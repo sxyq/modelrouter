@@ -27,6 +27,7 @@ header{flex:none;height:56px;display:flex;align-items:center;justify-content:spa
 
 main{flex:1;min-height:0;position:relative;background:var(--paper)}
 main iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+main .slide-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:var(--paper);display:block}
 
 footer{flex:none;height:64px;display:flex;align-items:center;gap:14px;padding:0 16px;background:var(--surface);border-top:1px solid var(--line)}
 .nav{display:flex;align-items:center;gap:6px;flex:none}
@@ -111,26 +112,26 @@ var GROUP=[
 ];
 
 var SLIDES=[
-  {p:1,g:0,t:'从一次 Agent Step 到 Long-Horizon Task',q:'长程任务为什么会产生累计成本',src:null,v:['Task → Step 1…Step N → Result 的平直流程图','页脚引用 MTRouter multi-turn framing']},
-  {p:2,g:0,t:'真实调用数据：我们观察到了什么',q:'数据资产有多大、能说明什么',src:null,v:['模型×档位矩阵、token 分桶和时间带','859,549 条来源记录 · 51 个 model × effort 组合 · 约 99.33B token']},
-  {p:3,g:1,t:'Model × Effort × Cache × Call Cost',q:'一次调用层面有哪些变量',src:['../汇报/model-matrix-dashboard.html','P3-model-matrix-dashboard.html'],v:['已生成：供应商 × 模型 × 推理档位矩阵（含 claude-opus-5 / sonnet-5 / fable-5）','cache read / write token、单次成本、P50 / P90']},
+  {p:1,g:0,t:'从一次 Agent Step 到 Long-Horizon Task',q:'长程任务为什么会产生累计成本',src:'assets/deck-images/page-01.png',v:['Task → Step 1…Step N → Result 的平直流程图','页脚引用 MTRouter multi-turn framing']},
+  {p:2,g:0,t:'真实调用数据：我们观察到了什么',q:'数据资产有多大、能说明什么',src:'assets/deck-images/page-02.png',v:['模型×档位矩阵、token 分桶和时间带','859,549 条来源记录 · 51 个 model × effort 组合 · 约 99.33B token']},
+  {p:3,g:1,t:'Model × Effort × Cache × Call Cost',q:'一次调用层面有哪些变量',src:'P3-model-matrix-dashboard.html',v:['已生成：供应商 × 模型 × 推理档位矩阵（含 claude-opus-5 / sonnet-5 / fable-5）','cache read / write token、单次成本、P50 / P90']},
   {p:4,g:2,t:'KV Cache 命中与多 Agent 的共享前缀',q:'缓存为什么会命中，多 Agent 又凭什么共用同一份',src:'P4-kv-cache.html',v:['已生成：多层 × 多头 KV 网格 + 开源动效组件','多 Agent 共享前缀 93%、本地 8 Agent 存 8 份占 16GB 卡 51%']},
-  {p:5,g:1,t:'推理档位会移动能力—成本位置',q:'为什么把 effort 作为路由动作',src:null,v:['AI Radar 的 cost × IQ 视图截图','右侧只放一句结论和两个标注数字']},
-  {p:6,g:1,t:'成本口径：近期论文如何记账',q:'我们的用户侧 USD 口径是否有依据',src:null,v:['MTRouter p.3 Eq.(1)','EET p.6 Table 1、Pricing Reversal p.4 Eq.(2)','UniScale eFLOPs 作为对照']},
-  {p:7,g:2,t:'Unified AI Gateway：模型切换为什么有隐藏成本',q:'第一篇论文解决什么问题',src:null,v:['p.3 Fig.2 对比 conventional 与 unified gateway']},
-  {p:8,g:2,t:'Unified AI Gateway：模型、位置和 Cache Action 联合决策',q:'它的核心系统方法是什么',src:null,v:['p.5 Fig.4','右侧列 reuse / mapping / transfer / re-prefill']},
-  {p:9,g:2,t:'Unified AI Gateway：效果与边界',q:'这篇结果能支持到什么程度',src:null,v:['p.12 Fig.5 或 p.11 Table 4','图下标注 analytical simulation']},
-  {p:10,g:3,t:'Google CATS：Agent 成本为什么要沿轨迹计算',q:'第二篇论文解决什么问题',src:null,v:['p.2 Fig.1 Budget Tracker 与 BATS','p.4 unified cost metric']},
-  {p:11,g:3,t:'Google CATS：预算感知的顺序/并行资源分配',q:'CATS 如何工作',src:null,v:['p.7 Fig.6']},
-  {p:12,g:3,t:'Google CATS：性能、工具调用和实际成本',q:'它与我们的任务级成本有什么连接',src:null,v:['p.9 Fig.7 accuracy 与 tool calls / unified cost 联合曲线']},
-  {p:13,g:4,t:'OpenSquilla：Agent Router 不能只看 Prompt',q:'第三篇论文解决什么问题',src:null,v:['p.6 Fig.2 query-level 与 harness-native 对比']},
-  {p:14,g:4,t:'OpenSquilla：Harness-native routing 如何工作',q:'它的核心方法是什么',src:null,v:['p.2 Fig.1 两个 operating regimes']},
-  {p:15,g:4,t:'OpenSquilla：成本—质量结果与适用范围',q:'它证明了什么',src:null,v:['p.19 Fig.3 cost–score frontier','可加 p.14–15 Table 1/2 局部']},
-  {p:16,g:5,t:'Route to Reason：为什么只选模型还不够',q:'第四篇论文解决什么问题',src:null,v:['p.2 Fig.1 dynamic reasoning / model routing / RTR']},
-  {p:17,g:5,t:'Route to Reason：模型 × 推理策略联合路由',q:'它怎样做联合选择',src:null,v:['p.4 Fig.4 routing table']},
-  {p:18,g:5,t:'Route to Reason：它对我们的启发',q:'这篇论文支持什么，不能支持什么',src:null,v:['p.8 Fig.7 或 p.13 Fig.9','标明 token 只是成本代理']},
-  {p:19,g:6,t:'四篇论文覆盖了哪些变量，还缺什么',q:'现有工作与我们的研究空间是什么',src:null,v:['四论文稀疏矩阵：Model / Effort / KV Cache / Task Cost','MTRouter 作为逐轮路由近邻']},
-  {p:20,g:6,t:'Our Idea：执行前预测是否值得',q:'我们最终要验证什么',src:null,v:['predictor / online / blind / fixed / oracle 对照流程','底部：调用级数据 → 未来受控 episode 数据']}
+  {p:5,g:1,t:'推理档位会移动能力—成本位置',q:'为什么把 effort 作为路由动作',src:'assets/deck-images/page-05.png',v:['AI Radar 的 cost × IQ 视图截图','右侧只放一句结论和两个标注数字']},
+  {p:6,g:1,t:'成本口径：近期论文如何记账',q:'我们的用户侧 USD 口径是否有依据',src:'assets/deck-images/page-06.png',v:['MTRouter p.3 Eq.(1)','EET p.6 Table 1、Pricing Reversal p.4 Eq.(2)','UniScale eFLOPs 作为对照']},
+  {p:7,g:2,t:'Unified AI Gateway：模型切换为什么有隐藏成本',q:'第一篇论文解决什么问题',src:'assets/deck-images/page-07.png',v:['p.3 Fig.2 对比 conventional 与 unified gateway']},
+  {p:8,g:2,t:'Unified AI Gateway：模型、位置和 Cache Action 联合决策',q:'它的核心系统方法是什么',src:'assets/deck-images/page-08.png',v:['p.5 Fig.4','右侧列 reuse / mapping / transfer / re-prefill']},
+  {p:9,g:2,t:'Unified AI Gateway：效果与边界',q:'这篇结果能支持到什么程度',src:'assets/deck-images/page-09.png',v:['p.12 Fig.5 或 p.11 Table 4','图下标注 analytical simulation']},
+  {p:10,g:3,t:'Google CATS：Agent 成本为什么要沿轨迹计算',q:'第二篇论文解决什么问题',src:'assets/deck-images/page-10.png',v:['p.2 Fig.1 Budget Tracker 与 BATS','p.4 unified cost metric']},
+  {p:11,g:3,t:'Google CATS：预算感知的顺序/并行资源分配',q:'CATS 如何工作',src:'assets/deck-images/page-11.png',v:['p.7 Fig.6']},
+  {p:12,g:3,t:'Google CATS：性能、工具调用和实际成本',q:'它与我们的任务级成本有什么连接',src:'assets/deck-images/page-12.png',v:['p.9 Fig.7 accuracy 与 tool calls / unified cost 联合曲线']},
+  {p:13,g:4,t:'OpenSquilla：Agent Router 不能只看 Prompt',q:'第三篇论文解决什么问题',src:'assets/deck-images/page-13.png',v:['p.6 Fig.2 query-level 与 harness-native 对比']},
+  {p:14,g:4,t:'OpenSquilla：Harness-native routing 如何工作',q:'它的核心方法是什么',src:'assets/deck-images/page-14.png',v:['p.2 Fig.1 两个 operating regimes']},
+  {p:15,g:4,t:'OpenSquilla：成本—质量结果与适用范围',q:'它证明了什么',src:'assets/deck-images/page-15.png',v:['p.19 Fig.3 cost–score frontier','可加 p.14–15 Table 1/2 局部']},
+  {p:16,g:5,t:'Route to Reason：为什么只选模型还不够',q:'第四篇论文解决什么问题',src:'assets/deck-images/page-16.png',v:['p.2 Fig.1 dynamic reasoning / model routing / RTR']},
+  {p:17,g:5,t:'Route to Reason：模型 × 推理策略联合路由',q:'它怎样做联合选择',src:'assets/deck-images/page-17.png',v:['p.4 Fig.4 routing table']},
+  {p:18,g:5,t:'Route to Reason：它对我们的启发',q:'这篇论文支持什么，不能支持什么',src:'assets/deck-images/page-18.png',v:['p.8 Fig.7 或 p.13 Fig.9','标明 token 只是成本代理']},
+  {p:19,g:6,t:'四篇论文覆盖了哪些变量，还缺什么',q:'现有工作与我们的研究空间是什么',src:'assets/deck-images/page-19.png',v:['四论文稀疏矩阵：Model / Effort / KV Cache / Task Cost','MTRouter 作为逐轮路由近邻']},
+  {p:20,g:6,t:'Our Idea：执行前预测是否值得',q:'我们最终要验证什么',src:'assets/deck-images/page-20.png',v:['predictor / online / blind / fixed / oracle 对照流程','底部：调用级数据 → 未来受控 episode 数据']}
 ];
 
 var PH_CSS=[
@@ -160,24 +161,22 @@ function phDoc(s){
   '</body></html>';
 }
 
-// 页面可能有多个候选路径（源文件 / 预览环境镜像），按顺序探测，取第一个可用的
-function resolveSrc(cands,cb){
-  if(location.protocol==='file:'){ cb(cands[0]); return; }
-  (function next(i){
-    if(i>=cands.length){ cb(cands[0]); return; }
-    fetch(cands[i],{method:'HEAD'}).then(function(r){
-      if(r.ok) cb(cands[i]); else next(i+1);
-    }).catch(function(){ next(i+1); });
-  })(0);
-}
-
-var stage=document.getElementById('stage'), cur=1, frames={}, booted=false;
+var stage=document.getElementById('stage'), cur=1, frames={};
 
 function buildFrame(s){
-  var f=document.createElement('iframe');
-  f.setAttribute('title','P'+pad(s.p)+' '+s.t);
   var u=s.src;
   if(Array.isArray(u)) u=u[0];
+  if(u && /\.(png|jpe?g|webp)$/i.test(u)){
+    var img=document.createElement('img');
+    img.className='slide-image';
+    img.alt='P'+pad(s.p)+' '+s.t;
+    img.src=u;
+    img.style.display='none';
+    stage.appendChild(img);
+    return img;
+  }
+  var f=document.createElement('iframe');
+  f.setAttribute('title','P'+pad(s.p)+' '+s.t);
   if(u) f.setAttribute('src',u); else f.setAttribute('srcdoc',phDoc(s));
   f.style.display='none';
   stage.appendChild(f);
@@ -267,20 +266,7 @@ window.addEventListener('hashchange',function(){
 });
 
 var m0=/^#p(\d+)$/.exec(location.hash);
-
-// 先解析候选路径（仅 http 预览环境需要），解析完再挂载当前页
-(function boot(){
-  var pend=0;
-  SLIDES.forEach(function(s){
-    if(Array.isArray(s.src)){
-      pend++;
-      (function(ss){
-        resolveSrc(ss,function(u){ ss.length=0; ss.push(u); pend--; if(!pend&&!booted){booted=true;go(m0?+m0[1]:3,true);} });
-      })(s.src);
-    }
-  });
-  if(!pend&&!booted){booted=true;go(m0?+m0[1]:3,true);}
-})();
+go(m0?+m0[1]:3,true);
 </script>
 </body>
 </html>
