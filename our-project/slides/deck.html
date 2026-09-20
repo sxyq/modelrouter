@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>长程 Agent 的任务级成本路由 · 汇报 Deck</title>
+<style>
+:root{--ink:#17202a;--muted:#66727d;--paper:#f5f3ee;--surface:#fffefa;--line:#d9d9d1;--rust:#b45739;--rust-2:#d87953;--teal:#2e766b;--blue:#4b7795;--gold:#bd8a36;--shadow:0 12px 34px rgba(27,37,42,.08)}
+*{box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;display:flex;flex-direction:column}
+button{font:inherit;cursor:pointer}
+
+header{flex:none;height:56px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 18px;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:12px;min-width:0}
+.brand .eyebrow{font-size:10px;letter-spacing:.16em;font-weight:800;color:var(--rust);text-transform:uppercase;white-space:nowrap}
+.brand h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-size:17px;letter-spacing:-.01em;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hright{display:flex;align-items:center;gap:10px;flex:none}
+.curtitle{font-size:12.5px;color:var(--muted);max-width:440px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.curtitle b{color:var(--ink);font-weight:750}
+.badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.badge.ready{background:#eef5f1;border-color:#bcd9cd;color:var(--teal)}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9px;padding:6px 11px;font-size:12px;font-weight:700;transition:.16s}
+.btn:hover{background:#f2f1ea}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.ghost:hover{background:#efeee7;color:var(--ink)}
+
+main{flex:1;min-height:0;position:relative;background:var(--paper)}
+main iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+
+footer{flex:none;height:64px;display:flex;align-items:center;gap:14px;padding:0 16px;background:var(--surface);border-top:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:6px;flex:none}
+.step{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;transition:.16s}
+.step:hover:not(:disabled){background:var(--rust);border-color:var(--rust);color:#fff}
+.step:disabled{opacity:.32;cursor:default}
+.pager{flex:none;font-family:Georgia,"Times New Roman",serif;font-size:19px;letter-spacing:.02em}
+.pager i{font-style:normal;color:var(--muted);font-size:13px}
+.ticks{flex:1;display:flex;align-items:center;gap:3px;justify-content:center;height:38px}
+.tick{width:100%;max-width:26px;height:26px;padding:0;border:0;background:transparent;position:relative;display:flex;align-items:flex-end}
+.tick span{display:block;width:100%;border-radius:3px;background:#e2e0d7;height:7px;transition:.16s}
+.tick:hover span{background:#c3c0b4}
+.tick.done span{background:#cfd8d3}
+.tick.now span{background:var(--rust);height:16px}
+.hint{flex:none;font-size:11px;color:var(--muted);white-space:nowrap}
+kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:#faf9f4;color:var(--ink)}
+
+.drawer{position:fixed;top:56px;bottom:64px;left:0;width:372px;background:var(--surface);border-right:1px solid var(--line);box-shadow:var(--shadow);transform:translateX(-102%);transition:transform .24s cubic-bezier(.16,1,.3,1);overflow-y:auto;padding:16px 18px 26px;z-index:9}
+.drawer.open{transform:none}
+.drawer h3{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:15px;margin:0 0 4px}
+.drawer p{margin:0 0 14px;font-size:11.5px;color:var(--muted);line-height:1.6}
+.grp{margin:16px 0 6px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--rust);display:flex;align-items:center;gap:7px}
+.grp:after{content:"";flex:1;height:1px;background:var(--line)}
+.row{display:flex;gap:10px;align-items:flex-start;padding:8px 9px;border-radius:10px;border:1px solid transparent;transition:.14s;text-align:left;width:100%;background:transparent}
+.row:hover{background:#f2f1ea}
+.row.now{background:#fdf4ee;border-color:#ecd3c2}
+.row .no{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--muted);width:22px;flex:none;padding-top:2px}
+.row.now .no{color:var(--rust);font-weight:800}
+.row .tx{min-width:0;display:block}
+.row .tt{display:block;font-size:12.5px;font-weight:700;line-height:1.4}
+.row .qq{display:block;font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
+.row .dot{width:6px;height:6px;border-radius:99px;flex:none;margin-top:6px;background:#dcd9cf}
+.row .dot.ready{background:var(--teal)}
+.scrim{position:fixed;inset:56px 0 64px;background:rgba(23,32,42,.24);opacity:0;pointer-events:none;transition:opacity .24s;z-index:8}
+.scrim.open{opacity:1;pointer-events:auto}
+@media (max-width:900px){.curtitle,.hint{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="eyebrow">Research Deck</span>
+    <h1>长程 Agent 的任务级成本路由</h1>
+  </div>
+  <div class="hright">
+    <span class="curtitle" id="curtitle"></span>
+    <span class="badge" id="curbadge"></span>
+    <button class="btn ghost" id="indexBtn">目录</button>
+    <button class="btn ghost" id="fsBtn">全屏</button>
+  </div>
+</header>
+
+<main id="stage"></main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <h3>页序（20 页）</h3>
+  <p>依据 <code>PPT_19页论文与数据汇报规划.md</code>，第 4 页为新增的 KV Cache 页，其后各页顺序顺延。<span style="color:var(--teal);font-weight:750">绿点</span>表示已生成页面。</p>
+  <div id="toc"></div>
+</aside>
+
+<footer>
+  <div class="nav">
+    <button class="step" id="prevBtn" title="上一页">‹</button>
+    <span class="pager"><span id="pgNow">01</span><i> / 20</i></span>
+    <button class="step" id="nextBtn" title="下一页">›</button>
+  </div>
+  <div class="ticks" id="ticks"></div>
+  <div class="hint"><kbd>←</kbd> <kbd>→</kbd> 翻页 · <kbd>F</kbd> 全屏</div>
+</footer>
+
+<script>
+var GROUP=[
+  {t:'开场与数据资产',c:'#4b7795'},
+  {t:'调用级成本三件套',c:'#2e766b'},
+  {t:'KV Cache 与华为 Gateway',c:'#b45739'},
+  {t:'CATS · 轨迹成本',c:'#bd8a36'},
+  {t:'OpenSquilla · Harness 路由',c:'#6f5ba3'},
+  {t:'Route to Reason',c:'#3f7f6a'},
+  {t:'综合与我们的思路',c:'#8b432e'}
+];
+
+var SLIDES=[
+  {p:1,g:0,t:'从一次 Agent Step 到 Long-Horizon Task',q:'长程任务为什么会产生累计成本',src:null,v:['Task → Step 1…Step N → Result 的平直流程图','页脚引用 MTRouter multi-turn framing']},
+  {p:2,g:0,t:'真实调用数据：我们观察到了什么',q:'数据资产有多大、能说明什么',src:null,v:['模型×档位矩阵、token 分桶和时间带','859,549 条来源记录 · 51 个 model × effort 组合 · 约 99.33B token']},
+  {p:3,g:1,t:'Model × Effort × Cache × Call Cost',q:'一次调用层面有哪些变量',src:['../汇报/model-matrix-dashboard.html','P3-model-matrix-dashboard.html'],v:['已生成：供应商 × 模型 × 推理档位矩阵（含 claude-opus-5 / sonnet-5 / fable-5）','cache read / write token、单次成本、P50 / P90']},
+  {p:4,g:2,t:'KV Cache 命中与多 Agent 的共享前缀',q:'缓存为什么会命中，多 Agent 又凭什么共用同一份',src:'P4-kv-cache.html',v:['已生成：多层 × 多头 KV 网格 + 开源动效组件','多 Agent 共享前缀 93%、本地 8 Agent 存 8 份占 16GB 卡 51%']},
+  {p:5,g:1,t:'推理档位会移动能力—成本位置',q:'为什么把 effort 作为路由动作',src:null,v:['AI Radar 的 cost × IQ 视图截图','右侧只放一句结论和两个标注数字']},
+  {p:6,g:1,t:'成本口径：近期论文如何记账',q:'我们的用户侧 USD 口径是否有依据',src:null,v:['MTRouter p.3 Eq.(1)','EET p.6 Table 1、Pricing Reversal p.4 Eq.(2)','UniScale eFLOPs 作为对照']},
+  {p:7,g:2,t:'Unified AI Gateway：模型切换为什么有隐藏成本',q:'第一篇论文解决什么问题',src:null,v:['p.3 Fig.2 对比 conventional 与 unified gateway']},
+  {p:8,g:2,t:'Unified AI Gateway：模型、位置和 Cache Action 联合决策',q:'它的核心系统方法是什么',src:null,v:['p.5 Fig.4','右侧列 reuse / mapping / transfer / re-prefill']},
+  {p:9,g:2,t:'Unified AI Gateway：效果与边界',q:'这篇结果能支持到什么程度',src:null,v:['p.12 Fig.5 或 p.11 Table 4','图下标注 analytical simulation']},
+  {p:10,g:3,t:'Google CATS：Agent 成本为什么要沿轨迹计算',q:'第二篇论文解决什么问题',src:null,v:['p.2 Fig.1 Budget Tracker 与 BATS','p.4 unified cost metric']},
+  {p:11,g:3,t:'Google CATS：预算感知的顺序/并行资源分配',q:'CATS 如何工作',src:null,v:['p.7 Fig.6']},
+  {p:12,g:3,t:'Google CATS：性能、工具调用和实际成本',q:'它与我们的任务级成本有什么连接',src:null,v:['p.9 Fig.7 accuracy 与 tool calls / unified cost 联合曲线']},
+  {p:13,g:4,t:'OpenSquilla：Agent Router 不能只看 Prompt',q:'第三篇论文解决什么问题',src:null,v:['p.6 Fig.2 query-level 与 harness-native 对比']},
+  {p:14,g:4,t:'OpenSquilla：Harness-native routing 如何工作',q:'它的核心方法是什么',src:null,v:['p.2 Fig.1 两个 operating regimes']},
+  {p:15,g:4,t:'OpenSquilla：成本—质量结果与适用范围',q:'它证明了什么',src:null,v:['p.19 Fig.3 cost–score frontier','可加 p.14–15 Table 1/2 局部']},
+  {p:16,g:5,t:'Route to Reason：为什么只选模型还不够',q:'第四篇论文解决什么问题',src:null,v:['p.2 Fig.1 dynamic reasoning / model routing / RTR']},
+  {p:17,g:5,t:'Route to Reason：模型 × 推理策略联合路由',q:'它怎样做联合选择',src:null,v:['p.4 Fig.4 routing table']},
+  {p:18,g:5,t:'Route to Reason：它对我们的启发',q:'这篇论文支持什么，不能支持什么',src:null,v:['p.8 Fig.7 或 p.13 Fig.9','标明 token 只是成本代理']},
+  {p:19,g:6,t:'四篇论文覆盖了哪些变量，还缺什么',q:'现有工作与我们的研究空间是什么',src:null,v:['四论文稀疏矩阵：Model / Effort / KV Cache / Task Cost','MTRouter 作为逐轮路由近邻']},
+  {p:20,g:6,t:'Our Idea：执行前预测是否值得',q:'我们最终要验证什么',src:null,v:['predictor / online / blind / fixed / oracle 对照流程','底部：调用级数据 → 未来受控 episode 数据']}
+];
+
+var PH_CSS=[
+'.stage{max-width:1180px;margin:0 auto;padding:44px 40px 60px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}',
+'.eyebrow{font-size:11px;letter-spacing:.16em;font-weight:800;color:#b45739;text-transform:uppercase}',
+'h2{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-size:clamp(30px,3.4vw,50px);line-height:1.08;letter-spacing:-.02em;margin:12px 0 10px}',
+'.q{font-size:15px;color:#66727d;line-height:1.7;margin:0 0 26px;max-width:820px}',
+'.card{background:#fffefa;border:1px solid #d9d9d1;border-radius:16px;padding:22px 24px;box-shadow:0 12px 34px rgba(27,37,42,.08)}',
+'.lb{font-size:11px;letter-spacing:.08em;font-weight:800;text-transform:uppercase;color:#66727d;margin-bottom:12px}',
+'ul{margin:0;padding-left:18px}li{font-size:13.5px;line-height:1.85;color:#37443f}',
+'.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:start}@media(max-width:860px){.grid{grid-template-columns:1fr}}',
+'.todo{border:1px dashed #cfcbbd;background:#fbfaf5}',
+'.n{font-family:Georgia,"Times New Roman",serif;font-size:64px;font-weight:500;color:#dcd8cb;line-height:1}'
+].join('');
+
+function pad(n){return n<10?'0'+n:''+n}
+
+function phDoc(s){
+  var items=s.v.map(function(x){return '<li>'+x+'</li>'}).join('');
+  return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>P'+pad(s.p)+'</title><style>'+PH_CSS+'</style></head><body>'+
+  '<div class="stage"><div class="eyebrow">PPT P'+pad(s.p)+' · 待生成 · '+GROUP[s.g].t+'</div>'+
+  '<div class="grid"><div><h2>'+s.t+'</h2>'+
+  '<p class="q">这一页要回答：'+s.q+'</p>'+
+  '<div class="card"><div class="lb">计划使用的视觉材料</div><ul>'+items+'</ul></div></div>'+
+  '<div class="card todo"><div class="lb">状态</div><div class="n">'+pad(s.p)+'</div>'+
+  '<p style="font-size:12.5px;color:#66727d;line-height:1.7;margin:12px 0 0">页面尚未生成。素材依据《PPT_19页论文与数据汇报规划.md》第 3 节与第 10 节。</p></div></div></div>'+
+  '</body></html>';
+}
+
+// 页面可能有多个候选路径（源文件 / 预览环境镜像），按顺序探测，取第一个可用的
+function resolveSrc(cands,cb){
+  if(location.protocol==='file:'){ cb(cands[0]); return; }
+  (function next(i){
+    if(i>=cands.length){ cb(cands[0]); return; }
+    fetch(cands[i],{method:'HEAD'}).then(function(r){
+      if(r.ok) cb(cands[i]); else next(i+1);
+    }).catch(function(){ next(i+1); });
+  })(0);
+}
+
+var stage=document.getElementById('stage'), cur=1, frames={}, booted=false;
+
+function buildFrame(s){
+  var f=document.createElement('iframe');
+  f.setAttribute('title','P'+pad(s.p)+' '+s.t);
+  var u=s.src;
+  if(Array.isArray(u)) u=u[0];
+  if(u) f.setAttribute('src',u); else f.setAttribute('srcdoc',phDoc(s));
+  f.style.display='none';
+  stage.appendChild(f);
+  return f;
+}
+
+function go(n,skipHash){
+  n=Math.max(1,Math.min(SLIDES.length,n));
+  cur=n;
+  var s=SLIDES[n-1];
+  if(!frames[n]) frames[n]=buildFrame(s);
+  for(var k in frames) frames[k].style.display=(+k===n)?'block':'none';
+  document.getElementById('pgNow').textContent=pad(n);
+  document.getElementById('curtitle').innerHTML='<b>P'+pad(n)+'</b> '+s.t;
+  var b=document.getElementById('curbadge');
+  b.textContent=s.src?'已生成':'待生成';
+  b.className='badge'+(s.src?' ready':'');
+  document.getElementById('prevBtn').disabled=(n===1);
+  document.getElementById('nextBtn').disabled=(n===SLIDES.length);
+  Array.prototype.forEach.call(document.querySelectorAll('.tick'),function(t,i){
+    t.className='tick'+(i+1===n?' now':'')+(SLIDES[i].src?' done':'');
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.row'),function(r,i){
+    r.className='row'+(i+1===n?' now':'');
+  });
+  if(!skipHash && location.hash!=='#p'+n) location.hash='p'+n;
+  document.title='P'+pad(n)+' · '+s.t+' · 长程 Agent 的任务级成本路由';
+}
+
+var ticks=document.getElementById('ticks'), toc=document.getElementById('toc');
+var lastG=-1;
+SLIDES.forEach(function(s,i){
+  var t=document.createElement('button');
+  t.className='tick'+(s.src?' done':'');
+  t.title='P'+pad(s.p)+' · '+s.t+(s.src?'':'（待生成）');
+  t.innerHTML='<span></span>';
+  t.onclick=function(){go(i+1)};
+  ticks.appendChild(t);
+
+  if(s.g!==lastG){
+    lastG=s.g;
+    var g=document.createElement('div');
+    g.className='grp';
+    g.textContent=GROUP[s.g].t;
+    toc.appendChild(g);
+  }
+  var r=document.createElement('button');
+  r.className='row';
+  r.innerHTML='<span class="no">'+pad(s.p)+'</span><span class="dot'+(s.src?' ready':'')+'"></span><span class="tx"><span class="tt">'+s.t+'</span><span class="qq">'+s.q+'</span></span>';
+  r.onclick=function(){go(i+1);closeDrawer()};
+  toc.appendChild(r);
+});
+
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('scrim').classList.remove('open')}
+function toggleDrawer(){document.getElementById('drawer').classList.toggle('open');document.getElementById('scrim').classList.toggle('open')}
+document.getElementById('indexBtn').onclick=toggleDrawer;
+document.getElementById('scrim').onclick=closeDrawer;
+document.getElementById('prevBtn').onclick=function(){go(cur-1)};
+document.getElementById('nextBtn').onclick=function(){go(cur+1)};
+document.getElementById('fsBtn').onclick=function(){
+  if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+};
+
+function act(a){
+  if(a==='next') go(cur+1);
+  else if(a==='prev') go(cur-1);
+  else if(a==='first') go(1);
+  else if(a==='last') go(SLIDES.length);
+}
+document.addEventListener('keydown',function(e){
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  var k=e.key;
+  if(k==='ArrowRight'||k==='ArrowDown'||k==='PageDown'){act('next');e.preventDefault()}
+  else if(k==='ArrowLeft'||k==='ArrowUp'||k==='PageUp'){act('prev');e.preventDefault()}
+  else if(k==='Home'){act('first');e.preventDefault()}
+  else if(k==='End'){act('last');e.preventDefault()}
+  else if(k==='f'||k==='F'){document.getElementById('fsBtn').click()}
+  else if(k==='Escape'){closeDrawer()}
+});
+window.addEventListener('message',function(e){
+  var a=(e.data&&e.data.__deck)||null;
+  if(a) act(a);
+});
+window.addEventListener('hashchange',function(){
+  var m=/^#p(\d+)$/.exec(location.hash);
+  if(m) go(+m[1],true);
+});
+
+var m0=/^#p(\d+)$/.exec(location.hash);
+
+// 先解析候选路径（仅 http 预览环境需要），解析完再挂载当前页
+(function boot(){
+  var pend=0;
+  SLIDES.forEach(function(s){
+    if(Array.isArray(s.src)){
+      pend++;
+      (function(ss){
+        resolveSrc(ss,function(u){ ss.length=0; ss.push(u); pend--; if(!pend&&!booted){booted=true;go(m0?+m0[1]:3,true);} });
+      })(s.src);
+    }
+  });
+  if(!pend&&!booted){booted=true;go(m0?+m0[1]:3,true);}
+})();
+</script>
+</body>
+</html>

@@ -11,16 +11,14 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans
 .shell{max-width:1900px;margin:0 auto;padding:30px 36px 56px}
 .eyebrow{font-size:12px;letter-spacing:.16em;font-weight:800;color:var(--rust);text-transform:uppercase}
 h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-size:clamp(32px,3.4vw,54px);line-height:1.06;letter-spacing:-.02em;margin:9px 0 12px}
-.lede{max-width:1220px;color:var(--muted);font-size:16px;line-height:1.7;margin:0}
+.lede{max-width:1150px;color:var(--muted);font-size:16px;line-height:1.7;margin:0}
 .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:22px;flex-wrap:wrap}
 .period{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:320px;box-shadow:var(--shadow)}
 .period b{display:block;font-size:17px;margin-bottom:6px}
 .period span{font-size:13px;color:var(--muted);line-height:1.6;display:block}
-.notice{display:flex;align-items:flex-start;gap:11px;background:#fff7e8;border:1px solid #e7c98e;color:#775625;border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.7;margin:18px 0 20px}
-.notice b{color:#644612}
-.notice .dot{color:var(--rust);font-size:11px;line-height:1.75;flex:none}
+.period span+span{margin-top:7px;padding-top:7px;border-top:1px solid #ecece7}
 .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:11px;margin-bottom:20px}
-.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:17px 18px;min-height:122px;box-shadow:var(--shadow)}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:17px 18px;min-height:118px;box-shadow:var(--shadow)}
 .kpi .label{font-size:12px;color:var(--muted);font-weight:750;text-transform:uppercase;letter-spacing:.08em}
 .kpi .value{font-size:30px;font-weight:780;margin:11px 0 5px}
 .kpi .sub{font-size:13px;color:var(--muted);line-height:1.5}
@@ -28,14 +26,40 @@ h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-
 .panel+.panel{margin-top:20px}
 .panel-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:20px 22px 16px;border-bottom:1px solid #e8e8e2;flex-wrap:wrap}
 .panel-title{font-size:21px;font-weight:800;margin:0}
-.panel-note{font-size:14px;color:var(--muted);margin-top:7px;line-height:1.7;max-width:1180px}
+.panel-note{font-size:14px;color:var(--muted);margin-top:7px;line-height:1.7;max-width:1150px}
 .panel-body{padding:20px 22px 22px}
-.stack{display:flex;flex-direction:column;gap:24px}
+.stack{display:flex;flex-direction:column;gap:26px}
 @media (max-width:1240px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:760px){.shell{padding:20px 14px 34px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .sub-title{font-size:15px;font-weight:800;margin:0 0 10px;display:flex;align-items:center;gap:9px}
 .sub-title .num{width:22px;height:22px;border-radius:6px;background:var(--rust);color:#fff;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:none}
 .muted{color:var(--muted);font-size:14px;line-height:1.75}
+
+/* ── 本地交互组件：多头注意力 × KV Cache ── */
+.lab{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.lab-bar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 16px;background:#f5f5f0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.lab-ctl{display:flex;align-items:center;gap:8px}
+.lab-lb{font-size:12px;font-weight:750;color:var(--muted)}
+.seg{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:99px;padding:6px 14px;font-size:12.5px;font-weight:750;transition:.15s}
+.seg:hover{border-color:#c9c5b8}
+.seg.on{background:var(--rust);border-color:var(--rust);color:#fff}
+.lab-cnt{font-size:13px;color:var(--muted)}
+.lab-cnt b{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:17px;color:var(--rust)}
+.lab-link{font-size:12.5px;color:var(--rust);font-weight:750;text-decoration:none;white-space:nowrap}
+.lab-grid{padding:18px 16px 6px}
+.lab-row{display:grid;grid-template-columns:76px repeat(8,minmax(0,1fr));gap:6px;align-items:stretch;margin-bottom:6px}
+.lab-head-tag{font-size:12px;font-weight:800;color:var(--muted);text-align:right;padding-right:10px;align-self:center}
+.lab-cell{height:44px;border-radius:8px;background:#f2f4f0;border:1px solid rgba(0,0,0,.04);display:flex;align-items:center;justify-content:center;font-size:15px;color:transparent;transition:background .3s,border-color .3s,color .3s}
+.lab-cell.cached{background:var(--teal);border-color:var(--teal);color:#eaf4f0}
+.lab-cell.calc{background:var(--gold);border-color:var(--gold);color:#775625}
+.lab-toks{display:grid;grid-template-columns:76px repeat(8,minmax(0,1fr));gap:6px;padding:2px 16px 12px}
+.lab-toks i{font-style:normal;font-size:12.5px;color:var(--muted);text-align:center}
+.lab-toks i:first-child{grid-column:1}
+.lab-state{border-top:1px dashed var(--line);padding:12px 16px;font-size:13.5px;color:var(--muted);line-height:1.65;min-height:46px;display:flex;align-items:center;background:#fbfbf7}
+.lab-state b{color:var(--ink)}
+.lab-state .bad{color:#8b432e;font-weight:750}
+
+/* ── 多层 × token 网格 ── */
 .grid-wrap{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fbfbf7}
 .layer-grid{display:flex;flex-direction:column;gap:8px;margin:14px 0 12px}
 .layer-row{display:flex;align-items:center;gap:11px}
@@ -50,12 +74,9 @@ h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-
 .legend div{display:flex;align-items:center;gap:7px}
 .sw{width:12px;height:12px;border-radius:3px;flex:none}
 .sw.g{background:var(--teal)}.sw.o{background:var(--gold)}.sw.x{background:#e4e2da;border:1px solid #d9d9d1}
-.statebox{background:#f8f8f4;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--muted);line-height:1.7;margin-top:14px;min-height:62px;display:flex;align-items:center}
-.embed{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
-.embed-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 14px;background:#f5f5f0;border-bottom:1px solid var(--line);font-size:13px;flex-wrap:wrap}
-.embed-bar b{font-size:13.5px}
-.embed-bar a{color:var(--rust);font-weight:750;text-decoration:none}
-.embed iframe{display:block;width:100%;height:660px;border:0}
+.statebox{background:#f8f8f4;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--muted);line-height:1.7;margin-top:14px;min-height:58px;display:flex;align-items:center}
+
+/* ── 第二段 ── */
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:4px}
 .step{border:1px solid var(--line);border-radius:12px;padding:16px 17px;background:#fbfbf7}
 .step .tag{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--rust);margin-bottom:8px}
@@ -74,7 +95,8 @@ h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-
 .pre{width:93%;background:var(--teal);border-radius:99px 0 0 99px}
 .suf{width:7%;background:var(--rust);border-radius:0 99px 99px 0}
 .track.narrow .pre,.track.narrow .suf{width:0}
-.scope{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:18px}
+.sub2{margin-top:26px}
+.scope{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:14px}
 .scope-group{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fbfbf7}
 .scope-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;gap:8px}
 .scope-name{font-size:14px;font-weight:800}
@@ -83,14 +105,12 @@ h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-
 .mini-box .mini-label{font-size:11px;font-weight:750;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
 .mini-box .mini-value{font-size:16.5px;font-weight:780}
 .mini-value.hot{color:var(--rust)}.mini-value.cool{color:var(--teal)}.mini-value.warm{color:var(--gold)}
-.concl{margin-top:18px;border-radius:12px;border:1px solid #cfe0da;background:#f7fbf9;padding:15px 17px;font-size:14.5px;line-height:1.8}
-.concl b{color:var(--ink)}
-.concl ol{margin:10px 0 0;padding-left:22px;color:var(--muted)}
-.concl li{margin-bottom:6px}
+.warn{margin-top:16px;border-radius:12px;border:1px solid #e7c98e;background:#fffbf2;padding:13px 16px;font-size:14px;line-height:1.75}
+.warn b{color:#644612}
 .footer{font-size:13.5px;color:var(--muted);line-height:1.8;margin-top:24px;padding:0 4px}
 .footer b{color:var(--ink)}
 .footer .clash{background:rgba(180,87,57,.1);color:#8b432e;font-weight:800;padding:1px 6px;border-radius:5px}
-@media print{body{background:#fff}.shell{max-width:none;padding:0}.panel,.kpi{box-shadow:none;break-inside:avoid}.embed iframe{display:none}}
+@media print{body{background:#fff}.shell{max-width:none;padding:0}.panel,.kpi{box-shadow:none;break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -100,16 +120,14 @@ h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-
     <div>
       <div class="eyebrow">P4 · MODEL ECONOMICS / KV CACHE &amp; SHARED PREFIX</div>
       <h1>KV Cache 命中原理，与多 Agent 的共享前缀</h1>
-      <p class="lede">先说缓存本身。Transformer 每一层、每个注意力头都各自存着一份 K 和 V，命中就是前缀一个 token 都不差，这段 K 和 V 直接拿来用。再说第二个问题，一条多 Agent 链路上，每个 Agent 开头那段上下文其实一模一样，它们能不能共用同一份缓存。</p>
+      <p class="lede">每一层、每个注意力头都各存一份 K 和 V。前缀一个 token 不差，这份 K/V 就能直接拿来用。一条多 Agent 链路上，各 Agent 开头的上下文一模一样，能不能共用同一份缓存，是这一页的第二段。</p>
     </div>
     <div class="period">
       <b>P4 / 20</b>
-      <span>19 页方案 + 本页新增 = 20 页<br>① 缓存原理 → ② 多 Agent 共享前缀</span>
-      <span style="margin-top:7px;padding-top:7px;border-top:1px solid #ecece7">口播素材：抖音 @老林讲AI《多Agent共享KV Cache》<br>数据：Anthropic / OpenAI 官方文档 · CacheScout arXiv:2608.14624</span>
+      <span>① 缓存原理 → ② 多 Agent 共享前缀</span>
+      <span>口播素材：抖音 @老林讲AI《多Agent共享KV Cache》<br>数据：Anthropic / OpenAI 官方文档 · CacheScout arXiv:2608.14624</span>
     </div>
   </header>
-
-  <div class="notice"><span class="dot">●</span><div><b>这一页分两段。</b>第一段讲多层网络里的 K/V 缓存和命中是怎么回事，配了一个可以直接上手的开源动效组件；第二段讲多 Agent 链路里那段被反复用到的巨大前缀。</div></div>
 
   <section class="kpis">
     <article class="kpi"><div class="label">缓存对象</div><div class="value">K / V</div><div class="sub">每层、每头、每 token 各一对<br>Q 用完即弃</div></article>
@@ -123,8 +141,8 @@ h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-
   <section class="panel">
     <div class="panel-head">
       <div>
-        <h2 class="panel-title">① KV Cache 原理：多层网络下，缓存的到底是什么</h2>
-        <div class="panel-note">一次 prefill 会给每一层的每个注意力头、每个 token 算出一对 K 和 V 并留下来。Query 是临时的，算完就扔，所以它叫 KV Cache。生成第 n 个 token 时，只需要算这一个 token 的 K 和 V，前面 n−1 个直接从缓存里读。</div>
+        <h2 class="panel-title">① KV Cache 原理</h2>
+        <div class="panel-note">一次 prefill 给每层、每头、每个 token 算一对 K 和 V，留下来；Q 是临时的，用完就扔，所以叫 KV Cache。之后每生成一个 token，只算它自己那份，前面的直接读缓存。</div>
       </div>
       <div class="legend"><span>点页面任意处重播动效</span></div>
     </div>
@@ -132,30 +150,42 @@ h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-
       <div class="stack">
 
         <div>
-          <div class="sub-title"><span class="num">1</span>开源动效组件 · 可直接操作「KV Cache 开 / 关」</div>
-          <div class="embed">
-            <div class="embed-bar">
-              <b>Attention Visualizer · ymgw55</b>
-              <span>MHA / GQA / MQA 切换 · KV Cache 开关 · 逐 step 播放</span>
-              <a href="https://github.com/ymgw55/attention-visualizer" target="_blank" rel="noopener">GitHub ↗</a>
+          <div class="sub-title"><span class="num">1</span>试一试：多头注意力里的 KV Cache（本地交互组件）</div>
+          <div class="lab">
+            <div class="lab-bar">
+              <div class="lab-ctl">
+                <span class="lab-lb">注意力头</span>
+                <button class="seg hon on" data-h="4">4 头 · MHA</button>
+                <button class="seg hon" data-h="2">2 头 · GQA</button>
+                <button class="seg hon" data-h="1">1 头 · MQA</button>
+              </div>
+              <div class="lab-ctl">
+                <span class="lab-lb">KV Cache</span>
+                <button class="seg con on" data-c="1">开</button>
+                <button class="seg con" data-c="0">关</button>
+              </div>
+              <button class="seg" id="replay">↻ 重播</button>
+              <div class="lab-cnt">本轮已算 K/V <b id="cnt">0</b> 次</div>
+              <a class="lab-link" href="https://ymgw55.github.io/attention-visualizer/" target="_blank" rel="noopener">在线完整版 ↗</a>
             </div>
-            <iframe src="https://ymgw55.github.io/attention-visualizer/" title="Attention Visualizer" loading="lazy" referrerpolicy="no-referrer"></iframe>
+            <div class="lab-grid" id="labGrid"></div>
+            <div class="lab-toks" id="labToks"></div>
+            <div class="lab-state" id="labState"></div>
           </div>
-          <p class="muted" style="margin-top:12px">可以开关 KV Cache，切换 4 头、2 头、1 头三种注意力，被缓存的值会打上勾，也能一步一步播放。多头注意力里到底哪些值被缓存了，它直接画给你看。</p>
         </div>
 
         <div>
-          <div class="sub-title"><span class="num">2</span>多层 × 多头：缓存是按层、按头分开存的</div>
+          <div class="sub-title"><span class="num">2</span>多层 × token：缓存按层分开存</div>
           <div class="grid-wrap">
             <div class="layer-grid" id="grid"></div>
             <div class="legend">
-              <div><i class="sw g"></i>已缓存的 K/V（命中，直接读）</div>
-              <div><i class="sw o"></i>本步新算的 K/V</div>
-              <div><i class="sw x"></i>前缀被改动后失效</div>
+              <div><i class="sw g"></i>已缓存，直接读</div>
+              <div><i class="sw o"></i>本步新算</div>
+              <div><i class="sw x"></i>前缀改动后失效</div>
             </div>
           </div>
           <div class="formula">缓存量 ≈ 2 × 层数 N × token 数 L × 每头维度 d × 头数 H × 每值字节数 b</div>
-          <p class="muted">层数是缓存开销的直接乘数。32 层的模型，同一段前缀要存 32 份 K/V。长上下文推理最先撞上的是<b>显存墙</b>，不是算力墙。</p>
+          <p class="muted">32 层的模型，同一段前缀要存 32 份 K/V。长上下文最先撞上的是<b>显存墙</b>，不是算力墙。</p>
           <div class="statebox" id="statebox">前 19 个 token 在每一层的 K/V 都从缓存读出，只算最后 1 个新 token。</div>
         </div>
 
@@ -166,91 +196,155 @@ h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-
   <section class="panel">
     <div class="panel-head">
       <div>
-        <h2 class="panel-title">② 多 Agent 的共享前缀：能不能复用同一份 KV Cache？</h2>
-        <div class="panel-note">能不能复用，取决于三件事。前缀是不是逐 token 对齐，推理框架有没有开前缀缓存，多个 Agent 是不是用同一套系统提示词和工具定义。</div>
+        <h2 class="panel-title">② 多 Agent 的共享前缀</h2>
+        <div class="panel-note">能不能复用同一份缓存，取决于三件事：前缀是否逐 token 对齐、框架是否开了前缀缓存、各 Agent 是否用同一套系统提示词和工具定义。</div>
       </div>
     </div>
     <div class="panel-body">
 
       <div class="steps">
         <div class="step bad">
-          <div class="tag">默认情况 · 独立推理</div>
-          <h4>各自算一遍，显存里存两份一样的</h4>
-          <p>Agent 推理时会把完整上下文提交给推理引擎，引擎为这次请求<b>单独分配一份 KV Cache</b>，逐层记下每个 token 的 K 和 V。默认规则下两个 Agent 的请求互不相干，系统提示词一模一样，引擎也会<b>分别算两遍</b>，显存里就存了两份完全相同的 KV Cache。这是最常见的缓存浪费，默认答案是不能。</p>
+          <div class="tag">默认 · 独立推理</div>
+          <h4>各算一遍，显存里存两份一样的</h4>
+          <p>引擎给每个请求单独建一份 KV Cache。系统提示词一模一样，也<b>各算一遍、各存一份</b>，这是最常见的缓存浪费。</p>
         </div>
         <div class="step good">
           <div class="tag">开启前缀缓存</div>
           <h4>RadixAttention：相同前缀只算一次</h4>
-          <p>推理框架提供了前缀缓存开关，<b>RadixAttention</b> 是其中一个。它用一棵 Radix 树按 token 序列索引算过的 KV 块，新请求沿树走，吃到最长的一段匹配前缀，只有真正新增的后缀才计算。高并发多 Agent 的场景特别有用，不然每个 Agent 都要把同一套系统提示词和工具定义重算一遍。</p>
+          <p>用一棵 Radix 树按 token 序列索引算过的 KV，新请求吃到最长匹配前缀，<b>只有新增后缀才计算</b>。多 Agent 高并发场景收益最大。</p>
         </div>
         <div class="step">
-          <div class="tag">语义缓存 · 注意区分</div>
+          <div class="tag">语义缓存 · 别混淆</div>
           <h4>它复用答案，KV 并没有共享</h4>
-          <p>再往上一层是语义缓存。缓存层把历史问答对按<b>语义相似度</b>建索引，新请求先查语义缓存，命中就<b>直接返回结果</b>，不命中才走推理。它复用的是结果，KV 并没有共享。很多讲解把这两件事放在一起说，概念是混的。真正的 KV 级共享只有前缀缓存。</p>
+          <p>按语义相似度检索历史问答，命中就<b>直接返回结果</b>，根本不进模型。真正 KV 级的共享只有前缀缓存。</p>
         </div>
       </div>
 
-      <div class="sub-title" style="margin-top:24px"><span class="num">2</span>在真实链路里，这段共享前缀有多大</div>
-      <p class="muted">真实项目会统一系统提示词和工具 schema，让所有 Agent 共用同一套前缀，引擎用 Radix 树管理这段共享前缀的 KV，相同部分只算一次。链路上每个 Agent 真正属于自己的，只有末尾几百个 token。</p>
-      <div class="bars" id="bars">
-        <div class="bar">
-          <div class="bar-head"><span class="bar-name">Agent A 的上下文</span><span class="bar-value">共享 ~4,000 tok · 新增 ~320 tok</span></div>
-          <div class="track"><i class="pre"></i><i class="suf"></i></div>
+      <div class="sub2">
+        <div class="sub-title"><span class="num">2</span>真实链路里，这段共享前缀有多大</div>
+        <div class="bars" id="bars">
+          <div class="bar">
+            <div class="bar-head"><span class="bar-name">Agent A 的上下文</span><span class="bar-value">共享 ~4,000 tok · 新增 ~320 tok</span></div>
+            <div class="track"><i class="pre"></i><i class="suf"></i></div>
+          </div>
+          <div class="bar">
+            <div class="bar-head"><span class="bar-name">Agent B 的上下文</span><span class="bar-value">共享 ~4,000 tok · 新增 ~260 tok</span></div>
+            <div class="track"><i class="pre"></i><i class="suf"></i></div>
+          </div>
+          <div class="bar">
+            <div class="bar-head"><span class="bar-name">Agent C 的上下文</span><span class="bar-value">共享 ~4,000 tok · 新增 ~410 tok</span></div>
+            <div class="track"><i class="pre"></i><i class="suf"></i></div>
+          </div>
         </div>
-        <div class="bar">
-          <div class="bar-head"><span class="bar-name">Agent B 的上下文</span><span class="bar-value">共享 ~4,000 tok · 新增 ~260 tok</span></div>
-          <div class="track"><i class="pre"></i><i class="suf"></i></div>
-        </div>
-        <div class="bar">
-          <div class="bar-head"><span class="bar-name">Agent C 的上下文</span><span class="bar-value">共享 ~4,000 tok · 新增 ~410 tok</span></div>
-          <div class="track"><i class="pre"></i><i class="suf"></i></div>
-        </div>
-      </div>
 
-      <div class="scope">
-        <div class="scope-group">
-          <div class="scope-head"><span class="scope-name">云端 API</span><span class="scope-badge">按 token 计费</span></div>
-          <div class="mini">
-            <div class="mini-box"><div class="mini-label">固定前缀</div><div class="mini-value">10k–50k</div></div>
-            <div class="mini-box"><div class="mini-label">命中</div><div class="mini-value cool">10%</div></div>
-            <div class="mini-box"><div class="mini-label">未命中</div><div class="mini-value hot">100%</div></div>
+        <div class="scope">
+          <div class="scope-group">
+            <div class="scope-head"><span class="scope-name">云端 API</span><span class="scope-badge">按 token 计费</span></div>
+            <div class="mini">
+              <div class="mini-box"><div class="mini-label">固定前缀</div><div class="mini-value">10k–50k</div></div>
+              <div class="mini-box"><div class="mini-label">命中</div><div class="mini-value cool">10%</div></div>
+              <div class="mini-box"><div class="mini-label">未命中</div><div class="mini-value hot">100%</div></div>
+            </div>
+          </div>
+          <div class="scope-group">
+            <div class="scope-head"><span class="scope-name">本地自建</span><span class="scope-badge">按显存占用</span></div>
+            <div class="mini">
+              <div class="mini-box"><div class="mini-label">4,000 tok</div><div class="mini-value">0.59 GB</div></div>
+              <div class="mini-box"><div class="mini-label">存 8 份</div><div class="mini-value hot">4.7 GB</div></div>
+              <div class="mini-box"><div class="mini-label">占 16GB 卡</div><div class="mini-value warm">51%</div></div>
+            </div>
+          </div>
+          <div class="scope-group">
+            <div class="scope-head"><span class="scope-name">实测收益</span><span class="scope-badge">CacheScout / SGLang</span></div>
+            <div class="mini">
+              <div class="mini-box"><div class="mini-label">命中率</div><div class="mini-value cool">+10–18pp</div></div>
+              <div class="mini-box"><div class="mini-label">首字延迟</div><div class="mini-value cool">−18–45%</div></div>
+              <div class="mini-box"><div class="mini-label">峰值吞吐</div><div class="mini-value cool">+57%</div></div>
+            </div>
           </div>
         </div>
-        <div class="scope-group">
-          <div class="scope-head"><span class="scope-name">本地自建</span><span class="scope-badge">按显存占用</span></div>
-          <div class="mini">
-            <div class="mini-box"><div class="mini-label">4,000 tok</div><div class="mini-value">0.59 GB</div></div>
-            <div class="mini-box"><div class="mini-label">存 8 份</div><div class="mini-value hot">4.7 GB</div></div>
-            <div class="mini-box"><div class="mini-label">占 16GB 卡</div><div class="mini-value warm">51%</div></div>
-          </div>
-        </div>
-        <div class="scope-group">
-          <div class="scope-head"><span class="scope-name">实测收益</span><span class="scope-badge">CacheScout / SGLang</span></div>
-          <div class="mini">
-            <div class="mini-box"><div class="mini-label">命中率</div><div class="mini-value cool">+10–18pp</div></div>
-            <div class="mini-box"><div class="mini-label">首字延迟</div><div class="mini-value cool">−18–45%</div></div>
-            <div class="mini-box"><div class="mini-label">峰值吞吐</div><div class="mini-value cool">+57%</div></div>
-          </div>
-        </div>
-      </div>
 
-      <div class="concl">
-        <b>坑在哪。</b>如果没做前缀对齐，比如每个 Agent 的系统提示词<b>顺序</b>不一样，工具定义的<b>格式</b>不一样，命中率会直接归零，等于白开。多 Agent 协作和批量任务处理时最容易踩到。<br>
-        <b>回答能不能共享时，标准思路是先分情况。</b>
-        <ol>
-          <li><b>prompt 前缀是否对齐</b>（逐 token、字节级一致）</li>
-          <li><b>推理框架有没有开启前缀缓存</b>（RadixAttention / vLLM automatic prefix caching）</li>
-          <li><b>多个 Agent 有没有共用同一套系统提示词和工具定义</b></li>
-        </ol>
+        <div class="warn"><b>没对齐就归零。</b>各 Agent 的系统提示词顺序、工具定义格式不一致时，命中率直接归零，等于白开。多 Agent 协作和批量任务最容易踩。</div>
       </div>
     </div>
   </section>
 
-  <p class="footer"><b>连回我们的研究问题。</b>这块巨大前缀同时也是最脆弱的东西，它要求字节级对齐，而路由动作（换模型、换推理档位、换工具集）恰恰要改写这段前缀。所以 <span class="clash">路由与缓存命中天然冲突</span>，选择哪个配置，影响的是整条轨迹的缓存状态和成本。<br/><b>口径。</b>命中价按 Anthropic prompt caching 文档，缓存读是标准输入价的 10%，5 分钟 TTL 写入加 25%，1 小时 TTL 加 100%；OpenAI cached input 是 50%，最小 1,024 token。命中判定要求字节级一致，改一个字符，其后整段失效。<br/><b>视频里有一处说法要修正。</b>「前缀没对齐会比不开缓存还慢」夸大了。SGLang 的消融实验测出 cache miss 时<b>没有可测量的开销</b>，作者因此把前缀缓存默认常开。准确的说法是收益归零，不是更慢。</p>
+  <p class="footer"><b>连回研究问题。</b>路由要换模型、换档位、换工具集，改的恰恰是这段必须字节级对齐的前缀。<span class="clash">路由与缓存命中天然冲突</span>，这也是下一页华为 Gateway 的出发点。<br/><b>口径。</b>缓存读按 Anthropic 文档为输入价 10%（OpenAI 50%）；「没对齐会更慢」的说法不准，SGLang 实测 cache miss 无可测量开销，准确说法是收益归零。</p>
 
 </main>
 
 <script>
+/* ── 本地组件：多头注意力 × KV Cache ── */
+(function(){
+  var WORDS=['你','是','路由','助手','请','分析','这段','文本'], N=WORDS.length;
+  var H=4, cacheOn=true, timers=[], grid=document.getElementById('labGrid'),
+      toks=document.getElementById('labToks'), state=document.getElementById('labState'),
+      cntEl=document.getElementById('cnt'), cells=[];
+
+  function stop(){ timers.forEach(clearTimeout); timers=[]; }
+  function at(ms,fn){ timers.push(setTimeout(fn,ms)); }
+
+  function build(){
+    grid.innerHTML=''; cells=[];
+    for(var h=0;h<H;h++){
+      var row=document.createElement('div'); row.className='lab-row';
+      var tag=document.createElement('div'); tag.className='lab-head-tag'; tag.textContent='Head '+(h+1);
+      row.appendChild(tag); cells[h]=[];
+      for(var t=0;t<N;t++){
+        var c=document.createElement('div'); c.className='lab-cell';
+        row.appendChild(c); cells[h].push(c);
+      }
+      grid.appendChild(row);
+    }
+    toks.innerHTML='';
+    var pad=document.createElement('i'); pad.textContent='token'; toks.appendChild(pad);
+    for(var t=0;t<N;t++){ var i=document.createElement('i'); i.textContent=WORDS[t]; toks.appendChild(i); }
+  }
+
+  function run(){
+    stop(); build();
+    var cnt=0; cntEl.textContent='0';
+    var totalOn=8*H, totalOff=H*N*(N+1)/2;
+    var stepMs=620;
+    for(var k=0;k<N;k++){ (function(k){
+      at(600+k*stepMs,function(){
+        for(var h=0;h<H;h++){
+          for(var t=0;t<k;t++) cells[h][t].className='lab-cell '+(cacheOn?'cached':'calc');
+          cells[h][k].className='lab-cell calc';
+        }
+        cnt+=cacheOn?H:H*(k+1);
+        cntEl.textContent=cnt;
+        state.innerHTML=cacheOn
+          ?'<b>第 '+(k+1)+' 步：</b>只算新 token「'+WORDS[k]+'」的 K/V，前面 '+k+' 个直接读缓存。'
+          :'<b>第 '+(k+1)+' 步：</b>缓存没开，「'+WORDS[k]+'」之前的 '+k+' 个 token 也要全部重算。<span class="bad">计算量随步数越滚越大。</span>';
+      });
+    })(k); }
+    at(600+N*stepMs+400,function(){
+      state.innerHTML=cacheOn
+        ?'<b>8 步共算 '+cnt+' 次。</b>头越少，要存的 K/V 越少，GQA / MQA 就是为省这份缓存设计的。'
+        :'<b>8 步共算 '+cnt+' 次</b><span class="bad">（开缓存只需 '+totalOn+' 次）</span>。没缓存，每一步都在重复劳动。';
+    });
+  }
+
+  document.querySelectorAll('.hon').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.hon').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on'); H=+b.dataset.h; run();
+    });
+  });
+  document.querySelectorAll('.con').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.con').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on'); cacheOn=b.dataset.c==='1'; run();
+    });
+  });
+  document.getElementById('replay').addEventListener('click',run);
+  window.addEventListener('load',function(){ setTimeout(run,400); });
+})();
+</script>
+
+<script>
+/* ── 多层 × token 网格动效 ── */
 (function(){
   var GRID=document.getElementById('grid'), TOKENS=20, PREFIX=19, LAYERS=4, cells=[];
   var names=['Layer 1','Layer 2','Layer 3','Layer N'];
@@ -265,38 +359,35 @@ h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-
     }
     row.appendChild(tag); row.appendChild(box); GRID.appendChild(row);
   }
-
   var BARS=document.querySelectorAll('#bars .bar'), STATE=document.getElementById('statebox');
   var timers=[], start=null;
   function at(ms,fn){ timers.push(setTimeout(fn,ms)); }
   function set(l,t,cls){ cells[l][t].className='cell '+cls; }
-
   function reset(){
     timers.forEach(clearTimeout); timers=[];
     for(var l=0;l<LAYERS;l++) for(var t=0;t<TOKENS;t++) set(l,t,'');
     BARS.forEach(function(b){ b.classList.remove('off'); b.querySelector('.track').classList.add('narrow'); });
     STATE.textContent='没开缓存时，每一步都要把整个前缀重算一遍。';
   }
-
   function play(){
     reset();
-    at(500,function(){ STATE.textContent='请求进了服务端，'+TOKENS+' 个 token 组成 prompt，各层都还没有缓存。'; });
+    at(500,function(){ STATE.textContent='请求进入服务端，'+TOKENS+' 个 token 组成 prompt，各层都还没有缓存。'; });
     at(1500,function(){
       for(var t=0;t<PREFIX;t++) (function(k){
         at(k*55,function(){ for(var l=0;l<LAYERS;l++) set(l,k,'hit'); });
       })(t);
-      STATE.textContent='前 '+PREFIX+' 个 token 一个都没变，每一层的 K 和 V 都直接从缓存读出。注意是每一层都命中。';
+      STATE.textContent='前 '+PREFIX+' 个 token 一个都没变，每一层的 K 和 V 直接从缓存读。';
     });
     at(2800,function(){
       for(var l=0;l<LAYERS;l++) set(l,PREFIX,'calc');
-      STATE.textContent='第 '+TOKENS+' 个是新 token，只有它要在每一层重新算一次 K 和 V。';
+      STATE.textContent='第 '+TOKENS+' 个是新 token，只有它要在每一层重新算一次。';
     });
     at(4600,function(){
       for(var l=0;l<LAYERS;l++) set(l,0,'dead');
       for(var t=1;t<TOKENS;t++) (function(k){
         at((k-1)*55,function(){ for(var l=0;l<LAYERS;l++) set(l,k,'dead'); });
       })(t);
-      STATE.textContent='第 1 个 token 被改了（系统提示词就在这个位置），由它决定的后面每一个 K 和 V，在所有层上全部失效。';
+      STATE.textContent='第 1 个 token 被改了（系统提示词就在这个位置），后面每一个 K/V 在所有层上全部失效。';
     });
     at(7000,function(){
       for(var t=0;t<TOKENS;t++) (function(k){
@@ -308,16 +399,27 @@ h1{font-family:Georgia,"Times New Roman","Songti SC",serif;font-weight:500;font-
       BARS.forEach(function(b,i){
         at(i*170,function(){ b.classList.remove('off'); b.querySelector('.track').classList.remove('narrow'); });
       });
-      STATE.textContent='换到多 Agent 链路。三个 Agent 的上下文里，共享前缀都占九成以上，同一份 K 和 V 被三个 Agent 共用。';
+      STATE.textContent='换到多 Agent 链路：三个 Agent 的上下文，共享前缀都占九成以上，同一份 K/V 被共用。';
     });
   }
-
   function schedule(){ if(start) clearTimeout(start); start=setTimeout(play,400); }
   document.addEventListener('click',function(e){
-    if(e.target.closest('a')) return;
+    if(e.target.closest('a')||e.target.closest('.lab')) return;
     schedule();
   });
   window.addEventListener('load',schedule);
+})();
+</script>
+<script>
+// 被 PPT deck 以 iframe 嵌入时，把翻页按键转发给外层播放器
+(function(){
+  var K={ArrowLeft:'prev',ArrowRight:'next',PageUp:'prev',PageDown:'next',Home:'first',End:'last'};
+  window.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    var a=K[e.key]; if(!a) return;
+    e.preventDefault();
+    try{ parent.postMessage({__deck:a},'*'); }catch(_){}
+  });
 })();
 </script>
 </body>
