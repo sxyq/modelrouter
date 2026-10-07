@@ -6,7 +6,16 @@
 **/.git/
 **/__pycache__/
 **/*.pyc
-research/
-papers/*.pdf
-our-project/visual_report_assets/
+# 克隆的第三方开源仓库（含各自 .git 历史，体积大且可重新 clone）
+research/*/implementation/repos/
+
+# 模型缓存与预训练权重（可重新下载）
+**/.cache/
+*.joblib
+*.pkl
+
+# 数据集（体积大，可按 README 指引重新获取）
+research/*/data/
+**/question_bank.jsonl
+
 *.log
