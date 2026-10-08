@@ -28,9 +28,8 @@
    - `our-project/data/` 包含 CCH 聚合统计（110 行）与 Blog GPT 调用明细（221,128 行），缺失 `task_id` 与任务终局标签。
    - `research/` 包含 58 份论文 PDF 与 73 份截图资产；`external-projects/` 为 9 个微型卡片。
 2. **服务器（RTX A6000 / `k3s-infra-01`）**：
-   - **ModelRouter 代码目录**：服务器上暂未创建，无重复克隆。
-   - **Kev-4B 权重**：在服务器模型与工作区目录中未检索到本地文件。
-   - **已有服务与目录分布**：共享模型权重位于 `/data/vllm/`（约 400GB+），在线推理服务运行于 `/home/syy/ai-serving/`，微调项目位于 `/home/syy/codellama-lora/`，端口 8000 (vLLM) 当前处于关闭状态。
+   - **硬件状态**：80 核 CPU、376 GiB RAM（346 GiB 空闲）、1.2 TiB 可用磁盘，GPU 显存占用仅 682 MiB / 49140 MiB（利用率 0%）。
+   - **已有服务**：Ollama (11434)、Zrald (8010)、Image API (8011)、Open WebUI (3000) 处于运行中状态；端口 8000 (vLLM) 当前未运行。
 
 ## 1. 当前总览
 

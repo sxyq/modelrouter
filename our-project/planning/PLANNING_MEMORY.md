@@ -230,14 +230,11 @@ modelrouter/
    - **历史工具目录**：`.workbuddy/` 历史工具记忆此前在本地已被加入 `.gitignore`。
 
 2. **远程授权服务器（RTX A6000 / `k3s-infra-01`）**：
-   - 连接状态：`a6000`（已授权连接，系统 Ubuntu 24.04 LTS），80 核 CPU，376 GiB RAM（346 GiB 可用），1.2 TiB 可用磁盘，1× RTX A6000 48GB 显存（当前显存占用仅 682 MiB，利用率 0%）。
-   - **ModelRouter 代码目录**：服务器上暂未创建，无重复克隆。
-   - **已有服务与目录现状**：
-     - 共享模型权重池位于 `/data/vllm/`（约 400GB+）；
-     - AI 推理服务运行在 `/home/syy/ai-serving/`，提供 Ollama 11434 等端点；
-     - 独立微调项目工作区位于 `/home/syy/codellama-lora/`；
+   - 连接状态：`a6000`（系统 Ubuntu 24.04 LTS），80 核 CPU，376 GiB RAM（346 GiB 可用），1.2 TiB 可用磁盘，1× RTX A6000 48GB 显存（当前显存占用仅 682 MiB，利用率 0%）。
+   - **已有服务现状**：
+     - AI 推理服务运行在 `/home/syy/ai-serving/`；
+     - Ollama (11434)、Zrald (8010)、Image API (8011)、Image WebUI (8020)、Open WebUI (3000) 处于运行中状态；
      - 端口 8000 (vLLM) 当前为关闭状态。
-   - **后续实验环境规划**：后续可考虑在服务器家目录下建立独立工作区 `modelrouter/` 与专属 venv。
 
 #### 9.5.2 目录精简方案（待 Planning Agent 审批，暂不执行物理变更）
 
