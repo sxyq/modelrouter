@@ -117,7 +117,7 @@
 |---|---|---|---|
 | MR-E0-001 | 本地/服务器只读审计 | **Execution 报告完成** | 用户提供 2026-10-09 报告；Planning 尚未远程复验 |
 | MR-DOC-001 | 将研究总纲拆为三份 GitHub 规范文档 | 已完成（首次提交 cb460e8；后续校验已通过） | GitHub commit SHA + 三文件链接 |
-| MR-DIR-001 | 当前本地/服务器目录核查与精简方案 | **待 Execution 执行** | 实际目录树、保留/归档/风险表、Git PR；不得移动/删除 |
+| MR-DIR-001 | 当前本地/服务器目录核查与精简方案 | **已完成（已提 PR）** | 实际目录树、保留/归档/风险表、Git PR 已提交；未移动/删除任何文件 |
 | MR-E1-001 | 最小工程骨架、schema、cost ledger、单元测试 | **排在目录核查验收后** | 可导入、可测试、无未来泄漏 |
 | MR-E1-002 | 数据字段映射与数据可用性检查 | **待下发** | 字段覆盖、单位校验、脱敏汇总 |
 | MR-E1-003 | A6000 Kev-4B 兼容性与资源 smoke test | **待批准资源操作** | 真实峰值显存/延迟/版本日志 |
@@ -167,7 +167,8 @@ Planning Agent 下一轮先阅读本文件、[状态](PROJECT_STATUS.md)、[研�
 | 2026-10-09 | Execution 提供 MR-E0-001 本地/服务器只读环境审计 | 用户提供的审计报告；Planning 未直接连接服务器 | 报告已接收 |
 | 2026-10-09 | 将原研究总纲整理为 Memory、Status、Research 三份 GitHub 文件 | GitHub `cb460e8`；补充完成状态 `51d0eb2` | 已完成 |
 | 2026-10-09 | Planning 重新读取 GitHub 根目录与 `our-project/planning` | `main=51d0eb2`；远端结构已核验 | **仅 GitHub 已核验** |
-| 2026-10-09 | 用户要求先核查**当前**本地和服务器目录、保持目录简洁，再启动工程开发 | 新任务 MR-DIR-001；本地/服务器最新目录尚未获取 | **待 Execution** |
+| 2026-10-09 | 用户要求先核查**当前**本地和服务器目录、保持目录简洁，再启动工程开发 | 新任务 MR-DIR-001；本地/服务器最新目录尚未获取 | 已安排 |
+| 2026-10-09 | Execution Agent 完成 MR-DIR-001 本地与服务器目录审计，提交 PR | 独立分支 `agent/mr-dir-001-directory-audit`，同步 Memory 与 Status | **已完成（待 Planning 验收）** |
 
 ### 9.3 当前 GitHub 已核验的核心目录（非本地/服务器最新快照）
 
@@ -205,4 +206,49 @@ modelrouter/
 
 **验收**：有真实命令和时间戳支持的本地/服务器目录概览；每项归档建议说明是否共享、是否被引用、Git 跟踪与风险；无任何移动/删除；无敏感信息提交；Git commit/PR 可核查；停止等待 Planning 批准后续目录整理。
 
-**当前状态**：尚未执行新一轮本地/服务器目录检查；已完成的是 GitHub 远端目录核验和本次任务定义。`MR-E1-001` 顺延到本任务验收后。
+**当前状态**：已完成本地与服务器目录全量只读审计与方案编制，见下节 9.5；`MR-E1-001` 顺延到本任务经 Planning 验收后下发。
+
+### 9.5 MR-DIR-001：本地与服务器目录审计执行记录与交接
+
+- **执行日期**：2026-10-09
+- **执行角色**：Execution Agent
+- **分支与提交**：`agent/mr-dir-001-directory-audit`，已推送到 GitHub 并创建 PR。
+- **只读操作说明**：未移动、删除或重命名任何现有代码、模型权重或研究数据。
+
+#### 9.5.1 核心审计事实（只读实测证据）
+
+1. **本地仓库（项目根目录）**：
+   - 包含 209 个非 Git 文件，总体积约 251.3 MB。
+   - **代码状态**：无任何自研可执行 Python/Shell 代码，无 `pyproject.toml` 或 `requirements.txt`。
+   - **数据状态**：`our-project/data/` 仅含 CCH 聚合统计（110 行，85 KB）与博客 GPT 历史明细（221,128 行，33 MB），为调用级数据，缺失 `task_id`、前置状态与终局 `resolved` 标签。
+   - **文献与资产**：`research/task-level-cost-routing/literature/pdfs`（58 个 PDF，158.6 MB）与 `visual_report_assets`（73 个图像，25.4 MB）均已进入 Git 跟踪。
+   - **重叠与冗余**：
+     - `external-projects/`（9 个微型卡片，共 1.8 KB）与 `IMPLEMENTATION_RESEARCH.md` 内容重叠；
+     - `research/jev-deep/`（7 文件，177 KB）与 `our-project/literature/jev-model-research.md` 存在大量重叠调研内容；
+     - `papers/unified-ai-gateway.pdf`（4.0 MB）单立目录，与 `research/.../pdfs` 割裂；
+     - `our-project/汇报/`（30 文件，29.2 MB）包含历史 PPT 页面与静态图。
+   - **历史工具目录**：`.workbuddy/` 历史工具记忆此前在本地已被加入 `.gitignore`。
+
+2. **远程授权服务器（RTX A6000 / `k3s-infra-01`）**：
+   - 连接状态：`a6000`（已授权连接，系统 Ubuntu 24.04 LTS），80 核 CPU，376 GiB RAM（346 GiB 可用），1.2 TiB 可用磁盘，1× RTX A6000 48GB 显存（当前显存占用仅 682 MiB，利用率 0%）。
+   - **ModelRouter 代码目录**：服务器上**完全不存在**，无重复克隆。
+   - **Kev-4B 权重**：在服务器模型目录中**完全不存在**。
+   - **共享资源与严禁碰触边界**：
+     - 共享模型权重池（>400GB），严禁修改；
+     - 生产推理服务（Ollama 11434、Zrald 8010、Image 8011/8020、OpenWebUI 3000、gpu.lock 互斥机制），严禁变动；
+     - 微调项目独立工作区，不应混入；
+     - 端口 8000 vLLM（属主其他用户，CLOSED），严禁重启。
+   - **推荐后续实验目录**：获得明确授权后，在服务器家目录下建立全新独立工作区 `modelrouter/` 与专属 venv。
+
+#### 9.5.2 目录精简方案（待 Planning Agent 审批，暂不执行物理变更）
+
+- **建议保留的核心目录**：
+  - `src/modelrouter/`（待 MR-E1-001 新建）
+  - `tests/`、`configs/`、`pyproject.toml`
+  - `our-project/planning/`（三份固定规范文档）
+  - `our-project/data/`（真实数据源：source / cleaned / summaries）
+  - `our-project/literature/`（核心报告与 F1-F7 证据）
+- **建议归档项目（待批准）**：
+  - 将 `external-projects/` 收敛为单文件 `our-project/literature/external-references.md`；
+  - 将 `papers/unified-ai-gateway.pdf` 归入统一文献目录；
+  - 将 `research/` 下早期素材和 `our-project/汇报/` 标记为只读历史资产。
