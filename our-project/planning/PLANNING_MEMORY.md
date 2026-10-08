@@ -1,8 +1,8 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v0.4｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v0.5｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
 >
-> **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。执行 Agent 每完成任务须按本文件的协议同步三份文档并提交 GitHub。
+> **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查三份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
 > **公开性**：仓库为 public。不得提交私有服务器 IP、SSH 用户名/命令凭据、密钥、原始私人会话、私有任务内容、个人本地绝对路径及未脱敏日志。必要的机器路径放在本地不跟踪的配置或安全通道内。
 
@@ -11,11 +11,12 @@
 - 项目：**ModelRouter**，研究**长程单/多 Agent 执行过程中的状态感知、任务级 Model × Reasoning Effort 联合路由**。
 - 主方法：**确定性 State Builder + 动态候选与硬约束 + 单一 Kev-4B（Qwen3.5-4B-Base/LoRA/pointer head）决策模型 + Agent Harness + 完整记账与任务终局评价**。
 - 目标：在可靠性/成功率约束下减少**任务完成总成本**，考虑动作对后续步骤、失败恢复、缓存连续性和成本剩余量的影响。
-- 当前阶段：**E0 只读环境审计已由 Execution Agent 报告完成；E1 工程骨架、Schema、Harness、可重放任务均未实现**。不存在已验证的训练收益。
-- 硬件：授权的单卡 **RTX A6000 48GB**；截至 E0 报告，GPU 基本空闲。实际运行前重新检查资源和共享服务。
+- 当前阶段：**E0.5 环境与文档确认**。MR-DIR-001 审计材料经 Planning 依据 Execution 报告和 GitHub 文档审阅验收；尚需完成本地 Git 版本对齐及环境边界讨论。**E-DESIGN 尚未开始**。
+- 执行路线：`E0.5 环境与文档确认 → E-DESIGN 详细实验设计与用户决策 → E1 工程基础 → E2 Harness 与基线 → E3 受控实验 → E4 模型训练与消融 → E5 论文与复现`。
+- 硬件：授权的单卡 **RTX A6000 48GB**；2026-10-09 审计快照显示显存占用仅 682 MiB。实际运行前重新检查资源和共享服务。
 - 现有 CCH 数据为 **110 行聚合记录，代表 750,212 次调用**；Blog GPT 数据为 **221,128 条调用明细**。二者都缺少可靠的任务级决策状态/终局成功标签，**不能直接作为反事实路由监督数据**。
-- GitHub 正式文档：[项目状态](PROJECT_STATUS.md)、[研究与方法](RESEARCH_OVERVIEW.md)、本文件。历史 `IMPLEMENTATION_RESEARCH.md` 保留作历史设计参考，**不再代表当前唯一方法**。
-- 首要下一步：**MR-DIR-001：复核本地与服务器实际目录、形成精简方案与安全边界**。本任务完成并获 Planning 验收后，才进入 MR-E1-001 工程骨架；不得跳过验收直接训练。
+- GitHub 正式文档：[项目状态](PROJECT_STATUS.md)、[研究与方法](RESEARCH_OVERVIEW.md)、本文件；后续规划文件为 `our-project/planning/EXPERIMENT_QA.md`（计划在 E-DESIGN 阶段建立，专职记录实验设计问答决策，本轮不提前创建）。历史 `IMPLEMENTATION_RESEARCH.md` 保留作历史设计参考，**不再代表当前唯一方法**。
+- 首要下一步：**MR-SYNC-001 本地/远端版本对齐与环境确认 → E-DESIGN 详细实验设计问答 → 决策完成后下发 MR-E1-001 工程骨架**。本次验收仅认可审计报告和 GitHub 文档，不等于 Planning 独立登录服务器实测；不得提前启动代码开发或模型训练。
 - 当前论文表述纪律：不要把状态字段数量本身作为创新点；**论文不讨论“多变量”或“混沌”**。新意必须靠任务级状态决策、Model × Effort、延迟成本/成功影响和严谨评测证明。
 
 ## 1. 事实来源、证据等级和时间
@@ -45,20 +46,23 @@
 | D-008 | 先搭建 Harness/Schema，再采集可重放受控轨迹 | 当前仓库没有可执行路由代码 | 已确认 |
 | D-009 | 论文聚焦真实 Agent 状态与决策机制；不以字段数量为新意 | 避免空泛主张 | 已确认 |
 | D-010 | 三份 Markdown 为持续维护的公开事实源 | 支持 ChatGPT 与本地 Agent 交接、审阅和版本控制 | 已确认 |
+| D-011 | 采用轻量 Git：默认 main、本地频繁 commit、按会话/里程碑或最长 24 小时工作周期 push；不要求 PR | 研究实验优先可追溯和及时备份，避免不必要的工程流程 | 已确认（2026-10-09） |
+| D-012 | 暂不迁移或归档历史研究目录，保持当前物理结构 | 现有目录可控，移动 PDF/截图可能破坏引用且不减少 Git 历史体积 | 已确认（2026-10-09） |
 
 **历史方案迁移说明**：2026-09 的 `IMPLEMENTATION_RESEARCH.md` 重点是“任务开始前一次选择 + GBDT/MLP 事前成本预测”。这是仍有价值的**对照基线和文献证据**，但当前主方法已更新为“运行时状态感知 + 单一 Kev-4B + 任务级回报”。不得在新代码中未经讨论把旧设计当作强制架构。
 
-## 3. E0 环境事实快照（[AUDIT]，非实时监控）
+## 3. E0/E0.5 环境事实快照（[AUDIT]，2026-10-09 审计快照，非实时监控）
 
 | 维度 | 观测 | 对后续的意义 |
 |---|---|---|
-| 仓库 | `sxyq/modelrouter`，`main`；研究材料为主，**尚无 Router/Harness Python 实现** | 从最小代码骨架开始 |
+| 仓库 | `sxyq/modelrouter`，`main`；在已授权扫描范围内为纯研究资产，**尚无 Router/Harness Python 实现** | 从最小代码骨架开始 |
 | 本地 | macOS Apple Silicon；Python 3.9.6；PyTorch 2.4.1/MPS | 适合轻量开发、静态测试和数据检查 |
-| 服务器 | Ubuntu 24.04，80 CPU 核，约 376 GiB RAM，单卡 A6000 48GB | 可进行 Kev smoke test，需隔离共享资源 |
-| GPU | E0 时 682 MiB/49140 MiB，利用率 0% | **仅是当时快照**；执行前重新查询 |
+| 服务器 | 授权 GPU 服务器：Ubuntu 24.04，80 CPU 核，约 376 GiB RAM，单卡 A6000 48GB | 可进行 Kev smoke test，需隔离共享资源 |
+| GPU | 2026-10-09 审计快照时 682 MiB/49140 MiB，利用率 0% | **仅是当时快照**；执行前重新查询 |
 | 服务器 Python | 3.12.3；已有环境报告 torch 2.14.0+cu126 | 兼容性待专用环境验证；不污染共享环境 |
-| 模型服务 | Ollama 端口服务及其他共享服务已存在 | 不重启、不覆盖、不占用他人端口 |
-| 模型权重 | 服务器共享模型目录存在大量已下载权重 | Kev-4B 及 Qwen3.5-4B-Base **尚未确认已存在** |
+| 模型端点 | 已有共享文本、图像与对话端点已存在 | 不重启、不覆盖、不占用他人端口 |
+| 模型权重 | 服务器共享模型目录存在大量已下载权重 | 在已授权扫描范围内**尚未确认 Kev-4B 及 Qwen3.5-4B-Base 权重已存在** |
+| 项目目录 | 在已授权扫描范围内未发现 ModelRouter 项目目录 | 新建/克隆需任务授权 |
 | CCH | 110 组统计、43 个模型、8 种 effort 标签、代表 750,212 调用 | 成本/缓存/Token 分布先验 |
 | Blog GPT | 221,128 条调用、10 模型、7 effort 标签、37 个实际组合 | 调用级经验分布；成本是 quotaUnits 非 USD |
 | Codex 监控 | 约 3,403 sessions、61,870 token 记录 | **隐私高风险**，不可直接提交或开放训练 |
@@ -96,20 +100,22 @@
 ### Execution Agent（本地 Agent）
 
 - 严格按任务卡执行，先检查工作区状态和最新 GitHub HEAD；发现未提交修改不得覆盖、reset、clean 或强推。
-- 可在任务卡授权范围内修改代码、运行测试、更新三份文档并提交 GitHub；每个任务都记录 commit SHA、测试结果、已知风险。
+- 可在任务卡授权范围内修改代码、运行测试，按职责检查三份文档；频繁本地 commit、定期 push；记录本地 HEAD、远端 HEAD、测试结果和已知风险。
 - 不擅自访问新主机、安装大型依赖、下载模型、占用共享 GPU、调用付费 API、修改生产服务或上传私人数据。
-- 任务完成**必须同步三份文档**：Memory 记决策/交接，Status 记实测进度，Research 记新增证据/方法改变；无变化也应检查并注明“本次无需修改”。
-- 每轮交付 Git commit 或 PR URL、变更文件列表、执行命令、输出摘要、失败/未完成项和下一步建议；不得只说“完成”。
+- 任务完成必须**检查**三份文档：Memory 记决策/交接，Status 记实测进度；Research 仅在证据、方法或实验协议变化时修改。无需修改的文档在交付报告注明即可，不做无意义提交。
+- 每轮交付本地 HEAD SHA、`origin/main` SHA、ahead/behind、未提交状态、最近 push 状态、变更文件列表、测试摘要、风险和下一步建议；不得只说“完成”。
 - 若任务超出授权或有冲突，停止并回报 Planning Agent。
 
-### GitHub 工作流
-
-1. 检查 `git status --short`、`git branch --show-current`、`git rev-parse HEAD`、远端状态；尊重本地现存未提交修改。
-2. 优先为实验代码/跨文件改动建立 `agent/<task-id>-<topic>` 分支和 PR；文档小修可在经授权且无冲突时提交主分支。
-3. 提交前运行适用的 lint/tests/schema validation；文档检查链接、相对路径、敏感信息和三文档一致性。
-4. Commit message 带任务编号；记录实际 commit SHA/PR 链接；不 force push、不覆盖他人工作。
-5. 公开仓库提交前检查：无 IP/密钥/个人绝对路径/私人 prompt/数据明细；保留来源与许可证信息。
-6. **实时更新的含义**：每次有新的执行结果或研究决策即在该轮工作内同步提交；不是无人值守的持续后台监控。
+### 轻量 Git 工作流（2026-10-09 起生效）
+ 
+1. **默认在 `main` 开发**，不要求 PR；只有需要隔离高风险试验或用户明确要求时才使用独立分支。既有 PR #1 已关闭且未合并，保留为历史记录。
+2. 每个可验证的小步骤或实验里程碑在本地 `git commit`；提交信息写清主题，重要工作可附任务编号。不要把每一行小改动都拆成独立提交。
+3. **推送频率**：每次工作会话结束、重要实验里程碑完成时推送；连续工作期间原则上不超过 24 小时不推送。离线或推送失败时明确标记“仅本地”，不能写成 GitHub 已同步。
+4. 提交前检查 `git status -sb`、`git diff --stat`、`git branch --show-current`；仅暂存需要的文件，不使用盲目的 `git add -A`，保护未跟踪的私人 `AGENTS.md`、配置、日志与数据。
+5. 推送前 `git fetch origin`，比较 `git rev-parse HEAD`、`git rev-parse origin/main` 和 `git rev-list --left-right --count origin/main...HEAD`。本地干净且可快进时才 `git pull --ff-only`；出现分叉/未提交冲突则停止并报告，禁止自动 reset、clean、rebase、force push。
+6. 在 `main` 且无冲突时使用 `git push origin main`；推送后再次核实远端 SHA。**本地 commit 不等于远端已更新**，GitHub 不会自动读取未推送内容。
+7. 实验记录需关联 **代码 commit SHA、配置版本、数据快照标识、模型版本、运行环境与结果路径**。服务器尚未部署时明确写“未部署”，不得把 GitHub main SHA 当作服务器运行版本。
+8. 提交前运行适用测试并检查公开仓库敏感信息、相对链接与许可证。历史 PR/分支曾包含内部环境标识；不得未经批准重写公开 Git 历史。
 
 ## 6. 当前任务台账
 
@@ -117,47 +123,53 @@
 |---|---|---|---|
 | MR-E0-001 | 本地/服务器只读审计 | **Execution 报告完成** | 用户提供 2026-10-09 报告；Planning 尚未远程复验 |
 | MR-DOC-001 | 将研究总纲拆为三份 GitHub 规范文档 | 已完成（首次提交 cb460e8；后续校验已通过） | GitHub commit SHA + 三文件链接 |
-| MR-DIR-001 | 当前本地/服务器目录核查与精简方案 | **待 Execution 执行** | 实际目录树、保留/归档/风险表、Git PR；不得移动/删除 |
-| MR-E1-001 | 最小工程骨架、schema、cost ledger、单元测试 | **排在目录核查验收后** | 可导入、可测试、无未来泄漏 |
+| MR-DIR-001 | 当前本地/服务器目录核查与精简方案 | **审计报告与文档已验收** | Planning 核实 GitHub 分支和修订；服务器事实依据 Execution 审计快照，非独立实测；未移动/删除文件 |
+| MR-SYNC-001 | 本地 Git 版本对齐与环境边界确认 | **待 Execution 回报** | 本地 HEAD / origin/main / ahead-behind / dirty / push / 服务器是否部署；不修改服务器 |
+| E-DESIGN | 详细实验设计与用户决策（规划引入 `EXPERIMENT_QA.md`） | **待 Planning 启动** | 明确评测任务集、动作空间与 effort 档位、预算决策、对照方案 |
+| MR-E1-001 | 最小工程骨架、schema、cost ledger、单元测试 | **排在 E-DESIGN 决策后** | 可导入、可测试、无未来泄漏 |
 | MR-E1-002 | 数据字段映射与数据可用性检查 | **待下发** | 字段覆盖、单位校验、脱敏汇总 |
 | MR-E1-003 | A6000 Kev-4B 兼容性与资源 smoke test | **待批准资源操作** | 真实峰值显存/延迟/版本日志 |
 | MR-E2-001 | Harness + 固定基线任务 pilot | **未开始** | 可重放任务与终局成功标签 |
 | MR-E3-001 | 同状态受控分支实验 | **未开始** | 成对轨迹、预算和配对统计 |
 | MR-E4-001 | Kev 训练与消融 | **未开始** | 训练日志、固定测试集、对照结果 |
 
-## 7. 下一张任务卡建议：MR-E1-001
+## 7. 当前版本同步与下一阶段规划：E-DESIGN
 
-**目标**：本地实现最小可测试的包结构和严格 Schema，不连服务器、不调用模型、不下载大权重。
+**当前先做 MR-SYNC-001**：由 Execution Agent 在本地只读检查 Git 状态、切换/对齐到最新 `origin/main`（仅在安全、无冲突时快进），回报工作树是否有未推送提交和未跟踪私人文件。已关闭的旧 PR 分支不应直接合并或 cherry-pick 到 `main`，避免将其历史中曾出现的内部环境标识引入 `main`。
 
-**建议交付**：`pyproject.toml`、`src/modelrouter/`（`schemas.py`、`constraints.py`、`pricing.py`、`state_builder.py`、`router/base.py`）、`tests/`、最小 README、可脱敏的 JSONL 示例。代码细节由 Planning Agent 审查任务卡后确认。
+**环境讨论**：保留现有文献与数据目录，不迁移、不删除；服务器暂不创建项目目录、安装依赖或下载 Kev-4B。确认版本及授权边界后才启动 E-DESIGN。
 
-**强制验收**：状态只包含决策前字段；缓存 read/write 与估计 overlap 分开；CCH USD 与 Blog quotaUnits 不相加；候选能力注册与硬约束可单测；无付费调用；三文档同步；提交可复查 commit/PR。
+**定位与目标**：在进入代码实现之前，由 Planning Agent 梳理并向项目负责人提出实验设计关键问题，明确评测任务集、动作空间与 effort 档位、预算上限、对照基线等核心边界。
+
+**规划登记文件**：待 E-DESIGN 阶段正式启动时，新建 `our-project/planning/EXPERIMENT_QA.md`，专职记录 Planning 向项目负责人提出的实验设计问题、选项、用户回答、最终决策及日期（本轮仅登记建立计划，不提前创建文件）。
+
+**后续工程衔接（MR-E1-001）**：待 E-DESIGN 问答决策完成并冻结实验边界后，再由 Planning Agent 下发 MR-E1-001 任务卡，启动本地最小工程骨架与 Schema 开发。建议交付包含 `pyproject.toml`、`src/modelrouter/`、`tests/` 等本地轻量代码，不连服务器、不调用付费 API。
 
 ## 8. 交接时的固定回复格式
 
 每次 Execution Agent 结束任务时报告：
 
-- `Task ID` / `Status` / `Branch` / `Commit or PR`
-- `Observed facts`（证据路径 + 命令）
-- `Files changed`（包括三份文档的同步状态）
+- `Task / Status / Local HEAD / origin/main HEAD / Ahead-Behind / Dirty / Last push`
+- `Observed facts`（审计时间与证据范围；服务器部署 SHA 或“未部署”）
+- `Files changed`（三份文档逐份注明“已修改/已检查无需修改”）
 - `Tests run`（通过/失败/未运行）
 - `Resource / cost usage`（仅真实数据）
-- `Risks / blockers`
-- `Next recommended task`（不自动执行）
+- `Risks / blockers / Next recommended task`（不自动执行）
 
 Planning Agent 下一轮先阅读本文件、[状态](PROJECT_STATUS.md)、[研究方法](RESEARCH_OVERVIEW.md)和最近一次任务报告，再决策。
 
 ## 9. 文档分层与按时间顺序的交接记录（MR-DIR-001 新规则）
 
-### 9.1 两类文档、三份文件
+### 9.1 文档体系与职责分工
 
-| 类别 | 文件 | 读者 | 更新触发 |
+| 类别 | 文件 | 读者 | 更新触发与职责 |
 |---|---|---|---|
-| A · 交接/记忆 | 本文件 `PLANNING_MEMORY.md` | Planning + Execution | **每次任务与决策**；保留日期、观察、动作、证据、提交、下一任务 |
-| B · 研究总纲 | `RESEARCH_OVERVIEW.md` | 项目负责人/论文研究 | **研究证据、方法或实验协议改变时**；避免流水账 |
-| B · 进度看板 | `PROJECT_STATUS.md` | 项目负责人 | **每次任务状态变化**；最上方简洁显示当前、已完成、阻塞、下一步、更新时间 |
+| A · 交接/记忆 | 本文件 `PLANNING_MEMORY.md` | Planning + Execution | **每次任务与决策**；按时间追加审计事件、Planning 审查意见、纠正事项、提交记录与后续决策 |
+| B · 研究总纲 | `RESEARCH_OVERVIEW.md` | 项目负责人/论文研究 | **研究证据、方法或实验协议改变时**；方法未变时无需修改，避免流水账 |
+| B · 进度看板 | `PROJECT_STATUS.md` | 项目负责人 | **每次任务状态变化**；统一首页看板、阶段表、工作包队列，确保当前状态一致 |
+| C · 实验问答决策 | `EXPERIMENT_QA.md` | Planning + 项目负责人 | **规划于 E-DESIGN 阶段建立（本轮仅登记计划，不提前创建）**；专职记录 Planning 提出的实验设计问题、选项、负责人回答、最终决策及日期 |
 
-“实时进度”定义为**Execution 每次执行状态变化时主动更新并提交，GitHub 刷新可见**；不能声称 ChatGPT 自动后台监视本地、服务器或持续推送。任务中若需要更高频率，可按里程碑提交，但不得为了更新而泄漏私人日志。
+“实时进度”定义为**Execution 在本地随任务事件更新并 commit，按工作会话/里程碑或最长 24 小时工作周期 push 后 GitHub 可见**；未推送内容只有本地可见。不能声称 ChatGPT 自动后台监视本地、服务器或持续推送；不得为了更新泄漏私人日志。
 
 ### 9.2 时间线（只追加新事件；纠错注明原因）
 
@@ -167,7 +179,12 @@ Planning Agent 下一轮先阅读本文件、[状态](PROJECT_STATUS.md)、[研�
 | 2026-10-09 | Execution 提供 MR-E0-001 本地/服务器只读环境审计 | 用户提供的审计报告；Planning 未直接连接服务器 | 报告已接收 |
 | 2026-10-09 | 将原研究总纲整理为 Memory、Status、Research 三份 GitHub 文件 | GitHub `cb460e8`；补充完成状态 `51d0eb2` | 已完成 |
 | 2026-10-09 | Planning 重新读取 GitHub 根目录与 `our-project/planning` | `main=51d0eb2`；远端结构已核验 | **仅 GitHub 已核验** |
-| 2026-10-09 | 用户要求先核查**当前**本地和服务器目录、保持目录简洁，再启动工程开发 | 新任务 MR-DIR-001；本地/服务器最新目录尚未获取 | **待 Execution** |
+| 2026-10-09 | 用户要求先核查**当前**本地和服务器目录、保持目录简洁，再启动工程开发 | 新任务 MR-DIR-001；本地/服务器最新目录尚未获取 | 已安排 |
+| 2026-10-09 | Execution Agent 提交 MR-DIR-001 审计报告与精简方案到独立分支 | 独立分支 `agent/mr-dir-001-directory-audit`，完成初步审计 | 审计完成 |
+| 2026-10-09 | Planning Agent 审阅反馈：未见正式 PR，要求修正阶段顺序（插入 E-DESIGN）、限定统计口径、公开脱敏、披露 Git 历史暴露风险 | 收到 MR-DIR-001-R1 修订任务要求 | 待修订 |
+| 2026-10-09 | Execution Agent 完成 MR-DIR-001-R1 修订并创建指向 main 的正式 PR | 插入 E-DESIGN、登记 EXPERIMENT_QA.md 计划、修正 209 文件口径、脱敏内部细节、披露历史暴露风险、创建正式 GitHub PR | 已提交，随后经 Planning 核验 |
+| 2026-10-09 | Planning 核实 MR-DIR-001-R1 修订与 GitHub 版本差异 | GitHub main 仍为旧版本、PR #1 的 head 为 a76fe4b；Planning 认可审计报告但未独立连接服务器 | 文档验收 |
+| 2026-10-09 | 项目负责人改用轻量 Git 工作流 | 默认 main、本地频繁 commit、定期 push，不再要求 PR；PR #1 已关闭且未合并，直接更新 main；历史分支仍需注意隐私风险 | 已决策，待本地对齐 |
 
 ### 9.3 当前 GitHub 已核验的核心目录（非本地/服务器最新快照）
 
@@ -188,7 +205,7 @@ modelrouter/
 
 上图仅来自 GitHub 远端目录列表，**不能推断本地工作树、服务器磁盘与 GitHub 一致**。此前 E0 报告提及本地有未提交修改和 `AGENTS.md`，需要重新核实。
 
-### 9.4 MR-DIR-001：本地/服务器目录治理审计任务卡
+### 9.4 MR-DIR-001：本地/服务器目录治理审计任务卡（历史记录；PR 要求已废止）
 
 **目标**：在开始编写 Router 代码前，找出实际目录、重复副本、共享资源边界和可精简的研究资产；先形成方案，不移动/删除。
 
@@ -205,4 +222,73 @@ modelrouter/
 
 **验收**：有真实命令和时间戳支持的本地/服务器目录概览；每项归档建议说明是否共享、是否被引用、Git 跟踪与风险；无任何移动/删除；无敏感信息提交；Git commit/PR 可核查；停止等待 Planning 批准后续目录整理。
 
-**当前状态**：尚未执行新一轮本地/服务器目录检查；已完成的是 GitHub 远端目录核验和本次任务定义。`MR-E1-001` 顺延到本任务验收后。
+**当前状态**：MR-DIR-001 审计报告与精简方案已提交正式 PR，等待 Planning 最终验收；详细实验设计尚未开始。
+
+### 9.5 MR-DIR-001 / MR-DIR-001-R1：本地与服务器目录审计执行记录与交接
+
+- **执行日期**：2026-10-09
+- **执行角色**：Execution Agent
+- **历史分支与提交**：`agent/mr-dir-001-directory-audit`，修订 head `a76fe4b`；曾创建 PR #1，现已关闭且未合并。当前安全修订内容由 Planning 直接提交到 `main`，不引入该分支中间提交。
+- **只读操作说明**：未移动、删除或重命名任何现有代码、模型权重或研究数据。
+
+#### 9.5.1 核心审计事实（只读实测证据快照）
+
+1. **本地仓库（项目根目录）**：
+   - **统计口径说明**：Git 跟踪管理的文件为 208 个，当前工作区未跟踪文件为 1 个（`AGENTS.md`），合计 209 个项目资产文件（总体积约 251.3 MB；若包含本地系统临时文件 `.DS_Store` 与未纳入版本控制的历史笔记 `.workbuddy/`，本地物理文件总数为 214 个）。
+   - **代码状态**：在已授权扫描范围内未发现任何自研可执行 Python/Shell 代码，无 `pyproject.toml` 或 `requirements.txt`。
+   - **数据状态**：`our-project/data/` 仅含 CCH 聚合统计（110 行，85 KB）与博客 GPT 历史明细（221,128 行，33 MB），为调用级数据，缺失 `task_id`、前置状态与终局 `resolved` 标签。
+   - **文献与资产**：`research/task-level-cost-routing/literature/pdfs`（58 个 PDF，158.6 MB）与 `visual_report_assets`（73 个图像，25.4 MB）均已进入 Git 跟踪。
+   - **重叠与冗余**：
+     - `external-projects/`（9 个微型卡片，共 1.8 KB）与 `IMPLEMENTATION_RESEARCH.md` 内容重叠；
+     - `research/jev-deep/`（7 文件，177 KB）与 `our-project/literature/jev-model-research.md` 存在大量重叠调研内容；
+     - `papers/unified-ai-gateway.pdf`（4.0 MB）单立目录，与 `research/.../pdfs` 割裂；
+     - `our-project/汇报/`（30 文件，29.2 MB）包含历史 PPT 页面与静态图。
+   - **历史工具目录**：`.workbuddy/` 历史工具记忆此前在本地已被加入 `.gitignore`。
+
+2. **远程授权 GPU 服务器（RTX A6000，2026-10-09 审计快照，非实时监控）**：
+   - **硬件资源**：Ubuntu 24.04 LTS，80 核 CPU，376 GiB RAM（346 GiB 可用），1.2 TiB 可用磁盘，1× RTX A6000 48GB 显存（审计快照时显存占用 682 MiB，利用率 0%）。
+   - **已有服务现状**：
+     - AI 推理服务运行于服务器共享目录；
+     - 已有共享文本、图像及 Web 对话服务处于运行中状态；
+     - vLLM 推理服务当前为未运行状态。
+   - **项目目录现状**：在已授权扫描范围内未发现 ModelRouter 项目目录或独立克隆。
+
+#### 9.5.2 目录精简方案（暂不迁移；保留历史建议）
+
+Planning 决定当前物理目录保持不变；PDF/截图迁移可能破坏引用且不能缩小已有 Git 历史。以下仅是历史建议，未经新授权不得执行。
+
+- **建议保留的核心目录**：
+  - `src/modelrouter/`（待后续任务新建）
+  - `tests/`、`configs/`、`pyproject.toml`
+  - `our-project/planning/`（规范文档体系）
+  - `our-project/data/`（真实数据源：source / cleaned / summaries）
+  - `our-project/literature/`（核心报告与 F1-F7 证据）
+- **建议归档项目（待批准）**：
+  - 将 `external-projects/` 收敛为单文件 `our-project/literature/external-references.md`；
+  - 将 `papers/unified-ai-gateway.pdf` 归入统一文献目录；
+  - 将 `research/` 下早期素材和 `our-project/汇报/` 标记为只读历史资产。
+
+#### 9.5.3 公开仓库隐私脱敏与 Git 历史暴露风险披露
+
+- **脱敏范围**：当前工作区各文档已全面删除或泛化内部主机名、用户家目录、私人绝对路径、连接细节与服务端口。
+- **Git 历史暴露风险**：由于分支 `agent/mr-dir-001-directory-audit` 早期提交（`b9c2321`、`fbbb53e` 等）已推送到公开仓库，其历史提交记录中曾包含内部主机名、用户家目录路径前缀及端口号。
+- **处理准则与状态**：本任务严格遵循安全纪律，**禁止擅自 force push 或重写远端公开历史**。上述历史暴露范围已如实向 Planning Agent 与项目负责人报告，等待决策后续是否需要启动专门的 Git 历史清理程序（如 `git-filter-repo`）。
+
+### 9.6 最新项目阶段说明与执行路线
+
+- **执行路线**：`E0.5 环境与文档确认 → E-DESIGN 详细实验设计与用户决策 → E1 工程基础 → E2 Harness 与基线 → E3 受控实验 → E4 模型训练与消融 → E5 论文与复现`。
+- **当前状态**：**MR-DIR-001 审计报告与文档已由 Planning 验收（仅基于 Execution 报告及 GitHub 核对）；当前 E0.5 继续进行本地/远端版本同步和环境边界讨论；详细实验设计尚未开始。**
+- **严禁事项**：不得在目录审计验收前跳过 E-DESIGN 直接启动 MR-E1-001 工程代码开发，不得下载大模型或修改服务器共享服务。
+
+### 9.7 MR-SYNC-001：版本信息完整性核对
+
+Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不能据此知道本地未提交改动、未推送 commit、服务器当前代码或 GPU 实况**。Execution 每轮提供一份简短版本快照：
+
+- `git status -sb`、`git branch --show-current`、`git rev-parse HEAD`；
+- `git fetch origin` 后的 `git rev-parse origin/main`、`git rev-list --left-right --count origin/main...HEAD`；
+- `git log -3 --oneline`、最近一次成功 push 的时间/commit；
+- 本地未提交/未跟踪文件的**脱敏摘要**，禁止上传私人文件内容；
+- 服务器项目目录/部署 commit（若不存在，写“未部署”）及环境观测时间；
+- 本次三文档的更新/无需更新判断、测试与实验结果版本。
+
+旧分支 `agent/mr-dir-001-directory-audit` 的历史仍在公开仓库中，**关闭 PR 不等于清除历史**；不擅自 force push、删远端分支或重写历史。

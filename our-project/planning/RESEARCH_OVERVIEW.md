@@ -1,6 +1,6 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v0.3｜研究基线：2026-10-09**
+> **版本 v0.4｜研究基线：2026-10-09（仅同步阶段与 Git 工作流；H1–H7 未变）**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -221,14 +221,17 @@ Provenance: source, schema_version, model_revision, privacy_flags
 
 ## 8. 实验设计
 
-### 8.1 顺序
+### 8.1 顺序（实验预案，尚未冻结）
 
-1. **E0**：审计代码/数据/服务器（Execution 报告已完成）。
-2. **E1**：最小 Schema、capability registry、hard constraint、usage ledger、可测试 Router 接口。
-3. **E2**：固定 Agent Harness 与自动任务终局 evaluator；固定模型/规则/sticky 基线。
-4. **E3**：从相同状态快照受控分支，收集成对动作结果。
-5. **E4**：Kev-4B LoRA/continuation 训练与严格独立测试。
-6. **E5**：消融、候选池变化、跨任务/模型泛化、统计置信区间和论文图表。
+1. **E0 / E0.5**：环境、目录、数据与文档审计；MR-DIR-001 审计报告和文档已由 Planning 依据 Execution 报告与 GitHub 核对验收，版本对齐和环境讨论继续进行。
+2. **E-DESIGN**：先与项目负责人讨论并冻结任务/基准、候选动作、预算、评价指标、受控分支与统计协议；届时建立 `EXPERIMENT_QA.md` 记录问题、回答和决策。
+3. **E1**：按已确认实验协议实现最小 Schema、capability registry、hard constraint、usage ledger 与可测试 Router 接口。
+4. **E2**：固定 Agent Harness 与自动任务终局 evaluator；固定模型/规则/sticky 基线。
+5. **E3**：从相同状态快照受控分支，收集成对动作结果。
+6. **E4**：Kev-4B LoRA/continuation 训练、消融与严格独立测试。
+7. **E5**：跨任务/模型泛化分析、统计置信区间、论文图表和开源复现。
+
+本节其余实验规模与对照为**待讨论的研究预案**，不是已执行实验或用户批准的预算。
 
 ### 8.2 最小对照与公平性
 
@@ -299,6 +302,6 @@ Provenance: source, schema_version, model_revision, privacy_flags
 
 - **Planning**：新研究决定、文献证据、实验假设改变时，更新本文件并同步 Memory/Status。
 - **Execution**：每个任务完成后提交真实实验结果、代码/数据版本、失败与负例；不得只写“实验已完成”。
-- **版本纪律**：每次 Git commit/PR 附 Task ID；修改研究方法需在 Memory Decision Log 记录替换原因，Status 更新阶段与阻塞。
+- **版本纪律**：默认在 `main` 本地频繁 commit，工作会话结束/重要里程碑或最长 24 小时工作周期内 push，不要求 PR；重要变更建议附任务编号。修改研究方法需在 Memory Decision Log 记录替换原因，Status 更新阶段与阻塞。
 - **公开安全**：仅公开可审阅的抽象状态、脱敏统计、代码与公开文献；不泄漏私人主机和原始会话。
-- **文档更新频率**：每个任务/决策事件同步；不是自动后台刷新。
+- **文档更新频率**：Memory/Status 随任务与决策事件更新；本研究总纲仅在证据、方法或实验协议变化时修改。未 push 的本地更新不在 GitHub 可见；不是自动后台刷新。

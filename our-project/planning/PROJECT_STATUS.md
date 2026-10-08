@@ -1,44 +1,51 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **版本 v0.4｜状态截止 2026-10-09｜依据：MR-E0-001 只读审计报告 + GitHub main 实际核查**
+> **版本 v0.6｜状态截止 2026-10-09｜依据：MR-E0-001 只读审计快照 + MR-DIR-001 目录审计快照 + GitHub main 实际核查**
 >
 > **读者**：项目负责人、实验执行人员。**本文件记录“已经有什么、还缺什么、何时算完成”**。详细研究论证见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)；Agent 交接规则见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
-> **证据注意**：服务器、GPU、进程和数据规模来自本地 Execution Agent 提交的 E0 报告，不代表 Planning Agent 直接登录复验，也不构成实时监控。公开文档刻意不包含服务器内网 IP、SSH 登录信息和私人绝对路径。
+> **证据注意**：服务器、GPU、进程和数据规模来自本地 Execution Agent 于 2026-10-09 提交的审计快照，不代表 Planning Agent 直接登录复验，也不构成实时监控。公开文档刻意不包含服务器内网 IP、SSH 登录信息、内部主机名、用户家目录与私人绝对路径。
 
 ## 0. 项目负责人进度看板（任务事件更新）
 
 | 项目 | 当前 |
 |---|---|
-| **当前阶段** | **E0.5：本地/服务器目录复核与文档交接治理** |
-| **当前任务** | **MR-DIR-001 待本地 Execution Agent 执行**；仅远端 GitHub 目录已复核 |
-| **已完成** | E0 历史审计报告已接收；三文档拆分已提交（`cb460e8`、`51d0eb2`） |
-| **正在等待** | 最新本地/服务器实际目录树、重复资产、共享资源边界和精简建议 |
-| **主要阻塞** | Planning 无法直接核验当前本地/服务器目录；不能安全决定搬迁或删除 |
-| **下一步** | Execution 完成 MR-DIR-001 → Planning 验收目录方案 → MR-E1-001 Schema/工程骨架 |
-| **更新方式** | 每个任务/里程碑由 Execution 更新并提交 GitHub；**不是后台自动监控** |
-| **最近更新时间** | 2026-10-09；当前文档更新任务 MR-DOC-002 |
+| **当前阶段** | **E0.5：环境与文档确认；审计报告与文档已由 Planning 验收，版本对齐和环境边界讨论仍在进行** |
+| **当前任务** | **MR-SYNC-001：核对本地/远端 Git 版本、工作树和服务器部署状态**；E-DESIGN 尚未开始 |
+| **已完成** | E0 只读审计报告；三文档治理；MR-DIR-001 审计报告和文档验收（服务器事实仍是 Execution 快照）；关闭历史 PR #1（未合并）；采用直接 main 提交工作流 |
+| **正在等待** | Execution 提供本地 Git 版本快照并安全对齐 main；完成环境边界讨论后进入 E-DESIGN |
+| **主要阻塞** | 尚未完成详细实验设计；无 Router/Harness 代码与测试；Kev-4B 未在授权扫描范围发现且未部署；服务器当前运行版本尚无本项目部署 |
+| **下一步** | **本地 Git 安全对齐与环境确认 → E-DESIGN 实验设计问答 → E1 工程基础** |
+| **更新方式** | 本地频繁 commit；工作会话结束/里程碑或最长 24 小时工作周期 push；仅 push 后 GitHub 可见，非后台自动监控 |
+| **最近更新时间** | 2026-10-09；当前任务 MR-SYNC-001（版本对齐待回报） |
 
-**文档分层**：Agent 交接历史 → [PLANNING_MEMORY.md](PLANNING_MEMORY.md)；给负责人看的稳定研究方案 → [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)；给负责人看的**最新进度** → 本文件。
+**文档分层与规划**：
+- Agent 交接历史与决策日志 → [PLANNING_MEMORY.md](PLANNING_MEMORY.md)
+- 给负责人看的最新进度与看板 → 本文件
+- 给负责人看的稳定研究方案 → [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)
+- （未来规划文件）实验设计问答决策记录 → `EXPERIMENT_QA.md`（计划在 E-DESIGN 阶段建立，本轮仅登记计划，不提前创建文件）
 
-### 0.1 GitHub 已核实的目录（不等于本地/服务器最新状态）
+### 0.1 本地与服务器实测核验结果（Execution Agent 于 2026-10-09 审计快照）
 
-~~~text
-modelrouter/
-  README.md
-  our-project/
-    planning/   (PLANNING_MEMORY.md, PROJECT_STATUS.md,
-                 RESEARCH_OVERVIEW.md, IMPLEMENTATION_RESEARCH.md)
-    literature/
-    data/
-    汇报/
-  research/
-  papers/
-  external-projects/
-  .workbuddy/
-~~~
+1. **本地仓库（资产统计快照）**：
+   - 统计口径说明：Git 跟踪管理的文件为 208 个，当前工作区未跟踪文件为 1 个（`AGENTS.md`），合计 209 个项目资产文件（总体积约 251.3 MB；若包含本地系统临时文件 `.DS_Store` 与未纳入版本控制的历史笔记 `.workbuddy/`，本地物理文件总数为 214 个）。
+   - 在已授权扫描范围内：纯研究文档与数据仓库，目前暂无 `pyproject.toml`、`requirements.txt` 或可运行的 Python 代码。
+   - `our-project/data/` 包含 CCH 聚合统计（110 行）与 Blog GPT 调用明细（221,128 行），缺失 `task_id` 与任务终局标签。
+   - `research/` 包含 58 份论文 PDF 与 73 份截图资产；`external-projects/` 为 9 个微型卡片。
+2. **授权 GPU 服务器（RTX A6000，2026-10-09 审计快照）**：
+   - **硬件状态**：80 核 CPU、376 GiB RAM（346 GiB 空闲）、1.2 TiB 可用磁盘，GPU 显存占用 682 MiB / 49140 MiB（利用率 0%）。
+   - **已有服务**：已有若干共享文本、图像及 Web 对话服务处于运行中状态；vLLM 推理服务当前未运行。
 
-远端 `main` 在此次更新前为 `51d0eb2`。此前 E0 报告所描述的本地/服务器目录和资源是**历史快照**，必须通过 MR-DIR-001 再核查。不得因远端目录存在就假定本地、服务器已经同步。
+### 0.2 当前版本信息的完整性核对
+
+| 版本层次 | Planning 能否直接核实 | Execution 应报告 |
+|---|---|---|
+| GitHub 远端 `main` | **可以**，读取最新 HEAD 与三份文件 | 远端 SHA、最近 push、文档变更 |
+| 本地工作区 | **不能自动看到** | 当前分支、本地 HEAD、未提交/未跟踪文件的脱敏摘要、相对 `origin/main` 的 ahead/behind |
+| 授权服务器运行版本 | **不能从 GitHub 推断** | ModelRouter 是否部署；若部署，记录实际代码 SHA、环境/模型版本、审计时间 |
+| 实验结果版本 | **必须由执行记录提供** | 代码 SHA、配置/数据/模型版本、任务集、seed、结果位置、费用与资源 |
+
+Execution 在每轮结束时先执行 `git status -sb`、`git rev-parse HEAD`、`git fetch origin`、`git rev-parse origin/main`、`git rev-list --left-right --count origin/main...HEAD`、`git log -3 --oneline`，报告脱敏摘要。只有 push 成功后，Planning 读取的 GitHub 才包含最新本地提交。旧审计分支不应直接合并进 `main`。
 
 ## 1. 当前总览
 
@@ -55,13 +62,15 @@ modelrouter/
 | 任务级评估 | 尚无本项目的成对任务轨迹、成功标签、预算与统计结果 | **未开始** |
 | 论文实验结果 | 无本项目可信对照/消融数据 | **不能声称已验证方法** |
 
-**总体阶段：E0 历史审计报告已接收 → E0.5 目录与文档治理待执行 → E1 数据协议与工程最小闭环。**
+**执行路线**：`E0.5 环境与文档确认 → E-DESIGN 详细实验设计与用户决策 → E1 工程基础 → E2 Harness 与基线 → E3 受控实验 → E4 模型训练与消融 → E5 论文与复现`。
+
+**当前状态**：MR-DIR-001 审计报告与文档已由 Planning 依据 Execution 报告和 GitHub 核对验收；E0.5 继续完成版本同步及环境讨论；E-DESIGN 尚未开始。
 
 ## 2. 仓库与工程状态
 
 **GitHub**：https://github.com/sxyq/modelrouter （公开，默认 `main`）。
 
-**E0 时本地工作树**：`main` 旧 HEAD 为 `13c14a3`；有用户未提交修改（包括 `.gitignore` 和未跟踪的 `AGENTS.md`，另有历史工作目录变动）。**绝不清理、覆盖、reset、强推这些变更**。执行 Agent 每轮重新核查当前状态。
+**E0 时本地工作树**：`main` 旧 HEAD 为 `13c14a3`；有用户未提交修改（包括 `.gitignore` 和未跟踪的 `AGENTS.md`，另有历史工作目录变动）。执行 Agent 每轮操作均保留未提交修改，不清理、覆盖、reset 或强推这些变更。执行 Agent 每轮重新核查当前状态。
 
 ### 2.1 已有研究资产（仓库相对路径）
 
@@ -108,23 +117,23 @@ configs/
 - 适合文档、数据校验、Schema 单测和轻量基线；不应据此宣称本地可以完成 Kev-4B 全量训练。
 - 项目专用 Python 环境、依赖锁文件和可执行测试均尚未建立。
 
-### 3.2 授权服务器（[E0 报告]）
+### 3.2 授权服务器（[AUDIT]，2026-10-09 审计快照）
 
 | 项目 | 审计值 | 风险/后续 |
 |---|---|---|
-| 系统 | Ubuntu 24.04 LTS | 版本变化需复核 |
+| 系统 | Ubuntu 24.04 LTS | 仅审计快照，版本变化需复核 |
 | CPU / 内存 | 80 核 / 约 376 GiB RAM | 共享资源，勿无限并行 |
 | GPU | NVIDIA RTX A6000 48GB（49140 MiB） | 单卡，需记录峰值显存 |
-| GPU E0 占用 | 682 MiB，0% utilization | 仅审计时刻，执行前重测 |
-| 磁盘 | E0 报告可用约 1.2 TiB | 仍需考虑已有大权重 |
+| GPU 占用 | 682 MiB，0% utilization | 仅 2026-10-09 审计时刻快照；执行前重测 |
+| 磁盘 | 可用约 1.2 TiB | 仍需考虑已有大权重 |
 | Python | 3.12.3 | 建议独立环境 |
-| PyTorch | 现有共享环境报告 2.14.0+cu126 | 不是 Kev 已验证兼容性的证明 |
-| Ollama | 现有网关与约 14 个本地模型 | 需测试 endpoint/effort 支持情况 |
+| PyTorch | 现有环境报告 2.14.0+cu126 | 不是 Kev 已验证兼容性的证明 |
+| 模型端点 | 现有若干本地模型推理端点 | 需测试 endpoint/effort 支持情况 |
 | 其他服务 | 已有共享文本与图像服务 | 不重启、不更改所有权或端口 |
-| 权重目录 | 存在 >400GB 模型权重 | 不假定 Kev 权重已经下载 |
-| ModelRouter 服务器目录 | E0 未发现 | 新建/克隆需任务授权 |
+| 权重目录 | 共享模型目录存在已下载权重 | 不假定 Kev 权重已经下载 |
+| ModelRouter 服务器目录 | 在已授权扫描范围内未发现 | 新建/克隆需任务授权 |
 
-**重要**：本地模型“有 Ollama 端点”不意味着原生支持多档 reasoning effort。候选池必须由 capability registry 校验，不得为不支持的组合造标签。
+**重要**：本地模型“有推理端点”不意味着原生支持多档 reasoning effort。候选池必须由 capability registry 校验，不得为不支持的组合造标签。
 
 ## 4. 数据资产与可训练性
 
@@ -162,14 +171,13 @@ configs/
 | 阶段 | 核心工作 | 验收条件 | 当前 |
 |---|---|---|---|
 | E0 | 环境/目录/数据只读审计 | 完整报告和证据路径 | **Agent 报告完成（历史快照）** |
-| E0.5 | 当前本地/服务器目录复核与精简建议 | 实际目录树、共享边界、风险与 Git PR | **MR-DIR-001 待执行** |
-| E1-A | 项目骨架、Schema、硬约束、账本 | 本地单元测试通过；无未来泄漏 | 未开始 |
-| E1-B | 生产数据映射与字段覆盖 | 真实统计、字段定义、缺失矩阵 | 未开始 |
-| E1-C | Kev-4B A6000 smoke test | 真实模型加载/显存/延迟记录 | 未开始 |
-| E2 | 最小 Harness + 固定/规则基线 | 可重放 task、自动 resolved、真实记账 | 未开始 |
-| E3 | 同状态多动作分支试验 | paired trajectories、相同继续策略、预算 | 未开始 |
-| E4 | Kev-4B 训练与离线/在线对照 | 训练日志、独立测试、消融/CI | 未开始 |
-| E5 | 论文图表与开源复现 | 可复现表格、成本-质量曲线、负例 | 未开始 |
+| E0.5 | 环境、目录与文档确认 | 审计报告/边界清楚；本地与远端版本对齐 | **审计文档已验收，版本对齐与环境讨论进行中** |
+| E-DESIGN | 详细实验设计与用户决策（规划引入 `EXPERIMENT_QA.md`） | 明确具体任务、动作空间、预算决策、对照方案 | **尚未开始** |
+| E1 | 工程基础（Schema、硬约束、账本、数据映射、环境验证） | 本地单元测试通过；无未来泄漏；环境跑通 | 未开始 |
+| E2 | Harness 与基线（最小 Harness + 固定/规则基线） | 可重放 task、自动 resolved、真实记账 | 未开始 |
+| E3 | 受控实验（同状态多动作分支试验） | paired trajectories、相同继续策略、预算约束 | 未开始 |
+| E4 | 模型训练与消融（Kev-4B 训练与离线/在线对照） | 训练日志、独立测试、消融/CI | 未开始 |
+| E5 | 论文与复现（论文图表与开源复现包） | 可复现表格、成本-质量曲线、负例分析 | 未开始 |
 
 ### 6.1 建议的首轮受控实验
 
@@ -192,17 +200,24 @@ configs/
 
 ## 7. 下一个工作包（Planning 任务卡队列）
 
-### MR-DIR-001：当前目录复核（当前最高优先级）
+### MR-DIR-001：目录审计与文档修订（Planning 已验收报告）
 
-**先检查、后整理**：本地与授权服务器的项目相关目录、重复克隆、数据/模型/共享服务边界、Git 未提交修改；形成实际目录树与简洁可控的目标结构。只读审计，禁止移动或删除。完成后更新交接历史和本进度看板，提交文档 PR，等待 Planning 验收。
+**已完成**：Execution 提交本地与授权服务器目录审计快照、共享资源边界及精简建议，未移动或删除文件；Planning 核实 GitHub 修订并认可报告，但未独立登录服务器。历史 PR #1 已关闭且未合并，改由直接提交 `main` 同步安全内容。
 
-**目前只核实了 GitHub 远端目录，尚未取得本地/服务器最新扫描结果。**
+### MR-SYNC-001：本地与远端版本对齐（当前）
 
-### MR-E1-001：最小工程与数据 Schema（目录复核后）
+**下一步**：Execution 检查当前分支、HEAD、未提交文件、`origin/main`、ahead/behind、最近成功 push；在安全且可快进的条件下将本地 `main` 对齐远端，避免合并旧 PR 分支历史。服务器 ModelRouter 尚未部署；仅核对，不创建服务器目录或安装模型。
+
+### E-DESIGN：详细实验设计与决策问答（目录复核验收后首先开展）
+
+**目标**：在进入代码实现之前，由 Planning Agent 梳理并向项目负责人提出实验设计关键问题，明确评测任务集、动作空间与 effort 档位、预算上限、对照基线等核心边界。
+**规划交付**：待 E-DESIGN 阶段正式启动时，新建 `our-project/planning/EXPERIMENT_QA.md`，专职记录问题、备选项、项目负责人答复、最终决策与决策时间（本轮仅登记建立计划，不提前创建文件）。
+
+### MR-E1-001：最小工程与数据 Schema（E-DESIGN 决策完成后执行）
 
 **允许范围（需正式任务卡确认）**：本地新建项目包、纯离线单元测试、公开脱敏示例；同步三文档、提交 GitHub。**不包括**服务器写操作、下载大模型或付费 API。
 
-**输出**：可安装包、State/Action/Constraint/Decision/Outcome/Pricing 定义、State Builder 决策前检查、候选能力表、约束单测、费用单位校验、测试命令与 commit/PR。
+**输出**：可安装包、State/Action/Constraint/Decision/Outcome/Pricing 定义、State Builder 决策前检查、候选能力表、约束单测、费用单位校验、测试命令、本地 commit SHA 与成功 push 状态。
 
 **验收**：测试可重复；无未来信息字段；缺失 effort 不伪造；USD/quotaUnits 不相加；缓存实际值与估计值分开。
 
@@ -216,6 +231,6 @@ configs/
 
 ## 8. 更新纪律
 
-每次完成任务或研究决策：Execution Agent 更新本文件的**状态表、阻塞项、实测结果、提交链接**；Planning Agent 审阅并更新研究决策；同步 [PLANNING_MEMORY.md](PLANNING_MEMORY.md) 与 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 中相应部分。提交必须记录 Task ID 和 Git commit/PR。
+每次任务或研究决策：Execution Agent 在本地频繁 commit，并在工作会话结束、重要里程碑或最长 24 小时工作周期内 push。Memory 记交接与决策，Status 记进度；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 仅在研究证据、方法或实验协议改变时更新。交付记录本地 HEAD、远端 HEAD、ahead/behind、dirty、最近 push、测试和结果版本；不要求 PR。
 
 **此处所有“未开始/待验证”均为 2026-10-09 的基线，后续必须依据真实执行证据更改。**
