@@ -24,14 +24,14 @@
 ### 0.1 本地与服务器最新实测核验结果（MR-DIR-001 快照）
 
 1. **本地仓库（209 文件，251.3 MB）**：
-   - 纯研究文档与数据仓库，**完全没有** `pyproject.toml`、`requirements.txt` 或可运行的 Python 代码。
+   - 纯研究文档与数据仓库，目前暂无 `pyproject.toml`、`requirements.txt` 或可运行的 Python 代码。
    - `our-project/data/` 包含 CCH 聚合统计（110 行）与 Blog GPT 调用明细（221,128 行），缺失 `task_id` 与任务终局标签。
    - `research/` 包含 58 份论文 PDF 与 73 份截图资产；`external-projects/` 为 9 个微型卡片。
 2. **服务器（RTX A6000 / `k3s-infra-01`）**：
-   - **ModelRouter 代码目录**：服务器上**完全不存在**，无重复克隆。
-   - **Kev-4B 权重**：在服务器 `/data/vllm/` 及 `/home/syy/` 中**完全不存在**。
+   - **ModelRouter 代码目录**：服务器上暂未创建，无重复克隆。
+   - **Kev-4B 权重**：在服务器模型与工作区目录中未检索到本地文件。
    - **硬件状态**：80 核 CPU、376 GiB RAM（346 GiB 空闲）、1.2 TiB 可用磁盘，GPU 显存占用仅 682 MiB / 49140 MiB（利用率 0%）。
-   - **共享边界**：`/data/vllm/`（>400GB 权重）、`/home/syy/ai-serving/`（在线推理服务）与 `/home/syy/codellama-lora/`（微调工作区）属于不可触碰的外部/共享资源。
+   - **独立项目与共享边界**：共享模型权重池（>400GB）、已有在线推理服务与微调工作区，建议保持隔离，不作改动。
 
 ## 1. 当前总览
 
@@ -54,7 +54,7 @@
 
 **GitHub**：https://github.com/sxyq/modelrouter （公开，默认 `main`）。
 
-**E0 时本地工作树**：`main` 旧 HEAD 为 `13c14a3`；有用户未提交修改（包括 `.gitignore` 和未跟踪的 `AGENTS.md`，另有历史工作目录变动）。**绝不清理、覆盖、reset、强推这些变更**。执行 Agent 每轮重新核查当前状态。
+**E0 时本地工作树**：`main` 旧 HEAD 为 `13c14a3`；有用户未提交修改（包括 `.gitignore` 和未跟踪的 `AGENTS.md`，另有历史工作目录变动）。执行 Agent 每轮操作均保留未提交修改，不清理、覆盖、reset 或强推这些变更。执行 Agent 每轮重新核查当前状态。
 
 ### 2.1 已有研究资产（仓库相对路径）
 
