@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v1.1｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v1.2｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
@@ -354,6 +354,12 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - **外部证据**：Open-SWE-Traces（首选，许可记录在 Q&A）、CMU agent_trajectories、SWE-Gym、AgentSuite（用途/许可需区分）；Finding the Right Fit 明示不可用于微调或训练。
 - **学习阶段建议尚未批准**：公开前缀 + 已执行动作结果预测，若有真实账本才学观察到的 cost-to-go，随后再讨论有真值的预算/能力规则辅助与可比动作的 choice 训练。Kev 官方 continuation 推荐仍需 Q-010 确认。
 - **状态/权限**：只进行了只读源研究与文件更新，没有下载数据、运行训练、使用 GPU/付费 API、访问或修改服务器。
+
+### 9.13 Q-007-R1：开源数据与训练预处理方案（2026-10-09）
+
+- Planning 按负责人要求研究两类训练主数据：Agent 运行轨迹与静态任务-模型结果；并审查八组状态、缓存和厂商规则、所需数据量。
+- 数据源、具体许可证阻塞、预处理顺序、真实标签与规则标签边界、阶段划分，详见 Q&A 的 Q-007-R1；未知许可证数据不得加入训练，Finding the Right Fit 明确禁止训练。
+- 本轮为**只读研究及文档提案**，无真实语料下载/处理/训练、无服务器/GPU/付费 API 使用；唯一当前任务仍是第一大阶段 Q-007 训练数据来源及加工方案的审议。
 
 ## 10. 新会话恢复协议（长期生效）
 

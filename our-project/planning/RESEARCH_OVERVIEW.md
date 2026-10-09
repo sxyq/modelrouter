@@ -1,6 +1,6 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v0.6｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
+> **版本 v0.7｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -157,6 +157,12 @@ Candidate Registry -----> Hard Constraint Filter
 **2026-10-09 Q-007 外部证据更新（仅方案，未训练）**：负责人要求第一学习阶段从 A（公开 Agent 轨迹）开始，不代表后续仅用公开数据。NVIDIA [Open-SWE-Traces](https://huggingface.co/datasets/nvidia/Open-SWE-Traces) 官方卡片记录软件工程轨迹、消息/工具、任务 ID 与 resolved，并允许 SFT；可用于决策前状态及已执行动作条件下的结果学习，**不能直接提供所有 Model×Effort 候选的反事实与物理 KV 缓存账本**。[CMU agent_trajectories](https://huggingface.co/datasets/cx-cmu/agent_trajectories) 含多模型/benchmark/奖励，训练许可待核；[SWE-Gym](https://huggingface.co/datasets/SWE-Gym/SWE-Gym) 为真实任务与环境；[AgentSuite trajectories](https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories) 可研究异构模型配置，但 thinking on/off 不等于所有 effort；[Finding the Right Fit](https://huggingface.co/datasets/yixuanli97/finding-the-right-fit) 明确禁止训练、蒸馏和微调，仅能分析。
 
 **训练数据要求**：八组状态均纳入可选 Schema，字段标记 observed_at、真实值/估算值和缺失状态；同任务所有前缀与多模型记录统一 train/val/test 侧，未来最终结果/标准补丁不得做决策前特征。阶段 A 可以学观察性 P(resolved | 前缀、已执行动作、当时行为策略)，有可信账单才学已观察的剩余费用；真正 action choice 胜负需未来同状态合法动作比较标签，不能伪造未观察结果。完整变量矩阵与阶段学习建议见 [EXPERIMENT_QA.md](EXPERIMENT_QA.md) Q-007。
+
+### 5.1a Q-007-R1 数据分层与训练加工研究（2026-10-09）
+
+训练数据分成 Agent 轨迹（Open-SWE-Traces、SWE-smith-trajectories）、静态任务-模型结果（LLMRouterBench、RouterBench、TwinRouterBench tier、Arena 双模型偏好）、缓存 usage/成本先验，以及按版本维护的厂商能力/价格/政策规则。LLMRouterBench/RouterBench 训练许可证未核实、CMU gated、Finding the Right Fit 禁训练。真实轨迹能学观察到的成败/成本，静态同题结果能学模型能力先验，但**不等于** Agent 同状态不同 model×effort 的反事实。
+
+预处理：锁定来源 revision、许可和 hash → task/repo 去重与先划分后抽决策前 prefix → 八组 state + measured/estimated/missing → 合法动作与能力注册 → 已观察的成功/真实费用、静态模型评分、确定规则标签分层 → Kev typed noul/score/choice 数据视图；绝不从未来结果泄漏输入或伪造物理 KV 命中。缓存 TTL、effort 支持和价格/限流由动态外部注册表及硬约束保证，而不是依赖 Kev 参数记住。详情、来源与候选数据量见 [EXPERIMENT_QA.md](EXPERIMENT_QA.md) Q-007-R1。此为研究方案，尚无实际训练数据。
 
 ### 5.2 最小 Schema
 

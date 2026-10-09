@@ -1,6 +1,6 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
-> **版本 v0.5｜建立：2026-10-09｜第一、二批决策：2026-10-09｜阶段：E-DESIGN（进行中，尚未冻结）**
+> **版本 v0.6｜建立：2026-10-09｜第一、二批决策：2026-10-09｜阶段：E-DESIGN（进行中，尚未冻结）**
 >
 > **职责**：记录每项实验设计的 Q-ID、问题、选项、Planning 推荐及理由、项目负责人回答、最终决策、日期，以及对实验设计、资源/预算和论文结论的影响。研究方法总览见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)，实时阶段见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，交接历史见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -169,6 +169,42 @@
 
 **Kev 官方依据**：项目 https://github.com/jaredpalmer/kev 的训练说明提供已训练 Kev-4B 权重的 init_from + LoRA/pointer continuation，并支持 choice/noul/score 的有监督样本；是否采用官方 checkpoint 为唯一训练起点属于尚待回答的 Q-010。这里只提供学习阶段推荐，不批准 GPU、权重下载、实验规模、种子、训练超参或新实现链。
 
+
+
+#### Q-007-R1｜开源训练数据来源与处理方案（2026-10-09）
+
+**本轮只处于第一大阶段：训练数据来源与加工契约研究。** 用户要求覆盖两类监督数据（运行轨迹、不同任务的模型选择）、全部八组状态、缓存、供应商规则、数据量；尚未批准下载/清洗/训练，以下均为 Planning 方案，不是已产出的训练集。
+
+| 来源 | 可提供的证据 | 许可/限制 |
+|---|---|---|
+| [NVIDIA Open-SWE-Traces](https://huggingface.co/datasets/nvidia/Open-SWE-Traces) | v1.0 约 207k 软件 Agent 轨迹，v1.1/v1.2 已扩容；任务/工具/消息/resolved；轨迹主源 | CC BY 4.0，固定实际 revision，-1 结局不作成功标签；没有同状态未选动作反事实 |
+| [SWE-smith-trajectories](https://huggingface.co/datasets/SWE-bench/SWE-smith-trajectories) | 5017 条公开训练轨迹子集；其它 SWE-smith 任务与轨迹不能混作该子集 | MIT 数据卡，核对生成模型输出的训练用途 |
+| [LLMRouterBench](https://github.com/ynulihao/LLMRouterBench) | 33 models/21+ datasets/400k+ benchmark 记录；同题模型输出、性能、Token、费用 | **数据许可证未核实，暂不纳入训练**；大多请求级，并非长程 Agent |
+| [RouterBench](https://huggingface.co/datasets/withmartian/routerbench) | 30k+ Prompts、11 模型的回答/质量/估算成本 | **数据集许可标签不明，暂不纳入训练**；请求级比较 |
+| [TwinRouterBench Static](https://huggingface.co/datasets/Amorph/TwinRouterBench) | 970 个 Agent 前缀 → 四级 tier，Apache-2.0 | tier 不是具体 model×effort；防正式对照集泄漏 |
+| [Arena Human Preference 55k](https://huggingface.co/datasets/lmarena-ai/arena-human-preference-55k) | 同题两模型偏好，Apache-2.0，参考 RouteLLM | 人类偏好不是终局软件任务成功 |
+| [CMU agent_trajectories](https://huggingface.co/datasets/cx-cmu/agent_trajectories) | 8653 个多领域/多模型轨迹 | gated 且训练许可待核 |
+| [AgentSuite](https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories) | 30 模型 × 273 任务、thinking 配置和评估结果 | 许可待核；thinking 开关不等于通用 effort |
+| [SWE-Gym](https://huggingface.co/datasets/SWE-Gym/SWE-Gym) / [SWE-rebench-V2](https://huggingface.co/datasets/nebius/SWE-rebench-V2) | 真实代码修复任务及可执行环境 | 任务不是天然的已标注模型选择轨迹 |
+| [Finding the Right Fit](https://huggingface.co/datasets/yixuanli97/finding-the-right-fit) | model×harness 数据及成本 | **发布条款明确禁止训练、微调和蒸馏** |
+
+**相关训练思路**：RouteLLM 从同题双模型 human preference 训练模型胜负；RouterBench 和 LLMRouterBench 提供按任务的多模型真实得分/成本来拟合静态模型路由；Kev 官方基础决策训练集约 12,576 个 typed 选择/规则样本，后续分阶段添加真实文档及开发工具标签并校准。以上来源均不能从单条 Agent 历史轨迹凭空推断未选 model×effort 的结局。
+
+**加工合同 / 顺序**：
+
+1. Source manifest：repo/dataset revision、license、训练用途权、任务和原始数据 hash；未知许可进入 quarantine，商业 API 输出的模型训练权限需单独核对。
+2. Task/Episode：task/repo、harness、模型版本、实际 effort、工具、时序、可信 resolved；-1 不作为成败监督。**先按 task/repo/近重复任务去重并冻结 train/validation/test，再抽轨迹前缀**。
+3. DecisionPrefix：在每个真实模型调用前截断，保留 Research 八组状态及 observed_at、provenance、measured/estimated/missing；标准修复补丁、最终测试、未来 token/调用/失败不得进入输入；同任务前缀采样加权防伪独立。
+4. Actions：provider/model/revision/effort requested/effective、候选合法性、上下文、工具、价格和缓存/会话条件；缺失为 unknown，不伪造多 Agent handoff、effort、缓存。
+5. Outcome：严格区分 observed task resolved、真实计费时的 observed cost-to-go、同静态 Prompt 的 model score/preference、由能力表确定的合法性标签。未执行候选 outcome 始终 missing；API status != task resolved。
+6. Kev train JSONL：noul（实际观察的成败或规则真值）、score（有可信计量的有序成本类别）、choice（真实可比较的动作或确定性规则）；保留 task/source/split/label provenance 和 option permutation；无真实反事实时不能标注最优中途 model×effort。
+7. 训练数据 ready 门禁：许可证完整、去重分割无泄漏、字段/八组状态覆盖率与缺失率、真实成功标签可用率、effort 与模型组合覆盖、缓存观测覆盖、USD/quotaUnits 保真、JSONL 可验证和 checksum。
+
+**Cache 与厂商政策**：公开轨迹通常只有 estimated prefix overlap，而非实际 physical cache read/write。CCH/Blog 是成本先验不能作同状态缓存效果监督；未来实际 Provider usage/vLLM metrics 才能给缓存真标签。官方缓存差异见 [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching)、[Claude](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)、[Gemini](https://ai.google.dev/gemini-api/docs/caching)、[DeepSeek](https://api-docs.deepseek.com/api/create-chat-completion/)、[vLLM](https://docs.vllm.ai/en/latest/usage/metrics/)。effort 支持、缓存 TTL、计价、限流、工具、隐私/ToS 等**不能只训练进 Kev 权重**，应由版本化 Registry+硬约束执行，样本只用于学习稳定的状态与动作效果。Google [Gemini API Terms](https://ai.google.dev/gemini-api/terms/) 对竞争模型训练有条款限制，不能默认商业 API 输出可用于训练。
+
+**样本量**：Kev 官方基础约 12,576 个决策样本，RouteLLM 采用万级偏好，说明不必无差别全量喂 20 万轨迹。但对任务级路由并无证明足够的固定 N。可先**规划**审计约 1k–3k 独立任务、数千～数万条有真实结局的代表性前缀及合法静态模型比较，按 task/repo/model/effort 独立覆盖、学习曲线和标签质量决定扩张；缺乏同状态多动作真值时增加 prefix 数不能补救。
+
+**大阶段（仅讨论结构）**：D-PREP 当前来源/许可证/Schema → D-BUILD 经批准实际加工数据 → M-INIT Kev 对观察到的动作结果学习 → M-CHOICE 只有真可比结果时学选择 → M-CAL 可靠性校准 → EVAL 最后讨论实验。仍遵守既有 E-DESIGN/E1–E5 和所有权限，不创建第二条执行链。
 
 ### Q-010｜Kev-4B 训练从哪个基础开始？（已提出待答）
 
