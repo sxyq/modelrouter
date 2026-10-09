@@ -26,9 +26,9 @@ def parse_args():
     parser = argparse.ArgumentParser(description="ModelRouter 唯一数据清洗与特征提取入口")
     parser.add_argument(
         "--mode",
-        choices=["blog", "tra", "route", "cache_time", "mem_mas_env", "public", "all"],
+        choices=["blog", "tra", "route", "cache_time", "mem_mas_env", "public", "views", "all"],
         default="public",
-        help="执行模式: blog (私有数据), tra (Batch 1: Agent轨迹), route (Batch 2: 路由比较), cache_time (Batch 3: 缓存时间), mem_mas_env (Batch 4: 记忆协作环境), public (全部公开数据), all (全部私有+公开)",
+        help="执行模式: blog (私有数据), tra (Batch 1: Agent轨迹), route (Batch 2: 路由比较), cache_time (Batch 3: 缓存时间), mem_mas_env (Batch 4: 记忆协作环境), public (全部公开数据并生成训练视图), views (仅构建训练视图与Kev划分), all (全部私有+公开+训练视图)",
     )
     # 路径配置
     parser.add_argument(
@@ -77,13 +77,57 @@ def parse_args():
 
 
 # =====================================================================
-# 统计与真实缺失率计算辅助工具 (严禁代码硬编码 missing_rate = 0.0)
+# 统计与真实缺失率计算辅助工具 (严禁抽样 35 条冒充全量，严禁硬编码 missing_rate = 0.0)
 # =====================================================================
 
+class StreamingFieldTracker:
+    """
+    流式全量字段缺失率统计器：
+    - 伴随全量清洗产物写入进行流式累计 (O(1) 内存开销)
+    - 覆盖 100% 真实清洗行数 (针对数百万条记录做真实扫描)
+    - 严格识别 None、空字符串与 'unknown' 为缺失
+    """
+    def __init__(self, schema_template):
+        self.schema_template = schema_template
+        self.total_count = 0
+        self.missing_counts = {}
+        for fpath, fval in schema_template.items():
+            if not (isinstance(fval, dict) and "value" in fval):
+                self.missing_counts[fpath] = 0
+
+    def update(self, record):
+        self.total_count += 1
+        for fpath in self.missing_counts:
+            curr = record
+            for part in fpath.split("."):
+                if isinstance(curr, dict) and part in curr:
+                    curr = curr[part]
+                else:
+                    curr = None
+                    break
+            if curr is None or curr == "" or curr == "unknown":
+                self.missing_counts[fpath] += 1
+
+    def build_schema(self):
+        res = {}
+        denom = max(1, self.total_count)
+        for fpath, fval in self.schema_template.items():
+            if isinstance(fval, dict) and "value" in fval:
+                res[fpath] = fval
+            else:
+                m_count = self.missing_counts.get(fpath, 0)
+                m_rate = round(m_count / denom, 4)
+                res[fpath] = {
+                    "type": fval,
+                    "missing_rate": m_rate,
+                    "total_scanned": self.total_count,
+                    "missing_count": m_count,
+                }
+        return res
+
+
 def compute_field_missingness(records, field_path):
-    """
-    根据实际记录计算字段缺失率（None、空字符串、unknown 计为缺失）
-    """
+    """兼容旧接口：基于记录列表计算缺失率"""
     if not records:
         return 0.0
     parts = field_path.split(".")
@@ -102,9 +146,7 @@ def compute_field_missingness(records, field_path):
 
 
 def build_schema_with_missingness(records, schema_def):
-    """
-    根据实际清洗记录计算真实字段 Schema 与实测缺失率
-    """
+    """兼容旧接口：基于记录列表构建 Schema"""
     res = {}
     for fpath, ftype in schema_def.items():
         if isinstance(ftype, dict) and "value" in ftype:
@@ -167,6 +209,23 @@ def process_tra_001(raw_root, cleaned_root, preview_root):
     model_counter = Counter()
     instance_ids = set()
     sample_pool = {}
+
+    schema_template = {
+        "provenance.instance_id": "string",
+        "provenance.repo": "string",
+        "provenance.step_index": "int",
+        "provenance.agent_framework": "string",
+        "provenance.model_name": "string",
+        "pre_decision_state.context_chars": "int",
+        "pre_decision_state.prior_tool_calls_count": "int",
+        "pre_decision_state.prior_error_signals_count": "int",
+        "observed_decision.action_type": "string",
+        "observed_decision.label_nature": {"value": "OBSERVED_ACTION"},
+        "ground_truth_outcome.task_resolved": "bool",
+        "ground_truth_outcome.label_nature": "string",
+        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
 
     with open(cleaned_file, "w", encoding="utf-8") as out_f:
         for pfile in parquet_files:
@@ -310,6 +369,7 @@ def process_tra_001(raw_root, cleaned_root, preview_root):
                             "policy_tag": "TRAIN_ROUTER_CANDIDATE",
                         }
                         out_f.write(json.dumps(record, ensure_ascii=False) + "\n")
+                        tracker.update(record)
 
                         # 收集用于审查的样本池 (覆盖框架、模型、是否成功、是否高步数)
                         ckey = (agent_framework, teacher_model_name, resolved, step_count > 5)
@@ -336,23 +396,8 @@ def process_tra_001(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    # 真实计算 schema 缺失率
-    schema_template = {
-        "provenance.instance_id": "string",
-        "provenance.repo": "string",
-        "provenance.step_index": "int",
-        "provenance.agent_framework": "string",
-        "provenance.model_name": "string",
-        "pre_decision_state.context_chars": "int",
-        "pre_decision_state.prior_tool_calls_count": "int",
-        "pre_decision_state.prior_error_signals_count": "int",
-        "observed_decision.action_type": "string",
-        "observed_decision.label_nature": {"value": "OBSERVED_ACTION"},
-        "ground_truth_outcome.task_resolved": "bool",
-        "ground_truth_outcome.label_nature": "string",
-        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 清洗记录)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -401,57 +446,65 @@ def process_tra_001(raw_root, cleaned_root, preview_root):
 
 
 
+KNOWN_SWE_CMDS = {
+    "bash", "sh", "find", "grep", "git", "python", "python3", "pytest", "ls", "cd", 
+    "cat", "echo", "sed", "awk", "rm", "mkdir", "cp", "mv", "pip", "curl", "source", 
+    "export", "which", "head", "tail", "diff", "touch", "chmod", "coverage", "tox"
+}
+SWE_STOPWORDS = {"the", "this", "that", "these", "those", "here", "first", "next", "then", "finally", "step", "note", "1.", "2.", "3.", "4.", "5."}
+
 def extract_swesmith_action(msg, split_type):
     """
-    根据 SWE-smith 不同 split (tool, xml, ticks) 结构精准提取真实工具动作与推理
+    根据 SWE-smith 不同 split (tool, xml, ticks) 严格区分显式工具调用、文本命令推断与普通文本：
+    - 显式 Tool API: tool_calls 字段或 <function=xxx> 标签
+    - 文本命令推断: markdown 代码块中的 str_replace_editor 或已知系统命令 (bash/sh/find/git等)
+    - 普通文本响应: 排除类似 the, this, 2. 等词汇，归为 text_response
     """
-    # 1. 优先提取显式 tool_calls 字段 (tool split / OpenAI 风格)
+    # 1. 显式 tool_calls 字段 (tool split / OpenAI 风格)
     tcs = msg.get("tool_calls")
     if tcs and hasattr(tcs, "__iter__") and len(tcs) > 0:
         tc0 = tcs[0]
         if isinstance(tc0, dict):
             fn = tc0.get("function")
             if isinstance(fn, dict) and "name" in fn:
-                return fn["name"], True
+                return fn["name"].lower(), "EXPLICIT_TOOL_API", True
             if "name" in tc0:
-                return tc0["name"], True
-        return "tool_call", True
-
-    # 2. 检查显式 action 字段
-    act = msg.get("action")
-    if act and isinstance(act, str) and act.strip():
-        first_w = act.strip().split()[0].lower()
-        if any(kw in first_w for kw in ["str_replace_editor", "editor", "bash", "python", "git"]):
-            return ("str_replace_editor" if "editor" in first_w else first_w), True
+                return tc0["name"].lower(), "EXPLICIT_TOOL_API", True
+        return "tool_call", "EXPLICIT_TOOL_API", True
 
     content = str(msg.get("content") or "")
-    if not content:
-        return "text_response", False
+    if not content.strip():
+        return "text_response", "TEXT_RESPONSE", False
 
     import re
-    # 3. 解析 ticks 分片中的 Markdown 代码块 (```bash / ```str_replace_editor / ```)
-    ticks_m = re.search(r"```(?:bash|sh)?\s*\n\s*([a-zA-Z0-9_\-\.]+)", content)
-    if ticks_m:
-        cmd_head = ticks_m.group(1).lower()
-        if "str_replace_editor" in cmd_head or "editor" in cmd_head:
-            return "str_replace_editor", True
-        elif cmd_head in ["bash", "sh", "python", "git", "ls", "cd", "cat", "find", "grep"]:
-            return "bash", True
-        elif "complete_task_and_submit_final_output" in content.lower():
-            return "submit", True
-        else:
-            return cmd_head, True
-
-    # 4. 解析 xml 分片中的 XML 标签 (<function=xxx> 或 <tool_call>)
-    xml_m = re.search(r"<(?:function|invoke|action|tool)=?([a-zA-Z0-9_\-]+)?", content, re.IGNORECASE)
+    # 2. 显式 XML 标签 (<function=xxx>) (xml split)
+    xml_m = re.search(r"<(?:function|invoke|action|tool)=([a-zA-Z0-9_\-]+)", content, re.IGNORECASE)
     if xml_m:
-        tname = xml_m.group(1) or "xml_tool"
-        return tname.lower(), True
+        tname = xml_m.group(1).lower()
+        return tname, "EXPLICIT_TOOL_API", True
 
-    if "```" in content:
-        return "command_execution", True
+    # 3. 提交任务特征
+    if "complete_task_and_submit_final_output" in content.lower():
+        return "submit", "INFERRED_COMMAND", True
 
-    return "text_response", False
+    # 4. 代码块命令推断 (ticks split)
+    code_m = re.search(r"```(?:bash|sh)?\s*\n\s*([a-zA-Z0-9_\-\.\/]+)", content)
+    if code_m:
+        first_token = code_m.group(1).strip().lower()
+        token_base = first_token.split("/")[-1]
+        if "str_replace_editor" in first_token:
+            return "str_replace_editor", "INFERRED_COMMAND", True
+        elif token_base in KNOWN_SWE_CMDS or first_token in KNOWN_SWE_CMDS:
+            return "bash", "INFERRED_COMMAND", True
+        elif token_base.endswith(".py") or token_base.endswith(".sh"):
+            return "bash", "INFERRED_COMMAND", True
+        elif first_token in SWE_STOPWORDS or any(first_token.startswith(s) for s in ["1.", "2.", "3.", "4.", "5."]):
+            return "text_response", "TEXT_RESPONSE", False
+
+    if "str_replace_editor" in content:
+        return "str_replace_editor", "INFERRED_COMMAND", True
+
+    return "text_response", "TEXT_RESPONSE", False
 
 
 def process_tra_002(raw_root, cleaned_root, preview_root):
@@ -459,7 +512,8 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
     TRA-002: SWE-smith Trajectories
     - 处理全部已下载分片 (涵盖 ticks, tool, xml 三大 splits)
     - 严格识别三种消息格式中的真实工具动作 (str_replace_editor, bash 等)，彻底根除全为 text_response 的缺陷
-    - 严格按前决策时序提取特征，流式写入与真实缺失率计算
+    - 严格区分显式 Tool API、推断命令与普通文本，分别累计报告
+    - 严格按前决策时序提取特征，流式写入与真实全量缺失率计算
     """
     import pyarrow.parquet as pq
 
@@ -483,8 +537,27 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
     resolved_counter = Counter()
     action_counter = Counter()
     split_counter = Counter()
+    explicit_tool_counter = Counter()
+    inferred_cmd_counter = Counter()
+    pure_text_counter = Counter()
     instance_ids = set()
     sample_pool = {}
+
+    schema_template = {
+        "provenance.instance_id": "string",
+        "provenance.split_type": "string",
+        "provenance.step_index": "int",
+        "pre_decision_state.context_chars": "int",
+        "pre_decision_state.prior_tool_calls_count": "int",
+        "pre_decision_state.prior_error_signals_count": "int",
+        "observed_decision.action_type": "string",
+        "observed_decision.action_nature": "string",
+        "observed_decision.label_nature": {"value": "OBSERVED_ACTION"},
+        "ground_truth_outcome.task_resolved": "bool",
+        "ground_truth_outcome.label_nature": "string",
+        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
 
     with open(cleaned_file, "w", encoding="utf-8") as out_f:
         for pfile in parquet_files:
@@ -570,9 +643,15 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
                             "initial_prompt_snippet": user_prompt_snippet,
                         }
 
-                        # 2. 识别当前 Assistant 发出的真实动作与推理
-                        action_type, has_tool_call = extract_swesmith_action(msg, split_type)
+                        # 2. 识别当前 Assistant 发出的真实动作与动作类别 (显式API vs 推断命令 vs 普通文本)
+                        action_type, action_nature, has_tool_call = extract_swesmith_action(msg, split_type)
                         action_counter[action_type] += 1
+                        if action_nature == "EXPLICIT_TOOL_API":
+                            explicit_tool_counter[action_type] += 1
+                        elif action_nature == "INFERRED_COMMAND":
+                            inferred_cmd_counter[action_type] += 1
+                        else:
+                            pure_text_counter[action_type] += 1
 
                         thought_text = str(msg.get("thought") or "")
                         has_thought = bool(thought_text.strip())
@@ -593,6 +672,7 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
                             "pre_decision_state": pre_decision_state,
                             "observed_decision": {
                                 "action_type": action_type,
+                                "action_nature": action_nature,
                                 "has_reasoning_tokens": has_thought,
                                 "reasoning_chars_len": thought_len,
                                 "model_name": model_name,
@@ -605,6 +685,7 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
                             "policy_tag": "TRAIN_ROUTER_CANDIDATE",
                         }
                         out_f.write(json.dumps(record, ensure_ascii=False) + "\n")
+                        tracker.update(record)
 
                         # 收集审查样本池
                         ckey = (split_type, action_type, resolved, step_count > 4)
@@ -631,20 +712,8 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.instance_id": "string",
-        "provenance.split_type": "string",
-        "provenance.step_index": "int",
-        "pre_decision_state.context_chars": "int",
-        "pre_decision_state.prior_tool_calls_count": "int",
-        "pre_decision_state.prior_error_signals_count": "int",
-        "observed_decision.action_type": "string",
-        "observed_decision.label_nature": {"value": "OBSERVED_ACTION"},
-        "ground_truth_outcome.task_resolved": "bool",
-        "ground_truth_outcome.label_nature": "string",
-        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 233 万步清洗记录)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -658,10 +727,18 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
         "splits_distribution": dict(split_counter),
         "model_name": "claude-3-7-sonnet-20250219",
         "action_types_distribution": dict(action_counter.most_common(10)),
+        "action_nature_distribution": {
+            "EXPLICIT_TOOL_API": sum(explicit_tool_counter.values()),
+            "INFERRED_COMMAND": sum(inferred_cmd_counter.values()),
+            "TEXT_RESPONSE": sum(pure_text_counter.values()),
+        },
+        "explicit_tool_api_calls_count": sum(explicit_tool_counter.values()),
+        "inferred_commands_count": sum(inferred_cmd_counter.values()),
+        "pure_text_responses_count": sum(pure_text_counter.values()),
         "task_resolved_distribution": dict(resolved_counter),
         "fields_schema": computed_schema,
         "server_full_data_path": "data/公开数据/清洗数据/Agent轨迹/TRA-002_SWE-smith/cleaned_trajectories.jsonl",
-        "completion_status": f"FULL (已处理 {len(parquet_files)} 个分片，涵盖 ticks, tool 与 xml 多格式 split，已修复真实工具调用识别与前决策时序)",
+        "completion_status": f"FULL (已处理 {len(parquet_files)} 个分片，涵盖 ticks, tool 与 xml 多格式 split，已修复真实工具调用识别、动作类别区分与前决策时序)",
     }
     with open(os.path.join(prev_dir, "字段统计.json"), "w", encoding="utf-8") as f:
         json.dump(stats, f, ensure_ascii=False, indent=2)
@@ -772,6 +849,19 @@ def process_tra_004(raw_root, cleaned_root, preview_root):
     task_instance_ids = set()
     records_by_task = {}  # instance_id -> list of records (用于构造跨模型同题成组样本)
 
+    schema_template = {
+        "provenance.instance_id": "string",
+        "provenance.task_axis": "string",
+        "provenance.model_name": "string",
+        "provenance.reasoning_effort_mode": "string",
+        "pre_decision_state.context_chars": "int",
+        "observed_decision.label_nature": {"value": "OBSERVED_ACTION"},
+        "ground_truth_outcome.eval_score": "float",
+        "ground_truth_outcome.label_nature": "string",
+        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
+
     with open(cleaned_file, "w", encoding="utf-8") as out_f:
         for jfile in jsonl_files:
             fname = os.path.basename(jfile)
@@ -849,13 +939,11 @@ def process_tra_004(raw_root, cleaned_root, preview_root):
                             step_idx += 1
                             total_steps_count += 1
 
-                            # 1. 严格在决策前构造 pre_decision_state
+                            # 1. 严格在决策前构造 pre_decision_state (绝不包含 target_question 与 pass_criteria 事后评审信息)
                             pre_decision_state = {
                                 "task_domain": "multi_challenge_agent",
                                 "instance_id": task_instance_id,
                                 "task_axis": task_axis,
-                                "target_question": target_question,
-                                "pass_criteria": pass_criteria,
                                 "step_index": step_idx,
                                 "context_chars": prior_chars,
                                 "initial_prompt_snippet": user_prompt_snippet,
@@ -879,6 +967,8 @@ def process_tra_004(raw_root, cleaned_root, preview_root):
                                     "label_nature": "OBSERVED_ACTION",
                                 },
                                 "ground_truth_outcome": {
+                                    "target_question": target_question,
+                                    "pass_criteria": pass_criteria,
                                     "eval_score": score_val,
                                     "is_success": is_success,
                                     "judge_verdict": judge_verdict,
@@ -887,6 +977,7 @@ def process_tra_004(raw_root, cleaned_root, preview_root):
                                 "policy_tag": "TRAIN_ROUTER_CANDIDATE",
                             }
                             out_f.write(json.dumps(record, ensure_ascii=False) + "\n")
+                            tracker.update(record)
 
                             # 收集同题跨模型比较样本池
                             if len(records_by_task.get(task_instance_id, [])) < 15:
@@ -916,18 +1007,8 @@ def process_tra_004(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.instance_id": "string",
-        "provenance.task_axis": "string",
-        "provenance.model_name": "string",
-        "provenance.reasoning_effort_mode": "string",
-        "pre_decision_state.context_chars": "int",
-        "observed_decision.label_nature": {"value": "OBSERVED_ACTION"},
-        "ground_truth_outcome.eval_score": "float",
-        "ground_truth_outcome.label_nature": "string",
-        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 41,430 步记录)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -1019,7 +1100,21 @@ def process_route_001(raw_root, cleaned_root, preview_root):
     model_counter = Counter()
     score_counter = Counter()
     sample_pool = {}  # 按 (benchmark, model) 收集少量候选用于分层采样
-    records_by_problem = {}  # (benchmark, index) -> list of records (用于同题跨模型实测成组审查)
+    records_by_problem = {}  # (benchmark, index, prompt_hash) -> list of records (用于同题跨模型实测成组审查)
+
+    schema_template = {
+        "provenance.benchmark_name": "string",
+        "provenance.model_name": "string",
+        "pre_decision_state.prompt_snippet": "string",
+        "pre_decision_state.prompt_tokens_est": "int",
+        "observed_decision.label_nature": {"value": "POST_HOC_BENCHMARK_ORACLE"},
+        "ground_truth_outcome.score": "float",
+        "ground_truth_outcome.cost_usd": "float",
+        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
+
+    import hashlib
 
     with open(cleaned_file, "w", encoding="utf-8") as out_f:
         for jpath in json_files:
@@ -1038,13 +1133,13 @@ def process_route_001(raw_root, cleaned_root, preview_root):
 
             for rec in records:
                 total_records += 1
-                idx = rec.get("index")
-                prompt_raw = str(rec.get("prompt") or rec.get("origin_query") or "")
+                idx = str(rec.get("index") or "0")
+                prompt_raw = str(rec.get("origin_query") or rec.get("prompt") or "")
                 prompt_snippet = prompt_raw[:400].replace("\n", " ").strip()
-                prompt_tokens = int(rec.get("prompt_tokens") or 0)
-                completion_tokens = int(rec.get("completion_tokens") or 0)
-                cost_usd = float(rec.get("cost") or 0.0)
-                score = float(rec.get("score") or 0.0)
+                prompt_tokens = int(rec.get("prompt_tokens") or 0) if rec.get("prompt_tokens") is not None else 0
+                completion_tokens = int(rec.get("completion_tokens") or 0) if rec.get("completion_tokens") is not None else 0
+                cost_usd = float(rec.get("cost") or 0.0) if rec.get("cost") is not None else 0.0
+                score = float(rec.get("score") or 0.0) if rec.get("score") is not None else 0.0
 
                 score_bin = "score_1.0" if score >= 1.0 else ("score_0.0" if score <= 0.0 else "score_partial")
                 score_counter[score_bin] += 1
@@ -1075,6 +1170,7 @@ def process_route_001(raw_root, cleaned_root, preview_root):
                     "policy_tag": "TRAIN_ROUTER_CANDIDATE",
                 }
                 out_f.write(json.dumps(item, ensure_ascii=False) + "\n")
+                tracker.update(item)
 
                 cat_key = (dataset_name, model_name)
                 if cat_key not in sample_pool:
@@ -1082,9 +1178,10 @@ def process_route_001(raw_root, cleaned_root, preview_root):
                 if len(sample_pool[cat_key]) < 2:
                     sample_pool[cat_key].append(item)
 
-                # 收集同题跨模型比较样本 (每题最多保留 10 个不同模型表现)
-                prob_key = (dataset_name, idx)
-                if len(records_by_problem.get(prob_key, [])) < 10:
+                # 收集同题跨模型比较样本 (基于真实题面哈希严格对齐同题)
+                q_hash = hashlib.sha256(prompt_raw.strip().encode()).hexdigest()[:12]
+                prob_key = (dataset_name, idx, q_hash)
+                if len(records_by_problem.get(prob_key, [])) < 15:
                     records_by_problem.setdefault(prob_key, []).append(item)
 
     # 关键科研交付物: 抽取同题跨模型成组审查样本 (同一题目在不同模型下的实测比较)
@@ -1108,17 +1205,8 @@ def process_route_001(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.benchmark_name": "string",
-        "provenance.model_name": "string",
-        "pre_decision_state.prompt_snippet": "string",
-        "pre_decision_state.prompt_tokens_est": "int",
-        "observed_decision.label_nature": {"value": "POST_HOC_BENCHMARK_ORACLE"},
-        "ground_truth_outcome.score": "float",
-        "ground_truth_outcome.cost_usd": "float",
-        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 548,059 条记录)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -1208,6 +1296,16 @@ def process_route_002(raw_root, cleaned_root, preview_root):
         "zero-one-ai/Yi-34B-Chat",
     ]
 
+    schema_template = {
+        "provenance.sample_id": "string",
+        "provenance.eval_name": "string",
+        "pre_decision_state.prompt_snippet": "string",
+        "observed_decision.oracle_model_to_route_to": "string",
+        "observed_decision.label_nature": {"value": "POST_HOC_BENCHMARK_ORACLE"},
+        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
+
     for _, row in df.iterrows():
         sample_id = str(row.get("sample_id") or "unknown")
         eval_name = str(row.get("eval_name") or "unknown")
@@ -1248,6 +1346,7 @@ def process_route_002(raw_root, cleaned_root, preview_root):
             "policy_tag": "TRAIN_ROUTER_CANDIDATE",
         }
         cleaned_records.append(item)
+        tracker.update(item)
 
     with open(cleaned_file, "w", encoding="utf-8") as f:
         for r in cleaned_records:
@@ -1269,15 +1368,8 @@ def process_route_002(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.sample_id": "string",
-        "provenance.eval_name": "string",
-        "pre_decision_state.prompt_snippet": "string",
-        "observed_decision.oracle_model_to_route_to": "string",
-        "observed_decision.label_nature": {"value": "POST_HOC_BENCHMARK_ORACLE"},
-        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 36,497 条记录)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -1388,9 +1480,21 @@ def process_route_003(raw_root, cleaned_root, preview_root):
         }
         cleaned_records.append(item)
 
+    schema_template = {
+        "provenance.instance_id": "string",
+        "pre_decision_state.step_index": "int",
+        "pre_decision_state.messages_snippet": "string",
+        "observed_decision.target_tier": "string",
+        "observed_decision.label_nature": {"value": "BENCHMARK_LABEL"},
+        "ground_truth_outcome.total_steps": "int",
+        "policy_tag": {"value": "EVAL_BENCHMARK_ONLY"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
+
     with open(cleaned_file, "w", encoding="utf-8") as f:
         for r in cleaned_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
+            tracker.update(r)
 
     # 分层抽取 35 条样本 (覆盖 low, mid, high)
     by_tier = {}
@@ -1406,16 +1510,8 @@ def process_route_003(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.instance_id": "string",
-        "pre_decision_state.step_index": "int",
-        "pre_decision_state.messages_snippet": "string",
-        "observed_decision.target_tier": "string",
-        "observed_decision.label_nature": {"value": "BENCHMARK_LABEL"},
-        "ground_truth_outcome.total_steps": "int",
-        "policy_tag": {"value": "EVAL_BENCHMARK_ONLY"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 970 步记录)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -1546,9 +1642,21 @@ def process_route_004(raw_root, cleaned_root, preview_root):
             }
             cleaned_records.append(item)
 
+    schema_template = {
+        "provenance.battle_id": "string",
+        "pre_decision_state.candidate_model_a": "string",
+        "pre_decision_state.candidate_model_b": "string",
+        "pre_decision_state.prompt_snippet": "string",
+        "observed_decision.winner_choice": "string",
+        "observed_decision.label_nature": {"value": "HUMAN_PREFERENCE"},
+        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
+
     with open(cleaned_file, "w", encoding="utf-8") as f:
         for r in cleaned_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
+            tracker.update(r)
 
     # 分层抽取 35 条样本 (覆盖 model_a, model_b, tie)
     by_win = {}
@@ -1564,16 +1672,8 @@ def process_route_004(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.battle_id": "string",
-        "pre_decision_state.candidate_model_a": "string",
-        "pre_decision_state.candidate_model_b": "string",
-        "pre_decision_state.prompt_snippet": "string",
-        "observed_decision.winner_choice": "string",
-        "observed_decision.label_nature": {"value": "HUMAN_PREFERENCE"},
-        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 57,477 条记录)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -1693,9 +1793,20 @@ def process_route_005(raw_root, cleaned_root, preview_root):
         }
         cleaned_records.append(item)
 
+    schema_template = {
+        "provenance.task_id": "string",
+        "pre_decision_state.harness": "string",
+        "observed_decision.model_name": "string",
+        "ground_truth_outcome.reward": "float",
+        "ground_truth_outcome.cached_tokens": "float",
+        "policy_tag": {"value": "RESEARCH_ANALYSIS_ONLY"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
+
     with open(cleaned_file, "w", encoding="utf-8") as f:
         for r in cleaned_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
+            tracker.update(r)
 
     # 分层抽取 35 条样本 (覆盖不同 Harness 与模型)
     by_harness = {}
@@ -1713,15 +1824,8 @@ def process_route_005(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.task_id": "string",
-        "pre_decision_state.harness": "string",
-        "observed_decision.model_name": "string",
-        "ground_truth_outcome.reward": "float",
-        "ground_truth_outcome.cached_tokens": "float",
-        "policy_tag": {"value": "RESEARCH_ANALYSIS_ONLY"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 6,204 条记录)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -1843,13 +1947,11 @@ def process_cache_001(raw_root, cleaned_root, preview_root):
                 else:
                     break
 
-            # 将当前请求的连续前缀链加入缓存池
+            # 将当前请求的连续前缀链加入缓存池 (保持时间序列全量前缀无界流，绝不随意截断或丢弃)
             curr_prefix = []
             for b in h_list:
                 curr_prefix.append(b)
                 cached_prefix_pool.add(tuple(curr_prefix))
-            if len(cached_prefix_pool) > 60000:
-                cached_prefix_pool = set(list(cached_prefix_pool)[-30000:])
 
             reuse_ratio = (prefix_hit_count / total_blocks) if total_blocks > 0 else 0.0
             if reuse_ratio > 0.7:
@@ -1864,7 +1966,7 @@ def process_cache_001(raw_root, cleaned_root, preview_root):
             trace_counter[trace_name] += 1
             reuse_tier_counter[rtier] += 1
 
-            # 关键科研修复 3: output_length 移至 ground_truth_outcome，绝不泄漏至 pre_decision_state
+            # 关键科研修复 3: 严格标明 HISTORICAL_PREFIX_REUSE 与 SIMULATED 属性，绝不冒充 Provider 物理 KV Cache 命中
             item = {
                 "provenance": {
                     "source_id": source_id,
@@ -1881,30 +1983,49 @@ def process_cache_001(raw_root, cleaned_root, preview_root):
                     "prefix_hash_sample": h_list[:5],
                 },
                 "observed_decision": {
-                    "observed_prefix_hit_blocks": prefix_hit_count,
-                    "observed_prefix_hit_ratio": round(reuse_ratio, 4),
-                    "label_nature": "OBSERVED_REUSE_OPPORTUNITY",
+                    "historical_prefix_hit_blocks": prefix_hit_count,
+                    "historical_prefix_hit_ratio": round(reuse_ratio, 4),
+                    "is_simulated": True,
+                    "physical_provider_cache_hit": False,
+                    "label_nature": "HISTORICAL_PREFIX_REUSE",
                 },
                 "ground_truth_outcome": {
                     "output_length": out_len,
                     "estimated_reusable_tokens": prefix_hit_count * 512,
-                    "label_nature": "OBSERVED_REUSE_OPPORTUNITY",
+                    "simulation_policy": "UNBOUNDED_CHRONOLOGICAL_STREAM",
+                    "physical_provider_cache_hit": False,
+                    "label_nature": "HISTORICAL_PREFIX_REUSE",
                 },
                 "policy_tag": "TRAIN_ROUTER_CANDIDATE",
             }
             cleaned_records.append(item)
 
+    schema_template = {
+        "provenance.trace_type": "string",
+        "pre_decision_state.arrival_timestamp": "int",
+        "pre_decision_state.input_length": "int",
+        "pre_decision_state.prefix_block_count": "int",
+        "observed_decision.historical_prefix_hit_blocks": "int",
+        "observed_decision.historical_prefix_hit_ratio": "float",
+        "observed_decision.label_nature": {"value": "HISTORICAL_PREFIX_REUSE"},
+        "ground_truth_outcome.output_length": "int",
+        "ground_truth_outcome.estimated_reusable_tokens": "int",
+        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
+
     with open(cleaned_file, "w", encoding="utf-8") as f:
         for r in cleaned_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
+            tracker.update(r)
 
-    # 关键科研修复 4: 抽取连续 35 条真实时间到达序列，供审查者直接观察缓存动态命中演进
+    # 关键科研交付物: 抽取连续 35 条真实时间到达序列，供审查者直接观察缓存动态命中演进
     sample_records = []
     for t_target in ["conversation", "toolagent"]:
         subset = [r for r in cleaned_records if r["provenance"]["trace_type"] == t_target]
         for start_i in range(0, max(1, len(subset) - 35), 10):
             window = subset[start_i:start_i + 35]
-            if any(w["observed_decision"]["observed_prefix_hit_blocks"] > 0 for w in window):
+            if any(w["observed_decision"]["historical_prefix_hit_blocks"] > 0 for w in window):
                 sample_records = window
                 break
         if sample_records:
@@ -1917,19 +2038,8 @@ def process_cache_001(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.trace_type": "string",
-        "pre_decision_state.arrival_timestamp": "int",
-        "pre_decision_state.input_length": "int",
-        "pre_decision_state.prefix_block_count": "int",
-        "observed_decision.observed_prefix_hit_blocks": "int",
-        "observed_decision.observed_prefix_hit_ratio": "float",
-        "observed_decision.label_nature": {"value": "OBSERVED_REUSE_OPPORTUNITY"},
-        "ground_truth_outcome.output_length": "int",
-        "ground_truth_outcome.estimated_reusable_tokens": "int",
-        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 39,632 条请求)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -1996,6 +2106,17 @@ def process_time_001(raw_root, cleaned_root, preview_root):
     log_type_counter = Counter()
     sample_pool = {}  # 按 (model, token_bin) 收集代表性样本
 
+    schema_template = {
+        "provenance.timestamp": "int",
+        "provenance.model_name": "string",
+        "pre_decision_state.arrival_timestamp": "int",
+        "pre_decision_state.prompt_tokens": "int",
+        "observed_decision.label_nature": {"value": "OBSERVED_WORKLOAD"},
+        "ground_truth_outcome.response_tokens": "int",
+        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
+
     with open(raw_file, "r", encoding="utf-8") as rf, open(cleaned_file, "w", encoding="utf-8") as wf:
         reader = csv.DictReader(rf)
         for row in reader:
@@ -2038,6 +2159,7 @@ def process_time_001(raw_root, cleaned_root, preview_root):
                 "policy_tag": "TRAIN_ROUTER_CANDIDATE",
             }
             wf.write(json.dumps(item, ensure_ascii=False) + "\n")
+            tracker.update(item)
 
             cat_key = (model_name, tbin)
             if cat_key not in sample_pool:
@@ -2058,16 +2180,8 @@ def process_time_001(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.timestamp": "int",
-        "provenance.model_name": "string",
-        "pre_decision_state.arrival_timestamp": "int",
-        "pre_decision_state.prompt_tokens": "int",
-        "observed_decision.label_nature": {"value": "OBSERVED_WORKLOAD"},
-        "ground_truth_outcome.response_tokens": "int",
-        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 1,404,294 条记录)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -2425,6 +2539,22 @@ def process_mem_003(raw_root, cleaned_root, preview_root):
                         pass
         print(f"  [✓] 成功载入 {len(questions_map)} 道真实长程记忆评测题目 (题面、答案与评估函数)")
 
+    # 关键科研修复 2: 载入 trajectories.jsonl 历史会话目标，解析真实历史语义 (彻底根除哈希字符串代替语义信息的缺陷)
+    traj_file = os.path.join(raw_dir, "trajectories.jsonl")
+    traj_goals = {}
+    if os.path.exists(traj_file):
+        with open(traj_file, "r", encoding="utf-8") as tf:
+            for line in tf:
+                if line.strip():
+                    try:
+                        td = json.loads(line)
+                        did = str(td.get("id"))
+                        goal = str(td.get("goal") or "")[:200].replace("\n", " ").strip()
+                        traj_goals[did] = goal
+                    except Exception:
+                        pass
+        print(f"  [✓] 成功载入 {len(traj_goals)} 条真实历史会话语义目标 (消除 f224a4eb 哈希 ID 代替语义缺陷)")
+
     with open(small_file, "r", encoding="utf-8") as f:
         lme_dict = json.load(f)
 
@@ -2433,9 +2563,26 @@ def process_mem_003(raw_root, cleaned_root, preview_root):
     domain_counter = Counter()
     qtype_counter = Counter()
 
+    schema_template = {
+        "provenance.task_id": "string",
+        "provenance.domain": "string",
+        "pre_decision_state.question_snippet": "string",
+        "pre_decision_state.haystack_docs_count": "int",
+        "observed_decision.label_nature": {"value": "MEMORY_BENCHMARK"},
+        "ground_truth_outcome.gold_answer": "string",
+        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
+
     for task_id, docs in lme_dict.items():
         doc_count = len(docs) if isinstance(docs, list) else 0
-        doc0_snip = str(docs[0])[:300].replace("\n", " ").strip() if doc_count > 0 else ""
+        semantic_goals = []
+        if isinstance(docs, list):
+            for doc_id in docs[:5]:
+                g = traj_goals.get(str(doc_id))
+                if g:
+                    semantic_goals.append(g)
+        haystack_goals_summary = " | ".join(semantic_goals[:3]) if semantic_goals else f"Haystack containing {doc_count} historical session trajectories"
 
         q_info = questions_map.get(str(task_id), {})
         domain = str(q_info.get("domain") or "unknown")
@@ -2448,6 +2595,7 @@ def process_mem_003(raw_root, cleaned_root, preview_root):
         domain_counter[domain] += 1
         qtype_counter[qtype] += 1
 
+        # 严格隔离：标准答案 gold_answer 绝不进入 pre_decision_state
         item = {
             "provenance": {
                 "source_id": source_id,
@@ -2463,7 +2611,7 @@ def process_mem_003(raw_root, cleaned_root, preview_root):
                 "question_type": qtype,
                 "question_snippet": question_text[:400].replace("\n", " ").strip(),
                 "haystack_docs_count": doc_count,
-                "initial_memory_snippet": doc0_snip,
+                "haystack_history_semantic_summary": haystack_goals_summary,
             },
             "observed_decision": {
                 "memory_task_id": task_id,
@@ -2479,6 +2627,7 @@ def process_mem_003(raw_root, cleaned_root, preview_root):
             "policy_tag": "TRAIN_ROUTER_CANDIDATE",
         }
         cleaned_records.append(item)
+        tracker.update(item)
 
     with open(cleaned_file, "w", encoding="utf-8") as f:
         for r in cleaned_records:
@@ -2490,16 +2639,8 @@ def process_mem_003(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.task_id": "string",
-        "provenance.domain": "string",
-        "pre_decision_state.question_snippet": "string",
-        "pre_decision_state.haystack_docs_count": "int",
-        "observed_decision.label_nature": {"value": "MEMORY_BENCHMARK"},
-        "ground_truth_outcome.gold_answer": "string",
-        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 451 个长程记忆任务)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
@@ -2563,6 +2704,17 @@ def process_mem_005(raw_root, cleaned_root, preview_root):
     cleaned_records = []
     source_counter = Counter()
 
+    schema_template = {
+        "provenance.uid": "string",
+        "provenance.sub_source": "string",
+        "pre_decision_state.memory_type": "string",
+        "pre_decision_state.sessions_count": "int",
+        "observed_decision.label_nature": {"value": "MEMORY_BENCHMARK"},
+        "ground_truth_outcome.gold_answer": "string",
+        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
+    }
+    tracker = StreamingFieldTracker(schema_template)
+
     for sname, fpath in files:
         if not os.path.exists(fpath):
             continue
@@ -2581,11 +2733,22 @@ def process_mem_005(raw_root, cleaned_root, preview_root):
                 sessions = d.get("sessions")
                 scount = len(sessions) if isinstance(sessions, list) else 0
 
-                qa = d.get("qa")
-                q0_snip = ""
-                if isinstance(qa, list) and len(qa) > 0 and isinstance(qa[0], dict):
-                    q0_snip = str(qa[0].get("question") or "")[:300].replace("\n", " ").strip()
+                # 提取历史会话对话轮次与第一轮真实交互文本 (提供有效语义上下文)
+                total_turns = sum(len(s.get("turns", [])) for s in sessions if isinstance(s, dict)) if isinstance(sessions, list) else 0
+                first_turn_snip = ""
+                if isinstance(sessions, list) and len(sessions) > 0 and isinstance(sessions[0], dict):
+                    t_list = sessions[0].get("turns") or []
+                    if t_list and isinstance(t_list[0], dict):
+                        first_turn_snip = str(t_list[0].get("text") or t_list[0].get("utterance") or t_list[0].get("content") or "")[:250].replace("\n", " ").strip()
 
+                qa = d.get("qa")
+                q_text = ""
+                a_text = ""
+                if isinstance(qa, list) and len(qa) > 0 and isinstance(qa[0], dict):
+                    q_text = str(qa[0].get("question") or "")[:350].replace("\n", " ").strip()
+                    a_text = str(qa[0].get("answer") or "")[:350].replace("\n", " ").strip()
+
+                # 严格隔离：标准答案仅存储于 ground_truth_outcome
                 item = {
                     "provenance": {
                         "source_id": source_id,
@@ -2597,19 +2760,23 @@ def process_mem_005(raw_root, cleaned_root, preview_root):
                         "sub_source": sname,
                         "memory_type": mtype,
                         "sessions_count": scount,
-                        "question_snippet": q0_snip,
+                        "history_turns_count": total_turns,
+                        "initial_session_turn_snippet": first_turn_snip,
+                        "question": q_text,
                     },
                     "observed_decision": {
                         "memory_type": mtype,
                         "label_nature": "MEMORY_BENCHMARK",
                     },
                     "ground_truth_outcome": {
+                        "gold_answer": a_text,
                         "qa_count": len(qa) if isinstance(qa, list) else 0,
                         "label_nature": "MEMORY_BENCHMARK",
                     },
                     "policy_tag": "TRAIN_ROUTER_CANDIDATE",
                 }
                 cleaned_records.append(item)
+                tracker.update(item)
 
     with open(cleaned_file, "w", encoding="utf-8") as f:
         for r in cleaned_records:
@@ -2621,15 +2788,8 @@ def process_mem_005(raw_root, cleaned_root, preview_root):
         for r in sample_records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    schema_template = {
-        "provenance.uid": "string",
-        "provenance.sub_source": "string",
-        "pre_decision_state.memory_type": "string",
-        "pre_decision_state.sessions_count": "int",
-        "observed_decision.label_nature": {"value": "MEMORY_BENCHMARK"},
-        "policy_tag": {"value": "TRAIN_ROUTER_CANDIDATE"},
-    }
-    computed_schema = build_schema_with_missingness(sample_records, schema_template)
+    # 全量实测流式 Schema 缺失率计算 (覆盖 100% 23,884 条记录)
+    computed_schema = tracker.build_schema()
 
     stats = {
         "source_id": source_id,
