@@ -1,0 +1,59 @@
+{
+  "source_id": "TRA-004",
+  "source_name": "AgentSuite multi_challenge",
+  "official_origin": "https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories",
+  "license": "Apache-2.0",
+  "raw_files_processed": 8,
+  "raw_episodes_count": 2184,
+  "valid_cleaned_records": 11048,
+  "unique_tasks_count": 4,
+  "model_distribution": {
+    "deepseek-ai/DeepSeek-V3.2-Exp-thinking-off": 273,
+    "deepseek-ai/DeepSeek-V3.2-Exp-thinking-on": 273,
+    "anthropic/claude-4.5-sonnet-thinking-off": 273,
+    "anthropic/claude-4.5-sonnet-thinking-on-10k": 273,
+    "google/gemini-2.5-flash-thinking-off": 273,
+    "google/gemini-2.5-flash-thinking-on": 273,
+    "openai/gpt-4.1": 273,
+    "openai/o3-high": 273
+  },
+  "thinking_effort_distribution": {
+    "thinking-off": 819,
+    "thinking-on": 819,
+    "unspecified": 546
+  },
+  "score_distribution": {
+    "0.0": 1127,
+    "1.0": 1057
+  },
+  "fields_schema": {
+    "provenance.task_name": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.model_name": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.reasoning_effort_mode": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.context_chars": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "OBSERVED_ACTION"
+    },
+    "ground_truth_outcome.eval_score": {
+      "type": "float",
+      "missing_rate": 0.0
+    },
+    "ground_truth_outcome.label_nature": {
+      "value": "POST_HOC_EVALUATOR"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/Agent轨迹/TRA-004_AgentSuite/cleaned_trajectories.jsonl",
+  "completion_status": "FULL (已处理全部 8 个模型与思考模式: Claude, DeepSeek, Gemini, GPT, O3)"
+}

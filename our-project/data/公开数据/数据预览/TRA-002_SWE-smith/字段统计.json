@@ -1,0 +1,57 @@
+{
+  "source_id": "TRA-002",
+  "source_name": "SWE-smith Trajectories",
+  "official_origin": "https://huggingface.co/datasets/SWE-bench/SWE-smith-trajectories",
+  "license": "MIT",
+  "raw_files_processed": 8,
+  "raw_trajectories_count": 25826,
+  "raw_assistant_turns_read": 783438,
+  "valid_cleaned_records": 783438,
+  "unique_instances_count": 13500,
+  "model_name": "claude-3-7-sonnet-20250219",
+  "action_types_distribution": {
+    "text_response": 783438
+  },
+  "task_resolved_distribution": {
+    "false": 14396,
+    "true": 11430
+  },
+  "fields_schema": {
+    "provenance.instance_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.step_index": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.context_chars": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.prior_tool_calls_count": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.prior_error_signals_count": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.action_type": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "OBSERVED_ACTION"
+    },
+    "ground_truth_outcome.task_resolved": {
+      "type": "bool",
+      "missing_rate": 0.0
+    },
+    "ground_truth_outcome.label_nature": {
+      "value": "POST_HOC_EVALUATOR"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/Agent轨迹/TRA-002_SWE-smith/cleaned_trajectories.jsonl",
+  "completion_status": "FULL (已处理全部 8 个分片: ticks-00000 至 ticks-00007, 972 MB)"
+}

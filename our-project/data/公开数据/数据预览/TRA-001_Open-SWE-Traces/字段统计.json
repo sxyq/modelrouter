@@ -1,0 +1,84 @@
+{
+  "source_id": "TRA-001",
+  "source_name": "Open-SWE-Traces",
+  "official_origin": "https://huggingface.co/datasets/nvidia/Open-SWE-Traces",
+  "license": "CC BY 4.0",
+  "raw_files_processed": 6,
+  "raw_trajectories_count": 15000,
+  "raw_assistant_turns_read": 1040564,
+  "valid_cleaned_records": 1040564,
+  "unique_instances_count": 13007,
+  "agent_frameworks_distribution": {
+    "minisweagent": 293142,
+    "openhands": 323363,
+    "sweagent": 424059
+  },
+  "model_distribution": {
+    "Qwen-2.5-Coder-32B-Instruct": 535668,
+    "DeepSeek-V4-Flash": 91219,
+    "Qwen-2.5-Coder-72B-Instruct": 232144,
+    "MiniMax-M2.5": 181533
+  },
+  "action_types_distribution": {
+    "bash": 571968,
+    "str_replace_editor": 231904,
+    "execute_bash": 213525,
+    "submit": 10017,
+    "think": 8150,
+    "finish": 5000
+  },
+  "task_resolved_distribution": {
+    "false": 9664,
+    "true": 5336
+  },
+  "fields_schema": {
+    "provenance.instance_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.repo": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.step_index": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "provenance.agent_framework": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.model_name": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.context_chars": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.prior_tool_calls_count": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.prior_error_signals_count": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.action_type": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "OBSERVED_ACTION"
+    },
+    "ground_truth_outcome.task_resolved": {
+      "type": "bool",
+      "missing_rate": 0.0
+    },
+    "ground_truth_outcome.label_nature": {
+      "value": "POST_HOC_EVALUATOR"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/Agent轨迹/TRA-001_Open-SWE-Traces/cleaned_trajectories.jsonl",
+  "completion_status": "PARTIAL_MULTI_CONFIG (已覆盖 minisweagent, openhands, sweagent 多 Agent 框架与多模型配置)"
+}
