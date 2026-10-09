@@ -1,6 +1,6 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v0.8｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
+> **版本 v0.9｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -224,6 +224,42 @@ Provenance: source, schema_version, model_revision, privacy_flags
 ### 6.1 旧研究报告与当前方法的关系
 
 `our-project/literature/report.md`（2026-09-15）重点研究 **admission-time 事前预测总费用分布**；`IMPLEMENTATION_RESEARCH.md` 给出 GBDT/MLP MVP。它们仍是高价值的**历史证据和 admission-only 对照设计**。当前主方法已转向**运行时状态 + Kev-4B**。不要直接复制旧报告中“KV 缓存延后、动态 handoff 延后”作为最新方法决策；但可以保留其关于成本重尾、分位数、泄漏和评测偏差的警示。
+
+### 6.2 真实路由训练论文的方法链比较与后续学术写法（2026-10-09；仅研究建议）
+
+负责人追问：数据先选/清洗/微调是否合理，其他路由论文怎么训练，Kev 与生成式微调如何区分、论文图与外部 Harness 怎样组织。**结论**：数据选择→清洗→训练是必要但不充分的三步，之前还必须定义路由决策、动作可行域、标签的实际因果/观察语义，训练后仍需受控同状态数据与 Agent 端到端验证。Q-007 仍是数据源审议阶段，以下方法**未获负责人批准执行**。
+
+| 直接相关论文与出处 | 论文真实训练/数据流程 | 对 ModelRouter 的适用性与边界 |
+|---|---|---|
+| [FrugalGPT](https://arxiv.org/abs/2305.05176) (TMLR 2024) | 分析模型质量/费用后设计请求级多模型级联 | 成本/级联传统基线，不等于 Agent 全任务成本 |
+| [RouteLLM](https://arxiv.org/html/2406.18665) (ICLR 2025) | Arena 成对偏好→矩阵分解/SW-ranking/BERT/causal classifier 训练；gold/judge 扩充、阈值选择及分布外测评 | 需在同任务同评价协议下形成真 model preference；训练模型不一定大；公开偏好≠长程 Agent 成功 |
+| [BEST-Route](https://proceedings.mlr.press/v267/ding25d.html) (ICML 2025) | 动态选模型和重复采样计算预算 | 近邻 test-time compute，不可声称首次联合模型与计算 |
+| [Route-to-Reason](https://arxiv.org/abs/2505.19435) (WWW 2026) | 共同学习 model 与 reasoning strategy 表征，预测成功/Token，按预算选动作 | **Model×Effort/推理策略联合选择直接近邻**，本项目须证明 Agent/Harness/cache 的新增效果 |
+| [Budget-Aware Agentic Routing](https://arxiv.org/html/2602.21227) (2026 preprint) | always-small/large 边界 profiling → 难度分类/成本有效轨迹 → BoSFT → BoPO 在线优化 → hard budget decoding | 动态 Agent 序列决策和任务级成本最直接近邻；**不能只拿 SFT 当完整因果路由监督**；是否用 RL 尚未决定 |
+| [TwinRouterBench](https://arxiv.org/html/2605.18859) (2026) | 强模型成功 Agent 轨迹→调用前缀→greedy sequential-locking 降档实验→执行验证 tier 标签→静态离线/动态真实执行两轨评测 | **标签构造近邻**；目标 tier 为固定 pool/协议下的局部估计，非任何 model×effort 的全局最优；静态 train 与正式 held-out 要隔离 |
+| [OpenSquilla / Harness-Native Agentic Routing](https://arxiv.org/html/2607.11399) (2026 preprint) | Harness 状态→LightGBM 冷启动→日志 (q,h,action,trace,outcome,cost)→覆盖采样→离线/校正估计与下一代路由器；某些场景扩展 ensemble | 最直接系统设计近邻；[当前仓库 SquillaRouter docs](https://github.com/TokenRhythm/opensquilla/blob/main/docs/features/squilla-router.md) **已移除历史 self-learning/反馈提交 API**，不能把论文愿景当公开可运行训练流程 |
+| [ProgRouter](https://arxiv.org/abs/2608.25992) (2026) | 多 Agent progress scoring、subtask 进展预测与动态 gate，考虑任务时间/费用 | 强对照，状态/协作/进度并非创新空白 |
+| [HM-Router](https://arxiv.org/abs/2609.32213) (2026 preprint) | 联合选择 model+harness、可迁移候选表示/稀疏组合训练 | Harness 应先固定并记录，未批准训练时选择 Harness 作为新动作维度 |
+
+**与普通生成式 SFT 的区别**：Kev 是 Qwen3.5-4B-Base 的 LoRA + pointer-head **类型化决策模型**，输入 state/questions，输出 choice/noul/score 概率而非开放文本；官方 [Kev model card](https://github.com/jaredpalmer/kev/blob/main/docs/model-cards/kev-4b.md) 与 [标注格式](https://github.com/jaredpalmer/kev/blob/main/skills/kev-finetune/references/data-format.md) 有真实规则/文档/分类标注、增量 replay、温度校准。通用微调脚本单条状态/问题+选项 <=2048 tokens（模型长上下文 serving 能力不等于 trainer 限额），原始 Agent 长历史必须在数据层维护，训练输入只用**决策前压缩快照**。不能把 Kev 当 Jev 原厂公开权重，不能将仅使用 LoRA/QLoRA/DPO 当论文新贡献；这些已有 [LoRA ICLR 2022](https://arxiv.org/abs/2106.09685)、[QLoRA NeurIPS 2023](https://arxiv.org/abs/2305.14314)、[DPO NeurIPS 2023](https://arxiv.org/abs/2305.18290)。
+
+**建议科学主流程（未批准）**：
+1. 问题/决策接口：task-success 质量下限约束下最小整任务成本；约束先过滤真实可执行 (model, effort)，保存 provider/effort/price/cache snapshot。
+2. 许可/来源/去重与 Benchmark 测试隔离；分源标签构造：Agent 已执行动作 outcome、静态 model preference、Cache reuse potential / 模拟与 measured tokens、确定性 rules，**不同事实不合成虚假的同状态反事实**。
+3. **先建立最小 Harness state/usage/checkpoint 接口与可复核 evaluator 计划**（不必此时运行），明确调用前快照、tool/environment/version/budget、terminal resolved 和整任务记账；避免训练数据 schema 与未来 serving 错位。
+4. 比较成本低的 rule/task-only/GBDT/MLP 初始基线与预训练 Kev 基线之后，拟定单一 Kev-4B LoRA continuation：观察条件结果辅助→经过许可的同题能力/成本比较+缓存复用任务→未来严格同状态真实候选数据才做最终运行时 choice→概率校准。
+5. 用独立任务级 Agent end-to-end、强固定模型/弱固定模型、task-only、规则/cache-aware、GBDT/MLP、近邻论文等验证 H1–H7；报告成功率、任务级费用、恢复次数、真实缓存命中、路由延迟、冷启动/新候选/跨仓库泛化、可靠性和消融。不能仅给离线分类准确率。
+
+**训练损失原则**：缺标签的任务 head 需 mask；observer success 仅代表实际 action+历史 continuation 下 outcome，不直接监督未见 action；静态 preference 对应 request-level，不等于动态 Agent；若以后做 policy/off-policy correction，必须实际记录 action 采样概率及探索覆盖，无 propensity 不能借名套用 IPS/DR。任务/仓库/来源 group split 在抽 prefix 前进行，并控制长轨迹对 loss 的过度加权。**Kev 只是科学研究的可替换建模选择，必须与简单排序/分类 baseline 公平比较。**
+
+**论文方法架构建议画两张，且训练与运行闭环分开**：
+- Fig. 1 系统在线推理：Agent Harness（任务、状态、工具、记忆、协作、检查点）→ 决策前八组状态快照；动态 Provider/Price/Cache Registry → 合法动作池；**单一 Kev router** → 合法 model+effort；Model Call Adapter → 国内外 API 或本地引擎；Tool/Verifier/Cost/Usage 返回 Harness 并独立记原始账。Memory summarization 是 Harness/Agent 职责，Kev 并不负责生成文本摘要。
+- Fig. 2 离线学习：不同源(Agent trajectory、静态同题 model outcomes、缓存 workload、政策规则)→来源权利/时间与任务拆分→独立监督真值→typed state+questions→ Kev LoRA/pointer 决策头→未来同状态受控比较与校准→回到 Fig. 1；未批准的数据生成/训练模块必须画为 future/planned，而非“我们已完成”。
+- Fig. 3 非方法架构而是实验：成功率—整任务成本 Pareto、分布外泛化、真实 vs 模拟 cache、按状态和 effort 的消融；没有真实结果前不能画数据点或声称有增益。
+
+**外部 Harness 优先原则**：现阶段**不造第二套 Agent 工程**；以后可先选一个可读开源基础，例如 [mini-SWE-agent](https://github.com/SWE-agent/mini-swe-agent) 的 coding task/run/model/trajectory interface，或 [LangGraph](https://langchain-ai.github.io/langgraph/concepts/durable_execution/) 的多 Agent/持久 checkpoint/store，先结合 Benchmark 复现/恢复需求**最终只批准一个主执行框架**。统一 ModelCall hook 之前构造 StateSnapshot 并执行 hard filter / Kev choice；之后由原 Harness 持有 context summary、multi-agent coordination、tools/verifier、memory/usage、task_budget 与环境恢复。需要严格同状态 fork 时不只恢复消息，还需 repo/worktree、容器/工具、随机性、价格/模型快照和 continuation policy；否则不得自称 paired causal comparison。论文里的 ensemble 模式与动态 Harness 更换都不在当前已批准动作空间内。
+
+**学术投稿纪律**：小模型微调可以构成论文组成部分，创新必须落在有效监督/序列优化/可执行约束/缓存连续性机制或可信新 benchmark，并以公平基线、组件消融、独立真实任务、费用/时延与统计检验证实；仅复制 Kev+LoRA 及拼数据不足以支撑算法创新主张。保持 E-DESIGN/Q-007 当前数据源优先，不提前解答 Q-010/Q-011 也不执行工程。
 
 ## 7. 可证伪的研究假设
 

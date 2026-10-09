@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v1.5｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v1.6｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
@@ -382,6 +382,14 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - 明确不是过度物理拆分，而是 Q&A 历史 R1/R2 / Research/Memory 重复数据事实。**以后 Registry 唯一更新最新 Source/Provider/Cache/AI 清洗详情；Q&A 记录负责人选择，Status 保留唯一当前任务。**
 - 官方数据卡与 Kev 训练格式复核：Open-SWE 参考补丁不能进决策输入、SWE-smith 多 split 需核、Mooncake hash 只代表缓存可复用潜力、LLMRouterBench 许可仍待审、Kev 通用微调记录有严格 2048 token 限制。
 - Registry §6.2～6.5 已列推荐最低源、source-specific normalize、task/repo split、真实标签/静态比较/缓存模拟的分离及 Kev M1～M4 训练路线。全部是 Planning 推荐，**没有逐源批准、下载/清理、训练或模型/API/GPU 操作**。
+
+### 9.17 E-DESIGN 路由训练相关工作、论文方法图与外部 Harness 方案（2026-10-09）
+
+- 负责人提出：当前数据→清洗→训练顺序是否学术充分，传统/神经模型路由及 LoRA 类论文怎么训练与发表，论文方法图怎么画，外部 Agent 框架怎样搭。
+- 本轮只读核对 RouteLLM (ICLR 2025)、FrugalGPT (TMLR 2024)、BEST-Route (ICML 2025)、Route-to-Reason (2025 / WWW 2026)、TwinRouterBench、Budget-Aware Agentic Routing、ProgRouter、HM-Router、OpenSquilla、Kev 官方格式及 mini-SWE-agent/LangGraph 官方能力，完整比较见 RESEARCH_OVERVIEW §6.2。
+- 研究结论：数据清洗前必须定义路由状态/动作/合法池/真实标签，训练前需要最小 Harness state/log/checkpoint 契约和可验证任务终局；训练中的 observational outcome、static preference、cache reuse 与同状态 counterfactual 严格分离；建议单 Kev 的领域适配与后续真实配对决策分阶段，**不规定必须 RL**。
+- 论文方法图应分「在线 Agent/Harness/Router/Provider 账本」和「离线多来源 supervision → Kev 训练 → 同状态比较/校准」；OpenSquilla 现行公开 SquillaRouter 自学习已移除，不能当现成在线训练引擎。Harness 未来只批准**单一主实现/调用入口**，优先比较 mini-SWE-agent（coding 基准）和 LangGraph（多 Agent checkpoint）。
+- 这轮仅作学术规划文档更新，不批准 Q-010/Q-011、下载/清洗真实数据、服务器/GPU/API、编写代码或启动训练。唯一当前讨论包仍是 Q-007 数据源审核，Status 不变。
 
 ## 10. 新会话恢复协议（长期生效）
 
