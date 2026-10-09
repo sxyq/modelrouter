@@ -1,6 +1,6 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
-> **版本 v1.2｜建立：2026-10-09｜第一、二批决策：2026-10-09｜阶段：E-DESIGN（进行中，尚未冻结）**
+> **版本 v1.3｜建立：2026-10-09｜第一、二批决策：2026-10-09｜阶段：E-DESIGN（进行中，尚未冻结）**
 >
 > **职责**：记录每项实验设计的 Q-ID、问题、选项、Planning 推荐及理由、项目负责人回答、最终决策、日期，以及对实验设计、资源/预算和论文结论的影响。研究方法总览见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)，实时阶段见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，交接历史见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -310,3 +310,4 @@
 | 2026-10-09 | Q-007 首批数据科研审查 | Execution 在服务器产出 80,970 混合样本并提供 GitHub 966f582 源码与 50 条预览；Planning 核对到 Arena 真实 winner 30k，但 Agent effort/complexity、Mooncake dispatch/缓存、成本 tier 大量为规则标签；且 TwinRouterBench 已混进 train/val/test | 已执行数据解析≠真实最优路由监督；禁止以 80,970 直接证明 TRAIN_READY；同一 prepare_router_data.py 修正、TwinRouterBench 留外部评测 |
 | 2026-10-09 | Kev 官方格式核对 | 官方数据样本要求 questions.choice.criteria 对象与 choice 字符串标签、score.criteria 等级数组与整数索引标签；现有输出为 options、levels 及字符串 score 标签，且补充 provenance 需确认不影响官方解析 | 在进入微调前最简改造与 validate 即可，不增加工程门禁；训练/评测按 task/repo/group 而非单个 trajectory 隔离 |
 | 2026-10-09 | Q-007 重建成果二次科研复审 | Planning 核对 16 个 GitHub 字段统计与唯一清洗程序，核出 **3,963,661 vs 报告 2,282,484** 总量冲突；Open-SWE 6 分片仅部分、SWE-smith 仅 ticks、AgentSuite 8/30 模型；前决策状态混入当前工具动作、模型名错映射、Mooncake 复用计算非有序 prefix 与其它字段问题 | 这是 Planning 源码与公开数据审查，**不是负责人新增批准/否决**；当前不应以 TRAIN_READY 开始正式微调；只修改既有脚本，不再全盘删原始文件 |
+| 2026-10-10 | Q-007 第三次科研复审（0b39a7e） | GitHub 16 源字段统计和=6,600,628，与 Execution 报告一致；多项代码修正确认，但 AgentSuite pass_criteria/target_question 可能含评测 rubric、SWE-smith 代码块误判工具动作、Mooncake 只有前缀复用潜力、missing_rate 仅按预览样本、缺真正同状态路由标签与 Train/Val/Test 物理切分、TRA-001 官方仍部分下载 | **Planning 审查意见，非负责人新批准**；保留已下载原始数据，继续原脚本定向科研纠偏；不得宣布 TRAIN_READY 或启动微调 |

@@ -1,6 +1,6 @@
 # ModelRouter · 数据源、模型能力与缓存政策统一台账
 
-> **版本 v1.4｜建立：2026-10-09；官方数据结构只读核验与清洗/训练方案更新：2026-10-09｜阶段：E-DESIGN / Q-007 第一大阶段｜状态：候选目录，未完成清洗和训练许可核验**
+> **版本 v1.5｜建立：2026-10-09；官方数据结构只读核验与清洗/训练方案更新：2026-10-09｜阶段：E-DESIGN / Q-007 第一大阶段｜状态：候选目录，未完成清洗和训练许可核验**
 >
 > **唯一职责**：此文件是公开数据源、数据许可、八组状态覆盖、模型/Provider 能力、缓存/定价政策及未来“候选 → 选择 → 数据加工 → 验收”信息的**唯一详细台账**。它不是新的执行流水线或运行时政策数据库。
 >
@@ -296,6 +296,15 @@
 > 3. **代码级科研缺陷彻底修复**：时序严格后置递增；Open-SWE 保留 Qwen3.6/3.5/3.8/DeepSeek/MiniMax 真实模型名；SWE-smith 真实识别 125.6 万次 `str_replace_editor`、90.1 万次 `bash` 与 12.2 万次 `submit`；AgentSuite 以 `meta.id` 对齐 273 个独特任务实例并输出同题跨模型审查组；Mooncake 严格按时间戳排序并计算 LCP 连续前缀且抽取连续 35 请求；TwinRouterBench 移除未来 `total_steps`；LongMemEval-V2 载入 451 道真实题目与答案；全源引入 `compute_field_missingness()` 动态计算缺失率；`prepare_router_data.py` 增加 `--mode public`。
 > 4. **GitHub 审查样本与统计同步**：全部 16 组轻量审查样本与动态统计已同步至 GitHub，供 ChatGPT 通过 GitHub MCP 开展验收。
 
+### 6.9 Q-007 全量重建后的数据监督科学验收（2026-10-10）
+
+- **2026-10-10 Planning 对提交 `0b39a7e` 的三次科研独立复审：** 已核 GitHub 16 份字段统计，按来源求和确为 **6,600,628** 条不同粒度记录；14 个来源含实际审查样本、CMU/MARBLE 两个受限为零。Execution 报告服务器 `wc -l` 与统计相同，但 Planning **未亲自登录服务器复核完整清洗文件**；不能把总量解读成模型路由监督数量。
+- **已确认修复**：`--mode public` 存在且与 Blog/CCH 分离；TRA-001 当前调用工具未提前计入 `prior_tool_calls_count`（第一步=0）；模型名从 metadata 优先提取；TRA-002 增加动作解析；TRA-004 使用 meta.id 对齐 273 个任务；CACHE-001 按 timestamp 排序、按有序前缀链计算复用潜力、output_length 移到事后；TwinRouterBench 的 total_steps 从决策前状态移出；LongMemEval 增加问题/答案；MEM-005 扩展四子集。SWE-smith 官方 ticks/tool/xml 各 8 个 shard，当前 24 分片与官方 metadata 一致；AgentSuite 官方 30×273=8,190 episode，当前覆盖 30 配置。
+- **仍未验收的科研缺陷**：(1) AgentSuite `pre_decision_state` 包含 `meta.target_question` 和 `meta.pass_criteria`，未证明是执行时可见字段，可能注入事后评测 rubric；同题跨模型为 **Episode 级**反事实近似，不等于同一个中途 state 的模型切换结果，thinking-on/off 不能无条件跨 Provider 标准化。(2) SWE-smith `extract_swesmith_action()` 从 Markdown 代码块首词推断动作，动作分布出现 `the`、`this`、`2.`、`pip`，不能把所有识别记录都叫真实 Tool API 调用。(3) Mooncake 有序前缀只证明历史复用机会，任意丢弃缓存前缀集合的策略不是确定性物理缓存容量/TTL/命中。(4) 缺失率以各源 35 条 GitHub 抽样 `sample_records` 计算，不能声称完整数据集精确缺失率。(5) LongMemEval `initial_memory_snippet` 仍是形如 `f224a4eb` 的哈希字符串，没有承载有效历史语义。(6) LLMRouterBench 单模型观察标签标为 `POST_HOC_BENCHMARK_ORACLE`，但最优模型尚需按同题完整评分和成本目标计算；并无 task/repo 完整 split 或 Laya/Kev 正式训练文件。(7) Open-SWE 仍为 12 代表分片（字段统计明标 PARTIAL），不能称全量官方覆盖。
+- **下一步唯一科研工作包**：保留已有正确原始文件，继续在 `prepare_router_data.py` 修复这些语义缺陷；补充按任务 ID 的 episode/candidate 对照和稳定分组划分；从全部输出而非预览计算缺失率；按来源/监督类型清点真实可训练样本；明确 Retriever/ModelRouterBench 的许可及真实测量单位。对 Laya-421M 与 Kev-4B 采用同一清洗视图、同一独立测试集比较，尚未固定唯一骨干，也**不启动正式微调**。
+
+Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表 31 个来源都已下载；其中有部分运行时/Provider 政策、模拟源，不等于独立可下载公开数据集。全量与否必须以具体官方配置和 shard 名单判定。
+
 ## 7. 后续阶段接口和变更历史
 
 当前唯一大阶段：**Q-007 数据来源候选目录**，先按本台账登记、核证与选定；数量、实际清洗、Kev 训练方式、Provider 部署和正式评测后议。
@@ -310,3 +319,4 @@
 | 2026-10-09 | v1.3 | 首批服务器清洗记录与官方 Kev schema 核对；发现规则伪标签、样本范围与 heldout 隔离问题 | 数据转换已执行，但尚非可信 TRAIN_READY；要求同脚本科研纠偏 |
 | 2026-10-09 | v1.4 | Planning 二次复核源脚本/16 份 GitHub 实际样本/官方规模，确认大额行数冲突、未全量下载、时间泄漏/模型错标/缓存复用算法问题 | Q-007 仅实测首轮加工，TRAIN_READY 未成立，等待在同一清洗代码修复和实际统计 |
 | 2026-10-10 | v1.5 | Q-007 成果科研纠偏执行完毕：统一总量为 6,600,628 条（差额为 0）；覆盖 24 分片 SWE-smith、12 分片 Open-SWE、30 模型 AgentSuite；修复十项代码时序与动作语义缺陷；生成同题成组与时序连续样本 | 执行完毕，已同步 GitHub，等待 Planning 最终验收 |
+| 2026-10-10 | v1.5 | Planning 对 0b39a7e 的 16 源实际 JSONL、统计及唯一脚本再审，确认数值对齐与剩余监督问题 | 数据已解析，但尚未完成路由训练监督和任务划分验收 |
