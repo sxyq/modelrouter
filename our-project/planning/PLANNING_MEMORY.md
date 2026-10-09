@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v1.6｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v1.7｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
@@ -390,6 +390,12 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - 研究结论：数据清洗前必须定义路由状态/动作/合法池/真实标签，训练前需要最小 Harness state/log/checkpoint 契约和可验证任务终局；训练中的 observational outcome、static preference、cache reuse 与同状态 counterfactual 严格分离；建议单 Kev 的领域适配与后续真实配对决策分阶段，**不规定必须 RL**。
 - 论文方法图应分「在线 Agent/Harness/Router/Provider 账本」和「离线多来源 supervision → Kev 训练 → 同状态比较/校准」；OpenSquilla 现行公开 SquillaRouter 自学习已移除，不能当现成在线训练引擎。Harness 未来只批准**单一主实现/调用入口**，优先比较 mini-SWE-agent（coding 基准）和 LangGraph（多 Agent checkpoint）。
 - 这轮仅作学术规划文档更新，不批准 Q-010/Q-011、下载/清洗真实数据、服务器/GPU/API、编写代码或启动训练。唯一当前讨论包仍是 Q-007 数据源审核，Status 不变。
+
+### 9.18 最简论文实验流程与 Kev 微调执行风格（2026-10-09）
+
+- 负责人最新明确：删去工程审批门禁、复杂工程单测/CI、防御性框架、版本冻结和哈希管理；仅一个终端入口，优先真实数据清理、微调与进度输出。
+- Research §6.3 已说明公开来源→可信监督→Kev LoRA 初始适配→Harness 同状态比较→动态路由微调→任务级评估。保留训练/测试分割、未来泄漏、cache 真实标签区分这三项科研事实约束。
+- 本轮只更新研究设计和协作规则；已上传清洗脚本仍非可比较的最优路由标签数据集。没有执行 GPU/训练/下载新数据，拟议 run_experiment.py 尚未创建。
 
 ## 10. 新会话恢复协议（长期生效）
 

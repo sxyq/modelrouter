@@ -1,6 +1,6 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v0.9｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
+> **版本 v1.0｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -260,6 +260,26 @@ Provenance: source, schema_version, model_revision, privacy_flags
 **外部 Harness 优先原则**：现阶段**不造第二套 Agent 工程**；以后可先选一个可读开源基础，例如 [mini-SWE-agent](https://github.com/SWE-agent/mini-swe-agent) 的 coding task/run/model/trajectory interface，或 [LangGraph](https://langchain-ai.github.io/langgraph/concepts/durable_execution/) 的多 Agent/持久 checkpoint/store，先结合 Benchmark 复现/恢复需求**最终只批准一个主执行框架**。统一 ModelCall hook 之前构造 StateSnapshot 并执行 hard filter / Kev choice；之后由原 Harness 持有 context summary、multi-agent coordination、tools/verifier、memory/usage、task_budget 与环境恢复。需要严格同状态 fork 时不只恢复消息，还需 repo/worktree、容器/工具、随机性、价格/模型快照和 continuation policy；否则不得自称 paired causal comparison。论文里的 ensemble 模式与动态 Harness 更换都不在当前已批准动作空间内。
 
 **学术投稿纪律**：小模型微调可以构成论文组成部分，创新必须落在有效监督/序列优化/可执行约束/缓存连续性机制或可信新 benchmark，并以公平基线、组件消融、独立真实任务、费用/时延与统计检验证实；仅复制 Kev+LoRA 及拼数据不足以支撑算法创新主张。保持 E-DESIGN/Q-007 当前数据源优先，不提前解答 Q-010/Q-011 也不执行工程。
+
+### 6.3 面向论文实验的最简执行规范与三段 Kev 微调（2026-10-09）
+
+**执行风格按负责人本轮明确要求**：只做最小可运行科研实验，尽快产生真实数据和可检验结果。不要新增审批/冻结/哈希管理/CI/单元测试/防御性框架/双重代码入口/多版本重复清洗脚本；一个终端可看到 source、rows、epoch、step、loss、eval 和耗时。移除的是工程管理形式，不是论文上不可少的 train/test 不串集、禁止未来答案泄漏、标签有真实出处、模拟缓存不冒充实际命中和来源使用权。使用不属于本项目的计算资源或收费 API 不因去工程门禁而自动获准。
+
+**唯一路线**：任务目标与合法动作定义 → 已登记公开源读取 → 分源最小清洗 → 同任务/仓库切分 → 决策前状态 → 可靠分类/偏好/缓存分层监督 → 已发布 Kev-4B checkpoint 的 LoRA 和 Pointer Head 领域微调 → 留出集检查和概率校准 → 复用同一个 Agent Harness 调用边界产生真实 usage/result → 同状态合法 model×effort 的可比较延续 → 动态选择精调 → 真实 Agent 总成本/成功率及消融。
+
+**T1 领域适配**：Open-SWE/SWE-smith 只有实际执行策略条件下的 resolved，可做 observed-outcome 的 noul 监督，不能直接标注最优模型；Arena 和许可明确的 LLMRouterBench 可做同静态任务的 choice 偏好；成本 score 仅当有实际费用和统一口径时可用。Mooncake 前缀 hash 主要作为缓存复用特征/工作负载，不能直接代替 Provider 实测 cached_tokens，也不应在没有路由标签时硬塞成 choice。Provider model/effort/TTL/价目维持调用前外部状态。
+
+**T2 动态选择精调**：未来固定一个 Agent Harness，从完全相同、可恢复的调用前状态真实执行多个合法 model+effort 动作并比较终局成功和整任务成本，才形成真正的步骤级 choice/ranking。先 SFT/成对监督，只有出现需要时才探索 RL/BoPO。
+
+**T3 校准和学术评价**：基线最少含强固定模型、低价固定模型、简单路由规则、未经微调 Kev，以及轻量分类器；报告任务 resolved、总花费、cost/resolved、缓存实报数据、延迟、失败恢复和状态组/effort 消融。只报训练 loss/离线 accuracy 不足以证明论文贡献。
+
+**现有脚本实际情况**：已查看本次上传的 prepare_router_data.py：当前会从一条 Agent episode 生成数个 prefix，却为它们赋相同 resolved 标签，语义只能是历史 continuation 的观察性 outcome；实际 model 对应决策点尚待核查。Arena 是静态人类偏好；Mooncake 输出档位由 prefix hash 确定，主要属于 cache opportunity。当前生成的混合 JSONL 不等于已经得到最优 (model,effort) 训练语料。以后只修改这一条原始数据清洗链，移除可选 mock/self-test 风格和冗余分支，改为打印真实处理行数/标签数/分割数。
+
+**论文图**：Figure 1 在线：Harness/Context/Memory/Agent → StateSnapshot + Provider Registry → Kev 决策 → Model Call → Usage & Task Outcome；Figure 2 离线：Agent 状态源/静态模型比较/Cache workload → 分层标签和独立 split → Kev-4B LoRA 域适配 → 同状态真实动态比较 → 动态路由精调与校准。两图不虚构已完成实验。
+
+**文献数据量**：[Kev 官方](https://github.com/jaredpalmer/kev/blob/main/docs/model-cards/kev-4b.md) decision-v7 第一阶段 12,576，后续增量 1,425/5,219/11,320 条；[TwinRouterBench](https://arxiv.org/abs/2605.18859) 是 520 tasks 的 970 个执行验证档位前缀；[RouteLLM](https://arxiv.org/abs/2406.18665) 是偏好数据训练；[Boundary-Guided](https://arxiv.org/abs/2602.21227) 为先边界策略与 SFT 后策略优化。不能以其中任何一个行数当成本项目固定配额，独立任务/真标签更重要。
+
+**一个终端入口**：未来以一个 run_experiment.py（尚不存在）调用已有 prepare_router_data.py 与 Kev 官方训练脚本，终端输出源数据数、训练轮次、loss、验证集指标和用时；示意为 python -u run_experiment.py 2>&1 | tee experiment.log。这只是拟议接口，未声称脚本已经可运行或模型已经训练。
 
 ## 7. 可证伪的研究假设
 
