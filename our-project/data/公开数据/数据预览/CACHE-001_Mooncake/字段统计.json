@@ -1,0 +1,48 @@
+{
+  "source_id": "CACHE-001",
+  "source_name": "Mooncake-FAST25",
+  "official_origin": "https://github.com/kvcache-ai/Mooncake / FAST'25 release",
+  "license": "Apache-2.0",
+  "valid_cleaned_records": 39632,
+  "trace_type_distribution": {
+    "conversation": 12031,
+    "toolagent": 23608,
+    "synthetic": 3993
+  },
+  "reuse_tier_distribution": {
+    "zero_reuse": 2243,
+    "low_reuse": 11134,
+    "medium_reuse": 7948,
+    "high_reuse": 18307
+  },
+  "fields_schema": {
+    "provenance.trace_type": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.input_length": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.prefix_block_count": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.observed_reusable_blocks": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "OBSERVED_REUSE_OPPORTUNITY"
+    },
+    "ground_truth_outcome.estimated_reusable_tokens": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "policy_tag": {
+      "value": "TRAIN_ROUTER_CANDIDATE"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/缓存与时间/CACHE-001_Mooncake/cleaned_mooncake_traces.jsonl",
+  "completion_status": "FULL (全量清洗完成，包含 conversation, toolagent, synthetic 全部 3 类追踪)"
+}

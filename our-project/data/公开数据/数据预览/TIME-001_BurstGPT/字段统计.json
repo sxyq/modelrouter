@@ -1,0 +1,45 @@
+{
+  "source_id": "TIME-001",
+  "source_name": "BurstGPT",
+  "official_origin": "https://github.com/HPMLL/BurstGPT",
+  "license": "Open Source",
+  "valid_cleaned_records": 1404294,
+  "model_distribution": {
+    "ChatGPT": 1189167,
+    "GPT-4": 215127
+  },
+  "log_type_distribution": {
+    "Conversation log": 145707,
+    "API log": 1258587
+  },
+  "fields_schema": {
+    "provenance.timestamp": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "provenance.model_name": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.arrival_timestamp": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.prompt_tokens": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "OBSERVED_WORKLOAD"
+    },
+    "ground_truth_outcome.response_tokens": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "policy_tag": {
+      "value": "TRAIN_ROUTER_CANDIDATE"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/缓存与时间/TIME-001_BurstGPT/cleaned_burstgpt.jsonl",
+  "completion_status": "FULL (全量流式清洗完成，覆盖全部 1,404,294 条生产环境请求真实时序与负载)"
+}
