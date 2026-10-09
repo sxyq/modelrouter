@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v1.4｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v1.5｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
@@ -375,6 +375,13 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - 负责人要求在文档中**专设一处**长期登记公开训练数据源、主流模型与供应商政策、KV 缓存政策，然后按批准结果挑选哪些数据、如何让 AI 合规清洗。
 - GitHub main 建立 [DATA_SOURCE_AND_POLICY_REGISTRY.md](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)，在既有 data/ 目录下唯一维护原始来源、八组变量、Cache 数据真实性、Provider 官方证据、选择状态和后续数据加工质量合同；原 Q-007-R1/R2 仅保留作为历史研究与问答，不再平行更新政策详细清单。
 - 仍无数据源逐项批准、真实下载/清洗/训练、服务器/GPU/API 使用授权。下一步负责人审阅 Source Registry/Provider Policy/Selection Board，项目阶段 E-DESIGN 不变。
+
+### 9.16 Q-007 文件数量审计与真实数据源清洗/训练规划（2026-10-09）
+
+- GitHub main 文件树检查：210 个文件，44 Markdown，五份当前核心管理文档（Status、Q&A、Memory、Research、Registry）；历史 IMPLEMENTATION_RESEARCH 与导航 README 不计入核心五份。
+- 明确不是过度物理拆分，而是 Q&A 历史 R1/R2 / Research/Memory 重复数据事实。**以后 Registry 唯一更新最新 Source/Provider/Cache/AI 清洗详情；Q&A 记录负责人选择，Status 保留唯一当前任务。**
+- 官方数据卡与 Kev 训练格式复核：Open-SWE 参考补丁不能进决策输入、SWE-smith 多 split 需核、Mooncake hash 只代表缓存可复用潜力、LLMRouterBench 许可仍待审、Kev 通用微调记录有严格 2048 token 限制。
+- Registry §6.2～6.5 已列推荐最低源、source-specific normalize、task/repo split、真实标签/静态比较/缓存模拟的分离及 Kev M1～M4 训练路线。全部是 Planning 推荐，**没有逐源批准、下载/清理、训练或模型/API/GPU 操作**。
 
 ## 10. 新会话恢复协议（长期生效）
 

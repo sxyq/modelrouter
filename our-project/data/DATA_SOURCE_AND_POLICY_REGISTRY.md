@@ -1,6 +1,6 @@
 # ModelRouter · 数据源、模型能力与缓存政策统一台账
 
-> **版本 v1.0｜建立：2026-10-09｜阶段：E-DESIGN / Q-007 第一大阶段｜状态：候选目录，未完成清洗和训练许可核验**
+> **版本 v1.1｜建立：2026-10-09；官方数据结构只读核验与清洗/训练方案更新：2026-10-09｜阶段：E-DESIGN / Q-007 第一大阶段｜状态：候选目录，未完成清洗和训练许可核验**
 >
 > **唯一职责**：此文件是公开数据源、数据许可、八组状态覆盖、模型/Provider 能力、缓存/定价政策及未来“候选 → 选择 → 数据加工 → 验收”信息的**唯一详细台账**。它不是新的执行流水线或运行时政策数据库。
 >
@@ -222,6 +222,55 @@
 | Recommendation | 选用、仅分析、等待许可、排除；理由与未来最小动作 |
 | Execution evidence | Git/数据 SHA、运行环境与命令、输出路径、完整性结果；**未执行必须写未执行** |
 
+
+### 6.2 官方数据卡只读核验：第一批候选和字段差异（Planning 推荐，不代表批准）
+
+2026-10-09 查阅下列官方数据卡、Viewer、README 及 Kev 官方标注格式；**未下载数据、没有原始样本统计结果，也未审核所有许可证**。优先保证不同训练任务需要的真值类型，不为了把八组变量全部填满而错误拼接不相关数据。
+
+| 来源 ID | 确认的原生数据及字段 | 具体清洗注意点 | 第一轮建议 |
+|---|---|---|---|
+| TRA-001 Open-SWE-Traces | 官方 v1.0 数据卡列 instance_id、repo、trajectory_id、trajectory、tools、resolved(-1/0/1)、metadata.reference_patch/model_patch；后续 v1.1/v1.2 已扩容 | 按 source revision/config 兼容 trajectory/messages；reference_patch 是标准答案，仅能做标签/审计，**不得进入决策输入**；-1 是 unknown 不是失败；同 task/repo/相似实例分同侧 | **P0 核心状态源** |
+| TRA-002 SWE-smith trajectories | 数据浏览器现列 messages、instance_id、resolved、model、traj_id、patch，且有多个 split；卡片特指 5,017 条训练子集但浏览器另展示多组数据 | messages 可能是 JSON 文本；区分实际执行 patch 与 gold patch；最终 patch 不可在前缀出现；**按具体 split/源模型/instance 核实后选取**，不要混同全部 76k rows、5,017 子集和 52k 任务 | **P0 互补 Agent 轨迹** |
+| CACHE-001 Mooncake FAST25 | 官方 JSONL 示例字段只有 timestamp(ms)、input_length、output_length、hash_ids（512-token remapped prefix block）；toolagent/会话真实请求与 synthetic 分开 | hash 可算真实请求的可复用前缀机会 OBSERVED_REUSE；**没有真实 API cache_read_tokens、模型 ID、任务 resolved 或单次响应时延**；在设定缓存容量/TTL/LRU 后只能生成 SIMULATED 标签 | **P0 Cache 数据源** |
+| ROUTE-004 Arena Human Preference | 官方数据卡 Apache-2.0，同一 query 的双模型人工胜负/平局偏好 | 两模型身份/响应与 winner / tie / both-bad 按原 schema 规范化；**偏好不等于 Agent resolved**，旧型号不可冒充当前部署 | **P0 静态比较底座** |
+| ROUTE-001 LLMRouterBench | 官方描述 33 模型/21+ 任务数据集的 score、prompt_tokens、completion_tokens、cost；结果按 dataset/split/model/time 分层 | **预先核验结果包及各上游许可**；按同 query、同 benchmark、同评分器、同 shot/版本对齐候选，不能混用不同评价指标的原始 score | **P0 研究优先，许可证未核前不训练** |
+| ROUTE-002 RouterBench | 同 prompt 多模型性能/估计费用、有 0-shot 和 5-shot 两套 | 数据卡缺明确 license；不同 shot 不能同组；估计费用不当作真实账单 | 许可待核候选 |
+| ROUTE-003 TwinRouterBench | 970 rows，messages JSON、step_index、target_tier（四档）等；**不含具体 model target** | 不能将 target_tier 硬映射为 model×effort；最好保留为独立基准，训练用途需提前锁定且防污染 | 评测优先 |
+| TIME-001 BurstGPT | 官方 README 有 Timestamp、Session ID、Elapsed time（整次响应非 TTFT）、Model、Request/Response tokens、Log Type | 带失败与 without_fails 文件彼此重叠；不能相加，且失败 API 请求不等于失败 Agent 任务 | 时间/会话辅助 |
+| MEM-003 LongMemEval-V2 | Web/企业 Agent 多次长历史、问答证据及时间，官方项目提供检索与记忆评测接口 | 未来问答答案不可泄露到当前 Agent 状态；优先用作 Memory/摘要评测，训练许可和保留集另审 | Context/Memory 参考 |
+| MAS-001 MARBLE | 多 Agent 任务、角色、拓扑、协作/通信环境 | 代码和任务不保证有已许可的每步训练轨迹，不能凭任务构造最优模型标签 | 协作环境/Schema |
+
+参考：[Open-SWE](https://huggingface.co/datasets/nvidia/Open-SWE-Traces/blob/main/README.md)、[SWE-smith](https://huggingface.co/datasets/SWE-bench/SWE-smith-trajectories)、[Mooncake](https://github.com/kvcache-ai/Mooncake/blob/main/FAST25-release/README.md)、[LLMRouterBench](https://github.com/ynulihao/LLMRouterBench)、[BurstGPT](https://github.com/HPMLL/BurstGPT)、[Kev format](https://github.com/jaredpalmer/kev/blob/main/skills/kev-finetune/references/data-format.md)。
+
+**当前最低必备数据能力组合**：真正 Agent 状态与 resolved（TRA-001，TRA-002 辅助）；合法静态比较（ROUTE-004）；缓存复用机会（CACHE-001）；真正同题性能/成本路由比较（ROUTE-001 待许可核验，核验失败则必须留缺口，不能用其他数据伪造）。Provider 模型/effort/缓存/价格规则取 POL 动态证据快照，不是固定训练语料。全部为 Planning 候选，**负责人还未逐源作最终选用决定**。
+
+### 6.3 源到训练数据的唯一清洗处理路线（尚未执行）
+
+1. **S0 来源许可与原始数据冻结**：source_id、官方 URL、revision、license、第三方原始模型生成内容的训练权、可再分发范围、文件 hash、原始字段、数据发布拆分；未知许可证先隔离。不得把多来源拼成一个并不存在的完整 Agent episode。
+2. **S1 源专属归一化**：分成五种实体，不强行统一为一张表：AgentEpisode（task/agent/steps/model/resolved）；StaticModelOutcome（prompt/候选/真实同题 score/费用及 benchmark）；CacheWorkloadRequest（timestamp/长度/有序 hash_ids）；MemoryOrMASBenchmark（上下文/协作任务与真答案）；ProviderPolicySnapshot（endpoint/model/revision/实际合法 effort/价格/TTL 与证据有效期）。
+3. **S2 去重与切分**：按数据源家族、task/repo/issue/near-duplicate 筛出同一个 leak_group；先分 train/val/calibration/test，再把 Agent episode 在每次真实 model call 的决策前时点切为 prefix。已公布正式 benchmark 需要另留出集，**官方 split=train 并不自动保证不会污染我们的测试题**。
+4. **S3 八组状态重建**：仅使用决策时刻之前的 Task/Subtask、Agent/Coordination、Context/Memory、Tool、Verification、Cache、Temporal、Provider 信息；每字段记录 observed_at、MEASURED/OBSERVED_REUSE/SIMULATED/ESTIMATED/UNKNOWN 与来源。不能读取未来 patch、最后 resolved、未来总 Token/缓存或未发生的测试。
+5. **S4 标签溯源**：把已执行动作的 terminal resolved 和可核 cost_to_go；同静态 query 的 model-score/人工偏好；确定性合法性规则；Mooncake prefix reuse/模拟 cache 单独存为不同监督域。没有相同决策前状态的未选动作真实结果时，**绝不生成所谓最优 Model×Effort 标签**。
+6. **S5 Kev 训练样本**：保留原始多表与 provenance，另导出一个最终 Kev JSONL 视图。官方记录为 state + questions，type 为 noul/score/choice，label 必须具有证据；候选字符串与实际可执行动作一致，source/task/split/evidence 外置记录映射。**官方通用 fine-tune 指南的记录总长度上限为 2048 tokens**，不能直接投入几十万 Token 的完整轨迹。真正提供给 Kev 的是决策前摘要，状态要短且来源可复查；默认 split_data.py 只分组 exact state，不替代本项目 task/repo 去重。
+7. **S6 验收**：先审来源许可证、数据分割无污染、八组状态覆盖和 missing rate、真实标签/有效模型×effort 数、cache 测量层、成本单位/价格快照、输入长度、JSONL 格式、任务权重、raw→normalized→training 的可逆索引。只有真实通过才把每个 Source 从候选改成 TRAIN_READY；数据量留到清理阶段决定。
+
+**重要原则**：不同来源通过共享模型学习**不同监督任务**，不通过按行联表“补齐缺失的八组状态”。例如 Mooncake 的缓存重用概率可作为单独训练任务，不能作为 Open-SWE 某条完全不相关 Agent 轨迹的真实缓存命中值。
+
+### 6.4 模型训练四阶段建议（Q-010/Q-011 仍未由负责人批准）
+
+| 学习阶段 | 可用训练视图 | 训练到什么程度 | 仍无法证明 |
+|---|---|---|---|
+| M1 Agent 状态、已执行动作结果 | TRA-001/002 的真实决策前状态与 terminal resolved；有真账单才成本分档 | Kev noul 观察性结果预测；部分确定规则辅助 | 不能推出其它候选模型实际更好 |
+| M2 静态任务/模型能力与辅助缓存 | 已许可的 ROUTE-004 与 ROUTE-001/002；Mooncake 缓存潜力和可核政策规则分别做 typed 任务 | choice 同题比较与能力先验、score/noul 缓存复用任务（只对对应真实/模拟标签） | 不能证明动态 Agent 中途切换模型的因果效果 |
+| M3 动态 Model×Effort | **未来同状态可恢复分支**中多个真实动作的 task resolved、cost_to_go、实际 cache/预算变化（当前无现成充足数据） | 才能训练 Agent 决策边界上有根据的 choice 最佳合法动作 | 没有此数据时不得声称学到最优 runtime router |
+| M4 校准与验证 | 任务、仓库、模型族和 Provider 版本留出；实际合法候选池、最终 task 成功与整任务费用 | 受成功率约束的选择、概率温度和不确定性、cost/resolved 及消融 | 一次请求的节省不等于整任务减少成本 |
+
+官方 [Kev-4B model card](https://github.com/jaredpalmer/kev/blob/main/docs/model-cards/kev-4b.md) 说明已训练权重可用 LoRA continuation；实际初始化、训练 loss/超参、采样、GPU 和运行许可还属于尚待讨论的 Q-010/Q-011，**本阶段不启动训练**。
+
+### 6.5 文档职责审计：不要新增第六个核心研究文档
+
+当前 GitHub main 只读文件树：共 **210 个跟踪文件，其中 44 个 .md，活跃核心为 5 份**（Status、Q&A、Memory、Research、Registry）；另有历史 IMPLEMENTATION_RESEARCH 与导航 README。五份文档职责不同，**没有必要再创建 DATA_CLEANING_PLAN.md 或新的训练目录文档**。实际冗余是旧 Q&A Q-007-R1/R2、Research 与 Memory 重复摘录数据集清单/政策细节，而 Registry 已是唯一新版本权威源。建议以后只更新 Registry 最新数据和政策、Q&A 仅保持负责人逐源决策及历史、Status 仅保持当前任务、Memory 仅新增交接变化、Research 仅在方法/证据本质改变时更新。历史笔记可保留不删除，后续如需精简应先确保决定及来源无信息损失。
+
 ## 7. 后续阶段接口和变更历史
 
 当前唯一大阶段：**Q-007 数据来源候选目录**，先按本台账登记、核证与选定；数量、实际清洗、Kev 训练方式、Provider 部署和正式评测后议。
@@ -231,3 +280,4 @@
 | 日期 | 版本 | 改动 | 决策/执行状态 |
 |---|---|---|---|
 | 2026-10-09 | v1.0 | 将 Q-007-R1/R2 的轨迹、模型选择、Mooncake 缓存、记忆、多 Agent、时间、Provider 资料整理为独立权威台账，补充 Selection Board 与未来 AI 清洗规范 | 仅研究/文档，尚无实际数据处理、逐源批准或运行授权 |
+| 2026-10-09 | v1.1 | 官方数据卡核验原生字段；增补第一轮推荐数据能力组合、源专属规范化、Kev 输入长度与四阶段学习方案、五核心文档去重建议 | Planning 提案；尚未选择/下载/加工真实数据、训练 Kev 或审批服务器/GPU/API |
