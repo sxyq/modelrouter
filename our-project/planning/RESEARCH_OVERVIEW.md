@@ -1,6 +1,6 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v0.4｜研究基线：2026-10-09（仅同步阶段与 Git 工作流；H1–H7 未变）**
+> **版本 v0.5｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -13,6 +13,8 @@ ModelRouter 研究长程单 Agent 与多 Agent 工作流中的**状态感知、�
 与仅比较一次 API 请求的价格不同，研究关注动作对**整任务成功、后续执行路径、成本剩余量和缓存/会话连续性**的延迟影响。通过可重放 Agent Harness、真实 usage 账本、任务终局判定和同状态分支实验验证质量—成本收益。
 
 **研究贡献须通过实验证明，而不是由状态字段数量或架构图本身成立。**
+
+**E-DESIGN 负责人于 2026-10-09 已确认**：Q-001=A（直接使用公开真实 Coding Benchmark，不先自建独立合成任务集）、Q-002=B（商业 API + 本地开源混合动态动作池）、Q-003=B（分阶段预算原则，本地模型推理费用无预设固定上限，商业 API 按模型限额）。具体 benchmark/evaluator、型号/effort 能力、API 金额与全部实际资源许可未冻结；本地 GPU 使用与物理成本仍须单独记录、授权。详见 [EXPERIMENT_QA.md](EXPERIMENT_QA.md)。
 
 ## 1. 研究问题和形式化
 
@@ -223,8 +225,8 @@ Provenance: source, schema_version, model_revision, privacy_flags
 
 ### 8.1 顺序（实验预案，尚未冻结）
 
-1. **E0 / E0.5**：环境、目录、数据与文档审计；MR-DIR-001 审计报告和文档已由 Planning 依据 Execution 报告与 GitHub 核对验收，版本对齐和环境讨论继续进行。
-2. **E-DESIGN**：先与项目负责人讨论并冻结任务/基准、候选动作、预算、评价指标、受控分支与统计协议；届时建立 `EXPERIMENT_QA.md` 记录问题、回答和决策。
+1. **E0 / E0.5**：环境、目录、数据与文档审计；MR-DIR-001/MR-SYNC-001 已验收，负责人确认未来隔离原则，E0.5 已完成（环境审计为历史快照）。
+2. **E-DESIGN**：`EXPERIMENT_QA.md` 已建立；Q-001=A、Q-002=B、Q-003=B 预算原则已批准，后续逐项冻结具体 Benchmark、动作/effort、逐模型 API 额度、主指标、基线和受控统计协议；未完成不得进入 E1。
 3. **E1**：按已确认实验协议实现最小 Schema、capability registry、hard constraint、usage ledger 与可测试 Router 接口。
 4. **E2**：固定 Agent Harness 与自动任务终局 evaluator；固定模型/规则/sticky 基线。
 5. **E3**：从相同状态快照受控分支，收集成对动作结果。
@@ -248,7 +250,9 @@ Provenance: source, schema_version, model_revision, privacy_flags
 - 从同一可恢复状态 `s_t` 选择两个真实合法动作；
 - 尽量固定工具环境、下游策略、seed、模型版本和预算；
 - 记录分支失败、超时、无法复现、污染、模型服务变化；
-- 5 任务 pilot 后才决定 30×2×2 等扩展规模；
+- **已确认 Q-001=A**：直接使用经许可/复现/evaluator 检查的真实公开 Coding Benchmark；若需要小样本 Harness 技术验证，仍从真实 Benchmark 选任务，不强制独立合成小任务 Pilot；原“5 任务 pilot”只是历史规划，具体数量/seed 待 Q-008。
+- **已确认 Q-002=B**：商业 API 与本地开源模型共用动态合法候选注册表，严格保留真实 effort 能力与缓存连续性约束。
+- **已确认 Q-003=B 预算原则**：本地模型推理费用无预定上限但计算资源成本、GPU 时间照实记录；API 按具体模型设硬限额。实际额度、单任务停止条件和服务器/API/GPU 操作必须另行批准；
 - 若无法可靠恢复完全相同的状态，不能称为严格反事实实验；
 - 付费 API、服务器 GPU 长时占用和模型下载必须单独审批。
 
