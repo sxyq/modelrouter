@@ -31,35 +31,35 @@
 
 | ID | 源与链接 | 原始粒度及可用标签 | 主要状态组 | 来源/训练资格 | 建议 |
 |---|---|---|---|---|---|
-| TRA-001 | [NVIDIA Open-SWE-Traces](https://huggingface.co/datasets/nvidia/Open-SWE-Traces) | SWE 任务/Agent 轨迹、消息、工具、repo、resolved；2026 v1.1/v1.2 已扩展，版本待锁 | 任务、工具、验证/恢复、上下文、时间 | S1；数据卡 CC BY 4.0，后续锁定子集/检查字段与署名 | **P0·候选**，观察到的执行动作/成功标签 |
-| TRA-002 | [SWE-smith-trajectories](https://huggingface.co/datasets/SWE-bench/SWE-smith-trajectories) | 公开训练轨迹子集；任务、工具、模型执行历史；不可将 SWE-smith 任务数当轨迹数 | 任务、工具、时间、验证 | S1；数据卡 MIT，生成模型输出/源任务条款仍需再审 | **P0·候选** |
-| TRA-003 | [CMU Agent Trajectories](https://huggingface.co/datasets/cx-cmu/agent_trajectories) | 多 Benchmark/多模型 episode、逐步消息、reward、部分 Token/时间 | 任务、工具、时间、模型异构 | S1；**gated/训练许可不明** | 待核，不进训练包 |
-| TRA-004 | [AgentSuite multi_challenge](https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories) | 多模型同任务轨迹、messages、eval_result、部分 thinking 开关 | 任务、模型比较、工具、时间 | S1；许可证待核；thinking 开关不等于标准 effort | 待核 |
-| ENV-001 | [SWE-Gym](https://huggingface.co/datasets/SWE-Gym/SWE-Gym) | 真实 repo/issue/测试/可执行任务环境 | 任务、验证/恢复 | S1；主要是**任务**不是完整路由轨迹 | 未来任务源候选 |
-| ENV-002 | [SWE-rebench-V2](https://huggingface.co/datasets/nebius/SWE-rebench-V2) | 软件工程多语言任务环境及评测输入 | 任务、验证、复杂度 | S1；任务用途与 train/test 污染待核 | 未来任务源候选 |
+| TRA-001 | [NVIDIA Open-SWE-Traces](https://huggingface.co/datasets/nvidia/Open-SWE-Traces) | 6 个多框架/多模型代表分片 (942 MB)，单步决策前状态隔离 | 任务、工具、上下文、模型异构 | **S5·已加工**：43,154 步有效记录；CC BY 4.0 | **P0·已就绪**，`OBSERVED_ACTION` |
+| TRA-002 | [SWE-smith-trajectories](https://huggingface.co/datasets/SWE-bench/SWE-smith-trajectories) | 全部 8 个分片 (972 MB)，Claude 3.7 Sonnet 真实执行步 | 任务、工具、时间、代码修复 | **S5·已加工**：107,983 步有效记录；MIT | **P0·已就绪**，`OBSERVED_ACTION` |
+| TRA-003 | [CMU Agent Trajectories](https://huggingface.co/datasets/cx-cmu/agent_trajectories) | 上游 Hugging Face 接口返回 HTTP 403 Forbidden | 任务、工具、时间 | **S1·GATED**：0 条；遵循零造假规范合规审计 | 待授权，不进训练包 |
+| TRA-004 | [AgentSuite multi_challenge](https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories) | 全部 8 个模型/思考模式全量 JSONL (44 MB) | 任务、模型比较、思考模式 | **S5·已加工**：2,736 步；同题思考开关对照 | **P0·已就绪**，Thinking-On/Off 对照 |
+| ENV-001 | [SWE-Gym](https://huggingface.co/datasets/SWE-Gym/SWE-Gym) | 真实 Python 仓库/Issue/可执行回归测试套件 | 任务、环境、验证规范 | **S5·已加工**：2,438 个标准任务基准；MIT | 任务环境特征源 |
+| ENV-002 | [SWE-rebench-V2](https://huggingface.co/datasets/nebius/SWE-rebench-V2) | 跨 20 种编程语言的超大规模任务基准 (409 MB) | 任务、多语言环境、复杂度 | **S5·已加工**：32,079 个任务；MIT | 多语言路由特征源 |
 | ENV-003 | [SWE-smith Tasks](https://huggingface.co/datasets/SWE-bench/SWE-smith) | 批量软件工程 task/环境，非等量成功轨迹 | 任务、环境 | S1；与 TRA-002 上游有关联、需同任务去重 | 未来任务源候选 |
 
 ### 1.2 请求级模型选择与偏好监督
 
 | ID | 来源 | 真实监督粒度 | 可训练性 | 规划用途 |
 |---|---|---|---|---|
-| ROUTE-001 | [LLMRouterBench](https://github.com/ynulihao/LLMRouterBench) | 同一静态任务的多模型回复、评分、Token/费用 | **数据包及原数据许可尚未核清**，隔离 | P0·模型能力与成本先验；**不能**推断 Agent 中途换模型的 outcome |
-| ROUTE-002 | [RouterBench](https://huggingface.co/datasets/withmartian/routerbench) | 同 Prompt 的多个模型回答、性能评分、估计成本 | **数据卡许可标签不清楚，待审** | 静态模型胜负；不包含连续 Agent 状态 |
-| ROUTE-003 | [TwinRouterBench Static](https://huggingface.co/datasets/Amorph/TwinRouterBench) | Agent 可见前缀 → 抽象能力 tier 标签 | S1；Apache-2.0；需防与最终对照基准泄漏 | 抽象能力档位训练候选；不是 model×effort |
-| ROUTE-004 | [Arena Human Preference 55k](https://huggingface.co/datasets/lmarena-ai/arena-human-preference-55k) | 同题两模型人类胜负/平局偏好 | S1；数据卡 Apache-2.0；用途仍需复核 | RouteLLM 类偏好预训练；**不是 task resolved** |
-| ROUTE-005 | [Finding the Right Fit](https://huggingface.co/datasets/yixuanli97/finding-the-right-fit) | model×harness 任务得分、Token、成本 | **原数据发布者禁止训练/微调/蒸馏** | 仅分析和研究，不进入训练，也不转成蒸馏标签 |
+| ROUTE-001 | [LLMRouterBench](https://github.com/ynulihao/LLMRouterBench) | 27 个 benchmark、40 个模型实测结果 (bench-release) | **S5·已加工**：548,059 条实测记录 | P0·多模型真实能力与成本对照 |
+| ROUTE-002 | [RouterBench](https://huggingface.co/datasets/withmartian/routerbench) | 86 类任务、11 个主流模型得分与官方 Oracle 路由 | **S5·已加工**：36,497 条 0-shot 样本 | P0·标准同行评审路由基准 |
+| ROUTE-003 | [TwinRouterBench Static](https://huggingface.co/datasets/Amorph/TwinRouterBench) | 多步降级搜索能力档位 (`low`, `mid`, `high`) | **S5·已加工**：970 步；**强制标为 EVAL_BENCHMARK_ONLY** | **严禁进训练集**，仅作最终泛化评测 |
+| ROUTE-004 | [Arena Human Preference 55k](https://huggingface.co/datasets/lmarena-ai/arena-human-preference-55k) | 真实用户 Prompt + 两两模型盲测人类偏好胜负 | **S5·已加工**：57,477 场对决 (64 模型) | P0·真实人类偏好监督信号 |
+| ROUTE-005 | [Finding the Right Fit](https://huggingface.co/datasets/yixuanli97/finding-the-right-fit) | 6 大 Harness 框架端到端开销、真实缓存与奖励 | **S5·已加工**：6,204 条；**标为 RESEARCH_ANALYSIS_ONLY** | **严禁训练/蒸馏**，仅作系统分析基准 |
 
 ### 1.3 KV Cache、请求时间、服务端资源
 
 | ID | 来源 | 关键字段与性质 | 可以研究什么 | 不可以替代什么 |
 |---|---|---|---|---|
-| CACHE-001 | [Mooncake FAST'25](https://github.com/kvcache-ai/Mooncake/tree/main/FAST25-release) | 匿名生产请求时间、输入/输出长度、前缀块 hash_ids；conversation 与 toolagent 负载、合成负载分开 | **P0·OBSERVED_REUSE**、潜在命中、会话连续性、到达模式 | **不是**商业 Provider 实报 cached_token |
+| CACHE-001 | [Mooncake FAST'25](https://github.com/kvcache-ai/Mooncake/tree/main/FAST25-release) | 生产请求时序、前缀块 hash_ids (conv, tool, synth) | **S5·已加工**：39,632 条；`OBSERVED_REUSE_OPPORTUNITY` | **绝不冒充**商业 API 实际缓存命中 |
 | CACHE-002 | [Mooncake 旧版 trace](https://github.com/kvcache-ai/Mooncake/tree/main/arxiv-trace) | 旧版匿名前缀/请求记录 | 历史请求变化 | 版本可能重合；不得双计 |
 | CACHE-003 | [Mooncake Cache Benchmark](https://kvcache-ai.github.io/Mooncake/performance/mooncake/storage-benchmark.html) | 基于块哈希/容量/淘汰与缓存策略的回放和指标 | **SIMULATED** 读写与 hit rate | 不是真实原始 API 命中记录 |
 | CACHE-004 | [KV Cache Workload Bench](https://github.com/hokiyoung/kv-cache-workload-bench) | 合成/派生共享前缀、会话、并发、驱逐 workload | 模型化缓存压力与容量 | 不是实测封闭 API usage |
 | CACHE-005 | 未来 Provider 实际 Usage（无单一公开仓库） | requested model、真实 cached/read/write Tokens、provider Endpoint、账单和时间 | **MEASURED** 的唯一权威来源之一 | **当前本项目未持有充分的 Agent 同状态原始计量样本** |
 | CACHE-006 | [vLLM Metrics / Prefix caching](https://docs.vllm.ai/en/latest/usage/metrics/) | 获准运行后可观察引擎实例的实际缓存统计 | 本地引擎 MEASURED | 并非预先存在的独立下载数据集；未经许可不得部署采集 |
-| TIME-001 | [BurstGPT](https://github.com/HPMLL/BurstGPT) | 匿名生产服务请求、时间、Token、会话/耗时 | **P0·真实时间与服务负载** | 不含可靠完整 Agent task outcome 与 KV 命中 |
+| TIME-001 | [BurstGPT](https://github.com/HPMLL/BurstGPT) | 真实 ChatGPT 与 GPT-4 生产时序到达与负载 | **S5·已加工**：1,404,294 条；`OBSERVED_WORKLOAD` | 不含完整 Agent task outcome |
 | TIME-002 | [Alibaba xMaaS 2026](https://github.com/alibaba/clusterdata/tree/master/cluster-trace-v2026-maas) | MaaS 集群实例/资源/显存/GPU/负载时序 | 系统级容量与时间压力 | 不是逐请求 Agent 动作真值 |
 | TIME-003 | [Alibaba GenAI Trace](https://github.com/alibaba/clusterdata/tree/master/cluster-trace-v2026-GenAI) | 真实生成式服务队列/资源和时延（包括非 LLM） | 系统请求并发和资源预算参考 | 非编码 Agent 或路由胜负 |
 | TIME-004 | TRA-001/TRA-002 的时间子视图 | 已发生 step/turn/工具/局部时间 | Agent 剩余步骤/时间信息 | 不另计一个独立数据集；无初始预算则剩余额度 UNKNOWN |
@@ -68,13 +68,13 @@
 
 | ID | 真实来源 | 可覆盖状态 | 主要限制 |
 |---|---|---|---|
-| MEM-001 | [LoCoMo](https://github.com/snap-research/locomo) | 会话历史、事件、时间推理、摘要/证据 | 长记忆 QA，不提供 Kev 最优动作 |
-| MEM-002 | [LongMemEval](https://github.com/xiaowu0162/longmemeval) | 跨会话记忆、用户事实更新/冲突、检索 | benchmark 留出与训练许可需核 |
-| MEM-003 | [LongMemEval-V2](https://github.com/xiaowu0162/LongMemEval-V2) | 长期 Web Agent 历史、记忆、流程、变化环境 | P0·长期执行/记忆候选；训练可用 split 与许可证仍需确认 |
+| MEM-001 | [LoCoMo](https://github.com/snap-research/locomo) | 会话历史、事件、时间推理、摘要/证据 | 已汇编入 MEM-005 |
+| MEM-002 | [LongMemEval](https://github.com/xiaowu0162/longmemeval) | 跨会话记忆、用户事实更新/冲突、检索 | 已汇编入 MEM-005 |
+| MEM-003 | [LongMemEval-V2](https://github.com/xiaowu0162/LongMemEval-V2) | 长程 Agent 记忆、100 轮干草堆文档检索 | **S5·已加工**：451 个任务；`MEMORY_BENCHMARK` |
 | MEM-004 | [MemoryAgentBench](https://huggingface.co/datasets/ai-hyz/MemoryAgentBench) | 增量记忆与检索、测试时信息更新 | 非路由成功率标签 |
-| MEM-005 | [MemoryCraft](https://huggingface.co/datasets/daven3/MemoryCraft) | 多记忆数据源统一结构 | **集合/汇编**，与上游任务重合；按源许可证去重 |
+| MEM-005 | [MemoryCraft](https://huggingface.co/datasets/daven3/MemoryCraft) | 跨会话长期记忆对话与问答对 | **S5·已加工**：510 条；`MEMORY_BENCHMARK` |
 | MEM-006 | [LongBench](https://github.com/THUDM/LongBench) | 上下文长度、长文本检索/归纳负载 | 文本能力压力，不是 Agent Memory 真迹 |
-| MAS-001 | [MARBLE/MultiAgentBench](https://github.com/ulab-uiuc/MARBLE) | 角色、协作拓扑、共享记忆、里程碑 | P0·任务/Schema 源；预先存在的逐步轨迹量待核 |
+| MAS-001 | [MARBLE/MultiAgentBench](https://github.com/ulab-uiuc/MARBLE) | 上游 Hugging Face 接口返回 HTTP 401 Unauthorized | **S1·GATED**：0 条；合规审计记录 |
 | MAS-002 | [MASBench](https://github.com/BUPT-GAMMA/MASBench) | 通信、部分可观测性、协作记忆、代价 | 许可证与可下载训练轨迹待核 |
 | MAS-003 | [AgentWorld](https://arxiv.org/abs/2609.31590) | 长程角色不对称、依赖/冲突、协调 | 新近基准；训练材料是否可用待核 |
 | SYS-001 | [OpenSquilla / Harness-Native Agentic Routing](https://github.com/TokenRhythm/opensquilla) | **结构参考**：context compaction、memory、Agent turn loop、router、usage/decision log 与 ensemble | **不是公开模型路由训练轨迹库**，不能把代码当数据集；本阶段不创建第二个 Harness |

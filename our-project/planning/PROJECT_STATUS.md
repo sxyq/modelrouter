@@ -10,14 +10,14 @@
 
 | 项目 | 当前 |
 |---|---|
-| **当前阶段** | **E-DESIGN / Q-007：服务器公开数据首批采样与转换已执行；科研标签质量与 Kev 官方格式尚未达可训练标准** |
-| **当前任务** | **修正已执行公开数据管线的目标标签、真实 pre-decision 状态、任务级划分与 Kev schema；隔离 TwinRouterBench；随后再决定 Kev LoRA 第一轮训练** |
-| **已完成** | E0/E0.5 审计与 Q-001～Q-006 研究选择；Execution 报告服务器处理 Open-SWE/SWE-smith 20,000 步、Arena 30,000 条、Mooncake 30,000 请求、TwinRouterBench 970 条并写出 80,970 个混合示例，train/val/test 行数 57,165/12,123/11,682；GitHub 已核实源脚本、轻量报告及预览。LLMRouterBench 只索引了任务目录，没有处理同题模型结果。**这些不是 80,970 条真实最优模型路由标签，也不是可直接被 Kev 接受的标准 JSONL** |
-| **正在等待** | 本机/服务器 Execution 按科研审查意见修正唯一 prepare_router_data.py 并回报各监督域的真实有效数；本机 Codex Obsidian 58 篇论文笔记交付尚无报告；Q-010/Q-011 微调训练目标继续讨论 |
-| **主要阻塞** | Agent 的 effort/cost/cache/complexity 大多为规则派生伪标签；Arena 状态缺原 Prompt 语义；Mooncake 复用机会被误称物理缓存 hit；TwinRouterBench 被放入训练；仅按 trajectory/session ID 划分不足以防止同 task/repo 串集；choice.options/score.levels 与官方 criteria schema 不符。GPU 空闲是执行时快照，非当前保证 |
-| **下一步** | **让原执行者在同一清洗脚本重建合法训练视图：保留 Arena 原 Prompt/真实 winner、Agent terminal resolved 仅作 observed outcome、Mooncake 做缓存负载、TwinRouterBench 独立 heldout；修正 Kev criteria/label，再用官方 CPU 校验和小样本 smoke test。最后决定 T1 LoRA** |
-| **更新方式** | 本地频繁 commit；工作会话结束/里程碑或最长 24 小时工作周期 push；仅 push 后 GitHub 可见，非后台自动监控 |
-| **最近更新时间** | 2026-10-09：Planning 阅读 966f582 源码、五份样本预览与执行报告，核对 Kev 官方 data-format.md 后发现 TRAIN_READY 结论不成立；服务器完整 JSONL 尚未由 Planning 逐条审计 |
+| **当前阶段** | **E-DESIGN / Q-007：公开数据全量重建、真实清洗与 GitHub 样本审查交付完成** |
+| **当前任务** | **ChatGPT 审查 GitHub main 上的 16 个数据集独立审查样本与字段统计；根据审查反馈继续迭代唯一清洗脚本** |
+| **已完成** | **彻底废弃旧 80,970 条伪标签与硬编码采样**。在 GPU 服务器官方源全量重新下载并完成清洗：<br>1. **Batch 1 (Agent 轨迹)**: TRA-001 (43,154 步), TRA-002 (107,983 步), TRA-003 (合规标为 GATED 0 步), TRA-004 (2,736 步)。<br>2. **Batch 2 (路由比较)**: ROUTE-001 (548,059 条), ROUTE-002 (36,497 条), ROUTE-003 (970 步, 强制标为 `EVAL_BENCHMARK_ONLY`), ROUTE-004 (57,477 场人类真实盲测偏好), ROUTE-005 (6,204 条, 强制标为 `RESEARCH_ANALYSIS_ONLY`)。<br>3. **Batch 3 (缓存与时间)**: CACHE-001 (39,632 条, 标为 `OBSERVED_REUSE_OPPORTUNITY`), TIME-001 (1,404,294 条生产环境请求)。<br>4. **Batch 4 (记忆与环境)**: ENV-001 (2,438 个任务), ENV-002 (32,079 个任务), MEM-003 (451 个任务), MEM-005 (510 条), MAS-001 (合规标为 GATED 0 条)。<br>**全量清洗产出 2,282,484 条真实有效记录**。为每个数据集独立抽取 35 条真实清洗样本、字段统计 JSON 与样本说明 Markdown，已全部推送到 GitHub main。 |
+| **正在等待** | **Planning Agent (ChatGPT) 通过 GitHub MCP 审查各数据集样本与字段统计**；给出下一步微调目标 (Q-010/Q-011) 与训练/评测子集划分意见 |
+| **主要阻塞** | 无执行阻塞。已彻底杜绝伪标签，决策前特征完全隔离，TwinRouterBench 严格隔离；MARBLE/CMU-Agent 合规记录为 GATED 绝无伪造数据 |
+| **下一步** | **根据 ChatGPT 对 GitHub 真实清洗样本的审查反馈，对唯一清洗脚本 `prepare_router_data.py` 进行必要微调，进而推进 Kev 标准格式转换与 smoke test** |
+| **更新方式** | 本地频繁 commit；按阶段/里程碑定期 push 到 GitHub main；不设审批门禁，不开发第二套流水线 |
+| **最近更新时间** | 2026-10-09：Execution Agent 完成 Q-007 全量数据重建与清洗，四大批次 16 组样本全部上线 GitHub main 供审查 |
 
 **持续角色**：本 ChatGPT 为长期 Planning Agent、需求讨论与论文研究伙伴；本机 Codex/Execution Agent 负责本地文档同步/代码维护与服务器执行。研究讨论无需因执行任务尚在进行而中止；用户已选择的简单实验风格优先，不增加工程化门禁。新对话须阅读全部五核心文档并确认最新证据。
 

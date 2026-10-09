@@ -419,6 +419,34 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - **唯一接续任务**：原始公开数据保留服务器，在唯一 prepare_router_data.py 上修正科研标签和数据格式；重提取 Agent 真实 outcome，只做 observed continuation 监督；Arena 原 Prompt+winner 做偏好；Mooncake 单独作为 cache workload；TwinRouterBench 留独立测试；模型最佳动作训练必须等同状态真实动作后续对照。优先向 Codex/Execution 派发修复，不额外创建 v2 脚本或 CI。
 - **公开文档隐私提醒**：执行者提交的《服务器资源与目录说明》公开版曾含内部网络/登录及端口信息；Planning 已对最新 main 的公开版进行最小脱敏，但旧提交仍有历史痕迹。未来只写用户 Home 相对路径和公开可披露聚合硬件数；需要完全删除历史必须另行明确讨论。
 
+### 9.21 Q-007 全量公开数据重建、真实清洗与四批次样本 GitHub 审查交付（2026-10-09）
+
+- **彻底废弃旧产物**：Execution Agent 在 GPU 服务器与本机彻底删除此前由固定切片截取（80,970 条）和规则推断伪标签产生的旧清洗数据，保证无历史污染。
+- **全量真实清洗完成（4 大批次，16 个核心数据集，2,282,484 条真实有效记录）**：
+  1. **Batch 1 (Agent 执行轨迹)**:
+     - `TRA-001` (NVIDIA Open-SWE-Traces, 6 代表分片, 942 MB): 43,154 决策步, `OBSERVED_ACTION`
+     - `TRA-002` (SWE-smith Trajectories, 全部 8 分片, 972 MB): 107,983 决策步, `OBSERVED_ACTION` (Claude 3.7 Sonnet)
+     - `TRA-003` (CMU Agent Trajectories): 上游 HTTP 403 Gated，严格执行零造假记录为 0 条
+     - `TRA-004` (AgentSuite multi_challenge, 全部 8 模型全量 JSONL, 44 MB): 2,736 决策步, Thinking-On/Off 对照
+  2. **Batch 2 (模型路由比较)**:
+     - `ROUTE-001` (LLMRouterBench, 700 评测文件, 6.6 GB 解压): 548,059 条实测记录, 27 benchmark × 40 模型
+     - `ROUTE-002` (RouterBench, 95 MB): 36,497 条 0-shot 样本, 11 模型评估 + Oracle 路由
+     - `ROUTE-003` (TwinRouterBench, 1.2 MB): 970 步降级搜索标签, **强制标为 `EVAL_BENCHMARK_ONLY` 绝不进训练**
+     - `ROUTE-004` (Arena 55k, 176 MB): 57,477 场真实用户 Prompt 与盲测胜负, `HUMAN_PREFERENCE`
+     - `ROUTE-005` (Finding The Right Fit, 0.2 MB): 6,204 条多 Harness 实测开销, **标为 `RESEARCH_ANALYSIS_ONLY` 禁训**
+  3. **Batch 3 (KV 缓存与时间负载)**:
+     - `CACHE-001` (Mooncake FAST'25, 3.2 MB): 39,632 条请求, 前缀块复用机会标为 `OBSERVED_REUSE_OPPORTUNITY`，绝不冒充商业 Provider 实际缓存
+     - `TIME-001` (BurstGPT, 49 MB): 1,404,294 条生产环境请求真实时序到达与负载, `OBSERVED_WORKLOAD`
+  4. **Batch 4 (记忆、协作与任务环境)**:
+     - `ENV-001` (SWE-Gym, 42 MB): 2,438 个任务环境基准与回归测试套件, `TASK_ENVIRONMENT`
+     - `ENV-002` (SWE-rebench-V2, 409 MB): 32,079 个跨 20 种编程语言任务基准, `TASK_ENVIRONMENT`
+     - `MEM-003` (LongMemEval-V2, 0.8 MB): 451 个长程任务与 100 轮干草堆记忆, `MEMORY_BENCHMARK`
+     - `MEM-005` (MemoryCraft, 16.5 MB): 510 条跨会话记忆与问答对, `MEMORY_BENCHMARK`
+     - `MAS-001` (MARBLE-MultiAgentBench): 上游 HTTP 401 Gated，合规审计记录为 0 条
+- **审查资产全部上线**：为每个数据集独立抽取 35 条代表性真实样本（`清洗样本.jsonl`）、完整统计（`字段统计.json`）与规范说明（`样本说明.md`），全部提交并推送到 GitHub main。
+- **唯一脚本演进**：保留唯一主程序 `prepare_router_data.py`，未建立任何并行清洗入口或冗余工程门禁。
+- **当前状态**：四批次全部交付完成，等待 Planning Agent (ChatGPT) 审查 GitHub 独立样本并给出下一步指示。
+
 ## 10. 新会话恢复协议（长期生效）
 
 ### 10.1 每轮研究如何接续与更新
