@@ -7,6 +7,8 @@ ModelRouter 是面向长程 Agent 任务的模型、推理档位与成本研究�
 - `our-project/`：本项目的研究报告、文献笔记、清洗数据、汇总数据和规划文档。
 - `external-projects/`：外部项目的来源登记，仅用于说明文献和实验参考，不包含外部仓库源码。
 
+**训练数据/Provider 政策唯一详细台账**：[DATA_SOURCE_AND_POLICY_REGISTRY.md](our-project/data/DATA_SOURCE_AND_POLICY_REGISTRY.md)：公开轨迹、静态模型比较、KV Cache、长记忆、多 Agent、时间/预算、国内外 Provider 能力与缓存/定价政策，包含来源状态、选择栏及未来数据清洗质量合同。**具体选择批准仍以 EXPERIMENT_QA.md 为准；台账是来源登记，不代表已下载或获准训练。**
+
 原始服务器日志、凭据、浏览器调试文件和外部仓库源码不纳入本仓库。
 ## 当前研究与跨对话恢复入口
 
