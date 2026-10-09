@@ -1,5 +1,5 @@
 {
-  "execution_timestamp": "2026-10-10T02:44:58.269765",
+  "execution_timestamp": "2026-10-10T03:15:36.797086",
   "random_seed": 42,
   "split_ratio_target": "80% Train / 10% Val / 10% Test (按独立任务/题目哈希隔离)",
   "task_counts": {
@@ -7,7 +7,11 @@
     "val_tasks": 10053,
     "test_tasks": 9976,
     "twinrouterbench_holdout_tasks": 520,
-    "total_routing_tasks": 100372
+    "raw_unfiltered_candidate_tasks": 101688,
+    "filtered_unsolvable_tasks": 1316,
+    "total_routing_tasks": 100372,
+    "strictly_differentiated_positive_tasks": 97382,
+    "all_failed_or_tied_tasks": 2990
   },
   "sample_counts": {
     "train_samples": 80343,
@@ -15,6 +19,13 @@
     "test_samples": 9976,
     "twinrouterbench_holdout_samples": 970,
     "total_kev_samples": 101342
+  },
+  "reconciliation_notes": {
+    "raw_unfiltered_total": "101,688 (Arena 39,716 + RouterBench 36,497 + LLMRouterBench 25,202 + AgentSuite 273)",
+    "excluded_unsolvable": "1,316 (RouterBench no_model_correct 1,308 + AgentSuite 0 成功 8)",
+    "total_routing_candidate_pool": "100,372 (Arena 39,716 + RouterBench 35,189 + LLMRouterBench 25,202 + AgentSuite 265)",
+    "strictly_differentiated_positive_subset": "97,382 (Arena 39,716 + RouterBench 35,189 + LLMRouterBench positive 22,458 + AgentSuite unique 19)",
+    "undifferentiated_subset": "2,990 (LLMRouterBench all-failed 2,744 + AgentSuite tied-success 246)"
   },
   "source_breakdown": {
     "train": {
@@ -69,9 +80,14 @@
     "ties_excluded": 17761
   },
   "agentsuite_thinking_contrasts": {
-    "paired_episodes_contrasting_thinking": 4368,
+    "paired_episodes_contrasting_thinking": 1638,
+    "genuine_pairs_per_task": 6,
+    "standalone_configurations_count": 18,
     "mid_trajectory_counterfactual_branches": 0,
-    "compliance_note": "Zero intermediate branching states exist; reported honestly as 0"
+    "unique_winner_tasks": 19,
+    "tied_success_tasks": 246,
+    "zero_success_tasks": 8,
+    "compliance_note": "Zero intermediate branching states exist; strictly 6 base models paired with thinking on/off across 273 tasks (1,638 pairs total)"
   },
   "kev_file_paths": {
     "train": "data/kev/公开数据/train.jsonl",

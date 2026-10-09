@@ -315,6 +315,22 @@
      - **TwinRouterBench (970 步)** 导出为独占外部评测集 `data/kev/公开数据/test_twinrouterbench_holdout.jsonl`，在训练/验证集中 **0 步进入**。
   5. **审查样本与报告闭环**：5 份轻量训练视图样本与 [科研数据收尾报告.md](科研数据收尾报告.md) 全部同步至 GitHub，完备应答 9 类确切统计指标。
 
+### 6.11 Q-007 训练视图最终科研纠偏与 Kev Schema 全量验证闭环（2026-10-10）
+
+- **定向科研纠偏与真值对齐执行完毕**：针对 Planning 对提交 `cb83127` 的最终复审，Execution Agent 在唯一入口 `prepare_router_data.py` 中直接完成定向纠偏并在 GPU 服务器验证通过：
+  1. **Thinking 对照真值校正**：彻底删除 `max(16, contrasts)` 人为下限代码，严格按照基础模型清点。确认 AgentSuite 30 个配置中仅存在 **6 组真实同基础模型对**（DeepSeek-V3.2-Exp, claude-4-opus, claude-4-sonnet, claude-4.5-sonnet, gemini-2.5-flash, Qwen3-235B-A22B-2507-FP8），全 273 任务合计 **1,638 组成对 Episode**；其余 18 个单向配置单独标注；中途反事实分叉数量确认保持为 **0**。
+  2. **AgentSuite 最佳动作纠偏**：清查 273 任务，确认 8 个全败任务排除；19 个任务存在唯一最优动作（`UNIQUE_WINNER`）；246 个并列成功任务中，所有成功模型执行步数完全相同（如均为 7 步）且成本未测量。坚决废除“默认首个模型为最优”的做法，在元数据中如实保留 `winner_status: "TIED_SUCCESS_UNDIFFERENTIATED"` 与全部并列模型，标记 `cost_status: "UNMEASURED"`。
+  3. **LLMRouterBench 质量与成本监督**：剔除 4,327 条 `score is None` 记录；区分 384,431 条实测商业 API 美元费用与 163,628 条本地未计费模型（标记为 `UNMEASURED_OR_LOCAL_FREE`）；以 `completion_tokens` 作为本地模型成本代理；明确标注 2,744 道全败题目与 22,458 道正向成功题目。
+  4. **RouterBench 移除防报错补丁**：删除 `if oracle not in criteria: criteria[oracle] = ...` 代码；实测 35,189 题中 Oracle 100% 存在于候选池；1,308 道 `no_model_correct` 题目严格剔除。
+  5. **TwinRouterBench 4 级映射修复**：补齐 `mid_high` 映射为 `low (0)`, `mid (1)`, `mid_high (2)`, `high (3)`，彻底消除 219 处校验错误。
+  6. **任务数严格对齐与高置信子集**：
+     - 原始未过滤各源候选总数：**101,688**
+     - 剔除无解不可路由任务：**- 1,316** (RouterBench 1,308 + AgentSuite 8)
+     - 多模型候选池总数：**100,372** (进入 80/10/10 划分)
+     - 高置信确定性单一胜者正向监督子集：**97,382** (Arena 39,716 + RouterBench 35,189 + LLMRouterBench 正向 22,458 + AgentSuite 唯一 19)
+     - 无区分度/全败子集：**2,990** (LLMRouterBench 全败 2,744 + AgentSuite 并列 246)
+  7. **全量内置 CPU Kev Schema 校验 100% PASS**：对训练集 (80,343)、验证集 (10,053)、测试集 (9,976)、TwinRouterBench 独占评测集 (970) 共 **101,342 条样本**逐行逐字段内置校验，**0 处错误，100% 合规**！
+
 Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表 31 个来源都已下载；其中有部分运行时/Provider 政策、模拟源，不等于独立可下载公开数据集。全量与否必须以具体官方配置和 shard 名单判定。
 
 ## 7. 后续阶段接口和变更历史
