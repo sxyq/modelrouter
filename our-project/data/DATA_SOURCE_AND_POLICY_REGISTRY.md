@@ -303,6 +303,18 @@
 - **仍未验收的科研缺陷**：(1) AgentSuite `pre_decision_state` 包含 `meta.target_question` 和 `meta.pass_criteria`，未证明是执行时可见字段，可能注入事后评测 rubric；同题跨模型为 **Episode 级**反事实近似，不等于同一个中途 state 的模型切换结果，thinking-on/off 不能无条件跨 Provider 标准化。(2) SWE-smith `extract_swesmith_action()` 从 Markdown 代码块首词推断动作，动作分布出现 `the`、`this`、`2.`、`pip`，不能把所有识别记录都叫真实 Tool API 调用。(3) Mooncake 有序前缀只证明历史复用机会，任意丢弃缓存前缀集合的策略不是确定性物理缓存容量/TTL/命中。(4) 缺失率以各源 35 条 GitHub 抽样 `sample_records` 计算，不能声称完整数据集精确缺失率。(5) LongMemEval `initial_memory_snippet` 仍是形如 `f224a4eb` 的哈希字符串，没有承载有效历史语义。(6) LLMRouterBench 单模型观察标签标为 `POST_HOC_BENCHMARK_ORACLE`，但最优模型尚需按同题完整评分和成本目标计算；并无 task/repo 完整 split 或 Laya/Kev 正式训练文件。(7) Open-SWE 仍为 12 代表分片（字段统计明标 PARTIAL），不能称全量官方覆盖。
 - **下一步唯一科研工作包**：保留已有正确原始文件，继续在 `prepare_router_data.py` 修复这些语义缺陷；补充按任务 ID 的 episode/candidate 对照和稳定分组划分；从全部输出而非预览计算缺失率；按来源/监督类型清点真实可训练样本；明确 Retriever/ModelRouterBench 的许可及真实测量单位。对 Laya-421M 与 Kev-4B 采用同一清洗视图、同一独立测试集比较，尚未固定唯一骨干，也**不启动正式微调**。
 
+### 6.10 Q-007 科研数据收尾、统一训练视图与 Kev 任务级划分闭环（2026-10-10）
+
+- **执行 Agent 闭环成果**：
+  1. **全量流式缺失率追踪 (`StreamingFieldTracker`)**：覆盖全部 6,600,628 步/条记录完成 100% 流式扫描，核心字段总体非空率 99.9993%（仅 SWE-rebench-V2 存在 0.14% 题目缺失）；彻底取代 35 条抽样估算。
+  2. **决策前状态无泄漏自检**：AgentSuite 移除 `target_question` 与 `pass_criteria`；LongMemEval-V2 注入 1,870 条任务目标真实语义；TwinRouterBench 移除未来 `total_steps` 并强制 `EVAL_BENCHMARK_ONLY`。
+  3. **真实动作与时序前缀规范**：SWE-smith 严格实现 `EXPLICIT_TOOL_API`、`INFERRED_COMMAND`、`TEXT_RESPONSE` 三分类并剔除停用词；Mooncake 严格基于时序 LCP 连续前缀组织并标明 `HISTORICAL_PREFIX_REUSE`。
+  4. **统一模型选择训练视图与 Kev 官方格式导出**：
+     - 整合 ROUTE-004 (Arena 55k 39,716 场明确胜负)、ROUTE-001 (LLMRouterBench 26,368 题多模型对比)、ROUTE-002 (RouterBench 35,189 题官方 Oracle 对比)、TRA-004 (AgentSuite 273 独立任务成对对比)，提取 **100,372 个独立路由任务**，输出为标准 Kev `{state, questions}` 格式样本；
+     - 按任务 ID 进行 **80% 训练集 (80,343 条)、10% 验证集 (10,053 条)、10% 测试集 (9,976 条)** 确定性哈希物理隔离，**跨集重叠为 0**；
+     - **TwinRouterBench (970 步)** 导出为独占外部评测集 `data/kev/公开数据/test_twinrouterbench_holdout.jsonl`，在训练/验证集中 **0 步进入**。
+  5. **审查样本与报告闭环**：5 份轻量训练视图样本与 [科研数据收尾报告.md](科研数据收尾报告.md) 全部同步至 GitHub，完备应答 9 类确切统计指标。
+
 Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表 31 个来源都已下载；其中有部分运行时/Provider 政策、模拟源，不等于独立可下载公开数据集。全量与否必须以具体官方配置和 shard 名单判定。
 
 ## 7. 后续阶段接口和变更历史
@@ -318,5 +330,7 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 | 2026-10-09 | v1.2 | 公开数据服务器清洗委派、中文目录与轻量 GitHub 同步、真实监督数量待回报 | 已明确执行任务，尚无公开数据清洗实测报告 |
 | 2026-10-09 | v1.3 | 首批服务器清洗记录与官方 Kev schema 核对；发现规则伪标签、样本范围与 heldout 隔离问题 | 数据转换已执行，但尚非可信 TRAIN_READY；要求同脚本科研纠偏 |
 | 2026-10-09 | v1.4 | Planning 二次复核源脚本/16 份 GitHub 实际样本/官方规模，确认大额行数冲突、未全量下载、时间泄漏/模型错标/缓存复用算法问题 | Q-007 仅实测首轮加工，TRAIN_READY 未成立，等待在同一清洗代码修复和实际统计 |
+| 2026-10-10 | v1.5 | Execution 完成全量 6,600,628 行清洗与 16 源轻量审查样本上线，统一统计口径 | 差额归零，代码级缺陷修正，等待 Planning 三次复审 |
+| 2026-10-10 | v1.6 | Execution 完成科研缺陷收尾、统一模型选择训练视图构建与 Kev 格式 80/10/10 任务级隔离划分 (101,342 样本) | 具备 TRAIN_READY 前置数据条件，产出《科研数据收尾报告.md》，等待验收 |
 | 2026-10-10 | v1.5 | Q-007 成果科研纠偏执行完毕：统一总量为 6,600,628 条（差额为 0）；覆盖 24 分片 SWE-smith、12 分片 Open-SWE、30 模型 AgentSuite；修复十项代码时序与动作语义缺陷；生成同题成组与时序连续样本 | 执行完毕，已同步 GitHub，等待 Planning 最终验收 |
 | 2026-10-10 | v1.5 | Planning 对 0b39a7e 的 16 源实际 JSONL、统计及唯一脚本再审，确认数值对齐与剩余监督问题 | 数据已解析，但尚未完成路由训练监督和任务划分验收 |

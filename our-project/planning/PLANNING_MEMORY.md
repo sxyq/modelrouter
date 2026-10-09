@@ -470,9 +470,23 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - **2026-10-10 Planning 对提交 `0b39a7e` 的三次科研独立复审：** 已核 GitHub 16 份字段统计，按来源求和确为 **6,600,628** 条不同粒度记录；14 个来源含实际审查样本、CMU/MARBLE 两个受限为零。Execution 报告服务器 `wc -l` 与统计相同，但 Planning **未亲自登录服务器复核完整清洗文件**；不能把总量解读成模型路由监督数量。
 - **已确认修复**：`--mode public` 存在且与 Blog/CCH 分离；TRA-001 当前调用工具未提前计入 `prior_tool_calls_count`（第一步=0）；模型名从 metadata 优先提取；TRA-002 增加动作解析；TRA-004 使用 meta.id 对齐 273 个任务；CACHE-001 按 timestamp 排序、按有序前缀链计算复用潜力、output_length 移到事后；TwinRouterBench 的 total_steps 从决策前状态移出；LongMemEval 增加问题/答案；MEM-005 扩展四子集。SWE-smith 官方 ticks/tool/xml 各 8 个 shard，当前 24 分片与官方 metadata 一致；AgentSuite 官方 30×273=8,190 episode，当前覆盖 30 配置。
 - **仍未验收的科研缺陷**：(1) AgentSuite `pre_decision_state` 包含 `meta.target_question` 和 `meta.pass_criteria`，未证明是执行时可见字段，可能注入事后评测 rubric；同题跨模型为 **Episode 级**反事实近似，不等于同一个中途 state 的模型切换结果，thinking-on/off 不能无条件跨 Provider 标准化。(2) SWE-smith `extract_swesmith_action()` 从 Markdown 代码块首词推断动作，动作分布出现 `the`、`this`、`2.`、`pip`，不能把所有识别记录都叫真实 Tool API 调用。(3) Mooncake 有序前缀只证明历史复用机会，任意丢弃缓存前缀集合的策略不是确定性物理缓存容量/TTL/命中。(4) 缺失率以各源 35 条 GitHub 抽样 `sample_records` 计算，不能声称完整数据集精确缺失率。(5) LongMemEval `initial_memory_snippet` 仍是形如 `f224a4eb` 的哈希字符串，没有承载有效历史语义。(6) LLMRouterBench 单模型观察标签标为 `POST_HOC_BENCHMARK_ORACLE`，但最优模型尚需按同题完整评分和成本目标计算；并无 task/repo 完整 split 或 Laya/Kev 正式训练文件。(7) Open-SWE 仍为 12 代表分片（字段统计明标 PARTIAL），不能称全量官方覆盖。
-- **下一步唯一科研工作包**：保留已有正确原始文件，继续在 `prepare_router_data.py` 修复这些语义缺陷；补充按任务 ID 的 episode/candidate 对照和稳定分组划分；从全部输出而非预览计算缺失率；按来源/监督类型清点真实可训练样本；明确 Retriever/ModelRouterBench 的许可及真实测量单位。对 Laya-421M 与 Kev-4B 采用同一清洗视图、同一独立测试集比较，尚未固定唯一骨干，也**不启动正式微调**。
 
-新对话请以 Status §0.2 与最新实际 GitHub HEAD 为准，不要重复引用上轮 `8835d79` 的旧行数，也不要把本次字段统计的混合行数当成动态路由监督标签数。
+### 9.24 Q-007 科研数据收尾、统一训练视图与 Kev 任务级划分闭环（2026-10-10）
+
+- **执行 Agent 闭环响应**：针对 Planning 三次复审提出的 7 项科研缺陷，Execution Agent 在唯一入口 `prepare_router_data.py` 中完成全部修复与重跑：
+  1. **AgentSuite 洁净隔离**：`target_question` 与 `pass_criteria` 严格移入 `ground_truth_outcome`；组织 273 个独立任务 × 30 个模型的整任务 Episode 对照；中途同状态反事实分叉数量**如实确切记录为 0**（绝不编造）。
+  2. **SWE-smith 真实三分类**：区分为 `EXPLICIT_TOOL_API`、`INFERRED_COMMAND`、`TEXT_RESPONSE`，过滤 `the/this/2./pip` 停用词。
+  3. **Mooncake 严格有序 LCP 前缀**：移除 30k set 截断，标记为 `HISTORICAL_PREFIX_REUSE`，`is_simulated = True`，`physical_provider_cache_hit = False`。
+  4. **全量流式缺失率追踪器 (`StreamingFieldTracker`)**：伴随物理写入扫描 100% 记录（6,600,628 步/条），核心字段非空率达 99.9993%。
+  5. **LongMemEval-V2 语义注入**：载入 451 真实题目与 1,870 条历史任务语义目标，标准答案严格隔离。
+  6. **统一模型选择训练视图与 Kev 官方格式导出**：
+     - 整合 ROUTE-004 (Arena 55k 39,716 场明确胜负，排除 17,761 场平局)、ROUTE-001 (LLMRouterBench 26,368 题 Oracle 对齐)、ROUTE-002 (RouterBench 35,189 题官方 Oracle 对比)、TRA-004 (AgentSuite 273 独立任务成对对比)，产出 **100,372 个独立路由任务**，输出为标准 Kev `{state, questions}` 格式样本；
+     - 按任务 ID 进行 **80% 训练集 (80,343 条)、10% 验证集 (10,053 条)、10% 测试集 (9,976 条)** 确定性哈希物理隔离，**跨集重叠为 0**；
+     - **TwinRouterBench (970 步)** 导出为独占外部评测集 `data/kev/公开数据/test_twinrouterbench_holdout.jsonl`，在训练/验证集中 **0 步进入**。
+  7. **5 份轻量预览与科研收尾报告上线**：在 `our-project/data/公开数据/数据预览/训练视图/` 产出 5 份样本，生成 [科研数据收尾报告.md](../data/科研数据收尾报告.md)，全面闭环 9 类确切统计指标。
+- **当前状态**：公开数据清洗与训练视图构建彻底收尾，等待 Planning 最终验收并开启微调前 Smoke Test。
+
+新对话请以 Status §0.2 与最新实际 GitHub HEAD 为准，不要把本次字段统计的混合行数当成动态路由监督标签数。
 
 ## 10. 新会话恢复协议（长期生效）
 

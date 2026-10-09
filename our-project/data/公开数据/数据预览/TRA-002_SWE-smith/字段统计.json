@@ -14,17 +14,19 @@
   },
   "model_name": "claude-3-7-sonnet-20250219",
   "action_types_distribution": {
-    "str_replace_editor": 1256074,
-    "bash": 901630,
-    "submit": 122631,
-    "rm": 17267,
-    "the": 5355,
-    "this": 4366,
-    "pip": 3401,
-    "command_execution": 2086,
-    "2.": 1836,
-    "python3": 1733
+    "str_replace_editor": 1267171,
+    "bash": 927920,
+    "submit": 84892,
+    "text_response": 51601
   },
+  "action_nature_distribution": {
+    "EXPLICIT_TOOL_API": 1546902,
+    "INFERRED_COMMAND": 733081,
+    "TEXT_RESPONSE": 51601
+  },
+  "explicit_tool_api_calls_count": 1546902,
+  "inferred_commands_count": 733081,
+  "pure_text_responses_count": 51601,
   "task_resolved_distribution": {
     "false": 43642,
     "true": 32360
@@ -32,47 +34,71 @@
   "fields_schema": {
     "provenance.instance_id": {
       "type": "string",
-      "missing_rate": 0.0
+      "missing_rate": 0.0,
+      "total_scanned": 2331584,
+      "missing_count": 0
     },
     "provenance.split_type": {
       "type": "string",
-      "missing_rate": 0.0
+      "missing_rate": 0.0,
+      "total_scanned": 2331584,
+      "missing_count": 0
     },
     "provenance.step_index": {
       "type": "int",
-      "missing_rate": 0.0
+      "missing_rate": 0.0,
+      "total_scanned": 2331584,
+      "missing_count": 0
     },
     "pre_decision_state.context_chars": {
       "type": "int",
-      "missing_rate": 0.0
+      "missing_rate": 0.0,
+      "total_scanned": 2331584,
+      "missing_count": 0
     },
     "pre_decision_state.prior_tool_calls_count": {
       "type": "int",
-      "missing_rate": 0.0
+      "missing_rate": 0.0,
+      "total_scanned": 2331584,
+      "missing_count": 0
     },
     "pre_decision_state.prior_error_signals_count": {
       "type": "int",
-      "missing_rate": 0.0
+      "missing_rate": 0.0,
+      "total_scanned": 2331584,
+      "missing_count": 0
     },
     "observed_decision.action_type": {
       "type": "string",
-      "missing_rate": 0.0
+      "missing_rate": 0.0,
+      "total_scanned": 2331584,
+      "missing_count": 0
+    },
+    "observed_decision.action_nature": {
+      "type": "string",
+      "missing_rate": 0.0,
+      "total_scanned": 2331584,
+      "missing_count": 0
     },
     "observed_decision.label_nature": {
       "value": "OBSERVED_ACTION"
     },
     "ground_truth_outcome.task_resolved": {
       "type": "bool",
-      "missing_rate": 0.0
+      "missing_rate": 0.0,
+      "total_scanned": 2331584,
+      "missing_count": 0
     },
     "ground_truth_outcome.label_nature": {
       "type": "string",
-      "missing_rate": 0.0
+      "missing_rate": 0.0,
+      "total_scanned": 2331584,
+      "missing_count": 0
     },
     "policy_tag": {
       "value": "TRAIN_ROUTER_CANDIDATE"
     }
   },
   "server_full_data_path": "data/公开数据/清洗数据/Agent轨迹/TRA-002_SWE-smith/cleaned_trajectories.jsonl",
-  "completion_status": "FULL (已处理 24 个分片，涵盖 ticks, tool 与 xml 多格式 split，已修复真实工具调用识别与前决策时序)"
+  "completion_status": "FULL (已处理 24 个分片，涵盖 ticks, tool 与 xml 多格式 split，已修复真实工具调用识别、动作类别区分与前决策时序)"
 }

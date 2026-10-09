@@ -1,0 +1,82 @@
+{
+  "execution_timestamp": "2026-10-10T02:44:58.269765",
+  "random_seed": 42,
+  "split_ratio_target": "80% Train / 10% Val / 10% Test (按独立任务/题目哈希隔离)",
+  "task_counts": {
+    "train_tasks": 80343,
+    "val_tasks": 10053,
+    "test_tasks": 9976,
+    "twinrouterbench_holdout_tasks": 520,
+    "total_routing_tasks": 100372
+  },
+  "sample_counts": {
+    "train_samples": 80343,
+    "val_samples": 10053,
+    "test_samples": 9976,
+    "twinrouterbench_holdout_samples": 970,
+    "total_kev_samples": 101342
+  },
+  "source_breakdown": {
+    "train": {
+      "ROUTE-004": 31844,
+      "ROUTE-001": 20283,
+      "ROUTE-002": 28008,
+      "TRA-004": 208
+    },
+    "val": {
+      "ROUTE-004": 3953,
+      "ROUTE-001": 2481,
+      "ROUTE-002": 3590,
+      "TRA-004": 29
+    },
+    "test": {
+      "ROUTE-004": 3919,
+      "ROUTE-001": 2438,
+      "ROUTE-002": 3591,
+      "TRA-004": 28
+    },
+    "holdout": {
+      "ROUTE-003": 970
+    }
+  },
+  "leakage_and_isolation_audit": {
+    "train_val_task_overlap": 0,
+    "train_test_task_overlap": 0,
+    "val_test_task_overlap": 0,
+    "twinrouterbench_in_train": 0,
+    "twinrouterbench_in_val": 0,
+    "isolation_status": "PASS (0 交叉泄漏，TwinRouterBench 100% 独立隔离评测)"
+  },
+  "candidate_models_distribution": {
+    "2_candidates": 39716,
+    "11_candidates": 36497,
+    "20_candidates": 11442,
+    "15_candidates": 7983,
+    "38_candidates": 1313,
+    "51_candidates": 1001,
+    "35_candidates": 871,
+    "30_candidates": 823,
+    "33_candidates": 750,
+    "29_candidates": 450,
+    "17_candidates": 400,
+    "12_candidates": 278,
+    "22_candidates": 164
+  },
+  "arena_55k_human_preference": {
+    "model_a_won": 20064,
+    "model_b_won": 19652,
+    "total_non_tie": 39716,
+    "ties_excluded": 17761
+  },
+  "agentsuite_thinking_contrasts": {
+    "paired_episodes_contrasting_thinking": 4368,
+    "mid_trajectory_counterfactual_branches": 0,
+    "compliance_note": "Zero intermediate branching states exist; reported honestly as 0"
+  },
+  "kev_file_paths": {
+    "train": "data/kev/公开数据/train.jsonl",
+    "val": "data/kev/公开数据/val.jsonl",
+    "test": "data/kev/公开数据/test.jsonl",
+    "twinrouterbench_holdout": "data/kev/公开数据/test_twinrouterbench_holdout.jsonl"
+  }
+}
