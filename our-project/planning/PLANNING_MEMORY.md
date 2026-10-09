@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v1.7｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v1.8｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
@@ -20,6 +20,9 @@
 - 当前论文表述纪律：不要把状态字段数量本身作为创新点；**论文不讨论“多变量”或“混沌”**。新意必须靠任务级状态决策、Model × Effort、延迟成本/成功影响和严谨评测证明。
 
 ## 0.1 新对话恢复规则（持续生效）
+
+**新对话角色**：ChatGPT 必须同时以长期 Planning Agent、需求探索/方法讨论伙伴、论文文献研究者的身份工作。和用户讨论研究方向、相关工作、训练监督、Kev/Jev、论文图及框架；实际本机文件由 Codex、服务器公开数据由 Execution Agent 处理，不宣称自己可实时访问本地/服务器。启动时读取全部五核心文档及最新证据，历史计划与真实执行分离。
+
 
 - **版本**：首先核查 GitHub `main` 最新 HEAD，从同一提交读取四份正式文档；文中旧 SHA、日期、章节「当时」均不作为实时证据。
 - **唯一状态来源**：[PROJECT_STATUS.md](PROJECT_STATUS.md) 首页；**实验决定**：[EXPERIMENT_QA.md](EXPERIMENT_QA.md)；**长期历史与协作**：本文件；**研究假设与方法**：[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)。
@@ -397,49 +400,49 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - Research §6.3 已说明公开来源→可信监督→Kev LoRA 初始适配→Harness 同状态比较→动态路由微调→任务级评估。保留训练/测试分割、未来泄漏、cache 真实标签区分这三项科研事实约束。
 - 本轮只更新研究设计和协作规则；已上传清洗脚本仍非可比较的最优路由标签数据集。没有执行 GPU/训练/下载新数据，拟议 run_experiment.py 尚未创建。
 
+### 9.19 五文档持续对话、Paper Research Router/Obsidian 与服务器任务交接（2026-10-09）
+
+- 当前唯一科学主线：长程单/多 Agent 执行中，联合 model×reasoning effort、KV 缓存、8 组状态与实际任务级总成本；目标是成功率约束下节省整任务费用。现有 Blog/CCH 221,128 行→178,621 样本来自本地执行报告，是实际调用记录而非真实最优选择标签。GitHub main 可核 prepare_router_data.py；公开 Agent 数据服务器清洗还未收到实测报告，Kev 尚未训练。
+- 分工：ChatGPT 为 Planning/科研讨论；本机 Codex 完成最新 GitHub 文档同步、真实 Skill 调用、PDF 阅读、Obsidian 一文一笔记；服务器 Execution Agent 在自有中文研究目录做公开源下载/CPU 清洗和统计，所有大数据留服务器。
+- 已查实 Skill 位于私有 sxyq/skill- 的 latest/skills/codex/paper-research-router/SKILL.md，本机通常检查 ~/.codex/skills/paper-research-router/SKILL.md；它对已有 PDF 提供 intake、paper-reader、页码证据与结构化笔记。新论文检索由 sxyq/research-router 的 research-router 负责，证据审阅可用 literature-evidence-audit。其 paper-intake/reader 的完整研究 workspace 模式可能需要未随 Skill 附带的 .research/schema，缺失时采用轻量 Obsidian 笔记。
+- 本仓库 research/task-level-cost-routing/literature/pdfs/ 实有 **58 个 PDF**；manifest.json 仅有 **54 条**，README/index 也截至 54；55–58 对应 CATS、Harness-Native Agentic Routing、EET 和 Price Reversal。先补现有 manifest/index/README 的差额，勿重复下载。以原 literature 文件夹作为一个 Obsidian Vault，在其中新增中文 论文笔记/ 和 主题索引/；每篇用唯一编号、规范 frontmatter、[[wikilinks]] 与原 PDF 相连。
+- 第一轮重点论文：SWE-Router、TRACE-Router、PROGROUTER、TwinRouterBench、Boundary-Guided Agentic Routing、Harness-Native Agentic Routing、TACIT-Switch、EarlyEval；Route-to-Reason、Switchcraft、BEST-Route、UNISCALE；RouteLLM、RouterBench、LLMRouterBench；Unified AI Gateway、InfraMind、KVFlow、LMCache、TokenDance；Kev、TypeSafe Jev/System One、Visual Jev、Laya、Simple Jev、AnyJev。分别标明真实训练数据、训练方式、结果和本项目对照差异，所有断言追溯原文。
+- 新目录和新 Markdown 报告尽量中文；技术代码、标准目录、原数据集英文名不批量改。用户不希望 CI/工程门禁/版本冻结/复杂 hash 管理；最小论文真实性检查依旧必要。GitHub 只提交代码/报告/少量公开笔记，不提交私密现场、大数据、凭据。
+- 本轮是 Planning 在远端五文档同步后的交接约定，**并非本机 Codex/Obsidian/服务器数据已经执行完成的证明**。
+
 ## 10. 新会话恢复协议（长期生效）
 
 ### 10.1 每轮研究如何接续与更新
 
-1. **启动**：核验 `main HEAD → Status → Q&A → Memory → Research → 必要的最新 Execution/实验报告`；不能只用此前聊天记忆。不可访问 GitHub 时要求用户提供文件。
-2. **继续**：以 Status 首页唯一「当前任务」定位下一行动，E-DESIGN 时只处理 Q&A 未关闭的 Q-ID。负责人未批准的问题不能当作已冻结方案。
+1. **启动**：核验 main HEAD → Status → Q&A → Memory → Research → Registry → 必要最新 Execution 报告与论文资料，不能只用此前聊天记忆。
+2. **继续**：以 Status 首页任务/实测、Q&A 已确认选择为准；同时继续和用户讨论相关论文、方法、实验设计、训练与研究创新，不将当前委派执行任务误报为完成。
 3. **完成决策**：负责人明确回答 Q-ID 时，Q&A 记录答复、最终决策、日期、实验和预算影响及下一题；Status 改进度/当前任务；重要长期决策追加 Memory 的 D-ID/交接事件。
 4. **完成工程/实验**：Execution 提供 Git SHA、任务编号、已完成/未完成、真实测试证据、资源/费用、未推送状态、阻塞和下一工作项；更新 Status 和 Memory。只有方法/证据/协议真正变化时才更新 Research。
 5. **验证**：公开脱敏，按既定 main 工作流提交，重新读取 GitHub 最新 HEAD 和改变的文件验证；不能凭此推断服务器实时状况。无新事件不产生空更新，不为新窗口另造文档/代码分支或第二套流程。
-6. **权限**：通用提示词不扩展原有授权；未批准的服务器、下载、GPU、付费 API、训练等禁止操作，也不主动启动深度研究。
+6. **执行范围**：用户已有公开数据服务器 CPU 清洗、本机 Codex 文献整理的明确任务要求；不扩展为 GPU 训练、付费 API、修改共享服务。研究文献检索按用户当前问题进行。
 
 ### 10.2 通用 ChatGPT 新窗口启动提示词
 
-每次新对话复制下方原文，无须更改日期、commit SHA 或问题编号：
+以下可直接复制到以后任意新 ChatGPT 对话；不写死日期、阶段或 SHA。
 
 ~~~text
-你是 ModelRouter 研究项目的长期 Planning Agent。请继续此前研究，不要重新开题。
+你是 ModelRouter 项目的长期 Planning Agent，同时是我的需求讨论、模型训练、相关工作/论文和研究方法论讨论伙伴。不要重新开题、重复询问已确认的问题或虚构实验进展。
 
-仓库：https://github.com/sxyq/modelrouter
-
-首先通过 GitHub 连接器或公开仓库访问方式，核验当前 main HEAD 的完整 SHA 与本次读取时间，并在该 HEAD 下按顺序完整阅读：
+仓库：https://github.com/sxyq/modelrouter。先核对当前最新 main HEAD，依次读取五核心文档：
 1. our-project/planning/PROJECT_STATUS.md
 2. our-project/planning/EXPERIMENT_QA.md
 3. our-project/planning/PLANNING_MEMORY.md
 4. our-project/planning/RESEARCH_OVERVIEW.md
-如确有必要，再核查近期 Execution 报告、实际代码、实验记录及相应版本。如果 GitHub 不可访问，直接告诉我，并要求提供这四份最新文件，不能假装已经读取。
+5. our-project/data/DATA_SOURCE_AND_POLICY_REGISTRY.md
+按当前问题再核查 prepare_router_data.py、执行 Agent 报告、research/task-level-cost-routing/literature/manifest.json、index.md、pdfs/ 和原论文正文。报告哪些是 GitHub 实际证据、哪些是用户/Execution 自报、哪些只是计划。不要把历史 Status 里的旧快照当最新。
 
-各文档唯一职责：
-PROJECT_STATUS = 最新阶段、唯一当前任务、阻塞、授权和下一行动；
-EXPERIMENT_QA = 实验问题 Q-ID、用户已确认选择和待答问题；
-PLANNING_MEMORY = 已确认的长期 D-ID、历史交接与协作纪律；
-RESEARCH_OVERVIEW = 学术问题、相关工作、方法、假设及数据/实验协议。
-旧聊天摘要、旧 SHA 和历史快照都不能覆盖最新版 Status；Planning 的建议不等于我的批准。遇到记录冲突时先说明证据和时间，不擅自修改或替我作决定。
+科学主线：长程单/多 Agent 在调用前观察真实八组状态，考虑模型、推理 effort、KV 缓存连续性、任务成功率与完整任务成本，用已发布 Kev 类决策骨干进行可验证的监督适配和后续真实任务路由。静态模型偏好、已执行轨迹结果、前缀复用机会与同状态真实动作比较不是同一种标签；不能造最优 Model×Effort 标签。论文原创可写我们的路由/监督/任务级研究方法，但必须如实披露已有 Kev/LoRA，TypeSafe Jev 原厂训练不可假称复现。
 
-请先输出简短恢复报告：GitHub HEAD、当前阶段、最新明确决定、唯一未完成任务、权限/阻塞、下一行动、尚需核实的事项。然后直接继续最新版文档所指向的工作，不重做已验收阶段，不重复询问已确认 Q-ID。本提示词没有固定阶段、日期、SHA 或当前任务号，今后也无需人工修改。
+角色分工：你负责 Planning + 深入需求和学术讨论；本机 Codex 负责 GitHub 文档同步、论文 Skill、Obsidian 笔记和必要代码；服务器 Execution Agent 在用户自有服务器下载/CPU 清洗公开数据。用户指定新研究目录和 Markdown 尽量中文，代码/开源数据集正式名保持英文。单一清洗主链，不搞工程化门禁/CI/复杂 hash 系统；保留必要科研数据隔离和标签真实性。未收到执行报告就写待执行，不得自己声称完成。
 
-你担任 Planning Agent，本地 Execution Agent 才执行经授权任务。维持唯一现有研究主线，禁止因新窗口创建重复脚本或第二套执行流程；改动研究方向先解释证据和迁移影响并征得同意。只有我明确要求时才能使用深度研究。
+文献资源已在本仓库 literature/pdfs/ 有 58 PDF，但旧 manifest/README 仍列 54；本机 Codex 应先补清单，利用 ~/.codex/skills/paper-research-router/SKILL.md（源仓库 sxyq/skill-）对已有 PDF 一篇一中文 Obsidian 笔记；新文献搜索由 sxyq/research-router 负责。不要建立第二套 PDF 仓库。重点核对 Agent 动态路由、模型×推理档位、KV/成本反转、Jev/Kev 训练相关文献的真实数据、方法、评价与缺陷。
 
-未经明确额外批准，禁止访问/修改服务器、写共享资源、安装依赖、下载模型、占用 GPU、调用付费 API、训练或启动工程任务。默认 GitHub main，本地频繁 commit、按工作会话/里程碑及时 push、不要求 PR；保护未提交私人文件、不 reset/clean/force push、不擅自重写远端历史。
-
-每次用户确认新 Q-ID、任务完成、阶段变化或出现新实测证据，都检查四文档：最新阶段与唯一下一步写入 Status；问答答案、日期、预算影响写入 Q&A；重大决策及跨 Agent 交接写入 Memory；仅在方法、证据或协议变化时改 Research。提交并复核 GitHub HEAD，明确已推送还是仅本地。没有实质变化就不要制造空更新。
-
-以后每次新对话都使用同一提示词，进度自动以可核查的最新 GitHub 内容确定，而不是以本段文字写死。
+启动时简洁汇报当前阶段、真实已完成/委派中、证据差异、直接相关论文和下一步问题；然后立即继续回答我这次的问题。获得新执行成果后更新五核心文档相应职责，并核实 GitHub。无需对用户重复问答，必要时才提出真正改变研究路径的单个问题。
 ~~~
 
 ### 10.3 信息缺口和回退

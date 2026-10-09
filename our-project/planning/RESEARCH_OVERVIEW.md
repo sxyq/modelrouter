@@ -1,6 +1,6 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v1.0｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
+> **版本 v1.1｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -280,6 +280,19 @@ Provenance: source, schema_version, model_revision, privacy_flags
 **文献数据量**：[Kev 官方](https://github.com/jaredpalmer/kev/blob/main/docs/model-cards/kev-4b.md) decision-v7 第一阶段 12,576，后续增量 1,425/5,219/11,320 条；[TwinRouterBench](https://arxiv.org/abs/2605.18859) 是 520 tasks 的 970 个执行验证档位前缀；[RouteLLM](https://arxiv.org/abs/2406.18665) 是偏好数据训练；[Boundary-Guided](https://arxiv.org/abs/2602.21227) 为先边界策略与 SFT 后策略优化。不能以其中任何一个行数当成本项目固定配额，独立任务/真标签更重要。
 
 **一个终端入口**：未来以一个 run_experiment.py（尚不存在）调用已有 prepare_router_data.py 与 Kev 官方训练脚本，终端输出源数据数、训练轮次、loss、验证集指标和用时；示意为 python -u run_experiment.py 2>&1 | tee experiment.log。这只是拟议接口，未声称脚本已经可运行或模型已经训练。
+
+### 6.4 文献研究主线、真实 Skill 与 Obsidian 论文知识库（2026-10-09）
+
+现有研究证据库 research/task-level-cost-routing/literature/ 包含 58 份 PDF，但旧 manifest.json / index.md / README.md 只覆盖前 54 项，额外的 CATS、Harness-Native Agentic Routing、EET、Price Reversal 须补元数据与正文证据。论文知识库应使用原 literature 文件夹，新增中文 论文笔记/ 和 主题索引/，每篇一份 Markdown + 唯一 ID + YAML 来源元数据 + 原 PDF 链接 + 双向 [[WikiLinks]]；Obsidian 可直接将此文件夹打开为 Vault，不复制 58 份 PDF。写作仍以正文页码为依据，而非靠 AI 摘要推断数值。
+
+已查到的 Skill 是 sxyq/skill- 中的 latest/skills/codex/paper-research-router/SKILL.md（本机一般为 ~/.codex/skills/paper-research-router/SKILL.md），专门针对已有 PDF 导入、精读、模型/方程/方法/训练/实验与限制提取；对引用做独立 evidence audit。外部论文搜索、作者/年份/论文更新属于 sxyq/research-router，不能假设两个 Skill 是同一个。paper-intake/reader 引用的 .research/schema 若本机缺失，可先用精简 Obsidian Markdown 而不创建复杂 Research Workspace。
+
+研究优先级 A（Agent 在线路由与任务级真实监督）：SWE-Router、TRACE-Router、TACIT-Switch、TwinRouterBench、Boundary-Guided Agentic Routing、Harness-Native Agentic Routing、PROGROUTER、EvoRoute、EarlyEval。核查逐步骤路由、历史策略观测偏差、同状态分支、任务验证与任务级成本。
+研究优先级 B（Model×Effort 和监督策略）：Route-to-Reason、Switchcraft、UNISCALE、BEST-Route、R2-Router、RouteLLM、RouterBench、LLMRouterBench、Router-R1、FrugalGPT。核查真实训练数据规模、pairwise/observed outcome/score 与 SFT/RL/分类器损失，分清调用级与任务级标签。
+研究优先级 C（缓存/编排）：Unified AI Gateway、InfraMind、KVFlow、LMCache、TokenDance、AgentOpt、CASTER、CATS 与 Price Reversal。核查缓存可复用机会、物理 cache 命中、跨模型缓存兼容、成本/时间与多 Agent 协作状态的真实证据。
+研究优先级 D（Jev/Kev 同类决策器）：结合 our-project/literature/jev-model-research.md、research/jev-deep/JEV深度调研报告.md 与 jaredpalmer/kev 的官方模型卡/训练格式，分开 TypeSafe Jev 托管闭源、Kev-4B Qwen 基座 LoRA+pointer-head 的开放训练、Laya/Visual Jev/Simple Jev/AnyJev 独立实现以及不同的 Meta JEPA。对 Jev 厂商公开程度和 RLCD 术语必须按官方可验证内容表述，不能推断未公开的训练细节；论文方法可不把 Kev 放在标题，但 Implementation Details 必须披露实际 checkpoint 与微调技术。
+
+每篇笔记统一回答：研究问题；输入/动作/目标；原始数据与标注规模；模型骨干/训练损失；静态/在线评测协议；主要表格/图和页码；作者的限制；与 ModelRouter 的重合和可证伪差异；可复用数据/代码；尚不能确认的点。结论须明确区分论文作者声称、原文证据、我们的推断。
 
 ## 7. 可证伪的研究假设
 
