@@ -1,0 +1,69 @@
+{
+  "source_id": "ROUTE-001",
+  "source_name": "LLMRouterBench",
+  "official_origin": "https://huggingface.co/datasets/NPULH/LLMRouterBench",
+  "license": "Open Source",
+  "raw_json_files_processed": 700,
+  "valid_cleaned_records": 548059,
+  "unique_benchmarks_count": 27,
+  "unique_models_count": 40,
+  "benchmark_distribution_top10": {
+    "mmlupro": 81036,
+    "simpleqa": 71940,
+    "livecodebench": 40090,
+    "hle": 39870,
+    "arenahard": 26250,
+    "medqa": 25460,
+    "winogrande": 25340,
+    "korbench": 25000,
+    "meld": 24640,
+    "arcc": 23440
+  },
+  "model_distribution_top10": {
+    "claude-sonnet-4": 15597,
+    "deepseek-r1-0528": 15597,
+    "deepseek-v3-0324": 15597,
+    "gemini-2.5-flash": 15597,
+    "gemini-2.5-pro": 15597,
+    "glm-4.6": 15597,
+    "gpt-5": 15597,
+    "intern-s1": 15597,
+    "kimi-k2-0905": 15597,
+    "qwen3-235b-a22b-2507": 15597
+  },
+  "score_distribution": {
+    "score_0.0": 277168,
+    "score_1.0": 263981,
+    "score_partial": 6910
+  },
+  "fields_schema": {
+    "provenance.benchmark_name": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.model_name": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.prompt_snippet": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.prompt_tokens_est": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "POST_HOC_BENCHMARK_ORACLE"
+    },
+    "ground_truth_outcome.score": {
+      "type": "float",
+      "missing_rate": 0.0
+    },
+    "policy_tag": {
+      "value": "TRAIN_ROUTER_CANDIDATE"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/路由比较/ROUTE-001_LLMRouterBench/cleaned_evaluations.jsonl",
+  "completion_status": "FULL (全量清洗完成，覆盖全部 27 个评测集与 34 个模型)"
+}

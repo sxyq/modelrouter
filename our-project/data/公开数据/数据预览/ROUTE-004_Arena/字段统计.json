@@ -1,0 +1,55 @@
+{
+  "source_id": "ROUTE-004",
+  "source_name": "Arena-Human-Preference-55k",
+  "official_origin": "https://huggingface.co/datasets/lmarena-ai/arena-human-preference-55k",
+  "license": "LMSYS Terms of Use",
+  "valid_cleaned_records": 57477,
+  "winner_distribution": {
+    "model_a": 20064,
+    "model_b": 19652,
+    "tie": 17761
+  },
+  "unique_models_count": 64,
+  "top_models_distribution": {
+    "gpt-4-1106-preview": 7387,
+    "gpt-3.5-turbo-0613": 7083,
+    "gpt-4-0613": 6165,
+    "claude-2.1": 5583,
+    "claude-instant-1": 4136,
+    "gpt-4-0314": 4122,
+    "claude-1": 3978,
+    "vicuna-33b": 3720,
+    "mixtral-8x7b-instruct-v0.1": 3545,
+    "vicuna-13b": 3448
+  },
+  "fields_schema": {
+    "provenance.battle_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.candidate_model_a": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.candidate_model_b": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.prompt_snippet": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "observed_decision.winner_choice": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "HUMAN_PREFERENCE"
+    },
+    "policy_tag": {
+      "value": "TRAIN_ROUTER_CANDIDATE"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/路由比较/ROUTE-004_Arena/cleaned_arena_preference.jsonl",
+  "completion_status": "FULL (全量清洗完成，包含全部 57,477 条人类偏好对决)"
+}

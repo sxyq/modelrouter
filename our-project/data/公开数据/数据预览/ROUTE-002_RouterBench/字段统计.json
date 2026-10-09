@@ -1,0 +1,58 @@
+{
+  "source_id": "ROUTE-002",
+  "source_name": "RouterBench",
+  "official_origin": "https://huggingface.co/datasets/withmartian/routerbench",
+  "license": "CC-BY-4.0",
+  "valid_cleaned_records": 36497,
+  "unique_evals_count": 86,
+  "eval_distribution_top10": {
+    "hellaswag": 10042,
+    "grade-school-math": 7450,
+    "mmlu-professional-law": 1534,
+    "arc-challenge": 1470,
+    "winogrande": 1267,
+    "mmlu-moral-scenarios": 895,
+    "mmlu-miscellaneous": 783,
+    "mmlu-professional-psychology": 612,
+    "mmlu-high-school-psychology": 545,
+    "mbpp": 427
+  },
+  "oracle_routing_distribution_top10": {
+    "mistralai/mistral-7b-chat": 10065,
+    "WizardLM/WizardLM-13B-V1.2": 8342,
+    "mistralai/mixtral-8x7b-chat": 6140,
+    "zero-one-ai/Yi-34B-Chat": 5309,
+    "claude-instant-v1": 1580,
+    "no_model_correct": 1308,
+    "gpt-3.5-turbo-1106": 1069,
+    "gpt-4-1106-preview": 771,
+    "meta/llama-2-70b-chat": 666,
+    "meta/code-llama-instruct-34b-chat": 477
+  },
+  "fields_schema": {
+    "provenance.sample_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.eval_name": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.prompt_snippet": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "observed_decision.oracle_model_to_route_to": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "POST_HOC_BENCHMARK_ORACLE"
+    },
+    "policy_tag": {
+      "value": "TRAIN_ROUTER_CANDIDATE"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/路由比较/ROUTE-002_RouterBench/cleaned_routerbench.jsonl",
+  "completion_status": "FULL (全量清洗完成，包含 36,497 条 0-shot 实测样本与 11 模型评估)"
+}

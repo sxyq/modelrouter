@@ -1,0 +1,43 @@
+{
+  "source_id": "ROUTE-003",
+  "source_name": "TwinRouterBench",
+  "official_origin": "https://huggingface.co/datasets/Amorph/TwinRouterBench",
+  "license": "Open Source",
+  "valid_cleaned_records": 970,
+  "target_tier_distribution": {
+    "low": 689,
+    "mid": 62,
+    "high": 170,
+    "mid_high": 49
+  },
+  "benchmark_distribution": {
+    "swebench": 336,
+    "pinchbench": 48,
+    "mtrag": 193,
+    "qmsum": 145,
+    "bfcl": 248
+  },
+  "policy_tag": "EVAL_BENCHMARK_ONLY",
+  "fields_schema": {
+    "provenance.instance_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.step_index": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.target_tier": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "BENCHMARK_LABEL"
+    },
+    "policy_tag": {
+      "value": "EVAL_BENCHMARK_ONLY"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/路由比较/ROUTE-003_TwinRouterBench/cleaned_twin_bench.jsonl",
+  "completion_status": "FULL (全量清洗完成，已严格锁定为 EVAL_BENCHMARK_ONLY 隔离集)"
+}

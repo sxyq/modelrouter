@@ -1,0 +1,55 @@
+{
+  "source_id": "ROUTE-005",
+  "source_name": "FindingTheRightFit",
+  "official_origin": "https://huggingface.co/datasets/yixuanli97/finding-the-right-fit",
+  "license": "Custom Research License (Prohibits Training/Distillation)",
+  "valid_cleaned_records": 6204,
+  "harness_distribution": {
+    "Claude Code": 282,
+    "Codex": 282,
+    "DSH": 1410,
+    "OpenHands": 1410,
+    "openJiuwen": 1410,
+    "PI": 1410
+  },
+  "model_distribution_top10": {
+    "Claude Opus 5": 1410,
+    "GPT-6 Astra": 1410,
+    "DeepSeek V4 Pro": 1128,
+    "GLM-5.3": 1128,
+    "Kimi K3": 1128
+  },
+  "reward_distribution": {
+    "fail_0.0": 2670,
+    "success_1.0": 2442,
+    "partial": 1092
+  },
+  "policy_tag": "RESEARCH_ANALYSIS_ONLY",
+  "fields_schema": {
+    "provenance.task_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.harness": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "observed_decision.model_name": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "ground_truth_outcome.reward": {
+      "type": "float",
+      "missing_rate": 0.0
+    },
+    "ground_truth_outcome.cached_tokens": {
+      "type": "float",
+      "missing_rate": 0.0
+    },
+    "policy_tag": {
+      "value": "RESEARCH_ANALYSIS_ONLY"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/路由比较/ROUTE-005_FindingTheRightFit/cleaned_task_level.jsonl",
+  "completion_status": "FULL (全量清洗完成，已严格锁定为 RESEARCH_ANALYSIS_ONLY 分析集)"
+}
