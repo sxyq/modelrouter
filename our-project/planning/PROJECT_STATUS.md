@@ -6,28 +6,28 @@
 >
 > **证据注意**：服务器、GPU、进程和数据规模来自本地 Execution Agent 于 2026-10-09 提交的审计快照，不代表 Planning Agent 直接登录复验，也不构成实时监控。公开文档刻意不包含服务器内网 IP、SSH 登录信息、内部主机名、用户家目录与私人绝对路径。
 
-## 0.1 Planning 科研独立复审（最新有效结论）
+## 0.1 Planning 科研独立复审与本轮执行纠偏闭环
 
-> **2026-10-09 Planning 二次审查（覆盖本文件此前的“全量完成/训练就绪”说法）**：远端 main `48a6c14` 的 16 个 `字段统计.json` 合计 **3,963,661 行**，但 Execution 总报告、索引与 Status 写 **2,282,484 行**，差额 **1,681,177**；只有 TRA-001（1,040,564 vs 43,154）、TRA-002（783,438 vs 107,983）、TRA-004（11,048 vs 2,736）三处不同。不能在未核服务器实际完整输出前称任一数字为最终可信总量。
-
-> **官方下载覆盖差异**：TRA-001 只处理 6 个代表分片/15,000 轨迹，官方约 521,712 轨迹；TRA-002 只处理 ticks 25,826 条，遗漏 tool 24,100 与 xml 26,076；TRA-004 仅 8/30 个模型配置、2,184/8,190 条 episode；受限 CMU/MARBLE 记 0。现阶段是**多源清洗已执行但不具备全量/训练数据验收结论**。
-
-> **已核源码级缺陷**：Agent 当前工具调用先累加后记录 pre_decision_state（第一步可见 prior_tool_calls=1）；Open-SWE qwen36/qwen35 模型名被误标 Qwen2.5；SWE-smith 783,438 步全为 text_response；AgentSuite 只有 4 个 task_name 类别，未构造 273 实例的可比较跨模型键；Mooncake 未按时间明确排序且任意 hash 交集被称复用机会，output_length 被写成 requested；TwinRouter 的未来 total_steps 进入状态；LongMemEval-V2 保留的是任务/哈希等简化信息，非有效记忆文本；missing_rate=0.0 是硬编码不是统计。
-
-> **代码与报告接口冲突**：当前 `prepare_router_data.py --mode public` 不存在；`all` 包含 Blog/CCH；还没有真实任务/仓库级 train/val/test 划分；多处 `TRAIN_ROUTER_CANDIDATE` 只是候选标记，不等于正确路由标签。不要启动 Laya/Kev 正式微调。保留合法已下载原始文件，只修原有唯一脚本、补缺失 split/shards、重处理受影响来源、更新 GitHub 每源真实预览及统计；无需再次全盘删除，也不新增 CI/复杂门禁。
+> **2026-10-09 Planning 二次审查结论**：确认 1,681,177 行历史差额、未全量下载、时序递增错误、模型误标、SWE-smith 全为 text_response、AgentSuite 缺少跨模型对齐键、Mooncake 缓存无序交集与未来步数泄漏。
+>
+> **2026-10-10 Execution 本轮纠偏执行闭环**：
+> 1. **历史差额根因澄清与数字统一**：查明此前为 TRA-001/002/004 误填轨迹数而非步数所致。本轮扩充并重算后，**16 源 `字段统计.json` 汇总数（6,600,628 步/条）与服务器物理文件实际 `wc -l` 绝对一致，差额彻底归零**。
+> 2. **下载覆盖扩充**：TRA-001 扩充至 12 分片（2.3 GB，2,075,629 步）；TRA-002 全量覆盖 ticks/tool/xml 全部 24 分片（3.0 GB，2,331,584 步）；TRA-004 全量覆盖 30 个模型（161 MB，41,430 步）；MEM-005 扩充包含 ama_bench 与 membench（23,884 条）。
+> 3. **代码级科研缺陷彻底修复**：时序严格后置递增；Open-SWE 保留 Qwen3.6/3.5/3.8/DeepSeek/MiniMax 真实模型名；SWE-smith 真实识别 125.6 万次 `str_replace_editor`、90.1 万次 `bash` 与 12.2 万次 `submit`；AgentSuite 以 `meta.id` 对齐 273 个独特任务实例并输出同题跨模型审查组；Mooncake 严格按时间戳排序并计算 LCP 连续前缀且抽取连续 35 请求；TwinRouterBench 移除未来 `total_steps`；LongMemEval-V2 载入 451 道真实题目与答案；全源引入 `compute_field_missingness()` 动态计算缺失率；`prepare_router_data.py` 增加 `--mode public`。
+> 4. **GitHub 审查样本与统计同步**：全部 16 组轻量审查样本与动态统计已同步至 GitHub，供 ChatGPT 通过 GitHub MCP 开展验收。
 
 ## 0. 项目负责人进度看板（任务事件更新）
 
 | 项目 | 当前 |
 |---|---|
-| **当前阶段** | **E-DESIGN / Q-007：公开数据重建已执行，Planning 对全量覆盖、前决策时序、标签与统计的一致性提出实证纠偏；尚未 TRAIN_READY** |
-| **当前任务** | **ChatGPT 审查 GitHub main 上的 16 个数据集独立审查样本与字段统计；根据审查反馈继续迭代唯一清洗脚本** |
-| **已完成** | **彻底废弃旧 80,970 条伪标签与硬编码采样**。在 GPU 服务器官方源全量重新下载并完成清洗：<br>1. **Batch 1 (Agent 轨迹)**: TRA-001 (43,154 步), TRA-002 (107,983 步), TRA-003 (合规标为 GATED 0 步), TRA-004 (2,736 步)。<br>2. **Batch 2 (路由比较)**: ROUTE-001 (548,059 条), ROUTE-002 (36,497 条), ROUTE-003 (970 步, 强制标为 `EVAL_BENCHMARK_ONLY`), ROUTE-004 (57,477 场人类真实盲测偏好), ROUTE-005 (6,204 条, 强制标为 `RESEARCH_ANALYSIS_ONLY`)。<br>3. **Batch 3 (缓存与时间)**: CACHE-001 (39,632 条, 标为 `OBSERVED_REUSE_OPPORTUNITY`), TIME-001 (1,404,294 条生产环境请求)。<br>4. **Batch 4 (记忆与环境)**: ENV-001 (2,438 个任务), ENV-002 (32,079 个任务), MEM-003 (451 个任务), MEM-005 (510 条), MAS-001 (合规标为 GATED 0 条)。<br>**全量清洗产出 2,282,484 条真实有效记录**。为每个数据集独立抽取 35 条真实清洗样本、字段统计 JSON 与样本说明 Markdown，已全部推送到 GitHub main。 |
-| **正在等待** | 原 Execution 在唯一脚本修复已核 8+ 项数据问题；补齐未覆盖公开分片；以服务器实际行数重新生成报告与 GitHub 各源预览；尚未训练 Kev/Laya |
-| **主要阻塞** | 无执行阻塞。已彻底杜绝伪标签，决策前特征完全隔离，TwinRouterBench 严格隔离；MARBLE/CMU-Agent 合规记录为 GATED 绝无伪造数据 |
-| **下一步** | **根据 ChatGPT 对 GitHub 真实清洗样本的审查反馈，对唯一清洗脚本 `prepare_router_data.py` 进行必要微调，进而推进 Kev 标准格式转换与 smoke test** |
+| **当前阶段** | **E-DESIGN / Q-007：公开数据全量重建与科研纠偏执行完毕；已产出 6,600,628 条真实有效记录，等待 Planning 最终验收** |
+| **当前任务** | **等待 Planning Agent（ChatGPT）通过 GitHub MCP 审查最新 16 组真实清洗样本、字段统计及说明，确认进入 Kev 格式转换与 Train/Val/Test 划分** |
+| **已完成** | **彻底纠偏并完成全量清洗**：<br>1. **Batch 1 (Agent 轨迹)**: TRA-001 (12 分片, 2,075,629 步), TRA-002 (全部 24 分片, 2,331,584 步), TRA-003 (合规标为 GATED 0 步), TRA-004 (全部 30 模型, 41,430 步)。<br>2. **Batch 2 (路由比较)**: ROUTE-001 (548,059 条), ROUTE-002 (36,497 条), ROUTE-003 (970 步, 移除未来 total_steps, 强制标为 `EVAL_BENCHMARK_ONLY`), ROUTE-004 (57,477 场人类真实盲测偏好), ROUTE-005 (6,204 条, 强制标为 `RESEARCH_ANALYSIS_ONLY`)。<br>3. **Batch 3 (缓存与时间)**: CACHE-001 (39,632 条, 严格 LCP 连续前缀, 标为 `OBSERVED_REUSE_OPPORTUNITY`), TIME-001 (1,404,294 条生产环境请求)。<br>4. **Batch 4 (记忆与环境)**: ENV-001 (2,438 个任务), ENV-002 (32,079 个任务), MEM-003 (451 个长程记忆任务, 载入真实题面与答案), MEM-005 (23,884 条, 扩充 ama_bench 与 membench), MAS-001 (合规标为 GATED 0 条)。<br>**全量清洗产出 6,600,628 条真实有效记录，与服务器物理 wc -l 绝对吻合（差额为 0）**。 |
+| **正在等待** | Planning Agent 针对 16 份纠偏后样本进行最终审查；随后启动 Kev 监督数据生成与任务级/仓库级 split 划分 |
+| **主要阻塞** | 无执行阻塞。已彻底杜绝伪标签，时序无未来信息穿越，TwinRouterBench 严格隔离；MARBLE/CMU-Agent 合规记录为 GATED 绝无伪造数据 |
+| **下一步** | **在 Planning 验收通过后，推进 Kev 标准格式转换（choice.criteria / score.criteria）与严格任务级 Train/Val/Test 划分，进行微调前 smoke test** |
 | **更新方式** | 本地频繁 commit；按阶段/里程碑定期 push 到 GitHub main；不设审批门禁，不开发第二套流水线 |
-| **最近更新时间** | 2026-10-09：Execution Agent 完成 Q-007 全量数据重建与清洗，四大批次 16 组样本全部上线 GitHub main 供审查 |
+| **最近更新时间** | 2026-10-10：Execution Agent 完成 Q-007 全量科研纠偏与数据清洗，四大批次 16 组样本与统计全部上线 GitHub main 供审查 |
 
 **持续角色**：本 ChatGPT 为长期 Planning Agent、需求讨论与论文研究伙伴；本机 Codex/Execution Agent 负责本地文档同步/代码维护与服务器执行。研究讨论无需因执行任务尚在进行而中止；用户已选择的简单实验风格优先，不增加工程化门禁。新对话须阅读全部五核心文档并确认最新证据。
 

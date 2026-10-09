@@ -10,14 +10,18 @@
     "synthetic": 3993
   },
   "reuse_tier_distribution": {
-    "zero_reuse": 2243,
-    "low_reuse": 11134,
-    "medium_reuse": 7948,
-    "high_reuse": 18307
+    "zero_reuse": 2226,
+    "low_reuse": 12044,
+    "medium_reuse": 7547,
+    "high_reuse": 17815
   },
   "fields_schema": {
     "provenance.trace_type": {
       "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.arrival_timestamp": {
+      "type": "int",
       "missing_rate": 0.0
     },
     "pre_decision_state.input_length": {
@@ -28,12 +32,20 @@
       "type": "int",
       "missing_rate": 0.0
     },
-    "observed_decision.observed_reusable_blocks": {
+    "observed_decision.observed_prefix_hit_blocks": {
       "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.observed_prefix_hit_ratio": {
+      "type": "float",
       "missing_rate": 0.0
     },
     "observed_decision.label_nature": {
       "value": "OBSERVED_REUSE_OPPORTUNITY"
+    },
+    "ground_truth_outcome.output_length": {
+      "type": "int",
+      "missing_rate": 0.0
     },
     "ground_truth_outcome.estimated_reusable_tokens": {
       "type": "int",
@@ -44,5 +56,5 @@
     }
   },
   "server_full_data_path": "data/公开数据/清洗数据/缓存与时间/CACHE-001_Mooncake/cleaned_mooncake_traces.jsonl",
-  "completion_status": "FULL (全量清洗完成，包含 conversation, toolagent, synthetic 全部 3 类追踪)"
+  "completion_status": "FULL (全量清洗完成，包含 conversation, toolagent, synthetic 全部 3 类追踪，已实现时间连续与严格 LCP 前缀匹配)"
 }

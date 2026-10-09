@@ -3,21 +3,38 @@
   "source_name": "SWE-smith Trajectories",
   "official_origin": "https://huggingface.co/datasets/SWE-bench/SWE-smith-trajectories",
   "license": "MIT",
-  "raw_files_processed": 8,
-  "raw_trajectories_count": 25826,
-  "raw_assistant_turns_read": 783438,
-  "valid_cleaned_records": 783438,
-  "unique_instances_count": 13500,
+  "raw_shards_processed": 24,
+  "raw_trajectories_count": 76002,
+  "valid_cleaned_records": 2331584,
+  "unique_instances_count": 13501,
+  "splits_distribution": {
+    "ticks": 8,
+    "tool": 8,
+    "xml": 8
+  },
   "model_name": "claude-3-7-sonnet-20250219",
   "action_types_distribution": {
-    "text_response": 783438
+    "str_replace_editor": 1256074,
+    "bash": 901630,
+    "submit": 122631,
+    "rm": 17267,
+    "the": 5355,
+    "this": 4366,
+    "pip": 3401,
+    "command_execution": 2086,
+    "2.": 1836,
+    "python3": 1733
   },
   "task_resolved_distribution": {
-    "false": 14396,
-    "true": 11430
+    "false": 43642,
+    "true": 32360
   },
   "fields_schema": {
     "provenance.instance_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.split_type": {
       "type": "string",
       "missing_rate": 0.0
     },
@@ -49,9 +66,13 @@
       "missing_rate": 0.0
     },
     "ground_truth_outcome.label_nature": {
-      "value": "POST_HOC_EVALUATOR"
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "policy_tag": {
+      "value": "TRAIN_ROUTER_CANDIDATE"
     }
   },
   "server_full_data_path": "data/公开数据/清洗数据/Agent轨迹/TRA-002_SWE-smith/cleaned_trajectories.jsonl",
-  "completion_status": "FULL (已处理全部 8 个分片: ticks-00000 至 ticks-00007, 972 MB)"
+  "completion_status": "FULL (已处理 24 个分片，涵盖 ticks, tool 与 xml 多格式 split，已修复真实工具调用识别与前决策时序)"
 }

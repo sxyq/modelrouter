@@ -4,8 +4,29 @@
   "official_origin": "https://huggingface.co/datasets/xiaowu0162/LongMemEval-V2",
   "license": "MIT",
   "valid_cleaned_records": 451,
+  "domain_distribution": {
+    "web": 240,
+    "enterprise": 211
+  },
+  "question_type_distribution": {
+    "dynamic-environment": 86,
+    "static-environment-abs": 55,
+    "procedure": 74,
+    "procedure-abs": 32,
+    "dynamic-environment-abs": 41,
+    "errors-gotchas": 29,
+    "static-environment": 134
+  },
   "fields_schema": {
     "provenance.task_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.domain": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.question_snippet": {
       "type": "string",
       "missing_rate": 0.0
     },
@@ -16,10 +37,14 @@
     "observed_decision.label_nature": {
       "value": "MEMORY_BENCHMARK"
     },
+    "ground_truth_outcome.gold_answer": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
     "policy_tag": {
       "value": "TRAIN_ROUTER_CANDIDATE"
     }
   },
   "server_full_data_path": "data/公开数据/清洗数据/长期记忆/MEM-003_LongMemEval-V2/cleaned_longmemeval_v2.jsonl",
-  "completion_status": "FULL (全量清洗完成，包含 451 个长程记忆与干草堆检索任务)"
+  "completion_status": "FULL (全量清洗完成，包含 451 个长程记忆任务，已注入真实题目题面、答案与评估函数)"
 }

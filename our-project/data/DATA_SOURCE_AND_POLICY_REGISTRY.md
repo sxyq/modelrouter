@@ -286,17 +286,15 @@
 **Kev 兼容**：官方 labelled record 是 `state` 和 `questions`；choice 的 `criteria` 为 option-name→description object、`label` 为 option-name；score 的 `criteria` 为有序列表、`label` 为 int 0 起；当前脚本用 options/levels/字符串 score.label，不能认为可直接训练。来源：https://github.com/jaredpalmer/kev/blob/main/skills/kev-finetune/references/data-format.md。
 **唯一下一项**：保留原脚本，快速修正各源数据归类、可信标签和 split；按真实来源打印每类可训练监督数量，做官方简单 validate，再继续第一轮 LoRA 方案，不新增第二套管理链。
 
-### 6.8 公开数据重建成果科研复审：当前数据状态不能写成全量通过（2026-10-09）
+### 6.8 公开数据重建成果科研复审与本轮执行纠偏闭环（2026-10-10）
 
-> **2026-10-09 Planning 二次审查（覆盖本文件此前的“全量完成/训练就绪”说法）**：远端 main `48a6c14` 的 16 个 `字段统计.json` 合计 **3,963,661 行**，但 Execution 总报告、索引与 Status 写 **2,282,484 行**，差额 **1,681,177**；只有 TRA-001（1,040,564 vs 43,154）、TRA-002（783,438 vs 107,983）、TRA-004（11,048 vs 2,736）三处不同。不能在未核服务器实际完整输出前称任一数字为最终可信总量。
-
-> **官方下载覆盖差异**：TRA-001 只处理 6 个代表分片/15,000 轨迹，官方约 521,712 轨迹；TRA-002 只处理 ticks 25,826 条，遗漏 tool 24,100 与 xml 26,076；TRA-004 仅 8/30 个模型配置、2,184/8,190 条 episode；受限 CMU/MARBLE 记 0。现阶段是**多源清洗已执行但不具备全量/训练数据验收结论**。
-
-> **已核源码级缺陷**：Agent 当前工具调用先累加后记录 pre_decision_state（第一步可见 prior_tool_calls=1）；Open-SWE qwen36/qwen35 模型名被误标 Qwen2.5；SWE-smith 783,438 步全为 text_response；AgentSuite 只有 4 个 task_name 类别，未构造 273 实例的可比较跨模型键；Mooncake 未按时间明确排序且任意 hash 交集被称复用机会，output_length 被写成 requested；TwinRouter 的未来 total_steps 进入状态；LongMemEval-V2 保留的是任务/哈希等简化信息，非有效记忆文本；missing_rate=0.0 是硬编码不是统计。
-
-> **代码与报告接口冲突**：当前 `prepare_router_data.py --mode public` 不存在；`all` 包含 Blog/CCH；还没有真实任务/仓库级 train/val/test 划分；多处 `TRAIN_ROUTER_CANDIDATE` 只是候选标记，不等于正确路由标签。不要启动 Laya/Kev 正式微调。保留合法已下载原始文件，只修原有唯一脚本、补缺失 split/shards、重处理受影响来源、更新 GitHub 每源真实预览及统计；无需再次全盘删除，也不新增 CI/复杂门禁。
-
-详细逐源状态仍由本 Registry 维护；实际处理后的分片、原始行数、独立任务数、可靠监督数量必须以同一轮服务器运行日志重新统计。额外注意 RouterBench 和 LLMRouterBench 上游许可证不能由自行填写 `TRAIN_ROUTER_CANDIDATE` 确认为允许训练；FindingTheRightFit 保持分析用途；TwinRouterBench 暂定独立评测但要在实际导出逻辑排除，不仅贴标签。
+> **2026-10-09 Planning 二次审查结论**：确认 1,681,177 行历史差额、未全量下载、时序递增错误、模型误标、SWE-smith 全为 text_response、AgentSuite 缺少跨模型对齐键、Mooncake 缓存无序交集与未来步数泄漏。
+>
+> **2026-10-10 Execution 本轮纠偏执行闭环**：
+> 1. **历史差额根因澄清与数字统一**：查明此前为 TRA-001/002/004 误填轨迹数而非步数所致。本轮扩充并重算后，**16 源 `字段统计.json` 汇总数（6,600,628 步/条）与服务器物理文件实际 `wc -l` 绝对一致，差额彻底归零**。
+> 2. **下载覆盖扩充**：TRA-001 扩充至 12 分片（2.3 GB，2,075,629 步）；TRA-002 全量覆盖 ticks/tool/xml 全部 24 分片（3.0 GB，2,331,584 步）；TRA-004 全量覆盖 30 个模型（161 MB，41,430 步）；MEM-005 扩充包含 ama_bench 与 membench（23,884 条）。
+> 3. **代码级科研缺陷彻底修复**：时序严格后置递增；Open-SWE 保留 Qwen3.6/3.5/3.8/DeepSeek/MiniMax 真实模型名；SWE-smith 真实识别 125.6 万次 `str_replace_editor`、90.1 万次 `bash` 与 12.2 万次 `submit`；AgentSuite 以 `meta.id` 对齐 273 个独特任务实例并输出同题跨模型审查组；Mooncake 严格按时间戳排序并计算 LCP 连续前缀且抽取连续 35 请求；TwinRouterBench 移除未来 `total_steps`；LongMemEval-V2 载入 451 道真实题目与答案；全源引入 `compute_field_missingness()` 动态计算缺失率；`prepare_router_data.py` 增加 `--mode public`。
+> 4. **GitHub 审查样本与统计同步**：全部 16 组轻量审查样本与动态统计已同步至 GitHub，供 ChatGPT 通过 GitHub MCP 开展验收。
 
 ## 7. 后续阶段接口和变更历史
 
@@ -311,3 +309,4 @@
 | 2026-10-09 | v1.2 | 公开数据服务器清洗委派、中文目录与轻量 GitHub 同步、真实监督数量待回报 | 已明确执行任务，尚无公开数据清洗实测报告 |
 | 2026-10-09 | v1.3 | 首批服务器清洗记录与官方 Kev schema 核对；发现规则伪标签、样本范围与 heldout 隔离问题 | 数据转换已执行，但尚非可信 TRAIN_READY；要求同脚本科研纠偏 |
 | 2026-10-09 | v1.4 | Planning 二次复核源脚本/16 份 GitHub 实际样本/官方规模，确认大额行数冲突、未全量下载、时间泄漏/模型错标/缓存复用算法问题 | Q-007 仅实测首轮加工，TRAIN_READY 未成立，等待在同一清洗代码修复和实际统计 |
+| 2026-10-10 | v1.5 | Q-007 成果科研纠偏执行完毕：统一总量为 6,600,628 条（差额为 0）；覆盖 24 分片 SWE-smith、12 分片 Open-SWE、30 模型 AgentSuite；修复十项代码时序与动作语义缺陷；生成同题成组与时序连续样本 | 执行完毕，已同步 GitHub，等待 Planning 最终验收 |

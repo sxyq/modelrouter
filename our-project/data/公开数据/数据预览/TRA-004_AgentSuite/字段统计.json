@@ -3,31 +3,54 @@
   "source_name": "AgentSuite multi_challenge",
   "official_origin": "https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories",
   "license": "Apache-2.0",
-  "raw_files_processed": 8,
-  "raw_episodes_count": 2184,
-  "valid_cleaned_records": 11048,
-  "unique_tasks_count": 4,
+  "raw_files_processed": 30,
+  "raw_episodes_count": 8190,
+  "valid_cleaned_records": 41430,
+  "unique_task_instances_count": 273,
   "model_distribution": {
-    "deepseek-ai/DeepSeek-V3.2-Exp-thinking-off": 273,
-    "deepseek-ai/DeepSeek-V3.2-Exp-thinking-on": 273,
-    "anthropic/claude-4.5-sonnet-thinking-off": 273,
-    "anthropic/claude-4.5-sonnet-thinking-on-10k": 273,
-    "google/gemini-2.5-flash-thinking-off": 273,
-    "google/gemini-2.5-flash-thinking-on": 273,
-    "openai/gpt-4.1": 273,
-    "openai/o3-high": 273
+    "DeepSeek-R1-0528": 273,
+    "DeepSeek-V3-0324": 273,
+    "DeepSeek-V3.2-Exp": 546,
+    "Kimi-K2-Instruct-0905": 273,
+    "Kimi-K2-Instruct": 273,
+    "Qwen3-235B-A22B-FP8": 273,
+    "Qwen3-235B-A22B-Instruct-2507-FP8": 273,
+    "Qwen3-235B-A22B-Thinking-2507-FP8": 273,
+    "Qwen3-Coder-480B-A35B-Instruct-FP8": 273,
+    "claude-4-opus": 546,
+    "claude-4-sonnet": 546,
+    "claude-4.5-sonnet": 546,
+    "gemini-2.5-flash": 546,
+    "gemini-2.5-pro": 273,
+    "gpt-4.1-mini": 273,
+    "gpt-4.1-nano": 273,
+    "gpt-4.1": 273,
+    "gpt-4o-20240806": 273,
+    "gpt-4o-mini": 273,
+    "gpt-5-nano": 273,
+    "gpt-5": 273,
+    "gpt-oss-120b": 273,
+    "gpt-oss-20b": 273,
+    "o3-high": 273,
+    "o4-mini-high": 273
   },
   "thinking_effort_distribution": {
-    "thinking-off": 819,
-    "thinking-on": 819,
-    "unspecified": 546
+    "standard": 4368,
+    "thinking-off": 1365,
+    "thinking-on": 1092,
+    "thinking-on-10k": 819,
+    "reasoning-high": 546
   },
   "score_distribution": {
-    "0.0": 1127,
-    "1.0": 1057
+    "1.0": 3646,
+    "0.0": 4544
   },
   "fields_schema": {
-    "provenance.task_name": {
+    "provenance.instance_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.task_axis": {
       "type": "string",
       "missing_rate": 0.0
     },
@@ -51,9 +74,13 @@
       "missing_rate": 0.0
     },
     "ground_truth_outcome.label_nature": {
-      "value": "POST_HOC_EVALUATOR"
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "policy_tag": {
+      "value": "TRAIN_ROUTER_CANDIDATE"
     }
   },
   "server_full_data_path": "data/公开数据/清洗数据/Agent轨迹/TRA-004_AgentSuite/cleaned_trajectories.jsonl",
-  "completion_status": "FULL (已处理全部 8 个模型与思考模式: Claude, DeepSeek, Gemini, GPT, O3)"
+  "completion_status": "FULL (已处理全部 30 个模型配置与思考模式，已提取具体任务实例唯一 ID 并完成同题成组对齐)"
 }

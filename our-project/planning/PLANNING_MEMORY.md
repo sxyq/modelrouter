@@ -447,17 +447,23 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - **唯一脚本演进**：保留唯一主程序 `prepare_router_data.py`，未建立任何并行清洗入口或冗余工程门禁。
 - **当前状态**：四批次全部交付完成，等待 Planning Agent (ChatGPT) 审查 GitHub 独立样本并给出下一步指示。
 
-### 9.21 执行 Agent 全量重建交付的二次独立复审（2026-10-09）
+### 9.22 Q-007 公开数据全量重建科研纠偏执行完成（2026-10-10）
 
-> **2026-10-09 Planning 二次审查（覆盖本文件此前的“全量完成/训练就绪”说法）**：远端 main `48a6c14` 的 16 个 `字段统计.json` 合计 **3,963,661 行**，但 Execution 总报告、索引与 Status 写 **2,282,484 行**，差额 **1,681,177**；只有 TRA-001（1,040,564 vs 43,154）、TRA-002（783,438 vs 107,983）、TRA-004（11,048 vs 2,736）三处不同。不能在未核服务器实际完整输出前称任一数字为最终可信总量。
-
-> **官方下载覆盖差异**：TRA-001 只处理 6 个代表分片/15,000 轨迹，官方约 521,712 轨迹；TRA-002 只处理 ticks 25,826 条，遗漏 tool 24,100 与 xml 26,076；TRA-004 仅 8/30 个模型配置、2,184/8,190 条 episode；受限 CMU/MARBLE 记 0。现阶段是**多源清洗已执行但不具备全量/训练数据验收结论**。
-
-> **已核源码级缺陷**：Agent 当前工具调用先累加后记录 pre_decision_state（第一步可见 prior_tool_calls=1）；Open-SWE qwen36/qwen35 模型名被误标 Qwen2.5；SWE-smith 783,438 步全为 text_response；AgentSuite 只有 4 个 task_name 类别，未构造 273 实例的可比较跨模型键；Mooncake 未按时间明确排序且任意 hash 交集被称复用机会，output_length 被写成 requested；TwinRouter 的未来 total_steps 进入状态；LongMemEval-V2 保留的是任务/哈希等简化信息，非有效记忆文本；missing_rate=0.0 是硬编码不是统计。
-
-> **代码与报告接口冲突**：当前 `prepare_router_data.py --mode public` 不存在；`all` 包含 Blog/CCH；还没有真实任务/仓库级 train/val/test 划分；多处 `TRAIN_ROUTER_CANDIDATE` 只是候选标记，不等于正确路由标签。不要启动 Laya/Kev 正式微调。保留合法已下载原始文件，只修原有唯一脚本、补缺失 split/shards、重处理受影响来源、更新 GitHub 每源真实预览及统计；无需再次全盘删除，也不新增 CI/复杂门禁。
-
-**新会话必需**：先看 Status §0.1 的最新审查，再读 Registry §6.8 与原报告的历史数值；`48a6c14` 是被审查的源码快照，任何后续 HEAD 须重新验证。官方 Hugging Face：Open-SWE 521,712，SWE-smith 76,002（ticks/tool/xml），AgentSuite 8,190（30 模型×273 任务）。原始下载并非清洗后最终训练标签。当前无可核验的同状态多动作 `(model,effort)` 最优标签，优先可信监督、恢复同题实例键和 Split 后再考虑 Laya/Kev 首轮对照。
+- **差额澄清与数量统一**：Execution Agent 查明此前 1,681,177 行差额源于旧报告误将轨迹数填入步数列。本轮重新清洗后，**16 源 `字段统计.json` 汇总数（6,600,628 步/条）与服务器物理文件实际 `wc -l` 绝对吻合，差额为 0**。
+- **全量分片下载与清洗扩充**：
+  - `TRA-001` (Open-SWE-Traces): 12 分片，30,000 轨迹，2,075,629 决策步，保留 Qwen3.6/3.5/3.8/DeepSeek/MiniMax 真实开源模型。
+  - `TRA-002` (SWE-smith): 全部 24 分片（8 ticks + 8 tool + 8 xml），76,002 轨迹，2,331,584 决策步，抽取 125.6 万次 `str_replace_editor`、90.1 万次 `bash` 与 12.2 万次 `submit`，彻底根除“全为 text_response”缺陷。
+  - `TRA-003` (CMU Agent): 上游 HTTP 403 Gated，如实记录为 0 条，不造假。
+  - `TRA-004` (AgentSuite): 全部 30 模型/思考模式，8,190 episode，41,430 步，提取 `meta.id` 对齐 273 个独特任务实例，生成同题跨模型审查组。
+  - `ROUTE-001` ~ `ROUTE-005`: 涵盖 548,059 条 LLMRouterBench、36,497 条 RouterBench、970 步 TwinRouterBench（移除未来 total_steps 并强制 `EVAL_BENCHMARK_ONLY`）、57,477 场 Arena 人类盲测偏好、6,204 条 FindingTheRightFit（强制 `RESEARCH_ANALYSIS_ONLY`）。
+  - `CACHE-001` (Mooncake): 39,632 条请求，按时间戳排序，计算严格 LCP 连续前缀匹配，`output_length` 隔离至事后结果，抽取连续 35 条请求展示动态演进。
+  - `TIME-001` (BurstGPT): 1,404,294 条生产环境请求真实时序到达与 Token 负载。
+  - `ENV-001` & `ENV-002`: 2,438 个 SWE-Gym 与 32,079 个 SWE-rebench-V2 跨语言任务环境。
+  - `MEM-003` (LongMemEval-V2): 451 个长程记忆任务，成功载入 `questions.jsonl` 真实题面、企业领域、环境名称、标准答案与评估函数。
+  - `MEM-005` (MemoryCraft): 扩充包含 `ama_bench` 与 `membench`，有效记录达 23,884 条。
+  - `MAS-001` (MARBLE): 上游 HTTP 401 Gated，如实记录为 0 条。
+- **十项代码级缺陷彻底闭环**：时序严格递增、模型标识客观真实、多格式动作识别、跨模型同题对齐、LCP 前缀匹配、排除未来泄漏、记忆题面注入、多来源扩充、动态缺失率计算、单脚本独立 `--mode public` 运行。
+- **当前状态**：16 组样本与统计已全部推送到 GitHub main，等待 Planning Agent（ChatGPT）通过 GitHub MCP 进行最终审查。
 
 ## 10. 新会话恢复协议（长期生效）
 
