@@ -1,0 +1,42 @@
+{
+  "source_id": "ENV-001",
+  "source_name": "SWE-Gym",
+  "official_origin": "https://huggingface.co/datasets/SWE-Gym/SWE-Gym",
+  "license": "MIT",
+  "valid_cleaned_records": 2438,
+  "unique_repos_count": 11,
+  "repo_distribution_top10": {
+    "pandas-dev/pandas": 737,
+    "Project-MONAI/MONAI": 374,
+    "getmoto/moto": 343,
+    "python/mypy": 257,
+    "iterative/dvc": 225,
+    "dask/dask": 145,
+    "modin-project/modin": 107,
+    "pydantic/pydantic": 83,
+    "conan-io/conan": 75,
+    "facebookresearch/hydra": 66
+  },
+  "fields_schema": {
+    "provenance.instance_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "provenance.repo": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.problem_snippet": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "TASK_ENVIRONMENT"
+    },
+    "policy_tag": {
+      "value": "TRAIN_ROUTER_CANDIDATE"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/任务环境/ENV-001_SWE-Gym/cleaned_swe_gym.jsonl",
+  "completion_status": "FULL (全量清洗完成，包含 2,438 个真实软件工程任务基准与测试规范)"
+}

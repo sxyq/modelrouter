@@ -1,0 +1,25 @@
+{
+  "source_id": "MEM-003",
+  "source_name": "LongMemEval-V2",
+  "official_origin": "https://huggingface.co/datasets/xiaowu0162/LongMemEval-V2",
+  "license": "MIT",
+  "valid_cleaned_records": 451,
+  "fields_schema": {
+    "provenance.task_id": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.haystack_docs_count": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "MEMORY_BENCHMARK"
+    },
+    "policy_tag": {
+      "value": "TRAIN_ROUTER_CANDIDATE"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/长期记忆/MEM-003_LongMemEval-V2/cleaned_longmemeval_v2.jsonl",
+  "completion_status": "FULL (全量清洗完成，包含 451 个长程记忆与干草堆检索任务)"
+}

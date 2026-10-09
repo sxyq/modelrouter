@@ -1,0 +1,29 @@
+{
+  "source_id": "MEM-005",
+  "source_name": "MemoryCraft",
+  "official_origin": "https://huggingface.co/datasets/daven3/MemoryCraft",
+  "license": "Open Source",
+  "valid_cleaned_records": 510,
+  "source_distribution": {
+    "longmemeval": 500,
+    "locomo": 10
+  },
+  "fields_schema": {
+    "provenance.uid": {
+      "type": "string",
+      "missing_rate": 0.0
+    },
+    "pre_decision_state.sessions_count": {
+      "type": "int",
+      "missing_rate": 0.0
+    },
+    "observed_decision.label_nature": {
+      "value": "MEMORY_BENCHMARK"
+    },
+    "policy_tag": {
+      "value": "TRAIN_ROUTER_CANDIDATE"
+    }
+  },
+  "server_full_data_path": "data/公开数据/清洗数据/长期记忆/MEM-005_MemoryCraft/cleaned_memorycraft.jsonl",
+  "completion_status": "FULL (全量清洗完成，包含 longmemeval 与 locomo 记忆基准)"
+}
