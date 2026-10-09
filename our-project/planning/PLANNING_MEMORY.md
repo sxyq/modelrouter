@@ -1,8 +1,8 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v0.7｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v0.8｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
 >
-> **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查三份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
+> **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
 > **公开性**：仓库为 public。不得提交私有服务器 IP、SSH 用户名/命令凭据、密钥、原始私人会话、私有任务内容、个人本地绝对路径及未脱敏日志。必要的机器路径放在本地不跟踪的配置或安全通道内。
 
@@ -11,13 +11,22 @@
 - 项目：**ModelRouter**，研究**长程单/多 Agent 执行过程中的状态感知、任务级 Model × Reasoning Effort 联合路由**。
 - 主方法：**确定性 State Builder + 动态候选与硬约束 + 单一 Kev-4B（Qwen3.5-4B-Base/LoRA/pointer head）决策模型 + Agent Harness + 完整记账与任务终局评价**。
 - 目标：在可靠性/成功率约束下减少**任务完成总成本**，考虑动作对后续步骤、失败恢复、缓存连续性和成本剩余量的影响。
-- 当前阶段：**E-DESIGN 详细实验设计问答（已启动，尚未冻结协议）**。E0.5-ENV 已由项目负责人确认：未来使用独立 ModelRouter 工作目录和 Python 环境，共享资源只读；当前不执行任何服务器操作。MR-DIR-001 与 MR-SYNC-001 已验收。
+- **最新阶段/唯一下一行动以 [PROJECT_STATUS.md](PROJECT_STATUS.md) 首页为准**；E-DESIGN 问答批准以 [EXPERIMENT_QA.md](EXPERIMENT_QA.md) 为准。截至 2026-10-09 的历史快照是 E0.5 已完成、E-DESIGN 进行中、Q-001 待答；新会话禁止把这个快照当作永久最新。
 - 执行路线：`E0.5 环境与文档确认 → E-DESIGN 详细实验设计与用户决策 → E1 工程基础 → E2 Harness 与基线 → E3 受控实验 → E4 模型训练与消融 → E5 论文与复现`。
 - 硬件：授权的单卡 **RTX A6000 48GB**；2026-10-09 审计快照显示显存占用仅 682 MiB。实际运行前重新检查资源和共享服务。
 - 现有 CCH 数据为 **110 行聚合记录，代表 750,212 次调用**；Blog GPT 数据为 **221,128 条调用明细**。二者都缺少可靠的任务级决策状态/终局成功标签，**不能直接作为反事实路由监督数据**。
 - GitHub 正式文档：[项目状态](PROJECT_STATUS.md)、[研究与方法](RESEARCH_OVERVIEW.md)、本文件及 [实验设计问答](EXPERIMENT_QA.md)（E-DESIGN 已建立，记录 Q-ID、选项、推荐、负责人回答与最终决策）。历史 `IMPLEMENTATION_RESEARCH.md` 保留作历史设计参考，**不再代表当前唯一方法**。
-- 首要下一步：**E-DESIGN Q-001 评测任务集选择（等待负责人答复）→ 依次冻结动作空间、预算、基线、受控实验和统计协议 → 之后才下发 MR-E1-001 工程骨架**。服务器隔离原则已确认但未实际创建目录；不得提前启动代码开发、模型下载或训练。
+- **下一步是动态字段**：每次先查最新 [PROJECT_STATUS.md](PROJECT_STATUS.md) 的「当前任务/正在等待/下一步」，如果处于 E-DESIGN 再查 [EXPERIMENT_QA.md](EXPERIMENT_QA.md) 第一个待答 Q-ID；不得重复已经确认的问题、提前执行未授权工程或训练。
 - 当前论文表述纪律：不要把状态字段数量本身作为创新点；**论文不讨论“多变量”或“混沌”**。新意必须靠任务级状态决策、Model × Effort、延迟成本/成功影响和严谨评测证明。
+
+## 0.1 新对话恢复规则（持续生效）
+
+- **版本**：首先核查 GitHub `main` 最新 HEAD，从同一提交读取四份正式文档；文中旧 SHA、日期、章节「当时」均不作为实时证据。
+- **唯一状态来源**：[PROJECT_STATUS.md](PROJECT_STATUS.md) 首页；**实验决定**：[EXPERIMENT_QA.md](EXPERIMENT_QA.md)；**长期历史与协作**：本文件；**研究假设与方法**：[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)。
+- **证据分层**：GitHub main、实际本地工作树、授权服务器部署、实验数据/结果分别核对。没有最新 Execution 回报就不能声称知道本地未推送更改或服务器实时状况。
+- **冲突处理**：先确认是否只是历史快照，查看明确日期与最新提交；仍有冲突则说明并请负责人裁决，不擅自猜测、reset、覆盖或重写。
+- **恢复输出**：HEAD、当前阶段、最近已批准事项、唯一进行中事项、阻塞与权限、下一行动和证据缺口；直接接续而非重跑已完成阶段。
+- **更新闭环**：有用户明确决定、任务验收、阶段切换或真实实验结果时更新各自负责的文档、记录日期和影响并校验远端提交；没有新事实就无需更改。禁止未经请求的深度研究、服务器操作或付费使用。
 
 ## 1. 事实来源、证据等级和时间
 
@@ -45,10 +54,11 @@
 | D-007 | 历史日志只用于分布先验/成本校准，不构造虚假未选动作标签 | 缺 task_id、状态与 counterfactual | 已确认 |
 | D-008 | 先搭建 Harness/Schema，再采集可重放受控轨迹 | 当前仓库没有可执行路由代码 | 已确认 |
 | D-009 | 论文聚焦真实 Agent 状态与决策机制；不以字段数量为新意 | 避免空泛主张 | 已确认 |
-| D-010 | 三份 Markdown 为持续维护的公开事实源 | 支持 ChatGPT 与本地 Agent 交接、审阅和版本控制 | 已确认 |
+| D-010 | 初期三份 Markdown 为公开事实源，E-DESIGN 后增为四份 | 支持 ChatGPT 与本地 Agent 交接、审阅和版本控制 | 已确认 |
 | D-011 | 采用轻量 Git：默认 main、本地频繁 commit、按会话/里程碑或最长 24 小时工作周期 push；不要求 PR | 研究实验优先可追溯和及时备份，避免不必要的工程流程 | 已确认（2026-10-09） |
 | D-012 | 暂不迁移或归档历史研究目录，保持当前物理结构 | 现有目录可控，移动 PDF/截图可能破坏引用且不减少 Git 历史体积 | 已确认（2026-10-09） |
 | D-013 | 服务器未来采用独立 ModelRouter 工作目录与 Python 环境；既有共享资源只读；本轮禁止实际服务器操作 | 降低对共享服务和既有资产的干扰，隔离实验依赖 | 已确认（2026-10-09，E0.5-ENV） |
+| D-014 | 未来所有新会话从 GitHub 最新 main 及四份职责分离文档恢复，单一现状入口，事件后更新 | 防止旧聊天记忆、历史快照、推荐和未推送状态冒充当前事实 | 已确认（2026-10-09） |
 
 **历史方案迁移说明**：2026-09 的 `IMPLEMENTATION_RESEARCH.md` 重点是“任务开始前一次选择 + GBDT/MLP 事前成本预测”。这是仍有价值的**对照基线和文献证据**，但当前主方法已更新为“运行时状态感知 + 单一 Kev-4B + 任务级回报”。不得在新代码中未经讨论把旧设计当作强制架构。
 
@@ -95,15 +105,15 @@
 - 审核 Execution 报告，区分事实、推断、未知；确定研究目标、实验假设、优先级和验收条件。
 - 下发单一编号任务卡：`Task ID / Goal / Inputs / Allowed operations / Forbidden operations / Deliverables / Tests / Documentation / Git workflow / Stop conditions`。
 - 对代码变更进行架构与实验有效性审查；对统计结论要求可复现证据。
-- 根据回报修订三份文档的研究决策与后续计划。
+- 根据真实报告或明确决定按职责更新四份文档；无新增事实的讨论不制造进度提交。
 - **不能**声称自动监听本地或服务器、自动运行后台任务、或已完成未实际执行的实验。
 
 ### Execution Agent（本地 Agent）
 
 - 严格按任务卡执行，先检查工作区状态和最新 GitHub HEAD；发现未提交修改不得覆盖、reset、clean 或强推。
-- 可在任务卡授权范围内修改代码、运行测试，按职责检查三份文档；频繁本地 commit、定期 push；记录本地 HEAD、远端 HEAD、测试结果和已知风险。
+- 可在任务卡授权范围内修改代码、运行测试，按职责检查四份文档；频繁本地 commit、定期 push；记录本地 HEAD、远端 HEAD、测试结果和已知风险。
 - 不擅自访问新主机、安装大型依赖、下载模型、占用共享 GPU、调用付费 API、修改生产服务或上传私人数据。
-- 任务完成必须**检查**三份文档：Memory 记决策/交接，Status 记实测进度；Research 仅在证据、方法或实验协议变化时修改。无需修改的文档在交付报告注明即可，不做无意义提交。
+- 任务完成必须**检查**四份文档：Memory 记决策/交接，Status 记实测进度；Research 仅在证据、方法或实验协议变化时修改。无需修改的文档在交付报告注明即可，不做无意义提交。
 - 每轮交付本地 HEAD SHA、`origin/main` SHA、ahead/behind、未提交状态、最近 push 状态、变更文件列表、测试摘要、风险和下一步建议；不得只说“完成”。
 - 若任务超出授权或有冲突，停止并回报 Planning Agent。
 
@@ -153,12 +163,12 @@
 
 - `Task / Status / Local HEAD / origin/main HEAD / Ahead-Behind / Dirty / Last push`
 - `Observed facts`（审计时间与证据范围；服务器部署 SHA 或“未部署”）
-- `Files changed`（三份文档逐份注明“已修改/已检查无需修改”）
+- `Files changed`（四份正式文档逐份注明“已修改/已检查无需修改”）
 - `Tests run`（通过/失败/未运行）
 - `Resource / cost usage`（仅真实数据）
 - `Risks / blockers / Next recommended task`（不自动执行）
 
-Planning Agent 下一轮先阅读本文件、[状态](PROJECT_STATUS.md)、[研究方法](RESEARCH_OVERVIEW.md)和最近一次任务报告，再决策。
+Planning Agent 必须使用第 10 节新会话恢复协议；先核对 GitHub HEAD，按 [Status](PROJECT_STATUS.md) → [Q&A](EXPERIMENT_QA.md) → Memory → [Research](RESEARCH_OVERVIEW.md) 的顺序确认唯一下一行动。
 
 ## 9. 文档分层与按时间顺序的交接记录（MR-DIR-001 新规则）
 
@@ -169,7 +179,7 @@ Planning Agent 下一轮先阅读本文件、[状态](PROJECT_STATUS.md)、[研�
 | A · 交接/记忆 | 本文件 `PLANNING_MEMORY.md` | Planning + Execution | **每次任务与决策**；按时间追加审计事件、Planning 审查意见、纠正事项、提交记录与后续决策 |
 | B · 研究总纲 | `RESEARCH_OVERVIEW.md` | 项目负责人/论文研究 | **研究证据、方法或实验协议改变时**；方法未变时无需修改，避免流水账 |
 | B · 进度看板 | `PROJECT_STATUS.md` | 项目负责人 | **每次任务状态变化**；统一首页看板、阶段表、工作包队列，确保当前状态一致 |
-| C · 实验问答决策 | `EXPERIMENT_QA.md` | Planning + 项目负责人 | **规划于 E-DESIGN 阶段建立（本轮仅登记计划，不提前创建）**；专职记录 Planning 提出的实验设计问题、选项、负责人回答、最终决策及日期 |
+| C · 实验问答决策 | `EXPERIMENT_QA.md` | Planning + 项目负责人 | **已于 2026-10-09 E-DESIGN 启动时建立**；专职记录 Planning 提出的实验设计问题、选项、负责人回答、最终决策及日期 |
 
 “实时进度”定义为**Execution 在本地随任务事件更新并 commit，按工作会话/里程碑或最长 24 小时工作周期 push 后 GitHub 可见**；未推送内容只有本地可见。不能声称 ChatGPT 自动后台监视本地、服务器或持续推送；不得为了更新泄漏私人日志。
 
@@ -277,10 +287,12 @@ Planning 决定当前物理目录保持不变；PDF/截图迁移可能破坏引�
 - **Git 历史暴露风险**：由于分支 `agent/mr-dir-001-directory-audit` 早期提交（`b9c2321`、`fbbb53e` 等）已推送到公开仓库，其历史提交记录中曾包含内部主机名、用户家目录路径前缀及端口号。
 - **处理准则与状态**：本任务严格遵循安全纪律，**禁止擅自 force push 或重写远端公开历史**。上述历史暴露范围已如实向 Planning Agent 与项目负责人报告，等待决策后续是否需要启动专门的 Git 历史清理程序（如 `git-filter-repo`）。
 
-### 9.6 最新项目阶段说明与执行路线
+### 9.6 历史阶段说明（以下是旧快照，不代表现状）
+
+> **这一节保留 E0.5 确认前的原始阶段记录；最新阶段唯一由 [PROJECT_STATUS.md](PROJECT_STATUS.md) 首页确定。**
 
 - **执行路线**：`E0.5 环境与文档确认 → E-DESIGN 详细实验设计与用户决策 → E1 工程基础 → E2 Harness 与基线 → E3 受控实验 → E4 模型训练与消融 → E5 论文与复现`。
-- **当前状态**：**MR-DIR-001 与 MR-SYNC-001 均已依据 Execution 报告验收；E0.5 仅待服务器工作目录与共享资源边界决策；E-DESIGN 尚未开始。**
+- **当时状态（已过时）**：MR-DIR-001 与 MR-SYNC-001 当时已验收；E0.5 当时待服务器边界确认；E-DESIGN 当时尚未开始。**随后 E0.5 已完成并启动 E-DESIGN，详情见 9.9 与最新 Status。**
 - **严禁事项**：不得在目录审计验收前跳过 E-DESIGN 直接启动 MR-E1-001 工程代码开发，不得下载大模型或修改服务器共享服务。
 
 ### 9.7 MR-SYNC-001：版本信息完整性核对
@@ -310,3 +322,52 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - **阶段判定**：E0.5 完成；E-DESIGN 正式启动，实验协议尚未冻结。建立 [EXPERIMENT_QA.md](EXPERIMENT_QA.md) 记录设计问题与用户决策。
 - **首轮问题**：Q-001 评测任务集和 pilot 构成，Planning 推荐分阶段混合任务方案；目前仅是推荐，待用户答复。后续 Q-002～Q-010 依次处理动作空间、预算、指标、基线、分支设计、数据分割、统计、复杂场景及 Kev 可行性。
 - **Git 同步边界**：本次文档由 Planning 直接提交 GitHub main；Execution 的上一轮本地 HEAD 快照在提交后不再等于最新远端 HEAD，下次本地工作前先安全 fetch/ff-only；保护私人未跟踪文件。
+
+## 10. 新会话恢复协议（长期生效）
+
+### 10.1 每轮研究如何接续与更新
+
+1. **启动**：核验 `main HEAD → Status → Q&A → Memory → Research → 必要的最新 Execution/实验报告`；不能只用此前聊天记忆。不可访问 GitHub 时要求用户提供文件。
+2. **继续**：以 Status 首页唯一「当前任务」定位下一行动，E-DESIGN 时只处理 Q&A 未关闭的 Q-ID。负责人未批准的问题不能当作已冻结方案。
+3. **完成决策**：负责人明确回答 Q-ID 时，Q&A 记录答复、最终决策、日期、实验和预算影响及下一题；Status 改进度/当前任务；重要长期决策追加 Memory 的 D-ID/交接事件。
+4. **完成工程/实验**：Execution 提供 Git SHA、任务编号、已完成/未完成、真实测试证据、资源/费用、未推送状态、阻塞和下一工作项；更新 Status 和 Memory。只有方法/证据/协议真正变化时才更新 Research。
+5. **验证**：公开脱敏，按既定 main 工作流提交，重新读取 GitHub 最新 HEAD 和改变的文件验证；不能凭此推断服务器实时状况。无新事件不产生空更新，不为新窗口另造文档/代码分支或第二套流程。
+6. **权限**：通用提示词不扩展原有授权；未批准的服务器、下载、GPU、付费 API、训练等禁止操作，也不主动启动深度研究。
+
+### 10.2 通用 ChatGPT 新窗口启动提示词
+
+每次新对话复制下方原文，无须更改日期、commit SHA 或问题编号：
+
+~~~text
+你是 ModelRouter 研究项目的长期 Planning Agent。请继续此前研究，不要重新开题。
+
+仓库：https://github.com/sxyq/modelrouter
+
+首先通过 GitHub 连接器或公开仓库访问方式，核验当前 main HEAD 的完整 SHA 与本次读取时间，并在该 HEAD 下按顺序完整阅读：
+1. our-project/planning/PROJECT_STATUS.md
+2. our-project/planning/EXPERIMENT_QA.md
+3. our-project/planning/PLANNING_MEMORY.md
+4. our-project/planning/RESEARCH_OVERVIEW.md
+如确有必要，再核查近期 Execution 报告、实际代码、实验记录及相应版本。如果 GitHub 不可访问，直接告诉我，并要求提供这四份最新文件，不能假装已经读取。
+
+各文档唯一职责：
+PROJECT_STATUS = 最新阶段、唯一当前任务、阻塞、授权和下一行动；
+EXPERIMENT_QA = 实验问题 Q-ID、用户已确认选择和待答问题；
+PLANNING_MEMORY = 已确认的长期 D-ID、历史交接与协作纪律；
+RESEARCH_OVERVIEW = 学术问题、相关工作、方法、假设及数据/实验协议。
+旧聊天摘要、旧 SHA 和历史快照都不能覆盖最新版 Status；Planning 的建议不等于我的批准。遇到记录冲突时先说明证据和时间，不擅自修改或替我作决定。
+
+请先输出简短恢复报告：GitHub HEAD、当前阶段、最新明确决定、唯一未完成任务、权限/阻塞、下一行动、尚需核实的事项。然后直接继续最新版文档所指向的工作，不重做已验收阶段，不重复询问已确认 Q-ID。本提示词没有固定阶段、日期、SHA 或当前任务号，今后也无需人工修改。
+
+你担任 Planning Agent，本地 Execution Agent 才执行经授权任务。维持唯一现有研究主线，禁止因新窗口创建重复脚本或第二套执行流程；改动研究方向先解释证据和迁移影响并征得同意。只有我明确要求时才能使用深度研究。
+
+未经明确额外批准，禁止访问/修改服务器、写共享资源、安装依赖、下载模型、占用 GPU、调用付费 API、训练或启动工程任务。默认 GitHub main，本地频繁 commit、按工作会话/里程碑及时 push、不要求 PR；保护未提交私人文件、不 reset/clean/force push、不擅自重写远端历史。
+
+每次用户确认新 Q-ID、任务完成、阶段变化或出现新实测证据，都检查四文档：最新阶段与唯一下一步写入 Status；问答答案、日期、预算影响写入 Q&A；重大决策及跨 Agent 交接写入 Memory；仅在方法、证据或协议变化时改 Research。提交并复核 GitHub HEAD，明确已推送还是仅本地。没有实质变化就不要制造空更新。
+
+以后每次新对话都使用同一提示词，进度自动以可核查的最新 GitHub 内容确定，而不是以本段文字写死。
+~~~
+
+### 10.3 信息缺口和回退
+
+GitHub 公开文件只能表示已推送事实，不能自动提供本地未推送代码、私人配置、服务器状态与未公开实验轨迹。新会话必须说明哪些内容经过独立核实，哪些仍需用户或 Execution Agent 补充；**不能承诺任意新窗口自动获得当前私有上下文**。

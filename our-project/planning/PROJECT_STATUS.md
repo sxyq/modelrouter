@@ -1,8 +1,8 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **版本 v0.8｜状态截止 2026-10-09｜依据：MR-E0-001 只读审计快照 + MR-DIR-001 目录审计快照 + GitHub main 实际核查**
+> **版本 v0.9｜状态截止 2026-10-09｜依据：MR-E0-001 只读审计快照 + MR-DIR-001 目录审计快照 + GitHub main 实际核查**
 >
-> **读者**：项目负责人、实验执行人员。**本文件记录“已经有什么、还缺什么、何时算完成”**。详细研究论证见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)；Agent 交接规则见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
+> **读者**：项目负责人、实验执行人员、新会话 Planning Agent。**本文件首页是最新阶段、任务、阻塞和唯一下一行动的权威入口**。详细研究论证见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)；Agent 交接规则见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
 > **证据注意**：服务器、GPU、进程和数据规模来自本地 Execution Agent 于 2026-10-09 提交的审计快照，不代表 Planning Agent 直接登录复验，也不构成实时监控。公开文档刻意不包含服务器内网 IP、SSH 登录信息、内部主机名、用户家目录与私人绝对路径。
 
@@ -17,13 +17,15 @@
 | **主要阻塞** | 尚未完成详细实验设计；无 Router/Harness 代码与测试；Kev-4B 未在授权扫描范围发现且未部署；服务器当前运行版本尚无本项目部署 |
 | **下一步** | **冻结任务集 → 动作空间/effort → 预算与主指标 → 基线/分支/统计 → 决策完成后 E1** |
 | **更新方式** | 本地频繁 commit；工作会话结束/里程碑或最长 24 小时工作周期 push；仅 push 后 GitHub 可见，非后台自动监控 |
-| **最近更新时间** | 2026-10-09；E0.5-ENV 已确认，E-DESIGN 已启动，Q-001 待答复 |
+| **最近更新时间** | 2026-10-09；交接文档治理更新，实验阶段未改变：E-DESIGN 进行中、Q-001 待答 |
 
-**文档分层与规划**：
-- Agent 交接历史与决策日志 → [PLANNING_MEMORY.md](PLANNING_MEMORY.md)
-- 给负责人看的最新进度与看板 → 本文件
-- 给负责人看的稳定研究方案 → [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)
-- 实验设计问答与决策记录 → [EXPERIMENT_QA.md](EXPERIMENT_QA.md)（E-DESIGN 已建立；Q-001 待答复）
+**通用新会话恢复顺序（不随阶段变化）**：
+
+1. 核查 GitHub 最新 `main` HEAD 并读取四文档；**本文件首页唯一决定当前阶段、当前任务、阻塞和下一行动**，历史审计不是实时信息。
+2. [EXPERIMENT_QA.md](EXPERIMENT_QA.md)：最新问题与已确认答案；[PLANNING_MEMORY.md](PLANNING_MEMORY.md)：D-ID、历史交接、完整通用新窗口启动提示词（第 10 节）；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)：方法与证据。
+3. **本次有效状态**：Q-001 的 A/B/C 尚未得到用户最终选择；C 只是推荐，不能写作批准。后续应由最新版文档自动确定下一 Q-ID，不再依赖本次固定信息。
+4. **授权限制**：负责人仅确认未来独立目录与 Python 环境，共享资源只读；未批准服务器写入、安装下载、GPU、付费 API 或开始 E1。
+5. 后续阶段/决策/实验状态变化时更新本页和相关 Q&A/Memory，只有方法或证据变化才更新 Research；不制造空提交，不能在仓库正文写死永久最新 SHA。
 
 ### 0.1 本地与服务器实测核验结果（Execution Agent 于 2026-10-09 审计快照）
 
@@ -40,7 +42,7 @@
 
 | 版本层次 | Planning 能否直接核实 | Execution 应报告 |
 |---|---|---|
-| GitHub 远端 `main` | **可以**，读取最新 HEAD 与三份文件 | 远端 SHA、最近 push、文档变更 |
+| GitHub 远端 `main` | **可以**，读取最新 HEAD 与四份正式文件 | 远端 SHA、最近 push、文档变更 |
 | 本地工作区 | **不能自动看到** | 当前分支、本地 HEAD、未提交/未跟踪文件的脱敏摘要、相对 `origin/main` 的 ahead/behind |
 | 授权服务器运行版本 | **不能从 GitHub 推断** | ModelRouter 是否部署；若部署，记录实际代码 SHA、环境/模型版本、审计时间 |
 | 实验结果版本 | **必须由执行记录提供** | 代码 SHA、配置/数据/模型版本、任务集、seed、结果位置、费用与资源 |
@@ -76,7 +78,7 @@ Execution 在每轮结束时先执行 `git status -sb`、`git rev-parse HEAD`、
 
 | 路径 | 内容 | 复用方式 |
 |---|---|---|
-| `README.md` | 项目入口 | 增加三文档导航 |
+| `README.md` | 项目入口 | 四文档与新会话导航 |
 | `our-project/literature/report.md` | 551 行任务级成本路由历史综合调研 | 保留原始证据与早期问题定位 |
 | `our-project/literature/findings/F1.md`–`F7.md` | 专题证据 | 研究与实验设计引用 |
 | `our-project/literature/related-papers.md` | 论文定位表 | 持续核对近邻方法 |
@@ -236,6 +238,6 @@ configs/
 
 ## 8. 更新纪律
 
-每次任务或研究决策：Execution Agent 在本地频繁 commit，并在工作会话结束、重要里程碑或最长 24 小时工作周期内 push。Memory 记交接与决策，Status 记进度；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 仅在研究证据、方法或实验协议改变时更新。交付记录本地 HEAD、远端 HEAD、ahead/behind、dirty、最近 push、测试和结果版本；不要求 PR。
+每次任务或研究决策：Execution Agent 在本地频繁 commit，并在工作会话结束、重要里程碑或最长 24 小时工作周期内 push。Memory 记长期决策与交接，Status 记唯一当前进度，Q&A 记问答批准；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 仅在研究证据、方法或实验协议改变时更新。交付记录本地 HEAD、远端 HEAD、ahead/behind、dirty、最近 push、测试和结果版本；不要求 PR。
 
 **此处所有“未开始/待验证”均为 2026-10-09 的基线，后续必须依据真实执行证据更改。**
