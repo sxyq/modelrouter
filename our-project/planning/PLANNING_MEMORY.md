@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v1.8｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v1.9｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
@@ -410,6 +410,15 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - 新目录和新 Markdown 报告尽量中文；技术代码、标准目录、原数据集英文名不批量改。用户不希望 CI/工程门禁/版本冻结/复杂 hash 管理；最小论文真实性检查依旧必要。GitHub 只提交代码/报告/少量公开笔记，不提交私密现场、大数据、凭据。
 - 本轮是 Planning 在远端五文档同步后的交接约定，**并非本机 Codex/Obsidian/服务器数据已经执行完成的证明**。
 
+### 9.20 服务器首批公开数据运行报告的科研审阅（2026-10-09）
+
+- Execution 报告/远端 main 966f582 可核对：本地/服务器运行新增 prepare_router_data.py public 模式，原始下载约 405MB，导出 20k Agent step、30k Arena 偏好、30k Mooncake 请求、970 TwinRouterBench，合计 80,970 样本，并写 train 57,165 / val 12,123 / test 11,682。实际读取的 Open-SWE 和 SWE-smith 都只是一份 Parquet shard，并非全部官方公开轨迹；LLMRouterBench 仅索引了任务目录。Planning 已核对 GitHub 代码和 50 条预览，**没有登陆服务器重新核验完整原始/清洗 JSONL**。
+- **重大标签审查**：Agent 的 step_complexity=step/error 阈值、is_high_effort=complexity==high、cache_hit=step>1；Arena 的 is_high_effort 取 winner 模型关键词或 prompt 长度，cost_tier 由 prompt 长度估出，state 只有 prompt_chars 无实际 Prompt；Mooncake 的 cache_affinity=hash prefix hit ratio 阈值、is_cache_hit=历史请求 hash 复用机会，不是实际 Provider cached_read。标签明显有多项规则映射/不对应真实动作，不能称 80,970 个最优 model×effort 标签。
+- **泄漏/评测**：Agent 清洗在处理 assistant 当前消息后才记录 context_chars/prior_tool_calls，包含当前动作信息（pre-decision 泄漏）；原脚本按 trajectory ID 分 Train/Val/Test，无法保证同一真实 instance/repo 不串集；Mooncake 每 100 条人造 task_session_id，不是真任务；TwinRouterBench 被合入 training，失去独立评测效力。未实际评估跨同题重复，不能称严格无泄漏。
+- **Kev 官方接口不兼容**：需将 choice.options 换成 choice.criteria map，score.levels 换成 score.criteria list，score.label 从 budget/standard/premium 字符串改为 0/1/2；只使用证据充分的监督问题。官方来源 jaredpalmer/kev 的 skills/kev-finetune/references/data-format.md 和 README.md；可用官方现有工具做单次轻量输入验证，然后才做小样本 LoRA smoke test。
+- **唯一接续任务**：原始公开数据保留服务器，在唯一 prepare_router_data.py 上修正科研标签和数据格式；重提取 Agent 真实 outcome，只做 observed continuation 监督；Arena 原 Prompt+winner 做偏好；Mooncake 单独作为 cache workload；TwinRouterBench 留独立测试；模型最佳动作训练必须等同状态真实动作后续对照。优先向 Codex/Execution 派发修复，不额外创建 v2 脚本或 CI。
+- **公开文档隐私提醒**：执行者提交的《服务器资源与目录说明》公开版曾含内部网络/登录及端口信息；Planning 已对最新 main 的公开版进行最小脱敏，但旧提交仍有历史痕迹。未来只写用户 Home 相对路径和公开可披露聚合硬件数；需要完全删除历史必须另行明确讨论。
+
 ## 10. 新会话恢复协议（长期生效）
 
 ### 10.1 每轮研究如何接续与更新
@@ -440,7 +449,7 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 
 角色分工：你负责 Planning + 深入需求和学术讨论；本机 Codex 负责 GitHub 文档同步、论文 Skill、Obsidian 笔记和必要代码；服务器 Execution Agent 在用户自有服务器下载/CPU 清洗公开数据。用户指定新研究目录和 Markdown 尽量中文，代码/开源数据集正式名保持英文。单一清洗主链，不搞工程化门禁/CI/复杂 hash 系统；保留必要科研数据隔离和标签真实性。未收到执行报告就写待执行，不得自己声称完成。
 
-文献资源已在本仓库 literature/pdfs/ 有 58 PDF，但旧 manifest/README 仍列 54；本机 Codex 应先补清单，利用 ~/.codex/skills/paper-research-router/SKILL.md（源仓库 sxyq/skill-）对已有 PDF 一篇一中文 Obsidian 笔记；新文献搜索由 sxyq/research-router 负责。不要建立第二套 PDF 仓库。重点核对 Agent 动态路由、模型×推理档位、KV/成本反转、Jev/Kev 训练相关文献的真实数据、方法、评价与缺陷。
+文献资源已在本仓库 literature/pdfs/ 有 58 PDF，但旧 manifest/README 仍列 54；本机 Codex 应先补清单，利用 ~/.codex/skills/paper-research-router/SKILL.md（源仓库 sxyq/skill-）对已有 PDF 一篇一中文 Obsidian 笔记；新文献搜索由 sxyq/research-router 负责。不要建立第二套 PDF 仓库。最新 Execution 已输出公开数据约 80,970 混合样本，但 Planning 发现大量规则伪标签、并非真实最优动作，TwinRouterBench 与训练混合、Kev JSONL 还缺官方 schema 转换，因此下一阶段是**修正数据标签与独立划分，不是盲目马上训练**。重点核对 Agent 动态路由、模型×推理档位、KV/成本反转、Jev/Kev 训练相关文献的真实数据、方法、评价与缺陷。
 
 启动时简洁汇报当前阶段、真实已完成/委派中、证据差异、直接相关论文和下一步问题；然后立即继续回答我这次的问题。获得新执行成果后更新五核心文档相应职责，并核实 GitHub。无需对用户重复问答，必要时才提出真正改变研究路径的单个问题。
 ~~~

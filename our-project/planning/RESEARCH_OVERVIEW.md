@@ -1,6 +1,6 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v1.1｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
+> **版本 v1.2｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -293,6 +293,16 @@ Provenance: source, schema_version, model_revision, privacy_flags
 研究优先级 D（Jev/Kev 同类决策器）：结合 our-project/literature/jev-model-research.md、research/jev-deep/JEV深度调研报告.md 与 jaredpalmer/kev 的官方模型卡/训练格式，分开 TypeSafe Jev 托管闭源、Kev-4B Qwen 基座 LoRA+pointer-head 的开放训练、Laya/Visual Jev/Simple Jev/AnyJev 独立实现以及不同的 Meta JEPA。对 Jev 厂商公开程度和 RLCD 术语必须按官方可验证内容表述，不能推断未公开的训练细节；论文方法可不把 Kev 放在标题，但 Implementation Details 必须披露实际 checkpoint 与微调技术。
 
 每篇笔记统一回答：研究问题；输入/动作/目标；原始数据与标注规模；模型骨干/训练损失；静态/在线评测协议；主要表格/图和页码；作者的限制；与 ModelRouter 的重合和可证伪差异；可复用数据/代码；尚不能确认的点。结论须明确区分论文作者声称、原文证据、我们的推断。
+
+### 6.5 公开数据首批实测后的训练方法纠偏：区分观测、规则和路由因果（2026-10-09）
+
+Execution 报告已落地 80,970 个多来源 JSONL 行；Planning 从 main 966f582 清洗代码和样本预览核实：Open-SWE/SWE-smith 只读各自首个 shard，Agent 的 low/mid/high 由 step/errors 阈值产生，并非真实模型努力/最佳选择；Arena winner 是真实比较标签，但生成的 Kev state **缺少原 Prompt 语义**，多余 effort/cost/cache 标签是模型名和长度阈值的派生；Mooncake prefix hash 可估历史复用，所谓 `cache_hit` 不等于 serving cached_read，`cache_affinity` 由同一 hit_ratio 阈值直接确定，放入 Choice 等于教模型重现阈值；TwinRouterBench 970 个 benchmark 标签被混进训练，不可再作为独立泛化测试。当前属于**初始多源数据转换成果，而非有 80,970 条最优 model×effort 标签的科研训练集**。
+
+额外决策前泄漏：Agent 的 current assistant content 与 tool_calls 在保存状态前就纳入 context_chars/prior_tool_calls，真实在线路由不应看到将要发生的 assistant 响应和动作；TwinRouterBench state 包括整段 total_steps，也可能在执行前不可知。按轨迹 ID/人工 100 请求块划分不足以保证相同 instance/repo 和同题多次执行不跨集。科研统计不能用人工 session ID 的 31,235 当作真实独立 Agent 任务数。
+
+**最短科学改正路线**：保留原始文件与现有单一 prepare_router_data.py；重提取仅决策前、真实文本及任务元数据；Agent resolved/continuation 只做 observed-outcome 标签，不把该策略当最优；Arena 保留真实 prompt + candidate model names + winner，优先训练真实 pairwise；Mooncake 仅做缓存负载特征与模拟研究数据；TwinRouterBench 仅独立 heldout；只有拥有相同状态多候选真实完成结果时才能训练 model×effort 优选标签。对 Kev 官方 `choice.criteria`、`score.criteria` 与整数 score.label 做最小兼容变换，并使用官方 CLI 验证一小批样本；不要重新构建工程化测试框架。完成后先记录真实各类可信标签数量，再选 Kev LoRA 适配。
+
+论文中必须说明数据规模是 raw episodes/decision-prefixes/preference pairs/workload traces 各类不同单位，不能把四种行数加起来称为最优路由监督。消融要有真正的未见 task/repo holdout 和不含 benchmark 的训练版；否则高分只反映规则拟合或同题泄漏。
 
 ## 7. 可证伪的研究假设
 

@@ -1,6 +1,6 @@
 # ModelRouter · 数据源、模型能力与缓存政策统一台账
 
-> **版本 v1.2｜建立：2026-10-09；官方数据结构只读核验与清洗/训练方案更新：2026-10-09｜阶段：E-DESIGN / Q-007 第一大阶段｜状态：候选目录，未完成清洗和训练许可核验**
+> **版本 v1.3｜建立：2026-10-09；官方数据结构只读核验与清洗/训练方案更新：2026-10-09｜阶段：E-DESIGN / Q-007 第一大阶段｜状态：候选目录，未完成清洗和训练许可核验**
 >
 > **唯一职责**：此文件是公开数据源、数据许可、八组状态覆盖、模型/Provider 能力、缓存/定价政策及未来“候选 → 选择 → 数据加工 → 验收”信息的**唯一详细台账**。它不是新的执行流水线或运行时政策数据库。
 >
@@ -278,6 +278,14 @@
 先于正式训练报告每源原始/有效记录数、task/repo/query 唯一数、决策前状态覆盖、真实/未知/静态偏好/OBSERVED_REUSE 各标签数、train/val/test 数、过滤原因、存储占用与实际执行耗时。现有 Blog/CCH Execution 自报 221,128→178,621 行是**调用级历史动作**，绝不是该数量的最优路由标签。GitHub 只能推代码/中文报告/公开少量样本，原始和完整训练大数据留服务器；服务器 GitHub 可写身份须由 Execution 实测，不记录任何密钥。
 本机并行文献库任务由 PLANNING_MEMORY §9.19 和 RESEARCH_OVERVIEW §6.4 管理，此数据 Registry 不另复制论文清单。
 
+### 6.7 首批服务器清洗执行证据与 TRAIN_READY 科学定义（2026-10-09）
+
+**最新完成的是数据读取+转换，不是有效监督验证**。Execution 提供主分支 966f582 代码、轻量预览和《公开数据清洗报告》：Open-SWE/SWE-smith 首分片合计 5,729 条轨迹中提取 20,000 step；Arena 57,477 原始行前部抽取 30,000 有偏好标签记录；Mooncake 两类 39,632 请求中抽取 30,000；TwinRouterBench 970；LLMRouterBench 只索引约 30 个任务目录，无同题模型 outcome。服务器生成混合 Kev train/val/test 57,165/12,123/11,682，总 80,970 行。Planning 已核 GitHub 代码与 50 条预览，完整服务器数据和源许可仍须实际检查。
+**需要纠正的标签**：Agent complexity/effort/cache 主要由 step/errors/step>1 规则给出；Arena 人类 winner 真实，但 effort/cost/cache 派生值不是实测，且 Kev state 仅 prompt_chars 没有 Prompt；Mooncake block reuse 是 historical-prefix opportunity，cache affinity 是同一 hit ratio 的规则映射，绝非实际 KV residency；TwinRouterBench 是 benchmark tier 不是具体 `(model,effort)`。训练标签须按 observed terminal outcome / static human preference / cache workload / controlled action comparison 分开记数。
+**数据划分**：原脚本按 trajectory/task_session_id 将四种任务混合切分，不能直接宣称独立 Agent task/repo holdout；在提取 Assistant 当前响应前截取状态；禁止将 TwinRouterBench 参与训练；同题反事实性能尚无可信数量。
+**Kev 兼容**：官方 labelled record 是 `state` 和 `questions`；choice 的 `criteria` 为 option-name→description object、`label` 为 option-name；score 的 `criteria` 为有序列表、`label` 为 int 0 起；当前脚本用 options/levels/字符串 score.label，不能认为可直接训练。来源：https://github.com/jaredpalmer/kev/blob/main/skills/kev-finetune/references/data-format.md。
+**唯一下一项**：保留原脚本，快速修正各源数据归类、可信标签和 split；按真实来源打印每类可训练监督数量，做官方简单 validate，再继续第一轮 LoRA 方案，不新增第二套管理链。
+
 ## 7. 后续阶段接口和变更历史
 
 当前唯一大阶段：**Q-007 数据来源候选目录**，先按本台账登记、核证与选定；数量、实际清洗、Kev 训练方式、Provider 部署和正式评测后议。
@@ -289,3 +297,4 @@
 | 2026-10-09 | v1.0 | 将 Q-007-R1/R2 的轨迹、模型选择、Mooncake 缓存、记忆、多 Agent、时间、Provider 资料整理为独立权威台账，补充 Selection Board 与未来 AI 清洗规范 | 仅研究/文档，尚无实际数据处理、逐源批准或运行授权 |
 | 2026-10-09 | v1.1 | 官方数据卡核验原生字段；增补第一轮推荐数据能力组合、源专属规范化、Kev 输入长度与四阶段学习方案、五核心文档去重建议 | Planning 提案；尚未选择/下载/加工真实数据、训练 Kev 或审批服务器/GPU/API |
 | 2026-10-09 | v1.2 | 公开数据服务器清洗委派、中文目录与轻量 GitHub 同步、真实监督数量待回报 | 已明确执行任务，尚无公开数据清洗实测报告 |
+| 2026-10-09 | v1.3 | 首批服务器清洗记录与官方 Kev schema 核对；发现规则伪标签、样本范围与 heldout 隔离问题 | 数据转换已执行，但尚非可信 TRAIN_READY；要求同脚本科研纠偏 |

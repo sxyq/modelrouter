@@ -1,6 +1,6 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **版本 v1.7｜状态截止 2026-10-09｜依据：MR-E0-001 只读审计快照 + MR-DIR-001 目录审计快照 + GitHub main 实际核查**
+> **版本 v1.8｜状态截止 2026-10-09｜依据：MR-E0-001 只读审计快照 + MR-DIR-001 目录审计快照 + GitHub main 实际核查**
 >
 > **读者**：项目负责人、实验执行人员、新会话 Planning Agent。**本文件首页是最新阶段、任务、阻塞和唯一下一行动的权威入口**。详细研究论证见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)；Agent 交接规则见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -10,14 +10,14 @@
 
 | 项目 | 当前 |
 |---|---|
-| **当前阶段** | **E-DESIGN：详细实验设计与用户决策；服务器公开数据清洗与 Kev-4B 数据集转换第一阶段完成** |
-| **当前任务** | **接收并审阅服务器公开数据清洗报告（80,970 样本，已完成会话隔离划分）；推进 Kev-4B 微调方案讨论与 Obsidian 论文库同步** |
-| **已完成** | E0/E0.5 审计；Q-001～Q-006 阶段选择；服务器公开数据（Open-SWE-Traces、SWE-smith、Arena、Mooncake、TwinRouterBench、LLMRouterBench）清洗完成并生成 Kev-4B 标准 JSONL；服务器中文目录规范确立；轻量报告与预览已同步至本地；GitHub main 包含唯一 prepare_router_data.py |
-| **正在等待** | Planning Agent 针对公开数据清洗实测结果（80,970 样本）进行审阅与确认；讨论 Q-010/Q-011 具体训练方案与基线对比；本机 Codex 同步文献与 Obsidian 笔记 |
-| **主要阻塞** | 暂无执行阻塞；公开数据已落地并完成会话隔离划分；服务器 GPU RTX A6000 随时可用；等待决策确定第一阶段微调超参与验证基准 |
-| **下一步** | **审阅公开数据清洗报告与样本预览；讨论 Kev-4B 在服务器上的微调方案 (Smoke Test) 与基线设计；推进 Obsidian 单篇论文笔记** |
+| **当前阶段** | **E-DESIGN / Q-007：服务器公开数据首批采样与转换已执行；科研标签质量与 Kev 官方格式尚未达可训练标准** |
+| **当前任务** | **修正已执行公开数据管线的目标标签、真实 pre-decision 状态、任务级划分与 Kev schema；隔离 TwinRouterBench；随后再决定 Kev LoRA 第一轮训练** |
+| **已完成** | E0/E0.5 审计与 Q-001～Q-006 研究选择；Execution 报告服务器处理 Open-SWE/SWE-smith 20,000 步、Arena 30,000 条、Mooncake 30,000 请求、TwinRouterBench 970 条并写出 80,970 个混合示例，train/val/test 行数 57,165/12,123/11,682；GitHub 已核实源脚本、轻量报告及预览。LLMRouterBench 只索引了任务目录，没有处理同题模型结果。**这些不是 80,970 条真实最优模型路由标签，也不是可直接被 Kev 接受的标准 JSONL** |
+| **正在等待** | 本机/服务器 Execution 按科研审查意见修正唯一 prepare_router_data.py 并回报各监督域的真实有效数；本机 Codex Obsidian 58 篇论文笔记交付尚无报告；Q-010/Q-011 微调训练目标继续讨论 |
+| **主要阻塞** | Agent 的 effort/cost/cache/complexity 大多为规则派生伪标签；Arena 状态缺原 Prompt 语义；Mooncake 复用机会被误称物理缓存 hit；TwinRouterBench 被放入训练；仅按 trajectory/session ID 划分不足以防止同 task/repo 串集；choice.options/score.levels 与官方 criteria schema 不符。GPU 空闲是执行时快照，非当前保证 |
+| **下一步** | **让原执行者在同一清洗脚本重建合法训练视图：保留 Arena 原 Prompt/真实 winner、Agent terminal resolved 仅作 observed outcome、Mooncake 做缓存负载、TwinRouterBench 独立 heldout；修正 Kev criteria/label，再用官方 CPU 校验和小样本 smoke test。最后决定 T1 LoRA** |
 | **更新方式** | 本地频繁 commit；工作会话结束/里程碑或最长 24 小时工作周期 push；仅 push 后 GitHub 可见，非后台自动监控 |
-| **最近更新时间** | 2026-10-09；远端 main 已同步 prepare_router_data.py、公开数据清洗报告与轻量预览；实测样本 80,970 条已完成划分 |
+| **最近更新时间** | 2026-10-09：Planning 阅读 966f582 源码、五份样本预览与执行报告，核对 Kev 官方 data-format.md 后发现 TRAIN_READY 结论不成立；服务器完整 JSONL 尚未由 Planning 逐条审计 |
 
 **持续角色**：本 ChatGPT 为长期 Planning Agent、需求讨论与论文研究伙伴；本机 Codex/Execution Agent 负责本地文档同步/代码维护与服务器执行。研究讨论无需因执行任务尚在进行而中止；用户已选择的简单实验风格优先，不增加工程化门禁。新对话须阅读全部五核心文档并确认最新证据。
 
@@ -25,7 +25,7 @@
 
 1. 核查 GitHub 最新 main HEAD 并读取**五核心文档（Status/Q&A/Memory/Research/Registry）**；**本文件首页唯一决定当前阶段、当前任务、阻塞和下一行动**，历史审计不是实时信息。
 2. [EXPERIMENT_QA.md](EXPERIMENT_QA.md)：最新问题与已确认答案；[PLANNING_MEMORY.md](PLANNING_MEMORY.md)：D-ID、历史交接、完整通用新窗口启动提示词（第 10 节）；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)：方法与证据。
-3. **本次有效状态**：Q-001～Q-006 批准不变；负责人已明确委派服务器做公开数据 CPU 清洗，委派本机 Codex 整理论文库（均尚无执行结果）；Q-010/Q-011 仍开放研究讨论。不得重问已决定事项。
+3. **本次有效状态**：Q-001～Q-006 批准不变；服务器公开数据首批清洗已有 Execution 报告与 GitHub 代码/抽样证据，但标签和 split **需要科研纠正**；本机 Codex Obsidian 论文库尚无执行结果。Q-010/Q-011 继续讨论，不得重问已决定事项。
 4. **执行范围**：服务器公开数据下载/CPU 清洗和本机 CodeX 同步/文献整理已由负责人明确要求；仍不代表授权干扰共享服务、GPU 训练或付费 API。保留科研必要的数据隔离/标签真实性，不新增复杂工程门禁。
 5. 后续阶段/决策/实验状态变化时更新本页和相关 Q&A/Memory，只有方法或证据变化才更新 Research；不制造空提交，不能在仓库正文写死永久最新 SHA。
 
