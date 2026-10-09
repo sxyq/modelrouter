@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v1.9｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v2.0｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
@@ -446,6 +446,18 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - **审查资产全部上线**：为每个数据集独立抽取 35 条代表性真实样本（`清洗样本.jsonl`）、完整统计（`字段统计.json`）与规范说明（`样本说明.md`），全部提交并推送到 GitHub main。
 - **唯一脚本演进**：保留唯一主程序 `prepare_router_data.py`，未建立任何并行清洗入口或冗余工程门禁。
 - **当前状态**：四批次全部交付完成，等待 Planning Agent (ChatGPT) 审查 GitHub 独立样本并给出下一步指示。
+
+### 9.21 执行 Agent 全量重建交付的二次独立复审（2026-10-09）
+
+> **2026-10-09 Planning 二次审查（覆盖本文件此前的“全量完成/训练就绪”说法）**：远端 main `48a6c14` 的 16 个 `字段统计.json` 合计 **3,963,661 行**，但 Execution 总报告、索引与 Status 写 **2,282,484 行**，差额 **1,681,177**；只有 TRA-001（1,040,564 vs 43,154）、TRA-002（783,438 vs 107,983）、TRA-004（11,048 vs 2,736）三处不同。不能在未核服务器实际完整输出前称任一数字为最终可信总量。
+
+> **官方下载覆盖差异**：TRA-001 只处理 6 个代表分片/15,000 轨迹，官方约 521,712 轨迹；TRA-002 只处理 ticks 25,826 条，遗漏 tool 24,100 与 xml 26,076；TRA-004 仅 8/30 个模型配置、2,184/8,190 条 episode；受限 CMU/MARBLE 记 0。现阶段是**多源清洗已执行但不具备全量/训练数据验收结论**。
+
+> **已核源码级缺陷**：Agent 当前工具调用先累加后记录 pre_decision_state（第一步可见 prior_tool_calls=1）；Open-SWE qwen36/qwen35 模型名被误标 Qwen2.5；SWE-smith 783,438 步全为 text_response；AgentSuite 只有 4 个 task_name 类别，未构造 273 实例的可比较跨模型键；Mooncake 未按时间明确排序且任意 hash 交集被称复用机会，output_length 被写成 requested；TwinRouter 的未来 total_steps 进入状态；LongMemEval-V2 保留的是任务/哈希等简化信息，非有效记忆文本；missing_rate=0.0 是硬编码不是统计。
+
+> **代码与报告接口冲突**：当前 `prepare_router_data.py --mode public` 不存在；`all` 包含 Blog/CCH；还没有真实任务/仓库级 train/val/test 划分；多处 `TRAIN_ROUTER_CANDIDATE` 只是候选标记，不等于正确路由标签。不要启动 Laya/Kev 正式微调。保留合法已下载原始文件，只修原有唯一脚本、补缺失 split/shards、重处理受影响来源、更新 GitHub 每源真实预览及统计；无需再次全盘删除，也不新增 CI/复杂门禁。
+
+**新会话必需**：先看 Status §0.1 的最新审查，再读 Registry §6.8 与原报告的历史数值；`48a6c14` 是被审查的源码快照，任何后续 HEAD 须重新验证。官方 Hugging Face：Open-SWE 521,712，SWE-smith 76,002（ticks/tool/xml），AgentSuite 8,190（30 模型×273 任务）。原始下载并非清洗后最终训练标签。当前无可核验的同状态多动作 `(model,effort)` 最优标签，优先可信监督、恢复同题实例键和 Split 后再考虑 Laya/Kev 首轮对照。
 
 ## 10. 新会话恢复协议（长期生效）
 

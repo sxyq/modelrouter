@@ -1,6 +1,6 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v1.2｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
+> **版本 v1.3｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -303,6 +303,18 @@ Execution 报告已落地 80,970 个多来源 JSONL 行；Planning 从 main 966f
 **最短科学改正路线**：保留原始文件与现有单一 prepare_router_data.py；重提取仅决策前、真实文本及任务元数据；Agent resolved/continuation 只做 observed-outcome 标签，不把该策略当最优；Arena 保留真实 prompt + candidate model names + winner，优先训练真实 pairwise；Mooncake 仅做缓存负载特征与模拟研究数据；TwinRouterBench 仅独立 heldout；只有拥有相同状态多候选真实完成结果时才能训练 model×effort 优选标签。对 Kev 官方 `choice.criteria`、`score.criteria` 与整数 score.label 做最小兼容变换，并使用官方 CLI 验证一小批样本；不要重新构建工程化测试框架。完成后先记录真实各类可信标签数量，再选 Kev LoRA 适配。
 
 论文中必须说明数据规模是 raw episodes/decision-prefixes/preference pairs/workload traces 各类不同单位，不能把四种行数加起来称为最优路由监督。消融要有真正的未见 task/repo holdout 和不含 benchmark 的训练版；否则高分只反映规则拟合或同题泄漏。
+
+### 6.6 公共数据实际清洗后的方法学复审（2026-10-09）
+
+> **2026-10-09 Planning 二次审查（覆盖本文件此前的“全量完成/训练就绪”说法）**：远端 main `48a6c14` 的 16 个 `字段统计.json` 合计 **3,963,661 行**，但 Execution 总报告、索引与 Status 写 **2,282,484 行**，差额 **1,681,177**；只有 TRA-001（1,040,564 vs 43,154）、TRA-002（783,438 vs 107,983）、TRA-004（11,048 vs 2,736）三处不同。不能在未核服务器实际完整输出前称任一数字为最终可信总量。
+
+> **官方下载覆盖差异**：TRA-001 只处理 6 个代表分片/15,000 轨迹，官方约 521,712 轨迹；TRA-002 只处理 ticks 25,826 条，遗漏 tool 24,100 与 xml 26,076；TRA-004 仅 8/30 个模型配置、2,184/8,190 条 episode；受限 CMU/MARBLE 记 0。现阶段是**多源清洗已执行但不具备全量/训练数据验收结论**。
+
+> **已核源码级缺陷**：Agent 当前工具调用先累加后记录 pre_decision_state（第一步可见 prior_tool_calls=1）；Open-SWE qwen36/qwen35 模型名被误标 Qwen2.5；SWE-smith 783,438 步全为 text_response；AgentSuite 只有 4 个 task_name 类别，未构造 273 实例的可比较跨模型键；Mooncake 未按时间明确排序且任意 hash 交集被称复用机会，output_length 被写成 requested；TwinRouter 的未来 total_steps 进入状态；LongMemEval-V2 保留的是任务/哈希等简化信息，非有效记忆文本；missing_rate=0.0 是硬编码不是统计。
+
+> **代码与报告接口冲突**：当前 `prepare_router_data.py --mode public` 不存在；`all` 包含 Blog/CCH；还没有真实任务/仓库级 train/val/test 划分；多处 `TRAIN_ROUTER_CANDIDATE` 只是候选标记，不等于正确路由标签。不要启动 Laya/Kev 正式微调。保留合法已下载原始文件，只修原有唯一脚本、补缺失 split/shards、重处理受影响来源、更新 GitHub 每源真实预览及统计；无需再次全盘删除，也不新增 CI/复杂门禁。
+
+**下一轮科学问题**：并非清洗行数越大越好。分别构造 (a) Agent observed continuation outcome（不能当 counterfactual routing），(b) Arena 真实人类偏好、RouterBench 有多候选评测（需许可/相同题目/正确成本口径），(c) AgentSuite 同题 across model/thinking 的**episode**级得分/真实任务键（同一任务下不能用 4 个 task_name 类别作为唯一 ID），(d) Mooncake真实到达顺序+最长前缀潜在复用（不能当实际物理缓存命中），(e) TIME/MEM/ENV 作为状态和工作负载，非最优路由标签。先做最小可验证输入与分割，再对照 Laya 与 Kev；不提前指定最终骨干，不因混合 `TRAIN_ROUTER_CANDIDATE` 标记而认为约 200 万训练标签存在。
 
 ## 7. 可证伪的研究假设
 

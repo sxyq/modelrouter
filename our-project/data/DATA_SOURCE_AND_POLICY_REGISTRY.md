@@ -1,6 +1,6 @@
 # ModelRouter · 数据源、模型能力与缓存政策统一台账
 
-> **版本 v1.3｜建立：2026-10-09；官方数据结构只读核验与清洗/训练方案更新：2026-10-09｜阶段：E-DESIGN / Q-007 第一大阶段｜状态：候选目录，未完成清洗和训练许可核验**
+> **版本 v1.4｜建立：2026-10-09；官方数据结构只读核验与清洗/训练方案更新：2026-10-09｜阶段：E-DESIGN / Q-007 第一大阶段｜状态：候选目录，未完成清洗和训练许可核验**
 >
 > **唯一职责**：此文件是公开数据源、数据许可、八组状态覆盖、模型/Provider 能力、缓存/定价政策及未来“候选 → 选择 → 数据加工 → 验收”信息的**唯一详细台账**。它不是新的执行流水线或运行时政策数据库。
 >
@@ -286,6 +286,18 @@
 **Kev 兼容**：官方 labelled record 是 `state` 和 `questions`；choice 的 `criteria` 为 option-name→description object、`label` 为 option-name；score 的 `criteria` 为有序列表、`label` 为 int 0 起；当前脚本用 options/levels/字符串 score.label，不能认为可直接训练。来源：https://github.com/jaredpalmer/kev/blob/main/skills/kev-finetune/references/data-format.md。
 **唯一下一项**：保留原脚本，快速修正各源数据归类、可信标签和 split；按真实来源打印每类可训练监督数量，做官方简单 validate，再继续第一轮 LoRA 方案，不新增第二套管理链。
 
+### 6.8 公开数据重建成果科研复审：当前数据状态不能写成全量通过（2026-10-09）
+
+> **2026-10-09 Planning 二次审查（覆盖本文件此前的“全量完成/训练就绪”说法）**：远端 main `48a6c14` 的 16 个 `字段统计.json` 合计 **3,963,661 行**，但 Execution 总报告、索引与 Status 写 **2,282,484 行**，差额 **1,681,177**；只有 TRA-001（1,040,564 vs 43,154）、TRA-002（783,438 vs 107,983）、TRA-004（11,048 vs 2,736）三处不同。不能在未核服务器实际完整输出前称任一数字为最终可信总量。
+
+> **官方下载覆盖差异**：TRA-001 只处理 6 个代表分片/15,000 轨迹，官方约 521,712 轨迹；TRA-002 只处理 ticks 25,826 条，遗漏 tool 24,100 与 xml 26,076；TRA-004 仅 8/30 个模型配置、2,184/8,190 条 episode；受限 CMU/MARBLE 记 0。现阶段是**多源清洗已执行但不具备全量/训练数据验收结论**。
+
+> **已核源码级缺陷**：Agent 当前工具调用先累加后记录 pre_decision_state（第一步可见 prior_tool_calls=1）；Open-SWE qwen36/qwen35 模型名被误标 Qwen2.5；SWE-smith 783,438 步全为 text_response；AgentSuite 只有 4 个 task_name 类别，未构造 273 实例的可比较跨模型键；Mooncake 未按时间明确排序且任意 hash 交集被称复用机会，output_length 被写成 requested；TwinRouter 的未来 total_steps 进入状态；LongMemEval-V2 保留的是任务/哈希等简化信息，非有效记忆文本；missing_rate=0.0 是硬编码不是统计。
+
+> **代码与报告接口冲突**：当前 `prepare_router_data.py --mode public` 不存在；`all` 包含 Blog/CCH；还没有真实任务/仓库级 train/val/test 划分；多处 `TRAIN_ROUTER_CANDIDATE` 只是候选标记，不等于正确路由标签。不要启动 Laya/Kev 正式微调。保留合法已下载原始文件，只修原有唯一脚本、补缺失 split/shards、重处理受影响来源、更新 GitHub 每源真实预览及统计；无需再次全盘删除，也不新增 CI/复杂门禁。
+
+详细逐源状态仍由本 Registry 维护；实际处理后的分片、原始行数、独立任务数、可靠监督数量必须以同一轮服务器运行日志重新统计。额外注意 RouterBench 和 LLMRouterBench 上游许可证不能由自行填写 `TRAIN_ROUTER_CANDIDATE` 确认为允许训练；FindingTheRightFit 保持分析用途；TwinRouterBench 暂定独立评测但要在实际导出逻辑排除，不仅贴标签。
+
 ## 7. 后续阶段接口和变更历史
 
 当前唯一大阶段：**Q-007 数据来源候选目录**，先按本台账登记、核证与选定；数量、实际清洗、Kev 训练方式、Provider 部署和正式评测后议。
@@ -298,3 +310,4 @@
 | 2026-10-09 | v1.1 | 官方数据卡核验原生字段；增补第一轮推荐数据能力组合、源专属规范化、Kev 输入长度与四阶段学习方案、五核心文档去重建议 | Planning 提案；尚未选择/下载/加工真实数据、训练 Kev 或审批服务器/GPU/API |
 | 2026-10-09 | v1.2 | 公开数据服务器清洗委派、中文目录与轻量 GitHub 同步、真实监督数量待回报 | 已明确执行任务，尚无公开数据清洗实测报告 |
 | 2026-10-09 | v1.3 | 首批服务器清洗记录与官方 Kev schema 核对；发现规则伪标签、样本范围与 heldout 隔离问题 | 数据转换已执行，但尚非可信 TRAIN_READY；要求同脚本科研纠偏 |
+| 2026-10-09 | v1.4 | Planning 二次复核源脚本/16 份 GitHub 实际样本/官方规模，确认大额行数冲突、未全量下载、时间泄漏/模型错标/缓存复用算法问题 | Q-007 仅实测首轮加工，TRAIN_READY 未成立，等待在同一清洗代码修复和实际统计 |
