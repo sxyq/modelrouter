@@ -1,6 +1,6 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
-> **版本 v0.6｜建立：2026-10-09｜第一、二批决策：2026-10-09｜阶段：E-DESIGN（进行中，尚未冻结）**
+> **版本 v0.7｜建立：2026-10-09｜第一、二批决策：2026-10-09｜阶段：E-DESIGN（进行中，尚未冻结）**
 >
 > **职责**：记录每项实验设计的 Q-ID、问题、选项、Planning 推荐及理由、项目负责人回答、最终决策、日期，以及对实验设计、资源/预算和论文结论的影响。研究方法总览见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)，实时阶段见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，交接历史见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -205,6 +205,69 @@
 **样本量**：Kev 官方基础约 12,576 个决策样本，RouteLLM 采用万级偏好，说明不必无差别全量喂 20 万轨迹。但对任务级路由并无证明足够的固定 N。可先**规划**审计约 1k–3k 独立任务、数千～数万条有真实结局的代表性前缀及合法静态模型比较，按 task/repo/model/effort 独立覆盖、学习曲线和标签质量决定扩张；缺乏同状态多动作真值时增加 prefix 数不能补救。
 
 **大阶段（仅讨论结构）**：D-PREP 当前来源/许可证/Schema → D-BUILD 经批准实际加工数据 → M-INIT Kev 对观察到的动作结果学习 → M-CHOICE 只有真可比结果时学选择 → M-CAL 可靠性校准 → EVAL 最后讨论实验。仍遵守既有 E-DESIGN/E1–E5 和所有权限，不创建第二条执行链。
+
+
+#### Q-007-R2：数据候选全集 V1（缓存、记忆、多 Agent、时间与 Provider；2026-10-09）
+
+**负责人本轮明确范围**：先把可取得的数据集、相关科研工作及主要国内外厂商官方政策尽量搜齐；**先不决定数据量、不做数据清洗，也不新建 Agent 执行框架**。本节只扩充已有 Q-007 的数据候选目录，**尚未完成训练许可证/原始字段的最终审计，也没有下载样本**。
+
+##### A. KV 缓存、真实调用和时间成本
+
+| 候选编号 | 源及关键数据 | 研究用途/不能宣称的内容 |
+|---|---|---|
+| CACHE-01 | [Mooncake FAST25 traces](https://github.com/kvcache-ai/Mooncake/blob/main/FAST25-release/README.md)：真实 conversation 12,031 条、toolagent 23,608 条；另有 synthetic 3,993 条。匿名 timestamp、input_length、output_length、512-token 前缀 hash_ids | **P0 首选**：真实调用里的前缀块可复用机会 + 真实到达时间；**没有实际生产 cache_read_tokens、cache_hit 标签** |
+| CACHE-02 | [Mooncake 旧版 arxiv trace](https://github.com/kvcache-ai/Mooncake/tree/main/arxiv-trace) | 旧版本比较；可能与 FAST25 重叠，不能当独立新样本数 |
+| CACHE-03 | [Mooncake KV cache simulator](https://kvcache-ai.github.io/Mooncake/performance/mooncake/storage-benchmark.html) | 用真实块 hash 重放，可模拟不同容量/淘汰条件下的缓存读取与 hit rate；**模拟数据不是生产实际命中** |
+| CACHE-04 | [KV Cache Workload Bench](https://github.com/hokiyoung/kv-cache-workload-bench) | ShareGPT 派生多轮/并发/增长/驱逐的合成 workload；无 Provider 真实账单 |
+| TIME-01 | [BurstGPT](https://github.com/HPMLL/BurstGPT) | 数百万条真实请求、session ID、耗时与 Token，研究服务压力、会话增长、延迟预算；无原始 Agent task-resolved |
+| TIME-02 | [Alibaba xMaaS 2026](https://github.com/alibaba/clusterdata/tree/master/cluster-trace-v2026-maas) | 真实 LLM MaaS 服务集群的资源/模型实例/显存/时间负载，**多数为实例级，不是每次 prompt 或 KV hit** |
+| TIME-03 | [Alibaba GenTD26](https://github.com/alibaba/clusterdata/tree/master/cluster-trace-v2026-GenAI) | 包括图像生成等的队列/QPS/延迟/资源工作负载；仅系统时间行为补充，不当成 LLM 任务路由标签 |
+| TIME-04 | 既有 Open-SWE-Traces、SWE-smith 与 Mooncake toolagent | Agent 已发生阶段、时间和 Token 等作为时间状态；同一原始数据只登记一次，剩余预算必须有原任务预算减真实已耗才可靠 |
+
+**缓存标签定义（非可互换）**：provider/vLLM 报告的 read/write/hit token 才是 measured；Mooncake 共享 hash 仅为真实请求可复用 prefix potential；配置缓存 TTL/容量/路由后推演的是 simulated hit；文本最长公共前缀只是 estimated overlap。**不可将 hash 匹配、模拟命中训练成商业 API 真实物理命中标签。** 跨模型、跨实例、跨账户/租户共享 KV 的技术和权限不能假设存在。
+
+##### B. 上下文、记忆、协作与执行状态
+
+| 来源 | 已核实特点 | 训练相关性及限制 |
+|---|---|---|
+| [LoCoMo](https://github.com/snap-research/locomo) | 10 个超长、多会话对话、时间、会话摘要、QA 证据 | 记忆压缩、跨会话更新、信息保持；不是路由胜者 |
+| [LongMemEval](https://github.com/xiaowu0162/longmemeval) | 500 问答，历史会话、时间与证据，多会话更新/冲突 | 记忆特征/检索候选，需防止把官方 test 用作训练 |
+| [LongMemEval-V2](https://github.com/xiaowu0162/LongMemEval-V2) | 451 问题，数百条 web Agent 轨迹组成长历史，记忆、工作流、环境失误 | **P0 长程 Agent 历史**；是否开放训练用途及实际记录结构另核 |
+| [MemoryAgentBench](https://huggingface.co/datasets/ai-hyz/MemoryAgentBench) | 增量多轮、检索与记忆更新 | P1，非任务模型选择真值 |
+| [MemoryCraft collection](https://huggingface.co/datasets/daven3/MemoryCraft) | 汇编 LoCoMo/LongMemEval/MemoryAgentBench/AMA-bench/Membench | P2 转换参考，沿用各上游许可证、不可重复样本计数 |
+| [LongBench](https://github.com/THUDM/LongBench) | 长上下文检索/理解基准 | 上下文压力和能力的可选辅助数据 |
+| [MARBLE / MultiAgentBench](https://github.com/ulab-uiuc/MARBLE) | multi-agent 角色、star/chain/tree/graph、共享记忆、milestones | **P0 多 Agent 协作环境/Schema**，开源任务不表示全量动作轨迹已发布 |
+| [MASBench](https://github.com/BUPT-GAMMA/MASBench) | 部分可观测的协议、记忆、路由与通信成本 | P1，训练轨迹和许可证待核 |
+| [AgentWorld](https://arxiv.org/abs/2609.31590) | 长程多智能体、非对称角色和真实协作依赖 | P1，刚发表的新基准；具体记录与许可证待核 |
+| [OpenSquilla](https://github.com/TokenRhythm/opensquilla) | 完整 Harness、ContextBudget、Memory、Router、可选 Ensemble | **软件/论文参考，不是公开训练轨迹数据集**；参考 [路由文档](https://github.com/TokenRhythm/opensquilla/blob/main/docs/features/squilla-router.md) 和 [Memory 文档](https://github.com/TokenRhythm/opensquilla/blob/main/docs/features/memory.md) |
+
+**OpenSquilla 的具体研究含义**：[Harness-Native Agentic Routing](https://arxiv.org/abs/2607.11399) 将 query、Harness state、model decision、execution trace、outcome 与 cost 串成数据飞轮。[ContextBudget 源码](https://github.com/TokenRhythm/opensquilla/blob/main/src/opensquilla/engine/context_budget.py) 管理压缩与上下文预算，[Decision Record 源码](https://github.com/TokenRhythm/opensquilla/blob/main/src/opensquilla/engine/steps/router_decision_record.py) 记录实际选用动作。用户的设想应写成**单一 Agent Harness 在模型请求前组织 Context/Memory、Agent 协作、Tool、时间和预算的 StateSnapshot；外部 Kev Router 只接收状态和动态合法候选，选实际 (model, effort)；Provider Adapter 执行并回传 usage，形成训练账本**。现阶段不要复刻 OpenSquilla，也不允许新建第二条 Agent 主调用链。OpenSquilla 的多模型 proposer→aggregator ensemble 是**复合动作**，不自动等于现有 Q-002 已批准单个 (model, effort) 候选。
+
+##### C. 官方 Provider 规则数据源（国内主要模型、国际闭源与开源托管）
+
+| Provider 或模型/部署族 | 官方证据 | 本轮认定与后续字段 |
+|---|---|---|
+| OpenAI / GPT、Codex | https://developers.openai.com/api/docs/guides/prompt-caching | 缓存 input read/write、TTL、写入收费随新旧模型不同；按 API/型号/地区/组织保存 |
+| Anthropic / Claude | https://platform.claude.com/docs/en/build-with-claude/prompt-caching | cache_read_input_tokens、cache_creation_input_tokens、5m/1h、breakpoint；effort/tool 前缀约束要验证 |
+| Google / Gemini | https://ai.google.dev/gemini-api/docs/caching | 隐式和显式缓存、TTL/存储价格；thinking 按实际型号 |
+| xAI / Grok | https://docs.x.ai/developers/advanced-api-usage/prompt-caching | 自动前缀缓存、cached_tokens 和会话 ID 粘性 |
+| OpenRouter（聚合） | https://openrouter.ai/docs/guides/best-practices/prompt-caching | provider sticky/session_id、真实承载 endpoint；同模型跨实际供应商不必有共同缓存 |
+| DeepSeek 原厂 API / 自托管开源 | https://api-docs.deepseek.com/zh-cn/guides/kv_cache/ | hit_tokens/miss_tokens、尽力命中；**开源权重不继承 API 的缓存定价** |
+| 阿里百炼：Qwen、托管 GLM/DeepSeek/MiniMax | https://help.aliyun.com/zh/model-studio/context-cache | 隐式/显式、模型/地域/版本相关 TTL、折扣和 cached_tokens |
+| 火山方舟 / 豆包 | https://docs.volcengine.com/docs/ark/context-cache?lang=zh | 隐式/显式/Session cache，thinking/tools 的连续性和字段 |
+| Kimi / Moonshot | https://www.kimi.com/academy/best-practices-for-context-caching | 5m/1h、cache read/write，随 Chat/Responses/Messages API 字段变化 |
+| 腾讯 Hunyuan / TokenHub | https://cloud.tencent.com/document/product/1729/101838 | 旧 API 的 CachedTokens；业务迁移到 TokenHub，现行端点/型号单独核 |
+| 百度 Qianfan / ERNIE | https://ai.baidu.com/ai-doc/WENXINWORKSHOP/Rm6uq7jy9 | 官方证实部分型号 cached_tokens，**不是全系列自动同能力** |
+| 智谱原厂 GLM / Z.ai | https://docs.bigmodel.cn/ | 厂商入口确认，cache/effort/价目具体型号与字段本轮**未核**；不能套用百炼托管 GLM |
+| MiniMax 原厂 | https://platform.minimaxi.com/ | 厂商入口确认；原厂 cache/read/effort 逐型号**待核** |
+| 阶跃星辰 StepFun | https://platform.stepfun.com/ | 厂商入口确认；具体模型参数与缓存**待核** |
+| 硅基流动 SiliconFlow | https://docs.siliconflow.cn/ | 托管服务规则按实际 endpoint，不按模型权重名推断；cache **待核** |
+| 国际其它及转售 | https://docs.mistral.ai/ 、https://docs.cohere.com/ 、https://docs.together.ai/ 、https://console.groq.com/docs 、https://docs.fireworks.ai/ | 纳入 provider 候选全集，但 per-model cache/effort/价格本轮**待核** |
+| 自托管开源 Qwen、DeepSeek、GLM、Kimi、MiniMax、Hunyuan 等 | https://docs.vllm.ai/en/latest/design/prefix_caching/ 、https://docs.sglang.ai/ | 缓存由真实 inference engine/实例/tokenizer/tenant 隔离决定，不由权重名称决定 |
+
+**Registry 建议字段**：source_url/verified_at/evidence_level、provider/model/deployment/revision/region、open/closed/hosted、supported_context/tools/effort_requested/effort_effective、cache_mode/read/write/TTL/min_prefix、price_version/currency、health/rate_limit、tenant/session_affinity、data_retention/training_output_terms/effective_dates。政策未知记 unknown 而非 false。厂商政策、effort 支持和价格作为动态合法性及计价**外部硬约束**，不通过训练 Kev 权重当作永久真值。缓存和时间类数据只是补充有证据的输入或条件监督。
+
+**阶段关闭边界**：本轮已汇集 candidate source catalog V1，但**没有宣称全部通过许可证审计**，没有指定样本量，没有下载、清洗、生成 Kev JSONL、使用 GPU/服务器/API，亦没有构建 Agent 框架。下一步才按用户另行指示开展逐个数据源许可与字段检查；随后再讨论真实数据加工。
 
 ### Q-010｜Kev-4B 训练从哪个基础开始？（已提出待答）
 

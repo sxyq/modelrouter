@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v1.2｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v1.3｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
@@ -360,6 +360,13 @@ Planning 可直接读取 GitHub `main` HEAD 和已推送的三份文档，**不�
 - Planning 按负责人要求研究两类训练主数据：Agent 运行轨迹与静态任务-模型结果；并审查八组状态、缓存和厂商规则、所需数据量。
 - 数据源、具体许可证阻塞、预处理顺序、真实标签与规则标签边界、阶段划分，详见 Q&A 的 Q-007-R1；未知许可证数据不得加入训练，Finding the Right Fit 明确禁止训练。
 - 本轮为**只读研究及文档提案**，无真实语料下载/处理/训练、无服务器/GPU/付费 API 使用；唯一当前任务仍是第一大阶段 Q-007 训练数据来源及加工方案的审议。
+
+### 9.14 Q-007-R2：多变量数据目录和 OpenSquilla 架构研究（2026-10-09）
+
+- 用户要求先把**缓存真实调用与复用、Context/Memory、Agent 协作、执行时间预算、主要中国及国际 Provider 政策**数据源列完整；不讨论数据量，不清洗、不启动工程。
+- Q&A Q-007-R2 新增 Mooncake FAST25 真实请求前缀 hash（reuse potential 非实报 cache hit）、BurstGPT/阿里 xMaaS 的时间资源负载、LongMemEval-V2/LoCoMo 等记忆、MARBLE/MASBench/AgentWorld 等多 Agent，供应商政策登记和局限。
+- OpenSquilla 论文与实际代码明确 Harness/Router/Memory/Context 分工，可供单一 ModelRouter Harness 的结构参考；不在此阶段复制完整 Agent 产品、也不启动并行实现链。
+- 本轮只增加数据候选目录和长期研究记忆，**无下载/清洗/训练/模型推理/GPU/服务器/付费 API**；具体原始数据许可证和每字段覆盖率未实际审计。
 
 ## 10. 新会话恢复协议（长期生效）
 

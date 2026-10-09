@@ -1,6 +1,6 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v0.7｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
+> **版本 v0.8｜研究基线：2026-10-09（第一批实验设计决策已记录；H1–H7 未变）**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -163,6 +163,14 @@ Candidate Registry -----> Hard Constraint Filter
 训练数据分成 Agent 轨迹（Open-SWE-Traces、SWE-smith-trajectories）、静态任务-模型结果（LLMRouterBench、RouterBench、TwinRouterBench tier、Arena 双模型偏好）、缓存 usage/成本先验，以及按版本维护的厂商能力/价格/政策规则。LLMRouterBench/RouterBench 训练许可证未核实、CMU gated、Finding the Right Fit 禁训练。真实轨迹能学观察到的成败/成本，静态同题结果能学模型能力先验，但**不等于** Agent 同状态不同 model×effort 的反事实。
 
 预处理：锁定来源 revision、许可和 hash → task/repo 去重与先划分后抽决策前 prefix → 八组 state + measured/estimated/missing → 合法动作与能力注册 → 已观察的成功/真实费用、静态模型评分、确定规则标签分层 → Kev typed noul/score/choice 数据视图；绝不从未来结果泄漏输入或伪造物理 KV 命中。缓存 TTL、effort 支持和价格/限流由动态外部注册表及硬约束保证，而不是依赖 Kev 参数记住。详情、来源与候选数据量见 [EXPERIMENT_QA.md](EXPERIMENT_QA.md) Q-007-R1。此为研究方案，尚无实际训练数据。
+
+### 5.1b Q-007-R2 多维数据来源与 Harness 边界（2026-10-09）
+
+Mooncake FAST25 toolagent/conversation 的真实请求时间、输入/输出长度与匿名 hash 前缀是**可复用机会**，并非真实 provider cached-token 命中；只有实际 usage 属 measured，KV simulator 属 simulated，文本重叠属 estimated。BurstGPT/阿里 xMaaS 补时间服务负载，仍缺长程 Agent 的 task resolved。LoCoMo、LongMemEval / V2、MemoryAgentBench、LongBench 是 Context/Memory 候选；MARBLE、MASBench、AgentWorld 是多 Agent 协作候选。OpenSquilla Harness-Native Agentic Routing 的真正价值在于统一执行循环产出状态/选择/结果/成本数据，可研究借鉴但不新建本项目第二个 Agent 框架。
+
+Provider registry 纳入 OpenAI、Anthropic、Google Gemini、xAI、OpenRouter、DeepSeek、阿里 Qwen/百炼、火山豆包、Moonshot Kimi、腾讯 Hunyuan/TokenHub、百度千帆、智谱 GLM、MiniMax、StepFun、硅基流动，以及 Mistral、Cohere、Together、Groq、Fireworks、自托管 vLLM/SGLang 的 Qwen/DeepSeek/GLM/Kimi 等。具体缓存/effort/TTL/价格要区分原厂 API、第三方托管与开源权重实例，保留 source verified/pending 状态，**未知不是不支持**。动态合同/模型可用性与价格在外部确定性 Registry 中生效，不由 Kev 参数固化。完整官方来源和状态见 EXPERIMENT_QA.md 的 Q-007-R2。
+
+**当前只完成候选数据目录**：未确认所有训练许可、未处理真实数据、未确定样本数或启动任何工程/实验。
 
 ### 5.2 最小 Schema
 
