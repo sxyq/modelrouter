@@ -600,3 +600,55 @@ Execution 报告自称 660 万分层、八组状态覆盖、五阶段训练设�
 - 项目 .venv 指向已有共享环境，PyTorch/CUDA 可用，系统 Python 无 PyTorch。已有 GPU 汇总报告短训练和重载成功；原始训练日志、当时解释器、临时权重未确认，不重复安装、下载或 GPU 测试。
 - 现有报告、来源台账、manifest 和统计说明已按证据更新；正式原始数据、清洗记录、权重与划分不改。日志在 runs/MR-FINAL-20261010；本轮临时材料清理，历史 /tmp 文件保留。
 - 下一工作包仅建议明确阶段 1 监督目标和取样方案。定向核验阶段未执行 Git 提交或推送；用户随后明确要求整理、提交并推送相关改动。此次许可不包含 CI/PR、正式训练、付费 API 或批量 Coding 评测；推送完成后停止。
+
+### 10.7 2026-10-10 Stage 1 科学监督定义与训练数据配置定稿（`MR-STAGE1-20261010`）
+
+- **1. RouterBench 87 条并列标签全量台账（P1）**：
+  - 逐条查明 `ROUTE-002`（35,189 条入池题）中唯一最高分 `2,553` 条（`1,998 / 273 / 282`）、同分最低估价唯一 `32,549` 条（`26,014 / 3,315 / 3,220`）、最高分与最低估价同时并列 **`87` 条（`train: 68, val: 10, test: 9`）**。
+  - 全部 87 条（100%）最高分均为 `1.0`，最低估价并列候选集合均为 **`['claude-v1', 'claude-v2']`**；因固定候选顺序 `claude-v1` 在前，上游 `np.argmin` 将 87 条全部选为 `claude-v1`。
+  - 协议：不覆写已冻结 JSONL；Stage 1 单胜者训练与严格单标签准确率评测通过任务 ID 掩码剔除这 87 条（全集 `84,310 → 84,223`：`67,360 / 8,426 / 8,437`；`ROUTE-002` `35,189 → 35,102`：`28,012 / 3,588 / 3,502`），将其归入并列分析集（`16,070 → 16,157`），并在集合命中率指标中以预测落入 `{'claude-v1', 'claude-v2'}` 计为最优。
+- **2. 三种监督体制与 AgentSuite 19 题精确拆分（P2）**：
+  - **体制 A（人类偏好 `HUMAN_PREFERENCE`）**：`ROUTE-004` Arena 共 `39,716` 题（`train: 31,766, val: 3,943, test: 4,007`），双候选盲测投票，无分数与费用。
+  - **体制 B（纯质量唯一最高分 `UNIQUE_MAX_SCORE`）**：共 `3,985` 题（`train: 3,206, val: 381, test: 398`），含 `ROUTE-002` `2,553` 题（`1,998 / 273 / 282`）与 `ROUTE-001` `1,432` 题（`1,208 / 108 / 116`）。
+  - **体制 C（同分最低费用规则 `TIED_SCORE_MIN_COST_RULE`）**：共 `40,503` 题（`train: 32,371, val: 4,101, test: 4,031`），含 `ROUTE-002` 最低估价 `32,549` 题（`26,014 / 3,315 / 3,220`）与 `ROUTE-001` 最低上游正值费用 `7,954` 题（`6,357 / 786 / 811`，账单/估价来源未证实）。
+  - **排除 `TRA-004` AgentSuite 19 题（`17 / 1 / 1`）**：系固定多轮对话末轮评判、仅首段 300 字符进入 `state`、`val=1 / test=1` 无统计效力且与 AgentSuite 评测集重叠；剔除 87 + 19 后得到 **Stage 1 推荐洁净主集 `84,204` 题（`train: 67,343, val: 8,425, test: 8,436`）**。
+  - **`ROUTE-001` 两项关键发现**：(a) `router_data/views.py` 为每条 `ROUTE-001` 附加了事后解题率派生的 `questions.difficulty_tier`（使总题项数多出 `7,565 / 894 / 927 = 9,386` 项），Stage 1 加载时必须仅保留 `question_key == "model_choice"`；(b) `bench-release/**/openrouter/*.json` 共 13 个原始文件（14,569 条）的 `model_name="openrouter"` 实为 OpenRouter 动态自动路由器基线（`extra_fields.actual_model` 逐题变化），在三集合中胜出 `551 / 70 / 58 = 679` 题，Stage 1 需同步报告屏蔽该元路由器的 39 静态模型消融。
+- **3. 未来评测隔离与原始 Parquet 100% 对账（P4）**：
+  - 剔除 19 题 `TRA-004` 后，Stage 1 与 `ENV-001/002`、`TRA-001/002/004`、`ROUTE-003` 之间任务 ID、代码仓库与题面重叠均为 **0**。
+  - 原始 Parquet 逐条证实 `TRA-001` 与 `ENV-002` 共享的 **13,336** 个 `instance_id`（按 `repo+issue` 共 **13,374** 条，跨 **2,353** 仓库）100% 标记 `hf_dataset_name == "nebius/SWE-rebench-V2"`，`repo`、`reference_patch == patch` 与剥离 `<uploaded_files>` 包装头后的 `problem_statement` **100.0% 完全相同**；`ENV-001 ∩ ENV-002` 的 **236** 个共享 ID（含 `TRA-001 ∩ ENV-001` 的 **150** 个子集）`repo` 与 `base_commit` **100.0% 相同**。未来 Stage 2/5 必须执行仓库级留出隔离。
+- **4. 归档与清理（P5）**：
+  - 完整只读核验证据存 `runs/MR-STAGE1-20261010/{routerbench-87,supervision-audit,future-eval-isolation-audit}.json`，本机与服务器 `.tmp/MR-STAGE1-20261010/` 已删除。
+
+### 10.8 2026-10-10 Stage 1 训练协议最后修订与版本归档（`MR-STAGE1-REV-20261010`）
+
+- **1. `openrouter` 元路由器修正与方案 A / B 对账（P1）**：
+  - `ROUTE-001`（`LLMRouterBench`）冻结三集合共 `9,386` 题（`train: 7,565, val: 894, test: 927`），其中 `1,260` 题（`1,066 / 77 / 117`）候选不含 `openrouter`；`8,126` 题（`6,499 / 817 / 810`）候选包含 `openrouter`（`7,447` 题原胜者已是静态模型，`679` 题原胜者为 `openrouter`）。
+  - **方案 A（整题剔除含 `openrouter` 的 `8,126` 题）**：`ROUTE-001` 仅剩 `1,260` 题（损失 `86.58%`），Stage 1 全集降为 `60,844 / 7,608 / 7,626 = 76,078` 题。
+  - **方案 B（从 `criteria` 移除 `openrouter` 并对剩余静态模型重算，推荐为纯静态主实验）**：
+    - `8,707` 题（`7,014 / 824 / 869`）静态胜者完全不变（含 `1,260` 题本无 `openrouter` + `7,447` 题原胜者即静态模型；其中 `201` 题 [`166 / 16 / 19`] 因移除唯一同分对手 `openrouter` 而从 `TIED_SCORE_MIN_MEASURED_API_USD` 升级为 `UNIQUE_MAX_SCORE`）；
+    - 原胜者为 `openrouter` 的 `679` 题（`551 / 70 / 58`）中，**`370` 题（`305 / 37 / 28`）**重算得新严格唯一静态胜者（`93` 题 [`73 / 13 / 7`] 唯一最高分 + `277` 题 [`232 / 24 / 21`] 同分最低正实测费），**`309` 题（`246 / 33 / 30`）**降级归入 `analysis_unsupervised_or_tied`（其中剩余静态候选 `<2` 为 `0` 题、全败 `ALL_MODELS_FAILED` 为 `308` 题 [`246 / 33 / 29`]、同分缺费用或不可比为 `0` 题、同分且正费用完全并列 `TIED_SCORE_TIED_API_USD` 为 `1` 题 [`0 / 0 / 1`，即 `llmroute_hle_57`]）。
+    - **方案 B 纯静态主集总数**：**`67,097 / 8,392 / 8,406 = 83,895` 题**（`ROUTE-004` `31,766/3,943/4,007=39,716`；`ROUTE-002` `28,012/3,588/3,502=35,102`；`ROUTE-001` `7,319/861/897=9,077`）；按三种监督体制为 Regime A `31,766/3,943/4,007=39,716`、Regime B `3,203/379/397=3,979`、Regime C `32,128/4,070/4,002=40,200`。原 `84,204` 题仅保留为混合候选参考对照。
+- **2. 官方加载器核验与一次性派生纯静态实验文件（P2）**：
+  - 源码核查证实官方 `kev/data.py`（`load_records` + `materialize`）与 `laya/train.py`（`items_from_rows`）均遍历每条记录 `questions` 字典的全部键，不支持按 `question_key` 过滤题项。
+  - 为确保不改动 `prepare_router_data.py`、不修改官方 `kev`/`laya` 代码、不覆写冻结 `data/{kev,laya}/公开数据/*.jsonl`，已在服务器 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b/{train,val,test}.jsonl` 一次性生成派生纯静态文件（物理移除 `questions.difficulty_tier` 与 `expected.difficulty_tier`，排除 RouterBench 87 题与 AgentSuite 19 题，应用方案 B），并通过官方加载器全量校验。
+  - 实测发现 Laya 默认 `head_max_len=192` 在 37 候选的 `ROUTE-001` 上会触发 `options_collapsed` 跳过样本；通过 CLI 传参 `--max-len 1024 --head-max-len 512` 实测 `0` 跳过。
+- **3. 第一批训练最小公平收敛与零 GPU 规则基线（P3–P4）**：
+  - 第一批正式训练收敛为 **1 次 Kev-4B 训练 + 1 次 Laya-421M 训练**（同一 `83,895` 纯静态三集合、`seed=42`、仅用 `val` 选模、`test` 唯一一次终评）。
+  - 完全基于 `train`（`67,097` 题）统计的零 GPU 规则基线在 `val`（`8,392` 题）上的准确率为：均匀随机期望 `28.07%`、固定全局最高频单模型（`mistralai/mistral-7b-chat`）`12.79%`、候选集内 `train` 最高胜次 `46.72%`（`3,921/8,392`）、按数据源候选集内 `train` 最高胜次 `46.81%`（`3,928/8,392`）、候选集内 `train` 最高经验胜率 `43.95%`（`3,688/8,392`）。
+  - 新增审计 JSON `openrouter-remediation-audit.json` 与 `stage1-protocol-and-baselines.json` 已归档至 `runs/MR-STAGE1-20261010/`，`.tmp/MR-STAGE1-REV-20261010/` 已清理。
+
+### 10.9 2026-10-11 Stage 1 许可、数据一致性、全量编码兼容与八类变量联合覆盖终审（`MR-STAGE1-FINAL-AUDIT`）
+
+- **1. 逐源训练许可与使用边界核查（P1）**：
+  - `ROUTE-004`（`Chatbot Arena 55k`，HF `lmarena-ai/arena-human-preference-55k`，实测 HF SHA `18c298340948c0e7f7727399fd459cca6ce0ca6f`）：数据卡 YAML 与 HF API `cardData.license` 明标 `apache-2.0`；Stage 1 仅使用 `(prompt, 候选模型名) -> 人类偏好胜者`（已剥离第三方模型回答文本 `response_a/b`），判定为 **`TRAIN_ALLOWED_VERIFIED`**。
+  - `ROUTE-002`（`RouterBench`，HF `withmartian/routerbench`，实测 HF SHA `784021482c3f320c6619ed4b3bb3b41a21424fcb`）：GitHub 代码仓 `LICENSE` 为 MIT（`Copyright (c) LangChain, Inc.`），HF 数据卡正文写明用于训练和评估路由方法，但 HF 数据卡无正式 `license` 字段且本地 `manifest.json` 误记 revision 与 `Apache-2.0`，按严格规则判定为 **`LICENSE_PENDING`**。
+  - `ROUTE-001`（`LLMRouterBench`，HF `NPULH/LLMRouterBench`，实测 HF SHA `0e5af1b84bf73437a01a1849c0f1d2468baa93fc`）：GitHub `README.md` 虽挂 MIT 徽章但 `LICENSE` 文件缺失（HTTP 404，GitHub API `license: null`），HF 数据仓无 `README.md` 与 `license` 元数据，判定为 **`LICENSE_PENDING`**。
+- **2. `ROUTE-001` 候选标识与逐题一致性全量审计（P2）**：
+  - 全量扫描 `548,059` 条清洗记录（`700` 个原始 JSON）：按 `(benchmark_name, instance_index)` 聚合的 `25,202` 题中，**`2,001` 题（`25,563` 对 `(benchmark, index, model)`）**存在同模型重复评估（`hle` `500` 题/`6,500` 对、`mmlupro` `1,001` 题/`13,013` 对、`simpleqa` `500` 题/`6,050` 对）。
+  - 其中 **`1,165` 题（`14,682` 对）**因 `bench-release` 下多子目录（`mmlupro/test_1000` vs `test_3000` 计 `664` 题、`simpleqa/subset_500` vs `test` 计 `500` 题、`arenahard` `1` 题）各自从 `0` 编号且题面不同，被 `views.py` 合并为同一题，直接污染方案 B 纯静态集中 **`563` 条记录（`438 / 65 / 60`）**；另有 **`651` 条记录（`512 / 71 / 68`）**含同模型重复评估（如 `llmroute_hle_57` 因 `hle/subset_500` 与 `hle/test` 均含唯一满分模型 `gemini-2.5-pro` [`score=1.0, cost=0.02580375`] 而被误判为 `TIED_SCORE_TIED_API_USD`）。若按 `(benchmark_name, instance_index, prompt_hash)` 拆分为 `26,367` 题并按模型去重，纯静态唯一胜者为 `10,262` 题（`1,640` 唯一最高分 + `8,622` 同分最低正费，`0` 同分同费并列）。
+- **3. Kev 与 Laya 全量 83,895 条 CPU 编码兼容核验（P3）**：
+  - 在 `CUDA_VISIBLE_DEVICES=""` 下对全部 `67,097 / 8,392 / 8,406` 条测试：**Kev** 在 `max_state=384` 至 `7552` 下 **100% 通过（`67,097 / 8,392 / 8,406`，0 截断、0 丢弃，`state_tokens` `11..352`，`branch_tokens` `25..441`；注：`state` 为截断至 400–500 字符的 `prompt_snippet`）**；**Laya** 在默认 `512/192` 下因 `options_collapsed` 跳过 `1,715` 条（`1,433 / 134 / 148`），显式传 `--max-len 1024 --head-max-len 512` 后 **100% 零跳过通过（`67,097 / 8,392 / 8,406`，仅 `test` 有 `2` 条 `ROUTE-001` 发生状态尾部截断）**，两模型可训练 `task_id` 交集为 **`100.0%`（`67,097 / 8,392 / 8,406`）**。
+- **4. 费用来源、八类变量联合覆盖与两项最终判定（P4–P9）**：
+  - 方案 B `83,895` 题中：`MEASURED_BILLING_VERIFIED = 0`、`PROVIDER_REPORTED_USAGE = 0`、`ESTIMATED_TOKEN_PRICE = 35,102`（Regime C 使用 `32,549` 题）、`UPSTREAM_COST_UNVERIFIED = 9,077`（Regime C 使用 `7,651` 题）、`NO_COST = 39,716`；决策前输入含价格表的样本为 `0`，Regime C 标签高度偏向静态低价模型（`ROUTE-002` 前 4 个开源低价模型占 `88.80%`）。
+  - 八类动态路由变量联合覆盖审计确认：同时观测八类状态 + `(model, effort)` + 真实 KV 缓存 + 真实费用的记录为 **`0`**，中途同状态多模型反事实分支为 **`0`**，跨模型切换缓存失效监督为 **`0`**。
+  - **两项核心判定**：**`STAGE1_DATA_READY = NOT_READY`**（因 P1 `ROUTE-001/002` `LICENSE_PENDING`、P2 `ROUTE-001` 同键多 Prompt 混拼与同模型重复评估、P6 `views.py` 缺正式纯静态导出入口及 `ROUTE-002` 候选位置偏差）；**`RUNTIME_JOINT_DATA_READY = NOT_READY`**（因缺同状态多模型×effort×缓存×账单联合动态数据）。完整证据归档于 `runs/MR-STAGE1-20261010/final-stage1-and-joint-coverage-audit.json`。

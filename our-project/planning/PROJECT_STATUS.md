@@ -1,45 +1,42 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> 当前任务 `MR-FINAL-20261010`；状态日期 2026-10-10。本页决定当前阶段；后文旧快照只供追溯。
+> 当前任务 `MR-STAGE1-FINAL-AUDIT`（Stage 1 许可、数据一致性、全量编码兼容与八类变量联合覆盖最终只读验收）；状态日期 2026-10-11。本页决定当前阶段；后文旧快照只供追溯。
 
 ## 一、总体项目进度
 
-**本轮定向核验和唯一入口整理已完成，正式训练未开始。** 以 `fec46d9` 为同步起点；用户后续已明确要求整理、提交并推送本轮改动，实际版本以 Git 记录为准。14 个公开源 6,600,628 行、静态选择 84,310 行及 67,428 / 8,436 / 8,446 划分保持不变。
+**已完成 Stage 1 训练前全量只读终审（`MR-STAGE1-FINAL-AUDIT`），给出两项核心结论：`STAGE1_DATA_READY = NOT_READY`、`RUNTIME_JOINT_DATA_READY = NOT_READY`；正式 GPU 训练严格未启动。** 本轮在不修改 `prepare_router_data.py` 与 `router_data/*`、不改动官方 `kev` / `laya` 代码、不覆写冻结 `data/{kev,laya}/公开数据/*.jsonl` 与 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b/*.jsonl`、不启动任何 GPU 训练/推理的前提下，对 `83,895` 条方案 B 纯静态样本（`train: 67,097 / val: 8,392 / test: 8,406`）及全量 `6,600,628` 条公开记录 + 自有生产记录完成了逐源许可证核查、`ROUTE-001`（`548,059` 条）逐题一致性审计、Kev/Laya 全量 `83,895` 条 CPU 编码与加载器核验、费用来源与监督标签专项审计、八类动态路由变量联合覆盖矩阵以及可复现性/位置偏差审计（完整脱敏证据保存于 `runs/MR-STAGE1-20261010/final-stage1-and-joint-coverage-audit.json`）。
 
-不能将全部行数解释为独立训练题。阶段 1 有人类偏好与评测标签；阶段 2 有行为轨迹结果但存在重复和代理字段；阶段 3 只有限定输入下的模式对照；阶段 4 先分析校准；阶段 5 尚无本项目受控强化训练样本。
+之所以判定 **`STAGE1_DATA_READY = NOT_READY`**，是因为本轮全量实测查出三项必须在启动正式训练前解决的硬阻塞：(1) **许可证待确认（`LICENSE_PENDING`）**：仅 `ROUTE-004`（`Chatbot Arena 55k`，`39,716` 题）在 Hugging Face 数据卡明确声明 `license: apache-2.0`（判定为 `TRAIN_ALLOWED_VERIFIED`）；`ROUTE-001`（`LLMRouterBench`，`9,077` 题）GitHub 仓库 `LICENSE` 文件缺失（HTTP 404，API `license: null`）且 HF 数据仓无许可证元数据，判定为 `LICENSE_PENDING`；`ROUTE-002`（`RouterBench`，`35,102` 题）虽代码仓为 MIT 且 README 写明用于训练路由，但 HF 数据卡缺失正式 `license` 字段且本地 `manifest.json` 误记 revision 与 `Apache-2.0`，判定为 `LICENSE_PENDING`；(2) **`ROUTE-001` 同键多 Prompt 混拼与同模型重复评估污染**：`router_data/route.py` 与 `views.py` 仅按 `(benchmark_name, instance_index)` 聚合 `25,202` 题，导致 `bench-release` 下多子目录重用 `0..N` 索引时发生混拼——共 **`2,001` 题（`25,563` 对 `(benchmark, index, model)`）**存在同模型重复评估，其中 **`1,165` 题（`mmlupro` `test_1000` vs `test_3000` 计 `664` 题、`simpleqa` `subset_500` vs `test` 计 `500` 题、`arenahard` `1` 题）**将**不同题面 Prompt** 的模型得分与费用混入同一题候选池，直接污染了方案 B 中的 **`563` 条记录（`438 / 65 / 60`）**，另有 `hle`（`subset_500` vs `test`）等 **`651` 条记录（`512 / 71 / 68`）**含同模型重复评估（如 `llmroute_hle_57` 因 `gemini-2.5-pro` 重复出现 2 次而被误判为同分同费并列）；(3) **可复现入口与位置偏差缺口**：`stage1_pure_static_scheme_b/*.jsonl` 由上一轮一次性临时脚本生成，清理 `.tmp/` 后 `router_data/views.py` 尚无正式提交的生成入口，且 `ROUTE-002` 候选列表固定顺序使 `index 0` 胜出率达 `22.32%–24.13%`（远高于 11 候选均匀随机的 `9.09%`）。同时判定 **`RUNTIME_JOINT_DATA_READY = NOT_READY`**，因为全量公开与自有数据中，同时观测八类状态变量 + `(model, effort)` 联合动作 + 真实 KV 缓存 + 真实账单费用的决策点为 **`0`**，中途同状态多模型反事实分支为 **`0`**，跨模型切换导致 KV 缓存失效的监督信号为 **`0`**。
 
 ## 二、当前阶段各小步骤
 
 | 项目 | 状态与真实结果 |
 |---|---|
-| P0 字段、费用、来源纠偏 | 已完成。累计费用/独立退出码覆盖均 0；84,310 题中已证明账单 0、估价 35,189、来源不明费用 9,386、无费用 39,735；OWN-003 为衍生汇总，人工 25 条来源未找到 |
-| P0 思考与任务粒度 | 已完成。AgentSuite 1,365 标称模式对、273 不同 Thinking 权重对；跨版本实有 1,365 对。旧 LLMRouterBench 27,192 对算法未找到。本轮独立对照 34,908 对详见报告，不能混为思考强度训练题 |
-| P1 GPU 历史证据 | 已完成只读核验。项目 .venv 有 PyTorch/CUDA，系统 Python 无 PyTorch；历史汇总记录短训练及重载成功，但原始日志/临时权重未找到，不声称独立复验。未安装或重跑 |
-| P2 唯一清洗入口 | 已完成。入口 4,499→136 行，内部 router_data 按数据类型组织；保留 14 个适配器、8 个模式和路径；765 条小样本、92 个输出文件旧新一致 |
-| P3 五阶段用途 | 已完成。偏好、质量、估价规则、终局与单步结果分开；Kev/Laya 当前官方能力与未实现新目标分开 |
-| P4 目录治理 | 保持现有本机/服务器根目录；本轮临时材料定向清理，日志保留 runs/MR-FINAL-20261010；历史 /tmp 文件仅盘点、未删除 |
+| P0 版本、工作区与服务器证据保护 | **已完成（PASS）**。本机 `HEAD` 与 `origin/main` 均为 `d1ace99a6676534195a2eedd25ba195c947aa4d0`；服务器 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b/{train,val,test}.jsonl` 行数（`67,097 / 8,392 / 8,406`）与 SHA256（`499e2aaf... / de51a65a... / 9ed5a65d...`）100% 匹配，冻结数据与模型权重零改动 |
+| P1 训练许可与使用边界逐源核查 | **已完成（发现阻塞）**。`ROUTE-004`（HF SHA `18c298340948c0e7f7727399fd459cca6ce0ca6f`）数据卡 YAML 明标 `license: apache-2.0`，Stage 1 仅用 `(prompt, 候选名) -> 人类偏好胜者`（不含模型回答文本），判为 **`TRAIN_ALLOWED_VERIFIED`**；`ROUTE-002`（HF SHA `784021482c3f320c6619ed4b3bb3b41a21424fcb`）代码仓 MIT、README 写明用于训练路由，但 HF 数据卡缺 `license` 标签且 `manifest.json` 登记有误，判为 **`LICENSE_PENDING`**；`ROUTE-001`（HF SHA `0e5af1b84bf73437a01a1849c0f1d2468baa93fc`）GitHub `LICENSE` 链接 404（API `license: null`）、HF 仓无 README/LICENSE，判为 **`LICENSE_PENDING`** |
+| P2 `ROUTE-001` 候选标识与逐题一致性全量审计 | **已完成（发现阻塞）**。全量扫描 `548,059` 条清洗记录（`700` 个原始 JSON）：按 `(benchmark_name, instance_index)` 聚合的 `25,202` 题中，**`2,001` 题（`25,563` 对）**存在同模型重复记录（`hle` `500` 题/`6,500` 对、`mmlupro` `1,001` 题/`13,013` 对、`simpleqa` `500` 题/`6,050` 对），其中 **`1,165` 题（`14,682` 对）**跨子目录（`mmlupro/test_1000` vs `test_3000` 计 `664` 题、`simpleqa/subset_500` vs `test` 计 `500` 题、`arenahard` `1` 题）将**不同题面 Prompt** 合并为同一题，直接污染方案 B 中 `563` 题（`438/65/60`）及重复评估 `651` 题（`512/71/68`）。查明 `llmroute_hle_57` 根因：`hle/subset_500` 与 `hle/test` 共享同题 `index=57`，唯一满分模型 `gemini-2.5-pro` 重复出现 2 次（`score=1.0, cost=0.02580375`），未按 `model_name` 去重导致被误判为 `TIED_SCORE_TIED_API_USD`。若按 `(benchmark_name, instance_index, prompt_hash)` 拆分为 `26,367` 题并对模型去重，纯静态唯一胜者实为 `10,262` 题（`1,640` 唯一最高分 + `8,622` 同分最低正费，`0` 同分同费并列） |
+| P3 Kev 与 Laya 全量 83,895 条 CPU 编码兼容核验 | **已完成（PASS，附配置约束）**。在 `CUDA_VISIBLE_DEVICES=""` 下对全部 `67,097 / 8,392 / 8,406` 条运行官方加载器与分词器：**Kev**（`load_records -> materialize -> encode/fits`）在 `max_state=384`（默认）至 `7552`（Checkpoint 配置）下 **100% 通过（`67,097 / 8,392 / 8,406`，0 截断、0 丢弃，`state_tokens` 范围 `11..352`，`branch_tokens` 范围 `25..441`；注：`state` 为截断至 400–500 字符的 `prompt_snippet`）**；**Laya**（`items_from_rows` + `build_sequence`）在 Checkpoint 默认 `max_len=512, head_max_len=192` 下因 30–37 候选触发 `options_collapsed` 跳过 **`1,715` 条（`1,433 / 134 / 148`）**，显式传入 `--max-len 1024 --head-max-len 512` 后 **100% 零跳过通过（`67,097 / 8,392 / 8,406`，仅 `test` 有 `2` 条 `ROUTE-001` 发生状态尾部截断）**，两模型可训练 `task_id` 交集为 **`100.0%`（`67,097 / 8,392 / 8,406`）** |
+| P4 费用来源与监督标签专项审计 | **已完成（PASS，边界明确）**。方案 B `83,895` 题中：`MEASURED_BILLING_VERIFIED = 0`、`PROVIDER_REPORTED_USAGE = 0`、`ESTIMATED_TOKEN_PRICE = 35,102`（`ROUTE-002`，其中 Regime C 使用 `32,549` 题 [`26,014/3,315/3,220`]，Regime B 无需用费 `2,553` 题）、`UPSTREAM_COST_UNVERIFIED = 9,077`（`ROUTE-001`，其中 Regime C 使用 `7,651` 题 [`6,114/755/782`]，Regime B `1,426` 题）、`NO_COST = 39,716`（`ROUTE-004` Regime A）。查明 `ROUTE-001` 有 `163,628` 条 `cost_usd == 0.0`（含 `gpt-5` `552` 条、`qwen3-235b-a22b-thinking-2507` `1,644` 条、`gemini-2.5-pro` `228` 条等商业模型在部分子目录未记费写为 `0.0`），`views.py` 将 `cost==0.0` 归为未计费从而未产生“0 美元伪低价胜者”，但决策前输入（`state/instructions/criteria`）含价格表的样本为 **`0`**，导致 Regime C 标签高度集中于历史静态低价模型（`ROUTE-002` 前 4 个开源低价模型占 Regime C 胜者的 **`88.80%`** [`28,905 / 32,549`]，`ROUTE-001` 中 `qwen3-235b-a22b-2507` 占 Regime C 胜者的 **`50.86%`** [`3,891 / 7,651`]） |
+| P5 八类动态路由变量联合覆盖审计 | **已完成（`RUNTIME_JOINT_DATA_READY = NOT_READY`）**。逐源完成 A–H 八类变量六态判定（`OBSERVED_PRE_DECISION / OBSERVED_POST_ACTION / DERIVED_PROXY / ESTIMATED / SIMULATED / MISSING`）：Q1 同时具备八类状态+`(model,effort)`+真实缓存+真实费用的记录为 **`0`**；Q2 含 `(model, thinking/effort)` 的仅有 `TRA-004`（`1,350` 对严格同权重开关 + `1,350` 对专用 Thinking 权重，无真实缓存/费用）与 `OWN-002/003`（有 effort/缓存/账单或额度，无题面与任务终局）；Q3 中途同状态多模型反事实分支为 **`0`**；Q4 跨模型切换 KV 缓存失效监督为 **`0`** |
+| P6–P8 可复现性、评估隔离、版本同步与临时清理 | **已完成**。三集合 `task_id`、`state` 与核心题面跨集重叠均为 **`0`**，`openrouter` 与 `difficulty_tier` 残留均为 **`0`**；但查明 `router_data/views.py` 尚缺生成 `stage1_pure_static_scheme_b` 的正式提交代码入口，且 `ROUTE-002` 存在候选顺序位置偏差（`index 0` 占 `22.32%–24.13%`）。已保存 `runs/MR-STAGE1-20261010/final-stage1-and-joint-coverage-audit.json`，清理 `.tmp/MR-STAGE1-FINAL-AUDIT/`，脱敏并同步推送六份核心研究文档至 `origin/main` |
 
 详细数字、每组质量结果、真实字段、版本、文件位置与限制以 [科研数据收尾报告](../data/科研数据收尾报告.md) 为准；资产说明见 [manifest](../data/公开数据/manifest.json)，来源边界见 [台账](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)。
 
-关键更正：AgentSuite 41,430 行含固定对话的重复历史，8190 是末次回答评测数；SWE-smith 的轨迹步重复不能制造额外样本；MemoryCraft 23,884 条含 28,148 次问答出现量、23,385 个 uid，不等于独立强化训练题。八组变量的实际覆盖详见报告 §2.1。
-
-RouterBench 另有 **87** 条最高分与最低估价同时并列；84,310 行属于已有单标签导出，不能全部称严格唯一胜者。数据不改，后续方案需保留并列语义。已验证源码同步到服务器原位置，未运行清洗模式。
-
 ## 三、后续计划
 
-只建议一个下一工作包：明确阶段 1 监督目标和取样配置。保留 Arena 人类偏好、基准评分、估价规则的区别；先解释尚不可靠的标签，不重新建设数据工程。本轮到此停止，不自动进入 GPU 正式训练、付费 API 或批量 Coding 评测。
+唯一建议的下一工作包（在启动任何 GPU 训练之前执行）：**`MR-STAGE1-REPRO-AND-CLEAN`——在唯一正式清洗/视图主链 `router_data/route.py` 与 `router_data/views.py` 中修复本轮终审发现的 `ROUTE-001` 同键多 Prompt 混拼（`1,165` 题）与同模型重复评估（`2,001` 题，含 `llmroute_hle_57`），把 Stage 1 纯静态方案 B（移除 `openrouter`、物理不导出事后 `difficulty_tier`、剔除 RouterBench 87 题并列与 AgentSuite 19 题）固化为 `prepare_router_data.py --mode views` 的正式可复现输出，修正 `manifest.json` 中的上游真实 revision 与许可证状态，并在负责人确认 `ROUTE-001` / `ROUTE-002` 的 `LICENSE_PENDING` 处置策略（含全部 A+B+C 训练 vs 仅用已验证 Apache-2.0 的 `ROUTE-004` 先行训练并在 A/B/C 分桶评测）后，再启动第一批 Kev-4B 与 Laya-421M 正式对比训练**。
 
 ## 四、下一步执行提示词
 
-> 阅读本页、PLANNING_MEMORY.md 第 10 节及科研数据收尾报告。复用现有唯一清洗入口和正式数据，提出阶段 1 的监督目标、按来源取样及评估配置，明确费用来源未知、固定对话粒度和重复轨迹的处理范围。不要改写正式数据、重复清洗或已有 GPU 测试，不安装、下载模型、调用付费 API，不提交或推送 Git。方案完成后停止。
+> 读取 `PROJECT_STATUS.md` 首页、`PLANNING_MEMORY.md` 第 10 节、`科研数据收尾报告.md`、`DATA_SOURCE_AND_POLICY_REGISTRY.md` 及 `runs/MR-STAGE1-20261010/final-stage1-and-joint-coverage-audit.json`。在不启动 GPU 训练、不调用付费 API、不新建平行脚本的前提下，针对 `MR-STAGE1-FINAL-AUDIT` 查出的三项 `STAGE1_DATA_READY = NOT_READY` 阻塞执行最小确定性修复：(1) 在 `router_data/route.py` 与 `router_data/views.py` 中，为 `ROUTE-001` 引入基于子目录 split / `prompt_hash` 的题目唯一键并按 `model_name` 去重（优先保留正费用记录，彻底消除 `mmlupro` `test_1000/3000` 与 `simpleqa` `subset_500/test` 的 `1,165` 题异题混拼，以及 `hle` `subset_500/test` 的 `500` 题同模型重复评估，恢复 `llmroute_hle_57` 的真实唯一胜者状态）；(2) 在 `router_data/views.py` 中将 Stage 1 纯静态方案 B（移除 `"openrouter"`、不注入事后 `difficulty_tier`、排除 RouterBench 87 题双并列与 AgentSuite 19 题、固定随机种子打乱每题 `criteria` 候选顺序以消除 `ROUTE-002` `index 0` 位置偏差）固化为 `prepare_router_data.py --mode views` 的正式可复现输出，并执行双遍 SHA256 一致性核验；(3) 更新 `manifest.json` 中 `ROUTE-001/002/004` 的真实 Hugging Face commit SHA 与许可证标记（`TRAIN_ALLOWED_VERIFIED` vs `LICENSE_PENDING`），输出按许可状态分层（仅 `ROUTE-004` vs `ROUTE-004+002+001`）的精确三集合统计与零 GPU 基线至 `runs/MR-STAGE1-REPRO-AND-CLEAN/`，清理 `.tmp/` 后停下等待负责人批准 GPU 训练。
 
 ## 五、简单情况说明
 
-源码能够保持原样输出，数据说明已按证据更正；研究标签仍有明确局限。GPU 汇总可以复用，但短训练成功不代表模型效果改善或全部功能兼容。完整环境、训练依赖和历史原始日志的限制均已记录。
+本轮在真正启动 GPU 训练前，对全部训练数据做了一次彻底的“体检”，发现目前**还不能直接开始正式训练（`STAGE1_DATA_READY = NOT_READY`）**，原因有三点：第一，三个数据源里只有 `Arena 55k`（人类偏好数据）确认了明确的 Apache-2.0 开源许可证，另外两个评测数据源（`RouterBench` 和 `LLMRouterBench`）在官方仓库里缺少正式的数据集许可证文件或标签，需要先标为“许可证待确认”；第二，我们在全量检查 `LLMRouterBench` 的 54.8 万条记录时发现，它把不同测试子集（比如 `simpleqa` 的 500 题子集和全量测试集、`mmlupro` 的 1000 题集和 3000 题集）都从编号 `0` 开始编号，导致旧程序把 1,165 道完全不同的题目按相同编号拼成了一道题，还在 `hle` 上把同一个模型的两次相同评测当成了两个不同模型并列；第三，上一轮生成的纯静态训练文件是用临时脚本生成的，清理临时目录后主程序里还没有保存这段生成逻辑，而且 `RouterBench` 的候选模型顺序固定不变，容易让模型靠“猜第一个位置”作弊。同时我们也确认了全部公开数据里没有任何一条记录同时包含完整的 Agent 中途状态、思考强度、真实缓存命中和真实账单（`RUNTIME_JOINT_DATA_READY = NOT_READY`）。因此下一步最稳妥的做法是先在唯一主程序里修好这几个数据拼接和顺序问题，再开始 GPU 训练。
 
 ## 固定汇报与新对话
 
-按“一、总体项目进度；二、当前阶段各小步骤；三、后续计划；四、下一步执行提示词；五、简单情况说明”回答。先读本页及 [PLANNING_MEMORY 第10节](PLANNING_MEMORY.md#10-新会话恢复协议长期生效)，按真实变化更新已有相关文件。此次提交与推送依据用户后续明确指令，不延伸为 CI/PR、训练或付费 API 许可。
+按“一、总体项目进度；二、当前阶段各小步骤；三、后续计划；四、下一步执行提示词；五、简单情况说明”回答。先读本页及 [PLANNING_MEMORY 第10节](PLANNING_MEMORY.md#10-新会话恢复协议长期生效)，按真实变化更新已有相关文件。
 
 ## 历史资料（以下为旧阶段快照，不代表当前状态）
 
