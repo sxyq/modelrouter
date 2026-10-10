@@ -1,18 +1,18 @@
 {
-  "manifest_version": "1.0.0-Q-007-FINAL",
+  "manifest_version": "1.1.0-Q-007-FINAL",
   "generated_at_utc": "2026-10-10T08:18:00Z",
   "project_repository": "https://github.com/sxyq/modelrouter",
   "cleaning_entrypoint": "prepare_router_data.py",
   "directory_classification": {
     "raw_public_data": {
-      "server_root": "/home/syy/路由/data/公开数据/原始数据",
+      "server_root": "data/公开数据/原始数据",
       "active_sources": 14,
       "total_files": 789,
       "total_bytes": 17869335210,
       "policy": "Read-only raw upstream files; never overwritten by cleaning or training scripts."
     },
     "cleaned_public_data": {
-      "server_root": "/home/syy/路由/data/公开数据/清洗数据",
+      "server_root": "data/公开数据/清洗数据",
       "active_sources": 14,
       "total_files": 14,
       "total_records": 6600628,
@@ -21,8 +21,8 @@
       "policy": "Deterministic standardized JSONL output from prepare_router_data.py."
     },
     "training_views": {
-      "kev_server_root": "/home/syy/路由/data/kev/公开数据",
-      "laya_server_root": "/home/syy/路由/data/laya/公开数据",
+      "kev_server_root": "data/kev/公开数据",
+      "laya_server_root": "data/laya/公开数据",
       "github_and_server_preview_root": "our-project/data/公开数据/数据预览/训练视图",
       "supervised_single_winner_total": 84310,
       "splits": {
@@ -32,11 +32,14 @@
       },
       "external_holdout_twinrouterbench": 970,
       "analysis_unsupervised_or_tied": 16070,
-      "thinking_contrasts_paired": 1911
+      "thinking_contrasts_paired": 1638,
+      "thinking_contrasts_strict_runtime_switch": 1365,
+      "thinking_contrasts_dedicated_checkpoint": 273,
+      "cross_version_or_variant_pairs": 1638
     },
     "own_production_data": {
       "github_root": "our-project/data",
-      "server_root": "/home/syy/路由/our-project/data",
+      "server_root": "our-project/data",
       "sources": [
         "OWN-001",
         "OWN-002",
@@ -46,10 +49,10 @@
       "total_bytes": 34979497
     },
     "pretrained_models": {
-      "server_root": "/home/syy/路由/models",
+      "server_root": "models",
       "models": {
         "laya-421m": {
-          "server_path": "/home/syy/路由/models/laya-421m",
+          "server_path": "models/laya-421m",
           "upstream_repo": "convaiinnovations/laya",
           "revision": "f570d7cd7794a0e9a971e5fc86d94f35cf76359d",
           "total_bytes": 1689056260,
@@ -65,7 +68,7 @@
           }
         },
         "kev-4b-adapter": {
-          "server_path": "/home/syy/路由/models/kev-4b-adapter",
+          "server_path": "models/kev-4b-adapter",
           "upstream_repo": "jaredpalmer/kev-4b",
           "revision": "b4be1e1c6756f8ebec4ef4f940413ffbc5fd702b",
           "total_bytes": 167007294,
@@ -85,7 +88,7 @@
           }
         },
         "qwen3.5-4b-base": {
-          "server_path": "/home/syy/路由/models/qwen3.5-4b-base",
+          "server_path": "models/qwen3.5-4b-base",
           "upstream_repo": "Qwen/Qwen3.5-4B-Base",
           "revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
           "total_bytes": 8698508826,
@@ -107,8 +110,8 @@
       }
     },
     "official_reference_repositories": {
-      "kev": "/home/syy/路由/external/kev",
-      "laya": "/home/syy/路由/external/laya"
+      "kev": "external/kev",
+      "laya": "external/laya"
     }
   },
   "reproducibility_verification": {
@@ -125,7 +128,7 @@
       "equals_formal_cleaned_files": true
     },
     "cleaned_to_views_two_pass_check": {
-      "command": "python prepare_router_data.py --mode views --base-dir /home/syy/路由/data/公开数据 --output-dir <tmp_dir>",
+      "command": "python prepare_router_data.py --mode views --base-dir data/公开数据 --output-dir <tmp_dir>",
       "files_compared": 15,
       "run1_equals_run2_all_15_files": true,
       "equals_formal_views": true
@@ -138,7 +141,7 @@
       "sha256": "36edcd0078dad8edf35dc4d74f0c5898a65bf98e91d1025276ea3a72294d4b3b",
       "github_path": "our-project/data/公开数据/数据预览/训练视图/AgentSuite整任务模型对照样本.jsonl",
       "server_paths": [
-        "/home/syy/路由/data/公开数据/数据预览/训练视图/AgentSuite整任务模型对照样本.jsonl"
+        "data/公开数据/数据预览/训练视图/AgentSuite整任务模型对照样本.jsonl"
       ]
     },
     "Agent决策前状态样本.jsonl": {
@@ -147,7 +150,7 @@
       "sha256": "cb9ea7020cfc663301d0a46ca4cf672bcf182352305c48d2ab62bef815ce7f8c",
       "github_path": "our-project/data/公开数据/数据预览/训练视图/Agent决策前状态样本.jsonl",
       "server_paths": [
-        "/home/syy/路由/data/公开数据/数据预览/训练视图/Agent决策前状态样本.jsonl"
+        "data/公开数据/数据预览/训练视图/Agent决策前状态样本.jsonl"
       ]
     },
     "同题模型比较样本.jsonl": {
@@ -156,16 +159,16 @@
       "sha256": "e078cb73581881965edf170b909f7eaac2b9bc606f2883da316eb62616befe82",
       "github_path": "our-project/data/公开数据/数据预览/训练视图/同题模型比较样本.jsonl",
       "server_paths": [
-        "/home/syy/路由/data/公开数据/数据预览/训练视图/同题模型比较样本.jsonl"
+        "data/公开数据/数据预览/训练视图/同题模型比较样本.jsonl"
       ]
     },
     "数据划分统计.json": {
-      "bytes": 11710,
-      "lines": 313,
-      "sha256": "ad3ce1108d690deb748737c6b8c6ae1790276e008a232febd644144eb3148726",
+      "bytes": 15316,
+      "lines": 364,
+      "sha256": "091f89af85990afb690160a058b4cbad14f7c9bf6eb63da6ce5e22c7b341f1b1",
       "github_path": "our-project/data/公开数据/数据预览/训练视图/数据划分统计.json",
       "server_paths": [
-        "/home/syy/路由/data/公开数据/数据预览/训练视图/数据划分统计.json"
+        "data/公开数据/数据预览/训练视图/数据划分统计.json"
       ]
     },
     "模型选择训练样本.jsonl": {
@@ -174,7 +177,7 @@
       "sha256": "e01f897e00ce13093d92665ada823e910f64eb95ef3b5cc19c77a1d8c3c2c3c4",
       "github_path": "our-project/data/公开数据/数据预览/训练视图/模型选择训练样本.jsonl",
       "server_paths": [
-        "/home/syy/路由/data/公开数据/数据预览/训练视图/模型选择训练样本.jsonl"
+        "data/公开数据/数据预览/训练视图/模型选择训练样本.jsonl"
       ]
     }
   },
@@ -190,7 +193,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_open_swe",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/TRA-001_Open-SWE-Traces",
+        "server_path": "data/公开数据/原始数据/TRA-001_Open-SWE-Traces",
         "file_count": 12,
         "total_bytes": 2385679241,
         "tree_or_file_sha256": "tree:e898b8653c0db0342846b6dd9597b698c1cb9a2f9518e81de34a95dafa5fa880",
@@ -258,7 +261,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/Agent轨迹/TRA-001_Open-SWE-Traces/cleaned_trajectories.jsonl",
+        "server_path": "data/公开数据/清洗数据/Agent轨迹/TRA-001_Open-SWE-Traces/cleaned_trajectories.jsonl",
         "record_count": 2075629,
         "total_bytes": 2200552707,
         "sha256": "e0288bd9e257426bbac86ee01e3b3de966bcc5f4475578247f150658e536722c",
@@ -278,7 +281,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_swesmith",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/TRA-002_SWE-smith",
+        "server_path": "data/公开数据/原始数据/TRA-002_SWE-smith",
         "file_count": 24,
         "total_bytes": 3171137897,
         "tree_or_file_sha256": "tree:711751e639fef3990d65e56238486f1a4f22c22e779ce8c6053ebebeb1c182d0",
@@ -406,7 +409,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/Agent轨迹/TRA-002_SWE-smith/cleaned_trajectories.jsonl",
+        "server_path": "data/公开数据/清洗数据/Agent轨迹/TRA-002_SWE-smith/cleaned_trajectories.jsonl",
         "record_count": 2331584,
         "total_bytes": 2835583120,
         "sha256": "2484346bc9e9b550d1d93f3844c606b81754678226c0fcab28f24ae812963d89",
@@ -441,7 +444,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_agentsuite",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/TRA-004_AgentSuite",
+        "server_path": "data/公开数据/原始数据/TRA-004_AgentSuite",
         "file_count": 30,
         "total_bytes": 167788546,
         "tree_or_file_sha256": "tree:796472e8e95646b33fb628d79944528f6a51b848feb68e814d1cab41cdbbbfb0",
@@ -599,7 +602,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/Agent轨迹/TRA-004_AgentSuite/cleaned_trajectories.jsonl",
+        "server_path": "data/公开数据/清洗数据/Agent轨迹/TRA-004_AgentSuite/cleaned_trajectories.jsonl",
         "record_count": 41430,
         "total_bytes": 53511307,
         "sha256": "d60af951f9ab0a272814c34a63a5db1ffbfcd0623c7b7185b0f937fa99e06419",
@@ -619,7 +622,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_llmrouterbench",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/ROUTE-001_LLMRouterBench",
+        "server_path": "data/公开数据/原始数据/ROUTE-001_LLMRouterBench",
         "file_count": 701,
         "total_bytes": 8271099158,
         "tree_or_file_sha256": "tree:a92de45ae26363ce8816863ccc7bffe67bd3a6100eefe486a4f25a09750edeb7",
@@ -705,7 +708,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/路由比较/ROUTE-001_LLMRouterBench/cleaned_evaluations.jsonl",
+        "server_path": "data/公开数据/清洗数据/路由比较/ROUTE-001_LLMRouterBench/cleaned_evaluations.jsonl",
         "record_count": 548059,
         "total_bytes": 429699215,
         "sha256": "7efdff15a40ac6fdc17d2f34a39787ae0e15d3c5db6d84770b58c3664d091bb7",
@@ -725,7 +728,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_routerbench",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/ROUTE-002_RouterBench",
+        "server_path": "data/公开数据/原始数据/ROUTE-002_RouterBench",
         "file_count": 3,
         "total_bytes": 1468793664,
         "tree_or_file_sha256": "tree:057016d59a72f093457dbfd4d249a4627ada19d5de23382320296ae028faddc9",
@@ -748,7 +751,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/路由比较/ROUTE-002_RouterBench/cleaned_routerbench.jsonl",
+        "server_path": "data/公开数据/清洗数据/路由比较/ROUTE-002_RouterBench/cleaned_routerbench.jsonl",
         "record_count": 36497,
         "total_bytes": 54280673,
         "sha256": "4eb002e79082f1342c19a91c0206fb5f050988a916e3404ef5e3930b1c714d8b",
@@ -768,7 +771,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_twinrouterbench",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/ROUTE-003_TwinRouterBench",
+        "server_path": "data/公开数据/原始数据/ROUTE-003_TwinRouterBench",
         "file_count": 2,
         "total_bytes": 18471124,
         "tree_or_file_sha256": "tree:7822e182189c99e382e6b579fe70d5db336a81825d463d36972a9e29f10dc573",
@@ -786,7 +789,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/路由比较/ROUTE-003_TwinRouterBench/cleaned_twin_bench.jsonl",
+        "server_path": "data/公开数据/清洗数据/路由比较/ROUTE-003_TwinRouterBench/cleaned_twin_bench.jsonl",
         "record_count": 970,
         "total_bytes": 900573,
         "sha256": "99e6fc4184a30325226166abeddeb11408cb1512204d2e7420d697cc3f1e0ca2",
@@ -806,7 +809,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_arena",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/ROUTE-004_Arena",
+        "server_path": "data/公开数据/原始数据/ROUTE-004_Arena",
         "file_count": 1,
         "total_bytes": 184175071,
         "tree_or_file_sha256": "0692154aaf20fc6649090c3f49b6b5dd1e693a765ecb5f0856ae0da5946f5be2",
@@ -819,7 +822,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/路由比较/ROUTE-004_Arena/cleaned_arena_preference.jsonl",
+        "server_path": "data/公开数据/清洗数据/路由比较/ROUTE-004_Arena/cleaned_arena_preference.jsonl",
         "record_count": 57477,
         "total_bytes": 35843708,
         "sha256": "0f4db8f50f0631b8847a64a04dbda99688558d1f552dbe297cde31b27f6f2a26",
@@ -839,7 +842,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_finding_right_fit",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/ROUTE-005_FindingTheRightFit",
+        "server_path": "data/公开数据/原始数据/ROUTE-005_FindingTheRightFit",
         "file_count": 2,
         "total_bytes": 229553,
         "tree_or_file_sha256": "tree:da40b3ddf480891b160df3a323c15bff174bd32f159ccb4e26e0e1b4c68dd0e3",
@@ -857,7 +860,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/路由比较/ROUTE-005_FindingTheRightFit/cleaned_task_level.jsonl",
+        "server_path": "data/公开数据/清洗数据/路由比较/ROUTE-005_FindingTheRightFit/cleaned_task_level.jsonl",
         "record_count": 6204,
         "total_bytes": 4260619,
         "sha256": "4718da07ffb2dc8093cb273d2c174c548c9ec5905457fe5ff7b482f7ef8daac6",
@@ -877,7 +880,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_mooncake",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/CACHE-001_Mooncake",
+        "server_path": "data/公开数据/原始数据/CACHE-001_Mooncake",
         "file_count": 3,
         "total_bytes": 3337619,
         "tree_or_file_sha256": "tree:f54f8f13a6b418432e191d19a2cba465b7d3d54caaeea191635fea71273af505",
@@ -900,7 +903,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/缓存与时间/CACHE-001_Mooncake/cleaned_mooncake_traces.jsonl",
+        "server_path": "data/公开数据/清洗数据/缓存与时间/CACHE-001_Mooncake/cleaned_mooncake_traces.jsonl",
         "record_count": 39632,
         "total_bytes": 31161346,
         "sha256": "79176e07c04b43003b849093403a2b474b7fd6d67c92dad3218790562a9518e3",
@@ -995,7 +998,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_burstgpt",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/TIME-001_BurstGPT",
+        "server_path": "data/公开数据/原始数据/TIME-001_BurstGPT",
         "file_count": 1,
         "total_bytes": 51429517,
         "tree_or_file_sha256": "a4d068a7113ec0290e74063a1b3447dc6001a30e4298eb313581b71006dda1f4",
@@ -1008,7 +1011,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/缓存与时间/TIME-001_BurstGPT/cleaned_burstgpt.jsonl",
+        "server_path": "data/公开数据/清洗数据/缓存与时间/TIME-001_BurstGPT/cleaned_burstgpt.jsonl",
         "record_count": 1404294,
         "total_bytes": 704993223,
         "sha256": "cb65db42e8ff1fa69c778bf7b154c0d6dd99bfc31fb0f6797eedfaa5485edec8",
@@ -1073,7 +1076,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_swegym",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/ENV-001_SWE-Gym",
+        "server_path": "data/公开数据/原始数据/ENV-001_SWE-Gym",
         "file_count": 1,
         "total_bytes": 43644473,
         "tree_or_file_sha256": "60569cea74bb281f7a5579467436a2bc1932c6e0c5f2f7fa0d084392abd9ad97",
@@ -1086,7 +1089,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/任务环境/ENV-001_SWE-Gym/cleaned_swe_gym.jsonl",
+        "server_path": "data/公开数据/清洗数据/任务环境/ENV-001_SWE-Gym/cleaned_swe_gym.jsonl",
         "record_count": 2438,
         "total_bytes": 3163889,
         "sha256": "3f4d0c79cc339f4bb5fd6a7cefaa57b32f81370d4c49848063999b400d7bedf4",
@@ -1106,7 +1109,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_swerebench",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/ENV-002_SWE-rebench-V2",
+        "server_path": "data/公开数据/原始数据/ENV-002_SWE-rebench-V2",
         "file_count": 1,
         "total_bytes": 428839266,
         "tree_or_file_sha256": "0e0bf9355f892ad74ae98d4e1c404f39fd6654a8e351ee3e6ab162e4a64cd3ad",
@@ -1119,7 +1122,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/任务环境/ENV-002_SWE-rebench-V2/cleaned_swe_rebench.jsonl",
+        "server_path": "data/公开数据/清洗数据/任务环境/ENV-002_SWE-rebench-V2/cleaned_swe_rebench.jsonl",
         "record_count": 32079,
         "total_bytes": 29396165,
         "sha256": "279ecf5ee8a87e8131a119570385022f734a8607c99467b7b81c3d4bb46111ba",
@@ -1184,7 +1187,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_longmemeval",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/MEM-003_LongMemEval-V2",
+        "server_path": "data/公开数据/原始数据/MEM-003_LongMemEval-V2",
         "file_count": 4,
         "total_bytes": 1200767601,
         "tree_or_file_sha256": "tree:c78a62d60d80112970b1a53a5b73dd39f28a9254be2fc151a2848f843f710c1e",
@@ -1212,7 +1215,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/长期记忆/MEM-003_LongMemEval-V2/cleaned_longmemeval_v2.jsonl",
+        "server_path": "data/公开数据/清洗数据/长期记忆/MEM-003_LongMemEval-V2/cleaned_longmemeval_v2.jsonl",
         "record_count": 451,
         "total_bytes": 653037,
         "sha256": "908b3abd432e471c4ff0999edb6cae72245744d10f6dfa908c9eca84b9eb95a6",
@@ -1247,7 +1250,7 @@
       "status": "DOWNLOADED_AND_CLEANED",
       "cleaning_script": "prepare_router_data.py::process_memorycraft",
       "raw_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/原始数据/MEM-005_MemoryCraft",
+        "server_path": "data/公开数据/原始数据/MEM-005_MemoryCraft",
         "file_count": 4,
         "total_bytes": 473942480,
         "tree_or_file_sha256": "tree:98e6a2b56c9316f5d4c0da3a886fb4b303fc1c3ed1c8225ad67b2d78106461c5",
@@ -1275,7 +1278,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/data/公开数据/清洗数据/长期记忆/MEM-005_MemoryCraft/cleaned_memorycraft.jsonl",
+        "server_path": "data/公开数据/清洗数据/长期记忆/MEM-005_MemoryCraft/cleaned_memorycraft.jsonl",
         "record_count": 23884,
         "total_bytes": 17154734,
         "sha256": "ad9d216495642d6f126032be27ce9e53e120d2a80f27bf12853d682c82031719",
@@ -1371,7 +1374,7 @@
       "cleaning_script": "Pre-aggregated gateway export (verified in our-project/data/)",
       "raw_storage": {
         "local_and_github_path": "our-project/data/cch-model-cost-cache-statistics.csv",
-        "server_path": "/home/syy/路由/our-project/data/cch-model-cost-cache-statistics.csv",
+        "server_path": "our-project/data/cch-model-cost-cache-statistics.csv",
         "file_count": 2,
         "total_bytes": 203459,
         "files": [
@@ -1390,7 +1393,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/our-project/data/cch-model-cost-cache-statistics.csv",
+        "server_path": "our-project/data/cch-model-cost-cache-statistics.csv",
         "record_count": 110,
         "total_bytes": 87057,
         "sha256": "4e045d121fce6b16559ef970072ecf8e2de1e731d7e7e6c6e7f46ec1e7f2b42d"
@@ -1411,7 +1414,7 @@
       "raw_storage": {
         "raw_undesensitized_status": "RAW_MISSING (un-desensitized sxyq.xyz-blog-gpt.csv not retained in repo/server for key/IP security; sxyq-blog-gpt-usage-cleaned.csv is the frozen authoritative source)",
         "local_and_github_path": "our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
-        "server_path": "/home/syy/路由/our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
+        "server_path": "our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
         "file_count": 2,
         "total_bytes": 34750614,
         "files": [
@@ -1431,7 +1434,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
+        "server_path": "our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
         "record_count": 221128,
         "total_bytes": 34738033,
         "sha256": "6ce697f3ffa76c5ec7ce3353795d46c883f1fe8b4b1b80ea746f01f248529b79"
@@ -1451,7 +1454,7 @@
       "cleaning_script": "Unified cross-platform summary table",
       "raw_storage": {
         "local_and_github_path": "our-project/data/cch-sxyq-gpt-unified-summary.csv",
-        "server_path": "/home/syy/路由/our-project/data/cch-sxyq-gpt-unified-summary.csv",
+        "server_path": "our-project/data/cch-sxyq-gpt-unified-summary.csv",
         "file_count": 1,
         "total_bytes": 25424,
         "files": [
@@ -1465,7 +1468,7 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "/home/syy/路由/our-project/data/cch-sxyq-gpt-unified-summary.csv",
+        "server_path": "our-project/data/cch-sxyq-gpt-unified-summary.csv",
         "record_count": 79,
         "total_bytes": 25424,
         "sha256": "92f12d40a1e5f6a3aa3db034e0d77fa28a0b5a0fb1a5a1eff1c7fb93fbfee6ac"

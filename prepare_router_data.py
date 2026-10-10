@@ -3389,23 +3389,47 @@ def build_unified_training_and_evaluation_views(args):
                 "prompt": ep["prompt"]
             })
 
-        # 严格真实计算 Thinking-ON 与 OFF 基础模型配对（6 对真实基础模型，严禁任何人工下限）
-        GENUINE_THINKING_PAIRS = [
+        # 严格真实计算 Thinking-ON 与 OFF 基础模型配对（严禁任何人工下限，并严格区分“同一权重运行时开关”、“同底座独立 Thinking 变体”、“跨代/跨变体比较”）
+        STRICT_SAME_CHECKPOINT_THINKING_SWITCH_PAIRS = [
             ("DeepSeek-V3.2-Exp", "thinking-off", "DeepSeek-V3.2-Exp", "thinking-on"),
             ("claude-4-opus", "thinking-off", "claude-4-opus", "thinking-on-10k"),
             ("claude-4-sonnet", "thinking-off", "claude-4-sonnet", "thinking-on-10k"),
             ("claude-4.5-sonnet", "thinking-off", "claude-4.5-sonnet", "thinking-on-10k"),
             ("gemini-2.5-flash", "thinking-off", "gemini-2.5-flash", "thinking-on"),
+        ]
+        DEDICATED_THINKING_CHECKPOINT_PAIRS = [
             ("Qwen3-235B-A22B-Instruct-2507-FP8", "standard", "Qwen3-235B-A22B-Thinking-2507-FP8", "thinking-on"),
         ]
+        GENUINE_THINKING_PAIRS = STRICT_SAME_CHECKPOINT_THINKING_SWITCH_PAIRS + DEDICATED_THINKING_CHECKPOINT_PAIRS
+
+        CROSS_VERSION_OR_VARIANT_PAIRS = [
+            ("DeepSeek-V3", "standard", "DeepSeek-R1", "thinking-on"),
+            ("glm-4.5-air", "thinking-on", "glm-4.5", "thinking-on"),
+            ("claude-4-sonnet", "thinking-off", "claude-4.5-sonnet", "thinking-off"),
+            ("claude-4-sonnet", "thinking-on-10k", "claude-4.5-sonnet", "thinking-on-10k"),
+            ("Kimi-K2-0711", "standard", "Kimi-K2-0905", "standard"),
+            ("Qwen3-235B-A22B-FP8", "thinking-on", "Qwen3-235B-A22B-Thinking-2507-FP8", "thinking-on"),
+        ]
+
+        strict_switch_contrasts = 0
+        dedicated_ckpt_contrasts = 0
+        cross_version_contrasts = 0
 
         for inst_id, eps in agentsuite_episodes_by_task.items():
             candidate_distribution_unfiltered[len(eps)] += 1
             ep_lookup = {(e["model"], e["thinking_mode"]): e for e in eps}
             task_contrasts = 0
-            for (m1, t1, m2, t2) in GENUINE_THINKING_PAIRS:
+            for (m1, t1, m2, t2) in STRICT_SAME_CHECKPOINT_THINKING_SWITCH_PAIRS:
                 if (m1, t1) in ep_lookup and (m2, t2) in ep_lookup:
                     task_contrasts += 1
+                    strict_switch_contrasts += 1
+            for (m1, t1, m2, t2) in DEDICATED_THINKING_CHECKPOINT_PAIRS:
+                if (m1, t1) in ep_lookup and (m2, t2) in ep_lookup:
+                    task_contrasts += 1
+                    dedicated_ckpt_contrasts += 1
+            for (m1, t1, m2, t2) in CROSS_VERSION_OR_VARIANT_PAIRS:
+                if (m1, t1) in ep_lookup and (m2, t2) in ep_lookup:
+                    cross_version_contrasts += 1
             agentsuite_thinking_contrasts += task_contrasts
 
             task_id = f"agentsuite_{inst_id}"
@@ -3868,7 +3892,7 @@ def build_unified_training_and_evaluation_views(args):
     cross_src_leakage = sum(1 for p in cross_src_prompts if len(prompt_to_splits[p]) > 1)
 
     split_stats_report = {
-        "schema_version": "Q-007-FINAL-v1.0",
+        "schema_version": "Q-007-FINAL-v1.1",
         "random_seed": args.seed,
         "split_ratio_target": "80% Train / 10% Val / 10% Test (按独立任务/题目与去标点规范化 Prompt 哈希严格隔离)",
         "task_counts": {
@@ -3966,13 +3990,18 @@ def build_unified_training_and_evaluation_views(args):
         "arena_55k_human_preference": arena_stats,
         "agentsuite_thinking_contrasts": {
             "paired_episodes_contrasting_thinking": agentsuite_thinking_contrasts,
-            "genuine_pairs_per_task": 6,
-            "standalone_configurations_count": 18,
+            "strict_same_checkpoint_thinking_switch_pairs": strict_switch_contrasts,
+            "dedicated_thinking_checkpoint_pairs": dedicated_ckpt_contrasts,
+            "cross_version_or_variant_comparison_pairs": cross_version_contrasts,
+            "strict_switch_pairs_per_task": len(STRICT_SAME_CHECKPOINT_THINKING_SWITCH_PAIRS),
+            "dedicated_thinking_checkpoint_pairs_per_task": len(DEDICATED_THINKING_CHECKPOINT_PAIRS),
+            "genuine_pairs_per_task": len(GENUINE_THINKING_PAIRS),
+            "standalone_configurations_count": 30 - len(GENUINE_THINKING_PAIRS) * 2,
             "mid_trajectory_counterfactual_branches": 0,
             "unique_winner_tasks": agentsuite_selection_counts["AGENTSUITE_UNIQUE_SUCCESSFUL_MODEL"],
             "tied_success_tasks": agentsuite_selection_counts["TIED_MULTI_SUCCESS_UNDIFFERENTIATED"],
             "zero_success_tasks": agentsuite_selection_counts["AGENTSUITE_ALL_FAILED"],
-            "compliance_note": "Zero intermediate branching states exist; strictly 6 base models paired with thinking on/off across 273 tasks (1,638 pairs total)"
+            "compliance_note": "Zero intermediate branching states exist; 5 strict runtime-switch pairs (1,365 pairs) + 1 same-base dedicated Thinking checkpoint pair (273 pairs) = 6 genuine pairs per task (1,638 pairs total); cross-version/cross-variant comparisons (6 pairs = 1,638 pairs) tracked separately."
         },
         "kev_file_paths": {
             "train": "data/kev/公开数据/train.jsonl",
@@ -4022,8 +4051,11 @@ def validate_kev_exports(kev_root, laya_root=None):
         "test_twinrouterbench_holdout.jsonl"
     ]
 
-    # 尝试引入官方 Kev 与 Laya 仓库模块
-    for ext_path in ("/home/syy/路由/external/kev", "/home/syy/路由/external/laya"):
+    project_root_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # 尝试引入官方 Kev 与 Laya 仓库模块（使用相对项目根目录解析）
+    for ext_rel in ("external/kev", "external/laya"):
+        ext_path = os.path.join(project_root_dir, ext_rel)
         if os.path.exists(ext_path) and ext_path not in sys.path:
             sys.path.insert(0, ext_path)
 
@@ -4044,7 +4076,8 @@ def validate_kev_exports(kev_root, laya_root=None):
                     _kev_ut_cache[key] = res
             return res
         _kev_model_mod.user_tokens = _cached_user_tokens
-        for ptd in ("/home/syy/路由/models/kev-4b-adapter", "/home/syy/路由/models/qwen3.5-4b-base"):
+        for ptd_rel in ("models/kev-4b-adapter", "models/qwen3.5-4b-base"):
+            ptd = os.path.join(project_root_dir, ptd_rel)
             if os.path.exists(ptd):
                 kev_tok = kev_load_tokenizer(ptd)
                 kev_mod = {
@@ -4058,7 +4091,7 @@ def validate_kev_exports(kev_root, laya_root=None):
                     "MAX_PACKED": MAX_PACKED,
                     "training_context": training_context
                 }
-                print(f"  [Kev Official] 成功加载官方 kev 模块与 Tokenizer: {ptd} (vocab={kev_tok.vocab_size:,})")
+                print(f"  [Kev Official] 成功加载官方 kev 模块与 Tokenizer: {ptd_rel} (vocab={kev_tok.vocab_size:,})")
                 break
     except Exception as e:
         print(f"  [Kev Notice] 未在当前环境加载外部官方 kev 仓库或模型目录 ({e})，将执行基础 Schema 校验")
@@ -4108,7 +4141,8 @@ def validate_kev_exports(kev_root, laya_root=None):
             return res
         _laya_common_mod.build_head = _cached_laya_bh
         _laya_train_mod.build_head = _cached_laya_bh
-        for ltd in ("/home/syy/路由/models/laya-421m/tokenizer", "/home/syy/路由/models/laya-421m"):
+        for ltd_rel in ("models/laya-421m/tokenizer", "models/laya-421m"):
+            ltd = os.path.join(project_root_dir, ltd_rel)
             if os.path.exists(ltd):
                 laya_tok = AutoTokenizer.from_pretrained(ltd)
                 laya_mod = {
@@ -4119,7 +4153,7 @@ def validate_kev_exports(kev_root, laya_root=None):
                     "build_sequence": laya_build_sequence,
                     "build_head": _cached_laya_bh
                 }
-                print(f"  [Laya Official] 成功加载官方 laya 模块与 Tokenizer: {ltd} (vocab={laya_tok.vocab_size:,})")
+                print(f"  [Laya Official] 成功加载官方 laya 模块与 Tokenizer: {ltd_rel} (vocab={laya_tok.vocab_size:,})")
                 break
     except Exception as e:
         print(f"  [Laya Notice] 未在当前环境加载外部官方 laya 仓库或模型目录 ({e})，将执行基础 Schema 校验")

@@ -1,5 +1,5 @@
 {
-  "schema_version": "Q-007-FINAL-v1.0",
+  "schema_version": "Q-007-FINAL-v1.1",
   "random_seed": 42,
   "split_ratio_target": "80% Train / 10% Val / 10% Test (按独立任务/题目与去标点规范化 Prompt 哈希严格隔离)",
   "task_counts": {
@@ -145,13 +145,64 @@
   },
   "agentsuite_thinking_contrasts": {
     "paired_episodes_contrasting_thinking": 1638,
+    "strict_same_checkpoint_thinking_switch_pairs": 1365,
+    "dedicated_thinking_checkpoint_pairs": 273,
+    "cross_version_or_variant_comparison_pairs": 1638,
+    "strict_switch_pairs_per_task": 5,
+    "dedicated_thinking_checkpoint_pairs_per_task": 1,
     "genuine_pairs_per_task": 6,
     "standalone_configurations_count": 18,
     "mid_trajectory_counterfactual_branches": 0,
     "unique_winner_tasks": 19,
     "tied_success_tasks": 246,
     "zero_success_tasks": 8,
-    "compliance_note": "Zero intermediate branching states exist; strictly 6 base models paired with thinking on/off across 273 tasks (1,638 pairs total)"
+    "compliance_note": "Zero intermediate branching states exist; 5 strict runtime-switch pairs (1,365 pairs) + 1 same-base dedicated Thinking checkpoint pair (273 pairs) = 6 genuine pairs per task (1,638 pairs total); cross-version/cross-variant comparisons (6 pairs = 1,638 pairs) tracked separately."
+  },
+  "full_660w_corpus_stratification_summary": {
+    "total_cleaned_public_records": 6600628,
+    "stage_1_static_single_winner_choice_tasks": 84310,
+    "stage_1_holdout_step_tier_oracle_records": 970,
+    "stage_1_tied_or_unsupervised_analysis_tasks": 16070,
+    "stage_2_agent_state_and_observed_outcome_step_records": 4448643,
+    "stage_2_unique_coding_tasks": 35016,
+    "stage_2_unique_agent_episodes": 88087,
+    "stage_3_thinking_effort_contrast_pairs_strict_switch": 1365,
+    "stage_3_thinking_effort_contrast_pairs_same_base_total": 1638,
+    "stage_3_family_reasoning_vs_instruct_pairs_llmrouterbench": 27192,
+    "stage_4_cache_and_arrival_workload_records": 1443926,
+    "stage_4_own_production_gateway_records": 221317,
+    "stage_5_coding_and_memory_benchmark_records": 58852,
+    "analysis_only_prohibited_for_training_records": 6204,
+    "gated_inaccessible_sources": ["TRA-003", "MAS-001"]
+  },
+  "five_stage_training_curriculum_plan": {
+    "Stage_1_Static_Model_Choice": {
+      "sources": ["ROUTE-001 (9,386)", "ROUTE-002 (35,189)", "ROUTE-004 (39,716)", "TRA-004 (19)"],
+      "total_tasks": 84310,
+      "split": "67,428 Train / 8,436 Val / 8,446 Test (strictly isolated by normalized prompt & task ID)",
+      "target_models": "Kev-4B (pointer choice head) & Laya-421M (choice head with max_len=1024, head_max_len=448)"
+    },
+    "Stage_2_Agent_State_and_Observed_Outcome": {
+      "sources": ["TRA-001 (2,075,629 steps / 30,000 episodes)", "TRA-002 (2,331,584 steps / 49,897 episodes)", "TRA-004 (41,430 steps / 8,190 episodes)"],
+      "total_records": 4448643,
+      "split_rule": "Strictly isolated by git repository (TRA-001: 2,558/350/332 repos; TRA-002: 95/11/13 repos) and task instance_id",
+      "supervision_note": "Predict terminal task resolution (score/bool head), observed tool action class, and remaining step budget; NEVER treat observed single-model generator as optimal routing choice."
+    },
+    "Stage_3_Thinking_Effort_and_Capability_Contrast": {
+      "sources": ["TRA-004 (1,365 strict runtime switch pairs + 273 dedicated Thinking checkpoint pairs)", "ROUTE-001 (27,192 same-family reasoning vs instruct pairs)"],
+      "split_rule": "Strictly isolated by task_id (80/10/10 aligned with Stage 1)",
+      "supervision_note": "Predict whether enabling thinking/reasoning improves task score enough to justify token expansion."
+    },
+    "Stage_4_Cache_Time_and_Cost_Prior": {
+      "sources": ["CACHE-001 (39,632)", "TIME-001 (1,404,294)", "ROUTE-001/002 measured costs", "OWN-001/002 (221,238 gateway logs with 185,154 physical cache hits)"],
+      "split_rule": "Chronological 80/10/10 split by arrival timestamp / trace window",
+      "supervision_note": "Calibrate token length prior, physical KV cache reuse rate, and real USD/latency cost estimator."
+    },
+    "Stage_5_Online_Counterfactual_and_Dynamic_Routing": {
+      "sources": ["ENV-001 (2,438)", "ENV-002 (32,079)", "MEM-003 (451)", "MEM-005 (23,884)", "ROUTE-003 holdout (970)"],
+      "status": "RESERVED_FOR_E3_E4_ONLINE_EXECUTION",
+      "supervision_note": "Requires real multi-model mid-trajectory rollouts in E3/E4 to obtain genuine counterfactual step routing labels."
+    }
   },
   "kev_file_paths": {
     "train": "data/kev/公开数据/train.jsonl",

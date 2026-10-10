@@ -338,10 +338,10 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 ### 6.12 Q-007-FINAL 数据资产冻结、可复现性核验与 Kev/Laya 官方代码兼容性闭环（2026-10-10）
 
 - **1. 全量资产盘点与机器可读 Manifest 冻结**：
-  - 生成并同步唯一权威清单 [manifest.json](公开数据/manifest.json)（同时保存于服务器 `/home/syy/路由/data/公开数据/manifest.json`），完整覆盖全部已登记 Source ID（`TRA-001..004`、`ROUTE-001..005`、`CACHE-001..006`、`TIME-001..004`、`ENV-001..003`、`MEM-001..006`、`MAS-001..003`、`SYS-001`、`OWN-001..003`）。
-  - **原始公开数据（只读冻结）**：服务器 `/home/syy/路由/data/公开数据/原始数据/` 下 14 个有效来源目录、**789 个文件**、**17,869,335,210 字节（17.87 GB）**，逐目录计算 SHA-256 树哈希。
-  - **清洗后标准数据**：服务器 `/home/syy/路由/data/公开数据/清洗数据/` 下 14 个 JSONL 文件、**6,600,628 行**、**6,401,154,316 字节（6.40 GB）**。
-  - **自有生产数据（双向同步冻结）**：`OWN-001`（`cch-model-cost-cache-statistics.csv`，87,057 B，110 条数据行）、`OWN-002`（`sxyq-blog-gpt-usage-cleaned.csv`，34,738,033 B，221,128 条脱敏记录；未脱敏原始文件因含 IP/Key 隐私标记为 `RAW_MISSING`，以脱敏版作为冻结权威源）、`OWN-003`（`cch-sxyq-gpt-unified-summary.csv`，25,424 B，79 条汇总行）在 GitHub 与服务器 `/home/syy/路由/our-project/data/` 完全一致。
+  - 生成并同步唯一权威清单 [manifest.json](公开数据/manifest.json)（同时保存于服务器 `data/公开数据/manifest.json`），完整覆盖全部已登记 Source ID（`TRA-001..004`、`ROUTE-001..005`、`CACHE-001..006`、`TIME-001..004`、`ENV-001..003`、`MEM-001..006`、`MAS-001..003`、`SYS-001`、`OWN-001..003`）。
+  - **原始公开数据（只读冻结）**：服务器 `data/公开数据/原始数据/` 下 14 个有效来源目录、**789 个文件**、**17,869,335,210 字节（17.87 GB）**，逐目录计算 SHA-256 树哈希。
+  - **清洗后标准数据**：服务器 `data/公开数据/清洗数据/` 下 14 个 JSONL 文件、**6,600,628 行**、**6,401,154,316 字节（6.40 GB）**。
+  - **自有生产数据（双向同步冻结）**：`OWN-001`（`cch-model-cost-cache-statistics.csv`，87,057 B，110 条数据行）、`OWN-002`（`sxyq-blog-gpt-usage-cleaned.csv`，34,738,033 B，221,128 条脱敏记录；未脱敏原始文件因含 IP/Key 隐私标记为 `RAW_MISSING`，以脱敏版作为冻结权威源）、`OWN-003`（`cch-sxyq-gpt-unified-summary.csv`，25,424 B，79 条汇总行）在 GitHub 与服务器 `our-project/data/` 完全一致。
   - **双遍确定性可复现核验（PASS）**：对 6 个代表性源从原始文件执行双遍重跑，输出 SHA-256 与正式清洗文件 100% 逐字节一致；对 `prepare_router_data.py --mode views` 执行双遍独立目录重跑，生成的 15 个视图文件在两次运行间及正式文件间 SHA-256 100% 逐字节一致。
 - **2. 路由监督标签最终净化（消除并列伪单胜者）**：
   - **LLMRouterBench（25,202 题）**：严格拆分为 5 类成本—质量状态：`UNIQUE_MAX_SCORE`（**1,432** 题）、`TIED_SCORE_MIN_MEASURED_API_USD`（**7,954** 题）、`TIED_SCORE_TIED_API_USD`（**86** 题）、`TIED_SCORE_COST_UNCOMPARED`（**12,986** 题，含 `cost == 0.0` 未计费开源模型与最高分并列）、`ALL_MODELS_FAILED`（**2,744** 题）。
@@ -352,15 +352,15 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
     - `ROUTE-001` LLMRouterBench 严格唯一胜者：**9,386** 题（`1,432 UNIQUE_MAX_SCORE + 7,954 TIED_SCORE_MIN_MEASURED_API_USD`）
     - `TRA-004` AgentSuite 唯一成功模型：**19** 题（`OBSERVED_EPISODE_UNIQUE_SUCCESS`）
   - **无区分度/并列/全败分析集（16,070 题）**：LLMRouterBench 15,816 题（`12,986 + 86 + 2,744`）+ AgentSuite 并列 246 题 + AgentSuite 全败 8 题。
-  - **Thinking-On/Off 对照视图**：`thinking_contrasts.jsonl` 共 **1,911 条**（覆盖 7 组同家族推理配置配对 × 273 任务：其中 6 组严格同底座同版本共计 **1,638 条**，1 组 Gemini 2.5 Pro/Flash 同代跨变体对照 **273 条**单独标注 `SAME_GENERATION_CROSS_VARIANT`）。
+  - **Thinking-On/Off 对照视图**：同基础架构成对 Episode 共 **1,638 条**（其中 **5 组严格同一权重运行时开关 × 273 任务 = 1,365 条**；**1 组同底座同版本专用 Thinking 权重 `Qwen3-235B-A22B-Instruct-2507-FP8` vs `Thinking-2507-FP8` = 273 条**）；另有 **6 组跨版本/跨变体对照 = 1,638 条**单独统计。
 - **3. 跨划分零泄漏修复（PASS）**：
   - 修复短 Prompt（`< 15` 字符）及句末标点变体未走语义哈希分桶的问题，对全部非空 Prompt 采用标点归一化 `canonical_prompt` 哈希分桶：
   - **Train**: **67,428**（80.0%）｜**Val**: **8,436**（10.0%）｜**Test**: **8,446**（10.0%）｜**Holdout (`TwinRouterBench`)**: **970** 步。
   - 实测 `train_val_task_overlap = 0`、`exact_prompt_overlap = 0`、`canonical_prompt_overlap = 0`、`cross_source_prompt_split_leakage = 0`。
 - **4. 官方 Kev 与 Laya 仓库真实代码 100% 兼容验证（PASS）**：
   - 优化 `criteria` 为空描述字典 `{m: ""}`（由官方 `kev.api.option_text` 与 `laya.common.render_options` 原生渲染纯净模型 ID）并补齐顶层 `"expected"` 字段，使同一份 JSONL 同时原生兼容两套官方仓库：
-  - **Kev 官方 (`kev.data.load_records -> materialize -> kev.model.encode`)**：全量 85,280 条样本（84,310 监督 + 970 Holdout）100% 通过，`max_state_tokens = 301`、`max_branch_tokens = 466`、`max_packed_tokens = 767`，在默认（`384/1024/2048`）与 Kev-4B（`7552/8192/9216`）下均为 **0 截断、0 溢出**。
-  - **Laya 官方 (`laya.train.read_data -> items_from_rows -> build_sequence`)**：在路由训练配置 `max_len=1024, head_max_len=448` 下全量 85,280 条样本 **100.0% 零跳过通过（`skipped={}`）**（注：Laya 出厂默认 `head_max_len=192` 因 `192 // 38 = 5 tokens/option` 会跳过 1,734 条 34~38 候选长选项样本，故正式训练与评测统一显式传入 `max_len=1024, head_max_len=448`）。
+  - **Kev 官方 (`kev.data.load_records -> materialize -> kev.model.encode`)**：全量 85,280 条样本（84,310 监督 + 970 Holdout）100% 通过，`max_state_tokens = 352`、`max_branch_tokens = 466`、`max_packed_tokens = 767`，在默认（`384/1024/2048`）与 Kev-4B（`7552/8192/9216`）下均为 **0 截断、0 溢出**。
+  - **Laya 官方 (`laya.train.read_data -> items_from_rows -> build_sequence`)**：在路由训练配置 `max_len=1024, head_max_len=448` 下全量 85,280 条样本 **100.0% 零跳过通过（`skipped={}`）**（注：Laya 出厂默认 `head_max_len=192` 因 `192 // 38 = 5 tokens/option` 会跳过 1,734 条 30~51 候选长选项样本，故正式训练与评测统一显式传入 `max_len=1024, head_max_len=448`）。
 
 ### 6.13 全量数据分层使用与目录方案（2026-10-10 Planning 提案，待执行核验）
 
@@ -391,9 +391,23 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 
 以上是用户要求的下阶段规划，**不表示这些视图已全部产出、覆盖率已验证或正式训练已获授权**。
 
+### 6.14 全量 660 万条数据 8 维分层、8 类状态真实覆盖与目录治理执行核验结论（2026-10-10）
+
+- **1. 67,853 vs 67,428 版本对账结论（P0）**：
+  - 经服务器物理文件 `wc -l` 与 `sha256sum` 实测确认，服务器 `data/kev/公开数据/` 与 `data/laya/公开数据/` 的唯一正式冻结文件、GitHub `manifest.json`、`数据划分统计.json` 及 `科研数据收尾报告.md` **全部一致为 `67,428 / 8,436 / 8,446`**（合计 `84,310` 题）。
+  - 旧数字 `67,853 / 8,136 / 8,321` 仅为引入句末标点归一化（`canonical_prompt`）之前的中间统计，已在 `PROJECT_STATUS.md` 中统一纠偏为 `67,428 / 8,436 / 8,446`，同时修正了 `PROJECT_STATUS.md` 中 `ROUTE-001`（LLMRouterBench 9,386）与 `ROUTE-002`（RouterBench 35,189）编号互换的笔误。
+- **2. 全量 6,600,628 条公开记录 + 221,317 条自有记录 8 维逐行清点（P1）**：
+  - **第一层（阶段 1 静态单胜者模型选择）**：**84,310 题**（`ROUTE-004` 39,716 + `ROUTE-002` 35,189 + `ROUTE-001` 9,386 + `TRA-004` 19），另有 **970 步** `ROUTE-003` Holdout 与 **16,070 题**并列/无监督分析集。
+  - **第二层（阶段 2 Agent 决策前状态与终局结果建模）**：**4,448,643 步**（`TRA-001` 2,075,629 步 / 30,000 轨迹 / 21,515 任务 / 3,240 仓库；`TRA-002` 2,331,584 步 / 49,897 独立轨迹 ID / 13,501 任务 / 119 仓库；`TRA-004` 41,430 步 / 8,190 Episode / 273 任务），100% 具备真实终局 `resolved`/`score` 标签（TRA-001 成功 11,488 轨迹、失败 18,512 轨迹；TRA-002 成功 21,513 轨迹、失败 28,384 轨迹；TRA-004 成功 3,646 Episode、失败 4,544 Episode），按代码仓库与任务 ID 严格 80/10/10 隔离。
+  - **第三层（阶段 3 Thinking Effort 与同家族推理对照）**：`TRA-004` 中严格拆分为 **1,365 对同一权重运行时开关对照**（5 个模型 × 273 任务）与 **273 对同底座同版本专用 Thinking 权重对照**（`Qwen3-235B-A22B-Instruct-2507-FP8` vs `Thinking-2507-FP8`），合计 **1,638 对同底座对照**；另有 **1,638 对跨版本/跨尺寸/跨代对照**（6 对 × 273 任务）单独登记。此外 `ROUTE-001` 含 **27,192 对**同家族推理 vs 指令评测对（覆盖 13,562 题）。
+  - **第四层（阶段 4 缓存、到达时序与真实成本校准）**：`CACHE-001`（39,632 条请求，37,416 条含历史连续前缀块匹配）、`TIME-001`（1,404,294 条真实到达时间戳与 Token 负载）、`OWN-001/002`（221,238 条真实网关调用，其中 185,154 条含物理 `cache_read_tokens > 0`、194,247 条含真实计费、198,359 条含显式 `reasoning_effort`）。
+  - **第五层（阶段 5 在线 Coding/Memory Benchmark 与未来动态反事实路由）**：`ENV-001`（2,438 题）、`ENV-002`（32,079 题）、`MEM-003`（451 题）、`MEM-005`（23,884 条）。当前公开集中**同一中途状态多模型反事实分支数为 0**，留待 E3/E4 受控在线运行采集。
+- **3. 规范化目录与脱敏治理（P4）**：
+  - 建立服务器 `runs/`（归档 `runs/E1-smoke-test-20261010/smoke_test_results.json`）与 `.tmp/`，清理本任务自行创建的 `.tmp/task_layer_audit_20261010/`，保留历史遗留文件清单待用户确认；将 `AGENTS.md` 从 Git 索引移除（`git rm --cached`，本地保留未跟踪状态），并将公开文档中的服务器绝对路径全部替换为相对路径。
+
 ## 7. 后续阶段接口和变更历史
 
-当前唯一大阶段：**Q-007-FINAL 数据资产冻结与 Kev/Laya 训练前兼容性验证已完成**，数据资产正式冻结，可进入 E1/E2 模型训练阶段。
+当前唯一大阶段：**Q-007-FINAL 数据资产冻结、全量 660 万条分层与 Kev/Laya 训练前兼容性验证已完成**，数据资产正式冻结，可按五阶段课程进入 E1/E2 模型训练阶段。
 
 建议的后续分界：SOURCE-REVIEW（确认源和使用权）→ SELECT（负责人明确用途/来源）→ DATA-CLEAN（正式授权后规范化/校验）→ TRAIN-DATA-READY（数据验收）→ Kev/Laya 正式训练与离线验证（E1/E2）→ Coding Benchmark 批量运行（E3）→ 动态缓存感知路由（E4）→ 论文与消融（E5）。
 
@@ -407,4 +421,4 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 | 2026-10-10 | v1.5 | Execution 完成全量 6,600,628 行清洗与 16 源轻量审查样本上线，统一统计口径 | 差额归零，代码级缺陷修正，等待 Planning 三次复审 |
 | 2026-10-10 | v1.6 | Execution 完成科研缺陷收尾、统一模型选择训练视图构建与 Kev 格式 80/10/10 任务级隔离划分 | 具备 TRAIN_READY 前置数据条件，产出《科研数据收尾报告.md》 |
 | 2026-10-10 | v1.7 | Execution 完成 Q-007-FINAL：生成机器可读 `manifest.json`、双遍确定性可复现验证、剔除 LLMRouterBench 13,072 条同分成本未比/并列样本至分析集（锁定 84,310 条严格唯一胜者）、修复短/标点 Prompt 跨集泄漏、通过官方 Kev 与 Laya 仓库 100% 兼容性及最小 GPU Smoke Test | **Q-007-FINAL 全部 PASS，数据资产正式冻结** |
-
+| 2026-10-10 | v1.8 | Execution 完成全量 6,600,628 条记录 8 维分层审计、8 类研究状态覆盖矩阵、AgentSuite Thinking vs 跨版本配对精确拆分、五阶段训练课程设计及本机/服务器目录治理与公开文档路径脱敏 | **全量数据分层与目录治理完成，待进入 E1/E2 正式训练** |
