@@ -40,7 +40,9 @@ def process_route_001(raw_root, cleaned_root, preview_root):
 
     schema_template = {
         "provenance.benchmark_name": "string",
+        "provenance.subset_name": "string",
         "provenance.model_name": "string",
+        "provenance.full_prompt_hash": "string",
         "pre_decision_state.prompt_snippet": "string",
         "pre_decision_state.prompt_tokens_est": "int",
         "observed_decision.label_nature": {"value": "POST_HOC_BENCHMARK_ORACLE"},
@@ -60,8 +62,11 @@ def process_route_001(raw_root, cleaned_root, preview_root):
             except Exception as e:
                 continue
 
+            rel_parts = os.path.relpath(jpath, raw_dir).split(os.sep)
+            subset_name = rel_parts[1] if len(rel_parts) >= 4 else str(data.get("split") or "test")
             model_name = str(data.get("model_name") or "unknown")
             dataset_name = str(data.get("dataset_name") or "unknown")
+            canonical_benchmark = "arenahard" if dataset_name.startswith("arenahard") else dataset_name
             records = data.get("records", [])
 
             model_counter[model_name] += len(records)
@@ -70,8 +75,17 @@ def process_route_001(raw_root, cleaned_root, preview_root):
             for rec in records:
                 total_records += 1
                 idx = str(rec.get("index") or "0")
-                prompt_raw = str(rec.get("origin_query") or rec.get("prompt") or "")
-                prompt_snippet = prompt_raw[:400].replace("\n", " ").strip()
+                oq_raw = str(rec.get("origin_query") or "")
+                pq_raw = str(rec.get("prompt") or "")
+                norm_oq = " ".join(oq_raw.replace("\u2028", "").replace("\u2029", "").strip().split())
+                norm_pq = pq_raw.replace("\u2028", "").replace("\u2029", "").strip()
+                if norm_pq.endswith("/no_think"):
+                    norm_pq = norm_pq[:-9].strip()
+                norm_pq = " ".join(norm_pq.split())
+                full_prompt_hash = hashlib.sha256((norm_oq + "\n" + norm_pq).encode("utf-8")).hexdigest()[:16]
+
+                prompt_raw = oq_raw if oq_raw else pq_raw
+                prompt_snippet = prompt_raw.replace("\u2028", "").replace("\u2029", "")[:400].replace("\n", " ").strip()
                 raw_prompt_tokens = rec.get("prompt_tokens")
                 prompt_tokens = int(raw_prompt_tokens) if raw_prompt_tokens is not None else 0
                 raw_completion_tokens = rec.get("completion_tokens")
@@ -98,13 +112,17 @@ def process_route_001(raw_root, cleaned_root, preview_root):
                         "source_id": source_id,
                         "source_name": source_name,
                         "benchmark_name": dataset_name,
+                        "canonical_benchmark": canonical_benchmark,
+                        "subset_name": subset_name,
                         "model_name": model_name,
                         "instance_index": idx,
+                        "full_prompt_hash": full_prompt_hash,
                     },
                     "pre_decision_state": {
                         "task_domain": dataset_name,
                         "prompt_tokens_est": prompt_tokens,
                         "prompt_snippet": prompt_snippet,
+                        "full_prompt_hash": full_prompt_hash,
                     },
                     "observed_decision": {
                         "model_name": model_name,
@@ -127,9 +145,8 @@ def process_route_001(raw_root, cleaned_root, preview_root):
                 if len(sample_pool[cat_key]) < 2:
                     sample_pool[cat_key].append(item)
 
-                # 收集同题跨模型比较样本 (基于真实题面哈希严格对齐同题)
-                q_hash = hashlib.sha256(prompt_raw.strip().encode()).hexdigest()[:12]
-                prob_key = (dataset_name, idx, q_hash)
+                # 收集同题跨模型比较样本 (基于完整原始题面哈希严格对齐真实同题)
+                prob_key = (canonical_benchmark, full_prompt_hash)
                 if len(records_by_problem.get(prob_key, [])) < 15:
                     records_by_problem.setdefault(prob_key, []).append(item)
 

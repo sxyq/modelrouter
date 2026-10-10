@@ -377,5 +377,126 @@
       },
       "error_sample": []
     }
+  },
+  "stage1_pure_static_scheme_b_fixed": {
+    "version": "MR-STAGE1-FAST-FIX-20261011",
+    "derived_dir": "runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed",
+    "generator_command": "python prepare_router_data.py --mode views",
+    "reproducibility_two_runs_identical_sha256": true,
+    "files": {
+      "train.jsonl": {
+        "rows": 66566,
+        "sha256": "ce32c69519cf55f1c114ec10859ed645e183a50e799a55936b3336af2cbddc2a"
+      },
+      "val.jsonl": {
+        "rows": 8343,
+        "sha256": "cda07164ea87143bdbcfbd844db2609f5cebfa129f77a5ad170bfaf4b3fdb8e1"
+      },
+      "test.jsonl": {
+        "rows": 8350,
+        "sha256": "2c4bf179ca237ecce07fc31bcdb992bc76d83b4eac87ba5cb6f8d68e60d87f0e"
+      },
+      "test_twinrouterbench_holdout.jsonl": {
+        "rows": 970,
+        "sha256": "29687d622b41469d1d4706d4986e82cedfc0db7c3f9aa75c3478b9d17d6caf88"
+      },
+      "analysis_unsupervised_or_tied.jsonl": {
+        "rows": 16360,
+        "sha256": "2340e5357d5f1e702ca6501abbf078d815c5a5abbb15c4370923e99e8e147d2e"
+      }
+    },
+    "total_supervised_tasks": 83259,
+    "source_breakdown": {
+      "train": {
+        "ROUTE-004": 31766,
+        "ROUTE-002": 28012,
+        "ROUTE-001": 6788
+      },
+      "val": {
+        "ROUTE-004": 3943,
+        "ROUTE-002": 3588,
+        "ROUTE-001": 812
+      },
+      "test": {
+        "ROUTE-004": 4007,
+        "ROUTE-002": 3502,
+        "ROUTE-001": 841
+      }
+    },
+    "regime_breakdown": {
+      "train": {
+        "Regime_A": 31766,
+        "Regime_B": 3243,
+        "Regime_C": 31557
+      },
+      "val": {
+        "Regime_A": 3943,
+        "Regime_B": 386,
+        "Regime_C": 4014
+      },
+      "test": {
+        "Regime_A": 4007,
+        "Regime_B": 410,
+        "Regime_C": 3933
+      },
+      "total": {
+        "Regime_A": 39716,
+        "Regime_B": 4039,
+        "Regime_C": 39504
+      }
+    },
+    "route001_dedup_and_conflict_audit": {
+      "cleaned_rows": 548059,
+      "unique_real_questions_by_full_prompt": 24441,
+      "cross_model_full_prompt_mismatches_within_raw_instance": 0,
+      "duplicate_same_model_same_result_observations_merged": 21144,
+      "admitted_to_stage1_pure_static": 8441,
+      "admitted_UNIQUE_MAX_SCORE": 1486,
+      "admitted_TIED_SCORE_MIN_MEASURED_API_USD": 6955,
+      "quarantined_conflict_questions_total": 1219,
+      "CONFLICTING_MODEL_SCORE_UNRESOLVED": 439,
+      "CONFLICTING_WINNER_COST_UNRESOLVED": 22,
+      "CONFLICTING_TIED_TOP_COST_UNRESOLVED": 758,
+      "other_unsupervised_or_tied_questions": {
+        "TIED_SCORE_TIED_API_USD": 1,
+        "TIED_SCORE_COST_UNCOMPARED": 11659,
+        "ALL_MODELS_FAILED": 3121
+      },
+      "llmroute_hle_57_check": {
+        "split": "test",
+        "full_prompt_hash": "eff26d09fee4d49b",
+        "merged_raw_subsets": ["subset_500", "test"],
+        "winner": "gemini-2.5-pro",
+        "selection_rule": "UNIQUE_MAX_SCORE",
+        "supervision_regime": "Regime_B"
+      }
+    },
+    "route002_candidate_order_fix": {
+      "shuffle_seed_rule": "SHA256('MR_STAGE1_SHUFFLE_SEED_42::' + task_id)",
+      "train_index0_win_rate": 0.092032,
+      "train_last_index_win_rate": 0.092103,
+      "val_index0_win_rate": 0.090022,
+      "test_index0_win_rate": 0.095089
+    },
+    "leakage_and_pre_decision_audit": {
+      "cross_split_task_id_overlap": 0,
+      "cross_split_prompt_hash_overlap": 0,
+      "cross_split_norm_prompt_overlap": 0,
+      "openrouter_candidate_residual": 0,
+      "difficulty_tier_in_state_text": 0,
+      "post_hoc_leakage_hits": 0
+    },
+    "cpu_compatibility_100pct": {
+      "kev_384_and_7552_pass": 83259,
+      "laya_1024_512_pass": 83259,
+      "joint_kev_laya_trainable_intersection": 83259,
+      "laya_default_512_192_skipped_options_collapsed": {
+        "train": 1086,
+        "val": 99,
+        "test": 98,
+        "total": 1283
+      }
+    }
   }
 }
+

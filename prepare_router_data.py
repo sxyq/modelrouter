@@ -61,6 +61,11 @@ def parse_args():
         help="Laya 格式输出目录",
     )
     parser.add_argument(
+        "--stage1-out-dir",
+        default="runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed",
+        help="Stage 1 纯静态 Scheme B 修复版输出目录（不覆盖历史冻结目录）",
+    )
+    parser.add_argument(
         "--manifest-path",
         default="",
         help="机器可读 Manifest 输出路径（默认生成于 preview-root 同级目录的 manifest.json）",

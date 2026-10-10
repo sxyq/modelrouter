@@ -34,17 +34,17 @@ def build_unified_training_and_evaluation_views(args):
     from collections import defaultdict
 
     print("\n" + "=" * 70)
-    print("  [训练视图] 构建统一模型选择训练视图与 Kev / Laya 格式任务级划分")
+    print("  [训练视图] 构建 Stage 1 纯静态 Scheme B 模型选择训练视图与 Kev / Laya 任务级划分")
     print("=" * 70)
 
+    raw_root = getattr(args, "raw_root", "data/公开数据/原始数据")
     cleaned_root = args.cleaned_root
     preview_root = args.preview_root
     kev_root = args.kev_root
     laya_root = getattr(args, "laya_root", "data/laya/公开数据")
+    stage1_out_dir = getattr(args, "stage1_out_dir", "runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed")
     views_dir = os.path.join(preview_root, "训练视图")
-    os.makedirs(views_dir, exist_ok=True)
-    os.makedirs(kev_root, exist_ok=True)
-    os.makedirs(laya_root, exist_ok=True)
+    os.makedirs(stage1_out_dir, exist_ok=True)
 
     random.seed(args.seed)
 
@@ -60,7 +60,7 @@ def build_unified_training_and_evaluation_views(args):
     agentsuite_thinking_contrasts = 0
 
     # -------------------------------------------------------------
-    # A. ROUTE-004: Arena 55k 人类盲测偏好对决 (39,716 场明确胜负)
+    # A. ROUTE-004: Arena 55k 人类盲测偏好对决 (39,716 场明确胜负, Regime A)
     # -------------------------------------------------------------
     arena_file = os.path.join(cleaned_root, "路由比较", "ROUTE-004_Arena", "cleaned_arena_preference.jsonl")
     if os.path.exists(arena_file):
@@ -95,7 +95,6 @@ def build_unified_training_and_evaluation_views(args):
                 candidate_distribution_unfiltered[2] += 1
                 candidate_distribution_filtered[2] += 1
 
-                # 使用空字符串描述以让 Kev (option_text) 与 Laya (render_options) 直接渲染纯净模型名，避免冗余前缀导致多候选截断坍缩
                 choice_criteria = {
                     model_a: "",
                     model_b: ""
@@ -110,6 +109,7 @@ def build_unified_training_and_evaluation_views(args):
                         "source_record_id": str(battle_id),
                         "selection_rule": "HUMAN_BLIND_PAIRWISE_PREFERENCE",
                         "label_nature": "pairwise_human_preference",
+                        "supervision_regime": "Regime_A",
                         "battle_id": battle_id,
                         "task_id": task_id,
                     },
@@ -132,153 +132,280 @@ def build_unified_training_and_evaluation_views(args):
                         "winner": label_model,
                         "is_deterministic_oracle": True,
                         "selection_rule": "HUMAN_BLIND_PAIRWISE_PREFERENCE",
-                        "label_nature": "pairwise_human_preference"
+                        "label_nature": "pairwise_human_preference",
+                        "supervision_regime": "Regime_A"
                     }
                 }
                 task_pool[task_id] = kev_record
                 task_pool_training[task_id] = kev_record
 
     # -------------------------------------------------------------
-    # B. ROUTE-001: LLMRouterBench 26,368 题实测基准 (多模型质量与成本对比)
+    # B. ROUTE-001: LLMRouterBench (真实题目哈希分组 + 同模型重复评测去重 + 冲突隔离 + 移除 openrouter)
     # -------------------------------------------------------------
+    llmroute_raw_dir = os.path.join(raw_root, "ROUTE-001_LLMRouterBench", "bench-release")
     llmroute_file = os.path.join(cleaned_root, "路由比较", "ROUTE-001_LLMRouterBench", "cleaned_evaluations.jsonl")
-    if os.path.exists(llmroute_file):
-        print(f"[Views] 读取 ROUTE-001 LLMRouterBench 多模型评估: {llmroute_file}")
-        problems = defaultdict(lambda: {"prompt": "", "benchmark": "", "evals": []})
-        with open(llmroute_file, "r", encoding="utf-8") as f:
-            for line in f:
-                if not line.strip():
+    if os.path.exists(llmroute_raw_dir) or os.path.exists(llmroute_file):
+        import glob as _glob
+        problems = defaultdict(lambda: {
+            "prompt": "",
+            "benchmark": "",
+            "raw_benchmarks": set(),
+            "subsets": set(),
+            "indices": [],
+            "full_prompt_hash": "",
+            "by_model": defaultdict(list),
+            "openrouter_present": False
+        })
+
+        raw_json_files = sorted(_glob.glob(os.path.join(llmroute_raw_dir, "**", "*.json"), recursive=True)) if os.path.exists(llmroute_raw_dir) else []
+        if raw_json_files:
+            print(f"[Views] 从 ROUTE-001 原始评测集 ({len(raw_json_files)} 个 JSON 文件) 提取完整原始 Prompt 哈希与真实 subset...")
+            for jpath in raw_json_files:
+                try:
+                    with open(jpath, "r", encoding="utf-8") as jf:
+                        data = json.load(jf)
+                except Exception:
                     continue
-                r = json.loads(line)
-                prov = r["provenance"]
-                bname = prov["benchmark_name"]
-                idx = prov["instance_index"]
-                mname = prov["model_name"]
-                pre = r["pre_decision_state"]
-                out = r["ground_truth_outcome"]
-                raw_score = out.get("score")
-                raw_cost = out.get("cost_usd")
-                raw_tokens = out.get("completion_tokens")
+                rel_parts = os.path.relpath(jpath, llmroute_raw_dir).split(os.sep)
+                subset_name = rel_parts[1] if len(rel_parts) >= 4 else str(data.get("split") or "test")
+                mname = str(data.get("model_name") or "unknown")
+                bname = str(data.get("dataset_name") or "unknown")
+                canon_bname = "arenahard" if bname.startswith("arenahard") else bname
+                for rec_i, rec in enumerate(data.get("records", [])):
+                    idx = str(rec.get("index", rec_i))
+                    oq_raw = str(rec.get("origin_query") or "")
+                    pq_raw = str(rec.get("prompt") or "")
+                    norm_oq = " ".join(oq_raw.replace("\u2028", "").replace("\u2029", "").strip().split())
+                    norm_pq = pq_raw.replace("\u2028", "").replace("\u2029", "").strip()
+                    if norm_pq.endswith("/no_think"):
+                        norm_pq = norm_pq[:-9].strip()
+                    norm_pq = " ".join(norm_pq.split())
+                    full_prompt_hash = hashlib.sha256((norm_oq + "\n" + norm_pq).encode("utf-8")).hexdigest()[:16]
+                    prompt_raw = oq_raw if oq_raw else pq_raw
+                    prompt_snippet = prompt_raw.replace("\u2028", "").replace("\u2029", "")[:400].replace("\n", " ").strip()
 
-                # 科研规范：严格区分缺失评估、实测商业 API 美元费用与本地未计费
-                score_val = float(raw_score) if raw_score is not None else None
-                score_status = "VALID_MEASURED" if score_val is not None else "UNEVALUATED_MISSING"
+                    raw_score = rec.get("score")
+                    score_val = float(raw_score) if raw_score is not None else None
+                    raw_cost = rec.get("cost")
+                    cost_val = round(float(raw_cost), 8) if raw_cost is not None else None
+                    raw_tokens = rec.get("completion_tokens")
+                    tokens_val = int(raw_tokens) if raw_tokens is not None else 0
 
-                if raw_cost is None:
-                    cost_val = None
-                    cost_type = "COST_UNSPECIFIED"
-                elif float(raw_cost) > 0.0:
-                    cost_val = float(raw_cost)
-                    # 正费用仅表示来源提供数值，无法证明账单；本轮保留既有导出字段。
-                    # 真实费用口径见现有科研数据收尾报告。
-                    cost_type = "ACTUAL_MEASURED_API_USD"
+                    key = (canon_bname, full_prompt_hash)
+                    p_entry = problems[key]
+                    if not p_entry["prompt"]:
+                        p_entry["prompt"] = prompt_snippet
+                        p_entry["benchmark"] = canon_bname
+                        p_entry["full_prompt_hash"] = full_prompt_hash
+                    p_entry["raw_benchmarks"].add(bname)
+                    p_entry["subsets"].add(subset_name)
+                    p_entry["indices"].append((subset_name, idx, bname))
+                    if mname == "openrouter":
+                        p_entry["openrouter_present"] = True
+                        continue
+                    p_entry["by_model"][mname].append({
+                        "model": mname,
+                        "score": score_val,
+                        "cost": cost_val,
+                        "tokens": tokens_val,
+                        "subset": subset_name,
+                        "index": idx,
+                        "raw_benchmark": bname
+                    })
+        else:
+            print(f"[Views] 读取 ROUTE-001 LLMRouterBench 清洗文件: {llmroute_file}")
+            with open(llmroute_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    if not line.strip():
+                        continue
+                    r = json.loads(line)
+                    prov = r["provenance"]
+                    bname = prov["benchmark_name"]
+                    canon_bname = prov.get("canonical_benchmark") or ("arenahard" if bname.startswith("arenahard") else bname)
+                    subset_name = prov.get("subset_name", "default")
+                    idx = str(prov["instance_index"])
+                    mname = prov["model_name"]
+                    pre = r["pre_decision_state"]
+                    prompt_snippet = pre.get("prompt_snippet", "").replace("\u2028", "").replace("\u2029", "")
+                    full_prompt_hash = prov.get("full_prompt_hash") or hashlib.sha256(prompt_snippet.encode("utf-8")).hexdigest()[:16]
+                    out = r["ground_truth_outcome"]
+                    raw_score = out.get("score")
+                    score_val = float(raw_score) if raw_score is not None else None
+                    raw_cost = out.get("cost_usd")
+                    cost_val = round(float(raw_cost), 8) if raw_cost is not None else None
+                    raw_tokens = out.get("completion_tokens")
+                    tokens_val = int(raw_tokens) if raw_tokens is not None else 0
+
+                    key = (canon_bname, full_prompt_hash)
+                    p_entry = problems[key]
+                    if not p_entry["prompt"]:
+                        p_entry["prompt"] = prompt_snippet
+                        p_entry["benchmark"] = canon_bname
+                        p_entry["full_prompt_hash"] = full_prompt_hash
+                    p_entry["raw_benchmarks"].add(bname)
+                    p_entry["subsets"].add(subset_name)
+                    p_entry["indices"].append((subset_name, idx, bname))
+                    if mname == "openrouter":
+                        p_entry["openrouter_present"] = True
+                        continue
+                    p_entry["by_model"][mname].append({
+                        "model": mname,
+                        "score": score_val,
+                        "cost": cost_val,
+                        "tokens": tokens_val,
+                        "subset": subset_name,
+                        "index": idx,
+                        "raw_benchmark": bname
+                    })
+
+        used_task_ids = set()
+        for (bname, fhash), pdata in sorted(problems.items()):
+            # 选择稳定主索引（优先使用完整测试子集 test / test_3000 / hybrid / verified / v1 的 index）
+            idx_candidates = sorted(
+                set(pdata["indices"]),
+                key=lambda x: (0 if x[0] in ("test", "test_3000", "hybrid", "verified", "v1") else 1, x[0], int(x[1]) if x[1].isdigit() else 999999, x[1])
+            )
+            primary_idx = idx_candidates[0][1] if idx_candidates else fhash[:8]
+            base_task_id = f"llmroute_{bname}_{primary_idx}"
+            if base_task_id in used_task_ids:
+                task_id = f"llmroute_{bname}_{primary_idx}_{fhash[:8]}"
+            else:
+                task_id = base_task_id
+            used_task_ids.add(task_id)
+
+            # 对每个候选静态模型进行重复评测去重与冲突检测 (Rule 5 & Rule 6)
+            dedup_evals = []
+            for mname in sorted(pdata["by_model"].keys()):
+                obs_list = [o for o in pdata["by_model"][mname] if o["score"] is not None]
+                if not obs_list:
+                    continue
+                unique_sc = sorted(set((o["score"], o["cost"] if o["cost"] is not None else 0.0) for o in obs_list))
+                scores_only = sorted(set(sc[0] for sc in unique_sc))
+                costs_only = sorted(set(sc[1] for sc in unique_sc))
+                if len(unique_sc) == 1:
+                    s_val, c_val = unique_sc[0]
+                    c_type = "ACTUAL_MEASURED_API_USD" if c_val > 0.0 else "UNMEASURED_OR_LOCAL_FREE"
+                    dedup_evals.append({
+                        "model": mname,
+                        "score": s_val,
+                        "score_min": s_val,
+                        "score_max": s_val,
+                        "score_conflict": False,
+                        "score_status": "VALID_MEASURED_DEDUP" if len(obs_list) > 1 else "VALID_MEASURED",
+                        "cost": c_val,
+                        "cost_min": c_val,
+                        "cost_max": c_val,
+                        "cost_conflict": False,
+                        "cost_type": c_type,
+                        "observations_count": len(obs_list)
+                    })
                 else:
-                    cost_val = 0.0
-                    cost_type = "UNMEASURED_OR_LOCAL_FREE"
+                    # 同一模型存在不同评分或不同费用冲突：严禁任意取首条、最大分或最低价 (Rule 6)
+                    dedup_evals.append({
+                        "model": mname,
+                        "score": scores_only[0] if len(scores_only) == 1 else None,
+                        "score_min": min(scores_only),
+                        "score_max": max(scores_only),
+                        "score_conflict": len(scores_only) > 1,
+                        "score_status": "CONFLICTING_SCORE_OBSERVATIONS" if len(scores_only) > 1 else "VALID_SCORE_CONFLICTING_COST",
+                        "cost": costs_only[0] if len(costs_only) == 1 else None,
+                        "cost_min": min(costs_only),
+                        "cost_max": max(costs_only),
+                        "cost_conflict": len(costs_only) > 1,
+                        "cost_type": "CONFLICTING_COST_OBSERVATIONS" if len(costs_only) > 1 else ("ACTUAL_MEASURED_API_USD" if costs_only[0] > 0.0 else "UNMEASURED_OR_LOCAL_FREE"),
+                        "observations_count": len(obs_list),
+                        "conflicting_pairs": unique_sc
+                    })
 
-                tokens_val = int(raw_tokens) if raw_tokens is not None else 0
-
-                key = (bname, idx)
-                if not problems[key]["prompt"]:
-                    problems[key]["prompt"] = pre.get("prompt_snippet", "")
-                    problems[key]["benchmark"] = bname
-                problems[key]["evals"].append({
-                    "model": mname,
-                    "score": score_val,
-                    "score_status": score_status,
-                    "cost": cost_val,
-                    "cost_type": cost_type,
-                    "tokens": tokens_val
-                })
-
-        for (bname, idx), pdata in problems.items():
-            evals = pdata["evals"]
-            num_cand = len(evals)
+            num_cand = len(dedup_evals)
             candidate_distribution_unfiltered[num_cand] += 1
             if num_cand < 2:
+                llmroute_selection_counts["FEWER_THAN_2_MODELS"] += 1
                 continue
 
-            # 仅保留具有真实评分 (score is not None) 的候选模型
-            valid_evals = [e for e in evals if e["score"] is not None]
-            if not valid_evals:
-                continue
-
-            # 科研规范质量与成本排序：
-            # 1. 质量绝对优先：最高得分优先
-            # 2. 严禁对成本不可比或同分同成本的并列任务按列表顺序强行取 [0] 进入硬单标签主训练集
-            max_score = max(e["score"] for e in valid_evals)
-            top_evals = [e for e in valid_evals if e["score"] == max_score]
-            is_all_failed = (max_score == 0.0)
+            max_score = max(e["score_max"] for e in dedup_evals)
+            top_evals = [e for e in dedup_evals if e["score_max"] == max_score]
+            is_all_failed = (max_score <= 0.0)
             is_strictly_unique_winner = False
             tied_group = []
+            supervision_regime = None
 
             if is_all_failed:
                 best_eval = top_evals[0]
                 best_model = best_eval["model"]
                 selection_rule = "ALL_MODELS_FAILED"
                 cost_comparison_status = "ALL_FAILED"
-                is_strictly_unique_winner = False
-                tied_group = []
+            elif any(e["score_conflict"] for e in top_evals):
+                # 潜在最高分模型存在评分冲突，无法确定合法胜者，转入分析集合 (Rule 7)
+                best_eval = top_evals[0]
+                best_model = best_eval["model"]
+                selection_rule = "CONFLICTING_MODEL_SCORE_UNRESOLVED"
+                cost_comparison_status = "SCORE_CONFLICT_IN_TOP_CANDIDATES"
+                tied_group = top_evals
             elif len(top_evals) == 1:
                 best_eval = top_evals[0]
                 best_model = best_eval["model"]
-                selection_rule = "UNIQUE_MAX_SCORE"
-                cost_comparison_status = "MEASURED_API_USD" if best_eval["cost_type"] == "ACTUAL_MEASURED_API_USD" else "LOCAL_UNMEASURED_COST"
-                is_strictly_unique_winner = True
-                tied_group = [best_eval]
-            else:
-                # 沿用历史正费用比较规则以保持既有导出；这些数值可能含估算。
-                # 真实费用口径见现有科研数据收尾报告。
-                all_api_usd = all(e["cost_type"] == "ACTUAL_MEASURED_API_USD" and e["cost"] is not None and e["cost"] > 0 for e in top_evals)
-                if all_api_usd:
-                    min_cost = min(e["cost"] for e in top_evals)
-                    min_cost_evals = [e for e in top_evals if e["cost"] == min_cost]
-                    best_eval = min_cost_evals[0]
-                    best_model = best_eval["model"]
-                    tied_group = min_cost_evals
-                    if len(min_cost_evals) == 1:
-                        selection_rule = "TIED_SCORE_MIN_MEASURED_API_USD"
-                        cost_comparison_status = "MEASURED_API_USD_LOWEST"
-                        is_strictly_unique_winner = True
-                    else:
-                        selection_rule = "TIED_SCORE_TIED_API_USD"
-                        cost_comparison_status = "MEASURED_API_USD_TIED"
-                        is_strictly_unique_winner = False
+                if best_eval["cost_conflict"]:
+                    # 唯一最高分模型自身存在费用冲突，保守隔离至分析集 (Rule 6 & Rule 7)
+                    selection_rule = "CONFLICTING_WINNER_COST_UNRESOLVED"
+                    cost_comparison_status = "COST_CONFLICT_IN_UNIQUE_TOP_CANDIDATE"
+                    is_strictly_unique_winner = False
+                    tied_group = [best_eval]
                 else:
-                    # 包含本地开源/未计费模型，无法进行公平美元成本决胜，严禁以 top_evals[0] 列表顺序伪造硬单标签
+                    selection_rule = "UNIQUE_MAX_SCORE"
+                    cost_comparison_status = "MEASURED_API_USD" if best_eval["cost_type"] == "ACTUAL_MEASURED_API_USD" else "LOCAL_UNMEASURED_COST"
+                    is_strictly_unique_winner = True
+                    supervision_regime = "Regime_B"
+                    tied_group = [best_eval]
+            else:
+                if any(e["cost_conflict"] for e in top_evals):
+                    # 并列最高分模型中存在费用冲突，禁止任意取最低价或首条，转入分析集 (Rule 6 & Rule 7)
                     best_eval = top_evals[0]
                     best_model = best_eval["model"]
-                    tied_group = top_evals
-                    selection_rule = "TIED_SCORE_COST_UNCOMPARED"
-                    cost_comparison_status = "COST_UNCOMPARED_UNMEASURED_LOCAL"
+                    selection_rule = "CONFLICTING_TIED_TOP_COST_UNRESOLVED"
+                    cost_comparison_status = "COST_CONFLICT_IN_TIED_TOP_CANDIDATES"
                     is_strictly_unique_winner = False
+                    tied_group = top_evals
+                else:
+                    all_api_usd = all(e["cost_type"] == "ACTUAL_MEASURED_API_USD" and e["cost"] is not None and e["cost"] > 0 for e in top_evals)
+                    if all_api_usd:
+                        min_cost = min(e["cost"] for e in top_evals)
+                        min_cost_evals = [e for e in top_evals if e["cost"] == min_cost]
+                        best_eval = min_cost_evals[0]
+                        best_model = best_eval["model"]
+                        tied_group = min_cost_evals
+                        if len(min_cost_evals) == 1:
+                            selection_rule = "TIED_SCORE_MIN_MEASURED_API_USD"
+                            cost_comparison_status = "MEASURED_API_USD_LOWEST"
+                            is_strictly_unique_winner = True
+                            supervision_regime = "Regime_C"
+                        else:
+                            selection_rule = "TIED_SCORE_TIED_API_USD"
+                            cost_comparison_status = "MEASURED_API_USD_TIED"
+                            is_strictly_unique_winner = False
+                    else:
+                        best_eval = top_evals[0]
+                        best_model = best_eval["model"]
+                        tied_group = top_evals
+                        selection_rule = "TIED_SCORE_COST_UNCOMPARED"
+                        cost_comparison_status = "COST_UNCOMPARED_UNMEASURED_LOCAL"
+                        is_strictly_unique_winner = False
 
             llmroute_selection_counts[selection_rule] += 1
             best_score = best_eval["score"]
             best_cost = best_eval["cost"]
             best_cost_type = best_eval["cost_type"]
 
-            task_id = f"llmroute_{bname}_{idx}"
-            criteria = {e["model"]: "" for e in valid_evals}
-
-            solved_count = sum(1 for e in valid_evals if e["score"] >= 1.0)
-            solve_rate = solved_count / len(valid_evals)
-            if solve_rate >= 0.7:
-                diff_idx = 0
-            elif solve_rate >= 0.3:
-                diff_idx = 1
-            else:
-                diff_idx = 2
-
+            criteria = {e["model"]: "" for e in dedup_evals}
             tied_models = [e["model"] for e in tied_group]
             target_dist = None
-            if len(tied_models) > 1:
+            if not is_strictly_unique_winner and len(tied_models) > 1:
                 tied_set = set(tied_models)
                 w = round(1.0 / len(tied_models), 6)
-                target_dist = {e["model"]: (w if e["model"] in tied_set else 0.0) for e in valid_evals}
+                target_dist = {e["model"]: (w if e["model"] in tied_set else 0.0) for e in dedup_evals}
 
             label_nature = "multi_model_quality_then_measured_api_cost" if is_strictly_unique_winner else (
-                "multi_model_all_failed_unsupervised" if is_all_failed else "multi_model_tied_winners_soft_or_analysis"
+                "multi_model_all_failed_unsupervised" if is_all_failed else "multi_model_tied_or_conflicted_analysis"
             )
 
             model_choice_q = {
@@ -290,37 +417,35 @@ def build_unified_training_and_evaluation_views(args):
             if target_dist is not None:
                 model_choice_q["target"] = target_dist
 
+            # P2.3: Stage 1 纯静态导出不得把事后多模型解出率生成的 difficulty_tier 作为主训练问题
             kev_record = {
                 "provenance": {
                     "source_id": "ROUTE-001",
                     "source_name": "LLMRouterBench",
                     "raw_file": f"ROUTE-001_LLMRouterBench/{bname}",
-                    "source_record_id": f"{bname}_{idx}",
+                    "source_record_id": f"{bname}_{primary_idx}_{fhash}",
                     "selection_rule": selection_rule,
                     "label_nature": label_nature,
+                    "supervision_regime": supervision_regime,
                     "benchmark_name": bname,
-                    "instance_index": idx,
+                    "raw_benchmarks_merged": sorted(pdata["raw_benchmarks"]),
+                    "subsets_merged": sorted(pdata["subsets"]),
+                    "instance_index": primary_idx,
+                    "full_prompt_hash": fhash,
                     "task_id": task_id,
                 },
                 "state": f"Benchmark: {bname}.\nTask Prompt: {pdata['prompt']}",
                 "questions": {
                     "model_choice": model_choice_q,
-                    "difficulty_tier": {
-                        "type": "score",
-                        "instructions": "Task difficulty tier estimated from multi-model solve rate.",
-                        "criteria": ["easy", "medium", "hard"],
-                        "label": diff_idx
-                    }
                 },
                 "expected": {
                     "model_choice": best_model,
-                    "difficulty_tier": diff_idx
                 },
                 "_meta": {
                     "source_id": "ROUTE-001",
-                    "num_candidates": len(valid_evals),
-                    "candidates": [e["model"] for e in valid_evals],
-                    "evals_summary": valid_evals[:10],
+                    "num_candidates": len(dedup_evals),
+                    "candidates": [e["model"] for e in dedup_evals],
+                    "evals_summary": dedup_evals[:10],
                     "winner": best_model if is_strictly_unique_winner else None,
                     "tied_winners": tied_models if len(tied_models) > 1 else ([best_model] if is_strictly_unique_winner else []),
                     "num_tied_winners": len(tied_models),
@@ -332,24 +457,24 @@ def build_unified_training_and_evaluation_views(args):
                     "all_models_failed": is_all_failed,
                     "is_deterministic_positive_oracle": is_strictly_unique_winner,
                     "selection_rule": selection_rule,
-                    "label_nature": label_nature
+                    "label_nature": label_nature,
+                    "supervision_regime": supervision_regime
                 }
             }
             if target_dist is not None:
                 kev_record["gold"] = {
                     "model_choice": {"probabilities": target_dist},
-                    "difficulty_tier": {"probabilities": {str(i): (1.0 if i == diff_idx else 0.0) for i in range(3)}}
                 }
 
             task_pool[task_id] = kev_record
             if is_strictly_unique_winner:
-                candidate_distribution_filtered[len(valid_evals)] += 1
+                candidate_distribution_filtered[len(dedup_evals)] += 1
                 task_pool_training[task_id] = kev_record
             else:
                 task_pool_unsupervised[task_id] = kev_record
 
     # -------------------------------------------------------------
-    # C. ROUTE-002: RouterBench 35,189 题官方 Oracle 对比
+    # C. ROUTE-002: RouterBench 0-shot (排除 87 条同分同费并列 + 固定种子确定性打乱候选顺序)
     # -------------------------------------------------------------
     routerbench_file = os.path.join(cleaned_root, "路由比较", "ROUTE-002_RouterBench", "cleaned_routerbench.jsonl")
     if os.path.exists(routerbench_file):
@@ -362,25 +487,89 @@ def build_unified_training_and_evaluation_views(args):
                 sid = r["provenance"]["sample_id"]
                 ename = r["provenance"]["eval_name"]
                 obs = r["observed_decision"]
-                # RouterBench 费用由 token 数与价格计算；本轮沿用既有导出。
-                # 真实费用口径见现有科研数据收尾报告。
                 oracle = obs.get("oracle_model_to_route_to")
                 cand_evals = r.get("candidate_evaluations") or {}
                 prompt = r["pre_decision_state"]["prompt_snippet"]
 
                 candidate_distribution_unfiltered[len(cand_evals)] += 1
-                if oracle == "no_model_correct" or not oracle:
+                if oracle == "no_model_correct" or not oracle or not cand_evals:
                     routerbench_selection_counts["NO_MODEL_CORRECT_EXCLUDED"] += 1
                     continue
                 if oracle not in cand_evals:
                     routerbench_selection_counts["ORACLE_NOT_IN_CANDIDATES"] += 1
                     continue
 
-                routerbench_selection_counts["ROUTERBENCH_OFFICIAL_ORACLE"] += 1
-                candidate_distribution_filtered[len(cand_evals)] += 1
+                max_score = max(float(v.get("score") or 0.0) for v in cand_evals.values())
+                if max_score <= 0.0:
+                    routerbench_selection_counts["NO_MODEL_CORRECT_EXCLUDED"] += 1
+                    continue
+
+                top_cands = [m for m, v in cand_evals.items() if float(v.get("score") or 0.0) == max_score]
+                min_cost = min(float(cand_evals[m].get("cost_usd") or 0.0) for m in top_cands)
+                min_cost_cands = [m for m in top_cands if float(cand_evals[m].get("cost_usd") or 0.0) == min_cost]
 
                 task_id = f"routerbench_{sid}"
-                criteria = {m: "" for m in cand_evals.keys()}
+                # P2.4: 对 ROUTE-002 的固定候选列表做确定性随机打乱，消除固定首尾位置偏置
+                shuffled_cands = list(cand_evals.keys())
+                cand_rng_seed = int(hashlib.sha256(f"r002_cand_shuffle_{task_id}_{args.seed}".encode("utf-8")).hexdigest()[:16], 16)
+                random.Random(cand_rng_seed).shuffle(shuffled_cands)
+                criteria = {m: "" for m in shuffled_cands}
+
+                if len(min_cost_cands) > 1:
+                    # P1 (历史已定稿): 排除 87 条同分同费并列样本，归入分析池
+                    routerbench_selection_counts["ROUTERBENCH_TIED_SCORE_TIED_COST_EXCLUDED"] += 1
+                    w = round(1.0 / len(min_cost_cands), 6)
+                    target_dist = {m: (w if m in min_cost_cands else 0.0) for m in shuffled_cands}
+                    kev_record = {
+                        "provenance": {
+                            "source_id": "ROUTE-002",
+                            "source_name": "RouterBench",
+                            "raw_file": "ROUTE-002_RouterBench/routerbench_0shot.pkl",
+                            "source_record_id": str(sid),
+                            "selection_rule": "ROUTERBENCH_TIED_SCORE_TIED_COST_EXCLUDED",
+                            "label_nature": "tied_score_tied_cost_soft_or_analysis",
+                            "supervision_regime": None,
+                            "sample_id": sid,
+                            "eval_name": ename,
+                            "task_id": task_id,
+                        },
+                        "state": f"Evaluation task: {ename}.\nProblem input: {prompt}",
+                        "questions": {
+                            "model_choice": {
+                                "type": "choice",
+                                "instructions": f"Select the optimal cost-effective model for this {ename} problem.",
+                                "criteria": criteria,
+                                "label": min_cost_cands[0],
+                                "target": target_dist
+                            }
+                        },
+                        "expected": {
+                            "model_choice": min_cost_cands[0]
+                        },
+                        "_meta": {
+                            "source_id": "ROUTE-002",
+                            "num_candidates": len(criteria),
+                            "candidates": shuffled_cands,
+                            "evals_summary": cand_evals,
+                            "winner": None,
+                            "tied_winners": min_cost_cands,
+                            "num_tied_winners": len(min_cost_cands),
+                            "is_deterministic_oracle": False,
+                            "selection_rule": "ROUTERBENCH_TIED_SCORE_TIED_COST_EXCLUDED",
+                            "label_nature": "tied_score_tied_cost_soft_or_analysis"
+                        }
+                    }
+                    task_pool[task_id] = kev_record
+                    task_pool_unsupervised[task_id] = kev_record
+                    continue
+
+                winner_model = min_cost_cands[0]
+                is_unique_max = (len(top_cands) == 1)
+                sel_rule = "ROUTERBENCH_UNIQUE_MAX_SCORE" if is_unique_max else "ROUTERBENCH_TIED_SCORE_MIN_COST"
+                sup_regime = "Regime_B" if is_unique_max else "Regime_C"
+                routerbench_selection_counts["ROUTERBENCH_OFFICIAL_ORACLE"] += 1
+                routerbench_selection_counts[sel_rule] += 1
+                candidate_distribution_filtered[len(cand_evals)] += 1
 
                 kev_record = {
                     "provenance": {
@@ -388,8 +577,9 @@ def build_unified_training_and_evaluation_views(args):
                         "source_name": "RouterBench",
                         "raw_file": "ROUTE-002_RouterBench/routerbench_0shot.pkl",
                         "source_record_id": str(sid),
-                        "selection_rule": "ROUTERBENCH_OFFICIAL_ORACLE",
+                        "selection_rule": sel_rule,
                         "label_nature": "official_oracle_cost_effective",
+                        "supervision_regime": sup_regime,
                         "sample_id": sid,
                         "eval_name": ename,
                         "task_id": task_id,
@@ -400,34 +590,35 @@ def build_unified_training_and_evaluation_views(args):
                             "type": "choice",
                             "instructions": f"Select the optimal cost-effective model for this {ename} problem.",
                             "criteria": criteria,
-                            "label": oracle
+                            "label": winner_model
                         }
                     },
                     "expected": {
-                        "model_choice": oracle
+                        "model_choice": winner_model
                     },
                     "_meta": {
                         "source_id": "ROUTE-002",
                         "num_candidates": len(criteria),
-                        "candidates": list(criteria.keys()),
+                        "candidates": shuffled_cands,
                         "evals_summary": cand_evals,
-                        "winner": oracle,
+                        "winner": winner_model,
                         "is_deterministic_oracle": True,
-                        "selection_rule": "ROUTERBENCH_OFFICIAL_ORACLE",
-                        "label_nature": "official_oracle_cost_effective"
+                        "selection_rule": sel_rule,
+                        "label_nature": "official_oracle_cost_effective",
+                        "supervision_regime": sup_regime
                     }
                 }
                 task_pool[task_id] = kev_record
                 task_pool_training[task_id] = kev_record
 
     # -------------------------------------------------------------
-    # D. TRA-004: AgentSuite 273 独立任务 × 30 模型全 Episode 对比
+    # D. TRA-004: AgentSuite 273 独立任务 × 30 模型全 Episode 对比 (Stage 1 纯静态全部隔离至分析池)
     # -------------------------------------------------------------
     agentsuite_file = os.path.join(cleaned_root, "Agent轨迹", "TRA-004_AgentSuite", "cleaned_trajectories.jsonl")
     agentsuite_episodes_by_task = defaultdict(list)
     agentsuite_step_samples = []
     if os.path.exists(agentsuite_file):
-        print(f"[Views] 读取 TRA-004 AgentSuite 任务级 Episode 对照: {agentsuite_file}")
+        print(f"[Views] 读取 TRA-004 AgentSuite 任务级 Episode 对照 (Stage 1 纯静态隔离至分析集): {agentsuite_file}")
         episodes_map = defaultdict(lambda: {"steps": 0, "success": False, "score": 0.0, "axis": "", "prompt": "", "model": "", "thinking": ""})
         with open(agentsuite_file, "r", encoding="utf-8") as f:
             for line in f:
@@ -469,7 +660,6 @@ def build_unified_training_and_evaluation_views(args):
                 "prompt": ep["prompt"]
             })
 
-        # 严格真实计算 Thinking-ON 与 OFF 基础模型配对（严禁任何人工下限，并严格区分“同一权重运行时开关”、“同底座独立 Thinking 变体”、“跨代/跨变体比较”）
         STRICT_SAME_CHECKPOINT_THINKING_SWITCH_PAIRS = [
             ("DeepSeek-V3.2-Exp", "thinking-off", "DeepSeek-V3.2-Exp", "thinking-on"),
             ("claude-4-opus", "thinking-off", "claude-4-opus", "thinking-on-10k"),
@@ -517,162 +707,67 @@ def build_unified_training_and_evaluation_views(args):
             success_eps = [e for e in eps if e["is_success"]]
 
             if not success_eps:
-                # 8 个全失败任务：所有模型均失败，无正向动作
                 winner_status = "ZERO_SUCCESS"
                 selection_rule = "AGENTSUITE_ALL_FAILED"
                 agentsuite_selection_counts[selection_rule] += 1
                 placeholder_label = list(criteria.keys())[0]
-
-                kev_record = {
-                    "provenance": {
-                        "source_id": "TRA-004",
-                        "source_name": "AgentSuite multi_challenge",
-                        "raw_file": "TRA-004_AgentSuite/multi_challenge_*.jsonl",
-                        "source_record_id": str(inst_id),
-                        "selection_rule": selection_rule,
-                        "label_nature": "episode_all_failed_unsupervised",
-                        "instance_id": inst_id,
-                        "task_axis": eps[0]["axis"] if eps else "unknown",
-                        "task_id": task_id,
-                    },
-                    "state": f"Task domain: multi_challenge_agent. Task ID: {inst_id}.\nPrompt: {eps[0]['prompt'] if eps else ''}",
-                    "questions": {
-                        "model_choice": {
-                            "type": "choice",
-                            "instructions": "Select the optimal agent model and thinking mode for this task.",
-                            "criteria": criteria,
-                            "label": placeholder_label
-                        }
-                    },
-                    "expected": {
-                        "model_choice": placeholder_label
-                    },
-                    "_meta": {
-                        "source_id": "TRA-004",
-                        "num_candidates": len(eps),
-                        "candidates": list(criteria.keys()),
-                        "winner": None,
-                        "winner_status": winner_status,
-                        "is_deterministic_oracle": False,
-                        "cost_status": "UNMEASURED_AGENT_EXECUTION_COST",
-                        "selection_rule": selection_rule,
-                        "label_nature": "episode_all_failed_unsupervised"
-                    }
-                }
-                task_pool[task_id] = kev_record
-                task_pool_unsupervised[task_id] = kev_record
+                label_nature = "episode_all_failed_unsupervised"
             else:
                 min_steps = min(e["total_steps"] for e in success_eps)
                 max_score = max(e["score"] for e in success_eps)
                 top_eps = [e for e in success_eps if e["total_steps"] == min_steps and e["score"] == max_score]
-
                 if len(top_eps) == 1:
-                    # 19 个唯一胜者任务：存在严格唯一确定性最优动作，可进入正式监督训练集
-                    winner_status = "UNIQUE_WINNER"
-                    best_ep = top_eps[0]
-                    selection_rule = "AGENTSUITE_UNIQUE_SUCCESSFUL_MODEL"
-                    agentsuite_selection_counts[selection_rule] += 1
-                    candidate_distribution_filtered[len(eps)] += 1
-                    label_key = f"{best_ep['model']}_{best_ep['thinking_mode']}"
-
-                    kev_record = {
-                        "provenance": {
-                            "source_id": "TRA-004",
-                            "source_name": "AgentSuite multi_challenge",
-                            "raw_file": "TRA-004_AgentSuite/multi_challenge_*.jsonl",
-                            "source_record_id": str(inst_id),
-                            "selection_rule": selection_rule,
-                            "label_nature": "episode_unique_success",
-                            "instance_id": inst_id,
-                            "task_axis": eps[0]["axis"],
-                            "task_id": task_id,
-                        },
-                        "state": f"Task domain: multi_challenge_agent. Task ID: {inst_id}.\nPrompt: {eps[0]['prompt']}",
-                        "questions": {
-                            "model_choice": {
-                                "type": "choice",
-                                "instructions": "Select the optimal agent model and thinking mode for this task.",
-                                "criteria": criteria,
-                                "label": label_key
-                            }
-                        },
-                        "expected": {
-                            "model_choice": label_key
-                        },
-                        "_meta": {
-                            "source_id": "TRA-004",
-                            "num_candidates": len(eps),
-                            "candidates": list(criteria.keys()),
-                            "winner": label_key,
-                            "winner_steps": best_ep["total_steps"],
-                            "winner_status": winner_status,
-                            "is_deterministic_oracle": True,
-                            "cost_status": "UNMEASURED_AGENT_EXECUTION_COST",
-                            "selection_rule": selection_rule,
-                            "label_nature": "episode_unique_success"
-                        }
-                    }
-                    task_pool[task_id] = kev_record
-                    task_pool_training[task_id] = kev_record
+                    winner_status = "UNIQUE_WINNER_STAGE2_ISOLATED"
+                    selection_rule = "AGENTSUITE_UNIQUE_SUCCESSFUL_MODEL_STAGE2_ISOLATED"
+                    agentsuite_selection_counts["AGENTSUITE_UNIQUE_SUCCESSFUL_MODEL"] += 1
+                    placeholder_label = f"{top_eps[0]['model']}_{top_eps[0]['thinking_mode']}"
+                    label_nature = "episode_unique_success_stage2_only"
                 else:
-                    # 246 个并列成功任务：执行步数完全相同，真实成本未测，无法区分单一最优模型
-                    # 坚决不伪造单一胜者，严禁进入正式训练集，仅保留在多模型分析池中，并提供均匀软目标分布
                     winner_status = "TIED_SUCCESS_UNDIFFERENTIATED"
-                    best_ep = top_eps[0]
                     selection_rule = "TIED_MULTI_SUCCESS_UNDIFFERENTIATED"
                     agentsuite_selection_counts[selection_rule] += 1
-                    label_key = f"{best_ep['model']}_{best_ep['thinking_mode']}"
-                    tied_keys = [f"{e['model']}_{e['thinking_mode']}" for e in top_eps]
-                    tied_set = set(tied_keys)
-                    w = round(1.0 / len(tied_keys), 6)
-                    target_dist = {k: (w if k in tied_set else 0.0) for k in criteria.keys()}
+                    placeholder_label = f"{top_eps[0]['model']}_{top_eps[0]['thinking_mode']}"
+                    label_nature = "episode_tied_winners_soft_or_analysis"
 
-                    kev_record = {
-                        "provenance": {
-                            "source_id": "TRA-004",
-                            "source_name": "AgentSuite multi_challenge",
-                            "raw_file": "TRA-004_AgentSuite/multi_challenge_*.jsonl",
-                            "source_record_id": str(inst_id),
-                            "selection_rule": selection_rule,
-                            "label_nature": "episode_tied_winners_soft_or_analysis",
-                            "instance_id": inst_id,
-                            "task_axis": eps[0]["axis"],
-                            "task_id": task_id,
-                        },
-                        "state": f"Task domain: multi_challenge_agent. Task ID: {inst_id}.\nPrompt: {eps[0]['prompt']}",
-                        "questions": {
-                            "model_choice": {
-                                "type": "choice",
-                                "instructions": "Select the optimal agent model and thinking mode for this task.",
-                                "criteria": criteria,
-                                "label": label_key,
-                                "target": target_dist
-                            }
-                        },
-                        "expected": {
-                            "model_choice": label_key
-                        },
-                        "gold": {
-                            "model_choice": {"probabilities": target_dist}
-                        },
-                        "_meta": {
-                            "source_id": "TRA-004",
-                            "num_candidates": len(eps),
-                            "candidates": list(criteria.keys()),
-                            "winner": None,
-                            "winner_status": winner_status,
-                            "is_deterministic_oracle": False,
-                            "tied_winners": tied_keys,
-                            "num_tied_winners": len(top_eps),
-                            "target_distribution": target_dist,
-                            "winner_steps": best_ep["total_steps"],
-                            "cost_status": "UNMEASURED_AGENT_EXECUTION_COST",
-                            "selection_rule": selection_rule,
-                            "label_nature": "episode_tied_winners_soft_or_analysis"
-                        }
+            kev_record = {
+                "provenance": {
+                    "source_id": "TRA-004",
+                    "source_name": "AgentSuite multi_challenge",
+                    "raw_file": "TRA-004_AgentSuite/multi_challenge_*.jsonl",
+                    "source_record_id": str(inst_id),
+                    "selection_rule": selection_rule,
+                    "label_nature": label_nature,
+                    "instance_id": inst_id,
+                    "task_axis": eps[0]["axis"] if eps else "unknown",
+                    "task_id": task_id,
+                },
+                "state": f"Task domain: multi_challenge_agent. Task ID: {inst_id}.\nPrompt: {eps[0]['prompt'] if eps else ''}",
+                "questions": {
+                    "model_choice": {
+                        "type": "choice",
+                        "instructions": "Select the optimal agent model and thinking mode for this task.",
+                        "criteria": criteria,
+                        "label": placeholder_label
                     }
-                    task_pool[task_id] = kev_record
-                    task_pool_unsupervised[task_id] = kev_record
+                },
+                "expected": {
+                    "model_choice": placeholder_label
+                },
+                "_meta": {
+                    "source_id": "TRA-004",
+                    "num_candidates": len(eps),
+                    "candidates": list(criteria.keys()),
+                    "winner": placeholder_label if "UNIQUE_SUCCESSFUL" in selection_rule else None,
+                    "winner_status": winner_status,
+                    "is_deterministic_oracle": "UNIQUE_SUCCESSFUL" in selection_rule,
+                    "cost_status": "UNMEASURED_AGENT_EXECUTION_COST",
+                    "selection_rule": selection_rule,
+                    "label_nature": label_nature
+                }
+            }
+            task_pool[task_id] = kev_record
+            # Stage 1 纯静态路由隔离全部 273 条多步 (model, thinking_mode) 轨迹任务
+            task_pool_unsupervised[task_id] = kev_record
 
     # -------------------------------------------------------------
     # E. ROUTE-003: TwinRouterBench (970 步) 强制作为 EVAL_BENCHMARK_ONLY 隔离评测集
@@ -734,22 +829,20 @@ def build_unified_training_and_evaluation_views(args):
                 }
                 twin_holdout_records.append(h_record)
 
-        for out_dir in (kev_root, laya_root):
-            twin_holdout_path = os.path.join(out_dir, "test_twinrouterbench_holdout.jsonl")
-            write_jsonl(twin_holdout_path, twin_holdout_records)
-        print(f"[Kev/Laya] TwinRouterBench 隔离评测集导出: {len(twin_holdout_records)} 条 -> {kev_root} & {laya_root} (0 条进入 train/val)")
+        write_jsonl(os.path.join(stage1_out_dir, "test_twinrouterbench_holdout.jsonl"), twin_holdout_records)
+        print(f"[Stage1] TwinRouterBench 隔离评测集导出: {len(twin_holdout_records)} 条 -> {stage1_out_dir} (0 条进入 train/val)")
 
     # -------------------------------------------------------------
-    # 2. 严格按规范化 Prompt 语义指纹与任务 ID 进行 80 / 10 / 10 隔离划分
+    # 2. 严格按规范化 Prompt 语义指纹与完整题目哈希进行 80 / 10 / 10 隔离划分
     # -------------------------------------------------------------
     train_records = []
     val_records = []
     test_records = []
 
     split_counts = {
-        "train": {"total": 0, "by_source": Counter(), "tasks": set(), "exact_prompts": set(), "canon_prompts": set()},
-        "val": {"total": 0, "by_source": Counter(), "tasks": set(), "exact_prompts": set(), "canon_prompts": set()},
-        "test": {"total": 0, "by_source": Counter(), "tasks": set(), "exact_prompts": set(), "canon_prompts": set()},
+        "train": {"total": 0, "by_source": Counter(), "by_regime": Counter(), "tasks": set(), "exact_prompts": set(), "canon_prompts": set(), "full_hashes": set()},
+        "val": {"total": 0, "by_source": Counter(), "by_regime": Counter(), "tasks": set(), "exact_prompts": set(), "canon_prompts": set(), "full_hashes": set()},
+        "test": {"total": 0, "by_source": Counter(), "by_regime": Counter(), "tasks": set(), "exact_prompts": set(), "canon_prompts": set(), "full_hashes": set()},
         "holdout": {"total": len(twin_holdout_records), "by_source": Counter({"ROUTE-003": len(twin_holdout_records)}), "tasks": {r["provenance"]["instance_id"] for r in twin_holdout_records}}
     }
 
@@ -760,9 +853,8 @@ def build_unified_training_and_evaluation_views(args):
         return state_str
 
     def normalize_prompt_pair(state_str):
-        p_text = extract_raw_prompt_from_state(state_str)
+        p_text = extract_raw_prompt_from_state(state_str).replace("\u2028", "").replace("\u2029", "")
         norm_exact = " ".join(p_text.strip().lower().split())
-        # 去除句末/句首常见标点差异 (如 "hello?" vs "hello", "can you speak chinese?" vs "can you speak chinese")
         word_canon = re.sub(r"[\s\.,!\?;:\"'`~]+", " ", norm_exact).strip()
         canon_key = word_canon if len(word_canon) >= 2 else norm_exact
         return norm_exact, canon_key
@@ -776,9 +868,12 @@ def build_unified_training_and_evaluation_views(args):
     prompt_to_sources = defaultdict(set)
     prompt_to_splits = defaultdict(set)
 
-    print(f"\n[Split] 开始执行 80/10/10 严格单胜者哈希隔离划分 (严格唯一最优监督子集: {len(task_pool_training):,} 任务)...")
-    for task_id, item in task_pool_training.items():
+    print(f"\n[Split] 开始执行 80/10/10 严格单胜者哈希隔离划分 (Stage 1 纯静态 Scheme B 监督子集: {len(task_pool_training):,} 任务)...")
+    for task_id in sorted(task_pool_training.keys()):
+        item = task_pool_training[task_id]
         src_id = item["provenance"]["source_id"]
+        sup_regime = item["provenance"].get("supervision_regime", "UNKNOWN")
+        fhash = item["provenance"].get("full_prompt_hash")
         norm_exact, canon_key = normalize_prompt_pair(item.get("state", ""))
         split_key = get_semantic_split_key(item)
         h_val = int(hashlib.sha256(f"{split_key}_{args.seed}".encode("utf-8")).hexdigest()[:8], 16) / 0xffffffff
@@ -805,7 +900,10 @@ def build_unified_training_and_evaluation_views(args):
 
         split_counts[split_name]["total"] += 1
         split_counts[split_name]["by_source"][src_id] += 1
+        split_counts[split_name]["by_regime"][sup_regime] += 1
         split_counts[split_name]["tasks"].add(task_id)
+        if fhash:
+            split_counts[split_name]["full_hashes"].add(fhash)
         if norm_exact:
             split_counts[split_name]["exact_prompts"].add(norm_exact)
             prompt_to_sources[norm_exact].add(src_id)
@@ -813,126 +911,22 @@ def build_unified_training_and_evaluation_views(args):
         if canon_key:
             split_counts[split_name]["canon_prompts"].add(canon_key)
 
-    for out_dir in (kev_root, laya_root):
-        write_jsonl(os.path.join(out_dir, "train.jsonl"), train_records)
-        write_jsonl(os.path.join(out_dir, "val.jsonl"), val_records)
-        write_jsonl(os.path.join(out_dir, "test.jsonl"), test_records)
-        with open(os.path.join(out_dir, "analysis_unsupervised_or_tied.jsonl"), "w", encoding="utf-8") as f:
-            for tid, r in task_pool_unsupervised.items():
-                f.write(json.dumps(r, ensure_ascii=False) + "\n")
+    write_jsonl(os.path.join(stage1_out_dir, "train.jsonl"), train_records)
+    write_jsonl(os.path.join(stage1_out_dir, "val.jsonl"), val_records)
+    write_jsonl(os.path.join(stage1_out_dir, "test.jsonl"), test_records)
+    with open(os.path.join(stage1_out_dir, "analysis_unsupervised_or_tied.jsonl"), "w", encoding="utf-8") as f:
+        for tid in sorted(task_pool_unsupervised.keys()):
+            f.write(json.dumps(task_pool_unsupervised[tid], ensure_ascii=False) + "\n")
 
-    print(f"[Kev/Laya] 训练集 (train.jsonl): {len(train_records):,} 样本 ({len(split_counts['train']['tasks']):,} 任务)")
-    print(f"[Kev/Laya] 验证集 (val.jsonl):   {len(val_records):,} 样本 ({len(split_counts['val']['tasks']):,} 任务)")
-    print(f"[Kev/Laya] 测试集 (test.jsonl):  {len(test_records):,} 样本 ({len(split_counts['test']['tasks']):,} 任务)")
-    print(f"[Kev/Laya] 全败/并列无唯一胜者分析集: {len(task_pool_unsupervised):,} 任务 -> analysis_unsupervised_or_tied.jsonl")
+    print(f"[Stage1] 修复版纯静态 Scheme B 导出目录: {stage1_out_dir}")
+    print(f"[Stage1] 训练集 (train.jsonl): {len(train_records):,} 样本 (By source: {dict(split_counts['train']['by_source'])}, By regime: {dict(split_counts['train']['by_regime'])})")
+    print(f"[Stage1] 验证集 (val.jsonl):   {len(val_records):,} 样本 (By source: {dict(split_counts['val']['by_source'])}, By regime: {dict(split_counts['val']['by_regime'])})")
+    print(f"[Stage1] 测试集 (test.jsonl):  {len(test_records):,} 样本 (By source: {dict(split_counts['test']['by_source'])}, By regime: {dict(split_counts['test']['by_regime'])})")
+    print(f"[Stage1] 全败/并列/冲突/Stage2隔离分析集: {len(task_pool_unsupervised):,} 任务 -> {stage1_out_dir}/analysis_unsupervised_or_tied.jsonl")
 
-    # -------------------------------------------------------------
-    # 3. 生成 5 份轻量训练视图预览样本与统计 (固定随机种子保证重跑哈希一致)
-    # -------------------------------------------------------------
-    print(f"\n[Preview] 生成 5 份轻量训练视图预览样本 -> {views_dir} ...")
-    preview_rng = random.Random(args.seed)
+    # 执行全量内置 CPU 校验（Kev & Laya 100% 样本官方编码器校验，Laya 显式验证 --max-len 1024 --head-max-len 512）
+    compat_report = validate_kev_exports(stage1_out_dir, laya_root=stage1_out_dir)
 
-    # A. 同题模型比较样本.jsonl (35 条)
-    comp_samples = []
-    pool_items = [task_pool[k] for k in sorted(task_pool.keys())]
-    preview_rng.shuffle(pool_items)
-    for it in pool_items:
-        meta = it.get("_meta", {})
-        if it["provenance"]["source_id"] in ("ROUTE-001", "ROUTE-002", "ROUTE-004"):
-            comp_record = {
-                "task_id": it["provenance"]["task_id"],
-                "source_id": it["provenance"]["source_id"],
-                "source_name": it["provenance"]["source_name"],
-                "raw_file": it["provenance"].get("raw_file"),
-                "source_record_id": it["provenance"].get("source_record_id"),
-                "prompt_snippet": it["state"][:300].replace("\n", " "),
-                "num_candidate_models": meta.get("num_candidates", 2),
-                "candidate_models": meta.get("candidates", [])[:15],
-                "oracle_winner": meta.get("winner"),
-                "tied_winners": meta.get("tied_winners"),
-                "winner_score": meta.get("winner_score"),
-                "winner_cost": meta.get("winner_cost"),
-                "winner_cost_type": meta.get("winner_cost_type"),
-                "all_models_failed": meta.get("all_models_failed", False),
-                "is_deterministic_oracle": meta.get("is_deterministic_oracle", meta.get("is_deterministic_positive_oracle", True)),
-                "selection_rule": meta.get("selection_rule"),
-                "label_nature": meta.get("label_nature"),
-                "candidates_evaluation_detail": meta.get("evals_summary")
-            }
-            comp_samples.append(comp_record)
-            if len(comp_samples) >= 35:
-                break
-    write_jsonl(os.path.join(views_dir, "同题模型比较样本.jsonl"), comp_samples)
-
-    # B. AgentSuite整任务模型对照样本.jsonl (35 条)
-    agentsuite_task_samples = []
-    as_tasks = sorted(agentsuite_episodes_by_task.keys())
-    preview_rng.shuffle(as_tasks)
-    for tid in as_tasks[:35]:
-        eps = agentsuite_episodes_by_task[tid]
-        ep_lookup = {(e["model"], e["thinking_mode"]): e for e in eps}
-        task_contrasts = sum(1 for (m1, t1, m2, t2) in GENUINE_THINKING_PAIRS if (m1, t1) in ep_lookup and (m2, t2) in ep_lookup)
-        success_eps = [e for e in eps if e["is_success"]]
-        min_steps = min([e["total_steps"] for e in success_eps]) if success_eps else 0
-        max_score = max([e["score"] for e in success_eps]) if success_eps else 0.0
-        top_eps = [e for e in success_eps if e["total_steps"] == min_steps and e["score"] == max_score]
-        winner_status = "UNIQUE_WINNER" if len(top_eps) == 1 else ("TIED_SUCCESS_UNDIFFERENTIATED" if len(top_eps) > 1 else "ZERO_SUCCESS")
-
-        as_record = {
-            "task_instance_id": tid,
-            "task_axis": eps[0]["axis"] if eps else "unknown",
-            "initial_prompt_snippet": eps[0]["prompt"] if eps else "",
-            "total_candidate_episodes_evaluated": len(eps),
-            "genuine_thinking_contrasting_pairs_count": task_contrasts,
-            "standalone_models_count": len(eps) - (task_contrasts * 2),
-            "winner_status": winner_status,
-            "tied_successful_models": [f"{e['model']}_{e['thinking_mode']}" for e in top_eps],
-            "cost_status": "UNMEASURED_AGENT_EXECUTION_COST",
-            "all_evaluated_episodes": [
-                {
-                    "model": e["model"],
-                    "thinking_mode": e["thinking_mode"],
-                    "is_success": e["is_success"],
-                    "score": e["score"],
-                    "total_steps": e["total_steps"]
-                }
-                for e in eps
-            ],
-            "mid_trajectory_counterfactual_branches_count": 0,
-            "scientific_compliance_note": "Zero mid-trajectory counterfactual branching states exist; all 30 models executed complete independent episodes from initial task state. Exactly 6 genuine thinking-on/off base model pairs exist."
-        }
-        agentsuite_task_samples.append(as_record)
-    write_jsonl(os.path.join(views_dir, "AgentSuite整任务模型对照样本.jsonl"), agentsuite_task_samples)
-
-    # C. Agent决策前状态样本.jsonl (35 条)
-    state_samples = []
-    for r in agentsuite_step_samples[:35]:
-        state_samples.append({
-            "source_id": "TRA-004",
-            "task_id": r["provenance"]["instance_id"],
-            "step_index": r["provenance"]["step_index"],
-            "pre_decision_state": r["pre_decision_state"],
-            "ground_truth_outcome": r["ground_truth_outcome"],
-            "leakage_audit": {
-                "target_question_in_pre_state": "target_question" in r["pre_decision_state"],
-                "pass_criteria_in_pre_state": "pass_criteria" in r["pre_decision_state"],
-                "gold_answer_in_pre_state": "gold_answer" in r["pre_decision_state"],
-                "future_tokens_in_pre_state": "completion_tokens" in r["pre_decision_state"],
-                "audit_result": "VERIFIED_CLEAN"
-            }
-        })
-    write_jsonl(os.path.join(views_dir, "Agent决策前状态样本.jsonl"), state_samples)
-
-    # D. 模型选择训练样本.jsonl (35 条)
-    kev_samples = []
-    for split_list in (train_records[:20], val_records[:10], test_records[:5]):
-        kev_samples.extend(split_list)
-    write_jsonl(os.path.join(views_dir, "模型选择训练样本.jsonl"), kev_samples)
-
-    # E. 执行全量内置 CPU 校验（Kev & Laya 100% 样本官方编码器校验）
-    compat_report = validate_kev_exports(kev_root, laya_root=laya_root)
-
-    # F. 数据划分统计.json
     train_tasks = split_counts["train"]["tasks"]
     val_tasks = split_counts["val"]["tasks"]
     test_tasks = split_counts["test"]["tasks"]
@@ -952,13 +946,18 @@ def build_unified_training_and_evaluation_views(args):
     canon_tr_te = len(split_counts["train"]["canon_prompts"].intersection(split_counts["test"]["canon_prompts"]))
     canon_va_te = len(split_counts["val"]["canon_prompts"].intersection(split_counts["test"]["canon_prompts"]))
 
+    fhash_tr_va = len(split_counts["train"]["full_hashes"].intersection(split_counts["val"]["full_hashes"]))
+    fhash_tr_te = len(split_counts["train"]["full_hashes"].intersection(split_counts["test"]["full_hashes"]))
+    fhash_va_te = len(split_counts["val"]["full_hashes"].intersection(split_counts["test"]["full_hashes"]))
+
     cross_src_prompts = {p: sset for p, sset in prompt_to_sources.items() if len(sset) > 1}
     cross_src_leakage = sum(1 for p in cross_src_prompts if len(prompt_to_splits[p]) > 1)
 
     split_stats_report = {
-        "schema_version": "Q-007-FINAL-v1.1",
+        "schema_version": "MR-STAGE1-FAST-FIX-v1.0",
         "random_seed": args.seed,
-        "split_ratio_target": "80% Train / 10% Val / 10% Test (按独立任务/题目与去标点规范化 Prompt 哈希严格隔离)",
+        "stage1_out_dir": stage1_out_dir,
+        "split_ratio_target": "80% Train / 10% Val / 10% Test (按完整原始 Prompt 哈希与去标点规范化 Prompt 严格隔离)",
         "task_counts": {
             "train_tasks": len(train_tasks),
             "val_tasks": len(val_tasks),
@@ -966,9 +965,10 @@ def build_unified_training_and_evaluation_views(args):
             "twinrouterbench_holdout_tasks": len(holdout_tasks),
             "raw_unfiltered_candidate_tasks": sum(candidate_distribution_unfiltered.values()),
             "filtered_routerbench_no_model_correct": routerbench_selection_counts["NO_MODEL_CORRECT_EXCLUDED"],
+            "filtered_routerbench_87_ties": routerbench_selection_counts["ROUTERBENCH_TIED_SCORE_TIED_COST_EXCLUDED"],
             "total_routing_pool_tasks": len(task_pool),
             "strictly_unique_winner_positive_tasks": len(task_pool_training),
-            "all_failed_or_tied_tasks": len(task_pool_unsupervised),
+            "all_failed_or_tied_or_conflicted_tasks": len(task_pool_unsupervised),
         },
         "sample_counts": {
             "train_samples": len(train_records),
@@ -980,59 +980,44 @@ def build_unified_training_and_evaluation_views(args):
             "total_supervised_plus_holdout_samples": len(train_records) + len(val_records) + len(test_records) + len(twin_holdout_records),
         },
         "llmrouterbench_selection_breakdown": {
-            "total_valid_multimodel_tasks": sum(llmroute_selection_counts.values()),
+            "total_unique_real_questions": sum(llmroute_selection_counts.values()),
             "UNIQUE_MAX_SCORE": llmroute_selection_counts["UNIQUE_MAX_SCORE"],
             "TIED_SCORE_MIN_MEASURED_API_USD": llmroute_selection_counts["TIED_SCORE_MIN_MEASURED_API_USD"],
+            "CONFLICTING_MODEL_SCORE_UNRESOLVED": llmroute_selection_counts["CONFLICTING_MODEL_SCORE_UNRESOLVED"],
+            "CONFLICTING_WINNER_COST_UNRESOLVED": llmroute_selection_counts["CONFLICTING_WINNER_COST_UNRESOLVED"],
+            "CONFLICTING_TIED_TOP_COST_UNRESOLVED": llmroute_selection_counts["CONFLICTING_TIED_TOP_COST_UNRESOLVED"],
             "TIED_SCORE_TIED_API_USD": llmroute_selection_counts["TIED_SCORE_TIED_API_USD"],
             "TIED_SCORE_COST_UNCOMPARED": llmroute_selection_counts["TIED_SCORE_COST_UNCOMPARED"],
             "ALL_MODELS_FAILED": llmroute_selection_counts["ALL_MODELS_FAILED"],
             "admitted_to_strict_single_winner_training": llmroute_selection_counts["UNIQUE_MAX_SCORE"] + llmroute_selection_counts["TIED_SCORE_MIN_MEASURED_API_USD"],
-            "moved_to_analysis_unsupervised_or_tied": llmroute_selection_counts["TIED_SCORE_TIED_API_USD"] + llmroute_selection_counts["TIED_SCORE_COST_UNCOMPARED"] + llmroute_selection_counts["ALL_MODELS_FAILED"],
+            "moved_to_analysis_unsupervised_or_tied": (
+                llmroute_selection_counts["CONFLICTING_MODEL_SCORE_UNRESOLVED"]
+                + llmroute_selection_counts["CONFLICTING_WINNER_COST_UNRESOLVED"]
+                + llmroute_selection_counts["CONFLICTING_TIED_TOP_COST_UNRESOLVED"]
+                + llmroute_selection_counts["TIED_SCORE_TIED_API_USD"]
+                + llmroute_selection_counts["TIED_SCORE_COST_UNCOMPARED"]
+                + llmroute_selection_counts["ALL_MODELS_FAILED"]
+            ),
         },
-        "reconciliation_notes": {
-            "raw_unfiltered_total": "101,688 (Arena 39,716 + RouterBench 36,497 + LLMRouterBench 25,202 + AgentSuite 273)",
-            "excluded_before_task_pool": "1,308 (RouterBench no_model_correct 1,308)",
-            "total_routing_task_pool": f"{len(task_pool):,} (Arena 39,716 + RouterBench 35,189 + LLMRouterBench 25,202 + AgentSuite 273)",
-            "strictly_unique_winner_training_subset": f"{len(task_pool_training):,} (Arena 39,716 + RouterBench 35,189 + LLMRouterBench unique-optimal {llmroute_selection_counts['UNIQUE_MAX_SCORE'] + llmroute_selection_counts['TIED_SCORE_MIN_MEASURED_API_USD']:,} [1,432 UNIQUE_MAX_SCORE + 7,954 TIED_SCORE_MIN_MEASURED_API_USD] + AgentSuite unique 19)",
-            "analysis_unsupervised_or_tied_subset": f"{len(task_pool_unsupervised):,} (LLMRouterBench tied-cost-uncompared {llmroute_selection_counts['TIED_SCORE_COST_UNCOMPARED']:,} + LLMRouterBench tied-api-usd {llmroute_selection_counts['TIED_SCORE_TIED_API_USD']:,} + LLMRouterBench all-failed {llmroute_selection_counts['ALL_MODELS_FAILED']:,} + AgentSuite tied-success 246 + AgentSuite all-failed 8)"
-        },
+        "routerbench_selection_breakdown": dict(routerbench_selection_counts),
         "source_breakdown": {
             "train": dict(split_counts["train"]["by_source"]),
             "val": dict(split_counts["val"]["by_source"]),
             "test": dict(split_counts["test"]["by_source"]),
             "holdout": dict(split_counts["holdout"]["by_source"]),
         },
-        "supervision_semantics_by_source": {
-            "ROUTE-004": {
-                "label_nature": "pairwise_human_preference",
-                "selection_rule": "HUMAN_BLIND_PAIRWISE_PREFERENCE",
-                "description": "2-model blind human pairwise preference battle (non-tie winner)"
-            },
-            "ROUTE-002": {
-                "label_nature": "official_oracle_cost_effective",
-                "selection_rule": "ROUTERBENCH_OFFICIAL_ORACLE",
-                "description": "11-model official cost-effective Oracle verified inside evaluated candidate set"
-            },
-            "ROUTE-001": {
-                "label_nature": "multi_model_quality_then_measured_api_cost",
-                "selection_rule": "UNIQUE_MAX_SCORE | TIED_SCORE_MIN_MEASURED_API_USD",
-                "description": "12-38 models strictly unique max score or tied max score resolved by strictly unique minimum measured commercial API USD cost"
-            },
-            "TRA-004": {
-                "label_nature": "episode_unique_success",
-                "selection_rule": "AGENTSUITE_UNIQUE_SUCCESSFUL_MODEL",
-                "description": "30-model full-episode evaluation with strictly 1 unique successful model configuration"
-            },
-            "ROUTE-003": {
-                "label_nature": "step_capability_tier_oracle",
-                "selection_rule": "TWINROUTERBENCH_STEP_TIER_ORACLE",
-                "description": "4-tier SWE-bench step routing holdout benchmark (EVAL_BENCHMARK_ONLY)"
-            }
+        "regime_breakdown": {
+            "train": dict(split_counts["train"]["by_regime"]),
+            "val": dict(split_counts["val"]["by_regime"]),
+            "test": dict(split_counts["test"]["by_regime"]),
         },
         "leakage_and_isolation_audit": {
             "train_val_task_overlap": overlap_train_val,
             "train_test_task_overlap": overlap_train_test,
             "val_test_task_overlap": overlap_val_test,
+            "train_val_full_hash_overlap": fhash_tr_va,
+            "train_test_full_hash_overlap": fhash_tr_te,
+            "val_test_full_hash_overlap": fhash_va_te,
             "train_val_exact_prompt_overlap": exact_tr_va,
             "train_test_exact_prompt_overlap": exact_tr_te,
             "val_test_exact_prompt_overlap": exact_va_te,
@@ -1043,49 +1028,12 @@ def build_unified_training_and_evaluation_views(args):
             "cross_source_prompt_split_leakage": cross_src_leakage,
             "twinrouterbench_in_train": twin_in_train,
             "twinrouterbench_in_val": twin_in_val,
-            "isolation_status": "PASS (0 任务重叠, 0 精确/去标点规范化 Prompt 跨集泄漏, 0 跨来源同题跨集泄漏, TwinRouterBench 100% 独立隔离)"
-        },
-        "candidate_models_distribution_unfiltered": {
-            f"{k}_candidates": v for k, v in sorted(candidate_distribution_unfiltered.items(), key=lambda x: -x[1])
-        },
-        "candidate_models_distribution_supervised_filtered": {
-            f"{k}_candidates": v for k, v in sorted(candidate_distribution_filtered.items(), key=lambda x: -x[1])
-        },
-        "arena_55k_human_preference": arena_stats,
-        "agentsuite_thinking_contrasts": {
-            "paired_episodes_contrasting_thinking": agentsuite_thinking_contrasts,
-            "strict_same_checkpoint_thinking_switch_pairs": strict_switch_contrasts,
-            "dedicated_thinking_checkpoint_pairs": dedicated_ckpt_contrasts,
-            "cross_version_or_variant_comparison_pairs": cross_version_contrasts,
-            "strict_switch_pairs_per_task": len(STRICT_SAME_CHECKPOINT_THINKING_SWITCH_PAIRS),
-            "dedicated_thinking_checkpoint_pairs_per_task": len(DEDICATED_THINKING_CHECKPOINT_PAIRS),
-            "genuine_pairs_per_task": len(GENUINE_THINKING_PAIRS),
-            "standalone_configurations_count": 30 - len(GENUINE_THINKING_PAIRS) * 2,
-            "mid_trajectory_counterfactual_branches": 0,
-            "unique_winner_tasks": agentsuite_selection_counts["AGENTSUITE_UNIQUE_SUCCESSFUL_MODEL"],
-            "tied_success_tasks": agentsuite_selection_counts["TIED_MULTI_SUCCESS_UNDIFFERENTIATED"],
-            "zero_success_tasks": agentsuite_selection_counts["AGENTSUITE_ALL_FAILED"],
-            "compliance_note": "Zero intermediate branching states exist; 5 strict runtime-switch pairs (1,365 pairs) + 1 same-base dedicated Thinking checkpoint pair (273 pairs) = 6 genuine pairs per task (1,638 pairs total); cross-version/cross-variant comparisons (6 pairs = 1,638 pairs) tracked separately."
-        },
-        "kev_file_paths": {
-            "train": "data/kev/公开数据/train.jsonl",
-            "val": "data/kev/公开数据/val.jsonl",
-            "test": "data/kev/公开数据/test.jsonl",
-            "twinrouterbench_holdout": "data/kev/公开数据/test_twinrouterbench_holdout.jsonl",
-            "unsupervised_analysis": "data/kev/公开数据/analysis_unsupervised_or_tied.jsonl"
-        },
-        "laya_file_paths": {
-            "train": "data/laya/公开数据/train.jsonl",
-            "val": "data/laya/公开数据/val.jsonl",
-            "test": "data/laya/公开数据/test.jsonl",
-            "twinrouterbench_holdout": "data/laya/公开数据/test_twinrouterbench_holdout.jsonl",
-            "unsupervised_analysis": "data/laya/公开数据/analysis_unsupervised_or_tied.jsonl"
+            "isolation_status": "PASS"
         },
         "kev_laya_official_compatibility_audit": compat_report
     }
-    write_json(os.path.join(views_dir, "数据划分统计.json"), split_stats_report)
-
-    print(f"[✓] 5 份轻量训练视图样本与划分统计构建完毕！已就绪供审查与同步。")
+    write_json(os.path.join(stage1_out_dir, "stage1_manifest.json"), split_stats_report)
+    print(f"[✓] Stage 1 纯静态 Scheme B 修复版生成与 100% 样本 CPU 校验完毕: {stage1_out_dir}/stage1_manifest.json")
     return split_stats_report
 
 
@@ -1414,14 +1362,14 @@ def validate_kev_exports(kev_root, laya_root=None):
                 laya_this_ok = False
                 if laya_mod is not None:
                     try:
-                        # a) 多候选路由配置 (max_len=1024, head_max_len=448)
-                        items_1024, sk_1024 = laya_mod["items_from_rows"](laya_tok, [r], max_len=1024, head_max_len=448)
+                        # a) 多候选路由配置 (max_len=1024, head_max_len=512)
+                        items_1024, sk_1024 = laya_mod["items_from_rows"](laya_tok, [r], max_len=1024, head_max_len=512)
                         if sk_1024:
                             for k_sk, v_sk in sk_1024.items():
                                 laya_skipped_1024_448[k_sk] += v_sk
                             file_err_count += 1
                             total_errors += 1
-                            error_details.append(f"Line {line_no}: Laya (1024/448) 跳过问题: {sk_1024}")
+                            error_details.append(f"Line {line_no}: Laya (1024/512) 跳过问题: {sk_1024}")
                         else:
                             laya_ok_records_1024_448 += 1
                             laya_items_1024_448 += len(items_1024)
@@ -1430,11 +1378,11 @@ def validate_kev_exports(kev_root, laya_root=None):
                             for it in items_1024:
                                 ids_seq, markers_seq, st_seq, tr_seq = laya_mod["build_sequence"](
                                     laya_tok, None, it["q"],
-                                    max_len=1024, head_max_len=448,
+                                    max_len=1024, head_max_len=512,
                                     state_ids=it["state_ids"],
                                     return_stats=True, return_truncation_stats=True
                                 )
-                                head_ids, _, _ = laya_mod["build_head"](laya_tok, it["q"], head_max_len=448)
+                                head_ids, _, _ = laya_mod["build_head"](laya_tok, it["q"], head_max_len=512)
                                 if len(ids_seq) > laya_max_seq_tok:
                                     laya_max_seq_tok = len(ids_seq)
                                 if len(head_ids) > laya_max_head_tok:
@@ -1451,7 +1399,7 @@ def validate_kev_exports(kev_root, laya_root=None):
                                 laya_perm_tested += 1
                                 it0 = items_1024[0]
                                 order = laya_mod["draw_option_order"](it0, random.Random(line_no), ("choice",))
-                                enc_par = laya_mod["encode_item"](laya_tok, it0, max_len=1024, head_max_len=448, option_order=order, parallel=True)
+                                enc_par = laya_mod["encode_item"](laya_tok, it0, max_len=1024, head_max_len=512, option_order=order, parallel=True)
                                 orig_argmax = max(range(len(it0["target"])), key=lambda idx_i: it0["target"][idx_i])
                                 perm_argmax = max(range(len(enc_par["target"])), key=lambda idx_i: enc_par["target"][idx_i])
                                 mapped_back = order[perm_argmax] if order is not None else perm_argmax
@@ -1493,10 +1441,10 @@ def validate_kev_exports(kev_root, laya_root=None):
             },
             "laya_official": {
                 "tested_100_percent": laya_mod is not None,
-                "router_config_1024_448_ok_records": laya_ok_records_1024_448,
-                "router_config_1024_448_items": laya_items_1024_448,
-                "router_config_1024_448_state_truncated": laya_trunc_1024_448,
-                "router_config_1024_448_skipped": dict(laya_skipped_1024_448),
+                "router_config_1024_512_ok_records": laya_ok_records_1024_448,
+                "router_config_1024_512_items": laya_items_1024_448,
+                "router_config_1024_512_state_truncated": laya_trunc_1024_448,
+                "router_config_1024_512_skipped": dict(laya_skipped_1024_448),
                 "shipped_config_512_192_ok_records": laya_ok_records_512_192,
                 "shipped_config_512_192_skipped": dict(laya_skipped_512_192),
                 "max_sequence_tokens": laya_max_seq_tok,
@@ -1511,7 +1459,7 @@ def validate_kev_exports(kev_root, laya_root=None):
         print(
             f"  [{status_tag}] {fname:36s} : {file_rec_count:,} 样本, {file_err_count} 错误 | "
             f"Kev(384/1024/2048) OK={kev_ok_default_384:,}/{file_rec_count:,} (max_packed={kev_max_packed_tok}) | "
-            f"Laya(1024/448) OK={laya_ok_records_1024_448:,}/{file_rec_count:,} (max_seq={laya_max_seq_tok})"
+            f"Laya(1024/512) OK={laya_ok_records_1024_448:,}/{file_rec_count:,} (max_seq={laya_max_seq_tok})"
         )
 
     if total_errors > 0:
