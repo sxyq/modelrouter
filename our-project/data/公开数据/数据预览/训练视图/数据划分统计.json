@@ -1,50 +1,51 @@
 {
-  "execution_timestamp": "2026-10-10T03:15:36.797086",
+  "execution_timestamp": "2026-10-10T11:09:26.367400",
   "random_seed": 42,
-  "split_ratio_target": "80% Train / 10% Val / 10% Test (按独立任务/题目哈希隔离)",
+  "split_ratio_target": "80% Train / 10% Val / 10% Test (按独立任务/题目与 Prompt 哈希隔离)",
   "task_counts": {
-    "train_tasks": 80343,
-    "val_tasks": 10053,
-    "test_tasks": 9976,
+    "train_tasks": 78376,
+    "val_tasks": 9367,
+    "test_tasks": 9639,
     "twinrouterbench_holdout_tasks": 520,
     "raw_unfiltered_candidate_tasks": 101688,
     "filtered_unsolvable_tasks": 1316,
-    "total_routing_tasks": 100372,
+    "total_routing_tasks": 100380,
     "strictly_differentiated_positive_tasks": 97382,
-    "all_failed_or_tied_tasks": 2990
+    "all_failed_or_tied_tasks": 2998
   },
   "sample_counts": {
-    "train_samples": 80343,
-    "val_samples": 10053,
-    "test_samples": 9976,
+    "train_samples": 78376,
+    "val_samples": 9367,
+    "test_samples": 9639,
     "twinrouterbench_holdout_samples": 970,
-    "total_kev_samples": 101342
+    "total_formal_training_samples": 97382,
+    "unsupervised_analysis_samples": 2998,
+    "total_kev_samples": 98352
   },
   "reconciliation_notes": {
     "raw_unfiltered_total": "101,688 (Arena 39,716 + RouterBench 36,497 + LLMRouterBench 25,202 + AgentSuite 273)",
     "excluded_unsolvable": "1,316 (RouterBench no_model_correct 1,308 + AgentSuite 0 成功 8)",
-    "total_routing_candidate_pool": "100,372 (Arena 39,716 + RouterBench 35,189 + LLMRouterBench 25,202 + AgentSuite 265)",
+    "total_routing_candidate_pool": "100,380 (Arena 39,716 + RouterBench 35,189 + LLMRouterBench 25,202 + AgentSuite 265)",
     "strictly_differentiated_positive_subset": "97,382 (Arena 39,716 + RouterBench 35,189 + LLMRouterBench positive 22,458 + AgentSuite unique 19)",
-    "undifferentiated_subset": "2,990 (LLMRouterBench all-failed 2,744 + AgentSuite tied-success 246)"
+    "undifferentiated_subset": "2,998 (LLMRouterBench all-failed 2,744 + AgentSuite tied-success 246)"
   },
   "source_breakdown": {
     "train": {
-      "ROUTE-004": 31844,
-      "ROUTE-001": 20283,
-      "ROUTE-002": 28008,
-      "TRA-004": 208
+      "ROUTE-004": 31879,
+      "ROUTE-001": 18209,
+      "ROUTE-002": 28270,
+      "TRA-004": 18
     },
     "val": {
-      "ROUTE-004": 3953,
-      "ROUTE-001": 2481,
-      "ROUTE-002": 3590,
-      "TRA-004": 29
+      "ROUTE-004": 3827,
+      "ROUTE-001": 2118,
+      "ROUTE-002": 3421,
+      "TRA-004": 1
     },
     "test": {
-      "ROUTE-004": 3919,
-      "ROUTE-001": 2438,
-      "ROUTE-002": 3591,
-      "TRA-004": 28
+      "ROUTE-004": 4010,
+      "ROUTE-001": 2131,
+      "ROUTE-002": 3498
     },
     "holdout": {
       "ROUTE-003": 970
@@ -93,6 +94,7 @@
     "train": "data/kev/公开数据/train.jsonl",
     "val": "data/kev/公开数据/val.jsonl",
     "test": "data/kev/公开数据/test.jsonl",
-    "twinrouterbench_holdout": "data/kev/公开数据/test_twinrouterbench_holdout.jsonl"
+    "twinrouterbench_holdout": "data/kev/公开数据/test_twinrouterbench_holdout.jsonl",
+    "unsupervised_analysis": "data/kev/公开数据/analysis_unsupervised_or_tied.jsonl"
   }
 }
