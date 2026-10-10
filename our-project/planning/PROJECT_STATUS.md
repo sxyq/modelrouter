@@ -33,17 +33,17 @@
 | **正在等待** | Planning Agent 确认 Q-007-FINAL 验收报告并下达 E1/E2 正式训练指令 |
 | **主要阻塞** | 无执行阻塞。Coding Benchmark 尚未启动，等待 Kev/Laya 正式训练完成后再规划批量运行 |
 | **下一步** | **进入 E1/E2 正式训练阶段（Kev-4B 与 Laya-421M 多轮正式微调、校准与离线评测）** |
-| **更新方式** | 本地频繁 commit；按阶段/里程碑定期 push 到 GitHub main；不设审批门禁，不开发第二套流水线 |
+| **更新方式** | 本地频繁 commit；按阶段/里程碑保存当前记录；保持唯一执行入口 |
 | **最近更新时间** | 2026-10-10：Execution Agent 完成 Q-007-FINAL 数据资产冻结、清洗最终验收与 Kev/Laya 官方 GPU Smoke Test |
 
-**持续角色**：本 ChatGPT 为长期 Planning Agent、需求讨论与论文研究伙伴；本机 Codex/Execution Agent 负责本地文档同步/代码维护与服务器执行。研究讨论无需因执行任务尚在进行而中止；用户已选择的简单实验风格优先，不增加工程化门禁。新对话须阅读全部五核心文档并确认最新证据。
+**持续角色**：本 ChatGPT 为长期 Planning Agent、需求讨论与论文研究伙伴；本机 Codex/Execution Agent 负责本地文档同步、代码维护与服务器执行。研究讨论无需因执行任务尚在进行而中止；优先保持简单实验风格和唯一入口。新对话读取核心文档和最新证据。
 
 **通用新会话恢复顺序（不随阶段变化）**：
 
 1. 核查 GitHub 最新 main HEAD 并读取**五核心文档（Status/Q&A/Memory/Research/Registry）**；**本文件首页唯一决定当前阶段、当前任务、阻塞和下一行动**，历史审计不是实时信息。
 2. [EXPERIMENT_QA.md](EXPERIMENT_QA.md)：最新问题与已确认答案；[PLANNING_MEMORY.md](PLANNING_MEMORY.md)：D-ID、历史交接、完整通用新窗口启动提示词（第 10 节）；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)：方法与证据。
 3. **本次有效状态**：Q-001～Q-007-FINAL 全部完成并冻结；84,310 条严格唯一单胜者训练视图与官方 Kev/Laya 模型环境已通过 GPU Smoke Test 验证。
-4. **执行范围**：服务器公开数据下载/CPU 清洗和本机 CodeX 同步/文献整理已由负责人明确要求；正式多轮 GPU 训练与付费 Coding Benchmark 批量运行按阶段指令推进。保留科研必要的数据隔离/标签真实性，不新增复杂工程门禁。
+4. **执行范围**：服务器公开数据下载/CPU 清洗和本机 Codex 同步/文献整理按负责人要求推进；正式多轮 GPU 训练与付费 Coding Benchmark 批量运行按阶段指令推进。保留科研必要的数据隔离和标签真实性。
 5. 后续阶段/决策/实验状态变化时更新本页和相关 Q&A/Memory，只有方法或证据变化才更新 Research；不制造空提交，不能在仓库正文写死永久最新 SHA。
 
 ### 0.1 本地与服务器实测核验结果（Execution Agent 于 2026-10-09 审计快照）
@@ -198,7 +198,7 @@ configs/
 | E1 | 工程基础（Schema、硬约束、账本、数据映射、环境验证） | 本地单元测试通过；无未来泄漏；环境跑通 | 未开始 |
 | E2 | Harness 与基线（最小 Harness + 固定/规则基线） | 可重放 task、自动 resolved、真实记账 | 未开始 |
 | E3 | 受控实验（同状态多动作分支试验） | paired trajectories、相同继续策略、预算约束 | 未开始 |
-| E4 | 模型训练与消融（Kev-4B 训练与离线/在线对照） | 训练日志、独立测试、消融/CI | 未开始 |
+| E4 | 模型训练与消融（Kev-4B 训练与离线/在线对照） | 训练日志、独立测试和消融 | 未开始 |
 | E5 | 论文与复现（论文图表与开源复现包） | 可复现表格、成本-质量曲线、负例分析 | 未开始 |
 
 ### 6.1 建议的首轮受控实验
@@ -258,6 +258,6 @@ configs/
 
 ## 8. 更新纪律
 
-每次任务或研究决策：Execution Agent 在本地频繁 commit，并在工作会话结束、重要里程碑或最长 24 小时工作周期内 push。Memory 记长期决策与交接，Status 记唯一当前进度，Q&A 记问答批准；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 仅在研究证据、方法或实验协议改变时更新。交付记录本地 HEAD、远端 HEAD、ahead/behind、dirty、最近 push、测试和结果版本；不要求 PR。
+每次任务或研究决策：Execution Agent 在本地频繁 commit。Memory 记长期决策与交接，Status 记唯一当前进度，Q&A 记问答记录；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 仅在研究证据、方法或实验协议改变时更新。交付记录本地 HEAD、工作树状态、测试和结果版本。
 
 **此处所有“未开始/待验证”均为 2026-10-09 的基线，后续必须依据真实执行证据更改。**

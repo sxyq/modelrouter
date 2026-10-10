@@ -55,7 +55,7 @@ subject to        P(task_resolved | policy) >= quality_floor
 | Agent/Coordination | 当前角色、活跃子 Agent、handoff、协作轮次 | Agent runtime | 用未来 handoff 预测当前动作 |
 | Context/Memory | 输入 token、窗口占用、增长、压缩次数、摘要状态 | provider usage / context manager | 读取未来总 token |
 | Tool/Environment | 最近工具类型、错误、重试、环境变化 | tool trace | 事后测试结果回流 |
-| Verification/Recovery | 当前测试失败、验证结果、失败连续性、恢复阶段 | CI / tests / evaluator | 将最终评测标签混入状态 |
+| Verification/Recovery | 当前测试失败、验证结果、失败连续性、恢复阶段 | tests / evaluator | 将最终评测标签混入状态 |
 | KV Cache/Continuity | 当前物理模型/会话、reported cached tokens、估计 prefix overlap、切换成本、锁 | provider/harness | 假定跨模型 KV 可直接共享 |
 | Temporal/Execution | 已走步数、elapsed time、剩余预算、截止时间 | scheduler/ledger | 使用未来完成时长 |
 | Provider/Availability | model/effort 能力、限流、延迟观测、上下文上限、价格版本 | capability registry | 选择不存在的配置 |
@@ -263,7 +263,7 @@ Provenance: source, schema_version, model_revision, privacy_flags
 
 ### 6.3 面向论文实验的最简执行规范与三段 Kev 微调（2026-10-09）
 
-**执行风格按负责人本轮明确要求**：只做最小可运行科研实验，尽快产生真实数据和可检验结果。不要新增审批/冻结/哈希管理/CI/单元测试/防御性框架/双重代码入口/多版本重复清洗脚本；一个终端可看到 source、rows、epoch、step、loss、eval 和耗时。移除的是工程管理形式，不是论文上不可少的 train/test 不串集、禁止未来答案泄漏、标签有真实出处、模拟缓存不冒充实际命中和来源使用权。使用不属于本项目的计算资源或收费 API 不因去工程门禁而自动获准。
+**执行风格按负责人本轮明确要求**：只做最小可运行科研实验，尽快产生真实数据和可检验结果。保持一个终端入口，不引入额外工程框架、重复代码入口或多版本清洗脚本；一个终端可看到 source、rows、epoch、step、loss、eval 和耗时。科研上必须保留 train/test 不串集、禁止未来答案泄漏、标签有真实出处、模拟缓存不冒充实际命中和来源使用权。使用不属于本项目的计算资源或收费 API 仍按实际权限处理。
 
 **唯一路线**：任务目标与合法动作定义 → 已登记公开源读取 → 分源最小清洗 → 同任务/仓库切分 → 决策前状态 → 可靠分类/偏好/缓存分层监督 → 已发布 Kev-4B checkpoint 的 LoRA 和 Pointer Head 领域微调 → 留出集检查和概率校准 → 复用同一个 Agent Harness 调用边界产生真实 usage/result → 同状态合法 model×effort 的可比较延续 → 动态选择精调 → 真实 Agent 总成本/成功率及消融。
 
@@ -312,7 +312,7 @@ Execution 报告已落地 80,970 个多来源 JSONL 行；Planning 从 main 966f
 
 > **已核源码级缺陷**：Agent 当前工具调用先累加后记录 pre_decision_state（第一步可见 prior_tool_calls=1）；Open-SWE qwen36/qwen35 模型名被误标 Qwen2.5；SWE-smith 783,438 步全为 text_response；AgentSuite 只有 4 个 task_name 类别，未构造 273 实例的可比较跨模型键；Mooncake 未按时间明确排序且任意 hash 交集被称复用机会，output_length 被写成 requested；TwinRouter 的未来 total_steps 进入状态；LongMemEval-V2 保留的是任务/哈希等简化信息，非有效记忆文本；missing_rate=0.0 是硬编码不是统计。
 
-> **代码与报告接口冲突**：当前 `prepare_router_data.py --mode public` 不存在；`all` 包含 Blog/CCH；还没有真实任务/仓库级 train/val/test 划分；多处 `TRAIN_ROUTER_CANDIDATE` 只是候选标记，不等于正确路由标签。不要启动 Laya/Kev 正式微调。保留合法已下载原始文件，只修原有唯一脚本、补缺失 split/shards、重处理受影响来源、更新 GitHub 每源真实预览及统计；无需再次全盘删除，也不新增 CI/复杂门禁。
+> **代码与报告接口冲突**：当前 `prepare_router_data.py --mode public` 不存在；`all` 包含 Blog/CCH；还没有真实任务/仓库级 train/val/test 划分；多处 `TRAIN_ROUTER_CANDIDATE` 只是候选标记，不等于正确路由标签。不要启动 Laya/Kev 正式微调。保留合法已下载原始文件，只修原有唯一脚本、补缺失 split/shards、重处理受影响来源、更新每源真实预览及统计；无需再次全盘删除。
 
 **下一轮科学问题**：并非清洗行数越大越好。分别构造 (a) Agent observed continuation outcome（不能当 counterfactual routing），(b) Arena 真实人类偏好、RouterBench 有多候选评测（需许可/相同题目/正确成本口径），(c) AgentSuite 同题 across model/thinking 的**episode**级得分/真实任务键（同一任务下不能用 4 个 task_name 类别作为唯一 ID），(d) Mooncake真实到达顺序+最长前缀潜在复用（不能当实际物理缓存命中），(e) TIME/MEM/ENV 作为状态和工作负载，非最优路由标签。先做最小可验证输入与分割，再对照 Laya 与 Kev；不提前指定最终骨干，不因混合 `TRAIN_ROUTER_CANDIDATE` 标记而认为约 200 万训练标签存在。
 
@@ -424,6 +424,6 @@ Execution 报告已落地 80,970 个多来源 JSONL 行；Planning 从 main 966f
 
 - **Planning**：新研究决定、文献证据、实验假设改变时，更新本文件并同步 Memory/Status。
 - **Execution**：每个任务完成后提交真实实验结果、代码/数据版本、失败与负例；不得只写“实验已完成”。
-- **版本纪律**：默认在 `main` 本地频繁 commit，工作会话结束/重要里程碑或最长 24 小时工作周期内 push，不要求 PR；重要变更建议附任务编号。修改研究方法需在 Memory Decision Log 记录替换原因，Status 更新阶段与阻塞。
+- **版本纪律**：默认在 `main` 本地频繁 commit，重要变更附任务编号。修改研究方法需在 Memory Decision Log 记录替换原因，Status 更新阶段与阻塞。
 - **公开安全**：仅公开可审阅的抽象状态、脱敏统计、代码与公开文献；不泄漏私人主机和原始会话。
 - **文档更新频率**：Memory/Status 随任务与决策事件更新；本研究总纲仅在证据、方法或实验协议变化时修改。未 push 的本地更新不在 GitHub 可见；不是自动后台刷新。

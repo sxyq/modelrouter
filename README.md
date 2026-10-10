@@ -19,8 +19,8 @@ ModelRouter 是面向长程 Agent 任务的模型、推理档位与成本研究�
 3. **[PLANNING_MEMORY.md · 长期交接与新会话启动提示词](our-project/planning/PLANNING_MEMORY.md)**：长期研究决定、历史、Agent 协作规范；第 10 节包含**长期通用的新窗口启动提示词**。
 4. **[RESEARCH_OVERVIEW.md · 研究方法与证据](our-project/planning/RESEARCH_OVERVIEW.md)**：学术问题、Kev 路线、假设、数据与评测方法。
 
-**恢复顺序**：远端 `main` HEAD → Status → Q&A → Memory → Research。当前任务必须由最新版 Status 确定；未批准推荐不能当成决定；历史章节不能覆盖最新进度。如 GitHub 不可访问，请用户提供这四份文件。
+**恢复顺序**：本地 `main` HEAD → Status → Q&A → Memory → Research。当前任务以最新版 Status 为准；推荐和历史章节分开记录，避免把旧资料当成当前进度。
 
 旧 `our-project/planning/IMPLEMENTATION_RESEARCH.md` 与 `our-project/literature/report.md` 仅是历史参考，不代表现在唯一实现方案。坚持一个研究主线，不因开启新聊天而新建重复工程链。
 
-**协作**：ChatGPT = Planning Agent，本地 Agent = Execution Agent。默认直接 `main`，本地频繁 commit，按会话/里程碑或最长 24 小时 push，不要求 PR。任务或决定发生真实变化时按职责更新相关文档；不把本地未推送状态误认为 GitHub 已同步，不声称可以自动获知服务器实时状态。公开仓库不得提交私人地址、密钥或原始私人日志。
+**协作**：ChatGPT = Planning Agent，本地 Agent = Execution Agent。默认直接 `main`，本地频繁 commit；任务或决定发生真实变化时按职责更新相关文档。公开仓库不得提交私人地址、密钥或原始私人日志。

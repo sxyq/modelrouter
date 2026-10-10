@@ -11,7 +11,7 @@
 - **E0.5 已完成（2026-10-09）**：负责人确认未来在授权服务器使用独立 ModelRouter 工作目录与独立 Python 环境，现有共享资源只读；仅确认原则，尚未部署。
 - **E-DESIGN 最新进度**：Q-001=A、Q-002=B、Q-003=B 预算原则、Q-004=B、Q-005=B、Q-006=A 已确认。Q-007 公开数据优先路线现已委派服务器清洗；本机 Codex 被要求同步 GitHub 五核心文档及构建 Obsidian 论文笔记。Q-010/Q-011 微调细节仍待研究；文献整理和数据 CPU 清洗无需重新请示。
 - **研究问题**：长程单/多 Agent 执行中，依据决策前可观测状态，在动态合法候选池中选择 `(model, reasoning_effort)`，能否在成功率约束下降低整任务成本。
-- **E-DESIGN 退出条件**：任务/划分与终局 evaluator、候选池与 effort 支持、预算及审批边界、主次指标、基线公平性、成对实验可恢复性、数据训练/验证/测试隔离、统计协议和停止条件均由负责人明确确认。未完成不得启动 MR-E1-001。
+- **E-DESIGN 记录项**：记录任务/划分与终局 evaluator、候选池与 effort 支持、预算范围、主次指标、基线公平性、成对实验可恢复性、数据训练/验证/测试隔离、统计协议和停止条件。
 - **纪律**：任务成功 ≠ API 成功；实际缓存读取 ≠ 可迁移 KV；调用聚合数据 ≠ 任务级标签；CCH USD ≠ Blog GPT quotaUnits；已观察的行为轨迹 ≠ 未执行动作的反事实结果。决策时刻不得使用未来信息。
 - **维护**：每次用户答复后补齐原话或忠实摘要、最终决策、日期和影响；若改变旧决策，保留修订记录。默认直接提交 `main`，不需要 PR；公开内容先脱敏。
 
@@ -200,7 +200,7 @@
 4. Actions：provider/model/revision/effort requested/effective、候选合法性、上下文、工具、价格和缓存/会话条件；缺失为 unknown，不伪造多 Agent handoff、effort、缓存。
 5. Outcome：严格区分 observed task resolved、真实计费时的 observed cost-to-go、同静态 Prompt 的 model score/preference、由能力表确定的合法性标签。未执行候选 outcome 始终 missing；API status != task resolved。
 6. Kev train JSONL：noul（实际观察的成败或规则真值）、score（有可信计量的有序成本类别）、choice（真实可比较的动作或确定性规则）；保留 task/source/split/label provenance 和 option permutation；无真实反事实时不能标注最优中途 model×effort。
-7. 训练数据 ready 门禁：许可证完整、去重分割无泄漏、字段/八组状态覆盖率与缺失率、真实成功标签可用率、effort 与模型组合覆盖、缓存观测覆盖、USD/quotaUnits 保真、JSONL 可验证和 checksum。
+7. 训练数据 ready 记录项：许可证完整、去重分割无泄漏、字段/八组状态覆盖率与缺失率、真实成功标签可用率、effort 与模型组合覆盖、缓存观测覆盖、USD/quotaUnits 保真、JSONL 可验证和 checksum。
 
 **Cache 与厂商政策**：公开轨迹通常只有 estimated prefix overlap，而非实际 physical cache read/write。CCH/Blog 是成本先验不能作同状态缓存效果监督；未来实际 Provider usage/vLLM metrics 才能给缓存真标签。官方缓存差异见 [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching)、[Claude](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)、[Gemini](https://ai.google.dev/gemini-api/docs/caching)、[DeepSeek](https://api-docs.deepseek.com/api/create-chat-completion/)、[vLLM](https://docs.vllm.ai/en/latest/usage/metrics/)。effort 支持、缓存 TTL、计价、限流、工具、隐私/ToS 等**不能只训练进 Kev 权重**，应由版本化 Registry+硬约束执行，样本只用于学习稳定的状态与动作效果。Google [Gemini API Terms](https://ai.google.dev/gemini-api/terms/) 对竞争模型训练有条款限制，不能默认商业 API 输出可用于训练。
 
@@ -303,7 +303,7 @@
 | 2026-10-09 | Q-007、Q-010、Q-011 | 第三批训练导向三个问题已提出待答；Q-008/Q-009 暂缓 | Planning 提案，不是批准 |
 | 2026-10-09 | Q-007 | 负责人指明第一学习阶段从 A 公开轨迹开始；补充公开数据检索、八组状态与学习阶段边界；全阶段数据选择仍开放 | 本轮答复与只读资料核验，未授权执行 |
 | 2026-10-09 | Q-007 台账治理 | 负责人要求专门登记数据集来源、Provider/Cache 政策并为后续 AI 筛选清洗留结构；建立 DATA_SOURCE_AND_POLICY_REGISTRY.md 作为唯一详细台账 | 本轮明确文档结构需求；未批准具体源或执行 |
-| 2026-10-09 | 论文实验简化执行 | 负责人要求最少可执行代码、单终端实时进度，不要审批门禁、CI/工程测试/复杂防御性编程/哈希与版本冻结 | 最新执行风格，科学数据隔离与真实标签仍需保持；不代表已有训练成果或第三方计算/付费 API 授权 |
+| 2026-10-09 | 论文实验简化执行 | 负责人要求最少可执行代码、单终端实时进度，移除额外工程流程和版本冻结 | 最新执行风格，科学数据隔离与真实标签仍需保持；不代表已有训练成果或第三方计算/付费 API 授权 |
 | 2026-10-09 | 公开数据清洗位置 | 本机存储不足，选定自有服务器作为 Open-SWE/SWE-smith/Arena/Mooncake 等公开数据下载、CPU 清洗及存储环境；中文目录优先；完整数据不推 GitHub | 用户已委派执行，实测报告未回传，GPU/付费 API 未因此获批 |
 | 2026-10-09 | 本机 Codex 论文知识库 | 要求同步 GitHub 五核心文档，用 Paper Research Router 整理 58 篇现有 PDF，Obsidian 中一篇一笔记、双向链接并补充直接相关路由/Jev/Kev 资料 | 明确交付任务；本 ChatGPT 负责 Planning 和需求学术讨论，本机 Codex 执行 |
 | 2026-10-09 | 论文引用与模型公开 | 允许将论文创新叙事放在任务级状态、缓存与 model×effort 决策，使用 Kev 已发布权重仍须在 Implementation/Experiments 披露 | 不能将闭源 Jev 训练方案或 Kev LoRA 架构写为原创 |
@@ -312,4 +312,3 @@
 | 2026-10-09 | Q-007 重建成果二次科研复审 | Planning 核对 16 个 GitHub 字段统计与唯一清洗程序，核出 **3,963,661 vs 报告 2,282,484** 总量冲突；Open-SWE 6 分片仅部分、SWE-smith 仅 ticks、AgentSuite 8/30 模型；前决策状态混入当前工具动作、模型名错映射、Mooncake 复用计算非有序 prefix 与其它字段问题 | 这是 Planning 源码与公开数据审查，**不是负责人新增批准/否决**；当前不应以 TRAIN_READY 开始正式微调；只修改既有脚本，不再全盘删原始文件 |
 | 2026-10-10 | Q-007 第三次科研复审（0b39a7e） | GitHub 16 源字段统计和=6,600,628，与 Execution 报告一致；多项代码修正确认，但 AgentSuite pass_criteria/target_question 可能含评测 rubric、SWE-smith 代码块误判工具动作、Mooncake 只有前缀复用潜力、missing_rate 仅按预览样本、缺真正同状态路由标签与 Train/Val/Test 物理切分、TRA-001 官方仍部分下载 | **Planning 审查意见，非负责人新批准**；保留已下载原始数据，继续原脚本定向科研纠偏；不得宣布 TRAIN_READY 或启动微调 |
 | 2026-10-10 | Q-007-FINAL 数据资产冻结与 Kev/Laya 兼容验证 | 完成全部已登记 Source ID 资产盘点与机器可读 `manifest.json`、双遍确定性可复现验证；将 LLMRouterBench 13,072 道同分成本未比/并列题移入分析集，锁定 **84,310 道严格唯一单胜者监督题**（Train 67,428 / Val 8,436 / Test 8,446）与 970 步 Holdout；修复短/标点 Prompt 跨集泄漏（0 重叠）；通过官方 `kev` 与 `laya` 仓库 100% 全量兼容性及 A6000 最小训练/保存恢复 Smoke Test | **Q-007-FINAL 全部 PASS，数据资产正式冻结**；下一阶段为 E1/E2 Kev/Laya 正式训练与离线验证，E3 Coding Benchmark 批量运行尚未启动 |
-
