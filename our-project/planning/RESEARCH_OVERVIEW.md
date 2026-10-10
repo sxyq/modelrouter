@@ -105,7 +105,7 @@ subject to        P(task_resolved | policy) >= quality_floor
 - 官方 serving 显存约 14.3GB；训练 H100 的显存/时间数据**不能直接外推到 A6000**。
 - 模型可服务长状态，但**官方经实验验证的有效上下文长度为 8,192 tokens**；不得把 65k serving 支持写成同等质量已验证。
 
-因此 Kev-4B 是**合理的起点**，不是已证明最优。A6000 的精度、延迟、候选规模敏感性、显存和 LoRA 训练仍需本项目实测。
+Kev-4B 可作为研究起点，任务级质量、延迟与候选规模泛化仍待验证。已有 A6000 短训练汇总的事实与限制见 [Q-010](EXPERIMENT_QA.md)；本轮只读核验后无需重复安装或测试，该汇总不支持最优模型或训练效果提升的结论。
 
 ### 4.2 计划架构
 
@@ -133,16 +133,29 @@ Candidate Registry -----> Hard Constraint Filter
 
 可考虑成功概率、剩余成本分位数、切换风险等**辅助任务**，但必须先有可信监督信号和消融证据；不为复杂度而强制增加 GNN、RL、Bandit 或多个预测头。
 
-### 4.3 训练策略（尚未实施）
+### 4.3 正式训练策略（仍属规划）
 
 1. 从真实 Harness 产生带决策前状态的样本；
 2. 构建候选集合和合法性标记；对 option 顺序做随机化防位置偏差；
 3. 仅用可观测动作的真实终局与 cost-to-go 监督已选动作的 outcome 模型；未选动作保持 missing；
 4. 若要学习跨动作选择，优先用**同状态分支 rollout**获取配对动作结果，或用有明确假设的离线策略估计并报告偏差；
-5. 使用官方 Kev continuation/LoRA 入口做小规模 smoke test，再决定正式训练超参；
+5. 复用已有 Kev continuation/LoRA 短训练记录，保留其证据范围；正式训练超参与实施顺序由 Q-010/Q-011 后续决定，本轮无需重跑；
 6. 冻结 held-out task 集与 calibration split，报告 Brier/ECE、任务级质量成本指标和候选泛化。
 
 **不能**将一个行为策略采集的单条轨迹直接复制为所有候选动作的监督标签。
+
+### 4.4 2026-10-10 P3：官方训练支持与方法范围
+
+本节依据已读取的官方源码：Kev commit `fc4a17e194bca35a48c57211392ec49ea54a94ac`，Laya commit `1adc59f7e371deb601fcfa18a14e25db238addcc`。源码提供的方式与本项目已完成的训练须分开记录。
+
+| 实现 | 已有方式 | 源码依据 |
+|---|---|---|
+| Kev | LoRA 与 pointer head、`--init_from` 续训、replay；另有全参数训练。支持硬标签或软目标交叉熵，硬标签分支可选平滑、Brier 或 focal，并可为有序 score 加评分项；另有 anchor KL 与选项排列 KL。软目标分支会提前返回，不叠加上述硬标签附加项。 | [损失定义](https://github.com/jaredpalmer/kev/blob/fc4a17e194bca35a48c57211392ec49ea54a94ac/kev/train.py#L41-L76)、[训练参数](https://github.com/jaredpalmer/kev/blob/fc4a17e194bca35a48c57211392ec49ea54a94ac/kev/train.py#L372-L419)、[全参数训练](https://github.com/jaredpalmer/kev/blob/fc4a17e194bca35a48c57211392ec49ea54a94ac/kev/full_ft.py#L1-L23) |
+| Laya | `choice/score/noul` 类型化标签微调；可训练编码器与决策部分，或以 `freeze_encoder` 固定编码器。正式循环提供 `soft-ce` 和 `rlcd`；后者在已知目标上加入带噪 logits 的策略梯度项。支持选项顺序扰动与温度标定。 | [配置](https://github.com/NandhaKishorM/laya/blob/1adc59f7e371deb601fcfa18a14e25db238addcc/laya/train.py#L63-L119)、[损失](https://github.com/NandhaKishorM/laya/blob/1adc59f7e371deb601fcfa18a14e25db238addcc/laya/train.py#L492-L518)、[训练循环](https://github.com/NandhaKishorM/laya/blob/1adc59f7e371deb601fcfa18a14e25db238addcc/laya/train.py#L648-L736) |
+
+**尚未接入的任务级目标**：Laya 的 RLCD 奖励来自目标分布上的 [proper scoring rules](https://github.com/NandhaKishorM/laya/blob/1adc59f7e371deb601fcfa18a14e25db238addcc/laya/common.py#L719-L745)，没有在该微调流程采集 Agent 环境回报；已有 [TD(lambda) 函数](https://github.com/NandhaKishorM/laya/blob/1adc59f7e371deb601fcfa18a14e25db238addcc/laya/common.py#L748-L763) 未被正式训练循环调用，`act_head` 输出也被 [`_forward`](https://github.com/NandhaKishorM/laya/blob/1adc59f7e371deb601fcfa18a14e25db238addcc/laya/train.py#L635-L646) 丢弃。两者已核验的正式训练入口均未接入整任务成功率与费用联合损失、连续费用分位数目标或真实动态路由强化训练。可把可信二元结果表示为类型化问题，但这仍需相应标签和明确的监督含义。
+
+**证据适用范围**：短训练和模型概率重载不能证明任务级收益、可靠标定或优化器状态恢复。Laya 无独立评估文件时会使用 [标定子集评估](https://github.com/NandhaKishorM/laya/blob/1adc59f7e371deb601fcfa18a14e25db238addcc/laya/train.py#L1095-L1101)，损失变化不能直接解释为泛化提升。Kev 的 [缓存复制代码](https://github.com/jaredpalmer/kev/blob/fc4a17e194bca35a48c57211392ec49ea54a94ac/kev/model.py#L350-L356) 对多项状态调用 `.copy()`，与本轮已核实环境的 Tensor/bool 状态类型不一致；已有短训练记录不能证明该缓存路径可用。
 
 ## 5. 数据策略
 

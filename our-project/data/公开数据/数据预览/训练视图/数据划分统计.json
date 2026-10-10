@@ -1,4 +1,17 @@
 {
+  "metadata_review": {
+    "date": "2026-10-10",
+    "report": "our-project/data/科研数据收尾报告.md",
+    "scope": "Metadata interpretation only; no formal training JSONL changed. Historical measurement labels and encoder statistics are retained identifiers, not fresh verification.",
+    "stage1_cost_evidence": {"confirmed_measured_billing": 0, "confirmed_price_estimate": 35189, "upstream_cost_origin_unverified": 9386, "no_cost": 39735},
+    "routerbench_winner_audit": {"tasks": 35189, "unique_highest_score": 2553, "tied_highest_score": 32636, "unique_after_price_comparison": 35102, "tied_lowest_estimate": 87, "official_label_outside_winner_set": 0},
+    "single_winner_note": "84310 counts existing single-label exports; 87 RouterBench labels are order-selected ties, not strict unique optima.",
+    "legacy_27192_pair_claim": "UNVERIFIED: original algorithm not retained",
+    "explicit_llm_comparisons": {"named_qwen_runtime_mode": 3714, "qwen_2507_distinct_weights": 15597, "deepseek_cross_version": 15597},
+    "agent_fields_absent": {"cumulative_cost": 0, "exit_code": 0},
+    "memorycraft": {"context_rows": 23884, "uid_values": 23385, "qa_occurrences": 28148, "distinct_session_sequences_summed_by_subsource": 10692},
+    "gpu_history": "One existing summary reports PASS; original stdout/stderr, historical interpreter and saved temporary models not located. No repeated GPU run."
+  },
   "schema_version": "Q-007-FINAL-v1.1",
   "random_seed": 42,
   "split_ratio_target": "80% Train / 10% Val / 10% Test (按独立任务/题目与去标点规范化 Prompt 哈希严格隔离)",
@@ -76,7 +89,7 @@
     "ROUTE-001": {
       "label_nature": "multi_model_quality_then_measured_api_cost",
       "selection_rule": "UNIQUE_MAX_SCORE | TIED_SCORE_MIN_MEASURED_API_USD",
-      "description": "12-38 models strictly unique max score or tied max score resolved by strictly unique minimum measured commercial API USD cost"
+      "description": "Unique max score or tied score resolved using positive upstream cost; invoice versus estimate origin is unverified."
     },
     "TRA-004": {
       "label_nature": "episode_unique_success",
@@ -147,7 +160,7 @@
     "paired_episodes_contrasting_thinking": 1638,
     "strict_same_checkpoint_thinking_switch_pairs": 1365,
     "dedicated_thinking_checkpoint_pairs": 273,
-    "cross_version_or_variant_comparison_pairs": 1638,
+    "cross_version_or_variant_comparison_pairs": 1365,
     "strict_switch_pairs_per_task": 5,
     "dedicated_thinking_checkpoint_pairs_per_task": 1,
     "genuine_pairs_per_task": 6,
@@ -156,7 +169,7 @@
     "unique_winner_tasks": 19,
     "tied_success_tasks": 246,
     "zero_success_tasks": 8,
-    "compliance_note": "Zero intermediate branching states exist; 5 strict runtime-switch pairs (1,365 pairs) + 1 same-base dedicated Thinking checkpoint pair (273 pairs) = 6 genuine pairs per task (1,638 pairs total); cross-version/cross-variant comparisons (6 pairs = 1,638 pairs) tracked separately."
+    "compliance_note": "273 fixed conversations, not complete agent executions. 1365 named runtime-mode pairs (served-weight revision unverified), 273 distinct Thinking/Instruct weight pairs and 1365 cross-version pairs. GLM pair files absent. Legacy strict/episode field names do not establish physical identity or independent runs."
   },
   "full_660w_corpus_stratification_summary": {
     "total_cleaned_public_records": 6600628,
@@ -165,12 +178,15 @@
     "stage_1_tied_or_unsupervised_analysis_tasks": 16070,
     "stage_2_agent_state_and_observed_outcome_step_records": 4448643,
     "stage_2_unique_coding_tasks": 35016,
-    "stage_2_unique_agent_episodes": 88087,
+    "stage_2_unique_agent_episodes": null,
+    "stage_2_identifier_note": "TRA-001 has 30000 trajectory IDs; TRA-002 has 49897 trajectory IDs with repeated steps; TRA-004 has 8190 final-response evaluations of fixed conversations. Do not sum these as independent complete episodes.",
     "stage_3_thinking_effort_contrast_pairs_strict_switch": 1365,
     "stage_3_thinking_effort_contrast_pairs_same_base_total": 1638,
-    "stage_3_family_reasoning_vs_instruct_pairs_llmrouterbench": 27192,
+    "stage_3_family_reasoning_vs_instruct_pairs_llmrouterbench": null,
     "stage_4_cache_and_arrival_workload_records": 1443926,
-    "stage_4_own_production_gateway_records": 221317,
+    "stage_4_own_production_gateway_records": 221128,
+    "stage_4_own_aggregate_rows": 110,
+    "stage_4_derived_summary_rows_not_new_observations": 79,
     "stage_5_coding_and_memory_benchmark_records": 58852,
     "analysis_only_prohibited_for_training_records": 6204,
     "gated_inaccessible_sources": ["TRA-003", "MAS-001"]
@@ -183,25 +199,25 @@
       "target_models": "Kev-4B (pointer choice head) & Laya-421M (choice head with max_len=1024, head_max_len=448)"
     },
     "Stage_2_Agent_State_and_Observed_Outcome": {
-      "sources": ["TRA-001 (2,075,629 steps / 30,000 episodes)", "TRA-002 (2,331,584 steps / 49,897 episodes)", "TRA-004 (41,430 steps / 8,190 episodes)"],
+      "sources": ["TRA-001 (2,075,629 steps / 30,000 trajectory IDs)", "TRA-002 (2,331,584 steps / 49,897 trajectory IDs; repeated steps)", "TRA-004 (41,430 expanded history rows / 8,190 final-response evaluations)"],
       "total_records": 4448643,
-      "split_rule": "Strictly isolated by git repository (TRA-001: 2,558/350/332 repos; TRA-002: 95/11/13 repos) and task instance_id",
-      "supervision_note": "Predict terminal task resolution (score/bool head), observed tool action class, and remaining step budget; NEVER treat observed single-model generator as optimal routing choice."
+      "split_rule": "Proposed: group all task/repository/trajectory variants together; cleaned TRA-002 has 119 repo values versus 129 full raw repo names. No Stage 2 training split is certified by this table.",
+      "supervision_note": "Observed action or terminal continuation outcome only; not current-step success, remaining budget truth or counterfactual routing. Deduplicate repeated trajectory steps and weight tasks rather than long trajectories."
     },
     "Stage_3_Thinking_Effort_and_Capability_Contrast": {
-      "sources": ["TRA-004 (1,365 strict runtime switch pairs + 273 dedicated Thinking checkpoint pairs)", "ROUTE-001 (27,192 same-family reasoning vs instruct pairs)"],
+      "sources": ["TRA-004 (1,365 named runtime-mode pairs; 273 distinct Thinking weight pairs separately)", "ROUTE-001 (3,714 named Qwen mode pairs; two distinct-weight/version comparisons of 15,597 each separately)"],
       "split_rule": "Strictly isolated by task_id (80/10/10 aligned with Stage 1)",
-      "supervision_note": "Predict whether enabling thinking/reasoning improves task score enough to justify token expansion."
+      "supervision_note": "Mode-quality comparisons are conditional on recorded input and model names; no immutable served-weight revision or joint cost optimum. Distinct weights and versions are analysis comparisons, not effort labels."
     },
     "Stage_4_Cache_Time_and_Cost_Prior": {
-      "sources": ["CACHE-001 (39,632)", "TIME-001 (1,404,294)", "ROUTE-001/002 measured costs", "OWN-001/002 (221,238 gateway logs with 185,154 physical cache hits)"],
+      "sources": ["CACHE-001 (39,632)", "TIME-001 (1,404,294)", "ROUTE-001 unverified cost provenance / ROUTE-002 estimates", "OWN-001 (110 aggregates) / OWN-002 (221,128 requests, 185,154 reported positive cache reads)"],
       "split_rule": "Chronological 80/10/10 split by arrival timestamp / trace window",
-      "supervision_note": "Calibrate token length prior, physical KV cache reuse rate, and real USD/latency cost estimator."
+      "supervision_note": "Analysis and calibration only. Prefix reuse is not measured cache hit; USD aggregates and quotaUnits requests are separate. Joint candidate-quality, cache and full-task-cost labels are unavailable."
     },
     "Stage_5_Online_Counterfactual_and_Dynamic_Routing": {
       "sources": ["ENV-001 (2,438)", "ENV-002 (32,079)", "MEM-003 (451)", "MEM-005 (23,884)", "ROUTE-003 holdout (970)"],
       "status": "RESERVED_FOR_E3_E4_ONLINE_EXECUTION",
-      "supervision_note": "Requires real multi-model mid-trajectory rollouts in E3/E4 to obtain genuine counterfactual step routing labels."
+      "supervision_note": "Zero controlled reinforcement samples. Record decisions, roles, tools, usage, cost units and final outcomes in future real runs. ENV sources overlap by 236 IDs; TRA-001 overlaps ENV-001/002 by 150/13336 IDs, so the entire pool is not unseen evaluation data."
     }
   },
   "kev_file_paths": {

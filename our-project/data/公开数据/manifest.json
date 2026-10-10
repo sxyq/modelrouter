@@ -1,5 +1,7 @@
 {
-  "manifest_version": "1.1.0-Q-007-FINAL",
+  "manifest_version": "1.1.1-MR-FINAL-20261010",
+  "metadata_review_date": "2026-10-10",
+  "metadata_review_note": "Existing data files retained. Metadata reviewed against current files; previous digest values are historical and were not recomputed. Detailed evidence: our-project/data/科研数据收尾报告.md.",
   "generated_at_utc": "2026-10-10T08:18:00Z",
   "project_repository": "https://github.com/sxyq/modelrouter",
   "cleaning_entrypoint": "prepare_router_data.py",
@@ -25,6 +27,8 @@
       "laya_server_root": "data/laya/公开数据",
       "github_and_server_preview_root": "our-project/data/公开数据/数据预览/训练视图",
       "supervised_single_winner_total": 84310,
+      "single_winner_field_note": "84310 is the retained single-label export size, not a verified strict-unique total. RouterBench contains 87 tied top-score/lowest-estimated-cost tasks chosen by upstream order.",
+      "routerbench_tied_top_score_lowest_estimate": 87,
       "splits": {
         "train": 67428,
         "val": 8436,
@@ -35,7 +39,16 @@
       "thinking_contrasts_paired": 1638,
       "thinking_contrasts_strict_runtime_switch": 1365,
       "thinking_contrasts_dedicated_checkpoint": 273,
-      "cross_version_or_variant_pairs": 1638
+      "cross_version_or_variant_pairs": 1365,
+      "cost_evidence_task_counts": {
+        "confirmed_measured_billing": 0,
+        "confirmed_price_estimate": 35189,
+        "upstream_cost_origin_unverified": 9386,
+        "no_cost": 39735
+      },
+      "legacy_cost_label_note": "ACTUAL_MEASURED_API_USD and TIED_SCORE_MIN_MEASURED_API_USD are retained identifiers, not proof of actual billing. Positive cost alone does not establish billing provenance.",
+      "agentsuite_granularity": "273 fixed conversations evaluated under 30 named configurations; 8190 stored final-response evaluations, not 8190 independent full-agent executions.",
+      "thinking_pair_evidence": "1365 matched named runtime-switch pairs; immutable served-weight revisions are absent. 273 distinct Thinking/Instruct weight pairs are a separate comparison."
     },
     "own_production_data": {
       "github_root": "our-project/data",
@@ -54,36 +67,39 @@
         "laya-421m": {
           "server_path": "models/laya-421m",
           "upstream_repo": "convaiinnovations/laya",
-          "revision": "f570d7cd7794a0e9a971e5fc86d94f35cf76359d",
-          "total_bytes": 1689056260,
+          "revision": "7b928d828b7b0e022f929d9bd2e44165aa270148",
+          "total_bytes": 846256151,
+          "artifact_bytes_without_download_metadata": 846248642,
+          "size_note": "Regular-file sizes including local download metadata; revision from existing download records; no model load or download.",
           "files": {
             "model.safetensors": {
-              "bytes": 1685914848,
-              "sha256": "ee7a66a90e0e0f1fc084b2625836d6a99ecad2ef7c772db32f98f4d432989e2e"
+              "bytes": 842609210,
+              "sha256": null
             },
             "rl_agent_config.json": {
-              "bytes": 2184,
-              "sha256": "fe67c32a8c28c1491a7eb0728bf8a68a6bd9411b6515b91a8703718d3aa7de08"
+              "bytes": 745,
+              "sha256": null
             }
           }
         },
         "kev-4b-adapter": {
           "server_path": "models/kev-4b-adapter",
           "upstream_repo": "jaredpalmer/kev-4b",
-          "revision": "b4be1e1c6756f8ebec4ef4f940413ffbc5fd702b",
-          "total_bytes": 167007294,
+          "revision": "6cfce5c2fa4b4bd64026336ab649c5ca78857d52",
+          "total_bytes": 159746002,
+          "artifact_bytes_without_download_metadata": 159741853,
           "files": {
             "adapter_model.safetensors": {
-              "bytes": 146818696,
-              "sha256": "1efbd10ef9ab31bc67e93fb83033d29fc2fd0c080ab59df1d7bf2fc5aa6e57b5"
+              "bytes": 129924032,
+              "sha256": null
             },
             "head.pt": {
-              "bytes": 5255485,
-              "sha256": "f7c6b94590ef916f689d9b4d491efdb2820e9b9bc864522f2dfaa57ccdb95b8f"
+              "bytes": 5249791,
+              "sha256": null
             },
             "adapter_config.json": {
-              "bytes": 1152,
-              "sha256": "6e7538be5679ee8e28ca52b7ef8518534824f5008e48723fb73bdcf5985b7438"
+              "bytes": 1271,
+              "sha256": null
             }
           }
         },
@@ -91,19 +107,20 @@
           "server_path": "models/qwen3.5-4b-base",
           "upstream_repo": "Qwen/Qwen3.5-4B-Base",
           "revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
-          "total_bytes": 8698508826,
+          "total_bytes": 9342828367,
+          "artifact_bytes_without_download_metadata": 9342824751,
           "files": {
             "model.safetensors-00001-of-00002.safetensors": {
-              "bytes": 4969269392,
-              "sha256": "9c210f4c469df8926fd6e820f2ab427ff7c772db32f98f4d432989e2e"
+              "bytes": 5329398712,
+              "sha256": null
             },
             "model.safetensors-00002-of-00002.safetensors": {
-              "bytes": 3714293792,
-              "sha256": "87ab57ff6a29d9bf616d619fd5e94bc0d61d7eb1fc8be18229d3802f7a0e292b"
+              "bytes": 3990429344,
+              "sha256": null
             },
             "config.json": {
-              "bytes": 2610,
-              "sha256": "974bf8c1497eb9e8a207df5b6511fb3fd0f72b0976f57d7ffcb0fd0057e4f8f5"
+              "bytes": 3161,
+              "sha256": null
             }
           }
         }
@@ -111,7 +128,9 @@
     },
     "official_reference_repositories": {
       "kev": "external/kev",
-      "laya": "external/laya"
+      "laya": "external/laya",
+      "kev_revision": "fc4a17e194bca35a48c57211392ec49ea54a94ac",
+      "laya_revision": "1adc59f7e371deb601fcfa18a14e25db238addcc"
     }
   },
   "reproducibility_verification": {
@@ -128,7 +147,8 @@
       "equals_formal_cleaned_files": true
     },
     "cleaned_to_views_two_pass_check": {
-      "command": "python prepare_router_data.py --mode views --base-dir data/公开数据 --output-dir <tmp_dir>",
+      "command": null,
+      "command_note": "Historical report listed unsupported --base-dir/--output-dir arguments. Exact historical command is not retained; supported path arguments are --cleaned-root, --preview-root, --kev-root and --laya-root.",
       "files_compared": 15,
       "run1_equals_run2_all_15_files": true,
       "equals_formal_views": true
@@ -163,9 +183,10 @@
       ]
     },
     "数据划分统计.json": {
-      "bytes": 15316,
-      "lines": 364,
-      "sha256": "091f89af85990afb690160a058b4cbad14f7c9bf6eb63da6ce5e22c7b341f1b1",
+      "bytes": 17727,
+      "lines": 381,
+      "sha256": null,
+      "metadata_note": "Interpretation updated on 2026-10-10; unchanged training JSONL counts, no full view regeneration.",
       "github_path": "our-project/data/公开数据/数据预览/训练视图/数据划分统计.json",
       "server_paths": [
         "data/公开数据/数据预览/训练视图/数据划分统计.json"
@@ -1366,15 +1387,15 @@
       "source_id": "OWN-001",
       "name": "CCH Model Cost & Cache Statistics",
       "category": "项目自有数据 (Production API Gateway Cost & Cache Aggregation)",
-      "upstream_url": "Internal production gateway export (our-project/data/cch-model-cost-cache-statistics.csv)",
-      "revision_or_version": "Frozen 2026-10-09 (110 data rows across 14 models + 2 summary rows)",
+      "upstream_url": "Internal production export (our-project/data/source/cch-model-cost-cache-statistics.csv)",
+      "revision_or_version": "2026-10-09 export: 110 model-effort aggregate rows, representing 750212 calls",
       "license": "Project Internal Research Asset",
       "download_time_utc": "2026-10-09T12:00:00Z",
       "status": "FROZEN_OWN_DATA",
       "cleaning_script": "Pre-aggregated gateway export (verified in our-project/data/)",
       "raw_storage": {
-        "local_and_github_path": "our-project/data/cch-model-cost-cache-statistics.csv",
-        "server_path": "our-project/data/cch-model-cost-cache-statistics.csv",
+        "local_and_github_path": "our-project/data/source/cch-model-cost-cache-statistics.csv",
+        "server_path": "our-project/data/source/cch-model-cost-cache-statistics.csv",
         "file_count": 2,
         "total_bytes": 203459,
         "files": [
@@ -1393,19 +1414,19 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "our-project/data/cch-model-cost-cache-statistics.csv",
+        "server_path": "our-project/data/source/cch-model-cost-cache-statistics.csv",
         "record_count": 110,
         "total_bytes": 87057,
         "sha256": "4e045d121fce6b16559ef970072ecf8e2de1e731d7e7e6c6e7f46ec1e7f2b42d"
       },
       "included_in_static_router_training": false,
-      "usage_role_or_exclusion_reason": "Real production cost & KV cache read/creation billing statistics (473,267 calls, $5,879.08 USD, 84.02% cache hit rate); used for E4 realistic cache cost parameterization."
+      "usage_role_or_exclusion_reason": "110 aggregates represent 750212 calls, USD accounting sum 125781.2522522021, 695947 calls with cost breakdown and 54265 zero-cost calls. No task IDs or provider invoice reconciliation. Do not add derived OWN-003 rows as independent observations."
     },
     {
       "source_id": "OWN-002",
       "name": "sxyq.xyz-blog-gpt Production Request Billing Logs",
       "category": "项目自有数据 (Desensitized Per-Request Production Billing & Cache Logs)",
-      "upstream_url": "Internal production gateway export (our-project/data/sxyq-blog-gpt-usage-cleaned.csv)",
+      "upstream_url": "Internal production export (our-project/data/cleaned/sxyq-blog-gpt-usage-cleaned.csv)",
       "revision_or_version": "Frozen 2026-10-09 (221,128 desensitized request records; raw un-desensitized sxyq.xyz-blog-gpt.csv is RAW_MISSING by privacy policy)",
       "license": "Project Internal Research Asset (Desensitized)",
       "download_time_utc": "2026-10-09T12:00:00Z",
@@ -1413,8 +1434,8 @@
       "cleaning_script": "Desensitized production export (raw un-desensitized CSV excluded for IP/key privacy)",
       "raw_storage": {
         "raw_undesensitized_status": "RAW_MISSING (un-desensitized sxyq.xyz-blog-gpt.csv not retained in repo/server for key/IP security; sxyq-blog-gpt-usage-cleaned.csv is the frozen authoritative source)",
-        "local_and_github_path": "our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
-        "server_path": "our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
+        "local_and_github_path": "our-project/data/cleaned/sxyq-blog-gpt-usage-cleaned.csv",
+        "server_path": "our-project/data/cleaned/sxyq-blog-gpt-usage-cleaned.csv",
         "file_count": 2,
         "total_bytes": 34750614,
         "files": [
@@ -1427,6 +1448,7 @@
           },
           {
             "name": "sxyq-blog-gpt-summary.csv",
+            "project_path": "our-project/data/summaries/sxyq-blog-gpt-summary.csv",
             "bytes": 12581,
             "lines": 38,
             "sha256": "a0698ff43474454cc1283ae3cd59158df19a56793b97443f99851cb2b97d40b6"
@@ -1434,27 +1456,27 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
+        "server_path": "our-project/data/cleaned/sxyq-blog-gpt-usage-cleaned.csv",
         "record_count": 221128,
         "total_bytes": 34738033,
         "sha256": "6ce697f3ffa76c5ec7ce3353795d46c883f1fe8b4b1b80ea746f01f248529b79"
       },
       "included_in_static_router_training": false,
-      "usage_role_or_exclusion_reason": "Per-request billing, latency, token & cache hit trace without prompt text or counterfactual model outputs; used for E4 empirical arrival, latency, and cache discount calibration."
+      "usage_role_or_exclusion_reason": "221128 unique request row IDs; 194247 positive quotaUnits amounts, 185154 positive reported cache reads, 198359 explicit effort values. Unit is quotaUnits, not USD. No task quality labels or task billing."
     },
     {
       "source_id": "OWN-003",
       "name": "CCH + sxyq-blog-gpt Unified Cross-Platform Summary",
       "category": "项目自有数据 (Unified Cross-Platform Production Summary)",
-      "upstream_url": "Internal unified summary (our-project/data/cch-sxyq-gpt-unified-summary.csv)",
+      "upstream_url": "Internal unified summary (our-project/data/summaries/cch-sxyq-gpt-unified-summary.csv)",
       "revision_or_version": "Frozen 2026-10-09 (79 model-source rows + header)",
       "license": "Project Internal Research Asset",
       "download_time_utc": "2026-10-09T12:00:00Z",
       "status": "FROZEN_OWN_DATA",
       "cleaning_script": "Unified cross-platform summary table",
       "raw_storage": {
-        "local_and_github_path": "our-project/data/cch-sxyq-gpt-unified-summary.csv",
-        "server_path": "our-project/data/cch-sxyq-gpt-unified-summary.csv",
+        "local_and_github_path": "our-project/data/summaries/cch-sxyq-gpt-unified-summary.csv",
+        "server_path": "our-project/data/summaries/cch-sxyq-gpt-unified-summary.csv",
         "file_count": 1,
         "total_bytes": 25424,
         "files": [
@@ -1468,13 +1490,13 @@
         ]
       },
       "cleaned_storage": {
-        "server_path": "our-project/data/cch-sxyq-gpt-unified-summary.csv",
+        "server_path": "our-project/data/summaries/cch-sxyq-gpt-unified-summary.csv",
         "record_count": 79,
         "total_bytes": 25424,
         "sha256": "92f12d40a1e5f6a3aa3db034e0d77fa28a0b5a0fb1a5a1eff1c7fb93fbfee6ac"
       },
       "included_in_static_router_training": false,
-      "usage_role_or_exclusion_reason": "Unified cross-platform pricing & cache ratio reference table (694,395 total requests, $6,455.28 USD total expenditure)."
+      "usage_role_or_exclusion_reason": "79 derived rows: 42 CCH rows representing 638421 calls plus 37 Blog rows representing 221128 requests. All derive from OWN-001/002; zero new independent observations. USD and quotaUnits remain separate. No verified set of 25 manually labeled examples exists in this inventory."
     }
   ]
 }
