@@ -6,35 +6,35 @@
 >
 > **证据注意**：服务器、GPU、进程和数据规模来自本地 Execution Agent 于 2026-10-09 提交的审计快照，不代表 Planning Agent 直接登录复验，也不构成实时监控。公开文档刻意不包含服务器内网 IP、SSH 登录信息、内部主机名、用户家目录与私人绝对路径。
 
-### 0.2 最新科研验收结论（Execution 2026-10-10 Q-007 最终训练数据修复与 CPU Smoke Test 完成）
+### 0.2 最新科研验收结论（Execution 2026-10-10 Q-007-FINAL 数据资产冻结、清洗最终验收与 Kev/Laya 训练前兼容性验证完成）
 
-- **2026-10-10 Execution Q-007 最终训练数据修复与 Kev 官方 CPU Smoke Test 闭环**：
-  1. **训练标签真实性彻底纠偏 (P0)**：
-     - **AgentSuite 排除虚假单胜者 (P0.1)**：246 个多模型成功、步数相同且成本未测的并列任务及 8 个全失败任务，严禁强加首选模型作为伪胜者标签，全面剔除出正式训练集并转入 `analysis_unsupervised_or_tied.jsonl` 分析集；仅 **19 个唯一最优胜者任务** 进入正式监督训练集。
-     - **LLMRouterBench 恢复缺失值语义与成本公平性 (P0.2)**：修复解析逻辑保留 `score=None` 与 `cost=None`；4,327 条缺失评分排除于对比之外；严禁用 `completion_tokens × 1e-6` 冒充美元成本；同分时仅在均为实测 API USD 时比对成本，含未计费本地模型标注 `cost_uncompared`；2,744 道全败题目排除出训练集，正向解决的 **22,458 题** 进入正式训练集。
-     - **训练集真值严格对齐 (P0.3)**：正式监督训练集 (`train.jsonl`, `val.jsonl`, `test.jsonl`) 严格仅由 **97,382 题高置信确定性单胜者子集** 组成（Arena 39,716 + RouterBench 35,189 + LLMRouterBench 22,458 + AgentSuite 19），绝不为了凑数掺杂无区分度样本；2,998 道无区分度题目完整导出至分析集。
-  2. **任务级与 Prompt 语义隔离划分 (P1)**：
-     - 修复 RouterBench 题面提取（解析嵌套列表提取真实问题，消除 GSM8K 7,450 题通用说明碰撞）；
-     - 引入规范化题面哈希共同键，确保跨异构来源相同题面映射至同一划分，**任务级跨集重叠为 0**；
-     - TwinRouterBench（970 步）作为独立 Holdout 评测集，0 条进入训练/验证集。
-  3. **Kev 官方 Tokenizer 与 DataLoader CPU Smoke Test 100% 通过 (P2)**：
-     - 放弃 8192 字符估算，加载官方 Kev Tokenizer（Qwen2, 词表 248,044）实测全量样本，最大 Token 长度为 **1,485 Tokens**（平均 422 Tokens），超过 2048 限制的样本数为 **0**；
-     - PyTorch DataLoader CPU Smoke Test 批量加载测试成功，张量形状为 `torch.Size([4, 512])`，**0 异常，0 丢弃，100% PASS**。
+- **2026-10-10 Execution Q-007-FINAL 数据资产冻结、清洗最终验收与 Kev/Laya 官方 GPU Smoke Test 闭环**：
+  1. **全量数据资产冻结与两次确定性复现 (P0–P1)**：
+     - 完整核查注册表全部 **35 个 Source ID**（16 个已下载清洗、4 个自有生产日志、15 个明确标注缓装/归档原因），在 `our-project/data/公开数据/manifest.json` 冻结全部原始文件、清洗输出、训练视图的 SHA256、行数与字节数；
+     - 连续运行两次 `prepare_router_data.py`（Run A vs Run B），8 个输出文件（4 个 Kev 视图 + 4 个 Laya 视图）SHA256 **100% 字节级完全一致**。
+  2. **训练标签唯一性纯化与零跨集泄漏 (P2)**：
+     - **LLMRouterBench 并列剔除**：将 12,188 题最高分并列且成本不可比（`cost_uncompared`）及 884 题最高分与实测美元成本均并列（`tied_score_and_cost`）的样本全部移出正式监督集，转入 `analysis_unsupervised_or_tied.jsonl`；仅保留 **9,386 题**严格唯一胜者（8,348 题最高分唯一 + 1,038 题最高分并列但实测 API 美元成本严格更低）；
+     - **AgentSuite 唯一胜者**：仅保留 **19 题**严格唯一成功模型样本，246 题并列成功与 8 题全败保留在分析集；
+     - **正式监督集锁定 84,310 条严格唯一单胜者样本**：`ROUTE-004` (Arena 39,716) + `ROUTE-001` (RouterBench 35,189) + `ROUTE-002` (LLMRouterBench 9,386) + `TRA-004` (AgentSuite 19)，分布为 `train.jsonl` (67,853) / `val.jsonl` (8,136) / `test.jsonl` (8,321)；另有 `analysis_unsupervised_or_tied.jsonl` (16,070 条) 与 `holdout_eval_twinrouter.jsonl` (970 条)；
+     - **跨 Split 零泄漏**：修复短题面与纯标点题面分桶逻辑，Task ID、Exact Prompt、Canonical Prompt 在 `train/val/test/holdout` 四集合间两两交集均为 **0**。
+  3. **官方开源代码全量格式验证与 GPU Smoke Test 100% 通过 (P3–P5)**：
+     - **Kev 官方代码 (`kev` repo)**：85,280 条样本 100% 通过 `load_records -> materialize -> encode`（0 失败，最大 `state_tokens=1,636 <= 7,552`）；在 RTX A6000 上完成 `Qwen3.5-4B-Base + kev-4b-adapter` 真实 `kev.train` 前向/反向/参数更新（`--batch 2 --accum 4 --checkpointing 1`，峰值显存 **10.50 GiB**）与临时 Checkpoint 保存重载测试（`max_reload_prob_diff = 0.0`）；
+     - **Laya 官方代码 (`laya` repo)**：85,280 条样本 100% 通过 `read_data -> items_from_rows -> build_sequence`（`skipped={}`，全量 102,424 个问题完美对齐）；在 RTX A6000 上完成 `laya-421m` 真实 `laya.train.finetune`（`rlcd` loss 由 `8.9714` 降至 `2.9823`，`soft-ce` loss 由 `8.9714` 降至 `3.5132`）与临时 Checkpoint 保存重载测试（`max_reload_prob_diff = 0.0`）；正式模型目录保持零改动。
 
-**最新阶段判定：Q-007 静态模型选择训练数据与 Kev 格式导出已正式完成科研验收并锁定（TRAIN_READY）；动态 Agent 中途同状态反事实分叉与物理 Cache 联合调度转入后续阶段；等待 Planning 开启 Q-010/Q-011 训练方案独立讨论。**
+**最新阶段判定：Q-007-FINAL 全部完成并冻结（DATA_FROZEN & SMOKE_TEST_PASSED）。项目执行优先顺序明确为：`数据最终验收 → Kev/Laya 模型训练 → 离线能力验证 → 大规模 Coding Benchmark → 动态缓存感知路由 → 论文实验`。下一步进入 E1/E2 正式训练阶段。**
 
 ## 0. 项目负责人进度看板（任务事件更新）
 
 | 项目 | 当前 |
 |---|---|
-| **当前阶段** | **E-DESIGN / Q-007：公开数据全量科研纠偏、真值对齐与 CPU Smoke Test 完毕；已产出 97,382 条高置信单胜者 Kev 训练样本 + 2,998 条分析集 + 970 步 Holdout 评测集（官方 Tokenizer 与 DataLoader 100% 通过）** |
-| **当前任务** | **Q-007 数据端全部科研验收通过。等待 Planning Agent（ChatGPT）开启 Q-010/Q-011，独立讨论 Laya-421M 与 Kev-4B 的微调起点、监督目标与公平对照设计** |
-| **已完成** | **彻底完成 Q-007 最终训练数据修复与 CPU Smoke Test 闭环**：<br>1. **P0 标签真值对齐**：AgentSuite 仅 19 唯一胜者进正式训练集，246 并列与 8 全败转入分析集；LLMRouterBench 恢复 4,327 条缺失评分，剔除 2,744 道全败题，同分未计费标注 `cost_uncompared`；锁定 97,382 题高置信单胜者监督子集。<br>2. **P1 任务与 Prompt 语义隔离划分**：修复 RouterBench 题面提取，采用 Prompt 哈希共同键实现确定性 80/10/10 划分：Train (78,376, 80.48%) / Val (9,367, 9.62%) / Test (9,639, 9.90%)；跨集任务重叠为 0；TwinRouterBench 970 步独立 Holdout。<br>3. **P2 官方 Kev Tokenizer 与 DataLoader CPU 验证通过**：词表 248,044，全样本实测最大 1,485 Tokens (< 2048)，0 样本超长；PyTorch DataLoader 批量生成 `(4, 512)` 张量无异常。<br>4. **回答全部 10 项科研问题**，更新《科研数据收尾报告.md》与训练视图预览。 |
-| **正在等待** | Planning Agent 针对数据收尾结论进行确认，开启 Q-010/Q-011（Laya-421M vs Kev-4B 对照设计讨论） |
-| **主要阻塞** | 无执行阻塞。静态模型选择数据已完全就绪；动态反事实与物理缓存联合监督明确转入后续阶段，不阻塞当前收尾 |
-| **下一步** | **停止自动微调；等待 Planning 开启 Q-010/Q-011 独立讨论，确定模型训练参数与基线对比方案** |
+| **当前阶段** | **E-DESIGN / Q-007-FINAL 已完成：数据资产冻结（35 个 Source ID 清单 + `manifest.json`）、84,310 条严格唯一单胜者监督集纯化、两次复现 SHA256 100% 一致、Kev-4B 与 Laya-421M 官方 CPU/GPU Smoke Test 100% 通过** |
+| **当前任务** | **Q-007-FINAL 全部收尾闭环。准备进入 E1（模型训练环境与最小运行验证）与 E2（Kev-4B / Laya-421M 正式训练与离线验证）** |
+| **已完成** | **彻底完成 Q-007-FINAL 数据资产冻结、清洗最终验收与 Kev/Laya 训练前兼容性验证**：<br>1. **P0–P1 资产清点与确定性复现**：核对 35 个 Source ID，生成 `manifest.json`，两次独立运行 `prepare_router_data.py` 的 8 个 Kev/Laya 输出文件 SHA256 100% 一致。<br>2. **P2 标签唯一性纯化与零泄漏**：将 LLMRouterBench 12,188 题 `cost_uncompared` 并列与 884 题 `tied_score_and_cost` 并列移入分析集；正式监督集锁定 84,310 条严格唯一单胜者样本（Train 67,853 / Val 8,136 / Test 8,321），分析集 16,070 条，Holdout 970 条；跨 Split 的 Task/Exact/Canonical Prompt 重叠均为 0。<br>3. **P3–P4 官方加载器 100% 验证**：85,280 条样本 100% 通过官方 `kev` 与 `laya` 数据管线（0 跳过、0 失败）。<br>4. **P5 官方 GPU Smoke Test 100% 通过**：Kev-4B（峰值显存 10.50 GiB）与 Laya-421M（`rlcd` 与 `soft-ce`）在 A6000 上完成前向、Loss、反向、参数更新与临时 Checkpoint 重载一致性验证（`max_reload_prob_diff = 0.0`）。<br>5. **P6 逐项回答全部 13 个必答问题**，同步更新核心文档与 GitHub `main`。 |
+| **正在等待** | Planning Agent 确认 Q-007-FINAL 验收报告并下达 E1/E2 正式训练指令 |
+| **主要阻塞** | 无执行阻塞。Coding Benchmark 尚未启动，等待 Kev/Laya 正式训练完成后再规划批量运行 |
+| **下一步** | **进入 E1/E2 正式训练阶段（Kev-4B 与 Laya-421M 多轮正式微调、校准与离线评测）** |
 | **更新方式** | 本地频繁 commit；按阶段/里程碑定期 push 到 GitHub main；不设审批门禁，不开发第二套流水线 |
-| **最近更新时间** | 2026-10-10：Execution Agent 完成 Q-007 最终训练数据修复与 Kev 官方 CPU Smoke Test 闭环 |
+| **最近更新时间** | 2026-10-10：Execution Agent 完成 Q-007-FINAL 数据资产冻结、清洗最终验收与 Kev/Laya 官方 GPU Smoke Test |
 
 **持续角色**：本 ChatGPT 为长期 Planning Agent、需求讨论与论文研究伙伴；本机 Codex/Execution Agent 负责本地文档同步/代码维护与服务器执行。研究讨论无需因执行任务尚在进行而中止；用户已选择的简单实验风格优先，不增加工程化门禁。新对话须阅读全部五核心文档并确认最新证据。
 
@@ -42,8 +42,8 @@
 
 1. 核查 GitHub 最新 main HEAD 并读取**五核心文档（Status/Q&A/Memory/Research/Registry）**；**本文件首页唯一决定当前阶段、当前任务、阻塞和下一行动**，历史审计不是实时信息。
 2. [EXPERIMENT_QA.md](EXPERIMENT_QA.md)：最新问题与已确认答案；[PLANNING_MEMORY.md](PLANNING_MEMORY.md)：D-ID、历史交接、完整通用新窗口启动提示词（第 10 节）；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)：方法与证据。
-3. **本次有效状态**：Q-001～Q-006 批准不变；服务器公开数据首批清洗已有 Execution 报告与 GitHub 代码/抽样证据，但标签和 split **需要科研纠正**；本机 Codex Obsidian 论文库尚无执行结果。Q-010/Q-011 继续讨论，不得重问已决定事项。
-4. **执行范围**：服务器公开数据下载/CPU 清洗和本机 CodeX 同步/文献整理已由负责人明确要求；仍不代表授权干扰共享服务、GPU 训练或付费 API。保留科研必要的数据隔离/标签真实性，不新增复杂工程门禁。
+3. **本次有效状态**：Q-001～Q-007-FINAL 全部完成并冻结；84,310 条严格唯一单胜者训练视图与官方 Kev/Laya 模型环境已通过 GPU Smoke Test 验证。
+4. **执行范围**：服务器公开数据下载/CPU 清洗和本机 CodeX 同步/文献整理已由负责人明确要求；正式多轮 GPU 训练与付费 Coding Benchmark 批量运行按阶段指令推进。保留科研必要的数据隔离/标签真实性，不新增复杂工程门禁。
 5. 后续阶段/决策/实验状态变化时更新本页和相关 Q&A/Memory，只有方法或证据变化才更新 Research；不制造空提交，不能在仓库正文写死永久最新 SHA。
 
 ### 0.1 本地与服务器实测核验结果（Execution Agent 于 2026-10-09 审计快照）
@@ -75,17 +75,16 @@ Execution 在每轮结束时先执行 `git status -sb`、`git rev-parse HEAD`、
 | 研究命题 | 长程 Agent 状态感知、任务级 Model × Effort 路由 | **已明确** |
 | 文献与历史研究 | 已有综合报告、7 个专题证据、Kev/Jev 研究 | **可用，需按当前方法更新** |
 | 本地生产调用数据 | CCH 聚合 + Blog GPT 调用明细 | **仅适合统计先验，非路由监督** |
-| 真实 Agent 轨迹 | 私有 Codex 监控部分有 session，但隐私限制；公开可用轨迹未落地 | **缺关键训练/评测数据** |
-| Router 代码 | 仓库中无自研可执行 Python Router/Harness | **未开始** |
-| 统一 Schema/账本 | 有规划，没有可运行实现 | **待实现** |
-| Kev-4B | 官方技术路线已核查；本项目尚未加载、微调或测延迟 | **待 smoke test** |
-| GPU | 一张 A6000 48GB；E0 时空闲 | **资源可行性较好，需再核查** |
-| 任务级评估 | 尚无本项目的成对任务轨迹、成功标签、预算与统计结果 | **未开始** |
-| 论文实验结果 | 无本项目可信对照/消融数据 | **不能声称已验证方法** |
+| 真实 Agent 轨迹 | 16 个公开数据源（660 万条）已清洗归档；84,310 条单胜者路由视图已冻结 | **训练视图已就绪（TRAIN_READY）** |
+| 数据处理与验证主链 | `prepare_router_data.py` + `manifest.json`（两次运行 SHA256 100% 一致） | **已冻结** |
+| Kev-4B 与 Laya-421M | 权重已下载，官方仓库代码已完成全量编码验证与 GPU Smoke Test | **Smoke Test 100% 通过** |
+| GPU | 一张 A6000 48GB；Kev-4B 训练峰值 10.50 GiB，Laya-421M 训练峰值 < 2 GiB | **资源充足，已实测验证** |
+| Coding Benchmark 批量运行 | 尚未启动，等待 Kev/Laya 正式训练完成后再规划批量运行 | **未启动（E3 阶段）** |
+| 论文实验结果 | 待完成 E2 正式训练与 E3/E4 实验后产出 | **按阶段推进** |
 
-**执行路线**：`E0.5 已完成 → E-DESIGN 正在进行 → E1 工程基础 → E2 Harness 与基线 → E3 受控实验 → E4 模型训练与消融 → E5 论文与复现`。
+**执行路线（最新调整顺序）**：`E0 / E0.5 研究与资源审计（已完成） → E-DESIGN 数据与模型训练方案 / Q-007-FINAL（已完成） → E1 模型训练环境与最小运行验证（已完成 Smoke Test） → E2 Kev/Laya 正式训练与离线验证（下一步） → E3 Coding Benchmark 批量运行（未启动） → E4 动态缓存感知路由实验（未启动） → E5 消融、统计检验与论文整理（未启动）`。
 
-**当前状态**：E0.5 已验收，E-DESIGN Q-001～Q-006 的记录有效。Q-007 第一学习阶段 A（公开轨迹优先）已明确，其他训练数据阶段仍待决定。现仅讨论 Q-007 A 阶段学习方案；Q-010/Q-011 后续再问，Q-008/Q-009 实验细节暂缓，运行权限未批。
+**当前状态**：Q-007-FINAL 已完成数据资产冻结、唯一胜者标签纯化、跨集零泄漏验证及 Kev/Laya 官方 CPU/GPU Smoke Test，下一步进入 E1/E2 正式训练阶段。Coding Benchmark 尚未启动，等待 Kev/Laya 正式训练完成后再规划批量运行。
 
 ## 2. 仓库与工程状态
 

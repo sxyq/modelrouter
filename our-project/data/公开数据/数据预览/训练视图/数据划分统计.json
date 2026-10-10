@@ -1,65 +1,111 @@
 {
-  "execution_timestamp": "2026-10-10T11:09:26.367400",
+  "schema_version": "Q-007-FINAL-v1.0",
   "random_seed": 42,
-  "split_ratio_target": "80% Train / 10% Val / 10% Test (按独立任务/题目与 Prompt 哈希隔离)",
+  "split_ratio_target": "80% Train / 10% Val / 10% Test (按独立任务/题目与去标点规范化 Prompt 哈希严格隔离)",
   "task_counts": {
-    "train_tasks": 78376,
-    "val_tasks": 9367,
-    "test_tasks": 9639,
+    "train_tasks": 67428,
+    "val_tasks": 8436,
+    "test_tasks": 8446,
     "twinrouterbench_holdout_tasks": 520,
     "raw_unfiltered_candidate_tasks": 101688,
-    "filtered_unsolvable_tasks": 1316,
-    "total_routing_tasks": 100380,
-    "strictly_differentiated_positive_tasks": 97382,
-    "all_failed_or_tied_tasks": 2998
+    "filtered_routerbench_no_model_correct": 1308,
+    "total_routing_pool_tasks": 100380,
+    "strictly_unique_winner_positive_tasks": 84310,
+    "all_failed_or_tied_tasks": 16070
   },
   "sample_counts": {
-    "train_samples": 78376,
-    "val_samples": 9367,
-    "test_samples": 9639,
+    "train_samples": 67428,
+    "val_samples": 8436,
+    "test_samples": 8446,
     "twinrouterbench_holdout_samples": 970,
-    "total_formal_training_samples": 97382,
-    "unsupervised_analysis_samples": 2998,
-    "total_kev_samples": 98352
+    "total_formal_training_samples": 84310,
+    "unsupervised_analysis_samples": 16070,
+    "total_supervised_plus_holdout_samples": 85280
+  },
+  "llmrouterbench_selection_breakdown": {
+    "total_valid_multimodel_tasks": 25202,
+    "UNIQUE_MAX_SCORE": 1432,
+    "TIED_SCORE_MIN_MEASURED_API_USD": 7954,
+    "TIED_SCORE_TIED_API_USD": 86,
+    "TIED_SCORE_COST_UNCOMPARED": 12986,
+    "ALL_MODELS_FAILED": 2744,
+    "admitted_to_strict_single_winner_training": 9386,
+    "moved_to_analysis_unsupervised_or_tied": 15816
   },
   "reconciliation_notes": {
     "raw_unfiltered_total": "101,688 (Arena 39,716 + RouterBench 36,497 + LLMRouterBench 25,202 + AgentSuite 273)",
-    "excluded_unsolvable": "1,316 (RouterBench no_model_correct 1,308 + AgentSuite 0 成功 8)",
-    "total_routing_candidate_pool": "100,380 (Arena 39,716 + RouterBench 35,189 + LLMRouterBench 25,202 + AgentSuite 265)",
-    "strictly_differentiated_positive_subset": "97,382 (Arena 39,716 + RouterBench 35,189 + LLMRouterBench positive 22,458 + AgentSuite unique 19)",
-    "undifferentiated_subset": "2,998 (LLMRouterBench all-failed 2,744 + AgentSuite tied-success 246)"
+    "excluded_before_task_pool": "1,308 (RouterBench no_model_correct 1,308)",
+    "total_routing_task_pool": "100,380 (Arena 39,716 + RouterBench 35,189 + LLMRouterBench 25,202 + AgentSuite 273)",
+    "strictly_unique_winner_training_subset": "84,310 (Arena 39,716 + RouterBench 35,189 + LLMRouterBench unique-optimal 9,386 [1,432 UNIQUE_MAX_SCORE + 7,954 TIED_SCORE_MIN_MEASURED_API_USD] + AgentSuite unique 19)",
+    "analysis_unsupervised_or_tied_subset": "16,070 (LLMRouterBench tied-cost-uncompared 12,986 + LLMRouterBench tied-api-usd 86 + LLMRouterBench all-failed 2,744 + AgentSuite tied-success 246 + AgentSuite all-failed 8)"
   },
   "source_breakdown": {
     "train": {
-      "ROUTE-004": 31879,
-      "ROUTE-001": 18209,
-      "ROUTE-002": 28270,
-      "TRA-004": 18
+      "ROUTE-004": 31766,
+      "ROUTE-001": 7565,
+      "ROUTE-002": 28080,
+      "TRA-004": 17
     },
     "val": {
-      "ROUTE-004": 3827,
-      "ROUTE-001": 2118,
-      "ROUTE-002": 3421,
+      "ROUTE-004": 3943,
+      "ROUTE-001": 894,
+      "ROUTE-002": 3598,
       "TRA-004": 1
     },
     "test": {
-      "ROUTE-004": 4010,
-      "ROUTE-001": 2131,
-      "ROUTE-002": 3498
+      "ROUTE-004": 4007,
+      "ROUTE-001": 927,
+      "ROUTE-002": 3511,
+      "TRA-004": 1
     },
     "holdout": {
       "ROUTE-003": 970
+    }
+  },
+  "supervision_semantics_by_source": {
+    "ROUTE-004": {
+      "label_nature": "pairwise_human_preference",
+      "selection_rule": "HUMAN_BLIND_PAIRWISE_PREFERENCE",
+      "description": "2-model blind human pairwise preference battle (non-tie winner)"
+    },
+    "ROUTE-002": {
+      "label_nature": "official_oracle_cost_effective",
+      "selection_rule": "ROUTERBENCH_OFFICIAL_ORACLE",
+      "description": "11-model official cost-effective Oracle verified inside evaluated candidate set"
+    },
+    "ROUTE-001": {
+      "label_nature": "multi_model_quality_then_measured_api_cost",
+      "selection_rule": "UNIQUE_MAX_SCORE | TIED_SCORE_MIN_MEASURED_API_USD",
+      "description": "12-38 models strictly unique max score or tied max score resolved by strictly unique minimum measured commercial API USD cost"
+    },
+    "TRA-004": {
+      "label_nature": "episode_unique_success",
+      "selection_rule": "AGENTSUITE_UNIQUE_SUCCESSFUL_MODEL",
+      "description": "30-model full-episode evaluation with strictly 1 unique successful model configuration"
+    },
+    "ROUTE-003": {
+      "label_nature": "step_capability_tier_oracle",
+      "selection_rule": "TWINROUTERBENCH_STEP_TIER_ORACLE",
+      "description": "4-tier SWE-bench step routing holdout benchmark (EVAL_BENCHMARK_ONLY)"
     }
   },
   "leakage_and_isolation_audit": {
     "train_val_task_overlap": 0,
     "train_test_task_overlap": 0,
     "val_test_task_overlap": 0,
+    "train_val_exact_prompt_overlap": 0,
+    "train_test_exact_prompt_overlap": 0,
+    "val_test_exact_prompt_overlap": 0,
+    "train_val_canonical_prompt_overlap": 0,
+    "train_test_canonical_prompt_overlap": 0,
+    "val_test_canonical_prompt_overlap": 0,
+    "cross_source_shared_prompts_count": 6,
+    "cross_source_prompt_split_leakage": 0,
     "twinrouterbench_in_train": 0,
     "twinrouterbench_in_val": 0,
-    "isolation_status": "PASS (0 交叉泄漏，TwinRouterBench 100% 独立隔离评测)"
+    "isolation_status": "PASS (0 任务重叠, 0 精确/去标点规范化 Prompt 跨集泄漏, 0 跨来源同题跨集泄漏, TwinRouterBench 100% 独立隔离)"
   },
-  "candidate_models_distribution": {
+  "candidate_models_distribution_unfiltered": {
     "2_candidates": 39716,
     "11_candidates": 36497,
     "20_candidates": 11442,
@@ -73,6 +119,23 @@
     "17_candidates": 400,
     "12_candidates": 278,
     "22_candidates": 164
+  },
+  "candidate_models_distribution_supervised_filtered": {
+    "2_candidates": 39716,
+    "11_candidates": 35189,
+    "14_candidates": 3461,
+    "15_candidates": 3106,
+    "20_candidates": 611,
+    "28_candidates": 447,
+    "35_candidates": 392,
+    "33_candidates": 382,
+    "17_candidates": 270,
+    "12_candidates": 260,
+    "38_candidates": 227,
+    "30_candidates": 96,
+    "51_candidates": 96,
+    "29_candidates": 50,
+    "22_candidates": 7
   },
   "arena_55k_human_preference": {
     "model_a_won": 20064,
@@ -96,5 +159,156 @@
     "test": "data/kev/公开数据/test.jsonl",
     "twinrouterbench_holdout": "data/kev/公开数据/test_twinrouterbench_holdout.jsonl",
     "unsupervised_analysis": "data/kev/公开数据/analysis_unsupervised_or_tied.jsonl"
+  },
+  "laya_file_paths": {
+    "train": "data/laya/公开数据/train.jsonl",
+    "val": "data/laya/公开数据/val.jsonl",
+    "test": "data/laya/公开数据/test.jsonl",
+    "twinrouterbench_holdout": "data/laya/公开数据/test_twinrouterbench_holdout.jsonl",
+    "unsupervised_analysis": "data/laya/公开数据/analysis_unsupervised_or_tied.jsonl"
+  },
+  "kev_laya_official_compatibility_audit": {
+    "train.jsonl": {
+      "records": 67428,
+      "errors": 0,
+      "joint_kev_laya_readable": 67428,
+      "joint_readability_rate": 1.0,
+      "kev_official": {
+        "tested_100_percent": true,
+        "max_state_tokens": 336,
+        "max_branch_tokens": 466,
+        "max_packed_tokens": 767,
+        "default_context_384_1024_2048_ok": 67428,
+        "default_context_384_state_truncated": 0,
+        "default_context_384_overflow": 0,
+        "kev4b_context_7552_8192_9216_ok": 67428,
+        "kev4b_context_7552_state_truncated": 0,
+        "permutation_sync_tested": 50,
+        "permutation_sync_passed": 50
+      },
+      "laya_official": {
+        "tested_100_percent": true,
+        "router_config_1024_448_ok_records": 67428,
+        "router_config_1024_448_items": 74993,
+        "router_config_1024_448_state_truncated": 0,
+        "router_config_1024_448_skipped": {},
+        "shipped_config_512_192_ok_records": 65978,
+        "shipped_config_512_192_skipped": {
+          "options_collapsed": 1450
+        },
+        "max_sequence_tokens": 880,
+        "max_head_tokens": 433,
+        "max_state_tokens": 574,
+        "permutation_parallel_layout_tested": 50,
+        "permutation_parallel_layout_passed": 50
+      },
+      "error_sample": []
+    },
+    "val.jsonl": {
+      "records": 8436,
+      "errors": 0,
+      "joint_kev_laya_readable": 8436,
+      "joint_readability_rate": 1.0,
+      "kev_official": {
+        "tested_100_percent": true,
+        "max_state_tokens": 277,
+        "max_branch_tokens": 466,
+        "max_packed_tokens": 709,
+        "default_context_384_1024_2048_ok": 8436,
+        "default_context_384_state_truncated": 0,
+        "default_context_384_overflow": 0,
+        "kev4b_context_7552_8192_9216_ok": 8436,
+        "kev4b_context_7552_state_truncated": 0,
+        "permutation_sync_tested": 50,
+        "permutation_sync_passed": 50
+      },
+      "laya_official": {
+        "tested_100_percent": true,
+        "router_config_1024_448_ok_records": 8436,
+        "router_config_1024_448_items": 9330,
+        "router_config_1024_448_state_truncated": 0,
+        "router_config_1024_448_skipped": {},
+        "shipped_config_512_192_ok_records": 8301,
+        "shipped_config_512_192_skipped": {
+          "options_collapsed": 135
+        },
+        "max_sequence_tokens": 1000,
+        "max_head_tokens": 433,
+        "max_state_tokens": 601,
+        "permutation_parallel_layout_tested": 50,
+        "permutation_parallel_layout_passed": 50
+      },
+      "error_sample": []
+    },
+    "test.jsonl": {
+      "records": 8446,
+      "errors": 0,
+      "joint_kev_laya_readable": 8446,
+      "joint_readability_rate": 1.0,
+      "kev_official": {
+        "tested_100_percent": true,
+        "max_state_tokens": 352,
+        "max_branch_tokens": 466,
+        "max_packed_tokens": 749,
+        "default_context_384_1024_2048_ok": 8446,
+        "default_context_384_state_truncated": 0,
+        "default_context_384_overflow": 0,
+        "kev4b_context_7552_8192_9216_ok": 8446,
+        "kev4b_context_7552_state_truncated": 0,
+        "permutation_sync_tested": 50,
+        "permutation_sync_passed": 50
+      },
+      "laya_official": {
+        "tested_100_percent": true,
+        "router_config_1024_448_ok_records": 8446,
+        "router_config_1024_448_items": 9373,
+        "router_config_1024_448_state_truncated": 2,
+        "router_config_1024_448_skipped": {},
+        "shipped_config_512_192_ok_records": 8297,
+        "shipped_config_512_192_skipped": {
+          "options_collapsed": 149
+        },
+        "max_sequence_tokens": 1024,
+        "max_head_tokens": 433,
+        "max_state_tokens": 634,
+        "permutation_parallel_layout_tested": 50,
+        "permutation_parallel_layout_passed": 50
+      },
+      "error_sample": []
+    },
+    "test_twinrouterbench_holdout.jsonl": {
+      "records": 970,
+      "errors": 0,
+      "joint_kev_laya_readable": 970,
+      "joint_readability_rate": 1.0,
+      "kev_official": {
+        "tested_100_percent": true,
+        "max_state_tokens": 133,
+        "max_branch_tokens": 113,
+        "max_packed_tokens": 246,
+        "default_context_384_1024_2048_ok": 970,
+        "default_context_384_state_truncated": 0,
+        "default_context_384_overflow": 0,
+        "kev4b_context_7552_8192_9216_ok": 970,
+        "kev4b_context_7552_state_truncated": 0,
+        "permutation_sync_tested": 50,
+        "permutation_sync_passed": 50
+      },
+      "laya_official": {
+        "tested_100_percent": true,
+        "router_config_1024_448_ok_records": 970,
+        "router_config_1024_448_items": 1940,
+        "router_config_1024_448_state_truncated": 0,
+        "router_config_1024_448_skipped": {},
+        "shipped_config_512_192_ok_records": 970,
+        "shipped_config_512_192_skipped": {},
+        "max_sequence_tokens": 216,
+        "max_head_tokens": 82,
+        "max_state_tokens": 133,
+        "permutation_parallel_layout_tested": 50,
+        "permutation_parallel_layout_passed": 50
+      },
+      "error_sample": []
+    }
   }
 }

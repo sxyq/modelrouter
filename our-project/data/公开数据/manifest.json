@@ -1,0 +1,1477 @@
+{
+  "manifest_version": "1.0.0-Q-007-FINAL",
+  "generated_at_utc": "2026-10-10T08:18:00Z",
+  "project_repository": "https://github.com/sxyq/modelrouter",
+  "cleaning_entrypoint": "prepare_router_data.py",
+  "directory_classification": {
+    "raw_public_data": {
+      "server_root": "/home/syy/路由/data/公开数据/原始数据",
+      "active_sources": 14,
+      "total_files": 789,
+      "total_bytes": 17869335210,
+      "policy": "Read-only raw upstream files; never overwritten by cleaning or training scripts."
+    },
+    "cleaned_public_data": {
+      "server_root": "/home/syy/路由/data/公开数据/清洗数据",
+      "active_sources": 14,
+      "total_files": 14,
+      "total_records": 6600628,
+      "total_bytes": 6401154316,
+      "github_preview_root": "our-project/data/公开数据/数据预览",
+      "policy": "Deterministic standardized JSONL output from prepare_router_data.py."
+    },
+    "training_views": {
+      "kev_server_root": "/home/syy/路由/data/kev/公开数据",
+      "laya_server_root": "/home/syy/路由/data/laya/公开数据",
+      "github_and_server_preview_root": "our-project/data/公开数据/数据预览/训练视图",
+      "supervised_single_winner_total": 84310,
+      "splits": {
+        "train": 67428,
+        "val": 8436,
+        "test": 8446
+      },
+      "external_holdout_twinrouterbench": 970,
+      "analysis_unsupervised_or_tied": 16070,
+      "thinking_contrasts_paired": 1911
+    },
+    "own_production_data": {
+      "github_root": "our-project/data",
+      "server_root": "/home/syy/路由/our-project/data",
+      "sources": [
+        "OWN-001",
+        "OWN-002",
+        "OWN-003"
+      ],
+      "total_files": 5,
+      "total_bytes": 34979497
+    },
+    "pretrained_models": {
+      "server_root": "/home/syy/路由/models",
+      "models": {
+        "laya-421m": {
+          "server_path": "/home/syy/路由/models/laya-421m",
+          "upstream_repo": "convaiinnovations/laya",
+          "revision": "f570d7cd7794a0e9a971e5fc86d94f35cf76359d",
+          "total_bytes": 1689056260,
+          "files": {
+            "model.safetensors": {
+              "bytes": 1685914848,
+              "sha256": "ee7a66a90e0e0f1fc084b2625836d6a99ecad2ef7c772db32f98f4d432989e2e"
+            },
+            "rl_agent_config.json": {
+              "bytes": 2184,
+              "sha256": "fe67c32a8c28c1491a7eb0728bf8a68a6bd9411b6515b91a8703718d3aa7de08"
+            }
+          }
+        },
+        "kev-4b-adapter": {
+          "server_path": "/home/syy/路由/models/kev-4b-adapter",
+          "upstream_repo": "jaredpalmer/kev-4b",
+          "revision": "b4be1e1c6756f8ebec4ef4f940413ffbc5fd702b",
+          "total_bytes": 167007294,
+          "files": {
+            "adapter_model.safetensors": {
+              "bytes": 146818696,
+              "sha256": "1efbd10ef9ab31bc67e93fb83033d29fc2fd0c080ab59df1d7bf2fc5aa6e57b5"
+            },
+            "head.pt": {
+              "bytes": 5255485,
+              "sha256": "f7c6b94590ef916f689d9b4d491efdb2820e9b9bc864522f2dfaa57ccdb95b8f"
+            },
+            "adapter_config.json": {
+              "bytes": 1152,
+              "sha256": "6e7538be5679ee8e28ca52b7ef8518534824f5008e48723fb73bdcf5985b7438"
+            }
+          }
+        },
+        "qwen3.5-4b-base": {
+          "server_path": "/home/syy/路由/models/qwen3.5-4b-base",
+          "upstream_repo": "Qwen/Qwen3.5-4B-Base",
+          "revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+          "total_bytes": 8698508826,
+          "files": {
+            "model.safetensors-00001-of-00002.safetensors": {
+              "bytes": 4969269392,
+              "sha256": "9c210f4c469df8926fd6e820f2ab427ff7c772db32f98f4d432989e2e"
+            },
+            "model.safetensors-00002-of-00002.safetensors": {
+              "bytes": 3714293792,
+              "sha256": "87ab57ff6a29d9bf616d619fd5e94bc0d61d7eb1fc8be18229d3802f7a0e292b"
+            },
+            "config.json": {
+              "bytes": 2610,
+              "sha256": "974bf8c1497eb9e8a207df5b6511fb3fd0f72b0976f57d7ffcb0fd0057e4f8f5"
+            }
+          }
+        }
+      }
+    },
+    "official_reference_repositories": {
+      "kev": "/home/syy/路由/external/kev",
+      "laya": "/home/syy/路由/external/laya"
+    }
+  },
+  "reproducibility_verification": {
+    "raw_to_cleaned_two_pass_check": {
+      "tested_sources": [
+        "ROUTE-003",
+        "ROUTE-005",
+        "MEM-003",
+        "ENV-001",
+        "CACHE-001",
+        "TRA-004"
+      ],
+      "pass1_equals_pass2": true,
+      "equals_formal_cleaned_files": true
+    },
+    "cleaned_to_views_two_pass_check": {
+      "command": "python prepare_router_data.py --mode views --base-dir /home/syy/路由/data/公开数据 --output-dir <tmp_dir>",
+      "files_compared": 15,
+      "run1_equals_run2_all_15_files": true,
+      "equals_formal_views": true
+    }
+  },
+  "training_view_files": {
+    "AgentSuite整任务模型对照样本.jsonl": {
+      "bytes": 166827,
+      "lines": 35,
+      "sha256": "36edcd0078dad8edf35dc4d74f0c5898a65bf98e91d1025276ea3a72294d4b3b",
+      "github_path": "our-project/data/公开数据/数据预览/训练视图/AgentSuite整任务模型对照样本.jsonl",
+      "server_paths": [
+        "/home/syy/路由/data/公开数据/数据预览/训练视图/AgentSuite整任务模型对照样本.jsonl"
+      ]
+    },
+    "Agent决策前状态样本.jsonl": {
+      "bytes": 39220,
+      "lines": 35,
+      "sha256": "cb9ea7020cfc663301d0a46ca4cf672bcf182352305c48d2ab62bef815ce7f8c",
+      "github_path": "our-project/data/公开数据/数据预览/训练视图/Agent决策前状态样本.jsonl",
+      "server_paths": [
+        "/home/syy/路由/data/公开数据/数据预览/训练视图/Agent决策前状态样本.jsonl"
+      ]
+    },
+    "同题模型比较样本.jsonl": {
+      "bytes": 67792,
+      "lines": 35,
+      "sha256": "e078cb73581881965edf170b909f7eaac2b9bc606f2883da316eb62616befe82",
+      "github_path": "our-project/data/公开数据/数据预览/训练视图/同题模型比较样本.jsonl",
+      "server_paths": [
+        "/home/syy/路由/data/公开数据/数据预览/训练视图/同题模型比较样本.jsonl"
+      ]
+    },
+    "数据划分统计.json": {
+      "bytes": 11710,
+      "lines": 313,
+      "sha256": "ad3ce1108d690deb748737c6b8c6ae1790276e008a232febd644144eb3148726",
+      "github_path": "our-project/data/公开数据/数据预览/训练视图/数据划分统计.json",
+      "server_paths": [
+        "/home/syy/路由/data/公开数据/数据预览/训练视图/数据划分统计.json"
+      ]
+    },
+    "模型选择训练样本.jsonl": {
+      "bytes": 26930,
+      "lines": 35,
+      "sha256": "e01f897e00ce13093d92665ada823e910f64eb95ef3b5cc19c77a1d8c3c2c3c4",
+      "github_path": "our-project/data/公开数据/数据预览/训练视图/模型选择训练样本.jsonl",
+      "server_paths": [
+        "/home/syy/路由/data/公开数据/数据预览/训练视图/模型选择训练样本.jsonl"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "source_id": "TRA-001",
+      "name": "Open-SWE-Traces",
+      "category": "Agent轨迹 (Multi-Turn SWE Trajectories)",
+      "upstream_url": "https://huggingface.co/datasets/nvidia/Open-SWE-Traces",
+      "revision_or_version": "063f0df487dc4ff09a7bd666424fd5a3a98d29d3",
+      "license": "CC-BY-4.0 / Apache-2.0 (NVIDIA Open-SWE-Traces)",
+      "download_time_utc": "2026-10-09T16:41:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_open_swe",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/TRA-001_Open-SWE-Traces",
+        "file_count": 12,
+        "total_bytes": 2385679241,
+        "tree_or_file_sha256": "tree:e898b8653c0db0342846b6dd9597b698c1cb9a2f9518e81de34a95dafa5fa880",
+        "files": [
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/minisweagent_qwen36_scaleswe_shard0.parquet",
+            "size": 113552886,
+            "sha256": "d0a788df4d9254e828b5b20d14d3f33597367fe0c3de8f57f03941538c7aeb70"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/minisweagent_qwen36_swerebench_shard0.parquet",
+            "size": 98551191,
+            "sha256": "3e59ad1e799dad690f606cc353231e1000a7d9e1b0aef6256f5dbca21470b365"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/minisweagent_qwen38_scaleswe_shard0.parquet",
+            "size": 245539146,
+            "sha256": "826ed13290d4baab4edd9696d5ec885fbb90e7c18b101578863055a22063f082"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/minisweagent_qwen38_swerebench_shard0.parquet",
+            "size": 255785378,
+            "sha256": "9a3138b4decee2d957a0137dd947649be9b4ffb51aab9aac30dfc53b123beacc"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/openhands_deepseek_scaleswe_shard0.parquet",
+            "size": 185046343,
+            "sha256": "440583c7922f3a02a6cb42a49d11a711d5fb0aeab5b40650e540a0e99b5d06b7"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/openhands_deepseek_swerebench_shard0.parquet",
+            "size": 196596052,
+            "sha256": "7b24511e03e25ce32ddc7fd793d159aaeb58784f26af949f004f4a2413049ee4"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/openhands_minimax_swerebench_shard0.parquet",
+            "size": 206085165,
+            "sha256": "4d917ba86b030b1f5e227222b0bfe5c1e74c696cbde3a05e7085f30601bb7435"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/openhands_qwen35_swerebench_shard0.parquet",
+            "size": 236380400,
+            "sha256": "2f984536bbaa1e2755d31031b069f93cab450a75aa26d71e2c4e76f2627c8e9a"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/sweagent_minimax_swerebench_shard0.parquet",
+            "size": 208152116,
+            "sha256": "5f8b06e6ca49394bb601dd47f3c550826980b87ac87e096f631219f56221c755"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/sweagent_qwen35_swerebench_shard0.parquet",
+            "size": 234451253,
+            "sha256": "be9c4a0c327e507e3bc0290955c4f8935e0a22059c38815ef638f7ec570760b0"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/sweagent_qwen36_scaleswe_shard0.parquet",
+            "size": 199644605,
+            "sha256": "a4417942dda9bd9c6466568b0022ddc0c96fc70aeacc533be4cc5efac1799618"
+          },
+          {
+            "rel_path": "TRA-001_Open-SWE-Traces/sweagent_qwen36_swerebench_shard0.parquet",
+            "size": 205894706,
+            "sha256": "fa56b12291848d07d56142fc05ef9343cd54144716820815237fadbf24fd3dda"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/Agent轨迹/TRA-001_Open-SWE-Traces/cleaned_trajectories.jsonl",
+        "record_count": 2075629,
+        "total_bytes": 2200552707,
+        "sha256": "e0288bd9e257426bbac86ee01e3b3de966bcc5f4475578247f150658e536722c",
+        "preview_github_path": "our-project/data/公开数据/数据预览/Agent轨迹/TRA-001_Open-SWE-Traces/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Single-model execution trajectory per episode without multi-model counterfactual comparison on identical step states; used for E3/E4 agent state transition & prefix length evolution analysis."
+    },
+    {
+      "source_id": "TRA-002",
+      "name": "SWE-smith-trajectories",
+      "category": "Agent轨迹 (Multi-Turn SWE Trajectories)",
+      "upstream_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith-trajectories",
+      "revision_or_version": "c20f9aa77bc384a0200b768aa61e02fb70a9a80e",
+      "license": "MIT",
+      "download_time_utc": "2026-10-09T16:36:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_swesmith",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/TRA-002_SWE-smith",
+        "file_count": 24,
+        "total_bytes": 3171137897,
+        "tree_or_file_sha256": "tree:711751e639fef3990d65e56238486f1a4f22c22e779ce8c6053ebebeb1c182d0",
+        "files": [
+          {
+            "rel_path": "TRA-002_SWE-smith/ticks-00000-of-00008.parquet",
+            "size": 113912058,
+            "sha256": "4c8932359650337d396c9b3019f312f97f2db7761b7e1324cc23ce54d4b56090"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/ticks-00001-of-00008.parquet",
+            "size": 94554660,
+            "sha256": "3af8307e3e198602b152fab538c68131c1f49b8c8ee6c400c6143ad92751903d"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/ticks-00002-of-00008.parquet",
+            "size": 111837011,
+            "sha256": "7dde9b3e7f3ff47d467a7992fa8db5ba704eee4145eb6046204f8b3a8b3c7e76"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/ticks-00003-of-00008.parquet",
+            "size": 143312101,
+            "sha256": "f77f88efc19c01f5507c7e0d4569c89f705b0d589d7a6650b871e5cac93b0b9f"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/ticks-00004-of-00008.parquet",
+            "size": 110237523,
+            "sha256": "5ceadc30c5d093b9f6e62cb84dc18e88d11679f946306d1e13a8b20eff744c8d"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/ticks-00005-of-00008.parquet",
+            "size": 95669393,
+            "sha256": "aa63a55a5b960dc745904b56082078d0facccd2209e6b5017b8a9fbbe92064e1"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/ticks-00006-of-00008.parquet",
+            "size": 119695672,
+            "sha256": "5522d7404a3a575300951bcfc0fd7f9da0984f47beba5a0d983a571ac60154a0"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/ticks-00007-of-00008.parquet",
+            "size": 229493008,
+            "sha256": "61085c94ea66d31dc93e958afa32938a280ebe7265ea8796f419dab1171ec316"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/tool-00000-of-00008.parquet",
+            "size": 248851790,
+            "sha256": "ac76e9efe75978f83d4daec98a55604587dd58b0f1509364893b8778cbf5b487"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/tool-00001-of-00008.parquet",
+            "size": 115563238,
+            "sha256": "2d3a4fcdb89bf4ec4485a1abc41d92645a446d115705cbe882dd5fe148afec3a"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/tool-00002-of-00008.parquet",
+            "size": 99575331,
+            "sha256": "13a95587cfc2fac8e2d6130b25167c02362add1cf969888574328a49dc8ad319"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/tool-00003-of-00008.parquet",
+            "size": 138356054,
+            "sha256": "677831f640fb14e5b7bc02fd2aa729c05cd2068750777eaf877084de03157594"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/tool-00004-of-00008.parquet",
+            "size": 77754558,
+            "sha256": "e41ffbd3f9d1571917ac5b9f4d0108ded4799d9776f597a054203467135a5715"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/tool-00005-of-00008.parquet",
+            "size": 122628947,
+            "sha256": "487a3a6bc8d00c4d2e6ace23da10a82c03349ada8b0f6758d5abf8c7f7fa61d4"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/tool-00006-of-00008.parquet",
+            "size": 152807260,
+            "sha256": "c20d2fc45e67af5d5c6d4c91ca7dfeac69cbaf40442bc2bfe7bac528a99e4b59"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/tool-00007-of-00008.parquet",
+            "size": 121734685,
+            "sha256": "29b684a990ec25345e9c7ade1b8287a6e41fa7fbabd4734f45420ed29280c868"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/xml-00000-of-00008.parquet",
+            "size": 105531809,
+            "sha256": "094264cf8d9803a669b8d663b52bb8f2be3feab4b160e82ec5f6deea725de6b3"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/xml-00001-of-00008.parquet",
+            "size": 120512063,
+            "sha256": "e5232aa06727b748f111a47382e85364b710aa02485962e12d4795a26e46be2c"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/xml-00002-of-00008.parquet",
+            "size": 115266864,
+            "sha256": "74d7f8f34f27204ed849182e1c8be796cd760291d697acad4e4bc820b7a00732"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/xml-00003-of-00008.parquet",
+            "size": 143562585,
+            "sha256": "f7e4fd065ee320493cc9b9ee89997955bd1e61826c888dfa1b56dce463b5b2af"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/xml-00004-of-00008.parquet",
+            "size": 126290943,
+            "sha256": "38ffb17191935937e74ea34ecec686f7d7d407d5a273554a6d53a693a2fb118d"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/xml-00005-of-00008.parquet",
+            "size": 244101081,
+            "sha256": "f94b7e7a6869b0c92b5e9181919dc7f376fb12d4a085aa7c2680a4f676038a7c"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/xml-00006-of-00008.parquet",
+            "size": 112771234,
+            "sha256": "6006adc2b0dcc0d76e22d51a58dd1970fe4d1ee2c93434c4f7db1009aa9d25ff"
+          },
+          {
+            "rel_path": "TRA-002_SWE-smith/xml-00007-of-00008.parquet",
+            "size": 107118029,
+            "sha256": "bb3abe6b680abc935d78686549392c31ecb851304e26897c84f23935de7ca80e"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/Agent轨迹/TRA-002_SWE-smith/cleaned_trajectories.jsonl",
+        "record_count": 2331584,
+        "total_bytes": 2835583120,
+        "sha256": "2484346bc9e9b550d1d93f3844c606b81754678226c0fcab28f24ae812963d89",
+        "preview_github_path": "our-project/data/公开数据/数据预览/Agent轨迹/TRA-002_SWE-smith/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Single-model trajectory logs without cross-model comparison per prompt/step; used for tool-call / command action distribution and difficulty progression analysis."
+    },
+    {
+      "source_id": "TRA-003",
+      "name": "nebius/SWE-rebench-openhands-trajectories",
+      "category": "Agent轨迹 (Multi-Turn SWE Trajectories)",
+      "upstream_url": "https://huggingface.co/datasets/nebius/SWE-rebench-openhands-trajectories",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "Apache-2.0 / CC-BY-4.0",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5 storage & priority policy: 4.40M multi-turn trajectories covered by TRA-001 + TRA-002 + TRA-004 and task metadata covered by ENV-002 (SWE-rebench-V2)."
+    },
+    {
+      "source_id": "TRA-004",
+      "name": "AgentSuite (multi_challenge-trajectories)",
+      "category": "Agent轨迹 (Multi-Model & Thinking-On/Off Trajectories)",
+      "upstream_url": "https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories",
+      "revision_or_version": "0b5ff8d410085a8f6f052f5920e677ff3db75da5",
+      "license": "Apache-2.0 / MIT",
+      "download_time_utc": "2026-10-09T16:34:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_agentsuite",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/TRA-004_AgentSuite",
+        "file_count": 30,
+        "total_bytes": 167788546,
+        "tree_or_file_sha256": "tree:796472e8e95646b33fb628d79944528f6a51b848feb68e814d1cab41cdbbbfb0",
+        "files": [
+          {
+            "rel_path": "TRA-004_AgentSuite/DeepSeek-R1-0528.jsonl",
+            "size": 5736693,
+            "sha256": "39e1461a7c72aaa97a46a151fc3da631ae8be2a8c0acacb3a82d01cce596bb5b"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/DeepSeek-V3-0324.jsonl",
+            "size": 5401705,
+            "sha256": "7bf237fd6619d734dd5087ac0c0a3e32a8e44fbb0f156a1627649f88b8d5e6ad"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/DeepSeek-V3.2-Exp-thinking-off.jsonl",
+            "size": 5742350,
+            "sha256": "2388b5e1eac4c80092f7c3510ba5f35fc55621503253417998cbd809702efbd2"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/DeepSeek-V3.2-Exp-thinking-on.jsonl",
+            "size": 5737172,
+            "sha256": "c9bf063c8c54c22042391c30e7ee63b742b6b1b155dbe2b02c5194656899635b"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/Kimi-K2-Instruct-0905.jsonl",
+            "size": 5487608,
+            "sha256": "95a342782d01032ce6d9a2f8d2d4f4158bb220c23df196c1dac43e0a2476cfa5"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/Kimi-K2-Instruct.jsonl",
+            "size": 5383935,
+            "sha256": "fb4db62c86447a7bdb56135681562064b1a4a913415c53d37b60e0596f31e33f"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/Qwen3-235B-A22B-FP8.jsonl",
+            "size": 6518011,
+            "sha256": "d5eb255fa129436e4940e4ed91c1cba57701262486c3c4707d5167df12d4ea0f"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/Qwen3-235B-A22B-Instruct-2507-FP8.jsonl",
+            "size": 5648052,
+            "sha256": "d5c955dc8ebb4b545029b26e9de58fca694e18e37c545f71587684cbd6f64aec"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/Qwen3-235B-A22B-Thinking-2507-FP8.jsonl",
+            "size": 6663603,
+            "sha256": "6d8889f4dd54375316cc0874efd3120894fe944ce216f93e7b3adb529f959bbe"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/Qwen3-Coder-480B-A35B-Instruct-FP8.jsonl",
+            "size": 5237092,
+            "sha256": "3a6c0af56d0635e53ab996b7e9498ab782329dabb03a22dc3d36bbe9273030d8"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/claude-4-opus-thinking-off.jsonl",
+            "size": 5255914,
+            "sha256": "da47cfee415180b3fa0a3a53045651be6899f221ba7cef8ee397ea20f5f2b02b"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/claude-4-opus-thinking-on-10k.jsonl",
+            "size": 5242051,
+            "sha256": "bf1a41abef52ce6474a3e344966a2bb69e5d3b63f347a7105397f83369c753a6"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/claude-4-sonnet-thinking-off.jsonl",
+            "size": 5242620,
+            "sha256": "ab6868ac629ebf9b8aec06c74e183bd7124b7b38ead091c7022d2998085e2748"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/claude-4-sonnet-thinking-on-10k.jsonl",
+            "size": 5243216,
+            "sha256": "78b2b0c4babbbc64896b58baaf31fdf3f14b19e80f4e4565506ada663affaf48"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/claude-4.5-sonnet-thinking-off.jsonl",
+            "size": 5280565,
+            "sha256": "0f3b19665ccd64dcbeb1da12daec04cf7d3226d7471ace8209ccf775538817ac"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/claude-4.5-sonnet-thinking-on-10k.jsonl",
+            "size": 5284691,
+            "sha256": "cae83d9c17a73d5deebd3c368bf425ee5e60379f75803b84aca94c6fc73f3fe2"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gemini-2.5-flash-thinking-off.jsonl",
+            "size": 6047234,
+            "sha256": "83c767710dbfc679eae331b6bed63d24225932c70950e5af415c1b5e1bc701a0"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gemini-2.5-flash-thinking-on.jsonl",
+            "size": 5930785,
+            "sha256": "4c9fdb5cd9a572594705d6e566b55274bccb9e8b28d4513aa7f6d13ec1d067b4"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gemini-2.5-pro-thinking-on.jsonl",
+            "size": 5765275,
+            "sha256": "d7532182095b3e0fa13a665d5fcdacd373574af34a1203874e3bd6214a331c01"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gpt-4.1-mini.jsonl",
+            "size": 5381439,
+            "sha256": "789f7ca6784f9179ecff2c05c59b89efa6e2570a06e7d6d28cbb46d5a8704ce6"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gpt-4.1-nano.jsonl",
+            "size": 5296897,
+            "sha256": "f951f0e0e149a327b0cbdf49b58ac250a73676a80eea39a925c65b5a1a1e14c3"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gpt-4.1.jsonl",
+            "size": 5365109,
+            "sha256": "c7ce4965fce7477136ec634a8fce91e4fcf45efd60a4a327220e317c28d41e71"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gpt-4o-20240806.jsonl",
+            "size": 5274577,
+            "sha256": "9731a5365adb3078339ec7f72d61c0f029cced8f2214cdf926259676276596e6"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gpt-4o-mini.jsonl",
+            "size": 5351580,
+            "sha256": "23fcc3b20986235af58026b59ddec7d06cf834115aab72ff5ef4a3628ef241f0"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gpt-5-nano.jsonl",
+            "size": 5275892,
+            "sha256": "c2efc41d9318c051d0769dc1ae026e47820d83952dc97ff6deaccb6d665016a3"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gpt-5.jsonl",
+            "size": 5421453,
+            "sha256": "675b2be57b0cb0cdc8e6717a8b3e80f49747a4c08a528f993880e594a05cc5fa"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gpt-oss-120b.jsonl",
+            "size": 6658524,
+            "sha256": "24d08b2265ac44c34f5eb82a6ad15ceeb6a37f95a1a72384d9f6d1118d2e7cb1"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/gpt-oss-20b.jsonl",
+            "size": 5679690,
+            "sha256": "9c70c3070ab7e398f571c9706711972a3c42d7aa4a931fe16129708aabbbf7f7"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/o3-high.jsonl",
+            "size": 5794117,
+            "sha256": "750f8c81803f430da366616d0487e3cc05f6b4811accb3f77c684112829ae305"
+          },
+          {
+            "rel_path": "TRA-004_AgentSuite/o4-mini-high.jsonl",
+            "size": 5440696,
+            "sha256": "5fa28d7ab48ec91582e96eee1ef3b2a57ff7825f99f5d04b02c2ec19ab36a31e"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/Agent轨迹/TRA-004_AgentSuite/cleaned_trajectories.jsonl",
+        "record_count": 41430,
+        "total_bytes": 53511307,
+        "sha256": "d60af951f9ab0a272814c34a63a5db1ffbfcd0623c7b7185b0f937fa99e06419",
+        "preview_github_path": "our-project/data/公开数据/数据预览/Agent轨迹/TRA-004_AgentSuite/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": true,
+      "usage_role_or_exclusion_reason": "19 strictly unique single-winner tasks included in supervised train/val/test; 246 tied-success and 8 all-failed tasks separated into analysis_unsupervised_or_tied.jsonl; 1,911 paired Thinking-On/Off contrasts exported to thinking_contrasts.jsonl."
+    },
+    {
+      "source_id": "ROUTE-001",
+      "name": "LLMRouterBench",
+      "category": "路由比较 (Multi-Model Quality-Cost Routing)",
+      "upstream_url": "https://github.com/ulab-uiuc/LLMRouterBench",
+      "revision_or_version": "fd5c2b93e979873d7cb05e8626e15e1eb8d91fd8",
+      "license": "Apache-2.0 / MIT",
+      "download_time_utc": "2026-10-09T16:30:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_llmrouterbench",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/ROUTE-001_LLMRouterBench",
+        "file_count": 701,
+        "total_bytes": 8271099158,
+        "tree_or_file_sha256": "tree:a92de45ae26363ce8816863ccc7bffe67bd3a6100eefe486a4f25a09750edeb7",
+        "files": [
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/aime/hybrid/DeepHermes-3-Llama-3-8B-Preview/aime-hybrid-DeepHermes-3-Llama-3-8B-Preview-20251005_080458.json",
+            "size": 1438566,
+            "sha256": "32c100aa0a8c6c84dbf50f6dab986e0d4cd694ffc327acf2f32c0c49bf41181c"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/aime/hybrid/DeepSeek-R1-0528-Qwen3-8B/aime-hybrid-DeepSeek-R1-0528-Qwen3-8B-20251004_144142.json",
+            "size": 2676041,
+            "sha256": "4a417692986ff70c61cf93ba38b99762b35f659864ee1df69df548eebc18e588"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/aime/hybrid/DeepSeek-R1-Distill-Qwen-7B/aime-hybrid-DeepSeek-R1-Distill-Qwen-7B-20250920_065352.json",
+            "size": 1851687,
+            "sha256": "a402374808ced9f09344b7a630b42dc844edded070fc3065cbdb2e5bc0c408be"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/aime/hybrid/Fin-R1/aime-hybrid-Fin-R1-20250915_151526.json",
+            "size": 501118,
+            "sha256": "fd25bd894fd74f40dbe3699127840db33acfd8053e792345ad88c2caf66eebbe"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/aime/hybrid/GLM-Z1-9B-0414/aime-hybrid-GLM-Z1-9B-0414-20251006_160634.json",
+            "size": 1937946,
+            "sha256": "b6355ad7a142663f7b926340bea037b21cf963765532fb69289cc17935961089"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/aime/hybrid/Intern-S1-mini/aime-hybrid-Intern-S1-mini-20251011_062702.json",
+            "size": 3241886,
+            "sha256": "112a6ad71d12707440a84ac45529711a1bcba0d2c8ad810e1f39bc58dcf209a2"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/aime/hybrid/Llama-3.1-8B-Instruct/aime-hybrid-Llama-3.1-8B-Instruct-20250917_093956.json",
+            "size": 786342,
+            "sha256": "688b2ce55620aea19c39dc7b8b37cb578aa530cd93399bedda64d3c15a186a00"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/aime/hybrid/Llama-3.1-8B-UltraMedical/aime-hybrid-Llama-3.1-8B-UltraMedical-20250916_141252.json",
+            "size": 338686,
+            "sha256": "77695428d501795c36975b70bb6603efa60ec77bfd22e17b7ff5f87fd97c3e93"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/aime/hybrid/Llama-3.1-Nemotron-Nano-8B-v1/aime-hybrid-Llama-3.1-Nemotron-Nano-8B-v1-20250930_105924.json",
+            "size": 1323240,
+            "sha256": "b82e0e5800c73952bc3f6b0602439350fd6a0fcad1e0c134cc2e5e20f0950b68"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/aime/hybrid/MiMo-7B-RL-0530/aime-hybrid-MiMo-7B-RL-0530-20251008_150137.json",
+            "size": 470592,
+            "sha256": "146ab83147bc0e4fefa3fbf6a0446a2fc3fb522af8a49b065fd941c909186097"
+          },
+          {
+            "note": "... 686 additional files omitted for brevity; full tree_sha256 covers all 701 files ..."
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/winogrande/valid/gemma-2-9b-it/winogrande-valid-gemma-2-9b-it-20251019_064308.json",
+            "size": 1501679,
+            "sha256": "87b03a847f7130525e08715847d3bafb3ee23d32f359b12a261ef161a9273ea8"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/winogrande/valid/glm-4-9b-chat/winogrande-valid-glm-4-9b-chat-20251019_064317.json",
+            "size": 1861152,
+            "sha256": "c8ae78bcfbf322f3d062bdaa268ea13189322754a16583295c930da12a67612b"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/winogrande/valid/granite-3.3-8b-instruct/winogrande-valid-granite-3.3-8b-instruct-20251019_064320.json",
+            "size": 1603026,
+            "sha256": "6cf7c43b110d0c00b51e7f4d416447ebd071119a27713cf4a5214bef26443213"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release/winogrande/valid/internlm3-8b-instruct/winogrande-valid-internlm3-8b-instruct-20251019_064325.json",
+            "size": 3055317,
+            "sha256": "f1def600447491d2102e5438d8128a430ea84ef8b4d037cf8d5d63bbc0507bb0"
+          },
+          {
+            "rel_path": "ROUTE-001_LLMRouterBench/bench-release.tar.gz",
+            "size": 1283503080,
+            "sha256": "b79f8cde1a6f029c2efa663a3a3b6f7748defb22341fe59f328cebef6648c8f1"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/路由比较/ROUTE-001_LLMRouterBench/cleaned_evaluations.jsonl",
+        "record_count": 548059,
+        "total_bytes": 429699215,
+        "sha256": "7efdff15a40ac6fdc17d2f34a39787ae0e15d3c5db6d84770b58c3664d091bb7",
+        "preview_github_path": "our-project/data/公开数据/数据预览/路由比较/ROUTE-001_LLMRouterBench/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": true,
+      "usage_role_or_exclusion_reason": "9,386 strictly unique single-winner tasks (1,432 UNIQUE_MAX_SCORE + 7,954 TIED_SCORE_MIN_MEASURED_API_USD) included in supervised train/val/test; 15,816 tied-cost/uncompared/all-failed tasks separated into analysis_unsupervised_or_tied.jsonl."
+    },
+    {
+      "source_id": "ROUTE-002",
+      "name": "RouterBench",
+      "category": "路由比较 (Multi-Model Quality-Cost Routing)",
+      "upstream_url": "https://huggingface.co/datasets/withmartian/routerbench",
+      "revision_or_version": "e9eb8776ffbe3fa99c7ad7fa65a7b9f88e431886",
+      "license": "Apache-2.0",
+      "download_time_utc": "2026-10-09T16:47:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_routerbench",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/ROUTE-002_RouterBench",
+        "file_count": 3,
+        "total_bytes": 1468793664,
+        "tree_or_file_sha256": "tree:057016d59a72f093457dbfd4d249a4627ada19d5de23382320296ae028faddc9",
+        "files": [
+          {
+            "rel_path": "ROUTE-002_RouterBench/routerbench_0shot.pkl",
+            "size": 99567659,
+            "sha256": "ba4f77f19517610a707c374e99322d7750c30fc4ae7ff5527888595a1e65d36d"
+          },
+          {
+            "rel_path": "ROUTE-002_RouterBench/routerbench_5shot.pkl",
+            "size": 171091324,
+            "sha256": "fbd7d3d16fba2759a18fa0ad44409d3e0e92ba80d03d90827eed1a6d084c9ffe"
+          },
+          {
+            "rel_path": "ROUTE-002_RouterBench/routerbench_raw.pkl",
+            "size": 1198134681,
+            "sha256": "18e919267500a1d49302e0efe25cf7d9aa2f5b74aa209f5230442c2cfbee7971"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/路由比较/ROUTE-002_RouterBench/cleaned_routerbench.jsonl",
+        "record_count": 36497,
+        "total_bytes": 54280673,
+        "sha256": "4eb002e79082f1342c19a91c0206fb5f050988a916e3404ef5e3930b1c714d8b",
+        "preview_github_path": "our-project/data/公开数据/数据预览/路由比较/ROUTE-002_RouterBench/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": true,
+      "usage_role_or_exclusion_reason": "35,189 tasks with in-candidate verified oracle_model included in supervised train/val/test; 1,308 tasks with oracle_no_router disabled perfectly accounted for."
+    },
+    {
+      "source_id": "ROUTE-003",
+      "name": "TwinRouterBench",
+      "category": "路由比较 (External Holdout Evaluation)",
+      "upstream_url": "https://huggingface.co/datasets/Amorph/TwinRouterBench",
+      "revision_or_version": "c2f5df9c62f8fd29382e46f766323da74bf192a0",
+      "license": "Apache-2.0 / MIT",
+      "download_time_utc": "2026-10-09T13:26:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_twinrouterbench",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/ROUTE-003_TwinRouterBench",
+        "file_count": 2,
+        "total_bytes": 18471124,
+        "tree_or_file_sha256": "tree:7822e182189c99e382e6b579fe70d5db336a81825d463d36972a9e29f10dc573",
+        "files": [
+          {
+            "rel_path": "ROUTE-003_TwinRouterBench/question_bank.jsonl",
+            "size": 17202551,
+            "sha256": "7e2870b5e2e5c801f6444c05a4311c9c9010e965016f6938f0bb5abc226252d0"
+          },
+          {
+            "rel_path": "ROUTE-003_TwinRouterBench/train.parquet",
+            "size": 1268573,
+            "sha256": "28070bd3e807565cc0144d8b558167d2a7035c6400b5fd55f97ea10383780427"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/路由比较/ROUTE-003_TwinRouterBench/cleaned_twin_bench.jsonl",
+        "record_count": 970,
+        "total_bytes": 900573,
+        "sha256": "99e6fc4184a30325226166abeddeb11408cb1512204d2e7420d697cc3f1e0ca2",
+        "preview_github_path": "our-project/data/公开数据/数据预览/路由比较/ROUTE-003_TwinRouterBench/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "970 step-level records strictly isolated as external holdout benchmark (test_twinrouterbench_holdout.jsonl); never mixed into train/val/test."
+    },
+    {
+      "source_id": "ROUTE-004",
+      "name": "Chatbot Arena Human Preference 55k",
+      "category": "路由比较 (Pairwise Human Preference Routing)",
+      "upstream_url": "https://huggingface.co/datasets/lmarena-ai/arena-human-preference-55k",
+      "revision_or_version": "f22fb4eb8bbff8dc2ae8fb5fb5fb31f2cf9e1da9",
+      "license": "CC-BY-4.0 / Apache-2.0",
+      "download_time_utc": "2026-10-09T13:26:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_arena",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/ROUTE-004_Arena",
+        "file_count": 1,
+        "total_bytes": 184175071,
+        "tree_or_file_sha256": "0692154aaf20fc6649090c3f49b6b5dd1e693a765ecb5f0856ae0da5946f5be2",
+        "files": [
+          {
+            "rel_path": "ROUTE-004_Arena/train.csv",
+            "size": 184175071,
+            "sha256": "0692154aaf20fc6649090c3f49b6b5dd1e693a765ecb5f0856ae0da5946f5be2"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/路由比较/ROUTE-004_Arena/cleaned_arena_preference.jsonl",
+        "record_count": 57477,
+        "total_bytes": 35843708,
+        "sha256": "0f4db8f50f0631b8847a64a04dbda99688558d1f552dbe297cde31b27f6f2a26",
+        "preview_github_path": "our-project/data/公开数据/数据预览/路由比较/ROUTE-004_Arena/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": true,
+      "usage_role_or_exclusion_reason": "39,716 decisive pairwise human preference comparisons included in supervised train/val/test; 17,761 ties/both_bad excluded from single-winner training."
+    },
+    {
+      "source_id": "ROUTE-005",
+      "name": "FindingTheRightFit",
+      "category": "路由比较 (Task-Level Capability Summary)",
+      "upstream_url": "https://github.com/ulab-uiuc/FindingTheRightFit",
+      "revision_or_version": "022bc5bb424fd5a3f15b91a8d7a6db5771122726",
+      "license": "MIT",
+      "download_time_utc": "2026-10-09T16:31:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_finding_right_fit",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/ROUTE-005_FindingTheRightFit",
+        "file_count": 2,
+        "total_bytes": 229553,
+        "tree_or_file_sha256": "tree:da40b3ddf480891b160df3a323c15bff174bd32f159ccb4e26e0e1b4c68dd0e3",
+        "files": [
+          {
+            "rel_path": "ROUTE-005_FindingTheRightFit/config_cost_summary.csv",
+            "size": 13645,
+            "sha256": "5c47fd12770175a6cd35db1e6530ec93629108933b4ee0ae59a37762cebfe74f"
+          },
+          {
+            "rel_path": "ROUTE-005_FindingTheRightFit/task_level.parquet",
+            "size": 215908,
+            "sha256": "27294b8055dc4d475c117975ae0465ab204d60ea3dfff71acbe0433cb3e3f278"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/路由比较/ROUTE-005_FindingTheRightFit/cleaned_task_level.jsonl",
+        "record_count": 6204,
+        "total_bytes": 4260619,
+        "sha256": "4718da07ffb2dc8093cb273d2c174c548c9ec5905457fe5ff7b482f7ef8daac6",
+        "preview_github_path": "our-project/data/公开数据/数据预览/路由比较/ROUTE-005_FindingTheRightFit/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Aggregated task-level summary metrics without raw per-instance prompt texts; excluded from prompt-level router supervision."
+    },
+    {
+      "source_id": "CACHE-001",
+      "name": "Mooncake Traces",
+      "category": "缓存与时间 (KV Block Reuse & Arrival Traces)",
+      "upstream_url": "https://github.com/kvcache-ai/Mooncake",
+      "revision_or_version": "a392accd16c9d20d8d5e1fd06b8ab83ffeb41a7e",
+      "license": "Apache-2.0",
+      "download_time_utc": "2026-10-09T16:31:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_mooncake",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/CACHE-001_Mooncake",
+        "file_count": 3,
+        "total_bytes": 3337619,
+        "tree_or_file_sha256": "tree:f54f8f13a6b418432e191d19a2cba465b7d3d54caaeea191635fea71273af505",
+        "files": [
+          {
+            "rel_path": "CACHE-001_Mooncake/conversation_trace.parquet",
+            "size": 1384324,
+            "sha256": "02117ccff2a798ab826719fdeb05c25bfe3aae9ee9a91bbcbb7c480971743c61"
+          },
+          {
+            "rel_path": "CACHE-001_Mooncake/synthetic_trace.parquet",
+            "size": 464591,
+            "sha256": "6219804217399a3be1238156137208812f8d0f64192c848361ed0d29667cfd44"
+          },
+          {
+            "rel_path": "CACHE-001_Mooncake/toolagent_trace.parquet",
+            "size": 1488704,
+            "sha256": "89490dd46fdbb7278d896bf51d0fe3fe2a2aa117f0ccc2ef5090ee37ab5611db"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/缓存与时间/CACHE-001_Mooncake/cleaned_mooncake_traces.jsonl",
+        "record_count": 39632,
+        "total_bytes": 31161346,
+        "sha256": "79176e07c04b43003b849093403a2b474b7fd6d67c92dad3218790562a9518e3",
+        "preview_github_path": "our-project/data/公开数据/数据预览/缓存与时间/CACHE-001_Mooncake/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Anonymized hash_ids and arrival timestamps without prompt texts or multi-model labels; used for E4 KV cache prefix reuse simulation."
+    },
+    {
+      "source_id": "CACHE-002",
+      "name": "LMSYS-Chat-1M",
+      "category": "缓存与时间 (Conversation Workload)",
+      "upstream_url": "https://huggingface.co/datasets/lmsys/lmsys-chat-1m",
+      "revision_or_version": "N/A (Gated / Not downloaded)",
+      "license": "LMSYS-Chat-1M Data License Agreement (Gated)",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Requires gated HF agreement & PII handling; human preference routing already covered by ROUTE-004 and cache traces by CACHE-001 + OWN-001/002."
+    },
+    {
+      "source_id": "CACHE-003",
+      "name": "WildChat-1M",
+      "category": "缓存与时间 (Conversation Workload)",
+      "upstream_url": "https://huggingface.co/datasets/allenai/WildChat-1M",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "ODC-By / AI2 ImpACT",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5: single-model chat logs without multi-model routing labels; arrival/cache modeling covered by CACHE-001 + TIME-001 + OWN-001/002."
+    },
+    {
+      "source_id": "CACHE-004",
+      "name": "ShareGPT-Vicuna-Unfiltered",
+      "category": "缓存与时间 (Conversation Workload)",
+      "upstream_url": "https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "Apache-2.0 / Community",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5: single-model multi-turn chat corpus without multi-model labels or timestamps."
+    },
+    {
+      "source_id": "CACHE-005",
+      "name": "FineWeb-Edu (Sample)",
+      "category": "缓存与时间 (Long-Context Prefix Auxiliary)",
+      "upstream_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "ODC-By",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5: raw web pretraining text without routing supervision."
+    },
+    {
+      "source_id": "CACHE-006",
+      "name": "LooGLE",
+      "category": "缓存与时间 (Long-Context QA)",
+      "upstream_url": "https://huggingface.co/datasets/bigainlco/LooGLE",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "MIT / Apache-2.0",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5: long-context QA benchmark covered by MEM-003 (LongMemEval-V2) and MEM-005 (MemoryCraft)."
+    },
+    {
+      "source_id": "TIME-001",
+      "name": "BurstGPT",
+      "category": "缓存与时间 (Arrival & Token Length Workload)",
+      "upstream_url": "https://github.com/HPMLL/BurstGPT",
+      "revision_or_version": "BurstGPT_without_fails_1.csv (v1.1)",
+      "license": "Apache-2.0",
+      "download_time_utc": "2026-10-09T16:31:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_burstgpt",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/TIME-001_BurstGPT",
+        "file_count": 1,
+        "total_bytes": 51429517,
+        "tree_or_file_sha256": "a4d068a7113ec0290e74063a1b3447dc6001a30e4298eb313581b71006dda1f4",
+        "files": [
+          {
+            "rel_path": "TIME-001_BurstGPT/BurstGPT_1.csv",
+            "size": 51429517,
+            "sha256": "a4d068a7113ec0290e74063a1b3447dc6001a30e4298eb313581b71006dda1f4"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/缓存与时间/TIME-001_BurstGPT/cleaned_burstgpt.jsonl",
+        "record_count": 1404294,
+        "total_bytes": 704993223,
+        "sha256": "cb65db42e8ff1fa69c778bf7b154c0d6dd99bfc31fb0f6797eedfaa5485edec8",
+        "preview_github_path": "our-project/data/公开数据/数据预览/缓存与时间/TIME-001_BurstGPT/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Arrival timestamps and token counts without prompt text or multi-model comparisons; used for E4 request arrival rate and TTL eviction modeling."
+    },
+    {
+      "source_id": "TIME-002",
+      "name": "AzureLLMInferenceTrace",
+      "category": "缓存与时间 (Arrival & Token Length Workload)",
+      "upstream_url": "https://github.com/Azure/AzurePublicDataset",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "CC-BY-4.0",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5: arrival trace already covered by TIME-001 (BurstGPT 1.40M rows) and CACHE-001 (Mooncake)."
+    },
+    {
+      "source_id": "TIME-003",
+      "name": "Alibaba GPU Cluster Trace",
+      "category": "缓存与时间 (Cluster Scheduling Trace)",
+      "upstream_url": "https://github.com/alibaba/clusterdata",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "CC-BY-4.0",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5: hardware cluster trace without LLM prompt or KV cache semantics."
+    },
+    {
+      "source_id": "TIME-004",
+      "name": "Helios / Philyra GPU Trace",
+      "category": "缓存与时间 (Cluster Scheduling Trace)",
+      "upstream_url": "https://github.com/S-Lab-System-Group/HeliosData",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "Apache-2.0",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5: datacenter job trace without LLM prompt or model routing semantics."
+    },
+    {
+      "source_id": "ENV-001",
+      "name": "SWE-Gym",
+      "category": "任务环境 (Executable Coding Task Environments)",
+      "upstream_url": "https://huggingface.co/datasets/SWE-Gym/SWE-Gym",
+      "revision_or_version": "b3eedb3ea0f3ff984919be1f2d98be633f368d2b",
+      "license": "MIT",
+      "download_time_utc": "2026-10-09T16:31:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_swegym",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/ENV-001_SWE-Gym",
+        "file_count": 1,
+        "total_bytes": 43644473,
+        "tree_or_file_sha256": "60569cea74bb281f7a5579467436a2bc1932c6e0c5f2f7fa0d084392abd9ad97",
+        "files": [
+          {
+            "rel_path": "ENV-001_SWE-Gym/train.parquet",
+            "size": 43644473,
+            "sha256": "60569cea74bb281f7a5579467436a2bc1932c6e0c5f2f7fa0d084392abd9ad97"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/任务环境/ENV-001_SWE-Gym/cleaned_swe_gym.jsonl",
+        "record_count": 2438,
+        "total_bytes": 3163889,
+        "sha256": "3f4d0c79cc339f4bb5fd6a7cefaa57b32f81370d4c49848063999b400d7bedf4",
+        "preview_github_path": "our-project/data/公开数据/数据预览/任务环境/ENV-001_SWE-Gym/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Task environment problem statements & test patches without pre-computed multi-model routing outcomes; reserved for E3 Coding Benchmark evaluation."
+    },
+    {
+      "source_id": "ENV-002",
+      "name": "SWE-rebench-V2",
+      "category": "任务环境 (Executable Coding Task Environments)",
+      "upstream_url": "https://huggingface.co/datasets/nebius/SWE-rebench-V2",
+      "revision_or_version": "65b5bd5b05f06b65abbe746b3b279884bf4c2ca8",
+      "license": "Apache-2.0 / CC-BY-4.0",
+      "download_time_utc": "2026-10-09T16:32:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_swerebench",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/ENV-002_SWE-rebench-V2",
+        "file_count": 1,
+        "total_bytes": 428839266,
+        "tree_or_file_sha256": "0e0bf9355f892ad74ae98d4e1c404f39fd6654a8e351ee3e6ab162e4a64cd3ad",
+        "files": [
+          {
+            "rel_path": "ENV-002_SWE-rebench-V2/train.parquet",
+            "size": 428839266,
+            "sha256": "0e0bf9355f892ad74ae98d4e1c404f39fd6654a8e351ee3e6ab162e4a64cd3ad"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/任务环境/ENV-002_SWE-rebench-V2/cleaned_swe_rebench.jsonl",
+        "record_count": 32079,
+        "total_bytes": 29396165,
+        "sha256": "279ecf5ee8a87e8131a119570385022f734a8607c99467b7b81c3d4bb46111ba",
+        "preview_github_path": "our-project/data/公开数据/数据预览/任务环境/ENV-002_SWE-rebench-V2/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Task environment metadata with aggregate pass_rate but no per-model execution outcomes; reserved for E3 difficulty-stratified benchmark sampling."
+    },
+    {
+      "source_id": "ENV-003",
+      "name": "SWE-bench_Verified",
+      "category": "任务环境 (Executable Coding Task Environments)",
+      "upstream_url": "https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified",
+      "revision_or_version": "N/A (Not downloaded yet)",
+      "license": "MIT",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Reserved for E3 online coding benchmark evaluation after E2 Kev/Laya training completes."
+    },
+    {
+      "source_id": "MEM-001",
+      "name": "LoCoMo",
+      "category": "长期记忆 (Long-Term Memory Benchmark)",
+      "upstream_url": "https://github.com/snap-research/locomo",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "CC-BY-NC-4.0",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5: long-term memory evaluation covered by MEM-003 (LongMemEval-V2) and MEM-005 (MemoryCraft)."
+    },
+    {
+      "source_id": "MEM-002",
+      "name": "LongMemEval (v1)",
+      "category": "长期记忆 (Long-Term Memory Benchmark)",
+      "upstream_url": "https://huggingface.co/datasets/xiaowu0162/longmemeval",
+      "revision_or_version": "Superseded by MEM-003 (LongMemEval-V2)",
+      "license": "MIT",
+      "download_time_utc": null,
+      "status": "SUPERSEDED",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Directly superseded by MEM-003 (LongMemEval-V2)."
+    },
+    {
+      "source_id": "MEM-003",
+      "name": "LongMemEval-V2",
+      "category": "长期记忆 (Long-Term Memory Benchmark)",
+      "upstream_url": "https://huggingface.co/datasets/xiaowu0162/LongMemEval-V2",
+      "revision_or_version": "24c9ff8a63c48bd32b24e35455d1c6e85db3ff46",
+      "license": "MIT",
+      "download_time_utc": "2026-10-09T16:42:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_longmemeval",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/MEM-003_LongMemEval-V2",
+        "file_count": 4,
+        "total_bytes": 1200767601,
+        "tree_or_file_sha256": "tree:c78a62d60d80112970b1a53a5b73dd39f28a9254be2fc151a2848f843f710c1e",
+        "files": [
+          {
+            "rel_path": "MEM-003_LongMemEval-V2/lme_v2_medium.json",
+            "size": 4054244,
+            "sha256": "4756d5126347f0d18f045bb6c47b08cb3b23e9db24386cc48a9b2879e7969b59"
+          },
+          {
+            "rel_path": "MEM-003_LongMemEval-V2/lme_v2_small.json",
+            "size": 822632,
+            "sha256": "9b5301defb23a088a5f06e45ff8d5f35e569d78305a66d492046a9fff9b46593"
+          },
+          {
+            "rel_path": "MEM-003_LongMemEval-V2/questions.jsonl",
+            "size": 286186,
+            "sha256": "0a3ae5ebea938c24d7800e1e0b0828e08ae1646f939a53853b2b8cdc08e292b7"
+          },
+          {
+            "rel_path": "MEM-003_LongMemEval-V2/trajectories.jsonl",
+            "size": 1195604539,
+            "sha256": "363cec9a8e87aa8d9101ce4e600aadbf7031d674056ebe4f969e8424abc5f3c6"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/长期记忆/MEM-003_LongMemEval-V2/cleaned_longmemeval_v2.jsonl",
+        "record_count": 451,
+        "total_bytes": 653037,
+        "sha256": "908b3abd432e471c4ff0999edb6cae72245744d10f6dfa908c9eca84b9eb95a6",
+        "preview_github_path": "our-project/data/公开数据/数据预览/长期记忆/MEM-003_LongMemEval-V2/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Long-context QA sessions without multi-model routing comparison; used for E4 long-session state & KV memory pressure evaluation."
+    },
+    {
+      "source_id": "MEM-004",
+      "name": "MemoryAgentBench",
+      "category": "长期记忆 (Long-Term Memory Benchmark)",
+      "upstream_url": "https://huggingface.co/datasets/ai-hyz/MemoryAgentBench",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "Apache-2.0",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5: memory agent trajectories already covered by MEM-005 (MemoryCraft 23,884 steps) and MEM-003."
+    },
+    {
+      "source_id": "MEM-005",
+      "name": "MemoryCraft",
+      "category": "长期记忆 (Memory Action Trajectory)",
+      "upstream_url": "https://huggingface.co/datasets/daven3/MemoryCraft",
+      "revision_or_version": "05cb346798f881e6ccbd36b51bf6db85ef384647",
+      "license": "Apache-2.0 / MIT",
+      "download_time_utc": "2026-10-09T16:44:00Z",
+      "status": "DOWNLOADED_AND_CLEANED",
+      "cleaning_script": "prepare_router_data.py::process_memorycraft",
+      "raw_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/原始数据/MEM-005_MemoryCraft",
+        "file_count": 4,
+        "total_bytes": 473942480,
+        "tree_or_file_sha256": "tree:98e6a2b56c9316f5d4c0da3a886fb4b303fc1c3ed1c8225ad67b2d78106461c5",
+        "files": [
+          {
+            "rel_path": "MEM-005_MemoryCraft/ama_bench.jsonl",
+            "size": 52775482,
+            "sha256": "681870cf3a7972518165c6583693d7b714481bb8c28d35e68124a92d0e0c691f"
+          },
+          {
+            "rel_path": "MEM-005_MemoryCraft/locomo.jsonl",
+            "size": 2175022,
+            "sha256": "b68c7b842db8ad87fb3a04b7406d30381c96ae89a18957991b1982dd6f5405dd"
+          },
+          {
+            "rel_path": "MEM-005_MemoryCraft/longmemeval.jsonl",
+            "size": 15123779,
+            "sha256": "d10a9f67731af55c47c197024b8d35bcfc5424b7797f108333d9cf4d52084a4e"
+          },
+          {
+            "rel_path": "MEM-005_MemoryCraft/membench.jsonl",
+            "size": 403868197,
+            "sha256": "286b1c28861143644d1d5a5fb6900debe4e176bfcc035668bb131dd470000b18"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/data/公开数据/清洗数据/长期记忆/MEM-005_MemoryCraft/cleaned_memorycraft.jsonl",
+        "record_count": 23884,
+        "total_bytes": 17154734,
+        "sha256": "ad9d216495642d6f126032be27ce9e53e120d2a80f27bf12853d682c82031719",
+        "preview_github_path": "our-project/data/公开数据/数据预览/长期记忆/MEM-005_MemoryCraft/preview_samples.jsonl"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Memory retrieval steps without multi-model routing supervision; used for E4 memory-state feature analysis."
+    },
+    {
+      "source_id": "MEM-006",
+      "name": "PerLTQA",
+      "category": "长期记忆 (Personal Long-Term QA)",
+      "upstream_url": "https://github.com/Elvin-Yiming-Du/PerLTQA",
+      "revision_or_version": "N/A (Not downloaded)",
+      "license": "MIT",
+      "download_time_utc": null,
+      "status": "NOT_DOWNLOADED_BY_DESIGN",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Deferred per E0.5: personal QA outside core software engineering / multi-agent routing scope."
+    },
+    {
+      "source_id": "MAS-001",
+      "name": "MasRouter",
+      "category": "多Agent路由参考 (Multi-Agent Routing Codebase)",
+      "upstream_url": "https://github.com/ulab-uiuc/MasRouter",
+      "revision_or_version": "Code-only reference (no standalone public trace release)",
+      "license": "MIT / Apache-2.0",
+      "download_time_utc": null,
+      "status": "NO_PUBLIC_TRACE_RELEASE",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Methodological baseline only; upstream repository releases code rather than pre-collected multi-agent trajectory datasets."
+    },
+    {
+      "source_id": "MAS-002",
+      "name": "RouteLLM",
+      "category": "多Agent路由参考 (Pairwise Router Baseline)",
+      "upstream_url": "https://github.com/lm-sys/RouteLLM",
+      "revision_or_version": "Underlying training data is Chatbot Arena (downloaded as ROUTE-004)",
+      "license": "Apache-2.0",
+      "download_time_utc": null,
+      "status": "SUPERSEDED",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Underlying preference dataset is identical to ROUTE-004 (arena-human-preference-55k), which is already downloaded and cleaned."
+    },
+    {
+      "source_id": "MAS-003",
+      "name": "FrugalGPT",
+      "category": "多Agent路由参考 (Cascade Routing Baseline)",
+      "upstream_url": "https://github.com/stanford-futuredata/FrugalGPT",
+      "revision_or_version": "Superseded by ROUTE-001 (LLMRouterBench) and ROUTE-002 (RouterBench)",
+      "license": "Apache-2.0",
+      "download_time_utc": null,
+      "status": "SUPERSEDED",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Cascade paradigm baseline; multi-model evaluation tables superseded by ROUTE-001 and ROUTE-002."
+    },
+    {
+      "source_id": "SYS-001",
+      "name": "vLLM / SGLang Prefix Caching Documentation & Semantics",
+      "category": "系统机制参考 (KV Prefix Caching Specification)",
+      "upstream_url": "https://docs.vllm.ai/en/latest/automatic_prefix_caching/apc.html",
+      "revision_or_version": "Documentation & system mechanism specification",
+      "license": "Apache-2.0",
+      "download_time_utc": null,
+      "status": "NO_PUBLIC_TRACE_RELEASE",
+      "cleaning_script": null,
+      "raw_storage": null,
+      "cleaned_storage": null,
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "System mechanism reference for E4 block-prefix cache state transitions; not a dataset."
+    },
+    {
+      "source_id": "OWN-001",
+      "name": "CCH Model Cost & Cache Statistics",
+      "category": "项目自有数据 (Production API Gateway Cost & Cache Aggregation)",
+      "upstream_url": "Internal production gateway export (our-project/data/cch-model-cost-cache-statistics.csv)",
+      "revision_or_version": "Frozen 2026-10-09 (110 data rows across 14 models + 2 summary rows)",
+      "license": "Project Internal Research Asset",
+      "download_time_utc": "2026-10-09T12:00:00Z",
+      "status": "FROZEN_OWN_DATA",
+      "cleaning_script": "Pre-aggregated gateway export (verified in our-project/data/)",
+      "raw_storage": {
+        "local_and_github_path": "our-project/data/cch-model-cost-cache-statistics.csv",
+        "server_path": "/home/syy/路由/our-project/data/cch-model-cost-cache-statistics.csv",
+        "file_count": 2,
+        "total_bytes": 203459,
+        "files": [
+          {
+            "name": "cch-model-cost-cache-statistics.csv",
+            "bytes": 87057,
+            "lines": 111,
+            "sha256": "4e045d121fce6b16559ef970072ecf8e2de1e731d7e7e6c6e7f46ec1e7f2b42d"
+          },
+          {
+            "name": "cch-model-cost-cache-statistics.md",
+            "bytes": 116402,
+            "lines": 997,
+            "sha256": "03ac391902f0fd03e83385fde346d18e0c11110dbe2506b69d9f6b5c63c04444"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/our-project/data/cch-model-cost-cache-statistics.csv",
+        "record_count": 110,
+        "total_bytes": 87057,
+        "sha256": "4e045d121fce6b16559ef970072ecf8e2de1e731d7e7e6c6e7f46ec1e7f2b42d"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Real production cost & KV cache read/creation billing statistics (473,267 calls, $5,879.08 USD, 84.02% cache hit rate); used for E4 realistic cache cost parameterization."
+    },
+    {
+      "source_id": "OWN-002",
+      "name": "sxyq.xyz-blog-gpt Production Request Billing Logs",
+      "category": "项目自有数据 (Desensitized Per-Request Production Billing & Cache Logs)",
+      "upstream_url": "Internal production gateway export (our-project/data/sxyq-blog-gpt-usage-cleaned.csv)",
+      "revision_or_version": "Frozen 2026-10-09 (221,128 desensitized request records; raw un-desensitized sxyq.xyz-blog-gpt.csv is RAW_MISSING by privacy policy)",
+      "license": "Project Internal Research Asset (Desensitized)",
+      "download_time_utc": "2026-10-09T12:00:00Z",
+      "status": "FROZEN_OWN_DATA",
+      "cleaning_script": "Desensitized production export (raw un-desensitized CSV excluded for IP/key privacy)",
+      "raw_storage": {
+        "raw_undesensitized_status": "RAW_MISSING (un-desensitized sxyq.xyz-blog-gpt.csv not retained in repo/server for key/IP security; sxyq-blog-gpt-usage-cleaned.csv is the frozen authoritative source)",
+        "local_and_github_path": "our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
+        "server_path": "/home/syy/路由/our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
+        "file_count": 2,
+        "total_bytes": 34750614,
+        "files": [
+          {
+            "name": "sxyq-blog-gpt-usage-cleaned.csv",
+            "bytes": 34738033,
+            "lines": 221129,
+            "records": 221128,
+            "sha256": "6ce697f3ffa76c5ec7ce3353795d46c883f1fe8b4b1b80ea746f01f248529b79"
+          },
+          {
+            "name": "sxyq-blog-gpt-summary.csv",
+            "bytes": 12581,
+            "lines": 38,
+            "sha256": "a0698ff43474454cc1283ae3cd59158df19a56793b97443f99851cb2b97d40b6"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/our-project/data/sxyq-blog-gpt-usage-cleaned.csv",
+        "record_count": 221128,
+        "total_bytes": 34738033,
+        "sha256": "6ce697f3ffa76c5ec7ce3353795d46c883f1fe8b4b1b80ea746f01f248529b79"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Per-request billing, latency, token & cache hit trace without prompt text or counterfactual model outputs; used for E4 empirical arrival, latency, and cache discount calibration."
+    },
+    {
+      "source_id": "OWN-003",
+      "name": "CCH + sxyq-blog-gpt Unified Cross-Platform Summary",
+      "category": "项目自有数据 (Unified Cross-Platform Production Summary)",
+      "upstream_url": "Internal unified summary (our-project/data/cch-sxyq-gpt-unified-summary.csv)",
+      "revision_or_version": "Frozen 2026-10-09 (79 model-source rows + header)",
+      "license": "Project Internal Research Asset",
+      "download_time_utc": "2026-10-09T12:00:00Z",
+      "status": "FROZEN_OWN_DATA",
+      "cleaning_script": "Unified cross-platform summary table",
+      "raw_storage": {
+        "local_and_github_path": "our-project/data/cch-sxyq-gpt-unified-summary.csv",
+        "server_path": "/home/syy/路由/our-project/data/cch-sxyq-gpt-unified-summary.csv",
+        "file_count": 1,
+        "total_bytes": 25424,
+        "files": [
+          {
+            "name": "cch-sxyq-gpt-unified-summary.csv",
+            "bytes": 25424,
+            "lines": 80,
+            "records": 79,
+            "sha256": "92f12d40a1e5f6a3aa3db034e0d77fa28a0b5a0fb1a5a1eff1c7fb93fbfee6ac"
+          }
+        ]
+      },
+      "cleaned_storage": {
+        "server_path": "/home/syy/路由/our-project/data/cch-sxyq-gpt-unified-summary.csv",
+        "record_count": 79,
+        "total_bytes": 25424,
+        "sha256": "92f12d40a1e5f6a3aa3db034e0d77fa28a0b5a0fb1a5a1eff1c7fb93fbfee6ac"
+      },
+      "included_in_static_router_training": false,
+      "usage_role_or_exclusion_reason": "Unified cross-platform pricing & cache ratio reference table (694,395 total requests, $6,455.28 USD total expenditure)."
+    }
+  ]
+}

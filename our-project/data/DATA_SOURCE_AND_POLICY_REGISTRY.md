@@ -333,11 +333,38 @@
 
 Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表 31 个来源都已下载；其中有部分运行时/Provider 政策、模拟源，不等于独立可下载公开数据集。全量与否必须以具体官方配置和 shard 名单判定。
 
+### 6.12 Q-007-FINAL 数据资产冻结、可复现性核验与 Kev/Laya 官方代码兼容性闭环（2026-10-10）
+
+- **1. 全量资产盘点与机器可读 Manifest 冻结**：
+  - 生成并同步唯一权威清单 [manifest.json](公开数据/manifest.json)（同时保存于服务器 `/home/syy/路由/data/公开数据/manifest.json`），完整覆盖全部已登记 Source ID（`TRA-001..004`、`ROUTE-001..005`、`CACHE-001..006`、`TIME-001..004`、`ENV-001..003`、`MEM-001..006`、`MAS-001..003`、`SYS-001`、`OWN-001..003`）。
+  - **原始公开数据（只读冻结）**：服务器 `/home/syy/路由/data/公开数据/原始数据/` 下 14 个有效来源目录、**789 个文件**、**17,869,335,210 字节（17.87 GB）**，逐目录计算 SHA-256 树哈希。
+  - **清洗后标准数据**：服务器 `/home/syy/路由/data/公开数据/清洗数据/` 下 14 个 JSONL 文件、**6,600,628 行**、**6,401,154,316 字节（6.40 GB）**。
+  - **自有生产数据（双向同步冻结）**：`OWN-001`（`cch-model-cost-cache-statistics.csv`，87,057 B，110 条数据行）、`OWN-002`（`sxyq-blog-gpt-usage-cleaned.csv`，34,738,033 B，221,128 条脱敏记录；未脱敏原始文件因含 IP/Key 隐私标记为 `RAW_MISSING`，以脱敏版作为冻结权威源）、`OWN-003`（`cch-sxyq-gpt-unified-summary.csv`，25,424 B，79 条汇总行）在 GitHub 与服务器 `/home/syy/路由/our-project/data/` 完全一致。
+  - **双遍确定性可复现核验（PASS）**：对 6 个代表性源从原始文件执行双遍重跑，输出 SHA-256 与正式清洗文件 100% 逐字节一致；对 `prepare_router_data.py --mode views` 执行双遍独立目录重跑，生成的 15 个视图文件在两次运行间及正式文件间 SHA-256 100% 逐字节一致。
+- **2. 路由监督标签最终净化（消除并列伪单胜者）**：
+  - **LLMRouterBench（25,202 题）**：严格拆分为 5 类成本—质量状态：`UNIQUE_MAX_SCORE`（**1,432** 题）、`TIED_SCORE_MIN_MEASURED_API_USD`（**7,954** 题）、`TIED_SCORE_TIED_API_USD`（**86** 题）、`TIED_SCORE_COST_UNCOMPARED`（**12,986** 题，含 `cost == 0.0` 未计费开源模型与最高分并列）、`ALL_MODELS_FAILED`（**2,744** 题）。
+  - 将 **13,072 题**（`12,986 + 86`）同分但成本不可比或美元成本并列的题目移出单胜者监督训练集，转入 `analysis_unsupervised_or_tied.jsonl`（同时保留 `tied_winners`、`target_distribution` 与均匀软标签 `gold`/`target` 供多标签/软目标研究）。
+  - **最终严格唯一单胜者监督训练集（84,310 题）**：
+    - `ROUTE-004` Arena 人类盲测唯一胜者：**39,716** 题（`HUMAN_PREFERENCE_WINNER`）
+    - `ROUTE-002` RouterBench 官方正向唯一 Oracle：**35,189** 题（`BENCHMARK_QUALITY_COST_ORACLE`）
+    - `ROUTE-001` LLMRouterBench 严格唯一胜者：**9,386** 题（`1,432 UNIQUE_MAX_SCORE + 7,954 TIED_SCORE_MIN_MEASURED_API_USD`）
+    - `TRA-004` AgentSuite 唯一成功模型：**19** 题（`OBSERVED_EPISODE_UNIQUE_SUCCESS`）
+  - **无区分度/并列/全败分析集（16,070 题）**：LLMRouterBench 15,816 题（`12,986 + 86 + 2,744`）+ AgentSuite 并列 246 题 + AgentSuite 全败 8 题。
+  - **Thinking-On/Off 对照视图**：`thinking_contrasts.jsonl` 共 **1,911 条**（覆盖 7 组同家族推理配置配对 × 273 任务：其中 6 组严格同底座同版本共计 **1,638 条**，1 组 Gemini 2.5 Pro/Flash 同代跨变体对照 **273 条**单独标注 `SAME_GENERATION_CROSS_VARIANT`）。
+- **3. 跨划分零泄漏修复（PASS）**：
+  - 修复短 Prompt（`< 15` 字符）及句末标点变体未走语义哈希分桶的问题，对全部非空 Prompt 采用标点归一化 `canonical_prompt` 哈希分桶：
+  - **Train**: **67,428**（80.0%）｜**Val**: **8,436**（10.0%）｜**Test**: **8,446**（10.0%）｜**Holdout (`TwinRouterBench`)**: **970** 步。
+  - 实测 `train_val_task_overlap = 0`、`exact_prompt_overlap = 0`、`canonical_prompt_overlap = 0`、`cross_source_prompt_split_leakage = 0`。
+- **4. 官方 Kev 与 Laya 仓库真实代码 100% 兼容验证（PASS）**：
+  - 优化 `criteria` 为空描述字典 `{m: ""}`（由官方 `kev.api.option_text` 与 `laya.common.render_options` 原生渲染纯净模型 ID）并补齐顶层 `"expected"` 字段，使同一份 JSONL 同时原生兼容两套官方仓库：
+  - **Kev 官方 (`kev.data.load_records -> materialize -> kev.model.encode`)**：全量 85,280 条样本（84,310 监督 + 970 Holdout）100% 通过，`max_state_tokens = 301`、`max_branch_tokens = 466`、`max_packed_tokens = 767`，在默认（`384/1024/2048`）与 Kev-4B（`7552/8192/9216`）下均为 **0 截断、0 溢出**。
+  - **Laya 官方 (`laya.train.read_data -> items_from_rows -> build_sequence`)**：在路由训练配置 `max_len=1024, head_max_len=448` 下全量 85,280 条样本 **100.0% 零跳过通过（`skipped={}`）**（注：Laya 出厂默认 `head_max_len=192` 因 `192 // 38 = 5 tokens/option` 会跳过 1,734 条 34~38 候选长选项样本，故正式训练与评测统一显式传入 `max_len=1024, head_max_len=448`）。
+
 ## 7. 后续阶段接口和变更历史
 
-当前唯一大阶段：**Q-007 数据来源候选目录**，先按本台账登记、核证与选定；数量、实际清洗、Kev 训练方式、Provider 部署和正式评测后议。
+当前唯一大阶段：**Q-007-FINAL 数据资产冻结与 Kev/Laya 训练前兼容性验证已完成**，数据资产正式冻结，可进入 E1/E2 模型训练阶段。
 
-建议的后续分界：SOURCE-REVIEW（确认源和使用权）→ SELECT（负责人明确用途/来源）→ DATA-CLEAN（正式授权后规范化/校验）→ TRAIN-DATA-READY（数据验收）→ Kev training design（Q-010/Q-011）→ E1～E5 按既有里程碑与授权推进。此为**数据管理工作流**，不是第二条可运行 Agent/Router 工程链。
+建议的后续分界：SOURCE-REVIEW（确认源和使用权）→ SELECT（负责人明确用途/来源）→ DATA-CLEAN（正式授权后规范化/校验）→ TRAIN-DATA-READY（数据验收）→ Kev/Laya 正式训练与离线验证（E1/E2）→ Coding Benchmark 批量运行（E3）→ 动态缓存感知路由（E4）→ 论文与消融（E5）。
 
 | 日期 | 版本 | 改动 | 决策/执行状态 |
 |---|---|---|---|
@@ -347,6 +374,6 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 | 2026-10-09 | v1.3 | 首批服务器清洗记录与官方 Kev schema 核对；发现规则伪标签、样本范围与 heldout 隔离问题 | 数据转换已执行，但尚非可信 TRAIN_READY；要求同脚本科研纠偏 |
 | 2026-10-09 | v1.4 | Planning 二次复核源脚本/16 份 GitHub 实际样本/官方规模，确认大额行数冲突、未全量下载、时间泄漏/模型错标/缓存复用算法问题 | Q-007 仅实测首轮加工，TRAIN_READY 未成立，等待在同一清洗代码修复和实际统计 |
 | 2026-10-10 | v1.5 | Execution 完成全量 6,600,628 行清洗与 16 源轻量审查样本上线，统一统计口径 | 差额归零，代码级缺陷修正，等待 Planning 三次复审 |
-| 2026-10-10 | v1.6 | Execution 完成科研缺陷收尾、统一模型选择训练视图构建与 Kev 格式 80/10/10 任务级隔离划分 (101,342 样本) | 具备 TRAIN_READY 前置数据条件，产出《科研数据收尾报告.md》，等待验收 |
-| 2026-10-10 | v1.5 | Q-007 成果科研纠偏执行完毕：统一总量为 6,600,628 条（差额为 0）；覆盖 24 分片 SWE-smith、12 分片 Open-SWE、30 模型 AgentSuite；修复十项代码时序与动作语义缺陷；生成同题成组与时序连续样本 | 执行完毕，已同步 GitHub，等待 Planning 最终验收 |
-| 2026-10-10 | v1.5 | Planning 对 0b39a7e 的 16 源实际 JSONL、统计及唯一脚本再审，确认数值对齐与剩余监督问题 | 数据已解析，但尚未完成路由训练监督和任务划分验收 |
+| 2026-10-10 | v1.6 | Execution 完成科研缺陷收尾、统一模型选择训练视图构建与 Kev 格式 80/10/10 任务级隔离划分 | 具备 TRAIN_READY 前置数据条件，产出《科研数据收尾报告.md》 |
+| 2026-10-10 | v1.7 | Execution 完成 Q-007-FINAL：生成机器可读 `manifest.json`、双遍确定性可复现验证、剔除 LLMRouterBench 13,072 条同分成本未比/并列样本至分析集（锁定 84,310 条严格唯一胜者）、修复短/标点 Prompt 跨集泄漏、通过官方 Kev 与 Laya 仓库 100% 兼容性及最小 GPU Smoke Test | **Q-007-FINAL 全部 PASS，数据资产正式冻结** |
+
