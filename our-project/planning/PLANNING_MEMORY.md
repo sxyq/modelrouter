@@ -697,3 +697,7 @@ Execution 报告自称 660 万分层、八组状态覆盖、五阶段训练设�
 ### 2026-10-12 · OVERNIGHT-LAYA-TRAINING
 
 已按授权完成 Laya-421M R0→R1→R2→R3。Batch 1 训练行 13,438（S1 4,592、S2 2,846、S3 6,000），独立 Val 5,692；官方 CPU 编码全部通过，0 跳过。R0 S1/S2/S3 Accuracy 为 0.4759/0.4896/0.4677。R1 最佳 R1-E1，S1 Val Loss/Accuracy 为 0.6038/0.6613；R2 最佳 R2-E1，S1 为 0.6093/0.6578、S2 为 1.0000；R3 最佳 R3-E1，S1 为 0.6388/0.6667、S2 为 1.0000、S3 为 0.6435。三组均按连续两轮缺少 0.5% S1 Val Loss 改善提前结束，权重与指标保存在服务器 runs/OVERNIGHT-LAYA-TRAINING/。未运行 Kev、Coding Benchmark 或付费 API。
+
+### 10.13 2026-10-12 · OVERNIGHT-LAYA-SWEEP-02
+
+已按授权完成 N01–N10，每个方案运行最多 3 轮并保留 `epoch_01`–`epoch_03`、`latest` 与 `best` 权重目录。N01、N02、N03、N07、N09 按连续两轮缺少 S1 验证损失改善提前结束，N04、N05、N06、N08、N10 完成三轮；共 30 个逐轮节点、50 个权重目录。固定验证集合为 S1 561 条，混合方案另含 S2 337 条与 S3 4,794 条。N05-E02 的 S1 验证损失最低（0.5969），N10-E03 的 S1 验证准确率最高（0.6952）。N01–N10 `best` 权重均通过官方 Laya CPU 加载。S2 验证准确率在混合方案中为 1.0，但该集合标签与状态字段的独立审计仍显示多数参考准确率约 0.551929，不能据此宣称通用路由能力。服务器训练进程已退出，GPU 回落至 682 MiB；未运行 Kev、Test、Coding Benchmark 或付费 API。服务器结果位于 `runs/OVERNIGHT-LAYA-SWEEP-02/`，公开面板数据和逐轮同步记录位于 `docs/training-dashboard/`。

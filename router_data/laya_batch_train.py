@@ -247,6 +247,15 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
     starts = [r.get('started_at') for r in runs.values() if r.get('started_at')]
     current = next((name for name, r in runs.items() if r.get('status') == 'running'), None)
     current_epoch = runs.get(current, {}).get('current_epoch') if current else None
+    generation = manifest.get('generation', {})
+    if isinstance(generation, dict) and isinstance(generation.get('code_sha256'), dict):
+        generation = dict(generation)
+        generation['code_sha256'] = {
+            ('prepare_router_data.py' if str(path).endswith('/prepare_router_data.py')
+             else 'router_data/batch_prep.py' if str(path).endswith('/batch_prep.py')
+             else Path(str(path)).name): digest
+            for path, digest in generation['code_sha256'].items()
+        }
     payload = {
         'experiment_id': 'OVERNIGHT-LAYA-SWEEP-02',
         'generated_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
@@ -273,7 +282,7 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
         'checkpoint_tree': all_nodes,
         'fixed_validation': manifest.get('fixed_validation', {}),
         'audit': manifest.get('audit', {}),
-        'generation': manifest.get('generation', {}),
+        'generation': generation,
     }
     _write(Path(out_root) / 'dashboard_data.json', payload)
     return payload
