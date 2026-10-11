@@ -32,6 +32,12 @@ def _dump(f, row):
     f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
+def _stage_dir(out_dir, name):
+    path = os.path.join(out_dir, "training", name)
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
 def _split(key):
     n = int(hashlib.sha256(str(key).encode()).hexdigest()[:8], 16) % 100
     return "train" if n < 80 else ("val" if n < 90 else "test")
@@ -88,9 +94,12 @@ def _route002(cleaned_file):
 
 
 def _route001_views(groups, out_dir):
-    choice = {"train": open(os.path.join(out_dir, "stage1_choice", "recomputed_route001_train.jsonl"), "w", encoding="utf-8"), "val": open(os.path.join(out_dir, "stage1_choice", "recomputed_route001_val.jsonl"), "w", encoding="utf-8"), "test": open(os.path.join(out_dir, "stage1_choice", "recomputed_route001_test.jsonl"), "w", encoding="utf-8")}
-    pair = {k: open(os.path.join(out_dir, "stage1_pairwise", k + ".jsonl"), "w", encoding="utf-8") for k in choice}
-    score = {k: open(os.path.join(out_dir, "stage1_score", k + ".jsonl"), "w", encoding="utf-8") for k in choice}
+    choice_dir = _stage_dir(out_dir, "stage1_choice")
+    pair_dir = _stage_dir(out_dir, "stage1_pairwise")
+    score_dir = _stage_dir(out_dir, "stage1_score")
+    choice = {"train": open(os.path.join(choice_dir, "recomputed_route001_train.jsonl"), "w", encoding="utf-8"), "val": open(os.path.join(choice_dir, "recomputed_route001_val.jsonl"), "w", encoding="utf-8"), "test": open(os.path.join(choice_dir, "recomputed_route001_test.jsonl"), "w", encoding="utf-8")}
+    pair = {k: open(os.path.join(pair_dir, k + ".jsonl"), "w", encoding="utf-8") for k in choice}
+    score = {k: open(os.path.join(score_dir, k + ".jsonl"), "w", encoding="utf-8") for k in choice}
     stats = Counter()
     for (benchmark, h), g in sorted(groups.items()):
         by_model = {}
@@ -134,17 +143,46 @@ def _route001_views(groups, out_dir):
     return stats
 
 
-def _route002_views(groups, out_dir):
+def _routerbench_prompts(raw_root):
+    prompts = {}
+    if not raw_root:
+        return prompts
+    raw_file = os.path.join(raw_root, "ROUTE-002_RouterBench", "routerbench_0shot.pkl")
+    if not os.path.exists(raw_file):
+        return prompts
+    import ast
+    with open(raw_file, "rb") as f:
+        df = pickle.load(f)
+    for _, raw_row in df.iterrows():
+        raw_prompt = raw_row.get("prompt")
+        if isinstance(raw_prompt, str):
+            try:
+                parsed = ast.literal_eval(raw_prompt)
+                prompt = str(parsed[-1]).strip() if isinstance(parsed, (list, tuple)) and parsed else raw_prompt.strip()
+            except Exception:
+                prompt = raw_prompt.strip()
+        elif isinstance(raw_prompt, (list, tuple)) and raw_prompt:
+            prompt = str(raw_prompt[-1]).strip()
+        else:
+            prompt = str(raw_prompt or "").strip()
+        prompts[str(raw_row.get("sample_id") or "unknown")] = prompt.replace("\u2028", "").replace("\u2029", "").replace("\n", " ").strip()
+    return prompts
+
+
+def _route002_views(groups, out_dir, raw_root=None):
     stats = Counter()
-    handles = {name: open(os.path.join(out_dir, "stage1_score", "route002_" + name + ".jsonl"), "w", encoding="utf-8") for name in ("train", "val", "test")}
-    pairs = {name: open(os.path.join(out_dir, "stage1_pairwise", "route002_" + name + ".jsonl"), "w", encoding="utf-8") for name in handles}
+    score_dir = _stage_dir(out_dir, "stage1_score")
+    pair_dir = _stage_dir(out_dir, "stage1_pairwise")
+    handles = {name: open(os.path.join(score_dir, "route002_" + name + ".jsonl"), "w", encoding="utf-8") for name in ("train", "val", "test")}
+    pairs = {name: open(os.path.join(pair_dir, "route002_" + name + ".jsonl"), "w", encoding="utf-8") for name in handles}
+    prompt_by_id = _routerbench_prompts(raw_root)
     for sid, r in groups.items():
         ev = r.get("candidate_evaluations") or {}
         vals = [(m, float(v.get("score") or 0), float(v.get("cost_usd") or 0)) for m, v in ev.items()]
         if len(vals) < 2 or len({x[1] for x in vals}) <= 1:
             continue
         split = _split("routerbench_" + sid)
-        state = r["pre_decision_state"].get("prompt_snippet", "")
+        state = prompt_by_id.get(sid, r["pre_decision_state"].get("prompt_snippet", ""))
         _dump(handles[split], {"provenance": {"source_id": "ROUTE-002", "task_id": "routerbench_" + sid, "sample_id": sid}, "state": state, "scores": {m: s for m, s, _ in vals}, "candidates": [m for m, _, _ in vals]})
         stats["score_tasks"] += 1
         ranked = sorted(vals, key=lambda x: (-x[1], x[0]))
@@ -158,15 +196,13 @@ def _route002_views(groups, out_dir):
 
 
 def _copy_choice(out_dir, stage1_dir):
-    target = os.path.join(out_dir, "stage1_choice")
-    os.makedirs(target, exist_ok=True)
+    target = _stage_dir(out_dir, "stage1_choice")
     for name in ("train.jsonl", "val.jsonl", "test.jsonl"):
         shutil.copyfile(os.path.join(stage1_dir, name), os.path.join(target, name))
 
 
 def _stage2(cleaned_root, out_dir):
-    target = os.path.join(out_dir, "stage2_agent_state")
-    os.makedirs(target, exist_ok=True)
+    target = _stage_dir(out_dir, "stage2_agent_state")
     files = [PUBLIC_FILES[x] for x in ("TRA-001", "TRA-002", "TRA-004")]
     counts = Counter()
     task_counts = defaultdict(Counter)
@@ -192,7 +228,7 @@ def _stage2(cleaned_root, out_dir):
 
 
 def _stage3(cleaned_root, out_dir):
-    target = os.path.join(out_dir, "stage3_effort"); os.makedirs(target, exist_ok=True)
+    target = _stage_dir(out_dir, "stage3_effort")
     rows = defaultdict(list); path = os.path.join(cleaned_root, PUBLIC_FILES["TRA-004"])
     for line in open(path, encoding="utf-8"):
         r = json.loads(line); p = r["provenance"]; rows[str(p.get("instance_id"))].append(r)
@@ -207,7 +243,7 @@ def _stage3(cleaned_root, out_dir):
 
 
 def _stage4(cleaned_root, out_dir):
-    target = os.path.join(out_dir, "stage4_cache_cost"); os.makedirs(target, exist_ok=True); counts = Counter()
+    target = _stage_dir(out_dir, "stage4_cache_cost"); counts = Counter()
     for source in ("CACHE-001", "TIME-001", "ROUTE-005"):
         path = os.path.join(cleaned_root, PUBLIC_FILES[source]); out = open(os.path.join(target, source + ".jsonl"), "w", encoding="utf-8")
         for line in open(path, encoding="utf-8"):
@@ -251,8 +287,9 @@ def _variable_refs(cleaned_root, out_dir):
 def prepare_all_data(args):
     raw_root = args.raw_root; cleaned_root = args.cleaned_root; out_dir = args.all_data_out_dir
     os.makedirs(out_dir, exist_ok=True)
-    for d in ("by_source", "by_variable", "stage1_choice", "stage1_pairwise", "stage1_score", "stage2_agent_state", "stage3_effort", "stage4_cache_cost", "evaluation", "analysis_only"):
+    for d in ("by_source", "by_variable", "evaluation", "analysis_only"):
         os.makedirs(os.path.join(out_dir, d), exist_ok=True)
+    os.makedirs(os.path.join(out_dir, "training"), exist_ok=True)
     source_counts = {}
     for source, rel in PUBLIC_FILES.items():
         path = os.path.join(cleaned_root, rel); n = 0
@@ -265,8 +302,8 @@ def prepare_all_data(args):
     stage1_dir = os.path.normpath(stage1_dir)
     _copy_choice(out_dir, stage1_dir)
     r1 = _route001(os.path.join(raw_root)); r2 = _route002(os.path.join(cleaned_root, PUBLIC_FILES["ROUTE-002"]))
-    route_stats = _route001_views(r1, out_dir); route_stats.update({"ROUTE-002_" + k: v for k, v in _route002_views(r2, out_dir).items()})
+    route_stats = _route001_views(r1, out_dir); route_stats.update({"ROUTE-002_" + k: v for k, v in _route002_views(r2, out_dir, raw_root).items()})
     stage2 = _stage2(cleaned_root, out_dir); stage3 = _stage3(cleaned_root, out_dir); stage4 = _stage4(cleaned_root, out_dir); variables = _variable_refs(cleaned_root, out_dir)
-    summary = {"experiment": "MR-ALLDATA-PREP-20261011", "source_counts": source_counts, "route_independent_questions": len(r1), "route001_stats": dict(route_stats), "stage2_counts": dict(stage2), "stage3_counts": dict(stage3), "stage4_counts": dict(stage4), "variable_reference_counts": dict(variables), "stage1_choice_counts": {n: sum(1 for _ in open(os.path.join(out_dir, "stage1_choice", n + ".jsonl"))) for n in ("train", "val", "test")}, "notes": ["ROUTE-003 is evaluation-only", "ROUTE-005 is analysis-only", "No GPU, API, model download, or Coding Benchmark execution"]}
+    summary = {"experiment": "MR-ALLDATA-PREP-20261011", "source_counts": source_counts, "route_independent_questions": len(r1), "route001_stats": dict(route_stats), "stage2_counts": dict(stage2), "stage3_counts": dict(stage3), "stage4_counts": dict(stage4), "variable_reference_counts": dict(variables), "stage1_choice_counts": {n: sum(1 for _ in open(os.path.join(_stage_dir(out_dir, "stage1_choice"), n + ".jsonl"))) for n in ("train", "val", "test")}, "notes": ["ROUTE-003 is evaluation-only", "ROUTE-005 is analysis-only", "No GPU, API, model download, or Coding Benchmark execution"]}
     with open(os.path.join(out_dir, "summary.json"), "w", encoding="utf-8") as f: json.dump(summary, f, ensure_ascii=False, indent=2)
     return summary
