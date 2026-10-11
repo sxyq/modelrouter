@@ -85,7 +85,7 @@ def process_route_001(raw_root, cleaned_root, preview_root):
                 full_prompt_hash = hashlib.sha256((norm_oq + "\n" + norm_pq).encode("utf-8")).hexdigest()[:16]
 
                 prompt_raw = oq_raw if oq_raw else pq_raw
-                prompt_snippet = prompt_raw.replace("\u2028", "").replace("\u2029", "")[:400].replace("\n", " ").strip()
+                prompt_snippet = prompt_raw.replace("\u2028", "").replace("\u2029", "").replace("\n", " ").strip()
                 raw_prompt_tokens = rec.get("prompt_tokens")
                 prompt_tokens = int(raw_prompt_tokens) if raw_prompt_tokens is not None else 0
                 raw_completion_tokens = rec.get("completion_tokens")
@@ -292,7 +292,7 @@ def process_route_002(raw_root, cleaned_root, preview_root):
         else:
             prompt_str = str(prompt_val or "").strip()
 
-        prompt_snippet = prompt_str[:400].replace("\n", " ").strip()
+        prompt_snippet = prompt_str.replace("\n", " ").strip()
 
         # 整理 11 个候选模型在该样本上的真实实测表现
         model_scores = {}
@@ -577,16 +577,17 @@ def process_route_004(raw_root, cleaned_root, preview_root):
             winner_counter[winner_choice] += 1
 
             prompt_val = row.get("prompt") or ""
-            # 若 prompt 为 JSON 列表，提取第一轮 user prompt
+            # 若 prompt 为对话列表，只保留决策前第一条 user 消息
             prompt_snippet = prompt_val
             if prompt_val.startswith("["):
                 try:
                     plist = json.loads(prompt_val)
                     if isinstance(plist, list) and len(plist) > 0:
-                        prompt_snippet = str(plist[0])
+                        user_messages = [m.get("content", "") for m in plist if isinstance(m, dict) and m.get("role") == "user"]
+                        prompt_snippet = user_messages[0] if user_messages else str(plist[0])
                 except Exception:
                     pass
-            prompt_snippet = prompt_snippet[:400].replace("\n", " ").strip()
+            prompt_snippet = prompt_snippet.replace("\n", " ").strip()
 
             item = {
                 "provenance": {

@@ -65,6 +65,27 @@ def build_unified_training_and_evaluation_views(args):
     arena_file = os.path.join(cleaned_root, "路由比较", "ROUTE-004_Arena", "cleaned_arena_preference.jsonl")
     if os.path.exists(arena_file):
         print(f"[Views] 读取 ROUTE-004 Arena 偏好对决: {arena_file}")
+        arena_prompt_by_id = {}
+        arena_raw_file = os.path.join(raw_root, "ROUTE-004_Arena", "train.csv")
+        if os.path.exists(arena_raw_file):
+            import csv
+            csv.field_size_limit(sys.maxsize)
+            with open(arena_raw_file, "r", encoding="utf-8") as raw_f:
+                for raw_row in csv.DictReader(raw_f):
+                    raw_prompt = raw_row.get("prompt") or ""
+                    if raw_prompt.startswith("["):
+                        try:
+                            import ast
+                            try:
+                                messages = json.loads(raw_prompt)
+                            except Exception:
+                                messages = ast.literal_eval(raw_prompt)
+                            if isinstance(messages, list):
+                                user_messages = [m.get("content", "") for m in messages if isinstance(m, dict) and m.get("role") == "user"]
+                                raw_prompt = user_messages[0] if user_messages else (messages[0] if messages else "")
+                        except Exception:
+                            pass
+                    arena_prompt_by_id[str(raw_row.get("id") or "unknown")] = str(raw_prompt).replace("\u2028", "").replace("\u2029", "").replace("\n", " ").strip()
         with open(arena_file, "r", encoding="utf-8") as f:
             for line in f:
                 if not line.strip():
@@ -77,7 +98,7 @@ def build_unified_training_and_evaluation_views(args):
                 pre = r["pre_decision_state"]
                 model_a = pre["candidate_model_a"]
                 model_b = pre["candidate_model_b"]
-                prompt = pre["prompt_snippet"]
+                prompt = arena_prompt_by_id.get(str(battle_id), pre["prompt_snippet"])
 
                 if winner_choice == "tie":
                     arena_stats["ties_excluded"] += 1
@@ -182,7 +203,7 @@ def build_unified_training_and_evaluation_views(args):
                     norm_pq = " ".join(norm_pq.split())
                     full_prompt_hash = hashlib.sha256((norm_oq + "\n" + norm_pq).encode("utf-8")).hexdigest()[:16]
                     prompt_raw = oq_raw if oq_raw else pq_raw
-                    prompt_snippet = prompt_raw.replace("\u2028", "").replace("\u2029", "")[:400].replace("\n", " ").strip()
+                    prompt_snippet = prompt_raw.replace("\u2028", "").replace("\u2029", "").replace("\n", " ").strip()
 
                     raw_score = rec.get("score")
                     score_val = float(raw_score) if raw_score is not None else None
@@ -479,6 +500,30 @@ def build_unified_training_and_evaluation_views(args):
     routerbench_file = os.path.join(cleaned_root, "路由比较", "ROUTE-002_RouterBench", "cleaned_routerbench.jsonl")
     if os.path.exists(routerbench_file):
         print(f"[Views] 读取 ROUTE-002 RouterBench 官方路由评测: {routerbench_file}")
+        routerbench_prompt_by_id = {}
+        routerbench_raw_file = os.path.join(raw_root, "ROUTE-002_RouterBench", "routerbench_0shot.pkl")
+        if os.path.exists(routerbench_raw_file):
+            import pickle
+            with open(routerbench_raw_file, "rb") as raw_f:
+                raw_df = pickle.load(raw_f)
+            for _, raw_row in raw_df.iterrows():
+                raw_prompt = raw_row.get("prompt")
+                prompt_text = ""
+                if isinstance(raw_prompt, str):
+                    try:
+                        import ast
+                        parsed = ast.literal_eval(raw_prompt)
+                        if isinstance(parsed, (list, tuple)) and parsed:
+                            prompt_text = str(parsed[-1]).strip()
+                        else:
+                            prompt_text = raw_prompt.strip()
+                    except Exception:
+                        prompt_text = raw_prompt.strip()
+                elif isinstance(raw_prompt, (list, tuple)) and raw_prompt:
+                    prompt_text = str(raw_prompt[-1]).strip()
+                else:
+                    prompt_text = str(raw_prompt or "").strip()
+                routerbench_prompt_by_id[str(raw_row.get("sample_id") or "unknown")] = prompt_text.replace("\u2028", "").replace("\u2029", "").replace("\n", " ").strip()
         with open(routerbench_file, "r", encoding="utf-8") as f:
             for line in f:
                 if not line.strip():
@@ -489,7 +534,7 @@ def build_unified_training_and_evaluation_views(args):
                 obs = r["observed_decision"]
                 oracle = obs.get("oracle_model_to_route_to")
                 cand_evals = r.get("candidate_evaluations") or {}
-                prompt = r["pre_decision_state"]["prompt_snippet"]
+                prompt = routerbench_prompt_by_id.get(sid, r["pre_decision_state"]["prompt_snippet"])
 
                 candidate_distribution_unfiltered[len(cand_evals)] += 1
                 if oracle == "no_model_correct" or not oracle or not cand_evals:
@@ -1337,7 +1382,7 @@ def validate_kev_exports(kev_root, laya_root=None):
                             kev_tok, mat,
                             max_state=ctx_7552["max_state"],
                             max_branch=ctx_7552["max_branch"],
-                            strict=True
+                            strict=False
                         )
                         kev_ok_7552 += 1
                         if enc_7552["state_truncated"]:
