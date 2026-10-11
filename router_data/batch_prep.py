@@ -81,7 +81,10 @@ def _example(src,r,x,t):
             n=float(r['completion_tokens']);label=0 if n<=64 else (1 if n<=256 else (2 if n<=1024 else 3));typ='score';qid='observed_response_token_tier'
             criteria=['Brief response (<= 64 tokens)','Standard response (65 to 256 tokens)','Detailed response (257 to 1024 tokens)','Long-form response (> 1024 tokens)']
     if criteria is None or label is None:return None
-    return {'provenance':{'source_id':src,'source_line':x['source_line'],'source_file':x['source_file'],'stable_record_id':x['stable_record_id'],'independent_unit_id':x['independent_unit_id'],'trajectory_id':x.get('trajectory_id'),'split':x['split']},'state':{'source_id':src,'pre_decision_state':state},'questions':{qid:{'type':typ,'instructions':'Predict this source-specific observed target: '+t+'. Observed actions are not optimal actions; prefix reuse is not physical cache hit.','criteria':criteria}},'expected':{qid:label},'_meta':{'supervision_class':x['primary_supervision_class'],'target':t,'label_evidence':x['label_evidence'].get(t,[]),'representative_only':True}}
+    evidence = x.get('label_evidence', {})
+    if isinstance(evidence, dict):
+        evidence = evidence.get(t, [])
+    return {'provenance':{'source_id':src,'source_line':x['source_line'],'source_file':x['source_file'],'stable_record_id':x['stable_record_id'],'independent_unit_id':x['independent_unit_id'],'trajectory_id':x.get('trajectory_id'),'split':x['split']},'state':{'source_id':src,'pre_decision_state':state},'questions':{qid:{'type':typ,'instructions':'Predict this source-specific observed target: '+t+'. Observed actions are not optimal actions; prefix reuse is not physical cache hit.','criteria':criteria}},'expected':{qid:label},'_meta':{'supervision_class':x['primary_supervision_class'],'target':t,'label_evidence':evidence,'representative_only':True}}
 
 
 def run_batch_prep(args):
@@ -171,3 +174,155 @@ def validate_representatives(out):
         report[name]={'rows':len(rows),'parsed_questions':questions,'failures':failures}
     _dump(os.path.join(out,'level1','laya','parsing_report.json'),{'official_functions':['read_data','to_internal','target_from_expected'],'model_loaded':False,'training_executed':False,'files':report})
     return report
+
+
+def _batch1_ref_targets(x):
+    """Targets retained by the saved V2.1 row; validation rows have no candidate_targets."""
+    targets = x.get('candidate_targets') or x.get('specific_supervision_targets') or []
+    return [t for t in targets if t not in {'inferred_command', 'effort_configuration_observation',
+                                            'derived_summary_reference', 'human_tie'}]
+
+
+def _batch1_priority(ref):
+    target = ref.get('target')
+    return ({'observed_success': 0, 'observed_failure': 1, 'observed_action': 2}.get(target, 3),
+            ref.get('stable_record_id', ''), ref.get('source_line', 0))
+
+
+def _batch1_pick_one_per_unit(refs):
+    grouped = defaultdict(list)
+    for ref in refs:
+        grouped[(ref['source_id'], ref['independent_unit_id'])].append(ref)
+    return [sorted(values, key=_batch1_priority)[0] for values in grouped.values()]
+
+
+def prepare_batch1(args):
+    """Materialize the small Batch 1 train/val views from existing V2.1 references."""
+    root = os.path.abspath(os.path.join(args.all_data_out_dir, 'quality_grading_v2_1'))
+    out = os.path.join(root, 'batch_preparation', 'batch1')
+    for name in ('train', 'val'):
+        os.makedirs(os.path.join(out, name), exist_ok=True)
+
+    sources = list(PUBLIC_FILES) + list(OWN_FILES)
+    train_refs = defaultdict(list)
+    for name in sorted(os.listdir(os.path.join(root, 'batch_preparation', 'level1', 'candidates'))):
+        if not name.endswith('.jsonl.gz'):
+            continue
+        target = name[:-len('.jsonl.gz')].split('_', 1)[1]
+        with gzip.open(os.path.join(root, 'batch_preparation', 'level1', 'candidates', name), 'rt', encoding='utf8') as f:
+            for line in f:
+                ref = json.loads(line)
+                ref['target'] = target
+                train_refs[target].append(ref)
+
+    # S1 keeps all legal L1 train rows. S2 keeps one target-bearing row per task unit.
+    s1 = sorted(train_refs.get('human_pairwise_preference', []), key=lambda x: x['stable_record_id'])
+    s2_all = [r for target in ('observed_action', 'observed_success', 'observed_failure')
+              for r in train_refs.get(target, []) if r['source_id'] in {'TRA-001', 'TRA-002'}]
+    s2 = sorted(_batch1_pick_one_per_unit(s2_all), key=lambda x: x['stable_record_id'])
+
+    # S3 is capped at 6,000 rows with stable per-target quotas and keeps source/target balance.
+    s3_quotas = {
+        ('CACHE-001', 'output_token_length'): 1000,
+        ('CACHE-001', 'prefix_reuse_opportunity'): 1000,
+        ('TIME-001', 'request_response_tokens'): 2000,
+        ('OWN-002', 'call_quota_units'): 667,
+        ('OWN-002', 'cache_read_tokens'): 666,
+        ('OWN-002', 'call_output_tokens'): 667,
+    }
+    s3 = []
+    for (src, target), quota in s3_quotas.items():
+        bucket = sorted([r for r in train_refs.get(target, []) if r['source_id'] == src],
+                        key=lambda x: x['stable_record_id'])
+        s3.extend(bucket[:quota])
+
+    # Read each source once for the selected train and validation line numbers.
+    wanted = {'train': defaultdict(list), 'val': defaultdict(list)}
+    for ref in s1 + s2 + s3:
+        wanted['train'][(ref['source_id'], ref['source_line'])].append(ref)
+
+    val_refs = defaultdict(list)
+    for src in sources:
+        path = os.path.join(root, 'by_source', src + '.jsonl.gz')
+        if not os.path.exists(path):
+            continue
+        with gzip.open(path, 'rt', encoding='utf8') as f:
+            for line in f:
+                x = json.loads(line)
+                if x.get('assigned_layer') != 'L1' or x.get('split') != 'val':
+                    continue
+                if not x.get('source_policy_train_allowed') or src in {'ROUTE-001', 'ROUTE-002'}:
+                    continue
+                for target in _batch1_ref_targets(x):
+                    if target in {'human_pairwise_preference'} and src == 'ROUTE-004':
+                        val_refs[target].append(dict(x, target=target))
+                    elif target in {'observed_action', 'observed_success', 'observed_failure'} and src in {'TRA-001', 'TRA-002'}:
+                        val_refs[target].append(dict(x, target=target))
+                    elif target in {'output_token_length', 'prefix_reuse_opportunity'} and src == 'CACHE-001':
+                        val_refs[target].append(dict(x, target=target))
+                    elif target == 'request_response_tokens' and src == 'TIME-001':
+                        val_refs[target].append(dict(x, target=target))
+                    elif target in {'call_quota_units', 'cache_read_tokens', 'call_output_tokens'} and src == 'OWN-002':
+                        val_refs[target].append(dict(x, target=target))
+    val_s1 = sorted(val_refs['human_pairwise_preference'], key=lambda x: x['stable_record_id'])
+    val_s2 = sorted(_batch1_pick_one_per_unit([r for t in ('observed_action', 'observed_success', 'observed_failure')
+                                               for r in val_refs[t]]), key=lambda x: x['stable_record_id'])
+    val_s3 = []
+    for target in ('output_token_length', 'prefix_reuse_opportunity', 'request_response_tokens',
+                   'call_quota_units', 'cache_read_tokens', 'call_output_tokens'):
+        val_s3.extend(sorted(val_refs[target], key=lambda x: x['stable_record_id'])[:1000])
+    for ref in val_s1 + val_s2 + val_s3:
+        wanted['val'][(ref['source_id'], ref['source_line'])].append(ref)
+
+    stats = {'train': Counter(), 'val': Counter()}
+    skipped = Counter()
+    handles = {}
+    try:
+        for split in ('train', 'val'):
+            source_max = defaultdict(int)
+            for src, line_no in wanted[split]:
+                source_max[src] = max(source_max[src], line_no)
+            for src in sorted(source_max):
+                path = (os.path.join(args.cleaned_root, PUBLIC_FILES[src]) if src in PUBLIC_FILES else OWN_FILES[src])
+                for line_no, raw in _source_rows(path):
+                    if line_no > source_max[src]:
+                        break
+                    refs = wanted[split].get((src, line_no))
+                    if not refs:
+                        continue
+                    for ref in refs:
+                        row = _example(src, raw, ref, ref['target'])
+                        if row is None:
+                            skipped[(split, src, ref['target'])] += 1
+                            continue
+                        row['_meta']['representative_only'] = False
+                        row['_meta']['batch1'] = True
+                        row['_meta']['selection_split'] = split
+                        key = 'S' + ref['primary_supervision_class'][1:] if ref['primary_supervision_class'].startswith('S') else ref['primary_supervision_class']
+                        filename = os.path.join(out, split, key + '.jsonl')
+                        if filename not in handles:
+                            handles[filename] = open(filename, 'w', encoding='utf8')
+                        handles[filename].write(json.dumps(row, ensure_ascii=False, separators=(',', ':')) + '\n')
+                        stats[split][key] += 1
+    finally:
+        for handle in handles.values():
+            handle.close()
+
+    manifest = {
+        'source': 'existing V2.1 level1 and batch_preparation candidate indexes',
+        'selection': {
+            'S1': 'all legal L1 ROUTE-004 train preference rows',
+            'S2': 'one stable target-bearing row per TRA-001/002 independent unit, outcome preferred over action',
+            'S3': 'stable per-target quotas totaling 6000 train rows',
+            'validation': 'L1 val rows, one row per S2 unit; at most 1000 rows per S3 target',
+        },
+        'train_rows': dict(stats['train']),
+        'val_rows': dict(stats['val']),
+        'skipped': {':'.join(k): v for k, v in skipped.items()},
+        'train_total': sum(stats['train'].values()),
+        'val_total': sum(stats['val'].values()),
+        'source_policy': 'ROUTE-001/002 excluded; analysis/evaluation sources excluded from train',
+    }
+    _dump(os.path.join(out, 'manifest.json'), manifest)
+    print(json.dumps({'batch1_out': out, 'manifest': manifest}, ensure_ascii=False), flush=True)
+    return manifest
