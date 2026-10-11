@@ -668,3 +668,11 @@ Execution 报告自称 660 万分层、八组状态覆盖、五阶段训练设�
   - 修复版 `train`（`66,566`）统计的零 GPU 规则基线在 `val`（`8,343`）上准确率为：均匀随机 `28.21%`、固定全局最高频单模型 `12.86%`、候选内 `train` 最高胜次 **`46.81%`**（`3,905/8,343`）、按数据源候选内 `train` 最高胜次 **`46.89%`**（`3,912/8,343`）、候选内 `train` 最高经验胜率 **`44.02%`**（`3,673/8,343`）。
   - Stage 1 技术与代码阻塞已 100% 解除（**`STAGE1_TECHNICAL_DATA_AND_CODE_READY = READY`**）；许可证状态保持原样（`ROUTE-004` `TRAIN_ALLOWED_VERIFIED`；`ROUTE-002` 与 `ROUTE-001` `LICENSE_PENDING`），待负责人批准后启动 GPU 训练。
 
+### 10.11 2026-10-11 大阶段收束、当前小任务与新增授权
+
+- **已经阶段性完成的数据工作**：14 个有效公开数据源，`6,600,628` 行不同粒度记录；唯一 `prepare_router_data.py` 入口 + `router_data/` 14 个独立适配模块；纠正数据 Source ID 与自有 CCH `110` 聚合行（代表 `750,212` 调用）、Blog `221,128` 调用行、`OWN-003` `79` 衍生行的统计口径；AgentSuite `273` 任务 × `30` 配置 = `8,190` 配置评估（`41,430` 展开行），同权重 Thinking 开关 `1,365` 对，专用权重 `273` 对，跨版本 `1,365` 对。
+- **已完成的 Stage 1 科研数据纠偏**：ROUTE-001 从 `548,059` 行重合并到 `24,441` 道独立原始题，合并 `21,144` 条完全重复同模型评估、隔离 `1,219` 道潜在胜者冲突题、排除 `openrouter`；ROUTE-002 排除 `87` 条真并列并打乱候选顺序；最终方案 B 纯静态 `83,259` 题（`train 66,566 / val 8,343 / test 8,350`；Regime A/B/C = `39,716 / 4,039 / 39,504`），既有 CPU Kev/Laya 编码均报告通过，旧冻结数据保留。
+- **研究范围不变**：八组状态依次为 Task/Subtask、Agent/Coordination、Context/Memory、Tool/Environment、Verification/Recovery、KV Cache/Continuity、Temporal/Execution、Provider/Availability；660 万行不代表动态模型×Effort 最优标签。同状态中途比较、真实跨模型缓存切换代价与八类完全联合监督当前为 `0`。
+- **2026-10-11 用户最新明确授权**：不要任何不必要的工程化设计；允许在当前唯一清洗主链上只针对训练 `state` 被约 `400` 字符截断做必要 Python 最小修改、CPU 验证、产生不覆盖旧结果的派生版，并据已有官方 Kev/Laya 源码确定首批参数；**GPU 正式训练、GPU 推理、付费 API、模型下载、大型 Benchmark 尚未授权**。A+B+C 按来源/体制分开，ROUTE-001/002 `LICENSE_PENDING` 不变；允许既有范围内差异审查、脱敏、无冲突后的文档与必要源码 GitHub 推送。
+- **唯一下一任务**：`MR-STAGE1-INPUT-FIX` **待执行/未收到完成报告**。过去 `MR-STAGE1-FAST-FIX` 的 `STAGE1_TECHNICAL_DATA_AND_CODE_READY=READY` 只适用于旧派生集的编码和修正，不构成此轮题面完整性已修复。待新输入核验完成再由负责人单独决定 `E2-STAGE1-BATCH1` 的 GPU 与数据使用权限。详细实时状态只看 `PROJECT_STATUS.md` 首页，不能用本节历史快照替代。
+

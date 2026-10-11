@@ -1,6 +1,6 @@
 # ModelRouter · 数据源、模型能力与缓存政策统一台账
 
-> **版本 v1.5｜建立：2026-10-09；官方数据结构只读核验与清洗/训练方案更新：2026-10-09｜阶段：E-DESIGN / Q-007 第一大阶段｜状态：候选目录，未完成清洗和训练许可核验**
+> **当前数据状态：2026-10-11｜14 个公开源 6,600,628 行已清洗；Stage 1 修复版 83,259 题已导出；下一小任务仅 CPU 训练题面修复与 Kev/Laya 参数确定，GPU 未授权。** 旧版号和历史状态按第 7 节追溯。
 >
 > **唯一职责**：此文件是公开数据源、数据许可、八组状态覆盖、模型/Provider 能力、缓存/定价政策及未来“候选 → 选择 → 数据加工 → 验收”信息的**唯一详细台账**。它不是新的执行流水线或运行时政策数据库。
 >
@@ -8,7 +8,7 @@
 >
 > **禁止误读**：登记 ≠ 已下载；官网有目录 ≠ 已核每个型号；公开许可证 ≠ 商业 API 输出自动可训练；可复用前缀 ≠ 生产缓存命中；task benchmark ≠ agent trajectory；API 调用成功 ≠ task resolved；跨模型同题评估 ≠ 相同中途状态的反事实。
 >
-> **新委派任务边界**：负责人已要求 Execution Agent 在自有服务器目录下载并 CPU 清洗公开数据（本机存储不足），但未回传真实清洗报告；本机 Codex 同步研究文档并组织 Obsidian 笔记。此任务委派并非已获 GPU 训练、付费 API 或修改共享服务许可；各数据集的实际条款和标签真实性仍需核实。
+> **最新执行范围**：公开数据 CPU 清洗及 `MR-STAGE1-FAST-FIX` 已完成，数据源与新旧监督细节见 §6.14–6.18。负责人仅允许在唯一主链做训练题面最小 CPU 修正和首批参数核对；没有批准 GPU 训练、付费 API 或覆盖冻结数据。
 
 > **执行汇报的固定格式（2026-10-10 用户确认）**：向用户汇报新一轮执行结果时，先说明项目整体进度，再按当前阶段小步骤逐项展开，接着给出下一步计划、可复制的详细执行提示词和简短通俗说明。唯一完整约定与新对话启动提示词在 [PLANNING_MEMORY.md 第 10 节](../planning/PLANNING_MEMORY.md#10-新会话恢复协议长期生效)；本台账仅保存数据源、模型和计费政策，不重复维护项目最新进度。
 
@@ -459,9 +459,28 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
   - 在 `CUDA_VISIBLE_DEVICES=""` 下，修复版 `66,566 / 8,343 / 8,350` 在官方 Kev（`max_state=384` 及 `7552`）与 Laya（`--max-len 1024 --head-max-len 512`）下 **`100.0%` 零跳过通过**（Laya 默认 `512/192` 会因 `options_collapsed` 跳过 `1,086 / 99 / 98 = 1,283` 条），双模型联合可训练交集 **`100.0%`（`83,259` 题）**。
   - 修复版 `train`（`66,566` 题）统计的零 GPU 规则基线在 `val`（`8,343` 题）上准确率为：均匀随机期望 `28.21%`、固定全局最高频模型（`mistralai/mistral-7b-chat`）`12.86%`（`1,073/8,343`）、候选内 `train` 最高胜次 **`46.81%`**（`3,905/8,343`）、按数据源候选内 `train` 最高胜次 **`46.89%`**（`3,912/8,343`）、候选内 `train` 最高经验胜率 **`44.02%`**（`3,673/8,343`）。
 
+### 6.18 2026-10-11 全量清洗阶段完成情况与当前唯一小任务（更新快照）
+
+**清洗规模（14 个已清洗来源，共 6,600,628 行；各行粒度不一致）**：
+
+| 组别 | 来源和清洗行数 | 可用于什么 |
+| --- | --- | --- |
+| Agent 轨迹 | `TRA-001` Open-SWE `2,075,629`；`TRA-002` SWE-smith `2,331,584`；`TRA-004` AgentSuite `41,430` | 状态前缀、工具/动作、轨迹终局；AgentSuite 仅 `273` 题 × `30` 配置，非 41,430 道题 |
+| 静态路由与偏好 | `ROUTE-001` LLMRouterBench `548,059`；`ROUTE-002` RouterBench `36,497`；`ROUTE-003` TwinRouterBench `970`；`ROUTE-004` Arena `57,477`；`ROUTE-005` FindingTheRightFit `6,204` | 同题模型表现、偏好、独立评测和成本/缓存分析；不是同状态在线反事实 |
+| 缓存与负载 | `CACHE-001` Mooncake `39,632`；`TIME-001` BurstGPT `1,404,294` | 历史前缀复用机会、请求到达与长度，不等于真实物理缓存命中 |
+| 环境任务 | `ENV-001` SWE-Gym `2,438`；`ENV-002` SWE-rebench-V2 `32,079` | 未来 Coding Benchmark 任务/环境；任务与已有 SWE 轨迹可能重合 |
+| 长程记忆 | `MEM-003` LongMemEval-V2 `451`；`MEM-005` MemoryCraft `23,884` | 长上下文与记忆评测，不直接提供模型选择奖励 |
+| 自有记录（**不加入上述总数**） | `OWN-001` CCH `110` 聚合行/代表 `750,212` 调用；`OWN-002` Blog `221,128` 次调用；`OWN-003` `79` 衍生汇总行 | 调用 Token、缓存 usage、Effort 和成本先验；衍生行不新增独立观测 |
+
+**八组变量现状**：`Task/Subtask` 有任务题面/阶段代理字段；`Agent/Coordination` 有框架标识但真实角色交接缺；`Context/Memory` 有字符长度和长记忆材料；`Tool/Environment` 有明确工具动作及环境题目；`Verification/Recovery` 多为轨迹终局重复结果而非逐步独立验证；`KV Cache/Continuity` 有 Blog 正缓存读数与 Mooncake 复用机会（非同类物理数据）；`Temporal/Execution` 有请求到达/Token/费用代理，但 Agent 整任务累计费用不完整；`Provider/Availability` 有候选模型和部分 Effort，但无真实路由时刻多动作结果。**完整八类联合动态路由监督 0，同状态中途动作比较 0，跨模型 KV 切换惩罚真值 0**，不可通过跨数据源拼接冒充。
+
+**Stage 1 当前修复版**：`runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed/`，`train 66,566 / val 8,343 / test 8,350 = 83,259`；`ROUTE-004/002/001 = 39,716 / 35,102 / 8,441`；`Regime A/B/C = 39,716 / 4,039 / 39,504`。已隔离 `16,360` 题分析池和 `970` 步 TwinRouterBench holdout。历史冻结 `84,310` 与前版 `83,895` 仅作比较，不能替代当前派生数据。历史执行报告显示 Kev/Laya `83,259` 条 CPU 编码 100% 通过。
+
+**唯一尚未完成的技术小任务**：训练输入中的 `prompt_snippet` 仍约 400 字符；已批准 `MR-STAGE1-INPUT-FIX` 限定 CPU 最小修复及 Kev/Laya 训练配置核对，**尚无完成报告**。当前不是批准正式 GPU 训练。费用字段 `ACTUAL_MEASURED_API_USD` 的历史命名不意味着有上游真实账单；`ROUTE-004` 训练许可已核，`ROUTE-002/001` 保持 `LICENSE_PENDING`。后续科研数据细节沿用 §6.14–6.17 和 `科研数据收尾报告.md`，不新建平行清洗或研究台账。
+
 ## 7. 后续阶段接口和变更历史
 
-当前状态：**已完成 `MR-STAGE1-FAST-FIX` 实验数据最小修复与全量 CPU 校验，Stage 1 技术与代码阻塞已 100% 解除（`STAGE1_TECHNICAL_DATA_AND_CODE_READY = READY`）；`ROUTE-004`（`39,716` 题）为 `TRAIN_ALLOWED_VERIFIED`，`ROUTE-002`（`35,102` 题）与 `ROUTE-001`（`8,441` 题）保持 `LICENSE_PENDING`；`RUNTIME_JOINT_DATA_READY = NOT_READY`**。现有冻结数据文件保持只读不变，正式 GPU 训练、付费 API 和批量评测尚未启动。下一工作包是等待负责人批准 GPU 训练及 `LICENSE_PENDING` 数据源使用范围后，启动 `E2-STAGE1-BATCH1`。
+当前状态：**公开数据清洗和 `MR-STAGE1-FAST-FIX` 已阶段性完成，旧版 `83,259` 题 CPU 编码技术准备已完成；唯一下一小任务 `MR-STAGE1-INPUT-FIX` 是训练题面截断最小 CPU 修正与 Kev/Laya 参数确定（已授权、未回报执行结果）。** `ROUTE-004` 为 `TRAIN_ALLOWED_VERIFIED`，`ROUTE-002/001` 为 `LICENSE_PENDING`；`RUNTIME_JOINT_DATA_READY=NOT_READY`，正式 GPU 训练、付费 API 和批量评测均尚未授权或启动。
 
 建议的后续分界：SOURCE-REVIEW & DATA-REPAIR（已完成 `MR-STAGE1-FAST-FIX` 技术修复，`ROUTE-004` 许可已核实，`ROUTE-002`/`ROUTE-001` 保持 `LICENSE_PENDING` 待负责人确认训练范围）→ Kev/Laya 正式训练与离线验证（E1/E2）→ Coding Benchmark 批量运行与受控多分支运行时采集（E3）→ 动态缓存感知路由（E4）→ 论文与消融（E5）。
 
