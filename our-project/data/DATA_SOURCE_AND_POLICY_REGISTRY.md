@@ -474,15 +474,19 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 
 **八组变量现状**：`Task/Subtask` 有任务题面/阶段代理字段；`Agent/Coordination` 有框架标识但真实角色交接缺；`Context/Memory` 有字符长度和长记忆材料；`Tool/Environment` 有明确工具动作及环境题目；`Verification/Recovery` 多为轨迹终局重复结果而非逐步独立验证；`KV Cache/Continuity` 有 Blog 正缓存读数与 Mooncake 复用机会（非同类物理数据）；`Temporal/Execution` 有请求到达/Token/费用代理，但 Agent 整任务累计费用不完整；`Provider/Availability` 有候选模型和部分 Effort，但无真实路由时刻多动作结果。**完整八类联合动态路由监督 0，同状态中途动作比较 0，跨模型 KV 切换惩罚真值 0**，不可通过跨数据源拼接冒充。
 
-**Stage 1 当前修复版**：`runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed/`，`train 66,566 / val 8,343 / test 8,350 = 83,259`；`ROUTE-004/002/001 = 39,716 / 35,102 / 8,441`；`Regime A/B/C = 39,716 / 4,039 / 39,504`。已隔离 `16,360` 题分析池和 `970` 步 TwinRouterBench holdout。历史冻结 `84,310` 与前版 `83,895` 仅作比较，不能替代当前派生数据。历史执行报告显示 Kev/Laya `83,259` 条 CPU 编码 100% 通过。
-
-**唯一尚未完成的技术小任务**：训练输入中的 `prompt_snippet` 仍约 400 字符；已批准 `MR-STAGE1-INPUT-FIX` 限定 CPU 最小修复及 Kev/Laya 训练配置核对，**尚无完成报告**。当前不是批准正式 GPU 训练。费用字段 `ACTUAL_MEASURED_API_USD` 的历史命名不意味着有上游真实账单；`ROUTE-004` 训练许可已核，`ROUTE-002/001` 保持 `LICENSE_PENDING`。后续科研数据细节沿用 §6.14–6.17 和 `科研数据收尾报告.md`，不新建平行清洗或研究台账。
+**Stage 1 全文题面恢复与 Stage 1–4 双模型训练视图适配（`runs/MR-ALLDATA-PREP-20261011/training/{laya,kev}/`）**：
+- `stage1_choice`：`train 66,721 / val 8,298 / test 8,240 = 83,259`（`ROUTE-004/002/001 = 39,716 / 35,102 / 8,441`；`Regime A/B/C = 39,716 / 4,039 / 39,504`）；`recomputed_route001` 排除 `1,953` 条不合法单胜者后为 `6,729 / 865 / 847 = 8,441`，与主 Choice `0` 差异。
+- `stage1_pairwise`：`47,241 / 5,941 / 5,867 = 59,049` 对（`ROUTE-001: 19,647, ROUTE-002: 39,402`）。
+- `stage1_soft_target`：`42,502 / 5,327 / 5,258 = 53,087` 题（`ROUTE-001: 18,932` [含 `7,333` 单胜者 + `11,599` 同分多模型分布题，剔除 `417` 道分数冲突题]；`ROUTE-002: 34,155` [含 `34,068` 单胜者 + `87` 双并列题，剔除 `1,034` 道 11 模型全满分无区分题]）。
+- `stage2_agent_state`：`70,334 / 8,683 / 9,070 = 88,087` 条轨迹级压缩记录（对应 `35,289` 个独立任务：`TRA-001: 30,000, TRA-002: 49,897, TRA-004: 8,190`，去除 `4,360,556` 条逐步重复终局行）。
+- `stage3_effort`：`217 / 39 / 34 = 290` 对同模型同权重有效胜负配对（`thinking-on` 胜 `182`、`thinking-off` 胜 `108`，排除 `1,075` 对同成同败平局）。
+- `stage4_auxiliary`：`1,297,178 / 162,623 / 162,746 = 1,622,547` 条有效调用记录（`CACHE-001: 39,632, TIME-001: 1,404,294, OWN-002: 178,621`，排除 `48,900` 条无效/禁止训练/聚合行）。
 
 ## 7. 后续阶段接口和变更历史
 
-当前状态：**公开数据清洗和 `MR-STAGE1-FAST-FIX` 已阶段性完成，旧版 `83,259` 题 CPU 编码技术准备已完成；唯一下一小任务 `MR-STAGE1-INPUT-FIX` 是训练题面截断最小 CPU 修正与 Kev/Laya 参数确定（已授权、未回报执行结果）。** `ROUTE-004` 为 `TRAIN_ALLOWED_VERIFIED`，`ROUTE-002/001` 为 `LICENSE_PENDING`；`RUNTIME_JOINT_DATA_READY=NOT_READY`，正式 GPU 训练、付费 API 和批量评测均尚未授权或启动。
+当前状态：**公开数据清洗、`MR-STAGE1-INPUT-FIX` 决策前全文恢复及 `MR-ALLDATA-ADAPTER-20261011` Laya-421M / Kev-4B 双模型全阶段（Stage 1–4）训练视图适配与 100% CPU 编码验证已全部完成；首轮训练参数与命令已就绪，暂停等待 GPU 训练授权。** `ROUTE-004` 为 `TRAIN_ALLOWED_VERIFIED`，`ROUTE-002/001` 为 `LICENSE_PENDING`；`RUNTIME_JOINT_DATA_READY=NOT_READY`，正式 GPU 训练、付费 API 和批量评测均尚未授权或启动。
 
-建议的后续分界：SOURCE-REVIEW & DATA-REPAIR（已完成 `MR-STAGE1-FAST-FIX` 技术修复，`ROUTE-004` 许可已核实，`ROUTE-002`/`ROUTE-001` 保持 `LICENSE_PENDING` 待负责人确认训练范围）→ Kev/Laya 正式训练与离线验证（E1/E2）→ Coding Benchmark 批量运行与受控多分支运行时采集（E3）→ 动态缓存感知路由（E4）→ 论文与消融（E5）。
+建议的后续分界：SOURCE-REVIEW & DATA-REPAIR（已完成技术修复与双模型训练视图适配，`ROUTE-004` 许可已核实，`ROUTE-002`/`ROUTE-001` 保持 `LICENSE_PENDING` 待负责人确认训练范围）→ Kev/Laya 正式训练与离线验证（E1/E2）→ Coding Benchmark 批量运行与受控多分支运行时采集（E3）→ 动态缓存感知路由（E4）→ 论文与消融（E5）。
 
 | 日期 | 版本 | 改动 | 决策/执行状态 |
 |---|---|---|---|
@@ -499,6 +503,5 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 | 2026-10-10 | v1.10 | 完成 `MR-STAGE1-REV-20261010`：对账 `"openrouter"` 方案 A（`76,078`）与方案 B（`83,895` 纯静态主集，降级 `309` 题至分析集），核实官方 `kev`/`laya` 加载器不支持按 `question_key` 过滤并在 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b/` 一次性生成物理移除 `difficulty_tier` 的派生纯静态 JSONL，收敛第一批训练为 1 次 Kev-4B + 1 次 Laya-421M，完成零 GPU 规则基线计算 | **Stage 1 最终训练协议与纯静态主实验数据视图归档完成** |
 | 2026-10-11 | v1.11 | 完成 `MR-STAGE1-FINAL-AUDIT`：逐源核实训练许可证（`ROUTE-004` `TRAIN_ALLOWED_VERIFIED`，`ROUTE-002`/`ROUTE-001` `LICENSE_PENDING`），查明 `ROUTE-001` 跨子集下标碰撞（全量 `1,165` 个键跨题碰撞、污染方案 B `563` 题，解释 `llmroute_hle_57` 实为 `gemini-2.5-pro` 双子集重复评测），完成 `83,895` 题 CPU-only 官方 Kev/Laya 全量编码校验（`100%` 通过且交集 `100%`），完成五级费用血统审计与八类动态路由变量联合覆盖矩阵（八类变量联合监督为 `0`） | **判定 `STAGE1_DATA_READY = NOT_READY`、`RUNTIME_JOINT_DATA_READY = NOT_READY`（审计证据归档于 `runs/MR-STAGE1-20261010/final-stage1-and-joint-coverage-audit.json`）** |
 | 2026-10-11 | v1.12 | 完成 `MR-STAGE1-FAST-FIX`：修正 P0 数据源行数/自有数据三表粒度/AgentSuite 配对数/八类状态名称；在 `router_data/route.py` 与 `views.py` 中用完整未截断 Prompt 哈希修复 `ROUTE-001` 跨子集题目合并（`24,441` 独立真题）、同模型相同评测去重（恢复 `llmroute_hle_57` 为 `gemini-2.5-pro` 唯一胜者）与 `1,219` 题分数/费用冲突隔离（保留 `8,441` 题入池）；固化 `ROUTE-002` 候选确定性打乱（`index 0` 胜出率 `9.20%/9.00%/9.51%`）与 `stage1_pure_static_scheme_b_fixed` 导出（`66,566 / 8,343 / 8,350 = 83,259` 题，双遍 SHA256 一致，Kev/Laya 100% CPU 兼容通过） | **Stage 1 技术与代码阻塞 100% 解除（`STAGE1_TECHNICAL_DATA_AND_CODE_READY = READY`），待负责人确认 GPU 训练授权** |
-## 2026-10-11 · MR-ALLDATA-PREP-20261011
+| 2026-10-11 | v1.13 | 完成 `MR-STAGE1-INPUT-FIX`、`MR-ALLDATA-PREP-20261011` 与 `MR-ALLDATA-ADAPTER-20261011`：恢复 Stage 1 决策前完整题面（`66,721 / 8,298 / 8,240 = 83,259`）；对齐 `ROUTE-001` 新旧 Choice（均为 `8,441` 题，`0` 差异）、Pairwise（`59,049` 对）与 Soft-Target/Score（`53,087` 题）的完整题目身份及统一语义划分（跨集泄漏 `0`）；在 `runs/MR-ALLDATA-PREP-20261011/training/{laya,kev}/` 生成 Stage 1–4 共 6 个独立训练子集（每模型 `1,906,319` 条记录），完成 100% CPU-only 官方加载与编码验证并锁定首轮训练参数 | **双模型全阶段训练视图与首轮参数准备完毕，暂停等待 GPU 训练授权** |
 
-服务器已从 14 个公开清洗源重新生成独立分层结果，公开记录合计 6,600,628 行；OWN-001/002/003 分别为 110、221,128、79 行。结果位于 `/home/syy/路由/runs/MR-ALLDATA-PREP-20261011/`，旧数据目录和旧 Stage 1 保持不变。ROUTE-001 聚合出 24,441 道独立题目；本轮另生成质量 Pairwise、评分向量、Agent 状态、Effort 配对及缓存/费用辅助文件。

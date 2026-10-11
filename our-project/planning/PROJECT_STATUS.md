@@ -1,52 +1,58 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-11。** 已阶段性结束「公开数据收集、清洗、Stage 1 静态样本纠偏」；**唯一当前小任务**为 `MR-STAGE1-INPUT-FIX`（在唯一主链中最小修正模型训练题面截断，并用 CPU 确认 Kev/Laya 第一批参数）。**已授权必要源码最小修改与 CPU 验证；未授权任何正式 GPU 训练、GPU 测试、付费 API 或 Coding Benchmark。** 此页首页是当前状态，以下历史快照不得倒灌覆盖。
+> **最新状态：2026-10-11。** 已完成「14 个公开数据源（`6,600,628` 行）与 3 个自有来源分层、`MR-STAGE1-INPUT-FIX` 全文决策前题面恢复，以及 `MR-ALLDATA-ADAPTER-20261011` Laya-421M / Kev-4B 双模型全阶段（Stage 1–4）独立训练视图适配与 100% CPU 官方编码校验」。**当前处于训练前暂停等待点：已备齐 Laya-421M 与 Kev-4B 首轮训练参数及命令；尚未授权或启动任何正式 GPU 训练、GPU 推理测试、付费 API 或 Coding Benchmark。** 此页首页是当前状态，以下历史快照不得倒灌覆盖。
 
 ## 一、总体项目进度
 
-**科研目标**：在真实单/多 Agent 的合法决策时刻，依据任务、代理协作、上下文记忆、工具环境、验证恢复、KV 缓存连续性、时间费用、模型/服务状态等八组可观测信息，选择 `(model, reasoning_effort)`；在成功率约束下优化整任务费用、Trace 次数和缓存切换成本。最终有效性需要真实 Agent Harness 与受控实验，不能由静态分类准确率证明。
+**科研目标**：面向单 Agent / 多子代理执行状态，利用八组研究变量（`Task/Subtask`、`Agent/Coordination`、`Context/Memory`、`Tool/Environment`、`Verification/Recovery`、`KV Cache/Continuity`、`Temporal/Execution`、`Provider/Availability`）以及模型、Reasoning Effort、KV 缓存、单次调用成本和任务平均 Trace 次数，学习模型路由决策，在任务成功率约束下降低完整任务成本。最终有效性需要真实 Agent Harness 与受控实验，不能由静态分类准确率证明。
 
 | 大阶段 / 工作 | 当前实际进度 |
 | --- | --- |
 | E0–E1：研究问题、数据源、环境、已有模型与 Smoke Test | 已完成主要准备；Kev/Laya 历史短训练与保存重载有执行汇总，不能称正式训练成果 |
 | 数据收集、14 个公开源统一 CPU 清洗 | **阶段性完成**：`6,600,628` 行，覆盖轨迹、静态评测、缓存请求、工作负载、环境和记忆；另有 CCH/Blog 自有数据，不能按同一粒度简单相加 |
-| Stage 1 静态训练样本纠偏与唯一处理链 | **已完成 `MR-STAGE1-FAST-FIX`**：修复 `ROUTE-001` 跨子集同题混拼、完全重复评测、胜者冲突，排除元路由器；保留唯一 `prepare_router_data.py` CLI + `router_data/` 内部模块 |
-| Stage 1 修复版纯静态视图 | **`83,259` 题已生成**：Train `66,566` / Val `8,343` / Test `8,350`；Kev/Laya 现有 CPU 编码检查报告均 100% 通过 |
-| **当前小任务：Stage 1 训练输入修正与训练配置** | **待执行/未收到完成报告**：实际训练 `state` 仍使用约 400 字符 `prompt_snippet`；已批准仅对相关部分作最小 CPU 修正，并确定 Kev/Laya 首批参数 |
-| E2：Kev/Laya 正式微调与离线对照 | **尚未启动；GPU 未授权**。保持 A/B/C 分源分体制评测；`ROUTE-001/002` 许可状态 `LICENSE_PENDING`，不得写成已获授权 |
+| Stage 1–4 全量分层与监督修复（P0） | **已完成**：对齐 `ROUTE-001` 新旧 Choice（均为 `8,441` 题，`0` 差异）、Pairwise（`59,049` 对）、Score/Soft-Target（`53,087` 题）的完整题目身份与统一 Train/Val/Test 语义划分（跨视图泄漏 `0`）；排除 `1,953` 条不合法单胜者与 `417` 道分数冲突题，保留 `11,599` 道 `ROUTE-001` 同分题与 `87` 道 `ROUTE-002` 双并列题于多模型比较视图 |
+| Laya-421M / Kev-4B 双模型训练视图适配与 CPU 校验（P1–P2） | **已完成**：在 `runs/MR-ALLDATA-PREP-20261011/training/{laya,kev}/` 生成 6 个训练子集（`stage1_choice` `83,259`、`stage1_pairwise` `59,049`、`stage1_soft_target` `53,087`、`stage2_agent_state` `88,087` 轨迹级、`stage3_effort` `290` 有效配对、`stage4_auxiliary` `1,622,547` 有效调用），合计每模型 `1,906,319` 条记录，均通过官方 CPU 加载与编码校验 |
+| **当前等待点：Laya-421M / Kev-4B 第一轮正式 GPU 训练（P3）** | **参数与命令已备齐，按指令暂停等待批准**：已基于官方 `laya-train` 与 `python -m kev.train` 锁定首轮超参数、数据路径与检查点输出目录 |
+| E2：Kev/Laya 正式微调与离线对照 | **尚未启动；GPU 未授权**。保持 A/B/C 分源分体制评测；`ROUTE-004` `TRAIN_ALLOWED_VERIFIED`，`ROUTE-001/002` `LICENSE_PENDING` |
 | E3–E5：Coding Benchmark、运行时缓存感知/多 Agent 动态路由、消融和论文 | **尚未启动**。同状态多动作、真实 KV 切换代价及整个任务回报的联合监督仍缺失 |
 
-**两项不可混淆的状态**：`STAGE1_TECHNICAL_DATA_AND_CODE_READY = READY` 仅指 2026-10-11 `FAST-FIX` 已完成的版本及其既有 CPU 编码检查，**不包含后续题面完整性修复**；`RUNTIME_JOINT_DATA_READY = NOT_READY`（八组运行时状态 + model×effort + 真实缓存和费用的完整联合监督为 0，同状态中途反事实分支为 0）。所有证据依据 GitHub `main` 与此前 Execution 报告；Planning 未实时读取服务器中的完整 JSONL 或 GPU 进程。
+**两项不可混淆的状态**：`STAGE1_TECHNICAL_DATA_AND_CODE_READY = READY`（含决策前完整题面恢复、跨视图身份/划分对齐及 Laya/Kev 双模型独立训练目录 CPU 100% 校验）；`RUNTIME_JOINT_DATA_READY = NOT_READY`（八组运行时状态 + model×effort + 真实缓存和费用的完整联合监督为 0，同状态中途反事实分支为 0）。
 
 ## 二、当前阶段各小步骤
 
-### A. 已完成的大块：数据清洗、正确性修正
+### A. 已完成的大块：数据清洗、正确性修正与双模型训练视图适配
 
-1. **源与数量**：14 个已清洗公开源共 `6,600,628` 条不同粒度记录；自有 `OWN-001` CCH `110` 聚合行对应 `750,212` 次调用、`OWN-002` Blog `221,128` 逐调用行、`OWN-003` `79` 衍生汇总行（新增独立观测 `0`）；纠正了 `6,620,400`、Source ID 错位与重复相加。
-2. **唯一处理链**：`prepare_router_data.py` 仍为唯一命令入口，8 种 `--mode` 保留；14 个公开源的独立适配保留于 `router_data/`，已冻结原始数据与历史导出未被 `FAST-FIX` 覆盖。
-3. **Agent/思考记录**：TRA-001/002/004 轨迹共 `4,448,643` 行，其中 AgentSuite `273` 任务 × `30` 配置 = `8,190` 次配置评估，清洗展开 `41,430` 行；同权重运行时 Thinking 开关配对 `1,365`，专用 Thinking 权重对照 `273`，跨版本对照 `1,365`。这些不是完整相同中途状态的反事实路由标签。
-4. **ROUTE-001**：`548,059` 次评估，原始 700 JSON 按完整 Prompt 哈希合并为 `24,441` 道独立题；去掉 `21,144` 条完全重复模型评测，隔离 `1,219` 道潜在胜者分数/费用冲突题，排除 `openrouter`，最终入 Stage 1 `8,441` 道合法纯静态胜者题。
-5. **ROUTE-002**：`35,189` 条历史单标签中剔除 `87` 条同分同估价真并列，保留 `35,102`；候选顺序按固定种子确定性打乱。ROUTE-004 Arena 保留 `39,716` 条人类胜负偏好。AgentSuite `19` 条末轮配置胜者不混入 Stage 1 主训练。
-6. **Stage 1 最终已有派生视图**：`ROUTE-004: 39,716` + `ROUTE-002: 35,102` + `ROUTE-001: 8,441` = **`83,259`**；Regime A `39,716`（人类偏好）、B `4,039`（质量唯一高分）、C `39,504`（同质量历史费用规则）；`16,360` 条分析池题、TwinRouterBench `970` 步隔离留出。两次导出文件 SHA256 相同，已有 Train/Val/Test ID/题面隔离验证与 Kev/Laya CPU 加载记录。
-7. **费用与数据边界**：ROUTE-002 费用主要为 Token × 价目估算；ROUTE-001 上游正费用缺逐条结算来源；CCH USD 与 Blog quotaUnits 不混加。Mooncake 前缀潜在复用不等于供应商物理缓存命中。660 万行不等于 660 万个最佳路由标签。
+1. **源与数量**：14 个已清洗公开源共 `6,600,628` 条不同粒度记录；自有 `OWN-001` CCH `110` 聚合行对应 `750,212` 次调用、`OWN-002` Blog `221,128` 逐调用行、`OWN-003` `79` 衍生汇总行（新增独立观测 `0`）。
+2. **唯一处理链**：`prepare_router_data.py` 为唯一命令入口（`--mode views` 与 `--mode all_data`），内部模块位于 `router_data/`；原始数据与历史冻结导出未被覆盖。
+3. **P0 监督修复与跨视图对齐**：
+   - `ROUTE-001` 新重算 Choice 严格剔除 `1,953` 条不合法单胜者（`ALL_MODELS_FAILED: 1,553`、`CONFLICTING_MODEL_SCORE_UNRESOLVED: 241`、`CONFLICTING_TIED_TOP_COST_UNRESOLVED: 141`、`CONFLICTING_WINNER_COST_UNRESOLVED: 17`、`TIED_SCORE_TIED_API_USD: 1`），从 `10,394` 收敛为 **`8,441` 条（`train: 6,729, val: 865, test: 847`）**，与 Stage 1 主 Choice 中的 `ROUTE-001` 子集逐题 100% 一致（差异 `0`）。
+   - 统一使用 `views.py` 的完整题面语义归一化哈希划分规则，消除 `all_data.py` 旧版二次哈希导致的不同视图跨集不一致（Soft-Target、Pairwise 与主 Choice 的跨集泄漏均为 `0`）。
+   - 在 `stage1_soft_target`（`53,087` 题：`42,502 / 5,327 / 5,258`）与 `stage1_pairwise`（`59,049` 对：`47,241 / 5,941 / 5,867`）中剔除 `417` 道同模型分数冲突题，完整保留 `11,599` 道 `ROUTE-001` 最高分并列但具备有效多模型质量分布的题目及 `87` 道 `ROUTE-002` 得分+估价双并列题。
+4. **P1–P2 双模型独立训练视图与 CPU 官方编码核验**：
+   - 独立目录 `runs/MR-ALLDATA-PREP-20261011/training/laya/` 与 `runs/MR-ALLDATA-PREP-20261011/training/kev/` 均包含 6 个阶段子目录：
+     - `stage1_choice`：`66,721 / 8,298 / 8,240 = 83,259`（Laya `1024/512` 100% 接收；Kev `--max_state 7552` 接收 `83,031` 条，跳过 `228` 条超长 `ROUTE-001` 样本）。
+     - `stage1_pairwise`：`47,241 / 5,941 / 5,867 = 59,049`（Laya 100% 接收；Kev `7552` 接收 `58,833` 条，跳过 `216` 条）。
+     - `stage1_soft_target`：`42,502 / 5,327 / 5,258 = 53,087`（Laya `gold.probabilities` 软分布、Kev `label + target` 概率向量；Kev `7552` 接收 `52,872` 条，跳过 `215` 条）。
+     - `stage2_agent_state`：`70,334 / 8,683 / 9,070 = 88,087` 条轨迹级压缩记录（对应 `35,289` 个独立任务，去除 `4,360,556` 条逐步重复终局行；两模型 `384/7552` 均 100% 零截断通过）。
+     - `stage3_effort`：`217 / 39 / 34 = 290` 对同模型同权重有效胜负配对（排除 `1,075` 对同成同败平局；两模型 100% 零截断通过）。
+     - `stage4_auxiliary`：`1,297,178 / 162,623 / 162,746 = 1,622,547` 条有效单请求辅助记录（排除 `42,507` 条失败/零 Token 调用、`6,204` 条禁止训练的 `ROUTE-005` 及 `189` 条聚合行；两模型 100% 零截断通过）。
 
-### B. 唯一正在等待执行的小任务：`MR-STAGE1-INPUT-FIX`
+### B. 唯一正在等待批准的步骤：启动首轮 Laya-421M / Kev-4B 训练
 
-- **现有代码实际缺口**：`router_data/route.py` 对 ROUTE-001/002 使用 `[:400]` 构造 `prompt_snippet`；`router_data/views.py` 的 ROUTE-001 训练 `state`、ROUTE-002 训练 `state` 和 Arena 训练 `state` 仍消费该摘要。完整 Prompt 哈希只保证去重身份，并不使模型训练自动看到全文。
-- **已批准**：在唯一 `--mode views` 路径及必要既有函数内最小修复决策前完整题面；保留标签与划分，输出新的派生目录，只做必要 CPU 样本/编码核对；从现有官方 Kev/Laya 源码确定首批真实参数和拟执行命令。
-- **未批准**：GPU 正式训练/推理、付费 API、下载依赖或模型、改写原始数据/冻结 JSONL、第二条流水线。上一轮 `FAST-FIX` 的 100% 编码通过不能代替此轮的全文 Token 截断统计。
+- **已就绪**：双模型全阶段训练 JSONL、CPU 编码兼容统计表、首轮训练超参数与命令均已核实完备。
+- **未批准**：正式 GPU 训练、GPU 推理评测、付费 API、Coding Benchmark 批量运行。
 
 ## 三、后续唯一计划
 
-**先执行 `MR-STAGE1-INPUT-FIX`，完成后停止并回报。** 如全文保留导致官方上下文窗口或候选标记受损，记录实际受影响题数并做必要最小修正；不得悄悄将过长输入称为“已完整可见”。输出本轮新的 `train/val/test` 数量、Regime A/B/C、Kev/Laya 有效交集与候选训练参数。正式 `E2-STAGE1-BATCH1` 只能在负责人之后明确批准 GPU 及数据使用范围时启动。
+**等待负责人确认 GPU 训练授权及 `ROUTE-001/002`（`LICENSE_PENDING`）训练范围后，启动 Stage 1 首轮 Laya-421M 与 Kev-4B 微调对比实验（先跑 `stage1_choice` 与 `stage1_soft_target`）。**
 
 ## 四、下一步执行提示词（给 Codex）
 
-> 继续 ModelRouter 唯一 `prepare_router_data.py --mode views`，不新建任何工程化流水线。当前正式旧派生集 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed/` 为 `66,566 / 8,343 / 8,350 = 83,259`；只针对 ROUTE-001/002/Arena 的模型训练题面被约 400 字符截断问题，在 `router_data/route.py`、`router_data/views.py` 及必要旧函数内实施最小 CPU 修正，从已有原始文件获取决策前全文，不泄漏未来结果、标签和评分；保留现有任务身份、A/B/C、候选与 split、原始/冻结文件；所有新派生输出定向 `runs/MR-STAGE1-INPUT-FIX/`，小样本先验，再仅核对受影响数据的 CPU 编码及真实 Token 截断/候选折叠。只读现有官方 Kev/Laya 训练代码并提出两个模型各一份未执行的训练参数与命令；不得调用 GPU、API、下载或开展 Benchmark。只更新必要已有文件，按已有授权审查后提交推送，五段汇报后停止。
+> 在获得负责人正式 GPU 训练授权后，基于 `runs/MR-ALLDATA-PREP-20261011/training/laya/` 与 `runs/MR-ALLDATA-PREP-20261011/training/kev/` 中已通过 100% CPU 校验的统一划分数据，按已锁定的首轮命令依次执行 Laya-421M（`laya-train --loss soft-ce --max-len 1024 --head-max-len 512`）与 Kev-4B（`python -m kev.train --weights lora --lora 16 --head_dim 256 --max_state 7552`）在 `stage1_choice` 与 `stage1_soft_target` 上的微调；仅使用 `val.jsonl` 选模与校准，`test.jsonl` 仅作单次终评，并按数据源（`ROUTE-004/002/001`）与监督体制（`Regime A/B/C`）分别汇报准确率、校准误差（ECE/Brier）与推理延迟。
 
 ## 五、简单情况说明
 
-已经处理的是“把大量不同来源记录清洗好、分类好，并筛出可靠的静态模型选择题”。接下来要处理的是“让模型实际看到足够完整的题目，再决定怎么训练”。**当前还没有 Kev/Laya 正式训练结果，也没有证明 KV 缓存感知动态路由能节省任务总成本的实验结果。**
+已经把 14 个公开数据集（660 万行）和自有数据里所有能用于训练的部分，修复了跨子集串题、分割不一致和并列标签问题，并按 Laya-421M 和 Kev-4B 各自要求的官方数据格式分别生成了可直接读取的训练文件，还在 CPU 上逐条验证通过。**现在数据和训练命令都已经准备好，停在启动 GPU 训练之前等待批准。**
 
 ## 固定汇报与新对话
 
@@ -274,6 +280,7 @@ configs/
 ### 2026-10-11 · MR-STAGE1-INPUT-FIX
 
 已在现有唯一入口恢复 ROUTE-001、ROUTE-002、ROUTE-004 的完整决策前题面，并生成服务器派生集 `runs/MR-STAGE1-INPUT-FIX/stage1/`：`66,721 / 8,298 / 8,240 = 83,259`。官方 Kev/Laya CPU 编码验证 84,229 条全部通过；Kev-4B 上限实际截断 228 条，Laya 1024/512 实际截断 898 条。与旧派生集逐任务的胜者和候选集合均无变化。GPU 训练仍未执行。
-### 2026-10-11 · MR-ALLDATA-PREP-20261011
+### 2026-10-11 · MR-ALLDATA-PREP-20261011 & MR-ALLDATA-ADAPTER-20261011
 
-全量公开清洗数据与现有 OWN 数据已完成独立分层，结果在服务器 `/home/syy/路由/runs/MR-ALLDATA-PREP-20261011/`。公开源合计 6,600,628 行；ROUTE-001 独立题目 24,441 道；新增 Pairwise 59,466 条、评分向量 53,504 条、Agent 状态 4,448,643 条、Effort 配对 1,365 对。未执行 GPU、API 或 Coding Benchmark。
+全量公开清洗数据（`6,600,628` 行）与自有数据（`OWN-001: 110, OWN-002: 221,128, OWN-003: 79`）已在 `runs/MR-ALLDATA-PREP-20261011/` 完成独立分层及双模型训练视图适配：修复 `ROUTE-001` 新旧 Choice（均为 `8,441` 条，`0` 差异）、Pairwise（`59,049` 条）与 Soft-Target/Score（`53,087` 条）的跨视图身份及统一 Train/Val/Test 划分（跨集泄漏 `0`）；在 `training/laya/` 与 `training/kev/` 分别生成 `stage1_choice`（`83,259`）、`stage1_pairwise`（`59,049`）、`stage1_soft_target`（`53,087`）、`stage2_agent_state`（`88,087` 轨迹级）、`stage3_effort`（`290` 有效配对）、`stage4_auxiliary`（`1,622,547` 有效调用），全部通过 100% CPU 官方加载与编码验证，并备齐首轮训练参数与命令，暂停等待 GPU 训练授权。
+

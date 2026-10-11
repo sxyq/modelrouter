@@ -674,7 +674,22 @@ Execution 报告自称 660 万分层、八组状态覆盖、五阶段训练设�
 - **已完成的 Stage 1 科研数据纠偏**：ROUTE-001 从 `548,059` 行重合并到 `24,441` 道独立原始题，合并 `21,144` 条完全重复同模型评估、隔离 `1,219` 道潜在胜者冲突题、排除 `openrouter`；ROUTE-002 排除 `87` 条真并列并打乱候选顺序；最终方案 B 纯静态 `83,259` 题（`train 66,566 / val 8,343 / test 8,350`；Regime A/B/C = `39,716 / 4,039 / 39,504`），既有 CPU Kev/Laya 编码均报告通过，旧冻结数据保留。
 - **研究范围不变**：八组状态依次为 Task/Subtask、Agent/Coordination、Context/Memory、Tool/Environment、Verification/Recovery、KV Cache/Continuity、Temporal/Execution、Provider/Availability；660 万行不代表动态模型×Effort 最优标签。同状态中途比较、真实跨模型缓存切换代价与八类完全联合监督当前为 `0`。
 - **2026-10-11 用户最新明确授权**：不要任何不必要的工程化设计；允许在当前唯一清洗主链上只针对训练 `state` 被约 `400` 字符截断做必要 Python 最小修改、CPU 验证、产生不覆盖旧结果的派生版，并据已有官方 Kev/Laya 源码确定首批参数；**GPU 正式训练、GPU 推理、付费 API、模型下载、大型 Benchmark 尚未授权**。A+B+C 按来源/体制分开，ROUTE-001/002 `LICENSE_PENDING` 不变；允许既有范围内差异审查、脱敏、无冲突后的文档与必要源码 GitHub 推送。
-- **唯一下一任务**：`MR-STAGE1-INPUT-FIX` **待执行/未收到完成报告**。过去 `MR-STAGE1-FAST-FIX` 的 `STAGE1_TECHNICAL_DATA_AND_CODE_READY=READY` 只适用于旧派生集的编码和修正，不构成此轮题面完整性已修复。待新输入核验完成再由负责人单独决定 `E2-STAGE1-BATCH1` 的 GPU 与数据使用权限。详细实时状态只看 `PROJECT_STATUS.md` 首页，不能用本节历史快照替代。
-## 2026-10-11 · MR-ALLDATA-PREP-20261011
+- **唯一下一任务**：`MR-STAGE1-INPUT-FIX` 与 `MR-ALLDATA-ADAPTER-20261011` 均已完成（详见 §10.12）。待负责人单独决定 `E2-STAGE1-BATCH1` 的 GPU 与数据使用权限。详细实时状态只看 `PROJECT_STATUS.md` 首页，不能用本节历史快照替代。
 
-本轮完成全量数据的独立分层准备：来源引用、八类变量引用、Stage 1 Choice/Pairwise/Score、Stage 2 Agent、Stage 3 Effort、Stage 4 Cache/Cost 均写入服务器新目录。ROUTE-001 的元路由器候选已排除；未启动 GPU 训练。
+### 10.12 2026-10-11 `MR-ALLDATA-PREP-20261011` 与 `MR-ALLDATA-ADAPTER-20261011` 双模型训练数据最终适配
+
+- **1. P0 监督修复与跨视图身份/划分对齐**：
+  - 统一 `stage1_choice`（`83,259` 题）、`recomputed_route001`（`8,441` 题）、`stage1_pairwise`（`59,049` 对）、`stage1_soft_target` / `stage1_score`（`53,087` 题）的真实完整题目身份（`ROUTE-001` 采用 `(benchmark_name, full_prompt_hash)`，`ROUTE-002` 采用 `sample_id`，`ROUTE-004` 采用 `battle_id`）与唯一 Train/Val/Test 语义归一化哈希划分规则，消除旧版二次哈希导致的跨集漂移（跨视图划分不一致数 = `0`）。
+  - 在 `recomputed_route001` 中严格剔除 `1,953` 条不合法单胜者（`ALL_MODELS_FAILED: 1,553`、`CONFLICTING_MODEL_SCORE_UNRESOLVED: 241`、`CONFLICTING_TIED_TOP_COST_UNRESOLVED: 141`、`CONFLICTING_WINNER_COST_UNRESOLVED: 17`、`TIED_SCORE_TIED_API_USD: 1`），从 `10,394` 收敛为 **`8,441` 题（`train: 6,729, val: 865, test: 847`）**，与主 Choice 中的 `ROUTE-001` 子集逐题 100% 一致（差异 `0`）。
+  - 在 `stage1_soft_target`（`53,087` 题：`42,502 / 5,327 / 5,258`）与 `stage1_pairwise`（`59,049` 对：`47,241 / 5,941 / 5,867`）中剔除 `417` 道同模型分数冲突题（`CONFLICTING_MODEL_SCORE_UNRESOLVED`），完整保留 `11,599` 道 `ROUTE-001` 最高分并列但具备有效多模型质量分布的题目及 `87` 道 `ROUTE-002` 得分+估价双并列题。
+- **2. P1–P2 Laya-421M / Kev-4B 双模型独立训练视图与 100% CPU 官方编码核验**：
+  - 在 `runs/MR-ALLDATA-PREP-20261011/training/laya/` 与 `runs/MR-ALLDATA-PREP-20261011/training/kev/` 分别生成 6 个训练阶段子集（每模型合计 `1,906,319` 条记录）：
+    - `stage1_choice`：`66,721 / 8,298 / 8,240 = 83,259`（Both accepted [`7552`]: `83,031`；Laya only [`7552`]: `228`；Kev only: `0`；Neither: `0`；Laya `1024` 截断 `899` 条）。
+    - `stage1_pairwise`：`47,241 / 5,941 / 5,867 = 59,049`（Both accepted [`7552`]: `58,833`；Laya only [`7552`]: `216`；Laya `1024` 截断 `493` 条）。
+    - `stage1_soft_target`：`42,502 / 5,327 / 5,258 = 53,087`（Laya 使用 `gold.probabilities` 软分布、Kev 使用 `label + target` 概率向量；Both accepted [`7552`]: `52,872`；Laya only [`7552`]: `215`；Laya `1024` 截断 `606` 条）。
+    - `stage2_agent_state`：`70,334 / 8,683 / 9,070 = 88,087` 条轨迹级压缩记录（对应 `35,289` 个独立任务，去除 `4,360,556` 条逐步重复终局行；Both accepted [`384/7552`]: `88,087`，`100.0%` 零截断）。
+    - `stage3_effort`：`217 / 39 / 34 = 290` 对同模型同权重有效胜负配对（排除 `1,075` 对同成同败平局；Both accepted [`384/7552`]: `290`，`100.0%` 零截断）。
+    - `stage4_auxiliary`：`1,297,178 / 162,623 / 162,746 = 1,622,547` 条有效单请求辅助记录（排除 `48,900` 条无效/分析/聚合行；Both accepted [`384/7552`]: `1,622,547`，`100.0%` 零截断）。
+- **3. P3 首轮训练参数准备与暂停**：
+  - 已备齐 Laya-421M（`laya-train --loss soft-ce --max-len 1024 --head-max-len 512`）与 Kev-4B（`python -m kev.train --weights lora --lora 16 --head_dim 256 --max_state 7552`）的首轮训练超参数、命令与检查点输出目录，按要求在启动正式 GPU 训练前暂停。
+
