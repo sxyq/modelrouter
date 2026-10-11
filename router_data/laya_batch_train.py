@@ -186,7 +186,7 @@ def main():
     if args.run == 'R0':
         print(json.dumps(run_baseline(args.batch_root, args.model_dir, args.out_root, args.seed), ensure_ascii=False, indent=2))
     else:
-        result = run_experiment(args.run, args.batch_root, args.parent_checkpoint or args.model_dir,
+        result = run_experiment(args.run, args.batch_root, args.model_dir,
                                 args.out_root, args.parent_checkpoint or None, args.epochs, args.seed)
         print(json.dumps(result, ensure_ascii=False, indent=2))
 
