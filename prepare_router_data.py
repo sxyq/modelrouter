@@ -19,13 +19,14 @@ from router_data.env_memory import run_mem_mas_env_batch
 from router_data.route import run_route_batch
 from router_data.tra import run_tra_batch
 from router_data.views import build_unified_training_and_evaluation_views
+from router_data.all_data import prepare_all_data
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="ModelRouter 唯一数据清洗与特征提取入口")
     parser.add_argument(
         "--mode",
-        choices=["blog", "tra", "route", "cache_time", "mem_mas_env", "public", "views", "all"],
+        choices=["blog", "tra", "route", "cache_time", "mem_mas_env", "public", "views", "all", "all_data"],
         default="public",
         help="执行模式: blog (私有数据), tra (Batch 1: Agent轨迹), route (Batch 2: 路由比较), cache_time (Batch 3: 缓存时间), mem_mas_env (Batch 4: 记忆协作环境), public (全部公开数据并生成训练视图), views (仅构建训练视图与Kev划分), all (全部私有+公开+训练视图)",
     )
@@ -69,6 +70,11 @@ def parse_args():
         "--manifest-path",
         default="",
         help="机器可读 Manifest 输出路径（默认生成于 preview-root 同级目录的 manifest.json）",
+    )
+    parser.add_argument(
+        "--all-data-out-dir",
+        default="runs/MR-ALLDATA-PREP-20261011",
+        help="全量清洗数据分层与训练准备的独立输出目录",
     )
     parser.add_argument(
         "--seed",
@@ -116,6 +122,8 @@ def main():
         run_mem_mas_env_batch(args)
     elif args.mode == "views":
         build_unified_training_and_evaluation_views(args)
+    elif args.mode == "all_data":
+        prepare_all_data(args)
     elif args.mode == "public":
         print("\n" + "=" * 70)
         print("  ModelRouter 公开数据全量清洗与规范化流水线 (--mode public)")

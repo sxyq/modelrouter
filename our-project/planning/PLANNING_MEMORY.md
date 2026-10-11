@@ -675,4 +675,6 @@ Execution 报告自称 660 万分层、八组状态覆盖、五阶段训练设�
 - **研究范围不变**：八组状态依次为 Task/Subtask、Agent/Coordination、Context/Memory、Tool/Environment、Verification/Recovery、KV Cache/Continuity、Temporal/Execution、Provider/Availability；660 万行不代表动态模型×Effort 最优标签。同状态中途比较、真实跨模型缓存切换代价与八类完全联合监督当前为 `0`。
 - **2026-10-11 用户最新明确授权**：不要任何不必要的工程化设计；允许在当前唯一清洗主链上只针对训练 `state` 被约 `400` 字符截断做必要 Python 最小修改、CPU 验证、产生不覆盖旧结果的派生版，并据已有官方 Kev/Laya 源码确定首批参数；**GPU 正式训练、GPU 推理、付费 API、模型下载、大型 Benchmark 尚未授权**。A+B+C 按来源/体制分开，ROUTE-001/002 `LICENSE_PENDING` 不变；允许既有范围内差异审查、脱敏、无冲突后的文档与必要源码 GitHub 推送。
 - **唯一下一任务**：`MR-STAGE1-INPUT-FIX` **待执行/未收到完成报告**。过去 `MR-STAGE1-FAST-FIX` 的 `STAGE1_TECHNICAL_DATA_AND_CODE_READY=READY` 只适用于旧派生集的编码和修正，不构成此轮题面完整性已修复。待新输入核验完成再由负责人单独决定 `E2-STAGE1-BATCH1` 的 GPU 与数据使用权限。详细实时状态只看 `PROJECT_STATUS.md` 首页，不能用本节历史快照替代。
+## 2026-10-11 · MR-ALLDATA-PREP-20261011
 
+本轮完成全量数据的独立分层准备：来源引用、八类变量引用、Stage 1 Choice/Pairwise/Score、Stage 2 Agent、Stage 3 Effort、Stage 4 Cache/Cost 均写入服务器新目录。ROUTE-001 的元路由器候选已排除；未启动 GPU 训练。

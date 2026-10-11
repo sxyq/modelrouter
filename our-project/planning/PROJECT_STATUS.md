@@ -274,3 +274,6 @@ configs/
 ### 2026-10-11 · MR-STAGE1-INPUT-FIX
 
 已在现有唯一入口恢复 ROUTE-001、ROUTE-002、ROUTE-004 的完整决策前题面，并生成服务器派生集 `runs/MR-STAGE1-INPUT-FIX/stage1/`：`66,721 / 8,298 / 8,240 = 83,259`。官方 Kev/Laya CPU 编码验证 84,229 条全部通过；Kev-4B 上限实际截断 228 条，Laya 1024/512 实际截断 898 条。与旧派生集逐任务的胜者和候选集合均无变化。GPU 训练仍未执行。
+### 2026-10-11 · MR-ALLDATA-PREP-20261011
+
+全量公开清洗数据与现有 OWN 数据已完成独立分层，结果在服务器 `/home/syy/路由/runs/MR-ALLDATA-PREP-20261011/`。公开源合计 6,600,628 行；ROUTE-001 独立题目 24,441 道；新增 Pairwise 59,466 条、评分向量 53,504 条、Agent 状态 4,448,643 条、Effort 配对 1,365 对。未执行 GPU、API 或 Coding Benchmark。
