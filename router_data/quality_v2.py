@@ -112,6 +112,8 @@ def classify(src,r,m):
   if nonnegative(pre.get('input_length')) and nonnegative(gt.get('output_length')):
    label('output_token_length','ground_truth_outcome.output_length'); label('prefix_reuse_opportunity','observed_decision.historical_prefix_hit_ratio');q='Q1'
   else:q='Q3'
+  if src=='CACHE-001' and m.get('quality_grade')=='Q3':
+   q='Q3'; reasons.append('preserved_v1_analysis_only_prefix_opportunity')
  elif src=='TIME-001':
   main='S3'
   if nonnegative(pre.get('prompt_tokens')) and nonnegative(gt.get('response_tokens')):
@@ -145,32 +147,27 @@ def classify(src,r,m):
  return dict(source_id=src,stable_record_id=m['record_id'],source_file=m['source_file'],source_line=m['source_line'],independent_unit_id=m['unit_id'],independent_unit_type=m['unit_type'],task_id=m.get('task_id'),trajectory_id=m.get('trajectory_id'),quality_grade=q,quality_reason=reasons or ['valid_source_specific_target'],primary_supervision_class=main,specific_supervision_targets=list(targets),label_evidence=targets,observed=[t for t in targets if t not in estimated],estimated=estimated,unknown=unknown,variable_coverage=coverage,split=m['split_identity'],license_status=m['license_status'],source_policy_train_allowed=permission,train_eligible=eligible,train_eligibility_reason='eligible_for_source_specific_auxiliary_or_preference_only' if eligible else 'quality_target_policy_or_preserved_split_excludes',candidate_targets=usable if eligible else [],direct_runtime_joint_route_label=False)
 
 def group_layers(groups):
- # Representatives minimise repetition; subsequent coverage adds configuration diversity and long contexts.
- ordered=sorted(groups,key=lambda u:(groups[u]['q'],groups[u]['n'],groups[u]['length'],u))
- n=len(ordered); cap=max(1,int(n**0.5)); assigned={}; seen=set()
- for u in ordered:
-  sig=groups[u]['scenario']
-  if sig not in seen and len(assigned)<cap:assigned[u]='L1';seen.add(sig)
- seen=set()
- for u in ordered:
-  if u in assigned:continue
-  sig=groups[u]['signature']
-  if sig not in seen and len(seen)<max(1,cap*4):assigned[u]='L2';seen.add(sig)
- remaining=[u for u in ordered if u not in assigned]; lengths=sorted(groups[u]['length'] for u in remaining); threshold=lengths[int(len(lengths)*0.9)] if lengths else 0
- for u in remaining:
-  assigned[u]='L3' if groups[u]['q']<4 and groups[u]['length']>threshold else 'L4'
- # Each source has real reference coverage; select one best available unassigned-complexity group if a tier is empty.
- for l in ['L1','L2','L3','L4']:
-  if l not in assigned.values():
-   counts=Counter(assigned.values()); pool=[u for u in ordered if counts[assigned[u]]>1]
-   if pool:assigned[pool[0]]=l
+ # Each source is partitioned by independent units. Quality is the primary key;
+ # a stable digest breaks ties so source order cannot determine a layer.
+ ordered=sorted(groups,key=lambda u:(groups[u]['q'], hashlib.sha256((groups[u]['signature']+'|'+u).encode()).hexdigest(), u))
+ n=len(ordered)
+ cuts=[max(1,round(n*0.10)),max(1,round(n*0.20)),max(1,round(n*0.30))]
+ while sum(cuts)>=n and n>=4:
+  cuts[-1]-=1
+  if cuts[-1]<1: cuts[-1]=1
+  if sum(cuts)<n: break
+ assigned={}; start=0
+ for layer,count in zip(('L1','L2','L3'),cuts):
+  for u in ordered[start:start+count]: assigned[u]=layer
+  start+=count
+ for u in ordered[start:]: assigned[u]='L4'
  return assigned
 
 def dump(path,obj):
  with open(path,'w',encoding='utf8') as f:json.dump(obj,f,ensure_ascii=False,indent=2)
 
 def run_quality_v2(args):
- out=os.path.join(args.all_data_out_dir,'quality_grading_v2'); v1=os.path.join(args.all_data_out_dir,'quality_grading')
+ out=os.path.join(args.all_data_out_dir,'quality_grading_v2_1'); v1=os.path.join(args.all_data_out_dir,'quality_grading')
  os.makedirs(out,exist_ok=True)
  for d in ['by_source','level1','level2','level3','level4']:os.makedirs(os.path.join(out,d),exist_ok=True)
  sources={s:os.path.join(args.cleaned_root,p) for s,p in PUBLIC_FILES.items()};sources.update(OWN_FILES)
@@ -188,11 +185,13 @@ def run_quality_v2(args):
    g=groups.setdefault(u,dict(q=4,n=0,length=0,scenario=str(m.get('scenario') or 'unknown'),signature=''))
    g['q']=min(g['q'],int(x['quality_grade'][1:]));g['n']+=1;g['length']=max(g['length'],length)
    g['signature']=str((g['scenario'],p.get('model_name') or r.get('model_normalized'),p.get('reasoning_effort_mode') or r.get('reasoning_effort'),int(length//1024),r.get('observed_decision',{}).get('action_type')))
-  assignment=group_layers(groups); q=Counter();s=Counter();c=Counter(); vm={l:{v:Counter() for v in VARIABLES} for l in layerstats};ts=defaultdict(lambda:dict(rows=0,units=set(),eligible_rows=0,eligible_units=set()));seen_candidate=set(); actual_candidates=0
+  assignment=group_layers(groups); q=Counter();s=Counter();c=Counter(); vm={l:{v:Counter() for v in VARIABLES} for l in layerstats}; layer_units={l:set() for l in layerstats}; layer_candidate_units={l:set() for l in layerstats};ts=defaultdict(lambda:dict(rows=0,units=set(),eligible_rows=0,eligible_units=set()));seen_candidate=set(); actual_candidates=0
   handles={l:gzip.open(os.path.join(out,'level'+l[1:],src+'.jsonl.gz'),'wt',encoding='utf8',compresslevel=1) for l in layerstats}
   with gzip.open(os.path.join(out,'by_source',src+'.jsonl.gz'),'wt',encoding='utf8',compresslevel=1) as f:
    for i,r,m in rows(src,path,ref):
     x=classify(src,r,m);u=x['independent_unit_id'];l=assignment[u];x['assigned_layer']=l
+    layer_units[l].add((x['independent_unit_type'],u))
+    if x['train_eligible']: layer_candidate_units[l].add((x['independent_unit_type'],u))
     q[x['quality_grade']]+=1;s[x['primary_supervision_class']]+=1;c['source_policy_allowed_rows']+=int(x['source_policy_train_allowed']);c['eligible_rows']+=int(x['train_eligible']);c['supervised_rows']+=bool(x['specific_supervision_targets'])
     # One candidate per independent outcome unit; action steps retain their own observed action identities.
     for t in x['specific_supervision_targets']:
@@ -207,6 +206,9 @@ def run_quality_v2(args):
   after=os.stat(path); unchanged=(before.st_size,before.st_mtime_ns)==(after.st_size,after.st_mtime_ns)
   quality[src]=dict(q,rows=sum(q.values()),independent_units=len(groups),independent_trajectories=len(trajectories),duplicate_record_ids=sum(q.values())-len(record_ids))
   supervision[src]=dict(s);matrix[src]=vm;candidates[src]=dict(c,deduplicated_target_units=len(seen_candidate));targetstats[src]={t:{k:len(v) if isinstance(v,set) else v for k,v in z.items()} for t,z in ts.items()}
+  for l in layerstats:
+   layerstats[l][src]['independent_units']=sum(1 for typ,u in layer_units[l] if u in assignment)
+   layerstats[l][src]['candidate_independent_units']=sum(1 for typ,u in layer_candidate_units[l] if u in assignment)
   validation[src]=dict(source_unchanged=unchanged,rows=sum(q.values()),layer_rows=sum(layerstats[l][src]['rows'] for l in layerstats),primary_rows=sum(s.values()),preserved_split_conflicts=0,units=len(groups))
   if not unchanged:raise ValueError('input changed '+src)
   print(src,quality[src],candidates[src],flush=True)
@@ -215,14 +217,16 @@ def run_quality_v2(args):
  summary={'generation':metadata,'public_rows':public,'own_rows':{s:quality[s]['rows'] for s in OWN_FILES},'quality_by_source':quality,'layer_details':{l:{s:dict(v) for s,v in ss.items()} for l,ss in layerstats.items()},'validation':validation,'target_statistics':targetstats}
  dump(os.path.join(out,'quality_summary.json'),summary);dump(os.path.join(out,'supervision_summary.json'),{'generation':metadata,'by_source':supervision,'specific_targets':targetstats});dump(os.path.join(out,'source_variable_matrix.json'),matrix);dump(os.path.join(out,'train_candidate_summary.json'),{'by_source':candidates,'by_target':targetstats,'runtime_joint_route_labels':0})
  v1q=json.load(open(os.path.join(v1,'quality_summary.json')))['quality_by_source']
+ v2root=os.path.join(args.all_data_out_dir,'quality_grading_v2')
+ v2q=json.load(open(os.path.join(v2root,'quality_summary.json')))['quality_by_source'] if os.path.exists(os.path.join(v2root,'quality_summary.json')) else {}
  with open(os.path.join(out,'tables.md'),'w',encoding='utf8') as f:
   f.write('# MR-DATA-GRADING-V2\n\n仅生成引用索引；真实联合路由标签为 0。\n\n|来源|记录|独立单位|Q1|Q2|Q3|Q4|S1|S2|S3|S4|候选记录|去重目标单位|\n|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n')
   for src,z in quality.items():f.write('|'+src+'|'+ '|'.join(str(v) for v in [z['rows'],z['independent_units']]+[z.get(k,0) for k in ['Q1','Q2','Q3','Q4']]+[supervision[src].get(k,0) for k in ['S1','S2','S3','S4']]+[candidates[src]['eligible_rows'],candidates[src]['deduplicated_target_units']])+'|\n')
-  f.write('\n## V1/V2\n\n|来源|V1 Q1/Q2/Q3/Q4|V2 Q1/Q2/Q3/Q4|\n|---|---|---|\n')
-  for src,z in quality.items():f.write('|'+src+'|'+str([v1q[src].get(k,0) for k in ['Q1','Q2','Q3','Q4']])+'|'+str([z.get(k,0) for k in ['Q1','Q2','Q3','Q4']])+'|\n')
-  f.write('\n## 四层来源与字段\n\n|层|来源|记录|八变量非空数量，按正式变量顺序|\n|---|---|---:|---|\n')
+  f.write('\n## V1/V2/V2.1\n\n|来源|V1 Q1/Q2/Q3/Q4|V2 Q1/Q2/Q3/Q4|V2.1 Q1/Q2/Q3/Q4|\n|---|---|---|---|\n')
+  for src,z in quality.items():f.write('|'+src+'|'+str([v1q[src].get(k,0) for k in ['Q1','Q2','Q3','Q4']])+'|'+str([v2q.get(src,{}).get(k,0) for k in ['Q1','Q2','Q3','Q4']])+'|'+str([z.get(k,0) for k in ['Q1','Q2','Q3','Q4']])+'|\n')
+  f.write('\n## 四层来源与字段\n\n|层|来源|记录|独立单位|候选独立单位|八变量非空数量，按正式变量顺序|\n|---|---|---:|---:|---:|---|\n')
   for l,ss in layerstats.items():
-   for src,z in ss.items():f.write(f"|{l}|{src}|{z['rows']}|{[matrix[src][l][v]['nonempty'] for v in VARIABLES]}|\n")
+   for src,z in ss.items():f.write(f"|{l}|{src}|{z['rows']}|{z['independent_units']}|{z['candidate_independent_units']}|{[matrix[src][l][v]['nonempty'] for v in VARIABLES]}|\n")
   f.write('\n## 具体目标\n\n|来源|目标|记录|独立单位|合法候选记录|候选独立单位|\n|---|---|---:|---:|---:|---:|\n')
   for src,tt in targetstats.items():
    for t,z in tt.items():f.write(f"|{src}|{t}|{z['rows']}|{z['units']}|{z['eligible_rows']}|{z['eligible_units']}|\n")
