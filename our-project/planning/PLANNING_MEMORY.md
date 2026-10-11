@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v2.1｜更新：2026-10-09｜角色：Planning Agent + Execution Agent**
+> **版本：v2.2｜更新：2026-10-12｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
@@ -8,7 +8,7 @@
 
 ## 0. 30 秒恢复上下文
 
-**2026-10-10 当前交接覆盖说明**：本轮 `MR-FINAL-20261010` 的结果见第 10.6 节与 Status 首页。此前 §9.26、§10.4 的全项完成表述已被定向证据更正，不能继续当作训练就绪证明。用户随后明确要求整理、提交并推送本轮改动，实际版本以 Git 记录为准。
+**2026-10-12 当前交接覆盖说明**：本轮 Laya-421M Batch 1 的 R0→R1→R2→R3 已完成，结果见第 10.12 节与 Status 首页。此前仅描述“等待 GPU”的文字属于历史快照，当前以服务器实验目录和最新 Git 记录为准；Kev、Coding Benchmark 和付费 API 仍未运行。
 
 - 项目：**ModelRouter**，研究**长程单/多 Agent 执行过程中的状态感知、任务级 Model × Reasoning Effort 联合路由**。
 - 主方法：**确定性 State Builder + 动态候选与硬约束 + 单一 Kev-4B（Qwen3.5-4B-Base/LoRA/pointer head）决策模型 + Agent Harness + 完整记账与任务终局评价**。
