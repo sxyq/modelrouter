@@ -1,161 +1,138 @@
-# ModelRouter 组会 PPT：叙事重排、原创路由流程图与论文原图规划（v4：主图设计与本地截图库任务版）
+# ModelRouter 组会 PPT：沿用旧版「生图页面 + 真实论文原图嵌入」的制作规划（v5）
 
-> 2026-10-12｜**只规划，不画图、不裁剪/导出 PDF 图片、不制作 PPT、不训练模型**。本版重新明确论文选取优先级、主流程图版式、原图取舍和本地 Agent 的最小交付。
-> 研究事实以 [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)、[PROJECT_STATUS](PROJECT_STATUS.md)、[研究内容简纲](GROUP_MEETING_RESEARCH_BRIEF.md) 为准。
-> **用户补充**：最初四篇论文的图已经使用过。当前仓库文献表尚不能唯一确认是哪四篇、用了哪些 Figure；本稿不擅自认定，要求本地 Agent 先核对已有 PPT/截图资产，**优先补充不重复的新论文图**。
+> 2026-10-12｜本轮**只规划与更新 Markdown，不生图、不制作 PPT、不启动深度研究、不训练模型**。
+> 事实依据：仓库旧版 \`our-project/汇报/PPT/deck.html\`、\`演讲文稿.md\`、\`PPT_19页论文与数据汇报规划.md\`、已有论文截图清单，以及 \`GROUP_MEETING_RESEARCH_BRIEF.md\`、\`RESEARCH_OVERVIEW.md\`、\`PROJECT_STATUS.md\`。
+> **重要修正**：已经通过旧版 deck 与演讲稿明确“最初已用的四篇”是 **Unified AI Gateway、Google CATS、OpenSquilla / Agentic Routing、Route-to-Reason**。先前 v4 不知道旧四篇是谁，误把 Gateway、Route-to-Reason 当作“新图”；现在纠正。此处的“看过”指已检查 HTML/讲稿/素材文件与引用关系；**尚未对每张二进制 PNG 做像素级视觉预览**。
 
-## 0. 这次组会真正要讲的三个问题
+## 0. 先学旧汇报：不是把论文 PDF 直接塞进幻灯片
 
-1. **为什么换方向**：KV Cache 影响切换成本，但它不能单独决定长程 Agent 的工具失败、恢复、成功概率和任务总费用；Gateway/INFRAMIND 等先例也要求我们不能把“缓存感知路由”说成首创。
-2. **我们的方法究竟是什么**：在每个合法模型调用边界，基于八组**决策前**状态，过滤真实可执行的模型×推理档位组合，由 Kev/Laya 类路由决策器选择，Agent 执行后收集工具/验证/真实费用反馈，再进入下一轮；任务结束后按成功率与完整费用评价。
-3. **凭什么相信有效**：目前只有数据、训练视图和 CPU 适配，**没有**正式微调或真实 Agent 路由降本结果。后续必须用真实 Harness 的动态对照、状态消融和任务级计费证明。
+### 0.1 仓库中真实存在的旧成品
 
-**表达规则**：少堆名词和论文列表；先用场景与别人的原图说明研究缺口，再用一张我们自己的主流程图解释机制，最后讲数据、可检验实验和导师需要决定的事。
+- **播放器**：\`our-project/汇报/PPT/deck.html\`，20 页，目录、翻页、全屏。
+- **完整图片页面**：\`our-project/汇报/PPT/assets/deck-images/page-01.png\` 至 \`page-20.png\` 中的 18 张；P3、P4 是 \`P3-model-matrix-dashboard.html\` 与 \`P4-kv-cache.html\` 两页独立 HTML。**不要误说“旧版是普通 PPT”**。
+- **论文页在旧版中的位置**：P7–9 Gateway；P10–12 Google CATS；P13–15 OpenSquilla；P16–18 Route-to-Reason。四篇各按“问题 → 方法 → 结果”讲，原论文 Figure 是整页视觉叙事的组成部分。
+- **已有裁剪源**：\`research/task-level-cost-routing/visual_report_assets/paper_screenshots/\` 下有 \`raw/\`、\`crops/\`、\`annotated/\`。例如 \`crops/unified_gateway_p03_fig02.png\`、\`crops/rtr_p02_fig01.png\`、\`crops/mtrouter_p04_fig02.png\`、\`crops/cats_p02_fig01.png\`、\`crops/opensquilla_p06_fig02.png\`。
+- **额外旧图**：\`our-project/汇报/PPT/assets/unified-gateway-images/page-06-hidden-cache-cost.png\`、\`page-07-joint-control-plane.png\`、\`page-08-results-boundary.png\`。不要重复制作这些已存在的论点图。
 
-## 1. 重排后的 14 页 PPT（约 18–20 分钟）
+### 0.2 继承旧版视觉语言，但新内容要重排
 
-| 页 | 标题（尽量用问题句） | 这一页只讲一件事 | 图像安排 | 证据/状态 |
-|---:|---|---|---|---|
-| 01 | **ModelRouter：为什么一次便宜不等于任务便宜？** | 长程 Coding Agent，目标是在成功率约束下降低整任务成本 | 简洁封面，**不占用论文原图** | 项目目标；不是已证实结论 |
-| 02 | **Agent 会反复调用模型：费用在哪里累积？** | 调用、工具、测试、失败重试形成长链；用“便宜但多次失败 vs 较贵但更快完成”的**假设场景**解释动机 | 我们自己的两条轨迹示意，标注“概念示例，非实验数据” | 动机 |
-| 03 | **KV Cache 为什么是起点，又为什么不够？** | 原来关注缓存连续性与切换损失；Gateway 已联合模型/缓存，INFRAMIND 已用基础设施状态进行 Agent 编排 | **Gateway Fig.2 + INFRAMIND Fig.2**：前者解释 KV 联合控制，后者直观展示基础设施感知选择；INFRAMIND Fig.3 留作备用 | 直接先例，P0 |
-| 04 | **Agent 路由为什么还需要历史和进度？** | MTRouter 已考虑历史，ProgRouter 已考虑工作流进度；我们需回答状态增量与任务总费用 | **ProgRouter Fig.2** 为新图主选；若最初四篇中已有 MTRouter，直接复用旧素材，不重复裁剪 | 最近邻，P0 |
-| 05 | **模型和推理强度能一起选择吗？** | Route-to-Reason 已做 model×reasoning strategy；SWE-Router 说明部分轨迹可触发升级。说明 provider 原生 effort 与论文中的 strategy 不是同义词 | **Route-to-Reason Fig.1** 为主；SWE-Router 如在最初四篇中已用，仅复用，不重复裁剪 | 已有先例，P0/P1 |
-| 06 | **我们的 ModelRouter 每一步怎样工作？** | **整场核心：原创在线闭环路由流程图**，展示调用前状态→合法候选→路由器→模型执行→工具/验证/费用→下一步；终局评价 | **一张占大部分版面的原创流程图**；不使用论文截图 | **拟议方法，尚未实测** |
-| 07 | **八组状态到底改变了哪个决策？** | 把八组状态贴回第 06 页流程的“State Snapshot”；分任务/协作、交互/验证、缓存/系统三层，强调决策前可见 | 原创状态分层图或主图局部放大，**不再重新画第二张大流程** | 假设，需要消融 |
-| 08 | **谁来做路由决策：Kev 还是 Laya？** | Kev-4B 混合 Qwen3.5 骨干+pointer；Laya-421M ModernBERT+决策头；二者都是 typed decision，非生成 Agent | 官方模型卡/源码事实绘制的对照卡，不伪装成论文 Figure | 已适配，未正式训练 |
-| 09 | **数据已经准备到什么程度？** | 14 公开源 6,600,628 异构行；6 个视图，Choice 83,259 / Agent State 88,087 / Effort 290 等，不是 660 万真值 | **真实数据图**：来源分布+视图用途，清楚分开单位 | 已完成清洗/适配 |
-| 10 | **第一轮微调能证明什么、不能证明什么？** | Kev/Laya 同许可数据静态冷启动；标签 A/B/C 语义不同；训练许可与 holdout 约束；静态准确率不代表动态收益 | 简洁“合法数据→训练→验证/校准→留出测试”图 | **拟议**；GPU 未启动 |
-| 11 | **Agent History 该给路由器什么？** | 最近 K 步、结构化事件摘要、混合方案；首轮建议结构化，但未定 | 3 种输入示意卡；可旁注 MTRouter 原图对应位置 | **待导师讨论** |
-| 12 | **怎样用真实 Agent 验证？** | 一个现有 Coding Harness、任务级完整执行、每次决策日志、真实费用/缓存与终局；TwinRouterBench 是动态评测依据 | **TwinRouterBench Fig.1**（静态/动态两条轨道）+ 我们自己的极简实验流程 | **拟议**，非已运行 |
-| 13 | **五个 RQ 与必要消融** | RQ1 状态增量；RQ2 Model×Effort；RQ3 任务级目标；RQ4 KV/History；RQ5 Kev/Laya 开销。比较 fixed/task-only/cache-only/model-only/full | 一张 RQ×对照矩阵；主指标 Success、Total Cost、Total Spend/#Resolved、Pareto | 待证伪 |
-| 14 | **目前完成什么，还需要导师决定什么？** | 已完成数据/CPU 适配；未完成 GPU 微调、History、真实动态实验；讨论状态、History、模型、Harness/预算 | 进度两栏+四个具体问题 | 当前事实 |
+旧版 HTML 明确的配色：背景 \`#f5f3ee\`（暖纸白）、卡片 \`#fffefa\`、正文 \`#17202a\`、注释 \`#66727d\`、锈红 \`#b45739\`（研究问题/强调）、青绿 \`#2e766b\`（执行/反馈）、蓝 \`#4b7795\`（状态/数据）、金 \`#bd8a36\`（成本/预算）；标题采用 Georgia/宋体式衬线，正文采用无衬线。16:9；浅色背景；细线卡片；留白充足。
 
-**顺序重点**：03–05 是“别人已经做过什么”，06 是“我们怎么做”，07–11 是“输入、模型、数据”，12–14 是“怎么验证”。不要把全部相关论文挤在最后一页才出现。
+**要复制的是“有论文原图、图像化讲故事、少字、风格统一”的呈现方式，不是复制旧版 20 页内容。** 旧版的最终问题是“执行前预测是否值得”（admission-only），**现版主线已变成 runtime Agent state-aware 的逐次 Model×Effort 联合选择**。不能沿用旧版最后一页的研究结论，也不能把旧版 859,549 次调用和新整理的 6,600,628 异构行混为一谈。
 
-## 2. 第 06 页原创主流程图：先确定画法，不实际绘制
+## 1. 新版统一生产方式：生图负责视觉，原论文图必须真实无损
 
-### 2.1 推荐版式：16:9 的“4 个主盒子 + 底部反馈回环”，不是六个盒子挤一排
+### 1.1 每页分三层，而不是一口气让模型画完全部文字和论文图
 
-**图名**：Runtime State-Aware Model × Reasoning-Effort Routing for Long-Horizon Agents（拟议方法）。
+1. **内容锁定层（文字/数据/流程逻辑）**：先写该页唯一结论、准确的数值、合法箭头与引用，来自本项目 Markdown/论文 PDF。不能让生图模型自由编造。
+2. **视觉生成层（生图）**：为每页生成**完整 16:9 背景构图、空间、卡片、装饰和原创概念插画**，预留清楚的论文图/数据图插入区域。可以把旧版 \`page-07.png\`、\`page-14.png\`、\`page-16.png\` 作为**风格参考**，但不能复用其中旧的研究结论。
+3. **真实素材合成层（最后嵌入）**：将原 PDF 裁剪出的 Figure、真实数据图、精确标题、来源和关键标注，**以原始像素/矢量独立叠加到生成的页面上**。不能让生图模型“临摹”论文流程图或重新生成图中文字；否则不再是真实论文图。最终输出仍是一张视觉统一的完整页面 PNG，视觉上和旧版一致。
 
-**图的核心观点**：**每次模型调用前重新决策，而不是只在任务开始时选一次模型**。图中同时区分“谁执行任务”（生成模型/Agent Harness）与“谁选择模型”（Kev/Laya 路由器）。
+**生成与合成的区别**：可以把原图作为生图时的版式参考，但最终必须用源文件的真实裁剪图覆盖到指定区域。对主流程图的关键箭头、状态名称、公式、数值同样采用受控矢量/文字叠加，生图仅负责美术表达。
 
-**从左到右的四个主盒子**：
+### 1.2 三种页面模版
 
-1. **Agent Harness / Task at step t**：当前 Coding 任务、Agent 角色、已执行历史和下一次合法 LLM 调用边界；Harness 负责实际任务、工具与测试。
-2. **State Snapshot + Feasible Action Filter**：在调用前截取八组状态，形成合法候选集合 `A_t = {(model, effort) | provider/上下文/预算/可用性支持}`。该盒内部上下两层：上层“八组决策前状态”，下层“合法动作过滤”。**过滤并不意味着已实现系统调度**。
-3. **Router: Kev-4B OR Laya-421M**：将状态和合法候选编码为 typed choice/score，输出本步选定的 `(model_t, effort_t)`；Kev 与 Laya 是**互为对照的实现**，不是串联的两个模型。图中不要伪造已训练的 Q-value/成功概率。
-4. **Selected Generative LLM Call**：调用真实可用的生成模型与其支持的 effort，得到回复、真实 provider usage 和可获得的 cache usage。**Kev/Laya 不负责生成 Agent 的代码/答案**。
-
-**底部回环（从右向左）**：`Tool / Environment → Test / Verifier → Recovery / History Update → State at t+1`；只有存在下一次合法调用时，才回到第 1–2 盒重新路由。**任务结束**则从右侧单独连到 `Episode End: resolved? / total USD / latency`，终局信息**不能逆流成为当前 t 的输入**。
-
-**图顶端一条窄带**（视觉上可分 3 色，但不要堆 8 个大卡）：
-- 任务层：Task/Subtask、Agent/Coordination、Context/Memory
-- 执行反馈层：Tool/Environment、Verification/Recovery
-- 系统层：KV/Continuity、Temporal/Execution、Provider/Availability
-
-History 是这些状态的**表示方式**，不是“第九组”。KV 的 provider-reported cached tokens、估计 prefix overlap 和模拟命中必须在注释中分开；**不得画出默认跨模型物理 KV 迁移**。
-
-**示例动作**只用于视觉解释：`(A, low)`、`(A, high)`、`(B, medium)`，必须标注“示意；最终以 provider 真实能力过滤”。若页面空间不足，把离线训练虚线分支完全移至第 10 页，不与在线闭环混画。
-
-**建议讲图的顺序（约 45–60 秒）**：① Agent 到达调用边界；② 读当前八组状态；③ 过滤不合法 model×effort；④ Kev 或 Laya 选下一调用；⑤ 生成模型执行，工具/测试返回反馈；⑥ 任务终局统一核算成功和总费用。
-
-### 2.2 视觉层级与讲解节奏
-
-- **深色/主色实线**：真实 Agent 在线执行路径；**回环箭头**：下一次调用重新决策；**虚线**：拟议训练/实验，不是已经完成。
-- **唯一突出的大盒子**：Router + Feasible Action Filter；旁边直接展示示例候选，如 (Model A, low), (Model A, high), (Model B, medium)，**仅作示意**，必须说明真实合法性取决于 provider。
-- **KV 小标注放在 Provider/State 两端**：reported cached tokens ≠ estimated prefix overlap ≠ simulated hit；切换的损失依赖真实服务后端。
-- **不出现**未来测试结果进入路由输入、模型间无条件 KV 迁移、无来源的百分比降本、已经完成的实时调度/训练。
-- **讲图顺序 20–30 秒**：① 什么时候决策 → ② 看哪些状态 → ③ 过滤什么动作 → ④ 谁做选择 → ⑤ 执行后什么反馈 → ⑥ 终局如何算成功与成本。
-
-### 2.3 为什么这张图应成为主图
-
-它与相关工作的比较轴直接对应：Gateway 的“系统缓存/模型联合控制”、INFRAMIND 的“基础设施 Agent 编排”、MTRouter 的“History”、PROGROUTER 的“Progress”、Route-to-Reason 的“Model×Reasoning”，最终落到**我们的具体研究假设**：这些信息在**真实任务级反馈**下是否能产生可测增量。八组状态只是输入组织方式，不自动等于创新。
-
-
-### 2.4 在 PPT 上具体怎样摆放（比复杂架构图更容易讲）
-
-推荐使用 16:9 横版：**上方标题和一句结论（约 15% 高度）；中间四个主盒子（约 55%）；下方反馈闭环（约 25%）；右下角终局结果小框**。四个主盒子各占相近宽度，状态快照+合法动作过滤可在同一个盒子里上下分区。
-
-| 位置 | 框内只保留的文字 | 演讲时一句话 |
-|---|---|---|
-| 左 ① Agent Harness | 当前任务 / 角色 / 调用边界 t | “Agent 每次需要调用 LLM 时才触发路由” |
-| 中左 ② State + Feasible Actions | 8 组决策前状态；Provider 支持的 Model×Effort | “先知道现在发生了什么，再排除不合法选项” |
-| 中右 ③ Decision Router | Kev-4B **或** Laya-421M；typed choice | “路由器只负责选择，不负责生成代码” |
-| 右 ④ Generative LLM | 选中的模型+effort；LLM 回复 | “真正写代码/规划工具动作的是生成模型” |
-| 下方回环 | Tool → Test → Recovery/History → t+1 | “测试与工具结果更新下一轮状态” |
-| 右下终局 | resolved?；episode total USD；latency | “完整任务结束才评价成功和总费用” |
-
-**画图示例（只作示意，非训练结果）**：第 t 步最近测试失败、剩余预算充足，候选集合里有 (A, high) 与 (B, medium)；第 t+1 步工具成功后状态改变，路由器可重新选择。不要画成固定“失败必升强模型、成功必降便宜模型”的硬规则。
-
-**两个绝不能画错的地方**：① Kev 与 Laya 是并列实验候选，不是 Kev → Laya 两级串联；② Cache continuity 是观测/估计状态，不是默认可跨模型直接迁移的物理 KV。八组状态可以在第 07 页放大解释，**第 06 页不堆八张小卡**。
-
-**图的视觉优先级**：在线调用的 ①→④ 实线最粗；底部工具/验证反馈次之；离线训练只放第 10 页。状态与动作盒子是方法的核心；系统监控不是单独研究一套 GPU 调度系统。主图标题下标注“Proposed / Not yet evaluated”。
-
-## 3. 论文原图：5 篇新图主选 + 1 篇条件补位 + 2 篇备选
-
-> 用户明确说明最初四篇论文的图片已用过。仓库研究证据表按序的前四篇是 MTRouter、BiCSRouter、SWE-Router、EvoRoute，**但排序不能证明这就是 PPT 已用的四篇**。本地 Agent 必须先查旧 PPT/截图资产；已用的只复用，不重复裁剪。新素材不超过 5–6 张，不为凑数量而加图。
-
-### 3.1 新增优先级：论文、具体 Figure、为什么选
-
-| 优先级 / PPT | 论文及官方 PDF | 具体原图与 PDF 物理页（从 1 开始） | 讲述作用 / 核实情况 |
+| 类型 | 用途 | 生图生成什么 | 后合成什么 |
 |---|---|---|---|
-| **P0 / 03** | [Unified AI Gateway](https://arxiv.org/pdf/2609.06940) | **Fig. 2**，Conventional AI Gateway vs Unified AI Gateway；**物理页待本地 PDF 核实** | 缓存管理与模型选择联合控制已有先例；图号及内容从论文文本镜像核实，**本轮未成功打开原 PDF** |
-| **P0 / 03** | [INFRAMIND](https://arxiv.org/pdf/2606.11440) | **Figure 2，物理第 2 页**：Traditional MAS vs InfraMind 的负载/模型/策略选择对照。**Figure 3，物理第 5 页**：完整 Planner–Executor–Monitor–Scheduler（备选） | Fig.2 比 Fig.3 更适合与 Gateway 并排投影；两图编号与页码已从原 PDF 核实，Fig.3 已直接查看原图 |
-| **P0 / 04** | [ProgRouter](https://arxiv.org/pdf/2608.25992) | **Figure 2**：Progress-guided routing overall procedure；**物理页待本地 PDF 核实** | 用工作流 ledger、进度、预算说明为什么只看 KV 不够；图号从论文文本转载核实，**本轮未成功打开原 PDF** |
-| **P0 / 05** | [Route-to-Reason](https://arxiv.org/pdf/2505.19435) | **Figure 1，物理第 2 页**：Dynamic Reasoning vs Model Routing vs RTR | 已直接查看原 PDF 图；证明联合 model×reasoning strategy 已有研究，**不等于原生 provider reasoning_effort** |
-| **P0 / 12** | [TwinRouterBench](https://arxiv.org/pdf/2605.18859) | **Figure 1，物理第 2 页**：Fast Static Track vs Live Dynamic Track | 已直接查看原 PDF 图；解释为何静态路由精度不能代替真实任务成功与 provider 花费 |
-| **条件补位 / 04、11** | [MTRouter（ACL 2026）](https://aclanthology.org/2026.acl-long.2045.pdf) | **Figure 2，物理第 4 页，印刷第 44209 页**：History Encoder + Model Encoder + Outcome Estimator | 已直接查看 ACL 原 PDF 图；**只有旧四篇没用过或需要复用旧资产时才放，不再重复截** |
+| **A 论文证据页** | 03/04/05/12 | 有层次的论文介绍页、边框、解释区、指引线与留白 | **真实论文 Figure**（优先占宽 55–65%）、论文名、Fig.号、来源、1 句结论/限制 |
+| **B 我们的方法页** | 02/06/07/08/10/11/13/14 | Agent 场景插画、流程容器、概念分层、卡片、适量抽象纹理 | 真实流程箭头、状态字段、模型名称、合法动作、公式、待验证标记 |
+| **C 真实数据页** | 09（以及必要时 13） | 背景版式、数据可视化容器、图例位置 | **从真实表计算生成**的柱图/比例/数字；不让图像模型自由写数据 |
 
-### 3.2 备选论文和只引文、不裁图的论文
+页面文字总量：标题 1 行、结论 1 句、图中标签若干、脚注 1 行。讲解内容放演讲稿，不塞满图片。
 
-| 层级 | 论文 | 安排 |
-|---|---|---|
-| **P1 备选** | [SWE-Router](https://arxiv.org/pdf/2607.00053) | Figure 1，物理第 2 页（据仓库前次核对；本轮未重新打开 PDF）；第 04/11 页需要说明“部分轨迹→继续/升级”时使用。若在旧四篇中，复用已有图 |
-| **P1 备选** | [EarlyEval](https://arxiv.org/pdf/2609.02783) | 适合“中途历史预测终局”的第 11/12 页；**不锁定 Figure 编号与页码**，本地读原 PDF 后决定 |
-| **P2 正文引用** | [FrugalGPT](https://arxiv.org/abs/2305.05176)、[RouteLLM](https://arxiv.org/abs/2406.18665)、[RouterBench](https://arxiv.org/abs/2403.12031) | 第 02/09/10 页：请求级路由和静态监督背景，不再占用大图 |
-| **P2 正文引用** | [TRACE-Router](https://arxiv.org/abs/2607.22465)、[TACIT-Switch](https://arxiv.org/abs/2608.27911)、[Budget-Aware Agentic Routing](https://arxiv.org/abs/2602.21227)、[EvoRoute](https://aclanthology.org/2026.acl-long.1771/) | 第 04/12/13 页：任务级路由、切换、预算和反馈的近邻；已用旧图优先复用 |
-| **P2 正文引用** | [Mooncake](https://www.usenix.org/conference/fast25/presentation/qin)、[LMCache](https://arxiv.org/abs/2510.09665) | 第 03/07 页：缓存系统背景；不是 ModelRouter 的直接算法对照 |
-| **P2 讨论备用** | [RouteGuard](https://arxiv.org/abs/2608.07583)、[Task- and Session-Level Model Routing](https://arxiv.org/abs/2608.14641) | 第 13 页：提醒“路由器分数高”不一定意味着任务级收益；通常只需引用 |
+## 2. 新版 14 页逐页生图分镜（18–20 分钟）
 
-**图像配额与版面**：第 03 页 2 张（Gateway Fig.2 + INFRAMIND Fig.2）；第 04 页 1 张（ProgRouter Fig.2，必要时配旧 MTRouter 小图）；第 05 页 1 张（Route-to-Reason Fig.1）；第 12 页 1 张（TwinRouterBench Fig.1）。因此正常情况下**新增 5 张原图即可**，不是八篇全部截图。第 06 页只放我们的原创主流程图，不掺论文原图。
+| 页 | 核心画面（最终生成页面） | 类型 | 必须叠加的真实内容/来源 | 这一页观众记住什么 |
+|---:|---|---|---|---|
+| **01** | 浅纸白封面；长程 Agent 多步路径沿画面延伸，终点显示任务成功/费用的两个图形符号 | B | 标题 ModelRouter；副标题“Runtime State-Aware Model × Reasoning-Effort Routing” | 目标是任务级成功与成本 |
+| **02** | **左右两条对照 Agent 轨迹**：单次便宜但多次测试失败/重试 vs 单次贵但较快完成；路径用不同线型 | B | 标“概念示例，非实验结果”；不要编造具体美元/成功率 | 便宜的一次不等于便宜的任务 |
+| **03** | **双论文证据拼贴**：左 55% 旧 Gateway 原图，右 35% 新 INFRAMIND 原图；下方一条研究边界总结 | A | 旧 \`unified_gateway_p03_fig02.png\`；新 INFRAMIND Fig.2（PDF 第 2 页，实际本地核实）；论文出处 | KV+模型联合、系统状态路由已有先例 |
+| **04** | **两篇 Agent 状态研究对照**：MTRouter 的 History Encoder vs ProgRouter 的 progress ledger，背景是 Agent 运行时间轴 | A | **已存** \`mtrouter_p04_fig02.png\`；**待截** ProgRouter Fig.2（页码待本地 PDF 核实） | History/Progress 已有人做，需验证增量价值 |
+| **05** | 左侧旧 Route-to-Reason Fig.1，右侧简洁的 \`Model × Effort\` 合法组合矩阵，选中一个格子 | A+B | **已存** \`rtr_p02_fig01.png\`；我们自己的 provider capability 示例；图下注“reasoning strategy ≠ 原生 effort” | 联合动作已有先例，但 Agent 在线约束不同 |
+| **06** | **全场主图：ModelRouter 在线闭环**。中间 4 主盒，底部工具/验证/History 反馈，右下任务终局 | B | 见第 3 节：每条箭头、标签、模型身份、合法动作都要精确 | 每次合法调用边界重新选 Model×Effort |
+| **07** | 把 06 的 State Snapshot **局部放大**：8 组状态分成三层，旁边一条“决策前可见”时间界线 | B | 八组状态名称，History 非第九组；cache reported/estimated/simulated 区分 | 状态要可观测、不能偷看未来 |
+| **08** | Kev-4B 与 Laya-421M 的**并列比较卡**；中间是同一组候选动作，绝不画 Kev→Laya 串联 | B | Kev：Qwen3.5-4B hybrid + pointer；Laya：ModernBERT-large 421M + choice head；“CPU 适配、尚未正式微调” | 两个可比较的 typed decision router |
+| **09** | **真实数据海报**：14 公开源的五类数据块 + 6 个训练视图条带；大数强调异构而非动态标签 | C | 6,600,628 异构公开行；Choice 83,259、Agent State 88,087、Effort 290；所有数字由报告核对 | 数据多，不等于可用动态真值多 |
+| **10** | **离线训练冷启动流水线**：合法数据 → 同分割 Kev/Laya → 校准/测试；使用细线和三段式卡片 | B | A/B/C 标签含义、训练许可 pending 的来源、无正式 GPU 训练 | 静态训练只证明冷启动，不证明整任务降本 |
+| **11** | **History 三选一视觉比较**：最近 K 步 / 结构化事件摘要 / 混合输入，右边用时间轴展示压缩 | B | 三种候选及“结构化摘要优先试验，未定” | History 是表示方案，需要消融 |
+| **12** | 左侧 **TwinRouterBench 原 Fig.1**（静态 vs 动态）；右侧我们真实 Harness 任务级计费的简短实验路径 | A+B | 待截 TwinRouterBench Fig.1，PDF 第 2 页；右侧是拟议实验，非已运行 | 静态分数不能代替真实 Agent 结果 |
+| **13** | **RQ × Baseline/消融矩阵**：5 行 RQ 与固定/任务级/cache-only/model-only/full-state 列；图例按成功与费用两轴 | B+C | 5 RQ、真实待测指标 Success / Episode Cost / Spend per Resolved / Pareto / overhead | 如何证伪我们的方法 |
+| **14** | **两栏收束页**：左“已完成数据/CPU 适配”，右“未完成 GPU/动态实验”；底部四个导师决策卡 | B | 已完成/未完成状态；History、状态消融、Kev/Laya、Harness/预算四项待讨论 | 下一步需要决定什么 |
 
-**图像验证分级**：
-- **已直接查看原 PDF 图**：INFRAMIND Fig.3、MTRouter Fig.2、Route-to-Reason Fig.1、TwinRouterBench Fig.1。
-- **原 PDF 文本已核对 Figure 编号和物理页，截图未成功或未再次取得**：INFRAMIND Fig.2。
-- **仅图注/正文镜像核对，必须由本地打开原 PDF 才能裁剪**：Unified AI Gateway Fig.2、ProgRouter Fig.2。
-- **备选待核对**：EarlyEval。任何 PDF 版本变化都以本地实际打开的 PDF 为准；记录 PDF 物理页（1-based）和实际 Figure 标号，**不得猜页码**。
+**论文截图出现的位置**：03、04、05、12。其它页面都主要是我们自己的原创生图与受控数据/流程叠加。旧四篇可以**少量复用**，不再按每篇三页占用大量篇幅。
 
-## 4. 给本地 Codex / Agent 的提示词（可直接复制）
+## 3. 第 06 页主流程图：具体构图和生图边界（只规划，不画）
 
-> **任务：ModelRouter 组会真实论文图片核对与裁剪；只交素材，不做 PPT，也不画我们的主流程图。**
->
-> 仓库 sxyq/modelrouter。先读：
-> - our-project/planning/GROUP_MEETING_PPT_OUTLINE.md（当前最新版）
-> - our-project/planning/GROUP_MEETING_RESEARCH_BRIEF.md
-> - our-project/planning/RESEARCH_OVERVIEW.md 与 PROJECT_STATUS.md
-> - research/task-level-cost-routing/literature/evidence/direct-evidence.md
-> - research/task-level-cost-routing/literature/index.md
->
-> **步骤 1 — 去重旧四篇。** 查 our-project/汇报/、research/task-level-cost-routing/literature/ 下历史 PPT、PDF、visual_report_assets、图片和引用记录，列出“旧四篇的准确标题—已使用 Figure—旧素材路径”。仓库证据表前四条（MTRouter、BiCSRouter、SWE-Router、EvoRoute）只是线索，不能直接当结论；如果无法确认，标注待用户确认，继续做可确定的素材。
->
-> **步骤 2 — 先核查 P0 的 5 张新图。** 依次从官方原 PDF 打开并核实：Unified AI Gateway Fig.2（页码待核）；INFRAMIND Fig.2（PDF 第 2 页，备选 Fig.3 第 5 页）；ProgRouter Fig.2（页码待核）；Route-to-Reason Fig.1（第 2 页）；TwinRouterBench Fig.1（第 2 页）。如果某篇已在旧四篇中且图已裁过，**优先复用旧文件**。如 P0 图不可读、不支持本页论点或重复，才按第 3.2 节考虑 MTRouter Fig.2、SWE-Router Fig.1、EarlyEval 的替代。所有 PDF 物理页从 1 开始，渲染工具若用 0-based 索引要注明转换。
->
-> **步骤 3 — 读图而不是只找图号。** 对每张先看正文方法段、Figure 图注、前后 1–2 段，写清楚这张图**证明了什么、不证明什么**。特别注意：Gateway 的跨模型 KV 映射是条件性的系统能力，不代表我们的 provider 已实现；INFRAMIND Flash/Concise/DeepThink 是 prompting strategy，不是原生 reasoning_effort；Route-to-Reason 也是 model×strategy，不等同原生 effort；TwinRouterBench 的动态轨道按实际任务执行与费用计账。
->
-> **步骤 4 — 裁剪真实原图。** 用本地已存的原 PDF 优先，缺失再取官方 PDF；只裁 Figure 主体，必要时保留图注或另存图注文字。优先矢量裁剪或清晰 PNG（约 2–3 倍展示分辨率）。不得 AI 重绘冒充原图，不改数值、图例、箭头和标签。旧图不重复下载/裁剪。原论文 PDF 版本、官方链接必须留档。
->
-> **步骤 5 — 最小交付。** 复用已有 PPT 素材目录，最多新增约 5 张 P0 图。生成一份 Markdown 素材清单：准确论文标题、官方 URL、PDF 版本、Figure 编号、PDF 物理页、图注/一句图意、截图路径、目标 PPT 页、是否与旧四篇重复、核查状态。给每张一个可快速查看的预览。按“已完成/重复复用/未找到/待用户确认”汇报即可。
->
-> **严格禁止：** 不生成 PPT、不画 ModelRouter 原创流程图、不更改科研方法或训练数据、不训练、不调用付费模型、不编造 Figure 页码或实验收益。不做 PR/CI、工程门禁、可信基线建立或反复复核等无关流程。
+**16:9 布局**：标题 12% 高度；主链 58%；底部反馈环 22%；脚注 8%。浅纸白，主链四盒从左至右，箭头粗细一致，最突出 **State + Feasible Actions → Router**。
 
-## 5. 下一步怎么用这些素材
+\`\`\`text
+                  [调用前可观察的 8 组 Agent Runtime 状态]
+                                    ↓
+ [Agent Harness at step t] → [State Snapshot + 合法动作过滤] → [Kev 或 Laya Router] → [选中的生成模型 + Effort]
+          ↑                                                                             │
+          └──── [History 更新] ← [Test / Verifier] ← [Tool / Environment] ← [执行输出] ────┘
+                                                                                         └→ [Episode End]
+                                                                                             success? / total cost
+\`\`\`
 
-1. **先由本地 Agent 返回去重结果和约 5 张真实原图**；如旧四篇确实包含 MTRouter/SWE-Router，直接引用旧素材。
-2. **我们另行确认第 06 页原创主流程图**：四主盒 + 底部反馈回环 + 终局计费；本轮仍只规划，不画。
-3. 最后再排 PPT 页面；不能用原论文图的模拟收益冒充我们的实验结果。
+**画面设计**：
+- **① Agent Harness**：一张简化的 coding 任务卡和历史轨迹图标。
+- **② State + Filter**：8 组状态用小标签围绕状态汇聚点；下面用 \`A_t = valid {(model, effort)}\` 表示合法动作集合；可展示 \`(A,low)\`、\`(B,medium)\` 等**纯示例**，不暗示所有 provider 支持这些档位。
+- **③ Router**：单个路由决策器，标题 \`Kev-4B / Laya-421M (alternatives)\`；只输出 \`(m_t,e_t)\`，不是生成答案。
+- **④ Generative LLM**：模型调用、回复与 usage；KV reported/estimated 两类用不同线型的小标签。
+- **底部闭环**：工具 → 验证 → 错误/恢复 → History → 下一次调用。只有在**下一个合法边界**才重新路由；任务结束另进终局评价。
+- **图中不能出现**：未来 verifier 结果提前进入当前状态、默认跨模型物理 KV 迁移、Kev→Laya 串联、已实测的降本数字、假定已训练成功的概率。
 
-**本轮范围**：只更新组会 PPT 规划 Markdown；不下载/裁剪论文图、不制作幻灯片、不运行模型或实验。
+**生图实施**：先生成不含复杂文字的主链空间、4 个容器和底部反馈的美术草图；随后把**精确箭头、盒名、动作集合、8 组状态、出处/拟议标记**以矢量/文字层覆盖。不能让生图模型自由决定箭头逻辑。最终依然是一张完整、风格统一的 PNG。
+
+## 4. 真实论文 Figure：哪些直接复用，哪些还需要新增
+
+| 论文 | 旧汇报是否已用 | 实际素材或新增目标 | 新版放哪里 |
+|---|---|---|---|
+| **Unified AI Gateway** | **已用，P7–9** | **复用** \`visual_report_assets/paper_screenshots/crops/unified_gateway_p03_fig02.png\`；另有 Fig.4、Fig.5 现成截图 | 03 |
+| **Google CATS** | **已用，P10–12** | 已有 \`crops/cats_p02_fig01.png\` 等；新版只在 02/13 需要成本视角时可复用，**不强求出图** | 备用 |
+| **OpenSquilla / Agentic Routing** | **已用，P13–15** | 已有 \`crops/opensquilla_p06_fig02.png\` 等；可在 07 或 12 做小图补充，**不强求出图** | 备用 |
+| **Route-to-Reason** | **已用，P16–18** | **复用** \`crops/rtr_p02_fig01.png\`；另有 Fig.4、Fig.7 现成截图 | 05 |
+| **MTRouter** | 不在“最初四篇”主讲中 | **已有** \`crops/mtrouter_p04_fig02.png\`，不必重新截 | 04 |
+| **INFRAMIND** | 旧 deck 未列为主讲 | **新裁剪** Fig.2（PDF 物理第 2 页，打开本地 PDF 核实）；Fig.3（第 5 页）备用 | 03 |
+| **ProgRouter** | 旧 deck 未列为主讲 | **新裁剪** Fig.2（具体 PDF 物理页待本地核实） | 04 |
+| **TwinRouterBench** | 旧 deck 未列为主讲 | **新裁剪** Fig.1（PDF 物理第 2 页，打开本地 PDF 核实） | 12 |
+| **SWE-Router** | 旧 deck 非四篇主讲 | 已有 \`visual_report_assets/crops/swe-flow.png\` 和 \`sweRouter_p2-02.png\`，先看是否可复用；如不需要不新增 | 备选 |
+
+**优先新增的真实原图实际只有 3 张**：INFRAMIND Fig.2、ProgRouter Fig.2、TwinRouterBench Fig.1。其它优先从已有裁剪资产拿，不要重复下载/裁剪。若 Fig.2 太密不适合 16:9，选原论文中更易讲的替代 Figure，但必须说明理由、图号和页码。
+
+**重要**：真实论文图作为**最终合成的锁定图层**；可以缩放、整体裁边、加外部标注，不可重绘、替换文字、改数据。每张图在最终页保留准确论文名/年份/Figure 编号/来源。原论文结果与我们的研究假设必须用不同标签区分。
+
+## 5. 三类生图提示词模版（本地 Agent 可直接改成逐页提示词）
+
+### A. 论文原图嵌入型（03/04/05/12）
+
+> 设计一张 16:9 学术组会汇报视觉页面，参考本仓库 \`our-project/汇报/PPT/assets/deck-images/page-07.png\` 与 \`page-16.png\` 的统一风格：暖纸白 \`#f5f3ee\`、墨色标题、锈红/青绿/蓝色小面积强调、衬线大标题、细线卡片、充足留白。整页是一幅完整的讲解型视觉构图，不是普通白底 PPT。画面左侧约 60% 为**清晰的论文 Figure 占位区域**（不要生成/重画其中的流程图、文字或数字），右侧约 35% 为一句主结论、两条简短解释、一个局限；底部留论文来源栏。此页的准确标题与文字由后处理叠加。画面不出现虚构实验图表、不添加水印、不堆小字。**最终将指定的真实 PDF 裁剪 Figure 原样嵌入占位区域**。
+
+### B. 我们的方法/流程型（02/06/07/08/10/11/14）
+
+> 生成 16:9 学术技术汇报插画页面，延续旧版暖纸白、锈红、青绿、蓝的克制配色与 editorial infographic 质感。核心是一张清楚的技术概念示意，空间布局和分区按提供的版式规范执行；避免 3D 机器人、赛博城市、发光大脑、复杂背景和装饰性大箭头。**不要自行编写公式、模型名、节点名、实验数字或决定逻辑**；为这些信息预留干净空间，之后用准确矢量文字和连线叠加。页脚标明 Proposed / Not yet evaluated（后合成）。
+
+### C. 数据与对照型（09/13）
+
+> 生成一张 16:9 学术数据可视化页面的完整美术底版，风格同旧版 deck：暖纸白、细线卡片、清晰信息层级。预留一块大面积主图、两块小解释区、图例和来源区；仅生成背景、装饰与卡片，不生成数据条高度、坐标刻度、数值或统计结论。所有数据图从本项目真实数据或已确认统计表生成后合成；数字、单位、分母、类别必须保留准确。
+
+**生图负面约束统一追加**：不生成假论文图、不伪造 Fig. 编号、不编造成功率或降本比例、不重画真实 Figure、不把策略名称当 provider 原生 effort、不画跨模型 KV 物理共享、不混用旧版和新版数据口径。
+
+## 6. 本地 Agent 的最短执行计划（以后授权生图时用）
+
+1. **读旧成品**：打开 \`our-project/汇报/PPT/deck.html\`，重点实际预览旧 P7、P14、P16 与 P19，确定字号、留白、原图嵌入比例；检查 P3/P4 两页 HTML 的可复用样式。**本轮 Planning 已检查结构但未直接像素预览 PNG，本地这一步必要。**
+2. **素材复用与补齐**：复用 Gateway、RTR、MTRouter 现成 crop；仅新裁 INFRAMIND Fig.2、ProgRouter Fig.2、TwinRouterBench Fig.1；记录 PDF 物理页、图号、图片路径。
+3. **先做两张风格样张**：**P04 论文原图嵌入型**和**P06 我们自己的主流程型**，每张一幅完整 16:9 页面。样张必须体现“真实 Figure 是画面的一部分”的效果；P06 不得靠模型乱画箭头。
+4. **确认样张后再做其余 12 页**：逐页按第 2 节分镜生图，叠加真实论文图、精确文字和数据；输出单页 PNG。需要交互的旧 HTML 仅作参考，不要求照搬。
+5. **最小检查与交付**：一次性查看 14 页缩略图，重点检查论文原图未失真、主图箭头正确、数字真实、来源可读；复用旧播放器或简单串联页图即可。**不先制作 PPTX，不进行不必要的工程流程。**
+
+### 本地 Agent 总提示词（待用户批准生图时复制）
+
+> 请先阅读 \`our-project/planning/GROUP_MEETING_PPT_OUTLINE.md\` v5，并打开旧版 \`our-project/汇报/PPT/deck.html\`，实际观看 \`assets/deck-images/page-07.png\`、\`page-14.png\`、\`page-16.png\`、\`page-19.png\`。我们的新汇报要沿用旧版**“完整页面生图 + 原论文真实 Figure 嵌入 + 少量文字解释”**的视觉方式，而不是把截图作为一张普通幻灯片上的附件。四篇已用论文为 Unified AI Gateway、Google CATS、OpenSquilla、Route-to-Reason，旧素材尽量复用；新增优先 INFRAMIND Fig.2、ProgRouter Fig.2、TwinRouterBench Fig.1。真实 Figure 作为锁定图层最终叠加，绝不让图像模型重画或改动其内容。先只制作 P04（论文页）与 P06（原创主流程页）的**样张**供确认，其它 12 页先不要做；生图版式、精确箭头、数据口径、逐页内容和配色全部以 v5 为准。不要深度研究、训练、付费 API、PR/CI 或无关工程工作。
+
+## 7. 这轮不做什么
+
+不实际生图、不截 PDF、不做 PPTX、不改旧 \`our-project/汇报/\` 成品、不启动深度研究。新图、样张与完整组会页面均待下一步明确授权。
 
 拒绝任何不必要的工程化设计与流程，包括 PR/CI、工程门禁、可信基线建立、反复复核等。
