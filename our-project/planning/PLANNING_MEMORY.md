@@ -693,3 +693,7 @@ Execution 报告自称 660 万分层、八组状态覆盖、五阶段训练设�
 - **3. P3 首轮训练参数准备与暂停**：
   - 已备齐 Laya-421M（`laya-train --loss soft-ce --max-len 1024 --head-max-len 512`）与 Kev-4B（`python -m kev.train --weights lora --lora 16 --head_dim 256 --max_state 7552`）的首轮训练超参数、命令与检查点输出目录，按要求在启动正式 GPU 训练前暂停。
 
+
+### 2026-10-12 · OVERNIGHT-LAYA-TRAINING
+
+已按授权完成 Laya-421M R0→R1→R2→R3。Batch 1 训练行 13,438（S1 4,592、S2 2,846、S3 6,000），独立 Val 5,692；官方 CPU 编码全部通过，0 跳过。R0 S1/S2/S3 Accuracy 为 0.4759/0.4896/0.4677。R1 最佳 R1-E1，S1 Val Loss/Accuracy 为 0.6038/0.6613；R2 最佳 R2-E1，S1 为 0.6093/0.6578、S2 为 1.0000；R3 最佳 R3-E1，S1 为 0.6388/0.6667、S2 为 1.0000、S3 为 0.6435。三组均按连续两轮缺少 0.5% S1 Val Loss 改善提前结束，权重与指标保存在服务器 runs/OVERNIGHT-LAYA-TRAINING/。未运行 Kev、Coding Benchmark 或付费 API。

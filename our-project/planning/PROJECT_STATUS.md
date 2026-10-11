@@ -1,8 +1,30 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-11。** 已完成「14 个公开数据源（`6,600,628` 行）与 3 个自有来源分层、`MR-STAGE1-INPUT-FIX` 全文决策前题面恢复，以及 `MR-ALLDATA-ADAPTER-20261011` Laya-421M / Kev-4B 双模型全阶段（Stage 1–4）独立训练视图适配与 100% CPU 官方编码校验」。**当前处于训练前暂停等待点：已备齐 Laya-421M 与 Kev-4B 首轮训练参数及命令；尚未授权或启动任何正式 GPU 训练、GPU 推理测试、付费 API 或 Coding Benchmark。** 此页首页是当前状态，以下历史快照不得倒灌覆盖。
+> **最新状态：2026-10-11。** ModelRouter 研究目标是面向单 Agent / 多子代理任务，利用八类变量、Reasoning Effort、KV Cache、调用成本与 Trace 次数，在成功率约束下降低整任务成本。数据起点为 14 个公开清洗源 `6,600,628` 行；OWN-001/002/003 分别 `110 / 221,128 / 79` 行，单独统计。本轮 P0–P4 已完成并停止；没有运行模型训练。
 
-## 一、总体项目进度
+八类变量为 `Task/Subtask`、`Agent/Coordination`、`Context/Memory`、`Tool/Environment`、`Verification/Recovery`、`KV Cache/Continuity`、`Temporal/Execution`、`Provider/Availability`。
+
+## 当前轮次
+
+| 阶段 | 状态 |
+| --- | --- |
+| P0 清理 | 已移除实验目录 `training/laya/`、`training/kev/` 及六个旧通用视图目录。`MR-STAGE1-*`、原始数据、清洗数据、OWN 源、`models/`、`external/` 均保留 |
+| P1 分级 | 从全量清洗源与三个 OWN 文件逐行处理。公开合计 `6,600,628`；OWN `110 / 221,128 / 79` 分开统计 |
+| P2 分层 | 17 个来源分别按任务、轨迹、请求、偏好对战或聚合单元归组，唯一分配至 L1–L4；每层均有全部 17 个来源的实际记录 |
+| P3 覆盖 | 八类变量逐层列出非空数、缺失数、监督/观察用途、许可与评测用途、Q4。真实运行时路由决策标签 `0` |
+| P4 输出 | 服务器 `runs/MR-ALLDATA-PREP-20261011/quality_grading/` 含逐源记录引用、四层引用、汇总 JSON、变量矩阵及五张表 |
+
+公开记录层规模：L1 `663,963`、L2 `1,304,523`、L3 `1,993,193`、L4 `2,638,949`，总计 `6,600,628`。三类 OWN 记录逐层另列。按来源政策允许、Q1/Q2、真实目标及 Train 身份计算的候选记录数依次为 `489,911`、`973,501`、`1,475,527`、`1,924,961`，合计 `4,863,900`；Val/Test 身份归评测用途，不计作训练候选。候选包含轨迹终局、静态偏好、缓存复用机会、请求负载和 OWN-002 调用统计等不同目标，不代表联合路由监督。
+
+逐源 Q1–Q4 总计：公开 Q1 `6,469,995`、Q2 `50,638`、Q3 `4,041`、Q4 `75,954`。ROUTE-001/002 的 `584,556` 行处于许可待核，未进入候选；ROUTE-005 保持仅分析，ROUTE-003、ENV、MEM 保持评测用途。Q4 内容状态可与许可待核重叠。
+
+TRA 与 ENV 共有 `13,486` 条任务记录继承 TRA 已有 Train/Val/Test 身份（ENV-001 `150`，ENV-002 `13,336`），分割冲突 `0`；ENV 用途仍为评测。ROUTE-001 的 `24,441` 个完整题目组、ROUTE-003 的 `520` 个任务组均按真实身份保留。轨迹步骤、候选评测行和请求没有按独立任务计数。
+
+逐项结果与五张交付表位于服务器 `runs/MR-ALLDATA-PREP-20261011/quality_grading/tables.md`。本轮未生成 Laya/Kev 训练文件、未启训练、未用 GPU、付费 API 或 Coding Benchmark；清洗源未改动。GitHub `main` 当前提交仍是 `5719753`，本轮没有提交或推送。
+
+本轮按要求停止。后续最多只能按各来源真实目标分别使用候选；八类运行状态与真实路由决策、缓存和整任务成本的联合监督仍为 `0`。
+
+## 历史状态：旧派生视图生成记录
 
 **科研目标**：面向单 Agent / 多子代理执行状态，利用八组研究变量（`Task/Subtask`、`Agent/Coordination`、`Context/Memory`、`Tool/Environment`、`Verification/Recovery`、`KV Cache/Continuity`、`Temporal/Execution`、`Provider/Availability`）以及模型、Reasoning Effort、KV 缓存、单次调用成本和任务平均 Trace 次数，学习模型路由决策，在任务成功率约束下降低完整任务成本。最终有效性需要真实 Agent Harness 与受控实验，不能由静态分类准确率证明。
 
@@ -284,3 +306,13 @@ configs/
 
 全量公开清洗数据（`6,600,628` 行）与自有数据（`OWN-001: 110, OWN-002: 221,128, OWN-003: 79`）已在 `runs/MR-ALLDATA-PREP-20261011/` 完成独立分层及双模型训练视图适配：修复 `ROUTE-001` 新旧 Choice（均为 `8,441` 条，`0` 差异）、Pairwise（`59,049` 条）与 Soft-Target/Score（`53,087` 条）的跨视图身份及统一 Train/Val/Test 划分（跨集泄漏 `0`）；在 `training/laya/` 与 `training/kev/` 分别生成 `stage1_choice`（`83,259`）、`stage1_pairwise`（`59,049`）、`stage1_soft_target`（`53,087`）、`stage2_agent_state`（`88,087` 轨迹级）、`stage3_effort`（`290` 有效配对）、`stage4_auxiliary`（`1,622,547` 有效调用），全部通过 100% CPU 官方加载与编码验证，并备齐首轮训练参数与命令，暂停等待 GPU 训练授权。
 
+### 2026-10-12 · OVERNIGHT-LAYA-TRAINING
+
+- L1 Batch 1：训练 S1=4,592、S2=2,846、S3=6,000，共 13,438 条；独立 Val 为 S1=561、S2=337、S3=4,794，共 5,692 条；S4 无合法目标。
+- 官方 Laya CPU 路径 read_data → items_from_rows → encode_item 全部通过，训练和 Val 均为 0 跳过；使用 max_len=1024、head_max_len=512。
+- R0 参考评估：S1 Accuracy 0.4759，S2 0.4896，S3 0.4677。
+- R1（S1）第 3 Epoch 提前结束，最佳 R1-E1：S1 Val Loss 0.6038、Accuracy 0.6613；父节点为 Laya-421M。
+- R2（S1+S2）第 3 Epoch 提前结束，最佳 R2-E1：S1 Loss 0.6093、Accuracy 0.6578，S2 Accuracy 1.0000；父节点为 R1-E1，S1 相比父节点略有下降。
+- R3（S1+S2+S3）第 3 Epoch 提前结束，最佳 R3-E1：S1 Loss 0.6388、Accuracy 0.6667，S2 Accuracy 1.0000，S3 Accuracy 0.6435；父节点为 R2-E1。S3 后续 Epoch 的评分指标升至 0.6998，但 S1 持续下降。
+- 服务器实验目录为 runs/OVERNIGHT-LAYA-TRAINING/；每组保留 Epoch、latest 和 best 权重及指标。未启动 Kev、Coding Benchmark 或付费 API。
+- A6000 训练期间图像服务与远程桌面合计约 682 MiB 显存，未暂停服务；Laya 训练峰值约 11.6 GiB。
