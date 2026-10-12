@@ -94,6 +94,16 @@ def parse_args():
         help="首个执行窗口要物化的批次 ID，逗号分隔",
     )
     parser.add_argument(
+        "--matrix-run-prefix",
+        default="",
+        help="为新物化批次增加的 ID 前缀，避免覆盖已有 Run",
+    )
+    parser.add_argument(
+        "--matrix-source-manifest",
+        default="",
+        help="既有矩阵清单路径，仅作为旧批次与来源记录",
+    )
+    parser.add_argument(
         "--matrix-max-items",
         type=int,
         default=4096,

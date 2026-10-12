@@ -711,3 +711,11 @@ Execution 报告自称 660 万分层、八组状态覆盖、五阶段训练设�
 B01 的 16 个 QB/PB 配置全部完成，每个配置 2 个 Epoch，共 32 个 Epoch。服务器训练进程自然退出，GPU 回落至 `682 MiB / 0%`。最终运行快照为 16 个 `completed`，累计 Epoch 用时约 `10,106.5` 秒；权重目录 `59` 个，单个权重文件约 `3.38 GB`。最佳 S1 验证结果为 B01_C05-e02：Loss `0.5945`、Accuracy `0.6827`、Brier `0.4082`、ECE `0.0363`。S2 可见的 11 个混合配置均为 `1.0`，S3 结果为 `0.5565–0.7082`；S2 满分仍受输入文本中曾出现目标名称的影响，不能作为泛化结论。
 
 本轮继续沿用固定 Batch 1 Val 集合，没有使用 Test、Kev、Coding Benchmark 或付费 API。`router_data/batch_prep.py` 已在 `f927877` 加入中性辅助指令，并按监督类别总量分配目标配额；首批 B01 输入在该改动之前一次生成，因此改动记录为后续物化使用，未改写已完成批次。看板新增八张 SVG 图表，最终快照提交为 `ef6f368`，本机数据时间为服务器 `2026-10-12T10:22:28Z`。
+
+### 10.16 2026-10-12 `MR-FULL-GRADED-P0-DATA-REPAIR`
+
+- 旧 B01_C01–C16 的 32 Epoch、权重和指标全部保留。看板将 16 个旧 Run 标成 `LEGACY_INPUT_PROTOCOL`；其中 S3 验证准确率最低的 B01_C14_QB_PB（0.5565）只把 checkpoints 移到服务器 `.Trash`，运行元数据与指标仍在原目录。
+- 唯一入口 `prepare_router_data.py --mode full_matrix` 生成服务器独立目录 `runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/`，使用 `P0_` 前缀物化 B01 的 C01/C04/C07/C13 以及 B02–B04 全部 C01–C16，共 52 个 CPU Run。配额按整个监督类别计算：C04、C07、C13 实际类别比例为 1:1、1:1、1:1:1。
+- Train 与固定 Val 都换成中性指令。官方 Laya `load_checkpoint`（CPU）和 `items_from_rows` 共读取 413,312 行并编码 413,312 Item，0 跳过；旧目标指令 0 行，稳定 ID 和独立任务/轨迹单位的 Train/Val 交集为 0。`trajectory_resolved` 的 false/true 仍是固定标签空间，未作为行级指令写入。
+- 覆盖口径分开记录：全来源 6,821,945 行、矩阵六来源 6,129,744 行、合法候选 4,863,900 行、候选独立单位 1,344,240；新 Run Item 暴露 212,970，跨 Run 去重 Item 45,056。S2 只计算多数类基线，Train 0/1=25,592/22,573、Val=6,510/5,285；模型指标仍标为 `BASELINE_ONLY_MODEL_METRICS_BLOCKED`。
+- 看板快照来自服务器 CPU 结果，旧历史与新协议分组呈现；本轮未启动 GPU、Test、Coding Benchmark、Kev 或付费 API。

@@ -323,3 +323,12 @@ configs/
 - R3（S1+S2+S3）第 3 Epoch 提前结束，最佳 R3-E1：S1 Loss 0.6388、Accuracy 0.6667，S2 Accuracy 1.0000，S3 Accuracy 0.6435；父节点为 R2-E1。S3 后续 Epoch 的评分指标升至 0.6998，但 S1 持续下降。
 - 服务器实验目录为 runs/OVERNIGHT-LAYA-TRAINING/；每组保留 Epoch、latest 和 best 权重及指标。未启动 Kev、Coding Benchmark 或付费 API。
 - A6000 训练期间图像服务与远程桌面合计约 682 MiB 显存，未暂停服务；Laya 训练峰值约 11.6 GiB。
+
+### 2026-10-12 · MR-FULL-GRADED-P0-DATA-REPAIR
+
+- 保留第一窗口 B01_C01–C16、32 Epoch、指标和历史文件；旧输入协议在看板中标为 `LEGACY_INPUT_PROTOCOL`。S3 验证准确率最低的 `B01_C14_QB_PB`（`0.5565`）仅将 checkpoints 移入服务器 `.Trash`，`run.json` 与指标仍保留。
+- 在唯一入口 `prepare_router_data.py --mode full_matrix` 中加入版本前缀和按监督类别总量分配配额。服务器独立输出 `runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/`，生成 `P0_` 前缀 B01 四个对照及 B02–B04 各 16 个 CPU 物化 Run，共 `52` 个。
+- 新 Train/固定 Val 均使用中性指令；官方 Laya `models/laya-421m` CPU 加载和编码共 `413,312 / 413,312` Item 通过，`0` 跳过。旧目标名指令 `0` 行；Train/Val 稳定 ID 与独立任务/轨迹单位交集均为 `0`。
+- 新目录统计：全来源记录 `6,821,945`，矩阵六来源记录 `6,129,744`，合法候选记录 `4,863,900`，候选独立单位 `1,344,240`，跨 Run Item 暴露 `212,970`，去重 Item `45,056`。C04/C07/C13 实际类别比例分别为 `1:1`、`1:1`、`1:1:1`。
+- S2 成功/失败仅做类别分布和多数类基线：Train 暴露 `25,592/22,573`，Val `6,510/5,285`；多数类 Accuracy `0.531340/0.551929`，Balanced Accuracy `0.5/0.5`，Macro-F1 `0.346977/0.355641`。没有进行模型推理，正式 S2 结论保持 `BASELINE_ONLY_MODEL_METRICS_BLOCKED`。
+- 当前看板数据为服务器 CPU 快照，旧 16 Run 与新协议队列分组显示；未启动新的 GPU 训练。
