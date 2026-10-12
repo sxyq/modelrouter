@@ -258,10 +258,19 @@ def prepare_full_matrix(args):
                        'pool_limit': pool_limit, 'max_items_per_class': max_items, 'test_used': False},
         'audit': {'route_001_002_training': False, 's2_observed_actions_are_not_model_choice': True,
                   's3_prefix_reuse_is_not_physical_cache_hit': True, 'validation_source': 'existing V2.1 Batch1 fixed validation'},
+        'coverage': {},
         'aggregate': {'eligible': sum(v['status'] == 'ELIGIBLE' or v.get('materialized') for v in plans.values() if v['run_id'].startswith('B')),
                       'blocked': sum(v['status'] == 'BLOCKED' for v in plans.values()), 'planned': sum(v['status'] == 'PLANNED' for v in plans.values()),
                       'materialized_runs': len(materialized)}
     }
+    layer_details = json.load(open(os.path.join(root, 'quality_summary.json'))).get('layer_details', {})
+    for layer in ('L1', 'L2', 'L3', 'L4'):
+        rows = units = candidate_units = 0
+        for src in MATRIX_ALLOWED_SOURCES:
+            z = layer_details.get(layer, {}).get(src, {})
+            rows += int(z.get('rows', 0)); units += int(z.get('independent_units', 0))
+            candidate_units += int(z.get('candidate_independent_units', 0))
+        manifest['coverage'][layer] = {'rows': rows, 'eligible_records': candidate_units, 'independent_units': units}
     _dump(os.path.join(out, 'experiment_matrix.json'), manifest)
     _dump(os.path.join(out, 'matrix_counts.json'), {'row_counts': {str(k): v for k,v in counts.items()}, 'source_counts': {str(k): v for k,v in source_counts.items()}, 'materialized': materialized})
     print(json.dumps({'out': out, 'slots': len(plans), 'materialized': list(materialized), 'aggregate': manifest['aggregate']}, ensure_ascii=False), flush=True)
