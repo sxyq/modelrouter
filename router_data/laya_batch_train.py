@@ -147,7 +147,7 @@ def run_experiment(run, batch_root, model_dir, out_root, parent_checkpoint=None,
         }
         history.append(entry)
         _write(run_root / 'epoch_metrics.json', history)
-        if epoch + 1 >= 2 and no_improve >= 2:
+        if s1_loss is not None and epoch + 1 >= 2 and no_improve >= 2:
             raise StopRun('two epochs without 0.5% S1 validation-loss improvement')
 
     status = 'completed'
@@ -457,7 +457,7 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
                           'checkpoint_id': epoch_id, 'best_epoch': best_epoch,
                           's1_loss': s1_loss, 's1_accuracy': metrics.get('S1', {}).get('accuracy')},
                          ensure_ascii=False), flush=True)
-        if epoch + 1 >= 2 and no_improve >= 2:
+        if s1_loss is not None and epoch + 1 >= 2 and no_improve >= 2:
             raise StopRun('two epochs without 0.5% S1 validation-loss improvement')
         epoch_train_started = time.time()
 
