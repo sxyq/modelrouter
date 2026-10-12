@@ -4,6 +4,8 @@ import json
 import os
 import sys
 import time
+import subprocess
+from collections import Counter
 from pathlib import Path
 
 
@@ -201,7 +203,7 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
     """Build the small public dashboard payload without server paths or row text."""
     runs = {}
     root = Path(out_root)
-    for path in sorted(root.glob('N*/run.json')):
+    for path in sorted(root.glob('*/run.json')):
         try:
             saved = json.loads(path.read_text(encoding='utf8'))
         except (OSError, json.JSONDecodeError):
@@ -211,6 +213,9 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
             'train_groups', 'val_groups', 'config', 'best_epoch', 'stop_reason',
             'started_at', 'finished_at', 'current_epoch', 'continuation_mode',
             'optimizer_updates_per_epoch', 'data_dir_label', 'train_origin',
+            'batch_id', 'combo_id', 'quality_code', 'sampling_code', 'layers',
+            'supervision_classes', 'ratios', 'counts', 'independent_units',
+            'eligibility_reason', 'audit_flags', 'current_step', 'command',
         ) if k in saved}
         public['history'] = saved.get('history', [])
         public['checkpoint_root'] = '%s/checkpoints' % path.parent.name
@@ -256,14 +261,18 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
              else Path(str(path)).name): digest
             for path, digest in generation['code_sha256'].items()
         }
+    plan_status = Counter((p.get('status') or 'PLANNED') for p in plans.values())
     payload = {
-        'experiment_id': 'OVERNIGHT-LAYA-SWEEP-02',
+        'experiment_id': manifest.get('experiment_id', 'OVERNIGHT-LAYA-SWEEP-02'),
         'generated_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
         'code_commit': os.environ.get('MODELROUTER_CODE_COMMIT', 'unknown'),
         'status': 'running' if current else ('completed' if runs else 'prepared'),
         'overview': {
             'completed_runs': sum(r.get('status') in {'completed', 'early_stopped'} for r in runs.values()),
             'planned_runs': len(plans),
+            'eligible_runs': plan_status.get('ELIGIBLE', 0),
+            'blocked_runs': plan_status.get('BLOCKED', 0),
+            'skipped_runs': plan_status.get('SKIPPED', 0),
             'checkpoint_total': len(all_nodes),
             'saved_weight_count': saved_weight_count,
             'current_run': current,
@@ -278,6 +287,7 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
         },
         'plans': plans,
         'plan_data': plan_data,
+        'matrix': manifest.get('aggregate', {}),
         'runs': runs,
         'checkpoint_tree': all_nodes,
         'fixed_validation': manifest.get('fixed_validation', {}),
@@ -360,6 +370,14 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
             'test_used': False,
             'route_001_002_training': False,
         },
+        'batch_id': spec.get('batch_id'), 'combo_id': spec.get('combo_id'),
+        'quality_code': spec.get('quality_code'), 'sampling_code': spec.get('sampling_code'),
+        'layers': spec.get('layers'), 'supervision_classes': spec.get('supervision_classes', group_names),
+        'ratios': spec.get('ratios'), 'counts': spec.get('counts'),
+        'independent_units': spec.get('independent_units'),
+        'eligibility_reason': spec.get('eligibility_reason'),
+        'command': 'python router_data/laya_batch_train.py --sweep-run %s --sweep-manifest %s --out-root %s --epochs %s' % (run_id, manifest_path, out_root, epochs),
+        'current_step': 0,
     }
     _write(run_root / 'run.json', run_meta)
     history = []
@@ -368,14 +386,18 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
     no_improve = 0
     if torch.cuda.is_available():
         torch.cuda.reset_peak_memory_stats()
+    epoch_train_started = time.time()
 
     def on_epoch_end(epoch, train_loss):
-        nonlocal best_loss, best_epoch, no_improve
-        started = time.time()
+        nonlocal best_loss, best_epoch, no_improve, epoch_train_started
+        epoch_boundary = time.time()
+        train_seconds = epoch_boundary - epoch_train_started
+        validation_started = time.time()
         metrics = _groups(model, tok, val_groups, dev, sys.modules['laya.train'], cfg, max_len, head_max_len)
         if 'S3' in val_rows:
             metrics['S3_by_source_target'] = _s3_validation_breakdown(
                 model, tok, val_rows['S3'], dev, sys.modules['laya.train'], cfg, max_len, head_max_len)
+        validation_seconds = time.time() - validation_started
         s1_loss = metrics.get('S1', {}).get('loss')
         ckcfg = dict(cfg, max_len=max_len, head_max_len=head_max_len,
                      training_run={'run_id': run_id, 'epoch': epoch + 1,
@@ -384,6 +406,7 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
                                    'continuation_mode': run_meta['continuation_mode']})
         epoch_id = f'{run_id}-e{epoch + 1:02d}'
         epoch_dir = run_root / 'checkpoints' / f'epoch_{epoch + 1:02d}'
+        checkpoint_started = time.time()
         save_checkpoint(model, tok, ckcfg, str(epoch_dir))
         save_checkpoint(model, tok, ckcfg, str(run_root / 'checkpoints' / 'latest'))
         improved = s1_loss is not None and (best_epoch is None or s1_loss < best_loss * 0.995)
@@ -392,19 +415,36 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
             save_checkpoint(model, tok, ckcfg, str(run_root / 'checkpoints' / 'best'))
         else:
             no_improve += 1
+        checkpoint_seconds = time.time() - checkpoint_started
+        try:
+            gpu_util = float(subprocess.check_output(
+                ['nvidia-smi', '--query-gpu=utilization.gpu', '--format=csv,noheader,nounits'],
+                text=True, timeout=3).strip().splitlines()[0])
+        except Exception:
+            gpu_util = None
+        try:
+            checkpoint_bytes = sum(p.stat().st_size for p in (run_root / 'checkpoints').rglob('*') if p.is_file())
+        except OSError:
+            checkpoint_bytes = None
+        epoch_total_seconds = time.time() - epoch_train_started
         entry = {
             'checkpoint_id': epoch_id, 'epoch': epoch + 1, 'train_loss': train_loss,
             'validation': metrics, 'improved_0_5pct': improved,
-            'best_epoch': best_epoch, 'epoch_seconds': round(time.time() - started, 3),
+            'best_epoch': best_epoch, 'epoch_seconds': round(epoch_total_seconds, 3),
+            'train_seconds': round(train_seconds, 3), 'validation_seconds': round(validation_seconds, 3),
+            'checkpoint_seconds': round(checkpoint_seconds, 3), 'epoch_total_seconds': round(epoch_total_seconds, 3),
             'optimizer_updates': updates_per_epoch,
             'learning_rate': {'encoder': config.encoder_lr, 'head': config.head_lr},
             'gradient_norm': None,
             'gpu_memory_peak_mib': round(torch.cuda.max_memory_allocated() / 1048576, 2) if torch.cuda.is_available() else None,
+            'gpu_utilization_percent': gpu_util, 'checkpoint_size_bytes': checkpoint_bytes,
+            'global_step': (epoch + 1) * updates_per_epoch,
             'weights_saved': True,
         }
         history.append(entry)
         run_meta['history'] = history
         run_meta['current_epoch'] = epoch + 1
+        run_meta['current_step'] = (epoch + 1) * updates_per_epoch
         run_meta['best_epoch'] = best_epoch
         _write(run_root / 'epoch_metrics.json', history)
         _write(run_root / 'epoch_status.json', {'run_id': run_id, 'epoch': epoch + 1,
@@ -418,6 +458,7 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
                          ensure_ascii=False), flush=True)
         if epoch + 1 >= 2 and no_improve >= 2:
             raise StopRun('two epochs without 0.5% S1 validation-loss improvement')
+        epoch_train_started = time.time()
 
     status = 'completed'
     try:

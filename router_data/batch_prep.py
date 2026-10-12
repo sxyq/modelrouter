@@ -6,6 +6,7 @@ import os
 import sys
 import hashlib
 import shutil
+import itertools
 from collections import Counter, defaultdict
 from .quality_v2 import PUBLIC_FILES, OWN_FILES, VARIABLES
 from .all_data import _map_action_category
@@ -86,6 +87,185 @@ def _example(src,r,x,t):
     if isinstance(evidence, dict):
         evidence = evidence.get(t, [])
     return {'provenance':{'source_id':src,'source_line':x['source_line'],'source_file':x['source_file'],'stable_record_id':x['stable_record_id'],'independent_unit_id':x['independent_unit_id'],'trajectory_id':x.get('trajectory_id'),'split':x['split']},'state':{'source_id':src,'pre_decision_state':state},'questions':{qid:{'type':typ,'instructions':'Predict this source-specific observed target: '+t+'. Observed actions are not optimal actions; prefix reuse is not physical cache hit.','criteria':criteria}},'expected':{qid:label},'_meta':{'supervision_class':x['primary_supervision_class'],'target':t,'label_evidence':evidence,'representative_only':True}}
+
+
+FULL_LAYERS = {
+    'B01': ['L1'], 'B02': ['L2'], 'B03': ['L3'], 'B04': ['L4'],
+    'B05': ['L1', 'L2'], 'B06': ['L1', 'L2', 'L3'],
+    'B07': ['L1', 'L2', 'L3', 'L4'],
+}
+FULL_COMBOS = {
+    'C01': (['S1'], [1]), 'C02': (['S2'], [1]), 'C03': (['S3'], [1]),
+    'C04': (['S1', 'S2'], [1, 1]), 'C05': (['S1', 'S2'], [2, 1]),
+    'C06': (['S1', 'S2'], [1, 2]), 'C07': (['S1', 'S3'], [1, 1]),
+    'C08': (['S1', 'S3'], [2, 1]), 'C09': (['S1', 'S3'], [1, 2]),
+    'C10': (['S2', 'S3'], [1, 1]), 'C11': (['S2', 'S3'], [2, 1]),
+    'C12': (['S2', 'S3'], [1, 2]),
+    'C13': (['S1', 'S2', 'S3'], [1, 1, 1]),
+    'C14': (['S1', 'S2', 'S3'], [2, 1, 1]),
+    'C15': (['S1', 'S2', 'S3'], [1, 2, 1]),
+    'C16': (['S1', 'S2', 'S3'], [1, 1, 2]),
+}
+FULL_QUALITY = {'QA': {'Q1'}, 'QB': {'Q1', 'Q2'}, 'QC': {'Q2'}}
+FULL_POLICIES = {'PA': 'natural', 'PB': 'independent_unit_balanced', 'PC': 'source_target_balanced'}
+MATRIX_TARGETS = {
+    'S1': ['human_pairwise_preference'],
+    'S2': ['observed_action', 'observed_success', 'observed_failure'],
+    'S3': ['prefix_reuse_opportunity', 'output_token_length', 'request_response_tokens',
+           'call_quota_units', 'cache_read_tokens', 'call_output_tokens'],
+}
+MATRIX_ALLOWED_SOURCES = {'TRA-001', 'TRA-002', 'ROUTE-004', 'CACHE-001', 'TIME-001', 'OWN-002'}
+
+
+def _matrix_unit(ref, target):
+    if target in {'observed_success', 'observed_failure'}:
+        return ref.get('trajectory_id') or ref.get('independent_unit_id')
+    return ref.get('independent_unit_id') or ref.get('stable_record_id')
+
+
+def _matrix_ref(x, target):
+    return {k: x.get(k) for k in (
+        'source_id', 'source_line', 'source_file', 'stable_record_id',
+        'independent_unit_id', 'trajectory_id', 'primary_supervision_class',
+        'split', 'license_status', 'label_evidence', 'variable_coverage') } | {
+        'target': target, 'quality_grade': x.get('quality_grade'),
+        'assigned_layer': x.get('assigned_layer')}
+
+
+def _matrix_select(refs, policy, target, quota):
+    refs = sorted(refs, key=lambda x: (x.get('stable_record_id') or '', x.get('source_line', 0)))
+    if policy == 'PB':
+        seen = set(); refs = [r for r in refs if not (_matrix_unit(r, target) in seen or seen.add(_matrix_unit(r, target)))]
+    elif policy == 'PC':
+        buckets = defaultdict(list)
+        for r in refs: buckets[r.get('source_id')].append(r)
+        refs = [r for group in itertools.zip_longest(*[buckets[k] for k in sorted(buckets)]) for r in group if r]
+    return refs[:quota]
+
+
+def _matrix_materialize(args, out, run_id, refs_by_target, groups, val_root):
+    wanted = defaultdict(lambda: defaultdict(list))
+    for target, refs in refs_by_target.items():
+        for ref in refs:
+            wanted[ref['source_id']][ref['source_line']].append((target, ref))
+    handles = {}
+    stats = Counter()
+    try:
+        for src, lines in wanted.items():
+            path = (os.path.join(args.cleaned_root, PUBLIC_FILES[src])
+                    if src in PUBLIC_FILES else OWN_FILES[src])
+            max_line = max(lines)
+            for line_no, raw in _source_rows(path):
+                if line_no > max_line: break
+                for target, ref in lines.get(line_no, []):
+                    row = _example(src, raw, ref, target)
+                    if row is None: continue
+                    s = ref['primary_supervision_class']
+                    if s not in groups: continue
+                    if s not in handles:
+                        handles[s] = open(os.path.join(out, 'data', run_id, 'train', s + '.jsonl'), 'w', encoding='utf8')
+                    handles[s].write(json.dumps(row, ensure_ascii=False, separators=(',', ':')) + '\n')
+                    stats[s] += 1
+    finally:
+        for f in handles.values(): f.close()
+    for s in groups:
+        src = os.path.join(val_root, 'val', s + '.jsonl')
+        dst = os.path.join(out, 'data', run_id, 'val', s + '.jsonl')
+        if os.path.exists(src): shutil.copyfile(src, dst)
+        else: open(dst, 'w', encoding='utf8').close()
+    return dict(stats)
+
+
+def prepare_full_matrix(args):
+    """Create the full B/C/Q/P manifest and materialize only the selected queue."""
+    root = os.path.abspath(os.path.join(args.all_data_out_dir, 'quality_grading_v2_1'))
+    out = os.path.abspath(args.matrix_out_dir or os.path.join(args.all_data_out_dir, '..', 'MR-FULL-GRADED-TRAINING'))
+    os.makedirs(out, exist_ok=True)
+    pool_limit = int(getattr(args, 'matrix_pool_limit', 6000))
+    max_items = int(getattr(args, 'matrix_max_items', 4096))
+    selected = [x for x in (getattr(args, 'matrix_run_ids', '') or '').split(',') if x]
+    if not selected:
+        selected = ['B01_C%02d_QB_PB' % i for i in range(1, 17)]
+    counts = Counter(); source_counts = Counter(); unit_sets = defaultdict(set); reservoirs = defaultdict(list)
+    index_root = os.path.join(root, 'by_source')
+    for src in sorted(MATRIX_ALLOWED_SOURCES):
+        path = os.path.join(index_root, src + '.jsonl.gz')
+        with gzip.open(path, 'rt', encoding='utf8') as f:
+            for line in f:
+                x = json.loads(line)
+                if x.get('split') != 'train' or not x.get('train_eligible') or not x.get('source_policy_train_allowed'):
+                    continue
+                q = x.get('quality_grade')
+                layer = x.get('assigned_layer')
+                if layer not in {'L1','L2','L3','L4'} or q not in {'Q1','Q2'}: continue
+                for s, targets in MATRIX_TARGETS.items():
+                    for target in targets:
+                        if target not in (x.get('candidate_targets') or []): continue
+                        key = (layer, q, s, target, src)
+                        counts[key] += 1; source_counts[(layer, q, s, target, src)] += 1
+                        unit_sets[(layer, q, s, target)].add(_matrix_unit(x, target))
+                        bucket = reservoirs[key]
+                        if len(bucket) < pool_limit: bucket.append(_matrix_ref(x, target))
+    plans = {}; materialized = {}
+    for b, layers in FULL_LAYERS.items():
+        for c, (classes, weights) in FULL_COMBOS.items():
+            for qcode, qset in FULL_QUALITY.items():
+                for pcode in FULL_POLICIES:
+                    run_id = f'{b}_{c}_{qcode}_{pcode}'
+                    class_counts = {}
+                    for s in classes:
+                        class_counts[s] = sum(counts[(layer, q, s, target, src)]
+                                              for layer in layers for q in qset
+                                              for target in MATRIX_TARGETS[s] for src in MATRIX_ALLOWED_SOURCES)
+                    available = all(class_counts.get(s, 0) > 0 for s in classes)
+                    spec = {'run_id': run_id, 'batch_id': b, 'combo_id': c, 'quality_code': qcode,
+                            'sampling_code': pcode, 'layers': layers, 'supervision_classes': classes,
+                            'ratios': weights, 'status': 'ELIGIBLE' if available else 'BLOCKED',
+                            'eligibility_reason': 'legal train rows for every requested supervision class' if available else 'no legal train rows for one or more requested supervision classes',
+                            'materialized': False, 'data': None, 'counts': class_counts,
+                            'independent_units': {s: sum(len(unit_sets[(layer, q, s, target)]) for layer in layers for q in qset for target in MATRIX_TARGETS[s]) for s in classes},
+                            'train_origin': 'Base', 'seed': 42, 'groups': classes,
+                            'max_len': 1024, 'head_max_len': 512, 'source_count': len(MATRIX_ALLOWED_SOURCES)}
+                    if run_id in selected and available:
+                        refs_by_target = defaultdict(list)
+                        total_weight = sum(weights)
+                        for s, weight in zip(classes, weights):
+                            quota = max(1, int(max_items * weight / total_weight))
+                            for target in MATRIX_TARGETS[s]:
+                                refs = [r for (layer, q, ss, tt, src), rows in reservoirs.items()
+                                        if ss == s and tt == target and layer in layers and q in qset for r in rows]
+                                refs_by_target[target].extend(_matrix_select(refs, pcode, target, quota))
+                        for d in ('train','val'):
+                            os.makedirs(os.path.join(out, 'data', run_id, d), exist_ok=True)
+                        val_root = os.path.join(root, 'batch_preparation', 'batch1')
+                        materialized[run_id] = _matrix_materialize(args, out, run_id, refs_by_target, classes, val_root)
+                        spec.update({'materialized': True, 'data': 'data/' + run_id,
+                                     'materialized_counts': materialized[run_id], 'status': 'PLANNED'})
+                    plans[run_id] = spec
+    extras = []
+    for prefix, n in [('CUR', 12), ('SEED', 40), ('ABL', 32)]:
+        for i in range(1, n + 1):
+            rid = f'{prefix}{i:02d}'
+            plans[rid] = {'run_id': rid, 'status': 'PLANNED', 'materialized': False, 'data': None,
+                          'eligibility_reason': 'reserved extension slot after base matrix', 'groups': [], 'seed': 42}
+            extras.append(rid)
+    manifest = {
+        'experiment_id': 'MR-FULL-GRADED-TRAINING', 'output_root': out,
+        'source': 'existing quality_grading_v2_1/by_source indexes; no reclassification',
+        'theoretical_slots': len(plans), 'base_slots': 1008, 'extra_slots': len(extras),
+        'plans': plans, 'selected_queue': selected, 'materialized': materialized,
+        'generation': {'command': sys.argv, 'code_sha256': {p: hashlib.sha256(open(p,'rb').read()).hexdigest() for p in ('prepare_router_data.py', __file__, 'router_data/laya_batch_train.py')},
+                       'pool_limit': pool_limit, 'max_items_per_class': max_items, 'test_used': False},
+        'audit': {'route_001_002_training': False, 's2_observed_actions_are_not_model_choice': True,
+                  's3_prefix_reuse_is_not_physical_cache_hit': True, 'validation_source': 'existing V2.1 Batch1 fixed validation'},
+        'aggregate': {'eligible': sum(v['status'] == 'ELIGIBLE' or v.get('materialized') for v in plans.values() if v['run_id'].startswith('B')),
+                      'blocked': sum(v['status'] == 'BLOCKED' for v in plans.values()), 'planned': sum(v['status'] == 'PLANNED' for v in plans.values()),
+                      'materialized_runs': len(materialized)}
+    }
+    _dump(os.path.join(out, 'experiment_matrix.json'), manifest)
+    _dump(os.path.join(out, 'matrix_counts.json'), {'row_counts': {str(k): v for k,v in counts.items()}, 'source_counts': {str(k): v for k,v in source_counts.items()}, 'materialized': materialized})
+    print(json.dumps({'out': out, 'slots': len(plans), 'materialized': list(materialized), 'aggregate': manifest['aggregate']}, ensure_ascii=False), flush=True)
+    return manifest
 
 
 def run_batch_prep(args):

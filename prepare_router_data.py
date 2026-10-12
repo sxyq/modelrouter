@@ -21,14 +21,14 @@ from router_data.tra import run_tra_batch
 from router_data.views import build_unified_training_and_evaluation_views
 from router_data.all_data import prepare_all_data
 from router_data.quality_v2 import run_quality_v2
-from router_data.batch_prep import prepare_sweep02, run_batch_prep
+from router_data.batch_prep import prepare_sweep02, run_batch_prep, prepare_full_matrix
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="ModelRouter 唯一数据清洗与特征提取入口")
     parser.add_argument(
         "--mode",
-        choices=["blog", "tra", "route", "cache_time", "mem_mas_env", "public", "views", "all", "all_data", "quality_v2", "batch_prep", "batch_sweep"],
+        choices=["blog", "tra", "route", "cache_time", "mem_mas_env", "public", "views", "all", "all_data", "quality_v2", "batch_prep", "batch_sweep", "full_matrix"],
         default="public",
         help="执行模式: blog (私有数据), tra (Batch 1: Agent轨迹), route (Batch 2: 路由比较), cache_time (Batch 3: 缓存时间), mem_mas_env (Batch 4: 记忆协作环境), public (全部公开数据并生成训练视图), views (仅构建训练视图与Kev划分), all (全部私有+公开+训练视图)",
     )
@@ -84,6 +84,28 @@ def parse_args():
         help="第二轮 Laya Sweep 的小型派生数据目录",
     )
     parser.add_argument(
+        "--matrix-out-dir",
+        default="",
+        help="全量 B/C/Q/P 矩阵和已选批次输出目录",
+    )
+    parser.add_argument(
+        "--matrix-run-ids",
+        default="",
+        help="首个执行窗口要物化的批次 ID，逗号分隔",
+    )
+    parser.add_argument(
+        "--matrix-max-items",
+        type=int,
+        default=4096,
+        help="每个监督类别的最大物化 Item 数",
+    )
+    parser.add_argument(
+        "--matrix-pool-limit",
+        type=int,
+        default=6000,
+        help="每个来源/层级/质量/目标保留的索引样本上限",
+    )
+    parser.add_argument(
         "--seed",
         type=int,
         default=42,
@@ -137,6 +159,8 @@ def main():
         run_batch_prep(args)
     elif args.mode == "batch_sweep":
         prepare_sweep02(args)
+    elif args.mode == "full_matrix":
+        prepare_full_matrix(args)
     elif args.mode == "public":
         print("\n" + "=" * 70)
         print("  ModelRouter 公开数据全量清洗与规范化流水线 (--mode public)")
