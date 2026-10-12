@@ -86,7 +86,15 @@ def _example(src,r,x,t):
     evidence = x.get('label_evidence', {})
     if isinstance(evidence, dict):
         evidence = evidence.get(t, [])
-    return {'provenance':{'source_id':src,'source_line':x['source_line'],'source_file':x['source_file'],'stable_record_id':x['stable_record_id'],'independent_unit_id':x['independent_unit_id'],'trajectory_id':x.get('trajectory_id'),'split':x['split']},'state':{'source_id':src,'pre_decision_state':state},'questions':{qid:{'type':typ,'instructions':'Predict this source-specific observed target: '+t+'. Observed actions are not optimal actions; prefix reuse is not physical cache hit.','criteria':criteria}},'expected':{qid:label},'_meta':{'supervision_class':x['primary_supervision_class'],'target':t,'label_evidence':evidence,'representative_only':True}}
+    if t == 'observed_action':
+        instruction = 'Predict the observed action category for this record. This is an observed action, not an optimal model choice.'
+    elif t in {'observed_success', 'observed_failure'}:
+        instruction = 'Predict the observed trajectory outcome category for this record. This is an observed outcome, not an optimal model choice.'
+    elif t == 'prefix_reuse_opportunity':
+        instruction = 'Predict the historical prefix reuse category for this record. Historical prefix reuse is not a physical provider cache hit.'
+    else:
+        instruction = 'Predict the observed auxiliary measurement category for this record. It is not a model choice.'
+    return {'provenance':{'source_id':src,'source_line':x['source_line'],'source_file':x['source_file'],'stable_record_id':x['stable_record_id'],'independent_unit_id':x['independent_unit_id'],'trajectory_id':x.get('trajectory_id'),'split':x['split']},'state':{'source_id':src,'pre_decision_state':state},'questions':{qid:{'type':typ,'instructions':instruction,'criteria':criteria}},'expected':{qid:label},'_meta':{'supervision_class':x['primary_supervision_class'],'target':t,'label_evidence':evidence,'representative_only':True}}
 
 
 FULL_LAYERS = {
@@ -230,11 +238,28 @@ def prepare_full_matrix(args):
                         refs_by_target = defaultdict(list)
                         total_weight = sum(weights)
                         for s, weight in zip(classes, weights):
-                            quota = max(1, int(max_items * weight / total_weight))
+                            class_quota = max(1, int(max_items * weight / total_weight))
+                            target_refs = {}
                             for target in MATRIX_TARGETS[s]:
-                                refs = [r for (layer, q, ss, tt, src), rows in reservoirs.items()
-                                        if ss == s and tt == target and layer in layers and q in qset for r in rows]
-                                refs_by_target[target].extend(_matrix_select(refs, pcode, target, quota))
+                                target_refs[target] = [r for (layer, q, ss, tt, src), rows in reservoirs.items()
+                                                       if ss == s and tt == target and layer in layers and q in qset for r in rows]
+                            target_pool = {t: _matrix_select(rows, pcode, t, len(rows))
+                                           for t, rows in target_refs.items() if rows}
+                            total_available = sum(len(rows) for rows in target_pool.values())
+                            remaining = class_quota
+                            target_names = sorted(target_pool)
+                            for index, target in enumerate(target_names):
+                                if remaining <= 0:
+                                    break
+                                if index == len(target_names) - 1:
+                                    target_quota = min(len(target_pool[target]), remaining)
+                                else:
+                                    target_quota = min(len(target_pool[target]), max(0, round(class_quota * len(target_pool[target]) / max(1, total_available))))
+                                    if target_quota == 0 and remaining > 0:
+                                        target_quota = 1
+                                chosen = _matrix_select(target_pool[target], pcode, target, target_quota)
+                                refs_by_target[target].extend(chosen)
+                                remaining -= len(chosen)
                         for d in ('train','val'):
                             os.makedirs(os.path.join(out, 'data', run_id, d), exist_ok=True)
                         val_root = os.path.join(root, 'batch_preparation', 'batch1')
