@@ -701,3 +701,7 @@ Execution 报告自称 660 万分层、八组状态覆盖、五阶段训练设�
 ### 10.13 2026-10-12 · OVERNIGHT-LAYA-SWEEP-02
 
 已按授权完成 N01–N10，每个方案运行最多 3 轮并保留 `epoch_01`–`epoch_03`、`latest` 与 `best` 权重目录。N01、N02、N03、N07、N09 按连续两轮缺少 S1 验证损失改善提前结束，N04、N05、N06、N08、N10 完成三轮；共 30 个逐轮节点、50 个权重目录。固定验证集合为 S1 561 条，混合方案另含 S2 337 条与 S3 4,794 条。N05-E02 的 S1 验证损失最低（0.5969），N10-E03 的 S1 验证准确率最高（0.6952）。N01–N10 `best` 权重均通过官方 Laya CPU 加载。S2 验证准确率在混合方案中为 1.0，但该集合标签与状态字段的独立审计仍显示多数参考准确率约 0.551929，不能据此宣称通用路由能力。服务器训练进程已退出，GPU 回落至 682 MiB；未运行 Kev、Test、Coding Benchmark 或付费 API。服务器结果位于 `runs/OVERNIGHT-LAYA-SWEEP-02/`，公开面板数据和逐轮同步记录位于 `docs/training-dashboard/`。
+
+### 10.14 2026-10-12 · FULL-GRADED-MULTI-BATCH-TRAINING
+
+从现有 V2.1 索引生成 `experiment_matrix.json`，共 1,092 个槽位：基础 B/C/Q/P 1,008 个，课程 12 个、多 Seed 40 个、变量消融 32 个；其中 693 个有合法数据，315 个因目标组合没有合法训练记录而标为 BLOCKED。首个执行窗口物化 B01 的 16 个 QB/PB 组合，每个监督类别最多 4,096 条索引样本，并沿用 Batch 1 固定验证集合。B01_C01、B01_C04、B01_C05、B01_C06 已完成两个 Epoch；B01_C02、B01_C03 各完成两个 Epoch 后因旧的 S1 早停条件结束，后续代码已限定为只有存在 S1 验证指标时才触发；B01_C07 正在执行。训练入口仍为 `router_data/laya_batch_train.py`，输出在服务器 `runs/MR-FULL-GRADED-TRAINING/`，每个 Epoch 写入训练、验证、保存耗时和 GPU 读数，看板按 Epoch 同步。
