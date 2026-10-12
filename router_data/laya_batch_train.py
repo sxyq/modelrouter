@@ -277,6 +277,7 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
             'saved_weight_count': saved_weight_count,
             'current_run': current,
             'current_epoch': current_epoch,
+            'current_step': runs.get(current, {}).get('current_step') if current else None,
             'best_s1_loss_checkpoint': best_id,
             'best_s1_loss': best_loss,
             'best_s1_accuracy_checkpoint': best_acc_id,
