@@ -78,28 +78,169 @@ def _load_items(path, tok, train_mod, max_len, head_max_len):
     return items, {'rows': len(rows), 'items': len(items), 'skipped': skipped}
 
 
-def _evaluate(model, tok, items, dev, train_mod, cfg, max_len, head_max_len):
-    if not items:
+def _evaluate_records_list(records, train_mod, return_item_vectors=False):
+    if not records:
         return {
             'items': 0, 'loss': None, 'accuracy': None, 'ece': None, 'brier': None,
             'balanced_accuracy': None, 'macro_f1': None, 'by_type': {},
         }
-    records = train_mod.calibration_records(model, tok, items, dev, max_len, head_max_len)
-    # Keep validation metrics on the same raw-logit scale for every run. Calibration is
-    # recorded separately and never replaces the independent validation set.
     res = train_mod.evaluate_records(records, [1.0, 1.0, 1.0], None)
-    cls_metrics = classification_metrics_from_records(records)
+    cls_metrics = classification_metrics_from_records(records, return_item_vectors=return_item_vectors)
     res.update(cls_metrics)
     return res
 
 
-def _groups(model, tok, val_groups, dev, train_mod, cfg, max_len, head_max_len):
+def _evaluate(model, tok, items, dev, train_mod, cfg, max_len, head_max_len, return_records=False, return_item_vectors=False):
+    if not items:
+        empty = {
+            'items': 0, 'loss': None, 'accuracy': None, 'ece': None, 'brier': None,
+            'balanced_accuracy': None, 'macro_f1': None, 'by_type': {},
+        }
+        return (empty, []) if return_records else empty
+    records = train_mod.calibration_records(model, tok, items, dev, max_len, head_max_len)
+    res = _evaluate_records_list(records, train_mod, return_item_vectors=return_item_vectors)
+    return (res, records) if return_records else res
+
+
+def _slice_records_by_key(rows, records, key_fn, train_mod):
+    if len(rows) != len(records):
+        return None
+    buckets = {}
+    for row, rec in zip(rows, records):
+        buckets.setdefault(key_fn(row), []).append(rec)
+    out = {}
+    for k, rec_list in sorted(buckets.items()):
+        ev = _evaluate_records_list(rec_list, train_mod, return_item_vectors=False)
+        ev['skipped'] = {}
+        out[k] = ev
+    return out
+
+
+def _groups(model, tok, val_groups, dev, train_mod, cfg, max_len, head_max_len, val_rows=None, return_s1_vectors=False):
     result = {}
+    all_records = []
+    records_by_group = {}
     for name, items in val_groups.items():
-        result[name] = _evaluate(model, tok, items, dev, train_mod, cfg, max_len, head_max_len)
-    all_items = [it for group in val_groups.values() for it in group]
-    result['all'] = _evaluate(model, tok, all_items, dev, train_mod, cfg, max_len, head_max_len)
+        want_vec = bool(return_s1_vectors and name == 'S1')
+        ev, recs = _evaluate(model, tok, items, dev, train_mod, cfg, max_len, head_max_len,
+                             return_records=True, return_item_vectors=want_vec)
+        result[name] = ev
+        records_by_group[name] = recs
+        all_records.extend(recs)
+    result['all'] = _evaluate_records_list(all_records, train_mod, return_item_vectors=False)
+
+    if val_rows:
+        if 'S1' in val_rows and 'S1' in records_by_group:
+            s1_src = _slice_records_by_key(
+                val_rows['S1'],
+                records_by_group['S1'],
+                lambda r: (r.get('provenance') or {}).get('source_id', 'unknown'),
+                train_mod,
+            )
+            if s1_src is not None:
+                result['S1_by_source'] = s1_src
+        if 'S3' in val_rows and 'S3' in records_by_group:
+            s3_tgt = _slice_records_by_key(
+                val_rows['S3'],
+                records_by_group['S3'],
+                lambda r: '%s:%s' % ((r.get('provenance') or {}).get('source_id', 'unknown'),
+                                     next(iter((r.get('questions') or {}).keys()), '')),
+                train_mod,
+            )
+            if s3_tgt is not None:
+                result['S3_by_source_target'] = enrich_s3_target_metrics(s3_tgt)
     return result
+
+
+def compute_baseline_0(val_root, model_dir, out_root, seed=42, max_len=1024, head_max_len=512):
+    """Evaluate un-finetuned Laya-421M on fixed new-protocol validation sets and freeze `baseline_0.json`."""
+    import torch
+    from laya.train import items_from_rows, load_checkpoint, read_data
+
+    train_mod = sys.modules['laya.train']
+    model, tok, cfg = load_checkpoint(model_dir)
+    dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.to(dev)
+
+    val_dir = Path(val_root)
+    if (val_dir / 'val').is_dir():
+        val_dir = val_dir / 'val'
+
+    val_groups = {}
+    val_rows = {}
+    skipped_map = {}
+    for name in ('S1', 'S2', 'S3'):
+        p = val_dir / f'{name}.jsonl'
+        if not p.is_file():
+            matches = sorted(Path(val_root).glob(f'data/*/val/{name}.jsonl'))
+            if matches:
+                p = matches[0]
+        if not p.is_file():
+            continue
+        rows = read_data(str(p))
+        items, skipped = items_from_rows(tok, rows, max_len=max_len, head_max_len=head_max_len)
+        val_rows[name] = rows
+        val_groups[name] = items
+        skipped_map[name] = skipped
+
+    metrics = _groups(
+        model, tok, val_groups, dev, train_mod, cfg, max_len, head_max_len,
+        val_rows=val_rows, return_s1_vectors=True,
+    )
+    s1_ev = dict(metrics.get('S1') or {})
+    s1_losses = s1_ev.pop('item_losses', [])
+    s1_correct = s1_ev.pop('item_correct', [])
+    s2_ev = dict(metrics.get('S2') or {})
+    s3_ev = dict(metrics.get('S3') or {})
+    s1_by_src = dict(metrics.get('S1_by_source') or {})
+    s3_by_tgt = dict(metrics.get('S3_by_source_target') or {})
+    s1_ev['by_source'] = s1_by_src
+    s3_ev['by_source_target'] = s3_by_tgt
+
+    payload = {
+        'baseline_id': 'BASELINE_0_LAYA_421M_FROZEN',
+        'computed_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+        'protocol_version': NEW_PROTOCOL_VERSION,
+        'model_name': 'Laya-421M (un-finetuned base)',
+        'frozen': True,
+        'composite_scores': {'S1_score': 100.0, 'S2_score': 100.0, 'S3_score': 100.0},
+        'validation': {
+            'S1': s1_ev,
+            'S1_by_source': s1_by_src,
+            'S2': s2_ev,
+            'S3': s3_ev,
+            'S3_by_source_target': s3_by_tgt,
+        },
+        'S1': s1_ev,
+        'S1_by_source': s1_by_src,
+        'S2': s2_ev,
+        'S3': s3_ev,
+        'S3_by_source_target': s3_by_tgt,
+        'skipped': skipped_map,
+        's1_item_losses': s1_losses,
+        's1_item_correct': s1_correct,
+    }
+    out_path = Path(out_root) / 'baseline_0.json'
+    _write(out_path, payload)
+    _write(Path(out_root) / 'R0' / 'run.json', {
+        'run_id': 'R0',
+        'status': 'completed',
+        'protocol_version': NEW_PROTOCOL_VERSION,
+        'seed': seed,
+        'validation': {
+            'S1': s1_ev,
+            'S1_by_source': payload['S1_by_source'],
+            'S2': s2_ev,
+            'S3': s3_ev,
+            'S3_by_source_target': payload['S3_by_source_target'],
+        },
+        'data': {k: len(v) for k, v in val_rows.items()},
+    })
+    return payload
+
+
+def run_baseline(batch_root, model_dir, out_root, seed=42, max_len=1024, head_max_len=512):
+    return compute_baseline_0(batch_root, model_dir, out_root, seed=seed, max_len=max_len, head_max_len=head_max_len)
 
 
 def _load_run_files(batch_root, run, tok, train_mod, max_len, head_max_len):
@@ -109,32 +250,6 @@ def _load_run_files(batch_root, run, tok, train_mod, max_len, head_max_len):
         train_groups[name], load['train_' + name] = _load_items(Path(batch_root) / 'train' / (name + '.jsonl'), tok, train_mod, max_len, head_max_len)
         val_groups[name], load['val_' + name] = _load_items(Path(batch_root) / 'val' / (name + '.jsonl'), tok, train_mod, max_len, head_max_len)
     return train_groups, val_groups, load
-
-
-def run_baseline(batch_root, model_dir, out_root, seed=42, max_len=1024, head_max_len=512):
-    import torch
-    from laya.train import calibration_records, evaluate_records, load_checkpoint
-
-    model, tok, cfg = load_checkpoint(model_dir)
-    dev = torch.device('cuda')
-    model.to(dev)
-    result = {'run_id': 'R0', 'status': 'completed', 'base_model': model_dir, 'seed': seed,
-              'validation': {}, 'data': {}}
-    for name in ('S1', 'S2', 'S3'):
-        path = Path(batch_root) / 'val' / (name + '.jsonl')
-        rows = json.loads('[]')
-        with path.open(encoding='utf8') as f:
-            rows = [json.loads(line) for line in f if line.strip()]
-        result['data'][name] = len(rows)
-        from laya.train import items_from_rows
-        items, skipped = items_from_rows(tok, rows, max_len=max_len, head_max_len=head_max_len)
-        rec = calibration_records(model, tok, items, dev, max_len, head_max_len)
-        ev = evaluate_records(rec, [1.0, 1.0, 1.0], None)
-        ev.update(classification_metrics_from_records(rec))
-        ev['skipped'] = skipped
-        result['validation'][name] = ev
-    _write(Path(out_root) / 'R0' / 'run.json', result)
-    return result
 
 
 def run_experiment(run, batch_root, model_dir, out_root, parent_checkpoint=None,
@@ -458,10 +573,7 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
     train_groups, val_groups, load, val_rows = _load_named_groups(
         data_dir, group_names, tok, sys.modules['laya.train'], max_len, head_max_len)
     train_items = [item for name in group_names for item in train_groups[name]]
-    parent_metrics = _groups(model, tok, val_groups, dev, sys.modules['laya.train'], cfg, max_len, head_max_len)
-    if 'S3' in val_rows:
-        parent_metrics['S3_by_source_target'] = _s3_validation_breakdown(
-            model, tok, val_rows['S3'], dev, sys.modules['laya.train'], cfg, max_len, head_max_len)
+    parent_metrics = _groups(model, tok, val_groups, dev, sys.modules['laya.train'], cfg, max_len, head_max_len, val_rows=val_rows)
 
     config = TrainConfig(
         epochs=epochs, micro_batch=8, grad_accum=8,
@@ -478,7 +590,8 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
     protocol_version = spec.get('protocol_version') or manifest.get('protocol_version') or NEW_PROTOCOL_VERSION
     legacy_flag = bool(spec.get('legacy_input_protocol', False))
     run_meta = {
-        'run_id': run_id, 'parent_checkpoint_id': parent_id,
+        'run_id': run_id, 'base_run_id': spec.get('base_run_id') or (run_id[3:] if run_id.startswith('P0_') else run_id),
+        'parent_checkpoint_id': parent_id,
         'base_model': sanitize_command_str(model_path), 'data_dir_label': spec['data'],
         'train_origin': spec.get('train_origin', 'Base'),
         'protocol_version': protocol_version,
@@ -528,10 +641,12 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         epoch_boundary = time.time()
         train_seconds = epoch_boundary - epoch_train_started
         validation_started = time.time()
-        metrics = _groups(model, tok, val_groups, dev, sys.modules['laya.train'], cfg, max_len, head_max_len)
-        if 'S3' in val_rows:
-            metrics['S3_by_source_target'] = _s3_validation_breakdown(
-                model, tok, val_rows['S3'], dev, sys.modules['laya.train'], cfg, max_len, head_max_len)
+        metrics = _groups(
+            model, tok, val_groups, dev, sys.modules['laya.train'], cfg, max_len, head_max_len,
+            val_rows=val_rows, return_s1_vectors=True,
+        )
+        s1_vec_losses = (metrics.get('S1') or {}).pop('item_losses', None)
+        s1_vec_correct = (metrics.get('S1') or {}).pop('item_correct', None)
         validation_seconds = time.time() - validation_started
         s1_loss = metrics.get('S1', {}).get('loss')
         ckcfg = dict(cfg, max_len=max_len, head_max_len=head_max_len,
@@ -546,6 +661,18 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
             best_loss, best_epoch, no_improve = s1_loss, epoch + 1, 0
         elif s1_loss is not None:
             no_improve += 1
+        elif best_epoch is None:
+            best_epoch = epoch + 1
+
+        if (improved or epoch == 0) and s1_vec_losses is not None and s1_vec_correct is not None:
+            _write(run_root / 's1_val_vectors.json', {
+                'run_id': run_id,
+                'checkpoint_id': epoch_id,
+                'epoch': epoch + 1,
+                'items': len(s1_vec_losses),
+                'item_losses': s1_vec_losses,
+                'item_correct': s1_vec_correct,
+            })
 
         try:
             gpu_util = float(subprocess.check_output(
@@ -563,7 +690,9 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
             'validation': metrics, 'improved_0_5pct': improved,
             'best_epoch': best_epoch,
             'train_seconds': round(train_seconds, 3), 'validation_seconds': round(validation_seconds, 3),
-            'checkpoint_seconds': 0.0, 'epoch_total_seconds': 0.0, 'epoch_seconds': 0.0,
+            'checkpoint_seconds': 0.0,
+            'epoch_total_seconds': round(train_seconds + validation_seconds, 3),
+            'epoch_seconds': round(train_seconds + validation_seconds, 3),
             'optimizer_updates': updates_per_epoch,
             'learning_rate': {'encoder': config.encoder_lr, 'head': config.head_lr},
             'gradient_norm': None,
@@ -591,6 +720,10 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         entry['checkpoint_seconds'] = round(checkpoint_seconds, 3)
         entry['epoch_total_seconds'] = round(epoch_total_seconds, 3)
         entry['epoch_seconds'] = round(epoch_total_seconds, 3)
+        if run_meta.get('history'):
+            run_meta['history'][-1]['checkpoint_seconds'] = entry['checkpoint_seconds']
+            run_meta['history'][-1]['epoch_total_seconds'] = entry['epoch_total_seconds']
+            run_meta['history'][-1]['epoch_seconds'] = entry['epoch_seconds']
 
         _write(run_root / 'epoch_metrics.json', run_meta['history'])
         _write(run_root / 'epoch_status.json', {
@@ -658,6 +791,7 @@ def main():
     parser.add_argument('--active-budget-gib', type=float, default=120.0)
     parser.add_argument('--s2-audit-passed', action='store_true')
     parser.add_argument('--pinned-checkpoints', default='')
+    parser.add_argument('--compute-baseline0', action='store_true')
     parser.add_argument('--verify-storage-policy', action='store_true')
     parser.add_argument('--sync-dashboard', action='store_true')
     parser.add_argument('--project-root', default='.')
@@ -680,6 +814,12 @@ def main():
     pinned = [x.strip() for x in args.pinned_checkpoints.split(',') if x.strip()]
 
     import laya.train as train_mod  # noqa: F401
+    if args.compute_baseline0:
+        val_root = args.sweep_data_root or args.out_root
+        result = compute_baseline_0(val_root, args.model_dir, args.out_root, seed=args.seed)
+        print(json.dumps({k: v for k, v in result.items() if k not in ('s1_item_losses', 's1_item_correct')}, ensure_ascii=False, indent=2))
+        return
+
     if args.sweep_run:
         result = run_sweep_experiment(
             args.sweep_run, args.sweep_manifest,

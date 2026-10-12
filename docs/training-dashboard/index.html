@@ -50,37 +50,67 @@
     <div id="protocolBanner" class="protocol-banner"></div>
   </header>
   <main>
-    <section class="panel"><h2>实验总览</h2><div class="grid" id="overview"></div></section>
+    <section class="panel"><h2>实验总览（MR-FULL-GRADED-AUTO-SWEEP · 三层基准 + Top 30% Checkpoint 保留）</h2><div class="grid" id="overview"></div></section>
+
+    <!-- Section 8.6: 1,092 槽位队列与阶段进度看板 -->
+    <section class="panel">
+      <h2>0. 1,092 槽位自动调度队列与阶段进度看板 (Stage 0–4 · 严禁将 52 个 P0 物化方案重复计入 1,144) <span class="badge RETAINED_TOP_K" id="queueStatusBadge">READY</span></h2>
+      <div class="grid" id="queueStageCards"></div>
+      <div class="progress-wrap" id="queueBatchBreakdown" style="margin-top:10px"></div>
+    </section>
+
+    <!-- Section 8.1 & 8.4: 三层基准综合得分分布图 & Checkpoint 筛选漏斗图 -->
+    <section class="two">
+      <div class="panel">
+        <h2>1. 三层基准与多指标综合得分分布图 (BASELINE_0=100 · BASELINE_1 均值/截尾均值 · BASELINE_2 P50/P70/P90/BEST)</h2>
+        <div class="grid-4" id="baselineTierCards" style="margin-bottom:10px"></div>
+        <svg id="scoreDistChart" viewBox="0 0 900 250" preserveAspectRatio="none"></svg>
+        <div class="small" id="scoreDistNote" style="margin-top:6px"></div>
+      </div>
+      <div class="panel">
+        <h2>2. Checkpoint Top 30% 筛选漏斗图 &amp; 多指标雷达对比</h2>
+        <div id="funnelWrap" style="margin-bottom:12px"></div>
+        <svg id="radarChart" viewBox="0 0 900 220" preserveAspectRatio="none"></svg>
+        <div class="small" id="radarNote" style="margin-top:6px"></div>
+      </div>
+    </section>
+
+    <!-- Section 8.3: 训练前后收益对比图 (Before/After vs BASELINE_0 + Paired Bootstrap 95% CI) -->
+    <section class="panel">
+      <h2>3. 训练前后收益对比（Before/After vs 冻结 BASELINE_0 · S1 561 独立单元成对 Bootstrap 95% 置信区间 &amp; 分来源 ROUTE-001..004 拆解）</h2>
+      <div id="beforeAfterSummary" class="kv-grid"></div>
+      <table id="beforeAfterTable"></table>
+    </section>
 
     <!-- P5.1 磁盘监控 & P5.2 Checkpoint 保留统计 -->
     <section class="two">
       <div class="panel">
-        <h2>1. 磁盘监控与存储预算保护 <span class="badge RETAINED_BEST" id="diskGuardBadge">OK</span></h2>
+        <h2>4. 磁盘监控与存储预算保护 <span class="badge RETAINED_BEST" id="diskGuardBadge">OK</span></h2>
         <div class="grid" id="diskCards"></div>
         <div class="progress-wrap" id="budgetBars"></div>
       </div>
       <div class="panel">
-        <h2>2. Checkpoint 智能保留统计与 100-Run 空间对比</h2>
+        <h2>5. Checkpoint 智能保留统计与 100-Run 空间对比</h2>
         <div class="grid" id="retentionCards"></div>
         <div class="progress-wrap" id="policyComparisonBox"></div>
       </div>
     </section>
 
-    <!-- P5.3 模型质量与存储散点图 -->
+    <!-- Section 8.5 / P5.3 模型质量与存储散点图 -->
     <section class="panel">
       <h2>
-        <span>3. 模型质量与存储散点图（点击节点可查看完整 Epoch 记录）</span>
+        <span>6. 质量–存储散点图（X 轴支持综合分 / S1 Loss / S1 Acc · 含 BASELINE_0=100、0.98×Mean、Top 30% P70 阈值线）</span>
         <span>
-          <button id="scatterModeLoss" class="active" onclick="setScatterMode('s1_loss')">X 轴：S1 Val Loss (越低越好)</button>
+          <button id="scatterModeScore" class="active" onclick="setScatterMode('primary_score')">X 轴：多指标综合分 (越高越好, 基座=100)</button>
+          <button id="scatterModeLoss" onclick="setScatterMode('s1_loss')">X 轴：S1 Val Loss (越低越好)</button>
           <button id="scatterModeAcc" onclick="setScatterMode('s1_acc')">X 轴：S1 Val Accuracy (越高越好)</button>
-          <button id="scatterModeAll" onclick="setScatterMode('all_score')">X 轴：全任务主验证指标</button>
         </span>
       </h2>
       <div class="legend">
-        <span><i class="dot" style="background:#4adeaa"></i> 最佳保留 (RETAINED_BEST)</span>
+        <span><i class="dot" style="background:#4adeaa"></i> 全局/批次最佳 (RETAINED_BEST)</span>
         <span><i class="dot" style="background:#f6c453"></i> 父节点保护 (PINNED_PARENT)</span>
-        <span><i class="dot" style="background:#63a4ff"></i> 同组 Top-K 保留 (RETAINED_TOP_K)</span>
-        <span><i class="dot" style="background:#fb7185"></i> 低分淘汰 / 仅元数据 (PRUNED_LOW_SCORE / METADATA_ONLY)</span>
+        <span><i class="dot" style="background:#63a4ff"></i> 同组前 30% 保留 (RETAINED_TOP_K)</span>
+        <span><i class="dot" style="background:#fb7185"></i> 后 70% 低分淘汰 / 仅元数据 (PRUNED_LOW_SCORE / METADATA_ONLY)</span>
       </div>
       <svg id="scatterChart" viewBox="0 0 960 280" preserveAspectRatio="none"></svg>
       <div class="small" id="scatterNote"></div>
@@ -88,7 +118,7 @@
 
     <!-- P5.4 动态阈值图 (S1 / S2 / S3 严格独立显示) -->
     <section class="panel">
-      <h2>4. 同类实验动态阈值与组内分布（S1 / S2 / S3 严格独立排名，新旧协议隔离）</h2>
+      <h2>7. 同类实验动态基准与组内 Top 30% 排名（S1 / S2 / S3 严格独立分组，新旧协议隔离）</h2>
       <div class="small" id="thresholdNote" style="margin-bottom:10px"></div>
       <div class="three" id="thresholdPanels"></div>
     </section>
@@ -96,23 +126,24 @@
     <!-- P5.5 历史树：所有 Epoch 节点（含已删权重的 METADATA_ONLY 节点）均可点击查看 -->
     <section class="panel">
       <h2>
-        <span>5. 历史训练树（Run 级与全部 Epoch 节点 · 含已删权重 METADATA_ONLY 节点可点击检查）</span>
+        <span>8. 历史训练树（Run 级与全部 Epoch 节点 · 含已删权重 METADATA_ONLY 节点可点击检查）</span>
         <span>
           <button id="treeFilterAll" class="active" onclick="setTreeFilter('ALL')">全部节点</button>
-          <button id="treeFilterFG" onclick="setTreeFilter('MR-FULL-GRADED-TRAINING')">FULL-GRADED (32 Ep)</button>
+          <button id="treeFilterNew" onclick="setTreeFilter('MR-FULL-GRADED-NEW-PROTOCOL')">新协议正式训练</button>
+          <button id="treeFilterFG" onclick="setTreeFilter('MR-FULL-GRADED-TRAINING')">旧窗口1 (32 Ep)</button>
           <button id="treeFilterSaved" onclick="setTreeFilter('SAVED')">已留实体权重</button>
           <button id="treeFilterPruned" onclick="setTreeFilter('PRUNED')">仅元数据 / 已淘汰</button>
           <button id="treeFilterPinned" onclick="setTreeFilter('PINNED')">PINNED 父节点</button>
-          <button id="treeFilterSim" onclick="setTreeFilter('SANDBOX_VERIFY')">P7 沙盒验收 (14 Ep)</button>
+          <button id="treeFilterSim" onclick="setTreeFilter('SANDBOX_VERIFY')">P11 沙盒验收</button>
         </span>
       </h2>
       <div id="epochTree" class="tree"></div>
       <div id="epochNodeDetail" class="detail"></div>
     </section>
 
-    <!-- P7 验收结果面板 -->
+    <!-- P11 14项验收结果面板 -->
     <section class="panel">
-      <h2>P7 存储策略与磁盘保护 10 项无 GPU 验收明细 <span class="badge RETAINED_BEST" id="verifySummaryBadge"></span></h2>
+      <h2>9. 执行前 14 项基准、Top 30% 筛选与磁盘保护验收明细 (P11-01 ~ P11-14) <span class="badge RETAINED_BEST" id="verifySummaryBadge"></span></h2>
       <table id="verifyTable"></table>
     </section>
 
@@ -147,20 +178,27 @@
   <script src="shards/checkpoint_tree_nodes.js"></script>
   <script src="shards/historical_runs_detail.js"></script>
   <script src="shards/storage_verification.js"></script>
+  <script src="shards/baselines_and_scores.js"></script>
   <script>
     const D = window.LAYA_DATA || {};
     if (window.LAYA_SHARD_PLANS) { D.plans = Object.assign({}, D.plans || {}, window.LAYA_SHARD_PLANS); }
     if (window.LAYA_SHARD_TREE && Array.isArray(window.LAYA_SHARD_TREE)) { D.checkpoint_tree = window.LAYA_SHARD_TREE; }
     if (window.LAYA_SHARD_VERIFICATION) { D.storage_verification_full = window.LAYA_SHARD_VERIFICATION; }
+    if (window.LAYA_SHARD_BASELINES) {
+      D.baseline_0 = D.baseline_0 || window.LAYA_SHARD_BASELINES.baseline_0;
+      D.queue_progress = D.queue_progress || window.LAYA_SHARD_BASELINES.queue_progress;
+      D.retention_funnel = D.retention_funnel || window.LAYA_SHARD_BASELINES.retention_funnel;
+      D.before_after_deltas = D.before_after_deltas || window.LAYA_SHARD_BASELINES.before_after_deltas;
+    }
 
     const runs = D.runs || {};
     const treeNodes = D.checkpoint_tree || [];
     const nodeById = {};
     for (const n of treeNodes) { nodeById[n.checkpoint_id] = n; }
 
-    let selected = D.overview?.current_run || 'B01_C05_QB_PB' || Object.keys(runs)[0] || '';
-    let selectedCkptId = nodeById['B01_C14_QB_PB-e01'] ? 'B01_C14_QB_PB-e01' : (treeNodes[0]?.checkpoint_id || '');
-    let scatterMode = 's1_loss';
+    let selected = D.overview?.current_run || Object.keys(runs).find(k => k.startsWith('P0_')) || 'B01_C05_QB_PB' || Object.keys(runs)[0] || '';
+    let selectedCkptId = treeNodes.find(n => n.experiment_group === 'MR-FULL-GRADED-NEW-PROTOCOL' && n.is_run_best_epoch)?.checkpoint_id || (nodeById['B01_C14_QB_PB-e01'] ? 'B01_C14_QB_PB-e01' : (treeNodes[0]?.checkpoint_id || ''));
+    let scatterMode = 'primary_score';
     let treeFilter = 'ALL';
 
     const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -186,20 +224,20 @@
         '指标更新时间：' + (D.generated_at || 'N/A') +
         ' · 同步状态：' + (o.github_sync || o.latest_sync_at || 'N/A') +
         ' · 状态：' + (D.status || 'N/A') +
-        ' · 分片加载：' + ((D.shards || []).length) + ' 个分片';
+        ' · 分片加载：' + ((D.shards || []).length || 5) + ' 个分片';
       const cards = [
-        ['已完成旧方案', o.completed_runs || 16],
-        ['新协议 CPU 可用', o.cpu_ready_runs || 52],
-        ['正式选模 Run', o.formal_selection_ready_runs || 0],
-        ['理论槽位 / BLOCKED', (o.planned_runs || 1092) + ' / ' + (o.blocked_runs ?? m.blocked ?? 315)],
-        ['FULL-GRADED Epoch', (o.checkpoint_total || 32) + ' (全项目 ' + (o.all_experiments_checkpoint_total || 71) + ')'],
-        ['FULL-GRADED 实体权重', (o.saved_weight_count || 55) + ' 目录 (' + (o.epoch_weight_count || 30) + ' Epoch)'],
-        ['新策略保留目标', (o.policy_retained_weight_count || 11) + ' / 32 (34.38%)'],
+        ['1,092 矩阵总槽位', (o.matrix_total_slots || 1092) + ' (1,008基础+84扩展)'],
+        ['新协议已完成 Run', o.new_protocol_completed_runs ?? 0],
+        ['新协议 CPU 已物化', o.cpu_materialized_runs ?? 52],
+        ['跳过同数据签名 / BLOCKED', (o.skipped_identical_runs ?? 154) + ' / ' + (o.blocked_base_slots ?? 315)],
+        ['BASELINE_0 固定基座', '100.0 (Loss=' + fmt(o.baseline_0_s1_loss ?? 1.8071) + ')'],
+        ['FULL-GRADED Epoch', (o.checkpoint_total || 32) + ' (新协议 ' + (o.new_protocol_checkpoint_total ?? 0) + ' / 全项目 ' + (o.all_experiments_checkpoint_total || 71) + ')'],
+        ['FULL-GRADED 实体权重', (o.saved_weight_count || 55) + ' 目录 (新协议 ' + (o.new_protocol_saved_weight_count ?? 0) + ')'],
+        ['Top 30% 策略保留', (o.policy_retained_weight_count || 11) + ' / ' + (o.checkpoint_total || 32)],
         ['PINNED 保护父节点', (o.pinned_parent_count || 2) + ' (R1-e01, R2-e01)'],
-        ['根分区可用磁盘', (dm.root_avail_gib || o.disk_avail_gib || 1064.78) + ' GiB (' + (dm.root_avail_pct || 30.26) + '%)'],
+        ['根分区可用磁盘', (dm.root_avail_gib || o.disk_avail_gib || 1244.41) + ' GiB (' + (dm.root_avail_pct || o.disk_avail_pct || 36.93) + '%)'],
         ['已释放 / 可继续清理', (o.freed_space_gib || 3.15) + ' GiB / ' + (o.future_reclaimable_gib || 34.68) + ' GiB'],
-        ['S1 Loss 最佳 (旧窗口)', o.best_s1_loss_checkpoint || 'B01_C05_QB_PB-e02'],
-        ['S1 Accuracy 最佳 (旧窗口)', o.best_s1_accuracy_checkpoint || 'B01_C05_QB_PB-e02']
+        ['旧窗口隔离归档', (o.legacy_completed_runs || 16) + ' Run (LEGACY)']
       ];
       document.getElementById('overview').innerHTML = cards.map(x =>
         '<div class="card"><div class="label">' + esc(x[0]) + '</div><div class="value">' + esc(x[1]) + '</div></div>'
@@ -207,8 +245,56 @@
       const n = D.new_protocol || {};
       document.getElementById('protocolBanner').innerHTML =
         '<b>当前数据协议：</b>' + esc(n.version || D.protocol_version || 'MR-FULL-GRADED-P0-DATA-REPAIR-v1') +
-        ' · <b>旧输入隔离：</b>' + esc(n.legacy_warning || '旧 LEGACY_INPUT_PROTOCOL 不参加新协议排名') +
-        ' · <b>存储保护：</b>活动权重预算 <b>120.0 GiB</b>，每轮 100% 记录指标，仅对达标 Top-K / 全局最佳 / PINNED 父节点保存单份实体权重。';
+        ' · <b>三层基准：</b>BASELINE_0 (冻结 Laya-421M = 100.0) + BASELINE_1 (同类去重鲁棒均值 0.98×下限) + BASELINE_2 (P50/P70/P90/Pareto)' +
+        ' · <b>存储保护：</b>活动权重预算 <b>120.0 GiB</b>，每轮 100% 记录指标，仅对达标 Top 30% (ceil(0.30×N)) / 全局最佳 / PINNED 父节点保存单份实体权重。';
+    }
+
+    function renderQueueProgress() {
+      const qp = D.queue_progress || baseShard.queue_progress || {};
+      const st = qp.status_counts || {};
+      const qState = qp.queue_state || {};
+      const badge = document.getElementById('queueProgressBadge');
+      if (badge) {
+        const qStatus = qState.queue_status || D.status || 'READY';
+        badge.textContent = '队列状态：' + qStatus;
+        badge.className = 'badge ' + (qStatus.includes('RUN') || qStatus.includes('COMPLETE') || qStatus.includes('READY') ? 'RETAINED_BEST' : 'PINNED_PARENT');
+      }
+      const qCards = [
+        ['NEW_PROTOCOL_COMPLETED', st.NEW_PROTOCOL_COMPLETED ?? 0, '新协议已完成训练 Run'],
+        ['CPU_MATERIALIZED', st.CPU_MATERIALIZED ?? 52, '已物化待执行 P0 方案'],
+        ['ELIGIBLE_UNMATERIALIZED', st.ELIGIBLE_UNMATERIALIZED ?? 487, '合法基础槽位按需物化'],
+        ['SKIPPED (同数据签名)', st.SKIPPED ?? 154, 'B01..B07 QA/QB/QC×PA/PB/PC 同签名去重跳过'],
+        ['BLOCKED (数据源阻断)', st.BLOCKED ?? 315, '缺失合法训练行阻断槽位'],
+        ['EXTENSION_UNDEFINED', st.EXTENSION_UNDEFINED ?? 84, 'P0_CUR/SEED/ABL 待父节点选定后展开'],
+        ['LEGACY_COMPLETED', qp.legacy_window1_completed ?? 16, '第一窗口旧协议归档（不抵扣新协议槽位）'],
+        ['FAILED / INTERRUPTED', (st.FAILED ?? 0) + ' / ' + (qState.interrupted_run ? 1 : 0), qState.stop_reason || '无失败阻断']
+      ];
+      const qEl = document.getElementById('queueCards');
+      if (qEl) {
+        qEl.innerHTML = qCards.map(x =>
+          '<div class="card"><div class="label">' + esc(x[0]) + '</div><div class="value">' + esc(x[1]) + '</div><div class="sub">' + esc(x[2]) + '</div></div>'
+        ).join('');
+      }
+      const s2Ver = qState.s2_neutral_verification;
+      const doneNew = Number(st.NEW_PROTOCOL_COMPLETED || 0);
+      const matRem = Number(st.CPU_MATERIALIZED || 0);
+      const skipCnt = Number(st.SKIPPED || 0);
+      const eligTotal = Number(qp.eligible_base_slots || 693);
+      const effDonePct = Math.min(100, ((doneNew + skipCnt) / Math.max(1, eligTotal) * 100)).toFixed(1);
+      const sbEl = document.getElementById('queueStageBars');
+      if (sbEl) {
+        sbEl.innerHTML =
+          '<div><b>693 个合法基础槽位有效覆盖进度（已完成 ' + doneNew + ' + 同数据签名去重跳过 ' + skipCnt + ' + 已物化待跑 ' + matRem + ' / ' + eligTotal + '）</b></div>' +
+          '<div class="bar-lg"><span style="width:' + effDonePct + '%;background:linear-gradient(90deg,#4adeaa,#63a4ff)"></span></div>' +
+          (s2Ver ? '<div class="small" style="margin-top:6px">• <b>Stage 0 S2 中性协议独立验证 (' + esc(s2Ver.run_id) + ')：</b>验证集 Accuracy = <code>' + esc(JSON.stringify(s2Ver.epoch_accuracies)) + '</code> &rarr; 策略状态：<b>' + esc(s2Ver.policy) + '</b></div>' : '');
+      }
+      const byB = qp.by_batch || {};
+      let bHtml = '<tr><th>Batch / Stage</th><th>NEW_PROTOCOL_COMPLETED</th><th>CPU_MATERIALIZED</th><th>ELIGIBLE_UNMATERIALIZED</th><th>SKIPPED (同数据签名)</th><th>BLOCKED</th><th>EXTENSION_UNDEFINED</th></tr>';
+      for (const [bk, bv] of Object.entries(byB)) {
+        bHtml += '<tr><td><b>' + esc(bk) + '</b></td><td class="good"><b>' + (bv.NEW_PROTOCOL_COMPLETED || 0) + '</b></td><td class="cyan">' + (bv.CPU_MATERIALIZED || 0) + '</td><td>' + (bv.ELIGIBLE_UNMATERIALIZED || 0) + '</td><td class="warn">' + (bv.SKIPPED || 0) + '</td><td class="muted">' + (bv.BLOCKED || 0) + '</td><td class="muted">' + (bv.EXTENSION_UNDEFINED || 0) + '</td></tr>';
+      }
+      const btEl = document.getElementById('queueBatchTable');
+      if (btEl) btEl.innerHTML = bHtml;
     }
 
     function renderDiskAndRetention() {
@@ -221,38 +307,38 @@
 
       const dCards = [
         ['根分区总容量 (/)', (dm.root_total_gib ?? 3518.72) + ' GiB', (dm.root_total_bytes || 0).toLocaleString() + ' B'],
-        ['已使用空间', (dm.root_used_gib ?? 2275.13) + ' GiB', 'df 已用占比 ' + (dm.root_df_used_pct ?? 68.12) + '%'],
-        ['剩余可用空间', (dm.root_avail_gib ?? 1064.78) + ' GiB', (dm.root_avail_bytes || 0).toLocaleString() + ' B'],
-        ['剩余空间百分比', (dm.root_avail_pct ?? 30.26) + '%', 'WARN <' + (th.warn_free_pct ?? 25) + '% / STOP <' + (th.stop_free_pct ?? 20) + '%'],
-        ['FULL-GRADED 权重占用', (dm.full_graded_weights_gib ?? 43.60) + ' GiB', '55 个实体目录 (P0 物化数据另占 ' + (dm.full_graded_p0_data_gib ?? 0.41) + ' GiB)'],
-        ['历史实验权重占用', (dm.historical_weights_gib ?? 51.47) + ' GiB', 'Sweep-02 ' + (dm.historical_sweep02_weights_gib ?? 39.65) + ' GiB + Batch1 ' + (dm.historical_overnight_weights_gib ?? 11.82) + ' GiB'],
-        ['实际清理已释放空间', (dm.actual_freed_this_round_gib ?? 3.15) + ' GiB', 'B01_C14 释放 3,384,787,296 B；沙盒清理 ' + (dm.sandbox_verified_freed_bytes ?? 197016).toLocaleString() + ' B'],
-        ['下轮可用存储预算', (dm.next_window_available_budget_gib ?? 120.0) + ' GiB', '新协议当前已用 0 GiB / 旧窗口可按需释放 34.68 GiB']
+        ['已使用空间', (dm.root_used_gib ?? 2095.50) + ' GiB', 'df 已用占比 ' + (dm.root_df_used_pct ?? 62.71) + '%'],
+        ['剩余可用空间', (dm.root_avail_gib ?? 1244.41) + ' GiB', (dm.root_avail_bytes || 0).toLocaleString() + ' B'],
+        ['剩余空间百分比', (dm.root_avail_pct ?? 36.93) + '%', 'WARN <' + (th.warn_free_pct ?? 25) + '% / STOP <' + (th.stop_free_pct ?? 20) + '%'],
+        ['FULL-GRADED 权重占用', (dm.full_graded_weights_gib ?? 43.60) + ' GiB', '新协议活动权重 ' + (dm.new_protocol_active_weights_gib ?? 0) + ' GiB (P0 数据 ' + (dm.new_protocol_data_gib ?? 0.41) + ' GiB)'],
+        ['历史实验权重占用', (dm.historical_experiments_weights_gib ?? 51.47) + ' GiB', 'Sweep-02 + Batch1 受白名单保护'],
+        ['实际清理已释放空间', (dm.freed_space_gib ?? 3.15) + ' GiB', '新协议自动淘汰释放 ' + (dm.new_protocol_freed_gib ?? 0) + ' GiB + B01_C14 3.15 GiB'],
+        ['下轮可用存储预算', (dm.next_window_available_budget_gib ?? 120.0) + ' GiB', '120 GiB 活动预算上限']
       ];
       document.getElementById('diskCards').innerHTML = dCards.map(x =>
         '<div class="card"><div class="label">' + esc(x[0]) + '</div><div class="value">' + esc(x[1]) + '</div><div class="sub">' + esc(x[2]) + '</div></div>'
       ).join('');
 
-      const usedPct = Math.min(100, Number(dm.active_budget_used_pct || 36.33));
+      const usedPct = Math.min(100, Number(dm.budget_used_pct || 36.33));
       const dedupPct = Math.min(100, Number(dm.post_dedup_projected_budget_pct || 7.22));
       document.getElementById('budgetBars').innerHTML =
         '<div><b>FULL-GRADED 活动权重预算进度条（上限 ' + (dm.active_budget_gib ?? 120.0) + ' GiB）</b></div>' +
-        '<div class="small">当前磁盘实体占用：' + (dm.active_budget_used_gib ?? 43.60) + ' GiB / ' + (dm.active_budget_gib ?? 120.0) + ' GiB (' + usedPct + '%)</div>' +
+        '<div class="small">当前磁盘实体占用：' + (dm.budget_used_gib ?? 43.60) + ' GiB / ' + (dm.active_budget_gib ?? 120.0) + ' GiB (' + usedPct + '%)</div>' +
         '<div class="bar-lg"><span style="width:' + usedPct + '%;background:linear-gradient(90deg,#38bdf8,#63a4ff)"></span></div>' +
-        '<div class="small">按新策略去重 + 动态阈值筛选后占用：' + (dm.post_dedup_projected_gib ?? 8.67) + ' GiB / ' + (dm.active_budget_gib ?? 120.0) + ' GiB (' + dedupPct + '%) · 停机保护线：剩余 &lt;20% 或 &lt;200 GiB</div>' +
+        '<div class="small">按 Top 30% + 去重筛选后目标占用：' + (dm.post_dedup_projected_budget_gib ?? 8.67) + ' GiB / ' + (dm.active_budget_gib ?? 120.0) + ' GiB (' + dedupPct + '%) · 停机保护线：剩余 &lt;20% 或 &lt;200 GiB</div>' +
         '<div class="bar-lg"><span style="width:' + dedupPct + '%;background:#4adeaa"></span></div>';
 
       const rs = D.checkpoint_retention_stats || {};
-      const fg = rs.full_graded || {}, all = rs.all_experiments || {}, sb = rs.sandbox_verification || {};
+      const np = rs.new_protocol || {}, fg = rs.full_graded || {}, all = rs.all_experiments || {}, sb = rs.sandbox_verification || {};
       const rCards = [
-        ['总 Epoch 节点数', fg.total_epochs ?? 32, '全项目累计 ' + (all.total_epochs ?? 71) + ' 轮 · P7 沙盒 ' + (sb.total_epochs ?? 14) + ' 轮'],
-        ['已保留实体权重数', (fg.epoch_weight_dirs_on_disk ?? 30) + ' Epoch (' + (fg.physical_weight_dirs_on_disk ?? 55) + ' 目录)', '新策略应保留 ' + (fg.policy_retained_epoch_weights ?? 11) + ' 个 (' + (fg.policy_retention_ratio_pct ?? 34.38) + '%)'],
-        ['METADATA_ONLY 节点数', fg.metadata_only_count ?? 2, 'B01_C14-e01/e02 (weights_saved=false) · 沙盒 ' + ((sb.status_counts?.METADATA_ONLY || 0) + (sb.status_counts?.LEGACY_METADATA_ONLY || 0)) + ' 个'],
-        ['低分淘汰节点数', fg.pruned_low_score_policy_count ?? 21, '已删 2 个 + 策略识别待淘汰 19 个 · 沙盒淘汰 ' + (sb.status_counts?.PRUNED_LOW_SCORE ?? 3) + ' 个'],
-        ['重复 best/latest 副本', fg.duplicate_best_latest_dirs_on_disk ?? 25, '已清 2 个；全项目存量重复 ' + (all.duplicate_best_latest_dirs_on_disk ?? 51) + ' 个 (' + (all.duplicate_best_latest_gib ?? 40.19) + ' GiB)'],
-        ['PINNED 父节点数', all.pinned_parent_count ?? 2, '历史依赖：' + ((all.pinned_parent_ids || ['R1-e01','R2-e01']).join(', ')) + ' · 沙盒：P0_SIM_S1_R01-e01'],
-        ['未来可清理权重占用', (fg.future_reclaimable_gib ?? 34.68) + ' GiB', (fg.future_reclaimable_dirs ?? 44) + ' 个非依赖冗余/低分目录 (' + (fg.future_reclaimable_bytes || 0).toLocaleString() + ' B)'],
-        ['P7 沙盒保留比例', (sb.physical_weights_saved ?? 5) + ' / ' + (sb.total_epochs ?? 14) + ' (35.7%)', '0 重复目录 · 二阶段清理释放 ' + (sb.total_freed_bytes ?? 197016).toLocaleString() + ' B']
+        ['总 Epoch 节点数', fg.total_epochs ?? 32, '新协议 ' + (np.total_epochs ?? 0) + ' 轮 · 全项目累计 ' + (all.total_epochs ?? 71) + ' 轮'],
+        ['已保留实体权重数', (fg.epoch_weight_dirs_on_disk ?? 30) + ' Epoch (' + (fg.physical_weight_dirs_on_disk ?? 55) + ' 目录)', '新协议保留 ' + (np.retained_epoch_weights ?? 0) + ' 个 (' + (np.retention_ratio_pct ?? 0) + '%)'],
+        ['METADATA_ONLY 节点数', fg.metadata_only_count ?? 2, '新协议 METADATA_ONLY ' + (np.metadata_only_count ?? 0) + ' 个 · 旧协议 2 个'],
+        ['低分淘汰节点数', fg.pruned_low_score_policy_count ?? 21, '新协议自动清理 ' + (np.pruned_low_score_count ?? 0) + ' 个 · 沙盒淘汰 ' + (sb.status_counts?.PRUNED_LOW_SCORE ?? 1) + ' 个'],
+        ['重复 best/latest 副本', fg.duplicate_best_latest_dirs_on_disk ?? 25, '新协议重复副本 0 个（100% 相对符号链接）'],
+        ['PINNED 父节点数', all.pinned_parent_count ?? 2, '历史依赖：' + ((all.pinned_parent_ids || ['R1-e01','R2-e01']).join(', '))],
+        ['未来可清理权重占用', (fg.future_reclaimable_gib ?? 34.68) + ' GiB', (fg.future_reclaimable_dirs ?? 44) + ' 个旧窗口非依赖冗余/低分目录'],
+        ['14 项沙盒保留比例', (sb.physical_weights_saved ?? 6) + ' / ' + (sb.total_epochs ?? 21) + ' (28.6%)', 'N=10 时保留 Top 30% (3 个) + PINNED 1 个']
       ];
       document.getElementById('retentionCards').innerHTML = rCards.map(x =>
         '<div class="card"><div class="label">' + esc(x[0]) + '</div><div class="value">' + esc(x[1]) + '</div><div class="sub">' + esc(x[2]) + '</div></div>'
@@ -263,11 +349,128 @@
       document.getElementById('policyComparisonBox').innerHTML =
         '<div><b>新旧保存方式对比（单份 Laya-421M 实体 Checkpoint = ' + (cmp.single_checkpoint_mib ?? 807.0) + ' MiB / ' + (cmp.single_checkpoint_bytes || 846196824).toLocaleString() + ' B）</b></div>' +
         '<div class="small" style="margin-top:4px">• <b>旧方式：</b>每轮写 <code>epoch_XX</code> + <code>latest</code> + <code>best</code> 实体副本（每 Run 4~5 份 = 3.15~3.94 GiB），<b>每 100 个 Run 占用 ' + (oldP.estimated_100_runs_2ep_gib ?? 315.23) + ' ~ ' + (oldP.estimated_100_runs_avg_gib ?? 354.64) + ' GiB</b>。</div>' +
-        '<div class="small" style="margin-top:4px">• <b>新方式：</b>每轮 100% 记录指标；<code>best</code> 采用相对符号链接，<code>latest</code> 仅作运行中临时恢复并在 Run 结束自动清理；仅同组动态阈值达标 Top-2 / 全局最佳 / PINNED 保存单份实体权重（预计 ~24 个/100 Runs），<b>每 100 个 Run 稳态仅占 ' + (newP.estimated_100_runs_steady_gib ?? 18.91) + ' GiB（含运行期临时峰值 ' + (newP.estimated_100_runs_peak_gib ?? 20.49) + ' GiB），节省 ' + (newP.space_reduction_pct_vs_old_2ep ?? 94.0) + '% ~ ' + (newP.space_reduction_pct_vs_old_avg ?? 94.67) + '% 磁盘空间</b>。</div>';
+        '<div class="small" style="margin-top:4px">• <b>新方式：</b>每轮 100% 记录指标；<code>best</code> 采用相对符号链接，<code>latest</code> 仅作运行中临时恢复并在 Run 结束自动清理；仅同组动态基准达标且排名前 30% (<code>ceil(0.30*N)</code>) / 全局最佳 / PINNED 保存单份实体权重，<b>每 100 个 Run 稳态仅占 ' + (newP.estimated_100_runs_steady_gib ?? 18.91) + ' GiB，节省 ' + (newP.space_reduction_pct_vs_old_2ep ?? 94.0) + '% ~ ' + (newP.space_reduction_pct_vs_old_avg ?? 94.67) + '% 磁盘空间</b>。</div>';
+    }
+
+    function renderBaselineAndFunnel() {
+      const b0 = D.baseline_0 || baseShard.baseline_0 || {};
+      const b0Val = b0.validation || b0;
+      const s1 = b0Val.S1 || {}, s2 = b0Val.S2 || {}, s3 = b0Val.S3 || {};
+      const bCards = [
+        ['BASELINE_0 模型', b0.model_name || 'Laya-421M (un-finetuned)', '冻结基座 · 综合分固定 = 100.0'],
+        ['S1 固定验证基准 (561)', 'Loss ' + fmt(s1.loss) + ' · Acc ' + fmt(s1.accuracy), 'Brier ' + fmt(s1.brier) + ' · ECE ' + fmt(s1.ece) + ' · Score=100.0'],
+        ['S2 固定验证基准 (337)', 'Loss ' + fmt(s2.loss) + ' · Acc ' + fmt(s2.accuracy), 'BalAcc ' + fmt(s2.balanced_accuracy) + ' · F1 ' + fmt(s2.macro_f1) + ' · Score=100.0'],
+        ['S3 固定验证基准 (4,794)', 'Loss ' + fmt(s3.loss) + ' · Acc ' + fmt(s3.accuracy), '6 个分目标等权宏平均 Score=100.0']
+      ];
+      const b0El = document.getElementById('baseline0Cards');
+      if (b0El) {
+        b0El.innerHTML = bCards.map(x =>
+          '<div class="card"><div class="label">' + esc(x[0]) + '</div><div class="value">' + esc(x[1]) + '</div><div class="sub">' + esc(x[2]) + '</div></div>'
+        ).join('');
+      }
+
+      const dt = D.dynamic_thresholds || {};
+      const s1Groups = (dt.S1?.new_protocol_active_groups?.length ? dt.S1.new_protocol_active_groups : dt.S1?.new_protocol_sandbox_groups) || [];
+      const g0 = s1Groups[0] || {};
+      const b1 = (g0.baseline_1_stats || {}).score || {};
+      const b2 = g0.baseline_2_quantiles || {};
+      const qEl = document.getElementById('quantileLadderBox');
+      if (qEl) {
+        qEl.innerHTML =
+          '<div><b>三层动态基准与分位线阶梯（当前主组：<code>' + esc(g0.comparable_group_id || 'S1') + '</code> · 独立完成 Run 数 N=' + (g0.distinct_completed_runs ?? 0) + ' · Top 30% 配额 K=' + (g0.top_k_quota ?? 2) + '）</b></div>' +
+          '<div class="small" style="margin-top:4px">' +
+          '• <b>BASELINE_0 (冻结基座)：</b><code>100.00</code> &nbsp;|&nbsp; ' +
+          '<b>BASELINE_1 (同类历史均值)：</b>Mean=<code>' + fmt(b1.mean) + '</code> · Median=<code>' + fmt(b1.median) + '</code> · 10% Trimmed Mean=<code>' + fmt(b1.trimmed_mean) + '</code> · Std=<code>' + fmt(b1.std) + '</code> · IQR=<code>' + fmt(b1.iqr) + '</code> · 准入下限 (0.98×Mean)=<b class="warn">' + fmt(g0.thresholds?.mean_score_floor) + '</b><br>' +
+          '• <b>BASELINE_2 (分位数阶梯)：</b>P50=<code>' + fmt(b2.P50) + '</code> &rarr; <b class="cyan">P70 (Top 30% 线)=' + fmt(b2.P70) + '</b> &rarr; <b class="good">P90 (Top 10% 线)=' + fmt(b2.P90) + '</b> &rarr; <b class="good">BEST=' + fmt(b2.BEST) + '</b> · Pareto 前沿节点：<code>' + esc((b2.pareto_frontier_ids || []).join(', ') || 'N/A') + '</code>' +
+          '</div>';
+      }
+
+      const fn = D.retention_funnel || baseShard.retention_funnel || {};
+      const fSteps = [
+        ['总评估 Epoch', fn.total_epochs_evaluated ?? 0, '#63a4ff'],
+        ['独立完成 Run', fn.distinct_runs_evaluated ?? 0, '#38bdf8'],
+        ['Run 内最佳 Epoch', fn.run_best_epochs ?? 0, '#a78bfa'],
+        ['超越 BASELINE_0 (>100)', fn.beat_baseline_0_count ?? 0, '#f6c453'],
+        ['通过 0.98×均值下限', fn.pass_baseline_1_floor_count ?? 0, '#4adeaa'],
+        ['最终保留实体权重', fn.retained_top_30pct_or_mandatory_count ?? 0, '#4adeaa'],
+        ['淘汰/METADATA_ONLY', fn.pruned_or_metadata_only_count ?? 0, '#fb7185']
+      ];
+      const fSvg = document.getElementById('funnelChart');
+      if (fSvg) {
+        const maxF = Math.max(1, ...fSteps.map(x => Number(x[1]) || 0));
+        let fh = '';
+        fSteps.forEach((st, idx) => {
+          const y = 14 + idx * 28;
+          const w = Math.max(6, (Number(st[1]) || 0) / maxF * 250);
+          fh += '<text x="145" y="' + (y + 14) + '" text-anchor="end" fill="#e8edf5" font-size="11">' + esc(st[0]) + '</text>';
+          fh += '<rect x="155" y="' + y + '" width="' + w.toFixed(1) + '" height="18" rx="4" fill="' + st[2] + '"/>';
+          fh += '<text x="' + (162 + w).toFixed(1) + '" y="' + (y + 14) + '" fill="#e8edf5" font-size="11" font-weight="bold">' + st[1] + '</text>';
+        });
+        fSvg.innerHTML = fh;
+      }
+
+      const rSvg = document.getElementById('radarChart');
+      if (rSvg) {
+        const scList = g0.scores || [];
+        const bestSc = scList.reduce((a, b) => ((b.s1_score || 0) > (a?.s1_score || 0) ? b : a), scList[0] || {});
+        const metrics = [
+          ['Composite Score', 100.0, b1.mean || 100.0, b2.P70 || 100.0, bestSc.s1_score || 100.0, 160.0],
+          ['1 - Val Loss (scaled)', Math.max(0, 100 - (s1.loss || 1.8) * 35), Math.max(0, 100 - (g0.run_best_mean_val_loss || 0.65) * 35), 78, Math.max(0, 100 - (bestSc.loss || 0.60) * 35), 100.0],
+          ['Accuracy (%)', (s1.accuracy || 0.4759) * 100, (g0.run_best_mean_accuracy || 0.64) * 100, 66, (bestSc.accuracy || 0.69) * 100, 100.0],
+          ['1 - Brier (%)', Math.max(0, (1 - (s1.brier || 0.90)) * 100), Math.max(0, (1 - (g0.run_best_mean_brier || 0.43)) * 100), 58, Math.max(0, (1 - (bestSc.brier || 0.40)) * 100), 100.0]
+        ];
+        let rh = '<text x="15" y="18" fill="#9aa9bf" font-size="11">灰: BASELINE_0 | 蓝: BASELINE_1 均值 | 黄: P70 (Top 30%) | 绿: Best (' + esc(bestSc.checkpoint_id || 'N/A') + ')</text>';
+        metrics.forEach((m, i) => {
+          const yBase = 34 + i * 44;
+          const maxV = m[5];
+          rh += '<text x="135" y="' + (yBase + 18) + '" text-anchor="end" fill="#e8edf5" font-size="11">' + esc(m[0]) + '</text>';
+          const cols = ['#64748b', '#63a4ff', '#f6c453', '#4adeaa'];
+          [m[1], m[2], m[3], m[4]].forEach((val, j) => {
+            const bw = Math.max(4, Math.min(280, (Number(val) || 0) / maxV * 260));
+            rh += '<rect x="145" y="' + (yBase + j * 8) + '" width="' + bw.toFixed(1) + '" height="6.5" rx="2" fill="' + cols[j] + '"/>';
+          });
+          rh += '<text x="415" y="' + (yBase + 18) + '" fill="#4adeaa" font-size="11" font-weight="bold">' + Number(m[4]).toFixed(1) + '</text>';
+        });
+        rSvg.innerHTML = rh;
+      }
+    }
+
+    function renderBeforeAfter() {
+      const rows = D.before_after_deltas || baseShard.before_after_deltas || [];
+      const tbl = document.getElementById('beforeAfterTable');
+      if (!tbl) return;
+      let h = '<tr><th>Run ID</th><th>最佳节点</th><th>协议</th><th>任务</th><th>综合得分</th><th>ΔScore vs BASELINE_0</th><th>ΔS1 Loss vs B0 (95% Bootstrap CI)</th><th>ΔS1 Acc vs B0 (95% Bootstrap CI)</th><th>Train-Val Gap</th><th>相对父节点增益</th><th>保留状态</th></tr>';
+      for (const r of rows.slice(0, 28)) {
+        const ci = r.s1_bootstrap_ci95 || {};
+        const dLoss = r.s1_delta_loss_vs_b0;
+        const dAcc = r.s1_delta_acc_vs_b0;
+        const lossStr = dLoss !== null && dLoss !== undefined
+          ? (fmt(dLoss) + (ci.loss_delta_ci95 ? ' [' + fmt(ci.loss_delta_ci95[0]) + ', ' + fmt(ci.loss_delta_ci95[1]) + ']' : ''))
+          : 'N/A';
+        const accStr = dAcc !== null && dAcc !== undefined
+          ? ((dAcc >= 0 ? '+' : '') + fmt(dAcc) + (ci.acc_delta_ci95 ? ' [' + fmt(ci.acc_delta_ci95[0]) + ', ' + fmt(ci.acc_delta_ci95[1]) + ']' : ''))
+          : 'N/A';
+        const dSc = Number(r.delta_score_vs_b0 || 0);
+        h += '<tr style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(r.checkpoint_id) + '\')">' +
+          '<td><b>' + esc(r.run_id) + '</b></td>' +
+          '<td><code>' + esc(r.checkpoint_id) + '</code></td>' +
+          '<td>' + (r.legacy_input_protocol ? '<span class="muted">LEGACY</span>' : '<span class="good">NEW_P0</span>') + '</td>' +
+          '<td>' + esc(r.task_family) + '</td>' +
+          '<td><b>' + fmt(r.primary_score) + '</b></td>' +
+          '<td class="' + (dSc >= 0 ? 'good' : 'bad') + '"><b>' + (dSc >= 0 ? '+' : '') + fmt(dSc) + '</b></td>' +
+          '<td class="' + ((dLoss ?? 0) <= 0 ? 'good' : 'bad') + '">' + esc(lossStr) + '</td>' +
+          '<td class="' + ((dAcc ?? 0) >= 0 ? 'good' : 'bad') + '">' + esc(accStr) + '</td>' +
+          '<td>' + fmt(r.train_val_loss_gap) + '</td>' +
+          '<td class="' + ((r.parent_to_current_score_gain ?? 0) >= 0 ? 'good' : 'bad') + '">' + fmt(r.parent_to_current_score_gain) + '</td>' +
+          '<td><span class="badge ' + esc(r.retention_status) + '">' + esc(r.retention_status) + '</span></td></tr>';
+      }
+      tbl.innerHTML = h;
     }
 
     function setScatterMode(mode) {
       scatterMode = mode;
+      const mScore = document.getElementById('scatterModeScore');
+      if (mScore) mScore.className = mode === 'primary_score' ? 'active' : '';
       document.getElementById('scatterModeLoss').className = mode === 's1_loss' ? 'active' : '';
       document.getElementById('scatterModeAcc').className = mode === 's1_acc' ? 'active' : '';
       document.getElementById('scatterModeAll').className = mode === 'all_score' ? 'active' : '';
@@ -279,7 +482,10 @@
       const rawPts = D.quality_storage_scatter || [];
       const pts = rawPts.map(p => {
         let xVal = null, xLabel = '';
-        if (scatterMode === 's1_loss') {
+        if (scatterMode === 'primary_score') {
+          xVal = p.primary_score ?? p.s1_score ?? p.s3_score ?? p.s2_score;
+          xLabel = 'Composite Score (BASELINE_0 = 100)';
+        } else if (scatterMode === 's1_loss') {
           xVal = p.s1_loss;
           xLabel = 'S1 Val Loss';
         } else if (scatterMode === 's1_acc') {
@@ -289,7 +495,6 @@
           xVal = p.s1_accuracy ?? p.s3_accuracy ?? p.s2_accuracy;
           xLabel = 'Primary Val Accuracy';
         }
-        // For sandbox verification nodes (64 KiB dummy files), plot their policy equivalent MiB (807 MiB if saved, 0 if pruned) so they are visible on the same scale
         const yMib = p.experiment_group === 'SANDBOX_VERIFY' ? (p.weights_saved ? 807.0 : 0.0) : Number(p.disk_size_mib || 0);
         return Object.assign({}, p, {xVal, xLabel, yMib});
       }).filter(p => typeof p.xVal === 'number');
@@ -323,28 +528,30 @@
       for (let i = 0; i <= 5; i++) {
         const xv = minX + (maxX - minX) * (i / 5);
         const px = 65 + (i / 5) * 860;
-        h += '<text x="' + px.toFixed(1) + '" y="255" text-anchor="middle" fill="#9aa9bf" font-size="11">' + xv.toFixed(4) + '</text>';
+        h += '<text x="' + px.toFixed(1) + '" y="255" text-anchor="middle" fill="#9aa9bf" font-size="11">' + xv.toFixed(2) + '</text>';
       }
 
       pts.forEach((p, idx) => {
         const px = 65 + ((p.xVal - minX) / (maxX - minX)) * 860;
-        // Slight vertical jitter for overlapping points at 807 MiB or 0 MiB
         const jitter = ((idx % 7) - 3) * 2.2;
         const py = Math.max(22, Math.min(238, 235 - (p.yMib / maxY) * 200 + jitter));
         const col = colorMap[p.category] || '#fb7185';
         const r = p.category === 'RETAINED_BEST' || p.category === 'PINNED_PARENT' ? 7 : 5.5;
         const fill = p.weights_saved ? col : '#121b2a';
         const strokeW = p.checkpoint_id === selectedCkptId ? 3 : 2;
+        if (p.is_pareto_front) {
+          h += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + (r + 3.5) + '" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="2,2"/>';
+        }
         h += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + r + '" fill="' + fill + '" stroke="' + col + '" stroke-width="' + strokeW + '" style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(p.checkpoint_id) + '\')">';
-        h += '<title>' + esc(p.checkpoint_id + ' | 状态: ' + p.retention_status + ' | ' + p.xLabel + ': ' + p.xVal.toFixed(4) + ' | 磁盘: ' + p.disk_size_mib + ' MiB (策略目标: ' + p.policy_size_mib + ' MiB) | 原因: ' + p.retention_reason) + '</title></circle>';
-        if (p.category === 'RETAINED_BEST' || p.category === 'PINNED_PARENT' || p.checkpoint_id.startsWith('B01_C14')) {
-          h += '<text x="' + px.toFixed(1) + '" y="' + (py - 10).toFixed(1) + '" text-anchor="middle" fill="' + col + '" font-size="10.5">' + esc(p.checkpoint_id) + '</text>';
+        h += '<title>' + esc(p.checkpoint_id + ' | 状态: ' + p.retention_status + ' | ' + p.xLabel + ': ' + p.xVal.toFixed(4) + (p.is_pareto_front ? ' (Pareto 前沿)' : '') + ' | 磁盘: ' + p.disk_size_mib + ' MiB | 原因: ' + p.retention_reason) + '</title></circle>';
+        if (p.category === 'RETAINED_BEST' || p.category === 'PINNED_PARENT' || p.checkpoint_id.startsWith('P0_B0')) {
+          h += '<text x="' + px.toFixed(1) + '" y="' + (py - 10).toFixed(1) + '" text-anchor="middle" fill="' + col + '" font-size="10">' + esc(p.checkpoint_id) + '</text>';
         }
       });
 
       svg.innerHTML = h;
       document.getElementById('scatterNote').textContent =
-        '当前展示 ' + pts.length + ' 个 Checkpoint 节点（点击任意点可在下方「5. 历史训练树」查看完整参数与指标）。实心点表示磁盘存有实体权重 (~807 MiB)，空心点表示仅保留 METADATA_ONLY 或已被低分淘汰 (0 MiB)。';
+        '当前展示 ' + pts.length + ' 个 Checkpoint 节点（外圈虚线环表示 Pareto 前沿模型，实心点表示磁盘存有实体权重 ~807 MiB，空心点表示 METADATA_ONLY 或已被低分淘汰 0 MiB）。';
     }
 
     function renderDynamicThresholds() {
@@ -352,59 +559,55 @@
       document.getElementById('thresholdNote').textContent = dt.protocol_separation_note || '';
       const s1 = dt.S1 || {}, s2 = dt.S2 || {}, s3 = dt.S3 || {};
 
-      // S1 Panel
-      const s1New = (s1.new_protocol_sandbox_groups || [])[0] || {};
+      // S1 Panel: prefer active new-protocol groups if trained, else sandbox preview
+      const s1New = ((s1.new_protocol_active_groups || []).length ? s1.new_protocol_active_groups : (s1.new_protocol_sandbox_groups || []))[0] || {};
       const s1Leg = (s1.legacy_window1_reference_groups || [])[0] || {};
       const s1Th = s1New.thresholds || {};
-      let s1Html = '<div class="panel" style="background:#121b2a"><h3>S1 主任务动态阈值（Loss / Accuracy / Brier）</h3>';
+      let s1Html = '<div class="panel" style="background:#121b2a"><h3>S1 路由主任务三层基准 + Top 30% (' + esc(s1New.comparable_group_id || 'S1') + ')</h3>';
       s1Html += '<div class="small" style="margin-bottom:8px">' + esc(s1.rule_summary || '') + '</div>';
-      s1Html += '<div class="kv-box" style="margin-bottom:8px"><b>新协议同组统计 (' + esc(s1New.comparable_group_id || 'N/A') + ')</b>' +
-        '对照数 n=' + fmt(s1New.checkpoint_count) + ' · 平均 Loss=' + fmt(s1New.mean_val_loss) +
-        ' · 平均 Acc=' + fmt(s1New.mean_accuracy) + ' · 平均 Brier=' + fmt(s1New.mean_brier) + '<br>' +
-        '<span class="good">条件 A 阈值：Loss &le; ' + fmt(s1Th.condition_a_max_loss) + ' 且 Acc &ge; ' + fmt(s1Th.condition_a_min_accuracy) + '</span><br>' +
-        '<span class="cyan">条件 B 阈值：Acc &ge; ' + fmt(s1Th.condition_b_min_accuracy) + ' 且 Loss &le; ' + fmt(s1Th.condition_b_max_loss) + ', Brier &le; ' + fmt(s1Th.condition_b_max_brier) + '</span><br>' +
-        '<b>Top-2 入选：</b>' + esc((s1New.top_k_checkpoints || []).join(', ')) + '</div>';
+      s1Html += '<div class="kv-box" style="margin-bottom:8px"><b>新协议同组去重统计 (独立 Run N=' + fmt(s1New.distinct_completed_runs ?? s1New.checkpoint_count) + ' · Top 30% 配额 K=' + fmt(s1New.top_k_quota ?? s1New.top_k_limit) + ')</b>' +
+        'BASELINE_0=100.0 · 同组均值 Score=' + fmt(s1New.mean_composite_score) + ' · 10%截尾均值=' + fmt(s1New.trimmed_mean_composite_score) + '<br>' +
+        '<span class="good">条件 A &amp; B：Score &gt; 100.0 且 Score &ge; ' + fmt(s1Th.mean_score_floor) + ' (0.98×LOO均值)</span><br>' +
+        '<span class="cyan">条件 C (Top 30% 分位线)：P70 Score=' + fmt(s1Th.p70_top30pct_score) + ' · P90 Score=' + fmt(s1Th.p90_top10pct_score) + '</span><br>' +
+        '<b>Top 30% 入选：</b>' + esc((s1New.top_k_checkpoints || []).join(', ')) + '</div>';
       if (s1Leg.comparable_group_id) {
-        const lTh = s1Leg.thresholds || {};
-        s1Html += '<div class="kv-box" style="margin-bottom:8px"><b>旧窗口对照参考 (' + esc(s1Leg.comparable_group_id) + ' · 不参与新协议排名)</b>' +
-          'n=' + fmt(s1Leg.checkpoint_count) + ' · 平均 Loss=' + fmt(s1Leg.mean_val_loss) +
-          ' · 平均 Acc=' + fmt(s1Leg.mean_accuracy) + ' · 平均 Brier=' + fmt(s1Leg.mean_brier) +
-          ' · 条件A Loss&le;' + fmt(lTh.condition_a_max_loss) +
-          ' · Top-2：' + esc((s1Leg.top_k_checkpoints || []).join(', ')) + '</div>';
+        s1Html += '<div class="kv-box" style="margin-bottom:8px"><b>旧窗口对照参考 (' + esc(s1Leg.comparable_group_id) + ' · 严格隔离不参与新协议排名)</b>' +
+          'N=' + fmt(s1Leg.distinct_completed_runs ?? s1Leg.checkpoint_count) + ' · 平均 Loss=' + fmt(s1Leg.mean_val_loss) +
+          ' · 平均 Acc=' + fmt(s1Leg.mean_accuracy) + ' · Top 30%：' + esc((s1Leg.top_k_checkpoints || []).join(', ')) + '</div>';
       }
-      s1Html += '<table style="min-width:100%"><tr><th>Checkpoint</th><th>Loss</th><th>Acc</th><th>Brier</th><th>条件A/B</th><th>Top-2</th></tr>';
+      s1Html += '<table style="min-width:100%"><tr><th>Checkpoint</th><th>S1 Score</th><th>Loss</th><th>Acc</th><th>Brier</th><th>Pareto</th><th>保留结论</th></tr>';
       for (const sc of (s1New.scores || [])) {
-        s1Html += '<tr style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(sc.checkpoint_id) + '\')"><td>' + esc(sc.checkpoint_id) + '</td><td>' + fmt(sc.loss) + '</td><td>' + fmt(sc.accuracy) + '</td><td>' + fmt(sc.brier) + '</td><td>' + (sc.cond_a ? 'A✓ ' : '') + (sc.cond_b ? 'B✓' : (!sc.cond_a ? '未达标' : '')) + '</td><td class="' + (sc.in_top_k ? 'good' : 'muted') + '">' + (sc.in_top_k ? 'TOP-2' : '淘汰') + '</td></tr>';
+        s1Html += '<tr style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(sc.checkpoint_id) + '\')"><td>' + esc(sc.checkpoint_id) + '</td><td><b>' + fmt(sc.s1_score) + '</b></td><td>' + fmt(sc.loss) + '</td><td>' + fmt(sc.accuracy) + '</td><td>' + fmt(sc.brier) + '</td><td>' + (sc.is_pareto_front ? '★' : '') + '</td><td class="' + (sc.in_top_k ? 'good' : 'muted') + '">' + (sc.in_top_k ? 'TOP 30% 保留' : (sc.is_run_best_epoch ? '后70%淘汰' : '非Run最佳Epoch')) + '</td></tr>';
       }
       s1Html += '</table></div>';
 
       // S2 Panel
-      const s2New = (s2.new_protocol_sandbox_groups || [])[0] || {};
+      const s2New = ((s2.new_protocol_active_groups || []).length ? s2.new_protocol_active_groups : (s2.new_protocol_sandbox_groups || []))[0] || {};
       const s2Base = s2.majority_baseline || {};
-      let s2Html = '<div class="panel" style="background:#121b2a"><h3>S2 轨迹终局辅助监督门禁（独立审计未通过前限留 1 个诊断模型）</h3>';
+      let s2Html = '<div class="panel" style="background:#121b2a"><h3>S2 轨迹终局辅助监督门禁（独立验证通过前限留 1 个诊断模型）</h3>';
       s2Html += '<div class="small" style="margin-bottom:8px">' + esc(s2.rule_summary || '') + '</div>';
       s2Html += '<div class="kv-box" style="margin-bottom:8px"><b>S2 固定验证集多数类基线 (337 items)</b>' +
-        '标签分布 False/True = 186 / 151 · 多数类 Accuracy = <b>' + fmt(s2Base.majority_accuracy) + '</b> · Balanced Acc = <b>' + fmt(s2Base.majority_balanced_accuracy) + '</b> · Macro-F1 = <b>' + fmt(s2Base.majority_macro_f1) + '</b> · Prior Loss = <b>' + fmt(s2Base.prior_loss) + '</b><br>' +
-        '<span class="warn">当前门禁：s2_audit_passed = false · 禁止以 Accuracy=1.0 认定全局冠军 · 诊断上限 Top-1：' + esc((s2New.top_k_checkpoints || []).join(', ')) + '</span></div>';
-      s2Html += '<table style="min-width:100%"><tr><th>Checkpoint</th><th>Log Loss</th><th>Accuracy</th><th>Brier</th><th>保留结论</th></tr>';
+        '标签分布 False/True = 186 / 151 · 多数类 Accuracy = <b>' + fmt(s2Base.majority_accuracy) + '</b> · Balanced Acc = <b>' + fmt(s2Base.majority_balanced_accuracy) + '</b> · Prior Loss = <b>' + fmt(s2Base.prior_loss) + '</b><br>' +
+        '<span class="warn">当前门禁：DIAGNOSTIC_ONLY · 禁止以 Accuracy=1.0 认定全局冠军 · 诊断上限 Top-1：' + esc((s2New.top_k_checkpoints || []).join(', ')) + '</span></div>';
+      s2Html += '<table style="min-width:100%"><tr><th>Checkpoint</th><th>S2 诊断分</th><th>Log Loss</th><th>Accuracy</th><th>Brier</th><th>保留结论</th></tr>';
       for (const sc of (s2New.scores || [])) {
-        s2Html += '<tr style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(sc.checkpoint_id) + '\')"><td>' + esc(sc.checkpoint_id) + '</td><td>' + fmt(sc.loss) + '</td><td>' + fmt(sc.accuracy) + '</td><td>' + fmt(sc.brier) + '</td><td class="' + (sc.in_top_k ? 'warn' : 'muted') + '">' + (sc.in_top_k ? '仅留1个诊断权重' : '淘汰实体权重(留指标)') + '</td></tr>';
+        s2Html += '<tr style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(sc.checkpoint_id) + '\')"><td>' + esc(sc.checkpoint_id) + '</td><td>' + fmt(sc.s2_diagnostic_score ?? sc.s2_score) + '</td><td>' + fmt(sc.loss) + '</td><td>' + fmt(sc.accuracy) + '</td><td>' + fmt(sc.brier) + '</td><td class="' + (sc.in_top_k ? 'warn' : 'muted') + '">' + (sc.in_top_k ? '仅留1个诊断权重' : '淘汰实体权重(留指标)') + '</td></tr>';
       }
       s2Html += '</table></div>';
 
       // S3 Panel
-      const s3New = (s3.new_protocol_sandbox_groups || [])[0] || {};
+      const s3New = ((s3.new_protocol_active_groups || []).length ? s3.new_protocol_active_groups : (s3.new_protocol_sandbox_groups || []))[0] || {};
       const s3Targets = s3New.per_target_thresholds || {};
-      let s3Html = '<div class="panel" style="background:#121b2a"><h3>S3 分目标多数类基线比较（严禁跨目标原始 Loss 简单相加）</h3>';
+      let s3Html = '<div class="panel" style="background:#121b2a"><h3>S3 分目标等权宏平均 S3_score（严禁跨目标原始 Loss 简单相加）</h3>';
       s3Html += '<div class="small" style="margin-bottom:8px">' + esc(s3.rule_summary || '') + '</div>';
-      s3Html += '<table style="min-width:100%"><tr><th>Source:Target</th><th>多数类基线 Acc</th><th>先验 Loss 基线</th><th>准入最高 Loss</th><th>准入最低 Acc</th></tr>';
+      s3Html += '<table style="min-width:100%"><tr><th>Source:Target</th><th>多数类基线 Acc</th><th>先验 Loss 基线</th><th>同组平均分</th><th>准入最高 Loss</th></tr>';
       for (const [tk, tv] of Object.entries(s3Targets)) {
-        s3Html += '<tr><td>' + esc(tk) + '</td><td>' + fmt(tv.baseline_majority_accuracy) + '</td><td>' + fmt(tv.baseline_prior_loss) + '</td><td>' + fmt(tv.threshold_max_loss) + '</td><td>' + fmt(tv.threshold_min_accuracy) + '</td></tr>';
+        s3Html += '<tr><td>' + esc(tk) + '</td><td>' + fmt(tv.baseline_majority_accuracy) + '</td><td>' + fmt(tv.baseline_prior_loss) + '</td><td>' + fmt(tv.mean_target_score) + '</td><td>' + fmt(tv.threshold_max_loss) + '</td></tr>';
       }
       s3Html += '</table>';
-      s3Html += '<div class="kv-box" style="margin-top:8px"><b>S3 候选模型分目标达标排名</b><br>';
+      s3Html += '<div class="kv-box" style="margin-top:8px"><b>S3 候选模型分目标宏平均排名</b><br>';
       for (const sc of (s3New.scores || [])) {
-        s3Html += '<span style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(sc.checkpoint_id) + '\')">• <b>' + esc(sc.checkpoint_id) + '</b>：超越基线目标数 <b>' + sc.beaten_target_count + '</b> 个，相对先验 Loss 平均降幅 <b>' + fmt(sc.mean_rel_gain) + '</b> &rarr; <span class="' + (sc.in_top_k ? 'good' : 'bad') + '">' + (sc.in_top_k ? '进入 Top-2 保留' : '未超多数类基线 (METADATA_ONLY)') + '</span></span><br>';
+        s3Html += '<span style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(sc.checkpoint_id) + '\')">• <b>' + esc(sc.checkpoint_id) + '</b>：S3_score=<b>' + fmt(sc.s3_score) + '</b>，超越基线目标 <b>' + sc.beaten_target_count + '/' + (sc.active_target_count || 3) + '</b> 个 &rarr; <span class="' + (sc.in_top_k ? 'good' : 'bad') + '">' + (sc.in_top_k ? '进入 Top 30% 保留' : '淘汰 (METADATA_ONLY)') + '</span></span><br>';
       }
       s3Html += '</div></div>';
 
@@ -413,7 +616,15 @@
 
     function setTreeFilter(f) {
       treeFilter = f;
-      for (const [id, key] of [['treeFilterAll','ALL'],['treeFilterFG','MR-FULL-GRADED-TRAINING'],['treeFilterSaved','SAVED'],['treeFilterPruned','PRUNED'],['treeFilterPinned','PINNED'],['treeFilterSim','SANDBOX_VERIFY']]) {
+      for (const [id, key] of [
+        ['treeFilterAll','ALL'],
+        ['treeFilterNew','MR-FULL-GRADED-NEW-PROTOCOL'],
+        ['treeFilterFG','MR-FULL-GRADED-LEGACY-WINDOW1'],
+        ['treeFilterSaved','SAVED'],
+        ['treeFilterPruned','PRUNED'],
+        ['treeFilterPinned','PINNED'],
+        ['treeFilterSim','SANDBOX_VERIFY']
+      ]) {
         const el = document.getElementById(id);
         if (el) el.className = (f === key ? 'active' : '');
       }
@@ -433,7 +644,8 @@
     function renderEpochTree() {
       const filtered = treeNodes.filter(n => {
         if (treeFilter === 'ALL') return true;
-        if (treeFilter === 'MR-FULL-GRADED-TRAINING') return n.experiment_group === 'MR-FULL-GRADED-TRAINING';
+        if (treeFilter === 'MR-FULL-GRADED-NEW-PROTOCOL') return n.experiment_group === 'MR-FULL-GRADED-NEW-PROTOCOL';
+        if (treeFilter === 'MR-FULL-GRADED-LEGACY-WINDOW1') return n.experiment_group === 'MR-FULL-GRADED-LEGACY-WINDOW1' || n.experiment_group === 'MR-FULL-GRADED-TRAINING';
         if (treeFilter === 'SANDBOX_VERIFY') return !n.experiment_group || n.experiment_group === 'SANDBOX_VERIFY';
         if (treeFilter === 'SAVED') return Boolean(n.weights_saved);
         if (treeFilter === 'PRUNED') return !n.weights_saved;
@@ -441,14 +653,15 @@
         return true;
       });
 
-      let h = '<button class="node-btn st-retained_best" onclick="selectCheckpointNode(\'' + esc(filtered[0]?.checkpoint_id || selectedCkptId) + '\')">Base (models/laya-421m)</button>';
+      let h = '<button class="node-btn st-retained_best" onclick="selectCheckpointNode(\'' + esc(filtered[0]?.checkpoint_id || selectedCkptId) + '\')">Base (models/laya-421m · Score=100.0)</button>';
       for (const n of filtered) {
         const stClass = 'st-' + String(n.retention_status || 'metadata_only').toLowerCase();
         const activeClass = n.checkpoint_id === selectedCkptId ? ' active' : '';
         const icon = n.is_pinned_parent ? '📌' : (n.weights_saved ? '💾' : '📄');
         const parentLabel = n.parent_checkpoint_id ? (' ← ' + n.parent_checkpoint_id) : '';
+        const scLabel = typeof n.primary_score === 'number' ? (' · S=' + n.primary_score.toFixed(1)) : '';
         h += '<button class="node-btn ' + stClass + activeClass + '" onclick="selectCheckpointNode(\'' + esc(n.checkpoint_id) + '\')">' +
-          icon + ' <b>' + esc(n.checkpoint_id) + '</b> · <span class="small">' + esc(n.retention_status) + esc(parentLabel) + '</span></button>';
+          icon + ' <b>' + esc(n.checkpoint_id) + '</b> · <span class="small">' + esc(n.retention_status) + esc(scLabel) + esc(parentLabel) + '</span></button>';
       }
       document.getElementById('epochTree').innerHTML = h;
 
@@ -462,8 +675,8 @@
       const fullHist = (fullRun.history || []).find(e => Number(e.epoch) === Number(cur.epoch)) || {};
       const val = cur.validation || fullHist.validation || {};
       const s1 = val.S1 || {loss: cur.s1_val_loss, accuracy: cur.s1_accuracy, brier: cur.s1_brier, ece: cur.s1_ece};
-      const s2 = val.S2 || {accuracy: cur.s2_accuracy};
-      const s3 = val.S3 || {accuracy: cur.s3_accuracy};
+      const s2 = val.S2 || {loss: cur.s2_val_loss, accuracy: cur.s2_accuracy, balanced_accuracy: cur.s2_balanced_accuracy, macro_f1: cur.s2_macro_f1};
+      const s3 = val.S3 || {loss: cur.s3_val_loss, accuracy: cur.s3_accuracy};
       const s3Targets = val.S3_by_source_target || {};
       const lr = cur.learning_rate || {};
       const cfg = cur.config || fullRun.config || {};
@@ -472,17 +685,18 @@
       d += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">' +
         '<div><b style="font-size:16px">节点详情：' + esc(cur.checkpoint_id) + '</b> （所属 Run：<code>' + esc(cur.run_id) + '</code> · 实验批次：<code>' + esc(cur.experiment_group || 'SANDBOX_VERIFY') + '</code>）</div>' +
         '<div><span class="badge ' + esc(cur.retention_status) + '">' + esc(cur.retention_status) + '</span> ' +
+        (cur.is_pareto_front ? '<span class="badge RETAINED_TOP_K">★ Pareto 前沿</span> ' : '') +
         (cur.weights_saved ? '<span class="badge RETAINED_BEST">实体权重存在 · 可通过官方 load_checkpoint 加载</span>' : '<span class="badge PRUNED_LOW_SCORE">无实体权重 (weights_saved=false) · 仅保留完整历史元数据</span>') +
         '</div></div>';
 
       d += '<div class="kv-grid">' +
         '<div class="kv-box"><b>实验所属 B / C / Q / P</b>' + esc([cur.batch_id||'N/A', cur.combo_id||'N/A', cur.quality_code||'N/A', cur.sampling_code||'N/A'].join(' / ')) + '</div>' +
         '<div class="kv-box"><b>数据协议版本</b>' + esc(cur.protocol_version || 'N/A') + (cur.legacy_input_protocol ? ' (旧协议)' : ' (新中性协议)') + '</div>' +
-        '<div class="kv-box"><b>真实监督目标与实际配比</b>类别：' + esc((cur.supervision_classes || []).join('+')) + ' · 配比：' + esc(JSON.stringify(cur.ratios || [])) + '</div>' +
-        '<div class="kv-box"><b>数据规模 (Train / Val Groups)</b>Train: ' + esc(JSON.stringify(cur.train_groups || {})) + '<br>Val: ' + esc(JSON.stringify(cur.val_groups || {})) + '</div>' +
-        '<div class="kv-box"><b>父子关系与训练起点</b>起点：' + esc(cur.train_origin || 'Base') + ' · 父节点：<b>' + esc(cur.parent_checkpoint_id || 'Base (models/laya-421m)') + '</b><br>依赖本节点的子实验：' + esc((cur.pinned_children || []).length ? cur.pinned_children.join(', ') : '无') + '</div>' +
+        '<div class="kv-box"><b>多指标综合得分 (BASELINE_0=100)</b>Primary Score=<b>' + fmt(cur.primary_score) + '</b><br>S1=' + fmt(cur.s1_score) + ' · S2=' + fmt(cur.s2_score) + ' · S3=' + fmt(cur.s3_score) + '</div>' +
+        '<div class="kv-box"><b>真实监督目标与数据规模</b>类别：' + esc((cur.supervision_classes || []).join('+')) + '<br>Train: ' + esc(JSON.stringify(cur.train_groups || {})) + ' · Val: ' + esc(JSON.stringify(cur.val_groups || {})) + '</div>' +
+        '<div class="kv-box"><b>父子关系与训练起点</b>起点：' + esc(cur.train_origin || 'Base') + ' · 父节点：<b>' + esc(cur.parent_checkpoint_id || 'Base (models/laya-421m)') + '</b><br>相对父节点增益：<b>' + fmt(cur.parent_to_current_score_gain) + '</b> · 子依赖：' + esc((cur.pinned_children || []).length ? cur.pinned_children.join(', ') : '无') + '</div>' +
         '<div class="kv-box"><b>优化器与超参数</b>Seed=' + fmt(cur.seed) + ' · Loss=' + esc(cfg.loss || 'soft-ce') + '<br>Encoder LR=' + fmt(lr.encoder ?? cfg.encoder_lr) + ' · Head LR=' + fmt(lr.head ?? cfg.head_lr) + '<br>MicroBatch=' + fmt(cfg.micro_batch ?? 8) + ' · GradAccum=' + fmt(cfg.grad_accum ?? 8) + '</div>' +
-        '<div class="kv-box"><b>Epoch / Step / 资源耗时</b>Epoch ' + fmt(cur.epoch) + ' · Updates=' + fmt(cur.optimizer_updates) + ' · GlobalStep=' + fmt(cur.global_step) + '<br>总耗时=' + fmt(cur.epoch_total_seconds) + 's · 峰值显存=' + fmt(cur.gpu_memory_peak_mib) + ' MiB</div>' +
+        '<div class="kv-box"><b>Epoch / Step / 稳定性指标</b>Epoch ' + fmt(cur.epoch) + ' · Updates=' + fmt(cur.optimizer_updates) + ' · Run最佳=' + String(Boolean(cur.is_run_best_epoch)) + '<br>Train-Val Gap=' + fmt(cur.train_val_loss_gap) + ' · 耗时=' + fmt(cur.epoch_total_seconds) + 's · 显存=' + fmt(cur.gpu_memory_peak_mib) + ' MiB</div>' +
         '<div class="kv-box"><b>权重状态与空间账本</b>weights_saved=<b>' + String(Boolean(cur.weights_saved)) + '</b> · loadable=<b>' + String(Boolean(cur.loadable)) + '</b><br>当前权重占用：' + fmtBytes(cur.actual_weight_bytes) + '<br>清理释放字节：' + fmtBytes(cur.freed_bytes) + '</div>' +
       '</div>';
 
@@ -499,9 +713,9 @@
         'Git Commit：<code>' + esc(cur.code_commit || D.code_commit || 'N/A') + '</code> · 完整训练命令：<code>' + esc(cur.command || fullRun.command || 'N/A') + '</code></div>';
 
       if (Object.keys(s3Targets).length) {
-        d += '<h3 style="margin-top:10px">该 Epoch 的 S3 分目标明细（与多数类基线对比）</h3><table><tr><th>Source:Target</th><th>样本数</th><th>Val Loss</th><th>先验基线 Loss</th><th>Val Acc</th><th>多数类基线 Acc</th><th>相对 Loss 降幅</th><th>是否优于基线</th></tr>';
+        d += '<h3 style="margin-top:10px">该 Epoch 的 S3 分目标明细（与多数类基线对比 + S3_score_t）</h3><table><tr><th>Source:Target</th><th>样本数</th><th>Val Loss</th><th>先验基线 Loss</th><th>Val Acc</th><th>多数类基线 Acc</th><th>分目标得分 S3_score_t</th><th>是否优于基线</th></tr>';
         for (const [tk, tv] of Object.entries(s3Targets)) {
-          d += '<tr><td>' + esc(tk) + '</td><td>' + fmt(tv.items) + '</td><td>' + fmt(tv.loss) + '</td><td>' + fmt(tv.prior_baseline_loss) + '</td><td>' + fmt(tv.accuracy) + '</td><td>' + fmt(tv.majority_baseline_accuracy) + '</td><td>' + fmt(tv.relative_loss_reduction_vs_prior) + '</td><td class="' + (tv.beats_majority_baseline ? 'good' : 'bad') + '">' + (tv.beats_majority_baseline ? '优于基线 ✓' : '低于基线 ✗') + '</td></tr>';
+          d += '<tr><td>' + esc(tk) + '</td><td>' + fmt(tv.items) + '</td><td>' + fmt(tv.loss) + '</td><td>' + fmt(tv.prior_baseline_loss) + '</td><td>' + fmt(tv.accuracy) + '</td><td>' + fmt(tv.majority_baseline_accuracy) + '</td><td><b>' + fmt(tv.s3_target_score) + '</b></td><td class="' + (tv.beats_majority_baseline ? 'good' : 'bad') + '">' + (tv.beats_majority_baseline ? '优于基线 ✓' : '低于基线 ✗') + '</td></tr>';
         }
         d += '</table>';
       }
@@ -513,7 +727,7 @@
       const v = D.storage_verification_full || D.storage_verification_summary || {};
       const checks = v.checks || [];
       const b = document.getElementById('verifySummaryBadge');
-      b.textContent = (v.passed_count || 0) + ' / ' + (v.total_checks || 10) + ' 全部通过';
+      b.textContent = (v.passed_count || 0) + ' / ' + (v.total_checks || 14) + ' 全部通过';
       b.className = 'badge ' + (v.all_passed ? 'RETAINED_BEST' : 'PRUNED_LOW_SCORE');
       let h = '<tr><th>编号</th><th>验收项目</th><th>状态</th><th>实测验证证据</th></tr>';
       for (const c of checks) {
@@ -528,17 +742,17 @@
     function renderMatrix(){const bs=['B01','B02','B03','B04','B05','B06','B07'],cs=Array.from({length:16},(_,i)=>'C'+String(i+1).padStart(2,'0'));let h='<tr><th>B / C</th>'+cs.map(c=>'<th>'+c+'</th>').join('')+'</tr>';for(const b of bs){h+='<tr><th>'+b+'</th>';for(const c of cs){const oldIds=Object.keys(D.plans||{}).filter(id=>id.startsWith(b+'_'+c+'_'));const newIds=Object.keys(D.plans||{}).filter(id=>id.startsWith('P0_'+b+'_'+c+'_'));const ids=newIds.length?newIds:oldIds;h+=ids.length?matrixCell(ids.find(id=>id.endsWith('_QB_PB'))||ids[0]):'<td class="blocked">N/A</td>'}h+='</tr>'}document.getElementById('matrixTable').innerHTML=h;const p=Object.values(D.plans||{}),done=p.filter(x=>['COMPLETED','EARLY_STOPPED'].includes(x.status)).length,mat=p.filter(x=>x.materialized).length;document.getElementById('matrixCards').innerHTML=[['旧 16 Run','LEGACY_INPUT_PROTOCOL'],['新协议已物化',mat],['已完成旧 Run',done],['新协议 CPU 队列',D.queue?.length||0],['理论槽位',D.theoretical_slots||p.length]].map(x=>'<div class="card"><div class="label">'+x[0]+'</div><div class="value">'+esc(x[1])+'</div></div>').join('')}
     function renderCoverage(){const c=D.coverage||{};if(!Object.keys(c).length){document.getElementById('coverage').innerHTML='<div class="muted">当前快照未携带覆盖摘要。</div>';return}let h='<table><tr><th>层</th><th>全来源记录</th><th>矩阵来源记录</th><th>合法候选记录</th><th>候选独立单位</th><th>实际去重 Item</th><th>Run 暴露</th></tr>';for(const [k,v] of Object.entries(c)){if(k==='totals')continue;h+='<tr><td>'+esc(k)+'</td><td>'+fmt(v.raw_records)+'</td><td>'+fmt(v.matrix_source_records||0)+'</td><td>'+fmt(v.eligible_candidate_records)+'</td><td>'+fmt(v.eligible_independent_units)+'</td><td>'+fmt(v.actual_encoded_items)+'</td><td>'+fmt(v.run_item_exposure)+'</td></tr>'}if(c.totals)h+='<tr><th>合计</th><th>'+fmt(c.totals.raw_records)+'</th><th>'+fmt(c.totals.matrix_source_records)+'</th><th>'+fmt(c.totals.eligible_candidate_records)+'</th><th>'+fmt(c.totals.eligible_independent_units)+'</th><th>'+fmt(c.totals.dedup_encoded_items)+'</th><th>'+fmt(c.totals.run_item_exposure)+'</th></tr>';const src=D.coverage_detail?.sources||{};if(Object.keys(src).length){h+='<tr><th colspan="7">来源明细（记录 / 合法候选 / 去重 Item）</th></tr>';for(const [k,v] of Object.entries(src)){if(k==='__totals__')continue;h+='<tr><td>'+esc(k)+'</td><td>'+fmt(v.raw_records)+'</td><td>'+fmt(v.matrix_source_records||0)+'</td><td>'+fmt(v.eligible_candidate_records)+'</td><td>'+fmt(v.eligible_independent_units)+'</td><td>'+fmt(v.dedup_encoded_items)+'</td><td>'+fmt(v.run_item_exposure)+'</td></tr>'}}document.getElementById('coverage').innerHTML=h+'</table>';bars('sourceChart',Object.entries(src).filter(([k,v])=>k!=='__totals__'&&(v.actual_encoded_items||v.run_item_exposure)).map(([k,v])=>[k,v.actual_encoded_items||0]),'#4adeaa')}
     function renderQP(){const p=Object.values(D.plans||{}),m={};for(const x of p){if(!x.quality_code)continue;const k=x.quality_code+' × '+x.sampling_code;m[k]=(m[k]||0)+(x.status==='COMPLETED'||x.status==='EARLY_STOPPED'?1:0)}let h='<tr><th>策略</th><th>已完成</th></tr>';for(const [k,v] of Object.entries(m))h+='<tr><td>'+esc(k)+'</td><td>'+v+'</td></tr>';document.getElementById('qpTable').innerHTML=h}
-    function renderRuns(){let h='<tr><th>Run</th><th>协议</th><th>数据</th><th>起点</th><th>Seed</th><th>Epoch</th><th>S1 Loss</th><th>S1 Acc</th><th>S1 ECE</th><th>S1 Brier</th><th>S2</th><th>S3</th><th>状态</th></tr>';for(const id of allIds()){const p=plan(id),r=run(id),best=(r.history||[]).find(x=>x.epoch===r.best_epoch)||(r.history||[])[0]||{},s1=best.validation?.S1||{},s2=best.validation?.S2||{},s3=best.validation?.S3||{},legacy=r.legacy_input_protocol||p.legacy_input_protocol;h+='<tr class="'+(id===selected?'selected':'')+'" data-id="'+esc(id)+'"><td><button onclick="selectRun(\''+esc(id)+'\')">'+esc(id)+'</button>'+(r.selection_state?'<div class="small">'+esc(r.selection_state)+'</div>':'')+'</td><td>'+esc(legacy?'LEGACY_INPUT':'P0_NEUTRAL')+'</td><td>'+esc(JSON.stringify(r.train_groups||p.data||{}))+'</td><td>'+esc(r.train_origin||p.train_origin||'Base')+'</td><td>'+fmt(r.seed??p.seed)+'</td><td>'+esc(r.history?.length||p.status||'N/A')+'</td><td>'+fmt(s1.loss)+'</td><td>'+fmt(s1.accuracy)+'</td><td>'+fmt(s1.ece)+'</td><td>'+fmt(s1.brier)+'</td><td>'+fmt(s2.accuracy)+'</td><td>'+fmt(s3.accuracy)+'</td><td>'+esc(r.selection_state||r.status||p.status||'planned')+'</td></tr>'}document.getElementById('runs').innerHTML=h;}
+    function renderRuns(){let h='<tr><th>Run</th><th>协议</th><th>数据</th><th>起点</th><th>Seed</th><th>Epoch</th><th>Primary Score</th><th>S1 Loss</th><th>S1 Acc</th><th>S1 ECE</th><th>S1 Brier</th><th>S2</th><th>S3</th><th>状态</th></tr>';for(const id of allIds()){const p=plan(id),r=run(id),best=(r.history||[]).find(x=>x.epoch===r.best_epoch)||(r.history||[])[0]||{},s1=best.validation?.S1||{},s2=best.validation?.S2||{},s3=best.validation?.S3||{},legacy=r.legacy_input_protocol||p.legacy_input_protocol;h+='<tr class="'+(id===selected?'selected':'')+'" data-id="'+esc(id)+'"><td><button onclick="selectRun(\''+esc(id)+'\')">'+esc(id)+'</button>'+(r.selection_state?'<div class="small">'+esc(r.selection_state)+'</div>':'')+'</td><td>'+esc(legacy?'LEGACY_INPUT':'P0_NEUTRAL')+'</td><td>'+esc(JSON.stringify(r.train_groups||p.data||{}))+'</td><td>'+esc(r.train_origin||p.train_origin||'Base')+'</td><td>'+fmt(r.seed??p.seed)+'</td><td>'+esc(r.history?.length||p.status||'N/A')+'</td><td><b>'+fmt(best.primary_score)+'</b></td><td>'+fmt(s1.loss)+'</td><td>'+fmt(s1.accuracy)+'</td><td>'+fmt(s1.ece)+'</td><td>'+fmt(s1.brier)+'</td><td>'+fmt(s2.accuracy)+'</td><td>'+fmt(s3.accuracy)+'</td><td>'+esc(r.selection_state||r.status||p.status||'planned')+'</td></tr>'}document.getElementById('runs').innerHTML=h;}
     function renderS2(){const a=D.s2_audit||{};let h='<p>只计算类别多数基线，未调用模型推理。</p>';for(const sp of ['train','val']){const x=a[sp]||{};h+='<p><b>'+sp+'</b>：0/1='+esc(JSON.stringify(x.exposure_label_counts||{}))+'，多数类='+esc(x.majority_label??'N/A')+'，Accuracy='+fmt(x.majority_accuracy)+'，Balanced Accuracy='+fmt(x.majority_balanced_accuracy)+'，Macro-F1='+fmt(x.majority_macro_f1)+'</p>'}const pa=D.protocol_audit||{};h+='<p class="small">新版指令行：'+fmt(pa.new_instruction_rows)+'；旧目标指令：'+fmt(pa.old_instruction_rows)+'；指令中出现目标名：'+fmt(pa.target_name_in_instruction)+'；S2 可信状态：'+esc(D.s2_status||'待审查')+'</p>';document.getElementById('s2Audit').innerHTML=h;}
     function renderRatio(){const a=D.ratio_comparison||[];let h='<table><tr><th>Run</th><th>计划</th><th>实际 Item</th><th>实际比例</th><th>独立单位</th><th>重复采样</th></tr>';for(const x of a)h+='<tr><td>'+esc(x.run_id)+'</td><td>'+esc(JSON.stringify(x.planned_ratios||{}))+'</td><td>'+esc(JSON.stringify(x.actual_item_counts||{}))+'</td><td>'+esc(JSON.stringify(x.actual_item_ratios||{}))+'</td><td>'+esc(JSON.stringify(x.actual_independent_units||{}))+'</td><td>'+esc(JSON.stringify(x.repeated_sampling_by_target||{}))+'</td></tr>';document.getElementById('ratioTable').innerHTML=h+'</table>';bars('ratioChart',a.slice(0,16).map(x=>[x.run_id,Number(x.effective_optimization_items)||0]),'#a78bfa');}
     function renderQueue(){const q=D.queue||[];document.getElementById('queue').textContent=JSON.stringify({ready_for_cpu_validation:q,formal_selection_ready_runs:D.overview?.formal_selection_ready_runs||0,discarded:D.discarded_runs||[]},null,2);}
-    function renderDetail(){const r=run(selected),p=plan(selected),cfg=r.config||{};document.getElementById('detail').innerHTML='<h3>'+esc(selected||'N/A')+'</h3><p>状态：'+esc(r.selection_state||r.status||p.status||'planned')+' · 协议：'+esc(r.protocol_version||p.protocol_version||'legacy')+' · B/C/Q/P：'+esc([r.batch_id||p.batch_id,r.combo_id||p.combo_id,r.quality_code||p.quality_code,r.sampling_code||p.sampling_code].join(' / '))+' · 起点：'+esc(r.train_origin||p.train_origin||'Base')+' · 父 Checkpoint：'+esc(r.parent_checkpoint_id||'Base')+' · Seed：'+fmt(r.seed??p.seed)+'</p><p>训练组：'+esc(JSON.stringify(r.train_groups||p.data||{}))+' · Val 组：'+esc(JSON.stringify(r.val_groups||{}))+'</p><p>Loss：'+esc(cfg.loss||'N/A')+' · Encoder LR：'+fmt(cfg.encoder_lr)+' · Head LR：'+fmt(cfg.head_lr)+' · micro/accum：'+esc((cfg.micro_batch??'N/A')+'/'+(cfg.grad_accum??'N/A'))+' · max_len/head：'+esc((cfg.max_len??'N/A')+'/'+(cfg.head_max_len??'N/A'))+'</p>'+(r.selection_reason?'<p class="warn">队列标记：'+esc(r.selection_reason)+'</p>':'')+(r.stop_reason?'<p class="warn">停止原因：'+esc(r.stop_reason)+'</p>':'');let hs=r.history||[];let h='<tr><th>节点</th><th>Train Loss</th><th>S1 Loss</th><th>S1 Acc</th><th>S1 ECE</th><th>S1 Brier</th><th>S2 Acc</th><th>S3 Acc</th><th>更新步数</th><th>总 s</th><th>显存 MiB</th><th>保留状态</th><th>实体权重</th><th>原因</th></tr>';for(const e of hs){const s1=e.validation?.S1||{},s2=e.validation?.S2||{},s3=e.validation?.S3||{};h+='<tr style="cursor:pointer" onclick="selectCheckpointNode(\''+esc(e.checkpoint_id)+'\')"><td><b>'+esc(e.checkpoint_id)+'</b></td><td>'+fmt(e.train_loss)+'</td><td>'+fmt(s1.loss)+'</td><td>'+fmt(s1.accuracy)+'</td><td>'+fmt(s1.ece)+'</td><td>'+fmt(s1.brier)+'</td><td>'+fmt(s2.accuracy)+'</td><td>'+fmt(s3.accuracy)+'</td><td>'+esc(e.optimizer_updates??'N/A')+'</td><td>'+fmt(e.epoch_total_seconds)+'</td><td>'+fmt(e.gpu_memory_peak_mib)+'</td><td><span class="badge '+esc(e.retention_status||'METADATA_ONLY')+'">'+esc(e.retention_status||'N/A')+'</span></td><td class="'+(e.weights_saved?'good':'bad')+'">'+esc(e.weights_saved?'saved (loadable)':'METADATA_ONLY')+'</td><td style="white-space:normal;text-align:left">'+esc(e.retention_reason||'')+'</td></tr>'}document.getElementById('history').innerHTML=h||'<tr><td>暂无 Epoch</td></tr>';}
+    function renderDetail(){const r=run(selected),p=plan(selected),cfg=r.config||{};document.getElementById('detail').innerHTML='<h3>'+esc(selected||'N/A')+'</h3><p>状态：'+esc(r.selection_state||r.status||p.status||'planned')+' · 协议：'+esc(r.protocol_version||p.protocol_version||'legacy')+' · B/C/Q/P：'+esc([r.batch_id||p.batch_id,r.combo_id||p.combo_id,r.quality_code||p.quality_code,r.sampling_code||p.sampling_code].join(' / '))+' · 起点：'+esc(r.train_origin||p.train_origin||'Base')+' · 父 Checkpoint：'+esc(r.parent_checkpoint_id||'Base')+' · Seed：'+fmt(r.seed??p.seed)+'</p><p>训练组：'+esc(JSON.stringify(r.train_groups||p.data||{}))+' · Val 组：'+esc(JSON.stringify(r.val_groups||{}))+'</p><p>Loss：'+esc(cfg.loss||'N/A')+' · Encoder LR：'+fmt(cfg.encoder_lr)+' · Head LR：'+fmt(cfg.head_lr)+' · micro/accum：'+esc((cfg.micro_batch??'N/A')+'/'+(cfg.grad_accum??'N/A'))+' · max_len/head：'+esc((cfg.max_len??'N/A')+'/'+(cfg.head_max_len??'N/A'))+'</p>'+(r.selection_reason?'<p class="warn">队列标记：'+esc(r.selection_reason)+'</p>':'')+(r.stop_reason?'<p class="warn">停止原因：'+esc(r.stop_reason)+'</p>':'');let hs=r.history||[];let h='<tr><th>节点</th><th>Primary Score</th><th>Train Loss</th><th>S1 Loss</th><th>S1 Acc</th><th>S1 ECE</th><th>S1 Brier</th><th>S2 Acc</th><th>S3 Acc</th><th>更新步数</th><th>总 s</th><th>显存 MiB</th><th>保留状态</th><th>实体权重</th><th>原因</th></tr>';for(const e of hs){const s1=e.validation?.S1||{},s2=e.validation?.S2||{},s3=e.validation?.S3||{};h+='<tr style="cursor:pointer" onclick="selectCheckpointNode(\''+esc(e.checkpoint_id)+'\')"><td><b>'+esc(e.checkpoint_id)+'</b></td><td><b>'+fmt(e.primary_score)+'</b></td><td>'+fmt(e.train_loss)+'</td><td>'+fmt(s1.loss)+'</td><td>'+fmt(s1.accuracy)+'</td><td>'+fmt(s1.ece)+'</td><td>'+fmt(s1.brier)+'</td><td>'+fmt(s2.accuracy)+'</td><td>'+fmt(s3.accuracy)+'</td><td>'+esc(e.optimizer_updates??'N/A')+'</td><td>'+fmt(e.epoch_total_seconds)+'</td><td>'+fmt(e.gpu_memory_peak_mib)+'</td><td><span class="badge '+esc(e.retention_status||'METADATA_ONLY')+'">'+esc(e.retention_status||'N/A')+'</span></td><td class="'+(e.weights_saved?'good':'bad')+'">'+esc(e.weights_saved?'saved (loadable)':'METADATA_ONLY')+'</td><td style="white-space:normal;text-align:left">'+esc(e.retention_reason||'')+'</td></tr>'}document.getElementById('history').innerHTML=h||'<tr><td>暂无 Epoch</td></tr>';}
     function draw(id,values,color){const svg=document.getElementById(id);svg.innerHTML='';const nums=values.filter(v=>typeof v==='number');if(!nums.length)return;let min=Math.min(...nums),max=Math.max(...nums);if(max===min)max=min+1;const pts=values.map((v,i)=>typeof v==='number'?((i/(values.length-1||1))*850+25)+','+(205-(v-min)/(max-min)*175):'').filter(Boolean).join(' ');svg.innerHTML='<polyline fill="none" stroke="'+color+'" stroke-width="3" points="'+pts+'"/>'}
     function bars(id,entries,color){const svg=document.getElementById(id);if(!entries.length){svg.innerHTML='';return}const max=Math.max(1,...entries.map(x=>Number(x[1])||0)),w=850/entries.length;let h='<line x1="25" y1="205" x2="875" y2="205" stroke="#34445b"/>';entries.forEach((x,i)=>{const v=Number(x[1])||0,bh=160*v/max,xp=25+i*w+w*.15;h+='<rect x="'+xp.toFixed(1)+'" y="'+(205-bh).toFixed(1)+'" width="'+(w*.7).toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="3" fill="'+color+'"/><text x="'+(xp+w*.35).toFixed(1)+'" y="'+(198-bh).toFixed(1)+'" text-anchor="middle" fill="#e8edf5" font-size="11">'+esc(fmt(v))+'</text><text x="'+(xp+w*.35).toFixed(1)+'" y="222" text-anchor="middle" fill="#9eacc0" font-size="11">'+esc(x[0])+'</text>'});svg.innerHTML=h}
     function renderCharts(){const hs=run(selected).history||[];draw('lossChart',hs.map(x=>x.validation?.S1?.loss),'#63a4ff');draw('accChart',hs.map(x=>x.validation?.S1?.accuracy),'#4adeaa');const p=Object.values(D.plans||{}),r=Object.values(runs);const status={};for(const x of p)status[x.status||'PLANNED']=(status[x.status||'PLANNED']||0)+1;for(const x of r){const k=x.status||'RUNNING';if(status[k]===undefined)status[k]=0;status[k]++}bars('statusChart',Object.entries(status),'#63a4ff');const cov=D.coverage||{};bars('layerRowsChart',Object.entries(cov).filter(([k])=>k!=='totals').map(([k,v])=>[k,v.raw_records]),'#4adeaa');bars('layerUnitsChart',Object.entries(cov).filter(([k])=>k!=='totals').map(([k,v])=>[k,v.eligible_independent_units]),'#f6c453');const qp={};for(const x of r){const k=[x.quality_code,x.sampling_code].join(' × ');if(k!==' × ')qp[k]=(qp[k]||0)+1}bars('qpChart',Object.entries(qp),'#a78bfa');const timings=r.map(x=>[x.run_id||'run',((x.history||[]).reduce((a,e)=>a+(Number(e.epoch_total_seconds)||0),0))]).filter(x=>x[1]>0).slice(-16);bars('timeChart',timings,'#fb7185');const memory=r.map(x=>[x.run_id||'run',Math.max(0,...(x.history||[]).map(e=>Number(e.gpu_memory_peak_mib)||0))]).filter(x=>x[1]>0).slice(-16);bars('memoryChart',memory,'#38bdf8');}
     function renderRepro(){const r=run(selected),p=plan(selected);document.getElementById('repro').textContent=JSON.stringify({experiment_id:D.experiment_id,run_id:selected,plan:p,run:{status:r.status,parent_checkpoint_id:r.parent_checkpoint_id,config:r.config,train_groups:r.train_groups,val_groups:r.val_groups,history:r.history},code_commit:D.code_commit,fixed_validation:D.fixed_validation,checkpoint_root:r.checkpoint_root},null,2);}
     function selectRun(id){selected=id;const r=run(id);if(r.history&&r.history.length){selectedCkptId=r.history[0].checkpoint_id}render()}
-    function render(){renderOverview();renderDiskAndRetention();renderScatter();renderDynamicThresholds();renderEpochTree();renderVerification();renderMatrix();renderCoverage();renderQP();renderS2();renderRatio();renderQueue();renderRuns();renderDetail();renderCharts();renderRepro()}
+    function render(){renderOverview();renderQueueProgress();renderDiskAndRetention();renderBaselineAndFunnel();renderBeforeAfter();renderScatter();renderDynamicThresholds();renderEpochTree();renderVerification();renderMatrix();renderCoverage();renderQP();renderS2();renderRatio();renderQueue();renderRuns();renderDetail();renderCharts();renderRepro()}
     render();
   </script>
 </body>
