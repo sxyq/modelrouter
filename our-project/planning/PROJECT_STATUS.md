@@ -6,7 +6,7 @@
 
 **2026-10-12 Sweep-02 当前状态：已完成 N01–N10。** Laya-421M 第二轮实验共 10 个方案、每个最多 3 轮，均已保存逐轮权重与指标：5 个方案自然完成，5 个方案按连续两轮缺少 S1 验证损失改善提前结束；共 30 个逐轮节点、50 个权重目录。固定 S1 Val 为 561 条，混合方案沿用 S2 Val 337 条与 S3 Val 4,794 条。最佳 S1 验证损失为 N05-E02 `0.5969`，最高 S1 验证准确率为 N10-E03 `0.6952`。N01–N10 的 `best` 权重均通过官方 Laya CPU 加载。Kev、Test、Coding Benchmark、付费 API 均未运行，训练结束后服务器 GPU 已回落至约 `682 MiB / 0%`。
 
-**2026-10-12 FULL-GRADED-MULTI-BATCH-TRAINING：首个窗口已完成。** 已由 V2.1 索引生成 `1,092` 个 B/C/Q/P 与扩展槽位，其中 `693` 个有合法数据、`315` 个因目标无合法数据标为 BLOCKED；首个窗口物化并完成 B01 的 16 个 QB/PB 组合。共完成 `32` 个 Epoch，保存 `59` 个权重目录；最佳 S1 Val Loss 为 B01_C05-e02 `0.5945`，最佳 S1 Accuracy 为 `0.6827`。输出位于服务器 `runs/MR-FULL-GRADED-TRAINING/`，最终看板数据已同步到本机并推送。训练只使用 Laya-421M，Kev、Test、Coding Benchmark 和付费 API 没有启动。首批输入在中性辅助指令改动前生成，S2 的 `1.0` 结果保留为输入审计事项，不作通用能力结论。
+**2026-10-12 FULL-GRADED-MULTI-BATCH-TRAINING：首个窗口已完成，P0 数据协议修复与 Checkpoint 智能保留机制已就绪（`READY_FOR_NEXT_GPU_WINDOW`）。** 已由 V2.1 索引生成 `1,092` 个 B/C/Q/P 与扩展槽位，其中 `693` 个有合法数据、`315` 个因目标无合法数据标为 BLOCKED；首个窗口完成 B01 的 16 个旧输入协议（`LEGACY_INPUT_PROTOCOL`）组合，共 `32` 个 Epoch，当前磁盘实存 `55` 个实体权重目录（`30` 个 `epoch_XX` + `25` 个 `best/latest`，其中 `B01_C14_QB_PB` 的 4 个目录 `3.15 GiB` 已在 P0 移除并修正为 `weights_saved=false` / `LEGACY_METADATA_ONLY`）。旧窗口最佳 S1 Val Loss / Accuracy / Brier 均为 `B01_C05_QB_PB-e02`（`0.5945 / 0.6827 / 0.4082`）。新协议（`MR-FULL-GRADED-P0-DATA-REPAIR-v1`）已在 CPU 物化 `52` 个 `P0_` 前缀 Run（`413,312` Item 100% 通过官方编码），并完成训练器 `CheckpointRetentionManager` 升级与 10 项无 GPU 存储安全验收（`10/10 PASS`）。本轮未启动 GPU 训练、未重跑数据、未运行 Kev / Test / Coding Benchmark 或付费 API。
 
 ## 当前轮次
 
@@ -17,9 +17,10 @@
 | P2 分层 | 17 个来源分别按任务、轨迹、请求、偏好对战或聚合单元归组，唯一分配至 L1–L4；每层均有全部 17 个来源的实际记录 |
 | P3 覆盖 | 八类变量逐层列出非空数、缺失数、监督/观察用途、许可与评测用途、Q4。真实运行时路由决策标签 `0` |
 | P4 输出 | 服务器 `runs/MR-ALLDATA-PREP-20261011/quality_grading/` 含逐源记录引用、四层引用、汇总 JSON、变量矩阵及五张表 |
-| P5 Laya Batch 1 | 训练 `13,438` 条、独立 Val `5,692` 条；R1/R2/R3 均保留逐轮权重和指标，当前停止 |
-| P6 Laya Sweep-02 | N01–N10 已完成；S1 池规模 `4,592 / 13,762 / 27,542 / 31,766`，混合方案按既定比例运行；结果位于服务器 `runs/OVERNIGHT-LAYA-SWEEP-02/`，公开面板已同步 |
-| P7 FULL-GRADED-MULTI-BATCH-TRAINING | 已生成 `1,092` 槽位；首个窗口 16 个 B01 QB/PB 方案全部完成，32 个 Epoch、59 个权重目录；服务器结果与本机看板已同步 |
+| P5 Laya Batch 1 | 训练 `13,438` 条、独立 Val `5,692` 条；`R1-e01` 与 `R2-e01` 作为课程父节点已标记 `PINNED_PARENT` 保护，当前停止 |
+| P6 Laya Sweep-02 | N01–N10 已完成（30 个 Epoch，50 个实体权重目录，占 `39.65 GiB`）；S1 最佳 Loss `N05-e02`（`0.5969`）、最佳 Acc `N10-e03`（`0.6952`） |
+| P7 FULL-GRADED 窗口一 & P0 数据修复 | 旧窗口 16 个 B01 Run（32 Epoch，存量 55 个权重目录 `43.60 GiB`）隔离为 `LEGACY_INPUT_PROTOCOL`；新协议 52 个 `P0_` Run（`0.41 GiB`）已完成 CPU 物化 |
+| P8 Checkpoint 智能保留与磁盘保护 | 已升级 `laya_batch_train.py` 与 `checkpoint_retention.py`：100% 保留每轮指标，按同组动态阈值 + Top-2 + 全局最佳 + `PINNED_PARENT` 单份保存权重，`best` 改用相对符号链接，120 GiB 活动预算与 `<20% / <200 GiB` 停机门禁 10/10 验收通过 |
 
 公开记录层规模：L1 `663,963`、L2 `1,304,523`、L3 `1,993,193`、L4 `2,638,949`，总计 `6,600,628`。三类 OWN 记录逐层另列。按来源政策允许、Q1/Q2、真实目标及 Train 身份计算的候选记录数依次为 `489,911`、`973,501`、`1,475,527`、`1,924,961`，合计 `4,863,900`；Val/Test 身份归评测用途，不计作训练候选。候选包含轨迹终局、静态偏好、缓存复用机会、请求负载和 OWN-002 调用统计等不同目标，不代表联合路由监督。
 
@@ -332,3 +333,23 @@ configs/
 - 新目录统计：全来源记录 `6,821,945`，矩阵六来源记录 `6,129,744`，合法候选记录 `4,863,900`，候选独立单位 `1,344,240`，跨 Run Item 暴露 `212,970`，去重 Item `45,056`。C04/C07/C13 实际类别比例分别为 `1:1`、`1:1`、`1:1:1`。
 - S2 成功/失败仅做类别分布和多数类基线：Train 暴露 `25,592/22,573`，Val `6,510/5,285`；多数类 Accuracy `0.531340/0.551929`，Balanced Accuracy `0.5/0.5`，Macro-F1 `0.346977/0.355641`。没有进行模型推理，正式 S2 结论保持 `BASELINE_ONLY_MODEL_METRICS_BLOCKED`。
 - 当前看板数据为服务器 CPU 快照，旧 16 Run 与新协议队列分组显示；未启动新的 GPU 训练。
+
+### 2026-10-12 · MR-FULL-GRADED-CHECKPOINT-RETENTION（Checkpoint 智能保留与磁盘保护）
+
+- **Checkpoint 保留政策（P0–P4）**：
+  - **100% 保留每轮指标**：每个 Epoch 完成后强制写入 24 项实验参数、数据协议版本、父子关系与验证成绩至 `run.json`、`epoch_metrics.json` 及 `checkpoint_manifest.json`，明确标记 8 类状态（`RETAINED_BEST`、`RETAINED_TOP_K`、`PINNED_PARENT`、`TEMP_RECOVERY`、`METADATA_ONLY`、`PRUNED_LOW_SCORE`、`PRUNED_DUPLICATE`、`LEGACY_METADATA_ONLY`）。无实体权重节点严格标记 `weights_saved=false`，在历史树中 100% 可点击查看。
+  - **单份实体权重与符号链接去重**：每个保留的真实 Checkpoint 仅在 `checkpoints/epoch_XX` 保存 1 份实体权重（`846,196,824 B = 807.00 MiB`）；`best` 采用指向 `epoch_XX` 的相对目录符号链接（经官方 `laya.train.load_checkpoint` 抽样实测 100% 兼容，`421,293,827` 参数正常加载）；`latest` 仅作运行期临时恢复并在 Run 完成时自动清理。
+  - **同类可比较组动态阈值与任务隔离**：可比较组必须同时满足相同协议版本、相同主监督目标、相同固定验证集、相同指标定义；旧 `LEGACY_INPUT_PROTOCOL` 严格隔离，不参加新协议（`MR-FULL-GRADED-P0-DATA-REPAIR-v1`）排名。
+    - **S1**：同组有效对照 `< 5` 时启用冷启动保护；`>= 5` 时需满足条件 A（`Val Loss <= 均值 * 0.995` 且 `Acc >= 均值 - 0.005`）或条件 B（`Acc >= 均值 + 0.01` 且 `Loss/Brier <= 均值 * 1.005`），每组限留非依赖 Top-2，并保留全局 S1 最低 Loss、最高 Accuracy、最低 Brier 模型及 `PINNED_PARENT` 父节点。
+    - **S2**：在独立监督审计通过前（`s2_audit_passed=false`），禁止因 `S2 Accuracy=1.0` 永久保存大量权重或设为全局冠军；全组最多临时保留 1 个最低 Log Loss 诊断模型。
+    - **S3**：按 6 个真实 `source:target` 分目标独立对比各自多数类准确率（`0.4232 ~ 0.9520`）与先验 Loss 基线（`0.1926 ~ 1.2576`），严禁跨目标原始 Loss 简单相加；仅分目标优于多数类基线的模型可进入组内 Top-2。
+- **磁盘保护阈值与二阶段清理（P3）**：
+  - **FULL-GRADED 活动权重预算**：`120.0 GiB`；告警阈值（`WARNING`）：根分区剩余 `< 25.0%` 或 `< 300.0 GiB`；停机阈值（`STOP`）：根分区剩余 `< 20.0%` 或 `< 200.0 GiB`（取更严格者）。
+  - 每个新 Run 启动前执行 `pre_run_disk_check`；预算不足时仅在当前授权 `out_root/*/checkpoints/*` 白名单内生成二阶段清理计划并物理删除（`shutil.rmtree`，绝不移入同分区 `.Trash` 虚报释放），严禁触碰原始数据、`models/`、`external/`、历史实验、`PINNED_PARENT` 或全局最佳模型。
+- **当前实测统计摘要（P6）**：
+  - **总 Epoch 数**：FULL-GRADED 窗口一 `32` 轮；全项目累计 `71` 轮（含 `Batch 1` `9` 轮 + `Sweep-02` `30` 轮）；P7 沙盒验证 `14` 轮。
+  - **有效模型权重数与保留比例**：FULL-GRADED 当前磁盘存有 `30` 个 Epoch 实体权重（共 `55` 个物理目录，含 `25` 个存量 `best/latest` 副本；`B01_C14_QB_PB` 的 `2` 个 Epoch 已修正为 `weights_saved=false` / `LEGACY_METADATA_ONLY`），存量 Epoch 保留率 `93.75%`（`30/32`）；按新策略筛选应保留 **`11` 个**有效 Epoch 权重（**策略保留比例 `34.38%`**，P7 沙盒实测保留率 `35.71%` [`5/14`]）。全项目累计存有 `69` 个 Epoch 权重（`120` 个物理目录，含 `2` 个 `PINNED_PARENT`：`R1-e01`、`R2-e01`）。
+  - **磁盘实际使用与累计释放空间**：服务器根分区总容量 `3,518.72 GiB`，已用 `2,275.13 GiB`（`df 69%`），**可用 `1,064.78 GiB`（`30.26%`）**；`runs/MR-FULL-GRADED-TRAINING/` 占 `43.60 GiB`，历史实验占 `51.47 GiB`（`Sweep-02` `39.65 GiB` + `Batch 1` `11.82 GiB`），新协议 `P0_` CPU 物化目录占 `0.41 GiB`，基础模型 `models/` 占 `9.64 GiB`。已释放 `B01_C14_QB_PB` 权重 **`3.15 GiB`（`3,384,787,296 B`）**（沙盒模拟二阶段清理另验证释放 `197,016 B`）；FULL-GRADED 存量中未来按需可清理冗余/低分权重 **`34.68 GiB`**（`44` 个目录）。
+  - **当前最佳模型与下次存储预算**：旧协议窗口一 S1 Loss / Accuracy / Brier 最佳均为 `B01_C05_QB_PB-e02`（`0.5945 / 0.6827 / 0.4082`），历史 Sweep-02 最高 S1 Accuracy 为 `N10-e03`（`0.6952`）；新协议尚未启动 GPU 训练。下一次训练窗口可用活动权重预算 **`120.0 GiB`**（去重后旧窗口仅占 `8.67 GiB` [`7.22%`]）；新策略预估**每 100 个 Run 稳态仅占 `18.91 GiB`（含临时峰值 `20.49 GiB`）**，较旧保存方式（`315.23 ~ 354.64 GiB / 100 Runs`）节省 **`94.0% ~ 94.67%`**。
+  - **看板分片与验收状态**：`docs/training-dashboard/` 已拆分为 `data.js` + `shards/*.js` 四个分片并新增五大监控视图，P7 10 项无 GPU 存储安全测试 **`10/10 PASS`**，状态为 **`READY_FOR_NEXT_GPU_WINDOW`**。
+

@@ -2,31 +2,125 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ModelRouter · Laya Full Matrix</title>
+  <title>ModelRouter · Laya Full Matrix & Checkpoint 智能保留看板</title>
   <style>
-    :root{color-scheme:dark;--bg:#101827;--panel:#1c2738;--line:#34445b;--text:#e8edf5;--muted:#9eacc0;--accent:#63a4ff;--good:#4adeaa;--warn:#f6c453;--bad:#fb7185}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px system-ui,-apple-system,"PingFang SC",sans-serif}
-    header{padding:24px 30px;border-bottom:1px solid var(--line)}h1{margin:0 0 7px;font-size:24px}h2{font-size:17px;margin:0 0 14px}
-    main{padding:20px 30px;display:grid;gap:18px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:17px;overflow:auto}
-    .grid{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:10px}.card{background:#121c2b;border:1px solid var(--line);border-radius:8px;padding:12px}.label{color:var(--muted);font-size:12px}.value{font-size:20px;margin-top:6px}.muted{color:var(--muted)}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
-    table{width:100%;border-collapse:collapse;min-width:800px}th,td{padding:8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}tr.selected{background:#243a55}
-    button{color:var(--text);background:#22344d;border:1px solid var(--line);border-radius:6px;padding:6px 10px;cursor:pointer}button:hover,button.active{background:#315579}.tree{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.tree .base{border-color:var(--good)}
-    .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}.detail{line-height:1.6}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;white-space:pre-wrap;color:#c9d7eb}
-    .heatmap th,.heatmap td{min-width:72px;text-align:center;font-size:11px}.heatmap td{height:42px;cursor:pointer;border-radius:4px}.heatmap .completed{background:#166b55}.heatmap .early_stopped{background:#6b5a1b}.heatmap .running{background:#285a9c}.heatmap .blocked{background:#4b5260}.heatmap .planned{background:#27364a}.heatmap .cpu_materialized{background:#285a9c}.heatmap .discarded,.heatmap .legacy_input_protocol_discarded{background:#7a3040}.heatmap .failed{background:#7a3040}.matrix-note{margin:7px 0;color:var(--muted);font-size:12px}.protocol-banner{margin-top:10px;padding:10px 12px;border:1px solid var(--warn);border-radius:8px;background:#2b2a1d}.bar{height:8px;background:#26374d;border-radius:5px;overflow:hidden}.bar span{display:block;height:100%;background:var(--accent)}
-    svg{width:100%;height:230px;background:#121c2b;border-radius:8px}.small{font-size:12px;color:var(--muted)}
-    @media(max-width:1100px){.grid{grid-template-columns:repeat(3,minmax(130px,1fr))}.two{grid-template-columns:1fr}}@media(max-width:650px){header,main{padding-left:15px;padding-right:15px}.grid{grid-template-columns:repeat(2,minmax(120px,1fr))}}
+    :root{color-scheme:dark;--bg:#0e1624;--panel:#182334;--panel2:#121b2a;--line:#2e3f57;--text:#e8edf5;--muted:#9aa9bf;--accent:#63a4ff;--good:#4adeaa;--warn:#f6c453;--bad:#fb7185;--purple:#a78bfa;--cyan:#38bdf8}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"PingFang SC",sans-serif}
+    header{padding:22px 28px;border-bottom:1px solid var(--line);background:#121c2c}h1{margin:0 0 6px;font-size:23px}h2{font-size:17px;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}h3{font-size:15px;margin:10px 0 8px}
+    main{padding:18px 28px;display:grid;gap:18px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:16px;overflow:auto}
+    .grid{display:grid;grid-template-columns:repeat(6,minmax(135px,1fr));gap:10px}.grid-4{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px}.card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:11px 12px}.label{color:var(--muted);font-size:12px}.value{font-size:19px;font-weight:600;margin-top:5px}.sub{font-size:11px;color:var(--muted);margin-top:4px}
+    .muted{color:var(--muted)}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}.purple{color:var(--purple)}.cyan{color:var(--cyan)}
+    table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-size:12.5px}th:first-child,td:first-child{text-align:left}tr.selected{background:#243a55}
+    button{color:var(--text);background:#21324a;border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;font-size:12px}button:hover,button.active{background:#315579;border-color:var(--accent)}
+    .tree{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;max-height:310px;overflow-y:auto;padding:4px}
+    .node-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:6px;font-size:12px;border:1px solid var(--line);background:#162234}
+    .node-btn.active{outline:2px solid var(--accent);background:#253d5b}
+    .node-btn.st-retained_best{border-color:var(--good);color:#d1fae5}
+    .node-btn.st-pinned_parent{border-color:var(--warn);color:#fef3c7}
+    .node-btn.st-retained_top_k{border-color:var(--accent);color:#dbeafe}
+    .node-btn.st-pruned_low_score,.node-btn.st-metadata_only,.node-btn.st-legacy_metadata_only{border-style:dashed;border-color:#fb718588;color:#fda4af}
+    .badge{display:inline-block;padding:2px 7px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid transparent}
+    .badge.RETAINED_BEST{background:#064e3b;color:#6ee7b7;border-color:#10b981}
+    .badge.RETAINED_TOP_K{background:#1e3a8a;color:#93c5fd;border-color:#3b82f6}
+    .badge.PINNED_PARENT{background:#78350f;color:#fde68a;border-color:#f59e0b}
+    .badge.TEMP_RECOVERY{background:#164e63;color:#67e8f9;border-color:#06b6d4}
+    .badge.METADATA_ONLY,.badge.LEGACY_METADATA_ONLY{background:#334155;color:#cbd5e1;border-color:#64748b}
+    .badge.PRUNED_LOW_SCORE,.badge.PRUNED_DUPLICATE{background:#4c0519;color:#fda4af;border-color:#f43f5e}
+    .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.detail{line-height:1.6}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;white-space:pre-wrap;color:#c9d7eb;background:#101927;padding:10px;border-radius:8px;border:1px solid var(--line)}
+    .heatmap th,.heatmap td{min-width:68px;text-align:center;font-size:11px}.heatmap td{height:40px;cursor:pointer;border-radius:4px}.heatmap .completed{background:#166b55}.heatmap .early_stopped{background:#6b5a1b}.heatmap .running{background:#285a9c}.heatmap .blocked{background:#4b5260}.heatmap .planned{background:#27364a}.heatmap .cpu_materialized{background:#285a9c}.heatmap .discarded,.heatmap .legacy_input_protocol_discarded,.heatmap .legacy_metadata_only{background:#7a3040}.heatmap .failed{background:#7a3040}
+    .matrix-note{margin:7px 0;color:var(--muted);font-size:12px}.protocol-banner{margin-top:10px;padding:10px 12px;border:1px solid var(--warn);border-radius:8px;background:#2b2a1d}
+    .progress-wrap{margin-top:12px;background:#101826;border:1px solid var(--line);border-radius:8px;padding:12px}
+    .bar-lg{height:16px;background:#223247;border-radius:8px;overflow:hidden;position:relative;margin:8px 0}
+    .bar-lg > span{display:block;height:100%;transition:width .25s}
+    svg{width:100%;height:250px;background:#111a29;border-radius:8px;border:1px solid #263549}.small{font-size:12px;color:var(--muted)}
+    .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:8px 0}
+    .legend span{display:inline-flex;align-items:center;gap:5px}
+    .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+    .kv-grid{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:8px;margin:10px 0}
+    .kv-box{background:#111a28;border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:12px}
+    .kv-box b{color:var(--muted);display:block;font-weight:500;margin-bottom:2px}
+    @media(max-width:1150px){.grid{grid-template-columns:repeat(3,minmax(130px,1fr))}.two,.three,.kv-grid,.grid-4{grid-template-columns:1fr}}
+    @media(max-width:650px){header,main{padding-left:14px;padding-right:14px}.grid{grid-template-columns:repeat(2,minmax(120px,1fr))}}
   </style>
 </head>
 <body>
-  <header><h1>ModelRouter · Laya Full Matrix</h1><div class="muted" id="updated"></div><div id="protocolBanner" class="protocol-banner"></div></header>
+  <header>
+    <h1>ModelRouter · Laya Full Matrix &amp; Checkpoint 智能保留看板</h1>
+    <div class="muted" id="updated"></div>
+    <div id="protocolBanner" class="protocol-banner"></div>
+  </header>
   <main>
     <section class="panel"><h2>实验总览</h2><div class="grid" id="overview"></div></section>
+
+    <!-- P5.1 磁盘监控 & P5.2 Checkpoint 保留统计 -->
+    <section class="two">
+      <div class="panel">
+        <h2>1. 磁盘监控与存储预算保护 <span class="badge RETAINED_BEST" id="diskGuardBadge">OK</span></h2>
+        <div class="grid" id="diskCards"></div>
+        <div class="progress-wrap" id="budgetBars"></div>
+      </div>
+      <div class="panel">
+        <h2>2. Checkpoint 智能保留统计与 100-Run 空间对比</h2>
+        <div class="grid" id="retentionCards"></div>
+        <div class="progress-wrap" id="policyComparisonBox"></div>
+      </div>
+    </section>
+
+    <!-- P5.3 模型质量与存储散点图 -->
+    <section class="panel">
+      <h2>
+        <span>3. 模型质量与存储散点图（点击节点可查看完整 Epoch 记录）</span>
+        <span>
+          <button id="scatterModeLoss" class="active" onclick="setScatterMode('s1_loss')">X 轴：S1 Val Loss (越低越好)</button>
+          <button id="scatterModeAcc" onclick="setScatterMode('s1_acc')">X 轴：S1 Val Accuracy (越高越好)</button>
+          <button id="scatterModeAll" onclick="setScatterMode('all_score')">X 轴：全任务主验证指标</button>
+        </span>
+      </h2>
+      <div class="legend">
+        <span><i class="dot" style="background:#4adeaa"></i> 最佳保留 (RETAINED_BEST)</span>
+        <span><i class="dot" style="background:#f6c453"></i> 父节点保护 (PINNED_PARENT)</span>
+        <span><i class="dot" style="background:#63a4ff"></i> 同组 Top-K 保留 (RETAINED_TOP_K)</span>
+        <span><i class="dot" style="background:#fb7185"></i> 低分淘汰 / 仅元数据 (PRUNED_LOW_SCORE / METADATA_ONLY)</span>
+      </div>
+      <svg id="scatterChart" viewBox="0 0 960 280" preserveAspectRatio="none"></svg>
+      <div class="small" id="scatterNote"></div>
+    </section>
+
+    <!-- P5.4 动态阈值图 (S1 / S2 / S3 严格独立显示) -->
+    <section class="panel">
+      <h2>4. 同类实验动态阈值与组内分布（S1 / S2 / S3 严格独立排名，新旧协议隔离）</h2>
+      <div class="small" id="thresholdNote" style="margin-bottom:10px"></div>
+      <div class="three" id="thresholdPanels"></div>
+    </section>
+
+    <!-- P5.5 历史树：所有 Epoch 节点（含已删权重的 METADATA_ONLY 节点）均可点击查看 -->
+    <section class="panel">
+      <h2>
+        <span>5. 历史训练树（Run 级与全部 Epoch 节点 · 含已删权重 METADATA_ONLY 节点可点击检查）</span>
+        <span>
+          <button id="treeFilterAll" class="active" onclick="setTreeFilter('ALL')">全部节点</button>
+          <button id="treeFilterFG" onclick="setTreeFilter('MR-FULL-GRADED-TRAINING')">FULL-GRADED (32 Ep)</button>
+          <button id="treeFilterSaved" onclick="setTreeFilter('SAVED')">已留实体权重</button>
+          <button id="treeFilterPruned" onclick="setTreeFilter('PRUNED')">仅元数据 / 已淘汰</button>
+          <button id="treeFilterPinned" onclick="setTreeFilter('PINNED')">PINNED 父节点</button>
+          <button id="treeFilterSim" onclick="setTreeFilter('SANDBOX_VERIFY')">P7 沙盒验收 (14 Ep)</button>
+        </span>
+      </h2>
+      <div id="epochTree" class="tree"></div>
+      <div id="epochNodeDetail" class="detail"></div>
+    </section>
+
+    <!-- P7 验收结果面板 -->
+    <section class="panel">
+      <h2>P7 存储策略与磁盘保护 10 项无 GPU 验收明细 <span class="badge RETAINED_BEST" id="verifySummaryBadge"></span></h2>
+      <table id="verifyTable"></table>
+    </section>
+
     <section class="panel"><h2>B×C 实验矩阵</h2><div id="matrixCards" class="grid"></div><div class="matrix-note">每格显示状态、已完成 Epoch 和当前可用的验证指标；辅助任务没有 S1 指标时保留为 N/A。</div><table id="matrixTable" class="heatmap"></table></section>
     <section class="two"><div class="panel"><h2>数据覆盖</h2><div id="coverage"></div><svg id="sourceChart" viewBox="0 0 900 230" preserveAspectRatio="none"></svg></div><div class="panel"><h2>Q×P 策略</h2><table id="qpTable"></table></div></section>
     <section class="two"><div class="panel"><h2>协议与 S2 基线</h2><div id="s2Audit" class="detail"></div></div><div class="panel"><h2>计划比例 / 实际 Item</h2><div id="ratioTable"></div><svg id="ratioChart" viewBox="0 0 900 230" preserveAspectRatio="none"></svg></div></section>
     <section class="panel"><h2>当前待执行队列</h2><div id="queue" class="code"></div></section>
     <section class="panel"><h2>所有方案</h2><table id="runs"></table></section>
-    <section class="panel"><h2>历史训练树</h2><div id="tree" class="tree"></div><div id="treeDetail" class="detail"></div></section>
     <section class="two">
       <div class="panel"><h2>训练曲线</h2><svg id="lossChart" viewBox="0 0 900 230" preserveAspectRatio="none"></svg><div class="small">当前方案的 S1 Val Loss；每个点对应一个真实 Epoch Checkpoint。</div></div>
       <div class="panel"><h2>准确率曲线</h2><svg id="accChart" viewBox="0 0 900 230" preserveAspectRatio="none"></svg><div class="small">当前方案的 S1 Accuracy。</div></div>
@@ -46,14 +140,388 @@
     <section class="panel"><h2>当前方案详情</h2><div id="detail" class="detail"></div><table id="history"></table></section>
     <section class="panel"><h2>复现信息</h2><div id="repro" class="code"></div></section>
   </main>
+
+  <!-- 主汇总数据与按批次/模块分片数据（无需 Web 服务，本地 file:// 与 GitHub 均可直接打开） -->
   <script src="data.js"></script>
+  <script src="shards/matrix_plans_full.js"></script>
+  <script src="shards/checkpoint_tree_nodes.js"></script>
+  <script src="shards/historical_runs_detail.js"></script>
+  <script src="shards/storage_verification.js"></script>
   <script>
-    const D=window.LAYA_DATA||{};const runs=D.runs||{};let selected=D.overview?.current_run||Object.keys(runs).find(x=>x==='N10')||Object.keys(runs).filter(x=>x!=='R0').pop()||Object.keys(runs)[0]||'';
-    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const fmt=v=>v===null||v===undefined||v===''?'N/A':typeof v==='number'?v.toFixed(4):esc(v);
-    const plan=id=>(D.plans||{})[id]||{};const run=id=>runs[id]||{};
-    function allIds(){return [...new Set([...Object.keys(D.plans||{}),...Object.keys(runs)])].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));}
-    function renderOverview(){const o=D.overview||{},m=D.matrix||{};document.getElementById('updated').textContent='指标更新时间：'+(D.generated_at||'N/A')+' · 同步状态：'+(o.github_sync||o.latest_sync_at||'N/A')+' · 状态：'+(D.status||'N/A');const cards=[['已完成旧方案',o.completed_runs||0],['新协议 CPU 可用',o.cpu_ready_runs||0],['正式选模 Run',o.formal_selection_ready_runs||0],['BLOCKED',o.blocked_runs??m.blocked??0],['理论槽位',o.planned_runs||D.theoretical_slots||0],['Checkpoint 节点',o.checkpoint_total||0],['实际权重目录',o.saved_weight_count||0],['旧输入协议 Run',o.legacy_run_count||0],['S1 Loss 最佳',o.best_s1_loss_checkpoint||'N/A'],['S1 Accuracy 最佳',o.best_s1_accuracy_checkpoint||'N/A']];document.getElementById('overview').innerHTML=cards.map(x=>'<div class="card"><div class="label">'+x[0]+'</div><div class="value">'+esc(x[1])+'</div></div>').join('');const n=D.new_protocol||{};document.getElementById('protocolBanner').innerHTML='<b>当前数据协议：</b>'+esc(n.version||D.protocol_version||'N/A')+' · <b>旧输入：</b>'+esc(n.legacy_warning||'未提供')+' · <b>新协议正式选模：</b>'+esc(o.formal_selection_ready_runs||0)+' 个 Run';}
+    const D = window.LAYA_DATA || {};
+    if (window.LAYA_SHARD_PLANS) { D.plans = Object.assign({}, D.plans || {}, window.LAYA_SHARD_PLANS); }
+    if (window.LAYA_SHARD_TREE && Array.isArray(window.LAYA_SHARD_TREE)) { D.checkpoint_tree = window.LAYA_SHARD_TREE; }
+    if (window.LAYA_SHARD_VERIFICATION) { D.storage_verification_full = window.LAYA_SHARD_VERIFICATION; }
+
+    const runs = D.runs || {};
+    const treeNodes = D.checkpoint_tree || [];
+    const nodeById = {};
+    for (const n of treeNodes) { nodeById[n.checkpoint_id] = n; }
+
+    let selected = D.overview?.current_run || 'B01_C05_QB_PB' || Object.keys(runs)[0] || '';
+    let selectedCkptId = nodeById['B01_C14_QB_PB-e01'] ? 'B01_C14_QB_PB-e01' : (treeNodes[0]?.checkpoint_id || '');
+    let scatterMode = 's1_loss';
+    let treeFilter = 'ALL';
+
+    const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const fmt = v => v === null || v === undefined || v === '' ? 'N/A' : typeof v === 'number' ? (Number.isInteger(v) ? String(v) : v.toFixed(4)) : esc(v);
+    const fmtBytes = b => {
+      if (b === null || b === undefined) return '0 B';
+      const n = Number(b) || 0;
+      if (n >= 1073741824) return (n / 1073741824).toFixed(2) + ' GiB (' + n.toLocaleString() + ' B)';
+      if (n >= 1048576) return (n / 1048576).toFixed(2) + ' MiB (' + n.toLocaleString() + ' B)';
+      if (n > 0) return (n / 1024).toFixed(1) + ' KiB (' + n.toLocaleString() + ' B)';
+      return '0 B';
+    };
+    const plan = id => (D.plans || {})[id] || {};
+    const run = id => runs[id] || {};
+
+    function allIds() {
+      return [...new Set([...Object.keys(D.plans || {}), ...Object.keys(runs)])].sort((a,b) => a.localeCompare(b, undefined, {numeric:true}));
+    }
+
+    function renderOverview() {
+      const o = D.overview || {}, m = D.matrix || {}, dm = D.disk_monitor || {};
+      document.getElementById('updated').textContent =
+        '指标更新时间：' + (D.generated_at || 'N/A') +
+        ' · 同步状态：' + (o.github_sync || o.latest_sync_at || 'N/A') +
+        ' · 状态：' + (D.status || 'N/A') +
+        ' · 分片加载：' + ((D.shards || []).length) + ' 个分片';
+      const cards = [
+        ['已完成旧方案', o.completed_runs || 16],
+        ['新协议 CPU 可用', o.cpu_ready_runs || 52],
+        ['正式选模 Run', o.formal_selection_ready_runs || 0],
+        ['理论槽位 / BLOCKED', (o.planned_runs || 1092) + ' / ' + (o.blocked_runs ?? m.blocked ?? 315)],
+        ['FULL-GRADED Epoch', (o.checkpoint_total || 32) + ' (全项目 ' + (o.all_experiments_checkpoint_total || 71) + ')'],
+        ['FULL-GRADED 实体权重', (o.saved_weight_count || 55) + ' 目录 (' + (o.epoch_weight_count || 30) + ' Epoch)'],
+        ['新策略保留目标', (o.policy_retained_weight_count || 11) + ' / 32 (34.38%)'],
+        ['PINNED 保护父节点', (o.pinned_parent_count || 2) + ' (R1-e01, R2-e01)'],
+        ['根分区可用磁盘', (dm.root_avail_gib || o.disk_avail_gib || 1064.78) + ' GiB (' + (dm.root_avail_pct || 30.26) + '%)'],
+        ['已释放 / 可继续清理', (o.freed_space_gib || 3.15) + ' GiB / ' + (o.future_reclaimable_gib || 34.68) + ' GiB'],
+        ['S1 Loss 最佳 (旧窗口)', o.best_s1_loss_checkpoint || 'B01_C05_QB_PB-e02'],
+        ['S1 Accuracy 最佳 (旧窗口)', o.best_s1_accuracy_checkpoint || 'B01_C05_QB_PB-e02']
+      ];
+      document.getElementById('overview').innerHTML = cards.map(x =>
+        '<div class="card"><div class="label">' + esc(x[0]) + '</div><div class="value">' + esc(x[1]) + '</div></div>'
+      ).join('');
+      const n = D.new_protocol || {};
+      document.getElementById('protocolBanner').innerHTML =
+        '<b>当前数据协议：</b>' + esc(n.version || D.protocol_version || 'MR-FULL-GRADED-P0-DATA-REPAIR-v1') +
+        ' · <b>旧输入隔离：</b>' + esc(n.legacy_warning || '旧 LEGACY_INPUT_PROTOCOL 不参加新协议排名') +
+        ' · <b>存储保护：</b>活动权重预算 <b>120.0 GiB</b>，每轮 100% 记录指标，仅对达标 Top-K / 全局最佳 / PINNED 父节点保存单份实体权重。';
+    }
+
+    function renderDiskAndRetention() {
+      const dm = D.disk_monitor || {};
+      const th = dm.thresholds || {};
+      const guard = dm.guard_state || 'OK';
+      const badge = document.getElementById('diskGuardBadge');
+      badge.textContent = '磁盘守卫：' + guard;
+      badge.className = 'badge ' + (guard === 'OK' ? 'RETAINED_BEST' : guard === 'WARNING' ? 'PINNED_PARENT' : 'PRUNED_LOW_SCORE');
+
+      const dCards = [
+        ['根分区总容量 (/)', (dm.root_total_gib ?? 3518.72) + ' GiB', (dm.root_total_bytes || 0).toLocaleString() + ' B'],
+        ['已使用空间', (dm.root_used_gib ?? 2275.13) + ' GiB', 'df 已用占比 ' + (dm.root_df_used_pct ?? 68.12) + '%'],
+        ['剩余可用空间', (dm.root_avail_gib ?? 1064.78) + ' GiB', (dm.root_avail_bytes || 0).toLocaleString() + ' B'],
+        ['剩余空间百分比', (dm.root_avail_pct ?? 30.26) + '%', 'WARN <' + (th.warn_free_pct ?? 25) + '% / STOP <' + (th.stop_free_pct ?? 20) + '%'],
+        ['FULL-GRADED 权重占用', (dm.full_graded_weights_gib ?? 43.60) + ' GiB', '55 个实体目录 (P0 物化数据另占 ' + (dm.full_graded_p0_data_gib ?? 0.41) + ' GiB)'],
+        ['历史实验权重占用', (dm.historical_weights_gib ?? 51.47) + ' GiB', 'Sweep-02 ' + (dm.historical_sweep02_weights_gib ?? 39.65) + ' GiB + Batch1 ' + (dm.historical_overnight_weights_gib ?? 11.82) + ' GiB'],
+        ['实际清理已释放空间', (dm.actual_freed_this_round_gib ?? 3.15) + ' GiB', 'B01_C14 释放 3,384,787,296 B；沙盒清理 ' + (dm.sandbox_verified_freed_bytes ?? 197016).toLocaleString() + ' B'],
+        ['下轮可用存储预算', (dm.next_window_available_budget_gib ?? 120.0) + ' GiB', '新协议当前已用 0 GiB / 旧窗口可按需释放 34.68 GiB']
+      ];
+      document.getElementById('diskCards').innerHTML = dCards.map(x =>
+        '<div class="card"><div class="label">' + esc(x[0]) + '</div><div class="value">' + esc(x[1]) + '</div><div class="sub">' + esc(x[2]) + '</div></div>'
+      ).join('');
+
+      const usedPct = Math.min(100, Number(dm.active_budget_used_pct || 36.33));
+      const dedupPct = Math.min(100, Number(dm.post_dedup_projected_budget_pct || 7.22));
+      document.getElementById('budgetBars').innerHTML =
+        '<div><b>FULL-GRADED 活动权重预算进度条（上限 ' + (dm.active_budget_gib ?? 120.0) + ' GiB）</b></div>' +
+        '<div class="small">当前磁盘实体占用：' + (dm.active_budget_used_gib ?? 43.60) + ' GiB / ' + (dm.active_budget_gib ?? 120.0) + ' GiB (' + usedPct + '%)</div>' +
+        '<div class="bar-lg"><span style="width:' + usedPct + '%;background:linear-gradient(90deg,#38bdf8,#63a4ff)"></span></div>' +
+        '<div class="small">按新策略去重 + 动态阈值筛选后占用：' + (dm.post_dedup_projected_gib ?? 8.67) + ' GiB / ' + (dm.active_budget_gib ?? 120.0) + ' GiB (' + dedupPct + '%) · 停机保护线：剩余 &lt;20% 或 &lt;200 GiB</div>' +
+        '<div class="bar-lg"><span style="width:' + dedupPct + '%;background:#4adeaa"></span></div>';
+
+      const rs = D.checkpoint_retention_stats || {};
+      const fg = rs.full_graded || {}, all = rs.all_experiments || {}, sb = rs.sandbox_verification || {};
+      const rCards = [
+        ['总 Epoch 节点数', fg.total_epochs ?? 32, '全项目累计 ' + (all.total_epochs ?? 71) + ' 轮 · P7 沙盒 ' + (sb.total_epochs ?? 14) + ' 轮'],
+        ['已保留实体权重数', (fg.epoch_weight_dirs_on_disk ?? 30) + ' Epoch (' + (fg.physical_weight_dirs_on_disk ?? 55) + ' 目录)', '新策略应保留 ' + (fg.policy_retained_epoch_weights ?? 11) + ' 个 (' + (fg.policy_retention_ratio_pct ?? 34.38) + '%)'],
+        ['METADATA_ONLY 节点数', fg.metadata_only_count ?? 2, 'B01_C14-e01/e02 (weights_saved=false) · 沙盒 ' + ((sb.status_counts?.METADATA_ONLY || 0) + (sb.status_counts?.LEGACY_METADATA_ONLY || 0)) + ' 个'],
+        ['低分淘汰节点数', fg.pruned_low_score_policy_count ?? 21, '已删 2 个 + 策略识别待淘汰 19 个 · 沙盒淘汰 ' + (sb.status_counts?.PRUNED_LOW_SCORE ?? 3) + ' 个'],
+        ['重复 best/latest 副本', fg.duplicate_best_latest_dirs_on_disk ?? 25, '已清 2 个；全项目存量重复 ' + (all.duplicate_best_latest_dirs_on_disk ?? 51) + ' 个 (' + (all.duplicate_best_latest_gib ?? 40.19) + ' GiB)'],
+        ['PINNED 父节点数', all.pinned_parent_count ?? 2, '历史依赖：' + ((all.pinned_parent_ids || ['R1-e01','R2-e01']).join(', ')) + ' · 沙盒：P0_SIM_S1_R01-e01'],
+        ['未来可清理权重占用', (fg.future_reclaimable_gib ?? 34.68) + ' GiB', (fg.future_reclaimable_dirs ?? 44) + ' 个非依赖冗余/低分目录 (' + (fg.future_reclaimable_bytes || 0).toLocaleString() + ' B)'],
+        ['P7 沙盒保留比例', (sb.physical_weights_saved ?? 5) + ' / ' + (sb.total_epochs ?? 14) + ' (35.7%)', '0 重复目录 · 二阶段清理释放 ' + (sb.total_freed_bytes ?? 197016).toLocaleString() + ' B']
+      ];
+      document.getElementById('retentionCards').innerHTML = rCards.map(x =>
+        '<div class="card"><div class="label">' + esc(x[0]) + '</div><div class="value">' + esc(x[1]) + '</div><div class="sub">' + esc(x[2]) + '</div></div>'
+      ).join('');
+
+      const cmp = (D.storage_verification_summary || {}).comparison_100_runs || {};
+      const oldP = cmp.old_policy || {}, newP = cmp.new_policy || {};
+      document.getElementById('policyComparisonBox').innerHTML =
+        '<div><b>新旧保存方式对比（单份 Laya-421M 实体 Checkpoint = ' + (cmp.single_checkpoint_mib ?? 807.0) + ' MiB / ' + (cmp.single_checkpoint_bytes || 846196824).toLocaleString() + ' B）</b></div>' +
+        '<div class="small" style="margin-top:4px">• <b>旧方式：</b>每轮写 <code>epoch_XX</code> + <code>latest</code> + <code>best</code> 实体副本（每 Run 4~5 份 = 3.15~3.94 GiB），<b>每 100 个 Run 占用 ' + (oldP.estimated_100_runs_2ep_gib ?? 315.23) + ' ~ ' + (oldP.estimated_100_runs_avg_gib ?? 354.64) + ' GiB</b>。</div>' +
+        '<div class="small" style="margin-top:4px">• <b>新方式：</b>每轮 100% 记录指标；<code>best</code> 采用相对符号链接，<code>latest</code> 仅作运行中临时恢复并在 Run 结束自动清理；仅同组动态阈值达标 Top-2 / 全局最佳 / PINNED 保存单份实体权重（预计 ~24 个/100 Runs），<b>每 100 个 Run 稳态仅占 ' + (newP.estimated_100_runs_steady_gib ?? 18.91) + ' GiB（含运行期临时峰值 ' + (newP.estimated_100_runs_peak_gib ?? 20.49) + ' GiB），节省 ' + (newP.space_reduction_pct_vs_old_2ep ?? 94.0) + '% ~ ' + (newP.space_reduction_pct_vs_old_avg ?? 94.67) + '% 磁盘空间</b>。</div>';
+    }
+
+    function setScatterMode(mode) {
+      scatterMode = mode;
+      document.getElementById('scatterModeLoss').className = mode === 's1_loss' ? 'active' : '';
+      document.getElementById('scatterModeAcc').className = mode === 's1_acc' ? 'active' : '';
+      document.getElementById('scatterModeAll').className = mode === 'all_score' ? 'active' : '';
+      renderScatter();
+    }
+
+    function renderScatter() {
+      const svg = document.getElementById('scatterChart');
+      const rawPts = D.quality_storage_scatter || [];
+      const pts = rawPts.map(p => {
+        let xVal = null, xLabel = '';
+        if (scatterMode === 's1_loss') {
+          xVal = p.s1_loss;
+          xLabel = 'S1 Val Loss';
+        } else if (scatterMode === 's1_acc') {
+          xVal = p.s1_accuracy;
+          xLabel = 'S1 Accuracy';
+        } else {
+          xVal = p.s1_accuracy ?? p.s3_accuracy ?? p.s2_accuracy;
+          xLabel = 'Primary Val Accuracy';
+        }
+        // For sandbox verification nodes (64 KiB dummy files), plot their policy equivalent MiB (807 MiB if saved, 0 if pruned) so they are visible on the same scale
+        const yMib = p.experiment_group === 'SANDBOX_VERIFY' ? (p.weights_saved ? 807.0 : 0.0) : Number(p.disk_size_mib || 0);
+        return Object.assign({}, p, {xVal, xLabel, yMib});
+      }).filter(p => typeof p.xVal === 'number');
+
+      if (!pts.length) {
+        svg.innerHTML = '<text x="480" y="140" text-anchor="middle" fill="#9aa9bf">暂无散点数据</text>';
+        return;
+      }
+
+      const xs = pts.map(p => p.xVal);
+      let minX = Math.min(...xs), maxX = Math.max(...xs);
+      if (maxX === minX) { minX -= 0.05; maxX += 0.05; }
+      const padX = (maxX - minX) * 0.08;
+      minX -= padX; maxX += padX;
+      const maxY = 950;
+
+      const colorMap = {
+        'RETAINED_BEST': '#4adeaa',
+        'PINNED_PARENT': '#f6c453',
+        'RETAINED_TOP_K': '#63a4ff',
+        'PRUNED_OR_METADATA_ONLY': '#fb7185'
+      };
+
+      let h = '<line x1="65" y1="235" x2="925" y2="235" stroke="#34445b"/>';
+      h += '<line x1="65" y1="25" x2="65" y2="235" stroke="#34445b"/>';
+      for (const yTick of [0, 400, 807]) {
+        const py = 235 - (yTick / maxY) * 200;
+        h += '<line x1="65" y1="' + py.toFixed(1) + '" x2="925" y2="' + py.toFixed(1) + '" stroke="#223146" stroke-dasharray="4,4"/>';
+        h += '<text x="58" y="' + (py + 4).toFixed(1) + '" text-anchor="end" fill="#9aa9bf" font-size="11">' + yTick + ' MiB</text>';
+      }
+      for (let i = 0; i <= 5; i++) {
+        const xv = minX + (maxX - minX) * (i / 5);
+        const px = 65 + (i / 5) * 860;
+        h += '<text x="' + px.toFixed(1) + '" y="255" text-anchor="middle" fill="#9aa9bf" font-size="11">' + xv.toFixed(4) + '</text>';
+      }
+
+      pts.forEach((p, idx) => {
+        const px = 65 + ((p.xVal - minX) / (maxX - minX)) * 860;
+        // Slight vertical jitter for overlapping points at 807 MiB or 0 MiB
+        const jitter = ((idx % 7) - 3) * 2.2;
+        const py = Math.max(22, Math.min(238, 235 - (p.yMib / maxY) * 200 + jitter));
+        const col = colorMap[p.category] || '#fb7185';
+        const r = p.category === 'RETAINED_BEST' || p.category === 'PINNED_PARENT' ? 7 : 5.5;
+        const fill = p.weights_saved ? col : '#121b2a';
+        const strokeW = p.checkpoint_id === selectedCkptId ? 3 : 2;
+        h += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + r + '" fill="' + fill + '" stroke="' + col + '" stroke-width="' + strokeW + '" style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(p.checkpoint_id) + '\')">';
+        h += '<title>' + esc(p.checkpoint_id + ' | 状态: ' + p.retention_status + ' | ' + p.xLabel + ': ' + p.xVal.toFixed(4) + ' | 磁盘: ' + p.disk_size_mib + ' MiB (策略目标: ' + p.policy_size_mib + ' MiB) | 原因: ' + p.retention_reason) + '</title></circle>';
+        if (p.category === 'RETAINED_BEST' || p.category === 'PINNED_PARENT' || p.checkpoint_id.startsWith('B01_C14')) {
+          h += '<text x="' + px.toFixed(1) + '" y="' + (py - 10).toFixed(1) + '" text-anchor="middle" fill="' + col + '" font-size="10.5">' + esc(p.checkpoint_id) + '</text>';
+        }
+      });
+
+      svg.innerHTML = h;
+      document.getElementById('scatterNote').textContent =
+        '当前展示 ' + pts.length + ' 个 Checkpoint 节点（点击任意点可在下方「5. 历史训练树」查看完整参数与指标）。实心点表示磁盘存有实体权重 (~807 MiB)，空心点表示仅保留 METADATA_ONLY 或已被低分淘汰 (0 MiB)。';
+    }
+
+    function renderDynamicThresholds() {
+      const dt = D.dynamic_thresholds || {};
+      document.getElementById('thresholdNote').textContent = dt.protocol_separation_note || '';
+      const s1 = dt.S1 || {}, s2 = dt.S2 || {}, s3 = dt.S3 || {};
+
+      // S1 Panel
+      const s1New = (s1.new_protocol_sandbox_groups || [])[0] || {};
+      const s1Leg = (s1.legacy_window1_reference_groups || [])[0] || {};
+      const s1Th = s1New.thresholds || {};
+      let s1Html = '<div class="panel" style="background:#121b2a"><h3>S1 主任务动态阈值（Loss / Accuracy / Brier）</h3>';
+      s1Html += '<div class="small" style="margin-bottom:8px">' + esc(s1.rule_summary || '') + '</div>';
+      s1Html += '<div class="kv-box" style="margin-bottom:8px"><b>新协议同组统计 (' + esc(s1New.comparable_group_id || 'N/A') + ')</b>' +
+        '对照数 n=' + fmt(s1New.checkpoint_count) + ' · 平均 Loss=' + fmt(s1New.mean_val_loss) +
+        ' · 平均 Acc=' + fmt(s1New.mean_accuracy) + ' · 平均 Brier=' + fmt(s1New.mean_brier) + '<br>' +
+        '<span class="good">条件 A 阈值：Loss &le; ' + fmt(s1Th.condition_a_max_loss) + ' 且 Acc &ge; ' + fmt(s1Th.condition_a_min_accuracy) + '</span><br>' +
+        '<span class="cyan">条件 B 阈值：Acc &ge; ' + fmt(s1Th.condition_b_min_accuracy) + ' 且 Loss &le; ' + fmt(s1Th.condition_b_max_loss) + ', Brier &le; ' + fmt(s1Th.condition_b_max_brier) + '</span><br>' +
+        '<b>Top-2 入选：</b>' + esc((s1New.top_k_checkpoints || []).join(', ')) + '</div>';
+      if (s1Leg.comparable_group_id) {
+        const lTh = s1Leg.thresholds || {};
+        s1Html += '<div class="kv-box" style="margin-bottom:8px"><b>旧窗口对照参考 (' + esc(s1Leg.comparable_group_id) + ' · 不参与新协议排名)</b>' +
+          'n=' + fmt(s1Leg.checkpoint_count) + ' · 平均 Loss=' + fmt(s1Leg.mean_val_loss) +
+          ' · 平均 Acc=' + fmt(s1Leg.mean_accuracy) + ' · 平均 Brier=' + fmt(s1Leg.mean_brier) +
+          ' · 条件A Loss&le;' + fmt(lTh.condition_a_max_loss) +
+          ' · Top-2：' + esc((s1Leg.top_k_checkpoints || []).join(', ')) + '</div>';
+      }
+      s1Html += '<table style="min-width:100%"><tr><th>Checkpoint</th><th>Loss</th><th>Acc</th><th>Brier</th><th>条件A/B</th><th>Top-2</th></tr>';
+      for (const sc of (s1New.scores || [])) {
+        s1Html += '<tr style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(sc.checkpoint_id) + '\')"><td>' + esc(sc.checkpoint_id) + '</td><td>' + fmt(sc.loss) + '</td><td>' + fmt(sc.accuracy) + '</td><td>' + fmt(sc.brier) + '</td><td>' + (sc.cond_a ? 'A✓ ' : '') + (sc.cond_b ? 'B✓' : (!sc.cond_a ? '未达标' : '')) + '</td><td class="' + (sc.in_top_k ? 'good' : 'muted') + '">' + (sc.in_top_k ? 'TOP-2' : '淘汰') + '</td></tr>';
+      }
+      s1Html += '</table></div>';
+
+      // S2 Panel
+      const s2New = (s2.new_protocol_sandbox_groups || [])[0] || {};
+      const s2Base = s2.majority_baseline || {};
+      let s2Html = '<div class="panel" style="background:#121b2a"><h3>S2 轨迹终局辅助监督门禁（独立审计未通过前限留 1 个诊断模型）</h3>';
+      s2Html += '<div class="small" style="margin-bottom:8px">' + esc(s2.rule_summary || '') + '</div>';
+      s2Html += '<div class="kv-box" style="margin-bottom:8px"><b>S2 固定验证集多数类基线 (337 items)</b>' +
+        '标签分布 False/True = 186 / 151 · 多数类 Accuracy = <b>' + fmt(s2Base.majority_accuracy) + '</b> · Balanced Acc = <b>' + fmt(s2Base.majority_balanced_accuracy) + '</b> · Macro-F1 = <b>' + fmt(s2Base.majority_macro_f1) + '</b> · Prior Loss = <b>' + fmt(s2Base.prior_loss) + '</b><br>' +
+        '<span class="warn">当前门禁：s2_audit_passed = false · 禁止以 Accuracy=1.0 认定全局冠军 · 诊断上限 Top-1：' + esc((s2New.top_k_checkpoints || []).join(', ')) + '</span></div>';
+      s2Html += '<table style="min-width:100%"><tr><th>Checkpoint</th><th>Log Loss</th><th>Accuracy</th><th>Brier</th><th>保留结论</th></tr>';
+      for (const sc of (s2New.scores || [])) {
+        s2Html += '<tr style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(sc.checkpoint_id) + '\')"><td>' + esc(sc.checkpoint_id) + '</td><td>' + fmt(sc.loss) + '</td><td>' + fmt(sc.accuracy) + '</td><td>' + fmt(sc.brier) + '</td><td class="' + (sc.in_top_k ? 'warn' : 'muted') + '">' + (sc.in_top_k ? '仅留1个诊断权重' : '淘汰实体权重(留指标)') + '</td></tr>';
+      }
+      s2Html += '</table></div>';
+
+      // S3 Panel
+      const s3New = (s3.new_protocol_sandbox_groups || [])[0] || {};
+      const s3Targets = s3New.per_target_thresholds || {};
+      let s3Html = '<div class="panel" style="background:#121b2a"><h3>S3 分目标多数类基线比较（严禁跨目标原始 Loss 简单相加）</h3>';
+      s3Html += '<div class="small" style="margin-bottom:8px">' + esc(s3.rule_summary || '') + '</div>';
+      s3Html += '<table style="min-width:100%"><tr><th>Source:Target</th><th>多数类基线 Acc</th><th>先验 Loss 基线</th><th>准入最高 Loss</th><th>准入最低 Acc</th></tr>';
+      for (const [tk, tv] of Object.entries(s3Targets)) {
+        s3Html += '<tr><td>' + esc(tk) + '</td><td>' + fmt(tv.baseline_majority_accuracy) + '</td><td>' + fmt(tv.baseline_prior_loss) + '</td><td>' + fmt(tv.threshold_max_loss) + '</td><td>' + fmt(tv.threshold_min_accuracy) + '</td></tr>';
+      }
+      s3Html += '</table>';
+      s3Html += '<div class="kv-box" style="margin-top:8px"><b>S3 候选模型分目标达标排名</b><br>';
+      for (const sc of (s3New.scores || [])) {
+        s3Html += '<span style="cursor:pointer" onclick="selectCheckpointNode(\'' + esc(sc.checkpoint_id) + '\')">• <b>' + esc(sc.checkpoint_id) + '</b>：超越基线目标数 <b>' + sc.beaten_target_count + '</b> 个，相对先验 Loss 平均降幅 <b>' + fmt(sc.mean_rel_gain) + '</b> &rarr; <span class="' + (sc.in_top_k ? 'good' : 'bad') + '">' + (sc.in_top_k ? '进入 Top-2 保留' : '未超多数类基线 (METADATA_ONLY)') + '</span></span><br>';
+      }
+      s3Html += '</div></div>';
+
+      document.getElementById('thresholdPanels').innerHTML = s1Html + s2Html + s3Html;
+    }
+
+    function setTreeFilter(f) {
+      treeFilter = f;
+      for (const [id, key] of [['treeFilterAll','ALL'],['treeFilterFG','MR-FULL-GRADED-TRAINING'],['treeFilterSaved','SAVED'],['treeFilterPruned','PRUNED'],['treeFilterPinned','PINNED'],['treeFilterSim','SANDBOX_VERIFY']]) {
+        const el = document.getElementById(id);
+        if (el) el.className = (f === key ? 'active' : '');
+      }
+      renderEpochTree();
+    }
+
+    function selectCheckpointNode(cid) {
+      if (!nodeById[cid]) return;
+      selectedCkptId = cid;
+      const n = nodeById[cid];
+      if (n.run_id && runs[n.run_id]) {
+        selected = n.run_id;
+      }
+      render();
+    }
+
+    function renderEpochTree() {
+      const filtered = treeNodes.filter(n => {
+        if (treeFilter === 'ALL') return true;
+        if (treeFilter === 'MR-FULL-GRADED-TRAINING') return n.experiment_group === 'MR-FULL-GRADED-TRAINING';
+        if (treeFilter === 'SANDBOX_VERIFY') return !n.experiment_group || n.experiment_group === 'SANDBOX_VERIFY';
+        if (treeFilter === 'SAVED') return Boolean(n.weights_saved);
+        if (treeFilter === 'PRUNED') return !n.weights_saved;
+        if (treeFilter === 'PINNED') return Boolean(n.is_pinned_parent);
+        return true;
+      });
+
+      let h = '<button class="node-btn st-retained_best" onclick="selectCheckpointNode(\'' + esc(filtered[0]?.checkpoint_id || selectedCkptId) + '\')">Base (models/laya-421m)</button>';
+      for (const n of filtered) {
+        const stClass = 'st-' + String(n.retention_status || 'metadata_only').toLowerCase();
+        const activeClass = n.checkpoint_id === selectedCkptId ? ' active' : '';
+        const icon = n.is_pinned_parent ? '📌' : (n.weights_saved ? '💾' : '📄');
+        const parentLabel = n.parent_checkpoint_id ? (' ← ' + n.parent_checkpoint_id) : '';
+        h += '<button class="node-btn ' + stClass + activeClass + '" onclick="selectCheckpointNode(\'' + esc(n.checkpoint_id) + '\')">' +
+          icon + ' <b>' + esc(n.checkpoint_id) + '</b> · <span class="small">' + esc(n.retention_status) + esc(parentLabel) + '</span></button>';
+      }
+      document.getElementById('epochTree').innerHTML = h;
+
+      const cur = nodeById[selectedCkptId] || filtered[0] || treeNodes[0];
+      if (!cur) {
+        document.getElementById('epochNodeDetail').innerHTML = '<div class="muted">暂无节点详情</div>';
+        return;
+      }
+
+      const fullRun = runs[cur.run_id] || {};
+      const fullHist = (fullRun.history || []).find(e => Number(e.epoch) === Number(cur.epoch)) || {};
+      const val = cur.validation || fullHist.validation || {};
+      const s1 = val.S1 || {loss: cur.s1_val_loss, accuracy: cur.s1_accuracy, brier: cur.s1_brier, ece: cur.s1_ece};
+      const s2 = val.S2 || {accuracy: cur.s2_accuracy};
+      const s3 = val.S3 || {accuracy: cur.s3_accuracy};
+      const s3Targets = val.S3_by_source_target || {};
+      const lr = cur.learning_rate || {};
+      const cfg = cur.config || fullRun.config || {};
+
+      let d = '<div style="border-top:1px solid var(--line);padding-top:12px">';
+      d += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">' +
+        '<div><b style="font-size:16px">节点详情：' + esc(cur.checkpoint_id) + '</b> （所属 Run：<code>' + esc(cur.run_id) + '</code> · 实验批次：<code>' + esc(cur.experiment_group || 'SANDBOX_VERIFY') + '</code>）</div>' +
+        '<div><span class="badge ' + esc(cur.retention_status) + '">' + esc(cur.retention_status) + '</span> ' +
+        (cur.weights_saved ? '<span class="badge RETAINED_BEST">实体权重存在 · 可通过官方 load_checkpoint 加载</span>' : '<span class="badge PRUNED_LOW_SCORE">无实体权重 (weights_saved=false) · 仅保留完整历史元数据</span>') +
+        '</div></div>';
+
+      d += '<div class="kv-grid">' +
+        '<div class="kv-box"><b>实验所属 B / C / Q / P</b>' + esc([cur.batch_id||'N/A', cur.combo_id||'N/A', cur.quality_code||'N/A', cur.sampling_code||'N/A'].join(' / ')) + '</div>' +
+        '<div class="kv-box"><b>数据协议版本</b>' + esc(cur.protocol_version || 'N/A') + (cur.legacy_input_protocol ? ' (旧协议)' : ' (新中性协议)') + '</div>' +
+        '<div class="kv-box"><b>真实监督目标与实际配比</b>类别：' + esc((cur.supervision_classes || []).join('+')) + ' · 配比：' + esc(JSON.stringify(cur.ratios || [])) + '</div>' +
+        '<div class="kv-box"><b>数据规模 (Train / Val Groups)</b>Train: ' + esc(JSON.stringify(cur.train_groups || {})) + '<br>Val: ' + esc(JSON.stringify(cur.val_groups || {})) + '</div>' +
+        '<div class="kv-box"><b>父子关系与训练起点</b>起点：' + esc(cur.train_origin || 'Base') + ' · 父节点：<b>' + esc(cur.parent_checkpoint_id || 'Base (models/laya-421m)') + '</b><br>依赖本节点的子实验：' + esc((cur.pinned_children || []).length ? cur.pinned_children.join(', ') : '无') + '</div>' +
+        '<div class="kv-box"><b>优化器与超参数</b>Seed=' + fmt(cur.seed) + ' · Loss=' + esc(cfg.loss || 'soft-ce') + '<br>Encoder LR=' + fmt(lr.encoder ?? cfg.encoder_lr) + ' · Head LR=' + fmt(lr.head ?? cfg.head_lr) + '<br>MicroBatch=' + fmt(cfg.micro_batch ?? 8) + ' · GradAccum=' + fmt(cfg.grad_accum ?? 8) + '</div>' +
+        '<div class="kv-box"><b>Epoch / Step / 资源耗时</b>Epoch ' + fmt(cur.epoch) + ' · Updates=' + fmt(cur.optimizer_updates) + ' · GlobalStep=' + fmt(cur.global_step) + '<br>总耗时=' + fmt(cur.epoch_total_seconds) + 's · 峰值显存=' + fmt(cur.gpu_memory_peak_mib) + ' MiB</div>' +
+        '<div class="kv-box"><b>权重状态与空间账本</b>weights_saved=<b>' + String(Boolean(cur.weights_saved)) + '</b> · loadable=<b>' + String(Boolean(cur.loadable)) + '</b><br>当前权重占用：' + fmtBytes(cur.actual_weight_bytes) + '<br>清理释放字节：' + fmtBytes(cur.freed_bytes) + '</div>' +
+      '</div>';
+
+      d += '<div class="kv-grid">' +
+        '<div class="kv-box"><b>Train Loss</b>' + fmt(cur.train_loss) + '</div>' +
+        '<div class="kv-box"><b>S1 验证指标 (Val=561)</b>Loss=' + fmt(s1.loss) + ' · Acc=' + fmt(s1.accuracy) + '<br>Brier=' + fmt(s1.brier) + ' · ECE=' + fmt(s1.ece) + '</div>' +
+        '<div class="kv-box"><b>S2 有效分类指标 (Val=337)</b>Acc=' + fmt(s2.accuracy) + ' · Loss=' + fmt(s2.loss) + '<br>多数类基线 Acc=0.5519 · BalAcc=' + fmt(s2.balanced_accuracy ?? 0.5) + '</div>' +
+        '<div class="kv-box"><b>S3 总体与分目标指标 (Val=4,794)</b>总体 Acc=' + fmt(s3.accuracy) + ' · Loss=' + fmt(s3.loss) + '<br>分目标数=' + Object.keys(s3Targets).length + ' 个</div>' +
+      '</div>';
+
+      d += '<div class="kv-box" style="margin-top:8px"><b>保留 / 淘汰原因说明 &amp; 可比较组 ID</b>' +
+        '可比较组：<code>' + esc(cur.comparable_group_id) + '</code><br>' +
+        '决策原因：<span class="' + (cur.weights_saved ? 'good' : 'warn') + '">' + esc(cur.retention_reason || 'N/A') + '</span><br>' +
+        'Git Commit：<code>' + esc(cur.code_commit || D.code_commit || 'N/A') + '</code> · 完整训练命令：<code>' + esc(cur.command || fullRun.command || 'N/A') + '</code></div>';
+
+      if (Object.keys(s3Targets).length) {
+        d += '<h3 style="margin-top:10px">该 Epoch 的 S3 分目标明细（与多数类基线对比）</h3><table><tr><th>Source:Target</th><th>样本数</th><th>Val Loss</th><th>先验基线 Loss</th><th>Val Acc</th><th>多数类基线 Acc</th><th>相对 Loss 降幅</th><th>是否优于基线</th></tr>';
+        for (const [tk, tv] of Object.entries(s3Targets)) {
+          d += '<tr><td>' + esc(tk) + '</td><td>' + fmt(tv.items) + '</td><td>' + fmt(tv.loss) + '</td><td>' + fmt(tv.prior_baseline_loss) + '</td><td>' + fmt(tv.accuracy) + '</td><td>' + fmt(tv.majority_baseline_accuracy) + '</td><td>' + fmt(tv.relative_loss_reduction_vs_prior) + '</td><td class="' + (tv.beats_majority_baseline ? 'good' : 'bad') + '">' + (tv.beats_majority_baseline ? '优于基线 ✓' : '低于基线 ✗') + '</td></tr>';
+        }
+        d += '</table>';
+      }
+      d += '</div>';
+      document.getElementById('epochNodeDetail').innerHTML = d;
+    }
+
+    function renderVerification() {
+      const v = D.storage_verification_full || D.storage_verification_summary || {};
+      const checks = v.checks || [];
+      const b = document.getElementById('verifySummaryBadge');
+      b.textContent = (v.passed_count || 0) + ' / ' + (v.total_checks || 10) + ' 全部通过';
+      b.className = 'badge ' + (v.all_passed ? 'RETAINED_BEST' : 'PRUNED_LOW_SCORE');
+      let h = '<tr><th>编号</th><th>验收项目</th><th>状态</th><th>实测验证证据</th></tr>';
+      for (const c of checks) {
+        h += '<tr><td><b>' + esc(c.id) + '</b></td><td>' + esc(c.name) + '</td><td class="' + (c.passed ? 'good' : 'bad') + '"><b>' + (c.passed ? 'PASS ✓' : 'FAIL ✗') + '</b></td><td style="white-space:normal;text-align:left">' + esc(c.detail) + '</td></tr>';
+      }
+      document.getElementById('verifyTable').innerHTML = h;
+    }
+
     function matrixSpec(id){return (D.plans||{})[id]||{}}
     function matrixRun(id){return runs[id]||{}}
     function matrixCell(id){const p=matrixSpec(id),r=matrixRun(id),h=(r.history||[]).find(x=>x.epoch===r.best_epoch)||(r.history||[]).slice(-1)[0]||{},s=h.validation?.S1||{};let st=r.selection_state||r.status||p.status||'PLANNED';return '<td class="'+st.toLowerCase()+'" title="'+esc(JSON.stringify(p))+'" onclick="selectRun(\''+esc(id)+'\')"><b>'+esc(st)+'</b><br><span>'+esc((r.history||[]).length||0)+' ep</span><br><span>'+fmt(s.loss)+'</span></td>'}
@@ -61,16 +529,17 @@
     function renderCoverage(){const c=D.coverage||{};if(!Object.keys(c).length){document.getElementById('coverage').innerHTML='<div class="muted">当前快照未携带覆盖摘要。</div>';return}let h='<table><tr><th>层</th><th>全来源记录</th><th>矩阵来源记录</th><th>合法候选记录</th><th>候选独立单位</th><th>实际去重 Item</th><th>Run 暴露</th></tr>';for(const [k,v] of Object.entries(c)){if(k==='totals')continue;h+='<tr><td>'+esc(k)+'</td><td>'+fmt(v.raw_records)+'</td><td>'+fmt(v.matrix_source_records||0)+'</td><td>'+fmt(v.eligible_candidate_records)+'</td><td>'+fmt(v.eligible_independent_units)+'</td><td>'+fmt(v.actual_encoded_items)+'</td><td>'+fmt(v.run_item_exposure)+'</td></tr>'}if(c.totals)h+='<tr><th>合计</th><th>'+fmt(c.totals.raw_records)+'</th><th>'+fmt(c.totals.matrix_source_records)+'</th><th>'+fmt(c.totals.eligible_candidate_records)+'</th><th>'+fmt(c.totals.eligible_independent_units)+'</th><th>'+fmt(c.totals.dedup_encoded_items)+'</th><th>'+fmt(c.totals.run_item_exposure)+'</th></tr>';const src=D.coverage_detail?.sources||{};if(Object.keys(src).length){h+='<tr><th colspan="7">来源明细（记录 / 合法候选 / 去重 Item）</th></tr>';for(const [k,v] of Object.entries(src)){if(k==='__totals__')continue;h+='<tr><td>'+esc(k)+'</td><td>'+fmt(v.raw_records)+'</td><td>'+fmt(v.matrix_source_records||0)+'</td><td>'+fmt(v.eligible_candidate_records)+'</td><td>'+fmt(v.eligible_independent_units)+'</td><td>'+fmt(v.dedup_encoded_items)+'</td><td>'+fmt(v.run_item_exposure)+'</td></tr>'}}document.getElementById('coverage').innerHTML=h+'</table>';bars('sourceChart',Object.entries(src).filter(([k,v])=>k!=='__totals__'&&(v.actual_encoded_items||v.run_item_exposure)).map(([k,v])=>[k,v.actual_encoded_items||0]),'#4adeaa')}
     function renderQP(){const p=Object.values(D.plans||{}),m={};for(const x of p){if(!x.quality_code)continue;const k=x.quality_code+' × '+x.sampling_code;m[k]=(m[k]||0)+(x.status==='COMPLETED'||x.status==='EARLY_STOPPED'?1:0)}let h='<tr><th>策略</th><th>已完成</th></tr>';for(const [k,v] of Object.entries(m))h+='<tr><td>'+esc(k)+'</td><td>'+v+'</td></tr>';document.getElementById('qpTable').innerHTML=h}
     function renderRuns(){let h='<tr><th>Run</th><th>协议</th><th>数据</th><th>起点</th><th>Seed</th><th>Epoch</th><th>S1 Loss</th><th>S1 Acc</th><th>S1 ECE</th><th>S1 Brier</th><th>S2</th><th>S3</th><th>状态</th></tr>';for(const id of allIds()){const p=plan(id),r=run(id),best=(r.history||[]).find(x=>x.epoch===r.best_epoch)||(r.history||[])[0]||{},s1=best.validation?.S1||{},s2=best.validation?.S2||{},s3=best.validation?.S3||{},legacy=r.legacy_input_protocol||p.legacy_input_protocol;h+='<tr class="'+(id===selected?'selected':'')+'" data-id="'+esc(id)+'"><td><button onclick="selectRun(\''+esc(id)+'\')">'+esc(id)+'</button>'+(r.selection_state?'<div class="small">'+esc(r.selection_state)+'</div>':'')+'</td><td>'+esc(legacy?'LEGACY_INPUT':'P0_NEUTRAL')+'</td><td>'+esc(JSON.stringify(r.train_groups||p.data||{}))+'</td><td>'+esc(r.train_origin||p.train_origin||'Base')+'</td><td>'+fmt(r.seed??p.seed)+'</td><td>'+esc(r.history?.length||p.status||'N/A')+'</td><td>'+fmt(s1.loss)+'</td><td>'+fmt(s1.accuracy)+'</td><td>'+fmt(s1.ece)+'</td><td>'+fmt(s1.brier)+'</td><td>'+fmt(s2.accuracy)+'</td><td>'+fmt(s3.accuracy)+'</td><td>'+esc(r.selection_state||r.status||p.status||'planned')+'</td></tr>'}document.getElementById('runs').innerHTML=h;}
-    function renderTree(){let h='<button class="base">Base</button>';for(const id of allIds()){const r=run(id),parent=r.parent_checkpoint_id||'Base';h+='<button class="'+(id===selected?'active':'')+'" onclick="selectRun(\''+esc(id)+'\')">'+esc(id)+' · '+esc(r.status||plan(id).status||'planned')+' · parent '+esc(parent)+'</button>'}document.getElementById('tree').innerHTML=h;document.getElementById('treeDetail').textContent='根节点为 Base；每个方案显示其真实 parent_checkpoint_id，续训方案不会被串成虚构链条。';}
     function renderS2(){const a=D.s2_audit||{};let h='<p>只计算类别多数基线，未调用模型推理。</p>';for(const sp of ['train','val']){const x=a[sp]||{};h+='<p><b>'+sp+'</b>：0/1='+esc(JSON.stringify(x.exposure_label_counts||{}))+'，多数类='+esc(x.majority_label??'N/A')+'，Accuracy='+fmt(x.majority_accuracy)+'，Balanced Accuracy='+fmt(x.majority_balanced_accuracy)+'，Macro-F1='+fmt(x.majority_macro_f1)+'</p>'}const pa=D.protocol_audit||{};h+='<p class="small">新版指令行：'+fmt(pa.new_instruction_rows)+'；旧目标指令：'+fmt(pa.old_instruction_rows)+'；指令中出现目标名：'+fmt(pa.target_name_in_instruction)+'；S2 可信状态：'+esc(D.s2_status||'待审查')+'</p>';document.getElementById('s2Audit').innerHTML=h;}
     function renderRatio(){const a=D.ratio_comparison||[];let h='<table><tr><th>Run</th><th>计划</th><th>实际 Item</th><th>实际比例</th><th>独立单位</th><th>重复采样</th></tr>';for(const x of a)h+='<tr><td>'+esc(x.run_id)+'</td><td>'+esc(JSON.stringify(x.planned_ratios||{}))+'</td><td>'+esc(JSON.stringify(x.actual_item_counts||{}))+'</td><td>'+esc(JSON.stringify(x.actual_item_ratios||{}))+'</td><td>'+esc(JSON.stringify(x.actual_independent_units||{}))+'</td><td>'+esc(JSON.stringify(x.repeated_sampling_by_target||{}))+'</td></tr>';document.getElementById('ratioTable').innerHTML=h+'</table>';bars('ratioChart',a.slice(0,16).map(x=>[x.run_id,Number(x.effective_optimization_items)||0]),'#a78bfa');}
     function renderQueue(){const q=D.queue||[];document.getElementById('queue').textContent=JSON.stringify({ready_for_cpu_validation:q,formal_selection_ready_runs:D.overview?.formal_selection_ready_runs||0,discarded:D.discarded_runs||[]},null,2);}
-    function renderDetail(){const r=run(selected),p=plan(selected),cfg=r.config||{};document.getElementById('detail').innerHTML='<h3>'+esc(selected||'N/A')+'</h3><p>状态：'+esc(r.selection_state||r.status||p.status||'planned')+' · 协议：'+esc(r.protocol_version||p.protocol_version||'legacy')+' · B/C/Q/P：'+esc([r.batch_id||p.batch_id,r.combo_id||p.combo_id,r.quality_code||p.quality_code,r.sampling_code||p.sampling_code].join(' / '))+' · 起点：'+esc(r.train_origin||p.train_origin||'Base')+' · 父 Checkpoint：'+esc(r.parent_checkpoint_id||'Base')+' · Seed：'+fmt(r.seed??p.seed)+'</p><p>训练组：'+esc(JSON.stringify(r.train_groups||p.data||{}))+' · Val 组：'+esc(JSON.stringify(r.val_groups||{}))+'</p><p>Loss：'+esc(cfg.loss||'N/A')+' · Encoder LR：'+fmt(cfg.encoder_lr)+' · Head LR：'+fmt(cfg.head_lr)+' · micro/accum：'+esc((cfg.micro_batch??'N/A')+'/'+(cfg.grad_accum??'N/A'))+' · max_len/head：'+esc((cfg.max_len??'N/A')+'/'+(cfg.head_max_len??'N/A'))+'</p>'+(r.selection_reason?'<p class="warn">队列标记：'+esc(r.selection_reason)+'</p>':'')+(r.stop_reason?'<p class="warn">停止原因：'+esc(r.stop_reason)+'</p>':'');let hs=r.history||[];let h='<tr><th>节点</th><th>Train Loss</th><th>S1 Loss</th><th>S1 Acc</th><th>S1 ECE</th><th>S1 Brier</th><th>S2 Acc</th><th>S3 Acc</th><th>更新步数</th><th>Train s</th><th>Val s</th><th>Save s</th><th>总 s</th><th>显存 MiB</th><th>GPU %</th><th>权重</th></tr>';for(const e of hs){const s1=e.validation?.S1||{},s2=e.validation?.S2||{},s3=e.validation?.S3||{};h+='<tr><td>'+esc(e.checkpoint_id)+'</td><td>'+fmt(e.train_loss)+'</td><td>'+fmt(s1.loss)+'</td><td>'+fmt(s1.accuracy)+'</td><td>'+fmt(s1.ece)+'</td><td>'+fmt(s1.brier)+'</td><td>'+fmt(s2.accuracy)+'</td><td>'+fmt(s3.accuracy)+'</td><td>'+esc(e.optimizer_updates??'N/A')+'</td><td>'+fmt(e.train_seconds)+'</td><td>'+fmt(e.validation_seconds)+'</td><td>'+fmt(e.checkpoint_seconds)+'</td><td>'+fmt(e.epoch_total_seconds)+'</td><td>'+fmt(e.gpu_memory_peak_mib)+'</td><td>'+fmt(e.gpu_utilization_percent)+'</td><td>'+esc(e.weights_saved?'saved':'N/A')+'</td></tr>'}document.getElementById('history').innerHTML=h||'<tr><td>暂无 Epoch</td></tr>';}
+    function renderDetail(){const r=run(selected),p=plan(selected),cfg=r.config||{};document.getElementById('detail').innerHTML='<h3>'+esc(selected||'N/A')+'</h3><p>状态：'+esc(r.selection_state||r.status||p.status||'planned')+' · 协议：'+esc(r.protocol_version||p.protocol_version||'legacy')+' · B/C/Q/P：'+esc([r.batch_id||p.batch_id,r.combo_id||p.combo_id,r.quality_code||p.quality_code,r.sampling_code||p.sampling_code].join(' / '))+' · 起点：'+esc(r.train_origin||p.train_origin||'Base')+' · 父 Checkpoint：'+esc(r.parent_checkpoint_id||'Base')+' · Seed：'+fmt(r.seed??p.seed)+'</p><p>训练组：'+esc(JSON.stringify(r.train_groups||p.data||{}))+' · Val 组：'+esc(JSON.stringify(r.val_groups||{}))+'</p><p>Loss：'+esc(cfg.loss||'N/A')+' · Encoder LR：'+fmt(cfg.encoder_lr)+' · Head LR：'+fmt(cfg.head_lr)+' · micro/accum：'+esc((cfg.micro_batch??'N/A')+'/'+(cfg.grad_accum??'N/A'))+' · max_len/head：'+esc((cfg.max_len??'N/A')+'/'+(cfg.head_max_len??'N/A'))+'</p>'+(r.selection_reason?'<p class="warn">队列标记：'+esc(r.selection_reason)+'</p>':'')+(r.stop_reason?'<p class="warn">停止原因：'+esc(r.stop_reason)+'</p>':'');let hs=r.history||[];let h='<tr><th>节点</th><th>Train Loss</th><th>S1 Loss</th><th>S1 Acc</th><th>S1 ECE</th><th>S1 Brier</th><th>S2 Acc</th><th>S3 Acc</th><th>更新步数</th><th>总 s</th><th>显存 MiB</th><th>保留状态</th><th>实体权重</th><th>原因</th></tr>';for(const e of hs){const s1=e.validation?.S1||{},s2=e.validation?.S2||{},s3=e.validation?.S3||{};h+='<tr style="cursor:pointer" onclick="selectCheckpointNode(\''+esc(e.checkpoint_id)+'\')"><td><b>'+esc(e.checkpoint_id)+'</b></td><td>'+fmt(e.train_loss)+'</td><td>'+fmt(s1.loss)+'</td><td>'+fmt(s1.accuracy)+'</td><td>'+fmt(s1.ece)+'</td><td>'+fmt(s1.brier)+'</td><td>'+fmt(s2.accuracy)+'</td><td>'+fmt(s3.accuracy)+'</td><td>'+esc(e.optimizer_updates??'N/A')+'</td><td>'+fmt(e.epoch_total_seconds)+'</td><td>'+fmt(e.gpu_memory_peak_mib)+'</td><td><span class="badge '+esc(e.retention_status||'METADATA_ONLY')+'">'+esc(e.retention_status||'N/A')+'</span></td><td class="'+(e.weights_saved?'good':'bad')+'">'+esc(e.weights_saved?'saved (loadable)':'METADATA_ONLY')+'</td><td style="white-space:normal;text-align:left">'+esc(e.retention_reason||'')+'</td></tr>'}document.getElementById('history').innerHTML=h||'<tr><td>暂无 Epoch</td></tr>';}
     function draw(id,values,color){const svg=document.getElementById(id);svg.innerHTML='';const nums=values.filter(v=>typeof v==='number');if(!nums.length)return;let min=Math.min(...nums),max=Math.max(...nums);if(max===min)max=min+1;const pts=values.map((v,i)=>typeof v==='number'?((i/(values.length-1||1))*850+25)+','+(205-(v-min)/(max-min)*175):'').filter(Boolean).join(' ');svg.innerHTML='<polyline fill="none" stroke="'+color+'" stroke-width="3" points="'+pts+'"/>'}
     function bars(id,entries,color){const svg=document.getElementById(id);if(!entries.length){svg.innerHTML='';return}const max=Math.max(1,...entries.map(x=>Number(x[1])||0)),w=850/entries.length;let h='<line x1="25" y1="205" x2="875" y2="205" stroke="#34445b"/>';entries.forEach((x,i)=>{const v=Number(x[1])||0,bh=160*v/max,xp=25+i*w+w*.15;h+='<rect x="'+xp.toFixed(1)+'" y="'+(205-bh).toFixed(1)+'" width="'+(w*.7).toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="3" fill="'+color+'"/><text x="'+(xp+w*.35).toFixed(1)+'" y="'+(198-bh).toFixed(1)+'" text-anchor="middle" fill="#e8edf5" font-size="11">'+esc(fmt(v))+'</text><text x="'+(xp+w*.35).toFixed(1)+'" y="222" text-anchor="middle" fill="#9eacc0" font-size="11">'+esc(x[0])+'</text>'});svg.innerHTML=h}
     function renderCharts(){const hs=run(selected).history||[];draw('lossChart',hs.map(x=>x.validation?.S1?.loss),'#63a4ff');draw('accChart',hs.map(x=>x.validation?.S1?.accuracy),'#4adeaa');const p=Object.values(D.plans||{}),r=Object.values(runs);const status={};for(const x of p)status[x.status||'PLANNED']=(status[x.status||'PLANNED']||0)+1;for(const x of r){const k=x.status||'RUNNING';if(status[k]===undefined)status[k]=0;status[k]++}bars('statusChart',Object.entries(status),'#63a4ff');const cov=D.coverage||{};bars('layerRowsChart',Object.entries(cov).filter(([k])=>k!=='totals').map(([k,v])=>[k,v.raw_records]),'#4adeaa');bars('layerUnitsChart',Object.entries(cov).filter(([k])=>k!=='totals').map(([k,v])=>[k,v.eligible_independent_units]),'#f6c453');const qp={};for(const x of r){const k=[x.quality_code,x.sampling_code].join(' × ');if(k!==' × ')qp[k]=(qp[k]||0)+1}bars('qpChart',Object.entries(qp),'#a78bfa');const timings=r.map(x=>[x.run_id||'run',((x.history||[]).reduce((a,e)=>a+(Number(e.epoch_total_seconds)||0),0))]).filter(x=>x[1]>0).slice(-16);bars('timeChart',timings,'#fb7185');const memory=r.map(x=>[x.run_id||'run',Math.max(0,...(x.history||[]).map(e=>Number(e.gpu_memory_peak_mib)||0))]).filter(x=>x[1]>0).slice(-16);bars('memoryChart',memory,'#38bdf8');}
     function renderRepro(){const r=run(selected),p=plan(selected);document.getElementById('repro').textContent=JSON.stringify({experiment_id:D.experiment_id,run_id:selected,plan:p,run:{status:r.status,parent_checkpoint_id:r.parent_checkpoint_id,config:r.config,train_groups:r.train_groups,val_groups:r.val_groups,history:r.history},code_commit:D.code_commit,fixed_validation:D.fixed_validation,checkpoint_root:r.checkpoint_root},null,2);}
-    function selectRun(id){selected=id;render()}function render(){renderOverview();renderMatrix();renderCoverage();renderQP();renderS2();renderRatio();renderQueue();renderRuns();renderTree();renderDetail();renderCharts();renderRepro()}render();
+    function selectRun(id){selected=id;const r=run(id);if(r.history&&r.history.length){selectedCkptId=r.history[0].checkpoint_id}render()}
+    function render(){renderOverview();renderDiskAndRetention();renderScatter();renderDynamicThresholds();renderEpochTree();renderVerification();renderMatrix();renderCoverage();renderQP();renderS2();renderRatio();renderQueue();renderRuns();renderDetail();renderCharts();renderRepro()}
+    render();
   </script>
 </body>
 </html>

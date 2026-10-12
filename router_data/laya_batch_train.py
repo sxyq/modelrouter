@@ -1,12 +1,63 @@
-"""Small overnight runner around the official Laya training functions."""
+"""Small overnight runner around the official Laya training functions with intelligent checkpoint retention and disk budget guard."""
 import argparse
 import json
 import os
+import subprocess
 import sys
 import time
-import subprocess
 from collections import Counter
 from pathlib import Path
+
+try:
+    from router_data.checkpoint_retention import (
+        DEFAULT_ACTIVE_BUDGET_BYTES,
+        GIB,
+        LEGACY_PROTOCOL_VERSION,
+        NEW_PROTOCOL_VERSION,
+        STATUS_LEGACY_METADATA_ONLY,
+        STATUS_METADATA_ONLY,
+        STATUS_PINNED_PARENT,
+        STATUS_PRUNED_DUPLICATE,
+        STATUS_PRUNED_LOW_SCORE,
+        STATUS_RETAINED_BEST,
+        STATUS_RETAINED_TOP_K,
+        STATUS_TEMP_RECOVERY,
+        CheckpointRetentionManager,
+        DiskBudgetExceededError,
+        classification_metrics_from_records,
+        enrich_s3_target_metrics,
+        has_physical_weights,
+        is_loadable_checkpoint_path,
+        physical_dir_bytes,
+        run_storage_policy_verification,
+        sanitize_command_str,
+        sync_server_metadata_and_build_dashboard,
+    )
+except ImportError:
+    from checkpoint_retention import (
+        DEFAULT_ACTIVE_BUDGET_BYTES,
+        GIB,
+        LEGACY_PROTOCOL_VERSION,
+        NEW_PROTOCOL_VERSION,
+        STATUS_LEGACY_METADATA_ONLY,
+        STATUS_METADATA_ONLY,
+        STATUS_PINNED_PARENT,
+        STATUS_PRUNED_DUPLICATE,
+        STATUS_PRUNED_LOW_SCORE,
+        STATUS_RETAINED_BEST,
+        STATUS_RETAINED_TOP_K,
+        STATUS_TEMP_RECOVERY,
+        CheckpointRetentionManager,
+        DiskBudgetExceededError,
+        classification_metrics_from_records,
+        enrich_s3_target_metrics,
+        has_physical_weights,
+        is_loadable_checkpoint_path,
+        physical_dir_bytes,
+        run_storage_policy_verification,
+        sanitize_command_str,
+        sync_server_metadata_and_build_dashboard,
+    )
 
 
 class StopRun(Exception):
@@ -29,11 +80,17 @@ def _load_items(path, tok, train_mod, max_len, head_max_len):
 
 def _evaluate(model, tok, items, dev, train_mod, cfg, max_len, head_max_len):
     if not items:
-        return {'items': 0, 'loss': None, 'accuracy': None, 'ece': None, 'brier': None, 'by_type': {}}
+        return {
+            'items': 0, 'loss': None, 'accuracy': None, 'ece': None, 'brier': None,
+            'balanced_accuracy': None, 'macro_f1': None, 'by_type': {},
+        }
     records = train_mod.calibration_records(model, tok, items, dev, max_len, head_max_len)
     # Keep validation metrics on the same raw-logit scale for every run. Calibration is
     # recorded separately and never replaces the independent validation set.
-    return train_mod.evaluate_records(records, [1.0, 1.0, 1.0], None)
+    res = train_mod.evaluate_records(records, [1.0, 1.0, 1.0], None)
+    cls_metrics = classification_metrics_from_records(records)
+    res.update(cls_metrics)
+    return res
 
 
 def _groups(model, tok, val_groups, dev, train_mod, cfg, max_len, head_max_len):
@@ -72,17 +129,29 @@ def run_baseline(batch_root, model_dir, out_root, seed=42, max_len=1024, head_ma
         from laya.train import items_from_rows
         items, skipped = items_from_rows(tok, rows, max_len=max_len, head_max_len=head_max_len)
         rec = calibration_records(model, tok, items, dev, max_len, head_max_len)
-        result['validation'][name] = evaluate_records(rec, [1.0, 1.0, 1.0], None)
-        result['validation'][name]['skipped'] = skipped
+        ev = evaluate_records(rec, [1.0, 1.0, 1.0], None)
+        ev.update(classification_metrics_from_records(rec))
+        ev['skipped'] = skipped
+        result['validation'][name] = ev
     _write(Path(out_root) / 'R0' / 'run.json', result)
     return result
 
 
 def run_experiment(run, batch_root, model_dir, out_root, parent_checkpoint=None,
-                   epochs=4, seed=42, max_len=1024, head_max_len=512):
+                   epochs=4, seed=42, max_len=1024, head_max_len=512,
+                   active_budget_bytes=DEFAULT_ACTIVE_BUDGET_BYTES,
+                   s2_audit_passed=False, explicit_pinned=()):
     import torch
-    from laya.train import (TrainConfig, calibration_records, evaluate_records,
-                            load_checkpoint, save_checkpoint, train_model)
+    from laya.train import (TrainConfig, load_checkpoint, optimizer_updates,
+                            save_checkpoint, train_model)
+
+    retention_mgr = CheckpointRetentionManager(
+        out_root=Path(out_root),
+        active_budget_bytes=active_budget_bytes,
+        s2_audit_passed=s2_audit_passed,
+        explicit_pinned=explicit_pinned,
+    )
+    pre_check = retention_mgr.pre_run_disk_check(run_id=run)
 
     run_root = Path(out_root) / run
     run_root.mkdir(parents=True, exist_ok=True)
@@ -91,7 +160,6 @@ def run_experiment(run, batch_root, model_dir, out_root, parent_checkpoint=None,
     model.to(dev)
     train_groups, val_groups, load = _load_run_files(batch_root, run, tok, sys.modules['laya.train'], max_len, head_max_len)
     train_items = [it for name in train_groups for it in train_groups[name]]
-    val_all = [it for name in val_groups for it in val_groups[name]]
     parent_metrics = _groups(model, tok, val_groups, dev, sys.modules['laya.train'], cfg, max_len, head_max_len)
 
     config = TrainConfig(
@@ -103,15 +171,21 @@ def run_experiment(run, batch_root, model_dir, out_root, parent_checkpoint=None,
         amp=True, gradient_checkpointing=True, log_every=100,
     )
     config.validate()
+    updates_per_epoch = optimizer_updates(len(train_items), config.micro_batch, config.grad_accum, 1)
     run_meta = {
         'run_id': run, 'parent_checkpoint_id': parent_checkpoint,
         'base_model': model_dir, 'seed': seed, 'epochs_max': epochs,
+        'protocol_version': NEW_PROTOCOL_VERSION, 'legacy_input_protocol': False,
+        'supervision_classes': sorted(train_groups.keys()),
         'train_groups': {k: len(v) for k, v in train_groups.items()},
         'val_groups': {k: len(v) for k, v in val_groups.items()},
         'loaded': load, 'config': vars(config),
         'max_len': max_len, 'head_max_len': head_max_len,
+        'optimizer_updates_per_epoch': updates_per_epoch,
         'status': 'running', 'started_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
         'parent_metrics': parent_metrics,
+        'pre_run_disk_check': pre_check,
+        'code_commit': os.environ.get('MODELROUTER_CODE_COMMIT', 'unknown'),
     }
     _write(run_root / 'run.json', run_meta)
     history = []
@@ -131,23 +205,35 @@ def run_experiment(run, batch_root, model_dir, out_root, parent_checkpoint=None,
                                    'parent_checkpoint_id': parent_checkpoint,
                                    'config': vars(config)})
         epoch_id = f'{run}-e{epoch + 1:02d}'
-        save_checkpoint(model, tok, ckcfg, str(run_root / 'checkpoints' / f'epoch_{epoch + 1:02d}'))
-        save_checkpoint(model, tok, ckcfg, str(run_root / 'checkpoints' / 'latest'))
         improved = s1_loss is not None and (best_epoch is None or s1_loss < best_loss * 0.995)
         if improved:
             best_loss, best_epoch, no_improve = s1_loss, epoch + 1, 0
-            save_checkpoint(model, tok, ckcfg, str(run_root / 'checkpoints' / 'best'))
         else:
             no_improve += 1
         entry = {
             'checkpoint_id': epoch_id, 'epoch': epoch + 1, 'train_loss': train_loss,
             'validation': metrics, 'improved_0_5pct': improved,
-            'best_epoch': best_epoch, 'epoch_seconds': round(time.time() - started, 3),
+            'best_epoch': best_epoch,
+            'optimizer_updates': updates_per_epoch,
+            'global_step': (epoch + 1) * updates_per_epoch,
+            'learning_rate': {'encoder': config.encoder_lr, 'head': config.head_lr},
+            'epoch_seconds': round(time.time() - started, 3),
             'gpu_memory_peak_mib': round(torch.cuda.max_memory_allocated() / 1048576, 2) if torch.cuda.is_available() else None,
         }
         history.append(entry)
-        _write(run_root / 'epoch_metrics.json', history)
-        if s1_loss is not None and epoch + 1 >= 2 and no_improve >= 2:
+        run_meta['history'] = history
+        run_meta['best_epoch'] = best_epoch
+        will_early_stop = bool(s1_loss is not None and epoch + 1 >= 2 and no_improve >= 2)
+        is_final = (epoch + 1 >= epochs) or will_early_stop
+        retention_mgr.handle_epoch_checkpoint(
+            run_id=run,
+            epoch=epoch + 1,
+            is_final_epoch=is_final,
+            save_fn=lambda target_dir: save_checkpoint(model, tok, ckcfg, target_dir),
+            run_meta=run_meta,
+            entry=entry,
+        )
+        if will_early_stop:
             raise StopRun('two epochs without 0.5% S1 validation-loss improvement')
 
     status = 'completed'
@@ -162,14 +248,13 @@ def run_experiment(run, batch_root, model_dir, out_root, parent_checkpoint=None,
         run_meta['status'] = status
         run_meta['finished_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
         run_meta['history'] = history
-        _write(run_root / 'run.json', run_meta)
+        retention_mgr.finalize_run_checkpoints(run, run_meta)
         raise
     run_meta['status'] = status
     run_meta['finished_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
     run_meta['history'] = history
     run_meta['best_epoch'] = best_epoch
-    run_meta['best_checkpoint'] = str(run_root / 'checkpoints' / 'best') if best_epoch else None
-    _write(run_root / 'run.json', run_meta)
+    retention_mgr.finalize_run_checkpoints(run, run_meta)
     return run_meta
 
 
@@ -196,13 +281,17 @@ def _s3_validation_breakdown(model, tok, rows, dev, train_mod, cfg, max_len, hea
         items, skipped = train_mod.items_from_rows(tok, bucket, max_len=max_len, head_max_len=head_max_len)
         result[key] = _evaluate(model, tok, items, dev, train_mod, cfg, max_len, head_max_len)
         result[key]['skipped'] = skipped
-    return result
+    return enrich_s3_target_metrics(result)
 
 
 def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
     """Build the small public dashboard payload without server paths or row text."""
-    runs = {}
     root = Path(out_root)
+    retention_mgr = CheckpointRetentionManager(out_root=root)
+    ckpt_manifest = retention_mgr.write_checkpoint_manifest(manifest=manifest)
+    node_by_id = {n['checkpoint_id']: n for n in ckpt_manifest.get('checkpoints', [])}
+
+    runs = {}
     for path in sorted(root.glob('*/run.json')):
         try:
             saved = json.loads(path.read_text(encoding='utf8'))
@@ -216,39 +305,53 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
             'batch_id', 'combo_id', 'quality_code', 'sampling_code', 'layers',
             'supervision_classes', 'ratios', 'counts', 'independent_units',
             'eligibility_reason', 'audit_flags', 'current_step', 'command',
+            'protocol_version', 'legacy_input_protocol', 'best_checkpoint',
         ) if k in saved}
-        public['history'] = saved.get('history', [])
+        if 'command' in public:
+            public['command'] = sanitize_command_str(public['command'])
+        pub_hist = []
+        for entry in saved.get('history', []):
+            cid = entry.get('checkpoint_id')
+            node = node_by_id.get(cid, {})
+            item = dict(entry)
+            item['weights_saved'] = bool(node.get('weights_saved', False))
+            item['loadable'] = bool(node.get('loadable', False))
+            item['retention_status'] = node.get('retention_status', STATUS_METADATA_ONLY)
+            item['retention_reason'] = node.get('retention_reason', '')
+            item['retention_reasons'] = node.get('retention_reasons', [])
+            item['actual_weight_bytes'] = int(node.get('actual_weight_bytes', 0))
+            item['freed_bytes'] = int(node.get('freed_bytes', entry.get('freed_bytes', 0)))
+            pub_hist.append(item)
+        public['history'] = pub_hist
         public['checkpoint_root'] = '%s/checkpoints' % path.parent.name
         runs[path.parent.name] = public
+
     plan_data = manifest.get('plan_data', {})
     plans = manifest.get('plans', {})
-    all_nodes = []
+    all_nodes = ckpt_manifest.get('checkpoints', [])
     best_loss = None
     best_id = None
     best_acc = None
     best_acc_id = None
     saved_weight_count = 0
-    for name, run in runs.items():
-        for entry in run.get('history', []):
-            node = {
-                'checkpoint_id': entry.get('checkpoint_id'),
-                'run_id': name,
-                'epoch': entry.get('epoch'),
-                'parent_checkpoint_id': run.get('parent_checkpoint_id'),
-                'path': '%s/checkpoints/epoch_%02d' % (name, int(entry.get('epoch', 0))),
-                'validation': entry.get('validation', {}),
-            }
-            all_nodes.append(node)
-            s1 = entry.get('validation', {}).get('S1', {})
-            loss = s1.get('loss')
-            acc = s1.get('accuracy')
-            if isinstance(loss, (int, float)) and (best_loss is None or loss < best_loss):
-                best_loss, best_id = loss, entry.get('checkpoint_id')
-            if isinstance(acc, (int, float)) and (best_acc is None or acc > best_acc):
-                best_acc, best_acc_id = acc, entry.get('checkpoint_id')
+    for name in runs:
         ckroot = root / name / 'checkpoints'
         if ckroot.exists():
-            saved_weight_count += sum(1 for p in ckroot.iterdir() if p.is_dir() and (p / 'model.safetensors').exists())
+            saved_weight_count += sum(
+                1 for p in ckroot.iterdir()
+                if p.is_dir() and not p.is_symlink() and has_physical_weights(p)
+            )
+    for node in all_nodes:
+        if node.get('legacy_input_protocol'):
+            continue
+        s1 = node.get('validation', {}).get('S1', {})
+        loss = s1.get('loss')
+        acc = s1.get('accuracy')
+        if isinstance(loss, (int, float)) and (best_loss is None or loss < best_loss):
+            best_loss, best_id = loss, node.get('checkpoint_id')
+        if isinstance(acc, (int, float)) and (best_acc is None or acc > best_acc):
+            best_acc, best_acc_id = acc, node.get('checkpoint_id')
+
     starts = [r.get('started_at') for r in runs.values() if r.get('started_at')]
     current = next((name for name, r in runs.items() if r.get('status') == 'running'), None)
     current_epoch = runs.get(current, {}).get('current_epoch') if current else None
@@ -262,6 +365,7 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
             for path, digest in generation['code_sha256'].items()
         }
     plan_status = Counter((p.get('status') or 'PLANNED') for p in plans.values())
+    ret_summary = ckpt_manifest.get('retention_summary', {})
     payload = {
         'experiment_id': manifest.get('experiment_id', 'OVERNIGHT-LAYA-SWEEP-02'),
         'generated_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
@@ -270,11 +374,16 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
         'overview': {
             'completed_runs': sum(r.get('status') in {'completed', 'early_stopped'} for r in runs.values()),
             'planned_runs': len(plans),
-            'eligible_runs': plan_status.get('ELIGIBLE', 0),
+            'eligible_runs': plan_status.get('ELIGIBLE', 0) + plan_status.get('CPU_MATERIALIZED', 0),
             'blocked_runs': plan_status.get('BLOCKED', 0),
             'skipped_runs': plan_status.get('SKIPPED', 0),
             'checkpoint_total': len(all_nodes),
             'saved_weight_count': saved_weight_count,
+            'metadata_only_count': ret_summary.get('status_counts', {}).get(STATUS_METADATA_ONLY, 0)
+                                   + ret_summary.get('status_counts', {}).get(STATUS_LEGACY_METADATA_ONLY, 0),
+            'pruned_low_score_count': ret_summary.get('status_counts', {}).get(STATUS_PRUNED_LOW_SCORE, 0),
+            'pinned_parent_count': len(ret_summary.get('pinned_parent_ids', {})),
+            'freed_space_bytes': ret_summary.get('total_freed_bytes', 0),
             'current_run': current,
             'current_epoch': current_epoch,
             'current_step': runs.get(current, {}).get('current_step') if current else None,
@@ -283,7 +392,7 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
             'best_s1_accuracy_checkpoint': best_acc_id,
             'best_s1_accuracy': best_acc,
             'started_at': min(starts) if starts else None,
-            'latest_sync_at': None,
+            'latest_sync_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
             'github_sync': 'pending_local_sync',
         },
         'plans': plans,
@@ -292,6 +401,9 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
         'coverage': manifest.get('coverage', {}),
         'runs': runs,
         'checkpoint_tree': all_nodes,
+        'comparable_groups': ckpt_manifest.get('comparable_groups', {}),
+        'disk_status': ckpt_manifest.get('disk_status', {}),
+        'retention_summary': ret_summary,
         'fixed_validation': manifest.get('fixed_validation', {}),
         'audit': manifest.get('audit', {}),
         'generation': generation,
@@ -301,11 +413,13 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
 
 
 def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=None,
-                         epochs=3, max_len=1024, head_max_len=512):
-    """Run one N01-N14 Sweep-02 plan through the same official training loop."""
+                         epochs=3, max_len=1024, head_max_len=512,
+                         active_budget_bytes=DEFAULT_ACTIVE_BUDGET_BYTES,
+                         s2_audit_passed=False, explicit_pinned=()):
+    """Run one Sweep / FULL-GRADED plan with selective checkpoint retention and disk guard."""
     import torch
-    from laya.train import (TrainConfig, calibration_records, evaluate_records,
-                            load_checkpoint, optimizer_updates, save_checkpoint, train_model)
+    from laya.train import (TrainConfig, load_checkpoint, optimizer_updates,
+                            save_checkpoint, train_model)
 
     manifest = json.loads(Path(manifest_path).read_text(encoding='utf8'))
     spec = manifest['plans'][run_id]
@@ -323,6 +437,15 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
                 return {'run_id': run_id, 'status': 'skipped_existing', 'existing_status': existing.get('status')}
         except json.JSONDecodeError:
             pass
+
+    retention_mgr = CheckpointRetentionManager(
+        out_root=Path(out_root),
+        active_budget_bytes=active_budget_bytes,
+        s2_audit_passed=s2_audit_passed,
+        explicit_pinned=explicit_pinned,
+    )
+    # P3: Perform pre-run disk and active weight budget check before loading GPU model
+    pre_check = retention_mgr.pre_run_disk_check(run_id=run_id, manifest=manifest)
 
     model_path = str(spec.get('model_dir') or model_dir)
     parent_id = spec.get('parent_checkpoint_id')
@@ -352,10 +475,14 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
     )
     config.validate()
     updates_per_epoch = optimizer_updates(len(train_items), config.micro_batch, config.grad_accum, 1)
+    protocol_version = spec.get('protocol_version') or manifest.get('protocol_version') or NEW_PROTOCOL_VERSION
+    legacy_flag = bool(spec.get('legacy_input_protocol', False))
     run_meta = {
         'run_id': run_id, 'parent_checkpoint_id': parent_id,
-        'base_model': model_path, 'data_dir_label': spec['data'],
+        'base_model': sanitize_command_str(model_path), 'data_dir_label': spec['data'],
         'train_origin': spec.get('train_origin', 'Base'),
+        'protocol_version': protocol_version,
+        'legacy_input_protocol': legacy_flag,
         'seed': config.seed, 'epochs_max': epochs,
         'train_groups': {k: len(v) for k, v in train_groups.items()},
         'val_groups': {k: len(v) for k, v in val_groups.items()},
@@ -366,8 +493,10 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         'optimizer_updates_per_epoch': updates_per_epoch,
         'started_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
         'parent_metrics': parent_metrics,
+        'pre_run_disk_check': pre_check,
         'audit_flags': {
-            's2_100pct_not_generalization': True,
+            's2_100pct_not_generalization': not s2_audit_passed,
+            's2_audit_passed': bool(s2_audit_passed),
             'validation_is_fixed': True,
             'test_used': False,
             'route_001_002_training': False,
@@ -378,7 +507,11 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         'ratios': spec.get('ratios'), 'counts': spec.get('counts'),
         'independent_units': spec.get('independent_units'),
         'eligibility_reason': spec.get('eligibility_reason'),
-        'command': 'python router_data/laya_batch_train.py --sweep-run %s --sweep-manifest %s --out-root %s --epochs %s' % (run_id, manifest_path, out_root, epochs),
+        'command': sanitize_command_str(
+            'python router_data/laya_batch_train.py --sweep-run %s --sweep-manifest %s --out-root %s --epochs %s'
+            % (run_id, manifest_path, out_root, epochs)
+        ),
+        'code_commit': os.environ.get('MODELROUTER_CODE_COMMIT', 'unknown'),
         'current_step': 0,
     }
     _write(run_root / 'run.json', run_meta)
@@ -404,61 +537,81 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         ckcfg = dict(cfg, max_len=max_len, head_max_len=head_max_len,
                      training_run={'run_id': run_id, 'epoch': epoch + 1,
                                    'parent_checkpoint_id': parent_id,
+                                   'protocol_version': protocol_version,
                                    'config': vars(config),
                                    'continuation_mode': run_meta['continuation_mode']})
         epoch_id = f'{run_id}-e{epoch + 1:02d}'
-        epoch_dir = run_root / 'checkpoints' / f'epoch_{epoch + 1:02d}'
-        checkpoint_started = time.time()
-        save_checkpoint(model, tok, ckcfg, str(epoch_dir))
-        save_checkpoint(model, tok, ckcfg, str(run_root / 'checkpoints' / 'latest'))
         improved = s1_loss is not None and (best_epoch is None or s1_loss < best_loss * 0.995)
         if improved:
             best_loss, best_epoch, no_improve = s1_loss, epoch + 1, 0
-            save_checkpoint(model, tok, ckcfg, str(run_root / 'checkpoints' / 'best'))
-        else:
+        elif s1_loss is not None:
             no_improve += 1
-        checkpoint_seconds = time.time() - checkpoint_started
+
         try:
             gpu_util = float(subprocess.check_output(
                 ['nvidia-smi', '--query-gpu=utilization.gpu', '--format=csv,noheader,nounits'],
                 text=True, timeout=3).strip().splitlines()[0])
         except Exception:
             gpu_util = None
-        try:
-            checkpoint_bytes = sum(p.stat().st_size for p in (run_root / 'checkpoints').rglob('*') if p.is_file())
-        except OSError:
-            checkpoint_bytes = None
-        epoch_total_seconds = time.time() - epoch_train_started
+
+        checkpoint_started = time.time()
+        will_early_stop = bool(s1_loss is not None and epoch + 1 >= 2 and no_improve >= 2)
+        is_final = (epoch + 1 >= epochs) or will_early_stop
+
         entry = {
             'checkpoint_id': epoch_id, 'epoch': epoch + 1, 'train_loss': train_loss,
             'validation': metrics, 'improved_0_5pct': improved,
-            'best_epoch': best_epoch, 'epoch_seconds': round(epoch_total_seconds, 3),
+            'best_epoch': best_epoch,
             'train_seconds': round(train_seconds, 3), 'validation_seconds': round(validation_seconds, 3),
-            'checkpoint_seconds': round(checkpoint_seconds, 3), 'epoch_total_seconds': round(epoch_total_seconds, 3),
+            'checkpoint_seconds': 0.0, 'epoch_total_seconds': 0.0, 'epoch_seconds': 0.0,
             'optimizer_updates': updates_per_epoch,
             'learning_rate': {'encoder': config.encoder_lr, 'head': config.head_lr},
             'gradient_norm': None,
             'gpu_memory_peak_mib': round(torch.cuda.max_memory_allocated() / 1048576, 2) if torch.cuda.is_available() else None,
-            'gpu_utilization_percent': gpu_util, 'checkpoint_size_bytes': checkpoint_bytes,
+            'gpu_utilization_percent': gpu_util,
             'global_step': (epoch + 1) * updates_per_epoch,
-            'weights_saved': True,
         }
         history.append(entry)
         run_meta['history'] = history
         run_meta['current_epoch'] = epoch + 1
         run_meta['current_step'] = (epoch + 1) * updates_per_epoch
         run_meta['best_epoch'] = best_epoch
-        _write(run_root / 'epoch_metrics.json', history)
-        _write(run_root / 'epoch_status.json', {'run_id': run_id, 'epoch': epoch + 1,
-                                                 'checkpoint_id': epoch_id, 'weights_saved': True,
-                                                 'updated_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())})
+
+        ret_result = retention_mgr.handle_epoch_checkpoint(
+            run_id=run_id,
+            epoch=epoch + 1,
+            is_final_epoch=is_final,
+            save_fn=lambda target_dir: save_checkpoint(model, tok, ckcfg, target_dir),
+            run_meta=run_meta,
+            entry=entry,
+            manifest=manifest,
+        )
+        checkpoint_seconds = time.time() - checkpoint_started
+        epoch_total_seconds = time.time() - epoch_train_started
+        entry['checkpoint_seconds'] = round(checkpoint_seconds, 3)
+        entry['epoch_total_seconds'] = round(epoch_total_seconds, 3)
+        entry['epoch_seconds'] = round(epoch_total_seconds, 3)
+
+        _write(run_root / 'epoch_metrics.json', run_meta['history'])
+        _write(run_root / 'epoch_status.json', {
+            'run_id': run_id, 'epoch': epoch + 1,
+            'checkpoint_id': epoch_id,
+            'weights_saved': bool(entry.get('weights_saved', False)),
+            'retention_status': entry.get('retention_status'),
+            'retention_reason': entry.get('retention_reason'),
+            'updated_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+        })
         _write(run_root / 'run.json', run_meta)
-        _sweep_public_run(run_id, run_root, run_meta, history, manifest, out_root)
-        print(json.dumps({'event': 'epoch_complete', 'run_id': run_id, 'epoch': epoch + 1,
-                          'checkpoint_id': epoch_id, 'best_epoch': best_epoch,
-                          's1_loss': s1_loss, 's1_accuracy': metrics.get('S1', {}).get('accuracy')},
-                         ensure_ascii=False), flush=True)
-        if s1_loss is not None and epoch + 1 >= 2 and no_improve >= 2:
+        _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root)
+        print(json.dumps({
+            'event': 'epoch_complete', 'run_id': run_id, 'epoch': epoch + 1,
+            'checkpoint_id': epoch_id, 'best_epoch': best_epoch,
+            'weights_saved': entry.get('weights_saved'),
+            'retention_status': entry.get('retention_status'),
+            'retention_reason': entry.get('retention_reason'),
+            's1_loss': s1_loss, 's1_accuracy': metrics.get('S1', {}).get('accuracy'),
+        }, ensure_ascii=False), flush=True)
+        if will_early_stop:
             raise StopRun('two epochs without 0.5% S1 validation-loss improvement')
         epoch_train_started = time.time()
 
@@ -474,18 +627,19 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         run_meta['status'] = status
         run_meta['finished_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
         run_meta['history'] = history
-        _write(run_root / 'run.json', run_meta)
-        _sweep_public_run(run_id, run_root, run_meta, history, manifest, out_root)
+        retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest)
+        _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root)
         raise
     run_meta['status'] = status
     run_meta['finished_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
-    run_meta['history'] = history
     run_meta['best_epoch'] = best_epoch
-    run_meta['current_epoch'] = len(history)
-    _write(run_root / 'run.json', run_meta)
-    _sweep_public_run(run_id, run_root, run_meta, history, manifest, out_root)
-    print(json.dumps({'event': 'run_complete', 'run_id': run_id, 'status': status,
-                      'best_epoch': best_epoch, 'epochs': len(history)}, ensure_ascii=False), flush=True)
+    run_meta['current_epoch'] = len(run_meta['history'])
+    retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest)
+    _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root)
+    print(json.dumps({
+        'event': 'run_complete', 'run_id': run_id, 'status': status,
+        'best_epoch': best_epoch, 'epochs': len(run_meta['history']),
+    }, ensure_ascii=False), flush=True)
     return run_meta
 
 
@@ -501,19 +655,51 @@ def main():
     parser.add_argument('--parent-checkpoint', default='')
     parser.add_argument('--epochs', type=int, default=4)
     parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument('--active-budget-gib', type=float, default=120.0)
+    parser.add_argument('--s2-audit-passed', action='store_true')
+    parser.add_argument('--pinned-checkpoints', default='')
+    parser.add_argument('--verify-storage-policy', action='store_true')
+    parser.add_argument('--sync-dashboard', action='store_true')
+    parser.add_argument('--project-root', default='.')
     args = parser.parse_args()
-    sys.path.insert(0, os.path.abspath('external/laya'))
-    import laya.train as train_mod
+
+    project_root = Path(args.project_root).resolve()
+    sys.path.insert(0, str(project_root / 'external' / 'laya'))
+
+    if args.verify_storage_policy:
+        result = run_storage_policy_verification(project_root=project_root, run_official_load=True)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return
+
+    if args.sync_dashboard:
+        result = sync_server_metadata_and_build_dashboard(project_root=project_root, run_official_load=True)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return
+
+    budget_bytes = int(args.active_budget_gib * GIB)
+    pinned = [x.strip() for x in args.pinned_checkpoints.split(',') if x.strip()]
+
+    import laya.train as train_mod  # noqa: F401
     if args.sweep_run:
-        result = run_sweep_experiment(args.sweep_run, args.sweep_manifest,
-                                      args.model_dir, args.out_root,
-                                      args.sweep_data_root or None, args.epochs)
+        result = run_sweep_experiment(
+            args.sweep_run, args.sweep_manifest,
+            args.model_dir, args.out_root,
+            args.sweep_data_root or None, args.epochs,
+            active_budget_bytes=budget_bytes,
+            s2_audit_passed=args.s2_audit_passed,
+            explicit_pinned=pinned,
+        )
         print(json.dumps(result, ensure_ascii=False, indent=2))
     elif args.run == 'R0':
         print(json.dumps(run_baseline(args.batch_root, args.model_dir, args.out_root, args.seed), ensure_ascii=False, indent=2))
     else:
-        result = run_experiment(args.run, args.batch_root, args.model_dir,
-                                args.out_root, args.parent_checkpoint or None, args.epochs, args.seed)
+        result = run_experiment(
+            args.run, args.batch_root, args.model_dir,
+            args.out_root, args.parent_checkpoint or None, args.epochs, args.seed,
+            active_budget_bytes=budget_bytes,
+            s2_audit_passed=args.s2_audit_passed,
+            explicit_pinned=pinned,
+        )
         print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

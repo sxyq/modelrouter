@@ -719,3 +719,23 @@ B01 的 16 个 QB/PB 配置全部完成，每个配置 2 个 Epoch，共 32 个 
 - Train 与固定 Val 都换成中性指令。官方 Laya `load_checkpoint`（CPU）和 `items_from_rows` 共读取 413,312 行并编码 413,312 Item，0 跳过；旧目标指令 0 行，稳定 ID 和独立任务/轨迹单位的 Train/Val 交集为 0。`trajectory_resolved` 的 false/true 仍是固定标签空间，未作为行级指令写入。
 - 覆盖口径分开记录：全来源 6,821,945 行、矩阵六来源 6,129,744 行、合法候选 4,863,900 行、候选独立单位 1,344,240；新 Run Item 暴露 212,970，跨 Run 去重 Item 45,056。S2 只计算多数类基线，Train 0/1=25,592/22,573、Val=6,510/5,285；模型指标仍标为 `BASELINE_ONLY_MODEL_METRICS_BLOCKED`。
 - 看板快照来自服务器 CPU 结果，旧历史与新协议分组呈现；本轮未启动 GPU、Test、Coding Benchmark、Kev 或付费 API。
+
+### 10.17 2026-10-12 `MR-FULL-GRADED-CHECKPOINT-RETENTION`（Checkpoint 智能保留与磁盘保护）
+
+- **1. 训练器 Checkpoint 保存机制重构（P0–P2）**：
+  - 新增 `router_data/checkpoint_retention.py` 并集成至 `router_data/laya_batch_train.py`：每个 Epoch 完成独立 Val 后，100% 将完整实验参数、数据协议版本、父节点、验证指标与保留状态写入 `run.json`、`epoch_metrics.json` 及 `checkpoint_manifest.json`（不因节省磁盘省略低分 Epoch）。
+  - 实体权重仅在符合保留条件时保存单份于 `checkpoints/epoch_XX`（单份约 `807.00 MiB`）；`best` 采用指向 `epoch_XX` 的相对目录符号链接（经官方 `laya.train.load_checkpoint` 实测 100% 兼容）；`latest` 仅作当前 Run 临时恢复并在 Run 完成时自动清理。
+  - 修正 `B01_C14_QB_PB` 的历史状态：因该 Run 的 4 个物理目录（`3.15 GiB`）已在 P0 移除，将其 2 个 Epoch 的 `weights_saved` 修正为 `false`、状态标为 `LEGACY_METADATA_ONLY`，使 FULL-GRADED 实体权重目录统计与真实磁盘（`55` 个目录：`30` 个 `epoch_XX` + `25` 个 `best/latest`）100% 对齐。
+- **2. 同类可比较组动态阈值与任务隔离（P1）**：
+  - 可比较组由 `(protocol_version, supervision_classes, val_signature, metric_definition)` 唯一确定；旧 `LEGACY_INPUT_PROTOCOL` 严格隔离，不参加新协议（`MR-FULL-GRADED-P0-DATA-REPAIR-v1`）排名。
+  - **S1**：同组有效对照 `< 5` 时启用冷启动保护；`>= 5` 时需满足条件 A（`Val Loss <= 均值 * 0.995` 且 `Acc >= 均值 - 0.005`）或条件 B（`Acc >= 均值 + 0.01` 且 `Loss/Brier <= 均值 * 1.005`），每组限留非依赖 Top-2，并强制保留全局 S1 最低 Loss、最高 Accuracy、最低 Brier 模型及被后续课程依赖的 `PINNED_PARENT` 节点（如历史 `R1-e01`、`R2-e01`）。
+  - **S2**：在独立监督审计通过前（`s2_audit_passed=false`），禁止因 `S2 Accuracy=1.0` 永久保存大量权重或设为全局冠军；全组最多临时保留 1 个最低 Log Loss 诊断模型。
+  - **S3**：按 6 个真实 `source:target` 分目标独立对比各自多数类准确率（`0.4232 ~ 0.9520`）与先验 Loss 基线（`0.1926 ~ 1.2576`），严禁将不同 S3 目标原始 Loss 简单相加排名；仅分目标优于多数类基线的模型可进入组内 Top-2。
+- **3. 磁盘预算与二阶段安全清理（P3）**：
+  - 设定 FULL-GRADED 活动权重预算 **`120.0 GiB`**，告警阈值 `< 25.0%` 或 `< 300.0 GiB`（`WARNING`），停机阈值 `< 20.0%` 或 `< 200.0 GiB`（`STOP`，取更严格者）。
+  - 每个新 Run 启动前执行 `pre_run_disk_check`；预算不足时仅在授权 `out_root/*/checkpoints/*` 白名单内生成二阶段清理清单并物理删除（`shutil.rmtree`，禁止移入同分区 `.Trash` 虚报释放），严禁触碰原始数据、`models/`、`external/`、历史实验、`PINNED_PARENT` 或全局最佳模型。
+- **4. 实测磁盘、模型统计与 10 项无 GPU 验收（P5–P7）**：
+  - **实测磁盘与占用**：根分区总容量 `3,518.72 GiB`，已用 `2,275.13 GiB`（`df 69%`），可用 **`1,064.78 GiB`（`30.26%`）**；`runs/MR-FULL-GRADED-TRAINING/` 占 `43.60 GiB`（`32` Epoch，存量 `30` 个 Epoch 权重 [`93.75%`]，新策略目标保留 `11` 个 [`34.38%`]，未来按需可释放冗余/低分权重 `34.68 GiB`），历史实验占 `51.47 GiB`（`Sweep-02` `39.65 GiB` + `Batch 1` `11.82 GiB`），新协议 `P0_` 物化目录占 `0.41 GiB`，基础模型 `models/` 占 `9.64 GiB`。累计已释放 `B01_C14_QB_PB` 权重 `3.15 GiB`（`3,384,787,296 B`）。
+  - **100-Run 空间对比**：旧策略每 100 个 Run 约占 `315.23 ~ 354.64 GiB`；新策略每 100 个 Run 稳态仅占 **`18.91 GiB`（含运行期临时峰值 `20.49 GiB`）**，节省 **`94.0% ~ 94.67%`**。
+  - **看板与验收**：`docs/training-dashboard/` 已拆分为 `data.js`（`580 KB`）+ `shards/*.js` 四个静态分片，新增磁盘监控、保留统计、质量-存储散点图、S1/S2/S3 独立动态阈值图与全节点可点击历史树。P7 10 项无 GPU 验证 **`10/10 PASS`**，未启动 GPU 训练、未重生成数据、未触碰 Kev 或 Test，当前状态 **`READY_FOR_NEXT_GPU_WINDOW`**。
+
