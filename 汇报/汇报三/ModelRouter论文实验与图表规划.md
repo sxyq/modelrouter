@@ -6,7 +6,7 @@
 >
 > **时间**：2026-10-13；**研究主线**：长程单 Agent 与多子代理任务的动态 `(model, native reasoning_effort)` 选择，利用任务拆分、执行状态、KV/上下文连续性、未来 Trace/失败恢复，在成功率约束下优化全任务成本。
 >
-> **交互式展示**：[网页版论文原型](../../docs/paper-rq-prototype/index.html)（静态 HTML，无结果数据；若 GitHub 未启用 Pages，可下载 `index.html` 本地打开）。**阅读说明**：Markdown 是详细科研协议的主文档，HTML 是相同 5 RQ / 8 图 / 12 表的视觉浏览器，不另建研究决策源。
+> **交互式展示**：[网页版论文原型](交互式原型/index.html)（静态 HTML，无结果数据；若 GitHub 未启用 Pages，可下载 `index.html` 本地打开）。**阅读说明**：Markdown 是详细科研协议的主文档，HTML 是相同 5 RQ / 8 图 / 12 表的视觉浏览器，不另建研究决策源。
 
 ## 0. 研究定位与文件职责
 
@@ -20,12 +20,12 @@
 
 | 文件 / 资产 | 本文如何使用 | 不在本文维护的事项 |
 |---|---|---|
-| [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md) | 方法总纲、H1–H7、受控状态、作用域 | 实时实验进度、最新 GPU 状态 |
-| [EXPERIMENT_QA](EXPERIMENT_QA.md) | Q-001=A 真实 Coding Benchmark；Q-002=B 商业+本地；Q-004=B 成功率约束；Q-005=B 分层基线；Q-006=A 同状态分支 | 未经负责人确认擅自改变决策或预算 |
-| [PROJECT_STATUS](PROJECT_STATUS.md) | 唯一实际执行状态和下一授权动作 | 历史对话中的计划当作已完成 |
-| [PLANNING_MEMORY](PLANNING_MEMORY.md) | 历史研究决定与跨 Agent 交接 | 将本文每个草案设成正式决定 |
-| [GROUP_MEETING_RESEARCH_BRIEF](GROUP_MEETING_RESEARCH_BRIEF.md) | 早期 RQ 命名与组会对照 | 将旧版 RQ 与本文版本混为同一正式版本 |
-| [PAPER_NOTES_AND_FIGURES](../汇报/ModelRouter组会/PAPER_NOTES_AND_FIGURES.md) | 已有论文**原图**资料与相关工作边界 | 把别人的论文截图当成本项目实验结果 |
+| [RESEARCH_OVERVIEW](../../our-project/planning/RESEARCH_OVERVIEW.md) | 方法总纲、H1–H7、受控状态、作用域 | 实时实验进度、最新 GPU 状态 |
+| [EXPERIMENT_QA](../../our-project/planning/EXPERIMENT_QA.md) | Q-001=A 真实 Coding Benchmark；Q-002=B 商业+本地；Q-004=B 成功率约束；Q-005=B 分层基线；Q-006=A 同状态分支 | 未经负责人确认擅自改变决策或预算 |
+| [PROJECT_STATUS](../../our-project/planning/PROJECT_STATUS.md) | 唯一实际执行状态和下一授权动作 | 历史对话中的计划当作已完成 |
+| [PLANNING_MEMORY](../../our-project/planning/PLANNING_MEMORY.md) | 历史研究决定与跨 Agent 交接 | 将本文每个草案设成正式决定 |
+| [GROUP_MEETING_RESEARCH_BRIEF](../../our-project/planning/GROUP_MEETING_RESEARCH_BRIEF.md) | 早期 RQ 命名与组会对照 | 将旧版 RQ 与本文版本混为同一正式版本 |
+| [PAPER_NOTES_AND_FIGURES](../../our-project/汇报/ModelRouter组会/PAPER_NOTES_AND_FIGURES.md) | 已有论文**原图**资料与相关工作边界 | 把别人的论文截图当成本项目实验结果 |
 | [训练看板](../../docs/training-dashboard/index.html) | 已完成 Laya 离线训练指标/Checkpoint 历史 | 冒充任务级经济评测 |
 
 ### 0.3 RQ 版本演进（务必显式保留）
@@ -502,7 +502,7 @@ episode_latency_ms, resolved, termination_reason
 - TwinRouterBench：https://arxiv.org/abs/2605.18859 （真实逐步路由近邻；需要审阅其评测协议）。
 - ProgRouter：https://arxiv.org/abs/2608.25992 （进度/状态路由近邻）。
 - Unified AI Gateway：https://arxiv.org/abs/2609.06940 （缓存/模型切换成本近邻，不等于本研究整任务 Agent 证明）。
-- 组会详细文献/原图与截图索引：[PAPER_NOTES_AND_FIGURES](../汇报/ModelRouter组会/PAPER_NOTES_AND_FIGURES.md)。
-- 主研究设计权威：[RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)；正式实验许可/决策：[EXPERIMENT_QA](EXPERIMENT_QA.md)。
+- 组会详细文献/原图与截图索引：[PAPER_NOTES_AND_FIGURES](../../our-project/汇报/ModelRouter组会/PAPER_NOTES_AND_FIGURES.md)。
+- 主研究设计权威：[RESEARCH_OVERVIEW](../../our-project/planning/RESEARCH_OVERVIEW.md)；正式实验许可/决策：[EXPERIMENT_QA](../../our-project/planning/EXPERIMENT_QA.md)。
 
 **本 V3 草案的下一步**：负责人确认 RQ 文义、图表数量、Benchmark 选择与实际资源预算后，Execution Agent 将本文规划映射到现有唯一 Agent Harness / 看板中。**此版本没有触发任何 GPU/API 任务。**
