@@ -289,6 +289,7 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
         'plans': plans,
         'plan_data': plan_data,
         'matrix': manifest.get('aggregate', {}),
+        'coverage': manifest.get('coverage', {}),
         'runs': runs,
         'checkpoint_tree': all_nodes,
         'fixed_validation': manifest.get('fixed_validation', {}),
