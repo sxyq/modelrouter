@@ -8,7 +8,7 @@
 
 ## 0. 30 秒恢复上下文
 
-**2026-10-12 当前交接覆盖说明**：本轮 Laya-421M Batch 1 的 R0→R1→R2→R3 已完成，结果见第 10.12 节与 Status 首页。此前仅描述“等待 GPU”的文字属于历史快照，当前以服务器实验目录和最新 Git 记录为准；Kev、Coding Benchmark 和付费 API 仍未运行。
+**2026-10-13 当前交接覆盖说明**：正式启动 Mode B **FULL-DATA-CONTINUOUS-TRAINING** 全量分级连续训练。以 V2.1 分级全部 4,863,900 条合法候选记录为总池，通过动态分块流式物化（Chunk 2,048~8,192 Items）、跨 Chunk 连续优化（AdamW + Cosine LR）、逐 Epoch 严格物理隔离验证与 Top 30% 智能保留机制，在 RTX A6000 宿主机上由唯一调度守护进程（PID 2207051）连续执行 F01..F20 共 34 个方案。首个纯路由任务 F01_S1（4,592 候选记录，2 Epoch，144 步梯度更新，0 重叠）已正式完成并入账，当前正在执行 F02_S1。结果详见 Status 首页与 HTML 看板。Kev、Coding Benchmark 和付费 API 仍未运行。
 
 - 项目：**ModelRouter**，研究**长程单/多 Agent 执行过程中的状态感知、任务级 Model × Reasoning Effort 联合路由**。
 - 主方法：**确定性 State Builder + 动态候选与硬约束 + 单一 Kev-4B（Qwen3.5-4B-Base/LoRA/pointer head）决策模型 + Agent Harness + 完整记账与任务终局评价**。

@@ -65,6 +65,7 @@ S1_LOSS_BRIER_DEGRADATION_REL = 0.005
 
 NEW_PROTOCOL_VERSION = "MR-FULL-GRADED-P0-DATA-REPAIR-v1"
 LEGACY_PROTOCOL_VERSION = "LEGACY_INPUT_PROTOCOL"
+RETENTION_POLICY_VERSION = "Composite-Retention-v2"
 
 # Fixed validation majority/prior baselines (computed on V2.1 fixed validation sets)
 S2_VAL_BASELINE = {
@@ -2761,8 +2762,15 @@ class CheckpointRetentionManager:
         payload = {
             "generated_at": _now_iso(),
             "protocol_version": NEW_PROTOCOL_VERSION,
+            "policy_version": RETENTION_POLICY_VERSION,
             "baseline_0": baseline_0,
             "policy": {
+                "policy_version": RETENTION_POLICY_VERSION,
+                "scoring_weights": {
+                    "S1": {"I_loss": 0.45, "I_acc": 0.30, "I_brier": 0.15, "I_ece": 0.10},
+                    "S2": {"I_loss": 0.35, "I_bal_acc": 0.30, "I_f1": 0.20, "I_brier": 0.15},
+                    "S3": "Equal-weight macro-average of per-target scores vs majority/prior baseline",
+                },
                 "active_budget_bytes": self.active_budget_bytes,
                 "active_budget_gib": round(self.active_budget_bytes / GIB, 2),
                 "warn_free_pct": self.warn_free_pct,
@@ -4340,6 +4348,16 @@ def sync_server_metadata_and_build_dashboard(
             "total_checks": verification["total_checks"],
             "checks": verification["checks"],
             "comparison_100_runs": verification["comparison_100_runs"],
+        },
+        "full_coverage_summary": {
+            "active": (fg_p0_root / "full_coverage_manifest.json").is_file(),
+            "total_eligible_records": 4863900,
+            "total_runs": 34,
+            "ledgers": {
+                p.parent.name: json.loads(p.read_text(encoding="utf8"))
+                for p in sorted(fg_p0_root.glob("*/run_coverage_ledger.json"))
+                if p.is_file()
+            },
         },
         "shards": [
             "shards/matrix_plans_full.js",

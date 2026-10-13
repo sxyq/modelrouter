@@ -1,12 +1,12 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-12。** ModelRouter 研究目标是面向单 Agent / 多子代理任务，利用八类变量、Reasoning Effort、KV Cache、调用成本与 Trace 次数，在成功率约束下降低整任务成本。数据起点为 14 个公开清洗源 `6,600,628` 行；OWN-001/002/003 分别 `110 / 221,128 / 79` 行，单独统计。Laya-421M 已按授权完成 Batch 1 的 R0 参考评估与 R1→R2→R3 三组逐层训练，当前停止；Kev、Coding Benchmark 和付费 API 均未运行。
+> **最新状态：2026-10-13。** ModelRouter 正式启动 **FULL-DATA-CONTINUOUS-TRAINING（Mode B：全量分级连续训练）**。充分利用已收集并经 V2.1 分级的全部 4,863,900 条合法训练候选记录（L1: 485,210; L2: 1,001,005; L3: 1,466,724; L4: 1,910,961; S1: 31,766; S2: 3,537,955; S3: 1,294,179），通过单层全量、累积全量、部分比例、课程续训、纯路由与纯辅助等 34 个方案（F01–F20），在 RTX A6000 宿主机上建立长期运行、可断点恢复的正式连续训练链。首个全量纯路由任务 F01_S1（4,592 候选记录，2 Epoch，144 步梯度更新，0 Train/Val 重叠）已正式完成并记录台账；调度守护进程正在连续执行后续方案（当前执行 F02_S1）。
 
 八类变量为 `Task/Subtask`、`Agent/Coordination`、`Context/Memory`、`Tool/Environment`、`Verification/Recovery`、`KV Cache/Continuity`、`Temporal/Execution`、`Provider/Availability`。
 
-**2026-10-12 Sweep-02 当前状态：已完成 N01–N10。** Laya-421M 第二轮实验共 10 个方案、每个最多 3 轮，均已保存逐轮权重与指标：5 个方案自然完成，5 个方案按连续两轮缺少 S1 验证损失改善提前结束；共 30 个逐轮节点、50 个权重目录。固定 S1 Val 为 561 条，混合方案沿用 S2 Val 337 条与 S3 Val 4,794 条。最佳 S1 验证损失为 N05-E02 `0.5969`，最高 S1 验证准确率为 N10-E03 `0.6952`。N01–N10 的 `best` 权重均通过官方 Laya CPU 加载。Kev、Test、Coding Benchmark、付费 API 均未运行，训练结束后服务器 GPU 已回落至约 `682 MiB / 0%`。
+**2026-10-13 FULL-DATA-CONTINUOUS-TRAINING（Mode B 唯一正式长效训练入口）：已在 A6000 后台正式启动并持续运行。** 调度器 `router_data/run_full_graded_queue.py --mode continuous_full_coverage` 驱动 F01..F20 共 34 个方案，采用动态分块流式物化与即训即删引擎（Chunk 2,048~8,192 Items）、跨 Chunk 连续优化（AdamW + CosineAnnealingLR）、逐 Epoch 固定验证集（S1/S2/S3）评估、Top 30% 智能保留（120 GiB 活动预算约束）及自动覆盖台账更新。F01_S1 损失从 0.6944 稳步降至 0.5680，指标与台账已写入，正依次执行 F02_S1..F07_S1 及后续阶段。
 
-**2026-10-12 FULL-GRADED-MULTI-BATCH-TRAINING：首个窗口已完成，P0 数据协议修复与 Checkpoint 智能保留机制已就绪（`READY_FOR_NEXT_GPU_WINDOW`）。** 已由 V2.1 索引生成 `1,092` 个 B/C/Q/P 与扩展槽位，其中 `693` 个有合法数据、`315` 个因目标无合法数据标为 BLOCKED；首个窗口完成 B01 的 16 个旧输入协议（`LEGACY_INPUT_PROTOCOL`）组合，共 `32` 个 Epoch，当前磁盘实存 `55` 个实体权重目录（`30` 个 `epoch_XX` + `25` 个 `best/latest`，其中 `B01_C14_QB_PB` 的 4 个目录 `3.15 GiB` 已在 P0 移除并修正为 `weights_saved=false` / `LEGACY_METADATA_ONLY`）。旧窗口最佳 S1 Val Loss / Accuracy / Brier 均为 `B01_C05_QB_PB-e02`（`0.5945 / 0.6827 / 0.4082`）。新协议（`MR-FULL-GRADED-P0-DATA-REPAIR-v1`）已在 CPU 物化 `52` 个 `P0_` 前缀 Run（`413,312` Item 100% 通过官方编码），并完成训练器 `CheckpointRetentionManager` 升级与 10 项无 GPU 存储安全验收（`10/10 PASS`）。本轮未启动 GPU 训练、未重跑数据、未运行 Kev / Test / Coding Benchmark 或付费 API。
+**2026-10-12 FULL-GRADED-MULTI-BATCH-TRAINING：首个窗口已完成，P0 数据协议修复与 Checkpoint 智能保留机制已就绪。** 已由 V2.1 索引生成 `1,092` 个 B/C/Q/P 与扩展槽位，其中 `693` 个有合法数据、`315` 个因目标无合法数据标为 BLOCKED；旧协议 16 个 Run（32 Epoch）隔离为 `LEGACY_INPUT_PROTOCOL`。新协议（`MR-FULL-GRADED-P0-DATA-REPAIR-v1`）CPU 物化 52 个 `P0_` Run 与 14 项基准/存储门禁验证全通（`14/14 PASS`）。
 
 ## 当前轮次
 
@@ -20,7 +20,8 @@
 | P5 Laya Batch 1 | 训练 `13,438` 条、独立 Val `5,692` 条；`R1-e01` 与 `R2-e01` 作为课程父节点已标记 `PINNED_PARENT` 保护，当前停止 |
 | P6 Laya Sweep-02 | N01–N10 已完成（30 个 Epoch，50 个实体权重目录，占 `39.65 GiB`）；S1 最佳 Loss `N05-e02`（`0.5969`）、最佳 Acc `N10-e03`（`0.6952`） |
 | P7 FULL-GRADED 窗口一 & P0 数据修复 | 旧窗口 16 个 B01 Run（32 Epoch，存量 55 个权重目录 `43.60 GiB`）隔离为 `LEGACY_INPUT_PROTOCOL`；新协议 52 个 `P0_` Run（`0.41 GiB`）已完成 CPU 物化 |
-| P8 Checkpoint 智能保留与磁盘保护 | 已升级 `laya_batch_train.py` 与 `checkpoint_retention.py`：100% 保留每轮指标，按同组动态阈值 + Top-2 + 全局最佳 + `PINNED_PARENT` 单份保存权重，`best` 改用相对符号链接，120 GiB 活动预算与 `<20% / <200 GiB` 停机门禁 10/10 验收通过 |
+| P8 Checkpoint 智能保留与磁盘保护 | 已升级 `laya_batch_train.py` 与 `checkpoint_retention.py`：100% 保留每轮指标，按同组动态阈值 + Top-2 + 全局最佳 + `PINNED_PARENT` 单份保存权重，`best` 改用相对符号链接，120 GiB 活动预算与 `<20% / <200 GiB` 停机门禁 14/14 验收通过 |
+| P9 FULL-DATA 连续全量分级训练（进行中） | 启动 Mode B：486.4 万候选记录 F01..F20 全量分级流式训练（34 个正式方案），调度守护进程在后台连续运行；F01_S1 已完成，正执行 F02_S1 |
 
 公开记录层规模：L1 `663,963`、L2 `1,304,523`、L3 `1,993,193`、L4 `2,638,949`，总计 `6,600,628`。三类 OWN 记录逐层另列。按来源政策允许、Q1/Q2、真实目标及 Train 身份计算的候选记录数依次为 `489,911`、`973,501`、`1,475,527`、`1,924,961`，合计 `4,863,900`；Val/Test 身份归评测用途，不计作训练候选。候选包含轨迹终局、静态偏好、缓存复用机会、请求负载和 OWN-002 调用统计等不同目标，不代表联合路由监督。
 

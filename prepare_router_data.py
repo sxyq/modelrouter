@@ -21,16 +21,16 @@ from router_data.tra import run_tra_batch
 from router_data.views import build_unified_training_and_evaluation_views
 from router_data.all_data import prepare_all_data
 from router_data.quality_v2 import run_quality_v2
-from router_data.batch_prep import prepare_sweep02, run_batch_prep, prepare_full_matrix
+from router_data.batch_prep import prepare_sweep02, run_batch_prep, prepare_full_matrix, prepare_full_coverage_manifest
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="ModelRouter 唯一数据清洗与特征提取入口")
     parser.add_argument(
         "--mode",
-        choices=["blog", "tra", "route", "cache_time", "mem_mas_env", "public", "views", "all", "all_data", "quality_v2", "batch_prep", "batch_sweep", "full_matrix"],
+        choices=["blog", "tra", "route", "cache_time", "mem_mas_env", "public", "views", "all", "all_data", "quality_v2", "batch_prep", "batch_sweep", "full_matrix", "full_coverage_manifest"],
         default="public",
-        help="执行模式: blog (私有数据), tra (Batch 1: Agent轨迹), route (Batch 2: 路由比较), cache_time (Batch 3: 缓存时间), mem_mas_env (Batch 4: 记忆协作环境), public (全部公开数据并生成训练视图), views (仅构建训练视图与Kev划分), all (全部私有+公开+训练视图)",
+        help="执行模式: blog (私有数据), tra (Batch 1: Agent轨迹), route (Batch 2: 路由比较), cache_time (Batch 3: 缓存时间), mem_mas_env (Batch 4: 记忆协作环境), public (全部公开数据并生成训练视图), views (仅构建训练视图与Kev划分), all (全部私有+公开+训练视图), full_coverage_manifest (Mode B: 全量覆盖任务清单)",
     )
     # 路径配置
     parser.add_argument(
@@ -171,6 +171,10 @@ def main():
         prepare_sweep02(args)
     elif args.mode == "full_matrix":
         prepare_full_matrix(args)
+    elif args.mode == "full_coverage_manifest":
+        graded_root = os.path.join(args.all_data_out_dir, "quality_grading_v2_1")
+        out_root = args.matrix_out_dir or "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012"
+        prepare_full_coverage_manifest(graded_root, out_root)
     elif args.mode == "public":
         print("\n" + "=" * 70)
         print("  ModelRouter 公开数据全量清洗与规范化流水线 (--mode public)")

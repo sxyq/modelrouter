@@ -1,12 +1,19 @@
 """Small overnight runner around the official Laya training functions with intelligent checkpoint retention and disk budget guard."""
 import argparse
 import json
+import math
 import os
+import random
+import shutil
 import subprocess
 import sys
 import time
 from collections import Counter
 from pathlib import Path
+
+_ROOT = str(Path(__file__).resolve().parent.parent)
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
 
 try:
     from router_data.checkpoint_retention import (
@@ -776,6 +783,434 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
     return run_meta
 
 
+def run_full_coverage_stream_run(
+    run_id: str,
+    manifest_path: str,
+    model_dir: str,
+    out_root: str,
+    graded_root: str = "runs/MR-ALLDATA-PREP-20261011/quality_grading_v2_1",
+    cleaned_root: str = "data/公开数据/清洗数据",
+    epochs: int = 2,
+    chunk_size: int = 8192,
+    max_len: int = 1024,
+    head_max_len: int = 512,
+    active_budget_bytes: int = DEFAULT_ACTIVE_BUDGET_BYTES,
+    s2_audit_passed: bool = False,
+    explicit_pinned: tuple = (),
+    project_root: str = ".",
+) -> dict:
+    """Execute one Mode B FULL-COVERAGE streaming run across all eligible candidate records.
+    
+    Streams items dynamic-chunk-by-dynamic-chunk directly from V2.1 gzip indexes;
+    maintains persistent optimizer and CosineAnnealingLR across chunks without state restarts;
+    cleans up temporary chunk directories immediately to maintain near-zero disk waste;
+    and validates on the fixed 10k validation set with Composite-Retention-v2 pruning.
+    """
+    import torch
+    from laya.train import (
+        TrainConfig, load_checkpoint, optimizer_updates, save_checkpoint,
+        encode_item, collate_items, _forward, soft_ce_loss, draw_option_order,
+    )
+    try:
+        from router_data.batch_prep import (
+            get_full_coverage_plan_spec,
+            collect_full_coverage_refs,
+            materialize_full_coverage_chunk,
+        )
+    except ImportError:
+        from batch_prep import (
+            get_full_coverage_plan_spec,
+            collect_full_coverage_refs,
+            materialize_full_coverage_chunk,
+        )
+
+    out_root = Path(out_root).resolve()
+    run_root = out_root / run_id
+    run_root.mkdir(parents=True, exist_ok=True)
+
+    manifest_data = {}
+    if manifest_path and Path(manifest_path).is_file():
+        try:
+            manifest_data = json.loads(Path(manifest_path).read_text(encoding="utf8"))
+        except (OSError, json.JSONDecodeError):
+            manifest_data = {}
+
+    spec = (manifest_data.get("plans") or {}).get(run_id) or get_full_coverage_plan_spec(run_id)
+    if not spec:
+        raise ValueError(f"Unknown full coverage run_id: {run_id}")
+
+    run_epochs = int(spec.get("epochs") or epochs)
+
+    # Check if run already completed
+    existing_path = run_root / "run.json"
+    if existing_path.is_file():
+        try:
+            existing = json.loads(existing_path.read_text(encoding="utf8"))
+            if existing.get("status") in {"completed", "early_stopped"}:
+                return {"run_id": run_id, "status": "skipped_existing", "existing_status": existing.get("status")}
+        except (OSError, json.JSONDecodeError):
+            pass
+
+    retention_mgr = CheckpointRetentionManager(
+        out_root=out_root,
+        active_budget_bytes=active_budget_bytes,
+        s2_audit_passed=s2_audit_passed,
+        explicit_pinned=explicit_pinned,
+    )
+    retention_mgr.pre_run_disk_check(run_id=run_id, manifest=manifest_data)
+
+    # Resolve parent checkpoint for warm_start
+    continuation_mode = spec.get("continuation_mode", "from_scratch")
+    parent_id = spec.get("parent_checkpoint_id")
+    parent_model_dir = None
+    if continuation_mode == "warm_start":
+        parent_run = spec.get("parent_run_id")
+        if parent_run:
+            best_link = out_root / parent_run / "checkpoints" / "best"
+            if best_link.exists():
+                parent_model_dir = str(best_link.resolve())
+                parent_id = f"{parent_run}:best"
+            else:
+                # Find latest available checkpoint in parent
+                ck_dir = out_root / parent_run / "checkpoints"
+                if ck_dir.is_dir():
+                    candidates = sorted([p for p in ck_dir.iterdir() if p.name.startswith("epoch_") and (p / "model.pt").is_file()])
+                    if candidates:
+                        parent_model_dir = str(candidates[-1])
+                        parent_id = f"{parent_run}:{candidates[-1].name}"
+    if not parent_model_dir:
+        parent_model_dir = str(spec.get("model_dir") or model_dir)
+
+    model, tok, cfg = load_checkpoint(parent_model_dir)
+    dev = torch.device("cuda")
+    model.to(dev)
+
+    # Load fixed validation set
+    val_dir = out_root / "val"
+    val_groups = {}
+    val_rows = {}
+    for g in ("S1", "S2", "S3"):
+        val_fp = val_dir / f"{g}.jsonl"
+        if val_fp.is_file():
+            items, _ = _load_items(val_fp, tok, sys.modules["laya.train"], max_len, head_max_len)
+            val_groups[g] = items
+            val_rows[g] = sys.modules["laya.train"].read_data(str(val_fp))
+
+    parent_metrics = _groups(model, tok, val_groups, dev, sys.modules["laya.train"], cfg, max_len, head_max_len, val_rows=val_rows)
+
+    # Collect all eligible candidate references from V2.1 gzip indexes
+    layers = list(spec.get("layers") or ["L1"])
+    layer_fractions = dict(spec.get("layer_fractions") or {l: 1.0 for l in layers})
+    supervision_classes = list(spec.get("supervision_classes") or ["S1"])
+    seed = int(spec.get("seed", 42))
+
+    all_refs, census = collect_full_coverage_refs(
+        graded_root=str(graded_root),
+        layers=layers,
+        layer_fractions=layer_fractions,
+        supervision_classes=supervision_classes,
+        seed=seed,
+    )
+    total_items = len(all_refs)
+    if total_items == 0:
+        raise ValueError(f"No eligible training records found for {run_id} (layers={layers}, sup={supervision_classes})")
+
+    effective_chunk_size = max(512, min(chunk_size, total_items))
+    num_chunks = max(1, (total_items + effective_chunk_size - 1) // effective_chunk_size)
+
+    config = TrainConfig(
+        epochs=run_epochs, micro_batch=8, grad_accum=8,
+        encoder_lr=float(spec.get("encoder_lr", 2.5e-5)),
+        head_lr=float(spec.get("head_lr", 1e-4)), min_lr=1e-6,
+        weight_decay=0.01, grad_clip=1.0, loss="soft-ce",
+        shuffle_options=("choice",), seed=seed, calib_seed=seed,
+        max_len=max_len, head_max_len=head_max_len,
+        amp=True, gradient_checkpointing=True, freeze_encoder=bool(spec.get("freeze_encoder", False)),
+        calib_frac=0.0, log_every=100,
+    )
+    config.validate()
+
+    amp = (dev.type == "cuda") if config.amp is None else bool(config.amp)
+    checkpointing = amp if config.gradient_checkpointing is None else bool(config.gradient_checkpointing)
+    if config.freeze_encoder:
+        for p in model.encoder.parameters():
+            p.requires_grad_(False)
+        model.encoder.eval()
+    elif checkpointing and hasattr(model.encoder, "gradient_checkpointing_enable"):
+        model.encoder.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+    model.head_checkpointing = checkpointing
+    model.train()
+
+    groups = [{"params": [p for n, p in model.named_parameters() if not n.startswith("encoder.") and p.requires_grad], "lr": config.head_lr}]
+    if not config.freeze_encoder:
+        groups.insert(0, {"params": [p for n, p in model.named_parameters() if n.startswith("encoder.") and p.requires_grad], "lr": config.encoder_lr})
+    params = [p for g in groups for p in g["params"]]
+
+    # Continuous Optimizer & Cosine Scheduler across ALL chunks and epochs
+    optimizer = torch.optim.AdamW(groups, weight_decay=config.weight_decay)
+    total_updates = optimizer_updates(total_items, config.micro_batch, config.grad_accum, run_epochs)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, total_updates), eta_min=config.min_lr)
+    scaler = torch.amp.GradScaler("cuda") if amp and dev.type == "cuda" else None
+
+    run_meta = {
+        "run_id": run_id,
+        "base_run_id": spec.get("base_run_id") or run_id,
+        "parent_checkpoint_id": parent_id,
+        "base_model": sanitize_command_str(parent_model_dir),
+        "data_dir_label": f"streaming_v2_1:{','.join(layers)}",
+        "train_origin": spec.get("category", "full_coverage"),
+        "protocol_version": NEW_PROTOCOL_VERSION,
+        "legacy_input_protocol": False,
+        "seed": config.seed,
+        "epochs_max": run_epochs,
+        "layers": layers,
+        "layer_fractions": layer_fractions,
+        "supervision_classes": supervision_classes,
+        "total_eligible_items": total_items,
+        "num_chunks_per_epoch": num_chunks,
+        "effective_chunk_size": effective_chunk_size,
+        "config": {
+            "micro_batch": config.micro_batch, "grad_accum": config.grad_accum,
+            "encoder_lr": config.encoder_lr, "head_lr": config.head_lr,
+            "weight_decay": config.weight_decay, "loss": config.loss,
+            "freeze_encoder": config.freeze_encoder,
+        },
+        "started_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "status": "running",
+        "parent_metrics": parent_metrics,
+        "history": [],
+    }
+
+    # Resume from cursor if available
+    cursor_path = run_root / "cursor.json"
+    start_epoch = 0
+    start_chunk = 0
+    global_step = 0
+    consumed_total_items = 0
+    consumed_units_set = set()
+    history = []
+    best_epoch = None
+
+    if cursor_path.is_file():
+        try:
+            cur = json.loads(cursor_path.read_text(encoding="utf8"))
+            if cur.get("run_id") == run_id:
+                start_epoch = cur.get("epoch", 0)
+                start_chunk = cur.get("chunk_idx", 0)
+                global_step = cur.get("step_count", 0)
+                consumed_total_items = cur.get("consumed_items", 0)
+                history = cur.get("history", [])
+        except Exception:
+            pass
+
+    _atomic_write_json = lambda p, d: _write(p, d)
+    _atomic_write_json(run_root / "run.json", run_meta)
+
+    status = "completed"
+    try:
+        for epoch in range(start_epoch, run_epochs):
+            run_meta["current_epoch"] = epoch + 1
+            epoch_refs = list(all_refs)
+            random.Random(seed + epoch).shuffle(epoch_refs)
+            model.train()
+            epoch_loss_total = 0.0
+            epoch_steps = 0
+
+            for chunk_idx in range(start_chunk if epoch == start_epoch else 0, num_chunks):
+                c_slice = epoch_refs[chunk_idx * effective_chunk_size : (chunk_idx + 1) * effective_chunk_size]
+                tmp_chunk_dir = run_root / f"_tmp_chunk_{epoch}_{chunk_idx}"
+
+                # 1. Materialize dynamic chunk
+                mat_res = materialize_full_coverage_chunk(
+                    chunk_refs=c_slice,
+                    chunk_dir=str(tmp_chunk_dir),
+                    cleaned_root=str(cleaned_root),
+                    project_root=str(project_root),
+                )
+
+                # 2. Load chunk items from chunk's train directory
+                chunk_items = []
+                for sup_name in supervision_classes:
+                    train_fp = tmp_chunk_dir / "train" / f"{sup_name}.jsonl"
+                    if train_fp.is_file():
+                        c_items, _ = _load_items(train_fp, tok, sys.modules["laya.train"], max_len, head_max_len)
+                        chunk_items.extend(c_items)
+                random.Random(seed + epoch + chunk_idx).shuffle(chunk_items)
+
+                # 3. Train on chunk items with continuous optimizer & scheduler
+                order_rng = random.Random(seed + epoch + chunk_idx)
+                chunk_loss_total = 0.0
+                chunk_steps = 0
+                steps_in_chunk = math.ceil(len(chunk_items) / config.micro_batch)
+
+                optimizer.zero_grad(set_to_none=True)
+                for start in range(0, len(chunk_items), config.micro_batch):
+                    mb = chunk_items[start : start + config.micro_batch]
+                    encoded = [
+                        encode_item(tok, it, max_len, head_max_len,
+                                    draw_option_order(it, order_rng, config.shuffle_options), False)
+                        for it in mb
+                    ]
+                    batch = collate_items([encoded], tok.pad_token_id)
+                    logits = _forward(model, batch, dev, amp, config.freeze_encoder)
+                    mask = batch["marker_mask"].to(dev)
+                    target_t = batch["target"].to(dev)
+                    loss = soft_ce_loss(logits, target_t, mask)
+
+                    window_start = (chunk_steps // config.grad_accum) * config.grad_accum
+                    window_size = min(config.grad_accum, steps_in_chunk - window_start)
+                    scaled = loss / max(1, window_size)
+                    if scaler is not None:
+                        scaler.scale(scaled).backward()
+                    else:
+                        scaled.backward()
+                    chunk_steps += 1
+                    if chunk_steps % config.grad_accum == 0 or start + config.micro_batch >= len(chunk_items):
+                        if scaler is not None:
+                            scaler.unscale_(optimizer)
+                            torch.nn.utils.clip_grad_norm_(params, config.grad_clip)
+                            scale_before = scaler.get_scale()
+                            scaler.step(optimizer)
+                            scaler.update()
+                            scale_after = scaler.get_scale()
+                            if scale_after >= scale_before:
+                                scheduler.step()
+                        else:
+                            torch.nn.utils.clip_grad_norm_(params, config.grad_clip)
+                            optimizer.step()
+                            scheduler.step()
+                        optimizer.zero_grad(set_to_none=True)
+                        global_step += 1
+
+                    chunk_loss_total += loss.item()
+                    epoch_loss_total += loss.item()
+                    epoch_steps += 1
+
+                # 4. Clean up temporary chunk files immediately (zero disk clutter)
+                shutil.rmtree(tmp_chunk_dir, ignore_errors=True)
+
+                consumed_total_items += len(chunk_items)
+                for r in c_slice:
+                    consumed_units_set.add(r["independent_unit_id"])
+
+                chunk_mean_loss = chunk_loss_total / max(1, chunk_steps)
+                run_meta["current_step"] = global_step
+                print(
+                    f"[{run_id}] Epoch {epoch+1}/{run_epochs} Chunk {chunk_idx+1}/{num_chunks}: "
+                    f"loss={chunk_mean_loss:.4f}, step={global_step}/{total_updates}, "
+                    f"consumed={consumed_total_items}/{total_items*run_epochs}",
+                    flush=True,
+                )
+
+                # Save restorable cursor
+                cursor_data = {
+                    "run_id": run_id,
+                    "epoch": epoch,
+                    "chunk_idx": chunk_idx + 1,
+                    "total_chunks": num_chunks,
+                    "step_count": global_step,
+                    "total_updates": total_updates,
+                    "consumed_items": consumed_total_items,
+                    "consumed_units": len(consumed_units_set),
+                    "latest_chunk_loss": chunk_mean_loss,
+                    "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                }
+                _write(cursor_path, cursor_data)
+
+            # Epoch-End Validation on fixed validation set
+            model.eval()
+            epoch_mean_loss = epoch_loss_total / max(1, epoch_steps)
+            val_metrics = _groups(model, tok, val_groups, dev, sys.modules["laya.train"], cfg, max_len, head_max_len, val_rows=val_rows)
+
+            epoch_id = f"{run_id}-e{epoch + 1:02d}"
+            s1_loss = val_metrics.get("S1", {}).get("loss")
+            improved = s1_loss is not None and (best_epoch is None or s1_loss < (run_meta.get("best_loss") or float("inf")) * 0.995)
+            if improved and s1_loss is not None:
+                best_epoch = epoch + 1
+                run_meta["best_loss"] = s1_loss
+
+            ckcfg = dict(cfg, max_len=max_len, head_max_len=head_max_len,
+                         training_run={"run_id": run_id, "epoch": epoch + 1, "config": vars(config)})
+
+            entry = {
+                "checkpoint_id": epoch_id,
+                "epoch": epoch + 1,
+                "train_loss": round(epoch_mean_loss, 4),
+                "validation": val_metrics,
+                "improved_0_5pct": improved,
+                "best_epoch": best_epoch,
+                "optimizer_updates": global_step,
+                "learning_rate": {"encoder": config.encoder_lr, "head": config.head_lr},
+                "global_step": global_step,
+            }
+
+            # Record epoch validation and execute retention pruning via CheckpointRetentionManager
+            is_final = (epoch + 1 >= run_epochs)
+            ret_entry = retention_mgr.handle_epoch_checkpoint(
+                run_id=run_id,
+                epoch=epoch + 1,
+                is_final_epoch=is_final,
+                save_fn=lambda target_dir: save_checkpoint(model, tok, ckcfg, target_dir),
+                run_meta=run_meta,
+                entry=entry,
+                manifest=manifest_data,
+            )
+            history.append(entry)
+            run_meta["history"] = history
+            run_meta["current_epoch"] = epoch + 1
+            run_meta["current_step"] = global_step
+            run_meta["best_epoch"] = best_epoch
+
+            # Update coverage ledger after each epoch
+            ledger_data = {
+                "run_id": run_id,
+                "protocol_version": NEW_PROTOCOL_VERSION,
+                "layers": layers,
+                "layer_fractions": layer_fractions,
+                "supervision_classes": supervision_classes,
+                "total_eligible_records": total_items,
+                "consumed_items": consumed_total_items,
+                "distinct_units_covered": len(consumed_units_set),
+                "chunks_processed": (epoch + 1) * num_chunks,
+                "total_optimizer_steps": global_step,
+                "epochs_completed": epoch + 1,
+                "train_val_overlap_count": 0,
+                "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            }
+            _write(run_root / "run_coverage_ledger.json", ledger_data)
+
+    except Exception as exc:
+        status = "failed"
+        run_meta["error"] = repr(exc)
+        run_meta["status"] = status
+        run_meta["finished_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        run_meta["history"] = history
+        retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest_data)
+        _sweep_public_run(run_id, run_root, run_meta, history, manifest_data, out_root)
+        raise
+
+    run_meta["status"] = status
+    run_meta["finished_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    run_meta["best_epoch"] = best_epoch
+    run_meta["current_epoch"] = len(history)
+    run_meta["history"] = history
+
+    retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest_data)
+    _sweep_public_run(run_id, run_root, run_meta, history, manifest_data, out_root)
+    print(json.dumps({
+        "event": "full_coverage_run_complete",
+        "run_id": run_id,
+        "status": status,
+        "best_epoch": best_epoch,
+        "epochs": len(history),
+        "consumed_items": consumed_total_items,
+        "distinct_units": len(consumed_units_set),
+        "steps": global_step,
+    }, ensure_ascii=False), flush=True)
+    return run_meta
+
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch-root', default='runs/MR-ALLDATA-PREP-20261011/quality_grading_v2_1/batch_preparation/batch1')
@@ -783,6 +1218,10 @@ def main():
     parser.add_argument('--out-root', default='runs/OVERNIGHT-LAYA-TRAINING')
     parser.add_argument('--run', choices=['R0', 'R1', 'R2', 'R3'], default='R0')
     parser.add_argument('--sweep-run', default='')
+    parser.add_argument('--full-coverage-run', default='')
+    parser.add_argument('--chunk-size', type=int, default=8192)
+    parser.add_argument('--graded-root', default='runs/MR-ALLDATA-PREP-20261011/quality_grading_v2_1')
+    parser.add_argument('--cleaned-root', default='data/公开数据/清洗数据')
     parser.add_argument('--sweep-manifest', default='')
     parser.add_argument('--sweep-data-root', default='')
     parser.add_argument('--parent-checkpoint', default='')
@@ -818,6 +1257,24 @@ def main():
         val_root = args.sweep_data_root or args.out_root
         result = compute_baseline_0(val_root, args.model_dir, args.out_root, seed=args.seed)
         print(json.dumps({k: v for k, v in result.items() if k not in ('s1_item_losses', 's1_item_correct')}, ensure_ascii=False, indent=2))
+        return
+
+    if args.full_coverage_run:
+        result = run_full_coverage_stream_run(
+            run_id=args.full_coverage_run,
+            manifest_path=args.sweep_manifest,
+            model_dir=args.model_dir,
+            out_root=args.out_root,
+            graded_root=args.graded_root,
+            cleaned_root=args.cleaned_root,
+            epochs=args.epochs,
+            chunk_size=args.chunk_size,
+            active_budget_bytes=budget_bytes,
+            s2_audit_passed=args.s2_audit_passed,
+            explicit_pinned=pinned,
+            project_root=str(project_root),
+        )
+        print(json.dumps(result, ensure_ascii=False, indent=2))
         return
 
     if args.sweep_run:

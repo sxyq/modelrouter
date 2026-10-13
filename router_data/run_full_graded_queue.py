@@ -15,6 +15,10 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+_ROOT = str(Path(__file__).resolve().parent.parent)
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
+
 try:
     from router_data.checkpoint_retention import (
         DEFAULT_ACTIVE_BUDGET_BYTES,
@@ -40,6 +44,19 @@ except ImportError:
         load_or_default_baseline_0,
         run_storage_policy_verification,
         sync_server_metadata_and_build_dashboard,
+    )
+
+try:
+    from router_data.batch_prep import (
+        FULL_COVERAGE_SERIES_DEFS,
+        get_full_coverage_plan_spec,
+        prepare_full_coverage_manifest,
+    )
+except ImportError:
+    from batch_prep import (
+        FULL_COVERAGE_SERIES_DEFS,
+        get_full_coverage_plan_spec,
+        prepare_full_coverage_manifest,
     )
 
 
@@ -579,57 +596,383 @@ def _git_sync_dashboard(project_root: Path, message: str) -> Dict[str, Any]:
         return {"committed": False, "error": repr(exc)}
 
 
+FULL_COVERAGE_STAGE_MAP = {
+    # Stage 1: Pure S1 Routing Full Coverage (31,766 items total) - High priority router benchmark
+    "F01_S1": (1, 1),
+    "F02_S1": (1, 2),
+    "F03_S1": (1, 3),
+    "F04_S1": (1, 4),
+    "F05_S1": (1, 5),
+    "F06_S1": (1, 6),
+    "F07_S1": (1, 7),
+    # Stage 2: Single-Layer Full Coverage (F01..F04, All Supervisable Classes S1+S2+S3)
+    "F01": (2, 1),
+    "F02": (2, 2),
+    "F03": (2, 3),
+    "F04": (2, 4),
+    # Stage 3: Cumulative Full Coverage (F05..F07)
+    "F05": (3, 1),
+    "F06": (3, 2),
+    "F07": (3, 3),
+    # Stage 4: Fractional Scale with Nested Subsets (F08..F16)
+    "F08": (4, 1),
+    "F09": (4, 2),
+    "F10": (4, 3),
+    "F11": (4, 4),
+    "F12": (4, 5),
+    "F13": (4, 6),
+    "F14": (4, 7),
+    "F15": (4, 8),
+    "F16": (4, 9),
+    # Stage 5: Curriculum Chaining (F17..F20)
+    "F17": (5, 1),
+    "F18": (5, 2),
+    "F19": (5, 3),
+    "F20": (5, 4),
+    # Stage 6: Pure S3 Auxiliary Full Coverage (F01_S3..F07_S3)
+    "F01_S3": (6, 1),
+    "F02_S3": (6, 2),
+    "F03_S3": (6, 3),
+    "F04_S3": (6, 4),
+    "F05_S3": (6, 5),
+    "F06_S3": (6, 6),
+    "F07_S3": (6, 7),
+}
+
+
+def build_ordered_full_coverage_queue(
+    out_root: Path,
+    manifest: Dict[str, Any],
+    queue_state: Dict[str, Any],
+    stages: Tuple[int, ...] = (1, 2, 3, 4, 5, 6),
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    """Build the ordered execution queue for Mode B FULL-COVERAGE series (F01..F20 + S1/S3 branches)."""
+    plans = manifest.get("plans") or {}
+    completed_runs: Dict[str, Dict[str, Any]] = {}
+
+    for rpath in sorted(out_root.glob("*/run.json")):
+        try:
+            rdata = json.loads(rpath.read_text(encoding="utf8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        rid = rdata.get("run_id") or rpath.parent.name
+        if rdata.get("status") in ("completed", "early_stopped"):
+            completed_runs[rid] = rdata
+
+    counts = Counter()
+    ordered = []
+
+    for run_id, stage_prio in sorted(FULL_COVERAGE_STAGE_MAP.items(), key=lambda kv: kv[1]):
+        st, prio = stage_prio
+        if st not in stages:
+            continue
+        spec = plans.get(run_id) or get_full_coverage_plan_spec(run_id)
+        if not spec:
+            continue
+        spec = dict(spec)
+        spec["_stage"] = st
+        spec["_prio"] = prio
+
+        if run_id in completed_runs or run_id in (queue_state.get("completed_runs") or []):
+            counts["NEW_PROTOCOL_COMPLETED"] += 1
+            continue
+
+        failed_info = (queue_state.get("failed_runs") or {}).get(run_id) or {}
+        if int(failed_info.get("attempts", 0)) >= 2:
+            counts["FAILED"] += 1
+            continue
+
+        counts["ELIGIBLE_QUEUED"] += 1
+        ordered.append(spec)
+
+    reconciliation = {
+        "total_full_coverage_runs": len(FULL_COVERAGE_STAGE_MAP),
+        "completed_runs_count": counts["NEW_PROTOCOL_COMPLETED"],
+        "queued_runs_count": len(ordered),
+        "status_counts": dict(counts),
+    }
+    return ordered, reconciliation
+
+
+def run_continuous_full_coverage_queue(
+    project_root: Path,
+    out_root: Path,
+    manifest_path: Path,
+    model_dir: Path,
+    graded_root: Path,
+    cleaned_root: Path,
+    epochs: int = 2,
+    chunk_size: int = 8192,
+    active_budget_gib: float = 120.0,
+    stages: Tuple[int, ...] = (1, 2, 3, 4, 5, 6),
+    sync_github_every: int = 1,
+    max_runs: Optional[int] = None,
+) -> Dict[str, Any]:
+    """Execute the long-running continuous full-coverage training loop until all eligible tasks complete."""
+    project_root = Path(project_root).resolve()
+    out_root = Path(out_root).resolve()
+    model_dir = Path(model_dir).resolve()
+    budget_bytes = int(active_budget_gib * GIB)
+
+    state_path = out_root / "queue_state.json"
+    queue_state: Dict[str, Any] = {}
+    if state_path.is_file():
+        try:
+            queue_state = json.loads(state_path.read_text(encoding="utf8"))
+        except (OSError, json.JSONDecodeError):
+            queue_state = {}
+
+    queue_state.setdefault("protocol_version", NEW_PROTOCOL_VERSION)
+    queue_state.setdefault("campaign", "FULL-DATA-CONTINUOUS-TRAINING")
+    queue_state.setdefault("started_at", _now_iso())
+    queue_state.setdefault("completed_runs", [])
+    queue_state.setdefault("skipped_runs", {})
+    queue_state.setdefault("failed_runs", {})
+    queue_state.setdefault("s2_audit_passed", False)
+    queue_state["queue_status"] = "RUNNING_PREFLIGHT"
+    _write_json(state_path, queue_state)
+
+    # Step 1: Ensure BASELINE_0 exists & is frozen
+    b0_path = out_root / "baseline_0.json"
+    b0_valid = False
+    if b0_path.is_file():
+        try:
+            b0_data = json.loads(b0_path.read_text(encoding="utf8"))
+            b0_valid = isinstance((b0_data.get("S1") or {}).get("loss"), (int, float))
+        except (OSError, json.JSONDecodeError):
+            b0_valid = False
+    if not b0_valid:
+        cmd = [
+            sys.executable,
+            str(project_root / "router_data" / "laya_batch_train.py"),
+            "--compute-baseline0",
+            "--model-dir", str(model_dir),
+            "--out-root", str(out_root),
+            "--sweep-data-root", str(out_root),
+            "--project-root", str(project_root),
+        ]
+        subprocess.run(cmd, check=True, cwd=str(project_root))
+
+    # Step 2: Pre-execution verification
+    ver = run_storage_policy_verification(project_root=project_root, run_official_load=True)
+    _write_json(out_root / "storage_policy_verification.json", ver)
+    if not ver.get("all_passed"):
+        queue_state["queue_status"] = "STOPPED_PREFLIGHT_VERIFICATION_FAILED"
+        queue_state["stop_reason"] = f"Verification passed {ver.get('passed_count')}/{ver.get('total_checks')}"
+        _write_json(state_path, queue_state)
+        return {"queue_state": queue_state, "verification": ver}
+
+    # Step 3: Ensure full_coverage_manifest.json exists
+    if not manifest_path.is_file():
+        prepare_full_coverage_manifest(str(graded_root), str(manifest_path.parent))
+    manifest = json.loads(manifest_path.read_text(encoding="utf8"))
+
+    ordered, reconciliation = build_ordered_full_coverage_queue(out_root, manifest, queue_state, stages=stages)
+    queue_state["reconciliation"] = reconciliation
+    queue_state["queue_status"] = "RUNNING"
+    _write_json(state_path, queue_state)
+
+    mgr = CheckpointRetentionManager(
+        out_root=out_root,
+        active_budget_bytes=budget_bytes,
+        s2_audit_passed=bool(queue_state.get("s2_audit_passed", False)),
+    )
+
+    executed_this_session: List[str] = []
+
+    for spec in ordered:
+        if max_runs is not None and len(executed_this_session) >= max_runs:
+            queue_state["queue_status"] = "PAUSED_MAX_RUNS_REACHED"
+            queue_state["stop_reason"] = f"Completed requested batch of {max_runs} runs"
+            break
+
+        run_id = spec["run_id"]
+
+        # Check GPU availability
+        gpu_ok, gpu_info = check_gpu_available()
+        if not gpu_ok:
+            queue_state["queue_status"] = "PAUSED_GPU_BUSY"
+            queue_state["stop_reason"] = f"GPU busy or unavailable: {gpu_info}"
+            _write_json(state_path, queue_state)
+            break
+
+        # Check disk space & active weight budget
+        try:
+            mgr.pre_run_disk_check(run_id=run_id, manifest=manifest)
+        except DiskBudgetExceededError as exc:
+            queue_state["queue_status"] = "PAUSED_DISK_OR_BUDGET_GUARD"
+            queue_state["stop_reason"] = str(exc)
+            _write_json(state_path, queue_state)
+            break
+
+        queue_state["current_run"] = run_id
+        queue_state["interrupted_run"] = run_id
+        queue_state["updated_at"] = _now_iso()
+        _write_json(state_path, queue_state)
+
+        run_epochs = int(spec.get("epochs") or epochs)
+        cmd = [
+            sys.executable,
+            str(project_root / "router_data" / "laya_batch_train.py"),
+            "--full-coverage-run", run_id,
+            "--sweep-manifest", str(manifest_path),
+            "--model-dir", str(model_dir),
+            "--out-root", str(out_root),
+            "--graded-root", str(graded_root),
+            "--cleaned-root", str(cleaned_root),
+            "--epochs", str(run_epochs),
+            "--chunk-size", str(chunk_size),
+            "--active-budget-gib", str(active_budget_gib),
+            "--project-root", str(project_root),
+        ]
+        if queue_state.get("s2_audit_passed"):
+            cmd.append("--s2-audit-passed")
+
+        proc = subprocess.run(cmd, cwd=str(project_root))
+        if proc.returncode == 0:
+            if run_id not in queue_state["completed_runs"]:
+                queue_state["completed_runs"].append(run_id)
+            queue_state["current_run"] = None
+            queue_state["interrupted_run"] = None
+            executed_this_session.append(run_id)
+        else:
+            prev_att = int((queue_state["failed_runs"].get(run_id) or {}).get("attempts", 0))
+            queue_state["failed_runs"][run_id] = {
+                "attempts": prev_att + 1,
+                "returncode": proc.returncode,
+                "failed_at": _now_iso(),
+            }
+
+        # Rebuild dashboard & manifest after each run
+        sync_server_metadata_and_build_dashboard(project_root=project_root, run_official_load=False)
+        _, reconciliation = build_ordered_full_coverage_queue(out_root, manifest, queue_state, stages=stages)
+        queue_state["reconciliation"] = reconciliation
+        queue_state["updated_at"] = _now_iso()
+        _write_json(state_path, queue_state)
+
+        if sync_github_every > 0 and len(executed_this_session) % sync_github_every == 0:
+            _git_sync_dashboard(project_root, f"continuous-training: completed {run_id}")
+
+    if queue_state.get("queue_status") == "RUNNING":
+        remaining_queued = [r for r in FULL_COVERAGE_STAGE_MAP if r not in queue_state["completed_runs"]]
+        if not remaining_queued:
+            queue_state["queue_status"] = "FULL_DATA_CAMPAIGN_COMPLETED"
+        else:
+            queue_state["queue_status"] = "IDLE_STAGE_COMPLETE"
+        queue_state["current_run"] = None
+
+    sync_summary = sync_server_metadata_and_build_dashboard(project_root=project_root, run_official_load=True)
+    queue_state["updated_at"] = _now_iso()
+    _write_json(state_path, queue_state)
+    if sync_github_every > 0 and executed_this_session:
+        _git_sync_dashboard(project_root, f"continuous-training: sync batch ({len(executed_this_session)} runs)")
+
+    return {
+        "executed_runs": executed_this_session,
+        "queue_state": queue_state,
+        "dashboard_sync": sync_summary,
+    }
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="ModelRouter FULL-GRADED Automated Queue Controller")
+    parser = argparse.ArgumentParser(description="ModelRouter Automated Queue Controller")
+    parser.add_argument("--mode", choices=["continuous_full_coverage", "config_exploration"], default="continuous_full_coverage",
+                        help="Execution mode: continuous_full_coverage (Mode B) or config_exploration (Mode A)")
     parser.add_argument("--project-root", default=".")
     parser.add_argument("--out-root", default="runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012")
-    parser.add_argument("--manifest", default="runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/experiment_matrix.json")
+    parser.add_argument("--manifest", default="")
     parser.add_argument("--model-dir", default="models/laya-421m")
-    parser.add_argument("--max-runs", type=int, default=10)
+    parser.add_argument("--graded-root", default="runs/MR-ALLDATA-PREP-20261011/quality_grading_v2_1")
+    parser.add_argument("--cleaned-root", default="data/公开数据/清洗数据")
+    parser.add_argument("--chunk-size", type=int, default=8192)
+    parser.add_argument("--max-runs", type=int, default=0, help="0 means unlimited (continuous run until all completed)")
     parser.add_argument("--epochs", type=int, default=2)
     parser.add_argument("--active-budget-gib", type=float, default=120.0)
-    parser.add_argument("--stages", default="0,1,2,3")
-    parser.add_argument("--sync-github-every", type=int, default=0)
+    parser.add_argument("--stages", default="1,2,3,4,5,6")
+    parser.add_argument("--sync-github-every", type=int, default=1)
     parser.add_argument("--allow-unmaterialized", action="store_true")
     parser.add_argument("--dry-reconcile", action="store_true")
     args = parser.parse_args()
 
     project_root = Path(args.project_root).resolve()
     out_root = (project_root / args.out_root).resolve()
-    manifest_path = (project_root / args.manifest).resolve()
     model_dir = (project_root / args.model_dir).resolve()
+    graded_root = (project_root / args.graded_root).resolve()
+    cleaned_root = (project_root / args.cleaned_root).resolve()
     stages = tuple(int(x.strip()) for x in args.stages.split(",") if x.strip())
+    max_runs_opt = args.max_runs if args.max_runs > 0 else None
 
-    if args.dry_reconcile:
-        manifest = json.loads(manifest_path.read_text(encoding="utf8")) if manifest_path.is_file() else {}
-        state_path = out_root / "queue_state.json"
-        q_state = json.loads(state_path.read_text(encoding="utf8")) if state_path.is_file() else {}
-        ordered, rec = build_ordered_queue(out_root, manifest, q_state, stages=stages)
-        print(json.dumps({
-            "reconciliation": rec,
-            "next_20_in_queue": [
-                {"run_id": x["run_id"], "stage": x["_stage"], "batch_id": x.get("batch_id"), "combo_id": x.get("combo_id"), "groups": x.get("groups")}
-                for x in ordered[:20]
-            ],
-            "skipped_identical_count": len(q_state.get("skipped_runs") or {}),
-        }, ensure_ascii=False, indent=2))
-        return
+    if args.mode == "continuous_full_coverage":
+        manifest_default = out_root / "full_coverage_manifest.json"
+        manifest_path = (project_root / args.manifest).resolve() if args.manifest else manifest_default
+        if not manifest_path.is_file():
+            prepare_full_coverage_manifest(str(graded_root), str(out_root))
 
-    res = run_queue(
-        project_root=project_root,
-        out_root=out_root,
-        manifest_path=manifest_path,
-        model_dir=model_dir,
-        max_runs=args.max_runs,
-        epochs=args.epochs,
-        active_budget_gib=args.active_budget_gib,
-        stages=stages,
-        sync_github_every=args.sync_github_every,
-        allow_unmaterialized=args.allow_unmaterialized,
-    )
-    print(json.dumps(res, ensure_ascii=False, indent=2))
+        if args.dry_reconcile:
+            manifest = json.loads(manifest_path.read_text(encoding="utf8"))
+            state_path = out_root / "queue_state.json"
+            q_state = json.loads(state_path.read_text(encoding="utf8")) if state_path.is_file() else {}
+            ordered, rec = build_ordered_full_coverage_queue(out_root, manifest, q_state, stages=stages)
+            print(json.dumps({
+                "mode": "continuous_full_coverage",
+                "reconciliation": rec,
+                "next_queue": [{"run_id": x["run_id"], "stage": x["_stage"], "category": x.get("category"), "layers": x.get("layers"), "sup": x.get("supervision_classes")} for x in ordered],
+            }, ensure_ascii=False, indent=2))
+            return
+
+        res = run_continuous_full_coverage_queue(
+            project_root=project_root,
+            out_root=out_root,
+            manifest_path=manifest_path,
+            model_dir=model_dir,
+            graded_root=graded_root,
+            cleaned_root=cleaned_root,
+            epochs=args.epochs,
+            chunk_size=args.chunk_size,
+            active_budget_gib=args.active_budget_gib,
+            stages=stages,
+            sync_github_every=args.sync_github_every,
+            max_runs=max_runs_opt,
+        )
+        print(json.dumps(res, ensure_ascii=False, indent=2))
+
+    else:
+        # Mode A: Configuration Exploration (legacy 1092-matrix queue)
+        manifest_default = out_root / "experiment_matrix.json"
+        manifest_path = (project_root / args.manifest).resolve() if args.manifest else manifest_default
+
+        if args.dry_reconcile:
+            manifest = json.loads(manifest_path.read_text(encoding="utf8")) if manifest_path.is_file() else {}
+            state_path = out_root / "queue_state.json"
+            q_state = json.loads(state_path.read_text(encoding="utf8")) if state_path.is_file() else {}
+            ordered, rec = build_ordered_queue(out_root, manifest, q_state, stages=stages)
+            print(json.dumps({
+                "mode": "config_exploration",
+                "reconciliation": rec,
+                "next_20_in_queue": [
+                    {"run_id": x["run_id"], "stage": x["_stage"], "batch_id": x.get("batch_id"), "combo_id": x.get("combo_id"), "groups": x.get("groups")}
+                    for x in ordered[:20]
+                ],
+                "skipped_identical_count": len(q_state.get("skipped_runs") or {}),
+            }, ensure_ascii=False, indent=2))
+            return
+
+        res = run_queue(
+            project_root=project_root,
+            out_root=out_root,
+            manifest_path=manifest_path,
+            model_dir=model_dir,
+            max_runs=args.max_runs if args.max_runs > 0 else 10,
+            epochs=args.epochs,
+            active_budget_gib=args.active_budget_gib,
+            stages=stages,
+            sync_github_every=args.sync_github_every,
+            allow_unmaterialized=args.allow_unmaterialized,
+        )
+        print(json.dumps(res, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
     main()
+
 
