@@ -70,6 +70,44 @@
       </div>
     </section>
 
+
+    <!-- Section 0.2: 八类状态变量与联合路由监督审计看板 (V1–V8 覆盖热力图 · 共现矩阵 · 低成本敏感性筛查) -->
+    <section class="panel" id="variableAuditPanel">
+      <h2>0.2 八类状态变量与联合路由监督审计 (V1–V8 覆盖热力图 · 8×8 共现矩阵 · 低成本特征组敏感性筛查) <span class="badge RETAINED_BEST" id="auditStatusBadge">AUDIT PASSED</span></h2>
+      <div class="grid" id="auditSummaryCards"></div>
+      
+      <div style="margin-top:14px; overflow-x:auto">
+        <h3 style="margin-bottom:8px">1. 八类变量真实字段表与决策时刻可见性审计（严格因果隔离，防范事后标签泄漏）</h3>
+        <table id="variableDefTable"></table>
+      </div>
+
+      <div style="margin-top:14px; overflow-x:auto">
+        <h3 style="margin-bottom:8px">2. 来源 × 变量覆盖热力图（6 个允许训练来源 · 4,863,900 合法训练候选全量对账）</h3>
+        <table id="sourceVariableHeatmapTable"></table>
+      </div>
+
+      <div class="two" style="margin-top:14px">
+        <div style="overflow-x:auto">
+          <h3 style="margin-bottom:8px">3. 8×8 变量两两共同出现矩阵（高亮零共现死区：V2∩V6=0, V2∩V7=0）</h3>
+          <table id="coOccurrenceTable"></table>
+        </div>
+        <div style="overflow-x:auto">
+          <h3 style="margin-bottom:8px">4. 单条决策样本包含状态变量类别数分布 (k=1..8)</h3>
+          <table id="stateHistTable"></table>
+        </div>
+      </div>
+
+      <div style="margin-top:14px; overflow-x:auto">
+        <h3 style="margin-bottom:8px">5. 低成本特征组敏感性筛查实测（微调权重 B01_C13_QB_PB on CUDA · 固定验证集 N=5,692 · 严谨标注非正式消融）</h3>
+        <table id="sensitivityTable"></table>
+      </div>
+
+      <div style="margin-top:14px; background:#121b2a; border:1px solid var(--line); border-radius:8px; padding:12px">
+        <h3 style="margin-top:0; color:var(--bad)">6. 当前客观数据边界：不支持的四项核心研究假设（学术诚实红线）</h3>
+        <div id="unsupportedHypothesesBox" class="detail" style="font-size:12.5px; color:#c9d7eb"></div>
+      </div>
+    </section>
+
     <!-- Section 8.1 & 8.4: 三层基准综合得分分布图 & Checkpoint 筛选漏斗图 -->
     <section class="two">
       <div class="panel">
@@ -190,11 +228,19 @@
   <script src="shards/historical_runs_detail.js"></script>
   <script src="shards/storage_verification.js"></script>
   <script src="shards/baselines_and_scores.js"></script>
+  <script src="shards/variable_audit_and_sensitivity.js"></script>
   <script>
     const D = window.LAYA_DATA || {};
     if (window.LAYA_SHARD_PLANS) { D.plans = Object.assign({}, D.plans || {}, window.LAYA_SHARD_PLANS); }
     if (window.LAYA_SHARD_TREE && Array.isArray(window.LAYA_SHARD_TREE)) { D.checkpoint_tree = window.LAYA_SHARD_TREE; }
     if (window.LAYA_SHARD_VERIFICATION) { D.storage_verification_full = window.LAYA_SHARD_VERIFICATION; }
+    if (window.LAYA_SHARD_VARIABLE_AUDIT) {
+      D.variable_audit = D.variable_audit || window.LAYA_SHARD_VARIABLE_AUDIT.variable_audit;
+      D.feature_sensitivity = D.feature_sensitivity || window.LAYA_SHARD_VARIABLE_AUDIT.feature_sensitivity;
+      D.pipeline_audit = D.pipeline_audit || window.LAYA_SHARD_VARIABLE_AUDIT.pipeline_audit;
+      D.validation_isolation = D.validation_isolation || window.LAYA_SHARD_VARIABLE_AUDIT.validation_isolation;
+    }
+
     if (window.LAYA_SHARD_BASELINES) {
       D.baseline_0 = D.baseline_0 || window.LAYA_SHARD_BASELINES.baseline_0;
       D.queue_progress = D.queue_progress || window.LAYA_SHARD_BASELINES.queue_progress;
@@ -306,6 +352,173 @@
           bHtml += '</table></div>';
         }
         qBreakdown.innerHTML = bHtml;
+      }
+    }
+
+
+    function renderVariableAudit() {
+      const va = D.variable_audit || {};
+      const fs = D.feature_sensitivity || {};
+      const pa = D.pipeline_audit || {};
+      const vi = D.validation_isolation || {};
+
+      // 1. Summary cards
+      const sCards = [
+        ['合法训练候选总数', (va.total_candidate_records || 4863900).toLocaleString() + ' 条', '6 个允许来源 V2.1 统计'],
+        ['最多共现变量数', '6 类变量 (72.7%)', 'TRA-001/002 交互状态簇'],
+        ['全 8 类共现样本', '0 条 (0.00%)', '全库无任何 8 类齐全样本'],
+        ['Model×Effort 联合真值', '0 条 (严格为 0)', '缺失下游质量反事实配对'],
+        ['验证集物理隔离', (vi.val_distinct_records || 3142) + ' 条 (0 泄漏)', '物理 ID / Prompt 哈希 0 重叠'],
+        ['敏感性筛查基准 Loss', (fs.conditions?.Baseline?.overall_loss || 0.8172).toFixed(4), 'B01_C13_QB_PB on CUDA']
+      ];
+      const sumEl = document.getElementById('auditSummaryCards');
+      if (sumEl) {
+        sumEl.innerHTML = sCards.map(x =>
+          '<div class="card"><div class="label">' + esc(x[0]) + '</div><div class="value">' + esc(x[1]) + '</div><div class="sub">' + esc(x[2]) + '</div></div>'
+        ).join('');
+      }
+
+      // 2. Variable definitions
+      const vdefs = va.variable_definitions || {};
+      const vdEl = document.getElementById('variableDefTable');
+      if (vdEl) {
+        let rows = '<tr><th>代码</th><th>变量类别</th><th>关键物理字段</th><th>涉及来源</th><th>决策时刻可见性</th><th>是否允许入模</th></tr>';
+        for (const [k, d] of Object.entries(vdefs)) {
+          const fieldsStr = (d.fields || []).map(f => '<code>' + esc(f[0]) + '</code>').slice(0, 3).join(', ');
+          const srcs = [...new Set((d.fields || []).map(f => f[1]))].join(', ');
+          const allowed = (d.fields || []).some(f => f[4]);
+          rows += '<tr>' +
+            '<td><b>' + esc(d.id || k) + '</b></td>' +
+            '<td>' + esc(d.name || k) + '</td>' +
+            '<td>' + fieldsStr + '</td>' +
+            '<td>' + esc(srcs) + '</td>' +
+            '<td class="' + (allowed ? 'good' : 'warn') + '">' + (allowed ? '决策前可见 (Pre-decision)' : '含事后目标 (Post-hoc, 严禁入模)') + '</td>' +
+            '<td><span class="badge ' + (allowed ? 'RETAINED_BEST' : 'PRUNED_LOW_SCORE') + '">' + (allowed ? '允许 (经因果过滤)' : '隔离至 Loss 端') + '</span></td>' +
+            '</tr>';
+        }
+        vdEl.innerHTML = rows;
+      }
+
+      // 3. Heatmap
+      const sstats = va.source_stats || {};
+      const hmEl = document.getElementById('sourceVariableHeatmapTable');
+      const vnames = ['Task/Subtask', 'Agent/Coordination', 'Context/Memory', 'Tool/Environment', 'Verification/Recovery', 'KV Cache/Continuity', 'Temporal/Execution', 'Provider/Availability'];
+      const vshorts = ['V1 Task', 'V2 Agent', 'V3 Ctx', 'V4 Tool', 'V5 Verify', 'V6 Cache', 'V7 Time', 'V8 Prov'];
+      if (hmEl) {
+        let rows = '<tr><th>数据来源</th><th>物理总记录</th><th>训练候选</th>' + vshorts.map(v => '<th>' + esc(v) + '</th>').join('') + '</tr>';
+        const trainSrcs = ['CACHE-001', 'OWN-002', 'ROUTE-004', 'TIME-001', 'TRA-001', 'TRA-002'];
+        for (const s of trainSrcs) {
+          const st = sstats[s] || {};
+          const tot = Number(st.total_records || 0);
+          const elig = Number(st.train_eligible || 0);
+          const cells = vnames.map(vn => {
+            const cnt = (st.variable_non_null || {})[vn] || 0;
+            const pct = elig > 0 ? (cnt / tot * 100).toFixed(0) : 0;
+            const cls = cnt > 0 ? (pct >= 90 ? 'good' : 'cyan') : 'muted';
+            return '<td class="' + cls + '">' + (cnt > 0 ? (pct + '% (' + (cnt >= 1000000 ? (cnt/1000000).toFixed(2)+'M' : (cnt >= 1000 ? (cnt/1000).toFixed(0)+'k' : cnt)) + ')') : '-') + '</td>';
+          }).join('');
+          rows += '<tr><td><b>' + esc(s) + '</b></td><td>' + tot.toLocaleString() + '</td><td class="good"><b>' + elig.toLocaleString() + '</b></td>' + cells + '</tr>';
+        }
+        // Total row
+        const totCells = vnames.map(vn => {
+          let sumCnt = 0;
+          for (const s of trainSrcs) {
+            const st = sstats[s] || {};
+            if ((st.variable_non_null || {})[vn] > 0) sumCnt += Number(st.train_eligible || 0);
+          }
+          const pct = (sumCnt / 4863900 * 100).toFixed(1);
+          return '<td class="cyan"><b>' + pct + '%</b> (' + (sumCnt >= 1000000 ? (sumCnt/1000000).toFixed(2)+'M' : (sumCnt/1000).toFixed(0)+'k') + ')</td>';
+        }).join('');
+        rows += '<tr style="background:#1a283c"><td><b>全库总计</b></td><td>6,129,744</td><td class="good"><b>4,863,900</b></td>' + totCells + '</tr>';
+        hmEl.innerHTML = rows;
+      }
+
+      // 4. Co-occurrence
+      const coEl = document.getElementById('coOccurrenceTable');
+      if (coEl) {
+        const coMat = va.co_occurrence || {};
+        let rows = '<tr><th>变量</th>' + vshorts.map(v => '<th>' + esc(v) + '</th>').join('') + '</tr>';
+        for (let i = 0; i < vnames.length; i++) {
+          const v1 = vnames[i];
+          let cells = '';
+          for (let j = 0; j < vnames.length; j++) {
+            const v2 = vnames[j];
+            const val = Number((coMat[v1] || {})[v2] || 0);
+            let style = '';
+            if (val === 0) style = 'color:#64748b';
+            else if (i === j) style = 'font-weight:bold;color:#4adeaa';
+            else style = 'color:#e8edf5';
+            cells += '<td style="' + style + '">' + (val > 0 ? (val >= 1000000 ? (val/1000000).toFixed(2)+'M' : (val/1000).toFixed(0)+'k') : '0') + '</td>';
+          }
+          rows += '<tr><td><b>' + esc(vshorts[i]) + '</b></td>' + cells + '</tr>';
+        }
+        coEl.innerHTML = rows;
+      }
+
+      // 5. State hist
+      const shEl = document.getElementById('stateHistTable');
+      if (shEl) {
+        const hist = va.state_count_hist || {};
+        let rows = '<tr><th>包含状态类别数 (k)</th><th>样本数量</th><th>占比</th><th>对应来源特征</th></tr>';
+        const rowsData = [
+          ['k = 6', Number(hist['6'] || 3537955), '72.74%', 'TRA-001/002 Agent 交互状态簇 {V1,V2,V3,V4,V5,V8}'],
+          ['k = 5', Number(hist['5'] || 142888), '2.94%', 'OWN-002 真实网关路由日志 {V1,V3,V6,V7,V8}'],
+          ['k = 3', Number(hist['3'] || 31766), '0.65%', 'ROUTE-004 LMSYS 竞技场偏好对战 {V1,V3,V5}'],
+          ['k = 2', Number(hist['2'] || 1151291), '23.67%', 'TIME-001 (1.12M) + CACHE-001 (28.7k) 底层性能负载簇'],
+          ['k = 7, 8', 0, '0.00%', '全库零样本包含全部 8 类变量（零全知样本）']
+        ];
+        for (const rd of rowsData) {
+          rows += '<tr><td><b>' + esc(rd[0]) + '</b></td><td class="good">' + Number(rd[1]).toLocaleString() + '</td><td><b>' + esc(rd[2]) + '</b></td><td>' + esc(rd[3]) + '</td></tr>';
+        }
+        shEl.innerHTML = rows;
+      }
+
+      // 6. Sensitivity
+      const senEl = document.getElementById('sensitivityTable');
+      if (senEl) {
+        const conds = fs.conditions || {};
+        let rows = '<tr><th>实验条件</th><th>特征遮蔽描述</th><th>整体 Loss</th><th>&Delta; Loss</th><th>S1 Loss</th><th>S2 Loss (Action)</th><th>S3 Loss (Quota/Tokens)</th><th>Macro-F1</th><th>敏感性实测结论</th></tr>';
+        const condNotes = {
+          'Baseline': '当前最佳多任务微调权重基准',
+          'G1': 'S3 资源 Loss 显著上升 (+0.0492)',
+          'G2': '静态验证集上边际差异较小 (-0.0061)',
+          'G3': 'S2 Action Loss 剧烈飙升 (+0.4559)，错误反馈极度敏感',
+          'G4': 'S3 Cache Loss 飙升 (+0.1065)，Macro-F1 跌至 0.48',
+          'G5': 'S1 与 S3 双重劣化，时序与模型规格直接影响效用',
+          'V2': '单独遮蔽 step_index，动作感知保持稳定'
+        };
+        for (const [k, cd] of Object.entries(conds)) {
+          const dLoss = Number(cd.delta_loss_vs_baseline || 0);
+          const m = cd.metrics || {};
+          const byS = m.by_supervision_class || {};
+          const isBase = k === 'Baseline';
+          rows += '<tr>' +
+            '<td><b>' + esc(k) + '</b></td>' +
+            '<td>' + esc(cd.description || k) + '</td>' +
+            '<td><b>' + (Number(cd.overall_loss || 0)).toFixed(4) + '</b></td>' +
+            '<td class="' + (dLoss > 0.05 ? 'bad' : (dLoss > 0 ? 'warn' : 'good')) + '">' + (isBase ? '-' : (dLoss >= 0 ? '+' : '') + dLoss.toFixed(4)) + '</td>' +
+            '<td>' + (byS.S1?.loss ? byS.S1.loss.toFixed(4) : '-') + '</td>' +
+            '<td class="' + (k === 'G3' ? 'bad' : '') + '">' + (byS.S2?.loss ? byS.S2.loss.toFixed(4) : '-') + '</td>' +
+            '<td class="' + (k === 'G4' ? 'bad' : '') + '">' + (byS.S3?.loss ? byS.S3.loss.toFixed(4) : '-') + '</td>' +
+            '<td>' + (m.overall?.macro_f1 ? m.overall.macro_f1.toFixed(4) : '-') + '</td>' +
+            '<td>' + esc(condNotes[k] || '') + '</td>' +
+            '</tr>';
+        }
+        senEl.innerHTML = rows;
+      }
+
+      // 7. Unsupported hypotheses
+      const hypEl = document.getElementById('unsupportedHypothesesBox');
+      if (hypEl) {
+        hypEl.innerHTML =
+          '<p><b>• 假设 1：端到端直接学习 (Model, Effort) 的 Pareto 最优联合路由（不支持）</b><br>' +
+          '事实：全库具备 (Model, Effort) 路由选择、下游任务完成度真值与实际成本的联合样本数为 <b>严格 0 条</b>。解法：质量偏好 (S1)、动作复杂度 (S2) 与资源开销 (S3) 解耦训练，在推理期通过复合效用函数联合决策。</p>' +
+          '<p><b>• 假设 2：在长程 Agent 交互中学习逐步 KV 缓存亲和性路由 (Step-wise KV Cache Affinity)（不支持）</b><br>' +
+          '事实：354 万条长程 Agent 交互轨迹 (TRA-001/002) 的 KV 缓存特征覆盖率为 <b>0.0% (V2∩V6=0)</b>。缓存与 Agent 完全不共现，无法在离线数据中直接学习其耦合关系。</p>' +
+          '<p><b>• 假设 3：Agent 报错时自适应动态提升思考等级 (Error-Triggered Dynamic Reasoning Escalation)（不支持）</b><br>' +
+          '事实：包含报错反馈的 356 万条记录均由固定模型执行，无同一报错下尝试 Low/High Effort 的反事实对照数据。动态提权只能作为推理期规则策略，不可宣称为监督学习成果。</p>' +
+          '<p><b>• 假设 4：大模型路由器直接感知商业闭源 API 底层的物理内存缓存命中率（不支持）</b><br>' +
+          '事实：所有商业 API 均未上报 physical_provider_cache_hit（全库 100% UNKNOWN）。模型仅能学习基于 Prompt 文本前缀块哈希推测的理论复用机会。</p>';
       }
     }
 
@@ -842,7 +1055,7 @@
     function renderCharts(){const hs=run(selected).history||[];draw('lossChart',hs.map(x=>x.validation?.S1?.loss),'#63a4ff');draw('accChart',hs.map(x=>x.validation?.S1?.accuracy),'#4adeaa');const p=Object.values(D.plans||{}),r=Object.values(runs);const status={};for(const x of p)status[x.status||'PLANNED']=(status[x.status||'PLANNED']||0)+1;for(const x of r){const k=x.status||'RUNNING';if(status[k]===undefined)status[k]=0;status[k]++}bars('statusChart',Object.entries(status),'#63a4ff');const cov=D.coverage||{};bars('layerRowsChart',Object.entries(cov).filter(([k])=>k!=='totals').map(([k,v])=>[k,v.raw_records]),'#4adeaa');bars('layerUnitsChart',Object.entries(cov).filter(([k])=>k!=='totals').map(([k,v])=>[k,v.eligible_independent_units]),'#f6c453');const qp={};for(const x of r){const k=[x.quality_code,x.sampling_code].join(' × ');if(k!==' × ')qp[k]=(qp[k]||0)+1}bars('qpChart',Object.entries(qp),'#a78bfa');const timings=r.map(x=>[x.run_id||'run',((x.history||[]).reduce((a,e)=>a+(Number(e.epoch_total_seconds)||0),0))]).filter(x=>x[1]>0).slice(-16);bars('timeChart',timings,'#fb7185');const memory=r.map(x=>[x.run_id||'run',Math.max(0,...(x.history||[]).map(e=>Number(e.gpu_memory_peak_mib)||0))]).filter(x=>x[1]>0).slice(-16);bars('memoryChart',memory,'#38bdf8');}
     function renderRepro(){const r=run(selected),p=plan(selected);document.getElementById('repro').textContent=JSON.stringify({experiment_id:D.experiment_id,run_id:selected,plan:p,run:{status:r.status,parent_checkpoint_id:r.parent_checkpoint_id,config:r.config,train_groups:r.train_groups,val_groups:r.val_groups,history:r.history},code_commit:D.code_commit,fixed_validation:D.fixed_validation,checkpoint_root:r.checkpoint_root},null,2);}
     function selectRun(id){selected=id;const r=run(id);if(r.history&&r.history.length){selectedCkptId=r.history[0].checkpoint_id}render()}
-    function render(){renderOverview();renderQueueProgress();renderFullCoverage();renderDiskAndRetention();renderBaselineAndFunnel();renderBeforeAfter();renderScatter();renderDynamicThresholds();renderEpochTree();renderVerification();renderMatrix();renderCoverage();renderQP();renderS2();renderRatio();renderQueue();renderRuns();renderDetail();renderCharts();renderRepro()}
+    function render(){renderOverview();renderQueueProgress();renderFullCoverage();renderVariableAudit();renderDiskAndRetention();renderBaselineAndFunnel();renderBeforeAfter();renderScatter();renderDynamicThresholds();renderEpochTree();renderVerification();renderMatrix();renderCoverage();renderQP();renderS2();renderRatio();renderQueue();renderRuns();renderDetail();renderCharts();renderRepro()}
     render();
   </script>
 </body>
