@@ -993,15 +993,33 @@ def run_full_coverage_stream_run(
     history = []
     best_epoch = None
 
+    resume_mode = "COLD_START"
     if cursor_path.is_file():
         try:
             cur = json.loads(cursor_path.read_text(encoding="utf8"))
             if cur.get("run_id") == run_id:
-                start_epoch = cur.get("epoch", 0)
-                start_chunk = cur.get("chunk_idx", 0)
-                global_step = cur.get("step_count", 0)
-                consumed_total_items = cur.get("consumed_items", 0)
-                history = cur.get("history", [])
+                cur_ep = int(cur.get("epoch", 0))
+                cur_chunk = int(cur.get("chunk_idx", 0))
+                ep_ckpt_dir = run_root / "checkpoints" / f"epoch_{cur_ep:02d}"
+                if cur_ep > 0 and has_physical_weights(ep_ckpt_dir):
+                    try:
+                        import laya.train
+                        model, _ = laya.train.load_checkpoint(str(ep_ckpt_dir))
+                        model.to(dev)
+                        start_epoch = cur_ep
+                        start_chunk = 0
+                        global_step = cur.get("step_count", 0)
+                        consumed_total_items = cur.get("consumed_items", 0)
+                        history = cur.get("history", [])
+                        resume_mode = "EPOCH_LEVEL_RESUME"
+                    except Exception as exc:
+                        print(f"[{run_id}] Warning: Failed to reload epoch checkpoint {ep_ckpt_dir}: {exc}")
+                        resume_mode = "WEIGHT_ONLY_FALLBACK"
+                else:
+                    start_epoch = cur_ep
+                    start_chunk = 0
+                    resume_mode = "EPOCH_LEVEL_RESTART"
+                run_meta["resume_mode"] = resume_mode
         except Exception:
             pass
 
@@ -1030,7 +1048,11 @@ def run_full_coverage_stream_run(
                     project_root=str(project_root),
                 )
 
-                materialized_total_items += sum(mat_res.values())
+                if isinstance(mat_res, dict):
+                    chunk_mat_items = int(mat_res.get("item_count", sum(mat_res.get("by_class", {}).values())))
+                else:
+                    chunk_mat_items = len(mat_res) if hasattr(mat_res, "__len__") else 0
+                materialized_total_items += chunk_mat_items
 
                 # 2. Load chunk items from chunk's train directory with multi-supervision balance
                 by_sup = {}

@@ -1723,7 +1723,10 @@ def get_full_coverage_plan_spec(run_id: str) -> Optional[dict]:
     if not spec:
         return None
     res = dict(spec)
-    res["protocol_version"] = "MR-FULL-GRADED-P0-DATA-REPAIR-v1"
+    if run_id.startswith("ALGN_"):
+        res["protocol_version"] = "MR-ROUTING-ALIGNED-v2"
+    else:
+        res["protocol_version"] = "MR-FULL-GRADED-P0-DATA-REPAIR-v1"
     res["legacy_input_protocol"] = False
     res["status"] = "ELIGIBLE"
     return res
@@ -1949,7 +1952,10 @@ def prepare_full_coverage_manifest(
     plans = {}
     for run_id, spec in FULL_COVERAGE_SERIES_DEFS.items():
         plan = dict(spec)
-        plan["protocol_version"] = "MR-FULL-GRADED-P0-DATA-REPAIR-v1"
+        if run_id.startswith("ALGN_"):
+            plan["protocol_version"] = "MR-ROUTING-ALIGNED-v2"
+        else:
+            plan["protocol_version"] = "MR-FULL-GRADED-P0-DATA-REPAIR-v1"
         plan["legacy_input_protocol"] = False
         plan["status"] = "ELIGIBLE"
         plan["materialized"] = False
@@ -1982,6 +1988,7 @@ def prepare_full_coverage_manifest(
             "S3": "val/S3.jsonl",
         },
         "plans": plans,
+        "routing_aligned_views": ROUTING_ALIGNED_VIEWS,
     }
     manifest_path = os.path.join(out_root, "full_coverage_manifest.json")
     _dump(manifest_path, manifest)

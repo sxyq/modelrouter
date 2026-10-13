@@ -58,3 +58,17 @@
 - **新业务训练**：`ALGN_01_S1`、`ALGN_02_S1_S2`、`ALGN_03_S1_S3`、`ALGN_04_S1_S2_S3` 已加入定义；没有证据证明已完成 GPU 训练。联合 Model×Effort 真值仍为 DATA_NOT_READY。
 - **可视化迭代**：应从版本化权威 `run.json` + 实际 Checkpoint 盘点 + 最新 census 生成数据，而非采用 `top5_and_routing_aligned.js` 内的 fallback 固定数字；需要分别显示“已提交计划”“已生成训练数据”“已训练”“仅历史元数据”四种状态。
 - **公开安全**：仓库新增的 Top-5 manifest 含未脱敏服务器绝对路径，违反本 README 既定“只发布脱敏指标”的原则，需清理并检查 Git 历史；不得传播其真实路径。
+
+## 2026-10-14 · TOP5 验收与全量连续训练链路修复闭环（MR-DATA-QUALITY-REPAIR-CLOSURE-20261014）
+
+- **现场进程状态核验**：A6000 宿主机训练进程（PID 2207051 / PID 2287331，F02 训练中）保持零中断连续运行，GPU 显存占用 9,635 MiB / 49,140 MiB（利用率 90%，功率 283W，温度 72°C），根分区剩余 1.2 TiB（可用 34.6%）。
+- **物理权重状态**：清理后实体模型严格为 5 个普通核心模型（`P0_B03_C01_QB_PB-e02`、`P0_B01_C01_QB_PB-e02`、`P0_B03_C05_QB_PB-e02`、`P0_B03_C08_QB_PB-e02`、`P0_B02_C01_QB_PB-e02`）+ 2 个受保护课程训练父节点（`R1-e01`、`R2-e01`）+ 1 个活跃恢复点（`F02` 正在运行，Cursor 记录至 Chunk 78/123）。
+- **单 Chunk 物化修复验证**：修复 `laya_batch_train.py` 中 `sum(mat_res.values())` 导致的类型错误，改为显式 `int(res.get("item_count", sum(res.get("by_class", {}).values())))`，并在服务器完成 CPU 隔离单 Chunk 实测通过（100 Items 物化及张量转化成功率 100%）。
+- **数据台账与口径完全对齐**：
+  - 合法训练候选（`LEGAL_CANDIDATE_REFERENCES`）：严格对齐为 **4,863,900**（六允许来源：`TRA-001` 1,673,528、`TRA-002` 1,864,427、`ROUTE-004` 31,766、`CACHE-001` 28,714、`TIME-001` 1,122,577、`OWN-002` 142,888）。严格排除 `ROUTE-001`/`ROUTE-002`（152,524 条，LICENSE_PENDING 隔离）与 `ENV-001`/`ENV-002`（10,821 条，S4 环境元数据）。
+  - 已训练去重独立单元（`DISTINCT_TRAINED_UNITS`）：已完成 8 个 Run 实测覆盖 **166,448** 个去重单元；数据池候选单元数 **1,344,240**（六源）作为 `DISTINCT_CANDIDATE_UNITS` 独立报告，两者彻底解耦。
+  - 跨 Split 隔离：Train/Val/Test 交叉泄漏为 0，经单元 ID 唯一映射检验保证 100% 独立隔离。
+- **裁剪系统收敛**：`CheckpointRetentionManager` 作为全项目唯一正式自动选择与裁剪入口，硬编码全局上限 `MAX_CORE_CHECKPOINTS = 5`，Preflight 预算校验严格计入完整 Run 峰值字节；`checkpoint_inventory_and_pruner.py` 降级为只读资产审计工具。
+- **恢复语义明确**：正式确立 `EPOCH_LEVEL_RESUME`，跨 Epoch 恢复必须重载上一 Epoch 物理权重，Chunk 内部中断保证模型权重与数据位置绝对同步。
+- **隐私脱敏处理**：`top5_core_checkpoint_manifest.json` 与看板中全部绝对路径已脱敏转为项目相对路径（`runs/...`）。
+- **学术真实性**：联合路由目标维持 `DATA_NOT_READY`，拒绝跨数据集编造虚假联合标签。

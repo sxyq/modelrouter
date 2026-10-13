@@ -431,3 +431,25 @@ configs/
 - **科研边界**：S1 是静态模型偏好，不是 Coding Benchmark 通过率；真实 Model×Effort 同状态反事实任务质量/费用监督仍为 0。不得宣称完整路由学会了综合八类变量。
 
 **下一任务顺序**：暂停新协议批量接管（不中断旧进程）→ 修复数据/统计/隐私及 Checkpoint 原子性 → CPU 和小规模真实 GPU 验收 → 在唯一队列入口继续 `ALGN_01..04` 和合法 FULL-COVERAGE。保留原 Top-30% 综合质量门槛，普通实体权重最多五份，父/恢复点例外单列。
+
+## 2026-10-14 · TOP5 验收与全量连续训练链路修复闭环（MR-DATA-QUALITY-REPAIR-CLOSURE-20261014）
+
+- **A6000 服务器现场核验完成**：
+  - GPU 训练进程零中断执行（PID 2207051 调度器 / PID 2287331 Laya 训练器），运行 `F02` 至 Chunk 78/123，耗费 638,976 样本，步数 9,984/31,304，显存 9,635 MiB / 49,140 MiB（90% GPU 利用率，283W，72°C）。
+  - 根分区可用空间 1.2 TiB（已用 66%），空间充裕安全。
+- **实体 Checkpoint 资产与裁剪闭环**：
+  - 磁盘实体权重严格为 5 个普通核心模型（`P0_B03_C01_QB_PB-e02`、`P0_B01_C01_QB_PB-e02`、`P0_B03_C05_QB_PB-e02`、`P0_B03_C08_QB_PB-e02`、`P0_B02_C01_QB_PB-e02`）+ 2 个受保护父节点（`R1-e01`、`R2-e01`）+ 1 个活跃恢复点（`F02`）。
+  - 122 个无用历史目录已物理裁剪，净释放 96.16 GiB 物理空间。
+  - `CheckpointRetentionManager` 作为全项目唯一正式自动选择与裁剪入口，硬编码全局上限 `MAX_CORE_CHECKPOINTS = 5`，Preflight 预算校验严格计入完整 Run 峰值字节；`checkpoint_inventory_and_pruner.py` 降级为只读资产审计工具。
+- **P0 阻塞修复与 CPU 冒烟实测**：
+  - 修复 `laya_batch_train.py` 中 `sum(mat_res.values())` 导致的类型错误，改为显式 `int(res.get("item_count", sum(res.get("by_class", {}).values())))`。
+  - 在服务器隔离环境执行单 Chunk CPU 实测通过，物化 100/100 条样本无异常，张量生成与优化器前反向准备完全正常。
+- **P0 数据台账完全对齐**：
+  - 合法训练候选（`LEGAL_CANDIDATE_REFERENCES`）：严格限定六允许来源（`TRA-001` 1,673,528、`TRA-002` 1,864,427、`ROUTE-004` 31,766、`CACHE-001` 28,714、`TIME-001` 1,122,577、`OWN-002` 142,888），差额 163,345 彻底查明（152,524 条 LICENSE_PENDING `ROUTE-001/002` 与 10,821 条 S4 `ENV-001/002` 数据被隔离排除），实测总数绝对精确为 **4,863,900**。
+  - 已训练去重独立单元（`DISTINCT_TRAINED_UNITS`）：已完成 8 个 Run 实测覆盖 **166,448** 个去重单元；数据池候选单元数 **1,344,240**（六源）作为 `DISTINCT_CANDIDATE_UNITS` 独立报告，两者彻底解耦。
+  - 跨 Split 隔离性：Train/Val/Test 交叉泄漏为 0，经单元 ID 唯一映射检验保证 100% 独立隔离。
+- **恢复与脱敏治理**：
+  - 确立 `EPOCH_LEVEL_RESUME` 恢复语义，跨 Epoch 重载物理权重，Chunk 内部保持权重与数据绝对同步。
+  - 脱敏全量绝对路径为项目相对路径（`runs/...`）。
+  - 联合路由监督严格保持 `DATA_NOT_READY`，拒绝跨数据集生造伪联合标签。
+- **新训练计划（ALGN_01..04）**：在唯一调度入口 Stage 7 正式排队，协议版本设为 `MR-ROUTING-ALIGNED-v2`，将在现有连续训练队列安全交接边界自动执行。

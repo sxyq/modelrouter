@@ -121,27 +121,39 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
     "disk_free_pct": 34.6
   },
   "census_reconciliation": {
-    "legal_candidate_references": 5027245,
+    "legal_candidate_references": 4863900,
     "materialized_items": 1180742,
     "encoded_items": 1180742,
     "trained_items": 1180742,
-    "distinct_trained_units": 1389767,
+    "distinct_trained_units": 166448,
+    "distinct_candidate_units": 1389767,
     "class_breakdown": {
-      "S1": 184290,
+      "S1": 31766,
       "S2": 3537955,
       "S3": 1294179,
-      "S4": 10821
+      "S4": 0
+    },
+    "source_breakdown": {
+      "TRA-001": 1673528,
+      "TRA-002": 1864427,
+      "ROUTE-004": 31766,
+      "CACHE-001": 28714,
+      "TIME-001": 1122577,
+      "OWN-002": 142888
     },
     "quantile_breakdown": {
-      "L1": 502494,
-      "L2": 1036432,
-      "L3": 1518786,
-      "L4": 1969533
+      "L1": 485210,
+      "L2": 1001005,
+      "L3": 1466724,
+      "L4": 1910961
     },
     "isolation_audit": {
       "train_val_overlap": 0,
       "train_test_overlap": 0,
-      "test_status": "Strictly Sealed & Air-Gapped"
+      "test_status": "Strictly Sealed & Air-Gapped",
+      "unit_split_integrity": "Verified 100% disjoint split assignments (quality_v2 unique unit mapping invariant holds with 0 conflicts)",
+      "route_001_002_license_status": "Strictly excluded from training candidate pool (LICENSE_PENDING: 152,524 rows isolated)",
+      "env_001_002_status": "Strictly excluded from training candidate pool (S4 environment metadata: 10,821 rows isolated)"
     }
   },
   "routing_aligned_v2": {

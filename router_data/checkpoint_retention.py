@@ -2575,7 +2575,7 @@ class CheckpointRetentionManager:
                 )
 
         after = self.disk_status(simulated_statvfs=simulated_statvfs)
-        after_projected_active = after["active_weights_bytes"] + SINGLE_CKPT_ESTIMATED_BYTES
+        after_projected_active = after["active_weights_bytes"] + estimated_peak_bytes
         after_projected_free = after["root_avail_bytes"] - estimated_peak_bytes
         after_projected_free_pct = (
             round(after_projected_free / after["root_total_bytes"] * 100.0, 2)
@@ -2600,7 +2600,7 @@ class CheckpointRetentionManager:
             status = "STOPPED_DISK_BUDGET"
             reason = (
                 f"Active weight budget exceeded after cleanup: active={round(after['active_weights_bytes']/GIB, 2)} GiB "
-                f"(mandatory best+pinned={round(mandatory_bytes/GIB, 2)} GiB) + next_ckpt={round(SINGLE_CKPT_ESTIMATED_BYTES/GIB, 2)} GiB "
+                f"(mandatory best+pinned={round(mandatory_bytes/GIB, 2)} GiB) + run_peak={round(estimated_peak_bytes/GIB, 2)} GiB "
                 f"> budget={round(self.active_budget_bytes/GIB, 2)} GiB. Refusing to delete PINNED or global best models."
             )
         else:
