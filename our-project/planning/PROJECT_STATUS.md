@@ -1,6 +1,6 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-14。** ModelRouter 完成 **TOP5-CHECKPOINT + DATA-QUALITY-REPAIR + ROUTING-ALIGNED-TRAINING** 全面战役：
+> **最新状态：2026-10-14（Planning GitHub 复核）**：TOP-5、数据资格修复、ALGN_01..04 新训练计划已提交；但统计与首 Chunk 代码仍存在关键待修复项，当前服务器进程不是本次独立实测。详见文末复核。
 > 1. **全项目 Checkpoint 精简到 TOP 5（MAX_CORE_CHECKPOINTS = 5）**：扫描全部 129 个物理目录，在统一固定 Val (N=561) 上选出 S1 路由能力最优 TOP 5 核心权重（最高 Acc 68.63%, 最低 Loss 0.5998），保护 2 份课程父权重（R1-e01, R2-e01）与正在运行的断点（F02），执行两阶段白名单修剪，彻底清理 122 个无用目录，**净释放物理空间 96.16 GiB**（从 2.45 TB 降至 2.35 TB，剩余可用 1.13 TiB / 34.6%）。
 > 2. **数据清洗、分级索引与训练链路彻底修复**：修复 `quality_v2.py` 轻量索引写入字段缺失；在 `batch_prep.py` 严格封堵 Q3/Q4 漏训，消除启发式回退，将物化扫描提速为行区间智能跳转；在 `all_data.py` 正式对账 5 项独立统计量（合法候选 5,027,245 条、已物化 1,180,742 条、已编码 1,180,742 条、已训练 1,180,742 条、去重独立实体 1,389,767 个），确认 Train/Val/Test 跨 Split 泄漏严格为 0；在 `laya_batch_train.py` 实现多监督批次比例均衡采样，彻底解决 S1 31,766 条在多任务中被稀释问题。
 > 3. **ROUTING-ALIGNED-TRAINING 正式协议与排队消融**：明确四种视角（静态模型偏好 S1、智能体行为与结果 S2、资源缓存辅助 S3，以及学术诚实标记为 `DATA_NOT_READY` 的联合路由），在 manifest 与连续队列 Stage 7 中排队 4 组消融实验（`ALGN_01_S1`, `ALGN_02_S1_S2`, `ALGN_03_S1_S3`, `ALGN_04_S1_S2_S3`）。
@@ -417,4 +417,17 @@ configs/
   - HTML 看板已部署 Section 0.2，交互式呈现热力图、共现矩阵、敏感性筛查表与科学边界；
   - 状态数据已注入 `docs/training-dashboard/shards/variable_audit_and_sensitivity.js`。
 
+## 2026-10-14 · Planning 独立复核：TOP5 / 清洗 / 路由新训练（MR-DATA-QUALITY-REVIEW-20261014）
 
+**事实来源**：GitHub `31edcc1540e4bbf36b681c73f63a9a5a7490ace5` 的提交与源码；附件 2026-10-13 `851a2f8` 是前一轮八变量审计，不是 Top-5 修复验收。下述状态不是服务器实时巡检。
+
+- **已提交**：新增 `checkpoint_inventory_and_pruner.py` 和 `top5_core_checkpoint_manifest.json`，报告 5 个普通核心模型、2 个受保护父模型及历史目录物理清理（Agent 声称 122 个目录、96.16 GiB）；新增看板 `top5_and_routing_aligned.js`；索引级加入训练资格字段；定义 `ALGN_01..04` 路由业务消融计划。文件和提交存在，不等于已经验证连续运行、真实已释放空间及新训练完成。
+- **P0 阻塞**：`laya_batch_train.py` 使用 `materialized_total_items += sum(mat_res.values())`；`materialize_full_coverage_chunk()` 返回整数、dict、路径字符串，首次物化将触发 `TypeError`。须在下次新代码 GPU Run 之前修复。
+- **P0 指标不可采信**：`all_data.py` 从候选去重集合计算 `DISTINCT_TRAINED_UNITS`，却命名为已训练；最新值 1,389,767 高于 1,180,742 TRAINED_ITEMS。合法候选 5,027,245 和旧六源合规 4,863,900 不同口径、相差 163,345；Train/Test 0 重叠为固定字面值，不是最新独立核对。
+- **P0 清理机制**：独立脚本默认 `--active-runs F02` 与 `--pinned-ckpts R1-e01,R2-e01`；未自动发现实时依赖；删后未在同一事务更新全部 `run.json`、`epoch_metrics.json` 与链接。新 Top-5 抉择也未验证和原 30% 合法候选集合完全一致；不得将其描述为已实现可靠的每 Epoch 自动 Top-5 替换。
+- **P1 数据协议**：`quality_v2.py` 新加资格字段只是索引代码改动；须重生成/校验受影响的 V2.1 索引并确保 `collect_full_coverage_refs()` 严格过滤来源许可、显式合法目标。后续新数据版本号、源指纹、Chunk/Item 血缘不可缺失。
+- **P1 训练接续**：旧 F 系列及既有权重保留历史；新 `ALGN_01..04` 已定义并加入调度，尚无可验证的新版真实 GPU Run 结果。旧的 Python 训练进程不会因代码提交而自动加载新逻辑；必须在安全 Run 边界交接。
+- **P1 公共仓库隐私**：新增 Top-5 manifest 出现服务器绝对路径；停止将其当作公开安全的脱敏产物，按仓库公开规则清理并检查 Git 历史暴露范围。
+- **科研边界**：S1 是静态模型偏好，不是 Coding Benchmark 通过率；真实 Model×Effort 同状态反事实任务质量/费用监督仍为 0。不得宣称完整路由学会了综合八类变量。
+
+**下一任务顺序**：暂停新协议批量接管（不中断旧进程）→ 修复数据/统计/隐私及 Checkpoint 原子性 → CPU 和小规模真实 GPU 验收 → 在唯一队列入口继续 `ALGN_01..04` 和合法 FULL-COVERAGE。保留原 Top-30% 综合质量门槛，普通实体权重最多五份，父/恢复点例外单列。
