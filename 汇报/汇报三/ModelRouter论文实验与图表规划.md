@@ -1,8 +1,8 @@
-# ModelRouter · 论文研究问题、实验与图表规划（V6）
+# ModelRouter · 论文研究问题、实验与图表规划（V7）
 
 > **更新日期**：2026-10-13；**研究设计**：5 个 RQ、8 张图、12 张空白表
 >
-> 本次整合候选模型池、任务拆分粒度、Model×Effort、缓存连续性与完整任务经济收益；保留 V5 的前沿迁移思想，恢复任务粒度作为独立 RQ。所有实验结果图与表仍为空白；实际模型/预算/执行授权沿用现有正式决策。
+> 本次整合候选模型池、任务拆分、可变候选动作泛化、稀疏反馈与完整任务经济收益；保留 V5 的前沿迁移思想，恢复任务粒度作为独立 RQ。所有实验结果图与表仍为空白；实际模型/预算/执行授权沿用现有正式决策。
 >
 > **展示入口**：[交互式原型](交互式原型/index.html)
 
@@ -102,75 +102,109 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 
 完整任务 API USD 必须包含全部真实模型调用的输入/输出、缓存读写与失败/重试费用；重试成本不可在已计价的调用费用上重复累加。本地 GPU-hours、估计本地美元费用、路由延迟、工具费用等分列报告。单位必须相同才能绘制 Pareto。QuotaUnits ≠ USD；prefix overlap ≠ Provider 报告的物理 KV 命中；不能假设 KV 可跨模型移植。
 
-## 2. 五个研究问题
+## 2. 五个研究问题（V7：3 核心 + 2 方法支撑）
 
-| RQ | 科学问题 | 核心自变量 | 主对照 | 图 | 表 |
-|---|---|---|---|---|---|
-| **RQ1 · 模型池** | 公开静态 Pareto 前沿能否迁移到真实 Agent；哪些模型组合最有路由价值？ | 池成员、选择规则、K | 公开前沿/Agent-dev/互补/价位分层/随机等 K | Fig. 1、4 | T1、T4 |
-| **RQ2 · 任务粒度** | 任务拆分和路由频率的最佳协作尺度在哪里？ | G 拆分粒度 × F 路由边界 | G0–G3 × F0–F3 中真实合法的交叉配置 | Fig. 7 | T8 |
-| **RQ3 · 异构算力** | Model × Native Effort 的联合动作是否提供超出单因素选择的增量价值？ | Model 与 Effort 政策 | Fixed / Model-only / Effort-only / Joint | Fig. 5 | T5 |
-| **RQ4 · 路径依赖** | 缓存、上下文连续性与恢复历史何时改变最经济的下一动作？ | measured cache/history / stay-switch | Unaware / Sticky / Cache-aware / History-aware | Fig. 6 | T6、T7 |
-| **RQ5 · 最终价值** | 完整动态路由能否扩展实际 Agent 成功率—成本前沿？ | 整体路由策略 | 固定配置/随机混合/Task-only/Greedy/规则/轻量/Full | Fig. 3 | T3 |
+**调整理由**：旧 RQ3（Model×Effort）与旧 RQ4（KV/History）不是独立于总体路由的研究对象，而是旧 RQ5 主实验的机制子问题。保留模型池 RQ1、任务结构 RQ2、最终任务经济性 RQ5 作为三个核心问题；新增两个相互独立的方法挑战：可变长候选评分（RQ3）与部分反馈/反事实缺失的学习可靠性（RQ4）。
 
-### RQ1 · 公开静态前沿是否能指导真实 Agent 的候选模型池？
+| RQ | 层级 | 科学问题 | Figure | Table |
+|---|---|---|---|---|
+| RQ1 | 核心 | 模型池选择与公开前沿迁移 | Fig. 3 | Table 3 |
+| RQ2 | 核心 | 任务拆分与路由决策粒度 | Fig. 4 | Table 4 |
+| RQ3 | 方法支撑 | 动态候选集的组合泛化 | Fig. 5 | Table 5 |
+| RQ4 | 方法支撑 | 稀疏历史反馈的决策可靠性 | Fig. 6 | Table 6 |
+| RQ5 | 核心 | 完整路由的真实任务级经济收益 | Fig. 7 | Table 7 |
 
-**Question**：哪些 `(provider, model, revision)` 应进入模型池？在相同池大小与策略预算下，静态 Pareto 成员是否比任务互补的模型池更有效？被公开指标支配的配置是否有局部路由价值？
+### 理清模型池、合法动作和运行状态
 
-- **选择规则**：Public-Pareto、Agent-development Pareto、Task-complementary、Price-stratified、Random，均固定 `K`；所有组合在开发集选择，独立任务评估。
-- **初始候选身份**：例如 Claude Haiku 5.5、GPT-6.1 Sol、Claude Opus 5.5，以及一个或更多真实可用的国产/本地开源模型。它们是调研候选，**不是事前认定的真实 Pareto 成员**；每模型多个原生 Effort 另列真实动作，不能当多个独立模型凑 `K`。
-- **规模数学**：`N` 个模型可能有 `2^N−1` 个非空池；固定 `K` 有 `C(N,K)` 种。同池合法动作数量为 `Σ_{m∈P}|E_m|`（只数实际支持的 Effort）。不穷举全部执行轨迹。
-- **初步设计**：先选 `K=3` 的低费、中档/互补、强能力三角色池；对照等 K 替换，再用 `K=2/4/5` 的少量嵌套池、单模型加入/移除分析边际贡献。**模型数量和模型选择是不同因素**。
-- **任务表现**：按规划、实现、验证、失败恢复及任务难度报告不同模型优势、分组胜率和完整 Episode 费用。固定路由策略以测池收益；池固定再测策略收益；选池开发预算/额外模型调用成本单列。
-- **前沿迁移**：公开 AA Intelligence 与公开 Cost per Task 一张图；我们独立任务的 Resolved 与平均 Episode USD 另一张图。只在共同模型/档位和可比较价格快照范围分析成员重合/排序变化，不能叠加两个纵轴宣称“击败 AA”。
-- **否证**：公开前沿池与互补池无稳定差异、前沿外模型边际收益为零、增加 K 不抵探索费，则如实报告。
-- **产物**：Fig. 1（静态/Agent 前沿并列），Fig. 4（等 K 池与边际贡献），T1/T4。
+- **Pool**：K 个不同模型身份（Provider / Model / Revision）；每模型有能力、原生 Effort 档位、上下文、价格、缓存政策与可用性元数据。
+- **Action**：`a_t=(model,native_effort)`，必须通过当时上下文、预算、工具与连续性硬约束。对一个池，候选动作总数为真实合法 `sum_m |E_m|`，不等于 K。
+- **State**：任务/子任务、Agent 角色、KV 缓存与上下文、历史 Trace、已发生验证失败、剩余预算、Provider 可用性等。**不是**“模型×Effort×KV×历史”个互不相干的固定标签。
+- **Router**：同一个 `score(s_t, candidate_features(a_t,s_t))` 对可变长动作逐项或批量评价，选择下一个合法动作；不枚举全部未来轨迹。
+- **Metrics**：同任务真实 Episode Success 与 Mean Complete Episode USD（含失败、重试、Provider KV 折扣与 Router 开销），另报 P95、Cost/Resolved 与置信区间。
 
-### RQ2 · 任务应拆多细，路由应多频繁？
+### RQ1 · 模型池选择与公开前沿迁移
 
-**Question**：在同一原任务和工具/预算下，改变任务拆分深度与模型路由时机，是否存在非单调的最佳经济粒度？对子代理分工是否有实际增益？
+**科学问题**：哪些模型应进入候选池，池应有多大；静态 AA Pareto 成员是否对长程 Agent 任务有效？
 
-- **因子 G**：G0 完整任务/单 Agent；G1 阶段级（规划/实现/验证）；G2 文件/功能子任务；G3 更细但语义可验证的任务片段。不可拆的任务格子为 N/A。
-- **因子 F**：F0 仅任务开始；F1 阶段交接；F2 子任务边界；F3 每个合法模型调用边界。F1/F2 在某 G 下不成立则 N/A，不能虚构。
-- **固定 G 改 F / 固定 F 改 G**：第一轮用可比的小矩阵分别分析，再对有交互迹象的组合补最少的交叉配置；不需要穷举所有 G×F。
-- **对照**：每组固定模型/固定 Effort vs 同一动态 Router，所有拆分、Handoff、上下文重复和 Router 调用的成本均进入完整任务账本。
-- **主要指标**：Success、Episode USD、Cost/Resolved、Trace、handoff、子 Agent 数、重复编辑与纠错、上下文重复 token、P95；单 Agent 和多 Agent 任务可分层。
-- **学术边界**：不训练新拆分器、不搜索 Agent 拓扑。拆分造成的提升归入粒度主效应，不能冒充路由器本身收益。
-- **否证**：G0/F0 简单策略已经达到同等效果，或更细分解令通信/重复工作成本超过收益。
-- **产物**：Fig. 7 任务树与 G×F 结果矩阵，T8。
+**主要对照**：AA Frontiers / Agent-dev Frontier / Complementarity / Price tiers / Random 等 K；再看前沿外模型边际加入。
 
-### RQ3 · Model × 原生 Reasoning Effort 联合分配是否真正有效？
+**必须控制**：固定K、Router实现、开发预算、任务/Harness；公开成本指标不和真实Episode成本同坐标。
 
-**Question**：在固定任务拆分和路由频率条件下，联合选择模型和真实原生 Effort 是否优于分别控制其中一个？强模型低 Effort 和弱模型高 Effort 是否会因为后续 Trace/恢复成本发生经济排序反转？
+**所需数据**：同版本AA/Provider配置、开发集/held-out相同任务的模型固定运行、模型池成员和动作数。
 
-- **对照**：Fixed M/E、Dynamic Model + Fixed Effort、Fixed Model + Dynamic Effort、Joint M×E、必要的 Agent-role-aware Joint。
-- **动作合法性**：Effort 是 Provider 的原生档位；不同 Provider 名称不一定可比。不支持某档位标 N/A，不能填 0 或伪造。
-- **控制**：同一候选池、G/F、状态输入、任务集、价格快照和预算。任务分层比较规划/实现/验证/恢复，难度不能使用未来成功标签输入路由器。
-- **指标**：Task Resolved、真实 reasoning/output tokens、单次费用、Trace、重试、Episode USD、成功率约束内净收益。
-- **否证**：Joint 不超过最优 Model-only 或 Effort-only，或收益被决策开销抵消。
-- **产物**：Fig. 5，T5。
+**可能被证伪的情况**：公开池已足够，模型互补或增加K未带来净收益。
 
-### RQ4 · 缓存与历史如何改变跨步骤最经济的动作？
+**配图**：Fig. 3；**空白结果表**：Table 3。
 
-**Question**：考虑真实 Provider 缓存、上下文连续性和已发生的失败/恢复历史后，Stay 与 Switch 哪个更经济？局部便宜是否导致更高后续任务成本？
 
-- **固定池、G/F、合法动作**，依次对照 Cache-unaware、Sticky、Cache-aware、Cache+Observed Runtime History；有真实可信反事实/监督后再比较未来费用估计模型，不凭空构建。
-- **证据等级**：真实 Provider cached-read/write 为 measured；前缀复用机会为 estimated；TTL 模拟为 simulated。分面展示，不混为物理命中。
-- **实验**：先同任务 Episode 配对比较，再在可恢复的决策前状态进行 Stay/Switch 受控分支；固定后续 continuation policy，记录实际失败、恢复、重试和最终费用。
-- **费用完整性**：缓存冷启动/上下文重新预填充已进入 API 费用时，只作费用组成解释，不再重复增加一次。
-- **否证**：复杂历史信号没有超越 Sticky、延迟开销超过节省，或无法在真实 Provider 观测下确定收益边界。
-- **产物**：Fig. 6，T6/T7。
+### RQ2 · 任务拆分与路由决策粒度
 
-### RQ5 · 完整 ModelRouter 能否把真实 Agent 前沿推向左上？
+**科学问题**：任务拆成什么粒度、什么时候重新路由，怎样使子代理协作成本与路由收益平衡？
 
-**Question**：在冻结的可行候选池与任务/价格口径下，动态策略能否在同成功率降低完整 Episode 费用，或同费用提高任务成功率，从而产生固定配置与无条件随机混合包络之外的非支配点？
+**主要对照**：G0–G3 任务分解与 F0–F3 路由频率；Fixed vs Dynamic；仅合法格子。
 
-- **策略**：池内每个 Fixed Model×Effort、任务无关随机整任务混合（构成固定点的凸组合包络）、Task-only、Per-call Greedy、Rule/Sticky、Lightweight Router、Full ModelRouter。
-- **关键统计**：横轴 `Mean Episode USD`（所有任务含失败与恢复），纵轴 `Resolved%`；附 `Total USD`、`Cost/Resolved`、P95 和本地 GPU/Router overhead。仅在共同任务、预算与费用区间比较，报告 task-level paired CI。
-- **进步判据**：相对于已测固定配置与无条件混合前沿，在重叠成本区间有统计可辨的 `ΔSuccess@Cost`，或在预先冻结的成功率下有正的 `Savings@Success`。**不能保证**比每个固定模型都同时更便宜且更准确，更不能声称超过所有可行策略的理论最优边界。
-- **机制与净收益**：分别将 RQ2 G/F、RQ3 单/联合动作、RQ4 缓存/历史固定为可比版本，在共同池下汇总；Router 推理开销、Cache cold-start、Tool/Retry 全部计入。学习型 Kev/Laya 与规则/轻量分类器比较只能基于相同状态与真实训练监督，不把离线 Accuracy 当终局收益。
-- **稳健性**：策略冻结后在未见仓库/任务、Agent 数量、模型池与 Provider 状态变化下复验；这些属于各 RQ 共用验证而不是第六个 RQ。
-- **否证**：Full 未胜过最佳简单策略、成功率显著回退、或者成本节约仅来自换池而非路由时，应限定或否认整体贡献。
-- **产物**：Fig. 3 核心任务级 Pareto，T3；真实轨迹 Fig. 8、机制 T9、系统开销 T12。
+**必须控制**：固定原始任务、工具、预算与模型池；G与F分别控制，Handoff/Context/Router开销入账。
+
+**所需数据**：同一原任务的可复现G0–G3、F0–F3；真实子代理handoff/context和费用账本。
+
+**可能被证伪的情况**：粗任务粒度最优，更细拆分造成更多重复上下文与通信开销。
+
+**配图**：Fig. 4；**空白结果表**：Table 4。
+
+
+### RQ3 · 动态候选集的组合泛化
+
+**科学问题**：同一共享评分器能否在新增模型、不同原生 Effort、不同合法动作数时仍正确选择，而不是固定有限分类标签？
+
+**主要对照**：Fixed combination classifier vs Model→Effort hierarchy vs Shared Candidate Scorer；测试未见/扩展动作。
+
+**必须控制**：相同训练信号/成本与合法动作；可变输入≠新模型已能零样本泛化。
+
+**所需数据**：合法真实Native Effort动作、候选模型特征、未见池评测、共享评分器的推理时间。
+
+**可能被证伪的情况**：可变候选评分器不能有效处理未见模型，甚至不及固定分类/层次基线。
+
+**配图**：Fig. 5；**空白结果表**：Table 5。
+
+
+### RQ4 · 稀疏历史反馈的决策可靠性
+
+**科学问题**：只有 S1 偏好、S2 观察性单轨迹、S3 辅助缓存和少量真实同状态动作分支时，怎样获得可信路由监督？
+
+**主要对照**：静态偏好、单轨迹观察、缓存辅助、少量同状态真分支的监督可靠性和样本效率。
+
+**必须控制**：观察性轨迹只能证明已执行动作；未执行动作不产生伪反事实；按任务/仓库隔离。
+
+**所需数据**：按监督原义清点独立任务、记录可恢复同状态真实分支及已执行动作结果。
+
+**可能被证伪的情况**：少量真实分支没有稳定增益、采集成本太高、旧观察记录偏差影响动作排名。
+
+**配图**：Fig. 6；**空白结果表**：Table 6。
+
+
+### RQ5 · 完整路由的真实任务级经济收益
+
+**科学问题**：Model×Effort、KV/History、Trace、失败恢复、实时反馈联合选择后，完整 Agent 成本—成功率前沿是否被扩展？
+
+**主要对照**：固定模型、任务无关随机混合、Task-only、Greedy、Rule/Sticky、Lightweight、Full ModelRouter。
+
+**必须控制**：冻结池/G/F/模型版本，统一真实任务、终局验证、价格、失败/重试和Router开销。
+
+**所需数据**：真实固定模型/随机混合/简单路由/Full Episode；各策略相同任务、预算、Verifier与成本口径。
+
+**可能被证伪的情况**：Full没有超过已测简单/随机混合前沿，或改善被质量下降、Router开销抵消。
+
+**配图**：Fig. 7；**空白结果表**：Table 7。
+
+
+### RQ5 内部机制章节（原 RQ3、RQ4 合并于此）
+
+- **RQ5a Model×Effort**：Fixed Model/Effort、Model-only、Effort-only、Joint，追踪原生推理档位、Trace、成功率和完整成本。
+- **RQ5b KV/History**：Cache-unaware、Sticky、Cache-aware、History-aware；真实Provider cached-read/write与prefix复用估计分开。
+- **RQ5c Short-sighted vs Task-level**：Per-call Greedy 与面向 Episode 的策略比较，拆解失败/恢复、剩余Trace和实际费用。
+- **RQ5d Feedback/Router Overhead**：Task-only、Progress、Tool/Verifier Feedback，规则/轻量/Laya/Kev公平比较，包含决策推理开销。
+
+**RQ5 的主图不预设Full一定在左上**；AA 静态 Intelligence 坐标与我们的 Agent 成功率坐标不同，不能合并出一个“超越第三方前沿”的点。
 
 ## 3. 实验安排与已有资产
 
@@ -209,20 +243,20 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 
 
 
-## 4. 八张图的正式设计（结果全部待真实数据填充）
+## 4. 八张图的 V7 设计
 
-| 图 | 论文位置 | 可视化结构 | 主要证据 |
-|---|---|---|---|
-| **Fig. 1** | Motivation / RQ1 | **双面板**：左公共 AA Intelligence–Cost/Task 静态 Pareto；右同标签配置在真实 Agent 上 Resolved–Mean Episode USD；两套纵轴独立 | 同日期/同版本/同价目与共同模型 |
-| **Fig. 2** | Main Method | **左**：G0–G3 任务/子 Agent 树；**中**：选池+动态合法 Model×Effort 与单一 Router；**右**：执行/工具；**底部**：KV/历史/费用与下一状态反馈 | 方法结构，不包含假成功率 |
-| **Fig. 3** | **RQ5 主结果** | 真实 Agent 成功率—平均完整任务成本散点/前沿；固定配置、随机混合包络、Task-only、Greedy、Rule、Full，CI 与质量门槛 | 同任务完整 Episode |
-| **Fig. 4** | RQ1 | 左不同等 K 模型池组成；右 K 固定下各池成功率与费用，前沿外模型加入/移除另列 | 开发池、冻结独立评测 |
-| **Fig. 5** | RQ3 | Model×Native Effort 矩阵 + 任务阶段/难度分面 + Trace/Cost 面板 | 实际支持的 Provider Effort |
-| **Fig. 6** | RQ4 | 同状态 Stay/Switch 路径，缓存读写/重复上下文/重试费用分解、净收益与反转区域 | measured 与 simulated 分开 |
-| **Fig. 7** | **RQ2** | **左侧分解树 G0–G3**；**右侧 G×F 决策粒度响应矩阵**；固定和动态路由成功率/费用成对比较 | 任务拆分/Handoff 与路由边界 |
-| **Fig. 8** | Real Case | 同一真实任务中固定策略与动态策略的阶段、子代理角色、Effort、Cache、失败恢复及累计费用时间轴 | 可追溯真实 Episode，成功/失败案例 |
+| 图 | 章节 | 结构与坐标 |
+|---|---|---|
+| Fig. 1 | Motivation | 静态AA Intelligence–Cost 与 Agent Success–Episode USD **双面板独立坐标** |
+| **Fig. 2** | **方法主图** | **模型资源登记、G/F任务树、可变长合法 Model×Effort 候选、单一共享 Scorer、KV/历史/执行账本反馈** |
+| Fig. 3 | RQ1 | 等规模模型池组合/K/前沿外模型的边际价值与成功率—成本结果 |
+| Fig. 4 | RQ2 | Task/Agent DAG + 拆分G0–G3 × 路由频率F0–F3响应矩阵 |
+| Fig. 5 | RQ3 | 固定组合分类 vs 候选条件化共享评分，动态可变池的新动作泛化 |
+| Fig. 6 | RQ4 | S1静态偏好、S2历史观察、S3辅助缓存、真实同状态分支的证据层级与可靠性曲线 |
+| **Fig. 7** | **RQ5 论文主结果** | **固定/随机整任务混合/简单/Full，真实任务 Success–Mean Episode USD Pareto** |
+| Fig. 8 | RQ5机制与案例 | 固定vs动态真实同任务轨迹：Model×Effort、真实KV、Trace、失败恢复、累计成本 |
 
-注意：图 1 比较的是**两种不同评测坐标系的前沿迁移**，不是直接把动态 Agent 点画在 AA Intelligence 坐标上；图 3 才是检验“向左上”的论文主结果。没有真实任务数据的点、曲线和表值一律保留空白。
+**所有数据点、曲线与结果数值待真实Benchmark**；不得画预设Full优于基线的虚构点。
 
 ## 5. 十二张空白表格
 
@@ -252,106 +286,96 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 | Development Tasks |   |   |   |   |   |   |   |
 | Held-out Tasks |   |   |   |   |   |   |   |
 
-### Table 3 · 完整路由与真实 Agent 成功率—成本前沿
+### Table 3 · 模型池组成与公开前沿迁移
 
-| Policy | Resolved ↑ | Mean Episode USD ↓ | Cost/Resolved ↓ | ΔSuccess@Cost | Savings@Success | Router Overhead | 95% CI |
+| Pool Rule | K | Legal Actions | Success | Episode USD | Marginal Gain | Selection Cost | 95% CI |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Fixed Model×Effort (each) |   |   |   |   |   |   |   |
-| Task-independent random mixture |   |   |   |   |   |   |   |
-| Task-only / Admission-only |   |   |   |   |   |   |   |
-| Per-call Greedy |   |   |   |   |   |   |   |
-| Sticky / Rule |   |   |   |   |   |   |   |
-| Lightweight Router |   |   |   |   |   |   |   |
+| Public Pareto |   |   |   |   |   |   |   |
+| Agent-dev Pareto |   |   |   |   |   |   |   |
+| Complementary |   |   |   |   |   |   |   |
+| Price Tiered |   |   |   |   |   |   |   |
+| Random |   |   |   |   |   |   |   |
+| Off-frontier Add |   |   |   |   |   |   |   |
+| K=3/5/8 |   |   |   |   |   |   |   |
+
+### Table 4 · 任务分解与路由边界
+
+| G×F / Policy | Subtasks | Agents | Handoffs | Router Calls | Context Copy | Success | Episode USD |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| G0/F0 |   |   |   |   |   |   |   |
+| G1/F1 |   |   |   |   |   |   |   |
+| G1/F3 |   |   |   |   |   |   |   |
+| G2/F2 |   |   |   |   |   |   |   |
+| G2/F3 |   |   |   |   |   |   |   |
+| G3/F2 |   |   |   |   |   |   |   |
+| G3/F3 |   |   |   |   |   |   |   |
+
+### Table 5 · 可变候选动作与模型泛化
+
+| Action Scorer | Legal Action Count | New Action Coverage | Ranking Quality | Success | Episode USD | Router Time | 95% CI |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Fixed Joint Classifier |   |   |   |   |   |   |   |
+| Model→Effort Hierarchy |   |   |   |   |   |   |   |
+| Shared Candidate Scorer |   |   |   |   |   |   |   |
+| Expanded Pool |   |   |   |   |   |   |   |
+| Unseen Model |   |   |   |   |   |   |   |
+| New Native Effort |   |   |   |   |   |   |   |
+
+### Table 6 · 监督证据与可靠性
+
+| Evidence Regime | Independent Units | Observed Actions | Paired Branches | Calibration | Choice Stability | Episode USD | Collection Cost |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| S1 Preference |   |   |   |   |   |   |   |
+| S2 Observed Trajectories |   |   |   |   |   |   |   |
+| S3 Cache Aux |   |   |   |   |   |   |   |
+| S1+S2 |   |   |   |   |   |   |   |
+| Few Real Branches |   |   |   |   |   |   |   |
+| More Real Branches |   |   |   |   |   |   |   |
+
+### Table 7 · 真实任务成功率—成本主结果
+
+| Policy | Success | Mean Episode USD | Cost/Resolved | Savings@Success | ΔSuccess@Cost | Router Overhead | 95% CI |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Always-Strong |   |   |   |   |   |   |   |
+| Always-Cheap |   |   |   |   |   |   |   |
+| Random Whole-task Mix |   |   |   |   |   |   |   |
+| Task-only |   |   |   |   |   |   |   |
+| Greedy |   |   |   |   |   |   |   |
+| Rule/Sticky |   |   |   |   |   |   |   |
+| Lightweight |   |   |   |   |   |   |   |
 | Full ModelRouter |   |   |   |   |   |   |   |
 
-### Table 4 · 候选池：公开前沿迁移与等规模组合
+### Table 8 · Joint Model×Effort 机制
 
-| Pool Selection Rule | Selected Models | K | Public→Agent Transfer | Resolved ↑ | Mean Episode USD ↓ | Added-model Gain | Pool Selection Cost |
+| Action Policy | Valid Actions | Success | Reasoning Tokens | Trace | Cache Read | Episode USD | P95 Latency |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Public Pareto / K fixed |   |   |   |   |   |   |   |
-| Agent-dev Pareto / K fixed |   |   |   |   |   |   |   |
-| Task-Complementary / K fixed |   |   |   |   |   |   |   |
-| Price-stratified / K fixed |   |   |   |   |   |   |   |
-| Random / K fixed |   |   |   |   |   |   |   |
-| Base Pool + Off-frontier Model |   |   |   |   |   |   |   |
-| Base Pool - One Model |   |   |   |   |   |   |   |
-| Nested K=2/3/4/5 |   |   |   |   |   |   |   |
+| Fixed Model/Effort |   |   |   |   |   |   |   |
+| Model-only |   |   |   |   |   |   |   |
+| Effort-only |   |   |   |   |   |   |   |
+| Joint |   |   |   |   |   |   |   |
+| Role-aware Joint |   |   |   |   |   |   |   |
 
-### Table 5 · Model × Effort 资源分配
+### Table 9 · KV 与历史机制
 
-**归属**：RQ3
-
-| Allocation Strategy | Model | Native Effort | Resolved ↑ | Reasoning Tokens | Avg Trace | Total Cost ↓ | P95 Latency |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Fixed Model / Fixed Effort |   |   |   |   |   |   |   |
-| Dynamic Model / Fixed Effort |   |   |   |   |   |   |   |
-| Fixed Model / Dynamic Effort |   |   |   |   |   |   |   |
-| Dynamic Model × Effort |   |   |   |   |   |   |   |
-| Role-aware Joint Allocation |   |   |   |   |   |   |   |
-
-### Table 6 · 任务成本分解与路由净收益
-
-**归属**：RQ4
-
-| Policy | Uncached Input Cost | Output Cost | Cache Read/Write | Tool Cost | Router Cost | Other Local Compute | Episode Total |
+| Sequential Policy | Physical Cache Read | Cache Write | Switches | Retries | Future Trace | Success | Episode USD |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Cache-unaware |   |   |   |   |   |   |   |
 | Sticky |   |   |   |   |   |   |   |
 | Cache-aware |   |   |   |   |   |   |   |
-| Cache + Runtime History |   |   |   |   |   |   |   |
-| Future-cost Predictor (if supported) |   |   |   |   |   |   |   |
+| History-aware |   |   |   |   |   |   |   |
+| Task-level Cost |   |   |   |   |   |   |   |
 
-### Table 7 · 缓存状态与切换
+### Table 10 · 反馈与路由器开销
 
-**归属**：RQ4
-
-| Cache Condition | Switch Policy | Measured Cache Read | Measured Cache Write | Switches | Retries | Resolved | Episode Cost |
+| Feedback / Scorer | Router Calls | Router Time | GPU Cost | Success | Episode USD | Net Gain | P95 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Warm / Stay |   |   |   |   |   |   |   |
-| Warm / Switch |   |   |   |   |   |   |   |
-| Cold / Stay |   |   |   |   |   |   |   |
-| Cold / Switch |   |   |   |   |   |   |   |
-| TTL Expired |   |   |   |   |   |   |   |
-| Provider Change |   |   |   |   |   |   |   |
-
-### Table 8 · 任务拆分 G × 决策频率 F
-
-| Granularity / Frequency | Subtasks | Agents | Handoffs | Resolved ↑ | Mean Episode USD ↓ | Context Copy | Router Calls |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| G0 / F0 (task) |   |   |   |   |   |   |   |
-| G1 / F0 |   |   |   |   |   |   |   |
-| G1 / F1 (stage) |   |   |   |   |   |   |   |
-| G2 / F1 |   |   |   |   |   |   |   |
-| G2 / F2 (subtask) |   |   |   |   |   |   |   |
-| G2 / F3 (legal call) |   |   |   |   |   |   |   |
-| G3 / F2 (where legal) |   |   |   |   |   |   |   |
-| G3 / F3 (where legal) |   |   |   |   |   |   |   |
-
-### Table 9 · 机制消融与主要增量收益
-
-| Variant | Resolved ↑ | Mean Episode USD ↓ | Cost/Resolved ↓ | Trace | Cache/Context | Router Calls | P95 Latency |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Full ModelRouter |   |   |   |   |   |   |   |
-| Fixed/Task-only Routing |   |   |   |   |   |   |   |
-| w/o Joint Effort |   |   |   |   |   |   |   |
-| w/o Cache Signals |   |   |   |   |   |   |   |
-| w/o Runtime Feedback |   |   |   |   |   |   |   |
-| Fixed G/F, Router Only |   |   |   |   |   |   |   |
-| Same Pool / Simple Policy |   |   |   |   |   |   |   |
-
-### Table 10 · 监督数据与分级
-
-**归属**：Appendix
-
-| Data Source / Supervision | Raw Records | Train Items | Independent Units | Val Units | Label Balance | Coverage | Permission |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| S1 Human Preference |   |   |   |   |   |   |   |
-| S2 Agent Observed Outcome |   |   |   |   |   |   |   |
-| S3 Cache / Token Auxiliary |   |   |   |   |   |   |   |
-| L1 |   |   |   |   |   |   |   |
-| L2 |   |   |   |   |   |   |   |
-| L3 |   |   |   |   |   |   |   |
-| L4 |   |   |   |   |   |   |   |
+| Task-only |   |   |   |   |   |   |   |
+| Task+Progress |   |   |   |   |   |   |   |
+| Tool/Verifier Feedback |   |   |   |   |   |   |   |
+| Rule |   |   |   |   |   |   |   |
+| Lightweight |   |   |   |   |   |   |   |
+| Laya |   |   |   |   |   |   |   |
+| Kev |   |   |   |   |   |   |   |
 
 ### Table 11 · Laya / Kev 微调与权重
 
@@ -379,38 +403,32 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 | Case A |   |   |   |   |   |   |   |
 | Case B |   |   |   |   |   |   |   |
 
-## 6. 结果数据关联信息
+## 6. 结果关联字段（按真实观测，不制造反事实）
 
-| 粒度 | 最少记录 | 支持哪项研究 |
+| 粒度 | 必需字段 |
+|---|---|
+| Model Registry | provider/model/revision/native_efforts/pricing/cache_policy |
+| Pool | pool_id/K/members/legal_actions/selection_split |
+| G/F | task_id/decomposition_id/granularity/route_frequency/handoffs |
+| Candidate | pre_decision_state/action_model/action_effort/validity |
+| Evidence | supervision_regime/independent_task/observed_action/branch_pair |
+| Cost | actual input/output/cache reads/writes/retries/router overhead |
+| Episode | task_id/pool_id/policy/seed/resolved/total USD/P95/evaluator version |
+
+空白结果≠零；没有已执行动作和可恢复真实分支时，不把历史单轨迹标为未执行候选的最优结果。
+
+## 7. 论文章节
+
+| 章节 | Figure | Table |
 |---|---|---|
-| 模型身份 | `provider/model/revision/native_effort/capability/price_snapshot` | RQ1/RQ3；跨厂商 Effort 不自动等价 |
-| 模型池 | `pool_id/members/K/selection_rule/dev_split` | RQ1 选池与 Router 增益分离 |
-| 拆分与路由边界 | `task_id/G_decomposition_version/F_routing_frequency/role_id/handoff_count` | **RQ2** 双因素 |
-| 决策 | `episode/step/observed_state/legal_action/chosen_model/effort` | RQ3/RQ4 |
-| 缓存与费用 | `usage/cache_read/write/cache_source/price_version/retry/tool/router_gpu` | RQ4/RQ5 |
-| Episode | `task/policy/pool_id/seed/resolved/total_cost/wall_time` | **RQ5** 主前沿 |
-| 独立验证 | `task_split/repository_id/evaluator_version/CI_method` | 全 RQ 泛化 |
-
-指标未观察到时标注 N/A，不得用 0；任务级聚合分母包含未成功的任务。
-
-## 7. 论文章节与贡献映射
-
-| 章节 | 内容 | 主图 | 主表 |
-|---|---|---|---|
-| Introduction / Motivation | AA 公开静态前沿、Agent 任务经济性缺口 | Fig. 1 | T1 |
-| Method | 模型池 → 任务拆分 → 单一 Router → KV/费用反馈 | Fig. 2 | T2 |
-| RQ1 | 公开前沿迁移和等 K 模型池互补性 | Fig. 1、4 | T4 |
-| RQ2 | 任务分解 G 与路由频率 F 的最佳粒度 | **Fig. 7** | **T8** |
-| RQ3 | Model × Native Effort 联合动作 | Fig. 5 | T5 |
-| RQ4 | KV、连续性、失败重试与未来执行成本 | Fig. 6 | T6、T7 |
-| **RQ5 / Main Results** | **真实 Agent Success–Episode Cost 前沿是否被扩展** | **Fig. 3** | **T3** |
-| Analysis / Case | 机制对照、失败/退化与真实轨迹 | Fig. 8 | T9、T12 |
-| Appendix | 数据清洗与 Laya/Kev SFT，独立场景泛化 | 附图 | T10、T11 |
-
-**候选论文贡献（须由实测证实）**：
-1. 公开静态前沿的适用边界与具有互补能力的候选模型池选取方式；
-2. 多子代理任务结构/决策粒度与 Model×Effort 联合分配之间的经济交互；
-3. 历史缓存、上下文及恢复成本感知的长程路由，最终检验完整任务成功率—费用非支配前沿相对于固定/简单策略是否真正改善。
+| Introduction / Motivation | Fig.1 | T1 |
+| Method + Setup | **Fig.2** | T2 |
+| RQ1 Pool | Fig.3 | T3 |
+| RQ2 Task G×F | Fig.4 | T4 |
+| RQ3 Dynamic Candidate | Fig.5 | T5 |
+| RQ4 Reliable Evidence | Fig.6 | T6 |
+| **RQ5 Main Task Economy** | **Fig.7/8** | **T7–10** |
+| Appendix Laya/Kev / Out-of-domain | Extra | T11/12 |
 
 ## 8. 适用边界与结果填写
 
