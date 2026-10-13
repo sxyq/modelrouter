@@ -823,3 +823,24 @@ B01 的 16 个 QB/PB 配置全部完成，每个配置 2 个 Epoch，共 32 个 
 - **唯一调度与保留系统收敛**：`CheckpointRetentionManager` 成为唯一自动评估与裁剪入口，硬编码全局上限 `MAX_CORE_CHECKPOINTS = 5`，Preflight 预算校验严格计入完整 Run 峰值字节；`checkpoint_inventory_and_pruner.py` 降级为只读资产审计工具。
 - **恢复语义明确**：正式确立 `EPOCH_LEVEL_RESUME`，跨 Epoch 恢复必须重载上一 Epoch 物理权重，Chunk 内部中断保证模型权重与数据位置绝对同步。
 - **脱敏与安全边界**：脱敏全量绝对路径为相对路径，联合路由监督严格保持 `DATA_NOT_READY`。
+
+## 2026-10-14 · AUTONOMOUS-TRAINING-V4 长期训练与独立评测集交接
+
+- **独立评估集 ENV-004 (Terminal-Bench 2.0)**：
+  - 160 个终端系统/DevOps/开发真实挑战任务套件，100% 隔离于 660 万训练数据池。
+  - 三级划分：`CANARY` (12 题冒烟验证)、`EXTERNAL_DEV` (48 题独立泛化评估)、`FINAL_TEST` (100 题物理密封)。
+- **三级评估体系与动态打分权重**：
+  - 内部验证（INTERNAL_VAL）：每 Epoch 自动在固定验证集（S1 561 题、S2 337 题、S3 1,397 题）计算。
+  - 外部泛化（EXTERNAL_DEV）：仅对 Top 候选模型按需触发。在没有部署真实路由器 Serving 与 Harness 端点前，严格客观回报 `ROUTER_SERVING_NOT_READY` / `NOT_EVALUATED`，严禁虚构通过率。
+  - 终局测试（FINAL_TEST）：永久封存，模型选择权重严格为 0。
+  - 动态打分公式：`selection_score = 0.80 * internal + 0.20 * external_dev`（DEV 未评估时自动退化为 100% 内部验证分）。
+- **长期多阶段持续训练演进规划**：
+  - Stage 1: ALGN_01 (S1), ALGN_02 (S1+S2), ALGN_03 (S1+S3), ALGN_04 (S1+S2+S3)
+  - Stage 2: 数据规模阶梯 (10% F08, 25% F09, 50% F10, 100% F07)
+  - Stage 3: 分层全量与跨层覆盖 (L1..L4 单层与累积，当前 F02 执行中)
+  - Stage 4: 部分比例与分位抽样 (F11..F16)
+  - Stage 5: 课程学习与能力渐进 (Base -> L1 -> L1+L2 -> L1..L4)
+  - Stage 6: 多 Seed 与状态变量消融
+- **唯一调度入口常驻**：
+  - 唯一入口为 `router_data/run_full_graded_queue.py --mode continuous_full_coverage`，常驻服务器后台，断网安全，看门狗自动恢复。
+

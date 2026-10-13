@@ -11,6 +11,10 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
       "s1_accuracy": 0.6863,
       "s1_brier": 0.4165,
       "primary_score": 159.25,
+      "internal_score": 159.25,
+      "external_dev_score": null,
+      "external_dev_status": "ROUTER_SERVING_NOT_READY",
+      "selection_score": 159.25,
       "loadable": true,
       "parameters": 421293827,
       "size_bytes": 846196824,
@@ -29,6 +33,10 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
       "s1_accuracy": 0.6774,
       "s1_brier": 0.4128,
       "primary_score": 158.83,
+      "internal_score": 158.83,
+      "external_dev_score": null,
+      "external_dev_status": "ROUTER_SERVING_NOT_READY",
+      "selection_score": 158.83,
       "loadable": true,
       "parameters": 421293827,
       "size_bytes": 846196824,
@@ -47,6 +55,10 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
       "s1_accuracy": 0.6756,
       "s1_brier": 0.4293,
       "primary_score": 157.66,
+      "internal_score": 157.66,
+      "external_dev_score": null,
+      "external_dev_status": "ROUTER_SERVING_NOT_READY",
+      "selection_score": 157.66,
       "loadable": true,
       "parameters": 421293827,
       "size_bytes": 846196824,
@@ -65,6 +77,10 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
       "s1_accuracy": 0.6667,
       "s1_brier": 0.4196,
       "primary_score": 157.51,
+      "internal_score": 157.51,
+      "external_dev_score": null,
+      "external_dev_status": "ROUTER_SERVING_NOT_READY",
+      "selection_score": 157.51,
       "loadable": true,
       "parameters": 421293827,
       "size_bytes": 846196824,
@@ -83,6 +99,10 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
       "s1_accuracy": 0.6595,
       "s1_brier": 0.4213,
       "primary_score": 157.46,
+      "internal_score": 157.46,
+      "external_dev_score": null,
+      "external_dev_status": "ROUTER_SERVING_NOT_READY",
+      "selection_score": 157.46,
       "loadable": true,
       "parameters": 421293827,
       "size_bytes": 846196824,
@@ -108,7 +128,17 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
   "active_resume": {
     "run_id": "F02",
     "status": "RUNNING",
-    "gpu_memory": "8948MiB",
+    "gpu_name": "NVIDIA RTX A6000",
+    "gpu_memory": "9635MiB / 49140MiB",
+    "gpu_utilization": "88%",
+    "daemon_pid": 2207051,
+    "train_pid": 2287331,
+    "current_epoch": "1 / 2",
+    "current_chunk": "80 / 123",
+    "current_step": "10240 / 31304",
+    "current_loss": 0.5814,
+    "consumed_items": 655360,
+    "total_items": 2003390,
     "reason": "Active GPU training job protected from pruning"
   },
   "cleanup_summary": {
@@ -120,13 +150,60 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
     "disk_free_available_bytes": 1239149690880,
     "disk_free_pct": 34.6
   },
+  "autonomous_training_v4": {
+    "protocol_version": "AUTONOMOUS-TRAINING-V4",
+    "execution_mode": "HEADLESS_DAEMON_ON_SERVER",
+    "sole_training_entry": "router_data/run_full_graded_queue.py --mode continuous_full_coverage",
+    "three_tier_benchmarks": {
+      "internal_validation": {
+        "tier": "INTERNAL_VALIDATION",
+        "description": "Fixed internal validation set evaluated after every epoch (S1 561 items, S2 337 items, S3 1,397 items)",
+        "status": "ACTIVE_CONTINUOUS",
+        "s1_baseline_loss": 0.6596,
+        "s1_baseline_acc": 0.5793,
+        "weight_in_selection": "80% (when DEV evaluated) / 100% (when DEV unready)"
+      },
+      "canary": {
+        "tier": "CANARY",
+        "benchmark": "ENV-004: Terminal-Bench 2.0 (Canary Subset)",
+        "task_count": 12,
+        "status": "PASSED_SMOKE_TEST",
+        "description": "Parser, schema verification, and container connectivity check"
+      },
+      "external_dev": {
+        "tier": "EXTERNAL_DEV",
+        "benchmark": "ENV-004: Terminal-Bench 2.0 (Dev Subset)",
+        "task_count": 48,
+        "status": "ROUTER_SERVING_NOT_READY",
+        "reason": "Router serving endpoint and agent harness await deployment; pass rate not fabricated (0.0% / NOT_EVALUATED)",
+        "trigger": "Evaluated exclusively on Top-5 candidates and champions",
+        "weight_in_selection": "20% (when live evaluation completes)"
+      },
+      "final_test": {
+        "tier": "FINAL_TEST",
+        "benchmark": "ENV-004: Terminal-Bench 2.0 (Test Subset)",
+        "task_count": 100,
+        "status": "PERMANENTLY_SEALED",
+        "access_weight": "0.00 (Permanently air-gapped from training & model selection)"
+      }
+    },
+    "composite_score_formula": "selection_score = 0.80 * internal + 0.20 * external_dev (defaults to 1.00 * internal when external_dev status is ROUTER_SERVING_NOT_READY)",
+    "long_term_stages": [
+      {"stage": 1, "name": "监督组合与路由对齐基线", "runs": "ALGN_01 (S1), ALGN_02 (S1+S2), ALGN_03 (S1+S3), ALGN_04 (S1+S2+S3)", "status": "QUEUED"},
+      {"stage": 2, "name": "数据规模阶梯", "runs": "10% (F08), 25% (F09), 50% (F10), 100% (F07)", "status": "QUEUED"},
+      {"stage": 3, "name": "分层全量与跨层覆盖", "runs": "L1 (F01), L2 (F02), L3 (F03), L4 (F04), L1+L2 (F05), L1..L3 (F06), L1..L4 (F07)", "status": "IN_PROGRESS (F02 Chunk 80/123)"},
+      {"stage": 4, "name": "部分比例与分位抽样", "runs": "F11..F16 嵌套子集对比", "status": "QUEUED"},
+      {"stage": 5, "name": "课程学习与能力渐进", "runs": "Base -> L1 -> L1+L2 -> L1..L4 (F17..F20)", "status": "QUEUED"},
+      {"stage": 6, "name": "多 Seed 与状态变量消融", "runs": "Seed 42/43/44, V1..V8 状态变量消融", "status": "QUEUED"}
+    ]
+  },
   "census_reconciliation": {
     "legal_candidate_references": 4863900,
     "materialized_items": 1180742,
     "encoded_items": 1180742,
     "trained_items": 1180742,
     "distinct_trained_units": 166448,
-    "distinct_candidate_units": 1389767,
+    "distinct_candidate_units": 1344240,
     "class_breakdown": {
       "S1": 31766,
       "S2": 3537955,
@@ -153,7 +230,8 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
       "test_status": "Strictly Sealed & Air-Gapped",
       "unit_split_integrity": "Verified 100% disjoint split assignments (quality_v2 unique unit mapping invariant holds with 0 conflicts)",
       "route_001_002_license_status": "Strictly excluded from training candidate pool (LICENSE_PENDING: 152,524 rows isolated)",
-      "env_001_002_status": "Strictly excluded from training candidate pool (S4 environment metadata: 10,821 rows isolated)"
+      "env_001_002_status": "Strictly excluded from training candidate pool (S4 environment metadata: 10,821 rows isolated)",
+      "env_004_status": "ENV-004 Terminal-Bench 2.0 strictly isolated from 6.6M training pool (0 training leakage; 12 Canary / 48 Dev / 100 Sealed Test)"
     }
   },
   "routing_aligned_v2": {

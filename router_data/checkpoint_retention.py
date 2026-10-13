@@ -10,6 +10,38 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
+try:
+    from router_data.external_benchmark import (
+        STATUS_EVALUATED,
+        STATUS_NOT_EVALUATED,
+        STATUS_ROUTER_SERVING_NOT_READY,
+        compute_composite_selection_score,
+        evaluate_external_dev,
+    )
+except ImportError:
+    try:
+        from external_benchmark import (
+            STATUS_EVALUATED,
+            STATUS_NOT_EVALUATED,
+            STATUS_ROUTER_SERVING_NOT_READY,
+            compute_composite_selection_score,
+            evaluate_external_dev,
+        )
+    except ImportError:
+        STATUS_NOT_EVALUATED = "NOT_EVALUATED"
+        STATUS_ROUTER_SERVING_NOT_READY = "ROUTER_SERVING_NOT_READY"
+        STATUS_EVALUATED = "EVALUATED"
+        def compute_composite_selection_score(score, dev_res=None):
+            return {
+                "selection_score": score,
+                "internal_score": score,
+                "external_dev_score": None,
+                "external_dev_status": STATUS_NOT_EVALUATED,
+                "formula_used": "1.00 * internal",
+            }
+        def evaluate_external_dev(ckpt, **kw):
+            return {"status": STATUS_NOT_EVALUATED, "normalized_score": None}
+
 # Canonical checkpoint retention statuses required by P4 & FULL-GRADED-AUTO-SWEEP
 STATUS_RETAINED_BEST = "RETAINED_BEST"
 STATUS_RETAINED_TOP_K = "RETAINED_TOP_K"
@@ -1171,6 +1203,13 @@ def evaluate_cohort_retention(
         node["s2_status"] = comp["s2_status"]
         node["s3_score"] = comp["s3_score"]
         node["beats_baseline_0"] = comp["beats_baseline_0"]
+        # Multi-tier selection score: combine internal score with external DEV score if present
+        dev_res = node.get("external_dev_result")
+        sel_info = compute_composite_selection_score(comp["primary_score"], dev_res)
+        node["selection_score"] = sel_info["selection_score"]
+        node["external_dev_status"] = sel_info["external_dev_status"]
+        node["external_dev_score"] = sel_info["external_dev_score"]
+        node["selection_formula"] = sel_info["formula_used"]
         node["dedup_signature"] = node.get("dedup_signature") or compute_run_dedup_signature(node, out_root=out_root)
         gid = build_comparable_group_id(node)
         node["comparable_group_id"] = gid
@@ -1873,7 +1912,7 @@ def evaluate_cohort_retention(
                 cid_val = item[0]
                 n_val = node_map.get(cid_val, {})
                 s1_val = (n_val.get("validation", {}).get("S1") or {})
-                sc = float(n_val.get("primary_score") or item[1].get("primary_score") or 0.0)
+                sc = float(n_val.get("selection_score") or n_val.get("primary_score") or item[1].get("selection_score") or item[1].get("primary_score") or 0.0)
                 loss = float(s1_val.get("loss", 999.0)) if isinstance(s1_val.get("loss"), (int, float)) else 999.0
                 acc = float(s1_val.get("accuracy", -1.0)) if isinstance(s1_val.get("accuracy"), (int, float)) else -1.0
                 brier = float(s1_val.get("brier", 999.0)) if isinstance(s1_val.get("brier"), (int, float)) else 999.0
@@ -2831,6 +2870,48 @@ class CheckpointRetentionManager:
             "checkpoints": nodes,
         }
         _atomic_write_json(self.out_root / "checkpoint_manifest.json", payload)
+
+        # Also emit synchronized top5_core_checkpoint_manifest.json with relative paths
+        retained_core = [
+            n for n in nodes
+            if n.get("retention_status") in (STATUS_RETAINED_BEST, STATUS_RETAINED_TOP_K)
+            and not n.get("is_pinned_parent")
+        ]
+        def _rank_k(n):
+            s1 = (n.get("validation", {}).get("S1") or {})
+            sc = float(n.get("selection_score") or n.get("primary_score") or 0.0)
+            l = float(s1.get("loss", 999.0)) if isinstance(s1.get("loss"), (int, float)) else 999.0
+            a = float(s1.get("accuracy", -1.0)) if isinstance(s1.get("accuracy"), (int, float)) else -1.0
+            return (-round(sc, 4), round(l, 4), -round(a, 4))
+
+        retained_core.sort(key=_rank_k)
+        top5_core = retained_core[:MAX_CORE_CHECKPOINTS]
+        protected = [
+            n for n in nodes
+            if n.get("retention_status") in (STATUS_PINNED_PARENT, STATUS_TEMP_RECOVERY)
+            or n.get("is_pinned_parent")
+        ]
+
+        def _rel_path_str(p_val: Any) -> Any:
+            if not p_val or not isinstance(p_val, str):
+                return p_val
+            if "runs/" in p_val:
+                return "runs/" + p_val.split("runs/", 1)[1]
+            return p_val
+
+        top5_payload = {
+            "generated_at": _now_iso(),
+            "policy": "TOP5_CORE_RETENTION_V1",
+            "max_core_checkpoints": MAX_CORE_CHECKPOINTS,
+            "selection_formula": "0.80 * internal + 0.20 * external_dev (when evaluated), else 1.00 * internal",
+            "top5_core_checkpoints": sanitize_deep(top5_core),
+            "temporarily_protected_checkpoints": sanitize_deep(protected),
+            "total_scanned_checkpoints": len(nodes),
+        }
+        _atomic_write_json(self.out_root / "top5_core_checkpoint_manifest.json", top5_payload)
+        if self.out_root.parent.name == "runs":
+            _atomic_write_json(self.out_root.parent / "top5_core_checkpoint_manifest.json", top5_payload)
+
         return payload
 
 

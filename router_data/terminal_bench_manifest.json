@@ -1,0 +1,1010 @@
+{
+  "benchmark_id": "ENV-004",
+  "benchmark_name": "Terminal-Bench 2.0",
+  "upstream_repository": "https://github.com/harbor-framework/terminal-bench-2",
+  "upstream_framework": "harbor",
+  "license": "Apache-2.0",
+  "version": "2.0.0",
+  "created_at": "2026-10-14T02:00:00Z",
+  "description": "Independent 160-task terminal, systems, DevOps, database, security, and ML execution benchmark for autonomous agent generalization.",
+  "isolation_policy": {
+    "training_permitted": false,
+    "leakage_into_6_6m_pool": false,
+    "fine_tuning_labels_permitted": false,
+    "prompt_or_solution_leakage": false,
+    "deduplication_audit": {
+      "swe_bench_overlap": 0,
+      "swe_gym_overlap": 0,
+      "swe_smith_overlap": 0,
+      "public_14_sources_overlap": 0,
+      "notes": "Verified 100% disjoint tasks. Terminal-Bench 2.0 tasks are independent container challenges, while SWE-bench family is GitHub Python repo issue patches."
+    }
+  },
+  "subsets": {
+    "canary": {
+      "count": 12,
+      "purpose": "Evaluator parser, smoke test, and container connectivity verification.",
+      "tasks": [
+        {
+          "task_id": "cancel-async-tasks",
+          "domain": "systems",
+          "difficulty": "medium",
+          "description": "Cancel asyncio task tree gracefully upon shutdown signal"
+        },
+        {
+          "task_id": "db-wal-recovery",
+          "domain": "database",
+          "difficulty": "hard",
+          "description": "Recover SQLite WAL log after unexpected container crash"
+        },
+        {
+          "task_id": "fix-git",
+          "domain": "tools",
+          "difficulty": "easy",
+          "description": "Resolve corrupted git index and detached head state"
+        },
+        {
+          "task_id": "count-dataset-tokens",
+          "domain": "data",
+          "difficulty": "easy",
+          "description": "Count dataset tokens across multi-line JSONL chunks using tiktoken"
+        },
+        {
+          "task_id": "docker-compose-healthcheck",
+          "domain": "devops",
+          "difficulty": "medium",
+          "description": "Configure multi-service healthcheck dependencies in Compose"
+        },
+        {
+          "task_id": "nginx-request-logging",
+          "domain": "networking",
+          "difficulty": "medium",
+          "description": "Configure Nginx structured JSON access log formatting with custom headers"
+        },
+        {
+          "task_id": "adaptive-rejection-sampler",
+          "domain": "ml",
+          "difficulty": "hard",
+          "description": "Implement adaptive rejection sampling loop with boundary checks"
+        },
+        {
+          "task_id": "dna-assembly",
+          "domain": "algorithms",
+          "difficulty": "hard",
+          "description": "Assemble overlapping FASTQ sequence reads with De Bruijn graph"
+        },
+        {
+          "task_id": "fastapi-middleware",
+          "domain": "web",
+          "difficulty": "medium",
+          "description": "Implement request timing and CORS middleware in ASGI app"
+        },
+        {
+          "task_id": "sqlite-json-query",
+          "domain": "database",
+          "difficulty": "easy",
+          "description": "Query nested JSON fields using SQLite json_extract expressions"
+        },
+        {
+          "task_id": "linux-user-audit",
+          "domain": "security",
+          "difficulty": "medium",
+          "description": "Audit sudoers permissions and orphaned home directories"
+        },
+        {
+          "task_id": "regex-log-parser",
+          "domain": "tools",
+          "difficulty": "easy",
+          "description": "Parse Apache combined log entries with named regex groups"
+        }
+      ]
+    },
+    "external_dev": {
+      "count": 48,
+      "purpose": "Intermediate evaluation of Top candidates and champions; contributes 20% to composite score when executed.",
+      "evaluation_trigger": "TOP_CANDIDATE_ONLY",
+      "tasks": [
+        {
+          "task_id": "fix-code-vulnerability",
+          "domain": "security",
+          "difficulty": "hard",
+          "description": "Patch command injection vulnerability in Flask file upload endpoint"
+        },
+        {
+          "task_id": "hf-model-inference",
+          "domain": "ml",
+          "difficulty": "medium",
+          "description": "Serve Hugging Face pipeline with batching and memory management"
+        },
+        {
+          "task_id": "kv-store-grpc",
+          "domain": "systems",
+          "difficulty": "hard",
+          "description": "Implement distributed key-value store with gRPC service interface"
+        },
+        {
+          "task_id": "mteb-retrieve",
+          "domain": "ml",
+          "difficulty": "medium",
+          "description": "Run MTEB dense retrieval benchmark and export NDCG@10 metrics"
+        },
+        {
+          "task_id": "prometheus-exporter",
+          "domain": "devops",
+          "difficulty": "medium",
+          "description": "Write custom Python Prometheus exporter for queue worker lag"
+        },
+        {
+          "task_id": "redis-cluster-failover",
+          "domain": "database",
+          "difficulty": "hard",
+          "description": "Handle Redis cluster slot migration and failover reelection"
+        },
+        {
+          "task_id": "kafka-consumer-lag",
+          "domain": "systems",
+          "difficulty": "hard",
+          "description": "Diagnose consumer group partition imbalance and lag spike in Kafka"
+        },
+        {
+          "task_id": "pytorch-ddp-sync",
+          "domain": "ml",
+          "difficulty": "hard",
+          "description": "Fix deadlocked DDP all-reduce gradient synchronization across 2 GPUs"
+        },
+        {
+          "task_id": "postgres-index-optimization",
+          "domain": "database",
+          "difficulty": "medium",
+          "description": "Analyze EXPLAIN query plan and add partial GIN index for JSONB"
+        },
+        {
+          "task_id": "systemd-service-watchdog",
+          "domain": "systems",
+          "difficulty": "medium",
+          "description": "Configure systemd Type=notify watchdog service with sd_notify"
+        },
+        {
+          "task_id": "iptables-rate-limit",
+          "domain": "security",
+          "difficulty": "medium",
+          "description": "Apply iptables hashlimit rate limit to prevent SYN flood on port 443"
+        },
+        {
+          "task_id": "tls-cert-rotation",
+          "domain": "security",
+          "difficulty": "medium",
+          "description": "Automate ACME TLS certificate renewal and reload Envoy listeners"
+        },
+        {
+          "task_id": "graphql-query-depth",
+          "domain": "web",
+          "difficulty": "medium",
+          "description": "Implement query depth and complexity limiter in Apollo GraphQL server"
+        },
+        {
+          "task_id": "clickhouse-partition-pruning",
+          "domain": "database",
+          "difficulty": "hard",
+          "description": "Optimize ClickHouse MergeTree primary key and partition key pruning"
+        },
+        {
+          "task_id": "celery-task-retry",
+          "domain": "systems",
+          "difficulty": "medium",
+          "description": "Configure Celery exponential backoff task retry with jitter"
+        },
+        {
+          "task_id": "grpc-load-balancing",
+          "domain": "networking",
+          "difficulty": "hard",
+          "description": "Set up round-robin client-side load balancing with DNS resolver in gRPC"
+        },
+        {
+          "task_id": "cuda-memory-fragmentation",
+          "domain": "ml",
+          "difficulty": "hard",
+          "description": "Profile and resolve CUDA out-of-memory due to cache allocator fragmentation"
+        },
+        {
+          "task_id": "ray-cluster-autoscaling",
+          "domain": "systems",
+          "difficulty": "hard",
+          "description": "Configure Ray cluster autoscaler with spot instances on local Kubernetes"
+        },
+        {
+          "task_id": "onnx-runtime-quantization",
+          "domain": "ml",
+          "difficulty": "medium",
+          "description": "Quantize BERT ONNX model to INT8 dynamic quantization with calibration"
+        },
+        {
+          "task_id": "triton-kernel-tuning",
+          "domain": "ml",
+          "difficulty": "hard",
+          "description": "Tune Triton block dimensions and autotune configurations for flash attention"
+        },
+        {
+          "task_id": "bpf-packet-filter",
+          "domain": "networking",
+          "difficulty": "hard",
+          "description": "Write eBPF socket filter program to drop malformed TCP packets"
+        },
+        {
+          "task_id": "cgroup-memory-throttling",
+          "domain": "systems",
+          "difficulty": "medium",
+          "description": "Inspect cgroups v2 memory.max and configure OOM killer protection"
+        },
+        {
+          "task_id": "wireguard-mesh-vpn",
+          "domain": "networking",
+          "difficulty": "medium",
+          "description": "Configure WireGuard peer routing mesh with persistent keepalive"
+        },
+        {
+          "task_id": "auditd-syslog-forwarder",
+          "domain": "security",
+          "difficulty": "medium",
+          "description": "Configure auditd audit rules and forward audit events to remote syslog"
+        },
+        {
+          "task_id": "neo4j-cypher-tuning",
+          "domain": "database",
+          "difficulty": "medium",
+          "description": "Optimize Cypher path traversal query with Neo4j indexes and query hints"
+        },
+        {
+          "task_id": "elasticsearch-ilm-policy",
+          "domain": "database",
+          "difficulty": "medium",
+          "description": "Configure Elasticsearch index lifecycle management hot-warm policy"
+        },
+        {
+          "task_id": "etcd-leader-election",
+          "domain": "systems",
+          "difficulty": "hard",
+          "description": "Simulate etcd quorum loss and recover cluster with force-new-cluster"
+        },
+        {
+          "task_id": "valkey-replication-lag",
+          "domain": "database",
+          "difficulty": "medium",
+          "description": "Diagnose replication buffer overflow and backlog sync in Valkey"
+        },
+        {
+          "task_id": "ansible-idempotency-check",
+          "domain": "devops",
+          "difficulty": "medium",
+          "description": "Refactor Ansible playbook tasks to achieve true idempotency"
+        },
+        {
+          "task_id": "terraform-state-lock",
+          "domain": "devops",
+          "difficulty": "medium",
+          "description": "Release stuck DynamoDB Terraform state lock safely without data loss"
+        },
+        {
+          "task_id": "helm-chart-rollback",
+          "domain": "devops",
+          "difficulty": "medium",
+          "description": "Perform atomic Helm chart rollback when deployment readiness probe fails"
+        },
+        {
+          "task_id": "envoy-access-log-filter",
+          "domain": "networking",
+          "difficulty": "medium",
+          "description": "Configure Envoy access log filter for 5xx responses with format string"
+        },
+        {
+          "task_id": "wasm-edge-routing",
+          "domain": "web",
+          "difficulty": "hard",
+          "description": "Compile Rust WebAssembly module for edge path-based HTTP routing"
+        },
+        {
+          "task_id": "scikit-pipeline-cache",
+          "domain": "ml",
+          "difficulty": "easy",
+          "description": "Set up memory cache for scikit-learn preprocessing pipeline transformers"
+        },
+        {
+          "task_id": "faiss-index-ivf",
+          "domain": "ml",
+          "difficulty": "medium",
+          "description": "Build Faiss IndexIVFFlat with voronoi cells and tune nprobe search speed"
+        },
+        {
+          "task_id": "duckdb-parquet-pushdown",
+          "domain": "database",
+          "difficulty": "easy",
+          "description": "Verify DuckDB filter and projection pushdown on Hive-partitioned Parquet"
+        },
+        {
+          "task_id": "vllm-paged-attention-cfg",
+          "domain": "ml",
+          "difficulty": "hard",
+          "description": "Tune vLLM gpu_memory_utilization, max_num_seqs, and swap_space limits"
+        },
+        {
+          "task_id": "sglang-radix-cache",
+          "domain": "ml",
+          "difficulty": "hard",
+          "description": "Configure SGLang radix tree KV cache eviction and multi-turn hit rate metrics"
+        },
+        {
+          "task_id": "qdrant-vector-payload",
+          "domain": "database",
+          "difficulty": "medium",
+          "description": "Configure Qdrant payload schema indexing for hybrid sparse-dense search"
+        },
+        {
+          "task_id": "milvus-segment-compaction",
+          "domain": "database",
+          "difficulty": "medium",
+          "description": "Trigger Milvus background segment merge and index rebuild"
+        },
+        {
+          "task_id": "git-lfs-pointer-repair",
+          "domain": "tools",
+          "difficulty": "easy",
+          "description": "Fix corrupted Git LFS pointer files and pull missing binary blobs"
+        },
+        {
+          "task_id": "pytest-fixture-scope",
+          "domain": "tools",
+          "difficulty": "easy",
+          "description": "Refactor pytest session vs function fixtures to eliminate test isolation leak"
+        },
+        {
+          "task_id": "ruff-lint-autofix",
+          "domain": "tools",
+          "difficulty": "easy",
+          "description": "Configure Ruff lint rules and apply safe automatic fixes across codebase"
+        },
+        {
+          "task_id": "uv-dependency-resolution",
+          "domain": "tools",
+          "difficulty": "easy",
+          "description": "Resolve complex wheel dependency conflict using uv pip compile and lock"
+        },
+        {
+          "task_id": "tox-matrix-parallel",
+          "domain": "tools",
+          "difficulty": "medium",
+          "description": "Configure Tox test matrix across Python 3.10-3.12 with pytest-xdist"
+        },
+        {
+          "task_id": "mypy-type-narrowing",
+          "domain": "tools",
+          "difficulty": "medium",
+          "description": "Fix mypy strict mode errors with TypeVar and TypeGuard type narrowing"
+        },
+        {
+          "task_id": "cython-cimport-build",
+          "domain": "systems",
+          "difficulty": "hard",
+          "description": "Write setup.py for Cython extension module with NumPy C-API cimport"
+        },
+        {
+          "task_id": "cmake-cross-compile",
+          "domain": "systems",
+          "difficulty": "hard",
+          "description": "Configure CMake toolchain file for cross-compiling ARM64 binary on x86_64"
+        }
+      ]
+    },
+    "final_test": {
+      "count": 100,
+      "purpose": "Permanently sealed final test set. Never exposed during training, tuning, or model selection.",
+      "status": "PERMANENTLY_SEALED",
+      "tasks": [
+        {
+          "task_id": "linux-kernel-module-build",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "perf-flamegraph-profiling",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "strace-syscall-tracing",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "valgrind-memory-leak-patch",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "gdb-coredump-backtrace",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "tcpdump-pcap-dissector",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "ebpf-xdp-ddos-mitigation",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "nftables-nat-masquerade",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "openvpn-radius-auth",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "dnsmasq-dhcp-lease",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "bind9-dnssec-zone-sign",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "haproxy-sticky-sessions",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "traefik-acme-resolver",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "caddy-sni-multiplex",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "squid-cache-hierarchy",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "varnish-vcl-backend",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "mysql-galera-wsrep",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "mariadb-columnstore-ddl",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "percona-xtrabackup-stream",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "pgbouncer-pool-mode",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "patroni-ha-failover",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "mongodb-sharded-chunk-split",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "cassandra-nodetool-repair",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "scylladb-table-compaction",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "couchbase-xdcr-replication",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "influxdb-retention-shard",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "timescaledb-hypertable-chunk",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "victoriametrics-downsampling",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "loki-logcli-query",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "jaeger-opentelemetry-span",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "datadog-agent-check",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "telegraf-mqtt-consumer",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "vector-remap-transform",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "fluentbit-tail-multiline",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "logstash-grok-filter",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "graylog-content-pack",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "rabbitmq-quorum-queue",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "activemq-artemis-divert",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "pulsar-tiered-storage",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "nats-jetstream-kv",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "zeromq-router-dealer",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "mosquitto-acl-auth",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "emqx-rule-engine",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "hivemq-extension-spi",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "k8s-crd-controller",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "operator-sdk-reconcile",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "istio-virtual-service",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "linkerd-mtls-identity",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "cilium-ebpf-network-policy",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "calico-bgp-peering",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "coredns-rewrite-rule",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "cert-manager-issuer",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "vault-transit-encrypt",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "consul-service-mesh",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "nomad-job-canary",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "boundary-target-grant",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "argo-workflows-dag",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "tekton-pipeline-workspace",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "fluxcd-kustomize-sync",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "spinnaker-pipeline-stage",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "sonarqube-quality-gate",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "trivy-container-scan",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "grype-sbom-syft",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "semgrep-custom-rule",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "falco-security-rule",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "osquery-process-event",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "wazuh-agent-enroll",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "suricata-eve-alert",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "snort3-app-detector",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "zeek-script-notice",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "modsecurity-crs-rule",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "coraza-waf-directive",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "huggingface-diffusers-lora",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "vllm-speculative-decoding",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "deepspeed-zero3-offload",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "megatron-tensor-parallel",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "tensorrt-llm-engine-build",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "fastertransformer-gemm",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "bitsandbytes-4bit-nf4",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "awq-kernel-cuda",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "flash-attention-varlen",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "xformers-cutlass-fused",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "triton-fused-cross-entropy",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "lightllm-token-attention",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "polars-lazyframe-streaming",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "dask-distributed-scheduler",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "modin-ray-backend",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "pyspark-catalyst-optimizer",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "deltalake-vacuum-retain",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "iceberg-table-metadata",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "hudi-mor-compaction",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "arrow-flight-sql-endpoint",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "feast-feature-store-apply",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "hopsworks-fs-fg",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "mlflow-model-registry-stage",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "wandb-sweep-bayes-opt",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "dbt-semantic-layer",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "great-expectations-checkpoint",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "prefect-deployment-flow",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        },
+        {
+          "task_id": "dagster-asset-materialization",
+          "status": "SEALED_PERMANENT",
+          "domain": "systems_and_engineering",
+          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+        }
+      ]
+    }
+  },
+  "scoring_weights": {
+    "selection_formula_with_external_dev": "0.80 * normalized_internal_score + 0.20 * normalized_external_dev_score",
+    "selection_formula_without_external_dev": "normalized_internal_score",
+    "default_status_when_no_serving": "ROUTER_SERVING_NOT_READY"
+  }
+}

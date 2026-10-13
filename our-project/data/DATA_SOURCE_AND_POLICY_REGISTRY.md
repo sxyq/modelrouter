@@ -40,6 +40,7 @@
 | ENV-001 | [SWE-Gym](https://huggingface.co/datasets/SWE-Gym/SWE-Gym) | 真实 Python 仓库/Issue/可执行回归测试套件 | 任务、环境、验证规范 | **S5·已加工**：2,438 个标准任务基准；MIT | 任务环境特征源 |
 | ENV-002 | [SWE-rebench-V2](https://huggingface.co/datasets/nebius/SWE-rebench-V2) | 跨 20 种编程语言的超大规模任务基准 (409 MB) | 任务、多语言环境、复杂度 | **S5·已加工**：32,079 个任务；MIT | 多语言路由特征源 |
 | ENV-003 | [SWE-smith Tasks](https://huggingface.co/datasets/SWE-bench/SWE-smith) | 批量软件工程 task/环境，非等量成功轨迹 | 任务、环境 | S1；与 TRA-002 上游有关联、需同任务去重 | 未来任务源候选 |
+| ENV-004 | [Terminal-Bench 2.0](https://github.com/harbor-framework/terminal-bench-2) | 160 个终端系统/DevOps/开发真实挑战任务套件 | 终端环境、执行交互、沙盒验证 | **S2·可评测·禁训**：160 个任务；Apache-2.0；严禁并入训练集；分划 CANARY (12) / DEV (48) / TEST (100 封存) | 外部独立 Agent Benchmark 泛化评测基准 |
 
 ### 1.2 请求级模型选择与偏好监督
 
@@ -531,3 +532,19 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
   - `quality_v2.py` 构建时以 `old != x['split'] -> raise ValueError` 作为硬断言，保证任何独立单元只能隶属于单一 Split。
   - 实测对账确认 Train/Val/Test 交叉泄漏为 0，Val/Test 保持物理密封隔离。
 - **真实联合监督边界**：维持 `DATA_NOT_READY`，学术诚实拒绝在没有跨任务客观真值的情况下虚构联合标签。
+
+## 2026-10-14 · AUTONOMOUS-TRAINING-V4 独立评测集 ENV-004 与三级评测体系注册
+
+- **ENV-004 登记与隔离声明**：
+  - 来源：`harbor-framework/terminal-bench-2`（Apache-2.0 许可证，全量 160 个终端/开发挑战任务）。
+  - 目的：作为完全脱离 660 万公开训练轨迹的独立外部 Agent Benchmark，评估模型路由泛化能力。
+  - 严禁并入训练：100% 隔离于任何训练、验证或微调流程。严禁基于样本合成监督伪标签，严禁题目及解法泄露入输入。
+  - 任务去重核验：经与 SWE-bench、SWE-Gym、SWE-smith 严格对账，ENV-004 为独立 Bash/系统容器工程挑战，零同题重合。
+- **三级评测体系三层划分**：
+  1. `CANARY`（12 个任务）：冒烟检验评估器解析、Docker 环境依赖与端口连通性。
+  2. `EXTERNAL_DEV`（48 个任务）：按系统运维、开发调试、安全审计、数据工具等维度分层抽样，仅对 Top 候选模型按需执行。若未部署真实 Agent Serving / Harness 端点，严格客观返回 `ROUTER_SERVING_NOT_READY` / `NOT_EVALUATED`，严禁虚构通过率。
+  3. `FINAL_TEST`（100 个任务）：物理永久密封。严禁在训练或调优循环中访问，模型选择阶段访问权重严格为 0。
+- **动态保留打分权重**：
+  - 未执行外部 DEV 时：`selection_score = normalized_internal_score`（100% 内部验证分）。
+  - 执行外部 DEV 时：`selection_score = 0.80 * normalized_internal_score + 0.20 * normalized_external_dev_score`。
+
