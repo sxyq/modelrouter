@@ -56,6 +56,7 @@ ECE_DENOM_FLOOR = 0.05                           # Prevent division explosion wh
 PARETO_TIE_MARGIN = 0.50                         # Pareto-front priority when composite score within 0.5 pts
 COLD_START_TOP_K = 2                             # Temporary Top-K cap when N < 5 during cold start
 GROUP_TOP_K = COLD_START_TOP_K                   # Backward-compatible alias
+MAX_CORE_CHECKPOINTS = 5                         # Global hard cap: permanently retain at most 5 optimal core checkpoints
 
 # Legacy P1 single-metric tolerances kept as secondary diagnostic flags
 S1_LOSS_IMPROVEMENT_REL = 0.005
@@ -1859,6 +1860,31 @@ def evaluate_cohort_retention(
                     "s3_beaten_targets": s3_ev["beaten_targets"],
                     "s3_mean_rel_gain": s3_ev["mean_relative_loss_reduction_vs_prior"],
                 }
+
+    # Enforce global hard cap MAX_CORE_CHECKPOINTS = 5 across non-pinned retained models
+    if not allow_legacy_reference_eval:
+        retained_non_pinned = [
+            (cid, dec) for cid, dec in decisions.items()
+            if dec.get("should_retain") and not dec.get("is_pinned_parent")
+        ]
+        if len(retained_non_pinned) > MAX_CORE_CHECKPOINTS:
+            node_map = {n["checkpoint_id"]: n for n in nodes}
+            def _core_top_key(item):
+                cid_val = item[0]
+                n_val = node_map.get(cid_val, {})
+                s1_val = (n_val.get("validation", {}).get("S1") or {})
+                sc = float(n_val.get("primary_score") or item[1].get("primary_score") or 0.0)
+                loss = float(s1_val.get("loss", 999.0)) if isinstance(s1_val.get("loss"), (int, float)) else 999.0
+                acc = float(s1_val.get("accuracy", -1.0)) if isinstance(s1_val.get("accuracy"), (int, float)) else -1.0
+                brier = float(s1_val.get("brier", 999.0)) if isinstance(s1_val.get("brier"), (int, float)) else 999.0
+                return (-round(sc, 4), round(loss, 4), -round(acc, 4), round(brier, 4))
+
+            sorted_retained = sorted(retained_non_pinned, key=_core_top_key)
+            for cid, dec in sorted_retained[MAX_CORE_CHECKPOINTS:]:
+                dec["should_retain"] = False
+                dec["is_top_k"] = False
+                dec["is_global_best"] = False
+                dec["rejection_reason"] = f"pruned_by_global_cap_max_{MAX_CORE_CHECKPOINTS}_checkpoints"
 
     return decisions, group_summaries
 

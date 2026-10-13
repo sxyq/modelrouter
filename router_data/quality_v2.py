@@ -201,7 +201,7 @@ def run_quality_v2(args):
     for v,fields in x['variable_coverage'].items():vm[l][v]['nonempty' if fields else 'missing']+=1
     layerstats[l][src][x['quality_grade']]+=1;layerstats[l][src]['rows']+=1;layerstats[l][src][x['primary_supervision_class']]+=1
     f.write(json.dumps(x,ensure_ascii=False,separators=(',',':'))+'\n')
-    handles[l].write(json.dumps({'source_id':src,'stable_record_id':x['stable_record_id'],'source_line':i,'independent_unit_id':u,'quality_grade':x['quality_grade'],'primary_supervision_class':x['primary_supervision_class'],'split':x['split'],'assigned_layer':l},ensure_ascii=False,separators=(',',':'))+'\n')
+    handles[l].write(json.dumps({'source_id':src,'stable_record_id':x['stable_record_id'],'source_line':i,'independent_unit_id':u,'quality_grade':x['quality_grade'],'primary_supervision_class':x['primary_supervision_class'],'split':x['split'],'assigned_layer':l,'train_eligible':x['train_eligible'],'source_policy_train_allowed':x['source_policy_train_allowed'],'candidate_targets':x['candidate_targets'],'specific_supervision_targets':x['specific_supervision_targets']},ensure_ascii=False,separators=(',',':'))+'\n')
   for f in handles.values():f.close()
   after=os.stat(path); unchanged=(before.st_size,before.st_mtime_ns)==(after.st_size,after.st_mtime_ns)
   quality[src]=dict(q,rows=sum(q.values()),independent_units=len(groups),independent_trajectories=len(trajectories),duplicate_record_ids=sum(q.values())-len(record_ids))

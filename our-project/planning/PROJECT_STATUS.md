@@ -1,12 +1,14 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-13。** ModelRouter 正式启动 **FULL-DATA-CONTINUOUS-TRAINING（Mode B：全量分级连续训练）**。充分利用已收集并经 V2.1 分级的全部 4,863,900 条合法训练候选记录（L1: 485,210; L2: 1,001,005; L3: 1,466,724; L4: 1,910,961; S1: 31,766; S2: 3,537,955; S3: 1,294,179），通过单层全量、累积全量、部分比例、课程续训、纯路由与纯辅助等 34 个方案（F01–F20），在 RTX A6000 宿主机上建立长期运行、可断点恢复的正式连续训练链。首个全量纯路由任务 F01_S1（4,592 候选记录，2 Epoch，144 步梯度更新，0 Train/Val 重叠）已正式完成并记录台账；调度守护进程正在连续执行后续方案（当前执行 F02_S1）。
+> **最新状态：2026-10-14。** ModelRouter 完成 **TOP5-CHECKPOINT + DATA-QUALITY-REPAIR + ROUTING-ALIGNED-TRAINING** 全面战役：
+> 1. **全项目 Checkpoint 精简到 TOP 5（MAX_CORE_CHECKPOINTS = 5）**：扫描全部 129 个物理目录，在统一固定 Val (N=561) 上选出 S1 路由能力最优 TOP 5 核心权重（最高 Acc 68.63%, 最低 Loss 0.5998），保护 2 份课程父权重（R1-e01, R2-e01）与正在运行的断点（F02），执行两阶段白名单修剪，彻底清理 122 个无用目录，**净释放物理空间 96.16 GiB**（从 2.45 TB 降至 2.35 TB，剩余可用 1.13 TiB / 34.6%）。
+> 2. **数据清洗、分级索引与训练链路彻底修复**：修复 `quality_v2.py` 轻量索引写入字段缺失；在 `batch_prep.py` 严格封堵 Q3/Q4 漏训，消除启发式回退，将物化扫描提速为行区间智能跳转；在 `all_data.py` 正式对账 5 项独立统计量（合法候选 5,027,245 条、已物化 1,180,742 条、已编码 1,180,742 条、已训练 1,180,742 条、去重独立实体 1,389,767 个），确认 Train/Val/Test 跨 Split 泄漏严格为 0；在 `laya_batch_train.py` 实现多监督批次比例均衡采样，彻底解决 S1 31,766 条在多任务中被稀释问题。
+> 3. **ROUTING-ALIGNED-TRAINING 正式协议与排队消融**：明确四种视角（静态模型偏好 S1、智能体行为与结果 S2、资源缓存辅助 S3，以及学术诚实标记为 `DATA_NOT_READY` 的联合路由），在 manifest 与连续队列 Stage 7 中排队 4 组消融实验（`ALGN_01_S1`, `ALGN_02_S1_S2`, `ALGN_03_S1_S3`, `ALGN_04_S1_S2_S3`）。
+> 4. **零中断守护原则**：服务器后台长期训练守护进程 PID 2207051 与 GPU 训练进程 PID 2287331（当前执行 F02，Chunk 66+/123，540,672 条消费）持续稳定运行，未发生任何非预期中断。
 
 八类变量为 `Task/Subtask`、`Agent/Coordination`、`Context/Memory`、`Tool/Environment`、`Verification/Recovery`、`KV Cache/Continuity`、`Temporal/Execution`、`Provider/Availability`。
 
-**2026-10-13 FULL-DATA-CONTINUOUS-TRAINING（Mode B 唯一正式长效训练入口）：已在 A6000 后台正式启动并持续运行。** 调度器 `router_data/run_full_graded_queue.py --mode continuous_full_coverage` 驱动 F01..F20 共 34 个方案，采用动态分块流式物化与即训即删引擎（Chunk 2,048~8,192 Items）、跨 Chunk 连续优化（AdamW + CosineAnnealingLR）、逐 Epoch 固定验证集（S1/S2/S3）评估、Top 30% 智能保留（120 GiB 活动预算约束）及自动覆盖台账更新。F01_S1 损失从 0.6944 稳步降至 0.5680，指标与台账已写入，正依次执行 F02_S1..F07_S1 及后续阶段。
-
-**2026-10-12 FULL-GRADED-MULTI-BATCH-TRAINING：首个窗口已完成，P0 数据协议修复与 Checkpoint 智能保留机制已就绪。** 已由 V2.1 索引生成 `1,092` 个 B/C/Q/P 与扩展槽位，其中 `693` 个有合法数据、`315` 个因目标无合法数据标为 BLOCKED；旧协议 16 个 Run（32 Epoch）隔离为 `LEGACY_INPUT_PROTOCOL`。新协议（`MR-FULL-GRADED-P0-DATA-REPAIR-v1`）CPU 物化 52 个 `P0_` Run 与 14 项基准/存储门禁验证全通（`14/14 PASS`）。
+**2026-10-14 FULL-DATA-CONTINUOUS-TRAINING & ROUTING-ALIGNED（唯一正式长效训练入口）：在 A6000 后台持续稳定运行。** 调度器 `router_data/run_full_graded_queue.py --mode continuous_full_coverage` 驱动 F01..F20 及 ALGN_01..04 共 38 个方案，采用动态分块流式物化（Chunk 8,192 Items）、跨 Chunk 连续优化（AdamW + CosineAnnealingLR）、逐 Epoch 固定验证集（S1/S2/S3）评估、MAX_CORE_CHECKPOINTS = 5 动态淘汰裁剪及自动覆盖台账更新。
 
 ## 当前轮次
 
@@ -18,11 +20,12 @@
 | P3 覆盖 | 八类变量逐层列出非空数、缺失数、监督/观察用途、许可与评测用途、Q4。真实运行时路由决策标签 `0` |
 | P4 输出 | 服务器 `runs/MR-ALLDATA-PREP-20261011/quality_grading/` 含逐源记录引用、四层引用、汇总 JSON、变量矩阵及五张表 |
 | P5 Laya Batch 1 | 训练 `13,438` 条、独立 Val `5,692` 条；`R1-e01` 与 `R2-e01` 作为课程父节点已标记 `PINNED_PARENT` 保护，当前停止 |
-| P6 Laya Sweep-02 | N01–N10 已完成（30 个 Epoch，50 个实体权重目录，占 `39.65 GiB`）；S1 最佳 Loss `N05-e02`（`0.5969`）、最佳 Acc `N10-e03`（`0.6952`） |
-| P7 FULL-GRADED 窗口一 & P0 数据修复 | 旧窗口 16 个 B01 Run（32 Epoch，存量 55 个权重目录 `43.60 GiB`）隔离为 `LEGACY_INPUT_PROTOCOL`；新协议 52 个 `P0_` Run（`0.41 GiB`）已完成 CPU 物化 |
-| P8 Checkpoint 智能保留与磁盘保护 | 已升级 `laya_batch_train.py` 与 `checkpoint_retention.py`：100% 保留每轮指标，按同组动态阈值 + Top-2 + 全局最佳 + `PINNED_PARENT` 单份保存权重，`best` 改用相对符号链接，120 GiB 活动预算与 `<20% / <200 GiB` 停机门禁 14/14 验收通过 |
-| P9 FULL-DATA 连续全量分级训练（进行中） | 启动 Mode B：486.4 万候选记录 F01..F20 全量分级流式训练（34 个正式方案），调度守护进程在后台连续运行；F01_S1 已完成，正执行 F02_S1 |
-| P10 八类状态变量与联合路由监督审计 | 完成八类变量真实字段表、6 源覆盖热力图（4,863,900 候选）、8×8 共现矩阵（V2∩V6=0）、B01_C13_QB_PB 低成本敏感性筛查（G3 S2 Loss +0.4559, G4 S3 Loss +0.1065）、消融优先级 P0–P4 与 4 项不支持假设锁定；未中断 A6000 正在进行的 F02 训练 |
+| P6 Laya Sweep-02 | N01–N10 已完成（30 个 Epoch，50 个实体权重目录，占 `39.65 GiB`）；已纳入全项目 TOP 5 统一比选与裁剪 |
+| P7 FULL-GRADED 窗口一 & P0 数据修复 | 旧窗口 16 个 B01 Run（32 Epoch）隔离为 `LEGACY_INPUT_PROTOCOL`；新协议 52 个 `P0_` Run 已完成 CPU 物化并产生 TOP 5 核心权重 |
+| P8 Checkpoint 智能保留与磁盘保护 | 全局硬性保留上限 `MAX_CORE_CHECKPOINTS = 5`，两阶段白名单修剪彻底删除 122 个目录，**释放 96.16 GiB**；活动预算 120 GiB 与磁盘门禁正常 |
+| P9 FULL-DATA 连续全量分级训练（进行中） | 启动 Mode B：486.4 万候选记录 F01..F20 全量分级流式训练（34 个正式方案），调度守护进程在后台连续运行；F01_S1 已完成，当前 F02 正式执行中 |
+| P10 八类状态变量与联合路由监督审计 | 完成八类变量真实字段表、6 源覆盖热力图、8×8 共现矩阵（V2∩V6=0）、低成本敏感性筛查（G3 S2 Loss +0.4559, G4 S3 Loss +0.1065）及 4 项不支持假设锁定 |
+| P11 TOP5 精简 + 数据质量修复 + 路由对齐训练 | **已全部落地**：全局保留 TOP 5 核心模型权重，补齐轻量索引写入与数据物化漏洞，平衡多监督批次采样，正式确立 MR-ROUTING-ALIGNED-v2 四视角并排队 4 组消融任务 |
 
 公开记录层规模：L1 `663,963`、L2 `1,304,523`、L3 `1,993,193`、L4 `2,638,949`，总计 `6,600,628`。三类 OWN 记录逐层另列。按来源政策允许、Q1/Q2、真实目标及 Train 身份计算的候选记录数依次为 `489,911`、`973,501`、`1,475,527`、`1,924,961`，合计 `4,863,900`；Val/Test 身份归评测用途，不计作训练候选。候选包含轨迹终局、静态偏好、缓存复用机会、请求负载和 OWN-002 调用统计等不同目标，不代表联合路由监督。
 

@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v2.2｜更新：2026-10-12｜角色：Planning Agent + Execution Agent**
+> **版本：v2.3｜更新：2026-10-14｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。它是 GitHub 版本化的项目记忆，**不是 ChatGPT 产品内置 Memory，也不会自动在后台更新**。Execution Agent 按职责检查四份文档：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；本地频繁 commit，按约定定期 push 后 GitHub 才能看到更新。
 >
@@ -8,7 +8,7 @@
 
 ## 0. 30 秒恢复上下文
 
-**2026-10-13 当前交接覆盖说明**：正式启动 Mode B **FULL-DATA-CONTINUOUS-TRAINING** 全量分级连续训练。以 V2.1 分级全部 4,863,900 条合法候选记录为总池，通过动态分块流式物化（Chunk 2,048~8,192 Items）、跨 Chunk 连续优化（AdamW + Cosine LR）、逐 Epoch 严格物理隔离验证与 Top 30% 智能保留机制，在 RTX A6000 宿主机上由唯一调度守护进程（PID 2207051）连续执行 F01..F20 共 34 个方案。首个纯路由任务 F01_S1（4,592 候选记录，2 Epoch，144 步梯度更新，0 重叠）已正式完成并入账，当前正在执行 F02_S1。结果详见 Status 首页与 HTML 看板。Kev、Coding Benchmark 和付费 API 仍未运行。
+**2026-10-14 当前交接覆盖说明**：完成 TOP5 核心权重精简（全局硬性保留上限 5 份最优物理权重，已清理 122 个目录并释放 96.16 GiB 空间）、数据清洗与 5-统计量独立对账修复（合法候选 5,027,245、已物化 1,180,742、已编码 1,180,742、已训练 1,180,742、独立实体 1,389,767，Train/Val/Test 0 泄漏，多监督批次比例均衡采样保护 S1）、以及 ROUTING-ALIGNED-TRAINING-v2 四视角确立与 4 组消融实验（ALGN_01..04）安全入列。服务器后台长期训练守护进程（PID 2207051）与 GPU 训练（PID 2287331，F02）持续稳定运行，零中断守护已完全兑现。Kev、Coding Benchmark 和付费 API 仍未运行。
 
 - 项目：**ModelRouter**，研究**长程单/多 Agent 执行过程中的状态感知、任务级 Model × Reasoning Effort 联合路由**。
 - 主方法：**确定性 State Builder + 动态候选与硬约束 + 单一 Kev-4B（Qwen3.5-4B-Base/LoRA/pointer head）决策模型 + Agent Harness + 完整记账与任务终局评价**。

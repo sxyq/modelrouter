@@ -1,0 +1,1039 @@
+{
+  "generated_at": "2026-10-13T17:39:45Z",
+  "policy": "TOP5_CORE_RETENTION_V1",
+  "max_core_checkpoints": 5,
+  "top5_core_checkpoints": [
+    {
+      "checkpoint_id": "P0_B03_C01_QB_PB-e02",
+      "run_id": "P0_B03_C01_QB_PB",
+      "epoch_name": "epoch_02",
+      "exp_group": "MR-FULL-GRADED-P0-DATA-REPAIR-20261012",
+      "physical_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C01_QB_PB/checkpoints/epoch_02",
+      "real_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C01_QB_PB/checkpoints/epoch_02",
+      "is_symlink": false,
+      "size_bytes": 842611100,
+      "size_mb": 803.58,
+      "files": [
+        "model.safetensors",
+        "rl_agent_config.json"
+      ],
+      "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+      "parent_checkpoint_id": null,
+      "primary_score": 159.2461,
+      "validation": {
+        "S1": {
+          "loss": 0.6039,
+          "accuracy": 0.6863,
+          "brier": 0.4165,
+          "ece": 0.0367,
+          "macro_f1": 0.6862
+        },
+        "S2": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "S3": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "overall": {
+          "items": 561,
+          "loss": 0.6039,
+          "accuracy": 0.6863,
+          "mean_confidence": 0.6696,
+          "ece": 0.0367,
+          "brier": 0.4165,
+          "brier_top1": 0.2082,
+          "by_type": {
+            "choice": {
+              "items": 561,
+              "loss": 0.6039,
+              "accuracy": 0.6863,
+              "mean_confidence": 0.6696,
+              "ece": 0.0367,
+              "brier": 0.4165,
+              "brier_top1": 0.2082
+            }
+          },
+          "num_classes": 2,
+          "majority_class": 1,
+          "majority_baseline_accuracy": 0.5258,
+          "majority_balanced_accuracy": 0.5,
+          "prior_baseline_loss": 0.6918,
+          "balanced_accuracy": 0.6888,
+          "macro_f1": 0.6862,
+          "beats_majority_baseline": true,
+          "gold_counts": {
+            "0": 266,
+            "1": 295
+          },
+          "pred_counts": {
+            "0": 302,
+            "1": 259
+          },
+          "confusion_matrix": {
+            "tn": 196,
+            "fp": 70,
+            "fn": 106,
+            "tp": 189
+          }
+        }
+      },
+      "lineage": {
+        "base_model": "models/laya-421m",
+        "layers": [
+          "L3"
+        ],
+        "supervision_classes": [
+          "S1"
+        ],
+        "seed": 42,
+        "total_items": null,
+        "config": {
+          "epochs": 2,
+          "micro_batch": 8,
+          "grad_accum": 8,
+          "encoder_lr": 2.5e-05,
+          "head_lr": 0.0001,
+          "min_lr": 1e-06,
+          "weight_decay": 0.01,
+          "grad_clip": 1.0,
+          "loss": "soft-ce",
+          "rl_samples": 4,
+          "sigma_start": 0.4,
+          "sigma_end": 0.1,
+          "w_sph": 0.75,
+          "w_rps": 1.0,
+          "shuffle_options": [
+            "choice"
+          ],
+          "option_layout": null,
+          "freeze_encoder": false,
+          "calib_max": 400,
+          "calib_frac": 0.0,
+          "calib_seed": 42,
+          "seed": 42,
+          "max_len": 1024,
+          "head_max_len": 512,
+          "amp": true,
+          "gradient_checkpointing": true,
+          "log_every": 100,
+          "label_smoothing": 0.0,
+          "text_column": "text",
+          "label_column": "label",
+          "question_id": "label",
+          "instructions": null,
+          "eval_data": null,
+          "target_error": 0.1,
+          "min_abstain_n": 10
+        },
+        "started_at": "2026-10-12T16:30:45Z"
+      },
+      "top5_selection_reason": "S1 Highest Accuracy (0.6863)"
+    },
+    {
+      "checkpoint_id": "P0_B01_C01_QB_PB-e02",
+      "run_id": "P0_B01_C01_QB_PB",
+      "epoch_name": "epoch_02",
+      "exp_group": "MR-FULL-GRADED-P0-DATA-REPAIR-20261012",
+      "physical_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B01_C01_QB_PB/checkpoints/epoch_02",
+      "real_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B01_C01_QB_PB/checkpoints/epoch_02",
+      "is_symlink": false,
+      "size_bytes": 842611100,
+      "size_mb": 803.58,
+      "files": [
+        "model.safetensors",
+        "rl_agent_config.json"
+      ],
+      "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+      "parent_checkpoint_id": null,
+      "primary_score": 158.8344,
+      "validation": {
+        "S1": {
+          "loss": 0.5998,
+          "accuracy": 0.6774,
+          "brier": 0.4128,
+          "ece": 0.0396,
+          "macro_f1": 0.6766
+        },
+        "S2": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "S3": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "overall": {
+          "items": 561,
+          "loss": 0.5998,
+          "accuracy": 0.6774,
+          "mean_confidence": 0.6776,
+          "ece": 0.0396,
+          "brier": 0.4128,
+          "brier_top1": 0.2064,
+          "by_type": {
+            "choice": {
+              "items": 561,
+              "loss": 0.5998,
+              "accuracy": 0.6774,
+              "mean_confidence": 0.6776,
+              "ece": 0.0396,
+              "brier": 0.4128,
+              "brier_top1": 0.2064
+            }
+          },
+          "num_classes": 2,
+          "majority_class": 1,
+          "majority_baseline_accuracy": 0.5258,
+          "majority_balanced_accuracy": 0.5,
+          "prior_baseline_loss": 0.6918,
+          "balanced_accuracy": 0.6766,
+          "macro_f1": 0.6766,
+          "beats_majority_baseline": true,
+          "gold_counts": {
+            "0": 266,
+            "1": 295
+          },
+          "pred_counts": {
+            "0": 267,
+            "1": 294
+          },
+          "confusion_matrix": {
+            "tn": 176,
+            "fp": 90,
+            "fn": 91,
+            "tp": 204
+          }
+        }
+      },
+      "lineage": {
+        "base_model": "models/laya-421m",
+        "layers": [
+          "L1"
+        ],
+        "supervision_classes": [
+          "S1"
+        ],
+        "seed": 42,
+        "total_items": null,
+        "config": {
+          "epochs": 2,
+          "micro_batch": 8,
+          "grad_accum": 8,
+          "encoder_lr": 2.5e-05,
+          "head_lr": 0.0001,
+          "min_lr": 1e-06,
+          "weight_decay": 0.01,
+          "grad_clip": 1.0,
+          "loss": "soft-ce",
+          "rl_samples": 4,
+          "sigma_start": 0.4,
+          "sigma_end": 0.1,
+          "w_sph": 0.75,
+          "w_rps": 1.0,
+          "shuffle_options": [
+            "choice"
+          ],
+          "option_layout": null,
+          "freeze_encoder": false,
+          "calib_max": 400,
+          "calib_frac": 0.0,
+          "calib_seed": 42,
+          "seed": 42,
+          "max_len": 1024,
+          "head_max_len": 512,
+          "amp": true,
+          "gradient_checkpointing": true,
+          "log_every": 100,
+          "label_smoothing": 0.0,
+          "text_column": "text",
+          "label_column": "label",
+          "question_id": "label",
+          "instructions": null,
+          "eval_data": null,
+          "target_error": 0.1,
+          "min_abstain_n": 10
+        },
+        "started_at": "2026-10-12T16:24:36Z"
+      },
+      "top5_selection_reason": "S1 Lowest Loss (0.5998)"
+    },
+    {
+      "checkpoint_id": "P0_B03_C05_QB_PB-e02",
+      "run_id": "P0_B03_C05_QB_PB",
+      "epoch_name": "epoch_02",
+      "exp_group": "MR-FULL-GRADED-P0-DATA-REPAIR-20261012",
+      "physical_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C05_QB_PB/checkpoints/epoch_02",
+      "real_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C05_QB_PB/checkpoints/epoch_02",
+      "is_symlink": false,
+      "size_bytes": 842611100,
+      "size_mb": 803.58,
+      "files": [
+        "model.safetensors",
+        "rl_agent_config.json"
+      ],
+      "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+      "parent_checkpoint_id": null,
+      "primary_score": 157.6589,
+      "validation": {
+        "S1": {
+          "loss": 0.6199,
+          "accuracy": 0.6756,
+          "brier": 0.4293,
+          "ece": 0.0527,
+          "macro_f1": 0.6754
+        },
+        "S2": {
+          "loss": 0.6992,
+          "accuracy": 0.5223,
+          "macro_f1": 0.5087
+        },
+        "S3": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "overall": {
+          "items": 898,
+          "loss": 0.6497,
+          "accuracy": 0.618,
+          "mean_confidence": 0.6221,
+          "ece": 0.0409,
+          "brier": 0.4579,
+          "brier_top1": 0.2289,
+          "by_type": {
+            "choice": {
+              "items": 561,
+              "loss": 0.6199,
+              "accuracy": 0.6756,
+              "mean_confidence": 0.6613,
+              "ece": 0.0527,
+              "brier": 0.4293,
+              "brier_top1": 0.2146
+            },
+            "noul": {
+              "items": 337,
+              "loss": 0.6992,
+              "accuracy": 0.5223,
+              "mean_confidence": 0.5568,
+              "ece": 0.0353,
+              "brier": 0.5054,
+              "brier_top1": 0.2527
+            }
+          },
+          "num_classes": 2,
+          "majority_class": 0,
+          "majority_baseline_accuracy": 0.5033,
+          "majority_balanced_accuracy": 0.5,
+          "prior_baseline_loss": 0.6931,
+          "balanced_accuracy": 0.6177,
+          "macro_f1": 0.6172,
+          "beats_majority_baseline": true,
+          "gold_counts": {
+            "0": 452,
+            "1": 446
+          },
+          "pred_counts": {
+            "0": 489,
+            "1": 409
+          },
+          "confusion_matrix": {
+            "tn": 299,
+            "fp": 153,
+            "fn": 190,
+            "tp": 256
+          }
+        }
+      },
+      "lineage": {
+        "base_model": "models/laya-421m",
+        "layers": [
+          "L3"
+        ],
+        "supervision_classes": [
+          "S1",
+          "S2"
+        ],
+        "seed": 42,
+        "total_items": null,
+        "config": {
+          "epochs": 2,
+          "micro_batch": 8,
+          "grad_accum": 8,
+          "encoder_lr": 2.5e-05,
+          "head_lr": 0.0001,
+          "min_lr": 1e-06,
+          "weight_decay": 0.01,
+          "grad_clip": 1.0,
+          "loss": "soft-ce",
+          "rl_samples": 4,
+          "sigma_start": 0.4,
+          "sigma_end": 0.1,
+          "w_sph": 0.75,
+          "w_rps": 1.0,
+          "shuffle_options": [
+            "choice"
+          ],
+          "option_layout": null,
+          "freeze_encoder": false,
+          "calib_max": 400,
+          "calib_frac": 0.0,
+          "calib_seed": 42,
+          "seed": 42,
+          "max_len": 1024,
+          "head_max_len": 512,
+          "amp": true,
+          "gradient_checkpointing": true,
+          "log_every": 100,
+          "label_smoothing": 0.0,
+          "text_column": "text",
+          "label_column": "label",
+          "question_id": "label",
+          "instructions": null,
+          "eval_data": null,
+          "target_error": 0.1,
+          "min_abstain_n": 10
+        },
+        "started_at": "2026-10-12T19:09:52Z"
+      },
+      "top5_selection_reason": "Next Best Composite Score (157.66)"
+    },
+    {
+      "checkpoint_id": "P0_B03_C08_QB_PB-e02",
+      "run_id": "P0_B03_C08_QB_PB",
+      "epoch_name": "epoch_02",
+      "exp_group": "MR-FULL-GRADED-P0-DATA-REPAIR-20261012",
+      "physical_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C08_QB_PB/checkpoints/epoch_02",
+      "real_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C08_QB_PB/checkpoints/epoch_02",
+      "is_symlink": false,
+      "size_bytes": 842611100,
+      "size_mb": 803.58,
+      "files": [
+        "model.safetensors",
+        "rl_agent_config.json"
+      ],
+      "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+      "parent_checkpoint_id": null,
+      "primary_score": 157.5054,
+      "validation": {
+        "S1": {
+          "loss": 0.6067,
+          "accuracy": 0.6667,
+          "brier": 0.4196,
+          "ece": 0.0586,
+          "macro_f1": 0.6667
+        },
+        "S2": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "S3": {
+          "loss": 1.0516,
+          "accuracy": 0.4985,
+          "macro_f1": 0.345
+        },
+        "overall": {
+          "items": 5355,
+          "loss": 1.005,
+          "accuracy": 0.5162,
+          "mean_confidence": 0.6381,
+          "ece": 0.1219,
+          "brier": 0.5685,
+          "brier_top1": 0.2065,
+          "by_type": {
+            "choice": {
+              "items": 561,
+              "loss": 0.6067,
+              "accuracy": 0.6667,
+              "mean_confidence": 0.6618,
+              "ece": 0.0586,
+              "brier": 0.4196,
+              "brier_top1": 0.2098
+            },
+            "score": {
+              "items": 3794,
+              "loss": 1.2754,
+              "accuracy": 0.3793,
+              "mean_confidence": 0.548,
+              "ece": 0.1705,
+              "brier": 0.7161,
+              "brier_top1": 0.2483
+            },
+            "noul": {
+              "items": 1000,
+              "loss": 0.2025,
+              "accuracy": 0.951,
+              "mean_confidence": 0.9665,
+              "ece": 0.0155,
+              "brier": 0.0918,
+              "brier_top1": 0.0459
+            }
+          },
+          "num_classes": 4,
+          "majority_class": 1,
+          "majority_baseline_accuracy": 0.4945,
+          "majority_balanced_accuracy": 0.25,
+          "prior_baseline_loss": 1.1972,
+          "balanced_accuracy": 0.4434,
+          "macro_f1": 0.396,
+          "beats_majority_baseline": true,
+          "gold_counts": {
+            "0": 1462,
+            "1": 2648,
+            "2": 761,
+            "3": 484
+          },
+          "pred_counts": {
+            "0": 311,
+            "1": 2868,
+            "2": 2029,
+            "3": 147
+          }
+        }
+      },
+      "lineage": {
+        "base_model": "models/laya-421m",
+        "layers": [
+          "L3"
+        ],
+        "supervision_classes": [
+          "S1",
+          "S3"
+        ],
+        "seed": 42,
+        "total_items": null,
+        "config": {
+          "epochs": 2,
+          "micro_batch": 8,
+          "grad_accum": 8,
+          "encoder_lr": 2.5e-05,
+          "head_lr": 0.0001,
+          "min_lr": 1e-06,
+          "weight_decay": 0.01,
+          "grad_clip": 1.0,
+          "loss": "soft-ce",
+          "rl_samples": 4,
+          "sigma_start": 0.4,
+          "sigma_end": 0.1,
+          "w_sph": 0.75,
+          "w_rps": 1.0,
+          "shuffle_options": [
+            "choice"
+          ],
+          "option_layout": null,
+          "freeze_encoder": false,
+          "calib_max": 400,
+          "calib_frac": 0.0,
+          "calib_seed": 42,
+          "seed": 42,
+          "max_len": 1024,
+          "head_max_len": 512,
+          "amp": true,
+          "gradient_checkpointing": true,
+          "log_every": 100,
+          "label_smoothing": 0.0,
+          "text_column": "text",
+          "label_column": "label",
+          "question_id": "label",
+          "instructions": null,
+          "eval_data": null,
+          "target_error": 0.1,
+          "min_abstain_n": 10
+        },
+        "started_at": "2026-10-12T17:33:31Z"
+      },
+      "top5_selection_reason": "Next Best Composite Score (157.51)"
+    },
+    {
+      "checkpoint_id": "P0_B02_C01_QB_PB-e02",
+      "run_id": "P0_B02_C01_QB_PB",
+      "epoch_name": "epoch_02",
+      "exp_group": "MR-FULL-GRADED-P0-DATA-REPAIR-20261012",
+      "physical_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C01_QB_PB/checkpoints/epoch_02",
+      "real_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C01_QB_PB/checkpoints/epoch_02",
+      "is_symlink": false,
+      "size_bytes": 842611100,
+      "size_mb": 803.58,
+      "files": [
+        "model.safetensors",
+        "rl_agent_config.json"
+      ],
+      "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+      "parent_checkpoint_id": null,
+      "primary_score": 157.4559,
+      "validation": {
+        "S1": {
+          "loss": 0.6087,
+          "accuracy": 0.6595,
+          "brier": 0.4213,
+          "ece": 0.0392,
+          "macro_f1": 0.6587
+        },
+        "S2": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "S3": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "overall": {
+          "items": 561,
+          "loss": 0.6087,
+          "accuracy": 0.6595,
+          "mean_confidence": 0.6724,
+          "ece": 0.0392,
+          "brier": 0.4213,
+          "brier_top1": 0.2107,
+          "by_type": {
+            "choice": {
+              "items": 561,
+              "loss": 0.6087,
+              "accuracy": 0.6595,
+              "mean_confidence": 0.6724,
+              "ece": 0.0392,
+              "brier": 0.4213,
+              "brier_top1": 0.2107
+            }
+          },
+          "num_classes": 2,
+          "majority_class": 1,
+          "majority_baseline_accuracy": 0.5258,
+          "majority_balanced_accuracy": 0.5,
+          "prior_baseline_loss": 0.6918,
+          "balanced_accuracy": 0.6587,
+          "macro_f1": 0.6587,
+          "beats_majority_baseline": true,
+          "gold_counts": {
+            "0": 266,
+            "1": 295
+          },
+          "pred_counts": {
+            "0": 267,
+            "1": 294
+          },
+          "confusion_matrix": {
+            "tn": 171,
+            "fp": 95,
+            "fn": 96,
+            "tp": 199
+          }
+        }
+      },
+      "lineage": {
+        "base_model": "models/laya-421m",
+        "layers": [
+          "L2"
+        ],
+        "supervision_classes": [
+          "S1"
+        ],
+        "seed": 42,
+        "total_items": null,
+        "config": {
+          "epochs": 2,
+          "micro_batch": 8,
+          "grad_accum": 8,
+          "encoder_lr": 2.5e-05,
+          "head_lr": 0.0001,
+          "min_lr": 1e-06,
+          "weight_decay": 0.01,
+          "grad_clip": 1.0,
+          "loss": "soft-ce",
+          "rl_samples": 4,
+          "sigma_start": 0.4,
+          "sigma_end": 0.1,
+          "w_sph": 0.75,
+          "w_rps": 1.0,
+          "shuffle_options": [
+            "choice"
+          ],
+          "option_layout": null,
+          "freeze_encoder": false,
+          "calib_max": 400,
+          "calib_frac": 0.0,
+          "calib_seed": 42,
+          "seed": 42,
+          "max_len": 1024,
+          "head_max_len": 512,
+          "amp": true,
+          "gradient_checkpointing": true,
+          "log_every": 100,
+          "label_smoothing": 0.0,
+          "text_column": "text",
+          "label_column": "label",
+          "question_id": "label",
+          "instructions": null,
+          "eval_data": null,
+          "target_error": 0.1,
+          "min_abstain_n": 10
+        },
+        "started_at": "2026-10-12T16:27:38Z"
+      },
+      "top5_selection_reason": "Next Best Composite Score (157.46)"
+    }
+  ],
+  "temporarily_protected_checkpoints": [
+    {
+      "checkpoint_id": "R1-e01",
+      "run_id": "R1",
+      "epoch_name": "epoch_01",
+      "exp_group": "OVERNIGHT-LAYA-TRAINING",
+      "physical_path": "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R1/checkpoints/epoch_01",
+      "real_path": "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R1/checkpoints/epoch_01",
+      "is_symlink": false,
+      "size_bytes": 842610978,
+      "size_mb": 803.58,
+      "files": [
+        "model.safetensors",
+        "rl_agent_config.json"
+      ],
+      "protocol_version": "UNKNOWN",
+      "parent_checkpoint_id": null,
+      "primary_score": null,
+      "validation": {
+        "S1": {
+          "loss": 0.6038,
+          "accuracy": 0.6613,
+          "brier": 0.4172,
+          "ece": 0.0351,
+          "macro_f1": null
+        },
+        "S2": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "S3": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "overall": {
+          "items": 561,
+          "loss": 0.6038,
+          "accuracy": 0.6613,
+          "mean_confidence": 0.6573,
+          "ece": 0.0351,
+          "brier": 0.4172,
+          "brier_top1": 0.2086,
+          "by_type": {
+            "choice": {
+              "items": 561,
+              "loss": 0.6038,
+              "accuracy": 0.6613,
+              "mean_confidence": 0.6573,
+              "ece": 0.0351,
+              "brier": 0.4172,
+              "brier_top1": 0.2086
+            }
+          }
+        }
+      },
+      "lineage": {
+        "base_model": "models/laya-421m",
+        "layers": [],
+        "supervision_classes": [],
+        "seed": 42,
+        "total_items": null,
+        "config": {
+          "epochs": 4,
+          "micro_batch": 8,
+          "grad_accum": 8,
+          "encoder_lr": 2.5e-05,
+          "head_lr": 0.0001,
+          "min_lr": 1e-06,
+          "weight_decay": 0.01,
+          "grad_clip": 1.0,
+          "loss": "soft-ce",
+          "rl_samples": 4,
+          "sigma_start": 0.4,
+          "sigma_end": 0.1,
+          "w_sph": 0.75,
+          "w_rps": 1.0,
+          "shuffle_options": [
+            "choice"
+          ],
+          "option_layout": null,
+          "freeze_encoder": false,
+          "calib_max": 400,
+          "calib_frac": 0.1,
+          "calib_seed": 42,
+          "seed": 42,
+          "max_len": 1024,
+          "head_max_len": 512,
+          "amp": true,
+          "gradient_checkpointing": true,
+          "log_every": 100,
+          "label_smoothing": 0.0,
+          "text_column": "text",
+          "label_column": "label",
+          "question_id": "label",
+          "instructions": null,
+          "eval_data": null,
+          "target_error": 0.1,
+          "min_abstain_n": 10
+        },
+        "started_at": "2026-10-11T17:32:24Z"
+      },
+      "retention_status": "PINNED_PARENT",
+      "protection_reason": "Pinned parent required by curriculum dependency"
+    },
+    {
+      "checkpoint_id": "R2-e01",
+      "run_id": "R2",
+      "epoch_name": "epoch_01",
+      "exp_group": "OVERNIGHT-LAYA-TRAINING",
+      "physical_path": "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R2/checkpoints/epoch_01",
+      "real_path": "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R2/checkpoints/epoch_01",
+      "is_symlink": false,
+      "size_bytes": 842610982,
+      "size_mb": 803.58,
+      "files": [
+        "model.safetensors",
+        "rl_agent_config.json"
+      ],
+      "protocol_version": "UNKNOWN",
+      "parent_checkpoint_id": "R1-e01",
+      "primary_score": null,
+      "validation": {
+        "S1": {
+          "loss": 0.6093,
+          "accuracy": 0.6578,
+          "brier": 0.42,
+          "ece": 0.0674,
+          "macro_f1": null
+        },
+        "S2": {
+          "loss": 0.0,
+          "accuracy": 1.0,
+          "macro_f1": null
+        },
+        "S3": {
+          "loss": null,
+          "accuracy": null,
+          "macro_f1": null
+        },
+        "overall": {
+          "items": 898,
+          "loss": 0.3806,
+          "accuracy": 0.7862,
+          "mean_confidence": 0.8177,
+          "ece": 0.0421,
+          "brier": 0.2624,
+          "brier_top1": 0.1312,
+          "by_type": {
+            "choice": {
+              "items": 561,
+              "loss": 0.6093,
+              "accuracy": 0.6578,
+              "mean_confidence": 0.7083,
+              "ece": 0.0674,
+              "brier": 0.42,
+              "brier_top1": 0.21
+            },
+            "noul": {
+              "items": 337,
+              "loss": 0.0,
+              "accuracy": 1.0,
+              "mean_confidence": 1.0,
+              "ece": 0.0,
+              "brier": 0.0,
+              "brier_top1": 0.0
+            }
+          }
+        }
+      },
+      "lineage": {
+        "base_model": "runs/OVERNIGHT-LAYA-TRAINING/R1/checkpoints/best",
+        "layers": [],
+        "supervision_classes": [],
+        "seed": 42,
+        "total_items": null,
+        "config": {
+          "epochs": 3,
+          "micro_batch": 8,
+          "grad_accum": 8,
+          "encoder_lr": 2.5e-05,
+          "head_lr": 0.0001,
+          "min_lr": 1e-06,
+          "weight_decay": 0.01,
+          "grad_clip": 1.0,
+          "loss": "soft-ce",
+          "rl_samples": 4,
+          "sigma_start": 0.4,
+          "sigma_end": 0.1,
+          "w_sph": 0.75,
+          "w_rps": 1.0,
+          "shuffle_options": [
+            "choice"
+          ],
+          "option_layout": null,
+          "freeze_encoder": false,
+          "calib_max": 400,
+          "calib_frac": 0.1,
+          "calib_seed": 42,
+          "seed": 42,
+          "max_len": 1024,
+          "head_max_len": 512,
+          "amp": true,
+          "gradient_checkpointing": true,
+          "log_every": 100,
+          "label_smoothing": 0.0,
+          "text_column": "text",
+          "label_column": "label",
+          "question_id": "label",
+          "instructions": null,
+          "eval_data": null,
+          "target_error": 0.1,
+          "min_abstain_n": 10
+        },
+        "started_at": "2026-10-11T17:41:29Z"
+      },
+      "retention_status": "PINNED_PARENT",
+      "protection_reason": "Pinned parent required by curriculum dependency"
+    }
+  ],
+  "pruning_summary": {
+    "dry_run": false,
+    "total_prunable_dirs": 122,
+    "deleted_count": 122,
+    "freed_bytes": 102798545515,
+    "freed_gib": 95.74,
+    "deleted_paths": [
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N05/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N05/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N05/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N05/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N05/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N10/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N10/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N10/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N10/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N10/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N06/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N06/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N06/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N06/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N06/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N07/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N07/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N07/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N07/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N07/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N08/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N08/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N08/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N08/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N08/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N01/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N01/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N01/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N01/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N01/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N03/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N03/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N03/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N03/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N03/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N02/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N02/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N02/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N02/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N02/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N09/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N09/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N09/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N09/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N09/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N04/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N04/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N04/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N04/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-SWEEP-02/N04/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C03_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C03_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C03_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C07_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C07_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C07_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C07_QB_PB/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C05_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C05_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C05_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C05_QB_PB/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C01_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C01_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C01_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C01_QB_PB/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C12_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C12_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C12_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C11_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C11_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C11_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C15_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C15_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C15_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C15_QB_PB/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C13_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C13_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C13_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C13_QB_PB/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C08_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C08_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C08_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C08_QB_PB/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C10_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C10_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C10_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C16_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C16_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C16_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C16_QB_PB/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C04_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C04_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C04_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C04_QB_PB/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C09_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C09_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C09_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C09_QB_PB/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C02_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C02_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C02_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C06_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C06_QB_PB/checkpoints/epoch_01",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C06_QB_PB/checkpoints/latest",
+      "/home/syy/路由/runs/MR-FULL-GRADED-TRAINING/B01_C06_QB_PB/checkpoints/best",
+      "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C07_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C03_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B01_C04_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C02_QB_PB/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R1/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R1/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R1/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R1/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R2/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R2/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R2/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R2/checkpoints/best",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R3/checkpoints/epoch_02",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R3/checkpoints/epoch_03",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R3/checkpoints/epoch_01",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R3/checkpoints/latest",
+      "/home/syy/路由/runs/OVERNIGHT-LAYA-TRAINING/R3/checkpoints/best"
+    ],
+    "skipped_paths": [],
+    "errors": []
+  },
+  "total_scanned_checkpoints": 138
+}

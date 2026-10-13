@@ -987,6 +987,8 @@ def run_full_coverage_stream_run(
     start_chunk = 0
     global_step = 0
     consumed_total_items = 0
+    materialized_total_items = 0
+    encoded_total_items = 0
     consumed_units_set = set()
     history = []
     best_epoch = None
@@ -1028,14 +1030,58 @@ def run_full_coverage_stream_run(
                     project_root=str(project_root),
                 )
 
-                # 2. Load chunk items from chunk's train directory
-                chunk_items = []
+                materialized_total_items += sum(mat_res.values())
+
+                # 2. Load chunk items from chunk's train directory with multi-supervision balance
+                by_sup = {}
                 for sup_name in supervision_classes:
                     train_fp = tmp_chunk_dir / "train" / f"{sup_name}.jsonl"
                     if train_fp.is_file():
                         c_items, _ = _load_items(train_fp, tok, sys.modules["laya.train"], max_len, head_max_len)
+                        if c_items:
+                            by_sup[sup_name] = c_items
+
+                chunk_items = []
+                if len(by_sup) > 1:
+                    # Multi-supervision batch sampling balance
+                    spec_ratios = spec.get("ratios") or {}
+                    if isinstance(spec_ratios, list):
+                        ratio_map = {sc: w for sc, w in zip(supervision_classes, spec_ratios)}
+                    elif isinstance(spec_ratios, dict):
+                        ratio_map = spec_ratios
+                    else:
+                        ratio_map = {sc: 1.0 for sc in supervision_classes}
+
+                    sup_keys = list(by_sup.keys())
+                    sup_weights = [float(ratio_map.get(k, 1.0)) for k in sup_keys]
+                    tot_w = sum(sup_weights) if sum(sup_weights) > 0 else 1.0
+                    sup_probs = [w / tot_w for w in sup_weights]
+
+                    rng_balance = random.Random(seed + epoch + chunk_idx)
+                    for k in sup_keys:
+                        rng_balance.shuffle(by_sup[k])
+
+                    cursors = {k: 0 for k in sup_keys}
+                    total_available = sum(len(v) for v in by_sup.values())
+                    while len(chunk_items) < total_available:
+                        picked = rng_balance.choices(sup_keys, weights=sup_probs, k=1)[0]
+                        idx = cursors[picked]
+                        if idx < len(by_sup[picked]):
+                            chunk_items.append(by_sup[picked][idx])
+                            cursors[picked] += 1
+                        else:
+                            rem = [k for k in sup_keys if cursors[k] < len(by_sup[k])]
+                            if not rem:
+                                break
+                            r_picked = rng_balance.choice(rem)
+                            chunk_items.append(by_sup[r_picked][cursors[r_picked]])
+                            cursors[r_picked] += 1
+                else:
+                    for c_items in by_sup.values():
                         chunk_items.extend(c_items)
-                random.Random(seed + epoch + chunk_idx).shuffle(chunk_items)
+                    random.Random(seed + epoch + chunk_idx).shuffle(chunk_items)
+
+                encoded_total_items += len(chunk_items)
 
                 # 3. Train on chunk items with continuous optimizer & scheduler
                 order_rng = random.Random(seed + epoch + chunk_idx)
@@ -1161,13 +1207,20 @@ def run_full_coverage_stream_run(
             run_meta["current_step"] = global_step
             run_meta["best_epoch"] = best_epoch
 
-            # Update coverage ledger after each epoch
+            # Update coverage ledger after each epoch with 5 independent census metrics
             ledger_data = {
                 "run_id": run_id,
                 "protocol_version": NEW_PROTOCOL_VERSION,
                 "layers": layers,
                 "layer_fractions": layer_fractions,
                 "supervision_classes": supervision_classes,
+                "census_metrics": {
+                    "legal_candidate_references": total_items,
+                    "materialized_items": materialized_total_items,
+                    "encoded_items": encoded_total_items,
+                    "trained_items": consumed_total_items,
+                    "distinct_trained_units": len(consumed_units_set),
+                },
                 "total_eligible_records": total_items,
                 "consumed_items": consumed_total_items,
                 "distinct_units_covered": len(consumed_units_set),

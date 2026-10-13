@@ -1617,6 +1617,103 @@ FULL_COVERAGE_SERIES_DEFS = {
         "epochs": 2,
         "description": "L1+L2+L3+L4 100% Pure S3 Auxiliary Grand Total Coverage (1,294,179 records)",
     },
+
+    # 7. ROUTING-ALIGNED Series (ALGN_01..ALGN_04) under MR-ROUTING-ALIGNED-DATA-v2
+    "ALGN_01_S1": {
+        "run_id": "ALGN_01_S1",
+        "series": "ROUTING_ALIGNED_V2",
+        "category": "routing_aligned_s1",
+        "layers": ["L1", "L2", "L3", "L4"],
+        "layer_fractions": {"L1": 1.0, "L2": 1.0, "L3": 1.0, "L4": 1.0},
+        "supervision_classes": ["S1"],
+        "groups": ["S1"],
+        "ratios": {"S1": 1.0},
+        "continuation_mode": "from_scratch",
+        "parent_run_id": None,
+        "epochs": 2,
+        "description": "MR-ROUTING-ALIGNED-v2 View 1: Static Model Preference (ROUTE-004 LMSYS Arena pairwise) single-task full coverage",
+    },
+    "ALGN_02_S1_S2": {
+        "run_id": "ALGN_02_S1_S2",
+        "series": "ROUTING_ALIGNED_V2",
+        "category": "routing_aligned_s1_s2",
+        "layers": ["L1", "L2", "L3", "L4"],
+        "layer_fractions": {"L1": 1.0, "L2": 1.0, "L3": 1.0, "L4": 1.0},
+        "supervision_classes": ["S1", "S2"],
+        "groups": ["S1", "S2"],
+        "ratios": {"S1": 2.0, "S2": 1.0},
+        "continuation_mode": "from_scratch",
+        "parent_run_id": None,
+        "epochs": 2,
+        "description": "MR-ROUTING-ALIGNED-v2 View 1+2: Static Model Preference (S1) + Observed Agent Outcome (S2 TRA-001/002) balanced 2:1",
+    },
+    "ALGN_03_S1_S3": {
+        "run_id": "ALGN_03_S1_S3",
+        "series": "ROUTING_ALIGNED_V2",
+        "category": "routing_aligned_s1_s3",
+        "layers": ["L1", "L2", "L3", "L4"],
+        "layer_fractions": {"L1": 1.0, "L2": 1.0, "L3": 1.0, "L4": 1.0},
+        "supervision_classes": ["S1", "S3"],
+        "groups": ["S1", "S3"],
+        "ratios": {"S1": 2.0, "S3": 1.0},
+        "continuation_mode": "from_scratch",
+        "parent_run_id": None,
+        "epochs": 2,
+        "description": "MR-ROUTING-ALIGNED-v2 View 1+3: Static Model Preference (S1) + Resource Cache Auxiliary (S3 TIME/CACHE/OWN) balanced 2:1",
+    },
+    "ALGN_04_S1_S2_S3": {
+        "run_id": "ALGN_04_S1_S2_S3",
+        "series": "ROUTING_ALIGNED_V2",
+        "category": "routing_aligned_tri",
+        "layers": ["L1", "L2", "L3", "L4"],
+        "layer_fractions": {"L1": 1.0, "L2": 1.0, "L3": 1.0, "L4": 1.0},
+        "supervision_classes": ["S1", "S2", "S3"],
+        "groups": ["S1", "S2", "S3"],
+        "ratios": {"S1": 2.0, "S2": 1.0, "S3": 1.0},
+        "continuation_mode": "from_scratch",
+        "parent_run_id": None,
+        "epochs": 2,
+        "description": "MR-ROUTING-ALIGNED-v2 View 1+2+3: Routing Preference + Agent Outcome + Resource Auxiliary balanced 2:1:1",
+    },
+}
+
+ROUTING_ALIGNED_VIEWS = {
+    "STATIC_MODEL_PREFERENCE": {
+        "view_id": "STATIC_MODEL_PREFERENCE",
+        "supervision_class": "S1",
+        "sources": ["ROUTE-004"],
+        "primary_targets": ["human_pairwise_preference"],
+        "eligible_record_count": 31766,
+        "status": "READY",
+        "description": "Human pairwise preference on LMSYS Chatbot Arena battles",
+    },
+    "OBSERVED_AGENT_OUTCOME": {
+        "view_id": "OBSERVED_AGENT_OUTCOME",
+        "supervision_class": "S2",
+        "sources": ["TRA-001", "TRA-002"],
+        "primary_targets": ["observed_action"],
+        "eligible_record_count": 3537955,
+        "status": "READY",
+        "description": "Agent trajectory step actions and outcomes in coding environments",
+    },
+    "RESOURCE_CACHE_AUXILIARY": {
+        "view_id": "RESOURCE_CACHE_AUXILIARY",
+        "supervision_class": "S3",
+        "sources": ["TIME-001", "CACHE-001", "OWN-002"],
+        "primary_targets": ["request_response_tokens", "output_token_length", "call_quota_units"],
+        "eligible_record_count": 1294179,
+        "status": "READY",
+        "description": "Inference resource consumption, response length, and cache tier auxiliary supervision",
+    },
+    "JOINT_ROUTING_COMPARISON": {
+        "view_id": "JOINT_ROUTING_COMPARISON",
+        "supervision_class": "JOINT",
+        "sources": [],
+        "primary_targets": [],
+        "eligible_record_count": 0,
+        "status": "DATA_NOT_READY",
+        "description": "Concurrent multi-objective routing (Arena preference + SWE outcome + Mooncake cache). No authentic joint records exist across disparate sources; synthetic cross-benchmark pairing strictly prohibited.",
+    },
 }
 
 
@@ -1671,6 +1768,16 @@ def collect_full_coverage_refs(
                     rec = json.loads(line)
                     if rec.get("split") != "train":
                         continue
+                    
+                    # Problem 1 & 2: Strictly require Q1/Q2 and train_eligible; no Q3/Q4 leakage
+                    q_grade = rec.get("quality_grade")
+                    if q_grade and q_grade not in {"Q1", "Q2"}:
+                        census["skipped_q3_q4"] = census.get("skipped_q3_q4", 0) + 1
+                        continue
+                    if rec.get("train_eligible") is False:
+                        census["skipped_ineligible"] = census.get("skipped_ineligible", 0) + 1
+                        continue
+
                     sup = rec.get("primary_supervision_class")
                     if sup not in sup_set:
                         continue
@@ -1681,27 +1788,34 @@ def collect_full_coverage_refs(
                         if unit_hash >= fraction:
                             continue
 
-                    # Determine target
+                    # Problem 2: Forbid heuristic default labels. Must use valid candidate_targets or verified targets.
                     target = rec.get("target")
                     if not target:
-                        if src == "ROUTE-004":
-                            target = "human_pairwise_preference"
-                        elif src in {"TRA-001", "TRA-002"}:
-                            cand = rec.get("candidate_targets") or []
-                            match = [t for t in cand if t in MATRIX_TARGETS["S2"]]
-                            target = match[0] if match else "observed_action"
-                        elif src == "CACHE-001":
-                            cand = rec.get("candidate_targets") or []
-                            match = [t for t in cand if t in MATRIX_TARGETS["S3"]]
-                            target = match[0] if match else "prefix_reuse_opportunity"
-                        elif src == "TIME-001":
-                            target = "request_response_tokens"
-                        elif src == "OWN-002":
-                            cand = rec.get("candidate_targets") or []
-                            match = [t for t in cand if t in MATRIX_TARGETS["S3"]]
-                            target = match[0] if match else "call_quota_units"
+                        cand_list = rec.get("candidate_targets")
+                        if cand_list is not None:
+                            valid_cands = [t for t in cand_list if t in MATRIX_TARGETS.get(sup, set())]
+                            if valid_cands:
+                                target = valid_cands[0]
+                            else:
+                                census["skipped_no_valid_target"] = census.get("skipped_no_valid_target", 0) + 1
+                                continue
                         else:
-                            target = "observed_action"
+                            # Fallback for legacy indexes without candidate_targets key
+                            if src == "ROUTE-004" and q_grade == "Q1":
+                                target = "human_pairwise_preference"
+                            elif src == "TIME-001" and q_grade == "Q1":
+                                target = "request_response_tokens"
+                            elif src == "CACHE-001" and q_grade == "Q1":
+                                target = "output_token_length"
+                            elif src == "OWN-002" and q_grade == "Q1":
+                                target = "call_quota_units"
+                            elif src == "TRA-001" and q_grade == "Q1":
+                                target = "observed_action"
+                            elif src == "TRA-002" and q_grade == "Q1":
+                                target = "observed_action"
+                            else:
+                                census["skipped_no_valid_target"] = census.get("skipped_no_valid_target", 0) + 1
+                                continue
 
                     ref = {
                         "source_id": src,
@@ -1713,8 +1827,9 @@ def collect_full_coverage_refs(
                         "primary_supervision_class": sup,
                         "assigned_layer": layer,
                         "target": target,
-                        "quality_grade": rec.get("quality_grade"),
+                        "quality_grade": q_grade,
                         "split": "train",
+                        "train_eligible": True,
                     }
                     collected.append(ref)
                     census["by_layer"][layer] += 1
@@ -1756,26 +1871,60 @@ def materialize_full_coverage_chunk(
             if not os.path.isfile(path):
                 continue
 
-            for line_no, raw in _source_rows(path):
-                if line_no > max_line:
-                    break
-                if line_no not in lines_map:
-                    continue
-                for ref in lines_map[line_no]:
-                    row = _example(src, raw, ref, ref["target"])
-                    if row is None:
-                        continue
-                    row = _rewrite_materialized_row(row)
-                    sup_class = ref["primary_supervision_class"]
-                    if sup_class not in handles:
-                        handles[sup_class] = open(
-                            os.path.join(chunk_dir, "train", f"{sup_class}.jsonl"),
-                            "w",
-                            encoding="utf8",
-                        )
-                    handles[sup_class].write(json.dumps(row, ensure_ascii=False, separators=(',', ':')) + "\n")
-                    stats[sup_class] += 1
-                    distinct_units.add(ref["independent_unit_id"])
+            min_line = min(lines_map.keys())
+            max_line = max(lines_map.keys())
+            target_line_set = set(lines_map.keys())
+
+            with open(path, encoding='utf-8-sig', newline='') as f:
+                if path.endswith('.csv'):
+                    reader = csv.DictReader(f)
+                    for line_no, raw in enumerate(reader, 2):
+                        if line_no < min_line:
+                            continue
+                        if line_no > max_line:
+                            break
+                        if line_no in target_line_set:
+                            for ref in lines_map[line_no]:
+                                row = _example(src, raw, ref, ref["target"])
+                                if row is None:
+                                    continue
+                                row = _rewrite_materialized_row(row)
+                                sup_class = ref["primary_supervision_class"]
+                                if sup_class not in handles:
+                                    handles[sup_class] = open(
+                                        os.path.join(chunk_dir, "train", f"{sup_class}.jsonl"),
+                                        "w",
+                                        encoding="utf8",
+                                    )
+                                handles[sup_class].write(json.dumps(row, ensure_ascii=False, separators=(',', ':')) + "\n")
+                                stats[sup_class] += 1
+                                distinct_units.add(ref["independent_unit_id"])
+                else:
+                    for line_no, line in enumerate(f, 1):
+                        if line_no < min_line:
+                            continue
+                        if line_no > max_line:
+                            break
+                        if line_no in target_line_set:
+                            s = line.strip()
+                            if not s:
+                                continue
+                            raw = json.loads(s)
+                            for ref in lines_map[line_no]:
+                                row = _example(src, raw, ref, ref["target"])
+                                if row is None:
+                                    continue
+                                row = _rewrite_materialized_row(row)
+                                sup_class = ref["primary_supervision_class"]
+                                if sup_class not in handles:
+                                    handles[sup_class] = open(
+                                        os.path.join(chunk_dir, "train", f"{sup_class}.jsonl"),
+                                        "w",
+                                        encoding="utf8",
+                                    )
+                                handles[sup_class].write(json.dumps(row, ensure_ascii=False, separators=(',', ':')) + "\n")
+                                stats[sup_class] += 1
+                                distinct_units.add(ref["independent_unit_id"])
     finally:
         for h in handles.values():
             h.close()

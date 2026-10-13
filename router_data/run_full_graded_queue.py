@@ -637,6 +637,11 @@ FULL_COVERAGE_STAGE_MAP = {
     "F05_S3": (6, 5),
     "F06_S3": (6, 6),
     "F07_S3": (6, 7),
+    # Stage 7: Routing-Aligned Ablation Series (ALGN_01..ALGN_04 under MR-ROUTING-ALIGNED-DATA-v2)
+    "ALGN_01_S1": (7, 1),
+    "ALGN_02_S1_S2": (7, 2),
+    "ALGN_03_S1_S3": (7, 3),
+    "ALGN_04_S1_S2_S3": (7, 4),
 }
 
 
@@ -644,7 +649,7 @@ def build_ordered_full_coverage_queue(
     out_root: Path,
     manifest: Dict[str, Any],
     queue_state: Dict[str, Any],
-    stages: Tuple[int, ...] = (1, 2, 3, 4, 5, 6),
+    stages: Tuple[int, ...] = (1, 2, 3, 4, 5, 6, 7),
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     """Build the ordered execution queue for Mode B FULL-COVERAGE series (F01..F20 + S1/S3 branches)."""
     plans = manifest.get("plans") or {}
@@ -704,7 +709,7 @@ def run_continuous_full_coverage_queue(
     epochs: int = 2,
     chunk_size: int = 8192,
     active_budget_gib: float = 120.0,
-    stages: Tuple[int, ...] = (1, 2, 3, 4, 5, 6),
+    stages: Tuple[int, ...] = (1, 2, 3, 4, 5, 6, 7),
     sync_github_every: int = 1,
     max_runs: Optional[int] = None,
 ) -> Dict[str, Any]:
@@ -888,7 +893,7 @@ def main() -> None:
     parser.add_argument("--max-runs", type=int, default=0, help="0 means unlimited (continuous run until all completed)")
     parser.add_argument("--epochs", type=int, default=2)
     parser.add_argument("--active-budget-gib", type=float, default=120.0)
-    parser.add_argument("--stages", default="1,2,3,4,5,6")
+    parser.add_argument("--stages", default="1,2,3,4,5,6,7")
     parser.add_argument("--sync-github-every", type=int, default=1)
     parser.add_argument("--allow-unmaterialized", action="store_true")
     parser.add_argument("--dry-reconcile", action="store_true")
