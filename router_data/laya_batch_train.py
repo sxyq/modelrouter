@@ -822,6 +822,87 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
     return run_meta
 
 
+def resolve_checkpoint_to_resume(run_root: Path, run_id: str, run_epochs: int):
+    """Production checkpoint resolution function for resuming training.
+
+    Enforces:
+    1. Exact match between physical checkpoint weights and recovery_state metadata.
+    2. Zero phantom item/unit re-consumption: start_chunk resets to checkpoint recovery state.
+    3. Proper recognition of completed runs even if final epoch weights were pruned as METADATA_ONLY.
+    4. Safe rollback to earlier valid checkpoint if mid-epoch chunks crashed.
+
+    Returns:
+        (resolved_ckpt_dir, start_epoch, start_chunk, global_step, consumed_total_items, resume_mode, history)
+    """
+    run_root = Path(run_root)
+    cursor_path = run_root / "cursor.json"
+    if not cursor_path.is_file():
+        return None, 0, 0, 0, 0, "COLD_START", []
+
+    cur = json.loads(cursor_path.read_text(encoding="utf8"))
+    if cur.get("run_id") != run_id:
+        return None, 0, 0, 0, 0, "COLD_START", []
+
+    cur_ep = int(cur.get("epoch", 0))
+    cur_chunk = int(cur.get("chunk_idx", 0))
+    ep_ckpt_dir = run_root / "checkpoints" / f"epoch_{cur_ep:02d}"
+    temp_recovery_dir = run_root / "checkpoints" / "_temp_recovery"
+
+    # Check if cursor claims all epochs already completed
+    if cur_ep >= run_epochs:
+        run_meta_file = run_root / "run.json"
+        run_meta = json.loads(run_meta_file.read_text(encoding="utf8")) if run_meta_file.is_file() else None
+        is_completed_in_meta = (
+            run_meta is not None
+            and run_meta.get("status") == "completed"
+            and len(run_meta.get("history", [])) >= run_epochs
+        )
+        if has_physical_weights(ep_ckpt_dir) or is_completed_in_meta:
+            resolved_target = ep_ckpt_dir if has_physical_weights(ep_ckpt_dir) else None
+            return resolved_target, cur_ep, 0, cur.get("step_count", 0), cur.get("consumed_items", 0), "COMPLETED", cur.get("history", [])
+        else:
+            raise RuntimeError(
+                f"[{run_id}] Corrupt state: Cursor claims {cur_ep}/{run_epochs} epochs completed, "
+                f"but final checkpoint {ep_ckpt_dir} lacks physical weights and run.json is not completed! Cannot claim completion without weights or completed status."
+            )
+
+    resolved_ckpt = None
+    if cur_ep > 0 and has_physical_weights(ep_ckpt_dir):
+        resolved_ckpt = ep_ckpt_dir
+    elif temp_recovery_dir.is_dir() and has_physical_weights(temp_recovery_dir):
+        resolved_ckpt = temp_recovery_dir
+
+    if resolved_ckpt is not None:
+        rec_meta_file = resolved_ckpt / "recovery_state.json"
+        if rec_meta_file.is_file():
+            try:
+                rec_meta = json.loads(rec_meta_file.read_text(encoding="utf8"))
+                start_epoch = int(rec_meta.get("epoch", cur_ep))
+                start_chunk = int(rec_meta.get("chunk_idx", 0))
+                global_step = int(rec_meta.get("step_count", cur.get("step_count", 0)))
+                consumed_total_items = int(rec_meta.get("consumed_items", cur.get("consumed_items", 0)))
+                history = rec_meta.get("history") or cur.get("history", [])
+                return resolved_ckpt, start_epoch, start_chunk, global_step, consumed_total_items, "STREAMING_EXACT_RESUME", history
+            except Exception:
+                start_epoch = cur_ep
+                start_chunk = 0
+                global_step = cur.get("step_count", 0)
+                consumed_total_items = cur.get("consumed_items", 0)
+                history = cur.get("history", [])
+                return resolved_ckpt, start_epoch, start_chunk, global_step, consumed_total_items, "RECOVERY_META_FALLBACK", history
+        else:
+            start_epoch = cur_ep
+            start_chunk = 0
+            global_step = cur.get("step_count", 0)
+            consumed_total_items = cur.get("consumed_items", 0)
+            history = cur.get("history", [])
+            return resolved_ckpt, start_epoch, start_chunk, global_step, consumed_total_items, "WEIGHT_ONLY_CONTINUATION", history
+    elif cur_ep > 0:
+        return None, 0, 0, 0, 0, "EPOCH_RESTART", []
+
+    return None, 0, 0, 0, 0, "COLD_START", []
+
+
 def run_full_coverage_stream_run(
     run_id: str,
     manifest_path: str,
@@ -970,100 +1051,31 @@ def run_full_coverage_stream_run(
     config.validate()
 
     # Step 1: Resolve resume target from cursor BEFORE creating optimizer
-    # 4 explicit modes:
-    # 1. EXACT_RESUME: Model weights + optimizer/scheduler/RNG states restored to final model
-    # 2. WEIGHT_ONLY_CONTINUATION: Model weights restored to final model, optimizer reinitialized on final model
-    # 3. EPOCH_RESTART: Cursor pointed to epoch, but weights missing; restart epoch 0 from scratch with parent model
-    # 4. COLD_START: No prior cursor or fresh run
-    cursor_path = run_root / "cursor.json"
-    start_epoch = 0
-    start_chunk = 0
-    global_step = 0
-    consumed_total_items = 0
+    target_ckpt_dir, start_epoch, start_chunk, global_step, consumed_total_items, resume_mode, history = resolve_checkpoint_to_resume(
+        run_root=run_root,
+        run_id=run_id,
+        run_epochs=run_epochs,
+    )
     materialized_total_items = 0
     encoded_total_items = 0
     consumed_units_set = set()
-    history = []
     best_epoch = None
-    target_ckpt_dir = None
-    resume_mode = "COLD_START"
 
-    if cursor_path.is_file():
-        try:
-            cur = json.loads(cursor_path.read_text(encoding="utf8"))
-            if cur.get("run_id") == run_id:
-                cur_ep = int(cur.get("epoch", 0))
-                cur_chunk = int(cur.get("chunk_idx", 0))
-                ep_ckpt_dir = run_root / "checkpoints" / f"epoch_{cur_ep:02d}"
-                temp_recovery_dir = run_root / "checkpoints" / "_temp_recovery"
-
-                # Check if cursor claims all epochs already completed
-                if cur_ep >= run_epochs:
-                    if has_physical_weights(ep_ckpt_dir):
-                        print(f"[{run_id}] Run already completed all {run_epochs} epochs with physical weights at {ep_ckpt_dir}.")
-                        if (run_root / "run.json").is_file():
-                            run_meta = json.loads((run_root / "run.json").read_text(encoding="utf8"))
-                        else:
-                            run_meta = {"run_id": run_id, "status": "completed"}
-                        return run_meta
-                    else:
-                        raise RuntimeError(
-                            f"[{run_id}] Corrupt state: Cursor claims {cur_ep}/{run_epochs} epochs completed, "
-                            f"but final checkpoint {ep_ckpt_dir} lacks physical weights! Cannot claim completion without weights."
-                        )
-
-                resolved_ckpt = None
-                if cur_ep > 0 and has_physical_weights(ep_ckpt_dir):
-                    resolved_ckpt = ep_ckpt_dir
-                elif temp_recovery_dir.is_dir() and has_physical_weights(temp_recovery_dir):
-                    resolved_ckpt = temp_recovery_dir
-
-                if resolved_ckpt is not None:
-                    target_ckpt_dir = resolved_ckpt
-                    rec_meta_file = resolved_ckpt / "recovery_state.json"
-                    if rec_meta_file.is_file():
-                        try:
-                            rec_meta = json.loads(rec_meta_file.read_text(encoding="utf8"))
-                            start_epoch = int(rec_meta.get("epoch", cur_ep))
-                            start_chunk = int(rec_meta.get("chunk_idx", 0))
-                            global_step = int(rec_meta.get("step_count", cur.get("step_count", 0)))
-                            consumed_total_items = int(rec_meta.get("consumed_items", cur.get("consumed_items", 0)))
-                            history = rec_meta.get("history") or cur.get("history", [])
-                            print(
-                                f"[{run_id}] RESUME_CONSISTENCY: Anchored to physical checkpoint at {resolved_ckpt.name} "
-                                f"(epoch={start_epoch}, chunk={start_chunk}, step={global_step}, consumed={consumed_total_items}).",
-                                flush=True,
-                            )
-                        except Exception as rec_err:
-                            print(f"[{run_id}] Warning parsing recovery_state.json: {rec_err}")
-                            start_epoch = cur_ep
-                            start_chunk = 0
-                            global_step = cur.get("step_count", 0)
-                            consumed_total_items = cur.get("consumed_items", 0)
-                            history = cur.get("history", [])
-                    else:
-                        start_epoch = cur_ep
-                        start_chunk = 0
-                        global_step = cur.get("step_count", 0)
-                        consumed_total_items = cur.get("consumed_items", 0)
-                        history = cur.get("history", [])
-                elif cur_ep > 0:
-                    print(f"[{run_id}] Warning: Cursor recorded epoch {cur_ep}, but physical weights are missing at {ep_ckpt_dir}. Full restart from epoch 0.")
-                    target_ckpt_dir = None
-                    start_epoch = 0
-                    start_chunk = 0
-                    global_step = 0
-                    consumed_total_items = 0
-                    history = []
-                    resume_mode = "EPOCH_RESTART"
-        except Exception as exc:
-            if isinstance(exc, RuntimeError):
-                raise
-            print(f"[{run_id}] Warning: Failed to parse cursor {cursor_path}: {exc}. Cold starting.")
-            target_ckpt_dir = None
-            start_epoch = 0
-            start_chunk = 0
-            resume_mode = "COLD_START"
+    if resume_mode == "COMPLETED":
+        print(f"[{run_id}] Run already completed all {run_epochs} epochs.")
+        if (run_root / "run.json").is_file():
+            run_meta = json.loads((run_root / "run.json").read_text(encoding="utf8"))
+        else:
+            run_meta = {"run_id": run_id, "status": "completed"}
+        return run_meta
+    elif resume_mode == "STREAMING_EXACT_RESUME":
+        print(
+            f"[{run_id}] RESUME_CONSISTENCY: Anchored to physical checkpoint at {target_ckpt_dir.name} "
+            f"(epoch={start_epoch}, chunk={start_chunk}, step={global_step}, consumed={consumed_total_items}).",
+            flush=True,
+        )
+    elif resume_mode == "EPOCH_RESTART":
+        print(f"[{run_id}] Warning: Cursor recorded epoch progress, but physical weights are missing. Full restart from epoch 0.")
 
     # Step 2: Load the FINAL model object ONCE before creating the optimizer
     if target_ckpt_dir is not None:
@@ -1355,7 +1367,23 @@ def run_full_coverage_stream_run(
                 "global_step": global_step,
             }
 
-            # Record epoch validation and execute retention pruning via CheckpointRetentionManager
+            # 1. Update history with entry FIRST so that retention evaluation sees this epoch in run.json
+            existing_idx = None
+            for i, h in enumerate(history):
+                if h.get("checkpoint_id") == epoch_id or h.get("epoch") == epoch + 1:
+                    existing_idx = i
+                    break
+            if existing_idx is not None:
+                history[existing_idx] = entry
+            else:
+                history.append(entry)
+
+            run_meta["history"] = history
+            run_meta["current_epoch"] = epoch + 1
+            run_meta["current_step"] = global_step
+            run_meta["best_epoch"] = best_epoch
+
+            # 2. Record epoch validation and execute retention pruning via CheckpointRetentionManager
             is_final = (epoch + 1 >= run_epochs)
             rec_meta_epoch = {
                 "run_id": run_id,
@@ -1376,11 +1404,7 @@ def run_full_coverage_stream_run(
                 entry=entry,
                 manifest=manifest_data,
             )
-            history.append(entry)
-            run_meta["history"] = history
-            run_meta["current_epoch"] = epoch + 1
-            run_meta["current_step"] = global_step
-            run_meta["best_epoch"] = best_epoch
+            history = run_meta.get("history", history)
 
             # Update restorable cursor pointing to completed epoch
             cursor_data = {

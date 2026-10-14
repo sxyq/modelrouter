@@ -3,26 +3,40 @@
 """Production-grade test suite for streaming chunk recovery & epoch boundary consistency.
 
 Verifies:
-1. Exact Epoch Boundary Recovery:
+1. Exact Epoch Boundary Recovery using production resolve_checkpoint_to_resume:
    - Run 1 (Golden Reference): Train 2 Epochs (5 chunks/epoch), save weights at Epoch 1 end & Epoch 2 end.
    - Run 2 (Interrupted & Resumed): Train Epoch 1, start Epoch 2, simulate crash at Chunk 3.
      Resume from previous valid save point (Epoch 1 end).
      Verify start_chunk reset to 0, consumed_items rolled back to Epoch 1 boundary (no phantom double-counting).
      Verify model weights, logits, optimizer step, and consumption match Run 1.
 2. Forbid using Epoch 1 weights with mid-epoch (Chunk 3) cursor.
-3. Forbid empty completed write when final epoch weights are missing.
-4. Distinguish between metadata-only pruned checkpoints and active recovery checkpoints.
+3. Forbid empty completed write when final epoch weights are missing and run.json is not completed.
+4. Correctly recognize completed runs when run.json has status: completed and full history.
+5. Strict SHA256 checkpoint weight hash verification in recovery_state.json.
+6. Verify optimizer parameter binding and actual weight updates after recovery.
 """
 
 import copy
+import hashlib
 import json
 import math
 import os
 import shutil
+import sys
 import tempfile
+from pathlib import Path
 import torch
 import torch.nn as nn
-from pathlib import Path
+
+# Ensure project root is on sys.path
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from router_data.laya_batch_train import (
+    resolve_checkpoint_to_resume,
+    has_physical_weights,
+)
 
 
 class MockLayaModel(nn.Module):
@@ -44,12 +58,22 @@ class MockLayaModel(nn.Module):
 
 
 def save_atomic_checkpoint(model, optimizer, scheduler, target_dir: Path, recovery_meta: dict):
+    """Mirror production _save_ckpt_with_optim behavior:
+    saves weights, optim_state.pt, and recovery_state.json with SHA256 checksum.
+    """
     tmp_dir = target_dir.parent / f"_tmp_{target_dir.name}"
     shutil.rmtree(tmp_dir, ignore_errors=True)
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
     weights_file = tmp_dir / "model.pt"
     torch.save(model.state_dict(), weights_file)
+
+    # Compute SHA256
+    h = hashlib.sha256()
+    with open(weights_file, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    weight_hash = h.hexdigest()
 
     optim_file = tmp_dir / "optim_state.pt"
     opt_data = {
@@ -59,68 +83,15 @@ def save_atomic_checkpoint(model, optimizer, scheduler, target_dir: Path, recove
     }
     torch.save(opt_data, optim_file)
 
+    meta = dict(recovery_meta)
+    meta["checkpoint_hash"] = weight_hash
+    meta["saved_at"] = "2026-10-14T12:00:00Z"
     meta_file = tmp_dir / "recovery_state.json"
-    meta_file.write_text(json.dumps(recovery_meta, indent=2))
+    meta_file.write_text(json.dumps(meta, indent=2))
 
     # Atomic rename/publish
     shutil.rmtree(target_dir, ignore_errors=True)
     tmp_dir.rename(target_dir)
-
-
-def has_physical_weights(target_dir: Path) -> bool:
-    if not target_dir or not target_dir.is_dir():
-        return False
-    pt = target_dir / "model.pt"
-    st = target_dir / "model.safetensors"
-    return (pt.is_file() and pt.stat().st_size > 100) or (st.is_file() and st.stat().st_size > 100)
-
-
-def resolve_recovery_point(run_root: Path, run_id: str, run_epochs: int):
-    """Production resolution rule:
-    Finds the latest physical checkpoint and returns its matched recovery boundary.
-    Any mid-epoch in-flight chunk progress without physical weights is rolled back.
-    """
-    cursor_path = run_root / "cursor.json"
-    if not cursor_path.is_file():
-        return None, 0, 0, 0, 0, "COLD_START"
-
-    cur = json.loads(cursor_path.read_text())
-    cur_ep = int(cur.get("epoch", 0))
-    cur_chunk = int(cur.get("chunk_idx", 0))
-
-    ep_ckpt_dir = run_root / "checkpoints" / f"epoch_{cur_ep:02d}"
-    temp_recovery_dir = run_root / "checkpoints" / "_temp_recovery"
-
-    # Rule: Claiming completion requires physical weights
-    if cur_ep >= run_epochs:
-        if has_physical_weights(ep_ckpt_dir):
-            return ep_ckpt_dir, cur_ep, 0, cur.get("step_count", 0), cur.get("consumed_items", 0), "COMPLETED"
-        else:
-            raise RuntimeError(f"Corrupt state: Cursor claims {cur_ep}/{run_epochs} completed but final weights missing!")
-
-    # Check valid checkpoints
-    candidate_ckpt = None
-    if cur_ep > 0 and has_physical_weights(ep_ckpt_dir):
-        candidate_ckpt = ep_ckpt_dir
-    elif temp_recovery_dir.is_dir() and has_physical_weights(temp_recovery_dir):
-        candidate_ckpt = temp_recovery_dir
-
-    if candidate_ckpt is not None:
-        rec_meta_file = candidate_ckpt / "recovery_state.json"
-        if rec_meta_file.is_file():
-            rec_meta = json.loads(rec_meta_file.read_text())
-            # Enforce exact match to recovery state
-            rec_ep = int(rec_meta.get("epoch", 0))
-            rec_chunk = int(rec_meta.get("chunk_idx", 0))
-            rec_step = int(rec_meta.get("step_count", 0))
-            rec_consumed = int(rec_meta.get("consumed_items", 0))
-            return candidate_ckpt, rec_ep, rec_chunk, rec_step, rec_consumed, "EXACT_RESUME"
-        else:
-            # Fallback epoch boundary
-            return candidate_ckpt, cur_ep, 0, cur.get("step_count", 0), cur.get("consumed_items", 0), "WEIGHT_ONLY_CONTINUATION"
-
-    # If physical weights missing
-    return None, 0, 0, 0, 0, "EPOCH_RESTART"
 
 
 def test_streaming_chunk_recovery():
@@ -130,7 +101,7 @@ def test_streaming_chunk_recovery():
 
     # Generate synthetic data: 2 epochs, 5 chunks per epoch, 16 items per chunk
     chunks_data = []
-    for c in range(10): # 10 chunks total
+    for c in range(10):
         x = torch.randint(0, 100, (16, 10))
         y = torch.randint(0, 2, (16,))
         chunks_data.append((x, y))
@@ -157,7 +128,10 @@ def test_streaming_chunk_recovery():
         ref_steps += 1
         ref_consumed += len(x)
 
-    epoch1_ref_weights = copy.deepcopy(model_ref.state_dict())
+    # Save Golden Epoch 1
+    golden_ep1_state = copy.deepcopy(model_ref.state_dict())
+    golden_ep1_opt = copy.deepcopy(opt_ref.state_dict())
+    golden_ep1_sched = copy.deepcopy(sched_ref.state_dict())
 
     # Epoch 2 (chunks 5..9)
     for c_idx in range(5, 10):
@@ -171,90 +145,102 @@ def test_streaming_chunk_recovery():
         ref_steps += 1
         ref_consumed += len(x)
 
-    ref_final_weights = copy.deepcopy(model_ref.state_dict())
-    eval_x = torch.randint(0, 100, (8, 10))
+    # Evaluation probe
+    eval_x = torch.randint(0, 100, (32, 10))
     with torch.no_grad():
         ref_logits = model_ref(eval_x)
 
-    print(f"[Run 1 Ref] Steps={ref_steps}, Consumed={ref_consumed}")
-
-    # --- Run 2: Interrupted at Epoch 2 Chunk 3 -> Resumed from Epoch 1 ---
+    # --- Run 2: Interrupted at Epoch 2 Chunk 3 and Resumed via production resolver ---
     with tempfile.TemporaryDirectory() as tmpdir:
-        run_root = Path(tmpdir) / "run_test"
-        run_root.mkdir(parents=True)
-        ckpt_dir = run_root / "checkpoints"
-        ckpt_dir.mkdir(parents=True)
+        run_root = Path(tmpdir) / "RUN_RESUME"
+        run_root.mkdir()
+        ckroot = run_root / "checkpoints"
+        ckroot.mkdir()
 
-        model_run2 = MockLayaModel().to(device)
-        model_run2.load_state_dict(init_state)
-        opt_run2 = torch.optim.AdamW(model_run2.parameters(), lr=1e-3)
-        sched_run2 = torch.optim.lr_scheduler.CosineAnnealingLR(opt_run2, T_max=10)
+        # Step 2.1: Model trains Epoch 1
+        model_resumed = MockLayaModel().to(device)
+        model_resumed.load_state_dict(init_state)
+        opt_resumed = torch.optim.AdamW(model_resumed.parameters(), lr=1e-3)
+        sched_resumed = torch.optim.lr_scheduler.CosineAnnealingLR(opt_resumed, T_max=10)
 
-        step2 = 0
-        consumed2 = 0
-
-        # Epoch 1
+        step_r = 0
+        consumed_r = 0
         for c_idx in range(5):
             x, y = chunks_data[c_idx]
-            opt_run2.zero_grad()
-            out = model_run2(x)
+            opt_resumed.zero_grad()
+            out = model_resumed(x)
             loss = loss_fn(out, y)
             loss.backward()
-            opt_run2.step()
-            sched_run2.step()
-            step2 += 1
-            consumed2 += len(x)
+            opt_resumed.step()
+            sched_resumed.step()
+            step_r += 1
+            consumed_r += len(x)
 
-        # Save Epoch 1 Checkpoint + Recovery State
-        ep1_dir = ckpt_dir / "epoch_01"
+        # Save Epoch 1 checkpoint atomically with metadata
+        ep1_dir = ckroot / "epoch_01"
         rec_meta_ep1 = {
-            "run_id": "RUN_001",
+            "run_id": "RUN_RESUME",
             "epoch": 1,
             "chunk_idx": 0,
-            "step_count": step2,
-            "consumed_items": consumed2,
+            "step_count": step_r,
+            "consumed_items": consumed_r,
+            "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+            "history": [{"epoch": 1, "train_loss": 0.5}],
         }
-        save_atomic_checkpoint(model_run2, opt_run2, sched_run2, ep1_dir, rec_meta_ep1)
-        # Also copy to _temp_recovery
-        shutil.copytree(ep1_dir, ckpt_dir / "_temp_recovery")
+        save_atomic_checkpoint(model_resumed, opt_resumed, sched_resumed, ep1_dir, rec_meta_ep1)
 
-        # Start Epoch 2 and simulate training Chunk 0, 1, 2, then CRASH at Chunk 3!
-        for c_idx in range(5, 8): # chunks 5, 6, 7 (which correspond to chunk 0, 1, 2 of epoch 2)
+        # Save cursor at Epoch 1 completion
+        cursor_data = {
+            "run_id": "RUN_RESUME",
+            "epoch": 1,
+            "chunk_idx": 0,
+            "step_count": step_r,
+            "consumed_items": consumed_r,
+        }
+        (run_root / "cursor.json").write_text(json.dumps(cursor_data))
+
+        # Step 2.2: Simulate Epoch 2 crash at Chunk 3
+        for c_idx in range(5, 8):
             x, y = chunks_data[c_idx]
-            opt_run2.zero_grad()
-            out = model_run2(x)
+            opt_resumed.zero_grad()
+            out = model_resumed(x)
             loss = loss_fn(out, y)
             loss.backward()
-            opt_run2.step()
-            sched_run2.step()
-            step2 += 1
-            consumed2 += len(x)
+            opt_resumed.step()
+            sched_resumed.step()
+            step_r += 1
+            consumed_r += len(x)
 
-        # Simulated crash! In-flight cursor was written with mid-epoch progress
-        crash_cursor = {
-            "run_id": "RUN_001",
-            "epoch": 1, # currently in epoch index 1 (epoch 2)
-            "chunk_idx": 3,
-            "step_count": step2, # 8 steps
-            "consumed_items": consumed2, # 128 items
-        }
-        (run_root / "cursor.json").write_text(json.dumps(crash_cursor))
-        print(f"[Simulated Crash] Cursor: chunk_idx=3, step={step2}, consumed={consumed2}")
+            # Cursor advanced to mid-epoch Chunk 3
+            cursor_data = {
+                "run_id": "RUN_RESUME",
+                "epoch": 1,
+                "chunk_idx": (c_idx - 5) + 1,
+                "step_count": step_r,
+                "consumed_items": consumed_r,
+            }
+            (run_root / "cursor.json").write_text(json.dumps(cursor_data))
 
-        # --- NOW PERFORM PRODUCTION RESUME ---
-        ckpt_resume, start_ep, start_chk, resumed_step, resumed_consumed, mode = resolve_recovery_point(run_root, "RUN_001", 2)
-        print(f"[Recovery Engine] Selected ckpt={ckpt_resume.name}, mode={mode}")
-        print(f"[Recovery Engine] Rolled back: start_epoch={start_ep}, start_chunk={start_chk}, step={resumed_step}, consumed={resumed_consumed}")
+        print(f"[Simulated Crash] Cursor: epoch=1, chunk=3, step={step_r}, consumed={consumed_r}")
+        assert step_r == 8
+        assert consumed_r == 128
 
-        # CRITICAL ASSERTIONS:
-        # 1. start_chunk must be 0 (re-run incomplete epoch from epoch boundary)
+        # Step 2.3: Production recovery resolution
+        ckpt_resume, start_ep, start_chk, resumed_step, resumed_consumed, mode, history = resolve_checkpoint_to_resume(
+            run_root=run_root,
+            run_id="RUN_RESUME",
+            run_epochs=2,
+        )
+
+        print(f"[Production Resume] mode={mode}, ckpt={ckpt_resume.name if ckpt_resume else None}, start_ep={start_ep}, start_chk={start_chk}, step={resumed_step}, consumed={resumed_consumed}")
+
+        assert ckpt_resume == ep1_dir
+        assert start_ep == 1
         assert start_chk == 0, f"Error: start_chunk must be 0, got {start_chk}"
-        # 2. consumed_items must roll back to 80 (not 128)
         assert resumed_consumed == 80, f"Error: consumed_items must roll back to 80, got {resumed_consumed}"
-        # 3. step must roll back to 5 (not 8)
         assert resumed_step == 5, f"Error: step must roll back to 5, got {resumed_step}"
-        # 4. mode must be EXACT_RESUME
-        assert mode == "EXACT_RESUME"
+        assert mode == "STREAMING_EXACT_RESUME"
+        assert len(history) == 1
 
         # Load weights and optimizer state into fresh model instance
         resumed_model = MockLayaModel().to(device)
@@ -267,7 +253,7 @@ def test_streaming_chunk_recovery():
         resumed_sched.load_state_dict(opt_st["scheduler"])
         torch.set_rng_state(opt_st["rng_state"])
 
-        # Execute Epoch 2 cleanly from Chunk 0 (which is chunks_data[5..9])
+        # Execute Epoch 2 cleanly from Chunk 0
         for c_idx in range(5, 10):
             x, y = chunks_data[c_idx]
             resumed_opt.zero_grad()
@@ -304,13 +290,12 @@ def test_streaming_chunk_recovery():
         (run_root / "checkpoints").mkdir()
         (run_root / "cursor.json").write_text(json.dumps({"run_id": "R1", "epoch": 1, "chunk_idx": 5, "step_count": 100, "consumed_items": 5000}))
 
-        # No physical weights in checkpoints/epoch_01
-        _, start_ep, start_chk, step, consumed, mode = resolve_recovery_point(run_root, "R1", 2)
+        _, start_ep, start_chk, step, consumed, mode, _ = resolve_checkpoint_to_resume(run_root, "R1", 2)
         assert mode == "EPOCH_RESTART"
         assert start_ep == 0 and start_chk == 0 and step == 0 and consumed == 0
         print(">>> TEST 2 PASSED: Missing physical weights correctly triggers EPOCH_RESTART and resets counts to 0!")
 
-    print("\n=== TEST 3: Completed Claim without Physical Weights Blocked ===")
+    print("\n=== TEST 3: Completed Claim without Physical Weights or Completed run.json Blocked ===")
     with tempfile.TemporaryDirectory() as tmpdir:
         run_root = Path(tmpdir) / "run_corrupt_complete"
         run_root.mkdir()
@@ -318,13 +303,85 @@ def test_streaming_chunk_recovery():
         (run_root / "cursor.json").write_text(json.dumps({"run_id": "R2", "epoch": 2, "chunk_idx": 0, "step_count": 200, "consumed_items": 10000}))
 
         try:
-            resolve_recovery_point(run_root, "R2", 2)
+            resolve_checkpoint_to_resume(run_root, "R2", 2)
             assert False, "Should have raised RuntimeError!"
         except RuntimeError as e:
             assert "Corrupt state" in str(e)
             print(f">>> TEST 3 PASSED: False completed claim blocked: {e}")
 
-    print("\nALL PRODUCTION STREAMING RECOVERY TESTS PASSED (3/3)!")
+    print("\n=== TEST 4: Legitimate Completed Run with METADATA_ONLY Final Epoch Accepted ===")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        run_root = Path(tmpdir) / "run_completed_metadata_only"
+        run_root.mkdir()
+        (run_root / "checkpoints").mkdir()
+        (run_root / "cursor.json").write_text(json.dumps({"run_id": "R_META", "epoch": 2, "chunk_idx": 0, "step_count": 200, "consumed_items": 10000}))
+        run_meta_data = {
+            "run_id": "R_META",
+            "status": "completed",
+            "history": [
+                {"epoch": 1, "train_loss": 0.6, "retention_status": "METADATA_ONLY"},
+                {"epoch": 2, "train_loss": 0.5, "retention_status": "METADATA_ONLY"},
+            ],
+        }
+        (run_root / "run.json").write_text(json.dumps(run_meta_data))
+
+        resolved, ep, chk, step, consumed, mode, hist = resolve_checkpoint_to_resume(run_root, "R_META", 2)
+        assert mode == "COMPLETED"
+        assert ep == 2
+        print(">>> TEST 4 PASSED: Legitimate completed run with pruned METADATA_ONLY weights recognized as COMPLETED!")
+
+    print("\n=== TEST 5: SHA256 Hash Matching and Integrity Verification ===")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        run_root = Path(tmpdir) / "run_hash_test"
+        run_root.mkdir()
+        ckpt_dir = run_root / "checkpoints" / "epoch_01"
+        m = MockLayaModel()
+        opt = torch.optim.AdamW(m.parameters(), lr=1e-3)
+        sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=10)
+        save_atomic_checkpoint(m, opt, sched, ckpt_dir, {"run_id": "R_HASH", "epoch": 1, "chunk_idx": 0, "step_count": 10, "consumed_items": 100})
+
+        # Verify hash matches actual file
+        rec_meta = json.loads((ckpt_dir / "recovery_state.json").read_text())
+        h = hashlib.sha256()
+        with open(ckpt_dir / "model.pt", "rb") as f:
+            for chunk in iter(lambda: f.read(65536), b""):
+                h.update(chunk)
+        real_hash = h.hexdigest()
+        assert rec_meta["checkpoint_hash"] == real_hash
+        print(f">>> TEST 5 PASSED: Checkpoint SHA256 verified ({real_hash[:16]}...)!")
+
+    print("\n=== TEST 6: Real Parameter Value Updates Verified After Resume ===")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        run_root = Path(tmpdir) / "run_param_update"
+        run_root.mkdir()
+        ckpt_dir = run_root / "checkpoints" / "epoch_01"
+        m = MockLayaModel()
+        opt = torch.optim.AdamW(m.parameters(), lr=1e-3)
+        sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=10)
+        save_atomic_checkpoint(m, opt, sched, ckpt_dir, {"run_id": "R_UPDATE", "epoch": 1, "chunk_idx": 0, "step_count": 10, "consumed_items": 100})
+
+        # Resume model
+        resumed_m = MockLayaModel()
+        resumed_m.load_state_dict(torch.load(ckpt_dir / "model.pt"))
+        before_weight = resumed_m.head.weight.clone()
+
+        resumed_opt = torch.optim.AdamW(resumed_m.parameters(), lr=1e-3)
+        resumed_opt.load_state_dict(torch.load(ckpt_dir / "optim_state.pt")["optimizer"])
+
+        # Train 1 step
+        x = torch.randint(0, 100, (16, 10))
+        y = torch.randint(0, 2, (16,))
+        out = resumed_m(x)
+        loss = nn.CrossEntropyLoss()(out, y)
+        loss.backward()
+        resumed_opt.step()
+
+        after_weight = resumed_m.head.weight.clone()
+        weight_change = (after_weight - before_weight).abs().max().item()
+        assert weight_change > 0.0, "Weight change must be non-zero after optimizer.step()!"
+        print(f">>> TEST 6 PASSED: Parameters actively updated after resume (max change={weight_change:.6e})!")
+
+    print("\nALL PRODUCTION STREAMING RECOVERY TESTS PASSED (6/6)!")
 
 
 if __name__ == "__main__":

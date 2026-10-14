@@ -104,8 +104,51 @@ def audit_stratification(project_root: Path):
     print("Auditing Train vs Fixed Validation true intersection...", flush=True)
     val_ids = set()
     val_units = set()
+    val_file_hashes = {}
+    val_file_counts = {}
 
-    # Search for validation records
+    # Read from canonical validation directory
+    val_dirs = [
+        project_root / "runs" / "MR-FULL-GRADED-P0-DATA-REPAIR-20261012" / "val",
+        project_root / "runs" / "MR-ALLDATA-PREP-20261011" / "evaluation",
+    ]
+    val_dirs.extend(sorted(project_root.glob("runs/*/val")))
+
+    checked_dirs = []
+    for vdir in val_dirs:
+        if not vdir.is_dir() or vdir in checked_dirs:
+            continue
+        checked_dirs.append(vdir)
+        for vf in sorted(vdir.glob("*.jsonl*")):
+            opener = gzip.open if vf.name.endswith(".gz") else open
+            # Calculate SHA256
+            import hashlib
+            h = hashlib.sha256()
+            with open(vf, "rb") as f_bin:
+                for chunk in iter(lambda: f_bin.read(65536), b""):
+                    h.update(chunk)
+            val_file_hashes[vf.name] = h.hexdigest()
+
+            count = 0
+            try:
+                with opener(vf, "rt", encoding="utf-8") as f:
+                    for line in f:
+                        if not line.strip():
+                            continue
+                        count += 1
+                        d = json.loads(line)
+                        prov = d.get("provenance", {}) if isinstance(d.get("provenance"), dict) else {}
+                        rid = prov.get("stable_record_id") or d.get("stable_record_id") or d.get("record_id")
+                        uid = prov.get("independent_unit_id") or d.get("independent_unit_id") or d.get("unit_id")
+                        if rid:
+                            val_ids.add(rid)
+                        if uid:
+                            val_units.add(uid)
+                val_file_counts[vf.name] = count
+            except Exception as e:
+                print(f"Warning reading validation file {vf}: {e}")
+
+    # Fallback to validation manifest if jsonl not found
     val_manifest_path = project_root / "runs" / "MR-FULL-GRADED-P0-DATA-REPAIR-20261012" / "fixed_validation_manifest.json"
     if val_manifest_path.is_file():
         try:
@@ -119,29 +162,25 @@ def audit_stratification(project_root: Path):
         except Exception as e:
             print(f"Error reading fixed val manifest: {e}")
 
-    for vpath in (project_root / "runs" / "MR-ALLDATA-PREP-20261011" / "evaluation").glob("**/*.jsonl*"):
-        opener = gzip.open if vpath.name.endswith(".gz") else open
-        try:
-            with opener(vpath, "rt", encoding="utf-8") as f:
-                for line in f:
-                    d = json.loads(line)
-                    rid = d.get("stable_record_id") or d.get("record_id")
-                    uid = d.get("independent_unit_id") or d.get("unit_id")
-                    if rid: val_ids.add(rid)
-                    if uid: val_units.add(uid)
-        except Exception:
-            pass
+    if len(val_ids) == 0:
+        raise ValueError(
+            "Audit failure: Fixed validation set is empty or missing! "
+            "Cannot claim zero data leakage without non-empty validation set."
+        )
 
     train_ids = {k for k, v in v2_records.items() if v[4] == "train"}
     train_units = {v[1] for k, v in v2_records.items() if v[4] == "train"}
 
-    train_val_id_intersection = train_ids.intersection(val_ids)
-    train_val_unit_intersection = train_units.intersection(val_units)
+    train_val_id_intersection = sorted(list(train_ids.intersection(val_ids)))
+    train_val_unit_intersection = sorted(list(train_units.intersection(val_units)))
+    zero_leakage_verified = (len(train_val_id_intersection) == 0 and len(train_val_unit_intersection) == 0)
 
+    print(f"Fixed Validation Files Scanned: {val_file_counts}")
     print(f"Fixed Validation Record IDs found: {len(val_ids):,}")
     print(f"Fixed Validation Unit IDs found: {len(val_units):,}")
     print(f"Train vs Val Record ID Intersection: {len(train_val_id_intersection)}")
     print(f"Train vs Val Unit ID Intersection: {len(train_val_unit_intersection)}")
+    print(f"Zero Leakage Verified: {zero_leakage_verified}")
 
     report = {
         "generated_at": _now_iso(),
@@ -159,11 +198,14 @@ def audit_stratification(project_root: Path):
         "migration_matrix": migration_matrix,
         "migration_by_source": {s: dict(c) for s, c in migration_by_source.items()},
         "validation_leakage_audit": {
+            "status": "PASS" if zero_leakage_verified else "FAIL_LEAKAGE_DETECTED",
+            "val_files": val_file_counts,
+            "val_file_sha256": val_file_hashes,
             "total_val_records": len(val_ids),
             "total_val_units": len(val_units),
             "train_val_record_overlap": len(train_val_id_intersection),
             "train_val_unit_overlap": len(train_val_unit_intersection),
-            "zero_leakage_verified": (len(train_val_id_intersection) == 0 and len(train_val_unit_intersection) == 0),
+            "zero_leakage_verified": zero_leakage_verified,
         }
     }
 

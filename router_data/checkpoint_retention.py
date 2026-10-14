@@ -1026,21 +1026,28 @@ def physical_dir_bytes(path: Path) -> int:
 
 
 def has_physical_weights(ckpt_dir: Path) -> bool:
-    """True iff `ckpt_dir` is a real directory (not a symlink) containing `model.safetensors`."""
+    """True iff `ckpt_dir` is a real directory (not a symlink) containing `model.safetensors` or `model.pt`."""
     ckpt_dir = Path(ckpt_dir)
     if not ckpt_dir.exists() or ckpt_dir.is_symlink() or not ckpt_dir.is_dir():
         return False
     st = ckpt_dir / "model.safetensors"
-    return st.is_file() and not st.is_symlink() and st.stat().st_size > 0
+    if st.is_file() and not st.is_symlink() and st.stat().st_size > 0:
+        return True
+    pt = ckpt_dir / "model.pt"
+    if pt.is_file() and not pt.is_symlink() and pt.stat().st_size > 0:
+        return True
+    return False
 
 
 def is_loadable_checkpoint_path(ckpt_dir: Path) -> bool:
-    """True iff `ckpt_dir` (real dir or valid symlink) has `rl_agent_config.json` and `model.safetensors`."""
+    """True iff `ckpt_dir` (real dir or valid symlink) has `rl_agent_config.json` and (`model.safetensors` or `model.pt`)."""
     ckpt_dir = Path(ckpt_dir)
     try:
         if not ckpt_dir.exists() or not ckpt_dir.is_dir():
             return False
-        return (ckpt_dir / "rl_agent_config.json").is_file() and (ckpt_dir / "model.safetensors").is_file()
+        has_w = (ckpt_dir / "model.safetensors").is_file() or (ckpt_dir / "model.pt").is_file()
+        has_cfg = (ckpt_dir / "rl_agent_config.json").is_file() or (ckpt_dir / "recovery_state.json").is_file()
+        return has_w and has_cfg
     except OSError:
         return False
 
@@ -2693,6 +2700,19 @@ class CheckpointRetentionManager:
         entry["checkpoint_size_bytes"] = 0
         entry["freed_bytes"] = 0
         entry["retention_status"] = STATUS_METADATA_ONLY
+
+        # Guarantee entry is present in run_meta["history"] without duplicate
+        history_list = run_meta.setdefault("history", [])
+        existing_idx = None
+        for i, h in enumerate(history_list):
+            if h.get("checkpoint_id") == epoch_id or h.get("epoch") == epoch:
+                existing_idx = i
+                break
+        if existing_idx is not None:
+            history_list[existing_idx] = entry
+        else:
+            history_list.append(entry)
+
         _atomic_write_json(run_root / "epoch_metrics.json", run_meta["history"])
         _atomic_write_json(run_root / "run.json", run_meta)
 

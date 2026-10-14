@@ -1,0 +1,50 @@
+{
+  "ledger_version": "1.0.0",
+  "created_at": "2026-10-14T19:30:00Z",
+  "policy": "IMMUTABLE_FAILURE_AUDIT_LEDGER",
+  "purpose": "Preserve empirical records of execution failures and crashes to ensure full auditability; never erase via failed_runs={}",
+  "incidents": [
+    {
+      "incident_id": "INC-20261014-01-F03-NAME-ERROR",
+      "run_id": "F03",
+      "run_type": "full_coverage_stream",
+      "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+      "failure_time": "2026-10-14T02:45:00Z",
+      "exception_type": "NameError",
+      "exception_message": "name 'params' is not defined",
+      "code_file": "router_data/laya_batch_train.py",
+      "code_line": 1280,
+      "code_function": "run_full_coverage_stream_run",
+      "failing_statement": "torch.nn.utils.clip_grad_norm_(params, config.grad_clip)",
+      "root_cause": "The list of trainable parameters was stored in variable 'trainable_params', but gradient clipping called 'params' which was undefined in that scope.",
+      "log_source": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/continuous_queue.log",
+      "log_lines": "14167-14177",
+      "resolution_commit": "c479f6f87a9a3e25751ac1604d79c54e3d50716f",
+      "fix_description": "Explicitly defined params = trainable_params and updated gradient clipping call.",
+      "status": "RESOLVED_VERIFIED"
+    },
+    {
+      "incident_id": "INC-20261014-02-F04-NAME-ERROR",
+      "run_id": "F04",
+      "run_type": "full_coverage_stream",
+      "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+      "failure_time": "2026-10-14T02:46:00Z",
+      "exception_type": "NameError",
+      "exception_message": "name 'params' is not defined",
+      "code_file": "router_data/laya_batch_train.py",
+      "code_line": 1280,
+      "code_function": "run_full_coverage_stream_run",
+      "failing_statement": "torch.nn.utils.clip_grad_norm_(params, config.grad_clip)",
+      "root_cause": "Daemon sequentially attempted next run F04 after F03 failed before fix commit c479f6f was deployed.",
+      "log_source": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/continuous_queue.log",
+      "log_lines": "14306-14316",
+      "resolution_commit": "c479f6f87a9a3e25751ac1604d79c54e3d50716f",
+      "fix_description": "Explicitly defined params = trainable_params and updated gradient clipping call.",
+      "status": "RESOLVED_VERIFIED"
+    }
+  ],
+  "verification_status": {
+    "zero_erased_history": true,
+    "audit_ledger_immutable": true
+  }
+}
