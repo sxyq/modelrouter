@@ -129,18 +129,19 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
     "run_id": "F02",
     "status": "RUNNING",
     "gpu_name": "NVIDIA RTX A6000",
-    "gpu_memory": "31157MiB / 49140MiB",
+    "gpu_memory": "9845MiB / 49140MiB",
     "gpu_utilization": "100%",
     "daemon_pid": 2207051,
     "train_pid": 2287331,
     "current_epoch": "2 / 2",
-    "current_chunk": "62 / 123",
-    "current_step": "23588 / 31304",
-    "current_loss": 0.5174,
-    "consumed_items": 1509599,
+    "current_chunk": "71 / 123",
+    "current_step": "24740 / 31304",
+    "current_loss": 0.5198,
+    "consumed_items": 1583327,
     "total_items": 2003390,
-    "progress_pct": "75.35%",
-    "eta_remaining": "~4.3 hours (estimated completion ~14:20 Oct 14)",
+    "progress_pct": "79.03%",
+    "eta_remaining": "~3.5 hours (estimated completion ~14:00 Oct 14)",
+    "last_observed_timestamp": "2026-10-14T10:36:10+08:00",
     "reason": "Active GPU training job protected from pruning"
   },
   "cleanup_summary": {
@@ -156,6 +157,14 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
     "protocol_version": "AUTONOMOUS-TRAINING-V4",
     "execution_mode": "HEADLESS_DAEMON_ON_SERVER",
     "sole_training_entry": "router_data/run_full_graded_queue.py --mode continuous_full_coverage",
+    "historical_audit": {
+      "previous_manifest_status": "REJECTED_UNVERIFIED_MANIFEST",
+      "previous_manifest_claimed_count": 160,
+      "official_overlap_count": 11,
+      "unverified_fabricated_count": 149,
+      "rejection_reason": "Planning independent audit verified official Terminal-Bench 2.1 contains exactly 89 tasks. Previous 160-task manifest contained 149 non-existent IDs. Suspended from checkpoint retention and paper statistics.",
+      "action_taken": "Anchored ENV-004 to official Terminal-Bench 2.1 tree commit 7131e4375048a0e408a8fb404b5f499d726b695b (89 verified tasks)."
+    },
     "three_tier_benchmarks": {
       "internal_validation": {
         "tier": "INTERNAL_VALIDATION",
@@ -167,24 +176,25 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
       },
       "canary": {
         "tier": "CANARY",
-        "benchmark": "ENV-004: Terminal-Bench 2.0 (Canary Subset)",
-        "task_count": 12,
-        "status": "PASSED_SMOKE_TEST",
-        "description": "Parser, schema verification, and container connectivity check"
+        "benchmark": "ENV-004: Terminal-Bench 2.1 (Canary Subset)",
+        "task_count": 8,
+        "validation_stage": "MANIFEST_VALIDATED",
+        "status": "MANIFEST_VALIDATED (8/8 官方树校验，容器与Oracle未执行)",
+        "description": "Fast smoke inspection, schema and task.toml SHA256 validation across 8 diverse domains"
       },
       "external_dev": {
         "tier": "EXTERNAL_DEV",
-        "benchmark": "ENV-004: Terminal-Bench 2.0 (Dev Subset)",
-        "task_count": 48,
+        "benchmark": "ENV-004: Terminal-Bench 2.1 (Dev Subset)",
+        "task_count": 24,
         "status": "ROUTER_SERVING_NOT_READY",
         "reason": "Router serving endpoint and agent harness await deployment; pass rate not fabricated (0.0% / NOT_EVALUATED)",
         "trigger": "Evaluated exclusively on Top-5 candidates and champions",
-        "weight_in_selection": "20% (when live evaluation completes)"
+        "weight_in_selection": "20% (when live evaluation completes) / 0% in current production selection"
       },
       "final_test": {
         "tier": "FINAL_TEST",
-        "benchmark": "ENV-004: Terminal-Bench 2.0 (Test Subset)",
-        "task_count": 100,
+        "benchmark": "ENV-004: Terminal-Bench 2.1 (Test Subset)",
+        "task_count": 57,
         "status": "PERMANENTLY_SEALED",
         "access_weight": "0.00 (Permanently air-gapped from training & model selection)"
       }
@@ -193,7 +203,7 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
     "long_term_stages": [
       {"stage": 1, "name": "监督组合与路由对齐基线", "runs": "ALGN_01 (S1), ALGN_02 (S1+S2), ALGN_03 (S1+S3), ALGN_04 (S1+S2+S3)", "status": "QUEUED"},
       {"stage": 2, "name": "数据规模阶梯", "runs": "10% (F08), 25% (F09), 50% (F10), 100% (F07)", "status": "QUEUED"},
-      {"stage": 3, "name": "分层全量与跨层覆盖", "runs": "L1 (F01), L2 (F02), L3 (F03), L4 (F04), L1+L2 (F05), L1..L3 (F06), L1..L4 (F07)", "status": "IN_PROGRESS (F02 Epoch 2/2 Chunk 62/123 · 75.3% 累计完成 · Loss 0.5174)"},
+      {"stage": 3, "name": "分层全量与跨层覆盖", "runs": "L1 (F01), L2 (F02), L3 (F03), L4 (F04), L1+L2 (F05), L1..L3 (F06), L1..L4 (F07)", "status": "IN_PROGRESS (F02 Epoch 2/2 Chunk 71/123 · 79.0% 累计完成 · Loss 0.5198)"},
       {"stage": 4, "name": "部分比例与分位抽样", "runs": "F11..F16 嵌套子集对比", "status": "QUEUED"},
       {"stage": 5, "name": "课程学习与能力渐进", "runs": "Base -> L1 -> L1+L2 -> L1..L4 (F17..F20)", "status": "QUEUED"},
       {"stage": 6, "name": "多 Seed 与状态变量消融", "runs": "Seed 42/43/44, V1..V8 状态变量消融", "status": "QUEUED"}
@@ -233,7 +243,7 @@ window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED = {
       "unit_split_integrity": "Verified 100% disjoint split assignments (quality_v2 unique unit mapping invariant holds with 0 conflicts)",
       "route_001_002_license_status": "Strictly excluded from training candidate pool (LICENSE_PENDING: 152,524 rows isolated)",
       "env_001_002_status": "Strictly excluded from training candidate pool (S4 environment metadata: 10,821 rows isolated)",
-      "env_004_status": "ENV-004 Terminal-Bench 2.0 strictly isolated from 6.6M training pool (0 training leakage; 12 Canary / 48 Dev / 100 Sealed Test)"
+      "env_004_status": "ENV-004 Terminal-Bench 2.1 strictly isolated from 6.6M training pool (0 training leakage; 8 Canary / 24 Dev / 57 Sealed Test)"
     }
   },
   "routing_aligned_v2": {

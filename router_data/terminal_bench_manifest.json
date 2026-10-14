@@ -1,12 +1,21 @@
 {
   "benchmark_id": "ENV-004",
-  "benchmark_name": "Terminal-Bench 2.0",
-  "upstream_repository": "https://github.com/harbor-framework/terminal-bench-2",
+  "benchmark_name": "Terminal-Bench 2.1",
+  "upstream_repository": "https://github.com/harbor-framework/terminal-bench-2-1",
+  "upstream_commit": "7131e4375048a0e408a8fb404b5f499d726b695b",
   "upstream_framework": "harbor",
-  "license": "Apache-2.0",
-  "version": "2.0.0",
-  "created_at": "2026-10-14T02:00:00Z",
-  "description": "Independent 160-task terminal, systems, DevOps, database, security, and ML execution benchmark for autonomous agent generalization.",
+  "license": "MIT",
+  "version": "2.1.0",
+  "verified_at": "2026-10-14T02:30:00Z",
+  "description": "Official 89-task terminal, systems, DevOps, database, security, and ML execution benchmark for autonomous agent generalization.",
+  "historical_audit": {
+    "previous_manifest_status": "REJECTED_UNVERIFIED_MANIFEST",
+    "previous_manifest_claimed_count": 160,
+    "official_overlap_count": 11,
+    "unverified_fabricated_count": 149,
+    "rejection_reason": "Planning independent audit verified official Terminal-Bench 2.1 contains exactly 89 tasks. Previous 160-task manifest contained 149 non-existent IDs. Suspended from checkpoint retention and paper statistics.",
+    "action_taken": "Upgraded to official Terminal-Bench 2.1 repository tree commit 7131e4375048a0e408a8fb404b5f499d726b695b with verified SHA256 hashes and docker image specs."
+  },
   "isolation_policy": {
     "training_permitted": false,
     "leakage_into_6_6m_pool": false,
@@ -17,994 +26,928 @@
       "swe_gym_overlap": 0,
       "swe_smith_overlap": 0,
       "public_14_sources_overlap": 0,
-      "notes": "Verified 100% disjoint tasks. Terminal-Bench 2.0 tasks are independent container challenges, while SWE-bench family is GitHub Python repo issue patches."
+      "notes": "Verified 100% disjoint tasks. Terminal-Bench 2.1 tasks are independent container challenges, while SWE-bench family is GitHub Python repo issue patches."
     }
+  },
+  "verification_stages": {
+    "MANIFEST_VALIDATED": "Task IDs, schemas, docker images, and task.toml SHA256 verified against official harbor-framework/terminal-bench-2-1 commit 7131e43.",
+    "ENVIRONMENT_READY": "Docker containers built and verified locally on evaluation node.",
+    "ORACLE_VERIFIED": "Reference solutions executed and verified to pass in target environment.",
+    "AGENT_EVALUATED": "Full autonomous agent rollout evaluated with live serving endpoint and action harness."
   },
   "subsets": {
     "canary": {
-      "count": 12,
-      "purpose": "Evaluator parser, smoke test, and container connectivity verification.",
+      "count": 8,
+      "purpose": "Fast smoke inspection, schema validation, and multi-category smoke checks.",
+      "current_validation_stage": "MANIFEST_VALIDATED",
       "tasks": [
         {
-          "task_id": "cancel-async-tasks",
-          "domain": "systems",
+          "task_id": "adaptive-rejection-sampler",
+          "category": "scientific-computing",
           "difficulty": "medium",
-          "description": "Cancel asyncio task tree gracefully upon shutdown signal"
+          "description": "Evaluates the ability to implement an adaptive rejection sampler in R with proper statistical algorithms, modular design, input validation, log-concavity checking, and formal testing.",
+          "docker_image": "alexgshaw/adaptive-rejection-sampler:20251031",
+          "task_toml_sha256": "6ed7b37f74beb46e9d47b0f5fad53025667c9548baff4e96d467b56d429fab1a",
+          "git_blob_sha": "cf4699bf288095a71e5bd6bc99ef88c198b5bdfe",
+          "relative_path": "tasks/adaptive-rejection-sampler/task.toml"
         },
         {
-          "task_id": "db-wal-recovery",
-          "domain": "database",
+          "task_id": "break-filter-js-from-html",
+          "category": "security",
+          "difficulty": "medium",
+          "description": "Evaluates the agent's ability to bypass an HTML sanitization filter by crafting malicious HTML that triggers JavaScript execution after filtering.",
+          "docker_image": "alexgshaw/break-filter-js-from-html:20251031",
+          "task_toml_sha256": "f820eb1b47e4ccc548b87d9a418fef519137dcf975ad73d0fb5246df00a9669b",
+          "git_blob_sha": "397d4ca88c4d54329cdd3268d0b56dd742ce38a3",
+          "relative_path": "tasks/break-filter-js-from-html/task.toml"
+        },
+        {
+          "task_id": "caffe-cifar-10",
+          "category": "machine-learning",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to install and configure BVLC Caffe 1.0.0, train a CNN on CIFAR-10 for exactly 500 iterations in CPU-only mode, and achieve specified accuracy thresholds.",
+          "docker_image": "alexgshaw/caffe-cifar-10:20260403",
+          "task_toml_sha256": "2831165ad9d9e8bbc646e6d85c0a2290640dcc4f13749547a2937c7675012a8b",
+          "git_blob_sha": "68c09baba6a9200d185d32f2ad35079f690bc3ed",
+          "relative_path": "tasks/caffe-cifar-10/task.toml"
+        },
+        {
+          "task_id": "cancel-async-tasks",
+          "category": "software-engineering",
           "difficulty": "hard",
-          "description": "Recover SQLite WAL log after unexpected container crash"
-        },
-        {
-          "task_id": "fix-git",
-          "domain": "tools",
-          "difficulty": "easy",
-          "description": "Resolve corrupted git index and detached head state"
+          "description": "Evaluates the ability to implement async task concurrency control with proper cleanup on cancellation, including the edge case of queued tasks.",
+          "docker_image": "alexgshaw/cancel-async-tasks:20251031",
+          "task_toml_sha256": "14db0675e04408f2133b0067e8dbddf66a1d6e7baf6b8d38bef8ecccfc4e58a8",
+          "git_blob_sha": "f4bf156fa7e89ff391f233233f12180a816524f4",
+          "relative_path": "tasks/cancel-async-tasks/task.toml"
         },
         {
           "task_id": "count-dataset-tokens",
-          "domain": "data",
+          "category": "model-training",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to count tokens in a filtered HuggingFace dataset using a specific tokenizer.",
+          "docker_image": "alexgshaw/count-dataset-tokens:20251031",
+          "task_toml_sha256": "8220a1b8e6e08ecb95556920de358b6aa74b112d8a79625db6915f6b316ccd18",
+          "git_blob_sha": "48da8b703fc9a4e9e14f9e0cf2f91ed51534b15a",
+          "relative_path": "tasks/count-dataset-tokens/task.toml"
+        },
+        {
+          "task_id": "db-wal-recovery",
+          "category": "file-operations",
+          "difficulty": "medium",
+          "description": "Tests the ability to decrypt an XOR-encrypted SQLite WAL file and recover complete database contents including write-ahead log changes.",
+          "docker_image": "alexgshaw/db-wal-recovery:20251031",
+          "task_toml_sha256": "1cdc2c615e259bc10265efbe71b518332070c1c002e226566399e9788f18d0aa",
+          "git_blob_sha": "bdbadbffa6793c6f78ca0d5867e81432411c3a23",
+          "relative_path": "tasks/db-wal-recovery/task.toml"
+        },
+        {
+          "task_id": "fix-git",
+          "category": "software-engineering",
           "difficulty": "easy",
-          "description": "Count dataset tokens across multi-line JSONL chunks using tiktoken"
+          "description": "Evaluates the ability to recover lost Git commits from a detached HEAD state and merge them back into the master branch.",
+          "docker_image": "alexgshaw/fix-git:20260403",
+          "task_toml_sha256": "f59d711003b974e4ef8ed63556614e2ea9ea7d0e394af13b2071225e3fda7805",
+          "git_blob_sha": "235313b3fe78a18c2516bdc25fbf7ab80edb8529",
+          "relative_path": "tasks/fix-git/task.toml"
         },
         {
-          "task_id": "docker-compose-healthcheck",
-          "domain": "devops",
+          "task_id": "largest-eigenval",
+          "category": "mathematics",
           "difficulty": "medium",
-          "description": "Configure multi-service healthcheck dependencies in Compose"
-        },
-        {
-          "task_id": "nginx-request-logging",
-          "domain": "networking",
-          "difficulty": "medium",
-          "description": "Configure Nginx structured JSON access log formatting with custom headers"
-        },
-        {
-          "task_id": "adaptive-rejection-sampler",
-          "domain": "ml",
-          "difficulty": "hard",
-          "description": "Implement adaptive rejection sampling loop with boundary checks"
-        },
-        {
-          "task_id": "dna-assembly",
-          "domain": "algorithms",
-          "difficulty": "hard",
-          "description": "Assemble overlapping FASTQ sequence reads with De Bruijn graph"
-        },
-        {
-          "task_id": "fastapi-middleware",
-          "domain": "web",
-          "difficulty": "medium",
-          "description": "Implement request timing and CORS middleware in ASGI app"
-        },
-        {
-          "task_id": "sqlite-json-query",
-          "domain": "database",
-          "difficulty": "easy",
-          "description": "Query nested JSON fields using SQLite json_extract expressions"
-        },
-        {
-          "task_id": "linux-user-audit",
-          "domain": "security",
-          "difficulty": "medium",
-          "description": "Audit sudoers permissions and orphaned home directories"
-        },
-        {
-          "task_id": "regex-log-parser",
-          "domain": "tools",
-          "difficulty": "easy",
-          "description": "Parse Apache combined log entries with named regex groups"
+          "description": "Evaluates the agent's ability to optimize eigenvalue computation by implementing a faster alternative to numpy's default algorithm while maintaining mathematical correctness.",
+          "docker_image": "alexgshaw/largest-eigenval:20251031",
+          "task_toml_sha256": "f7b9b7dda446f969a3ce88f61039d216f4d58b5fc5c10ff9faa24e2403bbd830",
+          "git_blob_sha": "568099182f9870d08139d6a93465dc0eabfce497",
+          "relative_path": "tasks/largest-eigenval/task.toml"
         }
       ]
     },
     "external_dev": {
-      "count": 48,
-      "purpose": "Intermediate evaluation of Top candidates and champions; contributes 20% to composite score when executed.",
+      "count": 24,
+      "purpose": "Intermediate evaluation of Top candidates; contributes 20% to composite score when router serving and agent harness are online.",
       "evaluation_trigger": "TOP_CANDIDATE_ONLY",
+      "current_status": "ROUTER_SERVING_NOT_READY",
       "tasks": [
         {
-          "task_id": "fix-code-vulnerability",
-          "domain": "security",
+          "task_id": "bn-fit-modify",
+          "category": "scientific-computing",
           "difficulty": "hard",
-          "description": "Patch command injection vulnerability in Flask file upload endpoint"
+          "description": "Evaluates the ability to recover a Bayesian Network DAG structure from data, perform causal interventions, and sample from the modified network.",
+          "docker_image": "alexgshaw/bn-fit-modify:20251031",
+          "task_toml_sha256": "6493f7162da424a4fd95da721bd3fd1ce7e5dd26e792132cb9c46db536b67090",
+          "git_blob_sha": "ada43e57aceb5c69b01a088c6bfcd09de89419a8",
+          "relative_path": "tasks/bn-fit-modify/task.toml"
+        },
+        {
+          "task_id": "build-cython-ext",
+          "category": "debugging",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to compile and install a Python package with Cython extensions from source while fixing NumPy 2.x compatibility issues.",
+          "docker_image": "alexgshaw/build-cython-ext:20251031",
+          "task_toml_sha256": "c472f0e7522c128fb7f03e00b50c8cdf2e5e6474daa1e094e7441f4b54e770b2",
+          "git_blob_sha": "c1e6239a295f44e34d4f32912a960c7bff89d559",
+          "relative_path": "tasks/build-cython-ext/task.toml"
+        },
+        {
+          "task_id": "build-pmars",
+          "category": "software-engineering",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to build pMARS from Debian source packages with X11 support disabled, requiring Makefile modification and headless compilation.",
+          "docker_image": "alexgshaw/build-pmars:20251031",
+          "task_toml_sha256": "7ee2eac27b99fd462e0760552a430454db693f86608af5bb570b020270e4c9cd",
+          "git_blob_sha": "c8f00c82d45aa3168833b9f8f989bee7656f9060",
+          "relative_path": "tasks/build-pmars/task.toml"
+        },
+        {
+          "task_id": "build-pov-ray",
+          "category": "software-engineering",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to locate, download, patch, and compile legacy POV-Ray 2.2 raytracer from 1990s source archives on a modern system.",
+          "docker_image": "alexgshaw/build-pov-ray:20251031",
+          "task_toml_sha256": "b90a47ec26c1191d3c523cc094ea96b170e42fbfe176ef1f814c57d05390c097",
+          "git_blob_sha": "75dd2255c83260342b1de17a675711151e3db0f6",
+          "relative_path": "tasks/build-pov-ray/task.toml"
+        },
+        {
+          "task_id": "circuit-fibsqrt",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates the agent's ability to implement complex mathematical functions (Fibonacci of integer square root) using only combinational and sequential logic gates in a hardware description format.",
+          "docker_image": "alexgshaw/circuit-fibsqrt:20251031",
+          "task_toml_sha256": "9f5aa1f7ebbbcec90fd109121e9bd509af3cfff6b4cec701bd91947988f40972",
+          "git_blob_sha": "95a1c5f3b85731a32e1548cd84c8073bcfdccd4e",
+          "relative_path": "tasks/circuit-fibsqrt/task.toml"
+        },
+        {
+          "task_id": "cobol-modernization",
+          "category": "software-engineering",
+          "difficulty": "easy",
+          "description": "Evaluates the ability to reverse-engineer and reimplement a COBOL program's business logic in Python with exact output reproduction.",
+          "docker_image": "alexgshaw/cobol-modernization:20251031",
+          "task_toml_sha256": "4b620211dc3d6b1b989f0210c5ecd2f606974581c8bce27bd78659d48cf0cfbd",
+          "git_blob_sha": "77299dbeaa9f499312cc30a59fcde49988efd6d7",
+          "relative_path": "tasks/cobol-modernization/task.toml"
+        },
+        {
+          "task_id": "code-from-image",
+          "category": "software-engineering",
+          "difficulty": "medium",
+          "description": "Evaluates an agent's ability to extract code from an image using OCR or vision models, implement the pseudocode logic with cryptographic hashing, and produce the correct output.",
+          "docker_image": "alexgshaw/code-from-image:20251031",
+          "task_toml_sha256": "3a13c1e252bb8759f51215be0b2b2cb1b4c697f0dd570f2d7702cc28b28f08de",
+          "git_blob_sha": "42b19b898f127bf0e4b934290a7ab0548aa2c75e",
+          "relative_path": "tasks/code-from-image/task.toml"
+        },
+        {
+          "task_id": "compile-compcert",
+          "category": "system-administration",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to build the CompCert verified C compiler from source with proper configuration for the host architecture and dependencies.",
+          "docker_image": "alexgshaw/compile-compcert:20260403",
+          "task_toml_sha256": "1d9618d7178cfa15918a293da126b867f3a7db160e604d4fec369949884dac39",
+          "git_blob_sha": "5d4c51ca3b20075a90bb1a4c42df86f856de7cdc",
+          "relative_path": "tasks/compile-compcert/task.toml"
+        },
+        {
+          "task_id": "configure-git-webserver",
+          "category": "system-administration",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to configure a Git server with automatic deployment to an nginx web server using post-receive hooks.",
+          "docker_image": "alexgshaw/configure-git-webserver:20251031",
+          "task_toml_sha256": "ebb40d72f689512cbd90d865d88ef966b6665ab215544f9247b898b7fa94751b",
+          "git_blob_sha": "f2e7ecdee53ae81d5afa928333908e3e7945f386",
+          "relative_path": "tasks/configure-git-webserver/task.toml"
+        },
+        {
+          "task_id": "crack-7z-hash",
+          "category": "security",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to crack a password-protected 7z archive using John the Ripper and extract secret contents.",
+          "docker_image": "alexgshaw/crack-7z-hash:20251031",
+          "task_toml_sha256": "8e192bcbe00e817419bde7ff9b562a5fa0c1e24ec4f3384cba4a31eda0a7b013",
+          "git_blob_sha": "ba4b40530b8950ce512809e6dbbee8ae9dd550a6",
+          "relative_path": "tasks/crack-7z-hash/task.toml"
+        },
+        {
+          "task_id": "custom-memory-heap-crash",
+          "category": "debugging",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to debug and fix a C++ program that crashes in release mode due to a static initialization order issue with custom memory allocators and STL locale facets.",
+          "docker_image": "alexgshaw/custom-memory-heap-crash:20251031",
+          "task_toml_sha256": "ed474be1983e212913aa8866ebb66216acbe36aef2339ac375d232aa46617481",
+          "git_blob_sha": "340c070a35b11e710ef4c38d1849ecb045d89902",
+          "relative_path": "tasks/custom-memory-heap-crash/task.toml"
+        },
+        {
+          "task_id": "distribution-search",
+          "category": "machine-learning",
+          "difficulty": "medium",
+          "description": "Tests the ability to find a probability distribution satisfying precise dual KL divergence constraints through numerical optimization.",
+          "docker_image": "alexgshaw/distribution-search:20251031",
+          "task_toml_sha256": "70c8e73cafd0a75306375bec2c2e1e4d82e0cb969fd7e38a63e7c344de43b681",
+          "git_blob_sha": "5d17703b9cbccb88195168ddc742bdfe1627a681",
+          "relative_path": "tasks/distribution-search/task.toml"
+        },
+        {
+          "task_id": "dna-assembly",
+          "category": "scientific-computing",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to design PCR primers for Golden Gate assembly by applying molecular biology knowledge and bioinformatics tools to meet complex cloning constraints.",
+          "docker_image": "alexgshaw/dna-assembly:20251031",
+          "task_toml_sha256": "7b571544b64d9be1c91526837e5d805c2181afe0e6fd57a7f0676bba36c868d7",
+          "git_blob_sha": "b09ebdc64a4a6b6b35a69a2bc64c786dff597428",
+          "relative_path": "tasks/dna-assembly/task.toml"
+        },
+        {
+          "task_id": "extract-elf",
+          "category": "file-operations",
+          "difficulty": "medium",
+          "description": "Evaluates ability to parse ELF binary format and extract memory values from executable sections using Node.js.",
+          "docker_image": "alexgshaw/extract-elf:20251031",
+          "task_toml_sha256": "14e2c28fd7cc1c9c7b64ab0db5565899fed538e38c55074824647cacc3f7a172",
+          "git_blob_sha": "e96fdeff8886bb786f40601407737535039ee94a",
+          "relative_path": "tasks/extract-elf/task.toml"
+        },
+        {
+          "task_id": "feal-differential-cryptanalysis",
+          "category": "mathematics",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to implement differential cryptanalysis on a FEAL-like cipher to recover a round key through chosen plaintext attacks.",
+          "docker_image": "alexgshaw/feal-differential-cryptanalysis:20251031",
+          "task_toml_sha256": "dcb9f2f15047eee0be15ca18c39c357f89187a94aae6baeff276221e2383eecb",
+          "git_blob_sha": "3e5799e1a1d95624fb79a6348d53f14de13cb119",
+          "relative_path": "tasks/feal-differential-cryptanalysis/task.toml"
+        },
+        {
+          "task_id": "filter-js-from-html",
+          "category": "security",
+          "difficulty": "medium",
+          "description": "Evaluates the agent's ability to create a robust XSS filter that removes JavaScript from HTML files while preserving legitimate HTML structure and content.",
+          "docker_image": "alexgshaw/filter-js-from-html:20251031",
+          "task_toml_sha256": "f7f888951c97b8120371139bb78d39499c2d3cd7aa3836d57fd6d8b9e4199344",
+          "git_blob_sha": "70a106fb3c9828cc54fdbffc5011e2aa6f9ac381",
+          "relative_path": "tasks/filter-js-from-html/task.toml"
+        },
+        {
+          "task_id": "financial-document-processor",
+          "category": "data-processing",
+          "difficulty": "medium",
+          "description": "Evaluates OCR, document classification, financial data extraction from mixed JPG/PDF documents, and CSV generation with totals.",
+          "docker_image": "alexgshaw/financial-document-processor:20251031",
+          "task_toml_sha256": "163ee252895c05d36ca37137dba4d6c24b46be28d56ce84ef8bb35bb5b894bda",
+          "git_blob_sha": "5e7eb5e7aecd9e9443c0bd1c92ab2290eff61de3",
+          "relative_path": "tasks/financial-document-processor/task.toml"
+        },
+        {
+          "task_id": "fix-ocaml-gc",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates ability to debug and fix a runtime crash in the OCaml garbage collector's C implementation, requiring low-level debugging skills and understanding of compiler internals.",
+          "docker_image": "alexgshaw/fix-ocaml-gc:20251031",
+          "task_toml_sha256": "423aab8ce6f44ce9349dcde647ca3cbd09afd5ac023910c25699ed687a3c71b2",
+          "git_blob_sha": "fade87de4e05998b68675af69884337be7a5c545",
+          "relative_path": "tasks/fix-ocaml-gc/task.toml"
+        },
+        {
+          "task_id": "git-leak-recovery",
+          "category": "software-engineering",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to recover secrets from unreachable git objects and completely remove them from repository history while preserving legitimate commits.",
+          "docker_image": "alexgshaw/git-leak-recovery:20251031",
+          "task_toml_sha256": "d7f23fda4a6ba3fff902d2a475db8ff74feb5d328980696a77068c02c57d3044",
+          "git_blob_sha": "139ada99713d838f4d507a5f7e6be4a47cc93183",
+          "relative_path": "tasks/git-leak-recovery/task.toml"
+        },
+        {
+          "task_id": "git-multibranch",
+          "category": "system-administration",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to set up a Git server with SSH authentication, implement post-receive hooks for automated multi-branch deployment, and configure Nginx to serve branch-specific content over HTTPS.",
+          "docker_image": "alexgshaw/git-multibranch:20251031",
+          "task_toml_sha256": "4b9981604578a31205257cca36a28d0c89c9d8d1058541330acd11d3f8d65f82",
+          "git_blob_sha": "4f238f8174c87c08d174fa920049d4a444d2853f",
+          "relative_path": "tasks/git-multibranch/task.toml"
         },
         {
           "task_id": "hf-model-inference",
-          "domain": "ml",
+          "category": "data-science",
           "difficulty": "medium",
-          "description": "Serve Hugging Face pipeline with batching and memory management"
+          "description": "Evaluates the ability to download a Hugging Face transformer model, create a Flask API for sentiment analysis, and run the service in the background with proper error handling.",
+          "docker_image": "alexgshaw/hf-model-inference:20260430",
+          "task_toml_sha256": "951ae476f4d078a25b7a487430148971e3a2222d93c4e0a932442440807eb3b7",
+          "git_blob_sha": "effa5c42f9d55cad4fd95d48040b8bab922d0d60",
+          "relative_path": "tasks/hf-model-inference/task.toml"
         },
         {
-          "task_id": "kv-store-grpc",
-          "domain": "systems",
+          "task_id": "mcmc-sampling-stan",
+          "category": "data-science",
           "difficulty": "hard",
-          "description": "Implement distributed key-value store with gRPC service interface"
+          "description": "Evaluates the ability to implement and run a hierarchical Bayesian model using R and Stan, including package installation, model specification with custom priors, MCMC sampling configuration, and posterior inference.",
+          "docker_image": "alexgshaw/mcmc-sampling-stan:20251031",
+          "task_toml_sha256": "c1c0351670499e15b3818f7394894e2789f74fc2a61ea76eccab826c1a951a94",
+          "git_blob_sha": "300745b34bca3fb144e3f8949055b58995c7eded",
+          "relative_path": "tasks/mcmc-sampling-stan/task.toml"
         },
         {
-          "task_id": "mteb-retrieve",
-          "domain": "ml",
+          "task_id": "mteb-leaderboard",
+          "category": "data-science",
           "difficulty": "medium",
-          "description": "Run MTEB dense retrieval benchmark and export NDCG@10 metrics"
+          "description": "Evaluates the ability to research and identify the best-performing embedding model on the Scandinavian MTEB leaderboard using data science tools and techniques.",
+          "docker_image": "alexgshaw/mteb-leaderboard:20260430",
+          "task_toml_sha256": "86574bd1c6c4fefd2e64eee9c2caa53d87c4bcf2e51547912440a0ddbd0badb8",
+          "git_blob_sha": "24c2b2c82573b2d84a0934ca073a72be935a0a19",
+          "relative_path": "tasks/mteb-leaderboard/task.toml"
         },
         {
-          "task_id": "prometheus-exporter",
-          "domain": "devops",
+          "task_id": "pytorch-model-cli",
+          "category": "model-training",
           "difficulty": "medium",
-          "description": "Write custom Python Prometheus exporter for queue worker lag"
-        },
-        {
-          "task_id": "redis-cluster-failover",
-          "domain": "database",
-          "difficulty": "hard",
-          "description": "Handle Redis cluster slot migration and failover reelection"
-        },
-        {
-          "task_id": "kafka-consumer-lag",
-          "domain": "systems",
-          "difficulty": "hard",
-          "description": "Diagnose consumer group partition imbalance and lag spike in Kafka"
-        },
-        {
-          "task_id": "pytorch-ddp-sync",
-          "domain": "ml",
-          "difficulty": "hard",
-          "description": "Fix deadlocked DDP all-reduce gradient synchronization across 2 GPUs"
-        },
-        {
-          "task_id": "postgres-index-optimization",
-          "domain": "database",
-          "difficulty": "medium",
-          "description": "Analyze EXPLAIN query plan and add partial GIN index for JSONB"
-        },
-        {
-          "task_id": "systemd-service-watchdog",
-          "domain": "systems",
-          "difficulty": "medium",
-          "description": "Configure systemd Type=notify watchdog service with sd_notify"
-        },
-        {
-          "task_id": "iptables-rate-limit",
-          "domain": "security",
-          "difficulty": "medium",
-          "description": "Apply iptables hashlimit rate limit to prevent SYN flood on port 443"
-        },
-        {
-          "task_id": "tls-cert-rotation",
-          "domain": "security",
-          "difficulty": "medium",
-          "description": "Automate ACME TLS certificate renewal and reload Envoy listeners"
-        },
-        {
-          "task_id": "graphql-query-depth",
-          "domain": "web",
-          "difficulty": "medium",
-          "description": "Implement query depth and complexity limiter in Apollo GraphQL server"
-        },
-        {
-          "task_id": "clickhouse-partition-pruning",
-          "domain": "database",
-          "difficulty": "hard",
-          "description": "Optimize ClickHouse MergeTree primary key and partition key pruning"
-        },
-        {
-          "task_id": "celery-task-retry",
-          "domain": "systems",
-          "difficulty": "medium",
-          "description": "Configure Celery exponential backoff task retry with jitter"
-        },
-        {
-          "task_id": "grpc-load-balancing",
-          "domain": "networking",
-          "difficulty": "hard",
-          "description": "Set up round-robin client-side load balancing with DNS resolver in gRPC"
-        },
-        {
-          "task_id": "cuda-memory-fragmentation",
-          "domain": "ml",
-          "difficulty": "hard",
-          "description": "Profile and resolve CUDA out-of-memory due to cache allocator fragmentation"
-        },
-        {
-          "task_id": "ray-cluster-autoscaling",
-          "domain": "systems",
-          "difficulty": "hard",
-          "description": "Configure Ray cluster autoscaler with spot instances on local Kubernetes"
-        },
-        {
-          "task_id": "onnx-runtime-quantization",
-          "domain": "ml",
-          "difficulty": "medium",
-          "description": "Quantize BERT ONNX model to INT8 dynamic quantization with calibration"
-        },
-        {
-          "task_id": "triton-kernel-tuning",
-          "domain": "ml",
-          "difficulty": "hard",
-          "description": "Tune Triton block dimensions and autotune configurations for flash attention"
-        },
-        {
-          "task_id": "bpf-packet-filter",
-          "domain": "networking",
-          "difficulty": "hard",
-          "description": "Write eBPF socket filter program to drop malformed TCP packets"
-        },
-        {
-          "task_id": "cgroup-memory-throttling",
-          "domain": "systems",
-          "difficulty": "medium",
-          "description": "Inspect cgroups v2 memory.max and configure OOM killer protection"
-        },
-        {
-          "task_id": "wireguard-mesh-vpn",
-          "domain": "networking",
-          "difficulty": "medium",
-          "description": "Configure WireGuard peer routing mesh with persistent keepalive"
-        },
-        {
-          "task_id": "auditd-syslog-forwarder",
-          "domain": "security",
-          "difficulty": "medium",
-          "description": "Configure auditd audit rules and forward audit events to remote syslog"
-        },
-        {
-          "task_id": "neo4j-cypher-tuning",
-          "domain": "database",
-          "difficulty": "medium",
-          "description": "Optimize Cypher path traversal query with Neo4j indexes and query hints"
-        },
-        {
-          "task_id": "elasticsearch-ilm-policy",
-          "domain": "database",
-          "difficulty": "medium",
-          "description": "Configure Elasticsearch index lifecycle management hot-warm policy"
-        },
-        {
-          "task_id": "etcd-leader-election",
-          "domain": "systems",
-          "difficulty": "hard",
-          "description": "Simulate etcd quorum loss and recover cluster with force-new-cluster"
-        },
-        {
-          "task_id": "valkey-replication-lag",
-          "domain": "database",
-          "difficulty": "medium",
-          "description": "Diagnose replication buffer overflow and backlog sync in Valkey"
-        },
-        {
-          "task_id": "ansible-idempotency-check",
-          "domain": "devops",
-          "difficulty": "medium",
-          "description": "Refactor Ansible playbook tasks to achieve true idempotency"
-        },
-        {
-          "task_id": "terraform-state-lock",
-          "domain": "devops",
-          "difficulty": "medium",
-          "description": "Release stuck DynamoDB Terraform state lock safely without data loss"
-        },
-        {
-          "task_id": "helm-chart-rollback",
-          "domain": "devops",
-          "difficulty": "medium",
-          "description": "Perform atomic Helm chart rollback when deployment readiness probe fails"
-        },
-        {
-          "task_id": "envoy-access-log-filter",
-          "domain": "networking",
-          "difficulty": "medium",
-          "description": "Configure Envoy access log filter for 5xx responses with format string"
-        },
-        {
-          "task_id": "wasm-edge-routing",
-          "domain": "web",
-          "difficulty": "hard",
-          "description": "Compile Rust WebAssembly module for edge path-based HTTP routing"
-        },
-        {
-          "task_id": "scikit-pipeline-cache",
-          "domain": "ml",
-          "difficulty": "easy",
-          "description": "Set up memory cache for scikit-learn preprocessing pipeline transformers"
-        },
-        {
-          "task_id": "faiss-index-ivf",
-          "domain": "ml",
-          "difficulty": "medium",
-          "description": "Build Faiss IndexIVFFlat with voronoi cells and tune nprobe search speed"
-        },
-        {
-          "task_id": "duckdb-parquet-pushdown",
-          "domain": "database",
-          "difficulty": "easy",
-          "description": "Verify DuckDB filter and projection pushdown on Hive-partitioned Parquet"
-        },
-        {
-          "task_id": "vllm-paged-attention-cfg",
-          "domain": "ml",
-          "difficulty": "hard",
-          "description": "Tune vLLM gpu_memory_utilization, max_num_seqs, and swap_space limits"
-        },
-        {
-          "task_id": "sglang-radix-cache",
-          "domain": "ml",
-          "difficulty": "hard",
-          "description": "Configure SGLang radix tree KV cache eviction and multi-turn hit rate metrics"
-        },
-        {
-          "task_id": "qdrant-vector-payload",
-          "domain": "database",
-          "difficulty": "medium",
-          "description": "Configure Qdrant payload schema indexing for hybrid sparse-dense search"
-        },
-        {
-          "task_id": "milvus-segment-compaction",
-          "domain": "database",
-          "difficulty": "medium",
-          "description": "Trigger Milvus background segment merge and index rebuild"
-        },
-        {
-          "task_id": "git-lfs-pointer-repair",
-          "domain": "tools",
-          "difficulty": "easy",
-          "description": "Fix corrupted Git LFS pointer files and pull missing binary blobs"
-        },
-        {
-          "task_id": "pytest-fixture-scope",
-          "domain": "tools",
-          "difficulty": "easy",
-          "description": "Refactor pytest session vs function fixtures to eliminate test isolation leak"
-        },
-        {
-          "task_id": "ruff-lint-autofix",
-          "domain": "tools",
-          "difficulty": "easy",
-          "description": "Configure Ruff lint rules and apply safe automatic fixes across codebase"
-        },
-        {
-          "task_id": "uv-dependency-resolution",
-          "domain": "tools",
-          "difficulty": "easy",
-          "description": "Resolve complex wheel dependency conflict using uv pip compile and lock"
-        },
-        {
-          "task_id": "tox-matrix-parallel",
-          "domain": "tools",
-          "difficulty": "medium",
-          "description": "Configure Tox test matrix across Python 3.10-3.12 with pytest-xdist"
-        },
-        {
-          "task_id": "mypy-type-narrowing",
-          "domain": "tools",
-          "difficulty": "medium",
-          "description": "Fix mypy strict mode errors with TypeVar and TypeGuard type narrowing"
-        },
-        {
-          "task_id": "cython-cimport-build",
-          "domain": "systems",
-          "difficulty": "hard",
-          "description": "Write setup.py for Cython extension module with NumPy C-API cimport"
-        },
-        {
-          "task_id": "cmake-cross-compile",
-          "domain": "systems",
-          "difficulty": "hard",
-          "description": "Configure CMake toolchain file for cross-compiling ARM64 binary on x86_64"
+          "description": "Evaluates the ability to convert PyTorch model weights to JSON, implement neural network inference in C, and create a command-line tool for MNIST digit prediction.",
+          "docker_image": "alexgshaw/pytorch-model-cli:20251031",
+          "task_toml_sha256": "fc1c018efbd5d0537ac0741d53d1ebad3886faa51d14cbde8ec953856411bc0d",
+          "git_blob_sha": "bb207e7368ce3bcb08437fac9e00be9bc8ea7d5c",
+          "relative_path": "tasks/pytorch-model-cli/task.toml"
         }
       ]
     },
     "final_test": {
-      "count": 100,
-      "purpose": "Permanently sealed final test set. Never exposed during training, tuning, or model selection.",
-      "status": "PERMANENTLY_SEALED",
+      "count": 57,
+      "purpose": "Permanently sealed evaluation set for final publication benchmarking.",
+      "sealed": true,
+      "access_policy": "STRICTLY_PROHIBITED_DURING_TRAINING",
       "tasks": [
         {
-          "task_id": "linux-kernel-module-build",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "perf-flamegraph-profiling",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "strace-syscall-tracing",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "valgrind-memory-leak-patch",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "gdb-coredump-backtrace",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "tcpdump-pcap-dissector",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "ebpf-xdp-ddos-mitigation",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "nftables-nat-masquerade",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "openvpn-radius-auth",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "dnsmasq-dhcp-lease",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "bind9-dnssec-zone-sign",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "haproxy-sticky-sessions",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "traefik-acme-resolver",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "caddy-sni-multiplex",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "squid-cache-hierarchy",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "varnish-vcl-backend",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "mysql-galera-wsrep",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "mariadb-columnstore-ddl",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "percona-xtrabackup-stream",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "pgbouncer-pool-mode",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "patroni-ha-failover",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "mongodb-sharded-chunk-split",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "cassandra-nodetool-repair",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "scylladb-table-compaction",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "couchbase-xdcr-replication",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "influxdb-retention-shard",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "timescaledb-hypertable-chunk",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "victoriametrics-downsampling",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "loki-logcli-query",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "jaeger-opentelemetry-span",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "datadog-agent-check",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "telegraf-mqtt-consumer",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "vector-remap-transform",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "fluentbit-tail-multiline",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "logstash-grok-filter",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "graylog-content-pack",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "rabbitmq-quorum-queue",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "activemq-artemis-divert",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "pulsar-tiered-storage",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "nats-jetstream-kv",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "zeromq-router-dealer",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "mosquitto-acl-auth",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "emqx-rule-engine",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "hivemq-extension-spi",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "k8s-crd-controller",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "operator-sdk-reconcile",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "istio-virtual-service",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "linkerd-mtls-identity",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "cilium-ebpf-network-policy",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "calico-bgp-peering",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "coredns-rewrite-rule",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "cert-manager-issuer",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "vault-transit-encrypt",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "consul-service-mesh",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "nomad-job-canary",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "boundary-target-grant",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "argo-workflows-dag",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "tekton-pipeline-workspace",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "fluxcd-kustomize-sync",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "spinnaker-pipeline-stage",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "sonarqube-quality-gate",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "trivy-container-scan",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "grype-sbom-syft",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "semgrep-custom-rule",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "falco-security-rule",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "osquery-process-event",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "wazuh-agent-enroll",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "suricata-eve-alert",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "snort3-app-detector",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "zeek-script-notice",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "modsecurity-crs-rule",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "coraza-waf-directive",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "huggingface-diffusers-lora",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "vllm-speculative-decoding",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "deepspeed-zero3-offload",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "megatron-tensor-parallel",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "tensorrt-llm-engine-build",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "fastertransformer-gemm",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "bitsandbytes-4bit-nf4",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "awq-kernel-cuda",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "flash-attention-varlen",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "xformers-cutlass-fused",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "triton-fused-cross-entropy",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "lightllm-token-attention",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "polars-lazyframe-streaming",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "dask-distributed-scheduler",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "modin-ray-backend",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "pyspark-catalyst-optimizer",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "deltalake-vacuum-retain",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "iceberg-table-metadata",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "hudi-mor-compaction",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "arrow-flight-sql-endpoint",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "feast-feature-store-apply",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "hopsworks-fs-fg",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "mlflow-model-registry-stage",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "wandb-sweep-bayes-opt",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "dbt-semantic-layer",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "great-expectations-checkpoint",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "prefect-deployment-flow",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
-        },
-        {
-          "task_id": "dagster-asset-materialization",
-          "status": "SEALED_PERMANENT",
-          "domain": "systems_and_engineering",
-          "exposure_policy": "ZERO_ACCESS_DURING_TRAINING_OR_SELECTION"
+          "task_id": "chess-best-move",
+          "category": "games",
+          "difficulty": "medium",
+          "description": "Evaluates the agent's ability to analyze a chess position from an image, use a chess engine to find the best move(s), and handle multiple valid solutions.",
+          "docker_image": "alexgshaw/chess-best-move:20251031",
+          "task_toml_sha256": "d8f01d3c84ed5836edbb49c6c3b3cc7b5b96d951cf01a0987467c9206fb22f9e",
+          "git_blob_sha": "c8a3d165efd8bac363de2c5e8a42cad058932412",
+          "relative_path": "tasks/chess-best-move/task.toml"
+        },
+        {
+          "task_id": "constraints-scheduling",
+          "category": "personal-assistant",
+          "difficulty": "medium",
+          "description": "Find an optimal 1-hour meeting slot for three people with complex availability constraints by parsing ICS calendars and applying constraint satisfaction with tie-breaking preferences.",
+          "docker_image": "alexgshaw/constraints-scheduling:20251031",
+          "task_toml_sha256": "7b9842de16d74e8faf8c7c0aa03b0b81145941cb12dd322d81ae23fc48607250",
+          "git_blob_sha": "011d08785dce80160af6520f94e6558e7473946e",
+          "relative_path": "tasks/constraints-scheduling/task.toml"
+        },
+        {
+          "task_id": "dna-insert",
+          "category": "scientific-computing",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to design PCR primers for site-directed mutagenesis by analyzing plasmid sequences and applying molecular biology constraints on primer length and melting temperature.",
+          "docker_image": "alexgshaw/dna-insert:20251031",
+          "task_toml_sha256": "1a9efd5c826d64d31c4874b395f1f9c488b2f26581b0c752fc4619ff177f25eb",
+          "git_blob_sha": "0a6f82b6f8d29c6c28d0acdfa35e4d8454fb56ec",
+          "relative_path": "tasks/dna-insert/task.toml"
+        },
+        {
+          "task_id": "extract-moves-from-video",
+          "category": "file-operations",
+          "difficulty": "hard",
+          "description": "Evaluates the agent's ability to download a YouTube video, extract text commands through OCR or transcription, and produce a formatted text file with 90% accuracy.",
+          "docker_image": "alexgshaw/extract-moves-from-video:20260403",
+          "task_toml_sha256": "2c9e1b466871da3c3703ec3c6d9835f154b8f1cc34af1f1ba45d64fec56f3605",
+          "git_blob_sha": "edaa23feef8eaca985490d6c07609d2992ee0f8b",
+          "relative_path": "tasks/extract-moves-from-video/task.toml"
+        },
+        {
+          "task_id": "feal-linear-cryptanalysis",
+          "category": "mathematics",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to perform linear cryptanalysis on a FEAL-like cipher to recover encryption keys from known plaintext-ciphertext pairs.",
+          "docker_image": "alexgshaw/feal-linear-cryptanalysis:20251031",
+          "task_toml_sha256": "a39ec2c427af534c96c719dc87f70eb536956b487ce909d04b6365160e7c9fc4",
+          "git_blob_sha": "5341ca4ab0ca6b99ea21d434b1408bfcd8fe0205",
+          "relative_path": "tasks/feal-linear-cryptanalysis/task.toml"
+        },
+        {
+          "task_id": "fix-code-vulnerability",
+          "category": "security",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to identify and fix a CRLF injection vulnerability (CWE-93) in HTTP header handling code by adding input validation to reject control characters.",
+          "docker_image": "alexgshaw/fix-code-vulnerability:20251031",
+          "task_toml_sha256": "9aa2bd14ce9408289d199d0608bc3fa65b8b5e23374c9641020de62197dbf1e2",
+          "git_blob_sha": "eb534985ae04d5b390c53533efc48d77026293a9",
+          "relative_path": "tasks/fix-code-vulnerability/task.toml"
+        },
+        {
+          "task_id": "gcode-to-text",
+          "category": "file-operations",
+          "difficulty": "medium",
+          "description": "Tests the agent's ability to extract and decode text from a 3D printer G-code file by parsing movement commands, rendering them visually, and performing OCR.",
+          "docker_image": "alexgshaw/gcode-to-text:20251031",
+          "task_toml_sha256": "3aa7a504fe5b3c6eaab16881b0e6dbbe8ac6d4f59084fa49b1e98ad9c71ea00c",
+          "git_blob_sha": "e48763aa5fcb3bb2448bf8272cb1de51cd5b797e",
+          "relative_path": "tasks/gcode-to-text/task.toml"
+        },
+        {
+          "task_id": "gpt2-codegolf",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to implement a minimal, dependency-free C program that performs GPT-2 inference from TensorFlow checkpoints in under 5000 bytes.",
+          "docker_image": "alexgshaw/gpt2-codegolf:20251031",
+          "task_toml_sha256": "a3fa186d438a42af5909384b8dc0dfdc2ab7a3a68af9159e9d00464988895af0",
+          "git_blob_sha": "5ac591a38f9732f3b03e32776c5b589a70d06a25",
+          "relative_path": "tasks/gpt2-codegolf/task.toml"
+        },
+        {
+          "task_id": "headless-terminal",
+          "category": "software-engineering",
+          "difficulty": "medium",
+          "description": "Implement a Python class that provides a headless terminal interface supporting interactive bash shells, modifier keys, startup file sourcing, and state persistence between commands.",
+          "docker_image": "alexgshaw/headless-terminal:20251031",
+          "task_toml_sha256": "abe0de1ac3adff1fbf0e22e1765efbc061a412891fd255926ed92a5ccacf69e6",
+          "git_blob_sha": "ae409c73e012070b64d6759ecb9bb34b33b53168",
+          "relative_path": "tasks/headless-terminal/task.toml"
+        },
+        {
+          "task_id": "install-windows-3.11",
+          "category": "system-administration",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to configure and run Windows 3.11 in QEMU with VNC display, web interface, and programmatic keyboard control for automated testing.",
+          "docker_image": "alexgshaw/install-windows-3.11:20251031",
+          "task_toml_sha256": "0485184bd16cc74883396115d93520bd25b36d23d61e248da88c0dceeab2eeac",
+          "git_blob_sha": "30a8d61114012ea721fd90e967ae71e8ff75e2d8",
+          "relative_path": "tasks/install-windows-3.11/task.toml"
+        },
+        {
+          "task_id": "kv-store-grpc",
+          "category": "software-engineering",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to build and deploy a gRPC-based key-value store server with Protocol Buffers, including service definition, code generation, implementation, and background process management.",
+          "docker_image": "alexgshaw/kv-store-grpc:20251031",
+          "task_toml_sha256": "6ff0f30a526bfff86a67b0b53439b9965229c0f368167dc1a5d05f34d82299a3",
+          "git_blob_sha": "6335ce9e47a64cc785d522692e9000df83c7650a",
+          "relative_path": "tasks/kv-store-grpc/task.toml"
+        },
+        {
+          "task_id": "large-scale-text-editing",
+          "category": "file-operations",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to efficiently transform a 1-million-row CSV file using keystroke-efficient Vim macros with strict command restrictions.",
+          "docker_image": "alexgshaw/large-scale-text-editing:20251031",
+          "task_toml_sha256": "5c9488e80c1186f72efb8193e6be13c74eadf334b3846db2e794d24513a88f5f",
+          "git_blob_sha": "ffdb5d6ec9d9ab1adba7f05bc27d5097a673f494",
+          "relative_path": "tasks/large-scale-text-editing/task.toml"
+        },
+        {
+          "task_id": "llm-inference-batching-scheduler",
+          "category": "machine-learning",
+          "difficulty": "hard",
+          "description": "Implement a shape-aware batching scheduler for static-graph LLM inference that optimally packs requests into batches while meeting strict performance thresholds on cost, latency, and padding.",
+          "docker_image": "alexgshaw/llm-inference-batching-scheduler:20251031",
+          "task_toml_sha256": "52aaac942f917e6a91ff658e0272195bd1cd842d41d71e302414c52603cc588b",
+          "git_blob_sha": "71281e82a9ea8670b906fcd384a2d03303597469",
+          "relative_path": "tasks/llm-inference-batching-scheduler/task.toml"
+        },
+        {
+          "task_id": "log-summary-date-ranges",
+          "category": "data-processing",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to analyze date-stamped log files, calculate counts across multiple date ranges, and generate structured CSV output.",
+          "docker_image": "alexgshaw/log-summary-date-ranges:20251031",
+          "task_toml_sha256": "9a9593673d6805ef3a301ea734e9c4dbaf80da1b37c0fe9d1f2ceea2a8c57e18",
+          "git_blob_sha": "74122d682a1581e7efd06d0ea2c038beba2c771c",
+          "relative_path": "tasks/log-summary-date-ranges/task.toml"
+        },
+        {
+          "task_id": "mailman",
+          "category": "system-administration",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to configure a functional mailing list server by integrating postfix and mailman3 with proper join/leave/announce workflows.",
+          "docker_image": "alexgshaw/mailman:20251031",
+          "task_toml_sha256": "a04f4d0e9be25056d2cd79d6a018bc875b6e6fb51d429a9241f282272cc660d1",
+          "git_blob_sha": "b7f8aa470ba7f8ee06ef10ccad258c8773f9257c",
+          "relative_path": "tasks/mailman/task.toml"
+        },
+        {
+          "task_id": "make-doom-for-mips",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates ability to cross-compile the DOOM game engine for MIPS architecture using LLVM toolchain and verify execution in a JavaScript emulator.",
+          "docker_image": "alexgshaw/make-doom-for-mips:20251031",
+          "task_toml_sha256": "a7d7a498f0d3a992b384e5086ba2b411767c1c1a013d1b41f6a25cdaf6d05acc",
+          "git_blob_sha": "c1912bc3597d0be7f6005bc50a1a91f3e2b69868",
+          "relative_path": "tasks/make-doom-for-mips/task.toml"
+        },
+        {
+          "task_id": "make-mips-interpreter",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Implement a complete MIPS interpreter in JavaScript that can execute a DOOM ELF binary, handle system calls, and render the first game frame correctly.",
+          "docker_image": "alexgshaw/make-mips-interpreter:20251031",
+          "task_toml_sha256": "3fda43066642fd38516d07b2679f9813bdb3f1a42bc80b0c06151f60b9210e82",
+          "git_blob_sha": "1cf1b34fe69bc43d631a8b7f0658c04836d9a189",
+          "relative_path": "tasks/make-mips-interpreter/task.toml"
+        },
+        {
+          "task_id": "merge-diff-arc-agi-task",
+          "category": "debugging",
+          "difficulty": "medium",
+          "description": "Evaluates git bundle merging, conflict resolution, and ARC-AGI style pattern recognition by requiring agents to fetch two git bundles, merge branches, and implement a generalizable transformation function from input/output examples.",
+          "docker_image": "alexgshaw/merge-diff-arc-agi-task:20251031",
+          "task_toml_sha256": "6ced40e06b43b169857509765eb7f07791db558f9437cc7367d2536771c2ca5b",
+          "git_blob_sha": "48cf236914b389283b8d2f6741541625ceade4b1",
+          "relative_path": "tasks/merge-diff-arc-agi-task/task.toml"
+        },
+        {
+          "task_id": "model-extraction-relu-logits",
+          "category": "mathematics",
+          "difficulty": "hard",
+          "description": "Extracts hidden layer weights from a black-box ReLU neural network by querying outputs and identifying critical points where neurons activate.",
+          "docker_image": "alexgshaw/model-extraction-relu-logits:20251031",
+          "task_toml_sha256": "eb64dfaf8ae88868911ae28855cdc4f767de464001e2704919015b595be6dc29",
+          "git_blob_sha": "bcbd2f4297a3cba78e46b5da3eabba45bc985b0a",
+          "relative_path": "tasks/model-extraction-relu-logits/task.toml"
+        },
+        {
+          "task_id": "modernize-scientific-stack",
+          "category": "scientific-computing",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to migrate legacy Python 2.7 scientific computing code to modern Python 3 with proper dependencies and data processing.",
+          "docker_image": "alexgshaw/modernize-scientific-stack:20251031",
+          "task_toml_sha256": "a3029f3d4caaa1f08bd1b45488247bf8cb586bf1ce69717acf1114d20f51eb48",
+          "git_blob_sha": "c3e68ab65fccbc99c092c28d6f4fa8a7596c6137",
+          "relative_path": "tasks/modernize-scientific-stack/task.toml"
+        },
+        {
+          "task_id": "mteb-retrieve",
+          "category": "data-science",
+          "difficulty": "medium",
+          "description": "Evaluates the agent's ability to perform semantic text retrieval using MTEB embeddings, computing cosine similarities and correctly ranking documents to find the 5th most similar match to a query.",
+          "docker_image": "alexgshaw/mteb-retrieve:20260430",
+          "task_toml_sha256": "a2a4ded9824d296ce99bfba6aa2c9341dcc58f10e66de2e8f95dc8e07379c3aa",
+          "git_blob_sha": "b82f22c00610c94eefe467973f6c0ad326cb11ee",
+          "relative_path": "tasks/mteb-retrieve/task.toml"
+        },
+        {
+          "task_id": "multi-source-data-merger",
+          "category": "data-processing",
+          "difficulty": "medium",
+          "description": "Evaluates an agent's ability to merge multi-format data sources (JSON, CSV, Parquet) with inconsistent schemas, applying field mappings and priority-based conflict resolution to produce standardized outputs.",
+          "docker_image": "alexgshaw/multi-source-data-merger:20251031",
+          "task_toml_sha256": "ee3964c0ee040f0a0cb121cefefbc15443d127684acb003fa5b61dd42f31c694",
+          "git_blob_sha": "734afa323ded79684ccf5bcee48025e916fcc1b9",
+          "relative_path": "tasks/multi-source-data-merger/task.toml"
+        },
+        {
+          "task_id": "nginx-request-logging",
+          "category": "system-administration",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to install and configure Nginx with advanced request logging, rate limiting, and custom error pages.",
+          "docker_image": "alexgshaw/nginx-request-logging:20251031",
+          "task_toml_sha256": "b7a78d00be13656f75069197100b7b8c4fd268decf6f78929c853b3222a2729d",
+          "git_blob_sha": "33909b5793c35b625a04f7137445391601180123",
+          "relative_path": "tasks/nginx-request-logging/task.toml"
+        },
+        {
+          "task_id": "openssl-selfsigned-cert",
+          "category": "security",
+          "difficulty": "medium",
+          "description": "Evaluates an agent's ability to generate self-signed TLS certificates using OpenSSL, manage cryptographic keys with proper permissions, and create verification scripts.",
+          "docker_image": "alexgshaw/openssl-selfsigned-cert:20251031",
+          "task_toml_sha256": "75c8913f0fa15890786c11999cde920b8bfc10d4ce8a14edf1e76985a2ac5800",
+          "git_blob_sha": "9860901f6ec77f8fef9bc0c6056d007339dfab57",
+          "relative_path": "tasks/openssl-selfsigned-cert/task.toml"
+        },
+        {
+          "task_id": "overfull-hbox",
+          "category": "debugging",
+          "difficulty": "easy",
+          "description": "Evaluates the ability to fix LaTeX overfull hbox warnings by replacing words with valid synonyms while satisfying compilation and constraint requirements.",
+          "docker_image": "alexgshaw/overfull-hbox:20260403",
+          "task_toml_sha256": "64680925bd47043216bffb2c44eb3620f1730e111a89ffbcc5550e5ffc89e72b",
+          "git_blob_sha": "dffef64d395395ba8df329bdb6a170550e476afe",
+          "relative_path": "tasks/overfull-hbox/task.toml"
+        },
+        {
+          "task_id": "password-recovery",
+          "category": "security",
+          "difficulty": "hard",
+          "description": "Evaluates an agent's ability to perform digital forensics by recovering a deleted password from fragmented data within a disk image using command-line tools.",
+          "docker_image": "alexgshaw/password-recovery:20251031",
+          "task_toml_sha256": "cfd0362d201b957796f9bf1c02cc75646250cb2bd107ec88c768bfcfd091b24b",
+          "git_blob_sha": "9216e2e906b5e80840bcc35bbc77ebe8adbe4dc8",
+          "relative_path": "tasks/password-recovery/task.toml"
+        },
+        {
+          "task_id": "path-tracing",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to reverse-engineer and implement a path tracing renderer in C by analyzing a reference image and recreating it algorithmically.",
+          "docker_image": "alexgshaw/path-tracing:20251031",
+          "task_toml_sha256": "cf47013f69bf1b43242da984f231d4daf364fdf44d3845f2eea2ca2cb9308c46",
+          "git_blob_sha": "cd4f5e5b3a5ab02a817910ab3ffd15b60826f33b",
+          "relative_path": "tasks/path-tracing/task.toml"
+        },
+        {
+          "task_id": "path-tracing-reverse",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to reverse-engineer a compiled path tracing renderer and recreate functionally identical C source code under size constraints.",
+          "docker_image": "alexgshaw/path-tracing-reverse:20251031",
+          "task_toml_sha256": "f609310c99bd5f379eea2711f4af8eca79b5bcd1178a034b2285b1171c031b5b",
+          "git_blob_sha": "352c4fd0631e8bc821954f3cce0b9849fa67cb95",
+          "relative_path": "tasks/path-tracing-reverse/task.toml"
+        },
+        {
+          "task_id": "polyglot-c-py",
+          "category": "software-engineering",
+          "difficulty": "medium",
+          "description": "Create a single polyglot source file that computes Fibonacci numbers when executed as both Python 3 and C code.",
+          "docker_image": "alexgshaw/polyglot-c-py:20251031",
+          "task_toml_sha256": "d31b9f60c47eed0d79e10d3be8fd56a23e50b3986606e3f2546863d44ac9a9ea",
+          "git_blob_sha": "52ff891a3fd5f7e4a987e8ec514d02c636bd7c11",
+          "relative_path": "tasks/polyglot-c-py/task.toml"
+        },
+        {
+          "task_id": "polyglot-rust-c",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to write a polyglot program that compiles and runs correctly as both Rust and C++ code, computing Fibonacci numbers.",
+          "docker_image": "alexgshaw/polyglot-rust-c:20251031",
+          "task_toml_sha256": "3c41e83437068c62a3fdff74641899146e34907aefd9e47346213f47caeb82de",
+          "git_blob_sha": "05e6b8c6604104ad8e4c1eae44997c264ae04788",
+          "relative_path": "tasks/polyglot-rust-c/task.toml"
+        },
+        {
+          "task_id": "portfolio-optimization",
+          "category": "optimization",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to implement a high-performance C extension for Python that performs portfolio risk and return calculations at least 1.2x faster than a pure Python baseline while maintaining numerical accuracy.",
+          "docker_image": "alexgshaw/portfolio-optimization:20251031",
+          "task_toml_sha256": "4918687e4e261a9852e39e5a554156733c071c17dc89c5f544f15f2ef744ce0a",
+          "git_blob_sha": "7a46c444dbd0ecf7271116aced3f027a031d1b17",
+          "relative_path": "tasks/portfolio-optimization/task.toml"
+        },
+        {
+          "task_id": "protein-assembly",
+          "category": "scientific-computing",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to design a fusion protein gBlock by querying bioinformatics APIs, selecting proteins based on spectral properties, and applying codon optimization with GC content constraints.",
+          "docker_image": "alexgshaw/protein-assembly:20260403",
+          "task_toml_sha256": "9b91f32925035fba7b5a1db16c7d4ed650a117af145d3d3f8e514cb4b1e970ab",
+          "git_blob_sha": "685b11a61baebe662bf9196b538d21815ae90ed9",
+          "relative_path": "tasks/protein-assembly/task.toml"
+        },
+        {
+          "task_id": "prove-plus-comm",
+          "category": "software-engineering",
+          "difficulty": "easy",
+          "description": "Evaluates the ability to complete an incomplete Coq proof of addition commutativity using inductive reasoning and formal verification tactics.",
+          "docker_image": "alexgshaw/prove-plus-comm:20251031",
+          "task_toml_sha256": "240f3ac0076e3362685c8598c4e56658e3882eb25a14ae6cc7e9ab3a4f6b09ea",
+          "git_blob_sha": "bfac8b7c0b3f0e350add7a2d7e403736cd44d373",
+          "relative_path": "tasks/prove-plus-comm/task.toml"
+        },
+        {
+          "task_id": "pypi-server",
+          "category": "software-engineering",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to create a Python package, build it, set up a local PyPI server, and make the package installable from the server.",
+          "docker_image": "alexgshaw/pypi-server:20251031",
+          "task_toml_sha256": "07c39d7a733c89adadf74bb63a3e906c3694feb6c490d5fc85ac187c003fd447",
+          "git_blob_sha": "60756e6b5a88035007e405889d1e7e9bac6e225a",
+          "relative_path": "tasks/pypi-server/task.toml"
+        },
+        {
+          "task_id": "pytorch-model-recovery",
+          "category": "model-training",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to reverse-engineer a PyTorch Transformer model architecture from a state dictionary, load pre-trained weights, and selectively fine-tune specific layers to improve performance on a dataset.",
+          "docker_image": "alexgshaw/pytorch-model-recovery:20260430",
+          "task_toml_sha256": "851a51204f53482a31f47cdf8833128cf421113b0331011286940fc857c37dfd",
+          "git_blob_sha": "35ac7e16a255e73ff33c09ebb7e3cc8245594f4e",
+          "relative_path": "tasks/pytorch-model-recovery/task.toml"
+        },
+        {
+          "task_id": "qemu-alpine-ssh",
+          "category": "system-administration",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to start an Alpine Linux VM in QEMU and configure SSH server access with proper networking and authentication.",
+          "docker_image": "alexgshaw/qemu-alpine-ssh:20251031",
+          "task_toml_sha256": "10a43ec6ee732eeba852c377f12e23178f7fa5a4868143f3699a15565ffb64c7",
+          "git_blob_sha": "05e2c6a5ddbfa722d61786702f1486c2e23d10b9",
+          "relative_path": "tasks/qemu-alpine-ssh/task.toml"
+        },
+        {
+          "task_id": "qemu-startup",
+          "category": "system-administration",
+          "difficulty": "medium",
+          "description": "Evaluates the agent's ability to configure and start a QEMU virtual machine with telnet-accessible serial console, requiring knowledge of QEMU command-line options, network configuration, and system readiness verification.",
+          "docker_image": "alexgshaw/qemu-startup:20251031",
+          "task_toml_sha256": "dc46292fff83fba50192f4c30606a5f9c092a9fb82139686df7dabf6580937d4",
+          "git_blob_sha": "9dec91116b96ae2aa1ddc58a8dc7833a194f886f",
+          "relative_path": "tasks/qemu-startup/task.toml"
+        },
+        {
+          "task_id": "query-optimize",
+          "category": "data-science",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to optimize a slow SQL query with correlated subqueries by rewriting it using CTEs and window functions while preserving exact output.",
+          "docker_image": "alexgshaw/query-optimize:20251031",
+          "task_toml_sha256": "6e88f2a86df699594bcb1bf81df4ed694505f79c9420f671335b02524bbe3868",
+          "git_blob_sha": "88fe3b4ada048489160d6a164aba3b88de5cf111",
+          "relative_path": "tasks/query-optimize/task.toml"
+        },
+        {
+          "task_id": "raman-fitting",
+          "category": "scientific-computing",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to fit Lorentzian curves to Raman spectroscopy data, extract peak parameters, and perform scientific data analysis using Python.",
+          "docker_image": "alexgshaw/raman-fitting:20251031",
+          "task_toml_sha256": "0f3f6b580d7435954b3a114e77cdfb6cd0a856f15cc0ad83cd1b69c48492dfed",
+          "git_blob_sha": "7d1eae870d830c928602be56b5ab258ae06a8660",
+          "relative_path": "tasks/raman-fitting/task.toml"
+        },
+        {
+          "task_id": "regex-chess",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to implement a complete chess move generator using only regular expression transformations on FEN notation.",
+          "docker_image": "alexgshaw/regex-chess:20251031",
+          "task_toml_sha256": "07fe52636fcc4bc9fff25d5630af145b97a5331219d719cc8decb4ca67ea21d4",
+          "git_blob_sha": "27e424362c20859c7d058688e662f95cfe3e76b1",
+          "relative_path": "tasks/regex-chess/task.toml"
+        },
+        {
+          "task_id": "regex-log",
+          "category": "data-processing",
+          "difficulty": "medium",
+          "description": "Tests the ability to construct a complex regular expression that matches dates in log lines containing valid IPv4 addresses while handling edge cases and boundary conditions.",
+          "docker_image": "alexgshaw/regex-log:20251031",
+          "task_toml_sha256": "6bc98525852755caf1fe34c174c2f10f4328adb4ce6c1968dcafe1c877e4e160",
+          "git_blob_sha": "1687e8f7a3fff35acc7b7ffea6aecd6bdfb7051e",
+          "relative_path": "tasks/regex-log/task.toml"
+        },
+        {
+          "task_id": "reshard-c4-data",
+          "category": "data-science",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to create Python scripts for bidirectional data resharding with file size and directory constraints, using proper dependency management.",
+          "docker_image": "alexgshaw/reshard-c4-data:20251031",
+          "task_toml_sha256": "c2f146a1e00f798f7486ff60686ad52749bb73c7b71e984d52716d859e0f7dd8",
+          "git_blob_sha": "7b0f6bb9bcdf2e3173ce2a60884f9d11e7712294",
+          "relative_path": "tasks/reshard-c4-data/task.toml"
+        },
+        {
+          "task_id": "rstan-to-pystan",
+          "category": "data-science",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to convert an RStan Gaussian Process script to functionally equivalent PyStan 3.10.0 code, including complex installation, hyperparameter mapping, and numerical verification of posterior estimates.",
+          "docker_image": "alexgshaw/rstan-to-pystan:20251031",
+          "task_toml_sha256": "ed0cd4382cb353e73cb575aa7a20b624e35f09ddd8769c332f40f8986980e13f",
+          "git_blob_sha": "e36c80ade5216bb06e575899839e9c52e0dfd21f",
+          "relative_path": "tasks/rstan-to-pystan/task.toml"
+        },
+        {
+          "task_id": "sam-cell-seg",
+          "category": "data-science",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to implement a histopathology image segmentation pipeline using MobileSAM to convert rectangular cell masks to precise polyline contours.",
+          "docker_image": "alexgshaw/sam-cell-seg:20251031",
+          "task_toml_sha256": "f0eb6af2acb87cb6fee67d77e8fdd55e3b331baf48999260bc5b6c4ac466c128",
+          "git_blob_sha": "f040b68da669e48348fb58d3e6e0159315b5d348",
+          "relative_path": "tasks/sam-cell-seg/task.toml"
+        },
+        {
+          "task_id": "sanitize-git-repo",
+          "category": "security",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to identify and sanitize sensitive API keys and tokens from a Git repository by replacing them with placeholders without modifying unrelated files.",
+          "docker_image": "alexgshaw/sanitize-git-repo:20251031",
+          "task_toml_sha256": "ff209feb7d07c68b8bd0d2e9abee96a1431c332095a1bbe0a532c44a833a264d",
+          "git_blob_sha": "76627698683fb6fe52c75e867cc87893161186d8",
+          "relative_path": "tasks/sanitize-git-repo/task.toml"
+        },
+        {
+          "task_id": "schemelike-metacircular-eval",
+          "category": "software-engineering",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to implement a metacircular evaluator in Scheme that can interpret itself and a comprehensive suite of Scheme programs.",
+          "docker_image": "alexgshaw/schemelike-metacircular-eval:20251031",
+          "task_toml_sha256": "8dae8eb226183b0ca92331c1106152a7abc93b03b4e5a95291b86a4ddc9b44e0",
+          "git_blob_sha": "2e22ee096fc6e4d7fa53935ccc546d290643df4f",
+          "relative_path": "tasks/schemelike-metacircular-eval/task.toml"
+        },
+        {
+          "task_id": "sparql-university",
+          "category": "data-querying",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to write complex SPARQL queries with multiple constraints, aggregations, and date filtering against an RDF knowledge graph.",
+          "docker_image": "alexgshaw/sparql-university:20251031",
+          "task_toml_sha256": "47a6f6dd9ce0fc7631ef607e900fcd039b2d064ea90545645b49c678cddc9585",
+          "git_blob_sha": "cdfc362336cb06755c2fd899937511a09c8d5a29",
+          "relative_path": "tasks/sparql-university/task.toml"
+        },
+        {
+          "task_id": "sqlite-db-truncate",
+          "category": "debugging",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to recover data from a corrupted SQLite database using binary file analysis and data recovery techniques.",
+          "docker_image": "alexgshaw/sqlite-db-truncate:20251031",
+          "task_toml_sha256": "56061acd75d9933aa554aeb249b85d7d081227fca1b71a3da7e3dc97a675723e",
+          "git_blob_sha": "2f3eefeec1295cdfd59b31114f0e525d54a40511",
+          "relative_path": "tasks/sqlite-db-truncate/task.toml"
+        },
+        {
+          "task_id": "sqlite-with-gcov",
+          "category": "system-administration",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to compile SQLite from source with gcov instrumentation and make it available in the system PATH.",
+          "docker_image": "alexgshaw/sqlite-with-gcov:20251031",
+          "task_toml_sha256": "9a0da96990ee2ecbf4d92682a4c5301a53db45fc6e2d46ac7d45d3b8ee7fe523",
+          "git_blob_sha": "35469a2a89a75c5e68528860a5133e07c5b50300",
+          "relative_path": "tasks/sqlite-with-gcov/task.toml"
+        },
+        {
+          "task_id": "torch-pipeline-parallelism",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to implement pipeline parallel training for LLaMA using PyTorch distributed primitives with all-forward-all-backward scheduling.",
+          "docker_image": "alexgshaw/torch-pipeline-parallelism:20251031",
+          "task_toml_sha256": "8b4f9f525c08afbbc4eca9168e46238a61ccb903486773e9ca4da64bb7ffe857",
+          "git_blob_sha": "7638a38482b85f131b5b1fb138c434f0912811a2",
+          "relative_path": "tasks/torch-pipeline-parallelism/task.toml"
+        },
+        {
+          "task_id": "torch-tensor-parallelism",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to implement tensor parallelism for PyTorch linear layers with correct weight sharding, distributed forward/backward passes, and gradient computation across multiple processes.",
+          "docker_image": "alexgshaw/torch-tensor-parallelism:20251031",
+          "task_toml_sha256": "72fd2a5500d1fe8795dcae76cccb1a29fb25894881a7475f2fa519c87d425a8d",
+          "git_blob_sha": "0b0bb16c26a129b3f89bb676c92cc622c25358f6",
+          "relative_path": "tasks/torch-tensor-parallelism/task.toml"
+        },
+        {
+          "task_id": "train-fasttext",
+          "category": "model-training",
+          "difficulty": "hard",
+          "description": "Train a FastText text classification model on Yelp review data that achieves >0.62 accuracy while staying under 150MB in size.",
+          "docker_image": "alexgshaw/train-fasttext:20251031",
+          "task_toml_sha256": "994fda7c3081bbdd9f6d05d6279ef64faefa94c214d1e08fbcea656540e4fe91",
+          "git_blob_sha": "751e5046fca5b0b0b897bc864fce76187bed0ad5",
+          "relative_path": "tasks/train-fasttext/task.toml"
+        },
+        {
+          "task_id": "tune-mjcf",
+          "category": "scientific-computing",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to optimize MuJoCo physics simulation parameters to achieve a 40% speedup while maintaining physical accuracy within specified tolerances.",
+          "docker_image": "alexgshaw/tune-mjcf:20251031",
+          "task_toml_sha256": "27b6d4e5a23761cc1a24a695125d891be74a2930fb83a02a66221db0244b08b3",
+          "git_blob_sha": "e01a01a6e3fcc167569ac50b111a749681529b33",
+          "relative_path": "tasks/tune-mjcf/task.toml"
+        },
+        {
+          "task_id": "video-processing",
+          "category": "video-processing",
+          "difficulty": "hard",
+          "description": "Evaluates the ability to build a computer vision script that analyzes hurdle jump videos and extracts takeoff/landing frame numbers using OpenCV.",
+          "docker_image": "alexgshaw/video-processing:20251031",
+          "task_toml_sha256": "be4fb42fccc5faa4862789cedd2c560eaa5758a2971989649a6dafeaeccc17aa",
+          "git_blob_sha": "fad7d1d35b3c51c1ecb985ace96bd50c9c0d98e3",
+          "relative_path": "tasks/video-processing/task.toml"
+        },
+        {
+          "task_id": "vulnerable-secret",
+          "category": "security",
+          "difficulty": "medium",
+          "description": "Evaluates the agent's ability to analyze a binary executable, identify and exploit a buffer overflow vulnerability to bypass authentication, and extract a hidden secret flag.",
+          "docker_image": "alexgshaw/vulnerable-secret:20251031",
+          "task_toml_sha256": "51079626e4c76445e616eff8723efc53af7f1cf8d9c64d15aab2f4f0ecd6df3c",
+          "git_blob_sha": "e563739f16ba1aedd5c737a21a7a4b721d2290a0",
+          "relative_path": "tasks/vulnerable-secret/task.toml"
+        },
+        {
+          "task_id": "winning-avg-corewars",
+          "category": "software-engineering",
+          "difficulty": "medium",
+          "description": "Evaluates the ability to write a competitive CoreWars Redcode warrior that achieves specific win rates against five diverse opponent strategies.",
+          "docker_image": "alexgshaw/winning-avg-corewars:20251031",
+          "task_toml_sha256": "a9b48765d03a66d966f6a162be203bc31e1d9d6e4abe616a2f4b42bac5dc246f",
+          "git_blob_sha": "048279f294e947e0970d35a08233a9e94c8b79a7",
+          "relative_path": "tasks/winning-avg-corewars/task.toml"
+        },
+        {
+          "task_id": "write-compressor",
+          "category": "software-engineering",
+          "difficulty": "hard",
+          "description": "Evaluates the agent's ability to reverse-engineer a custom compression format and write a compatible compressor program.",
+          "docker_image": "alexgshaw/write-compressor:20251031",
+          "task_toml_sha256": "6066a509066433c97c417fea68c4e3e73996f698dcdcbabe07718835eea355a6",
+          "git_blob_sha": "ef8bc825dced411ecc37c987bfa3774d08bcc060",
+          "relative_path": "tasks/write-compressor/task.toml"
         }
       ]
     }
-  },
-  "scoring_weights": {
-    "selection_formula_with_external_dev": "0.80 * normalized_internal_score + 0.20 * normalized_external_dev_score",
-    "selection_formula_without_external_dev": "normalized_internal_score",
-    "default_status_when_no_serving": "ROUTER_SERVING_NOT_READY"
   }
 }

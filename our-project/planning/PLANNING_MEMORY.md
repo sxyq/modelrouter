@@ -824,23 +824,32 @@ B01 的 16 个 QB/PB 配置全部完成，每个配置 2 个 Epoch，共 32 个 
 - **恢复语义明确**：正式确立 `EPOCH_LEVEL_RESUME`，跨 Epoch 恢复必须重载上一 Epoch 物理权重，Chunk 内部中断保证模型权重与数据位置绝对同步。
 - **脱敏与安全边界**：脱敏全量绝对路径为相对路径，联合路由监督严格保持 `DATA_NOT_READY`。
 
-## 2026-10-14 · AUTONOMOUS-TRAINING-V4 长期训练与独立评测集交接
+## 2026-10-14 · AUTONOMOUS-TRAINING-V4 长期训练与独立评测集真实性纠偏交接
 
-- **独立评估集 ENV-004 (Terminal-Bench 2.0)**：
-  - 160 个终端系统/DevOps/开发真实挑战任务套件，100% 隔离于 660 万训练数据池。
-  - 三级划分：`CANARY` (12 题冒烟验证)、`EXTERNAL_DEV` (48 题独立泛化评估)、`FINAL_TEST` (100 题物理密封)。
+> **重大纠偏说明**：经 Planning 独立比对 Harbor 官方代码树目录核实，官方真实 Terminal-Bench 2.1（`harbor-framework/terminal-bench-2-1`）任务总数精确为 **89 个**，此前生成的 160 题 manifest 存在 149 个虚构未验证 ID（仅 11 题匹配），现已正式标记为 `REJECTED_UNVERIFIED_MANIFEST` 全面作废，绝不计入 Checkpoint 晋级与实验成果。项目已全面升级锚定官方 2.1 Commit `7131e4375048a0e408a8fb404b5f499d726b695b`。
+
+- **独立评估集 ENV-004 (Terminal-Bench 2.1 官方核准)**：
+  - 89 个终端系统/DevOps/开发真实挑战任务套件（Commit `7131e4375048a0e408a8fb404b5f499d726b695b`，MIT 许可证），100% 隔离于 660 万训练数据池。
+  - 三级划分：
+    - `CANARY` (8 题快速冒烟验证)：当前状态定级为 `MANIFEST_VALIDATED`（元数据、Docker 镜像与 `task.toml` SHA256 官方校验通过；Docker 容器与 Oracle 运行未执行，严禁冒充真实执行通过）。
+    - `EXTERNAL_DEV` (24 题分层独立泛化评估)：仅针对 Top-5 候选模型执行。未部署真实路由器 Serving 与 Harness 端点前，严格客观回报 `ROUTER_SERVING_NOT_READY` / `NOT_EVALUATED`，严禁虚构通过率。
+    - `FINAL_TEST` (57 题终局评估)：永久封存，模型选择权重严格为 0.00。
+- **评测阶梯四级定义**：
+  - `MANIFEST_VALIDATED`：任务 ID、元数据 schema 与 SHA256 与官方树一致（当前 Canary 状态）。
+  - `ENVIRONMENT_READY`：评测节点 Docker 容器镜像拉取构建完成。
+  - `ORACLE_VERIFIED`：官方标准参考解在沙盒内验证通过。
+  - `AGENT_EVALUATED`：真实 Serving 端点联通，完整 Agent 决策交互评测完成。
 - **三级评估体系与动态打分权重**：
   - 内部验证（INTERNAL_VAL）：每 Epoch 自动在固定验证集（S1 561 题、S2 337 题、S3 1,397 题）计算。
-  - 外部泛化（EXTERNAL_DEV）：仅对 Top 候选模型按需触发。在没有部署真实路由器 Serving 与 Harness 端点前，严格客观回报 `ROUTER_SERVING_NOT_READY` / `NOT_EVALUATED`，严禁虚构通过率。
-  - 终局测试（FINAL_TEST）：永久封存，模型选择权重严格为 0。
-  - 动态打分公式：`selection_score = 0.80 * internal + 0.20 * external_dev`（DEV 未评估时自动退化为 100% 内部验证分）。
+  - 外部泛化（EXTERNAL_DEV）：在没有部署真实路由器 Serving 与 Harness 端点前，严格客观回报 `ROUTER_SERVING_NOT_READY` / `NOT_EVALUATED`，严禁虚构通过率。
+  - 动态打分公式：`selection_score = 0.80 * internal + 0.20 * external_dev`（未评估时严格采用 100% 内部验证分）。
 - **长期多阶段持续训练演进规划**：
   - Stage 1: ALGN_01 (S1), ALGN_02 (S1+S2), ALGN_03 (S1+S3), ALGN_04 (S1+S2+S3)
   - Stage 2: 数据规模阶梯 (10% F08, 25% F09, 50% F10, 100% F07)
-  - Stage 3: 分层全量与跨层覆盖 (L1..L4 单层与累积，当前 F02 执行中)
+  - Stage 3: 分层全量与跨层覆盖 (L1..L4 单层与累积，当前 F02 执行中，推进至 Epoch 2/2 Chunk 71+/123 · 79.0% 累计完成)
   - Stage 4: 部分比例与分位抽样 (F11..F16)
   - Stage 5: 课程学习与能力渐进 (Base -> L1 -> L1+L2 -> L1..L4)
   - Stage 6: 多 Seed 与状态变量消融
 - **唯一调度入口常驻**：
-  - 唯一入口为 `router_data/run_full_graded_queue.py --mode continuous_full_coverage`，常驻服务器后台，断网安全，看门狗自动恢复。
+  - 唯一入口为 `router_data/run_full_graded_queue.py --mode continuous_full_coverage`，常驻服务器后台（PID 2207051 / 2287331），断网安全，看门狗自动恢复。
 

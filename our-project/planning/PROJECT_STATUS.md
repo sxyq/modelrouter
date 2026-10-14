@@ -454,27 +454,36 @@ configs/
   - 联合路由监督严格保持 `DATA_NOT_READY`，拒绝跨数据集生造伪联合标签。
 - **新训练计划（ALGN_01..04）**：在唯一调度入口 Stage 7 正式排队，协议版本设为 `MR-ROUTING-ALIGNED-v2`，将在现有连续训练队列安全交接边界自动执行。
 
-## 2026-10-14 · AUTONOMOUS-TRAINING-V4 长期训练与独立评测集体系
+## 2026-10-14 · AUTONOMOUS-TRAINING-V4 长期训练与独立评测集真实性纠偏
 
-- **任务定位**：在现有 A6000 GPU 零中断运行边界内，建立独立外部 Agent Benchmark（ENV-004）、三级评测架构、多阶段连续训练队列、Top-5 动态保留模型打分闭环及断网常驻看门狗。
-- **独立 Agent Benchmark (ENV-004: Terminal-Bench 2.0)**：
-  - 来源：`harbor-framework/terminal-bench-2`（Apache-2.0 许可证，全量 160 个终端系统/DevOps/开发真实挑战任务套件）。
+> **重大纠偏说明**：经 Planning 独立比对 Harbor 官方代码树目录核实，官方真实 Terminal-Bench 2.1（`harbor-framework/terminal-bench-2-1`）任务总数精确为 **89 个**，此前生成的 160 题 manifest 存在 149 个虚构未验证 ID（仅 11 题匹配），现已正式标记为 `REJECTED_UNVERIFIED_MANIFEST` 全面作废，绝不计入 Checkpoint 晋级与实验成果。项目已全面升级锚定官方 2.1 Commit `7131e4375048a0e408a8fb404b5f499d726b695b`。
+
+- **任务定位**：在现有 A6000 GPU 零中断运行边界内，建立独立外部 Agent Benchmark（ENV-004: Terminal-Bench 2.1）、三级评测架构、多阶段连续训练队列、Top-5 动态保留模型打分闭环及断网常驻看门狗。
+- **独立 Agent Benchmark (ENV-004: Terminal-Bench 2.1)**：
+  - 来源：`harbor-framework/terminal-bench-2-1`（Commit `7131e4375048a0e408a8fb404b5f499d726b695b`，MIT 许可证，实存 89 个终端系统/DevOps/开发真实挑战任务套件）。
   - 任务去重与隔离：经与 SWE-bench、SWE-Gym、SWE-smith 严格对账，同题重合为 0，100% 物理隔离于 660 万训练数据池。
-  - 三级划分：`CANARY`（12 题冒烟验证，测试通过）、`EXTERNAL_DEV`（48 题独立泛化评估）、`FINAL_TEST`（100 题物理密封，访问权重 0.00）。
-- **三级评测标准与动态模型晋级打分**：
-  - 内部验证（INTERNAL_VAL）：每 Epoch 自动在固定验证集（S1 561 题、S2 337 题、S3 1,397 题）计算。
-  - 外部泛化（EXTERNAL_DEV）：仅对 Top 候选模型按需触发。在没有部署真实路由器 Serving 与 Harness 端点前，严格客观回报 `ROUTER_SERVING_NOT_READY` / `NOT_EVALUATED`，严禁虚构通过率。
-  - 动态打分公式：`selection_score = 0.80 * internal + 0.20 * external_dev`（DEV 未评估时自动退化为 100% 内部验证分）。
+  - 三级划分：
+    - `CANARY`（8 题快速冒烟检验，跨 8 异构领域）：当前状态定级为 `MANIFEST_VALIDATED`（元数据、Docker 镜像与 `task.toml` SHA256 官方校验通过；Docker 容器与 Oracle 运行未执行，严禁冒充真实执行通过）。
+    - `EXTERNAL_DEV`（24 题分层独立泛化评估）：仅针对 Top-5 候选模型执行。未部署真实路由器 Serving 与 Harness 端点前，严格客观回报 `ROUTER_SERVING_NOT_READY` / `NOT_EVALUATED`，严禁虚构通过率。
+    - `FINAL_TEST`（57 题终局评估）：永久物理密封，调优期间访问权重严格为 0.00。
+- **评测阶梯四级定义**：
+  - `MANIFEST_VALIDATED`：任务 ID、元数据 schema 与 SHA256 与官方树一致（当前 Canary 状态）。
+  - `ENVIRONMENT_READY`：评测节点 Docker 容器镜像拉取构建完成。
+  - `ORACLE_VERIFIED`：官方标准参考解在沙盒内验证通过。
+  - `AGENT_EVALUATED`：真实 Serving 端点联通，完整 Agent 决策交互评测完成。
+- **动态模型晋级打分机制**：
+  - 未执行外部 DEV 时（当前）：`selection_score = normalized_internal_score`（100% 内部验证分）。
+  - 执行外部 DEV 时：`selection_score = 0.80 * internal + 0.20 * external_dev`。
 - **动态保留 hard cap MAX_CORE_CHECKPOINTS = 5**：
   - 最多永久保留 5 份最优核心模型权重 + 受保护课程父节点（`R1-e01`、`R2-e01`）+ 活跃恢复点（`F02`）。
   - 自动依据 `selection_score` 实施 Top 30% 筛选与多余实体模型修剪。
 - **长期多阶段持续训练演进规划**：
   - Stage 1: ALGN_01 (S1), ALGN_02 (S1+S2), ALGN_03 (S1+S3), ALGN_04 (S1+S2+S3)
   - Stage 2: 数据规模阶梯 (10% F08, 25% F09, 50% F10, 100% F07)
-  - Stage 3: 分层全量与跨层覆盖 (L1..L4 单层与累积，当前 F02 执行中)
+  - Stage 3: 分层全量与跨层覆盖 (L1..L4 单层与累积，当前 F02 执行中，推进至 Epoch 2/2 Chunk 71+/123 · 79.0% 累计完成)
   - Stage 4: 部分比例与分位抽样 (F11..F16)
   - Stage 5: 课程学习与能力渐进 (Base -> L1 -> L1+L2 -> L1..L4)
   - Stage 6: 多 Seed 与状态变量消融
 - **看板与控制台交付**：
-  - HTML 看板已部署 Section 0.00，实时展现 Headless 守护状态、GPU 显存/利用率、Epoch/Chunk 进度、三级评测指标与数据隔离证明。
+  - HTML 看板已部署 Section 0.00，实时展现 Headless 守护状态（PID 2207051 / 2287331）、GPU 显存/利用率、Epoch/Chunk 进度、三级评测指标与数据隔离证明。
 

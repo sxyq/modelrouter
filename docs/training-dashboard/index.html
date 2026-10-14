@@ -608,9 +608,9 @@
       if (v4BmEl) {
         let rows = '<tr><th>层级 (Tier)</th><th>评测集名称 / 任务数</th><th>触发机制</th><th>当前状态 / 准确率</th><th>晋级保留打分权重</th></tr>';
         rows += '<tr><td><b>1. INTERNAL_VAL</b></td><td>固定验证集 (S1: 561, S2: 337, S3: 1397)</td><td>每 Epoch 自动执行</td><td class="good"><b>ACTIVE_CONTINUOUS</b> (Loss 0.6039)</td><td>80% (DEV 就绪) / 100% (DEV 未就绪)</td></tr>';
-        rows += '<tr><td><b>2. CANARY</b></td><td>ENV-004 Terminal-Bench 2.0 (12 题)</td><td>冒烟检验与容器联通</td><td class="good"><b>PASSED_SMOKE_TEST</b> (12/12)</td><td>语法验证通过门槛</td></tr>';
-        rows += '<tr><td><b>3. EXTERNAL_DEV</b></td><td>ENV-004 Terminal-Bench 2.0 (48 题)</td><td>仅 Top-5 候选模型触发</td><td class="warn"><b>ROUTER_SERVING_NOT_READY</b> (0.0% / 未评估)</td><td>20% 动态权重 (真实服务上线后)</td></tr>';
-        rows += '<tr><td><b>4. FINAL_TEST</b></td><td>ENV-004 Terminal-Bench 2.0 (100 题)</td><td>终局验收 (非调优循环)</td><td class="bad"><b>SEALED_PERMANENT</b> (永久密封)</td><td>0.00 (严禁参与训练或模型选择)</td></tr>';
+        rows += '<tr><td><b>2. CANARY</b></td><td>ENV-004 Terminal-Bench 2.1 (8 题)</td><td>冒烟检验与语法/哈希校验</td><td class="good"><b>MANIFEST_VALIDATED</b> (8/8 官方树校验)</td><td>语法验证通过门槛 (容器与Oracle未执行)</td></tr>';
+        rows += '<tr><td><b>3. EXTERNAL_DEV</b></td><td>ENV-004 Terminal-Bench 2.1 (24 题)</td><td>仅 Top-5 候选模型触发</td><td class="warn"><b>ROUTER_SERVING_NOT_READY</b> (0.0% / 未评估)</td><td>20% 动态权重 (真实服务上线后生效，当前回退为100%内部验证分)</td></tr>';
+        rows += '<tr><td><b>4. FINAL_TEST</b></td><td>ENV-004 Terminal-Bench 2.1 (57 题)</td><td>终局验收 (非调优循环)</td><td class="bad"><b>SEALED_PERMANENT</b> (永久密封)</td><td>0.00 (严禁参与训练或模型选择)</td></tr>';
         v4BmEl.innerHTML = rows;
       }
 
@@ -621,7 +621,7 @@
         rows += '<tr><td><b>合法训练数据源</b></td><td class="good"><b>4,863,900 条</b></td><td>TRA-001/002, ROUTE-004, CACHE-001, TIME-001, OWN-002</td><td>已完成 8 源收敛，严禁概念混淆</td></tr>';
         rows += '<tr><td><b>待核许可数据</b></td><td class="bad"><b>152,524 条</b></td><td>ROUTE-001, ROUTE-002 (LICENSE_PENDING)</td><td>物理隔离于训练池之外</td></tr>';
         rows += '<tr><td><b>环境特征数据</b></td><td class="bad"><b>10,821 条</b></td><td>ENV-001, ENV-002 (S4 环境元数据)</td><td>物理隔离于路由训练之外</td></tr>';
-        rows += '<tr><td><b>独立 Agent Benchmark</b></td><td class="purple"><b>160 题 (ENV-004)</b></td><td>Terminal-Bench 2.0 独立工程环境挑战</td><td><b>0 训练泄漏 · 0 伪标签蒸馏</b></td></tr>';
+        rows += '<tr><td><b>独立 Agent Benchmark</b></td><td class="purple"><b>89 题 (ENV-004 官方 2.1)</b></td><td>Terminal-Bench 2.1 (Commit 7131e43) 独立工程环境挑战</td><td><b>0 训练泄漏 · 历史 160 题已作废驳回</b></td></tr>';
         rows += '<tr><td><b>Train / Val / Test</b></td><td class="good"><b>0 交叉泄漏</b></td><td>Unique unit ID 物理硬隔离</td><td>Val 物理封闭 · Test 永久密封</td></tr>';
         v4IsoEl.innerHTML = rows;
       }
