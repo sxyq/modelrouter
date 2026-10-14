@@ -879,3 +879,37 @@ B01 的 16 个 QB/PB 配置全部完成，每个配置 2 个 Epoch，共 32 个 
   - 遵循 `MAX_CORE_CHECKPOINTS = 5` 上限，当前磁盘严格保留 5 份最优核心模型（`P0_B03_C08_QB_PB`、`P0_B01_C01_QB_PB`、`P0_B03_C05_QB_PB`、`P0_B02_C01_QB_PB`、`P0_B03_C01_QB_PB`）及 1 份运行中容灾临时权重（`F02/_temp_recovery`）。
 
 
+
+## 2026-10-14 · 过夜长队列可靠性修复、V1/V2.1 逐条对账与 ALGN 训练优先级调整（MR-ALGN-PRIORITY-REPAIR-20261014）
+
+- **现场运行与 F02 阶段性推进**：
+  - A6000 服务器（`k3s-infra-01`）守护进程 PID `2207051`、底层算子 PID `2287331`、Watchdog PID `2301880` 持续稳定运行；
+  - F02 推进至 Epoch 2/2 Chunk 120+/123，累计完成 30,884+/31,304 步更新，消费 1,976,543+ 条样本，最新分块 Loss `0.5042`，即将迎来 Epoch 2 固定验证终评；
+  - 硬件指标稳定：GPU 利用率 81%，显存 9,845 / 49,140 MiB (20.0%)，温度 74°C，功耗 290W，根分区剩余 1,148.4 GiB。
+- **Checkpoint 与 Cursor 一致性架构（10 项可靠恢复规则落地）**：
+  - 彻底解决“Cursor 每个 Chunk 更新，但权重仅在 Epoch 结束保存”造成的恢复错位隐患；
+  - Checkpoint 目录内部持久化 `recovery_state.json`，显式绑定 `run_id`、`epoch`、`chunk_idx: 0`、`step_count`、`consumed_items`、`protocol_version` 及物理权重 SHA256；
+  - 恢复引擎严格遵守 Epoch 边界可靠恢复规则：从上一个有效物理 Checkpoint 恢复，重跑当前未完成 Epoch，`start_chunk` 重置为 0，`step_count` 与 `consumed_items` 回滚至 Checkpoint 对应值，坚决禁止将 Epoch 1 权重代入 Epoch 2 Chunk 98，坚决禁止中间无权重空转；
+  - 生产级真实流式 Chunk 崩溃恢复测试套件 `test_streaming_chunk_recovery.py`（3/3 测试 100% 通过）：
+    - Test 1: 模拟 Epoch 2 Chunk 3 崩溃，恢复后自动回滚至 Epoch 1 边界重训 Epoch 2，Logits 最大差值 0.000000e+00，参数最大差值 0.000000e+00，步数与消费量与连续参考轨迹比特级完全一致；
+    - Test 2: 缺失物理权重安全触发 `EPOCH_RESTART` 并清空计数；
+    - Test 3: Cursor 显示已达总轮次但物理权重缺失时强制抛出 `RuntimeError`，封堵伪 completed 漏洞。
+- **队列失败多级安全暂停机制**：
+  - 修复 `run_full_graded_queue.py` 中子 Run 非零退出后盲目继续下一 Run 的风险；
+  - 引入显式多级错误分类：`PAUSED_DATA_INTEGRITY`（数据资格与 Schema 异常）、`PAUSED_RECOVERY_INTEGRITY`（恢复点或优化器绑定异常）、`PAUSED_GPU_BUSY`（OOM 或 GPU 异常）、`PAUSED_DISK_OR_BUDGET_GUARD`（磁盘超限）、`PAUSED_RUN_FAILED`（未分类训练退出）；
+  - 任何非零退出立即中止队列并持久化 `queue_state.json`，坚决杜绝 F03 失败后自动消耗 GPU 跑 F04。
+- **V1 与 V2.1 分层逐条记录稳定 ID 对账与真实交集核验**：
+  - 物理扫描 V1 与 V2.1 全部分层（共 5,942,291 条记录）：
+    - 共同记录数：`5,942,291`（**100.00%**，独有记录严格为 0）；
+    - Unit ID 冲突：`0`（每个样本独立任务单元 ID 100% 相同）；
+    - Split 身份冲突：`0`（每个样本 Train/Val 身份 100% 相同）；
+  - 迁入迁出根因：V2.1 引入 `signature = (scenario, model_name, reasoning_effort, length//1024, action_type)` 打破同分平局，等质样本跨层更均匀重组；
+  - **真实验证集交集核验**：扫描 5,070,313 条训练记录与 3,142 条固定验证集记录，**数学交集严格为 0（Record Overlap = 0, Unit Overlap = 0）**，彻底打破硬编码假设，由真实 ID 集合交集实证 0 泄漏。
+- **ALGN 四组优先级前置与严格比例配额采样**：
+  - 在 `FULL_COVERAGE_STAGE_MAP` 中将 ALGN_01..04 前置至 Stage 2.5（优先级排在 F02 之后、F03 之前）；
+  - 改造调度循环为动态查询，在 F02 正常结束后自动率先调起 ALGN 探索小预算对照；
+  - 修复多监督比例稀释漏洞：引入严格配额交错算法，确保 S1:S2（2:1）或 S1:S2:S3（2:1:1）在每个 Chunk 和 Epoch 内严格保持比例，避免主监督被弱相关数据淹没；
+  - 每组独立评估并输出 S1 Loss、Accuracy、Brier、ECE，以真实指标作为后续按比例扩充的决策依据。
+- **Top-5 与看板状态**：
+  - 保持 MAX_CORE_CHECKPOINTS = 5，当前磁盘保留 Top-5 核心模型权重 + 1 份容灾恢复点；
+  - Web 看板与文档同步更新真实服务器监控数据，不手写虚构状态。

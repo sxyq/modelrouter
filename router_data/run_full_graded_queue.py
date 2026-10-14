@@ -608,8 +608,14 @@ FULL_COVERAGE_STAGE_MAP = {
     # Stage 2: Single-Layer Full Coverage (F01..F04, All Supervisable Classes S1+S2+S3)
     "F01": (2, 1),
     "F02": (2, 2),
-    "F03": (2, 3),
-    "F04": (2, 4),
+    # Stage 2.5: Routing-Aligned Ablation Priority Series (ALGN_01..ALGN_04 under small budget)
+    "ALGN_01_S1": (2, 3),
+    "ALGN_02_S1_S2": (2, 4),
+    "ALGN_03_S1_S3": (2, 5),
+    "ALGN_04_S1_S2_S3": (2, 6),
+    # Stage 2 Continued: Remaining Single Layers
+    "F03": (2, 7),
+    "F04": (2, 8),
     # Stage 3: Cumulative Full Coverage (F05..F07)
     "F05": (3, 1),
     "F06": (3, 2),
@@ -637,11 +643,6 @@ FULL_COVERAGE_STAGE_MAP = {
     "F05_S3": (6, 5),
     "F06_S3": (6, 6),
     "F07_S3": (6, 7),
-    # Stage 7: Routing-Aligned Ablation Series (ALGN_01..ALGN_04 under MR-ROUTING-ALIGNED-DATA-v2)
-    "ALGN_01_S1": (7, 1),
-    "ALGN_02_S1_S2": (7, 2),
-    "ALGN_03_S1_S3": (7, 3),
-    "ALGN_04_S1_S2_S3": (7, 4),
 }
 
 
@@ -785,12 +786,23 @@ def run_continuous_full_coverage_queue(
 
     executed_this_session: List[str] = []
 
-    for spec in ordered:
+    while True:
+        # Dynamically evaluate ordered queue on each loop to pick up newly added/re-prioritized runs
+        manifest = json.loads(manifest_path.read_text(encoding="utf8"))
+        ordered, reconciliation = build_ordered_full_coverage_queue(out_root, manifest, queue_state, stages=stages)
+        queue_state["reconciliation"] = reconciliation
+        _write_json(state_path, queue_state)
+
+        if not ordered:
+            break
+
         if max_runs is not None and len(executed_this_session) >= max_runs:
             queue_state["queue_status"] = "PAUSED_MAX_RUNS_REACHED"
             queue_state["stop_reason"] = f"Completed requested batch of {max_runs} runs"
+            _write_json(state_path, queue_state)
             break
 
+        spec = ordered[0]
         run_id = spec["run_id"]
 
         # Check GPU availability
@@ -847,6 +859,31 @@ def run_continuous_full_coverage_queue(
                 "returncode": proc.returncode,
                 "failed_at": _now_iso(),
             }
+            # Specific error classification and safe queue halt
+            log_tail = ""
+            log_file = out_root / "continuous_queue.log"
+            if log_file.is_file():
+                try:
+                    with open(log_file, "r", encoding="utf-8", errors="replace") as lf:
+                        log_tail = "".join(lf.readlines()[-30:])
+                except Exception:
+                    pass
+
+            if "SCHEMA_INCOMPATIBLE" in log_tail or "DataAdmissionError" in log_tail:
+                err_class = "PAUSED_DATA_INTEGRITY"
+            elif "RECOVERY_INTEGRITY" in log_tail or "Corrupt state" in log_tail or "Optimizer parameter identity mismatch" in log_tail:
+                err_class = "PAUSED_RECOVERY_INTEGRITY"
+            elif "CUDA out of memory" in log_tail:
+                err_class = "PAUSED_GPU_BUSY"
+            else:
+                err_class = "PAUSED_RUN_FAILED"
+
+            queue_state["queue_status"] = err_class
+            queue_state["stop_reason"] = f"Run {run_id} failed with exit code {proc.returncode} ({err_class}). Queue execution halted safely."
+            queue_state["updated_at"] = _now_iso()
+            _write_json(state_path, queue_state)
+            print(f"[QUEUE PAUSED] Halting queue execution because {run_id} failed with returncode {proc.returncode} ({err_class}). Subsequent runs will NOT be executed.", flush=True)
+            break
 
         # Rebuild dashboard & manifest after each run
         sync_server_metadata_and_build_dashboard(project_root=project_root, run_official_load=False)

@@ -79,9 +79,10 @@ def _write(path, value):
     tmp.replace(path)
 
 
-def _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer=None, scheduler=None, scaler=None):
+def _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer=None, scheduler=None, scaler=None, recovery_meta=None):
     from laya.train import save_checkpoint
-    save_checkpoint(model, tok, ckcfg, str(target_dir))
+    target_path = Path(target_dir)
+    save_checkpoint(model, tok, ckcfg, str(target_path))
     if optimizer is not None:
         import torch
         opt_data = {
@@ -92,9 +93,28 @@ def _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer=None, schedul
             "cuda_rng_state": torch.cuda.get_rng_state() if torch.cuda.is_available() else None,
         }
         try:
-            torch.save(opt_data, Path(target_dir) / "optim_state.pt")
+            torch.save(opt_data, target_path / "optim_state.pt")
         except Exception as exc:
             raise RuntimeError(f"Critical error: Failed to save optim_state.pt to {target_dir}: {exc}") from exc
+    if recovery_meta:
+        import hashlib
+        hash_val = "unknown"
+        for wname in ["model.safetensors", "model.pt"]:
+            wf = target_path / wname
+            if wf.is_file():
+                h = hashlib.sha256()
+                with open(wf, "rb") as f:
+                    for chunk in iter(lambda: f.read(65536), b""):
+                        h.update(chunk)
+                hash_val = h.hexdigest()
+                break
+        meta = dict(recovery_meta)
+        meta["checkpoint_hash"] = hash_val
+        meta["saved_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        try:
+            (target_path / "recovery_state.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf8")
+        except Exception as exc:
+            raise RuntimeError(f"Critical error: Failed to save recovery_state.json to {target_dir}: {exc}") from exc
 
 
 
@@ -992,23 +1012,42 @@ def run_full_coverage_stream_run(
                             f"but final checkpoint {ep_ckpt_dir} lacks physical weights! Cannot claim completion without weights."
                         )
 
+                resolved_ckpt = None
                 if cur_ep > 0 and has_physical_weights(ep_ckpt_dir):
-                    target_ckpt_dir = ep_ckpt_dir
-                    start_epoch = cur_ep
-                    start_chunk = 0
-                    global_step = cur.get("step_count", 0)
-                    consumed_total_items = cur.get("consumed_items", 0)
-                    history = cur.get("history", [])
+                    resolved_ckpt = ep_ckpt_dir
                 elif temp_recovery_dir.is_dir() and has_physical_weights(temp_recovery_dir):
-                    target_ckpt_dir = temp_recovery_dir
-                    start_epoch = cur_ep
-                    start_chunk = cur_chunk
-                    global_step = cur.get("step_count", 0)
-                    consumed_total_items = cur.get("consumed_items", 0)
-                    history = cur.get("history", [])
+                    resolved_ckpt = temp_recovery_dir
+
+                if resolved_ckpt is not None:
+                    target_ckpt_dir = resolved_ckpt
+                    rec_meta_file = resolved_ckpt / "recovery_state.json"
+                    if rec_meta_file.is_file():
+                        try:
+                            rec_meta = json.loads(rec_meta_file.read_text(encoding="utf8"))
+                            start_epoch = int(rec_meta.get("epoch", cur_ep))
+                            start_chunk = int(rec_meta.get("chunk_idx", 0))
+                            global_step = int(rec_meta.get("step_count", cur.get("step_count", 0)))
+                            consumed_total_items = int(rec_meta.get("consumed_items", cur.get("consumed_items", 0)))
+                            history = rec_meta.get("history") or cur.get("history", [])
+                            print(
+                                f"[{run_id}] RESUME_CONSISTENCY: Anchored to physical checkpoint at {resolved_ckpt.name} "
+                                f"(epoch={start_epoch}, chunk={start_chunk}, step={global_step}, consumed={consumed_total_items}).",
+                                flush=True,
+                            )
+                        except Exception as rec_err:
+                            print(f"[{run_id}] Warning parsing recovery_state.json: {rec_err}")
+                            start_epoch = cur_ep
+                            start_chunk = 0
+                            global_step = cur.get("step_count", 0)
+                            consumed_total_items = cur.get("consumed_items", 0)
+                            history = cur.get("history", [])
+                    else:
+                        start_epoch = cur_ep
+                        start_chunk = 0
+                        global_step = cur.get("step_count", 0)
+                        consumed_total_items = cur.get("consumed_items", 0)
+                        history = cur.get("history", [])
                 elif cur_ep > 0:
-                    # Missing physical weights for cur_ep! Must restart from epoch 0 from parent model,
-                    # never pretend epoch 1..cur_ep happened on an un-trained parent model!
                     print(f"[{run_id}] Warning: Cursor recorded epoch {cur_ep}, but physical weights are missing at {ep_ckpt_dir}. Full restart from epoch 0.")
                     target_ckpt_dir = None
                     start_epoch = 0
@@ -1185,21 +1224,21 @@ def run_full_coverage_stream_run(
                     for k in sup_keys:
                         rng_balance.shuffle(by_sup[k])
 
+                    # Strict ratio quota balance (controls true supervision optimization contribution)
+                    min_factor = min(len(by_sup[k]) / max(0.001, float(ratio_map.get(k, 1.0))) for k in sup_keys)
+                    target_counts = {k: max(1, int(min_factor * float(ratio_map.get(k, 1.0)))) for k in sup_keys}
+                    total_quota = sum(target_counts.values())
+
                     cursors = {k: 0 for k in sup_keys}
-                    total_available = sum(len(v) for v in by_sup.values())
-                    while len(chunk_items) < total_available:
-                        picked = rng_balance.choices(sup_keys, weights=sup_probs, k=1)[0]
-                        idx = cursors[picked]
-                        if idx < len(by_sup[picked]):
-                            chunk_items.append(by_sup[picked][idx])
-                            cursors[picked] += 1
-                        else:
-                            rem = [k for k in sup_keys if cursors[k] < len(by_sup[k])]
-                            if not rem:
-                                break
-                            r_picked = rng_balance.choice(rem)
-                            chunk_items.append(by_sup[r_picked][cursors[r_picked]])
-                            cursors[r_picked] += 1
+                    while len(chunk_items) < total_quota:
+                        active_keys = [k for k in sup_keys if cursors[k] < target_counts[k]]
+                        if not active_keys:
+                            break
+                        active_weights = [float(ratio_map.get(k, 1.0)) for k in active_keys]
+                        tot_aw = sum(active_weights) if sum(active_weights) > 0 else 1.0
+                        picked = rng_balance.choices(active_keys, weights=[w / tot_aw for w in active_weights], k=1)[0]
+                        chunk_items.append(by_sup[picked][cursors[picked]])
+                        cursors[picked] += 1
                 else:
                     for c_items in by_sup.values():
                         chunk_items.extend(c_items)
@@ -1316,11 +1355,21 @@ def run_full_coverage_stream_run(
 
             # Record epoch validation and execute retention pruning via CheckpointRetentionManager
             is_final = (epoch + 1 >= run_epochs)
+            rec_meta_epoch = {
+                "run_id": run_id,
+                "epoch": epoch + 1,
+                "chunk_idx": 0,
+                "step_count": global_step,
+                "consumed_items": consumed_total_items,
+                "consumed_units": len(consumed_units_set),
+                "protocol_version": protocol_version,
+                "history": history,
+            }
             ret_entry = retention_mgr.handle_epoch_checkpoint(
                 run_id=run_id,
                 epoch=epoch + 1,
                 is_final_epoch=is_final,
-                save_fn=lambda target_dir: _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer, scheduler, scaler),
+                save_fn=lambda target_dir: _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer, scheduler, scaler, recovery_meta=rec_meta_epoch),
                 run_meta=run_meta,
                 entry=entry,
                 manifest=manifest_data,
