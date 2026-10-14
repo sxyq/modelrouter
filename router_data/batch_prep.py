@@ -1753,6 +1753,10 @@ def collect_full_coverage_refs(
         "by_source": Counter(),
         "distinct_units": set(),
         "total_records": 0,
+        "skipped_q3_q4": 0,
+        "skipped_ineligible": 0,
+        "skipped_disallowed_source": 0,
+        "skipped_no_valid_target": 0,
     }
 
     for layer in layers:
