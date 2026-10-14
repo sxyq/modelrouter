@@ -947,6 +947,7 @@ def run_full_coverage_stream_run(
     out_root = Path(out_root).resolve()
     run_root = out_root / run_id
     run_root.mkdir(parents=True, exist_ok=True)
+    cursor_path = run_root / "cursor.json"
 
     manifest_data = {}
     if manifest_path and Path(manifest_path).is_file():

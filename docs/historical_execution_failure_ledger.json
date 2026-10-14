@@ -41,6 +41,25 @@
       "resolution_commit": "c479f6f87a9a3e25751ac1604d79c54e3d50716f",
       "fix_description": "Explicitly defined params = trainable_params and updated gradient clipping call.",
       "status": "RESOLVED_VERIFIED"
+    },
+    {
+      "incident_id": "INC-20261014-03-ALGN04-CURSOR-PATH-NAME-ERROR",
+      "run_id": "ALGN_04_S1_S2_S3",
+      "run_type": "full_coverage_stream",
+      "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+      "failure_time": "2026-10-14T12:30:22Z",
+      "exception_type": "NameError",
+      "exception_message": "name 'cursor_path' is not defined",
+      "code_file": "router_data/laya_batch_train.py",
+      "code_line": 1341,
+      "code_function": "run_full_coverage_stream_run",
+      "failing_statement": "_write(cursor_path, cursor_data)",
+      "root_cause": "When refactoring resolve_checkpoint_to_resume(), cursor_path = run_root / 'cursor.json' was scoped inside the helper function, leaving cursor_path undefined in run_full_coverage_stream_run body.",
+      "log_source": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/continuous_queue.log",
+      "log_lines": "25701-25711",
+      "resolution_commit": "0701143b811252e0081d5952f4ae4c9e46a7cefe",
+      "fix_description": "Defined cursor_path = run_root / 'cursor.json' immediately following run_root initialization in run_full_coverage_stream_run.",
+      "status": "RESOLVED_VERIFIED"
     }
   ],
   "verification_status": {

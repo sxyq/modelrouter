@@ -597,3 +597,23 @@ configs/
   - 物理 Checkpoint 严格遵循 `MAX_CORE_CHECKPOINTS = 5` 硬上限，当前保留 Top-5 核心模型权重，磁盘空间 1,151.6 GiB（充裕）；
   - HTML 看板和服务器自治监控脚本持续稳定运行。
 
+
+## 2026-10-14 · ALGN_03 完成与泛化突破实证、ALGN_04 启动瞬态 NameError 修复、不可变事故台账升级与队列安全接续（MR-ALGN03-COMPLETION-AND-QUEUE-RESUME-20261014）
+
+- **P1 ALGN_03_S1_S3 完结指标与学术实证**：
+  - **训练全量推进**：2 个 Epoch、共 162/162 Chunk 全量无中断完成，累计消费 95,220 个训练 Item 与 1,316,213 个独立任务单元；
+  - **验证集实测**：
+    - Epoch 1：Train Loss 0.6247，S1 Val Loss 0.6015，S1 Val Acc 67.02%，Brier 0.4152；
+    - Epoch 2：Train Loss 0.5622，S1 Val Loss 0.6016，**S1 Val Acc 67.38%**，Brier 0.4149；
+  - **核心学术发现**：S1 路由准确率达 **67.38%**，超越纯路由单任务 baseline（`ALGN_01_S1` Epoch 2 Acc 66.13%）与多智能体轨迹联合（`ALGN_02_S1_S2` Epoch 2 Acc 66.84%），刷新全项目主路由准确率最高记录。这实证了底层物理资源（Token 档位、配额档位与物理缓存命中状态）的辅助监督能够为高层决策路由提供互补的鉴别特征，显著抑制过拟合。
+- **P0 ALGN_04 启动瞬态 NameError 根因排查与定向修复**：
+  - **事故现象**：`ALGN_03_S1_S3` 正常完结后，队列自动启动 `ALGN_04_S1_S2_S3`，在完成 Chunk 1 计算并尝试写入断点时抛出 `NameError: name 'cursor_path' is not defined`，进程退出码 1，队列安全停机保护生效（`queue_status: PAUSED_RUN_FAILED`）；
+  - **根因定位**：此前抽取 `resolve_checkpoint_to_resume()` 生产恢复函数时，`cursor_path = run_root / "cursor.json"` 被内聚封装至该辅助函数内部，导致 `run_full_coverage_stream_run()` 主函数体在保存流式 Chunk Cursor 时缺失局部变量定义；
+  - **代码级修复**：在 `run_full_coverage_stream_run()` 启动阶段 `run_root` 声明后立即显式定义 `cursor_path = run_root / "cursor.json"`；
+  - **多层验证防线**：经 AST 语法树全域无未定义变量扫描，`test_streaming_chunk_recovery.py`（6/6）及 `test_retention_ordering.py` 100% 绿灯通过，服务器端 `py_compile` 严格编译无误。
+- **P0-4 不可变历史失败台账升级（INC-20261014-03）**：
+  - 在不可变账本 `docs/historical_execution_failure_ledger.json` 中追加第三起事故记录 `INC-20261014-03-ALGN04-CURSOR-PATH-NAME-ERROR`；
+  - 详细保留报错堆栈行号（1341）、根因、以及修复方案，严格遵循“永不通过 failed_runs={} 内存重置抹除历史”的审计铁律。
+- **长队列断点接续与后续计划**：
+  - `ALGN_04_S1_S2_S3` 在 `queue_state.json` 中的失败尝试次数为 1（未达 2 次阻断门槛），已以 `COLD_START` 模式就绪，重启调度后将自动重跑并首度启用留存时序闭环与三元联合监督；
+  - `ALGN_04` 完结后队列将自动平滑推进至 Stage 2 全量 Run（`F03` L1 全量、`F04` L2 全量）。
