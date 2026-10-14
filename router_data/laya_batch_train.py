@@ -1088,6 +1088,8 @@ def run_full_coverage_stream_run(
     groups = [{"params": [p for n, p in model.named_parameters() if not n.startswith("encoder.") and p.requires_grad], "lr": config.head_lr}]
     if not config.freeze_encoder:
         groups.insert(0, {"params": [p for n, p in model.named_parameters() if n.startswith("encoder.") and p.requires_grad], "lr": config.encoder_lr})
+    trainable_params = [p for p in model.parameters() if p.requires_grad]
+    params = trainable_params
 
     # Step 5: Instantiate optimizer, scheduler, and scaler directly bound to final model parameters
     optimizer = torch.optim.AdamW(groups, weight_decay=config.weight_decay)

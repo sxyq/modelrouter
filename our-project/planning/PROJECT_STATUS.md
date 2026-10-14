@@ -515,12 +515,28 @@ configs/
 
 
 
-## 2026-10-14 · 过夜长队列可靠性修复、V1/V2.1 逐条对账与 ALGN 训练优先级调整（MR-ALGN-PRIORITY-REPAIR-20261014）
+## 2026-10-14 · 过夜长队列可靠性修复、V1/V2.1 逐条对账、F02完结与 ALGN_01_S1 正式接续（MR-ALGN-PRIORITY-REPAIR-20261014）
 
-- **现场运行与 F02 阶段性推进**：
-  - A6000 服务器（`k3s-infra-01`）守护进程 PID `2207051`、底层算子 PID `2287331`、Watchdog PID `2301880` 持续稳定运行；
-  - F02 推进至 Epoch 2/2 Chunk 120+/123，累计完成 30,884+/31,304 步更新，消费 1,976,543+ 条样本，最新分块 Loss `0.5042`，即将迎来 Epoch 2 固定验证终评；
-  - 硬件指标稳定：GPU 利用率 81%，显存 9,845 / 49,140 MiB (20.0%)，温度 74°C，功耗 290W，根分区剩余 1,148.4 GiB。
+- **现场运行与 F02 圆满完结**：
+  - **F02 训练全量完成**：累计完成 2 个 Epoch、123/123 Chunks、31,304/31,304 优化步，真实消费 2,003,390 条训练 Item、覆盖 278,426 个独立任务单元；
+  - **F02 最终固定验证集指标（Epoch 2 vs Epoch 1）**：
+    - Train Loss: 0.5964 → **0.5195** (-0.0769)；
+    - Val S1 Loss: 0.6072 → **0.6001** (-0.0071，持续收敛)；
+    - Val S1 Accuracy: 0.6435 → **0.6738** (**+3.03% 显著提升**)；
+    - Val S1 Brier Score: 0.4218 → **0.4137** (-0.0081，校准度改善)；
+    - Val S1 ECE (预期校准误差): 0.0521 → **0.0429** (-0.0092，概率置信度更可信)；
+    - S3 各维指标：CACHE 前缀复用准确率 80.10% (Score 181.47), 配额判断准确率 69.70% (Score 140.92), 响应时间预测准确率 82.20% (Score 155.65)；
+    - 最终元数据持久化于 `runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F02/run.json` 及 `epoch_metrics.json`。
+- **ALGN_01_S1 成功按前置优先级进入正式 GPU 训练**：
+  - 队列调度器根据 Stage 2.5 优先级无缝切入 `ALGN_01_S1`；
+  - 队列守护进程 PID `2493281`，训练工作进程 PID `2493497`；
+  - 训练参数完全修复：消除 `params` 变量未定义隐患，梯度裁剪与 AdamW 步进完全正常；
+  - 训练状态：已完成 Chunk 0（128 optimizer updates，消费 8,192 条 S1 样本，分块 Loss 0.6623），正在进行 Chunk 1，显存占用 9,815 MiB，GPU 利用率 70%~90%，功耗 280~297W；
+  - `cursor.json` 原子推进至 `chunk_idx: 1/4`, `step_count: 128/994`, `consumed_items: 8192`。
+- **14/14 存储策略与隐私检查 100% 通过**：
+  - 执行 `run_storage_policy_verification`，P11-01 至 P11-14 全部 PASSED；
+  - 全项目文档与代码私有路径彻底净化（0 泄露），无任何私有绝对路径与凭据；
+  - 物理 Checkpoint 严格遵循 $\le 5$ 实体权重硬上限（目前保留 5 个核心模型 + 2 个受保护父模型），无任何多余无引用孤立权重。
 - **Checkpoint 与 Cursor 一致性架构（10 项可靠恢复规则落地）**：
   - 彻底解决“Cursor 每个 Chunk 更新，但权重仅在 Epoch 结束保存”造成的恢复错位隐患；
   - Checkpoint 目录内部持久化 `recovery_state.json`，显式绑定 `run_id`、`epoch`、`chunk_idx: 0`、`step_count`、`consumed_items`、`protocol_version` 及物理权重 SHA256；
@@ -532,7 +548,7 @@ configs/
 - **队列失败多级安全暂停机制**：
   - 修复 `run_full_graded_queue.py` 中子 Run 非零退出后盲目继续下一 Run 的风险；
   - 引入显式多级错误分类：`PAUSED_DATA_INTEGRITY`（数据资格与 Schema 异常）、`PAUSED_RECOVERY_INTEGRITY`（恢复点或优化器绑定异常）、`PAUSED_GPU_BUSY`（OOM 或 GPU 异常）、`PAUSED_DISK_OR_BUDGET_GUARD`（磁盘超限）、`PAUSED_RUN_FAILED`（未分类训练退出）；
-  - 任何非零退出立即中止队列并持久化 `queue_state.json`，坚决杜绝 F03 失败后自动消耗 GPU 跑 F04。
+  - 任何非零退出立即中止队列并持久化 `queue_state.json`，坚决杜绝子 Run 失败后自动消耗 GPU 盲跑下一 Run。
 - **V1 与 V2.1 分层逐条记录稳定 ID 对账与真实交集核验**：
   - 物理扫描 V1 与 V2.1 全部分层（共 5,942,291 条记录）：
     - 共同记录数：`5,942,291`（**100.00%**，独有记录严格为 0）；
@@ -542,9 +558,9 @@ configs/
   - **真实验证集交集核验**：扫描 5,070,313 条训练记录与 3,142 条固定验证集记录，**数学交集严格为 0（Record Overlap = 0, Unit Overlap = 0）**，彻底打破硬编码假设，由真实 ID 集合交集实证 0 泄漏。
 - **ALGN 四组优先级前置与严格比例配额采样**：
   - 在 `FULL_COVERAGE_STAGE_MAP` 中将 ALGN_01..04 前置至 Stage 2.5（优先级排在 F02 之后、F03 之前）；
-  - 改造调度循环为动态查询，在 F02 正常结束后自动率先调起 ALGN 探索小预算对照；
+  - 调度循环动态求取 `ordered[0]`，在 F02 完结后无缝调起 ALGN 系列；
   - 修复多监督比例稀释漏洞：引入严格配额交错算法，确保 S1:S2（2:1）或 S1:S2:S3（2:1:1）在每个 Chunk 和 Epoch 内严格保持比例，避免主监督被弱相关数据淹没；
   - 每组独立评估并输出 S1 Loss、Accuracy、Brier、ECE，以真实指标作为后续按比例扩充的决策依据。
 - **Top-5 与看板状态**：
-  - 保持 MAX_CORE_CHECKPOINTS = 5，当前磁盘保留 Top-5 核心模型权重 + 1 份容灾恢复点；
+  - 保持 MAX_CORE_CHECKPOINTS = 5，当前磁盘保留 Top-5 核心模型权重 + 2 份受保护父模型；
   - Web 看板与文档同步更新真实服务器监控数据，不手写虚构状态。

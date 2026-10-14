@@ -565,6 +565,8 @@ def run_queue(
 def _git_sync_dashboard(project_root: Path, message: str) -> Dict[str, Any]:
     """Safely stage and push lightweight dashboard metadata (`docs/training-dashboard/`) without weights."""
     try:
+        if not (Path(project_root) / ".git").is_dir():
+            return {"committed": False, "reason": "not_a_git_repo"}
         subprocess.run(
             ["git", "add", "docs/training-dashboard/data.js", "docs/training-dashboard/shards/"],
             cwd=str(project_root),
@@ -575,6 +577,7 @@ def _git_sync_dashboard(project_root: Path, message: str) -> Dict[str, Any]:
             ["git", "diff", "--cached", "--quiet"],
             cwd=str(project_root),
             check=False,
+            capture_output=True,
         )
         if diff_res.returncode != 0:
             subprocess.run(

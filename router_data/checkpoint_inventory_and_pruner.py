@@ -49,7 +49,7 @@ def test_checkpoint_loadable(ckpt_dir: str) -> Tuple[bool, str]:
     """Test if checkpoint can be loaded by official laya.train.load_checkpoint."""
     try:
         # Import laya from external/laya if needed
-        for p in ["external/laya", "/home/syy/路由/external/laya"]:
+        for p in ["external/laya", str(Path(project_root) / "external/laya")]:
             if os.path.isdir(p) and p not in sys.path:
                 sys.path.insert(0, p)
         import laya.train

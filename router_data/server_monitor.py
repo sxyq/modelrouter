@@ -196,7 +196,7 @@ def format_status_markdown(data: Dict[str, Any]) -> str:
     md = []
     md.append("# 🚀 ModelRouter · 服务器端自治监控与运行看板")
     md.append("")
-    md.append(f"> **状态更新于**: `{ts}` | **守护运行节点**: `k3s-infra-01` (RTX A6000) | **独立驻留模式**: `Server-Daemon`")
+    md.append(f"> **状态更新于**: `{ts}` | **守护运行节点**: `a6000-server` (RTX A6000) | **独立驻留模式**: `Server-Daemon`")
     md.append("")
     md.append("---")
     md.append("")
@@ -342,7 +342,7 @@ def run_monitor_loop(project_root: Path, out_root: Path, interval_s: int = 30) -
 
 def main():
     parser = argparse.ArgumentParser(description="Server-Side Autonomous Watchdog & Progress Monitor")
-    parser.add_argument("--project-root", type=str, default="/home/syy/路由")
+    parser.add_argument("--project-root", type=str, default=".")
     parser.add_argument("--out-root", type=str, default="runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012")
     parser.add_argument("--interval", type=int, default=30)
     parser.add_argument("--once", action="store_true", help="Print single snapshot and exit")
