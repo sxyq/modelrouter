@@ -94,7 +94,7 @@ def _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer=None, schedul
         try:
             torch.save(opt_data, Path(target_dir) / "optim_state.pt")
         except Exception as exc:
-            print(f"Warning: Failed to save optim_state.pt to {target_dir}: {exc}")
+            raise RuntimeError(f"Critical error: Failed to save optim_state.pt to {target_dir}: {exc}") from exc
 
 
 
@@ -900,9 +900,9 @@ def run_full_coverage_stream_run(
     if not parent_model_dir:
         parent_model_dir = str(spec.get("model_dir") or model_dir)
 
-    model, tok, cfg = load_checkpoint(parent_model_dir)
+    parent_model, tok, cfg = load_checkpoint(parent_model_dir)
     dev = torch.device("cuda")
-    model.to(dev)
+    parent_model.to(dev)
 
     # Load fixed validation set
     val_dir = out_root / "val"
@@ -915,7 +915,7 @@ def run_full_coverage_stream_run(
             val_groups[g] = items
             val_rows[g] = sys.modules["laya.train"].read_data(str(val_fp))
 
-    parent_metrics = _groups(model, tok, val_groups, dev, sys.modules["laya.train"], cfg, max_len, head_max_len, val_rows=val_rows)
+    parent_metrics = _groups(parent_model, tok, val_groups, dev, sys.modules["laya.train"], cfg, max_len, head_max_len, val_rows=val_rows)
 
     # Collect all eligible candidate references from V2.1 gzip indexes
     layers = list(spec.get("layers") or ["L1"])
@@ -949,6 +949,91 @@ def run_full_coverage_stream_run(
     )
     config.validate()
 
+    # Step 1: Resolve resume target from cursor BEFORE creating optimizer
+    # 4 explicit modes:
+    # 1. EXACT_RESUME: Model weights + optimizer/scheduler/RNG states restored to final model
+    # 2. WEIGHT_ONLY_CONTINUATION: Model weights restored to final model, optimizer reinitialized on final model
+    # 3. EPOCH_RESTART: Cursor pointed to epoch, but weights missing; restart epoch 0 from scratch with parent model
+    # 4. COLD_START: No prior cursor or fresh run
+    cursor_path = run_root / "cursor.json"
+    start_epoch = 0
+    start_chunk = 0
+    global_step = 0
+    consumed_total_items = 0
+    materialized_total_items = 0
+    encoded_total_items = 0
+    consumed_units_set = set()
+    history = []
+    best_epoch = None
+    target_ckpt_dir = None
+    resume_mode = "COLD_START"
+
+    if cursor_path.is_file():
+        try:
+            cur = json.loads(cursor_path.read_text(encoding="utf8"))
+            if cur.get("run_id") == run_id:
+                cur_ep = int(cur.get("epoch", 0))
+                cur_chunk = int(cur.get("chunk_idx", 0))
+                ep_ckpt_dir = run_root / "checkpoints" / f"epoch_{cur_ep:02d}"
+                temp_recovery_dir = run_root / "checkpoints" / "_temp_recovery"
+
+                # Check if cursor claims all epochs already completed
+                if cur_ep >= run_epochs:
+                    if has_physical_weights(ep_ckpt_dir):
+                        print(f"[{run_id}] Run already completed all {run_epochs} epochs with physical weights at {ep_ckpt_dir}.")
+                        if (run_root / "run.json").is_file():
+                            run_meta = json.loads((run_root / "run.json").read_text(encoding="utf8"))
+                        else:
+                            run_meta = {"run_id": run_id, "status": "completed"}
+                        return run_meta
+                    else:
+                        raise RuntimeError(
+                            f"[{run_id}] Corrupt state: Cursor claims {cur_ep}/{run_epochs} epochs completed, "
+                            f"but final checkpoint {ep_ckpt_dir} lacks physical weights! Cannot claim completion without weights."
+                        )
+
+                if cur_ep > 0 and has_physical_weights(ep_ckpt_dir):
+                    target_ckpt_dir = ep_ckpt_dir
+                    start_epoch = cur_ep
+                    start_chunk = 0
+                    global_step = cur.get("step_count", 0)
+                    consumed_total_items = cur.get("consumed_items", 0)
+                    history = cur.get("history", [])
+                elif temp_recovery_dir.is_dir() and has_physical_weights(temp_recovery_dir):
+                    target_ckpt_dir = temp_recovery_dir
+                    start_epoch = cur_ep
+                    start_chunk = cur_chunk
+                    global_step = cur.get("step_count", 0)
+                    consumed_total_items = cur.get("consumed_items", 0)
+                    history = cur.get("history", [])
+                elif cur_ep > 0:
+                    # Missing physical weights for cur_ep! Must restart from epoch 0 from parent model,
+                    # never pretend epoch 1..cur_ep happened on an un-trained parent model!
+                    print(f"[{run_id}] Warning: Cursor recorded epoch {cur_ep}, but physical weights are missing at {ep_ckpt_dir}. Full restart from epoch 0.")
+                    target_ckpt_dir = None
+                    start_epoch = 0
+                    start_chunk = 0
+                    global_step = 0
+                    consumed_total_items = 0
+                    history = []
+                    resume_mode = "EPOCH_RESTART"
+        except Exception as exc:
+            if isinstance(exc, RuntimeError):
+                raise
+            print(f"[{run_id}] Warning: Failed to parse cursor {cursor_path}: {exc}. Cold starting.")
+            target_ckpt_dir = None
+            start_epoch = 0
+            start_chunk = 0
+            resume_mode = "COLD_START"
+
+    # Step 2: Load the FINAL model object ONCE before creating the optimizer
+    if target_ckpt_dir is not None:
+        model, _, cfg = load_checkpoint(str(target_ckpt_dir))
+    else:
+        model = parent_model
+    model.to(dev)
+
+    # Step 3: Configure encoder freeze and gradient checkpointing on this final model
     amp = (dev.type == "cuda") if config.amp is None else bool(config.amp)
     checkpointing = amp if config.gradient_checkpointing is None else bool(config.gradient_checkpointing)
     if config.freeze_encoder:
@@ -960,16 +1045,51 @@ def run_full_coverage_stream_run(
     model.head_checkpointing = checkpointing
     model.train()
 
+    # Step 4: Construct parameter groups from the final model instance
     groups = [{"params": [p for n, p in model.named_parameters() if not n.startswith("encoder.") and p.requires_grad], "lr": config.head_lr}]
     if not config.freeze_encoder:
         groups.insert(0, {"params": [p for n, p in model.named_parameters() if n.startswith("encoder.") and p.requires_grad], "lr": config.encoder_lr})
-    params = [p for g in groups for p in g["params"]]
 
-    # Continuous Optimizer & Cosine Scheduler across ALL chunks and epochs
+    # Step 5: Instantiate optimizer, scheduler, and scaler directly bound to final model parameters
     optimizer = torch.optim.AdamW(groups, weight_decay=config.weight_decay)
     total_updates = optimizer_updates(total_items, config.micro_batch, config.grad_accum, run_epochs)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, total_updates), eta_min=config.min_lr)
     scaler = torch.amp.GradScaler("cuda") if amp and dev.type == "cuda" else None
+
+    # Step 6: Restore optimizer, scheduler, scaler, RNG if target_ckpt_dir has optim_state.pt
+    if target_ckpt_dir is not None:
+        optim_file = target_ckpt_dir / "optim_state.pt"
+        if optim_file.is_file():
+            try:
+                opt_data = torch.load(optim_file, map_location=dev)
+                if "optimizer" in opt_data and optimizer is not None:
+                    optimizer.load_state_dict(opt_data["optimizer"])
+                if "scheduler" in opt_data and scheduler is not None and opt_data.get("scheduler") is not None:
+                    scheduler.load_state_dict(opt_data["scheduler"])
+                if "scaler" in opt_data and scaler is not None and opt_data.get("scaler") is not None:
+                    scaler.load_state_dict(opt_data["scaler"])
+                if "rng_state" in opt_data and opt_data.get("rng_state") is not None:
+                    torch.set_rng_state(opt_data["rng_state"].cpu())
+                if "cuda_rng_state" in opt_data and opt_data.get("cuda_rng_state") is not None and torch.cuda.is_available():
+                    torch.cuda.set_rng_state(opt_data["cuda_rng_state"].cpu())
+
+                # Verification: verify parameter tensor identities match model.parameters()
+                model_param_ids = {id(p) for p in model.parameters()}
+                for grp in optimizer.param_groups:
+                    for p in grp["params"]:
+                        if id(p) not in model_param_ids:
+                            raise RuntimeError(f"Optimizer parameter identity mismatch! Param {id(p)} not in model.parameters().")
+
+                resume_mode = "EXACT_RESUME"
+            except Exception as opt_err:
+                if isinstance(opt_err, RuntimeError) and "mismatch" in str(opt_err):
+                    raise
+                print(f"[{run_id}] Warning: Optimizer state load failed: {opt_err}. Fallback to WEIGHT_ONLY_CONTINUATION.")
+                resume_mode = "WEIGHT_ONLY_CONTINUATION"
+        else:
+            resume_mode = "WEIGHT_ONLY_CONTINUATION"
+    elif resume_mode != "EPOCH_RESTART":
+        resume_mode = "COLD_START"
 
     protocol_version = spec.get("protocol_version") or manifest_data.get("protocol_version") or NEW_PROTOCOL_VERSION
 
@@ -981,6 +1101,7 @@ def run_full_coverage_stream_run(
         "data_dir_label": f"streaming_v2_1:{','.join(layers)}",
         "train_origin": spec.get("category", "full_coverage"),
         "protocol_version": protocol_version,
+        "resume_mode": resume_mode,
         "legacy_input_protocol": False,
         "seed": config.seed,
         "epochs_max": run_epochs,
@@ -999,84 +1120,9 @@ def run_full_coverage_stream_run(
         "started_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "status": "running",
         "parent_metrics": parent_metrics,
-        "history": [],
+        "history": history,
     }
 
-    # Resume from cursor if available - 4 explicit modes:
-    # 1. EXACT_RESUME: Model weights + optimizer/scheduler/RNG states restored
-    # 2. WEIGHT_ONLY_CONTINUATION: Model weights restored, optimizer reinitialized
-    # 3. EPOCH_RESTART: Cursor pointed to epoch, but weights missing; restart epoch from scratch
-    # 4. COLD_START: No prior cursor or fresh run
-    cursor_path = run_root / "cursor.json"
-    start_epoch = 0
-    start_chunk = 0
-    global_step = 0
-    consumed_total_items = 0
-    materialized_total_items = 0
-    encoded_total_items = 0
-    consumed_units_set = set()
-    history = []
-    best_epoch = None
-
-    resume_mode = "COLD_START"
-    if cursor_path.is_file():
-        try:
-            cur = json.loads(cursor_path.read_text(encoding="utf8"))
-            if cur.get("run_id") == run_id:
-                cur_ep = int(cur.get("epoch", 0))
-                cur_chunk = int(cur.get("chunk_idx", 0))
-                ep_ckpt_dir = run_root / "checkpoints" / f"epoch_{cur_ep:02d}"
-                temp_recovery_dir = run_root / "checkpoints" / "_temp_recovery"
-
-                target_ckpt_dir = None
-                if cur_ep > 0 and has_physical_weights(ep_ckpt_dir):
-                    target_ckpt_dir = ep_ckpt_dir
-                elif temp_recovery_dir.is_dir() and has_physical_weights(temp_recovery_dir):
-                    target_ckpt_dir = temp_recovery_dir
-
-                if target_ckpt_dir is not None:
-                    try:
-                        import laya.train
-                        model, _ = laya.train.load_checkpoint(str(target_ckpt_dir))
-                        model.to(dev)
-                        start_epoch = cur_ep
-                        start_chunk = 0
-                        global_step = cur.get("step_count", 0)
-                        consumed_total_items = cur.get("consumed_items", 0)
-                        history = cur.get("history", [])
-
-                        optim_file = target_ckpt_dir / "optim_state.pt"
-                        if optim_file.is_file():
-                            try:
-                                opt_data = torch.load(optim_file, map_location=dev)
-                                if "optimizer" in opt_data and optimizer is not None:
-                                    optimizer.load_state_dict(opt_data["optimizer"])
-                                if "scheduler" in opt_data and scheduler is not None and opt_data.get("scheduler") is not None:
-                                    scheduler.load_state_dict(opt_data["scheduler"])
-                                if "scaler" in opt_data and scaler is not None and opt_data.get("scaler") is not None:
-                                    scaler.load_state_dict(opt_data["scaler"])
-                                if "rng_state" in opt_data and opt_data.get("rng_state") is not None:
-                                    torch.set_rng_state(opt_data["rng_state"].cpu())
-                                if "cuda_rng_state" in opt_data and opt_data.get("cuda_rng_state") is not None and torch.cuda.is_available():
-                                    torch.cuda.set_rng_state(opt_data["cuda_rng_state"].cpu())
-                                resume_mode = "EXACT_RESUME"
-                            except Exception as opt_err:
-                                print(f"[{run_id}] Warning: Optimizer state load failed: {opt_err}. Fallback to WEIGHT_ONLY_CONTINUATION.")
-                                resume_mode = "WEIGHT_ONLY_CONTINUATION"
-                        else:
-                            resume_mode = "WEIGHT_ONLY_CONTINUATION"
-                    except Exception as exc:
-                        print(f"[{run_id}] Warning: Failed to reload checkpoint {target_ckpt_dir}: {exc}. Fallback to EPOCH_RESTART.")
-                        resume_mode = "EPOCH_RESTART"
-                else:
-                    start_epoch = cur_ep
-                    start_chunk = 0
-                    resume_mode = "EPOCH_RESTART"
-        except Exception as exc:
-            print(f"[{run_id}] Warning: Failed to parse cursor {cursor_path}: {exc}")
-            resume_mode = "COLD_START"
-
-    run_meta["resume_mode"] = resume_mode
     print(f"[{run_id}] Initializing training: mode={resume_mode}, epoch={start_epoch}/{run_epochs}, chunk={start_chunk}/{num_chunks}, step={global_step}, protocol={protocol_version}")
 
     _atomic_write_json = lambda p, d: _write(p, d)

@@ -1776,26 +1776,28 @@ def collect_full_coverage_refs(
                     if rec.get("split") != "train":
                         continue
                     
-                    # Problem 1 & 2: Strictly require Q1/Q2, train_eligible is not False, and source_policy_train_allowed is True
-                    q_grade = rec.get("quality_grade")
-                    if q_grade not in {"Q1", "Q2"}:
-                        census["skipped_q3_q4"] = census.get("skipped_q3_q4", 0) + 1
+                    # P0-2: Strict schema validation - require all mandatory fields.
+                    for k in ("split", "train_eligible", "source_policy_train_allowed", "quality_grade", "primary_supervision_class"):
+                        if k not in rec:
+                            raise ValueError(f"SCHEMA_INCOMPATIBLE: Record in {idx_file} missing mandatory key '{k}'. Rebuild index before training.")
+
+                    if rec["split"] != "train":
                         continue
-                    
-                    train_elig = rec.get("train_eligible")
-                    if train_elig is False:
-                        census["skipped_ineligible"] = census.get("skipped_ineligible", 0) + 1
-                        continue
-                    
-                    src_allowed = rec.get("source_policy_train_allowed")
-                    if src_allowed is False or src not in MATRIX_ALLOWED_SOURCES:
-                        census["skipped_disallowed_source"] = census.get("skipped_disallowed_source", 0) + 1
-                        continue
-                    if train_elig is None and not (rec.get("split") == "train" and src in MATRIX_ALLOWED_SOURCES):
+
+                    if rec["train_eligible"] is not True:
                         census["skipped_ineligible"] = census.get("skipped_ineligible", 0) + 1
                         continue
 
-                    sup = rec.get("primary_supervision_class")
+                    if rec["source_policy_train_allowed"] is not True or src not in MATRIX_ALLOWED_SOURCES:
+                        census["skipped_disallowed_source"] = census.get("skipped_disallowed_source", 0) + 1
+                        continue
+
+                    q_grade = rec["quality_grade"]
+                    if q_grade not in {"Q1", "Q2"}:
+                        census["skipped_q3_q4"] = census.get("skipped_q3_q4", 0) + 1
+                        continue
+
+                    sup = rec["primary_supervision_class"]
                     if sup not in sup_set:
                         continue
 
@@ -1805,28 +1807,24 @@ def collect_full_coverage_refs(
                         if unit_hash >= fraction:
                             continue
 
-                    # Strictly require valid targets from explicit field or candidate_targets. Fall back to canonical target for legacy.
-                    target = rec.get("target")
+                    # Strict target verification: MUST have real supervision evidence in candidate_targets.
+                    # NO heuristic guessing from supervision class or source ID.
                     allowed_targets = MATRIX_TARGETS.get(sup, set())
-                    if not target or target not in allowed_targets:
-                        cand_list = rec.get("candidate_targets")
-                        if cand_list:
-                            valid_cands = [t for t in cand_list if t in allowed_targets]
-                            if valid_cands:
-                                target = valid_cands[0]
-                        if not target or target not in allowed_targets:
-                            # Safe canonical target resolution for legacy records
-                            if sup == "S1":
-                                target = "human_pairwise_preference" if src == "ROUTE-006" else "model_choice"
-                            elif sup == "S2":
-                                target = "routing_outcome"
-                            elif sup == "S3":
-                                target = "observed_success"
-                            elif sup == "S4":
-                                target = "tool_usage_pattern"
-                    if not target or target not in allowed_targets:
+                    target = rec.get("target")
+                    cand_list = rec.get("candidate_targets") or []
+
+                    valid_target = None
+                    if target and target in allowed_targets and target in cand_list:
+                        valid_target = target
+                    elif cand_list:
+                        valid_cands = [t for t in cand_list if t in allowed_targets]
+                        if valid_cands:
+                            valid_target = valid_cands[0]
+
+                    if not valid_target:
                         census["skipped_no_valid_target"] = census.get("skipped_no_valid_target", 0) + 1
                         continue
+                    target = valid_target
 
                     ref = {
                         "source_id": src,
