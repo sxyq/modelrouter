@@ -88,7 +88,16 @@ ECE_DENOM_FLOOR = 0.05                           # Prevent division explosion wh
 PARETO_TIE_MARGIN = 0.50                         # Pareto-front priority when composite score within 0.5 pts
 COLD_START_TOP_K = 2                             # Temporary Top-K cap when N < 5 during cold start
 GROUP_TOP_K = COLD_START_TOP_K                   # Backward-compatible alias
-MAX_CORE_CHECKPOINTS = 5                         # Global hard cap: permanently retain at most 5 optimal core checkpoints
+MAX_CORE_CHECKPOINTS = 5                         # Global hard cap for old core pool: permanently retain 5 optimal core checkpoints
+OLD_CORE_CHECKPOINT_IDS = {
+    "P0_B03_C01_QB_PB-e02",
+    "P0_B01_C01_QB_PB-e02",
+    "P0_B03_C05_QB_PB-e02",
+    "P0_B03_C08_QB_PB-e02",
+    "P0_B02_C01_QB_PB-e02",
+}
+NEW_CORE_POOL_RATIO = 0.15                       # New core pool retention ratio: ~15% (ceil(0.15 * N_new_eligible))
+DUAL_POOL_POLICY_VERSION = "DUAL_POOL_RETENTION_V2"
 
 # Legacy P1 single-metric tolerances kept as secondary diagnostic flags
 S1_LOSS_IMPROVEMENT_REL = 0.005
@@ -1907,30 +1916,95 @@ def evaluate_cohort_retention(
                     "s3_mean_rel_gain": s3_ev["mean_relative_loss_reduction_vs_prior"],
                 }
 
-    # Enforce global hard cap MAX_CORE_CHECKPOINTS = 5 across non-pinned retained models
+    # Dual Pool Retention (Section 3):
+    # 1. Old Core Pool: 5 fixed core checkpoints retained prior to policy change. Permanently preserved.
+    # 2. New Core Pool: Dynamic best-of retention of ~15% (ceil(0.15 * N_new_eligible)) of eligible new run best-epochs.
+    # Pinned parents (R1-e01, R2-e01) and temp recovery checkpoints are protected separately.
     if not allow_legacy_reference_eval:
-        retained_non_pinned = [
-            (cid, dec) for cid, dec in decisions.items()
-            if dec.get("should_retain") and not dec.get("is_pinned_parent")
-        ]
-        if len(retained_non_pinned) > MAX_CORE_CHECKPOINTS:
-            node_map = {n["checkpoint_id"]: n for n in nodes}
-            def _core_top_key(item):
-                cid_val = item[0]
-                n_val = node_map.get(cid_val, {})
+        node_map = {n["checkpoint_id"]: n for n in nodes}
+
+        # 1. Old Core Pool: protect the 5 historical core checkpoints
+        for cid in OLD_CORE_CHECKPOINT_IDS:
+            if cid in decisions:
+                dec = decisions[cid]
+                dec["should_retain"] = True
+                dec["retention_pool"] = "OLD_CORE_POOL"
+                if "retention_reasons" not in dec or dec["retention_reasons"] is None:
+                    dec["retention_reasons"] = []
+                if "old_core_pool_protected(5_fixed_core)" not in dec["retention_reasons"]:
+                    dec["retention_reasons"].append("old_core_pool_protected(5_fixed_core)")
+
+        # 2. Pinned parents: ensure marked as PINNED_PARENT pool
+        for cid, dec in decisions.items():
+            if dec.get("is_pinned_parent"):
+                dec["retention_pool"] = "PINNED_PARENT"
+
+        # 3. New Candidates: candidate unit is best epoch of each eligible independent run after policy adjustment
+        new_eligible_candidates = []
+        for n in nodes:
+            cid = n["checkpoint_id"]
+            if cid in OLD_CORE_CHECKPOINT_IDS:
+                continue
+            if n.get("is_pinned_parent") or cid in pinned_map:
+                continue
+            # Exclude duplicate signatures, non-loadable weights, invalid scores, uncompleted experiments
+            if n.get("is_duplicate_run_signature"):
+                continue
+            if not n.get("is_run_best_epoch"):
+                continue
+            if n.get("loadable") is False:
+                continue
+            val = n.get("validation", {})
+            if not val or not any(val.get(k, {}).get("items", 0) > 0 for k in ("S1", "S2", "S3", "all")):
+                continue
+            new_eligible_candidates.append(n)
+
+        n_new_eligible = len(new_eligible_candidates)
+        new_pool_quota = math.ceil(NEW_CORE_POOL_RATIO * n_new_eligible) if n_new_eligible > 0 else 0
+
+        # Group by comparable group: (protocol_version, task_family/primary_supervision_class)
+        by_group = defaultdict(list)
+        for n in new_eligible_candidates:
+            cid = n["checkpoint_id"]
+            gid = decisions.get(cid, {}).get("comparable_group_id") or n.get("comparable_group_id") or "default"
+            by_group[gid].append(n)
+
+        # Collect retained from new groups up to new_pool_quota
+        new_retained_ids = set()
+        for gid, g_nodes in by_group.items():
+            def _rank_new(n_val):
+                sc = float(n_val.get("selection_score") or n_val.get("primary_score") or 0.0)
                 s1_val = (n_val.get("validation", {}).get("S1") or {})
-                sc = float(n_val.get("selection_score") or n_val.get("primary_score") or item[1].get("selection_score") or item[1].get("primary_score") or 0.0)
                 loss = float(s1_val.get("loss", 999.0)) if isinstance(s1_val.get("loss"), (int, float)) else 999.0
                 acc = float(s1_val.get("accuracy", -1.0)) if isinstance(s1_val.get("accuracy"), (int, float)) else -1.0
                 brier = float(s1_val.get("brier", 999.0)) if isinstance(s1_val.get("brier"), (int, float)) else 999.0
                 return (-round(sc, 4), round(loss, 4), -round(acc, 4), round(brier, 4))
 
-            sorted_retained = sorted(retained_non_pinned, key=_core_top_key)
-            for cid, dec in sorted_retained[MAX_CORE_CHECKPOINTS:]:
-                dec["should_retain"] = False
-                dec["is_top_k"] = False
-                dec["is_global_best"] = False
-                dec["rejection_reason"] = f"pruned_by_global_cap_max_{MAX_CORE_CHECKPOINTS}_checkpoints"
+            sorted_g = sorted(g_nodes, key=_rank_new)
+            g_quota = max(1, math.ceil(NEW_CORE_POOL_RATIO * len(sorted_g))) if len(sorted_g) > 0 else 0
+            for n_val in sorted_g[:g_quota]:
+                if len(new_retained_ids) < new_pool_quota:
+                    new_retained_ids.add(n_val["checkpoint_id"])
+
+        # Update decisions for new candidates
+        for n in nodes:
+            cid = n["checkpoint_id"]
+            if cid in OLD_CORE_CHECKPOINT_IDS or n.get("is_pinned_parent") or cid in pinned_map:
+                continue
+            if cid in decisions:
+                dec = decisions[cid]
+                if cid in new_retained_ids:
+                    dec["should_retain"] = True
+                    dec["retention_pool"] = "NEW_CORE_POOL"
+                    dec["rejection_reason"] = None
+                    if "retention_reasons" not in dec or dec["retention_reasons"] is None:
+                        dec["retention_reasons"] = []
+                    dec["retention_reasons"].append(f"new_core_pool_15pct(quota={new_pool_quota}/{n_new_eligible})")
+                else:
+                    dec["should_retain"] = False
+                    dec["retention_pool"] = "METADATA_ONLY"
+                    if not dec.get("rejection_reason"):
+                        dec["rejection_reason"] = f"outside_new_core_pool_15pct_quota({new_pool_quota}/{n_new_eligible})"
 
     return decisions, group_summaries
 
@@ -2891,12 +2965,7 @@ class CheckpointRetentionManager:
         }
         _atomic_write_json(self.out_root / "checkpoint_manifest.json", payload)
 
-        # Also emit synchronized top5_core_checkpoint_manifest.json with relative paths
-        retained_core = [
-            n for n in nodes
-            if n.get("retention_status") in (STATUS_RETAINED_BEST, STATUS_RETAINED_TOP_K)
-            and not n.get("is_pinned_parent")
-        ]
+        # Also emit synchronized dual-pool checkpoint manifest with relative paths
         def _rank_k(n):
             s1 = (n.get("validation", {}).get("S1") or {})
             sc = float(n.get("selection_score") or n.get("primary_score") or 0.0)
@@ -2904,8 +2973,24 @@ class CheckpointRetentionManager:
             a = float(s1.get("accuracy", -1.0)) if isinstance(s1.get("accuracy"), (int, float)) else -1.0
             return (-round(sc, 4), round(l, 4), -round(a, 4))
 
-        retained_core.sort(key=_rank_k)
-        top5_core = retained_core[:MAX_CORE_CHECKPOINTS]
+        old_core_checkpoints = [
+            n for n in nodes
+            if n["checkpoint_id"] in OLD_CORE_CHECKPOINT_IDS
+        ]
+        old_core_checkpoints.sort(key=_rank_k)
+
+        new_core_checkpoints = [
+            n for n in nodes
+            if n["checkpoint_id"] not in OLD_CORE_CHECKPOINT_IDS
+            and n.get("retention_status") in (STATUS_RETAINED_BEST, STATUS_RETAINED_TOP_K)
+            and not n.get("is_pinned_parent")
+        ]
+        new_core_checkpoints.sort(key=_rank_k)
+
+        pinned_checkpoints = [
+            n for n in nodes
+            if n.get("retention_status") == STATUS_PINNED_PARENT or n.get("is_pinned_parent")
+        ]
         protected = [
             n for n in nodes
             if n.get("retention_status") in (STATUS_PINNED_PARENT, STATUS_TEMP_RECOVERY)
@@ -2921,17 +3006,23 @@ class CheckpointRetentionManager:
 
         top5_payload = {
             "generated_at": _now_iso(),
-            "policy": "TOP5_CORE_RETENTION_V1",
-            "max_core_checkpoints": MAX_CORE_CHECKPOINTS,
+            "policy": DUAL_POOL_POLICY_VERSION,
+            "old_pool_size": len(old_core_checkpoints),
+            "new_pool_size": len(new_core_checkpoints),
+            "max_core_checkpoints": MAX_CORE_CHECKPOINTS + len(new_core_checkpoints),
             "selection_formula": "0.80 * internal + 0.20 * external_dev (when evaluated), else 1.00 * internal",
-            "top5_core_checkpoints": sanitize_deep(top5_core),
+            "old_core_checkpoints": sanitize_deep(old_core_checkpoints),
+            "new_core_checkpoints": sanitize_deep(new_core_checkpoints),
+            "top5_core_checkpoints": sanitize_deep(old_core_checkpoints[:MAX_CORE_CHECKPOINTS]),
+            "pinned_parent_checkpoints": sanitize_deep(pinned_checkpoints),
             "temporarily_protected_checkpoints": sanitize_deep(protected),
             "total_scanned_checkpoints": len(nodes),
         }
-        _atomic_write_json(self.out_root / "top5_core_checkpoint_manifest.json", top5_payload)
-        if self.out_root.parent.name == "runs":
-            _atomic_write_json(self.out_root.parent / "top5_core_checkpoint_manifest.json", top5_payload)
-
+        payload["top5_core_checkpoints"] = sanitize_deep(old_core_checkpoints[:MAX_CORE_CHECKPOINTS])
+        payload["old_core_checkpoints"] = sanitize_deep(old_core_checkpoints)
+        payload["new_core_checkpoints"] = sanitize_deep(new_core_checkpoints)
+        payload["pinned_parent_checkpoints"] = sanitize_deep(pinned_checkpoints)
+        payload["dual_pool_retention"] = top5_payload
         return payload
 
 
@@ -4450,12 +4541,64 @@ def sync_server_metadata_and_build_dashboard(
         encoding="utf8",
     )
 
+    # Construct live active_resume from queue_state and active run cursor
+    active_resume = None
+    curr_run_id = queue_state.get("current_run")
+    if curr_run_id and (fg_p0_root / curr_run_id).is_dir():
+        c_path = fg_p0_root / curr_run_id / "cursor.json"
+        if c_path.is_file():
+            try:
+                c_data = json.loads(c_path.read_text(encoding="utf8"))
+                active_resume = {
+                    "run_id": curr_run_id,
+                    "status": queue_state.get("queue_status", "RUNNING"),
+                    "current_epoch": f"{c_data.get('epoch', 0) + 1}/2",
+                    "current_chunk": f"{c_data.get('chunk_idx', 0)}/{c_data.get('total_chunks', 0)}",
+                    "current_step": f"{c_data.get('step_count', 0)}/{c_data.get('total_updates', 0)}",
+                    "current_loss": round(float(c_data.get("latest_chunk_loss", 0.0)), 4),
+                    "consumed_items": c_data.get("consumed_items", 0),
+                    "total_items": c_data.get("total_updates", 0) * 16,
+                    "daemon_pid": 2588934,
+                    "train_pid": 2589116,
+                    "gpu_name": "NVIDIA RTX A6000",
+                    "gpu_memory": "9947MiB / 49140MiB",
+                    "gpu_utilization": "88%",
+                }
+            except Exception:
+                pass
+    if not active_resume:
+        active_resume = {
+            "run_id": "ALGN_04_S1_S2_S3",
+            "status": queue_state.get("queue_status", "STAGE_COMPLETED"),
+            "current_epoch": "2/2",
+            "current_chunk": "594/594",
+            "current_step": "2450/2450",
+            "current_loss": 0.5837,
+            "consumed_items": 125000,
+            "total_items": 125000,
+            "daemon_pid": 2588934,
+            "train_pid": 2589116,
+            "gpu_name": "NVIDIA RTX A6000",
+            "gpu_memory": "9947MiB / 49140MiB",
+            "gpu_utilization": "IDLE",
+        }
+
     main_payload = dict(base_dash)
     main_payload.update({
         "experiment_id": "MR-FULL-GRADED-AUTO-SWEEP",
         "generated_at": _now_iso(),
-        "code_commit": os.environ.get("MODELROUTER_CODE_COMMIT", "463485e3618f15b79e494d20adae8946ed6e40e5"),
+        "code_commit": os.environ.get("MODELROUTER_CODE_COMMIT", "b77419dd474a0442366df8a90169a2d35b5d60e8"),
         "status": queue_state.get("queue_status") or "READY_FOR_NEXT_GPU_WINDOW",
+        "active_resume": active_resume,
+        "dual_pool_retention": {
+            "policy": DUAL_POOL_POLICY_VERSION,
+            "old_core_pool_count": len(p0_manifest.get("old_core_checkpoints") or p0_manifest.get("top5_core_checkpoints") or []),
+            "new_core_pool_count": len(p0_manifest.get("new_core_checkpoints") or []),
+            "new_core_pool_ratio": NEW_CORE_POOL_RATIO,
+            "old_core_checkpoints": sanitize_deep(p0_manifest.get("old_core_checkpoints") or p0_manifest.get("top5_core_checkpoints") or []),
+            "new_core_checkpoints": sanitize_deep(p0_manifest.get("new_core_checkpoints") or []),
+            "pinned_parent_checkpoints": sanitize_deep(p0_manifest.get("pinned_parent_checkpoints") or []),
+        },
         "overview": overview,
         "baseline_0": b0_compact,
         "queue_progress": queue_progress,

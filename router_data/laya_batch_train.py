@@ -1219,9 +1219,10 @@ def run_full_coverage_stream_run(
                         if c_items:
                             by_sup[sup_name] = c_items
 
+                is_algn_ablation = "ALGN_" in run_id or spec.get("category") == "routing_aligned"
                 chunk_items = []
-                if len(by_sup) > 1:
-                    # Multi-supervision batch sampling balance
+                if is_algn_ablation and len(by_sup) > 1:
+                    # Multi-supervision batch sampling balance for controlled-ratio ALGN ablations
                     spec_ratios = spec.get("ratios") or {}
                     if isinstance(spec_ratios, list):
                         ratio_map = {sc: w for sc, w in zip(supervision_classes, spec_ratios)}
@@ -1239,7 +1240,7 @@ def run_full_coverage_stream_run(
                     for k in sup_keys:
                         rng_balance.shuffle(by_sup[k])
 
-                    # Strict ratio quota balance (controls true supervision optimization contribution)
+                    # Strict ratio quota balance (controls true supervision optimization contribution in ablation)
                     min_factor = min(len(by_sup[k]) / max(0.001, float(ratio_map.get(k, 1.0))) for k in sup_keys)
                     target_counts = {k: max(1, int(min_factor * float(ratio_map.get(k, 1.0)))) for k in sup_keys}
                     total_quota = sum(target_counts.values())
@@ -1255,6 +1256,8 @@ def run_full_coverage_stream_run(
                         chunk_items.append(by_sup[picked][cursors[picked]])
                         cursors[picked] += 1
                 else:
+                    # Full coverage scale experiments (F-series: F01..F20):
+                    # Train all materialized items across all supervisable classes present in chunk without discarding
                     for c_items in by_sup.values():
                         chunk_items.extend(c_items)
                     random.Random(seed + epoch + chunk_idx).shuffle(chunk_items)
@@ -1314,7 +1317,8 @@ def run_full_coverage_stream_run(
                 shutil.rmtree(tmp_chunk_dir, ignore_errors=True)
 
                 consumed_total_items += len(chunk_items)
-                for r in c_slice:
+                effective_n = min(len(chunk_items), len(c_slice))
+                for r in c_slice[:effective_n]:
                     consumed_units_set.add(r["independent_unit_id"])
 
                 chunk_mean_loss = chunk_loss_total / max(1, chunk_steps)
