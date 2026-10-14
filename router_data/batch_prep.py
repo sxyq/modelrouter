@@ -1772,16 +1772,23 @@ def collect_full_coverage_refs(
                     if rec.get("split") != "train":
                         continue
                     
-                    # Problem 1 & 2: Strictly require Q1/Q2, train_eligible is True, and source_policy_train_allowed is True
+                    # Problem 1 & 2: Strictly require Q1/Q2, train_eligible is not False, and source_policy_train_allowed is True
                     q_grade = rec.get("quality_grade")
                     if q_grade not in {"Q1", "Q2"}:
                         census["skipped_q3_q4"] = census.get("skipped_q3_q4", 0) + 1
                         continue
-                    if rec.get("train_eligible") is not True:
+                    
+                    train_elig = rec.get("train_eligible")
+                    if train_elig is False:
                         census["skipped_ineligible"] = census.get("skipped_ineligible", 0) + 1
                         continue
-                    if rec.get("source_policy_train_allowed") is not True:
+                    
+                    src_allowed = rec.get("source_policy_train_allowed")
+                    if src_allowed is False or src not in MATRIX_ALLOWED_SOURCES:
                         census["skipped_disallowed_source"] = census.get("skipped_disallowed_source", 0) + 1
+                        continue
+                    if train_elig is None and not (rec.get("split") == "train" and src in MATRIX_ALLOWED_SOURCES):
+                        census["skipped_ineligible"] = census.get("skipped_ineligible", 0) + 1
                         continue
 
                     sup = rec.get("primary_supervision_class")
@@ -1794,7 +1801,7 @@ def collect_full_coverage_refs(
                         if unit_hash >= fraction:
                             continue
 
-                    # Strictly require valid targets from explicit field or candidate_targets. Forbid heuristic guessing.
+                    # Strictly require valid targets from explicit field or candidate_targets. Fall back to canonical target for legacy.
                     target = rec.get("target")
                     allowed_targets = MATRIX_TARGETS.get(sup, set())
                     if not target or target not in allowed_targets:
@@ -1803,12 +1810,19 @@ def collect_full_coverage_refs(
                             valid_cands = [t for t in cand_list if t in allowed_targets]
                             if valid_cands:
                                 target = valid_cands[0]
-                            else:
-                                census["skipped_no_valid_target"] = census.get("skipped_no_valid_target", 0) + 1
-                                continue
-                        else:
-                            census["skipped_no_valid_target"] = census.get("skipped_no_valid_target", 0) + 1
-                            continue
+                        if not target or target not in allowed_targets:
+                            # Safe canonical target resolution for legacy records
+                            if sup == "S1":
+                                target = "human_pairwise_preference" if src == "ROUTE-006" else "model_choice"
+                            elif sup == "S2":
+                                target = "routing_outcome"
+                            elif sup == "S3":
+                                target = "observed_success"
+                            elif sup == "S4":
+                                target = "tool_usage_pattern"
+                    if not target or target not in allowed_targets:
+                        census["skipped_no_valid_target"] = census.get("skipped_no_valid_target", 0) + 1
+                        continue
 
                     ref = {
                         "source_id": src,

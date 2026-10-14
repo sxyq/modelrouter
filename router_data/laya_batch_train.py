@@ -79,6 +79,25 @@ def _write(path, value):
     tmp.replace(path)
 
 
+def _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer=None, scheduler=None, scaler=None):
+    from laya.train import save_checkpoint
+    save_checkpoint(model, tok, ckcfg, str(target_dir))
+    if optimizer is not None:
+        import torch
+        opt_data = {
+            "optimizer": optimizer.state_dict(),
+            "scheduler": scheduler.state_dict() if scheduler is not None else None,
+            "scaler": scaler.state_dict() if scaler is not None else None,
+            "rng_state": torch.get_rng_state(),
+            "cuda_rng_state": torch.cuda.get_rng_state() if torch.cuda.is_available() else None,
+        }
+        try:
+            torch.save(opt_data, Path(target_dir) / "optim_state.pt")
+        except Exception as exc:
+            print(f"Warning: Failed to save optim_state.pt to {target_dir}: {exc}")
+
+
+
 def _load_items(path, tok, train_mod, max_len, head_max_len):
     rows = train_mod.read_data(str(path))
     items, skipped = train_mod.items_from_rows(tok, rows, max_len=max_len, head_max_len=head_max_len)
@@ -717,7 +736,7 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
             run_id=run_id,
             epoch=epoch + 1,
             is_final_epoch=is_final,
-            save_fn=lambda target_dir: save_checkpoint(model, tok, ckcfg, target_dir),
+            save_fn=lambda target_dir: _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer, scheduler, scaler),
             run_meta=run_meta,
             entry=entry,
             manifest=manifest,
@@ -952,6 +971,8 @@ def run_full_coverage_stream_run(
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, total_updates), eta_min=config.min_lr)
     scaler = torch.amp.GradScaler("cuda") if amp and dev.type == "cuda" else None
 
+    protocol_version = spec.get("protocol_version") or manifest_data.get("protocol_version") or NEW_PROTOCOL_VERSION
+
     run_meta = {
         "run_id": run_id,
         "base_run_id": spec.get("base_run_id") or run_id,
@@ -959,7 +980,7 @@ def run_full_coverage_stream_run(
         "base_model": sanitize_command_str(parent_model_dir),
         "data_dir_label": f"streaming_v2_1:{','.join(layers)}",
         "train_origin": spec.get("category", "full_coverage"),
-        "protocol_version": NEW_PROTOCOL_VERSION,
+        "protocol_version": protocol_version,
         "legacy_input_protocol": False,
         "seed": config.seed,
         "epochs_max": run_epochs,
@@ -981,7 +1002,11 @@ def run_full_coverage_stream_run(
         "history": [],
     }
 
-    # Resume from cursor if available
+    # Resume from cursor if available - 4 explicit modes:
+    # 1. EXACT_RESUME: Model weights + optimizer/scheduler/RNG states restored
+    # 2. WEIGHT_ONLY_CONTINUATION: Model weights restored, optimizer reinitialized
+    # 3. EPOCH_RESTART: Cursor pointed to epoch, but weights missing; restart epoch from scratch
+    # 4. COLD_START: No prior cursor or fresh run
     cursor_path = run_root / "cursor.json"
     start_epoch = 0
     start_chunk = 0
@@ -1001,27 +1026,58 @@ def run_full_coverage_stream_run(
                 cur_ep = int(cur.get("epoch", 0))
                 cur_chunk = int(cur.get("chunk_idx", 0))
                 ep_ckpt_dir = run_root / "checkpoints" / f"epoch_{cur_ep:02d}"
+                temp_recovery_dir = run_root / "checkpoints" / "_temp_recovery"
+
+                target_ckpt_dir = None
                 if cur_ep > 0 and has_physical_weights(ep_ckpt_dir):
+                    target_ckpt_dir = ep_ckpt_dir
+                elif temp_recovery_dir.is_dir() and has_physical_weights(temp_recovery_dir):
+                    target_ckpt_dir = temp_recovery_dir
+
+                if target_ckpt_dir is not None:
                     try:
                         import laya.train
-                        model, _ = laya.train.load_checkpoint(str(ep_ckpt_dir))
+                        model, _ = laya.train.load_checkpoint(str(target_ckpt_dir))
                         model.to(dev)
                         start_epoch = cur_ep
                         start_chunk = 0
                         global_step = cur.get("step_count", 0)
                         consumed_total_items = cur.get("consumed_items", 0)
                         history = cur.get("history", [])
-                        resume_mode = "EPOCH_LEVEL_RESUME"
+
+                        optim_file = target_ckpt_dir / "optim_state.pt"
+                        if optim_file.is_file():
+                            try:
+                                opt_data = torch.load(optim_file, map_location=dev)
+                                if "optimizer" in opt_data and optimizer is not None:
+                                    optimizer.load_state_dict(opt_data["optimizer"])
+                                if "scheduler" in opt_data and scheduler is not None and opt_data.get("scheduler") is not None:
+                                    scheduler.load_state_dict(opt_data["scheduler"])
+                                if "scaler" in opt_data and scaler is not None and opt_data.get("scaler") is not None:
+                                    scaler.load_state_dict(opt_data["scaler"])
+                                if "rng_state" in opt_data and opt_data.get("rng_state") is not None:
+                                    torch.set_rng_state(opt_data["rng_state"].cpu())
+                                if "cuda_rng_state" in opt_data and opt_data.get("cuda_rng_state") is not None and torch.cuda.is_available():
+                                    torch.cuda.set_rng_state(opt_data["cuda_rng_state"].cpu())
+                                resume_mode = "EXACT_RESUME"
+                            except Exception as opt_err:
+                                print(f"[{run_id}] Warning: Optimizer state load failed: {opt_err}. Fallback to WEIGHT_ONLY_CONTINUATION.")
+                                resume_mode = "WEIGHT_ONLY_CONTINUATION"
+                        else:
+                            resume_mode = "WEIGHT_ONLY_CONTINUATION"
                     except Exception as exc:
-                        print(f"[{run_id}] Warning: Failed to reload epoch checkpoint {ep_ckpt_dir}: {exc}")
-                        resume_mode = "WEIGHT_ONLY_FALLBACK"
+                        print(f"[{run_id}] Warning: Failed to reload checkpoint {target_ckpt_dir}: {exc}. Fallback to EPOCH_RESTART.")
+                        resume_mode = "EPOCH_RESTART"
                 else:
                     start_epoch = cur_ep
                     start_chunk = 0
-                    resume_mode = "EPOCH_LEVEL_RESTART"
-                run_meta["resume_mode"] = resume_mode
-        except Exception:
-            pass
+                    resume_mode = "EPOCH_RESTART"
+        except Exception as exc:
+            print(f"[{run_id}] Warning: Failed to parse cursor {cursor_path}: {exc}")
+            resume_mode = "COLD_START"
+
+    run_meta["resume_mode"] = resume_mode
+    print(f"[{run_id}] Initializing training: mode={resume_mode}, epoch={start_epoch}/{run_epochs}, chunk={start_chunk}/{num_chunks}, step={global_step}, protocol={protocol_version}")
 
     _atomic_write_json = lambda p, d: _write(p, d)
     _atomic_write_json(run_root / "run.json", run_meta)
@@ -1218,7 +1274,7 @@ def run_full_coverage_stream_run(
                 run_id=run_id,
                 epoch=epoch + 1,
                 is_final_epoch=is_final,
-                save_fn=lambda target_dir: save_checkpoint(model, tok, ckcfg, target_dir),
+                save_fn=lambda target_dir: _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer, scheduler, scaler),
                 run_meta=run_meta,
                 entry=entry,
                 manifest=manifest_data,
@@ -1229,10 +1285,27 @@ def run_full_coverage_stream_run(
             run_meta["current_step"] = global_step
             run_meta["best_epoch"] = best_epoch
 
+            # Update restorable cursor pointing to completed epoch
+            cursor_data = {
+                "run_id": run_id,
+                "epoch": epoch + 1,
+                "chunk_idx": 0,
+                "total_chunks": num_chunks,
+                "step_count": global_step,
+                "total_updates": total_updates,
+                "consumed_items": consumed_total_items,
+                "consumed_units": len(consumed_units_set),
+                "latest_chunk_loss": epoch_mean_loss,
+                "history": history,
+                "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            }
+            _write(cursor_path, cursor_data)
+
             # Update coverage ledger after each epoch with 5 independent census metrics
             ledger_data = {
                 "run_id": run_id,
-                "protocol_version": NEW_PROTOCOL_VERSION,
+                "protocol_version": protocol_version,
+                "resume_mode": resume_mode,
                 "layers": layers,
                 "layer_fractions": layer_fractions,
                 "supervision_classes": supervision_classes,
