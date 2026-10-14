@@ -120,17 +120,25 @@ def _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer=None, schedul
 
 def _load_items(path, tok, train_mod, max_len, head_max_len):
     rows = train_mod.read_data(str(path))
-    items_with_prov = []
-    total_skipped = {}
-    for row in rows:
-        c_items, skipped = train_mod.items_from_rows(tok, [row], max_len=max_len, head_max_len=head_max_len)
-        for k, v in skipped.items():
-            total_skipped[k] = total_skipped.get(k, 0) + v
-        for it in c_items:
+    items, skipped = train_mod.items_from_rows(tok, rows, max_len=max_len, head_max_len=head_max_len)
+    if len(items) == len(rows):
+        for it, r in zip(items, rows):
             if isinstance(it, dict):
-                it["_provenance"] = row.get("provenance") or {}
-            items_with_prov.append(it)
-    return items_with_prov, {'rows': len(rows), 'items': len(items_with_prov), 'skipped': total_skipped}
+                it["_provenance"] = r.get("provenance") or {}
+    else:
+        # Fallback to precise per-row attribution if any item was skipped
+        items = []
+        total_skipped = {}
+        for r in rows:
+            c_items, c_skip = train_mod.items_from_rows(tok, [r], max_len=max_len, head_max_len=head_max_len)
+            for k, v in c_skip.items():
+                total_skipped[k] = total_skipped.get(k, 0) + v
+            for it in c_items:
+                if isinstance(it, dict):
+                    it["_provenance"] = r.get("provenance") or {}
+                items.append(it)
+        skipped = total_skipped
+    return items, {'rows': len(rows), 'items': len(items), 'skipped': skipped}
 
 
 def _evaluate_records_list(records, train_mod, return_item_vectors=False):
@@ -1114,9 +1122,10 @@ def run_full_coverage_stream_run(
     params = trainable_params
 
     # Step 5: Instantiate optimizer, scheduler, and scaler directly bound to final model parameters
-    optimizer = torch.optim.AdamW(groups, weight_decay=config.weight_decay)
-    total_updates = optimizer_updates(total_items, config.micro_batch, config.grad_accum, run_epochs)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, total_updates), eta_min=config.min_lr)
+    items_per_chunk = math.ceil(total_items / max(1, num_chunks))
+    updates_per_chunk = math.ceil(items_per_chunk / (config.micro_batch * config.grad_accum))
+    total_updates = max(1, updates_per_chunk * num_chunks * run_epochs)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=total_updates, eta_min=config.min_lr)
     scaler = torch.amp.GradScaler("cuda") if amp and dev.type == "cuda" else None
 
     # Step 6: Restore optimizer, scheduler, scaler, RNG if target_ckpt_dir has optim_state.pt
@@ -1326,16 +1335,10 @@ def run_full_coverage_stream_run(
                 shutil.rmtree(tmp_chunk_dir, ignore_errors=True)
 
                 consumed_total_items += len(chunk_items)
-                has_prov = False
                 for it in chunk_items:
                     unit_id = (it.get("_provenance") or {}).get("independent_unit_id")
                     if unit_id:
                         consumed_units_set.add(unit_id)
-                        has_prov = True
-                if not has_prov and c_slice:
-                    effective_n = min(len(chunk_items), len(c_slice))
-                    for r in c_slice[:effective_n]:
-                        consumed_units_set.add(r["independent_unit_id"])
 
                 chunk_mean_loss = chunk_loss_total / max(1, chunk_steps)
                 run_meta["current_step"] = global_step

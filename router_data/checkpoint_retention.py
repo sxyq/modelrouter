@@ -1954,12 +1954,10 @@ def evaluate_cohort_retention(
                 continue
             if n.get("is_pinned_parent") or cid in pinned_map:
                 continue
-            # Exclude duplicate signatures, non-loadable weights, invalid scores, uncompleted experiments
+            # Exclude duplicate signatures and uncompleted runs without valid validation
             if n.get("is_duplicate_run_signature"):
                 continue
             if not n.get("is_run_best_epoch"):
-                continue
-            if n.get("loadable") is False:
                 continue
             val = n.get("validation", {})
             if not val or not any(val.get(k, {}).get("items", 0) > 0 for k in ("S1", "S2", "S3", "all")):
