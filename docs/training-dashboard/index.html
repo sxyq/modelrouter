@@ -782,26 +782,50 @@
 
     function updateLiveUI(live) {
       if (!live) return;
-      document.getElementById('livePillText').textContent = '实时守护中 · ' + (live.run_id || 'F03');
-      document.getElementById('liveLossBadge').textContent = 'Loss ' + (live.loss || 0.6863);
-      document.getElementById('kpiRun').textContent = (live.run_id || 'F03') + ' (L3 全量覆盖)';
-      document.getElementById('kpiRunSub').textContent = 'Epoch ' + (live.epoch || '1/2') + ' · Chunk ' + (live.chunk || '37/180') + ' · Step ' + (live.step || '149/45836');
-      document.getElementById('chartLiveLossTxt').textContent = live.loss || 0.6863;
+      const nowSec = Date.now() / 1000;
+      const collectedSec = live.collected_at_unix || nowSec;
+      const ageSec = Math.floor(Math.max(0, nowSec - collectedSec));
+      const dateStr = live.collected_at_iso ? new Date(live.collected_at_iso).toLocaleTimeString() : new Date().toLocaleTimeString();
 
-      const d = new Date();
-      document.getElementById('lastSyncTxt').textContent = '同步时间: ' + d.toTimeString().split(' ')[0];
+      const lastSyncEl = document.getElementById('lastSyncTxt');
+      if (lastSyncEl) {
+        if (ageSec > 60) {
+          lastSyncEl.innerHTML = `<span style="color:#f43f5e;font-weight:600">⚠️ 数据过期 (${ageSec}秒前采集: ${dateStr})</span>`;
+        } else {
+          lastSyncEl.innerHTML = `<span style="color:#34d399">● 采集时间: ${dateStr} (${ageSec}s前)</span>`;
+        }
+      }
 
-      // Append terminal line if new
+      const isAlive = live.process_alive;
+      const runId = live.current_run || live.run_id || 'F03';
+      const pillText = document.getElementById('livePillText');
+      if (pillText) {
+        pillText.textContent = (isAlive ? '实时守护中 · ' : '进程已暂停 · ') + runId;
+      }
+
+      const lossVal = live.loss !== null && live.loss !== undefined ? live.loss : 'N/A';
+      document.getElementById('liveLossBadge').textContent = 'Loss ' + lossVal;
+      document.getElementById('kpiRun').textContent = runId + (isAlive ? ' (L3 全量流式)' : ' (' + (live.status || 'STOPPED') + ')');
+      document.getElementById('kpiRunSub').textContent = (live.epoch || 'N/A') + ' · Chunk ' + (live.chunk || 'N/A') + ' · Step ' + (live.step || 'N/A');
+      document.getElementById('chartLiveLossTxt').textContent = lossVal;
+
+      const gpuEl = document.getElementById('gpuMeta');
+      if (gpuEl && live.gpu_memory) {
+        gpuEl.textContent = `RTX A6000 (${live.gpu_memory}, ${live.gpu_util || '0%'} Util) · PID ${live.train_pid || 'N/A'}`;
+      }
+
+      // Update terminal feed with real recent points from server
       const feed = document.getElementById('terminalFeed');
-      if (feed && live.chunk) {
-        const line = document.createElement('div');
-        line.className = 'terminal-line good';
-        line.textContent = `[${live.run_id}] Epoch ${live.epoch} Chunk ${live.chunk}: loss=${live.loss}, step=${live.step}, consumed=${live.consumed}/${live.total || 2933448}`;
-        feed.appendChild(line);
+      if (feed && live.recent_points && live.recent_points.length > 0) {
+        let linesHtml = '';
+        live.recent_points.slice(-6).forEach(pt => {
+          linesHtml += `<div class="terminal-line good">[${runId}] Chunk ${pt.chunk}/${pt.total_chunks || 180}: loss=${pt.loss}, step=${pt.step}/${pt.total_steps || 45836}, consumed=${pt.consumed.toLocaleString()}/${(pt.total_consumed || 2933448).toLocaleString()}</div>`;
+        });
+        feed.innerHTML = linesHtml;
         feed.scrollTop = feed.scrollHeight;
       }
 
-      // Re-render live loss chart with live points
+      // Re-render live loss chart with true live points
       renderLiveLossChart(live.recent_points);
     }
 

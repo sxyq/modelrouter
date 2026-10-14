@@ -120,8 +120,17 @@ def _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer=None, schedul
 
 def _load_items(path, tok, train_mod, max_len, head_max_len):
     rows = train_mod.read_data(str(path))
-    items, skipped = train_mod.items_from_rows(tok, rows, max_len=max_len, head_max_len=head_max_len)
-    return items, {'rows': len(rows), 'items': len(items), 'skipped': skipped}
+    items_with_prov = []
+    total_skipped = {}
+    for row in rows:
+        c_items, skipped = train_mod.items_from_rows(tok, [row], max_len=max_len, head_max_len=head_max_len)
+        for k, v in skipped.items():
+            total_skipped[k] = total_skipped.get(k, 0) + v
+        for it in c_items:
+            if isinstance(it, dict):
+                it["_provenance"] = row.get("provenance") or {}
+            items_with_prov.append(it)
+    return items_with_prov, {'rows': len(rows), 'items': len(items_with_prov), 'skipped': total_skipped}
 
 
 def _evaluate_records_list(records, train_mod, return_item_vectors=False):
@@ -1317,9 +1326,16 @@ def run_full_coverage_stream_run(
                 shutil.rmtree(tmp_chunk_dir, ignore_errors=True)
 
                 consumed_total_items += len(chunk_items)
-                effective_n = min(len(chunk_items), len(c_slice))
-                for r in c_slice[:effective_n]:
-                    consumed_units_set.add(r["independent_unit_id"])
+                has_prov = False
+                for it in chunk_items:
+                    unit_id = (it.get("_provenance") or {}).get("independent_unit_id")
+                    if unit_id:
+                        consumed_units_set.add(unit_id)
+                        has_prov = True
+                if not has_prov and c_slice:
+                    effective_n = min(len(chunk_items), len(c_slice))
+                    for r in c_slice[:effective_n]:
+                        consumed_units_set.add(r["independent_unit_id"])
 
                 chunk_mean_loss = chunk_loss_total / max(1, chunk_steps)
                 run_meta["current_step"] = global_step

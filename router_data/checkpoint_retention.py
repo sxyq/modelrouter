@@ -1940,10 +1940,17 @@ def evaluate_cohort_retention(
                 dec["retention_pool"] = "PINNED_PARENT"
 
         # 3. New Candidates: candidate unit is best epoch of each eligible independent run after policy adjustment
+        # Old strategy models (P0_*, historical sweeps, etc.) were already evaluated under the old policy
+        # and MUST NOT be added to the new candidate denominator.
         new_eligible_candidates = []
         for n in nodes:
             cid = n["checkpoint_id"]
+            run_id = n.get("run_id", "")
+            # Exclude old core checkpoints
             if cid in OLD_CORE_CHECKPOINT_IDS:
+                continue
+            # Exclude old strategy historical models from inflating the new candidate denominator
+            if run_id.startswith(("P0_", "R0_", "N", "R1", "R2", "R3")) or n.get("experiment_group") in ("OVERNIGHT-LAYA-TRAINING", "OVERNIGHT-LAYA-SWEEP-02"):
                 continue
             if n.get("is_pinned_parent") or cid in pinned_map:
                 continue
@@ -2963,7 +2970,6 @@ class CheckpointRetentionManager:
             "comparable_groups": group_summaries,
             "checkpoints": nodes,
         }
-        _atomic_write_json(self.out_root / "checkpoint_manifest.json", payload)
 
         # Also emit synchronized dual-pool checkpoint manifest with relative paths
         def _rank_k(n):
@@ -3023,6 +3029,13 @@ class CheckpointRetentionManager:
         payload["new_core_checkpoints"] = sanitize_deep(new_core_checkpoints)
         payload["pinned_parent_checkpoints"] = sanitize_deep(pinned_checkpoints)
         payload["dual_pool_retention"] = top5_payload
+
+        # Write both manifest files in consistent atomic order
+        _atomic_write_json(self.out_root / "top5_core_checkpoint_manifest.json", top5_payload)
+        if self.out_root.parent.name == "runs":
+            _atomic_write_json(self.out_root.parent / "top5_core_checkpoint_manifest.json", top5_payload)
+        _atomic_write_json(self.out_root / "checkpoint_manifest.json", payload)
+
         return payload
 
 
