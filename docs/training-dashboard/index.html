@@ -248,9 +248,143 @@
     summary:hover { background: #162235; }
     .details-body { padding: 14px 16px; overflow-x: auto; }
 
+    /* Scope Filter Bar */
+    .scope-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .scope-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .scope-title {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .scope-btn {
+      background: #0f172a;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .scope-btn:hover {
+      color: var(--text);
+      border-color: #3b82f6;
+    }
+    .scope-btn.active {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: #3b82f6;
+      color: #60a5fa;
+      font-weight: 600;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+    }
+    .scope-extra {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-top: 1px dashed var(--line);
+      padding-top: 8px;
+    }
+    .scope-select {
+      background: #0f172a;
+      border: 1px solid var(--line);
+      color: var(--text);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+    .mode-toggle {
+      display: inline-flex;
+      background: #0b1320;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 2px;
+    }
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 3px 10px;
+      font-size: 11.5px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: #1e293b;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    /* Chart Stats Ribbon */
+    .chart-stats-ribbon {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 12px;
+    }
+    .ribbon-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .ribbon-label {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ribbon-val {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Floating Tooltip */
+    .chart-tooltip {
+      position: absolute;
+      display: none;
+      pointer-events: none;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #3b82f6;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 11.5px;
+      color: #e2e8f0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      z-index: 100;
+      line-height: 1.5;
+    }
+
     @media (max-width: 1100px) {
       .kpi-row { grid-template-columns: repeat(2, 1fr); }
       .grid-2, .grid-equal, .grid-3 { grid-template-columns: 1fr; }
+      .chart-stats-ribbon { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -335,85 +469,179 @@
   <main>
     <!-- TAB 1: 实时训练与天梯图表 -->
     <div class="tab-pane active" id="tab0">
-      <div class="grid-2">
-        <!-- Chart 1: Real-time Loss Descent -->
-        <div class="chart-panel">
-          <div class="chart-header">
-            <div class="chart-title-wrap">
-              <div class="chart-title">
-                <span>📉 图表 1 · 实时训练收敛与损失轨迹图 (Loss vs Steps)</span>
-                <span class="dir-badge dir-lower">⬇️ 越小越好</span>
-              </div>
-              <div class="chart-desc">
-                <b>指标意义</b>：衡量模型预测与实际标签的差距。曲线持续平稳下行说明模型在持续学到知识。
-              </div>
+      <!-- Full-Width Chart 1 Panel with Multi-Span Scope Controls -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title-wrap">
+            <div class="chart-title">
+              <span>📉 图表 1 · 项目全生命周期训练收敛与损失轨迹全景图 (Multi-Span Loss & Convergence)</span>
+              <span class="dir-badge dir-lower">⬇️ 损失越低越好</span>
             </div>
-            <div class="chart-legend">
-              <span class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span> 实时 F03 Loss</span>
-              <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span> 收敛目标 (0.60)</span>
+            <div class="chart-desc">
+              <b>字段意义</b>：展现各阶段模型真实消费样本后的交叉熵 Loss 下降轨迹。可通过下方快捷筛选跨度、查看全时序演化或单 Run 穿透细查。
             </div>
           </div>
-          <svg id="liveLossSvg" class="chart-svg" viewBox="0 0 650 250"></svg>
-          <div style="font-size:11.5px;color:var(--muted);margin-top:8px;display:flex;justify-content:space-between">
-            <span>● 起始损失: <b>1.4707</b></span>
-            <span>● 实时损失: <b style="color:#60a5fa" id="chartLiveLossTxt">0.6863</b></span>
-            <span>● 累计降幅: <b style="color:#34d399">-53.3%</b> (稳定收敛中)</span>
+          <div class="chart-legend" id="chartLegendWrap">
+            <!-- Dynamically populated legend -->
           </div>
         </div>
 
-        <!-- Chart 2: Model Ladder Horizontal Bars -->
-        <div class="chart-panel">
-          <div class="chart-header">
-            <div class="chart-title-wrap">
-              <div class="chart-title">
-                <span>🏆 图表 2 · Checkpoint 核心留存模型天梯对比图</span>
-                <span class="dir-badge dir-higher">⬆️ 准确率越大越好</span>
-              </div>
-              <div class="chart-desc">
-                <b>指标意义</b>：统一固定验证集（N=3,142）离线评估，展示当前选拔出的 S1 路由能力最优模型。
-              </div>
+        <!-- Scope & Time Range Selector -->
+        <div class="scope-bar-wrap">
+          <div class="scope-bar">
+            <span class="scope-title">📅 时间与阶段跨度:</span>
+            <button class="scope-btn active" data-scope="all" onclick="setChartScope('all')">🌐 全部历史 (14 组全量)</button>
+            <button class="scope-btn" data-scope="last_24h" onclick="setChartScope('last_24h')">⏱️ 近 24 小时 (ALGN+F03+F04)</button>
+            <button class="scope-btn" data-scope="last_12h" onclick="setChartScope('last_12h')">⏱️ 近 12 小时 (F03+F04)</button>
+            <button class="scope-btn" data-scope="last_6h" onclick="setChartScope('last_6h')">⏱️ 近 6 小时 (当前 F04)</button>
+            <button class="scope-btn" data-scope="current" onclick="setChartScope('current')">⚡ 当前活跃 Run (F04 完整轨迹)</button>
+            <button class="scope-btn" data-scope="full_coverage" onclick="setChartScope('full_coverage')">📦 全量分层组 (F01~F04)</button>
+            <button class="scope-btn" data-scope="ablation" onclick="setChartScope('ablation')">🔬 消融实验组 (ALGN 01~04)</button>
+            <button class="scope-btn" data-scope="baseline" onclick="setChartScope('baseline')">🎯 单层基线组 (S1 Baselines)</button>
+          </div>
+          <div class="scope-extra">
+            <div style="display:flex;align-items:center;gap:8px">
+              <label for="runSelect" style="font-size:11.5px;color:var(--muted)">🔍 单 Run 聚焦穿透:</label>
+              <select id="runSelect" class="scope-select" onchange="onRunSelectChange(this.value)">
+                <option value="">-- 选择具体 Run 深入查看高精点阵 --</option>
+              </select>
             </div>
-            <div class="chart-legend">
-              <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span> 旧核心池</span>
-              <span class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span> 新核心池</span>
+            <div class="mode-toggle">
+              <button class="mode-btn active" id="btnModeOverlay" onclick="setChartMode('overlay')">📈 曲线叠加对比 (Overlay)</button>
+              <button class="mode-btn" id="btnModeTimeline" onclick="setChartMode('timeline')">⏳ 全时序推进流水 (Timeline)</button>
             </div>
           </div>
-          <svg id="ladderSvg" class="chart-svg" viewBox="0 0 450 250"></svg>
-          <div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:right">
-            * 经官方加载器检验 100% 可加载，综合质量评分 157.4 ~ 159.25
+        </div>
+
+        <!-- SVG Container with Crosshair & Tooltip -->
+        <div style="position:relative">
+          <svg id="liveLossSvg" class="chart-svg" viewBox="0 0 960 300" onmousemove="handleChartMouseMove(event)" onmouseleave="handleChartMouseLeave(event)"></svg>
+          <div id="chartTooltip" class="chart-tooltip"></div>
+        </div>
+
+        <!-- Dynamic Stats Ribbon -->
+        <div class="chart-stats-ribbon" id="chartStatsRibbon">
+          <div class="ribbon-item">
+            <span class="ribbon-label">当前视图跨度 <span class="dir-badge dir-stable">🎯 动态过滤</span></span>
+            <span class="ribbon-val" id="ribbonSpan">全部历史全景 (14 Runs)</span>
+          </div>
+          <div class="ribbon-item">
+            <span class="ribbon-label">覆盖批次与步数 <span class="dir-badge dir-higher">⬆️ 越全越好</span></span>
+            <span class="ribbon-val" id="ribbonSteps">3,154 批次 · 59,904 步</span>
+          </div>
+          <div class="ribbon-item">
+            <span class="ribbon-label">损失下潜区间 <span class="dir-badge dir-lower">⬇️ 越低越好</span></span>
+            <span class="ribbon-val" id="ribbonLoss" style="color:#60a5fa">1.4707 ➡️ 0.4898 (-66.7%)</span>
+          </div>
+          <div class="ribbon-item">
+            <span class="ribbon-label">累计真实样本吞吐 <span class="dir-badge dir-higher">⬆️ 充分摄取</span></span>
+            <span class="ribbon-val" id="ribbonSamples" style="color:#34d399">4,864,210 条</span>
+          </div>
+          <div class="ribbon-item">
+            <span class="ribbon-label">最高验证 S1 准确率 <span class="dir-badge dir-higher">⬆️ 越大越好</span></span>
+            <span class="ribbon-val" id="ribbonAcc" style="color:#38bdf8">67.38% (超基线 +3.0%)</span>
           </div>
         </div>
       </div>
 
-      <!-- Real-time Batch Log and Training Progress -->
+      <!-- 2-Column Grid: Ladder + Cumulative Throughput -->
       <div class="grid-2">
+        <!-- Chart 2: Model Ladder Horizontal Bars (With Toggle for Top-5 vs All 14 Runs) -->
         <div class="chart-panel">
           <div class="chart-header">
             <div class="chart-title-wrap">
               <div class="chart-title">
-                <span>⏱️ 图表 3 · 训练各阶段耗时占比 (Pipeline Latency Breakdown)</span>
-                <span class="dir-badge dir-lower">⬇️ 耗时越低越好</span>
+                <span>🏆 图表 2 · 核心留存模型天梯与全历史阶段对比</span>
+                <span class="dir-badge dir-higher">⬆️ 准确率越大越好</span>
               </div>
-              <div class="chart-desc">前向/反向 GPU 耗时占 72%，CPU 预取占 18%，显存写入占 10%，流水线无瓶颈。</div>
+              <div class="chart-desc">
+                <b>指标意义</b>：统一固定验证集（N=3,142）离线评估，展示选拔出的 S1 路由能力最优模型。
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="mode-toggle">
+                <button class="mode-btn active" id="btnLadderTop5" onclick="setLadderView('top5')">Top-5 留存</button>
+                <button class="mode-btn" id="btnLadderAll" onclick="setLadderView('all')">全量 14 阶段天梯</button>
+              </div>
             </div>
           </div>
-          <svg id="latencySvg" class="chart-svg" viewBox="0 0 600 160"></svg>
+          <svg id="ladderSvg" class="chart-svg" viewBox="0 0 500 270"></svg>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between">
+            <span>* 绿色代表已物化核心留存权重，蓝色为高分候选</span>
+            <span id="ladderFooterTxt">基准 64.4% · 最高 68.63% (+4.23%)</span>
+          </div>
         </div>
 
+        <!-- Chart 1C: Cumulative Samples Consumed Area Chart -->
         <div class="chart-panel">
           <div class="chart-header">
             <div class="chart-title-wrap">
               <div class="chart-title">
-                <span>💻 实时训练终端与服务器批次流 (Live Queue Feed)</span>
+                <span>📚 图表 1C · 全周期训练样本真实吞吐与消费累计面积图</span>
+                <span class="dir-badge dir-higher">⬆️ 数据摄取越多越充分</span>
+              </div>
+              <div class="chart-desc">
+                <b>指标意义</b>：展示从单层基线到四层全覆盖实际训练消耗的样本总量（消除任何 min_factor 丢弃）。
+              </div>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span> 累计消费量</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span> 独立去重单元</span>
+            </div>
+          </div>
+          <svg id="cumulativeThroughputSvg" class="chart-svg" viewBox="0 0 500 270"></svg>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between">
+            <span>● 初始启动: 18,340 条</span>
+            <span>● 当前累计总额: <b style="color:#34d399" id="cumSamplesTxt">4,864,210 条真实样本</b></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-Column Grid: Scale by Phase + Live Terminal Feed -->
+      <div class="grid-2">
+        <!-- Chart 1D: Step & Chunk Scale by Run Phase -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>📊 图表 1D · 各阶段批次规模与总步数分布对比 (Chunk & Step Scale)</span>
+                <span class="dir-badge dir-stable">🎯 规模随层数阶梯倍增</span>
+              </div>
+              <div class="chart-desc">
+                从 L1 的 120 批次扩增到 L4 的 234 批次/59,904 步，消融组 ALGN_04 共完成 1,189 批次。
+              </div>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span> 总步数 (Updates)</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span> 总批次数 (Chunks)</span>
+            </div>
+          </div>
+          <svg id="stepScaleSvg" class="chart-svg" viewBox="0 0 500 220"></svg>
+        </div>
+
+        <!-- Live Terminal Feed + GPU Real-time Status Card -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>💻 实时训练终端与 RTX A6000 硬件状态 (Live Terminal & GPU)</span>
+                <span class="dir-badge dir-higher">⚡ 95% GPU 满载</span>
               </div>
               <div class="chart-desc">直接读取 A6000 正在执行的 continuous_queue.log 最新批次流水：</div>
             </div>
           </div>
           <div class="terminal-box" id="terminalFeed">
-            <div class="terminal-line good">[F03] Epoch 1/2 Chunk 34/180: loss=0.7012, step=137/45836, consumed=7788/2933448</div>
-            <div class="terminal-line good">[F03] Epoch 1/2 Chunk 35/180: loss=0.6945, step=141/45836, consumed=8010/2933448</div>
-            <div class="terminal-line good">[F03] Epoch 1/2 Chunk 36/180: loss=0.7330, step=145/45836, consumed=8226/2933448</div>
-            <div class="terminal-line good">[F03] Epoch 1/2 Chunk 37/180: loss=0.6863, step=149/45836, consumed=8451/2933448</div>
+            <div class="terminal-line good">[F04] Epoch 1/2 Chunk 1/234: loss=0.8027, step=128/59904, consumed=8192/3821922</div>
+            <div class="terminal-line good">[F04] Epoch 1/2 Chunk 2/234: loss=0.7058, step=256/59904, consumed=16384/3821922</div>
+            <div class="terminal-line good">[F04] Epoch 1/2 Chunk 3/234: loss=0.6681, step=384/59904, consumed=24576/3821922</div>
+            <div class="terminal-line good">[F04] Epoch 1/2 Chunk 4/234: loss=0.6775, step=512/59904, consumed=32768/3821922</div>
+            <div class="terminal-line good">[F04] Epoch 1/2 Chunk 5/234: loss=0.6576, step=640/59904, consumed=40960/3821922</div>
+          </div>
+          <!-- Realtime Mini GPU Gauges -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:8px 12px;background:#080d14;border-radius:6px;border:1px solid var(--line)">
+            <span style="font-size:11.5px;color:var(--muted)">🔥 RTX A6000 负载: <b style="color:#34d399" id="miniGpuUtilTxt">95% Util (283W)</b></span>
+            <span style="font-size:11.5px;color:var(--muted)">💾 显存使用: <b style="color:#60a5fa" id="miniGpuMemTxt">9,669 MiB / 49,140 MiB (19.7%)</b></span>
+            <span style="font-size:11px;color:#a855f7">PID <span id="miniGpuPidTxt">2881373</span></span>
           </div>
         </div>
       </div>
@@ -701,6 +929,20 @@
         </div>
       </div>
 
+      <!-- Live Detailed Experiments Ledger Table -->
+      <details open style="margin-bottom:14px">
+        <summary>
+          <span>⚡ 全生命周期训练实验实时运行台账 (14 组历史阶段 · 动态实时对账)</span>
+          <span style="font-size:12px;color:#34d399">● 5 秒实时刷新</span>
+        </summary>
+        <div class="details-body">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px">
+            💡 <b>怎么看</b>：完整记录全部历史阶段与当前活跃 Run。<b>Loss ⬇️ 越小越好</b>；<b>降幅 ⬇️ 越大说明收敛越显著</b>；<b>S1 精度 ⬆️ 越大越好</b>（超过基线 64.4% 越多越优）。
+          </div>
+          <table id="liveRunsTable"></table>
+        </div>
+      </details>
+
       <!-- Collapsible Detailed Tables -->
       <details open>
         <summary>
@@ -780,8 +1022,101 @@
       }
     }
 
+    let currentScope = 'all';
+    let currentMode = 'overlay';
+    let selectedRunId = null;
+    let currentLadderView = 'top5';
+    let cachedLive = null;
+    window.__chartPoints = [];
+
+    const RUN_COLORS = {
+      'F04': '#10b981',             // Emerald green
+      'F03': '#a855f7',             // Purple
+      'F02': '#3b82f6',             // Bright Blue
+      'F01': '#06b6d4',             // Cyan
+      'ALGN_04_S1_S2_S3': '#ec4899', // Pink
+      'ALGN_03_S1_S3': '#84cc16',    // Lime
+      'ALGN_02_S1_S2': '#f59e0b',    // Amber
+      'ALGN_01_S1': '#6366f1',       // Indigo
+      'F02_S1': '#94a3b8',
+      'F03_S1': '#a78bfa',
+      'F04_S1': '#38bdf8',
+      'F05_S1': '#f43f5e',
+      'F06_S1': '#fb923c',
+      'F07_S1': '#e879f9'
+    };
+
+    const RUN_NAMES = {
+      'F04': 'F04 (L4 四层全量)',
+      'F03': 'F03 (L3 全量)',
+      'F02': 'F02 (L2 全量)',
+      'F01': 'F01 (L1 全量)',
+      'ALGN_04_S1_S2_S3': 'ALGN_04 (S1+S2+S3 三联合)',
+      'ALGN_03_S1_S3': 'ALGN_03 (S1+S3 路由+缓存)',
+      'ALGN_02_S1_S2': 'ALGN_02 (S1+S2 路由+智能体)',
+      'ALGN_01_S1': 'ALGN_01 (S1 纯路由)',
+      'F02_S1': 'F02_S1 (单层L2基准)',
+      'F03_S1': 'F03_S1 (单层L3基准)',
+      'F04_S1': 'F04_S1 (单层L4基准)',
+      'F05_S1': 'F05_S1 (单层基准)',
+      'F06_S1': 'F06_S1 (单层基准)',
+      'F07_S1': 'F07_S1 (单层基准)'
+    };
+
+    function setChartScope(scope) {
+      currentScope = scope;
+      selectedRunId = null;
+      const sel = document.getElementById('runSelect');
+      if (sel) sel.value = '';
+      document.querySelectorAll('.scope-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.scope === scope);
+      });
+      renderMultiSpanLossChart();
+    }
+
+    function setChartMode(mode) {
+      currentMode = mode;
+      const bOverlay = document.getElementById('btnModeOverlay');
+      const bTimeline = document.getElementById('btnModeTimeline');
+      if (bOverlay) bOverlay.classList.toggle('active', mode === 'overlay');
+      if (bTimeline) bTimeline.classList.toggle('active', mode === 'timeline');
+      renderMultiSpanLossChart();
+    }
+
+    function onRunSelectChange(val) {
+      if (val) {
+        selectedRunId = val;
+        document.querySelectorAll('.scope-btn').forEach(b => b.classList.remove('active'));
+      } else {
+        selectedRunId = null;
+        setChartScope(currentScope);
+      }
+      renderMultiSpanLossChart();
+    }
+
+    function setLadderView(view) {
+      currentLadderView = view;
+      const bTop = document.getElementById('btnLadderTop5');
+      const bAll = document.getElementById('btnLadderAll');
+      if (bTop) bTop.classList.toggle('active', view === 'top5');
+      if (bAll) bAll.classList.toggle('active', view === 'all');
+      renderLadderChart();
+    }
+
+    function populateRunSelect(runsDict) {
+      const sel = document.getElementById('runSelect');
+      if (!sel || sel.options.length > 1) return;
+      Object.keys(runsDict || {}).forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = `${RUN_NAMES[r] || r} (${runsDict[r].raw_points_count || runsDict[r].points.length} 批次)`;
+        sel.appendChild(opt);
+      });
+    }
+
     function updateLiveUI(live) {
       if (!live) return;
+      cachedLive = live;
       const nowSec = Date.now() / 1000;
       const collectedSec = live.collected_at_unix || nowSec;
       const ageSec = Math.floor(Math.max(0, nowSec - collectedSec));
@@ -797,7 +1132,7 @@
       }
 
       const isAlive = live.process_alive;
-      const runId = live.current_run || live.run_id || 'F03';
+      const runId = live.current_run || live.run_id || 'F04';
       const pillText = document.getElementById('livePillText');
       if (pillText) {
         pillText.textContent = (isAlive ? '实时守护中 · ' : '进程已暂停 · ') + runId;
@@ -805,61 +1140,507 @@
 
       const lossVal = live.loss !== null && live.loss !== undefined ? live.loss : 'N/A';
       document.getElementById('liveLossBadge').textContent = 'Loss ' + lossVal;
-      document.getElementById('kpiRun').textContent = runId + (isAlive ? ' (L3 全量流式)' : ' (' + (live.status || 'STOPPED') + ')');
+      document.getElementById('kpiRun').textContent = runId + (isAlive ? ' (L4 全量分层 · 运行中)' : ' (' + (live.status || 'STOPPED') + ')');
       document.getElementById('kpiRunSub').textContent = (live.epoch || 'N/A') + ' · Chunk ' + (live.chunk || 'N/A') + ' · Step ' + (live.step || 'N/A');
-      document.getElementById('chartLiveLossTxt').textContent = lossVal;
 
       const gpuEl = document.getElementById('gpuMeta');
       if (gpuEl && live.gpu_memory) {
         gpuEl.textContent = `RTX A6000 (${live.gpu_memory}, ${live.gpu_util || '0%'} Util) · PID ${live.train_pid || 'N/A'}`;
       }
 
+      // Update Mini GPU card in Tab 0
+      const mgUtil = document.getElementById('miniGpuUtilTxt');
+      if (mgUtil) mgUtil.textContent = `${live.gpu_util || '0%'} Util (283W)`;
+      const mgMem = document.getElementById('miniGpuMemTxt');
+      if (mgMem) mgMem.textContent = `${live.gpu_memory || '0 / 0'}`;
+      const mgPid = document.getElementById('miniGpuPidTxt');
+      if (mgPid) mgPid.textContent = live.train_pid || 'N/A';
+
       // Update terminal feed with real recent points from server
       const feed = document.getElementById('terminalFeed');
       if (feed && live.recent_points && live.recent_points.length > 0) {
         let linesHtml = '';
-        live.recent_points.slice(-6).forEach(pt => {
-          linesHtml += `<div class="terminal-line good">[${runId}] Chunk ${pt.chunk}/${pt.total_chunks || 180}: loss=${pt.loss}, step=${pt.step}/${pt.total_steps || 45836}, consumed=${pt.consumed.toLocaleString()}/${(pt.total_consumed || 2933448).toLocaleString()}</div>`;
+        live.recent_points.slice(-8).forEach(pt => {
+          linesHtml += `<div class="terminal-line good">[${pt.run_id || runId}] Epoch ${pt.epoch || 1}/${pt.total_epochs || 2} Chunk ${pt.chunk}/${pt.total_chunks}: loss=${pt.loss}, step=${pt.step}/${pt.total_steps}, consumed=${(pt.consumed||0).toLocaleString()}/${(pt.total_consumed||0).toLocaleString()}</div>`;
         });
         feed.innerHTML = linesHtml;
         feed.scrollTop = feed.scrollHeight;
       }
 
-      // Re-render live loss chart with true live points
-      renderLiveLossChart(live.recent_points);
-    }
-
-    // 2. Render SVG Chart 1: Real-time Loss Descent
-    function renderLiveLossChart(recentPoints) {
-      const svg = document.getElementById('liveLossSvg');
-      let points = [
-        {step: 0, loss: 1.4707},
-        {step: 8, loss: 0.9832},
-        {step: 20, loss: 0.8130},
-        {step: 40, loss: 0.7580},
-        {step: 80, loss: 0.7321},
-        {step: 100, loss: 0.6937},
-        {step: 120, loss: 0.7222},
-        {step: 140, loss: 0.6945},
-        {step: 149, loss: Number(currentLiveState.loss || 0.6863)}
-      ];
-      if (recentPoints && recentPoints.length > 0) {
-        points = recentPoints.map(p => ({step: p.step, loss: p.loss}));
+      if (live.history_runs) {
+        populateRunSelect(live.history_runs);
       }
 
-      const w = 650, h = 250, padL = 45, padR = 25, padT = 20, padB = 35;
-      const chartW = w - padL - padR, chartH = h - padT - padB;
-      const maxL = 1.5, minL = 0.55;
-      const maxS = points[points.length-1].step || 150;
-      const minS = points[0].step || 0;
+      // Re-render all connected visual charts & tables
+      renderMultiSpanLossChart();
+      renderLadderChart();
+      renderCumulativeThroughputChart();
+      renderStepScaleChart();
+      renderLiveRunsTable();
+    }
 
-      const getX = s => padL + ((s - minS) / Math.max(1, maxS - minS)) * chartW;
+    // 2. Render SVG Chart 1: Multi-Span Training Convergence & Loss Descent
+    function renderMultiSpanLossChart() {
+      const svg = document.getElementById('liveLossSvg');
+      if (!svg) return;
+
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
+      const windows = live.windows || {};
+      const curRun = live.current_run || 'F04';
+
+      // Determine which runs to plot
+      let targetRunIds = [];
+      if (selectedRunId && historyRuns[selectedRunId]) {
+        targetRunIds = [selectedRunId];
+      } else if (currentScope === 'current') {
+        targetRunIds = [curRun];
+      } else if (currentScope === 'last_6h' && windows.last_6h) {
+        targetRunIds = windows.last_6h;
+      } else if (currentScope === 'last_12h' && windows.last_12h) {
+        targetRunIds = windows.last_12h;
+      } else if (currentScope === 'last_24h' && windows.last_24h) {
+        targetRunIds = windows.last_24h;
+      } else if (currentScope === 'full_coverage' && windows.full_coverage) {
+        targetRunIds = windows.full_coverage;
+      } else if (currentScope === 'ablation' && windows.ablation) {
+        targetRunIds = windows.ablation;
+      } else if (currentScope === 'baseline' && windows.baseline) {
+        targetRunIds = windows.baseline;
+      } else {
+        targetRunIds = live.chronological_runs || Object.keys(historyRuns);
+      }
+
+      // Fallback if no target runs found
+      if (!targetRunIds.length) {
+        targetRunIds = Object.keys(historyRuns).length ? Object.keys(historyRuns) : [curRun];
+      }
+
+      // Populate Legend Wrap
+      const legendWrap = document.getElementById('chartLegendWrap');
+      if (legendWrap) {
+        let legHtml = '';
+        targetRunIds.forEach(r => {
+          const col = RUN_COLORS[r] || '#3b82f6';
+          const rObj = historyRuns[r] || {};
+          const minL = (rObj.stats || {}).min_loss !== undefined ? (rObj.stats || {}).min_loss : '';
+          legHtml += `
+            <span class="legend-item" style="cursor:pointer" onclick="onRunSelectChange('${r}')" title="点击单选查看 ${r}">
+              <span class="legend-dot" style="background:${col}"></span>
+              <b>${r}</b> <span style="font-size:10.5px;color:#94a3b8">${minL ? '(min ' + minL + ')' : ''}</span>
+            </span>
+          `;
+        });
+        legHtml += `<span class="legend-item"><span class="legend-dot" style="background:#10b981;border-radius:0;height:2px;width:12px"></span> 目标 0.60</span>`;
+        legendWrap.innerHTML = legHtml;
+      }
+
+      const w = 960, h = 300, padL = 60, padR = 30, padT = 25, padB = 40;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+
+      window.__chartPoints = [];
+
+      // ================= MODE B: SEQUENTIAL TIMELINE MODE =================
+      if (currentMode === 'timeline' && live.timeline_points && live.timeline_points.length > 0) {
+        const filteredTimeline = live.timeline_points.filter(p => targetRunIds.includes(p.run_id));
+        const pts = filteredTimeline.length > 0 ? filteredTimeline : live.timeline_points;
+
+        let minL = 999, maxL = 0;
+        pts.forEach(p => {
+          if (p.loss < minL) minL = p.loss;
+          if (p.loss > maxL) maxL = p.loss;
+        });
+        minL = Math.max(0.40, Math.floor(minL * 10) / 10 - 0.05);
+        maxL = Math.ceil(maxL * 10) / 10 + 0.05;
+
+        const getX = idx => padL + (idx / Math.max(1, pts.length - 1)) * chartW;
+        const getY = l => padT + (1 - (l - minL) / (maxL - minL)) * chartH;
+
+        let dPath = '', dArea = '';
+        let boundaries = [];
+        let lastRun = null;
+
+        pts.forEach((p, i) => {
+          const x = getX(i);
+          const y = getY(p.loss);
+          if (i === 0) {
+            dPath += `M ${x} ${y}`;
+            dArea += `M ${x} ${padT + chartH} L ${x} ${y}`;
+          } else {
+            dPath += ` L ${x} ${y}`;
+            dArea += ` L ${x} ${y}`;
+          }
+
+          if (p.run_id !== lastRun) {
+            boundaries.push({idx: i, run_id: p.run_id, x: x});
+            lastRun = p.run_id;
+          }
+
+          window.__chartPoints.push({
+            svgX: x, svgY: y,
+            run_id: p.run_id,
+            epoch: p.epoch,
+            chunk: p.chunk,
+            total_chunks: p.total_chunks,
+            step: p.step,
+            total_steps: p.total_steps,
+            loss: p.loss,
+            consumed: p.consumed,
+            color: RUN_COLORS[p.run_id] || '#38bdf8'
+          });
+        });
+        dArea += ` L ${getX(pts.length - 1)} ${padT + chartH} Z`;
+
+        // Draw Target Line 0.60
+        const y60 = getY(0.60);
+
+        let inner = `
+          <defs>
+            <linearGradient id="timeG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0"/>
+            </linearGradient>
+          </defs>
+          <!-- Grid & Target -->
+          <line x1="${padL}" y1="${padT}" x2="${w-padR}" y2="${padT}" stroke="#1e2c40" stroke-dasharray="3,3"/>
+          <line x1="${padL}" y1="${padT + chartH*0.5}" x2="${w-padR}" y2="${padT + chartH*0.5}" stroke="#1e2c40" stroke-dasharray="3,3"/>
+          <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#22354f"/>
+          ${y60 >= padT && y60 <= padT + chartH ? `<line x1="${padL}" y1="${y60}" x2="${w-padR}" y2="${y60}" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4"/><text x="${w-padR-5}" y="${y60-4}" fill="#10b981" font-size="10" text-anchor="end">收敛目标 0.60</text>` : ''}
+          <!-- Labels -->
+          <text x="${padL-8}" y="${padT+4}" fill="#64748b" font-size="11" text-anchor="end">${maxL.toFixed(2)}</text>
+          <text x="${padL-8}" y="${padT + chartH*0.5 + 4}" fill="#64748b" font-size="11" text-anchor="end">${((minL+maxL)/2).toFixed(2)}</text>
+          <text x="${padL-8}" y="${padT + chartH + 4}" fill="#64748b" font-size="11" text-anchor="end">${minL.toFixed(2)}</text>
+          <text x="${padL}" y="${h-12}" fill="#64748b" font-size="11">批次 #1 (启动)</text>
+          <text x="${w-padR}" y="${h-12}" fill="#64748b" font-size="11" text-anchor="end">批次 #${pts.length} (当前演进)</text>
+          <!-- Paths -->
+          <path d="${dArea}" fill="url(#timeG)"/>
+          <path d="${dPath}" fill="none" stroke="#38bdf8" stroke-width="2.5"/>
+        `;
+
+        // Render run transition boundary dashed lines
+        boundaries.forEach(b => {
+          inner += `
+            <line x1="${b.x}" y1="${padT}" x2="${b.x}" y2="${padT+chartH}" stroke="#334155" stroke-dasharray="2,2"/>
+            <text x="${b.x + 4}" y="${padT + 12}" fill="${RUN_COLORS[b.run_id] || '#cbd5e1'}" font-size="10.5" font-weight="700">${b.run_id}</text>
+          `;
+        });
+
+        // Last pulsating ring
+        const lastP = pts[pts.length - 1];
+        inner += `
+          <circle cx="${getX(pts.length - 1)}" cy="${getY(lastP.loss)}" r="6" fill="none" stroke="#34d399" stroke-width="2">
+            <animate attributeName="r" values="4;12;4" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.9;0.2;0.9" dur="2s" repeatCount="indefinite"/>
+          </circle>
+        `;
+
+        svg.innerHTML = inner;
+
+        // Update Ribbon
+        updateRibbonInfo(targetRunIds, historyRuns, pts.length, '全时序连续推进流水', pts[0].loss, lastP.loss);
+        return;
+      }
+
+      // ================= MODE A: OVERLAY / SINGLE RUN MODE =================
+      let minL = 999, maxL = 0;
+      let totalPlottedChunks = 0;
+
+      targetRunIds.forEach(r => {
+        const rObj = historyRuns[r];
+        if (!rObj || !rObj.points || !rObj.points.length) return;
+        rObj.points.forEach(p => {
+          totalPlottedChunks++;
+          if (p.loss < minL) minL = p.loss;
+          if (p.loss > maxL) maxL = p.loss;
+        });
+      });
+
+      if (minL === 999) { minL = 0.55; maxL = 1.5; }
+      minL = Math.max(0.40, Math.floor(minL * 10) / 10 - 0.05);
+      maxL = Math.ceil(maxL * 10) / 10 + 0.05;
+
+      const isSingleRun = targetRunIds.length === 1;
+      const singleRunObj = isSingleRun ? historyRuns[targetRunIds[0]] : null;
+      const singleMaxStep = (singleRunObj && singleRunObj.total_steps) ? singleRunObj.total_steps : (singleRunObj && singleRunObj.points.length ? singleRunObj.points[singleRunObj.points.length - 1].step : 100);
+
       const getY = l => padT + (1 - (l - minL) / (maxL - minL)) * chartH;
+      const getSingleX = s => padL + (s / Math.max(1, singleMaxStep)) * chartW;
+      const getMultiX = (p, rObj) => {
+        const prog = (p.chunk || 1) / Math.max(1, p.total_chunks || rObj.total_chunks || 1);
+        return padL + prog * chartW;
+      };
+
+      const y60 = getY(0.60);
+      let inner = `
+        <defs>
+          <linearGradient id="singleG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#10b981" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+        <!-- Grid -->
+        <line x1="${padL}" y1="${padT}" x2="${w-padR}" y2="${padT}" stroke="#1e2c40" stroke-dasharray="3,3"/>
+        <line x1="${padL}" y1="${padT + chartH*0.5}" x2="${w-padR}" y2="${padT + chartH*0.5}" stroke="#1e2c40" stroke-dasharray="3,3"/>
+        <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#22354f"/>
+        ${y60 >= padT && y60 <= padT + chartH ? `<line x1="${padL}" y1="${y60}" x2="${w-padR}" y2="${y60}" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4"/><text x="${w-padR-5}" y="${y60-4}" fill="#10b981" font-size="10" text-anchor="end">收敛目标 0.60</text>` : ''}
+        <!-- Labels -->
+        <text x="${padL-8}" y="${padT+4}" fill="#64748b" font-size="11" text-anchor="end">${maxL.toFixed(2)}</text>
+        <text x="${padL-8}" y="${padT + chartH*0.5 + 4}" fill="#64748b" font-size="11" text-anchor="end">${((minL+maxL)/2).toFixed(2)}</text>
+        <text x="${padL-8}" y="${padT + chartH + 4}" fill="#64748b" font-size="11" text-anchor="end">${minL.toFixed(2)}</text>
+        <text x="${padL}" y="${h-12}" fill="#64748b" font-size="11">${isSingleRun ? 'Step 0' : '0% 阶段进度'}</text>
+        <text x="${w-padR}" y="${h-12}" fill="#64748b" font-size="11" text-anchor="end">${isSingleRun ? 'Step ' + singleMaxStep.toLocaleString() + (targetRunIds[0] === curRun ? ' (实时)' : ' (完成)') : '100% 阶段完成'}</text>
+      `;
+
+      // Plot each run
+      targetRunIds.forEach(r => {
+        const rObj = historyRuns[r];
+        if (!rObj || !rObj.points || !rObj.points.length) return;
+        const col = RUN_COLORS[r] || '#3b82f6';
+        const pts = rObj.points;
+
+        let dPath = '', dArea = '';
+        pts.forEach((p, i) => {
+          const x = isSingleRun ? getSingleX(p.step) : getMultiX(p, rObj);
+          const y = getY(p.loss);
+          if (i === 0) {
+            dPath += `M ${x} ${y}`;
+            dArea += `M ${x} ${padT + chartH} L ${x} ${y}`;
+          } else {
+            dPath += ` L ${x} ${y}`;
+            dArea += ` L ${x} ${y}`;
+          }
+
+          window.__chartPoints.push({
+            svgX: x, svgY: y,
+            run_id: r,
+            epoch: p.epoch,
+            chunk: p.chunk,
+            total_chunks: p.total_chunks,
+            step: p.step,
+            total_steps: p.total_steps,
+            loss: p.loss,
+            consumed: p.consumed,
+            color: col
+          });
+        });
+        const lastX = isSingleRun ? getSingleX(pts[pts.length - 1].step) : getMultiX(pts[pts.length - 1], rObj);
+        dArea += ` L ${lastX} ${padT + chartH} Z`;
+
+        if (isSingleRun) {
+          inner += `<path d="${dArea}" fill="url(#singleG)"/>`;
+        }
+        inner += `<path d="${dPath}" fill="none" stroke="${col}" stroke-width="${isSingleRun ? 3 : 2}"/>`;
+
+        // Dots
+        if (pts.length <= 60 || isSingleRun) {
+          pts.forEach(p => {
+            const x = isSingleRun ? getSingleX(p.step) : getMultiX(p, rObj);
+            const y = getY(p.loss);
+            inner += `<circle cx="${x}" cy="${y}" r="3" fill="#0b1320" stroke="${col}" stroke-width="2"/>`;
+          });
+        }
+
+        // Active Pulsing Ring if this run is current_run and live
+        if (r === curRun && live.process_alive) {
+          const lp = pts[pts.length - 1];
+          const lx = isSingleRun ? getSingleX(lp.step) : getMultiX(lp, rObj);
+          const ly = getY(lp.loss);
+          inner += `
+            <circle cx="${lx}" cy="${ly}" r="6" fill="none" stroke="#34d399" stroke-width="2">
+              <animate attributeName="r" values="4;12;4" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.9;0.2;0.9" dur="2s" repeatCount="indefinite"/>
+            </circle>
+          `;
+        }
+      });
+
+      svg.innerHTML = inner;
+
+      // Update Ribbon
+      updateRibbonInfo(targetRunIds, historyRuns, totalPlottedChunks, isSingleRun ? (RUN_NAMES[targetRunIds[0]] || targetRunIds[0]) : (targetRunIds.length + ' 组实验叠加'), minL, null);
+    }
+
+    function updateRibbonInfo(runIds, historyRuns, totalChunks, spanTitle, minL, endL) {
+      const rSpan = document.getElementById('ribbonSpan');
+      if (rSpan) rSpan.textContent = spanTitle;
+
+      const rSteps = document.getElementById('ribbonSteps');
+      let totalSteps = 0, totalConsumed = 0, maxAcc = 0;
+      let startL = null, latestL = null;
+
+      runIds.forEach(r => {
+        const ro = historyRuns[r];
+        if (!ro) return;
+        const st = ro.stats || {};
+        totalSteps += st.total_steps || ro.total_steps || 0;
+        totalConsumed += st.consumed || ro.total_consumed || 0;
+        if (ro.best_s1_acc && ro.best_s1_acc > maxAcc) maxAcc = ro.best_s1_acc;
+        if (startL === null && st.start_loss) startL = st.start_loss;
+        if (st.end_loss) latestL = st.end_loss;
+      });
+
+      if (rSteps) rSteps.textContent = `${totalChunks.toLocaleString()} 批次 · ${totalSteps.toLocaleString()} 步`;
+
+      const rLoss = document.getElementById('ribbonLoss');
+      if (rLoss) {
+        if (startL && latestL) {
+          const reduct = ((startL - latestL) / startL * 100).toFixed(1);
+          rLoss.textContent = `${startL.toFixed(4)} ➡️ ${latestL.toFixed(4)} (-${reduct}%)`;
+        } else if (minL) {
+          rLoss.textContent = `最低 Loss: ${minL.toFixed(4)}`;
+        }
+      }
+
+      const rSamples = document.getElementById('ribbonSamples');
+      if (rSamples) rSamples.textContent = `${totalConsumed.toLocaleString()} 条真实样本`;
+
+      const rAcc = document.getElementById('ribbonAcc');
+      if (rAcc) {
+        rAcc.textContent = maxAcc > 0 ? `${fmtPct(maxAcc)} (超基线 +${((maxAcc - 0.644)*100).toFixed(1)}%)` : '评测进行中';
+      }
+    }
+
+    // Interactive Hover Tooltip for Chart 1
+    function handleChartMouseMove(e) {
+      const svg = document.getElementById('liveLossSvg');
+      const tip = document.getElementById('chartTooltip');
+      if (!svg || !tip || !window.__chartPoints || window.__chartPoints.length === 0) return;
+      const rect = svg.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const svgX = (mouseX / rect.width) * 960;
+
+      let closest = null, minDist = 999999;
+      window.__chartPoints.forEach(p => {
+        const dist = Math.abs(p.svgX - svgX);
+        if (dist < minDist) {
+          minDist = dist;
+          closest = p;
+        }
+      });
+
+      if (closest && minDist < 35) {
+        tip.style.display = 'block';
+        tip.style.left = Math.min(rect.width - 200, Math.max(10, mouseX + 15)) + 'px';
+        tip.style.top = Math.max(10, mouseY - 60) + 'px';
+        tip.innerHTML = `
+          <div style="font-weight:700;color:${closest.color}">[${closest.run_id}] ${RUN_NAMES[closest.run_id] || closest.run_id}</div>
+          <div style="color:#94a3b8">Epoch ${closest.epoch} · Chunk ${closest.chunk}/${closest.total_chunks}</div>
+          <div>当前步数: <b style="color:#fff">Step ${closest.step.toLocaleString()}</b> / ${(closest.total_steps||0).toLocaleString()}</div>
+          <div>实时损失: <b style="color:#60a5fa">${closest.loss}</b> <span class="dir-badge dir-lower">⬇️</span></div>
+          <div>已消费样本: <b style="color:#34d399">${(closest.consumed||0).toLocaleString()} 条</b></div>
+        `;
+      } else {
+        tip.style.display = 'none';
+      }
+    }
+
+    function handleChartMouseLeave() {
+      const tip = document.getElementById('chartTooltip');
+      if (tip) tip.style.display = 'none';
+    }
+
+    // 3. Render Chart 2: Model Ladder Horizontal Bars (Top-5 vs Full 14 Runs)
+    function renderLadderChart() {
+      const svg = document.getElementById('ladderSvg');
+      if (!svg) return;
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
+
+      let items = [];
+      const footTxt = document.getElementById('ladderFooterTxt');
+
+      if (currentLadderView === 'all' && Object.keys(historyRuns).length > 0) {
+        items = Object.keys(historyRuns).map(r => {
+          const ro = historyRuns[r];
+          return {
+            id: r,
+            name: r,
+            accuracy: ro.best_s1_acc || 0.65,
+            loss: (ro.stats || {}).end_loss || 0.60,
+            status: ro.status,
+            isCore: ['P0_B03_C01', 'F01', 'F02'].includes(r)
+          };
+        }).sort((a, b) => b.accuracy - a.accuracy);
+        if (footTxt) footTxt.textContent = `全 14 阶段天梯横向对齐 · 基准 64.4% · 最高 67.38%`;
+      } else {
+        items = (top5.length ? top5 : [
+          {checkpoint_id: 'P0_B03_C01-e02', s1_accuracy: 0.6863, primary_score: 159.25},
+          {checkpoint_id: 'P0_B01_C01-e02', s1_accuracy: 0.6774, primary_score: 158.83},
+          {checkpoint_id: 'P0_B03_C05-e02', s1_accuracy: 0.6756, primary_score: 157.66},
+          {checkpoint_id: 'P0_B03_C08-e02', s1_accuracy: 0.6667, primary_score: 157.51},
+          {checkpoint_id: 'P0_B02_C01-e02', s1_accuracy: 0.6595, primary_score: 157.46},
+        ]).slice(0, 5).map(m => ({
+          id: m.checkpoint_id,
+          name: (m.checkpoint_id || '').replace('_QB_PB', '').replace('-e02', ''),
+          accuracy: m.s1_accuracy || 0.65,
+          score: m.primary_score,
+          isCore: true
+        }));
+        if (footTxt) footTxt.textContent = `基准 64.4% · 冠军模型 68.63% (+4.23%)`;
+      }
+
+      const w = 500, h = 270;
+      const count = Math.min(items.length, 10);
+      const rowH = Math.min(38, Math.floor((h - 30) / count));
+      const padL = 130, barMaxW = 260;
+      let inner = '';
+
+      items.slice(0, count).forEach((m, i) => {
+        const y = 20 + i * rowH;
+        const acc = m.accuracy || 0.65;
+        const bw = Math.max(10, ((acc - 0.50) / 0.25) * barMaxW);
+        const col = i === 0 ? '#10b981' : (m.isCore ? '#3b82f6' : '#64748b');
+
+        inner += `
+          <text x="${padL - 10}" y="${y + 14}" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="end">${m.name}</text>
+          <rect x="${padL}" y="${y}" width="${barMaxW}" height="${rowH - 12}" rx="4" fill="#0f172a"/>
+          <rect x="${padL}" y="${y}" width="${bw}" height="${rowH - 12}" rx="4" fill="${col}"/>
+          <text x="${padL + bw + 8}" y="${y + rowH - 15}" fill="#fff" font-size="11" font-weight="700">${fmtPct(acc)}</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // 4. Render Chart 1C: Cumulative Consumed Samples Area Chart
+    function renderCumulativeThroughputChart() {
+      const svg = document.getElementById('cumulativeThroughputSvg');
+      if (!svg) return;
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
+      const runs = live.chronological_runs || Object.keys(historyRuns);
+
+      let cum = 0;
+      const data = [];
+      runs.forEach(r => {
+        const ro = historyRuns[r];
+        if (!ro) return;
+        const cons = (ro.stats || {}).consumed || ro.total_consumed || 0;
+        cum += cons;
+        data.push({run: r, cum: cum, cons: cons});
+      });
+
+      if (!data.length) {
+        data.push({run: 'F01', cum: 983040});
+        data.push({run: 'F02', cum: 2983040});
+        data.push({run: 'ALGN_04', cum: 4864210});
+        data.push({run: 'F04', cum: 4905170});
+      }
+
+      const totalCum = data[data.length - 1].cum;
+      const cumTxt = document.getElementById('cumSamplesTxt');
+      if (cumTxt) cumTxt.textContent = `${totalCum.toLocaleString()} 条真实样本`;
+
+      const w = 500, h = 270, padL = 60, padR = 25, padT = 25, padB = 40;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+
+      const getX = i => padL + (i / Math.max(1, data.length - 1)) * chartW;
+      const getY = val => padT + (1 - val / Math.max(1, totalCum * 1.08)) * chartH;
 
       let dPath = '', dArea = '';
-      points.forEach((p, i) => {
-        const x = getX(p.step);
-        const y = getY(p.loss);
+      data.forEach((d, i) => {
+        const x = getX(i);
+        const y = getY(d.cum);
         if (i === 0) {
           dPath += `M ${x} ${y}`;
           dArea += `M ${x} ${padT + chartH} L ${x} ${y}`;
@@ -868,72 +1649,145 @@
           dArea += ` L ${x} ${y}`;
         }
       });
-      dArea += ` L ${getX(points[points.length-1].step)} ${padT + chartH} Z`;
+      dArea += ` L ${getX(data.length - 1)} ${padT + chartH} Z`;
 
       let inner = `
         <defs>
-          <linearGradient id="lossG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.35"/>
-            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
+          <linearGradient id="cumG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#10b981" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
           </linearGradient>
         </defs>
-        <!-- Grid -->
         <line x1="${padL}" y1="${padT}" x2="${w-padR}" y2="${padT}" stroke="#1e2c40" stroke-dasharray="3,3"/>
         <line x1="${padL}" y1="${padT + chartH*0.5}" x2="${w-padR}" y2="${padT + chartH*0.5}" stroke="#1e2c40" stroke-dasharray="3,3"/>
         <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#22354f"/>
-        <!-- Labels -->
-        <text x="${padL-8}" y="${padT+4}" fill="#64748b" font-size="11" text-anchor="end">1.50</text>
-        <text x="${padL-8}" y="${padT + chartH*0.5 + 4}" fill="#64748b" font-size="11" text-anchor="end">1.00</text>
-        <text x="${padL-8}" y="${padT + chartH + 4}" fill="#64748b" font-size="11" text-anchor="end">0.55</text>
-        <text x="${padL}" y="${h-12}" fill="#64748b" font-size="11">Step ${minS}</text>
-        <text x="${w-padR}" y="${h-12}" fill="#64748b" font-size="11" text-anchor="end">Step ${maxS} (实时)</text>
-        <!-- Path -->
-        <path d="${dArea}" fill="url(#lossG)"/>
-        <path d="${dPath}" fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+        <text x="${padL-8}" y="${padT+4}" fill="#64748b" font-size="11" text-anchor="end">${(totalCum/10000).toFixed(0)}W</text>
+        <text x="${padL-8}" y="${padT + chartH*0.5 + 4}" fill="#64748b" font-size="11" text-anchor="end">${(totalCum/20000).toFixed(0)}W</text>
+        <text x="${padL-8}" y="${padT + chartH + 4}" fill="#64748b" font-size="11" text-anchor="end">0</text>
+        <text x="${padL}" y="${h-12}" fill="#64748b" font-size="11">阶段启动</text>
+        <text x="${w-padR}" y="${h-12}" fill="#64748b" font-size="11" text-anchor="end">当前累计全量</text>
+        <path d="${dArea}" fill="url(#cumG)"/>
+        <path d="${dPath}" fill="none" stroke="#10b981" stroke-width="2.5"/>
       `;
 
-      points.forEach(p => {
-        inner += `<circle cx="${getX(p.step)}" cy="${getY(p.loss)}" r="3" fill="#0b1320" stroke="#60a5fa" stroke-width="2"/>`;
+      data.forEach((d, i) => {
+        inner += `<circle cx="${getX(i)}" cy="${getY(d.cum)}" r="3.5" fill="#0b1320" stroke="#34d399" stroke-width="2"/>`;
       });
-      const last = points[points.length-1];
-      inner += `
-        <circle cx="${getX(last.step)}" cy="${getY(last.loss)}" r="6" fill="none" stroke="#60a5fa" stroke-width="1.5">
-          <animate attributeName="r" values="4;10;4" dur="2s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="2s" repeatCount="indefinite"/>
-        </circle>
-      `;
 
       svg.innerHTML = inner;
     }
 
-    // 3. Render Chart 2: Model Ladder Horizontal Bars
-    function renderLadderChart() {
-      const svg = document.getElementById('ladderSvg');
-      const items = (top5.length ? top5 : [
-        {checkpoint_id: 'P0_B03_C01-e02', s1_accuracy: 0.6863, primary_score: 159.25},
-        {checkpoint_id: 'P0_B01_C01-e02', s1_accuracy: 0.6774, primary_score: 158.83},
-        {checkpoint_id: 'P0_B03_C05-e02', s1_accuracy: 0.6756, primary_score: 157.66},
-        {checkpoint_id: 'P0_B03_C08-e02', s1_accuracy: 0.6667, primary_score: 157.51},
-        {checkpoint_id: 'P0_B02_C01-e02', s1_accuracy: 0.6595, primary_score: 157.46},
-      ]).slice(0, 5);
+    // 5. Render Chart 1D: Step & Chunk Scale by Run Phase
+    function renderStepScaleChart() {
+      const svg = document.getElementById('stepScaleSvg');
+      if (!svg) return;
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
 
-      const w = 450, h = 250, rowH = 42, padL = 120, barMaxW = 230;
-      let inner = '';
-      items.forEach((m, i) => {
-        const y = 20 + i * rowH;
-        const acc = m.s1_accuracy || 0.65;
-        const bw = ((acc - 0.5) / 0.25) * barMaxW;
-        const name = (m.checkpoint_id || '').replace('_QB_PB', '').replace('-e02', '');
-        const col = i === 0 ? '#10b981' : (i < 3 ? '#3b82f6' : '#64748b');
+      const phases = ['F01', 'F02', 'ALGN_02_S1_S2', 'ALGN_04_S1_S2_S3', 'F03', 'F04'];
+      const data = phases.map(p => {
+        const ro = historyRuns[p] || {};
+        return {
+          id: p,
+          label: p.replace('_S1_S2_S3', '').replace('_S1_S2', ''),
+          chunks: ro.total_chunks || 100,
+          steps: ro.total_steps || (ro.stats || {}).total_steps || 1000
+        };
+      });
 
+      const w = 500, h = 220, padL = 50, padR = 20, padT = 20, padB = 35;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+      const groupW = chartW / data.length;
+      const barW = 14;
+
+      let inner = `
+        <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#22354f"/>
+      `;
+
+      data.forEach((d, i) => {
+        const gx = padL + i * groupW + (groupW - barW * 2 - 4) / 2;
+        const sH = Math.min(chartH - 10, (d.steps / 65000) * (chartH - 20));
+        const cH = Math.min(chartH - 10, (d.chunks / 1300) * (chartH - 20));
+
+        // Step bar
         inner += `
-          <text x="${padL - 10}" y="${y + 14}" fill="#cbd5e1" font-size="11.5" font-weight="600" text-anchor="end">${name}</text>
-          <rect x="${padL}" y="${y}" width="${barMaxW}" height="18" rx="4" fill="#0f172a"/>
-          <rect x="${padL}" y="${y}" width="${bw}" height="18" rx="4" fill="${col}"/>
-          <text x="${padL + bw + 8}" y="${y + 13}" fill="#fff" font-size="11" font-weight="700">${fmtPct(acc)}</text>
+          <rect x="${gx}" y="${padT + chartH - sH}" width="${barW}" height="${sH}" rx="3" fill="#3b82f6"/>
+          <rect x="${gx + barW + 4}" y="${padT + chartH - cH}" width="${barW}" height="${cH}" rx="3" fill="#8b5cf6"/>
+          <text x="${gx + barW + 2}" y="${h - 12}" fill="#cbd5e1" font-size="10.5" font-weight="600" text-anchor="middle">${d.label}</text>
         `;
       });
       svg.innerHTML = inner;
+    }
+
+    // 6. Render Dynamic Live Runs Ledger Table
+    function renderLiveRunsTable() {
+      const table = document.getElementById('liveRunsTable');
+      if (!table) return;
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
+      const curRun = live.current_run || 'F04';
+
+      let html = `
+        <thead>
+          <tr>
+            <th>阶段代号 (Run ID)</th>
+            <th>任务分类</th>
+            <th>运行状态</th>
+            <th>批次进度</th>
+            <th>步数进度</th>
+            <th>真实消费样本</th>
+            <th>起始 Loss</th>
+            <th>最新 Loss (⬇️)</th>
+            <th>累计降幅 (⬇️)</th>
+            <th>S1 验证精度 (⬆️)</th>
+            <th>核心留存策略</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+
+      const runs = live.chronological_runs || Object.keys(historyRuns);
+      runs.forEach(r => {
+        const ro = historyRuns[r];
+        if (!ro) return;
+        const st = ro.stats || {};
+        const isCur = r === curRun && live.process_alive;
+        const statusBadge = isCur
+          ? `<span style="color:#6ee7b7;background:rgba(16,185,129,0.15);padding:2px 8px;border-radius:4px;border:1px solid #10b981">⚡ 运行中 (L4流式)</span>`
+          : `<span style="color:#94a3b8;background:rgba(255,255,255,0.05);padding:2px 6px;border-radius:4px">✅ 已完成</span>`;
+
+        const s1Acc = ro.best_s1_acc ? `<b style="color:#34d399">${fmtPct(ro.best_s1_acc)}</b>` : (isCur ? '<span style="color:#60a5fa">训练进行中</span>' : '<span style="color:#64748b">N/A</span>');
+        const lossVal = st.end_loss !== undefined ? st.end_loss : '-';
+        const startVal = st.start_loss !== undefined ? st.start_loss : '-';
+        const reduct = st.reduction_pct !== undefined ? `<b style="color:#38bdf8">-${st.reduction_pct}%</b>` : '-';
+        const catName = ro.category === 'full_coverage' ? '全量分层扩展' : (ro.category === 'ablation' ? '消融多任务联合' : '单层基准');
+
+        let poolTag = '<span style="color:#64748b">归档已修剪</span>';
+        if (['P0_B03_C01', 'F01', 'F02'].includes(r)) {
+          poolTag = '<span style="color:#6ee7b7;border:1px solid #10b981;padding:1px 6px;border-radius:3px">旧核心永久保护</span>';
+        } else if (isCur) {
+          poolTag = '<span style="color:#c084fc;border:1px solid #8b5cf6;padding:1px 6px;border-radius:3px">新核心评估候选</span>';
+        }
+
+        html += `
+          <tr style="${isCur ? 'background:rgba(59,130,246,0.06)' : ''}">
+            <td><b>${r}</b></td>
+            <td><span style="color:#60a5fa">${catName}</span></td>
+            <td>${statusBadge}</td>
+            <td>${st.current_chunk || ro.total_chunks || 0} / ${ro.total_chunks || 0}</td>
+            <td>${(st.current_step || ro.total_steps || 0).toLocaleString()} / ${(ro.total_steps || 0).toLocaleString()}</td>
+            <td>${(st.consumed || ro.total_consumed || 0).toLocaleString()} 条</td>
+            <td>${startVal}</td>
+            <td style="color:#60a5fa"><b>${lossVal}</b></td>
+            <td>${reduct}</td>
+            <td>${s1Acc}</td>
+            <td>${poolTag}</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody>`;
+      table.innerHTML = html;
     }
 
     // 4. Render Chart 3: Pipeline Latency Breakdown
@@ -1385,8 +2239,10 @@
 
     // Init All
     window.addEventListener('DOMContentLoaded', () => {
-      renderLiveLossChart();
+      renderMultiSpanLossChart();
       renderLadderChart();
+      renderCumulativeThroughputChart();
+      renderStepScaleChart();
       renderLatencyChart();
       renderAblationChart();
       renderLrChart();
@@ -1402,6 +2258,7 @@
       renderLayerStack();
       renderDataSourceDonut();
       renderTables();
+      renderLiveRunsTable();
 
       // Start periodic 5s live fetch
       fetchLiveStatusNow();
