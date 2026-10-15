@@ -858,6 +858,87 @@ HTML_CONTENT = r'''<!doctype html>
       font-variant-numeric: tabular-nums;
     }
 
+    /* Tree Table & Hierarchical Nodes */
+    .tree-table-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      background: var(--cds-s1);
+      border: 1px solid var(--cds-border);
+      border-radius: 8px;
+    }
+    .tree-date-row {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+    .tree-date-row:hover {
+      background: rgba(217, 119, 87, 0.14) !important;
+    }
+    .tree-date-cell {
+      padding: 10px 14px !important;
+      text-align: left !important;
+    }
+    .tree-run-row {
+      background: rgba(255, 255, 255, 0.02) !important;
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+      transition: background 0.15s ease;
+    }
+    .tree-run-row:hover {
+      background: rgba(255, 255, 255, 0.06) !important;
+    }
+    .tree-run-row.is-cur-run {
+      background: rgba(217, 119, 87, 0.09) !important;
+      border-left: 3px solid var(--cds-clay) !important;
+    }
+    .tree-version-row {
+      background: transparent;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+      transition: background 0.15s ease;
+    }
+    .tree-version-row:hover {
+      background: rgba(255, 255, 255, 0.04) !important;
+    }
+    .tree-version-row.is-retained {
+      background: rgba(46, 160, 111, 0.04) !important;
+    }
+    .tree-version-row.is-in-flight {
+      background: rgba(217, 119, 87, 0.08) !important;
+    }
+    .tree-branch-symbol {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: rgba(255, 255, 255, 0.35);
+      font-weight: 500;
+      letter-spacing: -1px;
+    }
+    .tree-toggle-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--cds-clay);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tree-toggle-pill:hover {
+      background: var(--cds-clay);
+      color: #fff;
+    }
+
     /* Slide-over Dictionary Drawer */
     #dictDrawer {
       position: fixed;
@@ -1763,14 +1844,34 @@ HTML_CONTENT = r'''<!doctype html>
       <!-- Live Detailed Experiments Ledger Table -->
       <details open style="margin-bottom:14px">
         <summary>
-          <span>⚡ 全生命周期训练实验实时运行台账 (14 组历史阶段 · 动态实时对账)</span>
+          <span>🌳 全生命周期训练版本树形运行台账 (按时间折叠 · 133 组全版本无遗漏对账)</span>
           <span style="font-size:12px;color:#34d399">● 5 秒实时刷新</span>
         </summary>
         <div class="details-body">
-          <div style="font-size:12px;color:var(--cds-text-muted);margin-bottom:10px">
-            💡 <b>怎么看</b>：完整记录全部历史阶段与当前活跃 Run。<b>Loss ⬇️ 越小越好</b>；<b>降幅 ⬇️ 越大说明收敛越显著</b>；<b>S1 精度 ⬆️ 越大越好</b>（超过基线 64.44% 越多越优）。
+          <div style="font-size:12px;color:var(--cds-text-muted);margin-bottom:12px;line-height:1.6">
+            💡 <b>怎么看</b>：本表以<b>时间发生顺序</b>组织三层树形结构：<b>📅 时间日期簇 (支持折叠) ➔ 📦 阶段 Run 组 ➔ 🍃 每个 Checkpoint 具体版本</b>。完整录入全生命周期 <b>133 组版本节点</b>（包含 <b>🟢 3 组保留在盘与流式实体</b> 和 <b>🔴 130 组已修剪空间释放版本</b>）。默认展开今日与最新消融阶段，历史早期网格可一键展开。
           </div>
-          <table id="liveRunsTable"></table>
+
+          <!-- Tree Table Controls Toolbar -->
+          <div class="tree-table-controls">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <button class="filter-btn active" id="btnTreeAll" onclick="setTreeFilter('all')">📋 全部版本 (<span id="treeBadgeAll">133</span>)</button>
+              <button class="filter-btn green" id="btnTreeRetained" onclick="setTreeFilter('retained')">🟢 没淘汰版本 (<span id="treeBadgeRet">3</span>)</button>
+              <button class="filter-btn rose" id="btnTreePruned" onclick="setTreeFilter('pruned')">🔴 已淘汰修剪 (<span id="treeBadgePru">130</span>)</button>
+              <div style="width:1px;height:18px;background:var(--cds-border);margin:0 4px"></div>
+              <button class="filter-btn" onclick="expandAllTreeNodes()">📂 全部展开</button>
+              <button class="filter-btn" onclick="collapseAllTreeNodes()">📁 全部折叠</button>
+              <button class="filter-btn" onclick="expandRecentTreeNodes()">⚡ 展开今日与昨日</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex:1;max-width:440px">
+              <input type="text" id="liveTreeSearch" placeholder="🔍 快速搜索版本代号 / 阶段 / 时间 / 状态 (如 F04, 2026-10-15, ALGN, 留存, 淘汰)..." oninput="handleLiveTreeSearch(this.value)" style="flex:1;background:var(--cds-s1);border:1px solid var(--cds-border);color:#fff;padding:6px 12px;border-radius:9999px;font-size:12px;outline:none">
+              <span style="font-size:11.5px;color:var(--cds-text-muted);white-space:nowrap">匹配 <b id="liveTreeMatchCount" style="color:var(--cds-clay)">133</b> 项</span>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table id="liveRunsTable"></table>
+          </div>
         </div>
       </details>
 
@@ -3481,81 +3582,339 @@ HTML_CONTENT = r'''<!doctype html>
       svg.innerHTML = inner;
     }
 
-    // Render Tab 5 Tables
+    // Tab 5 Hierarchical Tree State (Folded by Time)
+    let liveTreeCollapsedDates = new Set(['2026-10-13', '2026-10-12']); // Default: 10-15 and 10-14 expanded, earlier folded
+    let liveTreeCollapsedRuns = new Set();
+    let liveTreeFilter = 'all'; // 'all', 'retained', 'pruned'
+    let liveTreeSearchQuery = '';
+
+    function toggleDateNode(dt) {
+      if (liveTreeCollapsedDates.has(dt)) {
+        liveTreeCollapsedDates.delete(dt);
+      } else {
+        liveTreeCollapsedDates.add(dt);
+      }
+      renderLiveRunsTable();
+    }
+
+    function toggleRunNode(runKey) {
+      if (liveTreeCollapsedRuns.has(runKey)) {
+        liveTreeCollapsedRuns.delete(runKey);
+      } else {
+        liveTreeCollapsedRuns.add(runKey);
+      }
+      renderLiveRunsTable();
+    }
+
+    function setTreeFilter(filter) {
+      liveTreeFilter = filter;
+      const bAll = document.getElementById('btnTreeAll');
+      const bRet = document.getElementById('btnTreeRetained');
+      const bPru = document.getElementById('btnTreePruned');
+      if (bAll) bAll.className = 'filter-btn' + (filter === 'all' ? ' active' : '');
+      if (bRet) bRet.className = 'filter-btn' + (filter === 'retained' ? ' active green' : '');
+      if (bPru) bPru.className = 'filter-btn' + (filter === 'pruned' ? ' active rose' : '');
+      renderLiveRunsTable();
+    }
+
+    function expandAllTreeNodes() {
+      liveTreeCollapsedDates.clear();
+      liveTreeCollapsedRuns.clear();
+      renderLiveRunsTable();
+    }
+
+    function collapseAllTreeNodes() {
+      const live = cachedLive || {};
+      const allV = (live.retained_versions || []).concat(live.pruned_versions || []);
+      allV.forEach(v => {
+        const dt = (v.created_at || '').substring(0, 10);
+        if (dt) liveTreeCollapsedDates.add(dt);
+      });
+      renderLiveRunsTable();
+    }
+
+    function expandRecentTreeNodes() {
+      liveTreeCollapsedDates.clear();
+      liveTreeCollapsedDates.add('2026-10-13');
+      liveTreeCollapsedDates.add('2026-10-12');
+      liveTreeCollapsedRuns.clear();
+      renderLiveRunsTable();
+    }
+
+    function handleLiveTreeSearch(val) {
+      liveTreeSearchQuery = (val || '').trim().toLowerCase();
+      if (liveTreeSearchQuery) {
+        liveTreeCollapsedDates.clear();
+        liveTreeCollapsedRuns.clear();
+      }
+      renderLiveRunsTable();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Render Tab 5 Tree Table (Every single version recorded & time-folded)
     function renderLiveRunsTable() {
       const table = document.getElementById('liveRunsTable');
       if (!table) return;
       const live = cachedLive || {};
       const historyRuns = live.history_runs || {};
       const curRun = live.current_run || 'F04';
+      const retainedList = live.retained_versions || [];
+      const prunedList = live.pruned_versions || [];
+
+      // Update badge counts on toolbar
+      const bAll = document.getElementById('treeBadgeAll');
+      const bRet = document.getElementById('treeBadgeRet');
+      const bPru = document.getElementById('treeBadgePru');
+      if (bAll) bAll.textContent = retainedList.length + prunedList.length;
+      if (bRet) bRet.textContent = retainedList.length;
+      if (bPru) bPru.textContent = prunedList.length;
+
+      let allVersions = retainedList.concat(prunedList);
+
+      // Apply Filter: all / retained / pruned
+      let filteredVersions = allVersions;
+      if (liveTreeFilter === 'retained') {
+        filteredVersions = allVersions.filter(v => v.weights_saved || String(v.retention_status).includes('RETAINED') || String(v.retention_status).includes('ACTIVE'));
+      } else if (liveTreeFilter === 'pruned') {
+        filteredVersions = allVersions.filter(v => !(v.weights_saved || String(v.retention_status).includes('RETAINED') || String(v.retention_status).includes('ACTIVE')));
+      }
+
+      // Apply Search Query
+      if (liveTreeSearchQuery) {
+        filteredVersions = filteredVersions.filter(v => {
+          const q = liveTreeSearchQuery;
+          const haystack = `${v.checkpoint_id} ${v.run_id} ${v.protocol_version || ''} ${v.created_at || ''} ${v.retention_status || ''} ${v.reasons || ''} ${v.elimination_reason || ''}`.toLowerCase();
+          return haystack.includes(q);
+        });
+      }
+
+      const matchEl = document.getElementById('liveTreeMatchCount');
+      if (matchEl) matchEl.textContent = filteredVersions.length;
+
+      // Group by Date -> Run
+      const dateMap = {};
+      filteredVersions.forEach(v => {
+        let dt = (v.created_at || '').substring(0, 10);
+        if (!dt || dt.length < 10) dt = '2026-10-12';
+        if (!dateMap[dt]) dateMap[dt] = {};
+        const rid = v.run_id || 'UNKNOWN';
+        if (!dateMap[dt][rid]) dateMap[dt][rid] = [];
+        dateMap[dt][rid].push(v);
+      });
+
+      const sortedDates = Object.keys(dateMap).sort().reverse();
 
       let html = `
         <thead>
           <tr>
-            <th title="实验唯一代号与配置标识">阶段代号 (Run ID)</th>
-            <th title="因果隔离训练协议版本">协议版本</th>
-            <th title="开始训练时间 (CST/UTC+8)">开始时间</th>
-            <th title="完成时间或最后更新心跳时间">完成 / 最新时间</th>
-            <th title="累计总耗时或当前进行时长">运行时长</th>
-            <th title="多任务与全量分层划分">任务分类</th>
-            <th title="A6000 实时进程存活状态">运行状态</th>
-            <th title="8,192 样本/批次的流式推进">批次进度</th>
-            <th title="AdamW 权重参数更新步数">优化步数</th>
-            <th title="真实参与反向传播的样本记录条数">真实消费样本 (⬆️)</th>
-            <th title="当前最新批次的交叉熵误差，越小说明预测越精确">最新 Loss (⬇️)</th>
-            <th title="相较于初始 Loss 的相对收敛降幅">收敛降幅 (⬇️)</th>
-            <th title="在 3,142 固定测试集上选对最佳回答的概率，越大越好">S1 验证精度 (⬆️)</th>
-            <th title="是否保留实体 Checkpoint 权重">核心留存判定</th>
+            <th style="min-width:300px" title="版本与树形时序层级：按时间折叠展开">版本节点 / 实验系列 (树形时序)</th>
+            <th style="min-width:145px" title="版本记录或 Checkpoint 产生的确切时间 (CST/UTC+8)">具体记录时间</th>
+            <th style="min-width:125px" title="因果隔离训练协议与所属阶段架构">协议与阶段</th>
+            <th style="min-width:130px" title="服务器 NVMe 磁盘上的物理权重文件在盘状态">物理权重状态</th>
+            <th style="min-width:140px" title="v2.0 双池留存策略判定：保留实体还是修剪释放">生命周期判定</th>
+            <th style="min-width:90px" title="在 3,142 固定测试集上的回答优选精度，越大越好">S1 精度 (⬆️)</th>
+            <th style="min-width:90px" title="交叉熵损失误差，越小越优">Loss 误差 (⬇️)</th>
+            <th style="min-width:95px" title="修剪物理权重后释放的 NVMe 磁盘空间">释放空间</th>
+            <th style="min-width:240px" title="为何保留或修剪淘汰的科学决策依据与双池规则">淘汰 / 留存判定依据</th>
           </tr>
         </thead>
         <tbody>
       `;
 
-      const runs = live.chronological_runs || Object.keys(historyRuns);
-      runs.forEach(r => {
-        const ro = historyRuns[r];
-        if (!ro) return;
-        const st = ro.stats || {};
-        const isCur = r === curRun && live.process_alive;
-        const statusBadge = isCur
-          ? `<span style="color:#34d399;background:var(--cds-sage-dim);padding:2px 8px;border-radius:9999px;border:1px solid #2EA06F;font-weight:600">⚡ 运行中 (L4流式)</span>`
-          : `<span style="color:var(--cds-text-muted);background:rgba(255,255,255,0.04);padding:2px 6px;border-radius:4px">✅ 已完成</span>`;
-
-        const s1Acc = ro.best_s1_acc ? `<b style="color:#34d399">${fmtPct(ro.best_s1_acc)}</b>` : (isCur ? '<span style="color:var(--cds-clay)">训练推进中</span>' : '<span style="color:var(--cds-text-dim)">N/A</span>');
-        const lossVal = st.end_loss !== undefined ? st.end_loss : '-';
-        const reduct = st.reduction_pct !== undefined ? `<b style="color:var(--cds-clay)">-${st.reduction_pct}%</b>` : '-';
-        const catName = ro.category === 'full_coverage' ? '全量分层' : (ro.category === 'ablation' ? '消融协同' : '单层基准');
-
-        let poolTag = '<span style="color:var(--cds-text-dim)">元数据在库 (已修剪)</span>';
-        if (['P0_B03_C01', 'P0_B01_C01'].includes(r)) {
-          poolTag = '<span style="color:#34d399;border:1px solid #2EA06F;padding:1px 6px;border-radius:3px;background:var(--cds-sage-dim)">🟢 旧核心实体</span>';
-        } else if (isCur) {
-          poolTag = '<span style="color:var(--cds-clay);border:1px solid var(--cds-clay);padding:1px 6px;border-radius:3px;background:var(--cds-clay-dim)">⚡ 新核心候选</span>';
-        }
-
-        const startedStr = fmtTime(ro.started_at);
-        const completedStr = isCur ? `<span style="color:#34d399">● 流式推进 (${fmtTime(live.cursor_updated_at || ro.completed_at)})</span>` : fmtTime(ro.completed_at);
-        const durStr = ro.duration_display || '-';
-        const pVer = (ro.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v');
-
+      if (sortedDates.length === 0) {
         html += `
-          <tr style="${isCur ? 'background:rgba(217,119,87,0.06)' : ''}">
-            <td><b style="color:#fff">${r}</b></td>
-            <td><span style="color:var(--cds-text-muted);font-size:11px">${pVer}</span></td>
-            <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${startedStr}</td>
-            <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${completedStr}</td>
-            <td style="font-size:11.5px;font-weight:600;color:var(--cds-clay)" class="tabular">${durStr}</td>
-            <td><span style="color:var(--cds-clay)">${catName}</span></td>
-            <td>${statusBadge}</td>
-            <td class="tabular">${st.current_chunk || ro.total_chunks || 0} / ${ro.total_chunks || 0}</td>
-            <td class="tabular">${(st.current_step || ro.total_steps || 0).toLocaleString()} / ${(ro.total_steps || 0).toLocaleString()}</td>
-            <td class="tabular" style="color:#cbd5e1">${(st.consumed || ro.total_consumed || 0).toLocaleString()}</td>
-            <td style="color:var(--cds-clay)" class="tabular"><b>${lossVal}</b></td>
-            <td class="tabular">${reduct}</td>
-            <td class="tabular">${s1Acc}</td>
-            <td>${poolTag}</td>
+          <tr>
+            <td colspan="9" style="text-align:center;padding:30px;color:var(--cds-text-muted)">
+              没有找到匹配的版本记录。请调整搜索关键词或重置筛选条件。
+            </td>
+          </tr>
+        </tbody>`;
+        table.innerHTML = html;
+        return;
+      }
+
+      sortedDates.forEach(dt => {
+        const runsInDate = dateMap[dt];
+        const runKeys = Object.keys(runsInDate);
+        runKeys.sort((a, b) => {
+          if (a === curRun) return -1;
+          if (b === curRun) return 1;
+          return a.localeCompare(b);
+        });
+
+        const totalVersInDate = runKeys.reduce((acc, r) => acc + runsInDate[r].length, 0);
+        const retainedInDate = runKeys.reduce((acc, r) => acc + runsInDate[r].filter(v => v.weights_saved || String(v.retention_status).includes('RETAINED') || String(v.retention_status).includes('ACTIVE')).length, 0);
+        const prunedInDate = totalVersInDate - retainedInDate;
+        const isDateCollapsed = liveTreeCollapsedDates.has(dt);
+
+        let dateDesc = '';
+        if (dt === '2026-10-15') dateDesc = '今日 · 双池流式推进与在训保护';
+        else if (dt === '2026-10-14') dateDesc = '昨日 · 任务消融协同与因果隔离';
+        else if (dt === '2026-10-13') dateDesc = '前日 · 全量分层基线与数据修复验证';
+        else dateDesc = '历史早期 · P0 超参网格搜索与架构预研';
+
+        // Date Cluster Row (Collapsible Header)
+        html += `
+          <tr class="tree-date-row" onclick="toggleDateNode('${dt}')">
+            <td colspan="9" class="tree-date-cell">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span class="tree-toggle-pill">${isDateCollapsed ? '▶' : '▼'}</span>
+                  <span style="font-size:13.5px;font-weight:700;color:#fff">📅 ${dt} (${dateDesc})</span>
+                  ${dt === '2026-10-15' ? '<span class="badge" style="background:var(--cds-sage-dim);border:1px solid #2EA06F;color:#34d399">⚡ 今日活跃阶段</span>' : ''}
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:var(--cds-text-muted)">
+                  <span>共 <b>${totalVersInDate}</b> 个版本节点</span>
+                  <span style="color:#34d399">🟢 ${retainedInDate} 个留存</span>
+                  <span style="color:#fca5a5">🔴 ${prunedInDate} 个修剪</span>
+                  <span>包含 <b>${runKeys.length}</b> 组实验阶段</span>
+                  <span style="color:var(--cds-clay);font-size:11px;font-weight:600">[点击${isDateCollapsed ? '展开 ⬇️' : '折叠 ⬆️'}]</span>
+                </div>
+              </div>
+            </td>
           </tr>
         `;
+
+        if (!isDateCollapsed) {
+          runKeys.forEach((r, rIdx) => {
+            const vList = runsInDate[r];
+            vList.sort((a, b) => (b.epoch || 0) - (a.epoch || 0));
+
+            const isLastRun = rIdx === runKeys.length - 1;
+            const isCur = (r === curRun) && live.process_alive;
+            const ro = historyRuns[r] || {};
+            const st = ro.stats || {};
+            const runKey = `${dt}_${r}`;
+            const isRunCollapsed = liveTreeCollapsedRuns.has(runKey);
+
+            // Metrics
+            const bestS1 = ro.best_s1_acc ? fmtPct(ro.best_s1_acc) : (vList.find(x => x.s1_accuracy)?.s1_accuracy ? fmtPct(vList.find(x => x.s1_accuracy).s1_accuracy) : '-');
+            const bestLoss = isCur ? (live.loss || st.end_loss || '0.4771') : (st.end_loss !== undefined ? st.end_loss : (vList.find(x => x.s1_val_loss)?.s1_val_loss || '-'));
+            const runFreedBytes = vList.reduce((acc, x) => acc + (x.freed_bytes || 0), 0);
+            const runFreedMb = runFreedBytes > 0 ? (runFreedBytes / (1024 * 1024)).toFixed(0) + ' MB' : '-';
+            const hasRetained = vList.some(x => x.weights_saved || String(x.retention_status).includes('RETAINED') || String(x.retention_status).includes('ACTIVE'));
+
+            let catBadge = '单层基准';
+            if (r.startsWith('F04') || r === 'F04') catBadge = '全量分层 L4';
+            else if (r.startsWith('F01') || r.startsWith('F02') || r.startsWith('F03')) catBadge = '分层基线';
+            else if (r.startsWith('ALGN')) catBadge = '消融协同';
+            else if (r.startsWith('P0_B03')) catBadge = '超参网格 (Top-1)';
+            else if (r.startsWith('P0_B01')) catBadge = '超参网格 (Top-2)';
+            else if (r.startsWith('P0_B')) catBadge = '超参网格';
+            else if (r.startsWith('P0_SIM')) catBadge = '模拟基准';
+
+            const runStatusTag = isCur
+              ? `<span style="color:#34d399;background:var(--cds-sage-dim);padding:2px 7px;border-radius:9999px;border:1px solid #2EA06F;font-weight:600;font-size:11px">⚡ 运行中 (L4流式)</span>`
+              : `<span style="color:var(--cds-text-muted);background:rgba(255,255,255,0.04);padding:2px 6px;border-radius:4px;font-size:11px">✅ 已完成</span>`;
+
+            const runWeightTag = hasRetained
+              ? (isCur ? '<span style="color:var(--cds-clay);font-weight:600">⚡ 显存流式计算</span>' : '<span style="color:#34d399;font-weight:600">💾 含实体在盘</span>')
+              : '<span style="color:var(--cds-text-dim)">🗑️ 空间已释放</span>';
+
+            const runTimeStr = isCur ? `● 进行中 (${fmtTime(live.cursor_updated_at || ro.completed_at)})` : fmtTime(ro.completed_at || vList[0]?.created_at);
+            const runProto = (vList[0]?.protocol_version || ro.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v').replace('MR-FULL-GRADED-P0-DATA-REPAIR-', 'v1-repair');
+
+            // Run Parent Row
+            html += `
+              <tr class="tree-run-row ${isCur ? 'is-cur-run' : ''}" onclick="toggleRunNode('${runKey}')">
+                <td style="padding-left:18px">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <span class="tree-branch-symbol">${isLastRun ? '└─' : '├─'}</span>
+                    <span class="tree-toggle-pill" onclick="event.stopPropagation();toggleRunNode('${runKey}')">${isRunCollapsed ? '▶' : '▼'}</span>
+                    <span style="font-weight:700;color:#fff;font-size:12.5px">${r}</span>
+                    <span class="badge" style="font-size:10px">${catBadge}</span>
+                    <span style="font-size:11px;color:var(--cds-text-dim)">(${vList.length} 个版本)</span>
+                  </div>
+                </td>
+                <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${runTimeStr}</td>
+                <td><span style="color:var(--cds-text-muted);font-size:11px">${runProto}</span></td>
+                <td>${runWeightTag}</td>
+                <td>${runStatusTag}</td>
+                <td class="tabular">${bestS1 !== '-' ? `<b style="color:#34d399">${bestS1}</b>` : '-'}</td>
+                <td class="tabular" style="color:var(--cds-clay)"><b>${bestLoss}</b></td>
+                <td class="tabular" style="color:${runFreedBytes > 0 ? '#fca5a5' : 'var(--cds-text-dim)'}">${runFreedMb}</td>
+                <td style="font-size:11px;color:var(--cds-text-muted)">
+                  ${isCur ? `<span style="color:var(--cds-clay)">Chunk ${st.current_chunk || live.chunk_idx || 202}/234 · Step ${st.current_step || live.step_idx || 25856}</span>` : `已归档 · 包含 ${vList.length} 个 Checkpoint 版本`}
+                </td>
+              </tr>
+            `;
+
+            // Version Leaf Rows under this Run
+            if (!isRunCollapsed) {
+              vList.forEach((v, vIdx) => {
+                const isLastVer = vIdx === vList.length - 1;
+                const isInFlight = v.checkpoint_id.includes('in-flight');
+                const isSaved = v.weights_saved;
+                const statusStr = String(v.retention_status || '');
+
+                let lifecycleBadge = '';
+                if (isInFlight) {
+                  lifecycleBadge = '<span style="color:var(--cds-clay);border:1px solid var(--cds-clay);padding:1px 6px;border-radius:3px;background:var(--cds-clay-dim);font-size:10.5px">🟢 留存 (在训流式候选)</span>';
+                } else if (isSaved || statusStr.includes('BEST') || statusStr.includes('TOP_K') || statusStr.includes('OLD_CORE')) {
+                  lifecycleBadge = '<span style="color:#34d399;border:1px solid #2EA06F;padding:1px 6px;border-radius:3px;background:var(--cds-sage-dim);font-size:10.5px">🟢 留存 (旧核心物理实体)</span>';
+                } else {
+                  lifecycleBadge = '<span style="color:#fca5a5;border:1px solid rgba(239,68,68,0.25);padding:1px 6px;border-radius:3px;background:rgba(239,68,68,0.08);font-size:10.5px">🔴 淘汰 (已修剪释放)</span>';
+                }
+
+                let weightBadge = '';
+                if (isInFlight) {
+                  weightBadge = '<span style="color:var(--cds-clay);font-size:11px">⚡ 显存反向传播中</span>';
+                } else if (isSaved) {
+                  weightBadge = '<span style="color:#34d399;font-weight:600;font-size:11px">💾 实体在盘 (2.7 GiB)</span>';
+                } else {
+                  weightBadge = '<span style="color:var(--cds-text-dim);font-size:11px">🗑️ 物理文件已修剪</span>';
+                }
+
+                const s1AccVal = v.s1_accuracy !== null && v.s1_accuracy !== undefined
+                  ? `<b style="color:${v.s1_accuracy > 0.68 ? '#34d399' : '#cbd5e1'}">${fmtPct(v.s1_accuracy)}</b>`
+                  : (isInFlight ? '<span style="color:var(--cds-clay)">评估推进中</span>' : '-');
+
+                const lossVal = v.s1_val_loss !== null && v.s1_val_loss !== undefined
+                  ? v.s1_val_loss
+                  : (isInFlight ? (live.loss || '0.4771') : '-');
+
+                const freedBytes = v.freed_bytes || 0;
+                const freedMb = freedBytes > 0 ? (freedBytes / (1024 * 1024)).toFixed(1) + ' MB' : '-';
+
+                const reasonDetail = v.reasons || v.elimination_reason || '评估元数据完整入库';
+                const reasonShort = reasonDetail.length > 32 ? reasonDetail.substring(0, 32) + '...' : reasonDetail;
+
+                const verIcon = isInFlight ? '⚡' : (isSaved ? '💾' : '📄');
+                const timeFormatted = fmtTime(v.created_at);
+
+                html += `
+                  <tr class="tree-version-row ${isSaved ? 'is-retained' : 'is-pruned'} ${isInFlight ? 'is-in-flight' : ''}">
+                    <td style="padding-left:42px">
+                      <div style="display:flex;align-items:center;gap:6px">
+                        <span class="tree-branch-symbol">${isLastVer ? '└──' : '├──'}</span>
+                        <span>${verIcon}</span>
+                        <code style="font-size:11.5px;color:${isInFlight ? '#34d399' : (isSaved ? '#6ee7b7' : '#cbd5e1')};font-weight:600">${v.checkpoint_id}</code>
+                        <span style="font-size:10.5px;color:var(--cds-text-dim)">(E${v.epoch || 1})</span>
+                      </div>
+                    </td>
+                    <td style="font-size:11px;color:#94a3b8" class="tabular">${timeFormatted}</td>
+                    <td><span style="font-size:10.5px;color:var(--cds-text-dim)">${(v.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v')}</span></td>
+                    <td>${weightBadge}</td>
+                    <td>${lifecycleBadge}</td>
+                    <td class="tabular">${s1AccVal}</td>
+                    <td class="tabular" style="color:${isInFlight ? '#34d399' : 'var(--cds-clay)'}"><b>${lossVal}</b></td>
+                    <td class="tabular" style="font-size:11px;color:${freedBytes > 0 ? '#fca5a5' : 'var(--cds-text-dim)'}">${freedMb}</td>
+                    <td style="font-size:11px;color:var(--cds-text-muted)" title="${escapeHtml(reasonDetail)}">
+                      <div style="display:flex;align-items:center;gap:4px">
+                        <span>${reasonShort}</span>
+                        <span style="font-size:10px;color:var(--cds-text-dim);cursor:help">ℹ️</span>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              });
+            }
+          });
+        }
       });
 
       html += `</tbody>`;
