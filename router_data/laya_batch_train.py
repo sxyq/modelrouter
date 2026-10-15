@@ -1005,18 +1005,24 @@ def run_full_coverage_stream_run(
         parent_run = spec.get("parent_run_id")
         if parent_run:
             best_link = out_root / parent_run / "checkpoints" / "best"
-            if best_link.exists():
+            if best_link.exists() and has_physical_weights(best_link.resolve()):
                 parent_model_dir = str(best_link.resolve())
                 parent_id = f"{parent_run}:best"
             else:
-                # Find latest available checkpoint in parent
+                # Find latest available checkpoint in parent with physical weights
                 ck_dir = out_root / parent_run / "checkpoints"
                 if ck_dir.is_dir():
-                    candidates = sorted([p for p in ck_dir.iterdir() if p.name.startswith("epoch_") and (p / "model.pt").is_file()])
+                    candidates = sorted([p for p in ck_dir.iterdir() if p.name.startswith("epoch_") and has_physical_weights(p)])
                     if candidates:
                         parent_model_dir = str(candidates[-1])
                         parent_id = f"{parent_run}:{candidates[-1].name}"
-    if not parent_model_dir:
+        if not parent_model_dir:
+            raise RuntimeError(
+                f"[{run_id}] FATAL: continuation_mode is 'warm_start' (parent_run_id={parent_run}), "
+                f"but no valid physical parent checkpoint was found in {out_root / (parent_run or '') / 'checkpoints'}. "
+                f"Silent fallback to base model is strictly prohibited to preserve curriculum chain integrity!"
+            )
+    else:
         parent_model_dir = str(spec.get("model_dir") or model_dir)
 
     parent_model, tok, cfg = load_checkpoint(parent_model_dir)
@@ -1123,9 +1129,14 @@ def run_full_coverage_stream_run(
 
     # Step 5: Instantiate optimizer, scheduler, and scaler directly bound to final model parameters
     optimizer = torch.optim.AdamW(groups, weight_decay=config.weight_decay)
-    items_per_chunk = math.ceil(total_items / max(1, num_chunks))
-    updates_per_chunk = math.ceil(items_per_chunk / (config.micro_batch * config.grad_accum))
-    total_updates = max(1, updates_per_chunk * num_chunks * run_epochs)
+    # Exact update calculation accounting for full chunks and partial tail chunks
+    updates_per_epoch = 0
+    for c_i in range(num_chunks):
+        c_items = min(effective_chunk_size, total_items - c_i * effective_chunk_size)
+        c_micro_batches = math.ceil(c_items / config.micro_batch)
+        c_updates = math.ceil(c_micro_batches / config.grad_accum)
+        updates_per_epoch += c_updates
+    total_updates = max(1, updates_per_epoch * run_epochs)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=total_updates, eta_min=config.min_lr)
     scaler = torch.amp.GradScaler("cuda") if amp and dev.type == "cuda" else None
 

@@ -665,6 +665,8 @@ def build_ordered_full_coverage_queue(
         except (OSError, json.JSONDecodeError):
             continue
         rid = rdata.get("run_id") or rpath.parent.name
+        if rid.endswith("_LEGACY_MINFACTOR") or rdata.get("protocol_version") == "LEGACY_MINFACTOR":
+            continue
         if rdata.get("status") in ("completed", "early_stopped"):
             completed_runs[rid] = rdata
 
@@ -682,7 +684,11 @@ def build_ordered_full_coverage_queue(
         spec["_stage"] = st
         spec["_prio"] = prio
 
-        if run_id in completed_runs or run_id in (queue_state.get("completed_runs") or []):
+        is_completed = (
+            (run_id in completed_runs and completed_runs[run_id].get("protocol_version") != "LEGACY_MINFACTOR")
+            or (run_id in (queue_state.get("completed_runs") or []) and run_id != "F03")
+        )
+        if is_completed:
             counts["NEW_PROTOCOL_COMPLETED"] += 1
             continue
 

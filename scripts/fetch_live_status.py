@@ -114,6 +114,8 @@ if log_path.is_file():
                 m = re.search(r'^\[([A-Za-z0-9_]+)\]\s+Epoch\s+([0-9]+)/([0-9]+)\s+Chunk\s+([0-9]+)/([0-9]+):\s+loss=([0-9.]+),\s+step=([0-9]+)/([0-9]+),\s+consumed=([0-9]+)/([0-9]+)', l)
                 if m:
                     r, ep, ep_tot, c, c_tot, loss_val, s, s_tot, cons, cons_tot = m.groups()
+                    if r == 'F03' and int(s_tot) == 45836:
+                        r = 'F03_LEGACY_MINFACTOR'
                     pt = {
                         'run_id': r,
                         'epoch': int(ep),
@@ -145,7 +147,8 @@ windows = {
     'last_6h': [],
     'full_coverage': [],
     'ablation': [],
-    'baseline': []
+    'baseline': [],
+    'archived': []
 }
 
 for r in chronological_runs:
@@ -162,6 +165,8 @@ for r in chronological_runs:
         cat = 'ablation'
     elif r in ['F01', 'F02', 'F03', 'F04', 'F05', 'F06', 'F07']:
         cat = 'full_coverage'
+    elif r == 'F03_LEGACY_MINFACTOR':
+        cat = 'archived'
 
     # Sample points for multi-run overlay if dense (keep full for current_run)
     sampled_pts = pts

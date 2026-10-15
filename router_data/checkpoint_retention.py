@@ -1155,6 +1155,25 @@ def collect_pinned_parent_ids(
         if parent and parent != "Base":
             if pid not in pinned[str(parent)]:
                 pinned[str(parent)].append(pid)
+        parent_run = p.get("parent_run_id")
+        if parent_run and p.get("continuation_mode") == "warm_start":
+            child_run = (runs or {}).get(pid)
+            if not child_run or child_run.get("status") not in ("completed", "early_stopped"):
+                prun_data = (runs or {}).get(parent_run) or {}
+                hist = prun_data.get("history") or []
+                if hist:
+                    best_cids = [
+                        h.get("checkpoint_id") for h in hist
+                        if h.get("is_run_best_epoch") or h.get("is_best_epoch")
+                    ]
+                    if not best_cids:
+                        best_cids = [hist[-1].get("checkpoint_id")]
+                    for bcid in best_cids:
+                        if bcid and pid not in pinned[str(bcid)]:
+                            pinned[str(bcid)].append(f"{pid}(curriculum_child)")
+                else:
+                    pinned[f"{parent_run}-e02"].append(f"{pid}(curriculum_child)")
+                    pinned[f"{parent_run}:best"].append(f"{pid}(curriculum_child)")
     return {k: sorted(v) for k, v in pinned.items()}
 
 
@@ -1937,8 +1956,15 @@ def evaluate_cohort_retention(
 
         # 2. Pinned parents: ensure marked as PINNED_PARENT pool
         for cid, dec in decisions.items():
-            if dec.get("is_pinned_parent"):
+            if dec.get("is_pinned_parent") or cid in pinned_map:
+                dec["should_retain"] = True
                 dec["retention_pool"] = "PINNED_PARENT"
+                dec["rejection_reason"] = None
+                if "retention_reasons" not in dec or dec["retention_reasons"] is None:
+                    dec["retention_reasons"] = []
+                p_reason = f"pinned_parent_protected({','.join(pinned_map.get(cid, ['dependency']))})"
+                if p_reason not in dec["retention_reasons"]:
+                    dec["retention_reasons"].append(p_reason)
 
         # 3. New Candidates: candidate unit is best epoch of each eligible independent run after policy adjustment
         # Old strategy models (P0_*, historical sweeps, etc.) were already evaluated under the old policy
@@ -1952,6 +1978,9 @@ def evaluate_cohort_retention(
                 continue
             # Exclude old strategy historical models from inflating the new candidate denominator
             if run_id.startswith(("P0_", "R0_", "N", "R1", "R2", "R3")) or n.get("experiment_group") in ("OVERNIGHT-LAYA-TRAINING", "OVERNIGHT-LAYA-SWEEP-02"):
+                continue
+            # Exclude legacy protocol or min_factor runs
+            if run_id.endswith("_LEGACY_MINFACTOR") or n.get("protocol_version") == "LEGACY_MINFACTOR" or n.get("legacy_input_protocol"):
                 continue
             if n.get("is_pinned_parent") or cid in pinned_map:
                 continue
