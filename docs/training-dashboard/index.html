@@ -477,7 +477,7 @@
         <span class="kpi-label">当前执行训练队列 <span class="dir-badge dir-stable">● 持续推进</span></span>
         <span style="font-size:11px;color:#34d399;font-weight:700" id="liveLossBadge">Loss 0.5517</span>
       </div>
-      <div class="kpi-val" id="kpiRun">F04 (L4 四层全量)</div>
+      <div class="kpi-val" id="kpiRun">F04 (L4 单层联合)</div>
       <div class="kpi-sub" id="kpiRunSub">Epoch 1/2 · Chunk 25/234 · Step 3,200 / 59,904</div>
       <div class="kpi-tip">
         <b>💡 字段说明</b>：显示当前 GPU 上正在训练的阶段代号、批次进度与优化步数。<br>
@@ -1388,21 +1388,38 @@
     };
 
     const RUN_NAMES = {
-      'F04': 'F04 (L4 四层全量 · 活跃中)',
-      'F03': 'F03 (L3 全量覆盖 · 待补跑)',
+      'F04': 'F04 (L4 单层联合 · 活跃中)',
+      'F03': 'F03 (L3 单层联合 · 待补跑)',
       'F03_LEGACY_MINFACTOR': 'F03_LEGACY (旧 min_factor 归档)',
-      'F02': 'F02 (L2 全量)',
-      'F01': 'F01 (L1 全量)',
+      'F02': 'F02 (L2 单层联合)',
+      'F01': 'F01 (L1 单层联合)',
+      'F05': 'F05 (L1+L2 2层累积全量)',
+      'F06': 'F06 (L1~L3 3层累积全量)',
+      'F07': 'F07 (L1~L4 4层累积全量)',
+      'F08': 'F08 (L1 100% + L2 25% 嵌套)',
+      'F09': 'F09 (L1 100% + L2 50% 嵌套)',
+      'F10': 'F10 (L1 100% + L2 75% 嵌套)',
+      'F11': 'F11 (L1+L2 + L3 25% 嵌套)',
+      'F12': 'F12 (L1+L2 + L3 50% 嵌套)',
+      'F13': 'F13 (L1+L2 + L3 75% 嵌套)',
+      'F14': 'F14 (L1~L3 + L4 25% 嵌套)',
+      'F15': 'F15 (L1~L3 + L4 50% 嵌套)',
+      'F16': 'F16 (L1~L3 + L4 75% 嵌套)',
+      'F17': 'F17 (课程 S1: 暖启 F01->L2)',
+      'F18': 'F18 (课程 S2: 暖启 F17->L3)',
+      'F19': 'F19 (课程 S3: 暖启 F18->L4)',
+      'F20': 'F20 (课程 S4: 暖启 F19->L1)',
       'ALGN_04_S1_S2_S3': 'ALGN_04 (S1+S2+S3 三联合)',
       'ALGN_03_S1_S3': 'ALGN_03 (S1+S3 路由+缓存)',
       'ALGN_02_S1_S2': 'ALGN_02 (S1+S2 路由+智能体)',
       'ALGN_01_S1': 'ALGN_01 (S1 纯路由)',
+      'F01_S1': 'F01_S1 (单层L1基准)',
       'F02_S1': 'F02_S1 (单层L2基准)',
       'F03_S1': 'F03_S1 (单层L3基准)',
       'F04_S1': 'F04_S1 (单层L4基准)',
-      'F05_S1': 'F05_S1 (单层基准)',
-      'F06_S1': 'F06_S1 (单层基准)',
-      'F07_S1': 'F07_S1 (单层基准)'
+      'F05_S1': 'F05_S1 (累积L1+L2基准)',
+      'F06_S1': 'F06_S1 (累积L1~L3基准)',
+      'F07_S1': 'F07_S1 (累积L1~L4基准)'
     };
 
     function toggleSingleRunZoom() {

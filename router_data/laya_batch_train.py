@@ -1599,9 +1599,20 @@ def run_full_coverage_stream_run(
     retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest_data)
     if is_regenerate:
         final_best = run_root / "checkpoints" / "best"
-        final_loadable = final_best.exists() and has_physical_weights(final_best.resolve())
-        run_meta.setdefault("regenerated_parent_artifact", {})["physical_best_path"] = str(final_best.resolve()) if final_best.exists() else None
-        run_meta["regenerated_parent_artifact"]["verified_loadable"] = final_loadable
+        if not final_best.exists() or not has_physical_weights(final_best.resolve()):
+            raise RuntimeError(f"[{run_id}] REGENERATE_PARENT FAILED: Physical weights not found at {final_best}")
+        
+        # Rigorous fail-closed verification with official load_checkpoint
+        try:
+            test_model, test_tok, test_cfg = load_checkpoint(str(final_best.resolve()), device="cpu")
+            del test_model, test_tok, test_cfg
+        except Exception as load_err:
+            raise RuntimeError(
+                f"[{run_id}] REGENERATE_PARENT FAIL-CLOSED: load_checkpoint({final_best.resolve()}) failed: {load_err}"
+            ) from load_err
+
+        run_meta.setdefault("regenerated_parent_artifact", {})["physical_best_path"] = str(final_best.resolve())
+        run_meta["regenerated_parent_artifact"]["verified_loadable"] = True
         run_meta["regenerated_parent_artifact"]["regenerated_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         _atomic_write_json(run_root / "run.json", run_meta)
 

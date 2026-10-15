@@ -163,7 +163,7 @@ for r in chronological_runs:
     cat = 'baseline'
     if r.startswith('ALGN'):
         cat = 'ablation'
-    elif r in ['F01', 'F02', 'F03', 'F04', 'F05', 'F06', 'F07']:
+    elif r.startswith('F') and not r.endswith('_S1') and not r.endswith('_S3') and r != 'F03_LEGACY_MINFACTOR':
         cat = 'full_coverage'
     elif r == 'F03_LEGACY_MINFACTOR':
         cat = 'archived'

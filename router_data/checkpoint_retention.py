@@ -96,6 +96,12 @@ OLD_CORE_CHECKPOINT_IDS = {
     "P0_B03_C08_QB_PB-e02",
     "P0_B02_C01_QB_PB-e02",
 }
+# The 13 historical runs completed before or at the Q-012 policy boundary under the metadata-only regime.
+# Their checkpoints were already finalized as METADATA_ONLY and MUST NOT inflate the new post-Q012 candidate denominator.
+HISTORICAL_PRE_Q012_COMPLETED_RUNS = {
+    "F01_S1", "F02_S1", "F03_S1", "F04_S1", "F05_S1", "F06_S1", "F07_S1",
+    "F01", "F02", "ALGN_01_S1", "ALGN_02_S1_S2", "ALGN_03_S1_S3", "ALGN_04_S1_S2_S3",
+}
 NEW_CORE_POOL_RATIO = 0.15                       # New core pool retention ratio: ~15% (ceil(0.15 * N_new_eligible))
 DUAL_POOL_POLICY_VERSION = "DUAL_POOL_RETENTION_V2"
 
@@ -1989,6 +1995,9 @@ def evaluate_cohort_retention(
             # Exclude old core checkpoints
             if cid in OLD_CORE_CHECKPOINT_IDS:
                 continue
+            # Exclude pre-Q012 historical completed runs from inflating new candidate denominator
+            if run_id in HISTORICAL_PRE_Q012_COMPLETED_RUNS:
+                continue
             # Exclude old strategy historical models from inflating the new candidate denominator
             if run_id.startswith(("P0_", "R0_", "N", "R1", "R2", "R3")) or n.get("experiment_group") in ("OVERNIGHT-LAYA-TRAINING", "OVERNIGHT-LAYA-SWEEP-02"):
                 continue
@@ -2037,7 +2046,15 @@ def evaluate_cohort_retention(
         # Update decisions for new candidates
         for n in nodes:
             cid = n["checkpoint_id"]
+            run_id = n.get("run_id", "")
             if cid in OLD_CORE_CHECKPOINT_IDS or n.get("is_pinned_parent") or cid in pinned_map:
+                continue
+            if run_id in HISTORICAL_PRE_Q012_COMPLETED_RUNS:
+                if cid in decisions:
+                    dec = decisions[cid]
+                    dec["should_retain"] = False
+                    dec["retention_pool"] = "HISTORICAL_METADATA_ONLY"
+                    dec["rejection_reason"] = "pre_q012_historical_metadata_only"
                 continue
             if cid in decisions:
                 dec = decisions[cid]
@@ -2851,13 +2868,23 @@ class CheckpointRetentionManager:
             "rejection_reason": "not_qualified",
         }
 
-        # Check active budget before writing permanent weights
+        # Check physical disk safety limits before writing permanent weights
         d_stat = self.disk_status()
+        if d_stat["stop_triggered"] or d_stat["root_avail_bytes"] < self.stop_free_bytes:
+            raise DiskBudgetExceededError(
+                f"[{run_id}] Refusing to save checkpoint {epoch_id}: "
+                f"Disk free space ({round(d_stat['root_avail_bytes']/GIB, 2)} GiB) below hard limit {round(self.stop_free_bytes/GIB, 2)} GiB."
+            )
         within_budget = (d_stat["active_weights_bytes"] + SINGLE_CKPT_ESTIMATED_BYTES) <= self.active_budget_bytes
         if not within_budget and dec.get("should_retain"):
             # Try cleaning displaced checkpoints first
             self.two_phase_cleanup(manifest=manifest, allow_legacy_cleanup=False, dry_run=False)
             d_stat = self.disk_status()
+            if d_stat["stop_triggered"] or d_stat["root_avail_bytes"] < self.stop_free_bytes:
+                raise DiskBudgetExceededError(
+                    f"[{run_id}] Refusing to save checkpoint {epoch_id}: "
+                    f"Disk free space ({round(d_stat['root_avail_bytes']/GIB, 2)} GiB) below hard limit {round(self.stop_free_bytes/GIB, 2)} GiB."
+                )
             within_budget = (d_stat["active_weights_bytes"] + SINGLE_CKPT_ESTIMATED_BYTES) <= self.active_budget_bytes
 
         is_pinned = bool(
