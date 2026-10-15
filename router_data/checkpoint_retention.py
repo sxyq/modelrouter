@@ -2009,6 +2009,9 @@ def evaluate_cohort_retention(
             # Exclude duplicate signatures and uncompleted runs without valid validation
             if n.get("is_duplicate_run_signature"):
                 continue
+            # Exclude in-flight, unfinished runs that only have temporary epoch metrics
+            if n.get("run_status") not in ("completed", "early_stopped"):
+                continue
             if not n.get("is_run_best_epoch"):
                 continue
             val = n.get("validation", {})
@@ -2313,6 +2316,7 @@ class CheckpointRetentionManager:
                 node = {
                     "checkpoint_id": cid,
                     "run_id": run_id,
+                    "run_status": r.get("status"),
                     "base_run_id": r.get("base_run_id") or (run_id[3:] if run_id.startswith("P0_") else run_id),
                     "epoch": epoch_no,
                     "parent_checkpoint_id": r.get("parent_checkpoint_id"),
@@ -2542,6 +2546,10 @@ class CheckpointRetentionManager:
                         rejected_candidates.append(item)
 
             # 3. Check `epoch_XX` directories that do NOT qualify for retention
+            if run_is_running:
+                # Active in-flight run: protect its epoch checkpoints and recovery assets during training
+                continue
+
             for h in r.get("history") or []:
                 ep = int(h.get("epoch", 0))
                 cid = h.get("checkpoint_id") or f"{run_id}-e{ep:02d}"
@@ -2894,7 +2902,13 @@ class CheckpointRetentionManager:
             or any(run_id in str(x) for x in (self.explicit_pinned or ()))
             or any(epoch_id in str(x) for x in (self.explicit_pinned or ()))
         )
-        should_save_permanent = bool(is_pinned or (dec.get("should_retain") and within_budget))
+        is_run_best_candidate = bool(
+            entry.get("improved_0_5pct")
+            or epoch == run_meta.get("best_epoch")
+            or is_final_epoch
+            or dec.get("should_retain")
+        )
+        should_save_permanent = bool(is_pinned or (is_run_best_candidate and within_budget))
         lock_file = run_root / ".writing_lock"
 
         if should_save_permanent:
