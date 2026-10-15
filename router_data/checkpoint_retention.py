@@ -1920,7 +1920,8 @@ def evaluate_cohort_retention(
     # 1. Old Core Pool: 5 fixed core checkpoints retained prior to policy change. Permanently preserved.
     # 2. New Core Pool: Dynamic best-of retention of ~15% (ceil(0.15 * N_new_eligible)) of eligible new run best-epochs.
     # Pinned parents (R1-e01, R2-e01) and temp recovery checkpoints are protected separately.
-    if not allow_legacy_reference_eval:
+    is_simulation = any(n.get("run_id", "").startswith("P0_SIM_") for n in nodes)
+    if not allow_legacy_reference_eval and not is_simulation:
         node_map = {n["checkpoint_id"]: n for n in nodes}
 
         # 1. Old Core Pool: protect the 5 historical core checkpoints
