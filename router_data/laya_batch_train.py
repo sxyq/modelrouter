@@ -988,10 +988,20 @@ def run_full_coverage_stream_run(
     existing_path = run_root / "run.json"
     ck_dir = run_root / "checkpoints"
     best_link = ck_dir / "best"
-    has_physical_parent = (
-        (best_link.exists() and has_physical_weights(best_link.resolve()))
-        or (ck_dir.is_dir() and any(p.name.startswith("epoch_") and has_physical_weights(p) for p in ck_dir.iterdir()))
-    )
+    has_physical_parent = False
+    best_ep_no = None
+    if existing_path.is_file():
+        try:
+            p_data = json.loads(existing_path.read_text(encoding="utf8"))
+            best_ep_no = p_data.get("best_epoch")
+        except Exception:
+            pass
+
+    if ck_dir.is_dir():
+        if best_link.exists() and has_physical_weights(best_link.resolve()):
+            has_physical_parent = True
+        elif best_ep_no is not None and has_physical_weights(ck_dir / f"epoch_{int(best_ep_no):02d}"):
+            has_physical_parent = True
 
     orig_historical_experiment = {}
     if existing_path.is_file():

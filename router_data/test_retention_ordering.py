@@ -204,7 +204,75 @@ def test_two_phase_cleanup_protects_running_run():
         print(">>> TEST TWO PHASE CLEANUP PROTECTS RUNNING RUN PASSED!")
 
 
+def test_two_phase_cleanup_protects_dual_pool_and_pinned():
+    print("=== TEST TWO PHASE CLEANUP PROTECTS DUAL POOL AND PINNED ===")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        out_root = Path(tmpdir)
+        # active_budget_bytes set to 10 bytes so budget is strictly exceeded
+        mgr = CheckpointRetentionManager(
+            out_root=out_root,
+            active_budget_bytes=10,
+            stop_free_bytes=1024**2,
+            stop_free_pct=0.01,
+            explicit_pinned={"PINNED_RUN-e01"},
+        )
+
+        # 1. Old Core Pool checkpoint (P0_B03_C01_QB_PB-e02)
+        old_core_run = "P0_B03_C01_QB_PB"
+        old_core_dir = out_root / old_core_run
+        old_core_ckpt = old_core_dir / "checkpoints" / "epoch_02"
+        old_core_ckpt.mkdir(parents=True)
+        (old_core_ckpt / "model.safetensors").write_bytes(b"old_core_weights")
+        old_core_meta = {
+            "run_id": old_core_run,
+            "status": "completed",
+            "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+            "history": [{"checkpoint_id": f"{old_core_run}-e02", "epoch": 2, "train_loss": 0.4}],
+        }
+        (old_core_dir / "run.json").write_text(json.dumps(old_core_meta))
+        (old_core_dir / "epoch_metrics.json").write_text(json.dumps(old_core_meta["history"]))
+
+        # 2. Pinned parent checkpoint
+        pinned_run = "PINNED_RUN"
+        pinned_dir = out_root / pinned_run
+        pinned_ckpt = pinned_dir / "checkpoints" / "epoch_01"
+        pinned_ckpt.mkdir(parents=True)
+        (pinned_ckpt / "model.safetensors").write_bytes(b"pinned_weights")
+        pinned_meta = {
+            "run_id": pinned_run,
+            "status": "completed",
+            "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+            "history": [{"checkpoint_id": f"{pinned_run}-e01", "epoch": 1, "train_loss": 0.5}],
+        }
+        (pinned_dir / "run.json").write_text(json.dumps(pinned_meta))
+        (pinned_dir / "epoch_metrics.json").write_text(json.dumps(pinned_meta["history"]))
+
+        # 3. Disposable un-retained low-score run
+        disp_run = "DISPOSABLE_RUN"
+        disp_dir = out_root / disp_run
+        disp_ckpt = disp_dir / "checkpoints" / "epoch_01"
+        disp_ckpt.mkdir(parents=True)
+        (disp_ckpt / "model.safetensors").write_bytes(b"disp_weights")
+        disp_meta = {
+            "run_id": disp_run,
+            "status": "completed",
+            "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+            "history": [{"checkpoint_id": f"{disp_run}-e01", "epoch": 1, "train_loss": 0.9, "validation": {"S1": {"loss": 1.2, "accuracy": 0.3}}}],
+        }
+        (disp_dir / "run.json").write_text(json.dumps(disp_meta))
+        (disp_dir / "epoch_metrics.json").write_text(json.dumps(disp_meta["history"]))
+
+        res = mgr.two_phase_cleanup()
+        # Old core and pinned parent MUST remain intact
+        assert (old_core_ckpt / "model.safetensors").is_file(), "Old Core weights must be protected!"
+        assert (pinned_ckpt / "model.safetensors").is_file(), "Pinned parent weights must be protected!"
+        # Disposable run should be cleaned up
+        assert not (disp_ckpt / "model.safetensors").is_file(), "Disposable weights should be cleaned up"
+        print(">>> TEST TWO PHASE CLEANUP PROTECTS DUAL POOL AND PINNED PASSED!")
+
+
 if __name__ == "__main__":
     test_retention_ordering()
     test_two_phase_cleanup_protects_running_run()
+    test_two_phase_cleanup_protects_dual_pool_and_pinned()
 

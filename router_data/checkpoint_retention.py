@@ -2155,6 +2155,43 @@ class CheckpointRetentionManager:
 
         return True, "whitelisted_ok"
 
+    def is_mandatory_checkpoint(
+        self,
+        cid: str,
+        dec: Dict[str, Any],
+        node: Optional[Dict[str, Any]] = None,
+        pinned_map: Optional[Dict[str, Any]] = None,
+        run_status: Optional[str] = None,
+    ) -> Tuple[bool, Optional[str]]:
+        """Return (True, reason) if this checkpoint is mandatory to retain and must NEVER be pruned or evicted."""
+        # 1. Active in-flight running run
+        if run_status == "running" or (node and node.get("run_status") == "running"):
+            return True, "protected_active_running_run"
+
+        # 2. Pinned parent for curriculum learning
+        if (
+            dec.get("is_pinned_parent")
+            or (pinned_map and cid in pinned_map)
+            or (node and node.get("is_pinned_parent"))
+            or dec.get("retention_pool") == "PINNED_PARENT"
+        ):
+            p_info = pinned_map.get(cid) if pinned_map else None
+            return True, f"protected_pinned_parent:{p_info or 'curriculum_dependency'}"
+
+        # 3. Old Core Pool (permanent 5 core checkpoints)
+        if cid in OLD_CORE_CHECKPOINT_IDS or dec.get("retention_pool") == "OLD_CORE_POOL":
+            return True, "protected_old_core_pool"
+
+        # 4. New Core Pool (dynamically retained ~15% post-Q012 quota)
+        if dec.get("retention_pool") == "NEW_CORE_POOL":
+            return True, "protected_new_core_pool_15pct"
+
+        # 5. Global Best
+        if dec.get("is_global_best"):
+            return True, "protected_global_best"
+
+        return False, None
+
     def disk_status(self, simulated_statvfs: Optional[Dict[str, int]] = None) -> Dict[str, Any]:
         """Query real-time filesystem capacity and active weight usage."""
         self.out_root.mkdir(parents=True, exist_ok=True)
@@ -2557,20 +2594,16 @@ class CheckpointRetentionManager:
                 if not has_physical_weights(ep_dir):
                     continue
                 dec = decisions.get(cid) or {}
-                if dec.get("is_pinned_parent") or cid in pinned_map:
+                node = node_by_key.get((run_id, ep))
+                is_mand, mand_reason = self.is_mandatory_checkpoint(
+                    cid=cid, dec=dec, node=node, pinned_map=pinned_map, run_status=r.get("status")
+                )
+                if is_mand:
                     rejected_candidates.append({
                         "run_id": run_id,
                         "checkpoint_id": cid,
                         "target_dir": str(ep_dir),
-                        "reason": f"protected_pinned_parent:{pinned_map.get(cid)}",
-                    })
-                    continue
-                if dec.get("is_global_best"):
-                    rejected_candidates.append({
-                        "run_id": run_id,
-                        "checkpoint_id": cid,
-                        "target_dir": str(ep_dir),
-                        "reason": "protected_global_best",
+                        "reason": mand_reason,
                     })
                     continue
                 if dec.get("should_retain"):
@@ -2598,8 +2631,8 @@ class CheckpointRetentionManager:
                     rejected_candidates.append(item)
 
         # 4. If remaining active weights after standard pruning still exceed `active_budget_bytes`,
-        #    evict lowest-score non-mandatory (`not is_pinned_parent` and `not is_global_best`) Top-30% checkpoints
-        #    until within budget (never evicting PINNED_PARENT or RETAINED_BEST).
+        #    evict lowest-score non-mandatory checkpoints until within budget (never evicting OLD_CORE_POOL,
+        #    NEW_CORE_POOL, PINNED_PARENT, GLOBAL_BEST, or active RUNNING runs).
         planned_dirs = {x["target_dir"] for x in phase1_candidates}
         remaining_bytes = 0
         evictable_top_k: List[Tuple[float, Dict[str, Any]]] = []
@@ -2613,11 +2646,11 @@ class CheckpointRetentionManager:
             remaining_bytes += sz
             cid = n["checkpoint_id"]
             dec = decisions.get(cid) or {}
-            if dec.get("is_pinned_parent") or cid in pinned_map or dec.get("is_global_best"):
-                continue
             run_status = n.get("run_status") or (runs.get(n["run_id"]) or {}).get("status")
-            if run_status == "running":
-                # Active in-flight run: protect its checkpoints from budget eviction during training
+            is_mand, mand_reason = self.is_mandatory_checkpoint(
+                cid=cid, dec=dec, node=n, pinned_map=pinned_map, run_status=run_status
+            )
+            if is_mand:
                 continue
             ok, w_reason = self.is_whitelisted_checkpoint_dir(ep_dir)
             run_root = self.out_root / n["run_id"]
@@ -2657,6 +2690,15 @@ class CheckpointRetentionManager:
                 tpath = Path(item["target_dir"])
                 ok, _ = self.is_whitelisted_checkpoint_dir(tpath)
                 if not ok or not item.get("history_persisted"):
+                    continue
+                cid = item.get("checkpoint_id")
+                dec = decisions.get(cid) or {}
+                node = node_by_key.get((item.get("run_id"), item.get("epoch")))
+                run_status = (runs.get(item.get("run_id")) or {}).get("status")
+                is_mand, _ = self.is_mandatory_checkpoint(
+                    cid=cid, dec=dec, node=node, pinned_map=pinned_map, run_status=run_status
+                )
+                if is_mand:
                     continue
                 sz_before = physical_dir_bytes(tpath)
                 shutil.rmtree(tpath)

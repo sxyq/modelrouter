@@ -697,11 +697,20 @@ def build_ordered_full_coverage_queue(
             if run_id in ("F01", "F17", "F18", "F19"):
                 ck_dir = out_root / run_id / "checkpoints"
                 best_link = ck_dir / "best"
-                has_physical = (
-                    (best_link.exists() and has_physical_weights(best_link.resolve()))
-                    or any(p.name.startswith("epoch_") and has_physical_weights(p) for p in ck_dir.iterdir())
-                    if ck_dir.is_dir() else False
-                )
+                has_physical = False
+                if ck_dir.is_dir():
+                    if best_link.exists() and has_physical_weights(best_link.resolve()):
+                        has_physical = True
+                    else:
+                        p_run_json = out_root / run_id / "run.json"
+                        if p_run_json.is_file():
+                            try:
+                                p_data = json.loads(p_run_json.read_text(encoding="utf8"))
+                                b_ep = p_data.get("best_epoch")
+                                if b_ep is not None and has_physical_weights(ck_dir / f"epoch_{int(b_ep):02d}"):
+                                    has_physical = True
+                            except Exception:
+                                pass
                 if not has_physical:
                     child_id = {"F01": "F17", "F17": "F18", "F18": "F19", "F19": "F20"}.get(run_id)
                     child_done = child_id in completed_runs or child_id in (queue_state.get("completed_runs") or [])
