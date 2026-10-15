@@ -1044,45 +1044,47 @@ def run_full_coverage_stream_run(
     if continuation_mode == "warm_start":
         parent_run = spec.get("parent_run_id")
         if parent_run:
-            best_link = out_root / parent_run / "checkpoints" / "best"
-            if best_link.exists() and has_physical_weights(best_link.resolve()):
-                parent_model_dir = str(best_link.resolve())
-                parent_id = f"{parent_run}:best"
-            else:
-                # Find prescribed best epoch from parent run.json instead of arbitrary latest epoch
-                p_run_json = out_root / parent_run / "run.json"
-                best_ep_no = None
-                if p_run_json.is_file():
-                    try:
-                        p_data = json.loads(p_run_json.read_text(encoding="utf8"))
-                        best_ep_no = p_data.get("best_epoch")
-                        if best_ep_no is None:
-                            p_hist = p_data.get("history") or []
-                            if p_hist:
-                                def _loss_key(h_item):
-                                    l = (h_item.get("validation", {}).get("S1") or {}).get("loss")
-                                    return float(l) if isinstance(l, (int, float)) else 999.0
-                                sorted_p = sorted(p_hist, key=_loss_key)
-                                best_ep_no = sorted_p[0].get("epoch")
-                    except Exception:
-                        best_ep_no = None
+            # Strictly determine the true scientific best epoch from parent run.json / epoch_metrics.json
+            p_run_json = out_root / parent_run / "run.json"
+            best_ep_no = None
+            if p_run_json.is_file():
+                try:
+                    p_data = json.loads(p_run_json.read_text(encoding="utf8"))
+                    best_ep_no = p_data.get("best_epoch")
+                    if best_ep_no is None:
+                        p_hist = p_data.get("history") or []
+                        if p_hist:
+                            def _loss_key(h_item):
+                                l = (h_item.get("validation", {}).get("S1") or {}).get("loss")
+                                return float(l) if isinstance(l, (int, float)) else 999.0
+                            sorted_p = sorted(p_hist, key=_loss_key)
+                            best_ep_no = sorted_p[0].get("epoch")
+                except Exception:
+                    best_ep_no = None
 
-                p_ck_dir = out_root / parent_run / "checkpoints"
-                if p_ck_dir.is_dir() and best_ep_no is not None:
-                    prescribed_best = p_ck_dir / f"epoch_{int(best_ep_no):02d}"
-                    if has_physical_weights(prescribed_best):
-                        parent_model_dir = str(prescribed_best)
-                        parent_id = f"{parent_run}:epoch_{int(best_ep_no):02d}"
-                    else:
-                        print(
-                            f"[{run_id}] Warning: Prescribed best epoch {prescribed_best.name} in parent {parent_run} lacks physical weights.",
-                            flush=True,
-                        )
+            p_ck_dir = out_root / parent_run / "checkpoints"
+            if p_ck_dir.is_dir() and best_ep_no is not None:
+                prescribed_best = p_ck_dir / f"epoch_{int(best_ep_no):02d}"
+                if has_physical_weights(prescribed_best):
+                    parent_model_dir = str(prescribed_best)
+                    parent_id = f"{parent_run}:epoch_{int(best_ep_no):02d}"
+                else:
+                    print(
+                        f"[{run_id}] Warning: Prescribed scientific best epoch {prescribed_best.name} in parent {parent_run} lacks physical weights.",
+                        flush=True,
+                    )
+            elif p_ck_dir.is_dir():
+                # Fallback check best symlink ONLY if it resolves to a verified physical directory
+                best_link = p_ck_dir / "best"
+                if best_link.exists() and has_physical_weights(best_link.resolve()):
+                    parent_model_dir = str(best_link.resolve())
+                    parent_id = f"{parent_run}:best"
+
         if not parent_model_dir:
             raise RuntimeError(
                 f"[{run_id}] FATAL: continuation_mode is 'warm_start' (parent_run_id={parent_run}), "
-                f"but no valid physical parent checkpoint was found in {out_root / (parent_run or '') / 'checkpoints'}. "
-                f"Silent fallback to base model is strictly prohibited to preserve curriculum chain integrity!"
+                f"but true scientific best physical weights were not found in {out_root / (parent_run or '') / 'checkpoints'}. "
+                f"Curriculum parent weights must be regenerated prior to starting downstream child to preserve curriculum chain integrity!"
             )
     else:
         parent_model_dir = str(spec.get("model_dir") or model_dir)

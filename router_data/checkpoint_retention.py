@@ -2751,28 +2751,42 @@ class CheckpointRetentionManager:
         return audit_log
 
     def _sync_run_best_symlink(self, run_id: str, rdata: Dict[str, Any]) -> None:
-        """Ensure `checkpoints/best` points to an actually existing retained epoch directory."""
+        """Ensure `checkpoints/best` points to the true scientific best epoch directory ONLY if it exists physically.
+        Never overwrite `best_epoch` with a suboptimal surviving epoch after pruning.
+        """
         ckroot = self.out_root / run_id / "checkpoints"
-        if not ckroot.exists():
+        history = rdata.get("history") or []
+
+        # 1. Determine the true scientific best epoch based on original validation metrics (S1 loss)
+        scientific_best_ep = None
+        min_loss = float("inf")
+        for h in history:
+            ep = int(h.get("epoch", 0))
+            s1_loss = ((h.get("validation") or {}).get("S1") or {}).get("loss")
+            if isinstance(s1_loss, (int, float)) and s1_loss < min_loss:
+                min_loss = s1_loss
+                scientific_best_ep = ep
+
+        # Preserve scientific best epoch in rdata (fallback to existing best_epoch if history is empty)
+        if scientific_best_ep is not None:
+            rdata["best_epoch"] = scientific_best_ep
+        elif rdata.get("best_epoch") is not None:
+            scientific_best_ep = int(rdata["best_epoch"])
+
+        if not ckroot.exists() or scientific_best_ep is None:
             rdata["best_checkpoint"] = None
             return
-        retained_eps = []
-        for h in rdata.get("history") or []:
-            ep = int(h.get("epoch", 0))
-            ep_dir = ckroot / f"epoch_{ep:02d}"
-            if has_physical_weights(ep_dir):
-                s1_loss = ((h.get("validation") or {}).get("S1") or {}).get("loss")
-                retained_eps.append((s1_loss if isinstance(s1_loss, (int, float)) else 999.0, ep))
-        if retained_eps:
-            retained_eps.sort()
-            best_ep = retained_eps[0][1]
-            update_safe_symlink(ckroot / "best", f"epoch_{best_ep:02d}")
+
+        # 2. Check if the true scientific best epoch physically exists
+        best_ep_dir = ckroot / f"epoch_{scientific_best_ep:02d}"
+        if has_physical_weights(best_ep_dir):
+            update_safe_symlink(ckroot / "best", f"epoch_{scientific_best_ep:02d}")
             rdata["best_checkpoint"] = f"{run_id}/checkpoints/best"
-            rdata["best_epoch"] = best_ep
         else:
+            # The scientific best epoch lacks physical weights (was pruned or not saved).
+            # Strictly remove/clear `checkpoints/best` link. Never redirect to a suboptimal surviving epoch!
             update_safe_symlink(ckroot / "best", None)
             rdata["best_checkpoint"] = None
-            rdata["best_epoch"] = None
 
     def pre_run_disk_check(
         self,

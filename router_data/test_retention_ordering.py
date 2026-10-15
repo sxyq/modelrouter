@@ -271,8 +271,59 @@ def test_two_phase_cleanup_protects_dual_pool_and_pinned():
         print(">>> TEST TWO PHASE CLEANUP PROTECTS DUAL POOL AND PINNED PASSED!")
 
 
+def test_sync_run_best_symlink_scientific_integrity():
+    print("=== TEST SYNC RUN BEST SYMLINK SCIENTIFIC INTEGRITY ===")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        out_root = Path(tmpdir)
+        mgr = CheckpointRetentionManager(out_root=out_root)
+        run_id = "SCIENTIFIC_RUN_01"
+        run_dir = out_root / run_id
+        ckroot = run_dir / "checkpoints"
+        ckroot.mkdir(parents=True)
+
+        ep1_dir = ckroot / "epoch_01"
+        ep2_dir = ckroot / "epoch_02"
+        ep1_dir.mkdir()
+        ep2_dir.mkdir()
+
+        # History: Epoch 1 (loss 0.60), Epoch 2 (loss 0.50 -> scientific best)
+        history = [
+            {"epoch": 1, "validation": {"S1": {"loss": 0.60, "accuracy": 0.65}}},
+            {"epoch": 2, "validation": {"S1": {"loss": 0.50, "accuracy": 0.75}}},
+        ]
+        rdata = {
+            "run_id": run_id,
+            "status": "completed",
+            "history": history,
+            "best_epoch": 2,
+        }
+
+        # Scenario A: Epoch 2 weights pruned, only suboptimal Epoch 1 weights exist
+        (ep1_dir / "model.safetensors").write_bytes(b"ep1_weights")
+        (ep1_dir / "rl_agent_config.json").write_bytes(b"{}")
+        mgr._sync_run_best_symlink(run_id, rdata)
+
+        # 1. best_epoch MUST strictly remain 2, NEVER overwritten to 1
+        assert rdata["best_epoch"] == 2, f"Expected best_epoch=2, got {rdata['best_epoch']}"
+        # 2. best_checkpoint MUST be None, not pointing to suboptimal epoch_01
+        assert rdata["best_checkpoint"] is None, f"Expected best_checkpoint=None, got {rdata['best_checkpoint']}"
+        assert not (ckroot / "best").exists(), "best symlink must be absent or unlinked when scientific best is missing"
+
+        # Scenario B: Scientific best Epoch 2 weights physically restored/generated
+        (ep2_dir / "model.safetensors").write_bytes(b"ep2_weights")
+        (ep2_dir / "rl_agent_config.json").write_bytes(b"{}")
+        mgr._sync_run_best_symlink(run_id, rdata)
+
+        assert rdata["best_epoch"] == 2
+        assert rdata["best_checkpoint"] == f"{run_id}/checkpoints/best"
+        assert (ckroot / "best").resolve().name == "epoch_02"
+        print(">>> TEST SYNC RUN BEST SYMLINK SCIENTIFIC INTEGRITY PASSED!")
+
+
 if __name__ == "__main__":
     test_retention_ordering()
     test_two_phase_cleanup_protects_running_run()
     test_two_phase_cleanup_protects_dual_pool_and_pinned()
+    test_sync_run_best_symlink_scientific_integrity()
+
 
