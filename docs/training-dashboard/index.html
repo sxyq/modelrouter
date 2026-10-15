@@ -760,6 +760,32 @@
       border: 1px solid var(--cds-border-subtle);
       color: #cbd5e1;
     }
+    .glossary-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #D0C8B8;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .glossary-toggle-btn:hover {
+      background: rgba(217, 119, 87, 0.15);
+      border-color: #D97757;
+      color: #fff;
+    }
+    .glossary-toggle-btn.expanded {
+      background: var(--cds-clay);
+      border-color: #D97757;
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
 
     /* Tables */
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -1761,17 +1787,25 @@
          TAB 5: 版本生命周期总账与指标百科
          ========================================================================= -->
     <div class="tab-pane" id="tab5">
-      <!-- Glossary Cards (Field Descriptions for Every Metric) -->
-      <div class="chart-panel">
-        <div class="chart-header">
-          <div class="chart-title">
-            <span>📖 核心指标通俗解读词典与工程导向指南 (Field Metric Glossary)</span>
+      <!-- Glossary Cards (Field Descriptions for Every Metric) - Collapsible by default -->
+      <div class="chart-panel" id="glossaryPanel" style="margin-bottom:14px">
+        <div class="chart-header" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="toggleGlossaryPanel()">
+          <div class="chart-title-wrap">
+            <div class="chart-title">
+              <span>📖 核心指标通俗解读词典与工程导向指南 (Field Metric Glossary)</span>
+              <span class="dir-badge dir-stable">12 项指标速查</span>
+            </div>
+            <div class="chart-desc" style="margin-top:2px">
+              详细解释看板内出现的每一个数字和字段：它有什么用、怎么看、越大越好还是越小越好、基准参考线是多少。
+            </div>
           </div>
-          <div class="chart-desc">
-            详细解释看板内出现的每一个数字和字段：它有什么用、怎么看、越大越好还是越小越好、基准参考线是多少。
-          </div>
+          <button class="glossary-toggle-btn" id="btnToggleGlossary" onclick="event.stopPropagation(); toggleGlossaryPanel()" title="点击展开/收起核心指标解读词典">
+            <span id="glossaryBtnIcon">📖</span>
+            <span id="glossaryBtnText">点击展开指标词典 ▾</span>
+          </button>
         </div>
-        <div class="grid-3" style="margin-top:10px">
+        <div id="glossaryPanelBody" style="display:none;margin-top:14px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px">
+          <div class="grid-3">
           <div class="field-guide-card">
             <b>1. S1 Accuracy (最优路由准确率) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
             <p><b>作用</b>：衡量路由网关在多个专家模型候选中，精准为用户 Prompt 选出“最优回答模型”的命中率。</p>
@@ -1845,6 +1879,7 @@
           </div>
         </div>
       </div>
+    </div>
 
       <!-- Live Detailed Experiments Ledger Table -->
       <details open style="margin-bottom:14px">
@@ -1867,6 +1902,8 @@
               <button class="filter-btn" onclick="expandAllTreeNodes()">📂 全部展开</button>
               <button class="filter-btn" onclick="collapseAllTreeNodes()">📁 全部折叠</button>
               <button class="filter-btn" onclick="expandRecentTreeNodes()">⚡ 展开今日与昨日</button>
+              <div style="width:1px;height:18px;background:var(--cds-border);margin:0 4px"></div>
+              <button class="filter-btn" onclick="toggleGlossaryPanel(true)" title="展开上方核心指标解读词典">📖 指标说明词典</button>
             </div>
             <div style="display:flex;align-items:center;gap:8px;flex:1;max-width:440px">
               <input type="text" id="liveTreeSearch" placeholder="🔍 快速搜索版本代号 / 阶段 / 时间 / 状态 (如 F04, 2026-10-15, ALGN, 留存, 淘汰)..." oninput="handleLiveTreeSearch(this.value)" style="flex:1;background:var(--cds-s1);border:1px solid var(--cds-border);color:#fff;padding:6px 12px;border-radius:9999px;font-size:12px;outline:none">
@@ -2045,6 +2082,30 @@
         const k = (el.dataset.key || '').toLowerCase();
         el.style.display = k.includes(query) ? 'flex' : 'none';
       });
+    }
+
+    function toggleGlossaryPanel(forceOpen) {
+      const body = document.getElementById('glossaryPanelBody');
+      const btn = document.getElementById('btnToggleGlossary');
+      const icon = document.getElementById('glossaryBtnIcon');
+      const txt = document.getElementById('glossaryBtnText');
+      if (!body) return;
+      const isHidden = body.style.display === 'none' || body.style.display === '';
+      const shouldOpen = forceOpen !== undefined ? forceOpen : isHidden;
+      if (shouldOpen) {
+        body.style.display = 'block';
+        if (btn) btn.classList.add('expanded');
+        if (icon) icon.innerText = '📕';
+        if (txt) txt.innerText = '收起指标词典 ▴';
+        if (forceOpen) {
+          document.getElementById('glossaryPanel')?.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        body.style.display = 'none';
+        if (btn) btn.classList.remove('expanded');
+        if (icon) icon.innerText = '📖';
+        if (txt) txt.innerText = '点击展开指标词典 ▾';
+      }
     }
 
     const fmtPct = v => (Number(v || 0) * 100).toFixed(1) + '%';
