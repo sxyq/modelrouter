@@ -612,91 +612,85 @@ HTML_CONTENT = r'''<!doctype html>
       fill: #fff !important;
     }
 
-    /* Scope Bar */
-    .scope-bar-wrap {
+    /* Unified Clean Chart Controls Toolbar */
+    .chart-toolbar {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-bottom: 12px;
-      padding: 10px 14px;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
       background: var(--cds-s1);
       border: 1px solid var(--cds-border);
-      border-radius: 8px;
+      border-radius: 10px;
     }
-    .scope-bar {
+    .toolbar-row {
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .scope-title {
-      font-size: 11.5px;
-      color: var(--cds-text-muted);
-      font-weight: 600;
-      margin-right: 4px;
-    }
-    .scope-btn {
-      background: var(--cds-s2);
-      border: 1px solid var(--cds-border);
-      color: var(--cds-text-muted);
-      padding: 4px 11px;
-      border-radius: 9999px;
-      font-size: 11.5px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .scope-btn:hover {
-      color: var(--cds-text-primary);
-      border-color: var(--cds-border-focus);
-    }
-    .scope-btn.active {
-      background: var(--cds-clay-dim);
-      border-color: var(--cds-clay);
-      color: #fff;
-      font-weight: 600;
-    }
-    .scope-extra {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       flex-wrap: wrap;
       gap: 10px;
-      border-top: 1px dashed var(--cds-border);
-      padding-top: 8px;
     }
-    .scope-select {
-      background: var(--cds-s2);
-      border: 1px solid var(--cds-border);
-      color: var(--cds-text-primary);
-      padding: 4px 10px;
-      border-radius: 6px;
+    .toolbar-row.sub-row {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 10px;
+      justify-content: space-between;
+    }
+    .control-cluster {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cluster-tag {
       font-size: 11.5px;
-      outline: none;
-      cursor: pointer;
+      font-weight: 700;
+      color: #D0C8B8;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      letter-spacing: 0.2px;
     }
-    .mode-toggle {
+    .seg-group {
       display: inline-flex;
       background: var(--cds-s2);
       border: 1px solid var(--cds-border);
-      border-radius: 9999px;
+      border-radius: 6px;
       padding: 2px;
+      gap: 2px;
+      flex-wrap: wrap;
     }
-    .mode-btn {
+    .seg-btn {
       background: transparent;
       border: none;
       color: var(--cds-text-muted);
-      padding: 3px 11px;
+      padding: 4px 11px;
       font-size: 11.5px;
       font-weight: 500;
-      border-radius: 9999px;
+      border-radius: 4px;
       cursor: pointer;
       transition: all 0.15s;
+      white-space: nowrap;
     }
-    .mode-btn.active {
+    .seg-btn:hover {
+      color: var(--cds-text-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .seg-btn.active {
       background: var(--cds-clay);
       color: #fff;
       font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    .seg-btn.active.green {
+      background: #2EA06F;
+      color: #fff;
+    }
+    .seg-btn.active.blue {
+      background: #0284c7;
+      color: #fff;
     }
 
     /* Stats Ribbon */
@@ -1226,33 +1220,42 @@ HTML_CONTENT = r'''<!doctype html>
           </div>
         </div>
 
-        <!-- Scope & Time Range Selector -->
-        <div class="scope-bar-wrap">
-          <div class="scope-bar">
-            <span class="scope-title">📅 时间线阶段跨度:</span>
-            <button class="scope-btn active" data-scope="all" onclick="setChartScope('all')">🌐 全部历史全景 (133 组全版本)</button>
-            <button class="scope-btn" data-scope="today" onclick="setChartScope('today')">⚡ 今日流式演进 (2026-10-15 · F04在训)</button>
-            <button class="scope-btn" data-scope="yesterday" onclick="setChartScope('yesterday')">🔬 昨日消融协同 (2026-10-14 · ALGN阶段)</button>
-            <button class="scope-btn" data-scope="baseline_day" onclick="setChartScope('baseline_day')">📦 分层基线对照 (2026-10-13 · F01~F07)</button>
-            <button class="scope-btn" data-scope="grid_day" onclick="setChartScope('grid_day')">🗄️ 早期超参网格 (2026-10-12 · P0网格)</button>
-            <button class="scope-btn" data-scope="retained" onclick="setChartScope('retained')">🟢 核心留存实体 (3 份受控权重)</button>
-          </div>
-          <div class="scope-extra">
-            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-              <span style="font-size:11.5px;color:var(--cds-text-muted)">指标轨迹:</span>
-              <div class="mode-toggle">
-                <button class="mode-btn active" id="btnModeDual" onclick="setChartMetricMode('dual')">📊 Loss & 精度双轴轨迹</button>
-                <button class="mode-btn" id="btnModeLoss" onclick="setChartMetricMode('loss')">📉 Loss 损失收敛</button>
-                <button class="mode-btn" id="btnModeAcc" onclick="setChartMetricMode('acc')">🎯 S1 精度跃迁</button>
-                <button class="mode-btn" id="btnModeSamples" onclick="setChartMetricMode('samples')">📈 累计样本吞吐</button>
-                <button class="mode-btn" id="btnModeSteps" onclick="setChartMetricMode('steps')">⚡ 累计优化步数</button>
+        <!-- Unified Clean Chart Controls Toolbar (3 Dimensions clearly separated) -->
+        <div class="chart-toolbar">
+          <!-- Row 1: Dimension 1 - Time Scope -->
+          <div class="toolbar-row">
+            <div class="control-cluster">
+              <span class="cluster-tag">⏱️ 维度 1 · 时间范围</span>
+              <div class="seg-group">
+                <button class="seg-btn active" data-scope="all" onclick="setChartScope('all')">全周期全景 (133 个模型版本)</button>
+                <button class="seg-btn" data-scope="today" onclick="setChartScope('today')">今日流式在训 (10-15 · 3 个模型版本 ⚡)</button>
+                <button class="seg-btn" data-scope="yesterday" onclick="setChartScope('yesterday')">昨日消融协同 (10-14 · 16 个模型版本)</button>
+                <button class="seg-btn" data-scope="baseline_day" onclick="setChartScope('baseline_day')">早期基线与网格 (10-12~13 · 114 个模型版本)</button>
+                <button class="seg-btn" data-scope="retained" onclick="setChartScope('retained')">核心受控留存 (3 份留存实体)</button>
               </div>
             </div>
-            <div style="display:flex;align-items:center;gap:6px">
-              <span style="font-size:11.5px;color:var(--cds-text-muted)">曲线形态:</span>
-              <div class="mode-toggle">
-                <button class="mode-btn active" id="btnStyleSmooth" onclick="setChartCurveStyle('smooth')">🌊 宏观平滑趋势</button>
-                <button class="mode-btn" id="btnStyleRaw" onclick="setChartCurveStyle('raw')">📐 全量离散折线</button>
+          </div>
+
+          <!-- Row 2: Dimension 2 (Metric Trajectory) & Dimension 3 (Curve Style) -->
+          <div class="toolbar-row sub-row">
+            <!-- Metric Trajectory -->
+            <div class="control-cluster">
+              <span class="cluster-tag">📈 维度 2 · 监控指标</span>
+              <div class="seg-group">
+                <button class="seg-btn active" id="btnModeDual" onclick="setChartMetricMode('dual')">📊 Loss & 精度双轴轨迹</button>
+                <button class="seg-btn" id="btnModeLoss" onclick="setChartMetricMode('loss')">📉 仅看 Loss 损失收敛</button>
+                <button class="seg-btn" id="btnModeAcc" onclick="setChartMetricMode('acc')">🎯 仅看 S1 验证精度</button>
+                <button class="seg-btn" id="btnModeSamples" onclick="setChartMetricMode('samples')">📈 累计真实样本吞吐</button>
+                <button class="seg-btn" id="btnModeSteps" onclick="setChartMetricMode('steps')">⚡ 累计优化更新步数</button>
+              </div>
+            </div>
+
+            <!-- Curve Style -->
+            <div class="control-cluster">
+              <span class="cluster-tag">🎨 维度 3 · 曲线形态</span>
+              <div class="seg-group">
+                <button class="seg-btn active" id="btnStyleSmooth" onclick="setChartCurveStyle('smooth')" title="宏观平滑趋势线（消除超参试探噪点）">🌊 宏观平滑趋势</button>
+                <button class="seg-btn" id="btnStyleRaw" onclick="setChartCurveStyle('raw')" title="全量逐点折线（真实点直连）">📐 全量逐点折线</button>
               </div>
             </div>
           </div>
@@ -2191,7 +2194,7 @@ HTML_CONTENT = r'''<!doctype html>
 
     function setChartScope(scope) {
       chartTimeScope = scope;
-      document.querySelectorAll('.scope-btn').forEach(btn => {
+      document.querySelectorAll('[data-scope]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.scope === scope);
       });
       renderMultiSpanLossChart();
@@ -2439,19 +2442,16 @@ HTML_CONTENT = r'''<!doctype html>
 
       // Filter by chartTimeScope
       let pts = allVersions;
-      let scopeTitle = '全部历史全景 (133 组全版本时序)';
+      let scopeTitle = '全部历史全景 (全部 133 个模型版本时序)';
       if (chartTimeScope === 'today') {
         pts = allVersions.filter(v => v.time.startsWith('2026-10-15'));
-        scopeTitle = '今日流式推进 (2026-10-15 · 3 个版本 · 在训⚡)';
+        scopeTitle = '今日流式在训 (2026-10-15 · 3 个模型版本 · F04在训⚡)';
       } else if (chartTimeScope === 'yesterday') {
         pts = allVersions.filter(v => v.time.startsWith('2026-10-14'));
-        scopeTitle = '昨日消融协同 (2026-10-14 · 16 个版本)';
+        scopeTitle = '昨日消融协同 (2026-10-14 · 16 个模型版本)';
       } else if (chartTimeScope === 'baseline_day') {
-        pts = allVersions.filter(v => v.time.startsWith('2026-10-13'));
-        scopeTitle = '分层基线对照 (2026-10-13 · 18 个版本)';
-      } else if (chartTimeScope === 'grid_day') {
-        pts = allVersions.filter(v => v.time.startsWith('2026-10-12'));
-        scopeTitle = '早期超参网格 (2026-10-12 · 96 个版本)';
+        pts = allVersions.filter(v => v.time.startsWith('2026-10-12') || v.time.startsWith('2026-10-13'));
+        scopeTitle = '早期基线与网格 (2026-10-12~13 · 114 个模型版本)';
       } else if (chartTimeScope === 'retained') {
         pts = allVersions.filter(v => v.saved || v.isInFlight);
         scopeTitle = '核心留存专线 (3 份受控权重实体)';
@@ -2488,17 +2488,17 @@ HTML_CONTENT = r'''<!doctype html>
 
       // Balanced stage timeline definitions for 'all' scope
       const dateStages = [
-        { id: '10-12', dt: '2026-10-12', label: '10-12 · P0 超参初筛', sub: '96版', ratio: 0.36, scope: 'grid_day' },
-        { id: '10-13', dt: '2026-10-13', label: '10-13 · 分层基线对照', sub: '18版', ratio: 0.24, scope: 'baseline_day' },
-        { id: '10-14', dt: '2026-10-14', label: '10-14 · 多监督消融协同', sub: '16版', ratio: 0.22, scope: 'yesterday' },
-        { id: '10-15', dt: '2026-10-15', label: '10-15 · 今日流式 ⚡', sub: '3版', ratio: 0.18, scope: 'today' }
+        { id: '10-12', dt: '2026-10-12', label: '10-12 · P0 超参初筛', sub: '96 个模型版本', ratio: 0.36 },
+        { id: '10-13', dt: '2026-10-13', label: '10-13 · 分层基线对照', sub: '18 个模型版本', ratio: 0.24 },
+        { id: '10-14', dt: '2026-10-14', label: '10-14 · 多监督消融协同', sub: '16 个模型版本', ratio: 0.22 },
+        { id: '10-15', dt: '2026-10-15', label: '10-15 · 今日流式在训 ⚡', sub: '3 个模型版本 (F04)', ratio: 0.18 }
       ];
 
       const stageInfoMap = {};
       let curStageX = padL;
       dateStages.forEach(st => {
         const sw = chartW * st.ratio;
-        stageInfoMap[st.dt] = { start: curStageX, end: curStageX + sw, width: sw, label: st.label, sub: st.sub, scope: st.scope, dt: st.dt };
+        stageInfoMap[st.dt] = { start: curStageX, end: curStageX + sw, width: sw, label: st.label, sub: st.sub, dt: st.dt };
         curStageX += sw;
       });
 
@@ -2597,17 +2597,15 @@ HTML_CONTENT = r'''<!doctype html>
             inner += `<line x1="${st.start}" y1="46" x2="${st.start}" y2="${padT+chartH}" stroke="#33302A" stroke-dasharray="3,3" stroke-width="1"/>`;
           }
 
-          // Clean Top Stage Badge Header (Dedicated 26px band with ZERO overlap)
-          const bw = Math.min(st.width - 10, idx === 3 ? 140 : 205);
-          const bx = st.start + (st.width - bw) / 2;
+          // Pure Static Stage Column Annotation (clean text reference, zero button clutter)
           const isToday = sec.dt === '2026-10-15';
           inner += `
-            <g class="stage-badge-btn" onclick="setChartScope('${sec.scope}')" style="cursor:pointer">
-              <rect x="${bx}" y="14" width="${bw}" height="26" rx="5"
-                    fill="${isToday ? 'rgba(46,160,111,0.14)' : 'rgba(255,255,255,0.035)'}"
-                    stroke="${isToday ? '#2EA06F' : '#3E3A33'}" stroke-width="1"/>
-              <text x="${st.start + st.width/2}" y="31" fill="${isToday ? '#34d399' : '#D0C8B8'}" font-size="10.5" font-weight="700" text-anchor="middle">
-                ${sec.label} <tspan fill="#8E867A" font-size="9" font-weight="500">(${sec.sub})</tspan>
+            <g class="stage-col-header">
+              <text x="${st.start + st.width/2}" y="24" fill="${isToday ? '#34d399' : '#C0B8AA'}" font-size="11" font-weight="700" text-anchor="middle">
+                ${sec.label}
+              </text>
+              <text x="${st.start + st.width/2}" y="38" fill="${isToday ? '#6ee7b7' : '#7A7367'}" font-size="9.5" font-family="monospace" text-anchor="middle">
+                ${sec.sub}
               </text>
             </g>
           `;
