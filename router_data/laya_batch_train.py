@@ -935,6 +935,7 @@ def run_full_coverage_stream_run(
     s2_audit_passed: bool = False,
     explicit_pinned: tuple = (),
     project_root: str = ".",
+    regenerate_parent: bool = False,
 ) -> dict:
     """Execute one Mode B FULL-COVERAGE streaming run across all eligible candidate records.
     
@@ -1086,12 +1087,28 @@ def run_full_coverage_stream_run(
     best_epoch = None
 
     if resume_mode == "COMPLETED":
-        print(f"[{run_id}] Run already completed all {run_epochs} epochs.")
-        if (run_root / "run.json").is_file():
-            run_meta = json.loads((run_root / "run.json").read_text(encoding="utf8"))
+        if regenerate_parent or spec.get("regenerate_parent"):
+            print(
+                f"[{run_id}] REGENERATE_PARENT: Archiving pruned metadata and regenerating physical weights for downstream curriculum.",
+                flush=True,
+            )
+            archive_path = run_root / "run_pruned_metadata_archive.json"
+            if (run_root / "run.json").is_file():
+                shutil.copy2(run_root / "run.json", archive_path)
+            cursor_path.unlink(missing_ok=True)
+            resume_mode = "COLD_START"
+            start_epoch = 0
+            start_chunk = 0
+            global_step = 0
+            consumed_total_items = 0
+            history = []
         else:
-            run_meta = {"run_id": run_id, "status": "completed"}
-        return run_meta
+            print(f"[{run_id}] Run already completed all {run_epochs} epochs.")
+            if (run_root / "run.json").is_file():
+                run_meta = json.loads((run_root / "run.json").read_text(encoding="utf8"))
+            else:
+                run_meta = {"run_id": run_id, "status": "completed"}
+            return run_meta
     elif resume_mode == "STREAMING_EXACT_RESUME":
         print(
             f"[{run_id}] RESUME_CONSISTENCY: Anchored to physical checkpoint at {target_ckpt_dir.name} "
@@ -1534,6 +1551,7 @@ def main():
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--active-budget-gib', type=float, default=120.0)
     parser.add_argument('--s2-audit-passed', action='store_true')
+    parser.add_argument('--regenerate-parent', action='store_true', help='Force regeneration of missing physical parent checkpoint')
     parser.add_argument('--pinned-checkpoints', default='')
     parser.add_argument('--compute-baseline0', action='store_true')
     parser.add_argument('--verify-storage-policy', action='store_true')
@@ -1578,6 +1596,7 @@ def main():
             s2_audit_passed=args.s2_audit_passed,
             explicit_pinned=pinned,
             project_root=str(project_root),
+            regenerate_parent=args.regenerate_parent,
         )
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return

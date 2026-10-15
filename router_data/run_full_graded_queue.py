@@ -28,6 +28,7 @@ try:
         CheckpointRetentionManager,
         DiskBudgetExceededError,
         compute_run_dedup_signature,
+        has_physical_weights,
         load_or_default_baseline_0,
         run_storage_policy_verification,
         sync_server_metadata_and_build_dashboard,
@@ -41,6 +42,7 @@ except ImportError:
         CheckpointRetentionManager,
         DiskBudgetExceededError,
         compute_run_dedup_signature,
+        has_physical_weights,
         load_or_default_baseline_0,
         run_storage_policy_verification,
         sync_server_metadata_and_build_dashboard,
@@ -690,6 +692,25 @@ def build_ordered_full_coverage_queue(
         )
         if is_completed:
             counts["NEW_PROTOCOL_COMPLETED"] += 1
+            # Check if this completed run serves as a required parent for downstream curriculum runs
+            # but lacks physical weights. If so, schedule it for regeneration before Stage 5.
+            if run_id in ("F01", "F17", "F18", "F19"):
+                ck_dir = out_root / run_id / "checkpoints"
+                best_link = ck_dir / "best"
+                has_physical = (
+                    (best_link.exists() and has_physical_weights(best_link.resolve()))
+                    or any(p.name.startswith("epoch_") and has_physical_weights(p) for p in ck_dir.iterdir())
+                    if ck_dir.is_dir() else False
+                )
+                if not has_physical:
+                    child_id = {"F01": "F17", "F17": "F18", "F18": "F19", "F19": "F20"}.get(run_id)
+                    child_done = child_id in completed_runs or child_id in (queue_state.get("completed_runs") or [])
+                    if not child_done:
+                        regen_spec = dict(spec)
+                        regen_spec["regenerate_parent"] = True
+                        regen_spec["_stage"] = 5
+                        regen_spec["_prio"] = 0  # Stage 5 Prio 0: immediately before F17
+                        ordered.append(regen_spec)
             continue
 
         failed_info = (queue_state.get("failed_runs") or {}).get(run_id) or {}
@@ -699,6 +720,8 @@ def build_ordered_full_coverage_queue(
 
         counts["ELIGIBLE_QUEUED"] += 1
         ordered.append(spec)
+
+    ordered.sort(key=lambda x: (x.get("_stage", 99), x.get("_prio", 99)))
 
     reconciliation = {
         "total_full_coverage_runs": len(FULL_COVERAGE_STAGE_MAP),
@@ -853,6 +876,8 @@ def run_continuous_full_coverage_queue(
         ]
         if queue_state.get("s2_audit_passed"):
             cmd.append("--s2-audit-passed")
+        if spec.get("regenerate_parent"):
+            cmd.append("--regenerate-parent")
 
         proc = subprocess.run(cmd, cwd=str(project_root))
         if proc.returncode == 0:
