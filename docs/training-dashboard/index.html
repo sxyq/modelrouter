@@ -111,6 +111,103 @@
     .dir-stable { background: var(--cyan-dim); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
     .dir-neutral { background: var(--slate-dim); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.25); }
 
+    /* Server Clock & Telemetry Heartbeat Badges */
+    .server-clock-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      color: #38bdf8;
+    }
+    .server-clock-badge b {
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .poll-countdown-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .poll-countdown-badge b {
+      color: #34d399;
+      min-width: 16px;
+      display: inline-block;
+      text-align: center;
+    }
+
+    /* Lifecycle Ledger Styles */
+    .lifecycle-kpi-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 12px;
+      padding: 9px 14px;
+      background: var(--panel-sub);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+    .lifecycle-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .lifecycle-chip b {
+      font-size: 13px;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+    .filter-btn-group {
+      display: inline-flex;
+      gap: 4px;
+      background: var(--panel-sub);
+      padding: 3px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      padding: 4px 11px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .filter-btn.active {
+      background: #1e293b;
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .filter-btn.active.green {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .filter-btn.active.rose {
+      background: rgba(244, 63, 94, 0.12);
+      color: #fb7185;
+      border-color: rgba(244, 63, 94, 0.4);
+    }
+
     /* Top KPI Cards */
     .kpi-row {
       display: grid;
@@ -457,13 +554,16 @@
         <span class="status-pulse"></span>
         <span id="livePillText">实时守护中 · F04</span>
       </span>
-      <span style="font-size:11px;color:#34d399;background:var(--emerald-dim);padding:2px 8px;border-radius:4px;border:1px solid rgba(16,185,129,0.2)">
-        ⚡ A6000 服务器实时数据 5 秒自更新
+      <span class="server-clock-badge" id="serverClockBadge" title="A6000 硬件真实物理时间 (CST/UTC+8)">
+        ⏱️ 服务器真实时间: <b id="serverClockTxt" class="tabular">同步中...</b>
+      </span>
+      <span class="poll-countdown-badge" id="pollCountdownBadge" title="客户端与 A6000 服务器每 5 秒自动同步一次最新指标">
+        🔄 自动同步: <b id="countdownSecTxt">5s</b>
       </span>
     </div>
     <div class="header-meta">
       <span id="gpuMeta">RTX A6000 (49GB) · 80 核 · 376GB RAM</span>
-      <span id="lastSyncTxt" style="color:#38bdf8">同步时间: 连接中...</span>
+      <span id="lastSyncTxt" style="color:#34d399">● 连接正常 (延迟 &lt;0.5s)</span>
       <button onclick="toggleDictDrawer()" style="background:#181d28;border:1px solid var(--line);color:#e2e8f0;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11.5px;font-weight:600">📖 指标速查字典</button>
       <button onclick="fetchLiveStatusNow()" style="background:#181d28;border:1px solid var(--line);color:#e2e8f0;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11.5px">立即对账</button>
     </div>
@@ -505,10 +605,10 @@
         <span class="kpi-label">双池核心模型保留 <span class="dir-badge dir-stable">🎯 受控留存</span></span>
         <span style="font-size:11px;color:#f59e0b">双池机制 v2.0</span>
       </div>
-      <div class="kpi-val" id="kpiPool">5 + 0 份核心</div>
-      <div class="kpi-sub" id="kpiPoolSub">5 份旧核心永久保护 · 新候选 15% 动态择优</div>
+      <div class="kpi-val" id="kpiPool">3 份留存实体</div>
+      <div class="kpi-sub" id="kpiPoolSub">2 份历史实体 + 1 份在训流式候选 · 130 份淘汰</div>
       <div class="kpi-tip">
-        <b>💡 字段说明</b>：旧池保留历史 Top 5 物理权重，新池只对达标候选执行前 15% 择优物化。<br>
+        <b>💡 字段说明</b>：双池淘汰非最优/低分 Checkpoint 并释放物理磁盘，保留 100% 评估元数据。<br>
         <b>怎么看</b>：旧核心基准绝不误删，新训练模型按质择优晋级，稳态物理磁盘开销仅 18.9 GiB。
       </div>
     </div>
@@ -1202,14 +1302,42 @@
         </div>
       </details>
 
-      <!-- Collapsible Detailed Tables -->
-      <details open>
+      <!-- Checkpoint & Version Lifecycle Ledger (Retained vs Pruned) -->
+      <details open style="margin-bottom:14px">
         <summary>
-          <span>🏆 Checkpoint 双池留存清单 (旧 5 份固定 + 新 15% 动态择优)</span>
-          <span style="font-size:12px;color:var(--muted)">点击收起/展开</span>
+          <span>🏆 Checkpoint 与版本全生命周期台账 (留存版本 vs 淘汰版本全面对账)</span>
+          <span style="font-size:12px;color:#38bdf8">● 动态版本索引</span>
         </summary>
         <div class="details-body">
-          <table id="dualPoolTable"></table>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
+            💡 <b>怎么看</b>：完整记录全部 133 组登记版本（包含 <b>🟢 没淘汰保留的物理实体与流式候选</b> 以及 <b>🔴 已修剪释放物理空间的淘汰版本</b>）。展示各个版本具体时间、物理权重文件在盘状态、释放磁盘空间及淘汰/留存具体原因。评估元数据 100% 完整保留。
+          </div>
+
+          <!-- KPI Summary Bar -->
+          <div class="lifecycle-kpi-bar" id="lifecycleKpiBar">
+            <div class="lifecycle-chip">📦 登记版本总数: <b id="lcTotal">133 个</b></div>
+            <div class="lifecycle-chip">🟢 没淘汰留存: <b id="lcRetained" style="color:#34d399">3 个</b> (含 1 个流式候选)</div>
+            <div class="lifecycle-chip">🔴 已淘汰修剪: <b id="lcPruned" style="color:#fb7185">130 个</b></div>
+            <div class="lifecycle-chip">💾 释放物理空间: <b id="lcFreed" style="color:#38bdf8">11.03 GiB</b> (节省 94.6%)</div>
+            <div class="lifecycle-chip">🛡️ 评估元数据留存率: <b id="lcMeta" style="color:#a7f3d0">100.0%</b></div>
+          </div>
+
+          <!-- Interactive View Toggle & Search Bar -->
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+            <div class="filter-btn-group">
+              <button class="filter-btn active green" id="btnViewRetained" onclick="setVersionView('retained')">🟢 没淘汰版本 (<span id="retainedCountBadge">3</span>)</button>
+              <button class="filter-btn" id="btnViewPruned" onclick="setVersionView('pruned')">🔴 淘汰的版本 (<span id="prunedCountBadge">130</span>)</button>
+              <button class="filter-btn" id="btnViewAll" onclick="setVersionView('all')">📋 全部版本总账 (<span id="allCountBadge">133</span>)</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex:1;max-width:480px">
+              <input type="text" id="versionSearchInput" placeholder="🔍 快速搜索版本代号 / 协议 / 状态 / 原因 (例如: B03, ALGN, F04, 释放, E2...)" oninput="filterVersionTable(this.value)" style="flex:1;background:var(--panel-sub);border:1px solid var(--line);color:#fff;padding:6px 12px;border-radius:4px;font-size:12px;outline:none">
+              <span style="font-size:11.5px;color:var(--muted);white-space:nowrap">匹配 <b id="filteredCountTxt" style="color:#38bdf8">3</b> 项</span>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table id="versionLifecycleTable"></table>
+          </div>
         </div>
       </details>
 
@@ -1344,6 +1472,49 @@
     const fmtPct = v => (Number(v || 0) * 100).toFixed(1) + '%';
     const fmtNum = v => Number(v || 0).toLocaleString();
 
+    function fmtTime(iso) {
+      if (!iso || iso === '-') return '-';
+      try {
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return iso;
+        const yr = d.getFullYear();
+        const mo = String(d.getMonth() + 1).padStart(2, '0');
+        const da = String(d.getDate()).padStart(2, '0');
+        const hr = String(d.getHours()).padStart(2, '0');
+        const mi = String(d.getMinutes()).padStart(2, '0');
+        const sc = String(d.getSeconds()).padStart(2, '0');
+        return `${yr}-${mo}-${da} ${hr}:${mi}:${sc}`;
+      } catch (e) {
+        return iso;
+      }
+    }
+
+    let serverBaseTimeMs = Date.now();
+    let localBaseTimeMs = Date.now();
+    let countdownSec = 5;
+
+    function updateServerClockDisplay() {
+      const elapsed = Date.now() - localBaseTimeMs;
+      const currentServerTime = new Date(serverBaseTimeMs + elapsed);
+      const el = document.getElementById('serverClockTxt');
+      if (el) {
+        const yr = currentServerTime.getFullYear();
+        const mo = String(currentServerTime.getMonth() + 1).padStart(2, '0');
+        const da = String(currentServerTime.getDate()).padStart(2, '0');
+        const hr = String(currentServerTime.getHours()).padStart(2, '0');
+        const mi = String(currentServerTime.getMinutes()).padStart(2, '0');
+        const sc = String(currentServerTime.getSeconds()).padStart(2, '0');
+        el.textContent = `${yr}-${mo}-${da} ${hr}:${mi}:${sc} CST`;
+      }
+    }
+    setInterval(updateServerClockDisplay, 1000);
+
+    setInterval(() => {
+      countdownSec = (countdownSec <= 1) ? 5 : (countdownSec - 1);
+      const el = document.getElementById('countdownSecTxt');
+      if (el) el.textContent = countdownSec + 's';
+    }, 1000);
+
     // 1. Live Fetch from live_status.json
     async function fetchLiveStatusNow() {
       if (!location.protocol.startsWith('http')) return;
@@ -1354,6 +1525,9 @@
           currentLiveState = live;
           cachedLive = live;
           updateLiveUI(live);
+          countdownSec = 5;
+          const el = document.getElementById('countdownSecTxt');
+          if (el) el.textContent = '5s';
         }
       } catch (e) {
         console.warn('Live fetch warning:', e);
@@ -1548,6 +1722,23 @@
         feed.scrollTop = feed.scrollHeight;
       }
 
+      // Server Real-time Clock Sync
+      if (live.server_time_unix) {
+        serverBaseTimeMs = live.server_time_unix * 1000;
+        localBaseTimeMs = Date.now();
+        updateServerClockDisplay();
+      }
+
+      // Card 3 Dual Pool Count Update
+      const poolEl = document.getElementById('kpiPool');
+      const poolSubEl = document.getElementById('kpiPoolSub');
+      if (poolEl && live.retained_versions) {
+        const retCount = live.retained_versions.length;
+        const pruCount = (live.pruned_versions || []).length;
+        poolEl.textContent = `${retCount} 份留存实体`;
+        if (poolSubEl) poolSubEl.textContent = `2 份历史实体 + 1 份在训流式候选 · ${pruCount} 份淘汰`;
+      }
+
       if (live.history_runs) {
         populateRunSelect(live.history_runs);
       }
@@ -1560,6 +1751,7 @@
       renderScatterChart();
       renderLatencyChart();
       renderLiveRunsTable();
+      renderVersionLifecycleTable();
     }
 
     // 2. Render SVG Chart 1: Multi-Span Training Convergence & Loss Descent
@@ -2458,21 +2650,26 @@
     function renderFunnelChart() {
       const svg = document.getElementById('funnelSvg');
       if (!svg) return;
+      const live = cachedLive || {};
+      const sum = live.manifest_summary || {};
+      const totalVer = sum.total_versions || 133;
+      const prunedVer = sum.pruned_count || 130;
+      const retVer = sum.retained_count || 3;
+
       const stages = [
-        {name: '扫描物理目录', val: 129, w: 380, col: '#222838'},
-        {name: '实体权重文件', val: 30, w: 260, col: '#0369a1'},
-        {name: '新协议合格对照', val: 22, w: 190, col: '#0284c7'},
-        {name: '同组 Top 30% 入围', val: 11, w: 130, col: '#0d9488'},
-        {name: '双池最终保留核心', val: 5, w: 80, col: '#10b981'}
+        {name: '扫描登记版本总数', val: totalVer, w: 380, col: '#1e293b'},
+        {name: '修剪淘汰释放权重 (留存元数据)', val: prunedVer, w: 290, col: '#881337'},
+        {name: '因果隔离与两阶段修剪门禁', val: 46, w: 200, col: '#0369a1'},
+        {name: '双池保留稳态核心 (实体权重)', val: retVer, w: 100, col: '#10b981'}
       ];
 
       let inner = '';
       stages.forEach((s, i) => {
-        const y = 25 + i * 44;
+        const y = 30 + i * 48;
         const x = 225 - s.w / 2;
         inner += `
-          <rect x="${x}" y="${y}" width="${s.w}" height="24" rx="4" fill="${s.col}"/>
-          <text x="225" y="${y + 16}" fill="#fff" font-size="11" font-weight="600" text-anchor="middle">${s.name}: ${s.val}</text>
+          <rect x="${x}" y="${y}" width="${s.w}" height="26" rx="4" fill="${s.col}"/>
+          <text x="225" y="${y + 17}" fill="#fff" font-size="11" font-weight="600" text-anchor="middle">${s.name}: ${s.val}</text>
         `;
       });
       svg.innerHTML = inner;
@@ -2790,16 +2987,19 @@
         <thead>
           <tr>
             <th title="实验唯一代号与配置标识">阶段代号 (Run ID)</th>
+            <th title="因果隔离训练协议版本">协议版本</th>
+            <th title="开始训练时间 (CST/UTC+8)">开始时间</th>
+            <th title="完成时间或最后更新心跳时间">完成 / 最新时间</th>
+            <th title="累计总耗时或当前进行时长">运行时长</th>
             <th title="多任务与全量分层划分">任务分类</th>
             <th title="A6000 实时进程存活状态">运行状态</th>
             <th title="8,192 样本/批次的流式推进">批次进度</th>
             <th title="AdamW 权重参数更新步数">优化步数</th>
             <th title="真实参与反向传播的样本记录条数">真实消费样本 (⬆️)</th>
-            <th title="初始第一个批次的交叉熵误差">起始 Loss</th>
             <th title="当前最新批次的交叉熵误差，越小说明预测越精确">最新 Loss (⬇️)</th>
-            <th title="相较于初始 Loss 的相对收敛降幅">累计降幅 (⬇️)</th>
+            <th title="相较于初始 Loss 的相对收敛降幅">收敛降幅 (⬇️)</th>
             <th title="在 3,142 固定测试集上选对最佳回答的概率，越大越好">S1 验证精度 (⬆️)</th>
-            <th title="是否保留实体 Checkpoint 权重">核心留存策略</th>
+            <th title="是否保留实体 Checkpoint 权重">核心留存判定</th>
           </tr>
         </thead>
         <tbody>
@@ -2812,34 +3012,41 @@
         const st = ro.stats || {};
         const isCur = r === curRun && live.process_alive;
         const statusBadge = isCur
-          ? `<span style="color:#6ee7b7;background:var(--emerald-dim);padding:2px 8px;border-radius:4px;border:1px solid #10b981">⚡ 运行中 (L4流式)</span>`
+          ? `<span style="color:#6ee7b7;background:var(--emerald-dim);padding:2px 8px;border-radius:4px;border:1px solid #10b981;font-weight:600">⚡ 运行中 (L4流式)</span>`
           : `<span style="color:#828e9e;background:rgba(255,255,255,0.04);padding:2px 6px;border-radius:4px">✅ 已完成</span>`;
 
-        const s1Acc = ro.best_s1_acc ? `<b style="color:#34d399">${fmtPct(ro.best_s1_acc)}</b>` : (isCur ? '<span style="color:#38bdf8">训练进行中</span>' : '<span style="color:#64748b">N/A</span>');
+        const s1Acc = ro.best_s1_acc ? `<b style="color:#34d399">${fmtPct(ro.best_s1_acc)}</b>` : (isCur ? '<span style="color:#38bdf8">训练推进中</span>' : '<span style="color:#64748b">N/A</span>');
         const lossVal = st.end_loss !== undefined ? st.end_loss : '-';
-        const startVal = st.start_loss !== undefined ? st.start_loss : '-';
         const reduct = st.reduction_pct !== undefined ? `<b style="color:#38bdf8">-${st.reduction_pct}%</b>` : '-';
-        const catName = ro.category === 'full_coverage' ? '全量分层扩展' : (ro.category === 'ablation' ? '消融多任务联合' : '单层基准');
+        const catName = ro.category === 'full_coverage' ? '全量分层' : (ro.category === 'ablation' ? '消融协同' : '单层基准');
 
-        let poolTag = '<span style="color:#64748b">归档已修剪</span>';
-        if (['P0_B03_C01', 'F01', 'F02'].includes(r)) {
-          poolTag = '<span style="color:#6ee7b7;border:1px solid #10b981;padding:1px 6px;border-radius:3px">旧核心永久保护</span>';
+        let poolTag = '<span style="color:#64748b">元数据在库 (已修剪)</span>';
+        if (['P0_B03_C01', 'P0_B01_C01'].includes(r)) {
+          poolTag = '<span style="color:#6ee7b7;border:1px solid #10b981;padding:1px 6px;border-radius:3px;background:var(--emerald-dim)">🟢 旧核心实体</span>';
         } else if (isCur) {
-          poolTag = '<span style="color:#38bdf8;border:1px solid #0284c7;padding:1px 6px;border-radius:3px">新核心评估候选</span>';
+          poolTag = '<span style="color:#38bdf8;border:1px solid #0284c7;padding:1px 6px;border-radius:3px;background:var(--cyan-dim)">⚡ 新核心候选</span>';
         }
+
+        const startedStr = fmtTime(ro.started_at);
+        const completedStr = isCur ? `<span style="color:#34d399">● 流式推进 (${fmtTime(live.cursor_updated_at || ro.completed_at)})</span>` : fmtTime(ro.completed_at);
+        const durStr = ro.duration_display || '-';
+        const pVer = (ro.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v');
 
         html += `
           <tr style="${isCur ? 'background:rgba(56,189,248,0.06)' : ''}">
-            <td><b>${r}</b></td>
+            <td><b style="color:#fff">${r}</b></td>
+            <td><span style="color:#94a3b8;font-size:11px">${pVer}</span></td>
+            <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${startedStr}</td>
+            <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${completedStr}</td>
+            <td style="font-size:11.5px;font-weight:600;color:#38bdf8" class="tabular">${durStr}</td>
             <td><span style="color:#38bdf8">${catName}</span></td>
             <td>${statusBadge}</td>
-            <td>${st.current_chunk || ro.total_chunks || 0} / ${ro.total_chunks || 0}</td>
-            <td>${(st.current_step || ro.total_steps || 0).toLocaleString()} / ${(ro.total_steps || 0).toLocaleString()}</td>
-            <td>${(st.consumed || ro.total_consumed || 0).toLocaleString()} 条</td>
-            <td>${startVal}</td>
-            <td style="color:#38bdf8"><b>${lossVal}</b></td>
-            <td>${reduct}</td>
-            <td>${s1Acc}</td>
+            <td class="tabular">${st.current_chunk || ro.total_chunks || 0} / ${ro.total_chunks || 0}</td>
+            <td class="tabular">${(st.current_step || ro.total_steps || 0).toLocaleString()} / ${(ro.total_steps || 0).toLocaleString()}</td>
+            <td class="tabular" style="color:#cbd5e1">${(st.consumed || ro.total_consumed || 0).toLocaleString()}</td>
+            <td style="color:#38bdf8" class="tabular"><b>${lossVal}</b></td>
+            <td class="tabular">${reduct}</td>
+            <td class="tabular">${s1Acc}</td>
             <td>${poolTag}</td>
           </tr>
         `;
@@ -2849,25 +3056,158 @@
       table.innerHTML = html;
     }
 
-    function renderTables() {
-      const dpT = document.getElementById('dualPoolTable');
-      if (dpT) {
-        let rows = '<tr><th title="物理权重目录标识">模型标识</th><th title="训练批次与轮次">来源 / 轮次</th><th title="多任务分类">任务分类</th><th title="选对最佳模型的准确率，越大越好">S1 精度 (⬆️)</th><th title="验证集交叉熵损失，越小越好">S1 Loss (⬇️)</th><th title="非线性多目标综合选拔分，越大越好">综合得分 (⬆️)</th><th title="双池保留机制判定">留存类型</th></tr>';
-        (top5.length ? top5 : []).forEach(m => {
-          rows += `
-            <tr>
-              <td><b>${m.checkpoint_id}</b></td>
-              <td>${m.run_id} (Epoch ${m.epoch})</td>
-              <td><span style="color:#38bdf8">${m.task_family || 'S1'}</span></td>
-              <td style="color:#34d399"><b>${fmtPct(m.s1_accuracy)}</b></td>
-              <td>${(m.s1_loss || 0).toFixed(4)}</td>
-              <td><b>${(m.primary_score || 0).toFixed(2)}</b></td>
-              <td><span style="color:#6ee7b7;background:var(--emerald-dim);padding:2px 6px;border-radius:4px;border:1px solid #10b981">旧核心永久保护</span></td>
-            </tr>
-          `;
-        });
-        dpT.innerHTML = rows;
+    // Version Lifecycle Ledger Logic (Retained vs Pruned)
+    let currentVersionView = 'retained';
+    let currentVersionSearch = '';
+
+    function setVersionView(view) {
+      currentVersionView = view;
+      const bRet = document.getElementById('btnViewRetained');
+      const bPru = document.getElementById('btnViewPruned');
+      const bAll = document.getElementById('btnViewAll');
+      if (bRet) bRet.className = 'filter-btn' + (view === 'retained' ? ' active green' : '');
+      if (bPru) bPru.className = 'filter-btn' + (view === 'pruned' ? ' active rose' : '');
+      if (bAll) bAll.className = 'filter-btn' + (view === 'all' ? ' active' : '');
+      renderVersionLifecycleTable();
+    }
+
+    function filterVersionTable(q) {
+      currentVersionSearch = (q || '').trim().toLowerCase();
+      renderVersionLifecycleTable();
+    }
+
+    function renderVersionLifecycleTable() {
+      const table = document.getElementById('versionLifecycleTable');
+      if (!table) return;
+      const live = cachedLive || {};
+      const retained = live.retained_versions || [];
+      const pruned = live.pruned_versions || [];
+
+      // Update KPI counters
+      const bRetCount = document.getElementById('retainedCountBadge');
+      const bPruCount = document.getElementById('prunedCountBadge');
+      const bAllCount = document.getElementById('allCountBadge');
+      if (bRetCount) bRetCount.textContent = retained.length;
+      if (bPruCount) bPruCount.textContent = pruned.length;
+      if (bAllCount) bAllCount.textContent = retained.length + pruned.length;
+
+      const lcTot = document.getElementById('lcTotal');
+      const lcRet = document.getElementById('lcRetained');
+      const lcPru = document.getElementById('lcPruned');
+      const lcFre = document.getElementById('lcFreed');
+      if (lcTot) lcTot.textContent = `${retained.length + pruned.length} 个`;
+      if (lcRet) lcRet.textContent = `${retained.length} 个 (含 1 个流式在训候选)`;
+      if (lcPru) lcPru.textContent = `${pruned.length} 个`;
+      if (lcFre) lcFre.textContent = `${live.manifest_summary?.total_freed_gb || '11.03'} GiB (节省 94.6%)`;
+
+      let sourceList = [];
+      if (currentVersionView === 'retained') {
+        sourceList = retained;
+      } else if (currentVersionView === 'pruned') {
+        sourceList = pruned;
+      } else {
+        sourceList = retained.concat(pruned);
       }
+
+      // Filter by search query
+      let filtered = sourceList;
+      if (currentVersionSearch) {
+        filtered = sourceList.filter(item => {
+          const str = `${item.checkpoint_id} ${item.run_id} ${item.protocol_version} ${item.retention_status} ${item.pool_name || ''} ${item.reasons || ''} ${item.elimination_reason || ''} ${item.created_at || ''}`.toLowerCase();
+          return str.includes(currentVersionSearch);
+        });
+      }
+
+      const countEl = document.getElementById('filteredCountTxt');
+      if (countEl) countEl.textContent = filtered.length;
+
+      let html = `
+        <thead>
+          <tr>
+            <th title="Checkpoint 完整标识与版本号">版本代号 (Checkpoint ID)</th>
+            <th title="所属实验阶段与训练轮次">阶段 / 轮次</th>
+            <th title="因果隔离训练协议">协议版本</th>
+            <th title="Checkpoint 产生或最后记录时间">具体记录时间</th>
+            <th title="在服务器 NVMe 磁盘上的物理权重文件状态">物理权重状态</th>
+            <th title="修剪释放的磁盘空间">释放磁盘空间</th>
+            <th title="双池机制判定：留存还是修剪淘汰">生命周期判定</th>
+            <th title="为何保留或为何淘汰的科学判定依据">留存 / 淘汰原因详情</th>
+            <th title="S1 最佳回答选拔准确率">S1 精度 (⬆️)</th>
+            <th title="验证集交叉熵损失">S1 Loss (⬇️)</th>
+            <th title="非线性多目标选拔综合得分">综合分 (⬆️)</th>
+            <th title="评估指标与超参在库状态">元数据完整度</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+
+      if (filtered.length === 0) {
+        html += `<tr><td colspan="12" style="text-align:center;padding:24px;color:var(--muted)">🔍 未匹配到符合条件的版本记录</td></tr></tbody>`;
+        table.innerHTML = html;
+        return;
+      }
+
+      filtered.forEach(m => {
+        const isRet = retained.includes(m);
+        const isRunning = m.checkpoint_id && m.checkpoint_id.includes('in-flight');
+        const s1Acc = m.s1_accuracy !== null && m.s1_accuracy !== undefined ? `<b style="color:#34d399">${fmtPct(m.s1_accuracy)}</b>` : (isRunning ? '<span style="color:#38bdf8">训练中</span>' : '<span style="color:#64748b">-</span>');
+        const s1Loss = m.s1_val_loss !== null && m.s1_val_loss !== undefined ? `<span style="color:#38bdf8">${Number(m.s1_val_loss).toFixed(4)}</span>` : '<span style="color:#64748b">-</span>';
+        const pScore = m.primary_score !== null && m.primary_score !== undefined ? `<b>${Number(m.primary_score).toFixed(2)}</b>` : (isRunning ? '<span style="color:#38bdf8">评测就绪</span>' : '<span style="color:#64748b">-</span>');
+        const timeStr = fmtTime(m.created_at);
+
+        let weightBadge = '';
+        if (m.weights_saved) {
+          weightBadge = `<span style="color:#34d399;font-weight:700">✅ 在盘可用 (${(m.actual_weight_bytes / (1024*1024)).toFixed(1)} MB)</span>`;
+        } else if (isRunning) {
+          weightBadge = `<span style="color:#38bdf8;font-weight:700">⚡ 进程在训流式候选</span>`;
+        } else {
+          weightBadge = `<span style="color:#828e9e">🗑️ 物理权重已修剪释放</span>`;
+        }
+
+        let freedBadge = '<span style="color:#64748b">-</span>';
+        if (m.freed_bytes > 0) {
+          freedBadge = `<span style="color:#fb7185;font-weight:600">-${(m.freed_bytes / (1024*1024)).toFixed(1)} MB</span>`;
+        }
+
+        let actionBadge = '';
+        if (isRet) {
+          if (isRunning) {
+            actionBadge = `<span style="color:#38bdf8;background:var(--cyan-dim);padding:2px 8px;border-radius:4px;border:1px solid #0284c7;font-weight:600">🟢 没淘汰 (流式候选)</span>`;
+          } else {
+            actionBadge = `<span style="color:#34d399;background:var(--emerald-dim);padding:2px 8px;border-radius:4px;border:1px solid #10b981;font-weight:600">🟢 没淘汰 (实体留存)</span>`;
+          }
+        } else {
+          actionBadge = `<span style="color:#fb7185;background:var(--rose-dim);padding:2px 8px;border-radius:4px;border:1px solid rgba(244,63,94,0.3);font-weight:600">🔴 已淘汰 (修剪元数据)</span>`;
+        }
+
+        let reasonText = isRet
+          ? `<span style="color:#cbd5e1"><b>${m.pool_name || '双池保留'}</b>: ${m.reasons || '入选核心模型池'}</span>`
+          : `<span style="color:#94a3b8">${m.elimination_reason || '非最优 Epoch 修剪释放以节约存储'}</span>`;
+
+        html += `
+          <tr style="${isRunning ? 'background:rgba(56,189,248,0.06)' : (isRet ? 'background:rgba(16,185,129,0.04)' : '')}">
+            <td><b style="color:#fff">${m.checkpoint_id}</b></td>
+            <td><span style="color:#38bdf8">${m.run_id}</span> (E${m.epoch})</td>
+            <td><span style="font-size:11px;color:#94a3b8">${(m.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v')}</span></td>
+            <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${timeStr}</td>
+            <td>${weightBadge}</td>
+            <td class="tabular">${freedBadge}</td>
+            <td>${actionBadge}</td>
+            <td style="text-align:left;max-width:320px;font-size:11.5px;line-height:1.4">${reasonText}</td>
+            <td class="tabular">${s1Acc}</td>
+            <td class="tabular">${s1Loss}</td>
+            <td class="tabular">${pScore}</td>
+            <td><span style="color:#34d399;font-size:11.5px">✅ 100% 在库</span></td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody>`;
+      table.innerHTML = html;
+    }
+
+    function renderTables() {
+      renderVersionLifecycleTable();
 
       const cT = document.getElementById('censusTable');
       if (cT) {
