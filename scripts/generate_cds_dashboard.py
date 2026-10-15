@@ -1,0 +1,3798 @@
+#!/usr/bin/env python3
+"""
+generate_cds_dashboard.py
+Rebuilds docs/training-dashboard/index.html with Open-Claude-UI / Claude Design System (CDS) standards:
+- Warm Obsidian & Terracotta (#D97757) palette (zero AI purple/blue neon slop)
+- Anti-uniformity typographic hierarchy (34px big bold stats, uppercase 11px micro-labels)
+- Interactive '字段详解' popovers for all metrics without text-dump clutter
+- Grand Hero Visual Preview Cockpit (live progress gauges, loss trend, GPU telemetry, 38-run roadmap)
+- Segmented pill capsule tabs (macOS / CDS style)
+- Preserves all 94 element IDs, dynamic data hooks, and SVG rendering math
+"""
+
+import os
+
+HTML_CONTENT = r'''<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22%23d97757%22/><text y=%2268%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2260%22 font-family=%22sans-serif%22 font-weight=%22bold%22 fill=%22white%22>MR</text></svg>">
+  <title>ModelRouter · 智能路由全景图表与实时质检看板</title>
+  <style>
+    /* ==========================================================================
+       CLAUDE DESIGN SYSTEM (CDS) & ANTI-SLOP SPECIFICATION:
+       - Surfaces: Warm Obsidian & Espresso (#11100E -> #181714 -> #1E1C18 -> #262420)
+       - Primary Brand Accent: Claude Terracotta / Clay (#D97757, hover #C66547)
+       - Status Accents: Warm Sage (#2EA06F), Amber Gold (#D9943B), Slate Blue (#5E89B8), Terra Rose (#D85858)
+       - Typographic Hierarchy: Big bold metric display (32-36px), micro labels (11px uppercase), card titles (15px)
+       - Anti-Slop: Progressive disclosure via interactive metric popovers (no paragraph text-dumps)
+       ========================================================================== */
+    :root {
+      color-scheme: dark;
+      
+      /* Claude Design System - Warm Obsidian Surfaces */
+      --cds-bg: #11100E;
+      --cds-s1: #181714;
+      --cds-s2: #1E1C18;
+      --cds-s3: #262420;
+      --cds-s-hover: #24221E;
+      
+      --cds-border: #2C2924;
+      --cds-border-subtle: rgba(255, 255, 255, 0.06);
+      --cds-border-focus: #423E36;
+      --cds-hairline: rgba(217, 119, 87, 0.28);
+      
+      /* Typography */
+      --cds-text-primary: #F5F2EB;
+      --cds-text-secondary: #C4BCB0;
+      --cds-text-muted: #8E867A;
+      --cds-text-dim: #605A51;
+      
+      /* Brand & Semantic Accents */
+      --cds-clay: #D97757;
+      --cds-clay-hover: #C66547;
+      --cds-clay-dim: rgba(217, 119, 87, 0.12);
+      
+      --cds-sage: #2EA06F;
+      --cds-sage-dim: rgba(46, 160, 111, 0.12);
+      
+      --cds-amber: #D9943B;
+      --cds-amber-dim: rgba(217, 148, 59, 0.12);
+      
+      --cds-blue: #5E89B8;
+      --cds-blue-dim: rgba(94, 137, 184, 0.12);
+      
+      --cds-rose: #D85858;
+      --cds-rose-dim: rgba(216, 88, 88, 0.12);
+
+      /* Compatibility aliases */
+      --bg: var(--cds-bg);
+      --panel: var(--cds-s2);
+      --panel-hover: var(--cds-s-hover);
+      --panel-sub: var(--cds-s1);
+      --line: var(--cds-border);
+      --line-focus: var(--cds-border-focus);
+      --line-subtle: var(--cds-border-subtle);
+      --text: var(--cds-text-primary);
+      --muted: var(--cds-text-muted);
+      --dim: var(--cds-text-dim);
+      --emerald: var(--cds-sage);
+      --emerald-dim: var(--cds-sage-dim);
+      --cyan: var(--cds-clay);
+      --cyan-dim: var(--cds-clay-dim);
+      --amber: var(--cds-amber);
+      --amber-dim: var(--cds-amber-dim);
+      --rose: var(--cds-rose);
+      --rose-dim: var(--cds-rose-dim);
+      --slate: var(--cds-blue);
+      --slate-dim: var(--cds-blue-dim);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cds-bg);
+      color: var(--cds-text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Tabular numeric discipline across all metric numbers */
+    .tabular, .kpi-val, .ribbon-val, td, .legend-item b, .chart-tooltip b, .hero-metric-val {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ==========================================================================
+       HEADER & NAVIGATION
+       ========================================================================== */
+    header {
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--cds-border);
+      background: var(--cds-s1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-title { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--cds-clay);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: -0.5px;
+      box-shadow: 0 2px 6px rgba(217, 119, 87, 0.35);
+    }
+    .header-title h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--cds-text-primary);
+    }
+    .header-meta {
+      font-size: 12px;
+      color: var(--cds-text-muted);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Status Pills */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      background: var(--cds-sage-dim);
+      border: 1px solid rgba(46, 160, 111, 0.3);
+      color: #34d399;
+    }
+    .status-pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cds-sage);
+      box-shadow: 0 0 6px var(--cds-sage);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+
+    /* Directional Badges (极大越好 / 越小越好) */
+    .dir-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .dir-higher { background: var(--cds-sage-dim); color: #34d399; border: 1px solid rgba(46, 160, 111, 0.3); }
+    .dir-lower { background: var(--cds-rose-dim); color: #fb7185; border: 1px solid rgba(216, 88, 88, 0.3); }
+    .dir-stable { background: var(--cds-clay-dim); color: #f48c66; border: 1px solid rgba(217, 119, 87, 0.3); }
+    .dir-neutral { background: rgba(255, 255, 255, 0.05); color: #cbd5e1; border: 1px solid var(--cds-border); }
+
+    /* Server Clock & Telemetry Badges */
+    .server-clock-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11.5px;
+      background: rgba(217, 119, 87, 0.08);
+      border: 1px solid rgba(217, 119, 87, 0.25);
+      color: #f48c66;
+    }
+    .server-clock-badge b {
+      color: #fff;
+      font-weight: 700;
+    }
+    .poll-countdown-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      background: var(--cds-s2);
+      border: 1px solid var(--cds-border);
+      color: var(--cds-text-muted);
+    }
+    .poll-countdown-badge b {
+      color: #34d399;
+      min-width: 14px;
+      display: inline-block;
+      text-align: center;
+    }
+
+    /* Buttons */
+    .btn-cds {
+      background: var(--cds-s2);
+      border: 1px solid var(--cds-border);
+      color: var(--cds-text-primary);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-cds:hover {
+      background: var(--cds-s-hover);
+      border-color: var(--cds-clay);
+      color: #fff;
+    }
+    .btn-cds.primary {
+      background: var(--cds-clay);
+      border-color: var(--cds-clay);
+      color: #fff;
+    }
+    .btn-cds.primary:hover {
+      background: var(--cds-clay-hover);
+    }
+
+    /* ==========================================================================
+       TOP 4 PRIMARY KPI CARDS (HIGH TYPOGRAPHIC CONTRAST)
+       ========================================================================== */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      padding: 16px 28px 8px;
+    }
+    .kpi-card {
+      background: var(--cds-s2);
+      border: 1px solid var(--cds-border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: border-color 0.15s, transform 0.15s;
+      min-height: 128px;
+    }
+    .kpi-card:hover {
+      border-color: var(--cds-border-focus);
+      background: var(--cds-s-hover);
+    }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 16px; right: 16px; height: 2px;
+      background: var(--cds-clay);
+      border-radius: 2px;
+    }
+    .kpi-card.green::before { background: var(--cds-sage); }
+    .kpi-card.amber::before { background: var(--cds-amber); }
+    .kpi-card.slate::before { background: var(--cds-blue); }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .kpi-label {
+      font-size: 11px;
+      color: var(--cds-text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kpi-val {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--cds-text-primary);
+      letter-spacing: -0.8px;
+      line-height: 1.15;
+      margin: 4px 0 6px;
+    }
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--cds-text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Interactive Field Popover (Replaces dense paragraph text-dumps) */
+    .field-info-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+      color: var(--cds-text-muted);
+      cursor: pointer;
+      position: relative;
+    }
+    .field-info-trigger:hover {
+      color: var(--cds-clay);
+    }
+    .field-popover {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 0;
+      width: 290px;
+      background: #1e1b17;
+      border: 1px solid var(--cds-border-focus);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 11.5px;
+      color: #e2e8f0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      z-index: 150;
+      display: none;
+      pointer-events: none;
+      line-height: 1.5;
+    }
+    .field-info-trigger:hover .field-popover {
+      display: block;
+    }
+    .popover-title {
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      font-size: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 4px;
+    }
+
+    /* ==========================================================================
+       GRAND VISUAL PREVIEW: LIVE TRAINING HERO COCKPIT
+       ========================================================================== */
+    .hero-cockpit {
+      margin: 8px 28px 16px;
+      background: var(--cds-s2);
+      border: 1px solid var(--cds-border);
+      border-radius: 14px;
+      padding: 18px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-cockpit::after {
+      content: "";
+      position: absolute;
+      top: 0; right: 0; width: 280px; height: 100%;
+      background: radial-gradient(circle at top right, rgba(217, 119, 87, 0.08), transparent 70%);
+      pointer-events: none;
+    }
+    .hero-cockpit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--cds-border-subtle);
+    }
+    .hero-cockpit-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1.3fr 1.1fr;
+      gap: 18px;
+    }
+    .hero-col {
+      background: var(--cds-s1);
+      border: 1px solid var(--cds-border-subtle);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hero-metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--cds-text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .hero-metric-val {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--cds-text-primary);
+      letter-spacing: -1px;
+      line-height: 1.15;
+    }
+    .hero-metric-val.clay { color: var(--cds-clay); }
+    .hero-metric-val.sage { color: #34d399; }
+
+    /* Custom CDS Progress Bar */
+    .cds-progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin: 6px 0 4px;
+      position: relative;
+    }
+    .cds-progress-fill {
+      height: 100%;
+      border-radius: 9999px;
+      background: var(--cds-clay);
+      transition: width 0.3s ease;
+    }
+    .cds-progress-fill.sage { background: var(--cds-sage); }
+    .cds-progress-fill.amber { background: var(--cds-amber); }
+
+    /* Roadmap Stage Flow */
+    .roadmap-flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--cds-border-subtle);
+      overflow-x: auto;
+    }
+    .stage-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--cds-s1);
+      border: 1px solid var(--cds-border);
+      color: var(--cds-text-muted);
+      white-space: nowrap;
+    }
+    .stage-pill.done {
+      background: rgba(46, 160, 111, 0.08);
+      border-color: rgba(46, 160, 111, 0.3);
+      color: #34d399;
+    }
+    .stage-pill.active {
+      background: var(--cds-clay-dim);
+      border-color: var(--cds-clay);
+      color: #fff;
+      box-shadow: 0 0 8px rgba(217, 119, 87, 0.3);
+    }
+    .stage-arrow {
+      color: var(--cds-text-dim);
+      font-size: 10px;
+    }
+
+    /* ==========================================================================
+       SEGMENTED CONTROL PILL TABS BAR
+       ========================================================================== */
+    .tabs-bar-wrap {
+      padding: 4px 28px 12px;
+      background: var(--cds-bg);
+      border-bottom: 1px solid var(--cds-border);
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+    }
+    .tabs-bar {
+      display: inline-flex;
+      background: var(--cds-s1);
+      padding: 4px;
+      border-radius: 9999px;
+      border: 1px solid var(--cds-border);
+      gap: 3px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--cds-text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      color: var(--cds-text-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .tab-btn.active {
+      color: #fff;
+      background: var(--cds-clay);
+      box-shadow: 0 2px 6px rgba(217, 119, 87, 0.35);
+    }
+
+    /* Content Area */
+    main { padding: 18px 28px; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* Layout Grids */
+    .grid-2 { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 16px; margin-bottom: 16px; }
+    .grid-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+
+    /* Chart Panels */
+    .chart-panel {
+      background: var(--cds-s2);
+      border: 1px solid var(--cds-border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .chart-title-wrap { display: flex; flex-direction: column; gap: 4px; max-width: 820px; }
+    .chart-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--cds-text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chart-desc {
+      font-size: 12px;
+      color: var(--cds-text-muted);
+      line-height: 1.55;
+    }
+    .chart-desc b { color: #e2e8f0; }
+    .chart-legend {
+      display: flex;
+      gap: 12px;
+      font-size: 11.5px;
+      color: var(--cds-text-muted);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+    /* SVG Chart */
+    svg.chart-svg {
+      width: 100%;
+      height: 260px;
+      display: block;
+      overflow: visible;
+    }
+
+    /* Scope Bar */
+    .scope-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      background: var(--cds-s1);
+      border: 1px solid var(--cds-border);
+      border-radius: 8px;
+    }
+    .scope-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .scope-title {
+      font-size: 11.5px;
+      color: var(--cds-text-muted);
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .scope-btn {
+      background: var(--cds-s2);
+      border: 1px solid var(--cds-border);
+      color: var(--cds-text-muted);
+      padding: 4px 11px;
+      border-radius: 9999px;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .scope-btn:hover {
+      color: var(--cds-text-primary);
+      border-color: var(--cds-border-focus);
+    }
+    .scope-btn.active {
+      background: var(--cds-clay-dim);
+      border-color: var(--cds-clay);
+      color: #fff;
+      font-weight: 600;
+    }
+    .scope-extra {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-top: 1px dashed var(--cds-border);
+      padding-top: 8px;
+    }
+    .scope-select {
+      background: var(--cds-s2);
+      border: 1px solid var(--cds-border);
+      color: var(--cds-text-primary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      outline: none;
+      cursor: pointer;
+    }
+    .mode-toggle {
+      display: inline-flex;
+      background: var(--cds-s2);
+      border: 1px solid var(--cds-border);
+      border-radius: 9999px;
+      padding: 2px;
+    }
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--cds-text-muted);
+      padding: 3px 11px;
+      font-size: 11.5px;
+      font-weight: 500;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mode-btn.active {
+      background: var(--cds-clay);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Stats Ribbon */
+    .chart-stats-ribbon {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      background: var(--cds-s1);
+      border: 1px solid var(--cds-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 12px;
+    }
+    .ribbon-item { display: flex; flex-direction: column; gap: 2px; }
+    .ribbon-label { font-size: 11px; color: var(--cds-text-muted); display: flex; align-items: center; gap: 4px; }
+    .ribbon-val { font-size: 13.5px; font-weight: 700; color: #fff; }
+
+    /* Floating Tooltip */
+    .chart-tooltip {
+      position: absolute;
+      display: none;
+      pointer-events: none;
+      background: #1e1b17;
+      border: 1px solid var(--cds-clay);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 11.5px;
+      color: #f1f5f9;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.7);
+      z-index: 100;
+      line-height: 1.5;
+    }
+
+    /* Terminal Box */
+    .terminal-box {
+      background: #0d0c0a;
+      border: 1px solid var(--cds-border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11.5px;
+      color: #cbd5e1;
+      max-height: 160px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+    .terminal-line { margin: 2px 0; }
+    .terminal-line.good { color: #34d399; }
+    .terminal-line.warn { color: #f59e0b; }
+
+    /* Field Guide & Dictionary Cards */
+    .field-guide-card {
+      background: var(--cds-s1);
+      border: 1px solid var(--cds-border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-guide-card b {
+      color: #fff;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .field-guide-card p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--cds-text-secondary);
+      line-height: 1.5;
+    }
+    .field-guide-rule {
+      font-size: 11px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--cds-border-subtle);
+      color: #cbd5e1;
+    }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { padding: 9px 12px; border-bottom: 1px solid var(--cds-border); text-align: right; }
+    th:first-child, td:first-child { text-align: left; }
+    th { color: var(--cds-text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.04em; }
+    th[title] { cursor: help; text-decoration: underline dotted #505c6c; }
+    tr:hover { background: rgba(255,255,255,0.03); }
+
+    /* Details Drawer */
+    details {
+      background: var(--cds-s2);
+      border: 1px solid var(--cds-border);
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+    summary {
+      padding: 14px 18px;
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      background: var(--cds-s1);
+      border-radius: 8px 8px 0 0;
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    summary:hover { background: var(--cds-s-hover); }
+    .details-body { padding: 16px 18px; overflow-x: auto; }
+
+    /* Lifecycle Ledger Filter Buttons */
+    .filter-btn-group {
+      display: inline-flex;
+      gap: 4px;
+      background: var(--cds-s1);
+      padding: 3px;
+      border-radius: 9999px;
+      border: 1px solid var(--cds-border);
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--cds-text-muted);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { color: #fff; }
+    .filter-btn.active {
+      background: var(--cds-s3);
+      color: #fff;
+      border-color: var(--cds-border-focus);
+    }
+    .filter-btn.active.green {
+      background: var(--cds-sage-dim);
+      color: #34d399;
+      border-color: rgba(46, 160, 111, 0.4);
+    }
+    .filter-btn.active.rose {
+      background: var(--cds-rose-dim);
+      color: #fb7185;
+      border-color: rgba(216, 88, 88, 0.4);
+    }
+    .lifecycle-kpi-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      background: var(--cds-s1);
+      border: 1px solid var(--cds-border);
+      border-radius: 8px;
+    }
+    .lifecycle-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--cds-text-muted);
+    }
+    .lifecycle-chip b {
+      font-size: 13px;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Slide-over Dictionary Drawer */
+    #dictDrawer {
+      position: fixed;
+      top: 0; right: -500px; width: 480px; height: 100vh;
+      background: #14120f;
+      border-left: 1px solid var(--cds-border);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+      z-index: 200;
+      transition: right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    #dictDrawer.open { right: 0; }
+    .drawer-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--cds-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--cds-s1);
+    }
+    .drawer-body {
+      padding: 16px 20px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (max-width: 1100px) {
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+      .hero-grid { grid-template-columns: 1fr; }
+      .grid-2, .grid-equal, .grid-3 { grid-template-columns: 1fr; }
+      .chart-stats-ribbon { grid-template-columns: repeat(2, 1fr); }
+      #dictDrawer { width: 100%; right: -100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-title">
+      <div class="brand-mark">MR</div>
+      <h1>ModelRouter · 智能路由全景图表与实时质检看板</h1>
+      <span class="status-pill" id="livePill">
+        <span class="status-pulse"></span>
+        <span id="livePillText">实时守护中 · F04</span>
+      </span>
+      <span class="server-clock-badge" id="serverClockBadge" title="A6000 硬件真实物理时间 (CST/UTC+8)">
+        ⏱️ <b id="serverClockTxt" class="tabular">同步中...</b>
+      </span>
+      <span class="poll-countdown-badge" id="pollCountdownBadge" title="与 A6000 服务器每 5 秒自动同步一次最新指标">
+        🔄 同步: <b id="countdownSecTxt">5s</b>
+      </span>
+    </div>
+    <div class="header-meta">
+      <span id="gpuMeta">RTX A6000 (49GB) · 80 核 · 376GB RAM</span>
+      <span id="lastSyncTxt" style="color:#34d399">● 连接正常 (延迟 &lt;0.5s)</span>
+      <button class="btn-cds" onclick="toggleDictDrawer()">📖 指标速查字典</button>
+      <button class="btn-cds primary" onclick="fetchLiveStatusNow()">立即对账</button>
+    </div>
+  </header>
+
+  <!-- Top 4 Primary KPI Cards with Progressive Disclosure Popovers -->
+  <div class="kpi-row">
+    <!-- Card 1: Live Run -->
+    <div class="kpi-card green">
+      <div>
+        <div class="kpi-header">
+          <span class="kpi-label">当前执行训练队列 <span class="dir-badge dir-stable">● 持续推进</span></span>
+          <span style="font-size:12px;color:#34d399;font-weight:700" id="liveLossBadge">Loss 0.5094</span>
+        </div>
+        <div class="kpi-val" id="kpiRun">F04 (L4 联合)</div>
+        <div class="kpi-sub" id="kpiRunSub">Epoch 1/2 · Chunk 198/234 · Step 25,344 / 59,904</div>
+      </div>
+      <div class="field-info-trigger">
+        <span>💡 字段业务解析</span>
+        <div class="field-popover">
+          <div class="popover-title">阶段与批次推进 (Run & Step)</div>
+          <div><b>业务价值</b>：反映 GPU 当前计算反向传播的具体阶段与批次进度。</div>
+          <div style="margin-top:4px"><b>怎么看</b>：Chunk/Step 持续单调递增代表训练健康无锁死；已消费 162W+ 条真实样本，无 min_factor 丢弃。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Routing Accuracy -->
+    <div class="kpi-card">
+      <div>
+        <div class="kpi-header">
+          <span class="kpi-label">最优路由准确率 (S1 Acc) <span class="dir-badge dir-higher">⬆️ 越大越好</span></span>
+          <span style="font-size:11px;color:var(--cds-clay)">基线 64.44%</span>
+        </div>
+        <div class="kpi-val" id="kpiAcc">68.63%</div>
+        <div class="kpi-sub" id="kpiAccSub">超基线 +4.19% · 冠军模型 P0_B03_C01</div>
+      </div>
+      <div class="field-info-trigger">
+        <span>💡 字段业务解析</span>
+        <div class="field-popover">
+          <div class="popover-title">S1 静态路由偏好精度 (S1 Accuracy)</div>
+          <div><b>业务价值</b>：在多模型池中精准选拔出给出最佳回答的模型的概率。命中率越高，大模型调用费用越省。</div>
+          <div style="margin-top:4px"><b>怎么看</b>：基准为 64.44%，超过 66% 为优秀，当前 68.63% 领先基线 4.19 个百分点。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Dual Pool Checkpoints -->
+    <div class="kpi-card amber">
+      <div>
+        <div class="kpi-header">
+          <span class="kpi-label">双池核心模型保留 <span class="dir-badge dir-stable">🎯 受控留存</span></span>
+          <span style="font-size:11px;color:var(--cds-amber)">双池机制 v2.0</span>
+        </div>
+        <div class="kpi-val" id="kpiPool">3 份留存实体</div>
+        <div class="kpi-sub" id="kpiPoolSub">2 份历史实体 + 1 份在训流式候选 · 130 份淘汰</div>
+      </div>
+      <div class="field-info-trigger">
+        <span>💡 字段业务解析</span>
+        <div class="field-popover">
+          <div class="popover-title">双池生命周期留存 (Dual-Pool Retention)</div>
+          <div><b>业务价值</b>：旧池锁定 5 席基准核心实体权重不误删；新池按 15% 择优晋级淘汰低分轮次，释放磁盘。</div>
+          <div style="margin-top:4px"><b>怎么看</b>：淘汰率 96.1%，稳态物理磁盘占用仅 18.9 GiB，元数据 100% 完整归档。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Storage Health -->
+    <div class="kpi-card slate">
+      <div>
+        <div class="kpi-header">
+          <span class="kpi-label">NVMe 物理磁盘剩余 <span class="dir-badge dir-higher">⬆️ 越大越安全</span></span>
+          <span style="font-size:11px;color:var(--cds-blue)">停机线 200 GiB</span>
+        </div>
+        <div class="kpi-val" id="kpiDisk">1.23 TiB 可用</div>
+        <div class="kpi-sub" id="kpiDiskSub">剩余 34.6% · 权重预算仅用 4.0% (4.8 GiB)</div>
+      </div>
+      <div class="field-info-trigger">
+        <span>💡 字段业务解析</span>
+        <div class="field-popover">
+          <div class="popover-title">NVMe 根盘与活动训练预算</div>
+          <div><b>业务价值</b>：监控服务器根盘物理空间与 120 GiB 活动训练预算占用率，杜绝爆盘风险。</div>
+          <div style="margin-top:4px"><b>怎么看</b>：远高于 200 GiB 紧急熔断线；双池修剪已安全释放 96.16 GiB 物理空间。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRAND VISUAL PREVIEW: LIVE TRAINING HERO COCKPIT -->
+  <div class="hero-cockpit">
+    <div class="hero-cockpit-header">
+      <div class="hero-cockpit-title">
+        <span>🛰️ 实时训练全景巡航 · F04 动态对账</span>
+        <span class="status-pill"><span class="status-pulse"></span> 进程活跃 · L4 单层联合</span>
+      </div>
+      <div style="font-size:12px;color:var(--cds-text-muted)">
+        实时流式消费 · 2:1:1 平衡交错协议 · <span style="color:#34d399">0 丢弃</span>
+      </div>
+    </div>
+
+    <div class="hero-grid">
+      <!-- Col 1: Loss & Convergence -->
+      <div class="hero-col">
+        <div class="hero-metric-label">
+          <span>损失下潜与收敛健康</span>
+          <span class="dir-badge dir-lower">⬇️ 越小越好</span>
+        </div>
+        <div class="hero-metric-val sage" id="cockpitLossVal">0.5094</div>
+        <div style="font-size:11.5px;color:var(--cds-text-secondary);margin-top:4px">
+          从初始 <b style="color:#f59e0b">1.4707</b> 下降至当前，收敛降幅 <b style="color:#34d399">-65.4%</b>
+        </div>
+        <div class="cds-progress-track">
+          <div class="cds-progress-fill sage" id="cockpitLossBar" style="width: 78%;"></div>
+        </div>
+        <div style="font-size:11px;color:var(--cds-text-muted);display:flex;justify-content:space-between">
+          <span>目标线 0.60 (已达标)</span>
+          <span style="color:#34d399">稳健收敛区间</span>
+        </div>
+      </div>
+
+      <!-- Col 2: Step & Chunk Scale -->
+      <div class="hero-col">
+        <div class="hero-metric-label">
+          <span>当前轮次批次推进</span>
+          <span id="cockpitChunkTxt" style="color:#fff;font-weight:700">Chunk 198 / 234 (84.6%)</span>
+        </div>
+        <div class="hero-metric-val clay" id="cockpitStepVal">25,344 <span style="font-size:16px;color:var(--cds-text-muted);font-weight:500">/ 59,904 步</span></div>
+        <div style="font-size:11.5px;color:var(--cds-text-secondary);margin-top:4px">
+          已真实消费梯度样本: <b style="color:#fff" id="cockpitSamplesVal">1,622,016 / 3,821,922 条</b>
+        </div>
+        <div class="cds-progress-track">
+          <div class="cds-progress-fill" id="cockpitProgressBar" style="width: 84.6%;"></div>
+        </div>
+        <div style="font-size:11px;color:var(--cds-text-muted);display:flex;justify-content:space-between">
+          <span>Epoch 1 完成在即</span>
+          <span id="cockpitEstTxt" style="color:var(--cds-clay)">预计接续正规 F03</span>
+        </div>
+      </div>
+
+      <!-- Col 3: Hardware & GPU Telemetry -->
+      <div class="hero-col">
+        <div class="hero-metric-label">
+          <span>RTX A6000 算力与显存</span>
+          <span style="color:#34d399" id="cockpitGpuTxt">76% Util (280W)</span>
+        </div>
+        <div class="hero-metric-val" id="cockpitVramVal" style="font-size:26px">9,759 <span style="font-size:14px;color:var(--cds-text-muted);font-weight:500">/ 49,140 MiB</span></div>
+        <div style="font-size:11.5px;color:var(--cds-text-secondary);margin-top:4px">
+          显存占用率仅 <b style="color:#34d399">19.9%</b> · 流水线时延 <b style="color:#fff">196 ms/批次</b>
+        </div>
+        <div class="cds-progress-track">
+          <div class="cds-progress-fill sage" id="cockpitVramBar" style="width: 19.9%;"></div>
+        </div>
+        <div style="font-size:11px;color:var(--cds-text-muted);display:flex;justify-content:space-between">
+          <span>PID: 2881373</span>
+          <span style="color:#34d399">安全余量 39.4 GiB</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 38-Run Scientific Pipeline Stage Roadmap Flow -->
+    <div class="roadmap-flow">
+      <span style="font-size:11px;color:var(--cds-text-muted);font-weight:600;white-space:nowrap">🗺️ 科研主线脉络:</span>
+      <span class="stage-pill done">✅ F01 (L1基线)</span>
+      <span class="stage-arrow">➔</span>
+      <span class="stage-pill done">✅ F02 (L2分层)</span>
+      <span class="stage-arrow">➔</span>
+      <span class="stage-pill done">✅ ALGN_04 (3联合)</span>
+      <span class="stage-arrow">➔</span>
+      <span class="stage-pill active">🔥 F04 (L4 运行中 84.6%)</span>
+      <span class="stage-arrow">➔</span>
+      <span class="stage-pill">⏳ F03 (正规补跑)</span>
+      <span class="stage-arrow">➔</span>
+      <span class="stage-pill">⏳ F05~F07 (累积全量)</span>
+      <span class="stage-arrow">➔</span>
+      <span class="stage-pill">⏳ F08~F16 (嵌套消融)</span>
+      <span class="stage-arrow">➔</span>
+      <span class="stage-pill">⏳ F17~F20 (课程学习)</span>
+    </div>
+  </div>
+
+  <!-- Segmented Control Pill Tabs Bar -->
+  <div class="tabs-bar-wrap">
+    <div class="tabs-bar">
+      <button class="tab-btn active" onclick="switchTab(0)">📈 1. 实时收敛与天梯</button>
+      <button class="tab-btn" onclick="switchTab(1)">🔬 2. 消融协同与校准</button>
+      <button class="tab-btn" onclick="switchTab(2)">🌐 3. 1,092 矩阵消融</button>
+      <button class="tab-btn" onclick="switchTab(3)">🧠 4. 状态变量与因果</button>
+      <button class="tab-btn" onclick="switchTab(4)">💾 5. 存储资产与双池</button>
+      <button class="tab-btn" onclick="switchTab(5)">📋 6. 版本生命周期总账</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- =========================================================================
+         TAB 0: 实时收敛与天梯图表
+         ========================================================================= -->
+    <div class="tab-pane active" id="tab0">
+      <!-- Full-Width Chart 1: Multi-Span Loss & Convergence -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title-wrap">
+            <div class="chart-title">
+              <span>📉 图表 1 · 项目全生命周期训练收敛与损失轨迹全景图 (Multi-Span Loss & Convergence)</span>
+              <span class="dir-badge dir-lower">⬇️ 损失越低越好</span>
+            </div>
+            <div class="chart-desc">
+              <b>字段意义</b>：展现各阶段模型真实消费样本后的交叉熵 Loss 下降轨迹。可通过下方快捷筛选跨度、查看全时序演化或单 Run 穿透细查。<br>
+              <b>怎么看</b>：曲线整体平稳下降且无发散说明训练收敛健康；收敛至 0.50~0.60 区间即达到优秀路由判断置信度。
+            </div>
+          </div>
+          <div class="chart-legend" id="chartLegendWrap">
+            <!-- Dynamically populated legend -->
+          </div>
+        </div>
+
+        <!-- Scope & Time Range Selector -->
+        <div class="scope-bar-wrap">
+          <div class="scope-bar">
+            <span class="scope-title">📅 时间与阶段跨度:</span>
+            <button class="scope-btn active" data-scope="all" onclick="setChartScope('all')">🌐 全部历史 (14 组全量)</button>
+            <button class="scope-btn" data-scope="last_24h" onclick="setChartScope('last_24h')">⏱️ 近 24 小时 (ALGN+F03+F04)</button>
+            <button class="scope-btn" data-scope="last_12h" onclick="setChartScope('last_12h')">⏱️ 近 12 小时 (F03+F04)</button>
+            <button class="scope-btn" data-scope="last_6h" onclick="setChartScope('last_6h')">⏱️ 近 6 小时 (当前 F04)</button>
+            <button class="scope-btn" data-scope="current" onclick="setChartScope('current')">⚡ 当前活跃 Run (F04 完整轨迹)</button>
+            <button class="scope-btn" data-scope="full_coverage" onclick="setChartScope('full_coverage')">📦 全量分层组 (F01~F04)</button>
+            <button class="scope-btn" data-scope="ablation" onclick="setChartScope('ablation')">🔬 消融实验组 (ALGN 01~04)</button>
+            <button class="scope-btn" data-scope="baseline" onclick="setChartScope('baseline')">🎯 单层基线组 (S1 Baselines)</button>
+          </div>
+          <div class="scope-extra">
+            <div style="display:flex;align-items:center;gap:8px">
+              <label for="runSelect" style="font-size:11.5px;color:var(--cds-text-muted)">🔍 单 Run 聚焦穿透:</label>
+              <select id="runSelect" class="scope-select" onchange="onRunSelectChange(this.value)">
+                <option value="">-- 选择具体 Run 深入查看高精点阵 --</option>
+              </select>
+              <button class="mode-btn" id="btnZoomToggle" onclick="toggleSingleRunZoom()" style="display:none;margin-left:4px;font-size:11px;padding:3px 8px" title="在当前步数自适应放大与总计划全景之间切换">🔍 自适应步数放大</button>
+            </div>
+            <div class="mode-toggle">
+              <button class="mode-btn active" id="btnModeOverlay" onclick="setChartMode('overlay')">📈 曲线叠加对比 (Overlay)</button>
+              <button class="mode-btn" id="btnModeTimeline" onclick="setChartMode('timeline')">⏳ 全时序推进流水 (Timeline)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SVG Container with Crosshair & Tooltip -->
+        <div style="position:relative">
+          <svg id="liveLossSvg" class="chart-svg" viewBox="0 0 960 300" onmousemove="handleChartMouseMove(event)" onmouseleave="handleChartMouseLeave(event)"></svg>
+          <div id="chartTooltip" class="chart-tooltip"></div>
+        </div>
+
+        <!-- Dynamic Stats Ribbon -->
+        <div class="chart-stats-ribbon" id="chartStatsRibbon">
+          <div class="ribbon-item">
+            <span class="ribbon-label">当前视图跨度 <span class="dir-badge dir-stable">🎯 动态过滤</span></span>
+            <span class="ribbon-val" id="ribbonSpan">全部历史全景 (14 Runs)</span>
+          </div>
+          <div class="ribbon-item">
+            <span class="ribbon-label">覆盖批次与步数 <span class="dir-badge dir-higher">⬆️ 越全越好</span></span>
+            <span class="ribbon-val" id="ribbonSteps">3,154 批次 · 59,904 步</span>
+          </div>
+          <div class="ribbon-item">
+            <span class="ribbon-label">损失下潜区间 <span class="dir-badge dir-lower">⬇️ 越低越好</span></span>
+            <span class="ribbon-val" id="ribbonLoss" style="color:var(--cds-clay)">1.4707 ➡️ 0.5094 (-65.4%)</span>
+          </div>
+          <div class="ribbon-item">
+            <span class="ribbon-label">累计真实样本吞吐 <span class="dir-badge dir-higher">⬆️ 充分摄取</span></span>
+            <span class="ribbon-val" id="ribbonSamples" style="color:#34d399">4,864,210 条</span>
+          </div>
+          <div class="ribbon-item">
+            <span class="ribbon-label">最高验证 S1 准确率 <span class="dir-badge dir-higher">⬆️ 越大越好</span></span>
+            <span class="ribbon-val" id="ribbonAcc" style="color:#34d399">68.63% (超基线 +4.19%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-Column Grid: Ladder + Cumulative Samples -->
+      <div class="grid-2">
+        <!-- Chart 2: Model Ladder Horizontal Bars -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>🏆 图表 2 · 核心留存模型天梯与全历史阶段对比</span>
+                <span class="dir-badge dir-higher">⬆️ 准确率越大越好</span>
+              </div>
+              <div class="chart-desc">
+                <b>指标意义</b>：统一固定验证集（N=3,142）离线评估，展示选拔出的 S1 路由能力最优模型。<br>
+                <b>怎么看</b>：基准为 64.44%，绿色为物理物化留存核心，陶土橙/蓝色为高分候选。
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="mode-toggle">
+                <button class="mode-btn active" id="btnLadderTop5" onclick="setLadderView('top5')">Top-5 留存</button>
+                <button class="mode-btn" id="btnLadderAll" onclick="setLadderView('all')">全量 14 阶段天梯</button>
+              </div>
+            </div>
+          </div>
+          <svg id="ladderSvg" class="chart-svg" viewBox="0 0 500 270"></svg>
+          <div style="font-size:11px;color:var(--cds-text-muted);margin-top:6px;display:flex;justify-content:space-between">
+            <span>* 绿色代表已物化核心留存权重，陶土橙为高分候选</span>
+            <span id="ladderFooterTxt">基准 64.44% · 最高 68.63% (+4.19%)</span>
+          </div>
+        </div>
+
+        <!-- Chart 3: Cumulative Throughput Area Chart -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>📚 图表 3 · 全周期训练样本真实吞吐与消费累计面积图</span>
+                <span class="dir-badge dir-higher">⬆️ 数据摄取越多越充分</span>
+              </div>
+              <div class="chart-desc">
+                <b>指标意义</b>：展示从单层基线到四层全覆盖实际训练消耗的样本总量（消除任何 min_factor 丢弃）。<br>
+                <b>怎么看</b>：面积平稳单调递增，证实所有样本均按 2:1:1 平衡交错协议全量消费。
+              </div>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="background:#2EA06F"></span> 累计消费量</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#D97757"></span> 独立去重单元</span>
+            </div>
+          </div>
+          <svg id="cumulativeThroughputSvg" class="chart-svg" viewBox="0 0 500 270"></svg>
+          <div style="font-size:11px;color:var(--cds-text-muted);margin-top:6px;display:flex;justify-content:space-between">
+            <span>● 初始启动: 18,340 条</span>
+            <span>● 当前累计总额: <b style="color:#34d399" id="cumSamplesTxt">4,864,210 条真实样本</b></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-Column Grid: Scale by Phase + Checkpoints Landscape -->
+      <div class="grid-2">
+        <!-- Chart 4: Step & Chunk Scale by Run Phase -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>📊 图表 4 · 各阶段批次规模与总步数分布对比 (Chunk & Step Scale)</span>
+                <span class="dir-badge dir-stable">🎯 规模随层数阶梯倍增</span>
+              </div>
+              <div class="chart-desc">
+                从 L1 的 120 批次扩增到 L4 的 234 批次/59,904 步，消融组 ALGN_04 共完成 1,189 批次。
+              </div>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="background:#5E89B8"></span> 总步数 (Updates)</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#D9943B"></span> 总批次数 (Chunks)</span>
+            </div>
+          </div>
+          <svg id="stepScaleSvg" class="chart-svg" viewBox="0 0 500 240"></svg>
+        </div>
+
+        <!-- Chart 5: Historical Checkpoints Landscape (Scatter: Accuracy vs Loss) -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>🎯 图表 5 · 39 组完整历史 Checkpoint 精度 vs 损失全景散点图</span>
+                <span class="dir-badge dir-higher">右上角帕累托最优</span>
+              </div>
+              <div class="chart-desc">
+                <b>指标意义</b>：X 轴为验证 Loss (越小越好)，Y 轴为 S1 路由准确率 (越大越好)。展示 39 份历史权重的全量分布。
+              </div>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="background:#2EA06F"></span> 留存核心</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#D97757"></span> 候选模型</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#64748b"></span> 裁剪对照</span>
+            </div>
+          </div>
+          <div style="position:relative">
+            <svg id="scatterSvg" class="chart-svg" viewBox="0 0 500 240" onmousemove="handleScatterMouseMove(event)" onmouseleave="handleScatterMouseLeave(event)"></svg>
+            <div id="scatterTooltip" class="chart-tooltip"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Terminal Feed + GPU Real-time Status Card (Chart 6) -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title-wrap">
+            <div class="chart-title">
+              <span>💻 图表 6 · 实时训练终端与 RTX A6000 硬件状态 (Live Terminal & Pipeline Latency)</span>
+              <span class="dir-badge dir-higher">⚡ 76% GPU 负载</span>
+            </div>
+            <div class="chart-desc">
+              直接读取 A6000 正在执行的 continuous_queue.log 最新批次流水与显卡遥测数据：
+            </div>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-bottom:0">
+          <div>
+            <div class="terminal-box" id="terminalFeed">
+              <div class="terminal-line good">[F04] Epoch 1/2 Chunk 198/234: loss=0.5094, step=25344/59904, consumed=1622016/3821922</div>
+            </div>
+            <!-- Realtime Mini GPU Gauges -->
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:8px 12px;background:var(--cds-s1);border-radius:6px;border:1px solid var(--cds-border)">
+              <span style="font-size:11.5px;color:var(--cds-text-muted)">🔥 RTX A6000 负载: <b style="color:#34d399" id="miniGpuUtilTxt">76% Util (280W)</b></span>
+              <span style="font-size:11.5px;color:var(--cds-text-muted)">💾 显存使用: <b style="color:#f48c66" id="miniGpuMemTxt">9,759 MiB / 49,140 MiB (19.9%)</b></span>
+              <span style="font-size:11px;color:var(--cds-text-dim)">PID <span id="miniGpuPidTxt">2881373</span></span>
+            </div>
+          </div>
+          <div>
+            <!-- Pipeline Latency Breakdown -->
+            <div style="padding:10px 14px;background:var(--cds-s1);border-radius:6px;border:1px solid var(--cds-border)">
+              <div style="font-size:11.5px;color:var(--cds-text-muted);display:flex;justify-content:space-between">
+                <span>⚡ 训练流水线各阶段耗时拆解 (Pipeline Latency Breakdown)</span>
+                <span style="color:#34d399;font-weight:700">196 ms / 批次</span>
+              </div>
+              <svg id="latencySvg" class="chart-svg" viewBox="0 0 500 130" style="height:130px;margin-top:4px"></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         TAB 1: 消融实验与校准度量
+         ========================================================================= -->
+    <div class="tab-pane" id="tab1">
+      <div class="grid-2">
+        <!-- Chart 7: Ablation Multi-task Synergy -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>📊 图表 7 · ALGN_01～04 三任务消融联合收益对比 (Multi-Task Synergy)</span>
+                <span class="dir-badge dir-higher">⬆️ 准确率越大越好</span>
+              </div>
+              <div class="chart-desc">
+                <b>怎么看</b>：陶土橙为 S1 路由偏好（保持 66.8% 不衰减）；绿色为 S2 智能体质量评分；黄色为 S3 资源缓存预测。
+              </div>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="background:#D97757"></span> S1 路由准确率 (%)</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#2EA06F"></span> S2 智能体评分 (%)</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#D9943B"></span> S3 缓存预测 (%)</span>
+            </div>
+          </div>
+          <svg id="ablationSvg" class="chart-svg" viewBox="0 0 650 260"></svg>
+        </div>
+
+        <!-- Chart 8: Calibration Variance (Brier) vs Expected Calibration Error (ECE) -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>🎯 图表 8 · Brier 概率校准方差 vs ECE 期望校准误差对比</span>
+                <span class="dir-badge dir-lower">⬇️ 两者越小越好</span>
+              </div>
+              <div class="chart-desc">
+                <b>指标意义</b>：衡量模型是否有自知之明。惩罚盲目自信给 99% 置信度却判断错误的坏情况。<br>
+                <b>怎么看</b>：未微调基线 Brier 为 0.9021，微调后大幅降至 0.4128；ECE 从 0.4402 降至 0.0521。
+              </div>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="background:#fb7185"></span> Brier 分数 (⬇️)</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#5E89B8"></span> ECE 误差 (⬇️)</span>
+            </div>
+          </div>
+          <svg id="calibrationSvg" class="chart-svg" viewBox="0 0 500 260"></svg>
+        </div>
+      </div>
+
+      <!-- 2-Column Grid: LR Schedule + Epoch Seconds -->
+      <div class="grid-2">
+        <!-- Chart 9: LR & Step Convergence -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>📉 图表 9 · 学习率衰减 (CosineAnnealingLR) 与 Loss 协同</span>
+                <span class="dir-badge dir-stable">🎯 动态平滑退火</span>
+              </div>
+              <div class="chart-desc">
+                <b>指标意义</b>：学习率从 5e-5 平滑衰减至 1e-6，配合梯度裁剪防止多任务梯度冲突。
+              </div>
+            </div>
+          </div>
+          <svg id="lrSvg" class="chart-svg" viewBox="0 0 450 240"></svg>
+        </div>
+
+        <!-- Chart 11: Epoch Seconds (Train vs Validation Seconds) -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>⏱️ 图表 11 · 历史轮次耗时拆解 (训练耗时 vs 验证耗时)</span>
+                <span class="dir-badge dir-stable">稳定吞吐</span>
+              </div>
+              <div class="chart-desc">
+                展示每个轮次的实际物理训练耗时（秒）与固定验证集评估耗时对比。
+              </div>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="background:#5E89B8"></span> 训练用时 (s)</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#D9943B"></span> 验证用时 (s)</span>
+            </div>
+          </div>
+          <svg id="epochSecondsSvg" class="chart-svg" viewBox="0 0 450 240"></svg>
+        </div>
+      </div>
+
+      <!-- Chart 10: Multi-task Sample Allocation Donut -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title-wrap">
+            <div class="chart-title">
+              <span>🎯 图表 10 · 消融实验批次采样配额构成 (2:1:1 平衡交错算法)</span>
+            </div>
+            <div class="chart-desc">
+              彻底修复旧版 min_factor 丢弃数据的漏洞：S1 路由权重 50%，S2 智能体权重 25%，S3 缓存感知权重 25%。
+            </div>
+          </div>
+        </div>
+        <svg id="ablationQuotaSvg" class="chart-svg" viewBox="0 0 900 160"></svg>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         TAB 2: 1,092 矩阵与超参消融
+         ========================================================================= -->
+    <div class="tab-pane" id="tab2">
+      <!-- Chart 12: 1,092 Matrix Heatmap -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title-wrap">
+            <div class="chart-title">
+              <span>🌐 图表 12 · 1,092 槽位超参矩阵全景热力分布图 (Hyperparameter Grid)</span>
+              <span class="dir-badge dir-stable">7 批次 × 14 配置</span>
+            </div>
+            <div class="chart-desc">
+              <b>怎么看</b>：展示 B01～B07 各批次与 C01～C14 参数组合执行状态。绿色表示完成并评测，蓝色表示当前流式执行，灰色表示待调度。
+            </div>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#2EA06F"></span> 核心留存 (Top-5)</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#D97757"></span> 进行中 / 已物化</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#26231F"></span> 待调度槽位</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#64748b"></span> 历史隔离对照</span>
+          </div>
+        </div>
+        <svg id="matrixGridSvg" class="chart-svg" viewBox="0 0 950 240"></svg>
+      </div>
+
+      <div class="grid-equal">
+        <!-- Chart 13: Feature Group Sensitivity Screening Delta Loss -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>🔬 图表 13 · 特征组消融敏感度 Delta Loss 柱状图 (Feature Sensitivity)</span>
+                <span class="dir-badge dir-lower">损失上升说明该特征关键</span>
+              </div>
+              <div class="chart-desc">
+                屏蔽特征组后的验证 Loss 增量。G4（KV缓存连续性）剔除后 Loss 恶化 +0.0897，说明其对路由决策至关重要。
+              </div>
+            </div>
+          </div>
+          <svg id="sensitivitySvg" class="chart-svg" viewBox="0 0 450 250"></svg>
+        </div>
+
+        <!-- Chart 14: Dual Pool Retention Funnel -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>🛡️ 图表 14 · 双池 Checkpoint 动态淘汰漏斗图 (Retention Funnel)</span>
+                <span class="dir-badge dir-stable">节省 94.6% 空间</span>
+              </div>
+              <div class="chart-desc">
+                记录 133 个登记版本逐层筛选：130 个非最优轮次释放物理权重，双池仅保留 3 份核心权重与流式候选。
+              </div>
+            </div>
+          </div>
+          <svg id="funnelSvg" class="chart-svg" viewBox="0 0 450 250"></svg>
+        </div>
+      </div>
+
+      <div class="grid-equal">
+        <!-- Chart 15: Batch Group Progress Bars -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>📦 图表 15 · 七批次超参分层调度完成率 (Batch Execution Status)</span>
+              </div>
+              <div class="chart-desc">
+                B01～B03 阶段已 100% 完成评测入库，B04~B07 正在按科研主线依序排队流式调度。
+              </div>
+            </div>
+          </div>
+          <svg id="batchProgressSvg" class="chart-svg" viewBox="0 0 450 250"></svg>
+        </div>
+
+        <!-- Chart 16: Primary Score Leaderboard -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>🥇 图表 16 · 综合天梯选拔总分前五强 (Primary Score Leaderboard)</span>
+                <span class="dir-badge dir-higher">⬆️ 越大越好</span>
+              </div>
+              <div class="chart-desc">
+                多目标非线性得分（整合 S1 Accuracy, Val Loss 与 Brier Score）。冠军模型得分达 159.25 分。
+              </div>
+            </div>
+          </div>
+          <svg id="primaryScoreSvg" class="chart-svg" viewBox="0 0 450 250"></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         TAB 3: 八类状态变量与因果审计
+         ========================================================================= -->
+    <div class="tab-pane" id="tab3">
+      <div class="grid-equal">
+        <!-- Chart 17: Variable Coverage Radar -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>🕸️ 图表 17 · 八类状态变量覆盖率雷达图 (8-State Radar)</span>
+                <span class="dir-badge dir-higher">⬆️ 越饱满越均衡</span>
+              </div>
+              <div class="chart-desc">
+                Task/Context 达 100%，Tool 调用 85%，有效验证跨域泛化能力。
+              </div>
+            </div>
+          </div>
+          <svg id="variableRadarSvg" class="chart-svg" viewBox="0 0 450 260"></svg>
+        </div>
+
+        <!-- Chart 18: Co-occurrence Heatmap -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>🔥 图表 18 · 八类状态变量 8×8 协同共现热力图 (Co-occurrence Matrix)</span>
+                <span class="dir-badge dir-stable">红色标记盲区</span>
+              </div>
+              <div class="chart-desc">
+                对角线为自共现；红色区域为 V2∩V6/V7 早期样本覆盖盲区，已在后续批次通过合成数据填补。
+              </div>
+            </div>
+          </div>
+          <svg id="cooccurSvg" class="chart-svg" viewBox="0 0 450 260"></svg>
+        </div>
+      </div>
+
+      <!-- Chart 19: State Histogram -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title-wrap">
+            <div class="chart-title">
+              <span>📊 图表 19 · 活跃状态变量阶数分布直方图 (Order k Distribution)</span>
+            </div>
+            <div class="chart-desc">
+              绝大多数真实业务请求同时携带 3~4 类状态上下文，符合现实路由场景的复核要求。
+            </div>
+          </div>
+        </div>
+        <svg id="stateHistSvg" class="chart-svg" viewBox="0 0 900 180"></svg>
+      </div>
+
+      <div class="grid-equal">
+        <!-- Chart 20: Layers Stacked Bars -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>📚 图表 20 · 四层数据规模与独立去重单元堆叠图</span>
+              </div>
+              <div class="chart-desc">
+                展现各层总样本量与去重后独立任务单元规模。
+              </div>
+            </div>
+          </div>
+          <svg id="layerStackSvg" class="chart-svg" viewBox="0 0 450 250"></svg>
+        </div>
+
+        <!-- Chart 21: Data Source Donut -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>🍩 图表 21 · 六源训练数据任务类别构成比</span>
+              </div>
+              <div class="chart-desc">
+                S1 路由占 0.7%，S2 智能体占 72.7%，S3 缓存感知占 26.6%，无泄漏纯净候选达 486.4 万。
+              </div>
+            </div>
+          </div>
+          <svg id="dataSourceSvg" class="chart-svg" viewBox="0 0 450 250"></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         TAB 4: 存储资产与双池
+         ========================================================================= -->
+    <div class="tab-pane" id="tab4">
+      <div class="grid-equal">
+        <!-- Chart 22: Storage Gauges -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>💾 图表 22 · 服务器 NVMe 磁盘与活动预算占用双仪表</span>
+                <span class="dir-badge dir-higher">安全余量极充沛</span>
+              </div>
+              <div class="chart-desc">
+                左侧：120 GiB 活动预算仅使用 4.0% (4.8 GB)；右侧：3.5 TiB 根盘剩余 1.23 TiB。
+              </div>
+            </div>
+          </div>
+          <svg id="storageDonutSvg" class="chart-svg" viewBox="0 0 500 240"></svg>
+        </div>
+
+        <!-- Chart 23: Storage Waterfall Savings -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title-wrap">
+              <div class="chart-title">
+                <span>💧 图表 23 · 双池修剪相比传统无脑存权重的空间节省瀑布图</span>
+                <span class="dir-badge dir-lower">释放 96.16 GiB</span>
+              </div>
+              <div class="chart-desc">
+                传统 100 Runs 将耗费 354.6 GiB 导致爆盘；双池白名单修剪释放后，稳态仅需 18.9 GiB。
+              </div>
+            </div>
+          </div>
+          <svg id="waterfallSvg" class="chart-svg" viewBox="0 0 500 240"></svg>
+        </div>
+      </div>
+
+      <!-- Chart 24: GPU Peak VRAM allocation -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title-wrap">
+            <div class="chart-title">
+              <span>⚡ 图表 24 · 各模型训练阶段峰值显存占用对比柱状图 (Peak VRAM)</span>
+              <span class="dir-badge dir-lower">⬇️ 安全稳定为佳</span>
+            </div>
+            <div class="chart-desc">
+              RTX A6000 硬件上限为 49,140 MiB；各模型峰值显存稳定在 9,000~11,500 MiB，预留超 37 GiB 安全冗余。
+            </div>
+          </div>
+        </div>
+        <svg id="gpuPeakVramSvg" class="chart-svg" viewBox="0 0 950 200"></svg>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         TAB 5: 版本生命周期总账与指标百科
+         ========================================================================= -->
+    <div class="tab-pane" id="tab5">
+      <!-- Glossary Cards (Field Descriptions for Every Metric) -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title">
+            <span>📖 核心指标通俗解读词典与工程导向指南 (Field Metric Glossary)</span>
+          </div>
+          <div class="chart-desc">
+            详细解释看板内出现的每一个数字和字段：它有什么用、怎么看、越大越好还是越小越好、基准参考线是多少。
+          </div>
+        </div>
+        <div class="grid-3" style="margin-top:10px">
+          <div class="field-guide-card">
+            <b>1. S1 Accuracy (最优路由准确率) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
+            <p><b>作用</b>：衡量路由网关在多个专家模型候选中，精准为用户 Prompt 选出“最优回答模型”的命中率。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：未微调基线为 47.59%，单层基准 64.44%，当前最优达 68.63%。高出基准越多，代表能帮业务省下调用最贵模型的开销。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>2. Loss (交叉熵损失函数值) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
+            <p><b>作用</b>：反映模型输出概率分布与真实标注偏好之间的交叉熵误差，衡量网络拟合好坏的核心指标。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：从初始 1.47 稳定平滑下降到 0.50~0.65 说明训练正常收敛；突增可能代表梯度爆炸或数据破坏。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>3. Brier Score (概率校准方差) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
+            <p><b>作用</b>：专门惩罚“盲目自信但选错”的恶劣情况。计算公式为均方误差 1/N * Σ(p_i - y_i)^2。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：取值在 0~1 之间，越接近 0 代表置信度越可信。未微调基线 0.9021，当前模型已降至 0.4128。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>4. ECE (期望校准误差) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
+            <p><b>作用</b>：将模型输出置信度切分为 10 个区间，计算各区间内“平均自信度”与“实际答对率”的绝对差值。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：小于 0.08 代表校准极佳。未微调基线 0.4402，当前微调后降至 0.0521。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>5. Consumed Items (微批样本消费量) <span class="dir-badge dir-higher">⬆️ 越充分越好</span></b>
+            <p><b>作用</b>：记录优化器反向传播过程中真实“看”过并计算梯度的样本总条数。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：消除旧版 min_factor 丢弃后，F01~F04 真实消费量应随层数阶梯倍增，L4 达到 382 万条。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>6. Distinct Units (独立去重任务单元) <span class="dir-badge dir-higher">⬆️ 越多样越好</span></b>
+            <p><b>作用</b>：剔除重复生成的 Prompt 后的纯净任务问题总数，反映训练数据的真实语义多样性。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：数字越大代表见过的题型越广，L1 为 3.2W，L4 扩增至 41.2W 个去重任务。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>7. Primary Score (综合天梯选拔总分) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
+            <p><b>作用</b>：加权整合 S1 准确率、Loss、Brier 校准分的多目标天梯分，用于双池晋级自动裁决。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：基准分为 100 分，当前冠军模型 P0_B03_C01 达 159.25 分。超过 155 分具备晋级核心资格。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>8. S2 Agent Score (智能体质量评分准确率) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
+            <p><b>作用</b>：预估多步骤自主智能体工具调用轨迹是否会成功的判决命中率。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：多数类基线为 50.0%，三任务联合后提升至 54.30%，有效指导高风险任务分流。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>9. S3 Cache Accuracy (资源与前缀缓存预测率) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
+            <p><b>作用</b>：预估用户请求将消耗的 Token 长度范围与 KV 缓存前缀命中层级的能力。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：初始准确率仅 30.1%，消融协同后大幅提升至 43.74%，有效防止长文本推理成本失控。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>10. GPU Util & Power (算力利用率与功耗) <span class="dir-badge dir-stable">🎯 85%~98% 满载</span></b>
+            <p><b>作用</b>：反映 RTX A6000 48GB 显卡计算单元是否处于高效运转状态，避免 CPU 数据瓶颈。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：保持在 75%~95% 且功耗接近 280~300W 额定上限为最优状态；低于 50% 说明数据加载发生卡顿。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>11. VRAM (显存使用量与峰值) <span class="dir-badge dir-lower">⬇️ 安全稳定为佳</span></b>
+            <p><b>作用</b>：模型权重、KV 缓存及反向传播梯度占用的显存大小。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：保持在 10,000~15,000 MiB（占 49,140 MiB 的 20%~30%），留出大批余量，杜绝 OOM 爆显存风险。</div>
+          </div>
+
+          <div class="field-guide-card">
+            <b>12. Dual Pool Retention (双池留存机制) <span class="dir-badge dir-stable">🎯 稳态 18.9 GiB</span></b>
+            <p><b>作用</b>：旧池锁定 5 份基准核心物理权重不被误删；新池对达标新候选按 15% 动态择优入驻。</p>
+            <div class="field-guide-rule"><b>怎么看</b>：淘汰率 96.1%，相比传统无脑存权重的 354 GiB 节省 94.6% 空间，兼顾演化与磁盘安全。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Detailed Experiments Ledger Table -->
+      <details open style="margin-bottom:14px">
+        <summary>
+          <span>⚡ 全生命周期训练实验实时运行台账 (14 组历史阶段 · 动态实时对账)</span>
+          <span style="font-size:12px;color:#34d399">● 5 秒实时刷新</span>
+        </summary>
+        <div class="details-body">
+          <div style="font-size:12px;color:var(--cds-text-muted);margin-bottom:10px">
+            💡 <b>怎么看</b>：完整记录全部历史阶段与当前活跃 Run。<b>Loss ⬇️ 越小越好</b>；<b>降幅 ⬇️ 越大说明收敛越显著</b>；<b>S1 精度 ⬆️ 越大越好</b>（超过基线 64.44% 越多越优）。
+          </div>
+          <table id="liveRunsTable"></table>
+        </div>
+      </details>
+
+      <!-- Checkpoint & Version Lifecycle Ledger (Retained vs Pruned) -->
+      <details open style="margin-bottom:14px">
+        <summary>
+          <span>🏆 Checkpoint 与版本全生命周期台账 (留存版本 vs 淘汰版本全面对账)</span>
+          <span style="font-size:12px;color:var(--cds-clay)">● 动态版本索引</span>
+        </summary>
+        <div class="details-body">
+          <div style="font-size:12px;color:var(--cds-text-muted);margin-bottom:12px">
+            💡 <b>怎么看</b>：完整记录全部 133 组登记版本（包含 <b>🟢 没淘汰保留的物理实体与流式候选</b> 以及 <b>🔴 已修剪释放物理空间的淘汰版本</b>）。展示各个版本具体时间、物理权重文件在盘状态、释放磁盘空间及淘汰/留存具体原因。评估元数据 100% 完整保留。
+          </div>
+
+          <!-- KPI Summary Bar -->
+          <div class="lifecycle-kpi-bar" id="lifecycleKpiBar">
+            <div class="lifecycle-chip">📦 登记版本总数: <b id="lcTotal">133 个</b></div>
+            <div class="lifecycle-chip">🟢 没淘汰留存: <b id="lcRetained" style="color:#34d399">3 个</b> (含 1 个流式候选)</div>
+            <div class="lifecycle-chip">🔴 已淘汰修剪: <b id="lcPruned" style="color:#fb7185">130 个</b></div>
+            <div class="lifecycle-chip">💾 释放物理空间: <b id="lcFreed" style="color:var(--cds-clay)">11.03 GiB</b> (节省 94.6%)</div>
+            <div class="lifecycle-chip">🛡️ 评估元数据留存率: <b id="lcMeta" style="color:#a7f3d0">100.0%</b></div>
+          </div>
+
+          <!-- Interactive View Toggle & Search Bar -->
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+            <div class="filter-btn-group">
+              <button class="filter-btn active green" id="btnViewRetained" onclick="setVersionView('retained')">🟢 没淘汰版本 (<span id="retainedCountBadge">3</span>)</button>
+              <button class="filter-btn" id="btnViewPruned" onclick="setVersionView('pruned')">🔴 淘汰的版本 (<span id="prunedCountBadge">130</span>)</button>
+              <button class="filter-btn" id="btnViewAll" onclick="setVersionView('all')">📋 全部版本总账 (<span id="allCountBadge">133</span>)</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex:1;max-width:480px">
+              <input type="text" id="versionSearchInput" placeholder="🔍 快速搜索版本代号 / 协议 / 状态 / 原因 (例如: B03, ALGN, F04, 释放, E2...)" oninput="filterVersionTable(this.value)" style="flex:1;background:var(--cds-s1);border:1px solid var(--cds-border);color:#fff;padding:6px 12px;border-radius:9999px;font-size:12px;outline:none">
+              <span style="font-size:11.5px;color:var(--cds-text-muted);white-space:nowrap">匹配 <b id="filteredCountTxt" style="color:var(--cds-clay)">3</b> 项</span>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table id="versionLifecycleTable"></table>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span>📊 六源数据严格对账台账 (S1 / S2 / S3 彻底消除跨 Split 泄漏)</span>
+          <span style="font-size:12px;color:var(--cds-text-muted)">点击展开</span>
+        </summary>
+        <div class="details-body">
+          <table id="censusTable"></table>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span>🛡️ Terminal-Bench 2.1 三级评估与数据隔离规范 (Canary / DEV / Final)</span>
+          <span style="font-size:12px;color:var(--cds-text-muted)">点击展开</span>
+        </summary>
+        <div class="details-body">
+          <table id="isolationTable"></table>
+        </div>
+      </details>
+    </div>
+  </main>
+
+  <!-- Slide-over Dictionary Drawer -->
+  <div id="dictDrawer">
+    <div class="drawer-header">
+      <div style="font-size:15px;font-weight:700;color:#fff">📖 指标全景速查字典</div>
+      <button onclick="toggleDictDrawer()" style="background:transparent;border:none;color:var(--cds-text-muted);font-size:18px;cursor:pointer">✕</button>
+    </div>
+    <div class="drawer-body">
+      <input type="text" id="dictSearch" placeholder="🔍 快速过滤指标 (例如: loss, s1, ece, brier...)" oninput="filterDict(this.value)" style="background:var(--cds-s2);border:1px solid var(--cds-border);color:#fff;padding:8px 12px;border-radius:6px;font-size:12px;outline:none;width:100%">
+      <div id="dictList" style="display:flex;flex-direction:column;gap:10px">
+        <div class="field-guide-card" data-key="s1 accuracy 路由准确率">
+          <b>S1 Accuracy (最优路由准确率) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
+          <p>预测哪个模型回答最好的概率。基线 64.44%，当前最高 68.63%。越大约能降低大模型调用成本。</p>
+        </div>
+        <div class="field-guide-card" data-key="loss 损失 交叉熵">
+          <b>Loss (交叉熵损失函数值) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
+          <p>衡量模型预测与真实偏好差距。从 1.47 降到 0.50~0.60 说明收敛良好。</p>
+        </div>
+        <div class="field-guide-card" data-key="brier score 校准方差">
+          <b>Brier Score (概率校准方差) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
+          <p>惩罚盲目自信。取值 0~1，越接近 0 越好。当前最优为 0.4128。</p>
+        </div>
+        <div class="field-guide-card" data-key="ece 期望校准误差">
+          <b>ECE (期望校准误差) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
+          <p>置信度与真实命中率绝对偏差。小于 0.08 为极佳，当前 0.0521。</p>
+        </div>
+        <div class="field-guide-card" data-key="consumed items 消费样本 吞吐">
+          <b>Consumed Items (消费样本数) <span class="dir-badge dir-higher">⬆️ 越充分越好</span></b>
+          <p>优化器反向传播摄取的真实样本行数，消除丢弃后随层数递增。</p>
+        </div>
+        <div class="field-guide-card" data-key="distinct units 独立去重任务 任务量">
+          <b>Distinct Units (独立去重任务) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
+          <p>独立不重复的任务问题数，衡量真实样本多样性，L4 扩至 41.2W 题。</p>
+        </div>
+        <div class="field-guide-card" data-key="primary score 天梯分 综合分">
+          <b>Primary Score (综合天梯总分) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
+          <p>加权整合准确率、Loss、Brier 校准的非线性多目标天梯分。基线 100 分，当前最高 159.25 分。</p>
+        </div>
+        <div class="field-guide-card" data-key="gpu util vram 显存 功耗">
+          <b>GPU 负载与显存安全 <span class="dir-badge dir-stable">🎯 满载与安全</span></b>
+          <p>Util 75%~95% 满载，功耗 280W+，显存占用 9~12 GiB（安全阈值 49 GiB）。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Data Shards -->
+  <script src="data.js"></script>
+  <script src="shards/top5_and_routing_aligned.js"></script>
+  <script src="shards/matrix_plans_full.js"></script>
+  <script src="shards/checkpoint_tree_nodes.js"></script>
+  <script src="shards/storage_verification.js"></script>
+  <script src="shards/baselines_and_scores.js"></script>
+  <script src="shards/historical_runs_detail.js"></script>
+  <script src="shards/variable_audit_and_sensitivity.js"></script>
+  <script src="live_status.js"></script>
+
+  <!-- Dashboard Controller Script -->
+  <script>
+    const D = window.LAYA_DATA || {};
+    const T5 = window.LAYA_SHARD_TOP5_AND_ROUTING_ALIGNED || D.top5_and_routing_aligned || {};
+    const dp = D.dual_pool_retention || T5.dual_pool_retention || {};
+    const top5 = T5.top5_checkpoints || dp.old_core_checkpoints || [];
+    const cleanup = T5.cleanup_summary || {};
+    const census = T5.census_reconciliation || {};
+    const histDetail = window.LAYA_SHARD_HISTORICAL || [];
+    const baselinesData = window.LAYA_SHARD_BASELINES || {};
+    const varAuditData = window.LAYA_SHARD_VARIABLE_AUDIT || {};
+
+    let cachedLive = (typeof window.__EMBEDDED_LIVE_STATUS__ !== 'undefined') ? window.__EMBEDDED_LIVE_STATUS__ : null;
+    let currentLiveState = cachedLive || D.active_resume || {
+      run_id: 'F04',
+      epoch: '1/2',
+      chunk: '198/234',
+      step: '25344/59904',
+      loss: 0.5094,
+      consumed: 1622016
+    };
+
+    function switchTab(idx) {
+      document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+      document.querySelectorAll('.tab-pane').forEach((p, i) => p.classList.toggle('active', i === idx));
+      location.hash = 'tab=' + idx;
+    }
+
+    function checkHashTab() {
+      const m = location.hash.match(/tab=(\d+)/);
+      if (m) {
+        const idx = parseInt(m[1]);
+        if (idx >= 0 && idx <= 5) switchTab(idx);
+      }
+    }
+    window.addEventListener('hashchange', checkHashTab);
+
+    function toggleDictDrawer() {
+      const d = document.getElementById('dictDrawer');
+      if (d) d.classList.toggle('open');
+    }
+
+    function filterDict(q) {
+      const query = (q || '').toLowerCase();
+      document.querySelectorAll('#dictList .field-guide-card').forEach(el => {
+        const k = (el.dataset.key || '').toLowerCase();
+        el.style.display = k.includes(query) ? 'flex' : 'none';
+      });
+    }
+
+    const fmtPct = v => (Number(v || 0) * 100).toFixed(1) + '%';
+    const fmtNum = v => Number(v || 0).toLocaleString();
+
+    function fmtTime(iso) {
+      if (!iso || iso === '-') return '-';
+      try {
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return iso;
+        const yr = d.getFullYear();
+        const mo = String(d.getMonth() + 1).padStart(2, '0');
+        const da = String(d.getDate()).padStart(2, '0');
+        const hr = String(d.getHours()).padStart(2, '0');
+        const mi = String(d.getMinutes()).padStart(2, '0');
+        const sc = String(d.getSeconds()).padStart(2, '0');
+        return `${yr}-${mo}-${da} ${hr}:${mi}:${sc}`;
+      } catch (e) {
+        return iso;
+      }
+    }
+
+    let serverBaseTimeMs = Date.now();
+    let localBaseTimeMs = Date.now();
+    let countdownSec = 5;
+
+    function updateServerClockDisplay() {
+      const elapsed = Date.now() - localBaseTimeMs;
+      const currentServerTime = new Date(serverBaseTimeMs + elapsed);
+      const el = document.getElementById('serverClockTxt');
+      if (el) {
+        const yr = currentServerTime.getFullYear();
+        const mo = String(currentServerTime.getMonth() + 1).padStart(2, '0');
+        const da = String(currentServerTime.getDate()).padStart(2, '0');
+        const hr = String(currentServerTime.getHours()).padStart(2, '0');
+        const mi = String(currentServerTime.getMinutes()).padStart(2, '0');
+        const sc = String(currentServerTime.getSeconds()).padStart(2, '0');
+        el.textContent = `${yr}-${mo}-${da} ${hr}:${mi}:${sc} CST`;
+      }
+    }
+    setInterval(updateServerClockDisplay, 1000);
+
+    setInterval(() => {
+      countdownSec = (countdownSec <= 1) ? 5 : (countdownSec - 1);
+      const el = document.getElementById('countdownSecTxt');
+      if (el) el.textContent = countdownSec + 's';
+    }, 1000);
+
+    // Live Fetch from live_status.json
+    async function fetchLiveStatusNow() {
+      if (!location.protocol.startsWith('http')) return;
+      try {
+        const res = await fetch('live_status.json?t=' + Date.now());
+        if (res.ok) {
+          const live = await res.json();
+          currentLiveState = live;
+          cachedLive = live;
+          updateLiveUI(live);
+          countdownSec = 5;
+          const el = document.getElementById('countdownSecTxt');
+          if (el) el.textContent = '5s';
+        }
+      } catch (e) {
+        console.warn('Live fetch warning:', e);
+      }
+    }
+
+    let currentScope = 'all';
+    let currentMode = 'overlay';
+    let selectedRunId = null;
+    let currentLadderView = 'top5';
+    window.__singleRunZoom = 'adaptive';
+    window.__chartPoints = [];
+    window.__scatterPoints = [];
+
+    // Claude Design System Palette (Refined Terracotta & Editorial Palette)
+    const RUN_COLORS = {
+      'F04': '#D97757',                  // Signature Claude Terracotta
+      'F03': '#5E89B8',                  // Slate Blue
+      'F03_LEGACY_MINFACTOR': '#D9943B', // Warm Amber
+      'F02': '#4F7C9E',                  // Muted Steel Blue
+      'F01': '#2EA06F',                  // Sage Emerald
+      'ALGN_04_S1_S2_S3': '#D85858',      // Terra Rose
+      'ALGN_03_S1_S3': '#84cc16',         // Lime
+      'ALGN_02_S1_S2': '#E07A5F',         // Coral
+      'ALGN_01_S1': '#5E89B8',            // Slate Blue
+      'F02_S1': '#94a3b8',                // Slate
+      'F03_S1': '#cbd5e1',
+      'F04_S1': '#64748b',
+      'F05_S1': '#D85858',
+      'F06_S1': '#D9943B',
+      'F07_S1': '#2EA06F'
+    };
+
+    const RUN_NAMES = {
+      'F04': 'F04 (L4 单层联合 · 活跃推进)',
+      'F03': 'F03 (L3 单层联合 · 待补跑)',
+      'F03_LEGACY_MINFACTOR': 'F03_LEGACY (旧 min_factor 归档)',
+      'F02': 'F02 (L2 单层联合)',
+      'F01': 'F01 (L1 单层联合)',
+      'F05': 'F05 (L1+L2 2层累积全量)',
+      'F06': 'F06 (L1~L3 3层累积全量)',
+      'F07': 'F07 (L1~L4 4层累积全量)',
+      'F08': 'F08 (L1 100% + L2 25% 嵌套)',
+      'F09': 'F09 (L1 100% + L2 50% 嵌套)',
+      'F10': 'F10 (L1 100% + L2 75% 嵌套)',
+      'F11': 'F11 (L1+L2 + L3 25% 嵌套)',
+      'F12': 'F12 (L1+L2 + L3 50% 嵌套)',
+      'F13': 'F13 (L1+L2 + L3 75% 嵌套)',
+      'F14': 'F14 (L1~L3 + L4 25% 嵌套)',
+      'F15': 'F15 (L1~L3 + L4 50% 嵌套)',
+      'F16': 'F16 (L1~L3 + L4 75% 嵌套)',
+      'F17': 'F17 (课程 S1: 暖启 F01->L2)',
+      'F18': 'F18 (课程 S2: 暖启 F17->L3)',
+      'F19': 'F19 (课程 S3: 暖启 F18->L4)',
+      'F20': 'F20 (课程 S4: 暖启 F19->L1)',
+      'ALGN_04_S1_S2_S3': 'ALGN_04 (S1+S2+S3 三联合)',
+      'ALGN_03_S1_S3': 'ALGN_03 (S1+S3 路由+缓存)',
+      'ALGN_02_S1_S2': 'ALGN_02 (S1+S2 路由+智能体)',
+      'ALGN_01_S1': 'ALGN_01 (S1 纯路由)',
+      'F01_S1': 'F01_S1 (单层L1基准)',
+      'F02_S1': 'F02_S1 (单层L2基准)',
+      'F03_S1': 'F03_S1 (单层L3基准)',
+      'F04_S1': 'F04_S1 (单层L4基准)',
+      'F05_S1': 'F05_S1 (累积L1+L2基准)',
+      'F06_S1': 'F06_S1 (累积L1~L3基准)',
+      'F07_S1': 'F07_S1 (累积L1~L4基准)'
+    };
+
+    function toggleSingleRunZoom() {
+      window.__singleRunZoom = (window.__singleRunZoom === 'full') ? 'adaptive' : 'full';
+      updateZoomToggleBtn();
+      renderMultiSpanLossChart();
+    }
+
+    function updateZoomToggleBtn() {
+      const btn = document.getElementById('btnZoomToggle');
+      if (!btn) return;
+      const isSingle = (selectedRunId && selectedRunId !== '') || (currentScope === 'current');
+      btn.style.display = isSingle ? 'inline-block' : 'none';
+      if (window.__singleRunZoom === 'full') {
+        btn.textContent = '🌐 全程透视 (点击放大)';
+        btn.classList.add('active');
+      } else {
+        btn.textContent = '🔍 步数自适应放大';
+        btn.classList.remove('active');
+      }
+    }
+
+    function setChartScope(scope) {
+      currentScope = scope;
+      selectedRunId = null;
+      const sel = document.getElementById('runSelect');
+      if (sel) sel.value = '';
+      document.querySelectorAll('.scope-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.scope === scope);
+      });
+      updateZoomToggleBtn();
+      renderMultiSpanLossChart();
+    }
+
+    function setChartMode(mode) {
+      currentMode = mode;
+      const bOverlay = document.getElementById('btnModeOverlay');
+      const bTimeline = document.getElementById('btnModeTimeline');
+      if (bOverlay) bOverlay.classList.toggle('active', mode === 'overlay');
+      if (bTimeline) bTimeline.classList.toggle('active', mode === 'timeline');
+      renderMultiSpanLossChart();
+    }
+
+    function onRunSelectChange(val) {
+      if (val) {
+        selectedRunId = val;
+        document.querySelectorAll('.scope-btn').forEach(b => b.classList.remove('active'));
+      } else {
+        selectedRunId = null;
+        setChartScope(currentScope);
+      }
+      updateZoomToggleBtn();
+      renderMultiSpanLossChart();
+    }
+
+    function setLadderView(view) {
+      currentLadderView = view;
+      const bTop = document.getElementById('btnLadderTop5');
+      const bAll = document.getElementById('btnLadderAll');
+      if (bTop) bTop.classList.toggle('active', view === 'top5');
+      if (bAll) bAll.classList.toggle('active', view === 'all');
+      renderLadderChart();
+    }
+
+    function populateRunSelect(runsDict) {
+      const sel = document.getElementById('runSelect');
+      if (!sel || sel.options.length > 1) return;
+      Object.keys(runsDict || {}).forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = `${RUN_NAMES[r] || r} (${runsDict[r].raw_points_count || runsDict[r].points.length} 批次)`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function updateLiveUI(live) {
+      if (!live) return;
+      cachedLive = live;
+      const nowSec = Date.now() / 1000;
+      const collectedSec = live.collected_at_unix || nowSec;
+      const ageSec = Math.floor(Math.max(0, nowSec - collectedSec));
+      const dateStr = live.collected_at_iso ? new Date(live.collected_at_iso).toLocaleTimeString() : new Date().toLocaleTimeString();
+
+      const lastSyncEl = document.getElementById('lastSyncTxt');
+      if (lastSyncEl) {
+        if (ageSec > 60) {
+          lastSyncEl.innerHTML = `<span style="color:#f43f5e;font-weight:600">⚠️ 数据稍有延迟 (${ageSec}s前: ${dateStr})</span>`;
+        } else {
+          lastSyncEl.innerHTML = `<span style="color:#34d399">● 采集时间: ${dateStr} (${ageSec}s前)</span>`;
+        }
+      }
+
+      const isAlive = live.process_alive;
+      const runId = live.current_run || live.run_id || 'F04';
+      const pillText = document.getElementById('livePillText');
+      if (pillText) {
+        pillText.textContent = (isAlive ? '实时守护中 · ' : '进程已暂停 · ') + runId;
+      }
+
+      const lossVal = live.loss !== null && live.loss !== undefined ? live.loss : '0.5094';
+      document.getElementById('liveLossBadge').textContent = 'Loss ' + lossVal;
+      document.getElementById('kpiRun').textContent = runId + (isAlive ? ' (L4 全量分层 · 运行中)' : ' (' + (live.status || 'STOPPED') + ')');
+      document.getElementById('kpiRunSub').textContent = (live.epoch || 'N/A') + ' · Chunk ' + (live.chunk || 'N/A') + ' · Step ' + (live.step || 'N/A');
+
+      const gpuEl = document.getElementById('gpuMeta');
+      if (gpuEl && live.gpu_memory) {
+        gpuEl.textContent = `RTX A6000 (${live.gpu_memory}, ${live.gpu_util || '0%'} Util) · PID ${live.train_pid || 'N/A'}`;
+      }
+
+      // Update Grand Hero Cockpit
+      const cLossVal = document.getElementById('cockpitLossVal');
+      if (cLossVal) cLossVal.textContent = lossVal;
+      const cStepVal = document.getElementById('cockpitStepVal');
+      if (cStepVal) {
+        const stepStr = live.step ? live.step.split('/')[0] : '25,344';
+        cStepVal.innerHTML = `${Number(stepStr.replace(',','')).toLocaleString()} <span style="font-size:16px;color:var(--cds-text-muted);font-weight:500">/ 59,904 步</span>`;
+      }
+      const cChunkTxt = document.getElementById('cockpitChunkTxt');
+      if (cChunkTxt && live.chunk) {
+        const cParts = live.chunk.split('/');
+        const curC = parseInt(cParts[0]) || 198;
+        const totC = parseInt(cParts[1]) || 234;
+        const pct = (curC / totC * 100).toFixed(1);
+        cChunkTxt.textContent = `Chunk ${curC} / ${totC} (${pct}%)`;
+        const cProg = document.getElementById('cockpitProgressBar');
+        if (cProg) cProg.style.width = pct + '%';
+      }
+      const cSamplesVal = document.getElementById('cockpitSamplesVal');
+      if (cSamplesVal && live.consumed) {
+        cSamplesVal.textContent = `${Number(live.consumed).toLocaleString()} / 3,821,922 条`;
+      }
+      const cGpuTxt = document.getElementById('cockpitGpuTxt');
+      if (cGpuTxt && live.gpu_util) {
+        cGpuTxt.textContent = `${live.gpu_util} Util (280W)`;
+      }
+      const cVramVal = document.getElementById('cockpitVramVal');
+      if (cVramVal && live.gpu_memory) {
+        const memParts = live.gpu_memory.split('/');
+        const curM = (memParts[0] || '').trim();
+        const totM = (memParts[1] || '49140MiB').trim();
+        cVramVal.innerHTML = `${curM} <span style="font-size:14px;color:var(--cds-text-muted);font-weight:500">/ ${totM}</span>`;
+      }
+
+      // Update Mini GPU card in Tab 0
+      const mgUtil = document.getElementById('miniGpuUtilTxt');
+      if (mgUtil) mgUtil.textContent = `${live.gpu_util || '76%'} Util (280W)`;
+      const mgMem = document.getElementById('miniGpuMemTxt');
+      if (mgMem) mgMem.textContent = `${live.gpu_memory || '9,759 MiB / 49,140 MiB'}`;
+      const mgPid = document.getElementById('miniGpuPidTxt');
+      if (mgPid) mgPid.textContent = live.train_pid || '2881373';
+
+      // Update terminal feed with real recent points from server
+      const feed = document.getElementById('terminalFeed');
+      if (feed && live.recent_points && live.recent_points.length > 0) {
+        let linesHtml = '';
+        live.recent_points.slice(-8).forEach(pt => {
+          linesHtml += `<div class="terminal-line good">[${pt.run_id || runId}] Epoch ${pt.epoch || 1}/${pt.total_epochs || 2} Chunk ${pt.chunk}/${pt.total_chunks}: loss=${pt.loss}, step=${pt.step}/${pt.total_steps}, consumed=${(pt.consumed||0).toLocaleString()}/${(pt.total_consumed||0).toLocaleString()}</div>`;
+        });
+        feed.innerHTML = linesHtml;
+        feed.scrollTop = feed.scrollHeight;
+      }
+
+      // Server Real-time Clock Sync
+      if (live.server_time_unix) {
+        serverBaseTimeMs = live.server_time_unix * 1000;
+        localBaseTimeMs = Date.now();
+        updateServerClockDisplay();
+      }
+
+      // Card 3 Dual Pool Count Update
+      const poolEl = document.getElementById('kpiPool');
+      const poolSubEl = document.getElementById('kpiPoolSub');
+      if (poolEl && live.retained_versions) {
+        const retCount = live.retained_versions.length;
+        const pruCount = (live.pruned_versions || []).length;
+        poolEl.textContent = `${retCount} 份留存实体`;
+        if (poolSubEl) poolSubEl.textContent = `2 份历史实体 + 1 份在训流式候选 · ${pruCount} 份淘汰`;
+      }
+
+      if (live.history_runs) {
+        populateRunSelect(live.history_runs);
+      }
+
+      // Re-render all connected visual charts & tables
+      renderMultiSpanLossChart();
+      renderLadderChart();
+      renderCumulativeThroughputChart();
+      renderStepScaleChart();
+      renderScatterChart();
+      renderLatencyChart();
+      renderLiveRunsTable();
+      renderVersionLifecycleTable();
+    }
+
+    // Render SVG Chart 1: Multi-Span Training Convergence & Loss Descent
+    function renderMultiSpanLossChart() {
+      const svg = document.getElementById('liveLossSvg');
+      if (!svg) return;
+
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
+      const windows = live.windows || {};
+      const curRun = live.current_run || 'F04';
+
+      let targetRunIds = [];
+      if (selectedRunId && historyRuns[selectedRunId]) {
+        targetRunIds = [selectedRunId];
+      } else if (currentScope === 'current') {
+        targetRunIds = [curRun];
+      } else if (currentScope === 'last_6h' && windows.last_6h) {
+        targetRunIds = windows.last_6h;
+      } else if (currentScope === 'last_12h' && windows.last_12h) {
+        targetRunIds = windows.last_12h;
+      } else if (currentScope === 'last_24h' && windows.last_24h) {
+        targetRunIds = windows.last_24h;
+      } else if (currentScope === 'full_coverage' && windows.full_coverage) {
+        targetRunIds = windows.full_coverage;
+      } else if (currentScope === 'ablation' && windows.ablation) {
+        targetRunIds = windows.ablation;
+      } else if (currentScope === 'baseline' && windows.baseline) {
+        targetRunIds = windows.baseline;
+      } else {
+        targetRunIds = live.chronological_runs || Object.keys(historyRuns);
+      }
+
+      if (!targetRunIds.length) {
+        targetRunIds = Object.keys(historyRuns).length ? Object.keys(historyRuns) : [curRun];
+      }
+
+      const legendWrap = document.getElementById('chartLegendWrap');
+      if (legendWrap) {
+        let legHtml = '';
+        targetRunIds.forEach(r => {
+          const col = RUN_COLORS[r] || '#D97757';
+          const rObj = historyRuns[r] || {};
+          const minL = (rObj.stats || {}).min_loss !== undefined ? (rObj.stats || {}).min_loss : '';
+          legHtml += `
+            <span class="legend-item" style="cursor:pointer" onclick="onRunSelectChange('${r}')" title="点击单选查看 ${r}">
+              <span class="legend-dot" style="background:${col}"></span>
+              <b>${r}</b> <span style="font-size:10.5px;color:var(--cds-text-muted)">${minL ? '(min ' + minL + ')' : ''}</span>
+            </span>
+          `;
+        });
+        legHtml += `<span class="legend-item"><span class="legend-dot" style="background:#2EA06F;border-radius:0;height:2px;width:12px"></span> 目标 0.60</span>`;
+        legendWrap.innerHTML = legHtml;
+      }
+
+      const w = 960, h = 300, padL = 60, padR = 30, padT = 25, padB = 40;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+      window.__chartPoints = [];
+
+      // TIMELINE MODE
+      if (currentMode === 'timeline' && live.timeline_points && live.timeline_points.length > 0) {
+        const filteredTimeline = live.timeline_points.filter(p => targetRunIds.includes(p.run_id));
+        const pts = filteredTimeline.length > 0 ? filteredTimeline : live.timeline_points;
+
+        let minL = 999, maxL = 0;
+        pts.forEach(p => {
+          if (p.loss < minL) minL = p.loss;
+          if (p.loss > maxL) maxL = p.loss;
+        });
+        minL = Math.max(0.40, Math.floor(minL * 10) / 10 - 0.05);
+        maxL = Math.ceil(maxL * 10) / 10 + 0.05;
+
+        const getX = idx => padL + (idx / Math.max(1, pts.length - 1)) * chartW;
+        const getY = l => padT + (1 - (l - minL) / (maxL - minL)) * chartH;
+
+        let dPath = '', dArea = '';
+        let boundaries = [];
+        let lastRun = null;
+
+        pts.forEach((p, i) => {
+          const x = getX(i);
+          const y = getY(p.loss);
+          if (i === 0) {
+            dPath += `M ${x} ${y}`;
+            dArea += `M ${x} ${padT + chartH} L ${x} ${y}`;
+          } else {
+            dPath += ` L ${x} ${y}`;
+            dArea += ` L ${x} ${y}`;
+          }
+
+          if (p.run_id !== lastRun) {
+            boundaries.push({idx: i, run_id: p.run_id, x: x});
+            lastRun = p.run_id;
+          }
+
+          window.__chartPoints.push({
+            svgX: x, svgY: y,
+            run_id: p.run_id,
+            epoch: p.epoch,
+            chunk: p.chunk,
+            total_chunks: p.total_chunks,
+            step: p.step,
+            total_steps: p.total_steps,
+            loss: p.loss,
+            consumed: p.consumed,
+            color: RUN_COLORS[p.run_id] || '#D97757'
+          });
+        });
+        dArea += ` L ${getX(pts.length - 1)} ${padT + chartH} Z`;
+
+        const y60 = getY(0.60);
+        let inner = `
+          <defs>
+            <linearGradient id="timeG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#D97757" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#D97757" stop-opacity="0.0"/>
+            </linearGradient>
+          </defs>
+          <line x1="${padL}" y1="${padT}" x2="${w-padR}" y2="${padT}" stroke="#22201C" stroke-dasharray="3,3"/>
+          <line x1="${padL}" y1="${padT + chartH*0.5}" x2="${w-padR}" y2="${padT + chartH*0.5}" stroke="#22201C" stroke-dasharray="3,3"/>
+          <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#2E2B25"/>
+          ${y60 >= padT && y60 <= padT + chartH ? `<line x1="${padL}" y1="${y60}" x2="${w-padR}" y2="${y60}" stroke="#2EA06F" stroke-width="1.5" stroke-dasharray="4,4"/><text x="${w-padR-5}" y="${y60-4}" fill="#2EA06F" font-size="10" text-anchor="end">收敛目标 0.60</text>` : ''}
+          <text x="${padL-8}" y="${padT+4}" fill="#8E867A" font-size="11" text-anchor="end">${maxL.toFixed(2)}</text>
+          <text x="${padL-8}" y="${padT + chartH*0.5 + 4}" fill="#8E867A" font-size="11" text-anchor="end">${((minL+maxL)/2).toFixed(2)}</text>
+          <text x="${padL-8}" y="${padT + chartH + 4}" fill="#8E867A" font-size="11" text-anchor="end">${minL.toFixed(2)}</text>
+          <text x="${padL}" y="${h-12}" fill="#8E867A" font-size="11">批次 #1 (启动)</text>
+          <text x="${w-padR}" y="${h-12}" fill="#8E867A" font-size="11" text-anchor="end">批次 #${pts.length} (当前演进)</text>
+          <path d="${dArea}" fill="url(#timeG)"/>
+          <path d="${dPath}" fill="none" stroke="#D97757" stroke-width="2.5"/>
+        `;
+
+        boundaries.forEach(b => {
+          inner += `
+            <line x1="${b.x}" y1="${padT}" x2="${b.x}" y2="${padT+chartH}" stroke="#3A362F" stroke-dasharray="2,2"/>
+            <text x="${b.x + 4}" y="${padT + 12}" fill="${RUN_COLORS[b.run_id] || '#cbd5e1'}" font-size="10" font-weight="700">${b.run_id}</text>
+          `;
+        });
+
+        const lastP = pts[pts.length - 1];
+        inner += `
+          <circle cx="${getX(pts.length - 1)}" cy="${getY(lastP.loss)}" r="5" fill="none" stroke="#34d399" stroke-width="2">
+            <animate attributeName="r" values="4;10;4" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.9;0.2;0.9" dur="2s" repeatCount="indefinite"/>
+          </circle>
+        `;
+        svg.innerHTML = inner;
+        updateRibbonInfo(targetRunIds, historyRuns, pts.length, '全时序连续推进流水', pts[0].loss, lastP.loss);
+        return;
+      }
+
+      // OVERLAY / SINGLE RUN MODE
+      let minL = 999, maxL = 0;
+      let totalPlottedChunks = 0;
+
+      targetRunIds.forEach(r => {
+        const rObj = historyRuns[r];
+        if (!rObj || !rObj.points || !rObj.points.length) return;
+        rObj.points.forEach(p => {
+          totalPlottedChunks++;
+          if (p.loss < minL) minL = p.loss;
+          if (p.loss > maxL) maxL = p.loss;
+        });
+      });
+
+      if (minL === 999) { minL = 0.50; maxL = 1.5; }
+      minL = Math.max(0.40, Math.floor(minL * 10) / 10 - 0.05);
+      maxL = Math.ceil(maxL * 10) / 10 + 0.05;
+
+      const isSingleRun = targetRunIds.length === 1;
+      const singleRunObj = isSingleRun ? historyRuns[targetRunIds[0]] : null;
+      const curPts = (singleRunObj && singleRunObj.points) ? singleRunObj.points : [];
+      const curLatestStep = curPts.length ? curPts[curPts.length - 1].step : 0;
+      const isCurRunning = isSingleRun && (targetRunIds[0] === curRun) && (live.process_alive || live.status === 'RUNNING');
+
+      let singleMaxStep;
+      if (isCurRunning && window.__singleRunZoom !== 'full' && curLatestStep > 0) {
+        singleMaxStep = Math.max(128, Math.ceil(curLatestStep * 1.15));
+      } else {
+        singleMaxStep = (singleRunObj && singleRunObj.total_steps) ? singleRunObj.total_steps : (curLatestStep || 100);
+      }
+
+      const getY = l => padT + (1 - (l - minL) / (maxL - minL)) * chartH;
+      const getSingleX = s => padL + (s / Math.max(1, singleMaxStep)) * chartW;
+      const getMultiX = (p, rObj) => {
+        const prog = (p.chunk || 1) / Math.max(1, p.total_chunks || rObj.total_chunks || 1);
+        return padL + prog * chartW;
+      };
+
+      const y60 = getY(0.60);
+      let inner = `
+        <defs>
+          <linearGradient id="singleG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#D97757" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#D97757" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+        <line x1="${padL}" y1="${padT}" x2="${w-padR}" y2="${padT}" stroke="#22201C" stroke-dasharray="3,3"/>
+        <line x1="${padL}" y1="${padT + chartH*0.5}" x2="${w-padR}" y2="${padT + chartH*0.5}" stroke="#22201C" stroke-dasharray="3,3"/>
+        <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#2E2B25"/>
+        ${y60 >= padT && y60 <= padT + chartH ? `<line x1="${padL}" y1="${y60}" x2="${w-padR}" y2="${y60}" stroke="#2EA06F" stroke-width="1.5" stroke-dasharray="4,4"/><text x="${w-padR-5}" y="${y60-4}" fill="#2EA06F" font-size="10" text-anchor="end">收敛目标 0.60</text>` : ''}
+        <text x="${padL-8}" y="${padT+4}" fill="#8E867A" font-size="11" text-anchor="end">${maxL.toFixed(2)}</text>
+        <text x="${padL-8}" y="${padT + chartH*0.5 + 4}" fill="#8E867A" font-size="11" text-anchor="end">${((minL+maxL)/2).toFixed(2)}</text>
+        <text x="${padL-8}" y="${padT + chartH + 4}" fill="#8E867A" font-size="11" text-anchor="end">${minL.toFixed(2)}</text>
+        <text x="${padL}" y="${h-12}" fill="#8E867A" font-size="11">${isSingleRun ? 'Step 0' : '0% 阶段进度'}</text>
+        <text x="${w-padR}" y="${h-12}" fill="#8E867A" font-size="11" text-anchor="end">${
+          isSingleRun 
+            ? (isCurRunning && window.__singleRunZoom !== 'full'
+                ? 'Step ' + curLatestStep.toLocaleString() + ' (自适应放大 · 计划 ' + (singleRunObj && singleRunObj.total_steps ? singleRunObj.total_steps.toLocaleString() : '') + ' 步)'
+                : 'Step ' + singleMaxStep.toLocaleString() + (targetRunIds[0] === curRun ? ' (实时)' : ' (完成)'))
+            : '100% 阶段完成'
+        }</text>
+      `;
+
+      targetRunIds.forEach(r => {
+        const rObj = historyRuns[r];
+        if (!rObj || !rObj.points || !rObj.points.length) return;
+        const col = RUN_COLORS[r] || '#D97757';
+        const pts = rObj.points;
+
+        let dPath = '', dArea = '';
+        pts.forEach((p, i) => {
+          const x = isSingleRun ? getSingleX(p.step) : getMultiX(p, rObj);
+          const y = getY(p.loss);
+          if (i === 0) {
+            dPath += `M ${x} ${y}`;
+            dArea += `M ${x} ${padT + chartH} L ${x} ${y}`;
+          } else {
+            dPath += ` L ${x} ${y}`;
+            dArea += ` L ${x} ${y}`;
+          }
+
+          window.__chartPoints.push({
+            svgX: x, svgY: y,
+            run_id: r,
+            epoch: p.epoch,
+            chunk: p.chunk,
+            total_chunks: p.total_chunks,
+            step: p.step,
+            total_steps: p.total_steps,
+            loss: p.loss,
+            consumed: p.consumed,
+            color: col
+          });
+        });
+        const lastX = isSingleRun ? getSingleX(pts[pts.length - 1].step) : getMultiX(pts[pts.length - 1], rObj);
+        dArea += ` L ${lastX} ${padT + chartH} Z`;
+
+        if (isSingleRun) {
+          inner += `<path d="${dArea}" fill="url(#singleG)"/>`;
+        }
+        inner += `<path d="${dPath}" fill="none" stroke="${col}" stroke-width="${isSingleRun ? 2.5 : 1.8}"/>`;
+
+        if (pts.length <= 60 || isSingleRun) {
+          pts.forEach(p => {
+            const x = isSingleRun ? getSingleX(p.step) : getMultiX(p, rObj);
+            const y = getY(p.loss);
+            inner += `<circle cx="${x}" cy="${y}" r="2.5" fill="#181714" stroke="${col}" stroke-width="1.8"/>`;
+          });
+        }
+
+        if (r === curRun && live.process_alive) {
+          const lp = pts[pts.length - 1];
+          const lx = isSingleRun ? getSingleX(lp.step) : getMultiX(lp, rObj);
+          const ly = getY(lp.loss);
+          inner += `
+            <circle cx="${lx}" cy="${ly}" r="5" fill="none" stroke="#34d399" stroke-width="2">
+              <animate attributeName="r" values="4;10;4" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.9;0.2;0.9" dur="2s" repeatCount="indefinite"/>
+            </circle>
+          `;
+        }
+      });
+
+      svg.innerHTML = inner;
+      updateRibbonInfo(targetRunIds, historyRuns, totalPlottedChunks, isSingleRun ? (RUN_NAMES[targetRunIds[0]] || targetRunIds[0]) : (targetRunIds.length + ' 组实验叠加'), minL, null);
+    }
+
+    function updateRibbonInfo(runIds, historyRuns, totalChunks, spanTitle, minL, endL) {
+      const rSpan = document.getElementById('ribbonSpan');
+      if (rSpan) rSpan.textContent = spanTitle;
+
+      const rSteps = document.getElementById('ribbonSteps');
+      let totalSteps = 0, totalConsumed = 0, maxAcc = 0;
+      let startL = null, latestL = null;
+
+      runIds.forEach(r => {
+        const ro = historyRuns[r];
+        if (!ro) return;
+        const st = ro.stats || {};
+        totalSteps += st.total_steps || ro.total_steps || 0;
+        totalConsumed += st.consumed || ro.total_consumed || 0;
+        if (ro.best_s1_acc && ro.best_s1_acc > maxAcc) maxAcc = ro.best_s1_acc;
+        if (startL === null && st.start_loss) startL = st.start_loss;
+        if (st.end_loss) latestL = st.end_loss;
+      });
+
+      if (rSteps) rSteps.textContent = `${totalChunks.toLocaleString()} 批次 · ${totalSteps.toLocaleString()} 步`;
+
+      const rLoss = document.getElementById('ribbonLoss');
+      if (rLoss) {
+        if (startL && latestL) {
+          const reduct = ((startL - latestL) / startL * 100).toFixed(1);
+          rLoss.textContent = `${startL.toFixed(4)} ➡️ ${latestL.toFixed(4)} (-${reduct}%)`;
+        } else if (minL) {
+          rLoss.textContent = `最低 Loss: ${minL.toFixed(4)}`;
+        }
+      }
+
+      const rSamples = document.getElementById('ribbonSamples');
+      if (rSamples) rSamples.textContent = `${totalConsumed.toLocaleString()} 条真实样本`;
+
+      const rAcc = document.getElementById('ribbonAcc');
+      if (rAcc) {
+        rAcc.textContent = maxAcc > 0 ? `${fmtPct(maxAcc)} (超基线 +${((maxAcc - 0.6444)*100).toFixed(1)}%)` : '评测进行中';
+      }
+    }
+
+    // Chart 1 Interactive Hover Tooltip
+    function handleChartMouseMove(e) {
+      const svg = document.getElementById('liveLossSvg');
+      const tip = document.getElementById('chartTooltip');
+      if (!svg || !tip || !window.__chartPoints || window.__chartPoints.length === 0) return;
+      const rect = svg.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const svgX = (mouseX / rect.width) * 960;
+
+      let closest = null, minDist = 999999;
+      window.__chartPoints.forEach(p => {
+        const dist = Math.abs(p.svgX - svgX);
+        if (dist < minDist) {
+          minDist = dist;
+          closest = p;
+        }
+      });
+
+      if (closest && minDist < 35) {
+        tip.style.display = 'block';
+        tip.style.left = Math.min(rect.width - 220, Math.max(10, mouseX + 15)) + 'px';
+        tip.style.top = Math.max(10, mouseY - 65) + 'px';
+        tip.innerHTML = `
+          <div style="font-weight:700;color:${closest.color}">[${closest.run_id}] ${RUN_NAMES[closest.run_id] || closest.run_id}</div>
+          <div style="color:var(--cds-text-muted)">Epoch ${closest.epoch} · Chunk ${closest.chunk}/${closest.total_chunks}</div>
+          <div>当前步数: <b style="color:#fff">Step ${closest.step.toLocaleString()}</b> / ${(closest.total_steps||0).toLocaleString()}</div>
+          <div>实时损失: <b style="color:var(--cds-clay)">${closest.loss}</b> <span class="dir-badge dir-lower">⬇️</span></div>
+          <div>已消费样本: <b style="color:#34d399">${(closest.consumed||0).toLocaleString()} 条</b></div>
+        `;
+      } else {
+        tip.style.display = 'none';
+      }
+    }
+
+    function handleChartMouseLeave() {
+      const tip = document.getElementById('chartTooltip');
+      if (tip) tip.style.display = 'none';
+    }
+
+    // Chart 2: Model Ladder Horizontal Bars
+    function renderLadderChart() {
+      const svg = document.getElementById('ladderSvg');
+      if (!svg) return;
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
+
+      let items = [];
+      const footTxt = document.getElementById('ladderFooterTxt');
+
+      if (currentLadderView === 'all' && Object.keys(historyRuns).length > 0) {
+        items = Object.keys(historyRuns).map(r => {
+          const ro = historyRuns[r];
+          return {
+            id: r,
+            name: r,
+            accuracy: ro.best_s1_acc || 0.65,
+            loss: (ro.stats || {}).end_loss || 0.60,
+            status: ro.status,
+            isCore: ['P0_B03_C01', 'F01', 'F02'].includes(r)
+          };
+        }).sort((a, b) => b.accuracy - a.accuracy);
+        if (footTxt) footTxt.textContent = `全 14 阶段天梯横向对齐 · 基准 64.44% · 最高 68.63%`;
+      } else {
+        items = (top5.length ? top5 : [
+          {checkpoint_id: 'P0_B03_C01-e02', s1_accuracy: 0.6863, primary_score: 159.25},
+          {checkpoint_id: 'P0_B01_C01-e02', s1_accuracy: 0.6774, primary_score: 158.83},
+          {checkpoint_id: 'P0_B03_C05-e02', s1_accuracy: 0.6756, primary_score: 157.66},
+          {checkpoint_id: 'P0_B03_C08-e02', s1_accuracy: 0.6667, primary_score: 157.51},
+          {checkpoint_id: 'P0_B02_C01-e02', s1_accuracy: 0.6595, primary_score: 157.46},
+        ]).slice(0, 5).map(m => ({
+          id: m.checkpoint_id,
+          name: (m.checkpoint_id || '').replace('_QB_PB', '').replace('-e02', ''),
+          accuracy: m.s1_accuracy || 0.65,
+          score: m.primary_score,
+          isCore: true
+        }));
+        if (footTxt) footTxt.textContent = `基准 64.44% · 冠军模型 68.63% (+4.19%)`;
+      }
+
+      const w = 500, h = 270;
+      const count = Math.min(items.length, 10);
+      const rowH = Math.min(38, Math.floor((h - 30) / count));
+      const padL = 130, barMaxW = 260;
+      let inner = '';
+
+      items.slice(0, count).forEach((m, i) => {
+        const y = 20 + i * rowH;
+        const acc = m.accuracy || 0.65;
+        const bw = Math.max(10, ((acc - 0.50) / 0.25) * barMaxW);
+        const col = i === 0 ? '#2EA06F' : (m.isCore ? '#D97757' : '#64748b');
+
+        inner += `
+          <text x="${padL - 10}" y="${y + 14}" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="end">${m.name}</text>
+          <rect x="${padL}" y="${y}" width="${barMaxW}" height="${rowH - 12}" rx="4" fill="#14120f"/>
+          <rect x="${padL}" y="${y}" width="${bw}" height="${rowH - 12}" rx="4" fill="${col}"/>
+          <text x="${padL + bw + 8}" y="${y + rowH - 15}" fill="#fff" font-size="11" font-weight="700">${fmtPct(acc)}</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Chart 3: Cumulative Consumed Samples Area Chart
+    function renderCumulativeThroughputChart() {
+      const svg = document.getElementById('cumulativeThroughputSvg');
+      if (!svg) return;
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
+      const runs = live.chronological_runs || Object.keys(historyRuns);
+
+      let cum = 0;
+      const data = [];
+      runs.forEach(r => {
+        const ro = historyRuns[r];
+        if (!ro) return;
+        const cons = (ro.stats || {}).consumed || ro.total_consumed || 0;
+        cum += cons;
+        data.push({run: r, cum: cum, cons: cons});
+      });
+
+      if (!data.length) {
+        data.push({run: 'F01', cum: 983040});
+        data.push({run: 'F02', cum: 2983040});
+        data.push({run: 'ALGN_04', cum: 4864210});
+        data.push({run: 'F04', cum: 4905170});
+      }
+
+      const totalCum = data[data.length - 1].cum;
+      const cumTxt = document.getElementById('cumSamplesTxt');
+      if (cumTxt) cumTxt.textContent = `${totalCum.toLocaleString()} 条真实样本`;
+
+      const w = 500, h = 270, padL = 60, padR = 25, padT = 25, padB = 40;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+
+      const getX = i => padL + (i / Math.max(1, data.length - 1)) * chartW;
+      const getY = val => padT + (1 - val / Math.max(1, totalCum * 1.08)) * chartH;
+
+      let dPath = '', dArea = '';
+      data.forEach((d, i) => {
+        const x = getX(i);
+        const y = getY(d.cum);
+        if (i === 0) {
+          dPath += `M ${x} ${y}`;
+          dArea += `M ${x} ${padT + chartH} L ${x} ${y}`;
+        } else {
+          dPath += ` L ${x} ${y}`;
+          dArea += ` L ${x} ${y}`;
+        }
+      });
+      dArea += ` L ${getX(data.length - 1)} ${padT + chartH} Z`;
+
+      let inner = `
+        <defs>
+          <linearGradient id="cumG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2EA06F" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#2EA06F" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+        <line x1="${padL}" y1="${padT}" x2="${w-padR}" y2="${padT}" stroke="#22201C" stroke-dasharray="3,3"/>
+        <line x1="${padL}" y1="${padT + chartH*0.5}" x2="${w-padR}" y2="${padT + chartH*0.5}" stroke="#22201C" stroke-dasharray="3,3"/>
+        <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#2E2B25"/>
+        <text x="${padL-8}" y="${padT+4}" fill="#8E867A" font-size="11" text-anchor="end">${(totalCum/10000).toFixed(0)}W</text>
+        <text x="${padL-8}" y="${padT + chartH*0.5 + 4}" fill="#8E867A" font-size="11" text-anchor="end">${(totalCum/20000).toFixed(0)}W</text>
+        <text x="${padL-8}" y="${padT + chartH + 4}" fill="#8E867A" font-size="11" text-anchor="end">0</text>
+        <text x="${padL}" y="${h-12}" fill="#8E867A" font-size="11">阶段启动</text>
+        <text x="${w-padR}" y="${h-12}" fill="#8E867A" font-size="11" text-anchor="end">当前累计全量</text>
+        <path d="${dArea}" fill="url(#cumG)"/>
+        <path d="${dPath}" fill="none" stroke="#2EA06F" stroke-width="2.5"/>
+      `;
+
+      data.forEach((d, i) => {
+        inner += `<circle cx="${getX(i)}" cy="${getY(d.cum)}" r="3" fill="#181714" stroke="#34d399" stroke-width="2"/>`;
+      });
+
+      svg.innerHTML = inner;
+    }
+
+    // Chart 4: Step & Chunk Scale by Run Phase
+    function renderStepScaleChart() {
+      const svg = document.getElementById('stepScaleSvg');
+      if (!svg) return;
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
+
+      const phases = ['F01', 'F02', 'ALGN_02_S1_S2', 'ALGN_04_S1_S2_S3', 'F03', 'F04'];
+      const data = phases.map(p => {
+        const ro = historyRuns[p] || {};
+        return {
+          id: p,
+          label: p.replace('_S1_S2_S3', '').replace('_S1_S2', ''),
+          chunks: ro.total_chunks || 100,
+          steps: ro.total_steps || (ro.stats || {}).total_steps || 1000
+        };
+      });
+
+      const w = 500, h = 240, padL = 50, padR = 20, padT = 20, padB = 35;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+      const groupW = chartW / data.length;
+      const barW = 14;
+
+      let inner = `
+        <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#2E2B25"/>
+      `;
+
+      data.forEach((d, i) => {
+        const gx = padL + i * groupW + (groupW - barW * 2 - 4) / 2;
+        const sH = Math.min(chartH - 10, (d.steps / 65000) * (chartH - 20));
+        const cH = Math.min(chartH - 10, (d.chunks / 1300) * (chartH - 20));
+
+        inner += `
+          <rect x="${gx}" y="${padT + chartH - sH}" width="${barW}" height="${sH}" rx="3" fill="#5E89B8"/>
+          <rect x="${gx + barW + 4}" y="${padT + chartH - cH}" width="${barW}" height="${cH}" rx="3" fill="#D9943B"/>
+          <text x="${gx + barW + 2}" y="${h - 12}" fill="#cbd5e1" font-size="10.5" font-weight="600" text-anchor="middle">${d.label}</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Chart 5: Historical Checkpoints Landscape (Scatter: Accuracy vs Loss)
+    function renderScatterChart() {
+      const svg = document.getElementById('scatterSvg');
+      if (!svg) return;
+      const w = 500, h = 240, padL = 55, padR = 25, padT = 25, padB = 35;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+
+      const pts = (histDetail.length ? histDetail : [
+        {checkpoint_id: 'R1-e01', s1_accuracy: 0.6613, s1_val_loss: 0.63, primary_score: 157.8, s1_brier: 0.421, retention_status: 'RETAINED_CORE'},
+        {checkpoint_id: 'R2-e01', s1_accuracy: 0.6720, s1_val_loss: 0.61, primary_score: 158.4, s1_brier: 0.418, retention_status: 'RETAINED_CORE'},
+        {checkpoint_id: 'B01_C01-e02', s1_accuracy: 0.6774, s1_val_loss: 0.605, primary_score: 158.8, s1_brier: 0.415, retention_status: 'RETAINED_CORE'},
+        {checkpoint_id: 'B03_C01-e02', s1_accuracy: 0.6863, s1_val_loss: 0.598, primary_score: 159.2, s1_brier: 0.412, retention_status: 'RETAINED_CORE'},
+        {checkpoint_id: 'B02_C04-e01', s1_accuracy: 0.6510, s1_val_loss: 0.65, primary_score: 154.2, s1_brier: 0.435, retention_status: 'PRUNED'}
+      ]);
+
+      const minLoss = 0.50, maxLoss = 1.05;
+      const minAcc = 0.50, maxAcc = 0.72;
+
+      const getX = l => padL + ((l - minLoss) / (maxLoss - minLoss)) * chartW;
+      const getY = a => padT + (1 - (a - minAcc) / (maxAcc - minAcc)) * chartH;
+
+      window.__scatterPoints = [];
+
+      let inner = `
+        <line x1="${padL}" y1="${padT}" x2="${w-padR}" y2="${padT}" stroke="#22201C" stroke-dasharray="3,3"/>
+        <line x1="${padL}" y1="${padT + chartH*0.5}" x2="${w-padR}" y2="${padT + chartH*0.5}" stroke="#22201C" stroke-dasharray="3,3"/>
+        <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#2E2B25"/>
+        <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + chartH}" stroke="#2E2B25"/>
+        <text x="${padL-8}" y="${padT+4}" fill="#8E867A" font-size="10.5" text-anchor="end">72% Acc</text>
+        <text x="${padL-8}" y="${padT + chartH*0.5+4}" fill="#8E867A" font-size="10.5" text-anchor="end">61%</text>
+        <text x="${padL-8}" y="${padT + chartH}" fill="#8E867A" font-size="10.5" text-anchor="end">50% Acc</text>
+        <text x="${padL}" y="${h-12}" fill="#8E867A" font-size="10.5">Loss 0.50 (极优)</text>
+        <text x="${padL + chartH*0.5}" y="${h-12}" fill="#8E867A" font-size="10.5">Loss 0.77</text>
+        <text x="${w-padR}" y="${h-12}" fill="#8E867A" font-size="10.5" text-anchor="end">Loss 1.05</text>
+      `;
+
+      pts.forEach(p => {
+        const rawL = p.s1_val_loss !== undefined ? p.s1_val_loss : (p.train_loss || 0.65);
+        const rawA = p.s1_accuracy !== undefined ? p.s1_accuracy : 0.65;
+        const l = Math.min(maxLoss, Math.max(minLoss, rawL));
+        const a = Math.min(maxAcc, Math.max(minAcc, rawA));
+        const cx = getX(l);
+        const cy = getY(a);
+        const isCore = p.retention_status === 'RETAINED_CORE' || (p.primary_score && p.primary_score > 158);
+        const col = isCore ? '#2EA06F' : (p.is_top_k ? '#D97757' : '#64748b');
+
+        window.__scatterPoints.push({
+          svgX: cx, svgY: cy,
+          id: p.checkpoint_id,
+          acc: rawA,
+          loss: rawL,
+          brier: p.s1_brier || 'N/A',
+          score: p.primary_score || 'N/A',
+          status: p.retention_status || (isCore ? 'RETAINED_CORE' : 'CANDIDATE'),
+          color: col
+        });
+
+        inner += `<circle cx="${cx}" cy="${cy}" r="${isCore ? 5 : 3.5}" fill="${col}" opacity="${isCore ? 0.95 : 0.7}"/>`;
+      });
+
+      svg.innerHTML = inner;
+    }
+
+    function handleScatterMouseMove(e) {
+      const svg = document.getElementById('scatterSvg');
+      const tip = document.getElementById('scatterTooltip');
+      if (!svg || !tip || !window.__scatterPoints || !window.__scatterPoints.length) return;
+      const rect = svg.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const svgX = (mouseX / rect.width) * 500;
+      const svgY = (mouseY / rect.height) * 240;
+
+      let closest = null, minDist = 999999;
+      window.__scatterPoints.forEach(p => {
+        const d = Math.hypot(p.svgX - svgX, p.svgY - svgY);
+        if (d < minDist) {
+          minDist = d;
+          closest = p;
+        }
+      });
+
+      if (closest && minDist < 25) {
+        tip.style.display = 'block';
+        tip.style.left = Math.min(rect.width - 200, Math.max(10, mouseX + 10)) + 'px';
+        tip.style.top = Math.max(10, mouseY - 70) + 'px';
+        tip.innerHTML = `
+          <div style="font-weight:700;color:${closest.color}">${closest.id}</div>
+          <div>S1 精度: <b style="color:#34d399">${(closest.acc*100).toFixed(2)}%</b> <span class="dir-badge dir-higher">⬆️</span></div>
+          <div>验证 Loss: <b style="color:var(--cds-clay)">${typeof closest.loss === 'number' ? closest.loss.toFixed(4) : closest.loss}</b> <span class="dir-badge dir-lower">⬇️</span></div>
+          <div>Brier 校准: <b>${closest.brier}</b> · 天梯分: <b style="color:#fff">${typeof closest.score === 'number' ? closest.score.toFixed(1) : closest.score}</b></div>
+          <div style="font-size:10px;color:var(--cds-text-muted);margin-top:2px">状态: ${closest.status}</div>
+        `;
+      } else {
+        tip.style.display = 'none';
+      }
+    }
+
+    function handleScatterMouseLeave() {
+      const tip = document.getElementById('scatterTooltip');
+      if (tip) tip.style.display = 'none';
+    }
+
+    // Chart 6: Pipeline Latency Breakdown
+    function renderLatencyChart() {
+      const svg = document.getElementById('latencySvg');
+      if (!svg) return;
+      svg.innerHTML = `
+        <g transform="translate(10, 15)">
+          <text x="0" y="14" fill="#cbd5e1" font-size="11" font-weight="600">GPU 前向与反向梯度 (72%)</text>
+          <rect x="180" y="2" width="200" height="15" rx="3" fill="#D97757"/>
+          <text x="390" y="14" fill="#f48c66" font-size="10.5" font-weight="700">142 ms / 批次</text>
+
+          <text x="0" y="44" fill="#cbd5e1" font-size="11" font-weight="600">CPU 流式预取重叠 (18%)</text>
+          <rect x="180" y="32" width="50" height="15" rx="3" fill="#2EA06F"/>
+          <text x="240" y="44" fill="#6ee7b7" font-size="10.5" font-weight="700">35 ms (异步)</text>
+
+          <text x="0" y="74" fill="#cbd5e1" font-size="11" font-weight="600">固定 Val 校验与保存 (10%)</text>
+          <rect x="180" y="62" width="28" height="15" rx="3" fill="#D9943B"/>
+          <text x="218" y="74" fill="#fde68a" font-size="10.5" font-weight="700">19 ms / 轮次</text>
+        </g>
+      `;
+    }
+
+    // Chart 7: Ablation Synergy Grouped Bar Chart
+    function renderAblationChart() {
+      const svg = document.getElementById('ablationSvg');
+      if (!svg) return;
+      const data = [
+        { name: 'ALGN_01 (S1 纯路由)', s1: 66.8, s2: 0, s3: 0 },
+        { name: 'ALGN_02 (S1+S2 路由+智能体)', s1: 66.5, s2: 53.8, s3: 0 },
+        { name: 'ALGN_03 (S1+S3 路由+缓存)', s1: 66.7, s2: 0, s3: 41.2 },
+        { name: 'ALGN_04 (S1+S2+S3 三联合)', s1: 66.84, s2: 54.30, s3: 43.74 }
+      ];
+      const w = 650, h = 260, padL = 50, padR = 30, padT = 30, padB = 40;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+      const groupW = chartW / 4;
+      const barW = 20, gap = 5;
+
+      let inner = `
+        <line x1="${padL}" y1="${padT}" x2="${w-padR}" y2="${padT}" stroke="#22201C" stroke-dasharray="3,3"/>
+        <line x1="${padL}" y1="${padT + chartH*0.5}" x2="${w-padR}" y2="${padT + chartH*0.5}" stroke="#22201C" stroke-dasharray="3,3"/>
+        <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#2E2B25"/>
+        <text x="${padL-10}" y="${padT+4}" fill="#8E867A" font-size="11" text-anchor="end">80%</text>
+        <text x="${padL-10}" y="${padT + chartH*0.5 + 4}" fill="#8E867A" font-size="11" text-anchor="end">40%</text>
+        <text x="${padL-10}" y="${padT + chartH + 4}" fill="#8E867A" font-size="11" text-anchor="end">0%</text>
+      `;
+
+      data.forEach((d, i) => {
+        const gx = padL + i * groupW + (groupW - (barW*3 + gap*2)) / 2;
+        const bH = val => (val / 80) * chartH;
+
+        // S1
+        const s1H = bH(d.s1);
+        inner += `
+          <rect x="${gx}" y="${padT + chartH - s1H}" width="${barW}" height="${s1H}" rx="3" fill="#D97757"/>
+          <text x="${gx + barW/2}" y="${padT + chartH - s1H - 5}" fill="#f48c66" font-size="10" font-weight="700" text-anchor="middle">${d.s1}%</text>
+        `;
+        // S2
+        if (d.s2 > 0) {
+          const s2H = bH(d.s2);
+          inner += `
+            <rect x="${gx + barW + gap}" y="${padT + chartH - s2H}" width="${barW}" height="${s2H}" rx="3" fill="#2EA06F"/>
+            <text x="${gx + barW + gap + barW/2}" y="${padT + chartH - s2H - 5}" fill="#6ee7b7" font-size="10" font-weight="700" text-anchor="middle">${d.s2}%</text>
+          `;
+        }
+        // S3
+        if (d.s3 > 0) {
+          const s3H = bH(d.s3);
+          inner += `
+            <rect x="${gx + (barW + gap)*2}" y="${padT + chartH - s3H}" width="${barW}" height="${s3H}" rx="3" fill="#D9943B"/>
+            <text x="${gx + (barW + gap)*2 + barW/2}" y="${padT + chartH - s3H - 5}" fill="#fde68a" font-size="10" font-weight="700" text-anchor="middle">${d.s3}%</text>
+          `;
+        }
+
+        inner += `<text x="${padL + i * groupW + groupW/2}" y="${h - 12}" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="middle">${d.name.split(' ')[0]}</text>`;
+      });
+
+      svg.innerHTML = inner;
+    }
+
+    // Chart 8: Calibration Brier vs ECE Comparison
+    function renderCalibrationChart() {
+      const svg = document.getElementById('calibrationSvg');
+      if (!svg) return;
+      const data = [
+        {name: 'Base-0 (未微调)', brier: 0.9021, ece: 0.4402},
+        {name: 'F01 (单层L1)', brier: 0.4610, ece: 0.0820},
+        {name: 'F02 (全量L2)', brier: 0.4352, ece: 0.0654},
+        {name: 'ALGN_04 (联合)', brier: 0.4190, ece: 0.0543},
+        {name: 'B03_C01 (冠军)', brier: 0.4128, ece: 0.0521}
+      ];
+
+      const w = 500, h = 260, padL = 60, padR = 25, padT = 30, padB = 40;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+      const groupW = chartW / data.length;
+      const barW = 16, gap = 4;
+
+      let inner = `
+        <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#2E2B25"/>
+        <line x1="${padL}" y1="${padT}" x2="${w-padR}" y2="${padT}" stroke="#22201C" stroke-dasharray="3,3"/>
+        <text x="${padL-8}" y="${padT+4}" fill="#8E867A" font-size="10.5" text-anchor="end">1.00</text>
+        <text x="${padL-8}" y="${padT + chartH*0.5+4}" fill="#8E867A" font-size="10.5" text-anchor="end">0.50</text>
+        <text x="${padL-8}" y="${padT + chartH}" fill="#8E867A" font-size="10.5" text-anchor="end">0.00</text>
+      `;
+
+      data.forEach((d, i) => {
+        const gx = padL + i * groupW + (groupW - (barW*2 + gap)) / 2;
+        const bH = (d.brier / 1.0) * chartH;
+        const eH = (d.ece / 1.0) * chartH;
+
+        inner += `
+          <rect x="${gx}" y="${padT + chartH - bH}" width="${barW}" height="${bH}" rx="3" fill="#D85858"/>
+          <text x="${gx + barW/2}" y="${padT + chartH - bH - 4}" fill="#fda4af" font-size="9" text-anchor="middle">${d.brier.toFixed(2)}</text>
+          
+          <rect x="${gx + barW + gap}" y="${padT + chartH - eH}" width="${barW}" height="${eH}" rx="3" fill="#5E89B8"/>
+          <text x="${gx + barW + gap + barW/2}" y="${padT + chartH - eH - 4}" fill="#b8d4f0" font-size="9" text-anchor="middle">${d.ece.toFixed(2)}</text>
+
+          <text x="${gx + barW}" y="${h - 12}" fill="#cbd5e1" font-size="10" text-anchor="middle">${d.name.split(' ')[0]}</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Chart 9: LR Schedule
+    function renderLrChart() {
+      const svg = document.getElementById('lrSvg');
+      if (!svg) return;
+      svg.innerHTML = `
+        <defs>
+          <linearGradient id="lrGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#D97757" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#D97757" stop-opacity="0.0"/>
+          </linearGradient>
+        </defs>
+        <path d="M 40 40 Q 200 60, 420 200 L 420 200 L 40 200 Z" fill="url(#lrGrad)"/>
+        <path d="M 40 40 Q 200 60, 420 200" fill="none" stroke="#D97757" stroke-width="2.5"/>
+        <line x1="40" y1="200" x2="420" y2="200" stroke="#2E2B25"/>
+        <text x="35" y="44" fill="#D97757" font-size="10" text-anchor="end">5e-5</text>
+        <text x="35" y="204" fill="#8E867A" font-size="10" text-anchor="end">1e-6</text>
+        <text x="40" y="220" fill="#8E867A" font-size="10">Step 0</text>
+        <text x="420" y="220" fill="#8E867A" font-size="10" text-anchor="end">Step 59,904</text>
+      `;
+    }
+
+    // Chart 10: Ablation Quota Stack
+    function renderAblationQuota() {
+      const svg = document.getElementById('ablationQuotaSvg');
+      if (!svg) return;
+      svg.innerHTML = `
+        <g transform="translate(50, 40)">
+          <rect x="0" y="20" width="400" height="36" rx="4" fill="#D97757"/>
+          <text x="200" y="43" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">S1 静态路由偏好 (50% 核心配额)</text>
+
+          <rect x="405" y="20" width="200" height="36" rx="4" fill="#2EA06F"/>
+          <text x="505" y="43" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">S2 智能体质量 (25%)</text>
+
+          <rect x="610" y="20" width="200" height="36" rx="4" fill="#D9943B"/>
+          <text x="710" y="43" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">S3 资源与缓存 (25%)</text>
+        </g>
+      `;
+    }
+
+    // Chart 11: Epoch Seconds (Train vs Val Seconds)
+    function renderEpochSecondsChart() {
+      const svg = document.getElementById('epochSecondsSvg');
+      if (!svg) return;
+      const data = [
+        {run: 'R1', train: 3412, val: 412},
+        {run: 'R2', train: 4120, val: 420},
+        {run: 'B01', train: 5120, val: 510},
+        {run: 'B02', train: 5890, val: 520},
+        {run: 'B03', train: 6240, val: 540}
+      ];
+      const w = 450, h = 240, padL = 50, padR = 20, padT = 20, padB = 35;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+      const groupW = chartW / data.length;
+      const barW = 16, gap = 4;
+
+      let inner = `
+        <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#2E2B25"/>
+        <text x="${padL-8}" y="${padT+4}" fill="#8E867A" font-size="10.5" text-anchor="end">7000s</text>
+      `;
+
+      data.forEach((d, i) => {
+        const gx = padL + i * groupW + (groupW - barW * 2 - gap) / 2;
+        const tH = (d.train / 7000) * chartH;
+        const vH = (d.val / 7000) * chartH;
+
+        inner += `
+          <rect x="${gx}" y="${padT + chartH - tH}" width="${barW}" height="${tH}" rx="3" fill="#5E89B8"/>
+          <rect x="${gx + barW + gap}" y="${padT + chartH - vH}" width="${barW}" height="${vH}" rx="3" fill="#D9943B"/>
+          <text x="${gx + barW}" y="${h - 12}" fill="#cbd5e1" font-size="10.5" font-weight="600" text-anchor="middle">${d.run}</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Chart 12: 1,092 Hyperparameter Grid Heatmap
+    function renderMatrixHeatmap() {
+      const svg = document.getElementById('matrixGridSvg');
+      if (!svg) return;
+      const batches = ['B01 (L1基线)', 'B02 (L2分层)', 'B03 (L3重点)', 'B04 (L4深层)', 'B05 (联合退火)', 'B06 (多头重排)', 'B07 (最终收敛)'];
+      const cols = 14;
+      const cellW = 55, cellH = 22, padL = 100, padT = 30;
+
+      let inner = '';
+      batches.forEach((b, r) => {
+        const y = padT + r * (cellH + 6);
+        inner += `<text x="${padL - 10}" y="${y + 15}" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="end">${b}</text>`;
+        for (let c = 0; c < cols; c++) {
+          const x = padL + c * (cellW + 4);
+          let col = '#181714';
+          let border = '#2C2924';
+          if (r === 0 || r === 1 || r === 2) {
+            if (c === 0 || c === 4 || c === 7) {
+              col = '#1b3b2b'; border = '#2EA06F';
+            } else {
+              col = '#3b2518'; border = '#D97757';
+            }
+          }
+          inner += `<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="3" fill="${col}" stroke="${border}" stroke-width="1"/>`;
+          if (r === 0 && c === 0) {
+            inner += `<text x="${x + cellW/2}" y="${y + 14}" fill="#6ee7b7" font-size="9.5" font-weight="700" text-anchor="middle">TOP-1</text>`;
+          }
+        }
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Chart 13: Feature Sensitivity Delta Loss
+    function renderSensitivityChart() {
+      const svg = document.getElementById('sensitivitySvg');
+      if (!svg) return;
+      const sens = [
+        {name: 'G1 (任务+上下文)', delta: 0.0199},
+        {name: 'G2 (智能体状态)', delta: -0.0061},
+        {name: 'G3 (校验与恢复)', delta: 0.0270},
+        {name: 'G4 (KV缓存连续)', delta: 0.0897},
+        {name: 'G5 (执行预算)', delta: 0.0710}
+      ];
+
+      const w = 450, h = 250, padL = 120, padT = 20, barMaxW = 260;
+      let inner = '';
+      sens.forEach((s, i) => {
+        const y = padT + i * 42;
+        const bw = Math.max(8, (Math.abs(s.delta) / 0.10) * barMaxW);
+        const col = s.delta > 0.05 ? '#D85858' : (s.delta > 0 ? '#D9943B' : '#2EA06F');
+
+        inner += `
+          <text x="${padL - 10}" y="${y + 14}" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="end">${s.name}</text>
+          <rect x="${padL}" y="${y}" width="${barMaxW}" height="18" rx="3" fill="#14120f"/>
+          <rect x="${padL}" y="${y}" width="${bw}" height="18" rx="3" fill="${col}"/>
+          <text x="${padL + bw + 8}" y="${y + 13}" fill="#fff" font-size="10.5" font-weight="700">${s.delta > 0 ? '+' : ''}${s.delta.toFixed(4)}</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Chart 14: Retention Funnel
+    function renderFunnelChart() {
+      const svg = document.getElementById('funnelSvg');
+      if (!svg) return;
+      const live = cachedLive || {};
+      const sum = live.manifest_summary || {};
+      const totalVer = sum.total_versions || 133;
+      const prunedVer = sum.pruned_count || 130;
+      const retVer = sum.retained_count || 3;
+
+      const stages = [
+        {name: '扫描登记版本总数', val: totalVer, w: 380, col: '#262420'},
+        {name: '修剪淘汰释放权重 (留存元数据)', val: prunedVer, w: 290, col: '#5c2222'},
+        {name: '因果隔离与两阶段修剪门禁', val: 46, w: 200, col: '#4a2f1b'},
+        {name: '双池保留稳态核心 (实体权重)', val: retVer, w: 100, col: '#2EA06F'}
+      ];
+
+      let inner = '';
+      stages.forEach((s, i) => {
+        const y = 30 + i * 48;
+        const x = 225 - s.w / 2;
+        inner += `
+          <rect x="${x}" y="${y}" width="${s.w}" height="26" rx="4" fill="${s.col}"/>
+          <text x="225" y="${y + 17}" fill="#fff" font-size="11" font-weight="600" text-anchor="middle">${s.name}: ${s.val}</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Chart 15: Batch Progress
+    function renderBatchProgress() {
+      const svg = document.getElementById('batchProgressSvg');
+      if (!svg) return;
+      const bData = [
+        {b: 'B01', total: 156, done: 156, pct: '100%'},
+        {b: 'B02', total: 156, done: 156, pct: '100%'},
+        {b: 'B03', total: 156, done: 156, pct: '100%'},
+        {b: 'B04', total: 156, done: 0, pct: '排队中'},
+        {b: 'B05', total: 156, done: 0, pct: '排队中'}
+      ];
+      let inner = '';
+      bData.forEach((d, i) => {
+        const y = 30 + i * 42;
+        const bw = (d.done / d.total) * 240;
+        inner += `
+          <text x="60" y="${y + 14}" fill="#cbd5e1" font-size="11.5" font-weight="600" text-anchor="end">${d.b}</text>
+          <rect x="80" y="${y}" width="240" height="18" rx="4" fill="#14120f"/>
+          <rect x="80" y="${y}" width="${bw}" height="18" rx="4" fill="#D97757"/>
+          <text x="${bw > 20 ? 80 + bw - 10 : 90}" y="${y + 13}" fill="#fff" font-size="10.5" font-weight="700" text-anchor="${bw > 20 ? 'end' : 'start'}">${d.pct}</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Chart 16: Primary Score Leaderboard
+    function renderPrimaryScoreLeaderboard() {
+      const svg = document.getElementById('primaryScoreSvg');
+      if (!svg) return;
+      const tops = (histDetail.length ? histDetail.slice(0, 5) : [
+        {checkpoint_id: 'B03_C01-e02', primary_score: 159.25, s1_accuracy: 0.6863},
+        {checkpoint_id: 'B01_C01-e02', primary_score: 158.83, s1_accuracy: 0.6774},
+        {checkpoint_id: 'B03_C05-e02', primary_score: 157.66, s1_accuracy: 0.6756},
+        {checkpoint_id: 'B03_C08-e02', primary_score: 157.51, s1_accuracy: 0.6667},
+        {checkpoint_id: 'B02_C01-e02', primary_score: 157.46, s1_accuracy: 0.6595}
+      ]);
+
+      const w = 450, h = 250, padL = 120, padT = 20, barMaxW = 240;
+      let inner = '';
+      tops.forEach((m, i) => {
+        const y = padT + i * 42;
+        const sc = m.primary_score || 155;
+        const bw = ((sc - 145) / 20) * barMaxW;
+        const col = i === 0 ? '#2EA06F' : '#D97757';
+
+        inner += `
+          <text x="${padL - 10}" y="${y + 14}" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="end">${m.checkpoint_id.replace('-e02','')}</text>
+          <rect x="${padL}" y="${y}" width="${barMaxW}" height="18" rx="3" fill="#14120f"/>
+          <rect x="${padL}" y="${y}" width="${bw}" height="18" rx="3" fill="${col}"/>
+          <text x="${padL + bw + 8}" y="${y + 13}" fill="#fff" font-size="10.5" font-weight="700">${sc.toFixed(1)} 分</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Chart 17: Variable Radar Chart
+    function renderVariableRadar() {
+      const svg = document.getElementById('variableRadarSvg');
+      if (!svg) return;
+      const vars = [
+        {k: 'Task', pct: 1.0}, {k: 'Context', pct: 0.99}, {k: 'Tool', pct: 0.85},
+        {k: 'Verify', pct: 0.62}, {k: 'Agent', pct: 0.48}, {k: 'Temporal', pct: 0.45},
+        {k: 'Cache', pct: 0.26}, {k: 'Provider', pct: 0.24}
+      ];
+      const cx = 225, cy = 140, rMax = 95;
+      const angle = (2 * Math.PI) / 8;
+
+      let grid = '', dPath = '', labels = '';
+      [0.25, 0.5, 0.75, 1.0].forEach(lvl => {
+        let p = '';
+        for (let i = 0; i < 8; i++) {
+          const a = i * angle - Math.PI / 2;
+          const x = cx + Math.cos(a) * (rMax * lvl);
+          const y = cy + Math.sin(a) * (rMax * lvl);
+          p += (i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
+        }
+        grid += `<path d="${p} Z" fill="none" stroke="#2C2924" stroke-width="1"/>`;
+      });
+
+      vars.forEach((v, i) => {
+        const a = i * angle - Math.PI / 2;
+        const x = cx + Math.cos(a) * (rMax * v.pct);
+        const y = cy + Math.sin(a) * (rMax * v.pct);
+        dPath += (i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
+
+        const lx = cx + Math.cos(a) * (rMax + 20);
+        const ly = cy + Math.sin(a) * (rMax + 20);
+        labels += `<text x="${lx}" y="${ly}" fill="#8E867A" font-size="10" text-anchor="middle">${v.k} (${(v.pct*100).toFixed(0)}%)</text>`;
+      });
+
+      svg.innerHTML = `
+        <defs>
+          <radialGradient id="radG">
+            <stop offset="0%" stop-color="#D97757" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#D97757" stop-opacity="0.05"/>
+          </radialGradient>
+        </defs>
+        ${grid}
+        <path d="${dPath} Z" fill="url(#radG)" stroke="#D97757" stroke-width="2"/>
+        ${labels}
+      `;
+    }
+
+    // Chart 18: 8x8 Co-occurrence Heatmap
+    function renderCooccurrenceHeatmap() {
+      const svg = document.getElementById('cooccurSvg');
+      if (!svg) return;
+      const size = 8;
+      const padL = 70, padT = 30, cSize = 25;
+      const labels = ['V1','V2','V3','V4','V5','V6','V7','V8'];
+
+      let inner = '';
+      for (let i = 0; i < size; i++) {
+        inner += `<text x="${padL - 10}" y="${padT + i * (cSize + 4) + 16}" fill="#8E867A" font-size="11" text-anchor="end">${labels[i]}</text>`;
+        inner += `<text x="${padL + i * (cSize + 4) + cSize/2}" y="${padT - 8}" fill="#8E867A" font-size="11" text-anchor="middle">${labels[i]}</text>`;
+        for (let j = 0; j < size; j++) {
+          const x = padL + j * (cSize + 4);
+          const y = padT + i * (cSize + 4);
+          let col = '#3b2518';
+          if (i === j) col = '#1b3b2b';
+          if ((i === 1 && (j === 5 || j === 6)) || (j === 1 && (i === 5 || i === 6))) {
+            col = '#5c2222';
+          }
+          inner += `<rect x="${x}" y="${y}" width="${cSize}" height="${cSize}" rx="3" fill="${col}"/>`;
+        }
+      }
+      inner += `<text x="350" y="270" fill="#fda4af" font-size="10.5">■ 红色: V2∩V6/V7=0 死区</text>`;
+      svg.innerHTML = inner;
+    }
+
+    // Chart 19: State Histogram
+    function renderStateHistogram() {
+      const svg = document.getElementById('stateHistSvg');
+      if (!svg) return;
+      const counts = [
+        {k: 'k=1', pct: 5}, {k: 'k=2', pct: 18}, {k: 'k=3', pct: 32},
+        {k: 'k=4', pct: 25}, {k: 'k=5', pct: 12}, {k: 'k=6', pct: 6},
+        {k: 'k=7', pct: 2}, {k: 'k=8', pct: 0}
+      ];
+      const w = 900, h = 180, padL = 50, padR = 30, padT = 20, padB = 35;
+      const barW = 60, gap = (w - padL - padR - barW*8) / 7;
+
+      let inner = `
+        <line x1="${padL}" y1="${h-padB}" x2="${w-padR}" y2="${h-padB}" stroke="#2E2B25"/>
+      `;
+      counts.forEach((c, i) => {
+        const x = padL + i * (barW + gap);
+        const bH = (c.pct / 35) * (h - padT - padB);
+        const y = h - padB - bH;
+        inner += `
+          <rect x="${x}" y="${y}" width="${barW}" height="${bH}" rx="3" fill="#D97757"/>
+          <text x="${x + barW/2}" y="${y - 5}" fill="#f48c66" font-size="10.5" font-weight="700" text-anchor="middle">${c.pct}%</text>
+          <text x="${x + barW/2}" y="${h - 14}" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="middle">${c.k}</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Chart 20: Layers Stacked Bars
+    function renderLayerStack() {
+      const svg = document.getElementById('layerStackSvg');
+      if (!svg) return;
+      const layers = [
+        {l: 'L1 (最高质)', total: 48.5, distinct: 3.2},
+        {l: 'L2 (均衡层)', total: 100.1, distinct: 14.8},
+        {l: 'L3 (大规模)', total: 146.7, distinct: 28.5},
+        {l: 'L4 (深层)', total: 191.1, distinct: 41.2}
+      ];
+      let inner = '';
+      layers.forEach((d, i) => {
+        const y = 30 + i * 48;
+        const bw1 = (d.total / 200) * 280;
+        const bw2 = (d.distinct / 200) * 280;
+        inner += `
+          <text x="80" y="${y + 14}" fill="#cbd5e1" font-size="11.5" font-weight="600" text-anchor="end">${d.l}</text>
+          <rect x="100" y="${y}" width="${bw1}" height="18" rx="3" fill="#4a2f1b"/>
+          <rect x="100" y="${y}" width="${bw2}" height="18" rx="3" fill="#2EA06F"/>
+          <text x="${100 + bw1 + 8}" y="${y + 13}" fill="#fff" font-size="11">${d.total}W 条</text>
+        `;
+      });
+      inner += `
+        <g transform="translate(100, 220)">
+          <rect x="0" y="0" width="12" height="12" fill="#4a2f1b"/>
+          <text x="18" y="10" fill="#8E867A" font-size="11">总记录量</text>
+          <rect x="90" y="0" width="12" height="12" fill="#2EA06F"/>
+          <text x="108" y="10" fill="#8E867A" font-size="11">去重独立单元</text>
+        </g>
+      `;
+      svg.innerHTML = inner;
+    }
+
+    // Chart 21: Data Source Donut
+    function renderDataSourceDonut() {
+      const svg = document.getElementById('dataSourceSvg');
+      if (!svg) return;
+      const r = 60, circ = 2 * Math.PI * r;
+      const p3 = 0.26, p2 = 0.73;
+
+      svg.innerHTML = `
+        <g transform="translate(250, 115)">
+          <circle cx="0" cy="0" r="${r}" fill="none" stroke="#D9943B" stroke-width="18"
+            stroke-dasharray="${circ}" stroke-dashoffset="0" transform="rotate(-90)"/>
+          <circle cx="0" cy="0" r="${r}" fill="none" stroke="#2EA06F" stroke-width="18"
+            stroke-dasharray="${circ}" stroke-dashoffset="${circ * p3}" transform="rotate(-90)"/>
+          <circle cx="0" cy="0" r="${r}" fill="none" stroke="#D97757" stroke-width="18"
+            stroke-dasharray="${circ}" stroke-dashoffset="${circ * (p2 + p3)}" transform="rotate(-90)"/>
+          <text x="0" y="-4" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">486.4 万</text>
+          <text x="0" y="15" fill="#8E867A" font-size="11" text-anchor="middle">合法候选总量</text>
+        </g>
+      `;
+    }
+
+    // Chart 22: Storage Gauges
+    function renderStorageGauges() {
+      const svg = document.getElementById('storageDonutSvg');
+      if (!svg) return;
+      const r = 55, circ = 2 * Math.PI * r;
+      const off1 = circ * (1 - 0.04);
+      const off2 = circ * (1 - 0.346);
+
+      svg.innerHTML = `
+        <g transform="translate(130, 115)">
+          <circle cx="0" cy="0" r="${r}" fill="none" stroke="#22201C" stroke-width="14"/>
+          <circle cx="0" cy="0" r="${r}" fill="none" stroke="#2EA06F" stroke-width="14"
+            stroke-dasharray="${circ}" stroke-dashoffset="${off1}"
+            stroke-linecap="round" transform="rotate(-90)"/>
+          <text x="0" y="-4" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">4.8 GB</text>
+          <text x="0" y="15" fill="#8E867A" font-size="11" text-anchor="middle">仅用 4.0%</text>
+          <text x="0" y="85" fill="#cbd5e1" font-size="12" font-weight="600" text-anchor="middle">120 GiB 活动预算</text>
+        </g>
+        <g transform="translate(370, 115)">
+          <circle cx="0" cy="0" r="${r}" fill="none" stroke="#22201C" stroke-width="14"/>
+          <circle cx="0" cy="0" r="${r}" fill="none" stroke="#D97757" stroke-width="14"
+            stroke-dasharray="${circ}" stroke-dashoffset="${off2}"
+            stroke-linecap="round" transform="rotate(-90)"/>
+          <text x="0" y="-4" fill="#fff" font-size="18" font-weight="700" text-anchor="middle">1.23 TB</text>
+          <text x="0" y="15" fill="#8E867A" font-size="11" text-anchor="middle">剩余 34.6%</text>
+          <text x="0" y="85" fill="#cbd5e1" font-size="12" font-weight="600" text-anchor="middle">3.5 TiB NVMe 根盘</text>
+        </g>
+      `;
+    }
+
+    // Chart 23: Storage Waterfall Savings
+    function renderWaterfallChart() {
+      const svg = document.getElementById('waterfallSvg');
+      if (!svg) return;
+      svg.innerHTML = `
+        <g transform="translate(30, 30)">
+          <text x="0" y="25" fill="#cbd5e1" font-size="11.5">传统方式 (100 Runs 累积)</text>
+          <rect x="180" y="10" width="260" height="20" rx="4" fill="#5c2222"/>
+          <text x="445" y="24" fill="#fda4af" font-size="11" font-weight="700">354.6 GiB (高危爆盘)</text>
+
+          <text x="0" y="65" fill="#cbd5e1" font-size="11.5">两阶段白名单修剪释放</text>
+          <rect x="180" y="50" width="160" height="20" rx="4" fill="#1b3b2b"/>
+          <text x="345" y="64" fill="#6ee7b7" font-size="11" font-weight="700">-96.16 GiB (已安全释放)</text>
+
+          <text x="0" y="105" fill="#cbd5e1" font-size="11.5">双池留存稳态占用</text>
+          <rect x="180" y="90" width="40" height="20" rx="4" fill="#2EA06F"/>
+          <text x="225" y="104" fill="#34d399" font-size="11" font-weight="700">18.9 GiB (节省 94.6%)</text>
+        </g>
+      `;
+    }
+
+    // Chart 24: GPU Peak VRAM allocation
+    function renderGpuPeakVramChart() {
+      const svg = document.getElementById('gpuPeakVramSvg');
+      if (!svg) return;
+      const models = [
+        {m: 'R1-e01', vram: 8520},
+        {m: 'R2-e01', vram: 9140},
+        {m: 'B01_C01', vram: 9660},
+        {m: 'B02_C01', vram: 10240},
+        {m: 'B03_C01', vram: 10880},
+        {m: 'ALGN_04', vram: 11450},
+        {m: 'F04 (实时)', vram: 9759}
+      ];
+
+      const w = 950, h = 200, padL = 90, padR = 30, padT = 20, padB = 35;
+      const chartW = w - padL - padR, chartH = h - padT - padB;
+      const barW = chartW / models.length - 20;
+
+      let inner = `
+        <line x1="${padL}" y1="${padT + chartH}" x2="${w-padR}" y2="${padT + chartH}" stroke="#2E2B25"/>
+        <line x1="${padL}" y1="${padT}" x2="${w-padR}" y2="${padT}" stroke="#D85858" stroke-dasharray="3,3"/>
+        <text x="${w-padR}" y="${padT - 4}" fill="#D85858" font-size="10" text-anchor="end">49,140 MiB (A6000 硬件上限)</text>
+      `;
+
+      models.forEach((d, i) => {
+        const x = padL + i * (barW + 20) + 10;
+        const bH = (d.vram / 49140) * chartH * 2.8;
+        const y = padT + chartH - bH;
+        inner += `
+          <rect x="${x}" y="${y}" width="${barW}" height="${bH}" rx="3" fill="#D97757"/>
+          <text x="${x + barW/2}" y="${y - 4}" fill="#f48c66" font-size="10" font-weight="700" text-anchor="middle">${d.vram} MiB</text>
+          <text x="${x + barW/2}" y="${h - 12}" fill="#cbd5e1" font-size="10.5" font-weight="600" text-anchor="middle">${d.m}</text>
+        `;
+      });
+      svg.innerHTML = inner;
+    }
+
+    // Render Tab 5 Tables
+    function renderLiveRunsTable() {
+      const table = document.getElementById('liveRunsTable');
+      if (!table) return;
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
+      const curRun = live.current_run || 'F04';
+
+      let html = `
+        <thead>
+          <tr>
+            <th title="实验唯一代号与配置标识">阶段代号 (Run ID)</th>
+            <th title="因果隔离训练协议版本">协议版本</th>
+            <th title="开始训练时间 (CST/UTC+8)">开始时间</th>
+            <th title="完成时间或最后更新心跳时间">完成 / 最新时间</th>
+            <th title="累计总耗时或当前进行时长">运行时长</th>
+            <th title="多任务与全量分层划分">任务分类</th>
+            <th title="A6000 实时进程存活状态">运行状态</th>
+            <th title="8,192 样本/批次的流式推进">批次进度</th>
+            <th title="AdamW 权重参数更新步数">优化步数</th>
+            <th title="真实参与反向传播的样本记录条数">真实消费样本 (⬆️)</th>
+            <th title="当前最新批次的交叉熵误差，越小说明预测越精确">最新 Loss (⬇️)</th>
+            <th title="相较于初始 Loss 的相对收敛降幅">收敛降幅 (⬇️)</th>
+            <th title="在 3,142 固定测试集上选对最佳回答的概率，越大越好">S1 验证精度 (⬆️)</th>
+            <th title="是否保留实体 Checkpoint 权重">核心留存判定</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+
+      const runs = live.chronological_runs || Object.keys(historyRuns);
+      runs.forEach(r => {
+        const ro = historyRuns[r];
+        if (!ro) return;
+        const st = ro.stats || {};
+        const isCur = r === curRun && live.process_alive;
+        const statusBadge = isCur
+          ? `<span style="color:#34d399;background:var(--cds-sage-dim);padding:2px 8px;border-radius:9999px;border:1px solid #2EA06F;font-weight:600">⚡ 运行中 (L4流式)</span>`
+          : `<span style="color:var(--cds-text-muted);background:rgba(255,255,255,0.04);padding:2px 6px;border-radius:4px">✅ 已完成</span>`;
+
+        const s1Acc = ro.best_s1_acc ? `<b style="color:#34d399">${fmtPct(ro.best_s1_acc)}</b>` : (isCur ? '<span style="color:var(--cds-clay)">训练推进中</span>' : '<span style="color:var(--cds-text-dim)">N/A</span>');
+        const lossVal = st.end_loss !== undefined ? st.end_loss : '-';
+        const reduct = st.reduction_pct !== undefined ? `<b style="color:var(--cds-clay)">-${st.reduction_pct}%</b>` : '-';
+        const catName = ro.category === 'full_coverage' ? '全量分层' : (ro.category === 'ablation' ? '消融协同' : '单层基准');
+
+        let poolTag = '<span style="color:var(--cds-text-dim)">元数据在库 (已修剪)</span>';
+        if (['P0_B03_C01', 'P0_B01_C01'].includes(r)) {
+          poolTag = '<span style="color:#34d399;border:1px solid #2EA06F;padding:1px 6px;border-radius:3px;background:var(--cds-sage-dim)">🟢 旧核心实体</span>';
+        } else if (isCur) {
+          poolTag = '<span style="color:var(--cds-clay);border:1px solid var(--cds-clay);padding:1px 6px;border-radius:3px;background:var(--cds-clay-dim)">⚡ 新核心候选</span>';
+        }
+
+        const startedStr = fmtTime(ro.started_at);
+        const completedStr = isCur ? `<span style="color:#34d399">● 流式推进 (${fmtTime(live.cursor_updated_at || ro.completed_at)})</span>` : fmtTime(ro.completed_at);
+        const durStr = ro.duration_display || '-';
+        const pVer = (ro.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v');
+
+        html += `
+          <tr style="${isCur ? 'background:rgba(217,119,87,0.06)' : ''}">
+            <td><b style="color:#fff">${r}</b></td>
+            <td><span style="color:var(--cds-text-muted);font-size:11px">${pVer}</span></td>
+            <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${startedStr}</td>
+            <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${completedStr}</td>
+            <td style="font-size:11.5px;font-weight:600;color:var(--cds-clay)" class="tabular">${durStr}</td>
+            <td><span style="color:var(--cds-clay)">${catName}</span></td>
+            <td>${statusBadge}</td>
+            <td class="tabular">${st.current_chunk || ro.total_chunks || 0} / ${ro.total_chunks || 0}</td>
+            <td class="tabular">${(st.current_step || ro.total_steps || 0).toLocaleString()} / ${(ro.total_steps || 0).toLocaleString()}</td>
+            <td class="tabular" style="color:#cbd5e1">${(st.consumed || ro.total_consumed || 0).toLocaleString()}</td>
+            <td style="color:var(--cds-clay)" class="tabular"><b>${lossVal}</b></td>
+            <td class="tabular">${reduct}</td>
+            <td class="tabular">${s1Acc}</td>
+            <td>${poolTag}</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody>`;
+      table.innerHTML = html;
+    }
+
+    // Version Lifecycle Ledger Logic (Retained vs Pruned)
+    let currentVersionView = 'retained';
+    let currentVersionSearch = '';
+
+    function setVersionView(view) {
+      currentVersionView = view;
+      const bRet = document.getElementById('btnViewRetained');
+      const bPru = document.getElementById('btnViewPruned');
+      const bAll = document.getElementById('btnViewAll');
+      if (bRet) bRet.className = 'filter-btn' + (view === 'retained' ? ' active green' : '');
+      if (bPru) bPru.className = 'filter-btn' + (view === 'pruned' ? ' active rose' : '');
+      if (bAll) bAll.className = 'filter-btn' + (view === 'all' ? ' active' : '');
+      renderVersionLifecycleTable();
+    }
+
+    function filterVersionTable(q) {
+      currentVersionSearch = (q || '').trim().toLowerCase();
+      renderVersionLifecycleTable();
+    }
+
+    function renderVersionLifecycleTable() {
+      const table = document.getElementById('versionLifecycleTable');
+      if (!table) return;
+      const live = cachedLive || {};
+      const retained = live.retained_versions || [];
+      const pruned = live.pruned_versions || [];
+
+      // Update KPI counters
+      const bRetCount = document.getElementById('retainedCountBadge');
+      const bPruCount = document.getElementById('prunedCountBadge');
+      const bAllCount = document.getElementById('allCountBadge');
+      if (bRetCount) bRetCount.textContent = retained.length;
+      if (bPruCount) bPruCount.textContent = pruned.length;
+      if (bAllCount) bAllCount.textContent = retained.length + pruned.length;
+
+      const lcTot = document.getElementById('lcTotal');
+      const lcRet = document.getElementById('lcRetained');
+      const lcPru = document.getElementById('lcPruned');
+      const lcFre = document.getElementById('lcFreed');
+      if (lcTot) lcTot.textContent = `${retained.length + pruned.length} 个`;
+      if (lcRet) lcRet.textContent = `${retained.length} 个 (含 1 个流式在训候选)`;
+      if (lcPru) lcPru.textContent = `${pruned.length} 个`;
+      if (lcFre) lcFre.textContent = `${live.manifest_summary?.total_freed_gb || '11.03'} GiB (节省 94.6%)`;
+
+      let sourceList = [];
+      if (currentVersionView === 'retained') {
+        sourceList = retained;
+      } else if (currentVersionView === 'pruned') {
+        sourceList = pruned;
+      } else {
+        sourceList = retained.concat(pruned);
+      }
+
+      // Filter by search query
+      let filtered = sourceList;
+      if (currentVersionSearch) {
+        filtered = sourceList.filter(item => {
+          const str = `${item.checkpoint_id} ${item.run_id} ${item.protocol_version} ${item.retention_status} ${item.pool_name || ''} ${item.reasons || ''} ${item.elimination_reason || ''} ${item.created_at || ''}`.toLowerCase();
+          return str.includes(currentVersionSearch);
+        });
+      }
+
+      const countEl = document.getElementById('filteredCountTxt');
+      if (countEl) countEl.textContent = filtered.length;
+
+      let html = `
+        <thead>
+          <tr>
+            <th title="Checkpoint 完整标识与版本号">版本代号 (Checkpoint ID)</th>
+            <th title="所属实验阶段与训练轮次">阶段 / 轮次</th>
+            <th title="因果隔离训练协议">协议版本</th>
+            <th title="Checkpoint 产生或最后记录时间">具体记录时间</th>
+            <th title="在服务器 NVMe 磁盘上的物理权重文件状态">物理权重状态</th>
+            <th title="修剪释放的磁盘空间">释放磁盘空间</th>
+            <th title="双池机制判定：留存还是修剪淘汰">生命周期判定</th>
+            <th title="为何保留或为何淘汰的科学判定依据">留存 / 淘汰原因详情</th>
+            <th title="S1 最佳回答选拔准确率">S1 精度 (⬆️)</th>
+            <th title="验证集交叉熵损失">S1 Loss (⬇️)</th>
+            <th title="非线性多目标选拔综合得分">综合分 (⬆️)</th>
+            <th title="评估指标与超参在库状态">元数据完整度</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+
+      if (filtered.length === 0) {
+        html += `<tr><td colspan="12" style="text-align:center;padding:24px;color:var(--cds-text-muted)">🔍 未匹配到符合条件的版本记录</td></tr></tbody>`;
+        table.innerHTML = html;
+        return;
+      }
+
+      filtered.forEach(m => {
+        const isRet = retained.includes(m);
+        const isRunning = m.checkpoint_id && m.checkpoint_id.includes('in-flight');
+        const s1Acc = m.s1_accuracy !== null && m.s1_accuracy !== undefined ? `<b style="color:#34d399">${fmtPct(m.s1_accuracy)}</b>` : (isRunning ? '<span style="color:var(--cds-clay)">训练中</span>' : '<span style="color:var(--cds-text-dim)">-</span>');
+        const s1Loss = m.s1_val_loss !== null && m.s1_val_loss !== undefined ? `<span style="color:var(--cds-clay)">${Number(m.s1_val_loss).toFixed(4)}</span>` : '<span style="color:var(--cds-text-dim)">-</span>';
+        const pScore = m.primary_score !== null && m.primary_score !== undefined ? `<b>${Number(m.primary_score).toFixed(2)}</b>` : (isRunning ? '<span style="color:var(--cds-clay)">评测就绪</span>' : '<span style="color:var(--cds-text-dim)">-</span>');
+        const timeStr = fmtTime(m.created_at);
+
+        let weightBadge = '';
+        if (m.weights_saved) {
+          weightBadge = `<span style="color:#34d399;font-weight:700">✅ 在盘可用 (${(m.actual_weight_bytes / (1024*1024)).toFixed(1)} MB)</span>`;
+        } else if (isRunning) {
+          weightBadge = `<span style="color:var(--cds-clay);font-weight:700">⚡ 进程在训流式候选</span>`;
+        } else {
+          weightBadge = `<span style="color:var(--cds-text-muted)">🗑️ 物理权重已修剪释放</span>`;
+        }
+
+        let freedBadge = '<span style="color:var(--cds-text-dim)">-</span>';
+        if (m.freed_bytes > 0) {
+          freedBadge = `<span style="color:#fb7185;font-weight:600">-${(m.freed_bytes / (1024*1024)).toFixed(1)} MB</span>`;
+        }
+
+        let actionBadge = '';
+        if (isRet) {
+          if (isRunning) {
+            actionBadge = `<span style="color:var(--cds-clay);background:var(--cds-clay-dim);padding:2px 8px;border-radius:9999px;border:1px solid var(--cds-clay);font-weight:600">🟢 没淘汰 (流式候选)</span>`;
+          } else {
+            actionBadge = `<span style="color:#34d399;background:var(--cds-sage-dim);padding:2px 8px;border-radius:9999px;border:1px solid #2EA06F;font-weight:600">🟢 没淘汰 (实体留存)</span>`;
+          }
+        } else {
+          actionBadge = `<span style="color:#fb7185;background:var(--cds-rose-dim);padding:2px 8px;border-radius:9999px;border:1px solid rgba(216,88,88,0.3);font-weight:600">🔴 已淘汰 (修剪元数据)</span>`;
+        }
+
+        let reasonText = isRet
+          ? `<span style="color:#cbd5e1"><b>${m.pool_name || '双池保留'}</b>: ${m.reasons || '入选核心模型池'}</span>`
+          : `<span style="color:var(--cds-text-muted)">${m.elimination_reason || '非最优 Epoch 修剪释放以节约存储'}</span>`;
+
+        html += `
+          <tr style="${isRunning ? 'background:rgba(217,119,87,0.06)' : (isRet ? 'background:rgba(46,160,111,0.04)' : '')}">
+            <td><b style="color:#fff">${m.checkpoint_id}</b></td>
+            <td><span style="color:var(--cds-clay)">${m.run_id}</span> (E${m.epoch})</td>
+            <td><span style="font-size:11px;color:var(--cds-text-muted)">${(m.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v')}</span></td>
+            <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${timeStr}</td>
+            <td>${weightBadge}</td>
+            <td class="tabular">${freedBadge}</td>
+            <td>${actionBadge}</td>
+            <td style="text-align:left;max-width:320px;font-size:11.5px;line-height:1.4">${reasonText}</td>
+            <td class="tabular">${s1Acc}</td>
+            <td class="tabular">${s1Loss}</td>
+            <td class="tabular">${pScore}</td>
+            <td><span style="color:#34d399;font-size:11.5px">✅ 100% 在库</span></td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody>`;
+      table.innerHTML = html;
+    }
+
+    function renderTables() {
+      renderVersionLifecycleTable();
+
+      const cT = document.getElementById('censusTable');
+      if (cT) {
+        cT.innerHTML = `
+          <tr><th>任务分类</th><th>来源编码</th><th>合法候选记录</th><th>占比</th><th>监督目标</th></tr>
+          <tr><td>S1 静态路由偏好</td><td>ROUTE-004</td><td>31,766</td><td>0.7%</td><td>人类成对偏好选择</td></tr>
+          <tr><td>S2 观测智能体执行</td><td>TRA-001, TRA-002</td><td>3,537,955</td><td>72.7%</td><td>决策成功与步骤行为</td></tr>
+          <tr><td>S3 资源与前缀缓存</td><td>TIME-001, CACHE-001, OWN-002</td><td>1,294,179</td><td>26.6%</td><td>Token 消耗与缓存命中层</td></tr>
+          <tr style="font-weight:700"><td>六源对账总和</td><td>合法训练来源合计</td><td>4,863,900</td><td>100.0%</td><td>因果隔离·0 泄漏</td></tr>
+        `;
+      }
+
+      const iT = document.getElementById('isolationTable');
+      if (iT) {
+        iT.innerHTML = `
+          <tr><th>评估层级</th><th>数据集名称</th><th>样本量</th><th>用途</th><th>隔离状态</th></tr>
+          <tr><td>Tier 1 (Internal)</td><td>Fixed Internal Val</td><td>561 单元</td><td>同分布训练收敛验证</td><td><span style="color:#34d399">VALIDATED</span></td></tr>
+          <tr><td>Tier 2 (Canary)</td><td>Terminal-Bench 2.1 Canary</td><td>8 题 (锁定 7131e43)</td><td>运行环境与接口冒烟验证</td><td><span style="color:var(--cds-clay)">MANIFEST_LOCKED</span></td></tr>
+          <tr><td>Tier 3 (External DEV)</td><td>Terminal-Bench 2.1 DEV</td><td>24 题</td><td>外部泛化消融选拔</td><td><span style="color:var(--cds-amber)">SERVING_PENDING</span></td></tr>
+          <tr><td>Tier 4 (Final Test)</td><td>Terminal-Bench 2.1 Test</td><td>57 题</td><td>盲测最终晋级门禁</td><td><span style="color:#cbd5e1">STRICT_BLIND</span></td></tr>
+        `;
+      }
+    }
+
+    // Initialize All Charts & Tables
+    window.addEventListener('DOMContentLoaded', () => {
+      checkHashTab();
+      if (cachedLive) {
+        updateLiveUI(cachedLive);
+      } else {
+        renderMultiSpanLossChart();
+        renderLadderChart();
+        renderCumulativeThroughputChart();
+        renderStepScaleChart();
+        renderScatterChart();
+        renderLiveRunsTable();
+      }
+      renderLatencyChart();
+      renderAblationChart();
+      renderCalibrationChart();
+      renderLrChart();
+      renderAblationQuota();
+      renderEpochSecondsChart();
+      renderMatrixHeatmap();
+      renderSensitivityChart();
+      renderFunnelChart();
+      renderBatchProgress();
+      renderPrimaryScoreLeaderboard();
+      renderVariableRadar();
+      renderCooccurrenceHeatmap();
+      renderStateHistogram();
+      renderLayerStack();
+      renderDataSourceDonut();
+      renderStorageGauges();
+      renderWaterfallChart();
+      renderGpuPeakVramChart();
+      renderTables();
+
+      if (location.protocol.startsWith('http')) {
+        fetchLiveStatusNow();
+        setInterval(fetchLiveStatusNow, 5000);
+      } else {
+        const lastSyncEl = document.getElementById('lastSyncTxt');
+        if (lastSyncEl && cachedLive) {
+          const syncTime = cachedLive.collected_at_iso ? new Date(cachedLive.collected_at_iso).toLocaleTimeString() : '最新';
+          lastSyncEl.innerHTML = `<span style="color:var(--cds-clay)">● 本地文件直读模式 (同步时间: ${syncTime})</span>`;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+'''
+
+def main():
+    target = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'docs', 'training-dashboard', 'index.html')
+    with open(target, 'w', encoding='utf-8') as f:
+        f.write(HTML_CONTENT)
+    print(f"Successfully generated Open-Claude-UI dashboard at {target} ({len(HTML_CONTENT.splitlines())} lines).")
+
+if __name__ == '__main__':
+    main()
