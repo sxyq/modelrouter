@@ -1122,6 +1122,7 @@ def run_full_coverage_stream_run(
     params = trainable_params
 
     # Step 5: Instantiate optimizer, scheduler, and scaler directly bound to final model parameters
+    optimizer = torch.optim.AdamW(groups, weight_decay=config.weight_decay)
     items_per_chunk = math.ceil(total_items / max(1, num_chunks))
     updates_per_chunk = math.ceil(items_per_chunk / (config.micro_batch * config.grad_accum))
     total_updates = max(1, updates_per_chunk * num_chunks * run_epochs)
