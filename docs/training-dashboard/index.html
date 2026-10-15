@@ -787,6 +787,187 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
 
+    /* Typographic Hierarchy - Glance Bar */
+    .chart-glance-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+    .chart-glance-bar.cols-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+    .chart-glance-bar.cols-1 {
+      grid-template-columns: 1fr;
+    }
+    @media (max-width: 900px) {
+      .chart-glance-bar, .chart-glance-bar.cols-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+    .glance-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+    .glance-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--cds-clay);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .glance-val {
+      font-size: 12px;
+      font-weight: 600;
+      color: #E2E8F0;
+      line-height: 1.4;
+    }
+    .glance-meta {
+      font-size: 10.5px;
+      font-weight: 400;
+      color: var(--cds-text-muted);
+    }
+
+    /* Tree Table 3-Tier Hierarchy Guide */
+    .tree-hierarchy-guide {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      background: var(--cds-s1);
+      border: 1px solid var(--cds-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+    }
+    .guide-tier {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .guide-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cds-clay);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .guide-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .guide-sub {
+      font-size: 11px;
+      color: var(--cds-text-muted);
+      line-height: 1.4;
+    }
+    .guide-divider {
+      font-size: 14px;
+      color: var(--cds-text-dim);
+      font-weight: 700;
+    }
+    .tree-pill-stat {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 2px 7px;
+      border-radius: 9999px;
+      color: #cbd5e1;
+    }
+    .tree-pill-stat.green {
+      background: var(--cds-sage-dim);
+      border-color: rgba(46, 160, 111, 0.3);
+      color: #34d399;
+    }
+    .tree-pill-stat.rose {
+      background: var(--cds-rose-dim);
+      border-color: rgba(216, 88, 88, 0.3);
+      color: #fca5a5;
+    }
+    .tree-pill-stat.muted {
+      color: var(--cds-text-muted);
+    }
+
+    /* Structured Field Guide Cards */
+    .fg-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .fg-title {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .fg-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--cds-clay);
+      background: var(--cds-clay-dim);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .fg-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .fg-zh {
+      font-size: 12px;
+      font-weight: 500;
+      color: #D0C8B8;
+    }
+    .fg-purpose {
+      font-size: 12px;
+      color: #E2E8F0;
+      line-height: 1.5;
+    }
+    .fg-meta-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 2px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .fg-scale, .fg-rule {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 11px;
+    }
+    .fg-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cds-text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 1px 5px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    .fg-scale-val {
+      color: #cbd5e1;
+      font-family: ui-monospace, SFMono-Regular, monospace;
+    }
+    .fg-scale-val b {
+      color: #34d399;
+      font-weight: 700;
+    }
+    .fg-rule-val {
+      color: var(--cds-text-muted);
+      line-height: 1.4;
+    }
+
     /* Tables */
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     th, td { padding: 9px 12px; border-bottom: 1px solid var(--cds-border); text-align: right; }
@@ -1219,12 +1400,24 @@
         <div class="chart-header">
           <div class="chart-title-wrap">
             <div class="chart-title">
-              <span>📈 图表 1 · 全生命周期版本演进折线图谱 (按时间线连续记录 · 133 组全版本对账)</span>
-              <span class="dir-badge dir-lower">⬇️ 损失持续走低 · ⬆️ 精度阶梯跃迁</span>
+              <span style="font-size:15px;font-weight:700;color:#fff">📈 图表 1 · 全生命周期版本演进折线图谱</span>
+              <span class="dir-badge dir-lower">⬇️ 损失持续走低</span>
+              <span class="dir-badge dir-higher">⬆️ 精度阶梯跃迁</span>
+              <span class="dir-badge dir-stable">133 组全版本时序</span>
             </div>
-            <div class="chart-desc">
-              <b>字段意义</b>：展现从早期网格预研至今日流式在训阶段，随<b>版本更迭随时间变化的核心指标</b>演进折线（包含 Loss 损失误差 ⬇️、S1 验证精度 ⬆️、累计样本吞吐 ⬆️）。<br>
-              <b>怎么看</b>：横轴严格按<b>真实发生时间线</b>连续排列全部 133 组 Checkpoint 版本；纵轴支持 Loss 损失与 S1 精度双轨迹联动对照。圆点代表已归档版本，特殊高亮 🟢 核心留存实体与 ⚡ 实时在训候选，鼠标悬停可穿透查账。
+            <div class="chart-glance-bar">
+              <div class="glance-item">
+                <span class="glance-label">🎯 监测导向</span>
+                <span class="glance-val">版本演进核心指标连续轨迹 <span class="glance-meta">(Loss ⬇️ · S1 精度 ⬆️ · 累计样本 ⬆️)</span></span>
+              </div>
+              <div class="glance-item">
+                <span class="glance-label">⏱️ 时序标尺</span>
+                <span class="glance-val">横轴按真实发生时间对账 <span class="glance-meta">(高亮 🟢 核心物理实体与 ⚡ 在训流式候选)</span></span>
+              </div>
+              <div class="glance-item">
+                <span class="glance-label">🔍 穿透对账</span>
+                <span class="glance-val">鼠标悬停点穿透查账 <span class="glance-meta">(实时检视梯度步数、样本行数与双池留存依据)</span></span>
+              </div>
             </div>
           </div>
           <div class="chart-legend" id="chartLegendWrap">
@@ -1314,110 +1507,143 @@
                 <span>🏆 图表 2 · 核心留存模型天梯与全历史阶段对比</span>
                 <span class="dir-badge dir-higher">⬆️ 准确率越大越好</span>
               </div>
-              <div class="chart-desc">
-                <b>指标意义</b>：统一固定验证集（N=3,142）离线评估，展示选拔出的 S1 路由能力最优模型。<br>
-                <b>怎么看</b>：基准为 64.44%，绿色为物理物化留存核心，陶土橙/蓝色为高分候选。
+            <div class="chart-glance-bar cols-2">
+              <div class="glance-item">
+                <span class="glance-label">🎯 监测标尺</span>
+                <span class="glance-val">统一固定验证集 (N=3,142) 离线评估，遴选最优模型</span>
               </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px">
-              <div class="mode-toggle">
-                <button class="mode-btn active" id="btnLadderTop5" onclick="setLadderView('top5')">Top-5 留存</button>
-                <button class="mode-btn" id="btnLadderAll" onclick="setLadderView('all')">全量 14 阶段天梯</button>
+              <div class="glance-item">
+                <span class="glance-label">📈 跃迁前沿</span>
+                <span class="glance-val">基准 64.44% ➔ 冠军模型达 <b style="color:#34d399">68.63% (+4.19%)</b></span>
               </div>
             </div>
           </div>
-          <svg id="ladderSvg" class="chart-svg" viewBox="0 0 500 270"></svg>
-          <div style="font-size:11px;color:var(--cds-text-muted);margin-top:6px;display:flex;justify-content:space-between">
-            <span>* 绿色代表已物化核心留存权重，陶土橙为高分候选</span>
-            <span id="ladderFooterTxt">基准 64.44% · 最高 68.63% (+4.19%)</span>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="mode-toggle">
+              <button class="mode-btn active" id="btnLadderTop5" onclick="setLadderView('top5')">Top-5 留存</button>
+              <button class="mode-btn" id="btnLadderAll" onclick="setLadderView('all')">全量 14 阶段天梯</button>
+            </div>
           </div>
         </div>
-
-        <!-- Chart 3: Cumulative Throughput Area Chart -->
-        <div class="chart-panel">
-          <div class="chart-header">
-            <div class="chart-title-wrap">
-              <div class="chart-title">
-                <span>📚 图表 3 · 全周期训练样本真实吞吐与消费累计面积图</span>
-                <span class="dir-badge dir-higher">⬆️ 数据摄取越多越充分</span>
-              </div>
-              <div class="chart-desc">
-                <b>指标意义</b>：展示从单层基线到四层全覆盖实际训练消耗的样本总量（消除任何 min_factor 丢弃）。<br>
-                <b>怎么看</b>：面积平稳单调递增，证实所有样本均按 2:1:1 平衡交错协议全量消费。
-              </div>
-            </div>
-            <div class="chart-legend">
-              <span class="legend-item"><span class="legend-dot" style="background:#2EA06F"></span> 累计消费量</span>
-              <span class="legend-item"><span class="legend-dot" style="background:#D97757"></span> 独立去重单元</span>
-            </div>
-          </div>
-          <svg id="cumulativeThroughputSvg" class="chart-svg" viewBox="0 0 500 270"></svg>
-          <div style="font-size:11px;color:var(--cds-text-muted);margin-top:6px;display:flex;justify-content:space-between">
-            <span>● 初始启动: 18,340 条</span>
-            <span>● 当前累计总额: <b style="color:#34d399" id="cumSamplesTxt">4,864,210 条真实样本</b></span>
-          </div>
+        <svg id="ladderSvg" class="chart-svg" viewBox="0 0 500 270"></svg>
+        <div style="font-size:11px;color:var(--cds-text-muted);margin-top:6px;display:flex;justify-content:space-between">
+          <span>* 绿色代表已物化核心留存权重，陶土橙为高分候选</span>
+          <span id="ladderFooterTxt">基准 64.44% · 最高 68.63% (+4.19%)</span>
         </div>
       </div>
 
-      <!-- 2-Column Grid: Scale by Phase + Checkpoints Landscape -->
-      <div class="grid-2">
-        <!-- Chart 4: Step & Chunk Scale by Run Phase -->
-        <div class="chart-panel">
-          <div class="chart-header">
-            <div class="chart-title-wrap">
-              <div class="chart-title">
-                <span>📊 图表 4 · 各阶段批次规模与总步数分布对比 (Chunk & Step Scale)</span>
-                <span class="dir-badge dir-stable">🎯 规模随层数阶梯倍增</span>
-              </div>
-              <div class="chart-desc">
-                从 L1 的 120 批次扩增到 L4 的 234 批次/59,904 步，消融组 ALGN_04 共完成 1,189 批次。
-              </div>
-            </div>
-            <div class="chart-legend">
-              <span class="legend-item"><span class="legend-dot" style="background:#5E89B8"></span> 总步数 (Updates)</span>
-              <span class="legend-item"><span class="legend-dot" style="background:#D9943B"></span> 总批次数 (Chunks)</span>
-            </div>
-          </div>
-          <svg id="stepScaleSvg" class="chart-svg" viewBox="0 0 500 240"></svg>
-        </div>
-
-        <!-- Chart 5: Historical Checkpoints Landscape (Scatter: Accuracy vs Loss) -->
-        <div class="chart-panel">
-          <div class="chart-header">
-            <div class="chart-title-wrap">
-              <div class="chart-title">
-                <span>🎯 图表 5 · 39 组完整历史 Checkpoint 精度 vs 损失全景散点图</span>
-                <span class="dir-badge dir-higher">右上角帕累托最优</span>
-              </div>
-              <div class="chart-desc">
-                <b>指标意义</b>：X 轴为验证 Loss (越小越好)，Y 轴为 S1 路由准确率 (越大越好)。展示 39 份历史权重的全量分布。
-              </div>
-            </div>
-            <div class="chart-legend">
-              <span class="legend-item"><span class="legend-dot" style="background:#2EA06F"></span> 留存核心</span>
-              <span class="legend-item"><span class="legend-dot" style="background:#D97757"></span> 候选模型</span>
-              <span class="legend-item"><span class="legend-dot" style="background:#64748b"></span> 裁剪对照</span>
-            </div>
-          </div>
-          <div style="position:relative">
-            <svg id="scatterSvg" class="chart-svg" viewBox="0 0 500 240" onmousemove="handleScatterMouseMove(event)" onmouseleave="handleScatterMouseLeave(event)"></svg>
-            <div id="scatterTooltip" class="chart-tooltip"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Live Terminal Feed + GPU Real-time Status Card (Chart 6) -->
+      <!-- Chart 3: Cumulative Throughput Area Chart -->
       <div class="chart-panel">
         <div class="chart-header">
           <div class="chart-title-wrap">
             <div class="chart-title">
-              <span>💻 图表 6 · 实时训练终端与 RTX A6000 硬件状态 (Live Terminal & Pipeline Latency)</span>
-              <span class="dir-badge dir-higher">⚡ 76% GPU 负载</span>
+              <span>📚 图表 3 · 全周期训练样本真实吞吐与消费累计面积图</span>
+              <span class="dir-badge dir-higher">⬆️ 数据摄取越多越充分</span>
             </div>
-            <div class="chart-desc">
-              直接读取 A6000 正在执行的 continuous_queue.log 最新批次流水与显卡遥测数据：
+            <div class="chart-glance-bar cols-2">
+              <div class="glance-item">
+                <span class="glance-label">📊 真实摄取</span>
+                <span class="glance-val">4,864,210 条真实样本行全量消费 <span class="glance-meta">(消除 min_factor 丢弃 · 2:1:1 平衡交错)</span></span>
+              </div>
+              <div class="glance-item">
+                <span class="glance-label">⏱️ 阶梯演化</span>
+                <span class="glance-val">L1 1.8W ➔ L2 18.2W ➔ L4 382.2W <span class="glance-meta">(单调平稳累积，保障泛化)</span></span>
+              </div>
             </div>
           </div>
+          <div class="chart-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#2EA06F"></span> 累计消费量</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#D97757"></span> 独立去重单元</span>
+          </div>
+        </div>
+        <svg id="cumulativeThroughputSvg" class="chart-svg" viewBox="0 0 500 270"></svg>
+        <div style="font-size:11px;color:var(--cds-text-muted);margin-top:6px;display:flex;justify-content:space-between">
+          <span>● 初始启动: 18,340 条</span>
+          <span>● 当前累计总额: <b style="color:#34d399" id="cumSamplesTxt">4,864,210 条真实样本</b></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-Column Grid: Scale by Phase + Checkpoints Landscape -->
+    <div class="grid-2">
+      <!-- Chart 4: Step & Chunk Scale by Run Phase -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title-wrap">
+            <div class="chart-title">
+              <span>📊 图表 4 · 各阶段批次规模与总步数分布对比 (Chunk & Step Scale)</span>
+              <span class="dir-badge dir-stable">🎯 规模随层数阶梯倍增</span>
+            </div>
+            <div class="chart-glance-bar cols-2">
+              <div class="glance-item">
+                <span class="glance-label">📦 批次规模</span>
+                <span class="glance-val">L1 120 批次 / 30,720 步 ➔ L4 234 批次 / 59,904 步</span>
+              </div>
+              <div class="glance-item">
+                <span class="glance-label">⚡ 消融总长</span>
+                <span class="glance-val">ALGN_04 累计完成 1,189 批次梯度优化 <span class="glance-meta">(规模阶梯倍增)</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#5E89B8"></span> 总步数 (Updates)</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#D9943B"></span> 总批次数 (Chunks)</span>
+          </div>
+        </div>
+        <svg id="stepScaleSvg" class="chart-svg" viewBox="0 0 500 240"></svg>
+      </div>
+
+      <!-- Chart 5: Historical Checkpoints Landscape (Scatter: Accuracy vs Loss) -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <div class="chart-title-wrap">
+            <div class="chart-title">
+              <span>🎯 图表 5 · 39 组完整历史 Checkpoint 精度 vs 损失全景散点图</span>
+              <span class="dir-badge dir-higher">右上角帕累托最优</span>
+            </div>
+            <div class="chart-glance-bar cols-2">
+              <div class="glance-item">
+                <span class="glance-label">🎯 帕累托坐标</span>
+                <span class="glance-val">横轴验证 Loss (⬇️ 越小越好) · 纵轴 S1 精度 (⬆️ 越大越好)</span>
+              </div>
+              <div class="glance-item">
+                <span class="glance-label">🏆 冠军前沿</span>
+                <span class="glance-val">P0_B03_C01 (Acc 68.63%, Loss 0.5218) 居于右上角最强前沿</span>
+              </div>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#2EA06F"></span> 留存核心</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#D97757"></span> 候选模型</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#64748b"></span> 裁剪对照</span>
+          </div>
+        </div>
+        <div style="position:relative">
+          <svg id="scatterSvg" class="chart-svg" viewBox="0 0 500 240" onmousemove="handleScatterMouseMove(event)" onmouseleave="handleScatterMouseLeave(event)"></svg>
+          <div id="scatterTooltip" class="chart-tooltip"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Terminal Feed + GPU Real-time Status Card (Chart 6) -->
+    <div class="chart-panel">
+      <div class="chart-header">
+        <div class="chart-title-wrap">
+          <div class="chart-title">
+            <span>💻 图表 6 · 实时训练终端与 RTX A6000 硬件状态 (Live Terminal & Pipeline Latency)</span>
+            <span class="dir-badge dir-higher">⚡ 76% GPU 负载</span>
+          </div>
+          <div class="chart-glance-bar cols-2">
+            <div class="glance-item">
+              <span class="glance-label">⚡ 硬件实时</span>
+              <span class="glance-val">RTX A6000 80 核 · 49 GiB 显存 · 功耗 280W+ <span class="glance-meta">(安全余量 39.4 GiB)</span></span>
+            </div>
+            <div class="glance-item">
+              <span class="glance-label">📡 训练流水</span>
+              <span class="glance-val">PID 2881373 (F04 L4) 持续打点 · 时延 196 ms/批次</span>
+            </div>
+          </div>
+        </div>
         </div>
         <div class="grid-2" style="margin-bottom:0">
           <div>
@@ -1458,8 +1684,15 @@
                 <span>📊 图表 7 · ALGN_01～04 三任务消融联合收益对比 (Multi-Task Synergy)</span>
                 <span class="dir-badge dir-higher">⬆️ 准确率越大越好</span>
               </div>
-              <div class="chart-desc">
-                <b>怎么看</b>：陶土橙为 S1 路由偏好（保持 66.8% 不衰减）；绿色为 S2 智能体质量评分；黄色为 S3 资源缓存预测。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">🎯 协同增益</span>
+                  <span class="glance-val">S1 路由偏好保持 66.8% 不衰减 · S2 智能体评分达 54.3%</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">⚡ 缓存收益</span>
+                  <span class="glance-val">S3 资源与前缀缓存预测达 58.1% (三目标联合对齐无冲突)</span>
+                </div>
               </div>
             </div>
             <div class="chart-legend">
@@ -1479,9 +1712,15 @@
                 <span>🎯 图表 8 · Brier 概率校准方差 vs ECE 期望校准误差对比</span>
                 <span class="dir-badge dir-lower">⬇️ 两者越小越好</span>
               </div>
-              <div class="chart-desc">
-                <b>指标意义</b>：衡量模型是否有自知之明。惩罚盲目自信给 99% 置信度却判断错误的坏情况。<br>
-                <b>怎么看</b>：未微调基线 Brier 为 0.9021，微调后大幅降至 0.4128；ECE 从 0.4402 降至 0.0521。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">🎯 Brier 方差</span>
+                  <span class="glance-val">未微调 0.9021 ➔ <b style="color:#34d399">微调后 0.4128</b> <span class="glance-meta">(严惩盲目自信)</span></span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">📉 期望误差 ECE</span>
+                  <span class="glance-val">0.4402 ➔ <b style="color:#34d399">0.0521</b> <span class="glance-meta">(&lt;0.08 为极佳，保障可靠决策)</span></span>
+                </div>
               </div>
             </div>
             <div class="chart-legend">
@@ -1503,8 +1742,15 @@
                 <span>📉 图表 9 · 学习率衰减 (CosineAnnealingLR) 与 Loss 协同</span>
                 <span class="dir-badge dir-stable">🎯 动态平滑退火</span>
               </div>
-              <div class="chart-desc">
-                <b>指标意义</b>：学习率从 5e-5 平滑衰减至 1e-6，配合梯度裁剪防止多任务梯度冲突。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">🎯 退火规律</span>
+                  <span class="glance-val">余弦退火 5e-5 平滑衰减至 1e-6 <span class="glance-meta">(梯度裁剪 1.0)</span></span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">📉 损失协同</span>
+                  <span class="glance-val">验证 Loss 从 1.47 稳定收敛至 0.50~0.60 区间</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1519,8 +1765,15 @@
                 <span>⏱️ 图表 11 · 历史轮次耗时拆解 (训练耗时 vs 验证耗时)</span>
                 <span class="dir-badge dir-stable">稳定吞吐</span>
               </div>
-              <div class="chart-desc">
-                展示每个轮次的实际物理训练耗时（秒）与固定验证集评估耗时对比。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">⏱️ 物理训练用时</span>
+                  <span class="glance-val">单轮次平均 1,200s~1,800s (吞吐稳定无抖动)</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">🔍 离线验证评估</span>
+                  <span class="glance-val">固定验证集完整推导约 180s / Epoch</span>
+                </div>
               </div>
             </div>
             <div class="chart-legend">
@@ -1539,8 +1792,15 @@
             <div class="chart-title">
               <span>🎯 图表 10 · 消融实验批次采样配额构成 (2:1:1 平衡交错算法)</span>
             </div>
-            <div class="chart-desc">
-              彻底修复旧版 min_factor 丢弃数据的漏洞：S1 路由权重 50%，S2 智能体权重 25%，S3 缓存感知权重 25%。
+            <div class="chart-glance-bar cols-2">
+              <div class="glance-item">
+                <span class="glance-label">🎯 平衡配额构成</span>
+                <span class="glance-val">S1 路由权重 50% · S2 智能体评分 25% · S3 缓存感知 25%</span>
+              </div>
+              <div class="glance-item">
+                <span class="glance-label">🛡️ 规避丢弃</span>
+                <span class="glance-val">消除旧版 min_factor 截断，保障三数据源真实全量消费</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1560,8 +1820,15 @@
               <span>🌐 图表 12 · 1,092 槽位超参矩阵全景热力分布图 (Hyperparameter Grid)</span>
               <span class="dir-badge dir-stable">7 批次 × 14 配置</span>
             </div>
-            <div class="chart-desc">
-              <b>怎么看</b>：展示 B01～B07 各批次与 C01～C14 参数组合执行状态。绿色表示完成并评测，蓝色表示当前流式执行，灰色表示待调度。
+            <div class="chart-glance-bar cols-2">
+              <div class="glance-item">
+                <span class="glance-label">🌐 矩阵结构</span>
+                <span class="glance-val">B01～B07 各批次 × C01～C14 参数组合 (共 1,092 槽位)</span>
+              </div>
+              <div class="glance-item">
+                <span class="glance-label">🚦 状态对账</span>
+                <span class="glance-val">🟢 核心留存 · 陶土橙 进行中/已物化 · 灰色 待调度</span>
+              </div>
             </div>
           </div>
           <div class="chart-legend">
@@ -1583,8 +1850,15 @@
                 <span>🔬 图表 13 · 特征组消融敏感度 Delta Loss 柱状图 (Feature Sensitivity)</span>
                 <span class="dir-badge dir-lower">损失上升说明该特征关键</span>
               </div>
-              <div class="chart-desc">
-                屏蔽特征组后的验证 Loss 增量。G4（KV缓存连续性）剔除后 Loss 恶化 +0.0897，说明其对路由决策至关重要。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">🔬 特征敏感度</span>
+                  <span class="glance-val">屏蔽某特征组后固定验证 Loss 增量 (Delta 越大越关键)</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">📌 核心结论</span>
+                  <span class="glance-val">G4 (KV 缓存连续性) 剔除后 Loss 恶化 +0.0897，至关重要</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1599,8 +1873,15 @@
                 <span>🛡️ 图表 14 · 双池 Checkpoint 动态淘汰漏斗图 (Retention Funnel)</span>
                 <span class="dir-badge dir-stable">节省 94.6% 空间</span>
               </div>
-              <div class="chart-desc">
-                记录 133 个登记版本逐层筛选：130 个非最优轮次释放物理权重，双池仅保留 3 份核心权重与流式候选。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">🛡️ 动态淘汰</span>
+                  <span class="glance-val">133 登记版本中 130 个非最优轮次释放权重，双池保留 3 份实体</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">💾 空间节省</span>
+                  <span class="glance-val">累计释放 11.03 GiB (节省 94.6% 磁盘，元数据 100% 入库)</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1616,8 +1897,15 @@
               <div class="chart-title">
                 <span>📦 图表 15 · 七批次超参分层调度完成率 (Batch Execution Status)</span>
               </div>
-              <div class="chart-desc">
-                B01～B03 阶段已 100% 完成评测入库，B04~B07 正在按科研主线依序排队流式调度。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">📦 调度进度</span>
+                  <span class="glance-val">B01～B03 阶段已 100% 评测入库</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">⏳ 流式排队</span>
+                  <span class="glance-val">B04~B07 正在按主线依序排队流式调度</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1632,8 +1920,15 @@
                 <span>🥇 图表 16 · 综合天梯选拔总分前五强 (Primary Score Leaderboard)</span>
                 <span class="dir-badge dir-higher">⬆️ 越大越好</span>
               </div>
-              <div class="chart-desc">
-                多目标非线性得分（整合 S1 Accuracy, Val Loss 与 Brier Score）。冠军模型得分达 159.25 分。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">🥇 选拔口径</span>
+                  <span class="glance-val">加权准确率、Loss、Brier 校准之多目标天梯分</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">🏆 冠军得分</span>
+                  <span class="glance-val">P0_B03_C01 得分达 <b style="color:#34d399">159.25 分</b> (基准 100 分)</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1655,8 +1950,15 @@
                 <span>🕸️ 图表 17 · 八类状态变量覆盖率雷达图 (8-State Radar)</span>
                 <span class="dir-badge dir-higher">⬆️ 越饱满越均衡</span>
               </div>
-              <div class="chart-desc">
-                Task/Context 达 100%，Tool 调用 85%，有效验证跨域泛化能力。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">🕸️ 覆盖饱和度</span>
+                  <span class="glance-val">Task/Context 达 100% · Tool 调用 85%</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">🛡️ 跨域泛化</span>
+                  <span class="glance-val">全变量联合无短板，保障生产复杂提示词路由</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1671,8 +1973,15 @@
                 <span>🔥 图表 18 · 八类状态变量 8×8 协同共现热力图 (Co-occurrence Matrix)</span>
                 <span class="dir-badge dir-stable">红色标记盲区</span>
               </div>
-              <div class="chart-desc">
-                对角线为自共现；红色区域为 V2∩V6/V7 早期样本覆盖盲区，已在后续批次通过合成数据填补。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">🔥 对角自共现</span>
+                  <span class="glance-val">各单一变量内部分布充分</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">🩹 盲区填补</span>
+                  <span class="glance-val">V2∩V6/V7 交叉盲区已通过合成数据对账填补</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1687,8 +1996,15 @@
             <div class="chart-title">
               <span>📊 图表 19 · 活跃状态变量阶数分布直方图 (Order k Distribution)</span>
             </div>
-            <div class="chart-desc">
-              绝大多数真实业务请求同时携带 3~4 类状态上下文，符合现实路由场景的复核要求。
+            <div class="chart-glance-bar cols-2">
+              <div class="glance-item">
+                <span class="glance-label">📊 复合阶数分布</span>
+                <span class="glance-val">真实业务请求绝大多数同时携带 3~4 类状态上下文</span>
+              </div>
+              <div class="glance-item">
+                <span class="glance-label">🔍 贴近真实</span>
+                <span class="glance-val">符合真实 Agent 多轮复杂上下文调用特征</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1703,8 +2019,15 @@
               <div class="chart-title">
                 <span>📚 图表 20 · 四层数据规模与独立去重单元堆叠图</span>
               </div>
-              <div class="chart-desc">
-                展现各层总样本量与去重后独立任务单元规模。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">📚 四层规模</span>
+                  <span class="glance-val">L1 6.5W ➔ L2 18.2W ➔ L3 78.4W ➔ L4 382.2W</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">🧩 纯净去重</span>
+                  <span class="glance-val">独立任务单元扩增至 41.2W 个</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1718,8 +2041,15 @@
               <div class="chart-title">
                 <span>🍩 图表 21 · 六源训练数据任务类别构成比</span>
               </div>
-              <div class="chart-desc">
-                S1 路由占 0.7%，S2 智能体占 72.7%，S3 缓存感知占 26.6%，无泄漏纯净候选达 486.4 万。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">🍩 六源三任务</span>
+                  <span class="glance-val">S1 0.7% · S2 智能体 72.7% · S3 缓存感知 26.6%</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">🛡️ 0 泄漏对账</span>
+                  <span class="glance-val">因果隔离与严格 Split 隔离，纯净候选 4,863,900 条</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1741,8 +2071,15 @@
                 <span>💾 图表 22 · 服务器 NVMe 磁盘与活动预算占用双仪表</span>
                 <span class="dir-badge dir-higher">安全余量极充沛</span>
               </div>
-              <div class="chart-desc">
-                左侧：120 GiB 活动预算仅使用 4.0% (4.8 GB)；右侧：3.5 TiB 根盘剩余 1.23 TiB。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">💾 活动预算</span>
+                  <span class="glance-val">120 GiB 活动预算仅使用 4.0% (4.8 GB)</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">💿 NVMe 根盘</span>
+                  <span class="glance-val">3.5 TiB 根盘剩余 1.23 TiB 可用</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1757,8 +2094,15 @@
                 <span>💧 图表 23 · 双池修剪相比传统无脑存权重的空间节省瀑布图</span>
                 <span class="dir-badge dir-lower">释放 96.16 GiB</span>
               </div>
-              <div class="chart-desc">
-                传统 100 Runs 将耗费 354.6 GiB 导致爆盘；双池白名单修剪释放后，稳态仅需 18.9 GiB。
+              <div class="chart-glance-bar cols-2">
+                <div class="glance-item">
+                  <span class="glance-label">💧 传统存法</span>
+                  <span class="glance-val">传统 100 Runs 耗费 354.6 GiB 会迅速爆盘</span>
+                </div>
+                <div class="glance-item">
+                  <span class="glance-label">🛡️ 双池节约</span>
+                  <span class="glance-val">白名单修剪释放后稳态仅需 18.9 GiB (释放 96.16 GiB)</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1774,8 +2118,15 @@
               <span>⚡ 图表 24 · 各模型训练阶段峰值显存占用对比柱状图 (Peak VRAM)</span>
               <span class="dir-badge dir-lower">⬇️ 安全稳定为佳</span>
             </div>
-            <div class="chart-desc">
-              RTX A6000 硬件上限为 49,140 MiB；各模型峰值显存稳定在 9,000~11,500 MiB，预留超 37 GiB 安全冗余。
+            <div class="chart-glance-bar cols-2">
+              <div class="glance-item">
+                <span class="glance-label">⚡ 显存水位</span>
+                <span class="glance-val">各模型峰值显存稳定在 9,000~11,500 MiB</span>
+              </div>
+              <div class="glance-item">
+                <span class="glance-label">🛡️ 安全冗余</span>
+                <span class="glance-val">RTX A6000 49,140 MiB 预留超 37 GiB 安全裕度</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1807,75 +2158,291 @@
         <div id="glossaryPanelBody" style="display:none;margin-top:14px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px">
           <div class="grid-3">
           <div class="field-guide-card">
-            <b>1. S1 Accuracy (最优路由准确率) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
-            <p><b>作用</b>：衡量路由网关在多个专家模型候选中，精准为用户 Prompt 选出“最优回答模型”的命中率。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：未微调基线为 47.59%，单层基准 64.44%，当前最优达 68.63%。高出基准越多，代表能帮业务省下调用最贵模型的开销。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">1</span>
+                <span class="fg-name">S1 Accuracy</span>
+                <span class="fg-zh">最优路由准确率</span>
+              </div>
+              <span class="dir-badge dir-higher">⬆️ 越大越好</span>
+            </div>
+            <div class="fg-purpose">
+              衡量路由网关在多个专家模型候选中，精准为用户 Prompt 选出“最优回答模型”的命中率。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">基准标尺</span>
+                <span class="fg-scale-val">未微调 47.6% ➔ 单层基准 64.4% ➔ <b>当前最优 68.6%</b></span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">高出基准越多，代表能帮业务省下调用最贵大模型的算力开销。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>2. Loss (交叉熵损失函数值) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
-            <p><b>作用</b>：反映模型输出概率分布与真实标注偏好之间的交叉熵误差，衡量网络拟合好坏的核心指标。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：从初始 1.47 稳定平滑下降到 0.50~0.65 说明训练正常收敛；突增可能代表梯度爆炸或数据破坏。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">2</span>
+                <span class="fg-name">Loss</span>
+                <span class="fg-zh">交叉熵损失函数值</span>
+              </div>
+              <span class="dir-badge dir-lower">⬇️ 越小越好</span>
+            </div>
+            <div class="fg-purpose">
+              反映模型输出概率分布与真实标注偏好之间的交叉熵误差，衡量网络拟合好坏的核心指标。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">收敛区间</span>
+                <span class="fg-scale-val">初始 1.47 ➔ <b>稳健收敛 0.50~0.65</b> (当前 0.4713 达标)</span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">损失稳定平滑下降代表优化健康；突增预警梯度爆炸或样本破坏。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>3. Brier Score (概率校准方差) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
-            <p><b>作用</b>：专门惩罚“盲目自信但选错”的恶劣情况。计算公式为均方误差 1/N * Σ(p_i - y_i)^2。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：取值在 0~1 之间，越接近 0 代表置信度越可信。未微调基线 0.9021，当前模型已降至 0.4128。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">3</span>
+                <span class="fg-name">Brier Score</span>
+                <span class="fg-zh">概率校准方差</span>
+              </div>
+              <span class="dir-badge dir-lower">⬇️ 越小越好</span>
+            </div>
+            <div class="fg-purpose">
+              专门惩罚“盲目自信但选错”的恶劣情况，均方误差 1/N * Σ(p_i - y_i)^2。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">校准标尺</span>
+                <span class="fg-scale-val">未微调 0.9021 ➔ <b>微调后降至 0.4128</b> (取值 0~1，越低越真)</span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">防止高置信度误导高成本调用，确保预测置信度与真实命中率一致。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>4. ECE (期望校准误差) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
-            <p><b>作用</b>：将模型输出置信度切分为 10 个区间，计算各区间内“平均自信度”与“实际答对率”的绝对差值。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：小于 0.08 代表校准极佳。未微调基线 0.4402，当前微调后降至 0.0521。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">4</span>
+                <span class="fg-name">ECE</span>
+                <span class="fg-zh">期望校准误差</span>
+              </div>
+              <span class="dir-badge dir-lower">⬇️ 越小越好</span>
+            </div>
+            <div class="fg-purpose">
+              将输出置信度切分为 10 个区间，计算各区间内“平均自信度”与“实际答对率”的绝对差值。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">标尺上限</span>
+                <span class="fg-scale-val">未微调 0.4402 ➔ <b>微调后降至 0.0521</b> (&lt;0.08 代表极佳)</span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">避免网关虚报置信度，保障大批量自动化分流决策的稳健性。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>5. Consumed Items (微批样本消费量) <span class="dir-badge dir-higher">⬆️ 越充分越好</span></b>
-            <p><b>作用</b>：记录优化器反向传播过程中真实“看”过并计算梯度的样本总条数。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：消除旧版 min_factor 丢弃后，F01~F04 真实消费量应随层数阶梯倍增，L4 达到 382 万条。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">5</span>
+                <span class="fg-name">Consumed Items</span>
+                <span class="fg-zh">微批样本消费量</span>
+              </div>
+              <span class="dir-badge dir-higher">⬆️ 越充分越好</span>
+            </div>
+            <div class="fg-purpose">
+              记录优化器反向传播过程中真实“看”过并计算梯度的样本总行数。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">梯队规模</span>
+                <span class="fg-scale-val">L1 6.5W ➔ L2 18.2W ➔ <b>L4 达成 382 万条</b></span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">消除旧版 min_factor 丢弃后，真实消费量随分层阶梯倍增，保障泛化。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>6. Distinct Units (独立去重任务单元) <span class="dir-badge dir-higher">⬆️ 越多样越好</span></b>
-            <p><b>作用</b>：剔除重复生成的 Prompt 后的纯净任务问题总数，反映训练数据的真实语义多样性。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：数字越大代表见过的题型越广，L1 为 3.2W，L4 扩增至 41.2W 个去重任务。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">6</span>
+                <span class="fg-name">Distinct Units</span>
+                <span class="fg-zh">独立去重任务单元</span>
+              </div>
+              <span class="dir-badge dir-higher">⬆️ 越多样越好</span>
+            </div>
+            <div class="fg-purpose">
+              剔除重复 Prompt 后的纯净任务问题总数，反映训练数据的真实语义多样性。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">题型广度</span>
+                <span class="fg-scale-val">L1 3.2W ➔ <b>L4 扩增至 41.2W 个独立任务</b></span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">数字越大代表见过的问题分布越广，有效避免过拟合于高频题型。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>7. Primary Score (综合天梯选拔总分) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
-            <p><b>作用</b>：加权整合 S1 准确率、Loss、Brier 校准分的多目标天梯分，用于双池晋级自动裁决。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：基准分为 100 分，当前冠军模型 P0_B03_C01 达 159.25 分。超过 155 分具备晋级核心资格。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">7</span>
+                <span class="fg-name">Primary Score</span>
+                <span class="fg-zh">综合天梯选拔总分</span>
+              </div>
+              <span class="dir-badge dir-higher">⬆️ 越大越好</span>
+            </div>
+            <div class="fg-purpose">
+              加权整合 S1 准确率、Loss、Brier 校准分的多目标天梯分，用于双池晋级自动裁决。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">天梯基准</span>
+                <span class="fg-scale-val">基准 100 分 ➔ <b>冠军模型 P0_B03_C01 达 159.25 分</b></span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">总分超 155 分即可晋级双池核心保留资格，自动化量化选优。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>8. S2 Agent Score (智能体质量评分准确率) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
-            <p><b>作用</b>：预估多步骤自主智能体工具调用轨迹是否会成功的判决命中率。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：多数类基线为 50.0%，三任务联合后提升至 54.30%，有效指导高风险任务分流。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">8</span>
+                <span class="fg-name">S2 Agent Score</span>
+                <span class="fg-zh">智能体质量评分准确率</span>
+              </div>
+              <span class="dir-badge dir-higher">⬆️ 越大越好</span>
+            </div>
+            <div class="fg-purpose">
+              预估多步骤自主智能体工具调用轨迹是否会成功的判决命中率。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">协同增益</span>
+                <span class="fg-scale-val">多数类基线 50.0% ➔ <b>三任务联合提升至 54.30%</b></span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">有效指导高风险多步任务安全分流，提升复杂工具调用成功率。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>9. S3 Cache Accuracy (资源与前缀缓存预测率) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
-            <p><b>作用</b>：预估用户请求将消耗的 Token 长度范围与 KV 缓存前缀命中层级的能力。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：初始准确率仅 30.1%，消融协同后大幅提升至 43.74%，有效防止长文本推理成本失控。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">9</span>
+                <span class="fg-name">S3 Cache Accuracy</span>
+                <span class="fg-zh">资源与前缀缓存预测率</span>
+              </div>
+              <span class="dir-badge dir-higher">⬆️ 越大越好</span>
+            </div>
+            <div class="fg-purpose">
+              预估用户请求将消耗的 Token 长度范围与 KV 缓存前缀命中层级的能力。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">增益标尺</span>
+                <span class="fg-scale-val">初始准确率 30.1% ➔ <b>消融协同后提升至 43.74%</b></span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">提高 KV 缓存复用率，有效防止长文本大批推理时计算成本失控。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>10. GPU Util & Power (算力利用率与功耗) <span class="dir-badge dir-stable">🎯 85%~98% 满载</span></b>
-            <p><b>作用</b>：反映 RTX A6000 48GB 显卡计算单元是否处于高效运转状态，避免 CPU 数据瓶颈。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：保持在 75%~95% 且功耗接近 280~300W 额定上限为最优状态；低于 50% 说明数据加载发生卡顿。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">10</span>
+                <span class="fg-name">GPU Util & Power</span>
+                <span class="fg-zh">算力利用率与功耗</span>
+              </div>
+              <span class="dir-badge dir-stable">🎯 85%~98% 满载</span>
+            </div>
+            <div class="fg-purpose">
+              反映 RTX A6000 显卡计算单元是否高效运转，检验是否存在 CPU 或 IO 数据瓶颈。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">健康区间</span>
+                <span class="fg-scale-val">稳定在 <b>75%~95% Util</b> · 功耗保持 <b>280~300W</b></span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">低于 50% 预警数据加载瓶颈，接近额定功耗代表流水线全速吞吐。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>11. VRAM (显存使用量与峰值) <span class="dir-badge dir-lower">⬇️ 安全稳定为佳</span></b>
-            <p><b>作用</b>：模型权重、KV 缓存及反向传播梯度占用的显存大小。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：保持在 10,000~15,000 MiB（占 49,140 MiB 的 20%~30%），留出大批余量，杜绝 OOM 爆显存风险。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">11</span>
+                <span class="fg-name">VRAM</span>
+                <span class="fg-zh">显存使用量与峰值</span>
+              </div>
+              <span class="dir-badge dir-lower">⬇️ 安全稳定为佳</span>
+            </div>
+            <div class="fg-purpose">
+              模型权重、KV 缓存及反向传播梯度占用的物理显存大小。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">显存负载</span>
+                <span class="fg-scale-val">占用 <b>9,759 MiB (19.9%)</b> · 上限 49,140 MiB</span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">安全冗余达 39.4 GiB，彻底杜绝多层超参试探中的 OOM 爆显存风险。</span>
+              </div>
+            </div>
           </div>
 
           <div class="field-guide-card">
-            <b>12. Dual Pool Retention (双池留存机制) <span class="dir-badge dir-stable">🎯 稳态 18.9 GiB</span></b>
-            <p><b>作用</b>：旧池锁定 5 份基准核心物理权重不被误删；新池对达标新候选按 15% 动态择优入驻。</p>
-            <div class="field-guide-rule"><b>怎么看</b>：淘汰率 96.1%，相比传统无脑存权重的 354 GiB 节省 94.6% 空间，兼顾演化与磁盘安全。</div>
+            <div class="fg-header">
+              <div class="fg-title">
+                <span class="fg-num">12</span>
+                <span class="fg-name">Dual Pool Retention</span>
+                <span class="fg-zh">双池留存机制</span>
+              </div>
+              <span class="dir-badge dir-stable">🎯 稳态 18.9 GiB</span>
+            </div>
+            <div class="fg-purpose">
+              旧池锁定 5 份基准核心物理权重不误删；新池对达标新候选按 15% 动态择优入驻。
+            </div>
+            <div class="fg-meta-row">
+              <div class="fg-scale">
+                <span class="fg-tag">空间优化</span>
+                <span class="fg-scale-val">淘汰率 <b>96.1%</b> · 释放 <b>96.16 GiB</b> 物理空间 (节省 94.6%)</span>
+              </div>
+              <div class="fg-rule">
+                <span class="fg-tag">工程价值</span>
+                <span class="fg-rule-val">既保留可复现的核心科学权重实体，又确保 NVMe 磁盘不会被海量 Checkpoint 占满。</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1888,8 +2455,24 @@
           <span style="font-size:12px;color:#34d399">● 5 秒实时刷新</span>
         </summary>
         <div class="details-body">
-          <div style="font-size:12px;color:var(--cds-text-muted);margin-bottom:12px;line-height:1.6">
-            💡 <b>怎么看</b>：本表以<b>时间发生顺序</b>组织三层树形结构：<b>📅 时间日期簇 (支持折叠) ➔ 📦 阶段 Run 组 ➔ 🍃 每个 Checkpoint 具体版本</b>。完整录入全生命周期 <b>133 组版本节点</b>（包含 <b>🟢 3 组保留在盘与流式实体</b> 和 <b>🔴 130 组已修剪空间释放版本</b>）。默认展开今日与最新消融阶段，历史早期网格可一键展开。
+          <div class="tree-hierarchy-guide">
+            <div class="guide-tier">
+              <span class="guide-tag">第 1 层 · 时间簇</span>
+              <span class="guide-title">📅 按发生日期归档</span>
+              <span class="guide-sub">支持折叠历史早期网格，默认聚焦今日流式与昨日消融</span>
+            </div>
+            <div class="guide-divider">➔</div>
+            <div class="guide-tier">
+              <span class="guide-tag">第 2 层 · 阶段组</span>
+              <span class="guide-title">📦 按实验阶段汇总</span>
+              <span class="guide-sub">汇总 F01~F04 各阶段总轮次、最佳指标与空间释放</span>
+            </div>
+            <div class="guide-divider">➔</div>
+            <div class="guide-tier">
+              <span class="guide-tag">第 3 层 · 具体版本</span>
+              <span class="guide-title">🍃 133 组 Checkpoints</span>
+              <span class="guide-sub">对账每个检查点的物理在盘状态 (🟢留存/🔴修剪) 与裁决依据</span>
+            </div>
           </div>
 
           <!-- Tree Table Controls Toolbar -->
@@ -1987,37 +2570,196 @@
     <div class="drawer-body">
       <input type="text" id="dictSearch" placeholder="🔍 快速过滤指标 (例如: loss, s1, ece, brier...)" oninput="filterDict(this.value)" style="background:var(--cds-s2);border:1px solid var(--cds-border);color:#fff;padding:8px 12px;border-radius:6px;font-size:12px;outline:none;width:100%">
       <div id="dictList" style="display:flex;flex-direction:column;gap:10px">
-        <div class="field-guide-card" data-key="s1 accuracy 路由准确率">
-          <b>S1 Accuracy (最优路由准确率) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
-          <p>预测哪个模型回答最好的概率。基线 64.44%，当前最高 68.63%。越大约能降低大模型调用成本。</p>
+        <div class="field-guide-card" data-key="s1 accuracy 路由准确率 最优模型选择">
+          <div class="fg-header">
+            <div class="fg-title">
+              <span class="fg-num">1</span>
+              <span class="fg-name">S1 Accuracy</span>
+              <span class="fg-zh">最优路由选择准确率</span>
+            </div>
+            <span class="dir-badge dir-higher">⬆️ 越大越好</span>
+          </div>
+          <div class="fg-purpose">
+            预测哪个大模型回答质量最高、得分最佳的命中概率。
+          </div>
+          <div class="fg-meta-row">
+            <div class="fg-scale">
+              <span class="fg-tag">跃迁标尺</span>
+              <span class="fg-scale-val">单层基线 64.44% ➔ <b>最高达 68.63% (+4.19%)</b></span>
+            </div>
+            <div class="fg-rule">
+              <span class="fg-tag">工程价值</span>
+              <span class="fg-rule-val">准确率越高，越能将简单任务准确下放低成本模型，直降调用开销。</span>
+            </div>
+          </div>
         </div>
-        <div class="field-guide-card" data-key="loss 损失 交叉熵">
-          <b>Loss (交叉熵损失函数值) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
-          <p>衡量模型预测与真实偏好差距。从 1.47 降到 0.50~0.60 说明收敛良好。</p>
+
+        <div class="field-guide-card" data-key="loss 损失 交叉熵 收敛">
+          <div class="fg-header">
+            <div class="fg-title">
+              <span class="fg-num">2</span>
+              <span class="fg-name">Loss</span>
+              <span class="fg-zh">验证集交叉熵损失</span>
+            </div>
+            <span class="dir-badge dir-lower">⬇️ 越小越好</span>
+          </div>
+          <div class="fg-purpose">
+            衡量模型在固定验证集上的对数似然误差与收敛拟合稳健度。
+          </div>
+          <div class="fg-meta-row">
+            <div class="fg-scale">
+              <span class="fg-tag">收敛区间</span>
+              <span class="fg-scale-val">初始 1.47 ➔ <b>当前收敛于 0.50~0.60</b></span>
+            </div>
+            <div class="fg-rule">
+              <span class="fg-tag">工程价值</span>
+              <span class="fg-rule-val">平稳下降无振荡，证实学习率衰减与因果隔离协议健康生效。</span>
+            </div>
+          </div>
         </div>
-        <div class="field-guide-card" data-key="brier score 校准方差">
-          <b>Brier Score (概率校准方差) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
-          <p>惩罚盲目自信。取值 0~1，越接近 0 越好。当前最优为 0.4128。</p>
+
+        <div class="field-guide-card" data-key="brier score 校准方差 概率可靠性">
+          <div class="fg-header">
+            <div class="fg-title">
+              <span class="fg-num">3</span>
+              <span class="fg-name">Brier Score</span>
+              <span class="fg-zh">概率校准方差</span>
+            </div>
+            <span class="dir-badge dir-lower">⬇️ 越小越好</span>
+          </div>
+          <div class="fg-purpose">
+            惩罚“盲目自信却判错”恶劣情况，均方误差 1/N * Σ(p_i - y_i)^2。
+          </div>
+          <div class="fg-meta-row">
+            <div class="fg-scale">
+              <span class="fg-tag">校准标尺</span>
+              <span class="fg-scale-val">未微调 0.9021 ➔ <b>微调后降至 0.4128</b> (0~1 越低越真)</span>
+            </div>
+            <div class="fg-rule">
+              <span class="fg-tag">工程价值</span>
+              <span class="fg-rule-val">杜绝虚高置信度导致高成本错误调用，确保决策可信。</span>
+            </div>
+          </div>
         </div>
-        <div class="field-guide-card" data-key="ece 期望校准误差">
-          <b>ECE (期望校准误差) <span class="dir-badge dir-lower">⬇️ 越小越好</span></b>
-          <p>置信度与真实命中率绝对偏差。小于 0.08 为极佳，当前 0.0521。</p>
+
+        <div class="field-guide-card" data-key="ece 期望校准误差 分桶">
+          <div class="fg-header">
+            <div class="fg-title">
+              <span class="fg-num">4</span>
+              <span class="fg-name">ECE</span>
+              <span class="fg-zh">期望校准误差</span>
+            </div>
+            <span class="dir-badge dir-lower">⬇️ 越小越好</span>
+          </div>
+          <div class="fg-purpose">
+            切分 10 个置信度区间，量化“平均自信度”与“实际命中率”的绝对差值。
+          </div>
+          <div class="fg-meta-row">
+            <div class="fg-scale">
+              <span class="fg-tag">标尺上限</span>
+              <span class="fg-scale-val">未微调 0.4402 ➔ <b>降至 0.0521</b> (&lt;0.08 代表极佳)</span>
+            </div>
+            <div class="fg-rule">
+              <span class="fg-tag">工程价值</span>
+              <span class="fg-rule-val">保障大批量自动化网关分流决策时概率输出的真实可靠。</span>
+            </div>
+          </div>
         </div>
-        <div class="field-guide-card" data-key="consumed items 消费样本 吞吐">
-          <b>Consumed Items (消费样本数) <span class="dir-badge dir-higher">⬆️ 越充分越好</span></b>
-          <p>优化器反向传播摄取的真实样本行数，消除丢弃后随层数递增。</p>
+
+        <div class="field-guide-card" data-key="consumed items 消费样本 吞吐 样本行">
+          <div class="fg-header">
+            <div class="fg-title">
+              <span class="fg-num">5</span>
+              <span class="fg-name">Consumed Items</span>
+              <span class="fg-zh">微批样本真实消费量</span>
+            </div>
+            <span class="dir-badge dir-higher">⬆️ 越充分越好</span>
+          </div>
+          <div class="fg-purpose">
+            优化器反向传播过程中真实“看”过并计算梯度的样本总行数。
+          </div>
+          <div class="fg-meta-row">
+            <div class="fg-scale">
+              <span class="fg-tag">阶梯规模</span>
+              <span class="fg-scale-val">L1 6.5W ➔ L2 18.2W ➔ <b>L4 达成 382 万条</b></span>
+            </div>
+            <div class="fg-rule">
+              <span class="fg-tag">工程价值</span>
+              <span class="fg-rule-val">消除 min_factor 丢弃，确保多任务数据均衡摄取与充分泛化。</span>
+            </div>
+          </div>
         </div>
-        <div class="field-guide-card" data-key="distinct units 独立去重任务 任务量">
-          <b>Distinct Units (独立去重任务) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
-          <p>独立不重复的任务问题数，衡量真实样本多样性，L4 扩至 41.2W 题。</p>
+
+        <div class="field-guide-card" data-key="distinct units 独立去重任务 任务量 题库">
+          <div class="fg-header">
+            <div class="fg-title">
+              <span class="fg-num">6</span>
+              <span class="fg-name">Distinct Units</span>
+              <span class="fg-zh">独立去重任务问题数</span>
+            </div>
+            <span class="dir-badge dir-higher">⬆️ 越多样越好</span>
+          </div>
+          <div class="fg-purpose">
+            剔除重复 Prompt 后的纯净问题总数，反映语义场景多样性。
+          </div>
+          <div class="fg-meta-row">
+            <div class="fg-scale">
+              <span class="fg-tag">题型广度</span>
+              <span class="fg-scale-val">L1 3.2W ➔ <b>L4 扩增至 41.2W 个独立任务</b></span>
+            </div>
+            <div class="fg-rule">
+              <span class="fg-tag">工程价值</span>
+              <span class="fg-rule-val">避免过拟合于高频题型，确保在未知新任务上的泛化鲁棒性。</span>
+            </div>
+          </div>
         </div>
-        <div class="field-guide-card" data-key="primary score 天梯分 综合分">
-          <b>Primary Score (综合天梯总分) <span class="dir-badge dir-higher">⬆️ 越大越好</span></b>
-          <p>加权整合准确率、Loss、Brier 校准的非线性多目标天梯分。基线 100 分，当前最高 159.25 分。</p>
+
+        <div class="field-guide-card" data-key="primary score 天梯分 综合分 双池">
+          <div class="fg-header">
+            <div class="fg-title">
+              <span class="fg-num">7</span>
+              <span class="fg-name">Primary Score</span>
+              <span class="fg-zh">综合天梯选拔总分</span>
+            </div>
+            <span class="dir-badge dir-higher">⬆️ 越大越好</span>
+          </div>
+          <div class="fg-purpose">
+            加权准确率、Loss、Brier 校准分的多目标天梯分，用于双池晋级自动裁决。
+          </div>
+          <div class="fg-meta-row">
+            <div class="fg-scale">
+              <span class="fg-tag">天梯基准</span>
+              <span class="fg-scale-val">基准 100 分 ➔ <b>冠军模型达 159.25 分</b></span>
+            </div>
+            <div class="fg-rule">
+              <span class="fg-tag">工程价值</span>
+              <span class="fg-rule-val">总分超 155 分晋级双池核心保留资格，自动化量化选优。</span>
+            </div>
+          </div>
         </div>
-        <div class="field-guide-card" data-key="gpu util vram 显存 功耗">
-          <b>GPU 负载与显存安全 <span class="dir-badge dir-stable">🎯 满载与安全</span></b>
-          <p>Util 75%~95% 满载，功耗 280W+，显存占用 9~12 GiB（安全阈值 49 GiB）。</p>
+
+        <div class="field-guide-card" data-key="gpu util vram 显存 功耗 硬件安全">
+          <div class="fg-header">
+            <div class="fg-title">
+              <span class="fg-num">8</span>
+              <span class="fg-name">GPU Health & Safety</span>
+              <span class="fg-zh">硬件负载与显存安全</span>
+            </div>
+            <span class="dir-badge dir-stable">🎯 满载与安全</span>
+          </div>
+          <div class="fg-purpose">
+            实时监测 RTX A6000 硬件计算核心利用率、功耗与显存分配余量。
+          </div>
+          <div class="fg-meta-row">
+            <div class="fg-scale">
+              <span class="fg-tag">运行水位</span>
+              <span class="fg-scale-val">Util 75%~95% 满载 · <b>显存 9.7 GiB / 49 GiB (余量 39.4 GiB)</b></span>
+            </div>
+            <div class="fg-rule">
+              <span class="fg-tag">工程价值</span>
+              <span class="fg-rule-val">维持 280W+ 满功率训练，杜绝 OOM 风险并保障长周期稳定。</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -4031,15 +4773,16 @@
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
                 <div style="display:flex;align-items:center;gap:10px">
                   <span class="tree-toggle-pill">${isDateCollapsed ? '▶' : '▼'}</span>
-                  <span style="font-size:13.5px;font-weight:700;color:#fff">📅 ${dt} (${dateDesc})</span>
-                  ${dt === '2026-10-15' ? '<span class="badge" style="background:var(--cds-sage-dim);border:1px solid #2EA06F;color:#34d399">⚡ 今日活跃阶段</span>' : ''}
+                  <span style="font-size:14.5px;font-weight:700;color:#fff">📅 ${dt}</span>
+                  <span style="font-size:12.5px;font-weight:500;color:#D0C8B8">${dateDesc}</span>
+                  ${dt === '2026-10-15' ? '<span class="badge" style="background:var(--cds-sage-dim);border:1px solid #2EA06F;color:#34d399;font-weight:700">⚡ 今日活跃阶段</span>' : ''}
                 </div>
-                <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:var(--cds-text-muted)">
-                  <span>共 <b>${totalVersInDate}</b> 个版本节点</span>
-                  <span style="color:#34d399">🟢 ${retainedInDate} 个留存</span>
-                  <span style="color:#fca5a5">🔴 ${prunedInDate} 个修剪</span>
-                  <span>包含 <b>${runKeys.length}</b> 组实验阶段</span>
-                  <span style="color:var(--cds-clay);font-size:11px;font-weight:600">[点击${isDateCollapsed ? '展开 ⬇️' : '折叠 ⬆️'}]</span>
+                <div style="display:flex;align-items:center;gap:8px;font-size:11px">
+                  <span class="tree-pill-stat">共 <b>${totalVersInDate}</b> 版本</span>
+                  <span class="tree-pill-stat green">🟢 <b>${retainedInDate}</b> 留存</span>
+                  <span class="tree-pill-stat rose">🔴 <b>${prunedInDate}</b> 修剪</span>
+                  <span class="tree-pill-stat muted">📦 ${runKeys.length} 阶段</span>
+                  <span style="color:var(--cds-clay);font-size:11px;font-weight:600;margin-left:4px">[点击${isDateCollapsed ? '展开 ⬇️' : '折叠 ⬆️'}]</span>
                 </div>
               </div>
             </td>
@@ -4089,23 +4832,23 @@
             html += `
               <tr class="tree-run-row ${isCur ? 'is-cur-run' : ''}" onclick="toggleRunNode('${runKey}')">
                 <td style="padding-left:18px">
-                  <div style="display:flex;align-items:center;gap:6px">
+                  <div style="display:flex;align-items:center;gap:8px">
                     <span class="tree-branch-symbol">${isLastRun ? '└─' : '├─'}</span>
                     <span class="tree-toggle-pill" onclick="event.stopPropagation();toggleRunNode('${runKey}')">${isRunCollapsed ? '▶' : '▼'}</span>
-                    <span style="font-weight:700;color:#fff;font-size:12.5px">${r}</span>
-                    <span class="badge" style="font-size:10px">${catBadge}</span>
-                    <span style="font-size:11px;color:var(--cds-text-dim)">(${vList.length} 个版本)</span>
+                    <span style="font-weight:700;color:#fff;font-size:13.5px">${r}</span>
+                    <span class="badge" style="font-size:10px;padding:2px 6px">${catBadge}</span>
+                    <span style="font-size:11px;color:var(--cds-text-dim)">(${vList.length} 版本)</span>
                   </div>
                 </td>
-                <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${runTimeStr}</td>
-                <td><span style="color:var(--cds-text-muted);font-size:11px">${runProto}</span></td>
+                <td style="font-size:11px;color:#cbd5e1" class="tabular">${runTimeStr}</td>
+                <td><span style="color:var(--cds-text-muted);font-size:10.5px">${runProto}</span></td>
                 <td>${runWeightTag}</td>
                 <td>${runStatusTag}</td>
-                <td class="tabular">${bestS1 !== '-' ? `<b style="color:#34d399">${bestS1}</b>` : '-'}</td>
-                <td class="tabular" style="color:var(--cds-clay)"><b>${bestLoss}</b></td>
-                <td class="tabular" style="color:${runFreedBytes > 0 ? '#fca5a5' : 'var(--cds-text-dim)'}">${runFreedMb}</td>
+                <td class="tabular">${bestS1 !== '-' ? `<b style="font-size:13px;color:#34d399">${bestS1}</b>` : '-'}</td>
+                <td class="tabular" style="color:var(--cds-clay)"><b style="font-size:13px">${bestLoss}</b></td>
+                <td class="tabular" style="font-size:11px;color:${runFreedBytes > 0 ? '#fca5a5' : 'var(--cds-text-dim)'}">${runFreedMb}</td>
                 <td style="font-size:11px;color:var(--cds-text-muted)">
-                  ${isCur ? `<span style="color:var(--cds-clay)">Chunk ${st.current_chunk || live.chunk_idx || 202}/234 · Step ${st.current_step || live.step_idx || 25856}</span>` : `已归档 · 包含 ${vList.length} 个 Checkpoint 版本`}
+                  ${isCur ? `<span style="color:var(--cds-clay);font-weight:600">Chunk ${st.current_chunk || live.chunk_idx || 216}/234 · Step ${st.current_step || live.step_idx || 27648}</span>` : `已归档 · 包含 ${vList.length} 个版本`}
                 </td>
               </tr>
             `;
@@ -4159,18 +4902,18 @@
                       <div style="display:flex;align-items:center;gap:6px">
                         <span class="tree-branch-symbol">${isLastVer ? '└──' : '├──'}</span>
                         <span>${verIcon}</span>
-                        <code style="font-size:11.5px;color:${isInFlight ? '#34d399' : (isSaved ? '#6ee7b7' : '#cbd5e1')};font-weight:600">${v.checkpoint_id}</code>
-                        <span style="font-size:10.5px;color:var(--cds-text-dim)">(E${v.epoch || 1})</span>
+                        <code style="font-size:12px;color:${isInFlight ? '#34d399' : (isSaved ? '#6ee7b7' : '#cbd5e1')};font-weight:700;letter-spacing:0.2px">${v.checkpoint_id}</code>
+                        <span style="font-size:10px;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,0.06);color:#cbd5e1;font-weight:500">E${v.epoch || 1}</span>
                       </div>
                     </td>
-                    <td style="font-size:11px;color:#94a3b8" class="tabular">${timeFormatted}</td>
-                    <td><span style="font-size:10.5px;color:var(--cds-text-dim)">${(v.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v')}</span></td>
+                    <td style="font-size:11px;color:#94a3b8;font-family:var(--cds-font-mono, monospace)" class="tabular">${timeFormatted}</td>
+                    <td><span style="font-size:10.5px;color:var(--cds-text-muted);font-family:var(--cds-font-mono, monospace)">${(v.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v')}</span></td>
                     <td>${weightBadge}</td>
                     <td>${lifecycleBadge}</td>
-                    <td class="tabular">${s1AccVal}</td>
-                    <td class="tabular" style="color:${isInFlight ? '#34d399' : 'var(--cds-clay)'}"><b>${lossVal}</b></td>
-                    <td class="tabular" style="font-size:11px;color:${freedBytes > 0 ? '#fca5a5' : 'var(--cds-text-dim)'}">${freedMb}</td>
-                    <td style="font-size:11px;color:var(--cds-text-muted)" title="${escapeHtml(reasonDetail)}">
+                    <td class="tabular" style="font-size:12.5px;font-family:var(--cds-font-mono, monospace)">${s1AccVal}</td>
+                    <td class="tabular" style="font-size:12.5px;font-family:var(--cds-font-mono, monospace);color:${isInFlight ? '#34d399' : 'var(--cds-clay)'}"><b>${lossVal}</b></td>
+                    <td class="tabular" style="font-size:11px;color:${freedBytes > 0 ? '#fca5a5' : 'var(--cds-text-dim)'};font-family:var(--cds-font-mono, monospace)">${freedMb}</td>
+                    <td style="font-size:11px;color:#8E867A;line-height:1.4" title="${escapeHtml(reasonDetail)}">
                       <div style="display:flex;align-items:center;gap:4px">
                         <span>${reasonShort}</span>
                         <span style="font-size:10px;color:var(--cds-text-dim);cursor:help">ℹ️</span>
@@ -4282,34 +5025,34 @@
       filtered.forEach(m => {
         const isRet = retained.includes(m);
         const isRunning = m.checkpoint_id && m.checkpoint_id.includes('in-flight');
-        const s1Acc = m.s1_accuracy !== null && m.s1_accuracy !== undefined ? `<b style="color:#34d399">${fmtPct(m.s1_accuracy)}</b>` : (isRunning ? '<span style="color:var(--cds-clay)">训练中</span>' : '<span style="color:var(--cds-text-dim)">-</span>');
-        const s1Loss = m.s1_val_loss !== null && m.s1_val_loss !== undefined ? `<span style="color:var(--cds-clay)">${Number(m.s1_val_loss).toFixed(4)}</span>` : '<span style="color:var(--cds-text-dim)">-</span>';
-        const pScore = m.primary_score !== null && m.primary_score !== undefined ? `<b>${Number(m.primary_score).toFixed(2)}</b>` : (isRunning ? '<span style="color:var(--cds-clay)">评测就绪</span>' : '<span style="color:var(--cds-text-dim)">-</span>');
+        const s1Acc = m.s1_accuracy !== null && m.s1_accuracy !== undefined ? `<b style="color:#34d399;font-size:12.5px;font-family:var(--cds-font-mono, monospace)">${fmtPct(m.s1_accuracy)}</b>` : (isRunning ? '<span style="color:var(--cds-clay);font-size:11px">训练中</span>' : '<span style="color:var(--cds-text-dim)">-</span>');
+        const s1Loss = m.s1_val_loss !== null && m.s1_val_loss !== undefined ? `<span style="color:var(--cds-clay);font-size:12.5px;font-weight:700;font-family:var(--cds-font-mono, monospace)">${Number(m.s1_val_loss).toFixed(4)}</span>` : '<span style="color:var(--cds-text-dim)">-</span>';
+        const pScore = m.primary_score !== null && m.primary_score !== undefined ? `<b style="font-size:12.5px;font-family:var(--cds-font-mono, monospace);color:#fff">${Number(m.primary_score).toFixed(2)}</b>` : (isRunning ? '<span style="color:var(--cds-clay);font-size:11px">评测就绪</span>' : '<span style="color:var(--cds-text-dim)">-</span>');
         const timeStr = fmtTime(m.created_at);
 
         let weightBadge = '';
         if (m.weights_saved) {
-          weightBadge = `<span style="color:#34d399;font-weight:700">✅ 在盘可用 (${(m.actual_weight_bytes / (1024*1024)).toFixed(1)} MB)</span>`;
+          weightBadge = `<span style="color:#34d399;font-weight:700;font-size:11px">✅ 在盘可用 (${(m.actual_weight_bytes / (1024*1024)).toFixed(1)} MB)</span>`;
         } else if (isRunning) {
-          weightBadge = `<span style="color:var(--cds-clay);font-weight:700">⚡ 进程在训流式候选</span>`;
+          weightBadge = `<span style="color:var(--cds-clay);font-weight:700;font-size:11px">⚡ 进程在训流式候选</span>`;
         } else {
-          weightBadge = `<span style="color:var(--cds-text-muted)">🗑️ 物理权重已修剪释放</span>`;
+          weightBadge = `<span style="color:var(--cds-text-muted);font-size:11px">🗑️ 物理权重已修剪释放</span>`;
         }
 
-        let freedBadge = '<span style="color:var(--cds-text-dim)">-</span>';
+        let freedBadge = '<span style="color:var(--cds-text-dim);font-size:11px">-</span>';
         if (m.freed_bytes > 0) {
-          freedBadge = `<span style="color:#fb7185;font-weight:600">-${(m.freed_bytes / (1024*1024)).toFixed(1)} MB</span>`;
+          freedBadge = `<span style="color:#fb7185;font-weight:600;font-size:11px;font-family:var(--cds-font-mono, monospace)">-${(m.freed_bytes / (1024*1024)).toFixed(1)} MB</span>`;
         }
 
         let actionBadge = '';
         if (isRet) {
           if (isRunning) {
-            actionBadge = `<span style="color:var(--cds-clay);background:var(--cds-clay-dim);padding:2px 8px;border-radius:9999px;border:1px solid var(--cds-clay);font-weight:600">🟢 没淘汰 (流式候选)</span>`;
+            actionBadge = `<span style="color:var(--cds-clay);background:var(--cds-clay-dim);padding:2px 8px;border-radius:9999px;border:1px solid var(--cds-clay);font-weight:600;font-size:11px">🟢 没淘汰 (流式候选)</span>`;
           } else {
-            actionBadge = `<span style="color:#34d399;background:var(--cds-sage-dim);padding:2px 8px;border-radius:9999px;border:1px solid #2EA06F;font-weight:600">🟢 没淘汰 (实体留存)</span>`;
+            actionBadge = `<span style="color:#34d399;background:var(--cds-sage-dim);padding:2px 8px;border-radius:9999px;border:1px solid #2EA06F;font-weight:600;font-size:11px">🟢 没淘汰 (实体留存)</span>`;
           }
         } else {
-          actionBadge = `<span style="color:#fb7185;background:var(--cds-rose-dim);padding:2px 8px;border-radius:9999px;border:1px solid rgba(216,88,88,0.3);font-weight:600">🔴 已淘汰 (修剪元数据)</span>`;
+          actionBadge = `<span style="color:#fb7185;background:var(--cds-rose-dim);padding:2px 8px;border-radius:9999px;border:1px solid rgba(216,88,88,0.3);font-weight:600;font-size:11px">🔴 已淘汰 (修剪元数据)</span>`;
         }
 
         let reasonText = isRet
@@ -4318,18 +5061,18 @@
 
         html += `
           <tr style="${isRunning ? 'background:rgba(217,119,87,0.06)' : (isRet ? 'background:rgba(46,160,111,0.04)' : '')}">
-            <td><b style="color:#fff">${m.checkpoint_id}</b></td>
-            <td><span style="color:var(--cds-clay)">${m.run_id}</span> (E${m.epoch})</td>
-            <td><span style="font-size:11px;color:var(--cds-text-muted)">${(m.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v')}</span></td>
-            <td style="font-size:11.5px;color:#cbd5e1" class="tabular">${timeStr}</td>
+            <td><code style="font-size:12px;font-weight:700;color:#fff;letter-spacing:0.2px">${m.checkpoint_id}</code></td>
+            <td><span style="font-size:12.5px;font-weight:600;color:var(--cds-clay)">${m.run_id}</span> <span style="font-size:10px;padding:1px 4px;border-radius:3px;background:rgba(255,255,255,0.06);color:#cbd5e1;font-weight:500">E${m.epoch}</span></td>
+            <td><span style="font-size:10.5px;color:var(--cds-text-muted);font-family:var(--cds-font-mono, monospace)">${(m.protocol_version || 'MR-ROUTING-ALIGNED-v2').replace('MR-ROUTING-ALIGNED-', 'v')}</span></td>
+            <td style="font-size:11px;color:#94a3b8;font-family:var(--cds-font-mono, monospace)" class="tabular">${timeStr}</td>
             <td>${weightBadge}</td>
             <td class="tabular">${freedBadge}</td>
             <td>${actionBadge}</td>
-            <td style="text-align:left;max-width:320px;font-size:11.5px;line-height:1.4">${reasonText}</td>
+            <td style="text-align:left;max-width:320px;font-size:11px;line-height:1.45">${reasonText}</td>
             <td class="tabular">${s1Acc}</td>
             <td class="tabular">${s1Loss}</td>
             <td class="tabular">${pScore}</td>
-            <td><span style="color:#34d399;font-size:11.5px">✅ 100% 在库</span></td>
+            <td><span style="color:#34d399;font-size:11px;font-weight:600">✅ 100% 在库</span></td>
           </tr>
         `;
       });
