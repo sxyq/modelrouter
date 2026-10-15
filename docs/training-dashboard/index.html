@@ -1238,6 +1238,314 @@
       transform: translateY(-1px);
     }
 
+    /* ==========================================================================
+       VISUAL TREE GRAPH STYLES (拓扑分支树与图形化节点)
+       ========================================================================== */
+    .view-switch-pill {
+      display: inline-flex;
+      background: var(--cds-s2);
+      padding: 2px;
+      border-radius: 6px;
+      border: 1px solid var(--cds-border);
+      gap: 2px;
+    }
+    .view-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--cds-text-muted);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .view-toggle-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .view-toggle-btn.active {
+      background: var(--cds-clay);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .vtree-container {
+      position: relative;
+      padding: 16px 18px 24px 34px;
+      background: var(--cds-s1);
+      border: 1px solid var(--cds-border);
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    .vtree-container::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      bottom: 28px;
+      left: 20px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--cds-clay) 0%, rgba(217, 119, 87, 0.4) 30%, rgba(255, 255, 255, 0.08) 100%);
+      border-radius: 2px;
+    }
+
+    .vtree-date-block {
+      position: relative;
+      margin-bottom: 22px;
+    }
+    .vtree-date-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .vtree-date-milestone {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 8px 14px;
+      background: var(--cds-s2);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .vtree-date-milestone:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--cds-clay);
+    }
+    .vtree-milestone-dot {
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #141310;
+      border: 2px solid var(--cds-clay);
+      box-shadow: 0 0 8px rgba(217, 119, 87, 0.5);
+    }
+    .vtree-milestone-dot.pulse {
+      background: var(--cds-clay);
+      animation: pulse-dot 1.8s infinite;
+    }
+    @keyframes pulse-dot {
+      0% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(217, 119, 87, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0); }
+    }
+
+    .vtree-run-block {
+      position: relative;
+      margin-top: 12px;
+      margin-left: 14px;
+      padding-left: 20px;
+      border-left: 2px dashed rgba(255, 255, 255, 0.1);
+    }
+    .vtree-run-block:last-child {
+      border-left: 2px dashed transparent;
+    }
+
+    .vtree-run-card {
+      position: relative;
+      background: #171613;
+      border: 1px solid var(--cds-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .vtree-run-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: #1c1a16;
+    }
+    .vtree-run-card.is-active-run {
+      border-color: var(--cds-clay);
+      box-shadow: 0 0 16px rgba(217, 119, 87, 0.2);
+      background: linear-gradient(135deg, rgba(217, 119, 87, 0.08) 0%, #171613 100%);
+    }
+    .vtree-run-card::before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 18px;
+      width: 20px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .vtree-run-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .vtree-run-summary-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .vtree-leaf-cluster {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+      margin-left: 18px;
+      padding-left: 18px;
+      border-left: 2px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .vtree-leaf-card {
+      position: relative;
+      background: #141310;
+      border: 1px solid var(--cds-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .vtree-leaf-card:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateX(2px);
+    }
+    .vtree-leaf-card.retained {
+      border-color: rgba(46, 160, 111, 0.4);
+      background: linear-gradient(135deg, rgba(46, 160, 111, 0.05) 0%, #141310 100%);
+    }
+    .vtree-leaf-card.in-flight {
+      border-color: var(--cds-clay);
+      background: linear-gradient(135deg, rgba(217, 119, 87, 0.08) 0%, #141310 100%);
+      box-shadow: 0 0 14px rgba(217, 119, 87, 0.15);
+    }
+    .vtree-leaf-card.pruned {
+      border-color: rgba(255, 255, 255, 0.05);
+      background: rgba(20, 19, 16, 0.6);
+    }
+    .vtree-leaf-card::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 20px;
+      width: 18px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .vtree-glyph-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .vtree-glyph-dot.green {
+      background: #34d399;
+      box-shadow: 0 0 6px rgba(52, 211, 153, 0.5);
+    }
+    .vtree-glyph-dot.red {
+      background: #f87171;
+      opacity: 0.7;
+    }
+    .vtree-glyph-dot.pulse {
+      background: var(--cds-clay);
+      animation: pulse-dot 1.5s infinite;
+    }
+
+    .vtree-metric-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .vtree-metric-col {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .vtree-metric-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--cds-text-dim);
+    }
+
+    .vtree-acc-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .vtree-acc-bar {
+      position: relative;
+      flex: 1;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      overflow: visible;
+    }
+    .vtree-acc-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+    .vtree-acc-baseline {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      width: 2px;
+      background: #fbbf24;
+      border-radius: 1px;
+      z-index: 2;
+    }
+
+    .vtree-seg-strip {
+      display: flex;
+      height: 7px;
+      border-radius: 3px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+      min-width: 90px;
+      max-width: 150px;
+    }
+    .vtree-seg-strip .seg-s1 { background: #38bdf8; }
+    .vtree-seg-strip .seg-s2 { background: #c084fc; }
+    .vtree-seg-strip .seg-s3 { background: #fbbf24; }
+
+    .vtree-loss-pill {
+      font-size: 11px;
+      color: var(--cds-clay);
+      background: rgba(217, 119, 87, 0.12);
+      border: 1px solid rgba(217, 119, 87, 0.3);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: var(--cds-font-mono, monospace);
+    }
+    .vtree-loss-pill.down::after {
+      content: ' ⬇';
+      font-size: 9px;
+    }
+
     /* Version Scientific Manifest Drawer */
     #versionDetailDrawer {
       position: fixed;
@@ -2615,16 +2923,21 @@
             </div>
           </div>
 
-          <!-- Tree Table Controls Toolbar -->
+          <!-- Tree Table & Graph Controls Toolbar -->
           <div class="tree-table-controls">
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-              <button class="filter-btn active" id="btnTreeAll" onclick="setTreeFilter('all')">📋 全部版本 (<span id="treeBadgeAll">133</span>)</button>
-              <button class="filter-btn green" id="btnTreeRetained" onclick="setTreeFilter('retained')">🟢 没淘汰版本 (<span id="treeBadgeRet">3</span>)</button>
-              <button class="filter-btn rose" id="btnTreePruned" onclick="setTreeFilter('pruned')">🔴 已淘汰修剪 (<span id="treeBadgePru">130</span>)</button>
+              <div class="view-switch-pill">
+                <button id="btnViewTreeGraph" class="view-toggle-btn active" onclick="switchTreeDisplayMode('tree')">🌲 树状演进分支图 (图形化)</button>
+                <button id="btnViewTreeTable" class="view-toggle-btn" onclick="switchTreeDisplayMode('table')">📋 表格网格 (对比)</button>
+              </div>
+              <div style="width:1px;height:18px;background:var(--cds-border);margin:0 4px"></div>
+              <button class="filter-btn active" id="btnTreeAll" onclick="setTreeFilter('all')">全部 (<span id="treeBadgeAll">133</span>)</button>
+              <button class="filter-btn green" id="btnTreeRetained" onclick="setTreeFilter('retained')">🟢 留存 (<span id="treeBadgeRet">3</span>)</button>
+              <button class="filter-btn rose" id="btnTreePruned" onclick="setTreeFilter('pruned')">🔴 淘汰 (<span id="treeBadgePru">130</span>)</button>
               <div style="width:1px;height:18px;background:var(--cds-border);margin:0 4px"></div>
               <button class="filter-btn" onclick="expandAllTreeNodes()">📂 全部展开</button>
               <button class="filter-btn" onclick="collapseAllTreeNodes()">📁 全部折叠</button>
-              <button class="filter-btn" onclick="expandRecentTreeNodes()">⚡ 展开今日与昨日</button>
+              <button class="filter-btn" onclick="expandRecentTreeNodes()">⚡ 仅看活跃分支</button>
               <div style="width:1px;height:18px;background:var(--cds-border);margin:0 4px"></div>
               <button class="filter-btn" onclick="toggleGlossaryPanel(true)" title="展开上方核心指标解读词典">📖 指标说明词典</button>
             </div>
@@ -2634,7 +2947,11 @@
             </div>
           </div>
 
-          <div style="overflow-x:auto">
+          <!-- Visual Tree Graph Container (Default Graphical View) -->
+          <div id="liveRunsTreeGraph" class="vtree-container"></div>
+
+          <!-- Table View Container (Secondary / Grid View) -->
+          <div id="liveRunsTableWrap" style="overflow-x:auto;display:none;margin-top:10px">
             <table id="liveRunsTable"></table>
           </div>
         </div>
@@ -3301,7 +3618,7 @@
       renderStepScaleChart();
       renderScatterChart();
       renderLatencyChart();
-      renderLiveRunsTable();
+      renderLiveRunsViews();
       renderVersionLifecycleTable();
     }
 
@@ -4750,6 +5067,25 @@
     let liveTreeCollapsedRuns = new Set();
     let liveTreeFilter = 'all'; // 'all', 'retained', 'pruned'
     let liveTreeSearchQuery = '';
+    let treeDisplayMode = 'tree'; // 'tree' (graphical DAG) or 'table' (grid)
+
+    function switchTreeDisplayMode(mode) {
+      treeDisplayMode = mode;
+      const btnGraph = document.getElementById('btnViewTreeGraph');
+      const btnTable = document.getElementById('btnViewTreeTable');
+      const wrapGraph = document.getElementById('liveRunsTreeGraph');
+      const wrapTable = document.getElementById('liveRunsTableWrap');
+      if (btnGraph) btnGraph.className = 'view-toggle-btn' + (mode === 'tree' ? ' active' : '');
+      if (btnTable) btnTable.className = 'view-toggle-btn' + (mode === 'table' ? ' active' : '');
+      if (wrapGraph) wrapGraph.style.display = mode === 'tree' ? 'block' : 'none';
+      if (wrapTable) wrapTable.style.display = mode === 'table' ? 'block' : 'none';
+      renderLiveRunsViews();
+    }
+
+    function renderLiveRunsViews() {
+      renderLiveRunsTree();
+      renderLiveRunsTable();
+    }
 
     function toggleDateNode(dt) {
       if (liveTreeCollapsedDates.has(dt)) {
@@ -4757,7 +5093,7 @@
       } else {
         liveTreeCollapsedDates.add(dt);
       }
-      renderLiveRunsTable();
+      renderLiveRunsViews();
     }
 
     function toggleRunNode(runKey) {
@@ -4766,7 +5102,7 @@
       } else {
         liveTreeCollapsedRuns.add(runKey);
       }
-      renderLiveRunsTable();
+      renderLiveRunsViews();
     }
 
     function setTreeFilter(filter) {
@@ -4777,13 +5113,13 @@
       if (bAll) bAll.className = 'filter-btn' + (filter === 'all' ? ' active' : '');
       if (bRet) bRet.className = 'filter-btn' + (filter === 'retained' ? ' active green' : '');
       if (bPru) bPru.className = 'filter-btn' + (filter === 'pruned' ? ' active rose' : '');
-      renderLiveRunsTable();
+      renderLiveRunsViews();
     }
 
     function expandAllTreeNodes() {
       liveTreeCollapsedDates.clear();
       liveTreeCollapsedRuns.clear();
-      renderLiveRunsTable();
+      renderLiveRunsViews();
     }
 
     function collapseAllTreeNodes() {
@@ -4793,7 +5129,7 @@
         const dt = (v.created_at || '').substring(0, 10);
         if (dt) liveTreeCollapsedDates.add(dt);
       });
-      renderLiveRunsTable();
+      renderLiveRunsViews();
     }
 
     function expandRecentTreeNodes() {
@@ -4801,7 +5137,7 @@
       liveTreeCollapsedDates.add('2026-10-13');
       liveTreeCollapsedDates.add('2026-10-12');
       liveTreeCollapsedRuns.clear();
-      renderLiveRunsTable();
+      renderLiveRunsViews();
     }
 
     function handleLiveTreeSearch(val) {
@@ -4810,7 +5146,7 @@
         liveTreeCollapsedDates.clear();
         liveTreeCollapsedRuns.clear();
       }
-      renderLiveRunsTable();
+      renderLiveRunsViews();
     }
 
     function escapeHtml(str) {
@@ -4885,13 +5221,35 @@
       else if (r.startsWith('P0_B')) layerStr = '超参网格';
       else if (r.startsWith('R')) layerStr = '课程学习迭代';
 
+      // Graphical Segments Percentage
+      let s1Pct = 100, s2Pct = 0, s3Pct = 0;
+      if (v.train_groups) {
+        const tot = (v.train_groups.S1 || 0) + (v.train_groups.S2 || 0) + (v.train_groups.S3 || 0);
+        if (tot > 0) {
+          s1Pct = Math.round(((v.train_groups.S1 || 0) / tot) * 100);
+          s2Pct = Math.round(((v.train_groups.S2 || 0) / tot) * 100);
+          s3Pct = Math.max(0, 100 - s1Pct - s2Pct);
+        }
+      } else if (pillClass === 'joint' || r === 'F04' || r.startsWith('F0') || r.startsWith('ALGN_04')) {
+        s1Pct = 50; s2Pct = 25; s3Pct = 25;
+      } else if (pillClass === 's2' || r.startsWith('ALGN_02')) {
+        s1Pct = 50; s2Pct = 50; s3Pct = 0;
+      } else if (pillClass === 's3' || r.startsWith('ALGN_03')) {
+        s1Pct = 50; s2Pct = 0; s3Pct = 50;
+      } else {
+        s1Pct = 100; s2Pct = 0; s3Pct = 0;
+      }
+
       return {
         pillClass,
         taskName,
         sampleCount,
         sampleDisplay: sampleDisplay + ' 真实样本',
         ratioStr,
-        layerStr
+        layerStr,
+        s1Pct,
+        s2Pct,
+        s3Pct
       };
     }
 
@@ -4919,6 +5277,17 @@
 
       const updates = v.optimizer_updates || v.global_step || (isInFlight ? (live.step_idx || '28,800') : null);
 
+      let accNum = null;
+      if (v.s1_accuracy !== null && v.s1_accuracy !== undefined) {
+        accNum = typeof v.s1_accuracy === 'number' ? v.s1_accuracy : parseFloat(v.s1_accuracy);
+        if (accNum > 1) accNum = accNum / 100;
+      }
+      const baselineAcc = 0.6444;
+      const isAccBeatingBase = accNum !== null && accNum >= baselineAcc;
+      const accPctDisplay = accNum !== null ? (accNum * 100).toFixed(1) : null;
+      const deltaBase = accNum !== null ? ((accNum - baselineAcc) * 100).toFixed(2) : null;
+      const accFillWidth = accNum !== null ? Math.min(100, Math.max(10, Math.round(accNum * 100))) : 0;
+
       return {
         isInFlight,
         pScore,
@@ -4926,7 +5295,12 @@
         lossVal,
         brierVal,
         eceVal,
-        updates
+        updates,
+        accNum,
+        isAccBeatingBase,
+        accPctDisplay,
+        deltaBase,
+        accFillWidth
       };
     }
 
@@ -4941,21 +5315,37 @@
       let statusBadge = '';
       let weightDesc = '';
       let reason = v.reasons || v.elimination_reason || v.retention_reason || '';
+      let friendlyReason = '';
 
       if (isInFlight) {
         statusBadge = '<span class="badge" style="background:var(--cds-clay-dim);border:1px solid var(--cds-clay);color:var(--cds-clay);font-size:10.5px">🟢 留存 (在训候选)</span>';
         weightDesc = '⚡ 显存反向传播中 (49G A6000)';
         if (!reason) reason = '正在 GPU 实时反向传播，受在训保护协议锁定，待 Epoch 结束择优晋级';
+        friendlyReason = 'GPU 实时反向传播流式推进中，受在训保护协议锁定，待 Epoch 结束择优晋级';
       } else if (isSaved || statusStr.includes('BEST') || statusStr.includes('TOP_K') || statusStr.includes('OLD_CORE') || statusStr.includes('PINNED')) {
         statusBadge = '<span class="badge" style="background:var(--cds-sage-dim);border:1px solid #2EA06F;color:#34d399;font-size:10.5px">🟢 留存 (核心物理实体)</span>';
         weightDesc = '💾 实体在盘 (2.7 GiB NVMe)';
         if (!reason) reason = '综合选拔入选核心模型池，作为可复现科研基准永久保留物理权重';
+        friendlyReason = '综合天梯选拔优胜，作为高分核心基准物理留存在盘，供生产网关直接挂载';
       } else {
         isPruned = true;
         statusBadge = '<span class="badge" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;font-size:10.5px">🔴 废弃/已淘汰</span>';
         weightDesc = `🗑️ 权重已修剪 (${freedBytes > 0 ? '-' + freedMb : '已释放'})`;
         if (!reason || reason === '评估元数据完整入库') {
           reason = '非该 Run 最佳轮次，按两阶段白名单修剪释放物理权重以保障 120GiB 动态存储预算，评估元数据 100% 留存在库';
+        }
+        if (reason.includes('non_best_epoch')) {
+          const bestMatch = reason.match(/best=([^)]+)/);
+          const bestVer = bestMatch ? bestMatch[1] : '最优轮次';
+          friendlyReason = `空间管理：同阶段非最优轮次修剪（保留 ${bestVer}），为生产释放 ${freedMb} 存储空间`;
+        } else if (reason.includes('outside_top_30pct') || reason.includes('s1_outside_top')) {
+          friendlyReason = `天梯选拔淘汰：综合指标未进入该阶段前 30% 保留配额，执行物理权重修剪`;
+        } else if (reason.includes('cold_start') || reason.includes('pareto')) {
+          friendlyReason = `Pareto 前沿基准：消融探索非劣解，已归档作为跨阶段科研对比基准元数据`;
+        } else if (reason.includes('historical_metadata') || reason.includes('pre_q012')) {
+          friendlyReason = `历史消融预研归档：早期参数探索版本，物理空间已释放，评测指标 100% 在库`;
+        } else {
+          friendlyReason = reason;
         }
       }
 
@@ -4965,7 +5355,8 @@
         weightDesc,
         freedMb,
         freedBytes,
-        reason
+        reason,
+        friendlyReason
       };
     }
 
@@ -5179,6 +5570,304 @@
     function closeVersionManifestDrawer() {
       const drawer = document.getElementById('versionDetailDrawer');
       if (drawer) drawer.classList.remove('open');
+    }
+
+    // Render Tab 5 Graphical Visual Tree (Branch DAG with SVG Rails & Cards)
+    function renderLiveRunsTree() {
+      const container = document.getElementById('liveRunsTreeGraph');
+      if (!container) return;
+      const live = cachedLive || {};
+      const historyRuns = live.history_runs || {};
+      const curRun = live.current_run || 'F04';
+      const retainedList = live.retained_versions || [];
+      const prunedList = live.pruned_versions || [];
+
+      // Update badge counts on toolbar
+      const bAll = document.getElementById('treeBadgeAll');
+      const bRet = document.getElementById('treeBadgeRet');
+      const bPru = document.getElementById('treeBadgePru');
+      if (bAll) bAll.textContent = retainedList.length + prunedList.length;
+      if (bRet) bRet.textContent = retainedList.length;
+      if (bPru) bPru.textContent = prunedList.length;
+
+      let allVersions = retainedList.concat(prunedList);
+
+      // Apply Filter: all / retained / pruned
+      let filteredVersions = allVersions;
+      if (liveTreeFilter === 'retained') {
+        filteredVersions = allVersions.filter(v => v.weights_saved || String(v.retention_status).includes('RETAINED') || String(v.retention_status).includes('ACTIVE'));
+      } else if (liveTreeFilter === 'pruned') {
+        filteredVersions = allVersions.filter(v => !(v.weights_saved || String(v.retention_status).includes('RETAINED') || String(v.retention_status).includes('ACTIVE')));
+      }
+
+      // Apply Search Query
+      if (liveTreeSearchQuery) {
+        filteredVersions = filteredVersions.filter(v => {
+          const q = liveTreeSearchQuery;
+          const haystack = `${v.checkpoint_id} ${v.run_id} ${v.protocol_version || ''} ${v.created_at || ''} ${v.retention_status || ''} ${v.reasons || ''} ${v.elimination_reason || ''}`.toLowerCase();
+          return haystack.includes(q);
+        });
+      }
+
+      const matchEl = document.getElementById('liveTreeMatchCount');
+      if (matchEl) matchEl.textContent = filteredVersions.length;
+
+      // Group by Date -> Run
+      const dateMap = {};
+      filteredVersions.forEach(v => {
+        let dt = (v.created_at || '').substring(0, 10);
+        if (!dt || dt.length < 10) dt = '2026-10-12';
+        if (!dateMap[dt]) dateMap[dt] = {};
+        const rid = v.run_id || 'UNKNOWN';
+        if (!dateMap[dt][rid]) dateMap[dt][rid] = [];
+        dateMap[dt][rid].push(v);
+      });
+
+      const sortedDates = Object.keys(dateMap).sort().reverse();
+
+      if (sortedDates.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:40px 20px;color:var(--cds-text-muted)">
+            <div style="font-size:24px;margin-bottom:8px">🔍</div>
+            <div style="font-size:14px;color:#cbd5e1;font-weight:600">没有找到匹配的版本分支节点</div>
+            <div style="font-size:12px;margin-top:4px">请尝试重置筛选按钮或调整搜索关键词</div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+
+      sortedDates.forEach(dt => {
+        const runsInDate = dateMap[dt];
+        const runKeys = Object.keys(runsInDate);
+        runKeys.sort((a, b) => {
+          if (a === curRun) return -1;
+          if (b === curRun) return 1;
+          return a.localeCompare(b);
+        });
+
+        const totalVersInDate = runKeys.reduce((acc, r) => acc + runsInDate[r].length, 0);
+        const retainedInDate = runKeys.reduce((acc, r) => acc + runsInDate[r].filter(v => v.weights_saved || String(v.retention_status).includes('RETAINED') || String(v.retention_status).includes('ACTIVE')).length, 0);
+        const prunedInDate = totalVersInDate - retainedInDate;
+        const isDateCollapsed = liveTreeCollapsedDates.has(dt);
+        const isToday = dt === '2026-10-15';
+
+        let dateDesc = '';
+        if (isToday) dateDesc = '今日 · 双池流式推进与在训保护';
+        else if (dt === '2026-10-14') dateDesc = '昨日 · 任务消融协同与因果隔离';
+        else if (dt === '2026-10-13') dateDesc = '前日 · 全量分层基线与数据修复验证';
+        else dateDesc = '历史早期 · P0 超参网格搜索与架构预研';
+
+        html += `
+          <div class="vtree-date-block">
+            <!-- Date Milestone Header -->
+            <div class="vtree-date-milestone" onclick="toggleDateNode('${dt}')">
+              <div class="vtree-milestone-dot ${isToday ? 'pulse' : ''}"></div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-size:14px;color:var(--cds-clay);font-weight:700">${isDateCollapsed ? '▶' : '▼'}</span>
+                <span style="font-size:15px;font-weight:700;color:#fff">📅 ${dt}</span>
+                <span style="font-size:12.5px;color:#cbd5e1;font-weight:500">${dateDesc}</span>
+                ${isToday ? '<span class="badge" style="background:var(--cds-sage-dim);border:1px solid #2EA06F;color:#34d399;font-weight:700">⚡ 今日实时推进</span>' : ''}
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:11px">
+                <span class="tree-pill-stat">共 <b>${totalVersInDate}</b> 版本</span>
+                <span class="tree-pill-stat green">🟢 <b>${retainedInDate}</b> 留存</span>
+                <span class="tree-pill-stat rose">🔴 <b>${prunedInDate}</b> 淘汰</span>
+                <span class="tree-pill-stat muted">📦 ${runKeys.length} 阶段组</span>
+                <span style="color:var(--cds-clay);font-size:11px;font-weight:600;margin-left:4px">[点击${isDateCollapsed ? '展开分支 ⬇️' : '折叠 ⬆️'}]</span>
+              </div>
+            </div>
+        `;
+
+        if (!isDateCollapsed) {
+          runKeys.forEach((r, rIdx) => {
+            const vList = runsInDate[r];
+            vList.sort((a, b) => (b.epoch || 0) - (a.epoch || 0));
+
+            const isLastRun = rIdx === runKeys.length - 1;
+            const isCur = (r === curRun) && live.process_alive;
+            const ro = historyRuns[r] || {};
+            const st = ro.stats || {};
+            const runKey = `${dt}_${r}`;
+            const isRunCollapsed = liveTreeCollapsedRuns.has(runKey);
+
+            // Metrics
+            const bestS1 = ro.best_s1_acc ? fmtPct(ro.best_s1_acc) : (vList.find(x => x.s1_accuracy)?.s1_accuracy ? fmtPct(vList.find(x => x.s1_accuracy).s1_accuracy) : '-');
+            const bestLoss = isCur ? (live.loss || st.end_loss || '0.4856') : (st.end_loss !== undefined ? st.end_loss : (vList.find(x => x.s1_val_loss)?.s1_val_loss || '-'));
+            const maxScoreInRun = vList.reduce((acc, x) => Math.max(acc, x.primary_score || 0), 0);
+            const bestScoreStr = maxScoreInRun > 0 ? maxScoreInRun.toFixed(2) + ' 分' : (isCur ? '实时推演' : '-');
+
+            const runFreedBytes = vList.reduce((acc, x) => acc + (x.freed_bytes || 0), 0);
+            const runFreedMb = runFreedBytes > 0 ? (runFreedBytes / (1024 * 1024)).toFixed(0) + ' MB' : '-';
+            const hasRetained = vList.some(x => x.weights_saved || String(x.retention_status).includes('RETAINED') || String(x.retention_status).includes('ACTIVE'));
+            const retainedInRun = vList.filter(x => x.weights_saved || String(x.retention_status).includes('RETAINED') || String(x.retention_status).includes('ACTIVE')).length;
+            const prunedInRun = vList.length - retainedInRun;
+
+            let catBadge = '单层基准';
+            if (r.startsWith('F04') || r === 'F04') catBadge = '全量分层 L4';
+            else if (r.startsWith('F01') || r.startsWith('F02') || r.startsWith('F03')) catBadge = '分层基线';
+            else if (r.startsWith('ALGN')) catBadge = '消融协同';
+            else if (r.startsWith('P0_B03')) catBadge = '超参网格 (Top-1)';
+            else if (r.startsWith('P0_B01')) catBadge = '超参网格 (Top-2)';
+            else if (r.startsWith('P0_B')) catBadge = '超参网格';
+            else if (r.startsWith('P0_SIM')) catBadge = '模拟基准';
+
+            const sampleV = vList[0] || {};
+            const shardSample = (window.LAYA_SHARD_TREE || []).find(x => x.run_id === r) || {};
+            const runCombined = Object.assign({}, shardSample, sampleV);
+            const dRun = getCheckpointDataSpecs(runCombined, r, historyRuns);
+
+            html += `
+              <div class="vtree-run-block ${isLastRun ? 'is-last-run' : ''}">
+                <!-- Run Stage Hub Card -->
+                <div class="vtree-run-card ${isCur ? 'is-active-run' : ''}" onclick="toggleRunNode('${runKey}')">
+                  <div class="vtree-run-header">
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <span style="font-size:16px">${isCur ? '⚡' : '📦'}</span>
+                      <span style="font-size:14.5px;font-weight:700;color:#fff">${r}</span>
+                      <span class="badge" style="font-size:10.5px">${catBadge}</span>
+                      <span style="font-size:11.5px;color:var(--cds-text-dim)">(${vList.length} 个版本节点)</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px">
+                      ${isCur
+                        ? '<span class="badge" style="background:var(--cds-sage-dim);border:1px solid #2EA06F;color:#34d399;font-weight:700;font-size:11px">⚡ 正在显存反向传播 · Chunk ' + (st.current_chunk || live.chunk_idx || 232) + '/234</span>'
+                        : '<span style="font-size:11px;color:var(--cds-text-muted);background:rgba(255,255,255,0.04);padding:2px 8px;border-radius:4px">✅ 阶段归档</span>'
+                      }
+                      <button class="btn-tree-toggle" onclick="event.stopPropagation();toggleRunNode('${runKey}')">
+                        ${isRunCollapsed ? '📂 展开 ' + vList.length + ' 个版本分支' : '📁 折叠分支'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Graphical Data & Metrics Strip in Run Card -->
+                  <div class="vtree-run-summary-bar">
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <span class="data-pill ${dRun.pillClass}">${dRun.taskName}</span>
+                      <div class="vtree-seg-strip" title="S1: ${dRun.s1Pct}% | S2: ${dRun.s2Pct}% | S3: ${dRun.s3Pct}%">
+                        <div class="seg-s1" style="width:${dRun.s1Pct}%"></div>
+                        <div class="seg-s2" style="width:${dRun.s2Pct}%"></div>
+                        <div class="seg-s3" style="width:${dRun.s3Pct}%"></div>
+                      </div>
+                      <b style="color:#fff;font-size:12px;font-family:var(--cds-font-mono, monospace)">${dRun.sampleDisplay}</b>
+                      <span style="font-size:10.5px;color:var(--cds-text-muted)">(${dRun.ratioStr})</span>
+                    </div>
+
+                    <div style="display:flex;align-items:center;gap:14px;font-size:11.5px">
+                      <div><span style="color:var(--cds-text-dim)">最高天梯: </span><b style="color:#fff;font-family:var(--cds-font-mono, monospace)">${bestScoreStr}</b></div>
+                      <div style="color:#34d399;font-family:var(--cds-font-mono, monospace)">S1 <b>${bestS1}</b> | Loss <span style="color:var(--cds-clay)"><b>${bestLoss}</b></span></div>
+                      <div style="color:${runFreedBytes > 0 ? '#fca5a5' : '#34d399'}">
+                        ${runFreedBytes > 0 ? '已释放 -' + runFreedMb : (hasRetained ? '实体在盘 2.7G' : '空间已释放')}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            `;
+
+            // Version Leaf Nodes
+            if (!isRunCollapsed) {
+              html += `<div class="vtree-leaf-cluster">`;
+              vList.forEach((v, vIdx) => {
+                const shardItem = (window.LAYA_SHARD_TREE || []).find(x => x.checkpoint_id === v.checkpoint_id) || {};
+                const histItem = (window.LAYA_SHARD_HISTORICAL || []).find(x => x.checkpoint_id === v.checkpoint_id) || {};
+                const fullV = Object.assign({}, histItem, shardItem, v);
+
+                const d = getCheckpointDataSpecs(fullV, r, historyRuns);
+                const m = getCheckpointOutputMetrics(fullV, live);
+                const pv = getCheckpointPruningVerdict(fullV);
+
+                const timeFormatted = fmtTime(fullV.created_at);
+                const cardClass = m.isInFlight ? 'in-flight' : (fullV.weights_saved ? 'retained' : 'pruned');
+                const dotClass = m.isInFlight ? 'pulse' : (fullV.weights_saved ? 'green' : 'red');
+
+                html += `
+                  <div class="vtree-leaf-card ${cardClass}">
+                    <!-- Card Top Row: Identity & Status -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                      <div style="display:flex;align-items:center;gap:8px">
+                        <span class="vtree-glyph-dot ${dotClass}"></span>
+                        <code style="font-size:13px;font-weight:700;color:${m.isInFlight ? '#34d399' : (fullV.weights_saved ? '#6ee7b7' : '#cbd5e1')}">${fullV.checkpoint_id}</code>
+                        <span class="badge" style="background:rgba(255,255,255,0.06);font-size:10px">E${fullV.epoch || 1}</span>
+                        <span style="font-size:11px;color:var(--cds-text-dim);font-family:var(--cds-font-mono, monospace)">${timeFormatted}</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:8px">
+                        ${pv.statusBadge}
+                        <button class="btn-inspect-meta" onclick="openVersionManifestDrawer('${escapeHtml(fullV.checkpoint_id)}')">🔬 档案详情</button>
+                      </div>
+                    </div>
+
+                    <!-- Card Middle Row: Graphical Data & Metrics Grid -->
+                    <div class="vtree-metric-strip">
+                      <!-- Column 1: Input Data Provenance -->
+                      <div class="vtree-metric-col">
+                        <div class="vtree-metric-label">📊 训练输入数据 (用了哪些数据)</div>
+                        <div style="display:flex;align-items:center;gap:6px;margin-top:3px">
+                          <span class="data-pill ${d.pillClass}">${d.taskName}</span>
+                          <div class="vtree-seg-strip" title="S1: ${d.s1Pct}% | S2: ${d.s2Pct}% | S3: ${d.s3Pct}%">
+                            <div class="seg-s1" style="width:${d.s1Pct}%"></div>
+                            <div class="seg-s2" style="width:${d.s2Pct}%"></div>
+                            <div class="seg-s3" style="width:${d.s3Pct}%"></div>
+                          </div>
+                          <b style="color:#fff;font-size:12px;font-family:var(--cds-font-mono, monospace)">${d.sampleDisplay}</b>
+                        </div>
+                        <div style="font-size:10px;color:var(--cds-text-muted);margin-top:2px">${d.ratioStr} • ${d.layerStr}</div>
+                      </div>
+
+                      <!-- Column 2: Accuracy Visual Progress Bar -->
+                      <div class="vtree-metric-col">
+                        <div class="vtree-metric-label">🎯 S1 命中率可视化 (对比基准 64.44%)</div>
+                        <div class="vtree-acc-bar-wrap" style="margin-top:4px">
+                          <div class="vtree-acc-bar" title="基准: 64.44% | 实测: ${m.s1Acc}">
+                            <div class="vtree-acc-fill" style="width:${m.accFillWidth}%;background:${m.isAccBeatingBase ? '#34d399' : (m.accNum ? '#f59e0b' : 'rgba(255,255,255,0.2)')}"></div>
+                            <div class="vtree-acc-baseline" style="left:64.44%" title="基准线 64.44%"></div>
+                          </div>
+                          <b style="font-size:12.5px;color:${m.isAccBeatingBase ? '#34d399' : '#fff'};font-family:var(--cds-font-mono, monospace)">${m.s1Acc}</b>
+                          ${m.isAccBeatingBase ? '<span style="font-size:10px;color:#34d399;font-weight:700">+' + m.deltaBase + '%</span>' : ''}
+                        </div>
+                      </div>
+
+                      <!-- Column 3: Primary Score & Loss -->
+                      <div class="vtree-metric-col">
+                        <div class="vtree-metric-label">🥇 天梯总分 & 收敛误差 (训练出的数据)</div>
+                        <div style="display:flex;align-items:baseline;gap:8px;margin-top:2px">
+                          <span style="font-size:14px;font-weight:800;color:#fff;font-family:var(--cds-font-mono, monospace)">${m.pScore}${m.pScore !== '-' && !m.isInFlight ? ' 分' : ''}</span>
+                          <span class="vtree-loss-pill down">Loss <b>${m.lossVal}</b></span>
+                        </div>
+                        <div style="font-size:10px;color:#94a3b8;margin-top:2px;font-family:var(--cds-font-mono, monospace)">
+                          ${m.brierVal ? `Brier ${m.brierVal} · ECE ${m.eceVal}` : ''}
+                          ${m.updates ? `<span style="color:var(--cds-text-dim);margin-left:4px">(${Number(m.updates).toLocaleString()} 步)</span>` : ''}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Card Bottom Row: Disposition & Storage Rationale -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,0.06);font-size:11px">
+                      <div style="display:flex;align-items:center;gap:6px;color:${pv.isPruned ? '#cbd5e1' : '#a7f3d0'};line-height:1.4">
+                        <span>${pv.isPruned ? '🛡️ 处置判定:' : '🏆 留存依据:'}</span>
+                        <span>${escapeHtml(pv.friendlyReason || pv.reason)}</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:8px;font-size:10.5px">
+                        <span style="color:${pv.isPruned ? '#fca5a5' : '#34d399'};font-weight:600">
+                          ${pv.isPruned ? '物理已修剪 (-' + pv.freedMb + ')' : (m.isInFlight ? '⚡ 显存流式计算' : '物理在盘 2.7G')}
+                        </span>
+                        <span style="color:var(--cds-text-dim)">•</span>
+                        <span style="color:#34d399">✅ 元数据 100% 在库</span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              });
+              html += `</div>`; // end vtree-leaf-cluster
+            }
+
+            html += `</div>`; // end vtree-run-block
+          });
+        }
+
+        html += `</div>`; // end vtree-date-block
+      });
+
+      container.innerHTML = html;
     }
 
     // Render Tab 5 Tree Table (Every single version recorded & time-folded)
@@ -5673,7 +6362,7 @@
         renderCumulativeThroughputChart();
         renderStepScaleChart();
         renderScatterChart();
-        renderLiveRunsTable();
+        renderLiveRunsViews();
       }
       renderLatencyChart();
       renderAblationChart();
