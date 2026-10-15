@@ -2615,6 +2615,10 @@ class CheckpointRetentionManager:
             dec = decisions.get(cid) or {}
             if dec.get("is_pinned_parent") or cid in pinned_map or dec.get("is_global_best"):
                 continue
+            run_status = n.get("run_status") or (runs.get(n["run_id"]) or {}).get("status")
+            if run_status == "running":
+                # Active in-flight run: protect its checkpoints from budget eviction during training
+                continue
             ok, w_reason = self.is_whitelisted_checkpoint_dir(ep_dir)
             run_root = self.out_root / n["run_id"]
             hist_ok = (run_root / "run.json").is_file() and (run_root / "epoch_metrics.json").is_file()

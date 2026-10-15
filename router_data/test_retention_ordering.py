@@ -39,7 +39,12 @@ def test_retention_ordering():
     print("=== TEST RETENTION ORDERING REGRESSION ===")
     with tempfile.TemporaryDirectory() as tmpdir:
         out_root = Path(tmpdir)
-        mgr = CheckpointRetentionManager(out_root=out_root, s2_audit_passed=True)
+        mgr = CheckpointRetentionManager(
+            out_root=out_root,
+            s2_audit_passed=True,
+            stop_free_bytes=1024**2,
+            stop_free_pct=0.01,
+        )
 
         run_id = "TEST_RUN_01"
         run_root = out_root / run_id
@@ -142,12 +147,64 @@ def test_retention_ordering():
         # Check final manifest
         manifest = mgr.write_checkpoint_manifest()
         top5_manifest = json.loads((out_root / "top5_core_checkpoint_manifest.json").read_text())
-        top5_cids = [c["checkpoint_id"] for c in top5_manifest["top5_core_checkpoints"]]
-        print(f"Top-5 CIDs: {top5_cids}")
-        assert f"{run_id}-e02" in top5_cids, f"Expected {run_id}-e02 in Top-5, found {top5_cids}"
+        new_core_cids = [c["checkpoint_id"] for c in top5_manifest["new_core_checkpoints"]]
+        print(f"New Core CIDs: {new_core_cids}")
+        assert f"{run_id}-e02" in new_core_cids, f"Expected {run_id}-e02 in new_core_checkpoints, found {new_core_cids}"
 
         print(">>> TEST RETENTION ORDERING PASSED!")
 
 
+def test_two_phase_cleanup_protects_running_run():
+    print("=== TEST TWO PHASE CLEANUP PROTECTS RUNNING RUN ===")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        out_root = Path(tmpdir)
+        # active_budget_bytes set to 10 bytes so budget is strictly exceeded
+        mgr = CheckpointRetentionManager(
+            out_root=out_root,
+            active_budget_bytes=10,
+            stop_free_bytes=1024**2,
+            stop_free_pct=0.01,
+        )
+
+        run_id = "RUNNING_RUN_01"
+        run_root = out_root / run_id
+        ckpt_dir = run_root / "checkpoints" / "epoch_01"
+        ckpt_dir.mkdir(parents=True)
+        (ckpt_dir / "model.safetensors").write_bytes(b"x" * 1024)
+
+        run_meta = {
+            "run_id": run_id,
+            "status": "running",
+            "protocol_version": "MR-FULL-GRADED-P0-DATA-REPAIR-v1",
+            "history": [
+                {
+                    "checkpoint_id": f"{run_id}-e01",
+                    "epoch": 1,
+                    "train_loss": 0.8,
+                    "validation": {"S1": {"loss": 0.9, "accuracy": 0.4}},
+                }
+            ],
+        }
+        (run_root / "run.json").write_text(json.dumps(run_meta))
+        (run_root / "epoch_metrics.json").write_text(json.dumps(run_meta["history"]))
+
+        # Cleanup should NEVER evict this running run in Step 3 or Step 4
+        res = mgr.two_phase_cleanup()
+        assert res["phase2_executed_count"] == 0, f"Expected 0 deletions, got {res['phase2_executed_count']}"
+        assert (ckpt_dir / "model.safetensors").is_file(), "Active running weights must remain intact!"
+
+        # Now mark as completed
+        run_meta["status"] = "completed"
+        (run_root / "run.json").write_text(json.dumps(run_meta))
+
+        res2 = mgr.two_phase_cleanup()
+        assert res2["phase2_executed_count"] == 1, "Completed low-score run should be pruned/evicted"
+        assert not (ckpt_dir / "model.safetensors").is_file(), "Completed run weights cleaned up"
+
+        print(">>> TEST TWO PHASE CLEANUP PROTECTS RUNNING RUN PASSED!")
+
+
 if __name__ == "__main__":
     test_retention_ordering()
+    test_two_phase_cleanup_protects_running_run()
+
