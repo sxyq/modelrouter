@@ -1162,15 +1162,28 @@ def collect_pinned_parent_ids(
                 prun_data = (runs or {}).get(parent_run) or {}
                 hist = prun_data.get("history") or []
                 if hist:
-                    best_cids = [
-                        h.get("checkpoint_id") for h in hist
-                        if h.get("is_run_best_epoch") or h.get("is_best_epoch")
-                    ]
+                    # Explicitly locate prescribed best epoch instead of arbitrary latest epoch
+                    best_ep_no = prun_data.get("best_epoch")
+                    best_cids = []
+                    if best_ep_no is not None:
+                        for h in hist:
+                            if int(h.get("epoch", 0)) == int(best_ep_no):
+                                best_cids.append(h.get("checkpoint_id"))
                     if not best_cids:
-                        best_cids = [hist[-1].get("checkpoint_id")]
+                        best_cids = [
+                            h.get("checkpoint_id") for h in hist
+                            if h.get("is_run_best_epoch") or h.get("is_best_epoch")
+                        ]
+                    if not best_cids:
+                        # Find best epoch by lowest validation loss / highest composite score
+                        def _loss_sort(h_item):
+                            l = (h_item.get("validation", {}).get("S1") or {}).get("loss")
+                            return float(l) if isinstance(l, (int, float)) else 999.0
+                        best_cids = [sorted(hist, key=_loss_sort)[0].get("checkpoint_id")]
                     for bcid in best_cids:
                         if bcid and pid not in pinned[str(bcid)]:
                             pinned[str(bcid)].append(f"{pid}(curriculum_child)")
+                    pinned[f"{parent_run}:best"].append(f"{pid}(curriculum_child)")
                 else:
                     pinned[f"{parent_run}-e02"].append(f"{pid}(curriculum_child)")
                     pinned[f"{parent_run}:best"].append(f"{pid}(curriculum_child)")
@@ -2684,9 +2697,11 @@ class CheckpointRetentionManager:
             best_ep = retained_eps[0][1]
             update_safe_symlink(ckroot / "best", f"epoch_{best_ep:02d}")
             rdata["best_checkpoint"] = f"{run_id}/checkpoints/best"
+            rdata["best_epoch"] = best_ep
         else:
             update_safe_symlink(ckroot / "best", None)
             rdata["best_checkpoint"] = None
+            rdata["best_epoch"] = None
 
     def pre_run_disk_check(
         self,
@@ -2845,7 +2860,14 @@ class CheckpointRetentionManager:
             d_stat = self.disk_status()
             within_budget = (d_stat["active_weights_bytes"] + SINGLE_CKPT_ESTIMATED_BYTES) <= self.active_budget_bytes
 
-        should_save_permanent = bool(dec.get("should_retain") and within_budget)
+        is_pinned = bool(
+            dec.get("is_pinned_parent")
+            or epoch_id in pinned_map
+            or f"{run_id}:best" in pinned_map
+            or any(run_id in str(x) for x in (self.explicit_pinned or ()))
+            or any(epoch_id in str(x) for x in (self.explicit_pinned or ()))
+        )
+        should_save_permanent = bool(is_pinned or (dec.get("should_retain") and within_budget))
         lock_file = run_root / ".writing_lock"
 
         if should_save_permanent:
@@ -2862,6 +2884,11 @@ class CheckpointRetentionManager:
                     else:
                         shutil.rmtree(epoch_dir)
                 staging_dir.rename(epoch_dir)
+                if not has_physical_weights(epoch_dir):
+                    raise RuntimeError(
+                        f"[{run_id}] FATAL: Verification failed after saving weights to {epoch_dir}! "
+                        f"Physical weights missing or corrupt."
+                    )
             finally:
                 lock_file.unlink(missing_ok=True)
 

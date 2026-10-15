@@ -929,6 +929,13 @@ def run_continuous_full_coverage_queue(
         if sync_github_every > 0 and len(executed_this_session) % sync_github_every == 0:
             _git_sync_dashboard(project_root, f"continuous-training: completed {run_id}")
 
+        # Safe Run-boundary code reload: if .reload_queue_daemon signal is set, re-exec daemon in-place with latest code
+        reload_flag = out_root / ".reload_queue_daemon"
+        if reload_flag.is_file():
+            reload_flag.unlink(missing_ok=True)
+            print(f"[QUEUE DAEMON RELOAD] Safe boundary reached after {run_id}. Re-executing queue controller in-place with latest code...", flush=True)
+            os.execv(sys.executable, [sys.executable] + sys.argv)
+
     if queue_state.get("queue_status") == "RUNNING":
         remaining_queued = [r for r in FULL_COVERAGE_STAGE_MAP if r not in queue_state["completed_runs"]]
         if not remaining_queued:

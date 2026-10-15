@@ -979,16 +979,45 @@ def run_full_coverage_stream_run(
         raise ValueError(f"Unknown full coverage run_id: {run_id}")
 
     run_epochs = int(spec.get("epochs") or epochs)
+    is_regenerate = bool(regenerate_parent or spec.get("regenerate_parent"))
 
-    # Check if run already completed
+    # Explicitly differentiate 3 real execution states:
+    # 1. Normal completed run -> skip execution
+    # 2. Missing parent weight -> regenerate physical model artifact while preserving original history
+    # 3. Interrupted training -> resume from exact physical chunk/checkpoint
     existing_path = run_root / "run.json"
+    ck_dir = run_root / "checkpoints"
+    best_link = ck_dir / "best"
+    has_physical_parent = (
+        (best_link.exists() and has_physical_weights(best_link.resolve()))
+        or (ck_dir.is_dir() and any(p.name.startswith("epoch_") and has_physical_weights(p) for p in ck_dir.iterdir()))
+    )
+
+    orig_historical_experiment = {}
     if existing_path.is_file():
         try:
             existing = json.loads(existing_path.read_text(encoding="utf8"))
             if existing.get("status") in {"completed", "early_stopped"}:
-                return {"run_id": run_id, "status": "skipped_existing", "existing_status": existing.get("status")}
+                if not is_regenerate:
+                    # Case 1: Normal completed run - skip execution
+                    return {"run_id": run_id, "status": "skipped_existing", "existing_status": existing.get("status")}
+                elif has_physical_parent:
+                    # Case 2a: Regeneration requested, but valid physical weights already exist
+                    print(f"[{run_id}] REGENERATE_PARENT: Valid physical parent weights already exist in {ck_dir}. Skipping duplicate regeneration.", flush=True)
+                    return {"run_id": run_id, "status": "parent_weights_already_present", "existing_status": existing.get("status")}
+                else:
+                    # Case 2b: Completed run missing physical parent weights -> proceed to regeneration
+                    orig_historical_experiment = dict(existing)
+                    print(
+                        f"[{run_id}] REGENERATE_PARENT: Run previously completed with metadata-only weights; "
+                        f"authorized regeneration of physical parent model for downstream curriculum.",
+                        flush=True,
+                    )
         except (OSError, json.JSONDecodeError):
             pass
+
+    if is_regenerate:
+        explicit_pinned = tuple(set(list(explicit_pinned) + [f"{run_id}-e01", f"{run_id}-e02", f"{run_id}:best", f"{run_id}:epoch_01", f"{run_id}:epoch_02"]))
 
     retention_mgr = CheckpointRetentionManager(
         out_root=out_root,
@@ -1010,13 +1039,35 @@ def run_full_coverage_stream_run(
                 parent_model_dir = str(best_link.resolve())
                 parent_id = f"{parent_run}:best"
             else:
-                # Find latest available checkpoint in parent with physical weights
-                ck_dir = out_root / parent_run / "checkpoints"
-                if ck_dir.is_dir():
-                    candidates = sorted([p for p in ck_dir.iterdir() if p.name.startswith("epoch_") and has_physical_weights(p)])
-                    if candidates:
-                        parent_model_dir = str(candidates[-1])
-                        parent_id = f"{parent_run}:{candidates[-1].name}"
+                # Find prescribed best epoch from parent run.json instead of arbitrary latest epoch
+                p_run_json = out_root / parent_run / "run.json"
+                best_ep_no = None
+                if p_run_json.is_file():
+                    try:
+                        p_data = json.loads(p_run_json.read_text(encoding="utf8"))
+                        best_ep_no = p_data.get("best_epoch")
+                        if best_ep_no is None:
+                            p_hist = p_data.get("history") or []
+                            if p_hist:
+                                def _loss_key(h_item):
+                                    l = (h_item.get("validation", {}).get("S1") or {}).get("loss")
+                                    return float(l) if isinstance(l, (int, float)) else 999.0
+                                sorted_p = sorted(p_hist, key=_loss_key)
+                                best_ep_no = sorted_p[0].get("epoch")
+                    except Exception:
+                        best_ep_no = None
+
+                p_ck_dir = out_root / parent_run / "checkpoints"
+                if p_ck_dir.is_dir() and best_ep_no is not None:
+                    prescribed_best = p_ck_dir / f"epoch_{int(best_ep_no):02d}"
+                    if has_physical_weights(prescribed_best):
+                        parent_model_dir = str(prescribed_best)
+                        parent_id = f"{parent_run}:epoch_{int(best_ep_no):02d}"
+                    else:
+                        print(
+                            f"[{run_id}] Warning: Prescribed best epoch {prescribed_best.name} in parent {parent_run} lacks physical weights.",
+                            flush=True,
+                        )
         if not parent_model_dir:
             raise RuntimeError(
                 f"[{run_id}] FATAL: continuation_mode is 'warm_start' (parent_run_id={parent_run}), "
@@ -1087,14 +1138,23 @@ def run_full_coverage_stream_run(
     best_epoch = None
 
     if resume_mode == "COMPLETED":
-        if regenerate_parent or spec.get("regenerate_parent"):
+        if is_regenerate:
             print(
-                f"[{run_id}] REGENERATE_PARENT: Archiving pruned metadata and regenerating physical weights for downstream curriculum.",
+                f"[{run_id}] REGENERATE_PARENT: Archiving original experiment metadata and regenerating physical weights for downstream curriculum.",
                 flush=True,
             )
-            archive_path = run_root / "run_pruned_metadata_archive.json"
+            # 1. Archive original completed metadata to dedicated historical archive
             if (run_root / "run.json").is_file():
-                shutil.copy2(run_root / "run.json", archive_path)
+                try:
+                    if not orig_historical_experiment:
+                        orig_historical_experiment = json.loads((run_root / "run.json").read_text(encoding="utf8"))
+                except Exception:
+                    pass
+                archive_path = run_root / "run_original_historical_metadata.json"
+                if not archive_path.is_file() and orig_historical_experiment:
+                    _write(archive_path, orig_historical_experiment)
+                shutil.copy2(run_root / "run.json", run_root / "run_pruned_metadata_archive.json")
+
             cursor_path.unlink(missing_ok=True)
             resume_mode = "COLD_START"
             start_epoch = 0
@@ -1223,6 +1283,25 @@ def run_full_coverage_stream_run(
         "parent_metrics": parent_metrics,
         "history": history,
     }
+
+    if is_regenerate and orig_historical_experiment:
+        run_meta["original_historical_experiment"] = {
+            "run_id": orig_historical_experiment.get("run_id", run_id),
+            "completed_at": orig_historical_experiment.get("finished_at") or orig_historical_experiment.get("completed_at"),
+            "status": orig_historical_experiment.get("status"),
+            "history": orig_historical_experiment.get("history"),
+            "census": orig_historical_experiment.get("census"),
+            "consumed_items": orig_historical_experiment.get("consumed_items"),
+            "optimizer_updates": orig_historical_experiment.get("current_step") or orig_historical_experiment.get("total_updates"),
+            "protocol_version": orig_historical_experiment.get("protocol_version"),
+        }
+        run_meta["regenerated_parent_artifact"] = {
+            "is_regenerated_parent": True,
+            "purpose": "curriculum_physical_parent",
+            "target_child_run": {"F01": "F17", "F17": "F18", "F18": "F19", "F19": "F20"}.get(run_id, "downstream"),
+            "retention_policy": "PINNED_PARENT",
+            "regenerated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        }
 
     print(f"[{run_id}] Initializing training: mode={resume_mode}, epoch={start_epoch}/{run_epochs}, chunk={start_chunk}/{num_chunks}, step={global_step}, protocol={protocol_version}")
 
@@ -1518,6 +1597,14 @@ def run_full_coverage_stream_run(
     run_meta["history"] = history
 
     retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest_data)
+    if is_regenerate:
+        final_best = run_root / "checkpoints" / "best"
+        final_loadable = final_best.exists() and has_physical_weights(final_best.resolve())
+        run_meta.setdefault("regenerated_parent_artifact", {})["physical_best_path"] = str(final_best.resolve()) if final_best.exists() else None
+        run_meta["regenerated_parent_artifact"]["verified_loadable"] = final_loadable
+        run_meta["regenerated_parent_artifact"]["regenerated_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        _atomic_write_json(run_root / "run.json", run_meta)
+
     _sweep_public_run(run_id, run_root, run_meta, history, manifest_data, out_root)
     print(json.dumps({
         "event": "full_coverage_run_complete",
