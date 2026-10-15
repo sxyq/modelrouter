@@ -302,11 +302,14 @@ def main():
     args = parser.parse_args()
 
     out_file = Path(__file__).resolve().parent.parent / "docs" / "training-dashboard" / "live_status.json"
+    js_file = Path(__file__).resolve().parent.parent / "docs" / "training-dashboard" / "live_status.js"
 
     while True:
         data = fetch_live_status()
         if data:
-            out_file.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf8")
+            json_str = json.dumps(data, indent=2, ensure_ascii=False)
+            out_file.write_text(json_str, encoding="utf8")
+            js_file.write_text("window.__EMBEDDED_LIVE_STATUS__ = " + json_str + ";\n", encoding="utf8")
             now_str = datetime.now().strftime("%X")
             cur_run = data.get("current_run")
             chunk = data.get("chunk")

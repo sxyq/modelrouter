@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
   <title>ModelRouter · 智能路由全景图表与实时质检看板</title>
   <style>
     :root {
@@ -505,6 +506,7 @@
               <select id="runSelect" class="scope-select" onchange="onRunSelectChange(this.value)">
                 <option value="">-- 选择具体 Run 深入查看高精点阵 --</option>
               </select>
+              <button class="mode-btn" id="btnZoomToggle" onclick="toggleSingleRunZoom()" style="display:none;margin-left:4px;font-size:11px;padding:3px 8px" title="在当前步数自适应放大与总计划全景之间切换">🔍 自适应步数放大</button>
             </div>
             <div class="mode-toggle">
               <button class="mode-btn active" id="btnModeOverlay" onclick="setChartMode('overlay')">📈 曲线叠加对比 (Overlay)</button>
@@ -642,6 +644,14 @@
             <span style="font-size:11.5px;color:var(--muted)">🔥 RTX A6000 负载: <b style="color:#34d399" id="miniGpuUtilTxt">95% Util (283W)</b></span>
             <span style="font-size:11.5px;color:var(--muted)">💾 显存使用: <b style="color:#60a5fa" id="miniGpuMemTxt">9,669 MiB / 49,140 MiB (19.7%)</b></span>
             <span style="font-size:11px;color:#a855f7">PID <span id="miniGpuPidTxt">2881373</span></span>
+          </div>
+          <!-- Pipeline Latency Breakdown -->
+          <div style="margin-top:10px;padding:8px 12px;background:#080d14;border-radius:6px;border:1px solid var(--line)">
+            <div style="font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between">
+              <span>⚡ 训练流水线各阶段耗时拆解 (Pipeline Latency Breakdown)</span>
+              <span style="color:#34d399">196 ms / 批次</span>
+            </div>
+            <svg id="latencySvg" class="chart-svg" viewBox="0 0 500 95" style="height:95px;margin-top:4px"></svg>
           </div>
         </div>
       </div>
@@ -982,6 +992,7 @@
   <script src="shards/matrix_plans_full.js"></script>
   <script src="shards/checkpoint_tree_nodes.js"></script>
   <script src="shards/storage_verification.js"></script>
+  <script src="live_status.js"></script>
 
   <script>
     const D = window.LAYA_DATA || {};
@@ -991,13 +1002,14 @@
     const cleanup = T5.cleanup_summary || {};
     const census = T5.census_reconciliation || {};
 
-    let currentLiveState = D.active_resume || {
-      run_id: 'F03',
+    let cachedLive = (typeof window.__EMBEDDED_LIVE_STATUS__ !== 'undefined') ? window.__EMBEDDED_LIVE_STATUS__ : null;
+    let currentLiveState = cachedLive || D.active_resume || {
+      run_id: 'F04',
       epoch: '1/2',
-      chunk: '37/180',
-      step: '149/45836',
-      loss: 0.6863,
-      consumed: 8451
+      chunk: '12/234',
+      step: '1536/59904',
+      loss: 0.6113,
+      consumed: 98304
     };
 
     function switchTab(idx) {
@@ -1010,11 +1022,13 @@
 
     // 1. Live Fetch from live_status.json
     async function fetchLiveStatusNow() {
+      if (!location.protocol.startsWith('http')) return;
       try {
         const res = await fetch('live_status.json?t=' + Date.now());
         if (res.ok) {
           const live = await res.json();
           currentLiveState = live;
+          cachedLive = live;
           updateLiveUI(live);
         }
       } catch (e) {
@@ -1026,7 +1040,7 @@
     let currentMode = 'overlay';
     let selectedRunId = null;
     let currentLadderView = 'top5';
-    let cachedLive = null;
+    window.__singleRunZoom = 'adaptive';
     window.__chartPoints = [];
 
     const RUN_COLORS = {
@@ -1065,6 +1079,26 @@
       'F07_S1': 'F07_S1 (单层基准)'
     };
 
+    function toggleSingleRunZoom() {
+      window.__singleRunZoom = (window.__singleRunZoom === 'full') ? 'adaptive' : 'full';
+      updateZoomToggleBtn();
+      renderMultiSpanLossChart();
+    }
+
+    function updateZoomToggleBtn() {
+      const btn = document.getElementById('btnZoomToggle');
+      if (!btn) return;
+      const isSingle = (selectedRunId && selectedRunId !== '') || (currentScope === 'current');
+      btn.style.display = isSingle ? 'inline-block' : 'none';
+      if (window.__singleRunZoom === 'full') {
+        btn.textContent = '🌐 全程透视 (点击放大)';
+        btn.classList.add('active');
+      } else {
+        btn.textContent = '🔍 步数自适应放大';
+        btn.classList.remove('active');
+      }
+    }
+
     function setChartScope(scope) {
       currentScope = scope;
       selectedRunId = null;
@@ -1073,6 +1107,7 @@
       document.querySelectorAll('.scope-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.scope === scope);
       });
+      updateZoomToggleBtn();
       renderMultiSpanLossChart();
     }
 
@@ -1093,6 +1128,7 @@
         selectedRunId = null;
         setChartScope(currentScope);
       }
+      updateZoomToggleBtn();
       renderMultiSpanLossChart();
     }
 
@@ -1363,7 +1399,17 @@
 
       const isSingleRun = targetRunIds.length === 1;
       const singleRunObj = isSingleRun ? historyRuns[targetRunIds[0]] : null;
-      const singleMaxStep = (singleRunObj && singleRunObj.total_steps) ? singleRunObj.total_steps : (singleRunObj && singleRunObj.points.length ? singleRunObj.points[singleRunObj.points.length - 1].step : 100);
+      const curPts = (singleRunObj && singleRunObj.points) ? singleRunObj.points : [];
+      const curLatestStep = curPts.length ? curPts[curPts.length - 1].step : 0;
+      const isCurRunning = isSingleRun && (targetRunIds[0] === curRun) && (live.process_alive || live.status === 'RUNNING');
+
+      // Adaptive X-axis zoom for active run unless user explicitly wants full scale
+      let singleMaxStep;
+      if (isCurRunning && window.__singleRunZoom !== 'full' && curLatestStep > 0) {
+        singleMaxStep = Math.max(128, Math.ceil(curLatestStep * 1.15));
+      } else {
+        singleMaxStep = (singleRunObj && singleRunObj.total_steps) ? singleRunObj.total_steps : (curLatestStep || 100);
+      }
 
       const getY = l => padT + (1 - (l - minL) / (maxL - minL)) * chartH;
       const getSingleX = s => padL + (s / Math.max(1, singleMaxStep)) * chartW;
@@ -1390,7 +1436,13 @@
         <text x="${padL-8}" y="${padT + chartH*0.5 + 4}" fill="#64748b" font-size="11" text-anchor="end">${((minL+maxL)/2).toFixed(2)}</text>
         <text x="${padL-8}" y="${padT + chartH + 4}" fill="#64748b" font-size="11" text-anchor="end">${minL.toFixed(2)}</text>
         <text x="${padL}" y="${h-12}" fill="#64748b" font-size="11">${isSingleRun ? 'Step 0' : '0% 阶段进度'}</text>
-        <text x="${w-padR}" y="${h-12}" fill="#64748b" font-size="11" text-anchor="end">${isSingleRun ? 'Step ' + singleMaxStep.toLocaleString() + (targetRunIds[0] === curRun ? ' (实时)' : ' (完成)') : '100% 阶段完成'}</text>
+        <text x="${w-padR}" y="${h-12}" fill="#64748b" font-size="11" text-anchor="end">${
+          isSingleRun 
+            ? (isCurRunning && window.__singleRunZoom !== 'full'
+                ? 'Step ' + curLatestStep.toLocaleString() + ' (实时推进 · 总计划 ' + (singleRunObj && singleRunObj.total_steps ? singleRunObj.total_steps.toLocaleString() : '') + ' 步)'
+                : 'Step ' + singleMaxStep.toLocaleString() + (targetRunIds[0] === curRun ? ' (实时)' : ' (完成)'))
+            : '100% 阶段完成'
+        }</text>
       `;
 
       // Plot each run
@@ -1795,22 +1847,23 @@
     // 4. Render Chart 3: Pipeline Latency Breakdown
     function renderLatencyChart() {
       const svg = document.getElementById('latencySvg');
+      if (!svg) return;
       svg.innerHTML = `
-        <g transform="translate(40, 30)">
+        <g transform="translate(10, 15)">
           <!-- Bar 1: GPU Forward/Backward -->
-          <text x="0" y="16" fill="#cbd5e1" font-size="11.5" font-weight="600">GPU 前向与反向梯度 (72%)</text>
-          <rect x="220" y="2" width="280" height="18" rx="4" fill="#3b82f6"/>
-          <text x="510" y="15" fill="#93c5fd" font-size="11" font-weight="700">142 ms / 批次</text>
+          <text x="0" y="14" fill="#cbd5e1" font-size="11" font-weight="600">GPU 前向与反向梯度 (72%)</text>
+          <rect x="180" y="2" width="200" height="15" rx="3" fill="#3b82f6"/>
+          <text x="390" y="14" fill="#93c5fd" font-size="10.5" font-weight="700">142 ms / 批次</text>
 
           <!-- Bar 2: CPU Prefetch -->
-          <text x="0" y="52" fill="#cbd5e1" font-size="11.5" font-weight="600">CPU 流式预取重叠 (18%)</text>
-          <rect x="220" y="38" width="70" height="18" rx="4" fill="#10b981"/>
-          <text x="300" y="51" fill="#6ee7b7" font-size="11" font-weight="700">35 ms (异步无阻塞)</text>
+          <text x="0" y="42" fill="#cbd5e1" font-size="11" font-weight="600">CPU 流式预取重叠 (18%)</text>
+          <rect x="180" y="30" width="50" height="15" rx="3" fill="#10b981"/>
+          <text x="240" y="42" fill="#6ee7b7" font-size="10.5" font-weight="700">35 ms (异步)</text>
 
           <!-- Bar 3: Validation & Metric Save -->
-          <text x="0" y="88" fill="#cbd5e1" font-size="11.5" font-weight="600">固定 Val 校验与保存 (10%)</text>
-          <rect x="220" y="74" width="39" height="18" rx="4" fill="#8b5cf6"/>
-          <text x="270" y="87" fill="#c084fc" font-size="11" font-weight="700">19 ms / 轮次</text>
+          <text x="0" y="70" fill="#cbd5e1" font-size="11" font-weight="600">固定 Val 校验与保存 (10%)</text>
+          <rect x="180" y="58" width="28" height="15" rx="3" fill="#8b5cf6"/>
+          <text x="218" y="70" fill="#c084fc" font-size="10.5" font-weight="700">19 ms / 轮次</text>
         </g>
       `;
     }
@@ -1818,6 +1871,7 @@
     // 5. Render Chart 4: Ablation Synergy Grouped Bar Chart
     function renderAblationChart() {
       const svg = document.getElementById('ablationSvg');
+      if (!svg) return;
       const data = [
         { name: 'ALGN_01 (S1 纯路由)', s1: 66.8, s2: 0, s3: 0 },
         { name: 'ALGN_02 (S1+S2 路由+智能体)', s1: 66.5, s2: 53.8, s3: 0 },
@@ -1874,6 +1928,7 @@
     // 6. Render Chart 5: LR Schedule
     function renderLrChart() {
       const svg = document.getElementById('lrSvg');
+      if (!svg) return;
       svg.innerHTML = `
         <defs>
           <linearGradient id="lrGrad" x1="0" y1="0" x2="0" y2="1">
@@ -1894,6 +1949,7 @@
     // 7. Render Chart 6: Ablation Quota Stack
     function renderAblationQuota() {
       const svg = document.getElementById('ablationQuotaSvg');
+      if (!svg) return;
       svg.innerHTML = `
         <g transform="translate(50, 40)">
           <!-- Segment S1 -->
@@ -1914,6 +1970,7 @@
     // 8. Render Chart 7: 1,092 Hyperparameter Grid Heatmap
     function renderMatrixHeatmap() {
       const svg = document.getElementById('matrixGridSvg');
+      if (!svg) return;
       const batches = ['B01 (L1基线)', 'B02 (L2分层)', 'B03 (L3重点)', 'B04 (L4深层)', 'B05 (联合退火)', 'B06 (多头重排)', 'B07 (最终收敛)'];
       const cols = 14;
       const cellW = 55, cellH = 22, padL = 100, padT = 30;
@@ -1945,6 +2002,7 @@
     // 9. Render Chart 8: Funnel Chart
     function renderFunnelChart() {
       const svg = document.getElementById('funnelSvg');
+      if (!svg) return;
       const stages = [
         {name: '扫描物理目录', val: 129, w: 380, col: '#334155'},
         {name: '实体权重文件', val: 30, w: 260, col: '#1e3a8a'},
@@ -1968,6 +2026,7 @@
     // 10. Render Chart 9: Batch Progress
     function renderBatchProgress() {
       const svg = document.getElementById('batchProgressSvg');
+      if (!svg) return;
       const bData = [
         {b: 'B01', total: 156, done: 156, pct: '100%'},
         {b: 'B02', total: 156, done: 156, pct: '100%'},
@@ -1992,6 +2051,7 @@
     // 11. Render Chart 10: Variable Radar Chart
     function renderVariableRadar() {
       const svg = document.getElementById('variableRadarSvg');
+      if (!svg) return;
       const vars = [
         {k: 'Task', pct: 1.0}, {k: 'Context', pct: 0.99}, {k: 'Tool', pct: 0.85},
         {k: 'Verify', pct: 0.62}, {k: 'Agent', pct: 0.48}, {k: 'Temporal', pct: 0.45},
@@ -2041,6 +2101,7 @@
     // 12. Render Chart 11: 8x8 Co-occurrence Heatmap
     function renderCooccurrenceHeatmap() {
       const svg = document.getElementById('cooccurSvg');
+      if (!svg) return;
       const size = 8;
       const padL = 70, padT = 30, cSize = 25;
       const labels = ['V1','V2','V3','V4','V5','V6','V7','V8'];
@@ -2067,6 +2128,7 @@
     // 13. Render Chart 12: State Variable Histogram
     function renderStateHistogram() {
       const svg = document.getElementById('stateHistSvg');
+      if (!svg) return;
       const counts = [
         {k: 'k=1', pct: 5}, {k: 'k=2', pct: 18}, {k: 'k=3', pct: 32},
         {k: 'k=4', pct: 25}, {k: 'k=5', pct: 12}, {k: 'k=6', pct: 6},
@@ -2094,6 +2156,7 @@
     // 14. Render Chart 13: Storage Gauges
     function renderStorageGauges() {
       const svg = document.getElementById('storageDonutSvg');
+      if (!svg) return;
       const r = 55, circ = 2 * Math.PI * r;
       const off1 = circ * (1 - 0.04);
       const off2 = circ * (1 - 0.346);
@@ -2123,6 +2186,7 @@
     // 15. Render Chart 14: Storage Waterfall Savings
     function renderWaterfallChart() {
       const svg = document.getElementById('waterfallSvg');
+      if (!svg) return;
       svg.innerHTML = `
         <g transform="translate(30, 30)">
           <!-- Old Way 100 Runs -->
@@ -2146,6 +2210,7 @@
     // 16. Render Chart 15: Layers Stacked Bars
     function renderLayerStack() {
       const svg = document.getElementById('layerStackSvg');
+      if (!svg) return;
       const layers = [
         {l: 'L1 (最高质)', total: 48.5, distinct: 3.2},
         {l: 'L2 (均衡层)', total: 100.1, distinct: 14.8},
@@ -2178,6 +2243,7 @@
     // 17. Render Chart 16: Data Source Donut
     function renderDataSourceDonut() {
       const svg = document.getElementById('dataSourceSvg');
+      if (!svg) return;
       const r = 60, circ = 2 * Math.PI * r;
       const p3 = 0.26, p2 = 0.73;
 
@@ -2241,10 +2307,15 @@
 
     // Init All
     window.addEventListener('DOMContentLoaded', () => {
-      renderMultiSpanLossChart();
-      renderLadderChart();
-      renderCumulativeThroughputChart();
-      renderStepScaleChart();
+      if (cachedLive) {
+        updateLiveUI(cachedLive);
+      } else {
+        renderMultiSpanLossChart();
+        renderLadderChart();
+        renderCumulativeThroughputChart();
+        renderStepScaleChart();
+        renderLiveRunsTable();
+      }
       renderLatencyChart();
       renderAblationChart();
       renderLrChart();
@@ -2260,11 +2331,18 @@
       renderLayerStack();
       renderDataSourceDonut();
       renderTables();
-      renderLiveRunsTable();
 
-      // Start periodic 5s live fetch
-      fetchLiveStatusNow();
-      setInterval(fetchLiveStatusNow, 5000);
+      // Start periodic 5s live fetch (under HTTP server) or show local file direct badge
+      if (location.protocol.startsWith('http')) {
+        fetchLiveStatusNow();
+        setInterval(fetchLiveStatusNow, 5000);
+      } else {
+        const lastSyncEl = document.getElementById('lastSyncTxt');
+        if (lastSyncEl && cachedLive) {
+          const syncTime = cachedLive.collected_at_iso ? new Date(cachedLive.collected_at_iso).toLocaleTimeString() : '最新';
+          lastSyncEl.innerHTML = `<span style="color:#38bdf8">● 本地文件直读模式 (同步时间: ${syncTime})</span>`;
+        }
+      }
     });
   </script>
 </body>
