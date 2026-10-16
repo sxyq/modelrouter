@@ -476,3 +476,43 @@ Execution 报告已落地 80,970 个多来源 JSONL 行；Planning 从 main 966f
 - **版本纪律**：默认在 `main` 本地频繁 commit，重要变更附任务编号。修改研究方法需在 Memory Decision Log 记录替换原因，Status 更新阶段与阻塞。
 - **公开安全**：仅公开可审阅的抽象状态、脱敏统计、代码与公开文献；不泄漏私人主机和原始会话。
 - **文档更新频率**：Memory/Status 随任务与决策事件更新；本研究总纲仅在证据、方法或实验协议变化时修改。未 push 的本地更新不在 GitHub 可见；不是自动后台刷新。
+
+
+
+## 2026-10-16 研究设计补充：层级候选池与多 Agent 决策输入（待实测）
+
+> 本节是研究设计澄清与真实代码审阅后的缺口记录，不代表当前训练已使用全部字段。既有 H1–H7、Q-ID、历史训练协议和 GPU 队列不因本节修改。
+
+### 1. 模型池是树，而不是固定的 Model×Effort 平面分类标签
+
+- **模型池的计数单位 K 是模型身份**：`provider/model_id/revision`（同一模型跨 Provider 的部署差异另计属性，不未经说明重复算独立模型）；开发阶段决定选哪些模型、选几个模型。每个模型是一级资源节点，至少挂载能力、原生 Effort 支持集合、上下文/工具能力、官方价目与缓存政策、可用性。
+- **第二层才是该模型自己的原生 Effort 候选**：`E(model)` 是官方真实支持的离散集合，可为单一默认选项；不能向不支持 Effort 的模型虚构档位，也不假定不同 Provider 的 Low/High 等价。Router 每次从合法 `(model, native_effort)` 中**联合选择模型与其 Effort**，不能由研究者事前固定“规划用 A/High、编码用 B/Low”。
+- **缓存与 Agent 信息不是三级动作标签**：在每个决策时刻，缓存命中机会、该模型已有会话、子 Agent 身份/职责、任务进度、失败与 Trace 是评估候选动作的当时状态；Router 不将“模型×Effort×KV 状态×历史事件”穷举为固定分类头。
+- **比较口径**：RQ 的模型池实验须固定同一批 K 模型比较不同 Router，或固定 Router/Harness/任务集比较不同 K 与池成员；对每个池同时报告 K 和实际合法 `Σ_m |E_t(m)|`；静态 AA Pareto 与真实 Agent Episode Pareto 不共用能力纵轴。
+
+### 2. 多 Agent Router 的必要决策前输入
+
+在任务开始及每个合法模型调用边界，Harness 向**同一个 Router**传入以下可得信息；字段缺失要显式标 `UNKNOWN`，不得用未来结果回填：
+
+| 信息 | 推荐决策前字段 | 角色及界限 |
+|---|---|---|
+| 当前是谁 | `agent_id`、`agent_role`、`agent_capabilities`、`agent_framework` | `agent_role` 如 planner/coder/tester/reviewer/recovery，依真实 Harness 定义；**不得混为 user/assistant/tool 消息 role**。`agent_id` 仅作局部稳定身份，不把任意字符串当泛化训练信号 |
+| 与谁协作 | `parent_agent_id`、`team_id`、`handoff_from_agent_id`、`handoff_count_so_far`、`coordination_mode` | 仅保留已经发生的 handoff；不得读取未来指派或终局 |
+| 当前工作 | `task_id`、`subtask_id`、`subtask_goal`、`task_phase`、`dependency_status_observed` | 当前计划和已满足依赖；不是事后真实解决路径 |
+| 当前执行 | `step_index`、`prior_failures`、`last_verification_feedback`、`elapsed_time`、`remaining_budget` | 所有状态都以本次模型选择前为时间截断 |
+| 候选与连续性 | 树形 `model_pool[] -> allowed_native_efforts[]`，以及每候选当时可知的 `price`、`context_fit`、`estimated_cache_reuse`、`session_affinity` | 官方合法动作过滤优先；历史实际 cached tokens 与本次预计命中不能混淆 |
+
+Agent 身份必须在调用日志中可定位；训练时优先使用**可迁移的角色/职责、子任务文本和已发生交接信息**，避免对只有一次出现的 `agent_id` 做无意义记忆。
+
+### 3. 当前训练现状与不得越界的推断
+
+- 已核查 `router_data/tra.py`：TRA-001 的 `pre_decision_state` 保留 step/context/tool/error 和初始任务文字，`provenance` 记录的是 `agent_framework`；TRA-004 保留模型名、thinking mode 和 task_axis。**这些不等同于有真实子 Agent 角色、团队拓扑、已发生 handoff 的训练监督**。
+- `router_data/laya_batch_train.py` 当前从 V2.1 索引物化 S1/S2/S3 等样本，通过 `laya.train.encode_item` 编码后优化。未看到已落实上述多 Agent 角色/交接字段的独立训练表示，因此不能宣称 P22 已训练出“Agent-role-aware joint Model×Effort Router”。本审阅未证明第三方 Laya tokenizer/编码器会自动保留任意元数据字段。
+- 不改正在运行的训练协议；后续只在统一训练数据物化与 Router 输入边界**增补一个可选、时间截断的 AgentState**，并确保正式训练使用的 `state` 文本/编码确实包含该信息，当前训练与改造后的训练严格区分。不能把 Agent 做过某事的观察日志直接生成为未选候选的最优标签。
+
+### 4. 多 Agent RQ 的横向比较原则
+
+- **主效果**：相同 Agent 任务和预算上，比较与本任务类型一致的固定/任务级/已有多 Agent 或动态路由基线；完整模型的 Model 和 Effort 都由 Router 决定；提供单/双/三组信息消融，但不宣称所有字段必定有效。
+- **模型池**：固定任务、Router、拆分方式，改变 K 和池成员，单独记录每模型真实 Effort 数；不把扩大动作数误作模型数增加。
+- **任务拆分**：固定 K、模型身份、各模型原生 Effort 选项、Router 与原始任务集合，主要改变拆分粗细；同时记录实际子 Agent 数、交接、调用次数和费用。跨不同多 Agent 任务类型的比较作为分层报告，不将任务难度差异归因于拆分。
+- 不新增一个硬凑的训练或变量 RQ；当前最终编号及其他 RQ 候选保持讨论状态。
