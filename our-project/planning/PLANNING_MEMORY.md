@@ -21,6 +21,17 @@
 - **下一步是动态字段**：每次先查最新 [PROJECT_STATUS.md](PROJECT_STATUS.md) 的「当前任务/正在等待/下一步」，如果处于 E-DESIGN 再查 [EXPERIMENT_QA.md](EXPERIMENT_QA.md) 待答 Q-ID；数据来源与 Provider/Cache 政策详见 [DATA_SOURCE_AND_POLICY_REGISTRY.md](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)，不得重复已经确认的问题、提前执行未授权工程或训练。
 - 当前论文表述纪律：不要把状态字段数量本身作为创新点；**论文不讨论“多变量”或“混沌”**。新意必须靠任务级状态决策、Model × Effort、延迟成本/成功影响和严谨评测证明。
 
+### 2026-10-16 最新已确认论文 RQ（研究决定快照，优先于旧 V3–V7 编号）
+
+- **RQ1**：真实多 Agent 任务下完整 ModelRouter 与同类 Agent Router/固定/随机混合/Role-static 的成功率—整任务 USD 横向对比；其内部做 Model×原生 Effort 联合选择、任务/模型经济性/历史 T/M/H 单双三组消融、Role/KV/Trace/Verifier 消融、整任务费用账本与 Router overhead。不再将长期成本或 Effort 单独当作 RQ5/RQ4。
+- **RQ2**：模型池应该放哪些**模型身份**与多少个 K；每模型真实 Native Effort 是该模型的子节点，统计 `Σ|E_m|`，不误算为模型数。
+- **RQ3**：固定相同 K/模型成员/各模型 Effort 支持与同一 Router，改变多 Agent 任务的**拆分粒度 G**，同原任务的真实成功/总费用/交接与 Trace 对比；不同多 Agent 任务类型分层而非乱混。
+- **RQ4**（负责人确认原候选 B）：不同 Agent 角色/阶段是否存在**可利用的模型能力互补性**；固定池与 G，对比 Role-static 和 Role-aware 的端到端收益；不得把观察轨迹伪装反事实最优。
+- **RQ5**（负责人确认原候选 C）：哪些任务类别、预先已知复杂度/任务长度、协作结构具有动态路由净收益，哪些无收益？固定池/G/Router，事前定义工作负载分层和可检验的交互效应，不仅重复 RQ1 的总体数。
+- **权威实验与空白图表**：[汇报三 V8](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)（八张图、十二表）。研究定义见 [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)，用户批准与 Q-ID 见 [EXPERIMENT_QA](EXPERIMENT_QA.md) Q-017；源字段/准入见 [DATA_SOURCE_AND_POLICY_REGISTRY](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)。
+- **现实缺口**：目前已有多 Agent AgentState 文档设计，但当前 P22 训练输入尚不能证明学到了真实子 Agent 角色/交接与 Model×Effort 最优动态标签。最新 GPU 现场只能由最新 Execution 状态核验，不能用本研究决定覆盖历史 F04 实测快照。
+
+
 ## 0.1 新对话恢复规则（持续生效）
 
 **新对话角色**：ChatGPT 必须同时以长期 Planning Agent、需求探索/方法讨论伙伴、论文文献研究者的身份工作。和用户讨论研究方向、相关工作、训练监督、Kev/Jev、论文图及框架；实际本机文件由 Codex、服务器公开数据由 Execution Agent 处理，不宣称自己可实时访问本地/服务器。启动时读取全部五核心文档及最新证据，历史计划与真实执行分离。
