@@ -453,3 +453,24 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 
 - [Artificial Analysis 当前模型指数方法与 Cost per Task 定义](https://artificialanalysis.ai/zh/methodology/intelligence-benchmarking)：公开指标并非相同 Coding Harness 的完整任务费用。
 - [Claude Haiku 5.5 / GPT-6.1 Sol 档位与费用](https://artificialanalysis.ai/models/comparisons/claude-haiku-5-5-high-vs-gpt-6-1-sol-low)、[Claude Opus 5.5 不同推理档位](https://artificialanalysis.ai/models/comparisons/claude-opus-5-5-vs-claude-opus-5)：仅作候选池调研入口，正式采样时以同日可用性及价格为准。
+
+
+
+## 2026-10-16 后续讨论补充：汇报用 RQ 边界及多 Agent 模型池层级（未重新编号）
+
+> 历史 V7 RQ1–RQ5、Fig./Table 编号保留以便定位；下列是后续与负责人讨论得出的**候选汇报逻辑**，不是已获最终批准的新 RQ 列表，也不是正式实验结果。
+
+**要向老师说清楚的路由动作**：我们先选择**K 个不同的模型身份**构成模型池；每个模型下挂自己**真实可用的原生 Effort 档位**。Router 在每个合法决策边界，通过当前 `agent_role/agent_id/subtask_goal/task_phase`、已有 handoff、上下文、KV、Trace、验证反馈、候选价格/能力，从可变长度的合法 `(model, effort)` 集合里**同时决定哪个模型和该模型的哪个档位**。用户不预设 planner/coder/tester 的固定模型。KV 和角色是状态/属性，不另构成静态分类类别。
+
+### 汇报 RQ 顺序（仍待确认）
+
+| 暂定编号 | 白话研究问题 | 控制什么 | 对照/产出 |
+|---|---|---|---|
+| RQ1 | **我们的 ModelRouter 在真实多 Agent 任务上是否比同类型路由方法更好？** | 同任务/同池/同预算/同 Harness；Model 和 Effort 均由各策略决定 | 横向比较固定、Task-only、简单动态、已有 Agent/多 Agent Router；成功率—完整 Episode USD 主前沿，附单组/双组/三组状态信息消融 |
+| RQ2 | **应给 Router 哪些模型、多少个？** | 任务/Harness/Router 不变，改变模型身份池组成及 K | 同 K 不同池、不同 K；记录 K 与每池真实合法 `Σ_m |E_m|`；区分 AA 静态与 Agent 任务前沿 |
+| RQ3 | **相同模型池和 Router，任务拆成多细更划算？** | 固定 K、具体模型身份、原生 Effort 支持、预算、原始任务集合；改变可复现任务拆分粒度 | 固定/动态策略对照、成功率/整任务费用/Trace/handoff；跨不同多 Agent 任务类型分层展示 |
+| RQ4/RQ5 候选 | 换模型或调 Effort 的最佳时机、失败恢复、团队预算分配、新池迁移等 | 各自必须定义独立变化轴；不得为凑数重复 RQ1/3 | 尚未选定，不在此声称已确定 |
+
+**实验设计注意**：RQ1 的变量组合消融可以筛选有效信息，但不能因效果不好而隐匿已完成负结果；开发集筛选与正式测试区分。RQ3 不能同一对照内同时无控制地改变拆分粒度、Agent 数量与路由频率；拆分有时自然改变实际 Agent 数时需明确这是整体系统对照，另设控制分析。Agent 角色来自 Harness 的真实角色/职责，不能用消息 `role=assistant` 代替。
+
+**主图/空白表建议**：Fig.3 真实多 Agent 成功率—Episode USD，Fig.4 信息组消融，Fig.5 模型池 K/成员/合法动作数，Fig.6 拆分粒度×任务类型，Fig.7 暂留 RQ4/RQ5 候选，Fig.8 逐 Agent 模型+Effort 选择及缓存/费用时间线。原始 V7 图表与模板暂不改写或填充假结果，待最终 RQ 确认统一调整。
