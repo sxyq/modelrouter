@@ -663,3 +663,22 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 - **长队列断点接续与后续计划**：
   - `ALGN_04_S1_S2_S3` 在 `queue_state.json` 中的失败尝试次数为 1（未达 2 次阻断门槛），已以 `COLD_START` 模式就绪，重启调度后将自动重跑并首度启用留存时序闭环与三元联合监督；
   - `ALGN_04` 完结后队列将自动平滑推进至 Stage 2 全量 Run（`F03` L1 全量、`F04` L2 全量）。
+
+
+
+## 2026-10-16 追加：Agent 角色/子任务训练输入的数据源候选与真实缺口
+
+**需求**：同一个路由器接收当前多 Agent `agent_id/agent_role/subtask_id/subtask_goal/task_phase`、已有 handoff 与实际工具/验证反馈，决定树形模型池中的 `(model, native_effort)`。消息 `role=user/assistant/tool` 不是子 Agent 角色；来源数据记录有多个模型或多个框架，也不自动代表具有同次执行中的多 Agent 角色监督。
+
+| 优先级 | 来源 | 已公开材料能说明什么 | 未证实/限制 | 用法建议 |
+|---|---|---|---|---|
+| P1 | [CooperBench/cooperator-dual-policy-sft-data](https://huggingface.co/datasets/CooperBench/cooperator-dual-policy-sft-data) | 数据卡公开 `metadata.role`、`source_role`、`agent_id`，leader/follower、tester/implementer 的双代理协作轨迹；标注 MIT | 小规模、偏专门的 SFT 数据；不是跨多模型 Effort 的路由真值 | 优先字段级抽样审阅，提取角色/身份/任务文本的**输入表示**及观察性协作 |
+| P1 | [CooperBench/team-trajectories](https://huggingface.co/datasets/CooperBench/team-trajectories) | 数据卡列出每任务 `agentN_traj.json`、`agentN_stream.log`、`result.json`、`eval.json`，solo/coop/team 对比，Apache-2.0 | 压缩包内部角色字段及时间戳须实际下载才确认；同一任务多条件不等于同状态动作反事实 | 构造真实多 Agent 子任务/交接/任务终局解析样例及协作评测 |
+| P2 | [DeepNLP/Multi-Agents-Parallel-Orchestration-Dataset](https://huggingface.co/datasets/DeepNLP/Multi-Agents-Parallel-Orchestration-Dataset) | 数据卡给出 `session_id` 下按 Agent `trace_id` 存储的 parallel/sequential/handoff 示意 | 示例少、完整下载/许可/隐私用途需重新核准 | 用于理解多 Agent 字段组织，暂不纳入训练 |
+| P2 | [PersonalAILab/AFM-MHQA-Agent-SFT-Dataset](https://huggingface.co/datasets/PersonalAILab/AFM-MHQA-Agent-SFT-Dataset) | 数据卡声明多角色/多工具 Agent 推理轨迹 | 未核样本级 agent_id、角色、模型版本/effort/授权范围 | 只作为进一步研究线索 |
+| Existing | TRA-001 Open-SWE-Traces、TRA-004 AgentSuite | 已有 `agent_framework`、`pre_decision_state`、`reasoning_effort_mode` 等加工字段 | 当前已读代码未证明包含子 Agent 角色/父子关系/handoff 的统一路由训练表示 | **先复用已有源并评估字段缺口**，不能把 framework/message role 改名造角色 |
+| Existing | MAS-001 MARBLE、MAS-002 MASBench、MAS-003 AgentWorld | 已在本台账；涉及多 Agent 协作 | 旧准入/权限状态未变，MARBLE 仍为 GATED，不得虚报可训练 | 保留候选，不把研究介绍当已获授权的数据 |
+
+**准入边界**：以上新增来源仅为公开数据卡核对，尚未下载、未完成训练许可/字段覆盖/时间因果检查、未加入 4,863,900 既有合法候选统计，也未用于任何 GPU 训练。原始 `agent_id` 应作为 episode 内稳定身份特征/追踪键，建议训练主要使用具有跨任务意义的角色、职责、子任务目标和已发生交接；不能由观察性轨迹合成未选模型的最优 `model×effort` 标签。
+
+**最小训练样本增补建议**：保留原有 `task_id/episode_id/step` 与观测标签，增加可选 `pre_decision_state.agent = {agent_id, agent_role, parent_agent_id, team_id, coordination_mode, handoff_count_so_far}` 与 `pre_decision_state.subtask = {subtask_id, subtask_goal, task_phase}`；明确 observed_at、missing_reason、source_id。再对照物化后的 Laya/Kev 实际 `state` 文本或结构化编码，确认输入真正进入模型；未做之前标为 PLANNED。
