@@ -519,17 +519,25 @@ print(json.dumps(payload))
 """
 
 def fetch_live_status():
-    cmd = ["ssh", "-o", "ConnectTimeout=4", "a6000", "python3"]
-    res = subprocess.run(cmd, input=REMOTE_SCRIPT, capture_output=True, text=True, timeout=12)
-    if res.returncode == 0 and res.stdout.strip():
-        try:
-            return json.loads(res.stdout.strip())
-        except Exception as e:
-            sys.stderr.write(f"JSON parse error: {e}\n")
+    cmd = ["ssh", "-o", "ConnectTimeout=8", "a6000", "python3"]
+    try:
+        res = subprocess.run(cmd, input=REMOTE_SCRIPT, capture_output=True, text=True, timeout=30)
+        if res.returncode == 0 and res.stdout.strip():
+            try:
+                return json.loads(res.stdout.strip())
+            except Exception as e:
+                sys.stderr.write(f"JSON parse error: {e}\n")
+                return None
+        else:
+            sys.stderr.write(f"SSH fetch error: {res.stderr}\n")
             return None
-    else:
-        sys.stderr.write(f"SSH fetch error: {res.stderr}\n")
+    except subprocess.TimeoutExpired:
+        sys.stderr.write("SSH fetch timed out (30s), will retry next tick...\n")
         return None
+    except Exception as e:
+        sys.stderr.write(f"Fetch error: {e}\n")
+        return None
+
 
 def main():
     parser = argparse.ArgumentParser()
