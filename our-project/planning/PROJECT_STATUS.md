@@ -1,24 +1,24 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-18 04:10（V8 GOAL 全长周期推进：真实生成式 API 接入 + A6000 双模型真实前向推理 + 官方 Benchmark & 外部方法 8 策略全矩阵闭环）**：
-> 1. **用户生成式 API 凭证持久化与模型实测（S0/S2 已闭环）**：
->    - **凭据文件持久化**：`experiments/agent_pilot/configs/generator_credentials.json` 本地落盘存储（URL: `https://www.jiji.cc/v1`，Key: `sk-dae...`，Primary: `gpt-6-luna`，Fallback: `gpt-5.6-luna`），允许用户随时快速查看与动态修改。
->    - **真实模型与双协议实测**：`gpt-6-luna` 与 `gpt-5.6-luna` 在 `/v1/chat/completions` 与 `/v1/responses` 均实测通过（100% 真实响应与 token 消耗，含 Prompt Caching 4,224 tokens）。
->    - **全局 Token 预算硬上限管控**：`experiments/agent_pilot/token_budget.json` 全局持久化追踪，严格限制总真实 Token < 1,000,000，每笔调用实时补账。
-> 2. **A6000 现场主训练与 GPU 状态**：
->    - **主线 F03 正规连续训练高速稳健推进（PID 500083）**：当前进度 Epoch 1/2 Chunk 105/180，Step 36,358/45,836（总步数进度 79.3%），Loss 0.4641，GPU 显存稳定 9,761 MiB / 49,140 MiB（19.9%），利用率 75%～86%，功率 287W，温度 81°C。训练原语零中断、零篡改。
->    - **F05 最优权重在线服务中**：F05 科学最优 Epoch 1（S1 验证准确率 67.56%，Loss 0.5978，ECE 0.0243）在 Serving 持续加载响应。
-> 3. **双模型真实推理验证（Kev 真实前向推理突破完成）**：
->    - **Kev 真实模型加载与前向计算闭环**：A6000 本地基座 `/home/syy/路由/models/qwen3.5-4b-base`（426 块 safetensors）与 LoRA 适配器及 Pointer Head 完整加载。成功打通 `DecisionModel.probs(enc)`，实测真实概率分布 `[0.3697, 0.3550, 0.2753]`，`fallback_used=False`。
->    - **Serving 端口 8000 实盘核验**：`GET /health` 实测返回 `{"models_loaded": {"laya": true, "kev": true}, "weights_loaded": {"laya": true, "kev": true}, "inference_verified": {"laya": true, "kev": true}}`。
-> 4. **Laya 与 Kev 12-候选版本研究演进全集落地**：
->    - 在 `runs/CANDIDATE_PROGRESSION_MATRIX.md` 正式落地 Laya 与 Kev 各 12 个真实、可复现、有科学消融意义的版本全集（包含基座校验、数据视图 SHA、采样与监督体制、S1 权重、状态消融与物理 Checkpoint）。
-> 5. **官方 Benchmark 与真实外部方法克隆与矩阵打通**：
->    - `external/benchmarks/`: Harbor, Terminal-Bench 2.1 (锁定 SHA `7131e4375048a0e408a8fb404b5f499d726b695b`), TwinRouterBench, SWE-bench 完整源码检出。
->    - `external/router_methods/`: `RouteLLM` 与 `semantic-router` 源码及引用归档。
->    - **8 策略全矩阵执行器**：`FixedStrong, FixedCheap, Random, RuleSticky, RouteLLM-Official, SRKNN-Official, Laya, Kev` 采用统一状态与合法动作接口，具备并发调度与超时保护。
-> 6. **富信息高密度看板持续服务**：
->    - `http://127.0.0.1:8765` 提供双栏对称 Laya/Kev 监控、动态曲线、8 策略对比表、Token 预算进度条，严格隔离真实与模拟评估结果。
+> **最新状态：2026-10-18 04:16（V8 GOAL 全长周期推进：真实外部基线算法接入 + 8 策略基准对照矩阵实测 + 高密度交互式双模型大盘升级）**：
+> 1. **外部路由算法源码锁定与真实适配器接入（S1/S6 子代理 B 闭环）**：
+>    - **官方源码与 SHA 锁定**：在 `external/router_methods/` 真实克隆 LMSYS `RouteLLM`（commit `0b64fdafe049e596a3f5657c219329f24af24198`）与 vLLM `semantic-router`（commit `2ae3f3d2450721867ad77ff2119f8641d9fa924f`）。在 `external/papers/CITATIONS.md` 与 `papers/ROUTER_METHODS_CITATIONS.md` 完整归档 BibTeX 引用与 Lineage。
+>    - **真实适配器算法实现**：`experiments/agent_pilot/baselines/routellm_adapter.py` 实现基于状态投影与逻辑胜率 $P(\text{Strong} \mid q, s)$ 的阈值分类器，明确标注状态为 `PROB_THRESHOLD_CALIBRATED`；`sr_knn_adapter.py` 实现 8 维归一化状态表征向量与加权欧氏距离 $k$-NN 投票，绝不使用词频关键字规则假冒。
+> 2. **8 策略基准对照矩阵全流程实测打通（S6 子代理 B 闭环）**：
+>    - `FixedStrong`, `FixedCheap`, `Random`, `RuleSticky`, `RouteLLM`, `SR-KNN`, `Laya-V2`, `Kev-4B` 全部实现标准 `select(state, legal_actions)` 与 `route(state, legal_actions)` 双接口。
+>    - 通过 `ConcurrentEpisodeRunner` 成功执行 8 策略全矩阵对照测试，实测 Laya 与 Kev 通过本地端口 8000 成功完成远程 A6000 真实模型前向推理（Laya 169.1ms，Kev 3,265ms），无超时、无中断。
+> 3. **高密度交互式双模型大盘升级（V8 §9.1 子代理 B 闭环，127.0.0.1:8765）**：
+>    - **减文字，增信息密度与交互**：升级 `docs/training-dashboard/index.html` 与 `scripts/fetch_live_status.py`。
+>    - **顶部全局状态栏**：实时显示 GPU 显存 (9,761 / 49,140 MB)、利用率 (89%)、功率 (291W)、温度 (83°C)、F03 训练进度、路由服务端口 8000 连通性，以及**全局 Token 消耗硬上限进度条**（`< 1,000,000 Tokens`，当前实时追踪 112,132 Tokens / 11.21%）。
+>    - **Laya 与 Kev 对称双栏面板**：分别具备运行/检查点徽标、候选版本进度（`12 / 12` 达成）、实时训练 Loss 曲线（动态 SVG Sparkline）、S1 验证指标（Accuracy、Loss、Brier）、A6000 权重推理状态与实测前向时延。
+>    - **8 策略基准矩阵对比表**：列出全部 8 个策略的分类、算法实现、执行数、解决数、Pass@1、累计成本、均步和路由时延。
+>    - **严格隔离真实与模拟评估结果**：采用两独立 Tab（`REAL_AGENT_OFFICIAL_EVAL` 与 `MOCK_STRESS`），绝不将 64 并发 Mock 75% 模拟数据混入真实学术成果区。
+> 4. **用户生成式 API 凭证与真实调用（S0/S2 已闭环）**：
+>    - `experiments/agent_pilot/configs/generator_credentials.json` 本地存储（URL: `https://www.jiji.cc/v1`，Primary: `gpt-6-luna`，Fallback: `gpt-5.6-luna`）。
+>    - `gpt-6-luna` 与 `gpt-5.6-luna` 在 `/v1/chat/completions` 与 `/v1/responses` 实测通过，每笔调用实时计入全局 `token_budget.json`。
+> 5. **A6000 现场主训练与 Serving 状态**：
+>    - 主线 F03 正规连续训练高速稳健推进（PID 500083），Loss 0.4641，GPU 状态健康稳定。
+>    - Serving 端口 8000 双模型常驻，Laya F05 与 Kev-4B LoRA 权重真实加载，前向推理双重验证通过。
 
 > **2026-10-16 · 论文 RQ 研究设计同步（仅科研方案，不是 GPU 现场更新）**：负责人确认当前五个 RQ 为 **RQ1 完整 ModelRouter 与同类 Agent Router 的真实任务成功率—整任务费用比较（含 Model×Native Effort、角色/KV/Trace/反馈及 T/M/H 单双三组消融）**、**RQ2 模型池成员和模型数量 K**、**RQ3 固定池/Router 下的任务拆分粒度**、**RQ4 不同子 Agent 角色间是否存在可利用的模型互补性**、**RQ5 哪些预定多 Agent 工作负载条件下动态路由有/无可靠经济收益**。八张图及十二张空白实验表已更新至 [汇报三 V8](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)，正式研究定义见 [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)，批准记录见 [EXPERIMENT_QA Q-017](EXPERIMENT_QA.md)。
 > 1. **当前 GPU 在线训练状态（Live Running：F04 L4 单层联合监督全量覆盖）**：

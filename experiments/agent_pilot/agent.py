@@ -117,7 +117,7 @@ class SingleAgent:
         environment.reset(task)
 
         # Messages for LLM
-        instruction = task.get("description") or task.get("instruction") or f"Task: {task_id}"
+        instruction = task.get("instruction") or task.get("description") or f"Task: {task_id}"
         messages: List[Dict[str, str]] = [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": f"Task instructions:\n{instruction}"},

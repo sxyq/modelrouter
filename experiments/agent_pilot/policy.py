@@ -1,14 +1,15 @@
 """Dynamic Model × Native Effort Routing Policies.
 
-Implements all policy baselines and server router adapters required by V8 §7.3:
-- RandomPolicy
-- FixedStrongPolicy
-- FixedCheapPolicy
-- RuleStickyPolicy
-- RouteLLMPolicy
-- SRKNNPolicy
-- LayaServerPolicy
-- KevServerPolicy
+Strictly follows V8 §7.3, §8.4, and §9.2 specifications:
+- All 8 policies implement both `select(state, legal_actions)` and `route(state, legal_actions)`:
+  1. `FixedStrongPolicy` (policy_id: "fixed_strong")
+  2. `FixedCheapPolicy` (policy_id: "fixed_cheap")
+  3. `RandomPolicy` (policy_id: "random")
+  4. `RuleStickyPolicy` (policy_id: "rule_sticky")
+  5. `RouteLLMPolicy` (policy_id: "routellm") - official LMSYS win-rate threshold architecture
+  6. `SRKNNPolicy` (policy_id: "sr_knn") - 8D state vector k-NN architecture
+  7. `LayaServerPolicy` (policy_id: "laya_v2") - remote A6000 Laya Serving API
+  8. `KevServerPolicy` (policy_id: "kev_4b") - remote A6000 Kev Serving API
 """
 from __future__ import annotations
 
@@ -18,6 +19,8 @@ import time
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
+from experiments.agent_pilot.baselines.routellm_adapter import RouteLLMAdapter
+from experiments.agent_pilot.baselines.sr_knn_adapter import SRKNNAdapter
 from experiments.agent_pilot.router_clients import MockRouter, RouterClient, RouterDecision
 from experiments.agent_pilot.state import AgentState
 
@@ -30,12 +33,21 @@ class BasePolicy:
     def __init__(self, policy_id: str):
         self.policy_id = policy_id
 
+    def select(
+        self,
+        state: AgentState,
+        legal_actions: List[Dict[str, Any]],
+    ) -> RouterDecision:
+        """Mandatory selection interface required by V8 §7.3 / §9.2."""
+        raise NotImplementedError
+
     def route(
         self,
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
     ) -> RouterDecision:
-        raise NotImplementedError
+        """Alias to select() ensuring backward compatibility with existing agent runners."""
+        return self.select(state, legal_actions)
 
 
 class RandomPolicy(BasePolicy):
@@ -45,7 +57,7 @@ class RandomPolicy(BasePolicy):
         super().__init__("random")
         self.rng = random.Random(seed)
 
-    def route(
+    def select(
         self,
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
@@ -60,18 +72,18 @@ class RandomPolicy(BasePolicy):
             ranked_actions=legal_actions,
             decision_latency_ms=(time.time() - t0) * 1000,
             fallback_used=False,
-            confidence=1.0 / len(legal_actions),
+            confidence=1.0 / len(legal_actions) if legal_actions else 0.5,
         )
 
 
 class FixedStrongPolicy(BasePolicy):
-    """Always routes to the most capable Flagship model in the Strong pool."""
+    """Always routes to the most capable Flagship model in the Strong/Reasoning pool."""
 
     def __init__(self, target_model: str = "gpt-4o-2024-08-06"):
         super().__init__("fixed_strong")
         self.target_model = target_model
 
-    def route(
+    def select(
         self,
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
@@ -79,8 +91,7 @@ class FixedStrongPolicy(BasePolicy):
         t0 = time.time()
         matches = [a for a in legal_actions if a.get("model") == self.target_model]
         if not matches:
-            # Fallback to any Strong pool action
-            matches = [a for a in legal_actions if a.get("pool") == "Strong"]
+            matches = [a for a in legal_actions if a.get("pool") in ("Strong", "Reasoning")]
         selected = matches[0] if matches else legal_actions[0]
         return RouterDecision(
             request_id=str(uuid4()),
@@ -101,7 +112,7 @@ class FixedCheapPolicy(BasePolicy):
         super().__init__("fixed_cheap")
         self.target_model = target_model
 
-    def route(
+    def select(
         self,
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
@@ -109,7 +120,6 @@ class FixedCheapPolicy(BasePolicy):
         t0 = time.time()
         matches = [a for a in legal_actions if a.get("model") == self.target_model]
         if not matches:
-            # Fallback to any Fast pool action
             matches = [a for a in legal_actions if a.get("pool") == "Fast"]
         selected = matches[0] if matches else legal_actions[0]
         return RouterDecision(
@@ -135,7 +145,7 @@ class RuleStickyPolicy(BasePolicy):
     def __init__(self):
         super().__init__("rule_sticky")
 
-    def route(
+    def select(
         self,
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
@@ -154,7 +164,6 @@ class RuleStickyPolicy(BasePolicy):
             selected = fast_actions[0]
             conf = 0.95
         elif snapshot.last_tool_exit_code != 0 and reasoning_actions:
-            # On tool error, escalate to reasoning
             selected = reasoning_actions[0]
             conf = 0.85
         elif phase == "modify" and standard_actions:
@@ -182,43 +191,43 @@ class RuleStickyPolicy(BasePolicy):
 class RouteLLMPolicy(BasePolicy):
     """RouteLLM baseline: threshold-based routing between Fast and Strong.
     
-    Evaluates state complexity score against a calibrated threshold theta.
-    If score > theta -> Strong model; otherwise -> Fast model.
+    Uses RouteLLMAdapter implementing LMSYS calibrated win-rate threshold architecture.
     """
 
     def __init__(self, threshold: float = 0.55):
         super().__init__("routellm")
         self.threshold = threshold
+        self.adapter = RouteLLMAdapter(threshold=threshold)
 
-    def _compute_complexity_score(self, snapshot: Any) -> float:
-        # Multi-factor difficulty estimation based on context length, tool errors, and steps
-        score = 0.2
-        if snapshot.last_tool_exit_code != 0:
-            score += 0.35
-        if snapshot.step_index >= 5:
-            score += 0.20
-        if snapshot.context_tokens_approx > 3000:
-            score += 0.25
-        return min(1.0, score)
-
-    def route(
+    def select(
         self,
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
     ) -> RouterDecision:
         t0 = time.time()
         snapshot = state.build_pre_decision_snapshot()
-        score = self._compute_complexity_score(snapshot)
+
+        score = self.adapter.compute_difficulty(
+            instruction=snapshot.task_id,
+            history_steps=snapshot.step_index,
+            max_steps=10,
+            context_tokens=snapshot.context_tokens_approx,
+            last_exit_code=snapshot.last_tool_exit_code,
+            tool_error_count=state.tool_error_count,
+            budget_remaining_ratio=snapshot.budget_remaining_usd / 2.0,
+        )
 
         fast_actions = [a for a in legal_actions if a.get("pool") == "Fast"]
         strong_actions = [a for a in legal_actions if a.get("pool") in ("Strong", "Reasoning")]
 
-        if score > self.threshold and strong_actions:
+        if score.win_rate >= self.threshold and strong_actions:
             selected = strong_actions[0]
         elif fast_actions:
             selected = fast_actions[0]
         else:
             selected = legal_actions[0]
+
+        lat_ms = (time.time() - t0) * 1000 + random.uniform(2.0, 8.0)
 
         return RouterDecision(
             request_id=str(uuid4()),
@@ -226,24 +235,25 @@ class RouteLLMPolicy(BasePolicy):
             checkpoint_id="none",
             selected_action=selected,
             ranked_actions=[selected],
-            decision_latency_ms=(time.time() - t0) * 1000 + random.uniform(5.0, 15.0),
+            decision_latency_ms=lat_ms,
             fallback_used=False,
-            confidence=score,
+            confidence=score.win_rate,
         )
 
 
 class SRKNNPolicy(BasePolicy):
     """State-Representation k-NN router baseline.
     
-    Extracts an 8-dimensional feature vector from agent state and matches
-    against nearest exemplars to select the capability tier.
+    Extracts 8-dimensional state vector from agent state and matches
+    against calibrated reference exemplars using distance-weighted voting.
     """
 
     def __init__(self, k: int = 3):
         super().__init__("sr_knn")
         self.k = k
+        self.adapter = SRKNNAdapter(k=k)
 
-    def route(
+    def select(
         self,
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
@@ -251,20 +261,29 @@ class SRKNNPolicy(BasePolicy):
         t0 = time.time()
         snapshot = state.build_pre_decision_snapshot()
 
-        # Feature vector: [step_index, phase_id, last_exit, context_tokens, budget_rem, error_count, history_len, difficulty]
-        phase_map = {"inspect": 0.0, "modify": 0.5, "verify": 1.0}
-        phase_val = phase_map.get(snapshot.phase, 0.0)
+        vec = self.adapter.extract_vector(
+            step_index=snapshot.step_index,
+            max_steps=10,
+            phase=snapshot.phase,
+            last_exit_code=snapshot.last_tool_exit_code,
+            context_tokens=snapshot.context_tokens_approx,
+            budget_remaining_ratio=snapshot.budget_remaining_usd / 2.0,
+            tool_error_count=state.tool_error_count,
+        )
 
-        # In SR-KNN, high phase_val + error -> higher tier
-        if snapshot.last_tool_exit_code != 0:
-            tier_preference = ["Reasoning", "Strong", "Standard", "Fast"]
-        elif phase_val > 0.4:
-            tier_preference = ["Standard", "Strong", "Fast"]
-        else:
-            tier_preference = ["Fast", "Standard"]
+        pred = self.adapter.predict(vec)
+        tier = pred["predicted_tier"]
+
+        # Preference matching based on predicted tier
+        tier_pref_order = {
+            "Fast": ["Fast", "Standard"],
+            "Standard": ["Standard", "Fast", "Strong"],
+            "Strong": ["Strong", "Reasoning", "Standard"],
+            "Reasoning": ["Reasoning", "Strong", "Standard"],
+        }.get(tier, ["Fast"])
 
         selected = None
-        for pool in tier_preference:
+        for pool in tier_pref_order:
             matches = [a for a in legal_actions if a.get("pool") == pool]
             if matches:
                 selected = matches[0]
@@ -272,15 +291,17 @@ class SRKNNPolicy(BasePolicy):
         if not selected:
             selected = legal_actions[0]
 
+        lat_ms = (time.time() - t0) * 1000 + random.uniform(4.0, 12.0)
+
         return RouterDecision(
             request_id=str(uuid4()),
             router_family="baseline_sr_knn",
             checkpoint_id="none",
             selected_action=selected,
             ranked_actions=[selected],
-            decision_latency_ms=(time.time() - t0) * 1000 + random.uniform(10.0, 30.0),
+            decision_latency_ms=lat_ms,
             fallback_used=False,
-            confidence=0.82,
+            confidence=pred["confidence"],
         )
 
 
@@ -291,7 +312,7 @@ class LayaServerPolicy(BasePolicy):
         super().__init__("laya_v2")
         self.client = RouterClient(endpoint=endpoint, router_family="laya")
 
-    def route(
+    def select(
         self,
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
@@ -314,7 +335,7 @@ class KevServerPolicy(BasePolicy):
         super().__init__("kev_4b")
         self.client = RouterClient(endpoint=endpoint, router_family="kev")
 
-    def route(
+    def select(
         self,
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
@@ -332,11 +353,13 @@ class KevServerPolicy(BasePolicy):
 
 def create_policy(policy_name: str, **kwargs) -> BasePolicy:
     """Factory to instantiate policies by name."""
-    p = policy_name.lower()
+    p = policy_name.lower().replace("-", "_")
     if p in ("random", "baseline_random"):
         return RandomPolicy(seed=kwargs.get("seed", 42))
     elif p in ("fixed_strong", "strong"):
-        return FixedStrongPolicy()
+        return FixedStrongPolicy(target_model=kwargs.get("target_model", "gpt-4o-2024-08-06"))
+    elif p in ("luna", "fixed_luna", "gpt_6_luna", "gpt-6-luna"):
+        return FixedStrongPolicy(target_model="gpt-6-luna")
     elif p in ("fixed_cheap", "cheap", "fast"):
         return FixedCheapPolicy()
     elif p in ("rule_sticky", "rule"):

@@ -137,6 +137,19 @@ class ExperimentLedger:
         with open(ep_dir / "episode.json", "w", encoding="utf-8") as f:
             json.dump(result.to_dict(), f, indent=2)
 
+        # 1.5 Official Verifier Artifacts (CTRF, reward, verifier output)
+        if isinstance(result.evaluator_details, dict):
+            import shutil
+            ctrf_p = result.evaluator_details.get("ctrf_path")
+            if ctrf_p and os.path.exists(ctrf_p):
+                shutil.copy(ctrf_p, ep_dir / "ctrf.json")
+            reward_p = result.evaluator_details.get("reward_path")
+            if reward_p and os.path.exists(reward_p):
+                shutil.copy(reward_p, ep_dir / "reward.txt")
+            if "ctrf_summary" in result.evaluator_details:
+                with open(ep_dir / "verifier_summary.json", "w", encoding="utf-8") as f_vs:
+                    json.dump(result.evaluator_details["ctrf_summary"], f_vs, indent=2)
+
         # 2. Append to Global Aggregate Ledgers (Thread-safe)
         with _LEDGER_LOCK:
             # 2.1 experiments_ledger.jsonl

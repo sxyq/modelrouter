@@ -24,6 +24,7 @@ class TerminalBenchTask:
     git_blob_sha: str
     relative_path: str
     subset: str
+    instruction: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -31,6 +32,7 @@ class TerminalBenchTask:
             "category": self.category,
             "difficulty": self.difficulty,
             "description": self.description,
+            "instruction": self.instruction,
             "docker_image": self.docker_image,
             "task_toml_sha256": self.task_toml_sha256,
             "git_blob_sha": self.git_blob_sha,
@@ -79,11 +81,29 @@ class TerminalBenchLoader:
         subsets = self._manifest.get("subsets", {})
         data = subsets.get(subset_name, {})
         raw_tasks = data.get("tasks", [])
+        tasks_base_dir = (
+            Path(__file__).resolve().parent.parent.parent
+            / "external"
+            / "benchmarks"
+            / "terminal-bench-2-1"
+            / "tasks"
+        )
         tasks = []
         for item in raw_tasks:
+            tid = item["task_id"]
+            inst_text = ""
+            inst_file = tasks_base_dir / tid / "instruction.md"
+            if inst_file.exists():
+                try:
+                    inst_text = inst_file.read_text(encoding="utf-8").strip()
+                except Exception:
+                    pass
+            if not inst_text:
+                inst_text = item.get("description", "")
+
             tasks.append(
                 TerminalBenchTask(
-                    task_id=item["task_id"],
+                    task_id=tid,
                     category=item.get("category", "general"),
                     difficulty=item.get("difficulty", "medium"),
                     description=item.get("description", ""),
@@ -92,6 +112,7 @@ class TerminalBenchLoader:
                     git_blob_sha=item.get("git_blob_sha", ""),
                     relative_path=item.get("relative_path", ""),
                     subset=subset_name,
+                    instruction=inst_text,
                 )
             )
         return tasks
