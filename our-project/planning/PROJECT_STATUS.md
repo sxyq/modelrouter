@@ -724,3 +724,8 @@ configs/
 负责人现在允许在 Mac 上**只读使用既有 CC Switch 本地配置或合法本地代理**发现实际 URL/模型/GPT-6 与 Luna 的可用模型名及三种 API 协议，进行 1–2 个真实 Benchmark 任务及各方法的极短真实请求。全部真实 API 调用全局严格 <1,000,000 tokens（包括重试、两个子代理和三种协议），另外设保守 USD hard cap；不得打印、移动、提交密钥或使用未经授权的订阅 OAuth 通路。现有 `http://127.0.0.1:8765` 双模型看板继续沿用，更新真实训练版本数、正式 Benchmark、API 协议、真实/模拟状态和进度。所有 Laya/Kev 权重仍留 A6000，不下载 Mac。GOAL 长周期命令实际存在才可启用，不得虚报。
 
 按照“最新 GitHub 拉取/六文档重读→实际小阶段→脱敏归档→定向 commit/push→核 SHA→再重读”继续，结果按真实证据和最新进度回报。
+
+
+### 2026-10-18 · V8 UI 和外部基线追加纠正（补充要求）
+
+负责人明确“**看板简化=减少长篇文字，不是砍掉数据、曲线和交互功能**”：原双模型 Laya/Kev 仍应保留完整训练/验证趋势、Best vs Latest、历史版本切换、真实 Benchmark 全策略横向比较、Token/USD 预算、开发阶段、真实/MOCK 隔离和按需详情；首页文字应简短高信息密度。另要求 **RouteLLM / SR-KNN 官方真实算法、FixedStrong/FixedCheap/RuleSticky/Random 与自有 Laya/Kev 一起，在相同 1–2 个官方 Terminal-Bench Canary 的同一 Harbor Agent/Generator/Tool/Evaluator 闭环中真正执行**，不是仅 import、输出路由分数或用自造启发式。第二外部基准 TwinRouterBench 也按官方协议产生一条可评分对照。完整新增验收见 [V8 GOAL 方案 §9](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。本条属于已确定执行规范，不代表这些真实基线/看板验收已完成；保持主 Agent+2 子代理、真实总 Token 上限与健康服务器训练不变。
