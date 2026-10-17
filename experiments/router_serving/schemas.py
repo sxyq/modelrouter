@@ -77,3 +77,5 @@ class HealthResponse(BaseModel):
     gpu_memory_total_mb: Optional[float] = None
     gpu_utilization_pct: Optional[float] = None
     models_loaded: Dict[str, bool] = Field(default_factory=dict)
+    weights_loaded: Dict[str, bool] = Field(default_factory=dict)
+    inference_verified: Dict[str, bool] = Field(default_factory=dict)

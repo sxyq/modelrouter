@@ -12,6 +12,7 @@ import json
 import logging
 import os
 import random
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -20,6 +21,9 @@ from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 logger = logging.getLogger("experiments.agent_pilot.router_clients")
+
+# Limit concurrent remote calls to avoid overloading single-worker uvicorn
+_ROUTER_SEMAPHORE = threading.Semaphore(2)
 
 
 @dataclass
@@ -130,7 +134,7 @@ class RouterClient:
     def __init__(
         self,
         endpoint: Optional[str] = None,
-        timeout: float = 3.0,
+        timeout: float = 20.0,
         max_retries: int = 2,
         router_family: str = "laya",
     ):
@@ -142,13 +146,14 @@ class RouterClient:
         self.timeout = timeout
         self.max_retries = max_retries
         self.router_family = router_family
+        self._opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
     def is_healthy(self) -> bool:
         """Checks if the remote serving endpoint /health returns 200 OK."""
         try:
             url = f"{self.endpoint}/health"
             req = urllib.request.Request(url, method="GET")
-            with urllib.request.urlopen(req, timeout=1.0) as resp:
+            with self._opener.open(req, timeout=3.0) as resp:
                 return resp.status == 200
         except Exception:
             return False
@@ -175,42 +180,43 @@ class RouterClient:
             "features_presence_mask": [1] * 8,
         }
 
-        # Try remote endpoint
+        # Try remote endpoint with concurrency throttle
         attempts = 0
         last_err = ""
-        while attempts <= self.max_retries:
-            attempts += 1
-            t0 = time.time()
-            try:
-                url = f"{self.endpoint}/route"
-                data = json.dumps(payload).encode("utf-8")
-                req = urllib.request.Request(
-                    url,
-                    data=data,
-                    headers={"Content-Type": "application/json"},
-                    method="POST",
-                )
-                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-                    lat_ms = (time.time() - t0) * 1000
-                    if resp.status == 200:
-                        body = json.loads(resp.read().decode("utf-8"))
-                        return RouterDecision(
-                            request_id=body.get("request_id", req_id),
-                            router_family=body.get("router_family", self.router_family),
-                            checkpoint_id=body.get("checkpoint_id", "remote-checkpoint"),
-                            selected_action=body.get("selected_action", legal_actions[0]),
-                            ranked_actions=body.get("ranked_actions", []),
-                            decision_latency_ms=lat_ms,
-                            fallback_used=body.get("fallback_used", False),
-                            fallback_reason=body.get("fallback_reason"),
-                            confidence=body.get("confidence"),
-                        )
-            except urllib.error.URLError as e:
-                last_err = f"URLError: {e.reason}"
-            except urllib.error.HTTPError as e:
-                last_err = f"HTTPError {e.code}: {e.reason}"
-            except Exception as e:
-                last_err = f"Exception: {str(e)}"
+        with _ROUTER_SEMAPHORE:
+            while attempts <= self.max_retries:
+                attempts += 1
+                t0 = time.time()
+                try:
+                    url = f"{self.endpoint}/route"
+                    data = json.dumps(payload).encode("utf-8")
+                    req = urllib.request.Request(
+                        url,
+                        data=data,
+                        headers={"Content-Type": "application/json"},
+                        method="POST",
+                    )
+                    with self._opener.open(req, timeout=self.timeout) as resp:
+                        lat_ms = (time.time() - t0) * 1000
+                        if resp.status == 200:
+                            body = json.loads(resp.read().decode("utf-8"))
+                            return RouterDecision(
+                                request_id=body.get("request_id", req_id),
+                                router_family=body.get("router_family", self.router_family),
+                                checkpoint_id=body.get("checkpoint_id", "remote-checkpoint"),
+                                selected_action=body.get("selected_action", legal_actions[0]),
+                                ranked_actions=body.get("ranked_actions", []),
+                                decision_latency_ms=lat_ms,
+                                fallback_used=body.get("fallback_used", False),
+                                fallback_reason=body.get("fallback_reason"),
+                                confidence=body.get("confidence"),
+                            )
+                except urllib.error.URLError as e:
+                    last_err = f"URLError: {e.reason}"
+                except urllib.error.HTTPError as e:
+                    last_err = f"HTTPError {e.code}: {e.reason}"
+                except Exception as e:
+                    last_err = f"Exception: {str(e)}"
 
         # Remote server unreachable -> Fallback to MockRouter
         logger.warning(

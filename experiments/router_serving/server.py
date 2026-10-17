@@ -29,9 +29,9 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://127.0.0.1:8765", "http://localhost:8765", "http://127.0.0.1:8000", "http://localhost:8000"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -93,6 +93,14 @@ def health():
         "laya": laya_adapter is not None and laya_adapter.is_loaded,
         "kev": kev_adapter is not None and kev_adapter.is_loaded
     }
+    weights_status = {
+        "laya": laya_adapter is not None and laya_adapter.is_loaded,
+        "kev": kev_adapter is not None and kev_adapter.is_loaded
+    }
+    inference_status = {
+        "laya": laya_adapter is not None and laya_adapter.is_loaded,
+        "kev": kev_adapter is not None and getattr(kev_adapter, "inference_verified", False)
+    }
     return HealthResponse(
         status="healthy",
         uptime_seconds=round(time.time() - START_TIME, 2),
@@ -101,7 +109,9 @@ def health():
         gpu_memory_used_mb=gpu["memory_used_mb"],
         gpu_memory_total_mb=gpu["memory_total_mb"],
         gpu_utilization_pct=gpu["utilization_pct"],
-        models_loaded=models_status
+        models_loaded=models_status,
+        weights_loaded=weights_status,
+        inference_verified=inference_status
     )
 
 

@@ -212,6 +212,33 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
         output_price_per_1m=10.00,
         reasoning_price_per_1m=0.0,
     ),
+    # 6. Luna Generators (V8 Live Execution)
+    "gpt-6-luna": ModelSpec(
+        model_id="gpt-6-luna",
+        pool="Reasoning",
+        provider="jiji",
+        display_name="GPT 6 Luna",
+        context_window=200_000,
+        max_output_tokens=65_536,
+        native_efforts=("none", "low", "medium", "high"),
+        input_price_per_1m=2.00,
+        output_price_per_1m=8.00,
+        reasoning_price_per_1m=8.00,
+        cache_read_price_per_1m=0.50,
+    ),
+    "gpt-5.6-luna": ModelSpec(
+        model_id="gpt-5.6-luna",
+        pool="Reasoning",
+        provider="jiji",
+        display_name="GPT 5.6 Luna",
+        context_window=128_000,
+        max_output_tokens=32_768,
+        native_efforts=("none", "low", "medium", "high"),
+        input_price_per_1m=1.00,
+        output_price_per_1m=4.00,
+        reasoning_price_per_1m=4.00,
+        cache_read_price_per_1m=0.25,
+    ),
 }
 
 
