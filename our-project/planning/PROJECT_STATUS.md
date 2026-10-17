@@ -675,4 +675,8 @@ configs/
   - **Epoch 1 完结成绩**：Train Loss 0.5295，S1 Val Acc 64.71%，S2 Val Acc 52.52%，**S3 Val Acc 53.53%**（展现出极强的底层资源鉴别力）；
   - **预计完训时刻（ETA）**：Epoch 2 剩余 114 个 Chunk，预计于 **10 月 18 日上午约 08:00** 全面完训，并将全自动连续启动 **F06（Stage 3 累积层 L1+L2+L3 全量）**。
 
+## 2026-10-18 · V8 数据增补、Laya/Kev 双训练与本机 Agent/Benchmark 长周期实施授权（计划状态）
 
+负责人当前要求：按 [V8 一体执行方案](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md) 启动服务器来源补缺/清洗、独立新训练（保持既有 Laya 队列；尝试 Kev-4B 单卡双并发，依据真实吞吐与资源决定持续与否）、收敛观察；本机下载已选 Benchmark 与 1–2 个开源路由基线，搭建最简单单 Agent + Harbor 任务执行框架，准备后续 RQ1–RQ3 同口径对照。具体来源、证据等级和禁训政策已写回 [唯一数据台账](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)。
+
+**本条是已授权的执行计划，不是执行完毕报告**：本聊天没有直接 SSH 操作 A6000 或控制用户 Mac；当前实际 Run、数据磁盘路径、Kev 梯度步骤、本机 Benchmark、模型权重是否已下载及外部路由是否跑通都需 Execution Agent 在现场核实后更新。付费 API URL/Key 和具体费用授权明早再补；今晚不调用新的付费端点。Benchmark 与最终测试数据继续禁训和隔离。
