@@ -698,3 +698,23 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 **准入边界**：以上新增来源仅为公开数据卡核对，尚未下载、未完成训练许可/字段覆盖/时间因果检查、未加入 4,863,900 既有合法候选统计，也未用于任何 GPU 训练。原始 `agent_id` 应作为 episode 内稳定身份特征/追踪键，建议训练主要使用具有跨任务意义的角色、职责、子任务目标和已发生交接；不能由观察性轨迹合成未选模型的最优 `model×effort` 标签。
 
 **最小训练样本增补建议**：保留原有 `task_id/episode_id/step` 与观测标签，增加可选 `pre_decision_state.agent = {agent_id, agent_role, parent_agent_id, team_id, coordination_mode, handoff_count_so_far}` 与 `pre_decision_state.subtask = {subtask_id, subtask_goal, task_phase}`；明确 observed_at、missing_reason、source_id。再对照物化后的 Laya/Kev 实际 `state` 文本或结构化编码，确认输入真正进入模型；未做之前标为 PLANNED。
+
+## 2026-10-18 追加：V8 长周期数据增补准入与公开来源再核（非新训练验收）
+
+执行与双模型/本机实验的完整方案见 [V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018](../planning/V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。本段属于**已有 Source ID 的增量资料核对与使用限制**，不重复登记成新的独立样本量，也不表示已经下载或运行。来源查询日：2026-10-18。
+
+| 现有 ID | 更新核对的出处与新增认识 | 服务器处理规则 | 训练准入 |
+|---|---|---|---|
+| TRA-001 | [Open-SWE-Traces 数据卡](https://huggingface.co/datasets/nvidia/Open-SWE-Traces) 与 [README](https://huggingface.co/datasets/nvidia/Open-SWE-Traces/blob/main/README.md) 披露 v1.0 已因不当工具行为清理过轨迹，后续 v1.1/v1.2 增源；实际 `messages/tools/repo/instance_id/trajectory_id/resolved` 与文件数量随版本不同 | 优先盘点服务器现有分片的 revision/sha，去重、仅补缺；`resolved=-1` 留 UNKNOWN；决策前状态不得包含未来答案/最终 patch | 仅有合规训练许可、合法 Train 身份、可核真实已执行动作时用于观察性 outcome，不自动产生所有候选 `model×effort` 标签 |
+| TRA-002 | [SWE-smith trajectories 官方卡](https://huggingface.co/datasets/SWE-bench/SWE-smith-trajectories)：MIT，公开 `messages/instance_id/resolved/model/traj_id/patch`，文件有 `tool/xml/ticks` 视图 | 复用已清洗分片；跨视图按真实轨迹标识避免重复计入；`patch` 只允许终局评价 | 仅观察性轨迹结果；不能由同一行为推断未运行模型的结果 |
+| TRA-004 | [AgentSuite multi_challenge 官方卡](https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories) 披露 30 模型、273 任务及 thinking 配置，`model_path/sampling_params/messages/eval_result` 等 | 优先复用已加工 8 模型；新增模型具体版本与许可再核；同题跨模型可比较但不必是同中途状态 | 权利不清的新增记录不投入正式训练；thinking variant ≠ 所有 Provider 原生 effort |
+| CACHE-001 | [Mooncake FAST25-release](https://github.com/kvcache-ai/Mooncake/tree/main/FAST25-release) 的 `timestamp/input_length/output_length/hash_ids` 提供 512-token 块的可复用前缀机会 | 与 CACHE-002 去重；在独立 `CACHE_REUSE_OPPORTUNITY` view 做时序/前缀重复分析；不能强行与 Agent task ID join | **OBSERVED_REUSE / SIMULATED**，不是 Provider 真实 `cached_read_tokens` 或真实 USD；不得造出缓存击中率真值 |
+| CACHE-005 | 真实 Provider Usage 与本机引擎可核验指标（非已下载数据集） | 未来 Agent `model_calls.jsonl` 按 `episode_id/decision_id/request_id` 记原生 usage、价格版本与缺失 | 只有来源可核、与同 Episode 正确连接时可用 `MEASURED_CACHE` 训练；缺失保持 null |
+| ROUTE-003 | [TwinRouterBench](https://github.com/CommonstackAI/TwinRouterBench) 包含静态监督评测与动态 SWE-bench 评测；有公开的模型路由对照实现 | 本机放 `external/benchmarks/TwinRouterBench`，不并入原始训练缓存 | **EVAL_BENCHMARK_ONLY，不参与训练与阈值调优** |
+| ENV-004 | [Terminal-Bench 2.1](https://github.com/harbor-framework/terminal-bench-2-1)，Harbor 提供容器执行与评分；项目已有 8/24/57 隔离划分 | 本机放 `external/benchmarks/terminal-bench-2-1`；先 Canary `fix-git` / `count-dataset-tokens` | **BENCHMARK_ONLY**，不得进入 Laya/Kev 学习；Final 57 维持封存 |
+
+**数据视图分界**：`OBSERVED_AGENT_OUTCOME`（观测行为、决策前可见输入与终局真实 label）；`ROUTER_CHOICE`（有效静态胜者/可比行动依据）；`CACHE_REUSE_OPPORTUNITY`（前缀可重用机会）；`MEASURED_CACHE`（未来同任务实测缓存 usage）。不同来源无同一真实 `episode_id` 时绝不横向伪联结。相同任务/仓库/近重复 issue 的所有前缀须在同一划分。新增训练必须沿用许可证、Train 身份、时间因果审查；测试集、Benchmark、仅分析集始终排除。
+
+**外部方法 vs Benchmark**：`RouteLLM`（[源码](https://github.com/lm-sys/RouteLLM)，强弱双模型 query-level router）和 `SR-KNN`（[vLLM semantic-router](https://github.com/vllm-project/semantic-router) 或 TwinRouterBench 已有适配）是**方法参考**；Terminal-Bench/TwinRouterBench/SWE-bench 是**评测资源**。代码目录 `external/router_methods/` 与 `external/benchmarks/` 严格区分。只有已用相同真实任务、同池动作约束、同 Harness/费用口径运行后的结果，才可以填写 V8 RQ1–RQ3 实验表。
+
+**执行/下载状态**：本段为 Planning 的在线来源复核；服务器新文件有无、磁盘实际路径、最终许可、数据清洗/训练、Mac Benchmark 与模型并发状态，均待 Execution Agent 现场回传，不声称已经完成。
