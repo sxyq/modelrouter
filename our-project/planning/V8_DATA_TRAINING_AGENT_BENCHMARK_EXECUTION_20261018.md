@@ -7,7 +7,21 @@
 - **服务器：数据→清洗→可用标签入库→逐阶段训练→收敛观察。** 保留既有 V2.1 正式 Laya 38 组原协议，新的数据/损失/KV 联合实验另外编号、另外输出。Kev-4B 优先按同源 V2.1 F05 L1+L2 进行第一阶段跨基模对照，再以合法补充数据做独立训练分支。单 A6000 试测双训练并发的**合计吞吐/显存/功耗/主任务延迟**，收益和安全共同决定长期策略。
 - **本机 Mac：Benchmark 源码、外部路由方法源码、最简单 Agent、Laya 最优权重、策略接口、真实输入输出及账本。** 今晚不使用新付费 API。运行 **Oracle/Marker/Mock** 只算环境或接口烟测，不算 Agent 成功。
 
-三名子代理可分别负责：A 服务器数据与训练；B 本机 Benchmark/单 Agent；C 外部 RouteLLM/SR-KNN/指标账本。主代理负责资源协调、进度与最终提交，**同一 SSH/GPU 队列仅由 A 管理**。
+**执行组织：主 Execution Agent + 仅 1 名子代理（硬限制）。** 主 Agent 负责服务器 A6000 的数据下载/清洗/双模型训练/唯一调度管理、整体验收与 Git 提交；唯一子代理负责本机 Harbor/Benchmark/单 Agent 框架、外部 RouteLLM/SR-KNN 适配、Laya 最优权重下载及本地推理、输入输出和费用日志。若子代理无法并行完成任务，由主 Agent串行补充，不得临时增派第二/第三子代理。双模型训练的两个 GPU 进程 ≠ 两个执行子代理，仍需通过同一服务器写入负责人统一协调。
+
+## 0.1 本轮新增负责人强制要求：每阶段重新同步最新 GitHub（2026-10-18）
+
+**远端 GitHub `main` 上的最新 V8 文档是执行要求的唯一持续更新入口。不能只在任务开始时读一次，也不能把最初收到的长提示词永久当作不变命令。** 本轮负责人特别要求“每完成一部分就重新读、及时更新 Git、规范整理目录”。具体闭环如下：
+
+1. **开始每个阶段前**（至少是数据盘点与下载、清洗、Kev 同源训练、增补 Agent 状态、KV 训练、首次验证/收敛节点、本机环境、Agent 接口、外部方法、Benchmark smoke、运行结果归档这些边界），在本机及服务器各自已有工作树查看 `git status` / `git rev-parse HEAD`；保护未提交改动后执行 `git fetch origin main`，在可安全快进时 `git pull --ff-only origin main`。不能强制 reset/覆盖别人或本轮子代理正在写的文件。
+2. **每次拉取后重新阅读**本文件、`our-project/planning/PROJECT_STATUS.md`、`our-project/planning/RESEARCH_OVERVIEW.md`、`our-project/planning/EXPERIMENT_QA.md`、`our-project/data/DATA_SOURCE_AND_POLICY_REGISTRY.md` 和 `汇报/汇报三/ModelRouter论文实验与图表规划.md` 的最新相关段落，尤其是任何新授权、否决、更改范围、Benchmark/Test 隔离、训练数据与模型池限定；记下读取到的 Git SHA。若负责人新要求与正在执行的非安全性工作冲突，安全停止**对应新阶段**并按新决定调整，避免重跑已完成健康训练；不触碰其他正常运行的 GPU 子进程。
+3. **每完成一个可验证阶段**就更新原有对应文档：实际当前进度/下一步到 `PROJECT_STATUS.md`；数据源许可/清洗/字段事实到唯一数据台账；已确认决定到 `EXPERIMENT_QA.md`；只有科学方法发生实质变化时才改 `RESEARCH_OVERVIEW.md`；本文件只记执行计划/阶段协议及必要修订。记录已完成、未完成、实测命令/样本/输出路径/版本、当前阻塞和资源占用，不把计划当成结果。
+4. **阶段完成马上 Git 提交并推送**可公开的源码、配置、Markdown、脱敏统计和简洁结果清单：`git status`→针对性 `git add <明确路径>`→`git diff --cached`→`git commit -m '<阶段成果>'`→`git push origin main`→再次核对远端 SHA。阶段无实际改变时不制造空提交；若网络失败保留本地 commit，真实汇报 `PUSH_PENDING`，待网络恢复再同步。不要把训练未完成/测试未运行说成完成；主 Agent 是**唯一统一提交负责人**，子代理产物交由主 Agent 审阅并合并，不各自竞争推送 `main`。
+5. **每个阶段收尾都整理目录**：服务器仅用已存在的 `data/公开数据`、`runs/`、`.tmp/` 归类数据、模型与阶段临时文件；本机区分 `external/benchmarks`（题目/评分器）、`external/router_methods`（外部论文方法）、`experiments/agent_pilot`（自有代码）、`models/agent_pilot`（模型实体）、`runs/agent_pilot`（实验结果/日志）、`.runtime/agent_pilot`（临时物）。禁止根目录散落 `test.py`/`tmp*.json`/下载模型、遍地 `nohup.out` 或随机脚本；运行失败临时证据先归档再清理，不能删历史数据/有效 checkpoint。
+6. **Git 和隐私边界**：密钥、Token、原始大数据、模型权重、完整可能敏感的 prompt/completion、Benchmark 封存答案、Docker 镜像与大批完整日志不进入 Git；仅提交脱敏 `summary.json`、manifest、路径索引、版本哈希、调用字段 Schema 和必要可复现代码。真实每次输入/输出、工具 stdout/stderr、usage、价格快照、缓存计量和完整 evaluator 结果必须持久化在**受保护的本地/服务器运行结果目录**，并在索引中注明路径/权限。不要为追求及时提交直接 `git add -A`。
+7. **单一主线、长周期运行**：服务器训练继续无人值守，本地子代理可同时准备 Agent；每到自然阶段边界自动执行上述刷新/提交/继续，无需等待负责人逐段确认；仅未授权的付费 API、禁训数据、Test 解封等仍不可擅自执行。不要把本机 Benchmark 与服务器训练强制串行，也不要用新 Watcher/第二正式队列破坏已有连续控制器。
+
+**操作顺序约定**：`刷新仓库与重读最新要求 → 执行本阶段 → 实测/落盘/分类归档 → 更新唯一权威文档 → 定向 commit/push → 记录 SHA → 再次拉取并重读最新要求 → 下一阶段`。
 
 ## 1. 已检索的公开数据：按“能够训练什么”而非“行数多少”分类
 
