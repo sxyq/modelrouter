@@ -319,3 +319,49 @@ S0–S8 可交织执行但**主 Agent 只管理两名明确分工的子代理**�
 必须保留现有 `PROJECT_STATUS.md` 和数据唯一台账。阶段分别：`S0 源码与凭据安全检查 → S1 全量 Bench/方法源码下载 → S2 三协议短 smoke → S3 真实 Kev 推理 → S4 两模型≥12 候选训练与数据融合 → S5 Harbor 官方 Docker 1–2 题 → S6 真 RouteLLM/SRKNN 1–2 题 → S7 真 Laya/Kev Router 1–2 题 → S8 并发/账本/看板 → S9 阶段总结`，可并行重叠但每部分需可核的 manifest + 日志 + 回滚路径。Git 上线只保存可复现代码、真实脱敏结果和出处，完整 I/O 与密钥永不 Push。每完成一阶段：检查工作树→保护未提交工作→从 origin/main 安全快进→**重读六份最新文档及本节 §8**→验收证据→整理服务器与本机目录→更新正确权威文件→定向 commit/push→再次核 SHA→继续。新实验出错仅停止该新分支，不中断健康的历史正式训练。
 
 **最终硬验收**：① 官方 Benchmark 源码+SHA 真正下载且官方任务环境可运行，② 2 个外部方法真实算法而非规则伪装至少各 1–2 个同协议样例，③ GPT-6/Luna 在可用 CC Switch Provider 上完成短调用，Responses/Chat/Anthropic 各至少一段实际可用协议路径或标明确不可用，④ 所有真实 API 请求累加计量严格 < 1,000,000 tokens，⑤ Laya/Kev 均获得来自合法增补数据的阶段性验证，≥12 个有效不同候选（如不能在一个夜晚做完继续长周期，不准假报），⑥ Kev 必须是实际权重推理且真 GPU 训练，⑦ Harbor 官方 1–2 Task 真 Agent+官方 grader 闭环，⑧ 受保护账本与双模型看板真实/模拟分离，⑨ 主 Agent+恰好两个子代理，阶段性 Git 复读/提交同步，⑩ 所有训练可恢复、合规、不抢断健康主线。对外展示任何无法通过的步骤用 `BLOCKED + cause + next bounded action`，不要直接宣称项目完整完成。
+
+
+## 9. 2026-10-18 最新补充：**仪表盘减文字，不减信息/功能；所有基线必须真实跑 Benchmark**
+
+> 本节是对 §7.6、§8.4、§8.6 与前述 GOAL 执行提示词的**补充和纠偏**，不替换原来服务器 Laya/Kev 持续训练、双子代理、CC Switch/三协议、<1,000,000 总 Token、受保护账本、分阶段提交等要求。**明确反对将大盘简化为几个数字和大片说明文字；也反对只给我们的 Laya/Kev 实现真实 Agent，而给竞品仅返回一个路由动作就宣称跑通。**
+
+### 9.1 仪表盘：更少文字、更高信息密度和交互性
+
+“简化”指**减少冗长自然语言与冗余静态文本**，**不是删除研究指标、对比曲线、任务明细、实验交互能力**。沿用 `http://127.0.0.1:8765`、`docs/training-dashboard/`、`scripts/fetch_live_status.py`，复用现有轻量前端与后台数据采集。禁止新建第三套 Dashboard 或仅为简化而取消模型训练曲线、Checkpoint 历史和实验记录；将这些按需加载、折叠或独立详情页。
+
+**建议布局（少字但丰富）：**
+
+1. **顶部横向紧凑状态栏**：A6000 GPU/VRAM、两训练状态、Router API、上次刷新时间和 STALE 指示、当前 Git SHA；用真实数据驱动的小数值/图标/进度条，不写长篇“正在努力训练”的文字。
+2. **主区域 Laya / Kev 对称双栏**：每栏具备 Run/Checkpoint、Epoch/Step/Chunk、训练 Loss 小趋势、S1/S2/S3 固定 Val（Accuracy、Brier 与 Loss 可切换）、Best vs Latest、已实测不同候选版本数 / 12、训练/服务可用状态。当前值与历史趋势同时可见；鼠标选择 Run/Epoch/Version 看详细曲线，不强制铺出每一条训练日志。两个模型的值绝不串写，Kev CPU smoke、heuristic 与真正模型 forward 必须显著分开。无数据 N/A、过期 STALE。
+3. **训练效果比较图**：支持 Laya / Kev 同口径切换对照，绘制固定 Val Accuracy / Loss / Brier 随 Epoch/Version 的趋势，标注样本数、验证口径和最佳物理可用 checkpoint。训练 loss 不与 val accuracy 混同一个未标量纲的坐标轴。无需一次画几十条；默认 1–2 条线，可选历史 Run。
+4. **Benchmark 与策略对比面板**：必须有真实实验矩阵——行是 `FixedStrong, FixedCheap, Random, RuleSticky, RouteLLM-Official, SRKNN-Official, Laya, Kev`，列是实际已执行 Canary/DEV 的 `N evaluated, N resolved, pass@1, known USD, tokens, p50/p95, fallback%`；可切换 Benchmark/任务/策略/模型池/seed。没有官方 Evaluator 结果时显示 `NOT_RUN`，别把“代码 import 成功”当完成。**真实/MOCK/Oracle 环境成绩分 Tab，不进入一个平均值。**
+5. **实验执行监控**：并发目标/活跃 Episode/完成与失败、全局 `real tokens used / 1,000,000`、USD hard cap、429/timeout、API 协议连通性（Responses/Chat/Messages）和 GPT-6/Luna 可用性。状态来自 Runner/账本，不靠静态写死 UI。
+6. **开发阶段进度与事件**：compact 阶段条（数据清洗、12+候选训练、真实 Kev Serving、Benchmark 下载、外部方法、Agent、协议、真实 Canary）、最近数条异常/里程碑事件；每条只有状态、时间、简短标题；点开显示证据文件路径、Git SHA、命令及完整日志。历史训练/实验结果以折叠详情、轻量二级页或按需加载，**数据不删除**。
+7. **视觉**：现代仪表盘布局、清晰字号/对齐/间距、密度适中；图表与数据值比长段落优先。无大面积装饰性说明/大篇营销文案；手机与桌面均可查看。微型趋势、进度条、表格、筛选器需真正响应数据，不放假按钮。首页初屏就能看“两个模型现在怎样、在验证集哪个最好、所有方法 Benchmark 怎样、是否还在跑”。
+8. **性能与采集**：原始详细 logs/checkpoint 数据落独立受保护 `runs/`；首页仅加载瘦身汇总 JSON，历史按需读取；分开本机 Runner 与服务器两数据源和各自 `collected_at/source_updated_at`。页面可 5–10 秒轻量轮询；禁止扫描全量大日志/把模型原始 I/O 推送 GitHub；不因采集器重启而重启 GPU 训练。
+
+**看板验收**：在本机独立终端实际启动单例 8765 和 sync，浏览器检查**两模型对称、可见动态曲线、可选择历史版本、基线比较表、Token/费用预算、真实与模拟隔离、STALE 更新**；提供截图/脱敏 smoke 记录及界面源码 Git SHA。**不能再用“2.1 KB JSON”和“页面非常简洁”替代研究信息完整性验收。**
+
+### 9.2 各竞品/固定基线必须完成与我们方法**同一真实 Agent + 同一 Benchmark**的闭环
+
+**最终目标不只是 Laya/Kev 实测，RouteLLM 与 SR-KNN、FixedStrong/FixedCheap/RuleSticky/Random 等基线也必须通过真实官方环境，不能只做 Import/模型排序接口。** 接入最新锁版的官方方法源码或其公开正式算法，实际运行每个策略对同一批 1–2 题 Canary；若算法与 Native Effort 不兼容，保留其能力边界，只使用合法公共候选并报告差异；不能以我们的手写启发式代替原论文方法。
+
+**最小公平试验矩阵：**
+
+| Task | 必跑固定/规则基线 | 必跑论文方法 | 必跑自有方法 | 证据 |
+|---|---|---|---|---|
+| Terminal-Bench Canary `fix-git` | FixedStrong, FixedCheap, RuleSticky, Random | RouteLLM 官方、SR-KNN 真实实现 | Laya 服务器实际 Forward、Kev 服务器实际 Forward | 同一 Harbor 官方 Docker sandbox 环境（各独立 instance）、官方 evaluator，逐策略独立 `episode.json` |
+| Terminal-Bench Canary `count-dataset-tokens` | 同上 | 同上 | 同上 | 同上；不足预算则严格按下方层次逐步运行 |
+
+**具体执行顺序**：
+1. 先单任务做 `FixedStrong` + 真正 Generator API + 官方 Harbor Tool Loop + 官方 Evaluator，证明整个链路；`FixedCheap` 重复同题，确认模型切换工作。只跑一个任务不等于 RQ1 结果显著。
+2. 在**同一任务、同一公开任务版本、统一预算/超时、统一 Generator Provider/模型池与相同努力等级合法约束**下，分别实际运行 `Random`、`RuleSticky`、`RouteLLM 官方算法`、`SR-KNN 真实算法`、`Laya`、`Kev`；每种策略由自己的 Router 决策实际触发后续生成式模型、Shell 工具和官方评分，形成自己的完整账本。不得把一条 Fixed 路径的结果复制到其他策略名下。
+3. 第一题跑通后再开展第二题；为节省预算，最小先 `1 task × 8 policies × 1 seed`，资源允许才到 `2 tasks × 8 policies × 1 seed`；所有请求共用用户已规定的 1,000,000 Token 硬上限和更低的实际 USD 限额。实际 Token 不足时按预算安全停止剩余矩阵，`NOT_RUN_BUDGET` 不编造分数。**不要求一夜内用完百万 Token。**
+4. 每个算法记录 `method_id, upstream_repo, upstream_commit, weights_or_training_origin, supported_pool, native_effort_capability, algorithm_used, task_id, model_choice, generator_model, all tool calls, official evaluator path, resolved, tokens, actual/estimated USD, walltime, retries, fallback flags`。
+5. **重要：算法来源与名称**。Repo 没有与当前场景兼容的公开 RouteLLM 权重/正式算法时不能用词汇启发式称作 `RouteLLM Official`；SR-KNN 没有用合法训练侧数据拟合前也不能将人工 exemplar 的分类作为论文成绩。此时该项 `BLOCKED_UPSTREAM_METHOD`，继续做 Fixed/Rule/自有方法的真实对照，并列明最小可恢复工作，不要造假通过。
+6. TwinRouterBench 的外部路由基准与 Terminal-Bench 的任务级 Agent 基准分别用**其官方协议**。先为 TwinRouterBench 跑官方加载、一次可以计分的真实路由 baseline 对照；SWE-bench 先做官方环境/评测入口烟测，后续在预算和授权允许时做完整任务。不要将不同 Benchmark 的 pass@1 合并为一个数字。
+7. 结果必须有 `REAL_AGENT_OFFICIAL_EVAL` 标记且包含官方 evaluator 文件，才能进入看板真实 `Pass@1`。仅路由动作正确 `ROUTE_SMOKE`、Mock Agent `MOCK_STRESS`、官方 Oracle `ENV_SMOKE`、测试题加载 `SCHEMA_ONLY` 均不计入真实解题率。成功率、费用和延迟按相同试验矩阵对齐，而不按零碎已跑策略混合分母。
+8. 各策略使用**同一高并发 Episode 调度器**，`max_concurrent_episodes`、Provider RPM/TPM/Router QPS、全局 token/USD 账本对所有方法生效；先单并发真实 8 策略，再逐步 2→4。真实模型调用必须显示模型名/协议/usage，路由器/生成器两种角色不能混淆。
+9. 把每个竞品方法的真实 1–2 个运行结果做脱敏 `summary.json` 或 `comparison.csv` 提交 GitHub（附上游 revision、实际执行环境 SHA 和评估路径/内容 hash），详细原始 prompt/output 留权限受控本机目录。完成后更新 `PROJECT_STATUS.md`、唯一 Benchmark/方法 manifest 和 Dashboard，定向 Commit/Push，再拉取最新 V8 方案。
+
+**本补充不增加子代理或停止服务器训练**：主 Agent 继续双模型真实训练/版本评估；子代理 A 完成官方 benchmark+真实 Agent；子代理 B 完成真实外部方法和可视化；恰好 2 名子代理，无二级派生。用户的要求是“论文方法真的参与整个 Agent/Benchmark 对照”，而不是“能对两个字符串输出路由分数”。
