@@ -1,0 +1,17 @@
+{
+  "policy_id": "laya_v2",
+  "policy_family": "model_router",
+  "description": "Laya-V2 421M multi-task token router served via A6000 endpoint with offline fallback.",
+  "max_steps": 15,
+  "time_budget_sec": 180.0,
+  "usd_budget": 2.0,
+  "max_tool_error_budget": 5,
+  "parameters": {
+    "router_family": "laya",
+    "endpoint": "http://127.0.0.1:8000",
+    "remote_ip": "10.16.15.202",
+    "timeout_sec": 3.0,
+    "max_retries": 2,
+    "fallback_enabled": true
+  }
+}

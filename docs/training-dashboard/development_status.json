@@ -1,0 +1,119 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-10-18T03:18:00Z",
+  "current_git_sha": "d1ace99",
+  "stages": [
+    {
+      "stage_id": "S0",
+      "name": "\u8d44\u4ea7\u76d8\u70b9\u4e0e\u4ed3\u5e93\u540c\u6b65",
+      "status": "completed",
+      "owner": "main",
+      "summary": "\u5b8c\u6210\u6700\u65b0 Git \u540c\u6b65\u3001A6000 \u786c\u4ef6\u4e0e\u670d\u52a1\u76d8\u70b9\u3001Terminal-Bench 89 \u9898\u8d44\u4ea7\u6838\u9a8c",
+      "output_path": "our-project/planning/PROJECT_STATUS.md"
+    },
+    {
+      "stage_id": "S1",
+      "name": "\u5408\u6cd5\u6570\u636e\u8865\u7f3a\u4e0e\u6e05\u6d17",
+      "status": "completed",
+      "owner": "main",
+      "summary": "\u670d\u52a1\u5668\u5b8c\u6210\u4e09\u5927\u89c6\u56fe\u843d\u76d8\uff08440\u4e07 Agent \u8f68\u8ff9\u30013.9\u4e07\u7f13\u5b58\u590d\u7528\u30015.7\u4e07\u6a21\u578b\u9009\u62e9\uff09",
+      "output_path": "runs/MR-V8-DATA-EXTENSION-20261017/"
+    },
+    {
+      "stage_id": "S2",
+      "name": "Kev \u540c\u6e90\u771f\u5b9e\u68af\u5ea6\u4e0e\u53cc\u8bad\u7ec3",
+      "status": "completed",
+      "owner": "main",
+      "summary": "Kev LoRA \u8bad\u7ec3\u5206\u652f\u5efa\u7acb\uff0c\u5065\u5eb7\u5355\u5361\u8d1f\u8f7d\u9694\u79bb\uff0cLaya F03 \u8bad\u7ec3\u6b63\u5e38\u63a8\u8fdb",
+      "output_path": "runs/KEV-V8-20261017/"
+    },
+    {
+      "stage_id": "S3",
+      "name": "\u670d\u52a1\u5668\u8def\u7531 Serving API",
+      "status": "completed",
+      "owner": "main",
+      "summary": "A6000 \u90e8\u7f72 FastAPI \u8def\u7531\u7aef\u70b9\uff08POST /route\uff09\uff0c\u901a\u8fc7 SSH \u96a7\u9053\u76f4\u901a Mac 8000 \u7aef\u53e3",
+      "output_path": "http://127.0.0.1:8000"
+    },
+    {
+      "stage_id": "S4",
+      "name": "Harbor / Terminal-Bench 2.1 Canary \u9a8c\u8bc1",
+      "status": "completed",
+      "owner": "subagent",
+      "summary": "\u5b8c\u6210 8 Canary \u4efb\u52a1 schema\u3001\u73af\u5883\u4e0e smoke \u9a8c\u8bc1\uff0cTwinRouterBench 970 \u9898\u63a5\u53e3\u5c31\u7eea",
+      "output_path": "experiments/harbor/"
+    },
+    {
+      "stage_id": "S5",
+      "name": "\u5355 Agent \u95ed\u73af\u7cfb\u7edf\u5efa\u8bbe",
+      "status": "completed",
+      "owner": "subagent",
+      "summary": "\u5b9e\u73b0 agent.py, router_clients.py, policy.py, registry.py, state.py, provider.py, runner.py, ledger.py",
+      "output_path": "experiments/agent_pilot/"
+    },
+    {
+      "stage_id": "S6",
+      "name": "RouteLLM / SR-KNN \u57fa\u51c6\u9002\u914d",
+      "status": "completed",
+      "owner": "subagent",
+      "summary": "\u5b8c\u6210 RouteLLM \u96be\u5ea6\u591a\u7ef4\u8bc4\u5206\u4e0e SR-KNN 8D \u72b6\u6001\u8868\u5f81\u9002\u914d\u5668",
+      "output_path": "experiments/agent_pilot/baselines/"
+    },
+    {
+      "stage_id": "S7",
+      "name": "\u53cc\u680f\u5b9e\u65f6\u76d1\u63a7\u770b\u677f\uff088765 \u7aef\u53e3\uff09",
+      "status": "completed",
+      "owner": "subagent",
+      "summary": "\u6781\u7b80\u53cc\u680f\u770b\u677f\u670d\u52a1\u4e8e 8765 \u7aef\u53e3\u6b63\u5e38\u8fd0\u884c\uff0cPoller \u7a33\u5b9a\u5237\u65b0",
+      "output_path": "docs/training-dashboard/"
+    },
+    {
+      "stage_id": "S8",
+      "name": "\u53d7\u4fdd\u62a4 I/O \u8d26\u672c\u4e0e\u5e76\u53d1\u538b\u6d4b",
+      "status": "completed",
+      "owner": "subagent",
+      "summary": "\u5b8c\u6210 64 \u5e76\u53d1 Canary \u538b\u529b\u6d4b\u8bd5\uff1a\u541e\u5410 22248.4 tasks/h\uff0c0 \u6b7b\u9501\uff0c0 \u5d29\u6e83\uff0c\u8d26\u672c\u5df2\u751f\u6210",
+      "output_path": "experiments/agent_pilot/ledgers/"
+    },
+    {
+      "stage_id": "S9",
+      "name": "\u6b63\u5f0f\u751f\u6210\u5f0f Agent Rollout",
+      "status": "waiting_for_generator_api",
+      "owner": "main+subagent",
+      "summary": "\u5f85\u660e\u65e9\u8d1f\u8d23\u4eba\u63d0\u4f9b\u751f\u6210\u6a21\u578b URL/Key/\u989d\u5ea6\u540e\u6267\u884c Canary / DEV \u771f\u5b9e\u57fa\u51c6\u8bc4\u6d4b",
+      "output_path": "WAITING_FOR_GENERATOR_API"
+    }
+  ],
+  "recent_events": [
+    {
+      "time": "2026-10-17T19:20:52Z",
+      "level": "SUCCESS",
+      "message": "64 \u5e76\u53d1 Canary \u538b\u529b\u6d4b\u8bd5\u901a\u8fc7\uff1a64/64 \u5b8c\u6210\uff0cPass@1=75.0%\uff0c\u5e73\u5747\u5ef6\u8fdf 1.289s\uff0c\u8d26\u672c\u843d\u76d8\u5b8c\u6210\u3002"
+    },
+    {
+      "time": "2026-10-18T03:18:21Z",
+      "level": "SUCCESS",
+      "message": "A6000 \u8def\u7531\u670d\u52a1 (port 8000) \u8fde\u901a\u6027\u6d4b\u8bd5\u901a\u8fc7\uff0cLaya \u4e0e Kev \u8fdc\u7a0b\u8def\u7531\u5747\u6b63\u5e38\u54cd\u5e94\u3002"
+    },
+    {
+      "time": "2026-10-18T03:17:30Z",
+      "level": "SUCCESS",
+      "message": "ModelRouter Agent Pilot \u6838\u5fc3\u5355 Agent\u3001\u7b56\u7565\u5e93\u4e0e\u5b9e\u9a8c\u8d26\u672c\u7aef\u5230\u7aef\u5192\u70df\u6d4b\u8bd5\u901a\u8fc7\u3002"
+    },
+    {
+      "time": "2026-10-18T03:13:17Z",
+      "level": "SUCCESS",
+      "message": "Terminal-Bench 2.1 Canary 8 \u9898\u5143\u6570\u636e\u4e0e\u73af\u5883 Smoke \u9a8c\u8bc1 100% \u901a\u8fc7\u3002"
+    },
+    {
+      "time": "2026-10-18T03:12:28Z",
+      "level": "SUCCESS",
+      "message": "TwinRouterBench 970 \u9898 Holdout \u8bc4\u4f30\u96c6\u540c\u6b65\u5e76\u5efa\u7acb\u79bb\u7ebf\u8bc4\u6d4b\u63a5\u53e3\u3002"
+    },
+    {
+      "time": "2026-10-18T03:10:23Z",
+      "level": "INFO",
+      "message": "A6000 \u670d\u52a1\u5668 GPU \u8bad\u7ec3\u6b63\u5e38\u8fd0\u884c\uff1aF03 \u8bad\u7ec3\u4e2d\uff0c\u5229\u7528\u7387 75%\uff0c\u663e\u5b58 9.7GB / 48GB\u3002"
+    }
+  ]
+}

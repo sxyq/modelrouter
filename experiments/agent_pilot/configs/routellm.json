@@ -1,0 +1,14 @@
+{
+  "policy_id": "routellm",
+  "policy_family": "external_baseline",
+  "description": "RouteLLM calibrated threshold routing between Fast and Strong pools.",
+  "max_steps": 15,
+  "time_budget_sec": 180.0,
+  "usd_budget": 2.0,
+  "max_tool_error_budget": 5,
+  "parameters": {
+    "threshold": 0.55,
+    "fast_pool": "Fast",
+    "strong_pool": "Strong"
+  }
+}

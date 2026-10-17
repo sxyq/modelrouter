@@ -1,0 +1,13 @@
+{
+  "policy_id": "rule_sticky",
+  "policy_family": "rule_heuristic",
+  "description": "Phase-level sticky rule policy (inspect: Fast, modify: Standard, verify: Fast) with tool-error escalation and budget downgrade gates.",
+  "max_steps": 15,
+  "time_budget_sec": 180.0,
+  "usd_budget": 2.0,
+  "max_tool_error_budget": 5,
+  "parameters": {
+    "downgrade_budget_threshold": 0.30,
+    "error_escalate_to_reasoning": true
+  }
+}

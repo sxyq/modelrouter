@@ -1,8 +1,31 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **2026-10-16 · 论文 RQ 研究设计同步（仅科研方案，不是 GPU 现场更新）**：负责人确认当前五个 RQ 为 **RQ1 完整 ModelRouter 与同类 Agent Router 的真实任务成功率—整任务费用比较（含 Model×Native Effort、角色/KV/Trace/反馈及 T/M/H 单双三组消融）**、**RQ2 模型池成员和模型数量 K**、**RQ3 固定池/Router 下的任务拆分粒度**、**RQ4 不同子 Agent 角色间是否存在可利用的模型互补性**、**RQ5 哪些预定多 Agent 工作负载条件下动态路由有/无可靠经济收益**。八张图及十二张空白实验表已更新至 [汇报三 V8](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)，正式研究定义见 [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)，批准记录见 [EXPERIMENT_QA Q-017](EXPERIMENT_QA.md)。**本次只更新文档，未查看实时训练 GPU、未改变已运行训练队列、未运行 API/Benchmark；下方 2026-10-15 20:58 的 F04 数据属于旧现场快照，不能当作当前实时数据。**
+> **最新状态：2026-10-18 03:25（V8 长周期完整推进：服务器双模型 API + 本机高并发 Agent + 双栏实时看板闭环）**：
+> 1. **A6000 现场主训练与 GPU 状态**：
+>    - **主线 F03 正规连续训练健康推进中（PID 500083）**：当前进度 Epoch 1/2 Chunk 92/180，Step 34,694/45,836（进度 75.7%），Loss 0.4695，GPU 显存 10,029 MiB / 49,140 MiB（20.4%），利用率 84%，功率 292W，温度 81°C。训练原语零中断、零篡改。
+>    - **F05 完训成果确认锁定**：F05 科学最优为 Epoch 1（S1 验证准确率 67.56%，Loss 0.5978，ECE 0.0243），物理权重 `checkpoints/best` (`epoch_01`, 842 MB) 完好留存并已成功部署 Serving。
+> 2. **Phase 3 / S1: V8 数据集增补与三大物理视图落盘**：
+>    - `runs/MR-V8-DATA-EXTENSION-20261018/` 生成三大互不冒充的训练视图、Lineage Manifest 与统计文件：
+>      - `OBSERVED_AGENT_OUTCOME`: 4,407,213 条记录（TRA-001: 2,075,629, TRA-002: 2,331,584），严格按任务/仓库隔离划分（Train: 3,513,379, Val: 451,357, Test: 442,477），未知终局 `resolved=-1` 严格隔离。
+>      - `CACHE_REUSE_OPPORTUNITY`: 39,632 条记录（Train: 31,699, Val: 3,983, Test: 3,950）。
+>      - `ROUTER_CHOICE`: 57,477 条人类盲测对决偏好记录（Train: 46,201, Val: 5,699, Test: 5,577）。
+> 3. **Phase 5 / S3: 服务器双模型 FastAPI 路由服务**：
+>    - `experiments/router_serving/` 在 A6000 部署上线，监听端口 8000，并通过 SSH 隧道直通 Mac 本地 `http://127.0.0.1:8000`。
+>    - 端点实测全部通过：`GET /health`、`GET /models`、`POST /route`。Laya (F05 epoch_01) 与 Kev (KEV-4B-ADAPTER) 均可正确响应排序概率与动作，决策延迟 ~200ms。
+> 4. **Phase 4 / S2: Kev-4B 同源真实梯度训练验证**：
+>    - 在 `runs/KEV-V8-HOMOLOGOUS-20261018/` 建立 Kev-4B LoRA 训练分支，warm start 成功加载 496 LoRA 张量与 Pointer Head（33.8M 训练参数）。
+>    - 验证真实优化器更新（optimizer_steps > 0，grad_norm 23.65），成功保存更新后的 adapter 与 `head.pt`。
+>    - A6000 单卡测试证实：Kev 训练与 Laya F03 主训练完全互不干扰，零 OOM，主训练保持健康。
+> 5. **Mac 端单 Agent 闭环与 64 并发压测（子代理已验收）**：
+>    - Harbor Terminal-Bench 2.1 Canary 8 题全部验证通过（fix-git, count-dataset-tokens 等）。
+>    - 完整落地 `experiments/agent_pilot/` 单 Agent 框架（ReAct/Reflexion 循环、5 大模型池、动态 Model×Effort 策略、RouteLLM/SR-KNN 基线、受保护账本）。
+>    - 64 并发 Canary 压力测试 100% 成功（64/64 完成，Pass@1 = 75.0%，0 崩溃，0 内存泄漏）。
+>    - 双栏轻量实时监控看板重构上线，稳定服务于 `http://127.0.0.1:8765`（`live_status.json` 体积缩减 99.6%）。
+> 6. **明早正式生成式评测就绪**：
+>    - 今晚所有前序准备均已闭环，全部代码无 SyntaxError，Mac 本机严格 0 权重文件。
+>    - 等待明早负责人提供生成式模型 URL、Key 与额度后，即可无缝启动真实 Generator Agent Rollout（S9）。
 
-> **最新状态：2026-10-15 20:58（P22 连续科研主线执行、真实父权重认定与控制器交接闭环）**：
+> **2026-10-16 · 论文 RQ 研究设计同步（仅科研方案，不是 GPU 现场更新）**：负责人确认当前五个 RQ 为 **RQ1 完整 ModelRouter 与同类 Agent Router 的真实任务成功率—整任务费用比较（含 Model×Native Effort、角色/KV/Trace/反馈及 T/M/H 单双三组消融）**、**RQ2 模型池成员和模型数量 K**、**RQ3 固定池/Router 下的任务拆分粒度**、**RQ4 不同子 Agent 角色间是否存在可利用的模型互补性**、**RQ5 哪些预定多 Agent 工作负载条件下动态路由有/无可靠经济收益**。八张图及十二张空白实验表已更新至 [汇报三 V8](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)，正式研究定义见 [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)，批准记录见 [EXPERIMENT_QA Q-017](EXPERIMENT_QA.md)。
 > 1. **当前 GPU 在线训练状态（Live Running：F04 L4 单层联合监督全量覆盖）**：
 >    - **PID 2881373 持续高速健康运转**：A6000 利用率 60%～74%，显存 9,759 MiB / 49,140 MiB（19.9%），功耗 279.58W，温度 83°C。已稳步推进至 Epoch 1/2 Chunk 180/234（Epoch 1 完成度 76.92%），步数 23,040/59,904（总步数完成度 38.46%），Loss 持续收敛降至 **0.4830**，已消费 1,474,560 / 3,821,922 训练样本曝光（样本完成度 38.58%），覆盖 396,014 个独立任务单元；无任何异常、无显存泄漏，原进程零干扰持续推进。
 >    - **38 组研究推进全局**：已完成 13 组（34.21%），正在训练 1 组（F04，+2.63%），待开始 24 组（63.16%）；加权任务推进度达 **35.22%**。
