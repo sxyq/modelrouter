@@ -276,6 +276,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY") or creds.get("api_key", "")
         self.primary_model = creds.get("primary_model", "gpt-6-luna")
         self.fallback_model = creds.get("fallback_model", "gpt-5.6-luna")
+        self.allowed_models = set(creds.get("allowed_models", ["gpt-6-luna", "gpt-5.6-luna"]))
 
     def _normalize_model(self, model_id: str) -> str:
         m = model_id.lower().replace(" ", "-")
@@ -283,7 +284,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             return "gpt-6-luna"
         if m in ("gpt-5.6-luna", "gpt-5.6"):
             return "gpt-5.6-luna"
-        return m
+        if m in self.allowed_models:
+            return m
+        return self.primary_model
 
     def generate(
         self,
@@ -369,6 +372,7 @@ class OpenAIResponsesProvider(BaseGeneratorProvider):
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY") or creds.get("api_key", "")
         self.primary_model = creds.get("primary_model", "gpt-6-luna")
         self.fallback_model = creds.get("fallback_model", "gpt-5.6-luna")
+        self.allowed_models = set(creds.get("allowed_models", ["gpt-6-luna", "gpt-5.6-luna"]))
 
     def _normalize_model(self, model_id: str) -> str:
         m = model_id.lower().replace(" ", "-")
@@ -376,7 +380,9 @@ class OpenAIResponsesProvider(BaseGeneratorProvider):
             return "gpt-6-luna"
         if m in ("gpt-5.6-luna", "gpt-5.6"):
             return "gpt-5.6-luna"
-        return m
+        if m in self.allowed_models:
+            return m
+        return self.primary_model
 
     def generate(
         self,

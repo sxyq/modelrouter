@@ -340,25 +340,56 @@ def fetch_agent_benchmark_data() -> Dict[str, Any]:
             "routing_latency_ms": meta["routing_latency_ms"],
         })
 
-    # Build 8-policy matrix table for REAL_AGENT_OFFICIAL_EVAL
-    # Separated from mock results per V8 §9.1
-    matrix_real = [
-        {
-            "policy_id": pol_id,
-            "name": meta["name"],
-            "category": meta["category"],
-            "algorithm": meta["algorithm"],
-            "status": "AWAITING_OFFICIAL_EVAL_GENERATOR" if pol_id not in ("laya_v2", "kev_4b") else "ROUTER_FORWARD_VERIFIED",
-            "episodes": 0,
-            "resolved": 0,
-            "pass_at_1": 0.0,
-            "total_cost_usd": 0.0,
-            "mean_cost_usd": 0.0,
-            "mean_steps": 0.0,
-            "routing_latency_ms": meta["routing_latency_ms"],
-        }
-        for pol_id, meta in policy_meta.items()
-    ]
+    # Load real benchmark matrix summary if available
+    real_summary_path = WORKSPACE_ROOT / "runs" / "agent_pilot" / "real_matrix_summary.json"
+    real_summaries = {}
+    total_real_episodes = 0
+    total_real_resolved = 0
+    if real_summary_path.is_file():
+        try:
+            rs_data = json.loads(real_summary_path.read_text(encoding="utf-8"))
+            for p_sum in rs_data.get("policy_summaries", []):
+                real_summaries[p_sum["policy_id"]] = p_sum
+                total_real_episodes += p_sum.get("total_tasks", 0)
+                total_real_resolved += p_sum.get("resolved_tasks", 0)
+        except Exception:
+            pass
+
+    matrix_real = []
+    for pol_id, meta in policy_meta.items():
+        rs = real_summaries.get(pol_id)
+        if rs:
+            matrix_real.append({
+                "policy_id": pol_id,
+                "name": meta["name"],
+                "category": meta["category"],
+                "algorithm": meta["algorithm"],
+                "status": "OFFICIAL_REAL_EVAL_RECORDED",
+                "episodes": rs.get("total_tasks", 0),
+                "resolved": rs.get("resolved_tasks", 0),
+                "pass_at_1": rs.get("pass_rate", 0.0),
+                "total_cost_usd": rs.get("total_cost_usd", 0.0),
+                "mean_cost_usd": rs.get("mean_cost_usd", 0.0),
+                "mean_steps": rs.get("mean_steps", 0.0),
+                "routing_latency_ms": rs.get("mean_router_latency_ms") or meta["routing_latency_ms"],
+            })
+        else:
+            matrix_real.append({
+                "policy_id": pol_id,
+                "name": meta["name"],
+                "category": meta["category"],
+                "algorithm": meta["algorithm"],
+                "status": "AWAITING_OFFICIAL_EVAL_GENERATOR" if pol_id not in ("laya_v2", "kev_4b") else "ROUTER_FORWARD_VERIFIED",
+                "episodes": 0,
+                "resolved": 0,
+                "pass_at_1": 0.0,
+                "total_cost_usd": 0.0,
+                "mean_cost_usd": 0.0,
+                "mean_steps": 0.0,
+                "routing_latency_ms": meta["routing_latency_ms"],
+            })
+
+    real_pass_at_1 = round(total_real_resolved / total_real_episodes, 4) if total_real_episodes > 0 else 0.0
 
     return {
         "summary": summary_data,
@@ -366,11 +397,11 @@ def fetch_agent_benchmark_data() -> Dict[str, Any]:
         "matrix_real": matrix_real,
         "active_tab": "real",
         "official_real_status": {
-            "status": "PIPELINE_READY",
-            "description": "8 policies wired and verified. Real Canary tasks ready for execution upon API rollout.",
-            "total_real_episodes": 0,
-            "total_real_resolved": 0,
-            "real_pass_at_1": 0.0,
+            "status": "OFFICIAL_REAL_RUNNING" if total_real_episodes > 0 else "PIPELINE_READY",
+            "description": f"Official evaluation over Terminal-Bench 2.1 Canary ({total_real_episodes} real episodes recorded).",
+            "total_real_episodes": total_real_episodes,
+            "total_real_resolved": total_real_resolved,
+            "real_pass_at_1": real_pass_at_1,
         },
         "mock_stress_status": {
             "status": "MOCK_STRESS_COMPLETED",
