@@ -713,3 +713,14 @@ configs/
 负责人进一步明确：**不把 Laya/Kev 任何最优权重下载到 Mac；两种模型在 A6000 服务器训练、留存并提供受控推理 API**。本机通过 SSH 隧道/API 调用这些 **Router**，另由用户明早提供 **Generator** 的外部 URL/Key 执行真实 Benchmark。单 Agent 使用 Harbor 任务与容器评分，多个彼此独立 Episode 按可用 API/RPM/TPM/Mac Docker 限额渐进并发；完整输入输出/Router 决策/工具日志/usage/真实费用分开存本机受保护目录。只有一个子代理，主 Agent 管理服务器训练与 Git，子代理搭建本机实验。
 
 负责人要求**复用** `docs/training-dashboard/` 和现有 8765 本地端口，另开独立终端长期显示，首页大幅简化为 Laya/ Kev 两列、训练/Serving 运行状况、真实实验与开发阶段进度；消除旧采集脚本里的 F04 静态兜底和根据 F03 的 45836 steps 判定 Legacy 的缺陷；无数据明确 N/A，更新失败标 STALE，不制造进度。具体 API 契约、Agent 循环、配对/公平/高并发限流、日志目录、看板 Schema 和阶段验收见 [V8 长周期执行方案 §7](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。这仍是**已授权执行要求**，本聊天只修改文档，未宣称服务器 API 或本机大盘已部署。
+
+
+### 2026-10-18 03:45 CST · 负责人最新修订：双子代理、真 Benchmark/竞品、三协议、持续多版本训练
+
+**本次是执行要求和源码复核结果，不是新阶段已全部跑通的证据。** 最新执行细则见 [V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md §8](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)：改为**主 Agent + 两个子代理（覆盖此前仅一个的旧限制）**；现有 A6000 Laya/Kev 训练和服务需继续，两个模型各自开展至少 12 个科学上不同、有真实固定 Val 与可加载 Checkpoint 的候选/阶段验证点，新增数据按台账合法进入独立 V8 分支，不能将 CPU 两步 Smoke 当作 Kev 正式多轮。GPU 安全/许可证/固定测试集泄漏问题仍优先于候选数指标。
+
+2026-10-18 `b80574d` GitHub 实际源码复核发现：`run_stress_benchmark.py` 用 `MockGeneratorProvider`，`runner.py` 固定创建 `MockSandboxEnvironment`，报告的“64 并发 75% Pass@1”“22,248 tasks/hour”和模型模拟 USD **不是 Terminal-Bench 真实 Agent 成绩**。Kev `experiments/router_serving/kev_adapter.py` 仅检查元数据、`route()` 是启发式评分而非实际 Kev forward；RouteLLM 和 SR-KNN 是手写规则/人工 exemplars，不是上游公开方法复现。`provider.py` 目前只有 Chat Completions，缺 OpenAI Responses/Anthropic Messages。Git 树未证明官方 Benchmark 与公开方法源码已按所需路径全部克隆。这些必须按 §8 的真实来源/官方 Docker/evaluator/权重推理做纠正。之前的 S4/S6/S8 completed 仅可保留为 MOCK/SCHEMA/ADAPTER_SMOKE 状态，不能当作正式完成。
+
+负责人现在允许在 Mac 上**只读使用既有 CC Switch 本地配置或合法本地代理**发现实际 URL/模型/GPT-6 与 Luna 的可用模型名及三种 API 协议，进行 1–2 个真实 Benchmark 任务及各方法的极短真实请求。全部真实 API 调用全局严格 <1,000,000 tokens（包括重试、两个子代理和三种协议），另外设保守 USD hard cap；不得打印、移动、提交密钥或使用未经授权的订阅 OAuth 通路。现有 `http://127.0.0.1:8765` 双模型看板继续沿用，更新真实训练版本数、正式 Benchmark、API 协议、真实/模拟状态和进度。所有 Laya/Kev 权重仍留 A6000，不下载 Mac。GOAL 长周期命令实际存在才可启用，不得虚报。
+
+按照“最新 GitHub 拉取/六文档重读→实际小阶段→脱敏归档→定向 commit/push→核 SHA→再重读”继续，结果按真实证据和最新进度回报。
