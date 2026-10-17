@@ -5,9 +5,9 @@
 ## 0. 现在执行的两条工作线
 
 - **服务器：数据→清洗→可用标签入库→逐阶段训练→收敛观察。** 保留既有 V2.1 正式 Laya 38 组原协议，新的数据/损失/KV 联合实验另外编号、另外输出。Kev-4B 优先按同源 V2.1 F05 L1+L2 进行第一阶段跨基模对照，再以合法补充数据做独立训练分支。单 A6000 试测双训练并发的**合计吞吐/显存/功耗/主任务延迟**，收益和安全共同决定长期策略。
-- **本机 Mac：Benchmark 源码、外部路由方法源码、最简单 Agent、Laya 最优权重、策略接口、真实输入输出及账本。** 今晚不使用新付费 API。运行 **Oracle/Marker/Mock** 只算环境或接口烟测，不算 Agent 成功。
+- **本机 Mac：Benchmark 源码、外部路由方法源码、最简单单 Agent、服务器 Laya/Kev Router API 客户端、真实输入输出及费用账本与双模型简化看板。** **不下载 Laya/Kev 权重到本机，不在 Mac 本地加载路由模型。** 今晚无新增付费 API，Oracle/Marker/Mock 只算环境或接口烟测，不算 Agent 成功。
 
-**执行组织：主 Execution Agent + 仅 1 名子代理（硬限制）。** 主 Agent 负责服务器 A6000 的数据下载/清洗/双模型训练/唯一调度管理、整体验收与 Git 提交；唯一子代理负责本机 Harbor/Benchmark/单 Agent 框架、外部 RouteLLM/SR-KNN 适配、Laya 最优权重下载及本地推理、输入输出和费用日志。若子代理无法并行完成任务，由主 Agent串行补充，不得临时增派第二/第三子代理。双模型训练的两个 GPU 进程 ≠ 两个执行子代理，仍需通过同一服务器写入负责人统一协调。
+**执行组织：主 Execution Agent + 仅 1 名子代理（硬限制）。** 主 Agent 负责服务器 A6000 的数据下载/清洗/双模型训练/唯一调度管理、整体验收与 Git 提交；唯一子代理负责本机 Harbor/Benchmark/单 Agent 框架、外部 RouteLLM/SR-KNN 适配、服务器 Laya/Kev Router API 连通性、简化双模型实时看板、完整输入输出和费用日志。若子代理无法并行完成任务，由主 Agent串行补充，不得临时增派第二/第三子代理。双模型训练的两个 GPU 进程 ≠ 两个执行子代理，仍需通过同一服务器写入负责人统一协调。
 
 ## 0.1 本轮新增负责人强制要求：每阶段重新同步最新 GitHub（2026-10-18）
 
@@ -17,7 +17,7 @@
 2. **每次拉取后重新阅读**本文件、`our-project/planning/PROJECT_STATUS.md`、`our-project/planning/RESEARCH_OVERVIEW.md`、`our-project/planning/EXPERIMENT_QA.md`、`our-project/data/DATA_SOURCE_AND_POLICY_REGISTRY.md` 和 `汇报/汇报三/ModelRouter论文实验与图表规划.md` 的最新相关段落，尤其是任何新授权、否决、更改范围、Benchmark/Test 隔离、训练数据与模型池限定；记下读取到的 Git SHA。若负责人新要求与正在执行的非安全性工作冲突，安全停止**对应新阶段**并按新决定调整，避免重跑已完成健康训练；不触碰其他正常运行的 GPU 子进程。
 3. **每完成一个可验证阶段**就更新原有对应文档：实际当前进度/下一步到 `PROJECT_STATUS.md`；数据源许可/清洗/字段事实到唯一数据台账；已确认决定到 `EXPERIMENT_QA.md`；只有科学方法发生实质变化时才改 `RESEARCH_OVERVIEW.md`；本文件只记执行计划/阶段协议及必要修订。记录已完成、未完成、实测命令/样本/输出路径/版本、当前阻塞和资源占用，不把计划当成结果。
 4. **阶段完成马上 Git 提交并推送**可公开的源码、配置、Markdown、脱敏统计和简洁结果清单：`git status`→针对性 `git add <明确路径>`→`git diff --cached`→`git commit -m '<阶段成果>'`→`git push origin main`→再次核对远端 SHA。阶段无实际改变时不制造空提交；若网络失败保留本地 commit，真实汇报 `PUSH_PENDING`，待网络恢复再同步。不要把训练未完成/测试未运行说成完成；主 Agent 是**唯一统一提交负责人**，子代理产物交由主 Agent 审阅并合并，不各自竞争推送 `main`。
-5. **每个阶段收尾都整理目录**：服务器仅用已存在的 `data/公开数据`、`runs/`、`.tmp/` 归类数据、模型与阶段临时文件；本机区分 `external/benchmarks`（题目/评分器）、`external/router_methods`（外部论文方法）、`experiments/agent_pilot`（自有代码）、`models/agent_pilot`（模型实体）、`runs/agent_pilot`（实验结果/日志）、`.runtime/agent_pilot`（临时物）。禁止根目录散落 `test.py`/`tmp*.json`/下载模型、遍地 `nohup.out` 或随机脚本；运行失败临时证据先归档再清理，不能删历史数据/有效 checkpoint。
+5. **每个阶段收尾都整理目录**：服务器仅用已存在的 `data/公开数据`、`runs/`、`.tmp/` 归类数据、模型与阶段临时文件；本机区分 `external/benchmarks`（题目/评分器）、`external/router_methods`（外部论文方法）、`experiments/agent_pilot`（自有代码）、`experiments/agent_pilot/configs`（仅端点配置，不存模型实体）、`runs/agent_pilot`（实验结果/日志）、`.runtime/agent_pilot`（临时物）。禁止根目录散落 `test.py`/`tmp*.json`/下载模型、遍地 `nohup.out` 或随机脚本；运行失败临时证据先归档再清理，不能删历史数据/有效 checkpoint。
 6. **Git 和隐私边界**：密钥、Token、原始大数据、模型权重、完整可能敏感的 prompt/completion、Benchmark 封存答案、Docker 镜像与大批完整日志不进入 Git；仅提交脱敏 `summary.json`、manifest、路径索引、版本哈希、调用字段 Schema 和必要可复现代码。真实每次输入/输出、工具 stdout/stderr、usage、价格快照、缓存计量和完整 evaluator 结果必须持久化在**受保护的本地/服务器运行结果目录**，并在索引中注明路径/权限。不要为追求及时提交直接 `git add -A`。
 7. **单一主线、长周期运行**：服务器训练继续无人值守，本地子代理可同时准备 Agent；每到自然阶段边界自动执行上述刷新/提交/继续，无需等待负责人逐段确认；仅未授权的付费 API、禁训数据、Test 解封等仍不可擅自执行。不要把本机 Benchmark 与服务器训练强制串行，也不要用新 Watcher/第二正式队列破坏已有连续控制器。
 
@@ -79,7 +79,7 @@
 
 **最小单 Agent**：Harbor `BaseAgent.run(instruction, environment, context)`，一个执行 Agent + 一个 Router；只需 `bash` 工具（文件操作通过 sandbox shell）；主循环 `observe → snapshot pre-state → legal (model,effort) filter → route → provider generate → parse shell action → env.exec → feedback → repeat`。实现 max_steps/timeout/budget；G0 整任务、G1 固定阶段、G2 可验证子任务先当预设拆分，F 路由边界另记。明早拿到 URL/Key 后才能做真实生成式模型任务，今晚只能 mock/Oracle/Marker/本地 Laya 真实推理。
 
-本机 Laya 选 **F05 Epoch1**（若实际能加载）下载配置、编码器、tokenizer、safetensors 到 `models/agent_pilot/laya/F05-e01/`；记录 sha256、原始 Run、checkpoint_id、加载/推理结果；不要下载无用 optimizer。若本机硬件无法运行不假称成功，保留服务器推理路径。
+**服务器选择并固定 Laya F05 Epoch1 或经核验的更优物理候选作为推理版本**，Kev 使用经固定验证且可加载的相应候选。模型权重、Tokenizer、优化器和 Checkpoint 只存服务器；服务端提供带 `checkpoint_id/revision` 的只读 `health/models/route` API，本机用受控 SSH 隧道访问，记录真实请求/响应及耗时；不得下载路由模型权重到 Mac。若服务器由于 GPU 资源紧张无法保持推理服务常驻，要记录 `SERVING_WAITING_FOR_GPU` 并采用单独推理窗口，不得假装本机已完成真实 Router 推理。
 
 ## 5. 目录、账本、费用和实验隔离
 
@@ -90,7 +90,7 @@
 │   ├── router_methods/           # 外部论文路由实现（非 Benchmark）
 │   └── agent_references/         # 仅供读的最简 Agent 参考
 ├── experiments/agent_pilot/     # 自有 Agent/Router/provider/state/ledger/config，唯一实现
-├── models/agent_pilot/laya/     # 本机候选推理权重（不进 git）
+├── experiments/agent_pilot/configs/  # Router API 端点与示例配置，无权重
 ├── runs/
 │   ├── MR-V8-DATA-EXTENSION-20261018/  # 服务器数据 manifest/派生索引/统计
 │   ├── KEV-V8-*/                       # 服务器 Kev 新实验，独立于 Laya
@@ -117,9 +117,119 @@
 
 阶段里程碑：
 1. 服务器核实增量数据与合法准入；A6000 Laya 不受影响、Kev 真实小段训练并尝试安全双跑；不重复下载已有数百 GB 文件。
-2. 本机拉 Harbor/Terminal-Bench、至少一个官方任务容器 Oracle 烟测、Marker/Mock 单 Agent 工具循环、一个真实 Laya choice 推理。
+2. 本机拉 Harbor/Terminal-Bench、至少一个官方任务容器 Oracle 烟测、Marker/Mock 单 Agent 工具循环；通过服务器 Router API 发起一次真实 Laya Choice 推理，真实服务不可用则记录 WAITING，不以 Mock 替代。
 3. 本机拉 RouteLLM/SR-KNN 并完成 import/adapter 与无需 API 的离线接口测试；不能把 mock 算作真实外部方法效果。
 4. 训练至 Epoch 1/中段节点报告验证和硬件；仅在验证收益与资源允许时继续 2~3 Epoch；保留每阶段 best checkpoint。
 5. 明早 API URL/Key 与额度到位后，选定 Canary 中 1–2 题做 Fixed vs Laya + 外部可跑 Router 的**真实** Agent rollout；扩展开发集和跨模型池后再做 RQ1–RQ3，最终 57 题只在冻结策略后一次性评测。
 
 **停止条件**：主训练正在受损、OOM、数据许可/样本身份不清、训练与 Test 混用、模型候选原生 effort 不合法、未授权 API 费用；只停止对应新增支线，保留已有主线。工作日志不能宣布没有测量过的“真实缓存节省”“收敛已证实”或“成功率提升”。
+
+
+## 7. 2026-10-18 最新负责人调整：**服务器 API 推理 + 本机 Agent 高并发 + 极简双模型实时看板**
+
+> **本节优先于本文前面任何与它冲突的旧文字。** 最明确的改动：**禁止把 Laya/Kev 最优模型权重下发 Mac。** Laya 与 Kev 都在 A6000 上训练、保留实体、推理并暴露受控 API；本机仅存 API 客户端、Benchmark 任务/基线代码及真实结果。仅允许主 Execution Agent + 一名子代理。今晚独立完成基础框架，无付费生成模型调用；明早负责人给 Provider URL/Key 和费用上限之后再运行正式任务。须在安全 Run 边界/已空闲资源中安排 Serving，不强杀健康训练。
+
+### 7.1 数据面与控制面严格分离
+
+- **控制面（主 Agent）**：唯一写入服务器训练队列、Kev 分支、服务启动/暂停和模型版本切换；服务器根目录使用现有 `/home/syy/路由` 或现场真实根目录。新增 `experiments/router_serving/` 存服务源码和加载适配器；`runs/router_serving/` 存仅服务器的请求/服务日志；`models/` 或现有 Run checkpoint 实体**留服务器**。新增 API 服务不是新训练控制器，不得创建第二条 Laya 正式队列。
+- **数据面**：Mac `experiments/agent_pilot/` 是单 Agent 和 Benchmark 客户端；只按受控 URL 与服务器路由选择 API 通信；后续另接外部生成式 Provider API。这两个 API **角色不同**：`Router API` 只返回合法 `(model,native_effort)` 的决策或概率；`Generator API` 接收上下文并生成执行动作/代码。不能把 Laya/Kev 当作 Terminal-Bench 执行生成模型。
+- **网络**：服务端默认监听 `127.0.0.1`、不在公网暴露；Mac 通过既有 `ssh a6000` 的受限本地端口转发访问。使用实际可用的隧道端口，检测冲突后再选；仅对授权终端开放。模型服务应鉴别可用角色或本地隧道来源，超时/断连要可诊断；API key 只能由环境变量/私有配置提供，不写仓库与前端。
+- **路由服务版本**：每次加载记录 `router_family`（laya/kev）、`run_id`、`checkpoint_id`、`epoch`、`dataset_protocol`、`source_revision`、`loadable`、`loaded_at`，**原子地将当前请求绑定不可变 checkpoint**；新模型上线先检查能加载和输入 schema，不能切换到尚未验证或已被修剪的权重。
+- **最小端点契约**：`GET /health`（服务自身、GPU/CPU 负载/版本、错误状态）；`GET /models`（两个 router 的已发布版本和可用性）；`POST /route`（详见下）；可选 `GET /metrics` 只暴露不含敏感数据的计数。服务器可共享单个轻量 FastAPI 服务进程/两个隔离加载器，也可各独立端口，**以实际模型库的加载能力及显存为准**，不要为了“统一接口”重复占用显存。
+- **`POST /route` 请求**：`request_id,episode_id,decision_id,policy_version,router_family,pre_decision_state,legal_actions:[{provider,model,revision,native_effort}],budget_remaining,features_presence_mask`。响应：`request_id,router_family,checkpoint_id,selected_action,ranked_actions_or_scores_if_available,decision_latency_ms,fallback_used,fallback_reason,confidence_if_defined`。服务端验证所选动作属于请求的 `legal_actions`；非法/不支持的 Effort 不得隐式映射为别的等级。请求、响应需版本化 JSON schema 并配最小真实可重复样例；错误码包括 `NO_MODEL_LOADED`、`INCOMPATIBLE_STATE`、`NO_LEGAL_ACTION`、`RESOURCE_BUSY`、`ROUTER_TIMEOUT`。
+- **概率与分数边界**：已有 S1/S2/S3 并不自动是任意多模型树的 Choice 输出。先在固定合法 action 集上实测 Laya/Kev 是否支持该请求；模型语义不足时明确 `NOT_SUPPORTED` 或有限可解释映射，并使用可追踪 Rule/Fixed fallback，**不可伪造“全空间最优路由”**。
+
+### 7.2 单卡三类负载隔离与双模型并发训练
+
+- 服务器保留 Laya 正式连续训练和 Kev 独立 LoRA 训练；后者首发必须为同源 V2.1 L1+L2 可核对数据。每一实验有独立 `run_id/cursor/optim_state/metrics`，不改变正在运行的 Laya 38 组协议。
+- 单张 A6000 的训练高利用率不是低负载；双训练先短时对照：分别计 `Laya updates/s, Kev updates/s, each samples/s, weighted useful throughput, end-to-end walltime, GPU memory peak, power, temperature, OOM/retries, primary chunk slowdown`。不同参数模型的样本/秒不能直接无权相加当“总收益”，以完成实际目标所需 GPU 墙钟与主线减速为主。
+- 如果持续双训练使主线严重变慢、显存有风险或完成时间不改善，**并行保留 CPU 数据准备、独立 CUDA 训练按安全 Run/Checkpoint 边界交替**。不因负责人要求“双模型都训练”就强制保持两个满负载 GPU 进程。
+- Serving 与训练会竞争同一张 GPU：先实测小批量路由推理服务的 P50/P95、显存和训练吞吐影响；Serving 只在余量允许时常驻，或在本机真正要测试时安排限定推理窗口；服务繁忙返回可观测状态并重试/排队，**绝不抢杀训练或暗中复制大权重到 Mac**。
+- 停止新分支追加 Epoch 的条件是预先记录的预算、固定 Val 多个节点的改善与统计噪声比较，而非 train loss 连续下降/单个 Accuracy 阈值；保存 `best` 和 `latest_resume` 两类物理有效引用及来源。
+
+### 7.3 最简可扩展单 Agent（本机）
+
+- 复用固定版本 [Harbor](https://github.com/harbor-framework/harbor) `BaseAgent` 外部 Agent 接口作为 Runner；任务/容器/evaluator 交给 Harbor，参考官方 `examples/agents/marker_agent.py` 的最小调用方式；如需执行循环结构仅借鉴 `mini-swe-agent`，**不引入 LangGraph、多 Agent orchestration、长期状态数据库或第二套独立 Bench 框架**。
+- 唯一 Agent Loop：`load task → init sandbox → observe(task + tool history + budget) → derive G and legal F boundary → build immutable pre_decision snapshot → list legal (model,native_effort) pairs → policy.route(Fixed/Rule/RouteLLM/SR-KNN/Laya/Kev) → call Generator API → parse single shell action → environment.exec in sandbox → append trace/usage/feedback → repeat → Harbor official evaluator`。终止条件：`agent_done`、`max_steps`、`time_budget`、`usd_budget`、`tool_error_budget`、`provider_unavailable`。模型输出不是真实 shell 命令时严守协议/合理重试，失败照实保留。
+- **拆分与路由频率分开**：`G0` 原任务整体、`G1` 可复现固定阶段（inspect/modify/verify）、`G2` 官方可验证子任务；`F0` 每完整任务一次、`F1` 阶段边界、`F2` 合法模型调用前等。今晚只实现单 Agent，G2 若任务无可信可验证子任务则为 `NOT_APPLICABLE`，不能伪造。RQ3 主试运行的单 Agent 结论不能代替 V8 后续多 Agent 工作负载。
+- **工具**：初期只有 Harbor 隔离 Shell；读写文件、git、测试、查看错误均通过相同 sandbox shell 实现，明示工作目录、超时、输出截断标记、exit code、重试是否新调用；绝不直接在 Mac 宿主执行不可信任务脚本。Verifier 独立于 Agent，不泄露标准解和隐藏 Test 到模型上下文。
+- **策略适配器统一协议**：`FixedStrong`、`FixedCheap`、`RuleSticky`、`RouteLLM`（实际兼容性验证）、`SRKNN`（以真实出处/版本为准）、`LayaServerRouter`、`KevServerRouter` 都只实现 `select(state,legal_actions)->decision`。失败 fallback 必须显式记录所用固定策略、原因与成本；不得把 fallback 计成成功的动态路由。
+- **Provider Registry**：每个可执行生成式模型记录 `provider/model/revision/context/max_output/tool_support/native_efforts/rpm/tpm/price_units/price_snapshot/availability`；**K=模型身份数**，合法动作数量为各模型合法 native effort 的总和。不可凭路由建议强行对供应商发送不支持的 effort；输出 Token 和原生 reasoning Token 分开记录。
+- **Benchmark 两类与方法两类**：`external/benchmarks/` 下单独固定 Terminal-Bench 2.1（89题、项目已冻结 8 Canary/24 Dev/57 Sealed）和 TwinRouterBench；`external/router_methods/` 下 RouteLLM / SR-KNN。先 `fix-git` 与 `count-dataset-tokens` Canary 单任务官方容器/Oracle 环境烟测；再只对 1–2 题做 Mock 适配；待明早授权 API 才能跑生成式模型成功率。别人的论文发表分数不能与我们不同评测协议的 Agent 成绩直接并表。
+- **实验配对原则**：同一个 `task_id` 在不同 policy 下独立 sandbox、相同基础任务版本、可核对 evaluator、相同预算/时间上限和生成模型候选池；预先固定任务/策略/seed 的组合，记录未执行/失败/超时；Policy 不得共享可变上下文状态或其他策略未来输出。
+
+### 7.4 高并发实验执行协议（并发任务 ≠ 同一任务并行 Agent）
+
+- 本机仅用一个 `ExperimentRunner` 调度独立的 `(benchmark_revision,task_id,policy_id,seed)` **Episode**，每个 Episode 始终是**单 Agent 串行多步**；不同 Episode 可并发。不要把一个 Agent 的工具历史拆到多个异步 Worker；不引入额外子代理。
+- `asyncio` 任务调度 + bounded queue + 两层令牌/信号量：`max_active_episodes` 管 Docker/Mac CPU/RAM；`router_api_limit` 管 A6000 服务吞吐；按 Provider/模型分别使用 `rpm/tpm/max_inflight` 令牌桶和预算闸门；另控 `max_active_builds` 防止本机 Docker 镜像并发编译 OOM。生成式 API 的并行调用遵守供应商实际限额，不自作设定无限 concurrency。
+- **渐进并发**：`concurrency=1` 完成真实可回放烟测，提升到 2、4、再视 CPU/RAM、Docker 和 API 响应决定是否 8；每级记录 `throughput tasks/hour, mean/p95 wall_time, error_rate, queue_wait, rate_limit_429, timeouts, actual cost, completed/evaluated count`。阈值按实际资源预算/测量确定，不在方案中许诺固定倍数加速。若 429/5xx/OOM/价格异常增长则自动降低新增任务并发（不抹去失败）。
+- 同一请求 `request_id` 贯穿 Router→Generator→Tool；Provider 的重试保留 **每一次实际收费尝试**，指数退避+抖动且有限次数；对不确定是否已执行的调用不得无账单重复计费，记录是否可确认。输入输出要绑定 checkpoint/revision、模型价格版本和 Agent 代码 Git SHA。
+- 每个 Episode 独立不可覆盖运行目录，`task:policy:seed` 唯一键经安全文件名编码；进程重启扫描 `run_manifest.json` 与 `episode.json`，完成的跳过、未完成的只在容器/远端费用状态可核时安全续跑，不能将部分完成任务算成功。随机种子只能控制可控随机源，不能保证非确定性 API 完全复现。
+- 首次阶段不进行大规模 Benchmark 全量调用；先完成 1–2 个任务的环境/接口证据，获得预算授权后用 8 Canary → 24 Dev → 独立冻结策略的 57 Final。真实正式测试次数、重复 seeds 和总费用需按实际授权额度约束，Final 在策略未冻结前不得触碰。
+
+### 7.5 受保护运行账本与分析口径
+
+受保护本机目录 `runs/agent_pilot/<date>/<benchmark>/<policy>/<task>/<seed>/`，每个任务至少落：
+`run_manifest.json`（版本/模型池/费用表 SHA/Env/evaluator/seed）、`decisions.jsonl`（决策前 snapshot、合法池/选项、Laya 或 Kev 的 checkpoint/延迟/fallback）、`model_calls.jsonl`（每个生成模型**实际输入与输出引用**、请求响应时间、真实 usage 和费用）、`router_calls.jsonl`（远程 Laya/Kev 请求响应、版本与延迟）、`tools.jsonl`（沙盒命令/退出码/stdout/stderr 引用）、`events.jsonl`（append-only 步骤、限流、重试、失败）、`episode.json`（Harbor resolved/timeout、全部调用总价、成功与否、时延）、`official_evaluator/`（官方评分原样记录），`inputs/`、`outputs/` 下按 `request_id` 保存权限受限的原始/脱敏内容。按来源许可和个人信息政策，可能敏感数据只存 hash+安全引用，不出现在 Git。
+- 单次 USD 使用**当次 Provider 真实 token usage × 当时生效版本化价格单位**；未上报缓存/推理 token 留 null，`MEASURED / ESTIMATED / UNKNOWN` 严格分层；若 Provider 返回实际账单优先于估算。输入、输出、reasoning、缓存 read/write、工具、Router 服务计算 GPU-hours 分项，失败重试照单入账、不重复相加。路由服务自有 GPU-hours 与生成式 API USD **不同单位分开报告**。
+- `summary.json` 从原始事件账本生成，拒绝手工覆盖：任务级 Success、Mean Episode USD、Cost/Resolved（零成功定义为不可计算）、P50/P95 延迟、Router fallback_rate、真实完成分母、分组/种子、缺失费用占比；跑 RQ1 时同任务配对比较并按任务自举置信区间；只对 Dev 做选择，Final 不用于训练/选阈值。Mock/Oracle/Marker 分别记 `ENV_SMOKE` / `ADAPTER_SMOKE`，不得进入真实成功率统计。
+
+### 7.6 大幅简化原有实时可视化，并在本机独立终端运行
+
+**复用已有** `docs/training-dashboard/` 和 `scripts/fetch_live_status.py`，不新开第三套大盘。现有 `index.html` 超过 6,000 行且 `live_status.json` 超过 500 KB，包含大量历史树、占位以及 F04 硬编码；本轮把主页实质重做成简洁 2 模型 + 开发进度图。原始历史 Epoch/Checkpoint 继续保存磁盘，可放独立静态归档链接（需要时看），不在首页加载庞大 JS shards。
+
+**首页只允许四个区域：**
+1. 顶部一排：最近成功刷新时间、Fresh/Stale/Disconnected 及刷新滞后秒数、服务器 GPU 利用率/显存/训练优先状态、本地 Agent/Benchmark 启动状态；
+2. **Laya 左列**：在训/完成/等待/Serving 就绪、当前 Run/Epoch/Chunk/Step、训练 Loss（标当前 chunk）、Best Epoch+S1/S2/S3 固定 Val、最佳 checkpoint 是否实体可加载、Router API 健康与最近 P95 延迟；
+3. **Kev 右列**：相同字段，但没有结果时显示 `NOT_STARTED / NO_DATA / NOT_EVALUATED`，**绝不能拿 Laya 值填 Kev**；
+4. 底部开发进度：数据盘点→新源清洗→Kev 同源训练→KV 独立分支→两路 Serving→Harbor Ready→单 Agent Smoke→外部基线→有授权的真实 Canary；每段 `planned/running/completed/blocked`、最近 Git SHA 和阶段输出路径；紧凑最近 8 条真实事件。选择性显示最近一次 Benchmark 已跑任务数、真实成功数、已知费用合计及 Mock/Oracle 分开计数。
+
+**源数据实现**：`scripts/fetch_live_status.py` 读服务器 Laya 当前 `run.json/cursor.json/epoch_metrics.json`、Kev 对应独立 `run.json`、GPU 和 Serving `/health`；本机侧读 `runs/agent_pilot/` 的 `summary` 与阶段 `development_status.json`（这是事实记录，由阶段任务写入，不是编辑一个字符串就算完成），输出两个有版本号的瘦身 JSON：`docs/training-dashboard/live_status.json`（服务器双模型及指标）和 `docs/training-dashboard/development_status.json`（本机开发进度/Agent 统计）。采集时间、源更新时间、字段来源分别保留；读取失败不沿用旧数字装“在线”，显示 STALE+原时间；无有效 Epoch 验证则显示 N/A。避免每 10 秒全量遍历巨型日志、重写 580KB JSON 或把本地实时数据每次都 push GitHub。
+- **必须修正**旧同步脚本的 F04 静态 fallback 与 `if r == "F03" and int(s_tot)==45836 → LEGACY` 错误：正规 F03 恰有 45836 steps。按 `run.json/protocol_version/run_id` 判别，不按 step 数猜测 Legacy。确认指标引用来自真实 `epoch_metrics.json` 而非 Chunk Loss / 最后 Epoch 冒充 Best；处理每个训练任务可能没有 Cursor 的情况。
+- **启动要求**：本地 Mac 用单独终端窗口继续服务旧地址 `http://127.0.0.1:8765`。先检查 `lsof -i :8765` 和现有 `http.server`、`fetch_live_status.py` 同步进程；若已运行且健康则沿用，需替换时优雅停旧服务后单例启动。不占用主 Agent 的终端，也不产生重复 HTTP/同步服务。HTTP 可采用 `python3 -m http.server 8765 --bind 127.0.0.1 --directory docs/training-dashboard`，同步器用现有受控运行方式，进程日志单独放 `.runtime/dashboard/`。如果本机 GUI 终端无法自动打开，输出可复制的确切命令并如实报告未打开，不能声称成功。
+- **前端原则**：仅静态 HTML/CSS/vanilla JS（已够用）；读 `live_status.json`、`development_status.json`，每 5–10 秒轻量刷新；无前端 token、SSH key、绝对私有路径、原始用户 prompt 或费用明细。手机版/电脑简洁两栏布局，实时更新不重绘整个页面；仅保留必要 2–3 条趋势，页面文件大幅压缩，删除静态历史数据对首页的耦合。刷新器不影响 GPU 训练。
+
+### 7.7 目录与阶段提交纪律（主 Agent + 仅一名子代理）
+
+```text
+路由/
+├── data/公开数据/                    # 复用服务器已有原始和清洗分级布局
+├── router_data/                      # 已有正式 Laya 数据与训练实现，不混新实验
+├── experiments/
+│   ├── router_serving/              # 服务端只读路由 API + 模型加载/服务压测
+│   └── agent_pilot/                 # Mac: agent.py/router_clients.py/registry.py/runner.py/ledger.py/configs/
+├── external/
+│   ├── benchmarks/                  # Terminal-Bench 2.1, TwinRouterBench, 可选 SWE-bench
+│   ├── router_methods/              # RouteLLM, SR-KNN
+│   └── agent_references/            # 官方 Harbor 或 mini-swe-agent 源参考
+├── docs/training-dashboard/         # 原地址首页，双模型+开发进度瘦身 JSON
+├── scripts/                          # 原 fetch_live_status 与运行所需唯一脚本入口
+├── runs/
+│   ├── MR-.../                       # 原 Laya 正式 Run，不触碰
+│   ├── KEV-V8-.../                   # 服务器 Kev 独立训练
+│   ├── MR-V8-DATA-EXTENSION-.../     # 服务器新增数据导出/manifest
+│   ├── router_serving/              # 服务器服务请求/错误/模型加载与日志
+│   └── agent_pilot/<date>/<benchmark>/<policy>/<task>/<seed>/
+└── .runtime/
+    ├── agent_pilot/                  # 沙盒下载缓存/临时任务
+    └── dashboard/                    # 本机采集与 http 服务日志
+```
+
+不同机器不要求存一模一样的实体：**服务器存 Laya/Kev 权重，本机绝不存这两种权重**；本机仅保留端点配置和模型版本 ID。原始模型请求和完整日志保存在有访问权限控制的运行目录；Git 仅上传代码、Schema、必要摘要、脱敏结果和 Git SHA。每完成一个自然阶段，按 §0.1 的 `fetch latest → read six docs → run → real verify → organize directories → update status → targeted commit/push → verify remote SHA → re-read` 闭环推进。不得使用 `git add -A` 把大文件混进公开仓库，也不制造空提交。
+
+### 7.8 长周期任务的分阶段验收（不能因无 Key 停掉 CPU 工作）
+
+| 阶段 | 负责人 | 最小可核结果（未通过写 BLOCKED） |
+|---|---|---|
+| S0 最新仓库、服务器/本机资产盘点 | 主 | 源版本、活跃训练/模型实体、磁盘/GPU、既有目录路径与下一个阶段 |
+| S1 合法数据补缺/清洗/映射 | 主 | lineage+Train/Val/Test+标签证据与真实已接纳样本数 |
+| S2 Kev 同源真实梯度+双训练吞吐 | 主 | Kev 优化器步数>0，完整恢复验证、GPU 性能 A/B 与正式 Laya 不受损 |
+| S3 服务器 Laya/Kev `/health/models/route` | 主 | 两个 Router 对**实际可加载**的权重做真实合法 Choice API 测试，若 GPU 紧张明确状态 |
+| S4 Harbor / Terminal-Bench 本机 | 子 | 隔离 Docker+官方 1 题 evaluator/Oracle 真实环境烟测 |
+| S5 单 Agent + Registry + Router API client | 子 | Mock 工具循环和在服务可用时真实 Laya/Kev 远程路由请求，账本可复现 |
+| S6 RouteLLM / SR-KNN 方法与独立 Benchmark | 子 | 实际可 import、同一动作格式和兼容性/不可用原因记录，不伪造效果 |
+| S7 极简双模型看板在独立终端运行 | 子 | 浏览器在 8765 可打开；两个训练/Serving 各自显示真实状态，开发阶段刷新且 STALE 正确 |
+| S8 受保护 I/O/费用汇总及并发烟测 | 子 | 1→2→4 episode 并发与限流记录、每请求/Tool/Router 调用追踪、Mock 标识 |
+| S9 明早正式 Agent Run（待 API 授权） | 主+子 | 有效 URL/Key、价格与额度授权后，1–2 Canary Fixed/Rule/Laya/Kev 按公平配对执行、官方 evaluator + 真实 USD；授权前明确 WAITING_FOR_GENERATOR_API |
+
+S0–S8 可交织执行但**主 Agent 只负责一名子代理**，服务器唯一控制器不变。每段结束提交真实结果并拉最新指令；不能因 S9 缺明早 API 就让 S1–S8 不执行。**实现条件达不到时如实停止对应新增分支，训练正常则继续。**
