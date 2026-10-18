@@ -21,6 +21,12 @@
 - **下一步是动态字段**：每次先查最新 [PROJECT_STATUS.md](PROJECT_STATUS.md) 的「当前任务/正在等待/下一步」，如果处于 E-DESIGN 再查 [EXPERIMENT_QA.md](EXPERIMENT_QA.md) 待答 Q-ID；数据来源与 Provider/Cache 政策详见 [DATA_SOURCE_AND_POLICY_REGISTRY.md](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)，不得重复已经确认的问题、提前执行未授权工程或训练。
 - 当前论文表述纪律：不要把状态字段数量本身作为创新点；**论文不讨论“多变量”或“混沌”**。新意必须靠任务级状态决策、Model × Effort、延迟成本/成功影响和严谨评测证明。
 
+### 2026-10-18 · 最新局部研究方向（覆盖下方 2026-10-16 快照的 RQ1 归属，但不改 RQ4/RQ5）
+
+负责人决定将 **RQ1 缩回总体横向效果**：同一任务/合法 Model→Native Effort 树池/真实 Harness 下，对比固定、开发集最优固定、整任务随机混合、Role-static（场景适用时）、Task-only/Rule/Sticky、合法适配的外部 Router 与 Full，测 **Task Success × Total Episode USD**。此前放在 RQ1 的大量消融（动作 Model-only/Effort-only/Joint、T/M/H 信息组单双三组合、KV/Trace/Feedback、训练监督/配比、额外开销）**拟单独形成一个系统消融大 RQ，正式编号待定**，不是继续作为 RQ1 的四个子块。本轮明确要求 **RQ4/RQ5 先别改**，因此旧 V8 的角色互补性与工作负载适用边界两节、Fig.7/8 与 T8/9 原样暂存，不能声称已被替换。RQ2 模型池、RQ3 拆分的核心实验不变。
+
+权威局部记录：[汇报三论文实验与图表规划](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)；审批/历史原始 Q-017 不覆盖。此为研究文档更改，不意味着真实 Agent Benchmark 或多 Agent 补训已经完成。
+
 ### 2026-10-16 最新已确认论文 RQ（研究决定快照，优先于旧 V3–V7 编号）
 
 - **RQ1**：真实多 Agent 任务下完整 ModelRouter 与同类 Agent Router/固定/随机混合/Role-static 的成功率—整任务 USD 横向对比；其内部做 Model×原生 Effort 联合选择、任务/模型经济性/历史 T/M/H 单双三组消融、Role/KV/Trace/Verifier 消融、整任务费用账本与 Router overhead。不再将长期成本或 Effort 单独当作 RQ5/RQ4。
