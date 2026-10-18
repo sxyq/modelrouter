@@ -1,5 +1,7 @@
 # ModelRouter
 
+> **2026-10-18 项目目录升级（实施中）**：将 [`our-project/`](our-project/README.md) 作为正式代码、数据、实验和科研文档的主目录。当前 `router_data/`、`experiments/`、`research/`、`docs/` 等旧位置仍有活跃消费者，**尚未物理迁移**。详见 [完整文件分类与安全迁移实施清单](our-project/planning/REPOSITORY_STRUCTURE_MIGRATION_20261018.md)。最新 RQ1 已调整为整体任务收益对照，系统消融题编号暂未定，以 [EXPERIMENT_QA](our-project/planning/EXPERIMENT_QA.md) 为准。
+
 ModelRouter 是面向长程 Agent 任务的模型、推理档位与成本研究项目。
 
 仓库分为两部分：
