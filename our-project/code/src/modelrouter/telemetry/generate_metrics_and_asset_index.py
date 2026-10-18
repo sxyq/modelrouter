@@ -102,12 +102,13 @@ def audit_all():
             "metrics": {"base_val_acc": 0.8726, "nll": 0.5160}
         },
         {
-            "name": "LAYA-V8-EXT-01-epoch01",
+            "name": "V8_AUXILIARY_HEAD_SMOKE",
             "family": "laya",
             "path": "runs/LAYA-V8-EXT-01/checkpoints/epoch_01.pt",
             "size_bytes": 2840000,
-            "status": "V8_EXTENSION_VERIFIED",
-            "metrics": {"val_choice_acc": 0.5800, "val_cache_mse": 0.1465}
+            "status": "SMOKE_ONLY",
+            "metrics": {"val_choice_acc": 0.5800, "val_cache_mse": 0.1465},
+            "note": "Auxiliary head smoke only (SHA256 hash features, 256-dim projection, not physical Laya/Kev model)"
         }
     ]
     

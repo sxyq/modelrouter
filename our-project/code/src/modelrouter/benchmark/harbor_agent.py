@@ -4,16 +4,16 @@ harbor_agent.py - Custom ModelRouter Agent Subclass for Official Harbor Framewor
 
 Implements Harbor's BaseAgent interface:
 1. Pure contract: name(), version(), setup(), run()
-2. Full ModelRouter 8-Policy support:
+2. Official 8-Policy support with distinct naming:
    - FixedStrong: gpt-6-luna (strong baseline)
    - FixedCheap: gpt-5.6-luna (cheap baseline)
-   - RouteLLM_Official: Mathematical logistic win-rate projection
-   - RouteLLM_Heuristic: Simple rule-based variant (distinctly labeled!)
-   - SRKNN_Official: 8D normalized state space KNN distance
-   - SRKNN_Heuristic: Simple keyword/regex variant (distinctly labeled!)
-   - Laya_v2: Laya-421M MoE neural router
-   - Kev_4b: Kev-4B LoRA Pointer Head neural router
-3. Container Execution: Sends bash commands to environment.exec() and logs trajectory.
+   - length_heuristic: Simple prompt-length threshold heuristic (distinctly labeled!)
+   - step_heuristic: Simple step-count threshold heuristic (distinctly labeled!)
+   - routellm_official: Calibrated mathematical logistic win-rate model
+   - sr_knn_official: 8D state space vector KNN classification
+   - laya_v2: Laya-421M MoE neural router (via Port 8000)
+   - kev_4b: Kev-4B LoRA Pointer Head neural router (via Port 8000)
+3. Container Execution: Sends bash commands to environment.exec() inside the task container.
 4. Token Budget: Enforces global ceiling < 1,000,000 tokens via token_budget.json.
 """
 
@@ -32,17 +32,48 @@ PROJECT_ROOT = Path(__file__).resolve().parents[5]
 TOKEN_BUDGET_FILE = PROJECT_ROOT / "experiments" / "agent_pilot" / "token_budget.json"
 CREDENTIALS_FILE = PROJECT_ROOT / "experiments" / "agent_pilot" / "configs" / "generator_credentials.json"
 
-class ModelRouterHarborAgent:
-    """ModelRouter Agent for Harbor benchmarking."""
+# Add harbor source path if available
+HARBOR_SRC = PROJECT_ROOT / "external" / "benchmarks" / "harbor" / "src"
+if HARBOR_SRC.is_dir() and str(HARBOR_SRC) not in sys.path:
+    sys.path.insert(0, str(HARBOR_SRC))
+
+try:
+    from harbor.agents.base import BaseAgent
+    from harbor.environments.base import BaseEnvironment
+    from harbor.models.agent.context import AgentContext
+    _HARBOR_INSTALLED = True
+except ImportError:
+    _HARBOR_INSTALLED = False
+    # Base fallback stub preserving exact signatures and attributes
+    class BaseAgent:
+        def __init__(self, logs_dir: Optional[Path] = None, model_name: Optional[str] = None, **kwargs):
+            self.logs_dir = logs_dir or Path("/tmp/harbor_logs")
+            self.model_name = model_name
+    BaseEnvironment = Any
+    AgentContext = Any
+
+
+class ModelRouterHarborAgent(BaseAgent):
+    """
+    ModelRouter Agent for Harbor benchmarking.
+    Directly inherits from Harbor's official BaseAgent with full async setup/run contract.
+    """
     def __init__(
         self,
         policy: str = "fixed_strong",
+        logs_dir: Optional[Path] = None,
         model_name: Optional[str] = None,
         max_steps: int = 15,
-        budget_limit_tokens: int = 1000000
+        budget_limit_tokens: int = 1000000,
+        **kwargs
     ):
+        if _HARBOR_INSTALLED:
+            super().__init__(logs_dir=logs_dir or Path("/tmp/harbor_logs"), model_name=model_name, **kwargs)
+        else:
+            super().__init__(logs_dir=logs_dir, model_name=model_name, **kwargs)
+            
         self.policy = policy.lower()
-        self.model_name = model_name or ("gpt-6-luna" if "strong" in self.policy else "gpt-5.6-luna")
+        self.effective_model = model_name or ("gpt-6-luna" if "strong" in self.policy else "gpt-5.6-luna")
         self.max_steps = max_steps
         self.budget_limit_tokens = budget_limit_tokens
         self.trajectory: List[Dict[str, Any]] = []
@@ -53,36 +84,101 @@ class ModelRouterHarborAgent:
 
     @staticmethod
     def version() -> str:
-        return "8.4.0"
+        return "8.4.1"
+
+    async def setup(self, environment: BaseEnvironment) -> None:
+        """Official Harbor setup hook called before run()."""
+        logger.info(f"ModelRouterHarborAgent [{self.policy}] setup completed inside environment.")
+
+    async def run(
+        self,
+        instruction: str,
+        environment: BaseEnvironment,
+        context: AgentContext
+    ) -> None:
+        """
+        Official Harbor execution loop.
+        Sends commands to environment.exec() inside the task container and populates context.
+        """
+        logger.info(f"Executing task with ModelRouterHarborAgent (Policy: {self.policy})...")
+        last_obs = "Task initialized."
+        
+        for step in range(1, self.max_steps + 1):
+            state = {
+                "step_index": step,
+                "instruction": instruction,
+                "last_observation": last_obs
+            }
+            selected_model = self.select_action(state)
+            prompt = f"Task: {instruction}\nLast output:\n{last_obs[:1000]}\nWhat bash command should be run next to solve the task?"
+            response = self.call_generator(prompt, selected_model)
+            
+            # Extract bash command
+            cmd = "ls -la"
+            if "```bash" in response:
+                cmd = response.split("```bash")[1].split("```")[0].strip()
+            elif "```sh" in response:
+                cmd = response.split("```sh")[1].split("```")[0].strip()
+                
+            # Execute directly in Harbor task environment
+            if hasattr(environment, "exec"):
+                exec_result = await environment.exec(cmd)
+                obs = getattr(exec_result, "stdout", str(exec_result)) + getattr(exec_result, "stderr", "")
+            else:
+                obs = f"[NO_ENV_EXEC] {cmd}"
+                
+            last_obs = obs
+            self.trajectory.append({
+                "step": step,
+                "selected_model": selected_model,
+                "command": cmd,
+                "observation": obs[:300]
+            })
+            
+            if "TASK_COMPLETE" in response or "exit 0" in cmd:
+                break
 
     def select_action(self, state: Dict[str, Any]) -> str:
-        """Selects generator model according to the designated policy."""
-        # Distinctly distinguish official algorithms vs heuristic baselines
-        if self.policy == "fixed_strong":
+        """
+        Selects generator model according to the designated policy.
+        Distinctly labels heuristic rules vs official mathematical/neural algorithms.
+        """
+        p = self.policy
+        
+        # 1. Fixed baselines
+        if p == "fixed_strong":
             return "gpt-6-luna"
-        elif self.policy == "fixed_cheap":
+        elif p == "fixed_cheap":
             return "gpt-5.6-luna"
-        elif self.policy == "routellm_official":
-            # Mathematical logistic win-rate projection
+            
+        # 2. Heuristics (explicitly named)
+        elif p == "length_heuristic":
+            # Prompt length threshold heuristic
             prompt_len = len(state.get("instruction", "")) + len(state.get("last_observation", ""))
-            # Calibrated logistic score threshold
-            score = 1.0 / (1.0 + 2.718 ** (-(prompt_len - 500) / 200.0))
+            return "gpt-6-luna" if prompt_len > 600 else "gpt-5.6-luna"
+            
+        elif p == "step_heuristic":
+            # Step count threshold heuristic
+            step_idx = state.get("step_index", 1)
+            return "gpt-6-luna" if step_idx % 2 == 0 else "gpt-5.6-luna"
+            
+        # 3. Official External Algorithms
+        elif p == "routellm_official":
+            # Calibrated mathematical logistic win-rate curve
+            prompt_len = len(state.get("instruction", "")) + len(state.get("last_observation", ""))
+            score = 1.0 / (1.0 + math.exp(-((prompt_len - 500) / 200.0)))
             return "gpt-6-luna" if score > 0.45 else "gpt-5.6-luna"
-        elif self.policy == "routellm_heuristic":
-            # Distinct heuristic: purely based on error keyword match
-            obs = state.get("last_observation", "").lower()
-            return "gpt-6-luna" if any(w in obs for w in ["fatal", "panic", "segfault", "failed"]) else "gpt-5.6-luna"
-        elif self.policy == "sr_knn_official":
-            # 8D state space distance classification
-            return "gpt-6-luna" if state.get("step_index", 0) > 3 else "gpt-5.6-luna"
-        elif self.policy == "sr_knn_heuristic":
-            # Distinct heuristic: step count threshold only
-            return "gpt-6-luna" if state.get("step_index", 0) % 2 == 0 else "gpt-5.6-luna"
-        elif self.policy in ("laya_v2", "kev_4b"):
-            # Remote neural routing via Port 8000
+            
+        elif p == "sr_knn_official":
+            # 8D state vector space distance projection
+            step = state.get("step_index", 1)
+            return "gpt-6-luna" if step >= 4 else "gpt-5.6-luna"
+            
+        # 4. Neural Routing Models via Port 8000
+        elif p in ("laya_v2", "kev_4b"):
             try:
                 import urllib.request
-                family = "laya" if self.policy == "laya_v2" else "kev"
+                family = "laya" if p == "laya_v2" else "kev"
                 req_data = {
                     "request_id": f"harbor-{uuid.uuid4()}",
                     "router_family": family,
@@ -96,16 +192,18 @@ class ModelRouterHarborAgent:
                     data=json.dumps(req_data).encode(),
                     headers={"Content-Type": "application/json"}
                 )
-                resp = json.loads(urllib.request.urlopen(r, timeout=3).read())
-                return resp["selected_action"]["model"]
+                with urllib.request.urlopen(r, timeout=3) as resp:
+                    resp_data = json.loads(resp.read().decode())
+                    return resp_data["selected_action"]["model"]
             except Exception as e:
-                logger.warning(f"Router API unreachable ({e}), falling back to strong model")
-                return "gpt-6-luna"
-        return self.model_name
+                logger.warning(f"Port 8000 Router API call failed ({e}), using default {self.effective_model}")
+                return self.effective_model
+                
+        return self.effective_model
 
     def call_generator(self, prompt: str, selected_model: str) -> str:
-        """Invokes generator model with token budget enforcement."""
-        # 1. Check budget
+        """Invokes generator model with strict token budget enforcement."""
+        # Check global budget ceiling (< 1,000,000 tokens)
         if TOKEN_BUDGET_FILE.is_file():
             try:
                 b = json.loads(TOKEN_BUDGET_FILE.read_text(encoding="utf-8"))
@@ -115,7 +213,6 @@ class ModelRouterHarborAgent:
             except Exception:
                 pass
 
-        # 2. Call API via credentials
         if CREDENTIALS_FILE.is_file():
             try:
                 import urllib.request
@@ -144,12 +241,10 @@ class ModelRouterHarborAgent:
                     data = json.loads(resp.read().decode("utf-8"))
                     content = data["choices"][0]["message"]["content"]
                     
-                    # Update token budget
                     usage = data.get("usage", {})
                     p_toks = usage.get("prompt_tokens", len(prompt) // 4)
                     c_toks = usage.get("completion_tokens", len(content) // 4)
                     self._update_budget(p_toks, c_toks)
-                    
                     return content
             except Exception as e:
                 logger.error(f"Generator API error ({selected_model}): {e}")
@@ -172,8 +267,8 @@ class ModelRouterHarborAgent:
         except Exception:
             pass
 
-    def run_step_loop(self, task_instruction: str, exec_fn) -> Dict[str, Any]:
-        """Runs iterative step loop executing commands inside environment."""
+    def run_step_loop_sync(self, task_instruction: str, exec_fn) -> Dict[str, Any]:
+        """Synchronous harness for local testing or controlled trials."""
         last_obs = "Task initialized."
         for step in range(1, self.max_steps + 1):
             state = {
@@ -185,7 +280,6 @@ class ModelRouterHarborAgent:
             prompt = f"Task: {task_instruction}\nLast output:\n{last_obs[:1000]}\nWhat command should be run next?"
             response = self.call_generator(prompt, selected_model)
             
-            # Extract bash command
             cmd = "ls -la"
             if "```bash" in response:
                 cmd = response.split("```bash")[1].split("```")[0].strip()

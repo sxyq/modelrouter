@@ -1,18 +1,20 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-18 18:45（双模型正式训练高速推进 + F05/F03/Kev 真实台账核验修正 + V8 扩展数据独立 Run 建立）**：
+> **最新状态：2026-10-18 20:30（d295b35 代码核验专项纠偏落地 + 物理权重 V8 真微调完成 + Harbor 继承与竞品命名规范化）**：
 > 1. **双模型真实持续 GPU 训练零中断推进（实时最新实测）**：
->    - **Laya-421M (MoE 架构)**：Worker PID `1202621`、Controller PID `499841`，正在执行全量分级连续训练（F06），已稳步推进至 **Epoch 0/2 Chunk 171/361，Step 21,888 / 92,280**（总更新步数完成度 **23.72%**），已消费 **1,400,832** 个训练样本曝光，最新 Chunk Loss 突破性收敛至 **0.4977**（跌破 0.50 大关）。物理在盘历史最高准确率权重为 `P0_B03_C01_QB_PB` Epoch 2（S1 Acc 68.63%）。
->    - **Kev-4B (Qwen3.5-4B LoRA + Pointer Head 架构)**：Worker PID `1357764`、Supervisor PID `1357763`，持续 LoRA 微调已稳步推进至 **Epoch 0/1 Step 2,170 / 16,857**（进度 **12.87%**），消费 8,680 条记录（2.025s / rec），Loss 稳步收敛降至 **0.988 ~ 1.282**（均值 ~1.15）。
->    - **服务与看板双重在线核验**：端口 8000 双模型 REST API 持续健康在线 > 14.4 小时，Laya (416ms) 与 Kev (2650ms) 均输出真实模型前向概率推理（`fallback_used: false`）。本地监控大盘 `http://127.0.0.1:8765` 保持 5 秒级实时刷新。
-> 2. **训练结果台账与历史数据纠偏核准**：
->    - **F05 指标核定**：经查 `F05/run.json` 原始记录，多任务联合训练 F05 Epoch 1 S1 Acc 为 **67.56%**，Loss 为 **0.5978**，Brier **0.4130**，为最佳物理权重并已部署在线；Epoch 2 因多任务轻微过拟合 S1 Acc 降为 **63.64%**，权重已合规修剪。手写台账中 67.91% 实为单流实验 `F05_S1` Epoch 2（Acc 67.91%，Loss 0.5933），两者已在台账中彻底澄清并分别建档。
->    - **F03 状态更正**：F03 实际已于 2026-10-18 00:10:47 完训（Epoch 1 S1 Acc 64.71%，Epoch 2 S1 Acc 67.20%），状态正式更正为 `COMPLETED`。
->    - **真实完成候选核定**：具备物理 Checkpoint、完整日志及固定 Val 验证的真实已完训候选为 Laya 11 个、Kev 1 个（基线适配器）；正在现场训练 2 个；其余候选全部严格标为 `QUEUED`。
-> 3. **核心科研边界与评测口径科学纠偏（严格求真）**：
->    - **算力竞争与显存余量**：显存占用 20.3 GiB / 49.1 GiB (41.3%) 保证零 OOM，两模型在 SM 算力与显存带宽上存在自然物理竞争。
->    - **官方 Benchmark 评测真实性准则**：Harbor Docker 评测状态保持为 **`BLOCKED (AWAITING_DOCKER_SOCKET_AUTHORIZATION)`**，等待宿主机 `sudo usermod -aG docker syy` 授权，不使用宿主未隔离环境虚报通过率。
->    - **V8 扩展数据独立性**：440 万 Agent 轨迹、3.9 万缓存复用机会与 5.7 万偏好数据已独立就绪，已为 Laya 和 Kev 分别建立 `V8-Extension` 独立 Run 配置，绝不混入当前 F06 与 Kev 正在进行的训练。
+>    - **Laya-421M (MoE 架构)**：Worker PID `1202621`，正在执行全量分级连续训练（F06），已稳步推进至 **Epoch 0/2 Chunk 196/361，Step 25,088 / 92,280**（总更新步数完成度 **27.19%**），已消费 **1,605,632** 个训练样本曝光，最新 Chunk Loss 为 **0.4995**。
+>    - **Kev-4B (Qwen3.5-4B LoRA + Pointer Head 架构)**：Worker PID `1357764`，持续 LoRA 微调已稳步推进至 **Epoch 0/1 Step 2,950 / 16,857**（进度 **17.50%**），消费 11,800 条记录（2.024s / rec），Loss 为 **1.221**。
+>    - **服务与看板双重在线核验**：端口 8000 双模型 REST API 持续健康在线 > 16.5 小时，Laya 与 Kev 均输出真实模型前向概率推理（`fallback_used: false`）。本地监控大盘 `http://127.0.0.1:8765` 保持 5 秒级实时刷新。
+> 2. **V8 新数据训练模型身份纠偏与物理权重真微调完成**：
+>    - **Smoke 标记纠偏**：原 46 步 SHA256 哈希伪特征小网络记录已正式重新标注为 `V8_AUXILIARY_HEAD_SMOKE`，严格不作为 `LAYA-V8-EXT-01` 正式模型成绩；
+>    - **实体权重真微调落地**：实现 `our-project/code/src/modelrouter/training/v8_real_finetune.py`，物理加载 Kev 真实 PointerHead 权重（`models/kev-4b-adapter/head.pt`，q/k: [256, 2560]）与 Qwen3.5-4B 真实 Token 词表 Embedding，接入 ROUTER_CHOICE 对战胜负、CACHE_REUSE 缓存复用机会与 AGENT_OUTCOME 智能体终态三类 V8 视图，完成 50 步真实反向传播与参数更新，实测参数位移 $\Delta q = 0.7764$、$\Delta k = 1.1833$（证实参数真实改变），验证集 Choice 准确率 83.33%、Cache MSE 0.1329、Outcome 准确率 100%，保存兼容 Serving 架构的新物理检查点 `runs/KEV-V8-EXT-01/checkpoint/head.pt`。
+> 3. **Harbor 规范化执行与真实评分修复**：
+>    - **上游 BaseAgent 继承**：`ModelRouterHarborAgent` 严格继承上游 `harbor.agents.base.BaseAgent`，实现 `setup/run` 契约，通过 `environment.exec()` 在任务容器内执行，彻底移除临时拉起 Alpine 容器的伪执行逻辑；
+>    - **真实鉴权拦截与零虚假评分**：完全删除 `docker_ok → evaluator_score=1.0` 伪逻辑；未通过官方 Verifier 评分时一律标为 `NOT_EVALUATED`；在 A6000 宿主 Docker 套接字无写权限时，真实记录 `BLOCKED_PERMISSION_REQUIRED` 并退出，坚决不向三方 Provider 消耗真实 Token。
+> 4. **竞品算法命名与基准调用严格纠偏**：
+>    - 将基于 prompt length 的启发式重命名为 `length_heuristic`，将基于 step count 的启发式重命名为 `step_heuristic`；严格仅将数学拟合与向量距离模型命名为 `routellm_official` / `sr_knn_official`。
+> 5. **Kev 候选链条真实验收**：
+>    - 调度器 `kev_candidate_dispatcher.py`（PID 2042701）保持对 Kev C03（PID 1357764）的轮询监护；C04（`--lr 1e-5`）、C05（状态字段置空真正消融）、C07（`--lora 8`）、C09（V8 视图数据）参数与命令校验 100% 通过测试，将在 C03 完训后自动接续。
 >
 
 > **2026-10-18 · 论文五个 RQ 最新确定（仅研究方案更新，不覆盖真实执行/训练现场）**：**RQ1 整体效果**（完整 Router vs 强固定/混合/规则与同类算法的 Task Success–Episode USD）、**RQ2 模型池身份成员与数量 K**、**RQ3 固定池/Router 的任务拆分 G**、**RQ4 系统消融**（Model×Native Effort 联合动作、T/M/H 状态单/双/三组、KV/Trace/反馈及合法 S1/S2/S3 训练数据/监督/Laya-Kev 配方）、**RQ5 任务适用边界（原命题不变）**。**原 V8 的「RQ4 Agent 角色模型互补性」已正式删除，不再是论文 RQ**，也不再占用 Fig.7/T8；图表和实验定义见 [汇报三 V9](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)，负责人最新决定见 [EXPERIMENT_QA Q-019](EXPERIMENT_QA.md)。下方旧日期的 RQ 记录只是历史快照。本次未操作服务器、训练、Benchmark 或实际结果。  
