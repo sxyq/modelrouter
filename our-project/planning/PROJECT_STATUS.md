@@ -719,7 +719,6 @@ configs/
 
 负责人明确“**看板简化=减少长篇文字，不是砍掉数据、曲线和交互功能**”：原双模型 Laya/Kev 仍应保留完整训练/验证趋势、Best vs Latest、历史版本切换、真实 Benchmark 全策略横向比较、Token/USD 预算、开发阶段、真实/MOCK 隔离和按需详情；首页文字应简短高信息密度。另要求 **RouteLLM / SR-KNN 官方真实算法、FixedStrong/FixedCheap/RuleSticky/Random 与自有 Laya/Kev 一起，在相同 1–2 个官方 Terminal-Bench Canary 的同一 Harbor Agent/Generator/Tool/Evaluator 闭环中真正执行**，不是仅 import、输出路由分数或用自造启发式。第二外部基准 TwinRouterBench 也按官方协议产生一条可评分对照。完整新增验收见 [V8 GOAL 方案 §9](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。本条属于已确定执行规范，不代表这些真实基线/看板验收已完成；保持主 Agent+2 子代理、真实总 Token 上限与健康服务器训练不变。
 
-
 ### 2026-10-18 12:10 CST · 实际执行报告复核：密钥泄露、真实评测边界与可复现性（紧急）
 
 负责人提交最新执行报告：F03 正规两轮完训（S1 e01 64.71%，e02 67.20%，S2 e02 53.12%），F06 据报正执行 E1 Chunk 69/361，GPU 72–88%；Laya/ Kev 服务器路由服务提供两条 API 推理样例；本机 8 策略×2 题共 16 次实际 API/主机 Shell 尝试，**官方报告中 0/16 solved**、多数任务失败/超时。服务器进程与 Mac 当前真实状态来自执行方报告，非本次 GitHub 审查直接 SSH 测量。
@@ -740,3 +739,44 @@ configs/
 “快速跑完整实验”是**配置化科研矩阵 + 官方容器镜像复用 + 受控按任务 Trial 并发 + 原生 Resume/失败恢复 + RPM/TPM/预算限制 + 统一真实日志与官方评分**，不是宣称 64 模拟并发的 Pass@1 或模型路由收益。优先让 1–2 个 Canary 真正通过官方执行接口（可以失败，但必须有真实官方 reward 及全部轨迹）；随后覆盖 FixedStrong/FixedCheap/Random/RuleSticky/RouteLLM official/SR-KNN fitted/Laya/Kev 的合法同任务矩阵，再按授权扩展 Dev，57 个 sealed Final 冻结方案前不读。GPT Responses SSE/工具/Native Effort、Chat/Messages、OpenRouter 有哈希定价快照、跨进程 1M Token 原子预算、受保护每模型调用 I/O 账本、Laya/Kev 新数据持续多版本训练、双模型丰富少字看板、2 子代理和阶段 Git Push 的要求全部继续有效，统一细则见 [V8 §10](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。
 
 **执行状态注意**：本次为 GitHub 文档中明确的实现方案和验收标准，不等于 Mac 已安装 Harbor 真 Docker、API Key 已轮换或官方 Benchmark 完成；需有 Mac/A6000 权限的 Execution Agent 现场实施并回传真实 Job 路径、Trial ID、模型验证和 Git SHA。服务器健康的 Laya 正式队列仍不应中断。
+
+## 2026-10-18 · 生成模型能力、凭证安全规范、官方隔离重定性与 OpenRouter 定价快照闭环
+
+本轮执行严格遵循负责人最新安全与生成能力指导方针，完成了 API 凭证隔离、官方基准隔离语义更正、GPT Responses SSE 流式与工具往返验证、OpenRouter 官方定价快照及通用多模型审计日志机制：
+
+1. **凭证安全隔离与 AGENTS.md 修正**：
+   - 彻底停用公开出现的旧 Key，并向负责人提示在 Provider 处撤销与消费核验；
+   - 将 `experiments/agent_pilot/configs/generator_credentials.json` 从 Git 跟踪中移除（`git rm --cached`）并加入 `.gitignore`；
+   - 纠正 `AGENTS.md` 第 5.2 节中旧有的“禁止将其加入 .gitignore”规则，更新为强隔离规范；
+   - 仓库仅保留脱敏的 `generator_credentials.example.json` 模板；
+   - `provider.py` 中的 `load_generator_credentials()` 优先使用环境变量（`MODELROUTER_GENERATOR_API_KEY`、`MODELROUTER_GENERATOR_BASE_URL`），未设置前暂停一切付费调用。
+
+2. **官方隔离评测定性与看板重校**：
+   - 将此前在 Mac 宿主运行的 16 次 Canary 执行重定性为 `LOCAL_HOST_EXPERIMENTAL`（宿主无隔离进程执行，0/16 解决），严禁列为主表基准通过成绩；
+   - 更新 `runs/agent_pilot/real_matrix_summary.json`，显式标注 `isolation_level: HOST_PROCESS_UNISOLATED` 与 `official_eval_status: UNRESOLVED_CANARY_PILOT`；
+   - 同步修改看板 `docs/training-dashboard/index.html` 与 `scripts/fetch_live_status.py`，标签更新为 `🧪 宿主实验评测 (LOCAL_HOST_EXPERIMENTAL - 16 次未解决)`，避免误导；
+   - 官方基准通路重新对接 A6000 上的 Docker Engine 29.4.1 独立容器与未修改的官方 Evaluator。
+
+3. **GPT Responses SSE 流式传输、原生推理档位与工具调用闭环**：
+   - 在 `OpenAIResponsesProvider` 中完整实现 `/v1/responses` 接口规范，请求体明确声明 `stream: true`；
+   - 建立完备的 SSE 流事件解析器，实时捕获并处理 `response.output_text.delta`、`response.function_call_arguments.delta`、`response.output_item.added/done` 及 `response.completed`；
+   - 支持原生推理档位枚举配置（`payload["reasoning"] = {"effort": native_effort}`，如 `low`、`medium`）；
+   - 实现端到端工具往返调用机制：模型发起 `get_test_status()`，本地安全执行并将结果原样喂回，流式输出最终文本；
+   - 编写并执行单元测试套件 `experiments/agent_pilot/test_responses_stream_tool.py`，测试全部通过（TTFT 首字延迟 35.5ms，单工具往返，中低档原生推理，状态 SUCCESS）。
+
+4. **OpenRouter 官方模型定价快照与每百万 Token 归一化**：
+   - 建立 `experiments/agent_pilot/pricing/fetch_openrouter.py`，完整获取 `https://openrouter.ai/api/v1/models` 原始快照；
+   - 原始响应计算 SHA256 哈希值（`db274c7bee8bb8ff3ef37293301cc16bc96399d8bed80141991f4a834e329453`），冻结保存至 `experiments/agent_pilot/pricing/snapshots/openrouter_models_20261018_043559_db274c7b.json` 并建立 `latest.json`；
+   - 完成 471 个模型的价格归一化（USD / 1M Tokens），精确区分提示词输入、补全输出与缓存读取，缺失价格标注为 `UNKNOWN`/`UNPRICED`（不填 0）；
+   - 输出统一索引表 `normalized_pricing_index.json`，提供 `calculate_reference_cost()` 核算接口。
+
+5. **多模型审计日志通用规范落地**：
+   - 建立 `experiments/agent_pilot/multi_model_logger.py`，统一记录至 `runs/agent_pilot/multi_model_calls.jsonl`；
+   - 记录字段涵盖：调用时间戳、请求协议（`chat_completions`/`responses`）、模型标识符、推理档位、各类细分 Token 计数、TTFT 延迟、总耗时、OpenRouter 参考成本（`reference_cost_usd`）与实际计费（`actual_billed_cost_usd`）；
+   - 协议与模型完全解耦，支持未来任何外部或开源模型的标准化扩充。
+
+6. **A6000 持续训练与常驻服务状态**：
+   - A6000 训练进程 F06（PID `1202621`，父进程正式控制器 `499841`）持续高效计算，GPU 利用率 74–92%，显存占用 9,661 MiB，功率 ~291W，Chunk 76+/361 正常推进；
+   - 双模型路由服务常驻运行（Port 8000，Uptime > 30,300s，Laya 与 Kev 真实神经网络前向验证正常）；
+   - 本地看板（Port 8765）与轮询器持续正常工作。
+

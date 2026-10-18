@@ -580,7 +580,7 @@
   <div class="bench-card">
     <div class="tab-bar">
       <button class="tab-btn active" id="btn-tab-real" onclick="switchTab('real')">
-        <span>🔒 官方真实任务评测 (REAL_AGENT_OFFICIAL_EVAL)</span>
+        <span>🧪 宿主实验评测 (LOCAL_HOST_EXPERIMENTAL - 16 次未解决)</span>
       </button>
       <button class="tab-btn" id="btn-tab-mock" onclick="switchTab('mock')">
         <span>⚠️ 64 并发模拟压力测试 (MOCK_STRESS)</span>
@@ -589,8 +589,8 @@
 
     <!-- Banner for Real Tab -->
     <div class="tab-banner banner-real" id="banner-real">
-      <span style="font-weight: 700;">[官方真实环境]</span>
-      <span>Terminal-Bench 2.1 Canary 真实题目已绑定官方容器与评测器；所有 8 个策略已接入真实 select() 接口；真实 API Token 硬约束 &lt; 1,000,000；绝无 Mock 混杂。</span>
+      <span style="font-weight: 700;">[宿主通路验证归档 · 非官方隔离结论]</span>
+      <span>当前数据为 Mac 宿主进程快速执行的 16 次通路实验归档（8 策略 × 2 Canary 任务），全未解决 (0% Pass)。官方基准通路正在对接 A6000 官方 Docker 容器与未修改 Evaluator；学术主表与对比结论仅采纳真正的官方容器隔离数据。</span>
     </div>
 
     <!-- Banner for Mock Tab -->
