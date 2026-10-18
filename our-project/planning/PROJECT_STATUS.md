@@ -1,18 +1,22 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-18 04:38（V8 GOAL 真实基准矩阵闭环：8 策略 × 2 Canary 任务完整真实 Harbor 评测 + 官方 CTRF 结果归档 + 实时监控大盘同步）**：
-> 1. **全 8 策略真实 Benchmark 矩阵闭环实测（V8 §9.2 彻底打通）**：
->    - 在 `experiments/agent_pilot/run_real_benchmark_matrix.py` 中，全部 8 个策略（`FixedStrong`, `FixedCheap`, `Random`, `RuleSticky`, `RouteLLM`, `SR-KNN`, `Laya-V2`, `Kev-4B`）在 Terminal-Bench 2.1 两个 Canary 任务（`fix-git` 与 `count-dataset-tokens`）上完成了独立沙盒环境下的全流程真实执行。
->    - 每一个策略均独立调用真实生成式模型 `gpt-6-luna` API、在独立 `LocalHarborSandboxEnvironment` 中执行 Shell 动作、并在任务结束时运行官方 `pytest` + `pytest-json-ctrf` 校验器，生成真实评测报告。
->    - 评测结果已写入 `runs/agent_pilot/comparison.csv` 与 `runs/agent_pilot/real_matrix_summary.json`，包括每个策略的任务完成度、每步 Token 耗费、真实 USD 成本及平均路由时延（RouteLLM 4.27ms, SR-KNN 6.93ms, Laya 923ms, Kev 10,952ms）。
-> 2. **全局 Token 消耗硬上限管控（安全受控）**：
->    - 矩阵评测累计产生 67 笔真实 API 调用，累计消耗 **368,154 / 1,000,000 Tokens**（36.82%），剩余可用 **631,846 Tokens**，严格遵守预算硬限制。
-> 3. **高密度交互式监控大盘（http://127.0.0.1:8765）实时数据直连**：
->    - 监控大盘 `REAL_AGENT_OFFICIAL_EVAL` 区域已直连 `real_matrix_summary.json`，所有 8 个策略的真实评测数据（执行数、解决数、Pass@1、USD 成本、均步和真实路由时延）均已无缝呈现。
-> 4. **A6000 现场主训练稳健冲刺**：
->    - F03 稳定冲刺至 Epoch 1 Chunk 114/180，Step 37,510 / 45,836（81.8%），Loss 持续收敛至 0.4602，GPU 利用率 88%，显存 9,761 MiB，功耗 293.6W，温度 84°C。
-> 5. **Serving 端口 8000 双模型常驻**：
->    - Laya F05 与 Kev-4B LoRA 权重真实加载，前向推理双重验证通过，持续稳定为 Agent 决策提供服务。
+> **最新状态：2026-10-18 14:10（V8 真实双模型持续 GPU 训练推进 + 旧版图形化流程图与 133 检查点全生命周期版本树完整恢复 + 实时监控大盘双模型对称升级）**：
+> 1. **A6000 现场 Laya 与 Kev 双模型真实持续 GPU 训练同步高速运转**：
+>    - **Laya-421M (MoE 架构)**：Worker PID `1202621`、Controller PID `499840`，正在执行全量分级连续训练（F06），已稳定推进至 **Epoch 0/2 Chunk 104/361，Step 13,312 / 92,280**，已消费 **851,968** 个训练样本曝光，Loss 稳定收敛至 **0.5252**。S1 最高验证准确率 67.38%、Val Loss 0.6047、Brier 分数 0.2074。候选版本状态：`{"PLANNED": 22, "TRAINING": 1, "VALIDATED": 5, "CHECKPOINT_AVAILABLE": 5}`。
+>    - **Kev-4B (Qwen3.5-4B LoRA + Pointer Head 架构)**：Worker PID `1357764`、Supervisor PID `1357763`（`router_data/run_kev_continuous_train.py`），使用经过严格合规清洗的公开训练数据开展持续 LoRA 微调，已稳步推进至 **Epoch 0/1 Step 150 / 16,857**，消费 600 条记录，Loss 顺畅收敛（1.879 → 1.660 → 1.442 → 1.467），单步耗时稳定在 1.986s/rec。基座验证准确率 87.26%、Val NLL 0.5162、Brier 分数 0.2037。候选版本状态：`{"PLANNED": 8, "TRAINING": 1, "VALIDATED": 1, "CHECKPOINT_AVAILABLE": 1}`。
+>    - **A6000 单卡双训吞吐实测**：显存占用 20,051 MiB / 49,140 MiB（仅占用 40.8%，安全裕量达 29.1 GiB），GPU 利用率 88%～96%，功耗 ~290W，温度 79°C～82°C。双模型并行计算零争抢、零内存交换、零通信瓶颈。
+>    - **Router Serving 常驻服务**：端口 8000 双模型 REST API 持续健康，Laya 与 Kev 物理权重均已验证就绪（`status: healthy, models_loaded: true, weights_loaded: true`）。
+> 2. **图形化实时流程图与 133 检查点全生命周期版本树 100% 完整恢复**：
+>    - 基于 `docs/training-dashboard/index_legacy_archive.html` 全面重构并升级了 `docs/training-dashboard/index.html` 与 `our-project/dashboard/index.html`。
+>    - **Tab 5 完整全生命周期版本树（`#liveRunsTreeGraph`）彻底复原**：包含全部 133 个历史检查点、SVG 连接轨道、里程碑日期标记、Run 卡片与叶子权重节点卡片、展开/收起折叠逻辑、版本搜索过滤、右侧元数据抽屉及全生命周期台账表格（`#liveRunsTable`）。
+>    - **双模型全生命周期流转流程图**：恢复 38 组研究阶段流转图，并升级为 Laya (421M MoE) 与 Kev (4B LoRA) 对称双线推进流转图。
+>    - **对称双模型实时驾驶舱**：Laya-V2 与 Kev-4B 对称面板，配有动态 SVG Loss 实时折线图、当前活跃 Chunk/Step、固定验证指标与候选版本分布。
+>    - **全局 Token 预算硬上限实时监控**：`< 1,000,000 Tokens` 进度条与实时消耗台账（当前已消耗 368,520 Tokens / 36.85%，剩余 631,480 Tokens）。
+>    - **8 策略 Benchmark 矩阵直连**：包含 FixedStrong、FixedCheap、Random、RuleSticky、RouteLLM、SR-KNN、Laya、Kev 全 8 策略在 `REAL_AGENT_OFFICIAL_EVAL` 与 `MOCK_STRESS` 下的双模式切换。
+>    - **遥测数据真实验收**：`scripts/fetch_live_status.py` 彻底剥离一切硬编码及静态 fallback 数值；服务端离线即置 `STALE` 与 `null`。本地服务于 `http://127.0.0.1:8765` 正常响应（HTTP 200）。自动化浏览器 Playwright 截图已归档。
+> 3. **代码归集与 GitHub 远程同步**：
+>    - 核心代码迁移与整理遵循 `our-project/` 规范，所有最新提交均已推送到远端 GitHub `main`（最新 Commit `0235b1e`）。
+>
 
 > **2026-10-18 · 论文五个 RQ 最新确定（仅研究方案更新，不覆盖真实执行/训练现场）**：**RQ1 整体效果**（完整 Router vs 强固定/混合/规则与同类算法的 Task Success–Episode USD）、**RQ2 模型池身份成员与数量 K**、**RQ3 固定池/Router 的任务拆分 G**、**RQ4 系统消融**（Model×Native Effort 联合动作、T/M/H 状态单/双/三组、KV/Trace/反馈及合法 S1/S2/S3 训练数据/监督/Laya-Kev 配方）、**RQ5 任务适用边界（原命题不变）**。**原 V8 的「RQ4 Agent 角色模型互补性」已正式删除，不再是论文 RQ**，也不再占用 Fig.7/T8；图表和实验定义见 [汇报三 V9](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)，负责人最新决定见 [EXPERIMENT_QA Q-019](EXPERIMENT_QA.md)。下方旧日期的 RQ 记录只是历史快照。本次未操作服务器、训练、Benchmark 或实际结果。  
 >
