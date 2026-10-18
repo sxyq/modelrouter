@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-10-18T07:25:35Z",
+  "active_run": {
+    "run_id": "KEV-V8-HOMOLOGOUS-20261018",
+    "supervisor_pid": 1357763,
+    "worker_pid": 1357764,
+    "base_model": "Qwen3.5-4B-Base",
+    "lora_rank": 16,
+    "lr": 2e-05,
+    "cursor_path": "runs/KEV-V8-HOMOLOGOUS-20261018/cursor.json",
+    "log_path": "runs/KEV-V8-HOMOLOGOUS-20261018/train.log",
+    "checkpoints_path": "runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+    "status": "LIVE_ACTIVE_COMPUTING"
+  },
+  "candidate_plan": [
+    {
+      "candidate_id": "KEV-V8-C03",
+      "run_id": "KEV-V8-HOMOLOGOUS-20261018",
+      "config": "LoRA r16, lr=2e-5, 1 Epoch",
+      "status": "LIVE_TRAINING"
+    },
+    {
+      "candidate_id": "KEV-V8-C07",
+      "run_id": "KEV-V8-ABL-LORA8",
+      "config": "LoRA r8, lr=5e-5",
+      "status": "QUEUED"
+    },
+    {
+      "candidate_id": "KEV-V8-C08",
+      "run_id": "KEV-V8-ABL-LORA32",
+      "config": "LoRA r32, lr=1e-5",
+      "status": "QUEUED"
+    },
+    {
+      "candidate_id": "KEV-V8-C05",
+      "run_id": "KEV-V8-ABL-NOSTATE",
+      "config": "Zero State Mask Ablation",
+      "status": "QUEUED"
+    }
+  ]
+}

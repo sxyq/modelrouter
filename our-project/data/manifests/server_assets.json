@@ -1,0 +1,85 @@
+{
+  "generated_at": "2026-10-18T07:25:35Z",
+  "server_host": "k3s-infra-01",
+  "base_workspace": "/home/syy/路由",
+  "categories": {
+    "models": {
+      "laya_421m": {
+        "path": "models/laya-421m",
+        "physical_weight": "models/laya-421m/model.safetensors",
+        "weight_size_mb": 803.57,
+        "architecture": "MoE-421M",
+        "status": "LOADED_ACTIVE_IN_SERVING",
+        "consumers": [
+          "Port 8000 REST API",
+          "Local Agent Harness via SSH"
+        ]
+      },
+      "kev_4b_adapter": {
+        "path": "models/kev-4b-adapter",
+        "physical_weight": "models/kev-4b-adapter/adapter_model.safetensors",
+        "pointer_head": "models/kev-4b-adapter/head.pt",
+        "weight_size_mb": 128.92,
+        "architecture": "Qwen3.5-4B LoRA r16 + Pointer Head",
+        "status": "LOADED_ACTIVE_IN_SERVING",
+        "consumers": [
+          "Port 8000 REST API",
+          "Local Agent Harness via SSH"
+        ]
+      },
+      "qwen3_5_4b_base": {
+        "path": "models/qwen3.5-4b-base",
+        "physical_shards": [
+          "models/qwen3.5-4b-base/model.safetensors-00001-of-00002.safetensors",
+          "models/qwen3.5-4b-base/model.safetensors-00002-of-00002.safetensors"
+        ],
+        "total_size_mb": 8888.08,
+        "status": "BASE_MODEL_PHYSICAL_WEIGHTS",
+        "consumers": [
+          "Kev Continuous Training Worker",
+          "Port 8000 REST API"
+        ]
+      }
+    },
+    "datasets": {
+      "kev_homologous": {
+        "train": "data/kev/公开数据/train.jsonl",
+        "val": "data/kev/公开数据/val.jsonl",
+        "test": "data/kev/公开数据/test.jsonl",
+        "holdout": "data/kev/公开数据/test_twinrouterbench_holdout.jsonl",
+        "train_records": 67428,
+        "status": "ACTIVE_READ_BY_KEV_TRAINING"
+      },
+      "laya_homologous": {
+        "train": "data/laya/公开数据/train.jsonl",
+        "val": "data/laya/公开数据/val.jsonl",
+        "test": "data/laya/公开数据/test.jsonl",
+        "holdout": "data/laya/公开数据/test_twinrouterbench_holdout.jsonl",
+        "train_records": 67428,
+        "status": "VALIDATED_HISTORICAL_BASELINE"
+      },
+      "cleaned_public_sources": {
+        "root": "data/公开数据/清洗数据",
+        "total_files": 14,
+        "total_records": 6600628,
+        "size_mb": 6104.62,
+        "status": "STATIC_FROZEN_CLEANED_SOURCES"
+      },
+      "raw_public_sources": {
+        "root": "data/公开数据/原始数据",
+        "total_shards": 789,
+        "size_mb": 17041.53,
+        "status": "IMMUTABLE_PROVENANCE_SOURCE"
+      },
+      "v8_extension_views": {
+        "root": "runs/MR-V8-DATA-EXTENSION-20261018",
+        "views": [
+          "runs/MR-V8-DATA-EXTENSION-20261018/views/observed_agent_outcome_train.jsonl.gz",
+          "runs/MR-V8-DATA-EXTENSION-20261018/views/cache_reuse_opportunity_train.jsonl.gz",
+          "runs/MR-V8-DATA-EXTENSION-20261018/views/router_choice_train.jsonl.gz"
+        ],
+        "status": "INDEPENDENT_VIEW_READY_FOR_NEXT_EXP_RUN"
+      }
+    }
+  }
+}
