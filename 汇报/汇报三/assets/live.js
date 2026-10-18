@@ -19,10 +19,27 @@ const MR = (() => {
     apiBase: API_BASE,
     health: null,
     models: null,
+    config: null,
     lastPair: null,
     inflight: false,
     lastError: null,
+    logs: [],
   };
+
+  const logSubs = [];
+  let logSeq = 0;
+
+  function pushLog(rec) {
+    rec.seq = ++logSeq;
+    S.logs.push(rec);
+    if (S.logs.length > 300) S.logs.shift();
+    logSubs.forEach(fn => { try { fn(S.logs); } catch (e) {} });
+  }
+
+  function onLog(fn) {
+    logSubs.push(fn);
+    try { fn(S.logs); } catch (e) {}
+  }
 
   /* ---------------- 选项中文短标签 ---------------- */
   const LABELS = {
@@ -370,8 +387,10 @@ const MR = (() => {
   }
 
   async function request(path, options = {}, timeoutMs = 200000) {
+    const t0 = performance.now();
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    let result;
     try {
       const resp = await fetch(S.apiBase + path, {
         ...options,
@@ -381,13 +400,31 @@ const MR = (() => {
       const text = await resp.text();
       let payload = null;
       try { payload = text ? JSON.parse(text) : null; } catch { payload = { detail: text }; }
-      return { ok: resp.ok, status: resp.status, payload };
+      result = { ok: resp.ok, status: resp.status, payload };
     } catch (err) {
       const name = err?.name === 'AbortError' ? 'TIMEOUT' : 'NETWORK_UNREACHABLE';
-      return { ok: false, status: 0, payload: { detail: `${name}: ${err?.message || err}`, error_class: name } };
+      result = { ok: false, status: 0, payload: { detail: `${name}: ${err?.message || err}`, error_class: name } };
     } finally {
       clearTimeout(timer);
     }
+    const ms = Math.round(performance.now() - t0);
+    pushLog({
+      at: new Date(),
+      method: (options.method || 'GET').toUpperCase(),
+      path,
+      status: result.status,
+      ok: result.ok,
+      ms,
+      bytes: result.payload ? JSON.stringify(result.payload).length : 0,
+      error: result.ok ? null : (result.payload?.error_class || 'ERROR'),
+    });
+    return result;
+  }
+
+  async function config() {
+    const r = await request('/config', {}, 6000);
+    if (r.ok) S.config = r.payload;
+    return r;
   }
 
   function classify(result) {
@@ -499,8 +536,8 @@ const MR = (() => {
     PRESETS, S, LABELS,
     get apiBase() { return S.apiBase; },
     setApiBase(v) { S.apiBase = v.replace(/\/+$/, ''); },
-    health, models, latest, runOne, runPair, newTestId, randomScenario,
-    modelMeta, checkpointLabel,
+    health, models, config, latest, runOne, runPair, newTestId, randomScenario,
+    modelMeta, checkpointLabel, onLog, pushLog,
     request, classify, errorText, ERROR_TITLES,
     clone, fmtTime, fmtPct, fmtNum, fmtShort: shortId, fmtChars, shortId,
     labelFor,
