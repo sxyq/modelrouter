@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ModelRouter · P16 / P17 真实双模型决策 · Research Deck</title>
+<title>ModelRouter · 真实双模型决策演示 · Research Deck</title>
 <style>
 :root { --paper:#f7f5ef;
 --surface:#fffefa;
@@ -50,14 +50,14 @@ body.hide-chrome .drawer{top:0;bottom:0}body.hide-chrome .scrim{inset:0}
 @media(max-width:750px){.sub,.status,.brand small{display:none}.progress button{width:13px}header{gap:6px}.brand strong{font-size:14px}}
 </style></head>
 <body>
-<header><div class="brand"><small>RESEARCH DECK</small><strong>ModelRouter · P16 / P17 真实双模型决策</strong><span class="sub">Live Typed Decision · Same State, Different Decisions</span></div>
+<header><div class="brand"><small>RESEARCH DECK</small><strong>ModelRouter · 真实双模型决策演示</strong><span class="sub">P16 / P17 · 中文面试版</span></div>
 <button class="btn" id="tocBtn">目录</button><button class="btn" id="hideBtn">隐藏边框</button><button class="btn" id="fsBtn">全屏</button></header>
 <main id="stage"></main><div class="scrim" id="scrim"></div><aside class="drawer" id="drawer"><h3>页面目录</h3><div id="toc"></div></aside>
 <footer><div class="nav"><button class="btn" id="prevBtn">‹</button><button class="btn" id="nextBtn">›</button></div>
 <div class="counter" id="counter"></div><div class="progress" id="progress"></div><span class="status" id="status"></span></footer>
 <script>
 'use strict';
-const SLIDES=[{"no": 16, "title": "Live Typed Decision Demo", "kind": "interactive", "src": "interactive/P16.html", "ready": true, "paper": null}, {"no": 17, "title": "Laya vs Kev — Same State, Different Decisions", "kind": "interactive", "src": "interactive/P17.html", "ready": true, "paper": null}];
+const SLIDES=[{"no": 16, "title": "真实三类型决策演示", "kind": "interactive", "src": "interactive/P16.html", "ready": true, "paper": null}, {"no": 17, "title": "同一输入，两种决策", "kind": "interactive", "src": "interactive/P17.html", "ready": true, "paper": null}];
 const THEME={"paper": "#f7f5ef", "surface": "#fffefa", "ink": "#292b29", "muted": "#6e7168", "accent": "#21877b", "line": "#dfd9cb", "hover": "#ecebe7", "pending": "#edebe5"};
 const stage=document.getElementById('stage');
 const views=new Map();
@@ -93,7 +93,7 @@ function go(i,fromHash=false){
  document.getElementById('status').textContent=s.ready?(s.kind==='interactive'?'交互页':'图片页'):(s.kind==='interactive'?'交互页待嵌入':'图片页待补齐');
  document.querySelectorAll('.progress button').forEach((el,j)=>el.classList.toggle('current',j===i));
  document.querySelectorAll('.item').forEach((el,j)=>el.classList.toggle('now',j===i));
- document.title='P'+pad(s.no)+' · '+s.title+' · ModelRouter · P16 / P17 真实双模型决策';
+ document.title='P'+pad(s.no)+' · '+s.title+' · ModelRouter · 真实双模型决策演示';
  if(!fromHash)history.replaceState(null,'','#p'+s.no);
 }
 function toggleDrawer(force){const open=force===undefined?!document.getElementById('drawer').classList.contains('open'):force;

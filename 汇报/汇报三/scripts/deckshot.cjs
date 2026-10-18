@@ -7,7 +7,7 @@ const ROOT = path.resolve('D:/Project/路由/modelrouter/汇报/汇报三');
   const page = await ctx.newPage();
   const errs = [];
   page.on('pageerror', e => errs.push(e.message));
-  await page.goto('http://127.0.0.1:8771/dist/deck.html', { waitUntil: 'networkidle' });
+  await page.goto((process.env.MR_BASE||'http://127.0.0.1:8775')+'/dist/deck.html', { waitUntil: 'networkidle' });
   await page.waitForTimeout(3000);
   await page.screenshot({ path: path.join(ROOT, 'assets/shots/deck_P16.png') });
   const info = await page.evaluate(() => ({ title: document.title, frames: document.querySelectorAll('iframe').length, body: document.body.innerText.slice(0, 200) }));

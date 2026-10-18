@@ -115,7 +115,7 @@ def extract_state_questions(body: dict) -> tuple:
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "ModelRouterBridge/1.0"
+    server_version = "MR-P16P17-Bridge/1.0"
 
     def log_message(self, fmt, *args):  # 静音默认日志，改为简洁输出
         sys.stderr.write("[%s] %s\n" % (datetime.now(CST).strftime("%H:%M:%S"), fmt % args))
@@ -359,7 +359,7 @@ UPSTREAM = DEFAULT_UPSTREAM
 def main():
     global UPSTREAM
     parser = argparse.ArgumentParser(description="P16/P17 真实双模型 Demo 桥接服务")
-    parser.add_argument("--port", type=int, default=8770)
+    parser.add_argument("--port", type=int, default=8775)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--upstream", default=None, help="A6000 服务基址，例如 http://127.0.0.1:8000")
     args = parser.parse_args()
