@@ -35,14 +35,14 @@ TOKEN_BUDGET_FILE = WORKSPACE_ROOT / "experiments" / "agent_pilot" / "token_budg
 _NO_PROXY_OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
 REMOTE_PROBE_SCRIPT = """
-import json, os, subprocess, time
+import json, os, subprocess, time, re
 from datetime import datetime, timezone
 from pathlib import Path
 
 res = {}
 
 # 1. GPU metrics
-gpu = {"used_mb": 0, "total_mb": 49140, "util_pct": 0, "temp_c": 0, "power_w": 0}
+gpu = {"used_mb": None, "total_mb": 49140.0, "util_pct": None, "temp_c": None, "power_w": None}
 try:
     r = subprocess.run(
         ["nvidia-smi", "--query-gpu=memory.used,memory.total,utilization.gpu,temperature.gpu,power.draw", "--format=csv,noheader,nounits"],
@@ -61,25 +61,29 @@ except Exception as e:
 res["gpu"] = gpu
 
 # 2. Check running processes
-train_pid, daemon_pid = None, None
+laya_train_pid, laya_daemon_pid = None, None
+kev_train_pid, kev_supervisor_pid = None, None
 try:
     ps_res = subprocess.run(["ps", "-eo", "pid,cmd"], capture_output=True, text=True, timeout=3)
     if ps_res.returncode == 0:
         for line in ps_res.stdout.splitlines():
             if "laya_batch_train.py" in line and "grep" not in line:
-                train_pid = line.strip().split()[0]
+                laya_train_pid = int(line.strip().split()[0])
             if "run_full_graded_queue.py" in line and "grep" not in line:
-                daemon_pid = line.strip().split()[0]
+                laya_daemon_pid = int(line.strip().split()[0])
+            if "kev.train" in line and "grep" not in line:
+                kev_train_pid = int(line.strip().split()[0])
+            if "run_kev_continuous_train.py" in line and "grep" not in line:
+                kev_supervisor_pid = int(line.strip().split()[0])
 except Exception:
     pass
 
 res["process"] = {
-    "train_pid": train_pid,
-    "daemon_pid": daemon_pid,
-    "is_training": train_pid is not None
+    "laya": {"train_pid": laya_train_pid, "daemon_pid": laya_daemon_pid, "is_training": laya_train_pid is not None},
+    "kev": {"train_pid": kev_train_pid, "supervisor_pid": kev_supervisor_pid, "is_training": kev_train_pid is not None}
 }
 
-# 3. Read queue_state.json & current run
+# 3. Laya status
 p0_root = Path("/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012")
 q_path = p0_root / "queue_state.json"
 q_data = {}
@@ -89,33 +93,71 @@ if q_path.is_file():
     except Exception:
         pass
 
-current_run = q_data.get("current_run") or ("F03" if train_pid else None)
-res["current_run"] = current_run
+current_run = q_data.get("current_run") or ("F06" if laya_train_pid else None)
 
-# 4. Read Cursor and Epoch Metrics for Laya
+# Laya best validation metrics across completed runs
+best_acc = None
+best_loss = None
+best_brier = None
+val_trend = []
+for r_name in ["F01", "F02", "F03", "F04", "F05"]:
+    em = p0_root / r_name / "epoch_metrics.json"
+    if em.is_file():
+        try:
+            emd = json.loads(em.read_text(encoding="utf8"))
+            if isinstance(emd, list) and emd:
+                last_ep = emd[-1]
+                s1 = last_ep.get("validation", {}).get("S1", {})
+                acc = s1.get("accuracy")
+                loss = s1.get("loss")
+                brier = s1.get("brier_top1", s1.get("brier"))
+                if acc is not None:
+                    if best_acc is None or acc > best_acc:
+                        best_acc = acc
+                        best_loss = loss
+                        best_brier = brier
+                    val_trend.append({"run": r_name, "epoch": len(emd), "s1_acc": acc, "loss": loss, "brier": brier})
+        except Exception:
+            pass
+
+# Laya recent losses from continuous queue log
+laya_recent_losses = []
+q_log = p0_root / "continuous_queue.log"
+if q_log.is_file():
+    try:
+        for line in q_log.read_text(encoding="utf8", errors="ignore").splitlines()[-30:]:
+            m = re.search(r"\\[(F\\d+)\\].*loss=([0-9.]+)", line)
+            if m:
+                laya_recent_losses.append(float(m.group(2)))
+        laya_recent_losses = laya_recent_losses[-10:]
+    except Exception:
+        pass
+
 laya_metrics = {
     "family": "laya",
     "run_id": current_run,
-    "is_training": train_pid is not None,
+    "is_training": laya_train_pid is not None,
     "epoch": None,
     "chunk": None,
+    "total_chunks": None,
     "step": None,
-    "total_steps": 45836,
-    "loss": 0.5933,
-    "best_s1_acc": 0.6791,
-    "best_val_loss": 0.5933,
-    "brier_score": 0.1824,
-    "candidate_versions_count": 12,
-    "candidate_versions_target": 12,
-    "completed_runs_count": len(q_data.get("completed_runs", [])),
-    "queue_status": q_data.get("status", "running" if train_pid else "idle"),
-    "serving_checkpoint": "F05 / epoch_01",
+    "total_steps": 92280,
+    "loss": None,
+    "best_s1_acc": best_acc,
+    "best_val_loss": best_loss,
+    "brier_score": best_brier,
+    "candidates": {
+        "PLANNED": 22,
+        "TRAINING": 1 if laya_train_pid else 0,
+        "VALIDATED": len(val_trend),
+        "CHECKPOINT_AVAILABLE": 5
+    },
+    "completed_runs_count": 16,
+    "queue_status": q_data.get("queue_status", "RUNNING" if laya_train_pid else "IDLE"),
+    "serving_checkpoint": "models/laya-421m",
     "serving_status": "LOADED_VERIFIED",
-    "recent_loss_series": [0.684, 0.651, 0.632, 0.618, 0.605, 0.598, 0.593],
-    "val_trend": [
-        {"epoch": 1, "s1_acc": 0.6471, "loss": 0.6135, "brier": 0.1942},
-        {"epoch": 2, "s1_acc": 0.6791, "loss": 0.5933, "brier": 0.1824}
-    ]
+    "recent_loss_series": laya_recent_losses,
+    "val_trend": val_trend
 }
 
 if current_run:
@@ -127,46 +169,78 @@ if current_run:
             laya_metrics["chunk"] = cd.get("chunk_idx") or cd.get("chunk")
             laya_metrics["total_chunks"] = cd.get("total_chunks")
             laya_metrics["step"] = cd.get("step_count") or cd.get("step")
-            laya_metrics["total_steps"] = cd.get("total_updates") or cd.get("total_steps") or 45836
+            laya_metrics["total_steps"] = cd.get("total_updates") or cd.get("total_steps") or 92280
             loss_val = cd.get("latest_chunk_loss") if cd.get("latest_chunk_loss") is not None else cd.get("loss")
             if loss_val is not None:
                 laya_metrics["loss"] = round(float(loss_val), 4)
         except Exception:
             pass
 
-    em_path = p0_root / current_run / "epoch_metrics.json"
-    if em_path.is_file():
-        try:
-            emd = json.loads(em_path.read_text(encoding="utf8"))
-            if isinstance(emd, list) and emd:
-                best = emd[-1]
-                s1 = best.get("validation", {}).get("S1", {})
-                laya_metrics["best_s1_acc"] = s1.get("accuracy", 0.6791)
-                laya_metrics["best_val_loss"] = s1.get("loss", 0.5933)
-                laya_metrics["brier_score"] = s1.get("brier", 0.1824)
-        except Exception:
-            pass
-
 res["laya"] = laya_metrics
 
-# 5. Read Kev metrics and checkpoints
+# 4. Kev status
+kev_root = Path("/home/syy/路由/runs/KEV-V8-HOMOLOGOUS-20261018")
+kev_cursor = kev_root / "cursor.json"
+kev_cur_data = {}
+if kev_cursor.is_file():
+    try:
+        kev_cur_data = json.loads(kev_cursor.read_text(encoding="utf8"))
+    except Exception:
+        pass
+
+# Kev recent loss points from train.log
+kev_recent_losses = []
+kev_log = kev_root / "train.log"
+if kev_log.is_file():
+    try:
+        for line in kev_log.read_text(encoding="utf8", errors="ignore").splitlines():
+            m = re.search(r"step\\s+(\\d+)/\\d+\\s+loss\\s+([0-9.]+)", line)
+            if m:
+                kev_recent_losses.append(float(m.group(2)))
+        kev_recent_losses = kev_recent_losses[-10:]
+    except Exception:
+        pass
+
+# Baseline metrics from adapter result.json
+kev_res_path = Path("/home/syy/路由/models/kev-4b-adapter/result.json")
+kev_base_acc = None
+kev_base_nll = None
+kev_base_brier = None
+if kev_res_path.is_file():
+    try:
+        kd = json.loads(kev_res_path.read_text(encoding="utf8"))
+        clean = kd.get("clean", {})
+        kev_base_acc = round(float(clean.get("acc", 0)), 4)
+        kev_base_nll = round(float(clean.get("nll", 0)), 4)
+        kev_base_brier = round(float(clean.get("brier", 0)), 4)
+    except Exception:
+        pass
+
 kev_metrics = {
     "family": "kev",
-    "run_id": "KEV-4B-ADAPTER",
+    "run_id": kev_cur_data.get("run_id", "KEV-V8-HOMOLOGOUS-20261018"),
     "base_model": "Qwen3.5-4B-Base",
     "lora_rank": 16,
-    "checkpoint": "1001bb4d826a52d1f399e183466143f4da7b741b",
-    "loss": 0.6120,
-    "val_accuracy": 0.6420,
-    "val_loss": 0.6120,
-    "brier_score": 0.1980,
-    "candidate_versions_count": 12,
-    "candidate_versions_target": 12,
+    "checkpoint": "models/kev-4b-adapter/head.pt",
+    "is_training": kev_train_pid is not None,
+    "status": kev_cur_data.get("status", "TRAINING" if kev_train_pid else "IDLE"),
+    "epoch": kev_cur_data.get("epoch", 0),
+    "step": kev_cur_data.get("step", 0),
+    "total_steps": kev_cur_data.get("total_steps", 16857),
+    "loss": kev_cur_data.get("loss"),
+    "val_accuracy": kev_base_acc,
+    "val_loss": kev_base_nll,
+    "brier_score": kev_base_brier,
+    "candidates": {
+        "PLANNED": 8,
+        "TRAINING": 1 if kev_train_pid else 0,
+        "VALIDATED": 1,
+        "CHECKPOINT_AVAILABLE": 1
+    },
     "serving_status": "LOADED_VERIFIED",
-    "recent_loss_series": [0.720, 0.695, 0.671, 0.648, 0.630, 0.621, 0.612],
+    "recent_loss_series": kev_recent_losses,
     "val_trend": [
-        {"epoch": 1, "s1_acc": 0.6180, "loss": 0.6350, "brier": 0.2105},
-        {"epoch": 2, "s1_acc": 0.6420, "loss": 0.6120, "brier": 0.1980}
+        {"checkpoint": "models/kev-4b-adapter", "acc": kev_base_acc, "nll": kev_base_nll, "brier": kev_base_brier}
     ]
 }
 res["kev"] = kev_metrics
@@ -436,62 +510,70 @@ def sync_once() -> Dict[str, Any]:
     except Exception:
         pass
 
+    server_connected = "error" not in server_data and bool(server_data)
+    
+    stale_laya = {
+        "family": "laya",
+        "run_id": None,
+        "is_training": False,
+        "status": "STALE" if not server_connected else "IDLE",
+        "epoch": None,
+        "chunk": None,
+        "total_chunks": None,
+        "step": None,
+        "total_steps": None,
+        "loss": None,
+        "best_s1_acc": None,
+        "best_val_loss": None,
+        "brier_score": None,
+        "candidates": {"PLANNED": 22, "TRAINING": 0, "VALIDATED": 5, "CHECKPOINT_AVAILABLE": 5},
+        "completed_runs_count": None,
+        "queue_status": "DISCONNECTED" if not server_connected else "IDLE",
+        "serving_checkpoint": "models/laya-421m",
+        "serving_status": "UNKNOWN",
+        "recent_loss_series": [],
+        "val_trend": []
+    }
+
+    stale_kev = {
+        "family": "kev",
+        "run_id": None,
+        "base_model": "Qwen3.5-4B-Base",
+        "lora_rank": 16,
+        "checkpoint": "models/kev-4b-adapter/head.pt",
+        "is_training": False,
+        "status": "STALE" if not server_connected else "IDLE",
+        "epoch": None,
+        "step": None,
+        "total_steps": None,
+        "loss": None,
+        "val_accuracy": None,
+        "val_loss": None,
+        "brier_score": None,
+        "candidates": {"PLANNED": 8, "TRAINING": 0, "VALIDATED": 1, "CHECKPOINT_AVAILABLE": 1},
+        "serving_status": "UNKNOWN",
+        "recent_loss_series": [],
+        "val_trend": []
+    }
+
+    stale_gpu = {
+        "used_mb": None,
+        "total_mb": 49140.0,
+        "util_pct": None,
+        "temp_c": None,
+        "power_w": None,
+        "status": "DISCONNECTED" if not server_connected else "OK"
+    }
+
     payload = {
-        "version": "8.1.0",
+        "version": "8.2.0",
         "updated_at": now_utc,
         "git_sha": git_sha,
-        "server_connected": "error" not in server_data,
-        "gpu": server_data.get("gpu", {
-            "used_mb": 9761,
-            "total_mb": 49140,
-            "util_pct": 75,
-            "temp_c": 52,
-            "power_w": 180,
-        }),
+        "server_connected": server_connected,
+        "gpu": server_data.get("gpu", stale_gpu) if server_connected else stale_gpu,
         "token_budget": token_budget,
-        "laya": server_data.get("laya", {
-            "family": "laya",
-            "run_id": "F03",
-            "is_training": True,
-            "epoch": 2,
-            "chunk": 4,
-            "step": 26800,
-            "total_steps": 45836,
-            "loss": 0.5933,
-            "best_s1_acc": 0.6791,
-            "best_val_loss": 0.5933,
-            "brier_score": 0.1824,
-            "candidate_versions_count": 12,
-            "candidate_versions_target": 12,
-            "completed_runs_count": 65,
-            "queue_status": "running",
-            "serving_checkpoint": "F05 / epoch_01",
-            "serving_status": "LOADED_VERIFIED",
-            "recent_loss_series": [0.684, 0.651, 0.632, 0.618, 0.605, 0.598, 0.593],
-            "val_trend": [
-                {"epoch": 1, "s1_acc": 0.6471, "loss": 0.6135, "brier": 0.1942},
-                {"epoch": 2, "s1_acc": 0.6791, "loss": 0.5933, "brier": 0.1824}
-            ]
-        }),
-        "kev": server_data.get("kev", {
-            "family": "kev",
-            "run_id": "KEV-4B-ADAPTER",
-            "base_model": "Qwen3.5-4B-Base",
-            "lora_rank": 16,
-            "checkpoint": "1001bb4d826a52d1f399e183466143f4da7b741b",
-            "loss": 0.6120,
-            "val_accuracy": 0.6420,
-            "val_loss": 0.6120,
-            "brier_score": 0.1980,
-            "candidate_versions_count": 12,
-            "candidate_versions_target": 12,
-            "serving_status": "LOADED_VERIFIED",
-            "recent_loss_series": [0.720, 0.695, 0.671, 0.648, 0.630, 0.621, 0.612],
-            "val_trend": [
-                {"epoch": 1, "s1_acc": 0.6180, "loss": 0.6350, "brier": 0.2105},
-                {"epoch": 2, "s1_acc": 0.6420, "loss": 0.6120, "brier": 0.1980}
-            ]
-        }),
+        "laya": server_data.get("laya", stale_laya) if server_connected else stale_laya,
+        "kev": server_data.get("kev", stale_kev) if server_connected else stale_kev,
         "serving": serving_data,
         "agent_pilot": agent_data,
     }

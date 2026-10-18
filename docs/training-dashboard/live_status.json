@@ -1,14 +1,14 @@
 {
-  "version": "8.1.0",
-  "updated_at": "2026-10-18T05:39:09.290599+00:00",
-  "git_sha": "18a4096",
+  "version": "8.2.0",
+  "updated_at": "2026-10-18T06:09:32.267718+00:00",
+  "git_sha": "b55afee",
   "server_connected": true,
   "gpu": {
-    "used_mb": 9661.0,
+    "used_mb": 20051.0,
     "total_mb": 49140.0,
-    "util_pct": 93.0,
-    "temp_c": 83.0,
-    "power_w": 291.65
+    "util_pct": 95.0,
+    "temp_c": 82.0,
+    "power_w": 290.79
   },
   "token_budget": {
     "max_tokens": 1000000,
@@ -25,78 +25,114 @@
     "run_id": "F06",
     "is_training": true,
     "epoch": 0,
-    "chunk": 96,
-    "step": 12288,
+    "chunk": 104,
+    "total_chunks": 361,
+    "step": 13312,
     "total_steps": 92280,
-    "loss": 0.5211,
-    "best_s1_acc": 0.6791,
-    "best_val_loss": 0.5933,
-    "brier_score": 0.1824,
-    "candidate_versions_count": 12,
-    "candidate_versions_target": 12,
-    "completed_runs_count": 66,
-    "queue_status": "running",
-    "serving_checkpoint": "F05 / epoch_01",
+    "loss": 0.5252,
+    "best_s1_acc": 0.6738,
+    "best_val_loss": 0.6047,
+    "brier_score": 0.2074,
+    "candidates": {
+      "PLANNED": 22,
+      "TRAINING": 1,
+      "VALIDATED": 5,
+      "CHECKPOINT_AVAILABLE": 5
+    },
+    "completed_runs_count": 16,
+    "queue_status": "RUNNING",
+    "serving_checkpoint": "models/laya-421m",
     "serving_status": "LOADED_VERIFIED",
     "recent_loss_series": [
-      0.684,
-      0.651,
-      0.632,
-      0.618,
-      0.605,
-      0.598,
-      0.593
+      0.5154,
+      0.5211,
+      0.5259,
+      0.5432,
+      0.5199,
+      0.5254,
+      0.5257,
+      0.53,
+      0.5242,
+      0.5252
     ],
     "val_trend": [
       {
-        "epoch": 1,
-        "s1_acc": 0.6471,
-        "loss": 0.6135,
-        "brier": 0.1942
+        "run": "F01",
+        "epoch": 2,
+        "s1_acc": 0.6738,
+        "loss": 0.6047,
+        "brier": 0.2074
       },
       {
+        "run": "F02",
         "epoch": 2,
-        "s1_acc": 0.6791,
-        "loss": 0.5933,
-        "brier": 0.1824
+        "s1_acc": 0.6738,
+        "loss": 0.6001,
+        "brier": 0.2069
+      },
+      {
+        "run": "F03",
+        "epoch": 2,
+        "s1_acc": 0.672,
+        "loss": 0.6059,
+        "brier": 0.2095
+      },
+      {
+        "run": "F04",
+        "epoch": 2,
+        "s1_acc": 0.6471,
+        "loss": 0.6141,
+        "brier": 0.2136
+      },
+      {
+        "run": "F05",
+        "epoch": 2,
+        "s1_acc": 0.6364,
+        "loss": 0.598,
+        "brier": 0.2071
       }
-    ],
-    "total_chunks": 361
+    ]
   },
   "kev": {
     "family": "kev",
-    "run_id": "KEV-4B-ADAPTER",
+    "run_id": "KEV-V8-HOMOLOGOUS-20261018",
     "base_model": "Qwen3.5-4B-Base",
     "lora_rank": 16,
-    "checkpoint": "1001bb4d826a52d1f399e183466143f4da7b741b",
-    "loss": 0.612,
-    "val_accuracy": 0.642,
-    "val_loss": 0.612,
-    "brier_score": 0.198,
-    "candidate_versions_count": 12,
-    "candidate_versions_target": 12,
+    "checkpoint": "models/kev-4b-adapter/head.pt",
+    "is_training": true,
+    "status": "TRAINING",
+    "epoch": 0,
+    "step": 140,
+    "total_steps": 16857,
+    "loss": 1.389,
+    "val_accuracy": 0.8726,
+    "val_loss": 0.5162,
+    "brier_score": 0.2037,
+    "candidates": {
+      "PLANNED": 8,
+      "TRAINING": 1,
+      "VALIDATED": 1,
+      "CHECKPOINT_AVAILABLE": 1
+    },
     "serving_status": "LOADED_VERIFIED",
     "recent_loss_series": [
-      0.72,
-      0.695,
-      0.671,
-      0.648,
-      0.63,
-      0.621,
-      0.612
+      1.927,
+      1.673,
+      1.638,
+      1.839,
+      1.434,
+      1.675,
+      1.514,
+      1.776,
+      1.442,
+      1.389
     ],
     "val_trend": [
       {
-        "epoch": 1,
-        "s1_acc": 0.618,
-        "loss": 0.635,
-        "brier": 0.2105
-      },
-      {
-        "epoch": 2,
-        "s1_acc": 0.642,
-        "loss": 0.612,
-        "brier": 0.198
+        "checkpoint": "models/kev-4b-adapter",
+        "acc": 0.8726,
+        "nll": 0.5162,
+        "brier": 0.2037
       }
     ]
   },
@@ -115,7 +151,7 @@
       "laya": true,
       "kev": true
     },
-    "uptime_seconds": 34319.3,
+    "uptime_seconds": 36142.3,
     "models": [
       {
         "family": "laya",
