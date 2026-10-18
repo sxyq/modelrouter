@@ -1,0 +1,357 @@
+/* ModelRouter 汇报三（第二版）· 交互页公共外壳
+   仅由 P06 / P07 共用；配色与静态 PNG 保持一致（暖白纸面 + 深墨字 + 青绿/赭橙/金棕）。 */
+
+:root {
+  --paper: #FEFDF9;
+  --surface: #FFFEFA;
+  --ink: #2A2A24;
+  --body: #3F3C34;
+  --muted: #655E50;
+  --line: #CBC0A8;
+  --line-soft: #EFE9DD;
+
+  --teal: #24817A;
+  --teal-line: #8FC3BE;
+  --teal-fill: #F5FAF8;
+
+  --brick: #BF6042;
+  --brick-line: #D9A18C;
+  --brick-fill: #FDF8F2;
+
+  --ochre: #B0842E;
+  --ochre-line: #DCC08A;
+  --ochre-fill: #FCF8EE;
+
+  --slate: #6F686A;
+  --slate-line: #BFB8B4;
+  --slate-fill: #FAF7F1;
+
+  --serif: Georgia, "Songti SC", "Noto Serif SC", "SimSun", serif;
+  --sans: Inter, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--paper);
+  font-family: var(--sans);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+/* 16:9 舞台，按视口等比缩放，保证与 PNG 页面同一构图 */
+.stage {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  flex: none;
+  background: var(--paper);
+  transform: scale(var(--s, 1));
+  transform-origin: center center;
+  overflow: hidden;
+  box-shadow: 0 18px 60px rgba(60, 52, 32, .10);
+}
+
+.stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid rgba(120, 110, 90, .10);
+}
+
+/* ── 顶部标题 ───────────────────────────────────────── */
+.page-title {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--serif);
+  font-size: 36px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: .015em;
+  color: #26261F;
+}
+
+.page-title small {
+  display: inline-block;
+  margin-left: 12px;
+  vertical-align: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  color: var(--teal);
+  border: 1px solid var(--teal-line);
+  border-radius: 999px;
+  padding: 3px 9px;
+  text-transform: uppercase;
+}
+
+/* ── 左侧四张说明卡 ─────────────────────────────────── */
+.rail {
+  position: absolute;
+  left: 36px;
+  top: 92px;
+  width: 346px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  --c: var(--teal);
+  --c-line: var(--teal-line);
+  --c-fill: var(--teal-fill);
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 11px;
+  align-items: start;
+  min-height: 128px;
+  padding: 13px 14px 13px 12px;
+  border: 1.4px solid var(--c-line);
+  border-radius: 9px;
+  background: var(--c-fill);
+  transition: opacity .3s ease, transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+.card .ico {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--c);
+  display: grid;
+  place-items: center;
+  color: #FDFDF8;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.card h3 {
+  margin: 3px 0 6px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: #2A2A24;
+}
+
+.card h3 .num {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  color: var(--c);
+  margin-right: 7px;
+}
+
+.card p {
+  margin: 0;
+  font-size: 12.4px;
+  line-height: 1.62;
+  color: var(--body);
+  text-align: justify;
+}
+
+.card:nth-child(1) { --c: var(--teal);  --c-line: var(--teal-line);  --c-fill: var(--teal-fill); }
+.card:nth-child(2) { --c: var(--brick); --c-line: var(--brick-line); --c-fill: var(--brick-fill); }
+.card:nth-child(3) { --c: var(--ochre); --c-line: var(--ochre-line); --c-fill: var(--ochre-fill); }
+.card:nth-child(4) { --c: var(--slate); --c-line: var(--slate-line); --c-fill: var(--slate-fill); }
+
+/* 当前 step 对应的卡片抬起，其余降噪 */
+body[data-step="1"] .card:nth-child(1),
+body[data-step="2"] .card:nth-child(2),
+body[data-step="3"] .card:nth-child(3),
+body[data-step="4"] .card:nth-child(4) {
+  transform: translateX(4px);
+  box-shadow: 0 8px 20px rgba(66, 56, 36, .09);
+  border-color: var(--c);
+}
+
+body:not([data-step="1"]) .card:nth-child(1),
+body:not([data-step="2"]) .card:nth-child(2),
+body:not([data-step="3"]) .card:nth-child(3),
+body:not([data-step="4"]) .card:nth-child(4) {
+  opacity: .88;
+}
+
+/* ── 右侧动态图区 ───────────────────────────────────── */
+.panel {
+  position: absolute;
+  left: 430px;
+  top: 92px;
+  width: 738px;
+  height: 500px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #FFFEFB 0%, #FDFCF7 62%, #FCFAF4 100%);
+  overflow: hidden;
+}
+
+.panel svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 图区左上角的 step 说明 */
+.panel-caption {
+  position: absolute;
+  left: 16px;
+  top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  color: #4A463C;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.panel-caption b {
+  color: #145C56;
+  font-weight: 700;
+}
+
+.panel-caption .cap-text {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  letter-spacing: .02em;
+  color: #6B675C;
+  text-transform: none;
+}
+
+/* ── 控制条 ─────────────────────────────────────────── */
+.controls {
+  position: absolute;
+  left: 430px;
+  bottom: 82px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.controls button {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #2E2B23;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 5px 11px;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.controls button:hover:not(:disabled) {
+  background: #EBE4D2;
+  border-color: #B5A98C;
+}
+
+.controls button:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.controls button.primary {
+  border-color: var(--teal-line);
+  color: var(--teal);
+}
+
+.controls button.primary:hover:not(:disabled) {
+  background: var(--teal-fill);
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 4px;
+}
+
+.dots i {
+  width: 16px;
+  height: 3px;
+  border-radius: 3px;
+  background: #BCAF93;
+  transition: background .2s ease, width .2s ease;
+}
+
+body[data-step="1"] .dots i:nth-child(1),
+body[data-step="2"] .dots i:nth-child(2),
+body[data-step="3"] .dots i:nth-child(3),
+body[data-step="4"] .dots i:nth-child(4) {
+  background: var(--teal);
+  width: 22px;
+}
+
+/* ── 右下角图例 ─────────────────────────────────────── */
+.legend {
+  position: absolute;
+  right: 36px;
+  bottom: 86px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 10.8px;
+  color: #4A463C;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+}
+
+.legend .l-score i { background: var(--brick); }
+.legend .l-noul i { background: var(--ochre); }
+
+/* ── 页码 ───────────────────────────────────────────── */
+.pageno {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: #655E50;
+}
+
+/* ── SVG 通用语义类（供各页复用） ───────────────────── */
+.sv-title { font-family: var(--sans); font-size: 12px; font-weight: 700; fill: var(--ink); }
+.sv-label { font-family: var(--sans); font-size: 10.5px; fill: #5E5B52; }
+.sv-mono  { font-family: var(--mono); font-size: 9.5px; fill: #8A857A; letter-spacing: .06em; }
+.sv-num   { font-family: var(--mono); font-size: 9px; fill: #8A857A; }
+
+.sv-box   { fill: #FFFEFA; stroke: #DCD5C6; stroke-width: 1; }
+.sv-flow  { stroke: #C9C2B3; stroke-width: 1.2; fill: none; }
+.sv-flow-strong { stroke: #9E988A; stroke-width: 1.4; fill: none; }
+
+.step-dim { opacity: .34; transition: opacity .35s ease; }
+.step-on  { opacity: 1; transition: opacity .35s ease; }

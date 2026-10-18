@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P06 · Laya 架构原理</title>
+<link rel="stylesheet" href="base.css">
+<style>
+  /* ── 本页 SVG 专属 ───────────────────────────── */
+  .f-h  { font-family: var(--mono); font-size: 10px; letter-spacing: 1.1px; fill: #6E675A; }
+  .f-b  { font-family: var(--sans); font-size: 11.5px; font-weight: 700; fill: #2A2A24; }
+  .f-b2 { font-family: var(--sans); font-size: 10.5px; font-weight: 700; fill: #2A2A24; }
+  .f-t  { font-family: var(--sans); font-size: 9.8px; fill: #3D3A32; }
+  .f-m  { font-family: var(--mono); font-size: 8.8px; fill: #56514A; }
+  .f-mm { font-family: var(--mono); font-size: 8px; fill: #514C41; }
+  .f-n  { font-family: var(--sans); font-size: 9.4px; fill: #4A463C; }
+
+  .grp { opacity: .84; transition: opacity .38s ease; }
+  body[data-step="1"] #g-input,
+  body[data-step="2"] #g-enc,
+  body[data-step="3"] #g-head,
+  body[data-step="4"] #g-out { opacity: 1; }
+
+  .halo { fill: none; stroke: #1B6A63; stroke-width: 1.5; opacity: 0; transition: opacity .38s ease; }
+  body[data-step="1"] #halo-a,
+  body[data-step="2"] #halo-b,
+  body[data-step="3"] #halo-c,
+  body[data-step="4"] #halo-d { opacity: .62; }
+
+  .sep { stroke: #EFE9DD; stroke-width: 1; stroke-dasharray: 2 5; }
+
+  .chip   { fill: #FFFEFA; stroke: #B9AC91; stroke-width: 1; }
+  .chip-q { fill: #FDF8F2; stroke: #BE9078; stroke-width: 1; }
+  .chip-o { fill: #FCF8EE; stroke: #BFA469; stroke-width: 1; }
+  .chip-s { fill: #F5FAF8; stroke: #6FB0A8; stroke-width: 1; }
+
+  .mesh path { stroke: #0F4E49; fill: none; stroke-width: .8; opacity: .5; --arc: .58; }
+  @keyframes meshPulse { 0%, 100% { opacity: .10; } 50% { opacity: .50; } }
+  body[data-step="2"] .mesh path { animation: meshPulse 2.8s ease-in-out infinite; }
+  body[data-step="2"] .mesh path:nth-child(4n) { animation-delay: .4s; }
+  body[data-step="2"] .mesh path:nth-child(4n+1) { animation-delay: .8s; }
+  body[data-step="2"] .mesh path:nth-child(4n+2) { animation-delay: 1.2s; }
+  body[data-step="2"] .mesh path:nth-child(4n+3) { animation-delay: 1.6s; }
+
+  .tok { fill: #E6EEEA; stroke: #5F9A93; stroke-width: .9; }
+  .tok.q { fill: #F5E4D8; stroke: #9C6244; }
+  .tok.o { fill: #F7EAD0; stroke: #A8823C; }
+
+  .lyr { fill: #6FA9A0; stroke: #2C6E67; stroke-width: .9; }
+
+  .arrow { stroke: #8F887A; stroke-width: 1.1; fill: none; }
+  .arrow-warm { stroke: #B08A72; stroke-width: 1.1; fill: none; }
+
+  .vector rect { fill: #6FA9A0; stroke: #2C6E67; stroke-width: .6; }
+
+  .bar-bg { fill: #D6CDB2; }
+  .bar-choice { fill: #24817A; }
+  .bar-score { fill: #7A351A; }
+  .bar-noul { fill: #8E6A24; }
+
+  .outnum { font-family: var(--mono); font-size: 8px; fill: #6E6A63; }
+
+/* ── 分步计算：进入某一步时，该列自上而下依次“跳”出来 ── */
+@keyframes seqIn { from { opacity: 0; transform: translateY(7px); } 60% { opacity: 1; } to { opacity: 1; transform: none; } }
+@keyframes arcSweep { from { opacity: 0; stroke-width: .2; } to { opacity: var(--arc, .55); stroke-width: .85; } }
+@keyframes barFill { from { opacity: .18; transform: scaleX(.3); } to { opacity: 1; transform: none; } }
+@keyframes cellFill { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { opacity: 0; transform: scale(.86); } to { opacity: 1; transform: none; } }
+
+body[data-step="1"] #g-input > *,
+body[data-step="2"] #g-enc > *,
+body[data-step="3"] #g-head > *,
+body[data-step="4"] #g-out > * {
+  animation: seqIn .40s cubic-bezier(.22,1,.36,1) both;
+}
+#g-input > *:nth-child(1), #g-enc > *:nth-child(1), #g-head > *:nth-child(1), #g-out > *:nth-child(1) { animation-delay: 0s; }
+#g-input > *:nth-child(2), #g-enc > *:nth-child(2), #g-head > *:nth-child(2), #g-out > *:nth-child(2) { animation-delay: .10s; }
+#g-input > *:nth-child(3), #g-enc > *:nth-child(3), #g-head > *:nth-child(3), #g-out > *:nth-child(3) { animation-delay: .20s; }
+#g-input > *:nth-child(4), #g-enc > *:nth-child(4), #g-head > *:nth-child(4), #g-out > *:nth-child(4) { animation-delay: .30s; }
+#g-input > *:nth-child(5), #g-enc > *:nth-child(5), #g-head > *:nth-child(5), #g-out > *:nth-child(5) { animation-delay: .40s; }
+#g-input > *:nth-child(6), #g-enc > *:nth-child(6), #g-head > *:nth-child(6), #g-out > *:nth-child(6) { animation-delay: .50s; }
+#g-input > *:nth-child(7), #g-enc > *:nth-child(7), #g-head > *:nth-child(7), #g-out > *:nth-child(7) { animation-delay: .60s; }
+#g-input > *:nth-child(8), #g-enc > *:nth-child(8), #g-head > *:nth-child(8), #g-out > *:nth-child(8) { animation-delay: .70s; }
+#g-input > *:nth-child(9), #g-enc > *:nth-child(9), #g-head > *:nth-child(9), #g-out > *:nth-child(9) { animation-delay: .80s; }
+#g-input > *:nth-child(n+10), #g-enc > *:nth-child(n+10), #g-head > *:nth-child(n+10), #g-out > *:nth-child(n+10) { animation-delay: .90s; }
+
+/* Transformer 层：一层一层点亮 */
+body[data-step="2"] .lyr,
+body[data-step="2"] .lyr-a,
+body[data-step="2"] .lyr-b { animation: barFill .34s ease-out both; transform-box: fill-box; transform-origin: left center; }
+body[data-step="2"] .lyr:nth-child(2), body[data-step="2"] .lyr-a:nth-child(2), body[data-step="2"] .lyr-b:nth-child(2) { animation-delay: .30s; }
+body[data-step="2"] .lyr:nth-child(3), body[data-step="2"] .lyr-a:nth-child(3), body[data-step="2"] .lyr-b:nth-child(3) { animation-delay: .46s; }
+body[data-step="2"] .lyr:nth-child(4), body[data-step="2"] .lyr-a:nth-child(4), body[data-step="2"] .lyr-b:nth-child(4) { animation-delay: .62s; }
+body[data-step="2"] .lyr:nth-child(5), body[data-step="2"] .lyr-a:nth-child(5), body[data-step="2"] .lyr-b:nth-child(5) { animation-delay: .78s; }
+body[data-step="2"] .lyr:nth-child(6), body[data-step="2"] .lyr-a:nth-child(6), body[data-step="2"] .lyr-b:nth-child(6) { animation-delay: .94s; }
+
+/* 池化向量：一格一格填充 */
+body[data-step="2"] .vector rect { animation: cellFill .26s ease-out both; }
+body[data-step="2"] .vector rect:nth-child(1){animation-delay:1.05s}
+body[data-step="2"] .vector rect:nth-child(2){animation-delay:1.09s}
+body[data-step="2"] .vector rect:nth-child(3){animation-delay:1.14s}
+body[data-step="2"] .vector rect:nth-child(4){animation-delay:1.19s}
+body[data-step="2"] .vector rect:nth-child(5){animation-delay:1.23s}
+body[data-step="2"] .vector rect:nth-child(6){animation-delay:1.27s}
+body[data-step="2"] .vector rect:nth-child(7){animation-delay:1.32s}
+body[data-step="2"] .vector rect:nth-child(8){animation-delay:1.36s}
+body[data-step="2"] .vector rect:nth-child(9){animation-delay:1.41s}
+body[data-step="2"] .vector rect:nth-child(10){animation-delay:1.46s}
+body[data-step="2"] .vector rect:nth-child(11){animation-delay:1.50s}
+body[data-step="2"] .vector rect:nth-child(12){animation-delay:1.54s}
+body[data-step="2"] .vector rect:nth-child(13){animation-delay:1.59s}
+body[data-step="2"] .vector rect:nth-child(14){animation-delay:1.64s}
+body[data-step="2"] .vector rect:nth-child(15){animation-delay:1.68s}
+body[data-step="2"] .vector rect:nth-child(16){animation-delay:1.73s}
+
+/* 注意力连线：一条一条扫过 */
+body[data-step="2"] .mesh path { animation: arcSweep .42s ease-out both; }
+body[data-step="1"] .causal path { animation: arcSweep .42s ease-out both; }
+body[data-step="2"] .mesh path:nth-child(1){animation-delay:0.62s}
+body[data-step="2"] .mesh path:nth-child(2){animation-delay:0.67s}
+body[data-step="2"] .mesh path:nth-child(3){animation-delay:0.71s}
+body[data-step="2"] .mesh path:nth-child(4){animation-delay:0.76s}
+body[data-step="2"] .mesh path:nth-child(5){animation-delay:0.80s}
+body[data-step="2"] .mesh path:nth-child(6){animation-delay:0.84s}
+body[data-step="2"] .mesh path:nth-child(7){animation-delay:0.89s}
+body[data-step="2"] .mesh path:nth-child(8){animation-delay:0.94s}
+body[data-step="2"] .mesh path:nth-child(9){animation-delay:0.98s}
+body[data-step="2"] .mesh path:nth-child(10){animation-delay:1.02s}
+body[data-step="2"] .mesh path:nth-child(11){animation-delay:1.07s}
+body[data-step="2"] .mesh path:nth-child(12){animation-delay:1.11s}
+body[data-step="2"] .mesh path:nth-child(13){animation-delay:1.16s}
+body[data-step="2"] .mesh path:nth-child(14){animation-delay:1.21s}
+body[data-step="2"] .mesh path:nth-child(15){animation-delay:1.25s}
+body[data-step="2"] .mesh path:nth-child(16){animation-delay:1.29s}
+body[data-step="2"] .mesh path:nth-child(17){animation-delay:1.34s}
+body[data-step="2"] .mesh path:nth-child(18){animation-delay:1.39s}
+body[data-step="2"] .mesh path:nth-child(19){animation-delay:1.43s}
+body[data-step="2"] .mesh path:nth-child(20){animation-delay:1.48s}
+body[data-step="2"] .mesh path:nth-child(21){animation-delay:1.52s}
+body[data-step="2"] .mesh path:nth-child(22){animation-delay:1.56s}
+body[data-step="2"] .mesh path:nth-child(23){animation-delay:1.61s}
+body[data-step="2"] .mesh path:nth-child(24){animation-delay:1.65s}
+body[data-step="2"] .mesh path:nth-child(25){animation-delay:1.70s}
+body[data-step="2"] .mesh path:nth-child(26){animation-delay:1.75s}
+body[data-step="2"] .mesh path:nth-child(27){animation-delay:1.79s}
+body[data-step="2"] .mesh path:nth-child(28){animation-delay:1.83s}
+body[data-step="1"] .causal path:nth-child(1){animation-delay:0.62s}
+body[data-step="1"] .causal path:nth-child(2){animation-delay:0.67s}
+body[data-step="1"] .causal path:nth-child(3){animation-delay:0.72s}
+body[data-step="1"] .causal path:nth-child(4){animation-delay:0.77s}
+body[data-step="1"] .causal path:nth-child(5){animation-delay:0.82s}
+body[data-step="1"] .causal path:nth-child(6){animation-delay:0.87s}
+body[data-step="1"] .causal path:nth-child(7){animation-delay:0.92s}
+body[data-step="1"] .causal path:nth-child(8){animation-delay:0.97s}
+body[data-step="1"] .causal path:nth-child(9){animation-delay:1.02s}
+body[data-step="1"] .causal path:nth-child(10){animation-delay:1.07s}
+body[data-step="1"] .causal path:nth-child(11){animation-delay:1.12s}
+body[data-step="1"] .causal path:nth-child(12){animation-delay:1.17s}
+body[data-step="1"] .causal path:nth-child(13){animation-delay:1.22s}
+body[data-step="1"] .causal path:nth-child(14){animation-delay:1.27s}
+body[data-step="1"] .causal path:nth-child(15){animation-delay:1.32s}
+body[data-step="1"] .causal path:nth-child(16){animation-delay:1.37s}
+
+/* LoRA 矩阵与候选打分：逐个弹出 */
+body[data-step="2"] .lora-mat { animation: popIn .34s cubic-bezier(.22,1.4,.36,1) both; }
+body[data-step="2"] .lora-mat:nth-of-type(2) { animation-delay: .34s; }
+body[data-step="3"] .logit { animation: barFill .3s ease-out both; transform-box: fill-box; transform-origin: left center; }
+</style>
+</head>
+<body data-step="1">
+<div class="stage">
+  <h1 class="page-title">Laya 架构原理<small>ENCODER-ONLY</small></h1>
+
+  <div class="rail">
+    <article class="card">
+      <div class="ico">01</div>
+      <div>
+        <h3>模型骨干</h3>
+        <p>采用 ModernBERT-large 作为统一的语义理解骨干模型，获得强大的语义表示能力。</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="ico">02</div>
+      <div>
+        <h3>双向编码</h3>
+        <p>将当前状态（State）与结构化问题（Typed Questions）拼接输入，进行双向联合编码，建模状态与问题的交互关系。</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="ico">03</div>
+      <div>
+        <h3>类型化决策头</h3>
+        <p>基于任务类型的决策头，分别输出 Choice、Score、Noul 三种问题的概率分布或有效回答。</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="ico">04</div>
+      <div>
+        <h3>单次前向输出</h3>
+        <p>一次前向计算同时生成结构化结果，包含答案、概率与元信息，便于后续推理与系统集成。</p>
+      </div>
+    </article>
+  </div>
+
+  <section class="panel">
+    <div class="panel-caption"><b>STEP 1 / 4</b><span class="cap-text"></span></div>
+
+    <svg viewBox="0 0 730 500" preserveAspectRatio="xMidYMid meet" role="img"
+         aria-label="Laya 编码器架构：状态与类型化问题拼接，经 ModernBERT 双向编码，由三个决策头输出 Choice/Score/Noul">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#8F887A"/>
+        </marker>
+        <marker id="ah-w" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#B08A72"/>
+        </marker>
+      </defs>
+
+      <!-- 列分隔 -->
+      <line class="sep" x1="186" y1="46" x2="186" y2="452"/>
+      <line class="sep" x1="420" y1="46" x2="420" y2="452"/>
+      <line class="sep" x1="588" y1="104" x2="588" y2="452"/>
+
+      <!-- 高亮底框 -->
+      <rect id="halo-a" class="halo" x="10" y="52" width="172" height="424" rx="8"/>
+      <rect id="halo-b" class="halo" x="190" y="52" width="226" height="342" rx="8"/>
+      <rect id="halo-c" class="halo" x="424" y="52" width="160" height="342" rx="8"/>
+      <rect id="halo-d" class="halo" x="592" y="104" width="128" height="274" rx="8"/>
+
+      <!-- 列标题 -->
+      <text class="f-h" x="16" y="44">A · INPUT</text>
+      <text class="f-h" x="196" y="44">B · ENCODER</text>
+      <text class="f-h" x="430" y="44">C · TYPED DECISION HEAD</text>
+      <text class="f-h" x="598" y="44">D · OUTPUT</text>
+
+      <!-- ══════════ A 输入 ══════════ -->
+      <g id="g-input" class="grp">
+        <!-- State -->
+        <rect class="chip" x="16" y="58" width="160" height="116" rx="6"/>
+        <text class="f-b" x="28" y="80">State S</text>
+        <text class="f-m" x="164" y="80" text-anchor="end">[B, Ls]</text>
+        <text class="f-n" x="28" y="94">决策前的当前状态</text>
+        <g class="f-mm">
+          <circle cx="31" cy="110" r="1.6" fill="#4E9A92"/><text x="38" y="113">task_domain</text>
+          <circle cx="31" cy="127" r="1.6" fill="#4E9A92"/><text x="38" y="130">step · context_chars</text>
+          <circle cx="31" cy="144" r="1.6" fill="#4E9A92"/><text x="38" y="147">prior_tool_calls_count</text>
+          <circle cx="31" cy="161" r="1.6" fill="#4E9A92"/><text x="38" y="164">prior_error_signals_count</text>
+        </g>
+
+        <!-- Questions -->
+        <rect class="chip-q" x="16" y="184" width="160" height="116" rx="6"/>
+        <text class="f-b" x="28" y="206">Typed Questions</text>
+        <text class="f-m" x="164" y="206" text-anchor="end">[B, 3]</text>
+        <g>
+          <rect x="28" y="218" width="44" height="15" rx="7.5" fill="#FBEDE5"/>
+          <text class="f-mm" x="50" y="228.5" text-anchor="middle" fill="#A04A28">choice</text>
+          <text class="f-t" x="78" y="229">下一步选哪个动作</text>
+
+          <rect x="28" y="244" width="44" height="15" rx="7.5" fill="#FBF1E4"/>
+          <text class="f-mm" x="50" y="254.5" text-anchor="middle" fill="#7A5A1A">score</text>
+          <text class="f-t" x="78" y="255">难度属于哪一档</text>
+
+          <rect x="28" y="270" width="44" height="15" rx="7.5" fill="#F4F2EC"/>
+          <text class="f-mm" x="50" y="280.5" text-anchor="middle" fill="#55504A">noul</text>
+          <text class="f-t" x="78" y="281">是否需要补充信息</text>
+        </g>
+
+        <!-- Options + concat -->
+        <rect class="chip-o" x="16" y="310" width="160" height="142" rx="6"/>
+        <text class="f-b" x="28" y="332">Options O</text>
+        <text class="f-m" x="164" y="332" text-anchor="end">[B, K]</text>
+        <text class="f-n" x="28" y="346">K 个合法候选（可动态变化）</text>
+        <g>
+          <rect x="28" y="356" width="40" height="20" rx="4" fill="#FFFDF7" stroke="#BFA469"/>
+          <text class="f-mm" x="48" y="369.5" text-anchor="middle">候选 A</text>
+          <rect x="72" y="356" width="40" height="20" rx="4" fill="#FFFDF7" stroke="#BFA469"/>
+          <text class="f-mm" x="92" y="369.5" text-anchor="middle">候选 B</text>
+          <rect x="116" y="356" width="24" height="20" rx="4" fill="#FFFDF7" stroke="#BFA469"/>
+          <text class="f-mm" x="128" y="369.5" text-anchor="middle">…</text>
+        </g>
+
+        <line x1="28" y1="386" x2="164" y2="386" stroke="#E9DFC9"/>
+        <text class="f-n" x="28" y="400">拼接为单一 token 序列</text>
+        <g>
+          <rect class="tok" x="28" y="408" width="18" height="16" rx="2"/>
+          <text class="f-mm" x="37" y="419" text-anchor="middle" fill="#1F5A55">CLS</text>
+          <rect class="tok" x="48" y="408" width="16" height="16" rx="2"/>
+          <rect class="tok" x="66" y="408" width="16" height="16" rx="2"/>
+          <rect class="tok q" x="86" y="408" width="16" height="16" rx="2"/>
+          <rect class="tok q" x="104" y="408" width="16" height="16" rx="2"/>
+          <rect class="tok o" x="124" y="408" width="16" height="16" rx="2"/>
+          <rect class="tok o" x="142" y="408" width="16" height="16" rx="2"/>
+          <text class="f-mm" x="28" y="440">S 段</text>
+          <text class="f-mm" x="86" y="440">Q 段</text>
+          <text class="f-mm" x="124" y="440">O 段</text>
+        </g>
+      </g>
+
+      <!-- ══════════ B 编码器 ══════════ -->
+      <g id="g-enc" class="grp">
+        <rect class="chip-s" x="196" y="58" width="214" height="330" rx="6"/>
+        <text class="f-b" x="208" y="80">ModernBERT-large</text>
+        <text class="f-m" x="400" y="80" text-anchor="end">421M</text>
+        <text class="f-n" x="208" y="94">双向 Transformer 编码器</text>
+        <text class="f-mm" x="208" y="108">28 layers · 1024 dim · 8192 ctx</text>
+
+        <!-- token 行 -->
+        <g>
+          <rect class="tok" x="208" y="120" width="20" height="17" rx="2"/>
+          <text class="f-mm" x="218" y="131.5" text-anchor="middle">CLS</text>
+          <rect class="tok" x="230" y="120" width="20" height="17" rx="2"/>
+          <text class="f-mm" x="240" y="131.5" text-anchor="middle">S1</text>
+          <rect class="tok" x="252" y="120" width="20" height="17" rx="2"/>
+          <text class="f-mm" x="262" y="131.5" text-anchor="middle">S2</text>
+          <rect class="tok q" x="274" y="120" width="20" height="17" rx="2"/>
+          <text class="f-mm" x="284" y="131.5" text-anchor="middle">Q1</text>
+          <rect class="tok q" x="296" y="120" width="20" height="17" rx="2"/>
+          <text class="f-mm" x="306" y="131.5" text-anchor="middle">Q2</text>
+          <rect class="tok q" x="318" y="120" width="20" height="17" rx="2"/>
+          <text class="f-mm" x="328" y="131.5" text-anchor="middle">Q3</text>
+          <rect class="tok o" x="340" y="120" width="20" height="17" rx="2"/>
+          <text class="f-mm" x="350" y="131.5" text-anchor="middle">O1</text>
+          <rect class="tok o" x="362" y="120" width="20" height="17" rx="2"/>
+          <text class="f-mm" x="372" y="131.5" text-anchor="middle">O2</text>
+        </g>
+
+        <!-- 双向注意力网状 -->
+        <g class="mesh">
+          <path d="M218,140 Q229,152 240,140"/><path d="M218,140 Q240,158 262,140"/>
+          <path d="M218,140 Q251,166 284,140"/><path d="M218,140 Q262,174 306,140"/>
+          <path d="M218,140 Q273,182 328,140"/><path d="M218,140 Q284,190 350,140"/>
+          <path d="M218,140 Q295,198 372,140"/>
+          <path d="M240,140 Q251,152 262,140"/><path d="M240,140 Q262,158 284,140"/>
+          <path d="M240,140 Q273,166 306,140"/><path d="M240,140 Q284,174 328,140"/>
+          <path d="M240,140 Q295,182 350,140"/><path d="M240,140 Q306,190 372,140"/>
+          <path d="M262,140 Q273,152 284,140"/><path d="M262,140 Q284,158 306,140"/>
+          <path d="M262,140 Q295,166 328,140"/><path d="M262,140 Q306,174 350,140"/>
+          <path d="M262,140 Q317,182 372,140"/><path d="M284,140 Q295,152 306,140"/>
+          <path d="M284,140 Q306,158 328,140"/><path d="M284,140 Q317,166 350,140"/>
+          <path d="M284,140 Q328,174 372,140"/><path d="M306,140 Q317,152 328,140"/>
+          <path d="M306,140 Q328,158 350,140"/><path d="M306,140 Q339,166 372,140"/>
+          <path d="M328,140 Q339,152 350,140"/><path d="M328,140 Q350,158 372,140"/>
+          <path d="M350,140 Q361,152 372,140"/>
+        </g>
+        <text class="f-mm" x="400" y="198" text-anchor="end" fill="#155E58">双向注意力 · 无因果掩码</text>
+
+        <!-- 层堆叠 -->
+        <text class="f-mm" x="208" y="214">ENCODER LAYERS</text>
+        <g>
+          <rect class="lyr" x="208" y="220" width="190" height="7" rx="1.5"/>
+          <rect class="lyr" x="208" y="231" width="190" height="7" rx="1.5"/>
+          <rect class="lyr" x="208" y="242" width="190" height="7" rx="1.5"/>
+          <rect class="lyr" x="208" y="253" width="190" height="7" rx="1.5"/>
+          <rect class="lyr" x="208" y="264" width="190" height="7" rx="1.5"/>
+          <rect class="lyr" x="208" y="275" width="190" height="7" rx="1.5"/>
+        </g>
+        <text class="f-mm" x="400" y="286" text-anchor="end">… × 28</text>
+
+        <!-- 池化表征 -->
+        <text class="f-n" x="208" y="306">池化 + 融合 → 句子级表征</text>
+        <g class="vector">
+          <rect x="208" y="314" width="10" height="16" rx="1"/>
+          <rect x="220" y="314" width="10" height="16" rx="1"/>
+          <rect x="232" y="314" width="10" height="16" rx="1"/>
+          <rect x="244" y="314" width="10" height="16" rx="1"/>
+          <rect x="256" y="314" width="10" height="16" rx="1"/>
+          <rect x="268" y="314" width="10" height="16" rx="1"/>
+          <rect x="280" y="314" width="10" height="16" rx="1"/>
+          <rect x="292" y="314" width="10" height="16" rx="1"/>
+          <rect x="304" y="314" width="10" height="16" rx="1"/>
+          <rect x="316" y="314" width="10" height="16" rx="1"/>
+          <rect x="328" y="314" width="10" height="16" rx="1"/>
+          <rect x="340" y="314" width="10" height="16" rx="1"/>
+          <rect x="352" y="314" width="10" height="16" rx="1"/>
+          <rect x="364" y="314" width="10" height="16" rx="1"/>
+          <rect x="376" y="314" width="10" height="16" rx="1"/>
+          <rect x="388" y="314" width="10" height="16" rx="1"/>
+        </g>
+        <text class="f-mm" x="208" y="346">h ∈ R^1024</text>
+        <text class="f-mm" x="208" y="366">语言理解：状态与问题在同一序列内互相可见</text>
+      </g>
+
+      <!-- ══════════ C 决策头 ══════════ -->
+      <g id="g-head" class="grp">
+        <rect class="chip" x="430" y="58" width="148" height="330" rx="6"/>
+        <text class="f-b" x="442" y="80">Typed Decision Head</text>
+        <text class="f-mm" x="442" y="94">三头并行 · 共享同一表征</text>
+
+        <!-- choice head -->
+        <rect class="chip-q" x="442" y="106" width="124" height="80" rx="5"/>
+        <text class="f-b2" x="452" y="124">Choice Head</text>
+        <text class="f-mm" x="556" y="124" text-anchor="end">[K]</text>
+        <text class="f-m" x="452" y="138">K 路 softmax</text>
+        <g>
+          <rect x="452" y="150" width="14" height="26" fill="#D9B7A5"/>
+          <rect x="470" y="158" width="14" height="18" fill="#D9B7A5"/>
+          <rect x="488" y="166" width="14" height="10" fill="#D9B7A5"/>
+        </g>
+        <text class="f-mm" x="550" y="176" text-anchor="end">分布 → 期望</text>
+
+        <!-- score head -->
+        <rect class="chip-o" x="442" y="194" width="124" height="80" rx="5"/>
+        <text class="f-b2" x="452" y="212">Score Head</text>
+        <text class="f-mm" x="556" y="212" text-anchor="end">[5]</text>
+        <text class="f-m" x="452" y="226">5 级有序分布</text>
+        <g>
+          <rect x="452" y="238" width="10" height="18" fill="#D9C28C"/>
+          <rect x="465" y="234" width="10" height="22" fill="#D9C28C"/>
+          <rect x="478" y="238" width="10" height="18" fill="#D9C28C"/>
+          <rect x="491" y="244" width="10" height="12" fill="#D9C28C"/>
+          <rect x="504" y="248" width="10" height="8" fill="#D9C28C"/>
+        </g>
+        <text class="f-mm" x="550" y="264" text-anchor="end">期望等级</text>
+
+        <!-- noul head -->
+        <rect class="chip-s" x="442" y="282" width="124" height="80" rx="5"/>
+        <text class="f-b2" x="452" y="300">Noul Head</text>
+        <text class="f-mm" x="556" y="300" text-anchor="end">[1]</text>
+        <text class="f-m" x="452" y="314">sigmoid 命题成立概率</text>
+        <line x1="452" y1="338" x2="544" y2="338" stroke="#8DBDB6"/>
+        <circle cx="512" cy="338" r="4" fill="#24817A"/>
+        <text class="f-mm" x="550" y="350" text-anchor="end">阈值 0.5</text>
+      </g>
+
+      <!-- ══════════ D 输出 ══════════ -->
+      <g id="g-out" class="grp">
+        <rect class="chip" x="598" y="106" width="116" height="80" rx="5"/>
+        <text class="f-b2" x="608" y="122">Choice</text>
+        <text class="f-mm" x="706" y="122" text-anchor="end">P(A)</text>
+        <g>
+          <text class="f-mm" x="608" y="139">A</text>
+          <rect class="bar-bg" x="618" y="133" width="86" height="6" rx="3"/>
+          <rect class="bar-choice" x="618" y="133" width="62" height="6" rx="3"/>
+          <text class="f-mm" x="608" y="157">B</text>
+          <rect class="bar-bg" x="618" y="151" width="86" height="6" rx="3"/>
+          <rect class="bar-choice" x="618" y="151" width="40" height="6" rx="3" opacity=".72"/>
+          <text class="f-mm" x="608" y="175">C</text>
+          <rect class="bar-bg" x="618" y="169" width="86" height="6" rx="3"/>
+          <rect class="bar-choice" x="618" y="169" width="24" height="6" rx="3" opacity=".5"/>
+        </g>
+
+        <rect class="chip" x="598" y="194" width="116" height="80" rx="5"/>
+        <text class="f-b2" x="608" y="210">Score</text>
+        <text class="f-mm" x="706" y="210" text-anchor="end">E[level]</text>
+        <g>
+          <rect class="bar-bg" x="608" y="224" width="96" height="5" rx="2.5"/>
+          <rect class="bar-score" x="608" y="224" width="30" height="5" rx="2.5"/>
+          <rect class="bar-bg" x="608" y="234" width="96" height="5" rx="2.5"/>
+          <rect class="bar-score" x="608" y="234" width="48" height="5" rx="2.5"/>
+          <rect class="bar-bg" x="608" y="244" width="96" height="5" rx="2.5"/>
+          <rect class="bar-score" x="608" y="244" width="66" height="5" rx="2.5"/>
+          <rect class="bar-bg" x="608" y="254" width="96" height="5" rx="2.5"/>
+          <rect class="bar-score" x="608" y="254" width="40" height="5" rx="2.5"/>
+          <rect class="bar-bg" x="608" y="264" width="96" height="5" rx="2.5"/>
+          <rect class="bar-score" x="608" y="264" width="18" height="5" rx="2.5"/>
+        </g>
+
+        <rect class="chip" x="598" y="282" width="116" height="80" rx="5"/>
+        <text class="f-b2" x="608" y="298">Noul</text>
+        <text class="f-mm" x="706" y="298" text-anchor="end">P(真)</text>
+        <line x1="608" y1="334" x2="704" y2="334" stroke="#BFA469"/>
+        <line x1="656" y1="322" x2="656" y2="346" stroke="#B0842E" stroke-dasharray="2 2"/>
+        <circle cx="676" cy="334" r="4.5" fill="#B0842E"/>
+        <text class="f-mm" x="608" y="354">0</text>
+        <text class="f-mm" x="700" y="354" text-anchor="end">1</text>
+        <text class="f-mm" x="656" y="356" text-anchor="middle" fill="#7A5A1A">0.5</text>
+      </g>
+
+      <!-- 箭头 -->
+      <path class="arrow" d="M176,220 L196,220" marker-end="url(#ah)"/>
+      <path class="arrow" d="M410,240 L430,240" marker-end="url(#ah)"/>
+      <path class="arrow" d="M578,146 L598,146" marker-end="url(#ah)"/>
+      <path class="arrow" d="M578,234 L598,234" marker-end="url(#ah)"/>
+      <path class="arrow" d="M578,322 L598,322" marker-end="url(#ah)"/>
+
+      <!-- 页脚说明 -->
+      <line x1="16" y1="466" x2="714" y2="466" stroke="#EFE9DD"/>
+      <text class="f-mm" x="16" y="484">与 Kev 的差别：双向注意力 · 编码器全参参与 · 一次前向给出三路分布</text>
+      <text class="f-mm" x="714" y="484" text-anchor="end">结构示意 · 概率条仅示意</text>
+    </svg>
+  </section>
+
+  <div class="controls">
+    <button id="btnPrev">上一步</button>
+    <button id="btnNext">下一步</button>
+    <div class="dots"></div>
+    <button id="btnPlay" class="primary">自动播放</button>
+    <button id="btnReset">重置</button>
+  </div>
+
+  <div class="legend">
+    <span class="l-choice"><i></i>Choice 选择类</span>
+    <span class="l-score"><i></i>Score 评分类</span>
+    <span class="l-noul"><i></i>Noul 空值类</span>
+  </div>
+
+  <div class="pageno">P06</div>
+</div>
+
+<script>
+  window.DECK_STEPS = 4;
+  window.STEP_LABELS = ["输入拼接", "双向编码", "类型化决策头", "三路结构化输出"];
+</script>
+<script src="shell.js"></script>
+</body>
+</html>

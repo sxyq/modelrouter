@@ -1,0 +1,296 @@
+{
+  "note": "P16/P17 中文演示的真实推理证据。所有数值直接取自 A6000 /system-one 响应，前端不重算。",
+  "service": {
+    "endpoint_path": "POST /system-one",
+    "model_meta": {
+      "laya": {
+        "run_id": "F05",
+        "checkpoint_id": "epoch_01",
+        "arch": "421M 决策头，CPU 前向"
+      },
+      "kev": {
+        "run_id": "KEV-4B-ADAPTER",
+        "arch": "Qwen3.5-4B + LoRA r=16 + 指针头"
+      }
+    },
+    "request_schema_note": "choice.criteria 必须是对象（选项键→中文描述）；score.criteria 必须是数组（等级名，低→高）；noul 无 criteria"
+  },
+  "round_A_chinese_preset": {
+    "test_id": "MR-20261019-030641-6DCF",
+    "state": {
+      "task_domain": "软件工程",
+      "step_index": 3,
+      "context_chars": 1240,
+      "prior_tool_calls_count": 2,
+      "prior_error_signals_count": 1,
+      "prompt": "单元测试 test_refresh_token 在令牌轮换后返回 401；进程内存中仍保留过期的用户标识，缓存与数据库不一致。"
+    },
+    "questions": {
+      "q_choice": {
+        "type": "choice",
+        "instructions": "这一步应该交给哪一档模型处理？",
+        "criteria": {
+          "cheap_fast": "轻量快速：小参数模型，成本低，不做长推理",
+          "mid_balanced": "均衡中档：中等模型，给予适度推理预算",
+          "strong_deep": "旗舰深度：前沿模型，高推理档位，长链路分析"
+        }
+      },
+      "q_score": {
+        "type": "score",
+        "instructions": "评估这一步的修复难度。",
+        "criteria": [
+          "很简单",
+          "较简单",
+          "中等",
+          "较困难",
+          "非常困难"
+        ]
+      },
+      "q_noul": {
+        "type": "noul",
+        "instructions": "下一步是否可能复用前缀缓存？"
+      }
+    },
+    "completed_at": "2026-10-19T03:06:52.378+08:00",
+    "results": {
+      "laya": {
+        "ok": true,
+        "model": "laya-421m",
+        "checkpoint_id": "epoch_01",
+        "decision_latency_ms": 998.62,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "usage": {
+          "input_tokens": 591,
+          "output_tokens": 0
+        },
+        "choice": {
+          "type": "choice",
+          "choice": "mid_balanced",
+          "probabilities": {
+            "cheap_fast": 0.2979,
+            "mid_balanced": 0.3986,
+            "strong_deep": 0.3034
+          },
+          "confidence": 0.0085,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        },
+        "score": {
+          "type": "score",
+          "score": 3.1824,
+          "legend": {
+            "0": "很简单",
+            "1": "较简单",
+            "2": "中等",
+            "3": "较困难",
+            "4": "非常困难"
+          },
+          "probabilities": {
+            "0": 0.0124,
+            "1": 0.0694,
+            "2": 0.0204,
+            "3": 0.5191,
+            "4": 0.3787
+          },
+          "confidence": 0.3619,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        },
+        "noul": {
+          "type": "noul",
+          "noul": 0.2809,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "kev": {
+        "ok": true,
+        "model": "kev-4b",
+        "checkpoint_id": "1001bb4d826a52d1f399e183466143f4da7b741b",
+        "decision_latency_ms": 9626.45,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "usage": {
+          "input_tokens": 178,
+          "output_tokens": 285
+        },
+        "choice": {
+          "type": "choice",
+          "choice": "mid_balanced",
+          "confidence": 0.2291,
+          "probabilities": {
+            "cheap_fast": 0.1453,
+            "mid_balanced": 0.4861,
+            "strong_deep": 0.3686
+          }
+        },
+        "score": {
+          "type": "score",
+          "score": 1.7571,
+          "legend": {
+            "0": "很简单",
+            "1": "较简单",
+            "2": "中等",
+            "3": "较困难",
+            "4": "非常困难"
+          },
+          "probabilities": {
+            "0": 0.127,
+            "1": 0.2422,
+            "2": 0.4257,
+            "3": 0.1567,
+            "4": 0.0483
+          },
+          "confidence": 0.3753
+        },
+        "noul": {
+          "type": "noul",
+          "noul": 0.3436
+        }
+      }
+    }
+  },
+  "round_B_random_example": {
+    "test_id": "MR-20261019-030739-644B",
+    "state": {
+      "task_domain": "客户支持",
+      "step_index": 14,
+      "context_chars": 29739,
+      "prior_tool_calls_count": 6,
+      "prior_error_signals_count": 5,
+      "prompt": "检索服务在流量高峰后返回 502，需要决定是否回滚。"
+    },
+    "questions": {
+      "q_choice": {
+        "type": "choice",
+        "instructions": "当前应该先做哪件事？",
+        "criteria": {
+          "patch_now": "立即热修：先把线上影响压下去",
+          "rollback": "滚动回滚：退回上一个稳定版本",
+          "observe": "继续观察：先补齐监控再决定"
+        }
+      },
+      "q_score": {
+        "type": "score",
+        "instructions": "评估这一步的难度。",
+        "criteria": [
+          "很简单",
+          "较简单",
+          "中等",
+          "较困难",
+          "非常困难"
+        ]
+      },
+      "q_noul": {
+        "type": "noul",
+        "instructions": "这次处理是否可能在无人介入下完成？"
+      }
+    },
+    "completed_at": "2026-10-19T03:07:48.847+08:00",
+    "results": {
+      "laya": {
+        "ok": true,
+        "model": "laya-421m",
+        "checkpoint_id": "epoch_01",
+        "decision_latency_ms": 565.29,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "usage": {
+          "input_tokens": 475,
+          "output_tokens": 0
+        },
+        "choice": {
+          "type": "choice",
+          "choice": "observe",
+          "probabilities": {
+            "patch_now": 0.2474,
+            "rollback": 0.3194,
+            "observe": 0.4332
+          },
+          "confidence": 0.0238,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        },
+        "score": {
+          "type": "score",
+          "score": 2.0655,
+          "legend": {
+            "0": "很简单",
+            "1": "较简单",
+            "2": "中等",
+            "3": "较困难",
+            "4": "非常困难"
+          },
+          "probabilities": {
+            "0": 0.1545,
+            "1": 0.2171,
+            "2": 0.2188,
+            "3": 0.2274,
+            "4": 0.1821
+          },
+          "confidence": 0.0061,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        },
+        "noul": {
+          "type": "noul",
+          "noul": 0.2156,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "kev": {
+        "ok": true,
+        "model": "kev-4b",
+        "checkpoint_id": "1001bb4d826a52d1f399e183466143f4da7b741b",
+        "decision_latency_ms": 8501.1,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "usage": {
+          "input_tokens": 152,
+          "output_tokens": 281
+        },
+        "choice": {
+          "type": "choice",
+          "choice": "rollback",
+          "confidence": 0.0862,
+          "probabilities": {
+            "patch_now": 0.2454,
+            "rollback": 0.3908,
+            "observe": 0.3638
+          }
+        },
+        "score": {
+          "type": "score",
+          "score": 1.8652,
+          "legend": {
+            "0": "很简单",
+            "1": "较简单",
+            "2": "中等",
+            "3": "较困难",
+            "4": "非常困难"
+          },
+          "probabilities": {
+            "0": 0.1507,
+            "1": 0.2085,
+            "2": 0.3504,
+            "3": 0.2056,
+            "4": 0.0847
+          },
+          "confidence": 0.2625
+        },
+        "noul": {
+          "type": "noul",
+          "noul": 0.4649
+        }
+      }
+    }
+  }
+}

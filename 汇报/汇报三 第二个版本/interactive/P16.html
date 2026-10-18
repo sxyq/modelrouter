@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P16 · 真实三类型决策演示</title>
+<link rel="stylesheet" href="../assets/live.css">
+<style>
+  .main { grid-template-columns: 32fr 25fr 25fr; }
+
+  /* ---------- 左栏 ---------- */
+  .editor .panel-body { gap: 11px; padding: 11px 13px; }
+
+  .scenario-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .scenario {
+    padding: 8px 13px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    text-align: left;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+    display: flex; gap: 6px; align-items: center;
+    min-width: 0;
+  }
+  .scenario .ico, .scenario .ds { display: none; }
+  .scenario:hover { border-color: var(--jev); background: rgba(189,150,81,0.06); }
+  .scenario.active {
+    border-color: var(--jev);
+    background: rgba(189,150,81,0.12);
+    box-shadow: inset 0 0 0 1px rgba(189,150,81,0.35);
+  }
+  .scenario .ico {
+    font-size: clamp(12px, 0.95vw, 17px);
+    color: var(--jev);
+    line-height: 1.1;
+    flex: 0 0 auto;
+    margin-top: 1px;
+  }
+  .scenario .txt { min-width: 0; }
+  .scenario .nm {
+    display: block;
+    font-size: clamp(13px, 0.95vw, 18px);
+    font-weight: 650;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .scenario .ds {
+    display: block;
+    margin-top: 2px;
+    font-size: clamp(8px, 0.58vw, 10.5px);
+    color: var(--faint);
+    line-height: 1.35;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .scenario.random {
+    justify-content: center;
+    align-items: center;
+    background: rgba(189,150,81,0.07);
+    border-style: dashed;
+    padding: 8px 13px;
+  }
+  .scenario.random .ico { display: inline; }
+  .scenario.random .nm { color: var(--warn); }
+
+  /* 输入摘要 */
+  .input-card {
+    border: 1px solid var(--line-soft);
+    border-radius: 9px;
+    background: var(--paper);
+    padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .input-title {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    font-size: clamp(11px, 0.72vw, 14px);
+    font-weight: 700; letter-spacing: .09em; color: var(--faint);
+  }
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .metric {
+    background: var(--card);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 6px 7px;
+    text-align: center;
+  }
+  .metric .v {
+    display: block;
+    font-size: clamp(17px, 1.5vw, 28px);
+    font-weight: 700;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+  }
+  .metric .k {
+    display: block;
+    margin-top: 3px;
+    font-size: clamp(10px, 0.66vw, 13px);
+    color: var(--faint);
+    letter-spacing: .04em;
+  }
+  .prompt-box {
+    border-left: 3px solid var(--jev);
+    background: var(--card);
+    border-radius: 0 6px 6px 0;
+    padding: 8px 10px;
+    font-size: clamp(12px, 0.95vw, 18px);
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .prompt-box .dom {
+    display: inline-block;
+    font-size: clamp(10px, 0.68vw, 13px);
+    color: var(--warn);
+    background: rgba(189,150,81,0.14);
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-bottom: 5px;
+    letter-spacing: .04em;
+  }
+
+  .q-list { display: flex; flex-direction: column; gap: 12px; flex: 1 1 auto; justify-content: space-evenly; }
+  .q-item { display: flex; gap: 8px; }
+  .q-idx {
+    flex: 0 0 auto;
+    width: 24px; height: 24px;
+    border-radius: 5px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .q-body { min-width: 0; flex: 1; }
+  .q-text {
+    font-size: clamp(12px, 0.9vw, 17px);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .q-type {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: clamp(9px, 0.58vw, 11px);
+    font-weight: 600;
+    color: var(--faint);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0 4px;
+    vertical-align: 1px;
+    letter-spacing: .04em;
+  }
+  .q-opts { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  /* ---- 模型树形展示 ---- */
+  .q-tree { display: flex; flex-direction: column; gap: 6px; margin-top: 7px; }
+  .tree-model {
+    display: flex; align-items: center; gap: 6px;
+    font-size: clamp(11px, 0.78vw, 14px);
+    font-weight: 700; color: var(--ink);
+    white-space: nowrap;
+  }
+  .tree-model .tw { color: var(--faint); font-size: 9px; flex: 0 0 auto; }
+  .tree-tier {
+    font-size: clamp(8px, 0.54vw, 10px); font-weight: 700;
+    padding: 1px 6px; border-radius: 4px;
+    background: var(--wash); color: var(--muted);
+    white-space: nowrap;
+  }
+  .tree-efforts { display: flex; flex-wrap: wrap; gap: 4px; padding-left: 15px; }
+  .opt {
+    font-size: clamp(10px, 0.68vw, 13px);
+    color: var(--muted);
+    background: var(--card);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+
+  .run-row { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 7px; }
+  .run-row .btn { padding: 10px 8px; font-size: clamp(9px, 0.72vw, 12.5px); }
+
+  .link-edit {
+    align-self: flex-start;
+    font-size: clamp(8px, 0.6vw, 10.5px);
+    color: var(--muted);
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 1px;
+  }
+  .link-edit:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* 编辑态 */
+  .edit-wrap { display: flex; flex-direction: column; gap: 9px; }
+  .qgroup {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 7px 8px;
+    border: 1px solid var(--line-soft);
+    border-radius: 7px;
+    background: var(--paper);
+  }
+  .qgroup .qh { display: flex; align-items: center; justify-content: space-between; }
+  .qgroup .qt { font-size: 10px; font-weight: 700; letter-spacing: .07em; color: var(--muted); }
+  .qgroup .ty { font-size: 9px; color: var(--faint); font-family: "Cascadia Code", Consolas, monospace; }
+  .crit-area {
+    min-height: 60px !important;
+    font-family: "Cascadia Code", "SF Mono", Consolas, monospace;
+    font-size: 10px !important;
+    line-height: 1.5;
+  }
+
+  /* ---------- 结果卡 ---------- */
+  .panel-body.result { gap: 0; padding: 14px 16px; }
+  #laya-body > .block, #kev-body > .block { flex: 1 1 0; justify-content: center; }
+  .block { padding: 10px 0; }
+  .block:first-child { padding-top: 2px; }
+  .block + .block { border-top: 1px solid var(--line-soft); }
+  .block-title {
+    font-size: clamp(11px, 0.74vw, 14px);
+    font-weight: 700; letter-spacing: .1em; color: var(--faint);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .block-title .hint {
+    font-weight: 500; letter-spacing: 0;
+    color: var(--faint); font-size: 0.95em;
+  }
+
+  .pick { display: flex; align-items: baseline; gap: 9px; margin: 5px 0 8px; }
+  .pick .name {
+    font-size: clamp(27px, 2.45vw, 47px);
+    font-weight: 700; letter-spacing: -.02em; line-height: 1.3;
+  }
+  .pick .name.laya { color: var(--laya); }
+  .pick .name.kev { color: var(--kev); }
+  .pick .pct {
+    font-size: clamp(18px, 1.5vw, 29px);
+    font-weight: 650; color: var(--muted); font-variant-numeric: tabular-nums;
+  }
+  .pick .raw { font-size: clamp(10px, 0.68vw, 13px); color: var(--faint); margin-left: auto; }
+  .pick .effort {
+    font-size: clamp(12px, 0.85vw, 16px);
+    font-weight: 700;
+    letter-spacing: .01em;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: var(--wash);
+    color: var(--muted);
+    align-self: center;
+  }
+  .pick .effort.laya { background: rgba(33,135,123,.12); color: var(--laya); }
+  .pick .effort.kev { background: rgba(182,94,67,.12); color: var(--kev); }
+
+  .bars { display: flex; flex-direction: column; gap: 6px; }
+  .bar-row { display: grid; grid-template-columns: 142px 1fr 64px; align-items: center; gap: 10px; }
+  .bar-group { display: flex; flex-direction: column; gap: 3px; }
+  .bar-group + .bar-group { margin-top: 6px; }
+  .bar-group-head {
+    display: flex; align-items: baseline; gap: 7px;
+    font-size: clamp(11.5px, 0.8vw, 15px); font-weight: 700; color: var(--ink);
+    margin-top: 2px;
+  }
+  .bar-group-head .tier {
+    font-size: clamp(8.5px, 0.56vw, 11px); font-weight: 700;
+    padding: 1px 6px; border-radius: 4px;
+    background: var(--wash); color: var(--muted);
+  }
+  .bar-group-head .best {
+    margin-left: auto; font-size: clamp(8.5px, 0.56vw, 11px);
+    color: var(--muted); font-weight: 650;
+  }
+  .bar-row.sub { grid-template-columns: 104px 1fr 64px; padding-left: 12px; }
+  /* ---- 多候选（>5）紧凑模式 ---- */
+  .block.many .pick { margin: 3px 0 6px; }
+  .block.many .pick .name { font-size: clamp(22px, 1.9vw, 36px); }
+  .block.many .pick .pct { font-size: clamp(15px, 1.2vw, 23px); }
+  .block.many .bar-track { height: 14px; }
+  .block.many .bar-row { grid-template-columns: 100px 1fr 56px; gap: 8px; }
+  .block.many .bar-row.sub { grid-template-columns: 84px 1fr 56px; padding-left: 10px; }
+  .block.many .bar-row .lbl, .block.many .bar-row .val { font-size: clamp(10px, 0.72vw, 13px); }
+  .block.many .bar-group + .bar-group { margin-top: 3px; }
+  .block.many .bar-group-head { font-size: clamp(10.5px, 0.72vw, 13.5px); }
+  /* 多候选时 Choice 块占更大高度 */
+  .panel-body.result.many-pool > .block:nth-child(1) { flex: 1.6 1 0; }
+  .panel-body.result.many-pool > .block:nth-child(2) { flex: 0.9 1 0; }
+  .panel-body.result.many-pool > .block:nth-child(3) { flex: 0.72 1 0; }
+  .bar-row .lbl {
+    font-size: clamp(12px, 0.9vw, 17px);
+    color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .bar-row .lbl.top { color: var(--ink); font-weight: 650; }
+  .bar-row .val {
+    font-size: clamp(12px, 0.9vw, 17px);
+    font-variant-numeric: tabular-nums; text-align: right; color: var(--muted);
+  }
+  .bar-row .val.top { color: var(--ink); font-weight: 700; }
+
+  .score-line { display: flex; align-items: baseline; gap: 10px; margin: 5px 0 8px; }
+  .score-line .num { font-size: clamp(27px, 2.45vw, 47px); font-weight: 700; letter-spacing: -.02em; }
+  .score-line .num.laya { color: var(--laya); }
+  .score-line .num.kev { color: var(--kev); }
+  .score-line .unit { font-size: clamp(12px, 0.9vw, 17px); color: var(--faint); }
+  .score-line .grade {
+    font-size: clamp(15px, 1.1vw, 21px); font-weight: 650;
+    padding: 2px 9px; border-radius: 5px; background: var(--wash); color: var(--ink);
+  }
+
+  .noul-line { display: flex; align-items: center; gap: 10px; margin: 5px 0 8px; }
+  .noul-line .num {
+    font-size: clamp(27px, 2.45vw, 47px); font-weight: 700; letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .noul-line .num.laya { color: var(--laya); }
+  .noul-line .num.kev { color: var(--kev); }
+  .noul-line .verdict {
+    font-size: clamp(13px, 0.95vw, 18px); font-weight: 700;
+    padding: 3px 9px; border-radius: 5px; white-space: nowrap;
+  }
+  .noul-line .verdict.yes { background: rgba(33,135,123,0.12); color: var(--laya); }
+  .noul-line .verdict.no { background: rgba(189,150,81,0.16); color: var(--warn); }
+  .panel.kev .noul-line .verdict.yes { background: rgba(182,94,67,0.12); color: var(--kev); }
+
+  .noul-track {
+    display: block; height: 20px; background: var(--wash);
+    border-radius: 4px; position: relative; overflow: hidden;
+  }
+  .noul-track .fill { display: block; height: 100%; width: 0; transition: width .55s cubic-bezier(.22,.61,.36,1); }
+  .noul-track .fill.laya { background: var(--laya); }
+  .noul-track .fill.kev { background: var(--kev); }
+  .noul-track .thr { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--ink); opacity: .45; }
+  .noul-foot {
+    display: flex; justify-content: space-between;
+    margin-top: 5px; font-size: clamp(10px, 0.66vw, 13px); color: var(--faint);
+  }
+
+  .card-foot {
+    margin-top: auto; padding-top: 10px;
+    border-top: 1px dashed var(--line-soft);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .card-foot .tf { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .card-foot .tf .k {
+    font-size: clamp(9px, 0.6vw, 11.5px);
+    color: var(--faint);
+    letter-spacing: .05em;
+  }
+  .card-foot .tf .v {
+    font-size: clamp(13px, 0.95vw, 18px);
+    font-weight: 650;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .card-foot .tf .v.hl { color: var(--ink); }
+  /* ---------- 实时终端 ---------- */
+  .term {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    height: 38vh; min-height: 280px;
+    background: #23251F;
+    color: #E8E3D6;
+    transform: translateY(102%);
+    transition: transform .26s cubic-bezier(.22,.61,.36,1);
+    z-index: 110;
+    display: flex; flex-direction: column;
+    border-top: 1px solid rgba(233,228,214,.16);
+    box-shadow: 0 -18px 48px rgba(35,37,31,.26);
+    font-family: "Cascadia Code", "SF Mono", Consolas, monospace;
+  }
+  .term.open { transform: translateY(0); }
+  .term-head { display: flex; align-items: center; gap: 14px; padding: 10px 18px; border-bottom: 1px solid rgba(233,228,214,.12); }
+  .term-title { font-size: 13px; font-weight: 700; letter-spacing: .08em; display: flex; align-items: center; gap: 8px; }
+  .term-dot { width: 8px; height: 8px; border-radius: 50%; background: #86BFA0; box-shadow: 0 0 0 3px rgba(134,191,160,.18); animation: pulse 1.6s ease-in-out infinite; }
+  .term-conn { margin-left: auto; font-size: 12px; color: #B9B3A3; white-space: nowrap; }
+  .term-actions { display: flex; gap: 8px; }
+  .term-actions button {
+    font-size: 12px; padding: 5px 11px; border-radius: 6px;
+    border: 1px solid rgba(233,228,214,.22); color: #E8E3D6; background: transparent;
+    font-family: inherit; cursor: pointer;
+  }
+  .term-actions button:hover { background: rgba(233,228,214,.09); }
+  .term-meta {
+    padding: 7px 18px; font-size: 11.5px; color: #8E897B;
+    border-bottom: 1px solid rgba(233,228,214,.08);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .term-meta b { color: #CFC9B8; font-weight: 600; }
+  .term-body { flex: 1; overflow-y: auto; padding: 9px 18px 16px; font-size: 12.5px; line-height: 1.75; }
+  .term-body::-webkit-scrollbar { width: 8px; }
+  .term-body::-webkit-scrollbar-thumb { background: rgba(233,228,214,.16); border-radius: 4px; }
+  .term-line { display: grid; grid-template-columns: 76px 56px 1fr 54px 78px 72px; gap: 10px; }
+  .c-t { color: #7E7A6D; }
+  .c-m { font-weight: 700; }
+  .c-m.post { color: #D8B36A; }
+  .c-m.get { color: #8FB8A8; }
+  .c-p { color: #E8E3D6; overflow: hidden; text-overflow: ellipsis; }
+  .c-s.ok { color: #86BFA0; font-weight: 700; }
+  .c-s.err { color: #D98971; font-weight: 700; }
+  .c-d { color: #B9B3A3; text-align: right; }
+  .c-b { color: #6E6A5E; text-align: right; }
+  .term-empty { color: #7E7A6D; }
+  .term-meta-line .c-p { color: #9FAE96; font-size: 12px; }
+
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- ===== 顶部 ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <h1>ModelRouter · 真实三类型决策演示</h1>
+      <span class="sub">P16 · 双模型实时推理</span>
+    </div>
+    <div class="conn-group">
+      <span class="pill"><span class="dot wait" id="dot-conn"></span><span class="k">A6000</span> <span id="conn-text">连接中…</span></span>
+      <span class="pill laya"><span class="dot" id="dot-laya"></span>Laya <span class="k">权重</span> <span id="laya-load">—</span></span>
+      <span class="pill kev"><span class="dot" id="dot-kev"></span>Kev <span class="k">权重</span> <span id="kev-load">—</span></span>
+      <button class="btn ghost sm" id="btn-refresh">刷新状态</button>
+    </div>
+  </header>
+
+  <!-- ===== 主体 ===== -->
+  <main class="main">
+
+    <!-- 左：场景与输入 -->
+    <section class="panel editor">
+      <div class="panel-head">
+        <div class="ttl">场景与输入</div>
+        <div class="meta" id="scenario-meta">示例 · 可直接运行</div>
+      </div>
+      <div class="panel-body">
+
+        <div class="scenario-grid" id="scenario-grid"></div>
+
+        <div class="input-card">
+          <div class="input-title">
+            <span>本次输入</span>
+            <span id="input-id">—</span>
+          </div>
+          <div class="metrics" id="metrics"></div>
+          <div class="prompt-box" id="prompt-box"></div>
+          <div class="q-list" id="q-list"></div>
+        </div>
+
+        <button class="link-edit" id="toggle-edit">编辑本次输入 ▾</button>
+
+        <div class="edit-wrap hidden" id="edit-wrap">
+          <div class="row2">
+            <div class="field"><label>任务域</label><input type="text" id="f-domain"></div>
+            <div class="field"><label>步骤序号</label><input type="number" id="f-step" min="0" step="1"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>上下文长度</label><input type="number" id="f-context" min="0" step="1"></div>
+            <div class="field"><label>工具调用次数</label><input type="number" id="f-calls" min="0" step="1"></div>
+          </div>
+          <div class="field"><label>错误信号次数</label><input type="number" id="f-errors" min="0" step="1"></div>
+          <div class="field"><label>任务描述</label><textarea id="f-prompt"></textarea></div>
+          <div class="qgroup">
+            <div class="qh"><span class="qt">选择类问题</span><span class="ty">choice</span></div>
+            <input type="text" id="q-choice-instr" placeholder="问题描述">
+            <textarea class="crit-area" id="q-choice-crit" spellcheck="false" placeholder="每行：选项键: 中文说明"></textarea>
+          </div>
+          <div class="qgroup">
+            <div class="qh"><span class="qt">评分类问题</span><span class="ty">score</span></div>
+            <input type="text" id="q-score-instr" placeholder="问题描述">
+            <textarea class="crit-area" id="q-score-crit" spellcheck="false" placeholder="每行一个等级，从低到高"></textarea>
+          </div>
+          <div class="qgroup">
+            <div class="qh"><span class="qt">判定类问题</span><span class="ty">noul</span></div>
+            <input type="text" id="q-noul-instr" placeholder="问题描述">
+          </div>
+          <div class="run-row" style="grid-template-columns:1fr 1fr">
+            <button class="btn" id="btn-apply">应用修改</button>
+            <button class="btn ghost" id="btn-cancel">取消</button>
+          </div>
+        </div>
+
+        <div class="run-row" style="margin-top:auto;">
+          <button class="btn laya" id="btn-laya">运行 Laya</button>
+          <button class="btn kev" id="btn-kev">运行 Kev</button>
+          <button class="btn primary" id="btn-both">双模型对比</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 中：Laya -->
+    <section class="panel laya" id="panel-laya">
+      <div class="panel-head">
+        <div class="ttl"><span class="dot" id="dot-laya-p"></span><span class="tag-laya">Laya · 421M</span></div>
+        <div class="meta"><span class="chip idle" id="laya-state">待运行</span></div>
+      </div>
+      <div class="panel-body result" id="laya-body">
+        <div class="empty" id="laya-empty">
+          <div class="glyph">◍</div>
+          <div class="t">尚未推理</div>
+          <div class="d">点击「运行 Laya」或「双模型对比」。<br>本页不预置任何概率数值。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右：Kev -->
+    <section class="panel kev" id="panel-kev">
+      <div class="panel-head">
+        <div class="ttl"><span class="dot" id="dot-kev-p"></span><span class="tag-kev">Kev · 4B</span></div>
+        <div class="meta"><span class="chip idle" id="kev-state">待运行</span></div>
+      </div>
+      <div class="panel-body result" id="kev-body">
+        <div class="empty" id="kev-empty">
+          <div class="glyph">◍</div>
+          <div class="t">尚未推理</div>
+          <div class="d">点击「运行 Kev」或「双模型对比」。<br>本页不预置任何概率数值。</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== 底部 ===== -->
+  <footer class="footer">
+    <div class="item"><span class="k">Laya 耗时</span><span class="v" id="foot-laya-lat">—</span></div>
+    <div class="item"><span class="k">Kev 耗时</span><span class="v" id="foot-kev-lat">—</span></div>
+    <div class="sep"></div>
+    <div class="item"><span class="k">回退</span><span class="v" id="foot-fb">—</span></div>
+    <div class="item"><span class="k">时间</span><span class="v" id="foot-time">—</span></div>
+    <div class="spacer"></div>
+    <button class="btn sm" id="btn-term">实时终端</button>
+    <button class="btn sm" id="btn-raw">原始数据</button>
+    <a class="btn sm" href="./P17.html" id="link-p17">进入对比 →</a>
+  </footer>
+</div>
+
+<!-- 实时终端 -->
+<section class="term" id="term">
+  <div class="term-head">
+    <div class="term-title"><span class="term-dot"></span>实时终端 · LIVE</div>
+    <div class="term-conn" id="term-conn">正在读取连接信息…</div>
+    <div class="term-actions">
+      <button id="term-clear">清屏</button>
+      <button id="term-close">收起 ▾</button>
+    </div>
+  </div>
+  <div class="term-meta" id="term-meta">—</div>
+  <div class="term-body" id="term-body"></div>
+</section>
+
+<!-- 原始 JSON -->
+<div class="drawer" id="drawer">
+  <div class="drawer-card">
+    <div class="drawer-head">
+      <div class="t">本次真实请求与响应</div>
+      <div class="drawer-tabs">
+        <button class="tab active" data-tab="laya">Laya</button>
+        <button class="tab" data-tab="kev">Kev</button>
+        <button class="tab" data-tab="pair">同一轮</button>
+      </div>
+      <button class="btn ghost sm" id="drawer-close">关闭</button>
+    </div>
+    <div class="drawer-body"><pre id="raw-pre">尚无请求。</pre></div>
+    <div class="drawer-foot">
+      <span>数值与响应原文一一对应，页面不做重算。</span>
+      <button class="btn ghost sm" id="copy-raw">复制</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/live.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  const state = {
+    scenarioKey: 'software_repair',
+    current: null,
+    laya: null,
+    kev: null,
+    pair: null,
+    running: false,
+    rawTab: 'laya'
+  };
+
+  /* ---------- 场景 ---------- */
+  function renderScenarioGrid() {
+    const grid = $('scenario-grid');
+    const items = Object.entries(MR.PRESETS).map(([key, p]) => `
+      <button class="scenario" data-key="${key}">
+        <span class="ico">${p.icon || '·'}</span>
+        <span class="txt"><span class="nm">${esc(p.label)}</span><span class="ds">${esc(p.note)}</span></span>
+      </button>`).join('');
+    grid.innerHTML = items + `
+      <button class="scenario random" data-key="__random">
+        <span class="ico">✦</span>
+        <span class="txt"><span class="nm">随机生成一个示例</span></span>
+      </button>`;
+    grid.querySelectorAll('.scenario').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.key;
+        if (key === '__random') applyScenario('__random', MR.randomScenario());
+        else applyScenario(key, MR.PRESETS[key]);
+      });
+    });
+  }
+
+  function applyScenario(key, preset) {
+    state.scenarioKey = key;
+    state.current = { state: MR.clone(preset.state), questions: MR.clone(preset.questions) };
+    document.querySelectorAll('.scenario').forEach(b => b.classList.toggle('active', b.dataset.key === key));
+    $('scenario-meta').textContent = preset.random ? '随机生成 · 可直接运行' : '示例 · 可直接运行';
+    renderSummary();
+    fillEditForm();
+    clearResults();
+  }
+
+  const labelOf = key => MR.labelFor(key);
+
+  function fmtDur(ms) {
+    if (ms == null || Number.isNaN(ms)) return '—';
+    return ms >= 1000 ? (ms / 1000).toFixed(2) + ' s' : Math.round(ms) + ' ms';
+  }
+
+  function renderSummary() {
+    const cur = state.current;
+    if (!cur) return;
+    const st = cur.state, q = cur.questions;
+
+    $('metrics').innerHTML = `
+      <div class="metric"><span class="v">${esc(st.step_index)}</span><span class="k">步骤</span></div>
+      <div class="metric"><span class="v">${MR.fmtChars(st.context_chars)}</span><span class="k">上下文</span></div>
+      <div class="metric"><span class="v">${esc(st.prior_tool_calls_count)}</span><span class="k">工具调用</span></div>
+      <div class="metric"><span class="v">${esc(st.prior_error_signals_count)}</span><span class="k">错误信号</span></div>`;
+
+    $('prompt-box').innerHTML = `<span class="dom">${esc(st.task_domain)}</span><br>${esc(st.prompt)}`;
+
+    /* choice 候选按「模型 → 推理档位」树形展示 */
+    const groups = MR.groupOptions(q.q_choice?.criteria);
+    const choiceOpts = `<div class="q-tree">${groups.map(g => {
+      if (g.options.length === 1) {
+        const meta = MR.describeOption(g.options[0]);
+        return `<div class="tree-model"><span class="tw">▸</span>${esc(g.model)}<span class="opt">${esc(meta.effort)}</span><span class="tree-tier">${esc(g.tier)}</span></div>`;
+      }
+      return `<div class="tree-group">
+        <div class="tree-model"><span class="tw">▾</span>${esc(g.model)}<span class="tree-tier">${esc(g.tier)}</span></div>
+        <div class="tree-efforts">${g.options.map(k => `<span class="opt">${esc(MR.describeOption(k).effort)}</span>`).join('')}</div>
+      </div>`;
+    }).join('')}</div>`;
+    const scoreOpts = (q.q_score?.criteria || []).map(v => `<span class="opt">${esc(v)}</span>`).join('');
+
+    $('q-list').innerHTML = `
+      <div class="q-item">
+        <span class="q-idx">选</span>
+        <div class="q-body">
+          <div class="q-text">${esc(q.q_choice?.instructions || '')}<span class="q-type">choice</span></div>
+          <div class="q-opts">${choiceOpts}</div>
+        </div>
+      </div>
+      <div class="q-item">
+        <span class="q-idx">评</span>
+        <div class="q-body">
+          <div class="q-text">${esc(q.q_score?.instructions || '')}<span class="q-type">score</span></div>
+          <div class="q-opts">${scoreOpts}</div>
+        </div>
+      </div>
+      <div class="q-item">
+        <span class="q-idx">判</span>
+        <div class="q-body">
+          <div class="q-text">${esc(q.q_noul?.instructions || '')}<span class="q-type">noul</span></div>
+        </div>
+      </div>`;
+
+    $('input-id').textContent = `第 ${st.step_index} 步 · ${st.task_domain}`;
+  }
+
+  /* ---------- 编辑 ---------- */
+  function criteriaToText(crit) {
+    if (Array.isArray(crit)) return crit.join('\n');
+    return Object.entries(crit || {}).map(([k, v]) => `${k}: ${v}`).join('\n');
+  }
+  function parseChoice(text) {
+    const out = {};
+    text.split('\n').map(l => l.trim()).filter(Boolean).forEach(line => {
+      const i = line.indexOf(':');
+      if (i > 0) out[line.slice(0, i).trim()] = line.slice(i + 1).trim();
+      else out[line] = line;
+    });
+    return out;
+  }
+  function parseScore(text) {
+    return text.split('\n').map(l => l.trim()).filter(Boolean);
+  }
+
+  function fillEditForm() {
+    const cur = state.current;
+    if (!cur) return;
+    const st = cur.state, q = cur.questions;
+    $('f-domain').value = st.task_domain ?? '';
+    $('f-step').value = st.step_index ?? 0;
+    $('f-context').value = st.context_chars ?? 0;
+    $('f-calls').value = st.prior_tool_calls_count ?? 0;
+    $('f-errors').value = st.prior_error_signals_count ?? 0;
+    $('f-prompt').value = st.prompt ?? '';
+    $('q-choice-instr').value = q.q_choice?.instructions || '';
+    $('q-choice-crit').value = criteriaToText(q.q_choice?.criteria);
+    $('q-score-instr').value = q.q_score?.instructions || '';
+    $('q-score-crit').value = criteriaToText(q.q_score?.criteria);
+    $('q-noul-instr').value = q.q_noul?.instructions || '';
+  }
+
+  function applyEdit() {
+    const choiceCrit = parseChoice($('q-choice-crit').value);
+    const scoreCrit = parseScore($('q-score-crit').value);
+    state.current = {
+      state: {
+        task_domain: $('f-domain').value.trim() || '未命名任务',
+        step_index: Number($('f-step').value || 0),
+        context_chars: Number($('f-context').value || 0),
+        prior_tool_calls_count: Number($('f-calls').value || 0),
+        prior_error_signals_count: Number($('f-errors').value || 0),
+        prompt: $('f-prompt').value.trim()
+      },
+      questions: {
+        q_choice: {
+          type: 'choice',
+          instructions: $('q-choice-instr').value.trim(),
+          criteria: Object.keys(choiceCrit).length ? choiceCrit : { cheap_fast: '轻量快速', mid_balanced: '均衡中档', strong_deep: '旗舰深度' }
+        },
+        q_score: {
+          type: 'score',
+          instructions: $('q-score-instr').value.trim(),
+          criteria: scoreCrit.length ? scoreCrit : ['很简单', '较简单', '中等', '较困难', '非常困难']
+        },
+        q_noul: { type: 'noul', instructions: $('q-noul-instr').value.trim() }
+      }
+    };
+    state.scenarioKey = '__custom';
+    document.querySelectorAll('.scenario').forEach(b => b.classList.remove('active'));
+    $('scenario-meta').textContent = '已自定义 · 可直接运行';
+    renderSummary();
+    $('edit-wrap').classList.add('hidden');
+    $('toggle-edit').textContent = '编辑本次输入 ▾';
+    MR.toast('输入已更新，可重新运行');
+  }
+
+  /* ---------- 渲染结果 ---------- */
+  function clearResults() {
+    ['laya', 'kev'].forEach(f => {
+      $(f + '-body').innerHTML = `<div class="empty">
+        <div class="glyph">◍</div>
+        <div class="t">尚未推理</div>
+        <div class="d">点击「运行 ${f === 'laya' ? 'Laya' : 'Kev'}」或「双模型对比」。<br>本页不预置任何概率数值。</div>
+      </div>`;
+      setChip($(f + '-state'), '待运行', 'idle');
+      MR.setDot($(f === 'laya' ? 'dot-laya-p' : 'dot-kev-p'), '');
+    });
+    state.laya = null; state.kev = null;
+    updateFooter();
+  }
+
+  function setChip(el, text, cls) {
+    if (!el) return;
+    el.textContent = text;
+    el.className = 'chip ' + (cls || 'idle');
+  }
+
+  function renderResult(family, payload, timing) {
+    const a = payload.answers || {};
+    const choice = a.q_choice, score = a.q_score, noul = a.q_noul;
+    const body = $(family + '-body');
+    if (!choice && !score && !noul) {
+      renderError(family, 'INFERENCE_FAILED', '响应中没有 answers 字段');
+      return;
+    }
+    let html = '';
+
+    if (choice) {
+      const probs = choice.probabilities || {};
+      const entries = Object.entries(probs).sort((x, y) => y[1] - x[1]);
+      const top = choice.choice || entries[0]?.[0];
+      html += `<div class="block${entries.length > 5 ? ' many' : ''}">
+        <div class="block-title"><span>选择 / Choice</span><span class="hint">${entries.length} 个候选的完整概率</span></div>
+        <div class="pick">
+          <span class="name ${family}">${esc(MR.describeOption(top).modelShort)}</span>
+          <span class="effort ${family}">${esc(MR.describeOption(top).effort || '—')}</span>
+          <span class="pct">${MR.fmtPct(probs[top], 1)}</span>
+        </div>
+        <div class="bars">
+          ${MR.groupOptions(probs)
+            .map(g => ({
+              ...g,
+              options: g.options.map(k => [k, probs[k]]).sort((a, b) => b[1] - a[1]),
+            }))
+            .map(g => ({ ...g, best: g.options[0] }))
+            .sort((a, b) => b.best[1] - a.best[1])
+            .map(g => {
+              const subRows = g.options.map(([k, v]) => `
+                <div class="bar-row sub" title="${esc(k)} = ${v}">
+                  <span class="lbl ${k === top ? 'top' : ''}">${esc(MR.describeOption(k).effort)}</span>
+                  <span class="bar-track"><span class="bar-fill ${k === top ? '' : 'dim'}" style="width:${(Math.max(0, Math.min(1, v)) * 100).toFixed(2)}%"></span></span>
+                  <span class="val ${k === top ? 'top' : ''}">${MR.fmtPct(v, 1)}</span>
+                </div>`).join('');
+              if (g.options.length === 1) {
+                const [k, v] = g.options[0];
+                return `
+                <div class="bar-row" title="${esc(k)} = ${v}">
+                  <span class="lbl ${k === top ? 'top' : ''}" title="${esc(g.model)} · ${esc(MR.describeOption(k).effort)}">${esc(MR.describeOption(k).short)}</span>
+                  <span class="bar-track"><span class="bar-fill ${k === top ? '' : 'dim'}" style="width:${(Math.max(0, Math.min(1, v)) * 100).toFixed(2)}%"></span></span>
+                  <span class="val ${k === top ? 'top' : ''}">${MR.fmtPct(v, 1)}</span>
+                </div>`;
+              }
+              return `<div class="bar-group">
+                <div class="bar-group-head">
+                  <span class="m">${esc(g.model)}</span>
+                  <span class="tier">${esc(g.tier)}</span>
+                  ${g.options.some(([k]) => k === top) ? '<span class="best">★ 本次选中</span>' : ''}
+                </div>
+                ${subRows}
+              </div>`;
+            }).join('')}
+        </div>
+      </div>`;
+    }
+
+    if (score) {
+      const probs = score.probabilities || {};
+      const legend = score.legend || {};
+      const keys = Object.keys(probs).sort((x, y) => Number(x) - Number(y));
+      const best = keys.reduce((b, k) => (probs[k] > (probs[b] ?? -1) ? k : b), keys[0]);
+      const maxIdx = Math.max(keys.length - 1, 1);
+      const near = Math.min(Math.round(score.score), maxIdx);
+      const gradeName = legend[String(near)] || legend[keys[keys.length - 1]] || '—';
+      html += `<div class="block">
+        <div class="block-title"><span>难度 / Score</span><span class="hint">期望等级与分布</span></div>
+        <div class="score-line">
+          <span class="num ${family}">${MR.fmtNum(score.score, 2)}</span>
+          <span class="unit">/ ${maxIdx}</span>
+          <span class="grade">${esc(gradeName)}</span>
+        </div>
+        <div class="bars">
+          ${keys.map(k => {
+            const p = probs[k];
+            const name = legend[k] != null ? legend[k] : k;
+            return `<div class="bar-row" title="等级 ${k} ${name} = ${p}">
+              <span class="lbl ${k === best ? 'top' : ''}">${esc(String(name))}</span>
+              <span class="bar-track"><span class="bar-fill ${k === best ? '' : 'dim'}" style="width:${(Math.max(0, Math.min(1, p)) * 100).toFixed(2)}%"></span></span>
+              <span class="val ${k === best ? 'top' : ''}">${MR.fmtPct(p, 1)}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }
+
+    if (noul) {
+      const p = typeof noul.noul === 'number' ? noul.noul : null;
+      const yes = p != null && p >= 0.5;
+      html += `<div class="block">
+        <div class="block-title"><span>判断 / Noul</span><span class="hint">为真的概率</span></div>
+        <div class="noul-line">
+          <span class="num ${family}">${p != null ? MR.fmtPct(p, 1) : '—'}</span>
+          <span class="verdict ${yes ? 'yes' : 'no'}">${p == null ? '—' : (yes ? '判为「是」' : '判为「否」')}</span>
+        </div>
+        <span class="noul-track">
+          <span class="fill ${family}" style="width:${p != null ? (p * 100).toFixed(2) : 0}%"></span>
+          <span class="thr"></span>
+        </span>
+        <div class="noul-foot"><span>否 0</span><span>阈值 0.5</span><span>是 1</span></div>
+      </div>`;
+    }
+
+    const t = timing || MR.splitTiming(payload);
+    html += `<div class="card-foot">
+      <span class="tf"><span class="k">模型推理</span><span class="v hl">${fmtDur(t.infer)}</span></span>
+      <span class="tf"><span class="k">网络往返</span><span class="v">${fmtDur(t.net)}</span></span>
+      <span class="tf"><span class="k">合计</span><span class="v">${fmtDur(t.total)}</span></span>
+    </div>`;
+
+    body.innerHTML = html;
+    body.classList.toggle('many-pool', /class="block many"/.test(html));
+    setChip($(family + '-state'), payload.fallback_used ? '已回退' : '已完成', payload.fallback_used ? 'run' : 'ok');
+    MR.setDot($(family === 'laya' ? 'dot-laya-p' : 'dot-kev-p'), 'ok');
+  }
+
+  function renderError(family, kind, detail) {
+    const title = MR.ERROR_TITLES[kind] || kind;
+    $(family + '-body').innerHTML = `<div class="err-box">
+        <div class="t">${esc(title)}</div>
+        <div>${esc(detail)}</div>
+      </div>
+      <div class="empty" style="flex:0;padding-top:12px;">
+        <div class="d">这是服务端真实返回，页面没有使用任何本地伪造结果。</div>
+      </div>`;
+    setChip($(family + '-state'), '连接异常', 'err');
+    MR.setDot($(family === 'laya' ? 'dot-laya-p' : 'dot-kev-p'), 'err');
+  }
+
+  /* ---------- 运行 ---------- */
+  function setRunning(on) {
+    state.running = on;
+    ['btn-laya', 'btn-kev', 'btn-both'].forEach(id => { $(id).disabled = on; });
+  }
+
+  async function runOne(family) {
+    if (state.running || !state.current) return;
+    if (!termAutoOpened) { termOpen(true); termAutoOpened = true; }
+    setRunning(true);
+    setChip($(family + '-state'), '请求中', 'run');
+    MR.setDot($(family === 'laya' ? 'dot-laya-p' : 'dot-kev-p'), 'wait');
+    $(family + '-body').innerHTML = `<div class="empty"><div class="glyph">◌</div><div class="t">正在推理…</div><div class="d">请求已发送到 A6000，模型正在做真实前向计算。</div></div>`;
+    try {
+      const res = await MR.runOne(family, state.current.state, state.current.questions);
+      const kind = MR.classify(res);
+      if (kind === 'OK' && res.reading) {
+        state[family] = { reading: res.reading, at: res.reading.completed_at, testId: res.reading.test_id };
+        renderResult(family, res.reading);
+        updateFooter();
+        MR.toast(`${family === 'laya' ? 'Laya' : 'Kev'} 完成 · ${MR.fmtNum(res.reading.decision_latency_ms, 0)} ms`);
+      } else {
+        state[family] = null;
+        renderError(family, kind, MR.errorText(res));
+        updateFooter();
+        MR.toast('推理失败：' + (MR.ERROR_TITLES[kind] || kind), true);
+      }
+    } finally {
+      setRunning(false);
+      if (termAutoOpened && !termUserToggled) setTimeout(() => termOpen(false), 2200);
+    }
+  }
+
+  /* 单侧请求：谁先回来谁先渲染，不等待另一侧 */
+  async function runSide(family, testId) {
+    const label = family === 'laya' ? 'Laya' : 'Kev';
+    const t0 = Date.now();
+    setChip($(family + '-state'), '请求中', 'run');
+    MR.setDot($(family === 'laya' ? 'dot-laya-p' : 'dot-kev-p'), 'wait');
+    $(family + '-body').innerHTML = `<div class="empty"><div class="glyph">◌</div><div class="t">${label} 正在推理…</div><div class="d">两侧各自推理，谁先返回谁先显示，不等另一侧。</div></div>`;
+    try {
+      const res = await MR.runOne(family, state.current.state, state.current.questions, testId);
+      const elapsed = Date.now() - t0;
+      const kind = MR.classify(res);
+      if (kind === 'OK' && res.reading) {
+        const timing = MR.splitTiming(res.reading, res.clientMs);
+        state[family] = { reading: res.reading, at: res.reading.completed_at, testId, timing };
+        renderResult(family, res.reading, timing);
+        updateFooter();
+        MR.pushLog({
+          at: new Date(), method: '', path: `${label} 推理 ${fmtDur(timing.infer)} · 网络 ${fmtDur(timing.net)} · 合计 ${fmtDur(timing.total)}`,
+          status: 0, ok: true, ms: 0, bytes: 0, kind: 'meta',
+        });
+        MR.toast(`${label} 已返回 · 推理 ${fmtDur(timing.infer)}`);
+        return { ok: true, request: res.request, response: res.reading, http_status: res.status, error: null, bridge_elapsed_ms: elapsed };
+      }
+      state[family] = null;
+      renderError(family, kind, MR.errorText(res));
+      updateFooter();
+      MR.toast(`${label} 失败：${MR.ERROR_TITLES[kind] || kind}`, true);
+      return { ok: false, request: res.request, response: null, http_status: res.status, error: res.payload, error_class: kind, bridge_elapsed_ms: elapsed };
+    } catch (e) {
+      state[family] = null;
+      renderError(family, 'UNKNOWN', String(e));
+      return { ok: false, request: null, response: null, http_status: 0, error: { detail: String(e) }, bridge_elapsed_ms: Date.now() - t0 };
+    }
+  }
+
+  /* 双模型对比：两侧并发，各自返回即渲染；全部结束后登记为同一轮 */
+  async function runBoth() {
+    if (state.running || !state.current) return;
+    if (!termAutoOpened) { termOpen(true); termAutoOpened = true; }
+    const testId = MR.newTestId();
+    const startedAt = new Date().toISOString();
+    const st = state.current.state;
+    const qs = state.current.questions;
+    setRunning(true);
+    const results = {};
+    try {
+      // 两侧依次请求：Laya 先跑，返回即渲染；Kev 随后开始，同样返回即渲染。
+      // 不用并发——A6000 上两侧都在 CPU 上跑，并发会互相抢核，单侧反而更慢。
+      results.laya = await runSide('laya', testId);
+      results.kev = await runSide('kev', testId);
+      const c = await MR.commitPair(testId, st, qs, results, startedAt);
+      state.pair = c.ok ? c.payload : null;
+      updateFooter();
+      const okCount = Object.values(results).filter(r => r.ok).length;
+      MR.toast(okCount === 2 ? '两侧都已完成 · 已登记为同一轮' : `只有 ${okCount}/2 侧成功`, okCount !== 2);
+    } finally {
+      setRunning(false);
+      if (termAutoOpened && !termUserToggled) setTimeout(() => termOpen(false), 2200);
+    }
+  }
+
+  function updateFooter() {
+    const tl = state.laya?.timing, tk = state.kev?.timing;
+    $('foot-laya-lat').textContent = tl ? `${fmtDur(tl.total)} · 推理 ${fmtDur(tl.infer)}` : '—';
+    $('foot-kev-lat').textContent = tk ? `${fmtDur(tk.total)} · 推理 ${fmtDur(tk.infer)}` : '—';
+    const l = state.laya?.reading, k = state.kev?.reading;
+    const fb = (l?.fallback_used) || (k?.fallback_used);
+    $('foot-fb').textContent = (l || k) ? (fb ? '是' : '否') : '—';
+    $('foot-fb').style.color = fb ? 'var(--warn)' : '';
+    const at = state.laya?.at || state.kev?.at;
+    $('foot-time').textContent = at ? MR.fmtTime(at) : '—';
+  }
+
+  /* ---------- 状态 ---------- */
+  async function refreshStatus() {
+    const [h, m] = await Promise.all([MR.health(), MR.models()]);
+    const hk = MR.classify(h);
+    if (hk === 'OK' && h.payload) {
+      MR.setDot($('dot-conn'), 'ok');
+      const util = h.payload.gpu_utilization_pct;
+      $('conn-text').textContent = `在线${util != null ? ' · ' + util + '%' : ''}`;
+    } else {
+      MR.setDot($('dot-conn'), 'err');
+      $('conn-text').textContent = hk === 'NETWORK_UNREACHABLE' ? '演示服务未启动' : '连接异常';
+    }
+    const mk = MR.classify(m);
+    if (mk === 'OK' && m.payload?.models) {
+      const l = m.payload.models.find(x => x.family === 'laya');
+      const k = m.payload.models.find(x => x.family === 'kev');
+      $('laya-load').textContent = l?.loaded ? '已加载' : '未加载';
+      $('kev-load').textContent = k?.loaded ? '已加载' : '未加载';
+      MR.setDot($('dot-laya'), l?.loaded ? 'ok' : 'err');
+      MR.setDot($('dot-kev'), k?.loaded ? 'ok' : 'err');
+      updateFooter();
+    } else {
+      $('laya-load').textContent = '—';
+      $('kev-load').textContent = '—';
+      MR.setDot($('dot-laya'), 'err');
+      MR.setDot($('dot-kev'), 'err');
+    }
+  }
+
+  /* ---------- 实时终端 ---------- */
+  let termAutoOpened = false;
+
+  function termOpen(open) { $('term').classList.toggle('open', !!open); }
+  function termToggle() { termOpen(!$('term').classList.contains('open')); }
+
+  function renderTerm(logs) {
+    const body = $('term-body');
+    if (!logs.length) {
+      body.innerHTML = '<div class="term-empty">▌ 等待请求… 点击「双模型对比」后，这里会逐条打印真实往返。</div>';
+      return;
+    }
+    body.innerHTML = logs.slice(-140).map(l => {
+      const t = l.at.toTimeString().slice(0, 8);
+      if (l.kind === 'meta') {
+        return `<div class="term-line term-meta-line">
+          <span class="c-t">${t}</span>
+          <span></span>
+          <span class="c-p">└─ ${esc(l.path)}</span>
+          <span></span><span></span><span></span>
+        </div>`;
+      }
+      const cls = l.ok ? 'ok' : 'err';
+      return `<div class="term-line">
+        <span class="c-t">${t}</span>
+        <span class="c-m ${l.method === 'POST' ? 'post' : 'get'}">${l.method}</span>
+        <span class="c-p">${esc(l.path)}</span>
+        <span class="c-s ${cls}">${l.status || 'ERR'}</span>
+        <span class="c-d">${l.ms} ms</span>
+        <span class="c-b">${l.bytes} B</span>
+      </div>`;
+    }).join('');
+    body.scrollTop = body.scrollHeight;
+  }
+
+  async function updateTermInfo() {
+    await MR.config();
+    const c = MR.S.config;
+    if (!c) { $('term-conn').textContent = '连接信息不可用'; return; }
+    const up = c.upstream_display || '—';
+    const tunnel = /^(127\.0\.0\.1|localhost)/.test(up);
+    $('term-conn').textContent = `${up} · ${tunnel ? 'SSH 隧道' : '内网直连'} · HTTP/1.1`;
+    const m = MR.S.models?.models || [];
+    const laya = m.find(x => x.family === 'laya');
+    const kev = m.find(x => x.family === 'kev');
+    $('term-meta').innerHTML =
+      `本地 <b>${esc(location.host)}</b> · 桥接 <b>${esc(MR.apiBase)}</b> · 上游 <b>${esc(c.upstream || '—')}</b>` +
+      ` · ${tunnel ? '本地端口转发' : '局域网 HTTP 直连，系统代理已绕过'}` +
+      ` · Laya <b>${esc(laya ? laya.run_id + ' / ' + laya.checkpoint_id : '—')}</b>` +
+      ` · Kev <b>${esc(kev ? MR.shortId(kev.checkpoint_id) : '—')}</b>`;
+  }
+
+  /* ---------- 原始数据 ---------- */
+  function rawFor(tab) {
+    if (tab === 'pair') return state.pair ? JSON.stringify(state.pair, null, 2) : '尚未执行双模型对比。';
+    const rec = state[tab];
+    if (!rec) return `尚未执行 ${tab === 'laya' ? 'Laya' : 'Kev'} 请求。`;
+    return JSON.stringify({ test_id: rec.testId, completed_at: rec.at, request: state.current, response: rec.reading }, null, 2);
+  }
+  function openDrawer(tab) {
+    state.rawTab = tab || state.rawTab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === state.rawTab));
+    $('raw-pre').textContent = rawFor(state.rawTab);
+    $('drawer').classList.add('open');
+  }
+
+  /* ---------- 事件 ---------- */
+  $('toggle-edit').addEventListener('click', () => {
+    const hidden = $('edit-wrap').classList.toggle('hidden');
+    $('toggle-edit').textContent = hidden ? '编辑本次输入 ▾' : '收起编辑 ▴';
+  });
+  $('btn-apply').addEventListener('click', applyEdit);
+  $('btn-cancel').addEventListener('click', () => {
+    fillEditForm();
+    $('edit-wrap').classList.add('hidden');
+    $('toggle-edit').textContent = '编辑本次输入 ▾';
+  });
+  $('btn-laya').addEventListener('click', () => runOne('laya'));
+  $('btn-kev').addEventListener('click', () => runOne('kev'));
+  $('btn-both').addEventListener('click', runBoth);
+  $('btn-refresh').addEventListener('click', refreshStatus);
+  $('btn-raw').addEventListener('click', () => openDrawer());
+  let termUserToggled = false;
+  $('btn-term').addEventListener('click', () => { termUserToggled = true; termToggle(); });
+  $('term-close').addEventListener('click', () => { termUserToggled = true; termOpen(false); });
+  $('term-clear').addEventListener('click', () => { MR.S.logs.length = 0; renderTerm([]); });
+  $('drawer-close').addEventListener('click', () => $('drawer').classList.remove('open'));
+  $('drawer').addEventListener('click', e => { if (e.target === $('drawer')) $('drawer').classList.remove('open'); });
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => openDrawer(t.dataset.tab)));
+  $('copy-raw').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('raw-pre').textContent); MR.toast('已复制'); }
+    catch { MR.toast('浏览器拒绝写入剪贴板', true); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === '`') { e.preventDefault(); termToggle(); }
+    if (e.key === 'Escape') { $('drawer').classList.remove('open'); termOpen(false); }
+    if (e.key === 'ArrowRight' && !state.running) location.href = './P17.html';
+  });
+
+  /* ---------- 初始化 ---------- */
+  (async () => {
+    renderScenarioGrid();
+    applyScenario('software_repair', MR.PRESETS.software_repair);
+    clearResults();
+    MR.onLog(renderTerm);
+    await refreshStatus();
+    updateTermInfo();
+
+    const fresh = new URLSearchParams(location.search).has('fresh');
+    if (fresh) { setInterval(refreshStatus, 15000); return; }
+
+    const r = await MR.latest();
+    if (r.ok && r.payload?.results) {
+      const pair = r.payload;
+      state.pair = pair;
+      applyScenario('__restored', {
+        label: '最近一轮', note: '从上次对比恢复',
+        state: pair.state, questions: pair.questions
+      });
+      let shown = false;
+      ['laya', 'kev'].forEach(f => {
+        const item = pair.results[f];
+        if (item?.ok && item.response) {
+          const timing = MR.splitTiming(item.response, item.bridge_elapsed_ms);
+          state[f] = { reading: item.response, at: pair.completed_at, testId: pair.test_id, timing };
+          renderResult(f, item.response, timing);
+          shown = true;
+        }
+      });
+      if (shown) { updateFooter(); MR.toast('已恢复最近一轮真实结果'); }
+    }
+    setInterval(refreshStatus, 15000);
+  })();
+})();
+</script>
+</body>
+</html>
