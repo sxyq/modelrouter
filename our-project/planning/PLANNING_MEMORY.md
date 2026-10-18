@@ -21,22 +21,18 @@
 - **下一步是动态字段**：每次先查最新 [PROJECT_STATUS.md](PROJECT_STATUS.md) 的「当前任务/正在等待/下一步」，如果处于 E-DESIGN 再查 [EXPERIMENT_QA.md](EXPERIMENT_QA.md) 待答 Q-ID；数据来源与 Provider/Cache 政策详见 [DATA_SOURCE_AND_POLICY_REGISTRY.md](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)，不得重复已经确认的问题、提前执行未授权工程或训练。
 - 当前论文表述纪律：不要把状态字段数量本身作为创新点；**论文不讨论“多变量”或“混沌”**。新意必须靠任务级状态决策、Model × Effort、延迟成本/成功影响和严谨评测证明。
 
-### 2026-10-18 · 最新局部研究方向（覆盖下方 2026-10-16 快照的 RQ1 归属，但不改 RQ4/RQ5）
+### 2026-10-18 · 最终五个论文 RQ（负责人明确纠正，覆盖此前局部待定版）
 
-负责人决定将 **RQ1 缩回总体横向效果**：同一任务/合法 Model→Native Effort 树池/真实 Harness 下，对比固定、开发集最优固定、整任务随机混合、Role-static（场景适用时）、Task-only/Rule/Sticky、合法适配的外部 Router 与 Full，测 **Task Success × Total Episode USD**。此前放在 RQ1 的大量消融（动作 Model-only/Effort-only/Joint、T/M/H 信息组单双三组合、KV/Trace/Feedback、训练监督/配比、额外开销）**拟单独形成一个系统消融大 RQ，正式编号待定**，不是继续作为 RQ1 的四个子块。本轮明确要求 **RQ4/RQ5 先别改**，因此旧 V8 的角色互补性与工作负载适用边界两节、Fig.7/8 与 T8/9 原样暂存，不能声称已被替换。RQ2 模型池、RQ3 拆分的核心实验不变。
+**已确认，不再待定**：
+1. **RQ1 总体效果**：同一真实 Agent 任务、合法树状 Model→Native Effort 池、相同 Harness/预算下，与强固定、整任务随机混合、规则/简单动态、同 Harness 可运行的外部 Router 做 **Task Success–Complete Episode USD** 横向比较。
+2. **RQ2 模型池**：选择哪些模型身份和数量 K；每个模型下有真实合法 Native Effort 子节点。
+3. **RQ3 任务拆分**：固定池成员/K/真实档位菜单/Router，在同原始任务上比较 G 粒度及实际交接/上下文/总费用。
+4. **RQ4 系统消融（**新正式 RQ4**）**：固定任务/池/环境，对照 Fixed/Model-only/Effort-only/Hierarchical/Joint；T/M/H 信息组及 KV/Trace/Role/Verifier 真实可用单项/组合；S1/S2/S3 合规数据、Laya/Kev 训练监督及配比，测完整任务成功率/费用与开销，保留负结果。
+5. **RQ5 适用边界（保留原版本）**：固定池/Router/G，检验不同事前可知的 Agent 工作负载（任务类型/规模/协作结构）对动态路由净收益的稳定影响。
 
-权威局部记录：[汇报三论文实验与图表规划](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)；审批/历史原始 Q-017 不覆盖。此为研究文档更改，不意味着真实 Agent Benchmark 或多 Agent 补训已经完成。
+**明确废止**：2026-10-16 V8 曾以“多 Agent 角色间模型互补性”作为 RQ4，**该独立 RQ 已被负责人明确删除并替换为系统消融**；它不再是现行研究方向，不再对应 Fig.7 或 T8。Agent 角色仍是按需可见的输入和状态消融字段，不等于必须独立研究角色互补。下方 2026-10-16 的条目是**历史时间快照**，不得覆盖此最新决定。
 
-### 2026-10-16 最新已确认论文 RQ（研究决定快照，优先于旧 V3–V7 编号）
-
-- **RQ1**：真实多 Agent 任务下完整 ModelRouter 与同类 Agent Router/固定/随机混合/Role-static 的成功率—整任务 USD 横向对比；其内部做 Model×原生 Effort 联合选择、任务/模型经济性/历史 T/M/H 单双三组消融、Role/KV/Trace/Verifier 消融、整任务费用账本与 Router overhead。不再将长期成本或 Effort 单独当作 RQ5/RQ4。
-- **RQ2**：模型池应该放哪些**模型身份**与多少个 K；每模型真实 Native Effort 是该模型的子节点，统计 `Σ|E_m|`，不误算为模型数。
-- **RQ3**：固定相同 K/模型成员/各模型 Effort 支持与同一 Router，改变多 Agent 任务的**拆分粒度 G**，同原任务的真实成功/总费用/交接与 Trace 对比；不同多 Agent 任务类型分层而非乱混。
-- **RQ4**（负责人确认原候选 B）：不同 Agent 角色/阶段是否存在**可利用的模型能力互补性**；固定池与 G，对比 Role-static 和 Role-aware 的端到端收益；不得把观察轨迹伪装反事实最优。
-- **RQ5**（负责人确认原候选 C）：哪些任务类别、预先已知复杂度/任务长度、协作结构具有动态路由净收益，哪些无收益？固定池/G/Router，事前定义工作负载分层和可检验的交互效应，不仅重复 RQ1 的总体数。
-- **权威实验与空白图表**：[汇报三 V8](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)（八张图、十二表）。研究定义见 [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)，用户批准与 Q-ID 见 [EXPERIMENT_QA](EXPERIMENT_QA.md) Q-017；源字段/准入见 [DATA_SOURCE_AND_POLICY_REGISTRY](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)。
-- **现实缺口**：目前已有多 Agent AgentState 文档设计，但当前 P22 训练输入尚不能证明学到了真实子 Agent 角色/交接与 Model×Effort 最优动态标签。最新 GPU 现场只能由最新 Execution 状态核验，不能用本研究决定覆盖历史 F04 实测快照。
-
+**权威新方案**：[汇报三 V9](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)；**现行图表**：Fig.3–4/RQ1，Fig.5/RQ2，Fig.6/RQ3，Fig.7/RQ4，Fig.8/RQ5；表 T4/T5/T8 与 RQ4 对齐。历史 Q-017 原记录保留，新决议另由 EXPERIMENT_QA 记录。未因此启动/修改训练或 Benchmark。
 
 ## 0.1 新对话恢复规则（持续生效）
 
