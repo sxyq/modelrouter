@@ -222,9 +222,21 @@
     font-weight: 650; color: var(--muted); font-variant-numeric: tabular-nums;
   }
   .pick .raw { font-size: clamp(10px, 0.68vw, 13px); color: var(--faint); margin-left: auto; }
+  .pick .effort {
+    font-size: clamp(12px, 0.85vw, 16px);
+    font-weight: 700;
+    letter-spacing: .01em;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: var(--wash);
+    color: var(--muted);
+    align-self: center;
+  }
+  .pick .effort.laya { background: rgba(33,135,123,.12); color: var(--laya); }
+  .pick .effort.kev { background: rgba(182,94,67,.12); color: var(--kev); }
 
   .bars { display: flex; flex-direction: column; gap: 6px; }
-  .bar-row { display: grid; grid-template-columns: 96px 1fr 64px; align-items: center; gap: 10px; }
+  .bar-row { display: grid; grid-template-columns: 128px 1fr 64px; align-items: center; gap: 10px; }
   .bar-row .lbl {
     font-size: clamp(12px, 0.9vw, 17px);
     color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -707,15 +719,16 @@
       const entries = Object.entries(probs).sort((x, y) => y[1] - x[1]);
       const top = choice.choice || entries[0]?.[0];
       html += `<div class="block">
-        <div class="block-title"><span>选择 / Choice</span><span class="hint">三候选完整概率</span></div>
+        <div class="block-title"><span>选择 / Choice</span><span class="hint">${entries.length} 个候选的完整概率</span></div>
         <div class="pick">
-          <span class="name ${family}">${esc(labelOf(top))}</span>
+          <span class="name ${family}">${esc(MR.describeOption(top).modelShort)}</span>
+          <span class="effort ${family}">${esc(MR.describeOption(top).effort || '—')}</span>
           <span class="pct">${MR.fmtPct(probs[top], 1)}</span>
         </div>
         <div class="bars">
           ${entries.map(([k, v]) => `
             <div class="bar-row" title="${esc(k)} = ${v}">
-              <span class="lbl ${k === top ? 'top' : ''}">${esc(labelOf(k))}</span>
+              <span class="lbl ${k === top ? 'top' : ''}" title="${esc(MR.describeOption(k).model)} · ${esc(MR.describeOption(k).effort)}">${esc(MR.describeOption(k).short)}</span>
               <span class="bar-track"><span class="bar-fill ${k === top ? '' : 'dim'}" style="width:${(Math.max(0, Math.min(1, v)) * 100).toFixed(2)}%"></span></span>
               <span class="val ${k === top ? 'top' : ''}">${MR.fmtPct(v, 1)}</span>
             </div>`).join('')}

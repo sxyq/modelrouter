@@ -41,6 +41,43 @@ const MR = (() => {
     try { fn(S.logs); } catch (e) {}
   }
 
+  /* ---------------- 真实模型池（2026-10 核实） ----------------
+     GPT-6 Astra       : low / medium / high / xhigh / max（不支持 none）
+     Claude Sonnet 5.5 : low / medium / high / xhigh / max（API 默认 high）
+     DeepSeek V4.1 Flash: low / high / max（默认 high）
+  ------------------------------------------------------------- */
+  const MODEL_POOL = {
+    'gpt-6-astra/xhigh':          { short: 'Astra · xhigh',       model: 'GPT-6 Astra',         modelShort: 'Astra',        effort: 'xhigh',  tier: '旗舰' },
+    'gpt-6-astra/high':           { short: 'Astra · high',        model: 'GPT-6 Astra',         modelShort: 'Astra',        effort: 'high',   tier: '旗舰' },
+    'claude-sonnet-5.5/high':     { short: 'Sonnet 5.5 · high',   model: 'Claude Sonnet 5.5',   modelShort: 'Sonnet 5.5',   effort: 'high',   tier: '中档' },
+    'claude-sonnet-5.5/medium':   { short: 'Sonnet 5.5 · medium', model: 'Claude Sonnet 5.5',   modelShort: 'Sonnet 5.5',   effort: 'medium', tier: '中档' },
+    'deepseek-v4.1-flash/high':   { short: 'V4.1 Flash · high',   model: 'DeepSeek V4.1 Flash', modelShort: 'V4.1 Flash',   effort: 'high',   tier: '轻量' },
+    'deepseek-v4.1-flash/low':    { short: 'V4.1 Flash · low',    model: 'DeepSeek V4.1 Flash', modelShort: 'V4.1 Flash',   effort: 'low',    tier: '轻量' }
+  };
+
+  /* 默认三档（每个模型取一个代表档位） */
+  const POOL_TIERED = {
+    'gpt-6-astra/xhigh': 'GPT-6 Astra · xhigh｜旗舰，Extra High，最贵最慢',
+    'claude-sonnet-5.5/high': 'Claude Sonnet 5.5 · high｜中档，API 默认档',
+    'deepseek-v4.1-flash/low': 'DeepSeek V4.1 Flash · low｜轻量，成本最低'
+  };
+
+  /* 联合档位（同模型不同 effort 一起决策） */
+  const POOL_JOINT = {
+    'gpt-6-astra/xhigh': 'GPT-6 Astra · xhigh｜旗舰，Extra High',
+    'gpt-6-astra/high': 'GPT-6 Astra · high｜旗舰，高推理',
+    'claude-sonnet-5.5/high': 'Claude Sonnet 5.5 · high｜中档，默认档',
+    'deepseek-v4.1-flash/high': 'DeepSeek V4.1 Flash · high｜轻量，高质量档',
+    'deepseek-v4.1-flash/low': 'DeepSeek V4.1 Flash · low｜轻量，最省成本'
+  };
+
+  function describeOption(key) {
+    const meta = MODEL_POOL[key];
+    if (meta) return meta;
+    const [model, effort] = String(key).split('/');
+    return { short: key, model: model || key, modelShort: model || key, effort: effort || '', tier: '' };
+  }
+
   /* ---------------- 选项中文短标签 ---------------- */
   const LABELS = {
     cheap_fast: '轻量快速',
@@ -62,6 +99,8 @@ const MR = (() => {
 
   function labelFor(key) {
     if (key == null) return '—';
+    const meta = MODEL_POOL[key];
+    if (meta) return meta.short;
     return LABELS[key] || String(key);
   }
 
@@ -83,11 +122,7 @@ const MR = (() => {
         q_choice: {
           type: 'choice',
           instructions: '这一步应该交给哪一档模型处理？',
-          criteria: {
-            cheap_fast: '轻量快速：小参数模型，成本低，不做长推理',
-            mid_balanced: '均衡中档：中等模型，给予适度推理预算',
-            strong_deep: '旗舰深度：前沿模型，高推理档位，长链路分析'
-          }
+          criteria: { ...POOL_TIERED }
         },
         q_score: {
           type: 'score',
@@ -116,12 +151,8 @@ const MR = (() => {
       questions: {
         q_choice: {
           type: 'choice',
-          instructions: '为下一次调用选择模型档位与推理强度的组合。',
-          criteria: {
-            cheap_fast: '轻量快速：小模型 + 关闭推理',
-            mid_balanced: '均衡中档：中等模型 + 中等推理',
-            strong_deep: '旗舰深度：强模型 + 高强度推理'
-          }
+          instructions: '为下一次调用联合选择具体模型与推理档位。',
+          criteria: { ...POOL_JOINT }
         },
         q_score: {
           type: 'score',
@@ -151,11 +182,7 @@ const MR = (() => {
         q_choice: {
           type: 'choice',
           instructions: '当前处置步骤应该用哪一档模型？',
-          criteria: {
-            cheap_fast: '轻量快速：快速扫一遍日志',
-            mid_balanced: '均衡中档：关联多个信号做判断',
-            strong_deep: '旗舰深度：完整因果分析'
-          }
+          criteria: { ...POOL_TIERED }
         },
         q_score: {
           type: 'score',
@@ -219,11 +246,7 @@ const MR = (() => {
         q_choice: {
           type: 'choice',
           instructions: '这一步应使用哪一档模型？',
-          criteria: {
-            cheap_fast: '轻量快速：先做粗略定位',
-            mid_balanced: '均衡中档：逐段比对',
-            strong_deep: '旗舰深度：全篇一致性推理'
-          }
+          criteria: { ...POOL_TIERED }
         },
         q_score: {
           type: 'score',
@@ -253,11 +276,7 @@ const MR = (() => {
         q_choice: {
           type: 'choice',
           instructions: '这次审查用哪一档模型？',
-          criteria: {
-            cheap_fast: '轻量快速：只看风格与明显缺陷',
-            mid_balanced: '均衡中档：检查逻辑与边界',
-            strong_deep: '旗舰深度：并发与死锁推理'
-          }
+          criteria: { ...POOL_TIERED }
         },
         q_score: {
           type: 'score',
@@ -286,18 +305,9 @@ const MR = (() => {
     ],
     actions: ['定位根因', '决定是否回滚', '拆分下一步子任务', '判断是否需要升级处理', '给出修复方案', '评估影响范围'],
     choiceSets: [
-      {
-        criteria: { cheap_fast: '轻量快速：小模型，低成本，短推理', mid_balanced: '均衡中档：中等模型，适度推理', strong_deep: '旗舰深度：强模型，长链路推理' },
-        question: '下一步应该交给哪一档模型？'
-      },
-      {
-        criteria: { retry_same: '原样重试：保持当前策略再试一次', escalate: '升级处理：换更强模型或更高推理档', ask_human: '转人工确认：由人做最终判断' },
-        question: '下一步采取哪种处理方式？'
-      },
-      {
-        criteria: { patch_now: '立即热修：先把线上影响压下去', rollback: '滚动回滚：退回上一个稳定版本', observe: '继续观察：先补齐监控再决定' },
-        question: '当前应该先做哪件事？'
-      }
+      { pool: 'tiered', question: '下一步应该交给哪个具体模型与档位？' },
+      { pool: 'joint', question: '在三个模型之间联合选择具体档位？' },
+      { pool: 'tiered', question: '这一步用哪个模型、哪个推理档更合适？' }
     ],
     scoreSets: [
       { criteria: ['很简单', '较简单', '中等', '较困难', '非常困难'], question: '评估这一步的难度。' },
@@ -338,7 +348,7 @@ const MR = (() => {
         q_choice: {
           type: 'choice',
           instructions: choiceSet.question,
-          criteria: { ...choiceSet.criteria }
+          criteria: { ...(choiceSet.pool === 'joint' ? POOL_JOINT : POOL_TIERED) }
         },
         q_score: {
           type: 'score',
@@ -557,7 +567,7 @@ const MR = (() => {
   }
 
   return {
-    PRESETS, S, LABELS,
+    PRESETS, S, LABELS, MODEL_POOL, describeOption,
     get apiBase() { return S.apiBase; },
     setApiBase(v) { S.apiBase = v.replace(/\/+$/, ''); },
     health, models, config, latest, runOne, runPair, commitPair, newTestId, randomScenario,
