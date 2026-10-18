@@ -8,7 +8,7 @@ import logging
 import os
 import sys
 import time
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from .schemas import ActionScore, LegalAction, PreDecisionState
 
@@ -149,3 +149,33 @@ class LayaAdapter:
         ranked.sort(key=lambda x: x.probability, reverse=True)
 
         return selected_action, ranked, latency_ms, confidence
+
+    def system_one(
+        self,
+        state: Any,
+        questions: Dict[str, Any]
+    ) -> Tuple[Dict[str, Any], float, Optional[Dict[str, Any]]]:
+        t0 = time.perf_counter()
+        if not self.is_loaded or self.agent is None:
+            raise RuntimeError("NO_MODEL_LOADED: Laya RLAgent is not loaded")
+
+        formatted_questions = {}
+        for qid, q in questions.items():
+            if hasattr(q, "model_dump"):
+                q_dict = q.model_dump()
+            elif hasattr(q, "dict"):
+                q_dict = q.dict()
+            elif isinstance(q, dict):
+                q_dict = dict(q)
+            else:
+                q_dict = {
+                    "type": getattr(q, "type", "choice"),
+                    "instructions": getattr(q, "instructions", ""),
+                    "criteria": getattr(q, "criteria", {})
+                }
+            formatted_questions[qid] = q_dict
+
+        res = self.agent.system_one(state, formatted_questions)
+        latency_ms = (time.perf_counter() - t0) * 1000.0
+        return res["answers"], latency_ms, res.get("usage")
+

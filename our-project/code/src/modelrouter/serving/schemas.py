@@ -79,3 +79,22 @@ class HealthResponse(BaseModel):
     models_loaded: Dict[str, bool] = Field(default_factory=dict)
     weights_loaded: Dict[str, bool] = Field(default_factory=dict)
     inference_verified: Dict[str, bool] = Field(default_factory=dict)
+
+
+class SystemOneRequest(BaseModel):
+    router_family: Optional[str] = Field("laya", description="Target router: 'laya' or 'kev'")
+    model: Optional[str] = Field(None, description="Optional model identifier, alias for router_family")
+    state: Any = Field(..., description="Observed agent state (str, dict, or list)")
+    questions: Dict[str, Any] = Field(..., description="Questions mapping: {qid: {type, instructions, criteria}}")
+
+
+class SystemOneResponse(BaseModel):
+    router_family: str
+    model: str
+    checkpoint_id: str
+    answers: Dict[str, Any]
+    decision_latency_ms: float
+    fallback_used: bool = False
+    fallback_reason: Optional[str] = None
+    usage: Optional[Dict[str, Any]] = None
+

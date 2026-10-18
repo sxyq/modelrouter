@@ -8,7 +8,7 @@ import logging
 import os
 import sys
 import time
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from .schemas import ActionScore, LegalAction, PreDecisionState
 
@@ -119,3 +119,47 @@ class KevAdapter:
         for idx, act in enumerate(legal_actions):
             ranked.append(ActionScore(action=act, score=round(base_prob, 4), probability=round(base_prob, 4)))
         return legal_actions[0], ranked, latency_ms, base_prob, True, "HEURISTIC_FALLBACK: true forward unavailable or errored"
+
+    def system_one(
+        self,
+        state: Any,
+        questions: Dict[str, Any]
+    ) -> Tuple[Dict[str, Any], float, Optional[Dict[str, Any]]]:
+        t0 = time.perf_counter()
+        if not self.is_loaded or self.model is None or self.tokenizer is None:
+            raise RuntimeError("NO_MODEL_LOADED: Kev model or tokenizer is not loaded")
+
+        from kev.api import SystemOneRequest as KevSysOneReq, to_record, to_answers, output_tokens
+        from kev.model import admit
+
+        formatted_questions = {}
+        for qid, q in questions.items():
+            if hasattr(q, "model_dump"):
+                q_dict = q.model_dump()
+            elif hasattr(q, "dict"):
+                q_dict = q.dict()
+            elif isinstance(q, dict):
+                q_dict = dict(q)
+            else:
+                q_dict = {
+                    "type": getattr(q, "type", "choice"),
+                    "instructions": getattr(q, "instructions", ""),
+                    "criteria": getattr(q, "criteria", {})
+                }
+            formatted_questions[qid] = q_dict
+
+        kev_req = KevSysOneReq(state=state, model="kev-4b", questions=formatted_questions)
+        rec, meta = to_record(kev_req)
+        enc = admit(self.model, self.tokenizer, rec)
+        probs_tensor = self.model.probs(enc)
+        raw_probs = [p.tolist() if hasattr(p, "tolist") else list(p) for p in probs_tensor]
+        answers = to_answers(raw_probs, meta)
+        latency_ms = (time.perf_counter() - t0) * 1000.0
+
+        n_tokens = len(enc.get("ids", []))
+        usage = {
+            "input_tokens": n_tokens,
+            "output_tokens": output_tokens(self.tokenizer, answers)
+        }
+        return answers, latency_ms, usage
+

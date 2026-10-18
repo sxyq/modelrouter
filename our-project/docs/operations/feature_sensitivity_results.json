@@ -1,0 +1,309 @@
+{
+  "checkpoint": "runs/MR-FULL-GRADED-TRAINING/B01_C13_QB_PB/checkpoints/best",
+  "val_dir": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/val",
+  "device": "cuda",
+  "screening_notice": "This is a low-cost screening of feature group sensitivity, NOT claimed as a full ablation study.",
+  "conditions": {
+    "Baseline": {
+      "description": "unmasked",
+      "metrics": {
+        "overall": {
+          "loss": 0.8172,
+          "score": null,
+          "accuracy": null,
+          "macro_f1": 0.5898,
+          "total_samples": 5692
+        },
+        "by_supervision_class": {
+          "S1": {
+            "loss": 0.6196,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.6376,
+            "samples": 561
+          },
+          "S2": {
+            "loss": 1.1677,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.4411,
+            "samples": 337
+          },
+          "S3": {
+            "loss": 0.8157,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.5985,
+            "samples": 4794
+          }
+        }
+      },
+      "overall_loss": 0.8172,
+      "s1_accuracy": null,
+      "s2_accuracy": null,
+      "s3_loss": 0.8157,
+      "delta_loss_vs_baseline": 0.0,
+      "delta_s1_acc": 0.0,
+      "delta_s2_acc": 0.0,
+      "delta_s3_loss": 0.0
+    },
+    "G1": {
+      "description": "Task & Context Baseline (V1+V3)",
+      "metrics": {
+        "overall": {
+          "loss": 0.8371,
+          "score": null,
+          "accuracy": null,
+          "macro_f1": 0.5886,
+          "total_samples": 5692
+        },
+        "by_supervision_class": {
+          "S1": {
+            "loss": 0.6154,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.6318,
+            "samples": 561
+          },
+          "S2": {
+            "loss": 0.8105,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.3094,
+            "samples": 337
+          },
+          "S3": {
+            "loss": 0.8649,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.6019,
+            "samples": 4794
+          }
+        }
+      },
+      "overall_loss": 0.8371,
+      "s1_accuracy": null,
+      "s2_accuracy": null,
+      "s3_loss": 0.8649,
+      "delta_loss_vs_baseline": 0.019899999999999918,
+      "delta_s1_acc": 0.0,
+      "delta_s2_acc": 0.0,
+      "delta_s3_loss": 0.04920000000000002
+    },
+    "G2": {
+      "description": "Interactive Agent State (V2+V4)",
+      "metrics": {
+        "overall": {
+          "loss": 0.8111,
+          "score": null,
+          "accuracy": null,
+          "macro_f1": 0.5911,
+          "total_samples": 5692
+        },
+        "by_supervision_class": {
+          "S1": {
+            "loss": 0.6196,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.6376,
+            "samples": 561
+          },
+          "S2": {
+            "loss": 1.0654,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.4665,
+            "samples": 337
+          },
+          "S3": {
+            "loss": 0.8157,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.5985,
+            "samples": 4794
+          }
+        }
+      },
+      "overall_loss": 0.8111,
+      "s1_accuracy": null,
+      "s2_accuracy": null,
+      "s3_loss": 0.8157,
+      "delta_loss_vs_baseline": -0.006099999999999994,
+      "delta_s1_acc": 0.0,
+      "delta_s2_acc": 0.0,
+      "delta_s3_loss": 0.0
+    },
+    "G3": {
+      "description": "Verification & Recovery (V5)",
+      "metrics": {
+        "overall": {
+          "loss": 0.8442,
+          "score": null,
+          "accuracy": null,
+          "macro_f1": 0.587,
+          "total_samples": 5692
+        },
+        "by_supervision_class": {
+          "S1": {
+            "loss": 0.6196,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.6376,
+            "samples": 561
+          },
+          "S2": {
+            "loss": 1.6236,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.3531,
+            "samples": 337
+          },
+          "S3": {
+            "loss": 0.8157,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.5985,
+            "samples": 4794
+          }
+        }
+      },
+      "overall_loss": 0.8442,
+      "s1_accuracy": null,
+      "s2_accuracy": null,
+      "s3_loss": 0.8157,
+      "delta_loss_vs_baseline": 0.026999999999999913,
+      "delta_s1_acc": 0.0,
+      "delta_s2_acc": 0.0,
+      "delta_s3_loss": 0.0
+    },
+    "G4": {
+      "description": "KV Cache & Continuity (V6)",
+      "metrics": {
+        "overall": {
+          "loss": 0.9069,
+          "score": null,
+          "accuracy": null,
+          "macro_f1": 0.4824,
+          "total_samples": 5692
+        },
+        "by_supervision_class": {
+          "S1": {
+            "loss": 0.6196,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.6376,
+            "samples": 561
+          },
+          "S2": {
+            "loss": 1.1677,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.4411,
+            "samples": 337
+          },
+          "S3": {
+            "loss": 0.9222,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.4803,
+            "samples": 4794
+          }
+        }
+      },
+      "overall_loss": 0.9069,
+      "s1_accuracy": null,
+      "s2_accuracy": null,
+      "s3_loss": 0.9222,
+      "delta_loss_vs_baseline": 0.0897,
+      "delta_s1_acc": 0.0,
+      "delta_s2_acc": 0.0,
+      "delta_s3_loss": 0.10650000000000004
+    },
+    "G5": {
+      "description": "Execution Budget & Provider (V7+V8)",
+      "metrics": {
+        "overall": {
+          "loss": 0.8882,
+          "score": null,
+          "accuracy": null,
+          "macro_f1": 0.5158,
+          "total_samples": 5692
+        },
+        "by_supervision_class": {
+          "S1": {
+            "loss": 0.6367,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.6453,
+            "samples": 561
+          },
+          "S2": {
+            "loss": 1.1677,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.4411,
+            "samples": 337
+          },
+          "S3": {
+            "loss": 0.898,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.5117,
+            "samples": 4794
+          }
+        }
+      },
+      "overall_loss": 0.8882,
+      "s1_accuracy": null,
+      "s2_accuracy": null,
+      "s3_loss": 0.898,
+      "delta_loss_vs_baseline": 0.07099999999999995,
+      "delta_s1_acc": 0.0,
+      "delta_s2_acc": 0.0,
+      "delta_s3_loss": 0.08230000000000004
+    },
+    "V2": {
+      "description": "Multi-Agent Coordination (V2 alone)",
+      "metrics": {
+        "overall": {
+          "loss": 0.8111,
+          "score": null,
+          "accuracy": null,
+          "macro_f1": 0.5911,
+          "total_samples": 5692
+        },
+        "by_supervision_class": {
+          "S1": {
+            "loss": 0.6196,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.6376,
+            "samples": 561
+          },
+          "S2": {
+            "loss": 1.0654,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.4665,
+            "samples": 337
+          },
+          "S3": {
+            "loss": 0.8157,
+            "score": null,
+            "accuracy": null,
+            "macro_f1": 0.5985,
+            "samples": 4794
+          }
+        }
+      },
+      "overall_loss": 0.8111,
+      "s1_accuracy": null,
+      "s2_accuracy": null,
+      "s3_loss": 0.8157,
+      "delta_loss_vs_baseline": -0.006099999999999994,
+      "delta_s1_acc": 0.0,
+      "delta_s2_acc": 0.0,
+      "delta_s3_loss": 0.0
+    }
+  }
+}

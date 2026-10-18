@@ -16,7 +16,8 @@ from fastapi.responses import JSONResponse
 from .kev_adapter import KevAdapter
 from .laya_adapter import LayaAdapter
 from .schemas import (HealthResponse, LegalAction, ModelInfo, ModelsResponse,
-                      RouteRequest, RouteResponse)
+                      RouteRequest, RouteResponse, SystemOneRequest, SystemOneResponse)
+
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("router_serving")
@@ -227,7 +228,69 @@ def route(req: RouteRequest):
         raise HTTPException(status_code=400, detail=f"INCOMPATIBLE_STATE: Unknown router_family '{req.router_family}'")
 
 
+@app.post("/system-one", response_model=SystemOneResponse)
+@app.post("/v1/systemone", response_model=SystemOneResponse)
+def system_one(req: SystemOneRequest):
+    global TOTAL_REQUESTS, FALLBACK_REQUESTS, REQUEST_LATENCIES
+
+    if not req.questions:
+        raise HTTPException(status_code=400, detail="NO_QUESTIONS: questions must contain at least one question")
+
+    TOTAL_REQUESTS += 1
+    target = req.router_family or req.model or "laya"
+    target_family = "kev" if "kev" in target.lower() else "laya"
+
+    if target_family == "laya":
+        if not laya_adapter or not laya_adapter.is_loaded:
+            raise HTTPException(status_code=503, detail="NO_MODEL_LOADED: Laya router model is not loaded")
+        try:
+            answers, lat, usage = laya_adapter.system_one(req.state, req.questions)
+            REQUEST_LATENCIES.append(lat)
+            if len(REQUEST_LATENCIES) > 1000:
+                REQUEST_LATENCIES.pop(0)
+
+            return SystemOneResponse(
+                router_family="laya",
+                model="laya-421m",
+                checkpoint_id=laya_adapter.checkpoint_id,
+                answers=answers,
+                decision_latency_ms=round(lat, 2),
+                fallback_used=False,
+                fallback_reason=None,
+                usage=usage
+            )
+        except Exception as e:
+            logger.error(f"Laya system_one failed: {e}", exc_info=True)
+            FALLBACK_REQUESTS += 1
+            raise HTTPException(status_code=500, detail=f"ROUTER_ERROR: Laya forward failed: {str(e)}")
+
+    elif target_family == "kev":
+        if not kev_adapter or not kev_adapter.is_loaded:
+            raise HTTPException(status_code=503, detail="NO_MODEL_LOADED: Kev router model is not loaded")
+        try:
+            answers, lat, usage = kev_adapter.system_one(req.state, req.questions)
+            REQUEST_LATENCIES.append(lat)
+            if len(REQUEST_LATENCIES) > 1000:
+                REQUEST_LATENCIES.pop(0)
+
+            return SystemOneResponse(
+                router_family="kev",
+                model="kev-4b",
+                checkpoint_id=kev_adapter.checkpoint_id,
+                answers=answers,
+                decision_latency_ms=round(lat, 2),
+                fallback_used=False,
+                fallback_reason=None,
+                usage=usage
+            )
+        except Exception as e:
+            logger.error(f"Kev system_one failed: {e}", exc_info=True)
+            FALLBACK_REQUESTS += 1
+            raise HTTPException(status_code=500, detail=f"ROUTER_ERROR: Kev forward failed: {str(e)}")
+
+
 @app.get("/metrics")
+
 def metrics():
     import numpy as np
     p50 = float(np.percentile(REQUEST_LATENCIES, 50)) if REQUEST_LATENCIES else 0.0
