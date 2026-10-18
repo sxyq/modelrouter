@@ -150,3 +150,51 @@
 - **工程负责人：主 Agent + 两名子代理**。子 A 扫本机代码/Agent/Benchmark & `our-project/code/`；子 B 外部论文/Benchmark 索引、文档/结果/看板 & 外部目录；主 Agent 亲自管理 A6000 训练与服务的兼容迁移、最终 Git 提交。所有工程迁移可拆小阶段，但每段具备实测和版本记录，无人等待、无新 Watcher/CI/PR/重复框架。
 
 **本文件是目录重构的实施规范，非已经完成 Mac/A6000 物理迁移的证明。**
+
+
+## 八、2026-10-18 A6000 服务器目录现场补充：必须实际整理，且双训练零中断
+
+现场第三份报告已对 `/home/syy/路由`、用户主目录、各 `router_data/ models/ data/ runs/ external/ docs/ scripts/ 日志/ .tmp/` 逐目录只读盘点（报告称项目约 57.5 GiB）。`/home/syy/codellama-lora/.venv` 是目前训练共享解释器，`/home/syy/路由/.venv` 是指向它的软链接；`/home/syy/ai-serving`、`/home/syy/go`、`/home/syy/.cache` 均属其他服务/共享运行环境，**不属于本次 ModelRouter 迁移对象，不许为“统一目录”移动或清除它们**。
+
+### 8.1 服务器也要有真正规范根目录，而不是只有 Mac 做目录整理
+
+```text
+/home/syy/路由/                         # 保持当前工作区和 Git 根绝对路径
+├── our-project/                       # 新项目主目录；新代码、新实验和索引的唯一目的地
+│   ├── code/src/modelrouter/
+│   │   ├── baselines/ agent/ sandbox/ benchmark/
+│   │   ├── data_pipeline/ datasets/ training/{laya,kev,queue,checkpoints}/
+│   │   └── serving/ providers/ telemetry/
+│   ├── data/{sources,manifests,training_views}/     # 新快照及已有大数据引用
+│   ├── external/{router_methods,benchmarks,research}/
+│   ├── results/{training/{laya,kev},baselines,benchmarks,agent_trials,serving}/
+│   ├── docs/{planning,architecture,operations,reports}/
+│   └── .runtime/                     # 非 Git 短期文件
+├── models/                            # 正在用的 Laya、Kev、Qwen 大权重原地保留；manifest 映射
+├── data/                              # 既有原始17 GiB/清洗6.1 GiB/模型现行训练视图原地保留
+├── runs/                              # Laya 38组正式队列+正在训练Kev的原地历史/恢复点
+├── external/{laya,kev}/               # 服务器官方源码当前被导入；原地保留+版本/哈希登记
+└── router_data/ experiments/ scripts/ docs/ 日志/ .tmp/ # 分批迁移冷文件，旧入口薄Shim
+```
+
+**这不是让服务器立即复制 57.5 GiB**：对训练活跃文件先原地保留，`our-project/` 通过 immutable asset manifest 建立唯一分类/查找入口；对真正无进程消费者的零散脚本/旧实验文档/较小孤立结果做实际迁移，不能只建空目录后宣称整理完成。
+
+### 8.2 执行方按以下顺序直接完成
+
+1. **训练保护基线**：记录 `ps`/PID/命令行、`nvidia-smi`、两个 `cursor.json`、`train.log`、`queue_state.json`、Service `/health`、磁盘 `df/du` 和共享 `.venv` 软链目标；训练实际最近 `updated_at` 必须推进。禁止终止/重启 Laya PID `1202621`、Kev PID `1357764` 或队列/Serving 进程（PID 仅供比对，必须重新确认）。
+2. **归属索引**：基于已落盘 `inventory_a6000_20261018_053049.json` 生成可复核的 `server_path_migration.csv`：源路径、文件/目录大小、owner、进程消费者、规范目标、动作（`MOVED/SHIM_ONLY/REFERENCE_ONLY/ACTIVE_HOLD/EXTERNAL_SYSTEM`）、验证结果；检查软链/硬链与跨文件系统行为。
+3. **先做安全的小迁移**：非活跃 `router_data/` 中审计/测试/辅助脚本放 `our-project/code` 对应 `data_pipeline/datasets/training/tests`；旧一次性交接脚本按 `legacy` 归档，不能再作为 Watcher 复活；`日志/` 分类为受保护结果链接；`.tmp/` 的有价值复现实验移入 `code/tests` 或 `docs/operations/legacy`，其余先列清单不直接删除；每组迁移后跑 CLI/import 单测与旧 Shim。
+4. **明确排除**：现行 `laya_batch_train.py`、`run_full_graded_queue.py`、`run_kev_continuous_train.py`、`external/kev`/模型基础权重、正在写的 `runs/MR-FULL.../F06` 与 `runs/KEV-V8.../`、Port 8000 服务文件、共享 `.venv` 不动。Kev 早期曾直接修改上游 `external/kev/kev/checkpoint.py` 的兼容条件；**不可边训练边覆盖上游库**，先记实际 SHA 和差异，后续在安全边界把这项适配移至自有代码/配置并验证可恢复。
+5. **大数据/权重目录仅建统一索引**：现有 `data/公开数据/原始数据`（报告 789 片）、`清洗数据`（14 文件）、`data/{kev,laya}/公开数据`、`models/`、`runs/` 形成 `our-project/data/manifests/server_assets.json` 和 `our-project/results/training/{laya,kev}/run_index.json`；保存实际来源/许可/哈希/文件存在性/固定划分/运行和最佳权重引用。**不把这些实体移动、复制、删重或把活动绝对路径改写。**
+6. **新运行写规范路径**：只有在验证 checkpoint 恢复、候选科学协议与队列自然切换后，新的独立 Kev/Laya-V9 训练运行才改写规范 `our-project/results/training/<family>/<run_id>/`；旧数据输出永远保留历史原路径的索引。在安全边界完成 import 与 CLI 切换，保证 `python -m modelrouter` 正式入口、现有 SSH API、Dashboard 8765 不变。
+7. **后验验证与提交**：分别比较迁移前后 Laya/Kev 两个 Cursor 最新步数是否继续增加，GPU/服务健康、日志和 Checkpoint 能读，原训练视图行数/sha 不变。只提交小型自有源码、路径索引、脱敏清单和文档；大数据、权重、私密完整日志与本地 API Key 不 Git 提交。主 Agent + 2 个子代理仍按已授权分工推进。
+
+### 8.3 本次现场同时暴露的训练与科研口径缺口（目录迁移不能掩盖）
+
+- Laya F06（最近报告 E1 Chunk 113/361、Step 14,464/92,280、Loss 0.5230）是真正式全覆盖运行；**正在用原有 F06 固定的数据协议，不能仅因 V8 新数据清洗成功就宣称已经增补入训**。
+- Kev 已从先前失败的 Smoke 恢复为真实 GPU `kev.train`，最近报告 Step 400/16,857、Loss 1.118；当前 `run_kev_continuous_train.py` 只启动**单次 1 Epoch**，不是自动跑 12 个科研候选的持续研究调度。需在自然 checkpoint / 本轮完成后按批准的真实参数组合扩展候选，并分别保存固定 Val 与物理 Checkpoint；**原 adapter 基座 87.26% 是另一验证口径，不能当作本轮 Step 400 成绩或同 Laya 561 S1 直接比较**。
+- 现有已清洗公开数据共 14 个来源、6,600,628 条；新 V8 `build_v8_data_extension.py` 实际只将 `TRA-001/TRA-002` `OBSERVED_AGENT_OUTCOME`、`CACHE-001` `CACHE_REUSE_OPPORTUNITY`、`ROUTE-004` `ROUTER_CHOICE` 写为 3 类独立视图。AgentSuite、CooperBench 等不得因为存在数据源就被称作已经进入新三视图。Mooncake 的 cache 字段是 LRU 假设下**复用机会**而非真实 Provider 的已计费缓存命中。新视图/许可证/任务隔离与旧正式队列必须分开，不篡改已完成的固定对照。
+- 目前报告明确 A6000 用户 `syy` 访问 Docker Socket `permission denied`，Mac 无 Docker daemon；**不应声称 8 策略正式 Harbor 任务已有官方 Docker 评分或 Trial ID**。不能要求未经批准给普通用户直接添加 docker root-equivalent 权限；请管理员评估使用已经授权的 Docker rootless/受限后端或正式服务托管的 Sandbox，未获授权时标记 BLOCKED。
+- 单卡显存 20,051 /49,140 MiB、GPU 利用率约 88–96% 证明显存余量和确实有 GPU 负载，**不证明“两任务完全零算力竞争”**；需以同时/独占的 `step/s`、`epoch_walltime` 比较，若相互严重降低吞吐再在自然边界配置限额。
+
+本节要求执行方实际完成**安全的服务器冷文件整理与索引**，而不是只提交方案。任务完成报告应给迁移前后路径映射、确认物理迁移的数量、ACTIVE_HOLD 数量、两个训练继续推进的 Cursor，以及 Git SHA。
