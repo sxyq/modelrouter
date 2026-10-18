@@ -16,7 +16,7 @@
 
 | 现行 RQ | 科学命题 | 需要固定/区分 |
 |---|---|---|
-| **RQ1 Overall + Mechanisms** | 在真实多 Agent 任务中，单一 Router 联合选择树状池内的 `Model×Native Effort`，相较同类 Agent Router、强固定、Role-static、随机整任务混合、简单动态策略是否改善真实成功率—完整任务 USD？ | 同任务、同池、同 Harness、费用/预算口径；内部检验 Model-only/Effort-only/Joint、KV/Trace/反馈、单/双/三组信息消融与费用机制，**不单设长期费用或 Effort RQ** |
+| **RQ1 Overall Performance（2026-10-18 局部调整）** | 在真实 Agent 任务中，完整 ModelRouter 是否相较同类路由策略、强固定、按角色固定（如适用）、整任务随机混合和简单动态策略改善成功率—完整 Episode USD 前沿？ | 同任务、同池、同 Harness、终局评价和费用/预算口径；动作/信息/训练机制的系统消融**拟另设大 RQ，编号未定** |
 | **RQ2 Pool** | 哪些模型身份、多少个 K 组成路由池才更值得？公开静态模型前沿是否迁移至真实 Agent 成本—成功率？ | K=模型身份数，另报告每模型原生 Effort 支持与 `Σ_m|E_m|`；同 K 比成员，再比 K |
 | **RQ3 Decomposition** | 固定同一 K、具体模型、原生 Effort 菜单和 Router，任务拆分粗细怎样影响多 Agent 动态路由收益？ | 相同原任务/工具/预算，记录 Agent 数、handoff、真实 F/Trace，任务类别分别展示 |
 | **RQ4 Cross-role Complementarity** | 不同子 Agent 角色/阶段是否存在可利用的模型/档位能力差异，并带来端到端经济增益？ | **固定池与拆分 G**；独立比较角色×候选、Best Role-static 与 Role-aware Router；观察轨迹不是同状态反事实 |
@@ -27,6 +27,13 @@
 **RQ4 和 RQ5 的真正区别**：RQ4 固定工作负载研究 `role×model` 的能力差异及可利用性；RQ5 固定 Router/池/G，研究 `router advantage×workload` 是否随任务条件变化。RQ2/3 则是改变池或拆分的受控实验。效应来自真实多 Agent Episode，不以已有 Laya/Kev 离线 Accuracy、聚合数据或未来泄漏字段代替。
 
 **当前准备缺口**：多 Agent 角色与 handoff 的状态 Schema 虽已规划，但现有 P22 训练视图尚未确认将 `agent_role/subtask_goal/parent_agent` 编入 Laya/Kev 学习输入。RQ4 需要真实角色/子任务对照与可能有限同状态分支；RQ5 需要事前定义、任务数足够的可重复任务分层。该缺口不构成新增 GPU/API 运行授权。
+
+## 2026-10-18 · RQ1 和系统消融的最新局部讨论（不改 RQ4/RQ5）
+
+负责人明确希望：**RQ1 只研究完整 ModelRouter 相比固定、混合、规则和同类型真实 Agent Router 的整体成功率—完整 Episode USD 前沿**；原先塞进 RQ1 的 Model×Native Effort、T/M/H 单组与组合、KV/Trace/反馈、训练数据与监督组成等机制，应**单独组成更大的系统消融 RQ**。**本次先不确定该 RQ 的编号，也不调整原 V8 RQ4「角色互补性」和 RQ5「工作负载适用边界」**。不将“取消以多 Agent 为独立科研卖点”误解为“删除实际工作流中可用的 Agent 角色输入”。
+- **RQ1 证据**：相同任务、真实合法模型树、执行 Harness、终局验证器和预算，对比可实际运行的外部 Router、Best-fixed、Whole-episode Random Mix、Task-only、Greedy/Sticky、Full；主要报成功率、平均完整任务费用、每成功任务费用和路由开销；仍不从一批失配的数据伪造动态路由优越性。
+- **独立消融候选**：A 路由动作空间（Model-only、Effort-only、两阶段、Joint），B 评分信息（T/M/H 单/双/三组及重要单项），C 不同合法训练监督与 Laya/Kev 配方，D 真实费用和推理/缓存开销。硬候选合法性永远保留。**独立 RQ 的正式题名、编号以及 Fig.4/T4/T5 归属均待后续确认**。
+- **RQ2/RQ3 不变**：模型身份池的成员与 K；同池同 Router 的任务拆分 G。详见 [汇报三 V8 局部更新](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)。不启动新训练或 API 评测。
 
 ## 摘要
 
