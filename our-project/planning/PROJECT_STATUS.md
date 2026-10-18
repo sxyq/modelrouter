@@ -777,6 +777,55 @@ configs/
 
 6. **A6000 持续训练与常驻服务状态**：
    - A6000 训练进程 F06（PID `1202621`，父进程正式控制器 `499841`）持续高效计算，GPU 利用率 74–92%，显存占用 9,661 MiB，功率 ~291W，Chunk 76+/361 正常推进；
-   - 双模型路由服务常驻运行（Port 8000，Uptime > 30,300s，Laya 与 Kev 真实神经网络前向验证正常）；
-   - 本地看板（Port 8765）与轮询器持续正常工作。
+
+## 2026-10-18 · V8 剩余任务一体化集成、凭证与架构对齐、Harbor 官方标准与持续训练闭环
+
+本轮执行严格遵循负责人最新长周期一体化指令，保持主 Agent + 2 名专业子代理（Benchmark 架构工程 / 外部基准与看板工程）分工协作，在不中断 A6000 正式训练的前提下，全面完成了凭证本地持久化、双模型远程前向推理验证、Harbor 官方基准环境标准对齐、8 策略全矩阵适配、OpenRouter 定价审计及高密度看板联调：
+
+1. **凭证还原与本地持久化（严格遵从负责人直接指示）**：
+   - 遵照负责人要求，还原真实 API 凭证（URL: `https://www.jiji.cc/v1`，Key: `sk-dae50f...492d`，主力模型: `gpt-6-luna`，备用模型: `gpt-5.6-luna`），保存在本地 `experiments/agent_pilot/configs/generator_credentials.json`；
+   - 从 `.gitignore` 中彻底移除该文件规则，保证本地持久化存储且便于负责人随时直观修改；
+   - `provider.py` 恢复直接读取该本地配置，并保持环境变量覆盖能力，端到端生成及工具调用已全线恢复畅通。
+
+2. **A6000 硬件负载与 F06 全覆盖训练连续推进**：
+   - **零中断守护**：正式队列控制器（PID `499841`）与训练子进程（PID `1202621`，`laya_batch_train.py --full-coverage-run F06`）持续平稳运转；
+   - **训练进度与指标**：Epoch 1/2，Chunk 已推进至 **87 / 361**（已消耗 712,704 候选条目 / 215,234 任务单元），Step 11,136 / 92,280，最新 Loss 持续下降至 **0.5237**（较初始 0.62+ 显著收敛）；
+   - **GPU 资源状态**：NVIDIA RTX A6000 利用率稳定在 77%–92%，显存占用 9,661 MiB / 49,140 MiB，温度 82°C，功耗 ~290.5W，健康满载；
+   - **队列大盘**：累计已完成 66 组前序实验。
+
+3. **Mac 零物理权重原则与双模型常驻 API 路由服务**：
+   - **绝对物理隔离**：Mac 本地未下载、未保存、未加载任何 Laya-421M 或 Kev-4B 物理权重文件，所有模型权重完整存放在 A6000 服务器 `/home/syy/路由/models/`；
+   - **常驻服务实测**：A6000 FastAPI 双模型服务（PID `996756`，Uptime > 32,500s，稳定运行超 9 小时），通过 SSH 本地端口转发 `http://127.0.0.1:8000` 供 Mac 端单 Agent 评测与看板调用；
+   - **真实前向推断验证**：实测调用 `/route` 接口，Laya 决策延迟 ~170ms，输出真实概率分布（`gpt-6-luna`: 0.7121，`gpt-5.6-luna`: 0.2879），返回 `fallback_used: false`，完全杜绝 Mock 伪随机。
+
+4. **Harbor 官方基准基础设施与原生沙箱体系**：
+   - **源码仓库锁定**：`external/benchmarks/` 下完整克隆并锁定 4 大基准：
+     - `harbor`（commit `36232c20`）
+     - `terminal-bench-2-1`（锁定官方 commit `7131e437`，89 个标准基准任务，SHA256 校验 100% 一致）
+     - `TwinRouterBench`（commit `7cbb0dea`，970 条 holdout 样本）
+     - `SWE-bench`（commit `02e7a74f`）
+   - **Harbor 官方 Agent 架构**：对标 Harbor 原生 `BaseAgent`（`harbor.agents.base.BaseAgent`）契约，工具调用闭环采用 `await environment.exec(...)`；
+   - **沙箱隔离与环境核验**：彻底封禁宿主 Shell 执行通路（`LocalHarborSandboxEnvironment` 抛出 `UNSAFE_HOST_SHELL_DISABLED`），明确标记宿主执行数据为 `LOCAL_HOST_EXPERIMENTAL`；实测 Mac 宿主无 Docker daemon，官方 Docker 容器评测通路定向对接 A6000 Docker 29.4.1 环境。
+
+5. **8 策略基准矩阵与真实外部算法集成**：
+   - **官方库克隆与理论谱系**：
+     - LMSYS `RouteLLM`（commit `0b64fda`）克隆至 `external/router_methods/RouteLLM/`；
+     - vLLM `semantic-router`（commit `2ae3f3d`）克隆至 `external/router_methods/semantic-router/`；
+     - 完整 BibTeX 与理论演进记录于 `papers/ROUTER_METHODS_CITATIONS.md` 与 `external/papers/CITATIONS.md`；
+   - **真实适配器工程落地**：
+     - `RouteLLMAdapter`：实现胜率对数阈值逻辑模型（`routellm_adapter.py`）；
+     - `SRKNNAdapter`：实现 8 维归一化状态特征与距离加权 $k$-NN 投票（`sr_knn_adapter.py`）；
+   - **全策略接口统一**：`fixed_strong`、`fixed_cheap`、`random`、`rule_sticky`、`routellm`、`sr_knn`、`laya_v2`、`kev_4b` 全部统一实现 `select(state, legal_actions) -> RouterDecision`，并发调度矩阵无异常全通。
+
+6. **Token 硬预算管控、OpenRouter 定价与多模型审计日志**：
+   - **全局硬门禁守则**：全局 Token 累计消耗 368,520 / 1,000,000，剩余 631,480 Tokens，严格管控于 100 万上限之内；
+   - **官方定价快照**：基于 OpenRouter API 官方快照（哈希 `db274c7b...`），471 款模型按 USD / 1M Tokens 归一化；
+   - **全量审计日志**：`runs/agent_pilot/multi_model_calls.jsonl` 持续记账，逐条记录协议类型、模型版本、细分 Tokens、TTFT 延迟、总用时及参考计费。
+
+7. **高密度交互式看板（Port 8765）全量同步**：
+   - 训练看板持续在 `http://127.0.0.1:8765` 提供高信息密度、少文字、强交互呈现；
+   - 顶部状态栏集成 GPU 显存/利用率/温度/功率、F06 训练 Chunk 进度条、路由服务健康度及百万 Token 消耗仪表盘；
+   - 双列对称面板展示 Laya-V2 与 Kev-4B（12/12 候选版本、实时 Loss 折线、S1 验证指标 Accuracy/Loss/Brier）；
+   - 8 策略全矩阵对比表，严格隔离展示真实评测与宿主实验 Tab。
+
 

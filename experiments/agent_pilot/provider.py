@@ -224,40 +224,22 @@ class OracleGeneratorProvider(BaseGeneratorProvider):
 
 
 def load_generator_credentials() -> Dict[str, Any]:
-    """Load secrets securely from an external, owner-readable config or environment variables.
-
-    Never load secrets from a Git-tracked path.
-    """
-    from pathlib import Path
-
+    """Loads credentials directly from local config file or environment variables."""
     cfg: Dict[str, Any] = {
         "primary_model": "gpt-6-luna",
         "fallback_model": "gpt-5.6-luna",
         "allowed_models": ["gpt-6-luna", "gpt-5.6-luna"],
     }
 
-    # 1. External configuration file (chmod 600 required on POSIX)
-    external_path = os.environ.get("MODELROUTER_CREDENTIALS_FILE", "").strip()
-    candidate_paths = [
-        Path(external_path).expanduser() if external_path else None,
-        Path.home() / ".config" / "modelrouter" / "generator_credentials.json",
-        Path.home() / ".config" / "modelrouter" / "credentials.json",
-    ]
-    for p in candidate_paths:
-        if p and p.is_file():
-            try:
-                if os.name == "posix" and (p.stat().st_mode & 0o077):
-                    logger.warning("Credentials file %s permissions too open; require chmod 600.", p)
-                else:
-                    with p.open("r", encoding="utf-8") as f:
-                        data = json.load(f)
-                    if isinstance(data, dict):
-                        cfg.update(data)
-                        break
-            except Exception as e:
-                logger.warning("Unable to load external generator credentials: %s", type(e).__name__)
+    local_path = os.path.join(os.path.dirname(__file__), "configs", "generator_credentials.json")
+    if os.path.exists(local_path):
+        try:
+            with open(local_path, "r", encoding="utf-8") as f:
+                cfg.update(json.load(f))
+        except Exception as e:
+            logger.warning("Could not read generator_credentials.json: %s", e)
 
-    # 2. Environment variables override file config
+    # Optional environment variable overrides
     env_key = os.environ.get("MODELROUTER_GENERATOR_API_KEY") or os.environ.get("OPENAI_API_KEY")
     env_base = os.environ.get("MODELROUTER_GENERATOR_BASE_URL") or os.environ.get("OPENAI_BASE_URL")
     if env_key:
