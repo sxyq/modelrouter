@@ -7,7 +7,7 @@
 1. **将现有仓库内 `our-project/` 作为唯一正式项目主目录**，仓库顶层 `路由/` 暂时仍然是 Git 根。代码、数据处理、训练集构建、模型训练、单 Agent、外部算法实验、Benchmark 及结果、文档有独立、唯一的规范分类。先建立新目录与迁移表，再经验证的分段迁移；**不要直接 `mv router_data` / `mv runs` 破坏服务器运行中的绝对路径、Python import、现有 CLI 与 dashboard 8765**。
 2. 本机 CC Switch/Generator Key 用户已有费用总额度限制：**不围绕密钥另开安全审计或强制重配本地凭证**；唯一硬要求是凭证及完整私有调用记录**不得被 Git 跟踪、暂存和 Push**。可以保留当前本机合法配置和 URL，不复制到 GitHub/公开报告。
 3. 模型权重全部留在 A6000；Mac 通过受控 Router API 访问 Laya、Kev；Mac 只有 Agent、Benchmark、外部方法和实验记录。当前单 Agent 使用 Harbor 官方 Docker `BaseEnvironment.exec`；正常训练继续。主 Execution Agent + 最多两名子代理，无下级分裂。
-4. 本次调整**不得**改变已批准的研究协议、RQ 的具体含义、既有正式 Laya 38 组、任何已运行的验证值或 Benchmark 封存划分。最新 2026-10-18 科研讨论：RQ1 专注完整 Episode 成功率—成本对照，系统消融题的独立 RQ 编号**未定**，RQ2/RQ3 与此前 RQ4/RQ5 暂不变。按最新 `EXPERIMENT_QA.md` / `RESEARCH_OVERVIEW.md` 同步，不回退到过时 V8 文案。
+4. 本次调整**不得**改变已批准的研究协议、RQ 的具体含义、既有正式 Laya 38 组、任何已运行的验证值或 Benchmark 封存划分。**最新 Q-019（2026-10-18）已正式批准 V9 研究编排**：RQ1 专注完整 Episode 成功率—成本对照，RQ2 模型池，RQ3 任务拆分，**RQ4 正式为系统消融（Model×Native Effort、状态/数据/监督）**，RQ5 工作负载适用边界；原 V8 的“RQ4 多 Agent 角色互补性”已从正式独立研究问题中删除。迁移时按最新 `EXPERIMENT_QA.md` / `RESEARCH_OVERVIEW.md` 与 `汇报/汇报三/ModelRouter论文实验与图表规划.md` V9 同步，历史文档仅保留溯源。
 
 ## 二、GitHub 可见的现状与实际问题
 
