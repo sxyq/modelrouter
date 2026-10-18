@@ -104,6 +104,17 @@
   #choice-grid.dense .dual-row { grid-template-columns: 34px 1fr 50px; gap: 6px; line-height: 1; }
   #choice-grid.dense .dual-row .who { font-size: clamp(8px, 0.56vw, 10px); }
   #choice-grid.dense .dual-row .val { font-size: clamp(10px, 0.7vw, 12.5px); }
+  /* ---- 超多候选（>8）：每行单行双条横向排 ---- */
+  #choice-grid.wide .choice-list { gap: 2px; }
+  #choice-grid.wide .choice-row { grid-template-columns: 216px 1fr; padding: 0 8px; }
+  #choice-grid.wide .cr-bars { flex-direction: row; gap: 12px; }
+  #choice-grid.wide .cr-bars .dual-row { grid-template-columns: 32px 1fr 46px; gap: 6px; line-height: 1; }
+  #choice-grid.wide .dual-track { height: 12px; }
+  #choice-grid.wide .cr-model { font-size: clamp(9.5px, 0.66vw, 12px); }
+  #choice-grid.wide .cr-effort { font-size: clamp(8px, 0.5vw, 9.5px); padding: 0 4px; }
+  #choice-grid.wide .dual-row .who { font-size: clamp(8px, 0.52vw, 10px); }
+  #choice-grid.wide .dual-row .val { font-size: clamp(9.5px, 0.64vw, 12px); }
+  #choice-grid.wide .cr-flag { display: none; }
 
   .dual-bar { display: flex; flex-direction: column; gap: 6px; }
   .dual-row { display: grid; grid-template-columns: 44px 1fr 62px; align-items: center; gap: 9px; }
@@ -120,16 +131,16 @@
   #sec-score { flex: 0 0 21%; }
   .score-wrap { flex: 1; display: grid; grid-template-columns: 1fr 330px; gap: 20px; min-height: 0; }
   .lvl-list { display: flex; flex-direction: column; gap: 4px; justify-content: center; min-height: 0; }
-  .lvl-row { display: grid; grid-template-columns: 100px 1fr 44px 1fr 44px; align-items: center; gap: 8px; }
+  .lvl-row { display: grid; grid-template-columns: 96px 1fr 58px 1fr 58px; align-items: center; gap: 7px; }
   .lvl-name { font-size: clamp(12px, 0.86vw, 16px); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .lvl-track { display: block; height: 16px; background: var(--wash); border-radius: 3px; overflow: hidden; }
   .lvl-fill { display: block; height: 100%; width: 0; transition: width .6s cubic-bezier(.22,.61,.36,1); }
   .lvl-fill.laya { background: var(--laya); }
   .lvl-fill.kev { background: var(--kev); }
-  .lvl-pct { font-size: clamp(11px, 0.76vw, 14px); font-variant-numeric: tabular-nums; text-align: right; }
+  .lvl-pct { font-size: clamp(10px, 0.7vw, 13px); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; overflow: hidden; }
   .lvl-pct.laya { color: var(--laya); font-weight: 600; }
   .lvl-pct.kev { color: var(--kev); font-weight: 600; }
-  .lvl-head { display: grid; grid-template-columns: 100px 1fr 44px 1fr 44px; align-items: center; gap: 8px; margin-bottom: 2px; }
+  .lvl-head { display: grid; grid-template-columns: 96px 1fr 58px 1fr 58px; align-items: center; gap: 7px; margin-bottom: 2px; }
   .lvl-who { font-size: clamp(10px, 0.7vw, 13px); font-weight: 700; letter-spacing: .04em; }
   .lvl-who.laya { color: var(--laya); }
   .lvl-who.kev { color: var(--kev); }
@@ -151,7 +162,7 @@
   .noul-row .who { font-size: clamp(12px, 0.86vw, 16px); font-weight: 700; letter-spacing: .03em; }
   .noul-row .who.laya { color: var(--laya); }
   .noul-row .who.kev { color: var(--kev); }
-  .noul-row .num { font-size: clamp(26px, 2.3vw, 44px); font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; text-align: right; }
+  .noul-row .num { font-size: clamp(26px, 2.3vw, 44px); font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; text-align: right; min-width: 0; line-height: 1.05; }
   .noul-row .num.laya { color: var(--laya); }
   .noul-row .num.kev { color: var(--kev); }
   .noul-track { display: block; height: 20px; background: var(--wash); border-radius: 4px; position: relative; overflow: hidden; }
@@ -333,6 +344,7 @@
     [laya, kev].forEach(a => Object.keys(a?.probabilities || {}).forEach(k => { if (!keys.includes(k)) keys.push(k); }));
 
     box.classList.toggle('dense', keys.length > 3);
+    box.classList.toggle('wide', keys.length > 8);
     box.innerHTML = `<div class="choice-list">` + keys.map(k => {
       const meta = MR.describeOption(k);
       const pl = laya?.probabilities?.[k], pk = kev?.probabilities?.[k];

@@ -46,13 +46,23 @@ const MR = (() => {
      Claude Sonnet 5.5 : low / medium / high / xhigh / max（API 默认 high）
      DeepSeek V4.1 Flash: low / high / max（默认 high）
   ------------------------------------------------------------- */
+  /* 全部具体档位（2026-10 官方核实）：
+     GPT-6 Astra / Claude Sonnet 5.5 : low / medium / high / xhigh / max
+     DeepSeek V4.1 Flash             : low / high / max */
   const MODEL_POOL = {
-    'gpt-6-astra/xhigh':          { short: 'Astra · xhigh',       model: 'GPT-6 Astra',         modelShort: 'Astra',        effort: 'xhigh',  tier: '旗舰' },
+    'gpt-6-astra/low':            { short: 'Astra · low',         model: 'GPT-6 Astra',         modelShort: 'Astra',        effort: 'low',    tier: '旗舰' },
+    'gpt-6-astra/medium':         { short: 'Astra · medium',      model: 'GPT-6 Astra',         modelShort: 'Astra',        effort: 'medium', tier: '旗舰' },
     'gpt-6-astra/high':           { short: 'Astra · high',        model: 'GPT-6 Astra',         modelShort: 'Astra',        effort: 'high',   tier: '旗舰' },
-    'claude-sonnet-5.5/high':     { short: 'Sonnet 5.5 · high',   model: 'Claude Sonnet 5.5',   modelShort: 'Sonnet 5.5',   effort: 'high',   tier: '中档' },
+    'gpt-6-astra/xhigh':          { short: 'Astra · xhigh',       model: 'GPT-6 Astra',         modelShort: 'Astra',        effort: 'xhigh',  tier: '旗舰' },
+    'gpt-6-astra/max':            { short: 'Astra · max',         model: 'GPT-6 Astra',         modelShort: 'Astra',        effort: 'max',    tier: '旗舰' },
+    'claude-sonnet-5.5/low':      { short: 'Sonnet 5.5 · low',    model: 'Claude Sonnet 5.5',   modelShort: 'Sonnet 5.5',   effort: 'low',    tier: '中档' },
     'claude-sonnet-5.5/medium':   { short: 'Sonnet 5.5 · medium', model: 'Claude Sonnet 5.5',   modelShort: 'Sonnet 5.5',   effort: 'medium', tier: '中档' },
+    'claude-sonnet-5.5/high':     { short: 'Sonnet 5.5 · high',   model: 'Claude Sonnet 5.5',   modelShort: 'Sonnet 5.5',   effort: 'high',   tier: '中档' },
+    'claude-sonnet-5.5/xhigh':    { short: 'Sonnet 5.5 · xhigh',  model: 'Claude Sonnet 5.5',   modelShort: 'Sonnet 5.5',   effort: 'xhigh',  tier: '中档' },
+    'claude-sonnet-5.5/max':      { short: 'Sonnet 5.5 · max',    model: 'Claude Sonnet 5.5',   modelShort: 'Sonnet 5.5',   effort: 'max',    tier: '中档' },
+    'deepseek-v4.1-flash/low':    { short: 'V4.1 Flash · low',    model: 'DeepSeek V4.1 Flash', modelShort: 'V4.1 Flash',   effort: 'low',    tier: '轻量' },
     'deepseek-v4.1-flash/high':   { short: 'V4.1 Flash · high',   model: 'DeepSeek V4.1 Flash', modelShort: 'V4.1 Flash',   effort: 'high',   tier: '轻量' },
-    'deepseek-v4.1-flash/low':    { short: 'V4.1 Flash · low',    model: 'DeepSeek V4.1 Flash', modelShort: 'V4.1 Flash',   effort: 'low',    tier: '轻量' }
+    'deepseek-v4.1-flash/max':    { short: 'V4.1 Flash · max',    model: 'DeepSeek V4.1 Flash', modelShort: 'V4.1 Flash',   effort: 'max',    tier: '轻量' }
   };
 
   /* 默认三档（每个模型取一个代表档位） */
@@ -62,13 +72,21 @@ const MR = (() => {
     'deepseek-v4.1-flash/low': 'DeepSeek V4.1 Flash · low｜轻量，成本最低'
   };
 
-  /* 联合档位（同模型不同 effort 一起决策） */
+  /* 联合档位：全部 13 个「模型 × 推理档位」组合一起决策 */
   const POOL_JOINT = {
-    'gpt-6-astra/xhigh': 'GPT-6 Astra · xhigh｜旗舰，Extra High',
+    'gpt-6-astra/low': 'GPT-6 Astra · low｜旗舰，最低推理，最快最省',
+    'gpt-6-astra/medium': 'GPT-6 Astra · medium｜旗舰，中档推理',
     'gpt-6-astra/high': 'GPT-6 Astra · high｜旗舰，高推理',
-    'claude-sonnet-5.5/high': 'Claude Sonnet 5.5 · high｜中档，默认档',
-    'deepseek-v4.1-flash/high': 'DeepSeek V4.1 Flash · high｜轻量，高质量档',
-    'deepseek-v4.1-flash/low': 'DeepSeek V4.1 Flash · low｜轻量，最省成本'
+    'gpt-6-astra/xhigh': 'GPT-6 Astra · xhigh｜旗舰，Extra High，很贵',
+    'gpt-6-astra/max': 'GPT-6 Astra · max｜旗舰，最高推理，最贵最慢',
+    'claude-sonnet-5.5/low': 'Claude Sonnet 5.5 · low｜中档，最低推理',
+    'claude-sonnet-5.5/medium': 'Claude Sonnet 5.5 · medium｜中档，中档推理',
+    'claude-sonnet-5.5/high': 'Claude Sonnet 5.5 · high｜中档，API 默认档',
+    'claude-sonnet-5.5/xhigh': 'Claude Sonnet 5.5 · xhigh｜中档，超高推理',
+    'claude-sonnet-5.5/max': 'Claude Sonnet 5.5 · max｜中档，最高推理',
+    'deepseek-v4.1-flash/low': 'DeepSeek V4.1 Flash · low｜轻量，最省成本',
+    'deepseek-v4.1-flash/high': 'DeepSeek V4.1 Flash · high｜轻量，默认高质量档',
+    'deepseek-v4.1-flash/max': 'DeepSeek V4.1 Flash · max｜轻量，最高推理'
   };
 
   function describeOption(key) {
