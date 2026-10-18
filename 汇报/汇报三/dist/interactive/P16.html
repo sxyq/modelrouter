@@ -153,6 +153,22 @@
     letter-spacing: .04em;
   }
   .q-opts { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  /* ---- 模型树形展示 ---- */
+  .q-tree { display: flex; flex-direction: column; gap: 6px; margin-top: 7px; }
+  .tree-model {
+    display: flex; align-items: center; gap: 6px;
+    font-size: clamp(11px, 0.78vw, 14px);
+    font-weight: 700; color: var(--ink);
+    white-space: nowrap;
+  }
+  .tree-model .tw { color: var(--faint); font-size: 9px; flex: 0 0 auto; }
+  .tree-tier {
+    font-size: clamp(8px, 0.54vw, 10px); font-weight: 700;
+    padding: 1px 6px; border-radius: 4px;
+    background: var(--wash); color: var(--muted);
+    white-space: nowrap;
+  }
+  .tree-efforts { display: flex; flex-wrap: wrap; gap: 4px; padding-left: 15px; }
   .opt {
     font-size: clamp(10px, 0.68vw, 13px);
     color: var(--muted);
@@ -237,6 +253,23 @@
 
   .bars { display: flex; flex-direction: column; gap: 6px; }
   .bar-row { display: grid; grid-template-columns: 128px 1fr 64px; align-items: center; gap: 10px; }
+  .bar-group { display: flex; flex-direction: column; gap: 3px; }
+  .bar-group + .bar-group { margin-top: 6px; }
+  .bar-group-head {
+    display: flex; align-items: baseline; gap: 7px;
+    font-size: clamp(11.5px, 0.8vw, 15px); font-weight: 700; color: var(--ink);
+    margin-top: 2px;
+  }
+  .bar-group-head .tier {
+    font-size: clamp(8.5px, 0.56vw, 11px); font-weight: 700;
+    padding: 1px 6px; border-radius: 4px;
+    background: var(--wash); color: var(--muted);
+  }
+  .bar-group-head .best {
+    margin-left: auto; font-size: clamp(8.5px, 0.56vw, 11px);
+    color: var(--muted); font-weight: 650;
+  }
+  .bar-row.sub { grid-template-columns: 104px 1fr 64px; padding-left: 12px; }
   .bar-row .lbl {
     font-size: clamp(12px, 0.9vw, 17px);
     color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -584,8 +617,18 @@
 
     $('prompt-box').innerHTML = `<span class="dom">${esc(st.task_domain)}</span><br>${esc(st.prompt)}`;
 
-    const choiceOpts = Object.entries(q.q_choice?.criteria || {})
-      .map(([k]) => `<span class="opt">${esc(labelOf(k))}</span>`).join('');
+    /* choice 候选按「模型 → 推理档位」树形展示 */
+    const groups = MR.groupOptions(q.q_choice?.criteria);
+    const choiceOpts = `<div class="q-tree">${groups.map(g => {
+      if (g.options.length === 1) {
+        const meta = MR.describeOption(g.options[0]);
+        return `<div class="tree-model"><span class="tw">▸</span>${esc(g.model)}<span class="opt">${esc(meta.effort)}</span><span class="tree-tier">${esc(g.tier)}</span></div>`;
+      }
+      return `<div class="tree-group">
+        <div class="tree-model"><span class="tw">▾</span>${esc(g.model)}<span class="tree-tier">${esc(g.tier)}</span></div>
+        <div class="tree-efforts">${g.options.map(k => `<span class="opt">${esc(MR.describeOption(k).effort)}</span>`).join('')}</div>
+      </div>`;
+    }).join('')}</div>`;
     const scoreOpts = (q.q_score?.criteria || []).map(v => `<span class="opt">${esc(v)}</span>`).join('');
 
     $('q-list').innerHTML = `
@@ -726,12 +769,38 @@
           <span class="pct">${MR.fmtPct(probs[top], 1)}</span>
         </div>
         <div class="bars">
-          ${entries.map(([k, v]) => `
-            <div class="bar-row" title="${esc(k)} = ${v}">
-              <span class="lbl ${k === top ? 'top' : ''}" title="${esc(MR.describeOption(k).model)} · ${esc(MR.describeOption(k).effort)}">${esc(MR.describeOption(k).short)}</span>
-              <span class="bar-track"><span class="bar-fill ${k === top ? '' : 'dim'}" style="width:${(Math.max(0, Math.min(1, v)) * 100).toFixed(2)}%"></span></span>
-              <span class="val ${k === top ? 'top' : ''}">${MR.fmtPct(v, 1)}</span>
-            </div>`).join('')}
+          ${MR.groupOptions(probs)
+            .map(g => ({
+              ...g,
+              options: g.options.map(k => [k, probs[k]]).sort((a, b) => b[1] - a[1]),
+            }))
+            .map(g => ({ ...g, best: g.options[0] }))
+            .sort((a, b) => b.best[1] - a.best[1])
+            .map(g => {
+              const subRows = g.options.map(([k, v]) => `
+                <div class="bar-row sub" title="${esc(k)} = ${v}">
+                  <span class="lbl ${k === top ? 'top' : ''}">${esc(MR.describeOption(k).effort)}</span>
+                  <span class="bar-track"><span class="bar-fill ${k === top ? '' : 'dim'}" style="width:${(Math.max(0, Math.min(1, v)) * 100).toFixed(2)}%"></span></span>
+                  <span class="val ${k === top ? 'top' : ''}">${MR.fmtPct(v, 1)}</span>
+                </div>`).join('');
+              if (g.options.length === 1) {
+                const [k, v] = g.options[0];
+                return `
+                <div class="bar-row" title="${esc(k)} = ${v}">
+                  <span class="lbl ${k === top ? 'top' : ''}" title="${esc(g.model)} · ${esc(MR.describeOption(k).effort)}">${esc(MR.describeOption(k).short)}</span>
+                  <span class="bar-track"><span class="bar-fill ${k === top ? '' : 'dim'}" style="width:${(Math.max(0, Math.min(1, v)) * 100).toFixed(2)}%"></span></span>
+                  <span class="val ${k === top ? 'top' : ''}">${MR.fmtPct(v, 1)}</span>
+                </div>`;
+              }
+              return `<div class="bar-group">
+                <div class="bar-group-head">
+                  <span class="m">${esc(g.model)}</span>
+                  <span class="tier">${esc(g.tier)}</span>
+                  ${g.options.some(([k]) => k === top) ? '<span class="best">★ 本次选中</span>' : ''}
+                </div>
+                ${subRows}
+              </div>`;
+            }).join('')}
         </div>
       </div>`;
     }

@@ -97,6 +97,22 @@ const MR = (() => {
     human_loop: '人机协同'
   };
 
+  /** 按模型把候选项分组：[{model, modelShort, tier, options:[key]}]，保持给定键顺序 */
+  function groupOptions(keysObj) {
+    const groups = [];
+    const idx = new Map();
+    for (const k of Object.keys(keysObj || {})) {
+      const meta = describeOption(k);
+      if (!idx.has(meta.model)) {
+        const g = { model: meta.model, modelShort: meta.modelShort, tier: meta.tier, options: [] };
+        idx.set(meta.model, g);
+        groups.push(g);
+      }
+      idx.get(meta.model).options.push(k);
+    }
+    return groups;
+  }
+
   function labelFor(key) {
     if (key == null) return '—';
     const meta = MODEL_POOL[key];
@@ -567,7 +583,7 @@ const MR = (() => {
   }
 
   return {
-    PRESETS, S, LABELS, MODEL_POOL, describeOption,
+    PRESETS, S, LABELS, MODEL_POOL, describeOption, groupOptions,
     get apiBase() { return S.apiBase; },
     setApiBase(v) { S.apiBase = v.replace(/\/+$/, ''); },
     health, models, config, latest, runOne, runPair, commitPair, newTestId, randomScenario,
