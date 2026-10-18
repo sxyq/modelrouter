@@ -219,15 +219,32 @@ class OracleGeneratorProvider(BaseGeneratorProvider):
 
 
 def load_generator_credentials() -> Dict[str, Any]:
-    """Loads credentials from generator_credentials.json if available."""
-    cfg_path = os.path.join(os.path.dirname(__file__), "configs", "generator_credentials.json")
-    if os.path.exists(cfg_path):
-        try:
-            with open(cfg_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception as e:
-            logger.warning("Could not read generator_credentials.json: %s", e)
-    return {}
+    """Load secrets only from an external, owner-readable config (or environment).
+
+    Never load secrets from a path inside the Git working tree. Rotate any
+    credential previously committed to Git; deleting the tracked file does
+    not invalidate a credential already exposed in repository history.
+    """
+    from pathlib import Path
+
+    external_path = os.environ.get("MODELROUTER_CREDENTIALS_FILE", "").strip()
+    cfg_path = (
+        Path(external_path).expanduser()
+        if external_path
+        else Path.home() / ".config" / "modelrouter" / "generator_credentials.json"
+    )
+    try:
+        if not cfg_path.is_file():
+            return {}
+        if os.name == "posix" and (cfg_path.stat().st_mode & 0o077):
+            logger.error("Credentials file permissions are too open; require chmod 600.")
+            return {}
+        with cfg_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except Exception as e:
+        logger.warning("Unable to load external generator credentials: %s", type(e).__name__)
+        return {}
 
 
 def update_token_budget(prompt_tokens: int, completion_tokens: int) -> None:
