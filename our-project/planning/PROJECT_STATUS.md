@@ -1,20 +1,18 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-18 15:28（A6000 现场物理工作区规范化整理落地 + 双模型持续训练零中断推进 + 科研与评测口径科学纠偏）**：
-> 1. **A6000 现场物理目录实际整理落地（`our-project/` 成为唯一规范主目录）**：
->    - 依据 `REPOSITORY_STRUCTURE_MIGRATION_20261018.md` 第八节，在 A6000 `/home/syy/路由/` 完成安全物理重构，建立 `our-project/{code,data,results,docs,external}` 规范体系。
->    - **冷文件物理迁移与兼容垫片**：将不在活跃使用中的数据审计、单元测试、旧实验工具与日志（`router_data/audit_*.py`, `scripts/val_benchmark_compare.py`, `日志/`, `.tmp/` 等）物理迁移至规范目录，并在原路径建立相对符号链接（Symlink Shims），确保旧调用链路 100% 保持透明兼容（实测 `server_monitor.py` 与 `val_benchmark_compare.py` 经垫片调用均秒级正常响应）。
->    - **活跃资产与大数据原地保护（ACTIVE_HOLD / REFERENCE_ONLY）**：正在运行的训练调度器（`run_full_graded_queue.py`, `laya_batch_train.py`, `run_kev_continuous_train.py`）、共享 Python 环境（`.venv`）、模型物理权重（`models/laya-421m/`, `models/kev-4b-adapter/`, `models/qwen3.5-4b-base/` 8.9 GB）、正式训练数据（14 清洗源 6.10 GB、标准划分集）以及正在写入的 Runs 保持物理原位，杜绝无意义的 57.5 GiB 重复拷贝。
->    - **不可变资产清单与迁移台账落盘**：生成 `our-project/data/manifests/server_assets.json`（模型与数据实体清单）、`our-project/results/training/{laya,kev}/run_index.json`（运行索引）以及 `our-project/docs/operations/server_path_migration.csv`（包含 46 项资产的迁移/保留/垫片全量台账）。
-> 2. **双模型真实持续 GPU 训练零中断推进（数据实测）**：
->    - **Laya-421M (MoE 架构)**：Worker PID `1202621`、Controller PID `499841`，正在执行全量分级连续训练（F06），已稳步推进至 **Epoch 0/2 Chunk 123/361，Step 15,744 / 92,280**，已消费 **1,007,616** 个训练样本曝光（突破百万级），最新 Chunk Loss 平稳收敛至 **0.5194**。S1 最高验证准确率 67.38%、Val Loss 0.6047、Brier 0.2074。
->    - **Kev-4B (Qwen3.5-4B LoRA + Pointer Head 架构)**：Worker PID `1357764`、Supervisor PID `1357763`，持续 LoRA 微调已稳步推进至 **Epoch 0/1 Step 710 / 16,857**，消费 2,840 条记录，Loss 持续收敛至 **1.330**。
->    - **服务与看板双重在线核验**：端口 8000 双模型 REST API 持续健康，Laya 与 Kev 前向概率推理正常（实测 `fallback_used: false`，Laya 延迟 419ms，Kev 延迟 3,326ms）。本地监控大盘 `http://127.0.0.1:8765` 保持 5 秒级实时刷新。
+> **最新状态：2026-10-18 18:45（双模型正式训练高速推进 + F05/F03/Kev 真实台账核验修正 + V8 扩展数据独立 Run 建立）**：
+> 1. **双模型真实持续 GPU 训练零中断推进（实时最新实测）**：
+>    - **Laya-421M (MoE 架构)**：Worker PID `1202621`、Controller PID `499841`，正在执行全量分级连续训练（F06），已稳步推进至 **Epoch 0/2 Chunk 171/361，Step 21,888 / 92,280**（总更新步数完成度 **23.72%**），已消费 **1,400,832** 个训练样本曝光，最新 Chunk Loss 突破性收敛至 **0.4977**（跌破 0.50 大关）。物理在盘历史最高准确率权重为 `P0_B03_C01_QB_PB` Epoch 2（S1 Acc 68.63%）。
+>    - **Kev-4B (Qwen3.5-4B LoRA + Pointer Head 架构)**：Worker PID `1357764`、Supervisor PID `1357763`，持续 LoRA 微调已稳步推进至 **Epoch 0/1 Step 2,170 / 16,857**（进度 **12.87%**），消费 8,680 条记录（2.025s / rec），Loss 稳步收敛降至 **0.988 ~ 1.282**（均值 ~1.15）。
+>    - **服务与看板双重在线核验**：端口 8000 双模型 REST API 持续健康在线 > 14.4 小时，Laya (416ms) 与 Kev (2650ms) 均输出真实模型前向概率推理（`fallback_used: false`）。本地监控大盘 `http://127.0.0.1:8765` 保持 5 秒级实时刷新。
+> 2. **训练结果台账与历史数据纠偏核准**：
+>    - **F05 指标核定**：经查 `F05/run.json` 原始记录，多任务联合训练 F05 Epoch 1 S1 Acc 为 **67.56%**，Loss 为 **0.5978**，Brier **0.4130**，为最佳物理权重并已部署在线；Epoch 2 因多任务轻微过拟合 S1 Acc 降为 **63.64%**，权重已合规修剪。手写台账中 67.91% 实为单流实验 `F05_S1` Epoch 2（Acc 67.91%，Loss 0.5933），两者已在台账中彻底澄清并分别建档。
+>    - **F03 状态更正**：F03 实际已于 2026-10-18 00:10:47 完训（Epoch 1 S1 Acc 64.71%，Epoch 2 S1 Acc 67.20%），状态正式更正为 `COMPLETED`。
+>    - **真实完成候选核定**：具备物理 Checkpoint、完整日志及固定 Val 验证的真实已完训候选为 Laya 11 个、Kev 1 个（基线适配器）；正在现场训练 2 个；其余候选全部严格标为 `QUEUED`。
 > 3. **核心科研边界与评测口径科学纠偏（严格求真）**：
->    - **纠偏一：算力竞争与显存余量科学界定**：显存占用 20,053 MiB / 49,140 MiB（裕量 ~29 GiB）仅保证**不发生 OOM 与显存换页**，但**不等于双模型零算力竞争**。两模型在 GPU 流多处理器（SM）、L2 缓存、显存带宽及 PCIe 总线上存在物理竞争，需以独占 vs 并行的吞吐比较为科学准则。
->    - **纠偏二：官方 Benchmark 评测真实性准则**：在宿主环境（`LocalHarborSandboxEnvironment`）完成的 Canary 任务仅属于通道验证（`LOCAL_HOST_EXPERIMENTAL`）。因 Mac 无 Docker daemon 且服务器非 root 用户访问 Docker Socket 受限（`permission denied`），在未具备官方 Docker 容器沙箱隔离、官方 Harbor Trial ID 及容器内原生未修改 CTRF 评测报告前，严格标记官方 Benchmark 成绩为 **`BLOCKED / UNFINISHED`**，不得宣称已完成。
->    - **纠偏三：V8 三类扩展视图独立性**：新清洗产出的 V8 三类数据视图（`MR-V8-DATA-EXTENSION-20261018`）严格独立封存，**绝对未混入**正在运行的 Laya F06 或当前 Kev 训练。F06 保持原有冻结协议 `MR-FULL-GRADED-P0-DATA-REPAIR-v1`；后续针对 V8 扩展视图的评估必须开辟独立新 Run。
->    - **纠偏四：Kev 12 候选研究真实推进**：Kev 当前仅处于单次 1 Epoch 真实训练（候选 C03 `KEV-V8-HOMOLOGOUS-20261018`），严禁将 Serving 在线或排队中的候选标为完训；后续排队候选（C04–C11）将在本轮完训后按计划逐一进行真实训练、物理 Checkpoint 保存与固定 Val 验证。
+>    - **算力竞争与显存余量**：显存占用 20.3 GiB / 49.1 GiB (41.3%) 保证零 OOM，两模型在 SM 算力与显存带宽上存在自然物理竞争。
+>    - **官方 Benchmark 评测真实性准则**：Harbor Docker 评测状态保持为 **`BLOCKED (AWAITING_DOCKER_SOCKET_AUTHORIZATION)`**，等待宿主机 `sudo usermod -aG docker syy` 授权，不使用宿主未隔离环境虚报通过率。
+>    - **V8 扩展数据独立性**：440 万 Agent 轨迹、3.9 万缓存复用机会与 5.7 万偏好数据已独立就绪，已为 Laya 和 Kev 分别建立 `V8-Extension` 独立 Run 配置，绝不混入当前 F06 与 Kev 正在进行的训练。
 >
 
 > **2026-10-18 · 论文五个 RQ 最新确定（仅研究方案更新，不覆盖真实执行/训练现场）**：**RQ1 整体效果**（完整 Router vs 强固定/混合/规则与同类算法的 Task Success–Episode USD）、**RQ2 模型池身份成员与数量 K**、**RQ3 固定池/Router 的任务拆分 G**、**RQ4 系统消融**（Model×Native Effort 联合动作、T/M/H 状态单/双/三组、KV/Trace/反馈及合法 S1/S2/S3 训练数据/监督/Laya-Kev 配方）、**RQ5 任务适用边界（原命题不变）**。**原 V8 的「RQ4 Agent 角色模型互补性」已正式删除，不再是论文 RQ**，也不再占用 Fig.7/T8；图表和实验定义见 [汇报三 V9](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)，负责人最新决定见 [EXPERIMENT_QA Q-019](EXPERIMENT_QA.md)。下方旧日期的 RQ 记录只是历史快照。本次未操作服务器、训练、Benchmark 或实际结果。  

@@ -1,0 +1,31 @@
+{
+  "candidate_id": "LAYA-V8-EXT-01",
+  "name": "Laya-V8-Extension-Run",
+  "base_model": "models/laya-421m/base",
+  "parent_checkpoint": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F06/checkpoints/best",
+  "protocol": "MR-V8-EXTENSION-v1",
+  "data_views": {
+    "router_choice": "runs/MR-V8-DATA-EXTENSION-20261018/views/router_choice_train.jsonl.gz",
+    "cache_reuse_opportunity": "runs/MR-V8-DATA-EXTENSION-20261018/views/cache_reuse_opportunity_train.jsonl.gz",
+    "observed_agent_outcome": "runs/MR-V8-DATA-EXTENSION-20261018/views/observed_agent_outcome_train.jsonl.gz"
+  },
+  "validation_views": {
+    "router_choice": "runs/MR-V8-DATA-EXTENSION-20261018/views/router_choice_val.jsonl.gz",
+    "cache_reuse_opportunity": "runs/MR-V8-DATA-EXTENSION-20261018/views/cache_reuse_opportunity_val.jsonl.gz",
+    "observed_agent_outcome": "runs/MR-V8-DATA-EXTENSION-20261018/views/observed_agent_outcome_val.jsonl.gz"
+  },
+  "training_knobs": {
+    "epochs": 2,
+    "chunk_size": 8192,
+    "learning_rate": 1e-4,
+    "weight_decay": 0.01,
+    "routing_loss_weight": 1.0,
+    "cache_aux_loss_weight": 0.2,
+    "outcome_aux_loss_weight": 0.3
+  },
+  "scientific_controls": {
+    "baseline_run": "F06",
+    "hypothesis": "H_V8_DATA: Incorporating Arena human pairwise preferences and Mooncake cache reuse opportunities improves cross-domain routing accuracy and token efficiency without degrading SWE task success."
+  },
+  "status": "QUEUED"
+}

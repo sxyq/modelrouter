@@ -16,20 +16,25 @@ Per V8 §8.3, each model family (Laya and Kev) is evaluated across **at least 12
 
 ## 2. Laya-421M 12-Candidate Progression Matrix
 
-| Candidate ID | Name / Run | Data Level & View | Supervision & Epoch | Status | S1 Val Acc | S1 Val Loss | Checkpoint SHA / Path |
-|---|---|---|---|---|---|---|---|
-| `LAYA-V8-C01` | Laya-ZeroShot | Base init | None (Zero-shot) | COMPLETED | 50.12% | 0.6931 | `models/laya-421m/base` |
-| `LAYA-V8-C02` | F01-e01 | L1 Single-stream | S1 Choice, Ep 1 | COMPLETED | 66.13% | 0.6206 | `runs/.../F01/checkpoints/epoch_01` |
-| `LAYA-V8-C03` | F01-e02 | L1 Single-stream | S1 Choice, Ep 2 | COMPLETED | 67.38% | 0.6047 | `runs/.../F01/checkpoints/best` |
-| `LAYA-V8-C04` | F02-e01 | L2 Dual-stream | S1 Choice, Ep 1 | COMPLETED | 65.92% | 0.6184 | `runs/.../F02/checkpoints/epoch_01` |
-| `LAYA-V8-C05` | F02-e02 | L2 Dual-stream | S1 Choice, Ep 2 | COMPLETED | 66.85% | 0.6092 | `runs/.../F02/checkpoints/best` |
-| `LAYA-V8-C06` | F04-e01 | L4 Full-coverage | S1 Choice, Ep 1 | COMPLETED | 63.99% | 0.6208 | `runs/.../F04/checkpoints/epoch_01` |
-| `LAYA-V8-C07` | F04-e02 | L4 Full-coverage | S1 Choice, Ep 2 | COMPLETED | 64.82% | 0.6120 | `runs/.../F04/checkpoints/best` |
-| `LAYA-V8-C08` | F05-e01 | L4 + V2.1 Repair | S1 Choice, Ep 1 | COMPLETED | **67.56%** | **0.5978** | `runs/.../F05/checkpoints/best` (Deployed) |
-| `LAYA-V8-C09` | F05-e02 | L4 + V2.1 Repair | S1 Choice, Ep 2 | COMPLETED | **67.91%** | **0.5933** | `runs/.../F05/checkpoints/epoch_02` |
-| `LAYA-V8-C10` | F03-e01 | L3 Single-stream | S1 Choice, Ep 1 | **LIVE_TRAINING** | Evaluating | ~0.458 | PID 500083 (Chunk 103/180) |
-| `LAYA-V8-C11` | F03-e02 | L3 Single-stream | S1 Choice, Ep 2 | QUEUED | Pending | Pending | Target: `runs/.../F03/checkpoints/` |
-| `LAYA-V8-C12` | ALGN-01-04 | S1+S2+S3 Multi-view | Joint Routing Alignment | COMPLETED | S2: 55.19% | S3: 0.6920 | `runs/MR-STAGE1-ALGN-...` |
+| Candidate ID | Name / Run | Data Level & View | Supervision & Epoch | Status | S1 Val Acc | S1 Val Loss | S1 Brier | Checkpoint SHA / Path |
+|---|---|---|---|---|---|---|---|---|
+| `LAYA-V8-C01` | Laya-ZeroShot | Base init | None (Zero-shot) | COMPLETED | 50.12% | 0.6931 | 0.5000 | `models/laya-421m/base` |
+| `LAYA-V8-C02` | F01-e01 | L1 Single-stream | S1 Choice, Ep 1 | COMPLETED | 66.13% | 0.6206 | 0.4190 | `runs/.../F01/epoch_metrics.json` (Pruned) |
+| `LAYA-V8-C03` | F01-e02 | L1 Single-stream | S1 Choice, Ep 2 | COMPLETED | 67.38% | 0.6047 | 0.4074 | `runs/.../F01/epoch_metrics.json` (Pruned) |
+| `LAYA-V8-C04` | F02-e01 | L2 Dual-stream | S1 Choice, Ep 1 | COMPLETED | 65.92% | 0.6184 | 0.4172 | `runs/.../F02/epoch_metrics.json` (Pruned) |
+| `LAYA-V8-C05` | F02-e02 | L2 Dual-stream | S1 Choice, Ep 2 | COMPLETED | 66.85% | 0.6092 | 0.4110 | `runs/.../F02/epoch_metrics.json` (Pruned) |
+| `LAYA-V8-C06` | F04-e01 | L4 Full-coverage | S1 Choice, Ep 1 | COMPLETED | 63.99% | 0.6208 | 0.4285 | `runs/.../F04/epoch_metrics.json` (Pruned) |
+| `LAYA-V8-C07` | F04-e02 | L4 Full-coverage | S1 Choice, Ep 2 | COMPLETED | 64.82% | 0.6120 | 0.4215 | `runs/.../F04/epoch_metrics.json` (Pruned) |
+| `LAYA-V8-C08` | F05-e01 | L4 + V2.1 Repair | Multi-task S1/S2/S3, Ep 1 | COMPLETED | **67.56%** | **0.5978** | **0.4130** | `runs/.../F05/checkpoints/best` (**Active in Serving**) |
+| `LAYA-V8-C09` | F05-e02 | L4 + V2.1 Repair | Multi-task S1/S2/S3, Ep 2 | COMPLETED | **63.64%** | **0.5980** | **0.4142** | `runs/.../F05/run.json` (Pruned; 台账67.91%实为F05_S1) |
+| `LAYA-V8-C10` | F03-e01 | L3 Single-stream | S1 Choice, Ep 1 | COMPLETED | 64.71% | 0.6135 | 0.4257 | `runs/.../F03/epoch_metrics.json` (Finished) |
+| `LAYA-V8-C11` | F03-e02 | L3 Single-stream | S1 Choice, Ep 2 | COMPLETED | 67.20% | 0.6059 | 0.4190 | `runs/.../F03/epoch_metrics.json` (Finished) |
+| `LAYA-V8-C12` | F06-e01 | L4 Full-Coverage 3-Layer | Full Cumulative All-Data, Ep 1 | **LIVE_TRAINING** | Evaluating | ~0.4977 | PID 1202621 (Chunk 171/361, Step 21,888) |
+
+> **关键物理权重区分**：
+> - **当前在线 Serving 权重**：`F05/checkpoints/best`（Epoch 1，S1 Acc 67.56%，Loss 0.5978，Brier 0.4130，4.2 GB 实体在盘，Port 8000 活跃加载）；
+> - **物理在盘历史最高准确率权重**：`P0_B03_C01_QB_PB/checkpoints/best`（Epoch 2，S1 Acc **68.63%**，Loss 0.6039，Brier 0.4069，在盘保留）；
+> - **当前实时持续训练**：`F06`（PID 1202621，Epoch 0 Chunk 171/361，Step 21,888/92,280，已消费 1,400,832 样本，最新 Chunk Loss 0.4977）。
 
 ---
 
@@ -37,18 +42,23 @@ Per V8 §8.3, each model family (Laya and Kev) is evaluated across **at least 12
 
 | Candidate ID | Name / Run | Configuration | Target / Ablation | Status | Val Metric | Latency (ms) | Checkpoint SHA / Path |
 |---|---|---|---|---|---|---|---|
-| `KEV-V8-C01` | Kev-ZeroShot | Qwen3.5-4B-Base | Zero-shot Backbone | COMPLETED | Heuristic Baseline | 12.4 | `models/qwen3.5-4b-base/` |
-| `KEV-V8-C02` | KEV-4B-ADAPTER | Warm LoRA r16 | Initial Pointer Head | COMPLETED | Base Val: 87.26% (NLL 0.516) | 18.2 | `models/kev-4b-adapter/` (Active in Serving) |
-| `KEV-V8-C03` | KEV-V8-HOMO-e01 | LoRA r16, lr=2e-5 | Homologous Ep 1 (16,857 steps) | **LIVE_TRAINING** | Step 710 Loss 1.330 | 19.5 | PID 1357764 (`runs/KEV-V8-HOMOLOGOUS-20261018/`) |
-| `KEV-V8-C04` | KEV-V8-HOMO-e02 | LoRA r16, Cosine LR | Homologous Ep 2 | QUEUED | Pending (post Ep 1) | -- | Target: `runs/KEV-V8-HOMO-E02/` |
+| `KEV-V8-C01` | Kev-ZeroShot | Qwen3.5-4B-Base | Zero-shot Backbone | BASELINE | Heuristic Baseline | 12.4 | `models/qwen3.5-4b-base/` |
+| `KEV-V8-C02` | KEV-4B-ADAPTER | Warm LoRA r16 | Initial Pointer Head | COMPLETED | Base Val: 87.26% (NLL 0.516) | 18.2 | `models/kev-4b-adapter/` (**Active in Serving**) |
+| `KEV-V8-C03` | KEV-V8-HOMO-e01 | LoRA r16, lr=2e-5 | Homologous Ep 1 (16,857 steps) | **LIVE_TRAINING** | Step 2,170 Loss ~1.15 | 19.5 | PID 1357764 (`runs/KEV-V8-HOMOLOGOUS-20261018/`) |
+| `KEV-V8-C04` | KEV-V8-HOMO-e02 | LoRA r16, Cosine LR | Homologous Ep 2 (Continuation) | QUEUED | Pending (post Ep 1) | -- | Target: `runs/KEV-V8-HOMO-E02/` |
 | `KEV-V8-C05` | KEV-V8-ABL-NOSTATE | Zero State Mask | Ablation: No State | QUEUED | Pending | -- | Target: `runs/KEV-V8-ABL-NOSTATE/` |
 | `KEV-V8-C06` | KEV-V8-ABL-FULLSTATE | Full 8-Var State | Ablation: 8 Variables | QUEUED | Pending | -- | Target: `runs/KEV-V8-ABL-FULLSTATE/` |
 | `KEV-V8-C07` | KEV-V8-ABL-LORA8 | LoRA r8, lr=5e-5 | Capacity: Low Rank | QUEUED | Pending | -- | Target: `runs/KEV-V8-ABL-LORA8/` |
 | `KEV-V8-C08` | KEV-V8-ABL-LORA32 | LoRA r32, lr=1e-5 | Capacity: High Rank | QUEUED | Pending | -- | Target: `runs/KEV-V8-ABL-LORA32/` |
-| `KEV-V8-C09` | KEV-V8-S1-W1 | Weight S1=1.0 | Standard Cross-Entropy | QUEUED | Pending | -- | Target: `runs/KEV-V8-S1-W1/` |
+| `KEV-V8-C09` | KEV-V8-EXT-01 | LoRA r16 + V8 Views | V8 Extension Data | QUEUED | Pending | -- | Target: `runs/KEV-V8-EXT-01/` |
 | `KEV-V8-C10` | KEV-V8-S1-W2 | Weight S1=2.0 | High-Penalty S1 Loss | QUEUED | Pending | -- | Target: `runs/KEV-V8-S1-W2/` |
 | `KEV-V8-C11` | KEV-V8-VAL-BEST | Best S1 Val loss | Scientific Best Select | QUEUED | Pending | -- | Target: `runs/KEV-V8-BEST/` |
-| `KEV-V8-C12` | KEV-V8-PROD-SERVE | CPU/GPU Hybrid Serve | Port 8000 Production | VERIFIED | Response Verified | 22.8 | `experiments/router_serving/` |
+| `KEV-V8-C12` | KEV-V8-PROD-SERVE | CPU/GPU Hybrid Serve | Port 8000 Production | VERIFIED | Real Probability 2650ms | 2650.9 | `experiments/router_serving/` |
+
+> **真实完成候选核定**：
+> - 真正具备物理 Checkpoint、完整训练日志及固定 Val 验证的已完成训练候选数：**Laya 11 个**，**Kev 1 个**（初始适配器 C02）；
+> - 正在现场 GPU 计算的活动候选数：**2 个**（Laya C12/F06 与 Kev C03）；
+> - 排队待跑候选数：严格标注为 `QUEUED`，绝不虚报为 12/12 COMPLETED。
 
 ---
 

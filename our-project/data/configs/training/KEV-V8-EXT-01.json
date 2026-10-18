@@ -1,0 +1,30 @@
+{
+  "candidate_id": "KEV-V8-C09",
+  "name": "KEV-V8-EXT-01",
+  "base_model": "models/qwen3.5-4b-base",
+  "init_from": "runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+  "protocol": "KEV-V8-EXTENSION-v1",
+  "data_views": {
+    "router_choice": "runs/MR-V8-DATA-EXTENSION-20261018/views/router_choice_train.jsonl.gz",
+    "cache_reuse_opportunity": "runs/MR-V8-DATA-EXTENSION-20261018/views/cache_reuse_opportunity_train.jsonl.gz",
+    "observed_agent_outcome": "runs/MR-V8-DATA-EXTENSION-20261018/views/observed_agent_outcome_train.jsonl.gz"
+  },
+  "validation_views": {
+    "router_choice": "runs/MR-V8-DATA-EXTENSION-20261018/views/router_choice_val.jsonl.gz",
+    "cache_reuse_opportunity": "runs/MR-V8-DATA-EXTENSION-20261018/views/cache_reuse_opportunity_val.jsonl.gz",
+    "observed_agent_outcome": "runs/MR-V8-DATA-EXTENSION-20261018/views/observed_agent_outcome_val.jsonl.gz"
+  },
+  "training_knobs": {
+    "lora_rank": 16,
+    "lr": 2e-5,
+    "epochs": 1,
+    "batch": 1,
+    "accum": 4,
+    "seed": 42
+  },
+  "scientific_controls": {
+    "baseline_run": "KEV-V8-HOMOLOGOUS-20261018",
+    "hypothesis": "H_KEV_V8: Extending Kev Pointer Head with Arena pairwise preference signals sharpens decision boundaries between frontier models."
+  },
+  "status": "QUEUED"
+}
