@@ -1,0 +1,21 @@
+const { chromium } = require('playwright-core');
+const path = require('node:path');
+const ROOT = path.resolve('D:/Project/路由/modelrouter/汇报/汇报三');
+(async () => {
+  const browser = await chromium.launch({ executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', headless: true, args: ['--no-proxy-server'] });
+  const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
+  const page = await ctx.newPage();
+  const errs = [];
+  page.on('pageerror', e => errs.push(e.message));
+  await page.goto('http://127.0.0.1:8771/dist/deck.html', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(3000);
+  await page.screenshot({ path: path.join(ROOT, 'assets/shots/deck_P16.png') });
+  const info = await page.evaluate(() => ({ title: document.title, frames: document.querySelectorAll('iframe').length, body: document.body.innerText.slice(0, 200) }));
+  console.log('deck P16:', JSON.stringify(info));
+  await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(2500);
+  await page.screenshot({ path: path.join(ROOT, 'assets/shots/deck_P17.png') });
+  const info2 = await page.evaluate(() => ({ body: document.body.innerText.slice(0, 160) }));
+  console.log('deck P17:', JSON.stringify(info2), 'errors:', errs);
+  await ctx.close(); await browser.close();
+})().catch(e => { console.error(e); process.exit(1); });

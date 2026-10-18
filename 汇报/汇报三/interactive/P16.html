@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P16 · ModelRouter Live Typed Decision Demo</title>
+<link rel="stylesheet" href="../assets/live.css">
+<style>
+  /* P16 左栏紧凑化 */
+  .editor .panel-body { gap: 8px; padding: 9px 11px; }
+  .qgroup { display: flex; flex-direction: column; gap: 4px; padding: 6px 7px; border: 1px solid var(--line-soft); border-radius: 6px; background: var(--paper); }
+  .qgroup .qh { display: flex; align-items: center; justify-content: space-between; }
+  .qgroup .qt { font-size: clamp(8px,0.6vw,10.5px); font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .qgroup .ty { font-size: clamp(7px,0.54vw,9.5px); color: var(--faint); font-family: "Cascadia Code", Consolas, monospace; }
+  .qgroup textarea, .qgroup input { font-size: clamp(8px,0.62vw,11px); }
+  .crit-area { min-height: 58px !important; font-family: "Cascadia Code", "SF Mono", Consolas, monospace; font-size: clamp(7.5px,0.58vw,10.5px) !important; line-height: 1.45; }
+
+  .result-empty .glyph { font-size: 26px; }
+
+  /* 结果块 */
+  .choice-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+  .choice-head .conf { text-align: right; }
+  .choice-head .conf .n { font-size: clamp(10px,0.9vw,16px); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .choice-head .conf .l { font-size: clamp(7px,0.52vw,9px); color: var(--faint); letter-spacing: .06em; text-transform: uppercase; }
+
+  .score-head { display: flex; align-items: flex-end; justify-content: space-between; }
+  .score-note { font-size: clamp(7px,0.54vw,9.5px); color: var(--faint); line-height: 1.4; text-align: right; }
+
+  .noul-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .noul-head .p { font-size: clamp(16px,1.55vw,28px); font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .noul-head .p.laya { color: var(--laya); }
+  .noul-head .p.kev { color: var(--kev); }
+
+  /* 三块结果在面板内均分，避免底部大片空白 */
+  #laya-body > .block, #kev-body > .block { flex: 1 1 0; justify-content: center; }
+  #laya-body, #kev-body { gap: 6px; }
+
+  .provenance {
+    margin-top: auto;
+    font-size: clamp(7px,0.52vw,9.5px);
+    color: var(--faint);
+    line-height: 1.5;
+    border-top: 1px dashed var(--line-soft);
+    padding-top: 6px;
+  }
+  .provenance b { color: var(--muted); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- ===== 顶部 10% ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <h1>ModelRouter | Live Typed Decision Demo</h1>
+      <span class="sub">P16 · 真实前向推理</span>
+    </div>
+    <div class="conn-group">
+      <span class="pill"><span class="dot wait" id="dot-conn"></span><span class="k">A6000</span> <span id="conn-text">连接中…</span></span>
+      <span class="pill laya"><span class="dot" id="dot-laya"></span>Laya <span class="k">weights</span> <span id="laya-load">—</span></span>
+      <span class="pill kev"><span class="dot" id="dot-kev"></span>Kev <span class="k">weights</span> <span id="kev-load">—</span></span>
+      <button class="btn ghost sm" id="btn-refresh" title="重新读取服务状态">刷新状态</button>
+    </div>
+  </header>
+
+  <!-- ===== 主体 82% ===== -->
+  <main class="main">
+
+    <!-- 左：编辑区 28% -->
+    <section class="panel editor">
+      <div class="panel-head">
+        <div class="ttl">State &amp; Questions</div>
+        <div class="meta">可编辑 · 直接进入真实请求</div>
+      </div>
+      <div class="panel-body">
+
+        <div class="sec-label">Preset scenarios</div>
+        <div class="preset-row" id="preset-row">
+          <button class="preset active" data-preset="software_repair">
+            Software Repair<small>failing test</small>
+          </button>
+          <button class="preset" data-preset="model_effort_routing">
+            Model × Effort<small>joint routing</small>
+          </button>
+          <button class="preset" data-preset="production_ops">
+            Production Ops<small>incident triage</small>
+          </button>
+        </div>
+
+        <div class="sec-label">State</div>
+        <div class="field">
+          <label for="f-domain">task_domain</label>
+          <input type="text" id="f-domain" value="software_engineering">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="f-step">step_index</label>
+            <input type="number" id="f-step" value="3" min="0" step="1">
+          </div>
+          <div class="field">
+            <label for="f-context">context_chars</label>
+            <input type="number" id="f-context" value="1240" min="0" step="1">
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="f-calls">prior_tool_calls</label>
+            <input type="number" id="f-calls" value="2" min="0" step="1">
+          </div>
+          <div class="field">
+            <label for="f-errors">prior_error_signals</label>
+            <input type="number" id="f-errors" value="1" min="0" step="1">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-prompt">prompt / observation</label>
+          <textarea id="f-prompt">Unit test test_refresh_token fails with 401 after token rotation; the store keeps a stale user id in memory.</textarea>
+        </div>
+
+        <div class="sec-label">Questions</div>
+
+        <div class="qgroup">
+          <div class="qh"><span class="qt">Choice</span><span class="ty">type: choice</span></div>
+          <input type="text" id="q-choice-instr" placeholder="instructions">
+          <textarea class="crit-area" id="q-choice-crit" spellcheck="false" placeholder="option: description（每行一个）"></textarea>
+        </div>
+
+        <div class="qgroup">
+          <div class="qh"><span class="qt">Score</span><span class="ty">type: score</span></div>
+          <input type="text" id="q-score-instr" placeholder="instructions">
+          <textarea class="crit-area" id="q-score-crit" spellcheck="false" placeholder="每行一个等级名（从低到高）"></textarea>
+        </div>
+
+        <div class="qgroup">
+          <div class="qh"><span class="qt">Noul</span><span class="ty">type: noul</span></div>
+          <input type="text" id="q-noul-instr" placeholder="instructions">
+        </div>
+
+        <div class="run-row" style="position:sticky;bottom:-9px;background:var(--card);padding:8px 0 2px;">
+          <button class="btn laya" id="btn-laya">Run Laya</button>
+          <button class="btn kev" id="btn-kev">Run Kev</button>
+          <button class="btn primary" id="btn-both">Compare Both</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 中：Laya 27% -->
+    <section class="panel laya" id="panel-laya">
+      <div class="panel-head">
+        <div class="ttl"><span class="dot" id="dot-laya-p"></span><span class="tag-laya">Laya-421M</span>
+          <span class="chip laya" id="laya-ck">—</span></div>
+        <div class="meta"><span class="chip idle" id="laya-state">IDLE</span></div>
+      </div>
+      <div class="panel-body" id="laya-body">
+        <div class="empty result-empty" id="laya-empty">
+          <div class="glyph">◍</div>
+          <div class="t">尚未推理</div>
+          <div class="d">点击 Run Laya 或 Compare Both。<br>本页不预置任何概率数值。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右：Kev 27% -->
+    <section class="panel kev" id="panel-kev">
+      <div class="panel-head">
+        <div class="ttl"><span class="dot" id="dot-kev-p"></span><span class="tag-kev">Kev-4B</span>
+          <span class="chip kev" id="kev-ck">—</span></div>
+        <div class="meta"><span class="chip idle" id="kev-state">IDLE</span></div>
+      </div>
+      <div class="panel-body" id="kev-body">
+        <div class="empty result-empty" id="kev-empty">
+          <div class="glyph">◍</div>
+          <div class="t">尚未推理</div>
+          <div class="d">点击 Run Kev 或 Compare Both。<br>本页不预置任何概率数值。</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== 底部 8% ===== -->
+  <footer class="footer">
+    <div class="item"><span class="k">endpoint</span><span class="v" id="foot-endpoint">—</span></div>
+    <div class="sep"></div>
+    <div class="item"><span class="k">laya latency</span><span class="v" id="foot-laya-lat">—</span></div>
+    <div class="item"><span class="k">kev latency</span><span class="v" id="foot-kev-lat">—</span></div>
+    <div class="sep"></div>
+    <div class="item"><span class="k">checkpoint</span><span class="v" id="foot-ckpt">—</span></div>
+    <div class="item"><span class="k">fallback</span><span class="v" id="foot-fb">—</span></div>
+    <div class="item"><span class="k">test id</span><span class="v mono" id="foot-testid">—</span></div>
+    <div class="item"><span class="k">time</span><span class="v" id="foot-time">—</span></div>
+    <div class="spacer"></div>
+    <button class="btn sm" id="btn-raw">原始 JSON</button>
+    <a class="btn sm" href="./P17.html" id="link-p17">P17 比较 →</a>
+  </footer>
+</div>
+
+<!-- 原始 JSON 抽屉 -->
+<div class="drawer" id="drawer">
+  <div class="drawer-card">
+    <div class="drawer-head">
+      <div class="t">本次真实 Request / Response</div>
+      <div class="drawer-tabs">
+        <button class="tab active" data-tab="laya">Laya</button>
+        <button class="tab" data-tab="kev">Kev</button>
+        <button class="tab" data-tab="pair">Pair</button>
+      </div>
+      <button class="btn ghost sm" id="drawer-close">关闭</button>
+    </div>
+    <div class="drawer-body"><pre id="raw-pre">尚无请求。</pre></div>
+    <div class="drawer-foot">
+      <span id="raw-note">数值与响应原文一一对应，前端不做重算。</span>
+      <button class="btn ghost sm" id="copy-raw">复制</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/live.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const state = {
+    preset: 'software_repair',
+    laya: null,      // { reading, meta, at, testId }
+    kev: null,
+    pair: null,
+    running: false,
+    rawTab: 'laya'
+  };
+
+  /* ---------- 表单读写 ---------- */
+  function parseChoiceCriteria(text) {
+    const out = {};
+    text.split('\n').map(l => l.trim()).filter(Boolean).forEach(line => {
+      const idx = line.indexOf(':');
+      if (idx > 0) out[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
+      else out[line] = line;
+    });
+    return out;
+  }
+  function parseScoreCriteria(text) {
+    return text.split('\n').map(l => l.trim()).filter(Boolean);
+  }
+  function criteriaToText(crit) {
+    if (Array.isArray(crit)) return crit.join('\n');
+    return Object.entries(crit || {}).map(([k, v]) => `${k}: ${v}`).join('\n');
+  }
+
+  function loadPreset(key) {
+    const p = MR.PRESETS[key];
+    if (!p) return;
+    state.preset = key;
+    $('f-domain').value = p.state.task_domain;
+    $('f-step').value = p.state.step_index;
+    $('f-context').value = p.state.context_chars;
+    $('f-calls').value = p.state.prior_tool_calls_count;
+    $('f-errors').value = p.state.prior_error_signals_count;
+    $('f-prompt').value = p.state.prompt;
+    $('q-choice-instr').value = p.questions.q_choice.instructions;
+    $('q-choice-crit').value = criteriaToText(p.questions.q_choice.criteria);
+    $('q-score-instr').value = p.questions.q_score.instructions;
+    $('q-score-crit').value = criteriaToText(p.questions.q_score.criteria);
+    $('q-noul-instr').value = p.questions.q_noul.instructions;
+    document.querySelectorAll('.preset').forEach(b => b.classList.toggle('active', b.dataset.preset === key));
+  }
+
+  function fillFormFrom(st, q) {
+    if (st) {
+      $('f-domain').value = st.task_domain ?? '';
+      $('f-step').value = st.step_index ?? 0;
+      $('f-context').value = st.context_chars ?? 0;
+      $('f-calls').value = st.prior_tool_calls_count ?? 0;
+      $('f-errors').value = st.prior_error_signals_count ?? 0;
+      $('f-prompt').value = st.prompt ?? '';
+    }
+    if (q) {
+      if (q.q_choice) {
+        $('q-choice-instr').value = q.q_choice.instructions || '';
+        $('q-choice-crit').value = criteriaToText(q.q_choice.criteria);
+      }
+      if (q.q_score) {
+        $('q-score-instr').value = q.q_score.instructions || '';
+        $('q-score-crit').value = criteriaToText(q.q_score.criteria);
+      }
+      if (q.q_noul) $('q-noul-instr').value = q.q_noul.instructions || '';
+    }
+    document.querySelectorAll('.preset').forEach(b => b.classList.remove('active'));
+  }
+
+  function readForm() {
+    const stateObj = {
+      task_domain: $('f-domain').value.trim() || 'software_engineering',
+      step_index: Number($('f-step').value || 0),
+      context_chars: Number($('f-context').value || 0),
+      prior_tool_calls_count: Number($('f-calls').value || 0),
+      prior_error_signals_count: Number($('f-errors').value || 0),
+      prompt: $('f-prompt').value.trim()
+    };
+    const choiceCrit = parseChoiceCriteria($('q-choice-crit').value);
+    const scoreCrit = parseScoreCriteria($('q-score-crit').value);
+    const questions = {
+      q_choice: {
+        type: 'choice',
+        instructions: $('q-choice-instr').value.trim(),
+        criteria: Object.keys(choiceCrit).length ? choiceCrit : { cheap_fast: 'cheap_fast', mid_balanced: 'mid_balanced', strong_deep: 'strong_deep' }
+      },
+      q_score: {
+        type: 'score',
+        instructions: $('q-score-instr').value.trim(),
+        criteria: scoreCrit.length ? scoreCrit : ['trivial', 'easy', 'medium', 'hard', 'very_hard']
+      },
+      q_noul: {
+        type: 'noul',
+        instructions: $('q-noul-instr').value.trim()
+      }
+    };
+    return { state: stateObj, questions };
+  }
+
+  /* ---------- 状态显示 ---------- */
+  function setChip(el, text, cls) {
+    if (!el) return;
+    el.textContent = text;
+    el.className = 'chip ' + (cls || 'idle');
+  }
+
+  function setModelStatus(family, ok) {
+    const dot = $(family === 'laya' ? 'dot-laya-p' : 'dot-kev-p');
+    MR.setDot(dot, ok ? 'ok' : 'err');
+  }
+
+  /* ---------- 渲染 ---------- */
+  function renderEmpty(family, title, desc) {
+    const body = $(family + '-body');
+    body.innerHTML = `<div class="empty result-empty">
+      <div class="glyph">◍</div>
+      <div class="t">${title}</div>
+      <div class="d">${desc}</div>
+    </div>`;
+  }
+
+  function renderError(family, kind, detail) {
+    const body = $(family + '-body');
+    const titles = {
+      NETWORK_UNREACHABLE: '无法连接桥接服务',
+      UPSTREAM_UNREACHABLE: 'A6000 服务断连',
+      MODEL_UNAVAILABLE: '模型未加载',
+      INFERENCE_FAILED: '推理失败',
+      TIMEOUT: '请求超时',
+      REQUEST_REJECTED: '请求被拒绝',
+      UNKNOWN: '未知错误'
+    };
+    body.innerHTML = `<div class="err-box">
+      <div class="t">${titles[kind] || kind}</div>
+      <div>${escapeHtml(detail)}</div>
+    </div>
+    <div class="empty" style="flex:0;padding-top:14px;">
+      <div class="d">这是服务端真实返回，未使用任何本地伪造结果。</div>
+    </div>`;
+    setChip($(family + '-state'), kind === 'NETWORK_UNREACHABLE' || kind === 'UPSTREAM_UNREACHABLE' ? 'DISCONNECTED' : 'ERROR', 'err');
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function renderResult(family, payload, opts = {}) {
+    const answers = payload.answers || {};
+    const choice = answers.q_choice;
+    const score = answers.q_score;
+    const noul = answers.q_noul;
+    const body = $(family + '-body');
+    const accent = family;
+
+    if (!choice && !score && !noul) {
+      renderError(family, 'INFERENCE_FAILED', '响应中没有 answers 字段：' + JSON.stringify(payload).slice(0, 300));
+      return;
+    }
+
+    let html = '';
+
+    // ---- Choice ----
+    if (choice) {
+      const probs = choice.probabilities || {};
+      const entries = Object.entries(probs).sort((a, b) => b[1] - a[1]);
+      const maxKey = choice.choice || (entries[0] && entries[0][0]);
+      html += `<div class="block">
+        <div class="block-head"><span class="block-title">Choice</span>
+          <span class="chip ${accent}">${escapeHtml(choice.choice || '—')}</span></div>
+        <div class="choice-head">
+          <div class="big-value ${accent}">${escapeHtml(choice.choice || '—')}</div>
+          <div class="conf"><div class="n">${MR.fmtNum(choice.confidence, 4)}</div><div class="l">self confidence</div></div>
+        </div>
+        <div class="bars">
+          ${entries.map(([k, v]) => `
+            <div class="bar-row" title="${escapeHtml(k)} = ${v}">
+              <span class="lbl ${k === maxKey ? 'top' : ''}">${escapeHtml(k)}</span>
+              <span class="bar-track"><span class="bar-fill ${k === maxKey ? '' : 'dim'}" style="width:${(Math.max(0, Math.min(1, v)) * 100).toFixed(2)}%"></span></span>
+              <span class="val ${k === maxKey ? 'top' : ''}">${MR.fmtNum(v, 4)}</span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+    }
+
+    // ---- Score ----
+    if (score) {
+      const probs = score.probabilities || {};
+      const legend = score.legend || {};
+      const keys = Object.keys(probs).sort((a, b) => Number(a) - Number(b));
+      const maxIdx = keys.reduce((best, k) => (probs[k] > (probs[best] ?? -1) ? k : best), keys[0]);
+      html += `<div class="block">
+        <div class="block-head"><span class="block-title">Score</span>
+          <span class="chip ${accent}">E[level] index</span></div>
+        <div class="score-head">
+          <div class="big-value ${accent}">${MR.fmtNum(score.score, 4)}<span class="unit">expected index</span></div>
+          <div class="score-note">${MR.fmtNum(score.confidence, 4)}<br>self confidence</div>
+        </div>
+        <div class="bars">
+          ${keys.map(k => {
+            const p = probs[k];
+            const name = legend[k] != null ? legend[k] : k;
+            return `<div class="bar-row" title="level ${k} (${escapeHtml(String(name))}) = ${p}">
+              <span class="lbl ${k === maxIdx ? 'top' : ''}">${k} · ${escapeHtml(String(name))}</span>
+              <span class="bar-track"><span class="bar-fill ${k === maxIdx ? '' : 'dim'}" style="width:${(Math.max(0, Math.min(1, p)) * 100).toFixed(2)}%"></span></span>
+              <span class="val ${k === maxIdx ? 'top' : ''}">${MR.fmtNum(p, 4)}</span>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="legend">
+          <span><b>0</b> ${escapeHtml(String(legend['0'] ?? ''))}</span>
+          <span><b>${keys[keys.length - 1]}</b> ${escapeHtml(String(legend[keys[keys.length - 1]] ?? ''))}</span>
+        </div>
+      </div>`;
+    }
+
+    // ---- Noul ----
+    if (noul) {
+      const p = typeof noul.noul === 'number' ? noul.noul : null;
+      const isTrue = p != null && p >= 0.5;
+      html += `<div class="block">
+        <div class="block-head"><span class="block-title">Noul · P(True)</span>
+          <span class="verdict ${isTrue ? 'yes' : 'no'}">${p == null ? '—' : (isTrue ? 'TRUE ≥ 0.5' : 'FALSE < 0.5')}</span></div>
+        <div class="noul-head">
+          <div class="p ${accent}">${p == null ? '—' : MR.fmtPct(p, 1)}</div>
+          <div class="score-note">raw P(True) = ${p == null ? '—' : p}<br>threshold τ = 0.5</div>
+        </div>
+        <div class="noul-bar">
+          <div class="noul-fill ${isTrue ? 'true' : 'false'}" style="width:${p == null ? 0 : (p * 100).toFixed(2)}%"></div>
+          <div class="noul-threshold" style="left:50%"></div>
+        </div>
+        <div class="legend"><span>0 = False</span><span>1 = True</span><span>τ = 0.5（页面约定，非模型参数）</span></div>
+      </div>`;
+    }
+
+    // ---- provenance ----
+    if (payload.fallback_used) {
+      html += `<div class="fallback-flag">FALLBACK · ${escapeHtml(payload.fallback_reason || 'unknown reason')}</div>`;
+    }
+    html += `<div class="provenance">
+      本次响应：<b>${escapeHtml(payload.model || family)}</b> ·
+      checkpoint <b>${escapeHtml(payload.checkpoint_id || '—')}</b> ·
+      服务端耗时 <b>${payload.decision_latency_ms != null ? MR.fmtNum(payload.decision_latency_ms, 1) + ' ms' : '—'}</b>
+      ${opts.testId ? ` · test ${escapeHtml(opts.testId)}` : ''}
+      ${opts.at ? `<br>完成时间 <b>${MR.fmtTime(opts.at)}</b>` : ''}
+    </div>`;
+
+    body.innerHTML = html;
+    setModelStatus(family, true);
+    setChip($(family + '-state'), payload.fallback_used ? 'FALLBACK' : 'LIVE', payload.fallback_used ? 'run' : 'ok');
+  }
+
+  /* ---------- 运行 ---------- */
+  function setRunning(on) {
+    state.running = on;
+    ['btn-laya', 'btn-kev', 'btn-both'].forEach(id => { $(id).disabled = on; });
+  }
+
+  async function runOne(family) {
+    if (state.running) return;
+    const { state: st, questions } = readForm();
+    setRunning(true);
+    setChip($(family + '-state'), 'REQUESTING', 'run');
+    MR.setDot($(family === 'laya' ? 'dot-laya-p' : 'dot-kev-p'), 'wait');
+    renderEmpty(family, '请求中…', `正在向 ${family.toUpperCase()} 发送真实前向请求，请稍候。`);
+
+    try {
+      const res = await MR.runOne(family, st, questions);
+      const kind = MR.classify(res);
+      if (kind === 'OK' && res.reading) {
+        state[family] = { reading: res.reading, at: res.reading.completed_at || new Date().toISOString(), testId: res.reading.test_id };
+        renderResult(family, res.reading, { testId: res.reading.test_id, at: res.reading.completed_at });
+        updateFooter();
+        MR.toast(`${family.toUpperCase()} 完成 · ${MR.fmtNum(res.reading.decision_latency_ms, 0)} ms`);
+      } else {
+        state[family] = null;
+        renderError(family, kind, MR.errorText(res));
+        updateFooter();
+        MR.toast(`${family.toUpperCase()} 失败：${kind}`, true);
+      }
+    } finally {
+      setRunning(false);
+    }
+  }
+
+  async function runBoth() {
+    if (state.running) return;
+    const { state: st, questions } = readForm();
+    const testId = MR.newTestId();
+    setRunning(true);
+    ['laya', 'kev'].forEach(f => {
+      setChip($(f + '-state'), 'REQUESTING', 'run');
+      MR.setDot($(f === 'laya' ? 'dot-laya-p' : 'dot-kev-p'), 'wait');
+      renderEmpty(f, '同一轮请求中…', '本次 Laya 与 Kev 使用完全相同的 State 与 Questions。');
+    });
+
+    try {
+      const res = await MR.runPair(st, questions, testId);
+      const pair = res.payload;
+      if (!pair || !pair.results) {
+        ['laya', 'kev'].forEach(f => renderError(f, MR.classify(res), MR.errorText(res)));
+        MR.toast('Compare 失败：' + MR.errorText(res), true);
+        return;
+      }
+      state.pair = pair;
+      ['laya', 'kev'].forEach(family => {
+        const r = pair.results[family];
+        if (r && r.ok && r.response) {
+          state[family] = { reading: r.response, at: pair.completed_at, testId: pair.test_id };
+          renderResult(family, r.response, { testId: pair.test_id, at: pair.completed_at });
+        } else {
+          state[family] = null;
+          const kind = (r && (r.error_class || (r.http_status === 503 ? 'MODEL_UNAVAILABLE' : 'INFERENCE_FAILED'))) || 'UNKNOWN';
+          const detail = r && r.error ? (r.error.detail || JSON.stringify(r.error)) : '无响应';
+          renderError(family, kind, detail);
+        }
+      });
+      updateFooter();
+      if (pair.test_id) $('foot-testid').textContent = pair.test_id;
+      const okCount = Object.values(pair.results).filter(r => r.ok).length;
+      MR.toast(okCount === 2 ? `同一轮双模型完成 · ${pair.test_id}` : `部分失败（${okCount}/2）· ${pair.test_id}`, okCount !== 2);
+    } finally {
+      setRunning(false);
+    }
+  }
+
+  function updateFooter() {
+    const laya = state.laya?.reading;
+    const kev = state.kev?.reading;
+    $('foot-laya-lat').textContent = laya?.decision_latency_ms != null ? `${MR.fmtNum(laya.decision_latency_ms, 1)} ms` : '—';
+    $('foot-kev-lat').textContent = kev?.decision_latency_ms != null ? `${MR.fmtNum(kev.decision_latency_ms, 1)} ms` : '—';
+
+    const ckL = laya?.checkpoint_id || MR.checkpointLabel('laya');
+    const ckK = kev?.checkpoint_id || MR.checkpointLabel('kev');
+    $('foot-ckpt').textContent = `${MR.shortId(ckL)} / ${MR.shortId(ckK)}`;
+    $('foot-ckpt').title = `${ckL}\n${ckK}`;
+
+    const anyFb = (laya && laya.fallback_used) || (kev && kev.fallback_used);
+    $('foot-fb').textContent = (laya || kev) ? (anyFb ? 'TRUE' : 'false') : '—';
+    $('foot-fb').style.color = anyFb ? 'var(--warn)' : '';
+
+    const at = state.laya?.at || state.kev?.at;
+    $('foot-time').textContent = at ? MR.fmtTime(at) : '—';
+    $('foot-testid').textContent = state.laya?.testId || state.kev?.testId || state.pair?.test_id || '—';
+  }
+
+  /* ---------- 状态轮询 ---------- */
+  async function refreshStatus() {
+    const [h, m] = await Promise.all([MR.health(), MR.models()]);
+    const hk = MR.classify(h);
+    const dot = $('dot-conn');
+    if (hk === 'OK' && h.payload) {
+      MR.setDot(dot, 'ok');
+      const gpu = h.payload.gpu_name || 'A6000';
+      const util = h.payload.gpu_utilization_pct;
+      $('conn-text').textContent = `online${util != null ? ' · ' + util + '%' : ''}`;
+      $('conn-text').title = `${gpu} · ${util ?? '—'}%`;
+      $('foot-endpoint').textContent = MR.S.health?._bridge?.upstream || MR.apiBase;
+    } else {
+      MR.setDot(dot, 'err');
+      $('conn-text').textContent = hk === 'NETWORK_UNREACHABLE' ? 'bridge 未连接' : hk;
+      $('foot-endpoint').textContent = MR.apiBase;
+    }
+
+    const mk = MR.classify(m);
+    if (mk === 'OK' && m.payload?.models) {
+      const laya = m.payload.models.find(x => x.family === 'laya');
+      const kev = m.payload.models.find(x => x.family === 'kev');
+      $('laya-load').textContent = laya?.loaded ? 'loaded' : 'not loaded';
+      $('kev-load').textContent = kev?.loaded ? 'loaded' : 'not loaded';
+      MR.setDot($('dot-laya'), laya?.loaded ? 'ok' : 'err');
+      MR.setDot($('dot-kev'), kev?.loaded ? 'ok' : 'err');
+      if (laya) $('laya-ck').textContent = MR.shortId(`${laya.run_id} · ${laya.checkpoint_id}`);
+      if (kev) $('kev-ck').textContent = MR.shortId(`${kev.run_id} · ${kev.checkpoint_id}`);
+      updateFooter();
+    } else {
+      $('laya-load').textContent = '—';
+      $('kev-load').textContent = '—';
+      MR.setDot($('dot-laya'), 'err');
+      MR.setDot($('dot-kev'), 'err');
+    }
+  }
+
+  /* ---------- 原始 JSON ---------- */
+  function rawFor(tab) {
+    if (tab === 'pair') {
+      return state.pair ? JSON.stringify(state.pair, null, 2) : '尚未执行 Compare Both。';
+    }
+    const rec = state[tab];
+    if (!rec) return `尚未执行 ${tab.toUpperCase()} 请求。`;
+    return JSON.stringify({ test_id: rec.testId, completed_at: rec.at, response: rec.reading }, null, 2);
+  }
+  function openDrawer(tab) {
+    state.rawTab = tab || state.rawTab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === state.rawTab));
+    $('raw-pre').textContent = rawFor(state.rawTab);
+    $('drawer').classList.add('open');
+  }
+
+  /* ---------- 事件 ---------- */
+  document.querySelectorAll('.preset').forEach(btn => {
+    btn.addEventListener('click', () => loadPreset(btn.dataset.preset));
+  });
+  $('btn-laya').addEventListener('click', () => runOne('laya'));
+  $('btn-kev').addEventListener('click', () => runOne('kev'));
+  $('btn-both').addEventListener('click', runBoth);
+  $('btn-refresh').addEventListener('click', refreshStatus);
+  $('btn-raw').addEventListener('click', () => openDrawer());
+  $('drawer-close').addEventListener('click', () => $('drawer').classList.remove('open'));
+  $('drawer').addEventListener('click', e => { if (e.target === $('drawer')) $('drawer').classList.remove('open'); });
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => openDrawer(t.dataset.tab));
+  });
+  $('copy-raw').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('raw-pre').textContent); MR.toast('已复制本次 JSON'); }
+    catch { MR.toast('浏览器拒绝剪贴板写入', true); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') $('drawer').classList.remove('open');
+    if (e.key === 'ArrowRight' && !state.running) location.href = './P17.html';
+  });
+
+  // 从 P17 返回时恢复同一轮（?fresh=1 用于演示“首次打开”的空态）
+  (async () => {
+    loadPreset('software_repair');
+    await refreshStatus();
+    const fresh = new URLSearchParams(location.search).has('fresh');
+    if (fresh) {
+      setInterval(refreshStatus, 15000);
+      return;
+    }
+    const r = await MR.latest();
+    if (r.ok && r.payload?.results) {
+      const pair = r.payload;
+      state.pair = pair;
+      fillFormFrom(pair.state, pair.questions);
+      let rendered = false;
+      ['laya', 'kev'].forEach(family => {
+        const item = pair.results[family];
+        if (item && item.ok && item.response) {
+          state[family] = { reading: item.response, at: pair.completed_at, testId: pair.test_id };
+          renderResult(family, item.response, { testId: pair.test_id, at: pair.completed_at });
+          rendered = true;
+        }
+      });
+      if (rendered) {
+        updateFooter();
+        MR.toast(`已恢复最近一轮真实结果 · ${pair.test_id}`, false);
+      }
+    }
+    setInterval(refreshStatus, 15000);
+  })();
+})();
+</script>
+</body>
+</html>

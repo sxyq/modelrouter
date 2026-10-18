@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P17 · Laya vs Kev — Same State, Different Decisions</title>
+<link rel="stylesheet" href="../assets/live.css">
+<style>
+  .p17 .main-vert {
+    flex: 1 1 82%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 10px 16px;
+  }
+
+  .sec {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .sec-head {
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 7px 13px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .sec-title {
+    font-size: clamp(9px, 0.72vw, 13px);
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sec-note { font-size: clamp(7.5px, 0.55vw, 10px); color: var(--faint); }
+  .sec-body { flex: 1 1 auto; min-height: 0; padding: 8px 13px; display: flex; }
+
+  /* 头部 */
+  .p17-head { flex: 0 0 10%; min-height: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 26px; border-bottom: 1px solid var(--line); }
+  .p17-head .brand h1 { font-size: clamp(15px, 1.34vw, 26px); }
+  .state-summary { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; justify-content: flex-end; }
+  .state-chip {
+    display: inline-flex; align-items: baseline; gap: 5px;
+    padding: 4px 9px; border-radius: 6px;
+    background: var(--wash); border: 1px solid var(--line-soft);
+    font-size: clamp(7.5px, 0.57vw, 10.5px); color: var(--muted);
+    white-space: nowrap;
+  }
+  .state-chip b { color: var(--ink); font-variant-numeric: tabular-nums; font-weight: 650; }
+  .testid {
+    font-family: "Cascadia Code", Consolas, monospace;
+    font-size: clamp(8px, 0.62vw, 11.5px);
+    padding: 4px 9px; border-radius: 6px;
+    background: rgba(189,150,81,0.13);
+    border: 1px solid rgba(189,150,81,0.32);
+    color: var(--warn); font-weight: 650; white-space: nowrap;
+  }
+
+  /* Choice 30% */
+  #sec-choice { flex: 0 0 30%; }
+  .choice-grid { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; min-height: 0; }
+  .cand {
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    padding: 8px 11px;
+    display: flex; flex-direction: column; gap: 7px;
+    justify-content: center;
+    background: var(--paper);
+    min-width: 0;
+  }
+  .cand.picked { border-color: rgba(33,135,123,0.4); background: rgba(33,135,123,0.045); }
+  .cand.picked.kev { border-color: rgba(182,94,67,0.42); background: rgba(182,94,67,0.045); }
+  .cand-head { display: flex; align-items: center; gap: 8px; }
+  .cand-name {
+    font-size: clamp(10px, 0.86vw, 15px); font-weight: 700; letter-spacing: -.01em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto;
+  }
+  .cand-flag { font-size: clamp(7px, 0.5vw, 9px); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+  .cand-flag.laya { background: var(--laya-wash); color: var(--laya); }
+  .cand-flag.kev { background: var(--kev-wash); color: var(--kev); }
+  .cand-flag.none { background: var(--wash); color: var(--faint); }
+
+  .dual-bar { display: flex; flex-direction: column; gap: 5px; }
+  .dual-row { display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 6px; }
+  .dual-row .who { font-size: clamp(7.5px, 0.55vw, 10px); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .dual-row .who.laya { color: var(--laya); }
+  .dual-row .who.kev { color: var(--kev); }
+  .dual-row .val { font-size: clamp(9px, 0.72vw, 12.5px); font-weight: 650; font-variant-numeric: tabular-nums; min-width: 46px; text-align: right; }
+  .dual-track { display: block; height: clamp(9px, 1.15vh, 16px); background: var(--wash); border-radius: 3px; overflow: hidden; }
+  .dual-fill { display: block; height: 100%; width: 0; border-radius: 3px; transition: width .6s cubic-bezier(.22,.61,.36,1); }
+  .dual-fill.laya { background: var(--laya); }
+  .dual-fill.kev { background: var(--kev); }
+
+  /* Score 22% */
+  #sec-score { flex: 0 0 22%; }
+  .score-wrap { flex: 1; display: grid; grid-template-columns: 1fr 300px; gap: 16px; min-height: 0; }
+  .lvl-list { display: flex; flex-direction: column; gap: 3px; justify-content: center; min-height: 0; }
+  .lvl-row { display: grid; grid-template-columns: 112px 1fr 1fr; align-items: center; gap: 9px; }
+  .lvl-name { font-size: clamp(8px, 0.6vw, 10.5px); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lvl-track { display: block; height: clamp(8px, 0.95vh, 13px); background: var(--wash); border-radius: 3px; overflow: hidden; }
+  .lvl-fill { display: block; height: 100%; width: 0; transition: width .6s cubic-bezier(.22,.61,.36,1); }
+  .lvl-fill.laya { background: var(--laya); }
+  .lvl-fill.kev { background: var(--kev); }
+  .score-side { display: flex; flex-direction: column; justify-content: center; gap: 8px; border-left: 1px dashed var(--line-soft); padding-left: 14px; }
+  .expect { display: flex; align-items: baseline; gap: 7px; }
+  .expect .model { font-size: clamp(8px, 0.6vw, 10.5px); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; width: 34px; }
+  .expect .model.laya { color: var(--laya); }
+  .expect .model.kev { color: var(--kev); }
+  .expect .num { font-size: clamp(19px, 1.75vw, 32px); font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .expect .num.laya { color: var(--laya); }
+  .expect .num.kev { color: var(--kev); }
+  .expect .delta { font-size: clamp(8px, 0.6vw, 10.5px); color: var(--faint); }
+
+  /* Noul 16% */
+  #sec-noul { flex: 0 0 16%; }
+  .noul-grid { flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+  .noul-row { display: grid; grid-template-columns: 48px 84px 1fr 232px; align-items: center; gap: 12px; }
+  .noul-row .who { font-size: clamp(9px, 0.68vw, 12px); font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+  .noul-row .who.laya { color: var(--laya); }
+  .noul-row .who.kev { color: var(--kev); }
+  .noul-row .num { font-size: clamp(17px, 1.55vw, 28px); font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; text-align: right; }
+  .noul-row .num.laya { color: var(--laya); }
+  .noul-row .num.kev { color: var(--kev); }
+  .noul-track { display: block; height: clamp(11px, 1.3vh, 18px); background: var(--wash); border-radius: 4px; position: relative; overflow: hidden; }
+  .noul-track .fill { display: block; height: 100%; width: 0; transition: width .6s cubic-bezier(.22,.61,.36,1); }
+  .noul-track .fill.laya { background: var(--laya); }
+  .noul-track .fill.kev { background: var(--kev); }
+  .thr { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--ink); opacity: .45; left: 50%; }
+  .noul-tail { display: flex; align-items: center; gap: 8px; justify-content: flex-end; white-space: nowrap; }
+  .verdict { font-size: clamp(8px, 0.6vw, 10.5px); font-weight: 700; padding: 3px 8px; border-radius: 5px; white-space: nowrap; }
+  .verdict.t { background: rgba(33,135,123,0.12); color: var(--laya); }
+  .verdict.f { background: rgba(189,150,81,0.16); color: var(--warn); }
+  .verdict.kt { background: rgba(182,94,67,0.12); color: var(--kev); }
+  .verdict.kf { background: rgba(189,150,81,0.16); color: var(--warn); }
+  .noul-delta { font-size: clamp(8px, 0.6vw, 10.5px); color: var(--faint); padding-left: 60px; }
+  .noul-delta b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* Meta 15% */
+  #sec-meta { flex: 0 0 15%; }
+  .meta-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; min-height: 0; }
+  .meta-cell { display: flex; flex-direction: column; gap: 5px; justify-content: center; min-width: 0; }
+  .meta-cell .h { font-size: clamp(8px, 0.58vw, 10px); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+  .lat-pair { display: flex; flex-direction: column; gap: 4px; }
+  .lat-line { display: flex; align-items: baseline; gap: 10px; }
+  .lat-line .who { font-size: clamp(8px, 0.6vw, 10.5px); font-weight: 700; text-transform: uppercase; width: 34px; }
+  .lat-line .who.laya { color: var(--laya); }
+  .lat-line .who.kev { color: var(--kev); }
+  .lat-line .v { font-size: clamp(13px, 1.1vw, 20px); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .arch-line { font-size: clamp(8px, 0.6vw, 10.5px); color: var(--muted); line-height: 1.45; }
+  .arch-line b { color: var(--ink); font-weight: 650; }
+  .arch-line.laya b { color: var(--laya); }
+  .arch-line.kev b { color: var(--kev); }
+  .explain { font-size: clamp(8px, 0.6vw, 10.5px); color: var(--muted); line-height: 1.5; }
+  .explain b { color: var(--ink); }
+
+  /* Footer 7% */
+  #sec-src { flex: 0 0 7%; }
+  .src-line { display: flex; align-items: center; gap: 12px; font-size: clamp(7px, 0.54vw, 9.5px); color: var(--faint); flex-wrap: wrap; line-height: 1.45; }
+  .src-line b { color: var(--muted); font-weight: 600; }
+  .src-line .warn { color: var(--err); font-weight: 650; }
+
+  .p17-actions { display: flex; align-items: center; gap: 8px; }
+  .empty-full { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 18px; }
+  .empty-full .t { font-size: clamp(11px, 0.9vw, 16px); font-weight: 650; color: var(--muted); }
+  .empty-full .d { font-size: clamp(8.5px, 0.64vw, 11.5px); color: var(--faint); line-height: 1.6; max-width: 620px; }
+</style>
+</head>
+<body>
+<div class="stage p17">
+
+  <!-- 10% -->
+  <header class="p17-head">
+    <div class="brand">
+      <h1>Laya vs Kev | Same State, Different Decisions</h1>
+      <span class="sub">P17 · 同一轮真实结果</span>
+    </div>
+    <div class="state-summary" id="state-summary">
+      <span class="state-chip">domain <b id="h-domain">—</b></span>
+      <span class="state-chip">step <b id="h-step">—</b></span>
+      <span class="state-chip">ctx <b id="h-ctx">—</b></span>
+      <span class="state-chip">tools <b id="h-tools">—</b></span>
+      <span class="state-chip">errors <b id="h-errors">—</b></span>
+      <span class="testid" id="h-testid">NO TEST YET</span>
+    </div>
+  </header>
+
+  <!-- 主体 -->
+  <main class="main-vert">
+
+    <!-- Choice 30% -->
+    <section class="sec" id="sec-choice">
+      <div class="sec-head">
+        <span class="sec-title">Choice · 三候选概率分布</span>
+        <span class="sec-note" id="choice-note">同一 State / 同一 Questions 下的真实 softmax 概率</span>
+      </div>
+      <div class="sec-body">
+        <div class="choice-grid" id="choice-grid">
+          <div class="empty-full"><div class="t">等待同一轮结果</div><div class="d">请先在 P16 点击 Compare Both，或点击右上角“重新比较”。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Score 22% -->
+    <section class="sec" id="sec-score">
+      <div class="sec-head">
+        <span class="sec-title">Score · 等级分布与期望索引</span>
+        <span class="sec-note">E[level] = Σ i·p_i 由服务端返回，不在此页重算</span>
+      </div>
+      <div class="sec-body">
+        <div class="score-wrap" id="score-wrap">
+          <div class="empty-full"><div class="t">尚无数值</div><div class="d">本页不预置或估算任何概率。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Noul 16% -->
+    <section class="sec" id="sec-noul">
+      <div class="sec-head">
+        <span class="sec-title">Noul · P(True)</span>
+        <span class="sec-note">阈值 τ = 0.5 为页面约定，不是模型参数</span>
+      </div>
+      <div class="sec-body">
+        <div class="noul-grid" id="noul-grid">
+          <div class="empty-full" style="grid-column:1/-1"><div class="t">尚无 P(True)</div><div class="d">Noul 与 Choice/Score 是不同指标，不能互相换算。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Meta 15% -->
+    <section class="sec" id="sec-meta">
+      <div class="sec-head">
+        <span class="sec-title">部署与架构差异</span>
+        <span class="sec-note">延迟仅代表本次请求</span>
+      </div>
+      <div class="sec-body">
+        <div class="meta-grid" id="meta-grid">
+          <div class="meta-cell"><div class="h">Latency</div><div class="arch-line">—</div></div>
+          <div class="meta-cell"><div class="h">Checkpoint</div><div class="arch-line">—</div></div>
+          <div class="meta-cell"><div class="h">Interpretation</div><div class="explain">—</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer 7% -->
+    <section class="sec" id="sec-src">
+      <div class="sec-body" style="align-items:center;padding:6px 13px;">
+        <div class="src-line" id="src-line">
+          <span><b>来源</b> A6000 /system-one 真实响应</span>
+          <span><b>时间</b> —</span>
+          <span><b>异常</b> 无</span>
+          <span class="warn">限制：一次 Demo 不能证明任一模型在独立测试集上更准确；模型自报 confidence ≠ 真实任务成功率。</span>
+        </div>
+        <div class="p17-actions" style="margin-left:auto;flex:0 0 auto;">
+          <button class="btn sm" id="btn-recompare">重新比较</button>
+          <a class="btn sm" href="./P16.html">← P16</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="../assets/live.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let pair = null;
+  let running = false;
+
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function getAnswer(family, qid) {
+    const r = pair?.results?.[family];
+    if (!r || !r.ok || !r.response?.answers) return null;
+    return r.response.answers[qid] || null;
+  }
+
+  function bothAnswers(qid) {
+    return { laya: getAnswer('laya', qid), kev: getAnswer('kev', qid) };
+  }
+
+  function headSummary() {
+    const st = pair?.state || {};
+    $('h-domain').textContent = st.task_domain ?? '—';
+    $('h-step').textContent = st.step_index ?? '—';
+    $('h-ctx').textContent = st.context_chars != null ? st.context_chars.toLocaleString() : '—';
+    $('h-tools').textContent = st.prior_tool_calls_count ?? '—';
+    $('h-errors').textContent = st.prior_error_signals_count ?? '—';
+    $('h-testid').textContent = pair?.test_id || 'NO TEST YET';
+  }
+
+  /* ---------- Choice ---------- */
+  function renderChoice() {
+    const { laya, kev } = bothAnswers('q_choice');
+    const box = $('choice-grid');
+    if (!laya && !kev) {
+      box.innerHTML = `<div class="empty-full"><div class="t">等待同一轮结果</div><div class="d">请先在 P16 点击 Compare Both，或点击右上角“重新比较”。</div></div>`;
+      return;
+    }
+    const keys = [];
+    [laya, kev].forEach(a => { Object.keys(a?.probabilities || {}).forEach(k => { if (!keys.includes(k)) keys.push(k); }); });
+
+    box.innerHTML = keys.map(k => {
+      const pl = laya?.probabilities?.[k];
+      const pk = kev?.probabilities?.[k];
+      const pickedL = laya?.choice === k;
+      const pickedK = kev?.choice === k;
+      const picked = pickedL || pickedK;
+      return `<div class="cand ${picked ? 'picked' : ''} ${pickedK && !pickedL ? 'kev' : ''}">
+        <div class="cand-head">
+          <span class="cand-name" title="${esc(k)}">${esc(k)}</span>
+          ${pickedL ? '<span class="cand-flag laya">Laya ✓</span>' : (pickedK ? '<span class="cand-flag kev">Kev ✓</span>' : '<span class="cand-flag none">—</span>')}
+        </div>
+        <div class="dual-bar">
+          <div class="dual-row" title="Laya ${esc(k)} = ${pl}">
+            <span class="who laya">Laya</span>
+            <span class="dual-track"><span class="dual-fill laya" style="width:${pl != null ? (Math.max(0, Math.min(1, pl)) * 100).toFixed(2) : 0}%"></span></span>
+            <span class="val">${pl != null ? MR.fmtNum(pl, 4) : '—'}</span>
+          </div>
+          <div class="dual-row" title="Kev ${esc(k)} = ${pk}">
+            <span class="who kev">Kev</span>
+            <span class="dual-track"><span class="dual-fill kev" style="width:${pk != null ? (Math.max(0, Math.min(1, pk)) * 100).toFixed(2) : 0}%"></span></span>
+            <span class="val">${pk != null ? MR.fmtNum(pk, 4) : '—'}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    const same = laya?.choice && kev?.choice && laya.choice === kev.choice;
+    $('choice-note').textContent = same
+      ? `两模型选择相同候选：${laya.choice}（概率分布仍不同）`
+      : `两模型选择不同：Laya → ${laya?.choice || '—'} ／ Kev → ${kev?.choice || '—'}`;
+  }
+
+  /* ---------- Score ---------- */
+  function renderScore() {
+    const { laya, kev } = bothAnswers('q_score');
+    const box = $('score-wrap');
+    if (!laya && !kev) {
+      box.innerHTML = `<div class="empty-full" style="grid-column:1/-1"><div class="t">尚无数值</div><div class="d">本页不预置或估算任何概率。</div></div>`;
+      return;
+    }
+    const probs = laya?.probabilities || kev?.probabilities || {};
+    const legend = laya?.legend || kev?.legend || {};
+    const keys = Object.keys(probs).sort((a, b) => Number(a) - Number(b));
+
+    box.innerHTML = `
+      <div class="lvl-list">
+        ${keys.map(k => {
+          const pl = laya?.probabilities?.[k];
+          const pk = kev?.probabilities?.[k];
+          const name = legend[k] != null ? legend[k] : k;
+          return `<div class="lvl-row">
+            <span class="lvl-name" title="${esc(String(name))}">${k} · ${esc(String(name))}</span>
+            <span class="lvl-track" title="Laya ${esc(String(name))} = ${pl}"><span class="lvl-fill laya" style="width:${pl != null ? (Math.max(0, Math.min(1, pl)) * 100).toFixed(2) : 0}%"></span></span>
+            <span class="lvl-track" title="Kev ${esc(String(name))} = ${pk}"><span class="lvl-fill kev" style="width:${pk != null ? (Math.max(0, Math.min(1, pk)) * 100).toFixed(2) : 0}%"></span></span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="score-side">
+        <div class="expect"><span class="model laya">Laya</span><span class="num laya">${laya?.score != null ? MR.fmtNum(laya.score, 4) : '—'}</span><span class="delta">期望等级索引</span></div>
+        <div class="expect"><span class="model kev">Kev</span><span class="num kev">${kev?.score != null ? MR.fmtNum(kev.score, 4) : '—'}</span><span class="delta">期望等级索引</span></div>
+        <div class="delta" style="font-size:clamp(8px,0.58vw,10px);color:var(--faint);line-height:1.45">
+          Δ = ${(laya?.score != null && kev?.score != null) ? (kev.score - laya.score).toFixed(4) : '—'}（Kev − Laya）
+        </div>
+      </div>`;
+  }
+
+  /* ---------- Noul ---------- */
+  function renderNoul() {
+    const { laya, kev } = bothAnswers('q_noul');
+    const box = $('noul-grid');
+    if (!laya && !kev) {
+      box.innerHTML = `<div class="empty-full"><div class="t">尚无 P(True)</div><div class="d">Noul 与 Choice/Score 是不同指标，不能互相换算。</div></div>`;
+      return;
+    }
+    const row = (family, a) => {
+      const p = typeof a?.noul === 'number' ? a.noul : null;
+      const isTrue = p != null && p >= 0.5;
+      const vcls = family === 'laya' ? (isTrue ? 't' : 'f') : (isTrue ? 'kt' : 'kf');
+      return `<div class="noul-row">
+        <span class="who ${family}">${family === 'laya' ? 'Laya' : 'Kev'}</span>
+        <span class="num ${family}">${p != null ? MR.fmtPct(p, 1) : '—'}</span>
+        <span class="noul-track" title="P(True) = ${p != null ? p : '—'}">
+          <span class="fill ${family}" style="width:${p != null ? (p * 100).toFixed(2) : 0}%"></span>
+          <span class="thr"></span>
+        </span>
+        <span class="noul-tail">
+          <span class="verdict ${vcls}">${p == null ? '—' : (isTrue ? 'P(True) ≥ 0.5 → True' : 'P(True) < 0.5 → False')}</span>
+          <span class="noul-delta" style="padding:0">raw ${p != null ? p : '—'}</span>
+        </span>
+      </div>`;
+    };
+    const pl = laya?.noul, pk = kev?.noul;
+    box.innerHTML = row('laya', laya) + row('kev', kev) +
+      `<div class="noul-delta">|ΔP| = <b>${(pl != null && pk != null) ? Math.abs(pk - pl).toFixed(4) : '—'}</b> · 两者判断${(pl != null && pk != null && ((pl >= 0.5) === (pk >= 0.5))) ? '一致，但概率水平不同' : '不一致'} · 阈值线 τ = 0.5</div>`;
+  }
+
+  /* ---------- Meta ---------- */
+  function renderMeta() {
+    const rl = pair?.results?.laya, rk = pair?.results?.kev;
+    const sl = rl?.response, sk = rk?.response;
+    const mL = MR.modelMeta('laya'), mK = MR.modelMeta('kev');
+
+    $('meta-grid').innerHTML = `
+      <div class="meta-cell">
+        <div class="h">Latency（本次请求）</div>
+        <div class="lat-pair">
+          <div class="lat-line"><span class="who laya">Laya</span><span class="v">${sl?.decision_latency_ms != null ? MR.fmtNum(sl.decision_latency_ms, 1) + ' ms' : '—'}</span></div>
+          <div class="lat-line"><span class="who kev">Kev</span><span class="v">${sk?.decision_latency_ms != null ? MR.fmtNum(sk.decision_latency_ms, 1) + ' ms' : '—'}</span></div>
+        </div>
+        <div class="explain">仅代表本次部署环境与真实请求，<b>不构成严格性能基准</b>。</div>
+      </div>
+      <div class="meta-cell">
+        <div class="h">Checkpoint</div>
+        <div class="arch-line laya"><b>Laya</b> ${esc(mL?.run_id || '—')} · ${esc(sl?.checkpoint_id || mL?.checkpoint_id || '—')}</div>
+        <div class="arch-line kev"><b>Kev</b> ${esc(mK?.run_id || '—')} · ${esc(MR.shortId(sk?.checkpoint_id || mK?.checkpoint_id || '—'))}</div>
+      </div>
+      <div class="meta-cell">
+        <div class="h">架构差异</div>
+        <div class="arch-line laya"><b>Laya</b> 421M MoE 决策头，CPU 前向</div>
+        <div class="arch-line kev"><b>Kev</b> Qwen3.5-4B + LoRA(r=16) + PointerHead</div>
+        <div class="explain">同一输入下，两种架构可能给出不同选项与分布；这本身不表示优劣。</div>
+      </div>`;
+  }
+
+  /* ---------- Footer ---------- */
+  function renderSource() {
+    const errs = [];
+    ['laya', 'kev'].forEach(f => {
+      const r = pair?.results?.[f];
+      if (r && !r.ok) errs.push(`${f}: ${r.error_class || r.http_status}`);
+      if (r?.ok && r.response?.fallback_used) errs.push(`${f}: fallback`);
+    });
+    const at = pair?.completed_at ? MR.fmtTime(pair.completed_at) : '—';
+    $('src-line').innerHTML = `
+      <span><b>来源</b> A6000 · POST /system-one · test ${esc(pair?.test_id || '—')}</span>
+      <span><b>时间</b> ${esc(at)}</span>
+      <span><b>异常</b> ${errs.length ? `<span class="warn">${esc(errs.join(' / '))}</span>` : '无'}</span>
+      <span class="warn">限制：一次 Demo 不能证明任一模型在独立测试集上更准确；模型自报 confidence ≠ 真实任务成功率；Score 期望索引与 Noul P(True) 不可混为同一指标。</span>`;
+  }
+
+  function renderAll() {
+    if (!pair) return;
+    headSummary();
+    renderChoice();
+    renderScore();
+    renderNoul();
+    renderMeta();
+    renderSource();
+  }
+
+  /* ---------- 重新比较 ---------- */
+  async function recompare() {
+    if (running || !pair) return;
+    running = true;
+    $('btn-recompare').disabled = true;
+    $('btn-recompare').textContent = '比较中…';
+    try {
+      const testId = MR.newTestId();
+      const res = await MR.runPair(pair.state, pair.questions, testId);
+      if (res.payload?.results) {
+        pair = res.payload;
+        renderAll();
+        MR.toast(`已产生新一轮真实结果 · ${pair.test_id}`);
+      } else {
+        MR.toast('重新比较失败：' + MR.errorText(res), true);
+      }
+    } finally {
+      running = false;
+      $('btn-recompare').disabled = false;
+      $('btn-recompare').textContent = '重新比较';
+    }
+  }
+
+  $('btn-recompare').addEventListener('click', recompare);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') location.href = './P16.html';
+  });
+
+  /* ---------- 初始化 ---------- */
+  (async () => {
+    await MR.models();
+    MR.health();
+    const r = await MR.latest();
+    if (r.ok && r.payload?.results) {
+      pair = r.payload;
+      renderAll();
+    } else {
+      headSummary();
+    }
+    // 若从 P16 直接跳来，latest 由 bridge 持久化，无需 URL 传参
+    setInterval(async () => {
+      const lite = await MR.latest();
+      if (lite.ok && lite.payload?.test_id && lite.payload.test_id !== pair?.test_id) {
+        pair = lite.payload;
+        renderAll();
+        MR.toast(`检测到新一轮结果 · ${pair.test_id}`);
+      }
+    }, 12000);
+  })();
+})();
+</script>
+</body>
+</html>
