@@ -731,3 +731,12 @@ configs/
 **比较口径与预算缺陷**：在 `provider.py` 的 `_normalize_model` 中，名义 FixedStrong/FixedCheap/Rule/RouteLLM/Laya/Kev 所选不在有限白名单的 Generator 都映射到同一个 `gpt-6-luna`，而每步美元费用仍用未映射的 `model_spec.calculate_cost` 的名义价格计数。由此不同策略的价格/能力对照不成立，`RouteLLM 省 93.4%` 与 `Kev 省 90.5%` 不是有效成功率相当的经济收益。真实执行 Generator 模型名、真实 Provider 账单价格需取最终请求/响应，且能力集合至少两种真正不同的合法生成模型才可开展模型选择 RQ1。另 `update_token_budget()` 只在请求结束后增加 JSON 计数，超过 100 万仅日志警告；并发/重试没有原子预留或即时硬阻断，**不是可靠硬门禁**。在重新签发凭据前应暂停新付费基准调用、修复预扣配额和独立真实用量记录，绝不能因其 368,154/1M 报告而保证不会超限。
 
 这些更正只影响有安全风险的本机 Agent / 新付费 API 实验；**不要中断正常运行的 Laya A6000 正式训练，也不要删除 F03/F06 现场成果**。原 KV/Laya/Kev 增补训练、两子代理、简洁高信息密度可视化仍按 V8 正式文档执行。修复后先 1 题/2 真实不同 generator/2 策略，对官方 Harbor 完整评分和逐调用真实费用做最小证据验证，再逐步扩展。没有证据不要提高“已完成”阶段状态。
+
+
+### 2026-10-18 · 总执行指令最后修订：使用 Harbor 原生 Docker 沙箱、原生 Job 并发和恢复，不再以 Mock 64 并发充数
+
+负责人要求一次性补齐前述剩余工作；**沙箱复用已选开源 Harbor 内建 `DockerEnvironment`、`BaseAgent`、官方 Task Verifier 和 `harbor run` / Job Resume**，不自造 Host Shell 或第二套 Container Scheduler。当前 `LocalHarborSandboxEnvironment` 已因宿主代码执行和伪官方 Verifier 被 fail-closed；真正接入的应是 Harbor `BaseAgent.setup/run` + `await environment.exec`，工具均在隔离容器中执行，未经授权的宿主 Secret/Docker socket/SSH 文件不得暴露给 Task。官方文档见 [Harbor GitHub](https://github.com/harbor-framework/harbor)、[Harbor CLI](https://github.com/harbor-framework/docs/blob/main/cli/run.mdx)。
+
+“快速跑完整实验”是**配置化科研矩阵 + 官方容器镜像复用 + 受控按任务 Trial 并发 + 原生 Resume/失败恢复 + RPM/TPM/预算限制 + 统一真实日志与官方评分**，不是宣称 64 模拟并发的 Pass@1 或模型路由收益。优先让 1–2 个 Canary 真正通过官方执行接口（可以失败，但必须有真实官方 reward 及全部轨迹）；随后覆盖 FixedStrong/FixedCheap/Random/RuleSticky/RouteLLM official/SR-KNN fitted/Laya/Kev 的合法同任务矩阵，再按授权扩展 Dev，57 个 sealed Final 冻结方案前不读。GPT Responses SSE/工具/Native Effort、Chat/Messages、OpenRouter 有哈希定价快照、跨进程 1M Token 原子预算、受保护每模型调用 I/O 账本、Laya/Kev 新数据持续多版本训练、双模型丰富少字看板、2 子代理和阶段 Git Push 的要求全部继续有效，统一细则见 [V8 §10](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。
+
+**执行状态注意**：本次为 GitHub 文档中明确的实现方案和验收标准，不等于 Mac 已安装 Harbor 真 Docker、API Key 已轮换或官方 Benchmark 完成；需有 Mac/A6000 权限的 Execution Agent 现场实施并回传真实 Job 路径、Trial ID、模型验证和 Git SHA。服务器健康的 Laya 正式队列仍不应中断。
