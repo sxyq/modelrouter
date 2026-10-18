@@ -718,3 +718,16 @@ configs/
 ### 2026-10-18 · V8 UI 和外部基线追加纠正（补充要求）
 
 负责人明确“**看板简化=减少长篇文字，不是砍掉数据、曲线和交互功能**”：原双模型 Laya/Kev 仍应保留完整训练/验证趋势、Best vs Latest、历史版本切换、真实 Benchmark 全策略横向比较、Token/USD 预算、开发阶段、真实/MOCK 隔离和按需详情；首页文字应简短高信息密度。另要求 **RouteLLM / SR-KNN 官方真实算法、FixedStrong/FixedCheap/RuleSticky/Random 与自有 Laya/Kev 一起，在相同 1–2 个官方 Terminal-Bench Canary 的同一 Harbor Agent/Generator/Tool/Evaluator 闭环中真正执行**，不是仅 import、输出路由分数或用自造启发式。第二外部基准 TwinRouterBench 也按官方协议产生一条可评分对照。完整新增验收见 [V8 GOAL 方案 §9](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。本条属于已确定执行规范，不代表这些真实基线/看板验收已完成；保持主 Agent+2 子代理、真实总 Token 上限与健康服务器训练不变。
+
+
+### 2026-10-18 12:10 CST · 实际执行报告复核：密钥泄露、真实评测边界与可复现性（紧急）
+
+负责人提交最新执行报告：F03 正规两轮完训（S1 e01 64.71%，e02 67.20%，S2 e02 53.12%），F06 据报正执行 E1 Chunk 69/361，GPU 72–88%；Laya/ Kev 服务器路由服务提供两条 API 推理样例；本机 8 策略×2 题共 16 次实际 API/主机 Shell 尝试，**官方报告中 0/16 solved**、多数任务失败/超时。服务器进程与 Mac 当前真实状态来自执行方报告，非本次 GitHub 审查直接 SSH 测量。
+
+**紧急秘密凭证事件**：本公开仓库的 `experiments/agent_pilot/configs/generator_credentials.json` 确实曾在 `main` 跟踪一个非空 API Key，且该 Key 在执行报告的聊天文本中也暴露。审查时已从 HEAD 删除此文件，并更新 `.gitignore`，使其未来不能正常重新加入；`provider.py` 默认只从 `~/.config/modelrouter/generator_credentials.json`（或 `MODELROUTER_CREDENTIALS_FILE` 指定的仓库外 0600 文件）或环境变量加载凭据，另有不含秘密的 `generator_credentials.example.json`。**Git 历史中的 Secret 不会因普通删除而消失，必须立即在 Provider 端撤销/轮换原 Key，检查异常使用，并请仓库管理员按 GitHub 秘密泄露响应流程清理历史/缓存；不得再次将 Secret 写入 AGENTS.md 规则或本仓库。** 用户本地 `AGENTS.md` 当前含相反的“禁止加入 .gitignore”指令（该文件本身被 ignore），执行方须就地删除错误指令并替换为“必须忽略 Secret”规则。不要打印/复制任何旧 Key。
+
+**Host 执行隔离缺陷**：报告使用 `LocalHarborSandboxEnvironment`；在 `083ee2c` 实际源码中，其 `exec()` 是 Mac 主机上的 `subprocess.run(..., shell=True, env=os.environ)`，不是 Harbor/Docker 容器，可能暴露宿主文件与私有凭据；其 `evaluate()` 动态自写 `test_verifier.py`，即使生成 CTRF 也不代表实际官方任务镜像与原版 Evaluator。已在 `experiments/harbor/environment.py` 中将该不安全实现设置 fail-closed，不得继续用于真实 Agent。**下一步唯一正确修复是接入上游 Harbor 隔离容器 + 未改写的官方任务验证器**；在此之前所有 16 次应标 `LOCAL_HOST_EXPERIMENTAL` / `NOT_OFFICIAL_HARBOR`，真实任务 0/16，不能称其为完整官方 Benchmark 通过。
+
+**比较口径与预算缺陷**：在 `provider.py` 的 `_normalize_model` 中，名义 FixedStrong/FixedCheap/Rule/RouteLLM/Laya/Kev 所选不在有限白名单的 Generator 都映射到同一个 `gpt-6-luna`，而每步美元费用仍用未映射的 `model_spec.calculate_cost` 的名义价格计数。由此不同策略的价格/能力对照不成立，`RouteLLM 省 93.4%` 与 `Kev 省 90.5%` 不是有效成功率相当的经济收益。真实执行 Generator 模型名、真实 Provider 账单价格需取最终请求/响应，且能力集合至少两种真正不同的合法生成模型才可开展模型选择 RQ1。另 `update_token_budget()` 只在请求结束后增加 JSON 计数，超过 100 万仅日志警告；并发/重试没有原子预留或即时硬阻断，**不是可靠硬门禁**。在重新签发凭据前应暂停新付费基准调用、修复预扣配额和独立真实用量记录，绝不能因其 368,154/1M 报告而保证不会超限。
+
+这些更正只影响有安全风险的本机 Agent / 新付费 API 实验；**不要中断正常运行的 Laya A6000 正式训练，也不要删除 F03/F06 现场成果**。原 KV/Laya/Kev 增补训练、两子代理、简洁高信息密度可视化仍按 V8 正式文档执行。修复后先 1 题/2 真实不同 generator/2 策略，对官方 Harbor 完整评分和逐调用真实费用做最小证据验证，再逐步扩展。没有证据不要提高“已完成”阶段状态。
