@@ -380,6 +380,22 @@ const MR = (() => {
     return s.length > 16 ? s.slice(0, 12) + '…' : s;
   }
 
+  /**
+   * 把一次请求拆成两段：
+   *   infer  服务端自报的模型前向耗时（decision_latency_ms）
+   *   net    客户端总耗时减去推理耗时（本机到服务端往返 + 排队 + 序列化）
+   *   total  客户端实测总耗时
+   */
+  function splitTiming(payload, clientMs) {
+    const infer = typeof payload?.decision_latency_ms === 'number' ? payload.decision_latency_ms : null;
+    const total = typeof clientMs === 'number' ? clientMs
+      : (typeof payload?.bridge_elapsed_ms === 'number' ? payload.bridge_elapsed_ms : null);
+    if (infer == null && total == null) return { infer: null, net: null, total: null };
+    if (infer == null) return { infer: null, net: null, total };
+    if (total == null) return { infer, net: null, total: infer };
+    return { infer, net: Math.max(0, total - infer), total };
+  }
+
   function fmtChars(n) {
     if (typeof n !== 'number') return '—';
     if (n >= 10000) return `${(n / 1000).toFixed(1)}k`;
@@ -408,6 +424,7 @@ const MR = (() => {
       clearTimeout(timer);
     }
     const ms = Math.round(performance.now() - t0);
+    result.elapsedMs = ms;
     pushLog({
       at: new Date(),
       method: (options.method || 'GET').toUpperCase(),
@@ -480,7 +497,7 @@ const MR = (() => {
     const body = { router_family: family, state, questions };
     if (testId) body.test_id = testId;
     const r = await request('/systemone', { method: 'POST', body: JSON.stringify(body) }, 200000);
-    return { ...r, family, request: body, reading: r.ok ? r.payload : null };
+    return { ...r, family, request: body, reading: r.ok ? r.payload : null, clientMs: r.elapsedMs };
   }
 
   async function runPair(state, questions, testId) {
@@ -545,7 +562,7 @@ const MR = (() => {
     setApiBase(v) { S.apiBase = v.replace(/\/+$/, ''); },
     health, models, config, latest, runOne, runPair, commitPair, newTestId, randomScenario,
     modelMeta, checkpointLabel, onLog, pushLog,
-    request, classify, errorText, ERROR_TITLES,
+    request, classify, errorText, ERROR_TITLES, splitTiming,
     clone, fmtTime, fmtPct, fmtNum, fmtShort: shortId, fmtChars, shortId,
     labelFor,
     toast, setDot

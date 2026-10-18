@@ -162,6 +162,7 @@
   .lat-line .who.laya { color: var(--laya); }
   .lat-line .who.kev { color: var(--kev); }
   .lat-line .v { font-size: clamp(18px, 1.45vw, 27px); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .lat-sub { font-size: clamp(9px, 0.6vw, 11.5px); color: var(--faint); margin-left: auto; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .arch-line { font-size: clamp(10.5px, 0.72vw, 13.5px); color: var(--muted); line-height: 1.45; overflow: hidden; text-overflow: ellipsis; }
   .arch-line b { color: var(--ink); font-weight: 650; }
   .arch-line.laya b { color: var(--laya); }
@@ -282,6 +283,10 @@
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const labelOf = k => MR.labelFor(k);
+  function fmtDur(ms) {
+    if (ms == null || Number.isNaN(ms)) return '—';
+    return ms >= 1000 ? (ms / 1000).toFixed(2) + ' s' : Math.round(ms) + ' ms';
+  }
 
   function getAnswer(family, qid) {
     const r = pair?.results?.[family];
@@ -435,12 +440,15 @@
     const sl = rl?.response, sk = rk?.response;
     const mL = MR.modelMeta('laya'), mK = MR.modelMeta('kev');
 
+    const tl = MR.splitTiming(sl, rl?.bridge_elapsed_ms);
+    const tk = MR.splitTiming(sk, rk?.bridge_elapsed_ms);
     $('meta-grid').innerHTML = `
       <div class="meta-cell">
-        <div class="h">本次耗时</div>
-        <div class="lat-line"><span class="who laya">Laya</span><span class="v">${sl?.decision_latency_ms != null ? MR.fmtNum(sl.decision_latency_ms, 0) + ' ms' : '—'}</span></div>
-        <div class="lat-line"><span class="who kev">Kev</span><span class="v">${sk?.decision_latency_ms != null ? MR.fmtNum(sk.decision_latency_ms, 0) + ' ms' : '—'}</span></div>
-        <div class="explain">只反映本次部署环境，<b>不是性能基准</b>。</div>
+        <div class="h">本次耗时（合计 / 推理 / 网络）</div>
+        <div class="lat-line"><span class="who laya">Laya</span><span class="v">${fmtDur(tl.total)}</span>
+          <span class="lat-sub">推理 ${fmtDur(tl.infer)} · 网络 ${fmtDur(tl.net)}</span></div>
+        <div class="lat-line"><span class="who kev">Kev</span><span class="v">${fmtDur(tk.total)}</span>
+          <span class="lat-sub">推理 ${fmtDur(tk.infer)} · 网络 ${fmtDur(tk.net)}</span></div>
       </div>
       <div class="meta-cell">
         <div class="h">检查点</div>

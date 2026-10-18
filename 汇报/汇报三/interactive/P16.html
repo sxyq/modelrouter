@@ -277,10 +277,22 @@
   .card-foot {
     margin-top: auto; padding-top: 10px;
     border-top: 1px dashed var(--line-soft);
-    display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    font-size: clamp(11px, 0.74vw, 14px); color: var(--faint);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
   }
-  .card-foot b { color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .card-foot .tf { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .card-foot .tf .k {
+    font-size: clamp(9px, 0.6vw, 11.5px);
+    color: var(--faint);
+    letter-spacing: .05em;
+  }
+  .card-foot .tf .v {
+    font-size: clamp(13px, 0.95vw, 18px);
+    font-weight: 650;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .card-foot .tf .v.hl { color: var(--ink); }
   /* ---------- 实时终端 ---------- */
   .term {
     position: fixed; left: 0; right: 0; bottom: 0;
@@ -327,6 +339,7 @@
   .c-d { color: #B9B3A3; text-align: right; }
   .c-b { color: #6E6A5E; text-align: right; }
   .term-empty { color: #7E7A6D; }
+  .term-meta-line .c-p { color: #9FAE96; font-size: 12px; }
 
 </style>
 </head>
@@ -541,6 +554,11 @@
 
   const labelOf = key => MR.labelFor(key);
 
+  function fmtDur(ms) {
+    if (ms == null || Number.isNaN(ms)) return '—';
+    return ms >= 1000 ? (ms / 1000).toFixed(2) + ' s' : Math.round(ms) + ' ms';
+  }
+
   function renderSummary() {
     const cur = state.current;
     if (!cur) return;
@@ -674,7 +692,7 @@
     el.className = 'chip ' + (cls || 'idle');
   }
 
-  function renderResult(family, payload) {
+  function renderResult(family, payload, timing) {
     const a = payload.answers || {};
     const choice = a.q_choice, score = a.q_score, noul = a.q_noul;
     const body = $(family + '-body');
@@ -751,9 +769,11 @@
       </div>`;
     }
 
+    const t = timing || MR.splitTiming(payload);
     html += `<div class="card-foot">
-      <span>耗时 <b>${payload.decision_latency_ms != null ? MR.fmtNum(payload.decision_latency_ms, 0) + ' ms' : '—'}</b></span>
-      <span>检查点 <b>${esc(MR.shortId(payload.checkpoint_id || '—'))}</b></span>
+      <span class="tf"><span class="k">模型推理</span><span class="v hl">${fmtDur(t.infer)}</span></span>
+      <span class="tf"><span class="k">网络往返</span><span class="v">${fmtDur(t.net)}</span></span>
+      <span class="tf"><span class="k">合计</span><span class="v">${fmtDur(t.total)}</span></span>
     </div>`;
 
     body.innerHTML = html;
@@ -819,10 +839,15 @@
       const elapsed = Date.now() - t0;
       const kind = MR.classify(res);
       if (kind === 'OK' && res.reading) {
-        state[family] = { reading: res.reading, at: res.reading.completed_at, testId };
-        renderResult(family, res.reading);
+        const timing = MR.splitTiming(res.reading, res.clientMs);
+        state[family] = { reading: res.reading, at: res.reading.completed_at, testId, timing };
+        renderResult(family, res.reading, timing);
         updateFooter();
-        MR.toast(`${label} 已返回 · ${MR.fmtNum(res.reading.decision_latency_ms, 0)} ms`);
+        MR.pushLog({
+          at: new Date(), method: '', path: `${label} 推理 ${fmtDur(timing.infer)} · 网络 ${fmtDur(timing.net)} · 合计 ${fmtDur(timing.total)}`,
+          status: 0, ok: true, ms: 0, bytes: 0, kind: 'meta',
+        });
+        MR.toast(`${label} 已返回 · 推理 ${fmtDur(timing.infer)}`);
         return { ok: true, request: res.request, response: res.reading, http_status: res.status, error: null, bridge_elapsed_ms: elapsed };
       }
       state[family] = null;
@@ -864,9 +889,10 @@
   }
 
   function updateFooter() {
+    const tl = state.laya?.timing, tk = state.kev?.timing;
+    $('foot-laya-lat').textContent = tl ? `${fmtDur(tl.total)} · 推理 ${fmtDur(tl.infer)}` : '—';
+    $('foot-kev-lat').textContent = tk ? `${fmtDur(tk.total)} · 推理 ${fmtDur(tk.infer)}` : '—';
     const l = state.laya?.reading, k = state.kev?.reading;
-    $('foot-laya-lat').textContent = l?.decision_latency_ms != null ? `${MR.fmtNum(l.decision_latency_ms, 0)} ms` : '—';
-    $('foot-kev-lat').textContent = k?.decision_latency_ms != null ? `${MR.fmtNum(k.decision_latency_ms, 0)} ms` : '—';
     const fb = (l?.fallback_used) || (k?.fallback_used);
     $('foot-fb').textContent = (l || k) ? (fb ? '是' : '否') : '—';
     $('foot-fb').style.color = fb ? 'var(--warn)' : '';
@@ -917,6 +943,14 @@
     }
     body.innerHTML = logs.slice(-140).map(l => {
       const t = l.at.toTimeString().slice(0, 8);
+      if (l.kind === 'meta') {
+        return `<div class="term-line term-meta-line">
+          <span class="c-t">${t}</span>
+          <span></span>
+          <span class="c-p">└─ ${esc(l.path)}</span>
+          <span></span><span></span><span></span>
+        </div>`;
+      }
       const cls = l.ok ? 'ok' : 'err';
       return `<div class="term-line">
         <span class="c-t">${t}</span>
@@ -1018,8 +1052,9 @@
       ['laya', 'kev'].forEach(f => {
         const item = pair.results[f];
         if (item?.ok && item.response) {
-          state[f] = { reading: item.response, at: pair.completed_at, testId: pair.test_id };
-          renderResult(f, item.response);
+          const timing = MR.splitTiming(item.response, item.bridge_elapsed_ms);
+          state[f] = { reading: item.response, at: pair.completed_at, testId: pair.test_id, timing };
+          renderResult(f, item.response, timing);
           shown = true;
         }
       });

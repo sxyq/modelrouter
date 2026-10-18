@@ -465,15 +465,16 @@ input, textarea, select { font-family: inherit; color: inherit; }
 
 /* ---------------- 提示条 ---------------- */
 .toast {
-  position: fixed; left: 50%; bottom: 11vh; transform: translateX(-50%) translateY(8px);
+  position: fixed; right: 26px; bottom: 10vh; transform: translateY(8px);
   background: var(--ink); color: var(--paper);
-  padding: 9px 16px; border-radius: 8px;
-  font-size: 12px; font-weight: 550;
+  padding: 10px 18px; border-radius: 8px;
+  font-size: 12.5px; font-weight: 550;
   opacity: 0; pointer-events: none;
   transition: opacity .2s, transform .2s;
-  z-index: 120; max-width: 70vw; text-align: center;
+  z-index: 120; max-width: 46vw; text-align: left;
+  box-shadow: 0 10px 28px rgba(41,43,41,.22);
 }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.show { opacity: 1; transform: translateY(0); }
 .toast.err { background: var(--err); }
 
 .mono { font-family: "Cascadia Code", "SF Mono", Consolas, monospace; }
