@@ -194,6 +194,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._handle_systemone()
         if parsed.path == "/api/pair":
             return self._handle_pair()
+        if parsed.path == "/api/pair/commit":
+            return self._handle_commit()
         return self._json(404, {"detail": "NOT_FOUND"})
 
     # ---------- 代理 ----------
@@ -322,6 +324,34 @@ class Handler(BaseHTTPRequestHandler):
 
         all_ok = all(r["ok"] for r in results.values())
         return self._json(200 if all_ok else 207, pair)
+
+    def _handle_commit(self):
+        """前端两侧各自返回后，把同一 test_id 的结果登记为同一轮，供 P17 读取。"""
+        body = self._read_json()
+        if not isinstance(body, dict):
+            return self._json(400, {"detail": "INVALID_JSON"})
+
+        test_id = body.get("test_id")
+        results = body.get("results") or {}
+        if not test_id or not isinstance(results, dict) or not results:
+            return self._json(400, {"detail": "MISSING_TEST_ID_OR_RESULTS"})
+
+        pair = {
+            "test_id": test_id,
+            "state": body.get("state"),
+            "questions": body.get("questions"),
+            "families": list(results.keys()),
+            "results": results,
+            "started_at": body.get("started_at") or now_iso(),
+            "completed_at": now_iso(),
+            "upstream": urllib.parse.urlparse(UPSTREAM).netloc,
+        }
+        with LOCK:
+            write_latest(pair)
+            (RUNS / f"pair_{stamp()}_{test_id}.json").write_text(
+                json.dumps(pair, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+        return self._json(200, pair)
 
     # ---------- 存档 ----------
     def _save_run(self, record: dict, family: str) -> None:

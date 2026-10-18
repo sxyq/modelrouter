@@ -491,6 +491,13 @@ const MR = (() => {
     return r;
   }
 
+  async function commitPair(testId, state, questions, results, startedAt) {
+    const body = { test_id: testId, state, questions, results, started_at: startedAt };
+    const r = await request('/pair/commit', { method: 'POST', body: JSON.stringify(body) }, 30000);
+    if (r.ok) S.lastPair = r.payload;
+    return r;
+  }
+
   function newTestId() {
     const d = new Date();
     const pad = n => String(n).padStart(2, '0');
@@ -536,7 +543,7 @@ const MR = (() => {
     PRESETS, S, LABELS,
     get apiBase() { return S.apiBase; },
     setApiBase(v) { S.apiBase = v.replace(/\/+$/, ''); },
-    health, models, config, latest, runOne, runPair, newTestId, randomScenario,
+    health, models, config, latest, runOne, runPair, commitPair, newTestId, randomScenario,
     modelMeta, checkpointLabel, onLog, pushLog,
     request, classify, errorText, ERROR_TITLES,
     clone, fmtTime, fmtPct, fmtNum, fmtShort: shortId, fmtChars, shortId,

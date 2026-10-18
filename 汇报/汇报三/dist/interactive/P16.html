@@ -807,39 +807,56 @@
     }
   }
 
+  /* 单侧请求：谁先回来谁先渲染，不等待另一侧 */
+  async function runSide(family, testId) {
+    const label = family === 'laya' ? 'Laya' : 'Kev';
+    const t0 = Date.now();
+    setChip($(family + '-state'), '请求中', 'run');
+    MR.setDot($(family === 'laya' ? 'dot-laya-p' : 'dot-kev-p'), 'wait');
+    $(family + '-body').innerHTML = `<div class="empty"><div class="glyph">◌</div><div class="t">${label} 正在推理…</div><div class="d">两侧各自推理，谁先返回谁先显示，不等另一侧。</div></div>`;
+    try {
+      const res = await MR.runOne(family, state.current.state, state.current.questions, testId);
+      const elapsed = Date.now() - t0;
+      const kind = MR.classify(res);
+      if (kind === 'OK' && res.reading) {
+        state[family] = { reading: res.reading, at: res.reading.completed_at, testId };
+        renderResult(family, res.reading);
+        updateFooter();
+        MR.toast(`${label} 已返回 · ${MR.fmtNum(res.reading.decision_latency_ms, 0)} ms`);
+        return { ok: true, request: res.request, response: res.reading, http_status: res.status, error: null, bridge_elapsed_ms: elapsed };
+      }
+      state[family] = null;
+      renderError(family, kind, MR.errorText(res));
+      updateFooter();
+      MR.toast(`${label} 失败：${MR.ERROR_TITLES[kind] || kind}`, true);
+      return { ok: false, request: res.request, response: null, http_status: res.status, error: res.payload, error_class: kind, bridge_elapsed_ms: elapsed };
+    } catch (e) {
+      state[family] = null;
+      renderError(family, 'UNKNOWN', String(e));
+      return { ok: false, request: null, response: null, http_status: 0, error: { detail: String(e) }, bridge_elapsed_ms: Date.now() - t0 };
+    }
+  }
+
+  /* 双模型对比：两侧并发，各自返回即渲染；全部结束后登记为同一轮 */
   async function runBoth() {
     if (state.running || !state.current) return;
     if (!termAutoOpened) { termOpen(true); termAutoOpened = true; }
     const testId = MR.newTestId();
+    const startedAt = new Date().toISOString();
+    const st = state.current.state;
+    const qs = state.current.questions;
     setRunning(true);
-    ['laya', 'kev'].forEach(f => {
-      setChip($(f + '-state'), '请求中', 'run');
-      MR.setDot($(f === 'laya' ? 'dot-laya-p' : 'dot-kev-p'), 'wait');
-      $(f + '-body').innerHTML = `<div class="empty"><div class="glyph">◌</div><div class="t">正在推理…</div><div class="d">两侧使用完全相同的输入，依次做真实前向计算。</div></div>`;
-    });
+    const results = {};
     try {
-      const res = await MR.runPair(state.current.state, state.current.questions, testId);
-      const pair = res.payload;
-      if (!pair?.results) {
-        ['laya', 'kev'].forEach(f => renderError(f, MR.classify(res), MR.errorText(res)));
-        MR.toast('对比失败：' + MR.errorText(res), true);
-        return;
-      }
-      state.pair = pair;
-      ['laya', 'kev'].forEach(family => {
-        const r = pair.results[family];
-        if (r?.ok && r.response) {
-          state[family] = { reading: r.response, at: pair.completed_at, testId: pair.test_id };
-          renderResult(family, r.response);
-        } else {
-          state[family] = null;
-          const kind = r?.error_class || (r?.http_status === 503 ? 'MODEL_UNAVAILABLE' : 'INFERENCE_FAILED');
-          renderError(family, kind, r?.error?.detail || '无响应');
-        }
-      });
+      // 两侧依次请求：Laya 先跑，返回即渲染；Kev 随后开始，同样返回即渲染。
+      // 不用并发——A6000 上两侧都在 CPU 上跑，并发会互相抢核，单侧反而更慢。
+      results.laya = await runSide('laya', testId);
+      results.kev = await runSide('kev', testId);
+      const c = await MR.commitPair(testId, st, qs, results, startedAt);
+      state.pair = c.ok ? c.payload : null;
       updateFooter();
-      const okCount = Object.values(pair.results).filter(r => r.ok).length;
-      MR.toast(okCount === 2 ? '两侧真实推理完成' : `只有 ${okCount}/2 侧成功`, okCount !== 2);
+      const okCount = Object.values(results).filter(r => r.ok).length;
+      MR.toast(okCount === 2 ? '两侧都已完成 · 已登记为同一轮' : `只有 ${okCount}/2 侧成功`, okCount !== 2);
     } finally {
       setRunning(false);
       if (termAutoOpened && !termUserToggled) setTimeout(() => termOpen(false), 2200);
