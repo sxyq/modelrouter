@@ -365,3 +365,88 @@ S0–S8 可交织执行但**主 Agent 只管理两名明确分工的子代理**�
 9. 把每个竞品方法的真实 1–2 个运行结果做脱敏 `summary.json` 或 `comparison.csv` 提交 GitHub（附上游 revision、实际执行环境 SHA 和评估路径/内容 hash），详细原始 prompt/output 留权限受控本机目录。完成后更新 `PROJECT_STATUS.md`、唯一 Benchmark/方法 manifest 和 Dashboard，定向 Commit/Push，再拉取最新 V8 方案。
 
 **本补充不增加子代理或停止服务器训练**：主 Agent 继续双模型真实训练/版本评估；子代理 A 完成官方 benchmark+真实 Agent；子代理 B 完成真实外部方法和可视化；恰好 2 名子代理，无二级派生。用户的要求是“论文方法真的参与整个 Agent/Benchmark 对照”，而不是“能对两个字符串输出路由分数”。
+
+
+## 10. 2026-10-18 最新总执行修订：复用 Harbor 官方沙箱，整体可恢复高吞吐实验，**一次性补齐剩余交付**
+
+> **本节覆盖前文任何“自制 `LocalHarborSandboxEnvironment` 或 `Mock 64 并发` 即算完成”的旧口径。** 用户要的是完整、可持续、安全、可重启、节省墙钟时间的正式实验平台，不是拿 64 个 Mock task 测一个数字。允许 **主 Execution Agent + 恰好两个子代理**；服务器 Laya/Kev 健康训练不得中断；本机不放两路 Router 权重，均调用服务器 API。暂不得使用已泄露旧 Key，必须先在实际 Provider 轮换并查验风险。本轮全部源码与实测按阶段交付，不能只写文档或假造“完成”。
+
+### 10.1 官方 Harbor **已经自带沙箱**，禁止再造 Host Shell
+
+**经官方源码/文档确认**：[Harbor 官方仓库](https://github.com/harbor-framework/harbor)、[官方任务环境定义](https://github.com/harbor-framework/harbor/blob/main/docs/content/docs/tasks/index.mdx)、[官方 `BaseAgent`](https://github.com/harbor-framework/harbor/blob/main/src/harbor/agents/base.py)、[最简自定义 Agent](https://github.com/harbor-framework/harbor/blob/main/examples/agents/marker_agent.py)、[官方 `harbor run`](https://github.com/harbor-framework/docs/blob/main/cli/run.mdx)。
+
+1. 环境选择 **Harbor 自带 `DockerEnvironment`（本机 Mac Docker Desktop）**；每个 Trial 实例由 Harbor 自己准备官方 Task 的 `environment/Dockerfile` / Compose / 官方已发布 Image；官方测试脚本由 Harbor Verifier 在任务定义规定的环境运行。**不得在 Mac 宿主上执行 Agent 输出的 Shell，不得动态重写任务 `test_verifier.py` 取代官方评分器。** 原 `LocalHarborSandboxEnvironment` 已 fail-closed，保持禁用；不允许为凑“跑通”删去这一保护。
+2. 自定义 `ModelRouterAgent(BaseAgent)` 用官方实际 API：`async setup(self, environment: BaseEnvironment)`、`async run(self, instruction: str, environment: BaseEnvironment, context: AgentContext)`；循环内所有命令执行仅 `await environment.exec(command=..., timeout_sec=...)`，按上游当前 `ExecResult.stdout/stderr/return_code` 记录，必要时沿用官方日志目录与 context/trial ID。其余网络 Provider/Router API 调用由受控调用端进行，按 Harbor 对 Agent 的运行位置/网络限制安排授权通信，**不得将 CC Switch/SSH 身份证据注入不可信 Task 沙箱**。
+3. 上游版本锁定 `git SHA`/发行包版本/依赖 lock；先执行官方 hello-world/marker 的真实 Docker trial，证明官方部署成功；再用本项目 custom agent + Terminal-Bench 原始 task/verifier 完成 1–2 题。官方 `Oracle` 只验测评链路，不能计入模型 agent 的真实成功率。输出 Harbor 原生 Trial/Job 结果和轨迹文件，归档到项目唯一 `runs/agent_pilot/` 的对应 Job ID，不自行编造 reward。
+4. **不要再另写一个完整 Container Scheduler / Sandbox Manager。** Harbor 已支持 `harbor run --path <task> --agent module.path:ClassName --env docker --n-concurrent N`、YAML/JSON Job Config、多个 trials、Job 输出与未完成 Job 恢复。具体 CLI 参数在本机安装版本运行 `harbor run --help`/`harbor jobs --help` 自检后使用。只有当官方接口确实不能表达本项目特有的 Router 运行配置时，增加最薄的 Job Matrix 生成器和日志导出/预算扩展，不重造 Runner 内核。
+5. 安全边界：每个任务独立文件系统/容器、CPU/RAM/time/storage 配额、环境清理、网络限制；禁止 host 的项目根目录、`~/.ssh`、`~/.cc-switch`、`~/.config/modelrouter`、Docker socket、API 密钥/Token 文件直接挂载给不可信容器。只有经过明确定义的 Agent 网络服务可以处理 Provider/Router 请求。Harbor 网络策略能力随环境后端变化，要现场验证而非假设 Docker 动态网络切换有效。Verifier 和 Agent 输入必须防止未来标准答案泄漏。
+
+### 10.2 不是“64 并发”：完整科研矩阵的实际快速执行设计
+
+**最小调度单位是独立 Trial**：`(benchmark_id, benchmark_revision, task_id, policy_id, model_pool_id, effort_mode, G, F, seed, repetition)`。同一个 Trial 中是一个串行的单 Agent 循环；不同 Trial 由 Harbor Job 原生并发。**不同 policy 同一题绝不复用同一任务容器、可变上下文或工具结果。**
+
+- **配置驱动的实验矩阵**：`experiments/agent_pilot/configs/experiment_matrix.yaml` 列清 Benchmark, Canary/Dev/Sealed split，Pool/Native Effort，FixedStrong/FixedCheap/Random/RuleSticky/RouteLLM-real/SR-KNN-real/Laya-real/Kev-real，G0/G1/G2、F0/F1/F2、steps/timeout、每 task 的 max output，种子、并发档位、预算。生成清单保存 `matrix_manifest.json` 和 `matrix_sha256`；最终 57 sealed Test 在预注册/冻结方案前永不加入调度队列。
+- **真正提速来自**：Task/Docker 镜像按 digest 预取或按需构建并复用内容寻址缓存（不改官方 task）；Warm Job 环境避免反复 install；本机 CPU/RAM/Docker 镜像并发 build 有界；同一个 Host 只启动 Harbor 官方 scheduler；Provider 长连接/HTTP keep-alive（模型支持再进行流式响应）；异步 API/工具时间复用；已完成 Trial 用官方 Job Resume 或自己只做薄的 manifest 状态 reconciliation 跳过；失败任务限制重试并分类；**不能靠把并发开到 64 宣称更快**。
+- **并发三重边界**：① `n_concurrent_trials` 不超过 Mac Docker CPU/RAM/存储与容器配置允许值；② Laya/Kev Router 服务器 QPS、真实训练影响和 `max_inflight`；③ 真实 Generator 每 Provider/模型的 `RPM/TPM/max_inflight` 与 Token/USD 全局账本。另对同时 Docker Builds 单独限流。不在 A6000 训练峰值无限请求 Router；Router 服务返回 `BUSY/RESOURCE_BUSY` 时排队/有限退避，不在 Mac 假装路由执行完成。
+- **1 → 2 → 4 → 经实际吞吐可拓展**：先测真环境每小时 `completed official-evaluated trials`、Docker create/build time、cache hit、p50/p95 duration、GPU route wait、API 429/5xx/timeout、已知真实 USD/token、失败重试、环境泄漏/清理；逐档扩容直到边际吞吐不再提升或费用/失败上升，再选最优并发。既有 Mock 64 并发只能作软件锁与账本压力测试，永不属于正式任务吞吐/Pass@1。
+- **失败恢复/长周期**：Job/Trial ID 稳定、`RUNNING/COMPLETED/FAILED/TIMEOUT/BLOCKED_BUDGET` 明确，Harbor 原生 Job 输出为评分权威；断电/终止后恢复未完成 Trials，完整任务不重复扣费，`RUNNING` 无最新心跳需确认相关容器/调用再重排；远程 API 返回不确定执行状态时保留请求 ID 做去重核查，不盲目重发和重复计费。提供受控 `start/resume/status/stop-new-work` 命令入口，保留已运行 Trial 恢复文件。
+- **真正墙钟效率**：结果报告必须同时给出“顺序完整基线用时、并发实际用时、官方已评估任务数、总真实 tokens/USD、CPU/RAM 负载及有效 speedup”；若环境构建或 Provider 限流更慢则不宣称提速。
+- **全局硬账本**：既定本轮真实生成 Token 总上限 1,000,000，所有 2 子代理/主 Agent/三协议/重复请求/工具调用共享**跨进程原子请求前预留**（SQLite WAL 事务、原子数据库锁或等价进程间正确机制即可）；按官方实际 usage 核销，未知 usage 保守计入上界。超过预算必须拒绝发送新请求，不能仅日志警告。USD 上限另独立硬控，且 OpenRouter **版本化参考价 ≠ CC Switch/实际 Provider 账单**。旧 `update_token_budget()` 必须修复并有 2–4 进程竞争测试。
+
+### 10.3 先完成全链路安全修复，再一次性真正跑全部选定基线
+
+- **凭证先决**：公开仓库曾提交非空 Provider Key；HEAD 已删除且 `.gitignore` 和外置配置有修复，但**旧 Key 历史仍泄露，必须撤销/轮换并查账**；没有已授权新 Key 时暂停收费真实请求，CPU/服务器训练/非付费开发继续，不阻塞全部工作。强制不再读取仓库内 Secret、禁止将密钥注入 benchmark container、日志/异常堆栈不得输出 Authorization。修复 Mac `AGENTS.md` 里错误的“Secret 不应忽略”语句。
+- **Provider**：检查 CC Switch 合法本机代理与真实 `model_id`/账户权限；GPT 优先 **Responses + SSE stream + 合法 `reasoning.effort` + tool/function call 与 response continuation**，Chat Completions/Anthropic Messages 用各自协议解析；工具调用写入统一 Trace。不要把 GPT-6、Luna 或任意模型 ID 强制映射成同一个实际 Generator；真实返回的模型 ID 与返回 usage/计价来源一致才可做模型池基线。无真实两个差异 Generator 时，允许固定模型的真实 Agent 闭环，但 RQ1 模型选择实证为 `NOT_EVALUABLE`。
+- **定价**：从 OpenRouter 官方 `GET https://openrouter.ai/api/v1/models` 采集模型 `pricing`，匹配明确的 OpenRouter ID 后定格 `price_snapshot_id/timestamp/sha/raw_units/normalized_per_1m/available_cache_prices`；不明价格=UNKNOWN。路由选择的 **requested/resolved/response** 模型分别存档；真实费用先用 Provider 实际账单，次之已知 Provider 计价估算；OpenRouter 标为 reference USD，不假充账单。
+- **竞品**：`external/router_methods/RouteLLM` 和实际 SR-KNN 上游源码/论文、revision 与训练模型/合法 fitted index 一并归档。旧关键词 RouteLLM、8 exemplars KNN 不可当论文复现。如果没有相容真实算法/权重，诚实保留 `BLOCKED_UPSTREAM_METHOD`，不要制造一个假方法。FixedStrong/FixedCheap/RuleSticky/Random 是实用基础线。
+- **Benchmark**：在 `external/benchmarks/{harbor,terminal-bench-2-1,TwinRouterBench,SWE-bench}` 固定真实 Git checkout 与上游版本，安装所需的受控依赖，保留原版 task/verifier。先官方 hello-world/marker 和选定 Canary `fix-git` / `count-dataset-tokens`，然后在**相同的 1–2 个真实官方任务上每个合法策略运行完整** `route → real generator → tool in Harbor Docker → observation → continue → official evaluator`，所有策略不同 Trial；此后按授权扩展 DEV，最终 57 Sealed 只在冻结后一次性执行。对于 TwinRouterBench 按其官方路由计分协议跑至少一项可比对照；SWE-bench 先官方任务/评测入口，按资源决定完整真实 Trial。原 Mock/host-shell/自写 pytest 的 CTRF 只能归档为无效官方评测的早期 Smoke。
+- **Agent**：实现最小自定义 `BaseAgent`，其交互统一注入 `PolicyAdapter.select(pre_state, legal_actions)`、`GeneratorProvider.generate(...)`、`Harbor BaseEnvironment.exec(...)`；只执行在当前历史可观察的 `state`，Shell Tool 最大输出截断但保留原始安全引用；终局由官方 verifier 认定而非模型自称完成。G0/G1/G2 与 F0/F1/F2 分离并由配置决定，不实现额外执行 Agent 或多 Agent orchestration。
+
+### 10.4 长周期两模型训练与真凭证修复同时推进，且以科学数据收敛为准
+
+- 主 Agent 独占 A6000。旧 Laya 38 组健康正式队列继续；Kev 真实 GPU + LoRA/Pointer Head 梯度必须形成实体 checkpoint 和正式固定 S1/S2/S3 Val。数据盘点沿唯一许可台账，复用已有 Agent/KV 原料（TRA-001/002/004、CooperBench、Mooncake 等），真实清洗的 `state/history/cache` 特征须进入实际前向，证据不可信不进入 choice 监督。Laya/Kev 新 V8 分支各自独立 Run。
+- Laya、Kev **各至少 12 个不同而有意义的模型候选**为覆盖目标（小规模先导筛选→有意义候选扩大样本/epoch），保留 best physical+latest resume 与真实固定 Val；不能在没有计算改善证据时编造“明显上升”，也不能因为初始 2 步或 Mock 上升就停止。允许预先约定训练资源/试验数上限，出现统计平台期/负结果如实记录并更换有依据的 ablation；正常已有正式 Run 不受本机工程影响。
+- A6000 同卡双训练 + Router Serving 根据真实有效 walltime、显存、主线减速与响应限流决定独占/并行，**“都开了 PID”不是并行有效性指标**。Mac 不下载 Laya/Kev 权重；Serving 必须检验经过真实 Checkpoint 前向、合法 `Model×Effort` 动作输出。错误要显式 `FALLBACK/NOT_AVAILABLE`，不得静默规则代替 Kev 并写成功。
+
+### 10.5 数据、结果和可视化：一套权威账本
+
+```text
+路由/
+├── external/benchmarks/{harbor,terminal-bench-2-1,TwinRouterBench,SWE-bench}/
+├── external/router_methods/{RouteLLM,semantic-router}/
+├── experiments/agent_pilot/{harbor_agent.py,policies/,provider_adapters/,registry.py,pricing/,configs/,matrix_manifest.py,ledger.py}
+├── experiments/router_serving/{server.py,laya_adapter.py,kev_adapter.py}
+├── docs/training-dashboard/{index.html,live_status.json,development_status.json,...}
+├── runs/agent_pilot/<job>/<benchmark>/<policy>/<task>/<seed>/
+│   ├── run_manifest.json    # 上游SHA/自有GitSHA/数据split/策略/池/模型Effort/价格快照/预算
+│   ├── decisions.jsonl      # 路由前可见状态、合法动作、真实模型选择/概率/checkpoint/fallback
+│   ├── router_calls.jsonl   # Laya/Kev API 的 request/response/耗时/模型实体
+│   ├── model_calls.jsonl    # 请求响应引用、协议/stream/effort、真实模型ID、usage/费用与重试
+│   ├── tools.jsonl          # Harbor容器命令、return_code/stdout/stderr引用/时间
+│   ├── events.jsonl         # append-only 事件，包括 fail/retry/resume/timeout/429
+│   ├── episode.json         # 官方 resolved、实际成本、耗时、完成/失败条件
+│   ├── official_evaluator/  # 官方任务验证文件原样，必须保留
+│   └── inputs/ outputs/     # 受保护原始调用和合法脱敏输出；不入Git
+└── .runtime/{agent_pilot,dashboard}/
+```
+
+- 完整输入输出和原始日志**在有访问控制的本机/服务器**保存，不公开 Secret/个人信息/Benchmark 答案；Git 只提交代码、Config 示例、上游 SHA、脱敏 `comparison.csv` / `summary.json` / hash 与实体存储索引，禁止 `git add -A` 误提交数十 GB 或 Secret。
+- 看板**减少无用文字、保留丰富图表/交互**：Laya/Kev 两列的 Train/Val 收敛曲线、Best vs Latest、12 候选进度；Benchmark 所有策略对照可筛选、真正官方 Eval vs Mock 分开；模型 API/Responses SSE、OpenRouter 快照、Token/费用、Agent Trials/h、队列/限流/异常、真实 Git SHA 和 STALE 检测；保留本机原 8765 独立终端，别重复启动。
+- GitHub `PROJECT_STATUS.md` 里老状态 S4/S6/S8 `completed` 是开发 Smoke，不自动等于官方评测。每个阶段必须检查源/状态/安全、运行真实命令、写入结果、逐一更新权威台账、定向 commit/push、重新 fetch/read 文档，再继续；每个阶段既不能因等待人工而停正常训练，也不能为了凑状态宣称未完成的工作已经完成。
+
+### 10.6 一次性交付的硬验收表（每项给日志/命令/路径；完成、阻塞皆可复核）
+
+| 必交项 | 判定 `COMPLETED` 的唯一证据 |
+|---|---|
+| 安全 | Key 在真实 Provider 撤销轮换/检查异常；私有凭证；Host Shell fail-closed；Harbor 官方 Docker 真隔离和官方 verifier |
+| 官方沙箱+最小 Agent | 官方 Marker/hello-world 真 Trial + 本项目 `BaseAgent` 真容器工具回路，Job/trial ID 和原版 evaluator 产物 |
+| 下载 | Harbor、Terminal-Bench 2.1、TwinRouterBench、SWE-bench 真实 checkout+SHA、许可、官方任务/评价入口 |
+| Provider | GPT Responses SSE/Text/Tool/合法 Effort 至少小规模真响应；Chat/Messages 分协议契约及实际可用状态；requested/resolved/response 身份一致性 |
+| 价格与 Token | OpenRouter 真 snapshot+unit/hash，真实 Provider 账单/参考价分层；多进程原子 1M Token+USD 预留/拒绝与重试账本 |
+| 外部方法 | RouteLLM 与 fitted SR-KNN 的实际算法/出处，合法 1–2 任务整链路 Harbor Agent+官方评分，不用关键词伪方法 |
+| 固定与自有方法 | FixedStrong/FixedCheap/Random/RuleSticky/Laya/Kev 同 1–2 题独立真 Trial；如果真实候选池只有 1 模型，RQ1 `NOT_EVALUABLE` |
+| 提速/恢复 | Harbor job 并发 1→2→4（按环境上限）实际 Trials/h、p95、fail 和 USD；Jobs Resume/跳过完成 Trial；不以 Mock 64 当指标 |
+| 服务器训练 | Laya/Kev 真训练实体，V8 数据来源/样本量/验证指标、12 个有意义候选计划及实际进度、可恢复日志、无损原队列 |
+| 看板与 Git | 8765 本机单例，双模型丰富图表、Benchmark 真/假分离，所有源/脱敏结果/状态提交 GitHub 并列最终 SHA |
+
+**执行组织**：主 Agent + 最多恰好 2 个子代理（不许子代理再分裂）；主 Agent 管 A6000/训练与唯一提交；子 A 负责 Harbor Sandbox+Agent+三协议+真实 Bench，子 B 负责官方 RouteLLM/SR-KNN+Router 对照+OpenRouter 价格/账本+看板。分工可以交错，但共享仓库的同时编辑需事先划分文件所有权。**不要把时间花在额外 Watcher、复杂调度框架或长期“读计划/安全审计”，应尽快把真正有隔离的首个官方 Agent Trial 跑通，之后让已有 Harbor Job 功能完成矩阵扩展。** 若 Provider 暴露旧凭证未轮换，暂停新收费调用，其余不涉及付费的工程及训练继续。
