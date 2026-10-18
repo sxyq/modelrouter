@@ -666,21 +666,22 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 
 
 
-## 2026-10-16 V8 RQ4/RQ5 的数据要求（研究规划，尚无新增实测）
+## 2026-10-18 V9 最新 RQ4/RQ5 的数据要求（替代 2026-10-16 旧映射）
 
-**研究决定**：最新五个 RQ 详见 [汇报三 V8](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)。RQ1 含 Model×Effort/状态消融；RQ4 固定模型池和拆分结构，研究子 Agent 角色的模型互补性；RQ5 固定 Router/池/拆分，研究不同多 Agent 工作负载有无可靠路由净收益。本台账只记录数据可能支持的字段和仍缺什么，不将 RQ 规划反向冒充新的训练数据。
+**已确认的最新编号**：RQ1 总体效果；RQ2 模型池；RQ3 任务拆分；**RQ4 系统消融**；RQ5 不同工作负载下路由适用边界。**原「RQ4 Agent 角色模型互补性」已从当前论文实验中删除。** 当前数据源注册表继续保存 CooperBench 等已有候选来源，但不因曾经的旧 RQ4 而要求将其补训成独立主实验；数据来源、许可、实际清洗/训练状态不随 RQ 改名自动变更。
 
-| 实验所需数据 | 已有/候选来源 | 真实边界与下一步 |
+| 当前研究 | 所需真实数据 | 已有与缺口 |
 |---|---|---|
-| RQ1 同类路由完整 Episode | 已有 SWE 轨迹及 Task/Model 比较、未来同 Harness 实跑账本 | 旧日志/离线模型选择 Accuracy **不能替代**相同完整任务上 Baseline/Full 的 Success 和 Total USD；所有失败/重试/Router 开销入账 |
-| RQ1 Joint Native Effort | Provider Registry、TRA-004 AgentSuite、OWN 聚合使用先验 | 原生 Effort 的具体合法值以模型版本为准；AgentSuite 的思考模式部分是开关/模型变体，不能一律宣传为同一模型的原生 Provider Effort |
-| RQ1 T/M/H 信息消融 | TRA-001/004、CACHE、OWN、模型能力/价格台账 | 需单条决策前实际共现与真实标签；不把八类来源彼此拼接成伪联合最优样本 |
-| RQ4 真实 role/subtask/handoff | 已加工 TRA-001/004；研究候选 CooperBench dual-policy/team-trajectories、MAS-002/003；未来自有 Harness | `agent_framework` 和 `role=assistant` **不是**真实多 Agent 的 `agent_role`；必须确认时间截断的 `agent_id/agent_role/subtask_goal/parent_agent/handoff` 是否在同一次执行中可用且真正编码进 Laya/Kev |
-| RQ4 角色×候选模型效果 | 同职责任务的受控小型 Model×Effort 对照 / 有可靠配对的多 Agent Episode | 局部子任务成功和费用≠整任务成功；不从异质单轨迹推断同状态全部候选最优；必要时真实匹配分支采样 |
-| RQ5 工作负载分层 | Benchmark 官方 `task_type`、task repo/description；预先确定的任务规模/难度 proxy、Agent 拆分配置 | 分层特征必须任务开始前可见且可重复，避免按事后 `total_trace`/最终失败数反向定义初始难度；不同任务类型有不同 evaluator，不可直接把绝对成功率差异归因于 Router |
-| RQ5 收益稳定性 | 按同一任务/政策对应的真实 Episode 账本 | 必须记录每层独立任务数、适配强基线 Success/Cost、Full Success/Cost 与任务级不确定性；空分层不可填预估收益 |
+| RQ1 总体效果 | 同一任务/池/Harness 下真实 Task Success、所有失败重试成本、Episode USD | 历史离线准确率与任务不同池、不同 Harness 的费用数字不能直接比较 |
+| RQ2 模型池 | `model_id/provider/revision/native_effort_menu/price`，每个池真实模型数 K 与合法动作数 | K=模型身份数，不能把 Effort 子节点误算成模型 |
+| RQ3 拆分 | 相同原任务、固定模型池与 Router 的不同 G、实际 agent/handoff/trace/cost | 拆分方案变化造成的 Agent 数变化要如实记录 |
+| **RQ4-A 动作消融** | Fixed M+E、Model-only、Effort-only、分层 M→E、Joint M×Native Effort 在同任务池合法条件的真实结果 | Provider 原生 Effort 以官方当前支持为准；不能将模型变体当档位 |
+| **RQ4-B 信息组合消融** | 决策前 T/M/H 的真实字段可用性、缺失率、联合覆盖、时间戳、实际编码状态 | 旧八类分布在异构来源，不能按索引拼接伪造完全联合观察；`agent_role` 等只是可选 T 组字段 |
+| **RQ4-C 训练监督消融** | 合法 S1/S2/S3、独立训练任务单位、Laya/Kev checkpoint、已编码特征、固定训练预算与真实 Episode 结果 | 一条观察性轨迹不是未执行模型/Effort 的最优标签；数据来源许可、旧正式训练与新消融训练分开记载 |
+| RQ5 适用边界 | 预定义 task type/原始规模/协作结构、同一策略池/Harness、每层独立任务数/最终成本/成功及 CI | 初始难度不能由事后 Trace/终局失败数回填 |
 
-**训练/准入状态不变**：上次登记 CooperBench 等多 Agent 源仅为候选，未因此获得新的正式训练许可、独立路由监督或新增样本数。历史 P22 训练与本次 RQ 更新分离。
+**仍旧适用的事实**：CooperBench dual-policy、team-trajectories 和其他多 Agent 候选来源可以在训练准入合规、字段真实存在且进入编码的条件下辅助 T 信息组学习；**它们不再是独立 RQ4 的必需训练数据**。既有数据集行数、许可证、GPU 运行状态均不因本文更新而改变；详见 [汇报三 V9](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)。
+
 
 ## 2026-10-16 追加：Agent 角色/子任务训练输入的数据源候选与真实缺口
 
