@@ -14,7 +14,8 @@
 > 5. **Serving 端口 8000 双模型常驻**：
 >    - Laya F05 与 Kev-4B LoRA 权重真实加载，前向推理双重验证通过，持续稳定为 Agent 决策提供服务。
 
-> **2026-10-18 · 最新论文方向（仅研究文件同步，不覆盖现有真实训练/Benchmark 状态）**：RQ1 现仅聚焦完整 Router 对比同类路由方法的任务成功率—整任务 USD 总体效果；原 RQ1 内的 Model×Native Effort、T/M/H 信息单/双/三组合、KV/Trace/反馈与训练数据监督等**系统消融拟独立成为新的大 RQ，但正式编号尚未确认**。RQ2 模型池、RQ3 任务拆分不变。**原 V8 RQ4 角色互补性、RQ5 工作负载适用边界的题目、定义、Fig.7/8 和 T8/9 本轮均不调整**。研究详情以 [汇报三论文规划](../../汇报/汇报三/ModelRouter论文实验与图表规划.md) 与 [EXPERIMENT_QA 最新备忘](EXPERIMENT_QA.md) 为准；本次未访问服务器或本机现场，也未调整训练代码/运行任务。
+> **2026-10-18 · 论文五个 RQ 最新确定（仅研究方案更新，不覆盖真实执行/训练现场）**：**RQ1 整体效果**（完整 Router vs 强固定/混合/规则与同类算法的 Task Success–Episode USD）、**RQ2 模型池身份成员与数量 K**、**RQ3 固定池/Router 的任务拆分 G**、**RQ4 系统消融**（Model×Native Effort 联合动作、T/M/H 状态单/双/三组、KV/Trace/反馈及合法 S1/S2/S3 训练数据/监督/Laya-Kev 配方）、**RQ5 任务适用边界（原命题不变）**。**原 V8 的「RQ4 Agent 角色模型互补性」已正式删除，不再是论文 RQ**，也不再占用 Fig.7/T8；图表和实验定义见 [汇报三 V9](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)，负责人最新决定见 [EXPERIMENT_QA Q-019](EXPERIMENT_QA.md)。下方旧日期的 RQ 记录只是历史快照。本次未操作服务器、训练、Benchmark 或实际结果。  
+>
 
 > **2026-10-16 · 论文 RQ 研究设计同步（仅科研方案，不是 GPU 现场更新）**：负责人确认当前五个 RQ 为 **RQ1 完整 ModelRouter 与同类 Agent Router 的真实任务成功率—整任务费用比较（含 Model×Native Effort、角色/KV/Trace/反馈及 T/M/H 单双三组消融）**、**RQ2 模型池成员和模型数量 K**、**RQ3 固定池/Router 下的任务拆分粒度**、**RQ4 不同子 Agent 角色间是否存在可利用的模型互补性**、**RQ5 哪些预定多 Agent 工作负载条件下动态路由有/无可靠经济收益**。八张图及十二张空白实验表已更新至 [汇报三 V8](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)，正式研究定义见 [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)，批准记录见 [EXPERIMENT_QA Q-017](EXPERIMENT_QA.md)。
 > 1. **当前 GPU 在线训练状态（Live Running：F04 L4 单层联合监督全量覆盖）**：
