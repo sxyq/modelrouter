@@ -1,8 +1,8 @@
-# ModelRouter · 论文研究问题、实验与图表规划（V8｜2026-10-16 导师讨论确认版）
+# ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-10-18 最新确认）
 
-> **更新日期：2026-10-16；现行汇报口径：五个 RQ、八张图、十二张空白表。** 这次明确调整 RQ1–RQ5 的科研定位，不改历史 Q-ID/H1–H7，不启动或声称完成真实 Benchmark。
+> **更新日期：2026-10-18；现行已确定：五个 RQ、八张图、十二张空白表。** 本次明确把**系统消融定为 RQ4**，删除原 V8 的独立「多 Agent 角色互补性 RQ4」；**RQ5 仍为动态路由适用边界**。历史 Q-ID / H1–H7 和已有真实训练、评测记录不被重写。
 >
-> **2026-10-18 最新局部讨论**：RQ1 聚焦**完整 Router 与同类方法的横向对比**；Model×Native Effort、T/M/H 状态信息、KV/Trace 与训练数据的系统消融拟**从 RQ1 独立出来**，但尚未确定新的 RQ 编号和正式实验归属。RQ2 仍为模型池成员与 K，RQ3 仍为同池任务拆分。**按负责人要求，原 V8 RQ4（角色互补性）与 RQ5（工作负载适用边界）原文暂时冻结、不改名、不改实验。**
+> **最终五个 RQ**：**RQ1 整体效果**（与同类 Router 横向比较）；**RQ2 模型池选择**（池成员与 K）；**RQ3 任务拆分粒度**（固定池/Router 比 G）；**RQ4 系统消融**（动作 Model×Native Effort、信息组 T/M/H、训练数据/监督与必要运行机制）；**RQ5 工作负载适用边界**（何种任务条件下动态路由有/无净收益）。**原角色互补性不再是独立 RQ**，角色字段仅在实际 Agent 状态和 RQ4 状态消融中按需研究。
 >
 > **导师汇报 / PPT 大纲（V8｜14 页，约 12–15 分钟）**：[汇报提纲.md](汇报提纲.md)——逐页标题、讲述重点、主方法 Fig.2 的每个模块/变量/箭头、各 RQ 图的坐标和对照、12 张空白表的用途、后续生图素材数量。**当前只规划，不制作 PPT 或图片**。
 >
@@ -21,7 +21,7 @@
 - **经济层**：主指标是同任务完整 Episode 成功率与平均实际成本。目标是**在观测到的固定/随机混合前沿之外获得新有效点**，不是宣称超越理论所有策略的最优边界。
 - **学术层**：模型池、任务粒度、Model×Effort、缓存历史各自建立可否证对照；最终端到端结果作为总评，不以 Laya/Kev 的训练 Accuracy 替代。
 
-**目前研究表达（2026-10-18 局部调整）**：Overall Performance → Model Pool → Task Decomposition；另有 **Systematic Ablation（候选独立研究问题，编号未定）**。旧 V8 的 RQ4/5 维持原样，仅供当前文档版本定位；五 RQ 最终次序待负责人另行确认。
+**当前正式主线（V9）**：**Overall Performance → Model Pool Selection → Task Decomposition → Systematic Ablation → Workload Applicability**。不以多 Agent 角色互补性作为独立研究贡献；但 Agent 状态中合法可见的角色/子任务仍可作为消融信息。
 
 ### 0.2 与项目现有资产的关系
 
@@ -45,11 +45,12 @@
 | V5 | 模型池前沿、全局收益、联合分配、缓存、重新路由 | 增加模型池，但任务拆分降为附属 |
 | **V6 当前草案** | **模型池、任务拆分/频率、联合分配、缓存/历史、端到端前沿收益** | 同时保留模型池新意与多子代理核心，5 个 RQ 不扩张 |
 
-**现行 V8**：模型×原生 Effort、KV/Trace/反馈、Router 开销、短视策略与整任务费用均属于 **RQ1**；不再作为独立 RQ4/RQ5。正式 Q-ID/H1–H7 不因论文重编号而改变。
+**V9 修订**：RQ1 只回答完整方法与强基线的总体表现；联合 Model×Native Effort、KV/Trace/反馈、输入信息组和监督/数据配方的**受控消融移入 RQ4**。完整 Episode 费用既是全部 RQ 的计量口径，也是 RQ1 主表和 RQ4 消融的共同评价指标。正式 Q-ID/H1–H7 不因论文重编号而改变。
 
 
 | V7 历史 | 模型池、任务结构、候选泛化、稀疏反馈、整任务经济收益 | 2026-10-13 方案，已被 V8 的 RQ 编号替代 |
-| **V8 当前** | **总体效果/机制、模型池、任务拆分、角色模型互补性、任务适用边界** | 2026-10-16 用户确认 RQ4（原方案 B）和 RQ5（原方案 C），Joint Model×Effort 内收 RQ1 |
+| V8 历史 | 总体效果/机制、模型池、任务拆分、角色模型互补性、任务适用边界 | 2026-10-16 版本，**原 RQ4 已废止**，参见历史提交 |
+| **V9 当前** | **总体效果、模型池、任务拆分、系统消融、任务适用边界** | 2026-10-18 负责人明确决定：旧 RQ4 删除，系统消融正式取代为 RQ4，RQ5 保留 |
 
 ## 1. 前沿定义与方法边界
 
@@ -93,7 +94,7 @@ flowchart LR
   USAGE --> SNAP
 ```
 
-Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆分粒度与路由频率；RQ3 比较固定/动态 Model×Effort；RQ4 在相同环境下改变缓存/历史信息；RQ5 在完整 Benchmark 上统一对照。单一路由入口，不引入第二个在线 Router、学习型拆分器或跨模型 KV 迁移功能。
+Pool 在开发阶段冻结；RQ2 **改变 K 与具体池成员**，RQ3 **固定池/Router 改变同一任务的拆分 G**，RQ4 **固定池/任务/评测口径改变动作、可选状态信息或训练监督配置**，RQ5 **固定 Router/池/G 比较预定工作负载条件下的相对收益**。同一个 Router 负责 Model×Native Effort 联合选择，不引入第二个在线 Router、学习型拆分器或跨模型 KV 迁移功能。
 
 ### 1.4 证据要求
 
@@ -108,16 +109,16 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 
 完整任务 API USD 必须包含全部真实模型调用的输入/输出、缓存读写与失败/重试费用；重试成本不可在已计价的调用费用上重复累加。本地 GPU-hours、估计本地美元费用、路由延迟、工具费用等分列报告。单位必须相同才能绘制 Pareto。QuotaUnits ≠ USD；prefix overlap ≠ Provider 报告的物理 KV 命中；不能假设 KV 可跨模型移植。
 
-## 2. 五个研究问题（V8，导师汇报版）
+## 2. 五个研究问题（V9，最新确认）
 
-> 本节为当前有效研究定位，替代 V7 的 RQ 顺序。五个 RQ 都要与真实多 Agent 任务和 ModelRouter 目标相连，而不能把单个字段、训练技巧或 KV 缓存单独包装成主问题。
+> 本节为当前**正式确定**的 RQ1–RQ5。旧 V8 的角色互补性独立 RQ 已取消。真实 Agent 任务仍可带有多个角色，但不把多 Agent 架构或角色专业化本身当成本文独立研究问题。
 
 | RQ | 白话问法 | 主要变化轴 | 图 | 表 |
 |---|---|---|---|---|
 | **RQ1 Overall Performance** | **我们的动态 ModelRouter 与相同任务环境中的其他路由方法相比，整体成功率—成本表现如何？** | 相同工作负载/模型池/Harness/预算下改变路由策略 | Fig.3 | T3、T10（成本账本） |
 | **RQ2 Pool Selection** | **池里放哪些模型、放几个最有价值？** | 模型身份成员与数量 K | Fig.5 | T6 |
 | **RQ3 Task Decomposition** | **同样的模型池与 Router，任务拆多细比较划算？** | 同原任务的可复现拆分粒度 G | Fig.6 | T7 |
-| **RQ4 Role Complementarity** | **规划、编码、验证等不同子 Agent，真的需要不同的模型配置吗？** | 固定池/拆分条件下比较角色×模型能力交互 | Fig.7 | T8 |
+| **RQ4 Systematic Ablation** | **Router 究竟靠哪些设计发挥作用？联合模型与档位、状态信息、训练数据/监督，哪些必要，哪些组合有效？** | 固定任务/池/评测，仅改变受控组件、输入信息组或训练配置 | Fig.7 | T4–T5、T8、T11 |
 | **RQ5 Workload Boundary** | **哪些多 Agent 任务真正适合动态路由，哪些不值得？** | 预先定义的任务类别、难度/长度、协作结构等工作负载分层 | Fig.8 | T9 |
 
 ### 2.1 动作树、状态与训练的边界
@@ -137,9 +138,9 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 - **核心结果图表**：Fig.3 成功率—Episode USD Pareto，Table 3 同环境横向对照；费用 ledger 用 T10 作为任务级总成本口径说明，并不在此宣称任何模块有贡献。
 - **可证伪性**：Full 可能无法超越认真选择的双模型整任务随机混合、开发集最佳固定或 Role-static，也可能被自身路由开销抵消；均须如实报告。
 
-### 2.2A 候选独立研究问题：系统消融（**暂不分配 RQ4/RQ5 编号**）
+### 2.2A 消融实验索引（正式归属为 RQ4，详细定义见 §2.5）
 
-> 2026-10-18 新讨论方向：负责人倾向不再围绕多 Agent 独立创新来撰写一个 RQ，而是**将原 RQ1 中系统消融单独提升为大 RQ**；这属于**待正式排号的方案**，不是对下文 RQ4/RQ5 的已确认替换，也不使原训练数据自动失效。本阶段保留实验方案、Fig.4 与 T4/T5/T11，不执行编号/内容替换。
+> 2026-10-18 负责人已明确确认：**本项就是新的 RQ4**。保留此节为从原 RQ1 迁移来的实验索引，详细控制与图表安排见 §2.5，不再是候选。以前独立的「角色互补性 RQ4」已删除；角色信息是可选评分特征之一，不预先断言它有效。
 
 - **A｜动作结构消融**：Fixed Model+Effort、Model-only（模型动态、每模型合法 Effort 预先固定）、Effort-only（模型固定）、Hierarchical Model→Effort、Joint Model×Native Effort；考察联合动作在实际任务上是否产生净收益，并分别说明候选动作空间是否相同。
 - **B｜决策输入消融**：T（任务/当前 Agent 与子任务）、M（模型能力和候选经济性）、H（上下文/KV/已发生 Trace 和验证反馈）的单组、双组、三组组合；根据开发集再细分关键字段。**所有模型合法性、Effort 支持、工具/权限硬约束保持启用**；去掉某组评分特征不是允许非法调用。
@@ -155,7 +156,7 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 
 - 在**固定 K** 下比较不同成员集合：公开前沿/Agent 开发集/价位分层/按任务互补/随机；再比较不同 K（如 3/5/8 仅作候选，不是已锁定配置）和在前沿之外加入模型的价值。
 - 固定 Router、任务、拆分、Evaluator 与预算；**K 是模型身份数**，另外报告每个池实际合法 Model×Effort 动作数 `Σ|E_m|`。
-- RQ2 测**池怎么搭**，不是断言所有 Agent 角色必须有不同最优模型；后者交给 RQ4。主要指标为整体任务成功率、费用、K 的边际价值及选池成本。
+- RQ2 测**池怎么搭**，不预设不同 Agent 角色必须选择不同模型；角色信息是否帮助评分可在 RQ4 的输入消融中测试。主要指标为整体任务成功率、费用、K 的边际价值及选池成本。
 - 允许“两个模型足够”“扩大池子无收益”等负结果。公开 AA 图与真实 Episode 图须分开坐标。
 
 ### 2.4 RQ3：同池条件下的任务拆分效果
@@ -165,19 +166,34 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 - 在相同原始任务上比较整体/阶段级/细粒度子任务等可执行 G，配合至少一种固定模型或 Role-static 对照；保持 Router 核心策略及合法动作条件一致。
 - 记录实际 agent 数、可用路由边界 F、handoff、上下文复制、Trace、费用和成功率。任务粒度改变可能自然增加 Agent 数：主结果可作为**整体拆分方案效果**；如需纯粒度因果结论，另加控制对照，不能声称这些因素完全独立。
 - 在可用的 Coding / Research / Data 等**真实多 Agent 工作负载**上分别展示，不把不同 benchmark 难度直接作同一任务的配对比较。
-- RQ3 研究**拆分方法本身带来的变化**；固定 G 之后的“不同角色是否偏好不同模型”由 RQ4 研究。
+- RQ3 研究**拆分方法本身带来的变化**；是否需要给 Router 提供角色、交接等额外输入，作为 RQ4 的信息消融，而不是另设角色互补性 RQ。
 
-### 2.5 RQ4：多 Agent 角色之间存在可利用的模型互补性吗？（用户确认原方案 B）
+### 2.5 RQ4：哪些设计与训练信息真正决定 ModelRouter 的任务级效果？（系统消融）
 
-**科学问题**：在固定模型池和拆分结构下，不同子 Agent 角色/任务阶段是否真的存在不同的优势 Model×Effort 配置？这种差异能否转化成真实端到端路由收益？
+**科学问题**：在固定的实际 Agent 任务、模型身份池、各模型原生 Effort 菜单、Harness 和真实终局评测下，完整 Router 的性能来源于哪些组成部分？联合动作选择、决策前状态信息和训练数据/监督是否有独立贡献或组合交互，是否值得其额外运行成本？
 
-- **对照**：同池统一固定模型；开发集按角色选静态配置（强基线）；不看角色的同一 Router；使用角色/子任务信息的同一 Router。不能把角色数据是否存在当成证明角色有效。
-- **角色×模型/档位对照**：选择同一批具有明确职责、可验证结果的规划/编码/测试/恢复子任务，在对应角色中对少量合法 Model×Effort 做受控重复执行，记录质量、成本及不确定性。观测日志只能提供观察性证据；不同任务的历史聚合结果**不是同状态反事实**；在昂贵且可恢复的少量状态做匹配分支，不推断全空间 oracle。
-- **有效价值与潜在价值分开**：角色×候选质量/费用热力图可以显示经验互补性；整体 Fixed / Role-static / Role-aware Router Episode 对比才能证明**可实现的净收益**。不能从局部子任务分数直接加总推出整任务成功率。
-- **RQ2 区别**：RQ2 决定池中有哪些模型；RQ4 固定 K/成员，问这些模型是否存在**跨角色的差异化适用性**。
-- **RQ3 区别**：RQ3 改任务拆分 G；RQ4 **固定 G**，分析角色与模型表现关系。
-- **证伪情况**：同一模型在所有角色都占优、角色差异无统计/实际意义，或 Role-static 已达到相当收益。
-- **主图**：角色×模型（或合法 M×E）格子质量/费用差的空白热力图；另报角色感知相较最优 Role-static 的端到端收益。
+**RQ4-A｜路由动作维度**（表 T5）：
+- 固定 Model+Effort；Model-only（模型动态，Effort 用每模型合法默认档位）；Effort-only（固定同一模型，动态选择该模型合法 Effort）；分层 Model→Effort；完整**单一共享评分器联合 Model×Native Effort**。
+- 每模型 Effort 档位必须来自 Provider 实际支持，不用人为设定统一 Low/Medium/High；明确行动空间变化可能带来上限变化，不把动作空间扩张误当路由器训练优势。
+
+**RQ4-B｜决策信息与组合贡献**（表 T4）：
+- 分组 T=任务需求/Agent 子任务（可含已知角色）；M=候选模型能力与经济性；H=决策前已有 Trace/上下文/KV/验证反馈/预算。
+- 最小矩阵：T、M、H、T+M、T+H、M+H、T+M+H（在合法过滤、官方价格/权限/工具/context 硬规则始终存在的条件下）；再对真实共现、允许训练的 KV/Trace/Agent role 等子字段开展有重点的单项剔除。
+- 信息组本身不是动作类别；当前大规模异构训练数据不具备完整八类状态同一条真实联合监督，无法把缺测字段硬填成“所有变量均可用”。允许无效变量从最终实现中删除，但已测负结果须保留记录。
+
+**RQ4-C｜训练数据与监督方式**（表 T8、附录 T11）：
+- 比较真实合法 S1 人类偏好、S2 已执行 Agent 轨迹、S3 缓存/调用辅助，以及**经许可、时间截断并实际进入输入编码的**组合；报告独立训练单元、样本覆盖、数据来源/许可证、固定训练预算、验证指标与最终任务级收益。
+- Laya / Kev 的不同训练阶段、代表性 Checkpoint/数据配比可在同条件下对照，但不能把异质数据行当独立决策标签，更不能由已执行轨迹生成未选动作的最优答案。
+- 训练配方本身与学习器架构差异应分开对照；若资源不足先做最能判别因果的重点对照，不为 92 种组合穷举而耗费大量 API。
+
+**RQ4-D｜净费用与必要性**（Fig.7）：
+- 汇总每个消融配置的 Task Success、完整 Episode USD、Cost/Resolved、Router 延迟与额外费用；真实 token、reasoning、cache、失败重试费用可从 T10 复用。
+- 只依据开发集进行变量筛选，独立 Test 用于冻结策略的最终评价；已测不显著或变差的实验不能隐匿。**某变量未产生观察到的净收益，不等于证明它本质无效**。
+
+**RQ1 与 RQ4 的严格分工**：RQ1 只证明最终完整方法与外部/简单基线的横向差异；RQ4 固定外部条件，改变 Router 自身动作、输入或训练数据来解释这种差异。即使总体无收益，RQ4 仍可报告各模块的真实影响。
+
+**主图**：Fig.7 为三面板（A 联合动作、B 信息组、C 训练数据/监督）；必要时另以小面板列 Router/Cache 开销。不画虚假提升曲线。**主表**：T4、T5、T8；补充 T10/T11。
+
 
 ### 2.6 RQ5：哪些多 Agent 工作负载值得动态路由？（用户确认原方案 C）
 
@@ -193,7 +209,7 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 
 ### 2.7 论文逻辑与必要数据
 
-- **数据优先**：主 RQ 都需要真实完整多 Agent Episode、终局成功标签、当时的合法池及实际费用；RQ4 更需要真正的 `agent_role / subtask_goal / handoff` 和一小部分公平的角色×模型对照；RQ5 需要每个工作负载层足够的独立任务和预先可知的分层字段。
+- **数据优先**：RQ1–RQ5 均需要真实完整 Agent Episode、终局成功标签、当时合法池及完整费用；**RQ4** 额外要求每种训练监督/信息组的真实覆盖、可比 Checkpoint 和合法输入编码证据；**RQ5** 要有预定义的、独立任务数量足够的工作负载分层。Agent role/handoff 仅作为具体输入字段候选，而非独立的跨角色模型互补性 RQ。
 - **现有训练缺口**：已加工轨迹含 `agent_framework`、消息 role、step/context 及部分 thinking mode，但这些不等于真正的子 Agent 角色监督；AgentState 已在研究总纲和数据台账设计，尚未验证进入 Laya/Kev 实际训练输入。公开数据集可帮助角色表征，不能凭此制造最佳 Model×Effort 动作标签。
 - **微调定位**：Laya / Kev 的 S1/S2/S3 联合训练和 Checkpoint 比选是 Router 的训练证据，继续作为方法、训练记录和附录；离线 Accuracy 不是 RQ1–RQ5 的任务级成绩。
 
@@ -217,10 +233,10 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 |---|---|---|---|
 | A | 锁定真实多 Agent task/evaluator、候选模型树、原生 Effort、完整费用口径；不改变现有训练授权 | Setup | Fig.1–2, T1–2 |
 | B | 同池同任务运行固定/随机混合/简单/可比 Agent Router/Full，完成主要任务级横向对照 | RQ1 | Fig.3, T3 |
-| C | 预备独立的大规模消融：动作结构、T/M/H 信息单/双/三组合、合法训练数据配比与实际费用开销；正式 RQ 编号待确定 | 消融候选（未占用 RQ4/RQ5） | Fig.4, T4–5、T10–11 |
+| C | 固定池与任务做联合动作、T/M/H 信息单双三组合、训练数据/监督与费用开销的系统消融 | **RQ4** | **Fig.7, T4–5、T8、T10–11** |
 | D | 固定 Router/G，比不同 K 和同 K 不同模型组合，区分 K 与 `Σ|E_m|` | RQ2 | Fig.5, T6 |
 | E | 固定模型池身份/K/原生 Effort/Router 改可复现任务拆分，按任务类型分层 | RQ3 | Fig.6, T7 |
-| F | 固定池与 G，分析角色×模型经济互补；真实 Role-static 与 Role-aware 任务对照 | RQ4 | Fig.7, T8 |
+| F | 对照合法训练数据/监督的真实效果，核验动态输入编码并报告独立样本、训练开销和最终任务级效果 | **RQ4（训练消融）** | **Fig.7, T8/T11** |
 | G | 固定池/Router/G，预先定义工作负载分层，比较 Full 相对强基线的任务级收益边界 | RQ5 | Fig.8, T9 |
 | H | 报告费用分解、真实训练证据和代表性任务轨迹；独立 Test 不用于事后挑池/变量 | 全部 | T10–12 |
 
@@ -237,7 +253,7 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 
 
 
-## 4. 八张图的 V8 设计（结果点全部留空）
+## 4. 八张图的 V9 设计（结果点全部留空）
 
 > **逐页制作说明**：参见 [导师汇报 V8 详细提纲](汇报提纲.md)。建议只有封面与 Agent 工作流两张 AI 场景插画（另可选一张训练/证据概念插画）；**Fig.2 论文主方法必须精确画成可编辑矢量流程图，不是 AI 随机生成的文本图**；Fig.1、Fig.3–8 的统计图当前保留精确轴、对照组和空白结果区域。
 
@@ -246,16 +262,16 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 | Fig.1 | Motivation | 静态 AA Intelligence–Price 与真实 Agent Success–Episode USD **两个独立面板**，不能把 AA 结果当 Agent 任务结果 |
 | **Fig.2** | Method | **树形模型池 Model→Native Effort**、AgentState（真实子 Agent 身份/角色/子任务）、合法动作过滤→单一 Router→任务执行→真实费用/验证/缓存反馈 |
 | **Fig.3** | **RQ1 主结果** | X=Mean Complete Episode USD，Y=Task Success Rate；固定、Role-static、随机整任务混合、简单、同 Harness 学术 Router、Full；真实实测后绘 Pareto |
-| Fig.4 | 消融候选（独立 RQ 待编号） | A: T/M/H 单/双/三组信息的 Success/Cost；B: Fixed / Model-only / Effort-only / Hierarchical / Joint 的 Success–Cost；C: KV/Trace/Router 实际成本与训练证据；**暂不归给旧 RQ4/5** |
+| Fig.4 | RQ1 结果解释 | 主结果策略的完整 Episode 成本分解（input/output/cache/router/retry）与成功率—费用基线包络说明；不与 Fig.7 的机制消融重复 |
 | Fig.5 | RQ2 | 不同 Pool Rule、不同 K 的 Success–Episode Cost/边际收益，分开标注 K 与实际合法 M×E 动作数 |
 | Fig.6 | RQ3 | X=可复现拆分粒度 G，Y=Success/Mean Episode USD（双面板），图例 Fixed/Role-static/Full、任务类型分层；标注 Agents/Handoffs/F |
-| **Fig.7** | **RQ4** | Role×Model（或合法 Model×Effort）性能/费用热力图（空格待测）+ Role-static vs Role-aware 的任务级净收益 |
+| **Fig.7** | **RQ4 系统消融** | 三面板：A 固定/Model-only/Effort-only/分层/Joint；B T/M/H 单双三组；C S1/S2/S3 合法数据与监督配置；每组以真实 Success/完整 USD 衡量，结果待测 |
 | **Fig.8** | **RQ5** | X=预定义多 Agent 工作负载分层（类型/复杂度/结构），Y=在可比成功率下的 Full 相对强基线的**任务级费用改善**及不确定性；无收益区域同样保留 |
 
 **不得填假坐标点或预设正收益**。Case trajectory、Provider cached-read 细节和失败案例可作补充图；图 8 不得简单重复图 3 的总体平均数。
 
 
-## 5. 十二张空白结果表（V8）
+## 5. 十二张空白结果表（V9）
 
 > PPT 表格展示策略：P06 缩略展示 T1/T2 的 Benchmark/池/协议；P07 展示 T3；P08 展示 T4/T5/T10；P09–P12 分别展示 T6–T9；T11/T12 留在备用/附录页。各表行、列的口径与讲述逻辑见 [详细汇报提纲](汇报提纲.md)。
 
@@ -293,7 +309,7 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 | Adapted Agent Router (named algorithm) |   |   |   |   |   |   |
 | Full ModelRouter |   |   |   |   |   |   |
 
-### Table 4 · 候选独立 RQ：信息组单/双/三消融（编号待定）
+### Table 4 · RQ4 信息组单/双/三组合消融
 
 | Information Used | Valid Action Space | Task Success ↑ | Mean Episode USD ↓ | Δ vs Full | Router Cost |
 | --- | --- | --- | --- | --- | --- |
@@ -308,7 +324,7 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 | Full minus KV |   |   |   |   |   |
 | Full minus Verifier feedback |   |   |   |   |   |
 
-### Table 5 · 候选独立 RQ：Model×Native Effort 联合选择（编号待定）
+### Table 5 · RQ4 Model×Native Effort 联合动作消融
 
 | Action Policy | Model Dynamic? | Effort Dynamic? | Task Success ↑ | Mean Episode USD ↓ | Reasoning Tokens | P95 Time |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -342,17 +358,19 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 | Coding: Fine / Full |   |   |   |   |   |   |   |
 | Other multi-Agent task: paired granularity (if runnable) |   |   |   |   |   |   |   |
 
-### Table 8 · RQ4 角色与模型互补
+### Table 8 · RQ4 合法训练数据/监督与微调策略消融
 
-| Agent Role / Subtask | Candidate Model×Effort | Matched Independent Units | Local Quality | Local Cost | Role-static Episode Success | Role-aware Episode Success | Episode USD Δ |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Planner: Candidate A |   |   |   |   |   |   |   |
-| Planner: Candidate B |   |   |   |   |   |   |   |
-| Coder: Candidate A |   |   |   |   |   |   |   |
-| Coder: Candidate B |   |   |   |   |   |   |   |
-| Verifier: Candidate A |   |   |   |   |   |   |   |
-| Verifier: Candidate B |   |   |   |   |   |   |   |
-| Role-static vs Role-aware |   |   |   |   |   |   |   |
+| Training Variant | Source / S1-S2-S3 | Independent Train Units | Input Feature Coverage | Frozen Training Budget | Offline Validation | Task Success ↑ | Episode USD ↓ |
+|---|---|---|---|---|---|---|---|
+| S1-only（合规子集） |  |  |  |  |  |  |  |
+| S1 + S2（合规且真实已观察） |  |  |  |  |  |  |  |
+| S1 + S3（仅经准入辅助） |  |  |  |  |  |  |  |
+| S1 + S2 + S3（可真实共现/分层） |  |  |  |  |  |  |  |
+| Representative Laya checkpoint |  |  |  |  |  |  |  |
+| Representative Kev checkpoint |  |  |  |  |  |  |  |
+
+> 行只代表拟比较的合法配置，不证明它们当前可训练、已完成或具有匹配反事实标签。结果字段保持空白；各样本准入与角色/缓存字段是否进入编码均需按真实资产说明。
+
 
 ### Table 9 · RQ5 工作负载收益边界
 
@@ -406,22 +424,22 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 | Evidence | `supervision_regime/task_group/observed_action/true_matched_branch`；历史单轨迹不是最优反事实标签 |
 | Usage | `actual_input/output/reasoning/cache_read/cache_write/retries/router_overhead/price_snapshot`；估计和实测分离 |
 | Episode | `task_id/task_type/G/pool/policy/seed/terminal_resolved/total_USD/wall_time/evaluator_version` |
-| RQ4 | `role/subtask/candidate/outcome/matched_unit_count`；角色×候选结果的局部证据与整任务收益分开 |
+| RQ4 | `ablation_group/action_policy/feature_mask/supervision_sources/train_units/checkpoint/actual_encoded_fields/terminal_resolved/episode_USD`；训练信息及动作/状态消融与全程 Episode 同口径，缺少真实反事实不补造 |
 | RQ5 | `predefined_workload_stratum/independent_task_count/baseline/full/cost_delta/uncertainty`；事后 Trace 仅用于解释 |
 
 不基于缺失的真实分支制造角色×模型“最优 oracle”；不因一次负结果就从训练/论文历史删除测试过的因素。
 
 
-## 7. 论文章节与图表定位（V8）
+## 7. 论文章节与图表定位（V9）
 
 | 章节 | Figure | Table |
 |---|---|---|
 | Motivation / Method / Setup | Fig.1–2 | T1–2 |
-| **RQ1 Overall Performance** | **Fig.3** | **T3、T10（全局成本口径）** |
-| **候选独立消融 RQ（暂未编号）** | Fig.4 | T4–5、T11（训练支撑） |
+| **RQ1 Overall Performance** | **Fig.3** | **T3（主表）** |
+| **RQ1 Results & Accounting** | **Fig.3–4** | **T3、T10** |
 | RQ2 Pool | Fig.5 | T6 |
 | RQ3 Task Decomposition | Fig.6 | T7 |
-| **RQ4 Role Complementarity** | **Fig.7** | **T8** |
+| **RQ4 Systematic Ablation** | **Fig.7** | **T4–5、T8、T11** |
 | **RQ5 Workload Boundary** | **Fig.8** | **T9** |
 | Appendix: Laya/Kev, Case Traces | Supplementary | T11–12 |
 
@@ -451,6 +469,6 @@ Pool 在开发阶段冻结。RQ2 只改变已有 Harness 的可复现任务拆�
 
 ## 2026-10-16 V8 决策落款
 
-**负责人最新确认**：原方案 B“多 Agent 任务是否存在可利用模型互补性”作为 RQ4；原方案 C“哪些多 Agent 任务不适合动态路由/路由适用边界”作为 RQ5；原独立 Model×Native Effort RQ4 并入 RQ1 的实验机制。此前 V7 的“候选泛化 RQ3、监督可靠性 RQ4、完整经济性 RQ5”只作为 Git 历史方案，不再代表当前 RQ 编号。
+**2026-10-18 最新明确决定（V9）**：负责人要求**消融直接成为新的 RQ4，原 V8 的 RQ4 角色互补性删除**；**RQ5 动态路由适用边界保持不变**。现行顺序为 RQ1 总体、RQ2 模型池、RQ3 任务粒度、RQ4 系统消融、RQ5 适用边界。V8/V7 的旧角色互补性编号仅在 Git 历史与 Q-ID 审批历史中可查，不属于当前论文方案。
 
 **更新范围**：仅论文实验研究设计及空白图表口径，没有新增 API/GPU 训练、下载、跑 Benchmark 或产生任何结果。八张图和十二张表的实际数据留空；独立外部最终评测集继续遵守现有隔离规则。
