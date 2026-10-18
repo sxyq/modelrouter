@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "modelrouter"
+version = "0.1.0"
+description = "ModelRouter: Dynamic Cost-Effective Routing for Large Language Model Agents"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pydantic>=2.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.20.0",
+    "requests>=2.28.0",
+]
+
+[project.scripts]
+modelrouter = "modelrouter.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

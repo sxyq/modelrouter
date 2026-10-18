@@ -115,6 +115,11 @@ async def main():
 
             with open(dev_path, "w", encoding="utf-8") as f:
                 json.dump(dev_data, f, indent=2)
+
+            our_dev_path = Path("our-project/dashboard/development_status.json")
+            if our_dev_path.parent.is_dir():
+                with open(our_dev_path, "w", encoding="utf-8") as f:
+                    json.dump(dev_data, f, indent=2)
         except Exception as e:
             logger.error("Failed to update development_status.json: %s", e)
 

@@ -27,6 +27,7 @@ logger = logging.getLogger("fetch_live_status")
 
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
 DASHBOARD_DIR = WORKSPACE_ROOT / "docs" / "training-dashboard"
+OUR_PROJECT_DASHBOARD_DIR = WORKSPACE_ROOT / "our-project" / "dashboard"
 LEDGERS_DIR = WORKSPACE_ROOT / "experiments" / "agent_pilot" / "ledgers"
 TOKEN_BUDGET_FILE = WORKSPACE_ROOT / "experiments" / "agent_pilot" / "token_budget.json"
 
@@ -499,6 +500,14 @@ def sync_once() -> Dict[str, Any]:
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2)
 
+    our_project_out_file = OUR_PROJECT_DASHBOARD_DIR / "live_status.json"
+    try:
+        OUR_PROJECT_DASHBOARD_DIR.mkdir(parents=True, exist_ok=True)
+        with open(our_project_out_file, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+    except Exception as e:
+        logger.warning("Failed writing our-project dashboard live_status.json: %s", e)
+
     return payload
 
 
@@ -518,7 +527,7 @@ def main():
             time.sleep(args.interval)
     else:
         res = sync_once()
-        print(f"Sync complete. Updated {DASHBOARD_DIR / 'live_status.json'}")
+        print(f"Sync complete. Updated {DASHBOARD_DIR / 'live_status.json'} and {OUR_PROJECT_DASHBOARD_DIR / 'live_status.json'}")
 
 
 if __name__ == "__main__":

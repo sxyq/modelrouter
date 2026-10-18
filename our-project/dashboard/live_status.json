@@ -1,0 +1,477 @@
+{
+  "version": "8.1.0",
+  "updated_at": "2026-10-18T05:39:09.290599+00:00",
+  "git_sha": "18a4096",
+  "server_connected": true,
+  "gpu": {
+    "used_mb": 9661.0,
+    "total_mb": 49140.0,
+    "util_pct": 93.0,
+    "temp_c": 83.0,
+    "power_w": 291.65
+  },
+  "token_budget": {
+    "max_tokens": 1000000,
+    "consumed_total_tokens": 368520,
+    "remaining_tokens": 631480,
+    "percent_used": 36.85,
+    "consumed_prompt_tokens": 328287,
+    "consumed_completion_tokens": 40233,
+    "total_calls": 69,
+    "last_updated": "2026-10-18T05:04:08Z"
+  },
+  "laya": {
+    "family": "laya",
+    "run_id": "F06",
+    "is_training": true,
+    "epoch": 0,
+    "chunk": 96,
+    "step": 12288,
+    "total_steps": 92280,
+    "loss": 0.5211,
+    "best_s1_acc": 0.6791,
+    "best_val_loss": 0.5933,
+    "brier_score": 0.1824,
+    "candidate_versions_count": 12,
+    "candidate_versions_target": 12,
+    "completed_runs_count": 66,
+    "queue_status": "running",
+    "serving_checkpoint": "F05 / epoch_01",
+    "serving_status": "LOADED_VERIFIED",
+    "recent_loss_series": [
+      0.684,
+      0.651,
+      0.632,
+      0.618,
+      0.605,
+      0.598,
+      0.593
+    ],
+    "val_trend": [
+      {
+        "epoch": 1,
+        "s1_acc": 0.6471,
+        "loss": 0.6135,
+        "brier": 0.1942
+      },
+      {
+        "epoch": 2,
+        "s1_acc": 0.6791,
+        "loss": 0.5933,
+        "brier": 0.1824
+      }
+    ],
+    "total_chunks": 361
+  },
+  "kev": {
+    "family": "kev",
+    "run_id": "KEV-4B-ADAPTER",
+    "base_model": "Qwen3.5-4B-Base",
+    "lora_rank": 16,
+    "checkpoint": "1001bb4d826a52d1f399e183466143f4da7b741b",
+    "loss": 0.612,
+    "val_accuracy": 0.642,
+    "val_loss": 0.612,
+    "brier_score": 0.198,
+    "candidate_versions_count": 12,
+    "candidate_versions_target": 12,
+    "serving_status": "LOADED_VERIFIED",
+    "recent_loss_series": [
+      0.72,
+      0.695,
+      0.671,
+      0.648,
+      0.63,
+      0.621,
+      0.612
+    ],
+    "val_trend": [
+      {
+        "epoch": 1,
+        "s1_acc": 0.618,
+        "loss": 0.635,
+        "brier": 0.2105
+      },
+      {
+        "epoch": 2,
+        "s1_acc": 0.642,
+        "loss": 0.612,
+        "brier": 0.198
+      }
+    ]
+  },
+  "serving": {
+    "online": true,
+    "endpoint": "http://127.0.0.1:8000",
+    "models_loaded": {
+      "laya": true,
+      "kev": true
+    },
+    "weights_loaded": {
+      "laya": true,
+      "kev": true
+    },
+    "inference_verified": {
+      "laya": true,
+      "kev": true
+    },
+    "uptime_seconds": 34319.3,
+    "models": [
+      {
+        "family": "laya",
+        "run_id": "F05",
+        "checkpoint_id": "epoch_01",
+        "epoch": 1,
+        "loaded": true,
+        "weights_path": "/home/syy/\u8def\u7531/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+        "metrics": {
+          "best_val_accuracy_s1": 0.6756,
+          "val_loss": 0.5978
+        }
+      },
+      {
+        "family": "kev",
+        "run_id": "KEV-4B-ADAPTER",
+        "checkpoint_id": "1001bb4d826a52d1f399e183466143f4da7b741b",
+        "epoch": null,
+        "loaded": true,
+        "weights_path": "/home/syy/\u8def\u7531/models/kev-4b-adapter",
+        "metrics": {
+          "base": "Qwen3.5-4B-Base",
+          "lora_rank": 16,
+          "inference_engine": "torch_cpu"
+        }
+      }
+    ]
+  },
+  "agent_pilot": {
+    "summary": {
+      "last_updated_at": "2026-10-17T20:36:27.613350+00:00",
+      "total_episodes": 106,
+      "resolved_count": 48,
+      "pass_at_1": 0.4528,
+      "total_cost_usd": 3.4454,
+      "mean_cost_usd": 0.0325,
+      "mean_steps_per_episode": 3.9,
+      "mean_duration_sec": 9.45,
+      "policy_breakdown": {
+        "rule_sticky": {
+          "total": 14,
+          "resolved": 6,
+          "cost_usd": 0.1351,
+          "steps": 55,
+          "pass_at_1": 0.4286,
+          "mean_cost_usd": 0.0097
+        },
+        "random": {
+          "total": 13,
+          "resolved": 6,
+          "cost_usd": 0.2825,
+          "steps": 44,
+          "pass_at_1": 0.4615,
+          "mean_cost_usd": 0.0217
+        },
+        "fixed_cheap": {
+          "total": 13,
+          "resolved": 6,
+          "cost_usd": 0.0094,
+          "steps": 52,
+          "pass_at_1": 0.4615,
+          "mean_cost_usd": 0.0007
+        },
+        "sr_knn": {
+          "total": 13,
+          "resolved": 6,
+          "cost_usd": 0.1257,
+          "steps": 52,
+          "pass_at_1": 0.4615,
+          "mean_cost_usd": 0.0097
+        },
+        "fixed_strong": {
+          "total": 15,
+          "resolved": 6,
+          "cost_usd": 0.3439,
+          "steps": 68,
+          "pass_at_1": 0.4,
+          "mean_cost_usd": 0.0229
+        },
+        "routellm": {
+          "total": 13,
+          "resolved": 6,
+          "cost_usd": 0.014,
+          "steps": 51,
+          "pass_at_1": 0.4615,
+          "mean_cost_usd": 0.0011
+        },
+        "kev_4b": {
+          "total": 12,
+          "resolved": 6,
+          "cost_usd": 0.0254,
+          "steps": 47,
+          "pass_at_1": 0.5,
+          "mean_cost_usd": 0.0021
+        },
+        "laya_v2": {
+          "total": 13,
+          "resolved": 6,
+          "cost_usd": 2.5094,
+          "steps": 44,
+          "pass_at_1": 0.4615,
+          "mean_cost_usd": 0.193
+        }
+      }
+    },
+    "matrix_mock": [
+      {
+        "policy_id": "fixed_strong",
+        "name": "FixedStrong (Flagship)",
+        "category": "Baseline (Fixed)",
+        "algorithm": "Always routes to Strong/Reasoning model",
+        "episodes": 15,
+        "resolved": 6,
+        "pass_at_1": 0.4,
+        "total_cost_usd": 0.3439,
+        "mean_cost_usd": 0.0229,
+        "mean_steps": 4.5,
+        "routing_latency_ms": 0.06
+      },
+      {
+        "policy_id": "fixed_cheap",
+        "name": "FixedCheap (Lowest Cost)",
+        "category": "Baseline (Fixed)",
+        "algorithm": "Always routes to Fast/Cheap model",
+        "episodes": 13,
+        "resolved": 6,
+        "pass_at_1": 0.4615,
+        "total_cost_usd": 0.0094,
+        "mean_cost_usd": 0.0007,
+        "mean_steps": 4.0,
+        "routing_latency_ms": 0.02
+      },
+      {
+        "policy_id": "random",
+        "name": "Random (Uniform)",
+        "category": "Baseline (Random)",
+        "algorithm": "Uniform stochastic sample across legal pairs",
+        "episodes": 13,
+        "resolved": 6,
+        "pass_at_1": 0.4615,
+        "total_cost_usd": 0.2825,
+        "mean_cost_usd": 0.0217,
+        "mean_steps": 3.4,
+        "routing_latency_ms": 0.02
+      },
+      {
+        "policy_id": "rule_sticky",
+        "name": "RuleSticky (Phase Guard)",
+        "category": "Baseline (Heuristic)",
+        "algorithm": "Phase-aware sticky rule with 25% budget guard",
+        "episodes": 14,
+        "resolved": 6,
+        "pass_at_1": 0.4286,
+        "total_cost_usd": 0.1351,
+        "mean_cost_usd": 0.0097,
+        "mean_steps": 3.9,
+        "routing_latency_ms": 0.03
+      },
+      {
+        "policy_id": "routellm",
+        "name": "RouteLLM (Official LMSYS)",
+        "category": "External Paper Method",
+        "algorithm": "Matrix Factorization logistic winrate threshold",
+        "episodes": 13,
+        "resolved": 6,
+        "pass_at_1": 0.4615,
+        "total_cost_usd": 0.014,
+        "mean_cost_usd": 0.0011,
+        "mean_steps": 3.9,
+        "routing_latency_ms": 5.03
+      },
+      {
+        "policy_id": "sr_knn",
+        "name": "SR-KNN (State Vector k-NN)",
+        "category": "External Paper Method",
+        "algorithm": "8D normalized state representation k-NN",
+        "episodes": 13,
+        "resolved": 6,
+        "pass_at_1": 0.4615,
+        "total_cost_usd": 0.1257,
+        "mean_cost_usd": 0.0097,
+        "mean_steps": 4.0,
+        "routing_latency_ms": 5.14
+      },
+      {
+        "policy_id": "laya_v2",
+        "name": "Laya-V2 (421M Serving Router)",
+        "category": "ModelRouter (Ours)",
+        "algorithm": "Full-coverage multi-task MoE state encoder",
+        "episodes": 13,
+        "resolved": 6,
+        "pass_at_1": 0.4615,
+        "total_cost_usd": 2.5094,
+        "mean_cost_usd": 0.193,
+        "mean_steps": 3.4,
+        "routing_latency_ms": 169.1
+      },
+      {
+        "policy_id": "kev_4b",
+        "name": "Kev-4B (Qwen LoRA Router)",
+        "category": "ModelRouter (Ours)",
+        "algorithm": "Pointer Head + Qwen3.5-4B LoRA (rank 16)",
+        "episodes": 12,
+        "resolved": 6,
+        "pass_at_1": 0.5,
+        "total_cost_usd": 0.0254,
+        "mean_cost_usd": 0.0021,
+        "mean_steps": 3.9,
+        "routing_latency_ms": 3265.25
+      }
+    ],
+    "matrix_real": [
+      {
+        "policy_id": "fixed_strong",
+        "name": "FixedStrong (Flagship)",
+        "category": "Baseline (Fixed)",
+        "algorithm": "Always routes to Strong/Reasoning model",
+        "status": "LOCAL_HOST_EXPERIMENTAL",
+        "isolation": "HOST_PROCESS (UNISOLATED)",
+        "official_isolated": false,
+        "episodes": 2,
+        "resolved": 0,
+        "pass_at_1": 0.0,
+        "total_cost_usd": 0.08166,
+        "mean_cost_usd": 0.04083,
+        "mean_steps": 4.0,
+        "routing_latency_ms": 0.08
+      },
+      {
+        "policy_id": "fixed_cheap",
+        "name": "FixedCheap (Lowest Cost)",
+        "category": "Baseline (Fixed)",
+        "algorithm": "Always routes to Fast/Cheap model",
+        "status": "LOCAL_HOST_EXPERIMENTAL",
+        "isolation": "HOST_PROCESS (UNISOLATED)",
+        "official_isolated": false,
+        "episodes": 2,
+        "resolved": 0,
+        "pass_at_1": 0.0,
+        "total_cost_usd": 0.00354,
+        "mean_cost_usd": 0.00177,
+        "mean_steps": 4.0,
+        "routing_latency_ms": 0.1
+      },
+      {
+        "policy_id": "random",
+        "name": "Random (Uniform)",
+        "category": "Baseline (Random)",
+        "algorithm": "Uniform stochastic sample across legal pairs",
+        "status": "LOCAL_HOST_EXPERIMENTAL",
+        "isolation": "HOST_PROCESS (UNISOLATED)",
+        "official_isolated": false,
+        "episodes": 2,
+        "resolved": 0,
+        "pass_at_1": 0.0,
+        "total_cost_usd": 0.0,
+        "mean_cost_usd": 0.0,
+        "mean_steps": 0.0,
+        "routing_latency_ms": 0.06
+      },
+      {
+        "policy_id": "rule_sticky",
+        "name": "RuleSticky (Phase Guard)",
+        "category": "Baseline (Heuristic)",
+        "algorithm": "Phase-aware sticky rule with 25% budget guard",
+        "status": "LOCAL_HOST_EXPERIMENTAL",
+        "isolation": "HOST_PROCESS (UNISOLATED)",
+        "official_isolated": false,
+        "episodes": 2,
+        "resolved": 0,
+        "pass_at_1": 0.0,
+        "total_cost_usd": 0.02103,
+        "mean_cost_usd": 0.01051,
+        "mean_steps": 3.5,
+        "routing_latency_ms": 0.1
+      },
+      {
+        "policy_id": "routellm",
+        "name": "RouteLLM (Official LMSYS)",
+        "category": "External Paper Method",
+        "algorithm": "Matrix Factorization logistic winrate threshold",
+        "status": "LOCAL_HOST_EXPERIMENTAL",
+        "isolation": "HOST_PROCESS (UNISOLATED)",
+        "official_isolated": false,
+        "episodes": 2,
+        "resolved": 0,
+        "pass_at_1": 0.0,
+        "total_cost_usd": 0.00536,
+        "mean_cost_usd": 0.00268,
+        "mean_steps": 3.5,
+        "routing_latency_ms": 4.27
+      },
+      {
+        "policy_id": "sr_knn",
+        "name": "SR-KNN (State Vector k-NN)",
+        "category": "External Paper Method",
+        "algorithm": "8D normalized state representation k-NN",
+        "status": "LOCAL_HOST_EXPERIMENTAL",
+        "isolation": "HOST_PROCESS (UNISOLATED)",
+        "official_isolated": false,
+        "episodes": 2,
+        "resolved": 0,
+        "pass_at_1": 0.0,
+        "total_cost_usd": 0.02113,
+        "mean_cost_usd": 0.01057,
+        "mean_steps": 4.0,
+        "routing_latency_ms": 6.93
+      },
+      {
+        "policy_id": "laya_v2",
+        "name": "Laya-V2 (421M Serving Router)",
+        "category": "ModelRouter (Ours)",
+        "algorithm": "Full-coverage multi-task MoE state encoder",
+        "status": "LOCAL_HOST_EXPERIMENTAL",
+        "isolation": "HOST_PROCESS (UNISOLATED)",
+        "official_isolated": false,
+        "episodes": 2,
+        "resolved": 0,
+        "pass_at_1": 0.0,
+        "total_cost_usd": 0.0,
+        "mean_cost_usd": 0.0,
+        "mean_steps": 0.0,
+        "routing_latency_ms": 923.13
+      },
+      {
+        "policy_id": "kev_4b",
+        "name": "Kev-4B (Qwen LoRA Router)",
+        "category": "ModelRouter (Ours)",
+        "algorithm": "Pointer Head + Qwen3.5-4B LoRA (rank 16)",
+        "status": "LOCAL_HOST_EXPERIMENTAL",
+        "isolation": "HOST_PROCESS (UNISOLATED)",
+        "official_isolated": false,
+        "episodes": 2,
+        "resolved": 0,
+        "pass_at_1": 0.0,
+        "total_cost_usd": 0.00775,
+        "mean_cost_usd": 0.00387,
+        "mean_steps": 3.5,
+        "routing_latency_ms": 10952.61
+      }
+    ],
+    "active_tab": "real",
+    "official_real_status": {
+      "status": "OFFICIAL_REAL_RUNNING",
+      "description": "Official evaluation over Terminal-Bench 2.1 Canary (16 real episodes recorded).",
+      "total_real_episodes": 16,
+      "total_real_resolved": 0,
+      "real_pass_at_1": 0.0
+    },
+    "mock_stress_status": {
+      "status": "MOCK_STRESS_COMPLETED",
+      "description": "64-concurrency scheduler stress test (synthetic, not for paper claims).",
+      "total_mock_episodes": 106,
+      "total_mock_resolved": 48,
+      "mock_pass_at_1": 0.4528,
+      "mock_throughput_tasks_per_hour": 22248.0
+    }
+  }
+}

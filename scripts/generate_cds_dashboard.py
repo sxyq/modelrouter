@@ -6416,10 +6416,18 @@ HTML_CONTENT = r'''<!doctype html>
 '''
 
 def main():
-    target = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'docs', 'training-dashboard', 'index.html')
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    target = os.path.join(base_dir, 'docs', 'training-dashboard', 'index.html')
+    target_our = os.path.join(base_dir, 'our-project', 'dashboard', 'index.html')
     with open(target, 'w', encoding='utf-8') as f:
         f.write(HTML_CONTENT)
-    print(f"Successfully generated Open-Claude-UI dashboard at {target} ({len(HTML_CONTENT.splitlines())} lines).")
+    try:
+        os.makedirs(os.path.dirname(target_our), exist_ok=True)
+        with open(target_our, 'w', encoding='utf-8') as f:
+            f.write(HTML_CONTENT)
+    except Exception as e:
+        print(f"Warning: could not write to {target_our}: {e}")
+    print(f"Successfully generated Open-Claude-UI dashboard at {target} and {target_our} ({len(HTML_CONTENT.splitlines())} lines).")
 
 if __name__ == '__main__':
     main()
