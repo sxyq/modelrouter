@@ -72,6 +72,10 @@ class UpstreamError(Exception):
         super().__init__(str(payload))
 
 
+# 显式绕开系统代理：内网 A6000 不应经过 HTTP_PROXY
+_OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+
+
 def http_json(method: str, url: str, body: dict | None = None, timeout: float = 180.0):
     data = json.dumps(body, ensure_ascii=False).encode("utf-8") if body is not None else None
     req = urllib.request.Request(url, data=data, method=method)
@@ -79,7 +83,7 @@ def http_json(method: str, url: str, body: dict | None = None, timeout: float = 
     if data is not None:
         req.add_header("Content-Type", "application/json")
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        with _OPENER.open(req, timeout=timeout) as resp:
             raw = resp.read().decode("utf-8", "replace")
             return resp.status, (json.loads(raw) if raw.strip() else {})
     except urllib.error.HTTPError as exc:

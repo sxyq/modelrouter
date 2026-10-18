@@ -11,17 +11,18 @@
   /* ---------- 左栏 ---------- */
   .editor .panel-body { gap: 11px; padding: 11px 13px; }
 
-  .scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .scenario-grid { display: flex; flex-wrap: wrap; gap: 6px; }
   .scenario {
-    padding: 9px 10px;
+    padding: 8px 13px;
     border: 1px solid var(--line);
     border-radius: 8px;
     background: var(--paper);
     text-align: left;
     transition: border-color .15s, background .15s, box-shadow .15s;
-    display: flex; gap: 8px; align-items: flex-start;
+    display: flex; gap: 6px; align-items: center;
     min-width: 0;
   }
+  .scenario .ico, .scenario .ds { display: none; }
   .scenario:hover { border-color: var(--jev); background: rgba(189,150,81,0.06); }
   .scenario.active {
     border-color: var(--jev);
@@ -38,10 +39,10 @@
   .scenario .txt { min-width: 0; }
   .scenario .nm {
     display: block;
-    font-size: clamp(10px, 0.78vw, 14px);
+    font-size: clamp(13px, 0.95vw, 18px);
     font-weight: 650;
     color: var(--ink);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .scenario .ds {
     display: block;
@@ -52,13 +53,13 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .scenario.random {
-    grid-column: 1 / -1;
     justify-content: center;
     align-items: center;
     background: rgba(189,150,81,0.07);
     border-style: dashed;
-    padding: 7px 10px;
+    padding: 8px 13px;
   }
+  .scenario.random .ico { display: inline; }
   .scenario.random .nm { color: var(--warn); }
 
   /* 输入摘要 */
@@ -74,7 +75,7 @@
   }
   .input-title {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    font-size: clamp(8px, 0.6vw, 10.5px);
+    font-size: clamp(11px, 0.72vw, 14px);
     font-weight: 700; letter-spacing: .09em; color: var(--faint);
   }
   .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
@@ -87,7 +88,7 @@
   }
   .metric .v {
     display: block;
-    font-size: clamp(12px, 1vw, 18px);
+    font-size: clamp(17px, 1.5vw, 28px);
     font-weight: 700;
     color: var(--ink);
     font-variant-numeric: tabular-nums;
@@ -95,8 +96,8 @@
   }
   .metric .k {
     display: block;
-    margin-top: 2px;
-    font-size: clamp(7px, 0.52vw, 9.5px);
+    margin-top: 3px;
+    font-size: clamp(10px, 0.66vw, 13px);
     color: var(--faint);
     letter-spacing: .04em;
   }
@@ -105,13 +106,13 @@
     background: var(--card);
     border-radius: 0 6px 6px 0;
     padding: 8px 10px;
-    font-size: clamp(9px, 0.72vw, 13px);
-    line-height: 1.6;
+    font-size: clamp(12px, 0.95vw, 18px);
+    line-height: 1.65;
     color: var(--ink);
   }
   .prompt-box .dom {
     display: inline-block;
-    font-size: clamp(7.5px, 0.55vw, 10px);
+    font-size: clamp(10px, 0.68vw, 13px);
     color: var(--warn);
     background: rgba(189,150,81,0.14);
     border-radius: 4px;
@@ -120,29 +121,29 @@
     letter-spacing: .04em;
   }
 
-  .q-list { display: flex; flex-direction: column; gap: 7px; }
+  .q-list { display: flex; flex-direction: column; gap: 12px; flex: 1 1 auto; justify-content: space-evenly; }
   .q-item { display: flex; gap: 8px; }
   .q-idx {
     flex: 0 0 auto;
-    width: 17px; height: 17px;
+    width: 24px; height: 24px;
     border-radius: 5px;
     background: var(--ink);
     color: var(--paper);
-    font-size: 9.5px; font-weight: 700;
+    font-size: 13px; font-weight: 700;
     display: flex; align-items: center; justify-content: center;
     margin-top: 1px;
   }
   .q-body { min-width: 0; flex: 1; }
   .q-text {
-    font-size: clamp(9px, 0.7vw, 12.5px);
+    font-size: clamp(12px, 0.9vw, 17px);
     font-weight: 600;
     color: var(--ink);
     line-height: 1.4;
   }
   .q-type {
     display: inline-block;
-    margin-left: 5px;
-    font-size: clamp(7px, 0.5vw, 9px);
+    margin-left: 6px;
+    font-size: clamp(9px, 0.58vw, 11px);
     font-weight: 600;
     color: var(--faint);
     border: 1px solid var(--line);
@@ -151,9 +152,9 @@
     vertical-align: 1px;
     letter-spacing: .04em;
   }
-  .q-opts { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .q-opts { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
   .opt {
-    font-size: clamp(7.5px, 0.56vw, 10px);
+    font-size: clamp(10px, 0.68vw, 13px);
     color: var(--muted);
     background: var(--card);
     border: 1px solid var(--line-soft);
@@ -194,12 +195,13 @@
   }
 
   /* ---------- 结果卡 ---------- */
-  .panel-body.result { gap: 0; padding: 12px 14px; }
+  .panel-body.result { gap: 0; padding: 14px 16px; }
+  #laya-body > .block, #kev-body > .block { flex: 1 1 0; justify-content: center; }
   .block { padding: 10px 0; }
   .block:first-child { padding-top: 2px; }
   .block + .block { border-top: 1px solid var(--line-soft); }
   .block-title {
-    font-size: clamp(8px, 0.6vw, 10.5px);
+    font-size: clamp(11px, 0.74vw, 14px);
     font-weight: 700; letter-spacing: .1em; color: var(--faint);
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
   }
@@ -210,49 +212,49 @@
 
   .pick { display: flex; align-items: baseline; gap: 9px; margin: 5px 0 8px; }
   .pick .name {
-    font-size: clamp(20px, 1.75vw, 32px);
+    font-size: clamp(27px, 2.45vw, 47px);
     font-weight: 700; letter-spacing: -.02em; line-height: 1.1;
   }
   .pick .name.laya { color: var(--laya); }
   .pick .name.kev { color: var(--kev); }
   .pick .pct {
-    font-size: clamp(13px, 1.05vw, 19px);
+    font-size: clamp(18px, 1.5vw, 29px);
     font-weight: 650; color: var(--muted); font-variant-numeric: tabular-nums;
   }
-  .pick .raw { font-size: clamp(8px, 0.58vw, 10.5px); color: var(--faint); margin-left: auto; }
+  .pick .raw { font-size: clamp(10px, 0.68vw, 13px); color: var(--faint); margin-left: auto; }
 
   .bars { display: flex; flex-direction: column; gap: 6px; }
-  .bar-row { display: grid; grid-template-columns: 74px 1fr 52px; align-items: center; gap: 8px; }
+  .bar-row { display: grid; grid-template-columns: 96px 1fr 64px; align-items: center; gap: 10px; }
   .bar-row .lbl {
-    font-size: clamp(9px, 0.68vw, 12px);
+    font-size: clamp(12px, 0.9vw, 17px);
     color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .bar-row .lbl.top { color: var(--ink); font-weight: 650; }
   .bar-row .val {
-    font-size: clamp(9px, 0.68vw, 12px);
+    font-size: clamp(12px, 0.9vw, 17px);
     font-variant-numeric: tabular-nums; text-align: right; color: var(--muted);
   }
   .bar-row .val.top { color: var(--ink); font-weight: 700; }
 
   .score-line { display: flex; align-items: baseline; gap: 10px; margin: 5px 0 8px; }
-  .score-line .num { font-size: clamp(20px, 1.75vw, 32px); font-weight: 700; letter-spacing: -.02em; }
+  .score-line .num { font-size: clamp(27px, 2.45vw, 47px); font-weight: 700; letter-spacing: -.02em; }
   .score-line .num.laya { color: var(--laya); }
   .score-line .num.kev { color: var(--kev); }
-  .score-line .unit { font-size: clamp(9px, 0.68vw, 12px); color: var(--faint); }
+  .score-line .unit { font-size: clamp(12px, 0.9vw, 17px); color: var(--faint); }
   .score-line .grade {
-    font-size: clamp(11px, 0.86vw, 15px); font-weight: 650;
+    font-size: clamp(15px, 1.1vw, 21px); font-weight: 650;
     padding: 2px 9px; border-radius: 5px; background: var(--wash); color: var(--ink);
   }
 
   .noul-line { display: flex; align-items: center; gap: 10px; margin: 5px 0 8px; }
   .noul-line .num {
-    font-size: clamp(20px, 1.75vw, 32px); font-weight: 700; letter-spacing: -.02em;
+    font-size: clamp(27px, 2.45vw, 47px); font-weight: 700; letter-spacing: -.02em;
     font-variant-numeric: tabular-nums;
   }
   .noul-line .num.laya { color: var(--laya); }
   .noul-line .num.kev { color: var(--kev); }
   .noul-line .verdict {
-    font-size: clamp(9px, 0.68vw, 12px); font-weight: 700;
+    font-size: clamp(13px, 0.95vw, 18px); font-weight: 700;
     padding: 3px 9px; border-radius: 5px; white-space: nowrap;
   }
   .noul-line .verdict.yes { background: rgba(33,135,123,0.12); color: var(--laya); }
@@ -260,7 +262,7 @@
   .panel.kev .noul-line .verdict.yes { background: rgba(182,94,67,0.12); color: var(--kev); }
 
   .noul-track {
-    display: block; height: 16px; background: var(--wash);
+    display: block; height: 20px; background: var(--wash);
     border-radius: 4px; position: relative; overflow: hidden;
   }
   .noul-track .fill { display: block; height: 100%; width: 0; transition: width .55s cubic-bezier(.22,.61,.36,1); }
@@ -269,14 +271,14 @@
   .noul-track .thr { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--ink); opacity: .45; }
   .noul-foot {
     display: flex; justify-content: space-between;
-    margin-top: 4px; font-size: clamp(7.5px, 0.54vw, 9.5px); color: var(--faint);
+    margin-top: 5px; font-size: clamp(10px, 0.66vw, 13px); color: var(--faint);
   }
 
   .card-foot {
-    margin-top: auto; padding-top: 9px;
+    margin-top: auto; padding-top: 10px;
     border-top: 1px dashed var(--line-soft);
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    font-size: clamp(8px, 0.6vw, 10.5px); color: var(--faint);
+    font-size: clamp(11px, 0.74vw, 14px); color: var(--faint);
   }
   .card-foot b { color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
 </style>
@@ -399,11 +401,9 @@
     <div class="item"><span class="k">Laya 耗时</span><span class="v" id="foot-laya-lat">—</span></div>
     <div class="item"><span class="k">Kev 耗时</span><span class="v" id="foot-kev-lat">—</span></div>
     <div class="sep"></div>
-    <div class="item"><span class="k">检查点</span><span class="v" id="foot-ckpt">—</span></div>
     <div class="item"><span class="k">回退</span><span class="v" id="foot-fb">—</span></div>
     <div class="item"><span class="k">时间</span><span class="v" id="foot-time">—</span></div>
     <div class="spacer"></div>
-    <span class="item" style="color:var(--faint);">同一输入 · 同一次请求</span>
     <button class="btn sm" id="btn-raw">原始数据</button>
     <a class="btn sm" href="./P17.html" id="link-p17">进入对比 →</a>
   </footer>
@@ -780,10 +780,6 @@
     const l = state.laya?.reading, k = state.kev?.reading;
     $('foot-laya-lat').textContent = l?.decision_latency_ms != null ? `${MR.fmtNum(l.decision_latency_ms, 0)} ms` : '—';
     $('foot-kev-lat').textContent = k?.decision_latency_ms != null ? `${MR.fmtNum(k.decision_latency_ms, 0)} ms` : '—';
-    const ckL = l?.checkpoint_id || MR.checkpointLabel('laya');
-    const ckK = k?.checkpoint_id || MR.checkpointLabel('kev');
-    $('foot-ckpt').textContent = `${MR.shortId(ckL)} / ${MR.shortId(ckK)}`;
-    $('foot-ckpt').title = `${ckL}\n${ckK}`;
     const fb = (l?.fallback_used) || (k?.fallback_used);
     $('foot-fb').textContent = (l || k) ? (fb ? '是' : '否') : '—';
     $('foot-fb').style.color = fb ? 'var(--warn)' : '';
