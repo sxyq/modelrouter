@@ -26,9 +26,40 @@ if str(SRC_DIR) not in sys.path:
 
 from modelrouter.benchmark.rq1_analysis import analyze_rq1, wilson_score_interval
 from modelrouter.benchmark.rq3_analysis import compute_decomposition_benchmarks
+from modelrouter.benchmark.rq1_analysis import observed_research_groups
 
 
 class TestRQ1RQ3Analysis(unittest.TestCase):
+    def test_missing_official_factors_produce_no_research_samples(self):
+        output = observed_research_groups([], [])
+        for number in (4, 5, 6, 7, 8, 9, 11):
+            self.assertEqual(output[f"table{number}"], [])
+        self.assertEqual(output["fig8"], [])
+
+    def test_observed_factors_use_task_seed_pairs_and_actual_cost_only(self):
+        def trial(identifier, policy, success, generator, billed, pool, k):
+            return {"trial_id": identifier, "task_name": "same-task", "seed": 42,
+                    "task_git_sha": "fixture-source", "task_digest": "fixture-task",
+                    "policy": policy, "reward": success, "cost_usd": generator,
+                    "actual_billed_cost_usd": billed, "verifier_path": "fixture/test.sh",
+                    "agent_metadata": {"pool_id": pool, "pool_k": k, "granularity": "G0",
+                       "information_ablation": "T", "action_ablation": "model-only",
+                       "supervision_ablation": "S1", "checkpoint_id": "fixture-checkpoint",
+                       "workload": "parser", "workload_label_source": "PRE_TASK_MANIFEST",
+                       "sandbox_cost_usd": .1, "router_compute_cost_usd": 0.01}}
+        records = [trial("fixed", "fixed_strong", 0, 1, 1, "small", 2),
+                   trial("routed", "random", 1, .5, .5, "small", 2)]
+        output = observed_research_groups(records, [])
+        self.assertEqual(output["table9"][0]["delta_success_rate"], 1)
+        self.assertIsNone(output["table9"][0]["gain_boundary"])
+        self.assertFalse(output["table6"][0]["publication_eligible"])
+        records.append(trial("large", "random", 1, .4, None, "large", 4))
+        output = observed_research_groups(records, [])
+        random_pools = [r for r in output["table6"] if r["policy"] == "random"]
+        self.assertTrue(all(r["paired_task_seed_sets"] for r in random_pools))
+        self.assertIsNone(next(r for r in random_pools if r["pool_k"] == 4)["actual_complete_mean_usd"])
+        self.assertEqual(output["table9"], [])  # Ambiguous repeated workload cells are not overwritten.
+
     def test_wilson_score_interval(self):
         """Verifies Wilson score confidence interval computation."""
         low, high = wilson_score_interval(successes=5, total=10)

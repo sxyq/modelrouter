@@ -160,6 +160,8 @@ class RQ4AblationAnalyzer:
         fig_7 = self.generate_fig_7_data()
 
         payload = {
+            "data_origin": "SYNTHETIC_PREFILLED_CONFIG",
+            "publication_eligible": False,
             "experiment_id": "RQ4_SYSTEMATIC_ABLATION",
             "table_5_action_ablation": table_5,
             "table_4_information_ablation": table_4,

@@ -4,7 +4,8 @@ Conforms strictly to V8 §7.1 specifications.
 """
 
 from typing import Dict, List, Optional, Any
-from pydantic import BaseModel, Field
+import json
+from pydantic import BaseModel, Field, model_validator
 
 
 class LegalAction(BaseModel):
@@ -12,9 +13,36 @@ class LegalAction(BaseModel):
     model: str = Field(..., description="Model identifier, e.g. gpt-4o, claude-3-5-sonnet")
     revision: Optional[str] = Field("latest", description="Model revision or version hash")
     native_effort: str = Field("none", description="Native reasoning effort: none, low, medium, high")
+    action_id: Optional[str] = None
+    pool: Optional[str] = None
+
+    @model_validator(mode="after")
+    def resolve_registered_action(self):
+        from modelrouter.providers.registry import ModelRegistry
+        try:
+            spec = ModelRegistry().get_spec(self.model)
+        except KeyError as exc:
+            raise ValueError(f"Unknown registered model: {self.model}") from exc
+        spec.validate_effort(self.native_effort)
+        if self.provider != spec.provider:
+            raise ValueError(f"Provider does not match {self.model}")
+        expected_id = f"{self.model}:{self.native_effort}"
+        if self.action_id is not None and self.action_id != expected_id:
+            raise ValueError("action_id does not match model and effort")
+        self.action_id = expected_id
+        self.pool = spec.pool
+        return self
 
 
 class PreDecisionState(BaseModel):
+    task_id: Optional[str] = None
+    phase: Optional[str] = None
+    last_tool_exit_code: Optional[int] = None
+    last_observation_summary: Optional[str] = None
+    history_length: Optional[int] = None
+    budget_remaining_usd: Optional[float] = None
+    steps_remaining: Optional[int] = None
+    context_tokens_approx: Optional[int] = None
     task_domain: Optional[str] = "software_engineering"
     step_index: Optional[int] = 0
     context_chars: Optional[int] = 0
@@ -22,6 +50,10 @@ class PreDecisionState(BaseModel):
     prior_error_signals_count: Optional[int] = 0
     prompt: Optional[str] = Field("", description="Pre-decision prompt snippet or observation")
     history_snippet: Optional[str] = Field("", description="Recent tool execution history snippet")
+
+    def router_text(self) -> str:
+        """Both adapters consume the same named pre-decision fields."""
+        return json.dumps(self.model_dump(), sort_keys=True, ensure_ascii=False)
 
 
 class RouteRequest(BaseModel):
@@ -31,15 +63,22 @@ class RouteRequest(BaseModel):
     policy_version: Optional[str] = Field("v8.0", description="Policy version string")
     router_family: str = Field("laya", description="Target router: 'laya' or 'kev'")
     pre_decision_state: PreDecisionState = Field(default_factory=PreDecisionState)
-    legal_actions: List[LegalAction] = Field(..., min_items=1, description="List of legal candidate actions")
+    legal_actions: List[LegalAction] = Field(..., min_length=1, description="List of legal candidate actions")
     budget_remaining: Optional[float] = Field(None, description="Remaining USD budget")
     features_presence_mask: Optional[List[int]] = Field(None, description="Binary feature availability mask")
+
+    @model_validator(mode="after")
+    def unique_actions(self):
+        ids = [action.action_id for action in self.legal_actions]
+        if len(ids) != len(set(ids)):
+            raise ValueError("legal_actions contains repeated action_id")
+        return self
 
 
 class ActionScore(BaseModel):
     action: LegalAction
     score: float
-    probability: float
+    probability: float = Field(ge=0, le=1, allow_inf_nan=False)
 
 
 class RouteResponse(BaseModel):

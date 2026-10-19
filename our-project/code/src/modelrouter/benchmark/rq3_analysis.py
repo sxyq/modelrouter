@@ -190,6 +190,8 @@ def compute_decomposition_benchmarks(base_records: Optional[List[Dict[str, Any]]
         })
 
     return {
+        "data_origin": "SYNTHETIC_EXAMPLE_MATRIX",
+        "publication_eligible": False,
         "analysis_target": "RQ3 Task Decomposition Granularity (G0..G3)",
         "granularity_definitions": DECOMPOSITION_LEVELS,
         "table7_decomposition_matrix": table7_rows,

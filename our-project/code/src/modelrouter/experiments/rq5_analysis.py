@@ -157,7 +157,7 @@ class RQ5BoundaryAnalyzer:
             "title": "Fig. 8: ModelRouter Workload Applicability Boundary & Phase Space",
             "x_axis": "Error Cascade Sensitivity & Subagent Dependency Depth",
             "y_axis": "Workload Context & Token Volume (kTokens)",
-            "decision_boundary_rule": "Applicable when Error_Cascade_Sensitivity < 0.72; fallback to Flagship Coordinator required when Sensitivity >= 0.72.",
+            "decision_boundary_rule": "UNVERIFIED: the 0.72 value is a layout example, not an estimated boundary.",
             "regions": {
                 "POSITIVE_GAIN_ZONE": "Coding, Tool-heavy DevOps, Long-context QA (Net Cost Savings 56-79%, Delta Success >= 0)",
                 "NEGATIVE_GAIN_ZONE": "Tight Multi-agent Coordination with Cascading Subagent Dependencies (Delta Success = -3.5%)"
@@ -170,6 +170,8 @@ class RQ5BoundaryAnalyzer:
         fig_8 = self.generate_fig_8_data()
 
         payload = {
+            "data_origin": "SYNTHETIC_PREFILLED_WORKLOAD_HYPOTHESIS",
+            "publication_eligible": False,
             "experiment_id": "RQ5_WORKLOAD_APPLICABILITY_BOUNDARY",
             "table_9_workload_boundary": table_9,
             "fig_8_phase_diagram": fig_8,

@@ -19,6 +19,7 @@ import urllib.request
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
+from modelrouter.serving.schemas import RouteRequest, RouteResponse
 
 logger = logging.getLogger("experiments.agent_pilot.router_clients")
 
@@ -37,6 +38,7 @@ class RouterDecision:
     fallback_used: bool = False
     fallback_reason: Optional[str] = None
     confidence: Optional[float] = None
+    inference_latency_ms: Optional[float] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -49,6 +51,8 @@ class RouterDecision:
             "fallback_used": self.fallback_used,
             "fallback_reason": self.fallback_reason,
             "confidence": round(self.confidence, 4) if self.confidence is not None else None,
+            "inference_latency_ms": self.inference_latency_ms,
+            "evidence_type": "MOCK_OR_FALLBACK" if self.fallback_used else "REMOTE_ROUTE",
         }
 
 
@@ -122,8 +126,8 @@ class MockRouter:
             selected_action=selected,
             ranked_actions=legal_actions[:3],
             decision_latency_ms=latency_ms,
-            fallback_used=False,
-            fallback_reason=None,
+            fallback_used=True,
+            fallback_reason="MOCK_ROUTER",
             confidence=conf,
         )
 
@@ -135,7 +139,7 @@ class RouterClient:
         self,
         endpoint: Optional[str] = None,
         timeout: float = 20.0,
-        max_retries: int = 2,
+        max_retries: int = 1,
         router_family: str = "laya",
     ):
         self.endpoint = (
@@ -177,8 +181,15 @@ class RouterClient:
             "pre_decision_state": pre_decision_state,
             "legal_actions": legal_actions,
             "budget_remaining": pre_decision_state.get("budget_remaining_usd", 1.0),
-            "features_presence_mask": [1] * 8,
+            "features_presence_mask": [int(key in pre_decision_state) for key in (
+                "task_domain", "step_index", "context_chars", "prior_tool_calls_count",
+                "prior_error_signals_count", "prompt", "history_snippet", "budget_remaining_usd",
+            )],
         }
+        route_request = RouteRequest.model_validate(payload)
+        route_request.legal_actions.sort(key=lambda action: action.action_id)
+        payload = route_request.model_dump()
+        candidates = {a.action_id: a for a in route_request.legal_actions}
 
         # Try remote endpoint with concurrency throttle
         attempts = 0
@@ -200,23 +211,33 @@ class RouterClient:
                         lat_ms = (time.time() - t0) * 1000
                         if resp.status == 200:
                             body = json.loads(resp.read().decode("utf-8"))
+                            response = RouteResponse.model_validate(body)
+                            returned_actions = [response.selected_action] + [score.action for score in response.ranked_actions_or_scores_if_available]
+                            if any(candidates.get(action.action_id) != action for action in returned_actions):
+                                raise ValueError("Router returned an action outside the request candidates")
+                            if response.request_id != req_id or response.router_family != self.router_family:
+                                raise ValueError("Router response identifies a different request")
                             return RouterDecision(
-                                request_id=body.get("request_id", req_id),
-                                router_family=body.get("router_family", self.router_family),
-                                checkpoint_id=body.get("checkpoint_id", "remote-checkpoint"),
-                                selected_action=body.get("selected_action", legal_actions[0]),
-                                ranked_actions=body.get("ranked_actions", []),
+                                request_id=response.request_id,
+                                router_family=response.router_family,
+                                checkpoint_id=response.checkpoint_id,
+                                selected_action=response.selected_action.model_dump(),
+                                ranked_actions=[score.model_dump() for score in response.ranked_actions_or_scores_if_available],
                                 decision_latency_ms=lat_ms,
-                                fallback_used=body.get("fallback_used", False),
-                                fallback_reason=body.get("fallback_reason"),
-                                confidence=body.get("confidence"),
+                                fallback_used=response.fallback_used,
+                                fallback_reason=response.fallback_reason,
+                                confidence=response.confidence_if_defined,
+                                inference_latency_ms=response.decision_latency_ms,
                             )
-                except urllib.error.URLError as e:
-                    last_err = f"URLError: {e.reason}"
                 except urllib.error.HTTPError as e:
                     last_err = f"HTTPError {e.code}: {e.reason}"
+                    if e.code not in (429, 502, 503, 504):
+                        break
+                except urllib.error.URLError as e:
+                    last_err = f"URLError: {e.reason}"
                 except Exception as e:
                     last_err = f"Exception: {str(e)}"
+                    break
 
         # Remote server unreachable -> Fallback to MockRouter
         logger.warning(
@@ -230,5 +251,6 @@ class RouterClient:
             legal_actions=legal_actions,
         )
         decision.fallback_used = True
+        decision.request_id = req_id
         decision.fallback_reason = f"REMOTE_UNREACHABLE: {last_err}"
         return decision

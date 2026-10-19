@@ -15,6 +15,9 @@ dependencies = [
     "requests>=2.28.0",
 ]
 
+[project.optional-dependencies]
+benchmark = ["mini-swe-agent==2.4.6", "harbor==0.24.0"]
+
 [project.scripts]
 modelrouter = "modelrouter.cli:main"
 

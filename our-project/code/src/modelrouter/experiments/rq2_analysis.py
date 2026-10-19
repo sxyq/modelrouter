@@ -214,6 +214,8 @@ class RQ2PoolAnalyzer:
         fig_5 = self.generate_fig_5_data()
 
         payload = {
+            "data_origin": "SYNTHETIC_POOL_HEURISTICS",
+            "publication_eligible": False,
             "experiment_id": "RQ2_MODEL_POOLS",
             "table_6_equal_k_pools": table_6,
             "fig_5_k_scaling": fig_5,

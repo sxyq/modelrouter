@@ -1,6 +1,23 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-19 18:30（V9 全项目深度整理、持续开发、真实测试与 RQ1–RQ5 长周期基石落地）**：
+## 2026-10-19 · V10 当前执行状态
+
+正式 Agent 实验为 `BLOCKED / NOT_EVALUATED`，未完成 RQ1–RQ5。当前 main 已接入 `22f3a2f`；远端删除的两份审计文件和独立解析测试未恢复。现有源码改动、目录整理、测试记录及健康训练继续保留。
+
+- **Rootless Docker**：宿主已有 Docker 29.4.1 与 RootlessKit 2.3.6，个人 subuid/subgid 范围存在；缺少 `newuidmap`、`newgidmap`，真实 UID/GID 映射失败。个人安装未执行，daemon、socket、镜像和容器均未创建。仅个人用户空间的授权不足以提供宿主 uidmap 权限；未使用 sudo、未改共享权限。
+- **官方成绩**：Oracle、原生 mini-swe-agent、ModelRouter mini 的真实官方 Trial 各为 **0**，Verifier、Reward 和完整实际费用均为 `N/A`。此前唯一 Oracle 尝试 exit 1、2.21 秒，无生成 Token。Canary、Dev 和全部正式科研统计待真实 Trial。
+- **执行代码**：官方 mini-swe-agent 2.4.6 的 DefaultAgent 循环、统一策略 Hook、临时 Provider 转发、ATIF、唯一 Benchmark CLI 和迭代记录已接入。Docker 目标由同一配置传给 preflight/run/resume；结束 Trial 由原始官方结果接入既有 Ledger，按 Trial ID 去重。尚未在官方沙箱实跑这条链。
+- **已有实测**：Provider 三次请求消耗 17,393 Token，配置价估算 $0.0183835，实付未知；累计使用 410,353 Token，余 589,647，总上限未变。Laya/Kev 各三次 CPU Serving 请求的重复与逆序 ID/概率映射一致，fallback 为 false。只有两款 Luna 的 low 档已实测；12 模型身份、其余 Effort、供应商输出限制及账单仍未确认。
+- **历史图表**：RQ1 旧 Ledger 无官方 Verifier；RQ2 预设成功率、RQ3 经验矩阵、RQ4 70.2% 配置值和 RQ5 0.72 边界均为 `UNVERIFIED / SYNTHETIC`，仅供开发与版式使用。正式 Fig.3–8、Table 3–11 读取官方 Episode，缺数据保持空表或 `null`。
+- **训练与看板**：本轮未停止 Laya F06、Kev C03、CPU Serving 或 8765 服务，未新增 GPU 工作。Agent 区域独立读取真实状态 JSON；状态过期显示时间差，未知费用显示 `N/A`。
+
+唯一外部接续事项：由宿主管理员提供官方 uidmap 工具及所需权限。条件具备后沿原链安装个人 Rootless Docker、运行 Oracle → 原生 mini → 动态 mini → Canary → Dev → RQ1–RQ5；57 题 Sealed Test 仍需负责人单独确认。当前没有可用的已授权云沙箱。方法沿用 Q-019，未改变研究问题。
+
+## 2026-10-19 18:30 · 历史工程记录
+
+以下为当时的工程快照；训练数字不代表当前现场。RQ 导出数值的真实来源以上方 V10 状态为准。
+
+> **历史状态（V9 目录整理与开发产出）**：
 > 1. **双模型真实持续 GPU 训练零中断推进（现场最新实测）**：
 >    - **Laya-421M (MoE 架构)**：Worker PID `1202621`，正在执行全量分级连续训练（F06），已稳步推进至 **Epoch 1/2（第2轮）Chunk 153/361，Step 65,724 / 92,280**（总步数完成度 **71.22%**），已消费 **4,206,315** 个训练样本曝光，最新 Chunk Loss 稳定收敛至 **0.4557**。首轮 Epoch 1 固定验证成绩已锁定：S1 Acc **67.38%**（胜过 52.58% 多数类，逼近历史最佳 68.63%）；S2 Acc **58.16%**（历史性突破，首度显著击败 55.19% 多数类基准）；S3 Acc **60.58%**。预计今晚 ~23:30 自然完训。
 >    - **Kev-4B (Qwen3.5-4B LoRA + Pointer Head 架构)**：Worker PID `1357764`，持续微调已稳步推进至 **Step 12,500 / 16,857**（进度 **74.15%**），消费 50,000 条记录（2.058s / rec），Train Loss 为 **0.938**。调度器 PID `2042701` 每 60s 监护就绪，完训后自动运行 2,437 条固定验证并接续 C04。
@@ -10,12 +27,12 @@
 >    - 彻底合并去重 `research/task-level-cost-routing/` 与 `our-project/external/research/` 间 139 个相同内容文件（释放 186 MB 重复空间，以相对符号链接完全兼容旧路径）；
 >    - 建立 `our-project/code/` 规范 Python 包并修复 `README.md` 与 editable install；CLI `python -m modelrouter status` 与 `python -m modelrouter route --model laya/kev` 实测 100% 连通；
 >    - 对历史一次性脚本（如 `oneshot_f05_to_f03_handover.py`）添加执行级安全守卫并安全归档。
-> 3. **RQ1–RQ5 完整科研代码、实验矩阵与可复现产出**：
+> 3. **RQ1–RQ5 开发代码、演示矩阵与未证实产出**：
 >    - **RQ1 总体效果**: 8 策略统一 Agent 评测矩阵，输出 Fig. 3 Pareto 前沿与 Fig. 4 成本分解，导出 Table 3 主表与 Table 10 账本；
 >    - **RQ2 模型池**: 注册 12 款前沿/开源模型，生成 5 组等 K 池与扩展 K 评估，导出 Table 6 与 Fig. 5；
 >    - **RQ3 任务拆分**: 统一 G0-G3 粒度实验框架，导出 Table 7 与 Fig. 6；
 >    - **RQ4 系统消融**: 实现动作空间（Joint M×E vs 独立）、状态特征（T/M/H 及剔除）与监督信号（S1/S2/S3）消融，导出 Table 4, 5, 8, 11 与 Fig. 7；
->    - **RQ5 工作负载边界**: 冻结四类事前分类，带 95% 置信区间实测收益，诚实报告 Multi-Agent 协调负收益边界，导出 Table 9 与 Fig. 8；
+>    - **RQ5 工作负载边界**: 四类分类及预设收益用于统计函数开发，未取得真实 Agent 边界证据，导出 Table 9 与 Fig. 8；
 >    - 全工程 56 项 pytest 单元/集成测试 100% 通过。
 > 4. **真实 Provider 与 Harbor 沙箱规范化**：
 >    - 利用现有本地凭证完成真实 `gpt-6-luna` Chat API 调用并更新 Token 账本（当前累计 392,120 / 1,000,000）；

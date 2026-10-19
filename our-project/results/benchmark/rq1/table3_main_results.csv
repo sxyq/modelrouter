@@ -1,9 +1,9 @@
-Policy ID,Policy Name,Algorithmic Type,Reference / Method,Episodes,Resolved,Task Success Rate,95% CI (Lower),95% CI (Upper),Mean Episode USD,Cost / Resolved ($),P95 Time (s),Router Latency (ms),Router Cost ($)
-fixed_strong,Fixed-Strong (GPT-6 Luna),BASELINE_FIXED,Single Flagship Model,15,6,0.4,0.1982,0.6425,0.022919,0.057298,62.8,0.1,0.0
-fixed_cheap,Fixed-Cheap (GPT-5.6 Luna),BASELINE_FIXED,Single Low-Cost Model,13,6,0.4615,0.2321,0.7086,0.000725,0.001571,65.8,0.1,0.0
-random,Random Mix,BASELINE_STOCHASTIC,Uniform Random Selection,13,6,0.4615,0.2321,0.7086,0.021735,0.047093,60.68,0.5,0.0
-rule_sticky,Rule-Sticky,BASELINE_HEURISTIC,Phase & Budget Heuristic,14,6,0.4286,0.2138,0.6741,0.009644,0.022504,34.64,1.2,0.0
-routellm,RouteLLM (Official),ACADEMIC_ALGORITHM,LMSYS RouteLLM (commit 0b64fda),13,6,0.4615,0.2321,0.7086,0.001077,0.002333,35.11,4.5,0.0
-sr_knn,SR-KNN (Official),ACADEMIC_ALGORITHM,TwinRouterBench / semantic-router (commit 2ae3f3d),13,6,0.4615,0.2321,0.7086,0.009661,0.020932,31.87,8.2,0.0
-laya_v2,ModelRouter (Laya-421M MoE),NEURAL_ROUTER,ModelRouter Laya v2 (Port 8000),13,6,0.4615,0.2321,0.7086,0.193036,0.418244,61.94,275.8,0.000271
-kev_4b,ModelRouter (Kev-4B Pointer Head),NEURAL_ROUTER,ModelRouter Kev v8.0 (Port 8000),12,6,0.5,0.2538,0.7462,0.002129,0.004257,76.05,3297.5,0.000979
+Policy ID,Policy Name,Algorithmic Type,Reference / Method,Episodes,Resolved,Task Success Rate,95% CI (Lower),95% CI (Upper),Mean Episode USD,Cost / Resolved ($),P95 Time (s),Router Latency (ms),Router Cost ($),Data Origin
+fixed_strong,Fixed-Strong (GPT-6 Luna),BASELINE_FIXED,Single Flagship Model,15,6,0.4,0.1982,0.6425,0.022919,0.057298,62.8,0.1,0.0,UNVERIFIED
+fixed_cheap,Fixed-Cheap (GPT-5.6 Luna),BASELINE_FIXED,Single Low-Cost Model,13,6,0.4615,0.2321,0.7086,0.000725,0.001571,65.8,0.1,0.0,UNVERIFIED
+random,Random Mix,BASELINE_STOCHASTIC,Uniform Random Selection,13,6,0.4615,0.2321,0.7086,0.021735,0.047093,60.68,0.5,0.0,UNVERIFIED
+rule_sticky,Rule-Sticky,BASELINE_HEURISTIC,Phase & Budget Heuristic,14,6,0.4286,0.2138,0.6741,0.009644,0.022504,34.64,1.2,0.0,UNVERIFIED
+routellm,RouteLLM (Official),ACADEMIC_ALGORITHM,LMSYS RouteLLM (commit 0b64fda),13,6,0.4615,0.2321,0.7086,0.001077,0.002333,35.11,4.5,0.0,UNVERIFIED
+sr_knn,SR-KNN (Official),ACADEMIC_ALGORITHM,TwinRouterBench / semantic-router (commit 2ae3f3d),13,6,0.4615,0.2321,0.7086,0.009661,0.020932,31.87,8.2,0.0,UNVERIFIED
+laya_v2,ModelRouter (Laya-421M MoE),NEURAL_ROUTER,ModelRouter Laya v2 (Port 8000),13,6,0.4615,0.2321,0.7086,0.193036,0.418244,61.94,275.8,0.000271,UNVERIFIED
+kev_4b,ModelRouter (Kev-4B Pointer Head),NEURAL_ROUTER,ModelRouter Kev v8.0 (Port 8000),12,6,0.5,0.2538,0.7462,0.002129,0.004257,76.05,3297.5,0.000979,UNVERIFIED

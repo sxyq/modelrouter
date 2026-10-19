@@ -304,6 +304,8 @@ def analyze_rq1(episodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     pareto_frontier.sort(key=lambda p: p["x_cost_usd"])
 
     return {
+        "data_origin": "UNVERIFIED_LEGACY_EPISODE_LEDGER",
+        "publication_eligible": False,
         "total_episodes_analyzed": len(episodes),
         "table3_main_results": table3_rows,
         "table10_cost_ledger": table10_rows,
@@ -410,6 +412,184 @@ def export_results(data: Dict[str, Any], output_dir: Path) -> None:
     print(f"  - fig3_pareto_frontier.json")
     print(f"  - fig4_cost_decomposition.json")
     print(f"  - rq1_summary.json")
+
+
+def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
+    """Compute publication inputs from original trials, never from legacy constants."""
+    from .iterations import collect_trials, rows, write_atomic, percentile
+
+    raw = collect_trials(iteration_dir)
+    usable = [r for r in raw if r["status"] == "OFFICIAL_ARTIFACT_VERIFIED"
+              and r.get("agent") != "oracle" and not r.get("router_fallback_used")
+              and r.get("reward") in (0, 1)
+              and not r.get("untested_native_efforts_used")
+              and r.get("policy_implementation_status") != "UNVERIFIED_EXAMPLE"
+              and r.get("policy") not in ("routellm", "sr_knn")
+              and (r.get("policy") not in ("laya_v2", "kev_4b", "joint_laya", "joint_kev")
+                   or r.get("neural_router_evidence_eligible") is True)]
+    events = rows(iteration_dir / "events.jsonl")
+    by_policy = defaultdict(list)
+    for trial in usable:
+        by_policy[trial["policy"]].append(trial)
+    table3, table10 = [], []
+    for policy, trials in by_policy.items():
+        n = len(trials)
+        successes = sum(t["reward"] == 1 for t in trials)
+        costs = [t.get("cost_usd") for t in trials]
+        costs_known = all(c is not None for c in costs)
+        ids = {str(t["trial_id"]) for t in trials}
+        calls = [e for e in events if e["event"] == "GENERATOR_END" and e.get("episode_id") in ids]
+        routing = [e for e in events if e["event"] == "ROUTER_END" and e.get("episode_id") in ids]
+        table3.append({
+            "policy": policy, "episodes": n, "successes": successes,
+            "success_rate": successes / n, "ci95": wilson_score_interval(successes, n),
+            "generator_mean_usd": sum(costs) / n if costs_known else None,
+            "generator_cost_per_success_usd": sum(costs) / successes if costs_known and successes else None,
+            "complete_cost_usd": None,
+            "episode_p95_s": percentile([t.get("duration_sec") for t in trials], .95),
+            "router_p50_ms": percentile([r.get("router_latency_ms") for r in routing], .5),
+            "router_p95_ms": percentile([r.get("router_latency_ms") for r in routing], .95),
+            "trial_ids": sorted(ids), "verifier_paths": [t["verifier_path"] for t in trials],
+        })
+        table10.append({"policy": policy, "generator_total_usd": sum(costs) if costs_known else None,
+                        "failed_generator_usd": sum(t["cost_usd"] for t in trials if t["reward"] == 0) if costs_known else None,
+                        "sandbox_usd": None, "router_compute_usd": None,
+                        "input_tokens": sum(c["prompt_tokens"] for c in calls) if calls else None,
+                        "output_tokens": sum(c["completion_tokens"] for c in calls) if calls else None})
+    task_sets = [{t.get("task_name") or str(t.get("task_id")) for t in v} for v in by_policy.values()]
+    paired = len(task_sets) > 1 and all(s == task_sets[0] for s in task_sets)
+    output = {
+        "data_origin": "OFFICIAL_HARBOR_TRIALS", "status": "PARTIAL" if usable else "NOT_EVALUATED",
+        "publication_eligible": False, "paired_task_sets": paired,
+        "table3": table3, "table10": table10,
+        "fig3": [{"policy": r["policy"], "success_rate": r["success_rate"],
+                  "generator_mean_usd": r["generator_mean_usd"]} for r in table3],
+        "fig4": table10,
+        "pending": {
+            "RQ1": "Need paired task/seed sets, attributable model identities and full infrastructure billing",
+            "RQ2_Table6_Fig5": "Need observed pool_id and paired equal-K/varying-K experiments",
+            "RQ3_Table7_Fig6": "Need observed G0-G3 decomposition and handoff traces",
+            "RQ4_Table4_Table5_Table8_Table11_Fig7": "Need observed ablation and checkpoint assignments",
+            "RQ5_Table9_Fig8": "Need workload labels independent of outcomes and paired observed costs",
+        },
+        "excluded": [{"trial_id": r.get("trial_id"), "status": r["status"],
+                      "policy": r.get("policy")} for r in raw if r not in usable],
+    }
+    output.update(observed_research_groups(usable, events))
+    destination = iteration_dir / "analysis"
+    write_atomic(destination / "official_results.json", output)
+    for number in range(3, 12):
+        name = f"table{number}"
+        records = output.get(name, [])
+        write_atomic(destination / f"{name}.json", records)
+        with (destination / f"{name}.csv").open("w", newline="", encoding="utf-8") as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(records[0]) if records else ["status"])
+            writer.writeheader()
+            writer.writerows(records)
+    for number in range(3, 9):
+        write_atomic(destination / f"fig{number}.json", output.get(f"fig{number}", []))
+    return output
+
+
+def observed_research_groups(trials, events):
+    """Group only declared experimental factors and observed official outcomes."""
+    from .iterations import percentile
+
+    def label(trial, field):
+        value = trial.get(field)
+        if value is None:
+            value = (trial.get("agent_metadata") or {}).get(field)
+        return value
+
+    def task_seed(trial):
+        return (trial.get("task_name") or str(trial.get("task_id")), trial.get("seed"),
+                trial.get("task_git_sha"), trial.get("task_digest"))
+
+    def full_cost(trial):
+        metadata = trial.get("agent_metadata") or {}
+        parts = [trial.get("actual_billed_cost_usd"), metadata.get("sandbox_cost_usd"),
+                 metadata.get("router_compute_cost_usd")]
+        return sum(parts) if all(p is not None for p in parts) else None
+
+    def summarize(group, labels):
+        ids = {str(t["trial_id"]) for t in group}
+        routed = [e for e in events if e["event"] == "ROUTER_END" and e.get("episode_id") in ids]
+        calls = [e for e in events if e["event"] == "GENERATOR_END" and e.get("episode_id") in ids]
+        success = sum(t["reward"] == 1 for t in group)
+        generator = [t.get("cost_usd") for t in group]
+        complete = [full_cost(t) for t in group]
+        handoffs = [label(t, "handoff_count") for t in group]
+        return {**labels, "episodes": len(group), "successes": success,
+                "success_rate": success / len(group), "ci95": wilson_score_interval(success, len(group)),
+                "generator_mean_usd": sum(generator) / len(group) if all(c is not None for c in generator) else None,
+                "actual_complete_mean_usd": sum(complete) / len(group) if all(c is not None for c in complete) else None,
+                "actual_cost_per_success_usd": sum(complete) / success if success and all(c is not None for c in complete) else None,
+                "episode_p95_s": percentile([t.get("duration_sec") for t in group], .95),
+                "router_inference_p50_ms": percentile([r.get("inference_latency_ms") for r in routed], .5),
+                "router_inference_p95_ms": percentile([r.get("inference_latency_ms") for r in routed], .95),
+                "ttft_p50_ms": percentile([c.get("ttft_ms") for c in calls], .5),
+                "output_tokens_per_s": percentile([c.get("output_tokens_per_s") for c in calls], .5),
+                "handoff_count_mean": sum(handoffs) / len(group) if all(h is not None for h in handoffs) else None,
+                "trial_ids": sorted(ids), "verifier_paths": [t["verifier_path"] for t in group],
+                "data_origin": "OFFICIAL_HARBOR_TRIALS", "publication_eligible": False}
+
+    result = {}
+    factors = {"table6": ("pool_id", "pool_k"), "table7": ("granularity",),
+               "table4": ("information_ablation",), "table5": ("action_ablation",),
+               "table8": ("supervision_ablation",), "table11": ("checkpoint_id",)}
+    group_status = {}
+    for table, fields in factors.items():
+        grouped = defaultdict(list)
+        for trial in trials:
+            values = tuple(label(trial, f) for f in fields)
+            if any(value is None for value in values):
+                continue
+            grouped[(trial["policy"], *values)].append(trial)
+        records = []
+        for key, group in sorted(grouped.items(), key=lambda kv: str(kv[0])):
+            same_policy = [v for k, v in grouped.items() if k[0] == key[0]]
+            sets = [{task_seed(t) for t in v} for v in same_policy]
+            paired = len(sets) > 1 and all(s == sets[0] for s in sets)
+            records.append(summarize(group, {"policy": key[0], **dict(zip(fields, key[1:])),
+                                            "paired_task_seed_sets": paired}))
+        result[table] = records
+        group_status[table] = {"status": "PARTIAL" if records else "NOT_EVALUATED",
+                               "required_observed_fields": list(fields)}
+
+    workloads = defaultdict(list)
+    for trial in trials:
+        workload = label(trial, "workload")
+        if workload is not None and label(trial, "workload_label_source") == "PRE_TASK_MANIFEST":
+            workloads[workload].append(trial)
+    comparisons = []
+    for workload, group in workloads.items():
+        fixed_groups = defaultdict(list)
+        for trial in group:
+            if trial["policy"] == "fixed_strong":
+                fixed_groups[task_seed(trial)].append(trial)
+        fixed = {key: records[0] for key, records in fixed_groups.items() if len(records) == 1}
+        for policy in sorted({t["policy"] for t in group} - {"fixed_strong"}):
+            routed_groups = defaultdict(list)
+            for trial in group:
+                if trial["policy"] == policy:
+                    routed_groups[task_seed(trial)].append(trial)
+            routed = {key: records[0] for key, records in routed_groups.items() if len(records) == 1}
+            pairs = [(fixed[key], routed[key]) for key in sorted(fixed.keys() & routed.keys(), key=str)]
+            if not pairs:
+                continue
+            delta = [b["reward"] - a["reward"] for a, b in pairs]
+            costs = [full_cost(a) - full_cost(b) if full_cost(a) is not None and full_cost(b) is not None else None for a, b in pairs]
+            comparisons.append({"workload": workload, "policy": policy, "paired_episodes": len(pairs),
+                "delta_success_rate": sum(delta) / len(delta),
+                "actual_mean_cost_saving_usd": sum(costs) / len(costs) if all(c is not None for c in costs) else None,
+                "gain_boundary": None, "boundary_status": "NOT_ESTIMATED",
+                "trial_pairs": [[a["trial_id"], b["trial_id"]] for a, b in pairs],
+                "publication_eligible": False})
+    result.update(table9=comparisons, fig5=result["table6"], fig6=result["table7"],
+                  fig7={"information": result["table4"], "actions": result["table5"],
+                        "supervision": result["table8"], "checkpoints": result["table11"]},
+                  fig8=comparisons, observed_factor_status=group_status)
+    return result
 
 
 def main():

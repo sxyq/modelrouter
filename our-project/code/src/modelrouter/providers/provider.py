@@ -9,15 +9,21 @@ Supports:
 from __future__ import annotations
 
 import json
+import fcntl
 import logging
 import os
 import random
 import re
+import secrets
+import threading
 import time
 import urllib.error
 import urllib.request
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from dataclasses import dataclass, field
+from contextlib import contextmanager
+from pathlib import Path
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     from modelrouter.providers.registry import ModelSpec
@@ -34,15 +40,17 @@ class GeneratorResponse:
     content: str
     thought: str
     action: str
-    prompt_tokens: int
-    completion_tokens: int
-    reasoning_tokens: int
-    cached_tokens: int
+    prompt_tokens: Optional[int]
+    completion_tokens: Optional[int]
+    reasoning_tokens: Optional[int]
+    cached_tokens: Optional[int]
     latency_ms: float
-    cost_usd: float
+    cost_usd: Optional[float]
     is_finish: bool
     ttft_ms: Optional[float] = None
     tool_calls: Optional[List[Dict[str, Any]]] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    raw_response: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -58,6 +66,7 @@ class GeneratorResponse:
             "tool_calls": self.tool_calls or [],
             "cost_usd": self.cost_usd,
             "is_finish": self.is_finish,
+            **self.metadata,
         }
 
 
@@ -227,490 +236,507 @@ class OracleGeneratorProvider(BaseGeneratorProvider):
         )
 
 
+def _pilot_file(name: str) -> Path:
+    for parent in Path(__file__).resolve().parents:
+        candidate = parent / "experiments" / "agent_pilot" / name
+        if candidate.is_file():
+            return candidate
+    raise FileNotFoundError(f"Existing experiments/agent_pilot/{name} not found")
+
+
 def load_generator_credentials() -> Dict[str, Any]:
-    """Loads credentials directly from local config file or environment variables."""
+    """Read the existing local settings without changing them."""
     cfg: Dict[str, Any] = {
         "primary_model": "gpt-6-luna",
         "fallback_model": "gpt-5.6-luna",
         "allowed_models": ["gpt-6-luna", "gpt-5.6-luna"],
     }
-
-    candidate_paths = [
-        os.path.join(os.path.dirname(__file__), "configs", "generator_credentials.json"),
-        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "experiments", "agent_pilot", "configs", "generator_credentials.json")),
-        os.path.abspath("experiments/agent_pilot/configs/generator_credentials.json"),
-    ]
-    for local_path in candidate_paths:
-        if os.path.exists(local_path):
-            try:
-                with open(local_path, "r", encoding="utf-8") as f:
-                    cfg.update(json.load(f))
-                break
-            except Exception as e:
-                logger.warning("Could not read generator_credentials.json at %s: %s", local_path, e)
-
-    # Optional environment variable overrides
+    try:
+        cfg.update(json.loads(_pilot_file("configs/generator_credentials.json").read_text()))
+    except FileNotFoundError:
+        pass
     env_key = os.environ.get("MODELROUTER_GENERATOR_API_KEY") or os.environ.get("OPENAI_API_KEY")
     env_base = os.environ.get("MODELROUTER_GENERATOR_BASE_URL") or os.environ.get("OPENAI_BASE_URL")
     if env_key:
         cfg["api_key"] = env_key
     if env_base:
         cfg["base_url"] = env_base
-
     return cfg
 
 
-def update_token_budget(prompt_tokens: int, completion_tokens: int) -> None:
-    """Safely updates global token budget tracker."""
-    candidate_budget_files = [
-        os.path.abspath("experiments/agent_pilot/token_budget.json"),
-        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "experiments", "agent_pilot", "token_budget.json")),
-        os.path.join(os.path.dirname(__file__), "token_budget.json"),
-    ]
-    budget_file = candidate_budget_files[0]
-    for fpath in candidate_budget_files:
-        if os.path.exists(fpath):
-            budget_file = fpath
-            break
-
-    total_new = prompt_tokens + completion_tokens
-    budget_data = {
-        "max_tokens": 1000000,
-        "consumed_prompt_tokens": 0,
-        "consumed_completion_tokens": 0,
-        "consumed_total_tokens": 0,
-        "remaining_tokens": 1000000,
-        "total_calls": 0,
-    }
-    if os.path.exists(budget_file):
+@contextmanager
+def _token_budget():
+    """Serialize requests and accounting against the existing shared file."""
+    with _pilot_file("token_budget.json").open("r+", encoding="utf-8") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        data = json.load(handle)
         try:
-            with open(budget_file, "r", encoding="utf-8") as f:
-                budget_data.update(json.load(f))
-        except Exception:
-            pass
+            yield data
+        finally:
+            handle.seek(0)
+            json.dump(data, handle, indent=2)
+            handle.truncate()
+            handle.flush()
+            os.fsync(handle.fileno())
+            fcntl.flock(handle, fcntl.LOCK_UN)
 
-    consumed = budget_data.get("consumed_total_tokens", 0) + total_new
-    if consumed >= budget_data.get("max_tokens", 1000000):
-        logger.error("Token budget exceeded: %d >= %d", consumed, budget_data.get("max_tokens", 1000000))
 
-    budget_data["consumed_prompt_tokens"] = budget_data.get("consumed_prompt_tokens", 0) + prompt_tokens
-    budget_data["consumed_completion_tokens"] = budget_data.get("consumed_completion_tokens", 0) + completion_tokens
-    budget_data["consumed_total_tokens"] = consumed
-    budget_data["remaining_tokens"] = max(0, budget_data.get("max_tokens", 1000000) - consumed)
-    budget_data["total_calls"] = budget_data.get("total_calls", 0) + 1
-    budget_data["last_updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+def _record_budget(data: Dict[str, Any], prompt_tokens: Optional[int], completion_tokens: Optional[int]) -> None:
+    data["total_calls"] = data.get("total_calls", 0) + 1
+    if prompt_tokens is None or completion_tokens is None:
+        data["unknown_usage_calls"] = data.get("unknown_usage_calls", 0) + 1
+    else:
+        data["consumed_prompt_tokens"] = data.get("consumed_prompt_tokens", 0) + prompt_tokens
+        data["consumed_completion_tokens"] = data.get("consumed_completion_tokens", 0) + completion_tokens
+        data["consumed_total_tokens"] = data.get("consumed_total_tokens", 0) + prompt_tokens + completion_tokens
+    data["remaining_tokens"] = max(0, data["max_tokens"] - data["consumed_total_tokens"])
+    data["last_updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
-    try:
-        with open(budget_file, "w", encoding="utf-8") as f:
-            json.dump(budget_data, f, indent=2)
-    except Exception as e:
-        logger.warning("Failed to persist token_budget.json: %s", e)
+
+def update_token_budget(prompt_tokens: int, completion_tokens: int) -> None:
+    with _token_budget() as data:
+        _record_budget(data, prompt_tokens, completion_tokens)
 
 
 class OpenAICompatibleProvider(BaseGeneratorProvider):
-    """Production provider calling OpenAI-compatible Chat Completions API endpoint."""
+    """Single-request Chat Completions transport; tools belong to the agent."""
+
+    protocol = "chat_completions"
 
     def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None):
         creds = load_generator_credentials()
-        self.base_url = (base_url or os.environ.get("OPENAI_BASE_URL") or creds.get("base_url") or "https://api.openai.com/v1").rstrip("/")
-        self.api_key = api_key or os.environ.get("OPENAI_API_KEY") or creds.get("api_key", "")
+        self.base_url = (base_url or creds.get("base_url") or "https://api.openai.com/v1").rstrip("/")
+        self.api_key = api_key or creds.get("api_key", "")
         self.primary_model = creds.get("primary_model", "gpt-6-luna")
         self.fallback_model = creds.get("fallback_model", "gpt-5.6-luna")
         self.allowed_models = set(creds.get("allowed_models", ["gpt-6-luna", "gpt-5.6-luna"]))
 
     def _normalize_model(self, model_id: str) -> str:
-        m = model_id.lower().replace(" ", "-")
-        if m in ("gpt-6-luna", "gpt-6", "luna"):
-            return "gpt-6-luna"
-        if m in ("gpt-5.6-luna", "gpt-5.6"):
-            return "gpt-5.6-luna"
-        if m in self.allowed_models:
-            return m
-        return self.primary_model
+        aliases = {"gpt-6": "gpt-6-luna", "luna": "gpt-6-luna", "gpt-5.6": "gpt-5.6-luna"}
+        model = model_id.lower().replace(" ", "-")
+        target = aliases.get(model, model)
+        if target not in self.allowed_models:
+            target = self.primary_model
+        if target not in {"gpt-6-luna", "gpt-5.6-luna"}:
+            raise ValueError("Only the two authorized Luna endpoints may be requested")
+        return target
 
-    def generate(
+    def _read_response(self, response, stream: bool, started: float) -> Tuple[Dict[str, Any], Optional[float]]:
+        if not stream:
+            return json.loads(response.read().decode("utf-8")), None
+        body: Dict[str, Any] = {"object": "chat.completion", "choices": []}
+        choices: Dict[int, Dict[str, Any]] = {}
+        tool_calls: Dict[Tuple[int, int], Dict[str, Any]] = {}
+        ttft = None
+        for raw_line in response:
+            line = raw_line.decode("utf-8").strip()
+            if not line.startswith("data:"):
+                continue
+            data = line[5:].strip()
+            if data == "[DONE]":
+                break
+            chunk = json.loads(data)
+            if "error" in chunk:
+                raise RuntimeError(f"Provider stream error: {chunk['error'].get('type', 'unknown')}")
+            for key in ("id", "model", "created", "system_fingerprint"):
+                if key in chunk:
+                    body[key] = chunk[key]
+            if chunk.get("usage") is not None:
+                body["usage"] = chunk["usage"]
+            for item in chunk.get("choices", []):
+                index = item["index"]
+                choice = choices.setdefault(index, {"index": index, "message": {"role": "assistant", "content": ""}, "finish_reason": None})
+                delta = item.get("delta", {})
+                if (delta.get("content") or delta.get("tool_calls")) and ttft is None:
+                    ttft = (time.perf_counter() - started) * 1000
+                for key in ("content", "reasoning_content"):
+                    if delta.get(key):
+                        choice["message"][key] = choice["message"].get(key, "") + delta[key]
+                for tc in delta.get("tool_calls", []):
+                    tool = tool_calls.setdefault((index, tc["index"]), {"id": "", "type": "function", "function": {"name": "", "arguments": ""}})
+                    if tc.get("id"):
+                        tool["id"] = tc["id"]
+                    for key in ("name", "arguments"):
+                        tool["function"][key] += tc.get("function", {}).get(key, "")
+                if item.get("finish_reason") is not None:
+                    choice["finish_reason"] = item["finish_reason"]
+        for index, choice in sorted(choices.items()):
+            calls = [tool for (choice_index, _), tool in sorted(tool_calls.items()) if choice_index == index]
+            if calls:
+                choice["message"]["tool_calls"] = calls
+            body["choices"].append(choice)
+        return body, ttft
+
+    def _make_payload(self, messages, target_model, native_effort, max_tokens, tools, stream):
+        payload = {"model": target_model, "messages": messages, "max_tokens": max_tokens, "stream": stream}
+        if stream:
+            payload["stream_options"] = {"include_usage": True}
+        if native_effort != "none":
+            payload["reasoning_effort"] = native_effort
+        if tools:
+            payload["tools"] = tools
+        return payload
+
+    def _usage_counts(self, usage):
+        return (
+            usage.get("prompt_tokens"),
+            usage.get("completion_tokens"),
+            (usage.get("completion_tokens_details") or {}).get("reasoning_tokens"),
+            (usage.get("prompt_tokens_details") or {}).get("cached_tokens"),
+        )
+
+    def query_raw(
         self,
-        messages: List[Dict[str, str]],
+        messages: List[Dict[str, Any]],
         model_spec: ModelSpec,
         native_effort: str = "none",
         max_tokens: int = 1024,
-    ) -> GeneratorResponse:
-        t0 = time.time()
-        url = f"{self.base_url}/chat/completions"
-        target_model = self._normalize_model(model_spec.model_id)
+        tools: Optional[List[Dict[str, Any]]] = None,
+        stream: bool = True,
+    ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        """Return (native_response, metrics); one request, no execution or retry.
 
-        payload: Dict[str, Any] = {
-            "model": target_model,
-            "messages": messages,
-            "max_tokens": max_tokens,
-        }
-        if native_effort != "none" and native_effort in model_spec.native_efforts:
-            payload["reasoning_effort"] = native_effort
+        Budget accounting is completed here. Callers must not charge it again.
+        Missing usage, returned identity or billing remains explicitly unknown.
+        """
+        from modelrouter.providers.registry import MODEL_REGISTRY
 
-        data = json.dumps(payload).encode("utf-8")
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.api_key}",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) ModelRouter/1.0",
-        }
-
-        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-        try:
-            with urllib.request.urlopen(req, timeout=60.0) as resp:
-                body = json.loads(resp.read().decode("utf-8"))
-        except urllib.error.HTTPError as e:
-            # Fallback to fallback_model if primary fails
-            if target_model != self.fallback_model and self.fallback_model:
-                logger.warning("Primary model %s failed (%s), attempting fallback %s", target_model, e, self.fallback_model)
-                payload["model"] = self.fallback_model
-                data = json.dumps(payload).encode("utf-8")
-                req2 = urllib.request.Request(url, data=data, headers=headers, method="POST")
-                with urllib.request.urlopen(req2, timeout=60.0) as resp2:
-                    body = json.loads(resp2.read().decode("utf-8"))
-            else:
+        model_spec.validate_effort(native_effort)
+        target = self._normalize_model(model_spec.model_id)
+        target_spec = MODEL_REGISTRY[target]
+        target_spec.validate_effort(native_effort)
+        payload = self._make_payload(messages, target, native_effort, max_tokens, tools, stream)
+        endpoint = "/chat/completions" if self.protocol == "chat_completions" else "/responses"
+        request = urllib.request.Request(
+            self.base_url + endpoint,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {self.api_key}", "User-Agent": "ModelRouter/10"},
+            method="POST",
+        )
+        started = time.perf_counter()
+        with _token_budget() as budget:
+            # Reserve requested output plus encoded input within the existing limit.
+            input_bound = len(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
+            if budget["consumed_total_tokens"] + input_bound + max_tokens >= budget["max_tokens"]:
+                raise RuntimeError("Existing total-token budget has insufficient remaining capacity")
+            try:
+                with urllib.request.urlopen(request, timeout=60.0) as response:
+                    body, ttft_ms = self._read_response(response, stream, started)
+            except Exception:
+                _record_budget(budget, None, None)
                 raise
-
-        choice = body["choices"][0]
-        content = choice["message"]["content"]
-        thought, action, is_finish = parse_react_response(content)
-
-        usage = body.get("usage", {})
-        p_tokens = usage.get("prompt_tokens", 0)
-        c_tokens = usage.get("completion_tokens", 0)
-        r_tokens = usage.get("completion_tokens_details", {}).get("reasoning_tokens", 0)
-        cached = usage.get("prompt_tokens_details", {}).get("cached_tokens", 0)
-
-        update_token_budget(p_tokens, c_tokens)
-
-        cost = model_spec.calculate_cost(
-            prompt_tokens=p_tokens,
-            completion_tokens=c_tokens,
-            reasoning_tokens=r_tokens,
-            cache_read_tokens=cached,
+            raw_usage = body.get("usage")
+            p_tokens, c_tokens, r_tokens, cached = self._usage_counts(raw_usage or {})
+            _record_budget(budget, p_tokens, c_tokens)
+        latency_ms = (time.perf_counter() - started) * 1000
+        returned = body.get("model")
+        identity_status = "MATCHED_REQUEST_ALIAS" if returned == target else ("MISSING" if not returned else "MISMATCH")
+        usage_complete = p_tokens is not None and c_tokens is not None
+        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0) if usage_complete and returned == target else None
+        # Vendor cost is distinct from the configured price estimate.
+        billed_cost = (raw_usage or {}).get("cost")
+        stream_elapsed_ms = latency_ms - ttft_ms if stream and ttft_ms is not None else None
+        stream_output_tokens_per_s = (
+            c_tokens * 1000 / stream_elapsed_ms
+            if usage_complete and stream_elapsed_ms is not None and stream_elapsed_ms > 0 else None
         )
-        total_lat = (time.time() - t0) * 1000.0
+        metrics = {
+            "requested_model_id": model_spec.model_id,
+            "response_id": body.get("id"),
+            "request_model_id": target,
+            "returned_model_id": returned,
+            "provider": target_spec.provider,
+            "protocol": self.protocol,
+            "native_effort": native_effort,
+            "stream": stream,
+            "requested_max_output_tokens": max_tokens,
+            "reported_max_output_tokens": body.get("max_output_tokens"),
+            "raw_usage": raw_usage,
+            "usage_status": "REPORTED" if usage_complete else "MISSING",
+            "identity_status": identity_status,
+            "alias_mapping_applied": model_spec.model_id != target,
+            "prompt_tokens": p_tokens,
+            "completion_tokens": c_tokens,
+            "reasoning_tokens": r_tokens,
+            "cached_tokens": cached,
+            "ttft_ms": ttft_ms,
+            "latency_ms": latency_ms,
+            "output_tokens_per_s": (c_tokens * 1000 / latency_ms) if usage_complete and stream and ttft_ms is not None else None,
+            "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+            "stream_output_tokens_per_s": stream_output_tokens_per_s,
+            "stream_output_tokens_per_s_status": "ESTIMATE" if stream_output_tokens_per_s is not None else "UNAVAILABLE",
+            "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+            "cost_usd": cost,
+            "cost_status": target_spec.pricing_status if cost is not None else "UNKNOWN",
+            "actual_billed_cost_usd": billed_cost,
+            "budget_accounted": True,
+            "status": "RECORDED" if usage_complete and returned == target else "NOT_EVALUATED",
+        }
+        if usage_complete:
+            global_multi_model_logger.log_call(
+                protocol=self.protocol, model_id=returned or target, provider=target_spec.provider,
+                reasoning_effort=native_effort, stream=stream, ttft_ms=ttft_ms, total_latency_ms=latency_ms,
+                prompt_tokens=p_tokens, completion_tokens=c_tokens, reasoning_tokens=r_tokens or 0,
+                cache_read_tokens=cached or 0, actual_billed_cost_usd=billed_cost,
+                status=metrics["status"], metadata=metrics,
+            )
+        return body, metrics
 
-        global_multi_model_logger.log_call(
-            protocol="chat_completions",
-            model_id=target_model,
-            provider="openai_compatible",
-            reasoning_effort=native_effort,
-            stream=False,
-            ttft_ms=None,
-            total_latency_ms=total_lat,
-            prompt_tokens=p_tokens,
-            completion_tokens=c_tokens,
-            reasoning_tokens=r_tokens,
-            cache_read_tokens=cached,
-            actual_billed_cost_usd=cost,
-            tool_calls=[],
-            status="SUCCESS",
-        )
+    def generate(self, messages, model_spec, native_effort="none", max_tokens=1024, tools=None, stream=False) -> GeneratorResponse:
+        body, metrics = self.query_raw(messages, model_spec, native_effort, max_tokens, tools, stream)
+        message = body["choices"][0]["message"]
+        return self._generation(message.get("content") or "", message.get("tool_calls", []), body, metrics)
 
+    @staticmethod
+    def _generation(content, tool_calls, body, metrics):
+        thought, action, finished = parse_react_response(content)
         return GeneratorResponse(
-            content=content,
-            thought=thought,
-            action=action,
-            prompt_tokens=p_tokens,
-            completion_tokens=c_tokens,
-            reasoning_tokens=r_tokens,
-            cached_tokens=cached,
-            latency_ms=total_lat,
-            cost_usd=cost,
-            is_finish=is_finish,
+            content=content, thought=thought, action=action, is_finish=finished,
+            prompt_tokens=metrics["prompt_tokens"], completion_tokens=metrics["completion_tokens"],
+            reasoning_tokens=metrics["reasoning_tokens"], cached_tokens=metrics["cached_tokens"],
+            latency_ms=metrics["latency_ms"], cost_usd=metrics["cost_usd"],
+            ttft_ms=metrics["ttft_ms"], tool_calls=tool_calls, metadata=metrics, raw_response=body,
         )
+
+
+@contextmanager
+def native_generator_relay(record_dir: str | Path, bind: str = "0.0.0.0"):
+    """Expose query_raw to native mini for this context's lifetime only.
+
+    Yields port, api_key and a Docker-facing base_url. api_key is a temporary
+    in-memory credential: pass it as the native client's API key, never log it.
+    Provider credentials and shared-budget accounting remain on the host.
+    Upstream requests stream for timing; downstream may request JSON or SSE.
+    SSE is replayed after the single upstream response, not live forwarded.
+    X-Session-ID identifies the episode. Existing events restore steps and cost.
+    As in mini, a completed call reaching cost_limit prevents the next call;
+    this does not predict or cap the bill of an in-flight provider request.
+    """
+    from modelrouter.benchmark.iterations import event, rows
+    from modelrouter.providers.registry import MODEL_REGISTRY
+
+    record_dir = Path(record_dir)
+    provider = OpenAICompatibleProvider()
+    relay_key = secrets.token_urlsafe(32)
+    episode_steps: Dict[str, int] = {}
+    episode_costs: Dict[Optional[str], Optional[float]] = {}
+    config_path = record_dir / "run_config.json"
+    config = json.loads(config_path.read_text()) if config_path.is_file() else {}
+    cost_limit = float(config.get("cost_limit", 3.0))
+    for record in rows(record_dir / "events.jsonl"):
+        if record.get("source") != "native_generator_relay":
+            continue
+        episode = record.get("episode_id")
+        if episode is not None and record.get("step") is not None:
+            episode_steps[episode] = max(episode_steps.get(episode, 0), record["step"] + 1)
+        if record["event"] == "GENERATOR_END":
+            previous = episode_costs.get(episode, 0.0)
+            cost = record.get("cost_usd")
+            episode_costs[episode] = previous + cost if previous is not None and cost is not None else None
+    step_lock = threading.Lock()
+
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, format, *args):
+            pass
+
+        def send_json(self, code, body):
+            data = json.dumps(body).encode("utf-8")
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
+        def do_POST(self):
+            if not secrets.compare_digest(self.headers.get("Authorization", "").encode(),
+                                          f"Bearer {relay_key}".encode()):
+                self.send_json(401, {"error": {"type": "authentication_error", "message": "Invalid relay credential"}})
+                return
+            if self.path != "/v1/chat/completions":
+                self.send_json(404, {"error": {"type": "not_found", "message": "Use /v1/chat/completions"}})
+                return
+            request_id = "native-" + secrets.token_hex(12)
+            episode_id = self.headers.get("X-Session-ID") or None
+            step = None
+            if episode_id is not None:
+                with step_lock:
+                    step = episode_steps.get(episode_id, 0)
+                    episode_steps[episode_id] = step + 1
+            attribution = {"episode_id": episode_id, "step": step,
+                           "policy": "mini-swe-agent", "sample_kind": "benchmark"}
+            started = time.perf_counter()
+            try:
+                payload = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+                model = payload["model"].removeprefix("openai/")
+                if model not in ("gpt-6-luna", "gpt-5.6-luna"):
+                    raise ValueError("Only the two Luna models are authorized")
+                with step_lock:
+                    previous_cost = episode_costs.get(episode_id, 0.0)
+                    if previous_cost is None or (cost_limit > 0 and previous_cost >= cost_limit):
+                        reason = "EPISODE_COST_UNKNOWN" if previous_cost is None else "EPISODE_COST_LIMIT"
+                        event(record_dir, "ERROR", source="native_generator_relay", category="BUDGET",
+                              **attribution, request_id=request_id, error=reason,
+                              episode_estimated_cost_usd=previous_cost, episode_cost_limit_usd=cost_limit)
+                        self.send_json(402, {"error": {"type": reason, "message": "Episode budget cannot fund another request"}})
+                        return
+                    raw, metrics = provider.query_raw(
+                        messages=payload["messages"], model_spec=MODEL_REGISTRY[model],
+                        native_effort=payload.get("reasoning_effort", "low"),
+                        max_tokens=payload.get("max_completion_tokens", payload.get("max_tokens", 1024)),
+                        tools=payload.get("tools"), stream=True,
+                    )
+                    cost = metrics["cost_usd"]
+                    episode_cost = previous_cost + cost if cost is not None else None
+                    episode_costs[episode_id] = episode_cost
+            except Exception as exc:
+                event(record_dir, "ERROR", source="native_generator_relay", category="PROVIDER",
+                      **attribution,
+                      request_id=request_id, error=type(exc).__name__,
+                      duration_ms=(time.perf_counter() - started) * 1000)
+                code = 400 if isinstance(exc, (ValueError, KeyError, TypeError)) else 502
+                self.send_json(code, {"error": {"type": type(exc).__name__, "message": "Native relay request failed; see host iteration metrics"}})
+                return
+            event(record_dir, "GENERATOR_END", **metrics, source="native_generator_relay",
+                  **attribution,
+                  request_id=request_id, native_stream=bool(payload.get("stream", False)),
+                  episode_estimated_cost_usd=episode_cost, episode_cost_limit_usd=cost_limit,
+                  model=metrics["request_model_id"], returned_model=metrics["returned_model_id"],
+                  effort=metrics["native_effort"])
+            if not payload.get("stream", False):
+                self.send_json(200, raw)
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream")
+            self.end_headers()
+            chunk = {key: raw[key] for key in ("id", "model", "created") if key in raw}
+            chunk.update(object="chat.completion.chunk", choices=[])
+            for choice in raw["choices"]:
+                delta = dict(choice["message"])
+                if delta.get("tool_calls"):
+                    delta["tool_calls"] = [{"index": index, **call} for index, call in enumerate(delta["tool_calls"])]
+                chunk["choices"].append({"index": choice["index"], "delta": delta, "finish_reason": None})
+            self.wfile.write(f"data: {json.dumps(chunk)}\n\n".encode())
+            chunk["choices"] = [{"index": choice["index"], "delta": {}, "finish_reason": choice.get("finish_reason")} for choice in raw["choices"]]
+            self.wfile.write(f"data: {json.dumps(chunk)}\n\n".encode())
+            if "usage" in raw:
+                chunk.update(choices=[], usage=raw["usage"])
+                self.wfile.write(f"data: {json.dumps(chunk)}\n\n".encode())
+            self.wfile.write(b"data: [DONE]\n\n")
+
+    server = ThreadingHTTPServer((bind, 0), Handler)
+    server.daemon_threads = False
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.1}, daemon=True)
+    thread.start()
+    try:
+        event(record_dir, "NATIVE_RELAY_START", bind=bind, port=port, cost_limit=cost_limit)
+        yield {"port": port, "api_key": relay_key, "base_url": f"http://host.docker.internal:{port}/v1"}
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join()
+        event(record_dir, "NATIVE_RELAY_STOP", port=port)
 
 
 GET_TEST_STATUS_TOOL = {
-    "type": "function",
-    "name": "get_test_status",
-    "description": "Returns current test status and benchmark environment metrics",
-    "parameters": {
-        "type": "object",
-        "properties": {},
-        "required": [],
-    },
+    "type": "function", "name": "get_test_status",
+    "description": "Returns local fixture status",
+    "parameters": {"type": "object", "properties": {}, "required": []},
 }
 
 
 def execute_safe_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
-    """Safe built-in tool executor for Responses API verification."""
+    """Explicit legacy fixture executor; never invoked by query_raw."""
     if name == "get_test_status":
-        return {
-            "status": "ready",
-            "environment": "verified_responses_harness",
-            "active_router": "laya-v2 / kev-4b on A6000",
-            "serving_endpoint": "http://127.0.0.1:8000",
-            "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        }
+        return {"status": "ready", "evidence_type": "FIXTURE", "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
     return {"error": f"Tool '{name}' not found"}
 
 
-class OpenAIResponsesProvider(BaseGeneratorProvider):
-    """Production provider calling OpenAI /v1/responses endpoint with SSE streaming,
-    native reasoning effort, and tool calling roundtrip support.
-    """
+class OpenAIResponsesProvider(OpenAICompatibleProvider):
+    """Native Responses transport, sharing identity and usage accounting."""
 
-    def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None):
-        creds = load_generator_credentials()
-        self.base_url = (base_url or os.environ.get("OPENAI_BASE_URL") or creds.get("base_url") or "https://api.openai.com/v1").rstrip("/")
-        self.api_key = api_key or os.environ.get("OPENAI_API_KEY") or creds.get("api_key", "")
-        self.primary_model = creds.get("primary_model", "gpt-6-luna")
-        self.fallback_model = creds.get("fallback_model", "gpt-5.6-luna")
-        self.allowed_models = set(creds.get("allowed_models", ["gpt-6-luna", "gpt-5.6-luna"]))
+    protocol = "responses"
 
-    def _normalize_model(self, model_id: str) -> str:
-        m = model_id.lower().replace(" ", "-")
-        if m in ("gpt-6-luna", "gpt-6", "luna"):
-            return "gpt-6-luna"
-        if m in ("gpt-5.6-luna", "gpt-5.6"):
-            return "gpt-5.6-luna"
-        if m in self.allowed_models:
-            return m
-        return self.primary_model
-
-    def _stream_response_request(
-        self,
-        payload: Dict[str, Any],
-        headers: Dict[str, str],
-        timeout: float = 60.0
-    ) -> Tuple[str, List[Dict[str, Any]], Dict[str, Any], Optional[float]]:
-        """
-        Executes a POST request to /v1/responses with stream: true and consumes SSE events.
-        Returns (accumulated_text, tool_calls, usage_dict, ttft_ms).
-        """
-        t0 = time.time()
-        url = f"{self.base_url}/responses"
-        data = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-
-        accumulated_text = ""
-        first_token_time: Optional[float] = None
-        ttft_ms: Optional[float] = None
-        current_event = ""
-        current_call_id: Optional[str] = None
-        tool_calls_map: Dict[str, Dict[str, Any]] = {}
-        usage_data: Dict[str, Any] = {}
-
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            for raw_line in resp:
-                line = raw_line.decode("utf-8").strip()
-                if not line:
-                    continue
-                if line.startswith("event:"):
-                    current_event = line[6:].strip()
-                    continue
-                if line.startswith("data:"):
-                    data_str = line[5:].strip()
-                    if data_str == "[DONE]":
-                        break
-                    try:
-                        event_data = json.loads(data_str)
-                    except Exception:
-                        continue
-
-                    ev_type = event_data.get("type") or current_event
-
-                    # 1. Delta text chunk
-                    if ev_type in ("response.output_text.delta", "response.delta"):
-                        delta = event_data.get("delta") or event_data.get("text") or ""
-                        if delta:
-                            if first_token_time is None:
-                                first_token_time = time.time()
-                                ttft_ms = (first_token_time - t0) * 1000.0
-                            accumulated_text += delta
-
-                    # 2. Function call arguments delta
-                    elif ev_type == "response.function_call_arguments.delta":
-                        call_id = event_data.get("call_id") or current_call_id
-                        delta_args = event_data.get("delta") or ""
-                        if call_id and call_id in tool_calls_map:
-                            tool_calls_map[call_id]["arguments"] += delta_args
-
-                    # 3. Output item added (message or function_call)
-                    elif ev_type == "response.output_item.added":
-                        item = event_data.get("item", {})
-                        if item.get("type") == "function_call":
-                            c_id = item.get("call_id") or item.get("id") or f"call_{len(tool_calls_map)+1}"
-                            current_call_id = c_id
-                            tool_calls_map[c_id] = {
-                                "call_id": c_id,
-                                "name": item.get("name", ""),
-                                "arguments": item.get("arguments", ""),
-                            }
-
-                    # 4. Output item done
-                    elif ev_type == "response.output_item.done":
-                        item = event_data.get("item", {})
-                        if item.get("type") == "function_call":
-                            c_id = item.get("call_id") or item.get("id")
-                            if c_id and c_id in tool_calls_map:
-                                if item.get("arguments"):
-                                    tool_calls_map[c_id]["arguments"] = item["arguments"]
-
-                    # 5. Response completed with final usage
-                    elif ev_type in ("response.completed", "response.done"):
-                        r_obj = event_data.get("response", {})
-                        usage_data = r_obj.get("usage") or event_data.get("usage", {})
-
-        tool_calls_list = list(tool_calls_map.values())
-        return accumulated_text, tool_calls_list, usage_data, ttft_ms
-
-    def generate(
-        self,
-        messages: List[Dict[str, str]],
-        model_spec: ModelSpec,
-        native_effort: str = "none",
-        max_tokens: int = 1024,
-        stream: bool = True,
-        tools: Optional[List[Dict[str, Any]]] = None,
-        tool_executor: Optional[Any] = None,
-    ) -> GeneratorResponse:
-        t0 = time.time()
-        target_model = self._normalize_model(model_spec.model_id)
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.api_key}",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) ModelRouter/1.0",
-        }
-
-        # Build initial input from messages
-        input_items = []
-        for m in messages:
-            input_items.append({"role": m.get("role", "user"), "content": m.get("content", "")})
-
-        payload: Dict[str, Any] = {
-            "model": target_model,
-            "input": input_items,
-            "stream": stream,
-        }
-
-        # Support native reasoning effort: low, medium, high
-        if native_effort in ("low", "medium", "high"):
+    def _make_payload(self, messages, target_model, native_effort, max_tokens, tools, stream):
+        payload = {"model": target_model, "input": messages, "max_output_tokens": max_tokens, "stream": stream}
+        if native_effort != "none":
             payload["reasoning"] = {"effort": native_effort}
+        if tools:
+            payload["tools"] = tools
+        return payload
 
-        # Support tool definitions
-        active_tools = tools if tools is not None else [GET_TEST_STATUS_TOOL]
-        if active_tools:
-            payload["tools"] = active_tools
+    def _usage_counts(self, usage):
+        return (
+            usage.get("input_tokens"), usage.get("output_tokens"),
+            (usage.get("output_tokens_details") or {}).get("reasoning_tokens"),
+            (usage.get("input_tokens_details") or {}).get("cached_tokens"),
+        )
 
-        executor = tool_executor or execute_safe_tool
-        executed_tool_calls: List[Dict[str, Any]] = []
+    def _read_response(self, response, stream, started):
+        if not stream:
+            return json.loads(response.read().decode("utf-8")), None
+        body: Dict[str, Any] = {}
+        output = {}
+        text = ""
+        ttft = None
+        event = ""
+        for raw_line in response:
+            line = raw_line.decode("utf-8").strip()
+            if line.startswith("event:"):
+                event = line[6:].strip()
+            if not line.startswith("data:"):
+                continue
+            data = line[5:].strip()
+            if data == "[DONE]":
+                break
+            item = json.loads(data)
+            kind = item.get("type", event)
+            if kind in ("response.output_text.delta", "response.function_call_arguments.delta"):
+                if item.get("delta") and ttft is None:
+                    ttft = (time.perf_counter() - started) * 1000
+                if kind == "response.output_text.delta":
+                    text += item.get("delta", "")
+            if kind in ("response.output_item.added", "response.output_item.done"):
+                value = item["item"]
+                output[value.get("id") or value.get("call_id") or str(item.get("output_index", 0))] = value
+            if kind in ("response.completed", "response.done", "response.incomplete"):
+                body = item.get("response", {})
+            if kind in ("error", "response.failed"):
+                raise RuntimeError(f"Provider stream ended with {kind}")
+        if "output" not in body:
+            body["output"] = list(output.values())
+            if text:
+                body["output"].append({"type": "message", "role": "assistant", "content": [{"type": "output_text", "text": text}]})
+        return body, ttft
 
-        try:
-            acc_text, tool_calls, usage, ttft_ms = self._stream_response_request(payload, headers)
-
-            # If model made function calls, perform tool roundtrip
-            if tool_calls and executor:
-                for tc in tool_calls:
-                    fn_name = tc.get("name", "")
-                    raw_args = tc.get("arguments", "{}")
-                    try:
-                        args = json.loads(raw_args) if isinstance(raw_args, str) and raw_args else {}
-                    except Exception:
-                        args = {}
-                    tool_output = executor(fn_name, args)
-                    executed_tool_calls.append({
-                        "name": fn_name,
-                        "args": args,
-                        "output": tool_output,
-                    })
-
-                # Follow-up turn: feed back function call and function_call_output
-                follow_up_input = list(input_items)
-                for tc in tool_calls:
-                    follow_up_input.append({
-                        "type": "function_call",
-                        "call_id": tc["call_id"],
-                        "name": tc["name"],
-                        "arguments": tc["arguments"],
-                    })
-                    output_payload = executed_tool_calls[-1]["output"] if executed_tool_calls else {}
-                    follow_up_input.append({
-                        "type": "function_call_output",
-                        "call_id": tc["call_id"],
-                        "output": json.dumps(output_payload),
-                    })
-
-                payload["input"] = follow_up_input
-                # Stream completion turn
-                acc_text2, _, usage2, ttft2 = self._stream_response_request(payload, headers)
-                if acc_text2:
-                    acc_text = (acc_text + "\n" + acc_text2).strip()
-                if usage2:
-                    usage = usage2
-                if ttft_ms is None and ttft2 is not None:
-                    ttft_ms = ttft2
-
-            p_tokens = usage.get("input_tokens", 0)
-            c_tokens = usage.get("output_tokens", 0)
-            r_tokens = usage.get("output_tokens_details", {}).get("reasoning_tokens", 0)
-            cached = usage.get("input_tokens_details", {}).get("cached_tokens", 0)
-
-            # Fallback token estimate if upstream stream omits usage
-            if p_tokens == 0 and c_tokens == 0:
-                p_tokens = sum(len(m.get("content", "").split()) for m in messages) * 2 + 50
-                c_tokens = len(acc_text.split()) * 2 + 10
-
-            update_token_budget(p_tokens, c_tokens)
-            cost = model_spec.calculate_cost(
-                prompt_tokens=p_tokens,
-                completion_tokens=c_tokens,
-                reasoning_tokens=r_tokens,
-                cache_read_tokens=cached,
-            )
-            total_lat = (time.time() - t0) * 1000.0
-
-            # Log standardized multi-model call
-            global_multi_model_logger.log_call(
-                protocol="responses",
-                model_id=target_model,
-                provider="openai_responses",
-                reasoning_effort=native_effort,
-                stream=stream,
-                ttft_ms=ttft_ms,
-                total_latency_ms=total_lat,
-                prompt_tokens=p_tokens,
-                completion_tokens=c_tokens,
-                reasoning_tokens=r_tokens,
-                cache_read_tokens=cached,
-                actual_billed_cost_usd=cost,
-                tool_calls=executed_tool_calls,
-                status="SUCCESS",
-            )
-
-            thought, action, is_finish = parse_react_response(acc_text)
-            return GeneratorResponse(
-                content=acc_text,
-                thought=thought,
-                action=action,
-                prompt_tokens=p_tokens,
-                completion_tokens=c_tokens,
-                reasoning_tokens=r_tokens,
-                cached_tokens=cached,
-                latency_ms=total_lat,
-                ttft_ms=ttft_ms,
-                tool_calls=executed_tool_calls,
-                cost_usd=cost,
-                is_finish=is_finish,
-            )
-        except Exception as e:
-            total_lat = (time.time() - t0) * 1000.0
-            global_multi_model_logger.log_call(
-                protocol="responses",
-                model_id=target_model,
-                provider="openai_responses",
-                reasoning_effort=native_effort,
-                stream=stream,
-                ttft_ms=None,
-                total_latency_ms=total_lat,
-                status="ERROR",
-                error_message=str(e),
-            )
-            raise
+    def generate(self, messages, model_spec, native_effort="none", max_tokens=1024, stream=True, tools=None, tool_executor=None):
+        body, metrics = self.query_raw(messages, model_spec, native_effort, max_tokens, tools, stream)
+        outputs = body.get("output", [])
+        text = "".join(part.get("text", "") for item in outputs if item["type"] == "message" for part in item.get("content", []))
+        calls = [item for item in outputs if item["type"] == "function_call"]
+        if calls and tool_executor is not None:
+            executed = []
+            followup = list(messages) + outputs
+            for call in calls:
+                args = json.loads(call.get("arguments") or "{}")
+                value = tool_executor(call["name"], args)
+                executed.append({"call_id": call["call_id"], "name": call["name"], "args": args, "output": value})
+                followup.append({"type": "function_call_output", "call_id": call["call_id"], "output": json.dumps(value)})
+            body2, metrics2 = self.query_raw(followup, model_spec, native_effort, max_tokens, tools, stream)
+            text += "".join(part.get("text", "") for item in body2.get("output", []) if item["type"] == "message" for part in item.get("content", []))
+            combined = dict(metrics)
+            for key in ("prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cost_usd", "actual_billed_cost_usd", "latency_ms"):
+                combined[key] = metrics[key] + metrics2[key] if metrics[key] is not None and metrics2[key] is not None else None
+            combined["requests"] = [metrics, metrics2]
+            combined["raw_usage"] = [metrics["raw_usage"], metrics2["raw_usage"]]
+            combined["status"] = "RECORDED" if all(m["status"] == "RECORDED" for m in (metrics, metrics2)) else "NOT_EVALUATED"
+            combined["output_tokens_per_s"] = None
+            combined["stream_output_tokens_per_s"] = None
+            combined["stream_output_tokens_per_s_status"] = "PER_REQUEST_ONLY"
+            return self._generation(text, executed, {"responses": [body, body2]}, combined)
+        return self._generation(text, calls, body, metrics)
 
 
-# Alias OpenAIChatCompletionsProvider to OpenAICompatibleProvider
 OpenAIChatCompletionsProvider = OpenAICompatibleProvider
 
 

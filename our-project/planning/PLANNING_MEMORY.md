@@ -8,6 +8,16 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-10-19 · V10 最新交接
+
+接续唯一主工程和 `20261019-v10-integration`，不重建执行系统。当前 main 已接入 `22f3a2f`；该次远端删除的审计文件和独立解析测试不恢复，旧命令日志仍保留。负责人本轮授权个人 Rootless Docker、必要官方镜像与 Oracle，以及本地 main commit 和本次会话 push；没有授权修改宿主 Docker、权限、共享服务或增加 GPU 训练。
+
+Rootless 分支为 `BLOCKED`：宿主无 `newuidmap`、`newgidmap`，真实 UID/GID 映射失败。安装工具未执行，没有个人 daemon/socket/镜像。官方 Oracle、原生 mini、动态 mini Trial 均为 0，全部正式科研结果保持 `NOT_EVALUATED`。不要重复同样失败，也不要用宿主执行或合成样本代替原版 Verifier。
+
+现有官方 DefaultAgent、Policy Hook、Provider 转发、ATIF、CLI、Ledger 和 8765 Agent 模块继续集成；私人 runtime、状态 JSON、凭据和原始日志留本机。历史 RQ 数值仅属开发证据。Provider 预算已用 410,353 Token，余 589,647，实付费用未知。健康 Laya F06、Kev C03 和 CPU Serving 不动，权重不下传 Mac。
+
+下一轮先读原迭代 `next_iteration.json`。宿主管理员补齐 uidmap 后，沿同一执行链完成个人 Docker、Oracle、原生 mini、动态 mini、Canary、Dev 和 Q-019 的 RQ1–RQ5；57 题 Sealed Test 另需负责人确认。最新真实阶段以 Status 首页为准，旧「科研完成」只适用于部分工程产出。
+
 **2026-10-14 当前交接覆盖说明（GitHub 复核）**：TOP-5 候选与数据工程更新已提交，但新训练代码存在首 Chunk 混合类型求和错误，最新合法/去重训练统计口径不一致；Agent 上报的物理删除空间、F02 现场及新 ALGN 训练尚未独立实测。以文末审计与 PROJECT_STATUS.md 为优先待修复事项。
 
 - 项目：**ModelRouter**，研究**长程单/多 Agent 执行过程中的状态感知、任务级 Model × Reasoning Effort 联合路由**。

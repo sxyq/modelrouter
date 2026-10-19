@@ -92,33 +92,18 @@ class LayaAdapter:
         if not legal_actions:
             raise ValueError("legal_actions cannot be empty")
 
-        if len(legal_actions) == 1:
-            latency_ms = (time.perf_counter() - t0) * 1000.0
-            act = legal_actions[0]
-            score = ActionScore(action=act, score=1.0, probability=1.0)
-            return act, [score], latency_ms, 1.0
-
         # Construct candidate option mapping
         # Keys must be string identifiers
         criteria = {}
         key_to_action = {}
-        for idx, act in enumerate(legal_actions):
+        for idx, act in enumerate(sorted(legal_actions, key=lambda action: action.action_id)):
             key = f"opt_{idx}_{act.provider}_{act.model}_{act.native_effort}".replace("/", "_").replace(".", "_")
             desc = f"{act.provider}/{act.model} (effort={act.native_effort})"
             criteria[key] = desc
             key_to_action[key] = act
 
         # Format state
-        prompt_snippet = pre_decision_state.prompt or ""
-        history_snippet = pre_decision_state.history_snippet or ""
-        state_text = (
-            f"Domain: {pre_decision_state.task_domain or 'code'}\n"
-            f"Step: {pre_decision_state.step_index or 0}\n"
-            f"Prior Tool Calls: {pre_decision_state.prior_tool_calls_count or 0}\n"
-            f"Prior Errors: {pre_decision_state.prior_error_signals_count or 0}\n"
-            f"Context snippet: {prompt_snippet[:1500]}\n"
-            f"History: {history_snippet[:500]}"
-        )
+        state_text = pre_decision_state.router_text()
 
         questions = {
             "route_decision": {
@@ -134,16 +119,18 @@ class LayaAdapter:
 
         q_ans = res["answers"]["route_decision"]
         selected_key = q_ans["choice"]
-        probs = q_ans.get("probabilities", {})
-        confidence = q_ans.get("confidence", 0.0)
+        probs = q_ans["probabilities"]
+        confidence = q_ans.get("confidence")
+        if set(probs) != set(key_to_action):
+            raise ValueError("Laya probability IDs differ from candidate IDs")
 
         # Selected action
-        selected_action = key_to_action.get(selected_key, legal_actions[0])
+        selected_action = key_to_action[selected_key]
 
         # Rank all actions
         ranked = []
         for k, act in key_to_action.items():
-            prob = float(probs.get(k, 0.0))
+            prob = float(probs[k])
             ranked.append(ActionScore(action=act, score=prob, probability=prob))
 
         ranked.sort(key=lambda x: x.probability, reverse=True)

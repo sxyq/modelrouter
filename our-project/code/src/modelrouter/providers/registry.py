@@ -37,6 +37,8 @@ class ModelSpec:
     rpm_limit: int = 500
     tpm_limit: int = 200_000
     tool_supported: bool = True
+    pricing_status: str = "UNVERIFIED_CONFIG"
+    identity_status: str = "UNVERIFIED_CONFIG"
 
     def calculate_cost(
         self,
@@ -46,16 +48,23 @@ class ModelSpec:
         cache_read_tokens: int = 0,
         cache_write_tokens: int = 0,
     ) -> float:
-        """Calculates precise USD cost based on token counts."""
+        """Calculate configured USD; completion includes its reasoning subset."""
         net_prompt_tokens = max(0, prompt_tokens - cache_read_tokens)
+        visible_completion_tokens = completion_tokens - reasoning_tokens
+        if visible_completion_tokens < 0:
+            raise ValueError("reasoning_tokens must be a subset of completion_tokens")
         cost = (
             (net_prompt_tokens * self.input_price_per_1m / 1_000_000)
-            + (completion_tokens * self.output_price_per_1m / 1_000_000)
+            + (visible_completion_tokens * self.output_price_per_1m / 1_000_000)
             + (reasoning_tokens * self.reasoning_price_per_1m / 1_000_000)
             + (cache_read_tokens * self.cache_read_price_per_1m / 1_000_000)
             + (cache_write_tokens * self.cache_write_price_per_1m / 1_000_000)
         )
-        return round(cost, 6)
+        return round(cost, 10)
+
+    def validate_effort(self, native_effort: str) -> None:
+        if native_effort not in self.native_efforts:
+            raise ValueError(f"Unsupported native_effort {native_effort!r} for {self.model_id}")
 
 
 # 5 Major Model Pools

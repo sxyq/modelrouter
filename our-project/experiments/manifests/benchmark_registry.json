@@ -1,0 +1,412 @@
+{
+  "schema_version": "1.0",
+  "recorded_at": "2026-10-19",
+  "project_git_sha": "dfa491e732a5270750dc00622a4581b225b0f676",
+  "runtime": ".runtime/benchmark-venv",
+  "harbor_agent_cli": {
+    "version": "0.24.0",
+    "preferred": "-a modelrouter.benchmark.harbor_agent:ModelRouterMiniSweAgent",
+    "preferred_long_option": "--agent modelrouter.benchmark.harbor_agent:ModelRouterMiniSweAgent",
+    "supported_hidden_deprecated_alias": "--agent-import-path modelrouter.benchmark.harbor_agent:ModelRouterMiniSweAgent",
+    "legacy_alias_help_visibility": "hidden=True",
+    "legacy_alias_print_config_exit_code": 0,
+    "preferred_print_config_exit_code": 0,
+    "legacy_alias_config_field": "agents[0].import_path",
+    "preferred_config_field": "agents[0].name; AgentFactory resolves colon-containing names as import paths",
+    "source": "external/benchmarks/harbor/src/harbor/cli/jobs.py:632",
+    "class_resolution_source": "external/benchmarks/harbor/src/harbor/agents/factory.py:135",
+    "command_log": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl",
+    "sandbox_started": false,
+    "model_calls": 0
+  },
+  "status": "PARTIAL_INTEGRATION_NOT_OFFICIAL_RESULTS",
+  "metric_rule": "Keep static tier accuracy, query-level routing scores, SWE-bench resolution and Terminal-Bench rewards separate.",
+  "benchmarks": [
+    {
+      "id": "terminal-bench-2-1",
+      "upstream": "https://github.com/harbor-framework/terminal-bench-2-1",
+      "version": {
+        "dataset": "2.1",
+        "source_git_sha": "7131e4375048a0e408a8fb404b5f499d726b695b",
+        "harbor": "0.24.0"
+      },
+      "benchmark_type": "HARBOR_AGENT_TASK",
+      "real_runner": "harbor run; project entry: python -m modelrouter.benchmark run",
+      "task_manifest": {
+        "dataset_id": "terminal-bench/terminal-bench-2-1",
+        "local_tasks": "external/benchmarks/terminal-bench-2-1/tasks",
+        "task_count": 89,
+        "project_split": "router_data/terminal_bench_manifest.json",
+        "split_origin": "PROJECT_DEFINED"
+      },
+      "verifier": {
+        "entry": "tasks/<task>/tests/test.sh",
+        "observed_task": "fix-git",
+        "observed_dependencies": [
+          "pytest==8.4.1",
+          "pytest-json-ctrf==0.3.5"
+        ],
+        "result_files": [
+          "verifier/ctrf.json",
+          "verifier/reward.txt"
+        ],
+        "modified": false
+      },
+      "agent_support": {
+        "upstream": [
+          "oracle",
+          "mini-swe-agent"
+        ],
+        "project": "modelrouter.benchmark.harbor_agent:ModelRouterMiniSweAgent",
+        "official_trial_validated": false
+      },
+      "test_command": [
+        ".runtime/benchmark-venv/bin/python",
+        "-m",
+        "modelrouter.benchmark",
+        "run",
+        "--task",
+        "fix-git",
+        "--agent",
+        "oracle",
+        "--iteration-dir",
+        "our-project/results/iterations/20261019-v10-oracle"
+      ],
+      "data_status": "89_LOCAL_TASKS_LOADED_WITH_HARBOR_TASK",
+      "real_status": "BLOCKED",
+      "execution": {
+        "attempts": 1,
+        "harbor_exit_code": 1,
+        "harbor_duration_sec": 2.2086289579747245,
+        "job_id": null,
+        "trial_id": null,
+        "reward": null,
+        "iteration": "our-project/results/iterations/20261019-v10-oracle",
+        "error": "Docker is not installed or not on PATH."
+      },
+      "field_sources": {
+        "upstream": "external/benchmarks/terminal-bench-2-1/README.md",
+        "version": [
+          "external/benchmarks/terminal-bench-2-1/README.md",
+          "git -C external/benchmarks/terminal-bench-2-1 rev-parse HEAD"
+        ],
+        "benchmark_type": "external/benchmarks/terminal-bench-2-1/README.md",
+        "real_runner": "external/benchmarks/harbor/src/harbor/cli/jobs.py",
+        "task_manifest": [
+          "router_data/terminal_bench_manifest.json",
+          "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl"
+        ],
+        "verifier": "external/benchmarks/terminal-bench-2-1/tasks/fix-git/tests/test.sh",
+        "agent_support": "external/benchmarks/harbor/src/harbor/agents/installed/mini_swe_agent.py",
+        "test_command": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl",
+        "data_status": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl",
+        "real_status": "our-project/results/iterations/20261019-v10-oracle/resume_state.json"
+      }
+    },
+    {
+      "id": "swe-bench-verified",
+      "upstream": "https://github.com/SWE-bench/SWE-bench",
+      "version": {
+        "dataset": "Harbor swebench-verified@1.0",
+        "task_source_git_sha": "86723674f04e4209ac479d0fb75d9d9f44b4377e",
+        "standalone_source_git_sha": "02e7a74ffd0b707aab73d203fe87bdc7c76afc8e"
+      },
+      "benchmark_type": "SOFTWARE_REPAIR_WITH_HARBOR_ADAPTER_AND_STANDALONE_PROTOCOL",
+      "real_runner": {
+        "harbor": "harbor run -d swebench-verified@1.0 --registry-path external/benchmarks/harbor/registry.json",
+        "standalone": "python -m swebench.harness.run_evaluation --dataset_name SWE-bench/SWE-bench_Verified --predictions_path <predictions.jsonl> --instance_ids django__django-15098 --max_workers 1 --run_id <run-id>"
+      },
+      "task_manifest": {
+        "registry": "external/benchmarks/harbor/registry.json",
+        "task_count": 500,
+        "loaded_task": "django__django-15098",
+        "loaded_path": "<harbor-task-cache>/django__django-15098",
+        "original_dataset": "SWE-bench/SWE-bench_Verified"
+      },
+      "verifier": {
+        "entry": "tests/test.sh",
+        "original_logic": "SWE-bench FAIL_TO_PASS and PASS_TO_PASS; ResolvedStatus.FULL",
+        "loaded_adapter_harness": "swebench==4.0.3",
+        "result_files": [
+          "verifier/report.json",
+          "verifier/reward.txt"
+        ],
+        "modified": false
+      },
+      "agent_support": {
+        "harbor": [
+          "oracle",
+          "mini-swe-agent",
+          "custom BaseAgent"
+        ],
+        "standalone": "Consumes model patches; agent generates predictions before evaluation.",
+        "official_trial_validated": false
+      },
+      "test_command": [
+        ".runtime/benchmark-venv/bin/harbor",
+        "run",
+        "-d",
+        "swebench-verified@1.0",
+        "--registry-path",
+        "external/benchmarks/harbor/registry.json",
+        "--include-task-name",
+        "django__django-15098",
+        "-a",
+        "oracle",
+        "-n",
+        "1",
+        "-k",
+        "1",
+        "--max-retries",
+        "0"
+      ],
+      "data_status": "500_TASK_REFERENCES_LOADED;_ONE_ORIGINAL_TASK_DOWNLOADED_AND_LOADED",
+      "real_status": "NOT_EVALUATED",
+      "blockers": [
+        "No usable Docker sandbox",
+        "No SWE-bench trial executed; data loading does not establish resolution"
+      ],
+      "field_sources": {
+        "upstream": "external/benchmarks/SWE-bench/README.md",
+        "version": "external/benchmarks/harbor/registry.json",
+        "benchmark_type": "external/benchmarks/harbor/adapters/swebench/README.md",
+        "real_runner": [
+          "external/benchmarks/harbor/adapters/swebench/README.md",
+          "external/benchmarks/SWE-bench/swebench/harness/run_evaluation.py"
+        ],
+        "task_manifest": [
+          "external/benchmarks/harbor/registry.json",
+          "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl"
+        ],
+        "verifier": "<harbor-task-cache>/django__django-15098/tests/test.sh",
+        "agent_support": "external/benchmarks/harbor/adapters/swebench/README.md",
+        "test_command": [
+          "external/benchmarks/harbor/registry.json",
+          "external/benchmarks/harbor/src/harbor/cli/jobs.py"
+        ],
+        "data_status": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl",
+        "real_status": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl"
+      }
+    },
+    {
+      "id": "aider-polyglot",
+      "upstream": "https://github.com/Aider-AI/polyglot-benchmark",
+      "version": {
+        "dataset": "aider-polyglot@1.0",
+        "task_source_git_sha": "f30b14415dd733c83627204bad0af69a89ceb46f"
+      },
+      "benchmark_type": "MULTILANGUAGE_CODE_EDITING_WITH_HARBOR_ADAPTER",
+      "real_runner": "harbor run -d aider-polyglot@1.0 --registry-path external/benchmarks/harbor/registry.json",
+      "task_manifest": {
+        "registry": "external/benchmarks/harbor/registry.json",
+        "task_count": 225,
+        "languages": 6,
+        "loaded_task": "polyglot_java_zipper",
+        "loaded_path": "<harbor-task-cache>/polyglot_java_zipper"
+      },
+      "verifier": {
+        "entry": "tests/test.sh",
+        "original_logic": "Exercism unit tests with language-specific runner; loaded Java task uses Gradle",
+        "result_files": [
+          "verifier/test-stdout.txt",
+          "verifier/reward.txt"
+        ],
+        "modified": false
+      },
+      "agent_support": {
+        "harbor": [
+          "oracle",
+          "mini-swe-agent",
+          "custom BaseAgent"
+        ],
+        "original_aider": "Original editing harness and retry protocol are separate; no original Aider run performed.",
+        "official_trial_validated": false
+      },
+      "test_command": [
+        ".runtime/benchmark-venv/bin/harbor",
+        "run",
+        "-d",
+        "aider-polyglot@1.0",
+        "--registry-path",
+        "external/benchmarks/harbor/registry.json",
+        "--include-task-name",
+        "polyglot_java_zipper",
+        "-a",
+        "oracle",
+        "-n",
+        "1",
+        "-k",
+        "1",
+        "--max-retries",
+        "0"
+      ],
+      "data_status": "225_TASK_REFERENCES_LOADED;_ONE_ORIGINAL_TASK_DOWNLOADED_AND_LOADED",
+      "real_status": "NOT_EVALUATED",
+      "blockers": [
+        "No usable Docker sandbox",
+        "No Aider trial executed"
+      ],
+      "protocol_note": "Registry spelling is aider-polyglot; source adapter README also contains older aider_polyglot examples. Harbor adaptation includes prompt/toolchain adjustments; do not present it as an original Aider leaderboard run.",
+      "field_sources": {
+        "upstream": "external/benchmarks/harbor/adapters/aider_polyglot/README.md",
+        "version": "external/benchmarks/harbor/registry.json",
+        "benchmark_type": "external/benchmarks/harbor/adapters/aider_polyglot/README.md",
+        "real_runner": [
+          "external/benchmarks/harbor/registry.json",
+          "external/benchmarks/harbor/src/harbor/cli/jobs.py"
+        ],
+        "task_manifest": [
+          "external/benchmarks/harbor/registry.json",
+          "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl"
+        ],
+        "verifier": "<harbor-task-cache>/polyglot_java_zipper/tests/test.sh",
+        "agent_support": "external/benchmarks/harbor/adapters/aider_polyglot/README.md",
+        "test_command": [
+          "external/benchmarks/harbor/registry.json",
+          "external/benchmarks/harbor/src/harbor/cli/jobs.py"
+        ],
+        "data_status": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl",
+        "real_status": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl"
+      }
+    },
+    {
+      "id": "twinrouterbench",
+      "upstream": "https://github.com/CommonstackAI/TwinRouterBench",
+      "version": {
+        "source_git_sha": "7cbb0deac8f697b5faa8489c309560e53d2ef088",
+        "static_schema": "tier_only_question_bank"
+      },
+      "benchmark_type": "TWO_TRACK_STATIC_ROUTING_AND_LIVE_SWE_BENCH;_NOT_TERMINAL_BENCH",
+      "real_runner": {
+        "static": "main.eval.evaluate_question_bank_rows / run_question_bank_eval",
+        "dynamic": "twinrouterbench dynamic run; miniswerouter.cli",
+        "scoring": "twinrouterbench dynamic score --run-dir <run-dir> --router-label <label> --instance-ids-file data/dynamic/dynamic_heldout100_ids.txt"
+      },
+      "task_manifest": {
+        "static": "external/benchmarks/twinrouterbench/data/static/manifest.json",
+        "question_bank": "external/benchmarks/twinrouterbench/data/static/question_bank.jsonl",
+        "static_count": 970,
+        "dynamic": "external/benchmarks/twinrouterbench/data/dynamic/dynamic_heldout100_ids.txt",
+        "dynamic_count": 100
+      },
+      "verifier": {
+        "static": "Gold target_tier_id comparison; tier sufficiency is not task completion. Cost summary uses nominal/estimated token quantities.",
+        "dynamic": "SWE-bench instance resolution via the upstream dynamic harness"
+      },
+      "agent_support": {
+        "static": "QuestionBankRouterPredictor.predict; no Agent episode",
+        "dynamic": "Upstream miniswerouter mini-swe-agent harness; distinct from the project Harbor harness",
+        "harbor_native": false
+      },
+      "test_command": {
+        "static": "PYTHONPATH=external/benchmarks/twinrouterbench .runtime/benchmark-venv/bin/python -c \"from main.dataset import iter_question_bank; from main.eval import FunctionPredictor,evaluate_question_bank_rows; r,e,c=evaluate_question_bank_rows(FunctionPredictor(lambda row:3),list(iter_question_bank()),predictor_label='fixed-tier-3-static-smoke'); print(len(r),len(e),c)\"",
+        "dynamic": "twinrouterbench dynamic run --router-import <module:factory> --router-label <label> --output-dir <run-dir> --instances <ids-from-dynamic-manifest> --workers 1"
+      },
+      "data_status": "970_STATIC_ROWS_LOADED_AND_SCORED",
+      "real_status": "STATIC_PROTOCOL_SMOKE_COMPLETE;DYNAMIC_NOT_EVALUATED",
+      "static_smoke": {
+        "predictor": "fixed tier 3",
+        "scored": 970,
+        "errors": 0,
+        "exact_tier_matches": 170,
+        "metric": "STATIC_TIER_EXACT_MATCH_ONLY",
+        "api_calls": 0,
+        "official_harbor_trials": 0
+      },
+      "blockers": [
+        "Live SWE-bench requires usable Docker and separately authorized model calls",
+        "Full upstream cost-summary attempt exceeded 45 seconds; isolated static scoring completed; no live-cost claim"
+      ],
+      "field_sources": {
+        "upstream": "external/benchmarks/twinrouterbench/README.md",
+        "version": "git -C external/benchmarks/twinrouterbench rev-parse HEAD",
+        "benchmark_type": "external/benchmarks/twinrouterbench/README.md",
+        "real_runner": [
+          "external/benchmarks/twinrouterbench/README.md",
+          "external/benchmarks/twinrouterbench/main/eval/runner.py"
+        ],
+        "task_manifest": [
+          "external/benchmarks/twinrouterbench/data/static/manifest.json",
+          "external/benchmarks/twinrouterbench/README.md"
+        ],
+        "verifier": [
+          "external/benchmarks/twinrouterbench/main/eval/runner.py",
+          "external/benchmarks/twinrouterbench/main/eval/section11.py"
+        ],
+        "agent_support": "external/benchmarks/twinrouterbench/README.md",
+        "test_command": [
+          "external/benchmarks/twinrouterbench/README.md",
+          "external/benchmarks/twinrouterbench/main/eval/predictors.py"
+        ],
+        "data_status": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl",
+        "real_status": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl"
+      }
+    },
+    {
+      "id": "llmrouterbench",
+      "upstream": "https://github.com/ynulihao/LLMRouterBench",
+      "version": {
+        "source_git_sha": "0b81ba3053fbb74828382690a883849e2443e2d8",
+        "data_release": "NPULH/LLMRouterBench bench-release; archive revision not established"
+      },
+      "benchmark_type": "STATIC_QUERY_MODEL_SCORE_COST_ROUTING;NOT_HARBOR_AGENT_TASK",
+      "real_runner": {
+        "offline": "baselines.BaselineDataLoader + BaselineAggregator + selected upstream adaptor",
+        "collection": "python -m data_collector.cli run config/data_collector_small_model_config.yaml"
+      },
+      "task_manifest": {
+        "public_archive": "https://huggingface.co/datasets/NPULH/LLMRouterBench",
+        "existing_raw_root": "<server-project>/data/公开数据/原始数据/ROUTE-001_LLMRouterBench/bench-release",
+        "result_layout": "<dataset>/<split>/<model>/<timestamp>.json",
+        "existing_json_files": 700,
+        "local_preview": "our-project/data/公开数据/数据预览/ROUTE-001_LLMRouterBench"
+      },
+      "verifier": {
+        "entry": "evaluation/<dataset> + evaluation/factory.py",
+        "offline": "Consumes existing score, token and cost fields; does not rerun original evaluators.",
+        "metric": "AvgAcc and performance-cost routing metrics, not Terminal-Bench Agent success"
+      },
+      "agent_support": {
+        "static": "Query-level router/adaptor; no Harbor BaseAgent",
+        "collection": "Dataset-specific integrations may use their own harness; no unified mini-swe-agent success metric",
+        "harbor_native": false
+      },
+      "test_command": {
+        "offline": "python -c \"from baselines import BaselineDataLoader,BaselineAggregator; r=BaselineDataLoader('config/baseline_config.yaml').load_all_records(); BaselineAggregator(r).print_summary_tables(score_as_percent=True,test_mode=False)\"",
+        "data_loading": "Read the existing remote bench-release JSON records; no archive download or model generation required."
+      },
+      "data_status": "EXISTING_RAW_ARCHIVE_AVAILABLE;3_JSON_FILES_180_RECORDS_PARSED;OFFICIAL_LOADER_NOT_EXECUTED",
+      "real_status": "NOT_EVALUATED",
+      "blockers": [
+        "Upstream Python loader/adaptors not installed on the execution host",
+        "Complete paired routing experiment not run",
+        "Archive revision and all original evaluator outputs not established"
+      ],
+      "field_sources": {
+        "upstream": "https://github.com/ynulihao/LLMRouterBench/blob/0b81ba3053fbb74828382690a883849e2443e2d8/README.md",
+        "version": "git-shallow source snapshot at 0b81ba3053fbb74828382690a883849e2443e2d8; snapshot removed after reading",
+        "benchmark_type": "https://github.com/ynulihao/LLMRouterBench/blob/0b81ba3053fbb74828382690a883849e2443e2d8/README.md",
+        "real_runner": [
+          "https://github.com/ynulihao/LLMRouterBench/blob/0b81ba3053fbb74828382690a883849e2443e2d8/README.md",
+          "https://github.com/ynulihao/LLMRouterBench/blob/0b81ba3053fbb74828382690a883849e2443e2d8/baselines/data_loader.py"
+        ],
+        "task_manifest": [
+          "https://github.com/ynulihao/LLMRouterBench/blob/0b81ba3053fbb74828382690a883849e2443e2d8/README.md",
+          "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl"
+        ],
+        "verifier": "https://github.com/ynulihao/LLMRouterBench/blob/0b81ba3053fbb74828382690a883849e2443e2d8/evaluation/README.md",
+        "agent_support": "https://github.com/ynulihao/LLMRouterBench/blob/0b81ba3053fbb74828382690a883849e2443e2d8/README.md",
+        "test_command": "https://github.com/ynulihao/LLMRouterBench/blob/0b81ba3053fbb74828382690a883849e2443e2d8/README.md",
+        "data_status": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl",
+        "real_status": "our-project/results/iterations/20261019-v10-integration/harbor_commands.jsonl"
+      },
+      "retrieval": {
+        "methods": [
+          "GitHub REST README",
+          "temporary shallow Git source snapshot"
+        ],
+        "temporary_snapshot_removed": true
+      }
+    }
+  ]
+}

@@ -6,8 +6,8 @@ Strictly follows V8 §7.3, §8.4, and §9.2 specifications:
   2. `FixedCheapPolicy` (policy_id: "fixed_cheap")
   3. `RandomPolicy` (policy_id: "random")
   4. `RuleStickyPolicy` (policy_id: "rule_sticky")
-  5. `RouteLLMPolicy` (policy_id: "routellm") - official LMSYS win-rate threshold architecture
-  6. `SRKNNPolicy` (policy_id: "sr_knn") - 8D state vector k-NN architecture
+  5. `RouteLLMPolicy` (policy_id: "routellm") - example threshold parameters
+  6. `SRKNNPolicy` (policy_id: "sr_knn") - example 8D reference vectors
   7. `LayaServerPolicy` (policy_id: "laya_v2") - remote A6000 Laya Serving API
   8. `KevServerPolicy` (policy_id: "kev_4b") - remote A6000 Kev Serving API
 """
@@ -18,6 +18,7 @@ import random
 import time
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
+from modelrouter.providers.registry import ModelRegistry
 
 try:
     from modelrouter.baselines.routellm_adapter import RouteLLMAdapter
@@ -36,8 +37,26 @@ logger = logging.getLogger("experiments.agent_pilot.policy")
 class BasePolicy:
     """Abstract base class for all routing policies."""
 
+    implementation_status = "CONFIGURED_POLICY"
+
     def __init__(self, policy_id: str):
         self.policy_id = policy_id
+
+    @staticmethod
+    def _snapshot(state):
+        if hasattr(state, "pre_decision_snapshot"):
+            return state.pre_decision_snapshot
+        return state.build_pre_decision_snapshot().to_dict()
+
+    @staticmethod
+    def _price_order(actions):
+        """Order declared input/output unit prices without changing model pools."""
+        registry = ModelRegistry()
+        def key(action):
+            spec = registry.get_spec(action["model"])
+            return (spec.input_price_per_1m + spec.output_price_per_1m,
+                    action["model"], action.get("native_effort", "none"))
+        return sorted(actions, key=key)
 
     def select(
         self,
@@ -83,7 +102,7 @@ class RandomPolicy(BasePolicy):
 
 
 class FixedStrongPolicy(BasePolicy):
-    """Always routes to the most capable Flagship model in the Strong/Reasoning pool."""
+    """Use the configured strong model, or the higher declared price endpoint."""
 
     def __init__(self, target_model: str = "gpt-4o-2024-08-06"):
         super().__init__("fixed_strong")
@@ -97,8 +116,8 @@ class FixedStrongPolicy(BasePolicy):
         t0 = time.time()
         matches = [a for a in legal_actions if a.get("model") == self.target_model]
         if not matches:
-            matches = [a for a in legal_actions if a.get("pool") in ("Strong", "Reasoning")]
-        selected = matches[0] if matches else legal_actions[0]
+            matches = list(reversed(self._price_order(legal_actions)))
+        selected = matches[0]
         return RouterDecision(
             request_id=str(uuid4()),
             router_family="baseline_fixed_strong",
@@ -112,7 +131,7 @@ class FixedStrongPolicy(BasePolicy):
 
 
 class FixedCheapPolicy(BasePolicy):
-    """Always routes to the lowest cost model in the Fast pool."""
+    """Use the configured cheap model, or the lower declared price endpoint."""
 
     def __init__(self, target_model: str = "deepseek-chat"):
         super().__init__("fixed_cheap")
@@ -126,8 +145,8 @@ class FixedCheapPolicy(BasePolicy):
         t0 = time.time()
         matches = [a for a in legal_actions if a.get("model") == self.target_model]
         if not matches:
-            matches = [a for a in legal_actions if a.get("pool") == "Fast"]
-        selected = matches[0] if matches else legal_actions[0]
+            matches = self._price_order(legal_actions)
+        selected = matches[0]
         return RouterDecision(
             request_id=str(uuid4()),
             router_family="baseline_fixed_cheap",
@@ -157,19 +176,20 @@ class RuleStickyPolicy(BasePolicy):
         legal_actions: List[Dict[str, Any]],
     ) -> RouterDecision:
         t0 = time.time()
-        snapshot = state.build_pre_decision_snapshot()
-        phase = snapshot.phase
-        budget_remaining = snapshot.budget_remaining_usd
+        snapshot = self._snapshot(state)
+        phase = snapshot["phase"]
+        budget_remaining = snapshot["budget_remaining_usd"]
 
-        fast_actions = [a for a in legal_actions if a.get("pool") == "Fast"]
-        standard_actions = [a for a in legal_actions if a.get("pool") == "Standard"]
-        reasoning_actions = [a for a in legal_actions if a.get("pool") == "Reasoning"]
+        priced = self._price_order(legal_actions)
+        fast_actions = [a for a in priced if a.get("pool") == "Fast"] or [priced[0]]
+        standard_actions = [a for a in priced if a.get("pool") == "Standard"] or [priced[-1]]
+        reasoning_actions = [a for a in reversed(priced) if a.get("pool") == "Reasoning"]
 
         # Budget constraint overrides phase
         if budget_remaining < 0.30 and fast_actions:
             selected = fast_actions[0]
             conf = 0.95
-        elif snapshot.last_tool_exit_code != 0 and reasoning_actions:
+        elif snapshot["last_tool_exit_code"] != 0 and reasoning_actions:
             selected = reasoning_actions[0]
             conf = 0.85
         elif phase == "modify" and standard_actions:
@@ -195,15 +215,15 @@ class RuleStickyPolicy(BasePolicy):
 
 
 class RouteLLMPolicy(BasePolicy):
-    """RouteLLM baseline: threshold-based routing between Fast and Strong.
-    
-    Uses RouteLLMAdapter implementing LMSYS calibrated win-rate threshold architecture.
-    """
+    """Reuse the existing threshold calculation with unverified example weights."""
+
+    implementation_status = "UNVERIFIED_EXAMPLE"
 
     def __init__(self, threshold: float = 0.55):
         super().__init__("routellm")
         self.threshold = threshold
         self.adapter = RouteLLMAdapter(threshold=threshold)
+        self.adapter.status = self.implementation_status
 
     def select(
         self,
@@ -211,20 +231,22 @@ class RouteLLMPolicy(BasePolicy):
         legal_actions: List[Dict[str, Any]],
     ) -> RouterDecision:
         t0 = time.time()
-        snapshot = state.build_pre_decision_snapshot()
+        snapshot = self._snapshot(state)
 
         score = self.adapter.compute_difficulty(
-            instruction=snapshot.task_id,
-            history_steps=snapshot.step_index,
-            max_steps=10,
-            context_tokens=snapshot.context_tokens_approx,
-            last_exit_code=snapshot.last_tool_exit_code,
+            instruction=getattr(state, "task_prompt", snapshot["task_id"]),
+            history_steps=snapshot["step_index"],
+            max_steps=state.max_steps,
+            context_tokens=snapshot["context_tokens_approx"],
+            last_exit_code=snapshot["last_tool_exit_code"],
             tool_error_count=state.tool_error_count,
-            budget_remaining_ratio=snapshot.budget_remaining_usd / 2.0,
+            budget_remaining_ratio=snapshot["budget_remaining_usd"] / state.usd_budget,
         )
+        score.algorithm_status = self.implementation_status
 
-        fast_actions = [a for a in legal_actions if a.get("pool") == "Fast"]
-        strong_actions = [a for a in legal_actions if a.get("pool") in ("Strong", "Reasoning")]
+        priced = self._price_order(legal_actions)
+        fast_actions = [a for a in priced if a.get("pool") == "Fast"] or [priced[0]]
+        strong_actions = [a for a in reversed(priced) if a.get("pool") in ("Strong", "Reasoning")]
 
         if score.win_rate >= self.threshold and strong_actions:
             selected = strong_actions[0]
@@ -233,12 +255,12 @@ class RouteLLMPolicy(BasePolicy):
         else:
             selected = legal_actions[0]
 
-        lat_ms = (time.time() - t0) * 1000 + random.uniform(2.0, 8.0)
+        lat_ms = (time.time() - t0) * 1000
 
         return RouterDecision(
             request_id=str(uuid4()),
             router_family="baseline_routellm",
-            checkpoint_id="none",
+            checkpoint_id=self.implementation_status,
             selected_action=selected,
             ranked_actions=[selected],
             decision_latency_ms=lat_ms,
@@ -248,16 +270,15 @@ class RouteLLMPolicy(BasePolicy):
 
 
 class SRKNNPolicy(BasePolicy):
-    """State-Representation k-NN router baseline.
-    
-    Extracts 8-dimensional state vector from agent state and matches
-    against calibrated reference exemplars using distance-weighted voting.
-    """
+    """Reuse existing 8D voting with unverified example reference vectors."""
+
+    implementation_status = "UNVERIFIED_EXAMPLE"
 
     def __init__(self, k: int = 3):
         super().__init__("sr_knn")
         self.k = k
         self.adapter = SRKNNAdapter(k=k)
+        self.adapter.status = self.implementation_status
 
     def select(
         self,
@@ -265,15 +286,15 @@ class SRKNNPolicy(BasePolicy):
         legal_actions: List[Dict[str, Any]],
     ) -> RouterDecision:
         t0 = time.time()
-        snapshot = state.build_pre_decision_snapshot()
+        snapshot = self._snapshot(state)
 
         vec = self.adapter.extract_vector(
-            step_index=snapshot.step_index,
-            max_steps=10,
-            phase=snapshot.phase,
-            last_exit_code=snapshot.last_tool_exit_code,
-            context_tokens=snapshot.context_tokens_approx,
-            budget_remaining_ratio=snapshot.budget_remaining_usd / 2.0,
+            step_index=snapshot["step_index"],
+            max_steps=state.max_steps,
+            phase=snapshot["phase"],
+            last_exit_code=snapshot["last_tool_exit_code"],
+            context_tokens=snapshot["context_tokens_approx"],
+            budget_remaining_ratio=snapshot["budget_remaining_usd"] / state.usd_budget,
             tool_error_count=state.tool_error_count,
         )
 
@@ -289,20 +310,22 @@ class SRKNNPolicy(BasePolicy):
         }.get(tier, ["Fast"])
 
         selected = None
+        priced = self._price_order(legal_actions)
+        preferred = list(reversed(priced)) if tier in ("Strong", "Reasoning") else priced
         for pool in tier_pref_order:
-            matches = [a for a in legal_actions if a.get("pool") == pool]
+            matches = [a for a in preferred if a.get("pool") == pool]
             if matches:
                 selected = matches[0]
                 break
         if not selected:
-            selected = legal_actions[0]
+            selected = preferred[0]
 
-        lat_ms = (time.time() - t0) * 1000 + random.uniform(4.0, 12.0)
+        lat_ms = (time.time() - t0) * 1000
 
         return RouterDecision(
             request_id=str(uuid4()),
             router_family="baseline_sr_knn",
-            checkpoint_id="none",
+            checkpoint_id=self.implementation_status,
             selected_action=selected,
             ranked_actions=[selected],
             decision_latency_ms=lat_ms,
@@ -314,6 +337,8 @@ class SRKNNPolicy(BasePolicy):
 class LayaServerPolicy(BasePolicy):
     """Routes using the remote Laya Serving API (with automatic fallback)."""
 
+    implementation_status = "REMOTE_NEURAL_ROUTER"
+
     def __init__(self, endpoint: Optional[str] = None):
         super().__init__("laya_v2")
         self.client = RouterClient(endpoint=endpoint, router_family="laya")
@@ -323,12 +348,12 @@ class LayaServerPolicy(BasePolicy):
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
     ) -> RouterDecision:
-        snapshot = state.build_pre_decision_snapshot()
+        snapshot = self._snapshot(state)
         decision_id = f"dec_{state.episode_id}_{state.step_index}"
         return self.client.route(
             episode_id=state.episode_id,
             decision_id=decision_id,
-            pre_decision_state=snapshot.to_dict(),
+            pre_decision_state=snapshot,
             legal_actions=legal_actions,
             policy_version="laya_v2.1",
         )
@@ -336,6 +361,8 @@ class LayaServerPolicy(BasePolicy):
 
 class KevServerPolicy(BasePolicy):
     """Routes using the remote Kev Serving API (with automatic fallback)."""
+
+    implementation_status = "REMOTE_NEURAL_ROUTER"
 
     def __init__(self, endpoint: Optional[str] = None):
         super().__init__("kev_4b")
@@ -346,12 +373,12 @@ class KevServerPolicy(BasePolicy):
         state: AgentState,
         legal_actions: List[Dict[str, Any]],
     ) -> RouterDecision:
-        snapshot = state.build_pre_decision_snapshot()
+        snapshot = self._snapshot(state)
         decision_id = f"dec_{state.episode_id}_{state.step_index}"
         return self.client.route(
             episode_id=state.episode_id,
             decision_id=decision_id,
-            pre_decision_state=snapshot.to_dict(),
+            pre_decision_state=snapshot,
             legal_actions=legal_actions,
             policy_version="kev_v8.0",
         )
@@ -436,7 +463,7 @@ def create_policy(policy_name: str, **kwargs) -> BasePolicy:
     elif p in ("luna", "fixed_luna", "gpt_6_luna", "gpt-6-luna"):
         return FixedStrongPolicy(target_model="gpt-6-luna")
     elif p in ("fixed_cheap", "cheap", "fast"):
-        return FixedCheapPolicy()
+        return FixedCheapPolicy(target_model=kwargs.get("target_model", "deepseek-chat"))
     elif p in ("rule_sticky", "rule"):
         return RuleStickyPolicy()
     elif p in ("length_heuristic", "length"):

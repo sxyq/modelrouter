@@ -69,17 +69,12 @@ class KevAdapter:
         if not legal_actions:
             raise ValueError("legal_actions cannot be empty")
 
-        if len(legal_actions) == 1:
-            latency_ms = (time.perf_counter() - t0) * 1000.0
-            act = legal_actions[0]
-            score = ActionScore(action=act, score=1.0, probability=1.0)
-            return act, [score], latency_ms, 1.0, False, None
-
         if self.model is not None and self.tokenizer is not None:
             try:
                 from kev.model import admit
-                state_text = f"Task: {pre_decision_state.prompt or 'general'}. Step: {pre_decision_state.step_index}. Prior errors: {pre_decision_state.prior_error_signals_count}."
-                options = [f"Model: {act.model}, Effort: {act.native_effort}" for act in legal_actions]
+                state_text = pre_decision_state.router_text()
+                ordered_actions = sorted(legal_actions, key=lambda action: action.action_id)
+                options = [f"{act.provider}/{act.model} (effort={act.native_effort})" for act in ordered_actions]
                 rec = {
                     "state": state_text,
                     "questions": [{
@@ -91,16 +86,13 @@ class KevAdapter:
                 enc = admit(self.model, self.tokenizer, rec)
                 probs_tensor = self.model.probs(enc)
                 raw_probs = probs_tensor[0].tolist() if hasattr(probs_tensor[0], "tolist") else list(probs_tensor[0])
+                if len(raw_probs) != len(ordered_actions):
+                    raise ValueError("Kev probability count differs from candidate count")
 
                 ranked = []
-                for idx, act in enumerate(legal_actions):
-                    p = float(raw_probs[idx]) if idx < len(raw_probs) else 0.0
-                    ranked.append(ActionScore(action=act, score=round(p, 4), probability=round(p, 4)))
-
-                total_p = sum(r.probability for r in ranked) or 1.0
-                for r in ranked:
-                    r.probability = round(r.probability / total_p, 4)
-                    r.score = r.probability
+                for idx, act in enumerate(ordered_actions):
+                    p = float(raw_probs[idx])
+                    ranked.append(ActionScore(action=act, score=p, probability=p))
 
                 ranked.sort(key=lambda x: x.probability, reverse=True)
                 latency_ms = (time.perf_counter() - t0) * 1000.0
