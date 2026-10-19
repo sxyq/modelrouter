@@ -115,7 +115,8 @@ def _task_in_subset(task: str, subset: str) -> bool:
     p = Path(__file__).resolve().parents[5] / "router_data" / "terminal_bench_manifest.json"
     try:
         data = json.loads(p.read_text(encoding="utf-8"))
-        records = data["subsets"][subset]["tasks"]
+        subset_key = {"canary": "canary", "dev": "external_dev", "sealed": "final_test"}[subset]
+        records = data["subsets"][subset_key]["tasks"]
     except (OSError, ValueError, KeyError):
         return False
     return task in {row["task_id"] for row in records if isinstance(row, dict) and "task_id" in row}
