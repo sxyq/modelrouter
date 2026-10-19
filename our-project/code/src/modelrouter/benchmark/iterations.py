@@ -207,6 +207,7 @@ def summarize(path: Path):
     token_values = call_tokens + native_tokens
     metrics = {
         "timestamp": now(), "iteration_id": path.name, "status": state["status"],
+        "reason": state.get("reason"),
         "observed_trials": len(trials), "verified_trials": len(verified), "successes": success,
         "success_rate": success / len(binary) if binary else None,
         "total_units": len(state["units"]),

@@ -28,6 +28,7 @@
       const modelLines = Object.entries(m.models || {}).map(([name, value]) => `${name}: TTFT P50/P95 ${show(value.ttft_p50_ms)}/${show(value.ttft_p95_ms)} ms · ${show(value.output_tokens_per_s)} Tokens/s（整请求）· ${show(value.stream_output_tokens_per_s_estimate)} Tokens/s（TTFT 后估算）`);
       const routerLines = Object.entries(m.router_latency_ms || {}).map(([name, value]) => `${name}: 路由 P50/P95 ${show(value.p50)}/${show(value.p95)} ms (n=${value.n})`);
       output.textContent = [
+        `当前原因 ${m.reason || '—'}`,
         `Job ID ${show(trial.job_id)} · Trial ID ${show(trial.trial_id)} · Job ${current.job_name || '—'}`,
         `Task ${current.task_id || trial.task_id || '—'} · Policy ${current.policy || '—'}`,
         `Step ${show(call.step)} · Model ${call.returned_model || call.model || '—'} · Effort ${call.effort || '—'}`,
