@@ -10,10 +10,10 @@ import argparse
 import json
 import math
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional, Union, List
 
 
-def _read_json(path: Path) -> dict[str, Any] | None:
+def _read_json(path: Path) -> Optional[dict[str, Any]]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
@@ -21,7 +21,7 @@ def _read_json(path: Path) -> dict[str, Any] | None:
     return value if isinstance(value, dict) else None
 
 
-def _verifier_reward(trial_dir: Path) -> float | None:
+def _verifier_reward(trial_dir: Path) -> Optional[float]:
     """Read the original on-disk Harbor verifier reward; do not infer success."""
     reward_dir = trial_dir / "verifier"
     reward_json = reward_dir / "reward.json"
@@ -41,7 +41,7 @@ def _verifier_reward(trial_dir: Path) -> float | None:
     return val if math.isfinite(val) else None
 
 
-def audit_trial(trial_dir: str | Path) -> dict[str, Any]:
+def audit_trial(trial_dir: Union[str, Path]) -> dict[str, Any]:
     """Classify a trial WITHOUT generating or rewriting any benchmark score."""
     p = Path(trial_dir)
     result: dict[str, Any] = {
@@ -83,7 +83,7 @@ def audit_trial(trial_dir: str | Path) -> dict[str, Any]:
     return result
 
 
-def audit_job(job_dir: str | Path) -> dict[str, Any]:
+def audit_job(job_dir: Union[str, Path]) -> dict[str, Any]:
     """Only count trials under a Harbor job with its own config/lock/results."""
     p = Path(job_dir)
     job_files = ("config.json", "result.json", "lock.json")
@@ -115,7 +115,7 @@ def audit_job(job_dir: str | Path) -> dict[str, Any]:
     return report
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Audit existing Harbor verifier provenance without API calls")
     parser.add_argument("job_dir", help="Actual Harbor job output directory")
     parser.add_argument("--output", type=Path, help="Optional machine-readable local report")
