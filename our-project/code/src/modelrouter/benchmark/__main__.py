@@ -81,11 +81,62 @@ def _write_atomic(path: Path, value: dict) -> None:
     tmp.replace(path)
 
 
+
+def build_harbor_command(
+    task: str,
+    agent: str = "oracle",
+    model: Optional[str] = None,
+    environment: str = "docker",
+    custom_agent: Optional[str] = None,
+) -> list[str]:
+    """Build a one-task command for the real upstream Harbor CLI; never a mock."""
+    if not task or any(ch.isspace() for ch in task):
+        raise ValueError("A single verified task identifier is required")
+    if agent != "oracle" and not model and not custom_agent:
+        raise ValueError("A verified provider/model ID is required for non-oracle agent")
+    cmd = [
+        "harbor", "run",
+        "-d", "terminal-bench/terminal-bench-2-1",
+        "--include-task-name", task,
+        "-n", "1", "-k", "1",
+        "--env", environment,
+    ]
+    if custom_agent:
+        cmd.extend(["--agent-import-path", custom_agent])
+    else:
+        cmd.extend(["-a", agent])
+    if model:
+        cmd.extend(["-m", model])
+    return cmd
+
+
+def _task_in_subset(task: str, subset: str) -> bool:
+    """Require exact IDs from our frozen 8/24/57 project-owned manifest."""
+    p = Path(__file__).resolve().parents[5] / "router_data" / "terminal_bench_manifest.json"
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+        records = data["subsets"][subset]["tasks"]
+    except (OSError, ValueError, KeyError):
+        return False
+    return task in {row["task_id"] for row in records if isinstance(row, dict) and "task_id" in row}
+
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="ModelRouter official Harbor evidence CLI")
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("preflight", help="Check Harbor and Docker, with no API calls")
     p.add_argument("--environment", choices=["docker", "daytona", "modal", "e2b"], default="docker")
+    p = sub.add_parser("run", help="Launch upstream Harbor on one frozen task (dry-run by default)")
+    p.add_argument("--task", required=True)
+    p.add_argument("--subset", choices=["canary", "dev", "sealed"], default="canary")
+    p.add_argument("--agent", choices=["oracle", "mini-swe-agent"], default="oracle")
+    p.add_argument("--custom-agent", help="Official Harbor import path; requires installed adapter")
+    p.add_argument("--model", help="Verified provider/model name; do not supply unverified aliases")
+    p.add_argument("--environment", choices=["docker", "daytona", "modal", "e2b"], default="docker")
+    p.add_argument("--execute", action="store_true", help="Actually start a real Harbor task")
+    p.add_argument("--allow-sealed", action="store_true", help="Explicitly acknowledge sealed-test run authorization")
+    p = sub.add_parser("resume", help="Resume an original Harbor job (dry-run by default)")
+    p.add_argument("job_dir", type=Path)
+    p.add_argument("--execute", action="store_true")
     p = sub.add_parser("audit", help="Verify original job/trial/lock/verifier artifacts")
     p.add_argument("job_dir", type=Path)
     p.add_argument("--output", type=Path)
@@ -100,6 +151,43 @@ def main(argv: Optional[List[str]] = None) -> int:
         result = preflight(args.environment)
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0 if result["status"] == "READY_FOR_ORACLE" else 2
+
+    if args.command == "run":
+        if not _task_in_subset(args.task, args.subset):
+            print("BLOCKED: task is absent from the frozen project subset manifest", file=sys.stderr)
+            return 2
+        if args.subset == "sealed" and not args.allow_sealed:
+            print("BLOCKED: sealed tasks need explicit separate authorization", file=sys.stderr)
+            return 2
+        try:
+            cmd = build_harbor_command(
+                args.task, args.agent, args.model, args.environment, args.custom_agent
+            )
+        except ValueError as exc:
+            print("BLOCKED: " + str(exc), file=sys.stderr)
+            return 2
+        print(json.dumps({"status": "DRY_RUN" if not args.execute else "STARTING_REAL_HARBOR",
+                          "argv": cmd}, ensure_ascii=False), flush=True)
+        if not args.execute:
+            return 0
+        if preflight(args.environment)["status"] != "READY_FOR_ORACLE":
+            print("BLOCKED: sandbox preflight did not pass", file=sys.stderr)
+            return 2
+        return subprocess.call(cmd)
+
+    if args.command == "resume":
+        cmd = ["harbor", "jobs", "resume", "--job-path", str(args.job_dir)]
+        print(json.dumps({"status": "DRY_RUN" if not args.execute else "RESUMING_REAL_HARBOR",
+                          "argv": cmd}, ensure_ascii=False), flush=True)
+        if not args.execute:
+            return 0
+        if not args.job_dir.is_dir() or not (args.job_dir / "config.json").is_file():
+            print("BLOCKED: original Harbor job config missing", file=sys.stderr)
+            return 2
+        if preflight()["status"] != "READY_FOR_ORACLE":
+            print("BLOCKED: sandbox preflight did not pass", file=sys.stderr)
+            return 2
+        return subprocess.call(cmd)
 
     if args.command == "audit":
         result = audit_job(args.job_dir)
