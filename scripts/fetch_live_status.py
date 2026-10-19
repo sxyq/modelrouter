@@ -187,6 +187,27 @@ def read_local_laya_metrics(processes: Dict[str, Any]) -> Dict[str, Any]:
         except Exception:
             pass
 
+    # Dynamically append newly validated epochs from active runs (e.g. F06)
+    f06_metrics_file = p0_root / "F06" / "epoch_metrics.json"
+    if f06_metrics_file.is_file():
+        try:
+            epochs_data = json.loads(f06_metrics_file.read_text(encoding="utf8"))
+            for ep in epochs_data:
+                s1_info = ep.get("validation", {}).get("S1", {})
+                if s1_info:
+                    val_trend.append({
+                        "run": "F06",
+                        "epoch": ep.get("epoch"),
+                        "s1_acc": round(float(s1_info.get("accuracy", 0)), 4),
+                        "loss": round(float(s1_info.get("loss", 0)), 4),
+                        "brier": round(float(s1_info.get("brier", 0)), 4),
+                        "s2_acc": round(float(ep.get("validation", {}).get("S2", {}).get("accuracy", 0)), 4),
+                        "s3_acc": round(float(ep.get("validation", {}).get("S3", {}).get("accuracy", 0)), 4),
+                        "type": "NEW_VALIDATED_EPOCH"
+                    })
+        except Exception:
+            pass
+
     return laya_metrics
 
 

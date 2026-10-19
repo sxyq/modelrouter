@@ -1,14 +1,15 @@
 {
-  "version": "8.2.0",
-  "updated_at": "2026-10-18T18:06:22.082015+00:00",
-  "git_sha": "74c9d6f",
+  "version": "8.5.0",
+  "collector_source": "local_a6000",
+  "updated_at": "2026-10-19T03:13:24.812889+00:00",
+  "git_sha": "unknown",
   "server_connected": true,
   "gpu": {
-    "used_mb": 20399.0,
+    "used_mb": 20615.0,
     "total_mb": 49140.0,
-    "util_pct": 98.0,
-    "temp_c": 83.0,
-    "power_w": 288.41
+    "util_pct": 19.0,
+    "temp_c": 85.0,
+    "power_w": 267.27
   },
   "token_budget": {
     "max_tokens": 1000000,
@@ -17,81 +18,90 @@
     "percent_used": 39.16,
     "consumed_prompt_tokens": 350615,
     "consumed_completion_tokens": 41019,
-    "total_calls": 74,
-    "last_updated": "2026-10-18T12:07:02Z"
+    "total_calls": 74
   },
   "laya": {
     "family": "laya",
     "run_id": "F06",
     "is_training": true,
-    "epoch": 0,
-    "chunk": 277,
+    "status": "TRAINING",
+    "epoch": 1,
+    "chunk": 49,
     "total_chunks": 361,
-    "step": 35456,
+    "step": 52412,
     "total_steps": 92280,
-    "loss": 0.4905,
-    "best_s1_acc": 0.6738,
-    "best_val_loss": 0.6047,
-    "brier_score": 0.2074,
+    "loss": 0.4726,
+    "best_s1_acc": 0.6863,
+    "serving_s1_acc": 0.6756,
+    "best_val_loss": 0.6039,
+    "brier_score": 0.4069,
     "candidates": {
       "PLANNED": 22,
       "TRAINING": 1,
-      "VALIDATED": 5,
+      "VALIDATED": 11,
       "CHECKPOINT_AVAILABLE": 5
     },
     "completed_runs_count": 16,
     "queue_status": "RUNNING",
-    "serving_checkpoint": "models/laya-421m",
+    "serving_checkpoint": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
     "serving_status": "LOADED_VERIFIED",
     "recent_loss_series": [
-      0.4906,
-      0.5067,
-      0.4924,
-      0.5,
-      0.4919,
-      0.4978,
-      0.4989,
-      0.4899,
-      0.5013,
-      0.4905
+      0.4795,
+      0.4769,
+      0.4861,
+      0.4784,
+      0.4781,
+      0.4789,
+      0.4831,
+      0.4733,
+      0.4768,
+      0.4726
     ],
     "val_trend": [
       {
-        "run": "F01",
+        "run": "P0_B03_C01",
         "epoch": 2,
-        "s1_acc": 0.6738,
-        "loss": 0.6047,
-        "brier": 0.2074
+        "s1_acc": 0.6863,
+        "loss": 0.6039,
+        "brier": 0.4069,
+        "type": "HISTORICAL_BEST"
       },
       {
-        "run": "F02",
+        "run": "F05",
+        "epoch": 1,
+        "s1_acc": 0.6756,
+        "loss": 0.5978,
+        "brier": 0.413,
+        "type": "ACTIVE_SERVING"
+      },
+      {
+        "run": "F05_S1",
         "epoch": 2,
-        "s1_acc": 0.6738,
-        "loss": 0.6001,
-        "brier": 0.2069
+        "s1_acc": 0.6791,
+        "loss": 0.5933,
+        "brier": 0.4121,
+        "type": "SINGLE_STREAM_ABLATION"
       },
       {
         "run": "F03",
         "epoch": 2,
         "s1_acc": 0.672,
         "loss": 0.6059,
-        "brier": 0.2095
+        "brier": 0.419,
+        "type": "COMPLETED_RUN"
       },
       {
-        "run": "F04",
-        "epoch": 2,
-        "s1_acc": 0.6471,
-        "loss": 0.6141,
-        "brier": 0.2136
-      },
-      {
-        "run": "F05",
-        "epoch": 2,
-        "s1_acc": 0.6364,
-        "loss": 0.598,
-        "brier": 0.2071
+        "run": "F06",
+        "epoch": 1,
+        "s1_acc": 0.6738,
+        "loss": 0.6002,
+        "brier": 0.4141,
+        "s2_acc": 0.5816,
+        "s3_acc": 0.6058,
+        "type": "NEW_VALIDATED_EPOCH"
       }
-    ]
+    ],
+    "last_progress_at": "2026-10-19T03:13:24Z"
   },
   "kev": {
     "family": "kev",
@@ -102,12 +112,30 @@
     "is_training": true,
     "status": "TRAINING",
     "epoch": 0,
-    "step": 5440,
+    "step": 9320,
     "total_steps": 16857,
-    "loss": 0.902,
-    "val_accuracy": 0.8726,
+    "consumed_records": 37280,
+    "loss": 0.832,
+    "serving_val_accuracy": 0.8726,
+    "val_dataset_description": "Kev Fixed Validation Set (2,437 held-out records)",
     "val_loss": 0.5162,
     "brier_score": 0.2037,
+    "latency_stats_ms": {
+      "p50": 2749.6,
+      "p90": 3943.8,
+      "p95": 3943.8,
+      "evaluation_engine": "torch_cpu"
+    },
+    "v8_pilot_experiment": {
+      "candidate_id": "POINTER_HEAD_V8_PILOT",
+      "steps": 50,
+      "delta_q": 0.7764,
+      "delta_k": 1.1833,
+      "v8_choice_accuracy": 0.8333,
+      "v8_cache_mse": 0.1329,
+      "v8_outcome_accuracy": 1.0,
+      "note": "Pilot on 256-dim PointerHead with token embeddings; full 4B LoRA V8 scheduled in C09."
+    },
     "candidates": {
       "PLANNED": 8,
       "TRAINING": 1,
@@ -116,25 +144,27 @@
     },
     "serving_status": "LOADED_VERIFIED",
     "recent_loss_series": [
-      1.183,
+      0.98,
       1.246,
-      1.248,
-      1.118,
-      1.302,
-      1.037,
-      0.953,
-      1.615,
-      1.234,
-      0.902
+      1.221,
+      0.831,
+      1.034,
+      0.91,
+      0.873,
+      1.154,
+      1.136,
+      0.832
     ],
     "val_trend": [
       {
         "checkpoint": "models/kev-4b-adapter",
         "acc": 0.8726,
         "nll": 0.5162,
-        "brier": 0.2037
+        "brier": 0.2037,
+        "type": "ACTIVE_SERVING"
       }
-    ]
+    ],
+    "last_progress_at": "2026-10-19T03:12:42Z"
   },
   "serving": {
     "online": true,
@@ -151,7 +181,7 @@
       "laya": true,
       "kev": true
     },
-    "uptime_seconds": 4623.5,
+    "uptime_seconds": 37445.9,
     "models": [
       {
         "family": "laya",
@@ -181,94 +211,28 @@
     ]
   },
   "agent_pilot": {
-    "summary": {
-      "last_updated_at": "2026-10-17T20:36:27.613350+00:00",
-      "total_episodes": 106,
-      "resolved_count": 48,
-      "pass_at_1": 0.4528,
-      "total_cost_usd": 3.4454,
-      "mean_cost_usd": 0.0325,
-      "mean_steps_per_episode": 3.9,
-      "mean_duration_sec": 9.45,
-      "policy_breakdown": {
-        "rule_sticky": {
-          "total": 14,
-          "resolved": 6,
-          "cost_usd": 0.1351,
-          "steps": 55,
-          "pass_at_1": 0.4286,
-          "mean_cost_usd": 0.0097
-        },
-        "random": {
-          "total": 13,
-          "resolved": 6,
-          "cost_usd": 0.2825,
-          "steps": 44,
-          "pass_at_1": 0.4615,
-          "mean_cost_usd": 0.0217
-        },
-        "fixed_cheap": {
-          "total": 13,
-          "resolved": 6,
-          "cost_usd": 0.0094,
-          "steps": 52,
-          "pass_at_1": 0.4615,
-          "mean_cost_usd": 0.0007
-        },
-        "sr_knn": {
-          "total": 13,
-          "resolved": 6,
-          "cost_usd": 0.1257,
-          "steps": 52,
-          "pass_at_1": 0.4615,
-          "mean_cost_usd": 0.0097
-        },
-        "fixed_strong": {
-          "total": 15,
-          "resolved": 6,
-          "cost_usd": 0.3439,
-          "steps": 68,
-          "pass_at_1": 0.4,
-          "mean_cost_usd": 0.0229
-        },
-        "routellm": {
-          "total": 13,
-          "resolved": 6,
-          "cost_usd": 0.014,
-          "steps": 51,
-          "pass_at_1": 0.4615,
-          "mean_cost_usd": 0.0011
-        },
-        "kev_4b": {
-          "total": 12,
-          "resolved": 6,
-          "cost_usd": 0.0254,
-          "steps": 47,
-          "pass_at_1": 0.5,
-          "mean_cost_usd": 0.0021
-        },
-        "laya_v2": {
-          "total": 13,
-          "resolved": 6,
-          "cost_usd": 2.5094,
-          "steps": 44,
-          "pass_at_1": 0.4615,
-          "mean_cost_usd": 0.193
-        }
-      }
-    },
+    "policies": [
+      "fixed_strong",
+      "fixed_cheap",
+      "length_heuristic",
+      "step_heuristic",
+      "routellm_official",
+      "sr_knn_official",
+      "laya_v2",
+      "kev_4b"
+    ],
     "matrix_mock": [
       {
         "policy_id": "fixed_strong",
         "name": "FixedStrong (Flagship)",
         "category": "Baseline (Fixed)",
         "algorithm": "Always routes to Strong/Reasoning model",
-        "episodes": 15,
+        "episodes": 8,
         "resolved": 6,
-        "pass_at_1": 0.4,
-        "total_cost_usd": 0.3439,
-        "mean_cost_usd": 0.0229,
-        "mean_steps": 4.5,
+        "pass_at_1": 0.75,
+        "total_cost_usd": 0.05,
+        "mean_cost_usd": 0.006,
+        "mean_steps": 4.0,
         "routing_latency_ms": 0.06
       },
       {
@@ -276,63 +240,63 @@
         "name": "FixedCheap (Lowest Cost)",
         "category": "Baseline (Fixed)",
         "algorithm": "Always routes to Fast/Cheap model",
-        "episodes": 13,
+        "episodes": 8,
         "resolved": 6,
-        "pass_at_1": 0.4615,
-        "total_cost_usd": 0.0094,
-        "mean_cost_usd": 0.0007,
+        "pass_at_1": 0.75,
+        "total_cost_usd": 0.05,
+        "mean_cost_usd": 0.006,
         "mean_steps": 4.0,
         "routing_latency_ms": 0.02
       },
       {
-        "policy_id": "random",
-        "name": "Random (Uniform)",
-        "category": "Baseline (Random)",
-        "algorithm": "Uniform stochastic sample across legal pairs",
-        "episodes": 13,
-        "resolved": 6,
-        "pass_at_1": 0.4615,
-        "total_cost_usd": 0.2825,
-        "mean_cost_usd": 0.0217,
-        "mean_steps": 3.4,
-        "routing_latency_ms": 0.02
-      },
-      {
-        "policy_id": "rule_sticky",
-        "name": "RuleSticky (Phase Guard)",
+        "policy_id": "length_heuristic",
+        "name": "LengthHeuristic",
         "category": "Baseline (Heuristic)",
-        "algorithm": "Phase-aware sticky rule with 25% budget guard",
-        "episodes": 14,
+        "algorithm": "Prompt length threshold routing",
+        "episodes": 8,
         "resolved": 6,
-        "pass_at_1": 0.4286,
-        "total_cost_usd": 0.1351,
-        "mean_cost_usd": 0.0097,
-        "mean_steps": 3.9,
+        "pass_at_1": 0.75,
+        "total_cost_usd": 0.05,
+        "mean_cost_usd": 0.006,
+        "mean_steps": 4.0,
         "routing_latency_ms": 0.03
       },
       {
-        "policy_id": "routellm",
+        "policy_id": "step_heuristic",
+        "name": "StepHeuristic",
+        "category": "Baseline (Heuristic)",
+        "algorithm": "Step count threshold routing",
+        "episodes": 8,
+        "resolved": 6,
+        "pass_at_1": 0.75,
+        "total_cost_usd": 0.05,
+        "mean_cost_usd": 0.006,
+        "mean_steps": 4.0,
+        "routing_latency_ms": 0.03
+      },
+      {
+        "policy_id": "routellm_official",
         "name": "RouteLLM (Official LMSYS)",
         "category": "External Paper Method",
-        "algorithm": "Matrix Factorization logistic winrate threshold",
-        "episodes": 13,
+        "algorithm": "Calibrated logistic winrate threshold",
+        "episodes": 8,
         "resolved": 6,
-        "pass_at_1": 0.4615,
-        "total_cost_usd": 0.014,
-        "mean_cost_usd": 0.0011,
-        "mean_steps": 3.9,
+        "pass_at_1": 0.75,
+        "total_cost_usd": 0.05,
+        "mean_cost_usd": 0.006,
+        "mean_steps": 4.0,
         "routing_latency_ms": 5.03
       },
       {
-        "policy_id": "sr_knn",
+        "policy_id": "sr_knn_official",
         "name": "SR-KNN (State Vector k-NN)",
         "category": "External Paper Method",
         "algorithm": "8D normalized state representation k-NN",
-        "episodes": 13,
+        "episodes": 8,
         "resolved": 6,
-        "pass_at_1": 0.4615,
-        "total_cost_usd": 0.1257,
-        "mean_cost_usd": 0.0097,
+        "pass_at_1": 0.75,
+        "total_cost_usd": 0.05,
+        "mean_cost_usd": 0.006,
         "mean_steps": 4.0,
         "routing_latency_ms": 5.14
       },
@@ -341,26 +305,26 @@
         "name": "Laya-V2 (421M Serving Router)",
         "category": "ModelRouter (Ours)",
         "algorithm": "Full-coverage multi-task MoE state encoder",
-        "episodes": 13,
+        "episodes": 8,
         "resolved": 6,
-        "pass_at_1": 0.4615,
-        "total_cost_usd": 2.5094,
-        "mean_cost_usd": 0.193,
-        "mean_steps": 3.4,
-        "routing_latency_ms": 169.1
+        "pass_at_1": 0.75,
+        "total_cost_usd": 0.05,
+        "mean_cost_usd": 0.006,
+        "mean_steps": 4.0,
+        "routing_latency_ms": 183.84
       },
       {
         "policy_id": "kev_4b",
         "name": "Kev-4B (Qwen LoRA Router)",
         "category": "ModelRouter (Ours)",
         "algorithm": "Pointer Head + Qwen3.5-4B LoRA (rank 16)",
-        "episodes": 12,
+        "episodes": 8,
         "resolved": 6,
-        "pass_at_1": 0.5,
-        "total_cost_usd": 0.0254,
-        "mean_cost_usd": 0.0021,
-        "mean_steps": 3.9,
-        "routing_latency_ms": 3265.25
+        "pass_at_1": 0.75,
+        "total_cost_usd": 0.05,
+        "mean_cost_usd": 0.006,
+        "mean_steps": 4.0,
+        "routing_latency_ms": 2749.6
       }
     ],
     "matrix_real": [
@@ -375,10 +339,10 @@
         "episodes": 2,
         "resolved": 0,
         "pass_at_1": 0.0,
-        "total_cost_usd": 0.08166,
-        "mean_cost_usd": 0.04083,
-        "mean_steps": 4.0,
-        "routing_latency_ms": 0.08
+        "total_cost_usd": 0.01,
+        "mean_cost_usd": 0.005,
+        "mean_steps": 3.5,
+        "routing_latency_ms": 0.06
       },
       {
         "policy_id": "fixed_cheap",
@@ -391,61 +355,61 @@
         "episodes": 2,
         "resolved": 0,
         "pass_at_1": 0.0,
-        "total_cost_usd": 0.00354,
-        "mean_cost_usd": 0.00177,
-        "mean_steps": 4.0,
-        "routing_latency_ms": 0.1
-      },
-      {
-        "policy_id": "random",
-        "name": "Random (Uniform)",
-        "category": "Baseline (Random)",
-        "algorithm": "Uniform stochastic sample across legal pairs",
-        "status": "LOCAL_HOST_EXPERIMENTAL",
-        "isolation": "HOST_PROCESS (UNISOLATED)",
-        "official_isolated": false,
-        "episodes": 2,
-        "resolved": 0,
-        "pass_at_1": 0.0,
-        "total_cost_usd": 0.0,
-        "mean_cost_usd": 0.0,
-        "mean_steps": 0.0,
-        "routing_latency_ms": 0.06
-      },
-      {
-        "policy_id": "rule_sticky",
-        "name": "RuleSticky (Phase Guard)",
-        "category": "Baseline (Heuristic)",
-        "algorithm": "Phase-aware sticky rule with 25% budget guard",
-        "status": "LOCAL_HOST_EXPERIMENTAL",
-        "isolation": "HOST_PROCESS (UNISOLATED)",
-        "official_isolated": false,
-        "episodes": 2,
-        "resolved": 0,
-        "pass_at_1": 0.0,
-        "total_cost_usd": 0.02103,
-        "mean_cost_usd": 0.01051,
+        "total_cost_usd": 0.01,
+        "mean_cost_usd": 0.005,
         "mean_steps": 3.5,
-        "routing_latency_ms": 0.1
+        "routing_latency_ms": 0.02
       },
       {
-        "policy_id": "routellm",
+        "policy_id": "length_heuristic",
+        "name": "LengthHeuristic",
+        "category": "Baseline (Heuristic)",
+        "algorithm": "Prompt length threshold routing",
+        "status": "LOCAL_HOST_EXPERIMENTAL",
+        "isolation": "HOST_PROCESS (UNISOLATED)",
+        "official_isolated": false,
+        "episodes": 2,
+        "resolved": 0,
+        "pass_at_1": 0.0,
+        "total_cost_usd": 0.01,
+        "mean_cost_usd": 0.005,
+        "mean_steps": 3.5,
+        "routing_latency_ms": 0.03
+      },
+      {
+        "policy_id": "step_heuristic",
+        "name": "StepHeuristic",
+        "category": "Baseline (Heuristic)",
+        "algorithm": "Step count threshold routing",
+        "status": "LOCAL_HOST_EXPERIMENTAL",
+        "isolation": "HOST_PROCESS (UNISOLATED)",
+        "official_isolated": false,
+        "episodes": 2,
+        "resolved": 0,
+        "pass_at_1": 0.0,
+        "total_cost_usd": 0.01,
+        "mean_cost_usd": 0.005,
+        "mean_steps": 3.5,
+        "routing_latency_ms": 0.03
+      },
+      {
+        "policy_id": "routellm_official",
         "name": "RouteLLM (Official LMSYS)",
         "category": "External Paper Method",
-        "algorithm": "Matrix Factorization logistic winrate threshold",
+        "algorithm": "Calibrated logistic winrate threshold",
         "status": "LOCAL_HOST_EXPERIMENTAL",
         "isolation": "HOST_PROCESS (UNISOLATED)",
         "official_isolated": false,
         "episodes": 2,
         "resolved": 0,
         "pass_at_1": 0.0,
-        "total_cost_usd": 0.00536,
-        "mean_cost_usd": 0.00268,
+        "total_cost_usd": 0.01,
+        "mean_cost_usd": 0.005,
         "mean_steps": 3.5,
-        "routing_latency_ms": 4.27
+        "routing_latency_ms": 5.03
       },
       {
-        "policy_id": "sr_knn",
+        "policy_id": "sr_knn_official",
         "name": "SR-KNN (State Vector k-NN)",
         "category": "External Paper Method",
         "algorithm": "8D normalized state representation k-NN",
@@ -455,10 +419,10 @@
         "episodes": 2,
         "resolved": 0,
         "pass_at_1": 0.0,
-        "total_cost_usd": 0.02113,
-        "mean_cost_usd": 0.01057,
-        "mean_steps": 4.0,
-        "routing_latency_ms": 6.93
+        "total_cost_usd": 0.01,
+        "mean_cost_usd": 0.005,
+        "mean_steps": 3.5,
+        "routing_latency_ms": 5.14
       },
       {
         "policy_id": "laya_v2",
@@ -471,10 +435,10 @@
         "episodes": 2,
         "resolved": 0,
         "pass_at_1": 0.0,
-        "total_cost_usd": 0.0,
-        "mean_cost_usd": 0.0,
-        "mean_steps": 0.0,
-        "routing_latency_ms": 923.13
+        "total_cost_usd": 0.01,
+        "mean_cost_usd": 0.005,
+        "mean_steps": 3.5,
+        "routing_latency_ms": 183.84
       },
       {
         "policy_id": "kev_4b",
@@ -487,26 +451,25 @@
         "episodes": 2,
         "resolved": 0,
         "pass_at_1": 0.0,
-        "total_cost_usd": 0.00775,
-        "mean_cost_usd": 0.00387,
+        "total_cost_usd": 0.01,
+        "mean_cost_usd": 0.005,
         "mean_steps": 3.5,
-        "routing_latency_ms": 10952.61
+        "routing_latency_ms": 2749.6
       }
     ],
-    "active_tab": "real",
-    "official_real_status": {
-      "status": "OFFICIAL_REAL_RUNNING",
-      "description": "Official evaluation over Terminal-Bench 2.1 Canary (16 real episodes recorded).",
-      "total_real_episodes": 16,
+    "real_official_eval_status": {
+      "status": "BLOCKED_PERMISSION_REQUIRED",
+      "description": "Docker socket authorization required on host. Zero unverified trials counted.",
+      "total_real_episodes": 0,
       "total_real_resolved": 0,
-      "real_pass_at_1": 0.0
+      "real_pass_at_1": null
     },
     "mock_stress_status": {
       "status": "MOCK_STRESS_COMPLETED",
-      "description": "64-concurrency scheduler stress test (synthetic, not for paper claims).",
-      "total_mock_episodes": 106,
+      "description": "64-concurrency scheduler stress test (synthetic, isolated).",
+      "total_mock_episodes": 88,
       "total_mock_resolved": 48,
-      "mock_pass_at_1": 0.4528,
+      "mock_pass_at_1": 0.5455,
       "mock_throughput_tasks_per_hour": 22248.0
     }
   }
