@@ -1,15 +1,15 @@
 {
   "version": "8.5.0",
   "collector_source": "local_a6000",
-  "updated_at": "2026-10-19T07:46:25.537453+00:00",
+  "updated_at": "2026-10-19T09:25:25.530426+00:00",
   "git_sha": "unknown",
   "server_connected": true,
   "gpu": {
     "used_mb": 20615.0,
     "total_mb": 49140.0,
-    "util_pct": 69.0,
-    "temp_c": 78.0,
-    "power_w": 232.88
+    "util_pct": 99.0,
+    "temp_c": 83.0,
+    "power_w": 287.54
   },
   "token_budget": {
     "max_tokens": 1000000,
@@ -26,11 +26,11 @@
     "is_training": true,
     "status": "TRAINING",
     "epoch": 1,
-    "chunk": 115,
+    "chunk": 138,
     "total_chunks": 361,
-    "step": 60860,
+    "step": 63804,
     "total_steps": 92280,
-    "loss": 0.4713,
+    "loss": 0.4662,
     "best_s1_acc": 0.6863,
     "serving_s1_acc": 0.6756,
     "best_val_loss": 0.6039,
@@ -46,16 +46,16 @@
     "serving_checkpoint": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
     "serving_status": "LOADED_VERIFIED",
     "recent_loss_series": [
-      0.4662,
-      0.4712,
-      0.4689,
-      0.4661,
-      0.4662,
-      0.481,
-      0.4609,
-      0.4752,
-      0.4624,
-      0.4713
+      0.4675,
+      0.4601,
+      0.4594,
+      0.461,
+      0.46,
+      0.4701,
+      0.4644,
+      0.4703,
+      0.475,
+      0.4662
     ],
     "val_trend": [
       {
@@ -101,7 +101,7 @@
         "type": "NEW_VALIDATED_EPOCH"
       }
     ],
-    "last_progress_at": "2026-10-19T07:46:10Z"
+    "last_progress_at": "2026-10-19T09:22:25Z"
   },
   "kev": {
     "family": "kev",
@@ -112,10 +112,10 @@
     "is_training": true,
     "status": "TRAINING",
     "epoch": 0,
-    "step": 11320,
+    "step": 12050,
     "total_steps": 16857,
-    "consumed_records": 45280,
-    "loss": 0.981,
+    "consumed_records": 48200,
+    "loss": 1.032,
     "serving_val_accuracy": 0.8726,
     "val_dataset_description": "Kev Fixed Validation Set (2,437 held-out records)",
     "val_loss": 0.5162,
@@ -144,16 +144,16 @@
     },
     "serving_status": "LOADED_VERIFIED",
     "recent_loss_series": [
-      1.132,
-      1.069,
-      1.297,
-      1.159,
-      0.952,
-      1.012,
-      0.954,
-      1.27,
-      0.936,
-      0.981
+      1.096,
+      1.114,
+      1.083,
+      1.163,
+      0.94,
+      0.9,
+      1.289,
+      1.124,
+      1.444,
+      1.032
     ],
     "val_trend": [
       {
@@ -164,7 +164,7 @@
         "type": "ACTIVE_SERVING"
       }
     ],
-    "last_progress_at": "2026-10-19T07:45:25Z"
+    "last_progress_at": "2026-10-19T09:24:11Z"
   },
   "serving": {
     "online": true,
@@ -181,7 +181,7 @@
       "laya": true,
       "kev": true
     },
-    "uptime_seconds": 53826.6,
+    "uptime_seconds": 59766.6,
     "models": [
       {
         "family": "laya",
