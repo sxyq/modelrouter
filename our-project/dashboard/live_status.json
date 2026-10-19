@@ -1,15 +1,15 @@
 {
   "version": "8.5.0",
   "collector_source": "local_a6000",
-  "updated_at": "2026-10-19T03:13:24.812889+00:00",
+  "updated_at": "2026-10-19T07:46:25.537453+00:00",
   "git_sha": "unknown",
   "server_connected": true,
   "gpu": {
     "used_mb": 20615.0,
     "total_mb": 49140.0,
-    "util_pct": 19.0,
-    "temp_c": 85.0,
-    "power_w": 267.27
+    "util_pct": 69.0,
+    "temp_c": 78.0,
+    "power_w": 232.88
   },
   "token_budget": {
     "max_tokens": 1000000,
@@ -26,11 +26,11 @@
     "is_training": true,
     "status": "TRAINING",
     "epoch": 1,
-    "chunk": 49,
+    "chunk": 115,
     "total_chunks": 361,
-    "step": 52412,
+    "step": 60860,
     "total_steps": 92280,
-    "loss": 0.4726,
+    "loss": 0.4713,
     "best_s1_acc": 0.6863,
     "serving_s1_acc": 0.6756,
     "best_val_loss": 0.6039,
@@ -46,16 +46,16 @@
     "serving_checkpoint": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
     "serving_status": "LOADED_VERIFIED",
     "recent_loss_series": [
-      0.4795,
-      0.4769,
-      0.4861,
-      0.4784,
-      0.4781,
-      0.4789,
-      0.4831,
-      0.4733,
-      0.4768,
-      0.4726
+      0.4662,
+      0.4712,
+      0.4689,
+      0.4661,
+      0.4662,
+      0.481,
+      0.4609,
+      0.4752,
+      0.4624,
+      0.4713
     ],
     "val_trend": [
       {
@@ -101,7 +101,7 @@
         "type": "NEW_VALIDATED_EPOCH"
       }
     ],
-    "last_progress_at": "2026-10-19T03:13:24Z"
+    "last_progress_at": "2026-10-19T07:46:10Z"
   },
   "kev": {
     "family": "kev",
@@ -112,10 +112,10 @@
     "is_training": true,
     "status": "TRAINING",
     "epoch": 0,
-    "step": 9320,
+    "step": 11320,
     "total_steps": 16857,
-    "consumed_records": 37280,
-    "loss": 0.832,
+    "consumed_records": 45280,
+    "loss": 0.981,
     "serving_val_accuracy": 0.8726,
     "val_dataset_description": "Kev Fixed Validation Set (2,437 held-out records)",
     "val_loss": 0.5162,
@@ -144,16 +144,16 @@
     },
     "serving_status": "LOADED_VERIFIED",
     "recent_loss_series": [
-      0.98,
-      1.246,
-      1.221,
-      0.831,
-      1.034,
-      0.91,
-      0.873,
-      1.154,
-      1.136,
-      0.832
+      1.132,
+      1.069,
+      1.297,
+      1.159,
+      0.952,
+      1.012,
+      0.954,
+      1.27,
+      0.936,
+      0.981
     ],
     "val_trend": [
       {
@@ -164,7 +164,7 @@
         "type": "ACTIVE_SERVING"
       }
     ],
-    "last_progress_at": "2026-10-19T03:12:42Z"
+    "last_progress_at": "2026-10-19T07:45:25Z"
   },
   "serving": {
     "online": true,
@@ -181,7 +181,7 @@
       "laya": true,
       "kev": true
     },
-    "uptime_seconds": 37445.9,
+    "uptime_seconds": 53826.6,
     "models": [
       {
         "family": "laya",
