@@ -14,14 +14,24 @@ prepare_router_data.py - ModelRouter 数据准备与 Kev/规范化处理唯一�
 import argparse
 import os
 
-from router_data.cache_time import run_cache_time_batch
-from router_data.env_memory import run_mem_mas_env_batch
-from router_data.route import run_route_batch
-from router_data.tra import run_tra_batch
-from router_data.views import build_unified_training_and_evaluation_views
-from router_data.all_data import prepare_all_data
-from router_data.quality_v2 import run_quality_v2
-from router_data.batch_prep import prepare_sweep02, run_batch_prep, prepare_full_matrix, prepare_full_coverage_manifest
+try:
+    from modelrouter.data_pipeline.sources.cache_time import run_cache_time_batch
+    from modelrouter.data_pipeline.sources.env_memory import run_mem_mas_env_batch
+    from modelrouter.data_pipeline.sources.route import run_route_batch
+    from modelrouter.data_pipeline.sources.tra import run_tra_batch
+    from modelrouter.data_pipeline.views import build_unified_training_and_evaluation_views
+    from modelrouter.data_pipeline.sources.all_data import prepare_all_data
+    from modelrouter.data_pipeline.quality.quality_v2 import run_quality_v2
+    from modelrouter.data_pipeline.batch_prep import prepare_sweep02, run_batch_prep, prepare_full_matrix, prepare_full_coverage_manifest
+except ImportError:
+    from router_data.cache_time import run_cache_time_batch
+    from router_data.env_memory import run_mem_mas_env_batch
+    from router_data.route import run_route_batch
+    from router_data.tra import run_tra_batch
+    from router_data.views import build_unified_training_and_evaluation_views
+    from router_data.all_data import prepare_all_data
+    from router_data.quality_v2 import run_quality_v2
+    from router_data.batch_prep import prepare_sweep02, run_batch_prep, prepare_full_matrix, prepare_full_coverage_manifest
 
 
 def parse_args():

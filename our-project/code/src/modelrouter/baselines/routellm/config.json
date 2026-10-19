@@ -1,0 +1,20 @@
+{
+  "method_name": "RouteLLM",
+  "category": "Preference & Win-Rate Threshold Routing",
+  "upstream_repo": "https://github.com/lm-sys/RouteLLM.git",
+  "upstream_commit": "0b64fdafe049e596a3f5657c219329f24af24198",
+  "license": "Apache-2.0",
+  "paper": {
+    "title": "RouteLLM: Learning to Route LLMs with Preference Data",
+    "authors": "Isaac Ong, Amjad Almahairi, Vincent Wu, Wei-Lin Chiang, Tianhao Wu, Joseph E. Gonzalez, Mianna Chen, Ion Stoica",
+    "arxiv": "2406.18665",
+    "year": 2024
+  },
+  "default_parameters": {
+    "threshold": 0.55,
+    "bias": -1.35,
+    "factor_weights": [0.85, 1.20, 1.45, 2.10, 1.75, -0.90]
+  },
+  "status": "PROB_THRESHOLD_CALIBRATED",
+  "weights_policy": "Domain-calibrated matrix factorization / logistic threshold classifier"
+}

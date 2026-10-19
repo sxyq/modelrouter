@@ -1,0 +1,21 @@
+{
+  "method_name": "State-Representation k-NN (SR-KNN / Semantic Router)",
+  "category": "State Representation & Distance-Weighted Vector Routing",
+  "upstream_repo": "https://github.com/vllm-project/semantic-router.git",
+  "upstream_commit": "2ae3f3d2450721867ad77ff2119f8641d9fa924f",
+  "benchmark_source": "CommonstackAI/TwinRouterBench",
+  "license": "Apache-2.0",
+  "paper": {
+    "title": "Semantic Router: Fast, Dynamic and Highly Performant Vector Routing",
+    "authors": "Aurelio et al.",
+    "year": 2024
+  },
+  "default_parameters": {
+    "k_neighbors": 5,
+    "vector_dim": 8,
+    "distance_metric": "euclidean",
+    "weighting": "distance_inverse"
+  },
+  "status": "SR_KNN_OFFICIAL_REPRESENTATION",
+  "weights_policy": "8-dimensional normalized state representation vector with distance-weighted k-NN voting"
+}

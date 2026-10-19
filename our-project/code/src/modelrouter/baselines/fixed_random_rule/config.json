@@ -1,0 +1,29 @@
+{
+  "method_group": "Heuristic & Static Baselines",
+  "policies": [
+    {
+      "id": "fixed_strong",
+      "name": "Fixed Strong",
+      "description": "Always routes to the highest capability Flagship model (GPT-6 Luna / GPT-4o)",
+      "pool": "Strong"
+    },
+    {
+      "id": "fixed_cheap",
+      "name": "Fixed Cheap",
+      "description": "Always routes to the lowest cost model (GPT-5.6 Luna / DeepSeek Chat)",
+      "pool": "Fast"
+    },
+    {
+      "id": "random",
+      "name": "Uniform Random",
+      "description": "Uniform random selection across all valid actions",
+      "pool": "All"
+    },
+    {
+      "id": "rule_sticky",
+      "name": "Phase-Sticky Rule",
+      "description": "Phase-level heuristic routing with budget override threshold (< $0.30)",
+      "pool": "Dynamic"
+    }
+  ]
+}

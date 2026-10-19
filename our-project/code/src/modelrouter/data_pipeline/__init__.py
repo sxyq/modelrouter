@@ -6,6 +6,7 @@ modelrouter.data_pipeline - Data validation, streaming loaders, and leakage dete
 from modelrouter.data_pipeline.validation import CausalStreamValidator
 from modelrouter.data_pipeline.leakage_checker import LeakageDetector, normalize_prompt, prompt_hash
 from modelrouter.data_pipeline.v8_extension_loader import V8ExtensionDataset
+from modelrouter.data_pipeline.views import build_unified_training_and_evaluation_views
 
 __all__ = [
     "CausalStreamValidator",
@@ -13,4 +14,5 @@ __all__ = [
     "normalize_prompt",
     "prompt_hash",
     "V8ExtensionDataset",
+    "build_unified_training_and_evaluation_views",
 ]

@@ -1,0 +1,28 @@
+{
+  "methods": [
+    {
+      "id": "routellm",
+      "name": "RouteLLM",
+      "upstream_url": "https://github.com/lm-sys/RouteLLM.git",
+      "locked_commit": "0b64fdafe049e596a3f5657c219329f24af24198",
+      "license": "Apache-2.0",
+      "paper_title": "RouteLLM: Learning to Route LLMs with Preference Data",
+      "paper_authors": "Isaac Ong, Amjad Almahairi, Vincent Wu, Wei-Lin Chiang, Tianhao Wu, Joseph E. Gonzalez, Mianna Chen, Ion Stoica",
+      "paper_arxiv": "2406.18665",
+      "adapter_path": "our-project/code/src/modelrouter/baselines/routellm",
+      "weights_policy": "Mac Zero-Weight Principle: Domain-calibrated matrix factorization / logistic threshold classifier"
+    },
+    {
+      "id": "semantic_router_sr_knn",
+      "name": "State-Representation k-NN (SR-KNN / Semantic Router)",
+      "upstream_url": "https://github.com/vllm-project/semantic-router.git",
+      "locked_commit": "2ae3f3d2450721867ad77ff2119f8641d9fa924f",
+      "benchmark_source": "CommonstackAI/TwinRouterBench",
+      "license": "Apache-2.0",
+      "paper_title": "Semantic Router: Fast, Dynamic and Highly Performant Vector Routing",
+      "paper_authors": "Aurelio et al.",
+      "adapter_path": "our-project/code/src/modelrouter/baselines/sr_knn",
+      "weights_policy": "8-dimensional normalized state representation vector with distance-weighted k-NN voting"
+    }
+  ]
+}
