@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """
-One-shot unattended safe handover script:
-Waits for F05 (PID 3989607) to naturally complete its 2 epochs and validation,
-verifies run.json integrity, terminates the frozen old controller (PID 2881128),
-and launches the single official queue controller to backfill F03 and continue the 38-run campaign.
-Self-terminates immediately after verifying F03 launch.
+[ARCHIVED / FORBIDDEN TO EXECUTE]
+Historical one-shot handover script from 2026-10-18 (F05 -> F03 transition).
+Retained strictly for provenance and historical execution records.
+DO NOT EXECUTE: Contains hardcoded historical PIDs and termination logic.
 """
 import sys
+
+if __name__ == "__main__":
+    sys.exit("[ARCHIVED] This script is a historical archive (2026-10-18) and must not be executed.")
+
 import os
 import time
 import json

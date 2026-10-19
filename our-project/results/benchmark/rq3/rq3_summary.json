@@ -1,0 +1,233 @@
+{
+  "analysis_target": "RQ3 Task Decomposition Granularity (G0..G3)",
+  "granularity_definitions": {
+    "G0": {
+      "name": "Whole (Monolithic)",
+      "description": "Single-agent unconstrained execution over complete task workspace",
+      "nominal_agents": 1,
+      "nominal_handoffs": 0,
+      "decision_boundaries_f": 3.8,
+      "context_copy_ratio": 1.0
+    },
+    "G1": {
+      "name": "Phase-level (Stage)",
+      "description": "Sequential three-phase lifecycle: Inspect -> Modify -> Verify",
+      "nominal_agents": 3,
+      "nominal_handoffs": 2,
+      "decision_boundaries_f": 6.4,
+      "context_copy_ratio": 1.35
+    },
+    "G2": {
+      "name": "Functional Subtasks",
+      "description": "Modular specialized agents (Architect, Implementer, TestEngineer, Reviewer)",
+      "nominal_agents": 4,
+      "nominal_handoffs": 5,
+      "decision_boundaries_f": 11.2,
+      "context_copy_ratio": 1.8
+    },
+    "G3": {
+      "name": "Fine-grained Verifiable",
+      "description": "Step-verifiable sub-agents with micro-commit feedback checkpoints",
+      "nominal_agents": 7,
+      "nominal_handoffs": 9,
+      "decision_boundaries_f": 18.5,
+      "context_copy_ratio": 2.45
+    }
+  },
+  "table7_decomposition_matrix": [
+    {
+      "decomposition_level": "G0",
+      "decomposition_name": "Whole (Monolithic)",
+      "policy": "Role-Static (Baseline)",
+      "task_domain": "Coding Benchmark",
+      "agents_count": 1,
+      "handoffs_count": 0,
+      "route_calls_f": 3.8,
+      "context_copy_ratio": 1.0,
+      "task_success_rate": 42.0,
+      "mean_episode_usd": 0.0185,
+      "cost_per_resolved": 0.044,
+      "relative_savings_pct": 0.0
+    },
+    {
+      "decomposition_level": "G0",
+      "decomposition_name": "Whole (Monolithic)",
+      "policy": "Full ModelRouter (Kev/Laya)",
+      "task_domain": "Coding Benchmark",
+      "agents_count": 1,
+      "handoffs_count": 0,
+      "route_calls_f": 3.8,
+      "context_copy_ratio": 1.0,
+      "task_success_rate": 46.2,
+      "mean_episode_usd": 0.0095,
+      "cost_per_resolved": 0.0206,
+      "relative_savings_pct": 48.6
+    },
+    {
+      "decomposition_level": "G1",
+      "decomposition_name": "Phase-level (Stage)",
+      "policy": "Role-Static (Baseline)",
+      "task_domain": "Coding Benchmark",
+      "agents_count": 3,
+      "handoffs_count": 2,
+      "route_calls_f": 6.4,
+      "context_copy_ratio": 1.35,
+      "task_success_rate": 45.0,
+      "mean_episode_usd": 0.0245,
+      "cost_per_resolved": 0.0544,
+      "relative_savings_pct": 0.0
+    },
+    {
+      "decomposition_level": "G1",
+      "decomposition_name": "Phase-level (Stage)",
+      "policy": "Full ModelRouter (Kev/Laya)",
+      "task_domain": "Coding Benchmark",
+      "agents_count": 3,
+      "handoffs_count": 2,
+      "route_calls_f": 6.4,
+      "context_copy_ratio": 1.35,
+      "task_success_rate": 50.0,
+      "mean_episode_usd": 0.0078,
+      "cost_per_resolved": 0.0156,
+      "relative_savings_pct": 68.2
+    },
+    {
+      "decomposition_level": "G2",
+      "decomposition_name": "Functional Subtasks",
+      "policy": "Role-Static (Baseline)",
+      "task_domain": "Coding Benchmark",
+      "agents_count": 4,
+      "handoffs_count": 5,
+      "route_calls_f": 11.2,
+      "context_copy_ratio": 1.8,
+      "task_success_rate": 48.5,
+      "mean_episode_usd": 0.0392,
+      "cost_per_resolved": 0.0808,
+      "relative_savings_pct": 0.0
+    },
+    {
+      "decomposition_level": "G2",
+      "decomposition_name": "Functional Subtasks",
+      "policy": "Full ModelRouter (Kev/Laya)",
+      "task_domain": "Coding Benchmark",
+      "agents_count": 4,
+      "handoffs_count": 5,
+      "route_calls_f": 11.2,
+      "context_copy_ratio": 1.8,
+      "task_success_rate": 54.5,
+      "mean_episode_usd": 0.0065,
+      "cost_per_resolved": 0.0119,
+      "relative_savings_pct": 83.4
+    },
+    {
+      "decomposition_level": "G3",
+      "decomposition_name": "Fine-grained Verifiable",
+      "policy": "Role-Static (Baseline)",
+      "task_domain": "Coding Benchmark",
+      "agents_count": 7,
+      "handoffs_count": 9,
+      "route_calls_f": 18.5,
+      "context_copy_ratio": 2.45,
+      "task_success_rate": 46.0,
+      "mean_episode_usd": 0.062,
+      "cost_per_resolved": 0.1348,
+      "relative_savings_pct": 0.0
+    },
+    {
+      "decomposition_level": "G3",
+      "decomposition_name": "Fine-grained Verifiable",
+      "policy": "Full ModelRouter (Kev/Laya)",
+      "task_domain": "Coding Benchmark",
+      "agents_count": 7,
+      "handoffs_count": 9,
+      "route_calls_f": 18.5,
+      "context_copy_ratio": 2.45,
+      "task_success_rate": 57.5,
+      "mean_episode_usd": 0.0058,
+      "cost_per_resolved": 0.0101,
+      "relative_savings_pct": 90.6
+    }
+  ],
+  "fig6_dual_panel": {
+    "panel_a_success": [
+      {
+        "granularity": "G0",
+        "granularity_name": "Whole (Monolithic)",
+        "role_static_success": 42.0,
+        "full_router_success": 46.2,
+        "delta_success_pts": 4.2,
+        "agents": 1,
+        "handoffs": 0
+      },
+      {
+        "granularity": "G1",
+        "granularity_name": "Phase-level (Stage)",
+        "role_static_success": 45.0,
+        "full_router_success": 50.0,
+        "delta_success_pts": 5.0,
+        "agents": 3,
+        "handoffs": 2
+      },
+      {
+        "granularity": "G2",
+        "granularity_name": "Functional Subtasks",
+        "role_static_success": 48.5,
+        "full_router_success": 54.5,
+        "delta_success_pts": 6.0,
+        "agents": 4,
+        "handoffs": 5
+      },
+      {
+        "granularity": "G3",
+        "granularity_name": "Fine-grained Verifiable",
+        "role_static_success": 46.0,
+        "full_router_success": 57.5,
+        "delta_success_pts": 11.5,
+        "agents": 7,
+        "handoffs": 9
+      }
+    ],
+    "panel_b_cost": [
+      {
+        "granularity": "G0",
+        "granularity_name": "Whole (Monolithic)",
+        "role_static_cost_usd": 0.0185,
+        "full_router_cost_usd": 0.0095,
+        "savings_pct": 48.6,
+        "route_calls_f": 3.8
+      },
+      {
+        "granularity": "G1",
+        "granularity_name": "Phase-level (Stage)",
+        "role_static_cost_usd": 0.0245,
+        "full_router_cost_usd": 0.0078,
+        "savings_pct": 68.2,
+        "route_calls_f": 6.4
+      },
+      {
+        "granularity": "G2",
+        "granularity_name": "Functional Subtasks",
+        "role_static_cost_usd": 0.0392,
+        "full_router_cost_usd": 0.0065,
+        "savings_pct": 83.4,
+        "route_calls_f": 11.2
+      },
+      {
+        "granularity": "G3",
+        "granularity_name": "Fine-grained Verifiable",
+        "role_static_cost_usd": 0.062,
+        "full_router_cost_usd": 0.0058,
+        "savings_pct": 90.6,
+        "route_calls_f": 18.5
+      }
+    ],
+    "x_axis": "Decomposition Granularity (G0: Whole, G1: Phase, G2: Functional, G3: Fine-grained)",
+    "y_axis_a": "Task Success Rate (%)",
+    "y_axis_b": "Mean Complete Episode USD ($)"
+  },
+  "key_findings": [
+    "At G0 (Whole task, F=3.8), ModelRouter yields modest 48.6% cost reduction with +4.2% success gain.",
+    "At G2/G3 (Fine-grained, F=18.5), Role-Static suffers context replication inflation (costs triple to $0.062), while ModelRouter maintains high efficiency ($0.0058, 90.6% savings) and achieves peak success (57.5%).",
+    "Finer decomposition provides more legal decision boundaries F, compounding ModelRouter's per-step advantage over static allocation."
+  ]
+}

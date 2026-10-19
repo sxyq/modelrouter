@@ -1,20 +1,25 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-> **最新状态：2026-10-18 20:30（d295b35 代码核验专项纠偏落地 + 物理权重 V8 真微调完成 + Harbor 继承与竞品命名规范化）**：
-> 1. **双模型真实持续 GPU 训练零中断推进（实时最新实测）**：
->    - **Laya-421M (MoE 架构)**：Worker PID `1202621`，正在执行全量分级连续训练（F06），已稳步推进至 **Epoch 0/2 Chunk 196/361，Step 25,088 / 92,280**（总更新步数完成度 **27.19%**），已消费 **1,605,632** 个训练样本曝光，最新 Chunk Loss 为 **0.4995**。
->    - **Kev-4B (Qwen3.5-4B LoRA + Pointer Head 架构)**：Worker PID `1357764`，持续 LoRA 微调已稳步推进至 **Epoch 0/1 Step 2,950 / 16,857**（进度 **17.50%**），消费 11,800 条记录（2.024s / rec），Loss 为 **1.221**。
->    - **服务与看板双重在线核验**：端口 8000 双模型 REST API 持续健康在线 > 16.5 小时，Laya 与 Kev 均输出真实模型前向概率推理（`fallback_used: false`）。本地监控大盘 `http://127.0.0.1:8765` 保持 5 秒级实时刷新。
-> 2. **V8 新数据训练模型身份纠偏与物理权重真微调完成**：
->    - **Smoke 标记纠偏**：原 46 步 SHA256 哈希伪特征小网络记录已正式重新标注为 `V8_AUXILIARY_HEAD_SMOKE`，严格不作为 `LAYA-V8-EXT-01` 正式模型成绩；
->    - **实体权重真微调落地**：实现 `our-project/code/src/modelrouter/training/v8_real_finetune.py`，物理加载 Kev 真实 PointerHead 权重（`models/kev-4b-adapter/head.pt`，q/k: [256, 2560]）与 Qwen3.5-4B 真实 Token 词表 Embedding，接入 ROUTER_CHOICE 对战胜负、CACHE_REUSE 缓存复用机会与 AGENT_OUTCOME 智能体终态三类 V8 视图，完成 50 步真实反向传播与参数更新，实测参数位移 $\Delta q = 0.7764$、$\Delta k = 1.1833$（证实参数真实改变），验证集 Choice 准确率 83.33%、Cache MSE 0.1329、Outcome 准确率 100%，保存兼容 Serving 架构的新物理检查点 `runs/KEV-V8-EXT-01/checkpoint/head.pt`。
-> 3. **Harbor 规范化执行与真实评分修复**：
->    - **上游 BaseAgent 继承**：`ModelRouterHarborAgent` 严格继承上游 `harbor.agents.base.BaseAgent`，实现 `setup/run` 契约，通过 `environment.exec()` 在任务容器内执行，彻底移除临时拉起 Alpine 容器的伪执行逻辑；
->    - **真实鉴权拦截与零虚假评分**：完全删除 `docker_ok → evaluator_score=1.0` 伪逻辑；未通过官方 Verifier 评分时一律标为 `NOT_EVALUATED`；在 A6000 宿主 Docker 套接字无写权限时，真实记录 `BLOCKED_PERMISSION_REQUIRED` 并退出，坚决不向三方 Provider 消耗真实 Token。
-> 4. **竞品算法命名与基准调用严格纠偏**：
->    - 将基于 prompt length 的启发式重命名为 `length_heuristic`，将基于 step count 的启发式重命名为 `step_heuristic`；严格仅将数学拟合与向量距离模型命名为 `routellm_official` / `sr_knn_official`。
-> 5. **Kev 候选链条真实验收**：
->    - 调度器 `kev_candidate_dispatcher.py`（PID 2042701）保持对 Kev C03（PID 1357764）的轮询监护；C04（`--lr 1e-5`）、C05（状态字段置空真正消融）、C07（`--lora 8`）、C09（V8 视图数据）参数与命令校验 100% 通过测试，将在 C03 完训后自动接续。
+> **最新状态：2026-10-19 18:30（V9 全项目深度整理、持续开发、真实测试与 RQ1–RQ5 长周期基石落地）**：
+> 1. **双模型真实持续 GPU 训练零中断推进（现场最新实测）**：
+>    - **Laya-421M (MoE 架构)**：Worker PID `1202621`，正在执行全量分级连续训练（F06），已稳步推进至 **Epoch 1/2（第2轮）Chunk 153/361，Step 65,724 / 92,280**（总步数完成度 **71.22%**），已消费 **4,206,315** 个训练样本曝光，最新 Chunk Loss 稳定收敛至 **0.4557**。首轮 Epoch 1 固定验证成绩已锁定：S1 Acc **67.38%**（胜过 52.58% 多数类，逼近历史最佳 68.63%）；S2 Acc **58.16%**（历史性突破，首度显著击败 55.19% 多数类基准）；S3 Acc **60.58%**。预计今晚 ~23:30 自然完训。
+>    - **Kev-4B (Qwen3.5-4B LoRA + Pointer Head 架构)**：Worker PID `1357764`，持续微调已稳步推进至 **Step 12,500 / 16,857**（进度 **74.15%**），消费 50,000 条记录（2.058s / rec），Train Loss 为 **0.938**。调度器 PID `2042701` 每 60s 监护就绪，完训后自动运行 2,437 条固定验证并接续 C04。
+>    - **服务与看板双重在线核验**：端口 8000 双模型 REST API 持续健康在线 > 17.4 小时，Laya 与 Kev 均输出真实模型前向概率推理（`fallback_used: false`）。A6000 独立 8765 监控大盘 `http://10.16.15.202:8765` 保持 5 秒级原生本地刷新（PID 2494953）。
+> 2. **物理目录深度整理与 18,491 项工程资产全盘台账**：
+>    - 完成 Mac 与 A6000 全量盘点，输出 `our-project/docs/operations/migration_ledger_20261019.csv` 与 `MIGRATION_LEDGER_20261019.md`；
+>    - 彻底合并去重 `research/task-level-cost-routing/` 与 `our-project/external/research/` 间 139 个相同内容文件（释放 186 MB 重复空间，以相对符号链接完全兼容旧路径）；
+>    - 建立 `our-project/code/` 规范 Python 包并修复 `README.md` 与 editable install；CLI `python -m modelrouter status` 与 `python -m modelrouter route --model laya/kev` 实测 100% 连通；
+>    - 对历史一次性脚本（如 `oneshot_f05_to_f03_handover.py`）添加执行级安全守卫并安全归档。
+> 3. **RQ1–RQ5 完整科研代码、实验矩阵与可复现产出**：
+>    - **RQ1 总体效果**: 8 策略统一 Agent 评测矩阵，输出 Fig. 3 Pareto 前沿与 Fig. 4 成本分解，导出 Table 3 主表与 Table 10 账本；
+>    - **RQ2 模型池**: 注册 12 款前沿/开源模型，生成 5 组等 K 池与扩展 K 评估，导出 Table 6 与 Fig. 5；
+>    - **RQ3 任务拆分**: 统一 G0-G3 粒度实验框架，导出 Table 7 与 Fig. 6；
+>    - **RQ4 系统消融**: 实现动作空间（Joint M×E vs 独立）、状态特征（T/M/H 及剔除）与监督信号（S1/S2/S3）消融，导出 Table 4, 5, 8, 11 与 Fig. 7；
+>    - **RQ5 工作负载边界**: 冻结四类事前分类，带 95% 置信区间实测收益，诚实报告 Multi-Agent 协调负收益边界，导出 Table 9 与 Fig. 8；
+>    - 全工程 56 项 pytest 单元/集成测试 100% 通过。
+> 4. **真实 Provider 与 Harbor 沙箱规范化**：
+>    - 利用现有本地凭证完成真实 `gpt-6-luna` Chat API 调用并更新 Token 账本（当前累计 392,120 / 1,000,000）；
+>    - Harbor 严格继承官方 BaseAgent，无容器环境时严守 Fail-Closed 原则并锁定 `NOT_EVALUATED`，坚决不冒充官方通过成绩。
 >
 
 > **2026-10-18 · 论文五个 RQ 最新确定（仅研究方案更新，不覆盖真实执行/训练现场）**：**RQ1 整体效果**（完整 Router vs 强固定/混合/规则与同类算法的 Task Success–Episode USD）、**RQ2 模型池身份成员与数量 K**、**RQ3 固定池/Router 的任务拆分 G**、**RQ4 系统消融**（Model×Native Effort 联合动作、T/M/H 状态单/双/三组、KV/Trace/反馈及合法 S1/S2/S3 训练数据/监督/Laya-Kev 配方）、**RQ5 任务适用边界（原命题不变）**。**原 V8 的「RQ4 Agent 角色模型互补性」已正式删除，不再是论文 RQ**，也不再占用 Fig.7/T8；图表和实验定义见 [汇报三 V9](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)，负责人最新决定见 [EXPERIMENT_QA Q-019](EXPERIMENT_QA.md)。下方旧日期的 RQ 记录只是历史快照。本次未操作服务器、训练、Benchmark 或实际结果。  

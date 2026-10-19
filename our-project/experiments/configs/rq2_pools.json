@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_id": "RQ2_MODEL_POOLS",
+  "description": "Model Pool Registry and K-selection Configurations for RQ2 (Fig.5 & Table 6)",
+  "equal_k_pools": {
+    "AA_PARETO": {
+      "pool_id": "AA_PARETO",
+      "name": "Quality-Cost Pareto Frontier",
+      "k": 5,
+      "description": "Selected from LMSYS & SWE-bench non-dominated Pareto frontier",
+      "models": [
+        "gemini-2.0-flash",
+        "deepseek-chat-v3",
+        "gpt-4o",
+        "deepseek-reasoner-r1",
+        "claude-3-7-sonnet"
+      ],
+      "rationale": "Spans extreme low cost to top frontier reasoning with maximal Pareto utility"
+    },
+    "AGENT_DEV": {
+      "pool_id": "AGENT_DEV",
+      "name": "Software Engineering & Agent Dev",
+      "k": 5,
+      "description": "Specialized in tool calling, multi-turn coding, and terminal execution",
+      "models": [
+        "qwen-2.5-coder-32b",
+        "deepseek-chat-v3",
+        "o3-mini",
+        "gpt-4o",
+        "claude-3-7-sonnet"
+      ],
+      "rationale": "Optimized for SWE-bench, Terminal-Bench, and code modification agents"
+    },
+    "PRICE_TIERED": {
+      "pool_id": "PRICE_TIERED",
+      "name": "Strict Price-Tiered Ladder",
+      "k": 5,
+      "description": "Logarithmic price progression across 5 cost tiers",
+      "models": [
+        "gemini-2.0-flash",
+        "deepseek-chat-v3",
+        "qwen-2.5-coder-32b",
+        "gpt-4o",
+        "o1"
+      ],
+      "rationale": "Tests routing accuracy across sharp 150x cost boundaries ($0.10 to $15.00)"
+    },
+    "COMPLEMENTARY": {
+      "pool_id": "COMPLEMENTARY",
+      "name": "Cross-Provider Complementary",
+      "k": 5,
+      "description": "Maximum provider and architecture diversity",
+      "models": [
+        "gemini-2.0-flash",
+        "deepseek-reasoner-r1",
+        "qwen-2.5-coder-32b",
+        "llama-3.3-70b-instruct",
+        "claude-3-7-sonnet"
+      ],
+      "rationale": "Balances Google context, DeepSeek reasoning, Alibaba coding, Meta open-weights, and Anthropic tool use"
+    },
+    "RANDOM": {
+      "pool_id": "RANDOM",
+      "name": "Uniform Random Baseline",
+      "k": 5,
+      "description": "Uniform sample without Pareto or capability optimization",
+      "models": [
+        "gpt-4o-mini",
+        "claude-3-5-haiku",
+        "llama-3.3-70b-instruct",
+        "gemini-2.0-pro-exp",
+        "o3-mini"
+      ],
+      "rationale": "Ablation control verifying necessity of structured model pool design"
+    }
+  },
+  "expanded_k_pools": {
+    "K_3": {
+      "k": 3,
+      "name": "Trio (Fast / Standard / Reasoning)",
+      "models": [
+        "gemini-2.0-flash",
+        "gpt-4o",
+        "claude-3-7-sonnet"
+      ]
+    },
+    "K_5": {
+      "k": 5,
+      "name": "Quintet (Pareto Frontier)",
+      "models": [
+        "gemini-2.0-flash",
+        "deepseek-chat-v3",
+        "qwen-2.5-coder-32b",
+        "gpt-4o",
+        "claude-3-7-sonnet"
+      ]
+    },
+    "K_8": {
+      "k": 8,
+      "name": "Octet (Diverse Spectrum)",
+      "models": [
+        "gemini-2.0-flash",
+        "gpt-4o-mini",
+        "deepseek-chat-v3",
+        "qwen-2.5-coder-32b",
+        "gpt-4o",
+        "o3-mini",
+        "deepseek-reasoner-r1",
+        "claude-3-7-sonnet"
+      ]
+    },
+    "K_12": {
+      "k": 12,
+      "name": "Full Dodecahedron (All Registered Models)",
+      "models": [
+        "gpt-4o",
+        "gpt-4o-mini",
+        "o1",
+        "o3-mini",
+        "claude-3-7-sonnet",
+        "claude-3-5-haiku",
+        "deepseek-chat-v3",
+        "deepseek-reasoner-r1",
+        "qwen-2.5-coder-32b",
+        "gemini-2.0-flash",
+        "gemini-2.0-pro-exp",
+        "llama-3.3-70b-instruct"
+      ]
+    }
+  }
+}

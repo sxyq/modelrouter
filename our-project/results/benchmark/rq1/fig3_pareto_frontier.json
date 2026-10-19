@@ -1,0 +1,88 @@
+{
+  "all_points": [
+    {
+      "policy_id": "fixed_strong",
+      "label": "Fixed-Strong (GPT-6 Luna)",
+      "x_cost_usd": 0.022919,
+      "y_success_rate": 0.4,
+      "policy_type": "BASELINE_FIXED",
+      "is_pareto_optimal": false
+    },
+    {
+      "policy_id": "fixed_cheap",
+      "label": "Fixed-Cheap (GPT-5.6 Luna)",
+      "x_cost_usd": 0.000725,
+      "y_success_rate": 0.4615,
+      "policy_type": "BASELINE_FIXED",
+      "is_pareto_optimal": true
+    },
+    {
+      "policy_id": "random",
+      "label": "Random Mix",
+      "x_cost_usd": 0.021735,
+      "y_success_rate": 0.4615,
+      "policy_type": "BASELINE_STOCHASTIC",
+      "is_pareto_optimal": false
+    },
+    {
+      "policy_id": "rule_sticky",
+      "label": "Rule-Sticky",
+      "x_cost_usd": 0.009644,
+      "y_success_rate": 0.4286,
+      "policy_type": "BASELINE_HEURISTIC",
+      "is_pareto_optimal": false
+    },
+    {
+      "policy_id": "routellm",
+      "label": "RouteLLM (Official)",
+      "x_cost_usd": 0.001077,
+      "y_success_rate": 0.4615,
+      "policy_type": "ACADEMIC_ALGORITHM",
+      "is_pareto_optimal": false
+    },
+    {
+      "policy_id": "sr_knn",
+      "label": "SR-KNN (Official)",
+      "x_cost_usd": 0.009661,
+      "y_success_rate": 0.4615,
+      "policy_type": "ACADEMIC_ALGORITHM",
+      "is_pareto_optimal": false
+    },
+    {
+      "policy_id": "laya_v2",
+      "label": "ModelRouter (Laya-421M MoE)",
+      "x_cost_usd": 0.193036,
+      "y_success_rate": 0.4615,
+      "policy_type": "NEURAL_ROUTER",
+      "is_pareto_optimal": false
+    },
+    {
+      "policy_id": "kev_4b",
+      "label": "ModelRouter (Kev-4B Pointer Head)",
+      "x_cost_usd": 0.002129,
+      "y_success_rate": 0.5,
+      "policy_type": "NEURAL_ROUTER",
+      "is_pareto_optimal": true
+    }
+  ],
+  "pareto_optimal_points": [
+    {
+      "policy_id": "fixed_cheap",
+      "label": "Fixed-Cheap (GPT-5.6 Luna)",
+      "x_cost_usd": 0.000725,
+      "y_success_rate": 0.4615,
+      "policy_type": "BASELINE_FIXED",
+      "is_pareto_optimal": true
+    },
+    {
+      "policy_id": "kev_4b",
+      "label": "ModelRouter (Kev-4B Pointer Head)",
+      "x_cost_usd": 0.002129,
+      "y_success_rate": 0.5,
+      "policy_type": "NEURAL_ROUTER",
+      "is_pareto_optimal": true
+    }
+  ],
+  "x_axis": "Mean Complete Episode USD",
+  "y_axis": "Task Success Rate (Pass@1)"
+}

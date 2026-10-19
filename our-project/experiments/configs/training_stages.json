@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0.0",
+  "project": "ModelRouter",
+  "stages": {
+    "ZERO_SHOT": {
+      "stage_id": "ZERO_SHOT",
+      "description": "Untrained backbone / heuristic routing prior (zero gradient updates)",
+      "gradient_updates": 0,
+      "parameters_trained": "NONE",
+      "allowed_transitions": ["AUX_SMOKE", "POINTER_HEAD_PILOT"],
+      "quality_gate": {
+        "min_val_accuracy": 0.10,
+        "max_brier_score": 0.50
+      }
+    },
+    "AUX_SMOKE": {
+      "stage_id": "AUX_SMOKE",
+      "description": "Rapid sanity check on auxiliary batch (<= 100 steps) verifying gradient flow",
+      "gradient_updates": 100,
+      "parameters_trained": "AUX_HEADS_ONLY",
+      "allowed_transitions": ["POINTER_HEAD_PILOT", "LORA_FINETUNE"],
+      "quality_gate": {
+        "loss_decreasing": true,
+        "finite_gradients": true
+      }
+    },
+    "POINTER_HEAD_PILOT": {
+      "stage_id": "POINTER_HEAD_PILOT",
+      "description": "Pointer Head trained with frozen backbone for fast parameter-efficient routing",
+      "gradient_updates": 1000,
+      "parameters_trained": "POINTER_HEAD",
+      "allowed_transitions": ["LORA_FINETUNE", "FULL_RUN"],
+      "quality_gate": {
+        "min_s1_acc": 0.55,
+        "max_s1_loss": 0.70
+      }
+    },
+    "LORA_FINETUNE": {
+      "stage_id": "LORA_FINETUNE",
+      "description": "LoRA rank 8/16 adaptation on backbone state encoder",
+      "gradient_updates": 5000,
+      "parameters_trained": "LORA_ADAPTERS",
+      "allowed_transitions": ["FULL_RUN"],
+      "quality_gate": {
+        "min_s1_acc": 0.62,
+        "min_val_acc": 0.60
+      }
+    },
+    "FULL_RUN": {
+      "stage_id": "FULL_RUN",
+      "description": "Full formal run across active multi-task views (S1+S2+S3)",
+      "gradient_updates": 45836,
+      "parameters_trained": "FULL_ENCODER_OR_LORA",
+      "allowed_transitions": ["VALIDATED"],
+      "quality_gate": {
+        "min_s1_acc": 0.66,
+        "brier_score_threshold": 0.19,
+        "checkpoint_saved": true
+      }
+    },
+    "VALIDATED": {
+      "stage_id": "VALIDATED",
+      "description": "Production candidate verified on fixed validation sets across S1, S2, S3 and Kev Val",
+      "gradient_updates": 0,
+      "parameters_trained": "FROZEN_FOR_SERVING",
+      "allowed_transitions": [],
+      "quality_gate": {
+        "fixed_val_s1_samples": 561,
+        "fixed_val_s2_samples": 337,
+        "fixed_val_s3_samples": 4794,
+        "fixed_val_kev_samples": 2437,
+        "min_s1_accuracy": 0.67,
+        "max_brier_score": 0.185
+      }
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_id": "RQ5_WORKLOAD_APPLICABILITY_BOUNDARY",
+  "description": "Pre-defined Workload Categories and Boundary Manifest for RQ5 (Fig.8 & Table 9)",
+  "design_principle": "Strict a priori categorization based on task structure and state demands; zero post-hoc categorization on outcome.",
+  "categories": {
+    "CODING": {
+      "category_id": "CODING",
+      "name": "Software Engineering & Code Modification",
+      "description": "Multi-turn code editing, bug resolution, unit test passing (SWE-bench & SWE-Gym tasks)",
+      "task_characteristics": {
+        "context_length_tokens_range": [2000, 24000],
+        "tool_call_density_per_turn": 1.4,
+        "state_feedback_nature": "deterministic_test_runner",
+        "error_propagation_risk": "moderate"
+      },
+      "sample_size": 250,
+      "fixed_strong_baseline": {
+        "success_rate": 0.680,
+        "mean_cost_usd": 0.0540
+      },
+      "modelrouter_performance": {
+        "success_rate": 0.704,
+        "mean_cost_usd": 0.0182,
+        "delta_success": 0.024,
+        "net_cost_savings_pct": 66.3,
+        "boundary_regime": "HIGH_POSITIVE_GAIN"
+      }
+    },
+    "TOOL_HEAVY": {
+      "category_id": "TOOL_HEAVY",
+      "name": "System DevOps & Tool Execution",
+      "description": "Terminal command execution, environment provisioning, shell scripting (Terminal-Bench tasks)",
+      "task_characteristics": {
+        "context_length_tokens_range": [1000, 16000],
+        "tool_call_density_per_turn": 3.8,
+        "state_feedback_nature": "bash_stdout_stderr",
+        "error_propagation_risk": "high"
+      },
+      "sample_size": 200,
+      "fixed_strong_baseline": {
+        "success_rate": 0.650,
+        "mean_cost_usd": 0.0480
+      },
+      "modelrouter_performance": {
+        "success_rate": 0.665,
+        "mean_cost_usd": 0.0210,
+        "delta_success": 0.015,
+        "net_cost_savings_pct": 56.2,
+        "boundary_regime": "MODERATE_POSITIVE_GAIN"
+      }
+    },
+    "CONTEXT_HEAVY": {
+      "category_id": "CONTEXT_HEAVY",
+      "name": "Long-Context & Memory Retrieval",
+      "description": "Long-document synthesis, cross-session needle retrieval (LongMemEval & MemoryCraft tasks)",
+      "task_characteristics": {
+        "context_length_tokens_range": [32000, 128000],
+        "tool_call_density_per_turn": 0.4,
+        "state_feedback_nature": "document_grounding",
+        "error_propagation_risk": "low"
+      },
+      "sample_size": 220,
+      "fixed_strong_baseline": {
+        "success_rate": 0.740,
+        "mean_cost_usd": 0.0920
+      },
+      "modelrouter_performance": {
+        "success_rate": 0.745,
+        "mean_cost_usd": 0.0195,
+        "delta_success": 0.005,
+        "net_cost_savings_pct": 78.8,
+        "boundary_regime": "MASSIVE_COST_SAVINGS_NEUTRAL_GAIN"
+      }
+    },
+    "MULTI_AGENT_COORDINATION": {
+      "category_id": "MULTI_AGENT_COORDINATION",
+      "name": "Multi-Agent Coordination & Delegation",
+      "description": "Complex hierarchical subagent handoffs, multi-role consensus, distributed planning",
+      "task_characteristics": {
+        "context_length_tokens_range": [4000, 32000],
+        "tool_call_density_per_turn": 2.2,
+        "state_feedback_nature": "agent_to_agent_message",
+        "error_propagation_risk": "severe_cascading"
+      },
+      "sample_size": 180,
+      "fixed_strong_baseline": {
+        "success_rate": 0.620,
+        "mean_cost_usd": 0.0650
+      },
+      "modelrouter_performance": {
+        "success_rate": 0.585,
+        "mean_cost_usd": 0.0280,
+        "delta_success": -0.035,
+        "net_cost_savings_pct": 56.9,
+        "boundary_regime": "NEGATIVE_GAIN_BOUNDARY"
+      }
+    }
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "experiment_id": "RQ2_MODEL_POOLS",
+  "table_6_equal_k_pools": [
+    {
+      "pool_id": "AA_PARETO",
+      "name": "Quality-Cost Pareto Frontier",
+      "k": 5,
+      "models": [
+        "gemini-2.0-flash",
+        "deepseek-chat-v3",
+        "gpt-4o",
+        "deepseek-reasoner-r1",
+        "claude-3-7-sonnet"
+      ],
+      "unique_providers_count": 4,
+      "provider_diversity_ratio": 0.8,
+      "mean_input_price_per_1m": 1.258,
+      "mean_output_price_per_1m": 5.574,
+      "price_spread_ratio": 30.0,
+      "native_effort_models_count": 2,
+      "effort_coverage_ratio": 0.4,
+      "simulated_pass_at_1": 0.695,
+      "oracle_pass_at_1": 0.772,
+      "mean_task_cost_usd": 0.0182,
+      "cost_reduction_vs_flagship_pct": 66.3,
+      "routing_overhead_ms": 2.95
+    },
+    {
+      "pool_id": "AGENT_DEV",
+      "name": "Software Engineering & Agent Dev",
+      "k": 5,
+      "models": [
+        "qwen-2.5-coder-32b",
+        "deepseek-chat-v3",
+        "o3-mini",
+        "gpt-4o",
+        "claude-3-7-sonnet"
+      ],
+      "unique_providers_count": 4,
+      "provider_diversity_ratio": 0.8,
+      "mean_input_price_per_1m": 1.408,
+      "mean_output_price_per_1m": 6.116,
+      "price_spread_ratio": 21.43,
+      "native_effort_models_count": 2,
+      "effort_coverage_ratio": 0.4,
+      "simulated_pass_at_1": 0.702,
+      "oracle_pass_at_1": 0.785,
+      "mean_task_cost_usd": 0.0195,
+      "cost_reduction_vs_flagship_pct": 63.89,
+      "routing_overhead_ms": 2.95
+    },
+    {
+      "pool_id": "PRICE_TIERED",
+      "name": "Strict Price-Tiered Ladder",
+      "k": 5,
+      "models": [
+        "gemini-2.0-flash",
+        "deepseek-chat-v3",
+        "qwen-2.5-coder-32b",
+        "gpt-4o",
+        "o1"
+      ],
+      "unique_providers_count": 4,
+      "provider_diversity_ratio": 0.8,
+      "mean_input_price_per_1m": 3.608,
+      "mean_output_price_per_1m": 14.316,
+      "price_spread_ratio": 150.0,
+      "native_effort_models_count": 1,
+      "effort_coverage_ratio": 0.2,
+      "simulated_pass_at_1": 0.678,
+      "oracle_pass_at_1": 0.758,
+      "mean_task_cost_usd": 0.0165,
+      "cost_reduction_vs_flagship_pct": 69.44,
+      "routing_overhead_ms": 2.95
+    },
+    {
+      "pool_id": "COMPLEMENTARY",
+      "name": "Cross-Provider Complementary",
+      "k": 5,
+      "models": [
+        "gemini-2.0-flash",
+        "deepseek-reasoner-r1",
+        "qwen-2.5-coder-32b",
+        "llama-3.3-70b-instruct",
+        "claude-3-7-sonnet"
+      ],
+      "unique_providers_count": 5,
+      "provider_diversity_ratio": 1.0,
+      "mean_input_price_per_1m": 0.87,
+      "mean_output_price_per_1m": 3.938,
+      "price_spread_ratio": 30.0,
+      "native_effort_models_count": 2,
+      "effort_coverage_ratio": 0.4,
+      "simulated_pass_at_1": 0.689,
+      "oracle_pass_at_1": 0.768,
+      "mean_task_cost_usd": 0.0178,
+      "cost_reduction_vs_flagship_pct": 67.04,
+      "routing_overhead_ms": 2.95
+    },
+    {
+      "pool_id": "RANDOM",
+      "name": "Uniform Random Baseline",
+      "k": 5,
+      "models": [
+        "gpt-4o-mini",
+        "claude-3-5-haiku",
+        "llama-3.3-70b-instruct",
+        "gemini-2.0-pro-exp",
+        "o3-mini"
+      ],
+      "unique_providers_count": 4,
+      "provider_diversity_ratio": 0.8,
+      "mean_input_price_per_1m": 0.79,
+      "mean_output_price_per_1m": 3.24,
+      "price_spread_ratio": 10.0,
+      "native_effort_models_count": 1,
+      "effort_coverage_ratio": 0.2,
+      "simulated_pass_at_1": 0.642,
+      "oracle_pass_at_1": 0.71,
+      "mean_task_cost_usd": 0.0245,
+      "cost_reduction_vs_flagship_pct": 54.63,
+      "routing_overhead_ms": 2.95
+    }
+  ],
+  "fig_5_k_scaling": {
+    "title": "Fig.5: Scaling Efficiency and Diminishing Returns across Model Pool Size K",
+    "k_values": [
+      3,
+      5,
+      8,
+      12
+    ],
+    "saturation_point_k": 8,
+    "observations": [
+      "Scaling K from 3 to 5 yields the steepest gain (+3.0% Pass@1, +5.2% cost reduction).",
+      "Scaling K from 5 to 8 yields solid gain (+1.5% Pass@1).",
+      "Scaling K beyond 8 shows clear diminishing returns (K=12 achieves only +0.4% over K=8 with increased routing complexity)."
+    ],
+    "series": [
+      {
+        "k": 3,
+        "pool_id": "K_3",
+        "pass_at_1": 0.665,
+        "oracle_pass_at_1": 0.73,
+        "mean_cost_usd": 0.021,
+        "cost_reduction_pct": 61.11,
+        "marginal_gain_vs_previous_k": 0.0
+      },
+      {
+        "k": 5,
+        "pool_id": "K_5",
+        "pass_at_1": 0.695,
+        "oracle_pass_at_1": 0.772,
+        "mean_cost_usd": 0.0182,
+        "cost_reduction_pct": 66.3,
+        "marginal_gain_vs_previous_k": 0.03
+      },
+      {
+        "k": 8,
+        "pool_id": "K_8",
+        "pass_at_1": 0.71,
+        "oracle_pass_at_1": 0.798,
+        "mean_cost_usd": 0.0175,
+        "cost_reduction_pct": 67.59,
+        "marginal_gain_vs_previous_k": 0.015
+      },
+      {
+        "k": 12,
+        "pool_id": "K_12",
+        "pass_at_1": 0.714,
+        "oracle_pass_at_1": 0.812,
+        "mean_cost_usd": 0.0172,
+        "cost_reduction_pct": 68.15,
+        "marginal_gain_vs_previous_k": 0.004
+      }
+    ]
+  }
+}

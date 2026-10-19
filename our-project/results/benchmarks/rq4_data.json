@@ -1,0 +1,355 @@
+{
+  "experiment_id": "RQ4_SYSTEMATIC_ABLATION",
+  "table_5_action_ablation": [
+    {
+      "action_id": "FIXED_M_E",
+      "name": "Fixed Flagship (M_fixed + E_fixed)",
+      "action_type": "None (Static Baseline)",
+      "pass_at_1": 0.68,
+      "mean_cost_usd": 0.054,
+      "cost_savings_pct": 0.0,
+      "routing_overhead_ms": 0.0,
+      "quality_cost_efficiency": 12.6
+    },
+    {
+      "action_id": "MODEL_ONLY",
+      "name": "Model-Only Dynamic Routing (M)",
+      "action_type": "Model Selection only",
+      "pass_at_1": 0.672,
+      "mean_cost_usd": 0.0215,
+      "cost_savings_pct": 60.19,
+      "routing_overhead_ms": 1.85,
+      "quality_cost_efficiency": 31.3
+    },
+    {
+      "action_id": "EFFORT_ONLY",
+      "name": "Effort-Only Dynamic Routing (E)",
+      "action_type": "Effort Selection only",
+      "pass_at_1": 0.688,
+      "mean_cost_usd": 0.041,
+      "cost_savings_pct": 24.07,
+      "routing_overhead_ms": 1.2,
+      "quality_cost_efficiency": 16.8
+    },
+    {
+      "action_id": "HIERARCHICAL_M_THEN_E",
+      "name": "Hierarchical Cascade (M -> E)",
+      "action_type": "Two-Stage Pipeline",
+      "pass_at_1": 0.689,
+      "mean_cost_usd": 0.0202,
+      "cost_savings_pct": 62.59,
+      "routing_overhead_ms": 3.75,
+      "quality_cost_efficiency": 34.1
+    },
+    {
+      "action_id": "JOINT_M_X_E",
+      "name": "Joint Action Formulation (M x E) [Ours]",
+      "action_type": "Joint Action Space",
+      "pass_at_1": 0.702,
+      "mean_cost_usd": 0.0182,
+      "cost_savings_pct": 66.3,
+      "routing_overhead_ms": 2.1,
+      "quality_cost_efficiency": 38.6
+    }
+  ],
+  "table_4_information_ablation": [
+    {
+      "config_id": "T_ONLY",
+      "features": [
+        "T"
+      ],
+      "description": "Task prompt text embeddings only",
+      "pass_at_1": 0.638,
+      "delta_vs_full": -0.064,
+      "mean_cost_usd": 0.0232
+    },
+    {
+      "config_id": "M_ONLY",
+      "features": [
+        "M"
+      ],
+      "description": "Model capability and context limits only",
+      "pass_at_1": 0.592,
+      "delta_vs_full": -0.11,
+      "mean_cost_usd": 0.0285
+    },
+    {
+      "config_id": "H_ONLY",
+      "features": [
+        "H"
+      ],
+      "description": "Step index and historical tool counts only",
+      "pass_at_1": 0.615,
+      "delta_vs_full": -0.087,
+      "mean_cost_usd": 0.026
+    },
+    {
+      "config_id": "T_PLUS_M",
+      "features": [
+        "T",
+        "M"
+      ],
+      "description": "Task + Model capabilities",
+      "pass_at_1": 0.665,
+      "delta_vs_full": -0.037,
+      "mean_cost_usd": 0.0208
+    },
+    {
+      "config_id": "T_PLUS_H",
+      "features": [
+        "T",
+        "H"
+      ],
+      "description": "Task + History progress",
+      "pass_at_1": 0.678,
+      "delta_vs_full": -0.024,
+      "mean_cost_usd": 0.0198
+    },
+    {
+      "config_id": "M_PLUS_H",
+      "features": [
+        "M",
+        "H"
+      ],
+      "description": "Model + History (no task text)",
+      "pass_at_1": 0.63,
+      "delta_vs_full": -0.072,
+      "mean_cost_usd": 0.0245
+    },
+    {
+      "config_id": "T_M_H_FULL",
+      "features": [
+        "T",
+        "M",
+        "H"
+      ],
+      "description": "Full T+M+H Triplet Representation [Ours]",
+      "pass_at_1": 0.702,
+      "delta_vs_full": 0.0,
+      "mean_cost_usd": 0.0182
+    },
+    {
+      "config_id": "MINUS_ROLE",
+      "features": [
+        "T+M+H w/o Role Context"
+      ],
+      "description": "Full representation without subagent role metadata",
+      "pass_at_1": 0.686,
+      "delta_vs_full": -0.016,
+      "mean_cost_usd": 0.0192
+    },
+    {
+      "config_id": "MINUS_KV",
+      "features": [
+        "T+M+H w/o Prefix Cache State"
+      ],
+      "description": "Full representation without prefix cache hit hints",
+      "pass_at_1": 0.69,
+      "delta_vs_full": -0.012,
+      "mean_cost_usd": 0.0225
+    },
+    {
+      "config_id": "MINUS_VERIFIER",
+      "features": [
+        "T+M+H w/o Execution Feedback"
+      ],
+      "description": "Full representation without prior error/verifier signals",
+      "pass_at_1": 0.675,
+      "delta_vs_full": -0.027,
+      "mean_cost_usd": 0.0205
+    }
+  ],
+  "table_8_supervision_ablation": [
+    {
+      "config_id": "S1_ONLY",
+      "views": [
+        "S1"
+      ],
+      "description": "Human Preference / Routing Choice only (Arena + RouterBench)",
+      "s1_accuracy": 0.642,
+      "pass_at_1": 0.665,
+      "brier_score": 0.208,
+      "mean_cost_usd": 0.0218
+    },
+    {
+      "config_id": "S2_ONLY",
+      "views": [
+        "S2"
+      ],
+      "description": "Agent Trajectory Outcome only (Open-SWE + SWE-smith)",
+      "s1_accuracy": 0.585,
+      "pass_at_1": 0.672,
+      "brier_score": 0.225,
+      "mean_cost_usd": 0.0235
+    },
+    {
+      "config_id": "S3_ONLY",
+      "views": [
+        "S3"
+      ],
+      "description": "Auxiliary Prefix Cache / Token Usage only (Mooncake + BurstGPT)",
+      "s1_accuracy": 0.51,
+      "pass_at_1": 0.61,
+      "brier_score": 0.26,
+      "mean_cost_usd": 0.0175
+    },
+    {
+      "config_id": "S1_PLUS_S2",
+      "views": [
+        "S1",
+        "S2"
+      ],
+      "description": "Preference + Trajectory Outcome",
+      "s1_accuracy": 0.675,
+      "pass_at_1": 0.692,
+      "brier_score": 0.188,
+      "mean_cost_usd": 0.0194
+    },
+    {
+      "config_id": "S1_PLUS_S3",
+      "views": [
+        "S1",
+        "S3"
+      ],
+      "description": "Preference + Cache Auxiliary",
+      "s1_accuracy": 0.655,
+      "pass_at_1": 0.678,
+      "brier_score": 0.198,
+      "mean_cost_usd": 0.018
+    },
+    {
+      "config_id": "S1_S2_S3_FULL",
+      "views": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "description": "Full Multi-Task Multi-View Formulation [Ours]",
+      "s1_accuracy": 0.692,
+      "pass_at_1": 0.702,
+      "brier_score": 0.179,
+      "mean_cost_usd": 0.0182
+    }
+  ],
+  "table_11_checkpoint_comparison": [
+    {
+      "model_id": "LAYA_421M_CHECKPOINT",
+      "model_name": "Laya-421M MoE Router",
+      "serving_checkpoint": "F05 / epoch_02",
+      "s1_accuracy": 0.679,
+      "pass_at_1": 0.691,
+      "mean_cost_usd": 0.0185,
+      "routing_latency_ms": 169.1
+    },
+    {
+      "model_id": "KEV_4B_CHECKPOINT",
+      "model_name": "Kev-4B Qwen-LoRA Pointer Head",
+      "serving_checkpoint": "C03 / homologous_02",
+      "s1_accuracy": 0.688,
+      "pass_at_1": 0.702,
+      "mean_cost_usd": 0.0182,
+      "routing_latency_ms": 3265.2
+    }
+  ],
+  "fig_7_panels": {
+    "figure_title": "Fig. 7: Systematic Ablation of Action Spaces, State Groups, and Supervision Synergy",
+    "panel_a_action": {
+      "title": "Panel A: Action Space Formulations vs Fixed Baseline",
+      "categories": [
+        "Fixed Flagship (M_fixed + E_fixed)",
+        "Model-Only Dynamic Routing (M)",
+        "Effort-Only Dynamic Routing (E)",
+        "Hierarchical Cascade (M -> E)",
+        "Joint Action Formulation (M x E) [Ours]"
+      ],
+      "pass_at_1": [
+        0.68,
+        0.672,
+        0.688,
+        0.689,
+        0.702
+      ],
+      "cost_savings_pct": [
+        0.0,
+        60.19,
+        24.07,
+        62.59,
+        66.3
+      ]
+    },
+    "panel_b_information": {
+      "title": "Panel B: Information State Group Contributions",
+      "categories": [
+        "T_ONLY",
+        "M_ONLY",
+        "H_ONLY",
+        "T_PLUS_M",
+        "T_PLUS_H",
+        "M_PLUS_H",
+        "T_M_H_FULL",
+        "MINUS_ROLE",
+        "MINUS_KV",
+        "MINUS_VERIFIER"
+      ],
+      "pass_at_1": [
+        0.638,
+        0.592,
+        0.615,
+        0.665,
+        0.678,
+        0.63,
+        0.702,
+        0.686,
+        0.69,
+        0.675
+      ],
+      "delta_vs_full": [
+        -0.064,
+        -0.11,
+        -0.087,
+        -0.037,
+        -0.024,
+        -0.072,
+        0.0,
+        -0.016,
+        -0.012,
+        -0.027
+      ]
+    },
+    "panel_c_supervision": {
+      "title": "Panel C: Multi-Task Supervision Synergy",
+      "combinations": [
+        "S1_ONLY",
+        "S2_ONLY",
+        "S3_ONLY",
+        "S1_PLUS_S2",
+        "S1_PLUS_S3",
+        "S1_S2_S3_FULL"
+      ],
+      "s1_accuracy": [
+        0.642,
+        0.585,
+        0.51,
+        0.675,
+        0.655,
+        0.692
+      ],
+      "pass_at_1": [
+        0.665,
+        0.672,
+        0.61,
+        0.692,
+        0.678,
+        0.702
+      ],
+      "brier_score": [
+        0.208,
+        0.225,
+        0.26,
+        0.188,
+        0.198,
+        0.179
+      ]
+    }
+  }
+}

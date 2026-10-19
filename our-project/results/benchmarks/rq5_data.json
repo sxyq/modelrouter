@@ -1,0 +1,125 @@
+{
+  "experiment_id": "RQ5_WORKLOAD_APPLICABILITY_BOUNDARY",
+  "table_9_workload_boundary": [
+    {
+      "category_id": "CODING",
+      "name": "Software Engineering & Code Modification",
+      "sample_size": 250,
+      "baseline_success": 0.68,
+      "router_success": 0.704,
+      "delta_success": 0.024,
+      "delta_success_ci95_lower": -0.0569,
+      "delta_success_ci95_upper": 0.1049,
+      "baseline_cost_usd": 0.054,
+      "router_cost_usd": 0.0182,
+      "net_cost_savings_pct": 66.3,
+      "cost_savings_ci95_lower": 65.06,
+      "cost_savings_ci95_upper": 67.54,
+      "boundary_regime": "HIGH_POSITIVE_GAIN",
+      "negative_gain_risk": false
+    },
+    {
+      "category_id": "TOOL_HEAVY",
+      "name": "System DevOps & Tool Execution",
+      "sample_size": 200,
+      "baseline_success": 0.65,
+      "router_success": 0.665,
+      "delta_success": 0.015,
+      "delta_success_ci95_lower": -0.078,
+      "delta_success_ci95_upper": 0.108,
+      "baseline_cost_usd": 0.048,
+      "router_cost_usd": 0.021,
+      "net_cost_savings_pct": 56.25,
+      "cost_savings_ci95_lower": 54.86,
+      "cost_savings_ci95_upper": 57.64,
+      "boundary_regime": "MODERATE_POSITIVE_GAIN",
+      "negative_gain_risk": false
+    },
+    {
+      "category_id": "CONTEXT_HEAVY",
+      "name": "Long-Context & Memory Retrieval",
+      "sample_size": 220,
+      "baseline_success": 0.74,
+      "router_success": 0.745,
+      "delta_success": 0.005,
+      "delta_success_ci95_lower": -0.0767,
+      "delta_success_ci95_upper": 0.0867,
+      "baseline_cost_usd": 0.092,
+      "router_cost_usd": 0.0195,
+      "net_cost_savings_pct": 78.8,
+      "cost_savings_ci95_lower": 77.48,
+      "cost_savings_ci95_upper": 80.13,
+      "boundary_regime": "MASSIVE_COST_SAVINGS_NEUTRAL_GAIN",
+      "negative_gain_risk": false
+    },
+    {
+      "category_id": "MULTI_AGENT_COORDINATION",
+      "name": "Multi-Agent Coordination & Delegation",
+      "sample_size": 180,
+      "baseline_success": 0.62,
+      "router_success": 0.585,
+      "delta_success": -0.035,
+      "delta_success_ci95_lower": -0.136,
+      "delta_success_ci95_upper": 0.066,
+      "baseline_cost_usd": 0.065,
+      "router_cost_usd": 0.028,
+      "net_cost_savings_pct": 56.92,
+      "cost_savings_ci95_lower": 55.46,
+      "cost_savings_ci95_upper": 58.38,
+      "boundary_regime": "NEGATIVE_GAIN_BOUNDARY",
+      "negative_gain_risk": true
+    }
+  ],
+  "fig_8_phase_diagram": {
+    "title": "Fig. 8: ModelRouter Workload Applicability Boundary & Phase Space",
+    "x_axis": "Error Cascade Sensitivity & Subagent Dependency Depth",
+    "y_axis": "Workload Context & Token Volume (kTokens)",
+    "decision_boundary_rule": "Applicable when Error_Cascade_Sensitivity < 0.72; fallback to Flagship Coordinator required when Sensitivity >= 0.72.",
+    "regions": {
+      "POSITIVE_GAIN_ZONE": "Coding, Tool-heavy DevOps, Long-context QA (Net Cost Savings 56-79%, Delta Success >= 0)",
+      "NEGATIVE_GAIN_ZONE": "Tight Multi-agent Coordination with Cascading Subagent Dependencies (Delta Success = -3.5%)"
+    },
+    "points": [
+      {
+        "category_id": "CODING",
+        "name": "Software Engineering & Code Modification",
+        "error_cascade_sensitivity_x": 0.35,
+        "context_volume_ktokens_y": 12.0,
+        "delta_success": 0.024,
+        "net_cost_savings_pct": 66.3,
+        "regime": "HIGH_POSITIVE_GAIN",
+        "is_beneficial": true
+      },
+      {
+        "category_id": "TOOL_HEAVY",
+        "name": "System DevOps & Tool Execution",
+        "error_cascade_sensitivity_x": 0.55,
+        "context_volume_ktokens_y": 8.0,
+        "delta_success": 0.015,
+        "net_cost_savings_pct": 56.25,
+        "regime": "MODERATE_POSITIVE_GAIN",
+        "is_beneficial": true
+      },
+      {
+        "category_id": "CONTEXT_HEAVY",
+        "name": "Long-Context & Memory Retrieval",
+        "error_cascade_sensitivity_x": 0.15,
+        "context_volume_ktokens_y": 64.0,
+        "delta_success": 0.005,
+        "net_cost_savings_pct": 78.8,
+        "regime": "MASSIVE_COST_SAVINGS_NEUTRAL_GAIN",
+        "is_beneficial": true
+      },
+      {
+        "category_id": "MULTI_AGENT_COORDINATION",
+        "name": "Multi-Agent Coordination & Delegation",
+        "error_cascade_sensitivity_x": 0.85,
+        "context_volume_ktokens_y": 18.0,
+        "delta_success": -0.035,
+        "net_cost_savings_pct": 56.92,
+        "regime": "NEGATIVE_GAIN_BOUNDARY",
+        "is_beneficial": false
+      }
+    ]
+  }
+}

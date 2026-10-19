@@ -357,6 +357,75 @@ class KevServerPolicy(BasePolicy):
         )
 
 
+class LengthHeuristicPolicy(BasePolicy):
+    """Simple baseline heuristic routing based strictly on prompt/instruction character length."""
+
+    def __init__(self, threshold_chars: int = 600):
+        super().__init__("length_heuristic")
+        self.threshold_chars = threshold_chars
+
+    def select(
+        self,
+        state: AgentState,
+        legal_actions: List[Dict[str, Any]],
+    ) -> RouterDecision:
+        t0 = time.time()
+        snapshot = state.build_pre_decision_snapshot()
+        prompt_len = getattr(snapshot, "context_chars", len(getattr(snapshot, "task_id", "")))
+        strong_actions = [a for a in legal_actions if a.get("pool") in ("Strong", "Reasoning") or "gpt-6" in a.get("model", "")]
+        cheap_actions = [a for a in legal_actions if a.get("pool") in ("Fast", "Standard") or "gpt-5.6" in a.get("model", "")]
+        if prompt_len > self.threshold_chars and strong_actions:
+            selected = strong_actions[0]
+        elif cheap_actions:
+            selected = cheap_actions[0]
+        else:
+            selected = legal_actions[0]
+        return RouterDecision(
+            request_id=str(uuid4()),
+            router_family="heuristic_length",
+            checkpoint_id="none",
+            selected_action=selected,
+            ranked_actions=[selected],
+            decision_latency_ms=(time.time() - t0) * 1000,
+            fallback_used=False,
+            confidence=0.6,
+        )
+
+
+class StepHeuristicPolicy(BasePolicy):
+    """Simple baseline heuristic routing based strictly on step index."""
+
+    def __init__(self):
+        super().__init__("step_heuristic")
+
+    def select(
+        self,
+        state: AgentState,
+        legal_actions: List[Dict[str, Any]],
+    ) -> RouterDecision:
+        t0 = time.time()
+        snapshot = state.build_pre_decision_snapshot()
+        step = snapshot.step_index
+        strong_actions = [a for a in legal_actions if a.get("pool") in ("Strong", "Reasoning") or "gpt-6" in a.get("model", "")]
+        cheap_actions = [a for a in legal_actions if a.get("pool") in ("Fast", "Standard") or "gpt-5.6" in a.get("model", "")]
+        if step % 2 == 0 and strong_actions:
+            selected = strong_actions[0]
+        elif cheap_actions:
+            selected = cheap_actions[0]
+        else:
+            selected = legal_actions[0]
+        return RouterDecision(
+            request_id=str(uuid4()),
+            router_family="heuristic_step",
+            checkpoint_id="none",
+            selected_action=selected,
+            ranked_actions=[selected],
+            decision_latency_ms=(time.time() - t0) * 1000,
+            fallback_used=False,
+            confidence=0.6,
+        )
+
+
 def create_policy(policy_name: str, **kwargs) -> BasePolicy:
     """Factory to instantiate policies by name."""
     p = policy_name.lower().replace("-", "_")
@@ -370,6 +439,10 @@ def create_policy(policy_name: str, **kwargs) -> BasePolicy:
         return FixedCheapPolicy()
     elif p in ("rule_sticky", "rule"):
         return RuleStickyPolicy()
+    elif p in ("length_heuristic", "length"):
+        return LengthHeuristicPolicy(threshold_chars=kwargs.get("threshold_chars", 600))
+    elif p in ("step_heuristic", "step"):
+        return StepHeuristicPolicy()
     elif p in ("routellm", "route_llm"):
         return RouteLLMPolicy(threshold=kwargs.get("threshold", 0.55))
     elif p in ("sr_knn", "srknn"):

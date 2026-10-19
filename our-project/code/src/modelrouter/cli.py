@@ -15,13 +15,19 @@ import urllib.request
 from pathlib import Path
 
 
+def _get_opener():
+    return urllib.request.build_opener(urllib.request.ProxyHandler({}))
+
+
 def cmd_status(args):
     """Checks health of A6000 router serving and local token budget."""
     print("=== ModelRouter Status ===")
     
     # 1. Router serving health
     try:
-        with urllib.request.urlopen("http://127.0.0.1:8000/health", timeout=3) as resp:
+        opener = _get_opener()
+        req = urllib.request.Request("http://127.0.0.1:8000/health")
+        with opener.open(req, timeout=5) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             print(f"Router Serving (Port 8000): HEALTHY (uptime: {data.get('uptime_seconds', 0):.1f}s)")
             print(f"  GPU: {data.get('gpu_name')} (used: {data.get('gpu_memory_used_mb')} MiB, util: {data.get('gpu_utilization_pct')}%)")
@@ -47,13 +53,21 @@ def cmd_status(args):
 
 def cmd_route(args):
     """Executes a sample routing decision via local FastAPI server."""
+    import time
     payload = {
-        "request_id": "cli-test",
-        "prompt": args.prompt or "Fix git merge conflicts",
-        "model_requested": args.model or "laya",
+        "request_id": f"cli-test-{int(time.time())}",
+        "episode_id": "ep-cli",
+        "decision_id": "dec-cli",
+        "policy_version": "v9.0",
+        "router_family": args.model or "laya",
+        "pre_decision_state": {
+            "task_domain": "software_engineering",
+            "prompt": args.prompt or "Fix git merge conflicts",
+            "context_chars": len(args.prompt or "")
+        },
         "legal_actions": [
-            {"provider": "openai", "model": "gpt-6-luna", "native_effort": "medium"},
-            {"provider": "openai", "model": "gpt-5.6-luna", "native_effort": "low"}
+            {"provider": "openai", "model": "gpt-6-luna", "revision": "latest", "native_effort": "medium"},
+            {"provider": "openai", "model": "gpt-5.6-luna", "revision": "latest", "native_effort": "low"}
         ]
     }
     req = urllib.request.Request(
@@ -63,7 +77,8 @@ def cmd_route(args):
         method="POST"
     )
     try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        opener = _get_opener()
+        with opener.open(req, timeout=15) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             print(json.dumps(data, indent=2))
     except Exception as e:

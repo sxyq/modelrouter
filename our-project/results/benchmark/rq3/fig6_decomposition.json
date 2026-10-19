@@ -1,0 +1,77 @@
+{
+  "panel_a_success": [
+    {
+      "granularity": "G0",
+      "granularity_name": "Whole (Monolithic)",
+      "role_static_success": 42.0,
+      "full_router_success": 46.2,
+      "delta_success_pts": 4.2,
+      "agents": 1,
+      "handoffs": 0
+    },
+    {
+      "granularity": "G1",
+      "granularity_name": "Phase-level (Stage)",
+      "role_static_success": 45.0,
+      "full_router_success": 50.0,
+      "delta_success_pts": 5.0,
+      "agents": 3,
+      "handoffs": 2
+    },
+    {
+      "granularity": "G2",
+      "granularity_name": "Functional Subtasks",
+      "role_static_success": 48.5,
+      "full_router_success": 54.5,
+      "delta_success_pts": 6.0,
+      "agents": 4,
+      "handoffs": 5
+    },
+    {
+      "granularity": "G3",
+      "granularity_name": "Fine-grained Verifiable",
+      "role_static_success": 46.0,
+      "full_router_success": 57.5,
+      "delta_success_pts": 11.5,
+      "agents": 7,
+      "handoffs": 9
+    }
+  ],
+  "panel_b_cost": [
+    {
+      "granularity": "G0",
+      "granularity_name": "Whole (Monolithic)",
+      "role_static_cost_usd": 0.0185,
+      "full_router_cost_usd": 0.0095,
+      "savings_pct": 48.6,
+      "route_calls_f": 3.8
+    },
+    {
+      "granularity": "G1",
+      "granularity_name": "Phase-level (Stage)",
+      "role_static_cost_usd": 0.0245,
+      "full_router_cost_usd": 0.0078,
+      "savings_pct": 68.2,
+      "route_calls_f": 6.4
+    },
+    {
+      "granularity": "G2",
+      "granularity_name": "Functional Subtasks",
+      "role_static_cost_usd": 0.0392,
+      "full_router_cost_usd": 0.0065,
+      "savings_pct": 83.4,
+      "route_calls_f": 11.2
+    },
+    {
+      "granularity": "G3",
+      "granularity_name": "Fine-grained Verifiable",
+      "role_static_cost_usd": 0.062,
+      "full_router_cost_usd": 0.0058,
+      "savings_pct": 90.6,
+      "route_calls_f": 18.5
+    }
+  ],
+  "x_axis": "Decomposition Granularity (G0: Whole, G1: Phase, G2: Functional, G3: Fine-grained)",
+  "y_axis_a": "Task Success Rate (%)",
+  "y_axis_b": "Mean Complete Episode USD ($)"
+}

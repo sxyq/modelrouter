@@ -21,6 +21,7 @@ import os
 import sys
 import json
 import time
+import math
 import uuid
 import logging
 from pathlib import Path
@@ -182,18 +183,24 @@ class ModelRouterHarborAgent(BaseAgent):
                 req_data = {
                     "request_id": f"harbor-{uuid.uuid4()}",
                     "router_family": family,
+                    "pre_decision_state": {
+                        "task_domain": "software_engineering",
+                        "prompt": (state.get("instruction", "") + "\n" + state.get("last_observation", ""))[:500],
+                        "context_chars": len(state.get("instruction", "")) + len(state.get("last_observation", ""))
+                    },
                     "legal_actions": [
-                        {"provider": "openai", "model": "gpt-6-luna"},
-                        {"provider": "openai", "model": "gpt-5.6-luna"}
+                        {"provider": "openai", "model": "gpt-6-luna", "revision": "latest", "native_effort": "medium"},
+                        {"provider": "openai", "model": "gpt-5.6-luna", "revision": "latest", "native_effort": "low"}
                     ]
                 }
+                opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
                 r = urllib.request.Request(
                     "http://127.0.0.1:8000/route",
-                    data=json.dumps(req_data).encode(),
+                    data=json.dumps(req_data).encode("utf-8"),
                     headers={"Content-Type": "application/json"}
                 )
-                with urllib.request.urlopen(r, timeout=3) as resp:
-                    resp_data = json.loads(resp.read().decode())
+                with opener.open(r, timeout=10) as resp:
+                    resp_data = json.loads(resp.read().decode("utf-8"))
                     return resp_data["selected_action"]["model"]
             except Exception as e:
                 logger.warning(f"Port 8000 Router API call failed ({e}), using default {self.effective_model}")

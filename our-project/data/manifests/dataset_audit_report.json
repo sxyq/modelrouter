@@ -1,0 +1,628 @@
+{
+  "audit_version": "1.0.0",
+  "audit_timestamp_utc": "2026-10-19T10:26:46.349901+00:00",
+  "overall_status": "PASS",
+  "inventory_summary": {
+    "total_registered_sources": 16,
+    "active_sources": 14,
+    "gated_sources": 2,
+    "total_verified_records": 6600628,
+    "total_preview_files": 48,
+    "total_preview_bytes": 525390,
+    "sources": {
+      "CACHE-001": {
+        "source_id": "CACHE-001",
+        "source_name": "Mooncake-FAST25",
+        "official_origin": "https://github.com/kvcache-ai/Mooncake / FAST'25 release",
+        "license": "Apache-2.0",
+        "batch_category": "Batch 3: 缓存与时延",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S3",
+        "label_nature": "OBSERVED_REUSE_OPPORTUNITY",
+        "valid_cleaned_records": 39632,
+        "stat_file_reported_records": 39632,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 2183,
+            "sha256": "d2b5e59e948d3f661c6985c0df1b98042e7d10419aa40d2364f35c4673770416"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 1264,
+            "sha256": "7e43346ac271b3b44be77c46e121f7b880962a919acad2ee53c5060990680ad2"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 27176,
+            "sha256": "cadaa077cb6a0eef1cc0f6d15df166be5008fabc57ebcfb718ca04e7e3b64ebb"
+          }
+        ]
+      },
+      "ENV-001": {
+        "source_id": "ENV-001",
+        "source_name": "SWE-Gym",
+        "official_origin": "https://huggingface.co/datasets/SWE-Gym/SWE-Gym",
+        "license": "MIT",
+        "batch_category": "Batch 4: 记忆与环境",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S2",
+        "label_nature": "TASK_ENVIRONMENT",
+        "valid_cleaned_records": 2438,
+        "stat_file_reported_records": 2438,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 1362,
+            "sha256": "21826d8e60f904e4e5e76c1123226d23575e829fe9c2e8af0f1e8911c72f369e"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 939,
+            "sha256": "0837a243840f766f2299a319c9397538a966b61eb6982f2be38cbbdfe80204fb"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 42959,
+            "sha256": "7247ff74a37a63ac8d378ac421b7805363c4c7f3528eb4eb79c96c6930562a16"
+          }
+        ]
+      },
+      "ENV-002": {
+        "source_id": "ENV-002",
+        "source_name": "SWE-rebench-V2",
+        "official_origin": "https://huggingface.co/datasets/nebius/SWE-rebench-V2",
+        "license": "MIT",
+        "batch_category": "Batch 4: 记忆与环境",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S2",
+        "label_nature": "TASK_ENVIRONMENT",
+        "valid_cleaned_records": 32079,
+        "stat_file_reported_records": 32079,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 1784,
+            "sha256": "aa7bad88e09008e7e340aaa35ed54fb0c91ac1d19cfc9aea9534143f947ba5f8"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 1126,
+            "sha256": "9c1a551e3e05079ff3c2cc3cd38d5713eae1599192debe69a69ab2a49df1f93b"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 31713,
+            "sha256": "e407d799ac03f55d60011e9f5fc5ecff6565c4a90c7ed601215c199bddb2121b"
+          }
+        ]
+      },
+      "MAS-001": {
+        "source_id": "MAS-001",
+        "source_name": "MARBLE-MultiAgentBench",
+        "official_origin": "https://github.com/ulab-uiuc/MARBLE",
+        "license": "Unknown",
+        "batch_category": "Batch 4: 记忆与环境",
+        "policy_tag": "GATED_PENDING",
+        "supervision_type": "UNSUPERVISED",
+        "label_nature": "GATED_INACCESSIBLE",
+        "valid_cleaned_records": 0,
+        "stat_file_reported_records": 0,
+        "record_count_verified": true,
+        "is_active": false,
+        "gated_reason": "HTTP 401 Unauthorized on upstream repository",
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 481,
+            "sha256": "d5c6e6989eed347c35929ed51bf9f51a39690cadef02ce9e1107f769369e531c"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 554,
+            "sha256": "5f170ae3a1a66162d02569d2f86b227da812872da05db169d03e8a842c4c9f8f"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ]
+      },
+      "MEM-003": {
+        "source_id": "MEM-003",
+        "source_name": "LongMemEval-V2",
+        "official_origin": "https://huggingface.co/datasets/xiaowu0162/LongMemEval-V2",
+        "license": "MIT",
+        "batch_category": "Batch 4: 记忆与环境",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S2",
+        "label_nature": "MEMORY_BENCHMARK",
+        "valid_cleaned_records": 451,
+        "stat_file_reported_records": 451,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 1690,
+            "sha256": "e325f2ead21552eef7c24d386bc88c3b079fa34988b281728dc8e11f1ba4c736"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 780,
+            "sha256": "72692c8e952e5eedbd2ac922e0c72d3a0955da888fea0c3f2b48adba064d5040"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 50265,
+            "sha256": "6e6b54df56fc56590e6e0ccbf34b2bede62dc60477b25629d4b330260b8be80a"
+          }
+        ]
+      },
+      "MEM-005": {
+        "source_id": "MEM-005",
+        "source_name": "MemoryCraft",
+        "official_origin": "https://huggingface.co/datasets/daven3/MemoryCraft",
+        "license": "Open Source",
+        "batch_category": "Batch 4: 记忆与环境",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S2",
+        "label_nature": "MEMORY_BENCHMARK",
+        "valid_cleaned_records": 23884,
+        "stat_file_reported_records": 23884,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 1465,
+            "sha256": "507a2565b6837f329ccb15df6289717e8056a0cd2805caa6b9ac66a7d51cb136"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 765,
+            "sha256": "f8c0c7f7fe5280f31c7415878ef5a5871af39e4b2e370e5bd218e50fe37cc7d7"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 25273,
+            "sha256": "c7bbb67f362ea3b6ac065539432d5d91696a636c97b1cf670a243af77247440e"
+          }
+        ]
+      },
+      "ROUTE-001": {
+        "source_id": "ROUTE-001",
+        "source_name": "LLMRouterBench",
+        "official_origin": "https://huggingface.co/datasets/NPULH/LLMRouterBench",
+        "license": "Open Source",
+        "batch_category": "Batch 2: 路由评测",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S1",
+        "label_nature": "POST_HOC_BENCHMARK_ORACLE",
+        "valid_cleaned_records": 548059,
+        "stat_file_reported_records": 548059,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 2373,
+            "sha256": "2de7452b95988df5bfe769d2db3354c59a9163639c059a4f87fa2326210714a2"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 1204,
+            "sha256": "0e382cbbe8e64e7893848717f8f9894bcbeba340c159b3368f35bc7292fd9768"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 32659,
+            "sha256": "8ce93f845e6a33a731398e85cb8457e67aff1f533eb2f9e5edd6c101a995d802"
+          }
+        ]
+      },
+      "ROUTE-002": {
+        "source_id": "ROUTE-002",
+        "source_name": "RouterBench",
+        "official_origin": "https://huggingface.co/datasets/withmartian/routerbench",
+        "license": "CC-BY-4.0",
+        "batch_category": "Batch 2: 路由评测",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S1",
+        "label_nature": "POST_HOC_BENCHMARK_ORACLE",
+        "valid_cleaned_records": 36497,
+        "stat_file_reported_records": 36497,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 1997,
+            "sha256": "b3153126778872026fc58b583fcf43005f0bb99d9e34b2ccec35ff459bf0fb40"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 1098,
+            "sha256": "4ee2beada9a60584cc64e5f96dd02a6cd66a07479643d5f9894dd8437e4472f8"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 46572,
+            "sha256": "2d2ee535cc70c2a4fd94c40ac8ad7a6744aedf9e3587601b58027d2434e7e784"
+          }
+        ]
+      },
+      "ROUTE-003": {
+        "source_id": "ROUTE-003",
+        "source_name": "TwinRouterBench",
+        "official_origin": "https://huggingface.co/datasets/Amorph/TwinRouterBench",
+        "license": "Open Source",
+        "batch_category": "Batch 2: 路由评测",
+        "policy_tag": "EVAL_BENCHMARK_ONLY",
+        "supervision_type": "S1",
+        "label_nature": "POST_HOC_BENCHMARK_ORACLE",
+        "valid_cleaned_records": 970,
+        "stat_file_reported_records": 970,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 1645,
+            "sha256": "748a73a4df7eb9b4f94b754ca65031f2e578ecc11dbffd9556e0f774b8cd4414"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 991,
+            "sha256": "069c709f83df59563d5855373fe3d1b5e698bbc8c66bde7de87e15655a0e39d2"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 33130,
+            "sha256": "002836a0832a25dbfd24d5d448cba0b31b601b9ee83fa2a66cf693870c398f64"
+          }
+        ]
+      },
+      "ROUTE-004": {
+        "source_id": "ROUTE-004",
+        "source_name": "Arena Human Preference 55k",
+        "official_origin": "https://huggingface.co/datasets/lmarena-ai/arena-human-preference-55k",
+        "license": "LMSYS Terms of Use",
+        "batch_category": "Batch 2: 路由评测",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S1",
+        "label_nature": "HUMAN_PREFERENCE",
+        "valid_cleaned_records": 57477,
+        "stat_file_reported_records": 57477,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 1834,
+            "sha256": "cf55d87dffa1c6e1bd2f2873822ab5b342411297e64a137282a56da39eccf535"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 932,
+            "sha256": "d677831db24d25e34bf29342b30cec10a49ede29f207a5361dbf9e2ff25fa284"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 23107,
+            "sha256": "9505a53d86ccf99389575c4918b1d7150dba5b5f86f93470181b33fd0658e055"
+          }
+        ]
+      },
+      "ROUTE-005": {
+        "source_id": "ROUTE-005",
+        "source_name": "FindingTheRightFit",
+        "official_origin": "https://huggingface.co/datasets/yixuanli97/finding-the-right-fit",
+        "license": "Custom Research License (Prohibits Training/Distillation)",
+        "batch_category": "Batch 2: 路由评测",
+        "policy_tag": "RESEARCH_ANALYSIS_ONLY",
+        "supervision_type": "S1",
+        "label_nature": "POST_HOC_BENCHMARK_ORACLE",
+        "valid_cleaned_records": 6204,
+        "stat_file_reported_records": 6204,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 1786,
+            "sha256": "3961dc745a6df8a03fb43522279c08bab976b46d81b406a8303a99d6edb5d598"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 1089,
+            "sha256": "8ee19fedc46d8a1d6417b8f9b7c67ca878c651c9c9390f92dde6e676118a4f50"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 24368,
+            "sha256": "d572cbf4748f4699047bd4545a7c78a337ff0f64b774205e28713953fdd4cd7c"
+          }
+        ]
+      },
+      "TIME-001": {
+        "source_id": "TIME-001",
+        "source_name": "BurstGPT",
+        "official_origin": "https://github.com/HPMLL/BurstGPT",
+        "license": "Open Source",
+        "batch_category": "Batch 3: 缓存与时延",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S3",
+        "label_nature": "OBSERVED_WORKLOAD",
+        "valid_cleaned_records": 1404294,
+        "stat_file_reported_records": 1404294,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 1520,
+            "sha256": "f460dcdbcb8c97ce6c7f020b2acdf4527fffeaf23f6c5d1a3e4b18ef8ac6ad1b"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 1106,
+            "sha256": "506ad1c30e27e09d4a5d0e0403b03f4513bbbc532dfc0b0594864d503d8b8eda"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 17480,
+            "sha256": "434b97320da27c21de2f3919eb02d30d0120cd347598fd2714f0da037d1d631e"
+          }
+        ]
+      },
+      "TRA-001": {
+        "source_id": "TRA-001",
+        "source_name": "Open-SWE-Traces",
+        "official_origin": "https://huggingface.co/datasets/nvidia/Open-SWE-Traces",
+        "license": "CC-BY-4.0",
+        "batch_category": "Batch 1: Agent轨迹",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S2",
+        "label_nature": "OBSERVED_ACTION",
+        "valid_cleaned_records": 2075629,
+        "stat_file_reported_records": 2075629,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 3050,
+            "sha256": "c13fc443f80b3fbe757aa905d4662c924bb749485bcb8c62cac36bbce9ee9ce0"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 1611,
+            "sha256": "c86dfb6cb06f7494febc1c2336e1a77f1a1752edb185110aca11fc7503ba7552"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 36882,
+            "sha256": "fe615c1d1b548f8aff2ac81fe5fef2424926438528ed8185ef264bab9a8a3f7b"
+          }
+        ]
+      },
+      "TRA-002": {
+        "source_id": "TRA-002",
+        "source_name": "SWE-smith Trajectories",
+        "official_origin": "https://huggingface.co/datasets/SWE-bench/SWE-smith-trajectories",
+        "license": "MIT",
+        "batch_category": "Batch 1: Agent轨迹",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S2",
+        "label_nature": "OBSERVED_ACTION",
+        "valid_cleaned_records": 2331584,
+        "stat_file_reported_records": 2331584,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 2917,
+            "sha256": "c9d2a300bfa83d7b6361c51f4e348f58d3a31e8fd6a1bca03bb32e98340bbb76"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 1413,
+            "sha256": "e6aa60bbdf3ffd6953e921c2c87426692887ec8dd88758e2dac90fd8519159ad"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 42335,
+            "sha256": "06c2bb89f50c71e0cc6193368adc3e73d82f106200a62ff0d7b3942f03946e62"
+          }
+        ]
+      },
+      "TRA-003": {
+        "source_id": "TRA-003",
+        "source_name": "CMU Agent Trajectories",
+        "official_origin": "https://huggingface.co/datasets/cx-cmu/agent_trajectories",
+        "license": "GATED / Terms Required",
+        "batch_category": "Batch 1: Agent轨迹",
+        "policy_tag": "GATED_PENDING",
+        "supervision_type": "UNSUPERVISED",
+        "label_nature": "GATED_INACCESSIBLE",
+        "valid_cleaned_records": 0,
+        "stat_file_reported_records": 0,
+        "record_count_verified": true,
+        "is_active": false,
+        "gated_reason": "HTTP 403 Forbidden on upstream repository",
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 546,
+            "sha256": "b2c1745c22b16de42442e2c83bcf5d64660fe1881d43e27763f75ee7f1999887"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 680,
+            "sha256": "4ab04219ded903fff99763cba224945f74b9e3110e75da79c43e5e636ab701e6"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ]
+      },
+      "TRA-004": {
+        "source_id": "TRA-004",
+        "source_name": "AgentSuite multi_challenge",
+        "official_origin": "https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories",
+        "license": "Apache-2.0",
+        "batch_category": "Batch 1: Agent轨迹",
+        "policy_tag": "TRAIN_ROUTER_CANDIDATE",
+        "supervision_type": "S2",
+        "label_nature": "OBSERVED_ACTION",
+        "valid_cleaned_records": 41430,
+        "stat_file_reported_records": 41430,
+        "record_count_verified": true,
+        "is_active": true,
+        "gated_reason": null,
+        "preview_files": [
+          {
+            "name": "字段统计.json",
+            "size_bytes": 2799,
+            "sha256": "1bf93489b8cd66b5e2f77b24c039a45aa3a89f76435423a32c01f36637a619e0"
+          },
+          {
+            "name": "样本说明.md",
+            "size_bytes": 1554,
+            "sha256": "ed8bb8b62068d0c38d45f32eb15287d8849ec732e488a5bfb39306d5e7efec09"
+          },
+          {
+            "name": "清洗样本.jsonl",
+            "size_bytes": 44933,
+            "sha256": "0b8b69ae1200ba653c9efd329ee07171b1c39ef6c9ef998fc4cf4d5aa1cdcb28"
+          }
+        ]
+      }
+    }
+  },
+  "causal_isolation_audit": {
+    "total_samples_audited": 488,
+    "total_causal_violations": 0,
+    "causal_isolation_passed": true,
+    "source_breakdown": {
+      "CACHE-001": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "ENV-001": {
+        "samples_audited": 33,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "ENV-002": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "MEM-003": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "MEM-005": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "ROUTE-001": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "ROUTE-002": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "ROUTE-003": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "ROUTE-004": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "ROUTE-005": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "TIME-001": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "TRA-001": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "TRA-002": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      },
+      "TRA-004": {
+        "samples_audited": 35,
+        "causal_violations_count": 0,
+        "is_causally_isolated": true,
+        "violations_sample": []
+      }
+    }
+  },
+  "benchmark_isolation_audit": {
+    "terminal_bench_total_tasks": 89,
+    "twin_router_bench_sample_tasks": 33,
+    "training_sources_checked": 12,
+    "leakage_detected_count": 0,
+    "leakage_items": [],
+    "twinrouterbench_strict_eval_only": true,
+    "findingtherightfit_strict_analysis_only": true,
+    "leakage_audit_status": "PASS"
+  }
+}
