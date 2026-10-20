@@ -334,7 +334,13 @@ class TestKevCandidateConfigs(unittest.TestCase):
                 stack.enter_context(patch.object(dispatcher, name, value))
             stack.enter_context(patch.object(dispatcher, "load_queue", return_value=[candidate]))
             stack.enter_context(patch.object(dispatcher, "is_pid_alive", return_value=False))
-            proc = Mock(pid=789, stdout=iter(["ep0 step 10/20 loss 9.45e-1\n", "training error\n"]))
+            def training_lines():
+                output = root / candidate["checkpoint_path"]
+                self.assertFalse(output.exists())
+                output.mkdir(parents=True)
+                yield "ep0 step 10/20 loss 9.45e-1\n"
+                yield "training error\n"
+            proc = Mock(pid=789, stdout=training_lines())
             proc.wait.return_value = 7
             train = stack.enter_context(patch.object(dispatcher.subprocess, "Popen", return_value=proc))
             stack.enter_context(patch.object(dispatcher.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, "16000\n")))

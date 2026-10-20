@@ -475,9 +475,9 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
             cursor = {"run_id": candidate["name"], "candidate_id": candidate["candidate_id"],
                       "pid": proc.pid, "status": "TRAINING", "step": None, "epoch": None, "loss": None}
             cursor_file = (out_ckpt if candidate["candidate_id"] == "KEV-V8-C09" else run_dir) / "cursor.json"
-            cursor_file.parent.mkdir(parents=True, exist_ok=True)
             save_queue(queue)
-            cursor_file.write_text(json.dumps(cursor, indent=2))
+            if cursor_file.parent.is_dir():
+                cursor_file.write_text(json.dumps(cursor, indent=2))
             for line in proc.stdout:
                 log.write(line)
                 log.flush()
@@ -489,7 +489,8 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
                     save_queue(queue)
             exit_code = proc.wait()
         cursor.update(status="COMPLETED" if exit_code == 0 else "FAILED", exit_code=exit_code, updated_at=_now())
-        cursor_file.write_text(json.dumps(cursor, indent=2))
+        if cursor_file.parent.is_dir():
+            cursor_file.write_text(json.dumps(cursor, indent=2))
         attempt.update(exit_code=exit_code, duration_sec=time.monotonic() - started, finished_at=_now())
         refresh_training(candidate)
         if exit_code != 0:
