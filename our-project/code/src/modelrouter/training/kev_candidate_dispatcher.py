@@ -5,7 +5,7 @@ kev_candidate_dispatcher.py - Persistent Multi-Candidate Scientific Progression 
 Fulfills all requirements of ModelRouter V8:
 1. Non-destructive monitoring: Watches active Kev training (PID 1357764) without killing or restarting.
 2. Checkpoint integrity check: Confirms head.pt, adapter_model weights, and tokenizer files exist and are non-empty.
-3. Fixed Val evaluation: Executes kev.evaluate on held-out validation set.
+3. Fixed Val evaluation: Executes kev.benchmark on the project's labelled validation JSONL.
 4. Metric extraction: Parses Accuracy, NLL, Brier, ECE.
 5. Scientific comparison: Computes deltas vs baseline (C02: 87.26%, NLL 0.516) and prior epoch.
 6. Fail-closed safety: Never skips failed runs or advances to subsequent candidates upon corruption.
@@ -33,6 +33,7 @@ PROJECT_ROOT = Path("/home/syy/路由")
 KEV_RUNS_ROOT = PROJECT_ROOT / "runs"
 QUEUE_FILE = PROJECT_ROOT / "our-project" / "results" / "training" / "kev" / "candidate_queue.json"
 LEDGER_FILE = PROJECT_ROOT / "our-project" / "results" / "training" / "kev" / "candidate_ledger.json"
+FIXED_VAL_PATH = "data/kev/公开数据/val.jsonl"
 
 DEFAULT_CANDIDATES = [
     {
@@ -161,35 +162,56 @@ def check_checkpoint_integrity(ckpt_dir: Path) -> tuple[bool, str]:
     return True, "Integrity OK"
 
 def run_fixed_validation(ckpt_dir: Path, out_file: Path) -> tuple[bool, Dict[str, Any]]:
-    """Runs kev.evaluate on the checkpoint against fixed held-out data."""
+    """Score the existing project Val through Kev's labelled-JSONL entry point."""
     logger.info(f"Running formal evaluation on checkpoint: {ckpt_dir}")
+    report_dir = out_file.with_suffix("")
+    val_path = PROJECT_ROOT / FIXED_VAL_PATH
     eval_cmd = [
         str(PROJECT_ROOT / ".venv" / "bin" / "python"),
-        "-m", "kev.evaluate",
+        "-m", "kev.benchmark",
         "--run", str(ckpt_dir),
+        "--data", str(val_path),
+        "--out", str(report_dir),
         "--device", "auto",
-        "--seed", "42"
     ]
     env = os.environ.copy()
     env["PYTHONPATH"] = str(PROJECT_ROOT / "external" / "kev")
     
+    started = time.monotonic()
+    metrics = {
+        "evaluation_status": "FAILED",
+        "validation_set": str(val_path),
+        "validation_protocol": "KEV_FIXED_VAL_JSONL",
+        "dataset_split": "val",
+        "test_used": False,
+        "command": eval_cmd,
+        "report_path": str(report_dir / "report.json"),
+        "exit_code": None,
+    }
     try:
         res = subprocess.run(eval_cmd, cwd=str(PROJECT_ROOT), env=env, capture_output=True, text=True, timeout=900)
+        metrics.update(exit_code=res.returncode, raw_output=res.stdout, stderr=res.stderr)
         if res.returncode != 0:
             logger.error(f"Evaluation process failed with code {res.returncode}: {res.stderr[:300]}")
-            return False, {"error": res.stderr}
-            
-        metrics = {
-            "evaluated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "raw_output": res.stdout[-1500:]
-        }
-        # Parse output for accuracy / NLL / ECE
-        out_file.parent.mkdir(parents=True, exist_ok=True)
-        out_file.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
-        return True, metrics
+            metrics["error"] = res.stderr
+        else:
+            report = json.loads((report_dir / "report.json").read_text(encoding="utf-8"))
+            coverage = report["coverage"]
+            metrics.update(report=report, clean=report["clean"], coverage=coverage)
+            metrics["evaluation_status"] = (
+                "EVALUATED" if coverage["evaluated_records"] == coverage["requested_records"]
+                else "PARTIAL"
+            )
     except Exception as e:
         logger.error(f"Evaluation execution exception: {e}")
-        return False, {"error": str(e)}
+        metrics["error"] = str(e)
+    metrics.update(
+        duration_sec=time.monotonic() - started,
+        evaluated_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    )
+    out_file.parent.mkdir(parents=True, exist_ok=True)
+    out_file.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    return metrics["evaluation_status"] == "EVALUATED", metrics
 
 def ensure_no_state_dataset() -> Path:
     """Creates train_nostate.jsonl for C05 state ablation if it does not exist."""
@@ -225,6 +247,7 @@ def main_loop():
             # Check PID from cursor or ps
             cur_file = KEV_RUNS_ROOT / active_cand["name"] / "cursor.json"
             active_pid = None
+            cd = {}
             if cur_file.is_file():
                 try:
                     cd = json.loads(cur_file.read_text(encoding="utf-8"))
@@ -239,6 +262,21 @@ def main_loop():
             else:
                 logger.info(f"Candidate {cand_id} ({active_cand['name']}) training process exited. Proceeding to evaluation...")
                 ckpt_dir = PROJECT_ROOT / active_cand["checkpoint_path"]
+                training_file = ckpt_dir / "training_metrics.json"
+                training_metrics = json.loads(training_file.read_text(encoding="utf-8")) if training_file.is_file() else {}
+                training_exit = cd.get("exit_code")
+                active_cand["training_status"] = (
+                    "COMPLETED" if training_exit == 0 or (training_exit is None and training_metrics)
+                    else "FAILED" if training_exit is not None
+                    else "UNKNOWN"
+                )
+                active_cand["training_exit_code"] = training_exit
+                active_cand["training_metrics"] = {
+                    k: training_metrics.get(k) for k in
+                    ("optimizer_steps", "records_seen", "requested_records", "wall_seconds")
+                }
+                active_cand["training_source"] = str(training_file) if training_metrics else str(cur_file)
+                active_cand["evaluation_status"] = "NOT_EVALUATED"
                 
                 # Check checkpoint integrity
                 valid, msg = check_checkpoint_integrity(ckpt_dir)
@@ -251,7 +289,12 @@ def main_loop():
                 
                 # Fixed Val Evaluation
                 val_file = ckpt_dir / "val_metrics.json"
+                active_cand["validation_set"] = str(PROJECT_ROOT / FIXED_VAL_PATH)
+                active_cand["evaluation_status"] = "EVALUATING"
+                save_queue(queue)
                 eval_ok, eval_metrics = run_fixed_validation(ckpt_dir, val_file)
+                active_cand["evaluation_status"] = eval_metrics["evaluation_status"]
+                active_cand["metrics"] = eval_metrics
                 if not eval_ok:
                     logger.error(f"Validation evaluation failed for {cand_id}. HALTING QUEUE!")
                     active_cand["status"] = "FAILED"
@@ -260,10 +303,11 @@ def main_loop():
                     sys.exit(1)
                 
                 active_cand["status"] = "COMPLETED"
+                active_cand.pop("failure_reason", None)
                 active_cand["finished_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
                 active_cand["metrics"] = eval_metrics
                 save_queue(queue)
-                logger.info(f"Candidate {cand_id} successfully COMPLETED and validated!")
+                logger.info(f"Candidate {cand_id}: training={active_cand['training_status']}, evaluation={active_cand['evaluation_status']}")
         
         # Look for next queued candidate
         queued_cands = [c for c in queue if c.get("status") == "QUEUED"]
@@ -319,6 +363,8 @@ def main_loop():
             proc = subprocess.Popen(train_cmd, cwd=str(PROJECT_ROOT), env=env, stdout=lf, stderr=subprocess.STDOUT)
             
         next_cand["status"] = "RUNNING"
+        next_cand["training_status"] = "RUNNING"
+        next_cand["evaluation_status"] = "NOT_EVALUATED"
         next_cand["pid"] = proc.pid
         next_cand["started_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         save_queue(queue)

@@ -31,7 +31,7 @@
       <div class="table-wrap"><table class="counts"><thead id="counts-head"></thead><tbody id="counts-body"></tbody></table></div>
       <p class="sub">Run、已记录 Epoch、权重实体与指标版本独立计数；只有 Epoch 汇总的 Run 不生成逐步训练点。</p>
       <div class="toolbar"><label>模型 <select id="family"><option value="all">全部</option><option value="laya">Laya</option><option value="kev">Kev</option></select></label><label>协议 <select id="protocol"><option value="all">全部</option></select></label><label>状态 <select id="run-status"><option value="all">全部</option></select></label><label>Run <input id="search" type="search" placeholder="搜索 Run / 恢复标识"></label><span id="run-count" class="muted"></span></div>
-      <div class="table-wrap"><table><thead><tr><th>Run / 恢复来源</th><th>模型</th><th>协议</th><th>状态</th><th>Epoch</th><th>曲线 / 粒度</th><th>验证集</th><th>开始 / 完成</th><th></th></tr></thead><tbody id="run-table"><tr><td colspan="9">等待历史数据</td></tr></tbody></table></div>
+      <div class="table-wrap" style="max-height:520px;overflow:auto"><table><thead><tr><th>Run / 恢复来源</th><th>模型</th><th>协议</th><th>状态</th><th>Epoch</th><th>曲线 / 粒度</th><th>验证集</th><th>开始 / 完成</th><th></th></tr></thead><tbody id="run-table"><tr><td colspan="9">等待历史数据</td></tr></tbody></table></div>
     </section>
     <section class="section card" aria-labelledby="curve-title">
       <div class="section-head"><h2 id="curve-title">单 Run 完整曲线</h2><span id="curve-status" class="muted">请选择 Run</span></div>

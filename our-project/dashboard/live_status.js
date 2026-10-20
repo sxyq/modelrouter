@@ -5,8 +5,10 @@
   const DASHES = ['', '7 3', '2 3', '9 3 2 3'];
   const COUNT_FIELDS = [
     ['planned_runs', '计划 Run'], ['observed_runs', '已观测 Run / 资产'], ['local_runs', '本地 Run'],
-    ['local_completed_runs', '本地完成 Run'], ['imported_assets', '导入资产'],
-    ['running_runs', '在训 Run'], ['checkpoint_versions', '版本总数'], ['physical_checkpoints', '权重实体'],
+    ['executed_runs', '实际执行 Run'], ['local_completed_runs', '本地结束 Run'],
+    ['metadata_only_runs', '仅状态记录 Run'], ['imported_assets', '导入资产'],
+    ['running_runs', '在训 Run'], ['checkpoint_versions', 'Checkpoint 记录'], ['physical_checkpoints', '权重实体'],
+    ['confirmed_saved_versions', '已知曾保存版本'],
     ['metadata_versions', '指标版本'], ['pruned_versions', '已移除实体'], ['unknown_missing_versions', '未知缺失'],
     ['train_curve_runs', '有 Loss 记录 Run（含 Epoch）'], ['step_curve_runs', '逐步曲线 Run'],
     ['epoch_only_runs', '仅 Epoch Run'], ['unrecorded_curve_runs', '无曲线记录 Run'],
@@ -41,6 +43,7 @@
     const timestamp = live.collected_at_iso ?? live.collected_at_unix ?? live.updated_at;
     const age = ageSeconds(timestamp);
     const status = live.connection_status === 'DISCONNECTED' || live.server_connected === false ? 'DISCONNECTED'
+      : live.collector_source === 'local_a6000' && !live.history ? 'COLLECTOR_UPDATE_REQUIRED'
       : age === null || age > 30 ? 'DATA_STALE' : null;
     return {timestamp, age, status};
   }
@@ -167,12 +170,18 @@
   }
   function liveCard(family, model, observation = {}) {
     const fields = [['Epoch', model.epoch], ['Chunk', model.chunk], ['Step', model.step],
-      ['已消费记录', model.consumed_records], ['优化器更新', model.optimizer_updates], ['PID', model.process_pid]];
+      ['已消费记录', model.consumed_records], ['优化器更新', model.optimizer_updates], ['PID', model.process_pid],
+      ['计划 Epoch / Chunk', display(model.planned_epochs) + ' / ' + display(model.total_chunks)],
+      ['总 Step / 进度', display(model.total_steps) + ' / ' + (num(model.total_steps) > 0 && num(model.step) !== null ? display(100 * model.step / model.total_steps, 2) + '%' : 'N/A')],
+      ['独立覆盖', model.distinct_units],
+      ['样本 / 秒（进度观测）', display(model.samples_per_s, 2)], ['训练耗时', seconds(model.training_seconds)]];
     const progressAge = ageSeconds(model.last_progress_at) ?? model.last_progress_age_s;
     const historical = observation.status;
     return '<article class="card live-card ' + family + '"' + (historical ? ' style="border-top-color:var(--cds-rose)"' : '') + '><div class="family-line"><h3>' + (family === 'laya' ? 'Laya' : 'Kev') + '</h3><span class="status' + (historical ? ' stale' : '') + '">' + esc(historical ?? model.status) + '</span></div><div class="run-id">' + esc(model.run_id) + '</div>'
       + (historical ? '<p class="sub">上次观测 ' + esc(dateText(observation.timestamp)) + ' · 以下数值非当前状态</p>' : '')
-      + '<div class="loss">' + esc(display(model.loss, 4)) + '<small>训练 Loss ↓</small></div><dl class="metrics">' + fields.map(([label, value]) => '<div><dt>' + esc(label) + '</dt><dd>' + esc(value) + '</dd></div>').join('') + '</dl><p class="sub">最后进度 ' + esc(dateText(model.last_progress_at)) + ' · ' + esc(seconds(progressAge)) + '前</p><p class="sub">' + (historical ? '上次观测时已运行 ' : '已运行 ') + esc(seconds(model.elapsed_s)) + '</p></article>';
+      + '<div class="loss">' + esc(display(model.loss, 4)) + '<small>训练 Loss ↓' + (present(model.loss_step) ? ' · 记录于 Step ' + esc(model.loss_step) : '') + '</small></div><dl class="metrics">' + fields.map(([label, value]) => '<div><dt>' + esc(label) + '</dt><dd>' + esc(value) + '</dd></div>').join('') + '</dl>'
+      + (present(model.evaluation_status) ? '<p class="sub">验证 ' + esc(model.evaluation_status) + ' · 队列 ' + esc(model.queue_status) + (model.failure_reason ? ' · ' + esc(model.failure_reason) : '') + '</p>' : '')
+      + '<p class="sub">最后进度 ' + esc(dateText(model.last_progress_at)) + ' · ' + esc(seconds(progressAge)) + '前</p><p class="sub">' + (historical ? '上次观测时进程已运行 ' : '进程已运行 ') + esc(seconds(model.elapsed_s)) + '</p></article>';
   }
   function boot() {
     const el = id => document.getElementById(id);
@@ -221,13 +230,13 @@
       if (state.selected) el('selected-run').value = state.selected;
     }
     function renderRetention() {
-      const names = {old_core: '旧核心', new_core: '新核心', recovery: '恢复文件', parents: '父模型', unclassified: '未分类'};
+      const names = {old_core: '旧核心', new_core: '新核心', recovery: '恢复文件', parents: '父模型', global_best: '历史全局保留', unclassified: '未分类 / Pilot / 导入'};
       const retention = state.history.retention || {};
       el('pool-slots').textContent = '新池名额 ' + display(retention.new_pool_slots);
       el('retention').innerHTML = Object.entries(names).map(([key, label]) => retentionMarkup(label, retention[key])).join('');
     }
     function renderComparisons() {
-      el('comparisons').innerHTML = (state.history.comparisons || []).map(c => '<div class="card"><h3>' + esc(c.family) + ' / ' + esc(c.protocol) + '</h3><p class="sub">验证集 ' + esc(c.validation_set) + ' · 指标 ' + esc(c.metric) + '</p><p>最好 ' + esc(comparisonText(c.best)) + '</p><p>最差 ' + esc(comparisonText(c.worst)) + '</p></div>').join('') || '<p class="muted">N/A · 尚无可比较的同协议、同验证集记录。</p>';
+      el('comparisons').innerHTML = (state.history.comparisons || []).map(c => '<div class="card"><h3>' + esc(c.family) + ' / ' + esc(c.protocol) + ' / ' + esc(c.supervision) + '</h3><p class="sub">验证集 ' + esc(c.validation_set) + ' · 指标 ' + esc(c.metric) + ' · 每个完成 Run 取该指标最佳 Epoch</p><p>最好 ' + esc(comparisonText(c.best)) + '</p><p>最差 ' + esc(comparisonText(c.worst)) + '</p></div>').join('') || '<p class="muted">N/A · 尚无可比较的同协议、同验证集记录。</p>';
     }
     function renderHistory() {
       renderCounts();
@@ -266,9 +275,12 @@
           state.axisRun = run.key;
         }
         const segments = [...new Set(current.points.map(point => point.segment).filter(present))];
-        const meta = [['Run', run.run_id], ['协议', run.protocol], ['状态 / 恢复', display(run.status) + ' / ' + display(runRecovery({...run, ...current.run, segments: segments.length ? segments : run.segments}))], ['粒度', run.curve_granularity], ['记录 Epoch', epochCount(run)], ['训练点', current.points.length], ['开始', dateText(run.started_at)], ['完成', dateText(run.finished_at)]];
+        const meta = [['Run', run.run_id], ['协议', run.protocol], ['训练类型', run.training_kind], ['状态 / 恢复', display(run.status) + ' / ' + display(runRecovery({...run, ...current.run, segments: segments.length ? segments : run.segments}))], ['验证 / 队列', display(run.evaluation_status) + ' / ' + display(run.queue_status)], ['失败原因', run.failure_reason], ['粒度', run.curve_granularity], ['记录 Epoch', epochCount(run)], ['训练点', current.points.length], ['开始', dateText(run.started_at)], ['完成', dateText(run.finished_at)]];
         el('run-metadata').innerHTML = meta.map(([label, value]) => '<div><dt>' + esc(label) + '</dt><dd>' + esc(value) + '</dd></div>').join('');
-        el('train-charts').innerHTML = [['train_loss', '训练 Loss ↓'], ['consumed_records', '样本曝光 · 已消费记录'], ['learning_rate', '学习率'], ['samples_per_s', '样本 / 秒'], ['optimizer_updates', '优化器更新']].map(([metric, title]) => chartMarkup(title, records, metric, el('curve-axis').value, '全部真实观测点 · 缺失字段留空 · 恢复或计数重置时断开')).join('');
+        el('train-charts').innerHTML = [['train_loss', '训练 Loss ↓'], ['consumed_records', '样本曝光 · 已消费记录'], ['learning_rate', '学习率'], ['samples_per_s', '样本 / 秒'], ['optimizer_updates', '优化器更新']].map(([metric, title]) => chartMarkup(title, records, metric, el('curve-axis').value, '全部真实观测点 · 缺失字段留空 · 恢复或计数重置时断开')).join('')
+          + (run.family === 'kev'
+            ? chartMarkup('优化器 Step 耗时 · 秒', records.map(r => ({...r, points: r.speed_points || []})), 'optimizer_step_seconds', 'step', '上游 training_metrics 原始计时；不以 batch 数推算样本吞吐')
+            : chartMarkup('Epoch 完整耗时 · 秒', records.map(r => ({...r, points: r.speed_points || []})), 'epoch_seconds', 'epoch', '原始 Epoch 计时；未记录的 Epoch 显示 N/A'));
         const groups = validationGroups(records);
         el('validation-charts').innerHTML = groups.flatMap(group => ['loss', 'accuracy', 'brier', 'ece'].map(metric => {
           const series = [...group.series.values()];
@@ -293,11 +305,11 @@
       try {
         const live = await json('live_status.json');
         state.live = live; renderLive(live);
-        if (live.history?.index) {
-          const revision = live.history.revision ?? live.collected_at_iso ?? live.collected_at_unix;
-          if (force || !state.history || state.revision !== revision) {
-            const history = await json(live.history.index);
-            state.history = history; state.revision = revision; state.cache.clear();
+        {
+          const revision = live.history?.revision;
+          if (force || !state.history || (present(revision) && state.revision !== revision)) {
+            const history = await json('shards/training_history.json');
+            state.history = history; state.revision = history.revision; state.cache.clear();
             renderHistory();
           } else {
             const selected = state.history.runs.find(r => r.key === state.selected);
@@ -306,8 +318,6 @@
             }
           }
           await renderSelected();
-        } else {
-          el('history-stamp').textContent = 'N/A · 实时状态尚无历史索引';
         }
       } catch (error) {
         renderLive({...state.live, connection_status: 'DISCONNECTED', error: error.message});

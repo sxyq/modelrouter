@@ -638,6 +638,37 @@ def test_collector_original_history_inputs_and_unchanged_revision():
         assert all(path.read_bytes() == content for path, content in originals.items())
 
 
+def test_collector_live_terminal_results_and_observed_rate(tmp_path, monkeypatch):
+    from scripts import fetch_live_status as collector
+    monkeypatch.setattr(collector, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(collector, "_PROGRESS", {})
+    directory = tmp_path / "runs/KEV-EXAMPLE/formal_run"
+    directory.mkdir(parents=True)
+    (directory / "training_metrics.json").write_text(json.dumps({
+        "optimizer_steps": 17, "records_seen": 68, "wall_seconds": 30}))
+    (directory.parent / "cursor.json").write_text(json.dumps({
+        "step": 10, "consumed_records": 40, "loss": .4, "updated_at": "2026-10-20T04:00:00Z"}))
+    history = {"runs": [{"family": "kev", "training_kind": "FORMAL_LORA", "root": "runs/KEV-EXAMPLE/formal_run",
+        "run_id": "C03", "status": "COMPLETED", "training_status": "COMPLETED", "epochs": 1, "planned_epochs": 1,
+        "evaluation_status": "FAILED", "queue_status": "FAILED", "failure_reason": "Validation evaluation failed",
+        "protocol": "KEV_FORMAL_LORA"}]}
+    result = collector._live_family("kev", {}, history)
+    assert (result["step"], result["consumed_records"], result["loss_step"]) == (17, 68, 10)
+    assert result["evaluation_status"] == "FAILED" and result["training_seconds"] == 30
+
+    laya = tmp_path / "runs/LAYA/F07"
+    laya.mkdir(parents=True)
+    cursor = {"step_count": 10, "consumed_items": 100, "updated_at": "2026-10-20T04:00:00Z"}
+    (laya / "cursor.json").write_text(json.dumps(cursor))
+    monkeypatch.setattr(collector, "age_seconds", lambda t: 20 if t.endswith("00Z") else 10)
+    proc = {"laya": {"train_pid": 123, "run_id": "F07", "out_root": "runs/LAYA", "elapsed_s": 30}}
+    history = {"runs": [{"family": "laya", "run_id": "F07", "root": "runs/LAYA/F07", "protocol": "example"}]}
+    assert collector._live_family("laya", proc, history)["samples_per_s"] is None
+    cursor.update(step_count=20, consumed_items=200, updated_at="2026-10-20T04:00:10Z")
+    (laya / "cursor.json").write_text(json.dumps(cursor))
+    assert collector._live_family("laya", proc, history)["samples_per_s"] == 10
+
+
 if __name__ == "__main__":
     test_retention_ordering()
     test_two_phase_cleanup_protects_running_run()

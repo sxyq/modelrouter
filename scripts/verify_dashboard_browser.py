@@ -15,8 +15,8 @@ from playwright.sync_api import sync_playwright
 
 TARGET_URL = "http://10.16.15.202:8765/"
 COUNT_FIELDS = (
-    "planned_runs", "observed_runs", "local_runs", "local_completed_runs", "imported_assets", "running_runs",
-    "checkpoint_versions", "physical_checkpoints", "metadata_versions",
+    "planned_runs", "observed_runs", "local_runs", "executed_runs", "local_completed_runs", "metadata_only_runs", "imported_assets", "running_runs",
+    "checkpoint_versions", "physical_checkpoints", "confirmed_saved_versions", "metadata_versions",
     "pruned_versions", "unknown_missing_versions", "train_curve_runs", "step_curve_runs",
     "epoch_only_runs", "unrecorded_curve_runs",
 )
@@ -34,12 +34,13 @@ def local_run_counts(runs):
     return {
         "local_runs": sum(r.get("origin") == "LOCAL_RUN" for r in runs),
         "local_completed_runs": sum(r.get("origin") == "LOCAL_RUN"
+                                    and r.get("execution_evidence")
                                     and r.get("status") in ("COMPLETED", "EARLY_STOPPED") for r in runs),
         "imported_assets": sum(r.get("origin") == "IMPORTED_ADAPTER" for r in runs),
     }
 
 
-def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright")):
+def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"), browser_executable=None):
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     started = time.perf_counter()
@@ -56,7 +57,8 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
 
     try:
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(headless=True, args=["--no-proxy-server"])
+            browser = playwright.chromium.launch(headless=True, args=["--no-proxy-server"],
+                                                 executable_path=browser_executable)
             try:
                 context = browser.new_context(viewport={"width": 1600, "height": 1100})
                 page = context.new_page()
@@ -72,19 +74,23 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                         status=response.status if response else None)
                 live_url = urljoin(page.url, "live_status.json")
                 page.wait_for_function(
-                    "() => document.querySelector('#connection')?.textContent.includes('CONNECTED')"
+                    "() => document.querySelector('#collected')?.textContent.startsWith('采集于')"
                     " || document.querySelector('#connection')?.textContent.includes('失败')"
                     " || document.querySelector('#connection')?.textContent.includes('DISCONNECTED')",
                     timeout=15000)
                 live_responses = [r for r in responses if urlsplit(r.url).path == urlsplit(live_url).path]
+                if not live_responses:
+                    live_responses = [page.wait_for_event("response", predicate=lambda r:
+                        urlsplit(r.url).path == urlsplit(live_url).path, timeout=15000)]
                 require(bool(live_responses), "live_json_response_received", url=live_url)
                 live_response = live_responses[-1]
                 require(live_response.status == 200, "live_json_http", status=live_response.status)
                 live = live_response.json()
-                require(live.get("connection_status") == "CONNECTED", "collector_connected",
-                        connection_status=live.get("connection_status"), error=live.get("error"))
-                require(bool(live.get("history", {}).get("index")), "history_reference_present")
-                history_url = urljoin(page.url, live["history"]["index"])
+                live_ready = live.get("connection_status") == "CONNECTED" and bool(live.get("history", {}).get("index"))
+                report["checks"].append({"name": "live_collector_updated", "passed": live_ready,
+                                         "connection_status": live.get("connection_status"),
+                                         "collector_source": live.get("collector_source")})
+                history_url = urljoin(page.url, "shards/training_history.json")
                 existing_history = [r for r in responses if urlsplit(r.url).path == urlsplit(history_url).path]
                 history_response = existing_history[-1] if existing_history else page.wait_for_event(
                     "response", predicate=lambda r: urlsplit(r.url).path == urlsplit(history_url).path,
@@ -162,6 +168,8 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                 other = next((r for r in runs if r["key"] != initial_key and r.get("curve_path")), None)
                 require(other is not None, "single_run_switch_target_available", observed_runs=len(runs))
                 candidates.append(other)
+                candidates.extend(r for r in runs if r.get("run_id") in ("F06", "KEV-V8-C03")
+                                  and r["key"] not in {c["key"] for c in candidates})
 
                 for run in candidates:
                     if page.locator("#selected-run").input_value() != run["key"]:
@@ -190,7 +198,7 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                         points and all(p.get("step") is None for p in points)
                         and any(numeric(p.get("epoch")) for p in points)) else "step"
                     require(axis == expected_axis, "curve_default_axis", expected=expected_axis, observed=axis)
-                    require(page.locator("#train-charts .chart").count() == 5,
+                    require(page.locator("#train-charts .chart").count() == 6,
                             "training_metric_charts", key=run["key"])
                     for metric, chart in zip(("train_loss", "consumed_records", "learning_rate",
                                               "samples_per_s", "optimizer_updates"),
@@ -215,6 +223,7 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                 require(not report["http_errors"], "no_http_errors", failures=report["http_errors"])
                 require(not report["console_errors"], "no_console_errors", errors=report["console_errors"])
                 require(not report["page_errors"], "no_page_errors", errors=report["page_errors"])
+                require(live_ready, "continuous_collector_uses_current_schema")
                 report["status"] = "PASS"
             finally:
                 browser.close()
@@ -234,8 +243,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Verify the existing dashboard against real telemetry")
     parser.add_argument("--url", default=TARGET_URL)
     parser.add_argument("--output-dir", type=Path, default=Path("output/playwright"))
+    parser.add_argument("--browser-executable", help="Use an already installed Chromium executable")
     args = parser.parse_args(argv)
-    return run_browser_verification(args.url, args.output_dir)
+    return run_browser_verification(args.url, args.output_dir, args.browser_executable)
 
 
 if __name__ == "__main__":
