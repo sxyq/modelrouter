@@ -18,6 +18,36 @@ PROJECT_ROOT = Path("/home/syy/路由")
 
 
 class TestKevCandidateConfigs(unittest.TestCase):
+    def test_load_queue_applies_existing_c09_config_only_before_start(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(dispatcher, "PROJECT_ROOT", Path(tmp)), \
+             patch.object(dispatcher, "QUEUE_FILE", Path(tmp) / "queue.json"):
+            root = Path(tmp)
+            config_path = root / "our-project/data/configs/training/KEV-V8-EXT-01.json"
+            config_path.parent.mkdir(parents=True)
+            source_config = Path(__file__).resolve().parents[3] / "data/configs/training/KEV-V8-EXT-01.json"
+            config = json.loads(source_config.read_text(encoding="utf-8"))
+            config_path.write_text(json.dumps(config))
+            original = copy.deepcopy(dispatcher.DEFAULT_CANDIDATES)
+            original[-1]["checkpoint_path"] = original[-1]["pilot_checkpoint_path"]
+            dispatcher.QUEUE_FILE.write_text(json.dumps(original))
+            loaded = dispatcher.load_queue()
+            self.assertEqual(loaded[:-1], original[:-1])
+            candidate = loaded[-1]
+            self.assertEqual(candidate["init_from"], config["init_from"])
+            for name, value in config["training_knobs"].items():
+                self.assertEqual(candidate["lora" if name == "lora_rank" else name], str(value))
+            self.assertTrue(candidate["checkpoint_path"].endswith("formal_run"))
+            self.assertTrue(candidate["pilot_checkpoint_path"].endswith("checkpoint"))
+            self.assertEqual(candidate["configuration_source"], str(config_path))
+            self.assertEqual(json.loads(dispatcher.QUEUE_FILE.read_text()), original)
+            original[-1].update(status="RUNNING", started_at="fixture started", init_from="already-used-init")
+            dispatcher.QUEUE_FILE.write_text(json.dumps(original))
+            self.assertEqual(dispatcher.load_queue(), original)
+            config_path.unlink()
+            original[-1] = copy.deepcopy(dispatcher.DEFAULT_CANDIDATES[-1])
+            dispatcher.QUEUE_FILE.write_text(json.dumps(original))
+            self.assertEqual(dispatcher.load_queue()[-1]["init_from"], original[-1]["init_from"])
+
     def test_c04_lr_schedule(self):
         cand = {
             "candidate_id": "KEV-V8-C04",

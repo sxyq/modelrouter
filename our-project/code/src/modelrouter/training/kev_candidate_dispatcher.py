@@ -118,20 +118,31 @@ DEFAULT_CANDIDATES = [
 ]
 
 def load_queue() -> List[Dict[str, Any]]:
+    queue = None
     if QUEUE_FILE.is_file():
         try:
             queue = json.loads(QUEUE_FILE.read_text(encoding="utf-8"))
-            for candidate in queue:
-                if candidate["candidate_id"] == "KEV-V8-C09":
-                    candidate["pilot_checkpoint_path"] = f"runs/{candidate['name']}/checkpoint"
-                    candidate["checkpoint_path"] = f"runs/{candidate['name']}/formal_run"
-                    candidate["training_kind"] = "FORMAL_LORA"
-            return queue
         except Exception as e:
             logger.warning(f"Failed to read queue file: {e}")
-    QUEUE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    queue = copy.deepcopy(DEFAULT_CANDIDATES)
-    QUEUE_FILE.write_text(json.dumps(queue, indent=2), encoding="utf-8")
+    new_queue = queue is None
+    if new_queue:
+        queue = copy.deepcopy(DEFAULT_CANDIDATES)
+    for candidate in queue:
+        if (candidate["candidate_id"] == "KEV-V8-C09"
+                and candidate.get("status") in ("QUEUED", "PENDING", "WAITING_FOR_GPU")
+                and not candidate.get("started_at") and not candidate.get("training_attempts")):
+            candidate["pilot_checkpoint_path"] = f"runs/{candidate['name']}/checkpoint"
+            candidate["checkpoint_path"] = f"runs/{candidate['name']}/formal_run"
+            candidate["training_kind"] = "FORMAL_LORA"
+            config_path = PROJECT_ROOT / "our-project/data/configs/training/KEV-V8-EXT-01.json"
+            if config_path.is_file():
+                config = json.loads(config_path.read_text(encoding="utf-8"))
+                candidate["init_from"] = config["init_from"]
+                for name, value in config["training_knobs"].items():
+                    candidate["lora" if name == "lora_rank" else name] = str(value)
+                candidate["configuration_source"] = str(config_path)
+    if new_queue:
+        save_queue(queue)
     return queue
 
 def save_queue(queue: List[Dict[str, Any]]):
@@ -452,7 +463,7 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
                      "--device", "cuda", "--dtype", "bf16", "--weights_dtype", "bf16",
                      "--batch", str(candidate.get("batch", "1")), "--accum", str(candidate.get("accum", "4")),
                      "--lr", str(candidate["lr"]), "--lora", str(candidate["lora"]),
-                     "--epochs", str(candidate["epochs"]), "--seed", "42"] + candidate.get("extra_args", [])
+                     "--epochs", str(candidate["epochs"]), "--seed", str(candidate.get("seed", 42))] + candidate.get("extra_args", [])
         if candidate["candidate_id"] == "KEV-V8-C04":
             parameters = {**source_args, "lr": float(candidate["lr"]),
                           "init_from": str(init), "out": str(out_ckpt)}
