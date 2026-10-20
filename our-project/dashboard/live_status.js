@@ -174,7 +174,7 @@
       ['计划 Epoch / Chunk', display(model.planned_epochs) + ' / ' + display(model.total_chunks)],
       ['总 Step / 进度', display(model.total_steps) + ' / ' + (num(model.total_steps) > 0 && num(model.step) !== null ? display(100 * model.step / model.total_steps, 2) + '%' : 'N/A')],
       ['独立覆盖', model.distinct_units],
-      ['样本 / 秒（进度观测）', display(model.samples_per_s, 2)], ['训练耗时', seconds(model.training_seconds)]];
+      [model.speed_scope ? '样本 / 秒（累计实测）' : '样本 / 秒（进度观测）', display(model.samples_per_s, 2)], ['训练耗时', seconds(model.training_seconds)]];
     const progressAge = ageSeconds(model.last_progress_at) ?? model.last_progress_age_s;
     const historical = observation.status;
     return '<article class="card live-card ' + family + '"' + (historical ? ' style="border-top-color:var(--cds-rose)"' : '') + '><div class="family-line"><h3>' + (family === 'laya' ? 'Laya' : 'Kev') + '</h3><span class="status' + (historical ? ' stale' : '') + '">' + esc(historical ?? model.status) + '</span></div><div class="run-id">' + esc(model.run_id) + '</div>'
@@ -183,6 +183,7 @@
       + (present(model.evaluation_status) ? '<p class="sub">验证 ' + esc(model.evaluation_status) + ' · 队列 ' + esc(model.queue_status) + (model.failure_reason ? ' · ' + esc(model.failure_reason) : '') + '</p>' : '')
       + (family === 'kev' ? '<p class="sub">固定 Val：Accuracy ' + esc(model.validation_metrics?.acc) + ' · NLL ' + esc(model.validation_metrics?.nll) + ' · Brier ' + esc(model.validation_metrics?.brier) + ' · ECE ' + esc(model.validation_metrics?.ece) + '</p><p class="sub">覆盖 ' + esc(model.validation_coverage?.evaluated_records) + ' / ' + esc(model.validation_coverage?.requested_records) + ' · 问题 ' + esc(model.validation_coverage?.evaluated_questions) + ' / ' + esc(model.validation_coverage?.requested_questions) + ' · 验证耗时 ' + esc(seconds(model.evaluation_seconds)) + ' · ' + esc(model.validation_device) + ' · attempt ' + esc(model.validation_attempt) + ' · 完成候选 ' + esc(model.completed_candidates) + '</p>'
         + '<p class="sub">' + (model.candidates || []).map(c => esc(c.candidate_id) + ' ' + esc(c.status) + (c.pending_reason || c.failure_reason ? ' · ' + esc(c.pending_reason || c.failure_reason) : '')).join('<br>') + '</p>' : '')
+      + (model.speed_source ? '<p class="sub">吞吐来源 ' + esc(model.speed_source) + ' · Step ' + esc(model.speed_step) + ' · ' + esc(model.speed_scope) + '</p>' : '')
       + '<p class="sub">最后进度 ' + esc(dateText(model.last_progress_at)) + ' · ' + esc(seconds(progressAge)) + '前</p><p class="sub">' + (historical ? '上次观测时进程已运行 ' : '进程已运行 ') + esc(seconds(model.elapsed_s)) + '</p></article>';
   }
   function boot() {

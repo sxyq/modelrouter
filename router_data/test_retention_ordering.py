@@ -655,6 +655,8 @@ def test_collector_live_terminal_results_and_observed_rate(tmp_path, monkeypatch
     result = collector._live_family("kev", {}, history)
     assert (result["step"], result["consumed_records"], result["loss_step"]) == (17, 68, 10)
     assert result["evaluation_status"] == "FAILED" and result["training_seconds"] == 30
+    assert result["samples_per_s"] == 68 / 30
+    assert result["speed_step"] == 17
 
     laya = tmp_path / "runs/LAYA/F07"
     laya.mkdir(parents=True)
@@ -667,6 +669,20 @@ def test_collector_live_terminal_results_and_observed_rate(tmp_path, monkeypatch
     cursor.update(step_count=20, consumed_items=200, updated_at="2026-10-20T04:00:10Z")
     (laya / "cursor.json").write_text(json.dumps(cursor))
     assert collector._live_family("laya", proc, history)["samples_per_s"] == 10
+
+    (directory.parent / "train.log").write_text("ep0 step 10/17 loss 0.400 2.0s/rec\n")
+    proc = {"kev": {"train_pid": 456, "out": str(directory), "elapsed_s": 30}}
+    history = {"runs": [{"family": "kev", "run_id": "C04", "root": "runs/KEV-EXAMPLE/formal_run",
+                          "protocol": "KEV_FORMAL_LORA", "planned_epochs": 1}]}
+    live = collector._live_family("kev", proc, history)
+    assert live["samples_per_s"] == .5 and live["speed_step"] == 10
+    assert live["consumed_records"] is None
+    assert live["speed_source"] == "runs/KEV-EXAMPLE/train.log"
+    assert collector._live_family("kev", proc, history)["samples_per_s"] == .5
+    with (directory.parent / "train.log").open("a") as stream:
+        stream.write("ep0 step 15/17 loss 0.300 2.5s/rec\n")
+    live = collector._live_family("kev", proc, history)
+    assert live["samples_per_s"] == .4 and live["speed_step"] == 15
 
 
 def test_collector_kev_validation_appended_rows(tmp_path, monkeypatch):

@@ -127,6 +127,12 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                     if model.get("loss") is None:
                         require(card.locator(".loss").inner_text().startswith("N/A"),
                                 "missing_loss_is_na", family=family)
+                    speed_label = "样本 / 秒（累计实测）" if model.get("speed_scope") else "样本 / 秒（进度观测）"
+                    speed = model.get("samples_per_s")
+                    expected_speed = (f"{speed:.2f}".rstrip("0").rstrip(".") if numeric(speed) else "N/A")
+                    require(normalized(metrics[speed_label]) == normalized(expected_speed),
+                            "live_training_speed", family=family, expected=speed,
+                            observed=metrics[speed_label], source=model.get("speed_source"))
                     if family == "kev" and model.get("validation_coverage"):
                         coverage = model["validation_coverage"]
                         expected = f"覆盖 {coverage.get('evaluated_records')} / {coverage.get('requested_records')}"

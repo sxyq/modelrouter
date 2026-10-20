@@ -606,6 +606,11 @@ def _live_family(family, processes, history):
                           loss_step=cursor.get("loss_step", cursor.get("step")))
             metric.update(validation_metrics=row.get("validation_metrics"),
                           validation_coverage=row.get("validation_coverage"), evaluation_seconds=row.get("evaluation_seconds"))
+            if terminal.get("records_seen") and terminal.get("wall_seconds"):
+                metric.update(samples_per_s=terminal["records_seen"] / terminal["wall_seconds"],
+                              speed_scope="completed training records / upstream wall seconds",
+                              speed_source=relative(PROJECT_ROOT / row["root"] / "training_metrics.json", PROJECT_ROOT),
+                              speed_step=terminal.get("optimizer_steps"))
         return metric
     if family == "laya":
         directory = PROJECT_ROOT / proc["out_root"] / proc["run_id"]
@@ -651,6 +656,16 @@ def _live_family(family, processes, history):
     if metric["last_progress_age_s"] is not None and metric["last_progress_age_s"] > 300:
         metric["status"] = "STALE" if metric["status"] != "STALLED" else "STALLED"
     metric["samples_per_s"] = _PROGRESS[family].get("samples_per_s")
+    if family == "kev":
+        log = directory / "train.log"
+        if not log.is_file():
+            log = directory.parent / "train.log"
+        key = run_key("kev", directory, PROJECT_ROOT)
+        points = read_log_points(log, PROJECT_ROOT, key, "kev").get(key, [])
+        if points:
+            point = points[-1]
+            metric.update(samples_per_s=point["samples_per_s"], speed_scope=point["speed_scope"],
+                          speed_source=point["source"], speed_step=point["step"])
     metric["training_seconds"] = metric["training_seconds"] if metric["training_seconds"] is not None else proc.get("elapsed_s")
     return metric
 
