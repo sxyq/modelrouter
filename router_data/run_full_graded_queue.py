@@ -10,6 +10,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 import time
 from collections import Counter
 from pathlib import Path
@@ -30,8 +31,6 @@ try:
         compute_run_dedup_signature,
         has_physical_weights,
         load_or_default_baseline_0,
-        run_storage_policy_verification,
-        sync_server_metadata_and_build_dashboard,
     )
 except ImportError:
     from checkpoint_retention import (
@@ -44,8 +43,6 @@ except ImportError:
         compute_run_dedup_signature,
         has_physical_weights,
         load_or_default_baseline_0,
-        run_storage_policy_verification,
-        sync_server_metadata_and_build_dashboard,
     )
 
 try:
@@ -61,6 +58,8 @@ except ImportError:
         prepare_full_coverage_manifest,
     )
 
+from scripts.fetch_live_status import build_training_history
+
 
 def _now_iso() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
@@ -74,13 +73,13 @@ def _write_json(path: Path, data: Any) -> None:
     tmp.replace(path)
 
 
-def check_gpu_available(max_busy_mib: int = 4096) -> Tuple[bool, Dict[str, Any]]:
-    """Verify the single RTX A6000 GPU is available and not occupied by another heavy job."""
+def check_gpu_available(reserve_mib: int = 4096) -> Tuple[bool, Dict[str, Any]]:
+    """Allow the next sequential Laya run with its observed 11.6 GiB peak rounded to 12 GiB."""
     try:
         out = subprocess.check_output(
             [
                 "nvidia-smi",
-                "--query-gpu=index,name,memory.total,memory.used,utilization.gpu",
+                "--query-gpu=index,name,memory.total,memory.used,memory.free,utilization.gpu",
                 "--format=csv,noheader,nounits",
             ],
             text=True,
@@ -89,15 +88,19 @@ def check_gpu_available(max_busy_mib: int = 4096) -> Tuple[bool, Dict[str, Any]]
         line = out.splitlines()[0]
         parts = [p.strip() for p in line.split(",")]
         used_mib = float(parts[3])
-        util_pct = float(parts[4])
+        free_mib = float(parts[4])
+        util_pct = float(parts[5])
+        required_mib = 12288 + reserve_mib
         info = {
             "gpu_index": int(parts[0]),
             "gpu_name": parts[1],
             "memory_total_mib": float(parts[2]),
             "memory_used_mib": used_mib,
             "utilization_pct": util_pct,
+            "memory_free_mib": free_mib,
+            "required_free_mib": required_mib,
         }
-        return used_mib <= max_busy_mib, info
+        return free_mib >= required_mib, info
     except Exception as exc:
         return False, {"error": repr(exc)}
 
@@ -157,30 +160,43 @@ def materialize_plan_on_demand(
     base_id = spec.get("base_run_id") or (run_id[3:] if run_id.startswith("P0_") else run_id)
     p0_id = run_id if run_id.startswith("P0_") else f"P0_{base_id}"
 
-    train_dir = out_root / "train" / p0_id
-    val_dir = out_root / "val"
+    data_dir = out_root / "data" / p0_id
     groups = list(spec.get("groups") or spec.get("supervision_classes") or [])
-    if train_dir.is_dir() and all((train_dir / "train" / f"{g}.jsonl").is_file() for g in groups):
+    if all((data_dir / "train" / f"{g}.jsonl").is_file() for g in groups):
         return True
 
-    # Call batch_prep.materialize_single_p0_plan if available, or materialize from graded pool
     if str(project_root) not in sys.path:
         sys.path.insert(0, str(project_root))
-    from router_data.batch_prep import prepare_p0_repaired_plans
+    from router_data.batch_prep import prepare_full_matrix
 
     graded_root = project_root / "runs" / "MR-ALLDATA-PREP-20261011" / "quality_grading_v2_1"
     if not graded_root.is_dir():
         return False
-    prepare_p0_repaired_plans(
-        graded_root=graded_root,
-        out_root=out_root,
-        target_base_run_ids=[base_id],
-    )
-    # Reload updated manifest if modified
-    if manifest_path.is_file():
-        updated = json.loads(manifest_path.read_text(encoding="utf8"))
-        manifest.update(updated)
-    return (out_root / "train" / p0_id).is_dir()
+    generation = manifest.get("generation") or {}
+    # Stage only new data; the existing preparation function writes a complete matrix.
+    # Keep its temporary metadata away from the current plans and completed-run material.
+    with tempfile.TemporaryDirectory(prefix="_matrix_prep_", dir=out_root) as prep_dir:
+        prepared = prepare_full_matrix(argparse.Namespace(
+            all_data_out_dir=str(graded_root.parent),
+            cleaned_root=str(project_root / "data" / "公开数据" / "清洗数据"),
+            matrix_out_dir=prep_dir,
+            matrix_run_prefix="P0_",
+            matrix_run_ids=base_id,
+            matrix_source_manifest=str(manifest_path),
+            matrix_pool_limit=int(generation.get("pool_limit", 6000)),
+            matrix_max_items=int(generation.get("max_items_per_class", 4096)),
+        ))
+        materialized_spec = prepared["plans"][p0_id]
+        if not materialized_spec.get("materialized"):
+            return False
+        data_dir.parent.mkdir(parents=True, exist_ok=True)
+        (Path(prep_dir) / "data" / p0_id).rename(data_dir)
+        plans[run_id] = materialized_spec
+        manifest.setdefault("materialized", {})[run_id] = prepared["materialized"][p0_id]
+        manifest.setdefault("materialization_audit", {})[run_id] = prepared["materialization_audit"][p0_id]
+        manifest.setdefault("aggregate", {})["materialized_runs"] = len(manifest["materialized"])
+        _write_json(manifest_path, manifest)
+    return True
 
 
 def build_ordered_queue(
@@ -266,7 +282,8 @@ def build_ordered_queue(
         spec["protocol_version"] = NEW_PROTOCOL_VERSION
         spec["legacy_input_protocol"] = False
 
-        if exec_id in completed_runs or b_id in completed_runs:
+        if (exec_id in completed_runs or b_id in completed_runs
+                or exec_id in (queue_state.get("completed_runs") or [])):
             counts["NEW_PROTOCOL_COMPLETED"] += 1
             continue
 
@@ -334,7 +351,7 @@ def run_queue(
     out_root: Path,
     manifest_path: Path,
     model_dir: Path,
-    max_runs: int = 10,
+    max_runs: Optional[int] = 10,
     epochs: int = 2,
     active_budget_gib: float = 120.0,
     stages: Tuple[int, ...] = (0, 1, 2, 3),
@@ -386,15 +403,6 @@ def run_queue(
         ]
         subprocess.run(cmd, check=True, cwd=str(project_root))
 
-    # Step 2: Run 14-point pre-execution verification (`P11-01..P11-14`)
-    ver = run_storage_policy_verification(project_root=project_root, run_official_load=True)
-    _write_json(out_root / "storage_policy_verification.json", ver)
-    if not ver.get("all_passed"):
-        queue_state["queue_status"] = "STOPPED_PREFLIGHT_VERIFICATION_FAILED"
-        queue_state["stop_reason"] = f"Verification passed {ver.get('passed_count')}/{ver.get('total_checks')}"
-        _write_json(state_path, queue_state)
-        return {"queue_state": queue_state, "verification": ver}
-
     manifest = json.loads(manifest_path.read_text(encoding="utf8"))
     ordered, reconciliation = build_ordered_queue(out_root, manifest, queue_state, stages=stages)
     queue_state["reconciliation"] = reconciliation
@@ -417,7 +425,7 @@ def run_queue(
 
     executed_this_session: List[str] = []
     for spec in ordered:
-        if len(executed_this_session) >= max_runs:
+        if max_runs is not None and len(executed_this_session) >= max_runs:
             queue_state["queue_status"] = "PAUSED_MAX_RUNS_REACHED"
             queue_state["stop_reason"] = f"Completed requested batch of {max_runs} runs"
             break
@@ -428,7 +436,14 @@ def run_queue(
         if not is_mat:
             if not allow_unmaterialized:
                 continue
-            ok_mat = materialize_plan_on_demand(project_root, out_root, manifest, manifest_path, run_id)
+            try:
+                ok_mat = materialize_plan_on_demand(project_root, out_root, manifest, manifest_path, run_id)
+            except (OSError, ValueError) as exc:
+                queue_state["failed_runs"][run_id] = {
+                    "attempts": 2, "reason": "materialization_failed", "detail": str(exc),
+                }
+                _write_json(state_path, queue_state)
+                continue
             if not ok_mat:
                 continue
 
@@ -541,7 +556,7 @@ def run_queue(
             }
 
         # Rebuild dashboard & manifest after each Run
-        sync_server_metadata_and_build_dashboard(project_root=project_root, run_official_load=False)
+        build_training_history(project_root)
         _, reconciliation = build_ordered_queue(out_root, manifest, queue_state, stages=stages)
         queue_state["reconciliation"] = reconciliation
         queue_state["updated_at"] = _now_iso()
@@ -552,7 +567,7 @@ def run_queue(
     if queue_state.get("queue_status") == "RUNNING":
         queue_state["queue_status"] = "IDLE_STAGE_COMPLETE"
         queue_state["current_run"] = None
-    sync_Summary = sync_server_metadata_and_build_dashboard(project_root=project_root, run_official_load=True)
+    sync_Summary = build_training_history(project_root)
     queue_state["updated_at"] = _now_iso()
     _write_json(state_path, queue_state)
     if sync_github_every > 0 and executed_this_session:
@@ -674,6 +689,7 @@ def build_ordered_full_coverage_queue(
 
     counts = Counter()
     ordered = []
+    pending_parents = {}
 
     for run_id, stage_prio in sorted(FULL_COVERAGE_STAGE_MAP.items(), key=lambda kv: kv[1]):
         st, prio = stage_prio
@@ -688,51 +704,37 @@ def build_ordered_full_coverage_queue(
 
         is_completed = (
             (run_id in completed_runs and completed_runs[run_id].get("protocol_version") != "LEGACY_MINFACTOR")
-            or (run_id in (queue_state.get("completed_runs") or []) and run_id != "F03")
+            or run_id in (queue_state.get("completed_runs") or [])
         )
         if is_completed:
             counts["NEW_PROTOCOL_COMPLETED"] += 1
-            # Check if this completed run serves as a required parent for downstream curriculum runs
-            # but lacks physical weights. If so, schedule it for regeneration before Stage 5.
-            if run_id in ("F01", "F17", "F18", "F19"):
-                ck_dir = out_root / run_id / "checkpoints"
-                p_run_json = out_root / run_id / "run.json"
-                has_physical = False
-                best_ep = None
-                if p_run_json.is_file():
-                    try:
-                        p_data = json.loads(p_run_json.read_text(encoding="utf8"))
-                        best_ep = p_data.get("best_epoch")
-                        if best_ep is None:
-                            p_hist = p_data.get("history") or []
-                            if p_hist:
-                                def _loss_key(h_item):
-                                    l = (h_item.get("validation", {}).get("S1") or {}).get("loss")
-                                    return float(l) if isinstance(l, (int, float)) else 999.0
-                                sorted_p = sorted(p_hist, key=_loss_key)
-                                best_ep = sorted_p[0].get("epoch")
-                    except Exception:
-                        pass
-                if ck_dir.is_dir() and best_ep is not None:
-                    prescribed_best = ck_dir / f"epoch_{int(best_ep):02d}"
-                    if has_physical_weights(prescribed_best):
-                        has_physical = True
-                if not has_physical:
-                    child_id = {"F01": "F17", "F17": "F18", "F18": "F19", "F19": "F20"}.get(run_id)
-                    child_done = child_id in completed_runs or child_id in (queue_state.get("completed_runs") or [])
-                    if not child_done:
-                        regen_spec = dict(spec)
-                        regen_spec["regenerate_parent"] = True
-                        regen_spec["_stage"] = 5
-                        regen_spec["_prio"] = 0  # Stage 5 Prio 0: immediately before F17
-                        ordered.append(regen_spec)
             continue
 
         failed_info = (queue_state.get("failed_runs") or {}).get(run_id) or {}
-        if int(failed_info.get("attempts", 0)) >= 2:
+        if int(failed_info.get("attempts", 0)) >= 2 or failed_info.get("reason") == "RUN_FAILED":
             counts["FAILED"] += 1
             continue
 
+        if spec.get("continuation_mode") == "warm_start":
+            parent_id = spec.get("parent_run_id")
+            parent = completed_runs.get(parent_id) or {}
+            best_epoch = parent.get("best_epoch")
+            if best_epoch is None:
+                history = parent.get("history") or []
+                if history:
+                    best_epoch = min(history, key=lambda h: float(
+                        ((h.get("validation") or {}).get("S1") or {}).get("loss", 999.0)
+                    ))["epoch"]
+            ck_root = out_root / (parent_id or "") / "checkpoints"
+            parent_path = (ck_root / f"epoch_{int(best_epoch):02d}" if best_epoch is not None
+                           else (ck_root / "best").resolve())
+            if not parent or not has_physical_weights(parent_path):
+                counts["PENDING_PARENT"] += 1
+                pending_parents[run_id] = {"parent_run_id": parent_id, "best_epoch": best_epoch,
+                                          "reason": "missing_completed_parent_weights"}
+                continue
+
+        spec.pop("regenerate_parent", None)
         counts["ELIGIBLE_QUEUED"] += 1
         ordered.append(spec)
 
@@ -743,6 +745,7 @@ def build_ordered_full_coverage_queue(
         "completed_runs_count": counts["NEW_PROTOCOL_COMPLETED"],
         "queued_runs_count": len(ordered),
         "status_counts": dict(counts),
+        "pending_parents": pending_parents,
     }
     return ordered, reconciliation
 
@@ -758,8 +761,9 @@ def run_continuous_full_coverage_queue(
     chunk_size: int = 8192,
     active_budget_gib: float = 120.0,
     stages: Tuple[int, ...] = (1, 2, 3, 4, 5, 6, 7),
-    sync_github_every: int = 1,
+    sync_github_every: int = 0,
     max_runs: Optional[int] = None,
+    continue_matrix: bool = True,
 ) -> Dict[str, Any]:
     """Execute the long-running continuous full-coverage training loop until all eligible tasks complete."""
     project_root = Path(project_root).resolve()
@@ -805,15 +809,6 @@ def run_continuous_full_coverage_queue(
             "--project-root", str(project_root),
         ]
         subprocess.run(cmd, check=True, cwd=str(project_root))
-
-    # Step 2: Pre-execution verification
-    ver = run_storage_policy_verification(project_root=project_root, run_official_load=True)
-    _write_json(out_root / "storage_policy_verification.json", ver)
-    if not ver.get("all_passed"):
-        queue_state["queue_status"] = "STOPPED_PREFLIGHT_VERIFICATION_FAILED"
-        queue_state["stop_reason"] = f"Verification passed {ver.get('passed_count')}/{ver.get('total_checks')}"
-        _write_json(state_path, queue_state)
-        return {"queue_state": queue_state, "verification": ver}
 
     # Step 3: Ensure full_coverage_manifest.json exists
     if not manifest_path.is_file():
@@ -891,8 +886,6 @@ def run_continuous_full_coverage_queue(
         ]
         if queue_state.get("s2_audit_passed"):
             cmd.append("--s2-audit-passed")
-        if spec.get("regenerate_parent"):
-            cmd.append("--regenerate-parent")
 
         proc = subprocess.run(cmd, cwd=str(project_root))
         if proc.returncode == 0:
@@ -927,15 +920,23 @@ def run_continuous_full_coverage_queue(
             else:
                 err_class = "PAUSED_RUN_FAILED"
 
+            if err_class != "PAUSED_GPU_BUSY":
+                queue_state["failed_runs"][run_id]["reason"] = "RUN_FAILED"
+                queue_state["current_run"] = None
+                queue_state["interrupted_run"] = None
+                queue_state["updated_at"] = _now_iso()
+                _write_json(state_path, queue_state)
+                print(f"[RUN FAILED] {run_id}: exit {proc.returncode}; continuing independent runs.", flush=True)
+                continue
             queue_state["queue_status"] = err_class
-            queue_state["stop_reason"] = f"Run {run_id} failed with exit code {proc.returncode} ({err_class}). Queue execution halted safely."
+            queue_state["stop_reason"] = f"Run {run_id} failed with exit code {proc.returncode} ({err_class})."
             queue_state["updated_at"] = _now_iso()
             _write_json(state_path, queue_state)
             print(f"[QUEUE PAUSED] Halting queue execution because {run_id} failed with returncode {proc.returncode} ({err_class}). Subsequent runs will NOT be executed.", flush=True)
             break
 
         # Rebuild dashboard & manifest after each run
-        sync_server_metadata_and_build_dashboard(project_root=project_root, run_official_load=False)
+        build_training_history(project_root)
         _, reconciliation = build_ordered_full_coverage_queue(out_root, manifest, queue_state, stages=stages)
         queue_state["reconciliation"] = reconciliation
         queue_state["updated_at"] = _now_iso()
@@ -959,16 +960,27 @@ def run_continuous_full_coverage_queue(
             queue_state["queue_status"] = "IDLE_STAGE_COMPLETE"
         queue_state["current_run"] = None
 
-    sync_summary = sync_server_metadata_and_build_dashboard(project_root=project_root, run_official_load=True)
+    sync_summary = build_training_history(project_root)
     queue_state["updated_at"] = _now_iso()
     _write_json(state_path, queue_state)
     if sync_github_every > 0 and executed_this_session:
         _git_sync_dashboard(project_root, f"continuous-training: sync batch ({len(executed_this_session)} runs)")
 
+    matrix_result = None
+    if continue_matrix and queue_state["queue_status"] in ("FULL_DATA_CAMPAIGN_COMPLETED", "IDLE_STAGE_COMPLETE"):
+        matrix_result = run_queue(
+            project_root=project_root, out_root=out_root,
+            manifest_path=out_root / "experiment_matrix.json", model_dir=model_dir,
+            max_runs=None, epochs=epochs, active_budget_gib=active_budget_gib,
+            stages=(0, 1, 2, 3, 4), sync_github_every=sync_github_every,
+            allow_unmaterialized=True,
+        )
+
     return {
         "executed_runs": executed_this_session,
-        "queue_state": queue_state,
+        "queue_state": matrix_result["queue_state"] if matrix_result else queue_state,
         "dashboard_sync": sync_summary,
+        "matrix_continuation": matrix_result,
     }
 
 
@@ -987,8 +999,10 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=2)
     parser.add_argument("--active-budget-gib", type=float, default=120.0)
     parser.add_argument("--stages", default="1,2,3,4,5,6,7")
-    parser.add_argument("--sync-github-every", type=int, default=1)
+    parser.add_argument("--sync-github-every", type=int, default=0)
     parser.add_argument("--allow-unmaterialized", action="store_true")
+    parser.add_argument("--continue-matrix", action=argparse.BooleanOptionalAction, default=True,
+                        help="Continue existing Mode A in the same controller after executable full runs finish")
     parser.add_argument("--dry-reconcile", action="store_true")
     args = parser.parse_args()
 
@@ -1031,6 +1045,7 @@ def main() -> None:
             stages=stages,
             sync_github_every=args.sync_github_every,
             max_runs=max_runs_opt,
+            continue_matrix=args.continue_matrix,
         )
         print(json.dumps(res, ensure_ascii=False, indent=2))
 

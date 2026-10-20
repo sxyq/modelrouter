@@ -28,6 +28,7 @@ _LOG_CACHE = {}
 _PROGRESS = {}
 _HISTORY = {}
 _VAL_CACHE = {}
+_REPORT_SIGNATURE = None
 logger = logging.getLogger("fetch_live_status")
 
 
@@ -142,7 +143,7 @@ def read_local_processes():
         if family:
             options = {a: argv[i + 1] for i, a in enumerate(argv[:-1]) if a.startswith("--")}
             process[family] = {"train_pid": int(pid), "elapsed_s": int(elapsed), "is_training": True,
-                               "run_id": options.get("--full-coverage-run"),
+                               "run_id": options.get("--full-coverage-run", options.get("--sweep-run")),
                                "out_root": options.get("--out-root"), "out": options.get("--out"),
                                "batch": options.get("--batch"), "accum": options.get("--accum")}
     return process
@@ -188,7 +189,11 @@ def _validation(history, source, validation_set=None):
                 continue
             result.append({"epoch": epoch.get("epoch"), "step": epoch.get("global_step", epoch.get("optimizer_updates")),
                            "stream": stream, "source": source, "validation_set": validation_set,
-                           **{k: metrics.get(k) for k in ("loss", "accuracy", "brier", "ece", "items")}})
+                           **{k: metrics.get(k) for k in ("loss", "nll", "accuracy", "brier", "ece", "items")},
+                           "by_type": metrics.get("by_type"),
+                           "balanced_accuracy": metrics.get("balanced_accuracy"),
+                           "by_source": (epoch.get("validation") or {}).get(stream + "_by_source"),
+                           "by_source_target": (epoch.get("validation") or {}).get(stream + "_by_source_target")})
     return result
 
 
@@ -206,6 +211,40 @@ def _validation_identity(meta, directory, root):
 def _new_log_state():
     return {"offset": 0, "points": defaultdict(list), "pending": [], "context": None,
             "last_epoch": None, "segments": defaultdict(int), "last_step": {}}
+
+
+def training_context(meta, spec, history, coverage, cursor):
+    groups = meta.get("train_groups") or {}
+    streams = meta.get("supervision_classes") or spec.get("supervision_classes") or list(groups)
+    ratios = meta.get("ratios", spec.get("ratios"))
+    requested = dict(zip(streams, ratios)) if isinstance(ratios, list) else ratios
+    origin = meta.get("train_origin") or spec.get("category") or ""
+    mode = "CONTROLLED_RATIO" if "routing_aligned" in origin else (
+        "MATRIX_RATIO" if requested else "FULL_COVERAGE" if meta.get("total_eligible_items") else "HISTORICAL_UNKNOWN")
+    trained = coverage.get("trained_by_supervision", meta.get("trained_by_supervision"))
+    loaded = meta.get("loaded") or {}
+    materialized = {s: loaded["train_" + s].get("rows") for s in streams if "train_" + s in loaded} or None
+    encoded = {s: loaded["train_" + s].get("items") for s in streams if "train_" + s in loaded} or None
+    times = [e.get("epoch_seconds", e.get("epoch_total_seconds")) for e in history]
+    wall = sum(times) if times and all(isinstance(t, (int, float)) for t in times) else None
+    if wall is None and meta.get("started_at") and meta.get("finished_at"):
+        wall = (datetime.fromisoformat(meta["finished_at"].replace("Z", "+00:00"))
+                - datetime.fromisoformat(meta["started_at"].replace("Z", "+00:00"))).total_seconds()
+    parent = meta.get("parent_checkpoint_id")
+    stage = "ALGN" if mode == "CONTROLLED_RATIO" else "COURSE" if parent else (
+        "N_SERIES" if str(meta.get("run_id", "")).startswith("N") else "MATRIX" if requested else origin or None)
+    return {"sampling": {"mode": mode, "requested_ratios": requested,
+                         "materialized_per_epoch_by_stream": materialized,
+                         "encoded_per_epoch_by_stream": encoded,
+                         "trained_total_by_stream": trained,
+                         "ratio_label": ":".join(str(requested.get(s)) for s in streams) if requested else None},
+            "stage": stage, "training_seconds": wall,
+            "training_seconds_scope": "sum recorded epoch wall seconds" if times and all(t is not None for t in times) else "recorded run start to finish",
+            "initialization": {"base_model": meta.get("base_model"), "parent_checkpoint": parent,
+                               "mode": meta.get("continuation_mode", meta.get("resume_mode"))},
+            "candidate_by_stream": meta.get("counts", spec.get("counts")), "independent_units_by_stream": meta.get("independent_units", spec.get("independent_units")),
+            "audit_flags": meta.get("audit_flags"), "failure_reason": meta.get("error", meta.get("stop_reason")),
+            "code_commit": meta.get("code_commit"), "command": meta.get("command")}
 
 
 def read_log_points(path, root, known_run=None, family="laya"):
@@ -283,6 +322,7 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
     runs_root = root / "runs"
     p0 = runs_root / "MR-FULL-GRADED-P0-DATA-REPAIR-20261012"
     full = read_json(p0 / "full_coverage_manifest.json", {})
+    matrix = read_json(p0 / "experiment_matrix.json", {})
     kev_queue = read_json(root / "our-project/results/training/kev/candidate_queue.json", [])
     manifest_rows = {}
     for directory in runs_root.glob("*"):
@@ -355,6 +395,14 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                     "by_stream_actual": meta.get("trained_by_supervision"),
                     "train_groups": meta.get("train_groups"), "ledger_updated_at": coverage.get("updated_at"),
                     "train_val_overlap_count": coverage.get("train_val_overlap_count")}
+        groups = meta.get("train_groups") or {}
+        if exposure["trained_records"] is None and groups and meta.get("status") in ("completed", "early_stopped"):
+            exposure.update(trained_records=sum(groups.values()) * len(history),
+                            trained_records_scope="derived from loaded full-pass items × recorded epochs; not a measured counter")
+        if coverage.get("census_metrics", {}).get("distinct_trained_units", 0) > (exposure.get("trained_records") or float("inf")):
+            exposure["distinct_units_recorded"] = exposure["distinct_units"]
+            exposure["distinct_units"] = None
+            exposure["distinct_units_issue"] = "recorded independent units exceed trained records; not used as actual training coverage"
         row = {"key": key, "family": family, "run_id": rid, "protocol": protocol,
                "status": meta.get("status", "COMPLETED" if meta.get("finished_at") else "UNKNOWN").upper(), "epochs": len(history),
                "planned_epochs": meta.get("epochs_max"), "started_at": meta.get("started_at"),
@@ -374,6 +422,18 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                "terminal_metrics": meta.get("metrics"),
                "curve_path": f"shards/training_runs/{key}.json", "source": relative(path, root),
                "limitations": ["Actual per-stream gradient exposure was not recorded"] if not exposure["by_stream_actual"] else []}
+        spec = (full.get("plans") or {}).get(rid, (matrix.get("plans") or {}).get(rid, {}))
+        row.update(training_context(meta, spec, history, coverage, cursor))
+        row["materialization_audit"] = spec.get("materialization_audit")
+        if meta.get("counts") or spec.get("counts"):
+            exposure["candidate_records"] = sum((meta.get("counts") or spec["counts"]).values())
+            exposure["candidate_records_scope"] = "original legal candidate references before materialization"
+        if groups:
+            exposure["materialized_records"] = sum(v.get("rows", 0) for k, v in (meta.get("loaded") or {}).items() if k.startswith("train_")) or None
+            exposure["encoded_records"] = sum(groups.values())
+            exposure["encoded_records_scope"] = "loaded items per epoch; not cumulative encoding operations"
+            if exposure.get("trained_records_scope"):
+                row["sampling"]["trained_total_by_stream_derived"] = {s: n * len(history) for s, n in groups.items()}
         if family == "kev" and not history:
             row["limitations"].append("Pointer head pilot has no epoch history; it is not a formal LoRA run")
         runs.append(row)
@@ -406,7 +466,7 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
         result = read_json(directory / "val_metrics.json", read_json(directory / "result.json", plan.get("metrics", {})))
         clean = result.get("clean", {})
         validation = [{"epoch": None, "step": metrics.get("optimizer_steps"), "stream": "clean",
-                       "loss": clean.get("nll"), "accuracy": clean.get("acc"), "brier": clean.get("brier"),
+                       "loss": clean.get("nll"), "nll": clean.get("nll"), "accuracy": clean.get("acc"), "brier": clean.get("brier"),
                        "ece": clean.get("ece"), "items": clean.get("n"),
                        "validation_set": result.get("validation_set") or config.get("holdout") or relative(directory / "result.json", root),
                        "source": relative(directory / "val_metrics.json" if result.get("validation_protocol") else directory / "result.json", root)}] if clean else []
@@ -424,11 +484,18 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                "parent_checkpoint": Path(args["init_from"]).name if args.get("init_from") else None,
                "validation": validation, "checkpoints": [checkpoint] if checkpoint["physical"] else [],
                "curve_path": f"shards/training_runs/{key}.json", "source": relative(directory / "training_config.json", root),
-               "config": {k: args.get(k) for k in ("lr", "epochs", "batch", "accum", "lora", "perm_kl", "synthetic_repeat", "max_steps")},
+               "config": {k: args.get(k) for k in ("lr", "head_lr", "epochs", "batch", "accum", "lora", "perm_kl", "synthetic_repeat", "max_steps", "seed", "max_state", "dtype", "weights_dtype", "checkpointing", "lora_targets", "head_dim")},
+               "data_path": args.get("data"),
                "terminal_metrics": {k: metrics.get(k) for k in ("wall_seconds", "optimizer_steps", "records_seen", "requested_records")},
                "exposure": {"trained_records": metrics.get("records_seen"), "requested_records": metrics.get("requested_records"),
                             "by_stream_actual": None, "optimizer_updates": metrics.get("optimizer_steps")},
                "limitations": ["Imported adapter history is upstream training, not a new local GPU run"] if directory.parent.name == "models" else []}
+        row.update(stage="IMPORTED" if imported else "SHORT_TRAINING" if partial else "FORMAL_LORA",
+                   supervision_classes=[], sampling={"mode": "FIXED_JSONL", "requested_ratios": None,
+                       "materialized_per_epoch_by_stream": None, "trained_total_by_stream": None, "ratio_label": None},
+                   training_seconds=metrics.get("wall_seconds"),
+                   initialization={"base_model": args.get("base"), "init_from": args.get("init_from")},
+                   code_commit=plan.get("code_commit"), command=(plan.get("training_attempts") or [{}])[-1].get("command"))
         row["origin"] = "IMPORTED_ADAPTER" if directory.parent.name == "models" else "LOCAL_RUN"
         row["training_kind"] = "IMPORTED_LORA" if imported else ("LORA_SMOKE" if partial or args.get("device") != "cuda" else "FORMAL_LORA")
         runs.append(row)
@@ -539,7 +606,7 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
         if row["origin"] != "IMPORTED_ADAPTER" and row["status"] not in ("COMPLETED", "EARLY_STOPPED"):
             continue
         for v in row["validation"]:
-            for metric in ("loss", "accuracy", "brier", "ece"):
+            for metric in ("loss", "nll", "accuracy", "brier", "ece"):
                 if v.get(metric) is not None:
                     set_id = json.dumps(v.get("validation_set"), ensure_ascii=False, sort_keys=True)
                     supervision = "+".join(sorted(row.get("supervision_classes") or []))
@@ -557,6 +624,12 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                             "best": ranked[0], "worst": ranked[-1], "observations": len(values)})
     current_manifest = read_json(p0 / "checkpoint_manifest.json", {})
     recorded_slots = {g.get("new_pool_total_quota") for g in current_manifest.get("comparable_groups", {}).values() if g.get("new_pool_total_quota") is not None}
+    # The original plan index is static between materialization updates.
+    plans = {"full_coverage": full.get("plans"), "matrix": matrix.get("plans"),
+             "matrix_aggregate": matrix.get("aggregate"), "matrix_audit": matrix.get("audit")}
+    plan_path = output / "shards/training_plans.json"
+    if read_json(plan_path) != plans:
+        atomic_json(plan_path, plans)
     payload = {"counts": counts, "runs": runs,
                "retention": {"old_core": old, "new_core": new, "parents": parents, "recovery": recovery,
                              "global_best": global_best,
@@ -567,6 +640,12 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                              "source": "physical files + last recorded cleanup; no policy execution"},
                "protocol_counts": {family: dict(Counter(r["protocol"] for r in runs if r["family"] == family)) for family in ("laya", "kev")},
                "comparisons": comparisons, "data_census": full.get("census"),
+               "experiment_plans": {"index": "shards/training_plans.json",
+                   "matrix_aggregate": matrix.get("aggregate"),
+                   "laya_queue": read_json(p0 / "queue_state.json", {}), "kev_queue": [
+                       {k: c.get(k) for k in ("candidate_id", "name", "status", "training_status", "evaluation_status",
+                          "pending_reason", "failure_reason", "data_path", "init_from", "configuration_source")}
+                       for c in kev_queue]},
                "limitations": ["Epoch records count observations, not proof that all versions were physically saved.",
                                 "Missing files without deletion evidence remain uncertain.",
                                 "Historical learning-rate fields are configured rates; actual scheduler curves were not logged.",
@@ -581,6 +660,135 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
         atomic_json(output / "shards/training_history.json", payload)
     _HISTORY[str(root)] = {"built_at": time.monotonic(), "payload": payload}
     return payload
+
+
+def write_training_research_report(history, project_root=PROJECT_ROOT):
+    """Summarize the existing observations; never launch training or read Test."""
+    root = Path(project_root)
+    plans = read_json(root / "our-project/dashboard" / history["experiment_plans"]["index"], {})
+    runs = history["runs"]
+    queue = history["experiment_plans"]["laya_queue"]
+    by_id = {r["run_id"]: r for r in runs if r["root"].startswith("runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/")}
+    plan_rows = []
+    for category in ("full_coverage", "matrix"):
+        for rid, plan in (plans.get(category) or {}).items():
+            observed = by_id.get(rid)
+            reason = (queue.get("skipped_runs") or {}).get(rid)
+            state = observed["status"] if observed and observed["execution_evidence"] else (
+                "SKIPPED" if reason else plan.get("status", "PLANNED"))
+            parent_id = plan.get("parent_run_id")
+            if not observed and parent_id:
+                parent = by_id.get(parent_id)
+                valid = [v for v in (parent or {}).get("validation", []) if v["stream"] == "S1" and v.get("loss") is not None]
+                best = min(valid, key=lambda v: v["loss"]) if valid else None
+                physical = any(c["physical"] and best and c["epoch"] == best["epoch"] for c in (parent or {}).get("checkpoints", []))
+                if not parent or parent["status"] not in ("COMPLETED", "EARLY_STOPPED") or not physical:
+                    state, reason = "PENDING_PARENT", "required completed parent best-epoch weights unavailable: " + parent_id
+            plan_rows.append({"category": category, "run_id": rid, "status": state,
+                "reason": reason or plan.get("eligibility_reason"), "supervision_classes": plan.get("supervision_classes"),
+                "ratios": plan.get("ratios"), "layers": plan.get("layers"),
+                "counts": plan.get("counts"), "materialized": plan.get("materialized"),
+                "parent_run_id": plan.get("parent_run_id"), "parent_checkpoint_id": plan.get("parent_checkpoint_id")})
+    observations = []
+    for run in runs:
+        if not run["execution_evidence"]:
+            continue
+        primary = ("S1" if "S1" in {v["stream"] for v in run["validation"]} else
+                   next(iter(run.get("supervision_classes") or []), "S1")) if run["family"] == "laya" else "clean"
+        candidates = [v for v in run["validation"] if v["stream"] == primary and v.get("loss") is not None]
+        chosen = min(candidates, key=lambda v: v["loss"]) if candidates else None
+        values = [v for v in run["validation"] if chosen and v["epoch"] == chosen["epoch"]]
+        cp = next((c for c in run["checkpoints"] if chosen and c["epoch"] == chosen["epoch"]), None)
+        if run["family"] == "kev" and chosen:
+            cp = next(iter(run["checkpoints"]), None)
+        observations.append({"run_id": run["run_id"], "family": run["family"], "protocol": run["protocol"],
+            "status": run["status"], "stage": run.get("stage"), "supervision": run.get("supervision_classes"),
+            "sampling": run.get("sampling"), "initialization": run.get("initialization"),
+            "config": run.get("config"), "exposure": run["exposure"], "epochs": run["epochs"],
+            "training_seconds": run.get("training_seconds"), "best_loss_epoch": chosen,
+            "primary_stream": primary, "validation_all_epochs": run["validation"],
+            "candidate_by_stream": run.get("candidate_by_stream"),
+            "independent_units_by_stream": run.get("independent_units_by_stream"),
+            "materialization_audit": run.get("materialization_audit"),
+            "code_commit": run.get("code_commit"), "command": run.get("command"),
+            "data_path": run.get("data_path"),
+            "validation_at_selected_epoch": values, "selected_epoch_physical": cp.get("physical") if cp else None,
+            "source": run["source"], "curve_path": run["curve_path"], "checkpoints": run["checkpoints"],
+            "actual_cost_usd": None})
+    def public(value):
+        if isinstance(value, str):
+            return value.replace(str(root) + "/", "").replace(str(root), ".")
+        if isinstance(value, dict):
+            return {k: public(v) for k, v in value.items()}
+        if isinstance(value, list):
+            return [public(v) for v in value]
+        return value
+    result = public({"generated_at": now_iso(), "code_commit": os.environ.get("MODELROUTER_CODE_COMMIT"),
+        "counts": history["counts"], "plans": plan_rows, "observations": observations,
+        "retention": history["retention"], "comparisons": history["comparisons"],
+        "kev_candidates": history["experiment_plans"]["kev_queue"], "data_census": history.get("data_census"),
+        "laya_queue": {k: queue.get(k) for k in ("queue_status", "current_run", "next_run", "failed_runs", "blocked_runs")},
+        "kev_materialization": read_json(root / "data/kev/v8_extension/materialization.json", {}),
+        "selection": "One minimum primary validation Loss epoch per run; secondary metrics use that same epoch",
+        "limitations": history["limitations"]})
+    destination = root / "our-project/results/training"
+    atomic_json(destination / "training_research.json", result)
+    def cell(v):
+        return "N/A" if v is None else json.dumps(v, ensure_ascii=False) if isinstance(v, (dict, list)) else str(v)
+    def table(headers, records):
+        return ["| " + " | ".join(headers) + " |", "| " + " | ".join("---" for _ in headers) + " |"] + [
+            "| " + " | ".join(cell(v).replace("|", "/").replace("\n", " ") for v in record) + " |" for record in records]
+    lines = ["# Laya / Kev 全历史训练研究报告", "", "生成时间：" + result["generated_at"], "",
+        "本报告来自原 Run、Epoch、Cursor、训练日志、队列和权重目录；当前训练仍在执行，全部计划尚未完成。",
+        "仅使用训练记录和项目 Val，不读取最终 Test。Loss 最佳 Epoch 与 Accuracy 最佳 Epoch分别识别；本表按主任务最低 Val Loss选择同一 Epoch，辅助成绩沿用该 Epoch。", "",
+        "## 1. 历史对象与物理实体", ""]
+    lines += table(["模型", "实际本地 Run", "结束 Run", "运行 Run", "导入资产", "Epoch", "版本", "实体", "Step/Chunk曲线", "Epoch曲线"], [
+        [family, c["executed_runs"], c["completed_runs"], c["running_runs"], c["imported_assets"], c["recorded_epochs"], c["checkpoint_versions"], c["physical_checkpoints"], c["step_curve_runs"], c["epoch_only_runs"]]
+        for family, c in result["counts"].items()])
+    lines += ["", "旧五份实体：" + str(sum(bool(c["physical"]) for c in result["retention"]["old_core"])) + "/5。新池、课程父权重与恢复点分别见 JSON；缺失实体没有被恢复。", "",
+        "## 2. 现有计划执行情况", ""]
+    lines += table(["计划", "状态", "数量"], [[category, status, count] for category in ("full_coverage", "matrix")
+        for status, count in sorted(Counter(p["status"] for p in plan_rows if p["category"] == category).items())])
+    lines += ["", "全部计划 ID、组合、配比、层级、材料数量和原原因保存在 training_research.json 的 plans，未执行不代表完成。", "",
+        "## 3. 同协议描述比较", "", "模型、协议、Val身份、问题数量与监督组合分别分组。组内仍可能包含数据量、初始化、预算和层级差异，排名不能解释为配比的因果效应。", ""]
+    lines += table(["模型/协议", "Val/监督", "指标", "Run数", "最好", "最差"], [[c["family"] + "/" + c["protocol"], c["validation_set"] + "/" + c["supervision"], c["metric"], c["observations"], c["best"], c["worst"]] for c in result["comparisons"] if c["observations"] > 1])
+    lines += ["", "## 4. 全部已执行版本", ""]
+    lines += table(["模型/Run", "协议/阶段", "组合/配比", "训练量/独立量", "Epoch/时间s", "主Val最低Loss Epoch", "同Epoch Accuracy/Loss/NLL/Brier/ECE", "该Epoch实体"], [
+        [r["family"] + "/" + r["run_id"], r["protocol"] + "/" + str(r["stage"]), str(r["supervision"]) + "/" + str((r["sampling"] or {}).get("ratio_label")),
+         str(r["exposure"].get("trained_records")) + "/" + str(r["exposure"].get("distinct_units")), str(r["epochs"]) + "/" + str(r["training_seconds"]),
+         (r["best_loss_epoch"] or {}).get("epoch"), [{k: v.get(k) for k in ("stream", "accuracy", "loss", "nll", "brier", "ece")} for v in r["validation_at_selected_epoch"]], r["selected_epoch_physical"]] for r in result["observations"]])
+    lines += ["", "## 5. 同材料范围配比对照", "",
+        "B02/QB/PB 保持原材料范围、初始化、种子与两Epoch预算。主Val按每Run最低主Loss选择；选中Epoch不同会影响比较，全部Epoch均保存在JSON。", ""]
+    ratio_rows = [r for r in result["observations"] if r["run_id"].startswith("P0_B02_C") and r["run_id"].endswith("QB_PB") and r["protocol"] == "MR-FULL-GRADED-P0-DATA-REPAIR-v1"]
+    lines += table(["Run/监督", "配比", "载入/stream", "所选Epoch", "主Val Accuracy", "Loss", "Brier", "ECE", "辅助Val"], [
+        [r["run_id"] + "/" + str(r["supervision"]), (r["sampling"] or {}).get("ratio_label"), r["exposure"].get("train_groups"),
+         (r["best_loss_epoch"] or {}).get("epoch"), (r["best_loss_epoch"] or {}).get("accuracy"), (r["best_loss_epoch"] or {}).get("loss"),
+         (r["best_loss_epoch"] or {}).get("brier"), (r["best_loss_epoch"] or {}).get("ece"),
+         [{k: v.get(k) for k in ("stream", "accuracy", "loss", "brier", "ece")} for v in r["validation_at_selected_epoch"] if v["stream"] != r["primary_stream"]]] for r in ratio_rows])
+    lines += ["", "上表分别呈现Accuracy与概率质量，不宣布唯一最优比例。", "",
+        "F06完整轨迹：" + cell([{k: v.get(k) for k in ("epoch", "stream", "accuracy", "loss", "brier", "ece")} for r in result["observations"] if r["run_id"] == "F06" for v in r["validation_all_epochs"]]), "",
+        "曝光数量异常：" + cell([{ "run_id": r["run_id"], "exposure": r["exposure"]} for r in result["observations"] if r["exposure"].get("distinct_units_issue")]), "",
+        "## 6. Kev 候选与材料", "",
+        "正式Kev的实际训练状态与全部固定Val：" + cell([{ "run_id": r["run_id"], "status": r["status"], "validation": r["validation_all_epochs"]} for r in result["observations"] if r["family"] == "kev" and r["stage"] == "FORMAL_LORA"]),
+        "C05原文本state含任务与Prompt，没有可单独移除的动态字段，未创建无效状态消融。C07既定Rank8与现有Rank16初权重不兼容，从基座重建会同时改变初始化，未擅自启动。",
+        "C09原视图与项目固定划分不一致。原转换入口仅导出位于同一项目Train/Val的Arena记录，保持任务文本与typed标签；导出训练记录全部已在C03使用，新训练记录为0。缓存标量及已观察终局没有当前正式配置的typed目标，完整C09保持PARTIAL_MATERIAL/PENDING，不重训C03材料冒充新增数据。", "",
+        "材料统计：" + cell(result["kev_materialization"]), "",
+        "Kev运行中的旧dispatcher内存没有代码重载入口；当前C04训练与Val继续由原父进程负责。磁盘新版已经支持独立候选待决后继续，但需旧队列自然退出后由同一原入口接手；未启动第二dispatcher。", "",
+        "## 7. 科学解释与当前限制", "",
+        "1. 候选规模、物化、编码、实际训练量和独立量分别保留。由载入条目×Epoch派生的数带 scope说明，不能当实测计数。逐监督梯度贡献没有历史记录，无法直接识别。",
+        "2. S1与加入S2/S3的比较使用同Val的Accuracy、Loss、Brier和ECE。Laya没有单独保存的NLL使用N/A；不得擅自把不同标签的Loss合并为主路由收益。",
+        "3. S1/S3的1:1、2:1、1:2及三监督配比均保留原参数。只有初始化、材料范围、预算和Val都一致时才支持受控比较。",
+        "4. F全量自然材料覆盖与ALGN按最小供给的受控抽样存在曝光与优化器预算差异；两者不能用于单独证明监督组合效应。",
+        "5. 层级、规模、种子和课程变化保留逐Run轨迹；缺失课程父权重的子项不能通过改用基座或重训已完成父Run来补齐。",
+        "6. Accuracy与概率质量可能发生权衡。饱和、过拟合和负迁移应结合完整Val轨迹及同协议对照判断，不能由最小Train Loss直接推断。",
+        "7. Kev正式LoRA、导入模型、部分训练及Pointer Head Pilot分开。C04使用C03权重与新优化器；收益同时包含更多训练及不同学习率。C05状态不可分离、C07 Rank与初始化不兼容时保留待决原因。",
+        "8. 固定Val连续参与选模，结果为开发期描述；不能代替独立最终Test，也不直接比较Laya与Kev不同Val的Accuracy。",
+        "9. 各Run主Val最佳Epoch的实体状态逐行展示，元数据不能代替可加载权重。留存策略源码与服务器实际部署状态分别报告。",
+        "10. 本轮可支持RQ4训练监督与概率质量的离线消融准备。正式任务成功率、完整Episode费用、Model×Effort效果与RQ1–RQ5结论仍需原版Verifier的真实AgentEpisode。", "",
+        "训练实付费用N/A；本地权重没有Token按量费用。原日志路径、配置、曝光和每个版本实体状态见同目录JSON，曲线仍由原shards/training_runs提供。", ""]
+    report = destination / "training_research.md"
+    report.write_text("\n".join(lines), encoding="utf-8")
+    return {"report": relative(report, root), "data": "our-project/results/training/training_research.json", "counts": result["counts"]}
 
 
 def _live_family(family, processes, history):
@@ -671,12 +879,18 @@ def _live_family(family, processes, history):
 
 
 def fetch_local_server_data():
+    global _REPORT_SIGNATURE
     proc = read_local_processes()
     previous = _HISTORY.get(str(PROJECT_ROOT))
     if previous is None or time.monotonic() - previous["built_at"] >= 30:
         history = build_training_history(processes=proc)
     else:
         history = previous["payload"]
+    signature = ([(r["key"], r["status"], r["epochs"], r["validation"]) for r in history["runs"]],
+                 history["experiment_plans"]["matrix_aggregate"], history["experiment_plans"]["kev_queue"])
+    if signature != _REPORT_SIGNATURE:
+        write_training_research_report(history)
+        _REPORT_SIGNATURE = signature
     disk = shutil.disk_usage(PROJECT_ROOT)
     queue = read_json(PROJECT_ROOT / "our-project/results/training/kev/candidate_queue.json", [])
     kev = _live_family("kev", proc, history)
@@ -729,7 +943,11 @@ def main():
     parser.add_argument("--interval", type=int, default=10)
     parser.add_argument("--probe-only", action="store_true")
     parser.add_argument("--history-only", action="store_true")
+    parser.add_argument("--research-report", action="store_true")
     args = parser.parse_args()
+    if args.research_report:
+        print(json.dumps(write_training_research_report(build_training_history(processes=read_local_processes()))))
+        return
     if args.history_only:
         history = build_training_history()
         print(json.dumps({"counts": history["counts"], "history": "shards/training_history.json"}))

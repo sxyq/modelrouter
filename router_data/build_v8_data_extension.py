@@ -16,6 +16,61 @@ import os
 import sys
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
+from pathlib import Path
+
+
+def export_kev_training(config_path, project_root="."):
+    """Use observed Arena labels within the existing project train/Val split."""
+    root = Path(project_root)
+    config = json.loads((root / config_path).read_text())
+    split_ids = {}
+    for split in ("train", "val"):
+        records = {}
+        with (root / f"data/kev/公开数据/{split}.jsonl").open(encoding="utf-8") as source:
+            for line in source:
+                row = json.loads(line)
+                provenance = row.get("provenance") or {}
+                if provenance.get("source_id") == "ROUTE-004":
+                    records[str(provenance["battle_id"])] = row
+        split_ids[split] = records
+    destination = root / "data/kev/v8_extension"
+    destination.mkdir(parents=True, exist_ok=True)
+    stats = {"configuration_source": config_path, "test_used": False,
+             "label_nature": "HUMAN_PAIRWISE_PREFERENCE", "splits": {},
+             "unsupported_views": {
+                 "cache_reuse_opportunity": "continuous opportunity target; no existing typed label mapping in this formal configuration",
+                 "observed_agent_outcome": "only the observed model outcome is available; no pairwise model-choice label"}}
+    for split, field in (("train", "data_views"), ("val", "validation_views")):
+        counts = Counter()
+        tmp = destination / (split + ".jsonl.tmp")
+        with gzip.open(root / config[field]["router_choice"], "rt", encoding="utf-8") as source, tmp.open("w", encoding="utf-8") as output:
+            for line in source:
+                view = json.loads(line)
+                counts["source_records"] += 1
+                identity = str(view["battle_id"])
+                if identity not in split_ids[split]:
+                    counts["excluded_project_split_mismatch"] += 1
+                    continue
+                models = view["candidate_models"]
+                if view.get("winner_choice") not in ("model_a", "model_b"):
+                    counts["excluded_tie_or_missing_label"] += 1
+                    continue
+                winner = models[0 if view["winner_choice"] == "model_a" else 1]
+                if winner != view.get("winner_model") or not all(models) or len(set(models)) != 2:
+                    counts["excluded_inconsistent_candidates"] += 1
+                    continue
+                record = split_ids[split][identity]
+                # Preserve the original typed record, task content, labels and split.
+                output.write(json.dumps(record, ensure_ascii=False) + "\n")
+                counts["written_records"] += 1
+        tmp.replace(destination / (split + ".jsonl"))
+        stats["splits"][split] = dict(counts)
+    stats["training_scope"] = "Arena router_choice only; cache/outcome views remain unsupported, not trained"
+    stats["new_train_records_vs_c03"] = 0
+    stats["configuration_status"] = "PARTIAL_MATERIAL_NOT_FULL_C09"
+    (destination / "materialization.json").write_text(json.dumps(stats, ensure_ascii=False, indent=2) + "\n")
+    print(json.dumps(stats, ensure_ascii=False))
+    return stats
 
 
 def get_split(key: str, train_ratio=0.8, val_ratio=0.1) -> str:
@@ -333,6 +388,12 @@ if __name__ == "__main__":
     parser.add_argument("--cleaned-root", default="data/公开数据/清洗数据")
     parser.add_argument("--out-root", default="runs/MR-V8-DATA-EXTENSION-20261018")
     parser.add_argument("--max-rows", type=int, default=None, help="Limit rows for fast validation")
+    parser.add_argument("--export-kev", action="store_true")
+    parser.add_argument("--config", default="our-project/data/configs/training/KEV-V8-EXT-01.json")
+    parser.add_argument("--project-root", default=".")
     args = parser.parse_args()
 
-    build_views(args.cleaned_root, args.out_root, args.max_rows)
+    if args.export_kev:
+        export_kev_training(args.config, args.project_root)
+    else:
+        build_views(args.cleaned_root, args.out_root, args.max_rows)

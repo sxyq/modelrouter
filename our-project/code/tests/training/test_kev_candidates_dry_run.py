@@ -18,6 +18,53 @@ PROJECT_ROOT = Path("/home/syy/路由")
 
 
 class TestKevCandidateConfigs(unittest.TestCase):
+    def test_independent_pending_candidates_do_not_hide_following_failure(self):
+        with tempfile.TemporaryDirectory() as tmp, ExitStack() as stack:
+            root = Path(tmp)
+            queue = [copy.deepcopy(dispatcher.DEFAULT_CANDIDATES[2]), copy.deepcopy(dispatcher.DEFAULT_CANDIDATES[4])]
+            queue[1].update(status="FAILED", failure_reason="recorded failure")
+            for name, value in (("PROJECT_ROOT", root), ("KEV_RUNS_ROOT", root / "runs"), ("QUEUE_FILE", root / "queue.json")):
+                stack.enter_context(patch.object(dispatcher, name, value))
+            stack.enter_context(patch.object(dispatcher, "load_queue", return_value=queue))
+            refreshed = []
+            def refresh(candidate):
+                refreshed.append(candidate["candidate_id"])
+                candidate.setdefault("training_status", "QUEUED")
+                return False
+            stack.enter_context(patch.object(dispatcher, "refresh_training", side_effect=refresh))
+            train = stack.enter_context(patch.object(dispatcher.subprocess, "Popen"))
+            self.assertEqual(dispatcher.main_loop(), 1)
+            self.assertEqual(refreshed, ["KEV-V8-C05", "KEV-V8-C09"])
+            self.assertEqual(queue[0]["status"], "PENDING")
+            self.assertEqual(queue[1]["failure_reason"], "recorded failure")
+            train.assert_not_called()
+
+    def test_v8_export_preserves_existing_project_split_and_typed_records(self):
+        import gzip
+        from router_data.build_v8_data_extension import export_kev_training
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data = root / "data/kev/公开数据"
+            data.mkdir(parents=True)
+            record = {"state": "original task", "provenance": {"source_id": "ROUTE-004", "battle_id": "1"},
+                "questions": {"model_choice": {"type": "choice", "criteria": {"a": "", "b": ""}, "label": "a"}},
+                "expected": {"model_choice": "a"}}
+            (data / "train.jsonl").write_text(json.dumps(record) + "\n")
+            (data / "val.jsonl").write_text("")
+            (root / "test.jsonl").write_text("must not read")
+            view = {"battle_id": "1", "candidate_models": ["a", "b"], "winner_choice": "model_a", "winner_model": "a"}
+            for split in ("train", "val"):
+                with gzip.open(root / (split + ".gz"), "wt") as stream:
+                    stream.write(json.dumps(view) + "\n")
+            (root / "config.json").write_text(json.dumps({"data_views": {"router_choice": "train.gz"}, "validation_views": {"router_choice": "val.gz"}}))
+            result = export_kev_training("config.json", root)
+            self.assertEqual(result["splits"]["train"]["written_records"], 1)
+            self.assertEqual(result["splits"]["val"]["excluded_project_split_mismatch"], 1)
+            self.assertEqual(json.loads((root / "data/kev/v8_extension/train.jsonl").read_text()), record)
+            self.assertEqual(result["new_train_records_vs_c03"], 0)
+            self.assertEqual(result["configuration_status"], "PARTIAL_MATERIAL_NOT_FULL_C09")
+            self.assertEqual((root / "test.jsonl").read_text(), "must not read")
+
     def test_load_queue_applies_existing_c09_config_only_before_start(self):
         with tempfile.TemporaryDirectory() as tmp, patch.object(dispatcher, "PROJECT_ROOT", Path(tmp)), \
              patch.object(dispatcher, "QUEUE_FILE", Path(tmp) / "queue.json"):

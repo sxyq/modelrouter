@@ -8,6 +8,18 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-10-20 · 全历史训练分析与现有队列接续
+
+最新执行目标已扩展为全部既定合法配比，沿原 Laya/Kev 调度器、数据转换入口、固定 Val 与8765执行；不要求逐个询问C05/C07/C09后停下。统一报告为 `our-project/results/training/training_research.md` / `.json`，实际Run、全Epoch Val、配置、曝光、曲线和实体分别保存。原采集新增 `--research-report` 并在阶段变化时自动输出同一报告，无第二队列、网页或记录库。
+
+Laya实际101、结束100、F07在训；212版本/7实体，84逐步+17Epoch曲线。Kev5本地对象+1导入，C03正式Val已完整成功，C04在训，Pilot/部分训练独立。旧五实体2，新池F05-e01在，F06-e02单独历史全局留存；缺失实体未恢复。ALGN03/04独立量高于实际训练量，原记录保持但分析使用N/A。
+
+原矩阵1092中52完成、487合法非重复待运行、154重复、315无目标、84未定义；原full38中17完成、1在训、16独立待运行、4缺父依赖。Laya源码已部署，原边界flag已设，F07结束后同控制器才读新版；不重训父F01，原Mode B结束调用原Mode A。已有CPU入口真实生成一个S3矩阵项4096条/2049单元，Val4794，官方编码skipped={}。留存源码未部署、服务器实际策略未变，训练和Serving保持。
+
+原8765页164项实际浏览器比对通过，队列/采集10项用例通过；仍单个采集职责5秒周期。报告呈现配比的Accuracy/Loss/Brier/ECE权衡，未宣布最佳比例；固定Val持续选模，最终Test未读。正式Agent任务成功率/完整费用与RQ结论继续NOT_EVALUATED。只更新Status与本次重大交接，QA/Research方法不变。Kev旧controller内存没有新增边界重载，C04之后新候选的实际启动须现场证据，不能以源码就绪代替。
+
+原V8转换新增同项目Train/Val的typed导出，25506训练/368Val，上游读取完整成功；全部训练记录已在C03，新增0。缓存标量与仅观察终局没有正式typed目标映射，完整C09保持PARTIAL_MATERIAL/PENDING，不能把部分Arena重复训练称为完整V8。原dispatcher独立候选待决后继续、失败仍非零终值的代码已部署，27用例通过；旧内存不会读新逻辑，仍需C04训练/Val/队列自然退出后同原入口接续。无第二dispatcher，无权重下载、删除、新模型或付费。
+
 ### 2026-10-20 · 训练历史与看板工作进行中
 
 本轮目标为现有 Laya/Kev 训练历史、实体留存和 8765 页面，不继续新增 Benchmark 环境。主实现为 `router_data/checkpoint_retention.py`、`router_data/laya_batch_train.py`、`scripts/fetch_live_status.py` 与 `our-project/dashboard/`；迁移包入口改为引用主实现，旧 HTML 生成入口不再各自维护页面模板。

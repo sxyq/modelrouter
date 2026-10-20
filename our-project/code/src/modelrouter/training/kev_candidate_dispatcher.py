@@ -140,6 +140,10 @@ def load_queue() -> List[Dict[str, Any]]:
                 candidate["init_from"] = config["init_from"]
                 for name, value in config["training_knobs"].items():
                     candidate["lora" if name == "lora_rank" else name] = str(value)
+                candidate["extra_args"] = ["--checkpointing", "1", "--max_state", "384"]
+                material = PROJECT_ROOT / "data/kev/v8_extension/materialization.json"
+                if material.is_file():
+                    candidate["materialization"] = json.loads(material.read_text())
                 candidate["configuration_source"] = str(config_path)
     if new_queue:
         save_queue(queue)
@@ -377,11 +381,12 @@ def validate_candidate(candidate, queue, device="auto", timeout=None):
 
 def main_loop(validation_only=False, validation_device="auto", validation_timeout=None):
     logger.info("=== Kev candidate queue ===")
+    deferred = set()
     while True:
         queue = load_queue()
-        candidate = next((c for c in queue if c.get("status") != "COMPLETED"), None)
+        candidate = next((c for c in queue if c.get("status") != "COMPLETED" and c["candidate_id"] not in deferred), None)
         if candidate is None:
-            return 0
+            return 1 if deferred else 0
         alive = refresh_training(candidate)
         save_queue(queue)
         if alive:
@@ -399,7 +404,10 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
         successful_val = prior_val.get("evaluation_status") == "EVALUATED" and prior_val.get("validation_set") == str(PROJECT_ROOT / FIXED_VAL_PATH)
         if candidate.get("status") == "FAILED" and not validation_only and not successful_val:
             logger.error("%s remains FAILED: %s", candidate["candidate_id"], candidate.get("failure_reason"))
-            return 1
+            if candidate["candidate_id"] in ("KEV-V8-C03", "KEV-V8-C04"):
+                return 1
+            deferred.add(candidate["candidate_id"])
+            continue
         if candidate["training_status"] == "COMPLETED":
             ok = validate_candidate(candidate, queue, validation_device, validation_timeout)
             if not ok or validation_only:
@@ -413,15 +421,23 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
             save_queue(queue)
             return 1
         data = PROJECT_ROOT / candidate["data_path"]
+        if candidate["candidate_id"] == "KEV-V8-C09" and candidate.get("materialization", {}).get("configuration_status") == "PARTIAL_MATERIAL_NOT_FULL_C09":
+            candidate.update(status="PENDING", configuration_status="PARTIAL_MATERIAL",
+                             pending_reason="Arena export contains only existing C03 training records; configured cache/outcome typed targets unavailable")
+            save_queue(queue)
+            deferred.add(candidate["candidate_id"])
+            continue
         if not data.is_file():
             candidate.update(status="PENDING", pending_reason=f"Missing training data: {data}")
             save_queue(queue)
-            return 1
+            deferred.add(candidate["candidate_id"])
+            continue
         init = PROJECT_ROOT / candidate["init_from"]
         if not init.exists():
             candidate.update(status="PENDING", pending_reason=f"Missing init_from: {init}")
             save_queue(queue)
-            return 1
+            deferred.add(candidate["candidate_id"])
+            continue
         adapter_config = init / "adapter_config.json"
         training_config = init / "training_config.json"
         source_args = json.loads(training_config.read_text(encoding="utf-8"))["args"] if training_config.is_file() else {}
@@ -436,7 +452,8 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
             candidate.update(status="PENDING", configuration_status="INCOMPATIBLE",
                              pending_reason=f"warm_start lora: source rank {init_rank}, requested rank {candidate['lora']}")
             save_queue(queue)
-            return 1
+            deferred.add(candidate["candidate_id"])
+            continue
         peak_source = PROJECT_ROOT / DEFAULT_CANDIDATES[0]["checkpoint_path"] / "training_metrics.json"
         peak_metrics = json.loads(peak_source.read_text(encoding="utf-8"))
         peak_bytes = peak_metrics["peak_device_bytes"]

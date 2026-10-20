@@ -129,8 +129,8 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                                 "missing_loss_is_na", family=family)
                     speed_label = "样本 / 秒（累计实测）" if model.get("speed_scope") else "样本 / 秒（进度观测）"
                     speed = model.get("samples_per_s")
-                    expected_speed = (f"{speed:.2f}".rstrip("0").rstrip(".") if numeric(speed) else "N/A")
-                    require(normalized(metrics[speed_label]) == normalized(expected_speed),
+                    matches_speed = abs(float(normalized(metrics[speed_label])) - speed) <= .005 if numeric(speed) else normalized(metrics[speed_label]) == "N/A"
+                    require(matches_speed,
                             "live_training_speed", family=family, expected=speed,
                             observed=metrics[speed_label], source=model.get("speed_source"))
                     if family == "kev" and model.get("validation_coverage"):
@@ -180,6 +180,49 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                 names = page.locator("#run-table td:first-child b").all_text_contents()
                 require(names == [r["run_id"] for r in runs], "run_table_labels")
 
+                page.locator("#overlay-toggle").uncheck()
+                filter_cases = (
+                    ("family", lambda r: r.get("family")),
+                    ("protocol", lambda r: r.get("protocol")),
+                    ("supervision", lambda r: " + ".join(sorted(r.get("supervision_classes") or [])) or None),
+                    ("sampling-ratio", lambda r: json.dumps([
+                        r["sampling"].get("mode"), r["sampling"].get("ratio_label"),
+                        r["sampling"].get("requested_ratios")], ensure_ascii=False, separators=(",", ":"))
+                        if r.get("sampling") is not None else None),
+                    ("training-stage", lambda r: r.get("stage")),
+                    ("data-volume", lambda r: r.get("exposure", {}).get("trained_records")
+                        if r.get("exposure") else None),
+                )
+                for control, field in filter_cases:
+                    values = page.locator(f"#{control} option").evaluate_all("nodes => nodes.map(n => n.value)")
+                    for value in dict.fromkeys((values[1], "__unknown__")):
+                        if value not in values:
+                            continue
+                        expected_keys = [r["key"] for r in runs if (
+                            "__unknown__" if field(r) is None or field(r) == "" else str(field(r))) == value]
+                        page.locator(f"#{control}").select_option(value)
+                        page.wait_for_function(
+                            "(keys) => JSON.stringify([...document.querySelectorAll('#run-table [data-run]')]"
+                            ".map(n => n.dataset.run)) === JSON.stringify(keys)", arg=expected_keys, timeout=15000)
+                        selected_keys = page.locator("#selected-run option").evaluate_all("nodes => nodes.map(n => n.value)")
+                        require(selected_keys == expected_keys, "filtered_run_dropdown", control=control,
+                                value=value, expected=expected_keys, observed=selected_keys)
+                    page.locator(f"#{control}").select_option("all")
+                for exposure_field in ("candidate_records", "materialized_records", "encoded_records", "distinct_units"):
+                    page.locator("#exposure-field").select_option(exposure_field)
+                    options = page.locator("#data-volume option").evaluate_all("nodes => nodes.map(n => n.value)")
+                    value = options[1]
+                    expected_keys = [r["key"] for r in runs if (
+                        str((r.get("exposure") or {}).get(exposure_field))
+                        if numeric((r.get("exposure") or {}).get(exposure_field)) else "__unknown__") == value]
+                    page.locator("#data-volume").select_option(value)
+                    require(page.locator("#run-table [data-run]").evaluate_all("nodes => nodes.map(n => n.dataset.run)")
+                            == expected_keys, "exposure_quantity_filter", field=exposure_field, expected=expected_keys)
+                    page.locator("#data-volume").select_option("all")
+                page.locator("#exposure-field").select_option("trained_records")
+                page.wait_for_function(
+                    "() => !document.querySelector('#curve-status').textContent.includes('正在读取')", timeout=15000)
+
                 initial_key = page.locator("#selected-run").input_value()
                 initial = next(r for r in runs if r["key"] == initial_key)
                 candidates = [initial]
@@ -197,6 +240,29 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                         arg=run["run_id"], timeout=15000)
                     require(page.locator("#selected-run").input_value() == run["key"],
                             "single_run_selected", key=run["key"])
+                    metadata = page.locator("#run-metadata").evaluate(
+                        "node => Object.fromEntries([...node.children].map(c =>"
+                        " [c.querySelector('dt').textContent, c.querySelector('dd').textContent]))")
+                    for field, label in (("stage", "训练阶段"), ("initialization", "初始化"), ("source", "来源")):
+                        expected = run.get(field)
+                        if isinstance(expected, (dict, list)):
+                            observed = json.loads(metadata[label])
+                        else:
+                            expected = str(expected) if expected is not None and expected != "" else "N/A"
+                            observed = metadata[label]
+                        require(observed == expected, "run_training_field", run=run["key"], field=field,
+                                expected=expected, observed=observed)
+                    summary = page.locator("#run-training-summary tr").first.locator("td").all_text_contents()
+                    sampling = run.get("sampling") or {}
+                    for column, field in ((2, "requested_ratios"), (3, "materialized_per_epoch_by_stream"),
+                                          (4, "trained_total_by_stream")):
+                        expected = sampling.get(field)
+                        observed = json.loads(summary[column]) if isinstance(expected, (dict, list)) else summary[column]
+                        require(observed == (expected if expected is not None else "N/A"), "run_sampling_field",
+                                run=run["key"], field=field, expected=expected, observed=observed)
+                    require(metadata["训练耗时"] == "N/A" if not numeric(run.get("training_seconds")) else
+                            normalized(metadata["训练耗时"]) == normalized(f"{run['training_seconds']:.1f} 秒"),
+                            "run_training_seconds", run=run["key"], expected=run.get("training_seconds"))
                     curve_responses = [r for r in responses if r.url.split("?")[0] ==
                                        urljoin(page.url, run.get("curve_path", ""))]
                     if run.get("curve_path"):
@@ -232,6 +298,32 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                     if other and run["key"] == other["key"]:
                         require(page.locator("#run-metadata").inner_text().find(run["run_id"]) >= 0,
                                 "single_run_switch", key=run["key"])
+
+                ratio_pairs = [(a, b) for i, a in enumerate(runs) for b in runs[i + 1:]
+                               if a.get("family") == b.get("family") and a.get("protocol")
+                               and a.get("protocol") == b.get("protocol")
+                               and a.get("supervision_classes") and b.get("supervision_classes")
+                               and sorted(a["supervision_classes"]) == sorted(b["supervision_classes"])
+                               and a.get("sampling") and b.get("sampling")
+                               and (a["sampling"].get("ratio_label"), a["sampling"].get("requested_ratios"))
+                               != (b["sampling"].get("ratio_label"), b["sampling"].get("requested_ratios"))]
+                if ratio_pairs:
+                    a, b = ratio_pairs[0]
+                    page.locator("#selected-run").select_option(a["key"])
+                    page.locator("#overlay-toggle").check()
+                    page.locator('#overlay-list [data-overlay-action="none"]').click()
+                    page.locator("#overlay-list [data-overlay]").evaluate_all(
+                        "(nodes, key) => { const n = nodes.find(n => n.dataset.overlay === key);"
+                        " n.checked = true; n.dispatchEvent(new Event('change', {bubbles:true})); }", b["key"])
+                    page.wait_for_function(
+                        "() => document.querySelector('#run-training-summary').rows.length === 2"
+                        " && !document.querySelector('#curve-status').textContent.includes('正在读取')", timeout=15000)
+                    require([a["run_id"], b["run_id"]] == page.locator("#run-training-summary tr td:first-child").evaluate_all(
+                            "nodes => nodes.map(n => n.firstChild.textContent)"),
+                            "same_protocol_supervision_different_ratio_overlay", runs=[a["key"], b["key"]])
+                else:
+                    report["checks"].append({"name": "same_protocol_supervision_different_ratio_overlay",
+                                             "status": "NOT_EVALUATED", "reason": "No real different-ratio pair in the index"})
 
                 page.screenshot(path=str(output_dir / "dashboard_training.png"), full_page=True)
                 report["http_errors"] = [{"url": r.url, "status": r.status}

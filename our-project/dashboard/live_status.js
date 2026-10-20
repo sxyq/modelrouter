@@ -3,6 +3,19 @@
   'use strict';
   const COLORS = ['#d97757', '#2ea06f', '#5e89b8', '#d9943b', '#d85858', '#c4bcb0'];
   const DASHES = ['', '7 3', '2 3', '9 3 2 3'];
+  const METRIC_GUIDE = {
+    train_loss: ['训练误差，反映模型对训练样本的拟合程度', '低一些更好'],
+    consumed_records: ['实际已经处理的训练记录数量，反映样本曝光进度', '高一些更好；不能单独代表质量'],
+    learning_rate: ['优化器每次更新的步长，决定参数更新幅度', '没有固定高低好坏；看是否符合训练方案'],
+    samples_per_s: ['单位时间处理的样本数，反映训练吞吐速度', '高一些更好；需结合硬件和批大小比较'],
+    optimizer_updates: ['优化器实际更新次数，反映参数更新进度', '高一些表示进度更深；不能单独代表质量'],
+    epoch_seconds: ['完成一个 Epoch 所用的时间，反映训练耗时', '低一些更好；需结合样本量比较'],
+    optimizer_step_seconds: ['单个优化器 Step 的耗时，反映更新速度', '低一些更好'],
+    loss: ['验证集上的预测误差，反映泛化误差', '低一些更好'],
+    accuracy: ['验证集预测正确的比例', '高一些更好'],
+    brier: ['概率预测的平方误差，衡量概率质量和校准情况', '低一些更好'],
+    ece: ['预测置信度与实际正确率的校准偏差', '低一些更好'],
+  };
   const COUNT_FIELDS = [
     ['planned_runs', '计划 Run'], ['observed_runs', '已观测 Run / 资产'], ['local_runs', '本地 Run'],
     ['executed_runs', '实际执行 Run'], ['local_completed_runs', '本地结束 Run'],
@@ -25,6 +38,12 @@
   const present = value => value !== null && value !== undefined && value !== '';
   const identity = value => present(value) ? (typeof value === 'object' ? JSON.stringify(value) : String(value)) : null;
   const epochCount = run => Array.isArray(run.epochs) ? run.epochs.length : num(run.epochs);
+  const supervisionCombo = run => run.supervision_classes?.length ? [...run.supervision_classes].sort().join(' + ') : null;
+  const samplingKey = run => run.sampling ? JSON.stringify([run.sampling.mode ?? null,
+    run.sampling.ratio_label ?? null, run.sampling.requested_ratios ?? null]) : null;
+  const samplingText = run => display(run.sampling?.mode) + ' · ' + display(run.sampling?.ratio_label)
+    + ' · 请求 ' + display(run.sampling?.requested_ratios);
+  const filterValue = value => identity(value) ?? '__unknown__';
   function dateNumber(value) {
     if (!present(value)) return null;
     const result = typeof value === 'number' ? (value < 1e12 ? value * 1000 : value) : Date.parse(value);
@@ -126,7 +145,7 @@
         const key = JSON.stringify([record.run.family, identity(protocol),
           identity(set) ?? record.run.key, identity(stream) ?? record.run.key,
           point.items ?? record.run.key, identity(definition), identity(protocol) === null ? record.run.key : null]);
-        if (!groups.has(key)) groups.set(key, {protocol, validation_set: set, stream, loss_definition: definition, series: new Map()});
+        if (!groups.has(key)) groups.set(key, {protocol, validation_set: set, stream, items: point.items, loss_definition: definition, series: new Map()});
         const group = groups.get(key);
         if (!group.series.has(record.run.key)) group.series.set(record.run.key, {run: record.run, points: []});
         group.series.get(record.run.key).points.push(point);
@@ -135,26 +154,38 @@
     return [...groups.values()];
   }
   const labelForAxis = axis => ({step: 'Step', timestamp: '时间', consumed_records: '已消费记录', optimizer_updates: '优化器更新', epoch: 'Epoch'}[axis]);
+  const axisTickText = (value, axis) => {
+    if (axis === 'timestamp') return new Date(value).toLocaleTimeString('zh-CN', {hour12: false});
+    const absolute = Math.abs(value);
+    if (absolute >= 1000000) return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (absolute >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return display(Number(value.toPrecision(4)));
+  };
+  const metricGuide = metric => {
+    const [meaning, direction] = METRIC_GUIDE[metric] || ['原始记录中的指标，具体含义见数据来源', '方向 N/A'];
+    return '字段说明：' + meaning + '；方向：' + direction + '。';
+  };
   function chartMarkup(title, series, metric, axis, note = '') {
     const plotted = series.map((s, i) => ({...s, color: COLORS[i % COLORS.length], dash: DASHES[i % DASHES.length], parts: splitSeries(s.points, metric, axis)}));
     const all = plotted.flatMap(s => s.parts.flat());
-    if (!all.length) return '<div class="chart"><h3>' + esc(title) + '</h3><div class="empty">N/A · 无此指标的真实记录</div><p class="sub">' + esc(note) + '</p></div>';
+    if (!all.length) return '<div class="chart"><h3>' + esc(title) + '</h3><p class="metric-guide">' + esc(metricGuide(metric)) + '</p><div class="empty">N/A · 无此指标的真实记录</div><p class="sub">' + esc(note) + '</p></div>';
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const p of all) { minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x); minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y); }
     if (minX === maxX) { minX -= axis === 'timestamp' ? 1000 : .5; maxX += axis === 'timestamp' ? 1000 : .5; }
     const pad = (maxY - minY) * .08 || Math.abs(minY) * .05 || .1;
     minY -= pad; maxY += pad;
-    const width = 760, height = 250, left = 62, right = 18, top = 12, bottom = 44;
+    const width = 680, height = 230, left = 58, right = 14, top = 12, bottom = 40;
     const x = value => left + (value - minX) / (maxX - minX) * (width - left - right);
     const y = value => height - bottom - (value - minY) / (maxY - minY) * (height - top - bottom);
     let drawing = '';
-    for (let i = 0; i <= 4; i++) {
-      const yy = top + (height - top - bottom) * i / 4;
-      const value = maxY - (maxY - minY) * i / 4;
+    const tickCount = 3;
+    for (let i = 0; i <= tickCount; i++) {
+      const yy = top + (height - top - bottom) * i / tickCount;
+      const value = maxY - (maxY - minY) * i / tickCount;
       drawing += '<line x1="' + left + '" y1="' + yy + '" x2="' + (width - right) + '" y2="' + yy + '" stroke="#2c2924"/><text x="' + (left - 8) + '" y="' + (yy + 4) + '" text-anchor="end" fill="#8e867a" font-size="11">' + esc(Number(value.toPrecision(4))) + '</text>';
-      const xx = left + (width - left - right) * i / 4;
-      const xv = minX + (maxX - minX) * i / 4;
-      const tick = axis === 'timestamp' ? new Date(xv).toLocaleTimeString('zh-CN', {hour12: false}) : display(Number(xv.toPrecision(4)));
+      const xx = left + (width - left - right) * i / tickCount;
+      const xv = minX + (maxX - minX) * i / tickCount;
+      const tick = axisTickText(xv, axis);
       drawing += '<text x="' + xx + '" y="' + (height - 23) + '" text-anchor="middle" fill="#8e867a" font-size="11">' + esc(tick) + '</text>';
     }
     for (const s of plotted) {
@@ -165,8 +196,8 @@
       }
     }
     drawing += '<text x="' + ((left + width - right) / 2) + '" y="' + (height - 3) + '" text-anchor="middle" fill="#8e867a" font-size="11">' + esc(labelForAxis(axis)) + '</text>';
-    const legend = plotted.map(s => '<span><i class="swatch" style="border-color:' + s.color + ';border-top-style:' + (s.dash ? 'dashed' : 'solid') + '"></i>' + esc(s.run.run_id) + ' · ' + s.parts.reduce((n, p) => n + p.length, 0) + ' 点</span>').join('');
-    return '<div class="chart"><h3>' + esc(title) + '</h3><svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="' + esc(title) + '">' + drawing + '</svg><div class="legend">' + legend + '</div><p class="sub">' + esc(note) + '</p></div>';
+    const legend = plotted.map(s => '<span><i class="swatch" style="border-color:' + s.color + ';border-top-style:' + (s.dash ? 'dashed' : 'solid') + '"></i>' + esc(s.run.run_id) + ' · ' + esc(supervisionCombo(s.run)) + ' · ' + esc(samplingText(s.run)) + ' · ' + s.parts.reduce((n, p) => n + p.length, 0) + ' 点</span>').join('');
+    return '<div class="chart"><h3>' + esc(title) + '</h3><p class="metric-guide">' + esc(metricGuide(metric)) + '</p><svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="' + esc(title) + '">' + drawing + '</svg><div class="legend">' + legend + '</div><p class="sub">' + esc(note) + '</p></div>';
   }
   function liveCard(family, model, observation = {}) {
     const fields = [['Epoch', model.epoch], ['Chunk', model.chunk], ['Step', model.step],
@@ -188,7 +219,7 @@
   }
   function boot() {
     const el = id => document.getElementById(id);
-    const state = {live: null, history: null, revision: null, cache: new Map(), selected: null, axisRun: null, overlays: new Set(), render: 0, refreshing: false};
+    const state = {live: null, history: null, revision: null, cache: new Map(), selected: null, axisRun: null, overlays: new Set(), overlaySeededRun: null, render: 0, refreshing: false};
     const json = async path => {
       const response = await fetch(path, {cache: 'no-store'});
       if (!response.ok) throw new Error('HTTP ' + response.status + ' · ' + path);
@@ -214,22 +245,31 @@
         return '<tr><td>' + esc(family) + '</td><td>' + esc(count) + '</td>' + COUNT_FIELDS.map(([field]) => '<td>' + esc(c[field]) + '</td>').join('') + '</tr>';
       }).join('');
     }
-    function fillOptions(id, values, previous) {
-      el(id).innerHTML = '<option value="all">全部</option>' + [...new Set(values.filter(present).map(identity))].map(v => '<option value="' + esc(v) + '">' + esc(v) + '</option>').join('');
+    function fillOptions(id, values, previous, label = display) {
+      const options = new Map(values.map(value => [filterValue(value), label(value)]));
+      el(id).innerHTML = '<option value="all">全部</option>' + [...options].map(([key, text]) => '<option value="' + esc(key) + '">' + esc(text) + '</option>').join('');
       if ([...el(id).options].some(o => o.value === previous)) el(id).value = previous;
+    }
+    function fillDataVolumes() {
+      fillOptions('data-volume', state.history.runs.map(run => num(run.exposure?.[el('exposure-field').value])), el('data-volume').value);
     }
     function filteredRuns() {
       return (state.history?.runs || []).filter(run =>
         (el('family').value === 'all' || run.family === el('family').value)
-        && (el('protocol').value === 'all' || identity(run.protocol) === el('protocol').value)
-        && (el('run-status').value === 'all' || identity(run.status) === el('run-status').value)
+        && (el('protocol').value === 'all' || filterValue(run.protocol) === el('protocol').value)
+        && (el('supervision').value === 'all' || filterValue(supervisionCombo(run)) === el('supervision').value)
+        && (el('sampling-ratio').value === 'all' || filterValue(samplingKey(run)) === el('sampling-ratio').value)
+        && (el('training-stage').value === 'all' || filterValue(run.stage) === el('training-stage').value)
+        && (el('data-volume').value === 'all' || filterValue(num(run.exposure?.[el('exposure-field').value])) === el('data-volume').value)
+        && (el('run-status').value === 'all' || filterValue(run.status) === el('run-status').value)
         && (display(run.run_id) + ' ' + display(runRecovery(run))).toLowerCase().includes(el('search').value.toLowerCase()));
     }
     function renderRuns() {
       const runs = filteredRuns();
+      if (!runs.some(run => run.key === state.selected)) state.selected = runs[0]?.key ?? null;
       el('run-count').textContent = runs.length + ' / ' + state.history.runs.length + ' Run';
-      el('run-table').innerHTML = runs.map(run => '<tr class="' + (state.selected === run.key ? 'selected' : '') + '"><td><b>' + esc(run.run_id) + '</b><div class="sub">恢复 ' + esc(runRecovery(run)) + '</div></td><td>' + esc(run.family) + '</td><td>' + esc(run.protocol) + '</td><td>' + esc(run.status) + '</td><td>' + esc(epochCount(run)) + '</td><td>' + esc(run.curve_points) + ' 点 / ' + esc(run.curve_granularity) + '</td><td>' + esc(validationSet(run)) + '</td><td>' + esc(dateText(run.started_at)) + '<br>' + esc(dateText(run.finished_at)) + '</td><td><button data-run="' + esc(run.key) + '" type="button">查看曲线</button></td></tr>').join('') || '<tr><td colspan="9">无匹配 Run</td></tr>';
-      el('selected-run').innerHTML = state.history.runs.map(run => '<option value="' + esc(run.key) + '">' + esc(run.family) + ' / ' + esc(run.run_id) + ' / ' + esc(run.protocol) + '</option>').join('');
+      el('run-table').innerHTML = runs.map(run => '<tr class="' + (state.selected === run.key ? 'selected' : '') + '"><td><b>' + esc(run.run_id) + '</b><div class="sub">恢复 ' + esc(runRecovery(run)) + '</div></td><td>' + esc(run.family) + '</td><td>' + esc(supervisionCombo(run)) + '</td><td>' + esc(run.protocol) + '</td><td>' + esc(samplingText(run)) + '</td><td>' + esc(run.stage) + ' / ' + esc(run.status) + '</td><td>' + esc(num(run.exposure?.[el('exposure-field').value])) + '</td><td>' + esc(epochCount(run)) + '</td><td>' + esc(run.curve_points) + ' 点 / ' + esc(run.curve_granularity) + '</td><td>' + esc(validationSet(run)) + '</td><td>' + esc(dateText(run.started_at)) + '<br>' + esc(dateText(run.finished_at)) + '<br>' + esc(seconds(run.training_seconds)) + '</td><td><button data-run="' + esc(run.key) + '" type="button">查看曲线</button></td></tr>').join('') || '<tr><td colspan="12">无匹配 Run</td></tr>';
+      el('selected-run').innerHTML = runs.map(run => '<option value="' + esc(run.key) + '">' + esc(run.family) + ' / ' + esc(run.run_id) + ' / ' + esc(run.protocol) + ' / ' + esc(supervisionCombo(run)) + ' / ' + esc(samplingText(run)) + '</option>').join('');
       if (state.selected) el('selected-run').value = state.selected;
     }
     function renderRetention() {
@@ -244,6 +284,11 @@
     function renderHistory() {
       renderCounts();
       fillOptions('protocol', state.history.runs.map(r => r.protocol), el('protocol').value);
+      fillOptions('supervision', state.history.runs.map(supervisionCombo), el('supervision').value);
+      const samplingLabels = new Map(state.history.runs.map(run => [samplingKey(run), samplingText(run)]));
+      fillOptions('sampling-ratio', state.history.runs.map(samplingKey), el('sampling-ratio').value, key => samplingLabels.get(key));
+      fillOptions('training-stage', state.history.runs.map(r => r.stage), el('training-stage').value);
+      fillDataVolumes();
       fillOptions('run-status', state.history.runs.map(r => r.status), el('run-status').value);
       if (!state.history.runs.some(r => r.key === state.selected)) {
         const active = state.history.runs.find(r => state.live?.[r.family]?.run_id === r.run_id);
@@ -253,20 +298,32 @@
       el('data-census').innerHTML = censusMarkup(state.history.data_census);
       el('history-stamp').textContent = '生成于 ' + dateText(state.history.generated_at) + ' · revision ' + display(state.revision);
       el('limitations').innerHTML = (state.history.limitations || []).map(note => '<p>' + esc(note) + '</p>').join('') || '索引未报告额外限制。曲线只使用文件中真实点；缺失值与恢复段之间不连线。';
+      el('limitations').innerHTML += '<p>未知范围：监督组合、采样模式、请求配比、各 stream 物化与累计训练、训练阶段、耗时及初始化无记录时显示 N/A；HISTORICAL_UNKNOWN 保留历史未知含义，不按 Run 名、计划 Epoch 或候选数量推算。</p>';
     }
     async function loadRun(run) {
       if (!run.curve_path) return {run, points: [], validation: [], exposure: run.exposure};
       if (!state.cache.has(run.curve_path)) state.cache.set(run.curve_path, json(run.curve_path));
-      try { return await state.cache.get(run.curve_path); }
+      try { const detail = await state.cache.get(run.curve_path); return {...detail, run: {...detail.run, ...run}, exposure: run.exposure}; }
       catch (error) { state.cache.delete(run.curve_path); throw error; }
     }
     async function renderSelected() {
       const render = ++state.render;
       const run = state.history?.runs.find(r => r.key === state.selected);
-      if (!run) { el('curve-status').textContent = 'N/A · 无 Run 记录'; return; }
+      if (!run) {
+        el('curve-status').textContent = 'N/A · 无匹配 Run';
+        for (const id of ['run-metadata', 'overlay-list', 'train-charts', 'validation-charts', 'validation-table', 'exposure', 'checkpoint-table']) el(id).textContent = '';
+        el('run-training-summary').innerHTML = '<tr><td colspan="9">N/A · 无匹配 Run</td></tr>';
+        return;
+      }
       const overlays = state.history.runs.filter(r => r.key !== run.key && canOverlay(run, r));
+      if (state.overlaySeededRun !== run.key) {
+        state.overlays = new Set(overlays.slice(0, 12).map(r => r.key));
+        state.overlaySeededRun = run.key;
+      }
       el('overlay-list').hidden = !el('overlay-toggle').checked;
-      el('overlay-list').innerHTML = overlays.map(r => '<label><input data-overlay="' + esc(r.key) + '" type="checkbox" ' + (state.overlays.has(r.key) ? 'checked' : '') + '> ' + esc(r.run_id) + '</label>').join('') || '<span class="muted">无同协议 Run；未知协议不能合并比较。</span>';
+      el('overlay-list').innerHTML = overlays.length
+        ? '<div class="overlay-toolbar"><span class="muted">历史版本 ' + display(state.overlays.size) + ' / ' + display(overlays.length) + ' 个 · 默认前 12 个，可全部加入 · 不限配比</span><button type="button" data-overlay-action="all">全部加入</button><button type="button" data-overlay-action="none">清空</button></div>' + overlays.map(r => '<label><input data-overlay="' + esc(r.key) + '" type="checkbox" ' + (state.overlays.has(r.key) ? 'checked' : '') + '> ' + esc(r.run_id) + ' · ' + esc(supervisionCombo(r)) + ' · ' + esc(samplingText(r)) + ' · ' + esc(r.stage) + '</label>').join('')
+        : '<span class="muted">无同协议 Run；未知协议不能合并比较。</span>';
       el('curve-status').textContent = '正在读取 ' + display(run.run_id);
       const selected = [run, ...(el('overlay-toggle').checked ? overlays.filter(r => state.overlays.has(r.key)) : [])];
       try {
@@ -278,8 +335,12 @@
           state.axisRun = run.key;
         }
         const segments = [...new Set(current.points.map(point => point.segment).filter(present))];
-        const meta = [['Run', run.run_id], ['协议', run.protocol], ['训练类型', run.training_kind], ['状态 / 恢复', display(run.status) + ' / ' + display(runRecovery({...run, ...current.run, segments: segments.length ? segments : run.segments}))], ['验证 / 队列', display(run.evaluation_status) + ' / ' + display(run.queue_status)], ['失败原因', run.failure_reason], ['粒度', run.curve_granularity], ['记录 Epoch', epochCount(run)], ['训练点', current.points.length], ['开始', dateText(run.started_at)], ['完成', dateText(run.finished_at)]];
+        const meta = [['Run', run.run_id], ['协议', run.protocol], ['监督组合', supervisionCombo(run)], ['训练阶段', run.stage], ['训练类型', run.training_kind], ['训练耗时', seconds(run.training_seconds)], ['初始化', run.initialization], ['来源', run.source], ['状态 / 恢复', display(run.status) + ' / ' + display(runRecovery({...run, ...current.run, segments: segments.length ? segments : run.segments}))], ['验证 / 队列', display(run.evaluation_status) + ' / ' + display(run.queue_status)], ['失败原因', run.failure_reason], ['粒度', run.curve_granularity], ['记录 Epoch', epochCount(run)], ['训练点', current.points.length], ['开始', dateText(run.started_at)], ['完成', dateText(run.finished_at)]];
         el('run-metadata').innerHTML = meta.map(([label, value]) => '<div><dt>' + esc(label) + '</dt><dd>' + esc(value) + '</dd></div>').join('');
+        el('run-training-summary').innerHTML = records.map(record => {
+          const r = record.run, s = r.sampling, e = record.exposure ?? r.exposure;
+          return '<tr><td>' + esc(r.run_id) + '<br>' + esc(supervisionCombo(r)) + '</td><td>' + esc(s?.mode) + '<br>' + esc(s?.ratio_label) + '</td><td>' + esc(s?.requested_ratios) + '</td><td>' + esc(s?.materialized_per_epoch_by_stream) + '</td><td>' + esc(s?.trained_total_by_stream) + '</td><td>' + [e?.candidate_records, e?.materialized_records, e?.encoded_records].map(esc).join(' / ') + '</td><td>' + esc(e?.trained_records) + ' / ' + esc(e?.distinct_units) + '<div class="sub">' + esc(e?.trained_records_scope) + '<br>' + esc(e?.distinct_units_issue) + '</div></td><td>' + esc(r.stage) + '<br>' + esc(seconds(r.training_seconds)) + '</td><td>' + esc(r.initialization) + '<br>' + esc(r.source) + '</td></tr>';
+        }).join('');
         el('train-charts').innerHTML = [['train_loss', '训练 Loss ↓'], ['consumed_records', '样本曝光 · 已消费记录'], ['learning_rate', '学习率'], ['samples_per_s', '样本 / 秒'], ['optimizer_updates', '优化器更新']].map(([metric, title]) => chartMarkup(title, records, metric, el('curve-axis').value, '全部真实观测点 · 缺失字段留空 · 恢复或计数重置时断开')).join('')
           + (run.family === 'kev'
             ? chartMarkup('优化器 Step 耗时 · 秒', records.map(r => ({...r, points: r.speed_points || []})), 'optimizer_step_seconds', 'step', '上游 training_metrics 原始计时；不以 batch 数推算样本吞吐')
@@ -288,18 +349,23 @@
         el('validation-charts').innerHTML = groups.flatMap(group => ['loss', 'accuracy', 'brier', 'ece'].map(metric => {
           const series = [...group.series.values()];
           const axis = series.every(s => s.points.every(p => num(p.step) !== null)) ? 'step' : 'epoch';
-          return chartMarkup(display(group.validation_set) + ' / ' + display(group.stream) + ' · ' + metric + (metric === 'accuracy' ? ' ↑' : ' ↓'), series, metric, axis, '协议 ' + display(group.protocol) + ' · Loss 定义 ' + display(group.loss_definition) + ' · 未知验证集保持逐 Run 分开');
+          return chartMarkup(display(group.validation_set) + ' / ' + display(group.stream) + ' · ' + metric + (metric === 'accuracy' ? ' ↑' : ' ↓'), series, metric, axis, '协议 ' + display(group.protocol) + ' · 样本 ' + display(group.items) + ' · Loss 定义 ' + display(group.loss_definition) + ' · 未知验证集保持逐 Run 分开');
         })).join('') || '<div class="chart empty">N/A · 尚无验证记录</div>';
         el('validation-table').innerHTML = records.flatMap(record => (record.validation || []).map(v => '<tr><td>' + esc(record.run.run_id) + '</td><td>' + esc(validationSet(record.run, v)) + ' / ' + esc(v.stream) + '</td><td>' + esc(v.epoch) + ' / ' + esc(v.step) + '</td><td>' + esc(v.loss) + '</td><td>' + esc(v.accuracy) + '</td><td>' + esc(v.brier) + '</td><td>' + esc(v.ece) + '</td><td>' + esc(v.items) + '</td><td>' + esc(v.source) + '</td></tr>')).join('') || '<tr><td colspan="9">N/A</td></tr>';
-        el('exposure').textContent = '数据暴露\n' + display(current.exposure ?? run.exposure)
-          + '\n\n终端指标\n' + display(current.run.terminal_metrics ?? run.terminal_metrics);
-        el('checkpoint-table').innerHTML = (current.run.checkpoints || run.checkpoints || []).map(cp => '<tr><td>' + esc(cp.checkpoint_id) + '</td><td>' + esc(cp.epoch) + '</td><td>' + (cp.physical === true ? '存在' : cp.physical === false ? '不存在' : 'N/A') + '</td><td>' + (cp.ever_saved === true ? '是' : cp.ever_saved === false ? '否' : 'N/A') + '</td><td>' + esc(cp.retention_status) + '</td><td>' + esc(cp.evidence) + '</td></tr>').join('') || '<tr><td colspan="6">N/A</td></tr>';
+        el('exposure').textContent = records.map(record => 'Run ' + display(record.run.run_id)
+          + '\n来源 ' + display(record.run.source) + '\n监督 ' + display(record.run.supervision_classes)
+          + '\n采样\n' + display(record.run.sampling) + '\n初始化\n' + display(record.run.initialization)
+          + '\n数据暴露\n' + display(record.exposure ?? record.run.exposure)
+          + '\n终端指标\n' + display(record.run.terminal_metrics)
+          + '\n已知限制\n' + display(record.run.limitations)).join('\n\n');
+        el('checkpoint-table').innerHTML = records.flatMap(record => (record.run.checkpoints || []).map(cp => '<tr><td>' + esc(record.run.run_id) + '</td><td>' + esc(cp.checkpoint_id) + '</td><td>' + esc(cp.epoch) + '</td><td>' + (cp.physical === true ? '存在' : cp.physical === false ? '不存在' : 'N/A') + '</td><td>' + (cp.ever_saved === true ? '是' : cp.ever_saved === false ? '否' : 'N/A') + '</td><td>' + esc(cp.retention_status) + '</td><td>' + esc(cp.path) + '<br>' + esc(cp.evidence) + '</td></tr>')).join('') || '<tr><td colspan="7">N/A</td></tr>';
         el('curve-status').textContent = display(run.run_id) + ' · ' + current.points.length + ' 训练点 · ' + (current.validation || []).length + ' 验证点';
       } catch (error) {
         if (render !== state.render) return;
         el('curve-status').textContent = 'N/A · ' + error.message;
         el('train-charts').innerHTML = '<div class="chart empty">N/A · 曲线文件不可读取</div>';
         el('validation-charts').innerHTML = ''; el('run-metadata').innerHTML = ''; el('validation-table').innerHTML = ''; el('exposure').textContent = ''; el('checkpoint-table').innerHTML = '';
+        el('run-training-summary').innerHTML = '<tr><td colspan="9">N/A · 曲线文件不可读取</td></tr>';
       }
     }
     async function refresh(force = false) {
@@ -351,11 +417,21 @@
       } catch (error) { el('agent-status').textContent = 'NOT_EVALUATED · ' + error.message; el('agent-output').textContent = ''; }
     }
     el('refresh').addEventListener('click', () => refresh(true));
-    for (const id of ['family', 'protocol', 'run-status']) el(id).addEventListener('change', renderRuns);
-    el('search').addEventListener('input', renderRuns);
-    el('selected-run').addEventListener('change', () => { state.selected = el('selected-run').value; state.overlays.clear(); renderRuns(); renderSelected(); });
-    el('run-table').addEventListener('click', e => { const button = e.target.closest('[data-run]'); if (button) { state.selected = button.dataset.run; state.overlays.clear(); renderRuns(); renderSelected(); } });
+    const applyFilters = () => { if (state.history) { renderRuns(); renderSelected(); } };
+    for (const id of ['family', 'protocol', 'supervision', 'sampling-ratio', 'training-stage', 'run-status', 'data-volume']) el(id).addEventListener('change', applyFilters);
+    el('exposure-field').addEventListener('change', () => { if (state.history) { el('data-volume').value = 'all'; fillDataVolumes(); applyFilters(); } });
+    el('search').addEventListener('input', applyFilters);
+    el('selected-run').addEventListener('change', () => { state.selected = el('selected-run').value; state.overlays.clear(); state.overlaySeededRun = null; renderRuns(); renderSelected(); });
+    el('run-table').addEventListener('click', e => { const button = e.target.closest('[data-run]'); if (button) { state.selected = button.dataset.run; state.overlays.clear(); state.overlaySeededRun = null; renderRuns(); renderSelected(); } });
     el('overlay-toggle').addEventListener('change', renderSelected);
+    el('overlay-list').addEventListener('click', e => {
+      const action = e.target.closest('[data-overlay-action]')?.dataset.overlayAction;
+      if (!action) return;
+      const run = state.history?.runs.find(r => r.key === state.selected);
+      const overlays = run ? state.history.runs.filter(r => r.key !== run.key && canOverlay(run, r)) : [];
+      state.overlays = new Set(action === 'all' ? overlays.map(r => r.key) : []);
+      renderSelected();
+    });
     el('overlay-list').addEventListener('change', e => { const key = e.target.dataset.overlay; if (e.target.checked) state.overlays.add(key); else state.overlays.delete(key); renderSelected(); });
     el('curve-axis').addEventListener('change', renderSelected);
     el('agent-secondary').addEventListener('toggle', () => { if (el('agent-secondary').open) refreshAgent(); });

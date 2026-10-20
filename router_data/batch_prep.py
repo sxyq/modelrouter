@@ -627,10 +627,7 @@ def prepare_full_matrix(args):
         'materialization_audit': materialization_audit,
         'generation': {
             'command': sys.argv,
-            'code_sha256': {
-                p: hashlib.sha256(open(p, 'rb').read()).hexdigest()
-                for p in ('prepare_router_data.py', __file__, 'router_data/laya_batch_train.py')
-            },
+            'code_commit': os.environ.get('MODELROUTER_CODE_COMMIT'),
             'pool_limit': pool_limit,
             'max_items_per_class': max_items,
             'test_used': False,
