@@ -109,6 +109,35 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                 (output_dir / "training_history_observed.json").write_text(
                     json.dumps(history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
+                eta = live.get("training_eta") or {}
+                totals = eta.get("totals") or {}
+                eta_node = page.locator("#training-eta")
+                eta_metrics = eta_node.locator("dl.metadata").evaluate(
+                    "node => Object.fromEntries([...node.children].map(c =>"
+                    " [c.querySelector('dt').textContent, c.querySelector('dd').textContent]))")
+                planned = totals.get("planned_executable_runs")
+                require(numeric(planned) and normalized(eta_metrics["可执行计划 Run"]) == normalized(planned),
+                        "eta_planned_executable_runs", expected=planned, observed=eta_metrics["可执行计划 Run"])
+                finish_values = {"total": totals.get("estimated_finish_at"), **{
+                    family: (eta.get("current", {}).get(family) or {}).get("estimated_finish_at")
+                    for family in ("laya", "kev")}}
+                finish_labels = page.evaluate(
+                    "values => Object.fromEntries(Object.entries(values).map(([key, value]) => [key,"
+                    " value ? new Date(value).toLocaleString('zh-CN', {hour12:false}) : 'N/A']))", finish_values)
+                total_finish = eta_metrics["预计完成（本地时区）"]
+                require(bool(finish_values["total"]) and total_finish not in ("N/A", "Invalid Date")
+                        and total_finish == finish_labels["total"], "eta_total_estimated_finish",
+                        expected=finish_values["total"], observed=total_finish)
+                current_rows = eta_node.locator("table").first.locator("tbody tr")
+                for index, family in enumerate(("laya", "kev")):
+                    current = eta.get("current", {}).get(family) or {}
+                    cells = current_rows.nth(index).locator("td").all_text_contents()
+                    require(bool(current.get("run_id")) and cells[0] == family and cells[1] == current["run_id"],
+                            "eta_current_run", family=family, expected=current.get("run_id"), observed=cells[1])
+                    require(bool(finish_values[family]) and cells[4] not in ("N/A", "Invalid Date")
+                            and cells[4] == finish_labels[family], "eta_current_estimated_finish",
+                            family=family, expected=finish_values[family], observed=cells[4])
+
                 for family in ("laya", "kev"):
                     model = live.get(family, {})
                     card = page.locator(f"#live-models .{family}")

@@ -173,6 +173,7 @@ def materialize_plan_on_demand(
     if not graded_root.is_dir():
         return False
     generation = manifest.get("generation") or {}
+    materialization_started = time.monotonic()
     # Stage only new data; the existing preparation function writes a complete matrix.
     # Keep its temporary metadata away from the current plans and completed-run material.
     with tempfile.TemporaryDirectory(prefix="_matrix_prep_", dir=out_root) as prep_dir:
@@ -189,6 +190,7 @@ def materialize_plan_on_demand(
         materialized_spec = prepared["plans"][p0_id]
         if not materialized_spec.get("materialized"):
             return False
+        materialized_spec.setdefault("materialization_audit", {})["materialization_seconds"] = time.monotonic() - materialization_started
         data_dir.parent.mkdir(parents=True, exist_ok=True)
         (Path(prep_dir) / "data" / p0_id).rename(data_dir)
         plans[run_id] = materialized_spec

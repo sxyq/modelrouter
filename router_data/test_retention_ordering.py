@@ -802,8 +802,31 @@ def test_collector_original_history_inputs_and_unchanged_revision():
         selected = next(r for r in report["observations"] if r["run_id"] == "F01")
         assert selected["best_loss_epoch"]["epoch"] == 1
         assert selected["selected_epoch_physical"] is True
+        assert selected["best_accuracy_epoch"]["epoch"] == 1
+        assert selected["epoch_records"][0]["global_step"] == 10
+        assert len(report["observations"]) == 7
         assert selected["actual_cost_usd"] is None
         assert all(path.read_bytes() == content for path, content in originals.items())
+
+
+def test_collector_training_eta_original_budget(tmp_path):
+    from scripts import fetch_live_status as collector
+    history = {"runs": [{"root": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F01", "run_id": "F01",
+        "protocol": NEW_PROTOCOL_VERSION,
+        "status": "COMPLETED", "family": "laya", "sampling": {"mode": "FULL_COVERAGE"},
+        "exposure": {"trained_records": 1000}, "training_seconds": 100,
+        "supervision_classes": ["S1", "S2", "S3"], "source": "run.json"}],
+        "data_census": {"layers": {"L1": {"S1": 1000}}}, "experiment_plans": {"kev_queue": []}}
+    plans = {"full_coverage": {"F08": {"supervision_classes": ["S1"], "layer_fractions": {"L1": .25}, "epochs": 2}}, "matrix": {}}
+    rows = [{"category": "full_coverage", "status": "ELIGIBLE", "run_id": "F08", "materialized": False}]
+    estimate = collector.training_eta(history, plans, {}, rows)
+    assert estimate["groups"][0]["remaining_records"] == 500
+    assert estimate["groups"][0]["training_seconds"] == 50
+    assert estimate["totals"]["planned_executable_runs"] == 1
+    assert estimate["current"]["laya"]["remaining_training_seconds"] is None
+    path = tmp_path / "status.json"
+    collector.atomic_json(path, {"loss": float("nan")})
+    assert json.loads(path.read_text()) == {"loss": None}
 
 
 def test_collector_live_terminal_results_and_observed_rate(tmp_path, monkeypatch):

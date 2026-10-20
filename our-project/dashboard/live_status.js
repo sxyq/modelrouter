@@ -85,6 +85,40 @@
     });
     return '<span>GPU ' + esc(gpu.name) + ' · ' + esc(gpu.util_pct) + '% · ' + esc(gpu.used_mb) + ' / ' + esc(gpu.total_mb) + ' MiB</span><span>温度 ' + esc(gpu.temp_c) + ' °C · 功率 ' + esc(gpu.power_w) + ' W</span><span>磁盘 ' + gib(disk.used_bytes) + ' / ' + gib(disk.total_bytes) + ' GiB · 可用 ' + gib(disk.free_bytes) + ' GiB</span><span>' + processes.map(esc).join(' · ') + '</span>';
   }
+  function trainingEtaMarkup(eta, observation = {}) {
+    const totals = eta?.totals;
+    const duration = value => seconds(value) + (num(value) !== null && value >= 3600 ? '（' + display(value / 3600, 1) + ' 小时）' : '');
+    const range = duration(totals?.range_seconds?.[0]) + ' — ' + duration(totals?.range_seconds?.[1]);
+    const fields = [['可执行计划 Run', totals?.planned_executable_runs],
+      ['串行墙钟估算', duration(totals?.serial_wall_seconds)], ['墙钟下限估算', duration(totals?.lower_bound_wall_seconds)],
+      ['墙钟估算范围', range], ['预计完成（本地时区）', dateText(totals?.estimated_finish_at)],
+      ['估算观测时间', dateText(eta?.observed_at)]];
+    const current = ['laya', 'kev'].map(family => {
+      const run = eta?.current?.[family];
+      return '<tr><td>' + esc(family) + '</td><td>' + esc(run?.run_id) + '</td><td>'
+        + esc(duration(run?.remaining_training_seconds)) + '</td><td>' + esc(duration(run?.validation_seconds))
+        + '<div class="sub">Val 估算依据：' + esc(run?.validation_method) + '</div>'
+        + '</td><td>' + esc(dateText(run?.estimated_finish_at)) + '</td><td>' + esc(run?.method) + '</td></tr>';
+    }).join('');
+    const groups = eta?.groups?.map(group => '<tr><td>' + esc(group.group) + '</td><td>' + esc(group.count)
+      + '</td><td>' + esc(duration(group.training_seconds)) + '</td><td>' + esc(duration(group.validation_seconds))
+      + '</td><td>' + esc(duration(group.materialization_seconds)) + '</td><td>' + esc(group.remaining_records)
+      + '</td><td>' + esc(group.method) + '</td></tr>').join('');
+    const blocked = eta?.blocked?.map(group => '<tr><td>' + esc(group.group) + '</td><td>' + esc(group.count)
+      + '</td><td>' + esc(group.reason) + '</td></tr>').join('');
+    const assumptions = eta?.assumptions?.map(note => '<p>' + esc(note) + '</p>').join('');
+    return '<summary>全局计划与 ETA · 可执行计划 ' + esc(totals?.planned_executable_runs)
+      + ' · 预计完成 ' + esc(dateText(totals?.estimated_finish_at))
+      + (observation.status ? ' · 上次估算 ' + esc(observation.status) : '') + '</summary><div class="inner">'
+      + '<p class="sub">来源 live_status.json → training_eta · 全局计划独立于历史筛选。以下均为耗时估算；墙钟包含等待及其他阶段，不代表实测 GPU 活跃时长。预计完成时间按浏览器本地时区显示。</p>'
+      + '<dl class="metadata">' + fields.map(([label, value]) => '<div><dt>' + esc(label) + '</dt><dd>' + esc(value) + '</dd></div>').join('') + '</dl>'
+      + '<h3>当前 Run 剩余时间估算</h3><div class="table-wrap"><table><thead><tr><th>模型</th><th>Run</th><th>剩余训练</th><th>验证</th><th>预计完成</th><th>估算方法</th></tr></thead><tbody>' + current + '</tbody></table></div>'
+      + '<h3 class="section">计划分组 · 耗时估算</h3><p class="sub">训练 / Val 合计已包含验证；Val 独立记录供参考，不重复相加。</p><div class="table-wrap"><table><thead><tr><th>分组</th><th>Run 数</th><th>训练 / Val 合计</th><th>Val（独立记录）</th><th>物化</th><th>剩余记录</th><th>估算方法</th></tr></thead><tbody>'
+      + (groups || '<tr><td colspan="7">' + (eta?.groups ? '无分组记录' : 'N/A · 未提供分组') + '</td></tr>') + '</tbody></table></div>'
+      + '<h3 class="section">待补条件的计划</h3><div class="table-wrap"><table><thead><tr><th>分组</th><th>Run 数</th><th>原因</th></tr></thead><tbody>'
+      + (blocked || '<tr><td colspan="3">' + (eta?.blocked ? '无待补条件记录' : 'N/A · 未提供记录') + '</td></tr>') + '</tbody></table></div>'
+      + '<h3 class="section">估算依据与适用条件</h3><div class="note muted">' + (assumptions || '<p>N/A · 未提供估算依据</p>') + '</div></div>';
+  }
   function retentionMarkup(label, records) {
     const items = Array.isArray(records) ? records : null;
     const physical = items && items.every(item => typeof item.physical === 'boolean') ? items.filter(item => item.physical).length : null;
@@ -234,6 +268,7 @@
       el('collected').textContent = '采集于 ' + dateText(observation.timestamp);
       el('live-models').innerHTML = ['laya', 'kev'].map(f => liveCard(f, live[f] || {}, observation)).join('');
       el('hardware').innerHTML = hardwareMarkup(live, observation);
+      el('training-eta').innerHTML = trainingEtaMarkup(live.training_eta, observation);
     }
     function renderCounts() {
       el('counts-head').innerHTML = '<tr><th>模型</th><th>记录 Epoch</th>' + COUNT_FIELDS.map(([, label]) => '<th>' + label + '</th>').join('') + '</tr>';
@@ -439,7 +474,7 @@
     return {refresh, renderSelected, state};
   }
   const api = {COUNT_FIELDS, display, ageSeconds, splitSeries, validationGroups, canOverlay, epochCount, chartMarkup, liveCard,
-    liveObservation, runRecovery, defaultAxis, hardwareMarkup, retentionMarkup, comparisonText, censusMarkup, boot};
+    liveObservation, runRecovery, defaultAxis, hardwareMarkup, trainingEtaMarkup, retentionMarkup, comparisonText, censusMarkup, boot};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof window !== 'undefined') window.ModelRouterTrainingDashboard = api;
   if (typeof document !== 'undefined') {
