@@ -669,6 +669,43 @@ def test_collector_live_terminal_results_and_observed_rate(tmp_path, monkeypatch
     assert collector._live_family("laya", proc, history)["samples_per_s"] == 10
 
 
+def test_collector_kev_validation_appended_rows(tmp_path, monkeypatch):
+    from scripts import fetch_live_status as collector
+    monkeypatch.setattr(collector, "_VAL_CACHE", {})
+    monkeypatch.setattr(collector, "age_seconds", lambda value: 15 if value else None)
+    directory = tmp_path / "formal_run"
+    attempt = directory / "val_metrics/attempt_0002"
+    attempt.mkdir(parents=True)
+    data = tmp_path / "val.jsonl"
+    data.write_text(json.dumps({"questions": {"a": {}, "b": {}}}) + "\n"
+                    + json.dumps({"questions": {"c": {}}}) + "\n")
+    result = {"evaluation_status": "EVALUATING", "validation_set": str(data),
+              "report_path": str(attempt / "report.json"), "attempt_id": 2, "device": "cuda"}
+    (directory / "val_metrics.json").write_text(json.dumps(result))
+    predictions = attempt / "predictions.jsonl"
+    first = json.dumps({"rows": [{}, {}]}) + "\n"
+    second = json.dumps({"rows": [{}]})
+    predictions.write_text(first + second)
+    candidate = {"evaluation_attempts": [{"started_at": "2026-10-20T08:00:00Z"}]}
+    observed = collector.live_kev_validation(directory, candidate)
+    assert observed["validation_coverage"] == {"requested_records": 2, "requested_questions": 3,
+                                               "evaluated_records": 1, "evaluated_questions": 2}
+    assert observed["evaluation_seconds"] == 15 and observed["validation_metrics"] == {}
+    assert collector.live_kev_validation(directory, candidate)["validation_coverage"] == observed["validation_coverage"]
+    with predictions.open("a") as stream:
+        stream.write("\n")
+    assert collector.live_kev_validation(directory, candidate)["validation_coverage"]["evaluated_records"] == 2
+    result.update(evaluation_status="EVALUATED", clean={"acc": .75}, duration_sec=20,
+                  coverage={"evaluated_records": 2, "requested_records": 2})
+    (directory / "val_metrics.json").write_text(json.dumps(result))
+    complete = collector.live_kev_validation(directory, candidate)
+    assert complete["validation_metrics"]["acc"] == .75 and complete["evaluation_seconds"] == 20
+    (directory.parent / "cursor.json").write_text("{}")
+    assert collector.kev_cursor(directory) == directory.parent / "cursor.json"
+    (directory / "cursor.json").write_text("{}")
+    assert collector.kev_cursor(directory) == directory / "cursor.json"
+
+
 if __name__ == "__main__":
     test_retention_ordering()
     test_two_phase_cleanup_protects_running_run()

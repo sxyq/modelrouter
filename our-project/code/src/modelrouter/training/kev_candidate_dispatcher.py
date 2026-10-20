@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
-"""
-kev_candidate_dispatcher.py - Persistent Multi-Candidate Scientific Progression Dispatcher for Kev-4B.
+"""Continue Kev candidates in order using recorded training and project Val results.
 
-Fulfills all requirements of ModelRouter V8:
-1. Non-destructive monitoring: Watches active Kev training (PID 1357764) without killing or restarting.
-2. Checkpoint integrity check: Confirms head.pt, adapter_model weights, and tokenizer files exist and are non-empty.
-3. Fixed Val evaluation: Executes kev.benchmark on the project's labelled validation JSONL.
-4. Metric extraction: Parses Accuracy, NLL, Brier, ECE.
-5. Scientific comparison: Computes deltas vs baseline (C02: 87.26%, NLL 0.516) and prior epoch.
-6. Fail-closed safety: Never skips failed runs or advances to subsequent candidates upon corruption.
-7. Parameter verification: Ensures C04 (lr=1e-5), C05 (masked state), C07 (lora=8), C09 (V8 data) actually take effect.
-8. Persistent queue: Idempotent state machine in candidate_queue.json.
+Completed training resumes at Val through upstream kev.benchmark. Attempts,
+commands, progress and terminal outcomes remain in the existing run and queue.
+Missing material or incompatible rank leaves a candidate pending; insufficient
+GPU memory returns WAITING_FOR_GPU without launching a training process.
 """
 
+import argparse
+import copy
 import os
+import re
 import sys
 import time
 import json
@@ -113,7 +110,9 @@ DEFAULT_CANDIDATES = [
         "batch": "1",
         "accum": "4",
         "extra_args": ["--checkpointing", "1"],
-        "checkpoint_path": "runs/KEV-V8-EXT-01/checkpoint",
+        "checkpoint_path": "runs/KEV-V8-EXT-01/formal_run",
+        "pilot_checkpoint_path": "runs/KEV-V8-EXT-01/checkpoint",
+        "training_kind": "FORMAL_LORA",
         "metrics": {}
     }
 ]
@@ -121,12 +120,19 @@ DEFAULT_CANDIDATES = [
 def load_queue() -> List[Dict[str, Any]]:
     if QUEUE_FILE.is_file():
         try:
-            return json.loads(QUEUE_FILE.read_text(encoding="utf-8"))
+            queue = json.loads(QUEUE_FILE.read_text(encoding="utf-8"))
+            for candidate in queue:
+                if candidate["candidate_id"] == "KEV-V8-C09":
+                    candidate["pilot_checkpoint_path"] = f"runs/{candidate['name']}/checkpoint"
+                    candidate["checkpoint_path"] = f"runs/{candidate['name']}/formal_run"
+                    candidate["training_kind"] = "FORMAL_LORA"
+            return queue
         except Exception as e:
             logger.warning(f"Failed to read queue file: {e}")
     QUEUE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    QUEUE_FILE.write_text(json.dumps(DEFAULT_CANDIDATES, indent=2), encoding="utf-8")
-    return DEFAULT_CANDIDATES
+    queue = copy.deepcopy(DEFAULT_CANDIDATES)
+    QUEUE_FILE.write_text(json.dumps(queue, indent=2), encoding="utf-8")
+    return queue
 
 def save_queue(queue: List[Dict[str, Any]]):
     QUEUE_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -161,25 +167,38 @@ def check_checkpoint_integrity(ckpt_dir: Path) -> tuple[bool, str]:
         
     return True, "Integrity OK"
 
-def run_fixed_validation(ckpt_dir: Path, out_file: Path) -> tuple[bool, Dict[str, Any]]:
+def run_fixed_validation(ckpt_dir: Path, out_file: Path, device: str = "auto",
+                         timeout: Optional[float] = None) -> tuple[bool, Dict[str, Any]]:
     """Score the existing project Val through Kev's labelled-JSONL entry point."""
     logger.info(f"Running formal evaluation on checkpoint: {ckpt_dir}")
-    report_dir = out_file.with_suffix("")
+    attempts_dir = out_file.with_suffix("")
+    attempts_dir.mkdir(parents=True, exist_ok=True)
+    if out_file.is_file():
+        prior = json.loads(out_file.read_text(encoding="utf-8"))
+        prior_file = attempts_dir / f"attempt_{prior.get('attempt_id', 0):04d}.json"
+        if not prior_file.exists():
+            prior_file.write_text(json.dumps(prior, indent=2), encoding="utf-8")
+    previous_ids = [int(p.name[8:12]) for p in attempts_dir.iterdir() if re.fullmatch(r"attempt_\d{4}(\.json)?", p.name)]
+    attempt_id = max(previous_ids, default=0) + 1
+    report_dir = attempts_dir / f"attempt_{attempt_id:04d}"
     val_path = PROJECT_ROOT / FIXED_VAL_PATH
     eval_cmd = [
         str(PROJECT_ROOT / ".venv" / "bin" / "python"),
-        "-m", "kev.benchmark",
+        "-u", "-m", "kev.benchmark",
         "--run", str(ckpt_dir),
         "--data", str(val_path),
         "--out", str(report_dir),
-        "--device", "auto",
+        "--device", device,
     ]
     env = os.environ.copy()
     env["PYTHONPATH"] = str(PROJECT_ROOT / "external" / "kev")
+    if device == "cpu":
+        env.update(OMP_NUM_THREADS="8", CUDA_VISIBLE_DEVICES="")
+    log_file = attempts_dir / f"attempt_{attempt_id:04d}.log"
     
     started = time.monotonic()
     metrics = {
-        "evaluation_status": "FAILED",
+        "evaluation_status": "EVALUATING",
         "validation_set": str(val_path),
         "validation_protocol": "KEV_FIXED_VAL_JSONL",
         "dataset_split": "val",
@@ -187,13 +206,25 @@ def run_fixed_validation(ckpt_dir: Path, out_file: Path) -> tuple[bool, Dict[str
         "command": eval_cmd,
         "report_path": str(report_dir / "report.json"),
         "exit_code": None,
+        "attempt_id": attempt_id,
+        "device": device,
+        "timeout_sec": timeout,
+        "log_path": str(log_file),
     }
+    attempt_file = attempts_dir / f"attempt_{attempt_id:04d}.json"
+    serialized = json.dumps(metrics, indent=2)
+    attempt_file.write_text(serialized, encoding="utf-8")
+    out_file.write_text(serialized, encoding="utf-8")
+    logger.info("Val attempt %s, progress log: %s", attempt_id, log_file)
     try:
-        res = subprocess.run(eval_cmd, cwd=str(PROJECT_ROOT), env=env, capture_output=True, text=True, timeout=900)
-        metrics.update(exit_code=res.returncode, raw_output=res.stdout, stderr=res.stderr)
+        with log_file.open("w", encoding="utf-8") as output:
+            res = subprocess.run(eval_cmd, cwd=str(PROJECT_ROOT), env=env, stdout=output,
+                                 stderr=subprocess.STDOUT, text=True, timeout=timeout)
+        raw_output = log_file.read_text(encoding="utf-8")
+        metrics.update(exit_code=res.returncode, raw_output=raw_output)
         if res.returncode != 0:
-            logger.error(f"Evaluation process failed with code {res.returncode}: {res.stderr[:300]}")
-            metrics["error"] = res.stderr
+            logger.error("Evaluation process failed with code %s; log: %s", res.returncode, log_file)
+            metrics.update(evaluation_status="FAILED", error=raw_output)
         else:
             report = json.loads((report_dir / "report.json").read_text(encoding="utf-8"))
             coverage = report["coverage"]
@@ -204,184 +235,276 @@ def run_fixed_validation(ckpt_dir: Path, out_file: Path) -> tuple[bool, Dict[str
             )
     except Exception as e:
         logger.error(f"Evaluation execution exception: {e}")
-        metrics["error"] = str(e)
+        metrics.update(evaluation_status="FAILED", error=str(e))
     metrics.update(
         duration_sec=time.monotonic() - started,
         evaluated_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     )
     out_file.parent.mkdir(parents=True, exist_ok=True)
-    out_file.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    serialized = json.dumps(metrics, indent=2)
+    attempt_file.write_text(serialized, encoding="utf-8")
+    out_file.write_text(serialized, encoding="utf-8")
     return metrics["evaluation_status"] == "EVALUATED", metrics
 
-def ensure_no_state_dataset() -> Path:
-    """Creates train_nostate.jsonl for C05 state ablation if it does not exist."""
-    src = PROJECT_ROOT / "data" / "kev" / "公开数据" / "train.jsonl"
-    dst = PROJECT_ROOT / "data" / "kev" / "公开数据" / "train_nostate.jsonl"
-    if dst.is_file() and dst.stat().st_size > 1024:
-        return dst
-    
-    logger.info(f"Generating C05 state ablation dataset: {dst}")
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    with open(src, "r", encoding="utf-8") as in_f, open(dst, "w", encoding="utf-8") as out_f:
-        for line in in_f:
-            if not line.strip():
-                continue
-            rec = json.loads(line)
-            rec["state"] = ""  # Pure ablation: completely mask out state tokens
-            out_f.write(json.dumps(rec, ensure_ascii=False) + "\n")
-    logger.info("C05 state ablation dataset generation complete.")
-    return dst
+def _now():
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
-def main_loop():
-    logger.info("=== Kev Multi-Candidate Persistent Progression Queue Activated ===")
-    
+
+def _progress(line):
+    match = re.search(r"ep(\d+)\s+step\s+(\d+)/(\d+)\s+loss\s+([-+\deE.]+)", line)
+    if not match:
+        return {}
+    return dict(epoch=int(match[1]), step=int(match[2]), total_steps=int(match[3]),
+                loss=float(match[4]), loss_step=int(match[2]))
+
+
+def refresh_training(candidate):
+    run_dir = KEV_RUNS_ROOT / candidate["name"]
+    cursor_file = (PROJECT_ROOT / candidate["checkpoint_path"] if candidate["candidate_id"] == "KEV-V8-C09" else run_dir) / "cursor.json"
+    cursor = json.loads(cursor_file.read_text()) if cursor_file.is_file() else {}
+    log_file = run_dir / "train.log"
+    if log_file.is_file():
+        with log_file.open(encoding="utf-8") as stream:
+            for line in stream:
+                cursor.update(_progress(line))
+    training_file = PROJECT_ROOT / candidate["checkpoint_path"] / "training_metrics.json"
+    metrics = json.loads(training_file.read_text()) if training_file.is_file() else {}
+    exit_code = cursor.get("exit_code")
+    pid = cursor.get("pid", candidate.get("pid"))
+    alive = bool(pid and is_pid_alive(pid))
+    candidate["training_status"] = (
+        "RUNNING" if alive else "FAILED" if exit_code is not None and exit_code != 0
+        else "COMPLETED" if exit_code == 0 or metrics else "UNKNOWN"
+    )
+    candidate.update(pid=pid, training_exit_code=exit_code,
+                     training_source=str(training_file if metrics else cursor_file),
+                     training_metrics={k: metrics.get(k) for k in
+                        ("optimizer_steps", "records_seen", "requested_records", "wall_seconds")})
+    if metrics:
+        cursor.update(step=metrics.get("optimizer_steps"), consumed_records=metrics.get("records_seen"))
+    candidate.update({k: cursor[k] for k in ("step", "total_steps", "epoch", "loss", "loss_step") if k in cursor})
+    return alive
+
+
+def record_c03_comparison(candidate, queue):
+    comparison = {"reference_candidate_id": "KEV-V8-C03", "status": "NOT_EVALUATED",
+                  "direction": "candidate_minus_c03",
+                  "deltas": {name: None for name in ("acc", "nll", "brier", "ece")}}
+    candidate["comparison_to_c03"] = comparison
+    if candidate["candidate_id"] == "KEV-V8-C03":
+        comparison.update(status="REFERENCE", reason="C03 is the reference; no self-comparison")
+        return
+    reference = next((c for c in queue if c["candidate_id"] == "KEV-V8-C03"), None)
+    ours = candidate.get("metrics", {})
+    theirs = reference.get("metrics", {}) if reference else {}
+    if ours.get("evaluation_status") != "EVALUATED" or theirs.get("evaluation_status") != "EVALUATED":
+        comparison["reason"] = "Both candidates need completed project Val results"
+        return
+    for field in ("validation_protocol", "validation_set"):
+        if not ours.get(field) or ours[field] != theirs.get(field):
+            comparison["reason"] = f"Different or missing {field}"
+            return
+    coverage = ours.get("coverage", {})
+    required = ("requested_records", "evaluated_records", "requested_questions", "evaluated_questions")
+    if (any(coverage.get(k) is None for k in required) or coverage != theirs.get("coverage")
+            or coverage["requested_records"] != coverage["evaluated_records"]
+            or coverage["requested_questions"] != coverage["evaluated_questions"]):
+        comparison["reason"] = "Different, incomplete or missing coverage"
+        return
+    our_clean, their_clean = ours.get("clean", {}), theirs.get("clean", {})
+    if our_clean.get("n") != their_clean.get("n") or our_clean.get("n") is None:
+        comparison["reason"] = "Different or missing scored question count"
+        return
+    if any(not isinstance(clean.get(k), (int, float)) for clean in (our_clean, their_clean)
+           for k in comparison["deltas"]):
+        comparison["reason"] = "Missing clean metrics"
+        return
+    comparison.update(status="COMPARABLE", validation_protocol=ours["validation_protocol"],
+                      validation_set=ours["validation_set"], coverage=copy.deepcopy(coverage),
+                      candidate_report_path=ours.get("report_path"), reference_report_path=theirs.get("report_path"),
+                      deltas={k: our_clean[k] - their_clean[k] for k in comparison["deltas"]})
+
+
+def validate_candidate(candidate, queue, device="auto", timeout=None):
+    ckpt = PROJECT_ROOT / candidate["checkpoint_path"]
+    val_file = ckpt / "val_metrics.json"
+    current = candidate.get("metrics", {})
+    saved = json.loads(val_file.read_text()) if val_file.is_file() else {}
+    if saved.get("evaluation_status") == "EVALUATED" and saved.get("validation_set") == str(PROJECT_ROOT / FIXED_VAL_PATH):
+        if candidate.get("failure_reason"):
+            candidate.setdefault("evaluation_attempts", []).append({
+                "type": "PRIOR_RESULT", "status": candidate.get("status"),
+                "failure_reason": candidate["failure_reason"], "metrics": copy.deepcopy(current)})
+        current = saved
+        candidate["metrics"] = saved
+    if current.get("evaluation_status") == "EVALUATED" and current.get("validation_set") == str(PROJECT_ROOT / FIXED_VAL_PATH):
+        candidate.update(status="COMPLETED", evaluation_status="EVALUATED")
+        candidate.pop("failure_reason", None)
+        record_c03_comparison(candidate, queue)
+        save_queue(queue)
+        return True
+    attempts = candidate.setdefault("evaluation_attempts", [])
+    if candidate.get("failure_reason") or current:
+        attempts.append({"type": "PRIOR_RESULT", "status": candidate.get("status"),
+                         "failure_reason": candidate.get("failure_reason"), "metrics": copy.deepcopy(current)})
+    attempt = {"type": "VALIDATION", "started_at": _now(), "status": "EVALUATING", "device": device}
+    attempts.append(attempt)
+    candidate.update(evaluation_status="EVALUATING", validation_set=str(PROJECT_ROOT / FIXED_VAL_PATH))
+    save_queue(queue)
+    ok, metrics = run_fixed_validation(ckpt, val_file, device=device, timeout=timeout)
+    attempt.update(status=metrics["evaluation_status"], metrics=copy.deepcopy(metrics), finished_at=_now())
+    candidate.update(metrics=metrics, evaluation_status=metrics["evaluation_status"],
+                     status="COMPLETED" if ok else "FAILED", finished_at=_now())
+    if not ok:
+        candidate["failure_reason"] = "Validation evaluation failed"
+    else:
+        candidate.pop("failure_reason", None)
+    record_c03_comparison(candidate, queue)
+    save_queue(queue)
+    return ok
+
+
+def main_loop(validation_only=False, validation_device="auto", validation_timeout=None):
+    logger.info("=== Kev candidate queue ===")
     while True:
         queue = load_queue()
-        
-        # Check if there is an active running candidate
-        running_cands = [c for c in queue if c.get("status") == "RUNNING"]
-        if running_cands:
-            active_cand = running_cands[0]
-            cand_id = active_cand["candidate_id"]
-            
-            # Check PID from cursor or ps
-            cur_file = KEV_RUNS_ROOT / active_cand["name"] / "cursor.json"
-            active_pid = None
-            cd = {}
-            if cur_file.is_file():
-                try:
-                    cd = json.loads(cur_file.read_text(encoding="utf-8"))
-                    active_pid = cd.get("pid")
-                except Exception:
-                    pass
-            
-            if active_pid and is_pid_alive(active_pid):
-                logger.info(f"Candidate {cand_id} ({active_cand['name']}) is actively training (PID {active_pid}). Waiting...")
-                time.sleep(60)
-                continue
-            else:
-                logger.info(f"Candidate {cand_id} ({active_cand['name']}) training process exited. Proceeding to evaluation...")
-                ckpt_dir = PROJECT_ROOT / active_cand["checkpoint_path"]
-                training_file = ckpt_dir / "training_metrics.json"
-                training_metrics = json.loads(training_file.read_text(encoding="utf-8")) if training_file.is_file() else {}
-                training_exit = cd.get("exit_code")
-                active_cand["training_status"] = (
-                    "COMPLETED" if training_exit == 0 or (training_exit is None and training_metrics)
-                    else "FAILED" if training_exit is not None
-                    else "UNKNOWN"
-                )
-                active_cand["training_exit_code"] = training_exit
-                active_cand["training_metrics"] = {
-                    k: training_metrics.get(k) for k in
-                    ("optimizer_steps", "records_seen", "requested_records", "wall_seconds")
-                }
-                active_cand["training_source"] = str(training_file) if training_metrics else str(cur_file)
-                active_cand["evaluation_status"] = "NOT_EVALUATED"
-                
-                # Check checkpoint integrity
-                valid, msg = check_checkpoint_integrity(ckpt_dir)
-                if not valid:
-                    logger.error(f"Checkpoint integrity check failed for {cand_id}: {msg}. HALTING QUEUE (fail-closed)!")
-                    active_cand["status"] = "FAILED"
-                    active_cand["failure_reason"] = msg
-                    save_queue(queue)
-                    sys.exit(1)
-                
-                # Fixed Val Evaluation
-                val_file = ckpt_dir / "val_metrics.json"
-                active_cand["validation_set"] = str(PROJECT_ROOT / FIXED_VAL_PATH)
-                active_cand["evaluation_status"] = "EVALUATING"
-                save_queue(queue)
-                eval_ok, eval_metrics = run_fixed_validation(ckpt_dir, val_file)
-                active_cand["evaluation_status"] = eval_metrics["evaluation_status"]
-                active_cand["metrics"] = eval_metrics
-                if not eval_ok:
-                    logger.error(f"Validation evaluation failed for {cand_id}. HALTING QUEUE!")
-                    active_cand["status"] = "FAILED"
-                    active_cand["failure_reason"] = "Validation evaluation failed"
-                    save_queue(queue)
-                    sys.exit(1)
-                
-                active_cand["status"] = "COMPLETED"
-                active_cand.pop("failure_reason", None)
-                active_cand["finished_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-                active_cand["metrics"] = eval_metrics
-                save_queue(queue)
-                logger.info(f"Candidate {cand_id}: training={active_cand['training_status']}, evaluation={active_cand['evaluation_status']}")
-        
-        # Look for next queued candidate
-        queued_cands = [c for c in queue if c.get("status") == "QUEUED"]
-        if not queued_cands:
-            logger.info("All candidates in queue have completed or no candidates left. Exiting.")
-            break
-            
-        next_cand = queued_cands[0]
-        logger.info(f"Preparing next candidate: {next_cand['candidate_id']} ({next_cand['name']})")
-        
-        # Pre-execution checks and preparations
-        if next_cand["candidate_id"] == "KEV-V8-C05":
-            ensure_no_state_dataset()
-        
-        init_from_path = PROJECT_ROOT / next_cand["init_from"]
-        if not init_from_path.exists():
-            logger.error(f"Cannot initialize {next_cand['candidate_id']}: init_from path does not exist: {init_from_path}. HALTING!")
-            next_cand["status"] = "FAILED"
-            next_cand["failure_reason"] = f"Missing init_from path: {init_from_path}"
-            save_queue(queue)
-            sys.exit(1)
-            
-        cand_run_dir = KEV_RUNS_ROOT / next_cand["name"]
-        cand_run_dir.mkdir(parents=True, exist_ok=True)
-        out_ckpt_dir = cand_run_dir / "checkpoint"
-        out_ckpt_dir.mkdir(parents=True, exist_ok=True)
-        log_file = cand_run_dir / "train.log"
-        
-        train_cmd = [
-            str(PROJECT_ROOT / ".venv" / "bin" / "python"),
-            "-u",
-            "-m", "kev.train",
-            "--base", str(PROJECT_ROOT / "models" / "qwen3.5-4b-base"),
-            "--init_from", str(init_from_path),
-            "--data", str(PROJECT_ROOT / next_cand["data_path"]),
-            "--out", str(out_ckpt_dir),
-            "--device", "cuda",
-            "--dtype", "bf16",
-            "--weights_dtype", "bf16",
-            "--batch", str(next_cand.get("batch", "1")),
-            "--accum", str(next_cand.get("accum", "4")),
-            "--lr", str(next_cand.get("lr", "2e-5")),
-            "--lora", str(next_cand.get("lora", "16")),
-            "--epochs", str(next_cand.get("epochs", "1")),
-            "--seed", "42"
-        ] + next_cand.get("extra_args", [])
-        
-        logger.info(f"Dispatching candidate {next_cand['candidate_id']} command: {' '.join(train_cmd)}")
-        env = os.environ.copy()
-        env["PYTHONPATH"] = str(PROJECT_ROOT / "external" / "kev")
-        
-        with open(log_file, "a", encoding="utf-8") as lf:
-            proc = subprocess.Popen(train_cmd, cwd=str(PROJECT_ROOT), env=env, stdout=lf, stderr=subprocess.STDOUT)
-            
-        next_cand["status"] = "RUNNING"
-        next_cand["training_status"] = "RUNNING"
-        next_cand["evaluation_status"] = "NOT_EVALUATED"
-        next_cand["pid"] = proc.pid
-        next_cand["started_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        candidate = next((c for c in queue if c.get("status") != "COMPLETED"), None)
+        if candidate is None:
+            return 0
+        alive = refresh_training(candidate)
         save_queue(queue)
-        
-        # Write cursor for telemetry
-        cursor_data = {
-            "run_id": next_cand["name"],
-            "candidate_id": next_cand["candidate_id"],
-            "pid": proc.pid,
-            "status": "TRAINING",
-            "epoch": 0,
-            "step": 0,
-            "loss": None,
-            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-        }
-        (cand_run_dir / "cursor.json").write_text(json.dumps(cursor_data, indent=2), encoding="utf-8")
-        logger.info(f"Candidate {next_cand['candidate_id']} launched with PID {proc.pid}. Monitoring...")
+        if alive:
+            if validation_only:
+                logger.info("Training is active; no validation started")
+                return 1
+            time.sleep(60)
+            continue
+        prior_val = candidate.get("metrics", {})
+        saved_val_file = PROJECT_ROOT / candidate["checkpoint_path"] / "val_metrics.json"
+        if saved_val_file.is_file():
+            saved_val = json.loads(saved_val_file.read_text())
+            if saved_val.get("evaluation_status") == "EVALUATED":
+                prior_val = saved_val
+        successful_val = prior_val.get("evaluation_status") == "EVALUATED" and prior_val.get("validation_set") == str(PROJECT_ROOT / FIXED_VAL_PATH)
+        if candidate.get("status") == "FAILED" and not validation_only and not successful_val:
+            logger.error("%s remains FAILED: %s", candidate["candidate_id"], candidate.get("failure_reason"))
+            return 1
+        if candidate["training_status"] == "COMPLETED":
+            ok = validate_candidate(candidate, queue, validation_device, validation_timeout)
+            if not ok or validation_only:
+                return 0 if ok else 1
+            continue
+        if validation_only:
+            logger.info("%s has no completed training to validate", candidate["candidate_id"])
+            return 1
+        if candidate.get("status") == "RUNNING" or candidate["training_status"] == "FAILED":
+            candidate.update(status="FAILED", failure_reason="Training exited without successful completion")
+            save_queue(queue)
+            return 1
+        data = PROJECT_ROOT / candidate["data_path"]
+        if not data.is_file():
+            candidate.update(status="PENDING", pending_reason=f"Missing training data: {data}")
+            save_queue(queue)
+            return 1
+        init = PROJECT_ROOT / candidate["init_from"]
+        if not init.exists():
+            candidate.update(status="PENDING", pending_reason=f"Missing init_from: {init}")
+            save_queue(queue)
+            return 1
+        adapter_config = init / "adapter_config.json"
+        training_config = init / "training_config.json"
+        source_args = json.loads(training_config.read_text(encoding="utf-8"))["args"] if training_config.is_file() else {}
+        init_rank = source_args.get("lora")
+        rank_source = training_config
+        if init_rank is None and adapter_config.is_file():
+            init_rank = json.loads(adapter_config.read_text(encoding="utf-8")).get("r")
+            rank_source = adapter_config
+        candidate["init_lora"] = init_rank
+        candidate["init_lora_source"] = str(rank_source) if init_rank is not None else None
+        if init_rank is not None and int(candidate["lora"]) != int(init_rank):
+            candidate.update(status="PENDING", configuration_status="INCOMPATIBLE",
+                             pending_reason=f"warm_start lora: source rank {init_rank}, requested rank {candidate['lora']}")
+            save_queue(queue)
+            return 1
+        peak_source = PROJECT_ROOT / DEFAULT_CANDIDATES[0]["checkpoint_path"] / "training_metrics.json"
+        peak_metrics = json.loads(peak_source.read_text(encoding="utf-8"))
+        peak_bytes = peak_metrics["peak_device_bytes"]
+        required_mib = (peak_bytes + 1048575) // 1048576 + 2048
+        gpu_cmd = ["nvidia-smi", "--query-gpu=memory.free", "--format=csv,noheader,nounits", "--id=0"]
+        gpu_result = subprocess.run(gpu_cmd, capture_output=True, text=True, check=True)
+        free_mib = int(gpu_result.stdout.strip())
+        candidate["gpu_resource"] = {"source": str(peak_source), "peak_device_bytes": peak_bytes,
+                                     "margin_mib": 2048, "required_mib": required_mib,
+                                     "free_mib": free_mib, "observed_at": _now(), "command": gpu_cmd}
+        if free_mib < required_mib:
+            candidate.update(status="WAITING_FOR_GPU", training_status="WAITING_FOR_GPU")
+            save_queue(queue)
+            logger.info("%s WAITING_FOR_GPU: free %s MiB, required %s MiB",
+                        candidate["candidate_id"], free_mib, required_mib)
+            return 1
+        candidate.pop("pending_reason", None)
+        run_dir = KEV_RUNS_ROOT / candidate["name"]
+        run_dir.mkdir(parents=True, exist_ok=True)
+        out_ckpt = PROJECT_ROOT / candidate["checkpoint_path"]
+        train_cmd = [str(PROJECT_ROOT / ".venv/bin/python"), "-u", "-m", "kev.train",
+                     "--base", str(PROJECT_ROOT / "models/qwen3.5-4b-base"),
+                     "--init_from", str(init), "--data", str(data), "--out", str(out_ckpt),
+                     "--device", "cuda", "--dtype", "bf16", "--weights_dtype", "bf16",
+                     "--batch", str(candidate.get("batch", "1")), "--accum", str(candidate.get("accum", "4")),
+                     "--lr", str(candidate["lr"]), "--lora", str(candidate["lora"]),
+                     "--epochs", str(candidate["epochs"]), "--seed", "42"] + candidate.get("extra_args", [])
+        if candidate["candidate_id"] == "KEV-V8-C04":
+            parameters = {**source_args, "lr": float(candidate["lr"]),
+                          "init_from": str(init), "out": str(out_ckpt)}
+            candidate["training_parameters"] = parameters
+            candidate["training_parameters_source"] = str(training_config)
+            train_cmd = [str(PROJECT_ROOT / ".venv/bin/python"), "-u", "-m", "kev.train"]
+            for name, value in parameters.items():
+                if value is not None:
+                    train_cmd.extend([f"--{name}", str(value)])
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(PROJECT_ROOT / "external/kev")
+        started = time.monotonic()
+        with (run_dir / "train.log").open("a", encoding="utf-8") as log:
+            proc = subprocess.Popen(train_cmd, cwd=str(PROJECT_ROOT), env=env, stdout=subprocess.PIPE,
+                                    stderr=subprocess.STDOUT, text=True, bufsize=1)
+            candidate.update(status="RUNNING", training_status="RUNNING", evaluation_status="NOT_EVALUATED",
+                             training_kind="FORMAL_LORA", pid=proc.pid, started_at=_now())
+            attempt = {"command": train_cmd, "pid": proc.pid, "started_at": candidate["started_at"]}
+            candidate.setdefault("training_attempts", []).append(attempt)
+            cursor = {"run_id": candidate["name"], "candidate_id": candidate["candidate_id"],
+                      "pid": proc.pid, "status": "TRAINING", "step": None, "epoch": None, "loss": None}
+            cursor_file = (out_ckpt if candidate["candidate_id"] == "KEV-V8-C09" else run_dir) / "cursor.json"
+            cursor_file.parent.mkdir(parents=True, exist_ok=True)
+            save_queue(queue)
+            cursor_file.write_text(json.dumps(cursor, indent=2))
+            for line in proc.stdout:
+                log.write(line)
+                log.flush()
+                progress = _progress(line)
+                if progress:
+                    cursor.update(progress, updated_at=_now())
+                    candidate.update(progress)
+                    cursor_file.write_text(json.dumps(cursor, indent=2))
+                    save_queue(queue)
+            exit_code = proc.wait()
+        cursor.update(status="COMPLETED" if exit_code == 0 else "FAILED", exit_code=exit_code, updated_at=_now())
+        cursor_file.write_text(json.dumps(cursor, indent=2))
+        attempt.update(exit_code=exit_code, duration_sec=time.monotonic() - started, finished_at=_now())
+        refresh_training(candidate)
+        if exit_code != 0:
+            candidate.update(status="FAILED", failure_reason=f"Training exit code {exit_code}")
+        save_queue(queue)
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Continue the existing Kev candidate queue")
+    parser.add_argument("--validation-only", action="store_true")
+    parser.add_argument("--validation-device", default="auto", choices=("auto", "cpu", "cuda", "mps"))
+    parser.add_argument("--validation-timeout", type=float, default=None, help="Seconds; omitted means no timeout")
+    args = parser.parse_args(argv)
+    return main_loop(args.validation_only, args.validation_device, args.validation_timeout)
+
 
 if __name__ == "__main__":
-    main_loop()
+    sys.exit(main())

@@ -127,6 +127,18 @@ def run_browser_verification(url=TARGET_URL, output_dir=Path("output/playwright"
                     if model.get("loss") is None:
                         require(card.locator(".loss").inner_text().startswith("N/A"),
                                 "missing_loss_is_na", family=family)
+                    if family == "kev" and model.get("validation_coverage"):
+                        coverage = model["validation_coverage"]
+                        expected = f"覆盖 {coverage.get('evaluated_records')} / {coverage.get('requested_records')}"
+                        require(normalized(expected) in normalized(card.inner_text()), "kev_val_coverage", expected=expected)
+                        for field, label in (("acc", "Accuracy"), ("nll", "NLL"), ("brier", "Brier"), ("ece", "ECE")):
+                            value = model.get("validation_metrics", {}).get(field)
+                            formatted = f"{value:.3f}".rstrip("0").rstrip(".") if numeric(value) else "N/A"
+                            require(f"{label} {formatted}" in normalized(card.inner_text()),
+                                    "kev_val_metric", field=field, expected=value)
+                        for candidate in model.get("candidates", []):
+                            require(f"{candidate['candidate_id']} {candidate['status']}" in card.inner_text(),
+                                    "kev_candidate_status", candidate=candidate["candidate_id"], status=candidate["status"])
 
                     family_runs = [r for r in runs if r["family"] == family]
                     row = page.locator("#counts-body tr").filter(

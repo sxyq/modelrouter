@@ -27,6 +27,7 @@ _JSON_CACHE = {}
 _LOG_CACHE = {}
 _PROGRESS = {}
 _HISTORY = {}
+_VAL_CACHE = {}
 logger = logging.getLogger("fetch_live_status")
 
 
@@ -69,6 +70,56 @@ def relative(path, root):
 
 def run_key(family, path, root):
     return family + "--" + re.sub(r"[^a-zA-Z0-9_.-]", "--", relative(path, root))
+
+
+def kev_cursor(directory):
+    directory = Path(directory)
+    return directory / "cursor.json" if (directory / "cursor.json").is_file() else directory.parent / "cursor.json"
+
+
+def live_kev_validation(directory, candidate):
+    result = read_json(directory / "val_metrics.json", candidate.get("metrics", {}))
+    status = result.get("evaluation_status", candidate.get("evaluation_status"))
+    fields = {"evaluation_status": status, "validation_metrics": result.get("clean", {}),
+              "validation_coverage": result.get("coverage"), "evaluation_seconds": result.get("duration_sec"),
+              "validation_device": result.get("device"), "validation_attempt": result.get("attempt_id")}
+    if status != "EVALUATING" or not result.get("report_path"):
+        return fields
+    data_path = Path(result["validation_set"])
+    data_stat = data_path.stat()
+    identity = (data_stat.st_mtime_ns, data_stat.st_size)
+    data = _VAL_CACHE.get(str(data_path))
+    if not data or data["identity"] != identity:
+        records = questions = 0
+        with data_path.open(encoding="utf-8") as stream:
+            for line in stream:
+                if line.strip():
+                    record = json.loads(line)
+                    records += 1
+                    questions += len(record["questions"])
+        data = {"identity": identity, "records": records, "questions": questions}
+        _VAL_CACHE[str(data_path)] = data
+    predictions = Path(result["report_path"]).parent / "predictions.jsonl"
+    progress = _VAL_CACHE.setdefault(str(predictions), {"offset": 0, "records": 0, "questions": 0})
+    if predictions.is_file():
+        with predictions.open(encoding="utf-8") as stream:
+            stream.seek(progress["offset"])
+            while True:
+                position = stream.tell()
+                line = stream.readline()
+                if not line or not line.endswith("\n"):
+                    progress["offset"] = position
+                    break
+                prediction = json.loads(line)
+                progress["records"] += 1
+                progress["questions"] += len(prediction["rows"])
+        fields["validation_last_progress_at"] = datetime.fromtimestamp(predictions.stat().st_mtime, timezone.utc).isoformat()
+    fields["validation_coverage"] = {"requested_records": data["records"], "requested_questions": data["questions"],
+                                     "evaluated_records": progress["records"], "evaluated_questions": progress["questions"]}
+    attempts = candidate.get("evaluation_attempts", [])
+    started_at = result.get("started_at") or (attempts[-1].get("started_at") if attempts else None)
+    fields["evaluation_seconds"] = age_seconds(started_at)
+    return fields
 
 
 def read_local_processes():
@@ -342,7 +393,7 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
         config = read_json(directory / "training_config.json", {})
         metrics = read_json(directory / "training_metrics.json", {})
         args = config.get("args", {})
-        cursor = read_json(directory.parent / "cursor.json", {}) if directory.name in ("formal_run", "checkpoint") else {}
+        cursor = read_json(kev_cursor(directory), {}) if directory.name in ("formal_run", "checkpoint") else {}
         plan = next((q for q in kev_queue if q.get("checkpoint_path") == relative(directory, root)), {})
         key = run_key("kev", directory, root)
         rid = plan.get("candidate_id", directory.parent.name + "/" + directory.name)
@@ -352,7 +403,7 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
         partial = bool(args.get("max_steps") or args.get("stop_after"))
         protocol = "KEV_IMPORTED_LORA" if imported else ("KEV_FORMAL_LORA" if args.get("device") == "cuda" and not partial else "KEV_LORA_SMOKE")
         checkpoint = _checkpoint(directory, rid + ":adapter", None, {}, root)
-        result = read_json(directory / "result.json", plan.get("metrics", {}))
+        result = read_json(directory / "val_metrics.json", read_json(directory / "result.json", plan.get("metrics", {})))
         clean = result.get("clean", {})
         validation = [{"epoch": None, "step": metrics.get("optimizer_steps"), "stream": "clean",
                        "loss": clean.get("nll"), "accuracy": clean.get("acc"), "brier": clean.get("brier"),
@@ -361,13 +412,15 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                        "source": relative(directory / "val_metrics.json" if result.get("validation_protocol") else directory / "result.json", root)}] if clean else []
         completed_epochs = len(metrics.get("grad_norm", [])) if metrics and not partial else 0
         row = {"key": key, "family": "kev", "run_id": rid, "protocol": protocol,
-               "status": "COMPLETED" if metrics else cursor.get("status", "UNKNOWN"),
+               "status": "COMPLETED" if metrics else plan.get("training_status", cursor.get("status", "UNKNOWN")),
                "execution_evidence": bool(metrics or cursor.get("step")),
-               "training_status": "COMPLETED" if metrics else cursor.get("status", "UNKNOWN"),
+               "training_status": "COMPLETED" if metrics else plan.get("training_status", cursor.get("status", "UNKNOWN")),
                "evaluation_status": plan.get("evaluation_status") or ("FAILED" if plan.get("failure_reason") == "Validation evaluation failed" else "EVALUATED" if clean else "NOT_EVALUATED"),
                "queue_status": plan.get("status"), "failure_reason": plan.get("failure_reason"),
+               "validation_metrics": clean, "validation_coverage": result.get("coverage"),
+               "evaluation_seconds": result.get("duration_sec"),
                "epochs": completed_epochs, "planned_epochs": args.get("epochs"),
-               "root": relative(directory, root), "started_at": None, "finished_at": None,
+               "root": relative(directory, root), "started_at": plan.get("started_at"), "finished_at": plan.get("finished_at"),
                "parent_checkpoint": Path(args["init_from"]).name if args.get("init_from") else None,
                "validation": validation, "checkpoints": [checkpoint] if checkpoint["physical"] else [],
                "curve_path": f"shards/training_runs/{key}.json", "source": relative(directory / "training_config.json", root),
@@ -380,7 +433,7 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
         row["training_kind"] = "IMPORTED_LORA" if imported else ("LORA_SMOKE" if partial or args.get("device") != "cuda" else "FORMAL_LORA")
         runs.append(row)
         log = directory / "train.log"
-        if directory.name == "formal_run" and not log.is_file():
+        if directory.name in ("formal_run", "checkpoint") and not log.is_file():
             log = directory.parent / "train.log"
         # A shared unlabelled CPU log cannot identify smoke_run vs test_run.
         points = list(read_log_points(log, root, key, "kev").get(key, []))
@@ -542,7 +595,7 @@ def _live_family(family, processes, history):
         if recent:
             row = max(recent, key=lambda r: (PROJECT_ROOT / r["root"] / "training_metrics.json").stat().st_mtime)
             terminal = read_json(PROJECT_ROOT / row["root"] / "training_metrics.json", {})
-            cursor = read_json((PROJECT_ROOT / row["root"]).parent / "cursor.json", {})
+            cursor = read_json(kev_cursor(PROJECT_ROOT / row["root"]), {})
             metric.update(run_id=row["run_id"], status=row.get("training_status", row["status"]),
                           epoch=row["epochs"], planned_epochs=row.get("planned_epochs"),
                           step=terminal.get("optimizer_steps"), optimizer_updates=terminal.get("optimizer_steps"),
@@ -550,14 +603,16 @@ def _live_family(family, processes, history):
                           evaluation_status=row.get("evaluation_status"), failure_reason=row.get("failure_reason"),
                           queue_status=row.get("queue_status"), protocol=row["protocol"],
                           last_progress_at=cursor.get("updated_at"), loss=cursor.get("loss"),
-                          loss_step=cursor.get("step"))
+                          loss_step=cursor.get("loss_step", cursor.get("step")))
+            metric.update(validation_metrics=row.get("validation_metrics"),
+                          validation_coverage=row.get("validation_coverage"), evaluation_seconds=row.get("evaluation_seconds"))
         return metric
     if family == "laya":
         directory = PROJECT_ROOT / proc["out_root"] / proc["run_id"]
     else:
         directory = PROJECT_ROOT / proc["out"]
     row = next((r for r in history["runs"] if r["root"] == relative(directory, PROJECT_ROOT)), {})
-    cursor_path = directory / "cursor.json" if family == "laya" else directory.parent / "cursor.json"
+    cursor_path = directory / "cursor.json" if family == "laya" else kev_cursor(directory)
     cursor = read_json(cursor_path, {})
     epoch = cursor.get("epoch")
     step = cursor.get("step_count", cursor.get("step"))
@@ -576,6 +631,7 @@ def _live_family(family, processes, history):
     if not timestamp:
         metric["status"] = "PROGRESS_UNAVAILABLE"
     if family == "kev":
+        metric["loss_step"] = cursor.get("loss_step", step)
         metric["consumed_records"] = None
         metric["consumed_scope"] = "Cursor count is step × batch × accum, not an upstream observed records_seen count"
     identity = (metric["run_id"], step)
@@ -607,9 +663,17 @@ def fetch_local_server_data():
     else:
         history = previous["payload"]
     disk = shutil.disk_usage(PROJECT_ROOT)
+    queue = read_json(PROJECT_ROOT / "our-project/results/training/kev/candidate_queue.json", [])
+    kev = _live_family("kev", proc, history)
+    kev["candidates"] = [{k: c.get(k) for k in ("candidate_id", "status", "training_status", "evaluation_status", "failure_reason", "pending_reason", "configuration_status", "checkpoint_path")} for c in queue]
+    kev["completed_candidates"] = sum(c.get("status") == "COMPLETED" and c.get("evaluation_status") == "EVALUATED" for c in queue)
+    current = next((c for c in queue if c.get("candidate_id") == kev.get("run_id")), {})
+    if current:
+        kev.update(live_kev_validation(PROJECT_ROOT / current["checkpoint_path"], current),
+                   queue_status=current.get("status"), failure_reason=current.get("failure_reason"))
     return {"connection_status": "CONNECTED", "gpu": read_local_gpu_status(), "process": proc,
             "disk": {"total_bytes": disk.total, "used_bytes": disk.used, "free_bytes": disk.free},
-            "laya": _live_family("laya", proc, history), "kev": _live_family("kev", proc, history),
+            "laya": _live_family("laya", proc, history), "kev": kev,
             "history": {"index": "shards/training_history.json", "revision": history["revision"]}}
 
 
