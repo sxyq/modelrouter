@@ -411,6 +411,7 @@ def run_experiment(run, batch_root, model_dir, out_root, parent_checkpoint=None,
             run_meta=run_meta,
             entry=entry,
         )
+        best_epoch = run_meta.get('best_epoch')
         if will_early_stop:
             raise StopRun('two epochs without 0.5% S1 validation-loss improvement')
 
@@ -778,6 +779,7 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
             entry=entry,
             manifest=manifest,
         )
+        best_epoch = run_meta.get('best_epoch')
         checkpoint_seconds = time.time() - checkpoint_started
         epoch_total_seconds = time.time() - epoch_train_started
         entry['checkpoint_seconds'] = round(checkpoint_seconds, 3)
@@ -1147,7 +1149,7 @@ def run_full_coverage_stream_run(
     materialized_total_items = 0
     encoded_total_items = 0
     consumed_units_set = set()
-    best_epoch = None
+    best_epoch = run_meta.get("best_epoch")
 
     if resume_mode == "COMPLETED":
         if is_regenerate:
@@ -1549,6 +1551,7 @@ def run_full_coverage_stream_run(
                 manifest=manifest_data,
             )
             history = run_meta.get("history", history)
+            best_epoch = run_meta.get("best_epoch")
 
             # Update restorable cursor pointing to completed epoch
             cursor_data = {

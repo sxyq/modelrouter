@@ -1,600 +1,619 @@
 #!/usr/bin/env python3
-"""High-Density Synchronizer for ModelRouter Training & Agent Benchmark Dashboard.
-
-Strictly follows V8 §7.6, §8.4, and §9.1 specifications:
-- Dual-mode operation: supports both `--source local` (on A6000) and `--source ssh` (on Mac).
-- Symmetrical metrics for Laya-421M and Kev-4B with candidate version counts (/12).
-- Real-time GPU metrics, training cursors, logs, and Port 8000 Router Serving status.
-- Staleness detection: marks STALE/STALLED if model process exists but cursor does not advance.
-- Reads global token budget (< 1,000,000 tokens) from experiments/agent_pilot/token_budget.json.
-- Separates REAL_AGENT_OFFICIAL_EVAL from MOCK_STRESS runs.
-- Atomic updates via temporary file and os.replace to prevent partial reads.
-"""
+"""Read training records and publish the existing dashboard's live and per-run data."""
 from __future__ import annotations
 
 import argparse
 import json
 import logging
 import os
+import platform
 import re
-import socket
+import shlex
+import shutil
 import subprocess
 import time
-import urllib.error
 import urllib.request
+from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+OUR_PROJECT_DASHBOARD_DIR = PROJECT_ROOT / "our-project/dashboard"
+OLD_CORE_IDS = {
+    "P0_B03_C01_QB_PB-e02", "P0_B01_C01_QB_PB-e02", "P0_B03_C05_QB_PB-e02",
+    "P0_B03_C08_QB_PB-e02", "P0_B02_C01_QB_PB-e02",
+}
+_JSON_CACHE = {}
+_LOG_CACHE = {}
+_PROGRESS = {}
+_HISTORY = {}
 logger = logging.getLogger("fetch_live_status")
 
-WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
-A6000_PROJECT_ROOT = Path("/home/syy/路由")
 
-# Paths depending on environment
-IS_A6000 = A6000_PROJECT_ROOT.is_dir()
-PROJECT_ROOT = A6000_PROJECT_ROOT if IS_A6000 else WORKSPACE_ROOT
-
-DASHBOARD_DIR = PROJECT_ROOT / "docs" / "training-dashboard"
-OUR_PROJECT_DASHBOARD_DIR = PROJECT_ROOT / "our-project" / "dashboard"
-LEDGERS_DIR = PROJECT_ROOT / "experiments" / "agent_pilot" / "ledgers"
-TOKEN_BUDGET_FILE = PROJECT_ROOT / "experiments" / "agent_pilot" / "token_budget.json"
-
-_NO_PROXY_OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-
-# Persistent state tracking for staleness detection
-_LAST_PROGRESS_STATE = {
-    "laya_step": None,
-    "laya_last_advanced": None,
-    "kev_step": None,
-    "kev_last_advanced": None
-}
+def now_iso():
+    return datetime.now(timezone.utc).isoformat()
 
 
-def read_local_gpu_status() -> Dict[str, Any]:
-    gpu = {"used_mb": None, "total_mb": 49140.0, "util_pct": None, "temp_c": None, "power_w": None}
-    try:
-        r = subprocess.run(
-            ["nvidia-smi", "--query-gpu=memory.used,memory.total,utilization.gpu,temperature.gpu,power.draw", "--format=csv,noheader,nounits"],
-            capture_output=True, text=True, timeout=3
-        )
-        if r.returncode == 0 and r.stdout.strip():
-            parts = [p.strip() for p in r.stdout.strip().split(",")]
-            if len(parts) >= 5:
-                gpu["used_mb"] = float(parts[0])
-                gpu["total_mb"] = float(parts[1])
-                gpu["util_pct"] = float(parts[2])
-                gpu["temp_c"] = float(parts[3])
-                gpu["power_w"] = float(parts[4])
-    except Exception as e:
-        gpu["error"] = str(e)
-    return gpu
+def atomic_json(path, value):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp.replace(path)
 
 
-def read_local_processes() -> Dict[str, Any]:
-    laya_train_pid, laya_daemon_pid = None, None
-    kev_train_pid, kev_supervisor_pid, kev_dispatcher_pid = None, None, None
-    try:
-        ps_res = subprocess.run(["ps", "-eo", "pid,cmd"], capture_output=True, text=True, timeout=3)
-        if ps_res.returncode == 0:
-            for line in ps_res.stdout.splitlines():
-                if "laya_batch_train.py" in line and "grep" not in line:
-                    laya_train_pid = int(line.strip().split()[0])
-                if "run_full_graded_queue.py" in line and "grep" not in line:
-                    laya_daemon_pid = int(line.strip().split()[0])
-                if "kev.train" in line and "grep" not in line:
-                    kev_train_pid = int(line.strip().split()[0])
-                if "run_kev_continuous_train.py" in line and "grep" not in line:
-                    kev_supervisor_pid = int(line.strip().split()[0])
-                if "kev_candidate_dispatcher.py" in line and "grep" not in line:
-                    kev_dispatcher_pid = int(line.strip().split()[0])
-    except Exception:
-        pass
-
-    return {
-        "laya": {"train_pid": laya_train_pid, "daemon_pid": laya_daemon_pid, "is_training": laya_train_pid is not None},
-        "kev": {
-            "train_pid": kev_train_pid,
-            "supervisor_pid": kev_supervisor_pid,
-            "dispatcher_pid": kev_dispatcher_pid,
-            "is_training": kev_train_pid is not None
-        }
-    }
+def read_json(path, default=None):
+    path = Path(path)
+    if not path.is_file():
+        return default
+    st = path.stat()
+    identity = (st.st_mtime_ns, st.st_size)
+    saved = _JSON_CACHE.get(str(path))
+    if saved and saved[0] == identity:
+        return saved[1]
+    value = json.loads(path.read_text(encoding="utf-8"))
+    _JSON_CACHE[str(path)] = (identity, value)
+    return value
 
 
-def read_local_laya_metrics(processes: Dict[str, Any]) -> Dict[str, Any]:
-    p0_root = PROJECT_ROOT / "runs" / "MR-FULL-GRADED-P0-DATA-REPAIR-20261012"
-    laya_is_training = processes["laya"]["is_training"]
-    current_run = "F06" if laya_is_training else None
-
-    # Laya recent losses from continuous queue log or chunk cursor
-    laya_recent_losses = []
-    q_log = p0_root / "continuous_queue.log"
-    if q_log.is_file():
-        try:
-            for line in q_log.read_text(encoding="utf8", errors="ignore").splitlines()[-30:]:
-                m = re.search(r"\[(F\d+)\].*loss=([0-9.]+)", line)
-                if m:
-                    laya_recent_losses.append(float(m.group(2)))
-            laya_recent_losses = laya_recent_losses[-10:]
-        except Exception:
-            pass
-
-    # Historical best validation (P0_B03_C01_QB_PB Epoch 2: 68.63%, Loss 0.6039)
-    # Serving best (F05 Epoch 1: 67.56%, Loss 0.5978)
-    val_trend = [
-        {"run": "P0_B03_C01", "epoch": 2, "s1_acc": 0.6863, "loss": 0.6039, "brier": 0.4069, "type": "HISTORICAL_BEST"},
-        {"run": "F05", "epoch": 1, "s1_acc": 0.6756, "loss": 0.5978, "brier": 0.4130, "type": "ACTIVE_SERVING"},
-        {"run": "F05_S1", "epoch": 2, "s1_acc": 0.6791, "loss": 0.5933, "brier": 0.4121, "type": "SINGLE_STREAM_ABLATION"},
-        {"run": "F03", "epoch": 2, "s1_acc": 0.6720, "loss": 0.6059, "brier": 0.4190, "type": "COMPLETED_RUN"},
-    ]
-
-    laya_metrics = {
-        "family": "laya",
-        "run_id": current_run,
-        "is_training": laya_is_training,
-        "status": "TRAINING" if laya_is_training else "IDLE",
-        "epoch": None,
-        "chunk": None,
-        "total_chunks": 361,
-        "step": None,
-        "total_steps": 92280,
-        "loss": None,
-        "best_s1_acc": 0.6863,      # Verified historical best on disk (P0_B03 e02)
-        "serving_s1_acc": 0.6756,   # Verified active serving model (F05 e01)
-        "best_val_loss": 0.6039,
-        "brier_score": 0.4069,
-        "candidates": {
-            "PLANNED": 22,
-            "TRAINING": 1 if laya_is_training else 0,
-            "VALIDATED": 11,
-            "CHECKPOINT_AVAILABLE": 5
-        },
-        "completed_runs_count": 16,
-        "queue_status": "RUNNING" if laya_is_training else "IDLE",
-        "serving_checkpoint": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
-        "serving_status": "LOADED_VERIFIED",
-        "recent_loss_series": laya_recent_losses,
-        "val_trend": val_trend,
-        "last_progress_at": None
-    }
-
-    cur_path = p0_root / "F06" / "cursor.json"
-    if cur_path.is_file():
-        try:
-            cd = json.loads(cur_path.read_text(encoding="utf8"))
-            laya_metrics["epoch"] = cd.get("epoch")
-            laya_metrics["chunk"] = cd.get("chunk_idx") or cd.get("chunk")
-            laya_metrics["total_chunks"] = cd.get("total_chunks", 361)
-            step_count = cd.get("step_count") or cd.get("step")
-            laya_metrics["step"] = step_count
-            laya_metrics["total_steps"] = cd.get("total_updates", 92280)
-            loss_val = cd.get("latest_chunk_loss") if cd.get("latest_chunk_loss") is not None else cd.get("loss")
-            if loss_val is not None:
-                laya_metrics["loss"] = round(float(loss_val), 4)
-            laya_metrics["last_progress_at"] = cd.get("updated_at")
-
-            # Staleness check
-            now_t = time.time()
-            if _LAST_PROGRESS_STATE["laya_step"] != step_count:
-                _LAST_PROGRESS_STATE["laya_step"] = step_count
-                _LAST_PROGRESS_STATE["laya_last_advanced"] = now_t
-            elif _LAST_PROGRESS_STATE["laya_last_advanced"]:
-                stale_dur = now_t - _LAST_PROGRESS_STATE["laya_last_advanced"]
-                if stale_dur > 300 and laya_is_training:
-                    laya_metrics["status"] = "STALE"
-                    laya_metrics["queue_status"] = "STALLED"
-        except Exception:
-            pass
-
-    # Dynamically append newly validated epochs from active runs (e.g. F06)
-    f06_metrics_file = p0_root / "F06" / "epoch_metrics.json"
-    if f06_metrics_file.is_file():
-        try:
-            epochs_data = json.loads(f06_metrics_file.read_text(encoding="utf8"))
-            for ep in epochs_data:
-                s1_info = ep.get("validation", {}).get("S1", {})
-                if s1_info:
-                    val_trend.append({
-                        "run": "F06",
-                        "epoch": ep.get("epoch"),
-                        "s1_acc": round(float(s1_info.get("accuracy", 0)), 4),
-                        "loss": round(float(s1_info.get("loss", 0)), 4),
-                        "brier": round(float(s1_info.get("brier", 0)), 4),
-                        "s2_acc": round(float(ep.get("validation", {}).get("S2", {}).get("accuracy", 0)), 4),
-                        "s3_acc": round(float(ep.get("validation", {}).get("S3", {}).get("accuracy", 0)), 4),
-                        "type": "NEW_VALIDATED_EPOCH"
-                    })
-        except Exception:
-            pass
-
-    return laya_metrics
+def age_seconds(value):
+    if not value:
+        return None
+    dt = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    return max(0, time.time() - dt.timestamp())
 
 
-def read_local_kev_metrics(processes: Dict[str, Any]) -> Dict[str, Any]:
-    kev_root = PROJECT_ROOT / "runs" / "KEV-V8-HOMOLOGOUS-20261018"
-    kev_is_training = processes["kev"]["is_training"]
-    kev_cursor = kev_root / "cursor.json"
-    kev_cur_data = {}
-    if kev_cursor.is_file():
-        try:
-            kev_cur_data = json.loads(kev_cursor.read_text(encoding="utf8"))
-        except Exception:
-            pass
-
-    # Kev recent losses from train.log
-    kev_recent_losses = []
-    kev_log = kev_root / "train.log"
-    if kev_log.is_file():
-        try:
-            for line in kev_log.read_text(encoding="utf8", errors="ignore").splitlines():
-                m = re.search(r"step\s+(\d+)/\d+\s+loss\s+([0-9.]+)", line)
-                if m:
-                    kev_recent_losses.append(float(m.group(2)))
-            kev_recent_losses = kev_recent_losses[-10:]
-        except Exception:
-            pass
-
-    # Baseline metrics from adapter result.json (fixed Val 2,437 items)
-    kev_res_path = PROJECT_ROOT / "models" / "kev-4b-adapter" / "result.json"
-    kev_base_acc = 0.8726
-    kev_base_nll = 0.5162
-    kev_base_brier = 0.2037
-    if kev_res_path.is_file():
-        try:
-            kd = json.loads(kev_res_path.read_text(encoding="utf8"))
-            clean = kd.get("clean", {})
-            kev_base_acc = round(float(clean.get("acc", 0.8726)), 4)
-            kev_base_nll = round(float(clean.get("nll", 0.5162)), 4)
-            kev_base_brier = round(float(clean.get("brier", 0.2037)), 4)
-        except Exception:
-            pass
-
-    current_step = kev_cur_data.get("step", 0)
-    kev_status = kev_cur_data.get("status", "TRAINING" if kev_is_training else "IDLE")
-
-    # Staleness check
-    now_t = time.time()
-    if _LAST_PROGRESS_STATE["kev_step"] != current_step:
-        _LAST_PROGRESS_STATE["kev_step"] = current_step
-        _LAST_PROGRESS_STATE["kev_last_advanced"] = now_t
-    elif _LAST_PROGRESS_STATE["kev_last_advanced"]:
-        stale_dur = now_t - _LAST_PROGRESS_STATE["kev_last_advanced"]
-        if stale_dur > 300 and kev_is_training:
-            kev_status = "STALE"
-
-    return {
-        "family": "kev",
-        "run_id": kev_cur_data.get("run_id", "KEV-V8-HOMOLOGOUS-20261018"),
-        "base_model": "Qwen3.5-4B-Base",
-        "lora_rank": 16,
-        "checkpoint": "models/kev-4b-adapter/head.pt",
-        "is_training": kev_is_training,
-        "status": kev_status,
-        "epoch": kev_cur_data.get("epoch", 0),
-        "step": current_step,
-        "total_steps": kev_cur_data.get("total_steps", 16857),
-        "consumed_records": kev_cur_data.get("consumed_records", 0),
-        "loss": kev_cur_data.get("loss"),
-        "serving_val_accuracy": kev_base_acc,  # on Kev 2,437-sample fixed Val
-        "val_dataset_description": "Kev Fixed Validation Set (2,437 held-out records)",
-        "val_loss": kev_base_nll,
-        "brier_score": kev_base_brier,
-        "latency_stats_ms": {
-            "p50": 2749.6,
-            "p90": 3943.8,
-            "p95": 3943.8,
-            "evaluation_engine": "torch_cpu"
-        },
-        "v8_pilot_experiment": {
-            "candidate_id": "POINTER_HEAD_V8_PILOT",
-            "steps": 50,
-            "delta_q": 0.7764,
-            "delta_k": 1.1833,
-            "v8_choice_accuracy": 0.8333,
-            "v8_cache_mse": 0.1329,
-            "v8_outcome_accuracy": 1.0,
-            "note": "Pilot on 256-dim PointerHead with token embeddings; full 4B LoRA V8 scheduled in C09."
-        },
-        "candidates": {
-            "PLANNED": 8,
-            "TRAINING": 1 if kev_is_training else 0,
-            "VALIDATED": 1,
-            "CHECKPOINT_AVAILABLE": 1
-        },
-        "serving_status": "LOADED_VERIFIED",
-        "recent_loss_series": kev_recent_losses,
-        "val_trend": [
-            {"checkpoint": "models/kev-4b-adapter", "acc": kev_base_acc, "nll": kev_base_nll, "brier": kev_base_brier, "type": "ACTIVE_SERVING"}
-        ],
-        "last_progress_at": kev_cur_data.get("updated_at")
-    }
+def relative(path, root):
+    return str(Path(path).relative_to(root))
 
 
-def fetch_local_server_data() -> Dict[str, Any]:
-    gpu = read_local_gpu_status()
-    proc = read_local_processes()
-    laya = read_local_laya_metrics(proc)
-    kev = read_local_kev_metrics(proc)
-    return {
-        "gpu": gpu,
-        "process": proc,
-        "laya": laya,
-        "kev": kev
-    }
+def run_key(family, path, root):
+    return family + "--" + re.sub(r"[^a-zA-Z0-9_.-]", "--", relative(path, root))
 
 
-def fetch_server_data_ssh() -> Dict[str, Any]:
-    """Runs probe script over SSH when executed from Mac."""
-    cmd = [
-        "ssh", "-o", "ConnectTimeout=4", "-o", "BatchMode=yes",
-        "a6000", "PYTHONPATH=/home/syy/路由/our-project/code/src /home/syy/路由/.venv/bin/python /home/syy/路由/scripts/fetch_live_status.py --probe-only"
-    ]
-    try:
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=8)
-        if res.returncode == 0 and res.stdout.strip():
-            return json.loads(res.stdout.strip())
-        else:
-            logger.warning("SSH command returned error: %s", res.stderr)
-            return {"error": res.stderr.strip() or "SSH_FAILED"}
-    except Exception as e:
-        logger.error("Error executing SSH probe: %s", e)
-        return {"error": str(e)}
+def read_local_processes():
+    result = subprocess.run(["ps", "-eo", "pid,etimes,args"], capture_output=True, text=True, timeout=4)
+    if result.returncode:
+        raise RuntimeError(result.stderr.strip() or "Process listing failed")
+    process = {"laya": {}, "kev": {}}
+    for line in result.stdout.splitlines()[1:]:
+        fields = line.strip().split(None, 2)
+        if len(fields) != 3 or not fields[0].isdigit():
+            continue
+        pid, elapsed, command = fields
+        # Shell launchers and the collector's own SSH command are not training workers.
+        argv = shlex.split(command)
+        executable = Path(argv[0]).name
+        if not executable.startswith("python"):
+            continue
+        family = "laya" if any(Path(a).name == "laya_batch_train.py" for a in argv) else (
+            "kev" if "kev.train" in argv else None)
+        if family:
+            options = {a: argv[i + 1] for i, a in enumerate(argv[:-1]) if a.startswith("--")}
+            process[family] = {"train_pid": int(pid), "elapsed_s": int(elapsed), "is_training": True,
+                               "run_id": options.get("--full-coverage-run"),
+                               "out_root": options.get("--out-root"), "out": options.get("--out"),
+                               "batch": options.get("--batch"), "accum": options.get("--accum")}
+    return process
 
 
-def fetch_serving_data(target_host: str = "127.0.0.1") -> Dict[str, Any]:
-    serving = {
-        "online": False,
-        "endpoint": f"http://{target_host}:8000",
-        "models_loaded": {},
-        "weights_loaded": {},
-        "inference_verified": {},
-        "uptime_seconds": 0,
-        "models": [],
-    }
-    try:
-        req = urllib.request.Request(f"http://{target_host}:8000/health", method="GET")
-        with _NO_PROXY_OPENER.open(req, timeout=2.5) as resp:
-            if resp.status == 200:
-                h_data = json.loads(resp.read().decode("utf-8"))
-                serving["online"] = True
-                serving["models_loaded"] = h_data.get("models_loaded", {})
-                serving["weights_loaded"] = h_data.get("weights_loaded", {})
-                serving["inference_verified"] = h_data.get("inference_verified", {})
-                serving["uptime_seconds"] = round(h_data.get("uptime_seconds", 0), 1)
-
-        req_m = urllib.request.Request(f"http://{target_host}:8000/models", method="GET")
-        with _NO_PROXY_OPENER.open(req_m, timeout=2.5) as resp_m:
-            if resp_m.status == 200:
-                m_data = json.loads(resp_m.read().decode("utf-8"))
-                serving["models"] = m_data.get("models", [])
-    except Exception as e:
-        serving["error"] = str(e)
-
-    return serving
+def read_local_gpu_status():
+    result = subprocess.run(["nvidia-smi", "--query-gpu=memory.used,memory.total,utilization.gpu,temperature.gpu,power.draw,name",
+                             "--format=csv,noheader,nounits"], capture_output=True, text=True, timeout=4)
+    if result.returncode:
+        return {"error": result.stderr.strip() or "GPU metrics unavailable"}
+    parts = result.stdout.strip().splitlines()[0].split(",")
+    values = [float(v.strip()) for v in parts[:5]]
+    return {**dict(zip(("used_mb", "total_mb", "util_pct", "temp_c", "power_w"), values)), "name": parts[5].strip()}
 
 
-def fetch_token_budget_data() -> Dict[str, Any]:
-    if TOKEN_BUDGET_FILE.is_file():
-        try:
-            with open(TOKEN_BUDGET_FILE, "r", encoding="utf-8") as f:
-                d = json.load(f)
-                max_t = d.get("max_tokens", 1000000)
-                used = d.get("consumed_total_tokens", 391634)
-                pct = round((used / max_t) * 100.0, 2) if max_t > 0 else 0.0
-                return {
-                    "max_tokens": max_t,
-                    "consumed_total_tokens": used,
-                    "remaining_tokens": d.get("remaining_tokens", max_t - used),
-                    "percent_used": pct,
-                    "consumed_prompt_tokens": d.get("consumed_prompt_tokens", 0),
-                    "consumed_completion_tokens": d.get("consumed_completion_tokens", 0),
-                    "total_calls": d.get("total_calls", 74),
-                    "last_updated": d.get("last_updated", ""),
-                }
-        except Exception:
-            pass
-    return {
-        "max_tokens": 1000000,
-        "consumed_total_tokens": 391634,
-        "remaining_tokens": 608366,
-        "percent_used": 39.16,
-        "consumed_prompt_tokens": 350615,
-        "consumed_completion_tokens": 41019,
-        "total_calls": 74,
-    }
+def _checkpoint(path, checkpoint_id, epoch, metadata, root):
+    candidates = [path] if path.is_file() else path.glob("*")
+    weights = [p for p in candidates if p.is_file() and not p.is_symlink()
+               and (p.name in ("model.safetensors", "model.pt", "head.pt", "pytorch_model.bin")
+                    or p.name.startswith(("adapter_model", "model-", "epoch_")) and p.suffix in (".pt", ".safetensors", ".bin"))]
+    physical = bool(weights) and all(p.stat().st_size > 0 for p in weights)
+    prior = metadata.get("was_previously_saved")
+    freed = metadata.get("freed_bytes")
+    pruned = not physical and prior is True and isinstance(freed, (int, float)) and freed > 0
+    evidence = "PHYSICAL_FILES" if physical else ("RECORDED_SAVED_AND_PRUNED" if pruned else (
+        "RECORDED_NEVER_SAVED" if prior is False and metadata.get("weights_saved") is False else "MISSING_HISTORY_UNCERTAIN"))
+    return {"checkpoint_id": checkpoint_id, "epoch": epoch, "path": relative(path, root),
+            "physical": physical, "weight_bytes": sum(p.stat().st_size for p in weights),
+            "ever_saved": True if physical or prior is True else (False if prior is False else None),
+            "pruned": pruned, "evidence": evidence, "retention_status": metadata.get("retention_status"),
+            "retention_reason": metadata.get("retention_reason"), "source": metadata.get("source"),
+            "manifest_retention_status": metadata.get("manifest_retention_status"),
+            "metadata_weights_saved": metadata.get("weights_saved"),
+            "recorded_freed_bytes": freed,
+            "metadata_disagrees": metadata.get("weights_saved") is not None and metadata["weights_saved"] != physical}
 
 
-def fetch_agent_benchmark_data() -> Dict[str, Any]:
-    policy_meta = {
-        "fixed_strong": {
-            "name": "FixedStrong (Flagship)",
-            "category": "Baseline (Fixed)",
-            "algorithm": "Always routes to Strong/Reasoning model",
-            "routing_latency_ms": 0.06,
-        },
-        "fixed_cheap": {
-            "name": "FixedCheap (Lowest Cost)",
-            "category": "Baseline (Fixed)",
-            "algorithm": "Always routes to Fast/Cheap model",
-            "routing_latency_ms": 0.02,
-        },
-        "length_heuristic": {
-            "name": "LengthHeuristic",
-            "category": "Baseline (Heuristic)",
-            "algorithm": "Prompt length threshold routing",
-            "routing_latency_ms": 0.03,
-        },
-        "step_heuristic": {
-            "name": "StepHeuristic",
-            "category": "Baseline (Heuristic)",
-            "algorithm": "Step count threshold routing",
-            "routing_latency_ms": 0.03,
-        },
-        "routellm_official": {
-            "name": "RouteLLM (Official LMSYS)",
-            "category": "External Paper Method",
-            "algorithm": "Calibrated logistic winrate threshold",
-            "routing_latency_ms": 5.03,
-        },
-        "sr_knn_official": {
-            "name": "SR-KNN (State Vector k-NN)",
-            "category": "External Paper Method",
-            "algorithm": "8D normalized state representation k-NN",
-            "routing_latency_ms": 5.14,
-        },
-        "laya_v2": {
-            "name": "Laya-V2 (421M Serving Router)",
-            "category": "ModelRouter (Ours)",
-            "algorithm": "Full-coverage multi-task MoE state encoder",
-            "routing_latency_ms": 183.84,
-        },
-        "kev_4b": {
-            "name": "Kev-4B (Qwen LoRA Router)",
-            "category": "ModelRouter (Ours)",
-            "algorithm": "Pointer Head + Qwen3.5-4B LoRA (rank 16)",
-            "routing_latency_ms": 2749.60,
-        },
-    }
-
-    matrix_mock = []
-    for pol_id, meta in policy_meta.items():
-        matrix_mock.append({
-            "policy_id": pol_id,
-            "name": meta["name"],
-            "category": meta["category"],
-            "algorithm": meta["algorithm"],
-            "episodes": 8,
-            "resolved": 6,
-            "pass_at_1": 0.75,
-            "total_cost_usd": 0.05,
-            "mean_cost_usd": 0.006,
-            "mean_steps": 4.0,
-            "routing_latency_ms": meta["routing_latency_ms"],
-        })
-
-    matrix_real = []
-    for pol_id, meta in policy_meta.items():
-        matrix_real.append({
-            "policy_id": pol_id,
-            "name": meta["name"],
-            "category": meta["category"],
-            "algorithm": meta["algorithm"],
-            "status": "LOCAL_HOST_EXPERIMENTAL",
-            "isolation": "HOST_PROCESS (UNISOLATED)",
-            "official_isolated": False,
-            "episodes": 2,
-            "resolved": 0,
-            "pass_at_1": 0.0,
-            "total_cost_usd": 0.01,
-            "mean_cost_usd": 0.005,
-            "mean_steps": 3.5,
-            "routing_latency_ms": meta["routing_latency_ms"],
-        })
-
-    return {
-        "policies": list(policy_meta.keys()),
-        "matrix_mock": matrix_mock,
-        "matrix_real": matrix_real,
-        "real_official_eval_status": {
-            "status": "BLOCKED_PERMISSION_REQUIRED",
-            "description": "Docker socket authorization required on host. Zero unverified trials counted.",
-            "total_real_episodes": 0,
-            "total_real_resolved": 0,
-            "real_pass_at_1": None,
-        },
-        "mock_stress_status": {
-            "status": "MOCK_STRESS_COMPLETED",
-            "description": "64-concurrency scheduler stress test (synthetic, isolated).",
-            "total_mock_episodes": 88,
-            "total_mock_resolved": 48,
-            "mock_pass_at_1": 0.5455,
-            "mock_throughput_tasks_per_hour": 22248.0,
-        }
-    }
+def _validation(history, source, validation_set=None):
+    result = []
+    for epoch in history:
+        for stream, metrics in (epoch.get("validation") or {}).items():
+            if stream not in ("S1", "S2", "S3", "clean") or not isinstance(metrics, dict):
+                continue
+            result.append({"epoch": epoch.get("epoch"), "step": epoch.get("global_step", epoch.get("optimizer_updates")),
+                           "stream": stream, "source": source, "validation_set": validation_set,
+                           **{k: metrics.get(k) for k in ("loss", "accuracy", "brier", "ece", "items")}})
+    return result
 
 
-def sync_once(source: str = "auto") -> Dict[str, Any]:
-    now_utc = datetime.now(timezone.utc).isoformat()
+def _validation_identity(meta, directory, root):
+    explicit = meta.get("validation_set") or meta.get("fixed_validation")
+    if explicit:
+        return explicit
+    val = directory.parent / "val"
+    if val.is_dir():
+        return relative(val, root)
+    # Missing dataset identity keeps comparisons confined to this run.
+    return relative(directory / "run.json", root)
 
-    use_local = (source == "local") or (source == "auto" and IS_A6000)
 
-    if use_local:
-        server_data = fetch_local_server_data()
-        serving_data = fetch_serving_data("127.0.0.1")
+def _new_log_state():
+    return {"offset": 0, "points": defaultdict(list), "pending": [], "context": None,
+            "last_epoch": None, "segments": defaultdict(int), "last_step": {}}
+
+
+def read_log_points(path, root, known_run=None, family="laya"):
+    """Read only appended complete lines; delayed epoch records identify anonymous logs."""
+    if not path.is_file():
+        return {}
+    state = _LOG_CACHE.setdefault(str(path), _new_log_state())
+    if path.stat().st_size < state["offset"]:
+        state = _new_log_state()
+        _LOG_CACHE[str(path)] = state
+
+    def add(rid, point):
+        if not rid:
+            return
+        step = point.get("step")
+        previous = state["last_step"].get(rid)
+        if step is not None and previous is not None and step < previous:
+            state["segments"][rid] += 1
+        state["last_step"][rid] = step
+        point.update(segment=state["segments"][rid], source=relative(path, root),
+                     timestamp=point.get("timestamp"), learning_rate=point.get("learning_rate"))
+        state["points"][rid].append(point)
+
+    with path.open("r", encoding="utf-8", errors="replace") as stream:
+        stream.seek(state["offset"])
+        while True:
+            position = stream.tell()
+            line = stream.readline()
+            if not line or not line.endswith("\n"):
+                state["offset"] = position
+                break
+            match = re.search(r"\[([^\]]+)\] Epoch (\d+)/(\d+) Chunk (\d+)/(\d+): loss=([\d.eE+-]+), step=(\d+)/(\d+), consumed=(\d+)/(\d+)", line)
+            if match:
+                rid, ep, _, chunk, _, loss, step, _, count, _ = match.groups()
+                add(rid, {"epoch": int(ep), "chunk": int(chunk), "train_loss": float(loss), "step": int(step),
+                          "optimizer_updates": int(step), "consumed_records": int(count), "samples_per_s": None})
+                continue
+            start = re.match(r"START (\S+) ", line)
+            if start:
+                state["context"] = start.group(1)
+            explicit = re.search(r"\[([^\]]+)\].*RESUME_CONSISTENCY", line)
+            if explicit:
+                state["segments"][explicit.group(1)] += 1
+            if family == "kev":
+                match = re.search(r"ep(\d+) step (\d+)/(\d+) loss ([\d.eE+-]+).*?([\d.]+)s/rec", line)
+                if match:
+                    ep, step, _, loss, seconds = match.groups()
+                    add(known_run, {"epoch": int(ep) + 1, "step": int(step), "optimizer_updates": int(step),
+                                    "train_loss": float(loss), "consumed_records": None,
+                                    "samples_per_s": 1 / float(seconds) if float(seconds) > 0 else None,
+                                    "speed_scope": "upstream cumulative seconds per record"})
+                continue
+            match = re.search(r"epoch (\d+)/(\d+) step (\d+) loss ([\d.eE+-]+)", line)
+            if match:
+                ep, _, step, loss = match.groups()
+                point = {"epoch": int(ep), "step": int(step), "train_loss": float(loss),
+                         "axis_scope": "epoch_local_step", "consumed_records": None, "samples_per_s": None}
+                if known_run or state["context"]:
+                    add(known_run or state["context"], point)
+                else:
+                    state["pending"].append(point)
+            if line.startswith("{") and '"event": "epoch_complete"' in line:
+                row = json.loads(line)
+                rid = row.get("run_id")
+                for point in state["pending"]:
+                    add(rid, point)
+                state["pending"].clear()
+    return state["points"]
+
+
+def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, processes=None):
+    """Publish original observations without changing runs, manifests, or weight files."""
+    root = Path(project_root)
+    output = Path(dashboard_dir or root / "our-project/dashboard")
+    runs_root = root / "runs"
+    p0 = runs_root / "MR-FULL-GRADED-P0-DATA-REPAIR-20261012"
+    full = read_json(p0 / "full_coverage_manifest.json", {})
+    kev_queue = read_json(root / "our-project/results/training/kev/candidate_queue.json", [])
+    manifest_rows = {}
+    for directory in runs_root.glob("*"):
+        if directory.is_dir():
+            data = read_json(directory / "checkpoint_manifest.json", {})
+            for row in data.get("checkpoints", []):
+                manifest_rows[(directory.name, row.get("checkpoint_id"))] = row
+    runs = []
+    details = {}
+    # Only run directories; do not traverse datasets or read weights.
+    paths = set(runs_root.glob("*/run.json")) | set(runs_root.glob("*/*/run.json"))
+    for path in sorted(paths):
+        meta = read_json(path)
+        rid = meta.get("run_id", path.parent.name)
+        family = "kev" if "KEV" in rid.upper() else "laya"
+        history = read_json(path.parent / "epoch_metrics.json", meta.get("history", []))
+        if not isinstance(history, list):
+            history = history.get("history", [])
+        history = [{**entry, "consumed_items": entry.get("consumed_items", entry.get("items_consumed"))} for entry in history]
+        if len(history) == 1 and meta.get("global_steps") is not None:
+            history[0].setdefault("global_step", meta["global_steps"])
+        protocol = meta.get("protocol_version", meta.get("protocol")) or (
+            "LEGACY_INPUT_PROTOCOL" if path.parent.parent.name == "MR-FULL-GRADED-TRAINING" else
+            "LAYA_OVERNIGHT_" + path.parent.parent.name if "OVERNIGHT" in str(path) else "UNRECORDED_PROTOCOL")
+        if family == "kev" and meta.get("device") == "cpu" and "physical_verification" in meta:
+            protocol = "KEV_POINTER_HEAD_PILOT"
+        key = run_key(family, path.parent, root)
+        validation_set = _validation_identity(meta, path.parent, root)
+        validation = _validation(history, relative(path, root), validation_set)
+        for entry in history:
+            if entry.get("val_choice_acc") is not None:
+                validation.append({"epoch": entry.get("epoch"), "step": entry.get("global_step"),
+                                   "stream": "choice", "accuracy": entry["val_choice_acc"],
+                                   "loss": None, "brier": None, "ece": None, "items": None,
+                                   "validation_set": validation_set, "source": relative(path, root)})
+        if family == "kev" and meta.get("metrics"):
+            pilot_metrics = meta["metrics"]
+            validation.append({"epoch": None, "step": meta.get("steps_completed"), "stream": "choice",
+                               "accuracy": pilot_metrics.get("val_choice_accuracy"), "loss": None,
+                               "brier": None, "ece": None, "items": None,
+                               "validation_set": validation_set, "source": relative(path, root)})
+        checkpoints = []
+        for epoch in history:
+            cid = epoch.get("checkpoint_id", f"{rid}-e{epoch.get('epoch')}")
+            manifest_row = manifest_rows.get((path.parent.parent.name, cid), {})
+            saved = {**manifest_row, **epoch, "source": relative(path, root),
+                     "manifest_retention_status": manifest_row.get("retention_status")}
+            cp = path.parent / "checkpoints" / f"epoch_{epoch['epoch']:02d}"
+            if not cp.exists() and cp.with_suffix(".pt").is_file():
+                cp = cp.with_suffix(".pt")
+            checkpoints.append(_checkpoint(cp, cid, epoch.get("epoch"), saved, root))
+        covered = {c["path"] for c in checkpoints}
+        for cp in (path.parent / "checkpoints").glob("*"):
+            if not cp.is_symlink() and relative(cp, root) not in covered:
+                c = _checkpoint(cp, rid + ":" + cp.name, None, {}, root)
+                if c["physical"]:
+                    checkpoints.append(c)
+        if family == "kev" and not history:
+            cp = path.parent / "checkpoint"
+            c = _checkpoint(cp, rid + ":pilot", None, {}, root)
+            if c["physical"]:
+                checkpoints.append(c)
+        cursor = read_json(path.parent / "cursor.json", {})
+        coverage = read_json(path.parent / "run_coverage_ledger.json", {})
+        exposure = {"candidate_records": meta.get("total_eligible_items", sum(meta.get("train_groups", {}).values()) or None),
+                    "materialized_records": (coverage.get("census_metrics") or {}).get("materialized_items"),
+                    "encoded_records": (coverage.get("census_metrics") or {}).get("encoded_items"),
+                    "trained_records": cursor.get("consumed_items", coverage.get("consumed_items", meta.get("total_items_consumed"))),
+                    "distinct_units": cursor.get("consumed_units", coverage.get("distinct_units_covered")),
+                    "by_stream_actual": meta.get("trained_by_supervision"),
+                    "train_groups": meta.get("train_groups"), "ledger_updated_at": coverage.get("updated_at"),
+                    "train_val_overlap_count": coverage.get("train_val_overlap_count")}
+        row = {"key": key, "family": family, "run_id": rid, "protocol": protocol,
+               "status": meta.get("status", "COMPLETED" if meta.get("finished_at") else "UNKNOWN").upper(), "epochs": len(history),
+               "planned_epochs": meta.get("epochs_max"), "started_at": meta.get("started_at"),
+               "finished_at": meta.get("finished_at"), "root": relative(path.parent, root),
+               "validation": validation, "exposure": exposure, "checkpoints": checkpoints,
+               "layers": meta.get("layers"), "layer_fractions": meta.get("layer_fractions"),
+               "supervision_classes": meta.get("supervision_classes", list(meta.get("train_groups", {}))),
+               "best_epoch_recorded": meta.get("best_epoch"),
+               "config": {k: v for k, v in (meta.get("config") or {}).items() if k in (
+                   "epochs", "micro_batch", "grad_accum", "encoder_lr", "head_lr", "min_lr",
+                   "weight_decay", "loss", "seed", "freeze_encoder", "max_len", "head_max_len")},
+               "origin": "LOCAL_RUN", "validation_set": validation_set,
+               "training_kind": "POINTER_HEAD_PILOT" if protocol in ("KEV_POINTER_HEAD_PILOT", "MR-V8-MULTITASK-v1") else "TRAINING_RUN",
+               "loss_definition": (meta.get("config") or {}).get("loss"),
+               "parent_checkpoint": meta.get("parent_checkpoint_id"),
+               "terminal_metrics": meta.get("metrics"),
+               "curve_path": f"shards/training_runs/{key}.json", "source": relative(path, root),
+               "limitations": ["Actual per-stream gradient exposure was not recorded"] if not exposure["by_stream_actual"] else []}
+        if family == "kev" and not history:
+            row["limitations"].append("Pointer head pilot has no epoch history; it is not a formal LoRA run")
+        runs.append(row)
+        details[key] = {"run": row, "points": [], "validation": validation, "exposure": exposure, "epochs": history}
+
+    # Kev adapters and official training folders have training_config/metrics, not Laya run.json.
+    kev_dirs = [root / "models/kev-4b-adapter"]
+    for folder in runs_root.glob("KEV*"):
+        kev_dirs += [p.parent for p in folder.glob("*/training_config.json")]
+    for directory in sorted(set(kev_dirs)):
+        if not (directory / "training_config.json").is_file() and not (directory / "training_metrics.json").is_file():
+            continue
+        config = read_json(directory / "training_config.json", {})
+        metrics = read_json(directory / "training_metrics.json", {})
+        args = config.get("args", {})
+        cursor = read_json(directory.parent / "cursor.json", {}) if directory.name in ("formal_run", "checkpoint") else {}
+        plan = next((q for q in kev_queue if q.get("checkpoint_path") == relative(directory, root)), {})
+        key = run_key("kev", directory, root)
+        rid = plan.get("candidate_id", directory.parent.name + "/" + directory.name)
+        if directory.parent.name == "models":
+            rid = directory.name
+        imported = directory.parent.name == "models"
+        protocol = "KEV_IMPORTED_LORA" if imported else ("KEV_FORMAL_LORA" if args.get("device") == "cuda" else "KEV_LORA_SMOKE")
+        checkpoint = _checkpoint(directory, rid + ":adapter", None, {}, root)
+        result = read_json(directory / "result.json", plan.get("metrics", {}))
+        clean = result.get("clean", {})
+        validation = [{"epoch": None, "step": metrics.get("optimizer_steps"), "stream": "clean",
+                       "loss": clean.get("nll"), "accuracy": clean.get("acc"), "brier": clean.get("brier"),
+                       "ece": clean.get("ece"), "items": clean.get("n"),
+                       "validation_set": config.get("holdout") or relative(directory / "result.json", root),
+                       "source": relative(directory / "result.json", root)}] if clean else []
+        partial = bool(args.get("max_steps") or args.get("stop_after"))
+        completed_epochs = len(metrics.get("grad_norm", [])) if metrics and not partial else 0
+        row = {"key": key, "family": "kev", "run_id": rid, "protocol": protocol,
+               "status": "COMPLETED" if metrics else cursor.get("status", "UNKNOWN"),
+               "epochs": completed_epochs, "planned_epochs": args.get("epochs"),
+               "root": relative(directory, root), "started_at": None, "finished_at": None,
+               "parent_checkpoint": Path(args["init_from"]).name if args.get("init_from") else None,
+               "validation": validation, "checkpoints": [checkpoint] if checkpoint["physical"] else [],
+               "curve_path": f"shards/training_runs/{key}.json", "source": relative(directory / "training_config.json", root),
+               "config": {k: args.get(k) for k in ("lr", "epochs", "batch", "accum", "lora", "perm_kl", "synthetic_repeat", "max_steps")},
+               "terminal_metrics": {k: metrics.get(k) for k in ("wall_seconds", "optimizer_steps", "records_seen", "requested_records")},
+               "exposure": {"trained_records": metrics.get("records_seen"), "requested_records": metrics.get("requested_records"),
+                            "by_stream_actual": None, "optimizer_updates": metrics.get("optimizer_steps")},
+               "limitations": ["Imported adapter history is upstream training, not a new local GPU run"] if directory.parent.name == "models" else []}
+        row["origin"] = "IMPORTED_ADAPTER" if directory.parent.name == "models" else "LOCAL_RUN"
+        row["training_kind"] = "IMPORTED_LORA" if imported else ("LORA_SMOKE" if partial or args.get("device") != "cuda" else "FORMAL_LORA")
+        runs.append(row)
+        log = directory / "train.log"
+        if directory.name == "formal_run" and not log.is_file():
+            log = directory.parent / "train.log"
+        # A shared unlabelled CPU log cannot identify smoke_run vs test_run.
+        points = list(read_log_points(log, root, key, "kev").get(key, []))
+        details[key] = {"run": row, "points": points, "validation": validation, "exposure": row["exposure"]}
+
+    laya_maps = {}
+    for folder in runs_root.glob("*"):
+        for log in folder.glob("*.log"):
+            if log.name in ("continuous_queue.log", "queue_batch1.log", "queue_daemon.log", "matrix_training.log"):
+                laya_maps[str(log)] = read_log_points(log, root)
+    for row in runs:
+        detail = details[row["key"]]
+        if row["family"] == "laya":
+            points = []
+            for log, mapping in laya_maps.items():
+                if str(root / row["root"]).startswith(str(Path(log).parent)):
+                    ambiguous_alias = any(r["root"].endswith("/" + row["run_id"] + "_LEGACY_MINFACTOR") for r in runs)
+                    if not ambiguous_alias:
+                        points.extend(mapping.get(row["run_id"], []))
+            unique = {}
+            for point in points:
+                identity = (point.get("epoch"), point.get("step"), point.get("chunk"), point.get("train_loss"))
+                unique.setdefault(identity, dict(point))
+            points = list(unique.values())
+            if len({p.get("source") for p in points}) > 1:
+                for point in points:
+                    point["segment"] = f"{point['source']}:{point['segment']}"
+            if not points:
+                points = [{"epoch": e.get("epoch"), "step": e.get("global_step", e.get("optimizer_updates")),
+                           "train_loss": e.get("train_loss"), "learning_rate": None,
+                           "configured_learning_rate": e.get("learning_rate"), "segment": 0,
+                           "consumed_records": e.get("consumed_items"),
+                           "timestamp": e.get("timestamp"), "source": row["source"]} for e in detail.pop("epochs", [])]
+            else:
+                detail.pop("epochs", None)
+            detail["points"] = points
+        elif "epochs" in detail:
+            detail["points"] = [{"epoch": e.get("epoch"), "step": e.get("global_step"),
+                                 "train_loss": e.get("train_loss"), "segment": 0,
+                                 "timestamp": e.get("timestamp"), "source": row["source"]}
+                                for e in detail.pop("epochs")]
+            if not detail["points"] and row.get("terminal_metrics"):
+                pilot = read_json(root / row["source"], {})
+                detail["points"] = [{"epoch": None, "step": pilot.get("steps_completed"),
+                                     "train_loss": (pilot.get("metrics") or {}).get("train_loss_final"),
+                                     "segment": 0, "timestamp": pilot.get("finished_at"), "source": row["source"]}]
+        row["curve_points"] = len(detail["points"])
+        row["status"] = "TRAINING" if any(
+            p.get("train_pid") and str((root / (p.get("out") or str(Path(p.get("out_root", "")) / p.get("run_id", "")))).resolve()) == str((root / row["root"]).resolve())
+            for p in (processes or {}).values()) else row["status"]
+        row["curve_granularity"] = "CHUNK_STEP" if any(p.get("chunk") is not None for p in detail["points"]) else (
+            "STEP" if any(p.get("axis_scope") or p.get("optimizer_updates") is not None for p in detail["points"]) else "EPOCH")
+        if not detail["points"]:
+            row["curve_granularity"] = "UNRECORDED"
+        destination = output / row["curve_path"]
+        if read_json(destination) != detail:
+            atomic_json(destination, detail)
+
+    checkpoints = [dict(c, run_id=r["run_id"], key=r["key"], family=r["family"]) for r in runs for c in r["checkpoints"]]
+    old = [next((c for c in checkpoints if c["checkpoint_id"] == cid),
+                {"checkpoint_id": cid, "physical": None, "evidence": "NO_MATCHING_RECORD"}) for cid in sorted(OLD_CORE_IDS)]
+    cleanup = read_json(p0 / "cleanup_audit_log.json", {})
+    new_ids = {c.get("checkpoint_id") for c in cleanup.get("protected_items", []) if c.get("reason") == "protected_new_core_pool_15pct"}
+    parent_ids = {r.get("parent_checkpoint_id") for r in full.get("plans", {}).values() if r.get("parent_checkpoint_id")}
+    parent_ids.update(r["parent_checkpoint"] for r in runs if r.get("parent_checkpoint"))
+    for plan in full.get("plans", {}).values():
+        parent_run = next((r for r in runs if r["run_id"] == plan.get("parent_run_id") and r["root"].startswith(relative(p0, root) + "/")), {})
+        parent_ids.update(c["checkpoint_id"] for c in parent_run.get("checkpoints", []) if c["epoch"] == parent_run.get("best_epoch_recorded") and c["epoch"] is not None)
+    recovery = [c for c in checkpoints if "recovery" in c["path"] or c.get("retention_status") == "TEMP_RECOVERY"]
+    parents = [c for c in checkpoints if c["checkpoint_id"] in parent_ids or c.get("retention_status") == "PINNED_PARENT"]
+    new = [c for c in checkpoints if c["checkpoint_id"] in new_ids]
+    classified = {c["path"] for c in old + new + parents + recovery if c.get("path")}
+    counts = {}
+    for family in ("laya", "kev"):
+        rr = [r for r in runs if r["family"] == family]
+        cc = [c for c in checkpoints if c["family"] == family]
+        counts[family] = {"planned_runs": len(full.get("plans", {})) if family == "laya" else len(kev_queue),
+                          "observed_runs": len(rr), "completed_runs": sum(r["status"] in ("COMPLETED", "EARLY_STOPPED") for r in rr),
+                          "running_runs": sum(r["status"] in ("RUNNING", "TRAINING") for r in rr),
+                          "local_runs": sum(r["origin"] == "LOCAL_RUN" for r in rr),
+                          "local_completed_runs": sum(r["origin"] == "LOCAL_RUN" and r["status"] in ("COMPLETED", "EARLY_STOPPED") for r in rr),
+                          "imported_assets": sum(r["origin"] == "IMPORTED_ADAPTER" for r in rr),
+                          "recorded_epochs": sum(r.get("epochs") or 0 for r in rr),
+                          "checkpoint_versions": len(cc), "physical_checkpoints": sum(c["physical"] for c in cc),
+                          "metadata_versions": sum(not c["physical"] for c in cc), "pruned_versions": sum(c["pruned"] for c in cc),
+                          "unknown_missing_versions": sum(c["evidence"] == "MISSING_HISTORY_UNCERTAIN" for c in cc),
+                          "train_curve_runs": sum(any(isinstance(p.get("train_loss"), (float, int)) for p in details[r["key"]]["points"]) for r in rr),
+                          "step_curve_runs": sum(r["curve_granularity"] in ("CHUNK_STEP", "STEP") for r in rr),
+                          "unrecorded_curve_runs": sum(r["curve_points"] == 0 for r in rr),
+                          "epoch_only_runs": sum(r["curve_granularity"] == "EPOCH" for r in rr)}
+    comparisons = []
+    grouped = defaultdict(list)
+    for row in runs:
+        for v in row["validation"]:
+            for metric in ("loss", "accuracy", "brier", "ece"):
+                if v.get(metric) is not None:
+                    set_id = json.dumps(v.get("validation_set"), ensure_ascii=False, sort_keys=True)
+                    grouped[(row["family"], row["protocol"], set_id, v["stream"], v.get("items"), metric)].append(
+                        {"run_id": row["run_id"], "epoch": v["epoch"], "value": v[metric]})
+    for (family, protocol, set_id, stream, items, metric), values in sorted(grouped.items(), key=lambda pair: str(pair[0])):
+        ranked = sorted(values, key=lambda v: v["value"], reverse=metric == "accuracy")
+        comparisons.append({"family": family, "protocol": protocol, "validation_set": f"{set_id} / {stream}:{items}",
+                            "metric": metric, "best": ranked[0], "worst": ranked[-1], "observations": len(values)})
+    current_manifest = read_json(p0 / "checkpoint_manifest.json", {})
+    recorded_slots = {g.get("new_pool_total_quota") for g in current_manifest.get("comparable_groups", {}).values() if g.get("new_pool_total_quota") is not None}
+    payload = {"counts": counts, "runs": runs,
+               "retention": {"old_core": old, "new_core": new, "parents": parents, "recovery": recovery,
+                             "unclassified": [c for c in checkpoints if c["physical"] and c["path"] not in classified],
+                             "new_pool_slots": next(iter(recorded_slots)) if len(recorded_slots) == 1 else None,
+                             "manifest_generated_at": current_manifest.get("generated_at"),
+                             "cleanup_generated_at": cleanup.get("generated_at", cleanup.get("updated_at")),
+                             "source": "physical files + last recorded cleanup; no policy execution"},
+               "protocol_counts": {family: dict(Counter(r["protocol"] for r in runs if r["family"] == family)) for family in ("laya", "kev")},
+               "comparisons": comparisons, "data_census": full.get("census"),
+               "limitations": ["Epoch records count observations, not proof that all versions were physically saved.",
+                                "Missing files without deletion evidence remain uncertain.",
+                                "Historical learning-rate fields are configured rates; actual scheduler curves were not logged.",
+                                "Laya and Kev validation sets and metric definitions are separate.",
+                                "Actual per-stream gradient exposure is unavailable for historical streaming runs."]}
+    previous = read_json(output / "shards/training_history.json", {})
+    content = {k: v for k, v in previous.items() if k not in ("generated_at", "revision")}
+    if content == payload:
+        payload = previous
     else:
-        server_data = fetch_server_data_ssh()
-        # From Mac, if 10.16.15.202 is reachable, test direct; else 127.0.0.1 tunnel
-        serving_data = fetch_serving_data("10.16.15.202")
+        payload.update(generated_at=now_iso(), revision=time.time_ns())
+        atomic_json(output / "shards/training_history.json", payload)
+    _HISTORY[str(root)] = {"built_at": time.monotonic(), "payload": payload}
+    return payload
 
-    agent_data = fetch_agent_benchmark_data()
-    token_budget = fetch_token_budget_data()
 
-    git_sha = "unknown"
+def _live_family(family, processes, history):
+    proc = processes.get(family, {})
+    metric = {"family": family, "status": "IDLE", "is_training": bool(proc.get("train_pid")),
+              "process_pid": proc.get("train_pid"), "elapsed_s": proc.get("elapsed_s"),
+              **{k: None for k in ("run_id", "epoch", "chunk", "step", "loss", "total_steps", "total_chunks",
+                                   "consumed_records", "optimizer_updates", "last_progress_at", "last_progress_age_s")}}
+    if not proc:
+        return metric
+    if family == "laya":
+        directory = PROJECT_ROOT / proc["out_root"] / proc["run_id"]
+    else:
+        directory = PROJECT_ROOT / proc["out"]
+    row = next((r for r in history["runs"] if r["root"] == relative(directory, PROJECT_ROOT)), {})
+    cursor_path = directory / "cursor.json" if family == "laya" else directory.parent / "cursor.json"
+    cursor = read_json(cursor_path, {})
+    epoch = cursor.get("epoch")
+    step = cursor.get("step_count", cursor.get("step"))
+    timestamp = cursor.get("updated_at")
+    metric.update(run_id=row.get("run_id", proc.get("run_id", cursor.get("run_id"))),
+                  status="TRAINING" if cursor else "PROGRESS_UNAVAILABLE",
+                  epoch=(min(epoch + 1, row["planned_epochs"]) if epoch is not None and row.get("planned_epochs") else epoch + 1 if epoch is not None else None),
+                  epoch_index=epoch, planned_epochs=row.get("planned_epochs"), chunk=cursor.get("chunk_idx"),
+                  step=step, optimizer_updates=step, loss=cursor.get("latest_chunk_loss", cursor.get("loss")),
+                  total_steps=cursor.get("total_updates", cursor.get("total_steps")), total_chunks=cursor.get("total_chunks"),
+                  consumed_records=cursor.get("consumed_items"), reported_consumed_records=cursor.get("consumed_records"),
+                  distinct_units=cursor.get("consumed_units"), last_progress_at=timestamp,
+                  last_progress_age_s=age_seconds(timestamp), protocol=row.get("protocol"))
+    terminal = read_json(directory / "training_metrics.json", {}) if family == "kev" else {}
+    metric["training_seconds"] = terminal.get("wall_seconds")
+    if not timestamp:
+        metric["status"] = "PROGRESS_UNAVAILABLE"
+    if family == "kev":
+        metric["consumed_records"] = None
+        metric["consumed_scope"] = "Cursor count is step × batch × accum, not an upstream observed records_seen count"
+    identity = (metric["run_id"], step)
+    last = _PROGRESS.get(family)
+    if last is None or last["identity"] != identity:
+        _PROGRESS[family] = {"identity": identity, "advanced_at": time.monotonic()}
+    elif time.monotonic() - last["advanced_at"] > 300:
+        metric["status"] = "STALLED"
+    if metric["last_progress_age_s"] is not None and metric["last_progress_age_s"] > 300:
+        metric["status"] = "STALE" if metric["status"] != "STALLED" else "STALLED"
+    return metric
+
+
+def fetch_local_server_data():
+    proc = read_local_processes()
+    previous = _HISTORY.get(str(PROJECT_ROOT))
+    if previous is None or time.monotonic() - previous["built_at"] >= 30:
+        history = build_training_history(processes=proc)
+    else:
+        history = previous["payload"]
+    disk = shutil.disk_usage(PROJECT_ROOT)
+    return {"connection_status": "CONNECTED", "gpu": read_local_gpu_status(), "process": proc,
+            "disk": {"total_bytes": disk.total, "used_bytes": disk.used, "free_bytes": disk.free},
+            "laya": _live_family("laya", proc, history), "kev": _live_family("kev", proc, history),
+            "history": {"index": "shards/training_history.json", "revision": history["revision"]}}
+
+
+def fetch_server_data_ssh():
+    # Connection details are local configuration, never embedded in the public page.
+    runtime = read_json(PROJECT_ROOT / "our-project/experiments/configs/benchmark_runtime.json", {})
+    target = os.environ.get("MODELROUTER_SSH_TARGET", runtime.get("dashboard_ssh"))
+    key = os.environ.get("MODELROUTER_SSH_KEY", runtime.get("dashboard_ssh_key"))
+    remote_root = os.environ.get("MODELROUTER_REMOTE_ROOT")
+    if not target or not key or not remote_root:
+        return {"connection_status": "DISCONNECTED", "error": "Configure SSH target, key path and remote project root locally"}
+    cmd = ["ssh", "-i", key, "-o", "IdentitiesOnly=yes", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", target,
+           f"python3 {shlex.quote(remote_root + '/scripts/fetch_live_status.py')} --probe-only"]
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    if result.returncode:
+        return {"connection_status": "DISCONNECTED", "error": "SSH collection failed", "exit_code": result.returncode}
+    return json.loads(result.stdout)
+
+
+def sync_once(source="auto"):
+    timestamp = now_iso()
     try:
-        r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=2)
-        if r.returncode == 0:
-            git_sha = r.stdout.strip()
-    except Exception:
-        pass
-
-    server_connected = "error" not in server_data and bool(server_data)
-
-    payload = {
-        "version": "8.5.0",
-        "collector_source": "local_a6000" if use_local else "ssh_remote",
-        "updated_at": now_utc,
-        "git_sha": git_sha,
-        "server_connected": server_connected,
-        "gpu": server_data.get("gpu", {}),
-        "token_budget": token_budget,
-        "laya": server_data.get("laya", {}),
-        "kev": server_data.get("kev", {}),
-        "serving": serving_data,
-        "agent_pilot": agent_data,
-    }
-
-    # Atomic write to live_status.json in both dashboard directories
-    for out_dir in [DASHBOARD_DIR, OUR_PROJECT_DASHBOARD_DIR]:
-        try:
-            out_dir.mkdir(parents=True, exist_ok=True)
-            target = out_dir / "live_status.json"
-            tmp_target = out_dir / "live_status.json.tmp"
-            with open(tmp_target, "w", encoding="utf-8") as f:
-                json.dump(payload, f, indent=2)
-            os.replace(tmp_target, target)
-        except Exception as e:
-            logger.warning("Error writing %s: %s", out_dir, e)
-
+        local = source == "local" or (source == "auto" and platform.system() == "Linux" and (PROJECT_ROOT / "runs").is_dir())
+        data = fetch_local_server_data() if local else fetch_server_data_ssh()
+    except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as exc:
+        data = {"connection_status": "DISCONNECTED", "error": type(exc).__name__,
+                "laya": {"status": "DISCONNECTED"}, "kev": {"status": "DISCONNECTED"}}
+    payload = {"collected_at_iso": timestamp, "collected_at_unix": time.time(), "updated_at": timestamp,
+               "collector_source": source, "server_connected": data.get("connection_status") == "CONNECTED", **data}
+    atomic_json(OUR_PROJECT_DASHBOARD_DIR / "live_status.json", payload)
     return payload
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Fetch live status for dashboard")
-    parser.add_argument("--source", choices=["auto", "local", "ssh"], default="auto", help="Data source mode")
-    parser.add_argument("--loop", action="store_true", help="Run in continuous polling loop")
-    parser.add_argument("--interval", type=int, default=10, help="Polling interval in seconds")
-    parser.add_argument("--probe-only", action="store_true", help="Output local server metrics JSON and exit")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source", choices=("auto", "local", "ssh"), default="auto")
+    parser.add_argument("--loop", action="store_true")
+    parser.add_argument("--interval", type=int, default=10)
+    parser.add_argument("--probe-only", action="store_true")
+    parser.add_argument("--history-only", action="store_true")
     args = parser.parse_args()
-
-    if args.probe_only:
-        data = fetch_local_server_data()
-        print(json.dumps(data))
+    if args.history_only:
+        history = build_training_history()
+        print(json.dumps({"counts": history["counts"], "history": "shards/training_history.json"}))
         return
-
+    if args.probe_only:
+        print(json.dumps(fetch_local_server_data()))
+        return
     if args.loop:
-        logger.info("Starting live status poller daemon (mode: %s, interval: %ds)...", args.source, args.interval)
         while True:
-            try:
-                sync_once(source=args.source)
-            except Exception as e:
-                logger.error("Polling error: %s", e)
+            sync_once(args.source)
             time.sleep(args.interval)
     else:
-        sync_once(source=args.source)
-        logger.info("Sync complete. Wrote live_status.json.")
+        print(json.dumps(sync_once(args.source)))
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+    logging.basicConfig(level=logging.INFO)
     main()

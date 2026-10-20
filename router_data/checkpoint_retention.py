@@ -1076,15 +1076,13 @@ def update_safe_symlink(link_path: Path, target_rel_name: Optional[str]) -> None
     link_path = Path(link_path)
     parent = link_path.parent
     if not target_rel_name:
-        if link_path.is_symlink() or link_path.is_file():
+        if link_path.is_symlink():
             link_path.unlink(missing_ok=True)
-        elif link_path.is_dir():
-            shutil.rmtree(link_path)
         return
 
     target_dir = parent / target_rel_name
     if not is_loadable_checkpoint_path(target_dir):
-        if link_path.is_symlink() or link_path.is_file():
+        if link_path.is_symlink():
             link_path.unlink(missing_ok=True)
         return
 
@@ -1127,13 +1125,19 @@ def build_comparable_group_id(run_meta: Dict[str, Any]) -> str:
         val_sig = "S2:337"
     else:
         val_sig = "S3:4794"
+    classes = sorted(run_meta.get("supervision_classes") or (run_meta.get("train_groups") or {}).keys() or [family])
+    if val_groups:
+        val_sig = "+".join(f"{key}:{val_groups[key]}" for key in sorted(val_groups))
     loss_name = (run_meta.get("config") or {}).get("loss", "soft-ce")
-    return f"{protocol}|sup:{family}|val:{val_sig}|metric:{loss_name}_raw_logit"
+    return f"{protocol}|sup:{'+'.join(classes)}|val:{val_sig}|metric:{loss_name}_raw_logit"
 
 
 def primary_task_family(run_meta: Dict[str, Any]) -> str:
     """Return 'S1', 'S2', or 'S3' as the primary evaluation task family (never mixing tasks)."""
     classes = list(run_meta.get("supervision_classes") or sorted((run_meta.get("train_groups") or {}).keys()))
+    if not classes:
+        classes = sorted({stream for entry in run_meta.get("history") or [run_meta]
+                          for stream in (entry.get("validation") or {}) if stream in ("S1", "S2", "S3")})
     if "S1" in classes:
         return "S1"
     if classes == ["S2"]:
@@ -1145,6 +1149,8 @@ def collect_pinned_parent_ids(
     runs: Dict[str, Dict[str, Any]],
     plans: Optional[Dict[str, Dict[str, Any]]] = None,
     explicit_pinned: Optional[Iterable[str]] = None,
+    baseline_0: Optional[Dict[str, Any]] = None,
+    s2_audit_passed: bool = False,
 ) -> Dict[str, List[str]]:
     """Return mapping `parent_checkpoint_id -> list of dependent child run_ids`."""
     pinned: Dict[str, List[str]] = defaultdict(list)
@@ -1168,8 +1174,9 @@ def collect_pinned_parent_ids(
                 prun_data = (runs or {}).get(parent_run) or {}
                 hist = prun_data.get("history") or []
                 if hist:
-                    # Explicitly locate prescribed best epoch instead of arbitrary latest epoch
-                    best_ep_no = prun_data.get("best_epoch")
+                    best_ep_no = select_run_best_epoch(prun_data, baseline_0, s2_audit_passed)
+                    if best_ep_no is None:
+                        best_ep_no = prun_data.get("best_epoch")
                     best_cids = []
                     if best_ep_no is not None:
                         for h in hist:
@@ -1180,12 +1187,6 @@ def collect_pinned_parent_ids(
                             h.get("checkpoint_id") for h in hist
                             if h.get("is_run_best_epoch") or h.get("is_best_epoch")
                         ]
-                    if not best_cids:
-                        # Find best epoch by lowest validation loss / highest composite score
-                        def _loss_sort(h_item):
-                            l = (h_item.get("validation", {}).get("S1") or {}).get("loss")
-                            return float(l) if isinstance(l, (int, float)) else 999.0
-                        best_cids = [sorted(hist, key=_loss_sort)[0].get("checkpoint_id")]
                     for bcid in best_cids:
                         if bcid and pid not in pinned[str(bcid)]:
                             pinned[str(bcid)].append(f"{pid}(curriculum_child)")
@@ -1202,12 +1203,55 @@ def _node_primary_sort_key(node: Dict[str, Any], task_family: str) -> Tuple[floa
     v = (node.get("validation") or {}).get(task_family) or {}
     loss = v.get("loss")
     acc = v.get("accuracy")
+    score_key = -(float(score) if _finite_metric(score) else -float("inf"))
+    loss_key = float(loss) if _finite_metric(loss) else float("inf")
     return (
-        -(float(score) if isinstance(score, (int, float)) else -9999.0),
-        float(loss) if isinstance(loss, (int, float)) else 9999.0,
-        -(float(acc) if isinstance(acc, (int, float)) else -1.0),
+        loss_key if task_family == "S1" else score_key,
+        score_key if task_family == "S1" else loss_key,
+        -(float(acc) if _finite_metric(acc) else -1.0),
         int(node.get("epoch", 99)),
     )
+
+
+def _finite_metric(value: Any) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def _rankable_node(node: Dict[str, Any]) -> bool:
+    family = node.get("task_family") or primary_task_family(node)
+    metrics = (node.get("validation") or {}).get(family) or {}
+    items = metrics.get("items")
+    expected = (node.get("val_groups") or {}).get(family)
+    fields = (("loss", "accuracy", "brier", "ece") if family == "S1"
+              else ("loss", "accuracy", "balanced_accuracy", "macro_f1", "brier") if family == "S2"
+              else ("loss", "accuracy"))
+    return (all(_finite_metric(metrics.get(field)) for field in fields)
+            and _finite_metric(items) and items > 0 and _finite_metric(expected) and expected == items
+            and _finite_metric(node.get("primary_score")))
+
+
+def select_run_best_epoch(run_meta: Dict[str, Any], baseline_0=None, s2_audit_passed=False) -> Optional[int]:
+    """Use minimum observed S1 loss; keep the existing S2/S3 score order."""
+    family = primary_task_family(run_meta)
+    candidates = []
+    for entry in run_meta.get("history") or []:
+        validation = entry.get("validation") or {}
+        metrics = validation.get(family) or {}
+        if not _finite_metric(metrics.get("loss")):
+            continue
+        if family == "S1":
+            tie_metrics = {key: value for key, value in metrics.items()
+                           if key not in ("accuracy", "brier", "ece") or _finite_metric(value)}
+            scores = compute_node_composite_scores({**validation, "S1": tie_metrics}, family, baseline_0, s2_audit_passed)
+            candidates.append({**entry, "primary_score": scores["primary_score"]})
+            continue
+        if any(not _finite_metric(value) for key, value in metrics.items()
+               if key in ("accuracy", "brier", "ece", "balanced_accuracy", "macro_f1") and value is not None):
+            continue
+        scores = compute_node_composite_scores(validation, family, baseline_0, s2_audit_passed)
+        if _finite_metric(scores["primary_score"]):
+            candidates.append({**entry, "primary_score": scores["primary_score"]})
+    return int(min(candidates, key=lambda n: _node_primary_sort_key(n, family))["epoch"]) if candidates else None
 
 
 def evaluate_cohort_retention(
@@ -1279,7 +1323,12 @@ def evaluate_cohort_retention(
     run_best_ckpt_id: Dict[str, str] = {}
     for rid, rnodes in nodes_by_run.items():
         fam = rnodes[0].get("task_family", "S1")
-        best_n = min(rnodes, key=lambda x: _node_primary_sort_key(x, fam))
+        best_epoch = select_run_best_epoch({**rnodes[0], "history": rnodes}, b0, s2_audit_passed)
+        best_n = next((n for n in rnodes if n.get("epoch") == best_epoch), None)
+        if best_n is None:
+            for rn in rnodes:
+                rn["is_run_best_epoch"] = False
+            continue
         run_best_ckpt_id[rid] = best_n["checkpoint_id"]
         for rn in rnodes:
             rn["is_run_best_epoch"] = (rn["checkpoint_id"] == best_n["checkpoint_id"])
@@ -2015,7 +2064,10 @@ def evaluate_cohort_retention(
             if not n.get("is_run_best_epoch"):
                 continue
             val = n.get("validation", {})
-            if not val or not any(val.get(k, {}).get("items", 0) > 0 for k in ("S1", "S2", "S3", "all")):
+            family = n["task_family"]
+            if not _rankable_node(n) or not _finite_metric(n.get("selection_score")):
+                continue
+            if family == "S2" and n.get("s2_status") != "AUDITED_RANKING":
                 continue
             new_eligible_candidates.append(n)
 
@@ -2029,22 +2081,22 @@ def evaluate_cohort_retention(
             gid = decisions.get(cid, {}).get("comparable_group_id") or n.get("comparable_group_id") or "default"
             by_group[gid].append(n)
 
-        # Collect retained from new groups up to new_pool_quota
+        # Allocate seats by group size; compare scores only inside each group.
         new_retained_ids = set()
-        for gid, g_nodes in by_group.items():
-            def _rank_new(n_val):
-                sc = float(n_val.get("selection_score") or n_val.get("primary_score") or 0.0)
-                s1_val = (n_val.get("validation", {}).get("S1") or {})
-                loss = float(s1_val.get("loss", 999.0)) if isinstance(s1_val.get("loss"), (int, float)) else 999.0
-                acc = float(s1_val.get("accuracy", -1.0)) if isinstance(s1_val.get("accuracy"), (int, float)) else -1.0
-                brier = float(s1_val.get("brier", 999.0)) if isinstance(s1_val.get("brier"), (int, float)) else 999.0
-                return (-round(sc, 4), round(loss, 4), -round(acc, 4), round(brier, 4))
-
-            sorted_g = sorted(g_nodes, key=_rank_new)
-            g_quota = max(1, math.ceil(NEW_CORE_POOL_RATIO * len(sorted_g))) if len(sorted_g) > 0 else 0
-            for n_val in sorted_g[:g_quota]:
-                if len(new_retained_ids) < new_pool_quota:
-                    new_retained_ids.add(n_val["checkpoint_id"])
+        group_quotas = {gid: new_pool_quota * len(group) // n_new_eligible for gid, group in by_group.items()}
+        remainder_order = sorted(by_group, key=lambda gid: (
+            -(new_pool_quota * len(by_group[gid]) % n_new_eligible), gid))
+        for gid in remainder_order[:new_pool_quota - sum(group_quotas.values())]:
+            group_quotas[gid] += 1
+        for gid in sorted(by_group):
+            g_nodes = by_group[gid]
+            sorted_g = sorted(g_nodes, key=lambda n: (
+                -n["selection_score"], _node_primary_sort_key(n, n["task_family"]), n["checkpoint_id"]))
+            g_quota = group_quotas[gid]
+            new_retained_ids.update(n["checkpoint_id"] for n in sorted_g[:g_quota])
+            group_summaries[gid].update(new_pool_eligible_runs=len(g_nodes), new_pool_quota=g_quota,
+                                        new_pool_total_quota=new_pool_quota,
+                                        new_pool_allocation="largest_remainder_by_group_size")
 
         # Update decisions for new candidates
         for n in nodes:
@@ -2056,6 +2108,8 @@ def evaluate_cohort_retention(
                 if cid in decisions:
                     dec = decisions[cid]
                     dec["should_retain"] = False
+                    dec["is_global_best"] = False
+                    dec["is_top_k"] = False
                     dec["retention_pool"] = "HISTORICAL_METADATA_ONLY"
                     dec["rejection_reason"] = "pre_q012_historical_metadata_only"
                 continue
@@ -2070,6 +2124,8 @@ def evaluate_cohort_retention(
                     dec["retention_reasons"].append(f"new_core_pool_15pct(quota={new_pool_quota}/{n_new_eligible})")
                 else:
                     dec["should_retain"] = False
+                    dec["is_global_best"] = False
+                    dec["is_top_k"] = False
                     dec["retention_pool"] = "METADATA_ONLY"
                     if not dec.get("rejection_reason"):
                         dec["rejection_reason"] = f"outside_new_core_pool_15pct_quota({new_pool_quota}/{n_new_eligible})"
@@ -2098,7 +2154,7 @@ def resolve_retention_status(
         if was_previously_saved and not weights_currently_saved:
             return STATUS_PRUNED_LOW_SCORE
         if weights_currently_saved:
-            return STATUS_PRUNED_LOW_SCORE
+            return STATUS_METADATA_ONLY
         return STATUS_METADATA_ONLY
     return STATUS_METADATA_ONLY
 
@@ -2165,7 +2221,7 @@ class CheckpointRetentionManager:
     ) -> Tuple[bool, Optional[str]]:
         """Return (True, reason) if this checkpoint is mandatory to retain and must NEVER be pruned or evicted."""
         # 1. Active in-flight running run
-        if run_status == "running" or (node and node.get("run_status") == "running"):
+        if run_status not in ("completed", "early_stopped") or (node and node.get("run_status") not in ("completed", "early_stopped")):
             return True, "protected_active_running_run"
 
         # 2. Pinned parent for curriculum learning
@@ -2181,6 +2237,9 @@ class CheckpointRetentionManager:
         # 3. Old Core Pool (permanent 5 core checkpoints)
         if cid in OLD_CORE_CHECKPOINT_IDS or dec.get("retention_pool") == "OLD_CORE_POOL":
             return True, "protected_old_core_pool"
+
+        if not dec or (node and not _rankable_node(node)):
+            return True, "protected_unscored_checkpoint"
 
         # 4. New Core Pool (dynamically retained ~15% post-Q012 quota)
         if dec.get("retention_pool") == "NEW_CORE_POOL":
@@ -2316,8 +2375,9 @@ class CheckpointRetentionManager:
             except (OSError, json.JSONDecodeError):
                 plans = {}
 
-        pinned_map = collect_pinned_parent_ids(runs, plans, self.explicit_pinned)
         baseline_0 = load_or_default_baseline_0(self.out_root)
+        pinned_map = collect_pinned_parent_ids(runs, plans, self.explicit_pinned,
+                                             baseline_0, self.s2_audit_passed)
 
         nodes: List[Dict[str, Any]] = []
         for run_id, r in sorted(runs.items()):
@@ -2527,16 +2587,17 @@ class CheckpointRetentionManager:
             if not ckroot.exists():
                 continue
 
-            run_is_running = r.get("status") == "running"
+            run_is_running = r.get("status") not in ("completed", "early_stopped")
             history_persisted = (run_root / "run.json").is_file() and (run_root / "epoch_metrics.json").is_file()
 
             # 1. Check completed-run temporary recovery (`_temp_recovery` and non-symlink `latest`)
-            if not run_is_running:
+            best_epoch = select_run_best_epoch(r, load_or_default_baseline_0(self.out_root), self.s2_audit_passed)
+            completed_best_exists = (best_epoch is not None
+                                    and has_physical_weights(ckroot / f"epoch_{best_epoch:02d}"))
+            if not run_is_running and completed_best_exists:
                 for tmp_name in ("_temp_recovery", "latest"):
                     tdir = ckroot / tmp_name
-                    if tdir.is_symlink():
-                        tdir.unlink(missing_ok=True)
-                    elif tdir.exists() and tdir.is_dir():
+                    if tdir.exists() and not tdir.is_symlink() and tdir.is_dir():
                         ok, reason = self.is_whitelisted_checkpoint_dir(tdir)
                         sz = physical_dir_bytes(tdir)
                         item = {
@@ -2757,24 +2818,20 @@ class CheckpointRetentionManager:
         ckroot = self.out_root / run_id / "checkpoints"
         history = rdata.get("history") or []
 
-        # 1. Determine the true scientific best epoch based on original validation metrics (S1 loss)
-        scientific_best_ep = None
-        min_loss = float("inf")
-        for h in history:
-            ep = int(h.get("epoch", 0))
-            s1_loss = ((h.get("validation") or {}).get("S1") or {}).get("loss")
-            if isinstance(s1_loss, (int, float)) and s1_loss < min_loss:
-                min_loss = s1_loss
-                scientific_best_ep = ep
+        scientific_best_ep = select_run_best_epoch(rdata, load_or_default_baseline_0(self.out_root), self.s2_audit_passed)
 
         # Preserve scientific best epoch in rdata (fallback to existing best_epoch if history is empty)
         if scientific_best_ep is not None:
             rdata["best_epoch"] = scientific_best_ep
-        elif rdata.get("best_epoch") is not None:
+        elif not history and rdata.get("best_epoch") is not None:
             scientific_best_ep = int(rdata["best_epoch"])
 
         if not ckroot.exists() or scientific_best_ep is None:
+            if history and scientific_best_ep is None:
+                rdata["best_epoch"] = None
             rdata["best_checkpoint"] = None
+            if ckroot.exists():
+                update_safe_symlink(ckroot / "best", None)
             return
 
         # 2. Check if the true scientific best epoch physically exists
@@ -2904,9 +2961,9 @@ class CheckpointRetentionManager:
         epoch_dir = ckroot / epoch_rel
 
         # Step 1: Persist metadata first so history is never lost even if weights are not saved
-        entry["weights_saved"] = False
-        entry["loadable"] = False
-        entry["checkpoint_size_bytes"] = 0
+        entry["weights_saved"] = has_physical_weights(epoch_dir)
+        entry["loadable"] = is_loadable_checkpoint_path(epoch_dir)
+        entry["checkpoint_size_bytes"] = physical_dir_bytes(epoch_dir) if entry["weights_saved"] else 0
         entry["freed_bytes"] = 0
         entry["retention_status"] = STATUS_METADATA_ONLY
 
@@ -2922,6 +2979,11 @@ class CheckpointRetentionManager:
         else:
             history_list.append(entry)
 
+        best_epoch = select_run_best_epoch(run_meta, load_or_default_baseline_0(self.out_root), self.s2_audit_passed)
+        if best_epoch is not None:
+            run_meta["best_epoch"] = best_epoch
+            for h in run_meta["history"]:
+                h["is_run_best_epoch"] = h.get("epoch") == best_epoch
         _atomic_write_json(run_root / "epoch_metrics.json", run_meta["history"])
         _atomic_write_json(run_root / "run.json", run_meta)
 
@@ -2963,8 +3025,7 @@ class CheckpointRetentionManager:
             or any(epoch_id in str(x) for x in (self.explicit_pinned or ()))
         )
         is_run_best_candidate = bool(
-            entry.get("improved_0_5pct")
-            or epoch == run_meta.get("best_epoch")
+            epoch == best_epoch
             or is_final_epoch
             or dec.get("should_retain")
         )
@@ -3013,10 +3074,10 @@ class CheckpointRetentionManager:
         else:
             # Do NOT write permanent `epoch_XX` weights (`METADATA_ONLY`)
             reason = dec.get("rejection_reason") or ("exceeded_active_budget" if not within_budget else STATUS_METADATA_ONLY)
-            entry["weights_saved"] = False
-            entry["loadable"] = False
-            entry["was_previously_saved"] = False
-            entry["checkpoint_size_bytes"] = 0
+            entry["weights_saved"] = has_physical_weights(epoch_dir)
+            entry["loadable"] = is_loadable_checkpoint_path(epoch_dir)
+            entry["was_previously_saved"] = bool(entry.get("was_previously_saved") or entry["weights_saved"])
+            entry["checkpoint_size_bytes"] = physical_dir_bytes(epoch_dir) if entry["weights_saved"] else 0
             entry["retention_status"] = STATUS_METADATA_ONLY
             entry["retention_reasons"] = []
             entry["retention_reason"] = reason
@@ -3047,6 +3108,7 @@ class CheckpointRetentionManager:
         updated_run = json.loads((run_root / "run.json").read_text(encoding="utf8"))
         run_meta["history"] = updated_run.get("history", run_meta["history"])
         run_meta["best_checkpoint"] = updated_run.get("best_checkpoint")
+        run_meta["best_epoch"] = updated_run.get("best_epoch")
         return {
             "checkpoint_id": epoch_id,
             "weights_saved": entry["weights_saved"],
@@ -3060,16 +3122,15 @@ class CheckpointRetentionManager:
         """Clean up temporary `latest` / `_temp_recovery` upon Run completion and sync `best` symlink."""
         run_root = self.out_root / run_id
         ckroot = run_root / "checkpoints"
-        if ckroot.exists():
+        self._sync_run_best_symlink(run_id, run_meta)
+        if (ckroot.exists() and run_meta.get("status") in ("completed", "early_stopped")
+                and run_meta.get("best_checkpoint") is not None):
             temp_dir = ckroot / "_temp_recovery"
             if temp_dir.exists() and not temp_dir.is_symlink():
                 shutil.rmtree(temp_dir)
             latest_link = ckroot / "latest"
-            if latest_link.is_symlink() or latest_link.is_file():
+            if latest_link.is_symlink():
                 latest_link.unlink(missing_ok=True)
-            elif latest_link.is_dir():
-                shutil.rmtree(latest_link)
-        self._sync_run_best_symlink(run_id, run_meta)
         _atomic_write_json(run_root / "run.json", run_meta)
         _atomic_write_json(run_root / "epoch_metrics.json", run_meta.get("history") or [])
         self.two_phase_cleanup(manifest=manifest, allow_legacy_cleanup=False, dry_run=False)
@@ -3954,905 +4015,9 @@ def sync_server_metadata_and_build_dashboard(
     dashboard_dir: Optional[Path] = None,
     run_official_load: bool = True,
 ) -> Dict[str, Any]:
-    """Audit real server disk & historical runs, repair metadata-only flags, run P7 verification,
-    and generate sharded `docs/training-dashboard/` payload.
+    """Refresh read-only training observations using the maintained collector."""
+    from scripts.fetch_live_status import build_training_history
 
-    Does NOT delete any existing historical weights on disk (per P7).
-    """
-    project_root = Path(project_root).resolve()
-    if dashboard_dir is None:
-        dashboard_dir = project_root / "docs" / "training-dashboard"
-    dashboard_dir = Path(dashboard_dir).resolve()
-    shards_dir = dashboard_dir / "shards"
-    shards_dir.mkdir(parents=True, exist_ok=True)
-
-    runs_root = project_root / "runs"
-    fg_train_root = runs_root / "MR-FULL-GRADED-TRAINING"
-    fg_p0_root = runs_root / "MR-FULL-GRADED-P0-DATA-REPAIR-20261012"
-    sweep02_root = runs_root / "OVERNIGHT-LAYA-SWEEP-02"
-    overnight_root = runs_root / "OVERNIGHT-LAYA-TRAINING"
-
-    # Load existing dashboard_data.json as baseline for coverage/plans/s2_audit if present
-    base_dash_path = fg_p0_root / "dashboard_data.json"
-    base_dash: Dict[str, Any] = {}
-    if base_dash_path.is_file():
-        base_dash = json.loads(base_dash_path.read_text(encoding="utf8"))
-    elif (dashboard_dir / "data.js").is_file():
-        raw = (dashboard_dir / "data.js").read_text(encoding="utf8")
-        prefix = "window.LAYA_DATA = "
-        if raw.startswith(prefix):
-            raw = raw[len(prefix):].rstrip(";\n")
-        try:
-            base_dash = json.loads(raw)
-        except json.JSONDecodeError:
-            base_dash = {}
-    base_dash = sanitize_deep(base_dash)
-    if (shards_dir / "matrix_plans_full.js").is_file():
-        s_raw = (shards_dir / "matrix_plans_full.js").read_text(encoding="utf8")
-        s_prefix = "window.LAYA_SHARD_PLANS = "
-        if s_raw.startswith(s_prefix):
-            s_raw = s_raw[len(s_prefix):].rstrip(";\n")
-        try:
-            s_plans = json.loads(s_raw)
-            if isinstance(s_plans, dict) and len(s_plans) >= len(base_dash.get("plans") or {}):
-                base_dash["plans"] = sanitize_deep(s_plans)
-        except json.JSONDecodeError:
-            pass
-
-    # 1. Audit & repair `runs/MR-FULL-GRADED-TRAINING` so any checkpoint without physical weights
-    #    (specifically `B01_C14_QB_PB`) NEVER has `weights_saved=True`
-    if fg_train_root.is_dir():
-        for rpath in sorted(fg_train_root.glob("B01_*/run.json")):
-            rdata = json.loads(rpath.read_text(encoding="utf8"))
-            rid = rdata.get("run_id") or rpath.parent.name
-            rdata["legacy_input_protocol"] = True
-            rdata["protocol_version"] = LEGACY_PROTOCOL_VERSION
-            rdata["command"] = sanitize_command_str(rdata.get("command", ""))
-            rdata.pop("base_model", None)
-            ckroot = rpath.parent / "checkpoints"
-            changed = True
-            for h in rdata.get("history") or []:
-                ep = int(h.get("epoch", 0))
-                ep_dir = ckroot / f"epoch_{ep:02d}"
-                phys = has_physical_weights(ep_dir)
-                h["weights_saved"] = phys
-                h["loadable"] = is_loadable_checkpoint_path(ep_dir)
-                if not phys:
-                    h["retention_status"] = STATUS_LEGACY_METADATA_ONLY
-                    h["retention_reason"] = "P0 阶段因旧协议下 S3 验证准确率最低 (0.5565/0.5872) 淘汰实体权重，仅保留完整元数据"
-                    # B01_C14_QB_PB originally had 4 dirs (epoch_01, epoch_02, best, latest) = 3,384,787,296 B
-                    h["freed_bytes"] = 1692393648
-                    h["actual_weight_bytes"] = 0
-                else:
-                    h["actual_weight_bytes"] = physical_dir_bytes(ep_dir)
-                    h["freed_bytes"] = 0
-                if "S3_by_source_target" in (h.get("validation") or {}):
-                    h["validation"]["S3_by_source_target"] = enrich_s3_target_metrics(
-                        h["validation"]["S3_by_source_target"]
-                    )
-            if changed:
-                _atomic_write_json(rpath, rdata)
-                _atomic_write_json(rpath.parent / "epoch_metrics.json", rdata.get("history") or [])
-
-    # 2. Evaluate CheckpointRetentionManager on `MR-FULL-GRADED-P0-DATA-REPAIR-20261012` (New Protocol)
-    #    and `MR-FULL-GRADED-TRAINING` (Legacy Window 1)
-    baseline_0_full = load_or_default_baseline_0(fg_p0_root if fg_p0_root.is_dir() else project_root)
-    p0_mgr = CheckpointRetentionManager(
-        out_root=fg_p0_root if fg_p0_root.is_dir() else (project_root / ".tmp" / "empty_p0"),
-        active_budget_bytes=DEFAULT_ACTIVE_BUDGET_BYTES,
-        s2_audit_passed=False,
-    )
-    p0_manifest = (
-        p0_mgr.write_checkpoint_manifest(manifest=base_dash)
-        if fg_p0_root.is_dir()
-        else {"checkpoints": [], "comparable_groups": {}, "baseline_0": baseline_0_full}
-    )
-
-    fg_mgr = CheckpointRetentionManager(
-        out_root=fg_train_root if fg_train_root.is_dir() else (project_root / ".tmp" / "empty_fg"),
-        active_budget_bytes=DEFAULT_ACTIVE_BUDGET_BYTES,
-        s2_audit_passed=False,
-    )
-    fg_manifest = fg_mgr.write_checkpoint_manifest() if fg_train_root.is_dir() else {"checkpoints": [], "comparable_groups": {}}
-
-    # Also evaluate historical Sweep-02 and Overnight Batch 1 (where R1-e01 and R2-e01 are PINNED_PARENT!)
-    historical_nodes: List[Dict[str, Any]] = []
-    for exp_label, h_root in [("OVERNIGHT-LAYA-TRAINING", overnight_root), ("OVERNIGHT-LAYA-SWEEP-02", sweep02_root)]:
-        if not h_root.is_dir():
-            continue
-        h_mgr = CheckpointRetentionManager(out_root=h_root, s2_audit_passed=False)
-        _h_runs, h_nodes, _h_pinned, _h_dec, _h_groups = h_mgr.load_and_evaluate_all()
-        for hn in h_nodes:
-            hn["experiment_group"] = exp_label
-            historical_nodes.append(hn)
-
-    # 3. Run the 14-point Section 11 verification suite (including official CPU `load_checkpoint` test)
-    verification = run_storage_policy_verification(
-        project_root=project_root,
-        run_official_load=run_official_load,
-    )
-    if fg_p0_root.is_dir():
-        _atomic_write_json(fg_p0_root / "storage_policy_verification.json", verification)
-
-    # 4. Compute exact real-time disk and directory byte statistics on `/`
-    st = os.statvfs(str(project_root))
-    root_total_b = st.f_frsize * st.f_blocks
-    root_avail_b = st.f_frsize * st.f_bavail
-    root_used_b = root_total_b - (st.f_frsize * st.f_bfree)
-    root_avail_pct = round(root_avail_b / root_total_b * 100.0, 2) if root_total_b > 0 else 0.0
-    root_df_used_pct = round(root_used_b / (root_used_b + root_avail_b) * 100.0, 2) if (root_used_b + root_avail_b) > 0 else 0.0
-
-    def _scan_run_root(r_dir: Path) -> Dict[str, int]:
-        if not r_dir.is_dir():
-            return {
-                "total_bytes": 0, "ckpt_total_bytes": 0, "ckpt_dir_count": 0,
-                "epoch_dir_count": 0, "epoch_dir_bytes": 0,
-                "duplicate_best_latest_count": 0, "duplicate_best_latest_bytes": 0,
-            }
-        total_b = physical_dir_bytes(r_dir)
-        ckpt_b = 0
-        ckpt_cnt = 0
-        ep_cnt = 0
-        ep_b = 0
-        dup_cnt = 0
-        dup_b = 0
-        for ck in r_dir.glob("*/checkpoints/*"):
-            if ck.is_symlink() or not ck.is_dir():
-                continue
-            if not has_physical_weights(ck):
-                continue
-            sz = physical_dir_bytes(ck)
-            ckpt_b += sz
-            ckpt_cnt += 1
-            if ck.name.startswith("epoch_"):
-                ep_cnt += 1
-                ep_b += sz
-            elif ck.name in ("best", "latest", "_temp_recovery"):
-                dup_cnt += 1
-                dup_b += sz
-        return {
-            "total_bytes": total_b,
-            "ckpt_total_bytes": ckpt_b,
-            "ckpt_dir_count": ckpt_cnt,
-            "epoch_dir_count": ep_cnt,
-            "epoch_dir_bytes": ep_b,
-            "duplicate_best_latest_count": dup_cnt,
-            "duplicate_best_latest_bytes": dup_b,
-        }
-
-    fg_stat = _scan_run_root(fg_train_root)
-    p0_stat = _scan_run_root(fg_p0_root)
-    sw_stat = _scan_run_root(sweep02_root)
-    ov_stat = _scan_run_root(overnight_root)
-    models_bytes = physical_dir_bytes(project_root / "models") if (project_root / "models").is_dir() else 0
-
-    p0_nodes = p0_manifest.get("checkpoints") or []
-    for n in p0_nodes:
-        n["experiment_group"] = "MR-FULL-GRADED-NEW-PROTOCOL"
-
-    fg_legacy_nodes = fg_manifest.get("checkpoints") or []
-    for n in fg_legacy_nodes:
-        n["experiment_group"] = "MR-FULL-GRADED-LEGACY-WINDOW1"
-
-    fg_nodes = p0_nodes + fg_legacy_nodes
-
-    fg_retained_nodes = [
-        n for n in fg_nodes
-        if n["retention_status"] in (STATUS_RETAINED_BEST, STATUS_RETAINED_TOP_K, STATUS_PINNED_PARENT)
-    ]
-    p0_retained_nodes = [
-        n for n in p0_nodes
-        if n["retention_status"] in (STATUS_RETAINED_BEST, STATUS_RETAINED_TOP_K, STATUS_PINNED_PARENT)
-    ]
-    fg_low_score_nodes = [n for n in fg_nodes if n["retention_status"] == STATUS_PRUNED_LOW_SCORE]
-    fg_meta_only_nodes = [
-        n for n in fg_nodes
-        if n["retention_status"] in (STATUS_METADATA_ONLY, STATUS_LEGACY_METADATA_ONLY)
-    ]
-
-    fg_reclaimable_low_score_bytes = sum(n["actual_weight_bytes"] for n in fg_low_score_nodes)
-    fg_reclaimable_duplicate_bytes = fg_stat["duplicate_best_latest_bytes"] + p0_stat["duplicate_best_latest_bytes"]
-    fg_future_reclaimable_bytes = fg_reclaimable_low_score_bytes + fg_reclaimable_duplicate_bytes
-
-    all_hist_duplicate_bytes = (
-        fg_stat["duplicate_best_latest_bytes"]
-        + p0_stat["duplicate_best_latest_bytes"]
-        + sw_stat["duplicate_best_latest_bytes"]
-        + ov_stat["duplicate_best_latest_bytes"]
-    )
-    actual_freed_b01_c14_bytes = 3_384_787_296
-    p0_freed_bytes = sum(int(n.get("freed_bytes", 0)) for n in p0_nodes)
-    total_actual_freed_bytes = actual_freed_b01_c14_bytes + p0_freed_bytes
-
-    active_fg_weights_bytes = fg_stat["ckpt_total_bytes"] + p0_stat["ckpt_total_bytes"]
-
-    disk_monitor = {
-        "checked_at": _now_iso(),
-        "root_total_bytes": root_total_b,
-        "root_total_gib": round(root_total_b / GIB, 2),
-        "root_total_tb": round(root_total_b / (1000 ** 4), 2),
-        "root_used_bytes": root_used_b,
-        "root_used_gib": round(root_used_b / GIB, 2),
-        "root_avail_bytes": root_avail_b,
-        "root_avail_gib": round(root_avail_b / GIB, 2),
-        "root_avail_tb": round(root_avail_b / (1000 ** 4), 2),
-        "root_avail_pct": root_avail_pct,
-        "root_df_used_pct": root_df_used_pct,
-        "full_graded_weights_bytes": active_fg_weights_bytes,
-        "full_graded_weights_gib": round(active_fg_weights_bytes / GIB, 2),
-        "full_graded_total_dir_bytes": fg_stat["total_bytes"] + p0_stat["total_bytes"],
-        "full_graded_total_dir_gib": round((fg_stat["total_bytes"] + p0_stat["total_bytes"]) / GIB, 2),
-        "new_protocol_active_weights_bytes": p0_stat["ckpt_total_bytes"],
-        "new_protocol_active_weights_gib": round(p0_stat["ckpt_total_bytes"] / GIB, 2),
-        "new_protocol_data_bytes": p0_stat["total_bytes"] - p0_stat["ckpt_total_bytes"],
-        "new_protocol_data_gib": round(max(0, p0_stat["total_bytes"] - p0_stat["ckpt_total_bytes"]) / GIB, 2),
-        "historical_experiments_weights_bytes": sw_stat["ckpt_total_bytes"] + ov_stat["ckpt_total_bytes"],
-        "historical_experiments_weights_gib": round((sw_stat["ckpt_total_bytes"] + ov_stat["ckpt_total_bytes"]) / GIB, 2),
-        "all_experiments_weights_bytes": active_fg_weights_bytes + sw_stat["ckpt_total_bytes"] + ov_stat["ckpt_total_bytes"],
-        "all_experiments_weights_gib": round((active_fg_weights_bytes + sw_stat["ckpt_total_bytes"] + ov_stat["ckpt_total_bytes"]) / GIB, 2),
-        "base_models_bytes": models_bytes,
-        "base_models_gib": round(models_bytes / GIB, 2),
-        "freed_space_bytes": total_actual_freed_bytes,
-        "freed_space_gib": round(total_actual_freed_bytes / GIB, 2),
-        "new_protocol_freed_bytes": p0_freed_bytes,
-        "new_protocol_freed_gib": round(p0_freed_bytes / GIB, 2),
-        "sandbox_verified_freed_bytes": verification["sandbox_summary"]["total_freed_bytes"],
-        "active_budget_bytes": DEFAULT_ACTIVE_BUDGET_BYTES,
-        "active_budget_gib": round(DEFAULT_ACTIVE_BUDGET_BYTES / GIB, 2),
-        "budget_used_bytes": active_fg_weights_bytes,
-        "budget_used_gib": round(active_fg_weights_bytes / GIB, 2),
-        "budget_used_pct": round(active_fg_weights_bytes / DEFAULT_ACTIVE_BUDGET_BYTES * 100.0, 2),
-        "post_dedup_projected_budget_bytes": sum(n["actual_weight_bytes"] for n in fg_retained_nodes),
-        "post_dedup_projected_budget_gib": round(sum(n["actual_weight_bytes"] for n in fg_retained_nodes) / GIB, 2),
-        "post_dedup_projected_budget_pct": round(
-            sum(n["actual_weight_bytes"] for n in fg_retained_nodes) / DEFAULT_ACTIVE_BUDGET_BYTES * 100.0, 2
-        ),
-        "next_window_available_budget_bytes": max(0, DEFAULT_ACTIVE_BUDGET_BYTES - p0_stat["ckpt_total_bytes"]),
-        "next_window_available_budget_gib": round(max(0, DEFAULT_ACTIVE_BUDGET_BYTES - p0_stat["ckpt_total_bytes"]) / GIB, 2),
-        "thresholds": {
-            "active_budget_gib": 120.0,
-            "warn_free_pct": DISK_WARN_FREE_PCT,
-            "stop_free_pct": DISK_STOP_FREE_PCT,
-            "warn_free_gib": 300.0,
-            "stop_free_gib": 200.0,
-        },
-        "guard_state": "OK" if (root_avail_pct >= DISK_WARN_FREE_PCT and root_avail_b >= DISK_WARN_FREE_BYTES) else "WARNING",
-    }
-
-    all_project_nodes = fg_nodes + historical_nodes
-    pinned_all = [n for n in all_project_nodes if n.get("is_pinned_parent")]
-
-    checkpoint_retention_stats = {
-        "new_protocol": {
-            "total_epochs": len(p0_nodes),
-            "physical_weight_dirs_on_disk": p0_stat["ckpt_dir_count"],
-            "retained_epoch_weights": len(p0_retained_nodes),
-            "retention_ratio_pct": round(len(p0_retained_nodes) / max(1, len(p0_nodes)) * 100.0, 2) if p0_nodes else 0.0,
-            "metadata_only_count": sum(1 for n in p0_nodes if n["retention_status"] == STATUS_METADATA_ONLY),
-            "pruned_low_score_count": sum(1 for n in p0_nodes if n["retention_status"] == STATUS_PRUNED_LOW_SCORE),
-            "pinned_parent_count": sum(1 for n in p0_nodes if n.get("is_pinned_parent")),
-            "freed_bytes": p0_freed_bytes,
-            "freed_gib": round(p0_freed_bytes / GIB, 2),
-        },
-        "full_graded": {
-            "total_epochs": len(fg_nodes),
-            "physical_weight_dirs_on_disk": fg_stat["ckpt_dir_count"] + p0_stat["ckpt_dir_count"],
-            "epoch_weight_dirs_on_disk": fg_stat["epoch_dir_count"] + p0_stat["epoch_dir_count"],
-            "policy_retained_epoch_weights": len(fg_retained_nodes),
-            "policy_retention_ratio_pct": round(len(fg_retained_nodes) / max(1, len(fg_nodes)) * 100.0, 2),
-            "actual_epoch_retention_ratio_pct": round((fg_stat["epoch_dir_count"] + p0_stat["epoch_dir_count"]) / max(1, len(fg_nodes)) * 100.0, 2),
-            "metadata_only_count": len(fg_meta_only_nodes),
-            "pruned_low_score_policy_count": len(fg_low_score_nodes) + len(fg_meta_only_nodes),
-            "already_deleted_epoch_count": len(fg_meta_only_nodes) + sum(1 for n in p0_nodes if not n["weights_saved"]),
-            "duplicate_best_latest_dirs_on_disk": fg_stat["duplicate_best_latest_count"] + p0_stat["duplicate_best_latest_count"],
-            "already_cleaned_duplicate_dirs": 2,
-            "pinned_parent_count": sum(1 for n in fg_nodes if n.get("is_pinned_parent")),
-            "future_reclaimable_bytes": fg_future_reclaimable_bytes,
-            "future_reclaimable_gib": round(fg_future_reclaimable_bytes / GIB, 2),
-            "future_reclaimable_dirs": len(fg_low_score_nodes) + fg_stat["duplicate_best_latest_count"],
-        },
-        "all_experiments": {
-            "total_epochs": len(all_project_nodes),
-            "physical_weight_dirs_on_disk": fg_stat["ckpt_dir_count"] + p0_stat["ckpt_dir_count"] + sw_stat["ckpt_dir_count"] + ov_stat["ckpt_dir_count"],
-            "epoch_weight_dirs_on_disk": fg_stat["epoch_dir_count"] + p0_stat["epoch_dir_count"] + sw_stat["epoch_dir_count"] + ov_stat["epoch_dir_count"],
-            "metadata_only_count": sum(1 for n in all_project_nodes if not n["weights_saved"]),
-            "pinned_parent_count": len(pinned_all),
-            "pinned_parent_ids": [n["checkpoint_id"] for n in pinned_all],
-            "duplicate_best_latest_dirs_on_disk": (
-                fg_stat["duplicate_best_latest_count"]
-                + p0_stat["duplicate_best_latest_count"]
-                + sw_stat["duplicate_best_latest_count"]
-                + ov_stat["duplicate_best_latest_count"]
-            ),
-            "duplicate_best_latest_bytes": all_hist_duplicate_bytes,
-            "duplicate_best_latest_gib": round(all_hist_duplicate_bytes / GIB, 2),
-        },
-        "sandbox_verification": verification["sandbox_summary"],
-    }
-
-    # Build Quality vs Storage Scatter Plot points (including New Protocol, Legacy Window 1, Historical PINNED, and Sandbox Verification)
-    scatter_points: List[Dict[str, Any]] = []
-    for n in fg_nodes + historical_nodes + verification["sandbox_checkpoints"]:
-        s1 = (n.get("validation") or {}).get("S1") or {}
-        s2 = (n.get("validation") or {}).get("S2") or {}
-        s3 = (n.get("validation") or {}).get("S3") or {}
-        cat = (
-            "PINNED_PARENT" if n.get("is_pinned_parent")
-            else "RETAINED_BEST" if n.get("is_global_best") or n["retention_status"] == STATUS_RETAINED_BEST
-            else "RETAINED_TOP_K" if n["retention_status"] == STATUS_RETAINED_TOP_K
-            else "PRUNED_OR_METADATA_ONLY"
-        )
-        policy_mib = (
-            round((n.get("actual_weight_bytes") or SINGLE_CKPT_ESTIMATED_BYTES) / MIB, 2)
-            if n["retention_status"] in (STATUS_RETAINED_BEST, STATUS_RETAINED_TOP_K, STATUS_PINNED_PARENT)
-            else 0.0
-        )
-        disk_mib = round((n.get("actual_weight_bytes") or 0) / MIB, 2)
-        scatter_points.append({
-            "checkpoint_id": n["checkpoint_id"],
-            "run_id": n["run_id"],
-            "epoch": n["epoch"],
-            "experiment_group": n.get("experiment_group", "SANDBOX_VERIFY"),
-            "protocol_version": n.get("protocol_version"),
-            "legacy_input_protocol": bool(n.get("legacy_input_protocol")),
-            "task_family": n.get("task_family"),
-            "category": cat,
-            "retention_status": n["retention_status"],
-            "retention_reason": n.get("retention_reason"),
-            "weights_saved": bool(n["weights_saved"]),
-            "loadable": bool(n["loadable"]),
-            "disk_size_mib": disk_mib,
-            "policy_size_mib": policy_mib,
-            "primary_score": n.get("primary_score"),
-            "s1_score": n.get("s1_score"),
-            "s2_score": n.get("s2_score"),
-            "s3_score": n.get("s3_score"),
-            "is_pareto_front": bool(n.get("is_pareto_front")),
-            "s1_loss": s1.get("loss"),
-            "s1_accuracy": s1.get("accuracy"),
-            "s1_brier": s1.get("brier"),
-            "s1_ece": s1.get("ece"),
-            "s2_loss": s2.get("loss"),
-            "s2_accuracy": s2.get("accuracy"),
-            "s3_accuracy": s3.get("accuracy"),
-        })
-
-    # Build Dynamic Thresholds & Three-Tier Baselines separated strictly by S1, S2, S3
-    p0_groups = p0_manifest.get("comparable_groups") or {}
-    fg_groups = fg_manifest.get("comparable_groups") or {}
-    sb_groups = verification.get("sandbox_groups") or {}
-
-    dynamic_thresholds = {
-        "protocol_separation_note": "旧 LEGACY_INPUT_PROTOCOL 实验与新 MR-FULL-GRADED-P0-DATA-REPAIR-v1 协议严格隔离，绝不混入新协议 BASELINE_1/BASELINE_2 或 Top 30% 排名。",
-        "policy_constants": {
-            "RETENTION_TARGET": RETENTION_TARGET,
-            "MEAN_FLOOR_RATIO": MEAN_FLOOR_RATIO,
-            "MIN_COMPARABLE_RUNS": MIN_COMPARABLE_RUNS,
-            "TRIM_RATIO": TRIM_RATIO,
-            "S1_SCORE_BASELINE": S1_SCORE_BASELINE,
-        },
-        "S1": {
-            "rule_summary": "Condition A: S1_score > 100.0 (优于 BASELINE_0) 且单指标无明显退化；Condition B: S1_score >= 0.98 * BASELINE_1_LOO_Mean；Condition C: N>=5 时保留同组前 30% (ceil(0.30*N)) 非依赖最佳 Run；Condition D: N<5 时冷启动临时保留 Top-2 并在 N>=5 后复评淘汰；Condition E: 分差 <=0.5 时优先 Pareto 前沿；Condition F: PINNED_PARENT + 全局最佳 + 各 Batch 最佳保底。",
-            "new_protocol_active_groups": [g for g in p0_groups.values() if g.get("task_family") == "S1"],
-            "new_protocol_sandbox_groups": [g for g in sb_groups.values() if g.get("task_family") == "S1"],
-            "legacy_window1_reference_groups": [g for g in fg_groups.values() if g.get("task_family") == "S1"],
-        },
-        "S2": {
-            "rule_summary": "中性协议独立验证通过前 (s2_audit_passed=false)，维持 DIAGNOSTIC_ONLY，禁止因 S2 Accuracy=1.0 永久保存大量权重或设为全局冠军；全组最多临时保留 1 个最低 Loss 诊断模型，100% 保留历史指标。",
-            "s2_audit_passed": False,
-            "majority_baseline": S2_VAL_BASELINE,
-            "new_protocol_active_groups": [g for g in p0_groups.values() if g.get("task_family") == "S2"],
-            "new_protocol_sandbox_groups": [g for g in sb_groups.values() if g.get("task_family") == "S2"],
-            "legacy_window1_reference_groups": [g for g in fg_groups.values() if g.get("task_family") == "S2"],
-        },
-        "S3": {
-            "rule_summary": "按各活跃 source:target 分目标独立计算 S3_score_t 并等权宏平均为 S3_score；严禁将不同 S3 目标原始 Loss 简单相加排名。仅 S3_score > 100.0 且分目标优于多数类基线的模型可进入 Top 30% 保留。",
-            "per_target_baselines": S3_VAL_BASELINES,
-            "new_protocol_active_groups": [g for g in p0_groups.values() if g.get("task_family") == "S3"],
-            "new_protocol_sandbox_groups": [g for g in sb_groups.values() if g.get("task_family") == "S3"],
-            "legacy_window1_reference_groups": [g for g in fg_groups.values() if g.get("task_family") == "S3"],
-        },
-    }
-
-    # Merge new-protocol runs from `fg_p0_root` into `dash_runs` alongside legacy Window 1 runs
-    dash_runs = dict(base_dash.get("runs") or {})
-    if fg_p0_root.is_dir():
-        for rpath in sorted(fg_p0_root.glob("*/run.json")):
-            try:
-                rdata = json.loads(rpath.read_text(encoding="utf8"))
-                rid = rdata.get("run_id") or rpath.parent.name
-                if rid != "R0":
-                    dash_runs[rid] = rdata
-            except (OSError, json.JSONDecodeError):
-                continue
-
-    fg_node_map = {(n["run_id"], int(n["epoch"])): n for n in fg_nodes}
-    for rid, r in dash_runs.items():
-        r["command"] = sanitize_command_str(r.get("command", ""))
-        for h in r.get("history") or []:
-            ep = int(h.get("epoch", 0))
-            matched = fg_node_map.get((rid, ep))
-            if matched:
-                h["weights_saved"] = matched["weights_saved"]
-                h["loadable"] = matched["loadable"]
-                h["retention_status"] = matched["retention_status"]
-                h["retention_reason"] = matched["retention_reason"]
-                h["retention_reasons"] = matched["retention_reasons"]
-                h["actual_weight_bytes"] = matched["actual_weight_bytes"]
-                h["freed_bytes"] = matched["freed_bytes"]
-                h["is_pinned_parent"] = matched["is_pinned_parent"]
-                h["is_global_best"] = matched["is_global_best"]
-                h["is_top_k"] = matched["is_top_k"]
-                h["is_pareto_front"] = matched.get("is_pareto_front", False)
-                h["s1_score"] = matched.get("s1_score")
-                h["s2_score"] = matched.get("s2_score")
-                h["s3_score"] = matched.get("s3_score")
-                h["primary_score"] = matched.get("primary_score")
-                h["train_val_loss_gap"] = matched.get("train_val_loss_gap")
-                h["parent_to_current_score_gain"] = matched.get("parent_to_current_score_gain")
-                if "S3_by_source_target" in (matched.get("validation") or {}):
-                    h.setdefault("validation", {})["S3_by_source_target"] = matched["validation"]["S3_by_source_target"]
-        if rid == "B01_C14_QB_PB":
-            r["selection_state"] = STATUS_LEGACY_METADATA_ONLY
-
-    # Build paired Bootstrap 95% CI deltas vs BASELINE_0 for new-protocol S1 runs with `s1_val_vectors.json`
-    b0_s1_losses = baseline_0_full.get("s1_item_losses")
-    b0_s1_correct = baseline_0_full.get("s1_item_correct")
-    before_after_deltas: List[Dict[str, Any]] = []
-    best_p0_by_run: Dict[str, Dict[str, Any]] = {}
-    for n in p0_nodes:
-        if n.get("is_run_best_epoch"):
-            best_p0_by_run[n["run_id"]] = n
-    # Also include top legacy Window 1 reference runs in before_after_deltas (marked as legacy reference)
-    for n in fg_legacy_nodes:
-        if n.get("is_run_best_epoch"):
-            best_p0_by_run.setdefault(n["run_id"], n)
-
-    for rid, best_n in sorted(best_p0_by_run.items(), key=lambda kv: -(kv[1].get("primary_score") or 0.0)):
-        val = best_n.get("validation") or {}
-        s1_v = val.get("S1") or {}
-        s2_v = val.get("S2") or {}
-        s3_v = val.get("S3") or {}
-        s1_by_src = val.get("S1_by_source") or {}
-        b0_val_root = baseline_0_full.get("validation") or DEFAULT_BASELINE_0["validation"]
-        b0_s1 = b0_val_root.get("S1") or DEFAULT_BASELINE_0["validation"]["S1"]
-        b0_src = b0_val_root.get("S1_by_source") or DEFAULT_BASELINE_0["validation"]["S1_by_source"]
-        vec_file = fg_p0_root / rid / "s1_val_vectors.json"
-        boot_ci = None
-        if vec_file.is_file() and isinstance(b0_s1_losses, list) and isinstance(b0_s1_correct, list):
-            try:
-                vdata = json.loads(vec_file.read_text(encoding="utf8"))
-                m_losses = vdata.get("item_losses") or []
-                m_corr = vdata.get("item_correct") or []
-                if len(m_losses) == len(b0_s1_losses) and len(m_corr) == len(b0_s1_correct) and len(m_losses) > 0:
-                    boot_ci = compute_bootstrap_ci(m_losses, m_corr, b0_s1_losses, b0_s1_correct, n_boot=1000, seed=42)
-            except (OSError, json.JSONDecodeError):
-                pass
-
-        src_deltas = {}
-        for src_id, b_m in b0_src.items():
-            m_src = s1_by_src.get(src_id) or {}
-            if isinstance(m_src.get("loss"), (int, float)) and isinstance(b_m.get("loss"), (int, float)):
-                src_deltas[src_id] = {
-                    "items": b_m.get("items"),
-                    "base_loss": b_m.get("loss"),
-                    "model_loss": m_src.get("loss"),
-                    "delta_loss": round(float(m_src["loss"]) - float(b_m["loss"]), 6),
-                    "base_acc": b_m.get("accuracy"),
-                    "model_acc": m_src.get("accuracy"),
-                    "delta_acc": round(float(m_src.get("accuracy", 0.0)) - float(b_m.get("accuracy", 0.0)), 6),
-                }
-
-        before_after_deltas.append({
-            "run_id": rid,
-            "checkpoint_id": best_n["checkpoint_id"],
-            "epoch": best_n["epoch"],
-            "protocol_version": best_n["protocol_version"],
-            "legacy_input_protocol": best_n["legacy_input_protocol"],
-            "task_family": best_n["task_family"],
-            "batch_id": best_n.get("batch_id"),
-            "combo_id": best_n.get("combo_id"),
-            "retention_status": best_n["retention_status"],
-            "weights_saved": best_n["weights_saved"],
-            "primary_score": best_n.get("primary_score"),
-            "s1_score": best_n.get("s1_score"),
-            "s2_score": best_n.get("s2_score"),
-            "s3_score": best_n.get("s3_score"),
-            "delta_score_vs_b0": round(float(best_n.get("primary_score") or 100.0) - 100.0, 2),
-            "s1_delta_loss_vs_b0": round(float(s1_v["loss"]) - float(b0_s1["loss"]), 6) if isinstance(s1_v.get("loss"), (int, float)) else None,
-            "s1_delta_acc_vs_b0": round(float(s1_v["accuracy"]) - float(b0_s1["accuracy"]), 6) if isinstance(s1_v.get("accuracy"), (int, float)) else None,
-            "s1_delta_brier_vs_b0": round(float(s1_v["brier"]) - float(b0_s1["brier"]), 6) if isinstance(s1_v.get("brier"), (int, float)) else None,
-            "s1_delta_ece_vs_b0": round(float(s1_v["ece"]) - float(b0_s1["ece"]), 6) if isinstance(s1_v.get("ece"), (int, float)) else None,
-            "s1_bootstrap_ci95": boot_ci,
-            "s1_by_source_deltas": src_deltas,
-            "train_val_loss_gap": best_n.get("train_val_loss_gap"),
-            "parent_to_current_score_gain": best_n.get("parent_to_current_score_gain"),
-        })
-
-    # Reconcile 1,092-slot Matrix & Queue Progress (folding 52 P0_ plans into their base_run_id slots)
-    full_plans = dict(base_dash.get("plans") or {})
-    if (fg_p0_root / "experiment_matrix.json").is_file():
-        try:
-            p0_m = json.loads((fg_p0_root / "experiment_matrix.json").read_text(encoding="utf8"))
-            full_plans.update(p0_m.get("plans") or {})
-        except (OSError, json.JSONDecodeError):
-            pass
-    queue_state_path = fg_p0_root / "queue_state.json"
-    queue_state = {}
-    if queue_state_path.is_file():
-        try:
-            queue_state = json.loads(queue_state_path.read_text(encoding="utf8"))
-        except (OSError, json.JSONDecodeError):
-            queue_state = {}
-
-    p0_by_base: Dict[str, Dict[str, Any]] = {}
-    base_slots: Dict[str, Dict[str, Any]] = {}
-    for pid, p in full_plans.items():
-        b_id = p.get("base_run_id") or (pid[3:] if pid.startswith("P0_") else pid)
-        if pid.startswith("P0_"):
-            p0_by_base[b_id] = p
-            base_slots.setdefault(b_id, p)
-        else:
-            base_slots[b_id] = p
-
-    p0_completed_set = {
-        r["run_id"] for r in dash_runs.values()
-        if not r.get("legacy_input_protocol") and r.get("status") in ("completed", "early_stopped")
-    } | set(queue_state.get("completed_runs") or [])
-    p0_skipped_map = dict(queue_state.get("skipped_runs") or {})
-    p0_failed_map = dict(queue_state.get("failed_runs") or {})
-
-    # If queue_state hasn't populated skipped_runs yet, compute identical-data deduplication across base_slots
-    if not p0_skipped_map:
-        seen_sigs: Dict[str, str] = {}
-        def _canon_ord(item: Tuple[str, Dict[str, Any]]) -> Tuple[int, int, str]:
-            b_k, b_v = item
-            p0_p = p0_by_base.get(b_k)
-            ex_id = p0_p["run_id"] if p0_p else f"P0_{b_k}"
-            mat = bool((p0_p or b_v).get("materialized")) or (fg_p0_root / "train" / ex_id).is_dir()
-            qc = (p0_p or b_v).get("quality_code") or ""
-            pc = (p0_p or b_v).get("sampling_code") or ""
-            return (0 if mat else 1, 0 if (qc == "QB" and pc == "PB") else 1, b_k)
-        for b_k, b_v in sorted(base_slots.items(), key=_canon_ord):
-            if not b_k.startswith("B0") or b_v.get("batch_id") is None or str(b_v.get("status") or "").startswith("BLOCKED"):
-                continue
-            p0_p = p0_by_base.get(b_k)
-            ex_id = p0_p["run_id"] if p0_p else f"P0_{b_k}"
-            sp = dict(b_v)
-            if p0_p:
-                sp.update(p0_p)
-            sp["run_id"] = ex_id
-            sp["protocol_version"] = NEW_PROTOCOL_VERSION
-            sig = compute_run_dedup_signature(sp, out_root=fg_p0_root)
-            if sig in seen_sigs:
-                p0_skipped_map[ex_id] = f"SKIPPED_IDENTICAL_DATA:{seen_sigs[sig]}"
-            else:
-                seen_sigs[sig] = ex_id
-
-    slot_status_counts: Counter = Counter()
-    batch_stage_breakdown: Dict[str, Counter] = defaultdict(Counter)
-    for b_id, bp in sorted(base_slots.items()):
-        batch_id = bp.get("batch_id") or "EXT"
-        p0_plan = p0_by_base.get(b_id)
-        p0_id = p0_plan["run_id"] if p0_plan else f"P0_{b_id}"
-        orig_status = str(bp.get("status") or "")
-        elig_reason = str(bp.get("eligibility_reason") or "")
-        is_ext = (
-            not b_id.startswith("B0")
-            or bp.get("batch_id") is None
-            or "extension slot" in elig_reason
-            or orig_status == "PENDING_PARENT_SELECTION"
-        )
-        if is_ext:
-            if p0_id in p0_completed_set or b_id in p0_completed_set:
-                st_code = "NEW_PROTOCOL_COMPLETED"
-            elif p0_plan and p0_plan.get("materialized"):
-                st_code = "CPU_MATERIALIZED"
-            else:
-                st_code = "EXTENSION_UNDEFINED"
-        elif orig_status.startswith("BLOCKED"):
-            st_code = "BLOCKED"
-        elif p0_id in p0_completed_set or b_id in p0_completed_set:
-            st_code = "NEW_PROTOCOL_COMPLETED"
-        elif p0_id in p0_skipped_map or b_id in p0_skipped_map:
-            st_code = "SKIPPED"
-        elif p0_id in p0_failed_map or b_id in p0_failed_map:
-            st_code = "FAILED"
-        elif (p0_plan and p0_plan.get("materialized")) or (fg_p0_root / "train" / p0_id).is_dir() or (fg_p0_root / "train" / b_id).is_dir():
-            st_code = "CPU_MATERIALIZED"
-        else:
-            st_code = "ELIGIBLE_UNMATERIALIZED"
-        slot_status_counts[st_code] += 1
-        batch_stage_breakdown[batch_id][st_code] += 1
-
-    queue_progress = {
-        "updated_at": _now_iso(),
-        "total_matrix_slots": len(base_slots),  # 1,092 (1,008 base + 84 extension)
-        "base_matrix_slots": sum(1 for k in base_slots if k.startswith("B0")),  # 1,008
-        "eligible_base_slots": sum(
-            1 for k, v in base_slots.items()
-            if k.startswith("B0") and not str(v.get("status", "")).startswith("BLOCKED")
-        ),  # 693
-        "blocked_base_slots": slot_status_counts["BLOCKED"],  # 315
-        "extension_slots": sum(1 for k in base_slots if not k.startswith("B0")),  # 84
-        "legacy_window1_completed": len(fg_legacy_nodes) // 2 if fg_legacy_nodes else 16,
-        "status_counts": dict(slot_status_counts),
-        "by_batch": {k: dict(v) for k, v in sorted(batch_stage_breakdown.items())},
-        "queue_state": queue_state,
-    }
-
-    # Build Retention Funnel & Radar Profiles
-    active_cohort_nodes = p0_nodes if len(p0_nodes) > 0 else verification["sandbox_checkpoints"]
-    retention_funnel = {
-        "cohort_source": "MR-FULL-GRADED-NEW-PROTOCOL" if len(p0_nodes) > 0 else "SANDBOX_VERIFICATION_PREVIEW",
-        "total_epochs_evaluated": len(active_cohort_nodes),
-        "distinct_runs_evaluated": len({n["run_id"] for n in active_cohort_nodes if not n.get("legacy_input_protocol")}),
-        "run_best_epochs": sum(1 for n in active_cohort_nodes if n.get("is_run_best_epoch")),
-        "beat_baseline_0_count": sum(
-            1 for n in active_cohort_nodes
-            if n.get("is_run_best_epoch") and isinstance(n.get("primary_score"), (int, float)) and n["primary_score"] > 100.0
-        ),
-        "pass_baseline_1_floor_count": sum(
-            1 for n in active_cohort_nodes
-            if n.get("is_run_best_epoch") and any("cond_b_above_98pct_loo_mean" in r for r in (n.get("retention_reasons") or []))
-        ),
-        "retained_top_30pct_or_mandatory_count": sum(1 for n in active_cohort_nodes if n.get("weights_saved")),
-        "pruned_or_metadata_only_count": sum(1 for n in active_cohort_nodes if not n.get("weights_saved")),
-    }
-
-    b0_compact = {k: v for k, v in baseline_0_full.items() if k not in ("s1_item_losses", "s1_item_correct")}
-
-    # Build full clickable epoch tree
-    checkpoint_tree = fg_nodes + historical_nodes + verification["sandbox_checkpoints"]
-
-    # Update overview counts
-    overview = dict(base_dash.get("overview") or {})
-    overview.update({
-        "matrix_total_slots": queue_progress["total_matrix_slots"],
-        "eligible_base_slots": queue_progress["eligible_base_slots"],
-        "blocked_base_slots": queue_progress["blocked_base_slots"],
-        "extension_slots": queue_progress["extension_slots"],
-        "new_protocol_completed_runs": slot_status_counts["NEW_PROTOCOL_COMPLETED"],
-        "cpu_materialized_runs": slot_status_counts["CPU_MATERIALIZED"],
-        "skipped_identical_runs": slot_status_counts["SKIPPED"],
-        "legacy_completed_runs": 16,
-        "checkpoint_total": len(fg_nodes),
-        "new_protocol_checkpoint_total": len(p0_nodes),
-        "all_experiments_checkpoint_total": len(all_project_nodes),
-        "saved_weight_count": fg_stat["ckpt_dir_count"] + p0_stat["ckpt_dir_count"],
-        "new_protocol_saved_weight_count": p0_stat["ckpt_dir_count"],
-        "epoch_weight_count": fg_stat["epoch_dir_count"] + p0_stat["epoch_dir_count"],
-        "policy_retained_weight_count": len(fg_retained_nodes),
-        "metadata_only_count": len(fg_meta_only_nodes) + sum(1 for n in p0_nodes if n["retention_status"] == STATUS_METADATA_ONLY),
-        "pruned_low_score_count": len(fg_low_score_nodes) + len(fg_meta_only_nodes),
-        "duplicate_weight_count": fg_stat["duplicate_best_latest_count"] + p0_stat["duplicate_best_latest_count"],
-        "pinned_parent_count": len(pinned_all),
-        "freed_space_bytes": total_actual_freed_bytes,
-        "freed_space_gib": round(total_actual_freed_bytes / GIB, 2),
-        "future_reclaimable_gib": round(fg_future_reclaimable_bytes / GIB, 2),
-        "disk_avail_gib": disk_monitor["root_avail_gib"],
-        "disk_avail_pct": disk_monitor["root_avail_pct"],
-        "active_budget_gib": 120.0,
-        "baseline_0_s1_score": 100.0,
-        "baseline_0_s1_loss": ((b0_compact.get("validation") or {}).get("S1") or {}).get("loss"),
-        "baseline_0_s1_acc": ((b0_compact.get("validation") or {}).get("S1") or {}).get("accuracy"),
-        "latest_sync_at": _now_iso(),
-        "github_sync": "synced_with_auto_sweep_and_top30pct_policy",
-        "ready_for_next_gpu_window": True,
-    })
-
-    # Keep only active/materialized/completed plans in main `data.js`; full plans live in `shards/matrix_plans_full.js`
-    compact_plans = {}
-    for pid, p in full_plans.items():
-        if pid in dash_runs or p.get("materialized") or p.get("status") in ("COMPLETED", "EARLY_STOPPED", "CPU_MATERIALIZED", "RUNNING"):
-            compact_plans[pid] = {
-                k: p.get(k)
-                for k in (
-                    "run_id", "base_run_id", "batch_id", "combo_id", "quality_code", "sampling_code",
-                    "layers", "supervision_classes", "ratios", "status", "materialized", "data",
-                    "counts", "independent_units", "train_origin", "seed", "groups",
-                    "protocol_version", "legacy_input_protocol", "eligibility_reason",
-                )
-                if k in p
-            }
-
-    compact_tree = [
-        {
-            k: n.get(k)
-            for k in (
-                "checkpoint_id", "run_id", "base_run_id", "experiment_group", "epoch", "parent_checkpoint_id",
-                "train_origin", "protocol_version", "legacy_input_protocol", "comparable_group_id",
-                "task_family", "batch_id", "combo_id", "quality_code", "sampling_code",
-                "supervision_classes", "ratios", "train_groups", "val_groups", "seed",
-                "learning_rate", "optimizer_updates", "global_step", "train_loss", "train_val_loss_gap",
-                "primary_score", "s1_score", "s2_score", "s3_score", "parent_to_current_score_gain",
-                "s1_val_loss", "s1_accuracy", "s1_brier", "s1_ece",
-                "s2_val_loss", "s2_accuracy", "s2_balanced_accuracy", "s2_macro_f1",
-                "s3_val_loss", "s3_accuracy",
-                "epoch_total_seconds", "gpu_memory_peak_mib", "command", "code_commit",
-                "weights_saved", "loadable", "actual_weight_bytes", "freed_bytes",
-                "retention_status", "retention_reason", "is_pinned_parent", "pinned_children",
-                "is_global_best", "is_top_k", "is_pareto_front", "is_run_best_epoch",
-            )
-        }
-        for n in checkpoint_tree
-    ]
-
-    baselines_and_scores_shard = {
-        "generated_at": _now_iso(),
-        "baseline_0": b0_compact,
-        "new_protocol_groups": p0_groups,
-        "sandbox_groups": sb_groups,
-        "legacy_window1_groups": fg_groups,
-        "before_after_deltas": before_after_deltas,
-        "retention_funnel": retention_funnel,
-        "queue_progress": queue_progress,
-    }
-
-    (shards_dir / "matrix_plans_full.js").write_text(
-        "window.LAYA_SHARD_PLANS = " + json.dumps(sanitize_deep(full_plans), ensure_ascii=False, separators=(",", ":")) + ";\n",
-        encoding="utf8",
-    )
-    (shards_dir / "checkpoint_tree_nodes.js").write_text(
-        "window.LAYA_SHARD_TREE = " + json.dumps(sanitize_deep(checkpoint_tree), ensure_ascii=False, separators=(",", ":")) + ";\n",
-        encoding="utf8",
-    )
-    (shards_dir / "historical_runs_detail.js").write_text(
-        "window.LAYA_SHARD_HISTORICAL = " + json.dumps(sanitize_deep(historical_nodes), ensure_ascii=False, separators=(",", ":")) + ";\n",
-        encoding="utf8",
-    )
-    (shards_dir / "storage_verification.js").write_text(
-        "window.LAYA_SHARD_VERIFICATION = " + json.dumps(sanitize_deep(verification), ensure_ascii=False, separators=(",", ":")) + ";\n",
-        encoding="utf8",
-    )
-    (shards_dir / "baselines_and_scores.js").write_text(
-        "window.LAYA_SHARD_BASELINES = " + json.dumps(sanitize_deep(baselines_and_scores_shard), ensure_ascii=False, separators=(",", ":")) + ";\n",
-        encoding="utf8",
-    )
-
-    # Construct live active_resume from queue_state and active run cursor
-    active_resume = None
-    curr_run_id = queue_state.get("current_run")
-    if curr_run_id and (fg_p0_root / curr_run_id).is_dir():
-        c_path = fg_p0_root / curr_run_id / "cursor.json"
-        if c_path.is_file():
-            try:
-                c_data = json.loads(c_path.read_text(encoding="utf8"))
-                active_resume = {
-                    "run_id": curr_run_id,
-                    "status": queue_state.get("queue_status", "RUNNING"),
-                    "current_epoch": f"{c_data.get('epoch', 0) + 1}/2",
-                    "current_chunk": f"{c_data.get('chunk_idx', 0)}/{c_data.get('total_chunks', 0)}",
-                    "current_step": f"{c_data.get('step_count', 0)}/{c_data.get('total_updates', 0)}",
-                    "current_loss": round(float(c_data.get("latest_chunk_loss", 0.0)), 4),
-                    "consumed_items": c_data.get("consumed_items", 0),
-                    "total_items": c_data.get("total_updates", 0) * 16,
-                    "daemon_pid": 2588934,
-                    "train_pid": 2589116,
-                    "gpu_name": "NVIDIA RTX A6000",
-                    "gpu_memory": "9947MiB / 49140MiB",
-                    "gpu_utilization": "88%",
-                }
-            except Exception:
-                pass
-    if not active_resume:
-        active_resume = {
-            "run_id": "ALGN_04_S1_S2_S3",
-            "status": queue_state.get("queue_status", "STAGE_COMPLETED"),
-            "current_epoch": "2/2",
-            "current_chunk": "594/594",
-            "current_step": "2450/2450",
-            "current_loss": 0.5837,
-            "consumed_items": 125000,
-            "total_items": 125000,
-            "daemon_pid": 2588934,
-            "train_pid": 2589116,
-            "gpu_name": "NVIDIA RTX A6000",
-            "gpu_memory": "9947MiB / 49140MiB",
-            "gpu_utilization": "IDLE",
-        }
-
-    main_payload = dict(base_dash)
-    main_payload.update({
-        "experiment_id": "MR-FULL-GRADED-AUTO-SWEEP",
-        "generated_at": _now_iso(),
-        "code_commit": os.environ.get("MODELROUTER_CODE_COMMIT", "b77419dd474a0442366df8a90169a2d35b5d60e8"),
-        "status": queue_state.get("queue_status") or "READY_FOR_NEXT_GPU_WINDOW",
-        "active_resume": active_resume,
-        "dual_pool_retention": {
-            "policy": DUAL_POOL_POLICY_VERSION,
-            "old_core_pool_count": len(p0_manifest.get("old_core_checkpoints") or p0_manifest.get("top5_core_checkpoints") or []),
-            "new_core_pool_count": len(p0_manifest.get("new_core_checkpoints") or []),
-            "new_core_pool_ratio": NEW_CORE_POOL_RATIO,
-            "old_core_checkpoints": sanitize_deep(p0_manifest.get("old_core_checkpoints") or p0_manifest.get("top5_core_checkpoints") or []),
-            "new_core_checkpoints": sanitize_deep(p0_manifest.get("new_core_checkpoints") or []),
-            "pinned_parent_checkpoints": sanitize_deep(p0_manifest.get("pinned_parent_checkpoints") or []),
-        },
-        "overview": overview,
-        "baseline_0": b0_compact,
-        "queue_progress": queue_progress,
-        "retention_funnel": retention_funnel,
-        "before_after_deltas": before_after_deltas,
-        "plans": compact_plans,
-        "runs": dash_runs,
-        "checkpoint_tree": compact_tree,
-        "disk_monitor": disk_monitor,
-        "checkpoint_retention_stats": checkpoint_retention_stats,
-        "quality_storage_scatter": scatter_points,
-        "dynamic_thresholds": dynamic_thresholds,
-        "storage_verification_summary": {
-            "verified_at": verification["verified_at"],
-            "all_passed": verification["all_passed"],
-            "passed_count": verification["passed_count"],
-            "total_checks": verification["total_checks"],
-            "checks": verification["checks"],
-            "comparison_100_runs": verification["comparison_100_runs"],
-        },
-        "full_coverage_summary": {
-            "active": (fg_p0_root / "full_coverage_manifest.json").is_file(),
-            "total_eligible_records": 4863900,
-            "total_runs": 34,
-            "ledgers": {
-                p.parent.name: json.loads(p.read_text(encoding="utf8"))
-                for p in sorted(fg_p0_root.glob("*/run_coverage_ledger.json"))
-                if p.is_file()
-            },
-        },
-        "shards": [
-            "shards/matrix_plans_full.js",
-            "shards/checkpoint_tree_nodes.js",
-            "shards/historical_runs_detail.js",
-            "shards/storage_verification.js",
-            "shards/baselines_and_scores.js",
-        ],
-    })
-    main_payload = sanitize_deep(main_payload)
-
-    if fg_p0_root.is_dir():
-        _atomic_write_json(fg_p0_root / "dashboard_data.json", main_payload)
-        _atomic_write_json(fg_p0_root / "checkpoint_manifest.json", sanitize_deep(p0_manifest))
-
-    (dashboard_dir / "data.js").write_text(
-        "window.LAYA_DATA = " + json.dumps(main_payload, ensure_ascii=False, separators=(",", ":")) + ";\n",
-        encoding="utf8",
-    )
-
-    # Re-run verification on the freshly written clean files so P11-14 reflects 100% clean repo state
-    verification = run_storage_policy_verification(
-        project_root=project_root,
-        run_official_load=run_official_load,
-    )
-    if fg_p0_root.is_dir():
-        _atomic_write_json(fg_p0_root / "storage_policy_verification.json", verification)
-    (shards_dir / "storage_verification.js").write_text(
-        "window.LAYA_SHARD_VERIFICATION = " + json.dumps(sanitize_deep(verification), ensure_ascii=False, separators=(",", ":")) + ";\n",
-        encoding="utf8",
-    )
-    main_payload["storage_verification_summary"] = {
-        "verified_at": verification["verified_at"],
-        "all_passed": verification["all_passed"],
-        "passed_count": verification["passed_count"],
-        "total_checks": verification["total_checks"],
-        "checks": verification["checks"],
-        "comparison_100_runs": verification["comparison_100_runs"],
-    }
-    (dashboard_dir / "data.js").write_text(
-        "window.LAYA_DATA = " + json.dumps(main_payload, ensure_ascii=False, separators=(",", ":")) + ";\n",
-        encoding="utf8",
-    )
-    return {
-        "disk_monitor": disk_monitor,
-        "checkpoint_retention_stats": checkpoint_retention_stats,
-        "queue_progress": queue_progress,
-        "verification": {
-            "all_passed": verification["all_passed"],
-            "passed_count": verification["passed_count"],
-            "total_checks": verification["total_checks"],
-            "checks": verification["checks"],
-            "comparison_100_runs": verification["comparison_100_runs"],
-        },
-        "data_js_bytes": (dashboard_dir / "data.js").stat().st_size,
-        "shard_bytes": {
-            p.name: p.stat().st_size for p in sorted(shards_dir.glob("*.js"))
-        },
-    }
+    history = build_training_history(Path(project_root), dashboard_dir)
+    return {"counts": history["counts"], "history": "shards/training_history.json",
+            "generated_at": history["generated_at"]}
