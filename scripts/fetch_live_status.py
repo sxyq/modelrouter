@@ -731,6 +731,16 @@ def write_training_research_report(history, project_root=PROJECT_ROOT):
         "kev_materialization": read_json(root / "data/kev/v8_extension/materialization.json", {}),
         "selection": "One minimum primary validation Loss epoch per run; secondary metrics use that same epoch",
         "limitations": history["limitations"]})
+    live = read_json(root / "our-project/dashboard/live_status.json", {})
+    result["live_observation"] = public({k: live.get(k) for k in ("collected_at_iso", "server_connected", "gpu", "laya", "kev")})
+    result["continuation"] = {
+        "laya_boundary_reload_requested": (root / "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/.reload_queue_daemon").is_file(),
+        "laya_order": "F07 completion/Val → F08–F16 → F01_S3–F07_S3 → remaining existing Mode A",
+        "kev_running_memory_updated": False,
+        "kev_boundary": "Existing C04 train/Val completes; original old dispatcher exits on missing C05 data",
+        "retention_policy_deployed_in_this_task": False,
+        "weight_deletions_in_this_task": 0,
+    }
     destination = root / "our-project/results/training"
     atomic_json(destination / "training_research.json", result)
     def cell(v):
