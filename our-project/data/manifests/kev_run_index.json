@@ -1,41 +1,105 @@
 {
-  "generated_at": "2026-10-18T07:25:35Z",
+  "generated_at": "2026-10-20T10:06:04Z",
+  "source": "A6000 original candidate_queue, cursor, training_config, training_metrics and kev.benchmark report",
   "active_run": {
-    "run_id": "KEV-V8-HOMOLOGOUS-20261018",
-    "supervisor_pid": 1357763,
-    "worker_pid": 1357764,
+    "candidate_id": "KEV-V8-C04",
+    "run_id": "KEV-V8-HOMO-e02",
+    "supervisor_pid": 3212008,
+    "worker_pid": 3212011,
     "base_model": "Qwen3.5-4B-Base",
     "lora_rank": 16,
-    "lr": 2e-05,
-    "cursor_path": "runs/KEV-V8-HOMOLOGOUS-20261018/cursor.json",
-    "log_path": "runs/KEV-V8-HOMOLOGOUS-20261018/train.log",
-    "checkpoints_path": "runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
-    "status": "LIVE_ACTIVE_COMPUTING"
+    "lr": 1e-05,
+    "cursor_path": "runs/KEV-V8-HOMO-e02/cursor.json",
+    "log_path": "runs/KEV-V8-HOMO-e02/train.log",
+    "checkpoints_path": "runs/KEV-V8-HOMO-e02/checkpoint",
+    "status": "TRAINING",
+    "step": 100,
+    "total_steps": 16857,
+    "loss": 1.199,
+    "last_progress_at": "2026-10-20T10:05:10Z",
+    "evaluation_status": "NOT_EVALUATED",
+    "physical_checkpoint_saved": false,
+    "init_from": "runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+    "continuation_mode": "WEIGHTS_NEW_OPTIMIZER"
   },
   "candidate_plan": [
     {
       "candidate_id": "KEV-V8-C03",
       "run_id": "KEV-V8-HOMOLOGOUS-20261018",
       "config": "LoRA r16, lr=2e-5, 1 Epoch",
-      "status": "LIVE_TRAINING"
+      "status": "COMPLETED",
+      "training_status": "COMPLETED",
+      "evaluation_status": "EVALUATED",
+      "optimizer_steps": 16857,
+      "records_seen": 67428,
+      "requested_records": 67428,
+      "training_wall_seconds": 138508.87790250778,
+      "weight_bytes": 135173021,
+      "loss_curve_points": 1685,
+      "fixed_val": {
+        "protocol": "KEV_FIXED_VAL_JSONL",
+        "dataset": "data/kev/公开数据/val.jsonl",
+        "report": "our-project/results/training/kev/C03_fixed_val_report.json",
+        "original_report": "runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0002/report.json",
+        "exit_code": 0,
+        "duration_sec": 3099.012350168079,
+        "evaluated_at": "2026-10-20T09:48:16Z",
+        "requested_records": 8436,
+        "evaluated_records": 8436,
+        "requested_questions": 9330,
+        "evaluated_questions": 9330,
+        "rejected_records": 0,
+        "truncated_records": 0,
+        "acc": 0.5715969989281886,
+        "nll": 1.0795525776246775,
+        "brier": 0.537533605673637,
+        "ece": 0.05104668378873653,
+        "device": "cuda",
+        "test_used": false
+      },
+      "earlier_attempts": [
+        {"status": "FAILED", "reason": "Old evaluate fetched public Test README; network unreachable", "exit_code": 1, "log": "runs/kev_dispatcher.log"},
+        {"status": "FAILED", "reason": "CPU attempt stopped after GPU resource became available", "exit_code": -2, "predicted_records": 374, "duration_sec": 2379.2905684299767, "log": "runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0001.log"}
+      ]
+    },
+    {
+      "candidate_id": "KEV-V8-C04",
+      "run_id": "KEV-V8-HOMO-e02",
+      "config": "C03 continuation, LoRA r16, lr=1e-5, bf16, max_state384, batch1, accum4, 1 Epoch",
+      "status": "RUNNING",
+      "evaluation_status": "NOT_EVALUATED"
+    },
+    {
+      "candidate_id": "KEV-V8-C05",
+      "run_id": "KEV-V8-ABL-NOSTATE",
+      "config": "State information ablation",
+      "status": "QUEUED",
+      "readiness": "MISSING_DATA",
+      "reason": "data/kev/公开数据/train_nostate.jsonl is absent",
+      "started": false
     },
     {
       "candidate_id": "KEV-V8-C07",
       "run_id": "KEV-V8-ABL-LORA8",
       "config": "LoRA r8, lr=5e-5",
-      "status": "QUEUED"
+      "status": "QUEUED",
+      "readiness": "INCOMPATIBLE",
+      "reason": "Existing init adapter rank16; requested rank8",
+      "started": false
     },
     {
-      "candidate_id": "KEV-V8-C08",
-      "run_id": "KEV-V8-ABL-LORA32",
-      "config": "LoRA r32, lr=1e-5",
-      "status": "QUEUED"
-    },
-    {
-      "candidate_id": "KEV-V8-C05",
-      "run_id": "KEV-V8-ABL-NOSTATE",
-      "config": "Zero State Mask Ablation",
-      "status": "QUEUED"
+      "candidate_id": "KEV-V8-C09",
+      "run_id": "KEV-V8-EXT-01",
+      "config": "V8 material extension formal LoRA; existing Pointer Head Pilot preserved",
+      "status": "QUEUED",
+      "readiness": "MISSING_DATA",
+      "reason": "data/kev/v8_extension/train.jsonl is absent; existing compressed views are not this training file",
+      "started": false,
+      "pilot_weight_bytes": 5384063
     }
-  ]
+  ],
+  "completed_candidates": 1,
+  "historical_plan_only": [{"candidate_id": "KEV-V8-C08", "run_id": "KEV-V8-ABL-LORA32", "config": "LoRA r32, lr=1e-5", "status": "NOT_IN_CURRENT_QUEUE"}],
+  "live_source": "our-project/dashboard/live_status.json",
+  "note": "This index is a dated observation; use the existing live collector for current progress. No missing material was generated and no weights were removed."
 }

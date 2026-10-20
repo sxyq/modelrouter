@@ -2,13 +2,15 @@
 
 ## 2026-10-20 · Kev 正式候选接续（执行中）
 
-C03 完整训练保持成功：16,857 次优化器更新、67,428/67,428 记录、138,508.88 秒，原 adapter 与 head 实体存在。旧验证调用读取公开 Test 时失败的记录继续保留。本轮沿原 dispatcher 调用 `kev.benchmark --data data/kev/公开数据/val.jsonl`，原 Val 为 8,436 记录、9,330 问题，未使用 Test。CPU attempt_0001 完成 374 条预测后，在 GPU 自然释放的资源窗口转到 CUDA；CPU 日志、预测及 exit -2 均留在原 Run。CUDA attempt_0002 正在执行，完整 Accuracy/NLL/Brier/ECE 尚未生成。
+C03 完整训练保持成功：16,857 次优化器更新、67,428/67,428 记录、138,508.88 秒，原 adapter 与 head 实体存在。旧验证调用读取公开 Test 时失败的记录继续保留。本轮沿原 dispatcher 调用 `kev.benchmark --data data/kev/公开数据/val.jsonl`，原 Val 为 8,436 记录、9,330 问题，未使用 Test。CPU attempt_0001 完成 374 条预测后，在 GPU 自然释放的资源窗口转到 CUDA；CPU 日志、预测及 exit -2 均留在原 Run。
+
+CUDA attempt_0002 于台北 17:48:16 完整成功，exit 0、耗时 3,099.012 秒：8,436/8,436 记录、9,330/9,330 问题，拒绝与截断均为 0。clean Accuracy=.5715969989、NLL=1.0795525776、Brier=.5375336057、ECE=.0510466838；Choice 的 8,436 问题 Accuracy=.5589141773，Score 的 894 问题 Accuracy=.6912751678。原 benchmark 推理 P50/P95 为 333.772/461.429 ms。完整报告保存于原 Run，脱敏副本为 `our-project/results/training/kev/C03_fixed_val_report.json`，仅路径改为项目相对路径，分数未变。该结果是项目固定 Val 分类成绩，不代表 Agent 任务成功率，也不与旧导入资产 87.26% 直接比较。
 
 原队列按 C03 → C04 → C05 → C07 → C09 接续，FAILED 候选不被跳过；训练与验证状态分别保存，完整 Val 可复用，部分结果不视为成功。C04 继承 C03 的真实训练参数，包括 bf16、max_state=384、batch=1、accum=4、checkpointing=1，学习率按计划改为 1e-5。每个完整候选只与同 Val 协议、覆盖数量和计分问题数的 C03 计算差值，导入资产的 1,264 条结果不混入比较。
 
-C04 尚未启动，等待 C03 完整 Val。C05 的 `train_nostate.jsonl` 与 C09 的 `v8_extension/train.jsonl` 缺失；C07 既定 Rank 8 与已有初始权重 Rank 16 不兼容，三项保持待执行，不生成替代材料。C09 原 Pointer Head Pilot 留存，正式输出使用同 Run 的 `formal_run/`，不会覆盖 Pilot。
+C04 已于台北 17:49:03 启动原连续 dispatcher，真实训练 PID 3212011、父进程 3212008；已加载 C03 的 496 个 LoRA 张量与 Pointer Head。台北 18:05:10 已到 Step 100/16,857、Loss 1.199，完整固定 Val 尚未执行。C04 使用新优化器，属于 C03 权重接续，不声称恢复上一轮优化器状态。C05 的 `train_nostate.jsonl` 与 C09 的 `v8_extension/train.jsonl` 缺失；C07 既定 Rank 8 与已有初始权重 Rank 16 不兼容，三项未启动，不生成替代材料。原队列到 C05 将保留材料缺失原因并退出，不跳到后续候选。C09 原 Pointer Head Pilot 留存，正式输出使用同 Run 的 `formal_run/`，不会覆盖 Pilot；输出目录由原 `kev.train` 创建。
 
-台北 17:18 GPU 总占用 18,491/49,140 MiB，剩余 30,050 MiB；Laya F07 与 C03 GPU Val 同时正常推进，未停止其他模型服务。原 8765 唯一采集职责已重载，继续每 5 秒输出，页面显示当前 F07、C03 训练终值、Val 实际记录/问题进度与候选状态。历史 Loss 延用原日志，新状态只增量读取追加预测；无实测成绩保持 N/A。Mac 实际浏览器页面测试通过。服务器目录无 Git，部署为原文件定向替换，未部署留存或删除策略。QA/Memory/Research 无新方法决定，本轮不变。
+台北 17:52 GPU 总占用 20,079/49,140 MiB，剩余 28,462 MiB；Laya F07 与 C04 同时正常运行，未停止其他模型服务。原 8765 唯一采集职责已重载，继续每 5 秒输出，页面显示当前 F07、C04 真实 Step/Loss 和候选状态，C03 完整 Val 已进入历史曲线记录。历史 Loss 延用原日志，Val 运行状态增量读取追加预测；无实测成绩保持 N/A。Mac 实际浏览器 133 项比对通过，dispatcher 24 项与 14 子用例通过，采集相关 4 项通过。服务器目录无 Git，部署为原文件定向替换，未部署留存或删除策略。QA/Memory/Research 无新方法决定，本轮不变。
 
 ## 2026-10-20 · 训练历史与现有看板接续
 
