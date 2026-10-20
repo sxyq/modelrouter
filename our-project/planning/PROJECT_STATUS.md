@@ -20,6 +20,8 @@ Kev旧运行内存尚无自然边界重载能力，C04训练和原Val仍由原�
 
 C09沿原V8入口真实导出typed材料，保留原任务文本与项目Train/Val：训练25,506条、Val368条，上游`kev.data.load_records`完整加载成功。V8原视图与项目划分不同，原train中20,695条不属项目Train、原val中5,331条不属项目Val，均排除；未读取项目Test。导出训练记录全部已在C03使用，新记录0。缓存机会标量及仅已观察终局缺少当前配置的typed目标映射，未虚构反事实模型标签；完整C09记录为PARTIAL_MATERIAL/PENDING，未用已有C03数据重复训练冒充V8扩展。材料统计留原`data/kev/v8_extension/materialization.json`，权重和Pilot不动。Kev相关27项用例通过。整体实验未完成，正式AgentEpisode仍NOT_EVALUATED。
 
+台北10月21日00:38现场：F07 Step30,976/151,998、Loss.508287、训练进度00:33:59；C04 Step2,670/16,857、Loss.803、训练进度00:37:35。原collector3292137每5秒输出；00:32 GPU使用20,233MiB、可用28,308MiB、利用率96%，磁盘余约1.2T。Mac原页面164项通过，C03历史和当前曲线持续显示；旧Web832433、Serving2291306、Laya控制器499841/worker2830698、Kev父3212008/worker3212011未动。源码main已推`ae3676c`；统一脱敏报告随本次结果提交。C04尚未完整Epoch与Val，新候选均未训练；下一步由当前原进程继续，Laya在F07自然完成后读取已部署队列，Kev旧内存在C04训练/Val后退出再由同一原入口接手。无新常驻任务或付费调用。
+
 ## 2026-10-20 · Kev 正式候选接续（执行中）
 
 C03 完整训练保持成功：16,857 次优化器更新、67,428/67,428 记录、138,508.88 秒，原 adapter 与 head 实体存在。旧验证调用读取公开 Test 时失败的记录继续保留。本轮沿原 dispatcher 调用 `kev.benchmark --data data/kev/公开数据/val.jsonl`，原 Val 为 8,436 记录、9,330 问题，未使用 Test。CPU attempt_0001 完成 374 条预测后，在 GPU 自然释放的资源窗口转到 CUDA；CPU 日志、预测及 exit -2 均留在原 Run。
