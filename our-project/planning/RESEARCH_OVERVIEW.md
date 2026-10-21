@@ -38,6 +38,39 @@
 
 **现行图表**：RQ1 Fig.3–4 / T3、T10；RQ2 Fig.5/T6；RQ3 Fig.6/T7；**RQ4 Fig.7/T4、T5、T8、T11**；RQ5 Fig.8/T9。具体空白表及实验策略以 [汇报三 V9](../../汇报/汇报三/ModelRouter论文实验与图表规划.md) 为准。
 
+## 2026-10-22 · V9 输入设计补充：外置轨迹评审与按 Effort 的模型能力证据（待实测）
+
+**现行 RQ 始终按 V9**：RQ1=总体效果、RQ2=模型池、RQ3=任务拆分、**RQ4=系统消融**、RQ5=任务适用边界。此前把消融并入 RQ1 的讨论被本次“以 V9 为准”覆盖。外置教师不是新增选路 Router，不单独增加 RQ；它的任务收益、真实额外 USD 和延迟放 RQ4，未见模型/模型池变化放 RQ2。
+
+**研究动机**：工具执行成功/失败不足以判断当前执行是否合理。外置大模型评审器可结合当前 Agent 截止决策点的工具使用、已验证进度、重复劳动、测试/验证反馈，以及从合规 TRAIN/DEV 检索的多条**相似任务的顶级模型成功轨迹**，推断短期规划和工具使用合理性。参考轨迹不需要命令顺序一致，也不能将某条顶级路径当唯一正确路径。这是**提议的输入加工器**而非已验证有效的算法。
+
+### 运行时输入字段契约（拟定）
+
+| 对象 | 字段 | 边界 |
+| --- | --- | --- |
+| `task_state` | `task_id, task_summary, task_domain, subtask_id, agent_role, stage, step_index, remaining_steps, context_tokens, elapsed_seconds, remaining_time_seconds, remaining_budget_usd` | 只包含决策前可知状态；估计 token 需标 ESTIMATED |
+| `tool_trace` | `recent_tool_events[{tool_name, tool_intent, args_digest, observed_exit_code, observation_summary, observed_at}], progress_milestones, verification_status, recovery_attempts, redundant_action_evidence` | 已发生的工具行为和真实返回；退出码不是合理性标签 |
+| `external_trajectory_assessment` | `short_summary, tool_intent_alignment, progress_alignment, redundancy_risk, verification_gap, next_milestone_short, risk_flags, confidence, assessed_through_decision_id` | 独立教师的**推断**；超出当前决策点或已过期则不可用 |
+| `assessment_provenance` | `teacher_provider, teacher_model_id, teacher_native_effort, reference_trajectory_ids, reference_split, retrieval_protocol, trigger_reason, generated_at, teacher_tokens, teacher_cost_usd, teacher_latency_ms, status` | 可审计来源/时效/费用；真实在线调用全部进 Episode 账本 |
+| `continuity` | `previous_model_id, previous_native_effort, reported_cached_read_tokens, estimated_prefix_overlap, session_affinity, estimated_switch_penalty` | Provider 实测、前缀估计与切换预测不得混用 |
+| `legal_actions[]` | `action_id, provider, model_id, revision, deployment_id, native_effort, available_now, supports_tools, context_limit, price_snapshot_id, benchmark_evidence_refs` | **先硬约束过滤再评分**；每档 Effort 必须真实支持 |
+
+### 外部轨迹评审的调用方式
+
+1. Agent Harness 只提供截至当前 `decision_id` 以前的观察和工具/验证事实；检索参考轨迹只准使用有训练许可且与测试隔离的 TRAIN/DEV 相似任务库。**禁止同题 Terminal-Bench 2.1 Sealed/Final 的完整答案、未来工具轨迹、未来 verifier 或测试结局**进入参考库或在线评审提示。
+2. 评审器是 Agent **外部**独立的一次大模型调用，输入当前前缀与多条相似成功参考；输出短的结构化合理性、进展和下一里程碑评估；**不执行工具，不选 (model,effort)**，也不直接向生成 Agent 提供可能泄漏的参考解法。
+3. 不强制每个 Agent 步骤都付费调用；建议按阶段边界/重复无进展/验证卡住触发，具体频率、摘要长度、模型/档位、参考条数及费用上限由开发集实测确定。缺参考或调用失败可以不用教师摘要，但必须显式标记。
+4. RQ4 对比 **无评审 / 确定性结构摘要 / 外置大模型评审摘要**，以真实终局成功、完整 Episode USD（包含教师的输入输出/缓存费用）和端到端时延计算净收益。离线强模型轨迹可以作辅助监督，但不构成未执行候选的反事实胜负。
+
+### 候选模型与每档推理强度的能力证据
+
+每个候选保留真实 `provider, model_id, revision, deployment_id, native_effort`，加版本化 `capability_evidence[]`。一条能力证据至少保存 `benchmark_id, benchmark_version, metric_name, raw_score, score_scale, normalized_score, eval_split, harness_id, evaluator_revision, measured_effort, sample_count, eval_date, source_url, license_status, evidence_status`。**SWE-Bench Pro、LiveCodeBench、BFCL 是候选来源示例，具体榜单版本、可用分数和可比性尚待审查**。
+
+- 同型号的 low/medium/high 若分别有同协议实测，才能填写各档分数；缺失标为 `NOT_MEASURED`，不能自动把模型级分数复制到每档，也不能把人工“强/中/弱模型”当真实能力标签。
+- 原始分、标准化分、分数方向、评测任务数、置信度及评测/价格日期要可追溯；不同 Harness、任务集和协议不可当作统一量表直接排序。
+- 模型输入/输出/缓存单价、上下文、工具与可用性在独立 Provider Registry 按实际版本维护，不能按模型名字猜；Provider 的原生 Effort 与能力分档是两种完全不同的东西。
+- **给现有 Laya/ Kev 权重追加这些 JSON 字段，不等于模型会使用它们**；必须核验合规训练视图对字段的覆盖、训练时编码、缺失值掩码与线上推理一致性。无实证时只能标 `PROPOSED / NOT_TRAINED / NOT_EVALUATED`。
+
 ## 摘要
 
 ModelRouter 研究长程单 Agent 与多 Agent 工作流中的**状态感知、任务级模型与推理强度联合路由**。在 Agent 的每个合法决策边界，系统从真实运行时获取任务进度、上下文、工具、验证/恢复、协作、缓存连续性、时间预算及服务商可用性，构建当前可执行的 `(model, reasoning_effort)` 候选集合，并由**单一 Kev-4B 风格决策模型**选择下一动作。
@@ -137,31 +170,40 @@ subject to        P(task_resolved | policy) >= quality_floor
 
 Kev-4B 可作为研究起点，任务级质量、延迟与候选规模泛化仍待验证。已有 A6000 短训练汇总的事实与限制见 [Q-010](EXPERIMENT_QA.md)；本轮只读核验后无需重复安装或测试，该汇总不支持最优模型或训练效果提升的结论。
 
-### 4.2 计划架构
+### 4.2 V9 计划架构：Agent 外部轨迹评审 → 单一 Router
 
 ~~~text
-Agent Runtime (task / tool / verifier / usage / session)
-        |
-Deterministic State Builder + provenance
-        |
-Candidate Registry -----> Hard Constraint Filter
-        |                           |
-        +------ valid (model, effort) actions
-                                    |
-                          Single Kev-4B Router
-                                    |
-                         selected valid action
-                                    |
-                   Agent Harness + provider adapter
-                                    |
-               usage ledger + trajectory + final resolved
-                                    |
-                 evaluation / controlled data collection
-                                    |
-                  supervised continuation fine-tuning
+ Real Agent / Harbor (task, prior tools, verification, usage)
+                        |
+         Deterministic pre-decision State Builder
+                        |
+             +----------+-----------+
+             |                      |
+   observed tool history     model pool / Provider Registry
+             |               identity, effort, capability, price
+             v                      |
+  Optional EXTERNAL Teacher         v
+  - retrieve similar successful  hard legal-action filter
+    TRAIN/DEV reference traces      |
+  - one LLM call: tool quality      |
+    progress / next milestone       |
+             |                      |
+     short structured assessment    |
+     + provenance / cost            |
+             |                      |
+             +----------+-----------+
+                        |
+            Single active Laya OR Kev Router
+                 ranks legal (model, native_effort)
+                        |
+             generator in existing Agent Harness
+                        |
+          tool + verifier + provider usage / episode cost
+                        |
+             next pre-decision state (feedback)
 ~~~
 
-可考虑成功概率、剩余成本分位数、切换风险等**辅助任务**，但必须先有可信监督信号和消融证据；不为复杂度而强制增加 GNN、RL、Bandit 或多个预测头。
+**注意**：外部 teacher/critic 只给短评，不负责选模型或工具执行，因而不存在第二个路由决策器。教师调用可禁用做消融；严禁使用当前封存题目的已解完整轨迹；产生的 Token、USD、时延计入 Episode。此图是**设计**，不是部署或测试结果。
 
 ### 4.3 正式训练策略（仍属规划）
 
