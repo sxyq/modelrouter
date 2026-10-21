@@ -8,7 +8,23 @@
 
 ## 0. 阶段入口与决策规则
 
-### 2026-10-22 · Router 输入与 RQ 归属修订讨论（最新对话记录，部分待定）
+### 2026-10-22 · Q-021：以 V9 为准，外置轨迹评审摘要 + Model×Effort 能力证据（新明确方向；字段细则待试验）
+
+**负责人最新指令**：以 V9 为准并同步六份文档；既有完整结构图中的轨迹总结/判断环节放在 Agent 外部。建议单独调用一次大模型，让它参考顶级模型的成功轨迹与当前 Agent 截至决策前的历史轨迹，生成简短的当前轨迹评估与下一步规划，作为 Router 输入。对新加入的模型，提供若干独立 Benchmark 能力分数，并尽可能细化到每个真实支持的 native reasoning effort。
+
+**现行 RQ 编号恢复并保持 V9**：RQ1=Overall；RQ2=Pool；RQ3=Decomposition；**RQ4=Systematic Ablation**（动作/信息组/数据监督/外部轨迹摘要等机制）；**RQ5=Workload Boundary**。2026-10-22 前一条“将系统消融并入 RQ1”的意见是被本次 V9 指令覆盖的讨论快照，非现行 RQ。不要新造 RQ6；八张图、十二张结果表沿 V9。
+
+**已明确的输入设计方向**：
+
+- `task_state`：决策前任务目标/子任务、Agent 角色和阶段、步数、上下文、预算与剩余时间；保留当前可观测真实值与缺失。`tool_trace`：已执行工具名称/使用意图/返回/测试验证/重复工作/已证实里程碑，**不能只凭退出码判合理性**。
+- `external_trajectory_assessment`：独立外置 teacher/critic 的单次调用在选路前产出 `short_summary`、工具意图匹配、进展对齐、无效重复、缺少验证、`next_milestone_short`、风险、置信度；记录触发原因、截至哪一个 `decision_id`、老师模型/版本、参考轨迹出处和覆盖、耗时/token/USD。**它不选模型、不指挥 Agent 执行**；按阶段或事件触发而非每步强制昂贵调用，具体频率待校准。多条已验证成功的相似任务轨迹仅限合规 train/dev 参考库；严禁使用 Sealed/Final 任务未来轨迹、答案或结局。
+- `candidate_actions`：对每个真实合法 `(provider,model_id,revision,actual_endpoint,native_effort)` 保留型号身份、版本化能力卡；每个 Benchmark 附 `benchmark_id/version, protocol/harness, split, timestamp, effort, raw_score, normalized_score, sample_count, source, status`。维度建议软件工程修复、代码推理、工具调用及可选综合能力，但**具体来源及指标仍待最终确定**。同模型不同档位不能直接复制分数；未知为 `NOT_MEASURED`，不人为假造高/中/低的质量标签。
+- 候选经济与硬约束：真实输入/输出/缓存读写价格快照、上下文/工具/地区/速率/可用性，前缀复用估计与 Provider 回报的 cached tokens 分开；先确定性过滤非法动作再打分。
+
+**实验与实施边界**：外置分析模型应对照 `无分析器/确定性工具摘要/外置 teacher 摘要`，记录端到端任务成功率、完整 Episode USD（包括 teacher 自身费用）和延迟；新模型输入对照 `名称+effort` 与 `名称+effort+能力证据`，未见模型泛化属于 RQ2 研究/扩展；动作、状态、训练监督分别在 RQ4 独立受控消融。新增字段尚未实现、未进入 Laya/Kev 训练，不得把文档当代码部署证明；现有 Terminal-Bench 2.1 正式官方 Trial 仍未验证。此决定不批准修改运行中 GPU 任务、花费新外部 API、解封 Test 或绕过 Harbor 沙箱。
+
+
+### 2026-10-22 · Router 输入与 RQ 归属修订讨论（历史快照，已由 Q-021 的 V9 指令覆盖）
 
 **记录性质**：负责人在 2026-10-21～22 的后续研究讨论；不是新的训练/付费评测授权，不声称新字段已实现或已经得到真实 Benchmark 结果。保留 Q-017/Q-019 历史原文与日期，新的明确决定在后续同步时覆盖旧方案，而不删除历史。
 
