@@ -8,6 +8,8 @@
 >
 > **旧交互式视觉原型**：[交互式原型（V7，未同步 V8）](交互式原型/index.html)；不能作为本轮最新 RQ 的权威依据。
 
+> **V9 设计补充（2026-10-22）**：不改变已经确认的 **RQ1 总体、RQ2 模型池、RQ3 拆分、RQ4 系统消融、RQ5 工作负载边界**，也不增加第六个 RQ。按负责人最新要求，在原 Fig.2 Agent Runtime **外部**补充“相似顶级成功轨迹检索 → 独立大模型工具/进展合理性短评 → 单一 Router”的支路，并将每个具体模型 × 原生 Effort 的能力 Benchmark 证据纳入动态候选。详细字段见 §1.3a 与 [研究总纲](../../our-project/planning/RESEARCH_OVERVIEW.md)；这些是**待训练/待验证的输入方案**，不是已运行的评测结果或新增付费 API 授权。
+
 ## 0. 研究定位与版本
 
 ### 0.1 新的统一思路
@@ -81,20 +83,47 @@ Artificial Analysis 当前方法区分 Token Price、混合单价和它自身工
 
 ```mermaid
 flowchart LR
-  PUB["AA/Public Static Frontier"] --> SELECT["Development-only Portfolio Selection: P_K"]
-  PDATA["Provider price / capability / cache policies"] --> SELECT
-  T["Real Coding Task"] --> G["Fixed Decomposition G0..G3 / Agent Roles"]
-  G --> SNAP["Pre-decision State at legal F0..F3"]
-  SELECT --> LEGAL["Legal Model × Native Effort by state"]
-  SNAP --> R["Single Router Policy"]
-  LEGAL --> R
-  R --> EXEC["Same Harness / Tool / Verifier"]
-  EXEC --> USAGE["Actual Usage + KV / Context + Failed Traces"]
-  EXEC --> OUT["Episode Resolved / Total USD / Latency"]
-  USAGE --> SNAP
+  PUB["AA/Public Static Frontier"] --> SELECT["Dev-only portfolio P_K"]
+  PDATA["Provider capability, prices, cache policies"] --> SELECT
+  PDATA --> LEGAL["Hard filter: legal Model × Native Effort"]
+  SELECT --> LEGAL
+  TASK["Real Agent Task"] --> G["Fixed G0..G3 / Agent Roles"]
+  G --> SNAP["Pre-decision observed State at F0..F3"]
+  EXEC["Same Agent Harness: Tools / Verifier"] --> HIST["Observed tools, progress, verification, usage"]
+  HIST --> SNAP
+  REF["Verified reference traces: TRAIN/DEV only"] --> RETRIEVE["Retrieve similar successful task traces"]
+  RETRIEVE --> JUDGE["Optional EXTERNAL LLM trajectory assessor"]
+  HIST --> JUDGE
+  SNAP --> JUDGE
+  JUDGE --> SHORT["Short reasoned progress / tool-use / next-milestone summary"]
+  SHORT --> ROUTER["Single active Laya OR Kev Router"]
+  SNAP --> ROUTER
+  LEGAL --> ROUTER
+  ROUTER --> EXEC
+  JUDGE --> COST["Teacher USD / tokens / latency"]
+  EXEC --> COST
+  COST --> OUT["Episode Resolved / Complete USD / Latency"]
 ```
 
-Pool 在开发阶段冻结；RQ2 **改变 K 与具体池成员**，RQ3 **固定池/Router 改变同一任务的拆分 G**，RQ4 **固定池/任务/评测口径改变动作、可选状态信息或训练监督配置**，RQ5 **固定 Router/池/G 比较预定工作负载条件下的相对收益**。同一个 Router 负责 Model×Native Effort 联合选择，不引入第二个在线 Router、学习型拆分器或跨模型 KV 迁移功能。
+Pool 在开发阶段冻结；RQ2 **改变 K 与具体池成员**，RQ3 **固定池/Router 改变同一任务的拆分 G**，RQ4 **固定池/任务/评测口径改变动作、可选状态信息或训练监督配置**，RQ5 **固定 Router/池/G 比较预定工作负载条件下的相对收益**。同一个 Laya **或** Kev Router 负责 Model×Native Effort 联合选择；**外置轨迹评审器不是第二个选路 Router**，只处理状态摘要。仍不引入学习型拆分器或跨模型 KV 迁移功能。
+
+### 1.3a · 输入字段和模块接口：外部轨迹评审 + Model×Effort 能力卡（2026-10-22）
+
+**结构定位**：外部评审器放在 Agent Harness 之外、Router 之前。它可以独立调用一次顶级/强大模型，参考若干**其他合法 Train/Dev 相似任务**的已验证成功轨迹与当前 Agent 截至 `decision_id` 的工具历史，压缩成短信息：工具使用意图是否合理、阶段/进展、是否无效重复、验证缺口、下一关键里程碑与不确定度。它不执行工具、不直接告诉 Agent 隐藏答案、也不负责选生成模型；只有单一活跃 Laya 或 Kev 执行最终路由。在线触发频率（阶段/失败恢复/停滞，非每步必调）、教师模型/档位、参考库规模与 token 上限需 Dev 小试。
+
+| 输入对象 | 字段（拟议） | 解释和来源 |
+| --- | --- | --- |
+| `task_state` | `task_id, task_summary, task_domain, subtask_id, agent_role, stage, step_index, remaining_steps, context_tokens, remaining_time_seconds, remaining_budget_usd` | 当前任务与已知预算，估计/实际 token 分开 |
+| `tool_trace` | `recent_tool_events[{tool_name, tool_intent, args_digest, observed_result, observed_at}], progress_milestones, verification_status, recovery_attempts` | 只记录已经发生的行为，退出码不是合理性结论 |
+| `external_trajectory_assessment` | `short_summary, tool_intent_alignment, progress_alignment, redundancy_risk, verification_gap, next_milestone_short, risk_flags, confidence, assessed_through_decision_id` | 外置 teacher/critic 的推断短评，不是最终成功标签 |
+| `assessment_provenance` | `teacher_model_id, teacher_native_effort, reference_trajectory_ids, reference_split, retrieval_protocol, trigger_reason, generated_at, teacher_input/output_tokens, teacher_cost_usd, teacher_latency_ms, status` | 教师来源、时间截止、Token/时延/真实费用入账 |
+| `continuity` | `previous_model_id, previous_native_effort, reported_cached_tokens, estimated_prefix_overlap, session_affinity, estimated_switch_penalty` | 实测 cached read 与预测复用不混为一谈 |
+| `legal_actions[]` | `provider, model_id, revision, deployment_id, native_effort, action_id, available_now, supports_tools, context_limit, price_snapshot_id, capability_evidence[]` | 先硬过滤；动作是具体型号+该 Provider 真正支持的档位 |
+| `capability_evidence[]` | `benchmark_id, version, metric, score_raw, score_normalized, harness, evaluator_revision, eval_split, evaluated_effort, sample_count, eval_date, source_url, evidence_status` | 每档 Effort 的实测分数仅在确有同协议结果时填；未测=NOT_MEASURED |
+
+**Benchmark 能力维度（待核具体版本/来源）**：拟先看软件工程修复、代码推理、工具调用，例如 SWE-Bench Pro、LiveCodeBench、BFCL；综合能力分数可作可选辅助。保留模型原始 ID 与明确的 Provider、Endpoint、Revision；不要以我们人为定的“低/中/高能力”替代分数，更不要把**模型能力等级**误作**原生 reasoning effort**。同一模型 low/high 若无各自实测，则 score_scope 标模型级/档位未知，不得复制为每档的独立真实成绩。
+
+**实验和安全边界**：外置教师禁止看到正式 Terminal-Bench 2.1 封存题目的未来轨迹、参考答案、测试 rubric 或最终 verifier；教师费用和端到端时延属于完整 Episode。没有 teacher 时标 `NOT_USED`、调用失败标 `FAILED`，不得静默回退而计算为评审有效。现有 F05/F06/C03 训练没有被证明学会读取该能力卡/外置短评；需要同语义训练输入与推理编码验证。消融：无评审/确定性摘要/独立 LLM 评审、只有名称+Effort/追加能力分数、只看工具返回码/检查行为和进展。结果只填真实 Task Success 和完整 USD，不把离线分数当任务效果。
 
 ### 1.4 证据要求
 
@@ -169,6 +198,9 @@ Pool 在开发阶段冻结；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 - RQ3 研究**拆分方法本身带来的变化**；是否需要给 Router 提供角色、交接等额外输入，作为 RQ4 的信息消融，而不是另设角色互补性 RQ。
 
 ### 2.5 RQ4：哪些设计与训练信息真正决定 ModelRouter 的任务级效果？（系统消融）
+
+**2026-10-22 新增 RQ4 对照**：外置轨迹评审（无/确定性摘要/独立教师短评）与教师费用/时延；工具合理性（仅看错误码 vs 参考成功轨迹引导的阶段/工具意图/重复/进展/验证）；候选输入（仅真实型号+原生 Effort vs 额外有来源的每档 Benchmark 能力卡）。固定同一合法候选池、任务、Harness、预算和验证协议，比较真实完整 Episode 费用与成功率；未证明有效前不把教师短评和能力分数写成最终方法必要项。
+
 
 **科学问题**：在固定的实际 Agent 任务、模型身份池、各模型原生 Effort 菜单、Harness 和真实终局评测下，完整 Router 的性能来源于哪些组成部分？联合动作选择、决策前状态信息和训练数据/监督是否有独立贡献或组合交互，是否值得其额外运行成本？
 
@@ -260,12 +292,12 @@ Pool 在开发阶段冻结；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 | 图 | 对应 | 坐标/结构与最终要回答的问题 |
 |---|---|---|
 | Fig.1 | Motivation | 静态 AA Intelligence–Price 与真实 Agent Success–Episode USD **两个独立面板**，不能把 AA 结果当 Agent 任务结果 |
-| **Fig.2** | Method | **树形模型池 Model→Native Effort**、AgentState（真实子 Agent 身份/角色/子任务）、合法动作过滤→单一 Router→任务执行→真实费用/验证/缓存反馈 |
+| **Fig.2** | Method | **树形模型池 Model→Native Effort**、AgentState（真实角色/子任务）→**Agent 外部参考轨迹检索与可选独立 LLM 短评**；另一支为每档能力证据/价格/合法动作过滤→**单一 Laya 或 Kev Router**→任务执行→真实费用/验证/缓存反馈 |
 | **Fig.3** | **RQ1 主结果** | X=Mean Complete Episode USD，Y=Task Success Rate；固定、Role-static、随机整任务混合、简单、同 Harness 学术 Router、Full；真实实测后绘 Pareto |
 | Fig.4 | RQ1 结果解释 | 主结果策略的完整 Episode 成本分解（input/output/cache/router/retry）与成功率—费用基线包络说明；不与 Fig.7 的机制消融重复 |
 | Fig.5 | RQ2 | 不同 Pool Rule、不同 K 的 Success–Episode Cost/边际收益，分开标注 K 与实际合法 M×E 动作数 |
 | Fig.6 | RQ3 | X=可复现拆分粒度 G，Y=Success/Mean Episode USD（双面板），图例 Fixed/Role-static/Full、任务类型分层；标注 Agents/Handoffs/F |
-| **Fig.7** | **RQ4 系统消融** | 三面板：A 固定/Model-only/Effort-only/分层/Joint；B T/M/H 单双三组；C S1/S2/S3 合法数据与监督配置；每组以真实 Success/完整 USD 衡量，结果待测 |
+| **Fig.7** | **RQ4 系统消融** | 三面板：A 固定/Model-only/Effort-only/分层/Joint；B T/M/H 单双三组与**外置 LLM 轨迹短评/候选分数**的有无及规则摘要对照；C S1/S2/S3 合法数据与监督配置；真实 Success/完整 USD（含教师费用）衡量，结果待测 |
 | **Fig.8** | **RQ5** | X=预定义多 Agent 工作负载分层（类型/复杂度/结构），Y=在可比成功率下的 Full 相对强基线的**任务级费用改善**及不确定性；无收益区域同样保留 |
 
 **不得填假坐标点或预设正收益**。Case trajectory、Provider cached-read 细节和失败案例可作补充图；图 8 不得简单重复图 3 的总体平均数。
@@ -280,6 +312,8 @@ Pool 在开发阶段冻结；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 ### Table 1 · 模型池树与供应商能力（Setup）
 
 | Model Identity | Provider / Revision | Allowed Native Efforts | Context | Tools | Input $/M | Output $/M | Cache Policy |
+
+> **T1 补充**：每个可执行 `model×native_effort` 需关联外部能力 Benchmark 证据清单（实测评分、测试协议、实际 Effort、来源、缺测状态），单列 `capability_evidence_refs` 附表/机器可读 manifest；T1 的单价不可替代每档能力成绩。正式结果格保持空白。
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Model candidate A |   |   |   |   |   |   |   |
 | Model candidate B |   |   |   |   |   |   |   |
@@ -323,6 +357,9 @@ Pool 在开发阶段冻结；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 | Full minus Agent role |   |   |   |   |   |
 | Full minus KV |   |   |   |   |   |
 | Full minus Verifier feedback |   |   |   |   |   |
+| Full minus external LLM trajectory assessment |   |   |   |   |   |
+| Deterministic tool-history summary (no teacher LLM) |   |   |   |   |   |
+| Full minus per-effort Benchmark ability evidence |   |   |   |   |   |
 
 ### Table 5 · RQ4 Model×Native Effort 联合动作消融
 
