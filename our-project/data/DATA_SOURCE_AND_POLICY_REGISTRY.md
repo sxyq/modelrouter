@@ -158,6 +158,24 @@
 
 **未知是 UNKNOWN，不等于不支持或支持。** 定价、TTL、准入和 ToS 不能通过 Kev 权重固化为长期真实的运行时政策；真正调用之前必须以当前版本化 ProviderRegistry/硬约束为准。Google [API Terms](https://ai.google.dev/gemini-api/terms/) 等模型服务协议包含特定训练用途限制；每个 API 输出能否被用于公开路由模型微调，必须另审合同与授权。
 
+### 3.4 · V9 外置轨迹评审参考库与 Model×Effort 基准能力证据（2026-10-22，新方案待核验）
+
+负责人决定**以 V9 五个 RQ 为准**；在 Agent 外部加入可选轨迹评审/短规划模块，并为模型池候选提供具体模型与原生 Effort 的独立 Benchmark 分数。本台账仅登记**应核验的来源、字段、许可和状态**，不代表这些新数据已经存在、实际训练或已调用老师模型。
+
+| 登记对象 | 建议记录字段 | 待核实的证据标准 |
+| --- | --- | --- |
+| 模型/动作身份 | `provider_id, base_model_id, model_id, revision, deployment_id, endpoint, region, native_effort, action_id` | 只有 Provider 实际支持的档位才能进候选 |
+| 多项能力分数 | `benchmark_id, benchmark_version, metric_name, score_raw, score_scale, normalized_score, harness_id, eval_split, evaluator_revision, evaluated_native_effort, sample_count, eval_date, source_url, source_license, evidence_status` | 软件工程、代码推理、工具调用可参考 SWE-Bench Pro、LiveCodeBench、BFCL，但具体版本、协议、训练权利和分数尚未核验 |
+| 能力缺失/不确定性 | `score_scope(model/effort), measured_effort, measurement_type, missing_reason, CI_or_uncertainty` | `NOT_MEASURED` 不等于 0；同一型号的模型级分数不能自动复制到所有 low/medium/high；不同 Harness 不能直接比较 |
+| 动作价格/约束 | `price_snapshot_id, input_usd_per_1m, output_usd_per_1m, cache_read/write_usd_per_1m, supports_tools, context_limit, actual_availability` | 分 actual provider+endpoint+revision 按日期核价；hard filter 始终外置 |
+| 参考强模型成功轨迹 | `reference_task_id, reference_trajectory_id, reference_model, reference_effort, verified_outcome, task_split, source_license, reference_revision, retrieval_version` | 来自合法 TRAIN/DEV 的**相似任务多条成功轨迹**，并非当前正式测试任务未来答案；不得把某个命令顺序当唯一正确过程 |
+| 当前评审短摘要 | `episode_id, assessed_through_decision_id, recent_tool_intent, tool_alignment, progress_alignment, redundancy_risk, verification_gap, next_milestone_short, short_summary, confidence, teacher_model_id, reference_ids, generated_at, status` | 教师的推断，不等于已验证任务成功；有缺席/失败/过期状态 |
+| 外置教师费用与时延 | `trigger_reason, teacher_input_tokens, teacher_output_tokens, teacher_cached_tokens, teacher_cost_usd, teacher_latency_ms` | 只有真实 Provider usage 才计 MEASURED；全部在线调用费用进 Episode，总延迟单列 |
+
+**来源与许可边界**：现有 Agent 轨迹来源可提供已执行动作、工具返回和部分终局，但不代表已具备工具意图合理性人工标签、相似强模型对照、每档 Effort 的同协议 Benchmark 能力分数。先登记来源修订、许可、训练/测试划分、参考轨迹检索协议、去重和同题隔离；封存 Terminal-Bench 2.1 Final 的答案/未来轨迹不得用于 online teacher 提示或选池训练。参考轨迹的辅助标签和最终 Agent 成败是不同数据类型；不得生成未选动作的虚假反事实。
+
+**字段编码验证**：模型卡中分数有证据，也不代表旧 F05/F06/C03 路由权重已训练接受该字段；需按缺失掩码、量纲、序列化顺序检查实际训练/推理一致性。详见 [RESEARCH_OVERVIEW](../planning/RESEARCH_OVERVIEW.md)、[EXPERIMENT_QA Q-021](../planning/EXPERIMENT_QA.md)、[V9 图表规划](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)。本轮无新增 API/GPU 运行许可，不宣称已测成功率或已部署外置教师。
+
 ## 4. Cache 专用证据字段与标签边界
 
 一条缓存相关训练记录必须区分**请求事实**、**缓存机会**、**模拟结果**及**真实计费结果**。
