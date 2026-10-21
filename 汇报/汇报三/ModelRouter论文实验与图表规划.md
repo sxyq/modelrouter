@@ -312,7 +312,6 @@ Pool 在开发阶段冻结；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 ### Table 1 · 模型池树与供应商能力（Setup）
 
 | Model Identity | Provider / Revision | Allowed Native Efforts | Context | Tools | Input $/M | Output $/M | Cache Policy |
-
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Model candidate A |   |   |   |   |   |   |   |
 | Model candidate B |   |   |   |   |   |   |   |
