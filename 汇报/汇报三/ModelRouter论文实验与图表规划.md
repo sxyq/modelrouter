@@ -1,4 +1,4 @@
-# ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-10-18 最新确认）
+# ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-10-22 输入与架构补充）
 
 > **更新日期：2026-10-18；现行已确定：五个 RQ、八张图、十二张空白表。** 本次明确把**系统消融定为 RQ4**，删除原 V8 的独立「多 Agent 角色互补性 RQ4」；**RQ5 仍为动态路由适用边界**。历史 Q-ID / H1–H7 和已有真实训练、评测记录不被重写。
 >
@@ -313,12 +313,13 @@ Pool 在开发阶段冻结；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 
 | Model Identity | Provider / Revision | Allowed Native Efforts | Context | Tools | Input $/M | Output $/M | Cache Policy |
 
-> **T1 补充**：每个可执行 `model×native_effort` 需关联外部能力 Benchmark 证据清单（实测评分、测试协议、实际 Effort、来源、缺测状态），单列 `capability_evidence_refs` 附表/机器可读 manifest；T1 的单价不可替代每档能力成绩。正式结果格保持空白。
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Model candidate A |   |   |   |   |   |   |   |
 | Model candidate B |   |   |   |   |   |   |   |
 | Model candidate C |   |   |   |   |   |   |   |
 | Model candidate D |   |   |   |   |   |   |   |
+
+> **T1 补充**：每个可执行 `model×native_effort` 需关联外部能力 Benchmark 证据清单（实测评分、测试协议、实际 Effort、来源、缺测状态），单列 `capability_evidence_refs` 附表/机器可读 manifest；T1 的单价不可替代每档能力成绩。正式结果格保持空白。
 
 ### Table 2 · 真实多 Agent Benchmark / 协议（Setup）
 
