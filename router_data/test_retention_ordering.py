@@ -809,6 +809,120 @@ def test_collector_original_history_inputs_and_unchanged_revision():
         assert all(path.read_bytes() == content for path, content in originals.items())
 
 
+def test_collector_research_same_target_and_loadable_epochs(tmp_path):
+    from scripts import fetch_live_status as collector
+
+    def write_json(path, value):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(value), encoding="utf-8")
+
+    runs_root = tmp_path / "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012"
+    fixtures = {
+        "F06": ("S1", [(1, .6738, .6002, .4141, .0247), (2, .6863, .6017, .415, .0549)]),
+        "F06_S1": ("S1", [(2, .6809, .5936, .4079, None)]),
+        "F07": ("S1", [(1, .6827, .6076, .4203, .0567), (2, .6791, .6145, .4213, .0388)]),
+        "F08": ("S1", [(2, .6702, .6123, .4246, .0555)]),
+        "F09": ("S1", [(2, .6649, .6100, .4226, .0271)]),
+        "AUX_S2": ("S2", [(1, .9, .2, None, None)]),
+        "AUX_S3": ("S3", [(1, .9, .2, None, None)]),
+    }
+    for index, (rid, (stream, values)) in enumerate(fixtures.items()):
+        epochs = [{"epoch": epoch, "weights_saved": False,
+                   "validation": {stream: {"accuracy": acc, "loss": loss, "brier": brier, "ece": ece, "items": 561}}}
+                  for epoch, acc, loss, brier, ece in values]
+        write_json(runs_root / rid / "run.json", {"run_id": rid, "status": "completed", "epochs_max": 2,
+            "protocol_version": NEW_PROTOCOL_VERSION, "validation_set": "same-fixed-val",
+            "supervision_classes": ["S1", "S2", "S3"] if rid in ("F06", "F07", "F08", "F09") else [stream],
+            "train_origin": "cumulative", "base_model": "fixture-base",
+            "layers": ["L1"], "config": {"loss": "soft-ce"},
+            "started_at": f"2026-10-{index + 10:02d}T00:00:00Z", "history": epochs})
+    physical = runs_root / "F06/checkpoints/epoch_02.pt"
+    physical.parent.mkdir(parents=True)
+    physical.write_bytes(b"temporary fixture only")
+
+    c03 = {"acc": .5715969989281886, "nll": 1.0795525776246775,
+           "brier": .537533605673637, "ece": .05104668378873653, "n": 9330}
+    c04 = {"acc": .5711682743837084, "nll": 1.0872975000322915,
+           "brier": .5402653787706695, "ece": .05987151793598101, "n": 9330}
+    candidates = []
+    for rid, metrics, seconds in (("KEV-V8-C03", c03, 3099.012350168079),
+                                  ("KEV-V8-C04", c04, 2982.712651308626)):
+        directory = tmp_path / "runs" / rid / "formal_run"
+        write_json(directory / "training_config.json", {"args": {"device": "cuda", "epochs": 1,
+                   "init_from": "fixture-parent-" + rid}})
+        write_json(directory / "training_metrics.json", {"optimizer_steps": 16857, "grad_norm": [1.0]})
+        write_json(directory / "val_metrics.json", {"clean": metrics, "duration_sec": seconds,
+                   "validation_protocol": "fixed-val", "validation_set": "kev-fixed-val",
+                   "coverage": {"requested_questions": 9330, "evaluated_questions": 9330}})
+        (directory / "adapter_model.pt").write_bytes(b"temporary adapter fixture only")
+        candidates.append({"candidate_id": rid, "status": "COMPLETED", "evaluation_status": "EVALUATED",
+                           "checkpoint_path": str(directory.relative_to(tmp_path))})
+    candidates[1]["comparison_to_c03"] = {"status": "COMPARABLE", "direction": "candidate_minus_c03",
+                                          "deltas": {k: c04[k] - c03[k] for k in ("acc", "nll", "brier", "ece")}}
+    write_json(tmp_path / "our-project/results/training/kev/candidate_queue.json", candidates)
+    originals = {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    history = collector.build_training_history(tmp_path, processes={})
+    original_validation = copy.deepcopy({r["key"]: r["validation"] for r in history["runs"]})
+    # Other Val identities, counts, protocols and loss definitions stay separate.
+    reference = next(r for r in history["runs"] if r["run_id"] == "F06_S1")
+    for field, value in (("validation_set", "other-fixed-val"), ("items", 562),
+                         ("protocol", "other-protocol"), ("loss_definition", "other-loss")):
+        other = copy.deepcopy(reference)
+        other["run_id"] = other["key"] = "OTHER_" + field
+        if field in ("validation_set", "items"):
+            other["validation"][0][field] = value
+        else:
+            other[field] = value
+        history["runs"].append(other)
+    live = {"kev": {"run_id": "KEV-V8-C04", "status": "COMPLETED", "evaluation_status": "EVALUATED",
+                    "is_training": False}, "process": {"kev": {}}}
+    summary = collector.write_training_research_report(history, tmp_path, live)
+    report = json.loads((tmp_path / summary["data"]).read_text())
+    rows = {r["run_id"]: r for r in report["observations"]}
+    f06 = rows["F06"]
+    assert (f06["best_loss_epoch"]["epoch"], f06["best_loss_epoch"]["loss"], f06["selected_epoch_physical"]) == (1, .6002, False)
+    assert (f06["best_accuracy_epoch"]["epoch"], f06["best_accuracy_epoch"]["accuracy"], f06["best_accuracy_physical"]) == (2, .6863, True)
+    assert rows["F06_S1"]["best_loss_epoch"]["loss"] == .5936
+    assert (rows["F07"]["best_loss_epoch"]["epoch"], rows["F07"]["best_accuracy_epoch"]["epoch"]) == (1, 1)
+    for rid in ("F07", "F08", "F09"):
+        assert all(not c["physical"] and not c["pruned"] and c["ever_saved"] is None for c in rows[rid]["checkpoints"])
+    for rid in ("AUX_S2", "AUX_S3"):
+        assert rows[rid]["comparison"]["control_key"] is None
+        assert rows[rid]["comparison"]["accuracy_delta"] is None
+        assert rows[rid]["comparison"]["loss_delta"] is None
+    trend = next(g for g in report["objective_trends"] if g["family"] == "laya" and g["stream"] == "S1"
+                 and g["validation_set"] == "same-fixed-val" and g["items"] == 561
+                 and g["protocol"] == NEW_PROTOCOL_VERSION and g["loss_definition"] == "soft-ce")
+    assert [r["run_id"] for r in trend["observations"]] == ["F06", "F06_S1", "F07", "F08", "F09"]
+    loaded = next(c for c in report["loadable_candidates"] if c["run_id"] == "F06")
+    assert loaded["epoch"] == 2 and loaded["is_best_loss_epoch"] is False and loaded["is_best_accuracy_epoch"] is True
+    assert [loaded["primary_validation"][k] for k in ("accuracy", "loss", "brier", "ece")] == [.6863, .6017, .415, .0549]
+    assert "其他Epoch" in f06["candidate_role"]
+    assert all(c["run_id"] not in ("F07", "F08", "F09", "F06_S1") for c in report["loadable_candidates"])
+    kev_trend = next(g for g in report["objective_trends"] if g["protocol"] == "KEV_FORMAL_LORA")
+    assert len(kev_trend["observations"]) == 2
+    for rid, metrics in (("KEV-V8-C03", c03), ("KEV-V8-C04", c04)):
+        assert [rows[rid]["best_loss_epoch"][k] for k in ("accuracy", "nll", "brier", "ece")] == [metrics[k] for k in ("acc", "nll", "brier", "ece")]
+        assert rows[rid]["validation_coverage"]["evaluated_questions"] == 9330
+    assert rows["KEV-V8-C04"]["evaluation_seconds"] == 2982.712651308626
+    assert rows["KEV-V8-C04"]["comparison_to_c03"] == candidates[1]["comparison_to_c03"]
+    current = report["training_eta"]["current"]["kev"]
+    assert (current["remaining_training_seconds"], current["validation_seconds"], current["estimated_finish_at"]) == (0, 0, None)
+    assert current["validation_in_finish_estimate"] is False
+    assert len(current["validation_samples"]) == 2
+    assert "median of 2" in current["validation_method"]
+    assert all(r["validation"] == original_validation[r["key"]] for r in history["runs"] if r["key"] in original_validation)
+    assert all(p.read_bytes() == content for p, content in originals.items())
+    markdown = (tmp_path / summary["report"]).read_text()
+    assert "| F06 | 最低S1 Loss | 1 | 0.6738 | 0.6002 | 0.4141 | 0.0247 | False |" in markdown
+    assert "| F06 | 最高S1 Accuracy | 2 | 0.6863 | 0.6017 | 0.415 | 0.0549 | True |" in markdown
+    assert "0.6863/0.6017/N/A/0.415/0.0549" in markdown
+    assert "9330" in markdown and "2982.712651308626" in markdown
+    assert "COMPLETED" in markdown and "EVALUATED" in markdown
+    assert "当前F07为两Epoch" not in markdown and "Kev运行中的旧dispatcher" not in markdown
+    assert "节省229小时" not in markdown and "节省40小时" not in markdown and "节省26小时" not in markdown
+
+
 def test_collector_training_eta_original_budget(tmp_path):
     from scripts import fetch_live_status as collector
     history = {"runs": [{"root": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F01", "run_id": "F01",
@@ -824,6 +938,19 @@ def test_collector_training_eta_original_budget(tmp_path):
     assert estimate["groups"][0]["training_seconds"] == 50
     assert estimate["totals"]["planned_executable_runs"] == 1
     assert estimate["current"]["laya"]["remaining_training_seconds"] is None
+    kev_val = {"stream": "clean", "validation_set": "same-kev-val", "items": 9330, "source": "val_metrics.json"}
+    history["runs"] += [{"family": "kev", "root": "runs/" + rid, "run_id": rid, "protocol": "KEV_FORMAL_LORA",
+                         "validation": [kev_val], "evaluation_status": "EVALUATED", "evaluation_seconds": seconds}
+                        for rid, seconds in (("C03", 3000), ("C04", 3200))]
+    history["runs"].append({"family": "kev", "root": "models/imported", "run_id": "imported", "protocol": "KEV_IMPORTED_LORA",
+                            "validation": [kev_val], "evaluation_status": "EVALUATED", "evaluation_seconds": 9000})
+    live = {"kev": {"run_id": "C04", "status": "TRAINING", "step": 5, "total_steps": 10,
+                    "samples_per_s": 2, "is_training": True}, "process": {"kev": {"train_pid": 123, "batch": 1, "accum": 4}}}
+    current = collector.training_eta(history, plans, live, rows)["current"]["kev"]
+    assert current["remaining_training_seconds"] == 10 and current["validation_seconds"] == 3100
+    assert current["validation_in_finish_estimate"] is True
+    assert [s["run_id"] for s in current["validation_samples"]] == ["C03", "C04"]
+    assert current["validation_method"] == "median of 2 same fixed Kev Val observed durations"
     path = tmp_path / "status.json"
     collector.atomic_json(path, {"loss": float("nan")})
     assert json.loads(path.read_text()) == {"loss": None}

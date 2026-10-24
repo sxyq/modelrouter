@@ -493,6 +493,7 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                "evaluation_status": plan.get("evaluation_status") or ("FAILED" if plan.get("failure_reason") == "Validation evaluation failed" else "EVALUATED" if clean else "NOT_EVALUATED"),
                "queue_status": plan.get("status"), "failure_reason": plan.get("failure_reason"),
                "validation_metrics": clean, "validation_coverage": result.get("coverage"),
+               "comparison_to_c03": result.get("comparison_to_c03", plan.get("comparison_to_c03")),
                "evaluation_seconds": result.get("duration_sec"),
                "epochs": completed_epochs, "planned_epochs": args.get("epochs"),
                "root": relative(directory, root), "started_at": plan.get("started_at"), "finished_at": plan.get("finished_at"),
@@ -660,7 +661,7 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                    "matrix_aggregate": matrix.get("aggregate"),
                    "laya_queue": read_json(p0 / "queue_state.json", {}), "kev_queue": [
                        {k: c.get(k) for k in ("candidate_id", "name", "status", "training_status", "evaluation_status",
-                          "pending_reason", "failure_reason", "data_path", "init_from", "configuration_source")}
+                          "pending_reason", "failure_reason", "data_path", "init_from", "configuration_source", "comparison_to_c03")}
                        for c in kev_queue]},
                "limitations": ["Epoch records count observations, not proof that all versions were physically saved.",
                                 "Missing files without deletion evidence remain uncertain.",
@@ -717,14 +718,28 @@ def training_eta(history, plans, live, plan_rows):
             remaining = max(0, total - step) * int(batch) * int(accum) / rate if (
                 rate and step is not None and total is not None and batch and accum) else None
             method = "upstream cumulative seconds/record × configured batch × accumulation"
-            times = [r["evaluation_seconds"] for r in history["runs"] if r["family"] == "kev"
-                     and r.get("evaluation_status") == "EVALUATED" and r.get("evaluation_seconds")]
-            validation = median(times) if times else None
+            run = next((r for r in history["runs"] if r["family"] == "kev" and r["run_id"] == observed.get("run_id")), {})
+            fixed_val = next((v for v in run.get("validation", []) if v["stream"] == "clean"), {})
+            timed = [{"run_id": r["run_id"], "seconds": r["evaluation_seconds"], "source": v["source"]}
+                     for r in history["runs"] if r["family"] == "kev" and r["protocol"] == run.get("protocol")
+                     and r.get("evaluation_status") == "EVALUATED" and r.get("evaluation_seconds")
+                     for v in r.get("validation", []) if v["stream"] == "clean"
+                     and fixed_val.get("validation_set") is not None and fixed_val.get("items") is not None
+                     and v.get("validation_set") == fixed_val["validation_set"] and v.get("items") == fixed_val["items"]]
+            validation = median(t["seconds"] for t in timed) if timed else None
+            completed = observed.get("status") == "COMPLETED" and not observed.get("is_training") and not proc.get("train_pid")
+            if completed:
+                remaining, validation = 0, 0
+                method = "completed run; no active training worker"
         current[family] = {"run_id": observed.get("run_id"), "status": observed.get("status"),
+            "evaluation_status": observed.get("evaluation_status"),
             "remaining_training_seconds": remaining, "validation_seconds": validation,
-            "estimated_finish_at": datetime.fromtimestamp(time.time() + remaining + (validation or 0), timezone.utc).isoformat() if remaining is not None else None,
-            "method": method, "validation_in_finish_estimate": validation is not None,
-            "validation_method": "same fixed Laya Val timed matrix epochs as a proxy; all remaining epochs" if family == "laya" else "C03 same fixed Val observed duration"}
+            "estimated_finish_at": datetime.fromtimestamp(time.time() + remaining + (validation or 0), timezone.utc).isoformat() if remaining is not None and not (family == "kev" and completed) else None,
+            "method": method, "validation_in_finish_estimate": validation is not None and not (family == "kev" and completed),
+            "validation_method": "same fixed Laya Val timed matrix epochs as a proxy; all remaining epochs" if family == "laya" else
+                f"median of {len(timed)} same fixed Kev Val observed durations" + ("; completed run has no pending Val time" if completed else "")}
+        if family == "kev":
+            current[family]["validation_samples"] = timed
     groups = []
     pending = []
     cpu_times = [p["materialization_audit"]["materialization_seconds"] for p in (plans.get("matrix") or {}).values()
@@ -877,6 +892,8 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
                                 "maximum_step": max((p.get("step") or 0 for p in detail.get("points", [])), default=0) or None,
                                 "segments": len({str(p.get("segment")) for p in detail.get("points", [])})},
             "primary_stream": primary, "validation_all_epochs": run["validation"],
+            "loss_definition": run.get("loss_definition"), "validation_coverage": run.get("validation_coverage"),
+            "comparison_to_c03": run.get("comparison_to_c03"),
             "candidate_by_stream": run.get("candidate_by_stream"),
             "independent_units_by_stream": run.get("independent_units_by_stream"),
             "materialization_audit": run.get("materialization_audit"),
@@ -898,6 +915,7 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         row["validation_changes"] = trajectory
         peers = [r for r in observations if r["key"] != row["key"] and r["family"] == row["family"] and r["protocol"] == row["protocol"]
                  and r["best_loss_epoch"] and row["best_loss_epoch"]
+                 and r["primary_stream"] == row["primary_stream"] and r["loss_definition"] == row["loss_definition"]
                  and r["best_loss_epoch"].get("validation_set") == row["best_loss_epoch"].get("validation_set")
                  and r["best_loss_epoch"].get("items") == row["best_loss_epoch"].get("items")
                  and r["design"]["variables"]["layers"] == row["design"]["variables"]["layers"]
@@ -906,13 +924,53 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         row["comparison"] = {"control_key": control["key"] if control else None,
             "accuracy_delta": row["best_loss_epoch"]["accuracy"] - control["best_loss_epoch"]["accuracy"] if control and row["best_loss_epoch"].get("accuracy") is not None and control["best_loss_epoch"].get("accuracy") is not None else None,
             "loss_delta": row["best_loss_epoch"]["loss"] - control["best_loss_epoch"]["loss"] if control else None,
-            "scope": "same model/protocol/Val/layers/initialization; exposure, budget and selected epoch may differ"}
-        row["candidate_role"] = ("可加载的离线候选，任务级能力待评测" if row["selected_epoch_physical"] else
+            "stream": row["primary_stream"],
+            "scope": "same model/protocol/Val/target/loss definition/layers/initialization; exposure, budget and selected epoch may differ"}
+        has_physical = any(c["physical"] for c in row["checkpoints"])
+        row["candidate_role"] = ("短训练或Pilot实体，正式能力待评测" if has_physical and row["training_kind"] in ("LORA_SMOKE", "POINTER_HEAD_PILOT") else
+                                 "辅助目标实体，S1选模能力无实测" if has_physical and row["family"] == "laya" and row["primary_stream"] != "S1" else
+                                 "可加载的离线候选，任务级能力待评测" if row["selected_epoch_physical"] else
+                                 "可加载的其他Epoch候选，最低Loss实体不可用，指标按实际Epoch呈现" if has_physical else
                                  "历史消融或负结果；主Val最佳实体不可用" if row["best_loss_epoch"] else "证据不足，保留历史对象")
         row["missing_evidence"] = [label for label, missing in (
             ("逐监督梯度贡献", True), ("实付费用", True), ("独立任务成功率/完整Episode费用", True),
             ("完整训练耗时", row["training_seconds"] is None), ("主Val", row["best_loss_epoch"] is None),
             ("最佳Loss实体", not row["selected_epoch_physical"])) if missing]
+    loadable = []
+    trends = {}
+    metric_fields = ("epoch", "step", "stream", "accuracy", "loss", "nll", "brier", "ece", "items", "validation_set", "source")
+    for row in observations:
+        for checkpoint in row["checkpoints"]:
+            if not checkpoint["physical"]:
+                continue
+            validation = [{k: v.get(k) for k in metric_fields} for v in row["validation_all_epochs"] if v["epoch"] == checkpoint["epoch"]]
+            loadable.append({"key": row["key"], "run_id": row["run_id"], "family": row["family"],
+                "protocol": row["protocol"], "training_kind": row["training_kind"], "primary_stream": row["primary_stream"],
+                "checkpoint_id": checkpoint["checkpoint_id"], "epoch": checkpoint["epoch"],
+                "path": checkpoint["path"], "evidence": checkpoint["evidence"], "validation": validation,
+                "primary_validation": next((v for v in validation if v["stream"] == row["primary_stream"]), None),
+                "is_best_loss_epoch": bool(row["best_loss_epoch"] and checkpoint["epoch"] == row["best_loss_epoch"]["epoch"]),
+                "is_best_accuracy_epoch": bool(row["best_accuracy_epoch"] and checkpoint["epoch"] == row["best_accuracy_epoch"]["epoch"]),
+                "candidate_role": row["candidate_role"], "source": row["source"]})
+        selected = row["best_loss_epoch"]
+        if not selected or selected.get("validation_set") is None or selected.get("items") is None:
+            continue
+        identity = (row["family"], row["protocol"], json.dumps(selected["validation_set"], ensure_ascii=False, sort_keys=True),
+                    row["primary_stream"], selected["items"], row["loss_definition"])
+        group = trends.setdefault(identity, {"family": row["family"], "protocol": row["protocol"],
+            "validation_set": selected["validation_set"], "stream": row["primary_stream"], "items": selected["items"],
+            "loss_definition": row["loss_definition"], "observations": [],
+            "scope": "same model/protocol/fixed Val/target/loss definition; descriptive history, budgets and initialization may differ"})
+        group["observations"].append({"key": row["key"], "run_id": row["run_id"], "status": row["status"],
+            "started_at": row["started_at"], "supervision": row["supervision"], "sampling": row["sampling"],
+            "initialization": row["initialization"], "trained_records": row["exposure"].get("trained_records"),
+            "training_seconds": row["training_seconds"], "best_loss_epoch": {k: selected.get(k) for k in metric_fields},
+            "selected_epoch_physical": row["selected_epoch_physical"],
+            "best_accuracy_epoch": {k: row["best_accuracy_epoch"].get(k) for k in metric_fields} if row["best_accuracy_epoch"] else None,
+            "best_accuracy_physical": row["best_accuracy_physical"], "source": row["source"]})
+    for group in trends.values():
+        group["observations"].sort(key=lambda r: (r["started_at"] is None, r["started_at"] or "", r["run_id"]))
+        group["order"] = "recorded start time; undated runs follow in Run ID order"
     def public(value):
         if isinstance(value, float) and not math.isfinite(value):
             return None
@@ -925,11 +983,12 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         return value
     result = public({"generated_at": now_iso(), "code_commit": os.environ.get("MODELROUTER_CODE_COMMIT"),
         "counts": history["counts"], "plans": plan_rows, "observations": observations,
+        "loadable_candidates": loadable, "objective_trends": list(trends.values()),
         "retention": history["retention"], "comparisons": history["comparisons"],
         "kev_candidates": history["experiment_plans"]["kev_queue"], "data_census": history.get("data_census"),
         "laya_queue": {k: queue.get(k) for k in ("queue_status", "current_run", "next_run", "failed_runs", "blocked_runs")},
         "kev_materialization": read_json(root / "data/kev/v8_extension/materialization.json", {}),
-        "selection": "One minimum primary validation Loss epoch per run; secondary metrics use that same epoch",
+        "selection": "One minimum primary validation Loss epoch per run; highest Accuracy epoch is independent; loadable candidates use their actual epoch metrics",
         "limitations": history["limitations"]})
     live = live if live is not None else read_json(root / "our-project/dashboard/live_status.json", {})
     result["live_observation"] = public({k: live.get(k) for k in ("collected_at_iso", "server_connected", "gpu", "process", "laya", "kev")})
@@ -937,7 +996,7 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
     result["continuation"] = {
         "laya_boundary_reload_requested": (root / "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/.reload_queue_daemon").is_file(),
         "laya_order": [p["run_id"] for p in plan_rows if p["category"] == "full_coverage" and p["status"] in ("TRAINING", "ELIGIBLE")],
-        "kev_boundary": "Current training/Val stays in its original process; pending independent candidates are handled at the natural dispatcher boundary",
+        "kev_boundary": "The original dispatcher owns training and Val; terminal results and pending reasons remain in the original records",
         "retention_policy_deployed_in_this_task": False,
         "weight_deletions_in_this_task": 0,
     }
@@ -970,8 +1029,8 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
     lines += ["", "## 5. 同材料范围配比对照", "",
         "B02/QB/PB 保持原材料范围、初始化、种子与两Epoch预算。主Val按每Run最低主Loss选择；选中Epoch不同会影响比较，全部Epoch均保存在JSON。", ""]
     ratio_rows = [r for r in result["observations"] if r["run_id"].startswith("P0_B02_C") and r["run_id"].endswith("QB_PB") and r["protocol"] == "MR-FULL-GRADED-P0-DATA-REPAIR-v1"]
-    lines += table(["Run/监督", "配比", "载入/stream", "所选Epoch", "主Val Accuracy", "Loss", "Brier", "ECE", "辅助Val"], [
-        [r["run_id"] + "/" + str(r["supervision"]), (r["sampling"] or {}).get("ratio_label"), r["exposure"].get("train_groups"),
+    lines += table(["Run/监督", "主目标", "配比", "载入/stream", "所选Epoch", "主Val Accuracy", "Loss", "Brier", "ECE", "辅助Val"], [
+        [r["run_id"] + "/" + str(r["supervision"]), r["primary_stream"], (r["sampling"] or {}).get("ratio_label"), r["exposure"].get("train_groups"),
          (r["best_loss_epoch"] or {}).get("epoch"), (r["best_loss_epoch"] or {}).get("accuracy"), (r["best_loss_epoch"] or {}).get("loss"),
          (r["best_loss_epoch"] or {}).get("brier"), (r["best_loss_epoch"] or {}).get("ece"),
          [{k: v.get(k) for k in ("stream", "accuracy", "loss", "brier", "ece")} for v in r["validation_at_selected_epoch"] if v["stream"] != r["primary_stream"]]] for r in ratio_rows])
@@ -983,7 +1042,7 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         "C05原文本state含任务与Prompt，没有可单独移除的动态字段，未创建无效状态消融。C07既定Rank8与现有Rank16初权重不兼容，从基座重建会同时改变初始化，未擅自启动。",
         "C09原视图与项目固定划分不一致。原转换入口仅导出位于同一项目Train/Val的Arena记录，保持任务文本与typed标签；导出训练记录全部已在C03使用，新训练记录为0。缓存标量及已观察终局没有当前正式配置的typed目标，完整C09保持PARTIAL_MATERIAL/PENDING，不重训C03材料冒充新增数据。", "",
         "材料统计：" + cell(result["kev_materialization"]), "",
-        "Kev运行中的旧dispatcher内存没有代码重载入口；当前C04训练与Val继续由原父进程负责。磁盘新版已经支持独立候选待决后继续，但需旧队列自然退出后由同一原入口接手；未启动第二dispatcher。", "",
+        "Kev训练与Val沿用原入口，当前状态见实时观测；候选方法与材料待决原因保留在原队列。", "",
         "## 7. 科学解释与当前限制", "",
         "1. 候选规模、物化、编码、实际训练量和独立量分别保留。由载入条目×Epoch派生的数带 scope说明，不能当实测计数。逐监督梯度贡献没有历史记录，无法直接识别。",
         "2. S1与加入S2/S3的比较使用同Val的Accuracy、Loss、Brier和ECE。Laya没有单独保存的NLL使用N/A；不得擅自把不同标签的Loss合并为主路由收益。",
@@ -998,13 +1057,13 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         "训练实付费用N/A；本地权重没有Token按量费用。原日志路径、配置、曝光和每个版本实体状态见同目录JSON，曲线仍由原shards/training_runs提供。", ""]
     def compact_metric(r):
         v = r["best_loss_epoch"] or {}
-        return [r["run_id"], (r["sampling"] or {}).get("ratio_label"), r["exposure"].get("trained_records"),
+        return [r["run_id"], r["primary_stream"], (r["sampling"] or {}).get("ratio_label"), r["exposure"].get("trained_records"),
                 r["training_seconds"], v.get("epoch"), *[v.get(k) for k in ("accuracy", "loss", "nll", "brier", "ece")],
                 r["selected_epoch_physical"]]
     eta = result["training_eta"]
     overview = ["## Executive Summary", "",
         "Laya 实际执行 " + str(result["counts"]["laya"]["executed_runs"]) + " 个 Run；Kev本地执行与导入资产分别统计，完整对象见附录。历史完成项目沿用原结果。",
-        "当前双模型进度：" + cell((result["live_observation"].get("laya") or {}).get("run_id")) + " / " + cell((result["live_observation"].get("kev") or {}).get("run_id")) + "。观测时间：" + cell(eta["observed_at"]) + "。",
+        "当前双模型进度：" + cell([{ "model": family, "run_id": eta["current"][family]["run_id"], "status": eta["current"][family]["status"], "evaluation_status": eta["current"][family]["evaluation_status"]} for family in ("laya", "kev")]) + "。观测时间：" + cell(eta["observed_at"]) + "。",
         "B02 同层级配比对照显示，增加辅助监督没有稳定提高 S1 Accuracy。S1+S3 的 2:1 存在主Loss改善与Accuracy下降的权衡；S2+S3缺少直接S1监督，主任务结果较弱。具体值与预算见下表。",
         "ALGN四项在主Val上的差异较小，但训练曝光和时间不同。F系列增加全材料覆盖后的主任务Accuracy可能上升，辅助概率质量可能恶化。无法由单次开发期Val确定最优比例或模型架构。",
         "旧五份实体只剩 " + str(sum(c["physical"] is True for c in result["retention"]["old_core"])) + " 份。主Val最低Loss模型与当前可加载模型分开；本轮没有删除、恢复权重或部署新的实体淘汰策略。",
@@ -1015,32 +1074,55 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         "ALGN采用受控配比与有限抽样；F系列逐层、累计层、比例子集采用全材料覆盖。课程Run改变初始化及训练次序。V8扩展中的Pointer Head Pilot与正式LoRA分别记录，不能用Pilot代表完整Kev训练。",
         "Kev C03通过官方typed state/questions接口完成正式训练和项目固定Val；C04从C03接续，学习率与训练预算共同改变。不同模型Val和输出标签并不一致，当前没有跨架构因果对照。", "",
         "## 可观察的配比、预算与任务权衡", "",
-        "下表按最低主Val Loss的同一Epoch取Accuracy、Brier、ECE；完整Epoch在附录。S1-only可作为同层主监督参考，辅助任务仍分别呈现。小样本单种子差异未作显著性或因果宣称。", ""]
-    overview += table(["B02 Run", "比例", "训练曝光", "时间s", "Epoch", "Accuracy", "Loss", "NLL", "Brier", "ECE", "实体"], [compact_metric(r) for r in ratio_rows])
+        "下表按最低主Val Loss的同一Epoch取Accuracy、Brier、ECE；完整Epoch在附录。S1-only可作为同层主监督参考，辅助任务仍分别呈现。S2/S3主目标衡量各自标签，不能用于S1模型选择能力排序；缺少S1实测保留N/A。小样本单种子差异未作显著性或因果宣称。", ""]
+    overview += table(["B02 Run", "主目标", "比例", "训练曝光", "时间s", "Epoch", "Accuracy", "Loss", "NLL", "Brier", "ECE", "实体"], [compact_metric(r) for r in ratio_rows])
     overview += ["", "ALGN受控配比：", ""]
-    overview += table(["Run", "比例", "训练曝光", "时间s", "Epoch", "Accuracy", "Loss", "NLL", "Brier", "ECE", "实体"],
+    overview += table(["Run", "主目标", "比例", "训练曝光", "时间s", "Epoch", "Accuracy", "Loss", "NLL", "Brier", "ECE", "实体"],
                       [compact_metric(r) for r in result["observations"] if r["stage"] == "ALGN"])
     overview += ["", "全材料及纯监督按层级/规模保留各自预算；下表不能单独隔离监督比例的影响。", ""]
-    overview += table(["Run", "比例", "训练曝光", "时间s", "Epoch", "Accuracy", "Loss", "NLL", "Brier", "ECE", "实体"],
+    overview += table(["Run", "主目标", "比例", "训练曝光", "时间s", "Epoch", "Accuracy", "Loss", "NLL", "Brier", "ECE", "实体"],
                       [compact_metric(r) for r in result["observations"] if r["family"] == "laya" and r["sampling"]["mode"] == "FULL_COVERAGE"])
+    overview += ["", "F06最低S1 Loss与最高S1 Accuracy独立列出，同列的其他指标均来自对应Epoch：", ""]
+    overview += table(["Run", "选择依据", "Epoch", "Accuracy", "Loss", "Brier", "ECE", "实体"],
+                      [[r["run_id"], label, *[(r[field] or {}).get(k) for k in ("epoch", "accuracy", "loss", "brier", "ece")], r[physical]]
+                       for r in result["observations"] if r["run_id"] == "F06"
+                       for label, field, physical in (("最低S1 Loss", "best_loss_epoch", "selected_epoch_physical"),
+                                                      ("最高S1 Accuracy", "best_accuracy_epoch", "best_accuracy_physical"))])
     overview += ["", "F06的主任务/辅助任务逐Epoch值：", ""]
     overview += table(["Epoch", "监督", "Accuracy", "Loss", "Brier", "ECE"],
                       [[v.get(k) for k in ("epoch", "stream", "accuracy", "loss", "brier", "ece")]
                        for r in result["observations"] if r["run_id"] == "F06" for v in r["validation_all_epochs"] if v["stream"] in ("S1", "S2", "S3")])
     overview += ["", "F06第二Epoch主Accuracy上升但主Loss没有改善，S2 Loss/ECE恶化；主Accuracy、校准、辅助任务收益应分别解释。现有记录不足以区分更多数据、训练时间和共享表征造成的影响。",
         "全量候选统计：" + cell(result["data_census"]) + "。这是候选材料规模；ALGN抽样、矩阵quota、编码跳过和重复曝光均会改变优化器实际输入。逐监督梯度贡献没有记录，不能从原材料比例推断。", "",
-        "## 可加载实体与最终候选", ""]
-    overview += table(["模型/Run", "Epoch", "状态", "实体位置"], [[r["family"] + "/" + r["run_id"], c["epoch"], c["evidence"], c["path"]]
-                      for r in result["observations"] for c in r["checkpoints"] if c["physical"]])
+        "## 同固定Val、同目标的历史趋势", "",
+        "各组按原记录的开始时间排列，未记录时间的Run按ID列在后面。最低Loss与最高Accuracy各自选择Epoch，实体状态分别列出；层级、配比、初始化和训练预算可能不同，趋势仅作描述。S1、S2、S3与Kev clean分别呈现，未将辅助目标当作S1收益。", ""]
+    for group in result["objective_trends"]:
+        if len(group["observations"]) < 2:
+            continue
+        overview += ["", cell({k: group[k] for k in ("family", "protocol", "validation_set", "stream", "items", "loss_definition")}), ""]
+        overview += table(["Run/状态", "监督/比例", "训练曝光/时间s", "最低Loss Epoch", "同Epoch Accuracy/Loss/NLL/Brier/ECE", "Loss实体", "最高Accuracy Epoch", "Accuracy", "Accuracy实体"],
+                          [[r["run_id"] + "/" + r["status"], {"streams": r["supervision"], "ratio": r["sampling"]["ratio_label"]},
+                            "/".join(cell(r[k]) for k in ("trained_records", "training_seconds")), r["best_loss_epoch"]["epoch"],
+                            "/".join(cell(r["best_loss_epoch"].get(k)) for k in ("accuracy", "loss", "nll", "brier", "ece")), r["selected_epoch_physical"],
+                            (r["best_accuracy_epoch"] or {}).get("epoch"), (r["best_accuracy_epoch"] or {}).get("accuracy"), r["best_accuracy_physical"]]
+                           for r in group["observations"]])
+    overview += ["", "## 可加载实体与最终候选", "",
+        "以下候选仅来自采集时有实体的记录，指标使用实体对应Epoch；最低Loss实体缺失时不挪用其成绩。短训练、Pilot、导入资产与正式训练分别标明，任务级能力仍待评测。", ""]
+    overview += table(["模型/Run", "协议/类别", "主目标", "Epoch", "最低Loss/最高Accuracy Epoch", "Val/数量", "同Epoch Accuracy/Loss/NLL/Brier/ECE", "用途", "实体位置"],
+                      [[c["family"] + "/" + c["run_id"], c["protocol"] + "/" + c["training_kind"], c["primary_stream"], c["epoch"],
+                        [c["is_best_loss_epoch"], c["is_best_accuracy_epoch"]],
+                        "/".join(cell((c["primary_validation"] or {}).get(k)) for k in ("validation_set", "items")),
+                        "/".join(cell((c["primary_validation"] or {}).get(k)) for k in ("accuracy", "loss", "nll", "brier", "ece")), c["candidate_role"], c["path"]]
+                       for c in result["loadable_candidates"]])
     missing_best = [r for r in result["observations"] if r["family"] == "laya" and r["best_loss_epoch"] and not r["selected_epoch_physical"]]
     overview += ["", "Laya有主Val Loss的实际Run中，" + str(len(missing_best)) + " 个最佳Loss Epoch没有物理实体。可使用现存候选做任务级实验，历史最优成绩只能用于离线分析；替代实体不能标成相同Epoch。",
-        "Kev正式固定Val和coverage：" + cell([{ "run_id": r["run_id"], "metrics": r["validation_all_epochs"], "training_seconds": r["training_seconds"]}
+        "Kev正式固定Val和coverage：" + cell([{ "run_id": r["run_id"], "metrics": r["validation_all_epochs"], "coverage": r["validation_coverage"], "comparison_to_c03": r["comparison_to_c03"], "training_seconds": r["training_seconds"], "evaluation_seconds": r["evaluation_seconds"]}
                                               for r in result["observations"] if r["family"] == "kev" and r["stage"] == "FORMAL_LORA"]), "",
         "## 终点与Planning建议", "",
-        "Run级：全材料入口按原定Epoch完成，当前F07为两Epoch，C04为一Epoch并固定Val。矩阵/历史小训练入口已有连续两Epoch未达0.5%主Loss改善的结束条件；该条件不适用于全材料入口，不新增结束规则。",
+        "Run级：全材料入口按原定Epoch完成，当前运行状态见实时观测，Kev已完成Val不计入待运行耗时。矩阵/历史小训练入口已有连续两Epoch未达0.5%主Loss改善的结束条件；该条件不适用于全材料入口，不新增结束规则。",
         "实验组级：结合所有Epoch观察Accuracy、Loss、Brier、ECE。F06的权衡及B02辅助监督的负结果支持减少机械扩张的建议，不能据此提前结束健康Run。当前缺多种子误差与独立Test，尚不能宣布性能平台期或唯一最优比例。",
         "整体研究级：代表性主监督、受控双/三监督、层级与规模已有离线结果。建议Planning优先保留能隔离预算和初始化的关键对照，并尽早转向官方Episode；原矩阵缩减只作为建议，执行计划本轮不变。",
-        "供Planning评估的缩减情景：F08–F16仅保留F09/F12/F15约节省229小时训练/Val墙钟，失去25%/75%规模曲线；纯S3仅保留F07_S3约节省40小时代理墙钟，失去分层规模对照；矩阵仅补QB/PB剩60项约节省26小时训练/Val，失去质量与采样敏感性对照。数值为历史吞吐情景，不代表已批准或已执行。",
+        "缩减情景以本次ETA下表的剩余Run和组预算为依据；已完成Run的耗时不可再节省。保留哪些对照尚未确定，部分缩减的可节省时间N/A；原计划本轮不变。",
         "若Planning取消全部尚未运行原矩阵，可节省下表该组的估算墙钟，但会失去质量/采样/层级扩展及未运行配比重复对照；若取消纯S3，将失去辅助目标单独训练的完整规模对照。建议不把课程缺父实体转成新的重训计划。", "",
         "## 全剩余队列时间预算", "", "最后观测时间：" + cell(eta["observed_at"]) + "。", ""]
     overview += table(["当前Run", "剩余训练h", "Val h", "预计结束UTC", "依据"],
