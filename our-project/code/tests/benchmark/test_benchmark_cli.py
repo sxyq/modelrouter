@@ -58,7 +58,8 @@ class TestBenchmarkCLI(unittest.TestCase):
         self.assertTrue(cli._task_in_subset("chess-best-move", "sealed"))
 
     def test_explicit_dry_run_never_calls_harbor(self):
-        with patch.object(cli.subprocess, "call", side_effect=AssertionError("no live run")):
+        with patch.object(cli.iterations, "latest", return_value=None), \
+             patch.object(cli.subprocess, "call", side_effect=AssertionError("no live run")):
             code = cli.main(["run", "--task", "fix-git", "--agent", "oracle", "--dry-run"])
             self.assertEqual(code, 0)
 
@@ -80,7 +81,9 @@ class TestBenchmarkCLI(unittest.TestCase):
         )
 
     def test_run_is_real_by_default(self):
-        with tempfile.TemporaryDirectory() as d, patch.object(cli, "run_iteration", return_value=2) as run:
+        with tempfile.TemporaryDirectory() as d, \
+             patch.object(cli.iterations, "latest", return_value=None), \
+             patch.object(cli, "run_iteration", return_value=2) as run:
             self.assertEqual(cli.main(["run", "--task", "fix-git", "--agent", "oracle", "--iteration-dir", d]), 2)
             run.assert_called_once()
             self.assertTrue((Path(d) / "run_config.json").exists())
@@ -249,6 +252,10 @@ class TestDockerRuntime(unittest.TestCase):
                 self.assertEqual(cli.run_iteration(path), 2)
                 self.assertEqual(execute.call_args.kwargs["env"]["DOCKER_HOST"], "ssh://configured")
                 self.assertEqual(execute.call_args.args[1][:2], ["harbor", "run"])
+                command = execute.call_args.args[1]
+                self.assertEqual(command[command.index("-p") + 1],
+                                 str(cli.iterations.ROOT / "external/benchmarks/terminal-bench-2-1/tasks/fix-git"))
+                self.assertNotIn("-d", command)
 
     def test_unknown_error_resume_uses_runtime_report_without_repeating_failure(self):
         with tempfile.TemporaryDirectory() as d:

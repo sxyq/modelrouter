@@ -442,7 +442,8 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
             custom = config.get("custom_agent")
             if unit["agent"] == "modelrouter":
                 custom = custom or "modelrouter.benchmark.harbor_agent:ModelRouterMiniSweAgent"
-            cmd = build_harbor_command(unit["task_id"], unit["agent"], None if unit["agent"] == "oracle" else config["model"], config["environment"], custom, config.get("task_source"))
+            task_source = config.get("task_source") or str(iterations.ROOT / "external/benchmarks/terminal-bench-2-1/tasks")
+            cmd = build_harbor_command(unit["task_id"], unit["agent"], None if unit["agent"] == "oracle" else config["model"], config["environment"], custom, task_source)
             cmd += ["--jobs-dir", str(path / "jobs"), "--job-name", unit["job_name"], "--max-retries", "0"]
             if custom:
                 for key, value in {"policy": unit["policy"], "seed": config["seed"], "max_steps": config["max_steps"], "max_output_tokens": config["max_output_tokens"], "cost_limit": config.get("cost_limit", 3.0)}.items():

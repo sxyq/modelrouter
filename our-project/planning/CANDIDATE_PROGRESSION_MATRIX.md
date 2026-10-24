@@ -18,7 +18,7 @@ Per V8 §8.3, each model family (Laya and Kev) is evaluated across **at least 12
 
 | Candidate ID | Name / Run | Data Level & View | Supervision & Epoch | Status | S1 Val Acc | S1 Val Loss | S1 Brier | Checkpoint SHA / Path |
 |---|---|---|---|---|---|---|---|---|
-| `LAYA-V8-C01` | Laya-ZeroShot | Base init | None (Zero-shot) | COMPLETED | 50.12% | 0.6931 | 0.5000 | `models/laya-421m/base` |
+| `LAYA-V8-C01` | Laya-ZeroShot | Base init | None (Zero-shot) | NOT_EVALUATED | N/A | N/A | N/A | `models/laya-421m/`；无独立零样本评测记录 |
 | `LAYA-V8-C02` | F01-e01 | L1 Single-stream | S1 Choice, Ep 1 | COMPLETED | 66.13% | 0.6206 | 0.4190 | `runs/.../F01/epoch_metrics.json` (Pruned) |
 | `LAYA-V8-C03` | F01-e02 | L1 Single-stream | S1 Choice, Ep 2 | COMPLETED | 67.38% | 0.6047 | 0.4074 | `runs/.../F01/epoch_metrics.json` (Pruned) |
 | `LAYA-V8-C04` | F02-e01 | L2 Dual-stream | S1 Choice, Ep 1 | COMPLETED | 65.92% | 0.6184 | 0.4172 | `runs/.../F02/epoch_metrics.json` (Pruned) |
@@ -29,16 +29,16 @@ Per V8 §8.3, each model family (Laya and Kev) is evaluated across **at least 12
 | `LAYA-V8-C09` | F05-e02 | L4 + V2.1 Repair | Multi-task S1/S2/S3, Ep 2 | COMPLETED | **63.64%** | **0.5980** | **0.4142** | `runs/.../F05/run.json` (Pruned; 台账67.91%实为F05_S1) |
 | `LAYA-V8-C10` | F03-e01 | L3 Single-stream | S1 Choice, Ep 1 | COMPLETED | 64.71% | 0.6135 | 0.4257 | `runs/.../F03/epoch_metrics.json` (Finished) |
 | `LAYA-V8-C11` | F03-e02 | L3 Single-stream | S1 Choice, Ep 2 | COMPLETED | 67.20% | 0.6059 | 0.4190 | `runs/.../F03/epoch_metrics.json` (Finished) |
-| `LAYA-V8-C12` | F06-e02 | L4 Full-Coverage 3-Layer | Ep 2 (92,280 steps, 5.9M items) | COMPLETED | **68.09%** | 0.5936 | **0.4079** | `runs/.../F06` (**RETAINED_BEST**, global best S1 Acc) |
-| `LAYA-V8-C13` | F07-e02 | L1+L2+L3+L4 Full-Coverage | Ep 2 (151,998 steps, 9.7M items) | COMPLETED | **68.27%** | 0.6076 | 0.4203 | `runs/.../F07` (Target score: 158.44, Pruned) |
-| `LAYA-V8-C14` | F08-e02 | L1+L2 Cumulative | Ep 2 (23,002 steps, 1.47M items) | COMPLETED | 67.02% | 0.6123 | 0.4246 | `runs/.../F08` (Target score: 157.55, Pruned) |
-| `LAYA-V8-C15` | F09-e02 | L1+L2+L3 Cumulative | Ep 2 (30,826 steps, 1.97M items) | COMPLETED | 66.49% | 0.6100 | 0.4226 | `runs/.../F09` (Target score: 157.99, Pruned) |
-| `LAYA-V8-C16` | F10 | L1+L4 Stratified | Ep 1 Chunk 135/152 (17,280/38,732) | **LIVE_TRAINING** | Evaluating | ~0.4934 | PID 4158797 (1.1M items consumed, GPU 93-100%) |
+| `LAYA-V8-C12` | F06-e02 | L4 Full-Coverage 3-Layer | Ep 2 (92,280 steps, 5.9M items) | COMPLETED | **68.63%** | 0.6017 | **0.4150** | `runs/.../F06/checkpoints/epoch_02`；实体在盘，最低 S1 Loss 属无实体的 e01 |
+| `LAYA-V8-C13` | F07-e01 | L1+L2+L3+L4 Full-Coverage | Run 完成 Ep 2 (151,998 steps, 9.7M items)；此行取 e01 | COMPLETED | **68.27%** | 0.6076 | 0.4203 | `runs/.../F07/epoch_metrics.json`；无实体，原记录未保存 |
+| `LAYA-V8-C14` | F08-e02 | L1+L2 Cumulative | Ep 2 (23,002 steps, 1.47M items) | COMPLETED | 67.02% | 0.6123 | 0.4246 | `runs/.../F08/epoch_metrics.json`；无实体，原记录未保存 |
+| `LAYA-V8-C15` | F09-e02 | L1+L2+L3 Cumulative | Ep 2 (30,826 steps, 1.97M items) | COMPLETED | 66.49% | 0.6100 | 0.4226 | `runs/.../F09/epoch_metrics.json`；无实体，原记录未保存 |
+| `LAYA-V8-C16` | F10 | L1+L4 Stratified | 23:38 观测 Ep 2 Chunk 32/152 (23,462/38,732) | **LIVE_TRAINING** | e01: 64.88% | e01: 0.6105 | e01: 0.4238 | PID 4158797；e01 实体在盘，最终 Val 尚未完成 |
 
 > **关键物理权重区分**：
 > - **当前在线 Serving 权重**：`F05/checkpoints/best`（Epoch 1，S1 Acc 67.56%，Loss 0.5978，Brier 0.4130，4.2 GB 实体在盘，Port 8000 活跃加载）；
-> - **物理在盘历史最高准确率留存**：`F06-e02`（`RETAINED_BEST`，S1 Acc **68.09%**，Loss 0.5936，Brier 0.4079，在盘保留）；
-> - **当前实时持续训练**：`F10`（PID 4158797，Epoch 0 Chunk 135/152，Step 17,280/38,732，已消费 1,105,920 样本，最新 Chunk Loss 0.4934）。
+> - **物理在盘准确率代表候选**：`F06-e02`（S1 Acc **68.63%**，Loss 0.6017，Brier 0.4150）；其最低 S1 Loss e01 无实体。`F06_S1-e02` 的 68.09% / 0.5936 / 0.4079 不属于 F06。
+> - **23:38 训练观测**：`F10`（PID 4158797，第 2 Epoch Chunk 32/152，Step 23,462/38,732，消费 1,501,536 条，Chunk Loss 0.4708748825868163）。后续实时值见原看板。
 
 ---
 
@@ -60,7 +60,7 @@ Per V8 §8.3, each model family (Laya and Kev) is evaluated across **at least 12
 | `KEV-V8-C12` | KEV-V8-PROD-SERVE | CPU/GPU Hybrid Serve | Port 8000 Production | VERIFIED | Real Probability (Serving healthy) | 2650.9 | `experiments/router_serving/` |
 
 > **真实完成候选核定**：
-> - 真正具备物理 Checkpoint、完整训练日志及固定 Val 验证的已完成训练候选数：**Laya 15 个**，**Kev 3 个**（初始适配器 C02、正式同源 C03、同源续训 C04）；
+> - 上表 Laya 历史 Epoch 条目不等于物理实体。23:52 全历史 Laya 实际执行 104 Run、完成 103、在训 1，219 条 Epoch 记录、8 份实体；其中含 Pilot、课程父权重与 F10 未完成 Run 的恢复权重。临时恢复文件随当前训练变化，单次实体盘点不用于推算历史生成总数。Kev 正式训练及相同固定 Val 完成 **2 Run**（C03/C04）；C02 是导入资产，验证集不同，不计为本地正式训练。
 > - 正在现场 GPU 计算的活动候选数：**1 个**（Laya F10，PID 4158797，GPU 93-100%）；
 > - 待决/排队候选数：严格标注为 `PENDING`（附带无法启动的科学依据，如数据缺失或 Rank 不匹配）或 `QUEUED`，绝不虚报为全数完成。
 
@@ -68,7 +68,7 @@ Per V8 §8.3, each model family (Laya and Kev) is evaluated across **at least 12
 
 ## 4. Verification & Scientific Rigor Guarantees
 
-1. **真实训练与候选版本边界**：严禁将在线 Serving 或处于计划/排队中的候选标注为已完训版本。Kev 当前仅进行单次 1 Epoch 真实训练（`KEV-V8-HOMOLOGOUS-20261018`），每个后续候选必须在安全边界以独立 Run、独立超参、物理 Checkpoint 和固定 Val 逐一产出。
+1. **真实训练与候选版本边界**：在线 Serving、导入资产与计划候选分开。Kev C03/C04 各完成一次正式 Run 和相同固定 Val，C04 从 C03 接续；C05/C07/C09 已由原入口记为 PENDING。物理实体、历史 Epoch 和完成 Run 分别计数。
 2. **算力竞争与显存余量科学界定**：显存占用 20 GB / 48 GB（余量 ~29 GB）仅保证**不发生 OOM 与显存换页**，但不等于两模型“零算力竞争”；两者在 GPU 流多处理器（SM）、L2 缓存、显存带宽及 PCIe 总线上存在物理竞争，需以单任务独占 vs 双任务并行的 `step/s` 和 `walltime` 进行客观基准测量。
 3. **官方 Benchmark 评测真实性准则**：在宿主环境（`LocalHarborSandboxEnvironment`）完成的 Canary 执行仅为通道调试（`LOCAL_HOST_EXPERIMENTAL`）。在未具备官方 Docker 容器沙箱隔离、官方 Harbor Trial ID 及容器内原生未修改 CTRF 评测报告前，严格标记官方 Benchmark 为 `BLOCKED / UNFINISHED`，不得计入学术主表。
 4. **V8 三类扩展视图独立性**：新清洗产出的 V8 三类数据视图（`MR-V8-DATA-EXTENSION-20261018`）严禁中途混入正在运行的 F06 或当前 Kev 训练；任何基于该扩展视图的训练均必须建立独立新 Run。
