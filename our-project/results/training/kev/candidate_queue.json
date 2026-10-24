@@ -1,0 +1,2072 @@
+[
+  {
+    "candidate_id": "KEV-V8-C03",
+    "name": "KEV-V8-HOMOLOGOUS-20261018",
+    "description": "Homologous run Ep 1 (LoRA r16, lr=2e-5, active)",
+    "status": "COMPLETED",
+    "init_from": "models/kev-4b-adapter",
+    "data_path": "data/kev/\u516c\u5f00\u6570\u636e/train.jsonl",
+    "lr": "2e-5",
+    "lora": "16",
+    "epochs": "1",
+    "batch": "1",
+    "accum": "4",
+    "extra_args": [
+      "--checkpointing",
+      "1"
+    ],
+    "checkpoint_path": "runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+    "metrics": {
+      "evaluation_status": "EVALUATED",
+      "validation_set": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+      "validation_protocol": "KEV_FIXED_VAL_JSONL",
+      "dataset_split": "val",
+      "test_used": false,
+      "command": [
+        "/home/syy/\u8def\u7531/.venv/bin/python",
+        "-u",
+        "-m",
+        "kev.benchmark",
+        "--run",
+        "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+        "--data",
+        "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+        "--out",
+        "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0002",
+        "--device",
+        "cuda"
+      ],
+      "report_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0002/report.json",
+      "exit_code": 0,
+      "attempt_id": 2,
+      "device": "cuda",
+      "timeout_sec": null,
+      "log_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0002.log",
+      "raw_output": "[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d\n\nLoading weights:   0%|          | 0/426 [00:00<?, ?it/s]\nLoading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 426/426 [00:00<00:00, 8178.16it/s]\nevaluated 50/8436\nevaluated 100/8436\nevaluated 150/8436\nevaluated 200/8436\nevaluated 250/8436\nevaluated 300/8436\nevaluated 350/8436\nevaluated 400/8436\nevaluated 450/8436\nevaluated 500/8436\nevaluated 550/8436\nevaluated 600/8436\nevaluated 650/8436\nevaluated 700/8436\nevaluated 750/8436\nevaluated 800/8436\nevaluated 850/8436\nevaluated 900/8436\nevaluated 950/8436\nevaluated 1000/8436\nevaluated 1050/8436\nevaluated 1100/8436\nevaluated 1150/8436\nevaluated 1200/8436\nevaluated 1250/8436\nevaluated 1300/8436\nevaluated 1350/8436\nevaluated 1400/8436\nevaluated 1450/8436\nevaluated 1500/8436\nevaluated 1550/8436\nevaluated 1600/8436\nevaluated 1650/8436\nevaluated 1700/8436\nevaluated 1750/8436\nevaluated 1800/8436\nevaluated 1850/8436\nevaluated 1900/8436\nevaluated 1950/8436\nevaluated 2000/8436\nevaluated 2050/8436\nevaluated 2100/8436\nevaluated 2150/8436\nevaluated 2200/8436\nevaluated 2250/8436\nevaluated 2300/8436\nevaluated 2350/8436\nevaluated 2400/8436\nevaluated 2450/8436\nevaluated 2500/8436\nevaluated 2550/8436\nevaluated 2600/8436\nevaluated 2650/8436\nevaluated 2700/8436\nevaluated 2750/8436\nevaluated 2800/8436\nevaluated 2850/8436\nevaluated 2900/8436\nevaluated 2950/8436\nevaluated 3000/8436\nevaluated 3050/8436\nevaluated 3100/8436\nevaluated 3150/8436\nevaluated 3200/8436\nevaluated 3250/8436\nevaluated 3300/8436\nevaluated 3350/8436\nevaluated 3400/8436\nevaluated 3450/8436\nevaluated 3500/8436\nevaluated 3550/8436\nevaluated 3600/8436\nevaluated 3650/8436\nevaluated 3700/8436\nevaluated 3750/8436\nevaluated 3800/8436\nevaluated 3850/8436\nevaluated 3900/8436\nevaluated 3950/8436\nevaluated 4000/8436\nevaluated 4050/8436\nevaluated 4100/8436\nevaluated 4150/8436\nevaluated 4200/8436\nevaluated 4250/8436\nevaluated 4300/8436\nevaluated 4350/8436\nevaluated 4400/8436\nevaluated 4450/8436\nevaluated 4500/8436\nevaluated 4550/8436\nevaluated 4600/8436\nevaluated 4650/8436\nevaluated 4700/8436\nevaluated 4750/8436\nevaluated 4800/8436\nevaluated 4850/8436\nevaluated 4900/8436\nevaluated 4950/8436\nevaluated 5000/8436\nevaluated 5050/8436\nevaluated 5100/8436\nevaluated 5150/8436\nevaluated 5200/8436\nevaluated 5250/8436\nevaluated 5300/8436\nevaluated 5350/8436\nevaluated 5400/8436\nevaluated 5450/8436\nevaluated 5500/8436\nevaluated 5550/8436\nevaluated 5600/8436\nevaluated 5650/8436\nevaluated 5700/8436\nevaluated 5750/8436\nevaluated 5800/8436\nevaluated 5850/8436\nevaluated 5900/8436\nevaluated 5950/8436\nevaluated 6000/8436\nevaluated 6050/8436\nevaluated 6100/8436\nevaluated 6150/8436\nevaluated 6200/8436\nevaluated 6250/8436\nevaluated 6300/8436\nevaluated 6350/8436\nevaluated 6400/8436\nevaluated 6450/8436\nevaluated 6500/8436\nevaluated 6550/8436\nevaluated 6600/8436\nevaluated 6650/8436\nevaluated 6700/8436\nevaluated 6750/8436\nevaluated 6800/8436\nevaluated 6850/8436\nevaluated 6900/8436\nevaluated 6950/8436\nevaluated 7000/8436\nevaluated 7050/8436\nevaluated 7100/8436\nevaluated 7150/8436\nevaluated 7200/8436\nevaluated 7250/8436\nevaluated 7300/8436\nevaluated 7350/8436\nevaluated 7400/8436\nevaluated 7450/8436\nevaluated 7500/8436\nevaluated 7550/8436\nevaluated 7600/8436\nevaluated 7650/8436\nevaluated 7700/8436\nevaluated 7750/8436\nevaluated 7800/8436\nevaluated 7850/8436\nevaluated 7900/8436\nevaluated 7950/8436\nevaluated 8000/8436\nevaluated 8050/8436\nevaluated 8100/8436\nevaluated 8150/8436\nevaluated 8200/8436\nevaluated 8250/8436\nevaluated 8300/8436\nevaluated 8350/8436\nevaluated 8400/8436\n{\n  \"objective\": -0.9124563675083813,\n  \"clean\": {\n    \"n\": 9330,\n    \"nll\": 1.0795525776246775,\n    \"acc\": 0.5715969989281886,\n    \"ece\": 0.05104668378873653,\n    \"brier\": 0.537533605673637,\n    \"mean_conf\": 0.6206555080026294,\n    \"confident_error_rate\": 0.01564844587352626,\n    \"coverage_at_0_9\": 0.12508038585209003,\n    \"accuracy_at_0_9\": 0.8748928877463582,\n    \"coverage_at_5pct_error\": 0.03172561629153269,\n    \"coverage_at_1pct_error\": 0.015005359056806002,\n    \"aurc\": 0.2541664834196241,\n    \"error_rate_at_0_9\": 0.12510711225364182,\n    \"confidence_bias\": 0.04905850907444076,\n    \"top_bins\": {\n      \"0.9\": {\n        \"n\": 1167,\n        \"errors\": 146,\n        \"error_rate\": 0.12510711225364182\n      },\n      \"0.95\": {\n        \"n\": 752,\n        \"errors\": 79,\n        \"error_rate\": 0.10505319148936171\n      },\n      \"0.99\": {\n        \"n\": 351,\n        \"errors\": 25,\n        \"error_rate\": 0.07122507122507123\n      }\n    },\n    \"selective\": {\n      \"0.5\": {\n        \"coverage\": 0.5,\n        \"accuracy\": 0.7314040728831726,\n        \"confidence_cutoff\": 0.6259512448085524\n      },\n      \"0.8\": {\n        \"coverage\": 0.8,\n        \"accuracy\": 0.6516613076098606,\n        \"confidence_cutoff\": 0.43924888606362855\n      }\n    },\n    \"score_mae\": 0.43309312930949934,\n    \"ranked_probability_score\": 0.12410338606793037\n  },\n  \"coverage\": {\n    \"requested_records\": 8436,\n    \"requested_questions\": 9330,\n    \"evaluated_records\": 8436,\n    \"evaluated_questions\": 9330,\n    \"rejected_records\": 0,\n    \"truncated_records\": 0\n  }\n}\n",
+      "report": {
+        "objective": -0.9124563675083813,
+        "paired_flip": null,
+        "unknowable": null,
+        "clean": {
+          "n": 9330,
+          "nll": 1.0795525776246775,
+          "acc": 0.5715969989281886,
+          "ece": 0.05104668378873653,
+          "brier": 0.537533605673637,
+          "mean_conf": 0.6206555080026294,
+          "confident_error_rate": 0.01564844587352626,
+          "coverage_at_0_9": 0.12508038585209003,
+          "accuracy_at_0_9": 0.8748928877463582,
+          "coverage_at_5pct_error": 0.03172561629153269,
+          "coverage_at_1pct_error": 0.015005359056806002,
+          "aurc": 0.2541664834196241,
+          "error_rate_at_0_9": 0.12510711225364182,
+          "confidence_bias": 0.04905850907444076,
+          "top_bins": {
+            "0.9": {
+              "n": 1167,
+              "errors": 146,
+              "error_rate": 0.12510711225364182
+            },
+            "0.95": {
+              "n": 752,
+              "errors": 79,
+              "error_rate": 0.10505319148936171
+            },
+            "0.99": {
+              "n": 351,
+              "errors": 25,
+              "error_rate": 0.07122507122507123
+            }
+          },
+          "selective": {
+            "0.5": {
+              "coverage": 0.5,
+              "accuracy": 0.7314040728831726,
+              "confidence_cutoff": 0.6259512448085524
+            },
+            "0.8": {
+              "coverage": 0.8,
+              "accuracy": 0.6516613076098606,
+              "confidence_cutoff": 0.43924888606362855
+            }
+          },
+          "score_mae": 0.43309312930949934,
+          "ranked_probability_score": 0.12410338606793037
+        },
+        "tasks": {
+          "custom_choice": {
+            "n": 8436,
+            "nll": 1.1191664762839106,
+            "acc": 0.55891417733523,
+            "ece": 0.054269960113137825,
+            "brier": 0.5500286184755332,
+            "mean_conf": 0.6109852671206791,
+            "confident_error_rate": 0.01588430535798957,
+            "coverage_at_0_9": 0.11972498814604078,
+            "accuracy_at_0_9": 0.8673267326732673,
+            "coverage_at_5pct_error": 0.03508771929824561,
+            "coverage_at_1pct_error": 0.016595542911332386,
+            "aurc": 0.265124016655971,
+            "error_rate_at_0_9": 0.13267326732673268,
+            "confidence_bias": 0.052071089785449165,
+            "top_bins": {
+              "0.9": {
+                "n": 1010,
+                "errors": 134,
+                "error_rate": 0.13267326732673268
+              },
+              "0.95": {
+                "n": 717,
+                "errors": 78,
+                "error_rate": 0.1087866108786611
+              },
+              "0.99": {
+                "n": 351,
+                "errors": 25,
+                "error_rate": 0.07122507122507123
+              }
+            },
+            "selective": {
+              "0.5": {
+                "coverage": 0.5,
+                "accuracy": 0.7190611664295875,
+                "confidence_cutoff": 0.6172190299967987
+              },
+              "0.8": {
+                "coverage": 0.8000237079184448,
+                "accuracy": 0.6389094680693436,
+                "confidence_cutoff": 0.41375871870066955
+              }
+            }
+          },
+          "custom_score": {
+            "n": 894,
+            "nll": 0.705746258732852,
+            "acc": 0.6912751677852349,
+            "ece": 0.031406823156187605,
+            "brier": 0.419627645945676,
+            "mean_conf": 0.7119062373987487,
+            "confident_error_rate": 0.013422818791946308,
+            "coverage_at_0_9": 0.1756152125279642,
+            "accuracy_at_0_9": 0.9235668789808917,
+            "coverage_at_5pct_error": 0.04586129753914989,
+            "coverage_at_1pct_error": 0.026845637583892617,
+            "aurc": 0.1692508721743149,
+            "error_rate_at_0_9": 0.07643312101910828,
+            "confidence_bias": 0.020631069613513797,
+            "top_bins": {
+              "0.9": {
+                "n": 157,
+                "errors": 12,
+                "error_rate": 0.07643312101910828
+              },
+              "0.95": {
+                "n": 35,
+                "errors": 1,
+                "error_rate": 0.02857142857142857
+              },
+              "0.99": {
+                "n": 0,
+                "errors": 0,
+                "error_rate": null
+              }
+            },
+            "selective": {
+              "0.5": {
+                "coverage": 0.5,
+                "accuracy": 0.8165548098434005,
+                "confidence_cutoff": 0.7294862920752636
+              },
+              "0.8": {
+                "coverage": 0.8008948545861297,
+                "accuracy": 0.7513966480446927,
+                "confidence_cutoff": 0.5093980951696918
+              }
+            },
+            "score_mae": 0.43309312930949934,
+            "ranked_probability_score": 0.12410338606793037
+          }
+        },
+        "variants": {
+          "clean": {
+            "n": 9330,
+            "nll": 1.0795525776246775,
+            "acc": 0.5715969989281886,
+            "ece": 0.05104668378873653,
+            "brier": 0.537533605673637,
+            "mean_conf": 0.6206555080026294,
+            "confident_error_rate": 0.01564844587352626,
+            "coverage_at_0_9": 0.12508038585209003,
+            "accuracy_at_0_9": 0.8748928877463582,
+            "coverage_at_5pct_error": 0.03172561629153269,
+            "coverage_at_1pct_error": 0.015005359056806002,
+            "aurc": 0.2541664834196241,
+            "error_rate_at_0_9": 0.12510711225364182,
+            "confidence_bias": 0.04905850907444076,
+            "top_bins": {
+              "0.9": {
+                "n": 1167,
+                "errors": 146,
+                "error_rate": 0.12510711225364182
+              },
+              "0.95": {
+                "n": 752,
+                "errors": 79,
+                "error_rate": 0.10505319148936171
+              },
+              "0.99": {
+                "n": 351,
+                "errors": 25,
+                "error_rate": 0.07122507122507123
+              }
+            },
+            "selective": {
+              "0.5": {
+                "coverage": 0.5,
+                "accuracy": 0.7314040728831726,
+                "confidence_cutoff": 0.6259512448085524
+              },
+              "0.8": {
+                "coverage": 0.8,
+                "accuracy": 0.6516613076098606,
+                "confidence_cutoff": 0.43924888606362855
+              }
+            },
+            "score_mae": 0.43309312930949934,
+            "ranked_probability_score": 0.12410338606793037
+          }
+        },
+        "heldout_tasks": {},
+        "permutation": {
+          "n": 0,
+          "mean_max_delta": null,
+          "flip_rate": null
+        },
+        "temperature": 1.0,
+        "calibrated_clean": {
+          "n": 9330,
+          "nll": 1.0795525776246775,
+          "acc": 0.5715969989281886,
+          "ece": 0.05104668378873653,
+          "brier": 0.537533605673637,
+          "mean_conf": 0.6206555080026294,
+          "confident_error_rate": 0.01564844587352626,
+          "coverage_at_0_9": 0.12508038585209003,
+          "accuracy_at_0_9": 0.8748928877463582,
+          "coverage_at_5pct_error": 0.03172561629153269,
+          "coverage_at_1pct_error": 0.015005359056806002,
+          "aurc": 0.2541664834196241,
+          "error_rate_at_0_9": 0.12510711225364182,
+          "confidence_bias": 0.04905850907444076,
+          "top_bins": {
+            "0.9": {
+              "n": 1167,
+              "errors": 146,
+              "error_rate": 0.12510711225364182
+            },
+            "0.95": {
+              "n": 752,
+              "errors": 79,
+              "error_rate": 0.10505319148936171
+            },
+            "0.99": {
+              "n": 351,
+              "errors": 25,
+              "error_rate": 0.07122507122507123
+            }
+          },
+          "selective": {
+            "0.5": {
+              "coverage": 0.5,
+              "accuracy": 0.7314040728831726,
+              "confidence_cutoff": 0.6259512448085524
+            },
+            "0.8": {
+              "coverage": 0.8,
+              "accuracy": 0.6516613076098606,
+              "confidence_cutoff": 0.43924888606362855
+            }
+          },
+          "score_mae": 0.43309312930949934,
+          "ranked_probability_score": 0.12410338606793037
+        },
+        "metric_policy": {
+          "version": 2,
+          "selective_ties": "whole_confidence_groups",
+          "coverage_at_error": "in-sample maximum over confidence thresholds; not a deployed error guarantee",
+          "aurc": "right-step integral over whole confidence groups",
+          "confident_error_rate": "high-confidence errors divided by all questions",
+          "error_rate_at_0_9": "errors divided by questions accepted at p_max >= 0.9",
+          "nll": "exact from logits when recorded; otherwise from floored probabilities",
+          "nll_floor": 1e-09,
+          "renormalize_returned_probabilities": true,
+          "raw_sums_outside_1e_5": 0,
+          "returned_zeros": 0
+        },
+        "coverage": {
+          "requested_records": 8436,
+          "requested_questions": 9330,
+          "evaluated_records": 8436,
+          "evaluated_questions": 9330,
+          "rejected_records": 0,
+          "truncated_records": 0
+        },
+        "latency_ms": {
+          "median": 333.7719580158591,
+          "p95": 461.42943715676665
+        },
+        "calibration": {
+          "inference_temperature": 1.0,
+          "additional_temperature": 1.0,
+          "logits_recorded": true
+        },
+        "suite_sha256": "8610f830b7a6daffa8d1d20f6724ec311cf53cd7b548460cc1dd85c3bbcae09b",
+        "data": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+        "date_facts": false,
+        "rotations": 1,
+        "run": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+        "split": "custom",
+        "calibration_applied": false,
+        "environment": {
+          "packages": {
+            "torch": "2.14.0+cu126",
+            "transformers": "5.8.0",
+            "peft": "0.18.1",
+            "flash-linear-attention": null,
+            "triton": "3.8.0",
+            "causal-conv1d": null,
+            "mlx": null,
+            "mlx-lm": null
+          },
+          "device": "cuda",
+          "gpu": "NVIDIA RTX A6000",
+          "backend": "torch",
+          "dtype": "bfloat16",
+          "triton_f32_default": null,
+          "attention": "sdpa",
+          "deltanet": {
+            "forward": "transformers.models.qwen3_5.modeling_qwen3_5.Qwen3_5GatedDeltaNet.forward",
+            "causal_conv1d_fn": "None.NoneType",
+            "torch_chunk_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_chunk_gated_delta_rule"
+          }
+        },
+        "remote": null
+      },
+      "clean": {
+        "n": 9330,
+        "nll": 1.0795525776246775,
+        "acc": 0.5715969989281886,
+        "ece": 0.05104668378873653,
+        "brier": 0.537533605673637,
+        "mean_conf": 0.6206555080026294,
+        "confident_error_rate": 0.01564844587352626,
+        "coverage_at_0_9": 0.12508038585209003,
+        "accuracy_at_0_9": 0.8748928877463582,
+        "coverage_at_5pct_error": 0.03172561629153269,
+        "coverage_at_1pct_error": 0.015005359056806002,
+        "aurc": 0.2541664834196241,
+        "error_rate_at_0_9": 0.12510711225364182,
+        "confidence_bias": 0.04905850907444076,
+        "top_bins": {
+          "0.9": {
+            "n": 1167,
+            "errors": 146,
+            "error_rate": 0.12510711225364182
+          },
+          "0.95": {
+            "n": 752,
+            "errors": 79,
+            "error_rate": 0.10505319148936171
+          },
+          "0.99": {
+            "n": 351,
+            "errors": 25,
+            "error_rate": 0.07122507122507123
+          }
+        },
+        "selective": {
+          "0.5": {
+            "coverage": 0.5,
+            "accuracy": 0.7314040728831726,
+            "confidence_cutoff": 0.6259512448085524
+          },
+          "0.8": {
+            "coverage": 0.8,
+            "accuracy": 0.6516613076098606,
+            "confidence_cutoff": 0.43924888606362855
+          }
+        },
+        "score_mae": 0.43309312930949934,
+        "ranked_probability_score": 0.12410338606793037
+      },
+      "coverage": {
+        "requested_records": 8436,
+        "requested_questions": 9330,
+        "evaluated_records": 8436,
+        "evaluated_questions": 9330,
+        "rejected_records": 0,
+        "truncated_records": 0
+      },
+      "duration_sec": 3099.012350168079,
+      "evaluated_at": "2026-10-20T09:48:16Z"
+    },
+    "training_status": "COMPLETED",
+    "pid": 1357764,
+    "training_exit_code": 0,
+    "training_source": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/training_metrics.json",
+    "training_metrics": {
+      "optimizer_steps": 16857,
+      "records_seen": 67428,
+      "requested_records": 67428,
+      "wall_seconds": 138508.87790250778
+    },
+    "step": 16857,
+    "total_steps": 16857,
+    "epoch": 0,
+    "loss": 0.945,
+    "evaluation_attempts": [
+      {
+        "type": "PRIOR_RESULT",
+        "status": "FAILED",
+        "failure_reason": "Validation evaluation failed",
+        "metrics": {}
+      },
+      {
+        "type": "VALIDATION",
+        "started_at": "2026-10-20T08:16:42Z",
+        "status": "FAILED",
+        "device": "cpu",
+        "metrics": {
+          "evaluation_status": "FAILED",
+          "validation_set": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+          "validation_protocol": "KEV_FIXED_VAL_JSONL",
+          "dataset_split": "val",
+          "test_used": false,
+          "command": [
+            "/home/syy/\u8def\u7531/.venv/bin/python",
+            "-u",
+            "-m",
+            "kev.benchmark",
+            "--run",
+            "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+            "--data",
+            "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+            "--out",
+            "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0001",
+            "--device",
+            "cpu"
+          ],
+          "report_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0001/report.json",
+          "exit_code": -2,
+          "attempt_id": 1,
+          "device": "cpu",
+          "timeout_sec": null,
+          "log_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0001.log",
+          "raw_output": "[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d\n\nLoading weights:   0%|          | 0/426 [00:00<?, ?it/s]\nLoading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 426/426 [00:00<00:00, 8338.50it/s]\nevaluated 50/8436\nevaluated 100/8436\nevaluated 150/8436\nevaluated 200/8436\nevaluated 250/8436\nevaluated 300/8436\nevaluated 350/8436\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 219, in <module>\n    main()\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 209, in main\n    report, _ = evaluate_records(records, scorer, a.out, heldout_sources=tuple(heldout), skip_overlong=skip_overlong)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 137, in evaluate_records\n    pred = next(preds)()\n           ^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/predictors.py\", line 139, in __call__\n    else: logits = self.model.forward(enc)\n                   ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 394, in forward\n    return self.forward_batch([enc])[0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 399, in forward_batch\n    if self.rows_form(encs): return self.forward_rows_batch(encs, shared_prefix and self.hybrid)\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 388, in forward_rows_batch\n    for h, (b, d, oi) in zip(self._rows_hidden(rows), readouts):\n                             ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 367, in _rows_hidden\n    h = self.lm(input_ids=ids, position_ids=pos, attention_mask=att, **past).last_hidden_state.float()\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/peft_model.py\", line 2986, in forward\n    return self.base_model(\n           ^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/tuners/tuners_utils.py\", line 311, in forward\n    return self.model.forward(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/utils/generic.py\", line 976, in wrapper\n    output = func(self, *args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py\", line 248, in wrapper\n    outputs = func(self, *args, **kwargs)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 1286, in forward\n    hidden_states = decoder_layer(\n                    ^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py\", line 93, in __call__\n    return super().__call__(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 770, in forward\n    hidden_states = self.linear_attn(\n                    ^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 543, in forward\n    output = self.out_proj(core_attn_out)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/tuners/lora/layer.py\", line 793, in forward\n    result = self.base_layer(x, *args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/linear.py\", line 134, in forward\n    return F.linear(input, self.weight, self.bias)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nKeyboardInterrupt\n",
+          "error": "[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d\n\nLoading weights:   0%|          | 0/426 [00:00<?, ?it/s]\nLoading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 426/426 [00:00<00:00, 8338.50it/s]\nevaluated 50/8436\nevaluated 100/8436\nevaluated 150/8436\nevaluated 200/8436\nevaluated 250/8436\nevaluated 300/8436\nevaluated 350/8436\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 219, in <module>\n    main()\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 209, in main\n    report, _ = evaluate_records(records, scorer, a.out, heldout_sources=tuple(heldout), skip_overlong=skip_overlong)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 137, in evaluate_records\n    pred = next(preds)()\n           ^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/predictors.py\", line 139, in __call__\n    else: logits = self.model.forward(enc)\n                   ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 394, in forward\n    return self.forward_batch([enc])[0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 399, in forward_batch\n    if self.rows_form(encs): return self.forward_rows_batch(encs, shared_prefix and self.hybrid)\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 388, in forward_rows_batch\n    for h, (b, d, oi) in zip(self._rows_hidden(rows), readouts):\n                             ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 367, in _rows_hidden\n    h = self.lm(input_ids=ids, position_ids=pos, attention_mask=att, **past).last_hidden_state.float()\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/peft_model.py\", line 2986, in forward\n    return self.base_model(\n           ^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/tuners/tuners_utils.py\", line 311, in forward\n    return self.model.forward(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/utils/generic.py\", line 976, in wrapper\n    output = func(self, *args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py\", line 248, in wrapper\n    outputs = func(self, *args, **kwargs)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 1286, in forward\n    hidden_states = decoder_layer(\n                    ^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py\", line 93, in __call__\n    return super().__call__(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 770, in forward\n    hidden_states = self.linear_attn(\n                    ^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 543, in forward\n    output = self.out_proj(core_attn_out)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/tuners/lora/layer.py\", line 793, in forward\n    result = self.base_layer(x, *args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/linear.py\", line 134, in forward\n    return F.linear(input, self.weight, self.bias)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nKeyboardInterrupt\n",
+          "duration_sec": 2379.2905684299767,
+          "evaluated_at": "2026-10-20T08:56:22Z"
+        },
+        "finished_at": "2026-10-20T08:56:22Z"
+      },
+      {
+        "type": "PRIOR_RESULT",
+        "status": "FAILED",
+        "failure_reason": "Validation evaluation failed",
+        "metrics": {
+          "evaluation_status": "FAILED",
+          "validation_set": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+          "validation_protocol": "KEV_FIXED_VAL_JSONL",
+          "dataset_split": "val",
+          "test_used": false,
+          "command": [
+            "/home/syy/\u8def\u7531/.venv/bin/python",
+            "-u",
+            "-m",
+            "kev.benchmark",
+            "--run",
+            "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+            "--data",
+            "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+            "--out",
+            "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0001",
+            "--device",
+            "cpu"
+          ],
+          "report_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0001/report.json",
+          "exit_code": -2,
+          "attempt_id": 1,
+          "device": "cpu",
+          "timeout_sec": null,
+          "log_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0001.log",
+          "raw_output": "[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d\n\nLoading weights:   0%|          | 0/426 [00:00<?, ?it/s]\nLoading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 426/426 [00:00<00:00, 8338.50it/s]\nevaluated 50/8436\nevaluated 100/8436\nevaluated 150/8436\nevaluated 200/8436\nevaluated 250/8436\nevaluated 300/8436\nevaluated 350/8436\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 219, in <module>\n    main()\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 209, in main\n    report, _ = evaluate_records(records, scorer, a.out, heldout_sources=tuple(heldout), skip_overlong=skip_overlong)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 137, in evaluate_records\n    pred = next(preds)()\n           ^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/predictors.py\", line 139, in __call__\n    else: logits = self.model.forward(enc)\n                   ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 394, in forward\n    return self.forward_batch([enc])[0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 399, in forward_batch\n    if self.rows_form(encs): return self.forward_rows_batch(encs, shared_prefix and self.hybrid)\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 388, in forward_rows_batch\n    for h, (b, d, oi) in zip(self._rows_hidden(rows), readouts):\n                             ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 367, in _rows_hidden\n    h = self.lm(input_ids=ids, position_ids=pos, attention_mask=att, **past).last_hidden_state.float()\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/peft_model.py\", line 2986, in forward\n    return self.base_model(\n           ^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/tuners/tuners_utils.py\", line 311, in forward\n    return self.model.forward(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/utils/generic.py\", line 976, in wrapper\n    output = func(self, *args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py\", line 248, in wrapper\n    outputs = func(self, *args, **kwargs)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 1286, in forward\n    hidden_states = decoder_layer(\n                    ^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py\", line 93, in __call__\n    return super().__call__(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 770, in forward\n    hidden_states = self.linear_attn(\n                    ^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 543, in forward\n    output = self.out_proj(core_attn_out)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/tuners/lora/layer.py\", line 793, in forward\n    result = self.base_layer(x, *args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/linear.py\", line 134, in forward\n    return F.linear(input, self.weight, self.bias)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nKeyboardInterrupt\n",
+          "error": "[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d\n\nLoading weights:   0%|          | 0/426 [00:00<?, ?it/s]\nLoading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 426/426 [00:00<00:00, 8338.50it/s]\nevaluated 50/8436\nevaluated 100/8436\nevaluated 150/8436\nevaluated 200/8436\nevaluated 250/8436\nevaluated 300/8436\nevaluated 350/8436\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 219, in <module>\n    main()\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 209, in main\n    report, _ = evaluate_records(records, scorer, a.out, heldout_sources=tuple(heldout), skip_overlong=skip_overlong)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/benchmark.py\", line 137, in evaluate_records\n    pred = next(preds)()\n           ^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/predictors.py\", line 139, in __call__\n    else: logits = self.model.forward(enc)\n                   ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 394, in forward\n    return self.forward_batch([enc])[0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 399, in forward_batch\n    if self.rows_form(encs): return self.forward_rows_batch(encs, shared_prefix and self.hybrid)\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 388, in forward_rows_batch\n    for h, (b, d, oi) in zip(self._rows_hidden(rows), readouts):\n                             ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/external/kev/kev/model.py\", line 367, in _rows_hidden\n    h = self.lm(input_ids=ids, position_ids=pos, attention_mask=att, **past).last_hidden_state.float()\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/peft_model.py\", line 2986, in forward\n    return self.base_model(\n           ^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/tuners/tuners_utils.py\", line 311, in forward\n    return self.model.forward(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/utils/generic.py\", line 976, in wrapper\n    output = func(self, *args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py\", line 248, in wrapper\n    outputs = func(self, *args, **kwargs)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 1286, in forward\n    hidden_states = decoder_layer(\n                    ^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/modeling_layers.py\", line 93, in __call__\n    return super().__call__(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 770, in forward\n    hidden_states = self.linear_attn(\n                    ^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py\", line 543, in forward\n    output = self.out_proj(core_attn_out)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/peft/tuners/lora/layer.py\", line 793, in forward\n    result = self.base_layer(x, *args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1783, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1794, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/syy/\u8def\u7531/.venv/lib/python3.12/site-packages/torch/nn/modules/linear.py\", line 134, in forward\n    return F.linear(input, self.weight, self.bias)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nKeyboardInterrupt\n",
+          "duration_sec": 2379.2905684299767,
+          "evaluated_at": "2026-10-20T08:56:22Z"
+        }
+      },
+      {
+        "type": "VALIDATION",
+        "started_at": "2026-10-20T08:56:37Z",
+        "status": "EVALUATED",
+        "device": "cuda",
+        "metrics": {
+          "evaluation_status": "EVALUATED",
+          "validation_set": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+          "validation_protocol": "KEV_FIXED_VAL_JSONL",
+          "dataset_split": "val",
+          "test_used": false,
+          "command": [
+            "/home/syy/\u8def\u7531/.venv/bin/python",
+            "-u",
+            "-m",
+            "kev.benchmark",
+            "--run",
+            "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+            "--data",
+            "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+            "--out",
+            "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0002",
+            "--device",
+            "cuda"
+          ],
+          "report_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0002/report.json",
+          "exit_code": 0,
+          "attempt_id": 2,
+          "device": "cuda",
+          "timeout_sec": null,
+          "log_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0002.log",
+          "raw_output": "[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d\n\nLoading weights:   0%|          | 0/426 [00:00<?, ?it/s]\nLoading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 426/426 [00:00<00:00, 8178.16it/s]\nevaluated 50/8436\nevaluated 100/8436\nevaluated 150/8436\nevaluated 200/8436\nevaluated 250/8436\nevaluated 300/8436\nevaluated 350/8436\nevaluated 400/8436\nevaluated 450/8436\nevaluated 500/8436\nevaluated 550/8436\nevaluated 600/8436\nevaluated 650/8436\nevaluated 700/8436\nevaluated 750/8436\nevaluated 800/8436\nevaluated 850/8436\nevaluated 900/8436\nevaluated 950/8436\nevaluated 1000/8436\nevaluated 1050/8436\nevaluated 1100/8436\nevaluated 1150/8436\nevaluated 1200/8436\nevaluated 1250/8436\nevaluated 1300/8436\nevaluated 1350/8436\nevaluated 1400/8436\nevaluated 1450/8436\nevaluated 1500/8436\nevaluated 1550/8436\nevaluated 1600/8436\nevaluated 1650/8436\nevaluated 1700/8436\nevaluated 1750/8436\nevaluated 1800/8436\nevaluated 1850/8436\nevaluated 1900/8436\nevaluated 1950/8436\nevaluated 2000/8436\nevaluated 2050/8436\nevaluated 2100/8436\nevaluated 2150/8436\nevaluated 2200/8436\nevaluated 2250/8436\nevaluated 2300/8436\nevaluated 2350/8436\nevaluated 2400/8436\nevaluated 2450/8436\nevaluated 2500/8436\nevaluated 2550/8436\nevaluated 2600/8436\nevaluated 2650/8436\nevaluated 2700/8436\nevaluated 2750/8436\nevaluated 2800/8436\nevaluated 2850/8436\nevaluated 2900/8436\nevaluated 2950/8436\nevaluated 3000/8436\nevaluated 3050/8436\nevaluated 3100/8436\nevaluated 3150/8436\nevaluated 3200/8436\nevaluated 3250/8436\nevaluated 3300/8436\nevaluated 3350/8436\nevaluated 3400/8436\nevaluated 3450/8436\nevaluated 3500/8436\nevaluated 3550/8436\nevaluated 3600/8436\nevaluated 3650/8436\nevaluated 3700/8436\nevaluated 3750/8436\nevaluated 3800/8436\nevaluated 3850/8436\nevaluated 3900/8436\nevaluated 3950/8436\nevaluated 4000/8436\nevaluated 4050/8436\nevaluated 4100/8436\nevaluated 4150/8436\nevaluated 4200/8436\nevaluated 4250/8436\nevaluated 4300/8436\nevaluated 4350/8436\nevaluated 4400/8436\nevaluated 4450/8436\nevaluated 4500/8436\nevaluated 4550/8436\nevaluated 4600/8436\nevaluated 4650/8436\nevaluated 4700/8436\nevaluated 4750/8436\nevaluated 4800/8436\nevaluated 4850/8436\nevaluated 4900/8436\nevaluated 4950/8436\nevaluated 5000/8436\nevaluated 5050/8436\nevaluated 5100/8436\nevaluated 5150/8436\nevaluated 5200/8436\nevaluated 5250/8436\nevaluated 5300/8436\nevaluated 5350/8436\nevaluated 5400/8436\nevaluated 5450/8436\nevaluated 5500/8436\nevaluated 5550/8436\nevaluated 5600/8436\nevaluated 5650/8436\nevaluated 5700/8436\nevaluated 5750/8436\nevaluated 5800/8436\nevaluated 5850/8436\nevaluated 5900/8436\nevaluated 5950/8436\nevaluated 6000/8436\nevaluated 6050/8436\nevaluated 6100/8436\nevaluated 6150/8436\nevaluated 6200/8436\nevaluated 6250/8436\nevaluated 6300/8436\nevaluated 6350/8436\nevaluated 6400/8436\nevaluated 6450/8436\nevaluated 6500/8436\nevaluated 6550/8436\nevaluated 6600/8436\nevaluated 6650/8436\nevaluated 6700/8436\nevaluated 6750/8436\nevaluated 6800/8436\nevaluated 6850/8436\nevaluated 6900/8436\nevaluated 6950/8436\nevaluated 7000/8436\nevaluated 7050/8436\nevaluated 7100/8436\nevaluated 7150/8436\nevaluated 7200/8436\nevaluated 7250/8436\nevaluated 7300/8436\nevaluated 7350/8436\nevaluated 7400/8436\nevaluated 7450/8436\nevaluated 7500/8436\nevaluated 7550/8436\nevaluated 7600/8436\nevaluated 7650/8436\nevaluated 7700/8436\nevaluated 7750/8436\nevaluated 7800/8436\nevaluated 7850/8436\nevaluated 7900/8436\nevaluated 7950/8436\nevaluated 8000/8436\nevaluated 8050/8436\nevaluated 8100/8436\nevaluated 8150/8436\nevaluated 8200/8436\nevaluated 8250/8436\nevaluated 8300/8436\nevaluated 8350/8436\nevaluated 8400/8436\n{\n  \"objective\": -0.9124563675083813,\n  \"clean\": {\n    \"n\": 9330,\n    \"nll\": 1.0795525776246775,\n    \"acc\": 0.5715969989281886,\n    \"ece\": 0.05104668378873653,\n    \"brier\": 0.537533605673637,\n    \"mean_conf\": 0.6206555080026294,\n    \"confident_error_rate\": 0.01564844587352626,\n    \"coverage_at_0_9\": 0.12508038585209003,\n    \"accuracy_at_0_9\": 0.8748928877463582,\n    \"coverage_at_5pct_error\": 0.03172561629153269,\n    \"coverage_at_1pct_error\": 0.015005359056806002,\n    \"aurc\": 0.2541664834196241,\n    \"error_rate_at_0_9\": 0.12510711225364182,\n    \"confidence_bias\": 0.04905850907444076,\n    \"top_bins\": {\n      \"0.9\": {\n        \"n\": 1167,\n        \"errors\": 146,\n        \"error_rate\": 0.12510711225364182\n      },\n      \"0.95\": {\n        \"n\": 752,\n        \"errors\": 79,\n        \"error_rate\": 0.10505319148936171\n      },\n      \"0.99\": {\n        \"n\": 351,\n        \"errors\": 25,\n        \"error_rate\": 0.07122507122507123\n      }\n    },\n    \"selective\": {\n      \"0.5\": {\n        \"coverage\": 0.5,\n        \"accuracy\": 0.7314040728831726,\n        \"confidence_cutoff\": 0.6259512448085524\n      },\n      \"0.8\": {\n        \"coverage\": 0.8,\n        \"accuracy\": 0.6516613076098606,\n        \"confidence_cutoff\": 0.43924888606362855\n      }\n    },\n    \"score_mae\": 0.43309312930949934,\n    \"ranked_probability_score\": 0.12410338606793037\n  },\n  \"coverage\": {\n    \"requested_records\": 8436,\n    \"requested_questions\": 9330,\n    \"evaluated_records\": 8436,\n    \"evaluated_questions\": 9330,\n    \"rejected_records\": 0,\n    \"truncated_records\": 0\n  }\n}\n",
+          "report": {
+            "objective": -0.9124563675083813,
+            "paired_flip": null,
+            "unknowable": null,
+            "clean": {
+              "n": 9330,
+              "nll": 1.0795525776246775,
+              "acc": 0.5715969989281886,
+              "ece": 0.05104668378873653,
+              "brier": 0.537533605673637,
+              "mean_conf": 0.6206555080026294,
+              "confident_error_rate": 0.01564844587352626,
+              "coverage_at_0_9": 0.12508038585209003,
+              "accuracy_at_0_9": 0.8748928877463582,
+              "coverage_at_5pct_error": 0.03172561629153269,
+              "coverage_at_1pct_error": 0.015005359056806002,
+              "aurc": 0.2541664834196241,
+              "error_rate_at_0_9": 0.12510711225364182,
+              "confidence_bias": 0.04905850907444076,
+              "top_bins": {
+                "0.9": {
+                  "n": 1167,
+                  "errors": 146,
+                  "error_rate": 0.12510711225364182
+                },
+                "0.95": {
+                  "n": 752,
+                  "errors": 79,
+                  "error_rate": 0.10505319148936171
+                },
+                "0.99": {
+                  "n": 351,
+                  "errors": 25,
+                  "error_rate": 0.07122507122507123
+                }
+              },
+              "selective": {
+                "0.5": {
+                  "coverage": 0.5,
+                  "accuracy": 0.7314040728831726,
+                  "confidence_cutoff": 0.6259512448085524
+                },
+                "0.8": {
+                  "coverage": 0.8,
+                  "accuracy": 0.6516613076098606,
+                  "confidence_cutoff": 0.43924888606362855
+                }
+              },
+              "score_mae": 0.43309312930949934,
+              "ranked_probability_score": 0.12410338606793037
+            },
+            "tasks": {
+              "custom_choice": {
+                "n": 8436,
+                "nll": 1.1191664762839106,
+                "acc": 0.55891417733523,
+                "ece": 0.054269960113137825,
+                "brier": 0.5500286184755332,
+                "mean_conf": 0.6109852671206791,
+                "confident_error_rate": 0.01588430535798957,
+                "coverage_at_0_9": 0.11972498814604078,
+                "accuracy_at_0_9": 0.8673267326732673,
+                "coverage_at_5pct_error": 0.03508771929824561,
+                "coverage_at_1pct_error": 0.016595542911332386,
+                "aurc": 0.265124016655971,
+                "error_rate_at_0_9": 0.13267326732673268,
+                "confidence_bias": 0.052071089785449165,
+                "top_bins": {
+                  "0.9": {
+                    "n": 1010,
+                    "errors": 134,
+                    "error_rate": 0.13267326732673268
+                  },
+                  "0.95": {
+                    "n": 717,
+                    "errors": 78,
+                    "error_rate": 0.1087866108786611
+                  },
+                  "0.99": {
+                    "n": 351,
+                    "errors": 25,
+                    "error_rate": 0.07122507122507123
+                  }
+                },
+                "selective": {
+                  "0.5": {
+                    "coverage": 0.5,
+                    "accuracy": 0.7190611664295875,
+                    "confidence_cutoff": 0.6172190299967987
+                  },
+                  "0.8": {
+                    "coverage": 0.8000237079184448,
+                    "accuracy": 0.6389094680693436,
+                    "confidence_cutoff": 0.41375871870066955
+                  }
+                }
+              },
+              "custom_score": {
+                "n": 894,
+                "nll": 0.705746258732852,
+                "acc": 0.6912751677852349,
+                "ece": 0.031406823156187605,
+                "brier": 0.419627645945676,
+                "mean_conf": 0.7119062373987487,
+                "confident_error_rate": 0.013422818791946308,
+                "coverage_at_0_9": 0.1756152125279642,
+                "accuracy_at_0_9": 0.9235668789808917,
+                "coverage_at_5pct_error": 0.04586129753914989,
+                "coverage_at_1pct_error": 0.026845637583892617,
+                "aurc": 0.1692508721743149,
+                "error_rate_at_0_9": 0.07643312101910828,
+                "confidence_bias": 0.020631069613513797,
+                "top_bins": {
+                  "0.9": {
+                    "n": 157,
+                    "errors": 12,
+                    "error_rate": 0.07643312101910828
+                  },
+                  "0.95": {
+                    "n": 35,
+                    "errors": 1,
+                    "error_rate": 0.02857142857142857
+                  },
+                  "0.99": {
+                    "n": 0,
+                    "errors": 0,
+                    "error_rate": null
+                  }
+                },
+                "selective": {
+                  "0.5": {
+                    "coverage": 0.5,
+                    "accuracy": 0.8165548098434005,
+                    "confidence_cutoff": 0.7294862920752636
+                  },
+                  "0.8": {
+                    "coverage": 0.8008948545861297,
+                    "accuracy": 0.7513966480446927,
+                    "confidence_cutoff": 0.5093980951696918
+                  }
+                },
+                "score_mae": 0.43309312930949934,
+                "ranked_probability_score": 0.12410338606793037
+              }
+            },
+            "variants": {
+              "clean": {
+                "n": 9330,
+                "nll": 1.0795525776246775,
+                "acc": 0.5715969989281886,
+                "ece": 0.05104668378873653,
+                "brier": 0.537533605673637,
+                "mean_conf": 0.6206555080026294,
+                "confident_error_rate": 0.01564844587352626,
+                "coverage_at_0_9": 0.12508038585209003,
+                "accuracy_at_0_9": 0.8748928877463582,
+                "coverage_at_5pct_error": 0.03172561629153269,
+                "coverage_at_1pct_error": 0.015005359056806002,
+                "aurc": 0.2541664834196241,
+                "error_rate_at_0_9": 0.12510711225364182,
+                "confidence_bias": 0.04905850907444076,
+                "top_bins": {
+                  "0.9": {
+                    "n": 1167,
+                    "errors": 146,
+                    "error_rate": 0.12510711225364182
+                  },
+                  "0.95": {
+                    "n": 752,
+                    "errors": 79,
+                    "error_rate": 0.10505319148936171
+                  },
+                  "0.99": {
+                    "n": 351,
+                    "errors": 25,
+                    "error_rate": 0.07122507122507123
+                  }
+                },
+                "selective": {
+                  "0.5": {
+                    "coverage": 0.5,
+                    "accuracy": 0.7314040728831726,
+                    "confidence_cutoff": 0.6259512448085524
+                  },
+                  "0.8": {
+                    "coverage": 0.8,
+                    "accuracy": 0.6516613076098606,
+                    "confidence_cutoff": 0.43924888606362855
+                  }
+                },
+                "score_mae": 0.43309312930949934,
+                "ranked_probability_score": 0.12410338606793037
+              }
+            },
+            "heldout_tasks": {},
+            "permutation": {
+              "n": 0,
+              "mean_max_delta": null,
+              "flip_rate": null
+            },
+            "temperature": 1.0,
+            "calibrated_clean": {
+              "n": 9330,
+              "nll": 1.0795525776246775,
+              "acc": 0.5715969989281886,
+              "ece": 0.05104668378873653,
+              "brier": 0.537533605673637,
+              "mean_conf": 0.6206555080026294,
+              "confident_error_rate": 0.01564844587352626,
+              "coverage_at_0_9": 0.12508038585209003,
+              "accuracy_at_0_9": 0.8748928877463582,
+              "coverage_at_5pct_error": 0.03172561629153269,
+              "coverage_at_1pct_error": 0.015005359056806002,
+              "aurc": 0.2541664834196241,
+              "error_rate_at_0_9": 0.12510711225364182,
+              "confidence_bias": 0.04905850907444076,
+              "top_bins": {
+                "0.9": {
+                  "n": 1167,
+                  "errors": 146,
+                  "error_rate": 0.12510711225364182
+                },
+                "0.95": {
+                  "n": 752,
+                  "errors": 79,
+                  "error_rate": 0.10505319148936171
+                },
+                "0.99": {
+                  "n": 351,
+                  "errors": 25,
+                  "error_rate": 0.07122507122507123
+                }
+              },
+              "selective": {
+                "0.5": {
+                  "coverage": 0.5,
+                  "accuracy": 0.7314040728831726,
+                  "confidence_cutoff": 0.6259512448085524
+                },
+                "0.8": {
+                  "coverage": 0.8,
+                  "accuracy": 0.6516613076098606,
+                  "confidence_cutoff": 0.43924888606362855
+                }
+              },
+              "score_mae": 0.43309312930949934,
+              "ranked_probability_score": 0.12410338606793037
+            },
+            "metric_policy": {
+              "version": 2,
+              "selective_ties": "whole_confidence_groups",
+              "coverage_at_error": "in-sample maximum over confidence thresholds; not a deployed error guarantee",
+              "aurc": "right-step integral over whole confidence groups",
+              "confident_error_rate": "high-confidence errors divided by all questions",
+              "error_rate_at_0_9": "errors divided by questions accepted at p_max >= 0.9",
+              "nll": "exact from logits when recorded; otherwise from floored probabilities",
+              "nll_floor": 1e-09,
+              "renormalize_returned_probabilities": true,
+              "raw_sums_outside_1e_5": 0,
+              "returned_zeros": 0
+            },
+            "coverage": {
+              "requested_records": 8436,
+              "requested_questions": 9330,
+              "evaluated_records": 8436,
+              "evaluated_questions": 9330,
+              "rejected_records": 0,
+              "truncated_records": 0
+            },
+            "latency_ms": {
+              "median": 333.7719580158591,
+              "p95": 461.42943715676665
+            },
+            "calibration": {
+              "inference_temperature": 1.0,
+              "additional_temperature": 1.0,
+              "logits_recorded": true
+            },
+            "suite_sha256": "8610f830b7a6daffa8d1d20f6724ec311cf53cd7b548460cc1dd85c3bbcae09b",
+            "data": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+            "date_facts": false,
+            "rotations": 1,
+            "run": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+            "split": "custom",
+            "calibration_applied": false,
+            "environment": {
+              "packages": {
+                "torch": "2.14.0+cu126",
+                "transformers": "5.8.0",
+                "peft": "0.18.1",
+                "flash-linear-attention": null,
+                "triton": "3.8.0",
+                "causal-conv1d": null,
+                "mlx": null,
+                "mlx-lm": null
+              },
+              "device": "cuda",
+              "gpu": "NVIDIA RTX A6000",
+              "backend": "torch",
+              "dtype": "bfloat16",
+              "triton_f32_default": null,
+              "attention": "sdpa",
+              "deltanet": {
+                "forward": "transformers.models.qwen3_5.modeling_qwen3_5.Qwen3_5GatedDeltaNet.forward",
+                "causal_conv1d_fn": "None.NoneType",
+                "torch_chunk_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_chunk_gated_delta_rule"
+              }
+            },
+            "remote": null
+          },
+          "clean": {
+            "n": 9330,
+            "nll": 1.0795525776246775,
+            "acc": 0.5715969989281886,
+            "ece": 0.05104668378873653,
+            "brier": 0.537533605673637,
+            "mean_conf": 0.6206555080026294,
+            "confident_error_rate": 0.01564844587352626,
+            "coverage_at_0_9": 0.12508038585209003,
+            "accuracy_at_0_9": 0.8748928877463582,
+            "coverage_at_5pct_error": 0.03172561629153269,
+            "coverage_at_1pct_error": 0.015005359056806002,
+            "aurc": 0.2541664834196241,
+            "error_rate_at_0_9": 0.12510711225364182,
+            "confidence_bias": 0.04905850907444076,
+            "top_bins": {
+              "0.9": {
+                "n": 1167,
+                "errors": 146,
+                "error_rate": 0.12510711225364182
+              },
+              "0.95": {
+                "n": 752,
+                "errors": 79,
+                "error_rate": 0.10505319148936171
+              },
+              "0.99": {
+                "n": 351,
+                "errors": 25,
+                "error_rate": 0.07122507122507123
+              }
+            },
+            "selective": {
+              "0.5": {
+                "coverage": 0.5,
+                "accuracy": 0.7314040728831726,
+                "confidence_cutoff": 0.6259512448085524
+              },
+              "0.8": {
+                "coverage": 0.8,
+                "accuracy": 0.6516613076098606,
+                "confidence_cutoff": 0.43924888606362855
+              }
+            },
+            "score_mae": 0.43309312930949934,
+            "ranked_probability_score": 0.12410338606793037
+          },
+          "coverage": {
+            "requested_records": 8436,
+            "requested_questions": 9330,
+            "evaluated_records": 8436,
+            "evaluated_questions": 9330,
+            "rejected_records": 0,
+            "truncated_records": 0
+          },
+          "duration_sec": 3099.012350168079,
+          "evaluated_at": "2026-10-20T09:48:16Z"
+        },
+        "finished_at": "2026-10-20T09:48:16Z"
+      }
+    ],
+    "evaluation_status": "EVALUATED",
+    "validation_set": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+    "finished_at": "2026-10-20T09:48:16Z"
+  },
+  {
+    "candidate_id": "KEV-V8-C04",
+    "name": "KEV-V8-HOMO-e02",
+    "description": "Homologous continuation Ep 2 with cosine decay lr=1e-5",
+    "status": "COMPLETED",
+    "init_from": "runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+    "data_path": "data/kev/\u516c\u5f00\u6570\u636e/train.jsonl",
+    "lr": "1e-5",
+    "lora": "16",
+    "epochs": "1",
+    "batch": "1",
+    "accum": "4",
+    "extra_args": [
+      "--checkpointing",
+      "1"
+    ],
+    "checkpoint_path": "runs/KEV-V8-HOMO-e02/checkpoint",
+    "metrics": {
+      "evaluation_status": "EVALUATED",
+      "validation_set": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+      "validation_protocol": "KEV_FIXED_VAL_JSONL",
+      "dataset_split": "val",
+      "test_used": false,
+      "command": [
+        "/home/syy/\u8def\u7531/.venv/bin/python",
+        "-u",
+        "-m",
+        "kev.benchmark",
+        "--run",
+        "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint",
+        "--data",
+        "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+        "--out",
+        "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint/val_metrics/attempt_0001",
+        "--device",
+        "cuda"
+      ],
+      "report_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint/val_metrics/attempt_0001/report.json",
+      "exit_code": 0,
+      "attempt_id": 1,
+      "device": "cuda",
+      "timeout_sec": null,
+      "log_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint/val_metrics/attempt_0001.log",
+      "raw_output": "[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d\n\nLoading weights:   0%|          | 0/426 [00:00<?, ?it/s]\nLoading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 426/426 [00:00<00:00, 8684.07it/s]\nevaluated 50/8436\nevaluated 100/8436\nevaluated 150/8436\nevaluated 200/8436\nevaluated 250/8436\nevaluated 300/8436\nevaluated 350/8436\nevaluated 400/8436\nevaluated 450/8436\nevaluated 500/8436\nevaluated 550/8436\nevaluated 600/8436\nevaluated 650/8436\nevaluated 700/8436\nevaluated 750/8436\nevaluated 800/8436\nevaluated 850/8436\nevaluated 900/8436\nevaluated 950/8436\nevaluated 1000/8436\nevaluated 1050/8436\nevaluated 1100/8436\nevaluated 1150/8436\nevaluated 1200/8436\nevaluated 1250/8436\nevaluated 1300/8436\nevaluated 1350/8436\nevaluated 1400/8436\nevaluated 1450/8436\nevaluated 1500/8436\nevaluated 1550/8436\nevaluated 1600/8436\nevaluated 1650/8436\nevaluated 1700/8436\nevaluated 1750/8436\nevaluated 1800/8436\nevaluated 1850/8436\nevaluated 1900/8436\nevaluated 1950/8436\nevaluated 2000/8436\nevaluated 2050/8436\nevaluated 2100/8436\nevaluated 2150/8436\nevaluated 2200/8436\nevaluated 2250/8436\nevaluated 2300/8436\nevaluated 2350/8436\nevaluated 2400/8436\nevaluated 2450/8436\nevaluated 2500/8436\nevaluated 2550/8436\nevaluated 2600/8436\nevaluated 2650/8436\nevaluated 2700/8436\nevaluated 2750/8436\nevaluated 2800/8436\nevaluated 2850/8436\nevaluated 2900/8436\nevaluated 2950/8436\nevaluated 3000/8436\nevaluated 3050/8436\nevaluated 3100/8436\nevaluated 3150/8436\nevaluated 3200/8436\nevaluated 3250/8436\nevaluated 3300/8436\nevaluated 3350/8436\nevaluated 3400/8436\nevaluated 3450/8436\nevaluated 3500/8436\nevaluated 3550/8436\nevaluated 3600/8436\nevaluated 3650/8436\nevaluated 3700/8436\nevaluated 3750/8436\nevaluated 3800/8436\nevaluated 3850/8436\nevaluated 3900/8436\nevaluated 3950/8436\nevaluated 4000/8436\nevaluated 4050/8436\nevaluated 4100/8436\nevaluated 4150/8436\nevaluated 4200/8436\nevaluated 4250/8436\nevaluated 4300/8436\nevaluated 4350/8436\nevaluated 4400/8436\nevaluated 4450/8436\nevaluated 4500/8436\nevaluated 4550/8436\nevaluated 4600/8436\nevaluated 4650/8436\nevaluated 4700/8436\nevaluated 4750/8436\nevaluated 4800/8436\nevaluated 4850/8436\nevaluated 4900/8436\nevaluated 4950/8436\nevaluated 5000/8436\nevaluated 5050/8436\nevaluated 5100/8436\nevaluated 5150/8436\nevaluated 5200/8436\nevaluated 5250/8436\nevaluated 5300/8436\nevaluated 5350/8436\nevaluated 5400/8436\nevaluated 5450/8436\nevaluated 5500/8436\nevaluated 5550/8436\nevaluated 5600/8436\nevaluated 5650/8436\nevaluated 5700/8436\nevaluated 5750/8436\nevaluated 5800/8436\nevaluated 5850/8436\nevaluated 5900/8436\nevaluated 5950/8436\nevaluated 6000/8436\nevaluated 6050/8436\nevaluated 6100/8436\nevaluated 6150/8436\nevaluated 6200/8436\nevaluated 6250/8436\nevaluated 6300/8436\nevaluated 6350/8436\nevaluated 6400/8436\nevaluated 6450/8436\nevaluated 6500/8436\nevaluated 6550/8436\nevaluated 6600/8436\nevaluated 6650/8436\nevaluated 6700/8436\nevaluated 6750/8436\nevaluated 6800/8436\nevaluated 6850/8436\nevaluated 6900/8436\nevaluated 6950/8436\nevaluated 7000/8436\nevaluated 7050/8436\nevaluated 7100/8436\nevaluated 7150/8436\nevaluated 7200/8436\nevaluated 7250/8436\nevaluated 7300/8436\nevaluated 7350/8436\nevaluated 7400/8436\nevaluated 7450/8436\nevaluated 7500/8436\nevaluated 7550/8436\nevaluated 7600/8436\nevaluated 7650/8436\nevaluated 7700/8436\nevaluated 7750/8436\nevaluated 7800/8436\nevaluated 7850/8436\nevaluated 7900/8436\nevaluated 7950/8436\nevaluated 8000/8436\nevaluated 8050/8436\nevaluated 8100/8436\nevaluated 8150/8436\nevaluated 8200/8436\nevaluated 8250/8436\nevaluated 8300/8436\nevaluated 8350/8436\nevaluated 8400/8436\n{\n  \"objective\": -0.9169534155966275,\n  \"clean\": {\n    \"n\": 9330,\n    \"nll\": 1.0872975000322915,\n    \"acc\": 0.5711682743837084,\n    \"ece\": 0.05987151793598101,\n    \"brier\": 0.5402653787706695,\n    \"mean_conf\": 0.6309225701515917,\n    \"confident_error_rate\": 0.018863879957127544,\n    \"coverage_at_0_9\": 0.13912111468381566,\n    \"accuracy_at_0_9\": 0.864406779661017,\n    \"coverage_at_5pct_error\": 0.022936763129689175,\n    \"coverage_at_1pct_error\": 0.012861736334405145,\n    \"aurc\": 0.25623016308072266,\n    \"error_rate_at_0_9\": 0.13559322033898305,\n    \"confidence_bias\": 0.05975429576788327,\n    \"top_bins\": {\n      \"0.9\": {\n        \"n\": 1298,\n        \"errors\": 176,\n        \"error_rate\": 0.13559322033898305\n      },\n      \"0.95\": {\n        \"n\": 856,\n        \"errors\": 99,\n        \"error_rate\": 0.11565420560747663\n      },\n      \"0.99\": {\n        \"n\": 383,\n        \"errors\": 24,\n        \"error_rate\": 0.06266318537859007\n      }\n    },\n    \"selective\": {\n      \"0.5\": {\n        \"coverage\": 0.5,\n        \"accuracy\": 0.7369774919614148,\n        \"confidence_cutoff\": 0.6360579946006539\n      },\n      \"0.8\": {\n        \"coverage\": 0.8,\n        \"accuracy\": 0.6487138263665595,\n        \"confidence_cutoff\": 0.4415246800956641\n      }\n    },\n    \"score_mae\": 0.43720196876683065,\n    \"ranked_probability_score\": 0.12417398639941785\n  },\n  \"coverage\": {\n    \"requested_records\": 8436,\n    \"requested_questions\": 9330,\n    \"evaluated_records\": 8436,\n    \"evaluated_questions\": 9330,\n    \"rejected_records\": 0,\n    \"truncated_records\": 0\n  }\n}\n",
+      "report": {
+        "objective": -0.9169534155966275,
+        "paired_flip": null,
+        "unknowable": null,
+        "clean": {
+          "n": 9330,
+          "nll": 1.0872975000322915,
+          "acc": 0.5711682743837084,
+          "ece": 0.05987151793598101,
+          "brier": 0.5402653787706695,
+          "mean_conf": 0.6309225701515917,
+          "confident_error_rate": 0.018863879957127544,
+          "coverage_at_0_9": 0.13912111468381566,
+          "accuracy_at_0_9": 0.864406779661017,
+          "coverage_at_5pct_error": 0.022936763129689175,
+          "coverage_at_1pct_error": 0.012861736334405145,
+          "aurc": 0.25623016308072266,
+          "error_rate_at_0_9": 0.13559322033898305,
+          "confidence_bias": 0.05975429576788327,
+          "top_bins": {
+            "0.9": {
+              "n": 1298,
+              "errors": 176,
+              "error_rate": 0.13559322033898305
+            },
+            "0.95": {
+              "n": 856,
+              "errors": 99,
+              "error_rate": 0.11565420560747663
+            },
+            "0.99": {
+              "n": 383,
+              "errors": 24,
+              "error_rate": 0.06266318537859007
+            }
+          },
+          "selective": {
+            "0.5": {
+              "coverage": 0.5,
+              "accuracy": 0.7369774919614148,
+              "confidence_cutoff": 0.6360579946006539
+            },
+            "0.8": {
+              "coverage": 0.8,
+              "accuracy": 0.6487138263665595,
+              "confidence_cutoff": 0.4415246800956641
+            }
+          },
+          "score_mae": 0.43720196876683065,
+          "ranked_probability_score": 0.12417398639941785
+        },
+        "tasks": {
+          "custom_choice": {
+            "n": 8436,
+            "nll": 1.1276813800337457,
+            "acc": 0.5585585585585585,
+            "ece": 0.06388117238258519,
+            "brier": 0.5530516748395767,
+            "mean_conf": 0.6223100862246487,
+            "confident_error_rate": 0.01979611190137506,
+            "coverage_at_0_9": 0.1380986249407302,
+            "accuracy_at_0_9": 0.8566523605150215,
+            "coverage_at_5pct_error": 0.025248933143669987,
+            "coverage_at_1pct_error": 0.01422475106685633,
+            "aurc": 0.26697403301287875,
+            "error_rate_at_0_9": 0.14334763948497853,
+            "confidence_bias": 0.06375152766609016,
+            "top_bins": {
+              "0.9": {
+                "n": 1165,
+                "errors": 167,
+                "error_rate": 0.14334763948497853
+              },
+              "0.95": {
+                "n": 803,
+                "errors": 97,
+                "error_rate": 0.12079701120797011
+              },
+              "0.99": {
+                "n": 373,
+                "errors": 24,
+                "error_rate": 0.064343163538874
+              }
+            },
+            "selective": {
+              "0.5": {
+                "coverage": 0.5,
+                "accuracy": 0.723565670934092,
+                "confidence_cutoff": 0.6266775540507569
+              },
+              "0.8": {
+                "coverage": 0.8001422475106685,
+                "accuracy": 0.6367407407407407,
+                "confidence_cutoff": 0.41911087561711285
+              }
+            }
+          },
+          "custom_score": {
+            "n": 894,
+            "nll": 0.7062254511595093,
+            "acc": 0.6901565995525727,
+            "ece": 0.025354316604528523,
+            "brier": 0.4196107997580284,
+            "mean_conf": 0.7121920493548254,
+            "confident_error_rate": 0.010067114093959731,
+            "coverage_at_0_9": 0.1487695749440716,
+            "accuracy_at_0_9": 0.9323308270676691,
+            "coverage_at_5pct_error": 0.13534675615212527,
+            "coverage_at_1pct_error": 0.02796420581655481,
+            "aurc": 0.1676554041752147,
+            "error_rate_at_0_9": 0.06766917293233082,
+            "confidence_bias": 0.022035449802252693,
+            "top_bins": {
+              "0.9": {
+                "n": 133,
+                "errors": 9,
+                "error_rate": 0.06766917293233082
+              },
+              "0.95": {
+                "n": 53,
+                "errors": 2,
+                "error_rate": 0.03773584905660377
+              },
+              "0.99": {
+                "n": 10,
+                "errors": 0,
+                "error_rate": 0.0
+              }
+            },
+            "selective": {
+              "0.5": {
+                "coverage": 0.5,
+                "accuracy": 0.8299776286353467,
+                "confidence_cutoff": 0.7234742479739878
+              },
+              "0.8": {
+                "coverage": 0.8008948545861297,
+                "accuracy": 0.7472067039106145,
+                "confidence_cutoff": 0.5324899435231847
+              }
+            },
+            "score_mae": 0.43720196876683065,
+            "ranked_probability_score": 0.12417398639941785
+          }
+        },
+        "variants": {
+          "clean": {
+            "n": 9330,
+            "nll": 1.0872975000322915,
+            "acc": 0.5711682743837084,
+            "ece": 0.05987151793598101,
+            "brier": 0.5402653787706695,
+            "mean_conf": 0.6309225701515917,
+            "confident_error_rate": 0.018863879957127544,
+            "coverage_at_0_9": 0.13912111468381566,
+            "accuracy_at_0_9": 0.864406779661017,
+            "coverage_at_5pct_error": 0.022936763129689175,
+            "coverage_at_1pct_error": 0.012861736334405145,
+            "aurc": 0.25623016308072266,
+            "error_rate_at_0_9": 0.13559322033898305,
+            "confidence_bias": 0.05975429576788327,
+            "top_bins": {
+              "0.9": {
+                "n": 1298,
+                "errors": 176,
+                "error_rate": 0.13559322033898305
+              },
+              "0.95": {
+                "n": 856,
+                "errors": 99,
+                "error_rate": 0.11565420560747663
+              },
+              "0.99": {
+                "n": 383,
+                "errors": 24,
+                "error_rate": 0.06266318537859007
+              }
+            },
+            "selective": {
+              "0.5": {
+                "coverage": 0.5,
+                "accuracy": 0.7369774919614148,
+                "confidence_cutoff": 0.6360579946006539
+              },
+              "0.8": {
+                "coverage": 0.8,
+                "accuracy": 0.6487138263665595,
+                "confidence_cutoff": 0.4415246800956641
+              }
+            },
+            "score_mae": 0.43720196876683065,
+            "ranked_probability_score": 0.12417398639941785
+          }
+        },
+        "heldout_tasks": {},
+        "permutation": {
+          "n": 0,
+          "mean_max_delta": null,
+          "flip_rate": null
+        },
+        "temperature": 1.0,
+        "calibrated_clean": {
+          "n": 9330,
+          "nll": 1.0872975000322915,
+          "acc": 0.5711682743837084,
+          "ece": 0.05987151793598101,
+          "brier": 0.5402653787706695,
+          "mean_conf": 0.6309225701515917,
+          "confident_error_rate": 0.018863879957127544,
+          "coverage_at_0_9": 0.13912111468381566,
+          "accuracy_at_0_9": 0.864406779661017,
+          "coverage_at_5pct_error": 0.022936763129689175,
+          "coverage_at_1pct_error": 0.012861736334405145,
+          "aurc": 0.25623016308072266,
+          "error_rate_at_0_9": 0.13559322033898305,
+          "confidence_bias": 0.05975429576788327,
+          "top_bins": {
+            "0.9": {
+              "n": 1298,
+              "errors": 176,
+              "error_rate": 0.13559322033898305
+            },
+            "0.95": {
+              "n": 856,
+              "errors": 99,
+              "error_rate": 0.11565420560747663
+            },
+            "0.99": {
+              "n": 383,
+              "errors": 24,
+              "error_rate": 0.06266318537859007
+            }
+          },
+          "selective": {
+            "0.5": {
+              "coverage": 0.5,
+              "accuracy": 0.7369774919614148,
+              "confidence_cutoff": 0.6360579946006539
+            },
+            "0.8": {
+              "coverage": 0.8,
+              "accuracy": 0.6487138263665595,
+              "confidence_cutoff": 0.4415246800956641
+            }
+          },
+          "score_mae": 0.43720196876683065,
+          "ranked_probability_score": 0.12417398639941785
+        },
+        "metric_policy": {
+          "version": 2,
+          "selective_ties": "whole_confidence_groups",
+          "coverage_at_error": "in-sample maximum over confidence thresholds; not a deployed error guarantee",
+          "aurc": "right-step integral over whole confidence groups",
+          "confident_error_rate": "high-confidence errors divided by all questions",
+          "error_rate_at_0_9": "errors divided by questions accepted at p_max >= 0.9",
+          "nll": "exact from logits when recorded; otherwise from floored probabilities",
+          "nll_floor": 1e-09,
+          "renormalize_returned_probabilities": true,
+          "raw_sums_outside_1e_5": 0,
+          "returned_zeros": 0
+        },
+        "coverage": {
+          "requested_records": 8436,
+          "requested_questions": 9330,
+          "evaluated_records": 8436,
+          "evaluated_questions": 9330,
+          "rejected_records": 0,
+          "truncated_records": 0
+        },
+        "latency_ms": {
+          "median": 321.185827255249,
+          "p95": 444.38553461804986
+        },
+        "calibration": {
+          "inference_temperature": 1.0,
+          "additional_temperature": 1.0,
+          "logits_recorded": true
+        },
+        "suite_sha256": "8610f830b7a6daffa8d1d20f6724ec311cf53cd7b548460cc1dd85c3bbcae09b",
+        "data": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+        "date_facts": false,
+        "rotations": 1,
+        "run": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint",
+        "split": "custom",
+        "calibration_applied": false,
+        "environment": {
+          "packages": {
+            "torch": "2.14.0+cu126",
+            "transformers": "5.8.0",
+            "peft": "0.18.1",
+            "flash-linear-attention": null,
+            "triton": "3.8.0",
+            "causal-conv1d": null,
+            "mlx": null,
+            "mlx-lm": null
+          },
+          "device": "cuda",
+          "gpu": "NVIDIA RTX A6000",
+          "backend": "torch",
+          "dtype": "bfloat16",
+          "triton_f32_default": null,
+          "attention": "sdpa",
+          "deltanet": {
+            "forward": "transformers.models.qwen3_5.modeling_qwen3_5.Qwen3_5GatedDeltaNet.forward",
+            "causal_conv1d_fn": "None.NoneType",
+            "torch_chunk_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_chunk_gated_delta_rule"
+          }
+        },
+        "remote": null
+      },
+      "clean": {
+        "n": 9330,
+        "nll": 1.0872975000322915,
+        "acc": 0.5711682743837084,
+        "ece": 0.05987151793598101,
+        "brier": 0.5402653787706695,
+        "mean_conf": 0.6309225701515917,
+        "confident_error_rate": 0.018863879957127544,
+        "coverage_at_0_9": 0.13912111468381566,
+        "accuracy_at_0_9": 0.864406779661017,
+        "coverage_at_5pct_error": 0.022936763129689175,
+        "coverage_at_1pct_error": 0.012861736334405145,
+        "aurc": 0.25623016308072266,
+        "error_rate_at_0_9": 0.13559322033898305,
+        "confidence_bias": 0.05975429576788327,
+        "top_bins": {
+          "0.9": {
+            "n": 1298,
+            "errors": 176,
+            "error_rate": 0.13559322033898305
+          },
+          "0.95": {
+            "n": 856,
+            "errors": 99,
+            "error_rate": 0.11565420560747663
+          },
+          "0.99": {
+            "n": 383,
+            "errors": 24,
+            "error_rate": 0.06266318537859007
+          }
+        },
+        "selective": {
+          "0.5": {
+            "coverage": 0.5,
+            "accuracy": 0.7369774919614148,
+            "confidence_cutoff": 0.6360579946006539
+          },
+          "0.8": {
+            "coverage": 0.8,
+            "accuracy": 0.6487138263665595,
+            "confidence_cutoff": 0.4415246800956641
+          }
+        },
+        "score_mae": 0.43720196876683065,
+        "ranked_probability_score": 0.12417398639941785
+      },
+      "coverage": {
+        "requested_records": 8436,
+        "requested_questions": 9330,
+        "evaluated_records": 8436,
+        "evaluated_questions": 9330,
+        "rejected_records": 0,
+        "truncated_records": 0
+      },
+      "duration_sec": 2982.712651308626,
+      "evaluated_at": "2026-10-22T01:17:46Z"
+    },
+    "training_status": "COMPLETED",
+    "pid": 3212011,
+    "training_exit_code": 0,
+    "training_source": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint/training_metrics.json",
+    "training_metrics": {
+      "optimizer_steps": 16857,
+      "records_seen": 67428,
+      "requested_records": 67428,
+      "wall_seconds": 139034.59429979324
+    },
+    "init_lora": 16,
+    "init_lora_source": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/training_config.json",
+    "gpu_resource": {
+      "source": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/training_metrics.json",
+      "peak_device_bytes": 10542966784,
+      "margin_mib": 2048,
+      "required_mib": 12103,
+      "free_mib": 38851,
+      "observed_at": "2026-10-20T09:49:03Z",
+      "command": [
+        "nvidia-smi",
+        "--query-gpu=memory.free",
+        "--format=csv,noheader,nounits",
+        "--id=0"
+      ]
+    },
+    "training_parameters": {
+      "base": "/home/syy/\u8def\u7531/models/qwen3.5-4b-base",
+      "n_per_source": 1000,
+      "epochs": 1,
+      "lr": 1e-05,
+      "head_lr": 0.0,
+      "weight_decay": 0.01,
+      "lora": 16,
+      "accum": 4,
+      "holdout": "",
+      "perm_kl": 0.0,
+      "perm_frac": 0.3,
+      "ord_w": 0.0,
+      "label_smoothing": 0.0,
+      "brier_w": 0.0,
+      "focal_gamma": 0.0,
+      "suite": null,
+      "train_sources": "",
+      "device": "cuda",
+      "batch": 1,
+      "dtype": "bf16",
+      "weights_dtype": "bf16",
+      "checkpointing": 1,
+      "option_isolation": 0,
+      "special_embeddings": 0,
+      "head_dim": 256,
+      "lora_targets": "all",
+      "base_revision": "",
+      "p_none": 0.1,
+      "p_none_distract": 0.12,
+      "p_distract": 0.15,
+      "p_none_pair": 0.0,
+      "none_pair_max_state": null,
+      "synthetic_repeat": 1,
+      "public_frac": 1.0,
+      "anchor": "",
+      "anchor_w": 0.0,
+      "anchor_sources": "",
+      "out": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint",
+      "data": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/train.jsonl",
+      "max_state": 384,
+      "replay": 0,
+      "init_from": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+      "full_ft": 0,
+      "row_budget": 0,
+      "shared_prefix": 0,
+      "length_sort": 0,
+      "pass_tokens_max": 0,
+      "max_steps": 0,
+      "save_every_steps": 0,
+      "save_every_minutes": 0,
+      "resume": 0,
+      "stop_after": 0,
+      "snapshot_fractions": "",
+      "snapshot_every_steps": 0,
+      "snapshot_dir": "",
+      "seed": 42
+    },
+    "training_parameters_source": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/training_config.json",
+    "evaluation_status": "EVALUATED",
+    "training_kind": "FORMAL_LORA",
+    "started_at": "2026-10-20T09:49:03Z",
+    "training_attempts": [
+      {
+        "command": [
+          "/home/syy/\u8def\u7531/.venv/bin/python",
+          "-u",
+          "-m",
+          "kev.train",
+          "--base",
+          "/home/syy/\u8def\u7531/models/qwen3.5-4b-base",
+          "--n_per_source",
+          "1000",
+          "--epochs",
+          "1",
+          "--lr",
+          "1e-05",
+          "--head_lr",
+          "0.0",
+          "--weight_decay",
+          "0.01",
+          "--lora",
+          "16",
+          "--accum",
+          "4",
+          "--holdout",
+          "",
+          "--perm_kl",
+          "0.0",
+          "--perm_frac",
+          "0.3",
+          "--ord_w",
+          "0.0",
+          "--label_smoothing",
+          "0.0",
+          "--brier_w",
+          "0.0",
+          "--focal_gamma",
+          "0.0",
+          "--train_sources",
+          "",
+          "--device",
+          "cuda",
+          "--batch",
+          "1",
+          "--dtype",
+          "bf16",
+          "--weights_dtype",
+          "bf16",
+          "--checkpointing",
+          "1",
+          "--option_isolation",
+          "0",
+          "--special_embeddings",
+          "0",
+          "--head_dim",
+          "256",
+          "--lora_targets",
+          "all",
+          "--base_revision",
+          "",
+          "--p_none",
+          "0.1",
+          "--p_none_distract",
+          "0.12",
+          "--p_distract",
+          "0.15",
+          "--p_none_pair",
+          "0.0",
+          "--synthetic_repeat",
+          "1",
+          "--public_frac",
+          "1.0",
+          "--anchor",
+          "",
+          "--anchor_w",
+          "0.0",
+          "--anchor_sources",
+          "",
+          "--out",
+          "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint",
+          "--data",
+          "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/train.jsonl",
+          "--max_state",
+          "384",
+          "--replay",
+          "0",
+          "--init_from",
+          "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+          "--full_ft",
+          "0",
+          "--row_budget",
+          "0",
+          "--shared_prefix",
+          "0",
+          "--length_sort",
+          "0",
+          "--pass_tokens_max",
+          "0",
+          "--max_steps",
+          "0",
+          "--save_every_steps",
+          "0",
+          "--save_every_minutes",
+          "0",
+          "--resume",
+          "0",
+          "--stop_after",
+          "0",
+          "--snapshot_fractions",
+          "",
+          "--snapshot_every_steps",
+          "0",
+          "--snapshot_dir",
+          "",
+          "--seed",
+          "42"
+        ],
+        "pid": 3212011,
+        "started_at": "2026-10-20T09:49:03Z",
+        "exit_code": 0,
+        "duration_sec": 139140.30757617205,
+        "finished_at": "2026-10-22T00:28:04Z"
+      }
+    ],
+    "epoch": 0,
+    "step": 16857,
+    "total_steps": 16857,
+    "loss": 0.926,
+    "loss_step": 16850,
+    "evaluation_attempts": [
+      {
+        "type": "VALIDATION",
+        "started_at": "2026-10-22T00:28:04Z",
+        "status": "EVALUATED",
+        "device": "cuda",
+        "metrics": {
+          "evaluation_status": "EVALUATED",
+          "validation_set": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+          "validation_protocol": "KEV_FIXED_VAL_JSONL",
+          "dataset_split": "val",
+          "test_used": false,
+          "command": [
+            "/home/syy/\u8def\u7531/.venv/bin/python",
+            "-u",
+            "-m",
+            "kev.benchmark",
+            "--run",
+            "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint",
+            "--data",
+            "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+            "--out",
+            "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint/val_metrics/attempt_0001",
+            "--device",
+            "cuda"
+          ],
+          "report_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint/val_metrics/attempt_0001/report.json",
+          "exit_code": 0,
+          "attempt_id": 1,
+          "device": "cuda",
+          "timeout_sec": null,
+          "log_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint/val_metrics/attempt_0001.log",
+          "raw_output": "[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d\n\nLoading weights:   0%|          | 0/426 [00:00<?, ?it/s]\nLoading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 426/426 [00:00<00:00, 8684.07it/s]\nevaluated 50/8436\nevaluated 100/8436\nevaluated 150/8436\nevaluated 200/8436\nevaluated 250/8436\nevaluated 300/8436\nevaluated 350/8436\nevaluated 400/8436\nevaluated 450/8436\nevaluated 500/8436\nevaluated 550/8436\nevaluated 600/8436\nevaluated 650/8436\nevaluated 700/8436\nevaluated 750/8436\nevaluated 800/8436\nevaluated 850/8436\nevaluated 900/8436\nevaluated 950/8436\nevaluated 1000/8436\nevaluated 1050/8436\nevaluated 1100/8436\nevaluated 1150/8436\nevaluated 1200/8436\nevaluated 1250/8436\nevaluated 1300/8436\nevaluated 1350/8436\nevaluated 1400/8436\nevaluated 1450/8436\nevaluated 1500/8436\nevaluated 1550/8436\nevaluated 1600/8436\nevaluated 1650/8436\nevaluated 1700/8436\nevaluated 1750/8436\nevaluated 1800/8436\nevaluated 1850/8436\nevaluated 1900/8436\nevaluated 1950/8436\nevaluated 2000/8436\nevaluated 2050/8436\nevaluated 2100/8436\nevaluated 2150/8436\nevaluated 2200/8436\nevaluated 2250/8436\nevaluated 2300/8436\nevaluated 2350/8436\nevaluated 2400/8436\nevaluated 2450/8436\nevaluated 2500/8436\nevaluated 2550/8436\nevaluated 2600/8436\nevaluated 2650/8436\nevaluated 2700/8436\nevaluated 2750/8436\nevaluated 2800/8436\nevaluated 2850/8436\nevaluated 2900/8436\nevaluated 2950/8436\nevaluated 3000/8436\nevaluated 3050/8436\nevaluated 3100/8436\nevaluated 3150/8436\nevaluated 3200/8436\nevaluated 3250/8436\nevaluated 3300/8436\nevaluated 3350/8436\nevaluated 3400/8436\nevaluated 3450/8436\nevaluated 3500/8436\nevaluated 3550/8436\nevaluated 3600/8436\nevaluated 3650/8436\nevaluated 3700/8436\nevaluated 3750/8436\nevaluated 3800/8436\nevaluated 3850/8436\nevaluated 3900/8436\nevaluated 3950/8436\nevaluated 4000/8436\nevaluated 4050/8436\nevaluated 4100/8436\nevaluated 4150/8436\nevaluated 4200/8436\nevaluated 4250/8436\nevaluated 4300/8436\nevaluated 4350/8436\nevaluated 4400/8436\nevaluated 4450/8436\nevaluated 4500/8436\nevaluated 4550/8436\nevaluated 4600/8436\nevaluated 4650/8436\nevaluated 4700/8436\nevaluated 4750/8436\nevaluated 4800/8436\nevaluated 4850/8436\nevaluated 4900/8436\nevaluated 4950/8436\nevaluated 5000/8436\nevaluated 5050/8436\nevaluated 5100/8436\nevaluated 5150/8436\nevaluated 5200/8436\nevaluated 5250/8436\nevaluated 5300/8436\nevaluated 5350/8436\nevaluated 5400/8436\nevaluated 5450/8436\nevaluated 5500/8436\nevaluated 5550/8436\nevaluated 5600/8436\nevaluated 5650/8436\nevaluated 5700/8436\nevaluated 5750/8436\nevaluated 5800/8436\nevaluated 5850/8436\nevaluated 5900/8436\nevaluated 5950/8436\nevaluated 6000/8436\nevaluated 6050/8436\nevaluated 6100/8436\nevaluated 6150/8436\nevaluated 6200/8436\nevaluated 6250/8436\nevaluated 6300/8436\nevaluated 6350/8436\nevaluated 6400/8436\nevaluated 6450/8436\nevaluated 6500/8436\nevaluated 6550/8436\nevaluated 6600/8436\nevaluated 6650/8436\nevaluated 6700/8436\nevaluated 6750/8436\nevaluated 6800/8436\nevaluated 6850/8436\nevaluated 6900/8436\nevaluated 6950/8436\nevaluated 7000/8436\nevaluated 7050/8436\nevaluated 7100/8436\nevaluated 7150/8436\nevaluated 7200/8436\nevaluated 7250/8436\nevaluated 7300/8436\nevaluated 7350/8436\nevaluated 7400/8436\nevaluated 7450/8436\nevaluated 7500/8436\nevaluated 7550/8436\nevaluated 7600/8436\nevaluated 7650/8436\nevaluated 7700/8436\nevaluated 7750/8436\nevaluated 7800/8436\nevaluated 7850/8436\nevaluated 7900/8436\nevaluated 7950/8436\nevaluated 8000/8436\nevaluated 8050/8436\nevaluated 8100/8436\nevaluated 8150/8436\nevaluated 8200/8436\nevaluated 8250/8436\nevaluated 8300/8436\nevaluated 8350/8436\nevaluated 8400/8436\n{\n  \"objective\": -0.9169534155966275,\n  \"clean\": {\n    \"n\": 9330,\n    \"nll\": 1.0872975000322915,\n    \"acc\": 0.5711682743837084,\n    \"ece\": 0.05987151793598101,\n    \"brier\": 0.5402653787706695,\n    \"mean_conf\": 0.6309225701515917,\n    \"confident_error_rate\": 0.018863879957127544,\n    \"coverage_at_0_9\": 0.13912111468381566,\n    \"accuracy_at_0_9\": 0.864406779661017,\n    \"coverage_at_5pct_error\": 0.022936763129689175,\n    \"coverage_at_1pct_error\": 0.012861736334405145,\n    \"aurc\": 0.25623016308072266,\n    \"error_rate_at_0_9\": 0.13559322033898305,\n    \"confidence_bias\": 0.05975429576788327,\n    \"top_bins\": {\n      \"0.9\": {\n        \"n\": 1298,\n        \"errors\": 176,\n        \"error_rate\": 0.13559322033898305\n      },\n      \"0.95\": {\n        \"n\": 856,\n        \"errors\": 99,\n        \"error_rate\": 0.11565420560747663\n      },\n      \"0.99\": {\n        \"n\": 383,\n        \"errors\": 24,\n        \"error_rate\": 0.06266318537859007\n      }\n    },\n    \"selective\": {\n      \"0.5\": {\n        \"coverage\": 0.5,\n        \"accuracy\": 0.7369774919614148,\n        \"confidence_cutoff\": 0.6360579946006539\n      },\n      \"0.8\": {\n        \"coverage\": 0.8,\n        \"accuracy\": 0.6487138263665595,\n        \"confidence_cutoff\": 0.4415246800956641\n      }\n    },\n    \"score_mae\": 0.43720196876683065,\n    \"ranked_probability_score\": 0.12417398639941785\n  },\n  \"coverage\": {\n    \"requested_records\": 8436,\n    \"requested_questions\": 9330,\n    \"evaluated_records\": 8436,\n    \"evaluated_questions\": 9330,\n    \"rejected_records\": 0,\n    \"truncated_records\": 0\n  }\n}\n",
+          "report": {
+            "objective": -0.9169534155966275,
+            "paired_flip": null,
+            "unknowable": null,
+            "clean": {
+              "n": 9330,
+              "nll": 1.0872975000322915,
+              "acc": 0.5711682743837084,
+              "ece": 0.05987151793598101,
+              "brier": 0.5402653787706695,
+              "mean_conf": 0.6309225701515917,
+              "confident_error_rate": 0.018863879957127544,
+              "coverage_at_0_9": 0.13912111468381566,
+              "accuracy_at_0_9": 0.864406779661017,
+              "coverage_at_5pct_error": 0.022936763129689175,
+              "coverage_at_1pct_error": 0.012861736334405145,
+              "aurc": 0.25623016308072266,
+              "error_rate_at_0_9": 0.13559322033898305,
+              "confidence_bias": 0.05975429576788327,
+              "top_bins": {
+                "0.9": {
+                  "n": 1298,
+                  "errors": 176,
+                  "error_rate": 0.13559322033898305
+                },
+                "0.95": {
+                  "n": 856,
+                  "errors": 99,
+                  "error_rate": 0.11565420560747663
+                },
+                "0.99": {
+                  "n": 383,
+                  "errors": 24,
+                  "error_rate": 0.06266318537859007
+                }
+              },
+              "selective": {
+                "0.5": {
+                  "coverage": 0.5,
+                  "accuracy": 0.7369774919614148,
+                  "confidence_cutoff": 0.6360579946006539
+                },
+                "0.8": {
+                  "coverage": 0.8,
+                  "accuracy": 0.6487138263665595,
+                  "confidence_cutoff": 0.4415246800956641
+                }
+              },
+              "score_mae": 0.43720196876683065,
+              "ranked_probability_score": 0.12417398639941785
+            },
+            "tasks": {
+              "custom_choice": {
+                "n": 8436,
+                "nll": 1.1276813800337457,
+                "acc": 0.5585585585585585,
+                "ece": 0.06388117238258519,
+                "brier": 0.5530516748395767,
+                "mean_conf": 0.6223100862246487,
+                "confident_error_rate": 0.01979611190137506,
+                "coverage_at_0_9": 0.1380986249407302,
+                "accuracy_at_0_9": 0.8566523605150215,
+                "coverage_at_5pct_error": 0.025248933143669987,
+                "coverage_at_1pct_error": 0.01422475106685633,
+                "aurc": 0.26697403301287875,
+                "error_rate_at_0_9": 0.14334763948497853,
+                "confidence_bias": 0.06375152766609016,
+                "top_bins": {
+                  "0.9": {
+                    "n": 1165,
+                    "errors": 167,
+                    "error_rate": 0.14334763948497853
+                  },
+                  "0.95": {
+                    "n": 803,
+                    "errors": 97,
+                    "error_rate": 0.12079701120797011
+                  },
+                  "0.99": {
+                    "n": 373,
+                    "errors": 24,
+                    "error_rate": 0.064343163538874
+                  }
+                },
+                "selective": {
+                  "0.5": {
+                    "coverage": 0.5,
+                    "accuracy": 0.723565670934092,
+                    "confidence_cutoff": 0.6266775540507569
+                  },
+                  "0.8": {
+                    "coverage": 0.8001422475106685,
+                    "accuracy": 0.6367407407407407,
+                    "confidence_cutoff": 0.41911087561711285
+                  }
+                }
+              },
+              "custom_score": {
+                "n": 894,
+                "nll": 0.7062254511595093,
+                "acc": 0.6901565995525727,
+                "ece": 0.025354316604528523,
+                "brier": 0.4196107997580284,
+                "mean_conf": 0.7121920493548254,
+                "confident_error_rate": 0.010067114093959731,
+                "coverage_at_0_9": 0.1487695749440716,
+                "accuracy_at_0_9": 0.9323308270676691,
+                "coverage_at_5pct_error": 0.13534675615212527,
+                "coverage_at_1pct_error": 0.02796420581655481,
+                "aurc": 0.1676554041752147,
+                "error_rate_at_0_9": 0.06766917293233082,
+                "confidence_bias": 0.022035449802252693,
+                "top_bins": {
+                  "0.9": {
+                    "n": 133,
+                    "errors": 9,
+                    "error_rate": 0.06766917293233082
+                  },
+                  "0.95": {
+                    "n": 53,
+                    "errors": 2,
+                    "error_rate": 0.03773584905660377
+                  },
+                  "0.99": {
+                    "n": 10,
+                    "errors": 0,
+                    "error_rate": 0.0
+                  }
+                },
+                "selective": {
+                  "0.5": {
+                    "coverage": 0.5,
+                    "accuracy": 0.8299776286353467,
+                    "confidence_cutoff": 0.7234742479739878
+                  },
+                  "0.8": {
+                    "coverage": 0.8008948545861297,
+                    "accuracy": 0.7472067039106145,
+                    "confidence_cutoff": 0.5324899435231847
+                  }
+                },
+                "score_mae": 0.43720196876683065,
+                "ranked_probability_score": 0.12417398639941785
+              }
+            },
+            "variants": {
+              "clean": {
+                "n": 9330,
+                "nll": 1.0872975000322915,
+                "acc": 0.5711682743837084,
+                "ece": 0.05987151793598101,
+                "brier": 0.5402653787706695,
+                "mean_conf": 0.6309225701515917,
+                "confident_error_rate": 0.018863879957127544,
+                "coverage_at_0_9": 0.13912111468381566,
+                "accuracy_at_0_9": 0.864406779661017,
+                "coverage_at_5pct_error": 0.022936763129689175,
+                "coverage_at_1pct_error": 0.012861736334405145,
+                "aurc": 0.25623016308072266,
+                "error_rate_at_0_9": 0.13559322033898305,
+                "confidence_bias": 0.05975429576788327,
+                "top_bins": {
+                  "0.9": {
+                    "n": 1298,
+                    "errors": 176,
+                    "error_rate": 0.13559322033898305
+                  },
+                  "0.95": {
+                    "n": 856,
+                    "errors": 99,
+                    "error_rate": 0.11565420560747663
+                  },
+                  "0.99": {
+                    "n": 383,
+                    "errors": 24,
+                    "error_rate": 0.06266318537859007
+                  }
+                },
+                "selective": {
+                  "0.5": {
+                    "coverage": 0.5,
+                    "accuracy": 0.7369774919614148,
+                    "confidence_cutoff": 0.6360579946006539
+                  },
+                  "0.8": {
+                    "coverage": 0.8,
+                    "accuracy": 0.6487138263665595,
+                    "confidence_cutoff": 0.4415246800956641
+                  }
+                },
+                "score_mae": 0.43720196876683065,
+                "ranked_probability_score": 0.12417398639941785
+              }
+            },
+            "heldout_tasks": {},
+            "permutation": {
+              "n": 0,
+              "mean_max_delta": null,
+              "flip_rate": null
+            },
+            "temperature": 1.0,
+            "calibrated_clean": {
+              "n": 9330,
+              "nll": 1.0872975000322915,
+              "acc": 0.5711682743837084,
+              "ece": 0.05987151793598101,
+              "brier": 0.5402653787706695,
+              "mean_conf": 0.6309225701515917,
+              "confident_error_rate": 0.018863879957127544,
+              "coverage_at_0_9": 0.13912111468381566,
+              "accuracy_at_0_9": 0.864406779661017,
+              "coverage_at_5pct_error": 0.022936763129689175,
+              "coverage_at_1pct_error": 0.012861736334405145,
+              "aurc": 0.25623016308072266,
+              "error_rate_at_0_9": 0.13559322033898305,
+              "confidence_bias": 0.05975429576788327,
+              "top_bins": {
+                "0.9": {
+                  "n": 1298,
+                  "errors": 176,
+                  "error_rate": 0.13559322033898305
+                },
+                "0.95": {
+                  "n": 856,
+                  "errors": 99,
+                  "error_rate": 0.11565420560747663
+                },
+                "0.99": {
+                  "n": 383,
+                  "errors": 24,
+                  "error_rate": 0.06266318537859007
+                }
+              },
+              "selective": {
+                "0.5": {
+                  "coverage": 0.5,
+                  "accuracy": 0.7369774919614148,
+                  "confidence_cutoff": 0.6360579946006539
+                },
+                "0.8": {
+                  "coverage": 0.8,
+                  "accuracy": 0.6487138263665595,
+                  "confidence_cutoff": 0.4415246800956641
+                }
+              },
+              "score_mae": 0.43720196876683065,
+              "ranked_probability_score": 0.12417398639941785
+            },
+            "metric_policy": {
+              "version": 2,
+              "selective_ties": "whole_confidence_groups",
+              "coverage_at_error": "in-sample maximum over confidence thresholds; not a deployed error guarantee",
+              "aurc": "right-step integral over whole confidence groups",
+              "confident_error_rate": "high-confidence errors divided by all questions",
+              "error_rate_at_0_9": "errors divided by questions accepted at p_max >= 0.9",
+              "nll": "exact from logits when recorded; otherwise from floored probabilities",
+              "nll_floor": 1e-09,
+              "renormalize_returned_probabilities": true,
+              "raw_sums_outside_1e_5": 0,
+              "returned_zeros": 0
+            },
+            "coverage": {
+              "requested_records": 8436,
+              "requested_questions": 9330,
+              "evaluated_records": 8436,
+              "evaluated_questions": 9330,
+              "rejected_records": 0,
+              "truncated_records": 0
+            },
+            "latency_ms": {
+              "median": 321.185827255249,
+              "p95": 444.38553461804986
+            },
+            "calibration": {
+              "inference_temperature": 1.0,
+              "additional_temperature": 1.0,
+              "logits_recorded": true
+            },
+            "suite_sha256": "8610f830b7a6daffa8d1d20f6724ec311cf53cd7b548460cc1dd85c3bbcae09b",
+            "data": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+            "date_facts": false,
+            "rotations": 1,
+            "run": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint",
+            "split": "custom",
+            "calibration_applied": false,
+            "environment": {
+              "packages": {
+                "torch": "2.14.0+cu126",
+                "transformers": "5.8.0",
+                "peft": "0.18.1",
+                "flash-linear-attention": null,
+                "triton": "3.8.0",
+                "causal-conv1d": null,
+                "mlx": null,
+                "mlx-lm": null
+              },
+              "device": "cuda",
+              "gpu": "NVIDIA RTX A6000",
+              "backend": "torch",
+              "dtype": "bfloat16",
+              "triton_f32_default": null,
+              "attention": "sdpa",
+              "deltanet": {
+                "forward": "transformers.models.qwen3_5.modeling_qwen3_5.Qwen3_5GatedDeltaNet.forward",
+                "causal_conv1d_fn": "None.NoneType",
+                "torch_chunk_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_chunk_gated_delta_rule"
+              }
+            },
+            "remote": null
+          },
+          "clean": {
+            "n": 9330,
+            "nll": 1.0872975000322915,
+            "acc": 0.5711682743837084,
+            "ece": 0.05987151793598101,
+            "brier": 0.5402653787706695,
+            "mean_conf": 0.6309225701515917,
+            "confident_error_rate": 0.018863879957127544,
+            "coverage_at_0_9": 0.13912111468381566,
+            "accuracy_at_0_9": 0.864406779661017,
+            "coverage_at_5pct_error": 0.022936763129689175,
+            "coverage_at_1pct_error": 0.012861736334405145,
+            "aurc": 0.25623016308072266,
+            "error_rate_at_0_9": 0.13559322033898305,
+            "confidence_bias": 0.05975429576788327,
+            "top_bins": {
+              "0.9": {
+                "n": 1298,
+                "errors": 176,
+                "error_rate": 0.13559322033898305
+              },
+              "0.95": {
+                "n": 856,
+                "errors": 99,
+                "error_rate": 0.11565420560747663
+              },
+              "0.99": {
+                "n": 383,
+                "errors": 24,
+                "error_rate": 0.06266318537859007
+              }
+            },
+            "selective": {
+              "0.5": {
+                "coverage": 0.5,
+                "accuracy": 0.7369774919614148,
+                "confidence_cutoff": 0.6360579946006539
+              },
+              "0.8": {
+                "coverage": 0.8,
+                "accuracy": 0.6487138263665595,
+                "confidence_cutoff": 0.4415246800956641
+              }
+            },
+            "score_mae": 0.43720196876683065,
+            "ranked_probability_score": 0.12417398639941785
+          },
+          "coverage": {
+            "requested_records": 8436,
+            "requested_questions": 9330,
+            "evaluated_records": 8436,
+            "evaluated_questions": 9330,
+            "rejected_records": 0,
+            "truncated_records": 0
+          },
+          "duration_sec": 2982.712651308626,
+          "evaluated_at": "2026-10-22T01:17:46Z"
+        },
+        "finished_at": "2026-10-22T01:17:46Z"
+      }
+    ],
+    "validation_set": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+    "finished_at": "2026-10-22T01:17:46Z",
+    "comparison_to_c03": {
+      "reference_candidate_id": "KEV-V8-C03",
+      "status": "COMPARABLE",
+      "direction": "candidate_minus_c03",
+      "deltas": {
+        "acc": -0.0004287245444801746,
+        "nll": 0.007744922407614041,
+        "brier": 0.0027317730970325416,
+        "ece": 0.008824834147244477
+      },
+      "validation_protocol": "KEV_FIXED_VAL_JSONL",
+      "validation_set": "/home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/val.jsonl",
+      "coverage": {
+        "requested_records": 8436,
+        "requested_questions": 9330,
+        "evaluated_records": 8436,
+        "evaluated_questions": 9330,
+        "rejected_records": 0,
+        "truncated_records": 0
+      },
+      "candidate_report_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMO-e02/checkpoint/val_metrics/attempt_0001/report.json",
+      "reference_report_path": "/home/syy/\u8def\u7531/runs/KEV-V8-HOMOLOGOUS-20261018/formal_run/val_metrics/attempt_0002/report.json"
+    }
+  },
+  {
+    "candidate_id": "KEV-V8-C05",
+    "name": "KEV-V8-ABL-NOSTATE",
+    "description": "State ablation: Zeroed/masked state features",
+    "status": "PENDING",
+    "init_from": "models/kev-4b-adapter",
+    "data_path": "data/kev/\u516c\u5f00\u6570\u636e/train_nostate.jsonl",
+    "lr": "2e-5",
+    "lora": "16",
+    "epochs": "1",
+    "batch": "1",
+    "accum": "4",
+    "extra_args": [
+      "--checkpointing",
+      "1"
+    ],
+    "checkpoint_path": "runs/KEV-V8-ABL-NOSTATE/checkpoint",
+    "metrics": {},
+    "training_status": "UNKNOWN",
+    "pid": null,
+    "training_exit_code": null,
+    "training_source": "/home/syy/\u8def\u7531/runs/KEV-V8-ABL-NOSTATE/cursor.json",
+    "training_metrics": {
+      "optimizer_steps": null,
+      "records_seen": null,
+      "requested_records": null,
+      "wall_seconds": null
+    },
+    "pending_reason": "Missing training data: /home/syy/\u8def\u7531/data/kev/\u516c\u5f00\u6570\u636e/train_nostate.jsonl"
+  },
+  {
+    "candidate_id": "KEV-V8-C07",
+    "name": "KEV-V8-ABL-LORA8",
+    "description": "Capacity ablation: LoRA rank 8",
+    "status": "QUEUED",
+    "init_from": "models/kev-4b-adapter",
+    "data_path": "data/kev/\u516c\u5f00\u6570\u636e/train.jsonl",
+    "lr": "5e-5",
+    "lora": "8",
+    "epochs": "1",
+    "batch": "1",
+    "accum": "4",
+    "extra_args": [
+      "--checkpointing",
+      "1"
+    ],
+    "checkpoint_path": "runs/KEV-V8-ABL-LORA8/checkpoint",
+    "metrics": {}
+  },
+  {
+    "candidate_id": "KEV-V8-C09",
+    "name": "KEV-V8-EXT-01",
+    "description": "V8 Extension: Arena human pairwise preference + agent traces",
+    "status": "QUEUED",
+    "init_from": "runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+    "data_path": "data/kev/v8_extension/train.jsonl",
+    "lr": "2e-05",
+    "lora": "16",
+    "epochs": "1",
+    "batch": "1",
+    "accum": "4",
+    "extra_args": [
+      "--checkpointing",
+      "1",
+      "--max_state",
+      "384"
+    ],
+    "checkpoint_path": "runs/KEV-V8-EXT-01/formal_run",
+    "metrics": {},
+    "pilot_checkpoint_path": "runs/KEV-V8-EXT-01/checkpoint",
+    "training_kind": "FORMAL_LORA",
+    "seed": "42",
+    "materialization": {
+      "configuration_source": "our-project/data/configs/training/KEV-V8-EXT-01.json",
+      "test_used": false,
+      "label_nature": "HUMAN_PAIRWISE_PREFERENCE",
+      "splits": {
+        "train": {
+          "source_records": 46201,
+          "excluded_project_split_mismatch": 20695,
+          "written_records": 25506
+        },
+        "val": {
+          "source_records": 5699,
+          "excluded_project_split_mismatch": 5331,
+          "written_records": 368
+        }
+      },
+      "unsupported_views": {
+        "cache_reuse_opportunity": "continuous opportunity target; no existing typed label mapping in this formal configuration",
+        "observed_agent_outcome": "only the observed model outcome is available; no pairwise model-choice label"
+      },
+      "training_scope": "Arena router_choice only; cache/outcome views remain unsupported, not trained",
+      "new_train_records_vs_c03": 0,
+      "configuration_status": "PARTIAL_MATERIAL_NOT_FULL_C09"
+    },
+    "configuration_source": "/home/syy/\u8def\u7531/our-project/data/configs/training/KEV-V8-EXT-01.json"
+  }
+]

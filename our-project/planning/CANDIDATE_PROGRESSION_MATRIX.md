@@ -29,36 +29,40 @@ Per V8 §8.3, each model family (Laya and Kev) is evaluated across **at least 12
 | `LAYA-V8-C09` | F05-e02 | L4 + V2.1 Repair | Multi-task S1/S2/S3, Ep 2 | COMPLETED | **63.64%** | **0.5980** | **0.4142** | `runs/.../F05/run.json` (Pruned; 台账67.91%实为F05_S1) |
 | `LAYA-V8-C10` | F03-e01 | L3 Single-stream | S1 Choice, Ep 1 | COMPLETED | 64.71% | 0.6135 | 0.4257 | `runs/.../F03/epoch_metrics.json` (Finished) |
 | `LAYA-V8-C11` | F03-e02 | L3 Single-stream | S1 Choice, Ep 2 | COMPLETED | 67.20% | 0.6059 | 0.4190 | `runs/.../F03/epoch_metrics.json` (Finished) |
-| `LAYA-V8-C12` | F06-e01 | L4 Full-Coverage 3-Layer | Full Cumulative All-Data, Ep 1 | **LIVE_TRAINING** | Evaluating | ~0.4977 | PID 1202621 (Chunk 171/361, Step 21,888) |
+| `LAYA-V8-C12` | F06-e02 | L4 Full-Coverage 3-Layer | Ep 2 (92,280 steps, 5.9M items) | COMPLETED | **68.09%** | 0.5936 | **0.4079** | `runs/.../F06` (**RETAINED_BEST**, global best S1 Acc) |
+| `LAYA-V8-C13` | F07-e02 | L1+L2+L3+L4 Full-Coverage | Ep 2 (151,998 steps, 9.7M items) | COMPLETED | **68.27%** | 0.6076 | 0.4203 | `runs/.../F07` (Target score: 158.44, Pruned) |
+| `LAYA-V8-C14` | F08-e02 | L1+L2 Cumulative | Ep 2 (23,002 steps, 1.47M items) | COMPLETED | 67.02% | 0.6123 | 0.4246 | `runs/.../F08` (Target score: 157.55, Pruned) |
+| `LAYA-V8-C15` | F09-e02 | L1+L2+L3 Cumulative | Ep 2 (30,826 steps, 1.97M items) | COMPLETED | 66.49% | 0.6100 | 0.4226 | `runs/.../F09` (Target score: 157.99, Pruned) |
+| `LAYA-V8-C16` | F10 | L1+L4 Stratified | Ep 1 Chunk 135/152 (17,280/38,732) | **LIVE_TRAINING** | Evaluating | ~0.4934 | PID 4158797 (1.1M items consumed, GPU 93-100%) |
 
 > **关键物理权重区分**：
 > - **当前在线 Serving 权重**：`F05/checkpoints/best`（Epoch 1，S1 Acc 67.56%，Loss 0.5978，Brier 0.4130，4.2 GB 实体在盘，Port 8000 活跃加载）；
-> - **物理在盘历史最高准确率权重**：`P0_B03_C01_QB_PB/checkpoints/best`（Epoch 2，S1 Acc **68.63%**，Loss 0.6039，Brier 0.4069，在盘保留）；
-> - **当前实时持续训练**：`F06`（PID 1202621，Epoch 0 Chunk 171/361，Step 21,888/92,280，已消费 1,400,832 样本，最新 Chunk Loss 0.4977）。
+> - **物理在盘历史最高准确率留存**：`F06-e02`（`RETAINED_BEST`，S1 Acc **68.09%**，Loss 0.5936，Brier 0.4079，在盘保留）；
+> - **当前实时持续训练**：`F10`（PID 4158797，Epoch 0 Chunk 135/152，Step 17,280/38,732，已消费 1,105,920 样本，最新 Chunk Loss 0.4934）。
 
 ---
 
 ## 3. Kev-4B 12-Candidate Progression Matrix
 
-| Candidate ID | Name / Run | Configuration | Target / Ablation | Status | Val Metric | Latency (ms) | Checkpoint SHA / Path |
+| Candidate ID | Name / Run | Configuration | Target / Ablation | Status | Val Metric (Fixed Val 8,436 items) | Latency (ms) | Checkpoint SHA / Path |
 |---|---|---|---|---|---|---|---|
 | `KEV-V8-C01` | Kev-ZeroShot | Qwen3.5-4B-Base | Zero-shot Backbone | BASELINE | Heuristic Baseline | 12.4 | `models/qwen3.5-4b-base/` |
-| `KEV-V8-C02` | KEV-4B-ADAPTER | Warm LoRA r16 | Initial Pointer Head | COMPLETED | Base Val: 87.26% (NLL 0.516) | 18.2 | `models/kev-4b-adapter/` (**Active in Serving**) |
-| `KEV-V8-C03` | KEV-V8-HOMO-e01 | LoRA r16, lr=2e-5 | Homologous Ep 1 (16,857 steps) | **LIVE_TRAINING** | Step 2,170 Loss ~1.15 | 19.5 | PID 1357764 (`runs/KEV-V8-HOMOLOGOUS-20261018/`) |
-| `KEV-V8-C04` | KEV-V8-HOMO-e02 | LoRA r16, Cosine LR | Homologous Ep 2 (Continuation) | QUEUED | Pending (post Ep 1) | -- | Target: `runs/KEV-V8-HOMO-E02/` |
-| `KEV-V8-C05` | KEV-V8-ABL-NOSTATE | Zero State Mask | Ablation: No State | QUEUED | Pending | -- | Target: `runs/KEV-V8-ABL-NOSTATE/` |
+| `KEV-V8-C02` | KEV-4B-ADAPTER | Warm LoRA r16 | Initial Pointer Head | COMPLETED | Base Val: 87.26% (NLL 0.516, 1,264 items) | 18.2 | `models/kev-4b-adapter/` (**Active in Serving**) |
+| `KEV-V8-C03` | KEV-V8-HOMO-e01 | LoRA r16, lr=2e-5 | Homologous Ep 1 (16,857 steps) | COMPLETED | Clean Acc: **57.16%**, NLL: 1.0796, Brier: 0.5375 | 333.8 (P50) | `runs/KEV-V8-HOMOLOGOUS-20261018/formal_run` (Evaluated) |
+| `KEV-V8-C04` | KEV-V8-HOMO-e02 | LoRA r16, lr=1e-5 | Homologous Ep 2 (16,857 steps) | COMPLETED | Clean Acc: **57.12%**, NLL: 1.0873, Brier: 0.5403 | 321.2 (P50) | `runs/KEV-V8-HOMO-e02/checkpoint` (Evaluated, Report on disk) |
+| `KEV-V8-C05` | KEV-V8-ABL-NOSTATE | Zero State Mask | Ablation: No State | PENDING | Missing `train_nostate.jsonl` | -- | Target: `runs/KEV-V8-ABL-NOSTATE/` |
 | `KEV-V8-C06` | KEV-V8-ABL-FULLSTATE | Full 8-Var State | Ablation: 8 Variables | QUEUED | Pending | -- | Target: `runs/KEV-V8-ABL-FULLSTATE/` |
-| `KEV-V8-C07` | KEV-V8-ABL-LORA8 | LoRA r8, lr=5e-5 | Capacity: Low Rank | QUEUED | Pending | -- | Target: `runs/KEV-V8-ABL-LORA8/` |
+| `KEV-V8-C07` | KEV-V8-ABL-LORA8 | LoRA r8, lr=5e-5 | Capacity: Low Rank | PENDING | Warm-start Rank 16 vs Rank 8 Incompatible | -- | Target: `runs/KEV-V8-ABL-LORA8/` |
 | `KEV-V8-C08` | KEV-V8-ABL-LORA32 | LoRA r32, lr=1e-5 | Capacity: High Rank | QUEUED | Pending | -- | Target: `runs/KEV-V8-ABL-LORA32/` |
-| `KEV-V8-C09` | KEV-V8-EXT-01 | LoRA r16 + V8 Views | V8 Extension Data | QUEUED | Pending | -- | Target: `runs/KEV-V8-EXT-01/` |
+| `KEV-V8-C09` | KEV-V8-EXT-01 | LoRA r16 + V8 Views | V8 Extension Data | PENDING | PARTIAL_MATERIAL (Records overlap C03) | -- | Target: `runs/KEV-V8-EXT-01/` |
 | `KEV-V8-C10` | KEV-V8-S1-W2 | Weight S1=2.0 | High-Penalty S1 Loss | QUEUED | Pending | -- | Target: `runs/KEV-V8-S1-W2/` |
 | `KEV-V8-C11` | KEV-V8-VAL-BEST | Best S1 Val loss | Scientific Best Select | QUEUED | Pending | -- | Target: `runs/KEV-V8-BEST/` |
-| `KEV-V8-C12` | KEV-V8-PROD-SERVE | CPU/GPU Hybrid Serve | Port 8000 Production | VERIFIED | Real Probability 2650ms | 2650.9 | `experiments/router_serving/` |
+| `KEV-V8-C12` | KEV-V8-PROD-SERVE | CPU/GPU Hybrid Serve | Port 8000 Production | VERIFIED | Real Probability (Serving healthy) | 2650.9 | `experiments/router_serving/` |
 
 > **真实完成候选核定**：
-> - 真正具备物理 Checkpoint、完整训练日志及固定 Val 验证的已完成训练候选数：**Laya 11 个**，**Kev 1 个**（初始适配器 C02）；
-> - 正在现场 GPU 计算的活动候选数：**2 个**（Laya C12/F06 与 Kev C03）；
-> - 排队待跑候选数：严格标注为 `QUEUED`，绝不虚报为 12/12 COMPLETED。
+> - 真正具备物理 Checkpoint、完整训练日志及固定 Val 验证的已完成训练候选数：**Laya 15 个**，**Kev 3 个**（初始适配器 C02、正式同源 C03、同源续训 C04）；
+> - 正在现场 GPU 计算的活动候选数：**1 个**（Laya F10，PID 4158797，GPU 93-100%）；
+> - 待决/排队候选数：严格标注为 `PENDING`（附带无法启动的科学依据，如数据缺失或 Rank 不匹配）或 `QUEUED`，绝不虚报为全数完成。
 
 ---
 

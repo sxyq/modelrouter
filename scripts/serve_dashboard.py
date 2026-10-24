@@ -30,6 +30,13 @@ LOCAL_DASHBOARD_DIR = Path(__file__).resolve().parent.parent / "our-project" / "
 SERVE_DIR = A6000_DASHBOARD_DIR if A6000_DASHBOARD_DIR.is_dir() else LOCAL_DASHBOARD_DIR
 
 
+class DashboardServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    """Keep one slow browser connection from blocking all dashboard requests."""
+
+    allow_reuse_address = True
+    daemon_threads = True
+
+
 class ReadOnlyNoCacheHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(SERVE_DIR), **kwargs)
@@ -71,9 +78,8 @@ def main():
     logger.info("Initializing ModelRouter Dashboard Server on %s:%d...", HOST, PORT)
     logger.info("Serving strictly from read-only directory: %s", SERVE_DIR)
 
-    socketserver.TCPServer.allow_reuse_address = True
     try:
-        with socketserver.TCPServer((HOST, PORT), ReadOnlyNoCacheHandler) as httpd:
+        with DashboardServer((HOST, PORT), ReadOnlyNoCacheHandler) as httpd:
             logger.info("Dashboard active and listening at http://%s:%d/ (Target: http://10.16.15.202:%d/)", HOST, PORT, PORT)
             httpd.serve_forever()
     except Exception as e:

@@ -26,5 +26,13 @@
 - [813 文件/116 代码路径完整架构审查](docs/operations/FULL_CODE_ARCHITECTURE_AUDIT_20261019.md)
 - [代码/脚本逐项分类与迁移台账](docs/operations/code_classification_inventory_20261019.csv)
 - [V9 双子代理 RQ1–RQ5 长期执行](planning/V9_RQ_LONG_RUNNING_TWO_SUBAGENTS_20261019.md)
+- [双模型12候选演进矩阵](planning/CANDIDATE_PROGRESSION_MATRIX.md)
+
+## 最新里程碑状态（2026-10-24 同步）
+
+- **Laya-421M 训练**：F01–F09 已全部完成训练并完成固定 Val 验证，物理留存全局最佳检查点 `F06-e02`（S1 Acc 68.09%）；当前正在执行 `F10` 训练（Chunk 135/152，GPU 93-100%）。
+- **Kev-4B 训练**：C03 与 C04（16,857 步）全部顺利完训，C04 固定验证（8,436 题）已完成（Acc 57.12%，NLL 1.0873，Brier 0.5403，ECE 0.0599）；C05/C07/C09 处于合法待决状态。
+- **服务与网络**：RTX A6000 上的 8765 训练看板与 8000 路由 API 持续稳定在线；通过 NetBird P2P 直连与 `~/.ssh/config` 隧道配置可从外部网络流畅访问。
 
 此 README 描述**目标归属**，不表示已经搬动服务器运行目录、完成 12 组实体模型训练或通过官方 Harbor Benchmark。保留所有能复现历史研究的原有路径和结果，直到迁移验收。
+
