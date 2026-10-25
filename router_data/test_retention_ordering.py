@@ -853,19 +853,25 @@ def test_collector_research_same_target_and_loadable_epochs(tmp_path):
         write_json(directory / "training_config.json", {"args": {"device": "cuda", "epochs": 1,
                    "init_from": "fixture-parent-" + rid}})
         write_json(directory / "training_metrics.json", {"optimizer_steps": 16857, "grad_norm": [1.0]})
-        write_json(directory / "val_metrics.json", {"clean": metrics, "duration_sec": seconds,
+        val_metrics = {"clean": metrics, "duration_sec": seconds,
                    "validation_protocol": "fixed-val", "validation_set": "kev-fixed-val",
-                   "coverage": {"requested_questions": 9330, "evaluated_questions": 9330}})
+                   "coverage": {"requested_questions": 9330, "evaluated_questions": 9330}}
+        write_json(directory / "val_metrics.json", val_metrics)
         (directory / "adapter_model.pt").write_bytes(b"temporary adapter fixture only")
         candidates.append({"candidate_id": rid, "status": "COMPLETED", "evaluation_status": "EVALUATED",
-                           "checkpoint_path": str(directory.relative_to(tmp_path))})
+                           "checkpoint_path": str(directory.relative_to(tmp_path)), "metrics": val_metrics})
     candidates[1]["comparison_to_c03"] = {"status": "COMPARABLE", "direction": "candidate_minus_c03",
                                           "deltas": {k: c04[k] - c03[k] for k in ("acc", "nll", "brier", "ece")}}
     candidates[1]["coverage_analysis"] = {"ratio": {"S1": 2, "S3": 1}, "splits": {"train": {
         "records_by_class": {"S1": 4, "S3": 2}, "independent_units_by_class": {"S1": 4, "S3": 1}}},
         "encoding": {"encoded_records": 6}}
     write_json(tmp_path / "our-project/results/training/kev/candidate_queue.json", candidates)
-    originals = {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    matrix_path = tmp_path / "our-project/planning/CANDIDATE_PROGRESSION_MATRIX.md"
+    matrix_path.parent.mkdir(parents=True)
+    matrix_header = "# 候选推进矩阵\n\n"
+    matrix_history = "## 历史\n\n2026-10-24：C03/C04 已完成固定 Val，原有科学对照记录继续保留。\n"
+    matrix_path.write_text(matrix_header + matrix_history, encoding="utf-8")
+    originals = {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file() and p != matrix_path}
     history = collector.build_training_history(tmp_path, processes={})
     original_validation = copy.deepcopy({r["key"]: r["validation"] for r in history["runs"]})
     # Other Val identities, counts, protocols and loss definitions stay separate.
@@ -934,6 +940,19 @@ def test_collector_research_same_target_and_loadable_epochs(tmp_path):
     assert "COMPLETED" in markdown and "EVALUATED" in markdown
     assert "当前F07为两Epoch" not in markdown and "Kev运行中的旧dispatcher" not in markdown
     assert "节省229小时" not in markdown and "节省40小时" not in markdown and "节省26小时" not in markdown
+    begin, end = "<!-- KEV_LIVE_CANDIDATES_BEGIN -->", "<!-- KEV_LIVE_CANDIDATES_END -->"
+    for _ in range(2):
+        matrix = matrix_path.read_text(encoding="utf-8")
+        assert matrix.count(begin) == matrix.count(end) == 1
+        assert matrix.startswith(matrix_header.rstrip("\n")) and matrix.endswith(matrix_history)
+        for cid, metrics in (("KEV-V8-C03", c03), ("KEV-V8-C04", c04)):
+            row = next(line for line in matrix.splitlines() if line.startswith("| " + cid + " |"))
+            cells = [cell.strip() for cell in row.strip("|").split("|")]
+            assert [float(value) for value in cells[4:8]] == [metrics[k] for k in ("acc", "nll", "brier", "ece")]
+            assert cells[8] == "9330"
+        if _ == 0:
+            collector.write_training_research_report(history, tmp_path, live)
+    assert all(p.read_bytes() == content for p, content in originals.items())
 
 
 def test_collector_training_eta_original_budget(tmp_path):
@@ -1185,6 +1204,8 @@ def test_kev_retention_group_quota_ties_and_required_control_levels(tmp_path):
     assert group["ranked_ids"] == ["KEV-V8-C03", "KEV-V8-C04", "KEV-V8-C20", "KEV-V8-C21",
                                     "KEV-V8-C22", "KEV-V8-C23", "KEV-V8-C24"]
     queue += [_kev_candidate(tmp_path, n) for n in (5, 6, 7, 8, 9)]
+    # The original state contrasts remain necessary even with a shared display label.
+    queue[-5]["control_variant"] = queue[-4]["control_variant"] = "STATE_PAIR"
     evaluate_kev_retention(queue, project_root=tmp_path)
     assert all(c["retention"]["status"] == "PROTECTED" for c in queue[-5:])
 
@@ -1235,7 +1256,7 @@ def test_kev_retention_apply_only_weights_with_real_bytes_and_repeat(tmp_path):
 def test_kev_retention_missing_recipe_or_persistence_preserves_weights(tmp_path):
     queue = _kev_queue(tmp_path)
     low = queue[-1]
-    for missing in ("source_git_sha", "parent_init_source", "data_identity", "base_revision"):
+    for missing in ("source_git_sha", "parent_init_source", "data_identity", "base_model", "init_from", "command"):
         value = low["recipe"].pop(missing)
         evaluate_kev_retention(queue, project_root=tmp_path, apply=True, persist=lambda q: None)
         assert low["retention"]["status"] == "PENDING"
@@ -1356,6 +1377,107 @@ def test_kev_retention_c11_original_observations_survive(tmp_path):
     assert all(c11["selection"][k] == v for k, v in original.items())
     assert c11["selection"]["score"] is None and c11["retention"]["status"] == "NOT_SAVED"
     assert report["applied"] is False and report["freed_bytes"] == 0
+
+
+def _kev_ratio_queue(root):
+    queue = [_kev_candidate(root, n) for n in (3, 4)]
+    for index in range(16):
+        cid, variant = f"KEV-V8-R{index + 1:02d}", f"R{index + 1:02d}"
+        c = _kev_candidate(root, index + 20, candidate_id=cid, control_variant=variant,
+                           retention_group="KEV_TYPED_COVERAGE_V1", init_from=queue[0]["checkpoint_path"])
+        c["recipe"].update(candidate_id=cid, init_from=c["init_from"], base_revision=None)
+        c["metrics"]["clean"]["nll"] += (index + 1) * .01
+        queue.append(c)
+    return queue
+
+
+def test_kev_retention_sixteen_ratio_names_keep_three_and_prune_fixtures(tmp_path):
+    queue = _kev_ratio_queue(tmp_path)
+    first = evaluate_kev_retention(copy.deepcopy(queue), project_root=tmp_path)
+    reversed_report = evaluate_kev_retention(copy.deepcopy(list(reversed(queue))), project_root=tmp_path)
+    assert first["groups"] == reversed_report["groups"]
+    assert first["decisions"] == reversed_report["decisions"]
+    group = first["groups"]["KEV_TYPED_COVERAGE_V1"]
+    assert (group["eligible_runs"], group["core_quota"]) == (16, 3)
+    removed = [tmp_path / c["checkpoint_path"] / name for c in queue[5:]
+               for name in ("head.pt", "adapter_model.safetensors")]
+    allocated = sum(p.stat().st_blocks * 512 for p in removed)
+    originals = {p: p.read_bytes() for c in queue for p in (tmp_path / c["checkpoint_path"]).iterdir()
+                 if p.suffix in (".json", ".log")}
+    snapshots = []
+    def persist(candidates):
+        snapshots.append(copy.deepcopy(candidates))
+        (tmp_path / "candidate_queue.json").write_text(json.dumps(candidates))
+        (tmp_path / "candidate_ledger.json").write_text(json.dumps({"candidates": candidates}))
+    report = evaluate_kev_retention(queue, project_root=tmp_path, apply=True, persist=persist)
+    kept = [c["candidate_id"] for c in queue[2:] if c["retention"]["status"] in ("RETAINED", "PROTECTED")]
+    assert kept == ["KEV-V8-R01", "KEV-V8-R02", "KEV-V8-R03"]
+    assert all(c["retention"]["status"] == "PRUNED_LOW_SCORE" for c in queue[5:])
+    assert all(not p.exists() for p in removed)
+    assert report["released_bytes"] == allocated and report["removed_weight_bytes"] > 0
+    assert snapshots[0][-1]["recipe"]["base_revision"] is None
+    assert snapshots[0][-1]["retention"]["planned_action"] == "PRUNED_LOW_SCORE"
+    assert all(c["recipe"]["base_revision"] is None and c["retention"]["base_revision"] == "N/A"
+               and c["retention"]["retraining_limitations"] for c in queue[2:])
+    assert all((tmp_path / c["checkpoint_path"]).is_dir() for c in queue)
+    assert all(p.read_bytes() == content for p, content in originals.items())
+    assert all(c["retention"]["status"] == "PROTECTED" for c in queue[:2])
+
+
+def test_kev_retention_ratios_explicit_science_parent_and_active_protections(tmp_path):
+    queue = _kev_ratio_queue(tmp_path)
+    queue[-1]["scientific_representative"] = True
+    queue[-3]["is_serving"] = True
+    queue[-4].update(status="RUNNING", training_status="RUNNING", metrics={})
+    queue[-5]["checkpoint_id"] = sorted(OLD_CORE_CHECKPOINT_IDS)[0]
+    child = _kev_candidate(tmp_path, 90, status="PENDING", training_status="QUEUED", metrics={},
+                           init_from=queue[-2]["checkpoint_path"])
+    queue.append(child)
+    first = evaluate_kev_retention(copy.deepcopy(queue), project_root=tmp_path)
+    second = evaluate_kev_retention(copy.deepcopy(list(reversed(queue))), project_root=tmp_path)
+    assert first["groups"] == second["groups"] and first["decisions"] == second["decisions"]
+    assert first["groups"]["KEV_TYPED_COVERAGE_V1"]["core_quota"] == 3
+    evaluate_kev_retention(queue, project_root=tmp_path, apply=True, persist=lambda q: None)
+    for c in queue[13:18]:
+        assert c["retention"]["status"] == "PROTECTED"
+        assert (tmp_path / c["checkpoint_path"] / "head.pt").is_file()
+    assert "base_import_serving_or_parent_path" in queue[16]["retention"]["protection_reasons"]
+    assert "scientific_representative" in queue[17]["retention"]["protection_reasons"]
+    assert any(c["retention"]["status"] == "PRUNED_LOW_SCORE" for c in queue[5:13])
+
+
+def test_kev_retention_low_rank_s1_only_r01_remains_required(tmp_path):
+    queue = _kev_ratio_queue(tmp_path)
+    r01 = queue[2]
+    r01["metrics"]["clean"]["nll"] = 2.0
+    first = evaluate_kev_retention(copy.deepcopy(queue), project_root=tmp_path)
+    reversed_report = evaluate_kev_retention(copy.deepcopy(list(reversed(queue))), project_root=tmp_path)
+    assert first["groups"] == reversed_report["groups"] and first["decisions"] == reversed_report["decisions"]
+    assert first["groups"]["KEV_TYPED_COVERAGE_V1"]["ranked_ids"][-1] == "KEV-V8-R01"
+    report = evaluate_kev_retention(queue, project_root=tmp_path, apply=True, persist=lambda q: None)
+    assert r01["selection"]["rank"] == 16 and r01["retention"]["status"] == "PROTECTED"
+    assert (tmp_path / r01["checkpoint_path"] / "head.pt").is_file()
+    assert report["groups"]["KEV_TYPED_COVERAGE_V1"]["core_quota"] == 3
+    kept = [c["candidate_id"] for c in queue[2:] if c["retention"]["status"] in ("RETAINED", "PROTECTED")]
+    assert kept == ["KEV-V8-R01", "KEV-V8-R02", "KEV-V8-R03", "KEV-V8-R04"]
+    assert all(c["retention"]["status"] == "PRUNED_LOW_SCORE" for c in queue[6:])
+
+
+def test_kev_retention_unknown_revision_alone_preserves_recipe_and_allows_pruning(tmp_path):
+    for index, revision in enumerate((None, "N/A", "", "UNKNOWN", "missing")):
+        root = tmp_path / str(index)
+        queue = _kev_queue(root)
+        low = queue[-1]
+        if revision == "missing":
+            low["recipe"].pop("base_revision")
+        else:
+            low["recipe"]["base_revision"] = revision
+        recipe = copy.deepcopy(low["recipe"])
+        evaluate_kev_retention(queue, project_root=root, apply=True, persist=lambda q: None)
+        assert low["retention"]["status"] == "PRUNED_LOW_SCORE"
+        assert low["recipe"] == recipe
+        assert low["retention"]["base_revision"] == "N/A"
+        assert low["retention"]["retraining_limitations"]
 
 
 if __name__ == "__main__":

@@ -1225,6 +1225,46 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
     temporary = report.with_suffix(".md.tmp")
     temporary.write_text("\n".join(lines), encoding="utf-8")
     temporary.replace(report)
+    matrix_path = root / "our-project/planning/CANDIDATE_PROGRESSION_MATRIX.md"
+    if matrix_path.is_file():
+        begin, end = "<!-- KEV_LIVE_CANDIDATES_BEGIN -->", "<!-- KEV_LIVE_CANDIDATES_END -->"
+        candidates = result["kev_candidates"]
+        coverage_runs = result["kev_coverage_material"].get("runs", {})
+        completed_ratios = sum(c.get("status") == "COMPLETED" and c.get("evaluation_status") == "EVALUATED"
+                               for c in candidates if c["candidate_id"].startswith("KEV-V8-R"))
+        live_lines = [begin, "## 当前 Kev 候选（原队列自动更新）", "",
+                      "来源：原候选队列、固定 Val 和实体留存记录。生成时间 UTC：" + result["generated_at"] + "。",
+                      "配比固定 Val 已完成 " + str(completed_ratios) + "/" + str(len(coverage_runs)) +
+                      "；材料 READY 不计训练完成。以下为当前状态，下方带日期的条目保留历史。", ""]
+        rows = []
+        for c in candidates:
+            metrics, selection, retained = c.get("metrics") or {}, c.get("selection") or {}, c.get("retention") or {}
+            material = c.get("coverage_analysis") or {}
+            rows.append([c["candidate_id"], material.get("ratio"), c.get("status"), c.get("evaluation_status"),
+                         *[metrics.get("clean", {}).get(k) for k in ("acc", "nll", "brier", "ece")],
+                         metrics.get("coverage", {}).get("evaluated_questions"), selection.get("score"),
+                         retained.get("status"), retained.get("total_released_bytes", 0),
+                         c.get("pending_reason") or c.get("failure_reason")])
+        for rid, material in coverage_runs.items():
+            if not any(c["candidate_id"] == "KEV-V8-" + rid for c in candidates):
+                rows.append(["KEV-V8-" + rid, material["ratio"], "MATERIAL_READY", "NOT_EVALUATED",
+                             None, None, None, None, None, None, None, 0, "等待原 dispatcher 自然接续"])
+        live_lines += table(["候选", "监督比例", "执行", "固定 Val", "Accuracy", "NLL", "Brier", "ECE",
+                             "计分问题", "内部评分", "实体状态", "累计释放字节", "尚缺条件"], rows)
+        live_lines += ["", "内部评分只用于实体选择；固定 Val 不计官方 Agent 成功率。完整配方、材料、命令与原始指标见 training_research.json 和 candidate_ledger.json。", end]
+        existing = matrix_path.read_text(encoding="utf-8")
+        section = "\n".join(live_lines)
+        if begin in existing:
+            before, remainder = existing.split(begin, 1)
+            _, after = remainder.split(end, 1)
+            updated = before + section + after
+        else:
+            before, after = existing.split("\n## ", 1)
+            updated = before + "\n" + section + "\n\n## " + after
+        if updated != existing:
+            temporary = matrix_path.with_suffix(".md.tmp")
+            temporary.write_text(updated, encoding="utf-8")
+            temporary.replace(matrix_path)
     return {"report": relative(report, root), "data": "our-project/results/training/training_research.json", "counts": result["counts"]}
 
 

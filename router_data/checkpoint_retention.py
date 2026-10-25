@@ -1263,6 +1263,7 @@ KEV_RESEARCH_GROUPS = {
     "KEV-V8-C07": "LORA_RANK_ABLATION", "KEV-V8-C08": "LORA_RANK_ABLATION",
     "KEV-V8-C09": "V8_EXTENSION", "KEV-V8-C10": "S1_WEIGHT_ABLATION",
 }
+KEV_NECESSARY_CONTROL_IDS = set(KEV_RESEARCH_GROUPS) | {"KEV-V8-R01"}
 KEV_WEIGHT_NAMES = ("head.pt", "adapter_model.bin", "adapter_model.safetensors")
 
 
@@ -1349,7 +1350,7 @@ def _kev_recipe_issue(candidate: Dict[str, Any]) -> Optional[str]:
     """Use existing recipe identities and actual training records, without new digests."""
     recipe = candidate.get("recipe") or {}
     required = ("run_id", "candidate_id", "source_git_sha", "upstream_git_sha", "base_model",
-                "base_revision", "init_from", "parent_init_source", "data_path", "data_identity",
+                "init_from", "parent_init_source", "data_path", "data_identity",
                 "validation_set", "command", "checkpoint_path", "retraining")
     missing = [k for k in required if not recipe.get(k) or
                isinstance(recipe[k], str) and recipe[k].strip().upper() in ("N/A", "UNKNOWN", "NONE", "NULL")]
@@ -1386,6 +1387,11 @@ def evaluate_kev_retention(candidates: List[Dict[str, Any]], *, project_root: Pa
     Groups follow the existing research goals or explicit retention_group. Each
     group retains ceil(.15*N) independent completed runs plus required scientific
     representatives; these protections can exceed the core quota. C03/C04 remain.
+    Variant names describe a ratio or setting, not scientific necessity; the
+    original C-series, R01 S1-only continuation and explicit scientific flags
+    supply that evidence.
+    Unknown base revision remains N/A with a recorded reproduction limitation;
+    the actual base/parent paths, data identity and training recipe are required.
     Report mode never deletes. Apply persists all original records before unlink
     and records each result through the same callback. Only known Kev weight files
     directly inside an explicit runs checkpoint are removed; directories remain.
@@ -1398,7 +1404,7 @@ def evaluate_kev_retention(candidates: List[Dict[str, Any]], *, project_root: Pa
     protected = {root / p for p in protected_paths}
     # Parents remain available for pending work and the recorded child recipes.
     protected.update(root / c["init_from"] for c in candidates if c.get("init_from"))
-    ids = set(protected_ids) | OLD_CORE_CHECKPOINT_IDS | {"KEV-V8-C03", "KEV-V8-C04"}
+    ids = set(protected_ids) | OLD_CORE_CHECKPOINT_IDS | {"KEV-V8-C03", "KEV-V8-C04", "KEV-V8-R01"}
     reference = next((c.get("metrics", {}) for c in candidates if c["candidate_id"] == "KEV-V8-C03"), {})
     groups = defaultdict(list)
     prior = {c["candidate_id"]: dict(c.get("retention") or {}) for c in candidates}
@@ -1432,14 +1438,11 @@ def evaluate_kev_retention(candidates: List[Dict[str, Any]], *, project_root: Pa
         quota = math.ceil(NEW_CORE_POOL_RATIO * len(ranked))
         kept.update(c["candidate_id"] for c in ranked[:quota])
         representatives.add(ranked[0]["candidate_id"])
-        # Existing C-series entries define the necessary levels of each contrast.
-        variants = defaultdict(list)
+        # Original C-series and R01 identify necessary contrasts; ratio names alone do not.
         for rank, c in enumerate(ranked, 1):
             c["selection"]["rank"] = rank
-            variant = c.get("control_variant") or (c["candidate_id"] if c["candidate_id"] in KEV_RESEARCH_GROUPS else None)
-            if variant:
-                variants[variant].append(c)
-        representatives.update(min(items, key=sort_key)["candidate_id"] for items in variants.values())
+            if c["candidate_id"] in KEV_NECESSARY_CONTROL_IDS:
+                representatives.add(c["candidate_id"])
         summaries[group] = {"eligible_runs": len(ranked), "core_quota": quota, "ratio": NEW_CORE_POOL_RATIO,
                             "ranked_ids": [c["candidate_id"] for c in ranked]}
     deletions = []
@@ -1463,12 +1466,18 @@ def evaluate_kev_retention(candidates: List[Dict[str, Any]], *, project_root: Pa
             reasons.append("active_training_validation_or_recovery")
         if cid in representatives:
             reasons.append("necessary_scientific_representative")
+        revision = (c.get("recipe") or {}).get("base_revision")
+        revision_unknown = revision is None or (isinstance(revision, str) and
+            revision.strip().upper() in ("", "N/A", "UNKNOWN", "NONE", "NULL"))
         result = {"status": "PENDING", "reason": selection.get("reason"), "protection_reasons": reasons,
                   "weight_files": [str(f) for f in files], "weights_present": bool(files),
                   "applied": apply, "released_bytes": 0, "freed_bytes": 0, "removed_weight_bytes": 0,
                   "total_released_bytes": prior[cid].get("total_released_bytes", 0),
                   "removed_files": list(prior[cid].get("removed_files", [])), "planned_action": None,
-                  "pruned_at": prior[cid].get("pruned_at"), "updated_at": prior[cid].get("updated_at")}
+                  "pruned_at": prior[cid].get("pruned_at"), "updated_at": prior[cid].get("updated_at"),
+                  "base_revision": "N/A" if revision_unknown else revision,
+                  "retraining_limitations": ["Base revision is not recorded; reproduction requires the recorded local "
+                      "base and parent weights. Exact revision or byte equality is not promised."] if revision_unknown else []}
         c["retention"] = result
         if reasons:
             result.update(status="PROTECTED", reason=";".join(reasons))
