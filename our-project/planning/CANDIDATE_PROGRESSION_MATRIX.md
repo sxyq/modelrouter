@@ -7,6 +7,43 @@
 
 ---
 
+<!-- KEV_LIVE_CANDIDATES_BEGIN -->
+## 当前 Kev 候选（原队列自动更新）
+
+来源：原候选队列、固定 Val 和实体留存记录。生成时间 UTC：2026-10-25T03:32:17.781763+00:00。
+配比固定 Val 已完成 0/16；材料 READY 不计训练完成。以下为当前状态，下方带日期的条目保留历史。
+
+| 候选 | 监督比例 | 执行 | 固定 Val | Accuracy | NLL | Brier | ECE | 计分问题 | 内部评分 | 实体状态 | 累计释放字节 | 尚缺条件 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| KEV-V8-C03 | N/A | COMPLETED | EVALUATED | 0.5715969989281886 | 1.0795525776246775 | 0.537533605673637 | 0.05104668378873653 | 9330 | 100.0 | PROTECTED | 0 | N/A |
+| KEV-V8-C04 | N/A | COMPLETED | EVALUATED | 0.5711682743837084 | 1.0872975000322915 | 0.5402653787706695 | 0.05987151793598101 | 9330 | 97.84213070623746 | PROTECTED | 0 | N/A |
+| KEV-V8-C05 | N/A | PENDING | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | Missing training data: data/kev/公开数据/train_nostate.jsonl |
+| KEV-V8-C06 | N/A | PENDING | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | Eight real state fields are not available in the current typed training records |
+| KEV-V8-C07 | N/A | PENDING | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | warm_start lora: source rank 16, requested rank 8 |
+| KEV-V8-C08 | N/A | PENDING | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | warm_start lora: source rank 16, requested rank 32 |
+| KEV-V8-C09 | N/A | RUNNING | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | N/A |
+| KEV-V8-C10 | N/A | PENDING | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | Original train contains 35,645 ROUTE-001/002 rows excluded by current policy and 17 TRA-004 rows outside the legal source set; difficulty_tier is historical auxiliary supervision |
+| KEV-V8-C11 | N/A | PENDING | N/A | N/A | N/A | N/A | N/A | N/A | N/A | NOT_SAVED | 0 | Selection uses comparable completed Val results; no new training |
+| KEV-V8-R01 | {"S1": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R02 | {"S2": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R03 | {"S3": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R04 | {"S1": 1, "S2": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R05 | {"S1": 2, "S2": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R06 | {"S1": 1, "S2": 2} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R07 | {"S1": 1, "S3": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R08 | {"S1": 2, "S3": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R09 | {"S1": 1, "S3": 2} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R10 | {"S2": 1, "S3": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R11 | {"S2": 2, "S3": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R12 | {"S2": 1, "S3": 2} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R13 | {"S1": 1, "S2": 1, "S3": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R14 | {"S1": 2, "S2": 1, "S3": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R15 | {"S1": 1, "S2": 2, "S3": 1} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+| KEV-V8-R16 | {"S1": 1, "S2": 1, "S3": 2} | MATERIAL_READY | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 0 | 等待原 dispatcher 自然接续 |
+
+内部评分只用于实体选择；固定 Val 不计官方 Agent 成功率。完整配方、材料、命令与原始指标见 training_research.json 和 candidate_ledger.json。
+<!-- KEV_LIVE_CANDIDATES_END -->
+
 ## 1. Overview & Research Rationales
 
 Per V8 §8.3, each model family (Laya and Kev) is evaluated across **at least 12 distinct, reproducible, and verifiable candidate versions / phase checkpoints**. Each candidate is uniquely defined by:
