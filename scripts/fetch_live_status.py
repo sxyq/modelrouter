@@ -1075,8 +1075,8 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
     lines += table(["模型/协议", "Val/监督", "指标", "Run数", "最好", "最差"], [[c["family"] + "/" + c["protocol"], c["validation_set"] + "/" + c["supervision"], c["metric"], c["observations"], c["best"], c["worst"]] for c in result["comparisons"] if c["observations"] > 1])
     lines += ["", "## 4. 全部已执行版本", ""]
     lines += table(["模型/Run", "协议/阶段", "组合/配比", "训练量/独立量", "Epoch/时间s", "主Val最低Loss Epoch", "同Epoch Accuracy/Loss/NLL/Brier/ECE", "该Epoch实体"], [
-        [r["family"] + "/" + r["run_id"], r["protocol"] + "/" + str(r["stage"]), str(r["supervision"]) + "/" + str((r["sampling"] or {}).get("ratio_label")),
-         str(r["exposure"].get("trained_records")) + "/" + str(r["exposure"].get("distinct_units")), str(r["epochs"]) + "/" + str(r["training_seconds"]),
+        [r["family"] + "/" + r["run_id"], r["protocol"] + "/" + cell(r["stage"]), cell(r["supervision"]) + "/" + cell((r["sampling"] or {}).get("ratio_label")),
+         cell(r["exposure"].get("trained_records")) + "/" + cell(r["exposure"].get("distinct_units")), cell(r["epochs"]) + "/" + cell(r["training_seconds"]),
          (r["best_loss_epoch"] or {}).get("epoch"), [{k: v.get(k) for k in ("stream", "accuracy", "loss", "nll", "brier", "ece")} for v in r["validation_at_selected_epoch"]], r["selected_epoch_physical"]] for r in result["observations"]])
     lines += ["", "## 5. 同材料范围配比对照", "",
         "B02/QB/PB 保持原材料范围、初始化、种子与两Epoch预算。主Val按每Run最低主Loss选择；选中Epoch不同会影响比较，全部Epoch均保存在JSON。", ""]
@@ -1203,7 +1203,7 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
                         [round(g[k] / 3600, 2) if g[k] is not None else None for k in ("fast_seconds", "slow_seconds")],
                         g["needs_materialization"]] for g in eta["groups"]])
     overview += ["", "总体估计：" + cell(eta["totals"]), "",
-        "CPU物化和任务切换没有完整独立历史耗时，保留N/A；原矩阵待物化数量不视为已就绪。当前两Run取较长剩余时间估算重叠阶段，后续Laya串行。最快/最慢来自历史有效吞吐极值，属于情景范围，无法保证未来GPU资源稳定。",
+        "CPU物化使用已有材料日志中的实际耗时作估算，合计秒数见总体 estimated_cpu_materialization_seconds；没有记录的部分和任务切换耗时使用N/A。原矩阵待物化数量不视为已就绪。当前两Run取较长剩余时间估算重叠阶段，后续各模型沿原队列串行。最快/最慢来自历史有效吞吐极值，属于情景范围，无法保证未来GPU资源稳定。",
         "课程父权重、Kev状态标签/Rank初始化/V8材料待决：" + cell(eta["blocked"]), "",
         "完整吞吐样本及原文件位置在training_research.json的training_eta.throughput_samples，每Run自然边界和原采集器轻量状态更新ETA。训练矩阵结束、待决实验结束与论文科研闭环是三个不同时间范围。", "",
         "## 附录：对象、原始Epoch与日志索引", ""]
