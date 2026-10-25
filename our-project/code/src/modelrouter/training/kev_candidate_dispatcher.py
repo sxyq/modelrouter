@@ -200,6 +200,23 @@ def complete_candidate_plan(queue):
         queue.append({"candidate_id": "KEV-V8-C11", "name": "KEV-V8-VAL-BEST",
                       "candidate_kind": "SELECTION", "status": "PENDING",
                       "pending_reason": "Selection uses comparable completed Val results; no new training"})
+    coverage_file = PROJECT_ROOT / "data/kev/v8_extension/materialization_coverage.json"
+    if coverage_file.is_file():
+        coverage = json.loads(coverage_file.read_text())
+        for rid, run in coverage.get("runs", {}).items():
+            cid = "KEV-V8-" + rid
+            if any(c["candidate_id"] == cid for c in queue) or run["status"] != "READY":
+                continue
+            data_path = str(Path(run["dataPaths"]["train"]).relative_to(PROJECT_ROOT))
+            queue.append({**copy.deepcopy(template), "candidate_id": cid, "name": "KEV-V8-COVERAGE-" + rid,
+                "description": "Existing legal typed supervision ratio " + str(run["ratio"]),
+                "status": "QUEUED", "init_from": DEFAULT_CANDIDATES[1]["init_from"],
+                "data_path": data_path, "checkpoint_path": f"runs/KEV-V8-COVERAGE-{rid}/checkpoint",
+                "lr": "2e-5", "lora": "16", "epochs": "1", "batch": "1", "accum": "4", "seed": 42,
+                "extra_args": ["--checkpointing", "1", "--max_state", "384"],
+                "retention_group": "KEV_TYPED_COVERAGE_V1", "control_variant": rid,
+                "coverage_analysis": {"materialization_source": str(coverage_file), **run},
+                "research_scope": "C03 warm-start; original legal labels; record ratios and training budgets vary"})
     queue.sort(key=lambda c: c["candidate_id"])
     save_queue(queue)
 

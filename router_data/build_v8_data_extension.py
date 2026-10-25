@@ -13,14 +13,273 @@ import gzip
 import hashlib
 import json
 import os
+import random
 import sys
 from collections import Counter, defaultdict
+from contextlib import ExitStack
 from datetime import datetime, timezone
 from pathlib import Path
 
 
-def export_kev_training(config_path, project_root="."):
+def _kev_source_targets():
+    from router_data.batch_prep import MATRIX_TARGETS
+
+    return {
+        "ROUTE-004": MATRIX_TARGETS["S1"],
+        "TRA-001": MATRIX_TARGETS["S2"], "TRA-002": MATRIX_TARGETS["S2"],
+        "CACHE-001": ["prefix_reuse_opportunity", "output_token_length"],
+        "TIME-001": ["request_response_tokens"],
+        "OWN-002": ["call_quota_units", "cache_read_tokens", "call_output_tokens"],
+    }
+
+
+def _kev_labeled_question(question, label, target):
+    from router_data.batch_prep import _neutral_instruction
+
+    typ, criteria = question["type"], question["criteria"]
+    valid = ((typ == "choice" and label in criteria)
+             or (typ == "noul" and type(label) is bool)
+             or (typ == "score" and type(label) is int and 0 <= label < len(criteria)))
+    if valid:
+        return {**question, "label": label, "instructions": _neutral_instruction(target)}
+    return None
+
+
+def export_kev_auxiliary(typed_data_root, project_root=".", configuration_source=None):
+    """Reuse saved S2/S3 views and their labels; do not copy the C03 S1 material."""
+    from router_data.batch_prep import MATRIX_TARGETS
+
+    root = Path(project_root)
+    source_root = root / typed_data_root
+    source_targets = _kev_source_targets()
+    destination = root / "data/kev/v8_extension"
+    stats = {"configuration_source": configuration_source, "typed_data_root": str(source_root),
+             "test_used": False, "splits": {}, "input_files": {}, "data_paths": {},
+             "training_scope": "Existing observed S2/S3 auxiliary labels only; no S1 re-export",
+             "model_choice_labels_created": 0}
+    for split in ("train", "val"):
+        counts, target_counts, labels, seen = Counter(), Counter(), Counter(), set()
+        units = defaultdict(set)
+        output_path = destination / (split + "_typed_auxiliary.jsonl")
+        output = None
+        with ExitStack() as stack:
+            for group in ("S2", "S3"):
+                path = source_root / split / (group + ".jsonl")
+                if not path.is_file():
+                    counts["missing_input_files"] += 1
+                    continue
+                input_counts = Counter()
+                stats["input_files"][str(path)] = {"bytes": path.stat().st_size, "counts": input_counts}
+                with path.open(encoding="utf-8") as source:
+                    for line in source:
+                        row = json.loads(line)
+                        input_counts["records"] += 1
+                        provenance, meta = row["provenance"], row["_meta"]
+                        target, source_id = meta["target"], provenance["source_id"]
+                        if (provenance["split"] != split or target not in MATRIX_TARGETS[group]
+                                or target not in source_targets.get(source_id, ())):
+                            counts["excluded_split_or_target"] += 1
+                            continue
+                        questions = {}
+                        for qid, question in row["questions"].items():
+                            label = question["label"] if "label" in question else row["expected"][qid]
+                            converted = _kev_labeled_question(question, label, target)
+                            if converted is None:
+                                counts["excluded_unknown_or_invalid_label"] += 1
+                                continue
+                            key = (source_id, provenance["source_file"], provenance["source_line"], qid)
+                            if key in seen:
+                                counts["excluded_repeated_supervision"] += 1
+                                continue
+                            seen.add(key)
+                            units[group].add((source_id, provenance["independent_unit_id"]))
+                            questions[qid] = converted
+                            counts["questions_" + group] += 1
+                            counts["qid_" + qid] += 1
+                            target_key = "|".join((source_id, target, qid, question["type"]))
+                            target_counts[target_key] += 1
+                            labels[target_key + "|" + json.dumps(label)] += 1
+                        if not questions:
+                            continue
+                        if output is None:
+                            destination.mkdir(parents=True, exist_ok=True)
+                            output = stack.enter_context(output_path.open("w", encoding="utf-8"))
+                            stats["data_paths"][split] = str(output_path)
+                        output.write(json.dumps({**row, "questions": questions}, ensure_ascii=False) + "\n")
+                        input_counts["written_records"] += 1
+                        counts["written_records"] += 1
+        stats["splits"][split] = {**dict(counts), "question_target_counts": dict(target_counts),
+                                 "label_counts": dict(labels),
+                                 "independent_units_by_class": {group: len(values) for group, values in units.items()}}
+    stats["new_train_questions_vs_c03"] = sum(
+        stats["splits"]["train"].get("questions_" + group, 0) for group in ("S2", "S3"))
+    stats["configuration_status"] = "TYPED_AUXILIARY_READY" if stats["new_train_questions_vs_c03"] else "PENDING_NO_NEW_TYPED_LABELS"
+    if stats["data_paths"]:
+        (destination / "materialization_typed_auxiliary.json").write_text(json.dumps(stats, ensure_ascii=False, indent=2) + "\n")
+    print(json.dumps(stats, ensure_ascii=False))
+    return stats
+
+
+def _kev_coverage_rows(source_root, split, group, counts):
+    """Stream the saved typed rows using the same source, split and label rules."""
+    from router_data.batch_prep import MATRIX_TARGETS
+
+    path = source_root / split / (group + ".jsonl")
+    if not path.is_file():
+        counts["missing_input_files"] += 1
+        return
+    seen, allowed = set(), _kev_source_targets()
+    with path.open(encoding="utf-8") as source:
+        for line_no, line in enumerate(source, 1):
+            row = json.loads(line)
+            counts["input_records"] += 1
+            provenance, meta = row["provenance"], row["_meta"]
+            target, source_id = meta["target"], provenance["source_id"]
+            if (provenance["split"] != split or meta["supervision_class"] != group
+                    or target not in MATRIX_TARGETS[group] or target not in allowed.get(source_id, ())):
+                counts["excluded_split_or_source_target"] += 1
+                continue
+            questions = {}
+            for qid, question in row["questions"].items():
+                label = question["label"] if "label" in question else row["expected"][qid]
+                converted = _kev_labeled_question(question, label, target)
+                if converted is None:
+                    counts["excluded_unknown_or_invalid_label"] += 1
+                    continue
+                key = (source_id, provenance["source_file"], provenance["source_line"], qid)
+                if key in seen:
+                    counts["excluded_repeated_supervision"] += 1
+                    continue
+                seen.add(key)
+                questions[qid] = converted
+            if questions:
+                counts["legal_records"] += 1
+                yield line_no, {**row, "questions": questions}
+
+
+def export_kev_coverage(typed_data_root, project_root=".", seed=42, configuration_source=None):
+    """Materialize R01-R16 ratios only; the existing dispatcher owns training."""
+    from router_data.batch_prep import FULL_COMBOS
+
+    root = Path(project_root).resolve()
+    source_root = (root / typed_data_root).resolve()
+    destination = root / "data/kev/v8_extension"
+    manifest_path = destination / "materialization_coverage.json"
+    groups, splits = ("S1", "S2", "S3"), ("train", "val")
+    ratios = {"R" + key[1:]: dict(zip(names, weights)) for key, (names, weights) in FULL_COMBOS.items()}
+    inputs = {}
+    for split in splits:
+        for group in groups:
+            path = source_root / split / (group + ".jsonl")
+            inputs[f"{split}/{group}"] = {"path": str(path), "exists": path.is_file()}
+            if path.is_file():
+                info = path.stat()
+                inputs[f"{split}/{group}"].update(bytes=info.st_size, mtime_ns=info.st_mtime_ns)
+    configuration = {"configuration_source": configuration_source, "typed_data_root": str(source_root),
+                     "seed": seed, "ratios": ratios, "source_targets": _kev_source_targets(),
+                     "selection": "MAX_INTEGER_RATIO_WITHOUT_REPLACEMENT_PER_SPLIT", "input_files": inputs}
+    if manifest_path.is_file():
+        existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if existing["configuration"] != configuration:
+            result = {"status": "PENDING", "reason": "Existing coverage has different configuration or inputs; historical material unchanged",
+                      "materialization_path": str(manifest_path)}
+        else:
+            missing = [path for run in existing["runs"].values() for path in run["dataPaths"].values() if not Path(path).is_file()]
+            result = existing if not missing else {"status": "PENDING", "reason": "Recorded coverage material is missing; historical record unchanged", "missing_paths": missing}
+        print(json.dumps(result, ensure_ascii=False))
+        return result
+
+    result = {"configuration": configuration, "test_used": False, "pools": {}, "runs": {},
+              "materialization_path": str(manifest_path),
+              "ratio_unit": "original typed record; no replacement within each run and class",
+              "validation_scope": "material split only; dispatcher retains its original fixed Kev Val"}
+    orders = {}
+    for split in splits:
+        result["pools"][split] = {}
+        for group in groups:
+            counts, units, sources, targets = Counter(), set(), Counter(), Counter()
+            order = []
+            for line_no, row in _kev_coverage_rows(source_root, split, group, counts):
+                order.append(line_no)
+                prov = row["provenance"]
+                units.add((prov["source_id"], prov["independent_unit_id"]))
+                sources[prov["source_id"]] += 1
+                targets[prov["source_id"] + "|" + row["_meta"]["target"]] += 1
+            random.Random(seed).shuffle(order)
+            orders[split, group] = order
+            result["pools"][split][group] = {**dict(counts), "independent_units": len(units),
+                                           "source_counts": dict(sources), "target_counts": dict(targets)}
+
+    wanted, summaries = defaultdict(lambda: defaultdict(list)), {}
+    for run_id, ratio in ratios.items():
+        run = {"run_id": run_id, "ratio": ratio, "seed": seed, "status": "READY", "splits": {}, "dataPaths": {}}
+        result["runs"][run_id] = run
+        absent = [group for group, weight in ratio.items() if len(orders["train", group]) < weight]
+        if absent:
+            run.update(status="PENDING", reason="Not enough legal training targets for a complete ratio: " + ",".join(absent))
+            continue
+        paths = {split: destination / run_id / (split + ".jsonl") for split in splits}
+        if any(path.exists() for path in paths.values()):
+            run.update(status="PENDING", reason="Existing run material has no matching coverage record; unchanged")
+            continue
+        for split in splits:
+            multiplier = min(len(orders[split, group]) // weight for group, weight in ratio.items())
+            summary = {"ratio_multiplier": multiplier, "records_by_class": {group: 0 for group in ratio},
+                       "questions_by_class": Counter(), "source_counts": Counter(), "target_counts": Counter(),
+                       "question_target_counts": Counter(), "units": defaultdict(set)}
+            summaries[run_id, split] = summary
+            if not multiplier:
+                run["splits"][split] = {"status": "PENDING", "reason": "No complete legal ratio in this split", "ratio_multiplier": 0, "records_by_class": summary["records_by_class"]}
+                continue
+            run["dataPaths"][split] = str(paths[split])
+            for group, weight in ratio.items():
+                for line_no in orders[split, group][:multiplier * weight]:
+                    wanted[split, group][line_no].append(run_id)
+
+    with ExitStack() as stack:
+        handles = {}
+        for split in splits:
+            for group in groups:
+                if not wanted[split, group]:
+                    continue
+                for line_no, row in _kev_coverage_rows(source_root, split, group, Counter()):
+                    recipients = wanted[split, group].get(line_no, ())
+                    if not recipients:
+                        continue
+                    text = json.dumps(row, ensure_ascii=False) + "\n"
+                    prov, target = row["provenance"], row["_meta"]["target"]
+                    for run_id in recipients:
+                        key = run_id, split
+                        if key not in handles:
+                            path = Path(result["runs"][run_id]["dataPaths"][split])
+                            path.parent.mkdir(parents=True, exist_ok=True)
+                            handles[key] = stack.enter_context(path.open("x", encoding="utf-8"))
+                        handles[key].write(text)
+                        summary = summaries[key]
+                        summary["records_by_class"][group] += 1
+                        summary["questions_by_class"][group] += len(row["questions"])
+                        summary["source_counts"][prov["source_id"]] += 1
+                        summary["target_counts"][prov["source_id"] + "|" + target] += 1
+                        summary["units"][group].add((prov["source_id"], prov["independent_unit_id"]))
+                        for qid, question in row["questions"].items():
+                            summary["question_target_counts"]["|".join((prov["source_id"], target, qid, question["type"]))] += 1
+    for (run_id, split), summary in summaries.items():
+        if not summary["ratio_multiplier"]:
+            continue
+        units = summary.pop("units")
+        summary["independent_units_by_class"] = {group: len(values) for group, values in units.items()}
+        summary["total_records"] = sum(summary["records_by_class"].values())
+        result["runs"][run_id]["splits"][split] = summary
+    destination.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(result, ensure_ascii=False))
+    return result
+
+
+def export_kev_training(config_path, project_root=".", typed_data_root=None):
     """Use observed Arena labels within the existing project train/Val split."""
+    if typed_data_root is not None:
+        return export_kev_auxiliary(typed_data_root, project_root, str(config_path))
     root = Path(project_root)
     config = json.loads((root / config_path).read_text())
     split_ids = {}
@@ -389,11 +648,18 @@ if __name__ == "__main__":
     parser.add_argument("--out-root", default="runs/MR-V8-DATA-EXTENSION-20261018")
     parser.add_argument("--max-rows", type=int, default=None, help="Limit rows for fast validation")
     parser.add_argument("--export-kev", action="store_true")
+    parser.add_argument("--kev-coverage", action="store_true", help="Export the existing 16 S1/S2/S3 ratios without training")
+    parser.add_argument("--typed-data-root", help="Saved train/val S1/S2/S3 views with original labels and provenance")
+    parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--config", default="our-project/data/configs/training/KEV-V8-EXT-01.json")
     parser.add_argument("--project-root", default=".")
     args = parser.parse_args()
 
-    if args.export_kev:
-        export_kev_training(args.config, args.project_root)
+    if args.kev_coverage:
+        if args.typed_data_root is None:
+            parser.error("--kev-coverage requires --typed-data-root")
+        export_kev_coverage(args.typed_data_root, args.project_root, args.seed, args.config)
+    elif args.export_kev:
+        export_kev_training(args.config, args.project_root, args.typed_data_root)
     else:
         build_views(args.cleaned_root, args.out_root, args.max_rows)

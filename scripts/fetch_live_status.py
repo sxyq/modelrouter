@@ -728,6 +728,10 @@ def training_eta(history, plans, live, plan_rows):
             method = "upstream cumulative seconds/record × configured batch × accumulation"
             run = next((r for r in history["runs"] if r["family"] == "kev" and r["run_id"] == observed.get("run_id")), {})
             fixed_val = next((v for v in run.get("validation", []) if v["stream"] == "clean"), {})
+            if not fixed_val and proc.get("train_pid"):
+                fixed_val = next((v for r in history["runs"] if r["family"] == "kev" and r["protocol"] == "KEV_FORMAL_LORA"
+                                  for v in r.get("validation", []) if v["stream"] == "clean"
+                                  and str(v.get("validation_set", "")).endswith("data/kev/公开数据/val.jsonl")), {})
             timed = [{"run_id": r["run_id"], "seconds": r["evaluation_seconds"], "source": v["source"]}
                      for r in history["runs"] if r["family"] == "kev" and r["protocol"] == run.get("protocol")
                      and r.get("evaluation_status") == "EVALUATED" and r.get("evaluation_seconds")
@@ -795,14 +799,37 @@ def training_eta(history, plans, live, plan_rows):
             "slow_seconds": sum(t[2] for t in task_times) if task_times and len(task_times) == len(selected) else records / min(rates) if rates else None,
             "needs_materialization": needs_cpu})
     pending += [{"group": p["run_id"], "count": 1, "reason": p["reason"]} for p in plan_rows if p["status"] == "PENDING_PARENT"]
+    kev_plans = history["experiment_plans"]["kev_queue"]
+    queued_kev = [c for c in kev_plans if c["status"] == "QUEUED" and c.get("coverage_analysis")]
+    coverage_material = read_json(PROJECT_ROOT / "data/kev/v8_extension/materialization_coverage.json", {})
+    queued_kev += [{"candidate_id": "KEV-V8-" + rid, "coverage_analysis": run}
+                   for rid, run in coverage_material.get("runs", {}).items() if run["status"] == "READY"
+                   and not any(c["candidate_id"] == "KEV-V8-" + rid for c in kev_plans)]
+    kev_rates = [r["terminal_metrics"]["records_seen"] / r["terminal_metrics"]["wall_seconds"]
+                 for r in history["runs"] if r["family"] == "kev" and r["protocol"] == "KEV_FORMAL_LORA"
+                 and r.get("terminal_metrics", {}).get("records_seen") and r["terminal_metrics"].get("wall_seconds")]
+    val_times = [r["evaluation_seconds"] for r in history["runs"] if r["family"] == "kev"
+                 and r["protocol"] == "KEV_FORMAL_LORA" and r.get("evaluation_status") == "EVALUATED"
+                 and r.get("evaluation_seconds")]
+    if queued_kev:
+        total_records = sum(sum(c["coverage_analysis"]["splits"]["train"]["records_by_class"].values()) for c in queued_kev)
+        validation_seconds = len(queued_kev) * median(val_times) if val_times else None
+        groups.append({"group": "Kev合法typed配比", "count": len(queued_kev),
+            "run_ids": [c["candidate_id"] for c in queued_kev], "remaining_records": total_records,
+            "training_seconds": total_records / median(kev_rates) if kev_rates else None,
+            "validation_seconds": validation_seconds, "materialization_seconds": 0, "needs_materialization": 0,
+            "records_per_second": median(kev_rates) if kev_rates else None,
+            "fast_seconds": total_records / max(kev_rates) + (validation_seconds or 0) if kev_rates else None,
+            "slow_seconds": total_records / min(kev_rates) + (validation_seconds or 0) if kev_rates else None,
+            "method": "legal material counts / observed formal Kev training throughput plus one original fixed Val per run; target mix may change throughput"})
     for candidate in history["experiment_plans"]["kev_queue"]:
-        if candidate["status"] not in ("COMPLETED", "RUNNING", "TRAINING"):
+        if candidate["status"] not in ("COMPLETED", "RUNNING", "TRAINING") and candidate not in queued_kev:
             pending.append({"group": candidate["candidate_id"], "count": 1,
                             "reason": candidate.get("pending_reason") or candidate.get("failure_reason") or "candidate method/material/initialization unresolved; no launch assumed"})
     live_seconds = [c["remaining_training_seconds"] + (c["validation_seconds"] or 0)
                     for c in current.values() if c["remaining_training_seconds"] is not None]
     cpu_total = sum(g["materialization_seconds"] or 0 for g in groups)
-    wall = sum(g["training_seconds"] or 0 for g in groups) + max(live_seconds, default=0) + cpu_total
+    wall = sum((g["training_seconds"] or 0) + (g["validation_seconds"] or 0) for g in groups) + max(live_seconds, default=0) + cpu_total
     low = sum(g["fast_seconds"] or 0 for g in groups) + max(live_seconds, default=0)
     high = sum(g["slow_seconds"] or 0 for g in groups) + sum(live_seconds) + cpu_total
     return {"observed_at": live.get("collected_at_iso", now_iso()), "current": current, "groups": groups,
@@ -996,6 +1023,8 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         "kev_candidates": history["experiment_plans"]["kev_queue"], "data_census": history.get("data_census"),
         "laya_queue": {k: queue.get(k) for k in ("queue_status", "current_run", "next_run", "failed_runs", "blocked_runs")},
         "kev_materialization": read_json(root / "data/kev/v8_extension/materialization.json", {}),
+        "kev_typed_auxiliary": read_json(root / "data/kev/v8_extension/materialization_typed_auxiliary.json", {}),
+        "kev_coverage_material": read_json(root / "data/kev/v8_extension/materialization_coverage.json", {}),
         "selection": "One minimum primary validation Loss epoch per run; highest Accuracy epoch is independent; loadable candidates use their actual epoch metrics",
         "limitations": history["limitations"]})
     live = live if live is not None else read_json(root / "our-project/dashboard/live_status.json", {})
@@ -1134,6 +1163,13 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
                         c.get("pending_reason") or c.get("failure_reason")]
                        for c in result["kev_candidates"]])
     overview += ["", "配方、原训练命令、父实体与验证记录保留在candidate_queue.json、candidate_ledger.json和本报告JSON；未记录的数据内容标识与历史源码提交使用N/A，不承诺遗失材料可精确重建。", "",
+        "### Kev已物化的合法配比", "",
+        "下表是原数据入口实际生成的材料。READY表示材料就绪，训练是否开始以候选队列和原始Run为准；全部使用同一C03初始化及原固定Val，样本总量随比例变化，不能单独归因于比例。", ""]
+    overview += table(["材料ID", "监督比例", "状态", "训练记录/S", "独立单元/S", "训练文件"],
+                      [[rid, r["ratio"], r["status"], r["splits"].get("train", {}).get("records_by_class"),
+                        r["splits"].get("train", {}).get("independent_units_by_class"), r["dataPaths"].get("train")]
+                       for rid, r in result["kev_coverage_material"].get("runs", {}).items()])
+    overview += ["", "C10原全量数据中存在当前政策排除的来源，保持待决。广覆盖使用已有Batch1合法目标，不将历史difficulty_tier当作新S3，也不生成未选动作的胜负。", "",
         "## 终点与Planning建议", "",
         "Run级：全材料入口按原定Epoch完成，当前运行状态见实时观测，Kev已完成Val不计入待运行耗时。矩阵/历史小训练入口已有连续两Epoch未达0.5%主Loss改善的结束条件；该条件不适用于全材料入口，不新增结束规则。",
         "实验组级：结合所有Epoch观察Accuracy、Loss、Brier、ECE。F06的权衡及B02辅助监督的负结果支持减少机械扩张的建议，不能据此提前结束健康Run。当前缺多种子误差与独立Test，尚不能宣布性能平台期或唯一最优比例。",
@@ -1211,6 +1247,11 @@ def _live_family(family, processes, history):
     else:
         directory = PROJECT_ROOT / proc["out"]
     row = next((r for r in history["runs"] if r["root"] == relative(directory, PROJECT_ROOT)), {})
+    if family == "kev" and not row:
+        candidate = next((c for c in read_json(PROJECT_ROOT / "our-project/results/training/kev/candidate_queue.json", [])
+                          if c.get("checkpoint_path") == relative(directory, PROJECT_ROOT)), {})
+        row = {"run_id": candidate.get("candidate_id"), "planned_epochs": int(candidate["epochs"]) if candidate.get("epochs") else None,
+               "protocol": "KEV_FORMAL_LORA"}
     cursor_path = directory / "cursor.json" if family == "laya" else kev_cursor(directory)
     cursor = read_json(cursor_path, {})
     epoch = cursor.get("epoch")

@@ -150,12 +150,19 @@ def load_v8_triplet_data(views_dir: Path, split: str = "train", max_per_view: in
                     break
                 if line.strip():
                     item = json.loads(line)
+                    models = item["candidate_models"]
+                    winner = item.get("winner_choice")
+                    if winner not in ("model_a", "model_b") or len(models) != 2 or not all(models) or models[0] == models[1]:
+                        continue
+                    label = 0 if winner == "model_a" else 1
+                    if item.get("winner_model") != models[label]:
+                        continue
                     records.append({
                         "task": "choice",
                         "prompt": item.get("prompt_snippet", "")[:300],
-                        "opt_a": f"Model: {item.get('model_a', 'model_a')}",
-                        "opt_b": f"Model: {item.get('model_b', 'model_b')}",
-                        "label": 0 if item.get("winner_choice") == "model_a" else 1
+                        "opt_a": f"Model: {models[0]}",
+                        "opt_b": f"Model: {models[1]}",
+                        "label": label
                     })
 
     # 2. CACHE_REUSE_OPPORTUNITY
@@ -167,9 +174,11 @@ def load_v8_triplet_data(views_dir: Path, split: str = "train", max_per_view: in
                     break
                 if line.strip():
                     item = json.loads(line)
-                    reusable = float(item.get("estimated_reusable_blocks", 0))
-                    total_blocks = max(1.0, float(item.get("prefix_block_count", 1)))
-                    ratio = min(1.0, max(0.0, reusable / total_blocks))
+                    reusable = float(item["estimated_reusable_blocks"])
+                    total_blocks = float(item["prefix_block_count"])
+                    if not math.isfinite(reusable) or not math.isfinite(total_blocks) or not 0 <= reusable <= total_blocks or total_blocks <= 0:
+                        continue
+                    ratio = reusable / total_blocks
                     records.append({
                         "task": "cache",
                         "prompt": f"Session prefix tokens: {item.get('input_length', 0)}, blocks: {total_blocks}",
@@ -185,10 +194,14 @@ def load_v8_triplet_data(views_dir: Path, split: str = "train", max_per_view: in
                     break
                 if line.strip():
                     item = json.loads(line)
-                    out_val = 1.0 if item.get("known_terminal_outcome") in ("RESOLVED", "SUCCESS", "1") else 0.0
+                    status = item.get("known_terminal_outcome")
+                    observed_model = item.get("observed_model")
+                    if status not in ("SUCCESS", "FAILURE") or not observed_model or observed_model == "unknown_model":
+                        continue
+                    out_val = 1.0 if status == "SUCCESS" else 0.0
                     records.append({
                         "task": "outcome",
-                        "prompt": f"Agent trajectory task {item.get('task_id', '')} step {item.get('step_id', 0)}",
+                        "prompt": json.dumps({"state_before": item["state_before"], "observed_model": observed_model}, ensure_ascii=False),
                         "outcome": out_val
                     })
 
