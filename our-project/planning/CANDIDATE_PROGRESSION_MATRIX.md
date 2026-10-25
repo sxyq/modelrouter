@@ -12,6 +12,39 @@
 Per V8 §8.3, each model family (Laya and Kev) is evaluated across **at least 12 distinct, reproducible, and verifiable candidate versions / phase checkpoints**. Each candidate is uniquely defined by:
 `candidate_id`: Base Checksum, Data View SHA, Training Source SHA, Supervision Target, Loss Weighting, Seed/Epoch, and Checkpoint SHA.
 
+## 2026-10-25 · 当前候选与材料状态
+
+依据为 A6000 台北 10:46–10:53 的实际记录。下方第 2–4 节保留 10/24 及此前历史原文，其中 F10 在训、C06/C08/C10 排队和 C09 待决均为旧状态；当前候选以本节为准，不把计划或材料就绪计为完成。
+
+| 对象 | 当前状态 | 依据与范围 |
+|---|---|---|
+| Laya F11 | RUNNING，健康在训 | worker `303160` / 原 controller `499841`；未补写 F10 最终指标 |
+| Kev C03/C04 | COMPLETED，正式训练及固定 Val 均完成 | 同一固定 Val：8,436 记录 / 9,330 问题；两实体保护，0 删除、0 释放 |
+| Kev C05/C06 | PENDING | 状态拆分不成立，不能据旧排队状态启动 |
+| Kev C07/C08 | PENDING | Rank16 初始化与 Rank8/32 请求不兼容；保持原初始化 |
+| Kev C09 | RUNNING，健康在训 | worker `413095` / 原 dispatcher `413082`；固定 Val 尚待本 Run 完训后完成 |
+| Kev C10 | PENDING，材料待决 | 实际 loss 权重有效；原材料含 35,645 条禁用 ROUTE-001/002 来源 + 17 条 TRA-004，不擅改或追加训练 |
+| Kev C11 | 选择记录，当前 C03 | 不计新 Run，不冒充新训练版本 |
+| Kev R01–R16 | READY，训练未完成 | 108,656 条训练材料已官方 strict CPU 编码，0 异常；等待 C09 完训及固定 Val 后同 dispatcher 接续 |
+
+唯一接续命令标识 `420899` 已存在，勿再次派发。R01–R16 的 READY 只证明材料就绪；CPU 编码、训练进度和固定 Val 均不计官方 Agent 成绩。
+
+### C03/C04 同固定 Val 的精确记录
+
+| 指标 | C03 | C04 |
+|---|---:|---:|
+| acc | 0.5715969989281886 | 0.5711682743837084 |
+| nll | 1.0795525776246775 | 1.0872975000322915 |
+| brier | 0.537533605673637 | 0.5402653787706695 |
+| ece | 0.05104668378873653 | 0.05987151793598101 |
+| 内部 score | 100 | 97.842 |
+
+C03 的 acc 更高，nll/brier/ece 更低。内部 score 只用于当前内部比较，不代表论文主要评价或官方 Agent 成绩；C11 当前选择 C03 的记录不增加正式训练次数。
+
+Laya 历史为 105 个真实 Run（104 结束 + F11 在训）、220 个版本、7 份实体；旧核心 2/5，新池 F05-e01 一份，F06-e02 另列历史留存。Kev 为 6 个执行对象 + 1 个导入对象，正式完成仅 C03/C04，C09 在训，导入对象不计本地正式训练。
+
+未来任务 515 项 = 499 Laya + 16 Kev，不含当前两个在训 Run。10:50 条件 ETA 约 478 小时，情景 398–524 小时，中心约台北 11/14；不保证日期，不宣布论文完成。原报告已更新监督材料与实际状态，候选科学定义、QA/Research与数据政策保持，不新增科研 Q-ID。
+
 ---
 
 ## 2. Laya-421M 12-Candidate Progression Matrix
