@@ -56,6 +56,19 @@ def finite_values(value):
     return value
 
 
+def public_training_record(value, project_root=PROJECT_ROOT):
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    if isinstance(value, str):
+        return value.replace(str(project_root) + "/", "").replace(str(project_root), ".")
+    if isinstance(value, dict):
+        return {public_training_record(k, project_root): public_training_record(v, project_root)
+                for k, v in value.items() if k not in ("raw_output", "error")}
+    if isinstance(value, list):
+        return [public_training_record(v, project_root) for v in value]
+    return value
+
+
 def read_json(path, default=None):
     path = Path(path)
     if not path.is_file():
@@ -513,9 +526,18 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                             "by_stream_actual": None, "question_exposure": metrics.get("question_exposure"),
                             "optimizer_updates": metrics.get("optimizer_steps")},
                "limitations": ["Imported adapter history is upstream training, not a new local GPU run"] if directory.parent.name == "models" else []}
+        coverage = plan.get("coverage_analysis") or {}
+        train_coverage = coverage.get("splits", {}).get("train", {})
+        materialized = train_coverage.get("records_by_class") or {
+            s: train_coverage["questions_" + s] for s in ("S1", "S2", "S3") if "questions_" + s in train_coverage}
+        ratios = coverage.get("ratio")
+        row["exposure"].update(materialized_records=sum(materialized.values()) if materialized else None,
+                               encoded_records=coverage.get("encoding", {}).get("encoded_records"),
+                               materialized_independent_units_by_stream=train_coverage.get("independent_units_by_class"))
         row.update(stage="IMPORTED" if imported else "SHORT_TRAINING" if partial else "FORMAL_LORA",
-                   supervision_classes=[], sampling={"mode": "FIXED_JSONL", "requested_ratios": None,
-                       "materialized_per_epoch_by_stream": None, "trained_total_by_stream": None, "ratio_label": None},
+                   supervision_classes=sorted(materialized), sampling={"mode": "MATRIX_RATIO" if ratios else "FIXED_JSONL", "requested_ratios": ratios,
+                       "materialized_per_epoch_by_stream": materialized or None, "trained_total_by_stream": None,
+                       "ratio_label": ":".join(str(ratios[s]) for s in sorted(ratios)) if ratios else None},
                    training_seconds=metrics.get("wall_seconds"),
                    initialization={"base_model": args.get("base"), "init_from": args.get("init_from")},
                    code_commit=plan.get("code_commit"), command=(plan.get("training_attempts") or [{}])[-1].get("command"))
@@ -669,7 +691,8 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                    "laya_queue": read_json(p0 / "queue_state.json", {}), "kev_queue": [
                        {k: c.get(k) for k in ("candidate_id", "name", "status", "training_status", "evaluation_status",
                           "pending_reason", "failure_reason", "data_path", "init_from", "configuration_source", "comparison_to_c03",
-                          "candidate_kind", "metrics", "recipe", "coverage_analysis", "selection", "retention")}
+                          "candidate_kind", "metrics", "recipe", "coverage_analysis", "selection", "retention",
+                          "checkpoint_path", "started_at", "finished_at", "code_commit", "training_attempts", "evaluation_attempts")}
                        for c in kev_queue]},
                "limitations": ["Epoch records count observations, not proof that all versions were physically saved.",
                                 "Missing files without deletion evidence remain uncertain.",
@@ -1007,15 +1030,7 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         group["observations"].sort(key=lambda r: (r["started_at"] is None, r["started_at"] or "", r["run_id"]))
         group["order"] = "recorded start time; undated runs follow in Run ID order"
     def public(value):
-        if isinstance(value, float) and not math.isfinite(value):
-            return None
-        if isinstance(value, str):
-            return value.replace(str(root) + "/", "").replace(str(root), ".")
-        if isinstance(value, dict):
-            return {k: public(v) for k, v in value.items() if k not in ("raw_output", "error")}
-        if isinstance(value, list):
-            return [public(v) for v in value]
-        return value
+        return public_training_record(value, root)
     result = public({"generated_at": now_iso(), "code_commit": os.environ.get("MODELROUTER_CODE_COMMIT"),
         "counts": history["counts"], "plans": plan_rows, "observations": observations,
         "loadable_candidates": loadable, "objective_trends": list(trends.values()),
@@ -1077,7 +1092,7 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         "## 6. Kev 候选与材料", "",
         "正式Kev的实际训练状态与全部固定Val：" + cell([{ "run_id": r["run_id"], "status": r["status"], "validation": r["validation_all_epochs"]} for r in result["observations"] if r["family"] == "kev" and r["stage"] == "FORMAL_LORA"]),
         "C05原文本state含任务与Prompt，没有可单独移除的动态字段，未创建无效状态消融。C07既定Rank8与现有Rank16初权重不兼容，从基座重建会同时改变初始化，未擅自启动。",
-        "C09原视图与项目固定划分不一致。原转换入口仅导出位于同一项目Train/Val的Arena记录，保持任务文本与typed标签；导出训练记录全部已在C03使用，新训练记录为0。缓存标量及已观察终局没有当前正式配置的typed目标，完整C09保持PARTIAL_MATERIAL/PENDING，不重训C03材料冒充新增数据。", "",
+        "C09原Arena导出均已在C03使用，历史视图保留。原转换入口新增合法typed辅助视图，仅使用实际观察的S2终局与S3缓存、输出Token及quota类别，不创建未选模型胜负。C09当前训练与Val状态见候选表；训练材料统计：" + cell((result["kev_typed_auxiliary"].get("splits") or {}).get("train")) + "。新增视图与原Pilot分别保存。", "",
         "材料统计：" + cell(result["kev_materialization"]), "",
         "Kev训练与Val沿用原入口，当前状态见实时观测；候选方法与材料待决原因保留在原队列。", "",
         "## 7. 科学解释与当前限制", "",

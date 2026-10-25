@@ -861,6 +861,9 @@ def test_collector_research_same_target_and_loadable_epochs(tmp_path):
                            "checkpoint_path": str(directory.relative_to(tmp_path))})
     candidates[1]["comparison_to_c03"] = {"status": "COMPARABLE", "direction": "candidate_minus_c03",
                                           "deltas": {k: c04[k] - c03[k] for k in ("acc", "nll", "brier", "ece")}}
+    candidates[1]["coverage_analysis"] = {"ratio": {"S1": 2, "S3": 1}, "splits": {"train": {
+        "records_by_class": {"S1": 4, "S3": 2}, "independent_units_by_class": {"S1": 4, "S3": 1}}},
+        "encoding": {"encoded_records": 6}}
     write_json(tmp_path / "our-project/results/training/kev/candidate_queue.json", candidates)
     originals = {p: p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
     history = collector.build_training_history(tmp_path, processes={})
@@ -908,6 +911,14 @@ def test_collector_research_same_target_and_loadable_epochs(tmp_path):
         assert rows[rid]["validation_coverage"]["evaluated_questions"] == 9330
     assert rows["KEV-V8-C04"]["evaluation_seconds"] == 2982.712651308626
     assert rows["KEV-V8-C04"]["comparison_to_c03"] == candidates[1]["comparison_to_c03"]
+    assert rows["KEV-V8-C04"]["supervision"] == ["S1", "S3"]
+    assert rows["KEV-V8-C04"]["sampling"]["ratio_label"] == "2:1"
+    assert rows["KEV-V8-C04"]["sampling"]["materialized_per_epoch_by_stream"] == {"S1": 4, "S3": 2}
+    assert rows["KEV-V8-C04"]["exposure"]["materialized_records"] == 6
+    assert rows["KEV-V8-C04"]["exposure"]["encoded_records"] == 6
+    assert rows["KEV-V8-C04"]["exposure"]["trained_records"] is None
+    assert rows["KEV-V8-C03"]["exposure"]["materialized_records"] is None
+    assert collector.public_training_record({str(tmp_path / "data"): {"raw_output": "private", "error": "private", "n": 6}}, tmp_path) == {"data": {"n": 6}}
     current = report["training_eta"]["current"]["kev"]
     assert (current["remaining_training_seconds"], current["validation_seconds"], current["estimated_finish_at"]) == (0, 0, None)
     assert current["validation_in_finish_estimate"] is False
