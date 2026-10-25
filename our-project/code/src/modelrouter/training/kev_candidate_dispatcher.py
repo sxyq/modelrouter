@@ -16,6 +16,7 @@ import time
 import json
 import logging
 import subprocess
+from collections import Counter
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
@@ -31,6 +32,7 @@ KEV_RUNS_ROOT = PROJECT_ROOT / "runs"
 QUEUE_FILE = PROJECT_ROOT / "our-project" / "results" / "training" / "kev" / "candidate_queue.json"
 LEDGER_FILE = PROJECT_ROOT / "our-project" / "results" / "training" / "kev" / "candidate_ledger.json"
 FIXED_VAL_PATH = "data/kev/公开数据/val.jsonl"
+SOURCE_SHA = os.environ.get("MODELROUTER_SOURCE_SHA")
 
 DEFAULT_CANDIDATES = [
     {
@@ -144,6 +146,13 @@ def load_queue() -> List[Dict[str, Any]]:
                 material = PROJECT_ROOT / "data/kev/v8_extension/materialization.json"
                 if material.is_file():
                     candidate["materialization"] = json.loads(material.read_text())
+                typed_material = PROJECT_ROOT / "data/kev/v8_extension/materialization_typed_auxiliary.json"
+                if typed_material.is_file():
+                    candidate["materialization"] = json.loads(typed_material.read_text())
+                    candidate["data_path"] = str(Path(candidate["materialization"]["data_paths"]["train"]).relative_to(PROJECT_ROOT))
+                    candidate["coverage_analysis"] = candidate["materialization"]
+                    candidate["retention_group"] = "V8_EXTENSION"
+                    candidate["research_scope"] = "New observed S2/S3 auxiliary targets; no repeated C03 S1 or unselected-model outcome labels"
                 candidate["configuration_source"] = str(config_path)
     if new_queue:
         save_queue(queue)
@@ -151,7 +160,120 @@ def load_queue() -> List[Dict[str, Any]]:
 
 def save_queue(queue: List[Dict[str, Any]]):
     QUEUE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    QUEUE_FILE.write_text(json.dumps(queue, indent=2), encoding="utf-8")
+    for path, payload in ((QUEUE_FILE, queue), (QUEUE_FILE.with_name(LEDGER_FILE.name), {
+        "updated_at": _now(), "candidates": [{k: c.get(k) for k in (
+            "candidate_id", "name", "status", "training_status", "evaluation_status",
+            "pending_reason", "failure_reason", "recipe", "training_attempts", "evaluation_attempts",
+            "training_metrics", "metrics", "comparison_to_c03", "selection", "retention",
+            "checkpoint_path", "init_from", "coverage_analysis") } for c in queue]})):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_name(path.name + ".tmp")
+        tmp.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        tmp.replace(path)
+
+
+def complete_candidate_plan(queue):
+    """Add the already defined C-series slots without changing executed recipes."""
+    template = copy.deepcopy(DEFAULT_CANDIDATES[2])
+    plans = [
+        ("KEV-V8-C06", "KEV-V8-ABL-FULLSTATE", "data/kev/公开数据/train_fullstate.jsonl", "16", "2e-5",
+         "Eight real state fields are not available in the current typed training records"),
+        ("KEV-V8-C08", "KEV-V8-ABL-LORA32", "data/kev/公开数据/train.jsonl", "32", "1e-5", None),
+        ("KEV-V8-C10", "KEV-V8-S1-W2", "data/kev/公开数据/train.jsonl", "16", "2e-5", None),
+    ]
+    for cid, name, data, rank, lr, reason in plans:
+        if any(c["candidate_id"] == cid for c in queue):
+            continue
+        item = {**copy.deepcopy(template), "candidate_id": cid, "name": name,
+                "data_path": data, "lora": rank, "lr": lr, "status": "PENDING" if reason else "QUEUED",
+                "checkpoint_path": f"runs/{name}/checkpoint", "seed": 42}
+        item["description"] = name
+        if reason:
+            item.update(pending_reason=reason, material_status="PENDING")
+        if cid == "KEV-V8-C10":
+            item["question_loss_weights"] = {"model_choice": 2.0}
+            item["retention_group"] = "S1_WEIGHT_ABLATION"
+            item.update(status="PENDING", material_status="PENDING",
+                        pending_reason="Original train contains 35,645 ROUTE-001/002 rows excluded by current policy and 17 TRA-004 rows outside the legal source set; difficulty_tier is historical auxiliary supervision")
+        queue.append(item)
+    if not any(c["candidate_id"] == "KEV-V8-C11" for c in queue):
+        queue.append({"candidate_id": "KEV-V8-C11", "name": "KEV-V8-VAL-BEST",
+                      "candidate_kind": "SELECTION", "status": "PENDING",
+                      "pending_reason": "Selection uses comparable completed Val results; no new training"})
+    queue.sort(key=lambda c: c["candidate_id"])
+    save_queue(queue)
+
+
+def record_recipe(candidate, command):
+    init = PROJECT_ROOT / candidate["init_from"]
+    config = init / "training_config.json"
+    parent = json.loads(config.read_text()) if config.is_file() else {}
+    data = PROJECT_ROOT / candidate["data_path"]
+    upstream = subprocess.run(["git", "-C", str(PROJECT_ROOT / "external/kev"), "rev-parse", "HEAD"],
+                              capture_output=True, text=True)
+    candidate["recipe"] = {
+        "run_id": candidate["name"], "candidate_id": candidate["candidate_id"],
+        "source_git_sha": SOURCE_SHA, "upstream_git_sha": upstream.stdout.strip() or None,
+        "base_model": "models/qwen3.5-4b-base", "base_revision": parent.get("base_revision"),
+        "init_from": candidate["init_from"], "parent_init_source": parent.get("init_source"),
+        "data_path": candidate["data_path"], "data_bytes": data.stat().st_size if data.is_file() else None,
+        "data_identity": candidate.get("coverage_analysis"),
+        "validation_set": FIXED_VAL_PATH, "test_used": False,
+        "command": command, "question_loss_weights": candidate.get("question_loss_weights", {}),
+        "loss_formula": "mean(weight[qid] * official_question_loss) * variant_share; unchanged record normalization",
+        "checkpoint_path": candidate["checkpoint_path"],
+        "retraining": "Use the recorded command and same initialization/data; numeric equality is not promised",
+        "unrecorded_data_digest": "N/A; no new content digest was computed",
+    }
+
+
+def train_with_question_weights(candidate_id, train_args):
+    """Use the official main loop with a per-question loss multiplier."""
+    from kev import train
+    candidate = next(c for c in load_queue() if c["candidate_id"] == candidate_id)
+    weights = candidate["question_loss_weights"]
+    exposure = Counter()
+    official_loss, official_write = train.question_loss, train.write_json
+    def question_loss(logits, question, *args, **kwargs):
+        qid = question["qid"]
+        exposure[qid] += 1
+        return official_loss(logits, question, *args, **kwargs) * weights.get(qid, 1.0)
+    def write_json(path, value):
+        if Path(path).name in ("training_config.json", "training_metrics.json"):
+            if Path(path).name == "training_config.json":
+                candidate["recipe"].update(official_args=value["args"],
+                                           init_source=value.get("init_source"), base_revision=value.get("base_revision"))
+            value = {**value, "modelrouter_source_sha": SOURCE_SHA,
+                     "question_loss_weights": weights, "question_exposure": dict(exposure),
+                     "recipe": candidate["recipe"]}
+        return official_write(path, value)
+    train.question_loss, train.write_json = question_loss, write_json
+    sys.argv = ["kev.train", *train_args]
+    train.main()
+
+
+def scientific_selection(queue):
+    selection = next((c for c in queue if c.get("candidate_kind") == "SELECTION"), None)
+    if selection is None:
+        return
+    candidates = [c for c in queue if c.get("status") == "COMPLETED"
+                  and c.get("metrics", {}).get("evaluation_status") == "EVALUATED"
+                  and (c["candidate_id"] == "KEV-V8-C03"
+                       or c.get("comparison_to_c03", {}).get("status") == "COMPARABLE")]
+    outstanding = [c["candidate_id"] for c in queue if c.get("candidate_kind") != "SELECTION"
+                   and c.get("status") != "COMPLETED"]
+    scored = [c for c in candidates if c.get("selection", {}).get("score") is not None]
+    best_score = min(scored, key=lambda c: (-c["selection"]["score"], c["metrics"]["clean"]["nll"],
+                                           -c["metrics"]["clean"]["acc"], c["candidate_id"])) if scored else None
+    selection.update(status="PENDING" if outstanding else "COMPLETED",
+                     training_status="NOT_APPLICABLE", selection={
+                         "observed_at": _now(), "outstanding": outstanding,
+                         "best_accuracy": max(candidates, key=lambda c: (c["metrics"]["clean"]["acc"], c["candidate_id"]))["candidate_id"] if candidates else None,
+                         "best_nll": min(candidates, key=lambda c: (c["metrics"]["clean"]["nll"], c["candidate_id"]))["candidate_id"] if candidates else None,
+                         "best_score": best_score["candidate_id"] if best_score else None,
+                         "selected_checkpoint_path": best_score["checkpoint_path"] if best_score else None,
+                         "new_training": False})
+    save_queue(queue)
 
 def is_pid_alive(pid: int) -> bool:
     try:
@@ -297,6 +419,19 @@ def refresh_training(candidate):
                         ("optimizer_steps", "records_seen", "requested_records", "wall_seconds")})
     if metrics:
         cursor.update(step=metrics.get("optimizer_steps"), consumed_records=metrics.get("records_seen"))
+        if metrics.get("recipe"):
+            candidate["recipe"] = metrics["recipe"]
+        elif "recipe" not in candidate:
+            config_file = PROJECT_ROOT / candidate["checkpoint_path"] / "training_config.json"
+            config = json.loads(config_file.read_text()) if config_file.is_file() else {}
+            candidate["recipe"] = {"run_id": candidate["name"], "candidate_id": candidate["candidate_id"],
+                "source_git_sha": config.get("modelrouter_source_sha"), "official_args": config.get("args"),
+                "init_source": config.get("init_source"), "base_revision": config.get("base_revision"),
+                "data_path": candidate["data_path"], "validation_set": FIXED_VAL_PATH,
+                "checkpoint_path": candidate["checkpoint_path"], "historical_identity": "Only existing metadata is used; unrecorded source/data identifiers remain N/A"}
+        config_file = PROJECT_ROOT / candidate["checkpoint_path"] / "training_config.json"
+        if config_file.is_file():
+            candidate["training_parameters"] = json.loads(config_file.read_text()).get("args", {})
     candidate.update({k: cursor[k] for k in ("step", "total_steps", "epoch", "loss", "loss_step") if k in cursor})
     return alive
 
@@ -379,13 +514,28 @@ def validate_candidate(candidate, queue, device="auto", timeout=None):
     return ok
 
 
-def main_loop(validation_only=False, validation_device="auto", validation_timeout=None):
+def update_retention(queue, apply=False):
+    from router_data.checkpoint_retention import evaluate_kev_retention
+    result = evaluate_kev_retention(queue, project_root=PROJECT_ROOT, apply=apply, persist=save_queue,
+        protected_paths=("models/kev-4b-adapter", "models/qwen3.5-4b-base"))
+    scientific_selection(queue)
+    logger.info("Kev retention: released %s bytes", result["released_bytes"])
+    return result
+
+
+def main_loop(validation_only=False, validation_device="auto", validation_timeout=None, wait_for_resources=False,
+              apply_retention=False):
     logger.info("=== Kev candidate queue ===")
     deferred = set()
     while True:
         queue = load_queue()
-        candidate = next((c for c in queue if c.get("status") != "COMPLETED" and c["candidate_id"] not in deferred), None)
+        candidate = next((c for c in queue if c.get("candidate_kind") != "SELECTION"
+                          and c.get("status") != "COMPLETED" and c["candidate_id"] not in deferred), None)
         if candidate is None:
+            if apply_retention:
+                update_retention(queue, apply=True)
+            else:
+                scientific_selection(queue)
             return 1 if deferred else 0
         alive = refresh_training(candidate)
         save_queue(queue)
@@ -410,8 +560,12 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
             continue
         if candidate["training_status"] == "COMPLETED":
             ok = validate_candidate(candidate, queue, validation_device, validation_timeout)
-            if not ok or validation_only:
+            if ok and apply_retention:
+                update_retention(queue, apply=True)
+            if validation_only:
                 return 0 if ok else 1
+            if not ok:
+                deferred.add(candidate["candidate_id"])
             continue
         if validation_only:
             logger.info("%s has no completed training to validate", candidate["candidate_id"])
@@ -419,7 +573,11 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
         if candidate.get("status") == "RUNNING" or candidate["training_status"] == "FAILED":
             candidate.update(status="FAILED", failure_reason="Training exited without successful completion")
             save_queue(queue)
-            return 1
+            deferred.add(candidate["candidate_id"])
+            continue
+        if candidate.get("material_status") == "PENDING":
+            deferred.add(candidate["candidate_id"])
+            continue
         data = PROJECT_ROOT / candidate["data_path"]
         if candidate["candidate_id"] == "KEV-V8-C09" and candidate.get("materialization", {}).get("configuration_status") == "PARTIAL_MATERIAL_NOT_FULL_C09":
             candidate.update(status="PENDING", configuration_status="PARTIAL_MATERIAL",
@@ -469,6 +627,9 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
             save_queue(queue)
             logger.info("%s WAITING_FOR_GPU: free %s MiB, required %s MiB",
                         candidate["candidate_id"], free_mib, required_mib)
+            if wait_for_resources:
+                time.sleep(30)
+                continue
             return 1
         candidate.pop("pending_reason", None)
         run_dir = KEV_RUNS_ROOT / candidate["name"]
@@ -490,14 +651,18 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
             for name, value in parameters.items():
                 if value is not None:
                     train_cmd.extend([f"--{name}", str(value)])
+        if candidate.get("question_loss_weights"):
+            train_cmd = [str(PROJECT_ROOT / ".venv/bin/python"), "-u", str(Path(__file__).resolve()),
+                         "--train-candidate", candidate["candidate_id"], "--", *train_cmd[4:]]
+        record_recipe(candidate, train_cmd)
         env = os.environ.copy()
-        env["PYTHONPATH"] = str(PROJECT_ROOT / "external/kev")
+    env["PYTHONPATH"] = os.pathsep.join((str(PROJECT_ROOT), str(PROJECT_ROOT / "external/kev")))
         started = time.monotonic()
         with (run_dir / "train.log").open("a", encoding="utf-8") as log:
             proc = subprocess.Popen(train_cmd, cwd=str(PROJECT_ROOT), env=env, stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT, text=True, bufsize=1)
             candidate.update(status="RUNNING", training_status="RUNNING", evaluation_status="NOT_EVALUATED",
-                             training_kind="FORMAL_LORA", pid=proc.pid, started_at=_now())
+                             training_kind="FORMAL_LORA", pid=proc.pid, started_at=_now(), code_commit=SOURCE_SHA)
             attempt = {"command": train_cmd, "pid": proc.pid, "started_at": candidate["started_at"]}
             candidate.setdefault("training_attempts", []).append(attempt)
             cursor = {"run_id": candidate["name"], "candidate_id": candidate["candidate_id"],
@@ -531,8 +696,21 @@ def main(argv=None):
     parser.add_argument("--validation-only", action="store_true")
     parser.add_argument("--validation-device", default="auto", choices=("auto", "cpu", "cuda", "mps"))
     parser.add_argument("--validation-timeout", type=float, default=None, help="Seconds; omitted means no timeout")
+    parser.add_argument("--train-candidate", help="Official trainer with the candidate's question loss weights")
+    parser.add_argument("--apply-retention", action="store_true", help="Apply authorized Kev retention after completed fixed Val")
+    parser.add_argument("train_args", nargs=argparse.REMAINDER)
     args = parser.parse_args(argv)
-    return main_loop(args.validation_only, args.validation_device, args.validation_timeout)
+    if args.train_candidate:
+        return train_with_question_weights(args.train_candidate, args.train_args[1:] if args.train_args[:1] == ["--"] else args.train_args)
+    if not args.validation_only:
+        queue = load_queue()
+        for candidate in queue:
+            if candidate.get("status") == "COMPLETED" and candidate.get("candidate_kind") != "SELECTION":
+                refresh_training(candidate)
+        complete_candidate_plan(queue)
+        update_retention(queue, apply=args.apply_retention)
+    return main_loop(args.validation_only, args.validation_device, args.validation_timeout,
+                     **({"wait_for_resources": True, "apply_retention": args.apply_retention} if not args.validation_only else {}))
 
 
 if __name__ == "__main__":

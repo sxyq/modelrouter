@@ -9,6 +9,8 @@ from contextlib import ExitStack
 import subprocess
 import tempfile
 import unittest
+import sys
+from types import SimpleNamespace
 from pathlib import Path
 from unittest.mock import patch, Mock
 
@@ -18,6 +20,37 @@ PROJECT_ROOT = Path("/home/syy/路由")
 
 
 class TestKevCandidateConfigs(unittest.TestCase):
+    def test_remaining_plan_preserves_completed_runs_and_selection_is_not_training(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(dispatcher, "QUEUE_FILE", Path(tmp) / "candidate_queue.json"):
+            queue = copy.deepcopy(dispatcher.DEFAULT_CANDIDATES)
+            queue[0].update(status="COMPLETED", metrics={"original": "result"})
+            original = copy.deepcopy(queue[0])
+            dispatcher.complete_candidate_plan(queue)
+            self.assertEqual(queue[0], original)
+            self.assertEqual([c["candidate_id"] for c in queue], [f"KEV-V8-C{i:02}" for i in range(3, 12)])
+            self.assertEqual(queue[-1]["candidate_kind"], "SELECTION")
+            self.assertEqual(queue[-2]["question_loss_weights"], {"model_choice": 2.0})
+            dispatcher.complete_candidate_plan(queue)
+            self.assertEqual(len(queue), 9)
+            ledger = json.loads((Path(tmp) / "candidate_ledger.json").read_text())
+            self.assertEqual(len(ledger["candidates"]), 9)
+
+    def test_c10_multiplies_real_question_loss_and_records_exposure(self):
+        output = {}
+        official = SimpleNamespace(question_loss=lambda logits, q, *a, **kw: logits,
+                                   write_json=lambda path, data: output.update({Path(path).name: data}))
+        def main():
+            weighted = official.question_loss(3.0, {"qid": "model_choice"})
+            ordinary = official.question_loss(4.0, {"qid": "difficulty_tier"})
+            self.assertEqual((weighted, ordinary), (6., 4.))
+            official.write_json("training_metrics.json", {"records_seen": 1})
+        official.main = main
+        candidate = {"candidate_id": "KEV-V8-C10", "question_loss_weights": {"model_choice": 2.0}, "recipe": {"source_git_sha": "fixture"}}
+        with patch.dict(sys.modules, {"kev": SimpleNamespace(train=official)}), patch.object(dispatcher, "load_queue", return_value=[candidate]), patch.object(sys, "argv", []):
+            dispatcher.train_with_question_weights("KEV-V8-C10", ["--epochs", "1"])
+        self.assertEqual(output["training_metrics.json"]["question_exposure"], {"model_choice": 1, "difficulty_tier": 1})
+        self.assertEqual(output["training_metrics.json"]["question_loss_weights"], {"model_choice": 2.0})
+
     def test_independent_pending_candidates_do_not_hide_following_failure(self):
         with tempfile.TemporaryDirectory() as tmp, ExitStack() as stack:
             root = Path(tmp)

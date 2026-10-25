@@ -151,7 +151,7 @@ def read_local_processes():
         if not executable.startswith("python"):
             continue
         family = "laya" if any(Path(a).name == "laya_batch_train.py" for a in argv) else (
-            "kev" if "kev.train" in argv else None)
+            "kev" if "kev.train" in argv or "--train-candidate" in argv else None)
         if family:
             options = {a: argv[i + 1] for i, a in enumerate(argv[:-1]) if a.startswith("--")}
             process[family] = {"train_pid": int(pid), "elapsed_s": int(elapsed), "is_training": True,
@@ -477,7 +477,11 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
         imported = directory.parent.name == "models"
         partial = bool(args.get("max_steps") or args.get("stop_after"))
         protocol = "KEV_IMPORTED_LORA" if imported else ("KEV_FORMAL_LORA" if args.get("device") == "cuda" and not partial else "KEV_LORA_SMOKE")
-        checkpoint = _checkpoint(directory, rid + ":adapter", None, {}, root)
+        retention = plan.get("retention") or {}
+        checkpoint = _checkpoint(directory, rid + ":adapter", None, {
+            "retention_status": retention.get("status"), "retention_reason": retention.get("reason"),
+            "freed_bytes": retention.get("freed_bytes"),
+            "was_previously_saved": True if retention.get("status") == "PRUNED_LOW_SCORE" else None}, root)
         result = read_json(directory / "val_metrics.json", read_json(directory / "result.json", plan.get("metrics", {})))
         clean = result.get("clean", {})
         validation = [{"epoch": None, "step": metrics.get("optimizer_steps"), "stream": "clean",
@@ -494,17 +498,20 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                "queue_status": plan.get("status"), "failure_reason": plan.get("failure_reason"),
                "validation_metrics": clean, "validation_coverage": result.get("coverage"),
                "comparison_to_c03": result.get("comparison_to_c03", plan.get("comparison_to_c03")),
+               "selection": plan.get("selection"), "retention": retention,
+               "recipe": plan.get("recipe"), "question_loss_weights": config.get("question_loss_weights"),
                "evaluation_seconds": result.get("duration_sec"),
                "epochs": completed_epochs, "planned_epochs": args.get("epochs"),
                "root": relative(directory, root), "started_at": plan.get("started_at"), "finished_at": plan.get("finished_at"),
                "parent_checkpoint": Path(args["init_from"]).name if args.get("init_from") else None,
-               "validation": validation, "checkpoints": [checkpoint] if checkpoint["physical"] else [],
+               "validation": validation, "checkpoints": [checkpoint],
                "curve_path": f"shards/training_runs/{key}.json", "source": relative(directory / "training_config.json", root),
                "config": {k: args.get(k) for k in ("lr", "head_lr", "epochs", "batch", "accum", "lora", "perm_kl", "synthetic_repeat", "max_steps", "seed", "max_state", "dtype", "weights_dtype", "checkpointing", "lora_targets", "head_dim")},
                "data_path": args.get("data"),
                "terminal_metrics": {k: metrics.get(k) for k in ("wall_seconds", "optimizer_steps", "records_seen", "requested_records")},
                "exposure": {"trained_records": metrics.get("records_seen"), "requested_records": metrics.get("requested_records"),
-                            "by_stream_actual": None, "optimizer_updates": metrics.get("optimizer_steps")},
+                            "by_stream_actual": None, "question_exposure": metrics.get("question_exposure"),
+                            "optimizer_updates": metrics.get("optimizer_steps")},
                "limitations": ["Imported adapter history is upstream training, not a new local GPU run"] if directory.parent.name == "models" else []}
         row.update(stage="IMPORTED" if imported else "SHORT_TRAINING" if partial else "FORMAL_LORA",
                    supervision_classes=[], sampling={"mode": "FIXED_JSONL", "requested_ratios": None,
@@ -661,7 +668,8 @@ def build_training_history(project_root=PROJECT_ROOT, dashboard_dir=None, proces
                    "matrix_aggregate": matrix.get("aggregate"),
                    "laya_queue": read_json(p0 / "queue_state.json", {}), "kev_queue": [
                        {k: c.get(k) for k in ("candidate_id", "name", "status", "training_status", "evaluation_status",
-                          "pending_reason", "failure_reason", "data_path", "init_from", "configuration_source", "comparison_to_c03")}
+                          "pending_reason", "failure_reason", "data_path", "init_from", "configuration_source", "comparison_to_c03",
+                          "candidate_kind", "metrics", "recipe", "coverage_analysis", "selection", "retention")}
                        for c in kev_queue]},
                "limitations": ["Epoch records count observations, not proof that all versions were physically saved.",
                                 "Missing files without deletion evidence remain uncertain.",
@@ -977,7 +985,7 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         if isinstance(value, str):
             return value.replace(str(root) + "/", "").replace(str(root), ".")
         if isinstance(value, dict):
-            return {k: public(v) for k, v in value.items()}
+            return {k: public(v) for k, v in value.items() if k not in ("raw_output", "error")}
         if isinstance(value, list):
             return [public(v) for v in value]
         return value
@@ -997,8 +1005,8 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         "laya_boundary_reload_requested": (root / "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/.reload_queue_daemon").is_file(),
         "laya_order": [p["run_id"] for p in plan_rows if p["category"] == "full_coverage" and p["status"] in ("TRAINING", "ELIGIBLE")],
         "kev_boundary": "The original dispatcher owns training and Val; terminal results and pending reasons remain in the original records",
-        "retention_policy_deployed_in_this_task": False,
-        "weight_deletions_in_this_task": 0,
+        "kev_retention_applied": any((c.get("retention") or {}).get("applied") for c in result["kev_candidates"]),
+        "kev_pruned_weight_bytes": sum((c.get("retention") or {}).get("total_released_bytes", 0) for c in result["kev_candidates"]),
     }
     destination = root / "our-project/results/training"
     atomic_json(destination / "training_research.json", result)
@@ -1066,7 +1074,7 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
         "当前双模型进度：" + cell([{ "model": family, "run_id": eta["current"][family]["run_id"], "status": eta["current"][family]["status"], "evaluation_status": eta["current"][family]["evaluation_status"]} for family in ("laya", "kev")]) + "。观测时间：" + cell(eta["observed_at"]) + "。",
         "B02 同层级配比对照显示，增加辅助监督没有稳定提高 S1 Accuracy。S1+S3 的 2:1 存在主Loss改善与Accuracy下降的权衡；S2+S3缺少直接S1监督，主任务结果较弱。具体值与预算见下表。",
         "ALGN四项在主Val上的差异较小，但训练曝光和时间不同。F系列增加全材料覆盖后的主任务Accuracy可能上升，辅助概率质量可能恶化。无法由单次开发期Val确定最优比例或模型架构。",
-        "旧五份实体只剩 " + str(sum(c["physical"] is True for c in result["retention"]["old_core"])) + " 份。主Val最低Loss模型与当前可加载模型分开；本轮没有删除、恢复权重或部署新的实体淘汰策略。",
+        "旧五份实体只剩 " + str(sum(c["physical"] is True for c in result["retention"]["old_core"])) + " 份。主Val最低Loss模型与当前可加载模型分开。Kev实体处理见下方同协议记录，Laya原策略保持。",
         "建议先完成原定当前Run和代表性对照，再由Planning决定是否减少新增矩阵。离线证据已支持监督与概率质量分析，任务成功率和真实费用仍需官方AgentEpisode。",
         "现有可计算队列预计墙钟 " + str(round(eta["totals"]["serial_wall_seconds"] / 3600, 1)) + " 小时；CPU物化、共享GPU波动和待决候选的限制见时间预算。整体论文完成日期N/A。", "",
         "## 技术演进与研究变量", "",
@@ -1118,6 +1126,14 @@ def write_training_research_report(history, project_root=PROJECT_ROOT, live=None
     overview += ["", "Laya有主Val Loss的实际Run中，" + str(len(missing_best)) + " 个最佳Loss Epoch没有物理实体。可使用现存候选做任务级实验，历史最优成绩只能用于离线分析；替代实体不能标成相同Epoch。",
         "Kev正式固定Val和coverage：" + cell([{ "run_id": r["run_id"], "metrics": r["validation_all_epochs"], "coverage": r["validation_coverage"], "comparison_to_c03": r["comparison_to_c03"], "training_seconds": r["training_seconds"], "evaluation_seconds": r["evaluation_seconds"]}
                                               for r in result["observations"] if r["family"] == "kev" and r["stage"] == "FORMAL_LORA"]), "",
+        "### Kev候选、模型内评分与实体留存", "",
+        "评分只用于同一固定Val下的内部实体选择，论文主指标保持原始Accuracy、NLL、Brier、ECE。C11是现有候选选择记录，不新增训练或复制权重。", ""]
+    overview += table(["候选", "执行/Val", "Accuracy/NLL/Brier/ECE", "内部评分", "实体状态/释放字节", "尚缺条件"],
+                      [[c["candidate_id"], [c.get("status"), c.get("evaluation_status")],
+                        (c.get("metrics") or {}).get("clean"), c.get("selection"), c.get("retention"),
+                        c.get("pending_reason") or c.get("failure_reason")]
+                       for c in result["kev_candidates"]])
+    overview += ["", "配方、原训练命令、父实体与验证记录保留在candidate_queue.json、candidate_ledger.json和本报告JSON；未记录的数据内容标识与历史源码提交使用N/A，不承诺遗失材料可精确重建。", "",
         "## 终点与Planning建议", "",
         "Run级：全材料入口按原定Epoch完成，当前运行状态见实时观测，Kev已完成Val不计入待运行耗时。矩阵/历史小训练入口已有连续两Epoch未达0.5%主Loss改善的结束条件；该条件不适用于全材料入口，不新增结束规则。",
         "实验组级：结合所有Epoch观察Accuracy、Loss、Brier、ECE。F06的权衡及B02辅助监督的负结果支持减少机械扩张的建议，不能据此提前结束健康Run。当前缺多种子误差与独立Test，尚不能宣布性能平台期或唯一最优比例。",
@@ -1261,7 +1277,7 @@ def fetch_local_server_data():
     disk = shutil.disk_usage(PROJECT_ROOT)
     queue = read_json(PROJECT_ROOT / "our-project/results/training/kev/candidate_queue.json", [])
     kev = _live_family("kev", proc, history)
-    kev["candidates"] = [{k: c.get(k) for k in ("candidate_id", "status", "training_status", "evaluation_status", "failure_reason", "pending_reason", "configuration_status", "checkpoint_path")} for c in queue]
+    kev["candidates"] = [{k: c.get(k) for k in ("candidate_id", "candidate_kind", "status", "training_status", "evaluation_status", "failure_reason", "pending_reason", "configuration_status", "checkpoint_path", "selection", "retention")} for c in queue]
     kev["completed_candidates"] = sum(c.get("status") == "COMPLETED" and c.get("evaluation_status") == "EVALUATED" for c in queue)
     current = next((c for c in queue if c.get("candidate_id") == kev.get("run_id")), {})
     if current:

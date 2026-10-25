@@ -1254,6 +1254,290 @@ def select_run_best_epoch(run_meta: Dict[str, Any], baseline_0=None, s2_audit_pa
     return int(min(candidates, key=lambda n: _node_primary_sort_key(n, family))["epoch"]) if candidates else None
 
 
+KEV_SELECTION_VERSION = "KEV_FIXED_VAL_FOUR_METRIC_V1"
+KEV_FIXED_VAL_PATH = "data/kev/公开数据/val.jsonl"
+KEV_SCORE_WEIGHTS = {"nll": 0.45, "acc": 0.30, "brier": 0.15, "ece": 0.10}
+KEV_RESEARCH_GROUPS = {
+    "KEV-V8-C03": "HOMOLOGOUS_CONTINUATION", "KEV-V8-C04": "HOMOLOGOUS_CONTINUATION",
+    "KEV-V8-C05": "STATE_ABLATION", "KEV-V8-C06": "STATE_ABLATION",
+    "KEV-V8-C07": "LORA_RANK_ABLATION", "KEV-V8-C08": "LORA_RANK_ABLATION",
+    "KEV-V8-C09": "V8_EXTENSION", "KEV-V8-C10": "S1_WEIGHT_ABLATION",
+}
+KEV_WEIGHT_NAMES = ("head.pt", "adapter_model.bin", "adapter_model.safetensors")
+
+
+def _kev_val_issue(metrics: Dict[str, Any]) -> Optional[str]:
+    if metrics.get("evaluation_status") != "EVALUATED" or metrics.get("exit_code") != 0:
+        return "completed_val_required"
+    dataset = metrics.get("validation_set", "")
+    if (metrics.get("validation_protocol") != "KEV_FIXED_VAL_JSONL"
+            or metrics.get("dataset_split") != "val" or metrics.get("test_used") is not False
+            or not dataset or not (dataset == KEV_FIXED_VAL_PATH or
+                                    Path(dataset).is_absolute() and dataset.endswith("/" + KEV_FIXED_VAL_PATH))):
+        return "project_fixed_val_required"
+    coverage = metrics.get("coverage") or {}
+    expected = {"requested_records": 8436, "evaluated_records": 8436,
+                "requested_questions": 9330, "evaluated_questions": 9330,
+                "rejected_records": 0, "truncated_records": 0}
+    if any(coverage.get(k) != v for k, v in expected.items()):
+        return "incomplete_or_different_coverage"
+    clean = metrics.get("clean") or {}
+    if clean.get("n") != 9330:
+        return "incomplete_scored_questions"
+    for key in KEV_SCORE_WEIGHTS:
+        value = clean.get(key)
+        upper = {"acc": 1, "ece": 1, "brier": 2}.get(key, math.inf)
+        if type(value) not in (float, int) or not math.isfinite(value) or not 0 <= value <= upper:
+            return "missing_or_invalid_" + key
+    report = metrics.get("report") or {}
+    for key in ("clean", "coverage"):
+        if key in report and report[key] != metrics[key]:
+            return "inconsistent_report_" + key
+    return None
+
+
+def compute_kev_selection_score(metrics: Dict[str, Any], reference_metrics: Dict[str, Any]) -> Dict[str, Any]:
+    """Internal Kev retention score; C03 supplies the scale, never a paper metric.
+
+    I_nll=(N0-N)/max(N0,1e-6), I_acc=(A-A0)/max(1-A0,.05),
+    I_brier=(B0-B)/max(B0,1e-6), I_ece=(E0-E)/max(E0,.05).
+    Each improvement is clipped to [-1,1]; score=100*(1+sum(weight*I)).
+    NLL/Brier/ECE decrease and Accuracy increases. Missing values have no score.
+    Ties: score descending, NLL ascending, Accuracy descending, Brier/ECE
+    ascending, then stable candidate ID. No rounding is used for ranking.
+    """
+    result = {"version": KEV_SELECTION_VERSION, "purpose": "internal_checkpoint_retention",
+              "reference_candidate_id": "KEV-V8-C03", "weights": dict(KEV_SCORE_WEIGHTS),
+              "directions": {"nll": "lower", "acc": "higher", "brier": "lower", "ece": "lower"},
+              "formula": "I_nll=(N0-N)/max(N0,1e-6); I_acc=(A-A0)/max(1-A0,.05); "
+                         "I_brier=(B0-B)/max(B0,1e-6); I_ece=(E0-E)/max(E0,.05); "
+                         "clip I to [-1,1]; score=100*(1+.45*I_nll+.30*I_acc+.15*I_brier+.10*I_ece)",
+              "tie_rule": "score_desc,nll_asc,acc_desc,brier_asc,ece_asc,candidate_id_asc",
+              "score": None, "rank": None, "status": "PENDING"}
+    issue = _kev_val_issue(reference_metrics)
+    if issue:
+        result["reason"] = "c03_" + issue
+        return result
+    issue = _kev_val_issue(metrics)
+    if issue:
+        result["reason"] = issue
+        return result
+    for field in ("validation_set", "validation_protocol", "coverage"):
+        if metrics[field] != reference_metrics[field]:
+            result["reason"] = "different_" + field
+            return result
+    # Recorded per-task counts also identify the scored targets, when supplied.
+    reports = [m.get("report") or {} for m in (metrics, reference_metrics)]
+    task_counts = [{k: v.get("n") for k, v in r.get("tasks", {}).items()} for r in reports]
+    policy_fields = ("version", "nll", "nll_floor", "renormalize_returned_probabilities")
+    policies = [{k: r.get("metric_policy", {}).get(k) for k in policy_fields} for r in reports]
+    if task_counts[0] != task_counts[1] or policies[0] != policies[1]:
+        result["reason"] = "different_prediction_targets_or_metric_policy"
+        return result
+    ref, clean = reference_metrics["clean"], metrics["clean"]
+    scales = {"nll": max(ref["nll"], 1e-6), "acc": max(1 - ref["acc"], .05),
+              "brier": max(ref["brier"], 1e-6), "ece": max(ref["ece"], .05)}
+    improvements = {k: _clip_improvement((clean[k] - ref[k] if k == "acc" else ref[k] - clean[k]) / scales[k])
+                    for k in KEV_SCORE_WEIGHTS}
+    result.update(status="COMPARABLE", reason=None, reference_metrics={k: ref[k] for k in KEV_SCORE_WEIGHTS},
+                  scales=scales, improvements=improvements,
+                  score=100 * (1 + sum(KEV_SCORE_WEIGHTS[k] * improvements[k] for k in KEV_SCORE_WEIGHTS)))
+    return result
+
+
+def _kev_recipe_issue(candidate: Dict[str, Any]) -> Optional[str]:
+    """Use existing recipe identities and actual training records, without new digests."""
+    recipe = candidate.get("recipe") or {}
+    required = ("run_id", "candidate_id", "source_git_sha", "upstream_git_sha", "base_model",
+                "base_revision", "init_from", "parent_init_source", "data_path", "data_identity",
+                "validation_set", "command", "checkpoint_path", "retraining")
+    missing = [k for k in required if not recipe.get(k) or
+               isinstance(recipe[k], str) and recipe[k].strip().upper() in ("N/A", "UNKNOWN", "NONE", "NULL")]
+    if missing:
+        return "incomplete_recipe:" + ",".join(missing)
+    for key in ("candidate_id", "init_from", "data_path", "checkpoint_path"):
+        if recipe[key] != candidate.get(key):
+            return "inconsistent_recipe_" + key
+    if recipe["run_id"] != candidate.get("name") or recipe.get("test_used") is not False:
+        return "inconsistent_recipe_run_or_split"
+    if recipe["validation_set"] != KEV_FIXED_VAL_PATH:
+        return "inconsistent_recipe_val"
+    parameters = candidate.get("training_parameters") or {}
+    if any(parameters.get(k) is None for k in ("lr", "lora", "epochs", "batch", "accum", "seed",
+                                               "dtype", "head_lr", "weight_decay", "lora_targets", "max_state")):
+        return "incomplete_recorded_training_parameters"
+    training = candidate.get("training_metrics") or {}
+    if any(not _finite_metric(training.get(k)) or training[k] <= 0
+           for k in ("optimizer_steps", "records_seen", "requested_records", "wall_seconds")):
+        return "incomplete_recorded_training_metrics"
+    if training["records_seen"] != training["requested_records"]:
+        return "incomplete_training_exposure"
+    if (not _finite_metric(candidate.get("loss")) or not candidate.get("finished_at")
+            or not candidate["metrics"].get("evaluated_at") or not candidate["metrics"].get("report_path")):
+        return "incomplete_recorded_loss_or_val_location"
+    return None
+
+
+def evaluate_kev_retention(candidates: List[Dict[str, Any]], *, project_root: Path,
+                           apply: bool = False, persist=None,
+                           protected_paths: Iterable[str] = (), protected_ids: Iterable[str] = ()) -> Dict[str, Any]:
+    """Write selection/retention into the original candidates, using save_queue as persist.
+
+    Groups follow the existing research goals or explicit retention_group. Each
+    group retains ceil(.15*N) independent completed runs plus required scientific
+    representatives; these protections can exceed the core quota. C03/C04 remain.
+    Report mode never deletes. Apply persists all original records before unlink
+    and records each result through the same callback. Only known Kev weight files
+    directly inside an explicit runs checkpoint are removed; directories remain.
+    released_bytes counts allocated bytes of successfully unlinked last-link files;
+    removed_weight_bytes counts their logical size. Both are zero on a repeated call.
+    Runtime/Serving users outside this queue supply protected paths or IDs.
+    """
+    root = Path(project_root).resolve()
+    paths = {c["candidate_id"]: root / c["checkpoint_path"] for c in candidates if c.get("checkpoint_path")}
+    protected = {root / p for p in protected_paths}
+    # Parents remain available for pending work and the recorded child recipes.
+    protected.update(root / c["init_from"] for c in candidates if c.get("init_from"))
+    ids = set(protected_ids) | OLD_CORE_CHECKPOINT_IDS | {"KEV-V8-C03", "KEV-V8-C04"}
+    reference = next((c.get("metrics", {}) for c in candidates if c["candidate_id"] == "KEV-V8-C03"), {})
+    groups = defaultdict(list)
+    prior = {c["candidate_id"]: dict(c.get("retention") or {}) for c in candidates}
+    for c in candidates:
+        cid = c["candidate_id"]
+        selection = compute_kev_selection_score(c.get("metrics") or {}, reference)
+        group = c.get("retention_group") or KEV_RESEARCH_GROUPS.get(cid)
+        selection["group"] = group
+        if c.get("candidate_kind") == "SELECTION":
+            selection = {**(c.get("selection") or {}), **selection}
+            # Keep C11's existing best-Accuracy/NLL observations alongside its non-run status.
+            selection.update(status="PENDING", score=None, reason="selection_record_not_a_training_run")
+        elif (c.get("status") != "COMPLETED" or c.get("training_status") != "COMPLETED"
+              or c.get("evaluation_status", "EVALUATED") != "EVALUATED"
+              or c.get("training_exit_code", 0) != 0):
+            selection.update(status="PENDING", score=None, reason="completed_consistent_training_required")
+        elif not group:
+            selection.update(status="PENDING", score=None, reason="research_group_not_recorded")
+        elif sum(other.get("name") == c.get("name") or other["candidate_id"] == cid
+                 for other in candidates) != 1:
+            selection.update(status="PENDING", score=None, reason="ambiguous_run_identity")
+        c["selection"] = selection
+        if selection["score"] is not None:
+            groups[group].append(c)
+    kept, representatives, summaries = set(), set(), {}
+    def sort_key(c):
+        m = c["metrics"]["clean"]
+        return (-c["selection"]["score"], m["nll"], -m["acc"], m["brier"], m["ece"], c["candidate_id"])
+    for group, members in sorted(groups.items()):
+        ranked = sorted(members, key=sort_key)
+        quota = math.ceil(NEW_CORE_POOL_RATIO * len(ranked))
+        kept.update(c["candidate_id"] for c in ranked[:quota])
+        representatives.add(ranked[0]["candidate_id"])
+        # Existing C-series entries define the necessary levels of each contrast.
+        variants = defaultdict(list)
+        for rank, c in enumerate(ranked, 1):
+            c["selection"]["rank"] = rank
+            variant = c.get("control_variant") or (c["candidate_id"] if c["candidate_id"] in KEV_RESEARCH_GROUPS else None)
+            if variant:
+                variants[variant].append(c)
+        representatives.update(min(items, key=sort_key)["candidate_id"] for items in variants.values())
+        summaries[group] = {"eligible_runs": len(ranked), "core_quota": quota, "ratio": NEW_CORE_POOL_RATIO,
+                            "ranked_ids": [c["candidate_id"] for c in ranked]}
+    deletions = []
+    for c in candidates:
+        cid, selection = c["candidate_id"], c["selection"]
+        path = paths.get(cid)
+        files = [path / name for name in KEV_WEIGHT_NAMES if (path / name).is_file()] if path else []
+        reasons = []
+        if cid in ids or c.get("checkpoint_id") in ids:
+            reasons.append("explicit_or_continuation_protection")
+        if path and (path.resolve().is_relative_to(root / "models") or any(
+                path.resolve().is_relative_to(p.resolve()) or p.resolve().is_relative_to(path.resolve()) for p in protected)):
+            reasons.append("base_import_serving_or_parent_path")
+        for flag in ("protected", "scientific_representative", "is_scientific_best", "is_serving",
+                     "is_base_model", "is_imported", "is_old_core", "is_curriculum_parent", "recovery_in_use",
+                     "validation_in_use", "training_in_use"):
+            if c.get(flag):
+                reasons.append(flag)
+        if any(c.get(k) in ("RUNNING", "EVALUATING", "VALIDATING", "RECOVERING")
+               for k in ("status", "training_status", "evaluation_status")):
+            reasons.append("active_training_validation_or_recovery")
+        if cid in representatives:
+            reasons.append("necessary_scientific_representative")
+        result = {"status": "PENDING", "reason": selection.get("reason"), "protection_reasons": reasons,
+                  "weight_files": [str(f) for f in files], "weights_present": bool(files),
+                  "applied": apply, "released_bytes": 0, "freed_bytes": 0, "removed_weight_bytes": 0,
+                  "total_released_bytes": prior[cid].get("total_released_bytes", 0),
+                  "removed_files": list(prior[cid].get("removed_files", [])), "planned_action": None,
+                  "pruned_at": prior[cid].get("pruned_at"), "updated_at": prior[cid].get("updated_at")}
+        c["retention"] = result
+        if reasons:
+            result.update(status="PROTECTED", reason=";".join(reasons))
+        elif not files:
+            if prior[cid].get("status") == STATUS_PRUNED_LOW_SCORE and prior[cid].get("removed_files"):
+                result.update(status=STATUS_PRUNED_LOW_SCORE, reason="previously_recorded_pruning")
+            elif (c.get("weights_saved") is False or prior[cid].get("status") == "NOT_SAVED"
+                  or c.get("candidate_kind") == "SELECTION"):
+                result.update(status="NOT_SAVED", reason="recorded_not_saved")
+            else:
+                result["reason"] = "no_weight_entity_or_saved_record"
+        elif selection["score"] is None:
+            pass
+        elif cid in kept:
+            result.update(status="RETAINED", reason="group_core_15pct")
+        else:
+            issue = _kev_recipe_issue(c)
+            if not issue and c.get("weights_saved") is False:
+                issue = "inconsistent_saved_record_and_weight_entity"
+            names = {f.name for f in files} | {Path(p).name for p in result["removed_files"]}
+            if not issue and ("head.pt" not in names or not names.intersection(KEV_WEIGHT_NAMES[1:])):
+                issue = "incomplete_weight_entity_without_removal_record"
+            if not issue and (not path.is_relative_to(root / "runs") or path == root / "runs"
+                              or path.resolve() != path or any(f.is_symlink() or f.stat().st_nlink != 1 for f in files)):
+                issue = "ambiguous_or_shared_weight_entity"
+            if not issue and any(other is not c and other.get("checkpoint_path")
+                                 and (root / other["checkpoint_path"]).resolve() == path.resolve() for other in candidates):
+                issue = "shared_candidate_checkpoint"
+            if issue:
+                result["reason"] = issue
+            else:
+                result.update(reason="report_only" if not apply else "awaiting_original_record_persistence",
+                              planned_action=STATUS_PRUNED_LOW_SCORE)
+                if apply and persist is not None:
+                    deletions.append((c, [(f, f.stat()) for f in files]))
+                elif apply:
+                    result["reason"] = "original_queue_persistence_required"
+    if persist is not None:
+        persist(candidates)
+    for c, files in deletions:
+        result = c["retention"]
+        for f, recorded_stat in files:
+            try:
+                stat = f.lstat()
+                if (f.is_symlink() or stat.st_nlink != 1
+                        or (stat.st_dev, stat.st_ino, stat.st_size) !=
+                           (recorded_stat.st_dev, recorded_stat.st_ino, recorded_stat.st_size)):
+                    raise OSError("weight entity changed during original record persistence")
+                f.unlink()
+            except OSError as exc:
+                result.update(status="PENDING", reason=f"weight_removal_failed:{exc}")
+                break
+            result["removed_files"].append(str(f))
+            result["released_bytes"] += stat.st_blocks * 512
+            result["removed_weight_bytes"] += stat.st_size
+        else:
+            result.update(status=STATUS_PRUNED_LOW_SCORE, reason="low_group_rank_unprotected", planned_action=None,
+                          pruned_at=_now_iso())
+        result["total_released_bytes"] += result["released_bytes"]
+        result["freed_bytes"] = result["released_bytes"]
+        result["updated_at"] = _now_iso()
+        persist(candidates)
+    return {"version": KEV_SELECTION_VERSION, "apply": apply, "applied": apply, "groups": summaries,
+            "decisions": {c["candidate_id"]: c["retention"] for c in candidates},
+            "released_bytes": sum(c["retention"]["released_bytes"] for c in candidates),
+            "freed_bytes": sum(c["retention"]["released_bytes"] for c in candidates),
+            "removed_weight_bytes": sum(c["retention"]["removed_weight_bytes"] for c in candidates)}
+
+
 def evaluate_cohort_retention(
     nodes: List[Dict[str, Any]],
     pinned_map: Dict[str, List[str]],
