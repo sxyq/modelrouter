@@ -656,7 +656,7 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
                          "--train-candidate", candidate["candidate_id"], "--", *train_cmd[4:]]
         record_recipe(candidate, train_cmd)
         env = os.environ.copy()
-    env["PYTHONPATH"] = os.pathsep.join((str(PROJECT_ROOT), str(PROJECT_ROOT / "external/kev")))
+        env["PYTHONPATH"] = os.pathsep.join((str(PROJECT_ROOT), str(PROJECT_ROOT / "external/kev")))
         started = time.monotonic()
         with (run_dir / "train.log").open("a", encoding="utf-8") as log:
             proc = subprocess.Popen(train_cmd, cwd=str(PROJECT_ROOT), env=env, stdout=subprocess.PIPE,
