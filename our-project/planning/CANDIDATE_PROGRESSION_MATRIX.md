@@ -10,8 +10,8 @@
 <!-- KEV_LIVE_CANDIDATES_BEGIN -->
 ## 当前 Kev 候选（原队列自动更新）
 
-来源：原候选队列、固定 Val 和实体留存记录。生成时间 UTC：2026-10-25T13:57:19.229735+00:00。
-配比固定 Val 已完成 2/16；材料 READY 不计训练完成。以下为当前状态，下方带日期的条目保留历史。
+来源：原候选队列、固定 Val 和实体留存记录。生成时间 UTC：2026-10-26T04:25:42.129304+00:00。
+配比固定 Val 已完成 5/16；材料 READY 不计训练完成。以下为当前状态，下方带日期的条目保留历史。
 
 | 候选 | 监督比例 | 执行 | 固定 Val | Accuracy | NLL | Brier | ECE | 计分问题 | 内部评分 | 实体状态 | 累计释放字节 | 尚缺条件 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -26,10 +26,10 @@
 | KEV-V8-C11 | N/A | PENDING | N/A | N/A | N/A | N/A | N/A | N/A | N/A | NOT_SAVED | 0 | Selection uses comparable completed Val results; no new training |
 | KEV-V8-R01 | {"S1": 1} | COMPLETED | EVALUATED | 0.5663451232583065 | 1.0947744186320645 | 0.5424889919371423 | 0.05103907884189752 | 9330 | 98.86092652834587 | PROTECTED | 0 | N/A |
 | KEV-V8-R02 | {"S2": 1} | COMPLETED | EVALUATED | 0.5739549839228296 | 1.110397028169808 | 0.5521168785776309 | 0.09340236816929533 | 9330 | 90.17501520407407 | PRUNED_LOW_SCORE | 135180288 | N/A |
-| KEV-V8-R03 | {"S3": 1} | RUNNING | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | N/A |
-| KEV-V8-R04 | {"S1": 1, "S2": 1} | QUEUED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | N/A |
-| KEV-V8-R05 | {"S1": 2, "S2": 1} | QUEUED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | N/A |
-| KEV-V8-R06 | {"S1": 1, "S2": 2} | QUEUED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | N/A |
+| KEV-V8-R03 | {"S3": 1} | COMPLETED | EVALUATED | 0.5679528403001072 | 1.1042406641467737 | 0.5444481569790544 | 0.06373829340256014 | 9330 | 96.03648479485287 | PRUNED_LOW_SCORE | 135180288 | N/A |
+| KEV-V8-R04 | {"S1": 1, "S2": 1} | COMPLETED | EVALUATED | 0.5678456591639871 | 1.0815259125865484 | 0.5408010620003451 | 0.02795676328298525 | 9330 | 104.08716239501341 | PROTECTED | 0 | N/A |
+| KEV-V8-R05 | {"S1": 2, "S2": 1} | COMPLETED | EVALUATED | 0.5713826366559486 | 1.0941285903828288 | 0.5438058325913012 | 0.043058595796956874 | 9330 | 100.767234558792 | PRUNED_LOW_SCORE | 135180288 | N/A |
+| KEV-V8-R06 | {"S1": 1, "S2": 2} | RUNNING | NOT_EVALUATED | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | N/A |
 | KEV-V8-R07 | {"S1": 1, "S3": 1} | QUEUED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | N/A |
 | KEV-V8-R08 | {"S1": 2, "S3": 1} | QUEUED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | N/A |
 | KEV-V8-R09 | {"S1": 1, "S3": 2} | QUEUED | N/A | N/A | N/A | N/A | N/A | N/A | N/A | PENDING | 0 | N/A |
