@@ -20,6 +20,31 @@ PROJECT_ROOT = Path("/home/syy/路由")
 
 
 class TestKevCandidateConfigs(unittest.TestCase):
+    def test_live_kev_card_separates_training_and_validation(self):
+        project = Path(__file__).resolve().parents[4]
+        script = r"""
+const assert = require('node:assert/strict');
+const {liveCard} = require(process.argv[1]);
+const model = {run_id: 'KEV-V8-R11', status: 'COMPLETED', queue_status: 'RUNNING'};
+for (const phase of ['EVALUATING', 'FAILED', 'PARTIAL']) {
+  const card = liveCard('kev', {...model, evaluation_status: phase});
+  assert.ok(card.includes('<span class="status">' + phase + '</span>'));
+  assert.ok(card.includes('训练 COMPLETED · 验证 ' + phase + ' · 队列 RUNNING'));
+}
+const finished = liveCard('kev', {...model, evaluation_status: 'EVALUATED', queue_status: 'COMPLETED'});
+assert.ok(finished.includes('<span class="status">COMPLETED</span>'));
+const training = liveCard('kev', {...model, status: 'TRAINING', evaluation_status: 'NOT_EVALUATED'});
+assert.ok(training.includes('<span class="status">TRAINING</span>'));
+const stale = liveCard('kev', {...model, evaluation_status: 'EVALUATING'}, {status: 'DISCONNECTED'});
+assert.ok(stale.includes('<span class="status stale">DISCONNECTED</span>'));
+const laya = liveCard('laya', {...model, status: 'TRAINING', evaluation_status: 'FAILED'});
+assert.ok(laya.includes('<span class="status">TRAINING</span>'));
+"""
+        result = subprocess.run(['node', '-e', script,
+                                 str(project / 'our-project/dashboard/live_status.js')],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_remaining_plan_preserves_completed_runs_and_selection_is_not_training(self):
         with tempfile.TemporaryDirectory() as tmp, patch.object(dispatcher, "QUEUE_FILE", Path(tmp) / "candidate_queue.json"):
             queue = copy.deepcopy(dispatcher.DEFAULT_CANDIDATES)

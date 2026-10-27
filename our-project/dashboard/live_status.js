@@ -242,10 +242,12 @@
       [model.speed_scope ? '样本 / 秒（累计实测）' : '样本 / 秒（进度观测）', display(model.samples_per_s, 2)], ['训练耗时', seconds(model.training_seconds)]];
     const progressAge = ageSeconds(model.last_progress_at) ?? model.last_progress_age_s;
     const historical = observation.status;
-    return '<article class="card live-card ' + family + '"' + (historical ? ' style="border-top-color:var(--cds-rose)"' : '') + '><div class="family-line"><h3>' + (family === 'laya' ? 'Laya' : 'Kev') + '</h3><span class="status' + (historical ? ' stale' : '') + '">' + esc(historical ?? model.status) + '</span></div><div class="run-id">' + esc(model.run_id) + '</div>'
+    const phase = family === 'kev' && ['EVALUATING', 'FAILED', 'PARTIAL'].includes(model.evaluation_status)
+      ? model.evaluation_status : model.status;
+    return '<article class="card live-card ' + family + '"' + (historical ? ' style="border-top-color:var(--cds-rose)"' : '') + '><div class="family-line"><h3>' + (family === 'laya' ? 'Laya' : 'Kev') + '</h3><span class="status' + (historical ? ' stale' : '') + '">' + esc(historical ?? phase) + '</span></div><div class="run-id">' + esc(model.run_id) + '</div>'
       + (historical ? '<p class="sub">上次观测 ' + esc(dateText(observation.timestamp)) + ' · 以下数值非当前状态</p>' : '')
       + '<div class="loss">' + esc(display(model.loss, 4)) + '<small>训练 Loss ↓' + (present(model.loss_step) ? ' · 记录于 Step ' + esc(model.loss_step) : '') + '</small></div><dl class="metrics">' + fields.map(([label, value]) => '<div><dt>' + esc(label) + '</dt><dd>' + esc(value) + '</dd></div>').join('') + '</dl>'
-      + (present(model.evaluation_status) ? '<p class="sub">验证 ' + esc(model.evaluation_status) + ' · 队列 ' + esc(model.queue_status) + (model.failure_reason ? ' · ' + esc(model.failure_reason) : '') + '</p>' : '')
+      + (present(model.evaluation_status) ? '<p class="sub">训练 ' + esc(model.status) + ' · 验证 ' + esc(model.evaluation_status) + ' · 队列 ' + esc(model.queue_status) + (model.failure_reason ? ' · ' + esc(model.failure_reason) : '') + '</p>' : '')
       + (family === 'kev' ? '<p class="sub">固定 Val：Accuracy ' + esc(model.validation_metrics?.acc) + ' · NLL ' + esc(model.validation_metrics?.nll) + ' · Brier ' + esc(model.validation_metrics?.brier) + ' · ECE ' + esc(model.validation_metrics?.ece) + '</p><p class="sub">覆盖 ' + esc(model.validation_coverage?.evaluated_records) + ' / ' + esc(model.validation_coverage?.requested_records) + ' · 问题 ' + esc(model.validation_coverage?.evaluated_questions) + ' / ' + esc(model.validation_coverage?.requested_questions) + ' · 验证耗时 ' + esc(seconds(model.evaluation_seconds)) + ' · ' + esc(model.validation_device) + ' · attempt ' + esc(model.validation_attempt) + ' · 完成候选 ' + esc(model.completed_candidates) + '</p>'
         + '<p class="sub">' + (model.candidates || []).map(c => esc(c.candidate_id) + ' ' + esc(c.status)
           + (c.selection?.score != null ? ' · 内部评分 ' + esc(c.selection.score) : '')
