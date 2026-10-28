@@ -38,6 +38,18 @@
 
 **现行图表**：RQ1 Fig.3–4 / T3、T10；RQ2 Fig.5/T6；RQ3 Fig.6/T7；**RQ4 Fig.7/T4、T5、T8、T11**；RQ5 Fig.8/T9。具体空白表及实验策略以 [汇报三 V9](../../汇报/汇报三/ModelRouter论文实验与图表规划.md) 为准。
 
+## 2026-10-28 · V9 方法精简与真实 mini-SWE-agent 试测前置审计（讨论方案）
+
+**正式研究版本仍是 V9 五个 RQ**：RQ1 总体效果、RQ2 模型池、RQ3 任务拆分、RQ4 系统消融、RQ5 工作负载边界。最近聊天提出三核心 RQ/把消融归 RQ1 是**未正式批准的论文组织建议**；不替代此前获批准的研究编号、8 图与 12 表。
+
+**最小轨迹教师**：在现有 Agent 的每个**合法模型生成边界**可请求单一 Router 选择 `(model,native_effort)`，不是每条工具命令都独立路由。外置教师**不是第二个 Agent/Router**，也无需在线向量检索服务。使用一个可用的顶级推理模型，在积累约三次生成调用后，或阶段转折/重复失败/明显停滞时，在下一次路由之前更新短评；不需要则不调用。参考仅有两条经许可、成功证据及数据分割核验的**固定公开 TRAIN/DEV 成功轨迹摘要**（高效完成与失败恢复），不能包含当前封存题目的未来解答。输入现有任务/子任务、真实工具/模型调用前缀与验证、预算、两条固定案例；教师输出给 Router 的最少语义字段为 `progress_summary, main_blocker, next_milestone`，调用证据另存截止 `decision_id`、模型/参考 ID、Token、推理成本、时延和状态。数值阈值只是 Dev 起点，教师隐藏推理 Token 也必须计费。
+
+**模型与 Effort 能力卡**：按精确 provider/model/revision/endpoint/native_effort 记录；每个 Benchmark 优先**原始分与原始单位**，正确率/通过率才是百分比，AA `Intelligence Index` 是综合指数**不是成功率百分比**。模型级分不得假冒单独 Effort 实测，无成绩为 `NOT_MEASURED`；可根据同 AA 版本冻结参考分布派生综合低中高标签，分项专业能力保持连续原分而不预置独立三档。新版本/价格/合法 Effort 变化时更新，正式比较使用冻结的能力证据快照。开发期模型池目标 K=3 个不同经济定位且实际可用的模型身份，最后由 RQ2 研究组成。
+
+**训练与测试**：现有健康 Laya/Kev 队列不改；各自同协议固定 Val 选实际可加载的候选，不跨架构直接按 Loss 排名；独立 Dev Agent 完整 Episode 比较后，再决定新字段继续微调的主线。新输入字段必须有合法训练样本、缺失掩码和训练/推理同义编码；文档字段不是已实现训练。不可用封存 Final 选模型或调参，旧缺失权重仅在不可替代关键实验确需时重训。
+
+**SWE-bench 试测核验**：mini-SWE-agent 是执行框架；SWE-bench Lite/Verified 是软件修复任务集，项目原有 Terminal-Bench 2.1 + Harbor + mini-swe-agent 是另一套任务/评测协议。官方参考：https://mini-swe-agent.com/latest/usage/swebench/ 。本轮只要求本地 Agent 只读核查真实入口、权重加载/回退、Provider 工具支持、Docker/uidmap、verifier、成本账本和数据隔离，然后再考虑少量简单开发题；不自动运行试测。
+
 ## 2026-10-22 · V9 输入设计补充：外置轨迹评审与按 Effort 的模型能力证据（待实测）
 
 **现行 RQ 始终按 V9**：RQ1=总体效果、RQ2=模型池、RQ3=任务拆分、**RQ4=系统消融**、RQ5=任务适用边界。此前把消融并入 RQ1 的讨论被本次“以 V9 为准”覆盖。外置教师不是新增选路 Router，不单独增加 RQ；它的任务收益、真实额外 USD 和延迟放 RQ4，未见模型/模型池变化放 RQ2。
@@ -183,8 +195,8 @@ Kev-4B 可作为研究起点，任务级质量、延迟与候选规模泛化仍�
              |               identity, effort, capability, price
              v                      |
   Optional EXTERNAL Teacher         v
-  - retrieve similar successful  hard legal-action filter
-    TRAIN/DEV reference traces      |
+  - 2 fixed TRAIN/DEV success hard legal-action filter
+    examples (no live retrieval)    |
   - one LLM call: tool quality      |
     progress / next milestone       |
              |                      |
