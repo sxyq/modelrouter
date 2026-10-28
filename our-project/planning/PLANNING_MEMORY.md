@@ -12,7 +12,7 @@
 
 **职责合并**：原研究方案 Planning 与原 Laya/Kev 模型训练 Planning 统一为一个 Planning Agent；本地 Codex/Execution 仍是执行方，现有健康训练、正式 Benchmark 授权和其他资源边界不自动变化。唯一研究主线保持 V9 **五个 RQ**，历史三 RQ 简化备选不采纳。
 
-**负责人本轮选定三模型研究池**：高 `GPT-6.1 Sol`、中 `GPT-6 Luna`、较低 `Qwen3.8 27B`（开放权重）；模型身份现已选定，实际 Provider ID、权限、工具支持、native_effort、计费和模型版本**尚未核实**。AA 历史页面约 52/38/34（Sol/Luna v4.3.2、Qwen 27B Xhigh v4.3 估计），**不属于严格同版的可比分数**；不应称为成功率百分比，正式数据需同版本重取，较低能力也不等于托管 API 成本更低。
+**统一 Planning 接续（2026-10-29 最新纠偏）**：已批准 V9 五 RQ；首批三模型池指定**`gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`**，第三项是 Qwen3.8-Flash 托管 API，**不是误记的 Qwen3.8 27B，更不是 Qwen3.8-Flash-Next 开放权重**。三档表示研究角色，非已测严格能力/费用排名；公开标准输入/输出 $/百万 Token 约 2/10、0.10/0.50、0.15/0.47；Qwen 输入单价反高于 Luna。AA Sol Max=52、Luna Max=38（v4.3.2），Flash-Next=40 属不同模型，托管 Qwen Flash 的同口径指数未核到，不能填入。下一任统一 Planning Agent 应把本次纠正视为最新明确用户选择，保留六文档、仅保守去重，确保现有训练自然推进，不以 planning 记录声称新调用已成功。
 
 **能力数据本地化**：由本地 Agent 从 GitHub 最新 main 接续，在现有代码路径复用已有 Registry/数据准备入口，获取有授权的 AA API 指数及可得基准/定价，形成可版本化本地快照；刷新脚本**每次执行尝试重新拉取**，失败则保留带正确来源/采集时间的最后有效数据；不允许 Router 每次推理都联网；训练/正式 Episode 冻结所用快照 ID，不提交密钥或凭空补充 Effort 分数。本次仅文档，尚未实际运行下载/抓取。
 
