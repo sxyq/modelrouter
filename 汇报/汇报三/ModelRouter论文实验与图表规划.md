@@ -10,6 +10,8 @@
 
 > **V9 设计补充（2026-10-22）**：不改变已经确认的 **RQ1 总体、RQ2 模型池、RQ3 拆分、RQ4 系统消融、RQ5 工作负载边界**，也不增加第六个 RQ。按负责人最新要求，在原 Fig.2 Agent Runtime **外部**补充“相似顶级成功轨迹检索 → 独立大模型工具/进展合理性短评 → 单一 Router”的支路，并将每个具体模型 × 原生 Effort 的能力 Benchmark 证据纳入动态候选。详细字段见 §1.3a 与 [研究总纲](../../our-project/planning/RESEARCH_OVERVIEW.md)；这些是**待训练/待验证的输入方案**，不是已运行的评测结果或新增付费 API 授权。
 
+> **2026-10-28 V9 最近讨论简化补充（拟议，未实现）**：正式权威仍是 **5 个 RQ + 8 图/12 表**；聊天里“改三核心 RQ、消融合入 RQ1”的组织建议尚未正式批准，不自动修改原 RQ/Fig/Table 编号。Fig.2 外置教师简化为**单个顶级推理模型 + 固定两条来自合法 TRAIN/DEV 的公开成功轨迹摘要**（高效完成/失败恢复），不建实时相似度检索；约积累三次模型生成或关键阶段/停滞事件时，在下一次 Router 决策前生成 `progress_summary, main_blocker, next_milestone`，另记录截止步骤、参考 ID、教师完整 Token/美元费用/时延。模型能力卡优先软件工程/代码/工具 Benchmark 的原始分和原始单位、AA 综合 Intelligence Index（不是正确率百分比）、对应真实 Effort 证据；只派生综合低中高，缺失档位 `NOT_MEASURED`。健康训练继续；Laya/Kev 各按同协议 Val 选可加载候选，再用独立 Dev Agent 完整 Episode 比较后决定继续微调主线，初始研究池暂以 K=3 个可用模型为目标。mini-SWE-agent 是 Agent 框架，SWE-bench Lite/Verified 和 Terminal-Bench 2.1/Harbor 评测任务不同，结果不得混用。本轮文档同步不是新训练、付费调用、测试或图表实测授权。
+
 ## 0. 研究定位与版本
 
 ### 0.1 新的统一思路
@@ -91,11 +93,10 @@ flowchart LR
   G --> SNAP["Pre-decision observed State at F0..F3"]
   EXEC["Same Agent Harness: Tools / Verifier"] --> HIST["Observed tools, progress, verification, usage"]
   HIST --> SNAP
-  REF["Verified reference traces: TRAIN/DEV only"] --> RETRIEVE["Retrieve similar successful task traces"]
-  RETRIEVE --> JUDGE["Optional EXTERNAL LLM trajectory assessor"]
+  REF["Two fixed successful TRAIN/DEV reference excerpts"] --> JUDGE["Optional EXTERNAL LLM trajectory assessor"]
   HIST --> JUDGE
   SNAP --> JUDGE
-  JUDGE --> SHORT["Short reasoned progress / tool-use / next-milestone summary"]
+  JUDGE --> SHORT["Progress / blocker / next milestone + provenance"]
   SHORT --> ROUTER["Single active Laya OR Kev Router"]
   SNAP --> ROUTER
   LEGAL --> ROUTER
