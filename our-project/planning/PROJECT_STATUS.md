@@ -1,5 +1,17 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-10-29 · 统一 Planning 接手、V9 三模型池与能力卡本地快照（本轮规划，不是服务器新实测）
+
+**已明确批准的研究结构**：继续使用 **V9 五个 RQ**，顺序仍为 RQ1 整体性能、RQ2 模型池、RQ3 任务拆分、RQ4 系统消融、RQ5 工作负载适用边界；保留原 Fig.1–8、T1–T12。原“三核心 RQ”只是历史备选，不再作为本轮待决事项。
+
+**本轮新选择——初始三个模型身份**：高档 `GPT-6.1 Sol`、中档 `GPT-6 Luna`、较低档开放权重 `Qwen3.8 27B`。此为**研究池成员选择**，不是已证明三者 Provider 可调用/Tool 支持/native Effort 全档有效，不是当前 `harbor_agent.py` 已接入三者；具体 API ID、Provider、价格与合法档位由本地 Agent 核实。Artificial Analysis 同版本 v4.3.x 页面的参考综合指数（不是成功率百分比）约 52/38/34（分别对应 Sol max、Luna max、Qwen 27B xhigh）；不同 AA 版本不能混排。Qwen 27B **能力较低不意味着托管费用低于 Luna**；最终经济性必须据有效报价与真实 Episode 账本决定。来源：https://artificialanalysis.ai/models/gpt-6-1-sol 、https://artificialanalysis.ai/models/gpt-6-luna/ 、https://artificialanalysis.ai/models/releases/qwen3-8-27b 。
+
+**新增数据任务（待本地 Execution Agent 执行）**：在**现有 `our-project/code/`** 范围复用 Registry/训练准备入口，为三款模型及后续候选建立本地能力数据快照；首次抓取/清洗公开允许使用的 AA 指标、Benchmark 原始单位和模型/版本/Effort 证据，每次**数据刷新脚本运行都尝试重新请求**官方 AA API（需合法密钥），成功则保存带来源、时间、协议和指标版本的新快照；网络/授权失败时保留最后有效数据，不写零、不过期数据冒充新实测。实际每一次 Router 决策不发起外网抓取，训练及正式评测固定 snapshot ID，API Key 不进 Git。脚本、当前数据和训练样本准备由本地 Agent 根据审批实施；**本次 GitHub 更新仅为规划，没有新增本地代码/实际抓取/微调**。
+
+**训练与文档维护**：原 Laya/Kev 健康训练、Kev 自动评分及约 15% 受保护留存不改；完成后各自在可比固定 Val 选择物理存在的优质 Checkpoint，独立 Dev Agent Episode 决定继续微调起点，随后用合法的新能力/轨迹输入**继续微调现有权重**，并记录实际训练范围。保留六份文档，**只删除确定的跨文档冗余，不按 14–20 万字的目标大规模删历史**；原始实验报告、Q/D ID、负结果、来源政策和图表编号不删。本轮允许六文档规划更新，未新增 GPU/API/正式测试授权。
+
+**最新训练证据时效**：目前只能独立确认 GitHub 最后已同步的 2026-10-27 F12/R12 在训、Kev 完整固定 Val 14 项；用户提出可从另一训练 Planning 查看更新，仍需由具备现场权限的本地 Agent 读取更晚队列、Ledger、训练报告或看板，不能把旧快照称为 10-29 实时进度。下方历史时点保持可追溯。
+
 ## 2026-10-28 · V9 最新讨论收敛与小规模 Agent 试测前代码审计（规划更新，非服务器实时状态）
 
 **本次边界**：仅同步六份核心研究 Markdown，不触碰健康训练、Checkpoint、Serving、Provider 或 Harbor；未运行 SWE-bench/Terminal-Bench、未花费 API/GPU 费用。下方 2026-10-27 的 F12/R12 及 Kev 14 项固定 Val 是**GitHub 最后已同步现场快照**，不是此时新的实时监控；正式 Agent 成功率与实际完整 Episode USD 仍为 `NOT_EVALUATED`。
