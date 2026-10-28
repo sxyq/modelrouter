@@ -10,7 +10,7 @@
 
 ### 2026-10-29 · 负责人最新决定：固定初始 K=3、能力数据可刷新、现有训练后继续微调、六文档保守去重
 
-负责人本轮明确：**正式 V9 五个 RQ 不变**（RQ1 Overall、RQ2 Pool、RQ3 Decomposition、RQ4 Ablation、RQ5 Workload Boundary）；**初始正式研究池 K=3 个模型身份**，优先挑实际可调用且经济定位/能力互补的型号，负责人给出的三个首选型号明确为 `GPT-6.1 Sol`（高）、`GPT-6 Luna`（中）和 `Qwen3.8 27B`（较低、开放权重）；最终 `provider/model_id/native_effort` 必须由本地 Agent 在原 Provider/Serving 代码和权限内核实，不能把未经调用的 registry 声明当成真实已验证动作；AA 同版本 v4.3.x 参考指数分别约 52/38/34（后者 xhigh），仅供研究选池，不能混用 2026-10 新 v5 的数值，也不代表 Qwen 托管费用比 Luna 低。RQ2 后续仍研究 K/成员变化。
+负责人本轮明确：**正式 V9 五个 RQ 不变**（RQ1 Overall、RQ2 Pool、RQ3 Decomposition、RQ4 Ablation、RQ5 Workload Boundary）；**初始正式研究池 K=3 个模型身份**，优先挑实际可调用且经济定位/能力互补的型号，负责人给出的三个首选型号明确为 `GPT-6.1 Sol`（高）、`GPT-6 Luna`（中）和 `Qwen3.8 27B`（较低、开放权重）；最终 `provider/model_id/native_effort` 必须由本地 Agent 在原 Provider/Serving 代码和权限内核实，不能把未经调用的 registry 声明当成真实已验证动作；AA 历史网页参考指数约 52/38/34（Sol/Luna 为 v4.3.2，Qwen 27B Xhigh 发布页为 v4.3 估计），三数**不是严格同版可比结果**；最新 v5 应重新获取同口径实测或保持缺失，也不代表 Qwen 托管费用低于 Luna。RQ2 后续仍研究 K/成员变化。
 
 **模型能力源同步决定**：由本地 Execution Agent 先查已有数据/Registry/脚本，复用原入口取得 AA 官方 Data API 和公开 Benchmark 可合法获取的真实指标，保存**首版带日期的本地数据快照**及来源/指标单位/评测版本/每 Effort 缺失标记，并将能力卡编码接入**原有代码路径**而非新建平行服务。后续该既有数据刷新脚本每次被明确执行时尝试重新抓取更新；不代表 Router 每个 inference 请求都联网。抓取失败沿用明确标识为上次成功版本的快照，不谎报实时数值；遵守授权、速率限制、API 套餐数据字段与再分发条款，不把密钥写进仓库。此决定**不授权**本轮 Planning 自动访问本地私有配置、下载受限数据或调用新的付费 API。
 
