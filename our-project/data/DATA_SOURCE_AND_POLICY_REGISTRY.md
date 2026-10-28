@@ -592,28 +592,7 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 
 ## 2026-10-14 · P0 恢复一致性、数据分层迁移与长队列交接验收（MR-P0-RESUME-INTEGRITY-20261014）
 
-- **恢复模型与优化器引用一致性彻底修复（P0-1）**：
-  - 根因定位：旧代码在初始模型上实例化 AdamW，恢复时重载新模型对象，导致优化器内部参数对象仍指向丢弃的旧模型，造成后续训练梯度更新脱节。
-  - 架构重构：确立“模型终态确定后再建优化器”准则。优先解析断点与有效物理权重，终态模型加载完成后直接提取其参数对象实例化优化器，并通过 `assert id(p) in model_param_ids` 强制校验，从根本上确保优化器与模型参数一一对应。
-  - 状态持久化升级：保存 Checkpoint 时同步输出包含完整 AdamW 动量、Cosine 学习率调度器状态、AMP GradScaler 及 PyTorch CPU/CUDA 随机数种子的 `optim_state.pt`。保存失败显式抛出 `RuntimeError`，严禁静默忽略。
-  - 6 项隔离测试全数通过（`router_data/test_resume_integrity.py`）：重现断连 Bug、验证修复后参数真实更新（max diff > 0.05）、验证 `EXACT_RESUME` 恢复轨迹比特级精确吻合、验证缺失物理权重回退至 Epoch 0（`EPOCH_RESTART`）、验证已达目标轮次但缺失权重时强制报错拦截、验证优化器状态持久化失败报错。
-- **数据准入严格校验与无猜测监督（P0-2）**：
-  - 彻底移除依据监督类型或数据源 ID 进行启发式目标猜测的分支。
-  - 接入显式 `SCHEMA_INCOMPATIBLE` 校验：索引记录若缺失 `split`、`train_eligible`、`source_policy_train_allowed`、`quality_grade`、`primary_supervision_class` 立即拒绝训练并报错。
-  - 监督目标必须同时属于合法目标集合并在 `candidate_targets` 拥有第一手标签证据。
-  - 实测四层全量普查：4,863,900 条合法记录 100% 通过严格准入；跳过 Q3/Q4 不合格样本 37,326 条；跳过非法/不许可来源 0 条；跳过无有效监督证据 0 条。
-- **旧版与新版 486.39 万候选分层迁移核验（P0-3）**：
-  - 物理行数比对：旧分片与新分片物理总行数完全一致（L1: 663,749, L2: 1,380,533, L3: 2,028,793, L4: 2,748,870），六大允许源总量与单源记录数完全相同。
-  - 迁移根因溯源：旧文档数值（L1: 489,911, L2: 973,501, L3: 1,475,527, L4: 1,924,961）来自 V1 单纯按质量初筛；V2.1 新普查（L1: 485,210, L2: 1,001,005, L3: 1,466,724, L4: 1,910,961）引入了多维多样性签名 `signature = (scenario, model_name, reasoning_effort, length//1024, action_type)`，在同等质量级打破平局，使得跨源独立单元分布更加均衡。跨层重复为 0，独立任务单元无泄漏，Train/Val/Test 身份完全保持。
-  - 实验可比性确立：F01、F02 与后续 F03 均统一使用 `MR-QUALITY-GRADING-V2-1`（`streaming_v2_1`），数据快照完全一致，实验指标科学可比。
-- **服务器现场推进与 F03 自动交接就绪（P0-4）**：
-  - A6000 现场稳定推进：队列守护 PID 2207051、训练 PID 2287331，GPU 显存占用 9,845 MiB，利用率 79%~97%，根分区可用空间 1.2 TiB。
-  - F02 正在平稳运行，最新进度已推进至 Epoch 2/2 · Chunk 96/123（Step 27,940/31,304，消费样本 1,788,127，Loss 0.5010）。
-  - F02 结束后，后台队列将自动调起 F03（L3 单层全量 1,466,724 条）。已完成代码和索引热替换，F03 将直接以最新参数绑定和严格数据准入规范运行。
-- **外部基准 Terminal-Bench 2.1 状态保持**：
-  - 89 题与既有代码基准 0 重叠；服务器非特权环境保持 Canary `MANIFEST_VALIDATED` 与 External DEV `ROUTER_SERVING_NOT_READY`，严禁伪造测试结果。
-- **Top-5 物理权重严格保留**：
-  - 遵循 `MAX_CORE_CHECKPOINTS = 5` 上限，当前磁盘严格保留 5 份最优核心模型（`P0_B03_C08_QB_PB`、`P0_B01_C01_QB_PB`、`P0_B03_C05_QB_PB`、`P0_B02_C01_QB_PB`、`P0_B03_C01_QB_PB`）及 1 份运行中容灾临时权重（`F02/_temp_recovery`）。
+- **历史 P0-1 模型/优化器恢复一致性**：原始实现、根因与验证详情见 [PLANNING_MEMORY](../planning/PLANNING_MEMORY.md) 2026-10-14；此处不重复训练事故过程。
 
 
 
@@ -654,28 +633,7 @@ Registry 共登记 31 个来源编号，本轮有 16 个来源目录，不代表
 
 ## 2026-10-14 · Checkpoint 留存时序闭环、真实验证集 0 泄漏实证、生产级恢复引擎验证与 ALGN 长期消融推进（MR-ALGN-PRIORITY-REPAIR-20261014-V2）
 
-- **P0-1 Checkpoint 留存时序与评审闭环修复**：
-  - 根因定位：`run_full_coverage_stream_run()` 中 `handle_epoch_checkpoint()` 在 `history.append(entry)` 之前调用，导致 `run.json` 缺少当前 Epoch，`load_and_evaluate_all()` 找不到候选节点，被错误判为 `not_qualified` 并降级为 `METADATA_ONLY`；
-  - 修复实现：严格保证当前 Epoch entry 在评审前写入 `history` 与 `run_meta["history"]`，并在 `handle_epoch_checkpoint()` 内部增加无重幂等写入保障；
-  - 终态完结防报错：Cursor 达到最大 Epoch 且 `run.json` 状态为 `completed` 且含有完整有效历史时，合规接纳为已完成状态，不再因物理权重依据留存策略被淘汰而误报 `Corrupt state`；
-  - 回归验证通过：编写并全数通过专用回归测试 `test_retention_ordering.py`，实测当前 Epoch 稳定参与 Top-5 动态排序并正确晋级保留（`RETAINED_BEST` / `RETAINED_TOP_K`）。
-- **P0-2 真实验证集无泄漏实证审查彻底纠偏**：
-  - 根因定位：旧脚本 `audit_v1_v2_stratification.py` 扫描顶层键，未穿透 JSONL 的 `provenance` 结构体，导致验证集加载为 0 条并形成“与空集交集为空”的伪 0 泄漏假象；
-  - 修复实现：严格从权威验证集目录 `runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/val/` 加载 S1（561 条）、S2（337 条）、S3（4,794 条，涵盖 2,244 个请求）共计 3,142 个独立 Record ID 和 Unit ID，计算物理 SHA256 校验和（S1: `ca5a956dda1c8631...`, S2: `7b39deadb8d83964...`, S3: `fe41ae9f17a9dc5e...`）；
-  - 全量实测：对全库 `quality_grading_v2_1` 共计 15,210,939 条训练记录进行逐行无遗漏扫描，真实交集为严格的 **0 条**（Record Overlap = 0, Unit Overlap = 0），以严密的数学确凿性实证了全项目绝对零数据泄漏！
-- **P0-3 生产级恢复引擎验证全量闭环**：
-  - 抽取生产函数 `resolve_checkpoint_to_resume()` 统一接管训练恢复与检查点锚定；
-  - 全面升级 `test_streaming_chunk_recovery.py`，6/6 项测试 100% 通过（参考轨迹比特级一致、缺失物理权重安全触发 `EPOCH_RESTART`、虚假 completed 拦截、合法 `METADATA_ONLY` 完结状态接纳、SHA256 权重校验和一致性、恢复后真实反向传播参数更新）。
-- **P0-4 不可变历史失败审计账本确立**：
-  - 建立不可变账本 `docs/historical_execution_failure_ledger.json`（及同名副本于 Run 根目录），详细记录早期 `F03` 与 `F04` 遭遇的 `NameError: params` 错误上下文、堆栈行号、根因、以及修复 Commit `c479f6f`；
-  - 彻底封堵因 `failed_runs={}` 内存重置而导致的错误痕迹抹除隐患，确保所有历史失败事件永久可审计、可追溯。
-- **P1 ALGN 系列长期消融实证与泛化突破**：
-  - `ALGN_01_S1`：完成 2 轮训练，S1 Val Loss 从 0.6000 微升至 0.6063，准确率 66.13%，出现典型单任务轻度过拟合；
-  - `ALGN_02_S1_S2`：完成 2 轮训练，S1 Val Loss 显著降至 **0.5983**（跌破 0.60 关口，超越单任务最佳），S1 Val Acc 达 **66.84%**，S2 判别准确率 53.71%，实证了真实智能体轨迹（TRA-001/002）2:1 联合监督具有极强的泛化正则化能力；
-  - `ALGN_03_S1_S3`：正在 RTX A6000 上高速推进，Epoch 1 Chunk 128+/162，Loss 稳定收敛于 0.51~0.62，GPU 利用率持续 60%~100%，功耗 260~296W，根分区可用空间 1.15 TiB。
-- **Top-5 物理权重与服务看板状态**：
-  - 物理 Checkpoint 严格遵循 `MAX_CORE_CHECKPOINTS = 5` 硬上限，当前保留 Top-5 核心模型权重，磁盘空间 1,151.6 GiB（充裕）；
-  - HTML 看板和服务器自治监控脚本持续稳定运行。
+- **历史 P0-1 Checkpoint 留存时序修复**：原始根因、修复、审计与恢复细节见 [PLANNING_MEMORY](../planning/PLANNING_MEMORY.md) 2026-10-14；本台账不重复相同长段落。
 
 
 ## 2026-10-14 · ALGN_03 完成与泛化突破实证、ALGN_04 启动瞬态 NameError 修复、不可变事故台账升级与队列安全接续（MR-ALGN03-COMPLETION-AND-QUEUE-RESUME-20261014）
