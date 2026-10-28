@@ -1,5 +1,17 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-10-28 · V9 最新讨论收敛与小规模 Agent 试测前代码审计（规划更新，非服务器实时状态）
+
+**本次边界**：仅同步六份核心研究 Markdown，不触碰健康训练、Checkpoint、Serving、Provider 或 Harbor；未运行 SWE-bench/Terminal-Bench、未花费 API/GPU 费用。下方 2026-10-27 的 F12/R12 及 Kev 14 项固定 Val 是**GitHub 最后已同步现场快照**，不是此时新的实时监控；正式 Agent 成功率与实际完整 Episode USD 仍为 `NOT_EVALUATED`。
+
+**研究方向**：继续采用正式 **V9 五个 RQ**（RQ1 总体、RQ2 模型池、RQ3 任务拆分、RQ4 系统消融、RQ5 工作负载边界）。最近聊天提议将论文压缩为三个核心 RQ/重排图表，尚非负责人最终批准，不修改 Fig.1–8 / Table 1–12 的权威编号。V9 最近方案倾向：Agent 外置**单个顶级推理模型**在积累约 3 次模型生成或发生关键事件后输出进展/主要问题/下一里程碑短评；首版使用经许可核验、与当前测试题隔离的**两条固定公开成功轨迹摘要**（高效完成与失败恢复），**不建在线语义检索/重排系统**；教师 Token/推理成本完整入账。该触发阈值仍待开发集校准。
+
+**候选能力与训练方向**：优先输入各 Benchmark 原始成绩及单位、AA 综合指数（是指数而非正确率百分比）、独立 native_effort 实测及证据缺失；综合高中低仅作同一版本参考集合上的派生标签。首版模型池拟以三个不同经济定位且经真实 Provider 核验的模型身份为目标；现有健康训练自然推进后，Laya/Kev 分别依据**各自同协议 Val**选可加载候选，再用独立 Dev Agent 任务比较以选择继续微调起点。未经确认不得按跨架构最低 Loss 直接选模或用封存 Test 进行迭代。
+
+**下一项只读审计（待本地 Agent 回报）**：检查现有 `our-project/code/` 的 Laya/Kev 路由器权重真实加载、回退标志、合法 `(provider, model, native_effort)`、Provider 工具调用/价格、Harbor/mini-SWE-agent 入口、Docker/uidmap、样本划分、真实 verifier 和完整账本。核清用户所说“SW 奔驰 Mini”究竟是 **mini-SWE-agent 框架 + SWE-bench Lite/Verified 任务**，还是目前 **Terminal-Bench 2.1 + Harbor 的官方 mini-swe-agent 链**；这两个评测协议不可混写。先审计可行性，再讨论极小、低成本的公开开发任务，不启动试跑。
+
+**依据与职责**：[EXPERIMENT_QA](EXPERIMENT_QA.md) 记讨论/授权边界；[RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md) 记方法；[V9 图表规划](../../汇报/汇报三/ModelRouter论文实验与图表规划.md) 保持论文版本。这里只登记最新规划和最后一份可溯源现场快照。
+
 ## 2026-10-27 14:31 · R06–R11结果同步，F12/R12自然接续
 
 本节以 A6000 原采集 `2026-10-27T05:49:52Z`（台北13:49:52）、原候选队列/Ledger、各候选完整固定 Val 报告及实体目录为准。12:48时R11尚在验证，现已于12:54:57完整结束；原dispatcher随后自然接续R12。没有重复派发、重训、重新生成材料或操作健康进程。
