@@ -38,6 +38,18 @@
 
 **现行图表**：RQ1 Fig.3–4 / T3、T10；RQ2 Fig.5/T6；RQ3 Fig.6/T7；**RQ4 Fig.7/T4、T5、T8、T11**；RQ5 Fig.8/T9。具体空白表及实验策略以 [汇报三 V9](../../汇报/汇报三/ModelRouter论文实验与图表规划.md) 为准。
 
+## 2026-10-29 · V9 三档初始池、能力数据持续更新与增量微调（本轮新决策）
+
+**五 RQ 已最终再确认**：保持 RQ1 整体成功率/完整费用、RQ2 模型池、RQ3 任务粒度、RQ4 系统消融、RQ5 工作负载边界，保留 Fig.1–8 和 T1–T12。三 RQ/消融并入 RQ1 只是已经讨论但未采纳的历史备选。
+
+**固定初始研究池的三个模型身份**：强 `GPT-6.1 Sol`，中 `GPT-6 Luna`，较低能力且开放权重 `Qwen3.8 27B`（三家族模型中的实际两款 OpenAI + 一款 Qwen）。这是负责人当前选定的研究候选**身份**，仍要由本地 Agent 检验 API 的精确 model ID、tool use、context、真正支持的 native_effort 与 pricing；代码中合法动作过滤不得因为此文档就自动添加未验证组合。Artificial Analysis 官网同 v4.3.x 公开参考指数约 52（GPT-6.1 Sol Max）、38（GPT-6 Luna Max）、34（Qwen3.8 27B Xhigh）；AA 2026-10 上线 v5，跨版本不可比较，Qwen 27B 虽然能力更低但其托管报价可能比 Luna 贵，**高/中/低只是研究能力标签**，不是固定的价格标签。索引来源：https://artificialanalysis.ai/models/gpt-6-1-sol 、https://artificialanalysis.ai/models/gpt-6-luna/ 、https://artificialanalysis.ai/models/releases/qwen3-8-27b 。
+
+**可刷新的本地模型能力证据**：在现有 `our-project/code/` 下复用/扩展原 Provider/模型 Registry 与数据准备代码，保留已取得的原始能力数值、AA index 和 Benchmark score、`metric_unit`、`index_version`、`evaluated_effort`、`source_id/url`、采集时点、`evidence_status`。首次抓取 AA **官方授权 Data API** 并落盘带版本快照；**每次运行专门的能力数据刷新脚本时，均重新请求**，成功就保存新快照、失败则继续使用最后成功的带时间/错误状态版本（无凭据或额度不足不能谎称 refreshed），不每次 Router 推理联网；训练与已开始的 Agent Episode 始终绑定同一 frozen snapshot。官方当前接口文档：https://artificialanalysis.ai/data-api/docs/reference ，免费层可能只覆盖 headline 指数与价格，缺少逐 Benchmark/逐 Effort 数据时须保留 `NOT_MEASURED`，不能杜撰分数。密钥只读自本地环境、不得纳入 public Git；API 数据使用/再发布须遵守许可证和署名。该任务由未来本地 Agent 实际编码、抓取并报告，本轮仅文档。
+
+**继续微调**：保持目前 Laya/Kev 已授权健康训练和自动 Val；各自同协议固定 Val 先选在盘的优秀候选，再用独立 Dev Agent 完整 Episode 的成功率/费用选择值得加训的初始权重。新输入数据首先需合法来源、正确信息截止时间、有效模型×Effort 监督和训练/推理一致编码；**在现有最佳可加载权重上继续微调**而非将当前训练打断或从零训练所有组合。若采用 LoRA/Adapter，研究报告如实描述实际更新的参数范围，不将 Adapter 微调写成全参数微调。新的加训实际运行尚未获本轮授权。
+
+**简化轨迹教师保持原 10-28 设计**：低频顶级教师+两个固定合规公开成功示例；无实时向量检索。保留五 RQ 结构。六文档仅清理重复段和失效要求、保留历史科学结果和决策；不按字符数大刀阔斧压缩。
+
 ## 2026-10-28 · V9 方法精简与真实 mini-SWE-agent 试测前置审计（讨论方案）
 
 **正式研究版本仍是 V9 五个 RQ**：RQ1 总体效果、RQ2 模型池、RQ3 任务拆分、RQ4 系统消融、RQ5 工作负载边界。最近聊天提出三核心 RQ/把消融归 RQ1 是**未正式批准的论文组织建议**；不替代此前获批准的研究编号、8 图与 12 表。
