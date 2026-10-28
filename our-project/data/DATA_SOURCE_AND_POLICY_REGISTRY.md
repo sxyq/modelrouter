@@ -184,6 +184,14 @@
 
 **状态与用途**：本节描述未来审计与数据加工要求，尚没有新训练数据、新模型分数或真实教师调用记录。现有权重不能因输入 JSON 变更就视为理解新字段；先核合法用途、分割及模型训练编码。SWE-bench Lite/Verified 的开发任务及原 Terminal-Bench 2.1/Harbor 评测集独立登记，不混同成绩或使用封存任务补分。
 
+### 3.6 · 2026-10-29 首批三模型能力证据及刷新式本地快照（待本地执行）
+
+负责人已明确研究池三个**模型身份**（非可用 API ID 验证）：`GPT-6.1 Sol`（高）、`GPT-6 Luna`（中）、`Qwen3.8 27B`（较低、27B 开放权重）。来源（Artificial Analysis 官网）：https://artificialanalysis.ai/models/gpt-6-1-sol 、https://artificialanalysis.ai/models/gpt-6-luna/ 、https://artificialanalysis.ai/models/releases/qwen3-8-27b 。同 v4.3.x 发布页分别给出综合指数约 52（Sol max）、38（Luna max）、34（Qwen 27B xhigh），**指标版本、模型档位、是否测量或估计**均须写入快照；AA 新版 v5 不能与旧版混排；不要将指数称为百分比。三款模型的精确 Provider/部署、合法 Effort、工具调用能力、价格和实测任务成本仍为 `NOT_VERIFIED`；尤其 Qwen 27B 不保证低价。
+
+**官方数据抓取协议**：优先读取 https://artificialanalysis.ai/data-api/docs/reference 所列当前接口（如 `GET https://artificialanalysis.ai/api/v2/language/models/free`，依套餐可选择 `/language/models`）；由本地合法 API Key 通过 `x-api-key` 调用，具体可见字段、速率和使用/再分发权限以运行时官方文档为准。免费 API 有综合 Intelligence/Coding/Agentic 等 headline 指数、价格及速度信息，但详细每 Benchmarks / 每 Effort 可能需更高级别，不得把缺失补算成已测。每次**能力快照脚本启动**尝试从网络重新抓取一次、清洗并原子保存新成功快照；保留已有成功快照与 `fetched_at_utc, source_revision, benchmark_version, original_metric_unit, model_stable_id, model_revision, exact_effort, evidence_kind, missing_mask, fetch_status`。失败（401/403/429/离线/字段缺失）不覆盖历史有效数据，也不将历史快照冒充当日新测；正式训练和 Task Episode 使用**冻结的单一 snapshot ID**，不让每次模型生成请求调用榜单网站。只保留允许在公开 Git 仓库分发的数据/简要归属，授权不明的原始响应应本地忽略提交或仅保存元数据。
+
+**实现归属**：沿现有 `our-project/code/src/modelrouter/providers/registry.py` 与已有数据准备/编码路径扩展，尽量复用而非创建第二份模型 Registry；由后续本地 Execution Agent 首次落盘并证实抓取成功，本次规划文档并未实际取得新的可训练数据、执行网络请求或批准 GPU 继续微调。轨迹教师仍使用两条固定 Train/Dev 成功摘要，无在线相似检索。
+
 ## 4. Cache 专用证据字段与标签边界
 
 一条缓存相关训练记录必须区分**请求事实**、**缓存机会**、**模拟结果**及**真实计费结果**。
