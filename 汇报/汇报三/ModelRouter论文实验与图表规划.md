@@ -12,6 +12,8 @@
 
 > **2026-10-28 V9 最近讨论简化补充（拟议，未实现）**：正式权威仍是 **5 个 RQ + 8 图/12 表**；聊天里“改三核心 RQ、消融合入 RQ1”的组织建议尚未正式批准，不自动修改原 RQ/Fig/Table 编号。Fig.2 外置教师简化为**单个顶级推理模型 + 固定两条来自合法 TRAIN/DEV 的公开成功轨迹摘要**（高效完成/失败恢复），不建实时相似度检索；约积累三次模型生成或关键阶段/停滞事件时，在下一次 Router 决策前生成 `progress_summary, main_blocker, next_milestone`，另记录截止步骤、参考 ID、教师完整 Token/美元费用/时延。模型能力卡优先软件工程/代码/工具 Benchmark 的原始分和原始单位、AA 综合 Intelligence Index（不是正确率百分比）、对应真实 Effort 证据；只派生综合低中高，缺失档位 `NOT_MEASURED`。健康训练继续；Laya/Kev 各按同协议 Val 选可加载候选，再用独立 Dev Agent 完整 Episode 比较后决定继续微调主线，初始研究池暂以 K=3 个可用模型为目标。mini-SWE-agent 是 Agent 框架，SWE-bench Lite/Verified 和 Terminal-Bench 2.1/Harbor 评测任务不同，结果不得混用。本轮文档同步不是新训练、付费调用、测试或图表实测授权。
 
+> **2026-10-29｜初始三模型池与能力证据本地刷新已由负责人确认**：本论文仍按 **V9 五 RQ**（RQ1 Overall、RQ2 Pool、RQ3 Decomposition、RQ4 Systematic Ablation、RQ5 Workload Boundary）及 Fig.1–8、T1–T12 展开；不采纳“改三 RQ”的旧组织备选。初始研究池 K=3 个**指定身份**：`GPT-6.1 Sol`（高）、`GPT-6 Luna`（中）、`Qwen3.8 27B`（较低、开放权重），不得将这三个能力标签直接解释为绝对价格排序。参考 Artificial Analysis 同版 v4.3.x 的 Intelligence Index 约 52/38/34（各自 Max/Max/Xhigh）；AA v5 数值不能混用，尤其 Qwen 27B 的托管成本不一定低于 Luna。最终精确 Provider ID、工具/原生 Effort、价格与动作合法性仍需真实核验。能力卡数据由未来本地 Agent 在**现有代码路径**抓取 AA 授权 API 并保存带来源、版本、时间和缺失状态的首个本地快照；以后**每次专用刷新脚本运行都尝试拉取最新数据**，但整个正式实验/训练消费冻结 snapshot，失败复用最后可证明有效的版本；不在每次路由推理时调用 API。健康 Laya/Kev 训练继续，选同协议可加载代表+独立 Dev Agent 真实效果，再在原权重上**继续微调**合法新输入与监督；未新训也未新增官方任务结果。六文档仅保守去重，不按字符预算大幅删除历史。官方 API：https://artificialanalysis.ai/data-api/docs/reference。
+
 ## 0. 研究定位与版本
 
 ### 0.1 新的统一思路
