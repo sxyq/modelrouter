@@ -176,6 +176,14 @@
 
 **字段编码验证**：模型卡中分数有证据，也不代表旧 F05/F06/C03 路由权重已训练接受该字段；需按缺失掩码、量纲、序列化顺序检查实际训练/推理一致性。详见 [RESEARCH_OVERVIEW](../planning/RESEARCH_OVERVIEW.md)、[EXPERIMENT_QA Q-021](../planning/EXPERIMENT_QA.md)、[V9 图表规划](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)。本轮无新增 API/GPU 运行许可，不宣称已测成功率或已部署外置教师。
 
+### 3.5 · 2026-10-28 V9 简化能力卡和两条轨迹参考的准入（拟议）
+
+**固定参考轨迹**：首版不部署动态检索、Embedding 或重排，只离线挑两条公开的**确实成功**的简短 Agent 轨迹样例（一条高效完成、一条失败恢复），并登记 `reference_id, source_dataset, source_url, license_and_training_rights, task_family, agent_harness, verified_success, split, test_overlap_check, excerpt_hash, prepared_at`。`nvidia/Open-SWE-Traces`（https://huggingface.co/datasets/nvidia/Open-SWE-Traces）仅列待审来源，不代表已经下载、验证成功标签或许可适合目标用途。正式 Final 不能看到同题未来轨迹或答案。
+
+**能力记录主值**：`score_raw`、`score_unit`、`benchmark_version`、`metric_name`、`harness_id`、`model_revision`、`evaluated_native_effort`、`source_url`、`evidence_status`；正确率/通过率可为百分比，AA 综合 `Intelligence Index` 是 0–100 综合指数（**不是百分比**）。模型级成绩不能无标注复制给各 Effort；未测为 `NOT_MEASURED`。综合低中高属于同版本冻结参考模型分布的派生特征，并记录 `tier_rule_version`；各专业维度暂只存原始连续成绩。只在新模型/修订/Provider 可用性与价格或实际 Effort 菜单变化时更新，正式比较锁定证据快照。
+
+**状态与用途**：本节描述未来审计与数据加工要求，尚没有新训练数据、新模型分数或真实教师调用记录。现有权重不能因输入 JSON 变更就视为理解新字段；先核合法用途、分割及模型训练编码。SWE-bench Lite/Verified 的开发任务及原 Terminal-Bench 2.1/Harbor 评测集独立登记，不混同成绩或使用封存任务补分。
+
 ## 4. Cache 专用证据字段与标签边界
 
 一条缓存相关训练记录必须区分**请求事实**、**缓存机会**、**模拟结果**及**真实计费结果**。
