@@ -19,7 +19,7 @@ class AliasMapping:
     backend_model_id: str
     base_url: Optional[str] = None
     effective_native_effort: str = "none"
-    cost_status: str = "LOCAL_COMPUTE_UNPRICED"
+    cost_status: str = "BACKEND_PRICE_NOT_MEASURED"
 
     def resolve(self, selected_model_id: str, requested_native_effort: str) -> Optional[Dict[str, Any]]:
         """Return configured execution facts; leave other models unchanged."""

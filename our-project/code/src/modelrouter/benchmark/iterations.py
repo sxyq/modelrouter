@@ -15,6 +15,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from .official_artifacts import audit_job
+from modelrouter.providers.registry import ModelRegistry
 from modelrouter.telemetry.ledger import ExperimentLedger
 
 ROOT = Path(__file__).resolve().parents[5]
@@ -195,24 +196,36 @@ def summarize(path: Path, *, persist=True):
             native_contexts.append(trial)
     teacher_ids = {str(row.get("episode_id")) for row in teachers}
     teachers.extend(row for row in native_teachers if str(row.get("episode_id")) not in teacher_ids)
+    calls = [dict(row) for row in calls]
+    teachers = [dict(row) for row in teachers]
+    luna_spec = ModelRegistry().get_spec("gpt-6-luna")
+    for row in calls + teachers:
+        if (row.get("request_model_id") == luna_spec.model_id
+                and row.get("returned_model_id") == luna_spec.model_id
+                and row.get("usage_status") == "REPORTED"):
+            row["official_rate_cost_usd"] = luna_spec.calculate_cost(
+                row["prompt_tokens"], row["completion_tokens"],
+                row.get("reasoning_tokens") or 0, row.get("cached_tokens") or 0,
+                row.get("cache_write_tokens") or 0)
+            row["official_rate_cost_status"] = luna_spec.pricing_status
     # Recompute costs from the recovered generator rows, not combined contexts.
-    costs = [c.get("cost_usd") for c in calls]
+    costs = [c.get("official_rate_cost_usd", c.get("cost_usd")) for c in calls]
     native_only = native_contexts
     for c in calls:
         model = c.get("returned_model") or c.get("returned_model_id") or c.get("model", "unknown")
         model_calls[model + " / " + c.get("protocol", "chat_completions")].append(c)
     native_costs = [r.get("cost_usd") for r in native_only]
     all_costs = costs + native_costs
-    known_cost = sum(v for v in all_costs if isinstance(v, (int, float)))
+    known_cost = round(sum(v for v in all_costs if isinstance(v, (int, float))), 10)
     complete_cost = bool(all_costs) and all(isinstance(v, (int, float)) for v in all_costs)
     durations = [r.get("duration_sec", r.get("episode_wall_s")) for r in verified]
     billed_calls = [c.get("actual_billed_cost_usd") for c in calls]
     native_billed = [r.get("actual_billed_cost_usd") for r in native_only]
     all_billed = billed_calls + native_billed
     billed_generator = sum(all_billed) if all_billed and all(v is not None for v in all_billed) else None
-    teacher_costs = [c.get("cost_usd") for c in teachers]
+    teacher_costs = [c.get("official_rate_cost_usd", c.get("cost_usd")) for c in teachers]
     teacher_billed = [c.get("actual_billed_cost_usd") for c in teachers]
-    teacher_cost = sum(teacher_costs) if all(v is not None for v in teacher_costs) else None
+    teacher_cost = round(sum(teacher_costs), 10) if all(v is not None for v in teacher_costs) else None
     billed_teacher = sum(teacher_billed) if all(v is not None for v in teacher_billed) else None
     sandbox_costs = [(r.get("agent_metadata") or {}).get("sandbox_cost_usd") for r in trials]
     router_costs = [(r.get("agent_metadata") or {}).get("router_compute_cost_usd") for r in trials]
@@ -256,9 +269,31 @@ def summarize(path: Path, *, persist=True):
         "generator_cost_usd": known_cost if complete_cost else None,
         "known_generator_cost_usd": known_cost if any(v is not None for v in all_costs) else None,
         "teacher_cost_usd": teacher_cost,
-        "known_teacher_cost_usd": sum(v for v in teacher_costs if v is not None) if any(v is not None for v in teacher_costs) else None,
-        "episode_model_cost_usd": sum(model_costs) if model_costs and all(v is not None for v in model_costs) else None,
-        "cost_source": "provider_usage_and_configured_rates; not an invoice",
+        "known_teacher_cost_usd": round(sum(v for v in teacher_costs if v is not None), 10) if any(v is not None for v in teacher_costs) else None,
+        "episode_model_cost_usd": round(sum(model_costs), 10) if model_costs and all(v is not None for v in model_costs) else None,
+        "cost_source": "provider_usage_and_registry_rates; not an invoice",
+        "official_rate_accounting": {
+            "model": luna_spec.model_id,
+            "pricing_status": luna_spec.pricing_status,
+            "price_source": luna_spec.pricing_source,
+            "cache_write_price_source": "https://developers.openai.com/api/docs/pricing?latest-pricing-expanded=true",
+            "usd_per_1m_tokens": {
+                "input": luna_spec.input_price_per_1m, "output": luna_spec.output_price_per_1m,
+                "cache_read": luna_spec.cache_read_price_per_1m,
+                "cache_write_30m": luna_spec.cache_write_price_per_1m,
+            },
+            "service_tier": "standard", "input_context": "<=272K",
+            "cache_policy": "Raw missing counts stay null; corresponding input charged at ordinary input rate",
+            "reasoning_policy": "Completion includes reasoning; counted once",
+            "requests": [{
+                "role": role, "episode_id": c.get("episode_id"), "response_id": c.get("response_id"),
+                "prompt_tokens": c["prompt_tokens"], "completion_tokens": c["completion_tokens"],
+                "reasoning_tokens": c.get("reasoning_tokens"), "cached_tokens": c.get("cached_tokens"),
+                "cache_write_tokens": c.get("cache_write_tokens"),
+                "recorded_cost_usd": c.get("cost_usd"), "official_rate_cost_usd": c["official_rate_cost_usd"],
+            } for role, group in (("generator", calls), ("teacher", teachers))
+              for c in group if "official_rate_cost_usd" in c],
+        },
         "actual_generator_cost_usd": billed_generator,
         "actual_teacher_cost_usd": billed_teacher,
         "sandbox_cost_usd": sandbox_cost, "router_compute_cost_usd": router_cost,
@@ -270,6 +305,16 @@ def summarize(path: Path, *, persist=True):
             "p50": percentile([e.get("inference_latency_ms") for e in benchmark_events if e["event"] == "ROUTER_END" and e.get("router_family") == k], .5),
             "p95": percentile([e.get("inference_latency_ms") for e in benchmark_events if e["event"] == "ROUTER_END" and e.get("router_family") == k], .95),
         } for k in router_calls},
+        "generator_request_time_ms": sum(c["latency_ms"] for c in calls) if calls and all(
+            c.get("latency_ms") is not None for c in calls) else None,
+        "teacher_request_time_ms": sum(c["latency_ms"] for c in teachers) if teachers and all(
+            c.get("latency_ms") is not None for c in teachers) else None,
+        "router_total_time_ms": {k: sum(v) if all(x is not None for x in v) else None
+                                 for k, v in router_calls.items()},
+        "container_time_resources": [{
+            "trial_id": r.get("trial_id"), "episode_wall_s": r.get("episode_wall_s"),
+            "phase_wall_s": r.get("phase_wall_s"),
+        } for r in trials],
         "models": {k: {
             "calls": len(v), "ttft_p50_ms": percentile([x.get("ttft_ms") for x in v], .5),
             "ttft_p95_ms": percentile([x.get("ttft_ms") for x in v], .95),
@@ -312,7 +357,8 @@ def display(metrics):
         f"LastTool={show(tool.get('command'))} TrialStatus={trial.get('status', 'NOT_EVALUATED')} "
         f"VerifierSource={show(trial.get('verifier_path'))} Reward={show(trial.get('reward'))} "
         f"Verifier={metrics['verified_trials']} Success={metrics['successes']} "
-        f"GeneratorUSD={show(metrics['generator_cost_usd'])} TotalUSD={show(metrics['complete_cost_usd'])} "
+        f"GeneratorUSD={show(metrics['generator_cost_usd'])} TeacherUSD={show(metrics['teacher_cost_usd'])} "
+        f"ModelUSD={show(metrics['episode_model_cost_usd'])} TotalUSD={show(metrics['complete_cost_usd'])} "
         f"Progress={metrics['finished_units']}/{metrics['total_units']}"
         f" | Router={json.dumps(metrics['router_latency_ms'], ensure_ascii=False)} "
         f"ToolExit={show(tool.get('exit_code'))} ToolMs={show(tool.get('duration_ms'))} "

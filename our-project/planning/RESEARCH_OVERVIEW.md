@@ -6,9 +6,11 @@
 >
 > **证据纪律**：论文/官方材料、现有仓库文献、E0 Agent 审计、我们提出的假设分开表述。**未运行的实验不得写成结果；“未见完全相同方案”不等于“首创”。**
 
-**10-30 20:05新增证据范围**：官方Oracle通过仅证明容器/Verifier通路；Luna真实Episode的9生成、18工具和3教师提供行为及用量证据，但路由回退、预算不足和缺少Verifier使终局收益不可测。双动作真实前缀前向仅涉及K=1、同Luna none/low，不能回答K=3独立模型选择或最优Effort监督。配置价估算与完整现金费用分开，后者仍缺。五RQ、八图十二表及先前训练负结果保持，正式效果/消融表不填该次结果；原实现和数据状态见 [PROJECT_STATUS](PROJECT_STATUS.md) 当前入口。
+**2026-10-30 当前证据范围**：单 Luna none/low 官方开发 Episode 已 reward=1.0、CTRF 2/2，14 次真实路由、0 fallback；该结果支持原执行链与同模型双动作的实际运行，不证明独立三模型选择、教师净收益或五 RQ 总体结论。当前 Provider 实际返回 3 项，研究池仅 Luna 列出，Sol/托管Flash未列出；用户充分测试/部署授权已明确，实际可用性分开记录。费用按真实输入/输出/缓存读写与适用官方价核算，输出含 reasoning，不重复计费；供应商 bill 未知单列，不影响执行，官方价模型费用已保存并复核。原代码配置部署后Laya/Kev真实非回退前向通过，权重不变；Kev长前缀超时及82.28秒CPU时延不是科学效果或时延达标证据，F14非有限损失仍不用于父候选选择。API 不设总 Token 或美元预算，服务器资源规则、训练不中断及 Final 隔离保留。详细证据在 [PROJECT_STATUS](PROJECT_STATUS.md)，计费算法与官方来源在 [数据台账](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md#当前托管-api-身份与计费政策2026-10-30)。
 
-**10-30证据边界更新**：AA v2为PARTIAL，LunaMax27.7552属于AA5.0参考，不能代入none动作、旧v4.3.2或托管Flash成绩。三候选短摘要与详细卡同一formatter分层保留，Laya当前窗口只覆盖前者及任务/教师/最近反馈，Kev同样本完整；训练材料仍v1，新布局未重新训练。原模型两项内部Val不足以证明动态路由/教师收益，F14数值异常不参与父选择。官方验证与独立模型、完整USD仍缺；五RQ/八图十二表保持，当前实测统一见 [PROJECT_STATUS](PROJECT_STATUS.md)，以下10:40以前结果按历史版本阅读。
+**10-30 20:05历史证据范围（旧额度已取消）**：官方Oracle通过仅证明容器/Verifier通路；Luna真实Episode的9生成、18工具和3教师提供行为及用量证据，但路由回退、预算不足和缺少Verifier使终局收益不可测。双动作真实前缀前向仅涉及K=1、同Luna none/low，不能回答K=3独立模型选择或最优Effort监督。配置价估算与完整现金费用分开，后者仍缺。五RQ、八图十二表及先前训练负结果保持，正式效果/消融表不填该次结果；原实现和数据状态见 [PROJECT_STATUS](PROJECT_STATUS.md) 当前入口。
+
+**10-30证据边界更新**：AA v2为PARTIAL，LunaMax27.7552属于AA5.0参考，不能代入none动作、旧v4.3.2或托管Flash成绩。三候选短摘要与详细卡同一formatter分层保留，Laya当前窗口只覆盖前者及任务/教师/最近反馈，Kev同样本完整；训练材料仍v1，新布局未重新训练。原模型两项内部Val不足以证明动态路由/教师收益，F14数值异常不参与父选择。官方 Oracle 与单 Luna 开发 Episode 已通过；独立三模型证据仍缺，官方价模型费用已核算保存，供应商 bill 未知；五RQ/八图十二表保持，当前实测统一见 [PROJECT_STATUS](PROJECT_STATUS.md)，以下10:40以前结果按历史版本阅读。
 
 **10-30 10:40 执行证据更新**：Laya `V9_LAYA_001` 与 Kev `KEV-V9-001` 均完成两轮及各自原固定 Val，新实体未上线。Laya 总体 Accuracy 48.23% → 49.51%，S2/S3 改善、S1 四项退步；Kev 四项退步。两者均 `FEATURE_PARTIALLY_TRAINED`，4 条稀疏教师和缺测能力卡实际进入训练，Laya 仍裁 6 条完整状态。当前证据支持输入消费和内部指标对照，尚不能证明教师、能力特征或独立三模型的任务收益。保存的 Laya 第 2 轮真实 CPU 加载/前向通过；F14 数值异常另记，不因新 Run loss 有限就视为恢复。AA、独立模型、完整费用及正式容器成绩仍缺，五 RQ/八图/十二表不填推算结果。详细结果与外部条件见 [PROJECT_STATUS](PROJECT_STATUS.md) 首页，以下旧执行状态按日期阅读。
 
@@ -16,7 +18,7 @@
 
 > **历史论文 RQ（2026-10-13，已由 V8/V9 接续）**：[汇报三 V5](../../汇报/汇报三/ModelRouter论文实验与图表规划.md) 纳入候选模型池与公开前沿迁移，分别比较选池与路由收益；H1–H7 和批准决策保持原义。仅做当前科研需要的实现与验证，提交、推送、PR、CI 只按当前明确请求执行。
 
-原 `benchmark CLI → Harbor Job/Trial → ModelRouterMiniSweAgent → DefaultAgent` 继续作为唯一正式执行链；V9 三候选参数已接入原 run/resume，真实上游解析和实例构造通过，未取得正式 Trial 结果。配置联调的三逻辑身份仍共用 Qwen，不能充当模型池实验。
+原 `benchmark CLI → Harbor Job/Trial → ModelRouterMiniSweAgent → DefaultAgent` 继续作为唯一正式执行链；V9 三候选参数已接入原 run/resume，真实上游解析和实例构造通过，后续单 Luna none/low 已取得官方 reward=1.0 与 CTRF 2/2，独立三模型结果仍缺。历史配置联调的三逻辑身份共用 Qwen，不能充当模型池实验。
 
 ## 2026-10-16 · 五 RQ 研究逻辑（V8 起点，下表按 V9 同步）
 
@@ -50,7 +52,7 @@
 
 **正式研究版本**：下载讨论行 25981 明确保留 V9 五 RQ：RQ1 总体效果、RQ2 模型池、RQ3 任务拆分、RQ4 系统消融、RQ5 工作负载边界，以及 8 图/12 表。此前三核心 RQ/把消融归 RQ1 的建议已由该决定替代。旧方法证据、数据缺陷和历史负结果继续保留。
 
-**初始模型池与调用范围**：用户指定的三逻辑 ID 为 `gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`；高/中/低是候选角色，不预设实际能力次序。V8 原生成范围仍是两Luna，V9 三模型正式生成授权与 Provider 配置待明确；当前只允许三身份映射已有 Qwen 作 `ALIAS_SMOKE`，真实 Provider 映射已确认。网关 `/models`/先前流式名 `Qwen3.8-27B` 与实际非流返回名 `self-dploy/Qwen3.8-27B` 分别保留；Alias 不能视为 K=3 个真实模型或正式 RQ1/RQ2 结果。物理后端 UNKNOWN，9002 物理 Qwen、Parfit API 及托管 `qwen3.8-flash` 分别保留身份，开源 Flash-Next 的分数不能直接赋给托管型号。审阅子 Agent `gpt-6.1-sol/max` 不等于生成器或教师配置。
+**初始模型池与调用范围**：用户指定的三逻辑 ID 为 `gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`；高/中/低是候选角色，不预设实际能力次序。用户已充分授权测试及部署；原 Provider 实际返回 3 项，研究池当前仅 Luna 列出，Sol/托管Flash未列出。旧两Luna范围与三身份统一 Qwen 联调安排仅保留历史，原 `ALIAS_SMOKE` 映射已有实证。网关 `/models`/先前流式名 `Qwen3.8-27B` 与实际非流返回名 `self-dploy/Qwen3.8-27B` 分别保留；Alias 不能视为 K=3 个真实模型或正式 RQ1/RQ2 结果。27B 是用户非自部署的托管 API，返回字符串只记录 API 身份，不推断本地零费；物理对应 UNKNOWN，9002 物理 Qwen、Parfit API 及托管 `qwen3.8-flash` 分别保留身份，开源 Flash-Next 的分数不能直接赋给托管型号。审阅子 Agent `gpt-6.1-sol/max` 不等于生成器或教师配置。
 
 **最小轨迹教师**：现有 Agent 在合法模型生成边界请求同一 Router 选择 `(model,native_effort)`，工具执行仍由原 Harness 完成。外置教师只加工当前轨迹前缀，首版对照两条许可适用、成功证据明确、与 Final 隔离的固定公开摘要（高效完成/失败恢复），不建在线检索服务。约三次生成或阶段/重复失败/停滞事件触发只作为 Dev 起点。输出固定 `progress_summary, main_blocker, next_milestone`，另记截止 `decision_id`、实际教师与参考 ID、Token、费用、时延和状态；顶级教师与 Qwen 联调教师分开记录，不用联调身份证明顶级教师效果。
 
@@ -69,7 +71,7 @@
 | 旧 Provider / Agent / Serving | 真实请求、原工具/Evaluator 执行、已有路由模型前向 | 必要参数传递和调用接点；不混放 V9 方法实现 |
 | 旧 Trainer / 队列 / telemetry | 优化器、训练运行、自然交接、原 usage 账本和展示 | 使用 V9 数据/配置，复用原记录，不重复计价或建立第二状态来源 |
 
-**训练、缓存与成本边界**：健康训练和正在使用的服务权重不干预，早先 F13 与最新原链 F14 快照按时点记录；原链运行不证明 V9 新训练已启动。代表权重用各自同协议 Val 加独立 Dev Episode 选择，不跨架构按最低 Loss 排名。上下文保存已发生消息/工具结果，模型切换额外重发 Token 与实际 KV/缓存用量分别记录；Alias 同后端不能证明跨 Provider 缓存共享。离线教师制作费用归数据/训练，在线教师含推理 Token 的费用归 Episode；Qwen API 联调保留实际用量、费用单位和时延，不套逻辑型号 API 单价。Mac 不存 Laya/Kev 权重，所有执行者、教师、重试累计真实 API Token `< 1,000,000`；Final 不参与训练、选池、调参或教师输入。
+**训练、缓存与成本边界**：健康训练和正在使用的服务权重不干预，早先 F13 与最新原链 F14 快照按时点记录；旧 F14 与已完成的 V9 两项训练分别记录。代表权重用各自同协议 Val 加独立 Dev Episode 选择，不跨架构按最低 Loss 排名。上下文保存已发生消息/工具结果，模型切换额外重发 Token 与实际 KV/缓存用量分别记录；Alias 同后端不能证明跨 Provider 缓存共享。离线教师制作费用归数据/训练，在线教师含推理 Token 的费用归 Episode；Qwen API 联调保留实际用量、费用单位和时延，不套逻辑型号 API 单价。Mac 不存 Laya/Kev 权重，所有执行者、教师及重试按实际 API 用量记录，不设累计 Token 或默认美元上限；Final 不参与训练、选池、调参或教师输入。
 
 **真实评测范围**：mini-SWE-agent 是框架，SWE 与 Terminal 的任务、Evaluator、划分和成绩独立。官方参考：https://mini-swe-agent.com/latest/usage/swebench/ 。宿主、模拟压力和身份联调分别记 `LOCAL_HOST_EXPERIMENTAL`、`MOCK_STRESS`、`ALIAS_SMOKE`；正式成绩来自官方环境/原版 Evaluator 的 `REAL_AGENT_OFFICIAL_EVAL`。文档子任务未执行评测；单题 Alias 控制链成功、原失败、教师、数据/语义缺口见 [PROJECT_STATUS](PROJECT_STATUS.md) 首页，不增加正式三模型成绩。
 
@@ -165,7 +167,7 @@ ModelRouter 研究长程单 Agent 与多 Agent 工作流中的**状态感知、�
 
 **研究贡献须由真实实验支持；状态字段数量和架构图不提供效果证据。**
 
-**2026-10-09 E-DESIGN 原决定**：Q-001=A（公开真实 Coding Benchmark）、Q-002=B（商业 API + 本地开源混合动作池）、Q-003=B（分阶段预算、本地资源与商业 API 费用分列）。原原则保留；现行三逻辑 ID、累计 Token 范围、正式生成配置和具体资源使用按 [EXPERIMENT_QA](EXPERIMENT_QA.md) 与 Status 的最新记录理解，不从历史原则推导当前调用权限。
+**2026-10-09 E-DESIGN 原决定**：Q-001=A（公开真实 Coding Benchmark）、Q-002=B（商业 API + 本地开源混合动作池）、Q-003=B（分阶段预算、本地资源与商业 API 费用分列）。旧预算安排只保留历史；现行三逻辑 ID、实际用量与官方价费用、正式生成配置和具体资源使用按 [EXPERIMENT_QA](EXPERIMENT_QA.md) 与 Status 的最新记录理解，不从历史原则推导当前调用权限。
 
 ## 1. 研究问题和形式化
 
@@ -554,7 +556,7 @@ Execution 报告已落地 80,970 个多来源 JSONL 行；Planning 从 main 966f
 以下保留最初工作分类；当前联调、数据接续和训练状态以 Status 首页及最新人类范围为准，不要求重新从 E0 开始。
 
 1. **E0 / E0.5**：环境、目录、数据与文档审阅；MR-DIR-001/MR-SYNC-001 已验收，负责人确认隔离原则，E0.5 已完成，均属历史快照。
-2. **E-DESIGN**：`EXPERIMENT_QA.md` 已建立；Q-001=A、Q-002=B、Q-003=B 原则保留，具体 Benchmark、动作/effort、费用、主指标、对照和统计协议随真实决定完善；旧前置顺序不作为当前执行的额外限制。
+2. **E-DESIGN**：`EXPERIMENT_QA.md` 已建立；Q-001=A、Q-002=B 保留，Q-003 按 2026-10-30 当前无 API 总 Token 或美元预算的决定执行，具体 Benchmark、动作/effort、费用、主指标、对照和统计协议随真实决定完善；旧前置顺序不作为当前执行的额外限制。
 3. **E1**：按已确认实验协议实现最小 Schema、capability registry、hard constraint、usage ledger 与可测试 Router 接口。
 4. **E2**：固定 Agent Harness 与自动任务终局 evaluator；固定模型/规则/sticky 基线。
 5. **E3**：从相同状态快照受控分支，收集成对动作结果。
@@ -571,18 +573,18 @@ Execution 报告已落地 80,970 个多来源 JSONL 行；Planning 从 main 966f
 - **学习策略**：MLP/LightGBM、admission-only predictor。
 - **主方法**：单活跃 Laya 或 Kev、完整决策前状态与联合动作。
 
-公平对照使用相同任务、工具权限、候选池、时间/费用预算、终局 evaluator、价格快照与后续 continuation policy；参照策略无法处理动态候选时，注明不适用或实际适配方式。
+公平对照使用相同任务、工具权限、候选池、时间/资源安排与 API 费用核算口径、终局 evaluator、价格快照与后续 continuation policy；参照策略无法处理动态候选时，注明不适用或实际适配方式。
 
 ### 8.3 受控分支与成本预算
 
 - 从同一可恢复状态 `s_t` 选择两个真实合法动作；
-- 尽量固定工具环境、下游策略、seed、模型版本和预算；
+- 尽量固定工具环境、下游策略、seed、模型版本和资源安排；
 - 记录分支失败、超时、无法复现、污染、模型服务变化；
 - **已确认 Q-001=A**：直接使用许可、复现和 Evaluator 明确的真实公开 Coding Benchmark；技术试跑仍选真实开发任务，不强制另造合成任务。原“5 任务 pilot”留作历史，SWE 与 Terminal 的任务/划分/成绩分开。
 - **已确认 Q-002=B**：商业 API 与本地开源模型共用动态合法候选注册表，严格保留真实 effort 能力与缓存连续性约束。
-- **Q-003=B 原则与现行范围**：本地模型资源成本、GPU 时间照实记录，不套商业 API 单价；累计真实 API Token `< 1,000,000`，计入教师、失败重试及所有执行者。USD 和单任务规模仍待明确；服务器/API/GPU 操作遵循当前人类要求，本轮文档子任务不执行；
+- **Q-003 当前范围（2026-10-30）**：用户明确从未设置 API 总 Token 或美元预算；测试数量按任务需要安排，所有生成、教师及重试照实记用量和适用官方价费用，输出含 reasoning 不重复计费。供应商 bill 未知单列，不影响执行；服务器负载、显存、磁盘与既有资源规则保留，本轮文档分支不发请求或部署；
 - 若无法可靠恢复完全相同的状态，不能称为严格反事实实验；
-- V9 正式生成与教师配置仍待明确；不下载 Laya/Kev 权重到 Mac，也不干预健康训练或正在服务的权重。
+- 用户充分测试及部署授权已明确，实际模型/Effort 与教师配置沿原入口按供应商可用性记录；不下载 Laya/Kev 权重到 Mac，也不干预健康训练或正在服务的权重。
 
 ### 8.4 评价指标与不确定性
 

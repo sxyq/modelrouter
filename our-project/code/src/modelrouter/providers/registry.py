@@ -38,6 +38,7 @@ class ModelSpec:
     tpm_limit: Optional[int] = 200_000
     tool_supported: Optional[bool] = True
     pricing_status: str = "UNVERIFIED_CONFIG"
+    pricing_source: Optional[str] = None
     identity_status: str = "UNVERIFIED_CONFIG"
     context_status: str = "UNVERIFIED_CONFIG"
     native_efforts_status: str = "UNVERIFIED_CONFIG"
@@ -51,7 +52,7 @@ class ModelSpec:
         cache_write_tokens: int = 0,
     ) -> Optional[float]:
         """Calculate configured USD; completion includes its reasoning subset."""
-        net_prompt_tokens = max(0, prompt_tokens - cache_read_tokens)
+        net_prompt_tokens = max(0, prompt_tokens - cache_read_tokens - cache_write_tokens)
         visible_completion_tokens = completion_tokens - reasoning_tokens
         if visible_completion_tokens < 0:
             raise ValueError("reasoning_tokens must be a subset of completion_tokens")
@@ -244,10 +245,15 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
         context_window=200_000,
         max_output_tokens=65_536,
         native_efforts=("none", "low", "medium", "high"),
-        input_price_per_1m=2.00,
-        output_price_per_1m=8.00,
-        reasoning_price_per_1m=8.00,
-        cache_read_price_per_1m=0.50,
+        # Official Standard rates, <=272K input, 30m cache writes:
+        # https://developers.openai.com/api/docs/models/gpt-6-luna
+        input_price_per_1m=0.10,
+        output_price_per_1m=0.50,
+        reasoning_price_per_1m=0.50,
+        cache_read_price_per_1m=0.01,
+        cache_write_price_per_1m=0.125,
+        pricing_status="VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        pricing_source="https://developers.openai.com/api/docs/models/gpt-6-luna",
     ),
     "gpt-5.6-luna": ModelSpec(
         model_id="gpt-5.6-luna",

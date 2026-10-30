@@ -37,7 +37,7 @@ from modelrouter.v9.runtime.context import record_tool_result
 from .iterations import append, event, now, rows
 
 
-def mini_configuration(max_steps=30, cost_limit=3.0):
+def mini_configuration(max_steps=30, cost_limit=0.0):
     config = yaml.safe_load((package_dir / "config/mini.yaml").read_text())
     config["agent"].update(step_limit=max_steps, cost_limit=cost_limit, mode="yolo")
     # The official bash function tool does not use LiteLLM's MCP gateway.
@@ -200,11 +200,8 @@ class PolicyModel(LitellmModel):
         return litellm.ModelResponse(**body)
 
     def _calculate_cost(self, response):
-        cost = self.last_metrics.get("cost_usd")
-        if cost is None and self.v9_hook and self.last_metrics.get("execution_mode") == "ALIAS_SMOKE":
-            cost = 0.0  # Upstream numeric placeholder only; reported USD stays unknown.
-        if cost is None:
-            raise ValueError("Provider has no attributable model usage/cost; retained as NOT_EVALUATED")
+        # Upstream needs a number; unpriced API usage remains null in records.
+        cost = self.last_metrics.get("cost_usd") or 0.0
         teacher_cost = sum(row.get("cost_usd") or 0 for row in
                            (self.v9_hook.last_teacher_metrics if self.v9_hook else []))
         return {"cost": cost + teacher_cost}
@@ -285,7 +282,7 @@ class HarborEnvironment(LocalEnvironment):
 class ModelRouterMiniSweAgent(BaseAgent):
     capabilities = AgentCapabilities(atif=True)
     def __init__(self, logs_dir=None, model_name=None, *, policy="fixed_strong", seed=42,
-                 max_steps=30, max_output_tokens=2048, cost_limit=3.0,
+                 max_steps=30, max_output_tokens=2048, cost_limit=0.0,
                  v9_config=None, candidate_actions=None, provider=None, **kwargs):
         super().__init__(logs_dir=Path(logs_dir or "/tmp/modelrouter-mini"), model_name=model_name, **kwargs)
         self.policy, self.seed = policy, int(seed)

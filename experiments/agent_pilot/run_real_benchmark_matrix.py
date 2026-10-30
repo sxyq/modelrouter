@@ -64,18 +64,6 @@ TASKS = [
 ]
 
 
-def check_token_budget_available(min_tokens_needed: int = 5000) -> bool:
-    budget_file = Path(__file__).resolve().parent / "token_budget.json"
-    if not budget_file.exists():
-        return True
-    try:
-        data = json.loads(budget_file.read_text(encoding="utf-8"))
-        remaining = data.get("remaining_tokens", 0)
-        return remaining >= min_tokens_needed
-    except Exception:
-        return True
-
-
 def run_matrix():
     print("=" * 80)
     print("STARTING REAL 8-POLICY BENCHMARK MATRIX EXECUTION (Terminal-Bench 2.1)")
@@ -110,10 +98,6 @@ def run_matrix():
         task_dict = task_obj.to_dict()
 
         for pol_idx, pol_name in enumerate(POLICIES, 1):
-            if not check_token_budget_available(5000):
-                print(f"[BUDGET GATE] Remaining token budget too low. Halting further real API calls.")
-                break
-
             print(f"\n--- [{task_id}] Policy {pol_idx}/{len(POLICIES)}: {pol_name} ---")
             t_start = time.time()
 

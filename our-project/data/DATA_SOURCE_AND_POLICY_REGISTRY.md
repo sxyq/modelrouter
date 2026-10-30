@@ -2,11 +2,43 @@
 
 ## 当前能力与数据资格（2026-10-30）
 
-**20:05新增运行资产**：原 `results/iterations/20261030-v9-official-luna/` 保存9次真实生成、18次工具、3条成功Luna教师及12个不同响应ID；总用量138,385Token、配置价估算0.182588USD，实际账单及完整费用未知。任务为既有canary `fix-git`，Verifier未执行，终局标签未知；这些轨迹只用于开发执行证据，不加入原198Train/192Val，不制造模型/Effort最优标签。三条新在线教师与旧训练中的四条教师分别登记，未重生成旧材料。Run保存能力快照 `20261030T041319933533Z-v2`；双动作none/low前向使用同快照，AA Max参考不转成动作分数。Oracle CTRF 2/2通过与真实模型结果分开，详细路径和运行限制见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md) 当前入口。
+**20:05历史运行资产**：原 `results/iterations/20261030-v9-official-luna/` 保存9次真实生成、18次工具、3条成功Luna教师及12个不同响应ID；总用量138,385Token、旧配置价估算0.182588USD（UNVERIFIED_CONFIG，保留历史），实际账单及完整费用未知。任务为既有canary `fix-git`，Verifier未执行，终局标签未知；这些轨迹只用于开发执行证据，不加入原198Train/192Val，不制造模型/Effort最优标签。三条新在线教师与旧训练中的四条教师分别登记，未重生成旧材料。Run保存能力快照 `20261030T041319933533Z-v2`；双动作none/low前向使用同快照，AA Max参考不转成动作分数。Oracle CTRF 2/2通过与真实模型结果分开，详细路径和运行限制见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md) 当前入口。
 
-[当前v2快照](../code/data/v9/capabilities/snapshots/20261030T041319933533Z-v2.json) 已真实落盘，Snapshot ID `20261030T041319933533Z-v2`；合法公开GET而非授权Data API，AA Key缺失。LunaMax Intelligence Index27.7552004938153/INDEX/AA5.0及9项Max原分可读，部分指标单位未披露仍NOT_REPORTED；Sol与托管Flash精确AA记录NOT_MEASURED。厂商三者的价格/上下文/Effort资料可作能力参考，不作调用权限、当前实际费用或最优动作标签。旧52/38/Flash-Next40的不同版本/变体参考不混入本快照。
+[当前v2快照](../code/data/v9/capabilities/snapshots/20261030T041319933533Z-v2.json) 已真实落盘，Snapshot ID `20261030T041319933533Z-v2`；合法公开GET而非授权Data API，AA Key缺失。LunaMax Intelligence Index27.7552004938153/INDEX/AA5.0及9项Max原分可读，部分指标单位未披露仍NOT_REPORTED；Sol与托管Flash精确AA记录NOT_MEASURED。厂商三者的价格/上下文/Effort资料可作能力参考，不能证明项目调用可用性或最优动作标签；已读官方价格可结合真实用量核算 API USD，供应商 bill 另列。旧52/38/Flash-Next40的不同版本/变体参考不混入本快照。
 
 训练唯一实体390行（198/192）及4条教师仍绑定v1，未重生成；S1旧偏好64+64、S2观察动作/结果70+64、S3运行辅助64+64分别可用于既有目标，三模型真实choice/Effort监督0。RouterBench和LLMRouterBench原许可待核资产不新增入训练或公开；公开TRA-001参考摘要按CC-BY-4.0保留来源、许可和修改说明，私人轨迹、prepared和本地路径不提交。当前Laya只保留关键三候选摘要，完整能力卡尚超预算；不把字段消费当学习收益。详细实测与历史数量见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md)，以下原训练及旧AA0按时点阅读。
+
+**当前官方开发资产**：`our-project/results/iterations/20261030-v9-official-luna-complete/` 已取得 reward=1.0、官方 `verifier/ctrf.json` tests2/passed2/failed0；单 Luna none/low，14 次真实路由、0 fallback。模型用量合计218,578Token，生成165,028、教师53,550；详细 Job/Trial、执行统计与 runtime 只在 [PROJECT_STATUS](../planning/PROJECT_STATUS.md) 当前入口维护。旧失败目录、旧配置金额和旧训练材料保留；本次单模型双动作开发证据不当作独立三模型能力、全动作最优监督或五 RQ 总体结果。
+
+**实际供应商可用性**：主 Agent 已实际 GET 原项目 Provider/models，返回 3 项，研究池当前仅 `gpt-6-luna` 列出，Sol/托管Flash未列出；用户充分测试/部署授权已明确，两类信息分开记录。公开能力页与价格页不能证明具体凭据下模型可用，未列出也不转写为待用户批准。
+
+## 当前托管 API 身份与计费政策（2026-10-30）
+
+用户明确 27B 是托管 API，非自部署。历史网关返回 `Qwen3.8-27B` 与非流式返回 `self-dploy/Qwen3.8-27B` 仅登记 API 返回身份，不能据名称推断本地部署、关联9002实体或零费用。费用必须依据该实际 API 的输入、输出与缓存命中及适用官方单价；未回报的27B官方价与供应商账单分别未知，不套用逻辑 Sol/Luna/Flash 的价格。
+
+主 Agent 已实际读取 [官方 Luna 模型页](https://developers.openai.com/api/docs/models/gpt-6-luna) 相应标准价格行；单位均为 USD/百万 Token：
+
+| 实际计价项 | 官方标准单价 | 核算口径 |
+| --- | ---: | --- |
+| 非缓存输入 | 0.10 | 输入总量减去已报告缓存读和缓存写 |
+| 输出 | 0.50 | output/completion 已含 reasoning，不另加 reasoning |
+| 缓存命中输入 | 0.01 | 只按该调用实际报告的缓存命中数 |
+| 30分钟缓存写入 | 0.125 | 只按该调用实际报告的写入数；[官方价格页](https://developers.openai.com/api/docs/pricing?latest-pricing-expanded=true) |
+
+缓存字段已报告时，Luna 标准价核算为 `USD=((input_tokens-cache_read_tokens-cache_write_tokens)×0.10 + output_tokens×0.50 + cache_read_tokens×0.01 + cache_write_tokens×0.125)/1,000,000`。适用 Standard、单请求输入不超过272K、30分钟缓存写；本轮未配置Fast/Batch/Flex。同一调用只计一次，已包含在 output/completion 中的 reasoning 不再相加；在线教师并入该 Episode，离线教师制作费用单列到数据/训练，结果复用不算物理缓存命中。失败调用已报告用量照实计费，缺失输入/输出用量或官方价格保留 UNKNOWN，不填零。缓存字段缺测保持 null，核算时对应输入按普通输入价计，不把 null 改成零缓存命中；write 未报告仍保留 null。
+
+**实际计价小请求（不并入官方 Episode）**：主 Agent 回报原费用接口的一次真实请求，input=4,389、completion=5、cached=4,224、cache write=null；price_source 为官方 Luna 模型页。按上述标准价得到 API USD=0.00006124，供应商 bill 仍 UNKNOWN；未报告的 write 保持 null，不填零。本样本验证该次实际输入/输出/缓存命中的核算，不能替代官方 Episode 的最终总费用或部署运行验证。
+
+公开价核算无需另取账单许可。按实测用量与官方价得到的 API USD、旧 `UNVERIFIED_CONFIG` 金额和供应商 `bill=UNKNOWN` 分列；账单未知不影响执行。费用分支已在原计价器复用30个原请求完成并保存核算，本分支不修改结果文件；真实单探针0.00006124USD单列、不计入任一Episode。用户从未设置 API 总 Token 或美元预算，旧累计额度、旧余额与待额度许可只留历史；保留服务器资源规则、训练不中断和 Final 隔离。
+
+### 已保存的官方价模型费用
+
+| 原迭代 | 模型 Token | 生成 USD | 教师 USD | 模型合计 USD |
+| --- | ---: | ---: | ---: | ---: |
+| `20261030-v9-official-luna` 旧未评分轮 | 138,385 | 0.00450286 | 0.00381204 | 0.00831490 |
+| `20261030-v9-official-luna-complete` 官方成功开发轮 | 218,578 | 0.00764224 | 0.00484108 | 0.01248332 |
+
+以上使用实际用量与官方 Luna 标准价，缺缓存字段保留 null、按普通输入价计；输出含 reasoning，不重复计费。主 Agent已用Decimal逐项复核两轮30个原请求、原用量及旧配置金额，保存值一致；原事件追加 `OFFICIAL_RATE_RECONCILIATION`，未为重算再次发请求。旧配置总额0.182588USD保留为历史 UNVERIFIED_CONFIG，不改写成实付账单；供应商bill与Router/工具/容器等资源费用仍分别未知。探针不并入Episode，也不因此改动其Token统计。原服务部署后的Laya/Kev真实非回退前向均通过；Kev长前缀超时与82.28秒CPU时延另记，详见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md) 当前部署段。
 
 ## 历史训练与材料记录（截至10-30 10:40）
 
@@ -215,7 +247,7 @@ Q（记录质量）、S（监督类型）、L（覆盖层级）是三个独立�
 
 **来源与许可边界**：现有轨迹可提供已执行动作、工具返回和部分终局，尚不能证明工具意图合理性人工标签或每 Effort 同协议能力分。两条 TRA-001 公开 Train 成功参考为 `roniemartinez_latex2mathml_pr163`、`cloudtools_troposphere_pr2024`，`resolved=true`、`split=train`；六前缀来自另外两任务，每题截止 0/3/7，与参考不重合，原 Train 资格保留。来源/成功标签与分割不证明教师效果或最优路由，具体参考角色和条款证据沿原登记保留。Final 的答案、未来轨迹/验证和结局不用于教师、训练、选池或调参。
 
-**离线制作与覆盖状态**：复用原 Assessor，2 次真实请求/2 次成功，4 条可用三字段样本（2 新、2 复用）、2 条未触发，`summary.teacher_data_status=PARTIAL`、`GENERATED=4 / NOT_GENERATED=386`。实际教师为 `self-dploy/Qwen3.8-27B`，不称顶级 Sol；三字段是当前前缀短评，不提供未执行动作真值。两请求 prompt 13,766、completion 949、总 Token 14,715；reasoning 678 已在 completion 内，cached 0 已报告、USD null。复用已有短评不等于物理缓存命中，离线费用归材料/训练；4 条字段覆盖不代表 390 条都已有教师或新特征已学习。
+**历史离线制作与覆盖状态**：复用原 Assessor，2 次真实请求/2 次成功，4 条可用三字段样本（2 新、2 复用）、2 条未触发，`summary.teacher_data_status=PARTIAL`、`GENERATED=4 / NOT_GENERATED=386`。实际教师为托管 API 返回的 `self-dploy/Qwen3.8-27B`，不称顶级 Sol；三字段是当前前缀短评，不提供未执行动作真值。两请求 prompt 13,766、completion 949、总 Token 14,715；reasoning 678 已在 completion 内，cached 0 已报告、USD null。复用已有短评不等于物理缓存命中，离线费用归材料/训练；4 条字段覆盖不代表 390 条都已有教师或新特征已学习。
 
 **字段编码验证与已测负结果**：三字段/能力原分/缺失表示须进入同义state编码。holding Tokenizer实测旧LayaState为2,762/2,827 Token、预算940、任务位置2,733/2,798，任务被裁，历史负结果保留。唯一V9 formatter与原Schema薄调用的 [final编码与训练prefix分词记录](../results/iterations/20261029-v9-alias-smoke-tools/input_encoding_validation.json) 已确认最终任务、三教师字段、候选卡和缓存/身份关键字段进入编码；新顶层`recent_tool_validation`于18:44 UTC/02:44台北仅验证原step5：Laya1024/head512、状态预算940下，512字符真实工具结果仅末128字符在Token `[879,930)`为`FULL`；任务、三教师、三候选卡及缓存/当前和前次身份均`FULL`，长`history_snippet`仍裁。Kev原native编码2147 state/2224 total、不截短、候选键3个，本次未新增Kev API前向。原`context.py`单文件已原位部署，真实128字符tail、源cached3136与前次Sol身份保留；源缓存数不算新缓存命中。随后同源一次Laya真实前向`epoch_01/fallback=false`，本次Router1/生成0，不新增材料、教师或有效目标。此前198条Train已测分词，本次未重测该批Train或Val；4教师核心在当前Laya1024下保留，但6条完整state被裁，8192推荐尚未启用；192条Val只核身份/数量而未测长度。原384默认Kev接纳诊断保留历史，当前8192与198条实际接纳另记；分词本身不作学习证据；第四次真实训练单列为`FEATURE_PARTIALLY_TRAINED`（4教师/8passes、三新身份目标0），原Serving旧权重的`FEATURE_NOT_TRAINED`保留，能力卡仍缺测。两路Native前缀真实前向、Kev20秒失败及一次60秒成功均保留，不重跑同题。choice目标0、AA缺测与386条未生成教师的覆盖缺口不变；现状见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md)。 04:20同一JSON的`live_transport_validation`支持旧SystemOne直传8822字符、同正文native编码与响应1024输入Token；未捕获旧进程Token IDs、普通`/route`未验证，长history仍裁。新Kev Val及内部评分已完成但四指标比C03均退步，不改AA0/choice与Effort目标0或teacher覆盖。
 
@@ -229,7 +261,7 @@ Q（记录质量）、S（监督类型）、L（覆盖层级）是三个独立�
 
 **三逻辑身份与实际后端**：规划身份为 `gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`；V8 仍只两Luna生成，三正式模型生成配置/授权待明确。当前仅允许三 ID 映射已有服务器 Qwen 的 `ALIAS_SMOKE`，须同时保留实际 Provider/API 模型、端点和部署证据；不能用 Alias 填正式三模型成绩。托管 Flash、开源 Flash-Next、校园 9002 物理模型与 Parfit API 身份分别记录。审阅子 Agent 的 `gpt-6.1-sol/max` 不充当生成或教师配置证明；本台账不存密钥。
 
-**状态与用途**：hcnsec 源 `PCG/config/pi-sag.local.env` 仅读 `QWEN_API_KEY`、未改；三逻辑身份真实 Provider 映射均已确认。网关 `/models`/先前流式名 `Qwen3.8-27B` 与实际非流返回名 `self-dploy/Qwen3.8-27B` 原样分列，物理后端 UNKNOWN，不关联 9002。单题 9 次生成/13 次 Bash/7 项 unittest 成功终局、仅选 Sol，在线 Teacher 3/6 成功、失败继续；先前两次三字段送到下次 Router，保留 `TEACHER_ALIAS_SMOKE`，与离线 2/2 和 4 条字段分开，不当顶级教师成绩。额外 Luna/Flash 短 Provider 映射不算新 Agent 题。数据/语义/学习及 usage 缺口保留，SWE/Terminal 成绩独立、8/24/57 划分和 Mac 零权重/总 Token 范围不变。
+**状态与用途**：hcnsec 源 `PCG/config/pi-sag.local.env` 仅读 `QWEN_API_KEY`、未改；三逻辑身份真实 Provider 映射均已确认。网关 `/models`/先前流式名 `Qwen3.8-27B` 与实际非流返回名 `self-dploy/Qwen3.8-27B` 原样分列，托管 API 物理对应 UNKNOWN，不据返回名推断本地零费或关联 9002。单题 9 次生成/13 次 Bash/7 项 unittest 成功终局、仅选 Sol，在线 Teacher 3/6 成功、失败继续；先前两次三字段送到下次 Router，保留 `TEACHER_ALIAS_SMOKE`，与离线 2/2 和 4 条字段分开，不当顶级教师成绩。额外 Luna/Flash 短 Provider 映射不算新 Agent 题。数据/语义/学习及 usage 缺口保留，SWE/Terminal 成绩独立、8/24/57 划分、Mac 零权重与 Final 隔离保留；当前 API 不设总 Token 或美元上限。
 
 **Native 回放与导入身份**：成功目录 `router_input_replay.json` 记录 Laya 新输入选 `gpt-6-luna`、`epoch_01`、`fallback=false`；Kev 首次 20 秒客户端窗口超时模拟 fallback，一次 60 秒窗口重测约 53,516 ms 真实前向成功，选 `gpt-6.1-sol`、`fallback=false`，两路均有三候选真实概率。Kev ID `1001bb4d826a52d1f399e183466143f4da7b741b` 是 Serving 导入适配器，不能称 R11 候选。回放不新增题目或正式/科学成绩，不替代最终 Tokenizer、新训练或部署结果。
 
@@ -247,7 +279,7 @@ Q（记录质量）、S（监督类型）、L（覆盖层级）是三个独立�
 
 **运行记录与材料分开**：主 Agent 已把误放 src 的 2 条真实 Episode 与 14 条真实调用迁至原 `experiments/agent_pilot/ledgers`、`runs/agent_pilot/multi_model_calls.jsonl`，Logger 复用同一根定位；误放副本已删，全部数据保留。它们不并入 390 行材料、不另建长期记录体系。
 
-**失败 usage 与预算**：保留历史已知 Token 410,353、9 次失败上限预留 77,544、余额 512,103；其后快照为 known/reserved/remaining=`494912/193040/312048`。本轮最后实读为 `575783/256135/168082`，新增 15 API 请求已计账、135 累计 calls，本轮不再新增生成式请求。失败实际 usage UNKNOWN，reserved 不算实际消耗；duration 失败教师缺测使完整 prompt/completion/reasoning/cache/USD 仍 null，不写零、不重复计价，不把预算已知量当完整用量。invoice 成功与 duration 失败独立，原记录不覆盖，离线/在线成本分列。
+**历史失败 usage、旧额度与旧暂停记录**：保留历史已知 Token 410,353、9 次失败上限预留 77,544、余额 512,103；其后快照为 known/reserved/remaining=`494912/193040/312048`。该历史阶段最后实读为 `575783/256135/168082`，新增 15 API 请求已计账、135 累计 calls，该阶段曾停止新增生成式请求，旧暂停决定不作当前约束。失败实际 usage UNKNOWN，reserved 不算实际消耗；duration 失败教师缺测使完整 prompt/completion/reasoning/cache/USD 仍 null，不写零、不重复计价，不把预算已知量当完整用量。invoice 成功与 duration 失败独立，原记录不覆盖，离线/在线成本分列。
 
 **实际金额单位**：hcnsec `raw_usage.cost` 未附 `currency/cost_currency`，单位不明；新 Provider 保留 `raw_reported_cost` 与 `reported_cost_unit=NOT_REPORTED`，只在响应明确 USD 时赋 `actual_billed_cost_usd`。未知单位金额不列入完整美元费用。当前 Episode 旧事件保留原版本输出，旧字段名不能证明单位；含超时的完整费用总额为 `None`，最终汇总注明单位未确认，不能写成零美元或按逻辑模型价目补造实付额。
 
@@ -374,7 +406,7 @@ Q（记录质量）、S（监督类型）、L（覆盖层级）是三个独立�
 
 | 学习阶段 | 可用训练视图 | 训练到什么程度 | 仍无法证明 |
 |---|---|---|---|
-| M1 Agent 状态、已执行动作结果 | TRA-001/002 的真实决策前状态与 terminal resolved；有真账单才成本分档 | Kev noul 观察性结果预测；部分确定规则辅助 | 不能推出其它候选模型实际更好 |
+| M1 Agent 状态、已执行动作结果 | TRA-001/002 的真实决策前状态与 terminal resolved；费用分档依据实测用量×适用官方价，供应商bill另列 | Kev noul 观察性结果预测；部分确定规则辅助 | 不能推出其它候选模型实际更好 |
 | M2 静态任务/模型能力与辅助缓存 | 已许可的 ROUTE-004 与 ROUTE-001/002；Mooncake 缓存潜力和可核政策规则分别做 typed 任务 | choice 同题比较与能力先验、score/noul 缓存复用任务（只对对应真实/模拟标签） | 不能证明动态 Agent 中途切换模型的因果效果 |
 | M3 动态 Model×Effort | **未来同状态可恢复分支**中多个真实动作的 task resolved、cost_to_go、实际 cache/预算变化（当前无现成充足数据） | 才能训练 Agent 决策边界上有根据的 choice 最佳合法动作 | 没有此数据时不得声称学到最优 runtime router |
 | M4 校准与验证 | 任务、仓库、模型系列和 Provider 版本留出；实际合法候选池、最终 task 成功与整任务费用 | 受成功率约束的选择、概率温度和不确定性、cost/resolved 及消融 | 一次请求的节省不等于整任务减少成本 |

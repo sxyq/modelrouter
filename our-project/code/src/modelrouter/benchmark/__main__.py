@@ -226,7 +226,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--max-steps", type=int, default=30)
     p.add_argument("--max-output-tokens", type=int, default=2048)
-    p.add_argument("--cost-limit", type=float, default=3.0)
+    p.add_argument("--cost-limit", type=float, default=0.0)
     p.add_argument("--allow-sealed", action="store_true", help="Explicitly acknowledge sealed-test run authorization")
     p = sub.add_parser("resume", help="Continue the saved iteration without rerunning completed trials")
     p.add_argument("job_dir", type=Path, nargs="?")
@@ -467,7 +467,7 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
             if config.get("force_build"):
                 cmd += ["--force-build"]
             if custom:
-                for key, value in {"policy": unit["policy"], "seed": config["seed"], "max_steps": config["max_steps"], "max_output_tokens": config["max_output_tokens"], "cost_limit": config.get("cost_limit", 3.0)}.items():
+                for key, value in {"policy": unit["policy"], "seed": config["seed"], "max_steps": config["max_steps"], "max_output_tokens": config["max_output_tokens"], "cost_limit": config.get("cost_limit", 0.0)}.items():
                     cmd += ["--agent-kwarg", f"{key}={value}"]
                 if "v9_config" in config:
                     for key in ("v9_config", "candidate_actions"):
@@ -484,8 +484,8 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
                 cmd += ["--agent-kwarg", "version=2.4.6", "--agent-env", "MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT=1",
                         "--agent-kwarg", "reasoning_effort=low",
                         "--agent-kwarg", f"max_tokens={config['max_output_tokens']}",
-                        "--agent-kwarg", f"cost_limit={config.get('cost_limit', 3.0)}",
-                        "--agent-kwarg", "config=" + json.dumps(mini_configuration(config["max_steps"], config.get("cost_limit", 3.0))),
+                        "--agent-kwarg", f"cost_limit={config.get('cost_limit', 0.0)}",
+                        "--agent-kwarg", "config=" + json.dumps(mini_configuration(config["max_steps"], config.get("cost_limit", 0.0))),
                         "--agent-kwarg", "litellm_model_registry=" + json.dumps(pricing)]
         unit["status"] = "RUNNING"
         state.update(status="RUNNING", updated_at=iterations.now())

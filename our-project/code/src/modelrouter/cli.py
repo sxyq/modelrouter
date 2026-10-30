@@ -35,7 +35,7 @@ def cmd_status(args):
     except Exception as e:
         print(f"Router Serving (Port 8000): UNREACHABLE ({e})")
 
-    # 2. Token budget
+    # 2. Recorded API usage
     budget_paths = [
         Path("experiments/agent_pilot/token_budget.json"),
         Path("our-project/data/token_budget.json"),
@@ -45,7 +45,7 @@ def cmd_status(args):
             try:
                 with open(bp, "r") as f:
                     bdata = json.load(f)
-                print(f"Token Budget: {bdata.get('consumed_total_tokens', 0)} / {bdata.get('max_tokens', 1000000)} consumed ({bdata.get('remaining_tokens', 0)} remaining)")
+                print(f"API Usage: {bdata.get('consumed_total_tokens', 0)} tokens consumed; no cumulative token limit")
                 break
             except Exception:
                 pass

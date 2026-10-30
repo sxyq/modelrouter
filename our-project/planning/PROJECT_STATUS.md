@@ -1,6 +1,43 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-10-30 20:05 · 当前入口：Docker 已恢复，Oracle 通过，模型 Episode 未完成评分
+## 2026-10-30 · 当前决定与单 Luna 双动作官方开发结果
+
+用户明确从未设置 API 总 Token 或美元预算。测试数量按任务需要安排，不采用旧文档中的 100 万、1000 万或待额度许可作为当前限制；继续遵守服务器负载、显存、磁盘和既有资源规则，健康训练不中断，Final 不参与训练、教师输入、选池或调参。主 Agent 已获充分测试及部署授权；供应商实际可用性与授权分别记录。六文档子任务已完成，主 Agent 已完成费用复核和原服务部署验证。
+
+主 Agent 已确认原 Provider 移除累计上限，`max/remaining=null`，历史用量保留；原 CLI 默认 `cost_limit=0`，不另设默认美元上限。原项目 Provider `/models` 已实际 GET，返回 3 项，研究池中只列出 `gpt-6-luna`，Sol 与托管 Flash 未列出；这些是本次供应商可用性事实，不要求用户再次批准充分测试。
+
+| 新官方开发对象 | 已确认结果 | 证据范围 |
+| --- | --- | --- |
+| 迭代 | `our-project/results/iterations/20261030-v9-official-luna-complete/` | 沿原 Harbor 执行链，旧失败目录保留 |
+| Job / Trial | `7a98c167-bf7c-47f4-bd73-abe43a8ddc44` / `288084ed-1f00-4cdd-b177-085731dcfb44` | 主 Agent 已确认真实执行对象 |
+| 官方结果 | Harbor reward `1.0`、exceptions `0`；`verifier/ctrf.json` 为 tests `2` / passed `2` / failed `0` | 单 Luna 双动作官方开发成功，不代表独立三模型或五 RQ 总体结论 |
+| 执行统计 | 14 次生成、21 次工具、4 次教师、14 次路由、0 fallback；真实 `gpt-6-luna:none/low` | 路由全部真实前向，不将两个 Effort 算作两个模型身份 |
+| API 用量 | 生成 `165,028` Token、教师 `53,550` Token，合计 `218,578` Token | 只记本 Episode；不与旧失败用量或 Router 本地前向重复相加 |
+| 运行时间 | `343.225291` 秒 | 本次 runtime；不推导训练或其他任务耗时 |
+| 官方价模型费用 | 生成 `0.00764224` USD、教师 `0.00484108` USD，合计 `0.01248332` USD | 官方标准价核算已保存；供应商 bill 未知，Router/工具/容器资源费用另列 |
+
+费用分支已在原计价器复用30个原请求完成官方 Luna 标准价核算并保存，主 Agent 用 Decimal 逐项对照原事件、用量和旧价，金额一致。旧轮模型费用为 `0.00831490` USD，新完整官方 Episode 为 `0.01248332` USD；缺缓存字段保留 null、按普通输入价核算，输出含 reasoning 不重复计费。原事件追加 `OFFICIAL_RATE_RECONCILIATION`，原用量、旧配置金额和失败保持不变。真实单探针 `0.00006124` USD 不计 Episode。公开价格核算无需账单许可，供应商 `bill=UNKNOWN` 单列，不影响执行。官方标准价格为输入/输出/缓存读/30分钟缓存写 `0.10/0.50/0.01/0.125` USD/百万 Token；完整算法与来源见 [数据与计费政策](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md#当前托管-api-身份与计费政策2026-10-30)。
+
+### 原服务部署与重启后验证（2026-10-30，Asia/Taipei）
+
+17 个原服务链源码与配置已定向同步 A6000 原工程，远端 Python AST 与 Serving 模块导入通过。原 Serving PID `2291306` 定向退出，沿原命令于 `20:53:21` 启动 PID `327621`，Kev 于 `20:54:34` 加载完成；没有替换任何权重或改动训练作业。服务器工程不是 Git checkout，不把 GitHub 提交等同于完整服务器版本。
+
+| 重启后实际前向 | HTTP / 回退 | 身份与 checkpoint | 模型前向耗时 |
+| --- | --- | --- | ---: |
+| Laya，保存的官方 Episode 决策前缀 | 200 / false | `laya-421m`，F05 / `epoch_01` | 1,879.54 ms |
+| Kev，同一真实前缀经原 `compact_router_state` 6000字符任务/工具视图 | 200 / false | `kev-4b`，`KEV-4B-ADAPTER` / `1001bb4d826a52d1f399e183466143f4da7b741b` | 82,276.58 ms |
+
+两次成功均选择 Luna low，记录在原 `events.jsonl` 的 `ROUTER_PROBE_END`，不计官方 Episode 成绩、Token 或费用。Kev 首次未压缩的16,770字符输入在90秒客户端窗口超时，原 `ROUTER_PROBE_ERROR` 保留；服务端计算结束后才发送10,321字符正常视图，报告输入3,126 Token。Kev成功验证采用300秒窗口，不改原60秒配置；其本次82.28秒CPU时延仍超过原窗口，不能声称普通Kev Episode时延已达标。
+
+`21:18:38` 原 `/health` healthy，Laya/Kev `weights_loaded`、`inference_verified` 均 true，`/models` 仍为上述原权重。GPU `34,567/49,140 MiB`、90%、79°C；可用RAM267GiB、磁盘946GiB。F14原PID `4085749` 和启动时间未变，日志在 `21:18:25` 到 Epoch1第420/420块、step53,702、consumed3,436,908；第63–420块共358块NaN。该块终点不等于两轮、固定Val或任务终局完成，有效更新数与首次诱因仍未知。
+
+原训练、实体留存、AA v2 与390行v1材料继续复用。独立Sol/托管Flash供应商可用性、AA同协议能力、真实三模型最优动作监督、五RQ对照、27B单价、供应商实收及资源现金费用仍缺；不重训已完成候选，不因新而晋升退步权重。
+
+`21:23:32` 最后只读补充：F14已自然进入Epoch2第1/420块，step53,830、consumed3,445,100，loss仍NaN（累计359块）；这是队列自然推进，不是本轮重训或人工接续。GPU `34,567/49,140 MiB`、84%、75°C；此前短时health快照曾显示48,254MiB，不能将单点占用当作稳定余量。原CPU Serving仍运行，GPU进程为原F14、ComfyUI、Image和桌面进程。本轮自有8000 SSH隧道已关闭、无残留监听；没有新备份或定时执行。
+
+## 2026-10-30 20:05 · 历史：Docker 恢复、Oracle 通过，旧模型 Episode 未完成评分
+
+以下各日期条目保留原时点事实、金额和失败；旧额度、旧余额、暂停和等待批准仅为历史，不作为当前测试或部署条件。当前决定与最新正式开发结果以首页为准。
 
 原 Mac Docker 已恢复到既有应用位置，Docker Desktop 4.97.0 / Engine 29.9.2 实际运行，原虚拟机数据保留。本机 Rosetta 已用于原 amd64 任务镜像；临时安装包和目录已删除。服务器服务、权重和健康训练未被重启或更换。恢复前 GitHub/main 为 `b56e9386d8d77edc1a860108a0bead901b733036`，本轮源码与文档同步提交以 Git 历史和最终执行回报为准。
 
@@ -11,31 +48,31 @@
 | `20261019-v10-oracle` 原 resume | amd64 镜像的 QEMU 执行 uvx 崩溃，原 reward=0 | 无 CTRF，保留 `NOT_EVALUATED`，不计任务失败率 |
 | `20261030-v9-oracle-native` | Harbor 原 `--force-build` 使用未改的上游 Dockerfile；setup 所依赖 GitHub 仓库返回404 | 未进入 Agent/Verifier，失败记录保留，不改上游任务 |
 | `20261030-v9-oracle-rosetta` | Job `6292da72-ecab-4830-ad71-d53dafc4d22d`，Trial `fb4abdf7-a8e9-4fb3-9833-e48aa44febb8`，官方 reward=1、CTRF 2/2通过 | 官方环境核验通过；Oracle 不计模型成绩 |
-| `20261030-v9-official-luna` | Job `12214a63-7f57-4584-97da-19865836d629`，Trial `a34286c3-4a4e-43c8-9c5d-c4683fca2f1d`；9次真实 Luna 生成、18次真实工具执行、3次真实教师成功 | 第10次生成因原 Token 预算容量不足未发出；Verifier 未执行，终局结果未知 |
+| `20261030-v9-official-luna` | Job `12214a63-7f57-4584-97da-19865836d629`，Trial `a34286c3-4a4e-43c8-9c5d-c4683fca2f1d`；9次真实 Luna 生成、18次真实工具执行、3次真实教师成功 | 历史：第10次生成因旧 Token 限制未发出；Verifier 未执行，旧终局结果未知。该限制已取消 |
 
-本轮使用原 `benchmark CLI → Harbor Job/Trial → ModelRouterMiniSweAgent → DefaultAgent`，无新增 Runner、模拟器或验证器。单候选试验的生成及教师请求/返回均为 `gpt-6-luna`，12个不同响应 ID、`alias_mapping_applied=false`、`REAL_API_IDENTITY_MATCHED`；Sol 与 Flash 在项目凭据中仍不可调用，未尝试借用其他账号。
+本轮使用原 `benchmark CLI → Harbor Job/Trial → ModelRouterMiniSweAgent → DefaultAgent`，无新增 Runner、模拟器或验证器。单候选试验的生成及教师请求/返回均为 `gpt-6-luna`，12个不同响应 ID、`alias_mapping_applied=false`、`REAL_API_IDENTITY_MATCHED`；该时点 Sol 与 Flash 在项目凭据中不可调用；最新 Provider 可用性见当前决定，未尝试借用其他账号。
 
-该单候选请求触发在线 Laya 原 `rl_common.py:120` 的 `topk(2)` 错误，10次路由使用旧回退路径，`neural_router_evidence_eligible=false`。不修改在线模型或重启服务；原正式配置已调整为同一授权 Luna 的 `none/low` 两个动作。用本轮最后一个真实决策前缀、原教师三字段与原 v2 快照完成一次真实前向：`none=0.5166 / low=0.4834`，选择 none、`epoch_01`、`fallback_used=false`，前向949.87ms；生成/教师新请求均0。证据保留于原迭代的 `router_evidence.json`。这仅证明双动作输入可运行，尚无使用该配置的完整官方 Episode。
+该单候选请求触发在线 Laya 原 `rl_common.py:120` 的 `topk(2)` 错误，10次路由使用旧回退路径，`neural_router_evidence_eligible=false`。不修改在线模型或重启服务；原正式配置已调整为同一授权 Luna 的 `none/low` 两个动作。用本轮最后一个真实决策前缀、原教师三字段与原 v2 快照完成一次真实前向：`none=0.5166 / low=0.4834`，选择 none、`epoch_01`、`fallback_used=false`，前向949.87ms；生成/教师新请求均0。证据保留于原迭代的 `router_evidence.json`。这仅证明双动作输入可运行，该时点尚无使用双动作配置的完整官方 Episode；后续成功结果见当前决定。
 
-### 教师、费用和预算
+### 历史教师、旧配置金额与旧用量记录
 
 3次教师分别在决策前缀截止2、3、8处成功，3条短评均含规定三字段。原在线路由因回退未消费短评；随后真实双动作前向保留最后一条短评。教师收益、最优动作和最终任务结果均未因此得到证明。
 
-| 用量来源 | Token | 配置价估算 USD |
-| --- | ---: | ---: |
-| 9次生成 | 98,359 | 0.106028 |
-| 3次教师 | 40,026 | 0.076560 |
-| 合计 | 138,385 | 0.182588 |
+| 历史用量来源 | Token | 旧配置价估算 USD | 后续官方价核算 USD |
+| --- | ---: | ---: | ---: |
+| 9次生成 | 98,359 | 0.106028 | 0.00450286 |
+| 3次教师 | 40,026 | 0.076560 | 0.00381204 |
+| 合计 | 138,385 | 0.182588 | 0.00831490 |
 
-金额状态为 `UNVERIFIED_CONFIG`，响应未报告费用及币种，实际供应商账单、容器费用、Router费用与完整现金总额仍为 null。原累计预算为已知714,168、未知调用预留256,135、剩余29,697，147次累计调用；本轮增加12次请求。预算未扩大，未启动第二轮收费 Episode。
+旧配置金额状态为 `UNVERIFIED_CONFIG`，响应未报告费用及币种，实际供应商账单、容器费用、Router费用与完整现金总额仍为 null。20:05 旧累计记录为已知714,168、未知调用预留256,135、旧余额29,697，147次累计调用；本轮增加12次请求。当时未扩大旧限制、未启动第二轮收费 Episode，仅保留历史；现行不设累计 Token 或美元上限，新 Episode 已成功，后续官方价模型核算金额另列。
 
 ### 原实现收口与当前剩余项
 
-只修改原 `benchmark/__main__.py`、`harbor_agent.py`、`official_artifacts.py`、`iterations.py`：传递上游构建选项、保存本次能力快照、区分真实API与Alias、采用Harbor真实数据格式、消除未完成阶段的事件/native重复累计。旧通用失败报告审批要求已移除，原预算、Final隔离和资源规则保留。原始失败、源码和日志均保留；AST及本轮真实记录汇总通过，未新增测试或夹具。
+只修改原 `benchmark/__main__.py`、`harbor_agent.py`、`official_artifacts.py`、`iterations.py`：传递上游构建选项、保存本次能力快照、区分真实API与Alias、采用Harbor真实数据格式、消除未完成阶段的事件/native重复累计。旧通用失败报告审批要求已移除，当时保留的旧预算设置已由当前决定取消，Final隔离和资源规则保留。原始失败、源码和日志均保留；AST及本轮真实记录汇总通过，未新增测试或夹具。
 
-20:04:53台北，F14原PID4085749仍到Epoch1第398/420块、step50,944、consumed3,260,416，第63–398块持续NaN（336块）；首次诱因、GradScaler实际跳步和有效更新数未知。Serving原PID2291306及启动时间不变，health healthy；GPU35,867/49,140MiB、100%、84°C。非有限loss父候选排除规则继续使用，新Laya/Kev不重训、不上线。
+20:04:53台北，F14原PID4085749仍到Epoch1第398/420块、step50,944、consumed3,260,416，第63–398块持续NaN（336块）；首次诱因、GradScaler实际跳步和有效更新数未知。Serving原PID2291306及启动时间不变，health healthy；GPU35,867/49,140MiB、100%、84°C。非有限loss父候选排除规则继续使用，该时点没有重训或上线新Laya/Kev；后续部署结果尚未回报。
 
-剩余核心项：预算内完整模型Episode仍未取得；Sol/托管Flash独立调用与AA同协议数据缺失；三模型真实最优动作/Effort标签仍0；供应商及资源账单缺失；F14数值异常未定位。原Harbor regrade需要保存的修改后文件，本轮artifacts为空且环境已按原流程删除，无法凭现存轨迹补出原Verifier结果。五RQ、八图十二表继续保留，正式模型结果格留空；原390行训练材料与v1绑定不变，canary轨迹不加入Train/Val。
+20:05 历史剩余项：当时完整模型Episode仍未取得；Sol/托管Flash独立调用与AA同协议数据缺失；三模型真实最优动作/Effort标签仍0；供应商及资源账单缺失；F14数值异常未定位。原Harbor regrade需要保存的修改后文件，本轮artifacts为空且环境已按原流程删除，无法凭现存轨迹补出原Verifier结果。五RQ、八图十二表继续保留，正式模型结果格留空；原390行训练材料与v1绑定不变，canary轨迹不加入Train/Val。
 
 ## 2026-10-30 17:56 · 历史：V9 收口与当时运行条件
 
@@ -120,7 +157,7 @@ AA Key 当前缺失，仍为 `FAILED/NOT_MEASURED`、分数 null；原 Luna HTTP
 
 ## 2026-10-29 起 · 历史执行记录（截至 10-30 04:34）
 
-**来源与边界**：当前Kev第4次两轮训练及固定Val均完成：训练03:25:31退出0，Val于2026-10-30 04:23:20台北完成、控制器50514自然退出0，`status/training_status=COMPLETED`、`evaluation_status=EVALUATED`。相对原C03四指标均退步，内部score92.38703579133796；V9组仅1条、rank1仅为单成员排名，`apply=False`留存未删除权重。新候选仍`FEATURE_PARTIALLY_TRAINED`，权重只在A6000、未上线Serving，正式Harbor/RQ仍空白。前三次FAILED及未知输入统计不覆盖。F14运行推进、损失持续非有限，有效优化更新未确认，具体诱因未知；主证据见下方F14段，Laya V9未启动；Serving健康接口与F14数值状态分开。现行Val/评分/现场依据主Agent服务器实测回报，本机直传JSON证据已读；本机同名candidate_queue/ledger未包含V9项，不作为现行评分来源。文档子任务仅改六份原Markdown，未改源码/结果数据/服务器，未发业务请求、运行测试或新增夹具，未执行Git；训练219465个本地前向Token不并入1M API预算，135calls及575783/256135/168082不变。
+**来源与边界**：当前Kev第4次两轮训练及固定Val均完成：训练03:25:31退出0，Val于2026-10-30 04:23:20台北完成、控制器50514自然退出0，`status/training_status=COMPLETED`、`evaluation_status=EVALUATED`。相对原C03四指标均退步，内部score92.38703579133796；V9组仅1条、rank1仅为单成员排名，`apply=False`留存未删除权重。新候选仍`FEATURE_PARTIALLY_TRAINED`，权重只在A6000、未上线Serving，正式Harbor/RQ仍空白。前三次FAILED及未知输入统计不覆盖。F14运行推进、损失持续非有限，有效优化更新未确认，具体诱因未知；主证据见下方F14段，Laya V9未启动；Serving健康接口与F14数值状态分开。现行Val/评分/现场依据主Agent服务器实测回报，本机直传JSON证据已读；本机同名candidate_queue/ledger未包含V9项，不作为现行评分来源。文档子任务仅改六份原Markdown，未改源码/结果数据/服务器，未发业务请求、运行测试或新增夹具，未执行Git；训练219465个本地前向Token不计为API实际用量，135calls及575783/256135/168082不变。
 
 | 对象 | 已回报事实 | 证据边界 |
 | --- | --- | --- |
@@ -242,17 +279,17 @@ AA Key 当前缺失，仍为 `FAILED/NOT_MEASURED`、分数 null；原 Luna HTTP
 
 **金额单位与事件版本**：hcnsec 的 `raw_usage.cost` 有金额，但未提供 `currency/cost_currency`，单位尚未确认。主 Agent 已让新请求保留 `raw_reported_cost`，`reported_cost_unit=NOT_REPORTED`；仅响应明确 USD 才赋 `actual_billed_cost_usd`。未知单位金额不计入完整美元费用。当前 Episode 的旧事件保留原版本输出，不将旧字段名当 USD 单位证据；完整费用含超时，现有总额为 `None`。最终汇总仍须说明单位未确认，新请求按新 Provider 记录，不能把未知金额或缺失总额写成零美元。
 
-**Token 已知量、失败预留与余额分列**：以下保留上一阶段回报，尚未包含随后全部生成/教师 usage 的最终结算。
+**历史 Token 已知量、旧失败预留与旧余额分列**：以下保留上一阶段回报，尚未包含随后全部生成/教师 usage 的最终结算。
 
 | 项目 | Token 数 | 含义 |
 | --- | ---: | --- |
 | 原 `token_budget` 已知记录 | 410,353 | 既有已知量，不含尚待计入的后续真实 usage |
-| 9 次失败调用预留 | 77,544 | 每次按 8,616 上限预留；失败实际 usage 为 UNKNOWN，不算已实际消耗 |
-| 上一阶段扣已知量与预留后的余额 | 512,103 | `1,000,000 - 410,353 - 77,544`；随后生成/教师 usage 会改变余额，不能当最终值 |
+| 9 次失败调用预留 | 77,544 | 当时每次按 8,616 预留；失败实际 usage 为 UNKNOWN，不算已实际消耗 |
+| 上一阶段扣已知量与预留后的余额 | 512,103 | `1,000,000 - 410,353 - 77,544`；旧限制下的余额公式，仅保留历史，不作当前停止条件 |
 
-**随后已回报预算实读（短视图/窄重跑回报前）**：`known=494912`、`reserved=193040`、`remaining=312048`。这是当时用户提供的阶段快照，保留上表历史；reserved 仍不计实际用量，不能推断缺失调用的实际 Token 或完整 USD。当时新一轮运行尚未结算，本轮最后预算见下段。
+**历史预算记录（短视图/窄重跑回报前）**：`known=494912`、`reserved=193040`、`remaining=312048`。这是当时用户提供的阶段快照，保留上表历史；reserved 仍不计实际用量，不能推断缺失调用的实际 Token 或完整 USD。当时新一轮运行尚未结算，该历史阶段的最后记录见下段。
 
-**本轮最后预算实读与清理回报**：`known=575783`、`reserved=256135`、`remaining=168082`；新增 **15 API 请求**已计入原账本，累计 **135 calls**。这替代前段作为本轮最后已报预算，历史数继续保留；reserved 不作实际消耗，完整用量/费用因失败项仍 null。本轮不再新增生成式请求。自有本机 8000 隧道 PID `28959` 已结束，duration 临时目录已清理，artifacts 与全部失败证据保留；该回报时 A6000 Serving/训练未操作。
+**该阶段历史预算与清理回报**：`known=575783`、`reserved=256135`、`remaining=168082`；新增 **15 API 请求**已计入原账本，累计 **135 calls**。这替代前段作为本轮最后已报预算，历史数继续保留；reserved 不作实际消耗，完整用量/费用因失败项仍 null。该阶段曾停止新增生成式请求，旧暂停决定不作当前约束。自有本机 8000 隧道 PID `28959` 已结束，duration 临时目录已清理，artifacts 与全部失败证据保留；该回报时 A6000 Serving/训练未操作。
 
 **训练参数已准备、服务器部署已完成**：现有 [prepared/summary.json](../code/data/v9/prepared/summary.json) 的 `training` 段已写真实配置，部署/材料读取已有实证；第 1 次训练启动失败，参数和部署成功不计训练完成。
 
@@ -296,11 +333,11 @@ Laya V9尚未启动；hook在盘，原F14内存代码不读，下一自然child�
 
 同日志`:32379`的F04 Epoch1 Chunk231已出现NaN，F04共8个NaN块、首次后仍有230个有限块；F04/run.json两轮train_loss=NaN，但S1 Val loss0.6300/0.6141有限。不能断言F14权重已失效或一定没有有效更新。F14尚无Epoch终局，首次异常batch的logits/target/gradient/scaler未捕获，具体诱因及有效更新未知；源码行号为磁盘版本，未读PID内存。本次主Agent只读诊断未停止/重启/改动作业，未加载权重、发模型请求、新评测或信号。Laya/原Serving仍旧权重；Kev新候选训练/Val/评分已完成、FEATURE_PARTIALLY_TRAINED，四指标比C03均退步，未上线Serving。
 
-预留与实际消耗分别保留；不将 77,544 写成真实已用 Token，不自行把新超时追加为已计失败或推算新余额。线上/离线教师、生成及重试仍累计在原总额 `< 1,000,000` 内；Token 额度不等于实付 USD，最终 usage、预留和有单位的费用等主 Agent 回报。
+预留与实际消耗分别保留；不将 77,544 写成真实已用 Token，不自行把新超时追加为已计失败或推算新余额。线上/离线教师、生成及重试按实际 API 用量累计记录，当前无总 Token 或美元上限。旧预留和旧余额仅为历史；官方价格核算与供应商账单分别记录，未知金额不填零，也不影响执行。
 
-**现行需求**：用户已保留 **V9 五 RQ、八图、十二表**，首批逻辑 ID 为 `gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`。V8 两Luna规则仍有效；三模型正式生成授权/配置待明确，当前只允许统一映射已有服务器 Qwen 的 `ALIAS_SMOKE`。Alias 不代表三个独立真实模型，审阅子 Agent 的 `gpt-6.1-sol/max` 也不代表生成/教师配置。新增方法只归 `v9/runtime`、`teacher`、`capabilities`、`training`，旧系统保留必要接点；职责表见 [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)。
+**现行需求**：用户已保留 **V9 五 RQ、八图、十二表**，首批逻辑 ID 为 `gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`。用户已充分授权测试及部署；原 Provider 实际返回 3 项，研究池当前只列 Luna，Sol/托管Flash未列出。旧两Luna范围与Qwen统一映射安排仅保留历史，`ALIAS_SMOKE` 与正式模型结果继续分开。Alias 不代表三个独立真实模型，审阅子 Agent 的 `gpt-6.1-sol/max` 也不代表生成/教师配置。新增方法只归 `v9/runtime`、`teacher`、`capabilities`、`training`，旧系统保留必要接点；职责表见 [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)。
 
-**训练、数据与教师后续**：复用 V2.1/L1 和合法 S1/S2/S3，保留质量、监督、层级和独立单位；AA 分数与观察动作不能作最优动作标签。教师的 `progress_summary`、`main_blocker`、`next_milestone` 必须实际编码且离线/在线同义；未学习记 `FEATURE_NOT_TRAINED`。顶级教师与联调教师、离线制作费用与在线 Episode 费用分开，连续上下文与实际 KV/缓存用量双记。原训练沿既有控制器自然接续，F14不读新hook与下一child两轮边界分别保留；各模型同协议Val及独立Dev选继续微调起点，Final不参与迭代。Mac不存Laya/Kev权重，累计真实API Token<1,000,000。源码/材料/原资源分支部署及final/训练prefix分词范围已确认；现行结果见上方训练表。step5近期工具真实末128字符已验证，长history与6条完整state仍裁、8192推荐未启用；192条Val长度尚未测。仍待Laya自然接续、F14首次异常具体诱因及有效优化更新定位、三新身份/Effort监督、AA实测和正式Harbor/RQ评测；前三次失败的曝光未知信息保留，Serving仍旧权重/`FEATURE_NOT_TRAINED`。原预算575783/256135/168082及135calls未变，04:20直传验证另增Router1/生成0，与此前回放分列；文档子任务未发请求。
+**训练、数据与教师后续**：复用 V2.1/L1 和合法 S1/S2/S3，保留质量、监督、层级和独立单位；AA 分数与观察动作不能作最优动作标签。教师的 `progress_summary`、`main_blocker`、`next_milestone` 必须实际编码且离线/在线同义；未学习记 `FEATURE_NOT_TRAINED`。顶级教师与联调教师、离线制作费用与在线 Episode 费用分开，连续上下文与实际 KV/缓存用量双记。原训练沿既有控制器自然接续，F14不读新hook与下一child两轮边界分别保留；各模型同协议Val及独立Dev选继续微调起点，Final不参与迭代。Mac不存Laya/Kev权重，API按实际用量记录、不设累计Token或美元上限。源码/材料/原资源分支部署及final/训练prefix分词范围已确认；现行结果见上方训练表。step5近期工具真实末128字符已验证，长history与6条完整state仍裁、8192推荐未启用；192条Val长度尚未测。Laya V9已完成两轮和固定Val；仍待F14首次异常具体诱因及有效优化更新定位、三新身份/Effort监督、AA实测和正式Harbor/RQ评测；前三次失败的曝光未知信息保留，Serving仍旧权重/`FEATURE_NOT_TRAINED`。该历史阶段旧记录575783/256135/168082及135calls保留，04:20直传验证另增Router1/生成0，与此前回放分列；文档子任务未发请求。
 
 **材料完整性**：原 linked 聊天已移除、本机 source 文件缺失；四段下载聊天与两份提示词全文复核仍完整。研究编号依据下载讨论行 25981；身份/联调依据 26344、26368；教师/模块/缓存与费用依据 27359–27361、28201–28203、28747–28784。原 Q-ID 和历史负结果继续保留，具体实验表见 [V9 图表规划](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)。
 
@@ -637,7 +674,7 @@ C04 仍由 PID 3212011 执行，Step 420/16,857、Loss 1.022，最后训练进�
 - **Rootless Docker**：宿主已有 Docker 29.4.1 与 RootlessKit 2.3.6，个人 subuid/subgid 范围存在；缺少 `newuidmap`、`newgidmap`，真实 UID/GID 映射失败。个人安装未执行，daemon、socket、镜像和容器均未创建。仅个人用户空间的授权不足以提供宿主 uidmap 权限；未使用 sudo、未改共享权限。
 - **官方成绩**：Oracle、原生 mini-swe-agent、ModelRouter mini 的真实官方 Trial 各为 **0**，Verifier、Reward 和完整实际费用均为 `N/A`。此前唯一 Oracle 尝试 exit 1、2.21 秒，无生成 Token。Canary、Dev 和全部正式科研统计待真实 Trial。
 - **执行代码**：官方 mini-swe-agent 2.4.6 的 DefaultAgent 循环、统一策略 Hook、临时 Provider 转发、ATIF、唯一 Benchmark CLI 和迭代记录已接入。Docker 目标由同一配置传给 preflight/run/resume；结束 Trial 由原始官方结果接入既有 Ledger，按 Trial ID 去重。尚未在官方沙箱实跑这条链。
-- **已有实测**：Provider 三次请求消耗 17,393 Token，配置价估算 $0.0183835，实付未知；累计使用 410,353 Token，余 589,647，总上限未变。Laya/Kev 各三次 CPU Serving 请求的重复与逆序 ID/概率映射一致，fallback 为 false。只有两款 Luna 的 low 档已实测；12 模型身份、其余 Effort、供应商输出限制及账单仍未确认。
+- **2026-10-19 历史实测（旧额度已取消）**：Provider 三次请求消耗 17,393 Token，配置价估算 $0.0183835，实付未知；累计使用 410,353 Token，余 589,647，该时点旧上限未变，现已取消。Laya/Kev 各三次 CPU Serving 请求的重复与逆序 ID/概率映射一致，fallback 为 false。只有两款 Luna 的 low 档已实测；12 模型身份、其余 Effort、供应商输出限制及账单仍未确认。
 - **历史图表**：RQ1 旧 Ledger 无官方 Verifier；RQ2 预设成功率、RQ3 经验矩阵、RQ4 70.2% 配置值和 RQ5 0.72 边界均为 `UNVERIFIED / SYNTHETIC`，仅供开发与版式使用。正式 Fig.3–8、Table 3–11 读取官方 Episode，缺数据保持空表或 `null`。
 - **训练与看板**：本轮未停止 Laya F06、Kev C03、CPU Serving 或 8765 服务，未新增 GPU 工作。Agent 区域独立读取真实状态 JSON；状态过期显示时间差，未知费用显示 `N/A`。
 
@@ -665,7 +702,7 @@ C04 仍由 PID 3212011 执行，Step 420/16,857、Loss 1.022，最后训练进�
 >    - **RQ5 工作负载边界**: 四类分类及预设收益用于统计函数开发，未取得真实 Agent 边界证据，导出 Table 9 与 Fig. 8；
 >    - 全工程 56 项 pytest 单元/集成测试 100% 通过。
 > 4. **真实 Provider 与 Harbor 沙箱规范化**：
->    - 利用现有本地凭证完成真实 `gpt-6-luna` Chat API 调用并更新 Token 账本（当前累计 392,120 / 1,000,000）；
+>    - 利用现有本地凭证完成真实 `gpt-6-luna` Chat API 调用并更新 Token 账本（历史记录 392,120 / 1,000,000，旧额度现已取消）；
 >    - Harbor 严格继承官方 BaseAgent，无容器环境时严守 Fail-Closed 原则并锁定 `NOT_EVALUATED`，坚决不冒充官方通过成绩。
 >
 
@@ -781,6 +818,8 @@ TRA 与 ENV 共有 `13,486` 条任务记录继承 TRA 已有 Train/Val/Test 身�
 按“一、总体项目进度；二、当前阶段各小步骤；三、后续计划；四、下一步执行提示词；五、简单情况说明”回答。先读本页及 [PLANNING_MEMORY 第10节](PLANNING_MEMORY.md#10-新会话恢复协议长期生效)，按真实变化更新已有相关文件。
 
 ## 历史资料（以下为旧阶段快照，不代表当前状态）
+
+本节旧 Token/美元额度、余额、暂停及待批准文字只保留原时点记录；用户明确从未设置 API 总 Token 或美元预算，当前测试与部署范围见首页。旧金额不改写为新官方核算结果，失败和负结果不删除；服务器资源规则、训练不中断和 Final 隔离继续适用。
 
 2026-10-10 Planning 基于 7fc24bc 的独立复审提出七项矛盾，本轮已逐项核验并替换无依据的 PASS。原复审与执行文字可从 Git 历史追溯；不将历史“已完成”结论继续当作当前证据。
 
@@ -1331,7 +1370,7 @@ configs/
 
 2026-10-18 `b80574d` GitHub 实际源码复核发现：`run_stress_benchmark.py` 用 `MockGeneratorProvider`，`runner.py` 固定创建 `MockSandboxEnvironment`，报告的“64 并发 75% Pass@1”“22,248 tasks/hour”和模型模拟 USD **不是 Terminal-Bench 真实 Agent 成绩**。Kev `experiments/router_serving/kev_adapter.py` 仅核对元数据、`route()` 使用启发式评分，未执行真实 Kev forward；RouteLLM 和 SR-KNN 是手写规则/人工 exemplars，不是上游公开方法复现。`provider.py` 目前只有 Chat Completions，缺 OpenAI Responses/Anthropic Messages。Git 树未证明官方 Benchmark 与公开方法源码已按所需路径全部克隆。这些必须按 §8 的真实来源/官方 Docker/evaluator/权重推理做纠正。之前的 S4/S6/S8 completed 仅可保留为 MOCK/SCHEMA/ADAPTER_SMOKE 状态，不能当作正式完成。
 
-负责人现在允许在 Mac 上**只读使用既有 CC Switch 本地配置或合法本地代理**发现实际 URL/模型/GPT-6 与 Luna 的可用模型名及三种 API 协议，进行 1–2 个真实 Benchmark 任务及各方法的极短真实请求。全部真实 API 调用全局严格 <1,000,000 tokens（包括重试、两个子代理和三种协议），另外设保守 USD hard cap；不得打印、移动、提交密钥或使用未经授权的订阅 OAuth 通路。现有 `http://127.0.0.1:8765` 双模型看板继续沿用，更新真实训练版本数、正式 Benchmark、API 协议、真实/模拟状态和进度。所有 Laya/Kev 权重仍留 A6000，不下载 Mac。GOAL 长周期命令实际存在才可启用，不得虚报。
+**2026-10-18 历史调用安排（旧额度已取消）**：旧文档当时记录负责人允许在 Mac 上**只读使用既有 CC Switch 本地配置或合法本地代理**发现实际 URL/模型/GPT-6 与 Luna 的可用模型名及三种 API 协议，进行 1–2 个真实 Benchmark 任务及各方法的极短真实请求。全部真实 API 调用全局严格 <1,000,000 tokens（包括重试、两个子代理和三种协议），另外设保守 USD hard cap；不得打印、移动、提交密钥或使用未经授权的订阅 OAuth 通路。现有 `http://127.0.0.1:8765` 双模型看板继续沿用，更新真实训练版本数、正式 Benchmark、API 协议、真实/模拟状态和进度。所有 Laya/Kev 权重仍留 A6000，不下载 Mac。GOAL 长周期命令实际存在才可启用，不得虚报。 其中旧 Token 与 USD hard cap 仅保留历史，不作当前执行条件。
 
 按照“最新 GitHub 拉取/六文档重读→实际小阶段→脱敏归档→定向 commit/push→核 SHA→再重读”继续，结果按真实证据和最新进度回报。
 
@@ -1348,7 +1387,7 @@ configs/
 
 **Host 执行隔离缺陷**：报告使用 `LocalHarborSandboxEnvironment`；在 `083ee2c` 实际源码中，其 `exec()` 是 Mac 主机上的 `subprocess.run(..., shell=True, env=os.environ)`，不是 Harbor/Docker 容器，可能暴露宿主文件与私有凭据；其 `evaluate()` 动态自写 `test_verifier.py`，即使生成 CTRF 也不代表实际官方任务镜像与原版 Evaluator。已在 `experiments/harbor/environment.py` 中将该不安全实现设置 fail-closed，不得继续用于真实 Agent。**下一步唯一正确修复是接入上游 Harbor 隔离容器 + 未改写的官方任务验证器**；在此之前所有 16 次应标 `LOCAL_HOST_EXPERIMENTAL` / `NOT_OFFICIAL_HARBOR`，真实任务 0/16，不能称其为完整官方 Benchmark 通过。
 
-**比较口径与预算缺陷**：在 `provider.py` 的 `_normalize_model` 中，名义 FixedStrong/FixedCheap/Rule/RouteLLM/Laya/Kev 所选不在有限白名单的 Generator 都映射到同一个 `gpt-6-luna`，而每步美元费用仍用未映射的 `model_spec.calculate_cost` 的名义价格计数。由此不同策略的价格/能力对照不成立，`RouteLLM 省 93.4%` 与 `Kev 省 90.5%` 不是有效成功率相当的经济收益。真实执行 Generator 模型名、真实 Provider 账单价格需取最终请求/响应，且能力集合至少两种真正不同的合法生成模型才可开展模型选择 RQ1。另 `update_token_budget()` 只在请求结束后增加 JSON 计数，超过 100 万仅日志警告；并发/重试缺少原子预留和即时额度限制，**无法可靠控制总额度**。在重新签发凭据前应暂停新付费基准调用、修复预扣配额和独立真实用量记录，绝不能因其 368,154/1M 报告而保证不会超限。
+**历史比较口径与旧预算诊断（原负结果保留）**：在 `provider.py` 的 `_normalize_model` 中，名义 FixedStrong/FixedCheap/Rule/RouteLLM/Laya/Kev 所选不在有限白名单的 Generator 都映射到同一个 `gpt-6-luna`，而每步美元费用仍用未映射的 `model_spec.calculate_cost` 的名义价格计数。由此不同策略的价格/能力对照不成立，`RouteLLM 省 93.4%` 与 `Kev 省 90.5%` 不是有效成功率相当的经济收益。真实执行 Generator 模型名、真实 Provider 账单价格需取最终请求/响应，且能力集合至少两种真正不同的合法生成模型才可开展模型选择 RQ1。另 `update_token_budget()` 只在请求结束后增加 JSON 计数，超过 100 万仅日志警告；并发/重试缺少原子预留和即时额度限制，**无法可靠控制总额度**。在重新签发凭据前应暂停新付费基准调用、修复预扣配额和独立真实用量记录，绝不能因其 368,154/1M 报告而保证不会超限。 上述暂停与预扣额度建议已由当前无累计限制的决定取代；独立真实用量与失败证据继续保留。
 
 这些更正只影响有安全风险的本机 Agent / 新付费 API 实验；**不要中断正常运行的 Laya A6000 正式训练，也不要删除 F03/F06 现场成果**。原 KV/Laya/Kev 增补训练、两子代理、简洁高信息密度可视化仍按 V8 正式文档执行。修复后先 1 题/2 真实不同 generator/2 策略，对官方 Harbor 完整评分和逐调用真实费用做最小证据验证，再逐步扩展。没有证据不要提高“已完成”阶段状态。
 
@@ -1357,7 +1396,7 @@ configs/
 
 负责人要求一次性补齐前述剩余工作；**沙箱复用已选开源 Harbor 内建 `DockerEnvironment`、`BaseAgent`、官方 Task Verifier 和 `harbor run` / Job Resume**，不自造 Host Shell 或第二套 Container Scheduler。当前 `LocalHarborSandboxEnvironment` 已因宿主代码执行和伪官方 Verifier 被 fail-closed；真正接入的应是 Harbor `BaseAgent.setup/run` + `await environment.exec`，工具均在隔离容器中执行，未经授权的宿主 Secret/Docker socket/SSH 文件不得暴露给 Task。官方文档见 [Harbor GitHub](https://github.com/harbor-framework/harbor)、[Harbor CLI](https://github.com/harbor-framework/docs/blob/main/cli/run.mdx)。
 
-“快速跑完整实验”是**配置化科研矩阵 + 官方容器镜像复用 + 受控按任务 Trial 并发 + 原生 Resume/失败恢复 + RPM/TPM/预算限制 + 统一真实日志与官方评分**，不是宣称 64 模拟并发的 Pass@1 或模型路由收益。优先让 1–2 个 Canary 真正通过官方执行接口（可以失败，但必须有真实官方 reward 及全部轨迹）；随后覆盖 FixedStrong/FixedCheap/Random/RuleSticky/RouteLLM official/SR-KNN fitted/Laya/Kev 的合法同任务矩阵，再按授权扩展 Dev，57 个 sealed Final 固定方案前不读。GPT Responses SSE/工具/Native Effort、Chat/Messages、OpenRouter 有散列定价快照、跨进程 1M Token 原子预算、受保护每模型调用 I/O 账本、Laya/Kev 新数据持续多版本训练、双模型丰富少字看板、2 子代理和阶段 Git Push 的要求全部继续有效，统一细则见 [V8 §10](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。
+**2026-10-18 历史完整执行方案**：“快速跑完整实验”是**配置化科研矩阵 + 官方容器镜像复用 + 受控按任务 Trial 并发 + 原生 Resume/失败恢复 + RPM/TPM/预算限制 + 统一真实日志与官方评分**，不是宣称 64 模拟并发的 Pass@1 或模型路由收益。优先让 1–2 个 Canary 真正通过官方执行接口（可以失败，但必须有真实官方 reward 及全部轨迹）；随后覆盖 FixedStrong/FixedCheap/Random/RuleSticky/RouteLLM official/SR-KNN fitted/Laya/Kev 的合法同任务矩阵，再按授权扩展 Dev，57 个 sealed Final 固定方案前不读。GPT Responses SSE/工具/Native Effort、Chat/Messages、OpenRouter 有散列定价快照、跨进程 1M Token 原子预算、受保护每模型调用 I/O 账本、Laya/Kev 新数据持续多版本训练、双模型丰富少字看板、2 子代理和阶段 Git Push 中旧 1M Token 额度要求已取消，其余事项按当前明确执行范围处理，统一细则见 [V8 §10](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。
 
 **执行状态注意**：本次为 GitHub 文档中明确的实现方案和验收标准，不等于 Mac 已安装 Harbor 真 Docker、API Key 已轮换或官方 Benchmark 完成；需有 Mac/A6000 权限的 Execution Agent 现场实施并回传真实 Job 路径、Trial ID、模型验证和 Git SHA。服务器健康的 Laya 正式队列仍不应中断。
 
@@ -1439,7 +1478,7 @@ configs/
    - **全策略接口统一**：`fixed_strong`、`fixed_cheap`、`random`、`rule_sticky`、`routellm`、`sr_knn`、`laya_v2`、`kev_4b` 全部统一实现 `select(state, legal_actions) -> RouterDecision`，并发调度矩阵无异常全通。
 
 6. **Token 硬预算管控、OpenRouter 定价与多模型审计日志**：
-   - **全局 Token 上限**：全局 Token 累计消耗 368,520 / 1,000,000，剩余 631,480 Tokens，严格管控于 100 万上限之内；
+   - **历史全局 Token 限制（已取消）**：当时累计消耗 368,520 / 1,000,000，旧余额 631,480 Tokens；原 100 万限制仅保留历史，不作当前停止条件；
    - **官方定价快照**：基于 OpenRouter API 官方快照（散列 `db274c7b...`），471 款模型按 USD / 1M Tokens 归一化；
    - **全量审计日志**：`runs/agent_pilot/multi_model_calls.jsonl` 持续记账，逐条记录协议类型、模型版本、细分 Tokens、TTFT 延迟、总用时及参考计费。
 

@@ -294,8 +294,8 @@ def _record_budget(data: Dict[str, Any], prompt_tokens: Optional[int], completio
         data["consumed_prompt_tokens"] = data.get("consumed_prompt_tokens", 0) + prompt_tokens
         data["consumed_completion_tokens"] = data.get("consumed_completion_tokens", 0) + completion_tokens
         data["consumed_total_tokens"] = data.get("consumed_total_tokens", 0) + prompt_tokens + completion_tokens
-    data["remaining_tokens"] = max(0, data["max_tokens"] - data["consumed_total_tokens"]
-                                   - data.get("reserved_unknown_tokens", 0))
+    data["max_tokens"] = None
+    data["remaining_tokens"] = None
     data["last_updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
@@ -396,6 +396,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             usage.get("completion_tokens"),
             (usage.get("completion_tokens_details") or {}).get("reasoning_tokens"),
             (usage.get("prompt_tokens_details") or {}).get("cached_tokens"),
+            (usage.get("prompt_tokens_details") or {}).get("cache_write_tokens"),
         )
 
     def query_raw(
@@ -409,7 +410,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Return (native_response, metrics); one request, no execution or retry.
 
-        Budget accounting is completed here. Callers must not charge it again.
+        Usage accounting is completed here. Callers must not charge it again.
         Missing usage, returned identity or billing remains explicitly unknown.
         """
         from modelrouter.providers.registry import MODEL_REGISTRY
@@ -439,11 +440,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         )
         started = time.perf_counter()
         with _token_budget() as budget:
-            # Reserve requested output plus encoded input within the existing limit.
             input_bound = len(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
             request_bound = input_bound + max_tokens
-            if budget["consumed_total_tokens"] + budget.get("reserved_unknown_tokens", 0) + request_bound >= budget["max_tokens"]:
-                raise RuntimeError("Existing total-token budget has insufficient remaining capacity")
             try:
                 with urllib.request.urlopen(request, timeout=60.0) as response:
                     body, ttft_ms = self._read_response(response, stream, started)
@@ -451,13 +449,13 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 _record_budget(budget, None, None, request_bound)
                 raise
             raw_usage = body.get("usage")
-            p_tokens, c_tokens, r_tokens, cached = self._usage_counts(raw_usage or {})
+            p_tokens, c_tokens, r_tokens, cached, cache_written = self._usage_counts(raw_usage or {})
             _record_budget(budget, p_tokens, c_tokens, request_bound)
         latency_ms = (time.perf_counter() - started) * 1000
         returned = body.get("model")
         identity_status = "MATCHED_REQUEST_ALIAS" if returned == target else ("MISSING" if not returned else "MISMATCH")
         usage_complete = p_tokens is not None and c_tokens is not None
-        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0) if target_spec is not None and usage_complete and returned == target else None
+        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if target_spec is not None and usage_complete and returned == target else None
         # Vendor cost is distinct from the configured price estimate.
         reported_cost = (raw_usage or {}).get("cost")
         reported_cost_unit = (raw_usage or {}).get("cost_currency") or (raw_usage or {}).get("currency")
@@ -486,6 +484,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "completion_tokens": c_tokens,
             "reasoning_tokens": r_tokens,
             "cached_tokens": cached,
+            "cache_write_tokens": cache_written,
             "ttft_ms": ttft_ms,
             "latency_ms": latency_ms,
             "output_tokens_per_s": (c_tokens * 1000 / latency_ms) if usage_complete and stream and ttft_ms is not None else None,
@@ -494,6 +493,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "stream_output_tokens_per_s_status": "ESTIMATE" if stream_output_tokens_per_s is not None else "UNAVAILABLE",
             "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
             "cost_usd": cost,
+            "cost_source": target_spec.pricing_source if target_spec is not None else None,
+            "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+            "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
             "cost_status": alias_facts["cost_status"] if alias_facts is not None else (target_spec.pricing_status if cost is not None else "UNKNOWN"),
             "actual_billed_cost_usd": billed_cost,
             "raw_reported_cost": reported_cost,
@@ -536,11 +538,11 @@ def native_generator_relay(record_dir: str | Path, bind: str = "0.0.0.0"):
 
     Yields port, api_key and a Docker-facing base_url. api_key is a temporary
     in-memory credential: pass it as the native client's API key, never log it.
-    Provider credentials and shared-budget accounting remain on the host.
+    Provider credentials and shared usage accounting remain on the host.
     Upstream requests stream for timing; downstream may request JSON or SSE.
     SSE is replayed after the single upstream response, not live forwarded.
     X-Session-ID identifies the episode. Existing events restore steps and cost.
-    As in mini, a completed call reaching cost_limit prevents the next call;
+    An explicitly positive cost_limit applies after a completed call;
     this does not predict or cap the bill of an in-flight provider request.
     """
     from modelrouter.benchmark.iterations import event, rows
@@ -553,7 +555,7 @@ def native_generator_relay(record_dir: str | Path, bind: str = "0.0.0.0"):
     episode_costs: Dict[Optional[str], Optional[float]] = {}
     config_path = record_dir / "run_config.json"
     config = json.loads(config_path.read_text()) if config_path.is_file() else {}
-    cost_limit = float(config.get("cost_limit", 3.0))
+    cost_limit = float(config.get("cost_limit", 0.0))
     for record in rows(record_dir / "events.jsonl"):
         if record.get("source") != "native_generator_relay":
             continue
@@ -603,8 +605,8 @@ def native_generator_relay(record_dir: str | Path, bind: str = "0.0.0.0"):
                     raise ValueError("Only the two Luna models are authorized")
                 with step_lock:
                     previous_cost = episode_costs.get(episode_id, 0.0)
-                    if previous_cost is None or (cost_limit > 0 and previous_cost >= cost_limit):
-                        reason = "EPISODE_COST_UNKNOWN" if previous_cost is None else "EPISODE_COST_LIMIT"
+                    if cost_limit > 0 and previous_cost is not None and previous_cost >= cost_limit:
+                        reason = "EPISODE_COST_LIMIT"
                         event(record_dir, "ERROR", source="native_generator_relay", category="BUDGET",
                               **attribution, request_id=request_id, error=reason,
                               episode_estimated_cost_usd=previous_cost, episode_cost_limit_usd=cost_limit)
@@ -617,7 +619,7 @@ def native_generator_relay(record_dir: str | Path, bind: str = "0.0.0.0"):
                         tools=payload.get("tools"), stream=True,
                     )
                     cost = metrics["cost_usd"]
-                    episode_cost = previous_cost + cost if cost is not None else None
+                    episode_cost = previous_cost + cost if previous_cost is not None and cost is not None else None
                     episode_costs[episode_id] = episode_cost
             except Exception as exc:
                 event(record_dir, "ERROR", source="native_generator_relay", category="PROVIDER",
@@ -701,6 +703,7 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
             usage.get("input_tokens"), usage.get("output_tokens"),
             (usage.get("output_tokens_details") or {}).get("reasoning_tokens"),
             (usage.get("input_tokens_details") or {}).get("cached_tokens"),
+            (usage.get("input_tokens_details") or {}).get("cache_write_tokens"),
         )
 
     def _read_response(self, response, stream, started):

@@ -116,7 +116,7 @@ def run_real_canary_evaluation():
             "ctrf_summary": ep_result.evaluator_details.get("ctrf_summary", {}),
         })
 
-    # Read updated token budget
+    # Read recorded API usage
     budget_file = Path(__file__).resolve().parent / "token_budget.json"
     budget_data = {}
     if budget_file.exists():
@@ -129,9 +129,9 @@ def run_real_canary_evaluation():
     for r in results:
         res_str = "PASSED" if r["resolved"] else "FAILED"
         print(f"  - {r['task_id']:<22} {res_str:<8} (score={r['score']}, steps={r['steps']}, cost=${r['cost_usd']:.5f})")
-    print(f"\nToken Budget Status:")
+    print(f"\nAPI Usage:")
     print(f"  Consumed Total Tokens: {budget_data.get('consumed_total_tokens', 0)}")
-    print(f"  Remaining Tokens:      {budget_data.get('remaining_tokens', 0)}")
+    print("  Cumulative token limit: none")
     print(f"  Total API Calls:       {budget_data.get('total_calls', 0)}")
     print("=" * 70)
 
