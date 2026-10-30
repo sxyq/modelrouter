@@ -219,6 +219,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--v9-config", type=Path, help="Existing V9 JSON configuration for the routed mini agent")
     p.add_argument("--environment", choices=["docker", "daytona", "modal", "e2b"], default="docker")
     p.add_argument("--docker-host", help="Docker endpoint for this run; overrides runtime config")
+    p.add_argument("--force-build", action="store_true", help="Build the task environment from its upstream Dockerfile")
     p.add_argument("--execute", action="store_true", help="Actually start a real Harbor task")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--iteration-dir", type=Path)
@@ -295,16 +296,6 @@ def main(argv: Optional[List[str]] = None) -> int:
             parser.error(str(exc))
         runtime = _runtime_config()
         docker_host = args.docker_host if args.docker_host is not None else runtime.get("docker_host")
-        previous = iterations.latest()
-        if previous and (previous / "next_iteration.json").exists():
-            plan = json.loads((previous / "next_iteration.json").read_text())
-            resolution = resolve_previous_failure(plan, args.environment, docker_host,
-                                                  runtime.get("reported_resolution"))
-            if not args.dry_run and resolution["status"] == "UNRESOLVED":
-                iterations.event(previous, "PREVIOUS_PROBLEM_ASSESSED", **resolution)
-                print(json.dumps({"status": "BLOCKED", "previous_iteration": str(previous),
-                                  "next_command": plan.get("next_command"), **resolution}, ensure_ascii=False))
-                return 2
         path = args.iteration_dir or iterations.ITERATIONS / iterations.iteration_name()
         path = path.resolve()
         if (path / "run_config.json").exists():
@@ -322,6 +313,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                   "units": units, "token_budget_path": str(iterations.ROOT / "experiments/agent_pilot/token_budget.json")}
         config.update(runtime)
         config["single_episode"] = args.single_episode
+        config["force_build"] = args.force_build
         config["docker_host"] = _runtime_env(docker_host).get("DOCKER_HOST")
         from modelrouter.providers.registry import ModelRegistry
         from .harbor_agent import mini_configuration, legal_actions
@@ -336,6 +328,10 @@ def main(argv: Optional[List[str]] = None) -> int:
             from modelrouter.serving.schemas import LegalAction
 
             v9_config = json.loads(args.v9_config.read_text())
+            if "capability_snapshot" not in v9_config:
+                from modelrouter.v9.capabilities.features import load_current
+
+                v9_config["capability_snapshot"] = load_current()
             candidates = v9_config.get("candidate_actions")
             if candidates is None:
                 registry = ModelRegistry()
@@ -429,37 +425,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 130
 
 
-def resolve_previous_failure(plan, environment, docker_host=None, reported_resolution=None):
-    reason = plan.get("reason", "")
-    if plan.get("status") != "BLOCKED":
-        return {"status": "NO_REPEATED_FAILURE", "problem": reason}
-    if any(term in reason.lower() for term in ("docker", "rootless", "newuidmap", "newgidmap", "uid_map")):
-        sandbox = _probe(["docker", "info"], env=_runtime_env(docker_host)) if environment == "docker" else {
-            "status": "NOT_CHECKED", "reason": "Saved Docker run cannot resume in a different environment"}
-        return {"status": "RESOLVED" if sandbox["status"] == "READY" else "UNRESOLVED",
-                "problem": reason, "sandbox": sandbox}
-    report = reported_resolution if reported_resolution is not None else plan.get("reported_resolution")
-    if (isinstance(report, dict) and report.get("status") == "RESOLVED"
-            and report.get("problem") == reason and report.get("evidence")):
-        return {"status": "RESOLVED", "problem": reason,
-                "resolution_source": "reported_resolution", "evidence": report["evidence"]}
-    return {"status": "UNRESOLVED", "problem": reason,
-            "action": "Retain the original job; provide reported_resolution with matching problem, RESOLVED status and evidence"}
-
-
 def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -> int:
     config = json.loads((path / "run_config.json").read_text())
     state = json.loads((path / "resume_state.json").read_text())
     runtime = _runtime_config()
     docker_host = docker_host if docker_host is not None else config.get("docker_host", runtime.get("docker_host"))
-    if resume and state["status"] == "BLOCKED":
-        plan = json.loads((path / "next_iteration.json").read_text())
-        resolution = resolve_previous_failure(plan, config.get("environment", "docker"), docker_host,
-                                              config.get("reported_resolution", runtime.get("reported_resolution")))
-        iterations.event(path, "PREVIOUS_PROBLEM_ASSESSED", **resolution)
-        if resolution["status"] == "UNRESOLVED":
-            print(json.dumps(resolution, ensure_ascii=False), flush=True)
-            return 2
     if not state["units"]:
         print("No pending benchmark units; retain this development iteration and its next plan")
         return 2
@@ -494,6 +464,8 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
             task_source = config.get("task_source") or str(iterations.ROOT / "external/benchmarks/terminal-bench-2-1/tasks")
             cmd = build_harbor_command(unit["task_id"], unit["agent"], None if unit["agent"] == "oracle" else config["model"], config["environment"], custom, task_source)
             cmd += ["--jobs-dir", str(path / "jobs"), "--job-name", unit["job_name"], "--max-retries", "0"]
+            if config.get("force_build"):
+                cmd += ["--force-build"]
             if custom:
                 for key, value in {"policy": unit["policy"], "seed": config["seed"], "max_steps": config["max_steps"], "max_output_tokens": config["max_output_tokens"], "cost_limit": config.get("cost_limit", 3.0)}.items():
                     cmd += ["--agent-kwarg", f"{key}={value}"]

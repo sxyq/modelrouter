@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "execution_scope": "OFFICIAL_SINGLE_AUTHORIZED_MODEL_DEVELOPMENT",
+  "router_endpoint": "http://127.0.0.1:8000",
+  "router_timeout_sec": 60,
+  "router_context_chars": 6000,
+  "teacher_enabled": true,
+  "teacher_model_id": "gpt-6-luna",
+  "teacher_native_effort": "none",
+  "teacher_max_output_tokens": 512,
+  "teacher_context_chars": 48000,
+  "feature_training_status": "FEATURE_NOT_TRAINED",
+  "backend_deployment_status": "PROVIDER_MODEL_IDENTITY_ONLY",
+  "candidate_actions": [
+    {"provider": "jiji", "model": "gpt-6-luna", "native_effort": "none"},
+    {"provider": "jiji", "model": "gpt-6-luna", "native_effort": "low"}
+  ]
+}

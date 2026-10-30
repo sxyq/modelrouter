@@ -2,6 +2,8 @@
 
 ## 当前能力与数据资格（2026-10-30）
 
+**20:05新增运行资产**：原 `results/iterations/20261030-v9-official-luna/` 保存9次真实生成、18次工具、3条成功Luna教师及12个不同响应ID；总用量138,385Token、配置价估算0.182588USD，实际账单及完整费用未知。任务为既有canary `fix-git`，Verifier未执行，终局标签未知；这些轨迹只用于开发执行证据，不加入原198Train/192Val，不制造模型/Effort最优标签。三条新在线教师与旧训练中的四条教师分别登记，未重生成旧材料。Run保存能力快照 `20261030T041319933533Z-v2`；双动作none/low前向使用同快照，AA Max参考不转成动作分数。Oracle CTRF 2/2通过与真实模型结果分开，详细路径和运行限制见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md) 当前入口。
+
 [当前v2快照](../code/data/v9/capabilities/snapshots/20261030T041319933533Z-v2.json) 已真实落盘，Snapshot ID `20261030T041319933533Z-v2`；合法公开GET而非授权Data API，AA Key缺失。LunaMax Intelligence Index27.7552004938153/INDEX/AA5.0及9项Max原分可读，部分指标单位未披露仍NOT_REPORTED；Sol与托管Flash精确AA记录NOT_MEASURED。厂商三者的价格/上下文/Effort资料可作能力参考，不作调用权限、当前实际费用或最优动作标签。旧52/38/Flash-Next40的不同版本/变体参考不混入本快照。
 
 训练唯一实体390行（198/192）及4条教师仍绑定v1，未重生成；S1旧偏好64+64、S2观察动作/结果70+64、S3运行辅助64+64分别可用于既有目标，三模型真实choice/Effort监督0。RouterBench和LLMRouterBench原许可待核资产不新增入训练或公开；公开TRA-001参考摘要按CC-BY-4.0保留来源、许可和修改说明，私人轨迹、prepared和本地路径不提交。当前Laya只保留关键三候选摘要，完整能力卡尚超预算；不把字段消费当学习收益。详细实测与历史数量见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md)，以下原训练及旧AA0按时点阅读。
@@ -253,7 +255,7 @@ Q（记录质量）、S（监督类型）、L（覆盖层级）是三个独立�
 
 **固定参考轨迹**：首版不部署动态检索、Embedding 或重排，只离线挑两条公开的**确实成功**的简短 Agent 轨迹样例（一条高效完成、一条失败恢复），并登记 `reference_id, source_dataset, source_url, license_and_training_rights, task_family, agent_harness, verified_success, split, test_overlap_check, excerpt_hash, prepared_at`。`nvidia/Open-SWE-Traces`（https://huggingface.co/datasets/nvidia/Open-SWE-Traces）仅列待审来源，不代表已经下载、验证成功标签或许可适合目标用途。正式 Final 不能看到同题未来轨迹或答案。
 
-**能力记录主值**：`score_raw`、`score_unit`、`benchmark_version`、`metric_name`、`harness_id`、`model_revision`、`evaluated_native_effort`、`source_url`、`evidence_status`；正确率/通过率可为百分比，AA 综合 `Intelligence Index` 是 0–100 综合指数（**不是百分比**）。模型级成绩不能无标注复制给各 Effort；未测为 `NOT_MEASURED`。综合低中高属于同版本冻结参考模型分布的派生特征，并记录 `tier_rule_version`；各专业维度暂只存原始连续成绩。只在新模型/修订/Provider 可用性与价格或实际 Effort 菜单变化时更新，正式比较锁定证据快照。
+**能力记录主值**：`score_raw`、`score_unit`、`benchmark_version`、`metric_name`、`harness_id`、`model_revision`、`evaluated_native_effort`、`source_url`、`evidence_status`；正确率/通过率可为百分比，AA 综合 `Intelligence Index` 是 0–100 综合指数（**不是百分比**）。模型级成绩不能无标注复制给各 Effort；未测为 `NOT_MEASURED`。综合低中高属于同版本固定参考模型分布的派生特征，并记录 `tier_rule_version`；各专业维度暂只存原始连续成绩。只在新模型/修订/Provider 可用性与价格或实际 Effort 菜单变化时更新，正式比较锁定证据快照。
 
 **状态与用途**：本节描述未来审计与数据加工要求，尚没有新训练数据、新模型分数或真实教师调用记录。现有权重不能因输入 JSON 变更就视为理解新字段；先核合法用途、分割及模型训练编码。SWE-bench Lite/Verified 的开发任务及原 Terminal-Bench 2.1/Harbor 评测集独立登记，不混同成绩或使用封存任务补分。
 
@@ -261,7 +263,7 @@ Q（记录质量）、S（监督类型）、L（覆盖层级）是三个独立�
 
 负责人明确首批三款**研究模型身份**：`gpt-6.1-sol`（GPT-6.1 Sol，研究高档）、`gpt-6-luna`（GPT-6 Luna，中档）、`qwen3.8-flash`（Qwen3.8-Flash，第三档**托管模型**）。更早 10-29 草稿把第三项写作 `Qwen3.8 27B` 是错误归属，**已按本轮最新明确用户选择纠正**；不能混用 `Qwen/Qwen3.8-Flash-Next` 开源权重与托管 `qwen3.8-flash`。种子参考：AA v4.3.2 Sol Max `52`、Luna Max `38`（均为综合指数，不是成功率）；AA 对 `Flash-Next` 的 `40` **不是托管 Flash 独立成绩**，托管 Qwen Flash 的 AA 同版分数为 `NOT_MEASURED`，不可用 40 补空。官方型号/标准价证据：`gpt-6.1-sol` 输入/输出 USD/百万 Token 2/10，`gpt-6-luna` 0.10/0.50（https://developers.openai.com/api/docs/models）；`qwen3.8-flash` 0.15/0.47（https://docs.qwencloud.com/developer-guides/getting-started/model-prices），且托管型号说明 https://docs.qwencloud.com/developer-guides/getting-started/latest-model 。请为三者记录 evidence_kind、价格快照、AA Index 版本、完整 URL、采集 UTC，若是第三方图表仅作参考；**不声称低档单价必低于中档或任何档位已被本项目真实调用**。
 
-**官方数据抓取协议**：优先读取 https://artificialanalysis.ai/data-api/docs/reference 所列当前接口（如 `GET https://artificialanalysis.ai/api/v2/language/models/free`，依套餐可选择 `/language/models`）；由本地合法 API Key 通过 `x-api-key` 调用，具体可见字段、速率和使用/再分发权限以运行时官方文档为准。免费 API 有综合 Intelligence/Coding/Agentic 等 headline 指数、价格及速度信息，但详细每 Benchmarks / 每 Effort 可能需更高级别，不得把缺失补算成已测。每次**能力快照脚本启动**尝试从网络重新抓取一次、清洗并原子保存新成功快照；保留已有成功快照与 `fetched_at_utc, source_revision, benchmark_version, original_metric_unit, model_stable_id, model_revision, exact_effort, evidence_kind, missing_mask, fetch_status`。失败（401/403/429/离线/字段缺失）不覆盖历史有效数据，也不将历史快照冒充当日新测；正式训练和 Task Episode 使用**冻结的单一 snapshot ID**，不让每次模型生成请求调用榜单网站。只保留允许在公开 Git 仓库分发的数据/简要归属，授权不明的原始响应应本地忽略提交或仅保存元数据。
+**官方数据抓取协议**：优先读取 https://artificialanalysis.ai/data-api/docs/reference 所列当前接口（如 `GET https://artificialanalysis.ai/api/v2/language/models/free`，依套餐可选择 `/language/models`）；由本地合法 API Key 通过 `x-api-key` 调用，具体可见字段、速率和使用/再分发权限以运行时官方文档为准。免费 API 有综合 Intelligence/Coding/Agentic 等 headline 指数、价格及速度信息，但详细每 Benchmarks / 每 Effort 可能需更高级别，不得把缺失补算成已测。每次**能力快照脚本启动**尝试从网络重新抓取一次、清洗并原子保存新成功快照；保留已有成功快照与 `fetched_at_utc, source_revision, benchmark_version, original_metric_unit, model_stable_id, model_revision, exact_effort, evidence_kind, missing_mask, fetch_status`。失败（401/403/429/离线/字段缺失）不覆盖历史有效数据，也不将历史快照冒充当日新测；正式训练和 Task Episode 使用**固定的单一 snapshot ID**，不让每次模型生成请求调用榜单网站。只保留允许在公开 Git 仓库分发的数据/简要归属，授权不明的原始响应应本地忽略提交或仅保存元数据。
 
 **实现归属**：沿现有 `our-project/code/src/modelrouter/providers/registry.py` 与已有数据准备/编码路径扩展，尽量复用而非创建第二份模型 Registry；由后续本地 Execution Agent 首次落盘并证实抓取成功，本次规划文档并未实际取得新的可训练数据、执行网络请求或批准 GPU 继续微调。轨迹教师仍使用两条固定 Train/Dev 成功摘要，无在线相似检索。
 

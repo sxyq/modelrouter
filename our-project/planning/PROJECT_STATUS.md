@@ -1,6 +1,43 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-10-30 17:56 · 当前入口：V9 收口，正式 Trial 仍受阻
+## 2026-10-30 20:05 · 当前入口：Docker 已恢复，Oracle 通过，模型 Episode 未完成评分
+
+原 Mac Docker 已恢复到既有应用位置，Docker Desktop 4.97.0 / Engine 29.9.2 实际运行，原虚拟机数据保留。本机 Rosetta 已用于原 amd64 任务镜像；临时安装包和目录已删除。服务器服务、权重和健康训练未被重启或更换。恢复前 GitHub/main 为 `b56e9386d8d77edc1a860108a0bead901b733036`，本轮源码与文档同步提交以 Git 历史和最终执行回报为准。
+
+### 官方容器与真实 Agent 证据
+
+| 原执行对象 | 实际结果 | 证据与适用范围 |
+| --- | --- | --- |
+| `20261019-v10-oracle` 原 resume | amd64 镜像的 QEMU 执行 uvx 崩溃，原 reward=0 | 无 CTRF，保留 `NOT_EVALUATED`，不计任务失败率 |
+| `20261030-v9-oracle-native` | Harbor 原 `--force-build` 使用未改的上游 Dockerfile；setup 所依赖 GitHub 仓库返回404 | 未进入 Agent/Verifier，失败记录保留，不改上游任务 |
+| `20261030-v9-oracle-rosetta` | Job `6292da72-ecab-4830-ad71-d53dafc4d22d`，Trial `fb4abdf7-a8e9-4fb3-9833-e48aa44febb8`，官方 reward=1、CTRF 2/2通过 | 官方环境核验通过；Oracle 不计模型成绩 |
+| `20261030-v9-official-luna` | Job `12214a63-7f57-4584-97da-19865836d629`，Trial `a34286c3-4a4e-43c8-9c5d-c4683fca2f1d`；9次真实 Luna 生成、18次真实工具执行、3次真实教师成功 | 第10次生成因原 Token 预算容量不足未发出；Verifier 未执行，终局结果未知 |
+
+本轮使用原 `benchmark CLI → Harbor Job/Trial → ModelRouterMiniSweAgent → DefaultAgent`，无新增 Runner、模拟器或验证器。单候选试验的生成及教师请求/返回均为 `gpt-6-luna`，12个不同响应 ID、`alias_mapping_applied=false`、`REAL_API_IDENTITY_MATCHED`；Sol 与 Flash 在项目凭据中仍不可调用，未尝试借用其他账号。
+
+该单候选请求触发在线 Laya 原 `rl_common.py:120` 的 `topk(2)` 错误，10次路由使用旧回退路径，`neural_router_evidence_eligible=false`。不修改在线模型或重启服务；原正式配置已调整为同一授权 Luna 的 `none/low` 两个动作。用本轮最后一个真实决策前缀、原教师三字段与原 v2 快照完成一次真实前向：`none=0.5166 / low=0.4834`，选择 none、`epoch_01`、`fallback_used=false`，前向949.87ms；生成/教师新请求均0。证据保留于原迭代的 `router_evidence.json`。这仅证明双动作输入可运行，尚无使用该配置的完整官方 Episode。
+
+### 教师、费用和预算
+
+3次教师分别在决策前缀截止2、3、8处成功，3条短评均含规定三字段。原在线路由因回退未消费短评；随后真实双动作前向保留最后一条短评。教师收益、最优动作和最终任务结果均未因此得到证明。
+
+| 用量来源 | Token | 配置价估算 USD |
+| --- | ---: | ---: |
+| 9次生成 | 98,359 | 0.106028 |
+| 3次教师 | 40,026 | 0.076560 |
+| 合计 | 138,385 | 0.182588 |
+
+金额状态为 `UNVERIFIED_CONFIG`，响应未报告费用及币种，实际供应商账单、容器费用、Router费用与完整现金总额仍为 null。原累计预算为已知714,168、未知调用预留256,135、剩余29,697，147次累计调用；本轮增加12次请求。预算未扩大，未启动第二轮收费 Episode。
+
+### 原实现收口与当前剩余项
+
+只修改原 `benchmark/__main__.py`、`harbor_agent.py`、`official_artifacts.py`、`iterations.py`：传递上游构建选项、保存本次能力快照、区分真实API与Alias、采用Harbor真实数据格式、消除未完成阶段的事件/native重复累计。旧通用失败报告审批要求已移除，原预算、Final隔离和资源规则保留。原始失败、源码和日志均保留；AST及本轮真实记录汇总通过，未新增测试或夹具。
+
+20:04:53台北，F14原PID4085749仍到Epoch1第398/420块、step50,944、consumed3,260,416，第63–398块持续NaN（336块）；首次诱因、GradScaler实际跳步和有效更新数未知。Serving原PID2291306及启动时间不变，health healthy；GPU35,867/49,140MiB、100%、84°C。非有限loss父候选排除规则继续使用，新Laya/Kev不重训、不上线。
+
+剩余核心项：预算内完整模型Episode仍未取得；Sol/托管Flash独立调用与AA同协议数据缺失；三模型真实最优动作/Effort标签仍0；供应商及资源账单缺失；F14数值异常未定位。原Harbor regrade需要保存的修改后文件，本轮artifacts为空且环境已按原流程删除，无法凭现存轨迹补出原Verifier结果。五RQ、八图十二表继续保留，正式模型结果格留空；原390行训练材料与v1绑定不变，canary轨迹不加入Train/Val。
+
+## 2026-10-30 17:56 · 历史：V9 收口与当时运行条件
 
 本轮复用已完成训练和 Agent 记录，没有重训、重跑成功题、加载权重或更换 Serving。GitHub `main` 同步前实测为 `d1712d1f8ce3227a1dcf7fe085b04a1afb2dd9ff`；本轮合规源码及六文档已完成公开安全核验，实际同步Commit以本节对应Git历史及执行回报为准。服务器部署为原文件增量，不是 Git checkout，无法报告完整部署 Commit；旧 Serving 仍为 Laya `F05/epoch_01`、Kev `KEV-4B-ADAPTER`，后者不是 R11 训练候选。本轮formatter/汇总/单Episode等收口代码未覆盖服务器旧进程，源码版本、已加载权重和本地验证分别记录。
 
@@ -289,7 +326,7 @@ Laya V9尚未启动；hook在盘，原F14内存代码不读，下一自然child�
 
 **候选能力与训练方向**：优先输入各 Benchmark 原始成绩及单位、AA 综合指数（是指数而非正确率百分比）、独立 native_effort 实测及证据缺失；综合高中低仅作同一版本参考集合上的派生标签。首版模型池拟以三个不同经济定位且经真实 Provider 核验的模型身份为目标；现有健康训练自然推进后，Laya/Kev 分别依据**各自同协议 Val**选可加载候选，再用独立 Dev Agent 任务比较以选择继续微调起点。未经确认不得按跨架构最低 Loss 直接选模或用封存 Test 进行迭代。
 
-**下一项只读审计（待本地 Agent 回报）**：检查现有 `our-project/code/` 的 Laya/Kev 路由器权重真实加载、回退标志、合法 `(provider, model, native_effort)`、Provider 工具调用/价格、Harbor/mini-SWE-agent 入口、Docker/uidmap、样本划分、真实 verifier 和完整账本。核清用户所说“SW 奔驰 Mini”究竟是 **mini-SWE-agent 框架 + SWE-bench Lite/Verified 任务**，还是目前 **Terminal-Bench 2.1 + Harbor 的官方 mini-swe-agent 链**；这两个评测协议不可混写。先审计可行性，再讨论极小、低成本的公开开发任务，不启动试跑。
+**下一项只读审计（待本地 Agent 回报）**：核验现有 `our-project/code/` 的 Laya/Kev 路由器权重真实加载、回退标志、合法 `(provider, model, native_effort)`、Provider 工具调用/价格、Harbor/mini-SWE-agent 入口、Docker/uidmap、样本划分、真实 verifier 和完整账本。核清用户所说“SW 奔驰 Mini”究竟是 **mini-SWE-agent 框架 + SWE-bench Lite/Verified 任务**，还是目前 **Terminal-Bench 2.1 + Harbor 的官方 mini-swe-agent 链**；这两个评测协议不可混写。先审计可行性，再讨论极小、低成本的公开开发任务，不启动试跑。
 
 **依据与职责**：[EXPERIMENT_QA](EXPERIMENT_QA.md) 记讨论/授权边界；[RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md) 记方法；[V9 图表规划](../../汇报/汇报三/ModelRouter论文实验与图表规划.md) 保持论文版本。这里只登记最新规划和最后一份可溯源现场快照。
 

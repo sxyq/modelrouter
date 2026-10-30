@@ -172,21 +172,26 @@ def summarize(path: Path, *, persist=True):
         if e["event"] == "ROUTER_END":
             router_calls[e.get("router_family", "unknown")].append(e.get("router_latency_ms"))
     costs = [c.get("cost_usd") for c in calls]
-    # Original Harbor contexts supply usage when no generator event was recorded.
+    # Reuse original Harbor request records without counting an event twice.
     event_ids = {str(c.get("episode_id")) for c in calls}
-    native_only = [r for r in trials if r.get("agent") != "oracle" and str(r.get("trial_id")) not in event_ids]
+    native_only = [r for r in trials if r.get("agent") != "oracle"]
     # Routed V9 contexts already total generator and teacher usage. Recover their
     # original per-request rows when events are unavailable, never add both totals.
     native_teachers = []
     native_contexts = []
+    recorded_requests = {(row["episode_id"], row["decision_id"]) for row in calls}
     for trial in native_only:
         metadata = trial.get("agent_metadata") or {}
         provider_metrics = metadata.get("provider_metrics")
         if provider_metrics is not None:
-            calls.extend(provider_metrics)
+            for row in provider_metrics:
+                key = (row["episode_id"], row["decision_id"])
+                if key not in recorded_requests:
+                    calls.append(row)
+                    recorded_requests.add(key)
             native_teachers.extend(row for row in (metadata.get("v9") or {}).get("teacher_metrics", [])
                                    if row.get("provider_request_attempted", True))
-        else:
+        elif str(trial.get("trial_id")) not in event_ids:
             native_contexts.append(trial)
     teacher_ids = {str(row.get("episode_id")) for row in teachers}
     teachers.extend(row for row in native_teachers if str(row.get("episode_id")) not in teacher_ids)

@@ -107,7 +107,9 @@ class PolicyModel(LitellmModel):
                     "router_timeout_sec", 60.0 if self.policy.client.router_family == "kev" else 20.0)
         self.teacher_metrics = self.v9_hook.teacher_metrics if self.v9_hook else []
         self.action_validation = {
-            action["action_id"]: ("ALIAS_SMOKE_ONLY" if self.v9_enabled else
+            action["action_id"]: ("ALIAS_SMOKE_ONLY" if self.v9_enabled and
+                                  getattr(self.provider, "alias_mapping", None) is not None else
+                                  "REAL_API_NOT_OBSERVED" if self.v9_enabled else
                                   "REAL_TESTED_LOW" if action["native_effort"] == "low" else "NOT_TESTED")
             for action in self.actions
         }
@@ -178,6 +180,14 @@ class PolicyModel(LitellmModel):
                        router_checkpoint_id=decision.checkpoint_id,
                        router_family=decision.router_family, **router_identity,
                        capability_snapshot_id=snapshot.get("capability_snapshot_id"))
+        if self.v9_enabled:
+            is_alias = metrics.get("execution_mode") == "ALIAS_SMOKE" or metrics["alias_mapping_applied"]
+            metrics["execution_mode"] = "ALIAS_SMOKE" if is_alias else "REAL_API"
+            identity_status = ("ALIAS_SMOKE_ONLY" if is_alias else
+                               "REAL_API_IDENTITY_MATCHED" if metrics["identity_status"] == "MATCHED_REQUEST_ALIAS"
+                               else "REAL_API_IDENTITY_UNVERIFIED")
+            self.action_validation[selected["action_id"]] = identity_status
+            metrics["effort_validation_status"] = identity_status
         self.last_metrics = metrics
         self.usage.append(metrics)
         self.state.accumulated_cost_usd += metrics.get("cost_usd") or 0
@@ -339,6 +349,7 @@ class ModelRouterMiniSweAgent(BaseAgent):
                                     model.policy.implementation_status == "REMOTE_NEURAL_ROUTER"
                                     and not model.fallback_used and not model.untested_efforts_used
                                     and not any(u.get("execution_mode") in ("ALIAS_SMOKE", "TEACHER_ALIAS_SMOKE")
+                                                or (model.v9_enabled and u.get("alias_mapping_applied"))
                                                 for u in model.episode_usage)),
                                 "raw_trajectory": str(self.logs_dir / "mini-swe-agent.trajectory.json")}
             if model.v9_hook:
