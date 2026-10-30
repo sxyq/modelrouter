@@ -4,6 +4,8 @@
 
 本轮复用已完成训练和 Agent 记录，没有重训、重跑成功题、加载权重或更换 Serving。GitHub `main` 同步前实测为 `d1712d1f8ce3227a1dcf7fe085b04a1afb2dd9ff`；本轮合规源码及六文档已完成公开安全核验，实际同步Commit以本节对应Git历史及执行回报为准。服务器部署为原文件增量，不是 Git checkout，无法报告完整部署 Commit；旧 Serving 仍为 Laya `F05/epoch_01`、Kev `KEV-4B-ADAPTER`，后者不是 R11 训练候选。本轮formatter/汇总/单Episode等收口代码未覆盖服务器旧进程，源码版本、已加载权重和本地验证分别记录。
 
+收尾同步：实现与六文档已在 `d7cc80e6991a69129ab52f7a85ce65849651d060` 推送main，GitHub API树非截断且17个V9 Python文件完整可见；凭据、私有路径、原始运行/训练数据、测试改动及其他删除未提交。本轮临时native编码脚本已移除、真实结果保留原证据文件。19:10:58台北最后现场F14到第390/420块、step49,920、consumed3,194,880，NaN从第63块持续（328块）；原F14/Serving启动时间未变、health healthy。只将与远端唯一差异的非有限loss父候选排除补丁原位部署 `continuation.py`，没有重载当前进程或启动新训练；原函数对真实Run返回F04/F14=false、F11/V9_LAYA_001=true，AST通过。其余formatter/CLI/汇总仍为本地与GitHub版本。
+
 ### F14 与候选处理
 
 17:56:21 台北，F14 原 PID `4085749` 仍运行，日志到 Epoch1 第371/420块、step47,488、consumed3,039,232；第63–371块持续 NaN（309块）。15:51 的逐块核查确认第63–346块连续，无有限块插入。第63–260块已读源引用/目标无缺行及非有限值，具体首次诱因仍未确认。原 `global_step` 无条件累加，GradScaler 的实际跳步与有效参数更新数未保存；没有证据判定全部权重受损。15:51 未见 F14 Epoch checkpoint，不加载权重补测。原服务健康、GPU17:56占35,875/49,140MiB、100%、84°C；没有停止或修改 F14、Serving、Docker权限或其他作业。
