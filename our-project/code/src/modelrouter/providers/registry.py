@@ -26,19 +26,21 @@ class ModelSpec:
     pool: str  # Fast, Standard, Strong, Reasoning, Vision
     provider: str
     display_name: str
-    context_window: int
-    max_output_tokens: int
+    context_window: Optional[int]
+    max_output_tokens: Optional[int]
     native_efforts: Tuple[str, ...]  # e.g., ("none",) or ("low", "medium", "high")
-    input_price_per_1m: float
-    output_price_per_1m: float
-    reasoning_price_per_1m: float
-    cache_read_price_per_1m: float = 0.0
-    cache_write_price_per_1m: float = 0.0
-    rpm_limit: int = 500
-    tpm_limit: int = 200_000
-    tool_supported: bool = True
+    input_price_per_1m: Optional[float]
+    output_price_per_1m: Optional[float]
+    reasoning_price_per_1m: Optional[float]
+    cache_read_price_per_1m: Optional[float] = 0.0
+    cache_write_price_per_1m: Optional[float] = 0.0
+    rpm_limit: Optional[int] = 500
+    tpm_limit: Optional[int] = 200_000
+    tool_supported: Optional[bool] = True
     pricing_status: str = "UNVERIFIED_CONFIG"
     identity_status: str = "UNVERIFIED_CONFIG"
+    context_status: str = "UNVERIFIED_CONFIG"
+    native_efforts_status: str = "UNVERIFIED_CONFIG"
 
     def calculate_cost(
         self,
@@ -47,12 +49,18 @@ class ModelSpec:
         reasoning_tokens: int = 0,
         cache_read_tokens: int = 0,
         cache_write_tokens: int = 0,
-    ) -> float:
+    ) -> Optional[float]:
         """Calculate configured USD; completion includes its reasoning subset."""
         net_prompt_tokens = max(0, prompt_tokens - cache_read_tokens)
         visible_completion_tokens = completion_tokens - reasoning_tokens
         if visible_completion_tokens < 0:
             raise ValueError("reasoning_tokens must be a subset of completion_tokens")
+        if any(price is None for price in (
+            self.input_price_per_1m, self.output_price_per_1m,
+            self.reasoning_price_per_1m, self.cache_read_price_per_1m,
+            self.cache_write_price_per_1m,
+        )):
+            return None
         cost = (
             (net_prompt_tokens * self.input_price_per_1m / 1_000_000)
             + (visible_completion_tokens * self.output_price_per_1m / 1_000_000)
@@ -63,8 +71,14 @@ class ModelSpec:
         return round(cost, 10)
 
     def validate_effort(self, native_effort: str) -> None:
+        # Unknown support permits omission, without asserting a measured level.
+        if not self.native_efforts and self.native_efforts_status == "NOT_MEASURED" and native_effort == "none":
+            return
         if native_effort not in self.native_efforts:
             raise ValueError(f"Unsupported native_effort {native_effort!r} for {self.model_id}")
+
+
+V9_MODEL_IDS = ("gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash")
 
 
 # 5 Major Model Pools
@@ -248,6 +262,26 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
         reasoning_price_per_1m=4.00,
         cache_read_price_per_1m=0.25,
     ),
+    "gpt-6.1-sol": ModelSpec(
+        model_id="gpt-6.1-sol", pool="Reasoning", provider="openai",
+        display_name="GPT 6.1 Sol", context_window=None, max_output_tokens=None,
+        native_efforts=(), input_price_per_1m=None, output_price_per_1m=None,
+        reasoning_price_per_1m=None, cache_read_price_per_1m=None,
+        cache_write_price_per_1m=None, rpm_limit=None, tpm_limit=None,
+        tool_supported=None, pricing_status="NOT_MEASURED",
+        identity_status="NOT_MEASURED", context_status="NOT_MEASURED",
+        native_efforts_status="NOT_MEASURED",
+    ),
+    "qwen3.8-flash": ModelSpec(
+        model_id="qwen3.8-flash", pool="Fast", provider="aliyun",
+        display_name="Qwen 3.8 Flash", context_window=None, max_output_tokens=None,
+        native_efforts=(), input_price_per_1m=None, output_price_per_1m=None,
+        reasoning_price_per_1m=None, cache_read_price_per_1m=None,
+        cache_write_price_per_1m=None, rpm_limit=None, tpm_limit=None,
+        tool_supported=None, pricing_status="NOT_MEASURED",
+        identity_status="NOT_MEASURED", context_status="NOT_MEASURED",
+        native_efforts_status="NOT_MEASURED",
+    ),
 }
 
 
@@ -268,20 +302,24 @@ class ModelRegistry:
     def list_legal_actions(self, allowed_pools: Optional[List[str]] = None) -> List[Dict[str, Any]]:
         """Returns all legal (model, native_effort) pairs for the given pools.
         
-        Total legal actions = sum(len(m.native_efforts) for m in allowed_models).
+        Unknown effort support exposes parameter omission with its evidence status.
         """
         actions = []
         for model in self._models.values():
             if allowed_pools and model.pool.lower() not in [p.lower() for p in allowed_pools]:
                 continue
-            for effort in model.native_efforts:
-                actions.append({
+            efforts = model.native_efforts or ("none",)
+            for effort in efforts:
+                action = {
                     "provider": model.provider,
                     "model": model.model_id,
                     "pool": model.pool,
                     "native_effort": effort,
                     "action_id": f"{model.model_id}:{effort}",
-                })
+                }
+                if not model.native_efforts:
+                    action["native_efforts_status"] = model.native_efforts_status
+                actions.append(action)
         return actions
 
     def compute_cost(
@@ -292,7 +330,7 @@ class ModelRegistry:
         reasoning_tokens: int = 0,
         cache_read_tokens: int = 0,
         cache_write_tokens: int = 0,
-    ) -> float:
+    ) -> Optional[float]:
         spec = self.get_spec(model_id)
         return spec.calculate_cost(
             prompt_tokens=prompt_tokens,

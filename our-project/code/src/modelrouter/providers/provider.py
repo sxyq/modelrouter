@@ -23,7 +23,10 @@ from dataclasses import dataclass, field
 from contextlib import contextmanager
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from typing import Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
+
+if TYPE_CHECKING:
+    from modelrouter.v9.runtime.alias import AliasMapping
 
 try:
     from modelrouter.providers.registry import ModelSpec
@@ -281,15 +284,18 @@ def _token_budget():
             fcntl.flock(handle, fcntl.LOCK_UN)
 
 
-def _record_budget(data: Dict[str, Any], prompt_tokens: Optional[int], completion_tokens: Optional[int]) -> None:
+def _record_budget(data: Dict[str, Any], prompt_tokens: Optional[int], completion_tokens: Optional[int],
+                   unknown_token_bound: int = 0) -> None:
     data["total_calls"] = data.get("total_calls", 0) + 1
     if prompt_tokens is None or completion_tokens is None:
         data["unknown_usage_calls"] = data.get("unknown_usage_calls", 0) + 1
+        data["reserved_unknown_tokens"] = data.get("reserved_unknown_tokens", 0) + unknown_token_bound
     else:
         data["consumed_prompt_tokens"] = data.get("consumed_prompt_tokens", 0) + prompt_tokens
         data["consumed_completion_tokens"] = data.get("consumed_completion_tokens", 0) + completion_tokens
         data["consumed_total_tokens"] = data.get("consumed_total_tokens", 0) + prompt_tokens + completion_tokens
-    data["remaining_tokens"] = max(0, data["max_tokens"] - data["consumed_total_tokens"])
+    data["remaining_tokens"] = max(0, data["max_tokens"] - data["consumed_total_tokens"]
+                                   - data.get("reserved_unknown_tokens", 0))
     data["last_updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
@@ -303,13 +309,20 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
 
     protocol = "chat_completions"
 
-    def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None):
-        creds = load_generator_credentials()
+    def __init__(
+        self, base_url: Optional[str] = None, api_key: Optional[str] = None,
+        alias_mapping: Optional[AliasMapping] = None,
+    ):
+        creds = {} if alias_mapping is not None else load_generator_credentials()
         self.base_url = (base_url or creds.get("base_url") or "https://api.openai.com/v1").rstrip("/")
-        self.api_key = api_key or creds.get("api_key", "")
+        credential_endpoint = (creds.get("base_url") or "https://api.openai.com/v1").rstrip("/")
+        self.api_key = api_key if api_key is not None else (
+            creds.get("api_key", "") if self.base_url == credential_endpoint else ""
+        )
         self.primary_model = creds.get("primary_model", "gpt-6-luna")
         self.fallback_model = creds.get("fallback_model", "gpt-5.6-luna")
         self.allowed_models = set(creds.get("allowed_models", ["gpt-6-luna", "gpt-5.6-luna"]))
+        self.alias_mapping = alias_mapping
 
     def _normalize_model(self, model_id: str) -> str:
         aliases = {"gpt-6": "gpt-6-luna", "luna": "gpt-6-luna", "gpt-5.6": "gpt-5.6-luna"}
@@ -343,7 +356,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                     body[key] = chunk[key]
             if chunk.get("usage") is not None:
                 body["usage"] = chunk["usage"]
-            for item in chunk.get("choices", []):
+            for item in chunk.get("choices") or []:
                 index = item["index"]
                 choice = choices.setdefault(index, {"index": index, "message": {"role": "assistant", "content": ""}, "finish_reason": None})
                 delta = item.get("delta", {})
@@ -352,12 +365,12 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 for key in ("content", "reasoning_content"):
                     if delta.get(key):
                         choice["message"][key] = choice["message"].get(key, "") + delta[key]
-                for tc in delta.get("tool_calls", []):
+                for tc in delta.get("tool_calls") or []:
                     tool = tool_calls.setdefault((index, tc["index"]), {"id": "", "type": "function", "function": {"name": "", "arguments": ""}})
                     if tc.get("id"):
                         tool["id"] = tc["id"]
                     for key in ("name", "arguments"):
-                        tool["function"][key] += tc.get("function", {}).get(key, "")
+                        tool["function"][key] += (tc.get("function") or {}).get(key) or ""
                 if item.get("finish_reason") is not None:
                     choice["finish_reason"] = item["finish_reason"]
         for index, choice in sorted(choices.items()):
@@ -401,14 +414,25 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         """
         from modelrouter.providers.registry import MODEL_REGISTRY
 
-        model_spec.validate_effort(native_effort)
-        target = self._normalize_model(model_spec.model_id)
-        target_spec = MODEL_REGISTRY[target]
-        target_spec.validate_effort(native_effort)
-        payload = self._make_payload(messages, target, native_effort, max_tokens, tools, stream)
+        alias_facts = self.alias_mapping.resolve(model_spec.model_id, native_effort) if self.alias_mapping is not None else None
+        if alias_facts is not None:
+            target = alias_facts["actual_backend_model_id"]
+            effective_effort = alias_facts["effective_native_effort"]
+            target_spec = None
+            request_base_url = (self.alias_mapping.base_url or self.base_url).rstrip("/")
+            provider_name = "local" if alias_facts["cost_status"] == "LOCAL_COMPUTE_UNPRICED" else "openai-compatible"
+        else:
+            model_spec.validate_effort(native_effort)
+            target = self._normalize_model(model_spec.model_id)
+            target_spec = MODEL_REGISTRY[target]
+            target_spec.validate_effort(native_effort)
+            effective_effort = native_effort
+            request_base_url = self.base_url
+            provider_name = target_spec.provider
+        payload = self._make_payload(messages, target, effective_effort, max_tokens, tools, stream)
         endpoint = "/chat/completions" if self.protocol == "chat_completions" else "/responses"
         request = urllib.request.Request(
-            self.base_url + endpoint,
+            request_base_url + endpoint,
             data=json.dumps(payload).encode("utf-8"),
             headers={"Content-Type": "application/json", "Authorization": f"Bearer {self.api_key}", "User-Agent": "ModelRouter/10"},
             method="POST",
@@ -417,24 +441,27 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         with _token_budget() as budget:
             # Reserve requested output plus encoded input within the existing limit.
             input_bound = len(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
-            if budget["consumed_total_tokens"] + input_bound + max_tokens >= budget["max_tokens"]:
+            request_bound = input_bound + max_tokens
+            if budget["consumed_total_tokens"] + budget.get("reserved_unknown_tokens", 0) + request_bound >= budget["max_tokens"]:
                 raise RuntimeError("Existing total-token budget has insufficient remaining capacity")
             try:
                 with urllib.request.urlopen(request, timeout=60.0) as response:
                     body, ttft_ms = self._read_response(response, stream, started)
             except Exception:
-                _record_budget(budget, None, None)
+                _record_budget(budget, None, None, request_bound)
                 raise
             raw_usage = body.get("usage")
             p_tokens, c_tokens, r_tokens, cached = self._usage_counts(raw_usage or {})
-            _record_budget(budget, p_tokens, c_tokens)
+            _record_budget(budget, p_tokens, c_tokens, request_bound)
         latency_ms = (time.perf_counter() - started) * 1000
         returned = body.get("model")
         identity_status = "MATCHED_REQUEST_ALIAS" if returned == target else ("MISSING" if not returned else "MISMATCH")
         usage_complete = p_tokens is not None and c_tokens is not None
-        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0) if usage_complete and returned == target else None
+        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0) if target_spec is not None and usage_complete and returned == target else None
         # Vendor cost is distinct from the configured price estimate.
-        billed_cost = (raw_usage or {}).get("cost")
+        reported_cost = (raw_usage or {}).get("cost")
+        reported_cost_unit = (raw_usage or {}).get("cost_currency") or (raw_usage or {}).get("currency")
+        billed_cost = reported_cost if reported_cost_unit == "USD" else None
         stream_elapsed_ms = latency_ms - ttft_ms if stream and ttft_ms is not None else None
         stream_output_tokens_per_s = (
             c_tokens * 1000 / stream_elapsed_ms
@@ -445,16 +472,16 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "response_id": body.get("id"),
             "request_model_id": target,
             "returned_model_id": returned,
-            "provider": target_spec.provider,
+            "provider": provider_name,
             "protocol": self.protocol,
-            "native_effort": native_effort,
+            "native_effort": effective_effort,
             "stream": stream,
             "requested_max_output_tokens": max_tokens,
             "reported_max_output_tokens": body.get("max_output_tokens"),
             "raw_usage": raw_usage,
             "usage_status": "REPORTED" if usage_complete else "MISSING",
             "identity_status": identity_status,
-            "alias_mapping_applied": model_spec.model_id != target,
+            "alias_mapping_applied": alias_facts is not None or model_spec.model_id != target,
             "prompt_tokens": p_tokens,
             "completion_tokens": c_tokens,
             "reasoning_tokens": r_tokens,
@@ -467,15 +494,19 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "stream_output_tokens_per_s_status": "ESTIMATE" if stream_output_tokens_per_s is not None else "UNAVAILABLE",
             "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
             "cost_usd": cost,
-            "cost_status": target_spec.pricing_status if cost is not None else "UNKNOWN",
+            "cost_status": alias_facts["cost_status"] if alias_facts is not None else (target_spec.pricing_status if cost is not None else "UNKNOWN"),
             "actual_billed_cost_usd": billed_cost,
+            "raw_reported_cost": reported_cost,
+            "reported_cost_unit": reported_cost_unit or "NOT_REPORTED",
             "budget_accounted": True,
             "status": "RECORDED" if usage_complete and returned == target else "NOT_EVALUATED",
         }
+        if alias_facts is not None:
+            metrics.update(alias_facts)
         if usage_complete:
             global_multi_model_logger.log_call(
-                protocol=self.protocol, model_id=returned or target, provider=target_spec.provider,
-                reasoning_effort=native_effort, stream=stream, ttft_ms=ttft_ms, total_latency_ms=latency_ms,
+                protocol=self.protocol, model_id=returned or target, provider=provider_name,
+                reasoning_effort=effective_effort, stream=stream, ttft_ms=ttft_ms, total_latency_ms=latency_ms,
                 prompt_tokens=p_tokens, completion_tokens=c_tokens, reasoning_tokens=r_tokens or 0,
                 cache_read_tokens=cached or 0, actual_billed_cost_usd=billed_cost,
                 status=metrics["status"], metadata=metrics,

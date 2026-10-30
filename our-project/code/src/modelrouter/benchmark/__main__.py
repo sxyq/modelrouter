@@ -178,11 +178,13 @@ def _task_in_subset(task: str, subset: str) -> bool:
     return task in {row["task_id"] for row in records if isinstance(row, dict) and "task_id" in row}
 
 
-def execution_units(tasks, policies, agent, seed, manifest, subset):
+def execution_units(tasks, policies, agent, seed, manifest, subset, *, single_episode=False):
+    if single_episode and (len(tasks) != 1 or len(policies) != 1 or not policies[0].strip()):
+        raise ValueError("Single Episode planning requires exactly one task and one policy")
     planned = []
-    if agent != "oracle":
+    if not single_episode and agent != "oracle":
         planned.append(("fix-git", "oracle", "oracle", "ORACLE_SINGLE"))
-    if agent == "modelrouter":
+    if not single_episode and agent == "modelrouter":
         planned.extend([("fix-git", "mini-swe-agent", "mini-swe-agent", "NATIVE_SINGLE"),
                         ("fix-git", "fixed_strong", "modelrouter", "ROUTED_SINGLE")])
         if subset == "dev":
@@ -205,6 +207,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--docker-host", help="Docker endpoint for this command; overrides runtime config without changing the shell")
     p = sub.add_parser("run", help="Run official Harbor tasks and record an experiment iteration")
     p.add_argument("--task")
+    p.add_argument("--single-episode", action="store_true",
+                   help="Plan only the explicit --task and one --policies value; no added baselines or canary")
     p.add_argument("--canary", action="store_true")
     p.add_argument("--dev", action="store_true")
     p.add_argument("--subset", choices=["canary", "dev", "sealed"], default="canary")
@@ -212,6 +216,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--policies", default="fixed_strong,fixed_cheap,random,rule_sticky,routellm,sr_knn,laya_v2,kev_4b,joint_laya,joint_kev")
     p.add_argument("--custom-agent", help="Official Harbor import path; requires installed adapter")
     p.add_argument("--model", help="Verified provider/model name; do not supply unverified aliases")
+    p.add_argument("--v9-config", type=Path, help="Existing V9 JSON configuration for the routed mini agent")
     p.add_argument("--environment", choices=["docker", "daytona", "modal", "e2b"], default="docker")
     p.add_argument("--docker-host", help="Docker endpoint for this run; overrides runtime config")
     p.add_argument("--execute", action="store_true", help="Actually start a real Harbor task")
@@ -235,10 +240,32 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--once", action="store_true")
     p.add_argument("--interval", type=float, default=10.0)
     p.add_argument("--output", type=Path, help="Optional progress JSON file for the dashboard")
+    p = sub.add_parser("alias-smoke", help="Run the original mini agent in a local development workspace")
+    p.add_argument("--config", type=Path, required=True)
+    p.add_argument("--workspace", type=Path, required=True)
+    p.add_argument("--instruction-file", type=Path, required=True)
+    p.add_argument("--verify-command", required=True)
+    p.add_argument("--task-id", required=True)
+    p.add_argument("--policy", choices=["laya_v2", "kev_4b"], default="laya_v2")
+    p.add_argument("--iteration-dir", type=Path)
+    p.add_argument("--max-steps", type=int, default=15)
+    p.add_argument("--max-output-tokens", type=int, default=4096)
     for command in ("summarize", "export"):
         p = sub.add_parser(command, help="Compute results from original official trials")
         p.add_argument("job_dir", type=Path, nargs="?")
     args = parser.parse_args(argv)
+
+    if args.command == "alias-smoke":
+        from modelrouter.v9.runtime.development import run_development
+        result = run_development(
+            workspace=args.workspace, instruction=args.instruction_file.read_text(),
+            verify_command=args.verify_command, config=json.loads(args.config.read_text()),
+            record_dir=args.iteration_dir or iterations.ITERATIONS / iterations.iteration_name(),
+            task_id=args.task_id, policy=args.policy, max_steps=args.max_steps,
+            max_output_tokens=args.max_output_tokens,
+        )
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0 if result["status"] == "RUNTIME_VERIFIED" else 2
 
     if args.command == "preflight":
         result = preflight(args.environment, args.docker_host)
@@ -259,6 +286,13 @@ def main(argv: Optional[List[str]] = None) -> int:
             print("Provide --task from the project split, --canary or --dev", file=sys.stderr)
             return 2
         policies = args.policies.split(",") if args.agent == "modelrouter" else [args.agent]
+        if args.single_episode and (not args.task or args.canary or args.dev):
+            parser.error("--single-episode requires --task without --canary or --dev; use --subset to select its split")
+        try:
+            units = execution_units(tasks, policies, args.agent, args.seed, manifest, subset,
+                                    single_episode=args.single_episode)
+        except ValueError as exc:
+            parser.error(str(exc))
         runtime = _runtime_config()
         docker_host = args.docker_host if args.docker_host is not None else runtime.get("docker_host")
         previous = iterations.latest()
@@ -276,7 +310,6 @@ def main(argv: Optional[List[str]] = None) -> int:
         if (path / "run_config.json").exists():
             print(f"Use resume {path} to retain this iteration's records", file=sys.stderr)
             return 2
-        units = execution_units(tasks, policies, args.agent, args.seed, manifest, subset)
         config = {"git_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=iterations.ROOT, text=True).strip(),
                   "dataset": "terminal-bench/terminal-bench-2-1", "dataset_version": manifest["version"],
                   "dataset_git_sha": manifest["upstream_commit"], "tasks": tasks, "subset": subset,
@@ -288,6 +321,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                   "cost_limit": args.cost_limit, "reasoning_effort": "low",
                   "units": units, "token_budget_path": str(iterations.ROOT / "experiments/agent_pilot/token_budget.json")}
         config.update(runtime)
+        config["single_episode"] = args.single_episode
         config["docker_host"] = _runtime_env(docker_host).get("DOCKER_HOST")
         from modelrouter.providers.registry import ModelRegistry
         from .harbor_agent import mini_configuration, legal_actions
@@ -297,6 +331,21 @@ def main(argv: Optional[List[str]] = None) -> int:
         config["harness_config"] = mini_configuration(args.max_steps, args.cost_limit)
         config["legal_actions"] = {policy: legal_actions(policy.startswith("joint_")) for policy in policies}
         config["credential_source"] = "experiments/agent_pilot/configs/generator_credentials.json; secret values excluded"
+        if args.v9_config is not None:
+            from modelrouter.providers.registry import V9_MODEL_IDS
+            from modelrouter.serving.schemas import LegalAction
+
+            v9_config = json.loads(args.v9_config.read_text())
+            candidates = v9_config.get("candidate_actions")
+            if candidates is None:
+                registry = ModelRegistry()
+                candidate_actions = [LegalAction(provider=registry.get_spec(model).provider, model=model,
+                                                 native_effort="none").model_dump() for model in V9_MODEL_IDS]
+            else:
+                candidate_actions = [LegalAction.model_validate(action).model_dump() for action in candidates]
+            config.update(v9_config=v9_config, candidate_actions=candidate_actions,
+                          v9_config_source=str(args.v9_config.resolve()))
+            config["legal_actions"] = {policy: candidate_actions for policy in policies}
         if args.dry_run:
             print(json.dumps({"status": "DRY_RUN", **config}, ensure_ascii=False, indent=2))
             return 0
@@ -448,6 +497,9 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
             if custom:
                 for key, value in {"policy": unit["policy"], "seed": config["seed"], "max_steps": config["max_steps"], "max_output_tokens": config["max_output_tokens"], "cost_limit": config.get("cost_limit", 3.0)}.items():
                     cmd += ["--agent-kwarg", f"{key}={value}"]
+                if "v9_config" in config:
+                    for key in ("v9_config", "candidate_actions"):
+                        cmd += ["--agent-kwarg", f"{key}={json.dumps(config[key])}"]
             elif unit["agent"] == "mini-swe-agent":
                 from .harbor_agent import mini_configuration
                 from modelrouter.providers.registry import ModelRegistry

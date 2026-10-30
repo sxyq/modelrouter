@@ -14,6 +14,8 @@ import uuid
 from typing import Dict, Any, Optional, List
 from datetime import datetime, timezone
 
+from modelrouter.telemetry.ledger import _find_project_root
+
 try:
     from modelrouter.providers.pricing.fetch_openrouter import calculate_reference_cost
 except ImportError:
@@ -21,15 +23,6 @@ except ImportError:
         from experiments.agent_pilot.pricing.fetch_openrouter import calculate_reference_cost
     except ImportError:
         from .pricing.fetch_openrouter import calculate_reference_cost
-
-
-def _find_project_root() -> str:
-    p = os.path.abspath(os.path.dirname(__file__))
-    while p != os.path.dirname(p):
-        if os.path.isdir(os.path.join(p, "runs")):
-            return p
-        p = os.path.dirname(p)
-    return os.getcwd()
 
 
 DEFAULT_LOG_PATH = os.path.join(_find_project_root(), "runs", "agent_pilot", "multi_model_calls.jsonl")

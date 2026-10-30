@@ -118,8 +118,23 @@ def _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer=None, schedul
 
 
 
-def _load_items(path, tok, train_mod, max_len, head_max_len):
+def _load_items(path, tok, train_mod, max_len, head_max_len, record_transform=None, input_exposure=None):
     rows = train_mod.read_data(str(path))
+    if record_transform is not None:
+        rows = [record_transform(row) for row in rows]
+    if input_exposure is not None:
+        items, skipped = [], Counter()
+        for index, row in enumerate(rows):
+            key = f'{Path(path).resolve()}:{index}'
+            input_exposure.add(key, row['state'])
+            row_items, row_skipped = train_mod.items_from_rows(
+                tok, [row], max_len=max_len, head_max_len=head_max_len)
+            skipped.update(row_skipped)
+            for item in row_items:
+                item['_v9_source_id'] = key
+                item['_provenance'] = row.get('provenance') or {}
+            items.extend(row_items)
+        return items, {'rows': len(rows), 'items': len(items), 'skipped': dict(skipped)}
     items, skipped = train_mod.items_from_rows(tok, rows, max_len=max_len, head_max_len=head_max_len)
     if len(items) == len(rows):
         for it, r in zip(items, rows):
@@ -437,12 +452,16 @@ def run_experiment(run, batch_root, model_dir, out_root, parent_checkpoint=None,
     return run_meta
 
 
-def _load_named_groups(data_root, group_names, tok, train_mod, max_len, head_max_len):
+def _load_named_groups(data_root, group_names, tok, train_mod, max_len, head_max_len,
+                       validation_root=None, record_transform=None, training_paths=None, validation_paths=None,
+                       input_exposure=None):
     train_groups, val_groups, load, val_rows = {}, {}, {}, {}
     for name in group_names:
-        train_path = Path(data_root) / 'train' / (name + '.jsonl')
-        val_path = Path(data_root) / 'val' / (name + '.jsonl')
-        train_groups[name], load['train_' + name] = _load_items(train_path, tok, train_mod, max_len, head_max_len)
+        train_path = Path((training_paths or {}).get(name, Path(data_root) / 'train' / (name + '.jsonl')))
+        val_path = Path((validation_paths or {}).get(name, Path(validation_root or data_root) / 'val' / (name + '.jsonl')))
+        train_groups[name], load['train_' + name] = _load_items(
+            train_path, tok, train_mod, max_len, head_max_len, record_transform=record_transform,
+            input_exposure=input_exposure)
         val_groups[name], load['val_' + name] = _load_items(val_path, tok, train_mod, max_len, head_max_len)
         val_rows[name] = train_mod.read_data(str(val_path))
     return train_groups, val_groups, load, val_rows
@@ -594,13 +613,15 @@ def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
 def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=None,
                          epochs=3, max_len=1024, head_max_len=512,
                          active_budget_bytes=DEFAULT_ACTIVE_BUDGET_BYTES,
-                         s2_audit_passed=False, explicit_pinned=()):
+                         s2_audit_passed=False, explicit_pinned=(),
+                         validation_root=None, record_transform=None, training_paths=None, validation_paths=None):
     """Run one Sweep / FULL-GRADED plan with selective checkpoint retention and disk guard."""
     import torch
     from laya.train import (TrainConfig, load_checkpoint, optimizer_updates,
                             save_checkpoint, train_model)
 
-    manifest = json.loads(Path(manifest_path).read_text(encoding='utf8'))
+    manifest = (manifest_path if isinstance(manifest_path, dict)
+                else json.loads(Path(manifest_path).read_text(encoding='utf8')))
     spec = manifest['plans'][run_id]
     if not spec.get('data'):
         raise ValueError('%s has no materialized data plan' % run_id)
@@ -613,6 +634,8 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         try:
             existing = json.loads(existing_path.read_text(encoding='utf8'))
             if existing.get('status') in {'completed', 'early_stopped'}:
+                if spec.get('v9_continuation'):
+                    return existing
                 return {'run_id': run_id, 'status': 'skipped_existing', 'existing_status': existing.get('status')}
         except json.JSONDecodeError:
             pass
@@ -634,8 +657,14 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
     dev = torch.device('cuda')
     model.to(dev)
     group_names = list(spec.get('groups') or [])
+    input_exposure = None
+    if spec.get('v9_continuation'):
+        from modelrouter.v9.training.continuation import InputExposure
+        input_exposure = InputExposure()
     train_groups, val_groups, load, val_rows = _load_named_groups(
-        data_dir, group_names, tok, sys.modules['laya.train'], max_len, head_max_len)
+        data_dir, group_names, tok, sys.modules['laya.train'], max_len, head_max_len,
+        validation_root=validation_root, record_transform=record_transform,
+        training_paths=training_paths, validation_paths=validation_paths, input_exposure=input_exposure)
     train_items = [item for name in group_names for item in train_groups[name]]
     parent_metrics = _groups(model, tok, val_groups, dev, sys.modules['laya.train'], cfg, max_len, head_max_len, val_rows=val_rows)
 
@@ -683,10 +712,19 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         'layers': spec.get('layers'), 'supervision_classes': spec.get('supervision_classes', group_names),
         'ratios': spec.get('ratios'), 'counts': spec.get('counts'),
         'independent_units': spec.get('independent_units'),
+        **({'v9_continuation': {**spec['v9_continuation'], 'input_exposure': input_exposure.summary(),
+                               'feature_exposure_basis': 'ACTUAL_TRAIN_ENCODING'},
+            'validation_root': str(validation_root),
+            'encoder_context_limit': getattr(model.encoder.config, 'max_position_embeddings', None)}
+           if spec.get('v9_continuation') else {}),
         'eligibility_reason': spec.get('eligibility_reason'),
         'command': sanitize_command_str(
-            'python router_data/laya_batch_train.py --sweep-run %s --sweep-manifest %s --out-root %s --epochs %s'
+            ('in-process router_data.laya_batch_train.run_sweep_experiment: run=%s prepared=%s out=%s epochs=%s'
+             % (run_id, spec['v9_continuation']['data_identity']['prepared_metadata'], out_root, epochs))
+            if spec.get('v9_continuation') else
+            ('python router_data/laya_batch_train.py --sweep-run %s --sweep-manifest %s --out-root %s --epochs %s'
             % (run_id, manifest_path, out_root, epochs)
+            )
         ),
         'code_commit': os.environ.get('MODELROUTER_CODE_COMMIT', 'unknown'),
         'current_step': 0,
@@ -700,7 +738,24 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         torch.cuda.reset_peak_memory_stats()
     epoch_train_started = time.time()
 
+    train_mod = sys.modules['laya.train']
+    official_encode = train_mod.encode_item
+    if input_exposure is not None:
+        def encode_item(tok, item, max_len, head_max_len, option_order=None, parallel=False):
+            encoded = official_encode(tok, item, max_len, head_max_len, option_order, parallel)
+            if '_v9_source_id' in item:
+                _, _, lengths = train_mod.build_sequence(
+                    tok, None, item['q'], max_len, head_max_len, option_order=option_order,
+                    state_ids=item['state_ids'], return_truncation_stats=True)
+                retained = item['state_ids'][:lengths['state_tokens_used']]
+                input_exposure.observe(item['_v9_source_id'], tok.decode(
+                    retained, skip_special_tokens=False, clean_up_tokenization_spaces=False))
+            return encoded
+        train_mod.encode_item = encode_item
+
     def on_epoch_end(epoch, train_loss):
+        if input_exposure is not None:
+            run_meta['v9_continuation']['input_exposure'] = input_exposure.summary()
         nonlocal best_loss, best_epoch, no_improve, epoch_train_started
         epoch_boundary = time.time()
         train_seconds = epoch_boundary - epoch_train_started
@@ -774,7 +829,9 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
             run_id=run_id,
             epoch=epoch + 1,
             is_final_epoch=is_final,
-            save_fn=lambda target_dir: _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer, scheduler, scaler),
+            save_fn=(lambda target_dir: save_checkpoint(model, tok, ckcfg, target_dir))
+                    if spec.get('v9_continuation') else
+                    (lambda target_dir: _save_ckpt_with_optim(model, tok, ckcfg, target_dir, optimizer, scheduler, scaler)),
             run_meta=run_meta,
             entry=entry,
             manifest=manifest,
@@ -825,13 +882,22 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         run_meta['status'] = status
         run_meta['finished_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
         run_meta['history'] = history
+        if input_exposure is not None:
+            run_meta['v9_continuation']['input_exposure'] = input_exposure.summary()
         retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest)
         _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root)
         raise
+    finally:
+        train_mod.encode_item = official_encode
     run_meta['status'] = status
     run_meta['finished_at'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
     run_meta['best_epoch'] = best_epoch
     run_meta['current_epoch'] = len(run_meta['history'])
+    if input_exposure is not None:
+        from modelrouter.v9.training.continuation import feature_training_status
+        run_meta['v9_continuation'].update(
+            input_exposure=input_exposure.summary(),
+            feature_training_status=feature_training_status(input_exposure.summary(), status in {'completed', 'early_stopped'}))
     retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest)
     _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root)
     print(json.dumps({
@@ -1711,6 +1777,18 @@ def main():
             project_root=str(project_root),
             regenerate_parent=args.regenerate_parent,
         )
+        try:
+            sys.path.insert(0, str(project_root / 'our-project/code/src'))
+            from modelrouter.v9.training.continuation import continue_laya
+            continuation = continue_laya(
+                project_root=project_root, out_root=args.out_root, completed_run_id=args.full_coverage_run,
+                epochs=2, active_budget_gib=args.active_budget_gib, trainer=run_sweep_experiment)
+            if continuation is not None:
+                result['v9_continuation'] = continuation
+                print(json.dumps({'event': 'v9_continuation_boundary', **continuation}, ensure_ascii=False), flush=True)
+        except Exception as exc:
+            print(json.dumps({'event': 'v9_continuation_unavailable', 'run_id': args.full_coverage_run,
+                              'error_type': type(exc).__name__, 'error': str(exc)}, ensure_ascii=False), flush=True)
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return
 

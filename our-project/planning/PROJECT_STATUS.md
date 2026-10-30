@@ -1,5 +1,272 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-10-30 17:56 · 当前入口：V9 收口，正式 Trial 仍受阻
+
+本轮复用已完成训练和 Agent 记录，没有重训、重跑成功题、加载权重或更换 Serving。GitHub `main` 同步前实测为 `d1712d1f8ce3227a1dcf7fe085b04a1afb2dd9ff`；本轮合规源码及六文档已完成公开安全核验，实际同步Commit以本节对应Git历史及执行回报为准。服务器部署为原文件增量，不是 Git checkout，无法报告完整部署 Commit；旧 Serving 仍为 Laya `F05/epoch_01`、Kev `KEV-4B-ADAPTER`，后者不是 R11 训练候选。本轮formatter/汇总/单Episode等收口代码未覆盖服务器旧进程，源码版本、已加载权重和本地验证分别记录。
+
+### F14 与候选处理
+
+17:56:21 台北，F14 原 PID `4085749` 仍运行，日志到 Epoch1 第371/420块、step47,488、consumed3,039,232；第63–371块持续 NaN（309块）。15:51 的逐块核查确认第63–346块连续，无有限块插入。第63–260块已读源引用/目标无缺行及非有限值，具体首次诱因仍未确认。原 `global_step` 无条件累加，GradScaler 的实际跳步与有效参数更新数未保存；没有证据判定全部权重受损。15:51 未见 F14 Epoch checkpoint，不加载权重补测。原服务健康、GPU17:56占35,875/49,140MiB、100%、84°C；没有停止或修改 F14、Serving、Docker权限或其他作业。
+
+原 `v9/training/continuation.py` 已排除记录中出现非有限 train loss 的后续父候选，固定Val有限不能解除该风险；仍复用原可比组及留存评分。Laya 保留 `F11-e01` 为当前接续代表（原内部159.7985、实体在盘），Kev覆盖组保留 `R11`（106.7487、adapter/head在盘），C03继续作固定参考（100）。新Laya总体改善但S1退步，新Kev92.387且四指标退步，两者只保留实验/消融候选，不上线或立即重复同配方；独立Dev尚无证据选出全局最佳Router。
+
+### 能力快照与监督
+
+专用刷新已于12:13真实保存 [v2快照](../code/data/v9/capabilities/snapshots/20261030T041319933533Z-v2.json)，`current.json` 指向 `20261030T041319933533Z-v2`。6次公开GET，AA Sol/Flash两次404，Luna成功解析；没有AA Key，没有调用收费Data API。厂商价格/上下文只是公开资料，不是项目权限或实际账单。
+
+| 模型 | AA v2 实际取得 | 来源/缺项 |
+| --- | --- | --- |
+| gpt-6.1-sol | NOT_MEASURED | 精确AA页面404；OpenAI厂商价格、上下文、Effort资料在盘 |
+| gpt-6-luna | Max Intelligence Index27.7552004938153，AA5.0；另9项Max指标 | AA公开页；Coding/Agentic Index及none动作缺测，不把指数当百分比 |
+| qwen3.8-flash | NOT_MEASURED | 托管版精确AA页面404；阿里厂商地区价格/上下文在盘，不套27B或Flash-Next成绩 |
+
+旧v4.3.2的52/38属于此前引用，不覆盖新v2的版本/原分。训练资产仍是唯一390行、Train198/Val192，绑定v1；4教师三字段、2新请求/2复用、6真实prefix及旧S1/S2/S3监督不变，真实三模型choice/Effort目标仍0。未重生成或追写v2到已完成训练；接口消费不等于已学会新能力。
+
+### 输入与教师收口
+
+同一已保存invoice step5、v2快照和原服务器tokenizer，修复前Laya状态4302Token/可用940，能力卡部分保留、最近工具缺失；Kev3656state/3733total不裁。现有formatter只去掉来源长文、共享重复地区费率及上下文资料，并将三候选摘要与最近反馈置前；不改mini消息或输入上限。修复后Laya3934state/1024total、3候选标记：任务[1,206)、教师[206,323)、最近工具末128字符[587,644)、三候选摘要[644,890)完整保留；详细能力卡[1107,2179)和长历史仍裁。LunaMax指数在摘要中明确为参考，不计none成绩。Kev3357state/3434total不裁。仅同样本编码，不新增API前向、训练或全部Train/Val复测；完整证据保留原 `input_encoding_validation.json`，不宣称全上下文保留。
+
+原invoice教师step3首次、step4新验证、step5–8阶段切换，共6请求/3成功；与duration重跑5/2分别统计。阶段变化确实来自真实工具，尚无依据判为重复请求或收益；没有新增调用或复杂节流。原 `iterations.summarize(persist=False)` 已消费两份原事件，分别6/5教师请求，用量和完整USD仍null（失败请求缺usage）；估算、明确USD账单及未知费用分开。原Harbor Context已经含教师的总量，不再与教师事件重复相加。
+
+### 官方入口与停止条件
+
+原CLI新增 `--single-episode`，必须显式一task/一policy；实测 `fix-git/laya_v2` 仅1个unit、三候选保存，上游AgentConfig往返为dict/list。默认多阶段规划保留，已有run/resume记录不改。V9 hook按原 `/models` 的loaded/family/checkpoint匹配记录run_id，注明该元数据与route非原子、Kev仍仅Serving导入身份，不补造历史Run。
+
+本机preflight：Harbor0.24.0和mini2.4.6可加载、上游fix-git可解析，Docker命令不可用；服务器daemon active但syy socket denied且缺Harbor任务环境。官方Trial/Verifier本轮0，完整费用未得，不启动容器或绕权限。最短下一步是恢复原Mac Docker，再沿既有Oracle `resume` 取得环境证据，随后原CLI单Episode；不能把Oracle或Alias当三模型正式成绩。API预算仍135calls、known575783/reserved256135/remaining168082；本轮新增生成/教师0、收费API0。五RQ、八图十二表及全部负结果保留。
+
+## 2026-10-30 10:28–10:40 · 历史：Laya V9 完训
+
+**当前结论**：Laya `V9_LAYA_001` 与 Kev `KEV-V9-001` 均已完成两轮训练及各自原固定 Val，新权重保存在原服务器工程，未传 Mac、未上线 Serving。Laya 总体及 S2/S3 指标改善，S1 四项退步；Kev 四项相对 C03 均退步。AA 实测、三个独立模型的正式执行、完整 Episode USD 及 Harbor/RQ 成绩仍缺。以下旧时点的“Laya 未启动”和 F14 第 175 块统计保留为历史，不代表当前状态。
+
+### Laya 原入口接续与保存实体
+
+复用原 `router_data/laya_batch_train.py --full-coverage-run F13`：F13 已于 10-29 17:08:13 完成两轮、固定 Val 和保存，本次沿 `skipped_existing` 跳过 F13 重训，再调用现有 `v9/training/continuation.py`。原评分选择父 `F11-e01`，内部得分 159.7985；没有新增 Trainer、队列或 Runner，也未改变 F14。
+
+`V9_LAYA_001` 于 10-30 10:28:40 启动，worker 183110；10:34:16 完成两轮训练及每轮完整固定 Val。参数为 `epochs=2/max_len=1024/head_max_len=512`，训练完整 encoder 与 head，每轮四次优化器更新，共八次；两轮 train loss 为 0.9904379869、0.7104009271，均有限。启动时空闲 27,332 MiB、原资源需求 16,384 MiB。
+
+首次接续完成标为 `CHECKPOINT_PENDING`，实际权重已在盘。真实函数调用确认原 `has_physical_weights` 不接受目录链接，而 `best` 指向的实体目录可加载。仅在原 `finish` 中先解析目录链接，原位部署后重用保存结果，10:40:33 状态成为 `COMPLETED`；未重训或重评。
+
+实体路径为 `runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_001/checkpoints/epoch_02`，`model.safetensors` 为 842,609,220 字节，目录共 846,196,980 字节，模型与 tokenizer 配置均存在，`best` 指向该目录。原留存流程移除第 1 轮权重，释放 846,196,980 字节；该轮参数、成绩与记录保留，权重需按原训练重建才能恢复，本次未重建。第 2 轮 `weights_saved/loadable=true` 与实体在盘均已确认；原 `retention_status=METADATA_ONLY` 标签仍保留，不能由该标签推断实体不存在。
+
+保存模型已经原 `laya.train.load_checkpoint` 在服务器 CPU fp32 严格加载，并用原 S1 Val 第 1 行经 `items_from_rows → calibration_records` 完成真实前向：logits 有限，两类概率为 0.4339680374 / 0.5660319924，目标为 `[0,1]`，跳过 0。未发模型 API 请求、未更换 Serving。
+
+### Laya 实际输入与固定 Val
+
+198 条 Train 全部使用，完整 state 192、部分 state 6；两轮 396 次输入，完整 384、部分 12。四条教师记录共八次输入，核心字段均保留；198 条能力卡共 396 次输入全部保留，但卡片仍缺 AA 分数。状态为 `FEATURE_PARTIALLY_TRAINED`：实际输入消费与完整状态覆盖分开，有限 loss 不证明教师或能力字段的独立收益。三个新身份的选择/Effort 监督目标仍为 0。
+
+两轮固定 Val 每轮完整加载 S1 561、S2 337、S3 4,794，共 5,692 条，跳过项为空；没有使用 Test。下表各单元依次为父 `F11-e01` → 新第 2 轮。
+
+| 原固定 Val | Loss | Accuracy | ECE | Brier |
+| --- | ---: | ---: | ---: | ---: |
+| S1 | 0.5941 → 0.5969 | 0.6898 → 0.6827 | 0.0378 → 0.0466 | 0.4085 → 0.4105 |
+| S2 | 2.2982 → 1.3626 | 0.5341 → 0.6024 | 0.4004 → 0.2640 | 0.8136 → 0.6394 |
+| S3 | 1.2416 → 1.0473 | 0.4543 → 0.4656 | 0.2554 → 0.1896 | 0.7288 → 0.6360 |
+| 总体 | 1.2403 → 1.0216 | 0.4823 → 0.4951 | 0.2354 → 0.1698 | 0.7022 → 0.6140 |
+
+这是内部固定 Val 对照，不能代替 Harbor、模型池效果或 RQ 成绩；教师、状态长度及训练材料共同变化，未证明单个字段的效果。
+
+### 原 Mini-SWE-agent 的 V9 配置接入
+
+仅修改现有 `benchmark/__main__.py`：原 `run --v9-config` 接受已有 JSON 配置，保存 `v9_config/candidate_actions` 到原运行配置，并通过 `--agent-kwarg` 传给上游 Job/Trial；原 `resume` 沿用保存参数，已存在 Job 使用自己的原 Agent 配置，不重新读取来源文件。无 V9 参数时仍用原默认行为。`iterations.py/official_artifacts.py` 未改，没有新增执行链。
+
+用原成功联调目录的 `run_config.json` 执行原 `run --task fix-git --agent modelrouter --policies laya_v2 --v9-config … --dry-run`，并使用真实 Harbor 0.24.0 的 `parse_kwargs → AgentConfig → AgentFactory → ModelRouterMiniSweAgent → PolicyModel → V9DecisionHook/AliasProvider` 完成参数解析、JSON 往返和实例构造。三候选保留为 Sol/Luna/Flash 的 `none` 动作，真实配置后端 `Qwen3.8-27B`、费用状态 `BACKEND_PRICE_NOT_MEASURED`，账本未变。仅验证配置接入，未创建 Run/Job、执行 Agent `run` 或实际 `resume`；不能计为正式任务执行。
+
+### F14 最新诊断与真实外部缺项
+
+10:32:49 的原日志到第 260 块、step 33,280、消费计数 2,129,920；第 63–260 块共 198 块持续 NaN，没有恢复证据。原第 63 块 8,192 个源引用均存在，按原目标构造得到的向量全部有限、非负且归一化；这排除了已读取目标向量的数值异常，不能证明所有外部标签语义正确。来源数为 ROUTE-004 60、TRA-001 2,770、TRA-002 3,138、CACHE-001 41、TIME-001 1,902、OWN-002 281。原总选源 3,436,908、seed42 打乱、切片 `[507904:516096]`、组内合并 seed104。该块临时目录已由原训练移除，没有当时编码张量、logits、梯度或 scaler；具体诱因与有效优化更新仍未知。V9 新训练有限 loss 不表示 F14 恢复；原作业未停止、重启或改动。
+
+Mac 原 Harbor 0.24.0、Mini-SWE-agent 2.4.6 与 89 个上游任务存在，但 Docker 程序链接失效、个人 socket 不存在。A6000 Docker 29.4.1 daemon 活跃，当前用户访问 socket 被拒绝，`sudo -n docker version` 需要密码；工程尚无 Harbor/mini 包、任务树和三个 benchmark 原入口文件。本轮未安装、构建镜像、启动 Trial 或运行官方 Evaluator。沿用唯一 `benchmark CLI → Harbor Job/Trial → HarborAgent → DefaultAgent`，工具由 `environment.exec` 执行；需恢复 Mac Docker，或由管理员提供现有服务器 daemon 的访问权限，才能继续正式容器评测。
+
+AA Key 当前缺失，仍为 `FAILED/NOT_MEASURED`、分数 null；原 Luna HTTP 200 的正文未保存，解析失败诱因无法确认，未重复来源请求。需要有效 AA Key 或精确模型身份的官方原始响应。三逻辑身份仍共用返回 `self-dploy/Qwen3.8-27B` 的后端，校园 9002 物理对应 `UNKNOWN`，不能写为三个独立模型。原 135 calls、known/reserved/remaining=`575783/256135/168082` 未变，本轮训练与 CPU 前向不并入 API Token 账本；完整 USD 仍缺测。五 RQ、八图、十二张正式结果表继续保留，未知结果不填数。
+
+## 2026-10-29 起 · 历史执行记录（截至 10-30 04:34）
+
+**来源与边界**：当前Kev第4次两轮训练及固定Val均完成：训练03:25:31退出0，Val于2026-10-30 04:23:20台北完成、控制器50514自然退出0，`status/training_status=COMPLETED`、`evaluation_status=EVALUATED`。相对原C03四指标均退步，内部score92.38703579133796；V9组仅1条、rank1仅为单成员排名，`apply=False`留存未删除权重。新候选仍`FEATURE_PARTIALLY_TRAINED`，权重只在A6000、未上线Serving，正式Harbor/RQ仍空白。前三次FAILED及未知输入统计不覆盖。F14运行推进、损失持续非有限，有效优化更新未确认，具体诱因未知；主证据见下方F14段，Laya V9未启动；Serving健康接口与F14数值状态分开。现行Val/评分/现场依据主Agent服务器实测回报，本机直传JSON证据已读；本机同名candidate_queue/ledger未包含V9项，不作为现行评分来源。文档子任务仅改六份原Markdown，未改源码/结果数据/服务器，未发业务请求、运行测试或新增夹具，未执行Git；训练219465个本地前向Token不并入1M API预算，135calls及575783/256135/168082不变。
+
+| 对象 | 已回报事实 | 证据边界 |
+| --- | --- | --- |
+| A6000 `/models` Laya | `F05 epoch_01` | 当前服务加载版本，不代表 F13 已投入推理 |
+| A6000 `/models` Kev | `KEV-4B-ADAPTER`，ID `1001bb4d826a52d1f399e183466143f4da7b741b` | Serving 导入适配器，不能称 R11 候选，不能据此断言新特征已学习 |
+| Laya F13（早先现场） | 当时健康运行，原 worker `2775954`、controller `499841` | 保留原观测；F13 最终训练/验证结果尚待回报 |
+| Laya 原训练链（21:59） | F14，PID `4085749` 正常；GPU 10,039/49,140 MiB、82% | 原链运行快照，不代表 V9 新训练已启动 |
+| Serving | 原进程 `2291306`，端口 `8000` | 继续使用同一服务，无新增副本 |
+
+**三候选真实路由前向**：通过 SSH `8000` 调用 `/v1/systemone`；三候选均使用内部 `none`，原生 Effort 请求字段省略。概率顺序见表，两模型均 `fallback=false`。
+
+| Router | `gpt-6.1-sol` | `gpt-6-luna` | `qwen3.8-flash` | 选择 |
+| --- | ---: | ---: | ---: | --- |
+| Laya | 0.2578 | 0.5214 | 0.2208 | `gpt-6-luna` |
+| Kev | 0.3492 | 0.2880 | 0.3627 | `qwen3.8-flash` |
+
+这组概率只证明真实路由模型前向，Laya/Kev 分别选过 Luna/Flash；它们与下列单题全部选择 Sol 的实际生成记录分开。单题控制链成功不证明旧状态布局语义正确、新特征已学习或正式三模型收益。
+
+**Qwen 与凭据演进**：前一阶段只找到 Parfit 网关和凭据候选，状态为待验证；现已回报 `<ALIAS_API_ENDPOINT>` 的 `/models` 真实返回 `Qwen3.8-27B`，来源确认为 `PCG/config/pi-sag.local.env`，仅按 `QWEN_API_KEY` 读取，不改源、不记录密钥。校园 `root9002` 在 NPU5/6 已存在、无有效认证的记录继续保留，共享模型/认证未改。Alias 的物理后端仍为 `UNKNOWN`；网关返回名不能证明与 9002 是同一物理部署。Project jiji 与当前 Codex oneapi 均无 Qwen，不使用未批准替代模型。此前 Provider 凭据隔离新增 1 项测试通过的事实保留，不据此推断两类新解析问题或整任务已全部验证。
+
+**SSE 失败与工具联调阶段**：首次 SSE 的工具字段为 null，暴露 `choices/tool_calls` nullable 及 `function.name/arguments` nullable 两类 Provider 解析问题；主 Agent 已在现有解析中处理。原失败完整保留，后续运行不能覆盖它们。
+
+| 原迭代目录 | 已回报事实 | 当前证据边界 |
+| --- | --- | --- |
+| `iterations/20261029-v9-alias-smoke` | 失败记录完整保存 | 失败不改写为成功，不删除原记录 |
+| `iterations/20261029-v9-alias-smoke-sse` | SSE 失败记录完整保存 | null 字段处理已由主 Agent 调整；不代表完整终局已通过 |
+| `iterations/20261029-v9-alias-smoke-tools` | 真实成功终局：9 次生成、13 次 Bash、7 项 unittest 全部通过；先前流式名 `Qwen3.8-27B`、实际非流返回名 `self-dploy/Qwen3.8-27B` 原样保留，逻辑选择仅 `gpt-6.1-sol`；Laya 全程 `fallback=false`，Checkpoint `epoch_01` | `ALIAS_SMOKE` 控制链证据；完整 prompt/completion/cache/USD 因失败调用 usage 缺失仍为 null，不写零或填正式成绩 |
+| 迭代 `20261029-v9-kev-alias-smoke` | 另一 `duration` 工程题，2 次真实生成、3 次 Bash 后，第 3 次路由 60 秒超时；默认原 `PolicyModel` 在 fallback 后退出，原回报 `FAILED/验证1`，所有日志保留 | 与成功 invoice 和 Native 前缀回放分开；本地 Host 无容器隔离，不称安全或正式基准，不增加科学成绩 |
+
+**Kev 当前 CPU 前向与失败定位**：原 Serving PID `2291306` 未重启、未换权重。真实启动的 `KevAdapter` 未传 `device` 参数，默认 CPU，原设备标记 `torch_cpu`；不因运行于 A6000 就把这组 Router 前向称为 GPU/NPU 前向。
+
+| 本失败题阶段 | 主 Agent 已回报观测 | 限制 |
+| --- | --- | --- |
+| step0 | Kev 真实前向 **18,802 ms** | CPU、当前输入条件下的单次观测 |
+| step1 | Kev 真实前向 **38,674 ms** | 不能由两次观测推导正式时延统计 |
+| step2 / 第 3 次路由 | 工具 history 长度回报 **3,835**，60 秒客户端窗口超时并走 fallback | history 长度单位未报；本次不计真实前向成功，原 `FAILED/验证1` 不改写 |
+
+首个 Bash 执行 `find /` 查找文件后，上游工具 30 秒超时；后用 `ls/pwd` 定位，未改外部数据的回报保留。缺容器隔离的 Host 控制测试不能证明安全性；`ALIAS_SMOKE` 是身份联调用途，环境仍属 `LOCAL_HOST_EXPERIMENTAL`，不填官方表。先前在线教师失败后 Agent 继续与本次 Router fallback 后原 PolicyModel 退出是两种已测行为，分别记录。
+
+**本失败题处理范围与停止位置**：复用原 Runtime，按既有 `router_context_chars` 缩短给 Router 的工具视图，保留 task、teacher 和原始 mini 消息；真实初始 CWD 的接入不由单次 step2 回放推断。短视图与一次必要重跑现均有实际结果，重跑已结束 `FAILED`，没有待完成的成功终局。成功 invoice 不重跑，不新建 Agent 循环、服务或记录体系，不把本题加入 390 行训练材料；本轮不再新增生成式请求。
+
+**原失败前缀的 Native 短视图验证（单次前向成功）**：原目录 [input_latency_validation.json](../results/iterations/20261029-v9-kev-alias-smoke/input_latency_validation.json) 记录 `NATIVE_INPUT_REPLAY`，UTC `2026-10-29T16:16:51.378272+00:00`；原失败不覆写，生成请求 0、Serving 权重未变。
+
+| 输入/状态 | 原值 → 本回放 | 证据含义 |
+| --- | --- | --- |
+| step2 任务 | 1,019 → 1,019 字符 | 任务全文保留 |
+| 工具摘录 | 3,835 → 1,280 字符 | 字符预算 `router_context_chars=2300`，不改 Agent 原始工具消息 |
+| mini 消息 | 7 条，`complete_messages_retained=true` | 主 Agent 回报原样保留，不把缩短的 Router 视图当完整 Agent 轨迹 |
+| 教师/能力/连续状态 | 保持不变 | 本回放 `teacher_assessment=null`、卡片仍缺测；缓存值沿用原连续状态，不产生新增教师、能力或缓存观测 |
+
+原 Serving 适配器 ID `1001bb4d826a52d1f399e183466143f4da7b741b` 保持，CPU 实际前向 **37,771.85 ms**、`fallback_used=false`，选择逻辑 `qwen3.8-flash:none`。下列顺序按真实动作身份核对，不能套用先前 Sol/Luna/Flash 的排列。
+
+| 逻辑动作 | 真实概率 |
+| --- | ---: |
+| `qwen3.8-flash:none` | 0.7234 |
+| `gpt-6.1-sol:none` | 0.1468 |
+| `gpt-6-luna:none` | 0.1298 |
+
+记录仍为 `LOCAL_HOST_EXPERIMENTAL`，官方/科学结果资格均 false，`token_measurement_status=NOT_MEASURED`、`FEATURE_NOT_TRAINED`。这补充字段保留和原 CPU 前向证据，不代表教师三字段有有效摘要、Token 编码全部覆盖、新权重已学习或该题已成功。
+
+**一次必要重跑已结束：真实路由通过，代码失败**：新目录 `our-project/results/iterations/20261030-v9-kev-alias-smoke-compact` 保留 [metrics.json](../results/iterations/20261030-v9-kev-alias-smoke-compact/metrics.json) 与 [verification.txt](../results/iterations/20261030-v9-kev-alias-smoke-compact/verification.txt)。这是原 duration 题的必要重跑，原 `20261029-v9-kev-alias-smoke` 失败不覆写。
+
+| 对象 | 本轮实际结果 | 不能推导的结论 |
+| --- | --- | --- |
+| 生成/工具 | 10 次生成、13 次真实 Bash | 调用和工具实际执行不等于任务成功 |
+| Kev 路由 | 10 次真实路由全部 `fallback=false`；CPU 前向 **20,430.85–37,243.64 ms** | 本次未再触发原 60 秒超时；仍非正式时延统计 |
+| 模型身份 | 全部逻辑选择 `qwen3.8-flash`；metrics 实际为 `Qwen3.8-27B`、导入适配器 ID `1001bb4d826a52d1f399e183466143f4da7b741b` | 无正式三模型效果，不能将在线适配器称 R11 |
+| 在线教师 | 5 请求/2 成功，3 失败依次 `TimeoutError`、`JSONDecodeError`、`TimeoutError`；成功短评在 steps3/4/5 实际送入 Router | 2 次成功的重复消费不算 3 次成功；不证明新特征已学习 |
+| 验证/终局 | 7 项 test 方法、4 项通过，仍有 **7 个 subtest errors**；10 步 `LimitsExceeded`、`status=FAILED`、`resolved=false`、验证退出 1 | 题目失败，不能写成功 Agent或官方成绩 |
+| 完整用量/费用 | 失败教师缺测，prompt/completion/reasoning/cache/USD 全部总值仍 null | 不写 zero，不加可得部分冒充完整费用 |
+
+主 Agent 回报原 `test_duration.py` 未改，已保留的 artifacts 为 `task.md`、`duration.py`、`test_duration.py`、`duration.patch`；本机已确认这些文件位于新结果目录。duration 临时工作目录已由主 Agent 清理，原失败和这次失败的记录仍在。短视图改善路由时延，代码质量未因此达标；宿主测试依旧无容器隔离，无官方或科学成绩。
+
+**首批数据与初始教师回报（历史阶段）**：首批 **390** 条由 S1/S2/S3 每类 Train/Val 各 64 条（共 **384**）加 **6** 条真实 prefix 构成，Schema 可加载。原 S1 目标仍是旧模型身份，V9 三身份 choice 目标 **0**；格式可加载不能写成三身份监督已就绪。AA 为 `FAILED / NOT_MEASURED`，没有成功取得首版能力分数。两条参考来自 TRA-001 公开数据的不同任务，`resolved=true`、`split=train`；具体 ID、用途许可及同题隔离细项尚未回报，不补造。当时离线 Teacher **0**、最少真实 prefix 正在补，线上待自然触发；下段保留随后新回报。新特征仍记 `FEATURE_NOT_TRAINED`，继续微调未完成。
+
+**当前材料实体与固定参考**：原 390 条现已整理进唯一实体，Train **198**、Val **192**，不把链接或运行记录另加为训练行。
+
+| 监督来源 | Train 记录 | Val 记录 | 当前材料 |
+| --- | ---: | ---: | --- |
+| S1 | 64 | 64 | 旧目标未对齐 V9 三身份，最后已知 choice 目标 0 |
+| S2 | 70 | 64 | 原 Train 64+6 真实前缀；`trajectory_prefixes/train.jsonl` 仅为相对符号链接 |
+| S3 | 64 | 64 | 原请求/运行辅助记录 |
+| 合计 | 198 | 192 | 唯一实体 390 行，不重复统计 |
+
+六前缀来自 `gruebel_pycep_pr109`、`fonttools_fonttools_pr2313`，每题截止 **0/3/7**，原 Train 资格保留；与两条固定 TRA-001 公开 Train 成功参考 `roniemartinez_latex2mathml_pr163`、`cloudtools_troposphere_pr2024` 不重合。不把六条记录写成六个独立任务，也不猜各截止位置属于新生成、复用或未触发中的哪一类。参考 ID/同题隔离已补证，具体角色用途与许可证据沿原来源登记保留。
+
+**离线教师当前制作**：复用原 Assessor，**2 次真实请求/2 次成功**，**4 条可用三字段样本（2 新、2 复用）**、**2 条未触发**；汇总为 `summary.teacher_data_status=PARTIAL`、`GENERATED=4 / NOT_GENERATED=386`。实际教师返回 `self-dploy/Qwen3.8-27B`，不称顶级 Sol。两请求 prompt **13,766**、completion **949**、总 Token **14,715**，reasoning **678** 已包含于 completion，不再相加；cached **0** 已报告、USD **null**。这是两条离线请求的已知用量，结果复用不等于 Provider 物理缓存命中；不据此计算所有请求完整总量或新预算余额。
+
+**AA 来源尝试与缺测**：改善现有解析后，三逻辑 ID 的实际来源请求分别为 Sol **404**、Luna **200 但解析失败**、Flash **404**，AA Key 缺失；仍为 **0 条实测能力记录**，current 保留原缺测快照。HTTP 200 不代表取得分数，记录数 0 也不代表能力分数为 0。
+
+**AA 刷新范围澄清**：每次手动执行专用刷新入口重新请求 AA，Agent 使用已保存快照；Agent 启动和 Router 每次决策不自动访问 AA。现有 `load_current` 已符合快照读取方式，本轮不为此改代码或新增 job；用户已撤销自动刷新派发。依据为第二提示词 198–208、335、773 行及本轮澄清，正式训练/实验固定相应 `snapshot_id`。
+
+**在线教师阶段演进**：先回报 2 次成功调用，实际返回 `self-dploy/Qwen3.8-27B`，两次三字段进入下一次 Router 输入、`fallback=false`；另 1 次 Timeout 后 Agent 继续，当时 `invoice` 仍在重写。现在单题已终局，Teacher 共 **6 次尝试/3 次成功**，其他超时/解析失败均未终止 Agent；不猜各失败类型的具体数量。`TEACHER_ALIAS_SMOKE` 输入传递和失败行为保留，不能充当 Sol/顶级教师效果或权重学习证明；与上方离线 2 请求/2 成功、4 条可用样本分别统计。
+
+**三身份覆盖的区别**：此前真实 `/v1/systemone` 分别选过 Luna/Flash，本题 9 次生成只有 Sol 逻辑选择。随后额外短 Provider 验证已确认三逻辑身份均映射同一 Qwen API；`/models` 和已报流式名为 `Qwen3.8-27B`，实际非流返回 `self-dploy/Qwen3.8-27B`。这是 Provider 映射证据，不能算两道新 Agent 题、K=3 个物理模型或三模型正式对比。
+
+**新 Native 前缀真实回放**：主 Agent 已在成功目录 `iterations/20261029-v9-alias-smoke-tools/router_input_replay.json` 保存两路结果。
+
+| Router / 尝试 | 已回报结果 | 身份与限制 |
+| --- | --- | --- |
+| Laya 新输入 | 选择 `gpt-6-luna`、`epoch_01`、`fallback=false`，三候选真实概率 | 原服务权重真实前向；未提供新概率数值，不套用上方旧概率 |
+| Kev 首请求 | 20 秒客户端窗口超时，出现模拟 fallback | 负结果保留，不能计为真实前向成功 |
+| Kev 一次重测 | 60 秒客户端窗口下真实前向成功，约 **53,516 ms**；选择 `gpt-6.1-sol`、`fallback=false`，三候选真实概率 | ID `1001bb4d826a52d1f399e183466143f4da7b741b`，Serving 导入适配器，不能称 R11 候选 |
+
+回放不重跑同一 `invoice` 题，不增加正式/科学成绩；客户端窗口与模型真实前向时长分开。它补充新前缀的真实 Router API 行为，不能替代最终 Tokenizer 覆盖、新特征学习或独立任务效果证据。
+
+**已测输入语义缺口与单一格式实现**：integration 的 holding Tokenizer 观测表明旧 LayaState 布局把任务文本放在预算之外，JSON 有字段仍会在实际编码时丢失任务。
+
+| 旧布局观测 | State Token 数 | State 预算 | 任务位置 | 已确认结果 |
+| --- | ---: | ---: | ---: | --- |
+| A | 2,762 | 940 | 2,733 | 任务被裁 |
+| B | 2,827 | 940 | 2,798 | 任务被裁 |
+
+主 Agent 已在唯一 V9 context formatter 中调整为任务优先、压缩缺测能力卡，原 Schema 只薄调用。已保存的原14:41 UTC final及训练prefix [分词记录](../results/iterations/20261029-v9-alias-smoke-tools/input_encoding_validation.json) 确认任务、三教师字段、三候选卡及缓存/身份关键字段进入最终编码；中间缓存被裁的负结果保留历史。新顶层`recent_tool_validation`于18:44 UTC/02:44台北仅验证原step5（events第30行）：原Tokenizer1024/head512、state_room940，raw_state2684/total1024、候选标记3。任务Token `[2,206)`、三教师、三候选卡 `[688,872)`、缓存及当前/前次身份均`FULL`；真实512字符工具结果仅原文末128字符在 `[879,930)`为`FULL`，长`history_snippet`仍裁。Kev原native编码2147 state/2224 total、不截短、候选键3个，编码验证未新增Kev API前向。18:46 UTC/02:46台北同源Laya真实API前向`fallback=false`，选Luna，概率Luna0.4005/Sol0.3519/Flash0.2476，模型前向1961.71ms、客户端1985.07ms，checkpoint仍`epoch_01`。主Agent本次新增Router1/生成0，135calls及575783/256135/168082预算不变。随后原`v9/runtime/context.py`单文件原位部署，fresh导入路径相同；序列化8822字符、真实128字符tail、源cached3136及前次Sol身份保留，cached3136仅为源字段，不算本次Router新缓存命中，未重启Serving/模型。旧before/intermediate/final、训练分词、原事件和mini消息及全部失败保留，不重跑题目；本次未重测198条Train或192条Val，不记作全部历史完整或新特征已学习。 同一原记录新增`live_transport_validation`：2026-10-30 04:20:38台北对原invoice step5实际调用旧Serving `/v1/systemone`，8822字符state按字符串直传；3候选依次`jiji/gpt-6-luna`、`openai/gpt-6.1-sol`、`aliyun/qwen3.8-flash`，均`effort=none`。HTTP200、`fallback_used=false`、checkpoint仍`epoch_01`，概率0.4005/0.3519/0.2476，响应`usage.input_tokens=1024/output_tokens=0`。同发送正文的原native编码为2684状态Token/940余量/1024总Token，任务、教师、能力卡、continuity及最近工具末128字符保留。仅“直传调用链、同发送正文native编码与响应Token数支持”这一范围；未捕获旧服务进程Token IDs，普通`/route`未验证，长history仍裁，未重跑整个Episode、重启旧服务或加载额外模型。 本次Router1/生成0与旧`recent_tool_validation`分列，不新增Agent题或科学成绩。
+
+此前15:26 UTC保存的198条Train分词/native编码范围测量已完成，本次step5验证未重测该批材料；4条教师前缀的任务与三教师核心在当前Laya1024下保留；6条完整state仍被裁，全198条完整Laya编码至少需8143，8192推荐尚未启用。Kev完整Train state至少需7401，当前8192及原Loader198条接纳已确认；原384默认拒绝144条仅作历史诊断，不作当前接纳结论。192条Val仅核记录身份/数量，未测Token长度；原问题、候选次序与目标未改。
+
+**原运行记录位置复用**：主 Agent 已把误放在 src 目录的 **2 条真实 Episode** 与 **14 条真实调用** 迁至原 `experiments/agent_pilot/ledgers` 和 `runs/agent_pilot/multi_model_calls.jsonl`，Logger 复用同一工程根定位；误放副本已删，数据全部保留。不新增长期记录体系，这些运行记录不并入 390 行材料。
+
+**金额单位与事件版本**：hcnsec 的 `raw_usage.cost` 有金额，但未提供 `currency/cost_currency`，单位尚未确认。主 Agent 已让新请求保留 `raw_reported_cost`，`reported_cost_unit=NOT_REPORTED`；仅响应明确 USD 才赋 `actual_billed_cost_usd`。未知单位金额不计入完整美元费用。当前 Episode 的旧事件保留原版本输出，不将旧字段名当 USD 单位证据；完整费用含超时，现有总额为 `None`。最终汇总仍须说明单位未确认，新请求按新 Provider 记录，不能把未知金额或缺失总额写成零美元。
+
+**Token 已知量、失败预留与余额分列**：以下保留上一阶段回报，尚未包含随后全部生成/教师 usage 的最终结算。
+
+| 项目 | Token 数 | 含义 |
+| --- | ---: | --- |
+| 原 `token_budget` 已知记录 | 410,353 | 既有已知量，不含尚待计入的后续真实 usage |
+| 9 次失败调用预留 | 77,544 | 每次按 8,616 上限预留；失败实际 usage 为 UNKNOWN，不算已实际消耗 |
+| 上一阶段扣已知量与预留后的余额 | 512,103 | `1,000,000 - 410,353 - 77,544`；随后生成/教师 usage 会改变余额，不能当最终值 |
+
+**随后已回报预算实读（短视图/窄重跑回报前）**：`known=494912`、`reserved=193040`、`remaining=312048`。这是当时用户提供的阶段快照，保留上表历史；reserved 仍不计实际用量，不能推断缺失调用的实际 Token 或完整 USD。当时新一轮运行尚未结算，本轮最后预算见下段。
+
+**本轮最后预算实读与清理回报**：`known=575783`、`reserved=256135`、`remaining=168082`；新增 **15 API 请求**已计入原账本，累计 **135 calls**。这替代前段作为本轮最后已报预算，历史数继续保留；reserved 不作实际消耗，完整用量/费用因失败项仍 null。本轮不再新增生成式请求。自有本机 8000 隧道 PID `28959` 已结束，duration 临时目录已清理，artifacts 与全部失败证据保留；该回报时 A6000 Serving/训练未操作。
+
+**训练参数已准备、服务器部署已完成**：现有 [prepared/summary.json](../code/data/v9/prepared/summary.json) 的 `training` 段已写真实配置，部署/材料读取已有实证；第 1 次训练启动失败，参数和部署成功不计训练完成。
+
+| 对象 | 实际记录参数 | 身份/状态 |
+| --- | --- | --- |
+| Laya 继续微调准备 | `epochs=2`、`max_len=1024`、`head_max_len=512` | 准备参数，未获本轮新训练完成证据 |
+| Kev 第4次训练已完成 | `epochs=2`、`max_state=8192`、`full_ft=0/resume=0` | 两轮/固定Val已完成、内部EVALUATED；四指标比C03均退步，新权重未上线，与父Run原长度/轮次分开 |
+| Kev 父 R11（主 Agent 回报） | `epochs=1`、`max_state=384` | 训练父对象，与当前 Serving 导入适配器不同 |
+
+**首批服务器部署实证（主 Agent 回报）**：目标仍为 `<SERVER_PROJECT_ROOT>`，37 个源码/数据/相对链接对象、6,993,920 传输字节，包含 16 个 V9 Python 模块、schemas/registry/common 和 390 行材料。原 Laya/Kev 两文件增量补丁成功，保留 Laya 4 处历史差异；common 约 45KB 的重复实现已改为现有薄别名，实导入 `common is canonical=True`，真正 root 执行链保留。原 Python/`_material` 实读198训练行、4教师、2refs，相对链接有效，GPU/Serving未重启。随后模块入口和Provider/telemetry接点追加部署另记，首批数量不冒充全部后续传输总数。
+
+| Kev 候选阶段 | 已发生事实 | 当前结论 |
+| --- | --- | --- |
+| 原 `--plan-only` 登记 | 同一 candidate_queue/ledger 写 `KEV-V9-001`，登记时 QUEUED；父 R11 实体、内部四指标 score 106.74866622586939，原 R01–R16已完成 | QUEUED 仅保留登记阶段；父分数不算新候选成绩 |
+| 同一原 CLI 第 1 次启动 | worker **13266**，**0.145 秒**退出 **1**；未加载 GPU 模型、未消费训练输入 | 历史 **FAILED**、attempt保留，不改写为成功 |
+| 失败原因 | 路径执行 `dispatcher.py` 使 `sys.path[0]` 在 `modelrouter/training`；bare `import kev` 落入本项目 `training/kev`，官方 `kev.train` 未导入 | 189 项先前组合测试通过不覆盖这项真实入口负结果 |
+| 原失败证据 | `train.log`、`attempt`、`cursor` 保留 | 不覆写、不删失败 |
+| 同一原 CLI 第 2 次启动 | worker **16722**先RUNNING；两行模块入口调整已部署、窄测40通过，官方 `kev.train` 位于 `external/kev/kev/train.py` | 启动与导入已确认，后续OOM见下一行，不计完训 |
+| 第 2 次真实反向失败 | 8K输入进入真实反向计算，Torch CUDA OutOfMemory、自然退出 **1**；进程 **13.54 GiB**，再分配 **60 MiB**时仅 **59.94 MiB**空闲；日志 **Epoch0/Step20/100/Loss0.993** | 第2次 **FAILED**，与13266第1次失败分别保留；该次进度日志不证明完整输入曝光，未产出两轮完成权重或固定Val；第四次统计另列 |
+| 第2次失败的Loader接纳/预期量 | 原Loader全部接纳 **198**条记录，两轮预期 **396**条次；失败目录只有`training_config.json`，其输入曝光 **0**为启动时统计 | 该次失败后的完整输入曝光/独立覆盖 **UNKNOWN**；不记作0、198或396已实际完成 |
+| 原 GPU 资源等待（历史） | 原资源代码已增量部署，CLI验证`WAITING_FOR_GPU`；01:43的12,668/15,973 MiB保留历史，**02:11 free12,698/required15,973 MiB**；先前13,932 MiB为旧快照 | 已观察占用下限加原 **2 GiB**余量，旧384输入`required=12103`不适用于8K；CLI25201当时保留、27184无worker已由主Agent结束；此为第2次失败后的历史阶段，最新终局见下行 |
+| 同一原CLI第3次启动/终局 | **2026-10-30 02:49:33台北**自然启动worker **44839**，**7.528秒**后exit **2**；日志`kev.train: error: refusing to overwrite an existing run`。02:55候选`KEV-V9-001`为`FAILED/training_status=FAILED`、原CLI **25201**自然退出 | 第3次 **FAILED**，因已有目录退出；原日志/attempt及`failed_attempt_0003/training_config.json`保留 |
+| 第4次启动/过程（历史） | **2026-10-30 03:03:33台北**原dispatcher **50514**、worker **50518**启动；`2 Epoch/max_state=8192/full_ft=0/resume=0`，加载 **426**个基础权重张量。03:06:18曾为ep0 step10/100、loss0.859、2.909s/rec | 原日志保留；step10只作过程历史，现行终局见下一行 |
+| 第4次训练完成 | **03:25:31** worker50518两Epoch/100steps自然结束、exit **0**，保存`runs/KEV-V9-001/checkpoint` | 两轮和新模型实体已确认；固定Val已完成/内部EVALUATED，未上线Serving |
+| 第4次真实training_metrics | `wall_seconds=1267.0303`、`records_seen=requested_records=396`、`optimizer_steps=100`、`forward_tokens=219465`、`peak_device_bytes=16336306176`；`truncated_records=rejected_records=0` | 来源为该次真实训练；本地GPU前向Token不计生成/教师API预算，不折作美元费用 |
+| 第4次ACTUAL_TRAIN_BATCH_INPUTS：记录/state | material/admitted **198**；records_used **198**/not_used **0**；full_state_records_retained **198**/partial **0**；input_passes **396**/full **396**/partial **0** | 198条独立训练记录均实际使用、两轮完整曝光；与前三次失败的统计分列，不覆盖UNKNOWN |
+| 第4次ACTUAL_TRAIN_BATCH_INPUTS：能力/教师 | capability source/retained **198**、passes **396**、incomplete **0**；teacher source/retained **4**、passes **8**、incomplete **0** | 能力卡仍缺测，不能称已有AA分数；4条稀疏教师实际学习，不代表全材料教师覆盖或三新身份有效监督 |
+| 原固定Val已完成 | 03:25:31开始attempt1；**2026-10-30 04:23:20台北**完整结束，controller50514自然exit0；**3468.2793179秒**，**8436/8436 records、9330/9330 questions**，拒绝0/裁减0/`test_used=false` | `status/training_status=COMPLETED`、`evaluation_status=EVALUATED`；原`checkpoint/val_metrics.json`与`val_metrics/attempt_0001/report.json`保留，未重评 |
+| 固定Val四指标 | Accuracy **0.5658092175777063**；NLL **1.1103247352468928**；Brier **0.5461336121552054**；ECE **0.08006657253210539** | 内部固定Val结果，不填正式Harbor/RQ或三模型比较 |
+| 相对原C03变化 | Accuracy **-0.005787781350482302**；NLL **+0.0307721576222153**；Brier **+0.008600006481568445**；ECE **+0.02901988874336886** | 四项均退步；不能据此宣称训练有效、效果改进或项目整体完成 |
+| 原完成时间与评分已更新 | 04:32:41原`validate_candidate`复用保存Val，`candidate.finished_at`与`v9_continuation.finished_at`均为`2026-10-29T20:23:20Z`；`evaluation_attempts=1`，前三次失败时间未改。原`update_retention(queue,apply=False)`保存queue/ledger，score **92.38703579133796** | 原C03=100，R11父=106.74866622586939；评分低于二者，不重评/重训 |
+| 原留存结果 | `MODELROUTER_V9_FEATURES_V1`组仅1条，rank1/core_quota1/ratio0.15，按原`necessary_scientific_representative`规则保留；`apply=False`，释放0字节、删除0字节/0文件 | 单成员组第1不表示优于C03；adapter129924032/head5249053字节仍在A6000，未上线Serving。现行来源为A6000原`our-project/results/training/kev/candidate_queue.json`/ledger及主Agent回报 |
+
+**原入口、失败输出保留与接续边界**：仍复用原`main_loop(wait_for_resources=True, v9_only=True, ...)`及`dispatcher --v9-continuation`；CLI25201已自然退出，27184经主Agent确认无worker后结束，服务器源码`CLI_WAIT/EXIT_RESET=true`已验证。资源等待与前三次失败历史保留；现行结果见上方训练表，入口窄测/导入通过不覆盖真实失败。原`reserve_kev_attempt`在前次FAILED且原out存在时，将输出移为同一Run的`failed_attempt_0003`并记`preserved_output_path`；第三次仅`training_config.json`、无新完成权重，原三次失败日志全部保留，原checkpoint路径重新创建。第四次保持`full_ft=0/resume=0` LoRA及上游已有输出保护，未盲设`resume=1`，未另建loop/Runner/定时任务/Trainer/队列。02:11 F14/ComfyUI/Serving未被干预；现行F14证据见下方F14段；Laya8.87 GiB、ComfyUI24.25 GiB的先前占用及ComfyUI`<A6000_HOST>:8188`监听、运行队列1/pending0的历史回报保留，图像任务活跃，`127.0.0.1`不通属绑定地址，未卸载/干预。第2次失败后的完整输入曝光仍UNKNOWN，第三次仅启动配置；第四次真实曝光单列，不替代任何失败attempt的统计。新候选`feature_training_status=FEATURE_PARTIALLY_TRAINED`：4条教师稀疏、三新身份监督目标0、能力卡缺测；正式评测仍待。新checkpoint已保存`head.pt` **5,249,053 bytes**、`adapter_model.safetensors` **129,924,032 bytes**及tokenizer实体，仅在A6000；未传Mac、未加载Serving，原Serving继续旧权重/`FEATURE_NOT_TRAINED`。原评分及留存机制保持，本轮收尾仅涉及多余控制器和临时连接，04:33:44主Agent确认无当轮SSH连接残留。04:33:44主Agent确认Serving2291306 `/health`HTTP200/`healthy`，Laya/Kev已加载、`inference_verified=true`，仍是旧权重；Kev50514/50518自然退出，未操作其他图像作业或服务。
+
+**原 Provider/telemetry 必要增量部署**：旧Server Provider缺少`alias_mapping/query_raw`支持，所需原Provider、账本/ledger/logger接点已部署；服务器构造V9 AliasProvider成功，账本根为`<SERVER_PROJECT_ROOT>`。该构造未发API请求、未读Key，不等于认证或生成请求已通过；Alias/账本补齐已验证且无新API，无新client服务，复用同一原执行链。最新source部署回报为 **40个文件/链接加原Laya/Kev增量**，首批37对象/6,993,920字节单列保留，后续总传输字节未回报。该批源码部署未更换Serving；KEV-V9-001新实体已在A6000保存、未上线Serving；API物理身份与正式三模型隔离仍保持。
+
+Laya V9尚未启动；hook在盘，原F14内存代码不读，下一自然child接续尚未发生。04:33:44原F14 PID4085749为R、显存9084MiB；现行结论为“运行推进，损失持续非有限，有效优化更新未确认”。原`continuous_queue.log:55355`第1块loss0.8102/step128，`:55416`第62块loss0.5391/step7936，`:55417`第63块起loss=nan/step8064；本次175块，前62块有限、第63–175块113块持续NaN。首次异常只能定位第63块内部、记录507905–516096、计数步骤7937–8064，无逐批log。
+
+磁盘源码`router_data/laya_batch_train.py:1473`每块独立初始化`chunk_loss_total`；1489原`soft_ce_loss`、1495 backward、1500起GradScaler/clip/step、1516累加`loss.item`、1529求均值/1533打印，支持该块真实loss累计值已非有限；不能推断每个微批均异常。1514的`global_step`无条件递增，包含可能被GradScaler跳过的更新尝试，计数步骤不能称有效更新数。`external/laya/laya/train.py:493` masked log_softmax使用有限-1e4，635的`_forward`在FP16 autocast后将logits转FP32；FP16仅为待追踪环节，未证明溢出诱因。已安装torch的`grad_scaler.py:363`在非有限梯度时会跳过`optimizer.step`，本次未保存skip/scaler信息。
+
+同日志`:32379`的F04 Epoch1 Chunk231已出现NaN，F04共8个NaN块、首次后仍有230个有限块；F04/run.json两轮train_loss=NaN，但S1 Val loss0.6300/0.6141有限。不能断言F14权重已失效或一定没有有效更新。F14尚无Epoch终局，首次异常batch的logits/target/gradient/scaler未捕获，具体诱因及有效更新未知；源码行号为磁盘版本，未读PID内存。本次主Agent只读诊断未停止/重启/改动作业，未加载权重、发模型请求、新评测或信号。Laya/原Serving仍旧权重；Kev新候选训练/Val/评分已完成、FEATURE_PARTIALLY_TRAINED，四指标比C03均退步，未上线Serving。
+
+预留与实际消耗分别保留；不将 77,544 写成真实已用 Token，不自行把新超时追加为已计失败或推算新余额。线上/离线教师、生成及重试仍累计在原总额 `< 1,000,000` 内；Token 额度不等于实付 USD，最终 usage、预留和有单位的费用等主 Agent 回报。
+
+**现行需求**：用户已保留 **V9 五 RQ、八图、十二表**，首批逻辑 ID 为 `gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`。V8 两Luna规则仍有效；三模型正式生成授权/配置待明确，当前只允许统一映射已有服务器 Qwen 的 `ALIAS_SMOKE`。Alias 不代表三个独立真实模型，审阅子 Agent 的 `gpt-6.1-sol/max` 也不代表生成/教师配置。新增方法只归 `v9/runtime`、`teacher`、`capabilities`、`training`，旧系统保留必要接点；职责表见 [RESEARCH_OVERVIEW](RESEARCH_OVERVIEW.md)。
+
+**训练、数据与教师后续**：复用 V2.1/L1 和合法 S1/S2/S3，保留质量、监督、层级和独立单位；AA 分数与观察动作不能作最优动作标签。教师的 `progress_summary`、`main_blocker`、`next_milestone` 必须实际编码且离线/在线同义；未学习记 `FEATURE_NOT_TRAINED`。顶级教师与联调教师、离线制作费用与在线 Episode 费用分开，连续上下文与实际 KV/缓存用量双记。原训练沿既有控制器自然接续，F14不读新hook与下一child两轮边界分别保留；各模型同协议Val及独立Dev选继续微调起点，Final不参与迭代。Mac不存Laya/Kev权重，累计真实API Token<1,000,000。源码/材料/原资源分支部署及final/训练prefix分词范围已确认；现行结果见上方训练表。step5近期工具真实末128字符已验证，长history与6条完整state仍裁、8192推荐未启用；192条Val长度尚未测。仍待Laya自然接续、F14首次异常具体诱因及有效优化更新定位、三新身份/Effort监督、AA实测和正式Harbor/RQ评测；前三次失败的曝光未知信息保留，Serving仍旧权重/`FEATURE_NOT_TRAINED`。原预算575783/256135/168082及135calls未变，04:20直传验证另增Router1/生成0，与此前回放分列；文档子任务未发请求。
+
+**材料完整性**：原 linked 聊天已移除、本机 source 文件缺失；四段下载聊天与两份提示词全文复核仍完整。研究编号依据下载讨论行 25981；身份/联调依据 26344、26368；教师/模块/缓存与费用依据 27359–27361、28201–28203、28747–28784。原 Q-ID 和历史负结果继续保留，具体实验表见 [V9 图表规划](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)。
+
+> 以下为 2026-10-28/29 的远端规划记录，不是 10-30 新实测。初始模型身份仍为 Sol、Luna、托管 `qwen3.8-flash`，不得替换为 27B 或 Flash-Next；其中 AA 52/38（v4.3.2）和 Qwen USD 价仅保留当时的来源陈述，未由本地证据复核，不用于当前能力快照、训练输入或实际账单。当前证据以本文最新记录及 `PROJECT_STATUS.md` 为准，早期权限描述不撤销后来的人类授权。
+
 ## 2026-10-29 · 统一 Planning 接手、V9 三模型池与能力卡本地快照（本轮规划，不是服务器新实测）
 
 **已明确批准的研究结构**：继续使用 **V9 五个 RQ**，顺序仍为 RQ1 整体性能、RQ2 模型池、RQ3 任务拆分、RQ4 系统消融、RQ5 工作负载适用边界；保留原 Fig.1–8、T1–T12。原“三核心 RQ”只是历史备选，不再作为本轮待决事项。
@@ -105,8 +372,8 @@ Kev 已完成固定 Val 的同协议结果如下。所有记录均为 C03 初始
 | R01 S1 | 0.566345 | 1.094774 | 0.542489 | 0.051039 | 98.861 | PROTECTED |
 | R02 S2 | 0.573955 | 1.110397 | 0.552117 | 0.093402 | 90.175 | PRUNED_LOW_SCORE |
 | R03 S3 | 0.567953 | 1.104241 | 0.544448 | 0.063738 | 96.036 | PRUNED_LOW_SCORE |
-| R04 S1:S2=1:1 | 0.567846 | 1.081526 | 0.540801 | 0.027957 | PROTECTED |
-| R05 S1:S2=2:1 | 0.571383 | 1.094129 | 0.543806 | 0.043059 | PRUNED_LOW_SCORE |
+| R04 S1:S2=1:1 | 0.567846 | 1.081526 | 0.540801 | 0.027957 |   | PROTECTED |
+| R05 S1:S2=2:1 | 0.571383 | 1.094129 | 0.543806 | 0.043059 |   | PRUNED_LOW_SCORE |
 
 R02、R03、R05 每项各有两个权重文件被移除，历史记录合计释放 `405,540,864` 字节；当前重复运行只产生0字节新增释放。训练配置、材料身份、日志、固定 Val 和处理原因仍保留。C03/C04/C09、R01、R04及父权重继续保护。留存评分仍只用于实体选择，不能替代论文主要评价。
 
@@ -204,8 +471,8 @@ Harbor 宿主仍缺 `newuidmap/newgidmap`，官方 Verifier Episode 仍 0；Orac
 
 1. **Laya-421M 队列连续自动推进至 F10**：
    - **F07 完训并验证**：2 个完整 Epochs，151,998 次优化步，消费 9,727,800 条训练样本，覆盖 1,344,240 个独立单元。最终 Chunk Loss = 0.4538。S1 最高 Accuracy 与最低 Loss 对应 `F07-e01`（S1 Val Acc 68.27%，Loss 0.6076，Brier 0.4203）；e02 为 67.91% / 0.6145。S3 选拔分与 S1 最佳 Epoch 分开。
-   - **F08 自动接续完训并验证**：2 个完整 Epochs，23,002 次优化步，消费 1,472,010 条样本，覆盖 209,037 个独立单元。最终 Chunk Loss = 0.4675。固定验证最佳检查点 `F08-e02`（S3 target score 157.5536，S1 Val Acc 67.02%，Loss 0.6123，Brier 0.4246）。
-   - **F09 自动接续完训并验证**：2 个完整 Epochs，30,826 次优化步，消费 1,972,758 条样本，覆盖 278,596 个独立单元。最终 Chunk Loss = 0.4698。固定验证最佳检查点 `F09-e02`（S3 target score 157.9859，S1 Val Acc 66.49%，Loss 0.6100，Brier 0.4226）。
+   - **F08 自动接续完训并验证**：2 个完整 Epochs，23,002 次优化步，消费 1,472,010 条样本，覆盖 209,037 个独立单元。最终 Chunk Loss = 0.4675。固定验证最佳Checkpoint `F08-e02`（S3 target score 157.5536，S1 Val Acc 67.02%，Loss 0.6123，Brier 0.4246）。
+   - **F09 自动接续完训并验证**：2 个完整 Epochs，30,826 次优化步，消费 1,972,758 条样本，覆盖 278,596 个独立单元。最终 Chunk Loss = 0.4698。固定验证最佳Checkpoint `F09-e02`（S3 target score 157.9859，S1 Val Acc 66.49%，Loss 0.6100，Brier 0.4226）。
    - **F10 当前健康训练中**：PID 4158797，Epoch 0 Chunk 135/152（已推进 88.8%），已执行 17,280 / 38,732 步，累计消费 1,105,920 条样本，覆盖 312,096 个独立单元，最新 Chunk Loss = 0.4934。GPU 占用 9,741 MiB / 49,140 MiB，利用率稳定在 93%–100%。
    - **Checkpoint 物理留存状态**：`F06-e02`（S1 Acc 68.63%，Loss 0.6017，Brier 0.4150）实体在盘。68.09% / 0.5936 / 0.4079 属于无实体的 `F06_S1-e02`。F07–F09 只有指标记录；Q-012 旧五份与新池约 15% 的决定保持，本段不作为实际淘汰比例的证明。
 
@@ -345,7 +612,7 @@ C04 仍由 PID 3212011 执行，Step 420/16,857、Loss 1.022，最后训练进�
 > 1. **双模型真实持续 GPU 训练零中断推进（现场最新实测）**：
 >    - **Laya-421M (MoE 架构)**：Worker PID `1202621`，正在执行全量分级连续训练（F06），已稳步推进至 **Epoch 1/2（第2轮）Chunk 153/361，Step 65,724 / 92,280**（总步数完成度 **71.22%**），已消费 **4,206,315** 个训练样本曝光，最新 Chunk Loss 稳定收敛至 **0.4557**。首轮 Epoch 1 固定验证成绩已锁定：S1 Acc **67.38%**（胜过 52.58% 多数类，逼近历史最佳 68.63%）；S2 Acc **58.16%**（历史性突破，首度显著击败 55.19% 多数类基准）；S3 Acc **60.58%**。预计今晚 ~23:30 自然完训。
 >    - **Kev-4B (Qwen3.5-4B LoRA + Pointer Head 架构)**：Worker PID `1357764`，持续微调已稳步推进至 **Step 12,500 / 16,857**（进度 **74.15%**），消费 50,000 条记录（2.058s / rec），Train Loss 为 **0.938**。调度器 PID `2042701` 每 60s 监护就绪，完训后自动运行 2,437 条固定验证并接续 C04。
->    - **服务与看板双重在线核验**：端口 8000 双模型 REST API 持续健康在线 > 17.4 小时，Laya 与 Kev 均输出真实模型前向概率推理（`fallback_used: false`）。A6000 独立 8765 监控大盘 `http://10.16.15.202:8765` 保持 5 秒级原生本地刷新（PID 2494953）。
+>    - **服务与看板双重在线核验**：端口 8000 双模型 REST API 持续健康在线 > 17.4 小时，Laya 与 Kev 均输出真实模型前向概率推理（`fallback_used: false`）。A6000 独立 8765 监控大盘 `http://<A6000_HOST>:8765` 保持 5 秒级原生本地刷新（PID 2494953）。
 > 2. **物理目录深度整理与 18,491 项工程资产全盘台账**：
 >    - 完成 Mac 与 A6000 全量盘点，输出 `our-project/docs/operations/migration_ledger_20261019.csv` 与 `MIGRATION_LEDGER_20261019.md`；
 >    - 彻底合并去重 `research/task-level-cost-routing/` 与 `our-project/external/research/` 间 139 个相同内容文件（释放 186 MB 重复空间，以相对符号链接完全兼容旧路径）；
@@ -370,8 +637,8 @@ C04 仍由 PID 3212011 执行，Step 420/16,857、Loss 1.022，最后训练进�
 > 1. **当前 GPU 在线训练状态（Live Running：F04 L4 单层联合监督全量覆盖）**：
 >    - **PID 2881373 持续高速健康运转**：A6000 利用率 60%～74%，显存 9,759 MiB / 49,140 MiB（19.9%），功耗 279.58W，温度 83°C。已稳步推进至 Epoch 1/2 Chunk 180/234（Epoch 1 完成度 76.92%），步数 23,040/59,904（总步数完成度 38.46%），Loss 持续收敛降至 **0.4830**，已消费 1,474,560 / 3,821,922 训练样本曝光（样本完成度 38.58%），覆盖 396,014 个独立任务单元；无任何异常、无显存泄漏，原进程零干扰持续推进。
 >    - **38 组研究推进全局**：已完成 13 组（34.21%），正在训练 1 组（F04，+2.63%），待开始 24 组（63.16%）；加权任务推进度达 **35.22%**。
-> 2. **纠正课程父模型认定，理清检查点真实含义（源码已实现、服务器已部署、单元测试 100% 通过）**：
->    - **严禁把“检查点物理存在”等同于“真实最优”**：在 `router_data/checkpoint_retention.py` 中彻底修复 `_sync_run_best_symlink()`，科学最优 Epoch 严格由完整历史验证指标（S1 loss）判定，裁剪后绝不把次优留存权重回写为 `best_epoch`；若最优物理权重丢失，严格将 `checkpoints/best` 符号链接撤除并置空 `best_checkpoint`，绝不随意降级指向次优权重；
+> 2. **纠正课程父模型认定，理清Checkpoint真实含义（源码已实现、服务器已部署、单元测试 100% 通过）**：
+>    - **严禁把“Checkpoint物理存在”等同于“真实最优”**：在 `router_data/checkpoint_retention.py` 中彻底修复 `_sync_run_best_symlink()`，科学最优 Epoch 严格由完整历史验证指标（S1 loss）判定，裁剪后绝不把次优留存权重回写为 `best_epoch`；若最优物理权重丢失，严格将 `checkpoints/best` 符号链接撤除并置空 `best_checkpoint`，绝不随意降级指向次优权重；
 >    - **Fail-Closed 课程父模型强校验**：在 `router_data/laya_batch_train.py` 与 `router_data/run_full_graded_queue.py` 中，`warm_start` 模式严格根据父模型的科学最优 `best_epoch` 核查物理权重；若真实最优物理权重缺失，直接判定为 `NEEDS_REGENERATION`，并在下游子任务启动前调度正规训练再生，坚决禁止回退基座或降级加载次优权重；
 >    - **F01 真实状态实测**：服务器实核 F01 科学最优为 Epoch 2（S1 Loss 0.6047 < Epoch 1 0.6206，S1 Acc 67.38% > Epoch 1 66.13%）；但物理权重因历史裁剪目前在盘为 0；系统已锁定科学最优 Epoch 2，判定为缺失并已安排在 Stage 5 启动前由正规流程再生物理权重，确保 `F17 ← F01`、`F18 ← F17`、`F19 ← F18`、`F20 ← F19` 严格闭环。
 > 3. **控制器版本安全交接方案与事实认定**：
@@ -387,9 +654,9 @@ C04 仍由 PID 3212011 执行，Step 420/16,857、Loss 1.022，最后训练进�
 
 八类变量为 `Task/Subtask`、`Agent/Coordination`、`Context/Memory`、`Tool/Environment`、`Verification/Recovery`、`KV Cache/Continuity`、`Temporal/Execution`、`Provider/Availability`。
 
-**2026-10-15 FULL-DATA-CONTINUOUS-TRAINING & ROUTING-ALIGNED（唯一正式长效训练入口）：在 A6000 后台持续稳定运行。** 调度器 `router_data/run_full_graded_queue.py --mode continuous_full_coverage` 驱动 F01..F20 及 ALGN_01..04，采用动态分块流式物化（Chunk 8,192 Items）、跨 Chunk 连续优化（AdamW + CosineAnnealingLR）、逐 Epoch 固定验证集（S1/S2/S3）评估、双池核心模型保留与动态淘汰裁剪及自动覆盖台账更新。
+**2026-10-15 FULL-DATA-CONTINUOUS-TRAINING & ROUTING-ALIGNED（历史运行快照，入口职责保留）。** 当时调度器 `router_data/run_full_graded_queue.py --mode continuous_full_coverage` 驱动 F01..F20 及 ALGN_01..04，采用动态分块流式物化（Chunk 8,192 Items）、跨 Chunk 连续优化（AdamW + CosineAnnealingLR）、逐 Epoch 固定验证集（S1/S2/S3）评估、双池核心模型保留与动态淘汰裁剪及自动覆盖台账更新；当前进程和阶段以首页的新回报为准。
 
-## 当前轮次
+## 2026-10-15 轮次留存（下列数字为当时记录）
 
 | 阶段 | 状态 |
 | --- | --- |
@@ -401,12 +668,12 @@ C04 仍由 PID 3212011 执行，Step 420/16,857、Loss 1.022，最后训练进�
 | P5 Laya Batch 1 | 训练 `13,438` 条、独立 Val `5,692` 条；`R1-e01` 与 `R2-e01` 作为课程父节点已标记 `PINNED_PARENT` 保护，当前停止 |
 | P6 Laya Sweep-02 | N01–N10 已完成（30 个 Epoch，50 个实体权重目录，占 `39.65 GiB`）；已纳入全项目 TOP 5 统一比选与裁剪 |
 | P7 FULL-GRADED 窗口一 & P0 数据修复 | 旧窗口 16 个 B01 Run（32 Epoch）隔离为 `LEGACY_INPUT_PROTOCOL`；新协议 52 个 `P0_` Run 已完成 CPU 物化并产生 TOP 5 核心权重 |
-| P8 Checkpoint 智能保留与磁盘保护 | 全局硬性保留上限 `MAX_CORE_CHECKPOINTS = 5`，两阶段白名单修剪彻底删除 122 个目录，**释放 96.16 GiB**；活动预算 120 GiB 与磁盘门禁正常 |
+| P8 Checkpoint 智能保留与磁盘保护 | 全局硬性保留上限 `MAX_CORE_CHECKPOINTS = 5`，两阶段白名单修剪彻底删除 122 个目录，**释放 96.16 GiB**；活动预算 120 GiB 与磁盘空间保护正常 |
 | P9 FULL-DATA 连续全量分级训练（进行中） | 启动 Mode B：486.4 万候选记录 F01..F20 全量分级流式训练（34 个正式方案），调度守护进程在后台连续运行；F01_S1..F07_S1 已完成，F01..F03 完成，当前 F04 准备启动，后续正规 Full-Coverage 准备就绪 |
 | P10 八类状态变量与联合路由监督审计 | 完成八类变量真实字段表、6 源覆盖热力图、8×8 共现矩阵（V2∩V6=0）、低成本敏感性筛查（G3 S2 Loss +0.4559, G4 S3 Loss +0.1065）及 4 项不支持假设锁定 |
 | P11 TOP5 精简 + 数据质量修复 + 路由对齐训练 | **已全部落地**：全局保留 TOP 5 核心模型权重，补齐轻量索引写入与数据物化漏洞，平衡多监督批次采样，正式确立 MR-ROUTING-ALIGNED-v2 四视角并排队 4 组消融任务 |
 | P12 采样优化 + 双池保留 + 极简质检看板 | **已全面完成**：ALGN_01～04 全量收敛验收；F03 正式接续流式训练；旧 5 核心永久保护 + 新 ~15% 动态择优双池上线；质检看板极简图表驱动重构上线 |
-| P13 过夜连续执行与全链数据修复 | **本轮就绪**：F03 顺利收敛归档（14 组完成），F04 启动阻断已完成定点修复并推送到远端与服务器，全链数据流打通，GPU 资源完全健康，待命接续 |
+| P13 过夜连续执行与全链数据修复 | **本轮就绪**：F03 顺利收敛归档（14 组完成），F04 启动失败已完成定点修复并推送到远端与服务器，全链数据流打通，GPU 资源完全健康，待命接续 |
 
 公开记录层规模：L1 `663,963`、L2 `1,304,523`、L3 `1,993,193`、L4 `2,638,949`，总计 `6,600,628`。三类 OWN 记录逐层另列。按来源政策允许、Q1/Q2、真实目标及 Train 身份计算的候选记录数依次为 `489,911`、`973,501`、`1,475,527`、`1,924,961`，合计 `4,863,900`；Val/Test 身份归评测用途，不计作训练候选。候选包含轨迹终局、静态偏好、缓存复用机会、请求负载和 OWN-002 调用统计等不同目标，不代表联合路由监督。
 
@@ -428,7 +695,7 @@ TRA 与 ENV 共有 `13,486` 条任务记录继承 TRA 已有 Train/Val/Test 身�
 | 数据收集、14 个公开源统一 CPU 清洗 | **阶段性完成**：`6,600,628` 行，覆盖轨迹、静态评测、缓存请求、工作负载、环境和记忆；另有 CCH/Blog 自有数据，不能按同一粒度简单相加 |
 | Stage 1–4 全量分层与监督修复（P0） | **已完成**：对齐 `ROUTE-001` 新旧 Choice（均为 `8,441` 题，`0` 差异）、Pairwise（`59,049` 对）、Score/Soft-Target（`53,087` 题）的完整题目身份与统一 Train/Val/Test 语义划分（跨视图泄漏 `0`）；排除 `1,953` 条不合法单胜者与 `417` 道分数冲突题，保留 `11,599` 道 `ROUTE-001` 同分题与 `87` 道 `ROUTE-002` 双并列题于多模型比较视图 |
 | Laya-421M / Kev-4B 双模型训练视图适配与 CPU 校验（P1–P2） | **已完成**：在 `runs/MR-ALLDATA-PREP-20261011/training/{laya,kev}/` 生成 6 个训练子集（`stage1_choice` `83,259`、`stage1_pairwise` `59,049`、`stage1_soft_target` `53,087`、`stage2_agent_state` `88,087` 轨迹级、`stage3_effort` `290` 有效配对、`stage4_auxiliary` `1,622,547` 有效调用），合计每模型 `1,906,319` 条记录，均通过官方 CPU 加载与编码校验 |
-| **当前等待点：Laya-421M / Kev-4B 第一轮正式 GPU 训练（P3）** | **参数与命令已备齐，按指令暂停等待批准**：已基于官方 `laya-train` 与 `python -m kev.train` 锁定首轮超参数、数据路径与检查点输出目录 |
+| **当前等待点：Laya-421M / Kev-4B 第一轮正式 GPU 训练（P3）** | **参数与命令已备齐，按指令暂停等待批准**：已基于官方 `laya-train` 与 `python -m kev.train` 锁定首轮超参数、数据路径与Checkpoint输出目录 |
 | E2：Kev/Laya 正式微调与离线对照 | **尚未启动；GPU 未授权**。保持 A/B/C 分源分体制评测；`ROUTE-004` `TRAIN_ALLOWED_VERIFIED`，`ROUTE-001/002` `LICENSE_PENDING` |
 | E3–E5：Coding Benchmark、运行时缓存感知/多 Agent 动态路由、消融和论文 | **尚未启动**。同状态多动作、真实 KV 切换代价及整个任务回报的联合监督仍缺失 |
 
@@ -436,13 +703,13 @@ TRA 与 ENV 共有 `13,486` 条任务记录继承 TRA 已有 Train/Val/Test 身�
 
 ## 二、当前阶段各小步骤
 
-### A. 已完成的大块：数据清洗、正确性修正与双模型训练视图适配
+### A. 已完成的大块：数据清洗、错误更正与双模型训练视图适配
 
 1. **源与数量**：14 个已清洗公开源共 `6,600,628` 条不同粒度记录；自有 `OWN-001` CCH `110` 聚合行对应 `750,212` 次调用、`OWN-002` Blog `221,128` 逐调用行、`OWN-003` `79` 衍生汇总行（新增独立观测 `0`）。
-2. **唯一处理链**：`prepare_router_data.py` 为唯一命令入口（`--mode views` 与 `--mode all_data`），内部模块位于 `router_data/`；原始数据与历史冻结导出未被覆盖。
+2. **唯一处理链**：`prepare_router_data.py` 为唯一命令入口（`--mode views` 与 `--mode all_data`），内部模块位于 `router_data/`；原始数据与历史固定导出未被覆盖。
 3. **P0 监督修复与跨视图对齐**：
    - `ROUTE-001` 新重算 Choice 严格剔除 `1,953` 条不合法单胜者（`ALL_MODELS_FAILED: 1,553`、`CONFLICTING_MODEL_SCORE_UNRESOLVED: 241`、`CONFLICTING_TIED_TOP_COST_UNRESOLVED: 141`、`CONFLICTING_WINNER_COST_UNRESOLVED: 17`、`TIED_SCORE_TIED_API_USD: 1`），从 `10,394` 收敛为 **`8,441` 条（`train: 6,729, val: 865, test: 847`）**，与 Stage 1 主 Choice 中的 `ROUTE-001` 子集逐题 100% 一致（差异 `0`）。
-   - 统一使用 `views.py` 的完整题面语义归一化哈希划分规则，消除 `all_data.py` 旧版二次哈希导致的不同视图跨集不一致（Soft-Target、Pairwise 与主 Choice 的跨集泄漏均为 `0`）。
+   - 统一使用 `views.py` 的完整题面语义归一化散列划分规则，消除 `all_data.py` 旧版二次散列导致的不同视图跨集不一致（Soft-Target、Pairwise 与主 Choice 的跨集泄漏均为 `0`）。
    - 在 `stage1_soft_target`（`53,087` 题：`42,502 / 5,327 / 5,258`）与 `stage1_pairwise`（`59,049` 对：`47,241 / 5,941 / 5,867`）中剔除 `417` 道同模型分数冲突题，完整保留 `11,599` 道 `ROUTE-001` 最高分并列但具备有效多模型质量分布的题目及 `87` 道 `ROUTE-002` 得分+估价双并列题。
 4. **P1–P2 双模型独立训练视图与 CPU 官方编码核验**：
    - 独立目录 `runs/MR-ALLDATA-PREP-20261011/training/laya/` 与 `runs/MR-ALLDATA-PREP-20261011/training/kev/` 均包含 6 个阶段子目录：
@@ -507,8 +774,8 @@ Execution 在每轮结束时先执行 `git status -sb`、`git rev-parse HEAD`、
 | 研究命题 | 长程 Agent 状态感知、任务级 Model × Effort 路由 | **已明确** |
 | 文献与历史研究 | 已有综合报告、7 个专题证据、Kev/Jev 研究 | **可用，需按当前方法更新** |
 | 本地生产调用数据 | CCH 聚合 + Blog GPT 调用明细 | **仅适合统计先验，非路由监督** |
-| 真实 Agent 轨迹 | 16 个公开数据源（660 万条）已清洗归档；84,310 条单胜者路由视图已冻结 | **训练视图已就绪（TRAIN_READY）** |
-| 数据处理与验证主链 | `prepare_router_data.py` + `manifest.json`（两次运行 SHA256 100% 一致） | **已冻结** |
+| 真实 Agent 轨迹 | 16 个公开数据源（660 万条）已清洗归档；84,310 条单胜者路由视图已固定 | **训练视图已就绪（TRAIN_READY）** |
+| 数据处理与验证主链 | `prepare_router_data.py` + `manifest.json`（两次运行 SHA256 100% 一致） | **已固定** |
 | Kev-4B 与 Laya-421M | 权重已下载，官方仓库代码已完成全量编码验证与 GPU Smoke Test | **Smoke Test 100% 通过** |
 | GPU | 一张 A6000 48GB；Kev-4B 训练峰值 10.50 GiB，Laya-421M 训练峰值 < 2 GiB | **资源充足，已实测验证** |
 | Coding Benchmark 批量运行 | 尚未启动，等待 Kev/Laya 正式训练完成后再规划批量运行 | **未启动（E3 阶段）** |
@@ -516,7 +783,7 @@ Execution 在每轮结束时先执行 `git status -sb`、`git rev-parse HEAD`、
 
 **执行路线（最新调整顺序）**：`E0 / E0.5 研究与资源审计（已完成） → E-DESIGN 数据与模型训练方案 / Q-007-FINAL（已完成） → E1 模型训练环境与最小运行验证（已完成 Smoke Test） → E2 Kev/Laya 正式训练与离线验证（下一步） → E3 Coding Benchmark 批量运行（未启动） → E4 动态缓存感知路由实验（未启动） → E5 消融、统计检验与论文整理（未启动）`。
 
-**当前状态**：Q-007-FINAL 已完成数据资产冻结、唯一胜者标签纯化、跨集零泄漏验证及 Kev/Laya 官方 CPU/GPU Smoke Test，下一步进入 E1/E2 正式训练阶段。Coding Benchmark 尚未启动，等待 Kev/Laya 正式训练完成后再规划批量运行。
+**当前状态**：Q-007-FINAL 已完成数据资产定版、唯一胜者标签纯化、跨集零泄漏验证及 Kev/Laya 官方 CPU/GPU Smoke Test，下一步进入 E1/E2 正式训练阶段。Coding Benchmark 尚未启动，等待 Kev/Laya 正式训练完成后再规划批量运行。
 
 ## 2. 仓库与工程状态
 
@@ -589,7 +856,7 @@ configs/
 
 ## 4. 数据资产与可训练性
 
-**数据来源/Policy/Cache 唯一详细目录**：[DATA_SOURCE_AND_POLICY_REGISTRY.md](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)。专门包含八组状态的源数据映射、国内外 Provider 官方政策、缓存标签实测/复用/模拟区别、待确认数据集清单、选择表与 AI 清洗质量合同；与下表已拥有的调用统计资产区分。
+**数据来源/Policy/Cache 唯一详细目录**：[DATA_SOURCE_AND_POLICY_REGISTRY.md](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)。专门包含八组状态的源数据映射、国内外 Provider 官方政策、缓存标签实测/复用/模拟区别、待确认数据集清单、选择表与 AI 清洗质量要求；与下表已拥有的调用统计资产区分。
 
 | 数据源 | 已审计规模 | Model × Effort | 可用字段 | 关键缺失 | 允许用途 |
 |---|---|---|---|---|---|
@@ -617,7 +884,7 @@ configs/
 | B6 | 中 | Kev-4B 依赖与显存尚未实测 | A6000 独立环境 smoke test |
 | B7 | 中 | 公共 benchmark 可能存在训练污染/任务泄漏 | task-level split、时间/仓库隔离、held-out |
 | B8 | 中 | 真实公开任务多分支 rollout 可能成本高 | 先用真实 Benchmark 小样本技术验证、API 逐模型限额、资源审批（规模待 Q-008） |
-| B9 | 中 | 公开 GitHub 与本地私人路径/日志混杂 | 脱敏检查、敏感数据不提交 |
+| B9 | 中 | 公开 GitHub 与本地私人路径/日志混杂 | 脱敏核对、敏感数据不提交 |
 | B10 | 中 | 历史实现方案与最新方法不一致 | 三文档规范化并注明历史基线 |
 
 ## 6. 里程碑与验收条件
@@ -626,7 +893,7 @@ configs/
 |---|---|---|---|
 | E0 | 环境/目录/数据只读审计 | 完整报告和证据路径 | **Agent 报告完成（历史快照）** |
 | E0.5 | 环境、目录与文档确认 | 审计报告、版本对齐及服务器边界明确 | **已完成：负责人确认隔离原则；未执行服务器操作** |
-| E-DESIGN | 详细实验设计与用户决策（`EXPERIMENT_QA.md`） | 明确具体任务、动作空间、预算决策、对照方案 | **进行中：Q-001～Q-006 已确认/原则确认；训练问答 Q-007/Q-010/Q-011 待答，实验协议未冻结** |
+| E-DESIGN | 详细实验设计与用户决策（`EXPERIMENT_QA.md`） | 明确具体任务、动作空间、预算决策、对照方案 | **进行中：Q-001～Q-006 已确认/原则确认；训练问答 Q-007/Q-010/Q-011 待答，实验协议未确定** |
 | E1 | 工程基础（Schema、硬约束、账本、数据映射、环境验证） | 本地单元测试通过；无未来泄漏；环境跑通 | 未开始 |
 | E2 | Harness 与基线（最小 Harness + 固定/规则基线） | 可重放 task、自动 resolved、真实记账 | 未开始 |
 | E3 | 受控实验（同状态多动作分支试验） | paired trajectories、相同继续策略、预算约束 | 未开始 |
@@ -642,7 +909,7 @@ configs/
 - 记录任务 resolved、整任务 USD、延迟、步骤、错误、cache read/write、seed、失败原因；
 - 预算与模型调用权限由用户单独批准。
 
-**正式扩展候选（仅规划）**：经许可与复现检查的真实公开 Coding Benchmark；旧预案约 30 个任务 × 2 动作 × 2 seed ≈ 120 分支轨迹；必须先验证预算、复现性和环境隔离，**不能把该数字写成已经运行**。
+**正式扩展候选（仅规划）**：经许可与复现核对的真实公开 Coding Benchmark；旧预案约 30 个任务 × 2 动作 × 2 seed ≈ 120 分支轨迹；必须先验证预算、复现性和环境隔离，**不能把该数字写成已经运行**。
 
 ### 6.2 评价与统计
 
@@ -676,7 +943,7 @@ configs/
 
 **允许范围（需正式任务卡确认）**：本地新建项目包、纯离线单元测试、公开脱敏示例；同步三文档、提交 GitHub。**不包括**服务器写操作、下载大模型或付费 API。
 
-**输出**：可安装包、State/Action/Constraint/Decision/Outcome/Pricing 定义、State Builder 决策前检查、候选能力表、约束单测、费用单位校验、测试命令、本地 commit SHA 与成功 push 状态。
+**输出**：可安装包、State/Action/Constraint/Decision/Outcome/Pricing 定义、State Builder 决策前核对、候选能力表、约束单测、费用单位校验、测试命令、本地 commit SHA 与成功 push 状态。
 
 **验收**：测试可重复；无未来信息字段；缺失 effort 不伪造；USD/quotaUnits 不相加；缓存实际值与估计值分开。
 
@@ -690,7 +957,7 @@ configs/
 
 ## 8. 更新纪律
 
-每次任务或研究决策：Execution Agent 在本地频繁 commit。Memory 记长期决策与交接，Status 记唯一当前进度，Q&A 记问答记录；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 仅在研究证据、方法或实验协议改变时更新。交付记录本地 HEAD、工作树状态、测试和结果版本。
+每次任务或研究决策按真实变化维护原文档：Memory 记长期决策与交接，Status 记唯一当前进度，Q&A 记问答记录；[RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 仅在研究证据、方法或实验协议改变时更新。提交、推送、PR、CI 只按当前明确请求执行，本轮不做；交付实际文件、验证和仍待完成事实。
 
 **此处所有“未开始/待验证”均为 2026-10-09 的基线，后续必须依据真实执行证据更改。**
 ### 2026-10-11 · MR-STAGE1-INPUT-FIX
@@ -734,7 +1001,7 @@ configs/
   - 每个新 Run 启动前执行 `pre_run_disk_check`；预算不足时仅在当前授权 `out_root/*/checkpoints/*` 白名单内生成二阶段清理计划并物理删除（`shutil.rmtree`，绝不移入同分区 `.Trash` 虚报释放），严禁触碰原始数据、`models/`、`external/`、历史实验、`PINNED_PARENT` 或全局最佳模型。
 - **当前实测统计摘要（P6）**：
   - **总 Epoch 数**：FULL-GRADED 窗口一 `32` 轮；全项目累计 `71` 轮（含 `Batch 1` `9` 轮 + `Sweep-02` `30` 轮）；P7 沙盒验证 `14` 轮。
-  - **有效模型权重数与保留比例**：FULL-GRADED 当前磁盘存有 `30` 个 Epoch 实体权重（共 `55` 个物理目录，含 `25` 个存量 `best/latest` 副本；`B01_C14_QB_PB` 的 `2` 个 Epoch 已修正为 `weights_saved=false` / `LEGACY_METADATA_ONLY`），存量 Epoch 保留率 `93.75%`（`30/32`）；按新策略筛选应保留 **`11` 个**有效 Epoch 权重（**策略保留比例 `34.38%`**，P7 沙盒实测保留率 `35.71%` [`5/14`]）。全项目累计存有 `69` 个 Epoch 权重（`120` 个物理目录，含 `2` 个 `PINNED_PARENT`：`R1-e01`、`R2-e01`）。
+  - **有效模型权重数与保留比例**：FULL-GRADED 当前磁盘存有 `30` 个 Epoch 实体权重（共 `55` 个物理目录，含 `25` 个存量 `best/latest` 副本；`B01_C14_QB_PB` 的 `2` 个 Epoch 已改为 `weights_saved=false` / `LEGACY_METADATA_ONLY`），存量 Epoch 保留率 `93.75%`（`30/32`）；按新策略筛选应保留 **`11` 个**有效 Epoch 权重（**策略保留比例 `34.38%`**，P7 沙盒实测保留率 `35.71%` [`5/14`]）。全项目累计存有 `69` 个 Epoch 权重（`120` 个物理目录，含 `2` 个 `PINNED_PARENT`：`R1-e01`、`R2-e01`）。
   - **磁盘实际使用与累计释放空间**：服务器根分区总容量 `3,518.72 GiB`，已用 `2,275.13 GiB`（`df 69%`），**可用 `1,064.78 GiB`（`30.26%`）**；`runs/MR-FULL-GRADED-TRAINING/` 占 `43.60 GiB`，历史实验占 `51.47 GiB`（`Sweep-02` `39.65 GiB` + `Batch 1` `11.82 GiB`），新协议 `P0_` CPU 物化目录占 `0.41 GiB`，基础模型 `models/` 占 `9.64 GiB`。已释放 `B01_C14_QB_PB` 权重 **`3.15 GiB`（`3,384,787,296 B`）**（沙盒模拟二阶段清理另验证释放 `197,016 B`）；FULL-GRADED 存量中未来按需可清理冗余/低分权重 **`34.68 GiB`**（`44` 个目录）。
   - **当前最佳模型与下次存储预算**：旧协议窗口一 S1 Loss / Accuracy / Brier 最佳均为 `B01_C05_QB_PB-e02`（`0.5945 / 0.6827 / 0.4082`），历史 Sweep-02 最高 S1 Accuracy 为 `N10-e03`（`0.6952`）；新协议尚未启动 GPU 训练。下一次训练窗口可用活动权重预算 **`120.0 GiB`**（去重后旧窗口仅占 `8.67 GiB` [`7.22%`]）；新策略预估**每 100 个 Run 稳态仅占 `18.91 GiB`（含临时峰值 `20.49 GiB`）**，较旧保存方式（`315.23 ~ 354.64 GiB / 100 Runs`）节省 **`94.0% ~ 94.67%`**。
 ### 2026-10-13 · MR-FULL-GRADED-AUTO-SWEEP（剩余合法实验自动执行与前 30% Checkpoint 动态保留验收）
@@ -743,8 +1010,8 @@ configs/
   - 编写并部署唯一轻量可恢复调度脚本 `router_data/run_full_graded_queue.py`，完整执行新中性协议（`MR-FULL-GRADED-P0-DATA-REPAIR-v1`）全部 `52` 个已物化 Run（各 2 Epoch，共 `104` Epoch），覆盖 B01–B04 全批次与 S1、S2、S3 全监督组合。
   - **1,092 矩阵槽位完全对账**：`1,008` 基础槽位（`52` `NEW_PROTOCOL_COMPLETED` + `487` `ELIGIBLE_UNMATERIALIZED` + `154` `SKIPPED` 相同数据去重 + `315` `BLOCKED`）+ `84` `EXTENSION_UNDEFINED` 扩展槽位 = `1,092`。旧协议 `16` 个历史 Run 严格隔离为 `LEGACY_COMPLETED`。
 - **三层基准体系与多指标综合得分**：
-  - **BASELINE_0（固定基座）**：未微调 Laya-421M 在新协议固定 Val 上冻结评估（S1 561 条: Loss `1.8071` / Acc `0.4759` / Brier `0.9021` / ECE `0.4402`；S2 337 条: Loss `0.7715` / Acc `0.4985` / Brier `0.5663` / ECE `0.1620`；S3 4,794 条: Loss `1.2189` / Acc `0.4637` / Brier `0.6540` / ECE `0.1895`），综合分精确标定为 `100.0`。
-  - **BASELINE_1 / BASELINE_2（动态历史均值与分位数）**：S1 组纳管 `37` 个独立已完成 Run（单 Run 仅贡献 1 个最佳 Epoch），得出历史均值 `155.67`、10% 截尾均值 `155.82` 与 P70（前 30%）分位数 `157.46`。
+  - **`BASELINE_0`（固定基座）**：未微调 Laya-421M 按新协议在固定 Val 上评估（S1 561 条: Loss `1.8071` / Acc `0.4759` / Brier `0.9021` / ECE `0.4402`；S2 337 条: Loss `0.7715` / Acc `0.4985` / Brier `0.5663` / ECE `0.1620`；S3 4,794 条: Loss `1.2189` / Acc `0.4637` / Brier `0.6540` / ECE `0.1895`），综合分精确标定为 `100.0`。
+  - **`BASELINE_1` / `BASELINE_2`（动态历史均值与分位数）**：S1 组纳管 `37` 个独立已完成 Run（单 Run 仅贡献 1 个最佳 Epoch），得出历史均值 `155.67`、10% 截尾均值 `155.82` 与 P70（前 30%）分位数 `157.46`。
 - **前 30% 动态 Checkpoint 保留机制与磁盘保护实测**：
   - **保留与裁剪实测**：104 个 Epoch 中物理权重仅保留 **10 个**（保留率 **`9.62%`**）：
     - `RETAINED_BEST`: 2 个（`P0_B03_C01_QB_PB-e02`: S1 Loss `0.6039` / 最高 Acc **`0.6863`** / S1_score `159.25`；`P0_B01_C01_QB_PB-e02`: 最低 S1 Loss **`0.5998`** / 最低 Brier **`0.4128`** / S1_score `158.83`）。
@@ -764,7 +1031,7 @@ configs/
 - **只读审计定位与零中断执行**：
   - 复用现有 V2.1 质量索引与 FULL-COVERAGE 训练数据，开展只读、轻量级静态穿透与前向推理审计；**零中断** RTX A6000 正在进行的合法 F02 训练（守护进程 PID 2207051，训练进程 PID 2287331，GPU 连续高效计算中）。
 - **八类变量真实字段表与因果隔离（V1–V8）**：
-  - **因果隔离审计通过**：模型输入仅抽取自 `pre_decision_state` 及静态元数据（V1 任务领域/PromptSnippet、V2 步数索引、V3 上下文字符/输入Token、V4 历史工具调用次数、V5 历史错误信号数、V6 前缀分块哈希采样/块数、V7 请求到达时间戳、V8 候选模型对/请求模型）。
+  - **因果隔离审计通过**：模型输入仅抽取自 `pre_decision_state` 及静态元数据（V1 任务领域/PromptSnippet、V2 步数索引、V3 上下文字符/输入Token、V4 历史工具调用次数、V5 历史错误信号数、V6 前缀分块散列采样/块数、V7 请求到达时间戳、V8 候选模型对/请求模型）。
   - **事后真值严格隔离至 Loss 端**：`task_resolved`、`human_winner`、`observed_action`、`output_length`、`response_tokens`、`quota_units` 等事后执行与计费字段严格隔离于 Loss 目标端，**完全消除事后目标泄漏（Target Leakage）**。
 - **6 大合法训练来源 × 变量覆盖热力图与共现结构（$N = 4,863,900$ 候选）**：
   - **变量整体覆盖率**：V8 供应商（`98.76%`，4.80M）、V1 任务 & V3 上下文（`76.33%`，3.71M）、V2 Agent & V4 工具（`72.74%`，3.54M，严格局限于 TRA-001/002 轨迹）、V5 验证（`73.39%`，3.57M）、V7 时序（`26.61%`，1.29M）、V6 KV 缓存（`3.53%`，171.6k，局限于 CACHE-001 与 OWN-002）。
@@ -776,10 +1043,10 @@ configs/
 - **FULL-COVERAGE 五级计数与索引流式采集穿透审计**：
   - **五级计数对账**：Level 0 物理记录（6,821,945）$\to$ Level 1 政策允许合法候选（4,863,900）$\to$ Level 2 索引收集引用（L1: 485,535 / L2: 1,001,695 / L3: 1,467,693 / L4: 1,946,303）$\to$ Level 3 官方物化编码 Item $\to$ Level 4 梯度更新优化步。
   - **索引剪裁与回退审计**：`levelN.json.gz` 因内存优化省略了 `train_eligible` 键导致少量 Q3 渗入（L1 325 条，L2 690 条，L3 969 条，L4 35,342 条）；TRA-002 的 `inferred_command` 回退至 `observed_action/failure/success` 动作。已在审计台账中如实核算，不虚报原生全监督。
-  - **验证集隔离核验**：固定 Val 集（3,142 独立记录，875 唯一 Prompt 前缀）与训练集记录 ID、单元 ID、Prompt 文本重叠**均为 0 条**，通过物理哈希真实集合交集核验（非代码写死常量）。
+  - **验证集隔离核验**：固定 Val 集（3,142 独立记录，875 唯一 Prompt 前缀）与训练集记录 ID、单元 ID、Prompt 文本重叠**均为 0 条**，通过物理散列真实集合交集核验（非代码写死常量）。
 - **低成本特征组敏感性筛查实测与正式消融优先级矩阵**：
   - **敏感性筛查实测（微调权重 `B01_C13_QB_PB` on CUDA，固定 Val $N=5,692$）**：
-    - Baseline (无掩蔽): Loss `0.8172` (S1 `0.6196`, S2 `1.1677`, S3 `0.8157`, Macro-F1 `0.5898`)
+    - 无掩蔽参照: Loss `0.8172` (S1 `0.6196`, S2 `1.1677`, S3 `0.8157`, Macro-F1 `0.5898`)
     - Mask G1 (Task+Context): Loss `0.8371` ($\Delta$ `+0.0199`)，S3 资源 Loss 上升至 `0.8649`
     - Mask G2 (Agent+Tool): Loss `0.8111` ($\Delta$ `-0.0061`)，静态验证集边际影响极小
     - Mask G3 (Verification): Loss `0.8442` ($\Delta$ `+0.0270`)，**S2 Action Loss 剧烈飙升至 1.6236 ($\Delta$ `+0.4559`)**！
@@ -808,7 +1075,7 @@ configs/
 - **P0 清理机制**：独立脚本默认 `--active-runs F02` 与 `--pinned-ckpts R1-e01,R2-e01`；未自动发现实时依赖；删后未在同一事务更新全部 `run.json`、`epoch_metrics.json` 与链接。新 Top-5 抉择也未验证和原 30% 合法候选集合完全一致；不得将其描述为已实现可靠的每 Epoch 自动 Top-5 替换。
 - **P1 数据协议**：`quality_v2.py` 新加资格字段只是索引代码改动；须重生成/校验受影响的 V2.1 索引并确保 `collect_full_coverage_refs()` 严格过滤来源许可、显式合法目标。后续新数据版本号、源指纹、Chunk/Item 血缘不可缺失。
 - **P1 训练接续**：旧 F 系列及既有权重保留历史；新 `ALGN_01..04` 已定义并加入调度，尚无可验证的新版真实 GPU Run 结果。旧的 Python 训练进程不会因代码提交而自动加载新逻辑；必须在安全 Run 边界交接。
-- **P1 公共仓库隐私**：新增 Top-5 manifest 出现服务器绝对路径；停止将其当作公开安全的脱敏产物，按仓库公开规则清理并检查 Git 历史暴露范围。
+- **P1 公共仓库隐私**：新增 Top-5 manifest 出现服务器绝对路径；停止将其当作公开安全的脱敏产物，按仓库公开规则清理并核对 Git 历史暴露范围。
 - **科研边界**：S1 是静态模型偏好，不是 Coding Benchmark 通过率；真实 Model×Effort 同状态反事实任务质量/费用监督仍为 0。不得宣称完整路由学会了综合八类变量。
 
 **下一任务顺序**：暂停新协议批量接管（不中断旧进程）→ 修复数据/统计/隐私及 Checkpoint 原子性 → CPU 和小规模真实 GPU 验收 → 在唯一队列入口继续 `ALGN_01..04` 和合法 FULL-COVERAGE。保留原 Top-30% 综合质量门槛，普通实体权重最多五份，父/恢复点例外单列。
@@ -898,7 +1165,7 @@ configs/
     - 队列守护进程 PID `2568166`，训练算子进程 PID `2568350`；
     - 硬件状态：RTX A6000 负载 100%，功耗 296W，显存 3,511 MiB，温度 45°C；
     - 调度体系在遭遇外部显存短时突增时精确触发 `PAUSED_GPU_BUSY` 自愈保护，GPU 释放后无缝秒级恢复。
-- **14/14 存储策略与隐私检查 100% 通过**：
+- **14/14 存储策略与隐私核对 100% 通过**：
   - 执行 `run_storage_policy_verification`，P11-01 至 P11-14 全部 PASSED；
   - 全项目文档与代码私有路径彻底净化（0 泄露），无任何私有绝对路径与凭据；
   - 物理 Checkpoint 严格遵循 $\le 5$ 实体权重硬上限（目前保留 5 个核心模型 + 2 个受保护父模型），无任何多余无引用孤立权重。
@@ -943,7 +1210,7 @@ configs/
   - **修复实现**：严格从权威验证集目录 `runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/val/` 加载 S1（561 条）、S2（337 条）、S3（4,794 条，涵盖 2,244 个请求）共计 3,142 个独立 Record ID 和 Unit ID，计算物理 SHA256 校验和（S1: `ca5a956dda1c8631...`, S2: `7b39deadb8d83964...`, S3: `fe41ae9f17a9dc5e...`）；
   - **全量实测**：对全库 `quality_grading_v2_1` 共计 15,210,939 条训练记录进行逐行无遗漏扫描，真实交集为严格的 **0 条**（Record Overlap = 0, Unit Overlap = 0），以严密的数学确凿性实证了全项目绝对零数据泄漏！
 - **P0-3 生产级恢复引擎验证全量闭环**：
-  - 抽取生产函数 `resolve_checkpoint_to_resume()` 统一接管训练恢复与检查点锚定；
+  - 抽取生产函数 `resolve_checkpoint_to_resume()` 统一接管训练恢复与Checkpoint锚定；
   - 全面升级 `test_streaming_chunk_recovery.py`，6/6 项测试 100% 通过（参考轨迹比特级一致、缺失物理权重安全触发 `EPOCH_RESTART`、虚假 completed 拦截、合法 `METADATA_ONLY` 完结状态接纳、SHA256 权重校验和一致性、恢复后真实反向传播参数更新）。
 - **P0-4 不可变历史失败审计账本确立**：
   - 建立不可变账本 `docs/historical_execution_failure_ledger.json`（及同名副本于 Run 根目录），详细记录早期 `F03` 与 `F04` 遭遇的 `NameError: params` 错误上下文、堆栈行号、根因、以及修复 Commit `c479f6f`；
@@ -1023,7 +1290,7 @@ configs/
 
 **本次是执行要求和源码复核结果，不是新阶段已全部跑通的证据。** 最新执行细则见 [V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md §8](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)：改为**主 Agent + 两个子代理（覆盖此前仅一个的旧限制）**；现有 A6000 Laya/Kev 训练和服务需继续，两个模型各自开展至少 12 个科学上不同、有真实固定 Val 与可加载 Checkpoint 的候选/阶段验证点，新增数据按台账合法进入独立 V8 分支，不能将 CPU 两步 Smoke 当作 Kev 正式多轮。GPU 安全/许可证/固定测试集泄漏问题仍优先于候选数指标。
 
-2026-10-18 `b80574d` GitHub 实际源码复核发现：`run_stress_benchmark.py` 用 `MockGeneratorProvider`，`runner.py` 固定创建 `MockSandboxEnvironment`，报告的“64 并发 75% Pass@1”“22,248 tasks/hour”和模型模拟 USD **不是 Terminal-Bench 真实 Agent 成绩**。Kev `experiments/router_serving/kev_adapter.py` 仅检查元数据、`route()` 是启发式评分而非实际 Kev forward；RouteLLM 和 SR-KNN 是手写规则/人工 exemplars，不是上游公开方法复现。`provider.py` 目前只有 Chat Completions，缺 OpenAI Responses/Anthropic Messages。Git 树未证明官方 Benchmark 与公开方法源码已按所需路径全部克隆。这些必须按 §8 的真实来源/官方 Docker/evaluator/权重推理做纠正。之前的 S4/S6/S8 completed 仅可保留为 MOCK/SCHEMA/ADAPTER_SMOKE 状态，不能当作正式完成。
+2026-10-18 `b80574d` GitHub 实际源码复核发现：`run_stress_benchmark.py` 用 `MockGeneratorProvider`，`runner.py` 固定创建 `MockSandboxEnvironment`，报告的“64 并发 75% Pass@1”“22,248 tasks/hour”和模型模拟 USD **不是 Terminal-Bench 真实 Agent 成绩**。Kev `experiments/router_serving/kev_adapter.py` 仅核对元数据、`route()` 使用启发式评分，未执行真实 Kev forward；RouteLLM 和 SR-KNN 是手写规则/人工 exemplars，不是上游公开方法复现。`provider.py` 目前只有 Chat Completions，缺 OpenAI Responses/Anthropic Messages。Git 树未证明官方 Benchmark 与公开方法源码已按所需路径全部克隆。这些必须按 §8 的真实来源/官方 Docker/evaluator/权重推理做纠正。之前的 S4/S6/S8 completed 仅可保留为 MOCK/SCHEMA/ADAPTER_SMOKE 状态，不能当作正式完成。
 
 负责人现在允许在 Mac 上**只读使用既有 CC Switch 本地配置或合法本地代理**发现实际 URL/模型/GPT-6 与 Luna 的可用模型名及三种 API 协议，进行 1–2 个真实 Benchmark 任务及各方法的极短真实请求。全部真实 API 调用全局严格 <1,000,000 tokens（包括重试、两个子代理和三种协议），另外设保守 USD hard cap；不得打印、移动、提交密钥或使用未经授权的订阅 OAuth 通路。现有 `http://127.0.0.1:8765` 双模型看板继续沿用，更新真实训练版本数、正式 Benchmark、API 协议、真实/模拟状态和进度。所有 Laya/Kev 权重仍留 A6000，不下载 Mac。GOAL 长周期命令实际存在才可启用，不得虚报。
 
@@ -1038,11 +1305,11 @@ configs/
 
 负责人提交最新执行报告：F03 正规两轮完训（S1 e01 64.71%，e02 67.20%，S2 e02 53.12%），F06 据报正执行 E1 Chunk 69/361，GPU 72–88%；Laya/ Kev 服务器路由服务提供两条 API 推理样例；本机 8 策略×2 题共 16 次实际 API/主机 Shell 尝试，**官方报告中 0/16 solved**、多数任务失败/超时。服务器进程与 Mac 当前真实状态来自执行方报告，非本次 GitHub 审查直接 SSH 测量。
 
-**紧急秘密凭证事件**：本公开仓库的 `experiments/agent_pilot/configs/generator_credentials.json` 确实曾在 `main` 跟踪一个非空 API Key，且该 Key 在执行报告的聊天文本中也暴露。审查时已从 HEAD 删除此文件，并更新 `.gitignore`，使其未来不能正常重新加入；`provider.py` 默认只从 `~/.config/modelrouter/generator_credentials.json`（或 `MODELROUTER_CREDENTIALS_FILE` 指定的仓库外 0600 文件）或环境变量加载凭据，另有不含秘密的 `generator_credentials.example.json`。**Git 历史中的 Secret 不会因普通删除而消失，必须立即在 Provider 端撤销/轮换原 Key，检查异常使用，并请仓库管理员按 GitHub 秘密泄露响应流程清理历史/缓存；不得再次将 Secret 写入 AGENTS.md 规则或本仓库。** 用户本地 `AGENTS.md` 当前含相反的“禁止加入 .gitignore”指令（该文件本身被 ignore），执行方须就地删除错误指令并替换为“必须忽略 Secret”规则。不要打印/复制任何旧 Key。
+**紧急秘密凭证事件**：本公开仓库的 `experiments/agent_pilot/configs/generator_credentials.json` 确实曾在 `main` 跟踪一个非空 API Key，且该 Key 在执行报告的聊天文本中也暴露。审查时已从 HEAD 删除此文件，并更新 `.gitignore`，使其未来不能正常重新加入；`provider.py` 默认只从 `~/.config/modelrouter/generator_credentials.json`（或 `MODELROUTER_CREDENTIALS_FILE` 指定的仓库外 0600 文件）或环境变量加载凭据，另有不含秘密的 `generator_credentials.example.json`。**Git 历史中的 Secret 不会因普通删除而消失，必须立即在 Provider 端撤销/轮换原 Key，核对异常使用，并请仓库管理员按 GitHub 秘密泄露响应流程清理历史/缓存；不得再次将 Secret 写入 AGENTS.md 规则或本仓库。** 用户本地 `AGENTS.md` 当前含相反的“禁止加入 .gitignore”指令（该文件本身被 ignore），执行方须就地删除错误指令并替换为“必须忽略 Secret”规则。不要打印/复制任何旧 Key。
 
 **Host 执行隔离缺陷**：报告使用 `LocalHarborSandboxEnvironment`；在 `083ee2c` 实际源码中，其 `exec()` 是 Mac 主机上的 `subprocess.run(..., shell=True, env=os.environ)`，不是 Harbor/Docker 容器，可能暴露宿主文件与私有凭据；其 `evaluate()` 动态自写 `test_verifier.py`，即使生成 CTRF 也不代表实际官方任务镜像与原版 Evaluator。已在 `experiments/harbor/environment.py` 中将该不安全实现设置 fail-closed，不得继续用于真实 Agent。**下一步唯一正确修复是接入上游 Harbor 隔离容器 + 未改写的官方任务验证器**；在此之前所有 16 次应标 `LOCAL_HOST_EXPERIMENTAL` / `NOT_OFFICIAL_HARBOR`，真实任务 0/16，不能称其为完整官方 Benchmark 通过。
 
-**比较口径与预算缺陷**：在 `provider.py` 的 `_normalize_model` 中，名义 FixedStrong/FixedCheap/Rule/RouteLLM/Laya/Kev 所选不在有限白名单的 Generator 都映射到同一个 `gpt-6-luna`，而每步美元费用仍用未映射的 `model_spec.calculate_cost` 的名义价格计数。由此不同策略的价格/能力对照不成立，`RouteLLM 省 93.4%` 与 `Kev 省 90.5%` 不是有效成功率相当的经济收益。真实执行 Generator 模型名、真实 Provider 账单价格需取最终请求/响应，且能力集合至少两种真正不同的合法生成模型才可开展模型选择 RQ1。另 `update_token_budget()` 只在请求结束后增加 JSON 计数，超过 100 万仅日志警告；并发/重试没有原子预留或即时硬阻断，**不是可靠硬门禁**。在重新签发凭据前应暂停新付费基准调用、修复预扣配额和独立真实用量记录，绝不能因其 368,154/1M 报告而保证不会超限。
+**比较口径与预算缺陷**：在 `provider.py` 的 `_normalize_model` 中，名义 FixedStrong/FixedCheap/Rule/RouteLLM/Laya/Kev 所选不在有限白名单的 Generator 都映射到同一个 `gpt-6-luna`，而每步美元费用仍用未映射的 `model_spec.calculate_cost` 的名义价格计数。由此不同策略的价格/能力对照不成立，`RouteLLM 省 93.4%` 与 `Kev 省 90.5%` 不是有效成功率相当的经济收益。真实执行 Generator 模型名、真实 Provider 账单价格需取最终请求/响应，且能力集合至少两种真正不同的合法生成模型才可开展模型选择 RQ1。另 `update_token_budget()` 只在请求结束后增加 JSON 计数，超过 100 万仅日志警告；并发/重试缺少原子预留和即时额度限制，**无法可靠控制总额度**。在重新签发凭据前应暂停新付费基准调用、修复预扣配额和独立真实用量记录，绝不能因其 368,154/1M 报告而保证不会超限。
 
 这些更正只影响有安全风险的本机 Agent / 新付费 API 实验；**不要中断正常运行的 Laya A6000 正式训练，也不要删除 F03/F06 现场成果**。原 KV/Laya/Kev 增补训练、两子代理、简洁高信息密度可视化仍按 V8 正式文档执行。修复后先 1 题/2 真实不同 generator/2 策略，对官方 Harbor 完整评分和逐调用真实费用做最小证据验证，再逐步扩展。没有证据不要提高“已完成”阶段状态。
 
@@ -1051,7 +1318,7 @@ configs/
 
 负责人要求一次性补齐前述剩余工作；**沙箱复用已选开源 Harbor 内建 `DockerEnvironment`、`BaseAgent`、官方 Task Verifier 和 `harbor run` / Job Resume**，不自造 Host Shell 或第二套 Container Scheduler。当前 `LocalHarborSandboxEnvironment` 已因宿主代码执行和伪官方 Verifier 被 fail-closed；真正接入的应是 Harbor `BaseAgent.setup/run` + `await environment.exec`，工具均在隔离容器中执行，未经授权的宿主 Secret/Docker socket/SSH 文件不得暴露给 Task。官方文档见 [Harbor GitHub](https://github.com/harbor-framework/harbor)、[Harbor CLI](https://github.com/harbor-framework/docs/blob/main/cli/run.mdx)。
 
-“快速跑完整实验”是**配置化科研矩阵 + 官方容器镜像复用 + 受控按任务 Trial 并发 + 原生 Resume/失败恢复 + RPM/TPM/预算限制 + 统一真实日志与官方评分**，不是宣称 64 模拟并发的 Pass@1 或模型路由收益。优先让 1–2 个 Canary 真正通过官方执行接口（可以失败，但必须有真实官方 reward 及全部轨迹）；随后覆盖 FixedStrong/FixedCheap/Random/RuleSticky/RouteLLM official/SR-KNN fitted/Laya/Kev 的合法同任务矩阵，再按授权扩展 Dev，57 个 sealed Final 冻结方案前不读。GPT Responses SSE/工具/Native Effort、Chat/Messages、OpenRouter 有哈希定价快照、跨进程 1M Token 原子预算、受保护每模型调用 I/O 账本、Laya/Kev 新数据持续多版本训练、双模型丰富少字看板、2 子代理和阶段 Git Push 的要求全部继续有效，统一细则见 [V8 §10](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。
+“快速跑完整实验”是**配置化科研矩阵 + 官方容器镜像复用 + 受控按任务 Trial 并发 + 原生 Resume/失败恢复 + RPM/TPM/预算限制 + 统一真实日志与官方评分**，不是宣称 64 模拟并发的 Pass@1 或模型路由收益。优先让 1–2 个 Canary 真正通过官方执行接口（可以失败，但必须有真实官方 reward 及全部轨迹）；随后覆盖 FixedStrong/FixedCheap/Random/RuleSticky/RouteLLM official/SR-KNN fitted/Laya/Kev 的合法同任务矩阵，再按授权扩展 Dev，57 个 sealed Final 固定方案前不读。GPT Responses SSE/工具/Native Effort、Chat/Messages、OpenRouter 有散列定价快照、跨进程 1M Token 原子预算、受保护每模型调用 I/O 账本、Laya/Kev 新数据持续多版本训练、双模型丰富少字看板、2 子代理和阶段 Git Push 的要求全部继续有效，统一细则见 [V8 §10](V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)。
 
 **执行状态注意**：本次为 GitHub 文档中明确的实现方案和验收标准，不等于 Mac 已安装 Harbor 真 Docker、API Key 已轮换或官方 Benchmark 完成；需有 Mac/A6000 权限的 Execution Agent 现场实施并回传真实 Job 路径、Trial ID、模型验证和 Git SHA。服务器健康的 Laya 正式队列仍不应中断。
 
@@ -1059,7 +1326,7 @@ configs/
 
 本轮执行严格遵循负责人最新安全与生成能力指导方针，完成了 API 凭证隔离、官方基准隔离语义更正、GPT Responses SSE 流式与工具往返验证、OpenRouter 官方定价快照及通用多模型审计日志机制：
 
-1. **凭证安全隔离与 AGENTS.md 修正**：
+1. **凭证安全隔离与 AGENTS.md 更正**：
    - 彻底停用公开出现的旧 Key，并向负责人提示在 Provider 处撤销与消费核验；
    - 将 `experiments/agent_pilot/configs/generator_credentials.json` 从 Git 跟踪中移除（`git rm --cached`）并加入 `.gitignore`；
    - 纠正 `AGENTS.md` 第 5.2 节中旧有的“禁止将其加入 .gitignore”规则，更新为强隔离规范；
@@ -1081,7 +1348,7 @@ configs/
 
 4. **OpenRouter 官方模型定价快照与每百万 Token 归一化**：
    - 建立 `experiments/agent_pilot/pricing/fetch_openrouter.py`，完整获取 `https://openrouter.ai/api/v1/models` 原始快照；
-   - 原始响应计算 SHA256 哈希值（`db274c7bee8bb8ff3ef37293301cc16bc96399d8bed80141991f4a834e329453`），冻结保存至 `experiments/agent_pilot/pricing/snapshots/openrouter_models_20261018_043559_db274c7b.json` 并建立 `latest.json`；
+   - 原始响应计算 SHA256 散列值（`db274c7bee8bb8ff3ef37293301cc16bc96399d8bed80141991f4a834e329453`），固定保存至 `experiments/agent_pilot/pricing/snapshots/openrouter_models_20261018_043559_db274c7b.json` 并建立 `latest.json`；
    - 完成 471 个模型的价格归一化（USD / 1M Tokens），精确区分提示词输入、补全输出与缓存读取，缺失价格标注为 `UNKNOWN`/`UNPRICED`（不填 0）；
    - 输出统一索引表 `normalized_pricing_index.json`，提供 `calculate_reference_cost()` 核算接口。
 
@@ -1109,7 +1376,7 @@ configs/
    - **队列大盘**：累计已完成 66 组前序实验。
 
 3. **Mac 零物理权重原则与双模型常驻 API 路由服务**：
-   - **绝对物理隔离**：Mac 本地未下载、未保存、未加载任何 Laya-421M 或 Kev-4B 物理权重文件，所有模型权重完整存放在 A6000 服务器 `/home/syy/路由/models/`；
+   - **绝对物理隔离**：Mac 本地未下载、未保存、未加载任何 Laya-421M 或 Kev-4B 物理权重文件，所有模型权重完整存放在 A6000 服务器 `models/`；
    - **常驻服务实测**：A6000 FastAPI 双模型服务（PID `996756`，Uptime > 32,500s，稳定运行超 9 小时），通过 SSH 本地端口转发 `http://127.0.0.1:8000` 供 Mac 端单 Agent 评测与看板调用；
    - **真实前向推断验证**：实测调用 `/route` 接口，Laya 决策延迟 ~170ms，输出真实概率分布（`gpt-6-luna`: 0.7121，`gpt-5.6-luna`: 0.2879），返回 `fallback_used: false`，完全杜绝 Mock 伪随机。
 
@@ -1133,8 +1400,8 @@ configs/
    - **全策略接口统一**：`fixed_strong`、`fixed_cheap`、`random`、`rule_sticky`、`routellm`、`sr_knn`、`laya_v2`、`kev_4b` 全部统一实现 `select(state, legal_actions) -> RouterDecision`，并发调度矩阵无异常全通。
 
 6. **Token 硬预算管控、OpenRouter 定价与多模型审计日志**：
-   - **全局硬门禁守则**：全局 Token 累计消耗 368,520 / 1,000,000，剩余 631,480 Tokens，严格管控于 100 万上限之内；
-   - **官方定价快照**：基于 OpenRouter API 官方快照（哈希 `db274c7b...`），471 款模型按 USD / 1M Tokens 归一化；
+   - **全局 Token 上限**：全局 Token 累计消耗 368,520 / 1,000,000，剩余 631,480 Tokens，严格管控于 100 万上限之内；
+   - **官方定价快照**：基于 OpenRouter API 官方快照（散列 `db274c7b...`），471 款模型按 USD / 1M Tokens 归一化；
    - **全量审计日志**：`runs/agent_pilot/multi_model_calls.jsonl` 持续记账，逐条记录协议类型、模型版本、细分 Tokens、TTFT 延迟、总用时及参考计费。
 
 7. **高密度交互式看板（Port 8765）全量同步**：

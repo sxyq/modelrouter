@@ -141,6 +141,7 @@ class RouterClient:
         timeout: float = 20.0,
         max_retries: int = 1,
         router_family: str = "laya",
+        protocol: str = "route",
     ):
         self.endpoint = (
             endpoint
@@ -150,6 +151,7 @@ class RouterClient:
         self.timeout = timeout
         self.max_retries = max_retries
         self.router_family = router_family
+        self.protocol = protocol
         self._opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
     def is_healthy(self) -> bool:
@@ -188,8 +190,26 @@ class RouterClient:
         }
         route_request = RouteRequest.model_validate(payload)
         route_request.legal_actions.sort(key=lambda action: action.action_id)
+        card_order = {action.action_id: index for index, action in enumerate(route_request.legal_actions)}
+        route_request.pre_decision_state.capability_cards = sorted(
+            route_request.pre_decision_state.capability_cards,
+            key=lambda card: card_order.get(card.get("action_id"), len(card_order)),
+        )
         payload = route_request.model_dump()
         candidates = {a.action_id: a for a in route_request.legal_actions}
+        native_options = {f"opt_{index}": action for index, action in
+                          enumerate(route_request.legal_actions)}
+        if self.protocol == "system_one":
+            payload = {
+                "router_family": self.router_family,
+                "state": route_request.pre_decision_state.router_text(),
+                "questions": {"route_decision": {
+                    "type": "choice",
+                    "instructions": "Select the model and native effort for the next agent generation.",
+                    "criteria": {key: f"{action.provider}/{action.model} (effort={action.native_effort})"
+                                 for key, action in native_options.items()},
+                }},
+            }
 
         # Try remote endpoint with concurrency throttle
         attempts = 0
@@ -199,7 +219,7 @@ class RouterClient:
                 attempts += 1
                 t0 = time.time()
                 try:
-                    url = f"{self.endpoint}/route"
+                    url = f"{self.endpoint}/v1/systemone" if self.protocol == "system_one" else f"{self.endpoint}/route"
                     data = json.dumps(payload).encode("utf-8")
                     req = urllib.request.Request(
                         url,
@@ -211,6 +231,26 @@ class RouterClient:
                         lat_ms = (time.time() - t0) * 1000
                         if resp.status == 200:
                             body = json.loads(resp.read().decode("utf-8"))
+                            if self.protocol == "system_one":
+                                answer = body["answers"]["route_decision"]
+                                probabilities = answer["probabilities"]
+                                if set(probabilities) != set(native_options):
+                                    raise ValueError("Router probability IDs differ from the request candidates")
+                                body = {
+                                    "request_id": req_id,
+                                    "router_family": body["router_family"],
+                                    "checkpoint_id": body["checkpoint_id"],
+                                    "selected_action": native_options[answer["choice"]].model_dump(),
+                                    "ranked_actions_or_scores_if_available": [
+                                        {"action": native_options[key].model_dump(),
+                                         "score": value, "probability": value}
+                                        for key, value in sorted(probabilities.items(), key=lambda item: item[1], reverse=True)
+                                    ],
+                                    "decision_latency_ms": body["decision_latency_ms"],
+                                    "fallback_used": body["fallback_used"],
+                                    "fallback_reason": body.get("fallback_reason"),
+                                    "confidence_if_defined": answer.get("confidence"),
+                                }
                             response = RouteResponse.model_validate(body)
                             returned_actions = [response.selected_action] + [score.action for score in response.ranked_actions_or_scores_if_available]
                             if any(candidates.get(action.action_id) != action for action in returned_actions):

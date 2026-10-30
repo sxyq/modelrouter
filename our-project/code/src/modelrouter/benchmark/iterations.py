@@ -152,28 +152,50 @@ def collect_trials(path: Path):
     return trials
 
 
-def summarize(path: Path):
-    trials = collect_trials(path)
+def summarize(path: Path, *, persist=True):
+    trials = collect_trials(path) if persist else rows(path / "official_trials.jsonl")
     events = rows(path / "events.jsonl")
     benchmark_events = [e for e in events if e.get("sample_kind", "benchmark").lower() == "benchmark"]
     calls = [e for e in benchmark_events if e["event"] == "GENERATOR_END"]
+    teachers = [e for e in benchmark_events if e["event"] in ("TEACHER_END", "TEACHER_ERROR")
+                and e.get("provider_request_attempted", True)]
     verified = [r for r in trials if r["status"] == "OFFICIAL_ARTIFACT_VERIFIED"]
     binary = [r for r in verified if r.get("reward") in (0, 1)]
     success = sum(r["reward"] == 1 for r in binary)
     tools = [r for r in rows(path / "tool_calls.jsonl") if r.get("kind") == "agent_tool"]
-    state = json.loads((path / "resume_state.json").read_text())
+    state_path = path / "resume_state.json"
+    state = json.loads((state_path if state_path.exists() else path / "metrics.json").read_text())
+    state.setdefault("units", [])
     model_calls = defaultdict(list)
     router_calls = defaultdict(list)
-    for c in calls:
-        model = c.get("returned_model") or c.get("model", "unknown")
-        model_calls[model + " / " + c.get("protocol", "chat_completions")].append(c)
     for e in benchmark_events:
         if e["event"] == "ROUTER_END":
             router_calls[e.get("router_family", "unknown")].append(e.get("router_latency_ms"))
     costs = [c.get("cost_usd") for c in calls]
     # Original Harbor contexts supply usage when no generator event was recorded.
-    event_ids = {c.get("episode_id") for c in calls}
+    event_ids = {str(c.get("episode_id")) for c in calls}
     native_only = [r for r in trials if r.get("agent") != "oracle" and str(r.get("trial_id")) not in event_ids]
+    # Routed V9 contexts already total generator and teacher usage. Recover their
+    # original per-request rows when events are unavailable, never add both totals.
+    native_teachers = []
+    native_contexts = []
+    for trial in native_only:
+        metadata = trial.get("agent_metadata") or {}
+        provider_metrics = metadata.get("provider_metrics")
+        if provider_metrics is not None:
+            calls.extend(provider_metrics)
+            native_teachers.extend(row for row in (metadata.get("v9") or {}).get("teacher_metrics", [])
+                                   if row.get("provider_request_attempted", True))
+        else:
+            native_contexts.append(trial)
+    teacher_ids = {str(row.get("episode_id")) for row in teachers}
+    teachers.extend(row for row in native_teachers if str(row.get("episode_id")) not in teacher_ids)
+    # Recompute costs from the recovered generator rows, not combined contexts.
+    costs = [c.get("cost_usd") for c in calls]
+    native_only = native_contexts
+    for c in calls:
+        model = c.get("returned_model") or c.get("returned_model_id") or c.get("model", "unknown")
+        model_calls[model + " / " + c.get("protocol", "chat_completions")].append(c)
     native_costs = [r.get("cost_usd") for r in native_only]
     all_costs = costs + native_costs
     known_cost = sum(v for v in all_costs if isinstance(v, (int, float)))
@@ -183,12 +205,16 @@ def summarize(path: Path):
     native_billed = [r.get("actual_billed_cost_usd") for r in native_only]
     all_billed = billed_calls + native_billed
     billed_generator = sum(all_billed) if all_billed and all(v is not None for v in all_billed) else None
+    teacher_costs = [c.get("cost_usd") for c in teachers]
+    teacher_billed = [c.get("actual_billed_cost_usd") for c in teachers]
+    teacher_cost = sum(teacher_costs) if all(v is not None for v in teacher_costs) else None
+    billed_teacher = sum(teacher_billed) if all(v is not None for v in teacher_billed) else None
     sandbox_costs = [(r.get("agent_metadata") or {}).get("sandbox_cost_usd") for r in trials]
     router_costs = [(r.get("agent_metadata") or {}).get("router_compute_cost_usd") for r in trials]
     sandbox_cost = sum(sandbox_costs) if sandbox_costs and all(v is not None for v in sandbox_costs) else None
     router_cost = sum(router_costs) if router_costs and all(v is not None for v in router_costs) else None
-    full_cost = (billed_generator + sandbox_cost + router_cost
-                 if all(v is not None for v in (billed_generator, sandbox_cost, router_cost)) else None)
+    full_cost = (billed_generator + billed_teacher + sandbox_cost + router_cost
+                 if all(v is not None for v in (billed_generator, billed_teacher, sandbox_cost, router_cost)) else None)
     started = datetime.fromisoformat(json.loads((path / "run_config.json").read_text())["started_at"])
     elapsed = (datetime.fromisoformat(state.get("finished_at", now())) - started).total_seconds()
     current = next((u for u in state["units"] if u["status"] == "RUNNING"), None)
@@ -205,6 +231,11 @@ def summarize(path: Path):
     call_tokens = [c["prompt_tokens"] + c["completion_tokens"]
                    if c.get("prompt_tokens") is not None and c.get("completion_tokens") is not None else None for c in calls]
     token_values = call_tokens + native_tokens
+    teacher_token_values = [c["prompt_tokens"] + c["completion_tokens"]
+                           if c.get("prompt_tokens") is not None and c.get("completion_tokens") is not None
+                           else None for c in teachers]
+    model_tokens = token_values + teacher_token_values
+    model_costs = all_costs + teacher_costs
     metrics = {
         "timestamp": now(), "iteration_id": path.name, "status": state["status"],
         "reason": state.get("reason"),
@@ -214,10 +245,17 @@ def summarize(path: Path):
         "finished_units": sum(u["status"] in ("EVALUATED", "FAILED", "BLOCKED", "NOT_EVALUATED") for u in state["units"]),
         "current": current, "current_trial": current_trial,
         "generator_tokens": sum(token_values) if token_values and all(v is not None for v in token_values) else None,
+        "teacher_calls": len(teachers),
+        "teacher_tokens": sum(teacher_token_values) if all(v is not None for v in teacher_token_values) else None,
+        "total_model_tokens": sum(model_tokens) if model_tokens and all(v is not None for v in model_tokens) else None,
         "generator_cost_usd": known_cost if complete_cost else None,
         "known_generator_cost_usd": known_cost if any(v is not None for v in all_costs) else None,
+        "teacher_cost_usd": teacher_cost,
+        "known_teacher_cost_usd": sum(v for v in teacher_costs if v is not None) if any(v is not None for v in teacher_costs) else None,
+        "episode_model_cost_usd": sum(model_costs) if model_costs and all(v is not None for v in model_costs) else None,
         "cost_source": "provider_usage_and_configured_rates; not an invoice",
         "actual_generator_cost_usd": billed_generator,
+        "actual_teacher_cost_usd": billed_teacher,
         "sandbox_cost_usd": sandbox_cost, "router_compute_cost_usd": router_cost,
         "complete_cost_usd": full_cost,
         "generator_cost_per_success_usd": known_cost / success if complete_cost and success else None,
@@ -248,7 +286,8 @@ def summarize(path: Path):
         "publication_status": "NOT_EVALUATED" if not verified else "AWAITING_PAIRED_SCIENTIFIC_ANALYSIS",
         "missing_measurements": ["sandbox billing", "router infrastructure cost", "provider invoice reconciliation"],
     }
-    write_atomic(path / "metrics.json", metrics)
+    if persist:
+        write_atomic(path / "metrics.json", metrics)
     return metrics
 
 

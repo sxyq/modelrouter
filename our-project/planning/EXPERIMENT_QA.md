@@ -1,12 +1,56 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
-> **版本 v1.3｜建立：2026-10-09｜第一、二批决策：2026-10-09｜阶段：E-DESIGN（进行中，尚未冻结）**
+> **版本 v1.4｜建立：2026-10-09｜更新：2026-10-30｜V9 五 RQ 已确定，部分执行配置待明确**
 >
 > **职责**：记录每项实验设计的 Q-ID、问题、选项、Planning 推荐及理由、项目负责人回答、最终决策、日期，以及对实验设计、资源/预算和论文结论的影响。研究方法总览见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)，实时阶段见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，交接历史见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
-> **证据边界**：本文件中“Planning 推荐”不是用户批准；“待回答”不是最终决策；预案任务数量和费用均不代表已执行或已授权。当前负责人已明确要求在自有服务器进行公开数据下载与 CPU 清洗、在本机用 Codex 整理论文库；其他 GPU 训练/付费 API/共享服务修改并未因此获批。
+> **证据边界**：Planning 推荐、待回答事项、预案任务数量和费用均不代表执行已获批准或已经完成。历史数据清洗、训练和评测要求按对应日期保留；实际操作遵循当前人类明确范围。本轮文档子任务仅编辑指定六文件，不从附件的执行建议推导新权限。
 
 ## 0. 阶段入口与决策规则
+
+**10-30接续决定（沿原Q-021，不新增Q-ID）**：当前附件要求合规源码/六文档同步main；已完成Laya/Kev不重训、不把内部Val或Alias计官方成绩。v2已取得LunaMax指数27.7552（AA5.0）及9项，其余精确型号缺测，旧52/38只属先前版本参考。原CLI显式 `--single-episode` 仅一task/一policy，不自动加基线；原教师6/3与5/2分别复核、费用未知。Laya当前仅关键短摘要保留，不称全部能力卡进入编码；三模型真实目标仍0，F14有效更新未知，不选其为父。Docker条件与当前状态统一见 [PROJECT_STATUS](PROJECT_STATUS.md) 首页；下方文档子任务“未改源码/只本地”仅描述历史范围。
+
+**10-30 10:40 既有执行要求的完成范围**：原 F13 已完成，本次沿原 CLI 的 `skipped_existing` 接续 Laya `V9_LAYA_001`，两轮和固定 Val 完成，状态 `COMPLETED`；第 2 轮总体 Accuracy 49.51%，S2/S3 改善、S1 四项退步，未上线。Kev 已完训但四项退步。两者新特征均为局部训练，未形成三个新身份的选择/Effort 监督或正式任务成绩；不从本次内部指标推导唯一最佳训练配方。原训练接点只解析已有目录链接，不新增控制器或执行条件；F14 未被改变。AA Key、Docker 访问、独立模型对应和完整费用仍缺，具体指标与证据见 [PROJECT_STATUS](PROJECT_STATUS.md) 首页。下方旧待启动描述仅保留历史，不撤回当前仍有效的执行范围。
+
+原 Harbor CLI 的 V9 配置和三候选已传入既有 Agent，run 保存、resume 复用；仅配置解析/实例构造通过，没有正式 Trial。恢复 Docker 或提供现有 daemon 访问后继续同一入口，不另建执行框架。
+
+### 2026-10-29 · Q-021 后续明确决定与执行配置（不新增 Q-ID）
+
+**研究版本**：用户在下载讨论行 25981 明确保留正式 V9 五 RQ；RQ1 Overall、RQ2 Pool、RQ3 Decomposition、RQ4 Systematic Ablation、RQ5 Workload Boundary 及 Fig.1–8/T1–T12 不变。此前三 RQ/将消融归 RQ1 的建议已被该决定替代；Q-017→Q-019→Q-021 的历史答复仍完整留存。
+
+**三逻辑身份**：行 26344 指定 `gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`，行 26368 允许三 ID 统一映射已有 Qwen 联调，三身份真实 Provider 映射均已确认。候选角色不等于真实能力排名，`ALIAS_SMOKE` 不得进入正式三模型比较。网关 `/models`/已报流式名 `Qwen3.8-27B`、实际非流返回 `self-dploy/Qwen3.8-27B` 分别保留，物理后端 UNKNOWN，不能关联 9002 实体。原 V8 只两Luna生成规则仍保留，三正式模型生成授权/配置待明确；审阅子 Agent 的 `gpt-6.1-sol/max` 不等于生成或教师设置。逻辑 ID、实际 Provider/API 模型、部署及价格证据分别登记。
+
+**教师与能力输入**：首版单个顶级教师对照两条固定成功公开摘要（高效完成/失败恢复），无需在线检索；约三次生成或阶段/停滞事件触发只作 Dev 起点。核心 `progress_summary / main_blocker / next_milestone` 必须真实进入 state 和编码，离线/在线含义相同；未学习标 `FEATURE_NOT_TRAINED`，不妨碍已有接口联调，但不能声称新特征有效。教师只加工当前前缀，不选模型、不执行工具；顶级教师与联调用 Qwen 分别记录。能力卡优先原分、单位、版本及实际 Effort 证据，AA Intelligence Index 是综合指数，不能生成最优动作标签；综合低中高仅作固定参考分布的派生特征，未测档位保持 `NOT_MEASURED`。
+
+**数据、训练和成本**：复用 V2.1/L1、原 S1/S2/S3 与固定划分，Q/S/L 各自保留；观察动作、重复终局与静态偏好不能拼成同状态全动作最优监督。每次手动执行专用刷新入口重新请求 AA，Agent 使用已保存快照；Agent 启动和 Router 每次决策不自动访问 AA，复用现有 `load_current`，正式训练/实验固定相应 `snapshot_id`，不新增 job 或自动网络行为。第二提示词 198–208、335、773 行及用户本轮澄清支持该范围，自动刷新派发已撤销。健康训练按原控制器自然完成后接续，不新建 Trainer/队列。Laya/Kev 各用同协议 Val 和独立 Dev 选可加载起点，历史缺失权重只在关键对照不可替代时考虑重训。离线教师制作费用归数据/训练，在线教师费用归完整 Episode；上下文消息与实际 KV/缓存双记。Mac 零 Laya/Kev 权重；全部执行者、教师、重试累计真实 API Token `< 1,000,000`，Final 不作训练、选池、调参或教师输入。
+
+**本轮范围与证据**：文档子任务只改六原文档。单题 Alias 已真实成功终局：9 次生成、13 次 Bash、7 项 unittest 通过，Laya 全程 `fallback=false`、Checkpoint `epoch_01`；本题选择仅 Sol。此前双路由选过 Luna/Flash，额外两次短 Provider 映射验证不算新 Agent 题。Teacher 从已知 2 次三字段输入传递/1 次超时后继续，发展为 3/6 成功；失败未终止任务，Qwen 联调教师不能算 Sol/顶级教师。原 SSE 失败、物理后端 UNKNOWN 及正式成绩隔离保留，详细事实只在 [PROJECT_STATUS](PROJECT_STATUS.md) 首页。
+
+**已确认的状态语义问题与回放**：holding Tokenizer观测旧LayaState为2,762/2,827 Token、预算940，任务位置2,733/2,798，任务被裁，历史负结果保留。唯一V9 formatter和Schema薄调用的 [final编码与训练prefix分词记录](../results/iterations/20261029-v9-alias-smoke-tools/input_encoding_validation.json) 已确认任务、三教师字段、候选卡及缓存/身份关键字段进入最终编码。新顶层`recent_tool_validation`于18:44 UTC/02:44台北仅验证原step5：Laya1024/head512、状态预算940下，512字符真实工具结果仅末128字符在Token `[879,930)`为`FULL`；任务、三教师、三候选卡及缓存/当前和前次身份均`FULL`，长`history_snippet`仍裁。Kev原native编码2147 state/2224 total、不截短、候选键3个，本次未新增Kev API前向。同源一次Laya真实前向仍`epoch_01`、`fallback=false`；概率与时延见 [PROJECT_STATUS](PROJECT_STATUS.md) 的本次编码段。原`context.py`单文件已原位部署，源cached3136仅为字段保留。此前198条Train已测分词，本次未重测该批Train或Val；Laya1024保留4教师核心但完整state裁6条，8192推荐尚未启用。192条Val只核身份/数量、未测长度，不把分词或字段传递当新特征学习。Native 前缀回放已记录 Laya 选 Luna、`epoch_01`、`fallback=false`；Kev 首次 20 秒窗口超时并走模拟 fallback，一次 60 秒窗口重测约 53,516 ms 真实前向成功，选 Sol、`fallback=false`，两路均有三候选真实概率。Kev ID `1001bb4d826a52d1f399e183466143f4da7b741b` 属 Serving 导入适配器，不能称 R11 候选。回放不重跑同题、不增加正式/科学成绩，不新增第二格式实现。 同一JSON的`live_transport_validation`已保存04:20原step5旧`/v1/systemone`字符串直传8822字符、HTTP200/fallback=false/epoch_01及1024输入Token；同正文native编码支持核心字段与末128字符保留。旧进程Token IDs未直接采集、普通`/route`未验证、长history仍裁；未重跑Episode或加载新权重。
+
+**新题失败、默认行为与宿主限制**：另一 `duration` 题迭代 `20261029-v9-kev-alias-smoke` 已回报 2 次真实生成/3 次 Bash 后第 3 次路由 60 秒超时，默认原 PolicyModel 在 fallback 后退出，`FAILED/验证1` 及日志保留；教师失败后继续的已测行为不适用于这次 Router fallback。原 Serving `2291306` 未重启/换权重，启动 `KevAdapter` 无 `device`、默认 CPU/`torch_cpu`，step0/step1 前向 18,802/38,674 ms，step2 工具 history 长度回报 3,835（单位未报）时超时。首个 Bash `find /` 上游 30 秒超时，后用 `ls/pwd` 定位，未改外部数据；Host 测试无容器隔离，不能称安全或正式基准。该失败回报时计划在原Runtime补CWD、按`router_context_chars`缩工具视图并保留task/teacher/raw mini消息；必要重跑已结束FAILED，终局见下段，成功invoice不重跑，原失败不覆盖，不新增Q-ID、Agent循环或服务。
+
+**短视图单次验证**：原失败目录 [input_latency_validation.json](../results/iterations/20261029-v9-kev-alias-smoke/input_latency_validation.json) 已记录 step2 任务 1,019 字符保留、工具摘录 3,835→1,280 字符，任务/工具字符预算 2,300；7 条 mini 消息及教师/卡片/缓存与身份连续状态不变。原适配器 CPU 前向 37,771.85 ms、`fallback=false`，真实概率 Flash 0.7234/Sol 0.1468/Luna 0.1298，选择逻辑 Flash。该回放 `teacher_assessment=null`、卡片缺测、Token 未实测、生成请求 0，不能增加有效教师样本、能力分数或新特征学习结论。原失败不覆写，成功 invoice 不重跑。
+
+**一次必要重跑终局已确定为失败**：`20261030-v9-kev-alias-smoke-compact` 的 [metrics.json](../results/iterations/20261030-v9-kev-alias-smoke-compact/metrics.json)/[verification.txt](../results/iterations/20261030-v9-kev-alias-smoke-compact/verification.txt) 保留 10 次生成、13 次真实 Bash、10 次 Kev 真实路由全部 `fallback=false`，CPU 前向 20,430.85–37,243.64 ms；本次不再有原 60 秒路由超时。全部逻辑 Flash/实际 Qwen、原 Serving 导入适配器。教师 5 请求/2 成功，3 失败依次 TimeoutError/JSONDecodeError/TimeoutError；成功短评在 steps3/4/5 实际送入 Router，2 次成功不能按消费步骤计成 3 次。最终代码仍有 7 个 subtest errors（7 方法、4 通过），10 步 `LimitsExceeded`、`FAILED`、`resolved=false`、验证退出 1；不能写成功 Agent或官方成绩。原测试未改、artifacts 四文件保留、临时目录已清理；完整用量/费用因失败教师缺测仍 null。
+
+**本轮停止与准备状态**：最后预算实读 `known=575783/reserved=256135/remaining=168082`，新增 15 API 请求已计账、135 累计 calls，预留不算实际消耗；本轮不再新增生成式请求，自有 8000 隧道 `28959` 已结束。现有 [prepared/summary.json](../code/data/v9/prepared/summary.json) 写 Laya 2 Epoch、`max_len=1024/head_max_len=512`，Kev 2 Epoch、`max_state=8192`；父 R11 原 1 Epoch/384，与在线导入适配器分开。源码部署完成；现行结果见 [PROJECT_STATUS](PROJECT_STATUS.md) 的训练表，原参数/预算与前三次失败及曝光分别保留，不新增 Trainer、Q-ID 或自动 AA 请求。 原评分/留存更新已实际完成，apply=False未删权重；F14运行推进且损失持续非有限，有效优化更新/具体诱因未知，Laya自然接续仍待。
+
+**首批部署和首次 FAILED（历史保留）**：37个源码/数据/相对链接对象、6,993,920字节，16个V9 Python模块及schemas/registry/common/390行材料已部署；Laya4处历史差异保留，common改薄别名、`common is canonical=True`、root链保留。原Python/`_material`实读198 Train/4教师/2refs及相对链接有效，GPU/Serving未重启。候选`KEV-V9-001`父R11实体、内部四指标score106.74866622586939、16原R候选完成，登记QUEUED仅历史。首次worker13266在0.145秒退出1、无GPU模型加载或训练输入消费，FAILED保留；dispatcher.py路径执行导致sys.path[0]在modelrouter/training，bare import kev误落training/kev、官方kev.train未导入。原train.log/attempt/cursor与189项测试保留，不覆盖真实失败。
+
+**第2次真实反向OOM（历史保留）**：原wrapper两行模块入口调整已部署，窄测40通过，官方 `kev.train` 真实导入位置为 `external/kev/kev/train.py`。worker16722先RUNNING，8K输入进入真实反向计算后Torch CUDA OutOfMemory、自然退出1；进程13.54 GiB、再分配60 MiB时仅59.94 MiB空闲，日志Epoch0/Step20/100/Loss0.993。原Loader全部接纳198条记录，两轮预期396条次；失败目录只有`training_config.json`，输入曝光0是启动时统计，失败后完整输入曝光/独立覆盖UNKNOWN，不把0、接纳量或预期量作真实训练完成量。13266首次入口失败与16722第二次反向OOM均保留；两次失败未产出两轮完成权重或固定Val，UNKNOWN不由第四次真实曝光替代。
+
+**原资源等待及三次FAILED历史、现行Kev结果**：原资源代码已按已观察占用下限加原2 GiB余量增量部署，CLI验证`WAITING_FOR_GPU`；01:43的12,668/15,973 MiB保留历史，02:11空闲12,698/需15,973 MiB为当时等待，旧384输入`required=12103`不适用于8K，不增其他限制。CLI25201曾沿原`main_loop(wait_for_resources=True, v9_only=True, ...)`保留，主Agent确认27184无worker并已结束；服务器源码`CLI_WAIT/EXIT_RESET=true`已验证，前三次FAILED分别为导入、8K反向显存不足、已有目录，原CLI25201已自然退出。2026-10-30 03:03:33原dispatcher50514/worker50518启动第四次，参数`2 Epoch/max_state=8192/full_ft=0/resume=0`，加载426个基础权重张量；03:25:31 worker50518完成2 Epoch/100steps、exit0，checkpoint实体已保存；dispatcher50514同秒自动开始原固定Val attempt1，2026-10-30 04:23:20台北完整完成、自然exit0；8436/8436记录、9330/9330问题、拒绝/裁减0、test_used=false，内部COMPLETED/EVALUATED。第四次实际使用198记录、396完整passes、拒绝/截短0，4教师完整8passes；能力卡仍缺测，三新身份监督目标仍0，新候选`FEATURE_PARTIALLY_TRAINED`。训练指标/曝光/保存及原Val日志见 [PROJECT_STATUS](PROJECT_STATUS.md) 训练表。不另建loop/Runner/定时任务。F14/ComfyUI/Serving未被干预；F14只读主证据见本节末F14段；先前Laya8.87 GiB、ComfyUI24.25 GiB占用及ComfyUI`<A6000_HOST>:8188`监听、运行队列1/pending0历史回报保留，图像任务活跃，`127.0.0.1`不通属绑定地址，未卸载/干预。原Provider/telemetry账本/logger已补`alias_mapping/query_raw`；V9 AliasProvider构造成功、账本根`<SERVER_PROJECT_ROOT>`，未发API请求/读Key、不新增client服务，Alias/账本补齐已验证且无新API，不计认证或真实生成成功。此前source部署为40个文件/链接加原Laya/Kev增量，首批37对象/6,993,920字节保留历史，后续总字节未报。Serving仍旧权重；Laya hook在盘、F14内存不读，下一自然child完两轮边界生效，不另建Trainer/队列。原评分及留存机制保持；本轮收尾仅涉及多余控制器和临时连接，04:33:44主Agent确认无当轮SSH连接残留。原`reserve_kev_attempt`将第三次输出移为同一Run的`failed_attempt_0003`并记`preserved_output_path`，其中保留原`training_config.json`；原checkpoint路径已重新创建。本次为LoRA、`resume=0`，同一原CLI/上游输出保护保留；新head/adapter/tokenizer仅在A6000、未传Mac或上线Serving，原Serving仍旧权重/`FEATURE_NOT_TRAINED`。未新增实现或测试。 固定Val8436记录/9330问题完整完成，拒绝/裁减0、`test_used=false`；相对原C03四指标均退步，内部score92.38703579133796。V9组仅1条，rank1不表示优于C03；新权重仍只在A6000、未上线Serving，正式Harbor/RQ成绩仍空白。04:32原validate_candidate时间同步与update_retention(apply=False)评分保存已完成，前三次失败时间/UNKNOWN原样。
+
+**F14只读诊断与限制**：原`continuous_queue.log:55355/55416/55417`分别为第1块loss0.8102/step128、第62块loss0.5391/step7936、第63块loss=nan/step8064；本次175块，前62有限、后113块持续NaN。首次只定位到第63块内部记录507905–516096、计数步骤7937–8064，没有逐批log。磁盘`laya_batch_train.py:1473/1489/1495/1500/1514/1516/1529/1533`显示每块独立loss累计、soft_ce/backward及GradScaler路径；这是块级真实累计非有限，不能推断每微批异常或将无条件递增的step称有效更新数。`external/laya/laya/train.py:493/635`的有限-1e4 mask与FP16→FP32 logits路径只提供待追踪环节，未证明FP16溢出；torch `grad_scaler.py:363`可跳过非有限梯度的optimizer.step，但skip/scaler未保存。F04历史8个NaN块后仍230块有限、两轮train_loss=NaN而S1 Val0.6300/0.6141有限，不能断言F14权重失效或一定无有效更新。F14无Epoch终局/首次异常batch的logits、target、gradient、scaler记录，具体诱因与有效更新未知；源码是磁盘版本、未读PID内存，作业未停/重启/改动。主证据集中 [PROJECT_STATUS](PROJECT_STATUS.md) 的F14段，原调用链/历史保留。
+
+**材料与监督缺口**：唯一实体 390 行，Train 198/Val 192；S1/S3 各 Train/Val 64，S2 Train 70（原 64+6 真实前缀）/Val 64，`trajectory_prefixes/train.jsonl` 仅为相对符号链接，不重复计数。六前缀来自 `gruebel_pycep_pr109`、`fonttools_fonttools_pr2313`，每题截止 0/3/7，与固定公开 Train 成功参考 `roniemartinez_latex2mathml_pr163`、`cloudtools_troposphere_pr2024` 不重合，原 Train 资格保留。旧 S1 未对齐 V9 三身份，choice 目标仍 0。离线初始 0 的记录保留；原 Assessor 新回报为 2 请求/2 成功、4 条可用三字段（2 新、2 复用）、2 条未触发，`summary.teacher_data_status=PARTIAL`、`GENERATED=4 / NOT_GENERATED=386`，实际教师 `self-dploy/Qwen3.8-27B`。AA 实际来源为 Sol 404、Luna 200 但解析失败、Flash 404，Key 缺失，实测能力记录仍 0、current 保留缺测快照；不能把 HTTP 200、数据可加载或三字段输入传递当有效能力分数/最优动作监督。
+
+**费用的已知子集与缺口**：离线两请求 prompt 13,766+completion 949=14,715 Token，reasoning 678 已包含于 completion，cached 0 已报告、USD null；2 条结果复用与 Provider 物理缓存分开。hcnsec `cost` 无 currency，新请求只保留 `raw_reported_cost`、`reported_cost_unit=NOT_REPORTED`；响应明确 USD 才赋 `actual_billed_cost_usd`。旧事件保留版本，含超时的完整费用为 `None`；未知单位金额不计美元，失败预留 Token 不计实际消耗。14,715 仅是离线两请求的已知用量，所有请求完整 prompt/completion/cache/USD 仍 null，不推算新预算余额。
+
+**仍待明确或补证**：Laya长history及6条完整state裁减的后续处理（8192推荐未启用）、192条Val长度、Laya自然接续、F14具体诱因及有效优化更新、前三次失败后的未知曝光、Laya下一自然child边界和新特征学习，以及正式生成/顶级教师配置、AA分数与完整用量/有单位费用。final/训练prefix分词范围、CLI等待及服务器旧exit处理已确认，不再列作未实施；step5近期工具真实末128字符及一次Laya前向已验证，长history仍裁；三次训练失败和duration失败均保留，第四次两轮/固定Val/内部评分已完成，不新增同题生成。189/40历史测试、配置或接口通过不替代真实训练；第四次的198实际记录/396完整passes与4教师8passes已确认，新候选为`FEATURE_PARTIALLY_TRAINED`（稀疏教师、三新身份目标0），现行结果见 [PROJECT_STATUS](PROJECT_STATUS.md) 的训练表；正式Harbor/RQ仍待。原Serving仍旧权重/`FEATURE_NOT_TRAINED`，未上线新模型；前三次FAILED及UNKNOWN不覆盖。原预算575783/256135/168082、135calls未变，不把预留或缺测总值作实际用量/零美元；主Agent本次Router1/生成0；本轮文档子任务未运行测试或发请求。
+
+> 以下为 2026-10-28/29 的远端规划记录，不是 10-30 新实测。初始模型身份仍为 Sol、Luna、托管 `qwen3.8-flash`，不得替换为 27B 或 Flash-Next；其中 AA 52/38（v4.3.2）和 Qwen USD 价仅保留当时的来源陈述，未由本地证据复核，不用于当前能力快照、训练输入或实际账单。当前证据以本文最新记录及 `PROJECT_STATUS.md` 为准，早期权限描述不撤销后来的人类授权。
 
 ### 2026-10-29 · 负责人最新决定：固定初始 K=3、能力数据可刷新、现有训练后继续微调、六文档保守去重
 
@@ -46,7 +90,7 @@
 **已明确的输入设计方向**：
 
 - `task_state`：决策前任务目标/子任务、Agent 角色和阶段、步数、上下文、预算与剩余时间；保留当前可观测真实值与缺失。`tool_trace`：已执行工具名称/使用意图/返回/测试验证/重复工作/已证实里程碑，**不能只凭退出码判合理性**。
-- `external_trajectory_assessment`：独立外置 teacher/critic 的单次调用在选路前产出 `short_summary`、工具意图匹配、进展对齐、无效重复、缺少验证、`next_milestone_short`、风险、置信度；记录触发原因、截至哪一个 `decision_id`、老师模型/版本、参考轨迹出处和覆盖、耗时/token/USD。**它不选模型、不指挥 Agent 执行**；按阶段或事件触发而非每步强制昂贵调用，具体频率待校准。多条已验证成功的相似任务轨迹仅限合规 train/dev 参考库；严禁使用 Sealed/Final 任务未来轨迹、答案或结局。
+- `external_trajectory_assessment`：2026-10-22 初稿的工具意图/进展对齐、重复、验证缺口、风险和置信度细项留作历史设计；首版已简化为 `progress_summary`、`main_blocker`、`next_milestone`。现行仅用两条许可适用、成功证据明确、与 Final 隔离的固定公开参考摘要；记录触发原因、截止 `decision_id`、实际教师/参考身份、token/USD/时延和缺失状态。短评必须真正进入模型编码；教师只加工状态，现有 Agent 继续执行。约三次生成/阶段/停滞触发尚待 Dev 实测。
 - `candidate_actions`：对每个真实合法 `(provider,model_id,revision,actual_endpoint,native_effort)` 保留型号身份、版本化能力卡；每个 Benchmark 附 `benchmark_id/version, protocol/harness, split, timestamp, effort, raw_score, normalized_score, sample_count, source, status`。维度建议软件工程修复、代码推理、工具调用及可选综合能力，但**具体来源及指标仍待最终确定**。同模型不同档位不能直接复制分数；未知为 `NOT_MEASURED`，不人为假造高/中/低的质量标签。
 - 候选经济与硬约束：真实输入/输出/缓存读写价格快照、上下文/工具/地区/速率/可用性，前缀复用估计与 Provider 回报的 cached tokens 分开；先确定性过滤非法动作再打分。
 
@@ -58,9 +102,9 @@
 **记录性质**：负责人在 2026-10-21～22 的后续研究讨论；不是新的训练/付费评测授权，不声称新字段已实现或已经得到真实 Benchmark 结果。保留 Q-017/Q-019 历史原文与日期，新的明确决定在后续同步时覆盖旧方案，而不删除历史。
 
 1. **RQ4 归属纠偏**：负责人明确表示独立“变量/系统消融 RQ4”没有必要，希望把 T/M/H 单组、双组、三组及关键字段的消融纳入 **RQ1**。Model-only/Effort-only/Joint 动作、S1/S2/S3 训练监督配比以及 KV/Trace 等应分开设计控制实验。V9 的独立 RQ4 不再代表最新讨论意见。最终 RQ 数量/编号与 Fig.7、T4/T5/T8/T11 归属仍需统一，已测负结果须如实保留。
-2. **RQ5 不得误改**：现有 Q-019/V9 RQ5 是“动态路由在哪些事前定义的工作负载条件下有/无净收益”，而不是已批准替换为“新模型/新任务零样本泛化”。未见模型池的泛化可在 RQ2 或扩展实验中讨论，是否独立成 RQ 待定。
+2. **RQ5 不得误改**：现有 Q-019/V9 RQ5 研究“动态路由在哪些事前定义的工作负载条件下有/无净收益”；替换为“新模型/新任务零样本泛化”尚未获批准。未见模型池的泛化可在 RQ2 或扩展实验中讨论，是否独立成 RQ 待定。
 3. **工具轨迹评价方向**：只看工具退出码或失败不足以评价工具使用合理性。拟利用**顶级模型的多条已验证成功参考任务轨迹**进行离线辅助监督，考察工具意图、阶段/顺序、重复劳动、有效进展、验证与恢复行为，不把某条参考命令顺序当唯一正确解。这个参考监督方案尚未完成数据可用性审计、标签定义或训练。在线只能使用当前决策前已有的轨迹；不得读取测试任务未来步骤、封存答案或验证结局。如在线另请教师模型，费用必须算入完整 Episode。
-4. **新模型候选能力卡（拟议，具体字段待确认）**：仍以真实 provider/model_id/revision/native_effort 为候选身份，补充有来源的多项 Benchmark 能力分数、具体原生 Effort 的同协议分数、输入输出/缓存价格、上下文与工具能力、可用性。Benchmark 选型未冻结；应保存每项分数的原始值、可比标准化值、评测版本/日期/Harness/样本量/来源/对应 Effort 和缺失/可信度。不以人为低中高等级替代实测分数；未测档位维持 UNKNOWN，不按名称猜分数；硬合法动作过滤与学习型打分分离。更改输入字段需验证实际训练覆盖及线上推理编码一致性，不能只修改推理 JSON。
+4. **新模型候选能力卡（拟议，具体字段待确认）**：仍以真实 provider/model_id/revision/native_effort 为候选身份，补充有来源的多项 Benchmark 能力分数、具体原生 Effort 的同协议分数、输入输出/缓存价格、上下文与工具能力、可用性。Benchmark 选型未确定；应保存每项分数的原始值、可比标准化值、评测版本/日期/Harness/样本量/来源/对应 Effort 和缺失/可信度。不以人为低中高等级替代实测分数；未测档位维持 UNKNOWN，不按名称猜分数；硬合法动作过滤与学习型打分分离。更改输入字段需验证实际训练覆盖及线上推理编码一致性，不能只修改推理 JSON。
 5. **证据与同步原则**：既有代码确有部分 AgentState、名称+Effort 候选和 Registry，但不代表参考轨迹合理性监督、每档 Benchmark 分数和真实缓存价格已进入训练/线上评分。六份核心文档按“已确认方向、待定字段、已实现代码、真实评测”四种状态同步；当前健康队列、原始数据与封存 Test 不因本讨论改变。
 
 ### 2026-10-20 · 本轮执行范围与 Q-012 延续
@@ -84,7 +128,7 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 - **研究问题**：长程单/多 Agent 执行中，依据决策前可观测状态，在动态合法候选池中选择 `(model, reasoning_effort)`，能否在成功率约束下降低整任务成本。
 - **E-DESIGN 记录项**：记录任务/划分与终局 evaluator、候选池与 effort 支持、预算范围、主次指标、基线公平性、成对实验可恢复性、数据训练/验证/测试隔离、统计协议和停止条件。
 - **纪律**：任务成功 ≠ API 成功；实际缓存读取 ≠ 可迁移 KV；调用聚合数据 ≠ 任务级标签；CCH USD ≠ Blog GPT quotaUnits；已观察的行为轨迹 ≠ 未执行动作的反事实结果。决策时刻不得使用未来信息。
-- **维护**：每次用户答复后补齐原话或忠实摘要、最终决策、日期和影响；若改变旧决策，保留修订记录。默认直接提交 `main`，不需要 PR；公开内容先脱敏。
+- **维护**：每次用户答复后补齐原话或忠实摘要、最终决策、日期和影响；改变旧决策时保留原记录并注明替代关系。公开内容先脱敏；提交、推送、PR、CI 只在当前任务明确要求时执行。
 
 ### 0.1 问答状态机与跨对话恢复
 
@@ -98,8 +142,8 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 | Q-ID | 主题 | 状态 | 对应关键假设 |
 |---|---|---|---|
 | Q-001 | 评测任务集、任务类型与 pilot 组成 | **已确认 A，2026-10-09** | H1/H3/H6 |
-| Q-002 | 真实可用的 Model × Effort 候选动作与 provider 能力 | **已确认 B，2026-10-09；具体清单待核验** | H2/H5 |
-| Q-003 | 总预算、单任务硬上限、API/GPU 授权门槛 | **B 预算原则已确认；金额/运行权限未决** | H3/H7 |
+| Q-002 | 真实可用的 Model × Effort 候选动作与 provider 能力 | **B 原则保留；V9 三逻辑 ID 已定，统一 Qwen 联调已允许；正式生成配置待明确** | H2/H5 |
+| Q-003 | 总预算、单任务上限、API/GPU 范围 | **B 原则保留；累计真实 API Token `< 1,000,000`；USD/单任务范围仍待明确** | H3/H7 |
 | Q-004 | 主要 estimand：成功率约束、总 USD、每成功任务成本与延迟 | **已确认 B，2026-10-09；成功率阈值待定** | H1/H3/H7 |
 | Q-005 | 固定、task-only、规则/sticky、MLP/GBDT、admission-only 基线 | **已确认 B，2026-10-09；实现细节暂缓** | H1/H2/H4 |
 | Q-006 | 相同决策状态的受控分支、后续 continuation policy 与复现边界 | **已确认 A，2026-10-09；“rq 3 需要 ab 同选”指代待澄清** | H3/H4 |
@@ -112,14 +156,14 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 ## 2. Q-001｜首批评测任务集与 pilot 构成
 
 **提出日期**：2026-10-09  
-**状态**：负责人 2026-10-09 已确认 A；具体 benchmark/evaluator/split 未冻结  
+**状态**：负责人 2026-10-09 已确认 A；具体 benchmark/evaluator/split 未确定\
 **核心问题**：首轮是否优先使用可复现、自动验证终局的真实 Agent 任务，如何平衡 Harness 可靠性、外部有效性与可控实验成本？
 
 ### 选项
 
-- **A｜直接使用公开真实 coding benchmark**：例如经许可证/环境检查后选取可复现的真实仓库修复任务；优势是外部有效性较强；风险是环境恢复、依赖、测试和模型费用高，初期很难把 Harness 故障与路由效应分离。
+- **A｜直接使用公开真实 coding benchmark**：例如经许可证/环境核对后选取可复现的真实仓库修复任务；优势是外部有效性较强；风险是环境恢复、依赖、测试和模型费用高，初期很难把 Harness 故障与路由效应分离。
 - **B｜只用小型自建可验证 Agent 任务**：本地沙箱中的 coding、工具调用、失败恢复任务；优势是可控、可重复、低成本；风险是任务分布狭窄，容易高估方法效果，单独用于论文主结论不足。
-- **C｜分阶段混合（原 Planning 推荐，现已由负责人批准的 A 取代）**：先用约 **5 个**低成本、终局可自动判定的沙箱 coding/tool-use Agent 任务验证 Harness、ledger、恢复与状态快照；通过 pilot 门槛后，再引入经过复现性与许可检查的**公开真实 coding Agent 任务**作为正式主评测，并预留少量多 Agent/失败恢复分层任务。扩展到约 30 个任务 × 2 个动作 × 2 seeds 只是初始预算估算锚点，**不代表批准规模**。
+- **C｜分阶段混合（原 Planning 推荐，现已由负责人批准的 A 取代）**：先用约 **5 个**低成本、终局可自动判定的沙箱 coding/tool-use Agent 任务验证 Harness、ledger、恢复与状态快照；通过 pilot 门槛后，再引入经过复现性与许可核对的**公开真实 coding Agent 任务**作为正式主评测，并预留少量多 Agent/失败恢复分层任务。扩展到约 30 个任务 × 2 个动作 × 2 seeds 只是初始预算估算锚点，**不代表批准规模**。
 
 ### Planning 推荐及理由
 
@@ -139,7 +183,7 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 
 - **实验设计**：A 更重真实仓库复现；B 更重 Harness 内部有效性；C 先小 pilot，再真实 benchmark 与复杂场景分层。
 - **预算**：本问只决定任务类型与分阶段原则；调用费用、GPU 额度、正式样本量需在 Q-003/Q-008 单独审批。
-- **论文**：若只选 B，必须限制外部有效性主张；若选 A/C，需公开任务筛选、失败/排除和污染检查规则。
+- **论文**：若只选 B，必须限制外部有效性主张；若选 A/C，需公开任务筛选、失败/排除和污染核对规则。
 - **后续依赖**：Q-002 动作池必须与选定任务的工具、上下文和 provider 能力兼容。
 
 ## 3. Q-002｜真实 Model × Effort 候选池
@@ -186,7 +230,7 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 
 **负责人回答（2026-10-09）：`Q-006=A`。** 正式确认严格同一决策前状态分支作为后续主要受控比较原则，真实 Benchmark 恢复性及 continuation policy 等具体实现暂缓；本决定不授权实际 rollout。
 
-**同一条消息的额外原话**：“rq 3 需要 ab 同选”。当前文档并无名为 RQ3 的已确认独立决策。它可能指第三个问题 Q-006 的 A+B，也可能指研究问题 RQ3 或后续批次的第三题。由于明确同时给出 `Q-006=A`，在指代核清之前**保留 Q-006=A 不自动改写为 A+B**。若确指 Q-006，则可将 A 的同状态受控分支与 B 的历史轨迹观察性分析作为互补证据，但二者的证据级别不可混同；这是待澄清的解释而非新批准。
+**同一条消息的额外原话**：“rq 3 需要 ab 同选”。当前文档并无名为 RQ3 的已确认独立决策。它可能指第三个问题 Q-006 的 A+B，也可能指研究问题 RQ3 或后续批次的第三题。由于明确同时给出 `Q-006=A`，在指代核清之前**保留 Q-006=A 不自动改写为 A+B**。若确指 Q-006，则可将 A 的同状态受控分支与 B 的历史轨迹观察性分析作为互补证据，但二者的证据级别不可混同；这是待澄清的解释，尚未获得新的批准。
 
 ## 8. 第三批训练规划问答（仅规划，不涉及实验实施）
 
@@ -194,7 +238,7 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 
 **负责人 2026-10-09 新要求**：“现在先不讨论具体如何实验 只讨论如何训模型一个阶段一个阶段的来”。保留现有 E0.5 → E-DESIGN → E1～E5 总路线，不提前启动 E4；当前只在 E-DESIGN 内依次讨论训练数据、训练起点、监督信号。Q-008/Q-009 的实验规模/场景协议待重新开启，Q-003 额度和资源授权仍未解决。
 
-### Q-007｜训练数据从哪里来？（第一学习阶段 A 已明确；整体方案未冻结）
+### Q-007｜训练数据从哪里来？（第一学习阶段 A 已明确；整体方案未确定）
 
 - **A**：优先使用经许可证和隐私核查的公开 Agent 轨迹，作为可用的**已执行动作**监督；承认缺少同状态未选动作标签。
 - **B**：优先规划未来从真实 Coding Benchmark 自采高质量 Agent 状态与终局标签；暂不依赖公开轨迹作初始训练集，但采集本身需另行授权。
@@ -246,7 +290,7 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 
 #### Q-007-R1｜开源训练数据来源与处理方案（2026-10-09）
 
-**本轮只处于第一大阶段：训练数据来源与加工契约研究。** 用户要求覆盖两类监督数据（运行轨迹、不同任务的模型选择）、全部八组状态、缓存、供应商规则、数据量；尚未批准下载/清洗/训练，以下均为 Planning 方案，不是已产出的训练集。
+**本轮只处于第一大阶段：训练数据来源与加工规范研究。** 用户要求覆盖两类监督数据（运行轨迹、不同任务的模型选择）、全部八组状态、缓存、供应商规则、数据量；尚未批准下载/清洗/训练，以下均为 Planning 方案，不是已产出的训练集。
 
 | 来源 | 可提供的证据 | 许可/限制 |
 |---|---|---|
@@ -256,24 +300,24 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 | [RouterBench](https://huggingface.co/datasets/withmartian/routerbench) | 30k+ Prompts、11 模型的回答/质量/估算成本 | **数据集许可标签不明，暂不纳入训练**；请求级比较 |
 | [TwinRouterBench Static](https://huggingface.co/datasets/Amorph/TwinRouterBench) | 970 个 Agent 前缀 → 四级 tier，Apache-2.0 | tier 不是具体 model×effort；防正式对照集泄漏 |
 | [Arena Human Preference 55k](https://huggingface.co/datasets/lmarena-ai/arena-human-preference-55k) | 同题两模型偏好，Apache-2.0，参考 RouteLLM | 人类偏好不是终局软件任务成功 |
-| [CMU agent_trajectories](https://huggingface.co/datasets/cx-cmu/agent_trajectories) | 8653 个多领域/多模型轨迹 | gated 且训练许可待核 |
+| [CMU agent_trajectories](https://huggingface.co/datasets/cx-cmu/agent_trajectories) | 8653 个多领域/多模型轨迹 | 访问受限 且训练许可待核 |
 | [AgentSuite](https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories) | 30 模型 × 273 任务、thinking 配置和评估结果 | 许可待核；thinking 开关不等于通用 effort |
 | [SWE-Gym](https://huggingface.co/datasets/SWE-Gym/SWE-Gym) / [SWE-rebench-V2](https://huggingface.co/datasets/nebius/SWE-rebench-V2) | 真实代码修复任务及可执行环境 | 任务不是天然的已标注模型选择轨迹 |
 | [Finding the Right Fit](https://huggingface.co/datasets/yixuanli97/finding-the-right-fit) | model×harness 数据及成本 | **发布条款明确禁止训练、微调和蒸馏** |
 
 **相关训练思路**：RouteLLM 从同题双模型 human preference 训练模型胜负；RouterBench 和 LLMRouterBench 提供按任务的多模型真实得分/成本来拟合静态模型路由；Kev 官方基础决策训练集约 12,576 个 typed 选择/规则样本，后续分阶段添加真实文档及开发工具标签并校准。以上来源均不能从单条 Agent 历史轨迹凭空推断未选 model×effort 的结局。
 
-**加工合同 / 顺序**：
+**加工规范 / 顺序**：
 
-1. Source manifest：repo/dataset revision、license、训练用途权、任务和原始数据 hash；未知许可进入 quarantine，商业 API 输出的模型训练权限需单独核对。
-2. Task/Episode：task/repo、harness、模型版本、实际 effort、工具、时序、可信 resolved；-1 不作为成败监督。**先按 task/repo/近重复任务去重并冻结 train/validation/test，再抽轨迹前缀**。
+1. Source manifest：repo/dataset revision、license、训练用途权、任务和原始数据散列值；未知许可进入 quarantine，商业 API 输出的模型训练权限需单独核对。
+2. Task/Episode：task/repo、harness、模型版本、实际 effort、工具、时序、可信 resolved；-1 不作为成败监督。**先按 task/repo/近重复任务去重并固定 train/validation/test，再抽轨迹前缀**。
 3. DecisionPrefix：在每个真实模型调用前截断，保留 Research 八组状态及 observed_at、provenance、measured/estimated/missing；标准修复补丁、最终测试、未来 token/调用/失败不得进入输入；同任务前缀采样加权防伪独立。
 4. Actions：provider/model/revision/effort requested/effective、候选合法性、上下文、工具、价格和缓存/会话条件；缺失为 unknown，不伪造多 Agent handoff、effort、缓存。
 5. Outcome：严格区分 observed task resolved、真实计费时的 observed cost-to-go、同静态 Prompt 的 model score/preference、由能力表确定的合法性标签。未执行候选 outcome 始终 missing；API status != task resolved。
 6. Kev train JSONL：noul（实际观察的成败或规则真值）、score（有可信计量的有序成本类别）、choice（真实可比较的动作或确定性规则）；保留 task/source/split/label provenance 和 option permutation；无真实反事实时不能标注最优中途 model×effort。
 7. 训练数据 ready 记录项：许可证完整、去重分割无泄漏、字段/八组状态覆盖率与缺失率、真实成功标签可用率、effort 与模型组合覆盖、缓存观测覆盖、USD/quotaUnits 保真、JSONL 可验证和 checksum。
 
-**Cache 与厂商政策**：公开轨迹通常只有 estimated prefix overlap，而非实际 physical cache read/write。CCH/Blog 是成本先验不能作同状态缓存效果监督；未来实际 Provider usage/vLLM metrics 才能给缓存真标签。官方缓存差异见 [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching)、[Claude](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)、[Gemini](https://ai.google.dev/gemini-api/docs/caching)、[DeepSeek](https://api-docs.deepseek.com/api/create-chat-completion/)、[vLLM](https://docs.vllm.ai/en/latest/usage/metrics/)。effort 支持、缓存 TTL、计价、限流、工具、隐私/ToS 等**不能只训练进 Kev 权重**，应由版本化 Registry+硬约束执行，样本只用于学习稳定的状态与动作效果。Google [Gemini API Terms](https://ai.google.dev/gemini-api/terms/) 对竞争模型训练有条款限制，不能默认商业 API 输出可用于训练。
+**Cache 与厂商政策**：公开轨迹通常只有 estimated prefix overlap，缺少实际 physical cache read/write。CCH/Blog 是成本先验不能作同状态缓存效果监督；未来实际 Provider usage/vLLM metrics 才能给缓存真标签。官方缓存差异见 [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching)、[Claude](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)、[Gemini](https://ai.google.dev/gemini-api/docs/caching)、[DeepSeek](https://api-docs.deepseek.com/api/create-chat-completion/)、[vLLM](https://docs.vllm.ai/en/latest/usage/metrics/)。effort 支持、缓存 TTL、计价、限流、工具、隐私/ToS 等**不能只训练进 Kev 权重**，应由版本化 Registry+硬约束执行，样本只用于学习稳定的状态与动作效果。Google [Gemini API Terms](https://ai.google.dev/gemini-api/terms/) 对竞争模型训练有条款限制，不能默认商业 API 输出可用于训练。
 
 **样本量**：Kev 官方基础约 12,576 个决策样本，RouteLLM 采用万级偏好，说明不必无差别全量喂 20 万轨迹。但对任务级路由并无证明足够的固定 N。可先**规划**审计约 1k–3k 独立任务、数千～数万条有真实结局的代表性前缀及合法静态模型比较，按 task/repo/model/effort 独立覆盖、学习曲线和标签质量决定扩张；缺乏同状态多动作真值时增加 prefix 数不能补救。
 
@@ -288,16 +332,16 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 
 | 候选编号 | 源及关键数据 | 研究用途/不能宣称的内容 |
 |---|---|---|
-| CACHE-01 | [Mooncake FAST25 traces](https://github.com/kvcache-ai/Mooncake/blob/main/FAST25-release/README.md)：真实 conversation 12,031 条、toolagent 23,608 条；另有 synthetic 3,993 条。匿名 timestamp、input_length、output_length、512-token 前缀 hash_ids | **P0 首选**：真实调用里的前缀块可复用机会 + 真实到达时间；**没有实际生产 cache_read_tokens、cache_hit 标签** |
+| CACHE-01 | [Mooncake FAST25 traces](https://github.com/kvcache-ai/Mooncake/blob/main/FAST25-release/README.md)：真实 conversation 12,031 条、toolagent 23,608 条；另有 synthetic 3,993 条。匿名 timestamp、input_length、output_length、512-token 前缀 `hash_ids` | **P0 首选**：真实调用里的前缀块可复用机会 + 真实到达时间；**没有实际生产 cache_read_tokens、cache_hit 标签** |
 | CACHE-02 | [Mooncake 旧版 arxiv trace](https://github.com/kvcache-ai/Mooncake/tree/main/arxiv-trace) | 旧版本比较；可能与 FAST25 重叠，不能当独立新样本数 |
-| CACHE-03 | [Mooncake KV cache simulator](https://kvcache-ai.github.io/Mooncake/performance/mooncake/storage-benchmark.html) | 用真实块 hash 重放，可模拟不同容量/淘汰条件下的缓存读取与 hit rate；**模拟数据不是生产实际命中** |
+| CACHE-03 | [Mooncake KV cache simulator](https://kvcache-ai.github.io/Mooncake/performance/mooncake/storage-benchmark.html) | 用真实块散列值重放，可模拟不同容量/淘汰条件下的缓存读取与 hit rate；**模拟数据不是生产实际命中** |
 | CACHE-04 | [KV Cache Workload Bench](https://github.com/hokiyoung/kv-cache-workload-bench) | ShareGPT 派生多轮/并发/增长/驱逐的合成 workload；无 Provider 真实账单 |
 | TIME-01 | [BurstGPT](https://github.com/HPMLL/BurstGPT) | 数百万条真实请求、session ID、耗时与 Token，研究服务压力、会话增长、延迟预算；无原始 Agent task-resolved |
 | TIME-02 | [Alibaba xMaaS 2026](https://github.com/alibaba/clusterdata/tree/master/cluster-trace-v2026-maas) | 真实 LLM MaaS 服务集群的资源/模型实例/显存/时间负载，**多数为实例级，不是每次 prompt 或 KV hit** |
 | TIME-03 | [Alibaba GenTD26](https://github.com/alibaba/clusterdata/tree/master/cluster-trace-v2026-GenAI) | 包括图像生成等的队列/QPS/延迟/资源工作负载；仅系统时间行为补充，不当成 LLM 任务路由标签 |
 | TIME-04 | 既有 Open-SWE-Traces、SWE-smith 与 Mooncake toolagent | Agent 已发生阶段、时间和 Token 等作为时间状态；同一原始数据只登记一次，剩余预算必须有原任务预算减真实已耗才可靠 |
 
-**缓存标签定义（非可互换）**：provider/vLLM 报告的 read/write/hit token 才是 measured；Mooncake 共享 hash 仅为真实请求可复用 prefix potential；配置缓存 TTL/容量/路由后推演的是 simulated hit；文本最长公共前缀只是 estimated overlap。**不可将 hash 匹配、模拟命中训练成商业 API 真实物理命中标签。** 跨模型、跨实例、跨账户/租户共享 KV 的技术和权限不能假设存在。
+**缓存标签定义（非可互换）**：provider/vLLM 报告的 read/write/hit token 才是 measured；Mooncake 共享散列值仅为真实请求可复用 prefix potential；配置缓存 TTL/容量/路由后推演的是 simulated hit；文本最长公共前缀只是 estimated overlap。**不可将散列值匹配、模拟命中训练成商业 API 真实物理命中标签。** 跨模型、跨实例、跨账户/租户共享 KV 的技术和权限不能假设存在。
 
 ##### B. 上下文、记忆、协作与执行状态
 
@@ -318,7 +362,7 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 
 ##### C. 官方 Provider 规则数据源（国内主要模型、国际闭源与开源托管）
 
-| Provider 或模型/部署族 | 官方证据 | 本轮认定与后续字段 |
+| Provider 或模型/部署系列 | 官方证据 | 本轮认定与后续字段 |
 |---|---|---|
 | OpenAI / GPT、Codex | https://developers.openai.com/api/docs/guides/prompt-caching | 缓存 input read/write、TTL、写入收费随新旧模型不同；按 API/型号/地区/组织保存 |
 | Anthropic / Claude | https://platform.claude.com/docs/en/build-with-claude/prompt-caching | cache_read_input_tokens、cache_creation_input_tokens、5m/1h、breakpoint；effort/tool 前缀约束要验证 |
@@ -338,9 +382,9 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 | 国际其它及转售 | https://docs.mistral.ai/ 、https://docs.cohere.com/ 、https://docs.together.ai/ 、https://console.groq.com/docs 、https://docs.fireworks.ai/ | 纳入 provider 候选全集，但 per-model cache/effort/价格本轮**待核** |
 | 自托管开源 Qwen、DeepSeek、GLM、Kimi、MiniMax、Hunyuan 等 | https://docs.vllm.ai/en/latest/design/prefix_caching/ 、https://docs.sglang.ai/ | 缓存由真实 inference engine/实例/tokenizer/tenant 隔离决定，不由权重名称决定 |
 
-**Registry 建议字段**：source_url/verified_at/evidence_level、provider/model/deployment/revision/region、open/closed/hosted、supported_context/tools/effort_requested/effort_effective、cache_mode/read/write/TTL/min_prefix、price_version/currency、health/rate_limit、tenant/session_affinity、data_retention/training_output_terms/effective_dates。政策未知记 unknown 而非 false。厂商政策、effort 支持和价格作为动态合法性及计价**外部硬约束**，不通过训练 Kev 权重当作永久真值。缓存和时间类数据只是补充有证据的输入或条件监督。
+**Registry 建议字段**：source_url/verified_at/evidence_level、provider/model/deployment/revision/region、open/closed/hosted、supported_context/tools/effort_requested/effort_effective、cache_mode/read/write/TTL/min_prefix、price_version/currency、health/rate_limit、tenant/session_affinity、data_retention/training_output_terms/effective_dates。政策未知记 unknown，不记 false。厂商政策、effort 支持和价格作为动态合法性及计价**外部硬约束**，不通过训练 Kev 权重当作永久真值。缓存和时间类数据只是补充有证据的输入或条件监督。
 
-**阶段关闭边界**：本轮已汇集 candidate source catalog V1，但**没有宣称全部通过许可证审计**，没有指定样本量，没有下载、清洗、生成 Kev JSONL、使用 GPU/服务器/API，亦没有构建 Agent 框架。下一步才按用户另行指示开展逐个数据源许可与字段检查；随后再讨论真实数据加工。
+**阶段关闭边界**：本轮已汇集 candidate source catalog V1，但**没有宣称全部通过许可证审计**，没有指定样本量，没有下载、清洗、生成 Kev JSONL、使用 GPU/服务器/API，亦没有构建 Agent 框架。下一步才按用户另行指示开展逐个数据源许可与字段核对；随后再讨论真实数据加工。
 
 ### Q-010｜Kev-4B 训练从哪个基础开始？（已提出待答）
 
@@ -358,7 +402,7 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 
 ### Q-011｜首先学习什么监督目标，如何分阶段？（新问题，已提出待答）
 
-**2026-10-11 负责人最新范围决定（Stage 1 具体层面）**：用户确认继续保留 **Regime A+B+C**，按来源及监督类型分别评价；`MR-STAGE1-FAST-FIX` 已完成、修复版为 `83,259` 题。用户明确**暂不授权正式 GPU 训练**，仅允许在原唯一 `prepare_router_data.py --mode views` 内最小修复训练题面约 400 字符截断、必要 CPU 验证并确定 Kev/Laya 第一批实际支持的参数；这一新输入修复**尚未收到完成报告**，不得当作已经执行。既往有条件 GitHub 文档/必要源码推送授权有效，但不包括训练、API、模型下载、覆盖原始与冻结文件或新建链路。ROUTE-004 `TRAIN_ALLOWED_VERIFIED`；ROUTE-001/002 `LICENSE_PENDING` 原样保留。此决定只锁定 Stage 1 **静态 A+B+C 的数据使用方向**，**不代表**已经最终选择 Q-011 的未来同状态动态训练顺序 A/B/C，也不代替 Q-010 的初始化选择或 GPU 许可。
+**2026-10-11 负责人最新范围决定（Stage 1 具体层面）**：用户确认继续保留 **Regime A+B+C**，按来源及监督类型分别评价；`MR-STAGE1-FAST-FIX` 已完成、修复版为 `83,259` 题。用户明确**暂不授权正式 GPU 训练**，仅允许在原唯一 `prepare_router_data.py --mode views` 内最小修复训练题面约 400 字符截断、必要 CPU 验证并确定 Kev/Laya 第一批实际支持的参数；这一新输入修复**尚未收到完成报告**，不得当作已经执行。既往有条件 GitHub 文档/必要源码推送授权有效，但不包括训练、API、模型下载、覆盖原始与固定文件或新建链路。ROUTE-004 `TRAIN_ALLOWED_VERIFIED`；ROUTE-001/002 `LICENSE_PENDING` 原样保留。此决定只锁定 Stage 1 **静态 A+B+C 的数据使用方向**，**不代表**已经最终选择 Q-011 的未来同状态动态训练顺序 A/B/C，也不代替 Q-010 的初始化选择或 GPU 许可。
 
 
 
@@ -366,7 +410,7 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 - **B（Planning 推荐）**：训练路线分为“已执行动作的 outcome/cost-to-go 监督 → 同状态成对标签训练动作选择/pointer head → 受约束路由校准”三步；各步是否能启动由数据真实性与权限决定，不假定配对数据现成。
 - **C**：一开始直接学习模型×effort 最优选择；仅在已具有同状态合法动作可比较标签时才合理，否则不能从单条行为轨迹推导最佳动作。
 
-**待答（2026-10-11 P3 仍未决；负责人已批准 `MR-STAGE1-FAST-FIX` 最小修复并完成全量 CPU 校验，当前 Stage 1 技术与代码阻塞已 100% 解除 `STAGE1_TECHNICAL_DATA_AND_CODE_READY = READY`、许可状态保持待决、`RUNTIME_JOINT_DATA_READY = NOT_READY`）**：A/B/C。在 `MR-STAGE1-FAST-FIX`（证据归档于 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed/stage1_manifest.json` 与 `runs/MR-STAGE1-20261010/final-stage1-and-joint-coverage-audit.json`）中已完成：(1) **P0 数字与口径纠偏**：公开数据总量严格为 14 个有效源 **`6,600,628` 行**（不与自有数据 `OWN-001` 110 聚合行、`OWN-002` `221,128` 调用行、`OWN-003` 79 衍生汇总行混加为 `6,620,400`），AgentSuite 统一为 **`273` 任务 × `30` 配置 = `8,190` Episode**（`1,365` 对严格同权重开关 + `273` 对同底座专用 Thinking 权重 + `1,365` 对已确认跨版本对照），八类状态统一为唯一标准名称（`Task/Subtask`、`Agent/Coordination`、`Context/Memory`、`Tool/Environment`、`Verification/Recovery`、`KV Cache/Continuity`、`Temporal/Execution`、`Provider/Availability`）；(2) **`ROUTE-001` 完整原始 Prompt 哈希合并、去重与冲突隔离（P1）**：按未截断原始 `(origin_query, prompt)` 的 `full_prompt_hash` 将跨子集同题导出合并为 **`24,441` 道独立真题**，去重 `21,144` 条完全一致的同模型重复评测（恢复 `llmroute_hle_57` 为 `gemini-2.5-pro` 唯一最高分胜者），并将 `1,219` 道潜在胜者分数或费用冲突题（`439 + 22 + 758`）隔离至分析集，保留 **`8,441` 道无冲突纯静态单胜者题**（`6,788 / 812 / 841`）；(3) **方案 B 一键可复现导出与候选打乱（P2–P4）**：`prepare_router_data.py --mode views` 在 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed/` 生成 **`83,259` 题纯静态主集（`train: 66,566, val: 8,343, test: 8,350`）**，两次独立运行 SHA256 100% 一致，`ROUTE-002` 首位置 `index 0` 胜出率降至均匀的 `9.20% / 9.00% / 9.51%`，且在官方 Kev（`384/7552`）与 Laya（`--max-len 1024 --head-max-len 512`）下 `100%` 零跳过通过（交集 `100%`）；(4) **许可证与动态联合覆盖状态**：`ROUTE-004`（`39,716` 题）为 `TRAIN_ALLOWED_VERIFIED`（`apache-2.0`），`ROUTE-002`（`35,102` 题）与 `ROUTE-001`（`8,441` 题）保持 `LICENSE_PENDING`；八类状态 + `(model, effort)` + 真实缓存 + 真实费用的联合动态记录仍为 **`0`**。待负责人明确 GPU 训练及 `LICENSE_PENDING` 范围授权后即可启动正式微调。
+**待答（2026-10-11 P3 仍未决；负责人已批准 `MR-STAGE1-FAST-FIX` 最小修复并完成全量 CPU 校验，当前 Stage 1 技术与代码阻塞已 100% 解除 `STAGE1_TECHNICAL_DATA_AND_CODE_READY = READY`、许可状态保持待决、`RUNTIME_JOINT_DATA_READY = NOT_READY`）**：A/B/C。在 `MR-STAGE1-FAST-FIX`（证据归档于 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed/stage1_manifest.json` 与 `runs/MR-STAGE1-20261010/final-stage1-and-joint-coverage-audit.json`）中已完成：(1) **P0 数字与口径纠偏**：公开数据总量严格为 14 个有效源 **`6,600,628` 行**（不与自有数据 `OWN-001` 110 聚合行、`OWN-002` `221,128` 调用行、`OWN-003` 79 衍生汇总行混加为 `6,620,400`），AgentSuite 统一为 **`273` 任务 × `30` 配置 = `8,190` Episode**（`1,365` 对严格同权重开关 + `273` 对同底座专用 Thinking 权重 + `1,365` 对已确认跨版本对照），八类状态统一为唯一标准名称（`Task/Subtask`、`Agent/Coordination`、`Context/Memory`、`Tool/Environment`、`Verification/Recovery`、`KV Cache/Continuity`、`Temporal/Execution`、`Provider/Availability`）；(2) **`ROUTE-001` 完整原始 Prompt 散列合并、去重与冲突隔离（P1）**：按未截断原始 `(origin_query, prompt)` 的 `full_prompt_hash` 将跨子集同题导出合并为 **`24,441` 道独立真题**，去重 `21,144` 条完全一致的同模型重复评测（恢复 `llmroute_hle_57` 为 `gemini-2.5-pro` 唯一最高分胜者），并将 `1,219` 道潜在胜者分数或费用冲突题（`439 + 22 + 758`）隔离至分析集，保留 **`8,441` 道无冲突纯静态单胜者题**（`6,788 / 812 / 841`）；(3) **方案 B 一键可复现导出与候选打乱（P2–P4）**：`prepare_router_data.py --mode views` 在 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed/` 生成 **`83,259` 题纯静态主集（`train: 66,566, val: 8,343, test: 8,350`）**，两次独立运行 SHA256 100% 一致，`ROUTE-002` 首位置 `index 0` 胜出率降至均匀的 `9.20% / 9.00% / 9.51%`，且在官方 Kev（`384/7552`）与 Laya（`--max-len 1024 --head-max-len 512`）下 `100%` 零跳过通过（交集 `100%`）；(4) **许可证与动态联合覆盖状态**：`ROUTE-004`（`39,716` 题）为 `TRAIN_ALLOWED_VERIFIED`（`apache-2.0`），`ROUTE-002`（`35,102` 题）与 `ROUTE-001`（`8,441` 题）保持 `LICENSE_PENDING`；八类状态 + `(model, effort)` + 真实缓存 + 真实费用的联合动态记录仍为 **`0`**。待负责人明确 GPU 训练及 `LICENSE_PENDING` 范围授权后即可启动正式微调。
 
 ## 2026-10-16 · Q-017：论文五个 RQ 研究定位（负责人明确确认）
 
@@ -379,7 +423,7 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 - **RQ2：固定 Router 的模型池 K/成员选择**。K 是不同模型身份数；另报每模型真实 Native Effort 菜单与总合法动作数。
 - **RQ3：固定模型池身份/K/原生 Effort/Router 的任务拆分粒度**。对同一原任务比较 G，并记录实际 Agent 数、F、handoff 与费用；跨任务类型分别报告。
 - **RQ4：不同子 Agent 角色之间的可利用模型互补性**。固定池和 G，检验角色×模型配置表现差异，并比较 Role-static 与 Role-aware 的完整任务经济结果；历史观测不能等于未选动作反事实。
-- **RQ5：动态路由的工作负载适用边界**。固定池/G/Router，事先定义多 Agent 任务类型、规模/复杂度及协作结构等层，检查在可比成功率条件下 Full 相对强简单基线的**增益与无增益区域**；仅分层汇总 RQ1 结果不足以宣称独立科学贡献，须有可检验的条件交互和不确定性。
+- **RQ5：动态路由的工作负载适用边界**。固定池/G/Router，事先定义多 Agent 任务类型、规模/复杂度及协作结构等层，核对在可比成功率条件下 Full 相对强简单基线的**增益与无增益区域**；仅分层汇总 RQ1 结果不足以宣称独立科学贡献，须有可检验的条件交互和不确定性。
 
 **执行/论文影响**：维持历史 Q-001～Q-016 的权限、数据协议与 GPU 训练事实。RQ 调整不重启、不打断现有 P22 队列；不下载未审核数据、不运行收费评测。本轮只同步六份文档。**八张图和十二张空白结果表**改以 V8 对应，全部数值留空（详见 [汇报三 V8](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)）。未来论文如实报告消融负结果，开发集选择和独立测试集分离。
 
@@ -424,24 +468,24 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 | 2026-10-09 | Q-007、Q-010、Q-011 | 第三批训练导向三个问题已提出待答；Q-008/Q-009 暂缓 | Planning 提案，不是批准 |
 | 2026-10-09 | Q-007 | 负责人指明第一学习阶段从 A 公开轨迹开始；补充公开数据检索、八组状态与学习阶段边界；全阶段数据选择仍开放 | 本轮答复与只读资料核验，未授权执行 |
 | 2026-10-09 | Q-007 台账治理 | 负责人要求专门登记数据集来源、Provider/Cache 政策并为后续 AI 筛选清洗留结构；建立 DATA_SOURCE_AND_POLICY_REGISTRY.md 作为唯一详细台账 | 本轮明确文档结构需求；未批准具体源或执行 |
-| 2026-10-09 | 论文实验简化执行 | 负责人要求最少可执行代码、单终端实时进度，移除额外工程流程和版本冻结 | 最新执行风格，科学数据隔离与真实标签仍需保持；不代表已有训练成果或第三方计算/付费 API 授权 |
+| 2026-10-09 | 论文实验简化执行 | 负责人要求最少可执行代码、单终端实时进度，移除额外工程流程和版本固定 | 最新执行风格，科学数据隔离与真实标签仍需保持；不代表已有训练成果或第三方计算/付费 API 授权 |
 | 2026-10-09 | 公开数据清洗位置 | 本机存储不足，选定自有服务器作为 Open-SWE/SWE-smith/Arena/Mooncake 等公开数据下载、CPU 清洗及存储环境；中文目录优先；完整数据不推 GitHub | 用户已委派执行，实测报告未回传，GPU/付费 API 未因此获批 |
 | 2026-10-09 | 本机 Codex 论文知识库 | 要求同步 GitHub 五核心文档，用 Paper Research Router 整理 58 篇现有 PDF，Obsidian 中一篇一笔记、双向链接并补充直接相关路由/Jev/Kev 资料 | 明确交付任务；本 ChatGPT 负责 Planning 和需求学术讨论，本机 Codex 执行 |
 | 2026-10-09 | 论文引用与模型公开 | 允许将论文创新叙事放在任务级状态、缓存与 model×effort 决策，使用 Kev 已发布权重仍须在 Implementation/Experiments 披露 | 不能将闭源 Jev 训练方案或 Kev LoRA 架构写为原创 |
-| 2026-10-09 | Q-007 首批数据科研审查 | Execution 在服务器产出 80,970 混合样本并提供 GitHub 966f582 源码与 50 条预览；Planning 核对到 Arena 真实 winner 30k，但 Agent effort/complexity、Mooncake dispatch/缓存、成本 tier 大量为规则标签；且 TwinRouterBench 已混进 train/val/test | 已执行数据解析≠真实最优路由监督；禁止以 80,970 直接证明 TRAIN_READY；同一 prepare_router_data.py 修正、TwinRouterBench 留外部评测 |
-| 2026-10-09 | Kev 官方格式核对 | 官方数据样本要求 questions.choice.criteria 对象与 choice 字符串标签、score.criteria 等级数组与整数索引标签；现有输出为 options、levels 及字符串 score 标签，且补充 provenance 需确认不影响官方解析 | 在进入微调前最简改造与 validate 即可，不增加工程门禁；训练/评测按 task/repo/group 而非单个 trajectory 隔离 |
+| 2026-10-09 | Q-007 首批数据科研审查 | Execution 在服务器产出 80,970 混合样本并提供 GitHub 966f582 源码与 50 条预览；Planning 核对到 Arena 真实 winner 30k，但 Agent effort/complexity、Mooncake dispatch/缓存、成本 tier 大量为规则标签；且 TwinRouterBench 已混进 train/val/test | 已执行数据解析≠真实最优路由监督；禁止以 80,970 直接证明 TRAIN_READY；同一 prepare_router_data.py 更正、TwinRouterBench 留外部评测 |
+| 2026-10-09 | Kev 官方格式核对 | 官方数据样本要求 questions.choice.criteria 对象与 choice 字符串标签、score.criteria 等级数组与整数索引标签；现有输出为 options、levels 及字符串 score 标签，且补充 provenance 需确认不影响官方解析 | 在进入微调前最简改造与 validate 即可，不增加额外执行限制；训练/评测按 task/repo/group 隔离，不以单个 trajectory 为隔离单位 |
 | 2026-10-09 | Q-007 重建成果二次科研复审 | Planning 核对 16 个 GitHub 字段统计与唯一清洗程序，核出 **3,963,661 vs 报告 2,282,484** 总量冲突；Open-SWE 6 分片仅部分、SWE-smith 仅 ticks、AgentSuite 8/30 模型；前决策状态混入当前工具动作、模型名错映射、Mooncake 复用计算非有序 prefix 与其它字段问题 | 这是 Planning 源码与公开数据审查，**不是负责人新增批准/否决**；当前不应以 TRAIN_READY 开始正式微调；只修改既有脚本，不再全盘删原始文件 |
-| 2026-10-10 | Q-007 第三次科研复审（0b39a7e） | GitHub 16 源字段统计和=6,600,628，与 Execution 报告一致；多项代码修正确认，但 AgentSuite pass_criteria/target_question 可能含评测 rubric、SWE-smith 代码块误判工具动作、Mooncake 只有前缀复用潜力、missing_rate 仅按预览样本、缺真正同状态路由标签与 Train/Val/Test 物理切分、TRA-001 官方仍部分下载 | **Planning 审查意见，非负责人新批准**；保留已下载原始数据，继续原脚本定向科研纠偏；不得宣布 TRAIN_READY 或启动微调 |
-| 2026-10-10 | Q-007-FINAL 数据资产冻结与 Kev/Laya 兼容验证 | 完成全部已登记 Source ID 资产盘点与机器可读 `manifest.json`、双遍确定性可复现验证；将 LLMRouterBench 13,072 道同分成本未比/并列题移入分析集，锁定 **84,310 道严格唯一单胜者监督题**（Train 67,428 / Val 8,436 / Test 8,446）与 970 步 Holdout；修复短/标点 Prompt 跨集泄漏（0 重叠）；通过官方 `kev` 与 `laya` 仓库 100% 全量兼容性及 A6000 最小训练/保存恢复 Smoke Test | **Q-007-FINAL 全部 PASS，数据资产正式冻结**；下一阶段为 E1/E2 Kev/Laya 正式训练与离线验证，E3 Coding Benchmark 批量运行尚未启动 |
-| 2026-10-10 | 全量 660 万条数据分层、八组状态覆盖与目录治理 | 对账确认服务器唯一正式冻结划分为 `67,428 / 8,436 / 8,446`；完成 16 公开源 + 3 自有源 8 维逐行清点、8 类研究状态覆盖矩阵及五阶段训练课程设计；精确拆分 AgentSuite Thinking 同一权重运行时开关（1,365 对）、专用 Thinking 权重（273 对）与跨版本对比（1,365 对已确认）；建立 `runs/` 与 `.tmp/`，清理本任务临时目录，脱敏全部公开文档中的服务器绝对路径 | **全量数据分层与目录治理完成**；等待负责人确认五阶段训练课程与历史遗留文件清理后进入 E1/E2 正式训练 |
+| 2026-10-10 | Q-007 第三次科研复审（0b39a7e） | GitHub 16 源字段统计和=6,600,628，与 Execution 报告一致；多项代码更改已确认，但 AgentSuite pass_criteria/target_question 可能含评测 rubric、SWE-smith 代码块误判工具动作、Mooncake 只有前缀复用潜力、missing_rate 仅按预览样本、缺真正同状态路由标签与 Train/Val/Test 物理切分、TRA-001 官方仍部分下载 | **Planning 审查意见，非负责人新批准**；保留已下载原始数据，继续原脚本定向科研纠偏；不得宣布 TRAIN_READY 或启动微调 |
+| 2026-10-10 | Q-007-FINAL 数据资产定版与 Kev/Laya 兼容验证 | 完成全部已登记 Source ID 资产盘点与机器可读 `manifest.json`、双遍确定性可复现验证；将 LLMRouterBench 13,072 道同分成本未比/并列题移入分析集，锁定 **84,310 道严格唯一单胜者监督题**（Train 67,428 / Val 8,436 / Test 8,446）与 970 步 Holdout；修复短/标点 Prompt 跨集泄漏（0 重叠）；通过官方 `kev` 与 `laya` 仓库 100% 全量兼容性及 A6000 最小训练/保存恢复 Smoke Test | **Q-007-FINAL 全部 PASS，数据资产正式定版**；下一阶段为 E1/E2 Kev/Laya 正式训练与离线验证，E3 Coding Benchmark 批量运行尚未启动 |
+| 2026-10-10 | 全量 660 万条数据分层、八组状态覆盖与目录治理 | 对账确认服务器唯一正式固定划分为 `67,428 / 8,436 / 8,446`；完成 16 公开源 + 3 自有源 8 维逐行清点、8 类研究状态覆盖矩阵及五阶段训练课程设计；精确拆分 AgentSuite Thinking 同一权重运行时开关（1,365 对）、专用 Thinking 权重（273 对）与跨版本对比（1,365 对已确认）；建立 `runs/` 与 `.tmp/`，清理本任务临时目录，脱敏全部公开文档中的服务器绝对路径 | **全量数据分层与目录治理完成**；等待负责人确认五阶段训练课程与历史遗留文件清理后进入 E1/E2 正式训练 |
 | 2026-10-10 | Stage 1 科学监督定义与训练数据配置定稿（`MR-STAGE1-20261010`） | 只读查明 RouterBench 全部 87 条得分+估价双并列题（`68/10/9`，均为 `['claude-v1','claude-v2']` 并列，顺序选 `claude-v1`）；将 Stage 1 精确拆分为人类偏好（`39,716`）、纯质量唯一最高分（`3,985`）、同分最低费用规则（`40,503`），排除 87 条双并列与 19 条 AgentSuite 固定对话题后锁定 **84,204 题洁净主集（`67,343 / 8,425 / 8,436`）**；查明 `ROUTE-001` 需在加载时屏蔽事后 `difficulty_tier` 辅助题项并做 `"openrouter"`（679 题胜出）静态候选消融；原始 Parquet 逐条证实 `TRA-001 ∩ ENV-002` 的 13,336 个共享 ID（13,374 条 `repo+issue`）与 `ENV-001 ∩ ENV-002` 的 236 个 ID 100% 为同一任务，确立仓库级留出隔离规则 | **Stage 1 实验协议初稿完成**（证据归档于 `runs/MR-STAGE1-20261010/`） |
-| 2026-10-10 | Stage 1 训练协议最后修订与版本归档（`MR-STAGE1-REV-20261010`） | 对账 `ROUTE-001` `"openrouter"` 元路由器修正方案 A（整题剔除 `8,126` 题，剩 `76,078` 题）与方案 B（从 `criteria` 移除 `"openrouter"` 并重算：`8,707` 题不变、`370` 题获新唯一静态胜者、`309` 题降级归入分析集），正式选用**方案 B 作为 Stage 1 纯静态主实验集，共 `83,895` 题（`67,097 / 8,392 / 8,406`）**，原 `84,204` 题仅作混合候选参考对照；核实官方 `kev`/`laya` 加载器不支持按 `question_key` 过滤，在 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b/` 一次性生成物理移除 `difficulty_tier` 的派生纯静态 JSONL 并通过官方加载器校验（发现 Laya 须传 `--max-len 1024 --head-max-len 512` 以避免 37 候选题 `options_collapsed`）；将第一批训练收敛为 **1 次 Kev-4B 训练 + 1 次 Laya-421M 训练**，并完成零 GPU 规则基线（`val` 最高 `46.81%`） | **Stage 1 最终训练协议与纯静态主实验数据视图归档完成**（新增 `openrouter-remediation-audit.json` 与 `stage1-protocol-and-baselines.json`）；等待负责人批准后执行 `E2-STAGE1-BATCH1` |
-| 2026-10-11 | Stage 1 许可、数据一致性、全量编码与八类变量联合覆盖最终只读验收（`MR-STAGE1-FINAL-AUDIT`） | 负责人批准决策 1（保留 Regime A+B+C 并分桶评估）、决策 2（仅做训练前只读 CPU 验收，不启动 GPU）、决策 3（修订文档脱敏后推送 GitHub）；逐源核实发现 `ROUTE-004`（`39,716` 题）为 `TRAIN_ALLOWED_VERIFIED`（HF 声明 `apache-2.0`），而 `ROUTE-002`（`35,102` 题，HF 缺 `license` 标记）与 `ROUTE-001`（`9,077` 题，GitHub `LICENSE` 404 且 HF 无数据卡）均为 `LICENSE_PENDING`；全量核查 `ROUTE-001` 548,059 行发现 `(benchmark_name, instance_index)` 在 `mmlupro`、`simpleqa`、`hle` 等跨子集中发生 `2,001` 题重复评测与 `1,165` 题不同 `prompt` 跨题碰撞（污染方案 B `563` 题跨题碰撞、`651` 题重复模型评测，并解释 `llmroute_hle_57` 实为 `gemini-2.5-pro` 双子集重复而非真实双模型并列）；完成 `83,895` 题 CPU-only 官方 Kev（`max_state=384`）与 Laya（`1024/512`）全量编码验证（`100%` 通过且交集 `100%`）；完成费用血统五级核查（实测账单 `0`）与八类动态路由变量联合覆盖矩阵（同时具备八类状态+`model×effort`+真实缓存+真实费用的记录为 **`0`**） | **判定 `STAGE1_DATA_READY = NOT_READY`、`RUNTIME_JOINT_DATA_READY = NOT_READY`**（完整审计证据归档于 `runs/MR-STAGE1-20261010/final-stage1-and-joint-coverage-audit.json`） |
-| 2026-10-11 | `MR-STAGE1-FAST-FIX` 实验数据最小修复与快速迭代 | 负责人授权在唯一主链 `prepare_router_data.py`（`router_data/route.py` 与 `views.py`）执行最小 CPU 修复并重导出派生集：修正 P0 文档与审计 JSON 的行数、自有数据三表粒度、AgentSuite 配对数（`273` 题 / `1,365` 同权重对 / `273` 专用权重对 / `1,365` 跨版本对）及八类状态名称；用未截断原始 `(origin_query, prompt)` 的 `full_prompt_hash` 合并 `ROUTE-001` 跨子集同题导出为 `24,441` 道独立真题，去重 `21,144` 条完全一致的同模型重复评测（恢复 `llmroute_hle_57` 为 `gemini-2.5-pro` 唯一胜者 `UNIQUE_MAX_SCORE`），并将 `1,219` 道潜在胜者分数或费用冲突题（`439 + 22 + 758`）隔离至分析池，保留 `8,441` 道无冲突纯静态单胜者题（`6,788 / 812 / 841`）；对 `ROUTE-002` 候选按固定种子确定性打乱（`index 0` 胜出率降至 `9.20% / 9.00% / 9.51%`）；在 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed/` 导出修复版纯静态三集合 **`83,259` 题（`66,566 / 8,343 / 8,350`）**，通过双遍 SHA256 100% 一致性校验及 Kev（`384/7552`）与 Laya（`1024/512`）100% 样本 CPU 编码核验 | **Stage 1 技术与代码阻塞 100% 解除（`STAGE1_TECHNICAL_DATA_AND_CODE_READY = READY`）；许可证保持 `ROUTE-004` `TRAIN_ALLOWED_VERIFIED`、`ROUTE-002`/`ROUTE-001` `LICENSE_PENDING`；待负责人批准后启动 GPU 微调** |
+| 2026-10-10 | Stage 1 训练协议最后修订与版本归档（`MR-STAGE1-REV-20261010`） | 对账 `ROUTE-001` `"openrouter"` 元路由器更正方案 A（整题剔除 `8,126` 题，剩 `76,078` 题）与方案 B（从 `criteria` 移除 `"openrouter"` 并重算：`8,707` 题不变、`370` 题获新唯一静态胜者、`309` 题降级归入分析集），正式选用**方案 B 作为 Stage 1 纯静态主实验集，共 `83,895` 题（`67,097 / 8,392 / 8,406`）**，原 `84,204` 题仅作混合候选参考对照；核实官方 `kev`/`laya` 加载器不支持按 `question_key` 过滤，在 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b/` 一次性生成物理移除 `difficulty_tier` 的派生纯静态 JSONL 并通过官方加载器校验（发现 Laya 须传 `--max-len 1024 --head-max-len 512` 以避免 37 候选题 `options_collapsed`）；将第一批训练收敛为 **1 次 Kev-4B 训练 + 1 次 Laya-421M 训练**，并完成零 GPU 规则基线（`val` 最高 `46.81%`） | **Stage 1 最终训练协议与纯静态主实验数据视图归档完成**（新增 `openrouter-remediation-audit.json` 与 `stage1-protocol-and-baselines.json`）；等待负责人批准后执行 `E2-STAGE1-BATCH1` |
+| 2026-10-11 | Stage 1 许可、数据一致性、全量编码与八类变量联合覆盖最终只读验收（`MR-STAGE1-FINAL-AUDIT`） | 负责人批准决策 1（保留 Regime A+B+C 并分桶评估）、决策 2（仅做训练前只读 CPU 验收，不启动 GPU）、决策 3（修订文档脱敏后推送 GitHub）；逐源核实发现 `ROUTE-004`（`39,716` 题）为 `TRAIN_ALLOWED_VERIFIED`（HF 声明 `apache-2.0`），而 `ROUTE-002`（`35,102` 题，HF 缺 `license` 标记）与 `ROUTE-001`（`9,077` 题，GitHub `LICENSE` 404 且 HF 无数据卡）均为 `LICENSE_PENDING`；全量核查 `ROUTE-001` 548,059 行发现 `(benchmark_name, instance_index)` 在 `mmlupro`、`simpleqa`、`hle` 等跨子集中发生 `2,001` 题重复评测与 `1,165` 题不同 `prompt` 跨题碰撞（污染方案 B `563` 题跨题碰撞、`651` 题重复模型评测，并解释 `llmroute_hle_57` 实为 `gemini-2.5-pro` 双子集重复，未构成真实双模型并列）；完成 `83,895` 题 CPU-only 官方 Kev（`max_state=384`）与 Laya（`1024/512`）全量编码验证（`100%` 通过且交集 `100%`）；完成费用血统五级核查（实测账单 `0`）与八类动态路由变量联合覆盖矩阵（同时具备八类状态+`model×effort`+真实缓存+真实费用的记录为 **`0`**） | **判定 `STAGE1_DATA_READY = NOT_READY`、`RUNTIME_JOINT_DATA_READY = NOT_READY`**（完整审计证据归档于 `runs/MR-STAGE1-20261010/final-stage1-and-joint-coverage-audit.json`） |
+| 2026-10-11 | `MR-STAGE1-FAST-FIX` 实验数据最小修复与快速迭代 | 负责人授权在唯一主链 `prepare_router_data.py`（`router_data/route.py` 与 `views.py`）执行最小 CPU 修复并重导出派生集：更正 P0 文档与审计 JSON 的行数、自有数据三表粒度、AgentSuite 配对数（`273` 题 / `1,365` 同权重对 / `273` 专用权重对 / `1,365` 跨版本对）及八类状态名称；用未截断原始 `(origin_query, prompt)` 的 `full_prompt_hash` 合并 `ROUTE-001` 跨子集同题导出为 `24,441` 道独立真题，去重 `21,144` 条完全一致的同模型重复评测（恢复 `llmroute_hle_57` 为 `gemini-2.5-pro` 唯一胜者 `UNIQUE_MAX_SCORE`），并将 `1,219` 道潜在胜者分数或费用冲突题（`439 + 22 + 758`）隔离至分析池，保留 `8,441` 道无冲突纯静态单胜者题（`6,788 / 812 / 841`）；对 `ROUTE-002` 候选按固定种子确定性打乱（`index 0` 胜出率降至 `9.20% / 9.00% / 9.51%`）；在 `runs/MR-STAGE1-20261010/stage1_pure_static_scheme_b_fixed/` 导出修复版纯静态三集合 **`83,259` 题（`66,566 / 8,343 / 8,350`）**，通过双遍 SHA256 100% 一致性校验及 Kev（`384/7552`）与 Laya（`1024/512`）100% 样本 CPU 编码核验 | **Stage 1 技术与代码阻塞 100% 解除（`STAGE1_TECHNICAL_DATA_AND_CODE_READY = READY`）；许可证保持 `ROUTE-004` `TRAIN_ALLOWED_VERIFIED`、`ROUTE-002`/`ROUTE-001` `LICENSE_PENDING`；待负责人批准后启动 GPU 微调** |
 | 2026-10-11 | `MR-ALLDATA-PREP-20261011` & `MR-ALLDATA-ADAPTER-20261011` 全量双模型训练数据最终适配 | 在唯一主链 `prepare_router_data.py --mode all_data`（`router_data/all_data.py`）中对齐 Stage 1 主 Choice（`83,259`）、`ROUTE-001` 新重算 Choice（剔除 `1,953` 条不合法单胜者后收敛为 `8,441` 条，与主 Choice `0` 差异）、Pairwise（`59,049` 对）与 Soft-Target/Score（`53,087` 题）的真实完整题目身份与统一 Train/Val/Test 语义划分（跨视图泄漏 `0`）；在 `runs/MR-ALLDATA-PREP-20261011/training/laya/` 与 `training/kev/` 分别生成 6 个训练子集（`stage1_choice` `83,259`、`stage1_pairwise` `59,049`、`stage1_soft_target` `53,087`、`stage2_agent_state` `88,087` 轨迹级、`stage3_effort` `290` 有效配对、`stage4_auxiliary` `1,622,547` 有效调用），完成每模型 `1,906,319` 条记录的 100% CPU-only 官方加载与编码核验，并锁定首轮训练超参数与命令 | **Laya-421M 与 Kev-4B 全阶段训练视图与首轮训练参数已 100% 就绪，按要求暂停等待 GPU 训练授权** |
 | 2026-10-15 | Q-012 | 负责人批准 Checkpoint 双池留存策略（旧 5 核心永久保护 + 新合格候选 ~15% 动态择优）；采样区分 ALGN 消融受控比例与 F 系列全量连续流式覆盖；重构质检看板为极简图表架构 | 策略版本升级为 DUAL_POOL_RETENTION_V2；已在唯一主链落地并同步 |
 | 2026-10-15 | Q-013 | 负责人明确授权 P14 连续训练恢复与整体研究推进：恢复现有 A6000 连续训练队列，推进 F04 及后续 24 组正式实验，在合适边界补跑正确采样协议的 F03，拒绝不必要的工程流程 | 全队列正式恢复执行；F04 已启动并验证首 Chunk 8,192 条全量无丢弃训练；旧 F03 归档至 F03_LEGACY_MINFACTOR 待边界补跑 |
-| 2026-10-15 | Q-014 | 负责人明确要求推进 P15 连续研究推进与关键训练资产修正：保持 F04 GPU 训练健康运行，彻底解耦并安排正规 F03 补跑，修复课程模型父依赖强熔断检查（Fail-Closed）禁止回退基座，实事求是审计老核心 5 席物理实体（2 席在盘，3 席仅留元数据），精确对齐尾部 Chunk 步数，升级看板多跨度与全数据图表 | 已在唯一正式主链全面落地并同步远端与服务器；F04 稳定长跑，F03 排队就绪，资产如实记录 |
+| 2026-10-15 | Q-014 | 负责人明确要求推进 P15 连续研究推进与关键训练资产更正：保持 F04 GPU 训练健康运行，彻底解耦并安排正规 F03 补跑，修复课程模型父依赖强熔断核对（Fail-Closed）禁止回退基座，实事求是审计老核心 5 席物理实体（2 席在盘，3 席仅留元数据），精确对齐尾部 Chunk 步数，升级看板多跨度与全数据图表 | 已在唯一正式主链全面落地并同步远端与服务器；F04 稳定长跑，F03 排队就绪，资产如实记录 |
 | 2026-10-15 | Q-015 | 负责人明确要求推进 P16 全局连续推进、历史运行协议审计、双池库存核查与课程父模型补跑就绪：保持 F04 原进程高速运行（Chunk 19/234，步数 2,432/59,904，Loss 0.5786~0.5917）；严谨核查历史 Run 真实已执行 Optimizer 步数（F01 15,174 步、F02 31,304 步、F03 旧版实际仅 1,456 步，S1 纯基准 7 组 144~994 步）；穿透核实 Checkpoint 双池实体留存（老核心 5 席中仅 2 席在盘、3 席留存元数据；新核心 15% 动态配额 2 席）；解决课程父模型依赖链（F17<-F01<-...）并在 Stage 5 课程依赖启动前排定 F01 物理断点正规补跑（Stage 5 Prio 0）；实证 Terminal-Bench 2.1 物理隔离与 0 泄漏 | 代码与调度已全面落地并同步远端与 A6000 服务器；F04 持续长跑，F03 紧随其后，F01 父模型补跑无缝编排，学术防线严密闭环 |
 | 2026-10-15 | Q-016 | 负责人明确要求推进 P22 连续科研主线执行、真实父权重认定与控制器交接闭环：保持 F04 GPU 进程（PID 2881373，推进至 Epoch 1 Chunk 99/234，Loss 0.5048，811k 样本）零干扰长跑；纠正课程父模型认定逻辑，严禁因任意物理文件存在而篡改最佳 Epoch，严格依据历史验证指标确定科学最优（F01 最优为 Epoch 2），物理缺失判定为 NEEDS_REGENERATION 并在 F17 启动前正规再生；彻底梳理旧控制器 PID 2881128 与 GPU 子进程关系，确定在 F17 之前的非 GPU 计算空闲间隙完成单控制器无缝交接，严禁常驻 Watcher 与多队列并发；严格核查双池实体（老核心 2 席实盘、3 席元数据；新核心 0 席，F04 未完训不抢占）；实证 S1/S2 最好与最差对比 | 源码已全面修复、单元测试 100% 通过（新增 test_sync_run_best_symlink_scientific_integrity）、最新代码已同步 A6000 服务器；F04 持续健康长跑，调度接续方案已闭环 |
 | 2026-10-16 | Q-017 | 负责人确认 RQ1 总体效果含 Model×Native Effort 及状态消融；RQ2 模型池；RQ3 任务拆分；RQ4 多 Agent 跨角色模型互补性；RQ5 工作负载适用边界。完成六份文档研究方案同步，未启动新训练 | 负责人最新明确指令；详细设计见汇报三 V8 |

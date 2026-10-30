@@ -50,10 +50,25 @@ class PreDecisionState(BaseModel):
     prior_error_signals_count: Optional[int] = 0
     prompt: Optional[str] = Field("", description="Pre-decision prompt snippet or observation")
     history_snippet: Optional[str] = Field("", description="Recent tool execution history snippet")
+    teacher_assessment: Optional[Dict[str, Any]] = None
+    capability_cards: List[Dict[str, Any]] = Field(default_factory=list)
+    capability_snapshot_id: Optional[str] = None
+    feature_training_status: Optional[str] = None
+    agent_context: Optional[Dict[str, Any]] = None
+    continuity: Optional[Dict[str, Any]] = None
 
     def router_text(self) -> str:
         """Both adapters consume the same named pre-decision fields."""
-        return json.dumps(self.model_dump(), sort_keys=True, ensure_ascii=False)
+        payload = self.model_dump()
+        extensions = ("teacher_assessment", "capability_cards", "capability_snapshot_id",
+                      "feature_training_status", "agent_context", "continuity")
+        for name in extensions:
+            if payload[name] is None or payload[name] == []:
+                payload.pop(name)
+        if not any(name in payload for name in extensions):
+            return json.dumps(payload, sort_keys=True, ensure_ascii=False)
+        from modelrouter.v9.runtime.context import format_router_payload
+        return format_router_payload(payload)
 
 
 class RouteRequest(BaseModel):

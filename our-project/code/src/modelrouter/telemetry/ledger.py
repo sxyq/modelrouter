@@ -40,11 +40,9 @@ _LEDGER_LOCK = threading.Lock()
 
 
 def _find_project_root() -> Path:
-    p = Path(__file__).resolve()
-    while p != p.parent:
-        if (p / "runs").is_dir() or (p / "experiments").is_dir():
-            return p
-        p = p.parent
+    for parent in Path(__file__).resolve().parents:
+        if (parent / "experiments" / "agent_pilot" / "token_budget.json").is_file():
+            return parent
     return Path.cwd()
 
 
@@ -270,6 +268,14 @@ class ExperimentLedger:
             "agent_metadata": metadata,
         })
 
+    def record_development_episode(self, result: dict) -> None:
+        """Index local evidence in the original ledger without copying its files."""
+        self._append_summary({**result, "official_result_eligible": False,
+                              "scientific_result_eligible": False,
+                              "official_success": None,
+                              "router_evidence_status": "ROUTER_FALLBACK" if result.get("router_fallback_used")
+                                                       else "NO_REPORTED_FALLBACK"})
+
     def _append_summary(self, summary_entry: dict) -> None:
         """Share the existing JSONL/CSV ledger; a Harbor Trial ID is recorded once."""
         jsonl_path = self.ledgers_root / "experiments_ledger.jsonl"
@@ -293,11 +299,11 @@ class ExperimentLedger:
                     rows = list(reader) if prior_fields != fieldnames else None
                 if rows is not None:
                     with csv_path.open("w", newline="", encoding="utf-8") as existing:
-                        writer = csv.DictWriter(existing, fieldnames=fieldnames)
+                        writer = csv.DictWriter(existing, fieldnames=fieldnames, lineterminator="\n")
                         writer.writeheader()
                         writer.writerows(rows)
             with open(csv_path, "a", newline="", encoding="utf-8") as f:
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
                 if write_header:
                     writer.writeheader()
                 writer.writerow(summary_entry)

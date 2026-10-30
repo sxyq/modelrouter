@@ -9,6 +9,7 @@ GPU memory returns WAITING_FOR_GPU without launching a training process.
 
 import argparse
 import copy
+import math
 import os
 import re
 import sys
@@ -27,7 +28,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("kev_dispatcher")
 
-PROJECT_ROOT = Path("/home/syy/路由")
+PROJECT_ROOT = Path(__file__).resolve().parents[5]
 KEV_RUNS_ROOT = PROJECT_ROOT / "runs"
 QUEUE_FILE = PROJECT_ROOT / "our-project" / "results" / "training" / "kev" / "candidate_queue.json"
 LEDGER_FILE = PROJECT_ROOT / "our-project" / "results" / "training" / "kev" / "candidate_ledger.json"
@@ -165,7 +166,8 @@ def save_queue(queue: List[Dict[str, Any]]):
             "candidate_id", "name", "status", "training_status", "evaluation_status",
             "pending_reason", "failure_reason", "recipe", "training_attempts", "evaluation_attempts",
             "training_metrics", "metrics", "comparison_to_c03", "selection", "retention",
-            "checkpoint_path", "init_from", "coverage_analysis") } for c in queue]})):
+            "checkpoint_path", "init_from", "coverage_analysis", "v9_continuation")
+            if k != "v9_continuation" or k in c} for c in queue]})):
         path.parent.mkdir(parents=True, exist_ok=True)
         tmp = path.with_name(path.name + ".tmp")
         tmp.write_text(json.dumps(payload, indent=2), encoding="utf-8")
@@ -245,12 +247,47 @@ def record_recipe(candidate, command):
 
 
 def train_with_question_weights(candidate_id, train_args):
-    """Use the official main loop with a per-question loss multiplier."""
+    """Use the official main loop with optional question weights and V9 input."""
     from kev import train
     candidate = next(c for c in load_queue() if c["candidate_id"] == candidate_id)
-    weights = candidate["question_loss_weights"]
+    weights = candidate.get("question_loss_weights", {})
     exposure = Counter()
     official_loss, official_write = train.question_loss, train.write_json
+    official_load = train.load_records
+    official_requests, official_batch_loss = train.training_requests, train.batch_loss
+    original_argv = sys.argv
+    material_records = admitted_records = 0
+    tokenizer = input_exposure = None
+    if candidate.get("v9_continuation"):
+        from modelrouter.v9.training.continuation import InputExposure, feature_training_status, serialize_training_record
+        input_exposure = InputExposure()
+        paths = candidate["v9_continuation"]["training_paths"]
+        def load_records(path, source="custom"):
+            nonlocal material_records
+            records = []
+            for group, value in paths.items():
+                for row in official_load(value, source + "_" + group):
+                    record = serialize_training_record(row)
+                    input_exposure.add(record['_meta']['id'], record['state'])
+                    records.append(record)
+            material_records = len(records)
+            return records
+        def training_requests(args, tok, manifest, holdout):
+            nonlocal tokenizer, admitted_records
+            tokenizer = tok
+            records = official_requests(args, tok, manifest, holdout)
+            admitted_records = len(records)
+            return records
+        def batch_loss(model, args, batch, dev, anchors, anchor_sources, autocast):
+            value = official_batch_loss(model, args, batch, dev, anchors, anchor_sources, autocast)
+            for variant in batch:
+                if variant.request_id in input_exposure.material:
+                    ids = [token for token, segment in zip(variant.enc['ids'], variant.enc['seg']) if segment == 0][1:]
+                    input_exposure.observe(variant.request_id, tokenizer.decode(
+                        ids, skip_special_tokens=False, clean_up_tokenization_spaces=False))
+            return value
+        train.load_records = load_records
+        train.training_requests, train.batch_loss = training_requests, batch_loss
     def question_loss(logits, question, *args, **kwargs):
         qid = question["qid"]
         exposure[qid] += 1
@@ -263,10 +300,24 @@ def train_with_question_weights(candidate_id, train_args):
             value = {**value, "modelrouter_source_sha": SOURCE_SHA,
                      "question_loss_weights": weights, "question_exposure": dict(exposure),
                      "recipe": candidate["recipe"]}
+            if candidate.get("v9_continuation"):
+                expected_records = admitted_records * int(candidate["epochs"])
+                value["v9_continuation"] = {**candidate["v9_continuation"],
+                    "material_records": material_records, "admitted_records": admitted_records,
+                    "expected_records": expected_records, "input_exposure": input_exposure.summary(),
+                    "feature_exposure_basis": "ACTUAL_TRAIN_BATCH_INPUTS"}
+                if Path(path).name == "training_metrics.json":
+                    complete = expected_records > 0 and value.get("records_seen") == expected_records
+                    value["v9_continuation"]["feature_training_status"] = feature_training_status(input_exposure.summary(), complete)
         return official_write(path, value)
     train.question_loss, train.write_json = question_loss, write_json
     sys.argv = ["kev.train", *train_args]
-    train.main()
+    try:
+        train.main()
+    finally:
+        train.question_loss, train.write_json, train.load_records = official_loss, official_write, official_load
+        train.training_requests, train.batch_loss = official_requests, official_batch_loss
+        sys.argv = original_argv
 
 
 def scientific_selection(queue):
@@ -294,9 +345,9 @@ def scientific_selection(queue):
 
 def is_pid_alive(pid: int) -> bool:
     try:
-        os.kill(pid, 0)
-        return True
-    except OSError:
+        fields = Path(f"/proc/{int(pid)}/stat").read_text().rsplit(")", 1)[1].split()
+        return fields[0] not in {"Z", "X"}
+    except (OSError, ValueError, IndexError):
         return False
 
 def check_checkpoint_integrity(ckpt_dir: Path) -> tuple[bool, str]:
@@ -446,6 +497,11 @@ def refresh_training(candidate):
                 "init_source": config.get("init_source"), "base_revision": config.get("base_revision"),
                 "data_path": candidate["data_path"], "validation_set": FIXED_VAL_PATH,
                 "checkpoint_path": candidate["checkpoint_path"], "historical_identity": "Only existing metadata is used; unrecorded source/data identifiers remain N/A"}
+        if candidate.get("v9_continuation") and metrics.get("v9_continuation"):
+            candidate["v9_continuation"].update({k: metrics["v9_continuation"][k] for k in
+                ("material_records", "admitted_records", "expected_records", "input_exposure",
+                 "feature_exposure_basis", "feature_training_status")
+                if k in metrics["v9_continuation"]})
         config_file = PROJECT_ROOT / candidate["checkpoint_path"] / "training_config.json"
         if config_file.is_file():
             candidate["training_parameters"] = json.loads(config_file.read_text()).get("args", {})
@@ -505,8 +561,10 @@ def validate_candidate(candidate, queue, device="auto", timeout=None):
         current = saved
         candidate["metrics"] = saved
     if current.get("evaluation_status") == "EVALUATED" and current.get("validation_set") == str(PROJECT_ROOT / FIXED_VAL_PATH):
-        candidate.update(status="COMPLETED", evaluation_status="EVALUATED")
+        candidate.update(status="COMPLETED", evaluation_status="EVALUATED", finished_at=current["evaluated_at"])
         candidate.pop("failure_reason", None)
+        if candidate.get("v9_continuation"):
+            candidate["v9_continuation"].update(status="COMPLETED", finished_at=candidate["finished_at"])
         record_c03_comparison(candidate, queue)
         save_queue(queue)
         return True
@@ -526,6 +584,8 @@ def validate_candidate(candidate, queue, device="auto", timeout=None):
         candidate["failure_reason"] = "Validation evaluation failed"
     else:
         candidate.pop("failure_reason", None)
+    if candidate.get("v9_continuation"):
+        candidate["v9_continuation"].update(status="COMPLETED" if ok else "FAILED", finished_at=candidate["finished_at"])
     record_c03_comparison(candidate, queue)
     save_queue(queue)
     return ok
@@ -541,18 +601,30 @@ def update_retention(queue, apply=False):
 
 
 def main_loop(validation_only=False, validation_device="auto", validation_timeout=None, wait_for_resources=False,
-              apply_retention=False):
+              apply_retention=False, *, v9_only=False, prepared_path=None, completion_group=None):
     logger.info("=== Kev candidate queue ===")
     deferred = set()
     while True:
         queue = load_queue()
         candidate = next((c for c in queue if c.get("candidate_kind") != "SELECTION"
-                          and c.get("status") != "COMPLETED" and c["candidate_id"] not in deferred), None)
+                          and c.get("status") != "COMPLETED" and c["candidate_id"] not in deferred
+                          and (not v9_only or c.get("v9_continuation"))), None)
         if candidate is None:
             if apply_retention:
                 update_retention(queue, apply=True)
-            else:
+            elif not v9_only:
                 scientific_selection(queue)
+            if any(c.get("v9_continuation") and c["candidate_id"] in deferred for c in queue):
+                return 1
+            if not validation_only:
+                from modelrouter.v9.training.continuation import plan_kev_continuation
+                continuation = plan_kev_continuation(queue, project_root=PROJECT_ROOT, persist=save_queue,
+                                                     prepared_path=prepared_path, completion_group=completion_group)
+                if (continuation is not None and continuation["status"] == "QUEUED"
+                        and continuation["candidate_id"] not in deferred):
+                    continue
+                if v9_only and (continuation is None or continuation["status"] != "COMPLETED"):
+                    return 1
             return 1 if deferred else 0
         alive = refresh_training(candidate)
         save_queue(queue)
@@ -562,6 +634,18 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
                 return 1
             time.sleep(60)
             continue
+        if candidate.get("v9_continuation") and candidate["training_status"] != "COMPLETED":
+            from modelrouter.v9.training.continuation import plan_kev_continuation
+            continuation = plan_kev_continuation(queue, project_root=PROJECT_ROOT, persist=save_queue,
+                                                 prepared_path=prepared_path, completion_group=completion_group)
+            if continuation is None:
+                reason = "prepared_metadata_not_available"
+                candidate.update(status="PENDING", material_status="PENDING", pending_reason=reason)
+                candidate["v9_continuation"].update(status="TRAINING_PENDING", pending_reason=reason)
+                save_queue(queue)
+            if continuation is None or continuation["status"] != "QUEUED":
+                deferred.add(candidate["candidate_id"])
+                continue
         prior_val = candidate.get("metrics", {})
         saved_val_file = PROJECT_ROOT / candidate["checkpoint_path"] / "val_metrics.json"
         if saved_val_file.is_file():
@@ -569,7 +653,8 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
             if saved_val.get("evaluation_status") == "EVALUATED":
                 prior_val = saved_val
         successful_val = prior_val.get("evaluation_status") == "EVALUATED" and prior_val.get("validation_set") == str(PROJECT_ROOT / FIXED_VAL_PATH)
-        if candidate.get("status") == "FAILED" and not validation_only and not successful_val:
+        if (candidate.get("status") == "FAILED" and not validation_only and not successful_val
+                and not candidate.get("v9_continuation")):
             logger.error("%s remains FAILED: %s", candidate["candidate_id"], candidate.get("failure_reason"))
             if candidate["candidate_id"] in ("KEV-V8-C03", "KEV-V8-C04"):
                 return 1
@@ -632,13 +717,32 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
         peak_source = PROJECT_ROOT / DEFAULT_CANDIDATES[0]["checkpoint_path"] / "training_metrics.json"
         peak_metrics = json.loads(peak_source.read_text(encoding="utf-8"))
         peak_bytes = peak_metrics["peak_device_bytes"]
-        required_mib = (peak_bytes + 1048575) // 1048576 + 2048
+        oom_observation = None
+        train_log = KEV_RUNS_ROOT / candidate["name"] / "train.log"
+        if train_log.is_file():
+            with train_log.open(encoding="utf-8") as log:
+                for line_number, line in enumerate(log, 1):
+                    match = re.search(
+                        r"CUDA out of memory\. Tried to allocate ([0-9]+\.[0-9]+) MiB\."
+                        r".*this process has ([0-9]+\.[0-9]+) GiB memory in use", line)
+                    if match:
+                        allocation_mib, process_gib = map(float, match.groups())
+                        oom_observation = {
+                            "source": str(train_log), "line_number": line_number,
+                            "process_memory_gib": process_gib, "failed_allocation_mib": allocation_mib,
+                            "lower_bound_bytes": math.ceil(process_gib * 1073741824 + allocation_mib * 1048576),
+                            "basis": "OBSERVED_CUDA_OOM_LOWER_BOUND_NOT_FULL_2_EPOCH_PEAK"}
+        resource_bytes = max(peak_bytes, oom_observation["lower_bound_bytes"] if oom_observation else 0)
+        required_mib = (resource_bytes + 1048575) // 1048576 + 2048
         gpu_cmd = ["nvidia-smi", "--query-gpu=memory.free", "--format=csv,noheader,nounits", "--id=0"]
         gpu_result = subprocess.run(gpu_cmd, capture_output=True, text=True, check=True)
         free_mib = int(gpu_result.stdout.strip())
         candidate["gpu_resource"] = {"source": str(peak_source), "peak_device_bytes": peak_bytes,
+                                     "required_basis_bytes": resource_bytes,
                                      "margin_mib": 2048, "required_mib": required_mib,
                                      "free_mib": free_mib, "observed_at": _now(), "command": gpu_cmd}
+        if oom_observation:
+            candidate["gpu_resource"]["oom_observation"] = oom_observation
         if free_mib < required_mib:
             candidate.update(status="WAITING_FOR_GPU", training_status="WAITING_FOR_GPU")
             save_queue(queue)
@@ -668,20 +772,40 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
             for name, value in parameters.items():
                 if value is not None:
                     train_cmd.extend([f"--{name}", str(value)])
-        if candidate.get("question_loss_weights"):
-            train_cmd = [str(PROJECT_ROOT / ".venv/bin/python"), "-u", str(Path(__file__).resolve()),
+        if candidate.get("v9_continuation"):
+            train_cmd = [str(PROJECT_ROOT / ".venv/bin/python"), "-u", "-m", "kev.train"]
+            for name, value in candidate["training_parameters"].items():
+                if value is not None:
+                    train_cmd.extend([f"--{name}", str(value)])
+        if candidate.get("question_loss_weights") or candidate.get("v9_continuation"):
+            train_cmd = [str(PROJECT_ROOT / ".venv/bin/python"), "-u", "-m", "modelrouter.training.kev_candidate_dispatcher",
                          "--train-candidate", candidate["candidate_id"], "--", *train_cmd[4:]]
         record_recipe(candidate, train_cmd)
         env = os.environ.copy()
-        env["PYTHONPATH"] = os.pathsep.join((str(PROJECT_ROOT), str(PROJECT_ROOT / "external/kev")))
+        env["PYTHONPATH"] = os.pathsep.join((str(PROJECT_ROOT), str(PROJECT_ROOT / "external/kev"),
+            str(PROJECT_ROOT / "our-project/code/src"))) if candidate.get("question_loss_weights") or candidate.get("v9_continuation") else os.pathsep.join(
+            (str(PROJECT_ROOT), str(PROJECT_ROOT / "external/kev")))
         started = time.monotonic()
         with (run_dir / "train.log").open("a", encoding="utf-8") as log:
+            attempt = None
+            if candidate.get("v9_continuation"):
+                from modelrouter.v9.training.continuation import reserve_kev_attempt
+                attempt = reserve_kev_attempt(candidate, train_cmd)
+                save_queue(queue)
+                if attempt is None:
+                    deferred.add(candidate["candidate_id"])
+                    continue
             proc = subprocess.Popen(train_cmd, cwd=str(PROJECT_ROOT), env=env, stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT, text=True, bufsize=1)
             candidate.update(status="RUNNING", training_status="RUNNING", evaluation_status="NOT_EVALUATED",
+                             training_exit_code=None,
                              training_kind="FORMAL_LORA", pid=proc.pid, started_at=_now(), code_commit=SOURCE_SHA)
-            attempt = {"command": train_cmd, "pid": proc.pid, "started_at": candidate["started_at"]}
-            candidate.setdefault("training_attempts", []).append(attempt)
+            if attempt is None:
+                attempt = {"command": train_cmd, "pid": proc.pid, "started_at": candidate["started_at"]}
+                candidate.setdefault("training_attempts", []).append(attempt)
+            else:
+                attempt.update(pid=proc.pid, status="RUNNING", started_at=candidate["started_at"])
+                candidate["v9_continuation"].update(status="RUNNING", started_at=candidate["started_at"])
             cursor = {"run_id": candidate["name"], "candidate_id": candidate["candidate_id"],
                       "pid": proc.pid, "status": "TRAINING", "step": None, "epoch": None, "loss": None}
             cursor_file = (out_ckpt if candidate["candidate_id"] == "KEV-V8-C09" else run_dir) / "cursor.json"
@@ -701,10 +825,14 @@ def main_loop(validation_only=False, validation_device="auto", validation_timeou
         cursor.update(status="COMPLETED" if exit_code == 0 else "FAILED", exit_code=exit_code, updated_at=_now())
         if cursor_file.parent.is_dir():
             cursor_file.write_text(json.dumps(cursor, indent=2))
-        attempt.update(exit_code=exit_code, duration_sec=time.monotonic() - started, finished_at=_now())
+        attempt.update(status="COMPLETED" if exit_code == 0 else "FAILED", exit_code=exit_code,
+                       duration_sec=time.monotonic() - started, finished_at=_now())
         refresh_training(candidate)
         if exit_code != 0:
             candidate.update(status="FAILED", failure_reason=f"Training exit code {exit_code}")
+            if candidate.get("v9_continuation"):
+                candidate["v9_continuation"].update(status="FAILED", finished_at=_now())
+            deferred.add(candidate["candidate_id"])
         save_queue(queue)
 
 
@@ -715,10 +843,25 @@ def main(argv=None):
     parser.add_argument("--validation-timeout", type=float, default=None, help="Seconds; omitted means no timeout")
     parser.add_argument("--train-candidate", help="Official trainer with the candidate's question loss weights")
     parser.add_argument("--apply-retention", action="store_true", help="Apply authorized Kev retention after completed fixed Val")
+    parser.add_argument("--v9-continuation", action="store_true", help="Continue only the V9 material, leaving original experiments unchanged")
+    parser.add_argument("--plan-only", action="store_true", help="Prepare the V9 request in the original queue without starting training")
+    parser.add_argument("--prepared-path", type=Path, help="Existing V9 index.json or summary.json")
+    parser.add_argument("--completion-group", help="Original completed research group; defaults to the R01..R16 coverage matrix")
     parser.add_argument("train_args", nargs=argparse.REMAINDER)
     args = parser.parse_args(argv)
     if args.train_candidate:
         return train_with_question_weights(args.train_candidate, args.train_args[1:] if args.train_args[:1] == ["--"] else args.train_args)
+    if args.v9_continuation or args.plan_only:
+        from modelrouter.v9.training.continuation import KEV_COMPLETION_GROUP, plan_kev_continuation
+        group = args.completion_group or KEV_COMPLETION_GROUP
+        if args.plan_only:
+            result = plan_kev_continuation(load_queue(), project_root=PROJECT_ROOT, persist=save_queue,
+                                          prepared_path=args.prepared_path, completion_group=group)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return 0 if result and result["status"] in ("QUEUED", "COMPLETED") else 1
+        return main_loop(args.validation_only, args.validation_device, args.validation_timeout,
+                         apply_retention=args.apply_retention, wait_for_resources=True, v9_only=True,
+                         prepared_path=args.prepared_path, completion_group=group)
     if not args.validation_only:
         queue = load_queue()
         for candidate in queue:
