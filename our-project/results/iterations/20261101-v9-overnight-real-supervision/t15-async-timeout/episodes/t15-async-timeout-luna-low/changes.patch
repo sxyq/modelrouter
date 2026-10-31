@@ -1,0 +1,52 @@
+diff --git a/async_timeout/__init__.py b/async_timeout/__init__.py
+index 799b3d0..173f7a7 100644
+--- a/async_timeout/__init__.py
++++ b/async_timeout/__init__.py
+@@ -112,6 +112,10 @@ if sys.version_info >= (3, 11):
+ 
+             Raise RuntimeError if shift is called when deadline is not scheduled
+             """
++            if self._state.name == "TIMEOUT":
++                raise RuntimeError("cannot reschedule expired timeout")
++            if self._state.name == "EXIT":
++                raise RuntimeError("cannot reschedule after exit from context manager")
+             deadline = self.when()
+             if deadline is None:
+                 raise RuntimeError("cannot shift timeout if deadline is not scheduled")
+@@ -128,6 +132,10 @@ if sys.version_info >= (3, 11):
+             Please note: it is not POSIX time but a time with
+             undefined starting base, e.g. the time of the system power on.
+             """
++            if self._state.name == "TIMEOUT":
++                raise RuntimeError("cannot reschedule expired timeout")
++            if self._state.name == "EXIT":
++                raise RuntimeError("cannot reschedule after exit from context manager")
+             self.reschedule(deadline)
+ 
+ else:
+@@ -209,6 +217,10 @@ else:
+ 
+             Raise RuntimeError if shift is called when deadline is not scheduled
+             """
++            if self._state == _State.TIMEOUT:
++                raise RuntimeError("cannot reschedule expired timeout")
++            if self._state == _State.EXIT:
++                raise RuntimeError("cannot reschedule after exit from context manager")
+             deadline = self._deadline
+             if deadline is None:
+                 raise RuntimeError("cannot shift timeout if deadline is not scheduled")
+@@ -225,9 +237,13 @@ else:
+             Please note: it is not POSIX time but a time with
+             undefined starting base, e.g. the time of the system power on.
+             """
++            if self._state == _State.TIMEOUT:
++                raise RuntimeError("cannot reschedule expired timeout")
++            if self._state == _State.EXIT:
++                raise RuntimeError("cannot reschedule after exit from context manager")
+             if self._state not in (_State.INIT, _State.ENTER):
+                 raise RuntimeError(f"invalid state {self._state.value}")
+-    
++
+             self._deadline = deadline
+             if self._state == _State.ENTER:
+                 self._reschedule()

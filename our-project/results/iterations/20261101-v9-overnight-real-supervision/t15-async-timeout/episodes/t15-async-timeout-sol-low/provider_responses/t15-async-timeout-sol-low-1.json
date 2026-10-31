@@ -1,0 +1,167 @@
+{
+  "response": {
+    "background": false,
+    "completed_at": 1793481137,
+    "created_at": 1793481132,
+    "frequency_penalty": 0.0,
+    "id": "resp_0b9e102656262d98016ae659acdb7c8193aaf1675e02cba10d",
+    "max_output_tokens": 4096,
+    "metadata": {},
+    "model": "gpt-6.1-sol",
+    "object": "response",
+    "output": [
+      {
+        "id": "rs_0b9e102656262d98016ae659ae47bc81939bc069706aea2a4a",
+        "type": "reasoning",
+        "content": [],
+        "encrypted_content": "gAAAAABq5lmxUoudnvVopqwyWFUNRVeVYq7fiZSg_NaMctGv_DVFkI0g4RWgK6YM0MCU8O-32Sl4zYIHSbfFX18LEERJubuFgF0rLefCCUYf1Tq57roSBmb69x_xlxUnLJ-xlzsd1ypo1VrE2bFR3b01mani3tWsFsZZxZm0-BHeu3Hv9aG7gzl9QFpFDodgdo3AsnOhwBiwWkTsQFncl-ALBmLsIskIvp_Q72WqcTOJivgATxGtQlYt0bK9Ev_Gwf4CcorKwjWWmvlXPCF7iDH6u2-a6wctvR1pR3WfaEACthAu2GeDa15A3vC0Gc0SpWpH11FXLdnt6SJ5VpzBaoMGR6PFlnF88PJnGFqf7Y7fIoPB1bf5Ty-kZyoV7f9o8_Ag2fvGLUysiK35s393ZmmTPAg8aDqWqdj-wr4rtjoGYN-ffhKywCYSCL8nFUUljBfs9-Be2ar9OIrarTmw3sqBqLamP_KZRTfnMaiQ16WZdnDh8Urjj_oilnLSbJMsHAtl24ur_pdwAsKxHm5FLHuw2CFeQnUC_BLRIKXDIp2ya1p1fZIryu731SRLxVZBna3pYpgueZGbzsg3iYORfL5mmTF2OCCQ5KPNnF5NuY46TslyiWQNeKEHHwnt8Dbiy5kLzqlvsOKMxsaSde06kvmQpx27lK_NXXlHfLuyxhYXm0GxAROsnPqg9L537Dk498awbBtqQ5TTc-zTrns-XSogQeTS29NuI1Twx1vDCDlQ_HMV9y21bsNHYoS5fpbor9LSuky0dfvR4oqzgASGHT0DVuCXlmtNDdgoM3dlzzfrK2rFz4MoILf2AwxF5USVCQ9TEUBh3aEMKQYzFQ_Rh8mVBYgg88JZYQPfJTEikg00ientq_zm1OT9W7X3e7dyN3XDjKTyRqQQlpVK51sS6vaEKswShOOz4URuVIqOeWc0HejQvl-Iaxxw3dlHZ1DK6yvE3_GLVJbNhyw2jU5-PB-EddY2YJlmsKW00uHjGKXaFlyRdeqVgp3njLurF1Iq07vGGnyZzlKqEqAFhAhN_YHBRK15AqenUixRKIkTwfRqLBYzSzolo4h75TiCBDZmyYMmRXYFxmSJnqGX_TF8DXEcQB5mw8JMwj7LvbwUaUb2UWFf9HdRwI_RQ_77cNQaU7nylN4zh9bFL-bn4HAxGdnuRT1hjD7bNlgbPRzO4xt5bXnvQ2f5ixzhVDtQe9eb0AidowzE3Mcqa104Cog7Rl9wfvl2D0l8t7LmWuYOfKpafLCfgO001anuIO0DCNsfVaAuooujb1VX5txu7h2GCHKPNNYiwLV4xsu_EtsfR9zYVLtkSMiMn7bmX4jS5kptYsV7faTCCl7s_7NkBYu2WHeN0aYsI3e9tYfbSbvjA-zEDUXBtufWkNIFHd0JgEAfoXNw-5VhIALErEMSpGrArRIT9ePxMSZU6r8qm9c7_hPszbQZbzMXz-Wv030u6vYhj5I6Jvk3vjP0yN00CNRomPQpKoS2diWkldZhFHlMgIImZ8GCKEadHXE=",
+        "summary": []
+      },
+      {
+        "id": "msg_0b9e102656262d98016ae659ae885881939fead7e649f81c27",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "The repository is small, with the implementation in `async_timeout/__init__.py` and tests in `tests/test_timeout.py`. I’ll check how rescheduling validates state and whether the tests already cover expired or exited timeouts.\n"
+          }
+        ],
+        "phase": "commentary",
+        "role": "assistant"
+      },
+      {
+        "id": "fc_0b9e102656262d98016ae659af7b248193bbdb9cbef773975b",
+        "type": "function_call",
+        "status": "completed",
+        "arguments": "{\"command\":\"cd /testbed && sed -n '1,320p' async_timeout/__init__.py && printf '\\\\n--- tests ---\\\\n' && sed -n '1,360p' tests/test_timeout.py && printf '\\\\n--- test/config dependencies ---\\\\n' && cat setup.cfg pyproject.toml requirements.txt && printf '\\\\n--- documentation references ---\\\\n' && rg -n 'reschedul|shift|update|expired|exit' README.rst CHANGES.rst CHANGES tests async_timeout && printf '\\\\n--- Python ---\\\\n' && python --version\"}",
+        "call_id": "call_E5x5dusbr1rxvJCvWnv3USIZ",
+        "name": "bash"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "prompt_cache_key": "cdc7d3abccdb799e",
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "mode": "standard",
+      "context": "all_turns",
+      "effort": "max"
+    },
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "type": "function",
+        "description": "Execute a bash command",
+        "name": "bash",
+        "parameters": {
+          "properties": {
+            "command": {
+              "description": "The bash command to execute",
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": 0.98,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 2093,
+      "input_tokens_details": {
+        "cached_tokens": 1071,
+        "cache_write_tokens": 1019
+      },
+      "output_tokens": 204,
+      "output_tokens_details": {
+        "reasoning_tokens": 12
+      },
+      "total_tokens": 2297
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "resp_0b9e102656262d98016ae659acdb7c8193aaf1675e02cba10d",
+    "request_model_id": "gpt-6.1-sol",
+    "returned_model_id": "gpt-6.1-sol",
+    "provider": "openai",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": 4096,
+    "raw_usage": {
+      "input_tokens": 2093,
+      "input_tokens_details": {
+        "cached_tokens": 1071,
+        "cache_write_tokens": 1019
+      },
+      "output_tokens": 204,
+      "output_tokens_details": {
+        "reasoning_tokens": 12
+      },
+      "total_tokens": 2297
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 2093,
+    "completion_tokens": 204,
+    "reported_completion_tokens": 204,
+    "reasoning_tokens": 12,
+    "cached_tokens": 1071,
+    "cache_write_tokens": 1019,
+    "ttft_ms": 81012.62341701658,
+    "latency_ms": 83750.33612502739,
+    "output_tokens_per_s": 2.4358111195572625,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 74.51475803252725,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0047006,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t15-async-timeout-sol-low",
+    "decision_id": "t15-async-timeout-sol-low-1",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

@@ -1,0 +1,98 @@
+FF...................................................................... [ 37%]
+........................................................................ [ 74%]
+.................................................                        [100%]
+=================================== FAILURES ===================================
+_____________________ TestDeleteColumn.test_delete_column ______________________
+
+self = <test_prettytable.TestDeleteColumn object at 0x7ffffdbb4700>
+
+    def test_delete_column(self) -> None:
+        table = PrettyTable()
+>       table.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
+
+tests/test_prettytable.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ++
+||
+++
+++, fieldname = 'City name'
+column = ['Adelaide', 'Brisbane', 'Darwin'], align = 'c', valign = 't'
+
+    def add_column(
+        self,
+        fieldname: str,
+        column: Sequence[Any],
+        align: AlignType = "c",
+        valign: VAlignType = "t",
+    ) -> None:
+        """Add a column to the table.
+    
+        Arguments:
+    
+        fieldname - name of the field to contain the new column of data
+        column - column of data, should be a list with as many elements as the
+        table has rows
+        align - desired alignment for this column - "l" for left, "c" for centre and
+            "r" for right
+        valign - desired vertical alignment for new columns - "t" for top,
+            "m" for middle and "b" for bottom"""
+    
+        if len(self._rows) in (0, len(column)):
+            msg = (
+                f"Column length {len(column)} does not match number of rows "
+                f"{len(self._rows)}"
+            )
+>           raise ValueError(msg)
+E           ValueError: Column length 3 does not match number of rows 0
+
+src/prettytable/prettytable.py:1631: ValueError
+___________ TestDeleteColumn.test_delete_illegal_column_raises_error ___________
+
+self = <test_prettytable.TestDeleteColumn object at 0x7ffffdbb4880>
+
+    def test_delete_illegal_column_raises_error(self) -> None:
+        table = PrettyTable()
+>       table.add_column("City name", ["Adelaide", "Brisbane", "Darwin"])
+
+tests/test_prettytable.py:286: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ++
+||
+++
+++, fieldname = 'City name'
+column = ['Adelaide', 'Brisbane', 'Darwin'], align = 'c', valign = 't'
+
+    def add_column(
+        self,
+        fieldname: str,
+        column: Sequence[Any],
+        align: AlignType = "c",
+        valign: VAlignType = "t",
+    ) -> None:
+        """Add a column to the table.
+    
+        Arguments:
+    
+        fieldname - name of the field to contain the new column of data
+        column - column of data, should be a list with as many elements as the
+        table has rows
+        align - desired alignment for this column - "l" for left, "c" for centre and
+            "r" for right
+        valign - desired vertical alignment for new columns - "t" for top,
+            "m" for middle and "b" for bottom"""
+    
+        if len(self._rows) in (0, len(column)):
+            msg = (
+                f"Column length {len(column)} does not match number of rows "
+                f"{len(self._rows)}"
+            )
+>           raise ValueError(msg)
+E           ValueError: Column length 3 does not match number of rows 0
+
+src/prettytable/prettytable.py:1631: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_prettytable.py::TestDeleteColumn::test_delete_column - Valu...
+FAILED tests/test_prettytable.py::TestDeleteColumn::test_delete_illegal_column_raises_error
+2 failed, 191 passed in 0.35s

@@ -1,0 +1,24 @@
+diff --git a/autograd/scipy/linalg.py b/autograd/scipy/linalg.py
+index dbeaf41..caba367 100644
+--- a/autograd/scipy/linalg.py
++++ b/autograd/scipy/linalg.py
+@@ -133,14 +133,14 @@ def _vjp_sylvester(argnums, ans, args, _):
+ 
+     def vjp(g):
+         q_vjp = solve_sylvester(anp.transpose(a), anp.transpose(b), g)
+-        if 2 in argnums:
+-            vjps.append(q_vjp)
+-        return tuple(vjps)
+-        if 1 in argnums:
+-            vjps.append(-anp.dot(anp.transpose(ans), q_vjp))
+         vjps = []
+         if 0 in argnums:
+             vjps.append(-anp.dot(q_vjp, anp.transpose(ans)))
++        if 1 in argnums:
++            vjps.append(-anp.dot(anp.transpose(ans), q_vjp))
++        if 2 in argnums:
++            vjps.append(q_vjp)
++        return tuple(vjps)
+     return vjp
+ 
+ 

@@ -1,0 +1,104 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "I found and am fixing one last issue in the test setup: the host’s `getent`/`id` calls need to resolve the mocked account consistently. The installer syntax and hook template are in place; I’ll run the final available checks next.",
+          "tool_calls": [
+            {
+              "id": "call_NnrNhw3RmIGF3RW2eokg6YrQ",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"sed -i '/cat > \\\"$tmp\\\\/bin\\\\/id\\\"/i cat > \\\"$tmp/bin/getent\\\" <<'\\\"'\\\"'MOCK'\\\"'\\\"'\\\\n#!/usr/bin/env bash\\\\necho \\\"root:x:0:0:root:/root:/bin/bash\\\"\\\\nMOCK' tests/test_setup.sh\\nsed -i 's|\\\"$tmp/bin/id\\\"$|\\\"$tmp/bin/id\\\" \\\"$tmp/bin/getent\\\"|' tests/test_setup.sh\\nbash -n setup-git-web-server.sh && bash -n tests/test_setup.sh && tests/test_setup.sh; echo \\\"test_rc=$?\\\"\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_0d0b7f3ee9cc2d0f016ae663b18d4887d093c166769f8fc6db",
+    "model": "gpt-6-luna",
+    "created": 1793483699,
+    "usage": {
+      "prompt_tokens": 43192,
+      "completion_tokens": 209,
+      "total_tokens": 43401,
+      "prompt_tokens_details": {
+        "cached_tokens": 41907
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0d0b7f3ee9cc2d0f016ae663b18d4887d093c166769f8fc6db",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 43192,
+      "completion_tokens": 209,
+      "total_tokens": 43401,
+      "prompt_tokens_details": {
+        "cached_tokens": 41907
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 43192,
+    "completion_tokens": 209,
+    "reported_completion_tokens": 209,
+    "reasoning_tokens": null,
+    "cached_tokens": 41907,
+    "cache_write_tokens": null,
+    "ttft_ms": 3287.010000029113,
+    "latency_ms": 10336.338291002903,
+    "output_tokens_per_s": 20.219926449381077,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 29.648214889865606,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00065207,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "d3385175-3e23-4976-a0ec-b15202fefc6f",
+    "decision_id": "d3385175-3e23-4976-a0ec-b15202fefc6f-29",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

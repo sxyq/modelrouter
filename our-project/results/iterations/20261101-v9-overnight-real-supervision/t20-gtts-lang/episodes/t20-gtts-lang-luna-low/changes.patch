@@ -1,0 +1,72 @@
+diff --git a/gtts/lang.py b/gtts/lang.py
+index 6689305..ea94824 100644
+--- a/gtts/lang.py
++++ b/gtts/lang.py
+@@ -72,20 +72,6 @@ def _fallback_deprecated_lang(lang):
+ 
+     """
+ 
+-    for fallback_lang, deprecated_langs in deprecated.items():
+-        if lang.lower() in deprecated_langs:
+-            msg = (
+-                "'{}' has been deprecated, falling back to '{}'. "
+-                "This fallback will be removed in a future version."
+-            ).format(lang, fallback_lang)
+-
+-            warn(msg, DeprecationWarning)
+-            log.warning(msg)
+-
+-            return fallback_lang
+-
+-    return lang
+-
+     deprecated = {
+         # '<fallback>': [<list of deprecated langs>]
+         "en": [
+@@ -108,4 +94,18 @@ def _fallback_deprecated_lang(lang):
+         "es": ["es-es", "es-us"],
+         "zh-CN": ["zh-cn"],
+         "zh-TW": ["zh-tw"],
+-    }
+\ No newline at end of file
++    }
++
++    for fallback_lang, deprecated_langs in deprecated.items():
++        if lang.lower() in deprecated_langs:
++            msg = (
++                "'{}' has been deprecated, falling back to '{}'. "
++                "This fallback will be removed in a future version."
++            ).format(lang, fallback_lang)
++
++            warn(msg, DeprecationWarning)
++            log.warning(msg)
++
++            return fallback_lang
++
++    return lang
+diff --git a/gtts/tests/test_lang.py b/gtts/tests/test_lang.py
+index e7a2b09..f548d0b 100644
+--- a/gtts/tests/test_lang.py
++++ b/gtts/tests/test_lang.py
+@@ -15,8 +15,19 @@ def test_main_langs():
+ 
+ def test_deprecated_lang():
+     """Test language deprecation fallback"""
+-    with pytest.deprecated_call():
+-        assert _fallback_deprecated_lang("en-gb") == "en"
++    for deprecated, fallback in (
++        ("en-gb", "en"),
++        ("es-es", "es"),
++        ("es-us", "es"),
++        ("zh-cn", "zh-CN"),
++        ("zh-tw", "zh-TW"),
++    ):
++        with pytest.deprecated_call():
++            assert _fallback_deprecated_lang(deprecated) == fallback
++
++
++def test_current_lang_is_unchanged():
++    assert _fallback_deprecated_lang("zh") == "zh"
+ 
+ 
+ if __name__ == "__main__":

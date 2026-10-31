@@ -1,0 +1,110 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "Parameter binding is fixed, and reproducing uncovered a related SQLAlchemy 2 issue: DDL returns no rows. I’ll make non-row statements return an empty collection before rerunning the suite.",
+          "reasoning_content": "**Analyzing DDL bug handling**\n\nIt looks like there’s a need to address a bug in DDL where the execution creates no rows, leading to a key error. The user’s DDL query is causing issues. I’m considering if the query method should support handling conditions for no-return results. There seems to be a problem with the existing test suite, particularly in test_69. Maybe fixing the query to return an empty RecordCollection when there are no rows could help. I’ll ensure to add necessary guards and test those parameters.",
+          "tool_calls": [
+            {
+              "id": "call_JV9EprtK0EbH3fTC7YatNzsJ",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cd /testbed \\u0026\\u0026 python -c \\\"from pathlib import Path; p=Path('records.py'); s=p.read_text(); old='        # Get column names\\\\n        keys = cursor.keys()\\\\n    \\\\n        # Make a generator to iterate through results\\\\n'; new='        # Statements such as CREATE TABLE do not return rows.\\\\n        if not cursor.returns_rows:\\\\n            return RecordCollection(iter(()))\\\\n\\\\n        # Get column names\\\\n        keys = cursor.keys()\\\\n    \\\\n        # Make a generator to iterate through results\\\\n'; assert old in s; p.write_text(s.replace(old,new,1))\\\" \\u0026\\u0026 python -m pytest -q\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_05b0d99369c032b9016ae6607e81b087d0abaf31c55d695bf0",
+    "model": "gpt-6-luna",
+    "created": 1793482879,
+    "usage": {
+      "prompt_tokens": 62298,
+      "completion_tokens": 648,
+      "total_tokens": 62946,
+      "prompt_tokens_details": {
+        "cached_tokens": 61804
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 135
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_05b0d99369c032b9016ae6607e81b087d0abaf31c55d695bf0",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 62298,
+      "completion_tokens": 648,
+      "total_tokens": 62946,
+      "prompt_tokens_details": {
+        "cached_tokens": 61804
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 135
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 62298,
+    "completion_tokens": 648,
+    "reported_completion_tokens": 648,
+    "reasoning_tokens": 135,
+    "cached_tokens": 61804,
+    "cache_write_tokens": null,
+    "ttft_ms": 77001.52154196985,
+    "latency_ms": 79120.31066697091,
+    "output_tokens_per_s": 8.190058842507936,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 305.8350603907675,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00099144,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t18-records-luna-low-model-comparison-6",
+    "decision_id": "t18-records-luna-low-model-comparison-6-6",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

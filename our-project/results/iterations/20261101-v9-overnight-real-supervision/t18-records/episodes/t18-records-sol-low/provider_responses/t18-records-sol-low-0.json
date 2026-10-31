@@ -1,0 +1,160 @@
+{
+  "response": {
+    "background": false,
+    "completed_at": 1793481875,
+    "created_at": 1793481872,
+    "frequency_penalty": 0.0,
+    "id": "resp_0a2444c47402a39c016ae65c90abcc819494ecbe5a596d8e23",
+    "max_output_tokens": 4096,
+    "metadata": {},
+    "model": "gpt-6.1-sol",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0a2444c47402a39c016ae65c91a2c48194bfb70c5195047393",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "I’ll inspect how `Connection.query` passes parameters to SQLAlchemy, then reproduce the failure before making a fix.\n"
+          }
+        ],
+        "phase": "commentary",
+        "role": "assistant"
+      },
+      {
+        "id": "fc_0a2444c47402a39c016ae65c923fe481949b7fa6a42149d3b9",
+        "type": "function_call",
+        "status": "completed",
+        "arguments": "{\"command\":\"cd /testbed && pwd && ls -la && git status --short && rg -n 'class Connection|def query|sqlalchemy|SQLAlchemy' . --glob '!*.lock' --glob '!*.svg' --glob '!*.png'\"}",
+        "call_id": "call_tYZC9ugQdiNkef6gdPcHMyWt",
+        "name": "bash"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "prompt_cache_key": "cdc7d3abccdb799e",
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "mode": "standard",
+      "context": "all_turns",
+      "effort": "max"
+    },
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "type": "function",
+        "description": "Execute a bash command",
+        "name": "bash",
+        "parameters": {
+          "properties": {
+            "command": {
+              "description": "The bash command to execute",
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": 0.98,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 1048,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1045
+      },
+      "output_tokens": 98,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1146
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "resp_0a2444c47402a39c016ae65c90abcc819494ecbe5a596d8e23",
+    "request_model_id": "gpt-6.1-sol",
+    "returned_model_id": "gpt-6.1-sol",
+    "provider": "openai",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": 4096,
+    "raw_usage": {
+      "input_tokens": 1048,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1045
+      },
+      "output_tokens": 98,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1146
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 1048,
+    "completion_tokens": 98,
+    "reported_completion_tokens": 98,
+    "reasoning_tokens": 0,
+    "cached_tokens": 0,
+    "cache_write_tokens": 1045,
+    "ttft_ms": 18471.086625009775,
+    "latency_ms": 20463.817583979107,
+    "output_tokens_per_s": 4.788940264827375,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 49.178741143604725,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0035985,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t18-records-sol-low",
+    "decision_id": "t18-records-sol-low-0",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

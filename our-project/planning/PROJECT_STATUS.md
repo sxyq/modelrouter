@@ -2,17 +2,21 @@
 
 **独立评分完成（2026-11-01）**：用户已选TwinRouterBench 520题/970步，复用已有ROUTE-003留出材料及原生模型入口，8/8版本全部完成。Laya微调前/F11-e01/P0_B03_C01_QB_PB-e02/F05-e01分别7.010309/20.515464/7.422680/12.061856分；Kev微调前/R11/R12/C09分别13.298969/18.969072/16.288660/15.567010分。F11/R11比微调前提高13.505155/5.670103个百分点，但八版本均低于恒选low的71.030928分。每版本970条、520任务，输入及输出任务身份/gold一致。原Val前三保持，不按Test重选；仅评旧四档，不增加新三模型动作监督或晋升。完整结果见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)。本轮起点main为e3c54a50f82648647922d15209a24a1fc57a6902，下方Test未执行描述保留原时点。
 
-**服务器与加训（03:21:31台北）**：训练进程0、原队列PAUSED_USER_REQUEST/current_run=null，F14归档仍failed/NON_FINITE_LOSS。Serving health/models均200，原PID327621及F05-e01/原Kev Adapter不变；共享服务未重启，GPU33277/49140MiB、0%、53°C。旧V9两轮8/100更新及负结果保留，本轮没有加训；F11-e01/R11代表不变。累计真实任务级/步骤级偏好各2条、同2个任务，覆盖仍有限；详情见[原训练报告](../results/training/training_research.md)。
+**服务器与加训（06:26:47台北）**：训练进程0、原队列PAUSED_USER_REQUEST/current_run=null，F14归档仍failed/NON_FINITE_LOSS，结束2026-10-31T09:01:02Z。Kev R01–R16全部COMPLETED/EVALUATED；Serving health/models均正常，原PID327621及F05-e01/原Kev Adapter不变。GPU34821/49140MiB、100%、84°C来自共享服务，未干预。旧V9两轮8/100更新及负结果保留，本轮没有加训；F11-e01/R11代表不变。详情见[原训练报告](../results/training/training_research.md)。
 
 ## 2026-11-01 · 当前：不同训练任务上的真实 K=2 增量
 
-从main `f71032b80cb69e8644127055308bbaf55970bd67`接续，新增3个Train任务尝试、2组完整可比任务对照。DeviceAuthorizationEndpoint两候选均原673/673，形成Luna费用偏好1条；同一真实错误恢复前缀，Luna一步673/673、Sol一步未修复，形成Luna步骤偏好1条。首次Sol连接断开的无Usage请求单独保留，不当质量败者。SQLparse的Luna请求中断只作观察；Scope两者原验证670/673与668/673均失败，无胜者，且与Device任务的同仓库关联保留。完整结果见[本轮结果](../results/iterations/20261101-v9-k2-supervision-expansion/review.md)。
+从main `ea2987d2244ed978903a45c364ef944c3345a826`接续，实际运行12个不同SWE-smith Train任务、9个仓库；另外10个来源元数据请求失败的候选未启动Agent，不计为执行任务。9个任务具备可用原Verifier，7组双候选完整通过。新增任务级模型费偏好7条、步骤级即时验证偏好2条，来自7个不同训练任务；同任务多个前缀不另算题。Mido原验证路径在仓库外，两条gTTS的原验证依赖Google网络，PyASN1 bitstring的Sol无Usage超时，以及其他API/格式问题均只作观察。完整结果见[本轮结果](../results/iterations/20261101-v9-overnight-real-supervision/review.md)。
 
-本轮68请求、65份Usage、3份缺失；已知模型费率小计0.67589603USD，完整模型费、实收及资源USD未知，教师0。原Prepare与共享Trainer序列化已消费新2条，不混任务/步骤目标；原Train196/Val186加旧2条、新2条可组合200/186，旧382视图未重加工。完整K=3与同模型Effort偏好仍0；两个既有账户/models仍未列Flash，AA保持v4，教师关闭，原体系与五RQ不变。
+训练采集209请求、199份Usage、10次用量缺失，另3份已返回Usage的响应无法按请求身份计价；已知模型费率小计1.85298918USD，完整费用、供应商实收及资源USD未知，采集教师0。新视图13条已含历史4条，任务级9/步骤级4、覆盖9个任务，标签Luna12/Sol1；可与原Train196组合209，Val186不变，不再另加旧delta。25份本轮比较记录中16份无选择目标，44份候选观察不当44条偏好；原382与13,214候选不重新加工。
 
-**服务器同步完成（03:44:42台北）**：相关原源码、六文档、两训练报告和本轮结果已定向同步到原工程。服务器原`serialize_training_record`实际消费新S1链接2条，task/step目标分开、AA v4、教师null；没有模型加载或训练，原Serving及共享服务不变。
+Sol请求low/medium的110份原响应均报告effort=max；Luna low/none的89份响应不报告应用档位。执行忽略参数还是返回元数据有误仍未知，启用Sol渠道param_override为空也不能确定原因。全部有效目标明确为MODEL_ONLY，保留requested_native_effort输入，不监督实际档位；确认的Model×Native Effort、同模型Effort及完整K=3目标均0。两个已有账户目录仍无Flash，未重发旧404/503；AA固定v4，low/none/Flash缺测不借用Max成绩。
 
-旧四档偏置分析只读取八份保存结果：S1人类模型偏好、S2终局和S3资源档位不等于外部能力四档，R11的4269条继续训练只有S2/S3；Laya微调前已有950/970个mid，F11降至788。原外部Context前400字符使970步只有318种输入，58个多步题输入不变。各因素的因果贡献未知；未重评、未用独立标签调参。现有两标签任务尚不足以支持有意义的新配方，模型参数、Serving及正式图表结果均未改变。
+**源码与材料同步**：10份相关原源码与新视图已传入服务器原工程，06:33:55台北原`serialize_training_record`消费全部13条，相对S1链接有效，task/step问题分开，teacher=null、AA v4，状态5069–11079字符；未加载权重或训练。六文档、两份训练报告与完整结果已完成定向同步。07:04:32台北实读仍无活动训练，原队列暂停、F14失败归档、Kev R01–R16全完训/评估；Serving仍PID327621及原权重。openrsync误生成的路径前缀副本已移除，不把材料同步描述为Serving运行版本更新。
+
+**真实Dev与教师**：configure-git-webserver关闭教师时30次全Luna，开启教师时7次全Luna，均原Verifier reward0、CTRF0/1；固定Sol的4次生成后安装工具超时，Verifier未运行，reward未知。新教师1次请求/1次成功，983输入、1112输出含1034 reasoning、0.013086USD，23.281秒；step3后触发，短评进入steps3–6共4次，不改Agent行动。教师开/关总模型费0.01712057/0.01776893USD，轨迹长度、缓存与排队不同，两者均失败，不能证明净收益。不同Dev filter-js-from-html完成15次F05真实路由：Sol3→Luna12，1次自然切换、fallback0、9条已返回工具结果，最终RepeatedFormatError；固定Luna3次生成/3条工具结果、Submitted。两者原Verifier均reward0、CTRF0/2，模型费0.07949004/0.00111207USD、完整Trial1349.535347/856.316198秒，不造质量赢家。Dev不进入Train。全工作包269请求、已知模型费率2.04290179USD，完整费用仍未知；17个临时Docker快照、采集工具与自有隧道已清理，原镜像和真实证据保留。
+
+旧四档偏置分析只复用八份保存结果：S1人类模型偏好、S2终局和S3资源档位不等于外部能力四档，R11的4269条继续训练只有S2/S3；Laya微调前已有950/970个mid，F11降至788。原外部Context前400字符使970步只有318种输入，58个多步题输入不变。各因素的因果贡献及导入权重原始训练分布未知，现有材料未证明选项索引错位；未重评、未用独立标签调参。13条稀疏模型目标已具备原格式消费条件，但不能支持联合档位学习或动态收益主张；本轮不启动新微调，正式五RQ、八图十二表不变。
 
 ## 2026-10-31 · 历史恢复点：有效K=2监督已取得，原训练接续停止
 

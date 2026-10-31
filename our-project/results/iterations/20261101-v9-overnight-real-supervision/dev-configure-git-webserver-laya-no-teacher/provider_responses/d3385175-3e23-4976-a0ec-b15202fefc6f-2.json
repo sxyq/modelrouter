@@ -1,0 +1,111 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The workspace is empty, so I’m adding a self-contained server installer and an end-to-end local test. The installer will create the bare SSH-push repository, publish `master` into a document root, and serve it on port 8080 via systemd.",
+          "reasoning_content": "**Considering script setup**\n\nI’m thinking about a script that runs with a server systemd. I should write some tests, maybe for a local setup using a fake systemctl and temporary directories. It might be useful to integrate real git pushes and manually set up a Python HTTP server. I'll make the script configurable for environment directories and the service file path, and maybe skip some service actions. Also, I need to build a test harness with bash stubs and ensure documentation is included.",
+          "tool_calls": [
+            {
+              "id": "call_K6GW0DbsocPpTQPBLLcjHH14",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cat <<'EOF' > setup-git-web-server.sh\\n#!/usr/bin/env bash\\nset -Eeuo pipefail\\n\\n# Run as root, optionally setting GIT_USER to the SSH account that will push.\\nGIT_USER=\\\"${GIT_USER:-${SUDO_USER:-}}\\\"\\nREPO=\\\"${GIT_REPO:-/git/server}\\\"\\nWEB_ROOT=\\\"${WEB_ROOT:-/var/www/git-server}\\\"\\nUNIT=\\\"${SYSTEMD_UNIT_FILE:-/etc/systemd/system/git-web.service}\\\"\\n\\nif [[ \\\"$EUID\\\" -ne 0 ]]; then\\n  echo \\\"Run as root (for example: sudo GIT_USER=deploy $0).\\\" >&2\\n  exit 1\\nfi\\nif [[ -z \\\"$GIT_USER\\\" ]] || ! id \\\"$GIT_USER\\\" >/dev/null 2>&1; then\\n  echo \\\"Set GIT_USER to an existing SSH account that will push.\\\" >&2\\n  exit 1\\nfi\\nfor cmd in git python3 systemctl; do\\n  command -v \\\"$cmd\\\" >/dev/null 2>&1 || { echo \\\"Missing required command: $cmd\\\" >&2; exit 1; }\\ndone\\n\\nGIT_HOME=\\\"$(getent passwd \\\"$GIT_USER\\\" | cut -d: -f6)\\\"\\n[[ -n \\\"$GIT_HOME\\\" ]] || { echo \\\"Could not find home directory for $GIT_USER\\\" >&2; exit 1; }\\nWEB_ROOT=\\\"$(realpath -m \\\"$WEB_ROOT\\\")\\\"\\nREPO=\\\"$(realpath -m \\\"$REPO\\\")\\\"\\nmkdir -p \\\"$(dirname \\\"$REPO\\\")\\\" \\\"$WEB_ROOT\\\"\\nif [[ ! -d \\\"$REPO\\\" ]]; then\\n  git init --bare --initial-branch=master \\\"$REPO\\\"\\nfi\\nchown -R \\\"$GIT_USER\\\":\\\"$(id -gn \\\"$GIT_USER\\\")\\\" \\\"$REPO\\\" \\\"$WEB_ROOT\\\"\\n\\nmkdir -p \\\"$REPO/hooks\\\"\\ncat > \\\"$REPO/hooks/post-receive\\\" <<HOOK\\n#!/usr/bin/env bash\\nset -Eeuo pipefail\\nwhile read -r oldrev newrev ref; do\\n  [[ \\\"\\\\$ref\\\" == \\\"refs/heads/master\\\" ]] || continue\\n  if [[ \\\"\\\\$newrev\\\" == \\\"0000000000000000000000000000000000000000\\\" ]]; then\\n    echo \\\"Refusing to deploy a deleted master branch.\\\" >&2\\n    exit 1\\n  fi\\n  git --git-dir=\\\"$REPO\\\" --work-tree=\\\"$WEB_ROOT\\\" checkout -f master\\n  # Remove files deleted from the deployed branch, without touching server-owned extras.\\n  git --git-dir=\\\"$REPO\\\" --work-tree=\\\"$WEB_ROOT\\\" ls-files -z --deleted | xargs -0 -r rm -f --\\ndone\\nHOOK\\nchmod 0755 \\\"$REPO/hooks/post-receive\\\"\\nchown \\\"$GIT_USER\\\":\\\"$(id -gn \\\"$GIT_USER\\\")\\\" \\\"$REPO/hooks/post-receive\\\"\\n\\ncat > \\\"$UNIT\\\" <<UNITFILE\\n[Unit]\\nDescription=Static website deployed from the Git server repository\\nAfter=network.target\\n\\n[Service]\\nType=simple\\nUser=$GIT_USER\\nGroup=$(id -gn \\\"$GIT_USER\\\")\\nWorkingDirectory=$WEB_ROOT\\nExecStart=/usr/bin/python3 -m http.server 8080 --bind 0.0.0.0 --directory $WEB_ROOT\\nRestart=on-failure\\nRestartSec=2\\n\\n[Install]\\nWantedBy=multi-user.target\\nUNITFILE\\nchmod 0644 \\\"$UNIT\\\"\\nsystemctl daemon-reload\\nsystemctl enable --now git-web.service\\n\\necho \\\"Ready: git clone $GIT_USER@$(hostname):$REPO\\\"\\necho \\\"Push to master; published files are served from http://$(hostname):8080/\\\"\\nEOF\\nchmod +x setup-git-web-server.sh\\ncat <<'EOF' > README.md\\n# Git-push static web server\\n\\n`setup-git-web-server.sh` configures a Linux server with systemd, Git, and Python 3. It creates a bare SSH-push repository at `/git/server`, deploys pushes to `master` into `/var/www/git-server`, and serves that directory on TCP port 8080.\\n\\nOn the server, run as root, setting the existing SSH account that will push:\\n\\n```sh\\nsudo GIT_USER=your-ssh-user ./setup-git-web-server.sh\\n```\\n\\nThe account needs SSH access and permission to push to the repository. Configure its SSH login separately. Ensure firewall/network rules permit inbound TCP 8080.\\n\\nFrom a client:\\n\\n```sh\\ngit clone your-ssh-user@server:/git/server\\ncd server\\necho \\\"hello world\\\" > hello.html\\ngit add hello.html\\ngit commit -m \\\"add hello.html\\\"\\ngit push origin master\\ncurl http://server:8080/hello.html\\n```\\n\\nThe web service runs as the SSH account, restarts on failure, and serves only the deployed document root. Set `GIT_REPO`, `WEB_ROOT`, or `SYSTEMD_UNIT_FILE` when installing to customize paths.\\nEOF\\nbash -n setup-git-web-server.sh && git status --short\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_0441155f338774c5016ae6630b2c9c87d0bf3eea98d97a6371",
+    "model": "gpt-6-luna",
+    "created": 1793483532,
+    "usage": {
+      "prompt_tokens": 28044,
+      "completion_tokens": 1802,
+      "total_tokens": 29846,
+      "prompt_tokens_details": {
+        "cached_tokens": 27893
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 580
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0441155f338774c5016ae6630b2c9c87d0bf3eea98d97a6371",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 28044,
+      "completion_tokens": 1802,
+      "total_tokens": 29846,
+      "prompt_tokens_details": {
+        "cached_tokens": 27893
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 580
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 28044,
+    "completion_tokens": 1802,
+    "reported_completion_tokens": 1802,
+    "reasoning_tokens": 580,
+    "cached_tokens": 27893,
+    "cache_write_tokens": null,
+    "ttft_ms": 9902.586709009483,
+    "latency_ms": 18883.24425002793,
+    "output_tokens_per_s": 95.428517268548,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 200.65345903342902,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00119503,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "d3385175-3e23-4976-a0ec-b15202fefc6f",
+    "decision_id": "d3385175-3e23-4976-a0ec-b15202fefc6f-2",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

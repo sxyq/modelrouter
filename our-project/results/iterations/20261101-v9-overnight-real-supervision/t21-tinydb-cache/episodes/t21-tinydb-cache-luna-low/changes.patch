@@ -1,0 +1,63 @@
+diff --git a/tests/test_utils.py b/tests/test_utils.py
+index 031e086..7620190 100644
+--- a/tests/test_utils.py
++++ b/tests/test_utils.py
+@@ -37,6 +37,28 @@ def test_lru_cache_set_update():
+     assert cache["a"] == 2
+ 
+ 
++def test_lru_cache_set_existing_key_moves_to_end():
++    cache = LRUCache(capacity=3)
++    cache["a"] = 1
++    cache["b"] = 2
++    cache["c"] = 3
++    cache["a"] = 4
++    cache["d"] = 5
++
++    assert cache.lru == ["c", "a", "d"]
++    assert "b" not in cache
++
++
++def test_lru_cache_set_falsy_existing_value_moves_to_end():
++    cache = LRUCache(capacity=3)
++    cache["a"] = 0
++    cache["b"] = 2
++    cache["c"] = 3
++    cache["a"] = 1
++
++    assert cache.lru == ["b", "c", "a"]
++
++
+ def test_lru_cache_get():
+     cache = LRUCache(capacity=3)
+     cache["a"] = 1
+diff --git a/tinydb/utils.py b/tinydb/utils.py
+index b87e4ce..e034b32 100644
+--- a/tinydb/utils.py
++++ b/tinydb/utils.py
+@@ -98,17 +98,14 @@ class LRUCache(abc.MutableMapping, Generic[K, V]):
+         return default
+ 
+     def set(self, key: K, value: V):
+-        if self.cache.get(key):
+-            self.cache[key] = value
+-
+-            # Check, if the cache is full and we have to remove old items
+-            # If the queue is of unlimited size, self.capacity is NaN and
+-            # x > NaN is always False in Python and the cache won't be cleared.
+-            if self.capacity is not None and self.length > self.capacity:
+-                self.cache.popitem(last=False)
+-        else:
+-            self.cache[key] = value
+-            self.cache.move_to_end(key, last=True)
++        self.cache[key] = value
++        self.cache.move_to_end(key, last=True)
++
++        # Check, if the cache is full and we have to remove old items
++        # If the queue is of unlimited size, self.capacity is NaN and
++        # x > NaN is always False in Python and the cache won't be cleared.
++        if self.capacity is not None and self.length > self.capacity:
++            self.cache.popitem(last=False)
+ 
+ class FrozenDict(dict):
+     """

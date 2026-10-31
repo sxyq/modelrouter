@@ -50,7 +50,7 @@ def _pricing_values(value):
 
 def _router_card(card, snapshot_id):
     result = {name: card.get(name) for name in ("model_id", "native_effort", "action_id", "revision")}
-    for name in ("model_revision", "model_evidence_status", "evidence_status", "metric", "unit", "missing"):
+    for name in ("requested_native_effort", "model_revision", "model_evidence_status", "evidence_status", "metric", "unit", "missing"):
         if name in card:
             result[name] = card[name]
     if card.get("snapshot_id") != snapshot_id:

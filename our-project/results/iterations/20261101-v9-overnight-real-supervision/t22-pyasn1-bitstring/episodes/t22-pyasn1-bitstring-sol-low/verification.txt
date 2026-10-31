@@ -1,0 +1,173 @@
+FFFFF................................................................... [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 18%]
+........................................................................ [ 24%]
+........................................................................ [ 30%]
+........................................................................ [ 36%]
+........................................................................ [ 42%]
+........................................................................ [ 48%]
+........................................................................ [ 54%]
+........................................................................ [ 61%]
+........................................................................ [ 67%]
+........................................................................ [ 73%]
+........................................................................ [ 79%]
+........................................................................ [ 85%]
+........................................................................ [ 91%]
+........................................................................ [ 97%]
+...........................                                              [100%]
+=================================== FAILURES ===================================
+_________________ BitStringEncoderTestCase.testDefModeChunked __________________
+
+self = <tests.codec.ber.test_encoder.BitStringEncoderTestCase testMethod=testDefModeChunked>
+
+    def testDefModeChunked(self):
+>       assert encoder.encode(
+            self.b, maxChunkSize=1
+        ) == bytes((35, 8, 3, 2, 0, 169, 3, 2, 1, 138))
+
+tests/codec/ber/test_encoder.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pyasn1/codec/ber/encoder.py:893: in __call__
+    return self._singleItemEncoder(
+pyasn1/codec/ber/encoder.py:874: in __call__
+    substrate = concreteEncoder.encode(value, asn1Spec, self, **options)
+pyasn1/codec/ber/encoder.py:101: in encode
+    substrate, isConstructed, isOctets = self.encodeValue(
+pyasn1/codec/ber/encoder.py:222: in encodeValue
+    substrate += encodeFun(alignedValue[start:stop], asn1Spec, **options)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <BitString value object, tagSet <TagSet object, tags 0:0:3>, payload [43402]>
+i = slice(0, 8, None)
+
+    def __getitem__(self, i):
+        if i.__class__ is slice:
+            length = len(self._value) - 1
+>           if i > length or i < 0:
+E           TypeError: '>' not supported between instances of 'slice' and 'int'
+
+pyasn1/type/univ.py:488: TypeError
+________________ BitStringEncoderTestCase.testIndefModeChunked _________________
+
+self = <tests.codec.ber.test_encoder.BitStringEncoderTestCase testMethod=testIndefModeChunked>
+
+    def testIndefModeChunked(self):
+>       assert encoder.encode(
+            self.b, defMode=False, maxChunkSize=1
+        ) == bytes((35, 128, 3, 2, 0, 169, 3, 2, 1, 138, 0, 0))
+
+tests/codec/ber/test_encoder.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pyasn1/codec/ber/encoder.py:893: in __call__
+    return self._singleItemEncoder(
+pyasn1/codec/ber/encoder.py:874: in __call__
+    substrate = concreteEncoder.encode(value, asn1Spec, self, **options)
+pyasn1/codec/ber/encoder.py:101: in encode
+    substrate, isConstructed, isOctets = self.encodeValue(
+pyasn1/codec/ber/encoder.py:222: in encodeValue
+    substrate += encodeFun(alignedValue[start:stop], asn1Spec, **options)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <BitString value object, tagSet <TagSet object, tags 0:0:3>, payload [43402]>
+i = slice(0, 8, None)
+
+    def __getitem__(self, i):
+        if i.__class__ is slice:
+            length = len(self._value) - 1
+>           if i > length or i < 0:
+E           TypeError: '>' not supported between instances of 'slice' and 'int'
+
+pyasn1/type/univ.py:488: TypeError
+____________ BitStringEncoderWithSchemaTestCase.testDefModeChunked _____________
+
+self = <tests.codec.ber.test_encoder.BitStringEncoderWithSchemaTestCase testMethod=testDefModeChunked>
+
+    def testDefModeChunked(self):
+>       assert encoder.encode(
+            self.b, asn1Spec=self.s, maxChunkSize=1
+        ) == bytes((35, 8, 3, 2, 0, 169, 3, 2, 1, 138))
+
+tests/codec/ber/test_encoder.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pyasn1/codec/ber/encoder.py:893: in __call__
+    return self._singleItemEncoder(
+pyasn1/codec/ber/encoder.py:874: in __call__
+    substrate = concreteEncoder.encode(value, asn1Spec, self, **options)
+pyasn1/codec/ber/encoder.py:101: in encode
+    substrate, isConstructed, isOctets = self.encodeValue(
+pyasn1/codec/ber/encoder.py:222: in encodeValue
+    substrate += encodeFun(alignedValue[start:stop], asn1Spec, **options)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <BitString value object, tagSet <TagSet object, tags 0:0:3>, payload [43402]>
+i = slice(0, 8, None)
+
+    def __getitem__(self, i):
+        if i.__class__ is slice:
+            length = len(self._value) - 1
+>           if i > length or i < 0:
+E           TypeError: '>' not supported between instances of 'slice' and 'int'
+
+pyasn1/type/univ.py:488: TypeError
+___________ BitStringEncoderWithSchemaTestCase.testIndefModeChunked ____________
+
+self = <tests.codec.ber.test_encoder.BitStringEncoderWithSchemaTestCase testMethod=testIndefModeChunked>
+
+    def testIndefModeChunked(self):
+>       assert encoder.encode(
+            self.b, asn1Spec=self.s, defMode=False, maxChunkSize=1
+        ) == bytes((35, 128, 3, 2, 0, 169, 3, 2, 1, 138, 0, 0))
+
+tests/codec/ber/test_encoder.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pyasn1/codec/ber/encoder.py:893: in __call__
+    return self._singleItemEncoder(
+pyasn1/codec/ber/encoder.py:874: in __call__
+    substrate = concreteEncoder.encode(value, asn1Spec, self, **options)
+pyasn1/codec/ber/encoder.py:101: in encode
+    substrate, isConstructed, isOctets = self.encodeValue(
+pyasn1/codec/ber/encoder.py:222: in encodeValue
+    substrate += encodeFun(alignedValue[start:stop], asn1Spec, **options)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <BitString value object, tagSet <TagSet object, tags 0:0:3>, payload [43402]>
+i = slice(0, 8, None)
+
+    def __getitem__(self, i):
+        if i.__class__ is slice:
+            length = len(self._value) - 1
+>           if i > length or i < 0:
+E           TypeError: '>' not supported between instances of 'slice' and 'int'
+
+pyasn1/type/univ.py:488: TypeError
+________________________ BitStringTestCase.testGetItem _________________________
+
+self = <tests.type.test_univ.BitStringTestCase testMethod=testGetItem>
+
+    def testGetItem(self):
+>       assert self.b.clone("'A98A'H")[0] == 1
+
+tests/type/test_univ.py:416: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <BitString value object, tagSet <TagSet object, tags 0:0:3>, namedValues <NamedValues object, enums Active=0, Urgent=1>, payload [43402]>
+i = 0
+
+    def __getitem__(self, i):
+        if i.__class__ is slice:
+            length = len(self._value) - 1
+            if i > length or i < 0:
+                raise IndexError('bit index out of range')
+            return (self._value >> (length - i)) & 1
+        else:
+>           return self.clone([self[x] for x in range(*i.indices(len(self)))])
+E           AttributeError: 'int' object has no attribute 'indices'
+
+pyasn1/type/univ.py:492: AttributeError
+=========================== short test summary info ============================
+FAILED tests/codec/ber/test_encoder.py::BitStringEncoderTestCase::testDefModeChunked
+FAILED tests/codec/ber/test_encoder.py::BitStringEncoderTestCase::testIndefModeChunked
+FAILED tests/codec/ber/test_encoder.py::BitStringEncoderWithSchemaTestCase::testDefModeChunked
+FAILED tests/codec/ber/test_encoder.py::BitStringEncoderWithSchemaTestCase::testIndefModeChunked
+FAILED tests/type/test_univ.py::BitStringTestCase::testGetItem - AttributeErr...
+5 failed, 1174 passed in 1.29s

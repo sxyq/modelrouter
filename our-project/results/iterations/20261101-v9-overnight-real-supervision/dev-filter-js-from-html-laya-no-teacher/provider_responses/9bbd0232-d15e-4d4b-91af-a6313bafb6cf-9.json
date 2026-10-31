@@ -1,0 +1,100 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "Implemented `/app/filter.py` to sanitize HTML in place, removing scripts, event-handler attributes, and dangerous URLs while retaining safe elements and attributes. Verification is incomplete: the regression suite still reports failures involving formatting preservation and raw-text content; the sanitizer should not be considered fully tested."
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "id": "resp_route_f63dbb926f3a44b59eb97b9d7d755cd4",
+    "model": "gpt-6-luna",
+    "created": 1793485315,
+    "usage": {
+      "prompt_tokens": 15555,
+      "completion_tokens": 104,
+      "total_tokens": 15659,
+      "prompt_tokens_details": {
+        "cached_tokens": 14051
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 48
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_f63dbb926f3a44b59eb97b9d7d755cd4",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "stop",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 15555,
+      "completion_tokens": 104,
+      "total_tokens": 15659,
+      "prompt_tokens_details": {
+        "cached_tokens": 14051
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 48
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 15555,
+    "completion_tokens": 104,
+    "reported_completion_tokens": 104,
+    "reasoning_tokens": 48,
+    "cached_tokens": 14051,
+    "cache_write_tokens": null,
+    "ttft_ms": 3167.013500002213,
+    "latency_ms": 3686.2937919795513,
+    "output_tokens_per_s": 28.21261838279897,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 200.27719442997576,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00034291,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf",
+    "decision_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf-9",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

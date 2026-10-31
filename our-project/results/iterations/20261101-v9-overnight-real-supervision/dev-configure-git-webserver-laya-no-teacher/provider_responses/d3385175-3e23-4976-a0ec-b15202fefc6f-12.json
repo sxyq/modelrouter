@@ -1,0 +1,111 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "",
+          "reasoning_content": "**Addressing scripting issues**\n\nI need to stop and look into a Bash `sed` issue. It seems I should modify the heredoc with placeholders and ensure I'm escaping `$newrev` correctly — currently, I have two slashes visible instead of one in the file. Since Python isn't available, I might need to use Perl instead. I'll check the exact command with `sed -n l`, and see if I can use Perl substitution for this as well. Also, there are references to `WEB_ROOT` that must be expanded at install time.",
+          "tool_calls": [
+            {
+              "id": "call_P5OinNkg9YnAz4Ikk6QMs28N",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"perl -pi -e 's/\\\\\\\\\\\\\\\\\\\\$/\\\\\\\\\\\\$/g' setup-git-web-server.sh\\nsed -n '36,45l' setup-git-web-server.sh\\nbash -n setup-git-web-server.sh && tests/test_setup.sh\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_02fc164819ef2ba9016ae6635fc0b087d09e8129a9038ed72d",
+    "model": "gpt-6-luna",
+    "created": 1793483617,
+    "usage": {
+      "prompt_tokens": 35038,
+      "completion_tokens": 157,
+      "total_tokens": 35195,
+      "prompt_tokens_details": {
+        "cached_tokens": 34937
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 84
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_02fc164819ef2ba9016ae6635fc0b087d09e8129a9038ed72d",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 35038,
+      "completion_tokens": 157,
+      "total_tokens": 35195,
+      "prompt_tokens_details": {
+        "cached_tokens": 34937
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 84
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 35038,
+    "completion_tokens": 157,
+    "reported_completion_tokens": 157,
+    "reasoning_tokens": 84,
+    "cached_tokens": 34937,
+    "cache_write_tokens": null,
+    "ttft_ms": 4257.247124973219,
+    "latency_ms": 4503.546499996446,
+    "output_tokens_per_s": 34.861414221019785,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 637.4356410169297,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00043797,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "d3385175-3e23-4976-a0ec-b15202fefc6f",
+    "decision_id": "d3385175-3e23-4976-a0ec-b15202fefc6f-12",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

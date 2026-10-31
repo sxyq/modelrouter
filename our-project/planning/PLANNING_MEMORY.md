@@ -10,11 +10,13 @@
 
 **独立评分完成（11-01）**：用户已选TwinRouterBench 520题/970步；从main e3c54a50f82648647922d15209a24a1fc57a6902复用原评价入口，8/8版本完成、7760条预测，输入及输出任务/gold一致。F11-e01为20.515464分，比微调前高13.505155个百分点；R11为18.969072分，比微调前高5.670103个百分点，全部版本低于恒选low的71.030928分。原Val已选Laya F11/P0_B03_C01/F05、Kev R11/R12/C09保持；旧四档分不当新三模型目标，不按Test重选或晋升。结果见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)，下方未执行Test描述保留原时点。
 
-**最新机器状态（03:21:31台北）**：原队列PAUSED_USER_REQUEST/current_run=null、训练进程0、F14归档failed/NON_FINITE_LOSS；Serving health/models均200，原PID及F05-e01/导入Kev Adapter不变。旧V9两轮8/100更新保留，本轮未再加训；任务级/步骤级监督累计各2、同2任务，F11-e01/R11代表保持。未重启共享服务或加载GPU权重。详细进度见[训练报告](../results/training/training_research.md)。
+**最新机器状态（06:26:47台北）**：原队列PAUSED_USER_REQUEST/current_run=null、训练进程0、F14归档failed/NON_FINITE_LOSS；Kev R01–R16全COMPLETED/EVALUATED，Serving健康、原PID与F05-e01/导入Kev Adapter不变。旧V9两轮8/100更新保留，本轮未再加训，F11-e01/R11代表保持。共享GPU34821/49140MiB、100%、84°C，未干预。10份原源码及新视图已定向同步；06:33:55原serializer消费13条、5069–11079字符、无权重加载。误生同步前缀副本已清理。详细进度见[训练报告](../results/training/training_research.md)。
 
-**2026-11-01 当前恢复点**：从main f71032b接续，新增3个Train任务尝试、2组完整可比任务对照；Device任务取得任务级Luna低费用与步骤级Luna即时修复各1条，累计4条/2标签任务。Scope同仓库关联保留，两边原验证均失败；SQLparse Luna response.failed只作观察。新增17份候选观察、68请求/65份Usage/3未知，模型费率已知0.67589603USD、完整费用未知，教师0。新delta2已被原Prepare/serializer消费，可与原196/186及旧delta2组合为200/186，不重新加工旧材料、不启动训练。原始失败、步骤后与完整终局分开，详见[当前结果](../results/iterations/20261101-v9-k2-supervision-expansion/review.md)。
+**2026-11-01 当前恢复点**：从main ea2987d接续，12个不同Train任务/9仓库，7组双成功终局；新增任务级7、步骤级2个模型目标、7个标签任务。13条视图已含历史4条，累计任务级9/步骤级4、9任务、Luna12/Sol1；与原Train196组合209，Val186不变。原Prepare与本机/服务器serializer已消费，任务与步骤问题分开，未知结果不生成赢家。44份候选观察、25份本轮比较中16份无目标；209请求/199Usage/10缺失、3响应无法计价，已知小计1.85298918USD、完整费用未知。采集教师关闭，原382和13,214候选不重加工。详见[当前结果](../results/iterations/20261101-v9-overnight-real-supervision/review.md)。
 
-**四档分析与下一轮**：旧标签目标不等于外部能力档；R11的4269行仅S2/S3，外部前400字符造成58个多步任务状态不变；Laya微调前已有mid偏向。因果贡献未知，八版本不重评、独立标签不训练或调参。AA固定v4、low/none/Flash缺测，两个原账户目录仍无Flash。保留旧S1，分别编码task/step目标、截止前教师和能力卡；当前2标签任务仅low，不自动设新配方。正式五RQ、八图十二表与Serving不变。
+**Native Effort与Dev**：Sol low/medium响应报告max，Luna low/none不报告应用档位；执行与元数据原因未知，渠道param_override为空。目标仅MODEL_ONLY，requested_native_effort保留为此前可见输入，确认的联合档位/同模型Effort/K=3标签均0；两个账户目录仍无Flash。configure-git-webserver教师开/关全Luna且官方reward均0，固定Sol工具超时无Verifier。新教师1成功/0失败、0.013086USD/23.281秒，step3后短评被Router消费4次，不能证明净收益。不同Dev filter-js-from-html完成15生成/9工具结果、自然Sol3→Luna12/fallback0、RepeatedFormatError；固定Luna3生成/3工具结果、Submitted。两者原reward0/CTRF0/2，模型费0.07949004/0.00111207USD、Trial1349.535347/856.316198秒，Dev不进Train或生成质量赢家。全工作包269请求、已知2.04290179USD、完整费用未知；17个临时快照、采集工具、自有隧道已清理，真实证据保留。
+
+**四档分析与下一轮**：旧标签目标不等于外部能力档；R11的4269行仅S2/S3，外部前400字符造成58个多步任务状态不变；Laya微调前已有mid偏向。因果贡献、导入权重原始训练分布未知，未证明选项索引错位；八版本不重评、独立标签不训练或调参。AA固定v4，low/none/Flash缺测。新模型目标与旧S1/S2/S3分开，教师截止前摘要和能力卡沿原输入；13条稀疏且Luna偏重的模型目标尚不足以支持联合档位继续微调，本轮参数更新0。正式五RQ、八图十二表与Serving不变。
 
 **2026-10-31 历史恢复点**：从main ad1d392接续，最新重点已转为真实训练监督。已有TRA-002的TextFSM公开训练任务取得1组完整K=2 Episode对照及2个同历史步骤前缀对照，25次生成均请求/返回身份匹配，无Alias。任务级Luna low成本偏好1条，前缀7 Sol low即时修复偏好1条；前缀6两失败保留为观察。两条允许Train、同1个任务，原Prepare与共享Trainer序列化已实际消费；完整三模型最优标签仍0。精确轨迹、费用和资格见[历史结果](../results/iterations/20261031-v9-real-route-supervision/review.md)。fix-git/db-wal/extract-elf、旧教师前缀和已完成训练未重跑。
 

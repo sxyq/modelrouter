@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+  "generator_protocol": "responses",
+  "provider_timeout_sec": 180,
+  "model_endpoints": {
+    "gpt-6-luna": {"protocol": "chat_completions"}
+  },
+  "formal_model_ids": ["gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash"],
+  "candidate_actions": [
+    {"provider": "openai", "model": "gpt-6.1-sol", "native_effort": "low"},
+    {"provider": "jiji", "model": "gpt-6-luna", "native_effort": "low"}
+  ],
+  "native_effort_observation_note": "Requested low; Sol Responses has reported max, Luna Chat has not reported applied effort. This run is not confirmed native-effort evidence.",
+  "teacher_enabled": true,
+  "teacher_model_id": "gpt-6.1-sol",
+  "teacher_native_effort": "low",
+  "teacher_max_output_tokens": 4096,
+  "teacher_context_chars": 8000,
+  "router_endpoint": "http://127.0.0.1:8000",
+  "feature_training_status": "FEATURE_NOT_TRAINED"
+}

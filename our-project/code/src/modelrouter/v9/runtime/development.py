@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import shlex
 import time
 from copy import deepcopy
 from contextlib import ExitStack
@@ -164,6 +165,14 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
         patch = task_environment.execute({"command": "git diff --binary HEAD -- ."})
         if patch["output"]:
             (record_dir / "changes.patch").write_text(patch["output"], encoding="utf-8")
+        verifier_restore = None
+        if config.get("original_verifier_paths"):
+            verifier_restore = task_environment.execute({
+                "command": shlex.join(["git", "restore", "--source=HEAD", "--",
+                                       *config["original_verifier_paths"]])})
+            event(record_dir, "ORIGINAL_VERIFIER_RESTORED", **verifier_restore)
+            if verifier_restore["returncode"] != 0:
+                raise RuntimeError("Original verifier files could not be restored")
         verified = task_environment.execute({"command": verify_command}, timeout=60)
         verification_error = verified.get("extra", {}).get("exception_type")
         verification_exit_code = None if verification_error else verified["returncode"]
@@ -189,6 +198,7 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
             "resolved": verification_exit_code == 0, "verification_exit_code": verification_exit_code,
             "comparison_scope": run_config["comparison_scope"],
             "verification_error": verification_error, "agent_exit_status": agent_exit_status,
+            "original_verifier_restore_exit_code": verifier_restore["returncode"] if verifier_restore else None,
             "agent_error": error, "status": "RUNTIME_VERIFIED" if success else "FAILED",
             "total_steps": len(model.usage), "tool_calls": len(state.history) - observed_tool_calls,
             "observed_tool_calls": observed_tool_calls, "history_tool_calls": len(state.history),

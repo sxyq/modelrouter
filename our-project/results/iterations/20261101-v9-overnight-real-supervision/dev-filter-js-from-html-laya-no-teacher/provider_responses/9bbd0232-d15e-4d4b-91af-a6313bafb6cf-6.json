@@ -1,0 +1,100 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "Created `/app/filter.py`, an in-place HTML sanitizer that preserves untouched source text and removes script content, event-handler attributes, and dangerous URLs. The regression suite ran, but did not pass: tests still fail for event-handler attributes, SVG `xlink:href`, a quoted `data:text/html` URL, and script removal. The fix is therefore incomplete and these security cases remain unresolved."
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "id": "resp_route_8745e727f69d4e309067d600b1d3df83",
+    "model": "gpt-6-luna",
+    "created": 1793485276,
+    "usage": {
+      "prompt_tokens": 11852,
+      "completion_tokens": 113,
+      "total_tokens": 11965,
+      "prompt_tokens_details": {
+        "cached_tokens": 9085
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 34
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_8745e727f69d4e309067d600b1d3df83",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "stop",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 11852,
+      "completion_tokens": 113,
+      "total_tokens": 11965,
+      "prompt_tokens_details": {
+        "cached_tokens": 9085
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 34
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 11852,
+    "completion_tokens": 113,
+    "reported_completion_tokens": 113,
+    "reasoning_tokens": 34,
+    "cached_tokens": 9085,
+    "cache_write_tokens": null,
+    "ttft_ms": 3089.95070803212,
+    "latency_ms": 3660.389208002016,
+    "output_tokens_per_s": 30.871034083744288,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 198.0932212779527,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00042405,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf",
+    "decision_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf-6",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

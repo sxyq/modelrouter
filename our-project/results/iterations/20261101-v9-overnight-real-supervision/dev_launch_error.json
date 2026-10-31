@@ -1,0 +1,8 @@
+{
+  "task_id": "configure-git-webserver",
+  "stage": "IMPORT_BEFORE_ITERATION_START",
+  "error": "ImportError: Using SOCKS proxy, but the socksio package is not installed",
+  "cause": "LiteLLM attempted to fetch its price table before the existing local-price-table option was applied",
+  "provider_requests": 0,
+  "action": "Use the existing LITELLM_LOCAL_MODEL_COST_MAP=true runtime option before importing the original Harbor adapter"
+}

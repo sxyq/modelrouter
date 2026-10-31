@@ -1,0 +1,837 @@
+{
+  "scope": "DEVELOPMENT_ONLY_NOT_TRAIN",
+  "results": [
+    {
+      "result_dir": "dev-configure-git-webserver-laya-no-teacher",
+      "task_id": "configure-git-webserver",
+      "policy": "laya_v2",
+      "status": "EVALUATED",
+      "generation_calls": 30,
+      "recorded_tool_results": 30,
+      "native_exit_status": "LimitsExceeded",
+      "neural_routes": 30,
+      "router_fallbacks": 0,
+      "selection_counts": {
+        "gpt-6-luna": 30
+      },
+      "model_switches": 0,
+      "selected_model_sequence": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "verified_trials": 1,
+      "reward": 0.0,
+      "ctrf_summary": {
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793483728.16155,
+        "stop": 1793483752.4505553
+      },
+      "harbor_exception": null,
+      "trial_duration_sec": 877.831667,
+      "known_input_tokens": 1070782,
+      "known_output_tokens": 6332,
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "generation_cost_usd": 0.01776893,
+      "teacher_cost_usd": 0,
+      "total_model_rate_cost_usd": 0.01776893,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null,
+      "generator_request_time_ms": 771535.19091825,
+      "teacher_request_time_ms": null,
+      "router_total_time_ms": {
+        "laya": 31149.208793707658
+      },
+      "train_eligible": false,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+      "route_probabilities": [
+        {
+          "step": 0,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": null,
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5052,
+            "gpt-6.1-sol": 0.4948
+          }
+        },
+        {
+          "step": 1,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "inspect",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5178,
+            "gpt-6.1-sol": 0.4822
+          }
+        },
+        {
+          "step": 2,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5526,
+            "gpt-6.1-sol": 0.4474
+          }
+        },
+        {
+          "step": 3,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5383,
+            "gpt-6.1-sol": 0.4617
+          }
+        },
+        {
+          "step": 4,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5526,
+            "gpt-6.1-sol": 0.4474
+          }
+        },
+        {
+          "step": 5,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5328,
+            "gpt-6.1-sol": 0.4672
+          }
+        },
+        {
+          "step": 6,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5307,
+            "gpt-6.1-sol": 0.4693
+          }
+        },
+        {
+          "step": 7,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5359,
+            "gpt-6.1-sol": 0.4641
+          }
+        },
+        {
+          "step": 8,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5406,
+            "gpt-6.1-sol": 0.4594
+          }
+        },
+        {
+          "step": 9,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5441,
+            "gpt-6.1-sol": 0.4559
+          }
+        },
+        {
+          "step": 10,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5407,
+            "gpt-6.1-sol": 0.4593
+          }
+        },
+        {
+          "step": 11,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5442,
+            "gpt-6.1-sol": 0.4558
+          }
+        },
+        {
+          "step": 12,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5362,
+            "gpt-6.1-sol": 0.4638
+          }
+        },
+        {
+          "step": 13,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5624,
+            "gpt-6.1-sol": 0.4376
+          }
+        },
+        {
+          "step": 14,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.56,
+            "gpt-6.1-sol": 0.44
+          }
+        },
+        {
+          "step": 15,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5334,
+            "gpt-6.1-sol": 0.4666
+          }
+        },
+        {
+          "step": 16,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5445,
+            "gpt-6.1-sol": 0.4555
+          }
+        },
+        {
+          "step": 17,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5462,
+            "gpt-6.1-sol": 0.4538
+          }
+        },
+        {
+          "step": 18,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5643,
+            "gpt-6.1-sol": 0.4357
+          }
+        },
+        {
+          "step": 19,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5462,
+            "gpt-6.1-sol": 0.4538
+          }
+        },
+        {
+          "step": 20,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5563,
+            "gpt-6.1-sol": 0.4437
+          }
+        },
+        {
+          "step": 21,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5657,
+            "gpt-6.1-sol": 0.4343
+          }
+        },
+        {
+          "step": 22,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5524,
+            "gpt-6.1-sol": 0.4476
+          }
+        },
+        {
+          "step": 23,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5431,
+            "gpt-6.1-sol": 0.4569
+          }
+        },
+        {
+          "step": 24,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5518,
+            "gpt-6.1-sol": 0.4482
+          }
+        },
+        {
+          "step": 25,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.559,
+            "gpt-6.1-sol": 0.441
+          }
+        },
+        {
+          "step": 26,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5445,
+            "gpt-6.1-sol": 0.4555
+          }
+        },
+        {
+          "step": 27,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5338,
+            "gpt-6.1-sol": 0.4662
+          }
+        },
+        {
+          "step": 28,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5314,
+            "gpt-6.1-sol": 0.4686
+          }
+        },
+        {
+          "step": 29,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5336,
+            "gpt-6.1-sol": 0.4664
+          }
+        }
+      ]
+    },
+    {
+      "result_dir": "dev-configure-git-webserver-laya-teacher",
+      "task_id": "configure-git-webserver",
+      "policy": "laya_v2",
+      "status": "EVALUATED",
+      "generation_calls": 7,
+      "recorded_tool_results": 7,
+      "native_exit_status": "Submitted",
+      "neural_routes": 7,
+      "router_fallbacks": 0,
+      "selection_counts": {
+        "gpt-6-luna": 7
+      },
+      "model_switches": 0,
+      "selected_model_sequence": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "verified_trials": 1,
+      "reward": 0.0,
+      "ctrf_summary": {
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793484475.691152,
+        "stop": 1793484520.0993972
+      },
+      "harbor_exception": null,
+      "trial_duration_sec": 146.896552,
+      "known_input_tokens": 203930,
+      "known_output_tokens": 3378,
+      "teacher_requests": 1,
+      "teacher_successes": 1,
+      "teacher_router_consumptions": 4,
+      "generation_cost_usd": 0.00403457,
+      "teacher_cost_usd": 0.013086,
+      "total_model_rate_cost_usd": 0.01712057,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null,
+      "generator_request_time_ms": 47710.42404207401,
+      "teacher_request_time_ms": 23281.411208969075,
+      "router_total_time_ms": {
+        "laya": 7550.110957934521
+      },
+      "train_eligible": false,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+      "route_probabilities": [
+        {
+          "step": 0,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": null,
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5052,
+            "gpt-6.1-sol": 0.4948
+          }
+        },
+        {
+          "step": 1,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "recover",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5399,
+            "gpt-6.1-sol": 0.4601
+          }
+        },
+        {
+          "step": 2,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5511,
+            "gpt-6.1-sol": 0.4489
+          }
+        },
+        {
+          "step": 3,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5831,
+            "gpt-6.1-sol": 0.4169
+          }
+        },
+        {
+          "step": 4,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5804,
+            "gpt-6.1-sol": 0.4196
+          }
+        },
+        {
+          "step": 5,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5928,
+            "gpt-6.1-sol": 0.4072
+          }
+        },
+        {
+          "step": 6,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5534,
+            "gpt-6.1-sol": 0.4466
+          }
+        }
+      ]
+    },
+    {
+      "result_dir": "dev-configure-git-webserver-sol-fixed",
+      "task_id": "configure-git-webserver",
+      "policy": "fixed_strong",
+      "status": "BLOCKED",
+      "generation_calls": 4,
+      "recorded_tool_results": 2,
+      "native_exit_status": "RuntimeError",
+      "neural_routes": 0,
+      "router_fallbacks": 0,
+      "selection_counts": {
+        "gpt-6.1-sol": 4
+      },
+      "model_switches": 0,
+      "selected_model_sequence": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol"
+      ],
+      "verified_trials": 0,
+      "reward": null,
+      "ctrf_summary": null,
+      "harbor_exception": {
+        "exception_type": "RuntimeError",
+        "exception_message": "Command timed out after 30 seconds",
+        "exception_traceback": "Traceback (most recent call last):\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/tasks.py\", line 507, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/subprocess.py\", line 201, in communicate\n    stdin, stdout, stderr = await tasks.gather(stdin, stdout, stderr)\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/subprocess.py\", line 181, in _read_stream\n    output = await stream.read()\n             ^^^^^^^^^^^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/streams.py\", line 723, in read\n    block = await self.read(self._limit)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/streams.py\", line 730, in read\n    await self._wait_for_data('read')\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/streams.py\", line 539, in _wait_for_data\n    await self._waiter\nasyncio.exceptions.CancelledError\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 775, in _collect_buffered_output\n    stdout_bytes, stderr_bytes = await asyncio.wait_for(\n                                 ^^^^^^^^^^^^^^^^^^^^^^^\n        process.communicate(input=stdin_data), timeout=timeout_sec\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/tasks.py\", line 506, in wait_for\n    async with timeouts.timeout(timeout):\n               ~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/timeouts.py\", line 117, in __aexit__\n    raise TimeoutError from exc_val\nTimeoutError\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/trial.py\", line 500, in run\n    await self._run()\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/single_step.py\", line 40, in _run\n    await self._run_agent()\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/single_step.py\", line 76, in _run_agent\n    await self._run_agent_phase(\n    ...<5 lines>...\n    )\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/trial.py\", line 651, in _run_agent_phase\n    await asyncio.wait_for(\n    ...<6 lines>...\n    )\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/tasks.py\", line 507, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"our-project/code/src/modelrouter/benchmark/harbor_agent.py\", line 372, in run\n    await asyncio.to_thread(agent.run, instruction)\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/threads.py\", line 26, in to_thread\n    return await loop.run_in_executor(None, func_call)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/thread.py\", line 59, in run\n    result = self.fn(*self.args, **self.kwargs)\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py\", line 98, in run\n    self.step()\n    ~~~~~~~~~^^\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py\", line 128, in step\n    return self.execute_actions(self.query())\n           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py\", line 156, in execute_actions\n    outputs = [self.env.execute(action) for action in message.get(\"extra\", {}).get(\"actions\", [])]\n               ~~~~~~~~~~~~~~~~^^^^^^^^\n  File \"our-project/code/src/modelrouter/benchmark/harbor_agent.py\", line 300, in execute\n    ).result()\n      ~~~~~~^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py\", line 460, in result\n    return self.__get_result()\n           ~~~~~~~~~~~~~~~~~^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py\", line 402, in __get_result\n    raise self._exception\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 1359, in exec\n    return await self._compose_exec(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<6 lines>...\n    )\n    ^\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 1436, in _compose_exec\n    return await self._run_docker_compose_command(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<4 lines>...\n    )\n    ^\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 749, in _run_docker_compose_command\n    result = await self._collect_buffered_output(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 782, in _collect_buffered_output\n    raise RuntimeError(f\"Command timed out after {timeout_sec} seconds\")\nRuntimeError: Command timed out after 30 seconds\n",
+        "occurred_at": "2026-10-31T22:02:30.889919Z"
+      },
+      "trial_duration_sec": 199.337526,
+      "known_input_tokens": 10711,
+      "known_output_tokens": 6161,
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "generation_cost_usd": 0.074421,
+      "teacher_cost_usd": 0,
+      "total_model_rate_cost_usd": 0.074421,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null,
+      "generator_request_time_ms": 163348.41212403262,
+      "teacher_request_time_ms": null,
+      "router_total_time_ms": {
+        "baseline_fixed_strong": 0.27066702023148537
+      },
+      "train_eligible": false,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+      "route_probabilities": []
+    },
+    {
+      "result_dir": "dev-filter-js-from-html-laya-no-teacher",
+      "task_id": "filter-js-from-html",
+      "policy": "laya_v2",
+      "status": "EVALUATED",
+      "generation_calls": 15,
+      "recorded_tool_results": 9,
+      "native_exit_status": "RepeatedFormatError",
+      "neural_routes": 15,
+      "router_fallbacks": 0,
+      "selection_counts": {
+        "gpt-6.1-sol": 3,
+        "gpt-6-luna": 12
+      },
+      "model_switches": 1,
+      "selected_model_sequence": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "verified_trials": 1,
+      "reward": 0.0,
+      "ctrf_summary": {
+        "tests": 2,
+        "passed": 0,
+        "failed": 2,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793485385.1090164,
+        "stop": 1793486292.7629552
+      },
+      "harbor_exception": null,
+      "trial_duration_sec": 1349.535347,
+      "known_input_tokens": 164011,
+      "known_output_tokens": 17259,
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "generation_cost_usd": 0.07949004,
+      "teacher_cost_usd": 0,
+      "total_model_rate_cost_usd": 0.07949004,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null,
+      "generator_request_time_ms": 296741.3832101156,
+      "teacher_request_time_ms": null,
+      "router_total_time_ms": {
+        "laya": 15391.738334030379
+      },
+      "train_eligible": false,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+      "route_probabilities": [
+        {
+          "step": 0,
+          "selected_model": "gpt-6.1-sol",
+          "prior_tool_phase": null,
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5269,
+            "gpt-6-luna": 0.4731
+          }
+        },
+        {
+          "step": 1,
+          "selected_model": "gpt-6.1-sol",
+          "prior_tool_phase": "verify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5071,
+            "gpt-6-luna": 0.4929
+          }
+        },
+        {
+          "step": 2,
+          "selected_model": "gpt-6.1-sol",
+          "prior_tool_phase": "verify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5048,
+            "gpt-6-luna": 0.4952
+          }
+        },
+        {
+          "step": 3,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "verify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5251,
+            "gpt-6.1-sol": 0.4749
+          }
+        },
+        {
+          "step": 4,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5202,
+            "gpt-6.1-sol": 0.4798
+          }
+        },
+        {
+          "step": 5,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.577,
+            "gpt-6.1-sol": 0.423
+          }
+        },
+        {
+          "step": 6,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5675,
+            "gpt-6.1-sol": 0.4325
+          }
+        },
+        {
+          "step": 7,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5555,
+            "gpt-6.1-sol": 0.4445
+          }
+        },
+        {
+          "step": 8,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5782,
+            "gpt-6.1-sol": 0.4218
+          }
+        },
+        {
+          "step": 9,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5684,
+            "gpt-6.1-sol": 0.4316
+          }
+        },
+        {
+          "step": 10,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5625,
+            "gpt-6.1-sol": 0.4375
+          }
+        },
+        {
+          "step": 11,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5903,
+            "gpt-6.1-sol": 0.4097
+          }
+        },
+        {
+          "step": 12,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5631,
+            "gpt-6.1-sol": 0.4369
+          }
+        },
+        {
+          "step": 13,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5559,
+            "gpt-6.1-sol": 0.4441
+          }
+        },
+        {
+          "step": 14,
+          "selected_model": "gpt-6-luna",
+          "prior_tool_phase": "modify",
+          "phase_source": "PRIOR_RECORDED_TOOL_COMMAND_HEURISTIC",
+          "probabilities": {
+            "gpt-6-luna": 0.5566,
+            "gpt-6.1-sol": 0.4434
+          }
+        }
+      ]
+    },
+    {
+      "result_dir": "dev-filter-js-from-html-luna-fixed",
+      "task_id": "filter-js-from-html",
+      "policy": "fixed_cheap",
+      "status": "EVALUATED",
+      "generation_calls": 3,
+      "recorded_tool_results": 3,
+      "native_exit_status": "Submitted",
+      "neural_routes": 0,
+      "router_fallbacks": 0,
+      "selection_counts": {
+        "gpt-6-luna": 3
+      },
+      "model_switches": 0,
+      "selected_model_sequence": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "verified_trials": 1,
+      "reward": 0.0,
+      "ctrf_summary": {
+        "tests": 2,
+        "passed": 0,
+        "failed": 2,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793485713.2867298,
+        "stop": 1793486506.3664258
+      },
+      "harbor_exception": null,
+      "trial_duration_sec": 856.316198,
+      "known_input_tokens": 4184,
+      "known_output_tokens": 1565,
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "generation_cost_usd": 0.00111207,
+      "teacher_cost_usd": 0,
+      "total_model_rate_cost_usd": 0.00111207,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null,
+      "generator_request_time_ms": 27501.481833984144,
+      "teacher_request_time_ms": null,
+      "router_total_time_ms": {
+        "baseline_fixed_cheap": 0.32720802119001746
+      },
+      "train_eligible": false,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+      "route_probabilities": []
+    }
+  ],
+  "quality_preference_created": false,
+  "teacher_net_benefit": "NOT_ESTABLISHED",
+  "limitations": [
+    "Both teacher conditions failed; different trajectory lengths, cache and waiting times confound costs.",
+    "Both HTML task conditions failed; lower cost alone is not a quality winner.",
+    "Sol low requests report max; Luna applied effort is not reported.",
+    "F05 Serving has not trained on the new supervision."
+  ]
+}

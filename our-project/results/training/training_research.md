@@ -1,6 +1,6 @@
 # Laya / Kev 全历史训练研究报告
 
-## 2026-11-01 · 03:21训练状态与新动作材料
+## 2026-11-01 · 06:26训练状态与模型监督材料
 
 | 对象 | 当前事实 |
 |---|---|
@@ -8,13 +8,20 @@
 | F14 | 归档failed/NON_FINITE_LOSS、结束2026-10-31T09:01:02Z不变；未恢复或作父权重 |
 | 接续代表 / Serving | F11-e01、R11；Serving health/models均200，仍F05-e01/原Kev Adapter，原PID327621 |
 | 旧V9加训 / 本轮 | 原2轮、Laya8更新/Kev100更新与负结果保留；本轮无新训练、参数更新或Serving晋升 |
-| 新合法动作材料 | 本轮任务级/步骤级各1，累计各2、同2标签任务；原Prepare/serializer已消费新2条 |
-| 材料组合 | 原Train196/Val186 + 旧2条 + 新2条可组合Train200/Val186；原382视图不重新加工 |
-| 新配方准备 | 只有2标签任务、均low，完整K=3/跨Effort目标0；仍不足以支持有意义的继续微调 |
+| 新合法模型材料 | 本轮12任务/9仓库，7组双成功终局；新增任务级7/步骤级2条MODEL_ONLY，来自7个任务 |
+| 当前监督视图 | 13条含历史4条；累计任务级9/步骤级4、9任务、Luna12/Sol1，原Prepare和本机/服务器serializer均已消费 |
+| 材料组合 | 原Train196/Val186 + 当前13条可组合Train209/Val186；不能再加旧delta，原382视图不重新加工 |
+| Native Effort | Sol请求low/medium报告max、Luna不报告应用档位，原因未知；确认的Model×Native Effort、同模型Effort及K=3目标均0 |
+| 新配方准备 | 仅13条稀疏且Luna偏重的模型目标，尚不能支持联合档位学习；本轮没有新训练或参数更新 |
+| 服务器消费 | 06:33:55原S1相对链接13条成功序列化、状态5069–11079字符、teacher=null、AA v4；未加载模型权重 |
 
 旧四档分析未重评：旧S1候选偏好、S2终局和S3资源档位语义不同于外部能力档；R11继续训练4269行仅S2/S3，Laya原mid偏向早已存在；外部前400字符造成58个多步任务输入不变。偏置的独立因果贡献未知，不用独立标签训练、调参或重选前三。
 
-后续保留旧S1，并区分task/step的新目标；教师截止前摘要与AA v4卡沿原serializer进入状态，low缺测不赋Max分数。Laya encoder/head与Kev LoRA/pointer head的具体更新配方未启动或另造。原固定Val四指标及独立真实Dev用于判断新收益，原训练负结果不删。新任务/步骤、失败与费用见[本轮结果](../iterations/20261101-v9-k2-supervision-expansion/review.md)，以下独立评分和原训练历史保留。
+06:26:47服务器实读：F14仍failed/NON_FINITE_LOSS、结束2026-10-31T09:01:02Z，Kev R01–R16全部COMPLETED/EVALUATED；原队列暂停、活动训练0，Serving PID327621、F05-e01/原Kev Adapter未重启。共享GPU34821/49140MiB、100%、84°C，未干预。10份相关源码及新数据已传入原目录；openrsync路径前缀误生的临时副本已清理，不保留第二个工程。
+
+后续保留旧S1，并区分task_model_preference/step_model_preference；native_effort不作为当前目标，requested_native_effort与此前可见状态、截止前教师、AA v4卡沿原serializer编码。Laya原encoder/head按freeze_encoder配置、Kev原LoRA/pointer head沿父配置接续，本轮实际更新均0；不能直接复用已退步的旧V9配方。原固定Val的Accuracy/Loss/Brier/ECE与独立真实Dev用于判断新收益，独立TwinRouterBench不训练、调参或重评。完整输入在两模型原编码窗口中的保留程度仍需后续配方明确，不把序列化成功当作参数已学会新目标。
+
+本轮训练采集209请求/199Usage/10缺失，另3响应无可用模型费率估值，已知小计1.85298918USD，完整费用、供应商实收及资源USD未知。不同Dev已取得F05自然Sol3→Luna12切换，15生成/9工具结果、RepeatedFormatError；固定Luna3生成/3工具结果、Submitted，两者原Verifier均reward0/CTRF0/2，模型费0.07949004/0.00111207USD。Git教师对照1次成功、0.013086USD并进入Router4次，但开/关原reward均0，不能证明净收益。全工作包269请求、已知2.04290179USD，不当完整成本；17个临时快照、采集工具和隧道已清理。训练任务/步骤、Dev、未知终局与费用分开见[本轮结果](../iterations/20261101-v9-overnight-real-supervision/review.md)，以下独立评分和原训练历史保留。
 
 ## 2026-11-01 · 独立 TwinRouterBench：八版本完整成绩
 

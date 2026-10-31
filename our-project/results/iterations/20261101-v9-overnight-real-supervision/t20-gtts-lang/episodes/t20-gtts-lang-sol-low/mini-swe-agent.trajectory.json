@@ -1,0 +1,1245 @@
+{
+  "info": {
+    "model_stats": {
+      "instance_cost": 0.1109597,
+      "api_calls": 8
+    },
+    "config": {
+      "agent": {
+        "system_template": "You are a helpful assistant that can interact with a computer.\n",
+        "instance_template": "Please solve this issue: {{task}}\n\nYou can execute bash commands and edit files to implement the necessary changes.\n\n## Recommended Workflow\n\nThis workflow should be done step-by-step so that you can iterate on your changes and any possible problems.\n\n1. Analyze the codebase by finding and reading relevant files\n2. Create a script to reproduce the issue\n3. Edit the source code to resolve the issue\n4. Verify your fix works by running your script again\n5. Test edge cases to ensure your fix is robust\n6. Submit your changes and finish your work by issuing the following command: `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`.\n   Do not combine it with any other command. <important>After this command, you cannot continue working on this task.</important>\n\n## Command Execution Rules\n\nYou are operating in an environment where\n\n1. You issue at least one command\n2. The system executes the command(s) in a subshell\n3. You see the result(s)\n4. You write your next command(s)\n\nEach response should include:\n\n1. **Reasoning text** where you explain your analysis and plan\n2. At least one tool call with your command\n\n**CRITICAL REQUIREMENTS:**\n\n- Your response SHOULD include reasoning text explaining what you're doing\n- Your response MUST include AT LEAST ONE bash tool call\n- Directory or environment variable changes are not persistent. Every action is executed in a new subshell.\n- However, you can prefix any action with `MY_ENV_VAR=MY_VALUE cd /path/to/working/dir && ...` or write/load environment variables from files\n- Submit your changes and finish your work by issuing the following command: `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`.\n  Do not combine it with any other command. <important>After this command, you cannot continue working on this task.</important>\n\nExample of a CORRECT response:\n<example_response>\nI need to understand the structure of the repository first. Let me check what files are in the current directory to get a better understanding of the codebase.\n\n[Makes bash tool call with {\"command\": \"ls -la\"} as arguments]\n</example_response>\n\n<system_information>\n{{system}} {{release}} {{version}} {{machine}}\n</system_information>\n\n## Useful command examples\n\n### Create a new file:\n\n```bash\ncat <<'EOF' > newfile.py\nimport numpy as np\nhello = \"world\"\nprint(hello)\nEOF\n```\n\n### Edit files with sed:\n\n{%- if system == \"Darwin\" -%}\n<important>\nYou are on MacOS. For all the below examples, you need to use `sed -i ''` instead of `sed -i`.\n</important>\n{%- endif -%}\n\n```bash\n# Replace all occurrences\nsed -i 's/old_string/new_string/g' filename.py\n\n# Replace only first occurrence\nsed -i 's/old_string/new_string/' filename.py\n\n# Replace first occurrence on line 1\nsed -i '1s/old_string/new_string/' filename.py\n\n# Replace all occurrences in lines 1-10\nsed -i '1,10s/old_string/new_string/g' filename.py\n```\n\n### View file content:\n\n```bash\n# View specific lines with numbers\nnl -ba filename.py | sed -n '10,20p'\n```\n\n### Any other command you want to run\n\n```bash\nanything\n```\n",
+        "step_limit": 30,
+        "cost_limit": 0.0,
+        "wall_time_limit_seconds": 0,
+        "max_consecutive_format_errors": 3,
+        "output_path": "our-project/results/iterations/20261101-v9-overnight-real-supervision/t20-gtts-lang/episodes/t20-gtts-lang-sol-low/mini-swe-agent.trajectory.json"
+      },
+      "agent_type": "minisweagent.agents.default.DefaultAgent",
+      "model": {
+        "model_name": "openai/gpt-6.1-sol",
+        "model_kwargs": {
+          "drop_params": true,
+          "_skip_mcp_handler": true,
+          "_skip_responses_api_bridge": true,
+          "num_retries": 0
+        },
+        "litellm_model_registry": null,
+        "set_cache_control": null,
+        "cost_tracking": "default",
+        "format_error_template": "{% if finish_reason is defined and (finish_reason == \"length\" or (finish_reason == \"tool_calls\" and not has_tool_calls)) -%}\nYour previous response reached the output token limit (finish_reason={{ finish_reason }}) before you produced a tool call, so it was cut off. Respond more concisely and finish with exactly one bash tool call. If you need to think more, do so briefly.\n{%- else -%}\nTool call error:\n\n<error>\n{{error}}\n</error>\n\nHere is general guidance on how to submit correct toolcalls:\n\nEvery response needs to use the 'bash' tool at least once to execute commands.\n\nCall the bash tool with your command as the argument:\n- Tool: bash\n- Arguments: {\"command\": \"your_command_here\"}\n\nIf you want to end the task, please issue the following command: `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`\nwithout any other command.\n{%- endif %}\n",
+        "observation_template": "{%- if output.output | length < 10000 -%}\n{\n  \"returncode\": {{ output.returncode }},\n  \"output\": {{ output.output | tojson }}\n  {%- if output.exception_info %}, \"exception_info\": {{ output.exception_info | tojson }}{% endif %}\n}\n{%- else -%}\n{\n  \"returncode\": {{ output.returncode }},\n  \"output_head\": {{ output.output[:5000] | tojson }},\n  \"output_tail\": {{ output.output[-5000:] | tojson }},\n  \"elided_chars\": {{ output.output | length - 10000 }},\n  \"warning\": \"Output too long.\"\n  {%- if output.exception_info %}, \"exception_info\": {{ output.exception_info | tojson }}{% endif %}\n}\n{%- endif -%}\n",
+        "multimodal_regex": ""
+      },
+      "model_type": "PolicyModel",
+      "policy": "fixed_strong",
+      "legal_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        },
+        {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        }
+      ],
+      "action_validation": {
+        "gpt-6.1-sol:low": "REAL_API_IDENTITY_MATCHED",
+        "gpt-6-luna:low": "REAL_API_NOT_OBSERVED"
+      },
+      "policy_implementation_status": "CONFIGURED_POLICY",
+      "environment": {
+        "image": "modelrouter-v9-night:t20-gtts-lang-initial",
+        "cwd": "/testbed",
+        "env": {},
+        "forward_env": [],
+        "timeout": 30,
+        "executable": "docker",
+        "run_args": [
+          "--rm",
+          "--platform",
+          "linux/amd64"
+        ],
+        "container_timeout": "2h",
+        "pull_timeout": 600,
+        "interpreter": [
+          "bash",
+          "-lc"
+        ]
+      },
+      "environment_type": "minisweagent.environments.docker.DockerEnvironment"
+    },
+    "mini_version": "2.4.6",
+    "exit_status": "Submitted",
+    "submission": "",
+    "fallback_used": false,
+    "provider_metrics": [
+      {
+        "requested_model_id": "gpt-6.1-sol",
+        "selected_model_id": "gpt-6.1-sol",
+        "response_id": "resp_0f0eefc28d626bea016ae65bec25008194ac4d536d89f621c3",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "provider": "openai",
+        "provider_base_url": "https://oneapi.sxyq27.online/v1",
+        "protocol": "responses",
+        "finish_reason": "completed",
+        "incomplete_details": null,
+        "native_effort": "low",
+        "stream": true,
+        "requested_max_output_tokens": 4096,
+        "reported_max_output_tokens": 4096,
+        "raw_usage": {
+          "input_tokens": 979,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 157,
+          "output_tokens_details": {
+            "reasoning_tokens": 75
+          },
+          "total_tokens": 1136
+        },
+        "usage_status": "REPORTED",
+        "identity_status": "MATCHED_REQUEST_ALIAS",
+        "alias_mapping_applied": false,
+        "prompt_tokens": 979,
+        "completion_tokens": 157,
+        "reported_completion_tokens": 157,
+        "reasoning_tokens": 75,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "ttft_ms": 6970.077792007942,
+        "latency_ms": 7947.843709029257,
+        "output_tokens_per_s": 19.753785523190142,
+        "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+        "stream_output_tokens_per_s": 160.57012958509307,
+        "stream_output_tokens_per_s_status": "ESTIMATE",
+        "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+        "cost_usd": 0.003528,
+        "cost_model_id": "gpt-6.1-sol",
+        "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+        "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+        "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+        "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+        "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        "actual_billed_cost_usd": null,
+        "raw_reported_cost": null,
+        "reported_cost_unit": "NOT_REPORTED",
+        "budget_accounted": true,
+        "status": "RECORDED",
+        "episode_id": "t20-gtts-lang-sol-low",
+        "decision_id": "t20-gtts-lang-sol-low-0",
+        "router_checkpoint_id": "none",
+        "router_family": "baseline_fixed_strong",
+        "router_run_id": null,
+        "router_identity_source": null,
+        "router_identity_status": "NOT_A_NEURAL_ROUTE",
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "execution_mode": "REAL_API",
+        "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+      },
+      {
+        "requested_model_id": "gpt-6.1-sol",
+        "selected_model_id": "gpt-6.1-sol",
+        "response_id": "resp_0d7baf2b4a069594016ae65bf2a9948197a14ba58d20f26dd2",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "provider": "openai",
+        "provider_base_url": "https://oneapi.sxyq27.online/v1",
+        "protocol": "responses",
+        "finish_reason": "completed",
+        "incomplete_details": null,
+        "native_effort": "low",
+        "stream": true,
+        "requested_max_output_tokens": 4096,
+        "reported_max_output_tokens": 4096,
+        "raw_usage": {
+          "input_tokens": 1526,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 1523
+          },
+          "output_tokens": 240,
+          "output_tokens_details": {
+            "reasoning_tokens": 44
+          },
+          "total_tokens": 1766
+        },
+        "usage_status": "REPORTED",
+        "identity_status": "MATCHED_REQUEST_ALIAS",
+        "alias_mapping_applied": false,
+        "prompt_tokens": 1526,
+        "completion_tokens": 240,
+        "reported_completion_tokens": 240,
+        "reasoning_tokens": 44,
+        "cached_tokens": 0,
+        "cache_write_tokens": 1523,
+        "ttft_ms": 3598.2124999864027,
+        "latency_ms": 7109.726166003384,
+        "output_tokens_per_s": 33.75657435972841,
+        "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+        "stream_output_tokens_per_s": 68.34659432558205,
+        "stream_output_tokens_per_s_status": "ESTIMATE",
+        "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+        "cost_usd": 0.0062135,
+        "cost_model_id": "gpt-6.1-sol",
+        "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+        "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+        "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+        "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+        "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        "actual_billed_cost_usd": null,
+        "raw_reported_cost": null,
+        "reported_cost_unit": "NOT_REPORTED",
+        "budget_accounted": true,
+        "status": "RECORDED",
+        "episode_id": "t20-gtts-lang-sol-low",
+        "decision_id": "t20-gtts-lang-sol-low-1",
+        "router_checkpoint_id": "none",
+        "router_family": "baseline_fixed_strong",
+        "router_run_id": null,
+        "router_identity_source": null,
+        "router_identity_status": "NOT_A_NEURAL_ROUTE",
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "execution_mode": "REAL_API",
+        "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+      },
+      {
+        "requested_model_id": "gpt-6.1-sol",
+        "selected_model_id": "gpt-6.1-sol",
+        "response_id": "resp_03aa087b2c6ad8a2016ae65bfaa19c8196832d01debbcf4c0f",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "provider": "openai",
+        "provider_base_url": "https://oneapi.sxyq27.online/v1",
+        "protocol": "responses",
+        "finish_reason": "completed",
+        "incomplete_details": null,
+        "native_effort": "low",
+        "stream": true,
+        "requested_max_output_tokens": 4096,
+        "reported_max_output_tokens": 4096,
+        "raw_usage": {
+          "input_tokens": 4663,
+          "input_tokens_details": {
+            "cached_tokens": 1523,
+            "cache_write_tokens": 3137
+          },
+          "output_tokens": 244,
+          "output_tokens_details": {
+            "reasoning_tokens": 42
+          },
+          "total_tokens": 4907
+        },
+        "usage_status": "REPORTED",
+        "identity_status": "MATCHED_REQUEST_ALIAS",
+        "alias_mapping_applied": false,
+        "prompt_tokens": 4663,
+        "completion_tokens": 244,
+        "reported_completion_tokens": 244,
+        "reasoning_tokens": 42,
+        "cached_tokens": 1523,
+        "cache_write_tokens": 3137,
+        "ttft_ms": 3967.6535420003347,
+        "latency_ms": 6614.032041979954,
+        "output_tokens_per_s": 36.89126367264423,
+        "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+        "stream_output_tokens_per_s": 92.20147458191606,
+        "stream_output_tokens_per_s_status": "ESTIMATE",
+        "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+        "cost_usd": 0.0104408,
+        "cost_model_id": "gpt-6.1-sol",
+        "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+        "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+        "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+        "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+        "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        "actual_billed_cost_usd": null,
+        "raw_reported_cost": null,
+        "reported_cost_unit": "NOT_REPORTED",
+        "budget_accounted": true,
+        "status": "RECORDED",
+        "episode_id": "t20-gtts-lang-sol-low",
+        "decision_id": "t20-gtts-lang-sol-low-2",
+        "router_checkpoint_id": "none",
+        "router_family": "baseline_fixed_strong",
+        "router_run_id": null,
+        "router_identity_source": null,
+        "router_identity_status": "NOT_A_NEURAL_ROUTE",
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "execution_mode": "REAL_API",
+        "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+      },
+      {
+        "requested_model_id": "gpt-6.1-sol",
+        "selected_model_id": "gpt-6.1-sol",
+        "response_id": "resp_058c8d78817ac366016ae65c0262448190ba6c35e4261cde61",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "provider": "openai",
+        "provider_base_url": "https://oneapi.sxyq27.online/v1",
+        "protocol": "responses",
+        "finish_reason": "completed",
+        "incomplete_details": null,
+        "native_effort": "low",
+        "stream": true,
+        "requested_max_output_tokens": 4096,
+        "reported_max_output_tokens": 4096,
+        "raw_usage": {
+          "input_tokens": 8386,
+          "input_tokens_details": {
+            "cached_tokens": 4660,
+            "cache_write_tokens": 3723
+          },
+          "output_tokens": 990,
+          "output_tokens_details": {
+            "reasoning_tokens": 516
+          },
+          "total_tokens": 9376
+        },
+        "usage_status": "REPORTED",
+        "identity_status": "MATCHED_REQUEST_ALIAS",
+        "alias_mapping_applied": false,
+        "prompt_tokens": 8386,
+        "completion_tokens": 990,
+        "reported_completion_tokens": 990,
+        "reasoning_tokens": 516,
+        "cached_tokens": 4660,
+        "cache_write_tokens": 3723,
+        "ttft_ms": 18165.63549998682,
+        "latency_ms": 24930.7252499857,
+        "output_tokens_per_s": 39.71003611299145,
+        "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+        "stream_output_tokens_per_s": 146.3395219553686,
+        "stream_output_tokens_per_s_status": "ESTIMATE",
+        "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+        "cost_usd": 0.0196795,
+        "cost_model_id": "gpt-6.1-sol",
+        "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+        "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+        "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+        "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+        "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        "actual_billed_cost_usd": null,
+        "raw_reported_cost": null,
+        "reported_cost_unit": "NOT_REPORTED",
+        "budget_accounted": true,
+        "status": "RECORDED",
+        "episode_id": "t20-gtts-lang-sol-low",
+        "decision_id": "t20-gtts-lang-sol-low-3",
+        "router_checkpoint_id": "none",
+        "router_family": "baseline_fixed_strong",
+        "router_run_id": null,
+        "router_identity_source": null,
+        "router_identity_status": "NOT_A_NEURAL_ROUTE",
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "execution_mode": "REAL_API",
+        "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+      },
+      {
+        "requested_model_id": "gpt-6.1-sol",
+        "selected_model_id": "gpt-6.1-sol",
+        "response_id": "resp_0c078a0b136c4118016ae65c1b51c081978ffd8fc3011d2b23",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "provider": "openai",
+        "provider_base_url": "https://oneapi.sxyq27.online/v1",
+        "protocol": "responses",
+        "finish_reason": "completed",
+        "incomplete_details": null,
+        "native_effort": "low",
+        "stream": true,
+        "requested_max_output_tokens": 4096,
+        "reported_max_output_tokens": 4096,
+        "raw_usage": {
+          "input_tokens": 11170,
+          "input_tokens_details": {
+            "cached_tokens": 8383,
+            "cache_write_tokens": 2784
+          },
+          "output_tokens": 3193,
+          "output_tokens_details": {
+            "reasoning_tokens": 2070
+          },
+          "total_tokens": 14363
+        },
+        "usage_status": "REPORTED",
+        "identity_status": "MATCHED_REQUEST_ALIAS",
+        "alias_mapping_applied": false,
+        "prompt_tokens": 11170,
+        "completion_tokens": 3193,
+        "reported_completion_tokens": 3193,
+        "reasoning_tokens": 2070,
+        "cached_tokens": 8383,
+        "cache_write_tokens": 2784,
+        "ttft_ms": 53372.576874971855,
+        "latency_ms": 68778.35941698868,
+        "output_tokens_per_s": 46.42448623471105,
+        "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+        "stream_output_tokens_per_s": 207.25983839455088,
+        "stream_output_tokens_per_s_status": "ESTIMATE",
+        "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+        "cost_usd": 0.0397343,
+        "cost_model_id": "gpt-6.1-sol",
+        "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+        "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+        "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+        "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+        "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        "actual_billed_cost_usd": null,
+        "raw_reported_cost": null,
+        "reported_cost_unit": "NOT_REPORTED",
+        "budget_accounted": true,
+        "status": "RECORDED",
+        "episode_id": "t20-gtts-lang-sol-low",
+        "decision_id": "t20-gtts-lang-sol-low-4",
+        "router_checkpoint_id": "none",
+        "router_family": "baseline_fixed_strong",
+        "router_run_id": null,
+        "router_identity_source": null,
+        "router_identity_status": "NOT_A_NEURAL_ROUTE",
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "execution_mode": "REAL_API",
+        "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+      },
+      {
+        "requested_model_id": "gpt-6.1-sol",
+        "selected_model_id": "gpt-6.1-sol",
+        "response_id": "resp_0d6b50add9af4229016ae65c638ee881969edfc54c780e53eb",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "provider": "openai",
+        "provider_base_url": "https://oneapi.sxyq27.online/v1",
+        "protocol": "responses",
+        "finish_reason": "completed",
+        "incomplete_details": null,
+        "native_effort": "low",
+        "stream": true,
+        "requested_max_output_tokens": 4096,
+        "reported_max_output_tokens": 4096,
+        "raw_usage": {
+          "input_tokens": 12704,
+          "input_tokens_details": {
+            "cached_tokens": 11167,
+            "cache_write_tokens": 1534
+          },
+          "output_tokens": 816,
+          "output_tokens_details": {
+            "reasoning_tokens": 516
+          },
+          "total_tokens": 13520
+        },
+        "usage_status": "REPORTED",
+        "identity_status": "MATCHED_REQUEST_ALIAS",
+        "alias_mapping_applied": false,
+        "prompt_tokens": 12704,
+        "completion_tokens": 816,
+        "reported_completion_tokens": 816,
+        "reasoning_tokens": 516,
+        "cached_tokens": 11167,
+        "cache_write_tokens": 1534,
+        "ttft_ms": 19734.483333013486,
+        "latency_ms": 23069.832124980167,
+        "output_tokens_per_s": 35.37086856893205,
+        "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+        "stream_output_tokens_per_s": 244.6520741594907,
+        "stream_output_tokens_per_s_status": "ESTIMATE",
+        "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+        "cost_usd": 0.0131177,
+        "cost_model_id": "gpt-6.1-sol",
+        "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+        "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+        "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+        "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+        "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        "actual_billed_cost_usd": null,
+        "raw_reported_cost": null,
+        "reported_cost_unit": "NOT_REPORTED",
+        "budget_accounted": true,
+        "status": "RECORDED",
+        "episode_id": "t20-gtts-lang-sol-low",
+        "decision_id": "t20-gtts-lang-sol-low-5",
+        "router_checkpoint_id": "none",
+        "router_family": "baseline_fixed_strong",
+        "router_run_id": null,
+        "router_identity_source": null,
+        "router_identity_status": "NOT_A_NEURAL_ROUTE",
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "execution_mode": "REAL_API",
+        "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+      },
+      {
+        "requested_model_id": "gpt-6.1-sol",
+        "selected_model_id": "gpt-6.1-sol",
+        "response_id": "resp_03ab8526635af1f4016ae65c7c77708194a7b6cece142c8921",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "provider": "openai",
+        "provider_base_url": "https://oneapi.sxyq27.online/v1",
+        "protocol": "responses",
+        "finish_reason": "completed",
+        "incomplete_details": null,
+        "native_effort": "low",
+        "stream": true,
+        "requested_max_output_tokens": 4096,
+        "reported_max_output_tokens": 4096,
+        "raw_usage": {
+          "input_tokens": 13266,
+          "input_tokens_details": {
+            "cached_tokens": 12701,
+            "cache_write_tokens": 562
+          },
+          "output_tokens": 479,
+          "output_tokens_details": {
+            "reasoning_tokens": 312
+          },
+          "total_tokens": 13745
+        },
+        "usage_status": "REPORTED",
+        "identity_status": "MATCHED_REQUEST_ALIAS",
+        "alias_mapping_applied": false,
+        "prompt_tokens": 13266,
+        "completion_tokens": 479,
+        "reported_completion_tokens": 479,
+        "reasoning_tokens": 312,
+        "cached_tokens": 12701,
+        "cache_write_tokens": 562,
+        "ttft_ms": 15680.82695902558,
+        "latency_ms": 18432.228667021263,
+        "output_tokens_per_s": 25.98709079911869,
+        "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+        "stream_output_tokens_per_s": 174.09308084966543,
+        "stream_output_tokens_per_s_status": "ESTIMATE",
+        "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+        "cost_usd": 0.0074711,
+        "cost_model_id": "gpt-6.1-sol",
+        "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+        "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+        "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+        "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+        "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        "actual_billed_cost_usd": null,
+        "raw_reported_cost": null,
+        "reported_cost_unit": "NOT_REPORTED",
+        "budget_accounted": true,
+        "status": "RECORDED",
+        "episode_id": "t20-gtts-lang-sol-low",
+        "decision_id": "t20-gtts-lang-sol-low-6",
+        "router_checkpoint_id": "none",
+        "router_family": "baseline_fixed_strong",
+        "router_run_id": null,
+        "router_identity_source": null,
+        "router_identity_status": "NOT_A_NEURAL_ROUTE",
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "execution_mode": "REAL_API",
+        "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+      },
+      {
+        "requested_model_id": "gpt-6.1-sol",
+        "selected_model_id": "gpt-6.1-sol",
+        "response_id": "resp_057c150363d609fc016ae65c94ee9c8196ae89071290b8b019",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "provider": "openai",
+        "provider_base_url": "https://oneapi.sxyq27.online/v1",
+        "protocol": "responses",
+        "finish_reason": "completed",
+        "incomplete_details": null,
+        "native_effort": "low",
+        "stream": true,
+        "requested_max_output_tokens": 4096,
+        "reported_max_output_tokens": 4096,
+        "raw_usage": {
+          "input_tokens": 15479,
+          "input_tokens_details": {
+            "cached_tokens": 13263,
+            "cache_write_tokens": 2213
+          },
+          "output_tokens": 391,
+          "output_tokens_details": {
+            "reasoning_tokens": 308
+          },
+          "total_tokens": 15870
+        },
+        "usage_status": "REPORTED",
+        "identity_status": "MATCHED_REQUEST_ALIAS",
+        "alias_mapping_applied": false,
+        "prompt_tokens": 15479,
+        "completion_tokens": 391,
+        "reported_completion_tokens": 391,
+        "reasoning_tokens": 308,
+        "cached_tokens": 13263,
+        "cache_write_tokens": 2213,
+        "ttft_ms": 20125.656624964904,
+        "latency_ms": 21531.124499975704,
+        "output_tokens_per_s": 18.159757517562134,
+        "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+        "stream_output_tokens_per_s": 278.1991726399264,
+        "stream_output_tokens_per_s_status": "ESTIMATE",
+        "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+        "cost_usd": 0.0107748,
+        "cost_model_id": "gpt-6.1-sol",
+        "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+        "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+        "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+        "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+        "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        "actual_billed_cost_usd": null,
+        "raw_reported_cost": null,
+        "reported_cost_unit": "NOT_REPORTED",
+        "budget_accounted": true,
+        "status": "RECORDED",
+        "episode_id": "t20-gtts-lang-sol-low",
+        "decision_id": "t20-gtts-lang-sol-low-7",
+        "router_checkpoint_id": "none",
+        "router_family": "baseline_fixed_strong",
+        "router_run_id": null,
+        "router_identity_source": null,
+        "router_identity_status": "NOT_A_NEURAL_ROUTE",
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "execution_mode": "REAL_API",
+        "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+      }
+    ],
+    "v9": {
+      "teacher_metrics": [],
+      "continuity": {
+        "episode_id": "t20-gtts-lang-sol-low",
+        "decision_id": "t20-gtts-lang-sol-low-7",
+        "message_count": 16,
+        "message_chars": 57810,
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "router_checkpoint_id": "none",
+        "router_family": "baseline_fixed_strong",
+        "router_fallback_used": false,
+        "router_run_id": null,
+        "router_identity_source": null,
+        "router_identity_status": "NOT_A_NEURAL_ROUTE",
+        "previous_router_checkpoint_id": "none",
+        "previous_router_run_id": null,
+        "previous_selected_model_id": "gpt-6.1-sol",
+        "selected_model_id": "gpt-6.1-sol",
+        "previous_actual_backend_model_id": "gpt-6.1-sol",
+        "actual_backend_model_id": "gpt-6.1-sol",
+        "logical_model_changed": false,
+        "actual_backend_changed": false,
+        "context_delivery": "FULL_MESSAGE_HISTORY",
+        "history_messages_resent": true,
+        "observed_cached_tokens": 13263,
+        "cache_usage_status": "REPORTED",
+        "physical_kv_cache_shared": null,
+        "switch_extra_tokens": null,
+        "switch_extra_cost_usd": null,
+        "switch_cost_status": "NOT_MEASURED"
+      },
+      "capability_snapshot_id": "20261031T072548885180Z-v4",
+      "router_checkpoint_ids": [
+        "none"
+      ],
+      "router_checkpoints": [
+        {
+          "router_family": "baseline_fixed_strong",
+          "run_id": null,
+          "checkpoint_id": "none"
+        }
+      ],
+      "feature_training_status": "FEATURE_NOT_TRAINED",
+      "backend_deployment_status": "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION",
+      "complete_episode_cost_usd": 0.1109597,
+      "upstream_cost_accounting": "KNOWN_COSTS_PLUS_UNKNOWN_PLACEHOLDERS_NOT_BILLING"
+    }
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful assistant that can interact with a computer."
+    },
+    {
+      "role": "user",
+      "content": "Please solve this issue: Language fallback function broken due to variable scope issue\n\n#### Description\n\nThe deprecated language fallback functionality is not working properly. When using deprecated language codes, the function fails to access the `deprecated` dictionary variable, causing an `UnboundLocalError`.\n\n#### Steps/Code to Reproduce\n\n```python\nfrom gtts import gTTS\n\n# Try using a deprecated language code\ntts = gTTS(text='Hello world', lang='zh-cn')  # zh-cn is deprecated, should fallback to zh-CN\n```\n\nThis should trigger a deprecation warning and fallback to the correct language code, but instead raises:\n\n```\nUnboundLocalError: local variable 'deprecated' referenced before assignment\n```\n\nThe same issue occurs when trying to use any deprecated language codes like 'es-es', 'es-us', 'zh-tw', etc.\n\nWorkspace and initial working directory (absolute CWD): /testbed\n\nYou can execute bash commands and edit files to implement the necessary changes.\n\n## Recommended Workflow\n\nThis workflow should be done step-by-step so that you can iterate on your changes and any possible problems.\n\n1. Analyze the codebase by finding and reading relevant files\n2. Create a script to reproduce the issue\n3. Edit the source code to resolve the issue\n4. Verify your fix works by running your script again\n5. Test edge cases to ensure your fix is robust\n6. Submit your changes and finish your work by issuing the following command: `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`.\n   Do not combine it with any other command. <important>After this command, you cannot continue working on this task.</important>\n\n## Command Execution Rules\n\nYou are operating in an environment where\n\n1. You issue at least one command\n2. The system executes the command(s) in a subshell\n3. You see the result(s)\n4. You write your next command(s)\n\nEach response should include:\n\n1. **Reasoning text** where you explain your analysis and plan\n2. At least one tool call with your command\n\n**CRITICAL REQUIREMENTS:**\n\n- Your response SHOULD include reasoning text explaining what you're doing\n- Your response MUST include AT LEAST ONE bash tool call\n- Directory or environment variable changes are not persistent. Every action is executed in a new subshell.\n- However, you can prefix any action with `MY_ENV_VAR=MY_VALUE cd /path/to/working/dir && ...` or write/load environment variables from files\n- Submit your changes and finish your work by issuing the following command: `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`.\n  Do not combine it with any other command. <important>After this command, you cannot continue working on this task.</important>\n\nExample of a CORRECT response:\n<example_response>\nI need to understand the structure of the repository first. Let me check what files are in the current directory to get a better understanding of the codebase.\n\n[Makes bash tool call with {\"command\": \"ls -la\"} as arguments]\n</example_response>\n\n<system_information>\nDarwin 27.0.0 Darwin Kernel Version 27.0.0: Tue Aug 11 21:02:59 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T8142 arm64\n</system_information>\n\n## Useful command examples\n\n### Create a new file:\n\n```bash\ncat <<'EOF' > newfile.py\nimport numpy as np\nhello = \"world\"\nprint(hello)\nEOF\n```\n\n### Edit files with sed:<important>\nYou are on MacOS. For all the below examples, you need to use `sed -i ''` instead of `sed -i`.\n</important>```bash\n# Replace all occurrences\nsed -i 's/old_string/new_string/g' filename.py\n\n# Replace only first occurrence\nsed -i 's/old_string/new_string/' filename.py\n\n# Replace first occurrence on line 1\nsed -i '1s/old_string/new_string/' filename.py\n\n# Replace all occurrences in lines 1-10\nsed -i '1,10s/old_string/new_string/g' filename.py\n```\n\n### View file content:\n\n```bash\n# View specific lines with numbers\nnl -ba filename.py | sed -n '10,20p'\n```\n\n### Any other command you want to run\n\n```bash\nanything\n```"
+    },
+    {
+      "content": "I’ll inspect the language fallback code and existing tests, then reproduce the error before making a targeted fix.\n",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"command\":\"cd /testbed && pwd && ls -la && git status --short && rg -n \\\"deprecated|fallback\\\" gtts tests pyproject.toml setup.cfg setup.py\"}",
+            "name": "bash"
+          },
+          "id": "call_a2VVcVZ5sFBEAIs12F1OXvoT",
+          "type": "function"
+        }
+      ],
+      "function_call": null,
+      "provider_specific_fields": null,
+      "extra": {
+        "actions": [
+          {
+            "command": "cd /testbed && pwd && ls -la && git status --short && rg -n \"deprecated|fallback\" gtts tests pyproject.toml setup.cfg setup.py",
+            "tool_call_id": "call_a2VVcVZ5sFBEAIs12F1OXvoT"
+          }
+        ],
+        "response": {
+          "id": "resp_0f0eefc28d626bea016ae65bec25008194ac4d536d89f621c3",
+          "created": 1793481713,
+          "model": "gpt-6.1-sol",
+          "object": "chat.completion",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "index": 0,
+              "message": {
+                "content": "I’ll inspect the language fallback code and existing tests, then reproduce the error before making a targeted fix.\n",
+                "role": "assistant",
+                "tool_calls": [
+                  {
+                    "function": {
+                      "arguments": "{\"command\":\"cd /testbed && pwd && ls -la && git status --short && rg -n \\\"deprecated|fallback\\\" gtts tests pyproject.toml setup.cfg setup.py\"}",
+                      "name": "bash"
+                    },
+                    "id": "call_a2VVcVZ5sFBEAIs12F1OXvoT",
+                    "type": "function"
+                  }
+                ],
+                "function_call": null
+              }
+            }
+          ],
+          "usage": {
+            "completion_tokens": 157,
+            "prompt_tokens": 979,
+            "total_tokens": 0,
+            "completion_tokens_details": null,
+            "prompt_tokens_details": null
+          }
+        },
+        "cost": 0.003528,
+        "timestamp": 1793481713.6462212
+      }
+    },
+    {
+      "content": "{\n  \"returncode\": 127,\n  \"output\": \"/testbed\\ntotal 88\\ndrwxr-xr-x 1 root root  4096 Jul 13  2025 .\\ndrwxr-xr-x 1 root root  4096 Oct 31 21:21 ..\\ndrwxr-xr-x 1 root root  4096 Oct 31 21:20 .git\\ndrwxr-xr-x 3 root root  4096 Jul 13  2025 .github\\n-rw-r--r-- 1 root root   639 Jul 13  2025 .gitignore\\n-rw-r--r-- 1 root root   631 Jul 13  2025 .readthedocs.yml\\n-rw-r--r-- 1 root root    13 Jul 13  2025 .release-please-manifest.json\\n-rw-r--r-- 1 root root 23636 Jul 13  2025 CHANGELOG.md\\n-rw-r--r-- 1 root root  1354 Jul 13  2025 CONTRIBUTING.rst\\n-rw-r--r-- 1 root root  1093 Jul 13  2025 LICENSE\\n-rw-r--r-- 1 root root  2309 Jul 13  2025 README.md\\ndrwxr-xr-x 2 root root  4096 Jul 13  2025 docs\\ndrwxr-xr-x 2 root root  4096 Jul 13  2025 gTTS.egg-info\\ndrwxr-xr-x 1 root root  4096 Oct 31 21:20 gtts\\n-rw-r--r-- 1 root root  2603 Jul 13  2025 pyproject.toml\\n-rw-r--r-- 1 root root   210 Jul 13  2025 release-please-config.json\\ndrwxr-xr-x 2 root root  4096 Jul 13  2025 scripts\\nbash: line 1: rg: command not found\\n\"\n}",
+      "extra": {
+        "raw_output": "/testbed\ntotal 88\ndrwxr-xr-x 1 root root  4096 Jul 13  2025 .\ndrwxr-xr-x 1 root root  4096 Oct 31 21:21 ..\ndrwxr-xr-x 1 root root  4096 Oct 31 21:20 .git\ndrwxr-xr-x 3 root root  4096 Jul 13  2025 .github\n-rw-r--r-- 1 root root   639 Jul 13  2025 .gitignore\n-rw-r--r-- 1 root root   631 Jul 13  2025 .readthedocs.yml\n-rw-r--r-- 1 root root    13 Jul 13  2025 .release-please-manifest.json\n-rw-r--r-- 1 root root 23636 Jul 13  2025 CHANGELOG.md\n-rw-r--r-- 1 root root  1354 Jul 13  2025 CONTRIBUTING.rst\n-rw-r--r-- 1 root root  1093 Jul 13  2025 LICENSE\n-rw-r--r-- 1 root root  2309 Jul 13  2025 README.md\ndrwxr-xr-x 2 root root  4096 Jul 13  2025 docs\ndrwxr-xr-x 2 root root  4096 Jul 13  2025 gTTS.egg-info\ndrwxr-xr-x 1 root root  4096 Oct 31 21:20 gtts\n-rw-r--r-- 1 root root  2603 Jul 13  2025 pyproject.toml\n-rw-r--r-- 1 root root   210 Jul 13  2025 release-please-config.json\ndrwxr-xr-x 2 root root  4096 Jul 13  2025 scripts\nbash: line 1: rg: command not found\n",
+        "returncode": 127,
+        "timestamp": 1793481713.967934,
+        "exception_info": ""
+      },
+      "tool_call_id": "call_a2VVcVZ5sFBEAIs12F1OXvoT",
+      "role": "tool"
+    },
+    {
+      "content": "`rg` isn’t installed here, so I’ll use `grep` and `find` to locate the fallback function and check the test setup.\n",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"command\":\"cd /testbed && find gtts scripts .github -maxdepth 3 -type f | sort && grep -R -n -E 'deprecated|fallback|pytest|unittest' gtts scripts .github pyproject.toml CONTRIBUTING.rst && printf '\\\\n--- Language handling ---\\\\n' && cat gtts/lang.py && printf '\\\\n--- Project configuration ---\\\\n' && cat pyproject.toml && printf '\\\\n--- TTS initialization ---\\\\n' && sed -n '1,240p' gtts/tts.py && printf '\\\\n--- Python / test tools ---\\\\n' && python --version && python -m pip show pytest gTTS\"}",
+            "name": "bash"
+          },
+          "id": "call_9v10sq3AMTcnsCIWudPEq4KT",
+          "type": "function"
+        }
+      ],
+      "function_call": null,
+      "provider_specific_fields": null,
+      "extra": {
+        "actions": [
+          {
+            "command": "cd /testbed && find gtts scripts .github -maxdepth 3 -type f | sort && grep -R -n -E 'deprecated|fallback|pytest|unittest' gtts scripts .github pyproject.toml CONTRIBUTING.rst && printf '\\n--- Language handling ---\\n' && cat gtts/lang.py && printf '\\n--- Project configuration ---\\n' && cat pyproject.toml && printf '\\n--- TTS initialization ---\\n' && sed -n '1,240p' gtts/tts.py && printf '\\n--- Python / test tools ---\\n' && python --version && python -m pip show pytest gTTS",
+            "tool_call_id": "call_9v10sq3AMTcnsCIWudPEq4KT"
+          }
+        ],
+        "response": {
+          "id": "resp_0d7baf2b4a069594016ae65bf2a9948197a14ba58d20f26dd2",
+          "created": 1793481721,
+          "model": "gpt-6.1-sol",
+          "object": "chat.completion",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "index": 0,
+              "message": {
+                "content": "`rg` isn’t installed here, so I’ll use `grep` and `find` to locate the fallback function and check the test setup.\n",
+                "role": "assistant",
+                "tool_calls": [
+                  {
+                    "function": {
+                      "arguments": "{\"command\":\"cd /testbed && find gtts scripts .github -maxdepth 3 -type f | sort && grep -R -n -E 'deprecated|fallback|pytest|unittest' gtts scripts .github pyproject.toml CONTRIBUTING.rst && printf '\\\\n--- Language handling ---\\\\n' && cat gtts/lang.py && printf '\\\\n--- Project configuration ---\\\\n' && cat pyproject.toml && printf '\\\\n--- TTS initialization ---\\\\n' && sed -n '1,240p' gtts/tts.py && printf '\\\\n--- Python / test tools ---\\\\n' && python --version && python -m pip show pytest gTTS\"}",
+                      "name": "bash"
+                    },
+                    "id": "call_9v10sq3AMTcnsCIWudPEq4KT",
+                    "type": "function"
+                  }
+                ],
+                "function_call": null
+              }
+            }
+          ],
+          "usage": {
+            "completion_tokens": 240,
+            "prompt_tokens": 1526,
+            "total_tokens": 0,
+            "completion_tokens_details": null,
+            "prompt_tokens_details": null
+          }
+        },
+        "cost": 0.0062135,
+        "timestamp": 1793481721.0844018
+      }
+    },
+    {
+      "content": "{\n  \"returncode\": 0,\n  \"output_head\": \".github/ISSUE_TEMPLATE/bug.md\\n.github/ISSUE_TEMPLATE/config.yml\\n.github/ISSUE_TEMPLATE/feature.md\\n.github/dependabot.yml\\ngtts/__init__.py\\ngtts/__pycache__/__init__.cpython-310.pyc\\ngtts/__pycache__/cli.cpython-310.pyc\\ngtts/__pycache__/lang.cpython-310.pyc\\ngtts/__pycache__/langs.cpython-310.pyc\\ngtts/__pycache__/tts.cpython-310.pyc\\ngtts/__pycache__/utils.cpython-310.pyc\\ngtts/__pycache__/version.cpython-310.pyc\\ngtts/accents.py\\ngtts/cli.py\\ngtts/lang.py\\ngtts/langs.py\\ngtts/tests/__init__.py\\ngtts/tests/__pycache__/__init__.cpython-310.pyc\\ngtts/tests/__pycache__/test_cli.cpython-310-pytest-8.3.4.pyc\\ngtts/tests/__pycache__/test_lang.cpython-310-pytest-8.3.4.pyc\\ngtts/tests/__pycache__/test_tts.cpython-310-pytest-8.3.4.pyc\\ngtts/tests/__pycache__/test_utils.cpython-310-pytest-8.3.4.pyc\\ngtts/tests/input_files/test_cli_test_ascii.txt\\ngtts/tests/input_files/test_cli_test_utf8.txt\\ngtts/tests/test_cli.py\\ngtts/tests/test_lang.py\\ngtts/tests/test_tts.py\\ngtts/tests/test_utils.py\\ngtts/tokenizer/__init__.py\\ngtts/tokenizer/__pycache__/__init__.cpython-310.pyc\\ngtts/tokenizer/__pycache__/core.cpython-310.pyc\\ngtts/tokenizer/__pycache__/pre_processors.cpython-310.pyc\\ngtts/tokenizer/__pycache__/symbols.cpython-310.pyc\\ngtts/tokenizer/__pycache__/tokenizer_cases.cpython-310.pyc\\ngtts/tokenizer/core.py\\ngtts/tokenizer/pre_processors.py\\ngtts/tokenizer/symbols.py\\ngtts/tokenizer/tests/test_core.py\\ngtts/tokenizer/tests/test_pre_processors.py\\ngtts/tokenizer/tests/test_tokenizer_cases.py\\ngtts/tokenizer/tokenizer_cases.py\\ngtts/tts.py\\ngtts/utils.py\\ngtts/version.py\\nscripts/check_langs.py\\nscripts/gen_langs.py\\nscripts/utils.py\\ngtts/tts.py:10:from gtts.lang import _fallback_deprecated_lang, tts_langs\\ngtts/tts.py:144:            # Fallback lang in case it is deprecated\\ngtts/tts.py:145:            self.lang = _fallback_deprecated_lang(lang)\\ngtts/tokenizer/tests/test_tokenizer_cases.py:2:import unittest\\ngtts/tokenizer/tests/test_tokenizer_cases.py:13:class TestPreTokenizerCases(unittest.TestCase):\\ngtts/tokenizer/tests/test_tokenizer_cases.py:50:    unittest.main()\\ngtts/tokenizer/tests/test_core.py:2:import unittest\\ngtts/tokenizer/tests/test_core.py:15:class TestRegexBuilder(unittest.TestCase):\\ngtts/tokenizer/tests/test_core.py:21:class TestPreProcessorRegex(unittest.TestCase):\\ngtts/tokenizer/tests/test_core.py:29:class TestPreProcessorSub(unittest.TestCase):\\ngtts/tokenizer/tests/test_core.py:38:class TestTokenizer(unittest.TestCase):\\ngtts/tokenizer/tests/test_core.py:73:    unittest.main()\\ngtts/tokenizer/tests/test_pre_processors.py:2:import unittest\\ngtts/tokenizer/tests/test_pre_processors.py:11:class TestPreProcessors(unittest.TestCase):\\ngtts/tokenizer/tests/test_pre_processors.py:35:    unittest.main()\\ngrep: gtts/tokenizer/tests/__pycache__/test_tokenizer_cases.cpython-310-pytest-8.3.4.pyc: binary file matches\\ngrep: gtts/tokenizer/tests/__pycache__/test_pre_processors.cpython-310-pytest-8.3.4.pyc: binary file matches\\ngrep: gtts/tokenizer/tests/__pycache__/test_core.cpython-310-pytest-8.3.4.pyc: binary file matches\\ngrep: gtts/tests/__pycache__/test_utils.cpython-310-pytest-8.3.4.pyc: binary file matches\\ngrep: gtts/tests/__pycache__/test_lang.cpython-310-pytest-8.3.4.pyc: binary file matches\\ngrep: gtts/tests/__pycache__/test_tts.cpython-310-pytest-8.3.4.pyc: binary file matches\\ngrep: gtts/tests/__pycache__/test_cli.cpython-310-pytest-8.3.4.pyc: binary file matches\\ngtts/tests/test_lang.py:2:import pytest\\ngtts/tests/test_lang.py:3:from gtts.lang import tts_langs, _extra_langs, _fallback_deprecated_lang\\ngtts/tests/test_lang.py:16:def test_deprecated_lang():\\ngtts/tests/test_lang.py:17:    \\\"\\\"\\\"Test language deprecation fallback\\\"\\\"\\\"\\ngtts/tests/test_lang.py:18:    with pytest.deprecated_call():\\ngtts/tests/test_lang.py:19:        assert _fallback_deprecated_lang(\\\"en-gb\\\") == \\\"en\\\"\\ngtts/tests/test_lang.py:23:    pytest.main([\\\"-x\\\", __file__])\\ngtts/tests/test_tts.py:3:import pytest\\ngtts/tests/test_tts.py:4:from unittest.mock import Mock\\ngtts/tests/test_tts.py:40:@pytest.mark.net\\ngtts/tests/test_tts.py:41:@pytest.mark.parametrize(\\\"lang\\\", langs.keys(), ids=list(langs.values()))\\ngtts/tests/test_tts.py:57:@pytest.mark.net\\ngtts/tests/test_tts.py:63:    with pytest.raises(ValueError):\\ngtts/tests/test_tts.py:70:    with pytest.raises(AssertionError):\\ngtts/tests/test_tts.py:77:    with pytest.raises(AssertionError):\\ngtts/tests/test_tts.py:86:@pytest.mark.net\\ngtts/tests/test_tts.py:91:    with pytest.raises(TypeError):\\ngtts/tests/test_tts.py:95:@pytest.mark.net\\ngtts/tests/test_tts.py:107:@pytest.mark.net\\ngtts/tests/test_tts.py:176:@pytest.mark.net\\ngtts/tests/test_tts.py:186:    with pytest.raises(gTTSError):\\ngtts/tests/test_tts.py:193:@pytest.mark.net\\ngtts/tests/test_tts.py:207:    with pytest.raises(gTTSError):\\ngtts/tests/test_tts.py:212:    pytest.main([\\\"-x\\\", __file__])\\ngtts/tests/test_utils.py:2:import pytest\\ngtts/tests/test_utils.py:62:    pytest.main([\\\"-x\\\", __file__])\\ngtts/tests/test_cli.py:2:import pytest\\ngtts/tests/test_cli.py:70:@pytest.mark.net\\ngtts/tests/test_cli.py:83\",\n  \"output_tail\": \"E_TTS_RPC = \\\"jQ1olc\\\"\\n\\n    def __init__(\\n        self,\\n        text,\\n        tld=\\\"com\\\",\\n        lang=\\\"en\\\",\\n        slow=False,\\n        lang_check=True,\\n        pre_processor_funcs=[\\n            pre_processors.tone_marks,\\n            pre_processors.end_of_line,\\n            pre_processors.abbreviations,\\n            pre_processors.word_sub,\\n        ],\\n        tokenizer_func=Tokenizer(\\n            [\\n                tokenizer_cases.tone_marks,\\n                tokenizer_cases.period_comma,\\n                tokenizer_cases.colon,\\n                tokenizer_cases.other_punctuation,\\n            ]\\n        ).run,\\n        timeout=None,\\n    ):\\n\\n        # Debug\\n        for k, v in dict(locals()).items():\\n            if k == \\\"self\\\":\\n                continue\\n            log.debug(\\\"%s: %s\\\", k, v)\\n\\n        # Text\\n        assert text, \\\"No text to speak\\\"\\n        self.text = text\\n\\n        # Translate URL top-level domain\\n        self.tld = tld\\n\\n        # Language\\n        self.lang_check = lang_check\\n        self.lang = lang\\n\\n        if self.lang_check:\\n            # Fallback lang in case it is deprecated\\n            self.lang = _fallback_deprecated_lang(lang)\\n\\n            try:\\n                langs = tts_langs()\\n                if self.lang not in langs:\\n                    raise ValueError(\\\"Language not supported: %s\\\" % lang)\\n            except RuntimeError as e:\\n                log.debug(str(e), exc_info=True)\\n                log.warning(str(e))\\n\\n        # Read speed\\n        if slow:\\n            self.speed = Speed.SLOW\\n        else:\\n            self.speed = Speed.NORMAL\\n\\n        # Pre-processors and tokenizer\\n        self.pre_processor_funcs = pre_processor_funcs\\n        self.tokenizer_func = tokenizer_func\\n\\n        self.timeout = timeout\\n\\n    def _tokenize(self, text):\\n        # Pre-clean\\n        text = text.strip()\\n\\n        # Apply pre-processors\\n        for pp in self.pre_processor_funcs:\\n            log.debug(\\\"pre-processing: %s\\\", pp)\\n            text = pp(text)\\n\\n        if len(text) \\u003c= self.GOOGLE_TTS_MAX_CHARS:\\n            return _clean_tokens([text])\\n\\n        # Tokenize\\n        log.debug(\\\"tokenizing: %s\\\", self.tokenizer_func)\\n        tokens = self.tokenizer_func(text)\\n\\n        # Clean\\n        tokens = _clean_tokens(tokens)\\n\\n        # Minimize\\n        min_tokens = []\\n        for t in tokens:\\n            min_tokens += _minimize(t, \\\" \\\", self.GOOGLE_TTS_MAX_CHARS)\\n\\n        # Filter empty tokens, post-minimize\\n        tokens = [t for t in min_tokens if t]\\n\\n        return tokens\\n\\n    def _prepare_requests(self):\\n        \\\"\\\"\\\"Created the TTS API the request(s) without sending them.\\n\\n        Returns:\\n            list: ``requests.PreparedRequests_``. \\u003chttps://2.python-requests.org/en/master/api/#requests.PreparedRequest\\u003e`_``.\\n        \\\"\\\"\\\"\\n        # TTS API URL\\n        translate_url = _translate_url(\\n            tld=self.tld, path=\\\"_/TranslateWebserverUi/data/batchexecute\\\"\\n        )\\n\\n        text_parts = self._tokenize(self.text)\\n        log.debug(\\\"text_parts: %s\\\", str(text_parts))\\n        log.debug(\\\"text_parts: %i\\\", len(text_parts))\\n        assert text_parts, \\\"No text to send to TTS API\\\"\\n\\n        prepared_requests = []\\n        for idx, part in enumerate(text_parts):\\n            data = self._package_rpc(part)\\n\\n            log.debug(\\\"data-%i: %s\\\", idx, data)\\n\\n            # Request\\n            r = requests.Request(\\n                method=\\\"POST\\\",\\n                url=translate_url,\\n                data=data,\\n                headers=self.GOOGLE_TTS_HEADERS,\\n            )\\n\\n            # Prepare request\\n            prepared_requests.append(r.prepare())\\n\\n        return prepared_requests\\n\\n    def _package_rpc(self, text):\\n        parameter = [text, self.lang, self.speed, \\\"null\\\"]\\n        escaped_parameter = json.dumps(parameter, separators=(\\\",\\\", \\\":\\\"))\\n\\n        rpc = [[[self.GOOGLE_TTS_RPC, escaped_parameter, None, \\\"generic\\\"]]]\\n        espaced_rpc = json.dumps(rpc, separators=(\\\",\\\", \\\":\\\"))\\n        return \\\"f.req={}\\u0026\\\".format(urllib.parse.quote(espaced_rpc))\\n\\n    def get_bodies(self):\\n        \\\"\\\"\\\"Get TTS API request bodies(s) that would be sent to the TTS API.\\n\\n--- Python / test tools ---\\nPython 3.10.16\\nName: pytest\\nVersion: 8.3.4\\nSummary: pytest: simple powerful testing with Python\\nHome-page: https://docs.pytest.org/en/latest/\\nAuthor: Holger Krekel, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, Florian Bruhin, Others (See AUTHORS)\\nAuthor-email: \\nLicense: MIT\\nLocation: /opt/miniconda3/envs/testbed/lib/python3.10/site-packages\\nRequires: exceptiongroup, iniconfig, packaging, pluggy, tomli\\nRequired-by: pytest-cov\\n---\\nName: gTTS\\nVersion: 2.5.4\\nSummary: gTTS (Google Text-to-Speech), a Python library and CLI tool to interface with Google Translate text-to-speech API\\nHome-page: https://github.com/pndurette/gTTS\\nAuthor: \\nAuthor-email: Pierre Nicolas Durette \\u003cpndurette@gmail.com\\u003e\\nLicense: MIT\\nLocation: /opt/miniconda3/envs/testbed/lib/python3.10/site-packages\\nEditable project location: /testbed\\nRequires: click, requests\\nRequired-by: \\n\",\n  \"elided_chars\": 11315,\n  \"warning\": \"Output too long.\"\n}",
+      "extra": {
+        "raw_output": ".github/ISSUE_TEMPLATE/bug.md\n.github/ISSUE_TEMPLATE/config.yml\n.github/ISSUE_TEMPLATE/feature.md\n.github/dependabot.yml\ngtts/__init__.py\ngtts/__pycache__/__init__.cpython-310.pyc\ngtts/__pycache__/cli.cpython-310.pyc\ngtts/__pycache__/lang.cpython-310.pyc\ngtts/__pycache__/langs.cpython-310.pyc\ngtts/__pycache__/tts.cpython-310.pyc\ngtts/__pycache__/utils.cpython-310.pyc\ngtts/__pycache__/version.cpython-310.pyc\ngtts/accents.py\ngtts/cli.py\ngtts/lang.py\ngtts/langs.py\ngtts/tests/__init__.py\ngtts/tests/__pycache__/__init__.cpython-310.pyc\ngtts/tests/__pycache__/test_cli.cpython-310-pytest-8.3.4.pyc\ngtts/tests/__pycache__/test_lang.cpython-310-pytest-8.3.4.pyc\ngtts/tests/__pycache__/test_tts.cpython-310-pytest-8.3.4.pyc\ngtts/tests/__pycache__/test_utils.cpython-310-pytest-8.3.4.pyc\ngtts/tests/input_files/test_cli_test_ascii.txt\ngtts/tests/input_files/test_cli_test_utf8.txt\ngtts/tests/test_cli.py\ngtts/tests/test_lang.py\ngtts/tests/test_tts.py\ngtts/tests/test_utils.py\ngtts/tokenizer/__init__.py\ngtts/tokenizer/__pycache__/__init__.cpython-310.pyc\ngtts/tokenizer/__pycache__/core.cpython-310.pyc\ngtts/tokenizer/__pycache__/pre_processors.cpython-310.pyc\ngtts/tokenizer/__pycache__/symbols.cpython-310.pyc\ngtts/tokenizer/__pycache__/tokenizer_cases.cpython-310.pyc\ngtts/tokenizer/core.py\ngtts/tokenizer/pre_processors.py\ngtts/tokenizer/symbols.py\ngtts/tokenizer/tests/test_core.py\ngtts/tokenizer/tests/test_pre_processors.py\ngtts/tokenizer/tests/test_tokenizer_cases.py\ngtts/tokenizer/tokenizer_cases.py\ngtts/tts.py\ngtts/utils.py\ngtts/version.py\nscripts/check_langs.py\nscripts/gen_langs.py\nscripts/utils.py\ngtts/tts.py:10:from gtts.lang import _fallback_deprecated_lang, tts_langs\ngtts/tts.py:144:            # Fallback lang in case it is deprecated\ngtts/tts.py:145:            self.lang = _fallback_deprecated_lang(lang)\ngtts/tokenizer/tests/test_tokenizer_cases.py:2:import unittest\ngtts/tokenizer/tests/test_tokenizer_cases.py:13:class TestPreTokenizerCases(unittest.TestCase):\ngtts/tokenizer/tests/test_tokenizer_cases.py:50:    unittest.main()\ngtts/tokenizer/tests/test_core.py:2:import unittest\ngtts/tokenizer/tests/test_core.py:15:class TestRegexBuilder(unittest.TestCase):\ngtts/tokenizer/tests/test_core.py:21:class TestPreProcessorRegex(unittest.TestCase):\ngtts/tokenizer/tests/test_core.py:29:class TestPreProcessorSub(unittest.TestCase):\ngtts/tokenizer/tests/test_core.py:38:class TestTokenizer(unittest.TestCase):\ngtts/tokenizer/tests/test_core.py:73:    unittest.main()\ngtts/tokenizer/tests/test_pre_processors.py:2:import unittest\ngtts/tokenizer/tests/test_pre_processors.py:11:class TestPreProcessors(unittest.TestCase):\ngtts/tokenizer/tests/test_pre_processors.py:35:    unittest.main()\ngrep: gtts/tokenizer/tests/__pycache__/test_tokenizer_cases.cpython-310-pytest-8.3.4.pyc: binary file matches\ngrep: gtts/tokenizer/tests/__pycache__/test_pre_processors.cpython-310-pytest-8.3.4.pyc: binary file matches\ngrep: gtts/tokenizer/tests/__pycache__/test_core.cpython-310-pytest-8.3.4.pyc: binary file matches\ngrep: gtts/tests/__pycache__/test_utils.cpython-310-pytest-8.3.4.pyc: binary file matches\ngrep: gtts/tests/__pycache__/test_lang.cpython-310-pytest-8.3.4.pyc: binary file matches\ngrep: gtts/tests/__pycache__/test_tts.cpython-310-pytest-8.3.4.pyc: binary file matches\ngrep: gtts/tests/__pycache__/test_cli.cpython-310-pytest-8.3.4.pyc: binary file matches\ngtts/tests/test_lang.py:2:import pytest\ngtts/tests/test_lang.py:3:from gtts.lang import tts_langs, _extra_langs, _fallback_deprecated_lang\ngtts/tests/test_lang.py:16:def test_deprecated_lang():\ngtts/tests/test_lang.py:17:    \"\"\"Test language deprecation fallback\"\"\"\ngtts/tests/test_lang.py:18:    with pytest.deprecated_call():\ngtts/tests/test_lang.py:19:        assert _fallback_deprecated_lang(\"en-gb\") == \"en\"\ngtts/tests/test_lang.py:23:    pytest.main([\"-x\", __file__])\ngtts/tests/test_tts.py:3:import pytest\ngtts/tests/test_tts.py:4:from unittest.mock import Mock\ngtts/tests/test_tts.py:40:@pytest.mark.net\ngtts/tests/test_tts.py:41:@pytest.mark.parametrize(\"lang\", langs.keys(), ids=list(langs.values()))\ngtts/tests/test_tts.py:57:@pytest.mark.net\ngtts/tests/test_tts.py:63:    with pytest.raises(ValueError):\ngtts/tests/test_tts.py:70:    with pytest.raises(AssertionError):\ngtts/tests/test_tts.py:77:    with pytest.raises(AssertionError):\ngtts/tests/test_tts.py:86:@pytest.mark.net\ngtts/tests/test_tts.py:91:    with pytest.raises(TypeError):\ngtts/tests/test_tts.py:95:@pytest.mark.net\ngtts/tests/test_tts.py:107:@pytest.mark.net\ngtts/tests/test_tts.py:176:@pytest.mark.net\ngtts/tests/test_tts.py:186:    with pytest.raises(gTTSError):\ngtts/tests/test_tts.py:193:@pytest.mark.net\ngtts/tests/test_tts.py:207:    with pytest.raises(gTTSError):\ngtts/tests/test_tts.py:212:    pytest.main([\"-x\", __file__])\ngtts/tests/test_utils.py:2:import pytest\ngtts/tests/test_utils.py:62:    pytest.main([\"-x\", __file__])\ngtts/tests/test_cli.py:2:import pytest\ngtts/tests/test_cli.py:70:@pytest.mark.net\ngtts/tests/test_cli.py:83:@pytest.mark.net\ngtts/tests/test_cli.py:92:@pytest.mark.net\ngtts/tests/test_cli.py:107:@pytest.mark.net\ngtts/tests/test_cli.py:167:@pytest.mark.net\ngtts/tests/test_cli.py:177:@pytest.mark.net\ngtts/tests/test_cli.py:187:@pytest.mark.net\ngtts/tests/test_cli.py:197:@pytest.mark.net\ngtts/tests/test_cli.py:207:@pytest.mark.net\ngtts/tests/test_cli.py:217:@pytest.mark.net\ngtts/tests/test_cli.py:227:@pytest.mark.net\ngtts/tests/test_cli.py:237:@pytest.mark.net\ngtts/tests/test_cli.py:247:@pytest.mark.net\ngtts/tests/test_cli.py:256:@pytest.mark.net\ngtts/tests/test_cli.py:268:    pytest.main([\"-x\", __file__])\ngrep: gtts/__pycache__/lang.cpython-310.pyc: binary file matches\ngrep: gtts/__pycache__/tts.cpython-310.pyc: binary file matches\ngtts/cli.py:3:from gtts.lang import tts_langs, _fallback_deprecated_lang\ngtts/cli.py:49:    # Fallback from deprecated language if needed\ngtts/cli.py:50:    lang = _fallback_deprecated_lang(lang)\ngtts/lang.py:55:def _fallback_deprecated_lang(lang):\ngtts/lang.py:59:    fallback to a more general language code to maintain\ngtts/lang.py:66:        string: The language tag, as-is if not deprecated,\ngtts/lang.py:67:            or a fallback if it exits.\ngtts/lang.py:75:    for fallback_lang, deprecated_langs in deprecated.items():\ngtts/lang.py:76:        if lang.lower() in deprecated_langs:\ngtts/lang.py:78:                \"'{}' has been deprecated, falling back to '{}'. \"\ngtts/lang.py:79:                \"This fallback will be removed in a future version.\"\ngtts/lang.py:80:            ).format(lang, fallback_lang)\ngtts/lang.py:85:            return fallback_lang\ngtts/lang.py:89:    deprecated = {\ngtts/lang.py:90:        # '<fallback>': [<list of deprecated langs>]\ngrep: gtts/__pycache__/cli.cpython-310.pyc: binary file matches\npyproject.toml:45:    \"pytest >= 7.1.3,< 8.4.0\",\npyproject.toml:46:    \"pytest-cov\",\npyproject.toml:84:[tool.pytest.ini_options]\nCONTRIBUTING.rst:29:| Testing is done with the ``unittest`` framework.\nCONTRIBUTING.rst:36:  $ TEST_LANGS=en pytest -v -s gtts/ --cov=gtts --cov-report=html\n\n--- Language handling ---\n# -*- coding: utf-8 -*-\nfrom gtts.langs import _main_langs\nfrom warnings import warn\nimport logging\n\n__all__ = [\"tts_langs\"]\n\n# Logger\nlog = logging.getLogger(__name__)\nlog.addHandler(logging.NullHandler())\n\n\ndef tts_langs():\n    \"\"\"Languages Google Text-to-Speech supports.\n\n    Returns:\n        dict: A dictionary of the type `{ '<lang>': '<name>'}`\n\n            Where `<lang>` is an IETF language tag such as `en` or `zh-TW`,\n            and `<name>` is the full English name of the language, such as\n            `English` or `Chinese (Mandarin/Taiwan)`.\n\n    The dictionary returned combines languages from two origins:\n\n    - Languages fetched from Google Translate (pre-generated in :mod:`gtts.langs`)\n    - Languages that are undocumented variations that were observed to work and\n      present different dialects or accents.\n\n    \"\"\"\n    langs = dict()\n    langs.update(_main_langs())\n    langs.update(_extra_langs())\n    log.debug(\"langs: {}\".format(langs))\n    return langs\n\n\ndef _extra_langs():\n    \"\"\"Define extra languages.\n\n    Returns:\n        dict: A dictionary of extra languages manually defined.\n\n            Variations of the ones generated in `_main_langs`,\n            observed to provide different dialects or accents or\n            just simply accepted by the Google Translate Text-to-Speech API.\n\n    \"\"\"\n    return {\n        # Chinese\n        \"zh-TW\": \"Chinese (Mandarin/Taiwan)\",\n        \"zh\": \"Chinese (Mandarin)\",\n    }\n\n\ndef _fallback_deprecated_lang(lang):\n    \"\"\"Languages Google Text-to-Speech used to support.\n\n    Language tags that don't work anymore, but that can\n    fallback to a more general language code to maintain\n    compatibility.\n\n    Args:\n        lang (string): The language tag.\n\n    Returns:\n        string: The language tag, as-is if not deprecated,\n            or a fallback if it exits.\n\n    Example:\n        ``en-GB`` returns ``en``.\n        ``en-gb`` returns ``en``.\n\n    \"\"\"\n\n    for fallback_lang, deprecated_langs in deprecated.items():\n        if lang.lower() in deprecated_langs:\n            msg = (\n                \"'{}' has been deprecated, falling back to '{}'. \"\n                \"This fallback will be removed in a future version.\"\n            ).format(lang, fallback_lang)\n\n            warn(msg, DeprecationWarning)\n            log.warning(msg)\n\n            return fallback_lang\n\n    return lang\n\n    deprecated = {\n        # '<fallback>': [<list of deprecated langs>]\n        \"en\": [\n            \"en-us\",\n            \"en-ca\",\n            \"en-uk\",\n            \"en-gb\",\n            \"en-au\",\n            \"en-gh\",\n            \"en-in\",\n            \"en-ie\",\n            \"en-nz\",\n            \"en-ng\",\n            \"en-ph\",\n            \"en-za\",\n            \"en-tz\",\n        ],\n        \"fr\": [\"fr-fr\"],\n        \"pt\": [\"pt-br\", \"pt-pt\"],\n        \"es\": [\"es-es\", \"es-us\"],\n        \"zh-CN\": [\"zh-cn\"],\n        \"zh-TW\": [\"zh-tw\"],\n    }\n--- Project configuration ---\n[project]\nname = \"gTTS\"\nversion = \"2.5.4\"\ndescription = \"gTTS (Google Text-to-Speech), a Python library and CLI tool to interface with Google Translate text-to-speech API\"\nauthors = [{name = \"Pierre Nicolas Durette\", email = \"pndurette@gmail.com\"}]\nrequires-python = \">=3.7\"\nreadme = \"README.md\"\nlicense = {text = \"MIT\"}\nkeywords = [\n    \"gtts\",\n    \"text to speech\",\n    \"Google Translate\",\n    \"TTS\",\n]\nclassifiers = [\n    \"Environment :: Console\",\n    \"Intended Audience :: Developers\",\n    \"License :: OSI Approved :: MIT License\",\n    \"Operating System :: MacOS\",\n    \"Operating System :: Unix\",\n    \"Operating System :: POSIX\",\n    \"Operating System :: POSIX :: Linux\",\n    \"Operating System :: Microsoft :: Windows\",\n    \"Programming Language :: Python :: 3.8\",\n    \"Programming Language :: Python :: 3.9\",\n    \"Programming Language :: Python :: 3.10\",\n    \"Programming Language :: Python :: 3.11\",\n    \"Programming Language :: Python :: 3.12\",\n    \"Topic :: Software Development :: Libraries\",\n    \"Topic :: Multimedia :: Sound/Audio :: Speech\",\n]\ndependencies = [\n    \"requests >=2.27, <3\",  # https://docs.python-requests.org/en/latest/community/updates/\n    \"click >=7.1, <8.2\",    # https://click.palletsprojects.com/en/latest/changes/\n]\n\n# TODO: release-please [yet] doesn't support dynamic version for pyproject.toml\n# https://github.com/googleapis/release-please/blob/909d310defdf24adfd4858bbe1604668c14ef77f/src/updaters/python/pyproject-toml.ts#L54\n# dynamic = [\"version\"]\n# [tool.setuptools.dynamic]\n# version = {attr = \"gtts.version.__version__\"}\n\n[project.optional-dependencies]\ntests = [\n    \"pytest >= 7.1.3,< 8.4.0\",\n    \"pytest-cov\",\n    \"testfixtures\",\n]\ndocs = [\n    \"sphinx\",\n    \"sphinx-autobuild\",\n    \"sphinx_rtd_theme\",\n    \"sphinx-click\",\n    \"sphinx-mdinclude\"\n]\n\n[project.scripts]\ngtts-cli = \"gtts.cli:tts_cli\"\n\n[project.urls]\nhomepage = \"https://github.com/pndurette/gTTS\"\ndocumentation = \"https://gtts.readthedocs.io\"\nrepository = \"https://github.com/pndurette/gTTS\"\nchangelog = \"https://github.com/pndurette/gTTS/blob/main/CHANGELOG.md\"\n\n[tool.setuptools.package-data]\n# Tests support files\n\"gtts.tests.input_files\" = [\"*.txt\"]\n\n[tool.coverage.run]\nomit = [\n    \"gtts/tests/*\",\n    \"gtts/tokenizer/tests/*\",\n]\n\n[tool.coverage.report]\nexclude_lines = [\n    \"pragma: no cover\",\n    \"def __repr__\",\n    \"log.debug\",\n    \"log.warning\",\n]\n\n[tool.pytest.ini_options]\nmarkers = [\"net: marks tests that call use the net (using the URL endpoint, deselect with '-m \\\"not net\\\"')\"]\n\n[build-system]\nrequires = [\"setuptools>=61\", \"wheel\"]\nbuild-backend = \"setuptools.build_meta\"\n\n--- TTS initialization ---\n# -*- coding: utf-8 -*-\nimport base64\nimport json\nimport logging\nimport re\nimport urllib\n\nimport requests\n\nfrom gtts.lang import _fallback_deprecated_lang, tts_langs\nfrom gtts.tokenizer import Tokenizer, pre_processors, tokenizer_cases\nfrom gtts.utils import _clean_tokens, _minimize, _translate_url\n\n__all__ = [\"gTTS\", \"gTTSError\"]\n\n# Logger\nlog = logging.getLogger(__name__)\nlog.addHandler(logging.NullHandler())\n\n\nclass Speed:\n    \"\"\"Read Speed\n\n    The Google TTS Translate API supports two speeds:\n        Slow: True\n        Normal: None\n    \"\"\"\n\n    SLOW = True\n    NORMAL = None\n\n\nclass gTTS:\n    \"\"\"gTTS -- Google Text-to-Speech.\n\n    An interface to Google Translate's Text-to-Speech API.\n\n    Args:\n        text (string): The text to be read.\n        tld (string): Top-level domain for the Google Translate host,\n            i.e `https://translate.google.<tld>`. Different Google domains\n            can produce different localized 'accents' for a given\n            language. This is also useful when ``google.com`` might be blocked\n            within a network but a local or different Google host\n            (e.g. ``google.com.hk``) is not. Default is ``com``.\n        lang (string, optional): The language (IETF language tag) to\n            read the text in. Default is ``en``.\n        slow (bool, optional): Reads text more slowly. Defaults to ``False``.\n        lang_check (bool, optional): Strictly enforce an existing ``lang``,\n            to catch a language error early. If set to ``True``,\n            a ``ValueError`` is raised if ``lang`` doesn't exist.\n            Setting ``lang_check`` to ``False`` skips Web requests\n            (to validate language) and therefore speeds up instantiation.\n            Default is ``True``.\n        pre_processor_funcs (list): A list of zero or more functions that are\n            called to transform (pre-process) text before tokenizing. Those\n            functions must take a string and return a string. Defaults to::\n\n                [\n                    pre_processors.tone_marks,\n                    pre_processors.end_of_line,\n                    pre_processors.abbreviations,\n                    pre_processors.word_sub\n                ]\n\n        tokenizer_func (callable): A function that takes in a string and\n            returns a list of string (tokens). Defaults to::\n\n                Tokenizer([\n                    tokenizer_cases.tone_marks,\n                    tokenizer_cases.period_comma,\n                    tokenizer_cases.colon,\n                    tokenizer_cases.other_punctuation\n                ]).run\n\n        timeout (float or tuple, optional): Seconds to wait for the server to\n            send data before giving up, as a float, or a ``(connect timeout,\n            read timeout)`` tuple. ``None`` will wait forever (default).\n\n    See Also:\n        :doc:`Pre-processing and tokenizing <tokenizer>`\n\n    Raises:\n        AssertionError: When ``text`` is ``None`` or empty; when there's nothing\n            left to speak after pre-processing, tokenizing and cleaning.\n        ValueError: When ``lang_check`` is ``True`` and ``lang`` is not supported.\n        RuntimeError: When ``lang_check`` is ``True`` but there's an error loading\n            the languages dictionary.\n\n    \"\"\"\n\n    GOOGLE_TTS_MAX_CHARS = 100  # Max characters the Google TTS API takes at a time\n    GOOGLE_TTS_HEADERS = {\n        \"Referer\": \"http://translate.google.com/\",\n        \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; WOW64) \"\n        \"AppleWebKit/537.36 (KHTML, like Gecko) \"\n        \"Chrome/47.0.2526.106 Safari/537.36\",\n        \"Content-Type\": \"application/x-www-form-urlencoded;charset=utf-8\",\n    }\n    GOOGLE_TTS_RPC = \"jQ1olc\"\n\n    def __init__(\n        self,\n        text,\n        tld=\"com\",\n        lang=\"en\",\n        slow=False,\n        lang_check=True,\n        pre_processor_funcs=[\n            pre_processors.tone_marks,\n            pre_processors.end_of_line,\n            pre_processors.abbreviations,\n            pre_processors.word_sub,\n        ],\n        tokenizer_func=Tokenizer(\n            [\n                tokenizer_cases.tone_marks,\n                tokenizer_cases.period_comma,\n                tokenizer_cases.colon,\n                tokenizer_cases.other_punctuation,\n            ]\n        ).run,\n        timeout=None,\n    ):\n\n        # Debug\n        for k, v in dict(locals()).items():\n            if k == \"self\":\n                continue\n            log.debug(\"%s: %s\", k, v)\n\n        # Text\n        assert text, \"No text to speak\"\n        self.text = text\n\n        # Translate URL top-level domain\n        self.tld = tld\n\n        # Language\n        self.lang_check = lang_check\n        self.lang = lang\n\n        if self.lang_check:\n            # Fallback lang in case it is deprecated\n            self.lang = _fallback_deprecated_lang(lang)\n\n            try:\n                langs = tts_langs()\n                if self.lang not in langs:\n                    raise ValueError(\"Language not supported: %s\" % lang)\n            except RuntimeError as e:\n                log.debug(str(e), exc_info=True)\n                log.warning(str(e))\n\n        # Read speed\n        if slow:\n            self.speed = Speed.SLOW\n        else:\n            self.speed = Speed.NORMAL\n\n        # Pre-processors and tokenizer\n        self.pre_processor_funcs = pre_processor_funcs\n        self.tokenizer_func = tokenizer_func\n\n        self.timeout = timeout\n\n    def _tokenize(self, text):\n        # Pre-clean\n        text = text.strip()\n\n        # Apply pre-processors\n        for pp in self.pre_processor_funcs:\n            log.debug(\"pre-processing: %s\", pp)\n            text = pp(text)\n\n        if len(text) <= self.GOOGLE_TTS_MAX_CHARS:\n            return _clean_tokens([text])\n\n        # Tokenize\n        log.debug(\"tokenizing: %s\", self.tokenizer_func)\n        tokens = self.tokenizer_func(text)\n\n        # Clean\n        tokens = _clean_tokens(tokens)\n\n        # Minimize\n        min_tokens = []\n        for t in tokens:\n            min_tokens += _minimize(t, \" \", self.GOOGLE_TTS_MAX_CHARS)\n\n        # Filter empty tokens, post-minimize\n        tokens = [t for t in min_tokens if t]\n\n        return tokens\n\n    def _prepare_requests(self):\n        \"\"\"Created the TTS API the request(s) without sending them.\n\n        Returns:\n            list: ``requests.PreparedRequests_``. <https://2.python-requests.org/en/master/api/#requests.PreparedRequest>`_``.\n        \"\"\"\n        # TTS API URL\n        translate_url = _translate_url(\n            tld=self.tld, path=\"_/TranslateWebserverUi/data/batchexecute\"\n        )\n\n        text_parts = self._tokenize(self.text)\n        log.debug(\"text_parts: %s\", str(text_parts))\n        log.debug(\"text_parts: %i\", len(text_parts))\n        assert text_parts, \"No text to send to TTS API\"\n\n        prepared_requests = []\n        for idx, part in enumerate(text_parts):\n            data = self._package_rpc(part)\n\n            log.debug(\"data-%i: %s\", idx, data)\n\n            # Request\n            r = requests.Request(\n                method=\"POST\",\n                url=translate_url,\n                data=data,\n                headers=self.GOOGLE_TTS_HEADERS,\n            )\n\n            # Prepare request\n            prepared_requests.append(r.prepare())\n\n        return prepared_requests\n\n    def _package_rpc(self, text):\n        parameter = [text, self.lang, self.speed, \"null\"]\n        escaped_parameter = json.dumps(parameter, separators=(\",\", \":\"))\n\n        rpc = [[[self.GOOGLE_TTS_RPC, escaped_parameter, None, \"generic\"]]]\n        espaced_rpc = json.dumps(rpc, separators=(\",\", \":\"))\n        return \"f.req={}&\".format(urllib.parse.quote(espaced_rpc))\n\n    def get_bodies(self):\n        \"\"\"Get TTS API request bodies(s) that would be sent to the TTS API.\n\n--- Python / test tools ---\nPython 3.10.16\nName: pytest\nVersion: 8.3.4\nSummary: pytest: simple powerful testing with Python\nHome-page: https://docs.pytest.org/en/latest/\nAuthor: Holger Krekel, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, Florian Bruhin, Others (See AUTHORS)\nAuthor-email: \nLicense: MIT\nLocation: /opt/miniconda3/envs/testbed/lib/python3.10/site-packages\nRequires: exceptiongroup, iniconfig, packaging, pluggy, tomli\nRequired-by: pytest-cov\n---\nName: gTTS\nVersion: 2.5.4\nSummary: gTTS (Google Text-to-Speech), a Python library and CLI tool to interface with Google Translate text-to-speech API\nHome-page: https://github.com/pndurette/gTTS\nAuthor: \nAuthor-email: Pierre Nicolas Durette <pndurette@gmail.com>\nLicense: MIT\nLocation: /opt/miniconda3/envs/testbed/lib/python3.10/site-packages\nEditable project location: /testbed\nRequires: click, requests\nRequired-by: \n",
+        "returncode": 0,
+        "timestamp": 1793481721.6828501,
+        "exception_info": ""
+      },
+      "tool_call_id": "call_9v10sq3AMTcnsCIWudPEq4KT",
+      "role": "tool"
+    },
+    {
+      "content": "The fallback lives in `gtts/lang.py`, and there’s already a language test module. I’ll read those files closely and check which tests can run without network access.\n",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"command\":\"cd /testbed && printf '\\\\n--- gtts/lang.py ---\\\\n' && nl -ba gtts/lang.py && printf '\\\\n--- Language tests ---\\\\n' && cat gtts/tests/test_lang.py && printf '\\\\n--- Test configuration ---\\\\n' && cat pyproject.toml && printf '\\\\n--- TTS tests ---\\\\n' && sed -n '1,230p' gtts/tests/test_tts.py && printf '\\\\n--- CLI network markers ---\\\\n' && grep -n -B 2 -A 4 'mark.net' gtts/tests/test_cli.py && printf '\\\\n--- Contribution guide ---\\\\n' && cat CONTRIBUTING.rst\"}",
+            "name": "bash"
+          },
+          "id": "call_c8ofgoJqyQKYAhoIYOBat2sT",
+          "type": "function"
+        }
+      ],
+      "function_call": null,
+      "provider_specific_fields": null,
+      "extra": {
+        "actions": [
+          {
+            "command": "cd /testbed && printf '\\n--- gtts/lang.py ---\\n' && nl -ba gtts/lang.py && printf '\\n--- Language tests ---\\n' && cat gtts/tests/test_lang.py && printf '\\n--- Test configuration ---\\n' && cat pyproject.toml && printf '\\n--- TTS tests ---\\n' && sed -n '1,230p' gtts/tests/test_tts.py && printf '\\n--- CLI network markers ---\\n' && grep -n -B 2 -A 4 'mark.net' gtts/tests/test_cli.py && printf '\\n--- Contribution guide ---\\n' && cat CONTRIBUTING.rst",
+            "tool_call_id": "call_c8ofgoJqyQKYAhoIYOBat2sT"
+          }
+        ],
+        "response": {
+          "id": "resp_03aa087b2c6ad8a2016ae65bfaa19c8196832d01debbcf4c0f",
+          "created": 1793481728,
+          "model": "gpt-6.1-sol",
+          "object": "chat.completion",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "index": 0,
+              "message": {
+                "content": "The fallback lives in `gtts/lang.py`, and there’s already a language test module. I’ll read those files closely and check which tests can run without network access.\n",
+                "role": "assistant",
+                "tool_calls": [
+                  {
+                    "function": {
+                      "arguments": "{\"command\":\"cd /testbed && printf '\\\\n--- gtts/lang.py ---\\\\n' && nl -ba gtts/lang.py && printf '\\\\n--- Language tests ---\\\\n' && cat gtts/tests/test_lang.py && printf '\\\\n--- Test configuration ---\\\\n' && cat pyproject.toml && printf '\\\\n--- TTS tests ---\\\\n' && sed -n '1,230p' gtts/tests/test_tts.py && printf '\\\\n--- CLI network markers ---\\\\n' && grep -n -B 2 -A 4 'mark.net' gtts/tests/test_cli.py && printf '\\\\n--- Contribution guide ---\\\\n' && cat CONTRIBUTING.rst\"}",
+                      "name": "bash"
+                    },
+                    "id": "call_c8ofgoJqyQKYAhoIYOBat2sT",
+                    "type": "function"
+                  }
+                ],
+                "function_call": null
+              }
+            }
+          ],
+          "usage": {
+            "completion_tokens": 244,
+            "prompt_tokens": 4663,
+            "total_tokens": 0,
+            "completion_tokens_details": null,
+            "prompt_tokens_details": null
+          }
+        },
+        "cost": 0.0104408,
+        "timestamp": 1793481728.303222
+      }
+    },
+    {
+      "content": "{\n  \"returncode\": 0,\n  \"output_head\": \"\\n--- gtts/lang.py ---\\n     1\\t# -*- coding: utf-8 -*-\\n     2\\tfrom gtts.langs import _main_langs\\n     3\\tfrom warnings import warn\\n     4\\timport logging\\n     5\\t\\n     6\\t__all__ = [\\\"tts_langs\\\"]\\n     7\\t\\n     8\\t# Logger\\n     9\\tlog = logging.getLogger(__name__)\\n    10\\tlog.addHandler(logging.NullHandler())\\n    11\\t\\n    12\\t\\n    13\\tdef tts_langs():\\n    14\\t    \\\"\\\"\\\"Languages Google Text-to-Speech supports.\\n    15\\t\\n    16\\t    Returns:\\n    17\\t        dict: A dictionary of the type `{ \\u0027\\u003clang\\u003e\\u0027: \\u0027\\u003cname\\u003e\\u0027}`\\n    18\\t\\n    19\\t            Where `\\u003clang\\u003e` is an IETF language tag such as `en` or `zh-TW`,\\n    20\\t            and `\\u003cname\\u003e` is the full English name of the language, such as\\n    21\\t            `English` or `Chinese (Mandarin/Taiwan)`.\\n    22\\t\\n    23\\t    The dictionary returned combines languages from two origins:\\n    24\\t\\n    25\\t    - Languages fetched from Google Translate (pre-generated in :mod:`gtts.langs`)\\n    26\\t    - Languages that are undocumented variations that were observed to work and\\n    27\\t      present different dialects or accents.\\n    28\\t\\n    29\\t    \\\"\\\"\\\"\\n    30\\t    langs = dict()\\n    31\\t    langs.update(_main_langs())\\n    32\\t    langs.update(_extra_langs())\\n    33\\t    log.debug(\\\"langs: {}\\\".format(langs))\\n    34\\t    return langs\\n    35\\t\\n    36\\t\\n    37\\tdef _extra_langs():\\n    38\\t    \\\"\\\"\\\"Define extra languages.\\n    39\\t\\n    40\\t    Returns:\\n    41\\t        dict: A dictionary of extra languages manually defined.\\n    42\\t\\n    43\\t            Variations of the ones generated in `_main_langs`,\\n    44\\t            observed to provide different dialects or accents or\\n    45\\t            just simply accepted by the Google Translate Text-to-Speech API.\\n    46\\t\\n    47\\t    \\\"\\\"\\\"\\n    48\\t    return {\\n    49\\t        # Chinese\\n    50\\t        \\\"zh-TW\\\": \\\"Chinese (Mandarin/Taiwan)\\\",\\n    51\\t        \\\"zh\\\": \\\"Chinese (Mandarin)\\\",\\n    52\\t    }\\n    53\\t\\n    54\\t\\n    55\\tdef _fallback_deprecated_lang(lang):\\n    56\\t    \\\"\\\"\\\"Languages Google Text-to-Speech used to support.\\n    57\\t\\n    58\\t    Language tags that don\\u0027t work anymore, but that can\\n    59\\t    fallback to a more general language code to maintain\\n    60\\t    compatibility.\\n    61\\t\\n    62\\t    Args:\\n    63\\t        lang (string): The language tag.\\n    64\\t\\n    65\\t    Returns:\\n    66\\t        string: The language tag, as-is if not deprecated,\\n    67\\t            or a fallback if it exits.\\n    68\\t\\n    69\\t    Example:\\n    70\\t        ``en-GB`` returns ``en``.\\n    71\\t        ``en-gb`` returns ``en``.\\n    72\\t\\n    73\\t    \\\"\\\"\\\"\\n    74\\t\\n    75\\t    for fallback_lang, deprecated_langs in deprecated.items():\\n    76\\t        if lang.lower() in deprecated_langs:\\n    77\\t            msg = (\\n    78\\t                \\\"\\u0027{}\\u0027 has been deprecated, falling back to \\u0027{}\\u0027. \\\"\\n    79\\t                \\\"This fallback will be removed in a future version.\\\"\\n    80\\t            ).format(lang, fallback_lang)\\n    81\\t\\n    82\\t            warn(msg, DeprecationWarning)\\n    83\\t            log.warning(msg)\\n    84\\t\\n    85\\t            return fallback_lang\\n    86\\t\\n    87\\t    return lang\\n    88\\t\\n    89\\t    deprecated = {\\n    90\\t        # \\u0027\\u003cfallback\\u003e\\u0027: [\\u003clist of deprecated langs\\u003e]\\n    91\\t        \\\"en\\\": [\\n    92\\t            \\\"en-us\\\",\\n    93\\t            \\\"en-ca\\\",\\n    94\\t            \\\"en-uk\\\",\\n    95\\t            \\\"en-gb\\\",\\n    96\\t            \\\"en-au\\\",\\n    97\\t            \\\"en-gh\\\",\\n    98\\t            \\\"en-in\\\",\\n    99\\t            \\\"en-ie\\\",\\n   100\\t            \\\"en-nz\\\",\\n   101\\t            \\\"en-ng\\\",\\n   102\\t            \\\"en-ph\\\",\\n   103\\t            \\\"en-za\\\",\\n   104\\t            \\\"en-tz\\\",\\n   105\\t        ],\\n   106\\t        \\\"fr\\\": [\\\"fr-fr\\\"],\\n   107\\t        \\\"pt\\\": [\\\"pt-br\\\", \\\"pt-pt\\\"],\\n   108\\t        \\\"es\\\": [\\\"es-es\\\", \\\"es-us\\\"],\\n   109\\t        \\\"zh-CN\\\": [\\\"zh-cn\\\"],\\n   110\\t        \\\"zh-TW\\\": [\\\"zh-tw\\\"],\\n   111\\t    }\\n\\n--- Language tests ---\\n# -*- coding: utf-8 -*-\\nimport pytest\\nfrom gtts.lang import tts_langs, _extra_langs, _fallback_deprecated_lang\\nfrom gtts.langs import _main_langs\\n\\n\\\"\\\"\\\"Test language list\\\"\\\"\\\"\\n\\n\\ndef test_main_langs():\\n    \\\"\\\"\\\"Fetch languages successfully\\\"\\\"\\\"\\n    # Safe to assume \\u0027en\\u0027 (English) will always be there\\n    scraped_langs = _main_langs()\\n    assert \\\"en\\\" in scraped_langs\\n\\n\\ndef test_deprecated_lang():\\n    \\\"\\\"\\\"Test language deprecation fallback\\\"\\\"\\\"\\n    with pytest.deprecated_call():\\n        assert _fallback_deprecated_lang(\\\"en-gb\\\") == \\\"en\\\"\\n\\n\\nif __name__ == \\\"__main__\\\":\\n    pytest.main([\\\"-x\\\", __file__])\\n\\n--- Test configuration ---\\n[project]\\nname = \\\"gTTS\\\"\\nversion = \\\"2.5.4\\\"\\ndescription = \\\"gTTS (Google Text-to-Speech), a Python library and CLI tool to interface with Google Translate text-to-speech API\\\"\\nauthors = [{name = \\\"Pierre Nicolas Durette\\\", email = \\\"pndurette@gmail.com\\\"}]\\nrequires-python = \\\"\\u003e=3.7\\\"\\nreadme = \\\"README.md\\\"\\nlicense = {text = \\\"MIT\\\"}\\nkeywords = [\\n    \\\"gtts\\\",\\n    \\\"text to speech\\\",\\n    \\\"Google Translate\\\",\\n    \\\"TTS\\\",\\n]\\nclassifiers = [\\n    \\\"Environment :: Console\\\",\\n    \\\"Intended Audience :: Developers\\\",\\n    \\\"License :: OSI Approved :: MIT License\\\",\\n    \\\"Operating System :: MacOS\\\",\\n    \\\"Operating System :: Unix\\\",\\n    \\\"Operating System :: POSIX\\\",\\n    \\\"Operating System :: POSIX :: \",\n  \"output_tail\": \"t\\ndef test_WebRequest(tmp_path):\\n    \\\"\\\"\\\"Test Web Requests\\\"\\\"\\\"\\n\\n    text = \\\"Lorem ipsum\\\"\\n\\n    \\\"\\\"\\\"Raise gTTSError on unsupported language (without language check)\\\"\\\"\\\"\\n    lang = \\\"xx\\\"\\n    check = False\\n\\n    with pytest.raises(gTTSError):\\n        filename = tmp_path / \\\"xx.txt\\\"\\n        # Create gTTS\\n        tts = gTTS(text=text, lang=lang, lang_check=check)\\n        tts.save(filename)\\n\\n\\n@pytest.mark.net\\ndef test_timeout(tmp_path):\\n    # Check default timeout\\n    tts = gTTS(text=\\\"test\\\")\\n    assert tts.timeout is None\\n\\n    # Check passed in timeout\\n    timeout = 1.2\\n    tts = gTTS(text=\\\"test\\\", timeout=timeout)\\n    assert tts.timeout == timeout\\n\\n    # Make sure an exception is raised when a timeout occurs\\n    tts = gTTS(text=\\\"test\\\", timeout=0.000001)\\n    filename = tmp_path / \\\"save.mp3\\\"\\n    with pytest.raises(gTTSError):\\n        tts.save(filename)\\n\\n\\nif __name__ == \\\"__main__\\\":\\n    pytest.main([\\\"-x\\\", __file__])\\n\\n--- CLI network markers ---\\n68-\\n69-# \\u003call\\u003e tests\\n70:@pytest.mark.net\\n71-def test_all():\\n72-    \\\"\\\"\\\"Option \\u003call\\u003e should return a list of languages\\\"\\\"\\\"\\n73-    result = runner([\\\"--all\\\"])\\n74-\\n--\\n81-\\n82-# \\u003clang\\u003e tests\\n83:@pytest.mark.net\\n84-def test_lang_not_valid():\\n85-    \\\"\\\"\\\"Invalid \\u003clang\\u003e should display an error\\\"\\\"\\\"\\n86-    result = runner([\\\"--lang\\\", \\\"xx\\\", \\\"test\\\"])\\n87-\\n--\\n90-\\n91-\\n92:@pytest.mark.net\\n93-def test_lang_nocheck():\\n94-    \\\"\\\"\\\"Invalid \\u003clang\\u003e (with \\u003cnocheck\\u003e) should display an error message from gtts\\\"\\\"\\\"\\n95-    with LogCapture() as lc:\\n96-        result = runner_debug([\\\"--lang\\\", \\\"xx\\\", \\\"--nocheck\\\", \\\"test\\\"])\\n--\\n105-\\n106-# Param set tests\\n107:@pytest.mark.net\\n108-def test_params_set():\\n109-    \\\"\\\"\\\"Options should set gTTS instance arguments (read from debug log)\\\"\\\"\\\"\\n110-    with LogCapture() as lc:\\n111-        result = runner_debug(\\n--\\n165-\\n166-\\n167:@pytest.mark.net\\n168-def test_stdin_text():\\n169-    with LogCapture() as lc:\\n170-        result = runner_debug([\\\"-\\\"], textstdin)\\n171-        log = logcapture_str(lc)\\n--\\n175-\\n176-\\n177:@pytest.mark.net\\n178-def test_stdin_text_unicode():\\n179-    with LogCapture() as lc:\\n180-        result = runner_debug([\\\"-\\\"], textstdin_unicode)\\n181-        log = logcapture_str(lc)\\n--\\n185-\\n186-\\n187:@pytest.mark.net\\n188-def test_stdin_file():\\n189-    with LogCapture() as lc:\\n190-        result = runner_debug([\\\"--file\\\", \\\"-\\\"], textstdin)\\n191-        log = logcapture_str(lc)\\n--\\n195-\\n196-\\n197:@pytest.mark.net\\n198-def test_stdin_file_unicode():\\n199-    with LogCapture() as lc:\\n200-        result = runner_debug([\\\"--file\\\", \\\"-\\\"], textstdin_unicode)\\n201-        log = logcapture_str(lc)\\n--\\n205-\\n206-\\n207:@pytest.mark.net\\n208-def test_text():\\n209-    with LogCapture() as lc:\\n210-        result = runner_debug([text])\\n211-        log = logcapture_str(lc)\\n--\\n215-\\n216-\\n217:@pytest.mark.net\\n218-def test_text_unicode():\\n219-    with LogCapture() as lc:\\n220-        result = runner_debug([text_unicode])\\n221-        log = logcapture_str(lc)\\n--\\n225-\\n226-\\n227:@pytest.mark.net\\n228-def test_file_ascii():\\n229-    with LogCapture() as lc:\\n230-        result = runner_debug([\\\"--file\\\", textfile_ascii])\\n231-        log = logcapture_str(lc)\\n--\\n235-\\n236-\\n237:@pytest.mark.net\\n238-def test_file_utf8():\\n239-    with LogCapture() as lc:\\n240-        result = runner_debug([\\\"--file\\\", textfile_utf8])\\n241-        log = logcapture_str(lc)\\n--\\n245-\\n246-\\n247:@pytest.mark.net\\n248-def test_stdout():\\n249-    result = runner([\\\"test\\\"])\\n250-\\n251-    # The MP3 encoding (LAME 3.99.5) used to leave a signature in the raw output\\n--\\n254-\\n255-\\n256:@pytest.mark.net\\n257-def test_file(tmp_path):\\n258-    filename = tmp_path / \\\"out.mp3\\\"\\n259-\\n260-    result = runner([\\\"test\\\", \\\"--output\\\", str(filename)])\\n\\n--- Contribution guide ---\\nContributing\\n============\\n\\nReporting Issues\\n----------------\\n\\nOn the Github issues_ page. Thanks!\\n\\nSubmitting Patches\\n------------------\\n\\n1. **Fork**. Follow `PEP 8 \\u003chttps://www.python.org/dev/peps/pep-0008/\\u003e`_!\\n2. **Write/Update tests** (see below).\\n3. **Document**. Docstrings follow the `Google Python Style Guide`_ (docs by Sphinx_).\\n   You can \\u0027test\\u0027 documentation::\\n\\n     $ pip install .[docs]\\n     $ cd docs \\u0026\\u0026 make html # generated in docs/_build/html/\\n\\n4. **Open Pull Request**. To the ``main`` branch.\\n\\n.. note:: | Please don\\u0027t hesitate to contribute! While good tests, docs and structure are\\n          | encouraged, I do welcome great ideas over absolute comformity to the above!\\n          | Thanks! \\u2764\\ufe0f\\n\\nTesting\\n-------\\n\\n| Testing is done with the ``unittest`` framework.\\n| As a rule, the file ``./tests/test_\\u003cmodule\\u003e.py`` file tests the ``\\u003cmodule\\u003e`` module.\\n\\nTo run all tests (testing only language \\u0027en\\u0027 and generating an html coverage\\nreport in ``gtts/htmlcov/``)::\\n\\n  $ pip install .[tests]\\n  $ TEST_LANGS=en pytest -v -s gtts/ --cov=gtts --cov-report=html\\n\\n.. _repo: https://github.com/pndurette/gTTS/\\n.. _issues: https://github.com/pndurette/gTTS/issues\\n\\n.. _Google Python Style Guide: http://google.github.io/styleguide/pyguide.html#Comments\\n.. _Sphinx: http://www.sphinx-doc.org/\\n.. _towncrier: https://github.com/hawkowl/towncrier\\n\",\n  \"elided_chars\": 6933,\n  \"warning\": \"Output too long.\"\n}",
+      "extra": {
+        "raw_output": "\n--- gtts/lang.py ---\n     1\t# -*- coding: utf-8 -*-\n     2\tfrom gtts.langs import _main_langs\n     3\tfrom warnings import warn\n     4\timport logging\n     5\t\n     6\t__all__ = [\"tts_langs\"]\n     7\t\n     8\t# Logger\n     9\tlog = logging.getLogger(__name__)\n    10\tlog.addHandler(logging.NullHandler())\n    11\t\n    12\t\n    13\tdef tts_langs():\n    14\t    \"\"\"Languages Google Text-to-Speech supports.\n    15\t\n    16\t    Returns:\n    17\t        dict: A dictionary of the type `{ '<lang>': '<name>'}`\n    18\t\n    19\t            Where `<lang>` is an IETF language tag such as `en` or `zh-TW`,\n    20\t            and `<name>` is the full English name of the language, such as\n    21\t            `English` or `Chinese (Mandarin/Taiwan)`.\n    22\t\n    23\t    The dictionary returned combines languages from two origins:\n    24\t\n    25\t    - Languages fetched from Google Translate (pre-generated in :mod:`gtts.langs`)\n    26\t    - Languages that are undocumented variations that were observed to work and\n    27\t      present different dialects or accents.\n    28\t\n    29\t    \"\"\"\n    30\t    langs = dict()\n    31\t    langs.update(_main_langs())\n    32\t    langs.update(_extra_langs())\n    33\t    log.debug(\"langs: {}\".format(langs))\n    34\t    return langs\n    35\t\n    36\t\n    37\tdef _extra_langs():\n    38\t    \"\"\"Define extra languages.\n    39\t\n    40\t    Returns:\n    41\t        dict: A dictionary of extra languages manually defined.\n    42\t\n    43\t            Variations of the ones generated in `_main_langs`,\n    44\t            observed to provide different dialects or accents or\n    45\t            just simply accepted by the Google Translate Text-to-Speech API.\n    46\t\n    47\t    \"\"\"\n    48\t    return {\n    49\t        # Chinese\n    50\t        \"zh-TW\": \"Chinese (Mandarin/Taiwan)\",\n    51\t        \"zh\": \"Chinese (Mandarin)\",\n    52\t    }\n    53\t\n    54\t\n    55\tdef _fallback_deprecated_lang(lang):\n    56\t    \"\"\"Languages Google Text-to-Speech used to support.\n    57\t\n    58\t    Language tags that don't work anymore, but that can\n    59\t    fallback to a more general language code to maintain\n    60\t    compatibility.\n    61\t\n    62\t    Args:\n    63\t        lang (string): The language tag.\n    64\t\n    65\t    Returns:\n    66\t        string: The language tag, as-is if not deprecated,\n    67\t            or a fallback if it exits.\n    68\t\n    69\t    Example:\n    70\t        ``en-GB`` returns ``en``.\n    71\t        ``en-gb`` returns ``en``.\n    72\t\n    73\t    \"\"\"\n    74\t\n    75\t    for fallback_lang, deprecated_langs in deprecated.items():\n    76\t        if lang.lower() in deprecated_langs:\n    77\t            msg = (\n    78\t                \"'{}' has been deprecated, falling back to '{}'. \"\n    79\t                \"This fallback will be removed in a future version.\"\n    80\t            ).format(lang, fallback_lang)\n    81\t\n    82\t            warn(msg, DeprecationWarning)\n    83\t            log.warning(msg)\n    84\t\n    85\t            return fallback_lang\n    86\t\n    87\t    return lang\n    88\t\n    89\t    deprecated = {\n    90\t        # '<fallback>': [<list of deprecated langs>]\n    91\t        \"en\": [\n    92\t            \"en-us\",\n    93\t            \"en-ca\",\n    94\t            \"en-uk\",\n    95\t            \"en-gb\",\n    96\t            \"en-au\",\n    97\t            \"en-gh\",\n    98\t            \"en-in\",\n    99\t            \"en-ie\",\n   100\t            \"en-nz\",\n   101\t            \"en-ng\",\n   102\t            \"en-ph\",\n   103\t            \"en-za\",\n   104\t            \"en-tz\",\n   105\t        ],\n   106\t        \"fr\": [\"fr-fr\"],\n   107\t        \"pt\": [\"pt-br\", \"pt-pt\"],\n   108\t        \"es\": [\"es-es\", \"es-us\"],\n   109\t        \"zh-CN\": [\"zh-cn\"],\n   110\t        \"zh-TW\": [\"zh-tw\"],\n   111\t    }\n\n--- Language tests ---\n# -*- coding: utf-8 -*-\nimport pytest\nfrom gtts.lang import tts_langs, _extra_langs, _fallback_deprecated_lang\nfrom gtts.langs import _main_langs\n\n\"\"\"Test language list\"\"\"\n\n\ndef test_main_langs():\n    \"\"\"Fetch languages successfully\"\"\"\n    # Safe to assume 'en' (English) will always be there\n    scraped_langs = _main_langs()\n    assert \"en\" in scraped_langs\n\n\ndef test_deprecated_lang():\n    \"\"\"Test language deprecation fallback\"\"\"\n    with pytest.deprecated_call():\n        assert _fallback_deprecated_lang(\"en-gb\") == \"en\"\n\n\nif __name__ == \"__main__\":\n    pytest.main([\"-x\", __file__])\n\n--- Test configuration ---\n[project]\nname = \"gTTS\"\nversion = \"2.5.4\"\ndescription = \"gTTS (Google Text-to-Speech), a Python library and CLI tool to interface with Google Translate text-to-speech API\"\nauthors = [{name = \"Pierre Nicolas Durette\", email = \"pndurette@gmail.com\"}]\nrequires-python = \">=3.7\"\nreadme = \"README.md\"\nlicense = {text = \"MIT\"}\nkeywords = [\n    \"gtts\",\n    \"text to speech\",\n    \"Google Translate\",\n    \"TTS\",\n]\nclassifiers = [\n    \"Environment :: Console\",\n    \"Intended Audience :: Developers\",\n    \"License :: OSI Approved :: MIT License\",\n    \"Operating System :: MacOS\",\n    \"Operating System :: Unix\",\n    \"Operating System :: POSIX\",\n    \"Operating System :: POSIX :: Linux\",\n    \"Operating System :: Microsoft :: Windows\",\n    \"Programming Language :: Python :: 3.8\",\n    \"Programming Language :: Python :: 3.9\",\n    \"Programming Language :: Python :: 3.10\",\n    \"Programming Language :: Python :: 3.11\",\n    \"Programming Language :: Python :: 3.12\",\n    \"Topic :: Software Development :: Libraries\",\n    \"Topic :: Multimedia :: Sound/Audio :: Speech\",\n]\ndependencies = [\n    \"requests >=2.27, <3\",  # https://docs.python-requests.org/en/latest/community/updates/\n    \"click >=7.1, <8.2\",    # https://click.palletsprojects.com/en/latest/changes/\n]\n\n# TODO: release-please [yet] doesn't support dynamic version for pyproject.toml\n# https://github.com/googleapis/release-please/blob/909d310defdf24adfd4858bbe1604668c14ef77f/src/updaters/python/pyproject-toml.ts#L54\n# dynamic = [\"version\"]\n# [tool.setuptools.dynamic]\n# version = {attr = \"gtts.version.__version__\"}\n\n[project.optional-dependencies]\ntests = [\n    \"pytest >= 7.1.3,< 8.4.0\",\n    \"pytest-cov\",\n    \"testfixtures\",\n]\ndocs = [\n    \"sphinx\",\n    \"sphinx-autobuild\",\n    \"sphinx_rtd_theme\",\n    \"sphinx-click\",\n    \"sphinx-mdinclude\"\n]\n\n[project.scripts]\ngtts-cli = \"gtts.cli:tts_cli\"\n\n[project.urls]\nhomepage = \"https://github.com/pndurette/gTTS\"\ndocumentation = \"https://gtts.readthedocs.io\"\nrepository = \"https://github.com/pndurette/gTTS\"\nchangelog = \"https://github.com/pndurette/gTTS/blob/main/CHANGELOG.md\"\n\n[tool.setuptools.package-data]\n# Tests support files\n\"gtts.tests.input_files\" = [\"*.txt\"]\n\n[tool.coverage.run]\nomit = [\n    \"gtts/tests/*\",\n    \"gtts/tokenizer/tests/*\",\n]\n\n[tool.coverage.report]\nexclude_lines = [\n    \"pragma: no cover\",\n    \"def __repr__\",\n    \"log.debug\",\n    \"log.warning\",\n]\n\n[tool.pytest.ini_options]\nmarkers = [\"net: marks tests that call use the net (using the URL endpoint, deselect with '-m \\\"not net\\\"')\"]\n\n[build-system]\nrequires = [\"setuptools>=61\", \"wheel\"]\nbuild-backend = \"setuptools.build_meta\"\n\n--- TTS tests ---\n# -*- coding: utf-8 -*-\nimport os\nimport pytest\nfrom unittest.mock import Mock\n\nfrom gtts.tts import gTTS, gTTSError\nfrom gtts.langs import _main_langs\nfrom gtts.lang import _extra_langs\n\n# Testing all languages takes some time.\n# Set TEST_LANGS envvar to choose languages to test.\n#  * 'main': Languages extracted from the Web\n#  * 'extra': Language set in Languages.EXTRA_LANGS\n#  * 'all': All of the above\n#  * <csv>: Languages tags list to test\n# Unset TEST_LANGS to test everything ('all')\n# See: langs_dict()\n\n\n\"\"\"Construct a dict of suites of languages to test.\n{ '<suite name>' : <list or dict of language tags> }\n\nex.: { 'fetch' : {'en': 'English', 'fr': 'French'},\n       'extra' : {'en': 'English', 'fr': 'French'} }\nex.: { 'environ' : ['en', 'fr'] }\n\"\"\"\nenv = os.environ.get(\"TEST_LANGS\")\nif not env or env == \"all\":\n    langs = _main_langs()\n    langs.update(_extra_langs())\nelif env == \"main\":\n    langs = _main_langs()\nelif env == \"extra\":\n    langs = _extra_langs()\nelse:\n    env_langs = {l: l for l in env.split(\",\") if l}\n    langs = env_langs\n\n\n@pytest.mark.net\n@pytest.mark.parametrize(\"lang\", langs.keys(), ids=list(langs.values()))\ndef test_TTS(tmp_path, lang):\n    \"\"\"Test all supported languages and file save\"\"\"\n\n    text = \"This is a test\"\n    \"\"\"Create output .mp3 file successfully\"\"\"\n    for slow in (False, True):\n        filename = tmp_path / \"test_{}_.mp3\".format(lang)\n        # Create gTTS and save\n        tts = gTTS(text=text, lang=lang, slow=slow, lang_check=False)\n        tts.save(filename)\n\n        # Check if files created is > 1.5\n        assert filename.stat().st_size > 1500\n\n\n@pytest.mark.net\ndef test_unsupported_language_check():\n    \"\"\"Raise ValueError on unsupported language (with language check)\"\"\"\n    lang = \"xx\"\n    text = \"Lorem ipsum\"\n    check = True\n    with pytest.raises(ValueError):\n        gTTS(text=text, lang=lang, lang_check=check)\n\n\ndef test_empty_string():\n    \"\"\"Raise AssertionError on empty string\"\"\"\n    text = \"\"\n    with pytest.raises(AssertionError):\n        gTTS(text=text)\n\n\ndef test_no_text_parts(tmp_path):\n    \"\"\"Raises AssertionError on no content to send to API (no text_parts)\"\"\"\n    text = \"                                                                                                          ..,\\n\"\n    with pytest.raises(AssertionError):\n        filename = tmp_path / \"no_content.txt\"\n        tts = gTTS(text=text)\n        tts.save(filename)\n\n\n# Test write_to_fp()/save() cases not covered elsewhere in this file\n\n\n@pytest.mark.net\ndef test_bad_fp_type():\n    \"\"\"Raise TypeError if fp is not a file-like object (no .write())\"\"\"\n    # Create gTTS and save\n    tts = gTTS(text=\"test\")\n    with pytest.raises(TypeError):\n        tts.write_to_fp(5)\n\n\n@pytest.mark.net\ndef test_save(tmp_path):\n    \"\"\"Save .mp3 file successfully\"\"\"\n    filename = tmp_path / \"save.mp3\"\n    # Create gTTS and save\n    tts = gTTS(text=\"test\")\n    tts.save(filename)\n\n    # Check if file created is > 2k\n    assert filename.stat().st_size > 2000\n\n\n@pytest.mark.net\ndef test_get_bodies():\n    \"\"\"get request bodies list\"\"\"\n    tts = gTTS(text=\"test\", tld=\"com\", lang=\"en\")\n    body = tts.get_bodies()[0]\n    assert \"test\" in body\n    # \\\"en\\\" url-encoded\n    assert \"%5C%22en%5C%22\" in body\n\n\ndef test_msg():\n    \"\"\"Test gTTsError internal exception handling\n    Set exception message successfully\"\"\"\n    error1 = gTTSError(\"test\")\n    assert \"test\" == error1.msg\n\n    error2 = gTTSError()\n    assert error2.msg is None\n\n\ndef test_infer_msg():\n    \"\"\"Infer message successfully based on context\"\"\"\n\n    # Without response:\n\n    # Bad TLD\n    ttsTLD = Mock(tld=\"invalid\")\n    errorTLD = gTTSError(tts=ttsTLD)\n    assert (\n        errorTLD.msg\n        == \"Failed to connect. Probable cause: Host 'https://translate.google.invalid/' is not reachable\"\n    )\n\n    # With response:\n\n    # 403\n    tts403 = Mock()\n    response403 = Mock(status_code=403, reason=\"aaa\")\n    error403 = gTTSError(tts=tts403, response=response403)\n    assert (\n        error403.msg\n        == \"403 (aaa) from TTS API. Probable cause: Bad token or upstream API changes\"\n    )\n\n    # 200 (and not lang_check)\n    tts200 = Mock(lang=\"xx\", lang_check=False)\n    response404 = Mock(status_code=200, reason=\"bbb\")\n    error200 = gTTSError(tts=tts200, response=response404)\n    assert (\n        error200.msg\n        == \"200 (bbb) from TTS API. Probable cause: No audio stream in response. Unsupported language 'xx'\"\n    )\n\n    # >= 500\n    tts500 = Mock()\n    response500 = Mock(status_code=500, reason=\"ccc\")\n    error500 = gTTSError(tts=tts500, response=response500)\n    assert (\n        error500.msg\n        == \"500 (ccc) from TTS API. Probable cause: Upstream API error. Try again later.\"\n    )\n\n    # Unknown (ex. 100)\n    tts100 = Mock()\n    response100 = Mock(status_code=100, reason=\"ddd\")\n    error100 = gTTSError(tts=tts100, response=response100)\n    assert error100.msg == \"100 (ddd) from TTS API. Probable cause: Unknown\"\n\n\n@pytest.mark.net\ndef test_WebRequest(tmp_path):\n    \"\"\"Test Web Requests\"\"\"\n\n    text = \"Lorem ipsum\"\n\n    \"\"\"Raise gTTSError on unsupported language (without language check)\"\"\"\n    lang = \"xx\"\n    check = False\n\n    with pytest.raises(gTTSError):\n        filename = tmp_path / \"xx.txt\"\n        # Create gTTS\n        tts = gTTS(text=text, lang=lang, lang_check=check)\n        tts.save(filename)\n\n\n@pytest.mark.net\ndef test_timeout(tmp_path):\n    # Check default timeout\n    tts = gTTS(text=\"test\")\n    assert tts.timeout is None\n\n    # Check passed in timeout\n    timeout = 1.2\n    tts = gTTS(text=\"test\", timeout=timeout)\n    assert tts.timeout == timeout\n\n    # Make sure an exception is raised when a timeout occurs\n    tts = gTTS(text=\"test\", timeout=0.000001)\n    filename = tmp_path / \"save.mp3\"\n    with pytest.raises(gTTSError):\n        tts.save(filename)\n\n\nif __name__ == \"__main__\":\n    pytest.main([\"-x\", __file__])\n\n--- CLI network markers ---\n68-\n69-# <all> tests\n70:@pytest.mark.net\n71-def test_all():\n72-    \"\"\"Option <all> should return a list of languages\"\"\"\n73-    result = runner([\"--all\"])\n74-\n--\n81-\n82-# <lang> tests\n83:@pytest.mark.net\n84-def test_lang_not_valid():\n85-    \"\"\"Invalid <lang> should display an error\"\"\"\n86-    result = runner([\"--lang\", \"xx\", \"test\"])\n87-\n--\n90-\n91-\n92:@pytest.mark.net\n93-def test_lang_nocheck():\n94-    \"\"\"Invalid <lang> (with <nocheck>) should display an error message from gtts\"\"\"\n95-    with LogCapture() as lc:\n96-        result = runner_debug([\"--lang\", \"xx\", \"--nocheck\", \"test\"])\n--\n105-\n106-# Param set tests\n107:@pytest.mark.net\n108-def test_params_set():\n109-    \"\"\"Options should set gTTS instance arguments (read from debug log)\"\"\"\n110-    with LogCapture() as lc:\n111-        result = runner_debug(\n--\n165-\n166-\n167:@pytest.mark.net\n168-def test_stdin_text():\n169-    with LogCapture() as lc:\n170-        result = runner_debug([\"-\"], textstdin)\n171-        log = logcapture_str(lc)\n--\n175-\n176-\n177:@pytest.mark.net\n178-def test_stdin_text_unicode():\n179-    with LogCapture() as lc:\n180-        result = runner_debug([\"-\"], textstdin_unicode)\n181-        log = logcapture_str(lc)\n--\n185-\n186-\n187:@pytest.mark.net\n188-def test_stdin_file():\n189-    with LogCapture() as lc:\n190-        result = runner_debug([\"--file\", \"-\"], textstdin)\n191-        log = logcapture_str(lc)\n--\n195-\n196-\n197:@pytest.mark.net\n198-def test_stdin_file_unicode():\n199-    with LogCapture() as lc:\n200-        result = runner_debug([\"--file\", \"-\"], textstdin_unicode)\n201-        log = logcapture_str(lc)\n--\n205-\n206-\n207:@pytest.mark.net\n208-def test_text():\n209-    with LogCapture() as lc:\n210-        result = runner_debug([text])\n211-        log = logcapture_str(lc)\n--\n215-\n216-\n217:@pytest.mark.net\n218-def test_text_unicode():\n219-    with LogCapture() as lc:\n220-        result = runner_debug([text_unicode])\n221-        log = logcapture_str(lc)\n--\n225-\n226-\n227:@pytest.mark.net\n228-def test_file_ascii():\n229-    with LogCapture() as lc:\n230-        result = runner_debug([\"--file\", textfile_ascii])\n231-        log = logcapture_str(lc)\n--\n235-\n236-\n237:@pytest.mark.net\n238-def test_file_utf8():\n239-    with LogCapture() as lc:\n240-        result = runner_debug([\"--file\", textfile_utf8])\n241-        log = logcapture_str(lc)\n--\n245-\n246-\n247:@pytest.mark.net\n248-def test_stdout():\n249-    result = runner([\"test\"])\n250-\n251-    # The MP3 encoding (LAME 3.99.5) used to leave a signature in the raw output\n--\n254-\n255-\n256:@pytest.mark.net\n257-def test_file(tmp_path):\n258-    filename = tmp_path / \"out.mp3\"\n259-\n260-    result = runner([\"test\", \"--output\", str(filename)])\n\n--- Contribution guide ---\nContributing\n============\n\nReporting Issues\n----------------\n\nOn the Github issues_ page. Thanks!\n\nSubmitting Patches\n------------------\n\n1. **Fork**. Follow `PEP 8 <https://www.python.org/dev/peps/pep-0008/>`_!\n2. **Write/Update tests** (see below).\n3. **Document**. Docstrings follow the `Google Python Style Guide`_ (docs by Sphinx_).\n   You can 'test' documentation::\n\n     $ pip install .[docs]\n     $ cd docs && make html # generated in docs/_build/html/\n\n4. **Open Pull Request**. To the ``main`` branch.\n\n.. note:: | Please don't hesitate to contribute! While good tests, docs and structure are\n          | encouraged, I do welcome great ideas over absolute comformity to the above!\n          | Thanks! ❤️\n\nTesting\n-------\n\n| Testing is done with the ``unittest`` framework.\n| As a rule, the file ``./tests/test_<module>.py`` file tests the ``<module>`` module.\n\nTo run all tests (testing only language 'en' and generating an html coverage\nreport in ``gtts/htmlcov/``)::\n\n  $ pip install .[tests]\n  $ TEST_LANGS=en pytest -v -s gtts/ --cov=gtts --cov-report=html\n\n.. _repo: https://github.com/pndurette/gTTS/\n.. _issues: https://github.com/pndurette/gTTS/issues\n\n.. _Google Python Style Guide: http://google.github.io/styleguide/pyguide.html#Comments\n.. _Sphinx: http://www.sphinx-doc.org/\n.. _towncrier: https://github.com/hawkowl/towncrier\n",
+        "returncode": 0,
+        "timestamp": 1793481728.663859,
+        "exception_info": ""
+      },
+      "tool_call_id": "call_c8ofgoJqyQKYAhoIYOBat2sT",
+      "role": "tool"
+    },
+    {
+      "content": "The `deprecated` dictionary is assigned after an unconditional `return`, so the lookup uses it before it can ever be initialized. This affects ordinary language codes too. I’ll reproduce the failure, then move the dictionary before the lookup without changing the fallback rules.\n",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"command\":\"cd /testbed && printf '\\\\n--- Test settings ---\\\\n' && sed -n '40,150p' pyproject.toml && printf '\\\\n--- TTS unit tests ---\\\\n' && sed -n '1,175p' gtts/tests/test_tts.py && printf '\\\\n--- Reproduction script ---\\\\n' && cat > /tmp/reproduce_gtts_language_fallback.py <<'PY'\\nimport warnings\\n\\nfrom gtts import gTTS\\n\\nfor lang, expected in [\\n    (\\\"zh-cn\\\", \\\"zh-CN\\\"),\\n    (\\\"zh-tw\\\", \\\"zh-TW\\\"),\\n    (\\\"es-es\\\", \\\"es\\\"),\\n    (\\\"es-us\\\", \\\"es\\\"),\\n    (\\\"en-gb\\\", \\\"en\\\"),\\n]:\\n    with warnings.catch_warnings(record=True) as caught:\\n        warnings.simplefilter(\\\"always\\\", DeprecationWarning)\\n        tts = gTTS(text=\\\"Hello world\\\", lang=lang)\\n    assert tts.lang == expected, (lang, tts.lang)\\n    assert len(caught) == 1, (lang, caught)\\n    assert caught[0].category is DeprecationWarning\\n    assert \\\"falling back to '{}'\\\".format(expected) in str(caught[0].message)\\n    print(\\\"{} -> {} (with deprecation warning)\\\".format(lang, tts.lang))\\n\\nwith warnings.catch_warnings(record=True) as caught:\\n    warnings.simplefilter(\\\"always\\\")\\n    tts = gTTS(text=\\\"Hello world\\\", lang=\\\"en\\\")\\nassert tts.lang == \\\"en\\\"\\nassert not caught\\nprint(\\\"en -> en (without warning)\\\")\\nPY\\nPYTHONPATH=/testbed python /tmp/reproduce_gtts_language_fallback.py\"}",
+            "name": "bash"
+          },
+          "id": "call_eW1lEs03J7GheMyqHgCqJ62w",
+          "type": "function"
+        }
+      ],
+      "function_call": null,
+      "provider_specific_fields": null,
+      "extra": {
+        "actions": [
+          {
+            "command": "cd /testbed && printf '\\n--- Test settings ---\\n' && sed -n '40,150p' pyproject.toml && printf '\\n--- TTS unit tests ---\\n' && sed -n '1,175p' gtts/tests/test_tts.py && printf '\\n--- Reproduction script ---\\n' && cat > /tmp/reproduce_gtts_language_fallback.py <<'PY'\nimport warnings\n\nfrom gtts import gTTS\n\nfor lang, expected in [\n    (\"zh-cn\", \"zh-CN\"),\n    (\"zh-tw\", \"zh-TW\"),\n    (\"es-es\", \"es\"),\n    (\"es-us\", \"es\"),\n    (\"en-gb\", \"en\"),\n]:\n    with warnings.catch_warnings(record=True) as caught:\n        warnings.simplefilter(\"always\", DeprecationWarning)\n        tts = gTTS(text=\"Hello world\", lang=lang)\n    assert tts.lang == expected, (lang, tts.lang)\n    assert len(caught) == 1, (lang, caught)\n    assert caught[0].category is DeprecationWarning\n    assert \"falling back to '{}'\".format(expected) in str(caught[0].message)\n    print(\"{} -> {} (with deprecation warning)\".format(lang, tts.lang))\n\nwith warnings.catch_warnings(record=True) as caught:\n    warnings.simplefilter(\"always\")\n    tts = gTTS(text=\"Hello world\", lang=\"en\")\nassert tts.lang == \"en\"\nassert not caught\nprint(\"en -> en (without warning)\")\nPY\nPYTHONPATH=/testbed python /tmp/reproduce_gtts_language_fallback.py",
+            "tool_call_id": "call_eW1lEs03J7GheMyqHgCqJ62w"
+          }
+        ],
+        "response": {
+          "id": "resp_058c8d78817ac366016ae65c0262448190ba6c35e4261cde61",
+          "created": 1793481753,
+          "model": "gpt-6.1-sol",
+          "object": "chat.completion",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "index": 0,
+              "message": {
+                "content": "The `deprecated` dictionary is assigned after an unconditional `return`, so the lookup uses it before it can ever be initialized. This affects ordinary language codes too. I’ll reproduce the failure, then move the dictionary before the lookup without changing the fallback rules.\n",
+                "role": "assistant",
+                "tool_calls": [
+                  {
+                    "function": {
+                      "arguments": "{\"command\":\"cd /testbed && printf '\\\\n--- Test settings ---\\\\n' && sed -n '40,150p' pyproject.toml && printf '\\\\n--- TTS unit tests ---\\\\n' && sed -n '1,175p' gtts/tests/test_tts.py && printf '\\\\n--- Reproduction script ---\\\\n' && cat > /tmp/reproduce_gtts_language_fallback.py <<'PY'\\nimport warnings\\n\\nfrom gtts import gTTS\\n\\nfor lang, expected in [\\n    (\\\"zh-cn\\\", \\\"zh-CN\\\"),\\n    (\\\"zh-tw\\\", \\\"zh-TW\\\"),\\n    (\\\"es-es\\\", \\\"es\\\"),\\n    (\\\"es-us\\\", \\\"es\\\"),\\n    (\\\"en-gb\\\", \\\"en\\\"),\\n]:\\n    with warnings.catch_warnings(record=True) as caught:\\n        warnings.simplefilter(\\\"always\\\", DeprecationWarning)\\n        tts = gTTS(text=\\\"Hello world\\\", lang=lang)\\n    assert tts.lang == expected, (lang, tts.lang)\\n    assert len(caught) == 1, (lang, caught)\\n    assert caught[0].category is DeprecationWarning\\n    assert \\\"falling back to '{}'\\\".format(expected) in str(caught[0].message)\\n    print(\\\"{} -> {} (with deprecation warning)\\\".format(lang, tts.lang))\\n\\nwith warnings.catch_warnings(record=True) as caught:\\n    warnings.simplefilter(\\\"always\\\")\\n    tts = gTTS(text=\\\"Hello world\\\", lang=\\\"en\\\")\\nassert tts.lang == \\\"en\\\"\\nassert not caught\\nprint(\\\"en -> en (without warning)\\\")\\nPY\\nPYTHONPATH=/testbed python /tmp/reproduce_gtts_language_fallback.py\"}",
+                      "name": "bash"
+                    },
+                    "id": "call_eW1lEs03J7GheMyqHgCqJ62w",
+                    "type": "function"
+                  }
+                ],
+                "function_call": null
+              }
+            }
+          ],
+          "usage": {
+            "completion_tokens": 990,
+            "prompt_tokens": 8386,
+            "total_tokens": 0,
+            "completion_tokens_details": null,
+            "prompt_tokens_details": null
+          }
+        },
+        "cost": 0.0196795,
+        "timestamp": 1793481753.60196
+      }
+    },
+    {
+      "content": "{\n  \"returncode\": 1,\n  \"output\": \"\\n--- Test settings ---\\n# [tool.setuptools.dynamic]\\n# version = {attr = \\\"gtts.version.__version__\\\"}\\n\\n[project.optional-dependencies]\\ntests = [\\n    \\\"pytest \\u003e= 7.1.3,\\u003c 8.4.0\\\",\\n    \\\"pytest-cov\\\",\\n    \\\"testfixtures\\\",\\n]\\ndocs = [\\n    \\\"sphinx\\\",\\n    \\\"sphinx-autobuild\\\",\\n    \\\"sphinx_rtd_theme\\\",\\n    \\\"sphinx-click\\\",\\n    \\\"sphinx-mdinclude\\\"\\n]\\n\\n[project.scripts]\\ngtts-cli = \\\"gtts.cli:tts_cli\\\"\\n\\n[project.urls]\\nhomepage = \\\"https://github.com/pndurette/gTTS\\\"\\ndocumentation = \\\"https://gtts.readthedocs.io\\\"\\nrepository = \\\"https://github.com/pndurette/gTTS\\\"\\nchangelog = \\\"https://github.com/pndurette/gTTS/blob/main/CHANGELOG.md\\\"\\n\\n[tool.setuptools.package-data]\\n# Tests support files\\n\\\"gtts.tests.input_files\\\" = [\\\"*.txt\\\"]\\n\\n[tool.coverage.run]\\nomit = [\\n    \\\"gtts/tests/*\\\",\\n    \\\"gtts/tokenizer/tests/*\\\",\\n]\\n\\n[tool.coverage.report]\\nexclude_lines = [\\n    \\\"pragma: no cover\\\",\\n    \\\"def __repr__\\\",\\n    \\\"log.debug\\\",\\n    \\\"log.warning\\\",\\n]\\n\\n[tool.pytest.ini_options]\\nmarkers = [\\\"net: marks tests that call use the net (using the URL endpoint, deselect with \\u0027-m \\\\\\\"not net\\\\\\\"\\u0027)\\\"]\\n\\n[build-system]\\nrequires = [\\\"setuptools\\u003e=61\\\", \\\"wheel\\\"]\\nbuild-backend = \\\"setuptools.build_meta\\\"\\n\\n--- TTS unit tests ---\\n# -*- coding: utf-8 -*-\\nimport os\\nimport pytest\\nfrom unittest.mock import Mock\\n\\nfrom gtts.tts import gTTS, gTTSError\\nfrom gtts.langs import _main_langs\\nfrom gtts.lang import _extra_langs\\n\\n# Testing all languages takes some time.\\n# Set TEST_LANGS envvar to choose languages to test.\\n#  * \\u0027main\\u0027: Languages extracted from the Web\\n#  * \\u0027extra\\u0027: Language set in Languages.EXTRA_LANGS\\n#  * \\u0027all\\u0027: All of the above\\n#  * \\u003ccsv\\u003e: Languages tags list to test\\n# Unset TEST_LANGS to test everything (\\u0027all\\u0027)\\n# See: langs_dict()\\n\\n\\n\\\"\\\"\\\"Construct a dict of suites of languages to test.\\n{ \\u0027\\u003csuite name\\u003e\\u0027 : \\u003clist or dict of language tags\\u003e }\\n\\nex.: { \\u0027fetch\\u0027 : {\\u0027en\\u0027: \\u0027English\\u0027, \\u0027fr\\u0027: \\u0027French\\u0027},\\n       \\u0027extra\\u0027 : {\\u0027en\\u0027: \\u0027English\\u0027, \\u0027fr\\u0027: \\u0027French\\u0027} }\\nex.: { \\u0027environ\\u0027 : [\\u0027en\\u0027, \\u0027fr\\u0027] }\\n\\\"\\\"\\\"\\nenv = os.environ.get(\\\"TEST_LANGS\\\")\\nif not env or env == \\\"all\\\":\\n    langs = _main_langs()\\n    langs.update(_extra_langs())\\nelif env == \\\"main\\\":\\n    langs = _main_langs()\\nelif env == \\\"extra\\\":\\n    langs = _extra_langs()\\nelse:\\n    env_langs = {l: l for l in env.split(\\\",\\\") if l}\\n    langs = env_langs\\n\\n\\n@pytest.mark.net\\n@pytest.mark.parametrize(\\\"lang\\\", langs.keys(), ids=list(langs.values()))\\ndef test_TTS(tmp_path, lang):\\n    \\\"\\\"\\\"Test all supported languages and file save\\\"\\\"\\\"\\n\\n    text = \\\"This is a test\\\"\\n    \\\"\\\"\\\"Create output .mp3 file successfully\\\"\\\"\\\"\\n    for slow in (False, True):\\n        filename = tmp_path / \\\"test_{}_.mp3\\\".format(lang)\\n        # Create gTTS and save\\n        tts = gTTS(text=text, lang=lang, slow=slow, lang_check=False)\\n        tts.save(filename)\\n\\n        # Check if files created is \\u003e 1.5\\n        assert filename.stat().st_size \\u003e 1500\\n\\n\\n@pytest.mark.net\\ndef test_unsupported_language_check():\\n    \\\"\\\"\\\"Raise ValueError on unsupported language (with language check)\\\"\\\"\\\"\\n    lang = \\\"xx\\\"\\n    text = \\\"Lorem ipsum\\\"\\n    check = True\\n    with pytest.raises(ValueError):\\n        gTTS(text=text, lang=lang, lang_check=check)\\n\\n\\ndef test_empty_string():\\n    \\\"\\\"\\\"Raise AssertionError on empty string\\\"\\\"\\\"\\n    text = \\\"\\\"\\n    with pytest.raises(AssertionError):\\n        gTTS(text=text)\\n\\n\\ndef test_no_text_parts(tmp_path):\\n    \\\"\\\"\\\"Raises AssertionError on no content to send to API (no text_parts)\\\"\\\"\\\"\\n    text = \\\"                                                                                                          ..,\\\\n\\\"\\n    with pytest.raises(AssertionError):\\n        filename = tmp_path / \\\"no_content.txt\\\"\\n        tts = gTTS(text=text)\\n        tts.save(filename)\\n\\n\\n# Test write_to_fp()/save() cases not covered elsewhere in this file\\n\\n\\n@pytest.mark.net\\ndef test_bad_fp_type():\\n    \\\"\\\"\\\"Raise TypeError if fp is not a file-like object (no .write())\\\"\\\"\\\"\\n    # Create gTTS and save\\n    tts = gTTS(text=\\\"test\\\")\\n    with pytest.raises(TypeError):\\n        tts.write_to_fp(5)\\n\\n\\n@pytest.mark.net\\ndef test_save(tmp_path):\\n    \\\"\\\"\\\"Save .mp3 file successfully\\\"\\\"\\\"\\n    filename = tmp_path / \\\"save.mp3\\\"\\n    # Create gTTS and save\\n    tts = gTTS(text=\\\"test\\\")\\n    tts.save(filename)\\n\\n    # Check if file created is \\u003e 2k\\n    assert filename.stat().st_size \\u003e 2000\\n\\n\\n@pytest.mark.net\\ndef test_get_bodies():\\n    \\\"\\\"\\\"get request bodies list\\\"\\\"\\\"\\n    tts = gTTS(text=\\\"test\\\", tld=\\\"com\\\", lang=\\\"en\\\")\\n    body = tts.get_bodies()[0]\\n    assert \\\"test\\\" in body\\n    # \\\\\\\"en\\\\\\\" url-encoded\\n    assert \\\"%5C%22en%5C%22\\\" in body\\n\\n\\ndef test_msg():\\n    \\\"\\\"\\\"Test gTTsError internal exception handling\\n    Set exception message successfully\\\"\\\"\\\"\\n    error1 = gTTSError(\\\"test\\\")\\n    assert \\\"test\\\" == error1.msg\\n\\n    error2 = gTTSError()\\n    assert error2.msg is None\\n\\n\\ndef test_infer_msg():\\n    \\\"\\\"\\\"Infer message successfully based on context\\\"\\\"\\\"\\n\\n    # Without response:\\n\\n    # Bad TLD\\n    ttsTLD = Mock(tld=\\\"invalid\\\")\\n    errorTLD = gTTSError(tts=ttsTLD)\\n    assert (\\n        errorTLD.msg\\n        == \\\"Failed to connect. Probable cause: Host \\u0027https://translate.google.invalid/\\u0027 is not reachable\\\"\\n    )\\n\\n    # With response:\\n\\n    # 403\\n    tts403 = Mock()\\n    response403 = Mock(status_code=403, reason=\\\"aaa\\\")\\n    error403 = gTTSError(tts=tts403, response=response403)\\n    assert (\\n        error403.msg\\n        == \\\"403 (aaa) from TTS API. Probable cause: Bad token or upstream API changes\\\"\\n    )\\n\\n    # 200 (and not lang_check)\\n    tts200 = Mock(lang=\\\"xx\\\", lang_check=False)\\n    response404 = Mock(status_code=200, reason=\\\"bbb\\\")\\n    error200 = gTTSError(tts=tts200, response=response404)\\n    assert (\\n        error200.msg\\n        == \\\"200 (bbb) from TTS API. Probable cause: No audio stream in response. Unsupported language \\u0027xx\\u0027\\\"\\n    )\\n\\n    # \\u003e= 500\\n    tts500 = Mock()\\n    response500 = Mock(status_code=500, reason=\\\"ccc\\\")\\n    error500 = gTTSError(tts=tts500, response=response500)\\n    assert (\\n        error500.msg\\n        == \\\"500 (ccc) from TTS API. Probable cause: Upstream API error. Try again later.\\\"\\n    )\\n\\n    # Unknown (ex. 100)\\n    tts100 = Mock()\\n    response100 = Mock(status_code=100, reason=\\\"ddd\\\")\\n    error100 = gTTSError(tts=tts100, response=response100)\\n    assert error100.msg == \\\"100 (ddd) from TTS API. Probable cause: Unknown\\\"\\n\\n\\n\\n--- Reproduction script ---\\nTraceback (most recent call last):\\n  File \\\"/tmp/reproduce_gtts_language_fallback.py\\\", line 14, in \\u003cmodule\\u003e\\n    tts = gTTS(text=\\\"Hello world\\\", lang=lang)\\n  File \\\"/testbed/gtts/tts.py\\\", line 145, in __init__\\n    self.lang = _fallback_deprecated_lang(lang)\\n  File \\\"/testbed/gtts/lang.py\\\", line 75, in _fallback_deprecated_lang\\n    for fallback_lang, deprecated_langs in deprecated.items():\\nUnboundLocalError: local variable \\u0027deprecated\\u0027 referenced before assignment\\n\"\n}",
+      "extra": {
+        "raw_output": "\n--- Test settings ---\n# [tool.setuptools.dynamic]\n# version = {attr = \"gtts.version.__version__\"}\n\n[project.optional-dependencies]\ntests = [\n    \"pytest >= 7.1.3,< 8.4.0\",\n    \"pytest-cov\",\n    \"testfixtures\",\n]\ndocs = [\n    \"sphinx\",\n    \"sphinx-autobuild\",\n    \"sphinx_rtd_theme\",\n    \"sphinx-click\",\n    \"sphinx-mdinclude\"\n]\n\n[project.scripts]\ngtts-cli = \"gtts.cli:tts_cli\"\n\n[project.urls]\nhomepage = \"https://github.com/pndurette/gTTS\"\ndocumentation = \"https://gtts.readthedocs.io\"\nrepository = \"https://github.com/pndurette/gTTS\"\nchangelog = \"https://github.com/pndurette/gTTS/blob/main/CHANGELOG.md\"\n\n[tool.setuptools.package-data]\n# Tests support files\n\"gtts.tests.input_files\" = [\"*.txt\"]\n\n[tool.coverage.run]\nomit = [\n    \"gtts/tests/*\",\n    \"gtts/tokenizer/tests/*\",\n]\n\n[tool.coverage.report]\nexclude_lines = [\n    \"pragma: no cover\",\n    \"def __repr__\",\n    \"log.debug\",\n    \"log.warning\",\n]\n\n[tool.pytest.ini_options]\nmarkers = [\"net: marks tests that call use the net (using the URL endpoint, deselect with '-m \\\"not net\\\"')\"]\n\n[build-system]\nrequires = [\"setuptools>=61\", \"wheel\"]\nbuild-backend = \"setuptools.build_meta\"\n\n--- TTS unit tests ---\n# -*- coding: utf-8 -*-\nimport os\nimport pytest\nfrom unittest.mock import Mock\n\nfrom gtts.tts import gTTS, gTTSError\nfrom gtts.langs import _main_langs\nfrom gtts.lang import _extra_langs\n\n# Testing all languages takes some time.\n# Set TEST_LANGS envvar to choose languages to test.\n#  * 'main': Languages extracted from the Web\n#  * 'extra': Language set in Languages.EXTRA_LANGS\n#  * 'all': All of the above\n#  * <csv>: Languages tags list to test\n# Unset TEST_LANGS to test everything ('all')\n# See: langs_dict()\n\n\n\"\"\"Construct a dict of suites of languages to test.\n{ '<suite name>' : <list or dict of language tags> }\n\nex.: { 'fetch' : {'en': 'English', 'fr': 'French'},\n       'extra' : {'en': 'English', 'fr': 'French'} }\nex.: { 'environ' : ['en', 'fr'] }\n\"\"\"\nenv = os.environ.get(\"TEST_LANGS\")\nif not env or env == \"all\":\n    langs = _main_langs()\n    langs.update(_extra_langs())\nelif env == \"main\":\n    langs = _main_langs()\nelif env == \"extra\":\n    langs = _extra_langs()\nelse:\n    env_langs = {l: l for l in env.split(\",\") if l}\n    langs = env_langs\n\n\n@pytest.mark.net\n@pytest.mark.parametrize(\"lang\", langs.keys(), ids=list(langs.values()))\ndef test_TTS(tmp_path, lang):\n    \"\"\"Test all supported languages and file save\"\"\"\n\n    text = \"This is a test\"\n    \"\"\"Create output .mp3 file successfully\"\"\"\n    for slow in (False, True):\n        filename = tmp_path / \"test_{}_.mp3\".format(lang)\n        # Create gTTS and save\n        tts = gTTS(text=text, lang=lang, slow=slow, lang_check=False)\n        tts.save(filename)\n\n        # Check if files created is > 1.5\n        assert filename.stat().st_size > 1500\n\n\n@pytest.mark.net\ndef test_unsupported_language_check():\n    \"\"\"Raise ValueError on unsupported language (with language check)\"\"\"\n    lang = \"xx\"\n    text = \"Lorem ipsum\"\n    check = True\n    with pytest.raises(ValueError):\n        gTTS(text=text, lang=lang, lang_check=check)\n\n\ndef test_empty_string():\n    \"\"\"Raise AssertionError on empty string\"\"\"\n    text = \"\"\n    with pytest.raises(AssertionError):\n        gTTS(text=text)\n\n\ndef test_no_text_parts(tmp_path):\n    \"\"\"Raises AssertionError on no content to send to API (no text_parts)\"\"\"\n    text = \"                                                                                                          ..,\\n\"\n    with pytest.raises(AssertionError):\n        filename = tmp_path / \"no_content.txt\"\n        tts = gTTS(text=text)\n        tts.save(filename)\n\n\n# Test write_to_fp()/save() cases not covered elsewhere in this file\n\n\n@pytest.mark.net\ndef test_bad_fp_type():\n    \"\"\"Raise TypeError if fp is not a file-like object (no .write())\"\"\"\n    # Create gTTS and save\n    tts = gTTS(text=\"test\")\n    with pytest.raises(TypeError):\n        tts.write_to_fp(5)\n\n\n@pytest.mark.net\ndef test_save(tmp_path):\n    \"\"\"Save .mp3 file successfully\"\"\"\n    filename = tmp_path / \"save.mp3\"\n    # Create gTTS and save\n    tts = gTTS(text=\"test\")\n    tts.save(filename)\n\n    # Check if file created is > 2k\n    assert filename.stat().st_size > 2000\n\n\n@pytest.mark.net\ndef test_get_bodies():\n    \"\"\"get request bodies list\"\"\"\n    tts = gTTS(text=\"test\", tld=\"com\", lang=\"en\")\n    body = tts.get_bodies()[0]\n    assert \"test\" in body\n    # \\\"en\\\" url-encoded\n    assert \"%5C%22en%5C%22\" in body\n\n\ndef test_msg():\n    \"\"\"Test gTTsError internal exception handling\n    Set exception message successfully\"\"\"\n    error1 = gTTSError(\"test\")\n    assert \"test\" == error1.msg\n\n    error2 = gTTSError()\n    assert error2.msg is None\n\n\ndef test_infer_msg():\n    \"\"\"Infer message successfully based on context\"\"\"\n\n    # Without response:\n\n    # Bad TLD\n    ttsTLD = Mock(tld=\"invalid\")\n    errorTLD = gTTSError(tts=ttsTLD)\n    assert (\n        errorTLD.msg\n        == \"Failed to connect. Probable cause: Host 'https://translate.google.invalid/' is not reachable\"\n    )\n\n    # With response:\n\n    # 403\n    tts403 = Mock()\n    response403 = Mock(status_code=403, reason=\"aaa\")\n    error403 = gTTSError(tts=tts403, response=response403)\n    assert (\n        error403.msg\n        == \"403 (aaa) from TTS API. Probable cause: Bad token or upstream API changes\"\n    )\n\n    # 200 (and not lang_check)\n    tts200 = Mock(lang=\"xx\", lang_check=False)\n    response404 = Mock(status_code=200, reason=\"bbb\")\n    error200 = gTTSError(tts=tts200, response=response404)\n    assert (\n        error200.msg\n        == \"200 (bbb) from TTS API. Probable cause: No audio stream in response. Unsupported language 'xx'\"\n    )\n\n    # >= 500\n    tts500 = Mock()\n    response500 = Mock(status_code=500, reason=\"ccc\")\n    error500 = gTTSError(tts=tts500, response=response500)\n    assert (\n        error500.msg\n        == \"500 (ccc) from TTS API. Probable cause: Upstream API error. Try again later.\"\n    )\n\n    # Unknown (ex. 100)\n    tts100 = Mock()\n    response100 = Mock(status_code=100, reason=\"ddd\")\n    error100 = gTTSError(tts=tts100, response=response100)\n    assert error100.msg == \"100 (ddd) from TTS API. Probable cause: Unknown\"\n\n\n\n--- Reproduction script ---\nTraceback (most recent call last):\n  File \"/tmp/reproduce_gtts_language_fallback.py\", line 14, in <module>\n    tts = gTTS(text=\"Hello world\", lang=lang)\n  File \"/testbed/gtts/tts.py\", line 145, in __init__\n    self.lang = _fallback_deprecated_lang(lang)\n  File \"/testbed/gtts/lang.py\", line 75, in _fallback_deprecated_lang\n    for fallback_lang, deprecated_langs in deprecated.items():\nUnboundLocalError: local variable 'deprecated' referenced before assignment\n",
+        "returncode": 1,
+        "timestamp": 1793481754.117742,
+        "exception_info": ""
+      },
+      "tool_call_id": "call_eW1lEs03J7GheMyqHgCqJ62w",
+      "role": "tool"
+    },
+    {
+      "content": "The reproduction confirms the reported `UnboundLocalError`. I’ll add regression tests for all deprecated aliases, case-insensitive matching, unchanged non-deprecated codes, and `gTTS` initialization. I’ll also verify that `lang_check=False` still bypasses fallback.\n",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"command\":\"cd /testbed && python - <<'PY'\\nfrom pathlib import Path\\n\\npath = Path(\\\"gtts/tests/test_lang.py\\\")\\nsource = path.read_text()\\nsource = source.replace(\\\"import pytest\\\\n\\\", \\\"import warnings\\\\nimport pytest\\\\n\\\", 1)\\nold = '''def test_deprecated_lang():\\n    \\\"\\\"\\\"Test language deprecation fallback\\\"\\\"\\\"\\n    with pytest.deprecated_call():\\n        assert _fallback_deprecated_lang(\\\"en-gb\\\") == \\\"en\\\"\\n'''\\nnew = '''@pytest.mark.parametrize(\\n    \\\"lang, fallback_lang\\\",\\n    [\\n        (\\\"en-us\\\", \\\"en\\\"),\\n        (\\\"en-ca\\\", \\\"en\\\"),\\n        (\\\"en-uk\\\", \\\"en\\\"),\\n        (\\\"en-gb\\\", \\\"en\\\"),\\n        (\\\"en-au\\\", \\\"en\\\"),\\n        (\\\"en-gh\\\", \\\"en\\\"),\\n        (\\\"en-in\\\", \\\"en\\\"),\\n        (\\\"en-ie\\\", \\\"en\\\"),\\n        (\\\"en-nz\\\", \\\"en\\\"),\\n        (\\\"en-ng\\\", \\\"en\\\"),\\n        (\\\"en-ph\\\", \\\"en\\\"),\\n        (\\\"en-za\\\", \\\"en\\\"),\\n        (\\\"en-tz\\\", \\\"en\\\"),\\n        (\\\"fr-fr\\\", \\\"fr\\\"),\\n        (\\\"pt-br\\\", \\\"pt\\\"),\\n        (\\\"pt-pt\\\", \\\"pt\\\"),\\n        (\\\"es-es\\\", \\\"es\\\"),\\n        (\\\"es-us\\\", \\\"es\\\"),\\n        (\\\"zh-cn\\\", \\\"zh-CN\\\"),\\n        (\\\"zh-tw\\\", \\\"zh-TW\\\"),\\n    ],\\n)\\n@pytest.mark.parametrize(\\n    \\\"case\\\", [str.lower, str.upper, str.title], ids=[\\\"lowercase\\\", \\\"uppercase\\\", \\\"mixed-case\\\"]\\n)\\ndef test_deprecated_lang(lang, fallback_lang, case):\\n    \\\"\\\"\\\"Test language deprecation fallback regardless of case\\\"\\\"\\\"\\n    with pytest.deprecated_call(match=\\\"falling back to '{}'\\\".format(fallback_lang)):\\n        assert _fallback_deprecated_lang(case(lang)) == fallback_lang\\n\\n\\n@pytest.mark.parametrize(\\\"lang\\\", [\\\"en\\\", \\\"fr\\\", \\\"pt\\\", \\\"es\\\", \\\"zh\\\", \\\"xx\\\", \\\"EN\\\", \\\"\\\"])\\ndef test_non_deprecated_lang(lang):\\n    \\\"\\\"\\\"Non-deprecated language tags are returned as-is without warnings\\\"\\\"\\\"\\n    with warnings.catch_warnings(record=True) as caught:\\n        warnings.simplefilter(\\\"always\\\")\\n        assert _fallback_deprecated_lang(lang) == lang\\n    assert not caught\\n'''\\nassert old in source\\npath.write_text(source.replace(old, new, 1))\\n\\npath = Path(\\\"gtts/tests/test_tts.py\\\")\\nsource = path.read_text()\\nsource = source.replace(\\\"import os\\\\n\\\", \\\"import os\\\\nimport warnings\\\\n\\\", 1)\\nanchor = '\\\\ndef test_empty_string():\\\\n'\\nnew = '''\\n@pytest.mark.parametrize(\\n    \\\"lang, fallback_lang\\\",\\n    [\\n        (\\\"en-gb\\\", \\\"en\\\"),\\n        (\\\"fr-fr\\\", \\\"fr\\\"),\\n        (\\\"pt-br\\\", \\\"pt\\\"),\\n        (\\\"es-es\\\", \\\"es\\\"),\\n        (\\\"es-us\\\", \\\"es\\\"),\\n        (\\\"zh-cn\\\", \\\"zh-CN\\\"),\\n        (\\\"zh-tw\\\", \\\"zh-TW\\\"),\\n    ],\\n)\\ndef test_deprecated_language_check(lang, fallback_lang):\\n    \\\"\\\"\\\"Deprecated language codes fall back during gTTS initialization\\\"\\\"\\\"\\n    with pytest.deprecated_call(match=\\\"falling back to '{}'\\\".format(fallback_lang)):\\n        tts = gTTS(text=\\\"Hello world\\\", lang=lang)\\n    assert tts.lang == fallback_lang\\n\\n\\n@pytest.mark.parametrize(\\\"lang\\\", [\\\"en-gb\\\", \\\"es-es\\\", \\\"zh-cn\\\", \\\"zh-tw\\\", \\\"xx\\\"])\\ndef test_language_check_disabled(lang):\\n    \\\"\\\"\\\"Disabling language checks preserves the code without deprecation warnings\\\"\\\"\\\"\\n    with warnings.catch_warnings(record=True) as caught:\\n        warnings.simplefilter(\\\"always\\\")\\n        tts = gTTS(text=\\\"Hello world\\\", lang=lang, lang_check=False)\\n    assert tts.lang == lang\\n    assert not caught\\n\\n'''\\nassert anchor in source\\npath.write_text(source.replace(anchor, new + anchor, 1))\\nPY\\npython -m pytest gtts/tests/test_lang.py gtts/tests/test_tts.py::test_deprecated_language_check -x --tb=short\"}",
+            "name": "bash"
+          },
+          "id": "call_KHoUAlhUi8IQvR3XkhBLfgjq",
+          "type": "function"
+        }
+      ],
+      "function_call": null,
+      "provider_specific_fields": null,
+      "extra": {
+        "actions": [
+          {
+            "command": "cd /testbed && python - <<'PY'\nfrom pathlib import Path\n\npath = Path(\"gtts/tests/test_lang.py\")\nsource = path.read_text()\nsource = source.replace(\"import pytest\\n\", \"import warnings\\nimport pytest\\n\", 1)\nold = '''def test_deprecated_lang():\n    \"\"\"Test language deprecation fallback\"\"\"\n    with pytest.deprecated_call():\n        assert _fallback_deprecated_lang(\"en-gb\") == \"en\"\n'''\nnew = '''@pytest.mark.parametrize(\n    \"lang, fallback_lang\",\n    [\n        (\"en-us\", \"en\"),\n        (\"en-ca\", \"en\"),\n        (\"en-uk\", \"en\"),\n        (\"en-gb\", \"en\"),\n        (\"en-au\", \"en\"),\n        (\"en-gh\", \"en\"),\n        (\"en-in\", \"en\"),\n        (\"en-ie\", \"en\"),\n        (\"en-nz\", \"en\"),\n        (\"en-ng\", \"en\"),\n        (\"en-ph\", \"en\"),\n        (\"en-za\", \"en\"),\n        (\"en-tz\", \"en\"),\n        (\"fr-fr\", \"fr\"),\n        (\"pt-br\", \"pt\"),\n        (\"pt-pt\", \"pt\"),\n        (\"es-es\", \"es\"),\n        (\"es-us\", \"es\"),\n        (\"zh-cn\", \"zh-CN\"),\n        (\"zh-tw\", \"zh-TW\"),\n    ],\n)\n@pytest.mark.parametrize(\n    \"case\", [str.lower, str.upper, str.title], ids=[\"lowercase\", \"uppercase\", \"mixed-case\"]\n)\ndef test_deprecated_lang(lang, fallback_lang, case):\n    \"\"\"Test language deprecation fallback regardless of case\"\"\"\n    with pytest.deprecated_call(match=\"falling back to '{}'\".format(fallback_lang)):\n        assert _fallback_deprecated_lang(case(lang)) == fallback_lang\n\n\n@pytest.mark.parametrize(\"lang\", [\"en\", \"fr\", \"pt\", \"es\", \"zh\", \"xx\", \"EN\", \"\"])\ndef test_non_deprecated_lang(lang):\n    \"\"\"Non-deprecated language tags are returned as-is without warnings\"\"\"\n    with warnings.catch_warnings(record=True) as caught:\n        warnings.simplefilter(\"always\")\n        assert _fallback_deprecated_lang(lang) == lang\n    assert not caught\n'''\nassert old in source\npath.write_text(source.replace(old, new, 1))\n\npath = Path(\"gtts/tests/test_tts.py\")\nsource = path.read_text()\nsource = source.replace(\"import os\\n\", \"import os\\nimport warnings\\n\", 1)\nanchor = '\\ndef test_empty_string():\\n'\nnew = '''\n@pytest.mark.parametrize(\n    \"lang, fallback_lang\",\n    [\n        (\"en-gb\", \"en\"),\n        (\"fr-fr\", \"fr\"),\n        (\"pt-br\", \"pt\"),\n        (\"es-es\", \"es\"),\n        (\"es-us\", \"es\"),\n        (\"zh-cn\", \"zh-CN\"),\n        (\"zh-tw\", \"zh-TW\"),\n    ],\n)\ndef test_deprecated_language_check(lang, fallback_lang):\n    \"\"\"Deprecated language codes fall back during gTTS initialization\"\"\"\n    with pytest.deprecated_call(match=\"falling back to '{}'\".format(fallback_lang)):\n        tts = gTTS(text=\"Hello world\", lang=lang)\n    assert tts.lang == fallback_lang\n\n\n@pytest.mark.parametrize(\"lang\", [\"en-gb\", \"es-es\", \"zh-cn\", \"zh-tw\", \"xx\"])\ndef test_language_check_disabled(lang):\n    \"\"\"Disabling language checks preserves the code without deprecation warnings\"\"\"\n    with warnings.catch_warnings(record=True) as caught:\n        warnings.simplefilter(\"always\")\n        tts = gTTS(text=\"Hello world\", lang=lang, lang_check=False)\n    assert tts.lang == lang\n    assert not caught\n\n'''\nassert anchor in source\npath.write_text(source.replace(anchor, new + anchor, 1))\nPY\npython -m pytest gtts/tests/test_lang.py gtts/tests/test_tts.py::test_deprecated_language_check -x --tb=short",
+            "tool_call_id": "call_KHoUAlhUi8IQvR3XkhBLfgjq"
+          }
+        ],
+        "response": {
+          "id": "resp_0c078a0b136c4118016ae65c1b51c081978ffd8fc3011d2b23",
+          "created": 1793481822,
+          "model": "gpt-6.1-sol",
+          "object": "chat.completion",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "index": 0,
+              "message": {
+                "content": "The reproduction confirms the reported `UnboundLocalError`. I’ll add regression tests for all deprecated aliases, case-insensitive matching, unchanged non-deprecated codes, and `gTTS` initialization. I’ll also verify that `lang_check=False` still bypasses fallback.\n",
+                "role": "assistant",
+                "tool_calls": [
+                  {
+                    "function": {
+                      "arguments": "{\"command\":\"cd /testbed && python - <<'PY'\\nfrom pathlib import Path\\n\\npath = Path(\\\"gtts/tests/test_lang.py\\\")\\nsource = path.read_text()\\nsource = source.replace(\\\"import pytest\\\\n\\\", \\\"import warnings\\\\nimport pytest\\\\n\\\", 1)\\nold = '''def test_deprecated_lang():\\n    \\\"\\\"\\\"Test language deprecation fallback\\\"\\\"\\\"\\n    with pytest.deprecated_call():\\n        assert _fallback_deprecated_lang(\\\"en-gb\\\") == \\\"en\\\"\\n'''\\nnew = '''@pytest.mark.parametrize(\\n    \\\"lang, fallback_lang\\\",\\n    [\\n        (\\\"en-us\\\", \\\"en\\\"),\\n        (\\\"en-ca\\\", \\\"en\\\"),\\n        (\\\"en-uk\\\", \\\"en\\\"),\\n        (\\\"en-gb\\\", \\\"en\\\"),\\n        (\\\"en-au\\\", \\\"en\\\"),\\n        (\\\"en-gh\\\", \\\"en\\\"),\\n        (\\\"en-in\\\", \\\"en\\\"),\\n        (\\\"en-ie\\\", \\\"en\\\"),\\n        (\\\"en-nz\\\", \\\"en\\\"),\\n        (\\\"en-ng\\\", \\\"en\\\"),\\n        (\\\"en-ph\\\", \\\"en\\\"),\\n        (\\\"en-za\\\", \\\"en\\\"),\\n        (\\\"en-tz\\\", \\\"en\\\"),\\n        (\\\"fr-fr\\\", \\\"fr\\\"),\\n        (\\\"pt-br\\\", \\\"pt\\\"),\\n        (\\\"pt-pt\\\", \\\"pt\\\"),\\n        (\\\"es-es\\\", \\\"es\\\"),\\n        (\\\"es-us\\\", \\\"es\\\"),\\n        (\\\"zh-cn\\\", \\\"zh-CN\\\"),\\n        (\\\"zh-tw\\\", \\\"zh-TW\\\"),\\n    ],\\n)\\n@pytest.mark.parametrize(\\n    \\\"case\\\", [str.lower, str.upper, str.title], ids=[\\\"lowercase\\\", \\\"uppercase\\\", \\\"mixed-case\\\"]\\n)\\ndef test_deprecated_lang(lang, fallback_lang, case):\\n    \\\"\\\"\\\"Test language deprecation fallback regardless of case\\\"\\\"\\\"\\n    with pytest.deprecated_call(match=\\\"falling back to '{}'\\\".format(fallback_lang)):\\n        assert _fallback_deprecated_lang(case(lang)) == fallback_lang\\n\\n\\n@pytest.mark.parametrize(\\\"lang\\\", [\\\"en\\\", \\\"fr\\\", \\\"pt\\\", \\\"es\\\", \\\"zh\\\", \\\"xx\\\", \\\"EN\\\", \\\"\\\"])\\ndef test_non_deprecated_lang(lang):\\n    \\\"\\\"\\\"Non-deprecated language tags are returned as-is without warnings\\\"\\\"\\\"\\n    with warnings.catch_warnings(record=True) as caught:\\n        warnings.simplefilter(\\\"always\\\")\\n        assert _fallback_deprecated_lang(lang) == lang\\n    assert not caught\\n'''\\nassert old in source\\npath.write_text(source.replace(old, new, 1))\\n\\npath = Path(\\\"gtts/tests/test_tts.py\\\")\\nsource = path.read_text()\\nsource = source.replace(\\\"import os\\\\n\\\", \\\"import os\\\\nimport warnings\\\\n\\\", 1)\\nanchor = '\\\\ndef test_empty_string():\\\\n'\\nnew = '''\\n@pytest.mark.parametrize(\\n    \\\"lang, fallback_lang\\\",\\n    [\\n        (\\\"en-gb\\\", \\\"en\\\"),\\n        (\\\"fr-fr\\\", \\\"fr\\\"),\\n        (\\\"pt-br\\\", \\\"pt\\\"),\\n        (\\\"es-es\\\", \\\"es\\\"),\\n        (\\\"es-us\\\", \\\"es\\\"),\\n        (\\\"zh-cn\\\", \\\"zh-CN\\\"),\\n        (\\\"zh-tw\\\", \\\"zh-TW\\\"),\\n    ],\\n)\\ndef test_deprecated_language_check(lang, fallback_lang):\\n    \\\"\\\"\\\"Deprecated language codes fall back during gTTS initialization\\\"\\\"\\\"\\n    with pytest.deprecated_call(match=\\\"falling back to '{}'\\\".format(fallback_lang)):\\n        tts = gTTS(text=\\\"Hello world\\\", lang=lang)\\n    assert tts.lang == fallback_lang\\n\\n\\n@pytest.mark.parametrize(\\\"lang\\\", [\\\"en-gb\\\", \\\"es-es\\\", \\\"zh-cn\\\", \\\"zh-tw\\\", \\\"xx\\\"])\\ndef test_language_check_disabled(lang):\\n    \\\"\\\"\\\"Disabling language checks preserves the code without deprecation warnings\\\"\\\"\\\"\\n    with warnings.catch_warnings(record=True) as caught:\\n        warnings.simplefilter(\\\"always\\\")\\n        tts = gTTS(text=\\\"Hello world\\\", lang=lang, lang_check=False)\\n    assert tts.lang == lang\\n    assert not caught\\n\\n'''\\nassert anchor in source\\npath.write_text(source.replace(anchor, new + anchor, 1))\\nPY\\npython -m pytest gtts/tests/test_lang.py gtts/tests/test_tts.py::test_deprecated_language_check -x --tb=short\"}",
+                      "name": "bash"
+                    },
+                    "id": "call_KHoUAlhUi8IQvR3XkhBLfgjq",
+                    "type": "function"
+                  }
+                ],
+                "function_call": null
+              }
+            }
+          ],
+          "usage": {
+            "completion_tokens": 3193,
+            "prompt_tokens": 11170,
+            "total_tokens": 0,
+            "completion_tokens_details": null,
+            "prompt_tokens_details": null
+          }
+        },
+        "cost": 0.0397343,
+        "timestamp": 1793481822.904762
+      }
+    },
+    {
+      "content": "{\n  \"returncode\": 1,\n  \"output\": \"============================= test session starts ==============================\\nplatform linux -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0\\nrootdir: /testbed\\nconfigfile: pyproject.toml\\nplugins: cov-6.0.0\\ncollected 76 items\\n\\ngtts/tests/test_lang.py .F\\n\\n=================================== FAILURES ===================================\\n___________________ test_deprecated_lang[lowercase-en-us-en] ___________________\\ngtts/tests/test_lang.py:48: in test_deprecated_lang\\n    assert _fallback_deprecated_lang(case(lang)) == fallback_lang\\ngtts/lang.py:75: in _fallback_deprecated_lang\\n    for fallback_lang, deprecated_langs in deprecated.items():\\nE   UnboundLocalError: local variable \\u0027deprecated\\u0027 referenced before assignment\\n\\nDuring handling of the above exception, another exception occurred:\\ngtts/tests/test_lang.py:47: in test_deprecated_lang\\n    with pytest.deprecated_call(match=\\\"falling back to \\u0027{}\\u0027\\\".format(fallback_lang)):\\nE   Failed: DID NOT WARN. No warnings of type (\\u003cclass \\u0027DeprecationWarning\\u0027\\u003e, \\u003cclass \\u0027PendingDeprecationWarning\\u0027\\u003e, \\u003cclass \\u0027FutureWarning\\u0027\\u003e) were emitted.\\nE    Emitted warnings: [].\\n=========================== short test summary info ============================\\nFAILED gtts/tests/test_lang.py::test_deprecated_lang[lowercase-en-us-en] - Fa...\\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!\\n========================= 1 failed, 1 passed in 0.11s ==========================\\n\"\n}",
+      "extra": {
+        "raw_output": "============================= test session starts ==============================\nplatform linux -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0\nrootdir: /testbed\nconfigfile: pyproject.toml\nplugins: cov-6.0.0\ncollected 76 items\n\ngtts/tests/test_lang.py .F\n\n=================================== FAILURES ===================================\n___________________ test_deprecated_lang[lowercase-en-us-en] ___________________\ngtts/tests/test_lang.py:48: in test_deprecated_lang\n    assert _fallback_deprecated_lang(case(lang)) == fallback_lang\ngtts/lang.py:75: in _fallback_deprecated_lang\n    for fallback_lang, deprecated_langs in deprecated.items():\nE   UnboundLocalError: local variable 'deprecated' referenced before assignment\n\nDuring handling of the above exception, another exception occurred:\ngtts/tests/test_lang.py:47: in test_deprecated_lang\n    with pytest.deprecated_call(match=\"falling back to '{}'\".format(fallback_lang)):\nE   Failed: DID NOT WARN. No warnings of type (<class 'DeprecationWarning'>, <class 'PendingDeprecationWarning'>, <class 'FutureWarning'>) were emitted.\nE    Emitted warnings: [].\n=========================== short test summary info ============================\nFAILED gtts/tests/test_lang.py::test_deprecated_lang[lowercase-en-us-en] - Fa...\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!\n========================= 1 failed, 1 passed in 0.11s ==========================\n",
+        "returncode": 1,
+        "timestamp": 1793481823.666761,
+        "exception_info": ""
+      },
+      "tool_call_id": "call_KHoUAlhUi8IQvR3XkhBLfgjq",
+      "role": "tool"
+    },
+    {
+      "content": "The new regression tests fail with the same scope error, confirming they catch the bug. I’ll now move the dictionary before the loop and rerun both the reproduction script and the focused tests.\n",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"command\":\"cd /testbed && python - <<'PY'\\nfrom pathlib import Path\\n\\npath = Path(\\\"gtts/lang.py\\\")\\nsource = path.read_text()\\nlookup_start = source.index(\\\"    for fallback_lang, deprecated_langs in deprecated.items():\\\")\\ndictionary_start = source.index(\\\"    deprecated = {\\\", lookup_start)\\ndictionary = source[dictionary_start:].rstrip()\\nlookup = source[lookup_start:dictionary_start].rstrip()\\npath.write_text(source[:lookup_start] + dictionary + \\\"\\\\n\\\\n\\\" + lookup + \\\"\\\\n\\\")\\nPY\\nprintf '\\\\n--- Reproduction after fix ---\\\\n' && PYTHONPATH=/testbed python /tmp/reproduce_gtts_language_fallback.py && printf '\\\\n--- Focused language tests ---\\\\n' && python -m pytest gtts/tests/test_lang.py gtts/tests/test_tts.py::test_deprecated_language_check gtts/tests/test_tts.py::test_language_check_disabled gtts/tests/test_tts.py::test_unsupported_language_check --tb=short && printf '\\\\n--- Patch whitespace check ---\\\\n' && git diff --check\"}",
+            "name": "bash"
+          },
+          "id": "call_bu7X4reTb5luXSrRSEseDKJ7",
+          "type": "function"
+        }
+      ],
+      "function_call": null,
+      "provider_specific_fields": null,
+      "extra": {
+        "actions": [
+          {
+            "command": "cd /testbed && python - <<'PY'\nfrom pathlib import Path\n\npath = Path(\"gtts/lang.py\")\nsource = path.read_text()\nlookup_start = source.index(\"    for fallback_lang, deprecated_langs in deprecated.items():\")\ndictionary_start = source.index(\"    deprecated = {\", lookup_start)\ndictionary = source[dictionary_start:].rstrip()\nlookup = source[lookup_start:dictionary_start].rstrip()\npath.write_text(source[:lookup_start] + dictionary + \"\\n\\n\" + lookup + \"\\n\")\nPY\nprintf '\\n--- Reproduction after fix ---\\n' && PYTHONPATH=/testbed python /tmp/reproduce_gtts_language_fallback.py && printf '\\n--- Focused language tests ---\\n' && python -m pytest gtts/tests/test_lang.py gtts/tests/test_tts.py::test_deprecated_language_check gtts/tests/test_tts.py::test_language_check_disabled gtts/tests/test_tts.py::test_unsupported_language_check --tb=short && printf '\\n--- Patch whitespace check ---\\n' && git diff --check",
+            "tool_call_id": "call_bu7X4reTb5luXSrRSEseDKJ7"
+          }
+        ],
+        "response": {
+          "id": "resp_0d6b50add9af4229016ae65c638ee881969edfc54c780e53eb",
+          "created": 1793481846,
+          "model": "gpt-6.1-sol",
+          "object": "chat.completion",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "index": 0,
+              "message": {
+                "content": "The new regression tests fail with the same scope error, confirming they catch the bug. I’ll now move the dictionary before the loop and rerun both the reproduction script and the focused tests.\n",
+                "role": "assistant",
+                "tool_calls": [
+                  {
+                    "function": {
+                      "arguments": "{\"command\":\"cd /testbed && python - <<'PY'\\nfrom pathlib import Path\\n\\npath = Path(\\\"gtts/lang.py\\\")\\nsource = path.read_text()\\nlookup_start = source.index(\\\"    for fallback_lang, deprecated_langs in deprecated.items():\\\")\\ndictionary_start = source.index(\\\"    deprecated = {\\\", lookup_start)\\ndictionary = source[dictionary_start:].rstrip()\\nlookup = source[lookup_start:dictionary_start].rstrip()\\npath.write_text(source[:lookup_start] + dictionary + \\\"\\\\n\\\\n\\\" + lookup + \\\"\\\\n\\\")\\nPY\\nprintf '\\\\n--- Reproduction after fix ---\\\\n' && PYTHONPATH=/testbed python /tmp/reproduce_gtts_language_fallback.py && printf '\\\\n--- Focused language tests ---\\\\n' && python -m pytest gtts/tests/test_lang.py gtts/tests/test_tts.py::test_deprecated_language_check gtts/tests/test_tts.py::test_language_check_disabled gtts/tests/test_tts.py::test_unsupported_language_check --tb=short && printf '\\\\n--- Patch whitespace check ---\\\\n' && git diff --check\"}",
+                      "name": "bash"
+                    },
+                    "id": "call_bu7X4reTb5luXSrRSEseDKJ7",
+                    "type": "function"
+                  }
+                ],
+                "function_call": null
+              }
+            }
+          ],
+          "usage": {
+            "completion_tokens": 816,
+            "prompt_tokens": 12704,
+            "total_tokens": 0,
+            "completion_tokens_details": null,
+            "prompt_tokens_details": null
+          }
+        },
+        "cost": 0.0131177,
+        "timestamp": 1793481846.7459059
+      }
+    },
+    {
+      "content": "{\n  \"returncode\": 0,\n  \"output\": \"\\n--- Reproduction after fix ---\\nzh-cn -\\u003e zh-CN (with deprecation warning)\\nzh-tw -\\u003e zh-TW (with deprecation warning)\\nes-es -\\u003e es (with deprecation warning)\\nes-us -\\u003e es (with deprecation warning)\\nen-gb -\\u003e en (with deprecation warning)\\nen -\\u003e en (without warning)\\n\\n--- Focused language tests ---\\n============================= test session starts ==============================\\nplatform linux -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0\\nrootdir: /testbed\\nconfigfile: pyproject.toml\\nplugins: cov-6.0.0\\ncollected 82 items\\n\\ngtts/tests/test_lang.py ................................................ [ 58%]\\n.....................                                                    [ 84%]\\ngtts/tests/test_tts.py .............                                     [100%]\\n\\n============================== 82 passed in 0.12s ==============================\\n\\n--- Patch whitespace check ---\\n\"\n}",
+      "extra": {
+        "raw_output": "\n--- Reproduction after fix ---\nzh-cn -> zh-CN (with deprecation warning)\nzh-tw -> zh-TW (with deprecation warning)\nes-es -> es (with deprecation warning)\nes-us -> es (with deprecation warning)\nen-gb -> en (with deprecation warning)\nen -> en (without warning)\n\n--- Focused language tests ---\n============================= test session starts ==============================\nplatform linux -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0\nrootdir: /testbed\nconfigfile: pyproject.toml\nplugins: cov-6.0.0\ncollected 82 items\n\ngtts/tests/test_lang.py ................................................ [ 58%]\n.....................                                                    [ 84%]\ngtts/tests/test_tts.py .............                                     [100%]\n\n============================== 82 passed in 0.12s ==============================\n\n--- Patch whitespace check ---\n",
+        "returncode": 0,
+        "timestamp": 1793481847.7028632,
+        "exception_info": ""
+      },
+      "tool_call_id": "call_bu7X4reTb5luXSrRSEseDKJ7",
+      "role": "tool"
+    },
+    {
+      "content": "The reproduction now passes: deprecated codes produce warnings and fall back correctly, while `en` stays unchanged without a warning. All 82 focused tests pass. I’ll run the full non-network suite and review the diff for unintended changes.\n",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"command\":\"cd /testbed && printf '\\\\n--- Full non-network test suite ---\\\\n' && python -m pytest gtts -m 'not net' --tb=short && printf '\\\\n--- Final patch review ---\\\\n' && git diff --check && git diff --stat && git diff -- gtts/lang.py gtts/tests/test_lang.py gtts/tests/test_tts.py && printf '\\\\n--- Working tree ---\\\\n' && git status --short\"}",
+            "name": "bash"
+          },
+          "id": "call_avGpsWANaC53TqQDKGBda5zW",
+          "type": "function"
+        }
+      ],
+      "function_call": null,
+      "provider_specific_fields": null,
+      "extra": {
+        "actions": [
+          {
+            "command": "cd /testbed && printf '\\n--- Full non-network test suite ---\\n' && python -m pytest gtts -m 'not net' --tb=short && printf '\\n--- Final patch review ---\\n' && git diff --check && git diff --stat && git diff -- gtts/lang.py gtts/tests/test_lang.py gtts/tests/test_tts.py && printf '\\n--- Working tree ---\\n' && git status --short",
+            "tool_call_id": "call_avGpsWANaC53TqQDKGBda5zW"
+          }
+        ],
+        "response": {
+          "id": "resp_03ab8526635af1f4016ae65c7c77708194a7b6cece142c8921",
+          "created": 1793481866,
+          "model": "gpt-6.1-sol",
+          "object": "chat.completion",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "index": 0,
+              "message": {
+                "content": "The reproduction now passes: deprecated codes produce warnings and fall back correctly, while `en` stays unchanged without a warning. All 82 focused tests pass. I’ll run the full non-network suite and review the diff for unintended changes.\n",
+                "role": "assistant",
+                "tool_calls": [
+                  {
+                    "function": {
+                      "arguments": "{\"command\":\"cd /testbed && printf '\\\\n--- Full non-network test suite ---\\\\n' && python -m pytest gtts -m 'not net' --tb=short && printf '\\\\n--- Final patch review ---\\\\n' && git diff --check && git diff --stat && git diff -- gtts/lang.py gtts/tests/test_lang.py gtts/tests/test_tts.py && printf '\\\\n--- Working tree ---\\\\n' && git status --short\"}",
+                      "name": "bash"
+                    },
+                    "id": "call_avGpsWANaC53TqQDKGBda5zW",
+                    "type": "function"
+                  }
+                ],
+                "function_call": null
+              }
+            }
+          ],
+          "usage": {
+            "completion_tokens": 479,
+            "prompt_tokens": 13266,
+            "total_tokens": 0,
+            "completion_tokens_details": null,
+            "prompt_tokens_details": null
+          }
+        },
+        "cost": 0.0074711,
+        "timestamp": 1793481866.144295
+      }
+    },
+    {
+      "content": "{\n  \"returncode\": 0,\n  \"output\": \"\\n--- Full non-network test suite ---\\n============================= test session starts ==============================\\nplatform linux -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0\\nrootdir: /testbed\\nconfigfile: pyproject.toml\\nplugins: cov-6.0.0\\ncollected 203 items / 89 deselected / 114 selected\\n\\ngtts/tests/test_cli.py ....                                              [  3%]\\ngtts/tests/test_lang.py ................................................ [ 45%]\\n.....................                                                    [ 64%]\\ngtts/tests/test_tts.py ................                                  [ 78%]\\ngtts/tests/test_utils.py .........                                       [ 85%]\\ngtts/tokenizer/tests/test_core.py .......                                [ 92%]\\ngtts/tokenizer/tests/test_pre_processors.py ....                         [ 95%]\\ngtts/tokenizer/tests/test_tokenizer_cases.py .....                       [100%]\\n\\n====================== 114 passed, 89 deselected in 0.17s ======================\\n\\n--- Final patch review ---\\n gtts/lang.py            | 30 +++++++++++++++---------------\\n gtts/tests/test_lang.py | 46 ++++++++++++++++++++++++++++++++++++++++++----\\n gtts/tests/test_tts.py  | 30 ++++++++++++++++++++++++++++++\\n 3 files changed, 87 insertions(+), 19 deletions(-)\\ndiff --git a/gtts/lang.py b/gtts/lang.py\\nindex 6689305..ea94824 100644\\n--- a/gtts/lang.py\\n+++ b/gtts/lang.py\\n@@ -72,20 +72,6 @@ def _fallback_deprecated_lang(lang):\\n \\n     \\\"\\\"\\\"\\n \\n-    for fallback_lang, deprecated_langs in deprecated.items():\\n-        if lang.lower() in deprecated_langs:\\n-            msg = (\\n-                \\\"\\u0027{}\\u0027 has been deprecated, falling back to \\u0027{}\\u0027. \\\"\\n-                \\\"This fallback will be removed in a future version.\\\"\\n-            ).format(lang, fallback_lang)\\n-\\n-            warn(msg, DeprecationWarning)\\n-            log.warning(msg)\\n-\\n-            return fallback_lang\\n-\\n-    return lang\\n-\\n     deprecated = {\\n         # \\u0027\\u003cfallback\\u003e\\u0027: [\\u003clist of deprecated langs\\u003e]\\n         \\\"en\\\": [\\n@@ -108,4 +94,18 @@ def _fallback_deprecated_lang(lang):\\n         \\\"es\\\": [\\\"es-es\\\", \\\"es-us\\\"],\\n         \\\"zh-CN\\\": [\\\"zh-cn\\\"],\\n         \\\"zh-TW\\\": [\\\"zh-tw\\\"],\\n-    }\\n\\\\ No newline at end of file\\n+    }\\n+\\n+    for fallback_lang, deprecated_langs in deprecated.items():\\n+        if lang.lower() in deprecated_langs:\\n+            msg = (\\n+                \\\"\\u0027{}\\u0027 has been deprecated, falling back to \\u0027{}\\u0027. \\\"\\n+                \\\"This fallback will be removed in a future version.\\\"\\n+            ).format(lang, fallback_lang)\\n+\\n+            warn(msg, DeprecationWarning)\\n+            log.warning(msg)\\n+\\n+            return fallback_lang\\n+\\n+    return lang\\ndiff --git a/gtts/tests/test_lang.py b/gtts/tests/test_lang.py\\nindex e7a2b09..9aa26dc 100644\\n--- a/gtts/tests/test_lang.py\\n+++ b/gtts/tests/test_lang.py\\n@@ -1,4 +1,5 @@\\n # -*- coding: utf-8 -*-\\n+import warnings\\n import pytest\\n from gtts.lang import tts_langs, _extra_langs, _fallback_deprecated_lang\\n from gtts.langs import _main_langs\\n@@ -13,10 +14,47 @@ def test_main_langs():\\n     assert \\\"en\\\" in scraped_langs\\n \\n \\n-def test_deprecated_lang():\\n-    \\\"\\\"\\\"Test language deprecation fallback\\\"\\\"\\\"\\n-    with pytest.deprecated_call():\\n-        assert _fallback_deprecated_lang(\\\"en-gb\\\") == \\\"en\\\"\\n+@pytest.mark.parametrize(\\n+    \\\"lang, fallback_lang\\\",\\n+    [\\n+        (\\\"en-us\\\", \\\"en\\\"),\\n+        (\\\"en-ca\\\", \\\"en\\\"),\\n+        (\\\"en-uk\\\", \\\"en\\\"),\\n+        (\\\"en-gb\\\", \\\"en\\\"),\\n+        (\\\"en-au\\\", \\\"en\\\"),\\n+        (\\\"en-gh\\\", \\\"en\\\"),\\n+        (\\\"en-in\\\", \\\"en\\\"),\\n+        (\\\"en-ie\\\", \\\"en\\\"),\\n+        (\\\"en-nz\\\", \\\"en\\\"),\\n+        (\\\"en-ng\\\", \\\"en\\\"),\\n+        (\\\"en-ph\\\", \\\"en\\\"),\\n+        (\\\"en-za\\\", \\\"en\\\"),\\n+        (\\\"en-tz\\\", \\\"en\\\"),\\n+        (\\\"fr-fr\\\", \\\"fr\\\"),\\n+        (\\\"pt-br\\\", \\\"pt\\\"),\\n+        (\\\"pt-pt\\\", \\\"pt\\\"),\\n+        (\\\"es-es\\\", \\\"es\\\"),\\n+        (\\\"es-us\\\", \\\"es\\\"),\\n+        (\\\"zh-cn\\\", \\\"zh-CN\\\"),\\n+        (\\\"zh-tw\\\", \\\"zh-TW\\\"),\\n+    ],\\n+)\\n+@pytest.mark.parametrize(\\n+    \\\"case\\\", [str.lower, str.upper, str.title], ids=[\\\"lowercase\\\", \\\"uppercase\\\", \\\"mixed-case\\\"]\\n+)\\n+def test_deprecated_lang(lang, fallback_lang, case):\\n+    \\\"\\\"\\\"Test language deprecation fallback regardless of case\\\"\\\"\\\"\\n+    with pytest.deprecated_call(match=\\\"falling back to \\u0027{}\\u0027\\\".format(fallback_lang)):\\n+        assert _fallback_deprecated_lang(case(lang)) == fallback_lang\\n+\\n+\\n+@pytest.mark.parametrize(\\\"lang\\\", [\\\"en\\\", \\\"fr\\\", \\\"pt\\\", \\\"es\\\", \\\"zh\\\", \\\"xx\\\", \\\"EN\\\", \\\"\\\"])\\n+def test_non_deprecated_lang(lang):\\n+    \\\"\\\"\\\"Non-deprecated language tags are returned as-is without warnings\\\"\\\"\\\"\\n+    with warnings.catch_warnings(record=True) as caught:\\n+        warnings.simplefilter(\\\"always\\\")\\n+        assert _fallback_deprecated_lang(lang) == lang\\n+    assert not caught\\n \\n \\n if __name__ == \\\"__main__\\\":\\ndiff --git a/gtts/tests/test_tts.py b/gtts/tests/test_tts.py\\nindex a30c598..b7153e0 100644\\n--- a/gtts/tests/test_tts.py\\n+++ b/gtts/tests/test_tts.py\\n@@ -1,5 +1,6 @@\\n # -*- coding: utf-8 -*-\\n import os\\n+import warnings\\n import pytest\\n from unittest.mock import Mock\\n \\n@@ -64,6 +65,35 @@ def test_unsupported_language_check():\\n         gTTS(text=text, lang=lang, lang_check=check)\\n \\n \\n+@pytest.mark.parametrize(\\n+    \\\"lang, fallback_lang\\\",\\n+    [\\n+        (\\\"en-gb\\\", \\\"en\\\"),\\n+        (\\\"fr-fr\\\", \\\"fr\\\"),\\n+        (\\\"pt-br\\\", \\\"pt\\\"),\\n+        (\\\"es-es\\\", \\\"es\\\"),\\n+        (\\\"es-us\\\", \\\"es\\\"),\\n+        (\\\"zh-cn\\\", \\\"zh-CN\\\"),\\n+        (\\\"zh-tw\\\", \\\"zh-TW\\\"),\\n+    ],\\n+)\\n+def test_deprecated_language_check(lang, fallback_lang):\\n+    \\\"\\\"\\\"Deprecated language codes fall back during gTTS initialization\\\"\\\"\\\"\\n+    with pytest.deprecated_call(match=\\\"falling back to \\u0027{}\\u0027\\\".format(fallback_lang)):\\n+        tts = gTTS(text=\\\"Hello world\\\", lang=lang)\\n+    assert tts.lang == fallback_lang\\n+\\n+\\n+@pytest.mark.parametrize(\\\"lang\\\", [\\\"en-gb\\\", \\\"es-es\\\", \\\"zh-cn\\\", \\\"zh-tw\\\", \\\"xx\\\"])\\n+def test_language_check_disabled(lang):\\n+    \\\"\\\"\\\"Disabling language checks preserves the code without deprecation warnings\\\"\\\"\\\"\\n+    with warnings.catch_warnings(record=True) as caught:\\n+        warnings.simplefilter(\\\"always\\\")\\n+        tts = gTTS(text=\\\"Hello world\\\", lang=lang, lang_check=False)\\n+    assert tts.lang == lang\\n+    assert not caught\\n+\\n+\\n def test_empty_string():\\n     \\\"\\\"\\\"Raise AssertionError on empty string\\\"\\\"\\\"\\n     text = \\\"\\\"\\n\\n--- Working tree ---\\n M gtts/lang.py\\n M gtts/tests/test_lang.py\\n M gtts/tests/test_tts.py\\n\"\n}",
+      "extra": {
+        "raw_output": "\n--- Full non-network test suite ---\n============================= test session starts ==============================\nplatform linux -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0\nrootdir: /testbed\nconfigfile: pyproject.toml\nplugins: cov-6.0.0\ncollected 203 items / 89 deselected / 114 selected\n\ngtts/tests/test_cli.py ....                                              [  3%]\ngtts/tests/test_lang.py ................................................ [ 45%]\n.....................                                                    [ 64%]\ngtts/tests/test_tts.py ................                                  [ 78%]\ngtts/tests/test_utils.py .........                                       [ 85%]\ngtts/tokenizer/tests/test_core.py .......                                [ 92%]\ngtts/tokenizer/tests/test_pre_processors.py ....                         [ 95%]\ngtts/tokenizer/tests/test_tokenizer_cases.py .....                       [100%]\n\n====================== 114 passed, 89 deselected in 0.17s ======================\n\n--- Final patch review ---\n gtts/lang.py            | 30 +++++++++++++++---------------\n gtts/tests/test_lang.py | 46 ++++++++++++++++++++++++++++++++++++++++++----\n gtts/tests/test_tts.py  | 30 ++++++++++++++++++++++++++++++\n 3 files changed, 87 insertions(+), 19 deletions(-)\ndiff --git a/gtts/lang.py b/gtts/lang.py\nindex 6689305..ea94824 100644\n--- a/gtts/lang.py\n+++ b/gtts/lang.py\n@@ -72,20 +72,6 @@ def _fallback_deprecated_lang(lang):\n \n     \"\"\"\n \n-    for fallback_lang, deprecated_langs in deprecated.items():\n-        if lang.lower() in deprecated_langs:\n-            msg = (\n-                \"'{}' has been deprecated, falling back to '{}'. \"\n-                \"This fallback will be removed in a future version.\"\n-            ).format(lang, fallback_lang)\n-\n-            warn(msg, DeprecationWarning)\n-            log.warning(msg)\n-\n-            return fallback_lang\n-\n-    return lang\n-\n     deprecated = {\n         # '<fallback>': [<list of deprecated langs>]\n         \"en\": [\n@@ -108,4 +94,18 @@ def _fallback_deprecated_lang(lang):\n         \"es\": [\"es-es\", \"es-us\"],\n         \"zh-CN\": [\"zh-cn\"],\n         \"zh-TW\": [\"zh-tw\"],\n-    }\n\\ No newline at end of file\n+    }\n+\n+    for fallback_lang, deprecated_langs in deprecated.items():\n+        if lang.lower() in deprecated_langs:\n+            msg = (\n+                \"'{}' has been deprecated, falling back to '{}'. \"\n+                \"This fallback will be removed in a future version.\"\n+            ).format(lang, fallback_lang)\n+\n+            warn(msg, DeprecationWarning)\n+            log.warning(msg)\n+\n+            return fallback_lang\n+\n+    return lang\ndiff --git a/gtts/tests/test_lang.py b/gtts/tests/test_lang.py\nindex e7a2b09..9aa26dc 100644\n--- a/gtts/tests/test_lang.py\n+++ b/gtts/tests/test_lang.py\n@@ -1,4 +1,5 @@\n # -*- coding: utf-8 -*-\n+import warnings\n import pytest\n from gtts.lang import tts_langs, _extra_langs, _fallback_deprecated_lang\n from gtts.langs import _main_langs\n@@ -13,10 +14,47 @@ def test_main_langs():\n     assert \"en\" in scraped_langs\n \n \n-def test_deprecated_lang():\n-    \"\"\"Test language deprecation fallback\"\"\"\n-    with pytest.deprecated_call():\n-        assert _fallback_deprecated_lang(\"en-gb\") == \"en\"\n+@pytest.mark.parametrize(\n+    \"lang, fallback_lang\",\n+    [\n+        (\"en-us\", \"en\"),\n+        (\"en-ca\", \"en\"),\n+        (\"en-uk\", \"en\"),\n+        (\"en-gb\", \"en\"),\n+        (\"en-au\", \"en\"),\n+        (\"en-gh\", \"en\"),\n+        (\"en-in\", \"en\"),\n+        (\"en-ie\", \"en\"),\n+        (\"en-nz\", \"en\"),\n+        (\"en-ng\", \"en\"),\n+        (\"en-ph\", \"en\"),\n+        (\"en-za\", \"en\"),\n+        (\"en-tz\", \"en\"),\n+        (\"fr-fr\", \"fr\"),\n+        (\"pt-br\", \"pt\"),\n+        (\"pt-pt\", \"pt\"),\n+        (\"es-es\", \"es\"),\n+        (\"es-us\", \"es\"),\n+        (\"zh-cn\", \"zh-CN\"),\n+        (\"zh-tw\", \"zh-TW\"),\n+    ],\n+)\n+@pytest.mark.parametrize(\n+    \"case\", [str.lower, str.upper, str.title], ids=[\"lowercase\", \"uppercase\", \"mixed-case\"]\n+)\n+def test_deprecated_lang(lang, fallback_lang, case):\n+    \"\"\"Test language deprecation fallback regardless of case\"\"\"\n+    with pytest.deprecated_call(match=\"falling back to '{}'\".format(fallback_lang)):\n+        assert _fallback_deprecated_lang(case(lang)) == fallback_lang\n+\n+\n+@pytest.mark.parametrize(\"lang\", [\"en\", \"fr\", \"pt\", \"es\", \"zh\", \"xx\", \"EN\", \"\"])\n+def test_non_deprecated_lang(lang):\n+    \"\"\"Non-deprecated language tags are returned as-is without warnings\"\"\"\n+    with warnings.catch_warnings(record=True) as caught:\n+        warnings.simplefilter(\"always\")\n+        assert _fallback_deprecated_lang(lang) == lang\n+    assert not caught\n \n \n if __name__ == \"__main__\":\ndiff --git a/gtts/tests/test_tts.py b/gtts/tests/test_tts.py\nindex a30c598..b7153e0 100644\n--- a/gtts/tests/test_tts.py\n+++ b/gtts/tests/test_tts.py\n@@ -1,5 +1,6 @@\n # -*- coding: utf-8 -*-\n import os\n+import warnings\n import pytest\n from unittest.mock import Mock\n \n@@ -64,6 +65,35 @@ def test_unsupported_language_check():\n         gTTS(text=text, lang=lang, lang_check=check)\n \n \n+@pytest.mark.parametrize(\n+    \"lang, fallback_lang\",\n+    [\n+        (\"en-gb\", \"en\"),\n+        (\"fr-fr\", \"fr\"),\n+        (\"pt-br\", \"pt\"),\n+        (\"es-es\", \"es\"),\n+        (\"es-us\", \"es\"),\n+        (\"zh-cn\", \"zh-CN\"),\n+        (\"zh-tw\", \"zh-TW\"),\n+    ],\n+)\n+def test_deprecated_language_check(lang, fallback_lang):\n+    \"\"\"Deprecated language codes fall back during gTTS initialization\"\"\"\n+    with pytest.deprecated_call(match=\"falling back to '{}'\".format(fallback_lang)):\n+        tts = gTTS(text=\"Hello world\", lang=lang)\n+    assert tts.lang == fallback_lang\n+\n+\n+@pytest.mark.parametrize(\"lang\", [\"en-gb\", \"es-es\", \"zh-cn\", \"zh-tw\", \"xx\"])\n+def test_language_check_disabled(lang):\n+    \"\"\"Disabling language checks preserves the code without deprecation warnings\"\"\"\n+    with warnings.catch_warnings(record=True) as caught:\n+        warnings.simplefilter(\"always\")\n+        tts = gTTS(text=\"Hello world\", lang=lang, lang_check=False)\n+    assert tts.lang == lang\n+    assert not caught\n+\n+\n def test_empty_string():\n     \"\"\"Raise AssertionError on empty string\"\"\"\n     text = \"\"\n\n--- Working tree ---\n M gtts/lang.py\n M gtts/tests/test_lang.py\n M gtts/tests/test_tts.py\n",
+        "returncode": 0,
+        "timestamp": 1793481866.924358,
+        "exception_info": ""
+      },
+      "tool_call_id": "call_avGpsWANaC53TqQDKGBda5zW",
+      "role": "tool"
+    },
+    {
+      "content": "The fix is complete. All 114 non-network tests pass, the focused tests confirm unsupported-language validation still works, and `git diff --check` is clean. Only the fallback ordering and regression tests changed. I’ll submit the result now.\n",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"command\":\"echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\"}",
+            "name": "bash"
+          },
+          "id": "call_UBq95ws1u8O05jMqWDGMF4NB",
+          "type": "function"
+        }
+      ],
+      "function_call": null,
+      "provider_specific_fields": null,
+      "extra": {
+        "actions": [
+          {
+            "command": "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT",
+            "tool_call_id": "call_UBq95ws1u8O05jMqWDGMF4NB"
+          }
+        ],
+        "response": {
+          "id": "resp_057c150363d609fc016ae65c94ee9c8196ae89071290b8b019",
+          "created": 1793481888,
+          "model": "gpt-6.1-sol",
+          "object": "chat.completion",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "index": 0,
+              "message": {
+                "content": "The fix is complete. All 114 non-network tests pass, the focused tests confirm unsupported-language validation still works, and `git diff --check` is clean. Only the fallback ordering and regression tests changed. I’ll submit the result now.\n",
+                "role": "assistant",
+                "tool_calls": [
+                  {
+                    "function": {
+                      "arguments": "{\"command\":\"echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\"}",
+                      "name": "bash"
+                    },
+                    "id": "call_UBq95ws1u8O05jMqWDGMF4NB",
+                    "type": "function"
+                  }
+                ],
+                "function_call": null
+              }
+            }
+          ],
+          "usage": {
+            "completion_tokens": 391,
+            "prompt_tokens": 15479,
+            "total_tokens": 0,
+            "completion_tokens_details": null,
+            "prompt_tokens_details": null
+          }
+        },
+        "cost": 0.0107748,
+        "timestamp": 1793481888.4634528
+      }
+    },
+    {
+      "role": "exit",
+      "content": "",
+      "extra": {
+        "exit_status": "Submitted",
+        "submission": ""
+      }
+    }
+  ],
+  "trajectory_format": "mini-swe-agent-1.1"
+}

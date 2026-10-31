@@ -184,12 +184,13 @@ def audit_trial(trial_dir: str | Path) -> dict[str, Any]:
             row["reason"] = "fix-git pytest CTRF report absent; verifier reward is not a measured task outcome"
             return row
 
-    from harbor.models.trial.error_policy import policy_for
-
     exceptions = [p["exception_info"] for p in [data, *phases] if p.get("exception_info")]
-    if any(not policy_for(e["exception_type"]).reward_valid for e in exceptions):
-        row["reason"] = "Harbor classifies this exception as an invalid reward measurement"
-        return row
+    if exceptions:
+        from harbor.models.trial.error_policy import policy_for
+
+        if any(not policy_for(e["exception_type"]).reward_valid for e in exceptions):
+            row["reason"] = "Harbor classifies this exception as an invalid reward measurement"
+            return row
     rewards = (data.get("verifier_result") or {}).get("rewards")
     if not rewards or not data.get("finished_at"):
         row["reason"] = "Final trial reward or completion absent"

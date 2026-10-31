@@ -1,0 +1,110 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The test failures show my custom tokenization still mishandles valid HTML. I’ll replace it with BeautifulSoup’s HTML parser, preserving formatting as far as possible, then test the result and submit.",
+          "tool_calls": [
+            {
+              "id": "sg_call_121d5986ec12e_1",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cat > /app/filter.py <<'PY'\\n#!/usr/bin/env python3\\n\\\"\\\"\\\"Remove executable JavaScript from an HTML file in place.\\\"\\\"\\\"\\nimport html\\nimport re\\nimport sys\\nfrom pathlib import Path\\nfrom bs4 import BeautifulSoup, Comment, Doctype, NavigableString, Tag\\n\\nURL_ATTRS = frozenset('href src action formaction xlink:href data poster background cite manifest codebase archive longdesc usemap profile'.split())\\nBAD_CSS = re.compile(r'expression\\\\s*\\\\(|behavior\\\\s*:|-moz-binding\\\\s*:|@import\\\\b|url\\\\s*\\\\(\\\\s*[\\\\\\\"\\\\']?\\\\s*(?:javascript|vbscript|data\\\\s*:\\\\s*text/html)\\\\s*:', re.I)\\n\\ndef unsafe_url(value):\\n    import urllib.parse\\n    value = html.unescape(str(value))\\n    for _ in range(3):\\n        decoded = urllib.parse.unquote(value)\\n        if decoded == value:\\n            break\\n        value = decoded\\n    compact = re.sub(r'[\\\\x00-\\\\x20\\\\x7f]+', '', value).casefold()\\n    if compact.startswith(('javascript:', 'vbscript:', 'data:text/html')):\\n        return True\\n    return compact.startswith('data:') and not compact.startswith(('data:image/', 'data:audio/', 'data:video/', 'data:font/'))\\n\\ndef clean_tree(soup):\\n    for node in list(soup.find_all(['script', 'applet', 'object', 'embed'])):\\n        node.decompose()\\n    for tag in soup.find_all(True):\\n        for attr in list(tag.attrs):\\n            key = attr.lower()\\n            value = tag.attrs[attr]\\n            if key.startswith('on') or key == 'srcdoc':\\n                del tag.attrs[attr]\\n            elif key in URL_ATTRS and value is not None and unsafe_url(' '.join(value) if isinstance(value, list) else value):\\n                del tag.attrs[attr]\\n            elif key == 'style' and value is not None:\\n                cleaned = BAD_CSS.sub('', str(value))\\n                if cleaned:\\n                    tag.attrs[attr] = cleaned\\n                else:\\n                    del tag.attrs[attr]\\n    return soup\\n\\ndef sanitize(source):\\n    # html.parser preserves entity spelling and avoids injecting a document wrapper.\\n    soup = BeautifulSoup(source, 'html.parser')\\n    clean_tree(soup)\\n    return str(soup)\\n\\ndef main():\\n    if len(sys.argv) < 2:\\n        print('Usage: filter.py HTML_FILE', file=sys.stderr)\\n        return 2\\n    path = Path(sys.argv[1])\\n    with path.open(encoding='utf-8', errors='surrogateescape', newline='') as f:\\n        source = f.read()\\n    with path.open('w', encoding='utf-8', errors='surrogateescape', newline='') as f:\\n        f.write(sanitize(source))\\n    return 0\\n\\nif __name__ == '__main__':\\n    sys.exit(main())\\nPY\\npython -m py_compile /app/filter.py && python /tmp/test_filter.py 2>&1 | tail -30; echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_route_ae9b7f1e9fa0488ba39fe41a2064ba05",
+    "model": "gpt-6-luna",
+    "created": 1793485303,
+    "usage": {
+      "prompt_tokens": 14051,
+      "completion_tokens": 1067,
+      "total_tokens": 15118,
+      "prompt_tokens_details": {
+        "cached_tokens": 11969
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 294
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_ae9b7f1e9fa0488ba39fe41a2064ba05",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 14051,
+      "completion_tokens": 1067,
+      "total_tokens": 15118,
+      "prompt_tokens_details": {
+        "cached_tokens": 11969
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 294
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 14051,
+    "completion_tokens": 1067,
+    "reported_completion_tokens": 1067,
+    "reasoning_tokens": 294,
+    "cached_tokens": 11969,
+    "cache_write_tokens": null,
+    "ttft_ms": 3160.331833991222,
+    "latency_ms": 6851.594167004805,
+    "output_tokens_per_s": 155.7301810341231,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 289.0610050813947,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00086139,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf",
+    "decision_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf-8",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

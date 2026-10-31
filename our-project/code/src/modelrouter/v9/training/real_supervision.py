@@ -25,6 +25,12 @@ PREFERENCE_TARGETS = {
         "This target does not describe the eventual episode outcome.",
     ),
 }
+MODEL_TARGETS = {
+    kind: (target.replace("model_effort", "model"), instruction.replace(
+        "a model and its native effort", "a model under the recorded Provider configuration"
+    ) + " The applied native effort is not a supervised target.")
+    for kind, (target, instruction) in PREFERENCE_TARGETS.items()
+}
 
 
 def prepare_comparison(row, split):
@@ -46,6 +52,15 @@ def prepare_comparison(row, split):
     results = row["candidate_results"]
     if {action["action_id"] for action in actions} != {item["action_id"] for item in results}:
         return None, "CANDIDATE_IDENTITY_CONFLICT"
+    model_only = row.get("selection_scope") == "MODEL_ONLY"
+    if model_only:
+        actions = [{**action, "action_id": action["model_id"], "native_effort": None,
+                    "requested_native_effort": action["native_effort"]} for action in actions]
+        results = [{**item, "action_id": item["model_id"]} for item in results]
+    elif any(item.get("native_effort_status") == "PROVIDER_REPORTED_MISMATCH" for item in results):
+        return None, "NATIVE_EFFORT_MISMATCH"
+    elif row.get("native_efforts_confirmed") is False:
+        return None, "NATIVE_EFFORT_NOT_CONFIRMED"
     passing = [item for item in results if item["resolved"] is True]
     if not passing:
         return None, "NO_VERIFIED_ACTION"
@@ -58,19 +73,25 @@ def prepare_comparison(row, split):
             return None, "NO_STRICT_PREFERENCE"
         basis = "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
     winner = passing[0]["action_id"]
-    target, instruction = PREFERENCE_TARGETS[kind]
+    target, instruction = (MODEL_TARGETS if model_only else PREFERENCE_TARGETS)[kind]
     prepared = deepcopy(row)
     prepared.update(
         candidate_actions=actions,
+        candidate_results=results,
         questions={target: {"type": "choice", "instructions": instruction,
                            "criteria": {action["action_id"]:
-                                        f"{action['model_id']} / {action['native_effort']}"
+                                        (action['model_id'] if model_only else
+                                         f"{action['model_id']} / {action['native_effort']}")
                                         for action in actions}}},
         expected={target: winner},
         _meta={"supervision_class": "S1", "supervision_type": kind, "target": target,
                "input_kind": "REAL_CANDIDATE_COMPARISON", "preference_basis": basis,
                "supervision_qualification": "PAIRED_REAL_VERIFIER_RESULT",
                "comparison_size_k": len({action["model_id"] for action in actions}),
+               "candidate_action_count": len(actions),
+               "comparison_axis": ("NATIVE_EFFORT" if len({action["model_id"] for action in actions}) == 1
+                                   else "MODEL"),
+               "selection_scope": "MODEL_ONLY" if model_only else "MODEL_NATIVE_EFFORT",
                "full_three_model_optimum": False},
     )
     return prepared, None

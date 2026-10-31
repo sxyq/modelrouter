@@ -1,0 +1,167 @@
+{
+  "response": {
+    "background": false,
+    "completed_at": 1793481023,
+    "created_at": 1793481020,
+    "frequency_penalty": 0.0,
+    "id": "resp_039b20307754a1b7016ae6593c72b081969ffe903684419ee6",
+    "max_output_tokens": 4096,
+    "metadata": {},
+    "model": "gpt-6.1-sol",
+    "object": "response",
+    "output": [
+      {
+        "id": "rs_039b20307754a1b7016ae6593d9f1881969c4c2e2a61074a6b",
+        "type": "reasoning",
+        "content": [],
+        "encrypted_content": "gAAAAABq5lk_A9k3uYxIgk8TLHfP5D0uAuUVl1ESNn0OLdubkLUyr-A0q-WdpeOKNkgq_P-ZVwkjP2r8OcTO7TGm1-1PPVN8h5w52-cHETw2DlLIOEP-Otad4rBdDwJV1oojkdnROJLmgiBDSMDbstn1XN-W_hPQ29zIlfkKlQYRV0l-VlBoLKYPsQfB2jQCYRgIVtqUz7wb7GuFSYhOwhrdZUfEzV-TnShKJFeF0o7MB9onljzWgoTSGDFCbr4FVMtu_gTFiLfh6YPcr1afBng4pCGyfiWCxaVIeX1OXOAy4UyCHN__Oc_ws-_6Of32YqD3GA-njK28JjaNaxwoNcWE7TNPt0KMqHRmF7a_gXxKD9fLQ3smJO8e_alg2maBw930zrLBeAgkYZwbplVe9okQmOPlwIuAukDEPmHwyL688U7iEMHaxgKNnlft19TRJ7E5vm9_GZyFK9iLvxnrA6QlKl5wr3kzviqWrFKxcCmsi82U4TYRq_VLUx2a6h9ntzCW5ldh80JLcSLGovOkCHI43FoPhAoIuTo1oUSjKZ02bh8MBkyz-Gi91aYNyqmfPwAvYvci1Jd3krlzNujsg1qOge9_hieJ5U6IpHV8U-vSJDxq5i6w6uf4yjMTN6d7sTqS-g02LZmwjVwn9iYEofbMQe20prt8aWbZ-Hl8ShfVly26F2aSzc9e_jzc1vM-oyYnOn5HeatsZnz6Bn1iBNPy8gi8KzIcMjdKd10pCZgN13aEUfVGKOtWpjBOFNtrCFsaGn2PFDD26ARlC9RKYjcj4ODfherv_llqQsbzEhoYEo748KiPLl1HAZAHcq2A2ZD4wuiihTTEgU00NOJhqZg-hzI7KlJxhtXFFLAzvhBlJ58_8GEHhcqS7lOLmrXqGM16DBNOPINLaCjGvhVHCAErgvL_Jfixhyn2MSSp6dpIvu1z54zn_ZNP9NG-bvdzfRhMdkRu8WKTwNTj8r7U_nhA4yp8mzLRV4sxdEWyfmHQL_OVMYgI3FQtgo4CNNGPWL8vqWBvkeeDtP0bIDxjJeMYHgs_0C8cRp933yzic7lwvIBivSsduXbPt9Jg88YRoAOp_AO3MsE6vzLh6itBsI0iJts_zKbi7ZRVwa2gziC2GSImaaeLei13aOdmTMgxDjNdRnsPVPHpqFy24DFh68B3aCMHi1kC7tsTrifHm8p23CiqgWVU-y4nr35TIevfKvhC3icgFmDduhoaj2ADqBH80WlGs8Zv6utbklaLi2LQlqkqKaHgnFyBxo5jd8q2lCuQuowLyRZgnOqKrNCby__RqRRrGQvgguWIppLJGhgrawigSUVu0QWYahR9cviqldpEPKytnp7wgrMOXoz7Ieqti2iBTftey8bvENKn8cAzkXClv8ZBjoewYG0m-SbwuM8Y8ikGg0Opn-rfuyN5MIzXi_UAYLlAL-BKtblRhWk1KQrc4uOAUfRmmIJ6Ug2Azp1IecM-ryM6cGOLQoE_k1z7oUAX9QudntIHmWBBsJ_2jqEf_pS7tHo4V-b1SbMN8ucw9APDuf5J",
+        "summary": []
+      },
+      {
+        "id": "msg_039b20307754a1b7016ae6593df57c8196a85e32aee93efc35",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "The working tree is clean. `rg` isn’t available, so I’ll use `grep` to locate the implementation and tests.\n"
+          }
+        ],
+        "phase": "commentary",
+        "role": "assistant"
+      },
+      {
+        "id": "fc_039b20307754a1b7016ae6593ea14c8196ab5c285e11d802ef",
+        "type": "function_call",
+        "status": "completed",
+        "arguments": "{\"command\":\"cd /testbed && grep -R -n \\\"solve_sylvester\\\\|sylvester\\\" autograd tests && cat pyproject.toml && cat CONTRIBUTING.md && sed -n '1,300p' autograd/scipy/linalg.py && ls tests\"}",
+        "call_id": "call_eECU3VglQdigLfq0mDNkUZbZ",
+        "name": "bash"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "prompt_cache_key": "cdc7d3abccdb799e",
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "mode": "standard",
+      "context": "all_turns",
+      "effort": "max"
+    },
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "type": "function",
+        "description": "Execute a bash command",
+        "name": "bash",
+        "parameters": {
+          "properties": {
+            "command": {
+              "description": "The bash command to execute",
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": 0.98,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 1654,
+      "input_tokens_details": {
+        "cached_tokens": 1063,
+        "cache_write_tokens": 588
+      },
+      "output_tokens": 122,
+      "output_tokens_details": {
+        "reasoning_tokens": 14
+      },
+      "total_tokens": 1776
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "resp_039b20307754a1b7016ae6593c72b081969ffe903684419ee6",
+    "request_model_id": "gpt-6.1-sol",
+    "returned_model_id": "gpt-6.1-sol",
+    "provider": "openai",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": 4096,
+    "raw_usage": {
+      "input_tokens": 1654,
+      "input_tokens_details": {
+        "cached_tokens": 1063,
+        "cache_write_tokens": 588
+      },
+      "output_tokens": 122,
+      "output_tokens_details": {
+        "reasoning_tokens": 14
+      },
+      "total_tokens": 1776
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 1654,
+    "completion_tokens": 122,
+    "reported_completion_tokens": 122,
+    "reasoning_tokens": 14,
+    "cached_tokens": 1063,
+    "cache_write_tokens": 588,
+    "ttft_ms": 2644.9008749914356,
+    "latency_ms": 4228.974124998786,
+    "output_tokens_per_s": 28.848604033498322,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 77.01664048643832,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0028023,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t19-autograd-sol-low",
+    "decision_id": "t19-autograd-sol-low-1",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

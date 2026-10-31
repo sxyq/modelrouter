@@ -1,0 +1,75 @@
+diff --git a/test_schema.py b/test_schema.py
+index 2d7a495..e268fa7 100644
+--- a/test_schema.py
++++ b/test_schema.py
+@@ -838,6 +838,54 @@ def test_optional_callable_default_ignore_inherited_schema_validate_kwargs():
+     assert d["k"] == 1 and d["d"]["k"] == 42 and d["d"]["l"][0]["l"] == [3, 4, 5]
+ 
+ 
++
++@mark.parametrize("default", [dict, list, set, int, str])
++def test_optional_builtin_callable_defaults(default):
++    s = Schema({Optional("k", default=default): object})
++    assert s.validate({}) == {"k": default()}
++
++
++def test_optional_builtin_callable_default_receives_kwargs():
++    s = Schema({Optional("k", default=dict): dict})
++    assert s.validate({}, increment=1) == {"k": {"increment": 1}}
++
++
++def test_optional_callable_objects_ignore_validate_kwargs():
++    class Default:
++        def __call__(self):
++            return 42
++
++    default_object = Default()
++    for default in (
++        default_object,
++        default_object.__call__,
++        partial(lambda value: value, 42),
++    ):
++        s = Schema({Optional("k", default=default): int})
++        assert s.validate({}, increment=1) == {"k": 42}
++
++
++def test_optional_callable_default_receives_named_kwargs():
++    def default(*, increment):
++        return 42 + increment
++
++    s = Schema({Optional("k", default=default): int})
++    assert s.validate({}, increment=1) == {"k": 43}
++
++
++def test_optional_callable_default_type_error_is_not_retried():
++    calls = []
++
++    def default(**kwargs):
++        calls.append(kwargs)
++        raise TypeError("default failed")
++
++    s = Schema({Optional("k", default=default): int})
++    with raises(TypeError, match="default failed"):
++        s.validate({}, increment=1)
++    assert calls == [{"increment": 1}]
++
++
+ def test_inheritance_optional():
+     def convert(data, increment):
+         if isinstance(data, int):
+@@ -1186,12 +1234,13 @@ def test_json_schema_default_is_custom_type():
+     }
+ 
+ 
+-def test_json_schema_default_is_callable():
++@mark.parametrize("kwargs", [{}, {"name": "World!"}])
++def test_json_schema_default_is_callable(kwargs):
+     def default_func():
+         return "Hello!"
+ 
+     s = Schema({Optional("test", default=default_func): str})
+-    assert s.json_schema("my-id") == {
++    assert s.json_schema("my-id", **kwargs) == {
+         "$schema": "http://json-schema.org/draft-07/schema#",
+         "$id": "my-id",
+         "properties": {"test": {"default": "Hello!", "type": "string"}},

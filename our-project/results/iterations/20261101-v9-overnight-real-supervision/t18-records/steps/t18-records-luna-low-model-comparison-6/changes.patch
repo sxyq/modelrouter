@@ -1,0 +1,29 @@
+diff --git a/records.py b/records.py
+index cc3a3a6..0b61ae8 100644
+--- a/records.py
++++ b/records.py
+@@ -380,8 +380,12 @@ class Connection(object):
+             raise exc.ResourceClosedError("Connection is closed.")
+ 
+         # Execute the query with parameters
+-        cursor = self._conn.execute(text(query), **params)
++        cursor = self._conn.execute(text(query), params)
+     
++        # Statements such as CREATE TABLE do not return rows.
++        if not cursor.returns_rows:
++            return RecordCollection(iter(()))
++
+         # Get column names
+         keys = cursor.keys()
+     
+diff --git a/tests/test_69.py b/tests/test_69.py
+index 034bf26..75ed68b 100644
+--- a/tests/test_69.py
++++ b/tests/test_69.py
+@@ -1,3 +1,5 @@
+ def test_issue69(db):
+     db.query("CREATE table users (id text)")
+-    db.query("SELECT * FROM users WHERE id = :user", user="Te'ArnaLambert")
++    db.query("INSERT INTO users (id) VALUES (:user)", user="Te'ArnaLambert")
++    rows = db.query("SELECT * FROM users WHERE id = :user", user="Te'ArnaLambert")
++    assert rows.first().id == "Te'ArnaLambert"

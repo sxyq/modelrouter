@@ -10,7 +10,9 @@
 
 **独立评分决定与完成（11-01）**：用户已明确选TwinRouterBench 520题/970步，只评原ROUTE-003的旧四档 `routing_tier_choice`，不使用同源test.jsonl、Train成绩或新三模型动作映射替代。两组微调前导入权重与原Val前三8/8在CPU完整实算；F11/R11分别20.515464/18.969072分，较微调前增13.505155/5.670103个百分点，但八版本均低于恒选low71.030928分。Test不用于重选、温度拟合、训练或Serving晋升；数字和最终状态见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)，不增加Q-ID或新研究流程。原队列仍暂停、无活动训练，382/v4及新两条后没有加训。
 
-**2026-11-01 当前决定（沿 Q-003/Q-021）**：新增3个不同Train任务尝试、2组完整可比任务对照，取得任务级/步骤级各1条新偏好，累计各2条/同2标签任务。Scope两边均失败、SQLparse请求中断和无终局前缀保留观察；不复制任务胜负到步骤。原Prepare消费新2条，旧382视图不改。四档分析只读取原八份结果，不使用独立标签训练、调温度或选阈值；旧S1/S2/S3与外部能力档位语义不同，偏置因果贡献未知。教师关闭、AA v4、K=2 low；Flash原两账户仍无渠道，K=3与跨Effort目标0。当前无训练，F14归档及F11/R11代表、旧Serving不变，不启动新配方。费用与有效资格见[本轮结果](../results/iterations/20261101-v9-k2-supervision-expansion/review.md)。
+**2026-11-01 当前决定（沿 Q-003/Q-021）**：12个不同Train任务/9仓库，7组双候选完整通过；新增任务级7、步骤级2条模型偏好，累计9/4、同9个标签任务。双方失败、原Verifier不可用、API中断或缺失候选均保留观察，不复制任务赢家到每个步骤。Sol请求low/medium却报告max、Luna不报告应用档位，实际原因未知，因此13条新视图明确MODEL_ONLY，确认的Model×Native Effort/同模型Effort/K=3目标均0；不改写成low或max监督。原Prepare与本机/服务器serializer消费13条，含历史4条，可组合209/186，旧382不改。209请求/199Usage/10缺失、3响应无法计价，已知小计1.85298918USD，完整费用未知。详见[本轮结果](../results/iterations/20261101-v9-overnight-real-supervision/review.md)。
+
+**Dev与接续范围**：训练采集教师关闭；configure-git-webserver开启教师1次成功/0.013086USD、短评进入Router4次，但开/关均原reward0，不声称净收益。不同Dev filter-js-from-html完成Sol3→Luna12自然切换，15生成/9工具结果、RepeatedFormatError；固定Luna3生成/3工具结果、Submitted，两者原Verifier均reward0/CTRF0/2、模型费0.07949004/0.00111207USD。Dev不进Train或制造质量赢家，不扰动推理概率。两个账户目录仍无Flash，AA v4的Max不用于low；八版本独立四档不重评、不训练或调参。06:26两组无活动训练，F14归档及F11/R11代表、旧Serving不变；13条模型目标尚不能支撑联合档位新配方，本轮未更新模型参数或启动旧队列。17个临时快照、采集工具与自有隧道已清理，原失败与训练记录保留。
 
 **2026-10-31 历史决定（沿 Q-003/Q-021）**：从ad1d392接续，五RQ、八图十二表、三正式身份、两固定教师参考及原mini/Harbor体系不变。使用允许训练且与Canary/Dev/Final元数据隔离的SWE-smith TextFSM任务，取得K=2任务级偏好1、步骤级偏好1；前缀6两失败不贴选择标签。新Task偏好为等Verifier结果下低费用的Luna low，Step偏好为前缀7一步完成修复的Sol low，不能互相复制终局目标；完整三模型最优和同模型Effort差异标签仍0。结果见[历史真实监督](../results/iterations/20261031-v9-real-route-supervision/review.md)。
 

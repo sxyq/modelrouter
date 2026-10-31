@@ -1,0 +1,113 @@
+diff --git a/gtts/tests/test_tts.py b/gtts/tests/test_tts.py
+index a30c598..ba91f01 100644
+--- a/gtts/tests/test_tts.py
++++ b/gtts/tests/test_tts.py
+@@ -1,8 +1,11 @@
+ # -*- coding: utf-8 -*-
+ import os
+-import pytest
++from io import BytesIO
+ from unittest.mock import Mock
+ 
++import pytest
++import requests
++
+ from gtts.tts import gTTS, gTTSError
+ from gtts.langs import _main_langs
+ from gtts.lang import _extra_langs
+@@ -124,6 +127,82 @@ def test_msg():
+     assert error2.msg is None
+ 
+ 
++@pytest.mark.parametrize("exception_type", [gTTSError, Exception])
++@pytest.mark.parametrize("msg", [None, "Custom error message"])
++def test_exception(msg, exception_type):
++    """gTTSError can be raised and caught as a standard exception."""
++    error = gTTSError(msg)
++    with pytest.raises(exception_type) as caught:
++        raise error
++
++    assert caught.value is error
++    assert error.args == (msg,)
++    assert str(error) == str(msg)
++
++
++def test_exception_class():
++    """gTTSError can also be raised without constructing it explicitly."""
++    with pytest.raises(gTTSError):
++        raise gTTSError
++
++
++def test_exception_custom_message_with_context():
++    """An explicit message takes precedence without losing error context."""
++    tts = Mock(tld="invalid")
++    response = Mock(status_code=500, reason="Server Error")
++    error = gTTSError("Custom error message", tts=tts, response=response)
++
++    assert error.tts is tts
++    assert error.rsp is response
++    assert error.msg == "Custom error message"
++    assert error.args == (error.msg,)
++    assert str(error) == error.msg
++
++
++@pytest.mark.parametrize("failure", ["connection", "timeout", "http", "no_audio"])
++def test_request_error(failure, monkeypatch):
++    """API failures propagate as gTTSError rather than a file-object TypeError."""
++    tts = gTTS("Hello", lang="xyz", lang_check=False)
++    response = Mock(status_code=200, reason="OK")
++    send = Mock(return_value=response)
++    expected_response = response
++
++    if failure in ("connection", "timeout"):
++        exception = (
++            requests.exceptions.ConnectionError
++            if failure == "connection"
++            else requests.exceptions.Timeout
++        )
++        send.side_effect = exception("offline")
++        expected_response = None
++        expected_message = "Failed to connect. Probable cause: Unknown"
++    elif failure == "http":
++        response.status_code = 403
++        response.reason = "Forbidden"
++        response.raise_for_status.side_effect = requests.exceptions.HTTPError()
++        expected_message = (
++            "403 (Forbidden) from TTS API. Probable cause: "
++            "Bad token or upstream API changes"
++        )
++    else:
++        response.iter_lines.return_value = [b'["jQ1olc",null]']
++        expected_message = (
++            "200 (OK) from TTS API. Probable cause: "
++            "No audio stream in response. Unsupported language 'xyz'"
++        )
++
++    monkeypatch.setattr("gtts.tts.requests.Session.send", send)
++    with pytest.raises(gTTSError) as caught:
++        tts.write_to_fp(BytesIO())
++
++    error = caught.value
++    assert error.tts is tts
++    assert error.rsp is expected_response
++    assert error.msg == expected_message
++    assert error.args == (expected_message,)
++    assert str(error) == expected_message
++
++
+ def test_infer_msg():
+     """Infer message successfully based on context"""
+ 
+diff --git a/gtts/tts.py b/gtts/tts.py
+index ed87bbe..2a67a70 100644
+--- a/gtts/tts.py
++++ b/gtts/tts.py
+@@ -337,7 +337,7 @@ class gTTS:
+             log.debug("Saved to %s", savefile)
+ 
+ 
+-class gTTSError():
++class gTTSError(Exception):
+     """Exception that uses context to present a meaningful error message"""
+ 
+     def __init__(self, msg=None, **kwargs):

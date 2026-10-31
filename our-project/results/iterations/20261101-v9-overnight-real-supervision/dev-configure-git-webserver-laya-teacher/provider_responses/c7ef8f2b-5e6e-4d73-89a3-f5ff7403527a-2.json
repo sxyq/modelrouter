@@ -1,0 +1,111 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "`/app` is empty, so I’m adding a self-contained server installer with a post-receive deploy hook and port-8080 service.",
+          "reasoning_content": "**Considering deployment setup**\n\nI’m realizing there are no repo files or git installed in this environment, which makes configuring the git server a challenge. I think about creating a setup script to configure a bare repo and set up the server on port 8080. A self-contained bash installer could be handy for that, utilizing Python’s HTTP server. The script might need to run as an admin. Plus, I want to ensure the documentation is clear and usable!**Evaluating deployment mechanics**\n\nI need to ensure that the bare repo hook exports the master branch correctly to the webroot. The command `git --work-tree=\"$WEB_ROOT\" checkout -f master` might create complications with the worktree, so I’m considering using `git archive master | tar -x -C \"$WEB_ROOT\"` instead. This could help avoid stale files issues that might come from rsync. I’m also thinking about including a systemd service unit for the Python web server setup, alongside validating user login and creating necessary files in the /app directory.**Creating installation script**\n\nThis situation is a bit strange since it appears the repository is absent. I think the first step is to create an installation script, but I need to consider that there might be no git executable present, which prevents me from testing everything properly. I should check for the availability of the necessary commands before proceeding with the script. Making sure I have everything I need will help avoid any complications down the line!",
+          "tool_calls": [
+            {
+              "id": "call_GoGYwQKnNeDjZpBZfH3adS7w",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"command -v apply_patch || true; command -v tar || true; command -v systemctl || true; command -v sh || true\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_0d0e578d80e3b487016ae66664381c87d091ce79663367f751",
+    "model": "gpt-6-luna",
+    "created": 1793484389,
+    "usage": {
+      "prompt_tokens": 28095,
+      "completion_tokens": 509,
+      "total_tokens": 28604,
+      "prompt_tokens_details": {
+        "cached_tokens": 27905
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 423
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0d0e578d80e3b487016ae66664381c87d091ce79663367f751",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 28095,
+      "completion_tokens": 509,
+      "total_tokens": 28604,
+      "prompt_tokens_details": {
+        "cached_tokens": 27905
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 423
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 28095,
+    "completion_tokens": 509,
+    "reported_completion_tokens": 509,
+    "reasoning_tokens": 423,
+    "cached_tokens": 27905,
+    "cache_write_tokens": null,
+    "ttft_ms": 8145.687458047178,
+    "latency_ms": 8235.227833036333,
+    "output_tokens_per_s": 61.8076403372961,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 5684.58642329391,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00055255,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "c7ef8f2b-5e6e-4d73-89a3-f5ff7403527a",
+    "decision_id": "c7ef8f2b-5e6e-4d73-89a3-f5ff7403527a-2",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

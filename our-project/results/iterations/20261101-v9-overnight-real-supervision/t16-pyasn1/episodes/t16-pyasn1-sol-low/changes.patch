@@ -1,0 +1,49 @@
+diff --git a/pyasn1/codec/ber/decoder.py b/pyasn1/codec/ber/decoder.py
+index 91f2533..2f39ede 100644
+--- a/pyasn1/codec/ber/decoder.py
++++ b/pyasn1/codec/ber/decoder.py
+@@ -1162,7 +1162,7 @@ class SetOfPayloadDecoder(SetOrSetOfPayloadDecoder):
+     protoComponent = univ.SetOf()
+ 
+ 
+-class ChoicePayloadDecoder():
++class ChoicePayloadDecoder(AbstractConstructedPayloadDecoder):
+     protoComponent = univ.Choice()
+ 
+     def valueDecoder(self, substrate, asn1Spec,
+diff --git a/tests/codec/ber/test_decoder.py b/tests/codec/ber/test_decoder.py
+index f69da11..2e4e15a 100644
+--- a/tests/codec/ber/test_decoder.py
++++ b/tests/codec/ber/test_decoder.py
+@@ -1573,6 +1573,31 @@ class ChoiceDecoderTestCase(BaseTestCase):
+             bytes((5, 0)), asn1Spec=self.s
+         ) == (self.s, b'')
+ 
++    def testBySchemaAlternatives(self):
++        taggedSchema = self.s.subtype(
++            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 4)
++        )
++        trailing = bytes((5, 0))
++
++        for name, component, substrate in (
++                ('place-holder', univ.Null(b''), bytes((5, 0))),
++                ('number', univ.Integer(123), bytes((2, 1, 123))),
++                ('string', univ.OctetString(b'fox'), bytes((4, 3, 102, 111, 120)))):
++            for schema, encoded in (
++                    (self.s, substrate),
++                    (taggedSchema, bytes((164, len(substrate))) + substrate),
++                    (taggedSchema, bytes((164, 128)) + substrate + bytes((0, 0)))):
++                with self.subTest(name=name, encoded=encoded):
++                    decoded, rest = decoder.decode(
++                        encoded + trailing, asn1Spec=schema
++                    )
++                    self.assertEqual(decoded.getName(), name)
++                    self.assertTrue(decoded.getComponent().isSameTypeWith(component))
++                    self.assertEqual(decoded.getComponent(), component)
++                    self.assertEqual(decoded.tagSet, schema.tagSet)
++                    self.assertEqual(rest, trailing)
++                    self.assertFalse(schema.isValue)
++
+     def testWithoutSpec(self):
+         self.s.setComponentByPosition(0, univ.Null(b''))
+         assert decoder.decode(bytes((5, 0))) == (self.s, b'')

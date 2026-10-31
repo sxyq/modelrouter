@@ -2,9 +2,13 @@
 
 ## 当前能力与数据来源（2026-11-01）
 
-**新增真实监督**：3个SWE-smith Train任务尝试、2组完整可比终局，新任务级/步骤级偏好各1条，累计4条/2标签任务。新标签均为Device任务上的Luna low：完整终局等质量下较低模型费，以及真实同前缀的一步修复；类型不混用。Scope同仓库但不同任务ID/源码文件，双失败仅观察；SQLparse Luna请求中断不生成胜者。数据MIT、两个代码仓库BSD-3-Clause，Canary/Dev/Final与独立集的精确ID及可识别仓库元数据无交集，任意近重复不作全面结论。结果见[本轮记录](../results/iterations/20261101-v9-k2-supervision-expansion/review.md)。
+**新增真实监督**：12个不同SWE-smith Train任务/9仓库，7组双候选完整通过，新增任务级模型成本偏好7条、步骤级即时验证偏好2条，来自7任务。来源TRA-002/MIT，保留各原repo与instance_id、镜像版本、工具及原Verifier；与Canary/Dev/Final和独立TwinRouterBench的精确ID、可识别派生元数据关系见本轮task_isolation，不对任意近重复作全面结论。Mido仓库外路径、gTTS网络验证、PyASN1单边超时和其他接口/格式错误只作观察。结果见[本轮记录](../results/iterations/20261101-v9-overnight-real-supervision/review.md)。
 
-新delta2已由原Prepare与共享serializer消费，完整过去消息、实际候选、low、AA v4及反馈来源保留；原382视图与13,214候选不重加工。可组合Train200/Val186仅增加4条真实偏好，仍同2任务；17份候选观察和6组无有效目标对照不混作choice。68请求/65份Usage/3缺失，已知模型费率0.67589603USD，完整费用、实收及资源未知；教师0。两个既有账户目录仍无Flash，不重发已知失败POST；K=3、同模型Effort监督0。旧四档标签与训练目标语义差异、400字符输入限制只作分析，不用独立标签再训。
+新视图13条含历史TextFSM/Device的4条，累计任务级9/步骤级4、9个任务、Luna12/Sol1；不能再加旧delta重复计数。原Prepare及本机/服务器serializer均消费13条，相对S1链接有效，原Train196可组合209、Val186不变，382与13,214候选不重加工。25份本轮比较中16份无目标，44份候选观察不等于44条动作监督。209请求/199Usage/10缺失、3响应无法计价；已知小计1.85298918USD，完整费用、实收和资源USD未知，采集教师0。Dev及其教师结果隔离，不入Train。
+
+两个不同Dev共5个Episode/59生成及1教师请求，4个原Verifier终局均reward0，固定Sol工具超时的终局未知。HTML任务动态Sol3→Luna12/15生成与固定Luna3生成均CTRF0/2；Git教师开/关均CTRF0/1，新教师成功短评进入Router4次。Dev已知模型费0.18991261USD、全工作包269请求/已知2.04290179USD，完整费用仍未知；不产生Dev质量赢家或Train标签。临时快照17个、采集工具和自有隧道已清理，原镜像、失败和任务记录保留。
+
+Sol请求low/medium的110份原响应报告max；Luna low/none的89份不报告应用档位，执行与元数据原因未知。合法Model目标明确MODEL_ONLY_UNDER_RECORDED_PROVIDER_CONFIGURATION，native_effort目标为null，requested_native_effort只作为此前可见输入保留；确认的Model×Native Effort/同模型Effort/K=3标签均0，旧历史实体不改写。两个账户目录仍无Flash，不重发旧404/503；AA v4的Max不是low/none成绩，缺测继续NOT_MEASURED。旧四档标签和输入限制只用于既有独立结果解释，不用独立标签再训。
 
 **独立评价材料（11-01完成）**：本轮复用已有ROUTE-003 TwinRouterBench `test_twinrouterbench_holdout.jsonl`（520任务/970步），原 `EVAL_BENCHMARK_ONLY` 用途不变，没有下载、清洗或加入Train/Val。两组数据任务/state/instruction/criteria/gold逐条相同，8/8版本完整评价、7760条预测。只评分旧四档choice，不将每行score问题另算970个样本，不生成Sol/Luna/Flash最优Model×Effort目标；分数与原始概率见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)。既有合法K=2 Train动作目标仍2条（1任务），K=3最优仍0；新训练未启动。
 

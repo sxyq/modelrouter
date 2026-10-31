@@ -1,0 +1,123 @@
+diff --git a/tests/test_queries.py b/tests/test_queries.py
+index 6e0dd8f..07fafeb 100644
+--- a/tests/test_queries.py
++++ b/tests/test_queries.py
+@@ -2,7 +2,7 @@ import re
+ 
+ import pytest
+ 
+-from tinydb.queries import Query, where
++from tinydb.queries import Query, QueryInstance, where
+ 
+ 
+ def test_no_path():
+@@ -130,6 +130,49 @@ def test_and():
+     assert hash(query)
+ 
+ 
++@pytest.mark.parametrize('left_result', [False, True])
++@pytest.mark.parametrize('right_result', [False, True])
++def test_and_short_circuit(left_result, right_result):
++    calls = []
++
++    def left_test(value):
++        calls.append('left')
++        return value['left']
++
++    def right_test(value):
++        calls.append('right')
++        return value['right']
++
++    left = QueryInstance(left_test, ('left',))
++    right = QueryInstance(right_test, ('right',))
++    query = left & right
++
++    assert isinstance(query, QueryInstance)
++    assert query({'left': left_result, 'right': right_result}) is (
++        left_result and right_result
++    )
++    assert calls == (['left', 'right'] if left_result else ['left'])
++
++
++@pytest.mark.parametrize('left_cacheable', [False, True])
++@pytest.mark.parametrize('right_cacheable', [False, True])
++def test_and_cacheable(left_cacheable, right_cacheable):
++    left = QueryInstance(
++        lambda value: True, ('left',) if left_cacheable else None
++    )
++    right = QueryInstance(
++        lambda value: True, ('right',) if right_cacheable else None
++    )
++    query = left & right
++
++    assert query({})
++    assert query.is_cacheable() is (left_cacheable and right_cacheable)
++    if query.is_cacheable():
++        assert query == (right & left)
++        assert hash(query) == hash(right & left)
++        assert query != (left | right)
++
++
+ def test_not():
+     query = ~ (Query().val1 == 1)
+     assert query({'val1': 5, 'val2': 2})
+diff --git a/tests/test_tables.py b/tests/test_tables.py
+index 4335200..93beedd 100644
+--- a/tests/test_tables.py
++++ b/tests/test_tables.py
+@@ -95,6 +95,31 @@ def test_query_cache_with_mutable_callable(db):
+     assert len(table._query_cache) == 0
+ 
+ 
++@pytest.mark.parametrize('reverse', [False, True])
++def test_query_cache_with_mutable_callable_and(db, reverse):
++    table = db.table('table')
++    table.insert({'val': 5})
++
++    mutable = 5
++
++    def increase(value):
++        return value + mutable
++
++    cacheable = where('val').exists()
++    non_cacheable = where('val').map(increase) == 10
++    query = (non_cacheable & cacheable) if reverse else (
++        cacheable & non_cacheable
++    )
++
++    assert not query.is_cacheable()
++    assert table.count(query) == 1
++
++    mutable = 10
++
++    assert table.count(query) == 0
++    assert not table._query_cache
++
++
+ def test_zero_cache_size(db):
+     table = db.table('table3', cache_size=0)
+     query = where('int') == 1
+diff --git a/tinydb/queries.py b/tinydb/queries.py
+index d163d71..de04808 100644
+--- a/tinydb/queries.py
++++ b/tinydb/queries.py
+@@ -100,6 +100,19 @@ class QueryInstance:
+ 
+         return False
+ 
++    def __and__(self, other: 'QueryInstance') -> 'QueryInstance':
++        # We use a frozenset for the hash as the AND operation is commutative
++        # (a & b == b & a) and the frozenset does not consider the order of
++        # elements
++        if self.is_cacheable() and other.is_cacheable():
++            hashval = ('and', frozenset([self._hash, other._hash]))
++        else:
++            hashval = None
++        return QueryInstance(
++            lambda value: self(value) and other(value),
++            hashval
++        )
++
+     def __or__(self, other: 'QueryInstance') -> 'QueryInstance':
+         # We use a frozenset for the hash as the OR operation is commutative
+         # (a | b == b | a) and the frozenset does not consider the order of

@@ -1,0 +1,110 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "I found remaining edge cases in quoted `>` characters, raw-text elements, and `srcdoc`. I’ll make the tokenizer quote-aware, preserve safe raw content, remove scripts from embedded documents, rerun the tests, and submit.",
+          "tool_calls": [
+            {
+              "id": "sg_call_ef109b8914a7a_1",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cat <<'PY' > /app/filter.py\\n#!/usr/bin/env python3\\n\\\"\\\"\\\"Remove executable JavaScript from HTML while preserving safe source formatting.\\\"\\\"\\\"\\nimport html\\nimport re\\nimport sys\\nfrom html.parser import HTMLParser\\nfrom pathlib import Path\\nfrom urllib.parse import unquote\\n\\nVOID = frozenset('area base br col embed hr img input link meta param source track wbr'.split())\\nDROP = frozenset({'script', 'applet', 'object', 'embed'})\\nURL_ATTRS = frozenset('href src action formaction xlink:href data poster background cite manifest codebase archive longdesc usemap profile'.split())\\nBAD_CSS = re.compile(r'expression\\\\s*\\\\(|behavior\\\\s*:|-moz-binding\\\\s*:|@import\\\\b|url\\\\s*\\\\(\\\\s*[\\\\\\\"\\\\']?\\\\s*(?:javascript|vbscript|data\\\\s*:\\\\s*text/html)\\\\s*:', re.I)\\nTOKEN = re.compile(r'<!--.*?-->|<![^>]*>|<\\\\?[^>]*>|</?[A-Za-z][^>]*>', re.S)\\nATTR = re.compile(r'''([^\\\\s=/>]+)(?:\\\\s*=\\\\s*(?:\\\"([^\\\"]*)\\\"|'([^']*)'|([^\\\\s>]+)))?''')\\nRAW = frozenset({'textarea', 'title', 'style', 'xmp', 'noembed', 'noframes', 'plaintext'})\\n\\n\\ndef unsafe_url(value):\\n    value = html.unescape(value)\\n    for _ in range(3):\\n        decoded = unquote(value)\\n        if decoded == value:\\n            break\\n        value = decoded\\n    value = re.sub(r'[\\\\x00-\\\\x20\\\\x7f]+', '', value).casefold()\\n    if value.startswith(('javascript:', 'vbscript:')):\\n        return True\\n    return value.startswith('data:') and not value.startswith(('data:image/', 'data:audio/', 'data:video/', 'data:font/'))\\n\\n\\ndef parse_tag(raw):\\n    m = re.match(r'<(/?)\\\\s*([^\\\\s/>]+)', raw)\\n    if not m:\\n        return None\\n    close, name = m.groups()\\n    attr_text = raw[m.end():]\\n    # Remove closing delimiter without consuming quoted '>' characters.\\n    attr_text = re.sub(r'/?>\\\\s*$', '', attr_text)\\n    attrs = []\\n    for a in ATTR.finditer(attr_text):\\n        name, double, single, bare = a.groups()\\n        value = double if double is not None else single if single is not None else bare\\n        attrs.append((name, value))\\n    return close, name.lower(), attrs\\n\\n\\ndef sanitize_tag(raw):\\n    parsed = parse_tag(raw)\\n    if not parsed or raw.startswith(('<!--', '<!', '<?')):\\n        return raw\\n    close, tag, attrs = parsed\\n    if close:\\n        return raw\\n    safe = []\\n    changed = False\\n    for name, value in attrs:\\n        key = name.lower()\\n        if key.startswith('on') or key == 'srcdoc':\\n            changed = True\\n            continue\\n        if value is not None and key in URL_ATTRS and unsafe_url(value):\\n            changed = True\\n            continue\\n        if value is not None and key == 'style':\\n            cleaned = BAD_CSS.sub('', value)\\n            if cleaned != value:\\n                changed = True\\n                value = cleaned\\n        safe.append((name, value))\\n    if not changed:\\n        return raw\\n    self_closing = raw.rstrip().endswith('/>')\\n    result = ['<' + tag]\\n    for name, value in safe:\\n        result.append(' ' + name if value is None else ' ' + name + '=\\\"' + html.escape(value, quote=True) + '\\\"')\\n    result.append('/>' if self_closing else '>')\\n    return ''.join(result)\\n\\n\\ndef sanitize(source):\\n    out = []\\n    cursor = 0\\n    suppressed = []\\n    raw_text = None\\n    for match in TOKEN.finditer(source):\\n        token = match.group()\\n        parsed = parse_tag(token)\\n        if raw_text:\\n            if not parsed or not parsed[0] or parsed[1] != raw_text:\\n                continue\\n            if not suppressed:\\n                out.append(source[cursor:match.end()])\\n            cursor = match.end()\\n            raw_text = None\\n            continue\\n        if not suppressed:\\n            out.append(source[cursor:match.start()])\\n        cursor = match.end()\\n        if not parsed:\\n            if not suppressed:\\n                out.append(token)\\n            continue\\n        closing, tag, _ = parsed\\n        if suppressed:\\n            if closing and tag == suppressed[-1]:\\n                suppressed.pop()\\n            elif not closing and tag in DROP and tag not in VOID and not token.rstrip().endswith('/>'):\\n                suppressed.append(tag)\\n            continue\\n        if not closing and tag in DROP:\\n            if tag not in VOID and not token.rstrip().endswith('/>'):\\n                suppressed.append(tag)\\n            continue\\n        # Sanitize srcdoc recursively instead of discarding safe embedded HTML.\\n        if not closing and re.search(r'\\\\bsrcdoc\\\\s*=', token, re.I):\\n            token = re.sub(r'(?i)\\\\s+srcdoc\\\\s*=\\\\s*(\\\"[^\\\"]*\\\"|\\\\'[^\\\\']*\\\\'|[^\\\\s>]+)', lambda m: ' srcdoc=\\\"' + html.escape(sanitize(html.unescape(m.group(1)[1:-1] if m.group(1)[0] in '\\\\\\\"\\\\'' else m.group(1))), quote=True) + '\\\"', token)\\n        out.append(sanitize_tag(token))\\n        if not closing and tag in RAW and tag not in VOID:\\n            raw_text = tag\\n    if not suppressed:\\n        out.append(source[cursor:])\\n    return ''.join(out)\\n\\n\\ndef main():\\n    if len(sys.argv) < 2:\\n        print('Usage: filter.py HTML_FILE', file=sys.stderr)\\n        return 2\\n    path = Path(sys.argv[1])\\n    with path.open(encoding='utf-8', errors='surrogateescape', newline='') as f:\\n        source = f.read()\\n    with path.open('w', encoding='utf-8', errors='surrogateescape', newline='') as f:\\n        f.write(sanitize(source))\\n    return 0\\n\\nif __name__ == '__main__':\\n    sys.exit(main())\\nPY\\npython /tmp/test_filter.py 2>&1 | tail -40; echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_route_c7f47aec81c7426d9c2045cfb730ca72",
+    "model": "gpt-6-luna",
+    "created": 1793485257,
+    "usage": {
+      "prompt_tokens": 9085,
+      "completion_tokens": 1758,
+      "total_tokens": 10843,
+      "prompt_tokens_details": {
+        "cached_tokens": 6687
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 179
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_c7f47aec81c7426d9c2045cfb730ca72",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 9085,
+      "completion_tokens": 1758,
+      "total_tokens": 10843,
+      "prompt_tokens_details": {
+        "cached_tokens": 6687
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 179
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 9085,
+    "completion_tokens": 1758,
+    "reported_completion_tokens": 1758,
+    "reasoning_tokens": 179,
+    "cached_tokens": 6687,
+    "cache_write_tokens": null,
+    "ttft_ms": 3737.83125000773,
+    "latency_ms": 15631.697459029965,
+    "output_tokens_per_s": 112.46379381430874,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 147.80727890367962,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00118567,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf",
+    "decision_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf-5",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

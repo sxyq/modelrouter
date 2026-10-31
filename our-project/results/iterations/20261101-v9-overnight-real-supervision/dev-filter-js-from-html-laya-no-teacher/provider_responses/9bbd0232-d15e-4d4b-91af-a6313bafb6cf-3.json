@@ -1,0 +1,110 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "I’ll implement an in-place sanitizer using Python’s standard-library HTML parser, preserve untouched markup verbatim where possible, and run the regression tests before submitting.\n",
+          "tool_calls": [
+            {
+              "id": "sg_call_8ad63515881aa_1",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cat <<'PY' > /app/filter.py\\n#!/usr/bin/env python3\\n\\\"\\\"\\\"Remove executable JavaScript from an HTML document in place.\\\"\\\"\\\"\\nimport html\\nimport re\\nimport sys\\nfrom html.parser import HTMLParser\\nfrom pathlib import Path\\n\\nVOID_TAGS = frozenset('area base br col embed hr img input link meta param source track wbr'.split())\\nDANGEROUS_TAGS = frozenset({'script', 'applet', 'object', 'embed'})\\nURL_ATTRIBUTES = frozenset({'href', 'src', 'action', 'formaction', 'xlink:href', 'data', 'poster', 'background', 'cite', 'manifest', 'codebase', 'archive', 'longdesc', 'usemap', 'profile'})\\nBAD_CSS = re.compile(r'expression\\\\s*\\\\(|behavior\\\\s*:|-moz-binding\\\\s*:|@import\\\\b|url\\\\s*\\\\(\\\\s*[\\\\\\\"\\\\']?\\\\s*(?:javascript|vbscript|data\\\\s*:\\\\s*text/html)\\\\s*:', re.I)\\n\\n\\ndef dangerous_url(value):\\n    # Decode HTML entities and repeatedly percent-decode to detect common evasions.\\n    from urllib.parse import unquote\\n    value = html.unescape(value)\\n    for _ in range(3):\\n        decoded = unquote(value)\\n        if decoded == value:\\n            break\\n        value = decoded\\n    compact = re.sub(r'[\\\\x00-\\\\x20\\\\x7f]+', '', value).casefold()\\n    if compact.startswith(('javascript:', 'vbscript:')):\\n        return True\\n    if compact.startswith('data:'):\\n        return not compact.startswith(('data:image/', 'data:audio/', 'data:video/', 'data:font/'))\\n    return False\\n\\n\\nclass Sanitizer(HTMLParser):\\n    def __init__(self, source):\\n        super().__init__(convert_charrefs=False)\\n        self.source = source\\n        self.parts = []\\n        self.suppressed = []\\n        self.drop_content = []\\n\\n    def _original(self, start, end):\\n        return self.source[start:end]\\n\\n    def handle_starttag(self, tag, attrs):\\n        tag = tag.lower()\\n        start, end = self.getpos()\\n        original = self._original(start, start + 1)\\n        del original\\n        # get_starttag_text preserves original whitespace, quote styles and case.\\n        raw = self.get_starttag_text()\\n        if self.suppressed:\\n            if tag in DANGEROUS_TAGS and tag not in VOID_TAGS:\\n                self.suppressed.append(tag)\\n            return\\n        if tag in DANGEROUS_TAGS:\\n            if tag not in VOID_TAGS:\\n                self.suppressed.append(tag)\\n            return\\n        self._emit_filtered_tag(raw, tag, attrs)\\n\\n    def _emit_filtered_tag(self, raw, tag, attrs):\\n        clean = []\\n        for name, value in attrs:\\n            key = name.lower()\\n            if key.startswith('on') or key in {'srcdoc', 'xmlns'} and tag == 'svg':\\n                continue\\n            if value is not None and key in URL_ATTRIBUTES and dangerous_url(value):\\n                continue\\n            if value is not None and key == 'style':\\n                value = BAD_CSS.sub('', value)\\n            clean.append((key, value))\\n        # Keep original opening tag byte-for-byte when no filtering was necessary.\\n        original_attrs = self._parse_raw_attributes(raw)\\n        if clean == original_attrs:\\n            self.parts.append(raw)\\n            return\\n        match = re.match(r'<\\\\s*[^\\\\s/>]+', raw)\\n        if not match:\\n            self.parts.append(raw)\\n            return\\n        name_text = match.group(0)\\n        is_self_closing = raw.rstrip().endswith('/>')\\n        rendered = [name_text]\\n        for key, value in clean:\\n            if value is None:\\n                rendered.append(' ' + key)\\n            else:\\n                rendered.append(' ' + key + '=\\\"' + html.escape(value, quote=True) + '\\\"')\\n        rendered.append('/>' if is_self_closing else '>')\\n        self.parts.append(''.join(rendered))\\n\\n    @staticmethod\\n    def _parse_raw_attributes(raw):\\n        # Attribute values are entity-decoded by HTMLParser, so only use this\\n        # comparison as an optimization when no attributes need to be filtered.\\n        return None\\n\\n    def handle_startendtag(self, tag, attrs):\\n        tag = tag.lower()\\n        if self.suppressed or tag in DANGEROUS_TAGS:\\n            return\\n        self._emit_filtered_tag(self.get_starttag_text(), tag, attrs)\\n\\n    def handle_endtag(self, tag):\\n        tag = tag.lower()\\n        if self.suppressed:\\n            if tag == self.suppressed[-1]:\\n                self.suppressed.pop()\\n            return\\n        start, end = self.getpos()\\n        raw = self.source[start:end]\\n        # getpos points to the beginning of this token; HTMLParser does not expose\\n        # the raw end-tag text, so recover it directly from the source.\\n        match = re.match(r'</\\\\s*[^>]*>', self.source[start:], re.I)\\n        if match:\\n            raw = match.group(0)\\n        if tag not in DANGEROUS_TAGS:\\n            self.parts.append(raw)\\n\\n    def handle_data(self, data):\\n        if not self.suppressed:\\n            self.parts.append(data)\\n\\n    def handle_entityref(self, name):\\n        if not self.suppressed:\\n            self.parts.append('&' + name + ';')\\n\\n    def handle_charref(self, name):\\n        if not self.suppressed:\\n            self.parts.append('&#' + name + ';')\\n\\n    def handle_comment(self, data):\\n        if not self.suppressed:\\n            self.parts.append('<!--' + data + '-->')\\n\\n    def handle_decl(self, decl):\\n        if not self.suppressed:\\n            self.parts.append('<!' + decl + '>')\\n\\n    def unknown_decl(self, data):\\n        if not self.suppressed:\\n            self.parts.append('<![%s]>' % data)\\n\\n    def handle_pi(self, data):\\n        if not self.suppressed:\\n            self.parts.append('<?' + data + '>')\\n\\n\\ndef sanitize(source):\\n    parser = Sanitizer(source)\\n    parser.feed(source)\\n    parser.close()\\n    return ''.join(parser.parts)\\n\\n\\ndef main():\\n    if len(sys.argv) < 2:\\n        print('Usage: filter.py HTML_FILE', file=sys.stderr)\\n        return 2\\n    path = Path(sys.argv[1])\\n    with path.open('r', encoding='utf-8', errors='surrogateescape', newline='') as file:\\n        source = file.read()\\n    result = sanitize(source)\\n    with path.open('w', encoding='utf-8', errors='surrogateescape', newline='') as file:\\n        file.write(result)\\n    return 0\\n\\n\\nif __name__ == '__main__':\\n    sys.exit(main())\\nPY\\npython /tmp/test_filter.py 2>&1 | tail -70\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_route_1684546a232542f69f6c6067b8acf6e5",
+    "model": "gpt-6-luna",
+    "created": 1793485216,
+    "usage": {
+      "prompt_tokens": 2942,
+      "completion_tokens": 2004,
+      "total_tokens": 4946,
+      "prompt_tokens_details": {
+        "cached_tokens": 1245
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 303
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_1684546a232542f69f6c6067b8acf6e5",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 2942,
+      "completion_tokens": 2004,
+      "total_tokens": 4946,
+      "prompt_tokens_details": {
+        "cached_tokens": 1245
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 303
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 2942,
+    "completion_tokens": 2004,
+    "reported_completion_tokens": 2004,
+    "reasoning_tokens": 303,
+    "cached_tokens": 1245,
+    "cache_write_tokens": null,
+    "ttft_ms": 4268.655417021364,
+    "latency_ms": 15428.331041999627,
+    "output_tokens_per_s": 129.8909126686892,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 179.57511197857093,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00118415,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf",
+    "decision_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf-3",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

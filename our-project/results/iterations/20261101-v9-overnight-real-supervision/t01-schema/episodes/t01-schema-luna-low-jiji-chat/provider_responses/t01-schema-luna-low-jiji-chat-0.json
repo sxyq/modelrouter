@@ -1,0 +1,88 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "I’m unable to access the project workspace in the current execution environment.\n\nI attempted to inspect `/testbed`, but the directory does not exist in the available filesystem. I also checked the other accessible directories and could not locate the repository.\n\n**No source files have been modified, and no changes have been submitted.**\n\nPlease restore or mount the repository at `/testbed` so I can proceed with:\n\n1. Reproducing the callable-default regression.\n2. Tracing how validation kwargs are propagated.\n3. Implementing the smallest compatible fix.\n4. Adding regression tests and checking edge cases.\n5. Running the test suite and submitting the changes."
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "id": "resp_1793479404809500477",
+    "model": "gpt-6-luna",
+    "created": 1793479458,
+    "usage": {
+      "prompt_tokens": 1047,
+      "completion_tokens": 172,
+      "total_tokens": 1219,
+      "completion_tokens_details": {
+        "reasoning_tokens": 4
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_1793479404809500477",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://www.jiji.cc/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "stop",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 1047,
+      "completion_tokens": 172,
+      "total_tokens": 1219,
+      "completion_tokens_details": {
+        "reasoning_tokens": 4
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 1047,
+    "completion_tokens": 172,
+    "reported_completion_tokens": 172,
+    "reasoning_tokens": 4,
+    "cached_tokens": null,
+    "cache_write_tokens": null,
+    "ttft_ms": 54768.02391698584,
+    "latency_ms": 54771.49600000121,
+    "output_tokens_per_s": 3.1403195559967214,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 49537.986055843285,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0001907,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t01-schema-luna-low-jiji-chat",
+    "decision_id": "t01-schema-luna-low-jiji-chat-0",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

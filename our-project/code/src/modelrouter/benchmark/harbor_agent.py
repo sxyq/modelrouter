@@ -95,7 +95,8 @@ class PolicyModel(LitellmModel):
                                  and v9_config.get("generator_protocol") == "responses"
                                  else OpenAICompatibleProvider)
                 self.provider = provider_type(request_timeout_sec=(
-                    v9_config.get("provider_timeout_sec", 60.0) if self.v9_enabled else 60.0))
+                    v9_config.get("provider_timeout_sec", 60.0) if self.v9_enabled else 60.0),
+                    model_endpoints=v9_config.get("model_endpoints") if self.v9_enabled else None)
         self.max_output_tokens = max_output_tokens
         self.last_metrics, self.usage = {}, []
         self.fallback_used = False
@@ -185,7 +186,7 @@ class PolicyModel(LitellmModel):
                   actual_backend_model_id=alias_facts.get("actual_backend_model_id"),
                   request_model_id=alias_facts.get("actual_backend_model_id", spec.model_id),
                   returned_model_id=None, requested_native_effort=selected["native_effort"],
-                  effective_native_effort=alias_facts.get("effective_native_effort", selected["native_effort"]),
+                  effective_native_effort=alias_facts.get("effective_native_effort"),
                   router_checkpoint_id=decision.checkpoint_id,
                   execution_mode=alias_facts.get("execution_mode", "REAL_API"),
                   cost_usd=None, actual_billed_cost_usd=None, usage_status="MISSING",
@@ -202,8 +203,10 @@ class PolicyModel(LitellmModel):
             identity_status = ("ALIAS_SMOKE_ONLY" if is_alias else
                                "REAL_API_IDENTITY_MATCHED" if metrics["identity_status"] == "MATCHED_REQUEST_ALIAS"
                                else "REAL_API_IDENTITY_UNVERIFIED")
-            self.action_validation[selected["action_id"]] = identity_status
-            metrics["effort_validation_status"] = identity_status
+            effort_status = metrics["native_effort_status"] if not is_alias else "ALIAS_SMOKE_ONLY"
+            self.action_validation[selected["action_id"]] = effort_status
+            metrics["model_validation_status"] = identity_status
+            metrics["effort_validation_status"] = effort_status
         self.last_metrics = metrics
         self.usage.append(metrics)
         self.state.accumulated_cost_usd += metrics.get("cost_usd") or 0
@@ -213,7 +216,7 @@ class PolicyModel(LitellmModel):
               step=self.state.step_index, policy=self.policy_name, model=selected["model"],
               returned_model=metrics["returned_model_id"], effort=selected["native_effort"])
         self.state.step_index += 1
-        if self.provider.protocol == "responses":
+        if metrics["protocol"] == "responses":
             calls = [{"id": item["call_id"], "type": "function",
                       "function": {"name": item["name"], "arguments": item["arguments"]}}
                      for item in body["output"] if item["type"] == "function_call"]

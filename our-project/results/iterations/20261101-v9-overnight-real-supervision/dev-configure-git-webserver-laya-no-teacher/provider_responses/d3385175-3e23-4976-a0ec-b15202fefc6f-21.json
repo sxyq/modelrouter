@@ -1,0 +1,111 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "",
+          "reasoning_content": "**Evaluating command structure**\n\nI need to ensure the final command is formatted correctly as a standalone piece. I think there might be issues with the generated hook that uses `\"\\$newrev\"` instead of `\\$newrev` in the heredoc, which might cause problems. The grep command should be simplified to use `grep -Fq 'git archive \"$newrev\"'` since single quotes treat backslashes differently. I want to confirm that the existing test works with this structure. I’ll make sure the paths are resolved correctly and execute the commands.",
+          "tool_calls": [
+            {
+              "id": "call_HRXDNmLoGAKrIk7Gn8LyPiBc",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"sed -i '29c\\\\grep -Fq '\\\\''git archive \\\"$newrev\\\"'\\\\'' \\\"$hook\\\"' tests/test_setup.sh\\nsed -i '30c\\\\grep -Fq \\\"find \\\\\\\\\\\"$tmp/www\\\\\\\\\\\"\\\" \\\"$hook\\\"' tests/test_setup.sh\\nbash -n setup-git-web-server.sh && bash -n tests/test_setup.sh && tests/test_setup.sh\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_0168e93fa7a55212016ae6638a830087d088971ddc7d8f1822",
+    "model": "gpt-6-luna",
+    "created": 1793483659,
+    "usage": {
+      "prompt_tokens": 38445,
+      "completion_tokens": 313,
+      "total_tokens": 38758,
+      "prompt_tokens_details": {
+        "cached_tokens": 37960
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 210
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0168e93fa7a55212016ae6638a830087d088971ddc7d8f1822",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 38445,
+      "completion_tokens": 313,
+      "total_tokens": 38758,
+      "prompt_tokens_details": {
+        "cached_tokens": 37960
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 210
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 38445,
+    "completion_tokens": 313,
+    "reported_completion_tokens": 313,
+    "reasoning_tokens": 210,
+    "cached_tokens": 37960,
+    "cache_write_tokens": null,
+    "ttft_ms": 5081.08795795124,
+    "latency_ms": 5245.246000005864,
+    "output_tokens_per_s": 59.673083016440046,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 1906.699154561369,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0005846,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "d3385175-3e23-4976-a0ec-b15202fefc6f",
+    "decision_id": "d3385175-3e23-4976-a0ec-b15202fefc6f-21",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

@@ -1,0 +1,1751 @@
+{
+  "recorded_at": "2026-10-31T22:22:20.039578+00:00",
+  "execution_scope": "REAL_API_K2_MODEL_ONLY",
+  "source_candidates_considered": 22,
+  "source_metadata_fetch_failures": 10,
+  "new_training_tasks_attempted": 12,
+  "repositories_attempted": 9,
+  "new_training_tasks_with_usable_original_verifier": 9,
+  "new_task_level_pairs_with_trusted_outcomes": 7,
+  "new_step_pairs_with_trusted_outcomes": 3,
+  "new_tasks_with_valid_preference": 7,
+  "new_preference_counts": {
+    "STEP_LEVEL_PREFERENCE": 2,
+    "TASK_LEVEL_PREFERENCE": 7
+  },
+  "cumulative_preference_counts": {
+    "STEP_LEVEL_PREFERENCE": 4,
+    "TASK_LEVEL_PREFERENCE": 9
+  },
+  "cumulative_train_preference_rows": 13,
+  "cumulative_preference_task_count": 9,
+  "cumulative_preference_model_distribution": {
+    "gpt-6-luna": 12,
+    "gpt-6.1-sol": 1
+  },
+  "new_observation_only_comparisons": 16,
+  "candidate_observation_records": 44,
+  "new_comparison_rows": 25,
+  "confirmed_model_native_effort_target_count": 0,
+  "within_model_native_effort_target_count": 0,
+  "full_three_model_target_count": 0,
+  "existing_train_rows": 196,
+  "existing_val_rows": 186,
+  "combinable_train_rows": 209,
+  "training_launched": false,
+  "teacher_collection_calls": 0,
+  "teacher_collection_cost_usd": 0,
+  "capability_snapshot_id": "20261031T072548885180Z-v4",
+  "generation_response_events": 199,
+  "generation_known_usage_events": 199,
+  "provider_error_events": 8,
+  "interrupted_requests_without_error_event": 2,
+  "known_token_sums": {
+    "prompt_tokens": 3958403,
+    "completion_tokens": 127710,
+    "reasoning_tokens": 69992,
+    "cached_tokens": 3285410,
+    "cache_write_tokens": 255475
+  },
+  "missing_response_token_fields": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "reasoning_tokens": 45,
+    "cached_tokens": 16,
+    "cache_write_tokens": 89
+  },
+  "known_model_rate_cost_usd": 1.85298918,
+  "total_model_rate_cost_usd": null,
+  "actual_supplier_billed_cost_usd": null,
+  "resource_cost_usd": null,
+  "resource_cost_status": "NOT_MEASURED",
+  "selection_scope": "MODEL_ONLY_UNDER_RECORDED_PROVIDER_CONFIGURATION",
+  "task_rows": [
+    {
+      "task_label": "t01-schema",
+      "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+      "repo": "swesmith/keleshev__schema.24a30457",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:566b34f74b5a9826e56a8268bd8f69f9c776a33a976ae23322aafe3b977d2490",
+      "initial_verifier_exit_code": 1,
+      "original_task_test_count": 116,
+      "episode_results": [
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 116
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.23518809999999998,
+          "known_model_rate_cost_usd": 0.2351881,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 11,
+          "failed_provider_requests": 0,
+          "tool_calls": 10,
+          "usage": {
+            "prompt_tokens": 125098,
+            "completion_tokens": 17289,
+            "reasoning_tokens": 12567,
+            "cached_tokens": 104346,
+            "cache_write_tokens": 20719
+          },
+          "episode_elapsed_sec": 584.1455643750378,
+          "evidence_dir": "t01-schema/episodes/sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": false,
+          "trusted_outcome": false,
+          "resolved": false,
+          "verifier_exit_code": 1,
+          "verifier_counts": {
+            "failed": 1,
+            "passed": 115
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "KeyError",
+          "agent_error": "KeyError",
+          "model_rate_cost_usd": null,
+          "known_model_rate_cost_usd": 0,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 1,
+          "failed_provider_requests": 0,
+          "tool_calls": 0,
+          "usage": {
+            "prompt_tokens": 1038,
+            "completion_tokens": 65,
+            "reasoning_tokens": 34,
+            "cached_tokens": 59,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 7.678154499968514,
+          "evidence_dir": "t01-schema/episodes/t01-schema-luna-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "NO_RETURNED_RESPONSE",
+          "provider_protocol": "responses",
+          "identities_matched": false,
+          "trusted_outcome": false,
+          "resolved": false,
+          "verifier_exit_code": 1,
+          "verifier_counts": {
+            "failed": 1,
+            "passed": 115
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "AttributeError",
+          "agent_error": "AttributeError",
+          "model_rate_cost_usd": null,
+          "known_model_rate_cost_usd": 0,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 0,
+          "failed_provider_requests": 1,
+          "tool_calls": 0,
+          "usage": {
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 20.503822792030405,
+          "evidence_dir": "t01-schema/episodes/t01-schema-luna-low-jiji",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "jiji",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": false,
+          "resolved": false,
+          "verifier_exit_code": 1,
+          "verifier_counts": {
+            "failed": 1,
+            "passed": 115
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "RepeatedFormatError",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.0006245000000000001,
+          "known_model_rate_cost_usd": 0.0006245,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 3,
+          "failed_provider_requests": 0,
+          "tool_calls": 0,
+          "usage": {
+            "prompt_tokens": 3535,
+            "completion_tokens": 542,
+            "reasoning_tokens": 13,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 290.2314951669541,
+          "evidence_dir": "t01-schema/episodes/t01-schema-luna-low-jiji-chat",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": false,
+          "resolved": false,
+          "verifier_exit_code": 1,
+          "verifier_counts": {
+            "failed": 1,
+            "passed": 115
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "RuntimeError",
+          "agent_error": "RuntimeError",
+          "model_rate_cost_usd": null,
+          "known_model_rate_cost_usd": 0.00234226,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 4,
+          "failed_provider_requests": 1,
+          "tool_calls": 4,
+          "usage": {
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 44.79270270897541,
+          "evidence_dir": "t01-schema/episodes/t01-schema-luna-low-oneapi-chat",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": false,
+          "trusted_outcome": false,
+          "resolved": false,
+          "verifier_exit_code": 1,
+          "verifier_counts": {
+            "failed": 1,
+            "passed": 115
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "KeyError",
+          "agent_error": "KeyError",
+          "model_rate_cost_usd": null,
+          "known_model_rate_cost_usd": 0,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 1,
+          "failed_provider_requests": 0,
+          "tool_calls": 0,
+          "usage": {
+            "prompt_tokens": 1038,
+            "completion_tokens": 86,
+            "reasoning_tokens": 40,
+            "cached_tokens": 59,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 7.927583041018806,
+          "evidence_dir": "t01-schema/episodes/t01-schema-luna-low-reader-original",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        }
+      ]
+    },
+    {
+      "task_label": "t12-mido",
+      "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+      "repo": "swesmith/mido__mido.a0158ff9",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:78d3a637fd9139a9a205d142275270ef1526e105d6e57f45a763d6cdc81bc589",
+      "initial_verifier_exit_code": 4,
+      "original_task_test_count": 122,
+      "episode_results": [
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "identities_matched": true,
+          "trusted_outcome": false,
+          "resolved": null,
+          "verifier_exit_code": null,
+          "verifier_counts": {},
+          "original_verifier_unchanged": false,
+          "original_verifier_restore_exit_code": 128,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "verification_error": "Original verifier files could not be restored",
+          "model_rate_cost_usd": 0.1646322,
+          "known_model_rate_cost_usd": 0.1646322,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 10,
+          "failed_provider_requests": 0,
+          "tool_calls": 11,
+          "usage": {
+            "prompt_tokens": 123628,
+            "completion_tokens": 9905,
+            "reasoning_tokens": 6340,
+            "cached_tokens": 101447,
+            "cache_write_tokens": 22151
+          },
+          "episode_elapsed_sec": 529.292382,
+          "elapsed_scope": "RECORDED_START_TO_RESTORE_FAILURE",
+          "evidence_dir": "t12-mido/episodes/t12-mido-sol-low",
+          "verification_horizon": "EPISODE",
+          "observation_only_reason": "SOURCE_VERIFIER_PATH_OUTSIDE_REPOSITORY"
+        }
+      ]
+    },
+    {
+      "task_label": "t13-tinydb",
+      "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+      "repo": "swesmith/msiemens__tinydb.10644a0e",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:73c828dae8bb97ba560140d9d6e2f8687601ae5d0cd33d1487684a42a81dd1d2",
+      "initial_verifier_exit_code": 1,
+      "original_task_test_count": 204,
+      "episode_results": [
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 204
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.00758944,
+          "known_model_rate_cost_usd": 0.00758944,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 10,
+          "failed_provider_requests": 0,
+          "tool_calls": 10,
+          "usage": {
+            "prompt_tokens": 334744,
+            "completion_tokens": 1482,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 39.60883920895867,
+          "evidence_dir": "t13-tinydb/episodes/t13-tinydb-luna-low-oneapi-chat",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 204
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.1534323,
+          "known_model_rate_cost_usd": 0.1534323,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 11,
+          "failed_provider_requests": 0,
+          "tool_calls": 11,
+          "usage": {
+            "prompt_tokens": 143388,
+            "completion_tokens": 8721,
+            "reasoning_tokens": 5188,
+            "cached_tokens": 121763,
+            "cache_write_tokens": 21592
+          },
+          "episode_elapsed_sec": 514.0024921669974,
+          "evidence_dir": "t13-tinydb/episodes/t13-tinydb-sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "jiji",
+          "provider_protocol": "chat_completions",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED",
+          "identities_matched": true,
+          "trusted_outcome": false,
+          "resolved": null,
+          "verifier_exit_code": null,
+          "verifier_counts": {},
+          "original_verifier_unchanged": false,
+          "agent_exit_status": "INTERRUPTED",
+          "agent_error": "STOPPED_KNOWN_PROVIDER_NATIVE_TOOL_INCOMPATIBILITY",
+          "model_rate_cost_usd": null,
+          "known_model_rate_cost_usd": 0.0004758,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 2,
+          "failed_provider_requests": 1,
+          "tool_calls": 0,
+          "usage": {
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "known_token_sums": {
+            "prompt_tokens": 2358,
+            "completion_tokens": 480,
+            "reasoning_tokens": 8,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": null,
+          "evidence_dir": "t13-tinydb/episodes/t13-tinydb-luna-low",
+          "verification_horizon": "EPISODE",
+          "provider_request_attempted": true,
+          "usage_status": "INCOMPLETE",
+          "interruption_evidence": "interruption.json"
+        }
+      ]
+    },
+    {
+      "task_label": "t14-prettytable",
+      "task_id": "prettytable__prettytable.ca90b055.func_pm_ctrl_invert_if__utwa8v9f",
+      "repo": "swesmith/prettytable__prettytable.ca90b055",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:977d2ff9b551e859fe155de58146ba75af2da81627142cfdb6658189f9254f78",
+      "initial_verifier_exit_code": 1,
+      "original_task_test_count": 193,
+      "episode_results": [
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 193
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.00832801,
+          "known_model_rate_cost_usd": 0.00832801,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 8,
+          "failed_provider_requests": 0,
+          "tool_calls": 8,
+          "usage": {
+            "prompt_tokens": 227964,
+            "completion_tokens": 1424,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 241.05660729203373,
+          "evidence_dir": "t14-prettytable/episodes/t14-prettytable-luna-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 193
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.0916647,
+          "known_model_rate_cost_usd": 0.0916647,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 8,
+          "failed_provider_requests": 0,
+          "tool_calls": 8,
+          "usage": {
+            "prompt_tokens": 59731,
+            "completion_tokens": 5375,
+            "reasoning_tokens": 3427,
+            "cached_tokens": 46417,
+            "cache_write_tokens": 13290
+          },
+          "episode_elapsed_sec": 242.64401741605252,
+          "evidence_dir": "t14-prettytable/episodes/t14-prettytable-sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ]
+    },
+    {
+      "task_label": "t15-async-timeout",
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "repo": "swesmith/aio-libs__async-timeout.d0baa9f1",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:ab2b243764f0f055256c651a3e475458019ca257a5ddc2e272e677405c603a9d",
+      "initial_verifier_exit_code": 1,
+      "original_task_test_count": 32,
+      "episode_results": [
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 32
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.00742081,
+          "known_model_rate_cost_usd": 0.00742081,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 7,
+          "failed_provider_requests": 0,
+          "tool_calls": 7,
+          "usage": {
+            "prompt_tokens": 261731,
+            "completion_tokens": 3451,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 67.5691284579807,
+          "evidence_dir": "t15-async-timeout/episodes/t15-async-timeout-luna-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 32
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.1358809,
+          "known_model_rate_cost_usd": 0.1358809,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 11,
+          "failed_provider_requests": 0,
+          "tool_calls": 11,
+          "usage": {
+            "prompt_tokens": 126206,
+            "completion_tokens": 7784,
+            "reasoning_tokens": 4303,
+            "cached_tokens": 107274,
+            "cache_write_tokens": 18899
+          },
+          "episode_elapsed_sec": 599.4168221250293,
+          "evidence_dir": "t15-async-timeout/episodes/t15-async-timeout-sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ]
+    },
+    {
+      "task_label": "t16-pyasn1",
+      "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+      "repo": "swesmith/pyasn1__pyasn1.0f07d724",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:27acd44e17b2b71511c2623e31597cf6cd9a2719857f6421f2eb6e5c9f683fd5",
+      "initial_verifier_exit_code": 1,
+      "original_task_test_count": 1179,
+      "episode_results": [
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 1179
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.00563513,
+          "known_model_rate_cost_usd": 0.00563513,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 7,
+          "failed_provider_requests": 0,
+          "tool_calls": 7,
+          "usage": {
+            "prompt_tokens": 203359,
+            "completion_tokens": 1289,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 44.59248404199025,
+          "evidence_dir": "t16-pyasn1/episodes/t16-pyasn1-luna-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 1179
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.1469432,
+          "known_model_rate_cost_usd": 0.1469432,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 10,
+          "failed_provider_requests": 0,
+          "tool_calls": 10,
+          "usage": {
+            "prompt_tokens": 120710,
+            "completion_tokens": 8364,
+            "reasoning_tokens": 5032,
+            "cached_tokens": 99357,
+            "cache_write_tokens": 21323
+          },
+          "episode_elapsed_sec": 424.9643232499948,
+          "evidence_dir": "t16-pyasn1/episodes/t16-pyasn1-sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ]
+    },
+    {
+      "task_label": "t17-gtts",
+      "task_id": "pndurette__gTTS.dbcda4f3.func_pm_class_rm_base__n9eahnvx",
+      "repo": "swesmith/pndurette__gTTS.dbcda4f3",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:7a1d9fdeb0fa9523eb8c370681e9f3f0f95d0ac93c1eb2286fb9d7e4629ad1a6",
+      "initial_verifier_exit_code": -1,
+      "original_task_test_count": 116,
+      "episode_results": [
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": false,
+          "resolved": false,
+          "verifier_exit_code": null,
+          "verifier_counts": {},
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "RuntimeError",
+          "agent_error": "RuntimeError",
+          "model_rate_cost_usd": null,
+          "known_model_rate_cost_usd": 0.0024775,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 1,
+          "failed_provider_requests": 1,
+          "tool_calls": 1,
+          "usage": {
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 76.28348595800344,
+          "evidence_dir": "t17-gtts/episodes/t17-gtts-luna-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": true,
+          "trusted_outcome": false,
+          "resolved": false,
+          "verifier_exit_code": null,
+          "verifier_counts": {},
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.1282463,
+          "known_model_rate_cost_usd": 0.1282463,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 8,
+          "failed_provider_requests": 0,
+          "tool_calls": 9,
+          "usage": {
+            "prompt_tokens": 86919,
+            "completion_tokens": 7268,
+            "reasoning_tokens": 4286,
+            "cached_tokens": 67383,
+            "cache_write_tokens": 19512
+          },
+          "episode_elapsed_sec": 518.5759434580104,
+          "evidence_dir": "t17-gtts/episodes/t17-gtts-sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ]
+    },
+    {
+      "task_label": "t18-records",
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "repo": "swesmith/kennethreitz__records.5941ab27",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:794281e58c1754e3a0a835c8f8e4a77e24773cf932c9e64f34dcaa8808e5f979",
+      "initial_verifier_exit_code": 1,
+      "original_task_test_count": 24,
+      "episode_results": [
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 24
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.00789112,
+          "known_model_rate_cost_usd": 0.00789112,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 9,
+          "failed_provider_requests": 0,
+          "tool_calls": 9,
+          "usage": {
+            "prompt_tokens": 363851,
+            "completion_tokens": 2533,
+            "reasoning_tokens": null,
+            "cached_tokens": 330672,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 60.992476500046905,
+          "evidence_dir": "t18-records/episodes/t18-records-luna-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 24
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.1797543,
+          "known_model_rate_cost_usd": 0.1797543,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 10,
+          "failed_provider_requests": 0,
+          "tool_calls": 9,
+          "usage": {
+            "prompt_tokens": 96469,
+            "completion_tokens": 13034,
+            "reasoning_tokens": 9337,
+            "cached_tokens": 79893,
+            "cache_write_tokens": 16546
+          },
+          "episode_elapsed_sec": 603.9410759999882,
+          "evidence_dir": "t18-records/episodes/t18-records-sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ]
+    },
+    {
+      "task_label": "t19-autograd",
+      "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+      "repo": "swesmith/HIPS__autograd.ac044f0d",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:65ef413aeb2f275e77a7aa826fd21efd2d5f529a89688fc255d69867fc60f6d5",
+      "initial_verifier_exit_code": 1,
+      "original_task_test_count": 585,
+      "episode_results": [
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 585
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.00582507,
+          "known_model_rate_cost_usd": 0.00582507,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 6,
+          "failed_provider_requests": 0,
+          "tool_calls": 6,
+          "usage": {
+            "prompt_tokens": 193865,
+            "completion_tokens": 2015,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 435.89105587505037,
+          "evidence_dir": "t19-autograd/episodes/t19-autograd-luna-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 585
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.1260819,
+          "known_model_rate_cost_usd": 0.1260819,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 7,
+          "failed_provider_requests": 0,
+          "tool_calls": 8,
+          "usage": {
+            "prompt_tokens": 68808,
+            "completion_tokens": 6123,
+            "reasoning_tokens": 4248,
+            "cached_tokens": 44649,
+            "cache_write_tokens": 24138
+          },
+          "episode_elapsed_sec": 191.56053612497635,
+          "evidence_dir": "t19-autograd/episodes/t19-autograd-sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ]
+    },
+    {
+      "task_label": "t20-gtts-lang",
+      "task_id": "pndurette__gTTS.dbcda4f3.func_pm_ctrl_shuffle__5q1qgtx3",
+      "repo": "swesmith/pndurette__gTTS.dbcda4f3",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:ef055c01f67d598d4ea8e16c837d106861d146e87a6368edaf149873fb899c9a",
+      "initial_verifier_exit_code": -1,
+      "original_task_test_count": 116,
+      "episode_results": [
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": false,
+          "resolved": false,
+          "verifier_exit_code": null,
+          "verifier_counts": {},
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.00731837,
+          "known_model_rate_cost_usd": 0.00731837,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 9,
+          "failed_provider_requests": 0,
+          "tool_calls": 9,
+          "usage": {
+            "prompt_tokens": 291297,
+            "completion_tokens": 2230,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 582.8330545410281,
+          "evidence_dir": "t20-gtts-lang/episodes/t20-gtts-lang-luna-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": true,
+          "trusted_outcome": false,
+          "resolved": false,
+          "verifier_exit_code": null,
+          "verifier_counts": {},
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.1109597,
+          "known_model_rate_cost_usd": 0.1109597,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 8,
+          "failed_provider_requests": 0,
+          "tool_calls": 8,
+          "usage": {
+            "prompt_tokens": 68173,
+            "completion_tokens": 6510,
+            "reasoning_tokens": 3883,
+            "cached_tokens": 51697,
+            "cache_write_tokens": 15476
+          },
+          "episode_elapsed_sec": 243.63058191700839,
+          "evidence_dir": "t20-gtts-lang/episodes/t20-gtts-lang-sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ]
+    },
+    {
+      "task_label": "t21-tinydb-cache",
+      "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+      "repo": "swesmith/msiemens__tinydb.10644a0e",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:d0e523879df6bab3aeb6f2e084286231203c02a084d793861858f1a63aca6e54",
+      "initial_verifier_exit_code": 1,
+      "original_task_test_count": 204,
+      "episode_results": [
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 204
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.00633763,
+          "known_model_rate_cost_usd": 0.00633763,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 8,
+          "failed_provider_requests": 0,
+          "tool_calls": 10,
+          "usage": {
+            "prompt_tokens": 250330,
+            "completion_tokens": 1461,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 119.67020733299432,
+          "evidence_dir": "t21-tinydb-cache/episodes/t21-tinydb-cache-luna-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "responses",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 204
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.1728658,
+          "known_model_rate_cost_usd": 0.1728658,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 10,
+          "failed_provider_requests": 0,
+          "tool_calls": 10,
+          "usage": {
+            "prompt_tokens": 142785,
+            "completion_tokens": 9662,
+            "reasoning_tokens": 4886,
+            "cached_tokens": 116748,
+            "cache_write_tokens": 24994
+          },
+          "episode_elapsed_sec": 219.76199837500462,
+          "evidence_dir": "t21-tinydb-cache/episodes/t21-tinydb-cache-sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [
+            "max"
+          ],
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ]
+    },
+    {
+      "task_label": "t22-pyasn1-bitstring",
+      "task_id": "pyasn1__pyasn1.0f07d724.func_pm_ctrl_invert_if__4h51g1o6",
+      "repo": "swesmith/pyasn1__pyasn1.0f07d724",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "initial_environment_version": "sha256:0982ebf4c5efef2a445fc66a42f2b53709f2219a7df9110b1dfa1a7fabe63e65",
+      "initial_verifier_exit_code": 1,
+      "original_task_test_count": 1179,
+      "episode_results": [
+        {
+          "action_id": "gpt-6-luna:low",
+          "model_id": "gpt-6-luna",
+          "native_effort": "low",
+          "provider": "jiji",
+          "actual_provider_account": "oneapi",
+          "provider_protocol": "chat_completions",
+          "identities_matched": true,
+          "trusted_outcome": true,
+          "resolved": true,
+          "verifier_exit_code": 0,
+          "verifier_counts": {
+            "passed": 1179
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "Submitted",
+          "agent_error": null,
+          "model_rate_cost_usd": 0.00671302,
+          "known_model_rate_cost_usd": 0.00671302,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 8,
+          "failed_provider_requests": 0,
+          "tool_calls": 8,
+          "usage": {
+            "prompt_tokens": 253759,
+            "completion_tokens": 1938,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 76.46600854198914,
+          "evidence_dir": "t22-pyasn1-bitstring/episodes/t22-pyasn1-bitstring-luna-low",
+          "verification_horizon": "EPISODE"
+        },
+        {
+          "action_id": "gpt-6.1-sol:low",
+          "model_id": "gpt-6.1-sol",
+          "native_effort": "low",
+          "provider": "openai",
+          "actual_provider_account": "NO_RETURNED_RESPONSE",
+          "provider_protocol": "NOT_OBSERVED",
+          "identities_matched": false,
+          "trusted_outcome": false,
+          "resolved": false,
+          "verifier_exit_code": 1,
+          "verifier_counts": {
+            "failed": 5,
+            "passed": 1174
+          },
+          "original_verifier_unchanged": true,
+          "agent_exit_status": "TimeoutError",
+          "agent_error": "TimeoutError",
+          "model_rate_cost_usd": null,
+          "known_model_rate_cost_usd": 0,
+          "actual_billed_cost_usd": null,
+          "generation_calls": 0,
+          "failed_provider_requests": 1,
+          "tool_calls": 0,
+          "usage": {
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "reasoning_tokens": null,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "episode_elapsed_sec": 633.9952466250397,
+          "evidence_dir": "t22-pyasn1-bitstring/episodes/t22-pyasn1-bitstring-sol-low",
+          "verification_horizon": "EPISODE",
+          "requested_native_effort": "low",
+          "returned_native_efforts": [],
+          "native_effort_status": "NOT_REPORTED"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Sol low/medium requests report max; execution-versus-metadata cause is unknown.",
+    "Luna Chat does not report applied native effort.",
+    "Protocol/account/cache conditions are recorded rather than equated.",
+    "Seven new task targets are lower model-rate-cost preferences at equal original verifier result.",
+    "New targets all prefer Luna; 12/13 cumulative targets do not support balanced joint fine-tuning."
+  ],
+  "generation_request_attempts": 209,
+  "requests_without_usage": 10,
+  "responses_without_model_rate_cost": 3,
+  "native_effort_observations": [
+    {
+      "request_model": "gpt-6.1-sol",
+      "requested_effort": "low",
+      "reported_effort": "max",
+      "status": "PROVIDER_REPORTED_MISMATCH",
+      "count": 109
+    },
+    {
+      "request_model": "gpt-6-luna",
+      "requested_effort": "low",
+      "reported_effort": null,
+      "status": "NOT_REPORTED",
+      "count": 88
+    },
+    {
+      "request_model": "gpt-6.1-sol",
+      "requested_effort": "medium",
+      "reported_effort": "max",
+      "status": "PROVIDER_REPORTED_MISMATCH",
+      "count": 1
+    },
+    {
+      "request_model": "gpt-6-luna",
+      "requested_effort": "none",
+      "reported_effort": null,
+      "status": "NOT_REPORTED",
+      "count": 1
+    }
+  ],
+  "unpaired_interrupted_candidates": 1,
+  "training_consumption": {
+    "local": {
+      "rows_serialized": 13,
+      "model_weights_loaded": false,
+      "training_started": false
+    },
+    "server": {
+      "sampled_at": "2026-11-01T06:33:55.644078+08:00",
+      "rows_serialized": 13,
+      "supervision_types": {
+        "STEP_LEVEL_PREFERENCE": 4,
+        "TASK_LEVEL_PREFERENCE": 9
+      },
+      "model_labels": {
+        "gpt-6-luna": 12,
+        "gpt-6.1-sol": 1
+      },
+      "unique_tasks": 9,
+      "native_effort_targets": 0,
+      "capability_snapshot_ids": [
+        "20261031T072548885180Z-v4"
+      ],
+      "teacher_assessments": 0,
+      "state_char_range": [
+        5069,
+        11079
+      ],
+      "training_started": false,
+      "model_weights_loaded": false,
+      "s1_relative_link": "../model_comparison/train.jsonl",
+      "kev_r_statuses": [
+        {
+          "candidate_id": "KEV-V8-R01",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R02",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R03",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R04",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R05",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R06",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R07",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R08",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R09",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R10",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R11",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R12",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R13",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R14",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R15",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        },
+        {
+          "candidate_id": "KEV-V8-R16",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED"
+        }
+      ]
+    }
+  },
+  "server_source_files_synced": 10,
+  "serving_process_restarted": false,
+  "transfer_cleanup": "Openrsync absolute-prefix temporary copy removed after relative-file transfer into original directory.",
+  "dev_results": [
+    {
+      "result_dir": "dev-configure-git-webserver-laya-no-teacher",
+      "task_id": "configure-git-webserver",
+      "policy": "laya_v2",
+      "status": "EVALUATED",
+      "generation_calls": 30,
+      "recorded_tool_results": 30,
+      "native_exit_status": "LimitsExceeded",
+      "neural_routes": 30,
+      "router_fallbacks": 0,
+      "selection_counts": {
+        "gpt-6-luna": 30
+      },
+      "model_switches": 0,
+      "selected_model_sequence": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "verified_trials": 1,
+      "reward": 0.0,
+      "ctrf_summary": {
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793483728.16155,
+        "stop": 1793483752.4505553
+      },
+      "harbor_exception": null,
+      "trial_duration_sec": 877.831667,
+      "known_input_tokens": 1070782,
+      "known_output_tokens": 6332,
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "generation_cost_usd": 0.01776893,
+      "teacher_cost_usd": 0,
+      "total_model_rate_cost_usd": 0.01776893,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null,
+      "generator_request_time_ms": 771535.19091825,
+      "teacher_request_time_ms": null,
+      "router_total_time_ms": {
+        "laya": 31149.208793707658
+      },
+      "train_eligible": false,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV"
+    },
+    {
+      "result_dir": "dev-configure-git-webserver-laya-teacher",
+      "task_id": "configure-git-webserver",
+      "policy": "laya_v2",
+      "status": "EVALUATED",
+      "generation_calls": 7,
+      "recorded_tool_results": 7,
+      "native_exit_status": "Submitted",
+      "neural_routes": 7,
+      "router_fallbacks": 0,
+      "selection_counts": {
+        "gpt-6-luna": 7
+      },
+      "model_switches": 0,
+      "selected_model_sequence": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "verified_trials": 1,
+      "reward": 0.0,
+      "ctrf_summary": {
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793484475.691152,
+        "stop": 1793484520.0993972
+      },
+      "harbor_exception": null,
+      "trial_duration_sec": 146.896552,
+      "known_input_tokens": 203930,
+      "known_output_tokens": 3378,
+      "teacher_requests": 1,
+      "teacher_successes": 1,
+      "teacher_router_consumptions": 4,
+      "generation_cost_usd": 0.00403457,
+      "teacher_cost_usd": 0.013086,
+      "total_model_rate_cost_usd": 0.01712057,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null,
+      "generator_request_time_ms": 47710.42404207401,
+      "teacher_request_time_ms": 23281.411208969075,
+      "router_total_time_ms": {
+        "laya": 7550.110957934521
+      },
+      "train_eligible": false,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV"
+    },
+    {
+      "result_dir": "dev-configure-git-webserver-sol-fixed",
+      "task_id": "configure-git-webserver",
+      "policy": "fixed_strong",
+      "status": "BLOCKED",
+      "generation_calls": 4,
+      "recorded_tool_results": 2,
+      "native_exit_status": "RuntimeError",
+      "neural_routes": 0,
+      "router_fallbacks": 0,
+      "selection_counts": {
+        "gpt-6.1-sol": 4
+      },
+      "model_switches": 0,
+      "selected_model_sequence": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol"
+      ],
+      "verified_trials": 0,
+      "reward": null,
+      "ctrf_summary": null,
+      "harbor_exception": {
+        "exception_type": "RuntimeError",
+        "exception_message": "Command timed out after 30 seconds",
+        "exception_traceback": "Traceback (most recent call last):\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/tasks.py\", line 507, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/subprocess.py\", line 201, in communicate\n    stdin, stdout, stderr = await tasks.gather(stdin, stdout, stderr)\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/subprocess.py\", line 181, in _read_stream\n    output = await stream.read()\n             ^^^^^^^^^^^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/streams.py\", line 723, in read\n    block = await self.read(self._limit)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/streams.py\", line 730, in read\n    await self._wait_for_data('read')\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/streams.py\", line 539, in _wait_for_data\n    await self._waiter\nasyncio.exceptions.CancelledError\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 775, in _collect_buffered_output\n    stdout_bytes, stderr_bytes = await asyncio.wait_for(\n                                 ^^^^^^^^^^^^^^^^^^^^^^^\n        process.communicate(input=stdin_data), timeout=timeout_sec\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/tasks.py\", line 506, in wait_for\n    async with timeouts.timeout(timeout):\n               ~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/timeouts.py\", line 117, in __aexit__\n    raise TimeoutError from exc_val\nTimeoutError\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/trial.py\", line 500, in run\n    await self._run()\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/single_step.py\", line 40, in _run\n    await self._run_agent()\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/single_step.py\", line 76, in _run_agent\n    await self._run_agent_phase(\n    ...<5 lines>...\n    )\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/trial.py\", line 651, in _run_agent_phase\n    await asyncio.wait_for(\n    ...<6 lines>...\n    )\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/tasks.py\", line 507, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"our-project/code/src/modelrouter/benchmark/harbor_agent.py\", line 372, in run\n    await asyncio.to_thread(agent.run, instruction)\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/threads.py\", line 26, in to_thread\n    return await loop.run_in_executor(None, func_call)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/thread.py\", line 59, in run\n    result = self.fn(*self.args, **self.kwargs)\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py\", line 98, in run\n    self.step()\n    ~~~~~~~~~^^\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py\", line 128, in step\n    return self.execute_actions(self.query())\n           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py\", line 156, in execute_actions\n    outputs = [self.env.execute(action) for action in message.get(\"extra\", {}).get(\"actions\", [])]\n               ~~~~~~~~~~~~~~~~^^^^^^^^\n  File \"our-project/code/src/modelrouter/benchmark/harbor_agent.py\", line 300, in execute\n    ).result()\n      ~~~~~~^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py\", line 460, in result\n    return self.__get_result()\n           ~~~~~~~~~~~~~~~~~^^\n  File \"LOCAL/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py\", line 402, in __get_result\n    raise self._exception\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 1359, in exec\n    return await self._compose_exec(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<6 lines>...\n    )\n    ^\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 1436, in _compose_exec\n    return await self._run_docker_compose_command(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<4 lines>...\n    )\n    ^\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 749, in _run_docker_compose_command\n    result = await self._collect_buffered_output(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"LOCAL/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 782, in _collect_buffered_output\n    raise RuntimeError(f\"Command timed out after {timeout_sec} seconds\")\nRuntimeError: Command timed out after 30 seconds\n",
+        "occurred_at": "2026-10-31T22:02:30.889919Z"
+      },
+      "trial_duration_sec": 199.337526,
+      "known_input_tokens": 10711,
+      "known_output_tokens": 6161,
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "generation_cost_usd": 0.074421,
+      "teacher_cost_usd": 0,
+      "total_model_rate_cost_usd": 0.074421,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null,
+      "generator_request_time_ms": 163348.41212403262,
+      "teacher_request_time_ms": null,
+      "router_total_time_ms": {
+        "baseline_fixed_strong": 0.27066702023148537
+      },
+      "train_eligible": false,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV"
+    },
+    {
+      "result_dir": "dev-filter-js-from-html-laya-no-teacher",
+      "task_id": "filter-js-from-html",
+      "policy": "laya_v2",
+      "status": "EVALUATED",
+      "generation_calls": 15,
+      "recorded_tool_results": 9,
+      "native_exit_status": "RepeatedFormatError",
+      "neural_routes": 15,
+      "router_fallbacks": 0,
+      "selection_counts": {
+        "gpt-6.1-sol": 3,
+        "gpt-6-luna": 12
+      },
+      "model_switches": 1,
+      "selected_model_sequence": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "verified_trials": 1,
+      "reward": 0.0,
+      "ctrf_summary": {
+        "tests": 2,
+        "passed": 0,
+        "failed": 2,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793485385.1090164,
+        "stop": 1793486292.7629552
+      },
+      "harbor_exception": null,
+      "trial_duration_sec": 1349.535347,
+      "known_input_tokens": 164011,
+      "known_output_tokens": 17259,
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "generation_cost_usd": 0.07949004,
+      "teacher_cost_usd": 0,
+      "total_model_rate_cost_usd": 0.07949004,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null,
+      "generator_request_time_ms": 296741.3832101156,
+      "teacher_request_time_ms": null,
+      "router_total_time_ms": {
+        "laya": 15391.738334030379
+      },
+      "train_eligible": false,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV"
+    },
+    {
+      "result_dir": "dev-filter-js-from-html-luna-fixed",
+      "task_id": "filter-js-from-html",
+      "policy": "fixed_cheap",
+      "status": "EVALUATED",
+      "generation_calls": 3,
+      "recorded_tool_results": 3,
+      "native_exit_status": "Submitted",
+      "neural_routes": 0,
+      "router_fallbacks": 0,
+      "selection_counts": {
+        "gpt-6-luna": 3
+      },
+      "model_switches": 0,
+      "selected_model_sequence": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "verified_trials": 1,
+      "reward": 0.0,
+      "ctrf_summary": {
+        "tests": 2,
+        "passed": 0,
+        "failed": 2,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793485713.2867298,
+        "stop": 1793486506.3664258
+      },
+      "harbor_exception": null,
+      "trial_duration_sec": 856.316198,
+      "known_input_tokens": 4184,
+      "known_output_tokens": 1565,
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "generation_cost_usd": 0.00111207,
+      "teacher_cost_usd": 0,
+      "total_model_rate_cost_usd": 0.00111207,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null,
+      "generator_request_time_ms": 27501.481833984144,
+      "teacher_request_time_ms": null,
+      "router_total_time_ms": {
+        "baseline_fixed_cheap": 0.32720802119001746
+      },
+      "train_eligible": false,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV"
+    }
+  ],
+  "dev_generation_requests": 59,
+  "dev_teacher_requests": 1,
+  "dev_known_model_rate_cost_usd": 0.18991261,
+  "work_package_request_attempts": 269,
+  "work_package_known_model_rate_cost_usd": 2.04290179,
+  "cleanup": {
+    "temporary_docker_snapshots_removed": 17,
+    "upstream_task_images_preserved": true,
+    "temporary_collector_removed": true,
+    "unexpected_server_transfer_copy_removed": true
+  }
+}

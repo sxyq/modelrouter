@@ -1,0 +1,105 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The branch is reversed: integer indices enter slice logic. I’ll restore scalar bit access and preserve slice results as BitString values, with normal bounds and negative-index handling.",
+          "reasoning_content": "**Correcting code logic**\n\nI see that I'm mixing up the reversed and sliced code logic, especially with my condition for comparisons. I need to ensure the integer methods are correctly implemented, especially regarding negative indexing in Python. My current slice implementation seems bizarre and needs a clear logic that checks for slice instances properly. I should support negative integers naturally and raise an IndexError when appropriate. I’ll also import the necessary inspect module tools to help with this!",
+          "tool_calls": [
+            {
+              "id": "call_L2KuSiVKuDfBbvTBMNN1EY5p",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cd /testbed && head -45 pyasn1/type/univ.py && grep -R -n \\\"\\\\[.*:.*\\\\]\\\" tests/type/test_univ.py | head\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_0a12333846de180e016ae66323717887d09359c2df794db3b5",
+    "model": "gpt-6-luna",
+    "created": 1793483556,
+    "usage": {
+      "prompt_tokens": 31671,
+      "completion_tokens": 215,
+      "total_tokens": 31886,
+      "prompt_tokens_details": {
+        "cached_tokens": 29584
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 117
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0a12333846de180e016ae66323717887d09359c2df794db3b5",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 31671,
+      "completion_tokens": 215,
+      "total_tokens": 31886,
+      "prompt_tokens_details": {
+        "cached_tokens": 29584
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 117
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 31671,
+    "completion_tokens": 215,
+    "reported_completion_tokens": 215,
+    "reasoning_tokens": 117,
+    "cached_tokens": 29584,
+    "cache_write_tokens": null,
+    "ttft_ms": 8658.542000048328,
+    "latency_ms": 8797.280709026381,
+    "output_tokens_per_s": 24.43937019986198,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 1549.6756570944483,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00061204,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t22-pyasn1-bitstring-luna-low",
+    "decision_id": "t22-pyasn1-bitstring-luna-low-3",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

@@ -1,0 +1,19 @@
+diff --git a/tinydb/queries.py b/tinydb/queries.py
+index d163d71..dbdcfd0 100644
+--- a/tinydb/queries.py
++++ b/tinydb/queries.py
+@@ -110,6 +110,14 @@ class QueryInstance:
+             hashval = None
+         return QueryInstance(lambda value: self(value) or other(value), hashval)
+ 
++    def __and__(self, other: 'QueryInstance') -> 'QueryInstance':
++        # AND is commutative, so use an unordered hash representation
++        if self.is_cacheable() and other.is_cacheable():
++            hashval = ('and', frozenset([self._hash, other._hash]))
++        else:
++            hashval = None
++        return QueryInstance(lambda value: self(value) and other(value), hashval)
++
+     def __invert__(self) -> 'QueryInstance':
+         hashval = ('not', self._hash) if self.is_cacheable() else None
+         return QueryInstance(lambda value: not self(value), hashval)

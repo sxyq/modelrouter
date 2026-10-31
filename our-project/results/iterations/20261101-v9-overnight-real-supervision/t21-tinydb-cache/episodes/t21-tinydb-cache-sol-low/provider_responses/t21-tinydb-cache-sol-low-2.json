@@ -1,0 +1,167 @@
+{
+  "response": {
+    "background": false,
+    "completed_at": 1793482557,
+    "created_at": 1793482552,
+    "frequency_penalty": 0.0,
+    "id": "resp_0f13eb8d55b64a00016ae65f38c3e081949373fcfead4da07e",
+    "max_output_tokens": 4096,
+    "metadata": {},
+    "model": "gpt-6.1-sol",
+    "object": "response",
+    "output": [
+      {
+        "id": "rs_0f13eb8d55b64a00016ae65f399a688194a72c01a84c672b8e",
+        "type": "reasoning",
+        "content": [],
+        "encrypted_content": "gAAAAABq5l89BWvNNmcHqO35MjDNb_OwFH_dMz_6osTC_Vr_HvXA-cXw2BETDxLVXj7XZ_nZ1awwkVxGr07Gh_ldeW41MwFoAnCeV6O4E8I4Hq1Xkljt58tNZIpCR2sOuoibpgGbCQmij50c2pAMEh0le5lZYHci_NaSYradHj12C6WK_Q4KBSLnJtTvu8hPPqS8rVeNSH-VfpsKvMa7H1PMbv3u7JH5L1gIR4LLGfB6QqKmPvVX_0g6EuYCOpvVXIgHWnZs44XmMYIZCb92NbdliY0Be_eOSAfholZ1Pa5xLUZx_kJtZAwgq3HCpEagtVMARhSMy6anh93IZ-FaRBnzWJWyuPppu0fJY0Jw_IsQWgHMPesNLy2uUEuGJGDKNZri-JT5xbbkjRUrN0zD5gbPXlE5dphB4_0xM_DptFaJx9t3xq5x_T_QT7_O4NJSO9rQsbd4QQthvev9WLmJNORZ9THAlfbZ5E1PKAHZ_9FomvWExx3qipZY8tYBoc3rrZtPJBvpJk-eKNK2fYd2qTVAsM7WDQd-3kc_YVfNDJkxkUPlfM_arJ7iLAv88TXvbpgx-gYhOFVJfogqP-FHuQDQOyfhxXqJQ1d8VpDIQCpZYlYulUSodgaCb_Z2VoZTe9pDWVCioDQyjiDJPF_AhHYHkfMArO2n8i4h0er0ryCgkoQLcu_NGhFnPb3O-aqpeTRRBjWB271rHhLPz038F0Z7hDloinpdlsMRQeGRB0tec1-zZ-rzCk3f_UuZTYlNT0Y5R_oDxiKdzvzUFerNzA14B18Q86LgdjXKmr_wBtYd3-ycHmPBFX8vEESLDAZk-z4Gp0-rOgIBqeIHCeUCiWeoegL3-in0qWpVg7pMxBR4nAtNBMZSUkAPe3S1XndO4KoYKELxbuMvpnYsljIeA9tigVCGWCvC9YiR7xxLRAKEQtqLGitnR-QwnijDVT_5MW9CTIvdi1yZKlA1pUpl_CIiw7UvrWnAUVBUZpf3n_2JBd5oeyoHUzv4_u30OfIqNdhv1XwGHk2LhjGqV1aA_Z6ohK2C1ub3qf7Sg-48hRWA18urUsh8yyE_gaGK0hk0LxBdX5S0cHEjUAk5wBG74-kZCEX9--TsPmUisnrytocgEBakPre_94R0uSg9aJJDYIcufj4LC_cqoJyNHV2_9dgCrqfWMHzRVgXlvz1mM_5eBLryPWzhbjOhf9R-vYhaQF_QpL9cop9sxkR326dDkRJYmxV-4Y0J7KnhyuqS8dPiYYYG6uIGlyuKfJRCe1TRBcfjl6cgZxUx8_aSRluaUTDYWy0ESmevgy7KqpQSnBoBsldPLNzIYqL1ef_2aX-35hH2LdPyKmpTiagykS0tD2h-sHiJHkKNvv0vghKtMshwd0AkTKN8a8rbBACX9EECsuGc9Mh71pwHMYX_oaD1ir2JAnqgn5jZ1CFmQPypcxxkEsv4JYeloF8txu4cpQJ-PSVwK3keJJrh",
+        "summary": []
+      },
+      {
+        "id": "msg_0f13eb8d55b64a00016ae65f39ed108194820d2ae1c33e1964",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "The cache uses an `OrderedDict`, and the existing tests cover reads but not the order after overwriting a key. I’ll check both paths: the supplied example tests read recency, while the reported issue concerns write recency.\n"
+          }
+        ],
+        "phase": "commentary",
+        "role": "assistant"
+      },
+      {
+        "id": "fc_0f13eb8d55b64a00016ae65f3b1150819497a756e775eeb631",
+        "type": "function_call",
+        "status": "completed",
+        "arguments": "{\"command\":\"cd /testbed && printf '\\\\n--- complete cache implementation ---\\\\n' && nl -ba tinydb/utils.py | sed -n '35,155p' && printf '\\\\n--- query cache tests ---\\\\n' && sed -n '1,210p' tests/test_tables.py && printf '\\\\n--- query cache integration ---\\\\n' && sed -n '80,125p' tinydb/table.py && sed -n '220,290p' tinydb/table.py && printf '\\\\n--- fixtures and contributing guide ---\\\\n' && cat tests/conftest.py CONTRIBUTING.rst && printf '\\\\n--- Python/testing tools ---\\\\n' && python --version && python -m pytest --version && printf '\\\\n--- working tree ---\\\\n' && git status --short\"}",
+        "call_id": "call_d1yprXJnBW56gF24pLnqKFH6",
+        "name": "bash"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "prompt_cache_key": "cdc7d3abccdb799e",
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "mode": "standard",
+      "context": "all_turns",
+      "effort": "max"
+    },
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "type": "function",
+        "description": "Execute a bash command",
+        "name": "bash",
+        "parameters": {
+          "properties": {
+            "command": {
+              "description": "The bash command to execute",
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": 0.98,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 5263,
+      "input_tokens_details": {
+        "cached_tokens": 1648,
+        "cache_write_tokens": 3612
+      },
+      "output_tokens": 245,
+      "output_tokens_details": {
+        "reasoning_tokens": 9
+      },
+      "total_tokens": 5508
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "resp_0f13eb8d55b64a00016ae65f38c3e081949373fcfead4da07e",
+    "request_model_id": "gpt-6.1-sol",
+    "returned_model_id": "gpt-6.1-sol",
+    "provider": "openai",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": 4096,
+    "raw_usage": {
+      "input_tokens": 5263,
+      "input_tokens_details": {
+        "cached_tokens": 1648,
+        "cache_write_tokens": 3612
+      },
+      "output_tokens": 245,
+      "output_tokens_details": {
+        "reasoning_tokens": 9
+      },
+      "total_tokens": 5508
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 5263,
+    "completion_tokens": 245,
+    "reported_completion_tokens": 245,
+    "reasoning_tokens": 9,
+    "cached_tokens": 1648,
+    "cache_write_tokens": 3612,
+    "ttft_ms": 2142.6952079636976,
+    "latency_ms": 5511.026582971681,
+    "output_tokens_per_s": 44.45632702208633,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 72.73631146205719,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0116508,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t21-tinydb-cache-sol-low",
+    "decision_id": "t21-tinydb-cache-sol-low-2",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

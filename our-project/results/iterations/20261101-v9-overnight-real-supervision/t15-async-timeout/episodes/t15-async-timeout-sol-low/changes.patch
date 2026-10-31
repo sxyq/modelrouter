@@ -1,0 +1,95 @@
+diff --git a/async_timeout/__init__.py b/async_timeout/__init__.py
+index 799b3d0..e215a37 100644
+--- a/async_timeout/__init__.py
++++ b/async_timeout/__init__.py
+@@ -214,7 +214,7 @@ else:
+                 raise RuntimeError("cannot shift timeout if deadline is not scheduled")
+             self.update(deadline + delay)
+ 
+-        def update(self, deadline: float) ->None:
++        def update(self, deadline: float) -> None:
+             """Set deadline to absolute value.
+ 
+             deadline argument points on the time in the same clock system
+@@ -225,12 +225,15 @@ else:
+             Please note: it is not POSIX time but a time with
+             undefined starting base, e.g. the time of the system power on.
+             """
+-            if self._state not in (_State.INIT, _State.ENTER):
+-                raise RuntimeError(f"invalid state {self._state.value}")
+-    
++            if self._state == _State.EXIT:
++                raise RuntimeError("cannot reschedule after exit from context manager")
++            if self._state == _State.TIMEOUT:
++                raise RuntimeError("cannot reschedule expired timeout")
++
+             self._deadline = deadline
+             if self._state == _State.ENTER:
+                 self._reschedule()
++
+         def _reschedule(self) -> None:
+             assert self._state == _State.ENTER
+             deadline = self._deadline
+diff --git a/tests/test_timeout.py b/tests/test_timeout.py
+index d1671e9..7c5f5dc 100644
+--- a/tests/test_timeout.py
++++ b/tests/test_timeout.py
+@@ -2,7 +2,7 @@ import asyncio
+ import sys
+ import time
+ from functools import wraps
+-from typing import Any, Callable, List, TypeVar
++from typing import Any, Callable, List, Optional, TypeVar
+ 
+ import pytest
+ 
+@@ -398,6 +398,49 @@ async def test_shift_by_after_cm_exit() -> None:
+         cm.shift(1)
+ 
+ 
++@pytest.mark.parametrize("method", ["shift", "update"])
++@pytest.mark.asyncio
++async def test_reschedule_after_timeout(method: str) -> None:
++    with pytest.raises(asyncio.TimeoutError):
++        async with timeout(0) as cm:
++            await asyncio.sleep(10)
++
++    assert cm.expired
++    deadline = cm.deadline
++    with pytest.raises(
++        RuntimeError,
++        match=(
++            "(cannot reschedule expired timeout)|"
++            "(Cannot change state of expired Timeout)"
++        ),
++    ):
++        if method == "shift":
++            cm.shift(1)
++        else:
++            cm.update(asyncio.get_running_loop().time() + 1)
++    assert cm.deadline == deadline
++    assert cm.expired
++
++
++@pytest.mark.parametrize("delay", [None, 1])
++@pytest.mark.asyncio
++async def test_update_after_cm_exit(delay: Optional[float]) -> None:
++    async with timeout(delay) as cm:
++        await asyncio.sleep(0)
++
++    deadline = cm.deadline
++    with pytest.raises(
++        RuntimeError,
++        match=(
++            "(cannot reschedule after exit from context manager)|"
++            "(Cannot change state of finished Timeout)"
++        ),
++    ):
++        cm.update(asyncio.get_running_loop().time() + 1)
++    assert cm.deadline == deadline
++    assert not cm.expired
++
++
+ @pytest.mark.asyncio
+ async def test_enter_twice() -> None:
+     async with timeout(10) as t:

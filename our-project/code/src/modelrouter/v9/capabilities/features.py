@@ -111,4 +111,6 @@ def capability_cards(snapshot: dict, legal_actions: list) -> list[dict]:
             "model_context_limits": deepcopy(metadata.get("context_limits", model.get("context_limits", {}))),
             "model_provider_metadata": deepcopy(metadata),
         })
+        if "requested_native_effort" in action:
+            cards[-1]["requested_native_effort"] = action["requested_native_effort"]
     return cards

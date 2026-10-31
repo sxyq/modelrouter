@@ -1,0 +1,110 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "Tests still show failures. I’ll make a focused fix to preserve untouched documents byte-for-byte while sanitizing unsafe tags, attributes, and embedded HTML, then verify and submit.",
+          "tool_calls": [
+            {
+              "id": "sg_call_d378af139b18a_1",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cat > /app/filter.py <<'PY'\\n#!/usr/bin/env python3\\n\\\"\\\"\\\"Strip JavaScript from HTML in place, retaining untouched source verbatim.\\\"\\\"\\\"\\nimport html\\nimport re\\nimport sys\\nfrom html.parser import HTMLParser\\nfrom pathlib import Path\\nfrom urllib.parse import unquote\\n\\nURL_ATTRS = frozenset('href src action formaction xlink:href data poster background cite manifest codebase archive longdesc usemap profile'.split())\\nDROP_CONTENT = frozenset({'script', 'applet', 'object', 'embed'})\\nBAD_CSS = re.compile(r'expression\\\\s*\\\\(|behavior\\\\s*:|-moz-binding\\\\s*:|@import\\\\b|url\\\\s*\\\\(\\\\s*[\\\\\\\"\\\\']?\\\\s*(?:javascript|vbscript|data\\\\s*:\\\\s*text/html)\\\\s*:', re.I)\\n\\n\\ndef unsafe_url(value):\\n    value = html.unescape(str(value))\\n    for _ in range(4):\\n        decoded = unquote(value)\\n        if decoded == value:\\n            break\\n        value = decoded\\n    value = re.sub(r'[\\\\x00-\\\\x20\\\\x7f]+', '', value).casefold()\\n    if value.startswith(('javascript:', 'vbscript:', 'data:text/html')):\\n        return True\\n    return value.startswith('data:') and not value.startswith(('data:image/', 'data:audio/', 'data:video/', 'data:font/'))\\n\\n\\nclass TagParser(HTMLParser):\\n    def __init__(self, raw):\\n        super().__init__(convert_charrefs=False)\\n        self.raw = raw\\n        self.result = None\\n\\n    def handle_starttag(self, tag, attrs):\\n        self.result = (False, tag, attrs, self.get_starttag_text())\\n\\n    def handle_startendtag(self, tag, attrs):\\n        self.result = (False, tag, attrs, self.get_starttag_text())\\n\\n    def handle_endtag(self, tag):\\n        self.result = (True, tag, [], self.raw)\\n\\n\\ndef clean_tag(raw):\\n    parser = TagParser(raw)\\n    try:\\n        parser.feed(raw)\\n    except Exception:\\n        return raw\\n    parsed = parser.result\\n    if not parsed:\\n        return raw\\n    closing, tag, attrs, original = parsed\\n    if closing:\\n        return raw\\n    changes = False\\n    safe = []\\n    for name, value in attrs:\\n        key = name.lower()\\n        if key.startswith('on') or key == 'srcdoc':\\n            changes = True\\n            continue\\n        if value is not None and key in URL_ATTRS and unsafe_url(value):\\n            changes = True\\n            continue\\n        if value is not None and key == 'style':\\n            clean_value = BAD_CSS.sub('', value)\\n            if clean_value != value:\\n                changes = True\\n                value = clean_value\\n        safe.append((name, value))\\n    if not changes:\\n        return raw\\n    self_closing = raw.rstrip().endswith('/>')\\n    result = ['<' + tag]\\n    for name, value in safe:\\n        result.append(' ' + name if value is None else ' ' + name + '=\\\"' + html.escape(value, quote=True) + '\\\"')\\n    result.append('/>' if self_closing else '>')\\n    return ''.join(result)\\n\\n\\ndef tokenize(source):\\n    \\\"\\\"\\\"Yield HTML tokens and intervening text; quoted '>' does not end a tag.\\\"\\\"\\\"\\n    i, n = 0, len(source)\\n    while i < n:\\n        start = source.find('<', i)\\n        if start < 0:\\n            yield source[i:], False\\n            return\\n        if start > i:\\n            yield source[i:start], False\\n        if source.startswith('<!--', start):\\n            end = source.find('-->', start + 4)\\n            end = n if end < 0 else end + 3\\n        else:\\n            quote = None\\n            end = start + 1\\n            while end < n:\\n                ch = source[end]\\n                if quote:\\n                    if ch == quote:\\n                        quote = None\\n                elif ch in '\\\\\\\"\\\\'':\\n                    quote = ch\\n                elif ch == '>':\\n                    end += 1\\n                    break\\n                end += 1\\n        yield source[start:end], True\\n        i = end\\n\\n\\ndef sanitize(source):\\n    out = []\\n    suppressed = []\\n    raw_text = None\\n    for token, is_tag in tokenize(source):\\n        if not is_tag:\\n            if not suppressed:\\n                out.append(token)\\n            continue\\n        if token.startswith('<!--') or token.startswith('<!') or token.startswith('<?'):\\n            if not suppressed:\\n                out.append(token)\\n            continue\\n        parser = TagParser(token)\\n        try:\\n            parser.feed(token)\\n        except Exception:\\n            if not suppressed:\\n                out.append(token)\\n            continue\\n        parsed = parser.result\\n        if not parsed:\\n            if not suppressed:\\n                out.append(token)\\n            continue\\n        closing, tag, attrs, _ = parsed\\n        tag = tag.lower()\\n        if raw_text:\\n            if closing and tag == raw_text:\\n                if not suppressed:\\n                    out.append(token)\\n                raw_text = None\\n            elif not suppressed:\\n                out.append(token)\\n            continue\\n        if suppressed:\\n            if closing and tag == suppressed[-1]:\\n                suppressed.pop()\\n            elif not closing and tag in DROP_CONTENT and tag not in {'embed'}:\\n                suppressed.append(tag)\\n            continue\\n        if not closing and tag in DROP_CONTENT:\\n            if tag != 'embed' and not token.rstrip().endswith('/>'):\\n                suppressed.append(tag)\\n            continue\\n        # Sanitize srcdoc recursively, retaining safe embedded markup.\\n        if not closing and any(name.lower() == 'srcdoc' for name, _ in attrs):\\n            for name, value in attrs:\\n                if name.lower() == 'srcdoc' and value is not None:\\n                    embedded = html.escape(sanitize(html.unescape(value)), quote=True)\\n                    token = re.sub(r'(?i)(\\\\s+srcdoc\\\\s*=\\\\s*)(\\\"[^\\\"]*\\\"|\\\\'[^\\\\']*\\\\'|[^\\\\s>]+)', lambda m: m.group(1) + '\\\"' + embedded + '\\\"', token, count=1)\\n                    break\\n        out.append(clean_tag(token))\\n        if not closing and tag in {'textarea', 'title', 'style', 'xmp', 'noembed', 'noframes'}:\\n            raw_text = tag\\n    return ''.join(out)\\n\\n\\ndef main():\\n    if len(sys.argv) < 2:\\n        print('Usage: filter.py HTML_FILE', file=sys.stderr)\\n        return 2\\n    path = Path(sys.argv[1])\\n    with path.open(encoding='utf-8', errors='surrogateescape', newline='') as f:\\n        source = f.read()\\n    with path.open('w', encoding='utf-8', errors='surrogateescape', newline='') as f:\\n        f.write(sanitize(source))\\n    return 0\\n\\n\\nif __name__ == '__main__':\\n    sys.exit(main())\\nPY\\npython -m py_compile /app/filter.py && python /tmp/test_filter.py 2>&1 | tail -35\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_route_7b9804fb4cf049f0bbfbb95acc80019d",
+    "model": "gpt-6-luna",
+    "created": 1793485319,
+    "usage": {
+      "prompt_tokens": 15672,
+      "completion_tokens": 1999,
+      "total_tokens": 17671,
+      "prompt_tokens_details": {
+        "cached_tokens": 15555
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 272
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_7b9804fb4cf049f0bbfbb95acc80019d",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 15672,
+      "completion_tokens": 1999,
+      "total_tokens": 17671,
+      "prompt_tokens_details": {
+        "cached_tokens": 15555
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 272
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 15672,
+    "completion_tokens": 1999,
+    "reported_completion_tokens": 1999,
+    "reasoning_tokens": 272,
+    "cached_tokens": 15555,
+    "cache_write_tokens": null,
+    "ttft_ms": 3217.1590420184657,
+    "latency_ms": 12427.435250021517,
+    "output_tokens_per_s": 160.85378517635317,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 217.04017934478622,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00116675,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf",
+    "decision_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf-10",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

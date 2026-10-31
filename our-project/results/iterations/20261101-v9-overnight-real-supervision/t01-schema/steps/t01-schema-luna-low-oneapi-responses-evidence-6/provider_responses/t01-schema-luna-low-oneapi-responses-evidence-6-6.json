@@ -1,0 +1,109 @@
+{
+  "response": {
+    "id": "resp_route_f3817c9ab4a84affb61a3453fa047cc3",
+    "object": "response",
+    "output": [
+      {
+        "content": [
+          {
+            "annotations": [],
+            "text": "The focused tests confirm the helper fails for zero-argument callables and built-in factories, and my JSON-schema check also exposed that it must keep passing kwargs to kwargs-capable defaults. I’ll fix signature handling, cover these cases, and rerun verification.",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_3e672c3d3e4b7_0",
+        "phase": "commentary",
+        "role": "assistant",
+        "status": "completed",
+        "type": "message"
+      },
+      {
+        "arguments": "{\"command\":\"cd /testbed && python - <<'PY'\\nfrom pathlib import Path\\np=Path('schema/__init__.py')\\ns=p.read_text()\\nold='''def _invoke_with_optional_kwargs(f: Callable[..., Any], **kwargs: Any) -> Any:\\n    return f(**kwargs)\\n    s = inspect.signature(f)\\n    if len(s.parameters) == 0:\\n        return f()\\n'''\\nnew='''def _invoke_with_optional_kwargs(f: Callable[..., Any], **kwargs: Any) -> Any:\\n    try:\\n        signature = inspect.signature(f)\\n    except (TypeError, ValueError):\\n        # Some built-in callables do not expose a signature. Preserve the\\n        # traditional zero-argument factory behavior for these callables.\\n        return f()\\n\\n    parameters = signature.parameters.values()\\n    if not any(\\n        parameter.kind\\n        in (parameter.POSITIONAL_OR_KEYWORD, parameter.KEYWORD_ONLY,\\n            parameter.VAR_KEYWORD)\\n        for parameter in parameters\\n    ):\\n        return f()\\n    return f(**kwargs)\\n'''\\nassert s.count(old)==1\\np.write_text(s.replace(old,new))\\np=Path('test_schema.py'); s=p.read_text()\\nold='''@mark.parametrize(\\\"default\\\", [dict, list, set, int, str])\\ndef test_optional_builtin_callable_defaults(default):\\n    s = Schema({Optional(\\\"k\\\", default=default): object})\\n    assert s.validate({}) == {\\\"k\\\": default()}\\n'''\\nnew='''@mark.parametrize(\\\"default\\\", [dict, list, set, int, str])\\ndef test_optional_builtin_callable_defaults(default):\\n    s = Schema({Optional(\\\"k\\\", default=default): object})\\n    assert s.validate({}) == {\\\"k\\\": default()}\\n    assert s.validate({}, increment=1) == {\\\"k\\\": default()}\\n'''\\nassert s.count(old)==1\\np.write_text(s.replace(old,new))\\nPY\\npython -m pytest -q && python /tmp/schema_optional_defaults_repro.py && git diff --check && git diff --stat && git status --short\"}",
+        "call_id": "sg_call_3e672c3d3e4b7_1",
+        "encrypted_function_args": [],
+        "id": "fc_3e672c3d3e4b7_1",
+        "name": "bash",
+        "status": "completed",
+        "type": "function_call"
+      }
+    ],
+    "status": "completed",
+    "usage": {
+      "input_tokens": 16640,
+      "input_tokens_details": {
+        "cached_tokens": 14478
+      },
+      "output_tokens": 2245,
+      "output_tokens_details": {
+        "reasoning_tokens": 1716
+      },
+      "total_tokens": 18885
+    },
+    "created_at": 1793480028
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_f3817c9ab4a84affb61a3453fa047cc3",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": null,
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 16640,
+      "input_tokens_details": {
+        "cached_tokens": 14478
+      },
+      "output_tokens": 2245,
+      "output_tokens_details": {
+        "reasoning_tokens": 1716
+      },
+      "total_tokens": 18885
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MISSING",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 16640,
+    "completion_tokens": 2245,
+    "reported_completion_tokens": 2245,
+    "reasoning_tokens": 1716,
+    "cached_tokens": 14478,
+    "cache_write_tokens": null,
+    "ttft_ms": 8436.31766695762,
+    "latency_ms": 16913.342833984643,
+    "output_tokens_per_s": 132.73543982618466,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 264.8334711488587,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": null,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "UNKNOWN",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "NOT_EVALUATED",
+    "episode_id": "t01-schema-luna-low-oneapi-responses-evidence-6",
+    "decision_id": "t01-schema-luna-low-oneapi-responses-evidence-6-6",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_UNVERIFIED"
+  }
+}

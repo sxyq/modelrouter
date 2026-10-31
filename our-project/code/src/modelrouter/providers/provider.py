@@ -313,6 +313,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         self, base_url: Optional[str] = None, api_key: Optional[str] = None,
         alias_mapping: Optional[AliasMapping] = None,
         request_timeout_sec: float = 60.0,
+        model_endpoints: Optional[Dict[str, Dict[str, str]]] = None,
     ):
         creds = {} if alias_mapping is not None else load_generator_credentials()
         self.base_url = (base_url or creds.get("base_url") or "https://api.openai.com/v1").rstrip("/")
@@ -325,6 +326,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         self.allowed_models = set(creds.get("allowed_models", ["gpt-6-luna", "gpt-5.6-luna"]))
         self.alias_mapping = alias_mapping
         self.request_timeout_sec = request_timeout_sec
+        self.model_endpoints = model_endpoints or {}
 
     def _normalize_model(self, model_id: str) -> str:
         from modelrouter.providers.registry import V9_MODEL_IDS
@@ -357,7 +359,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             chunk = json.loads(data)
             if "error" in chunk:
                 raise RuntimeError(f"Provider stream error: {chunk['error'].get('type', 'unknown')}")
-            for key in ("id", "model", "created", "system_fingerprint"):
+            for key in ("id", "model", "created", "system_fingerprint", "reasoning", "reasoning_effort"):
                 if key in chunk:
                     body[key] = chunk[key]
             if chunk.get("usage") is not None:
@@ -429,6 +431,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         from modelrouter.providers.registry import MODEL_REGISTRY
 
         alias_facts = self.alias_mapping.resolve(model_spec.model_id, native_effort) if self.alias_mapping is not None else None
+        request_api_key = self.api_key
+        request_protocol = self.protocol
         if alias_facts is not None:
             target = alias_facts["actual_backend_model_id"]
             effective_effort = alias_facts["effective_native_effort"]
@@ -443,17 +447,23 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             effective_effort = native_effort
             request_base_url = self.base_url
             provider_name = target_spec.provider
-        payload = self._make_payload(messages, target, effective_effort, max_tokens, tools, stream)
+            endpoint_credentials = self.model_endpoints.get(target)
+            if endpoint_credentials is not None:
+                request_base_url = endpoint_credentials.get("base_url", request_base_url).rstrip("/")
+                request_api_key = endpoint_credentials.get("api_key", request_api_key)
+                request_protocol = endpoint_credentials.get("protocol", request_protocol)
+        transport = OpenAIResponsesProvider if request_protocol == "responses" else OpenAICompatibleProvider
+        payload = transport._make_payload(self, messages, target, effective_effort, max_tokens, tools, stream)
         if response_format is not None:
-            if self.protocol == "responses":
+            if request_protocol == "responses":
                 payload["text"] = {"format": response_format}
             else:
                 payload["response_format"] = response_format
-        endpoint = "/chat/completions" if self.protocol == "chat_completions" else "/responses"
+        endpoint = "/chat/completions" if request_protocol == "chat_completions" else "/responses"
         request = urllib.request.Request(
             request_base_url + endpoint,
             data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json", "Authorization": f"Bearer {self.api_key}", "User-Agent": "ModelRouter/10"},
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {request_api_key}", "User-Agent": "ModelRouter/10"},
             method="POST",
         )
         started = time.perf_counter()
@@ -462,17 +472,21 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             request_bound = input_bound + max_tokens
             try:
                 with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:
-                    body, ttft_ms = self._read_response(response, stream, started)
+                    body, ttft_ms = transport._read_response(self, response, stream, started)
             except Exception:
                 _record_budget(budget, None, None, request_bound)
                 raise
             raw_usage = body.get("usage")
-            p_tokens, c_tokens, r_tokens, cached, cache_written = self._usage_counts(raw_usage or {})
-            reported_completion = (raw_usage or {}).get("completion_tokens") if self.protocol == "chat_completions" else (raw_usage or {}).get("output_tokens")
+            p_tokens, c_tokens, r_tokens, cached, cache_written = transport._usage_counts(raw_usage or {})
+            reported_completion = (raw_usage or {}).get("completion_tokens") if request_protocol == "chat_completions" else (raw_usage or {}).get("output_tokens")
             _record_budget(budget, p_tokens, c_tokens, request_bound)
         latency_ms = (time.perf_counter() - started) * 1000
         returned = body.get("model")
         identity_status = "MATCHED_REQUEST_ALIAS" if returned == target else ("MISSING" if not returned else "MISMATCH")
+        returned_effort = (body.get("reasoning") or {}).get("effort") or body.get("reasoning_effort")
+        effort_status = ("NOT_REPORTED" if returned_effort is None else
+                         "PROVIDER_REPORTED_MATCH" if returned_effort == effective_effort else
+                         "PROVIDER_REPORTED_MISMATCH")
         usage_complete = p_tokens is not None and c_tokens is not None
         cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and (alias_facts is not None or returned == target) else None
         # Vendor cost is distinct from the configured price estimate.
@@ -492,11 +506,15 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "returned_model_id": returned,
             "provider": provider_name,
             "provider_base_url": request_base_url,
-            "protocol": self.protocol,
-            "finish_reason": (body.get("status") if self.protocol == "responses"
+            "protocol": request_protocol,
+            "finish_reason": (body.get("status") if request_protocol == "responses"
                               else body["choices"][0]["finish_reason"]),
             "incomplete_details": body.get("incomplete_details"),
             "native_effort": effective_effort,
+            "requested_native_effort": native_effort,
+            "request_native_effort": effective_effort,
+            "returned_native_effort": returned_effort,
+            "native_effort_status": effort_status,
             "stream": stream,
             "requested_max_output_tokens": max_tokens,
             "reported_max_output_tokens": body.get("max_output_tokens"),
@@ -537,7 +555,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             metrics["requested_response_format"] = response_format
         if usage_complete:
             global_multi_model_logger.log_call(
-                protocol=self.protocol, model_id=model_spec.model_id if alias_facts is not None else returned or target, provider=provider_name,
+                protocol=request_protocol, model_id=model_spec.model_id if alias_facts is not None else returned or target, provider=provider_name,
                 reasoning_effort=native_effort, stream=stream, ttft_ms=ttft_ms, total_latency_ms=latency_ms,
                 prompt_tokens=p_tokens, completion_tokens=c_tokens, reasoning_tokens=r_tokens or 0,
                 cache_read_tokens=cached or 0, actual_billed_cost_usd=billed_cost,
@@ -743,7 +761,8 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
                                 if "function" in tool else tool for tool in tools]
         return payload
 
-    def _usage_counts(self, usage):
+    @staticmethod
+    def _usage_counts(usage):
         return (
             usage.get("input_tokens"), usage.get("output_tokens"),
             (usage.get("output_tokens_details") or {}).get("reasoning_tokens"),

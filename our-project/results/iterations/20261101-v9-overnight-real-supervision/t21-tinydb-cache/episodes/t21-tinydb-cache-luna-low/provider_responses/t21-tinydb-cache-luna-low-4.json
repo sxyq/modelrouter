@@ -1,0 +1,98 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The reproduction confirms the cache grows past capacity because existing truthy keys skip eviction; falsy values also take the wrong branch. I’m correcting membership detection and always moving set keys to the newest end before enforcing capacity.",
+          "tool_calls": [
+            {
+              "id": "call_ujhYTg58IfXOZaiMfnwH8K1V",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"python - <<'PY'\\nfrom pathlib import Path\\np = Path('tinydb/utils.py')\\ns = p.read_text()\\nold = '''    def set(self, key: K, value: V):\\n        if self.cache.get(key):\\n            self.cache[key] = value\\n\\n            # Check, if the cache is full and we have to remove old items\\n            # If the queue is of unlimited size, self.capacity is NaN and\\n            # x > NaN is always False in Python and the cache won't be cleared.\\n            if self.capacity is not None and self.length > self.capacity:\\n                self.cache.popitem(last=False)\\n        else:\\n            self.cache[key] = value\\n            self.cache.move_to_end(key, last=True)\\n'''\\nnew = '''    def set(self, key: K, value: V):\\n        self.cache[key] = value\\n        self.cache.move_to_end(key, last=True)\\n\\n        # Check, if the cache is full and we have to remove old items\\n        # If the queue is of unlimited size, self.capacity is NaN and\\n        # x > NaN is always False in Python and the cache won't be cleared.\\n        if self.capacity is not None and self.length > self.capacity:\\n            self.cache.popitem(last=False)\\n'''\\nif old not in s:\\n    raise SystemExit('target function not found')\\np.write_text(s.replace(old, new))\\n\\np = Path('tests/test_utils.py')\\ns = p.read_text()\\nneedle = '''def test_lru_cache_set_update():\\n    cache = LRUCache(capacity=3)\\n    cache[\\\"a\\\"] = 1\\n    cache[\\\"a\\\"] = 2\\n\\n    assert cache[\\\"a\\\"] == 2\\n'''\\nreplacement = needle + '''\\n\\ndef test_lru_cache_set_existing_key_moves_to_end():\\n    cache = LRUCache(capacity=3)\\n    cache[\\\"a\\\"] = 1\\n    cache[\\\"b\\\"] = 2\\n    cache[\\\"c\\\"] = 3\\n    cache[\\\"a\\\"] = 4\\n    cache[\\\"d\\\"] = 5\\n\\n    assert cache.lru == [\\\"c\\\", \\\"a\\\", \\\"d\\\"]\\n    assert \\\"b\\\" not in cache\\n\\n\\ndef test_lru_cache_set_falsy_existing_value_moves_to_end():\\n    cache = LRUCache(capacity=3)\\n    cache[\\\"a\\\"] = 0\\n    cache[\\\"b\\\"] = 2\\n    cache[\\\"c\\\"] = 3\\n    cache[\\\"a\\\"] = 1\\n\\n    assert cache.lru == [\\\"b\\\", \\\"c\\\", \\\"a\\\"]\\n'''\\nif needle not in s:\\n    raise SystemExit('test anchor not found')\\np.write_text(s.replace(needle, replacement))\\nPY\\npython -m pytest tests/test_utils.py -q\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_0d133f3f12e22d88016ae66016993087d0b468df96f5bbff92",
+    "model": "gpt-6-luna",
+    "created": 1793482775,
+    "usage": {
+      "prompt_tokens": 31902,
+      "completion_tokens": 708,
+      "total_tokens": 32610,
+      "prompt_tokens_details": {
+        "cached_tokens": 31697
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0d133f3f12e22d88016ae66016993087d0b468df96f5bbff92",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 31902,
+      "completion_tokens": 708,
+      "total_tokens": 32610,
+      "prompt_tokens_details": {
+        "cached_tokens": 31697
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 31902,
+    "completion_tokens": 708,
+    "reported_completion_tokens": 708,
+    "reasoning_tokens": null,
+    "cached_tokens": 31697,
+    "cache_write_tokens": null,
+    "ttft_ms": 1906.8052499787882,
+    "latency_ms": 6265.422666969243,
+    "output_tokens_per_s": 113.00115533027224,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 162.43683082624418,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00069147,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t21-tinydb-cache-luna-low",
+    "decision_id": "t21-tinydb-cache-luna-low-4",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

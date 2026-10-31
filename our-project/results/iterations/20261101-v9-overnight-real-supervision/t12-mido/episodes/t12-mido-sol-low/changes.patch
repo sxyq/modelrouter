@@ -1,0 +1,175 @@
+diff --git a/docs/messages/serializing.rst b/docs/messages/serializing.rst
+index f8414d3..45916bb 100644
+--- a/docs/messages/serializing.rst
++++ b/docs/messages/serializing.rst
+@@ -75,6 +75,15 @@ parsed. *Extra whitespace is ignored*::
+     >>> parse_string('  control_change   control=1  value=122')
+     Message('control_change', channel=0, control=1, value=122, time=0)
+ 
++SysEx data is a comma-separated sequence of decimal bytes. Parentheses
++are included when encoding a message but are optional when parsing::
++
++    >>> parse_string('sysex data=10,20,30')
++    Message('sysex', data=(10, 20, 30), time=0)
++
++Use ``data=()`` for an empty data sequence. Spaces are not allowed within
++the data sequence.
++
+ To parse messages from a stream, you can use
+ ``mido.messages.parse_string_stream()``::
+ 
+diff --git a/mido/messages/strings.py b/mido/messages/strings.py
+index 08a7926..45db068 100644
+--- a/mido/messages/strings.py
++++ b/mido/messages/strings.py
+@@ -40,11 +40,15 @@ def _parse_time(value):
+ 
+ 
+ def _parse_data(value):
+-    if not value.startswith('(') and value.endswith(')'):
++    if value.startswith('(') and value.endswith(')'):
++        value = value[1:-1]
++        if not value:
++            return []
++    elif value.startswith('(') or value.endswith(')'):
+         raise ValueError('missing parentheses in data message')
+ 
+     try:
+-        return [int(byte) for byte in value[1:-1].split(',')]
++        return [int(byte) for byte in value.split(',')]
+     except ValueError as ve:
+         raise ValueError('unable to parse data bytes') from ve
+ 
+@@ -66,10 +70,10 @@ def str2msg(text):
+         if name == 'time':
+             value = _parse_time(value)
+         elif name == 'data':
+-            value = int(value)
+-        else:
+             value = _parse_data(value)
++        else:
++            value = int(value)
+ 
+         msg[name] = value
+ 
+-    return make_msgdict(type_, msg)
+\ No newline at end of file
++    return make_msgdict(type_, msg)
+diff --git a/tests/messages/test_strings.py b/tests/messages/test_strings.py
+index 2085e6a..cd4b147 100644
+--- a/tests/messages/test_strings.py
++++ b/tests/messages/test_strings.py
+@@ -2,13 +2,26 @@
+ #
+ # SPDX-License-Identifier: MIT
+ 
+-from pytest import raises
++from pytest import mark, raises
+ 
+-from mido.messages import Message
++from mido import Message, parse_string, parse_string_stream
++from mido.messages.specs import SPEC_BY_TYPE
++from mido.messages.strings import str2msg
+ 
+ 
+-def test_decode_sysex():
+-    assert Message.from_str('sysex data=(1,2,3)').data == (1, 2, 3)
++@mark.parametrize('parse', [Message.from_str, parse_string])
++@mark.parametrize(('data', 'expected'), [
++    ('(1,2,3)', (1, 2, 3)),
++    ('(10,20,30)', (10, 20, 30)),
++    ('10,20,30', (10, 20, 30)),
++    ('(10)', (10,)),
++    ('10', (10,)),
++    ('()', ()),
++    ('(0,127)', (0, 127)),
++    ('0,127', (0, 127)),
++])
++def test_decode_sysex(parse, data, expected):
++    assert parse(f'sysex data={data}').data == expected
+ 
+ 
+ def test_decode_invalid_sysex_with_spaces():
+@@ -21,3 +34,82 @@ def test_encode_sysex():
+     # This should not have an extra comma.
+     assert str(Message('sysex', data=(1,))) == 'sysex data=(1) time=0'
+     assert str(Message('sysex', data=(1, 2, 3))) == 'sysex data=(1,2,3) time=0'
++
++
++@mark.parametrize('data', [
++    '(10,20,30', '10,20,30)', '(10,x,30)', '10,x,30',
++    '(10,,30)', '(10,20,)', '', '(128)', '128', '(-1)', '-1',
++])
++def test_decode_invalid_sysex_data(data):
++    with raises(ValueError):
++        parse_string(f'sysex data={data}')
++
++
++@mark.parametrize(('text', 'expected'), [
++    (
++        'control_change channel=2 control=1 value=122 time=0.5',
++        Message('control_change', channel=2, control=1, value=122, time=0.5),
++    ),
++    (
++        'note_on channel=3 note=64 velocity=100',
++        Message('note_on', channel=3, note=64, velocity=100),
++    ),
++    ('pitchwheel pitch=-8192', Message('pitchwheel', pitch=-8192)),
++    ('songpos pos=16383', Message('songpos', pos=16383)),
++    (
++        'quarter_frame frame_type=7 frame_value=15',
++        Message('quarter_frame', frame_type=7, frame_value=15),
++    ),
++])
++def test_decode_integer_fields(text, expected):
++    assert str2msg(text) == expected.dict()
++    assert parse_string(text) == expected
++
++
++@mark.parametrize('text', [
++    'note_on note=(60)', 'note_on note=60.5', 'control_change value=1,2',
++    'control_change value=128', 'note_on channel=16',
++    'pitchwheel pitch=-8193', 'clock time=invalid',
++])
++def test_decode_invalid_numeric_fields(text):
++    with raises(ValueError):
++        parse_string(text)
++
++
++@mark.parametrize(('text', 'expected'), [
++    ('0', 0), ('12', 12), ('0.5', 0.5), ('-0.5', -0.5), ('1e-3', 0.001),
++])
++def test_decode_time(text, expected):
++    message = parse_string(f'clock time={text}')
++    assert message.time == expected
++    assert type(message.time) is type(expected)
++
++
++@mark.parametrize('type_', SPEC_BY_TYPE)
++def test_string_roundtrip(type_):
++    message = Message(type_)
++    assert parse_string(str(message)) == message
++
++
++def test_str2msg_data():
++    assert str2msg('sysex data=(10,20,30) time=0.5') == {
++        'type': 'sysex', 'data': [10, 20, 30], 'time': 0.5,
++    }
++
++
++def test_parse_string_stream():
++    stream = [
++        '# Messages read from a text file',
++        'sysex data=10,20,30 time=0.5',
++        'control_change control=1 value=122',
++        'sysex data=(10,20,30',
++        'sysex data=()',
++    ]
++    messages = list(parse_string_stream(stream))
++    assert messages[:2] == [
++        (Message('sysex', data=(10, 20, 30), time=0.5), None),
++        (Message('control_change', control=1, value=122), None),
++    ]
++    assert messages[2][0] is None
++    assert messages[2][1].startswith('line 4:')
++    assert messages[3] == (Message('sysex', data=()), None)

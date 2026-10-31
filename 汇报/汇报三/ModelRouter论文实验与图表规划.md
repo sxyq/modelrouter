@@ -1,8 +1,10 @@
 # ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-01 文档接续）
 
-> **本轮真实增量（11-01）**：新增3个Train任务尝试、2组完整可比终局，新任务级/步骤级各1条，累计4条/2标签任务。Device等质量费用偏好与错误恢复一步偏好分别记录；Scope双失败、SQLparse请求中断不产生胜者，同仓库关联不丢弃。原Prepare/serializer已消费delta2，可组合Train200/Val186；旧材料不重新加工，独立四档标签只用于既有结果分析，不训练或调参。68请求/65Usage/3未知，已知模型费率0.67589603USD、完整费用未知，教师0；AA v4、实际K=2 low，Flash及完整K=3仍缺。03:21:31无活动训练、F14仍failed/NON_FINITE_LOSS，F11/R11代表与旧Serving不变，不启动新配方。五RQ、八图十二表不改，真实训练任务不填正式效果表。详情见[本轮结果](../../our-project/results/iterations/20261101-v9-k2-supervision-expansion/review.md)。
+> **本轮真实增量（11-01）**：12个不同Train任务/9仓库，7组双成功终局；新增任务级模型偏好7条、步骤级即时验证偏好2条、7个标签任务。13条新视图含历史4条，累计任务级9/步骤级4、9任务、Luna12/Sol1；原Prepare与本机/服务器serializer均消费，可组合209/186，不重加工旧382或13,214候选。Sol请求low/medium报告max、Luna不报告应用档位，因此仅MODEL_ONLY，确认的Model×Native Effort/同模型Effort/K=3标签仍0。25份本轮比较中16份无目标，44份候选观察分开；209请求/199Usage/10缺失、3响应无法计价，已知模型费率1.85298918USD、完整费用未知，采集教师0。06:26:47无活动训练、F14仍failed/NON_FINITE_LOSS，R01–R16全COMPLETED/EVALUATED，F11/R11代表与旧Serving不变，未开新配方。五RQ、八图十二表保持，训练任务结果不填正式效果表。详情见[本轮结果](../../our-project/results/iterations/20261101-v9-overnight-real-supervision/review.md)。
 >
-> **四档偏置的已知范围**：旧S1/S2/S3语义与外部能力四档不同；R11继续训练仅4269行S2/S3，Laya微调前已有mid偏向。原前400字符使58个多步任务输入不变；各因素的因果贡献仍未知。未重跑八版本，动态Router与教师净收益仍须独立真实Dev。
+> **动态与教师**：configure-git-webserver教师开/关均全Luna且原reward0；固定Sol工具超时、Verifier未运行。新教师1请求/1成功，983输入/1112输出含1034 reasoning，0.013086USD/23.281秒，step3后短评进入Router4次；开/关总模型费0.01712057/0.01776893USD，轨迹、缓存与排队不同，不能证明净收益。不同Dev filter-js-from-html完成15生成/9工具结果、自然Sol3→Luna12/fallback0、RepeatedFormatError；固定Luna3生成/3工具结果、Submitted。两者原Verifier均reward0/CTRF0/2，模型费0.07949004/0.00111207USD，完整Trial1349.535347/856.316198秒；Dev不入Train或制造质量赢家，旧Serving没有学习新目标。全工作包269请求、已知模型费2.04290179USD、完整费用未知；临时快照17个、采集工具及自有隧道已清理，真实失败证据保留。
+>
+> **四档偏置的已知范围**：旧S1/S2/S3语义与外部能力四档不同；R11继续训练仅4269行S2/S3，Laya微调前已有mid偏向。原前400字符使58个多步任务输入不变；各因素因果贡献、导入权重原始训练分布未知，未证明选项索引错位。未重跑八版本或用独立标签调参；13条模型目标可消费，但联合档位监督仍0，不自动继续微调。
 
 > **独立静态评分完成（11-01）**：用户已选TwinRouterBench 520题/970步，两组微调前与原Val前三8/8在CPU完成。F11-e01为20.515464分，比微调前高13.505155个百分点；R11为18.969072分，比微调前高5.670103个百分点，全部版本低于恒选low71.030928分。此为旧四档精确步骤分，不是Agent终局、三模型选择标签或正式五RQ效果；不按Test重选、不晋升Serving、不填原正式效果表。01:43:44服务器无活动训练、F14归档failed/NON_FINITE_LOSS，旧V9加训完成但382/v4与新2条后未加训。结果见[独立评分](../../our-project/results/iterations/20261031-twinrouterbench-independent/review.md)，原五RQ、八图十二表保持。
 

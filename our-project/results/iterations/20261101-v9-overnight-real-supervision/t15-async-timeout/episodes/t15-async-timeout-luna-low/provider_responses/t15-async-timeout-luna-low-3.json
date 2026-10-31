@@ -1,0 +1,104 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The compatibility branch delegates to asyncio’s generic error path; I’ll add explicit state guards for both APIs.",
+          "tool_calls": [
+            {
+              "id": "call_l79rUUrJMncydakTujH5UY3l",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cd /testbed \\u0026\\u0026 sed -n '1,75p' async_timeout/__init__.py \\u0026\\u0026 python - \\u003c\\u003c'PY'\\nimport asyncio, sys\\nprint(sys.version)\\nprint(asyncio.Timeout.__dict__.keys())\\nprint(asyncio.Timeout.__init__.__code__.co_consts)\\nPY\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_0b6dea2d7bc0e244016ae65bc1ceac87d0a3f79c0580febe9f",
+    "model": "gpt-6-luna",
+    "created": 1793481668,
+    "usage": {
+      "prompt_tokens": 29161,
+      "completion_tokens": 269,
+      "total_tokens": 29430,
+      "prompt_tokens_details": {
+        "cached_tokens": 26464
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 105
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0b6dea2d7bc0e244016ae65bc1ceac87d0a3f79c0580febe9f",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 29161,
+      "completion_tokens": 269,
+      "total_tokens": 29430,
+      "prompt_tokens_details": {
+        "cached_tokens": 26464
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 105
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 29161,
+    "completion_tokens": 269,
+    "reported_completion_tokens": 269,
+    "reasoning_tokens": 105,
+    "cached_tokens": 26464,
+    "cache_write_tokens": null,
+    "ttft_ms": 13882.452749996446,
+    "latency_ms": 15213.734082994051,
+    "output_tokens_per_s": 17.681392256006948,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 202.06097188661167,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00066884,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t15-async-timeout-luna-low",
+    "decision_id": "t15-async-timeout-luna-low-3",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

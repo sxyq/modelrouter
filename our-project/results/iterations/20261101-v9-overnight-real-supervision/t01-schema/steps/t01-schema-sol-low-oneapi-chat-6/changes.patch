@@ -1,0 +1,111 @@
+diff --git a/README.rst b/README.rst
+index 03829a8..6cab6fc 100644
+--- a/README.rst
++++ b/README.rst
+@@ -439,6 +439,8 @@ The ``Schema.validate`` method accepts additional keyword arguments. The
+ keyword arguments will be propagated to the ``validate`` method of any
+ child validatables (including any ad-hoc ``Schema`` objects), or the default
+ value callable (if a callable is specified) for ``Optional`` keys.
++Callable defaults that take no arguments are called without the additional
++keyword arguments.
+ 
+ This feature can be used together with inheritance of the ``Schema`` class
+ for customized validation.
+diff --git a/schema/__init__.py b/schema/__init__.py
+index f524541..d49d827 100644
+--- a/schema/__init__.py
++++ b/schema/__init__.py
+@@ -341,10 +341,17 @@ def _priority(s: Any) -> int:
+ 
+ 
+ def _invoke_with_optional_kwargs(f: Callable[..., Any], **kwargs: Any) -> Any:
+-    return f(**kwargs)
+-    s = inspect.signature(f)
++    if not kwargs:
++        return f()
++    try:
++        s = inspect.signature(f)
++    except (TypeError, ValueError):
++        # Some built-in callables do not have an inspectable signature.
++        return f(**kwargs)
+     if len(s.parameters) == 0:
+         return f()
++    return f(**kwargs)
++
+ 
+ class Schema(object):
+     """
+diff --git a/test_schema.py b/test_schema.py
+index 2d7a495..a193f84 100644
+--- a/test_schema.py
++++ b/test_schema.py
+@@ -838,6 +838,53 @@ def test_optional_callable_default_ignore_inherited_schema_validate_kwargs():
+     assert d["k"] == 1 and d["d"]["k"] == 42 and d["d"]["l"][0]["l"] == [3, 4, 5]
+ 
+ 
++@mark.parametrize("default", [dict, list, set, int, str])
++def test_optional_builtin_callable_defaults(default):
++    s = Schema({Optional("k", default=default): object})
++    assert s.validate({}) == {"k": default()}
++
++
++def test_optional_builtin_callable_default_receives_kwargs():
++    s = Schema({Optional("k", default=dict): dict})
++    assert s.validate({}, increment=1) == {"k": {"increment": 1}}
++
++
++def test_optional_callable_objects_ignore_validate_kwargs():
++    class Default:
++        def __call__(self):
++            return 42
++
++    default_object = Default()
++    for default in (
++        default_object,
++        default_object.__call__,
++        partial(lambda value: value, 42),
++    ):
++        s = Schema({Optional("k", default=default): int})
++        assert s.validate({}, increment=1) == {"k": 42}
++
++
++def test_optional_callable_default_receives_named_kwargs():
++    def default(*, increment):
++        return 42 + increment
++
++    s = Schema({Optional("k", default=default): int})
++    assert s.validate({}, increment=1) == {"k": 43}
++
++
++def test_optional_callable_default_type_error_is_not_retried():
++    calls = []
++
++    def default(**kwargs):
++        calls.append(kwargs)
++        raise TypeError("default failed")
++
++    s = Schema({Optional("k", default=default): int})
++    with raises(TypeError, match="default failed"):
++        s.validate({}, increment=1)
++    assert calls == [{"increment": 1}]
++
++
+ def test_inheritance_optional():
+     def convert(data, increment):
+         if isinstance(data, int):
+@@ -1186,12 +1233,13 @@ def test_json_schema_default_is_custom_type():
+     }
+ 
+ 
+-def test_json_schema_default_is_callable():
++@mark.parametrize("kwargs", [{}, {"name": "World!"}])
++def test_json_schema_default_is_callable(kwargs):
+     def default_func():
+         return "Hello!"
+ 
+     s = Schema({Optional("test", default=default_func): str})
+-    assert s.json_schema("my-id") == {
++    assert s.json_schema("my-id", **kwargs) == {
+         "$schema": "http://json-schema.org/draft-07/schema#",
+         "$id": "my-id",
+         "properties": {"test": {"default": "Hello!", "type": "string"}},

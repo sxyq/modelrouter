@@ -222,6 +222,8 @@ def build_offline_prefix_input(row, state_factory):
                 arguments = function.get("arguments")
                 arguments = json.loads(arguments) if isinstance(arguments, str) else arguments
                 commands[call.get("id")] = arguments.get("command") if isinstance(arguments, dict) else None
+        elif message.get("role") == "user" and message.get("extra", {}).get("interrupt_type") == "FormatError":
+            continue
         elif message.get("role") == "tool" or (message.get("role") == "user" and generation):
             command = (commands.get(message.get("tool_call_id")) if message.get("role") == "tool"
                        else next(iter(commands.values())) if len(commands) == 1 else None)
@@ -604,6 +606,7 @@ def prepare(typed_root=None, *, inputs=(), v8_views=None, preview_root=None, tra
     candidates = [candidate_action(action) for action in candidates]
     teacher_statuses, teacher_models, target_scopes, prefix_counts = Counter(), Counter(), Counter(), Counter()
     supervision_types = Counter()
+    comparison_axes = Counter()
     comparison_tasks = {}
     inline_trajectories, inline_counts = [], Counter()
     fixed_reference_kinds = set()
@@ -735,6 +738,7 @@ def prepare(typed_root=None, *, inputs=(), v8_views=None, preview_root=None, tra
                 if row["_meta"].get("supervision_type"):
                     kind = row["_meta"]["supervision_type"]
                     supervision_types[kind] += 1
+                    comparison_axes[row["_meta"]["comparison_axis"]] += 1
                     comparison_tasks.setdefault(kind, set()).add(
                         (row["provenance"]["source_id"], row["provenance"]["task_id"]))
                 if row["_meta"].get("input_kind") == "TRAJECTORY_PREFIX":
@@ -746,7 +750,9 @@ def prepare(typed_root=None, *, inputs=(), v8_views=None, preview_root=None, tra
                     for label in row["expected"].values():
                         action = candidate_action(label)
                         if action["model_id"] in MODEL_IDS:
-                            target_scopes["v9_model_choice"] += 1
+                            axis = ("v9_native_effort_choice" if row["_meta"].get("comparison_axis") == "NATIVE_EFFORT"
+                                    else "v9_model_choice")
+                            target_scopes[axis] += 1
                             if action["native_effort"] is not None:
                                 target_scopes["v9_model_effort_choice"] += 1
                 else:
@@ -805,7 +811,9 @@ def prepare(typed_root=None, *, inputs=(), v8_views=None, preview_root=None, tra
                "supplied_auxiliary_candidates": candidates,
                "v9_model_choice_target_count": target_scopes["v9_model_choice"],
                "v9_model_effort_target_count": target_scopes["v9_model_effort_choice"],
+               "v9_native_effort_target_count": target_scopes["v9_native_effort_choice"],
                "supervision_type_counts": dict(supervision_types),
+               "comparison_axis_counts": dict(comparison_axes),
                "comparison_task_count": len(set().union(*comparison_tasks.values())),
                "comparison_tasks_by_supervision_type": {
                    kind: len(tasks) for kind, tasks in comparison_tasks.items()},

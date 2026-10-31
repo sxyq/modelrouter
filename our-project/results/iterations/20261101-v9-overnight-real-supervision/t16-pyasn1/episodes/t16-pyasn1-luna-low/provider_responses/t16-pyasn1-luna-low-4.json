@@ -1,0 +1,98 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "call_6mzKV1isac1hj1PkZUwgwlNf",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cd /testbed \\u0026\\u0026 sed -n '25,75p' pyasn1/codec/ber/decoder.py \\u0026\\u0026 sed -n '610,635p' pyasn1/codec/ber/decoder.py \\u0026\\u0026 python - \\u003c\\u003c'PY'\\np='pyasn1/codec/ber/decoder.py'\\ns=open(p).read(); old='class ChoicePayloadDecoder():'; new='class ChoicePayloadDecoder(AbstractPayloadDecoder):'\\nassert old in s\\nopen(p,'w').write(s.replace(old,new,1))\\nPY\\npytest -q tests/codec/ber/test_decoder.py -k ChoiceDecoderTestCase \\u0026\\u0026 python - \\u003c\\u003c'PY'\\nfrom pyasn1.type import univ, tag, namedtype\\nfrom pyasn1.codec.ber import decoder\\nc=univ.Choice(componentType=namedtype.NamedTypes(namedtype.NamedType('null',univ.Null()),namedtype.NamedType('boolean',univ.Boolean()),namedtype.NamedType('octetString',univ.OctetString())))\\nfor data,spec in [(bytes((5,0)),c),(bytes((164,2,5,0)),c.subtype(explicitTag=tag.Tag(tag.tagClassContext,tag.tagFormatConstructed,4)))]:\\n v,rest=decoder.decode(data,asn1Spec=spec); print(v.getName(),v.getComponent(),rest)\\nPY\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_07ea2f82be343557016ae658c7b87087d093980371b08a9caf",
+    "model": "gpt-6-luna",
+    "created": 1793480907,
+    "usage": {
+      "prompt_tokens": 31353,
+      "completion_tokens": 373,
+      "total_tokens": 31726,
+      "prompt_tokens_details": {
+        "cached_tokens": 29861
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_07ea2f82be343557016ae658c7b87087d093980371b08a9caf",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 31353,
+      "completion_tokens": 373,
+      "total_tokens": 31726,
+      "prompt_tokens_details": {
+        "cached_tokens": 29861
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 31353,
+    "completion_tokens": 373,
+    "reported_completion_tokens": 373,
+    "reasoning_tokens": null,
+    "cached_tokens": 29861,
+    "cache_write_tokens": null,
+    "ttft_ms": 5407.4748330167495,
+    "latency_ms": 5434.282416012138,
+    "output_tokens_per_s": 68.63831715866547,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 13913.9735224978,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00063431,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t16-pyasn1-luna-low",
+    "decision_id": "t16-pyasn1-luna-low-4",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

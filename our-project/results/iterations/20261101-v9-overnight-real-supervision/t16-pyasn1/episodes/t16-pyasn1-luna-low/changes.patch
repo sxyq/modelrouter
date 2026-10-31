@@ -1,0 +1,13 @@
+diff --git a/pyasn1/codec/ber/decoder.py b/pyasn1/codec/ber/decoder.py
+index 91f2533..795e99a 100644
+--- a/pyasn1/codec/ber/decoder.py
++++ b/pyasn1/codec/ber/decoder.py
+@@ -1162,7 +1162,7 @@ class SetOfPayloadDecoder(SetOrSetOfPayloadDecoder):
+     protoComponent = univ.SetOf()
+ 
+ 
+-class ChoicePayloadDecoder():
++class ChoicePayloadDecoder(AbstractPayloadDecoder):
+     protoComponent = univ.Choice()
+ 
+     def valueDecoder(self, substrate, asn1Spec,

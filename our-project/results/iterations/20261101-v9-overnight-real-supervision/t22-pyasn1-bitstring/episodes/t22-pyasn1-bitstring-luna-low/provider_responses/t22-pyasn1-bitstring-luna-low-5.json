@@ -1,0 +1,104 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The reproduction confirms the reported failure. This environment lacks `apply_patch`; I’m applying the narrow code and regression-test edits with a scripted replacement, then rerunning the focused suite.",
+          "tool_calls": [
+            {
+              "id": "call_PIltGN8L0s7z6mhwH9cSyI4u",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cd /testbed && python - <<'PY'\\nfrom pathlib import Path\\np = Path('pyasn1/type/univ.py')\\ns = p.read_text()\\nold = '''    def __getitem__(self, i):\\n        if i.__class__ is slice:\\n            length = len(self._value) - 1\\n            if i > length or i < 0:\\n                raise IndexError('bit index out of range')\\n            return (self._value >> (length - i)) & 1\\n        else:\\n            return self.clone([self[x] for x in range(*i.indices(len(self)))])\\n'''\\nnew = '''    def __getitem__(self, i):\\n        if isinstance(i, slice):\\n            return self.clone([self[x] for x in range(*i.indices(len(self)))])\\n        else:\\n            if i < 0:\\n                i += len(self)\\n            if i < 0 or i >= len(self):\\n                raise IndexError('bit index out of range')\\n            return (self._value >> (len(self) - i - 1)) & 1\\n'''\\nassert old in s\\np.write_text(s.replace(old, new, 1))\\np = Path('tests/type/test_univ.py')\\ns = p.read_text()\\nold = '''    def testGetItem(self):\\n        assert self.b.clone(\\\"'A98A'H\\\")[0] == 1\\n        assert self.b.clone(\\\"'A98A'H\\\")[1] == 0\\n        assert self.b.clone(\\\"'A98A'H\\\")[2] == 1\\n'''\\nnew = '''    def testGetItem(self):\\n        bit_string = self.b.clone(\\\"'A98A'H\\\")\\n        assert bit_string[0] == 1\\n        assert bit_string[1] == 0\\n        assert bit_string[2] == 1\\n        assert bit_string[-1] == 0\\n        assert bit_string[1:4] == (0, 1, 0)\\n        for index in (len(bit_string), -len(bit_string) - 1):\\n            try:\\n                bit_string[index]\\n            except IndexError:\\n                pass\\n            else:\\n                raise AssertionError('out-of-range bit index accepted')\\n'''\\nassert old in s\\np.write_text(s.replace(old, new, 1))\\nPY\\npython - <<'PY'\\nfrom pyasn1.type import univ\\nbs = univ.BitString(\\\"'A98A'H\\\")\\nassert [bs[i] for i in range(3)] == [1, 0, 1]\\nassert bs[1:4] == (0, 1, 0)\\nassert bs[-1] == 0\\nfor i in (len(bs), -len(bs)-1):\\n    try:\\n        bs[i]\\n    except IndexError:\\n        continue\\n    raise AssertionError(i)\\nprint('reproduction and edge cases passed')\\nPY\\npython -m pytest tests/type/test_univ.py -q\",\"timeout\":120000}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_01e238670d592cb6016ae66339da7c87d0889ead256f5c21b3",
+    "model": "gpt-6-luna",
+    "created": 1793483578,
+    "usage": {
+      "prompt_tokens": 33767,
+      "completion_tokens": 773,
+      "total_tokens": 34540,
+      "prompt_tokens_details": {
+        "cached_tokens": 32579
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 22
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_01e238670d592cb6016ae66339da7c87d0889ead256f5c21b3",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 33767,
+      "completion_tokens": 773,
+      "total_tokens": 34540,
+      "prompt_tokens_details": {
+        "cached_tokens": 32579
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 22
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 33767,
+    "completion_tokens": 773,
+    "reported_completion_tokens": 773,
+    "reasoning_tokens": 22,
+    "cached_tokens": 32579,
+    "cache_write_tokens": null,
+    "ttft_ms": 5315.477583964821,
+    "latency_ms": 9320.86941698799,
+    "output_tokens_per_s": 82.9321778278697,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 192.98985772799142,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00083109,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t22-pyasn1-bitstring-luna-low",
+    "decision_id": "t22-pyasn1-bitstring-luna-low-5",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

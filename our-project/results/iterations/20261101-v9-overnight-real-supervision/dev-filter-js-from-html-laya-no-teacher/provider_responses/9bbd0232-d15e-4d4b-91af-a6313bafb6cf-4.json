@@ -1,0 +1,110 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The first test run exposed a parser bug: `getpos()` is relative to the current parser input, not a reliable way to retrieve source slices. I’ll replace that logic with a tokenizer that copies untouched text directly and sanitizes only tags and dangerous content.",
+          "tool_calls": [
+            {
+              "id": "sg_call_befa0eed38ce8_1",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cat <<'PY' > /app/filter.py\\n#!/usr/bin/env python3\\n\\\"\\\"\\\"Remove JavaScript from HTML while preserving untouched source formatting.\\\"\\\"\\\"\\nimport html\\nimport re\\nimport sys\\nfrom html.parser import HTMLParser\\nfrom pathlib import Path\\nfrom urllib.parse import unquote\\n\\nURL_ATTRIBUTES = frozenset('href src action formaction xlink:href data poster background cite manifest codebase archive longdesc usemap profile'.split())\\nDROP_CONTENT = frozenset({'script', 'applet', 'object', 'embed'})\\nDROP_TAG = frozenset({'base'})\\nCSS_BAD = re.compile(r'expression\\\\s*\\\\(|behavior\\\\s*:|-moz-binding\\\\s*:|@import\\\\b|url\\\\s*\\\\(\\\\s*[\\\\\\\"\\\\']?\\\\s*(?:javascript|vbscript|data\\\\s*:\\\\s*text/html)\\\\s*:', re.I)\\nTAG = re.compile(r'<!--.*?-->|<![^>]*>|<\\\\?[^>]*>|</?[A-Za-z][^>]*>', re.S)\\nATTR = re.compile(r'''([^\\\\s=/>]+)(?:\\\\s*=\\\\s*(?:\\\"([^\\\"]*)\\\"|'([^']*)'|([^\\\\s>]+)))?''')\\n\\n\\ndef unsafe_url(value):\\n    value = html.unescape(value)\\n    for _ in range(3):\\n        decoded = unquote(value)\\n        if decoded == value:\\n            break\\n        value = decoded\\n    value = re.sub(r'[\\\\x00-\\\\x20\\\\x7f]+', '', value).casefold()\\n    if value.startswith(('javascript:', 'vbscript:')):\\n        return True\\n    return value.startswith('data:') and not value.startswith(('data:image/', 'data:audio/', 'data:video/', 'data:font/'))\\n\\n\\ndef sanitize_tag(raw):\\n    if raw.startswith(('<!--', '<!', '<?')):\\n        return raw\\n    end = raw.startswith('</')\\n    match = re.match(r'<(/?)\\\\s*([^\\\\s/>]+)', raw)\\n    if not match:\\n        return raw\\n    closing, tag = match.groups()\\n    tag = tag.lower()\\n    if end:\\n        return raw if tag not in DROP_CONTENT and tag not in DROP_TAG else ''\\n    if tag in DROP_TAG:\\n        return ''\\n    if tag in DROP_CONTENT:\\n        return raw\\n    self_closing = raw.rstrip().endswith('/>')\\n    attrs = []\\n    for match in ATTR.finditer(raw[match.end():].rstrip('>/')):\\n        name, double, single, unquoted = match.groups()\\n        key = name.lower()\\n        value = double if double is not None else single if single is not None else unquoted\\n        if key.startswith('on') or (key == 'srcdoc'):\\n            continue\\n        if value is not None and key in URL_ATTRIBUTES and unsafe_url(value):\\n            continue\\n        if value is not None and key == 'style':\\n            value = CSS_BAD.sub('', value)\\n        attrs.append((key, value))\\n    # Preserve the original tag exactly if no filtering or CSS edit is necessary.\\n    original_attrs = [(m.group(1).lower(), next((v for v in m.groups()[1:] if v is not None), None)) for m in ATTR.finditer(raw[match.end():].rstrip('>/'))]\\n    if attrs == original_attrs and not any(v is not None and k == 'style' and CSS_BAD.search(v) for k, v in attrs):\\n        return raw\\n    result = ['<' + tag]\\n    for key, value in attrs:\\n        if value is None:\\n            result.append(' ' + key)\\n        else:\\n            result.append(' ' + key + '=\\\"' + html.escape(value, quote=True) + '\\\"')\\n    result.append('/>' if self_closing else '>')\\n    return ''.join(result)\\n\\n\\ndef sanitize(source):\\n    pieces = []\\n    cursor = 0\\n    suppressed = []\\n    for match in TAG.finditer(source):\\n        raw = match.group()\\n        if not suppressed:\\n            pieces.append(source[cursor:match.start()])\\n        cursor = match.end()\\n        if raw.startswith(('<!--', '<!', '<?')):\\n            if not suppressed:\\n                pieces.append(raw)\\n            continue\\n        tag_match = re.match(r'<(/?)\\\\s*([^\\\\s/>]+)', raw)\\n        if not tag_match:\\n            if not suppressed:\\n                pieces.append(raw)\\n            continue\\n        closing, name = tag_match.groups()\\n        name = name.lower()\\n        if suppressed:\\n            if closing and name == suppressed[-1]:\\n                suppressed.pop()\\n            elif not closing and name in DROP_CONTENT and not raw.rstrip().endswith('/>'):\\n                suppressed.append(name)\\n            continue\\n        if not closing and name in DROP_CONTENT:\\n            if not raw.rstrip().endswith('/>'):\\n                suppressed.append(name)\\n            continue\\n        pieces.append(sanitize_tag(raw))\\n    if not suppressed:\\n        pieces.append(source[cursor:])\\n    return ''.join(pieces)\\n\\n\\ndef main():\\n    if len(sys.argv) < 2:\\n        print('Usage: filter.py HTML_FILE', file=sys.stderr)\\n        return 2\\n    path = Path(sys.argv[1])\\n    with path.open(encoding='utf-8', errors='surrogateescape', newline='') as stream:\\n        source = stream.read()\\n    result = sanitize(source)\\n    with path.open('w', encoding='utf-8', errors='surrogateescape', newline='') as stream:\\n        stream.write(result)\\n    return 0\\n\\nif __name__ == '__main__':\\n    sys.exit(main())\\nPY\\npython /tmp/test_filter.py 2>&1 | tail -45\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_route_9a258091f98c4a4db44bc8245a694e53",
+    "model": "gpt-6-luna",
+    "created": 1793485234,
+    "usage": {
+      "prompt_tokens": 6687,
+      "completion_tokens": 1644,
+      "total_tokens": 8331,
+      "prompt_tokens_details": {
+        "cached_tokens": 2942
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 265
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_9a258091f98c4a4db44bc8245a694e53",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 6687,
+      "completion_tokens": 1644,
+      "total_tokens": 8331,
+      "prompt_tokens_details": {
+        "cached_tokens": 2942
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 265
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 6687,
+    "completion_tokens": 1644,
+    "reported_completion_tokens": 1644,
+    "reasoning_tokens": 265,
+    "cached_tokens": 2942,
+    "cache_write_tokens": null,
+    "ttft_ms": 3149.0422079805285,
+    "latency_ms": 19863.82691602921,
+    "output_tokens_per_s": 82.7635081069583,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 98.35603800558457,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00122592,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf",
+    "decision_id": "9bbd0232-d15e-4d4b-91af-a6313bafb6cf-4",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

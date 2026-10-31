@@ -1,0 +1,167 @@
+{
+  "response": {
+    "background": false,
+    "completed_at": 1793481850,
+    "created_at": 1793481847,
+    "frequency_penalty": 0.0,
+    "id": "resp_0ee786ca27db0533016ae65c7787e08193ae7466208d652caa",
+    "max_output_tokens": 4096,
+    "metadata": {},
+    "model": "gpt-6.1-sol",
+    "object": "response",
+    "output": [
+      {
+        "id": "rs_0ee786ca27db0533016ae65c78e17881939156358e496285f4",
+        "type": "reasoning",
+        "content": [],
+        "encrypted_content": "gAAAAABq5lx6BvOuf0PM5ec6c3DouOu4u9Clfx9z9N1jr6ATbu5XfagdLBenJFUxOJr0DEeu-z2Pnqv0LRkuoA_sgnNe8O4Tre0F0f3SsxLYwG7_Rr_pTBLFNZ0RHLrTDCJ2MOe-zSRPa-cuJAsVUQFEWXrWGsEWdkaN0_2VTqfm9ZJFnPdaAKTcMRBIpf8Wx3S_PkKqPk1cXVcrn9y1QKIHp59PgAsyh6oCePY3U6M6kf-2qG2zgsNePC6oYAKnR83ePdKhYN5mrOgCBM9MiGU-bxdjSJ5zYvkzmo6Q-g5PtmWYizNzgIgTIUp23l1WKd_6PDmH6qRul7C2zXgrlmVBIUwkq3hqXk7XN3dXJW3-O8Rl8Kiry9o2MctL0V10jNYIm8hgm1eA8t6j8u7KzExFoJHyK5mLqdjz5jrX42vtI3H3ESubSg2Rf2jd68VxcWd0vbyQDMjsxSlEMoQ07C2VbX6m5-xKQB2sB4usnrbBuiwtfGPFFA8MY8fNm60M3J6_-19k05wQuvcLZYbbatGJ9bEdaHFSn0ZkZ0M7lu_S3U8Wy3Wo6ImyWLAFnQLqT1QB58GluF6VtEv3eTo9wKnzcr1PbzD26bFP7ZyIqkSnudjaf4lpn10RFCnxs2xGSNZptvPeRpv9GYYORB_EcJSVZOLmzx6Y7G7NJfc0tAezbEeBwmqFofueB62myIz34qdgHg0eIQ-B-B2IdhMQSf5JDko7hl3z5JjaCXlg3VJXbevFKjdKIWOI8pZMTdM2tRj_Ar342bOt9rVm2vvQfWMwjROaFabwz4Jq4cJzIYcxOk7xf1tlnoiDv23Y0pQ0SK6C6QH79kIhd-xvXHAHvbKF_5wWzbLBZR_U1uQg2mcGVklalpZ6cel6TcftCXwwH1B1LXggloqUHg3RZlaPqyZkz7-IGxTJuk48lpPk1D_tS1P0OmIV8mVVTj4ciGYwIRv-i9HCr5nz4vINAn5EQRTgLvlSRxgTIRZAqk2bpRl_amfv8Txu9Ypm-jfNJQP82i_4AjNVa2tWXGjrcuPJJ4vkA5tLsWKvO1HPJr02ny7FxUByVsfmDZ1ntQnPTvi9OQW4cQ_AMwMj1mwgAq4ETskIquCaipyyui21Z4vMXP2Si97yi3ttiuYnhjPcc-sQu2K9ALGnGsxgQLFfDqC-78UKb78JDEYfhhp5oUUhQFWTCqNgdVEoa2DnOHrF54tb14qg9rcs1Ydz6PLpPOAMZPmvm7ZNUw__88BnX9usY3Bw2ZsgtQ5nzjyylodZGWpZLCF4hyktXu6YAGtq8pTdXu0jwFq5h6vluRQp4U3BH9ZiayzQHHi6jjMMBxe9lksZ1-p6oinWhqj423_mJu1aHVLCYYjz_QAOXf37RYmYs6KhEk4rlL49_ZeNrCHRjom2NxejRRJIevYT58e1b_7K9EyfDCttV0Y4B0fqppyYhVzPInRieE3IY6p4hGMEZi0VnmPgGtAyY82u_BEMFiqULOhY7H2BpN8PtqSDHqwzGcm1HScaS89rg52HaXA9BYg2oc2wgmSm1bDLeA8eR_f-XLeKR2ztAM8LDIxr-IuFmuPy7GjsDHx5U8YAoIkXpbF7W056huL9vbpkNjEiP3yMGOpiPjvE9bQflQ==",
+        "summary": []
+      },
+      {
+        "id": "msg_0ee786ca27db0533016ae65c7962448193ae740f17381b2ef0",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "The working tree is clean. `rg` isn’t installed here, so I’ll use `grep` to locate the parser and its tests.\n"
+          }
+        ],
+        "phase": "commentary",
+        "role": "assistant"
+      },
+      {
+        "id": "fc_0ee786ca27db0533016ae65c79e30c81938e2cc48a27f4af14",
+        "type": "function_call",
+        "status": "completed",
+        "arguments": "{\"command\":\"cd /testbed && grep -R -n -E 'def str2msg|def _parse_data|parse_string|str2msg' mido tests docs && cat pyproject.toml && find tests -maxdepth 3 -type f | sort && find mido/messages -maxdepth 2 -type f | sort\"}",
+        "call_id": "call_SWdTeRdp071fs1IjjTBacIKk",
+        "name": "bash"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "prompt_cache_key": "cdc7d3abccdb799e",
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "mode": "standard",
+      "context": "all_turns",
+      "effort": "max"
+    },
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "type": "function",
+        "description": "Execute a bash command",
+        "name": "bash",
+        "parameters": {
+          "properties": {
+            "command": {
+              "description": "The bash command to execute",
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": 0.98,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 1705,
+      "input_tokens_details": {
+        "cached_tokens": 1079,
+        "cache_write_tokens": 623
+      },
+      "output_tokens": 141,
+      "output_tokens_details": {
+        "reasoning_tokens": 18
+      },
+      "total_tokens": 1846
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "resp_0ee786ca27db0533016ae65c7787e08193ae7466208d652caa",
+    "request_model_id": "gpt-6.1-sol",
+    "returned_model_id": "gpt-6.1-sol",
+    "provider": "openai",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": 4096,
+    "raw_usage": {
+      "input_tokens": 1705,
+      "input_tokens_details": {
+        "cached_tokens": 1079,
+        "cache_write_tokens": 623
+      },
+      "output_tokens": 141,
+      "output_tokens_details": {
+        "reasoning_tokens": 18
+      },
+      "total_tokens": 1846
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 1705,
+    "completion_tokens": 141,
+    "reported_completion_tokens": 141,
+    "reasoning_tokens": 18,
+    "cached_tokens": 1079,
+    "cache_write_tokens": 623,
+    "ttft_ms": 23579.565624997485,
+    "latency_ms": 24759.267417015508,
+    "output_tokens_per_s": 5.694837315869025,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 119.52173079164564,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0030814,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t12-mido-sol-low",
+    "decision_id": "t12-mido-sol-low-1",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

@@ -1,0 +1,35 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.18, pytest-7.4.4, pluggy-1.5.0
+rootdir: /testbed
+configfile: pytest.ini
+plugins: pycodestyle-2.3.1, cov-4.1.0, mypy-0.10.3
+collected 204 items
+
+tests/test_queries.py ....                                               [  1%]
+tests/test_middlewares.py ........                                       [  5%]
+tests/test_operations.py ..............                                  [ 12%]
+tests/test_queries.py ............................                       [ 26%]
+tests/test_storages.py .............                                     [ 32%]
+tests/test_tables.py ..............................                      [ 47%]
+tests/test_tinydb.py ................................................... [ 72%]
+..............................................                           [ 95%]
+tests/test_utils.py ..........                                           [100%]
+
+---------- coverage: platform linux, python 3.10.18-final-0 ----------
+Name                    Stmts   Miss Branch BrPart  Cover
+---------------------------------------------------------
+tinydb/__init__.py          5      0      0      0   100%
+tinydb/database.py         53      0     10      0   100%
+tinydb/middlewares.py      33      0      6      0   100%
+tinydb/mypy_plugin.py      25     25      2      0     0%
+tinydb/operations.py       24      0      0      0   100%
+tinydb/queries.py         124      1     70      4    97%
+tinydb/storages.py         57      0     11      0   100%
+tinydb/table.py           216      1    102      1    99%
+tinydb/utils.py            73      1     20      1    98%
+tinydb/version.py           1      0      0      0   100%
+---------------------------------------------------------
+TOTAL                     611     28    221      6    96%
+
+
+============================= 204 passed in 0.48s ==============================

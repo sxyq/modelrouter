@@ -315,6 +315,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         config["single_episode"] = args.single_episode
         config["force_build"] = args.force_build
         config["docker_host"] = _runtime_env(docker_host).get("DOCKER_HOST")
+        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "true"
         from modelrouter.providers.registry import ModelRegistry
         from .harbor_agent import mini_configuration, legal_actions
         from modelrouter.providers.registry import MODEL_REGISTRY

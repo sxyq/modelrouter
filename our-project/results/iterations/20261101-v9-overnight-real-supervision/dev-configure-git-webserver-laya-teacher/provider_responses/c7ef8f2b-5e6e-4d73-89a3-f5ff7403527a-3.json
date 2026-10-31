@@ -1,0 +1,104 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "call_oLErfU6WB9VzzrViReof4nxI",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cat > setup-git-web.sh <<'EOF'\\n#!/bin/sh\\nset -eu\\n\\n# Run as root on the server. SSH account setup and authorization remain external.\\nGIT_USER=${GIT_USER:-git}\\nREPO=${REPO:-/git/server}\\nWEB_ROOT=${WEB_ROOT:-/var/www/git-server}\\nPORT=${PORT:-8080}\\nSERVICE=${SERVICE:-git-web}\\n\\nif [ \\\"$(id -u)\\\" -ne 0 ]; then\\n  echo \\\"Run this installer as root (sudo ./setup-git-web.sh).\\\" >&2\\n  exit 1\\nfi\\nfor tool in git python3; do\\n  command -v \\\"$tool\\\" >/dev/null 2>&1 || { echo \\\"Required command not found: $tool\\\" >&2; exit 1; }\\ndone\\nid \\\"$GIT_USER\\\" >/dev/null 2>&1 || { echo \\\"Create the SSH user '$GIT_USER' first.\\\" >&2; exit 1; }\\ncase \\\"$PORT\\\" in *[!0-9]*|'') echo \\\"PORT must be numeric.\\\" >&2; exit 1;; esac\\n\\ninstall -d -o \\\"$GIT_USER\\\" -g \\\"$(id -gn \\\"$GIT_USER\\\")\\\" \\\"$REPO\\\" \\\"$WEB_ROOT\\\"\\nif [ ! -f \\\"$REPO/HEAD\\\" ]; then\\n  git init --bare --initial-branch=master \\\"$REPO\\\"\\nfi\\n\\nHOOK=\\\"$REPO/hooks/post-receive\\\"\\ncat > \\\"$HOOK\\\" <<'HOOK_EOF'\\n#!/bin/sh\\nset -eu\\nrepo=$(git rev-parse --show-toplevel)\\nweb_root=${WEB_ROOT:-/var/www/git-server}\\nwhile read -r oldrev newrev refname; do\\n  [ \\\"$refname\\\" = refs/heads/master ] || continue\\n  [ \\\"$newrev\\\" != 0000000000000000000000000000000000000000 ] || continue\\n  tmp=$(mktemp -d \\\"${web_root}.deploy.XXXXXX\\\")\\n  trap 'rm -rf \\\"$tmp\\\"' EXIT HUP INT TERM\\n  git --git-dir=\\\"$repo\\\" archive \\\"$newrev\\\" | tar -x -C \\\"$tmp\\\"\\n  find \\\"$web_root\\\" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +\\n  cp -a \\\"$tmp\\\"/. \\\"$web_root\\\"/\\n  rm -rf \\\"$tmp\\\"\\n  trap - EXIT HUP INT TERM\\ndone\\nHOOK_EOF\\nchmod 0755 \\\"$HOOK\\\"\\nchown \\\"$GIT_USER:$(id -gn \\\"$GIT_USER\\\")\\\" \\\"$HOOK\\\"\\n\\ncat > \\\"/etc/systemd/system/$SERVICE.service\\\" <<UNIT_EOF\\n[Unit]\\nDescription=Static web server for Git-published site\\nAfter=network.target\\n\\n[Service]\\nType=simple\\nUser=$GIT_USER\\nGroup=$(id -gn \\\"$GIT_USER\\\")\\nWorkingDirectory=$WEB_ROOT\\nExecStart=$(command -v python3) -m http.server $PORT --bind 0.0.0.0 --directory $WEB_ROOT\\nRestart=on-failure\\nNoNewPrivileges=true\\nProtectSystem=full\\nProtectHome=true\\n\\n[Install]\\nWantedBy=multi-user.target\\nUNIT_EOF\\n\\nsystemctl daemon-reload\\nsystemctl enable --now \\\"$SERVICE.service\\\"\\necho \\\"Ready: ssh://$GIT_USER@<server>:$REPO and http://<server>:$PORT/\\\"\\necho \\\"Clone with: git clone $GIT_USER@<server>:$REPO\\\"\\necho \\\"Push the master branch; its contents publish to $WEB_ROOT.\\\"\\nEOF\\nchmod +x setup-git-web.sh\\ncat > README.md <<'EOF'\\n# Git-pushed static web server\\n\\nRun `sudo ./setup-git-web.sh` on a Linux server with Git, Python 3, systemd, and an existing SSH user named `git`. Set `GIT_USER`, `REPO`, `WEB_ROOT`, `PORT`, or `SERVICE` in the environment to override defaults. The installer creates a bare repository at `/git/server`, installs a post-receive hook that publishes the `master` branch, and enables a static HTTP service on port 8080.\\n\\nThe server's SSH account and access control are intentionally left to the operator. Ensure the account can use Git over SSH and that firewall rules allow TCP port 8080. Do not expose the repository's filesystem as the web root; only the checked-out `master` tree is served.\\n\\nFrom a client:\\n\\n```sh\\ngit clone git@server:/git/server\\ncd server\\necho \\\"hello world\\\" > hello.html\\ngit add hello.html\\ngit commit -m \\\"add hello.html\\\"\\ngit push origin master\\ncurl http://server:8080/hello.html\\n```\\n\\nThe response is `hello world`. Only updates to `master` publish; pushes to other branches do not change the site. A deleted `master` ref is ignored, preserving the last published site. Existing content in the configured web root is replaced on each successful master push.\\nEOF\\nsh -n setup-git-web.sh && ls -l setup-git-web.sh README.md\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_0acb563bbc956e1c016ae66685095087d0ad090e173a67361b",
+    "model": "gpt-6-luna",
+    "created": 1793484421,
+    "usage": {
+      "prompt_tokens": 28513,
+      "completion_tokens": 1148,
+      "total_tokens": 29661,
+      "prompt_tokens_details": {
+        "cached_tokens": 28092
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0acb563bbc956e1c016ae66685095087d0ad090e173a67361b",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 28513,
+      "completion_tokens": 1148,
+      "total_tokens": 29661,
+      "prompt_tokens_details": {
+        "cached_tokens": 28092
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 28513,
+    "completion_tokens": 1148,
+    "reported_completion_tokens": 1148,
+    "reasoning_tokens": null,
+    "cached_tokens": 28092,
+    "cache_write_tokens": null,
+    "ttft_ms": 1776.0946670314297,
+    "latency_ms": 10280.209792021196,
+    "output_tokens_per_s": 111.67087279590345,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 134.9934688238809,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00089702,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "c7ef8f2b-5e6e-4d73-89a3-f5ff7403527a",
+    "decision_id": "c7ef8f2b-5e6e-4d73-89a3-f5ff7403527a-3",
+    "router_checkpoint_id": "epoch_01",
+    "router_family": "laya",
+    "router_run_id": "F05",
+    "router_identity_source": "http://127.0.0.1:8000/models",
+    "router_identity_status": "SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE",
+    "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

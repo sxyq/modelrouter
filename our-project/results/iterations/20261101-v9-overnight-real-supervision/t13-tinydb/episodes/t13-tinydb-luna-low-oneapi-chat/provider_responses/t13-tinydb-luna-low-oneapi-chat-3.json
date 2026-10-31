@@ -1,0 +1,105 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "",
+          "reasoning_content": "**Looking into testing needs**\n\nI need to gather some information on patch tests to ensure they’re done properly. It seems I should check existing conventions in the test section to see what’s already been established. Doing this will help me understand what's required and avoid missed steps. I'll make sure to document my findings thoroughly so that everything is clear moving forward. It looks like I have a solid plan to get this organized!",
+          "tool_calls": [
+            {
+              "id": "call_uFww8DEL9MG4CMx4E9ocyNqY",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cd /testbed && grep -n \\\"or\\\\|invert\\\\|and\\\\|QueryInstance\\\" tests/test_queries.py | head -60 && sed -n '1,180p' tests/test_queries.py\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_03a22102b8f60ff6016ae65613e78087d08e32a776264dba0a",
+    "model": "gpt-6-luna",
+    "created": 1793480213,
+    "usage": {
+      "prompt_tokens": 31600,
+      "completion_tokens": 76,
+      "total_tokens": 31676,
+      "prompt_tokens_details": {
+        "cached_tokens": 28252
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 14
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_03a22102b8f60ff6016ae65613e78087d08e32a776264dba0a",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 31600,
+      "completion_tokens": 76,
+      "total_tokens": 31676,
+      "prompt_tokens_details": {
+        "cached_tokens": 28252
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 14
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 31600,
+    "completion_tokens": 76,
+    "reported_completion_tokens": 76,
+    "reasoning_tokens": 14,
+    "cached_tokens": 28252,
+    "cache_write_tokens": null,
+    "ttft_ms": 3637.897290987894,
+    "latency_ms": 3725.9554999764077,
+    "output_tokens_per_s": 20.39745241200042,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 863.0654753597514,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00065532,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t13-tinydb-luna-low-oneapi-chat",
+    "decision_id": "t13-tinydb-luna-low-oneapi-chat-3",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

@@ -1,0 +1,61 @@
+diff --git a/autograd/scipy/linalg.py b/autograd/scipy/linalg.py
+index dbeaf41..cca6430 100644
+--- a/autograd/scipy/linalg.py
++++ b/autograd/scipy/linalg.py
+@@ -133,14 +133,15 @@ def _vjp_sylvester(argnums, ans, args, _):
+ 
+     def vjp(g):
+         q_vjp = solve_sylvester(anp.transpose(a), anp.transpose(b), g)
+-        if 2 in argnums:
+-            vjps.append(q_vjp)
+-        return tuple(vjps)
+-        if 1 in argnums:
+-            vjps.append(-anp.dot(anp.transpose(ans), q_vjp))
+         vjps = []
+         if 0 in argnums:
+             vjps.append(-anp.dot(q_vjp, anp.transpose(ans)))
++        if 1 in argnums:
++            vjps.append(-anp.dot(anp.transpose(ans), q_vjp))
++        if 2 in argnums:
++            vjps.append(q_vjp)
++        return tuple(vjps)
++
+     return vjp
+ 
+ 
+diff --git a/tests/test_scipy.py b/tests/test_scipy.py
+index ba563ef..8fd594d 100644
+--- a/tests/test_scipy.py
++++ b/tests/test_scipy.py
+@@ -1,6 +1,7 @@
+ from functools import partial
+ 
+ import numpy as npo
++import pytest
+ 
+ try:
+     import scipy
+@@ -433,5 +434,23 @@ else:
+             [R(3, 3)], [R(3, 3)], [R(3, 3)]
+         )
+ 
++    @pytest.mark.parametrize("argnums", [0, 1, 2, (0, 1), (0, 2), (1, 2), (0, 1, 2), (2, 0, 1)])
++    def test_solve_sylvester_grad(argnums):
++        a = np.array([[1.0, 2.0], [3.0, 4.0]])
++        b = np.array([[5.0, 6.0], [7.0, 8.0]])
++        q = np.array([[9.0, 10.0], [11.0, 12.0]])
++
++        def fun(a, b, q):
++            return np.sum(spla.solve_sylvester(a, b, q))
++
++        check_grads(fun, argnums, modes=["rev", "fwd"], order=2)(a, b, q)
++
++    @pytest.mark.parametrize("m,n", [(1, 1), (2, 3), (3, 2)])
++    def test_solve_sylvester_shapes(m, n):
++        a = R(m, m) + 4.0 * np.eye(m)
++        b = R(n, n) + 4.0 * np.eye(n)
++        q = R(m, n)
++        check_grads(spla.solve_sylvester, [0, 1, 2], modes=["rev", "fwd"], order=2)(a, b, q)
++
+     def test_solve_banded():
+         combo_check(spla.solve_banded, [1, 2], modes=["rev"], order=1)([(1, 1)], [R(3, 5)], [R(5)])

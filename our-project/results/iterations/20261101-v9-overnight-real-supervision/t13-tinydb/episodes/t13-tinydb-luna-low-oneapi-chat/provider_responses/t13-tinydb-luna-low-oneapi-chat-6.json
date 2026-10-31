@@ -1,0 +1,98 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "Confirmed the three existing AND cases fail. I’m adding `__and__` alongside `__or__`, preserving commutative cache hashes and non-cacheable behavior.",
+          "tool_calls": [
+            {
+              "id": "call_WXIE6LtkPZLY2j9laHDNbXjh",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cd /testbed && apply_patch <<'PATCH'\\n*** Begin Patch\\n*** Update File: tinydb/queries.py\\n@@\\n     def __or__(self, other: 'QueryInstance') -> 'QueryInstance':\\n@@\\n         else:\\n             hashval = None\\n         return QueryInstance(lambda value: self(value) or other(value), hashval)\\n+\\n+    def __and__(self, other: 'QueryInstance') -> 'QueryInstance':\\n+        # AND is commutative, so use an unordered hash representation.\\n+        if self.is_cacheable() and other.is_cacheable():\\n+            hashval = ('and', frozenset([self._hash, other._hash]))\\n+        else:\\n+            hashval = None\\n+        return QueryInstance(lambda value: self(value) and other(value), hashval)\\n \\n     def __invert__(self) -> 'QueryInstance':\\n*** End Patch\\nPATCH\\npython - <<'PY'\\nfrom tinydb import TinyDB, Query\\nfrom tinydb.queries import QueryInstance\\nfrom tinydb.storages import MemoryStorage\\n\\ndb = TinyDB(storage=MemoryStorage)\\nUser = Query()\\ndb.insert_multiple([{'age': 20, 'name': 'John'}, {'age': 17, 'name': 'John'}, {'age': 21, 'name': 'Jane'}])\\nassert len(db.search((User.age > 18) & (User.name == 'John'))) == 1\\nq = Query()\\nassert (q.value.exists() & (q.value == 5))({'value': 5})\\nassert not (q.value.exists() & (q.value == 5))({})\\nassert ((~(q.value == 1)) & (q.value == 5))({'value': 5})\\nassert not ((~(q.value == 1)) & (q.value == 5))({'value': 1})\\n# Uncacheable instances remain uncacheable and retain short-circuit evaluation.\\na = QueryInstance(lambda value: False, None)\\nb = QueryInstance(lambda value: (_ for _ in ()).throw(AssertionError()), None)\\ncombined = a & b\\nassert not combined({}) and not combined.is_cacheable()\\nprint('reproduction and edge checks passed')\\nPY\\npytest -q tests/test_queries.py\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_029b031c99c82327016ae6561fbe0c87d0b7e981933825104b",
+    "model": "gpt-6-luna",
+    "created": 1793480225,
+    "usage": {
+      "prompt_tokens": 35463,
+      "completion_tokens": 573,
+      "total_tokens": 36036,
+      "prompt_tokens_details": {
+        "cached_tokens": 34515
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_029b031c99c82327016ae6561fbe0c87d0b7e981933825104b",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 35463,
+      "completion_tokens": 573,
+      "total_tokens": 36036,
+      "prompt_tokens_details": {
+        "cached_tokens": 34515
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 35463,
+    "completion_tokens": 573,
+    "reported_completion_tokens": 573,
+    "reasoning_tokens": null,
+    "cached_tokens": 34515,
+    "cache_write_tokens": null,
+    "ttft_ms": 3627.0520410034806,
+    "latency_ms": 6731.796915992163,
+    "output_tokens_per_s": 85.11843229239018,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 184.5562270239962,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00072645,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "t13-tinydb-luna-low-oneapi-chat",
+    "decision_id": "t13-tinydb-luna-low-oneapi-chat-6",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

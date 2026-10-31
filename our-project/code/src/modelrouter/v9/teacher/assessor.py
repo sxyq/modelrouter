@@ -55,7 +55,7 @@ class TrajectoryAssessor:
         started = time.perf_counter()
         alias_mapping = getattr(self.provider, "alias_mapping", None)
         backend_model_id = alias_mapping.backend_model_id if alias_mapping else None
-        effective_effort = alias_mapping.effective_native_effort if alias_mapping else self.native_effort
+        effective_effort = alias_mapping.effective_native_effort if alias_mapping else None
         execution_mode = "TEACHER_ALIAS_SMOKE" if alias_mapping else "TEACHER"
         metrics = {
             "role": "teacher", "episode_id": state.episode_id,

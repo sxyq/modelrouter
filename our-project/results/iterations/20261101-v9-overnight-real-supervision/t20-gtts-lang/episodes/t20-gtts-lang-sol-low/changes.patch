@@ -1,0 +1,155 @@
+diff --git a/gtts/lang.py b/gtts/lang.py
+index 6689305..ea94824 100644
+--- a/gtts/lang.py
++++ b/gtts/lang.py
+@@ -72,20 +72,6 @@ def _fallback_deprecated_lang(lang):
+ 
+     """
+ 
+-    for fallback_lang, deprecated_langs in deprecated.items():
+-        if lang.lower() in deprecated_langs:
+-            msg = (
+-                "'{}' has been deprecated, falling back to '{}'. "
+-                "This fallback will be removed in a future version."
+-            ).format(lang, fallback_lang)
+-
+-            warn(msg, DeprecationWarning)
+-            log.warning(msg)
+-
+-            return fallback_lang
+-
+-    return lang
+-
+     deprecated = {
+         # '<fallback>': [<list of deprecated langs>]
+         "en": [
+@@ -108,4 +94,18 @@ def _fallback_deprecated_lang(lang):
+         "es": ["es-es", "es-us"],
+         "zh-CN": ["zh-cn"],
+         "zh-TW": ["zh-tw"],
+-    }
+\ No newline at end of file
++    }
++
++    for fallback_lang, deprecated_langs in deprecated.items():
++        if lang.lower() in deprecated_langs:
++            msg = (
++                "'{}' has been deprecated, falling back to '{}'. "
++                "This fallback will be removed in a future version."
++            ).format(lang, fallback_lang)
++
++            warn(msg, DeprecationWarning)
++            log.warning(msg)
++
++            return fallback_lang
++
++    return lang
+diff --git a/gtts/tests/test_lang.py b/gtts/tests/test_lang.py
+index e7a2b09..9aa26dc 100644
+--- a/gtts/tests/test_lang.py
++++ b/gtts/tests/test_lang.py
+@@ -1,4 +1,5 @@
+ # -*- coding: utf-8 -*-
++import warnings
+ import pytest
+ from gtts.lang import tts_langs, _extra_langs, _fallback_deprecated_lang
+ from gtts.langs import _main_langs
+@@ -13,10 +14,47 @@ def test_main_langs():
+     assert "en" in scraped_langs
+ 
+ 
+-def test_deprecated_lang():
+-    """Test language deprecation fallback"""
+-    with pytest.deprecated_call():
+-        assert _fallback_deprecated_lang("en-gb") == "en"
++@pytest.mark.parametrize(
++    "lang, fallback_lang",
++    [
++        ("en-us", "en"),
++        ("en-ca", "en"),
++        ("en-uk", "en"),
++        ("en-gb", "en"),
++        ("en-au", "en"),
++        ("en-gh", "en"),
++        ("en-in", "en"),
++        ("en-ie", "en"),
++        ("en-nz", "en"),
++        ("en-ng", "en"),
++        ("en-ph", "en"),
++        ("en-za", "en"),
++        ("en-tz", "en"),
++        ("fr-fr", "fr"),
++        ("pt-br", "pt"),
++        ("pt-pt", "pt"),
++        ("es-es", "es"),
++        ("es-us", "es"),
++        ("zh-cn", "zh-CN"),
++        ("zh-tw", "zh-TW"),
++    ],
++)
++@pytest.mark.parametrize(
++    "case", [str.lower, str.upper, str.title], ids=["lowercase", "uppercase", "mixed-case"]
++)
++def test_deprecated_lang(lang, fallback_lang, case):
++    """Test language deprecation fallback regardless of case"""
++    with pytest.deprecated_call(match="falling back to '{}'".format(fallback_lang)):
++        assert _fallback_deprecated_lang(case(lang)) == fallback_lang
++
++
++@pytest.mark.parametrize("lang", ["en", "fr", "pt", "es", "zh", "xx", "EN", ""])
++def test_non_deprecated_lang(lang):
++    """Non-deprecated language tags are returned as-is without warnings"""
++    with warnings.catch_warnings(record=True) as caught:
++        warnings.simplefilter("always")
++        assert _fallback_deprecated_lang(lang) == lang
++    assert not caught
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/gtts/tests/test_tts.py b/gtts/tests/test_tts.py
+index a30c598..b7153e0 100644
+--- a/gtts/tests/test_tts.py
++++ b/gtts/tests/test_tts.py
+@@ -1,5 +1,6 @@
+ # -*- coding: utf-8 -*-
+ import os
++import warnings
+ import pytest
+ from unittest.mock import Mock
+ 
+@@ -64,6 +65,35 @@ def test_unsupported_language_check():
+         gTTS(text=text, lang=lang, lang_check=check)
+ 
+ 
++@pytest.mark.parametrize(
++    "lang, fallback_lang",
++    [
++        ("en-gb", "en"),
++        ("fr-fr", "fr"),
++        ("pt-br", "pt"),
++        ("es-es", "es"),
++        ("es-us", "es"),
++        ("zh-cn", "zh-CN"),
++        ("zh-tw", "zh-TW"),
++    ],
++)
++def test_deprecated_language_check(lang, fallback_lang):
++    """Deprecated language codes fall back during gTTS initialization"""
++    with pytest.deprecated_call(match="falling back to '{}'".format(fallback_lang)):
++        tts = gTTS(text="Hello world", lang=lang)
++    assert tts.lang == fallback_lang
++
++
++@pytest.mark.parametrize("lang", ["en-gb", "es-es", "zh-cn", "zh-tw", "xx"])
++def test_language_check_disabled(lang):
++    """Disabling language checks preserves the code without deprecation warnings"""
++    with warnings.catch_warnings(record=True) as caught:
++        warnings.simplefilter("always")
++        tts = gTTS(text="Hello world", lang=lang, lang_check=False)
++    assert tts.lang == lang
++    assert not caught
++
++
+ def test_empty_string():
+     """Raise AssertionError on empty string"""
+     text = ""

@@ -1,0 +1,103 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "sg_call_4feac3bce06da_0",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cat > /app/filter.py <<'PY'\\n#!/usr/bin/env python3\\n\\\"\\\"\\\"Remove executable JavaScript from an HTML file in place.\\\"\\\"\\\"\\nimport sys\\nfrom html.parser import HTMLParser\\nfrom pathlib import Path\\n\\n\\nclass JavaScriptFilter(HTMLParser):\\n    VOID_ELEMENTS = {\\n        \\\"area\\\", \\\"base\\\", \\\"br\\\", \\\"col\\\", \\\"embed\\\", \\\"hr\\\", \\\"img\\\", \\\"input\\\",\\n        \\\"link\\\", \\\"meta\\\", \\\"param\\\", \\\"source\\\", \\\"track\\\", \\\"wbr\\\",\\n    }\\n\\n    def __init__(self):\\n        super().__init__(convert_charrefs=False)\\n        self.output = []\\n        self.drop_script = 0\\n        self.drop_textarea = 0\\n\\n    @staticmethod\\n    def _js_url(value):\\n        if value is None:\\n            return False\\n        # Ignore whitespace and control characters often used to obscure the scheme.\\n        compact = \\\"\\\".join(ch for ch in value if ord(ch) > 32 and ord(ch) != 127)\\n        return compact.lower().startswith(\\\"javascript:\\\")\\n\\n    def handle_starttag(self, tag, attrs):\\n        tag_lower = tag.lower()\\n        if self.drop_script:\\n            if tag_lower == \\\"script\\\":\\n                self.drop_script += 1\\n            return\\n        if self.drop_textarea:\\n            if tag_lower == \\\"textarea\\\":\\n                self.drop_textarea += 1\\n            return\\n        if tag_lower == \\\"script\\\":\\n            self.drop_script = 1\\n            return\\n        kept = []\\n        for name, value in attrs:\\n            lname = name.lower()\\n            if lname.startswith(\\\"on\\\") or self._js_url(value):\\n                continue\\n            kept.append((name, value))\\n        self.output.append(\\\"<\\\" + tag)\\n        for name, value in kept:\\n            self.output.append(\\\" \\\" + name)\\n            if value is not None:\\n                escaped = value.replace(\\\"&\\\", \\\"&amp;\\\").replace('\\\"', \\\"&quot;\\\")\\n                self.output.append('=\\\"' + escaped + '\\\"')\\n        self.output.append(\\\">\\\")\\n\\n    def handle_startendtag(self, tag, attrs):\\n        tag_lower = tag.lower()\\n        if self.drop_script or self.drop_textarea or tag_lower == \\\"script\\\":\\n            return\\n        kept = [(n, v) for n, v in attrs\\n                if not n.lower().startswith(\\\"on\\\") and not self._js_url(v)]\\n        self.output.append(\\\"<\\\" + tag)\\n        for name, value in kept:\\n            self.output.append(\\\" \\\" + name)\\n            if value is not None:\\n                escaped = value.replace(\\\"&\\\", \\\"&amp;\\\").replace('\\\"', \\\"&quot;\\\")\\n                self.output.append('=\\\"' + escaped + '\\\"')\\n        self.output.append(\\\" />\\\")\\n\\n    def handle_endtag(self, tag):\\n        tag_lower = tag.lower()\\n        if self.drop_script:\\n            if tag_lower == \\\"script\\\":\\n                self.drop_script -= 1\\n            return\\n        if self.drop_textarea:\\n            if tag_lower == \\\"textarea\\\":\\n                self.drop_textarea -= 1\\n            return\\n        if tag_lower == \\\"textarea\\\":\\n            self.output.append(\\\"</\\\" + tag + \\\">\\\")\\n            return\\n        self.output.append(\\\"</\\\" + tag + \\\">\\\")\\n\\n    def handle_data(self, data):\\n        if not self.drop_script and not self.drop_textarea:\\n            self.output.append(data)\\n\\n    def handle_entityref(self, name):\\n        if not self.drop_script and not self.drop_textarea:\\n            self.output.append(\\\"&\\\" + name + \\\";\\\")\\n\\n    def handle_charref(self, name):\\n        if not self.drop_script and not self.drop_textarea:\\n            self.output.append(\\\"&#\\\" + name + \\\";\\\")\\n\\n    def handle_comment(self, data):\\n        if not self.drop_script and not self.drop_textarea:\\n            self.output.append(\\\"<!--\\\" + data + \\\"-->\\\")\\n\\n    def handle_decl(self, decl):\\n        if not self.drop_script and not self.drop_textarea:\\n            self.output.append(\\\"<!\\\" + decl + \\\">\\\")\\n\\n    def handle_pi(self, data):\\n        if not self.drop_script and not self.drop_textarea:\\n            self.output.append(\\\"<?\\\" + data + \\\">\\\")\\n\\n\\ndef main():\\n    path = Path(sys.argv[1])\\n    text = path.read_text(encoding=\\\"utf-8\\\")\\n    parser = JavaScriptFilter()\\n    parser.feed(text)\\n    parser.close()\\n    path.write_text(\\\"\\\".join(parser.output), encoding=\\\"utf-8\\\")\\n\\n\\nif __name__ == \\\"__main__\\\":\\n    main()\\nPY\\npython3 - <<'PY'\\nimport pathlib, subprocess, tempfile\\np=pathlib.Path('/tmp/filter-test.html')\\np.write_text('<!doctype html><table onclick=\\\"x\\\"><tr><td>ok<script>alert(1)</script><a href=\\\"javascript:alert(1)\\\" title=\\\"x\\\">link</a><img src=\\\"x\\\" onerror=\\\"x\\\"></td></tr></table>')\\nsubprocess.run(['python3','/app/filter.py',str(p)],check=True)\\nprint(p.read_text())\\nPY\\n\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_route_6c4ff924740d46d0901d434ee3cfe564",
+    "model": "gpt-6-luna",
+    "created": 1793485661,
+    "usage": {
+      "prompt_tokens": 987,
+      "completion_tokens": 1465,
+      "total_tokens": 2452,
+      "completion_tokens_details": {
+        "reasoning_tokens": 250
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_6c4ff924740d46d0901d434ee3cfe564",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 987,
+      "completion_tokens": 1465,
+      "total_tokens": 2452,
+      "completion_tokens_details": {
+        "reasoning_tokens": 250
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 987,
+    "completion_tokens": 1465,
+    "reported_completion_tokens": 1465,
+    "reasoning_tokens": 250,
+    "cached_tokens": null,
+    "cache_write_tokens": null,
+    "ttft_ms": 1952.9351660166867,
+    "latency_ms": 21360.671875008848,
+    "output_tokens_per_s": 68.58398502502128,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 75.48536039863028,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0008312,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "b5fe1aff-ef16-4db5-9712-de910fce891e",
+    "decision_id": "b5fe1aff-ef16-4db5-9712-de910fce891e-1",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

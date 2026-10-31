@@ -1,0 +1,34 @@
+F....................................................................... [ 62%]
+............................................                             [100%]
+=================================== FAILURES ===================================
+____ test_optional_callable_default_ignore_inherited_schema_validate_kwargs ____
+
+    def test_optional_callable_default_ignore_inherited_schema_validate_kwargs():
+        def convert(data, increment):
+            if isinstance(data, int):
+                return data + increment
+            return data
+    
+        s = {"k": int, "d": {Optional("k", default=lambda: 42): int, "l": [{"l": [int]}]}}
+        v = {"k": 1, "d": {"l": [{"l": [3, 4, 5]}]}}
+>       d = Schema(s).validate(v, increment=1)
+
+test_schema.py:835: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+schema/__init__.py:483: in validate
+    nvalue = Schema(
+schema/__init__.py:527: in validate
+    _invoke_with_optional_kwargs(default.default, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = <function test_optional_callable_default_ignore_inherited_schema_validate_kwargs.<locals>.<lambda> at 0x7ffffdf436d0>
+kwargs = {'increment': 1}
+
+    def _invoke_with_optional_kwargs(f: Callable[..., Any], **kwargs: Any) -> Any:
+>       return f(**kwargs)
+E       TypeError: test_optional_callable_default_ignore_inherited_schema_validate_kwargs.<locals>.<lambda>() got an unexpected keyword argument 'increment'
+
+schema/__init__.py:344: TypeError
+=========================== short test summary info ============================
+FAILED test_schema.py::test_optional_callable_default_ignore_inherited_schema_validate_kwargs
+1 failed, 115 passed in 0.15s

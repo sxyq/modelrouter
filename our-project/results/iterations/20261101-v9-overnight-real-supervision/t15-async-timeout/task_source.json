@@ -1,0 +1,51 @@
+{
+  "dataset": "SWE-bench/SWE-smith",
+  "source_id": "TRA-002",
+  "split": "train",
+  "metadata_origin": "PUBLIC_PRIMARY_TASK_PARQUET_0004",
+  "source_metadata_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith/resolve/refs%2Fconvert%2Fparquet/default/train/0004.parquet",
+  "source_raw_asset": "TRA-002_SWE-smith/task-metadata-0004.parquet",
+  "record": {
+    "instance_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+    "patch": "diff --git a/async_timeout/__init__.py b/async_timeout/__init__.py\nindex fe4aa58..799b3d0 100644\n--- a/async_timeout/__init__.py\n+++ b/async_timeout/__init__.py\n@@ -214,7 +214,7 @@ else:\n                 raise RuntimeError(\"cannot shift timeout if deadline is not scheduled\")\n             self.update(deadline + delay)\n \n-        def update(self, deadline: float) -> None:\n+        def update(self, deadline: float) ->None:\n             \"\"\"Set deadline to absolute value.\n \n             deadline argument points on the time in the same clock system\n@@ -225,16 +225,12 @@ else:\n             Please note: it is not POSIX time but a time with\n             undefined starting base, e.g. the time of the system power on.\n             \"\"\"\n-            if self._state == _State.EXIT:\n-                raise RuntimeError(\"cannot reschedule after exit from context manager\")\n-            if self._state == _State.TIMEOUT:\n-                raise RuntimeError(\"cannot reschedule expired timeout\")\n-            if self._timeout_handler is not None:\n-                self._timeout_handler.cancel()\n+            if self._state not in (_State.INIT, _State.ENTER):\n+                raise RuntimeError(f\"invalid state {self._state.value}\")\n+    \n             self._deadline = deadline\n-            if self._state != _State.INIT:\n+            if self._state == _State.ENTER:\n                 self._reschedule()\n-\n         def _reschedule(self) -> None:\n             assert self._state == _State.ENTER\n             deadline = self._deadline\n",
+    "FAIL_TO_PASS": [
+      "tests/test_timeout.py::test_shift_by_expired",
+      "tests/test_timeout.py::test_shift_to_expired",
+      "tests/test_timeout.py::test_shift_by_after_cm_exit"
+    ],
+    "PASS_TO_PASS": [
+      "tests/test_timeout.py::test_timeout",
+      "tests/test_timeout.py::test_timeout_finish_in_time",
+      "tests/test_timeout.py::test_timeout_disable",
+      "tests/test_timeout.py::test_timeout_is_none_no_schedule",
+      "tests/test_timeout.py::test_timeout_no_loop",
+      "tests/test_timeout.py::test_timeout_zero",
+      "tests/test_timeout.py::test_timeout_not_relevant_exception",
+      "tests/test_timeout.py::test_timeout_canceled_error_is_not_converted_to_timeout",
+      "tests/test_timeout.py::test_timeout_blocking_loop",
+      "tests/test_timeout.py::test_for_race_conditions",
+      "tests/test_timeout.py::test_timeout_time",
+      "tests/test_timeout.py::test_outer_coro_is_not_cancelled",
+      "tests/test_timeout.py::test_cancel_outer_coro",
+      "tests/test_timeout.py::test_timeout_suppress_exception_chain",
+      "tests/test_timeout.py::test_timeout_expired",
+      "tests/test_timeout.py::test_timeout_inner_timeout_error",
+      "tests/test_timeout.py::test_timeout_inner_other_error",
+      "tests/test_timeout.py::test_timeout_at",
+      "tests/test_timeout.py::test_timeout_at_not_fired",
+      "tests/test_timeout.py::test_expired_after_rejecting",
+      "tests/test_timeout.py::test_reject_finished",
+      "tests/test_timeout.py::test_expired_after_timeout",
+      "tests/test_timeout.py::test_deadline",
+      "tests/test_timeout.py::test_async_timeout",
+      "tests/test_timeout.py::test_async_no_timeout",
+      "tests/test_timeout.py::test_shift",
+      "tests/test_timeout.py::test_shift_nonscheduled",
+      "tests/test_timeout.py::test_shift_negative_expired",
+      "tests/test_timeout.py::test_enter_twice"
+    ],
+    "image_name": "jyangballin/swesmith.x86_64.aio-libs_1776_async-timeout.d0baa9f1",
+    "repo": "swesmith/aio-libs__async-timeout.d0baa9f1",
+    "problem_statement": "# Cannot reschedule timeout after exit or expiration\n\n```\n>>> import asyncio\n>>> from async_timeout import timeout\n>>> \n>>> async def main():\n...     try:\n...         async with timeout(0.1) as t:\n...             await asyncio.sleep(0.2)  # This will cause timeout to expire\n...     except asyncio.TimeoutError:\n...         print(\"Timeout occurred\")\n...         try:\n...             # Try to shift the timeout after it has expired\n...             t.shift(1.0)\n...             print(\"Shift succeeded unexpectedly\")\n...         except RuntimeError as e:\n...             print(f\"Error: {e}\")  # Should get error about expired timeout\n... \n>>> asyncio.run(main())\nTimeout occurred\nError: invalid state TIMEOUT\n```\n\nThe error message is incorrect. When trying to shift or update a timeout after it has expired or after exiting the context manager, we get a generic \"invalid state\" error instead of the specific error message that explains what went wrong.\n\nPreviously, we would get clear error messages like \"cannot reschedule expired timeout\" or \"cannot reschedule after exit from context manager\", which were much more helpful for debugging.\n\nThis affects both the `shift()` and `update()` methods when called after a timeout has expired or after exiting the context manager."
+  }
+}

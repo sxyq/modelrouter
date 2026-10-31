@@ -1,0 +1,86 @@
+diff --git a/src/prettytable/prettytable.py b/src/prettytable/prettytable.py
+index 87db417..7486a5b 100644
+--- a/src/prettytable/prettytable.py
++++ b/src/prettytable/prettytable.py
+@@ -1617,13 +1617,14 @@ class PrettyTable:
+ 
+         fieldname - name of the field to contain the new column of data
+         column - column of data, should be a list with as many elements as the
+-        table has rows
++        table has rows. If the table has no rows, new rows are created to match
++        the column length
+         align - desired alignment for this column - "l" for left, "c" for centre and
+             "r" for right
+         valign - desired vertical alignment for new columns - "t" for top,
+             "m" for middle and "b" for bottom"""
+ 
+-        if len(self._rows) in (0, len(column)):
++        if len(self._rows) not in (0, len(column)):
+             msg = (
+                 f"Column length {len(column)} does not match number of rows "
+                 f"{len(self._rows)}"
+@@ -1640,6 +1641,7 @@ class PrettyTable:
+                     self._rows.append([])
+                     self._dividers.append(False)
+                 self._rows[i].append(column[i])
++
+     def add_autoindex(self, fieldname: str = "Index") -> None:
+         """Add an auto-incrementing index column to the table.
+         Arguments:
+diff --git a/tests/test_prettytable.py b/tests/test_prettytable.py
+index 75254ca..486d5a7 100644
+--- a/tests/test_prettytable.py
++++ b/tests/test_prettytable.py
+@@ -267,6 +267,52 @@ class TestBuildEquivalence:
+         assert left_hand.get_latex_string() == right_hand.get_latex_string()
+ 
+ 
++class TestAddColumn:
++    @pytest.mark.parametrize(
++        "column", [[], ["Value 1"], ["Value 1", "Value 2", "Value 3"]]
++    )
++    def test_add_column_to_empty_table(self, column: list[str]) -> None:
++        table = PrettyTable()
++
++        table.add_column("Column 1", column)
++
++        assert table.field_names == ["Column 1"]
++        assert table.rows == [[value] for value in column]
++        assert table.dividers == [False] * len(column)
++        assert table.align["Column 1"] == "c"
++        assert table.valign["Column 1"] == "t"
++
++    def test_add_column_to_existing_rows(self) -> None:
++        table = PrettyTable(["Column 1"])
++        table.add_row(["Value 1"], divider=True)
++        table.add_row(["Value 2"])
++
++        table.add_column("Column 2", (1, 2), align="l", valign="b")
++
++        assert table.field_names == ["Column 1", "Column 2"]
++        assert table.rows == [["Value 1", 1], ["Value 2", 2]]
++        assert table.dividers == [True, False]
++        assert table.align["Column 2"] == "l"
++        assert table.valign["Column 2"] == "b"
++
++    @pytest.mark.parametrize("column", [[], [1], [1, 2, 3]])
++    def test_add_column_with_incorrect_length(self, column: list[int]) -> None:
++        table = PrettyTable(["Column 1"])
++        table.add_rows([["Value 1"], ["Value 2"]])
++
++        with pytest.raises(
++            ValueError,
++            match=f"Column length {len(column)} does not match number of rows 2",
++        ):
++            table.add_column("Column 2", column)
++
++        assert table.field_names == ["Column 1"]
++        assert table.rows == [["Value 1"], ["Value 2"]]
++        assert table.dividers == [False, False]
++        assert "Column 2" not in table.align
++        assert "Column 2" not in table.valign
++
++
+ class TestDeleteColumn:
+     def test_delete_column(self) -> None:
+         table = PrettyTable()

@@ -1,0 +1,43 @@
+{
+  "dataset": "SWE-bench/SWE-smith",
+  "source_id": "TRA-002",
+  "split": "train",
+  "metadata_origin": "PUBLIC_PRIMARY_TASK_PARQUET_0004",
+  "source_metadata_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith/resolve/refs%2Fconvert%2Fparquet/default/train/0004.parquet",
+  "source_raw_asset": "TRA-002_SWE-smith/task-metadata-0004.parquet",
+  "record": {
+    "instance_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+    "patch": "diff --git a/records.py b/records.py\nindex b5b6766..cc3a3a6 100644\n--- a/records.py\n+++ b/records.py\n@@ -376,27 +376,28 @@ class Connection(object):\n         Parameters can, optionally, be provided. Returns a RecordCollection,\n         which can be iterated over to get result rows as dictionaries.\n         \"\"\"\n-\n-        # Execute the given query.\n-        cursor = self._conn.execute(\n-            text(query).bindparams(**params)\n-        )  # TODO: PARAMS GO HERE\n-\n-        # Row-by-row Record generator.\n-        row_gen = iter(Record([], []))\n-\n-        if cursor.returns_rows:\n-            row_gen = (Record(cursor.keys(), row) for row in cursor)\n-\n-        # Convert psycopg2 results to RecordCollection.\n-        results = RecordCollection(row_gen)\n-\n-        # Fetch all results if desired.\n+        if not self.open:\n+            raise exc.ResourceClosedError(\"Connection is closed.\")\n+\n+        # Execute the query with parameters\n+        cursor = self._conn.execute(text(query), **params)\n+    \n+        # Get column names\n+        keys = cursor.keys()\n+    \n+        # Make a generator to iterate through results\n+        def generate_rows():\n+            for row in cursor:\n+                yield Record(keys, row)\n+    \n+        # Create a RecordCollection with the generator\n+        results = RecordCollection(generate_rows())\n+    \n+        # If fetchall is True, fetch all results immediately\n         if fetchall:\n             results.all()\n-\n+    \n         return results\n-\n     def bulk_query(self, query, *multiparams):\n         \"\"\"Bulk insert or update.\"\"\"\n \n",
+    "FAIL_TO_PASS": [
+      "tests/test_69.py::test_issue69[sqlite_memory]"
+    ],
+    "PASS_TO_PASS": [
+      "tests/test_records.py::TestRecordCollection::test_iter",
+      "tests/test_records.py::TestRecordCollection::test_next",
+      "tests/test_records.py::TestRecordCollection::test_iter_and_next",
+      "tests/test_records.py::TestRecordCollection::test_multiple_iter",
+      "tests/test_records.py::TestRecordCollection::test_slice_iter",
+      "tests/test_records.py::TestRecordCollection::test_all_returns_a_list_of_records",
+      "tests/test_records.py::TestRecordCollection::test_first_returns_a_single_record",
+      "tests/test_records.py::TestRecordCollection::test_first_defaults_to_None",
+      "tests/test_records.py::TestRecordCollection::test_first_default_is_overridable",
+      "tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_subclass",
+      "tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_instance",
+      "tests/test_records.py::TestRecordCollection::test_one_returns_a_single_record",
+      "tests/test_records.py::TestRecordCollection::test_one_defaults_to_None",
+      "tests/test_records.py::TestRecordCollection::test_one_default_is_overridable",
+      "tests/test_records.py::TestRecordCollection::test_one_raises_when_more_than_one",
+      "tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_subclass",
+      "tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_instance",
+      "tests/test_records.py::TestRecordCollection::test_scalar_returns_a_single_record",
+      "tests/test_records.py::TestRecordCollection::test_scalar_defaults_to_None",
+      "tests/test_records.py::TestRecordCollection::test_scalar_default_is_overridable",
+      "tests/test_records.py::TestRecordCollection::test_scalar_raises_when_more_than_one",
+      "tests/test_records.py::TestRecord::test_record_dir",
+      "tests/test_records.py::TestRecord::test_record_duplicate_column"
+    ],
+    "image_name": "jyangballin/swesmith.x86_64.kennethreitz_1776_records.5941ab27",
+    "repo": "swesmith/kennethreitz__records.5941ab27",
+    "problem_statement": "Query parameters not passed correctly when using named parameters\n\nDescription\n\nI noticed an issue when trying to use named parameters in queries. When passing parameters to the query method, they are not being correctly bound to the query.\n\nFor example:\n```python\ndb.query('SELECT * FROM users WHERE id = :user', user=\"Te'ArnaLambert\")\n```\n\nThis results in the following error:\n```\nsqlalchemy.exc.ResourceClosedError: Connection is closed.\n```\n\nThe issue seems to be related to how parameters are passed to the underlying SQLAlchemy text query. The parameters are not being properly bound to the query, causing the connection to be closed before the query can be executed.\n\nThis worked fine in previous versions, but after a recent update, it's now failing. The issue appears to be in the `query` method of the `Connection` class, where the parameters are not being correctly passed to the SQLAlchemy execute method.\n\nA simple reproduction case:\n```python\nimport records\n\ndb = records.Database('sqlite:///:memory:')\ndb.query('CREATE table users (id text)')\ndb.query('SELECT * FROM users WHERE id = :user', user=\"Te'ArnaLambert\")\n```"
+  }
+}
