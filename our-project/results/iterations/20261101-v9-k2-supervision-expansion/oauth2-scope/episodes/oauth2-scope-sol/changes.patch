@@ -1,0 +1,138 @@
+diff --git a/oauthlib/oauth2/rfc6749/utils.py b/oauthlib/oauth2/rfc6749/utils.py
+index c5db6ba..2456b45 100644
+--- a/oauthlib/oauth2/rfc6749/utils.py
++++ b/oauthlib/oauth2/rfc6749/utils.py
+@@ -15,8 +15,8 @@ def list_to_scope(scope):
+     """Convert a list of scopes to a space separated string."""
+     if isinstance(scope, str) or scope is None:
+         return scope
+-    elif isinstance(scope, (tuple, list)):
+-        return " ".join(str(s) for s in reversed(scope))
++    elif isinstance(scope, (tuple, list, set)):
++        return " ".join(str(s) for s in scope)
+     else:
+         raise ValueError("Invalid scope (%s), must be string, tuple, set, or list." % scope)
+ 
+@@ -24,9 +24,9 @@ def list_to_scope(scope):
+ def scope_to_list(scope):
+     """Convert a space separated string to a list of scopes."""
+     if isinstance(scope, (tuple, list, set)):
+-        return [s for s in scope]
++        return [str(s) for s in scope]
+     elif scope is None:
+-        return []
++        return None
+     else:
+         return scope.split()
+ 
+@@ -34,8 +34,7 @@ def scope_to_list(scope):
+ def params_from_uri(uri):
+     params = dict(urldecode(urlparse(uri).query))
+     if 'scope' in params:
+-        params['scope'] = scope_to_list(params['scope'][-1])
+-    params['timestamp'] = None
++        params['scope'] = scope_to_list(params['scope'])
+     return params
+ 
+ 
+diff --git a/tests/oauth2/rfc6749/test_utils.py b/tests/oauth2/rfc6749/test_utils.py
+index 8417fe5..ac30c82 100644
+--- a/tests/oauth2/rfc6749/test_utils.py
++++ b/tests/oauth2/rfc6749/test_utils.py
+@@ -55,6 +55,47 @@ class UtilsTests(TestCase):
+         self.assertEqual(params_from_uri('http://i.b/?foo=bar&g&scope=a+d'),
+                          {'foo': 'bar', 'g': '', 'scope': ['a', 'd']})
+ 
++    def test_params_from_uri_scope_order(self):
++        queries = (
++            'scope=read+write+admin',
++            'scope=read%20write%20admin',
++        )
++        for query in queries:
++            with self.subTest(query=query):
++                self.assertEqual(
++                    params_from_uri('http://example.com/?' + query),
++                    {'scope': ['read', 'write', 'admin']},
++                )
++
++    def test_params_from_uri_encoded_scope(self):
++        self.assertEqual(
++            params_from_uri('http://example.com/?scope=read%2Bwrite+admin'),
++            {'scope': ['read+write', 'admin']},
++        )
++
++    def test_params_from_uri_empty_scope(self):
++        for query in ('scope=', 'scope'):
++            with self.subTest(query=query):
++                self.assertEqual(
++                    params_from_uri('http://example.com/?' + query),
++                    {'scope': []},
++                )
++
++    def test_params_from_uri_without_scope(self):
++        self.assertEqual(params_from_uri('http://example.com/'), {})
++        self.assertEqual(
++            params_from_uri('http://example.com/?other=value'),
++            {'other': 'value'},
++        )
++
++    def test_params_from_uri_preserves_other_parameters(self):
++        self.assertEqual(
++            params_from_uri(
++                'http://example.com/?scope=read&other=value&timestamp=123'
++            ),
++            {'scope': ['read'], 'other': 'value', 'timestamp': '123'},
++        )
++
+     def test_generate_age(self):
+         issue_time = datetime.datetime.now() - datetime.timedelta(
+                 days=3, minutes=1, seconds=4)
+@@ -98,3 +139,48 @@ class UtilsTests(TestCase):
+         set_list_scopes = set(string_list_scopes)
+         set_list = scope_to_list(set_list_scopes)
+         self.assertEqual(sorted(set_list), sorted(string_list_scopes))
++
++    def test_none_scope(self):
++        self.assertIsNone(list_to_scope(None))
++        self.assertIsNone(scope_to_list(None))
++
++    def test_list_to_scope_string_passthrough(self):
++        for scope in ('', 'read write admin', ' read  write admin '):
++            with self.subTest(scope=scope):
++                self.assertEqual(list_to_scope(scope), scope)
++
++    def test_empty_scope(self):
++        for scope in ([], (), set()):
++            with self.subTest(scope=scope):
++                self.assertEqual(list_to_scope(scope), '')
++                self.assertEqual(scope_to_list(scope), [])
++        self.assertEqual(scope_to_list(''), [])
++        self.assertEqual(scope_to_list(' \t\n '), [])
++
++    def test_scope_order_and_duplicates(self):
++        expected = ['read', 'write', 'read', 'admin']
++        for scope in (expected, tuple(expected)):
++            with self.subTest(scope=scope):
++                self.assertEqual(list_to_scope(scope), 'read write read admin')
++                self.assertEqual(scope_to_list(scope), expected)
++                self.assertEqual(scope_to_list(list_to_scope(scope)), expected)
++
++    def test_scope_to_list_whitespace(self):
++        self.assertEqual(
++            scope_to_list('  read \t write\nadmin  '),
++            ['read', 'write', 'admin'],
++        )
++
++    def test_scope_collection_items_to_strings(self):
++        objects = [ScopeObject('read'), ScopeObject('write')]
++        for collection_type in (list, tuple, set):
++            with self.subTest(collection_type=collection_type):
++                scope = collection_type(objects)
++                expected = [str(item) for item in scope]
++                self.assertEqual(scope_to_list(scope), expected)
++                self.assertEqual(list_to_scope(scope), ' '.join(expected))
++
++    def test_list_to_scope_invalid_types(self):
++        for scope in (42, b'read write', {'read': True}):
++            with self.subTest(scope=scope):
++                self.assertRaises(ValueError, list_to_scope, scope)

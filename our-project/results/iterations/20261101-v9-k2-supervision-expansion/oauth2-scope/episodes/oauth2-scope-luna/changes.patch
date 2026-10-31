@@ -1,0 +1,52 @@
+diff --git a/oauthlib/oauth2/rfc6749/utils.py b/oauthlib/oauth2/rfc6749/utils.py
+index c5db6ba..f9a9ddc 100644
+--- a/oauthlib/oauth2/rfc6749/utils.py
++++ b/oauthlib/oauth2/rfc6749/utils.py
+@@ -15,8 +15,8 @@ def list_to_scope(scope):
+     """Convert a list of scopes to a space separated string."""
+     if isinstance(scope, str) or scope is None:
+         return scope
+-    elif isinstance(scope, (tuple, list)):
+-        return " ".join(str(s) for s in reversed(scope))
++    elif isinstance(scope, (tuple, list, set)):
++        return " ".join(str(s) for s in scope)
+     else:
+         raise ValueError("Invalid scope (%s), must be string, tuple, set, or list." % scope)
+ 
+@@ -26,7 +26,7 @@ def scope_to_list(scope):
+     if isinstance(scope, (tuple, list, set)):
+         return [s for s in scope]
+     elif scope is None:
+-        return []
++        return None
+     else:
+         return scope.split()
+ 
+@@ -34,7 +34,7 @@ def scope_to_list(scope):
+ def params_from_uri(uri):
+     params = dict(urldecode(urlparse(uri).query))
+     if 'scope' in params:
+-        params['scope'] = scope_to_list(params['scope'][-1])
++        params['scope'] = scope_to_list(params['scope'])
+     params['timestamp'] = None
+     return params
+ 
+diff --git a/tests/oauth2/rfc6749/test_utils.py b/tests/oauth2/rfc6749/test_utils.py
+index 8417fe5..89b9228 100644
+--- a/tests/oauth2/rfc6749/test_utils.py
++++ b/tests/oauth2/rfc6749/test_utils.py
+@@ -98,3 +98,14 @@ class UtilsTests(TestCase):
+         set_list_scopes = set(string_list_scopes)
+         set_list = scope_to_list(set_list_scopes)
+         self.assertEqual(sorted(set_list), sorted(string_list_scopes))
++
++        self.assertIsNone(scope_to_list(None))
++
++    def test_scope_order_and_uri_parsing(self):
++        scopes = ["read", "write", "admin"]
++        self.assertEqual(list_to_scope(scopes), "read write admin")
++        self.assertEqual(scope_to_list("read write admin"), scopes)
++        self.assertEqual(
++            params_from_uri("http://example.com/?scope=read+write&other=value"),
++            {"scope": ["read", "write"], "other": "value", "timestamp": None},
++        )

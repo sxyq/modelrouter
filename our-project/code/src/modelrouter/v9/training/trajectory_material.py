@@ -30,7 +30,9 @@ def tool_result(message):
         code = value.get("returncode", value.get("exit_code"))
         if isinstance(code, str) and re.fullmatch(r"-?\d+", code):
             code = int(code)
-        return code if type(code) is int else None, str(value.get("output", ""))
+        output = (value["output"] if "output" in value else
+                  "\n".join(value[name] for name in ("output_head", "output_tail") if name in value))
+        return code if type(code) is int else None, str(output)
     match = re.search(r"(?im)^(?:returncode|exit_code|exit code)\s*[:=]\s*(-?\d+)\s*$", content)
     return (int(match.group(1)) if match else None), content
 

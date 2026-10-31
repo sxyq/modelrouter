@@ -2,9 +2,19 @@
 
 **独立评分完成（2026-11-01）**：用户已选TwinRouterBench 520题/970步，复用已有ROUTE-003留出材料及原生模型入口，8/8版本全部完成。Laya微调前/F11-e01/P0_B03_C01_QB_PB-e02/F05-e01分别7.010309/20.515464/7.422680/12.061856分；Kev微调前/R11/R12/C09分别13.298969/18.969072/16.288660/15.567010分。F11/R11比微调前提高13.505155/5.670103个百分点，但八版本均低于恒选low的71.030928分。每版本970条、520任务，输入及输出任务身份/gold一致。原Val前三保持，不按Test重选；仅评旧四档，不增加新三模型动作监督或晋升。完整结果见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)。本轮起点main为e3c54a50f82648647922d15209a24a1fc57a6902，下方Test未执行描述保留原时点。
 
-**服务器与加训（01:43:44台北）**：训练进程0、原队列PAUSED_USER_REQUEST/current_run=null，F14归档仍failed/NON_FINITE_LOSS。Serving HTTP200/healthy、原PID327621及F05-e01/原Kev Adapter不变；共享图像服务未重启，GPU33009/49140MiB、30%、81°C。旧V9两轮8/100更新已完成并保留负结果，382/v4及新两条目标之后没有再加训。当前任务级/步骤级目标各1条、同1任务，仍不足以启动有意义新微调；详情见[原训练报告](../results/training/training_research.md)。本轮生成API0，CPU资源费用未计量。
+**服务器与加训（03:21:31台北）**：训练进程0、原队列PAUSED_USER_REQUEST/current_run=null，F14归档仍failed/NON_FINITE_LOSS。Serving health/models均200，原PID327621及F05-e01/原Kev Adapter不变；共享服务未重启，GPU33277/49140MiB、0%、53°C。旧V9两轮8/100更新及负结果保留，本轮没有加训；F11-e01/R11代表不变。累计真实任务级/步骤级偏好各2条、同2个任务，覆盖仍有限；详情见[原训练报告](../results/training/training_research.md)。
 
-## 2026-10-31 · 当前恢复点：有效K=2监督已取得，原训练接续停止
+## 2026-11-01 · 当前：不同训练任务上的真实 K=2 增量
+
+从main `f71032b80cb69e8644127055308bbaf55970bd67`接续，新增3个Train任务尝试、2组完整可比任务对照。DeviceAuthorizationEndpoint两候选均原673/673，形成Luna费用偏好1条；同一真实错误恢复前缀，Luna一步673/673、Sol一步未修复，形成Luna步骤偏好1条。首次Sol连接断开的无Usage请求单独保留，不当质量败者。SQLparse的Luna请求中断只作观察；Scope两者原验证670/673与668/673均失败，无胜者，且与Device任务的同仓库关联保留。完整结果见[本轮结果](../results/iterations/20261101-v9-k2-supervision-expansion/review.md)。
+
+本轮68请求、65份Usage、3份缺失；已知模型费率小计0.67589603USD，完整模型费、实收及资源USD未知，教师0。原Prepare与共享Trainer序列化已消费新2条，不混任务/步骤目标；原Train196/Val186加旧2条、新2条可组合200/186，旧382视图未重加工。完整K=3与同模型Effort偏好仍0；两个既有账户/models仍未列Flash，AA保持v4，教师关闭，原体系与五RQ不变。
+
+**服务器同步完成（03:44:42台北）**：相关原源码、六文档、两训练报告和本轮结果已定向同步到原工程。服务器原`serialize_training_record`实际消费新S1链接2条，task/step目标分开、AA v4、教师null；没有模型加载或训练，原Serving及共享服务不变。
+
+旧四档偏置分析只读取八份保存结果：S1人类模型偏好、S2终局和S3资源档位不等于外部能力四档，R11的4269条继续训练只有S2/S3；Laya微调前已有950/970个mid，F11降至788。原外部Context前400字符使970步只有318种输入，58个多步题输入不变。各因素的因果贡献未知；未重评、未用独立标签调参。现有两标签任务尚不足以支持有意义的新配方，模型参数、Serving及正式图表结果均未改变。
+
+## 2026-10-31 · 历史恢复点：有效K=2监督已取得，原训练接续停止
 
 本轮从main `ad1d392ac9621b8fcd3370f1b8815718d54d8e6f`接续，使用已有TRA-002的SWE-smith公开训练任务TextFSM；原mini-SWE-agent的run/step和原生Docker环境复用，教师关闭，五RQ、八图十二表、三正式身份及两条教师参考不变。完整结果见[真实监督采集](../results/iterations/20261031-v9-real-route-supervision/review.md)。
 

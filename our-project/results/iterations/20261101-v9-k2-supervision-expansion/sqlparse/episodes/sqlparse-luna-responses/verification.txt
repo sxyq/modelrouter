@@ -1,0 +1,100 @@
+FFF..................................................................... [ 21%]
+........................................................................ [ 43%]
+........................................................................ [ 65%]
+........................................................................ [ 87%]
+...........................................                              [100%]
+=================================== FAILURES ===================================
+_________________________ TestOutputFormat.test_python _________________________
+
+self = <tests.test_format.TestOutputFormat object at 0x7ffffe561b40>
+
+    def test_python(self):
+        sql = 'select * from foo;'
+        f = lambda sql: sqlparse.format(sql, output_format='python')
+>       assert f(sql) == "sql = 'select * from foo;'"
+
+tests/test_format.py:645: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_format.py:644: in <lambda>
+    f = lambda sql: sqlparse.format(sql, output_format='python')
+sqlparse/__init__.py:59: in format
+    return ''.join(stack.run(sql, encoding))
+sqlparse/engine/filter_stack.py:45: in run
+    stmt = filter_.process(stmt)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlparse.filters.output.OutputPythonFilter object at 0x7ffffe498bb0>
+stmt = <Statement 'select...' at 0x7FFFFE2B9EC0>
+
+    def process(self, stmt):
+        self.count += 1
+        if self.count >= 1:
+>           varname = '{f.varname}{f.count - 1}'.format(f=self)
+E           AttributeError: 'OutputPythonFilter' object has no attribute 'count - 1'
+
+sqlparse/filters/output.py:24: AttributeError
+_______________ TestOutputFormat.test_python_multiple_statements _______________
+
+self = <tests.test_format.TestOutputFormat object at 0x7ffffe561cc0>
+
+    def test_python_multiple_statements(self):
+        sql = 'select * from foo; select 1 from dual'
+        f = lambda sql: sqlparse.format(sql, output_format='python')
+>       assert f(sql) == '\n'.join([
+            "sql = 'select * from foo; '",
+            "sql2 = 'select 1 from dual'"])
+
+tests/test_format.py:655: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_format.py:654: in <lambda>
+    f = lambda sql: sqlparse.format(sql, output_format='python')
+sqlparse/__init__.py:59: in format
+    return ''.join(stack.run(sql, encoding))
+sqlparse/engine/filter_stack.py:45: in run
+    stmt = filter_.process(stmt)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlparse.filters.output.OutputPythonFilter object at 0x7ffffe29fc10>
+stmt = <Statement 'select...' at 0x7FFFFE4CF340>
+
+    def process(self, stmt):
+        self.count += 1
+        if self.count >= 1:
+>           varname = '{f.varname}{f.count - 1}'.format(f=self)
+E           AttributeError: 'OutputPythonFilter' object has no attribute 'count - 1'
+
+sqlparse/filters/output.py:24: AttributeError
+__________________________ TestOutputFormat.test_php ___________________________
+
+self = <tests.test_format.TestOutputFormat object at 0x7ffffe561fc0>
+
+    def test_php(self):
+        sql = 'select * from foo;'
+        f = lambda sql: sqlparse.format(sql, output_format='php')
+>       assert f(sql) == '$sql = "select * from foo;";'
+
+tests/test_format.py:673: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_format.py:672: in <lambda>
+    f = lambda sql: sqlparse.format(sql, output_format='php')
+sqlparse/__init__.py:59: in format
+    return ''.join(stack.run(sql, encoding))
+sqlparse/engine/filter_stack.py:45: in run
+    stmt = filter_.process(stmt)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlparse.filters.output.OutputPHPFilter object at 0x7ffffe49b460>
+stmt = <Statement 'select...' at 0x7FFFFE4CF3C0>
+
+    def process(self, stmt):
+        self.count += 1
+        if self.count >= 1:
+>           varname = '{f.varname}{f.count - 1}'.format(f=self)
+E           AttributeError: 'OutputPHPFilter' object has no attribute 'count - 1'
+
+sqlparse/filters/output.py:24: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_format.py::TestOutputFormat::test_python - AttributeError: ...
+FAILED tests/test_format.py::TestOutputFormat::test_python_multiple_statements
+FAILED tests/test_format.py::TestOutputFormat::test_php - AttributeError: 'Ou...
+3 failed, 328 passed in 0.48s

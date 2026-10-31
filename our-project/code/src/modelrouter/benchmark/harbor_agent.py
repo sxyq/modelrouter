@@ -208,7 +208,7 @@ class PolicyModel(LitellmModel):
         self.usage.append(metrics)
         self.state.accumulated_cost_usd += metrics.get("cost_usd") or 0
         if self.v9_hook:
-            self.v9_hook.after_generation(metrics, selected)
+            self.v9_hook.after_generation(metrics, selected, body)
         event(self.record_dir, "GENERATOR_END", **metrics,
               step=self.state.step_index, policy=self.policy_name, model=selected["model"],
               returned_model=metrics["returned_model_id"], effort=selected["native_effort"])

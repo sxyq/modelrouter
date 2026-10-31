@@ -1,0 +1,68 @@
+diff --git a/tests/oauth2/rfc8628/test_server.py b/tests/oauth2/rfc8628/test_server.py
+index 5202503..a6f45dc 100644
+--- a/tests/oauth2/rfc8628/test_server.py
++++ b/tests/oauth2/rfc8628/test_server.py
+@@ -12,7 +12,7 @@ class DeviceAuthorizationEndpointTest(TestCase):
+         self, interval=None, verification_uri_complete=None, user_code_generator=None
+     ):
+         self.endpoint = DeviceAuthorizationEndpoint(
+-            request_validator=mock.MagicMock(spec=RequestValidator),
++            request_validator=self.request_validator,
+             verification_uri=self.verification_uri,
+             interval=interval,
+             verification_uri_complete=verification_uri_complete,
+@@ -31,6 +31,54 @@ class DeviceAuthorizationEndpointTest(TestCase):
+     def response_payload(self):
+         return self.uri, self.http_method, self.body, self.headers
+ 
++    def test_constructor_defaults(self):
++        self.assertIs(self.endpoint.request_validator, self.request_validator)
++        self.assertEqual(self.endpoint.verification_uri, self.verification_uri)
++        self.assertEqual(self.endpoint.expires_in, 1800)
++        self.assertIsNone(self.endpoint.interval)
++        self.assertTrue(self.endpoint.available)
++        self.assertFalse(self.endpoint.catch_errors)
++        self.assertIsNone(self.endpoint.valid_request_methods)
++
++    def test_constructor_parameters(self):
++        verification_uri = "https://example.com/device"
++        endpoint = DeviceAuthorizationEndpoint(
++            request_validator=self.request_validator,
++            verification_uri=verification_uri,
++            expires_in=600,
++            interval=5,
++        )
++        self.assertIs(endpoint.request_validator, self.request_validator)
++        self.assertEqual(endpoint.verification_uri, verification_uri)
++        self.assertEqual(endpoint.expires_in, 600)
++        self.assertEqual(endpoint.interval, 5)
++
++        _, body, status_code = endpoint.create_device_authorization_response(
++            *self.response_payload()
++        )
++        self.assertEqual(status_code, 200)
++        self.assertEqual(body["verification_uri"], verification_uri)
++        self.assertEqual(body["expires_in"], 600)
++        self.assertEqual(body["interval"], 5)
++        self.request_validator.validate_client_id.assert_called_once()
++        self.request_validator.authenticate_client.assert_called_once()
++
++    def test_constructor_positional_parameters_with_zero_values(self):
++        endpoint = DeviceAuthorizationEndpoint(
++            self.request_validator, self.verification_uri, 0, 0
++        )
++        self.assertIs(endpoint.request_validator, self.request_validator)
++        self.assertEqual(endpoint.verification_uri, self.verification_uri)
++        self.assertEqual(endpoint.expires_in, 0)
++        self.assertEqual(endpoint.interval, 0)
++
++        _, body, status_code = endpoint.create_device_authorization_response(
++            *self.response_payload()
++        )
++        self.assertEqual(status_code, 200)
++        self.assertEqual(body["expires_in"], 0)
++        self.assertEqual(body["interval"], 0)
++
+     @mock.patch("oauthlib.oauth2.rfc8628.endpoints.device_authorization.generate_token")
+     def test_device_authorization_grant(self, generate_token):
+         generate_token.side_effect = ["abc", "def"]

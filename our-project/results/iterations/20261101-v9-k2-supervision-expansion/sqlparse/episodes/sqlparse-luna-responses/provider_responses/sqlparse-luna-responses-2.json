@@ -1,0 +1,169 @@
+{
+  "response": {
+    "access_programs": null,
+    "background": false,
+    "completed_at": 1793472798,
+    "created_at": 1793472796,
+    "error": null,
+    "frequency_penalty": 0.0,
+    "id": "resp_0851a8166ca2bb8c016ae6391c834087d0a838887432f79b4b",
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "metadata": null,
+    "model": "gpt-6-luna",
+    "moderation": null,
+    "object": "response",
+    "output": [
+      {
+        "arguments": "{\"command\":\"cd /testbed \\u0026\\u0026 cat sqlparse/filters/output.py \\u0026\\u0026 sed -n '620,690p' tests/test_format.py \\u0026\\u0026 python - \\u003c\\u003c'PY'\\nimport sqlparse\\nfor kw in ({}, {'reindent':True}):\\n print(repr(sqlparse.format('select * from foo;',output_format='python',**kw)))\\n print(repr(sqlparse.format('select * from foo;',output_format='php',**kw)))\\nprint(repr(sqlparse.format('select * from foo; select 1 from dual',output_format='python')))\\nPY\"}",
+        "call_id": "call_Ytfl2ADIcjqF8jO9FjDzUvmu",
+        "id": "fc_0851a8166ca2bb8c016ae6391dafb487d093b844db1c3e0e86",
+        "name": "bash",
+        "status": "completed",
+        "type": "function_call"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": "ae10948a-a59b-4e5c-8065-ea7eb74e1a3e",
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "mode": "standard",
+      "summary": "detailed"
+    },
+    "safety_identifier": "user-2HQPSo9YzwtPaJ1L5c9Znfrx__d5b90745-ae68-43ac-9aac-5cb1a9850343",
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
+    "tools": [
+      {
+        "description": "Execute a bash command",
+        "name": "bash",
+        "parameters": {
+          "properties": {
+            "command": {
+              "description": "The bash command to execute",
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "type": "object"
+        },
+        "type": "function"
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": 0.98,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 27201,
+      "input_tokens_details": {
+        "cached_tokens": 24893
+      },
+      "output_tokens": 186,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 27387
+    },
+    "user": null
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0851a8166ca2bb8c016ae6391c834087d0a838887432f79b4b",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "<RESPONSES_PROVIDER_ENDPOINT>",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 27201,
+      "input_tokens_details": {
+        "cached_tokens": 24893
+      },
+      "output_tokens": 186,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 27387
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 27201,
+    "completion_tokens": 186,
+    "reported_completion_tokens": 186,
+    "reasoning_tokens": 0,
+    "cached_tokens": 24893,
+    "cache_write_tokens": null,
+    "ttft_ms": null,
+    "latency_ms": 12999.348875018768,
+    "output_tokens_per_s": null,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": null,
+    "stream_output_tokens_per_s_status": "UNAVAILABLE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00057273,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "sqlparse-luna-responses",
+    "decision_id": "sqlparse-luna-responses-2",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

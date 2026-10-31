@@ -1,0 +1,191 @@
+{
+  "response": {
+    "access_programs": null,
+    "background": false,
+    "completed_at": 1793472785,
+    "created_at": 1793472783,
+    "error": null,
+    "frequency_penalty": 0.0,
+    "id": "resp_0851a8166ca2bb8c016ae6390f6de087d0a0ecacd035e7fe58",
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "metadata": null,
+    "model": "gpt-6-luna",
+    "moderation": null,
+    "object": "response",
+    "output": [
+      {
+        "content": [],
+        "encrypted_content": "gAAAAABq5jkRhRzGCxkwwYCj9aSEAfVabbkb4JdyNsxfyIDqlZMrGj0ZtCZXyuz6rBN7meH0v55GyPn2SKkdm6pQIjjkn7xOcp09F7TzOFK4HjRRJQz-BT7qWSs9Og8RSwlPdEHgqaJM8P31eXzAAeYilOnmMf35gwFrMByTDT_C0a-5ugqwMlSy5SCddXuAm8iXvEzIMSGnPuZQlsmj6_P9AsoU-9ZeriuGjvhCOKsLfJuoz8zKKwl_NwANe9f2Pq-Bw9pL6LCE_mx8m3yD8npNjaAaJDZRZNjhFE89vbz3GAXDUWuTIpRu2uB3jJ_SWZ7fgl7-R9tq9Szw7qk3VDOP7L0L3QdbMmbC9blMSJybgyWBSy564IbWi1IHwekRVezW1-fnotwUbaAvluHmSJK4Kdw76Fte1udS7BudQPvbhF4W4uU-lJdTo0oHJ0CXz1T3JZejNND6rV-zbIvkP9YAejfZJZAAlD4ae88FRvtJdffbJD6oaa5V-_8uSeJyP1xYtJOyYKP31jbmhMIecA55r489xw-9_o4OMsIf6ZWJcOhVWh7QO4ftjjZcTpxs2eYpTUp8IEmG7n93Gqy6puo4gD-kzF95PPinXPCDdkcYxlKPID4kYKVTue7IWLsg6QHNMlytIjp_4xBSt0CN9t1OpNatn1zhgA9VSzduWVeLxir_C7rp8cOZeZU4Az-l6tqV6rf-9MrQ3hqHuU5-liDiCplt9hXnNVRQ1PTMMd0nsvDXQqksnMOZTxd_zEhgZ5IPw-13Veg0NTdFHjx2OQ9LpdtXZLOElyRRAXPzeGOmwc1KYdUz4qtDDtEefT508mpmV6rGXAjROiSKeS7C_xNO3PLTnYtT8TNnnjBE2oKaX2TSVn3u4pX-75PI6-vwaChAzGhZSokmYnBY1MbBmeT5hbb45BJzqMJqyOEWgB2mVw2whUz08MQlkzg83rbZNsG2avmvisqFODaEatzJXQLUQrocJT4f0GtalqYTvIq4uvDiNaPMVNA0a8jCM9a4m2daj920zoUL3wCq5cQT97aJh_5-PKAO0Bd4ay3tGSD357xNC5f1XCedblTKw4dBymdNfhxzOkBFJpwUutr6jnLD3o9ibzzFms2nGIdk0KmBkDO_px8jxGLnaIfl65ULfQGlJrPqO7GK_675mEB4nfyykHxyJhcmWj01L4KH2yh6B15tbmxgmqAGCoLVMr7d2SC94-9FPdbUSJJCA9tdg-pyIGkIixccBCd9qbUDPyyWj_Xhk49EpyHdRw1IUBPOweBJ9AZb2bccXHTt4_qU_OPQ14QSxraREahecSUNzfX6W5x87N5rv7wsHpc1Tw1Rc1Nnc6DumoNhmpvFvro6Q-v2gWf7N7tFy1_w9l7VVxDbuZvM7pLPuSpfEXVMGNp5npfN08p2IidALuycBbC9p5ymaKwQwt2lz7qNwzTOhP1Rv9cHPGqL2NHXJa34xKIbGh3gE_CdXpqtWKPX5Tye9IXRdMIf90zUKPJfMNk6ltvN8X-zl2kwwwQOJzijrVzZubpsDq7OATdDERT-bBgxHvz4gSjW-SN4IfldHO6zs_TtAY9a9_-XvZs=",
+        "id": "rs_0851a8166ca2bb8c016ae63910b04c87d094ae1793bbb248bb",
+        "summary": [],
+        "type": "reasoning"
+      },
+      {
+        "content": [
+          {
+            "annotations": [],
+            "logprobs": [],
+            "text": "`rg` isn’t installed here; I’m switching to grep to locate the formatter code and existing tests.",
+            "type": "output_text"
+          }
+        ],
+        "id": "msg_0851a8166ca2bb8c016ae63910e29c87d0a0ebdd4cdb4914b9",
+        "phase": "commentary",
+        "role": "assistant",
+        "status": "completed",
+        "type": "message"
+      },
+      {
+        "arguments": "{\"command\":\"cd /testbed \\u0026\\u0026 grep -RInE 'output_format|php|python' sqlparse tests | head -100 \\u0026\\u0026 find sqlparse tests -maxdepth 3 -type f\"}",
+        "call_id": "call_SIBDTIxIMjWfOH3JJwtiVkDs",
+        "id": "fc_0851a8166ca2bb8c016ae63911054887d09db15688f2c1ffbc",
+        "name": "bash",
+        "status": "completed",
+        "type": "function_call"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": "ae10948a-a59b-4e5c-8065-ea7eb74e1a3e",
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "mode": "standard",
+      "summary": "detailed"
+    },
+    "safety_identifier": "user-2HQPSo9YzwtPaJ1L5c9Znfrx__d5b90745-ae68-43ac-9aac-5cb1a9850343",
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
+    "tools": [
+      {
+        "description": "Execute a bash command",
+        "name": "bash",
+        "parameters": {
+          "properties": {
+            "command": {
+              "description": "The bash command to execute",
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "type": "object"
+        },
+        "type": "function"
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": 0.98,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 24896,
+      "input_tokens_details": {
+        "cached_tokens": 24227
+      },
+      "output_tokens": 137,
+      "output_tokens_details": {
+        "reasoning_tokens": 7
+      },
+      "total_tokens": 25033
+    },
+    "user": null
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0851a8166ca2bb8c016ae6390f6de087d0a0ecacd035e7fe58",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "<RESPONSES_PROVIDER_ENDPOINT>",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 24896,
+      "input_tokens_details": {
+        "cached_tokens": 24227
+      },
+      "output_tokens": 137,
+      "output_tokens_details": {
+        "reasoning_tokens": 7
+      },
+      "total_tokens": 25033
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 24896,
+    "completion_tokens": 137,
+    "reported_completion_tokens": 137,
+    "reasoning_tokens": 7,
+    "cached_tokens": 24227,
+    "cache_write_tokens": null,
+    "ttft_ms": 2903.552083997056,
+    "latency_ms": 3315.4989590402693,
+    "output_tokens_per_s": 41.321080685743034,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 332.56715440705466,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00037767,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "sqlparse-luna-responses",
+    "decision_id": "sqlparse-luna-responses-1",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_cheap",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "effort_validation_status": "REAL_API_IDENTITY_MATCHED"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "serializer": "modelrouter.v9.training.continuation.serialize_training_record",
+  "actual_records_consumed": 2,
+  "model_weights_loaded": false,
+  "training_started": false,
+  "server_data_consumption": {
+    "sampled_at": "2026-10-31T19:44:42.736252+00:00",
+    "s1_relative_link_resolves": true,
+    "actual_records_consumed": 2,
+    "question_ids": ["task_model_effort_preference", "step_model_effort_preference"],
+    "state_chars": [5926, 11027],
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "teacher_assessment": null,
+    "model_weights_loaded": false,
+    "training_started": false
+  },
+  "records": [
+    {
+      "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+      "supervision_type": "TASK_LEVEL_PREFERENCE",
+      "question_id": "task_model_effort_preference",
+      "expected_action": "gpt-6-luna:low",
+      "state_chars": 5926,
+      "state_contains_candidate_results": false,
+      "state_contains_preferred_action_id": false,
+      "capability_snapshot_id": "20261031T072548885180Z-v4",
+      "teacher_assessment": null,
+      "candidate_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "native_effort": "low",
+          "model_id": "gpt-6.1-sol",
+          "action_id": "gpt-6.1-sol:low"
+        },
+        {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "native_effort": "low",
+          "model_id": "gpt-6-luna",
+          "action_id": "gpt-6-luna:low"
+        }
+      ]
+    },
+    {
+      "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+      "supervision_type": "STEP_LEVEL_PREFERENCE",
+      "question_id": "step_model_effort_preference",
+      "expected_action": "gpt-6-luna:low",
+      "state_chars": 11027,
+      "state_contains_candidate_results": false,
+      "state_contains_preferred_action_id": false,
+      "capability_snapshot_id": "20261031T072548885180Z-v4",
+      "teacher_assessment": null,
+      "candidate_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "native_effort": "low",
+          "model_id": "gpt-6.1-sol",
+          "action_id": "gpt-6.1-sol:low"
+        },
+        {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "native_effort": "low",
+          "model_id": "gpt-6-luna",
+          "action_id": "gpt-6-luna:low"
+        }
+      ]
+    }
+  ]
+}

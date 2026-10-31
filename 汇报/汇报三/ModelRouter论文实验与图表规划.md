@@ -1,8 +1,12 @@
 # ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-01 文档接续）
 
+> **本轮真实增量（11-01）**：新增3个Train任务尝试、2组完整可比终局，新任务级/步骤级各1条，累计4条/2标签任务。Device等质量费用偏好与错误恢复一步偏好分别记录；Scope双失败、SQLparse请求中断不产生胜者，同仓库关联不丢弃。原Prepare/serializer已消费delta2，可组合Train200/Val186；旧材料不重新加工，独立四档标签只用于既有结果分析，不训练或调参。68请求/65Usage/3未知，已知模型费率0.67589603USD、完整费用未知，教师0；AA v4、实际K=2 low，Flash及完整K=3仍缺。03:21:31无活动训练、F14仍failed/NON_FINITE_LOSS，F11/R11代表与旧Serving不变，不启动新配方。五RQ、八图十二表不改，真实训练任务不填正式效果表。详情见[本轮结果](../../our-project/results/iterations/20261101-v9-k2-supervision-expansion/review.md)。
+>
+> **四档偏置的已知范围**：旧S1/S2/S3语义与外部能力四档不同；R11继续训练仅4269行S2/S3，Laya微调前已有mid偏向。原前400字符使58个多步任务输入不变；各因素的因果贡献仍未知。未重跑八版本，动态Router与教师净收益仍须独立真实Dev。
+
 > **独立静态评分完成（11-01）**：用户已选TwinRouterBench 520题/970步，两组微调前与原Val前三8/8在CPU完成。F11-e01为20.515464分，比微调前高13.505155个百分点；R11为18.969072分，比微调前高5.670103个百分点，全部版本低于恒选low71.030928分。此为旧四档精确步骤分，不是Agent终局、三模型选择标签或正式五RQ效果；不按Test重选、不晋升Serving、不填原正式效果表。01:43:44服务器无活动训练、F14归档failed/NON_FINITE_LOSS，旧V9加训完成但382/v4与新2条后未加训。结果见[独立评分](../../our-project/results/iterations/20261031-twinrouterbench-independent/review.md)，原五RQ、八图十二表保持。
 
-> **当前结果资格（2026-10-31）**：本轮从ad1d392接续，在已有SWE-smith公开训练任务TextFSM上取得有效K=2 Episode对照1组、真实步骤前缀2组。Sol/Luna low两Episode均通过原96项，任务级成本偏好Luna；前缀7 Sol一步通过而Luna使用不存在的apply_patch，形成即时修复偏好Sol。新合法选择目标2条，同1任务，前缀6两失败只作观察；完整三模型最优标签仍0。原mini/Harbor及正式五RQ不变，不将训练任务、一步成功或单题差异填正式效果表。结果见[真实监督记录](../../our-project/results/iterations/20261031-v9-real-route-supervision/review.md)。
+> **历史结果资格（2026-10-31）**：本轮从ad1d392接续，在已有SWE-smith公开训练任务TextFSM上取得有效K=2 Episode对照1组、真实步骤前缀2组。Sol/Luna low两Episode均通过原96项，任务级成本偏好Luna；前缀7 Sol一步通过而Luna使用不存在的apply_patch，形成即时修复偏好Sol。新合法选择目标2条，同1任务，前缀6两失败只作观察；完整三模型最优标签仍0。原mini/Harbor及正式五RQ不变，不将训练任务、一步成功或单题差异填正式效果表。结果见[真实监督记录](../../our-project/results/iterations/20261031-v9-real-route-supervision/review.md)。
 >
 > **教师证据**：旧五次失败与新真实Sol low/2048空正文均说明reasoning可用尽额度。原Assessor缩短固定参考/观察视图，仅做事实摘要；low/4096、context8000，首次约3生成、后续至少间隔3，验证/重复错误优先阶段变化。新真实step3三字段JSON成功，input1462/output1528含reasoning1435、模型费0.0189335USD；未执行新Router或工具，且该价格仍约为Luna本次Episode的4.23倍。单次有效输出不证明稳定收益，旧短评随信号变化清除并保留截止范围；不改变Agent计划、执行工具或指定模型。
 >

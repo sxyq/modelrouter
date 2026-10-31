@@ -6,7 +6,7 @@ from pathlib import Path
 import json
 import urllib.request
 
-from modelrouter.benchmark.iterations import event
+from modelrouter.benchmark.iterations import event, write_atomic
 from modelrouter.v9.capabilities.features import capability_cards, load_current, DEFAULT_DATA_DIR
 from modelrouter.v9.teacher.assessor import TrajectoryAssessor, DEFAULT_REFERENCES
 from modelrouter.v9.teacher.trigger import TeacherTrigger
@@ -114,7 +114,9 @@ class V9DecisionHook:
               assessed_through_decision_id=self.assessment["assessed_through_decision_id"],
               checkpoint_id=decision.checkpoint_id, assessment_consumed_by_router=consumed)
 
-    def after_generation(self, metrics, selected):
+    def after_generation(self, metrics, selected, response):
+        write_atomic(self.record_dir / "provider_responses" / f"{metrics['decision_id']}.json",
+                     {"response": response, "metrics": metrics})
         backend = metrics.get("actual_backend_model_id") or metrics.get("returned_model_id")
         model_id = selected["model"]
         cached = metrics.get("cached_tokens")

@@ -1,10 +1,14 @@
 # ModelRouter · 数据源、模型能力与缓存政策统一台账
 
-## 当前能力与数据来源（2026-10-31）
+## 当前能力与数据来源（2026-11-01）
+
+**新增真实监督**：3个SWE-smith Train任务尝试、2组完整可比终局，新任务级/步骤级偏好各1条，累计4条/2标签任务。新标签均为Device任务上的Luna low：完整终局等质量下较低模型费，以及真实同前缀的一步修复；类型不混用。Scope同仓库但不同任务ID/源码文件，双失败仅观察；SQLparse Luna请求中断不生成胜者。数据MIT、两个代码仓库BSD-3-Clause，Canary/Dev/Final与独立集的精确ID及可识别仓库元数据无交集，任意近重复不作全面结论。结果见[本轮记录](../results/iterations/20261101-v9-k2-supervision-expansion/review.md)。
+
+新delta2已由原Prepare与共享serializer消费，完整过去消息、实际候选、low、AA v4及反馈来源保留；原382视图与13,214候选不重加工。可组合Train200/Val186仅增加4条真实偏好，仍同2任务；17份候选观察和6组无有效目标对照不混作choice。68请求/65份Usage/3缺失，已知模型费率0.67589603USD，完整费用、实收及资源未知；教师0。两个既有账户目录仍无Flash，不重发已知失败POST；K=3、同模型Effort监督0。旧四档标签与训练目标语义差异、400字符输入限制只作分析，不用独立标签再训。
 
 **独立评价材料（11-01完成）**：本轮复用已有ROUTE-003 TwinRouterBench `test_twinrouterbench_holdout.jsonl`（520任务/970步），原 `EVAL_BENCHMARK_ONLY` 用途不变，没有下载、清洗或加入Train/Val。两组数据任务/state/instruction/criteria/gold逐条相同，8/8版本完整评价、7760条预测。只评分旧四档choice，不将每行score问题另算970个样本，不生成Sol/Luna/Flash最优Model×Effort目标；分数与原始概率见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)。既有合法K=2 Train动作目标仍2条（1任务），K=3最优仍0；新训练未启动。
 
-**10-31 当前真实监督**：从ad1d392接续，已有TRA-002对应的SWE-smith公开训练任务TextFSM取得1组有效K=2完整Episode与2个同历史步骤前缀对照，25次Sol/Luna low生成均身份匹配，无Alias。两Episode原96项通过，形成任务级Luna成本偏好1条；前缀7 Sol一步通过、Luna使用镜像不存在的apply_patch，形成步骤级即时修复偏好1条。前缀6两失败和6个候选结果只作观察；完整K=3最优/同模型Effort差异标签仍0。原Dev失败、教师前缀及旧成功题没有重跑，结果见[真实监督记录](../results/iterations/20261031-v9-real-route-supervision/review.md)。
+**10-31 历史真实监督**：从ad1d392接续，已有TRA-002对应的SWE-smith公开训练任务TextFSM取得1组有效K=2完整Episode与2个同历史步骤前缀对照，25次Sol/Luna low生成均身份匹配，无Alias。两Episode原96项通过，形成任务级Luna成本偏好1条；前缀7 Sol一步通过、Luna使用镜像不存在的apply_patch，形成步骤级即时修复偏好1条。前缀6两失败和6个候选结果只作观察；完整K=3最优/同模型Effort差异标签仍0。原Dev失败、教师前缀及旧成功题没有重跑，结果见[真实监督记录](../results/iterations/20261031-v9-real-route-supervision/review.md)。
 
 | 新材料 | 本地与服务器原目录中的对象 | 监督、身份及用途 |
 |---|---|---|

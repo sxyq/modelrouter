@@ -1,0 +1,694 @@
+FFFFFFFFFFFFF........................................................... [ 10%]
+........................................................................ [ 21%]
+........................................................................ [ 32%]
+........................................................................ [ 42%]
+........................................................................ [ 53%]
+........................................................................ [ 64%]
+........................................................................ [ 74%]
+........................................................................ [ 85%]
+........................................................................ [ 96%]
+.........................                                                [100%]
+=================================== FAILURES ===================================
+__________________ ErrorResponseTest.test_duplicate_client_id __________________
+
+self = <tests.oauth2.rfc8628.endpoints.test_error_responses.ErrorResponseTest testMethod=test_duplicate_client_id>
+
+    def setUp(self):
+        self.validator = mock.MagicMock(spec=RequestValidator)
+        self.validator.get_default_redirect_uri.return_value = None
+        self.validator.get_code_challenge.return_value = None
+>       self.device = DeviceApplicationServer(self.validator, "https://example.com/verify")
+
+tests/oauth2/rfc8628/endpoints/test_error_responses.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc8628/endpoints/pre_configured.py:24: in __init__
+    DeviceAuthorizationEndpoint.__init__(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.pre_configured.DeviceApplicationServer object at 0x7ffffdbefee0>
+request_validator = <MagicMock spec='RequestValidator' id='140737450509456'>
+verification_uri = 'https://example.com/verify', expires_in = 1800
+interval = None, verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+_______________ ErrorResponseTest.test_duplicate_scope_parameter _______________
+
+self = <tests.oauth2.rfc8628.endpoints.test_error_responses.ErrorResponseTest testMethod=test_duplicate_scope_parameter>
+
+    def setUp(self):
+        self.validator = mock.MagicMock(spec=RequestValidator)
+        self.validator.get_default_redirect_uri.return_value = None
+        self.validator.get_code_challenge.return_value = None
+>       self.device = DeviceApplicationServer(self.validator, "https://example.com/verify")
+
+tests/oauth2/rfc8628/endpoints/test_error_responses.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc8628/endpoints/pre_configured.py:24: in __init__
+    DeviceAuthorizationEndpoint.__init__(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.pre_configured.DeviceApplicationServer object at 0x7ffffdbdc6d0>
+request_validator = <MagicMock spec='RequestValidator' id='140737450482256'>
+verification_uri = 'https://example.com/verify', expires_in = 1800
+interval = None, verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+____________________ ErrorResponseTest.test_empty_client_id ____________________
+
+self = <tests.oauth2.rfc8628.endpoints.test_error_responses.ErrorResponseTest testMethod=test_empty_client_id>
+
+    def setUp(self):
+        self.validator = mock.MagicMock(spec=RequestValidator)
+        self.validator.get_default_redirect_uri.return_value = None
+        self.validator.get_code_challenge.return_value = None
+>       self.device = DeviceApplicationServer(self.validator, "https://example.com/verify")
+
+tests/oauth2/rfc8628/endpoints/test_error_responses.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc8628/endpoints/pre_configured.py:24: in __init__
+    DeviceAuthorizationEndpoint.__init__(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.pre_configured.DeviceApplicationServer object at 0x7ffffdbdf850>
+request_validator = <MagicMock spec='RequestValidator' id='140737444658768'>
+verification_uri = 'https://example.com/verify', expires_in = 1800
+interval = None, verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+___________________ ErrorResponseTest.test_invalid_client_id ___________________
+
+self = <tests.oauth2.rfc8628.endpoints.test_error_responses.ErrorResponseTest testMethod=test_invalid_client_id>
+
+    def setUp(self):
+        self.validator = mock.MagicMock(spec=RequestValidator)
+        self.validator.get_default_redirect_uri.return_value = None
+        self.validator.get_code_challenge.return_value = None
+>       self.device = DeviceApplicationServer(self.validator, "https://example.com/verify")
+
+tests/oauth2/rfc8628/endpoints/test_error_responses.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc8628/endpoints/pre_configured.py:24: in __init__
+    DeviceAuthorizationEndpoint.__init__(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.pre_configured.DeviceApplicationServer object at 0x7ffffdcbf580>
+request_validator = <MagicMock spec='RequestValidator' id='140737450540672'>
+verification_uri = 'https://example.com/verify', expires_in = 1800
+interval = None, verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+___________________ ErrorResponseTest.test_missing_client_id ___________________
+
+self = <tests.oauth2.rfc8628.endpoints.test_error_responses.ErrorResponseTest testMethod=test_missing_client_id>
+
+    def setUp(self):
+        self.validator = mock.MagicMock(spec=RequestValidator)
+        self.validator.get_default_redirect_uri.return_value = None
+        self.validator.get_code_challenge.return_value = None
+>       self.device = DeviceApplicationServer(self.validator, "https://example.com/verify")
+
+tests/oauth2/rfc8628/endpoints/test_error_responses.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc8628/endpoints/pre_configured.py:24: in __init__
+    DeviceAuthorizationEndpoint.__init__(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.pre_configured.DeviceApplicationServer object at 0x7ffffdbf1e10>
+request_validator = <MagicMock spec='RequestValidator' id='140737451555520'>
+verification_uri = 'https://example.com/verify', expires_in = 1800
+interval = None, verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+__________ ErrorResponseTest.test_unauthenticated_confidential_client __________
+
+self = <tests.oauth2.rfc8628.endpoints.test_error_responses.ErrorResponseTest testMethod=test_unauthenticated_confidential_client>
+
+    def setUp(self):
+        self.validator = mock.MagicMock(spec=RequestValidator)
+        self.validator.get_default_redirect_uri.return_value = None
+        self.validator.get_code_challenge.return_value = None
+>       self.device = DeviceApplicationServer(self.validator, "https://example.com/verify")
+
+tests/oauth2/rfc8628/endpoints/test_error_responses.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc8628/endpoints/pre_configured.py:24: in __init__
+    DeviceAuthorizationEndpoint.__init__(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.pre_configured.DeviceApplicationServer object at 0x7ffffdbe8700>
+request_validator = <MagicMock spec='RequestValidator' id='140737451915728'>
+verification_uri = 'https://example.com/verify', expires_in = 1800
+interval = None, verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+_____________ ErrorResponseTest.test_unauthenticated_public_client _____________
+
+self = <tests.oauth2.rfc8628.endpoints.test_error_responses.ErrorResponseTest testMethod=test_unauthenticated_public_client>
+
+    def setUp(self):
+        self.validator = mock.MagicMock(spec=RequestValidator)
+        self.validator.get_default_redirect_uri.return_value = None
+        self.validator.get_code_challenge.return_value = None
+>       self.device = DeviceApplicationServer(self.validator, "https://example.com/verify")
+
+tests/oauth2/rfc8628/endpoints/test_error_responses.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc8628/endpoints/pre_configured.py:24: in __init__
+    DeviceAuthorizationEndpoint.__init__(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.pre_configured.DeviceApplicationServer object at 0x7ffffdbdf610>
+request_validator = <MagicMock spec='RequestValidator' id='140737447234720'>
+verification_uri = 'https://example.com/verify', expires_in = 1800
+interval = None, verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+_______ DeviceAuthorizationEndpointTest.test_device_authorization_grant ________
+
+self = <tests.oauth2.rfc8628.test_server.DeviceAuthorizationEndpointTest testMethod=test_device_authorization_grant>
+
+    def setUp(self):
+        self.request_validator = mock.MagicMock(spec=RequestValidator)
+        self.verification_uri = "http://i.b/l/verify"
+        self.uri = "http://i.b/l"
+        self.http_method = "POST"
+        self.body = "client_id=abc"
+        self.headers = {"Content-Type": "application/x-www-form-urlencoded"}
+>       self._configure_endpoint()
+
+tests/oauth2/rfc8628/test_server.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/oauth2/rfc8628/test_server.py:14: in _configure_endpoint
+    self.endpoint = DeviceAuthorizationEndpoint(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.device_authorization.DeviceAuthorizationEndpoint object at 0x7ffffdbddbd0>
+request_validator = <MagicMock spec='RequestValidator' id='140737450540768'>
+verification_uri = 'http://i.b/l/verify', expires_in = 1800, interval = None
+verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+___ DeviceAuthorizationEndpointTest.test_device_authorization_grant_interval ___
+
+self = <tests.oauth2.rfc8628.test_server.DeviceAuthorizationEndpointTest testMethod=test_device_authorization_grant_interval>
+
+    def setUp(self):
+        self.request_validator = mock.MagicMock(spec=RequestValidator)
+        self.verification_uri = "http://i.b/l/verify"
+        self.uri = "http://i.b/l"
+        self.http_method = "POST"
+        self.body = "client_id=abc"
+        self.headers = {"Content-Type": "application/x-www-form-urlencoded"}
+>       self._configure_endpoint()
+
+tests/oauth2/rfc8628/test_server.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/oauth2/rfc8628/test_server.py:14: in _configure_endpoint
+    self.endpoint = DeviceAuthorizationEndpoint(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.device_authorization.DeviceAuthorizationEndpoint object at 0x7ffffdbf1e40>
+request_validator = <MagicMock spec='RequestValidator' id='140737450554992'>
+verification_uri = 'http://i.b/l/verify', expires_in = 1800, interval = None
+verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+_ DeviceAuthorizationEndpointTest.test_device_authorization_grant_interval_with_zero _
+
+self = <tests.oauth2.rfc8628.test_server.DeviceAuthorizationEndpointTest testMethod=test_device_authorization_grant_interval_with_zero>
+
+    def setUp(self):
+        self.request_validator = mock.MagicMock(spec=RequestValidator)
+        self.verification_uri = "http://i.b/l/verify"
+        self.uri = "http://i.b/l"
+        self.http_method = "POST"
+        self.body = "client_id=abc"
+        self.headers = {"Content-Type": "application/x-www-form-urlencoded"}
+>       self._configure_endpoint()
+
+tests/oauth2/rfc8628/test_server.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/oauth2/rfc8628/test_server.py:14: in _configure_endpoint
+    self.endpoint = DeviceAuthorizationEndpoint(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.device_authorization.DeviceAuthorizationEndpoint object at 0x7ffffdbeb2e0>
+request_validator = <MagicMock spec='RequestValidator' id='140737450518480'>
+verification_uri = 'http://i.b/l/verify', expires_in = 1800, interval = None
+verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+_ DeviceAuthorizationEndpointTest.test_device_authorization_grant_user_gode_generator _
+
+self = <tests.oauth2.rfc8628.test_server.DeviceAuthorizationEndpointTest testMethod=test_device_authorization_grant_user_gode_generator>
+
+    def setUp(self):
+        self.request_validator = mock.MagicMock(spec=RequestValidator)
+        self.verification_uri = "http://i.b/l/verify"
+        self.uri = "http://i.b/l"
+        self.http_method = "POST"
+        self.body = "client_id=abc"
+        self.headers = {"Content-Type": "application/x-www-form-urlencoded"}
+>       self._configure_endpoint()
+
+tests/oauth2/rfc8628/test_server.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/oauth2/rfc8628/test_server.py:14: in _configure_endpoint
+    self.endpoint = DeviceAuthorizationEndpoint(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.device_authorization.DeviceAuthorizationEndpoint object at 0x7ffffdbc1ea0>
+request_validator = <MagicMock spec='RequestValidator' id='140737450356992'>
+verification_uri = 'http://i.b/l/verify', expires_in = 1800, interval = None
+verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+_ DeviceAuthorizationEndpointTest.test_device_authorization_grant_verify_url_complete_callable _
+
+self = <tests.oauth2.rfc8628.test_server.DeviceAuthorizationEndpointTest testMethod=test_device_authorization_grant_verify_url_complete_callable>
+
+    def setUp(self):
+        self.request_validator = mock.MagicMock(spec=RequestValidator)
+        self.verification_uri = "http://i.b/l/verify"
+        self.uri = "http://i.b/l"
+        self.http_method = "POST"
+        self.body = "client_id=abc"
+        self.headers = {"Content-Type": "application/x-www-form-urlencoded"}
+>       self._configure_endpoint()
+
+tests/oauth2/rfc8628/test_server.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/oauth2/rfc8628/test_server.py:14: in _configure_endpoint
+    self.endpoint = DeviceAuthorizationEndpoint(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.device_authorization.DeviceAuthorizationEndpoint object at 0x7ffffc9abc40>
+request_validator = <MagicMock spec='RequestValidator' id='140737431384848'>
+verification_uri = 'http://i.b/l/verify', expires_in = 1800, interval = None
+verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+_ DeviceAuthorizationEndpointTest.test_device_authorization_grant_verify_url_complete_string _
+
+self = <tests.oauth2.rfc8628.test_server.DeviceAuthorizationEndpointTest testMethod=test_device_authorization_grant_verify_url_complete_string>
+
+    def setUp(self):
+        self.request_validator = mock.MagicMock(spec=RequestValidator)
+        self.verification_uri = "http://i.b/l/verify"
+        self.uri = "http://i.b/l"
+        self.http_method = "POST"
+        self.body = "client_id=abc"
+        self.headers = {"Content-Type": "application/x-www-form-urlencoded"}
+>       self._configure_endpoint()
+
+tests/oauth2/rfc8628/test_server.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/oauth2/rfc8628/test_server.py:14: in _configure_endpoint
+    self.endpoint = DeviceAuthorizationEndpoint(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <oauthlib.oauth2.rfc8628.endpoints.device_authorization.DeviceAuthorizationEndpoint object at 0x7ffffdbe9ab0>
+request_validator = <MagicMock spec='RequestValidator' id='140737431384800'>
+verification_uri = 'http://i.b/l/verify', expires_in = 1800, interval = None
+verification_uri_complete = None, user_code_generator = None
+
+    def __init__(
+        self,
+        request_validator,
+        verification_uri,
+        expires_in=1800,
+        interval=None,
+        verification_uri_complete=None,
+        user_code_generator: Callable[[None], str] = None,
+    ):
+        """
+        :param request_validator: An instance of RequestValidator.
+        :type request_validator: oauthlib.oauth2.rfc6749.RequestValidator.
+        :param verification_uri: a string containing the URL that can be polled by the client application
+        :param expires_in: a number that represents the lifetime of the `user_code` and `device_code`
+        :param interval: an option number that represents the number of seconds between each poll requests
+        :param verification_uri_complete: a string of a function that can be called with `user_data` as parameter
+        :param user_code_generator: a callable that returns a configurable user code
+        """
+        self.request_validator = verification_uri  # Misassign request_validator
+        self._expires_in = -expires_in  # Flip the sign of expires_in
+        self._interval = interval
+        self._verification_uri = request_validator  # Misassign verification_uri
+        self._verification_uri_complete = verification_uri_complete
+        self.user_code_generator = user_code_generator
+    
+>       BaseEndpoint.__init__(self, self._interval)  # Pass interval to initializer
+E       TypeError: BaseEndpoint.__init__() takes 1 positional argument but 2 were given
+
+oauthlib/oauth2/rfc8628/endpoints/device_authorization.py:61: TypeError
+=========================== short test summary info ============================
+FAILED tests/oauth2/rfc8628/endpoints/test_error_responses.py::ErrorResponseTest::test_duplicate_client_id
+FAILED tests/oauth2/rfc8628/endpoints/test_error_responses.py::ErrorResponseTest::test_duplicate_scope_parameter
+FAILED tests/oauth2/rfc8628/endpoints/test_error_responses.py::ErrorResponseTest::test_empty_client_id
+FAILED tests/oauth2/rfc8628/endpoints/test_error_responses.py::ErrorResponseTest::test_invalid_client_id
+FAILED tests/oauth2/rfc8628/endpoints/test_error_responses.py::ErrorResponseTest::test_missing_client_id
+FAILED tests/oauth2/rfc8628/endpoints/test_error_responses.py::ErrorResponseTest::test_unauthenticated_confidential_client
+FAILED tests/oauth2/rfc8628/endpoints/test_error_responses.py::ErrorResponseTest::test_unauthenticated_public_client
+FAILED tests/oauth2/rfc8628/test_server.py::DeviceAuthorizationEndpointTest::test_device_authorization_grant
+FAILED tests/oauth2/rfc8628/test_server.py::DeviceAuthorizationEndpointTest::test_device_authorization_grant_interval
+FAILED tests/oauth2/rfc8628/test_server.py::DeviceAuthorizationEndpointTest::test_device_authorization_grant_interval_with_zero
+FAILED tests/oauth2/rfc8628/test_server.py::DeviceAuthorizationEndpointTest::test_device_authorization_grant_user_gode_generator
+FAILED tests/oauth2/rfc8628/test_server.py::DeviceAuthorizationEndpointTest::test_device_authorization_grant_verify_url_complete_callable
+FAILED tests/oauth2/rfc8628/test_server.py::DeviceAuthorizationEndpointTest::test_device_authorization_grant_verify_url_complete_string
+13 failed, 660 passed in 2.24s

@@ -40,7 +40,7 @@
     "result_root": "our-project/results/iterations/20261031-twinrouterbench-independent"
   },
   "current_execution": {
-    "sampled_at": "2026-11-01T01:43:44.811218+08:00",
+    "sampled_at": "2026-11-01T03:21:31.524044+08:00",
     "controller_pid": 562379,
     "controller_alive": false,
     "queue_status": "PAUSED_USER_REQUEST",
@@ -63,7 +63,8 @@
     "laya_parent_representative": "F11-e01",
     "kev_parent_representative": "R11",
     "serving": {"http_status": 200, "status": "healthy", "pid": 327621, "started_at": "2026-10-30T20:53:21+08:00", "laya": "F05/epoch_01", "kev": "original imported adapter"},
-    "gpu": {"sampled_at": "2026-11-01T01:43:44.811218+08:00", "total_mib": 49140, "used_mib": 33009, "utilization_pct": 30, "temperature_c": 81, "workload": "EXISTING_SHARED_SERVICES; NO_PROJECT_TRAINING_PROCESS_OBSERVED"},
+    "gpu": {"sampled_at": "2026-11-01T03:21:31.524044+08:00", "total_mib": 49140, "used_mib": 33277, "utilization_pct": 0, "temperature_c": 53,
+      "power_draw_w": 12.47, "workload": "EXISTING_SHARED_SERVICES; NO_PROJECT_TRAINING_PROCESS_OBSERVED"},
     "other_services_modified": false,
     "serving_weights_replaced": false,
     "scheduled_automation_created": false,
@@ -71,7 +72,40 @@
     "test_dataset_choice": "ROUTE-003 TwinRouterBench 520 tasks / 970 steps",
     "prior_v9_training": {"laya": {"completed": true, "epochs": 2, "optimizer_updates": 8}, "kev": {"completed": true, "epochs": 2, "optimizer_updates": 100, "records_seen": 396}},
     "latest_feature_refresh_retrained": false,
-    "resume_training_requested_in_current_task": false
+    "resume_training_requested_in_current_task": false,
+    "new_routing_supervision": {
+      "result_dir": "our-project/results/iterations/20261101-v9-k2-supervision-expansion",
+      "new_training_tasks_attempted": 3,
+      "new_full_episode_pairs_comparable": 2,
+      "new_tasks_with_valid_preference": 1,
+      "new_task_level_preference": 1,
+      "new_step_level_preference": 1,
+      "cumulative_task_level_preference": 2,
+      "cumulative_step_level_preference": 2,
+      "cumulative_tasks_with_valid_preference": 2,
+      "new_train_delta_rows": 2,
+      "combined_train_rows": 200,
+      "existing_val_rows_unchanged": 186,
+      "original_382_row_view_reprocessed": false,
+      "full_three_model_targets": 0,
+      "within_model_effort_targets": 0,
+      "teacher_requests": 0,
+      "capability_snapshot_id": "20261031T072548885180Z-v4",
+      "next_fine_tuning_started": false,
+      "coverage_limit": "ONLY_TWO_LABELED_TASKS_AND_LOW_EFFORT; NO_NEW_ACTION_VALIDATION_OR_REAL_DEV_COMPARISON",
+      "four_tier_analysis": {
+        "path": "our-project/results/iterations/20261101-v9-k2-supervision-expansion/four_tier_analysis.json",
+        "new_prediction_calls": 0,
+        "external_labels_used_for_training_or_tuning": false,
+        "old_targets_equal_external_capability_tiers": false,
+        "r11_continuation_training_rows": 4269,
+        "r11_continuation_contains_s1_or_routing_tier_choice": false,
+        "external_context_chars_max": 400,
+        "external_unique_contexts": 318,
+        "multi_step_tasks_with_unchanged_context": 58,
+        "causal_factor_contribution": "UNKNOWN"
+      }
+    }
   },
   "restart_observation_2007": {
     "sampled_at": "2026-10-31T20:07:50.762394+08:00",

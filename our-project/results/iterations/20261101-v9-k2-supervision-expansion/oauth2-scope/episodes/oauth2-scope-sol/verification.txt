@@ -1,0 +1,278 @@
+.F.........FF........................................................... [ 10%]
+........................................................................ [ 21%]
+........................................................................ [ 32%]
+........................................................................ [ 42%]
+........................................................................ [ 53%]
+........................................................................ [ 64%]
+........................................................................ [ 74%]
+........................................................................ [ 85%]
+........................................................................ [ 96%]
+.........................                                                [100%]
+=================================== FAILURES ===================================
+________________________ ClientTest.test_add_mac_token _________________________
+
+self = <tests.oauth2.rfc6749.clients.test_base.ClientTest testMethod=test_add_mac_token>
+
+    def test_add_mac_token(self):
+        # Missing access token
+        client = Client(self.client_id, token_type="MAC")
+        self.assertRaises(ValueError, client.add_token, self.uri)
+    
+        # Invalid hash algorithm
+        client = Client(self.client_id, token_type="MAC",
+                access_token=self.access_token, mac_key=self.mac_key,
+                mac_algorithm="hmac-sha-2")
+        self.assertRaises(ValueError, client.add_token, self.uri)
+    
+        orig_generate_timestamp = common.generate_timestamp
+        orig_generate_nonce = common.generate_nonce
+        orig_generate_age = utils.generate_age
+        self.addCleanup(setattr, common, 'generage_timestamp', orig_generate_timestamp)
+        self.addCleanup(setattr, common, 'generage_nonce', orig_generate_nonce)
+        self.addCleanup(setattr, utils, 'generate_age', orig_generate_age)
+        common.generate_timestamp = lambda: '123456789'
+        common.generate_nonce = lambda: 'abc123'
+        utils.generate_age = lambda *args: 0
+    
+        # Add the Authorization header (draft 00)
+        client = Client(self.client_id, token_type="MAC",
+                access_token=self.access_token, mac_key=self.mac_key,
+                mac_algorithm="hmac-sha-1")
+>       uri, headers, body = client.add_token(self.uri, body=self.body,
+                headers=self.headers, issue_time=datetime.datetime.now())
+
+tests/oauth2/rfc6749/clients/test_base.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc6749/clients/base.py:218: in add_token
+    return case_insensitive_token_types[self.token_type.lower()](uri, http_method, body,
+oauthlib/oauth2/rfc6749/clients/base.py:561: in _add_mac_token
+    headers = tokens.prepare_mac_header(self.access_token, uri,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+token = 'token', uri = 'https://example.com/path?query=world', key = 'secret'
+http_method = 'GET', nonce = '0:abc123', headers = {}, body = b'not=empty'
+ext = None, hash_algorithm = 'hmac-sha-1'
+issue_time = datetime.datetime(2026, 10, 31, 19, 7, 10, 238274), draft = 0
+
+    def prepare_mac_header(token, uri, key, http_method,
+                           nonce=None,
+                           headers=None,
+                           body=None,
+                           ext='',
+                           hash_algorithm='hmac-sha-1',
+                           issue_time=None,
+                           draft=0):
+        """Add an `MAC Access Authentication`_ signature to headers.
+    
+        Unlike OAuth 1, this HMAC signature does not require inclusion of the
+        request payload/body, neither does it use a combination of client_secret
+        and token_secret but rather a mac_key provided together with the access
+        token.
+    
+        Currently two algorithms are supported, "hmac-sha-1" and "hmac-sha-256",
+        `extension algorithms`_ are not supported.
+    
+        Example MAC Authorization header, linebreaks added for clarity
+    
+        Authorization: MAC id="h480djs93hd8",
+                           nonce="1336363200:dj83hs9s",
+                           mac="bhCQXTVyfj5cmA9uKkPFx1zeOXM="
+    
+        .. _`MAC Access Authentication`: https://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-01
+        .. _`extension algorithms`: https://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-01#section-7.1
+    
+        :param token:
+        :param uri: Request URI.
+        :param key: MAC given provided by token endpoint.
+        :param http_method: HTTP Request method.
+        :param nonce:
+        :param headers: Request headers as a dictionary.
+        :param body:
+        :param ext:
+        :param hash_algorithm: HMAC algorithm provided by token endpoint.
+        :param issue_time: Time when the MAC credentials were issued (datetime).
+        :param draft: MAC authentication specification version.
+        :return: headers dictionary with the authorization field added.
+        """
+        http_method = http_method.upper()
+        host, port = utils.host_from_uri(uri)
+    
+        if hash_algorithm.lower() == 'hmac-sha-1':
+            h = hashlib.sha1
+        elif hash_algorithm.lower() == 'hmac-sha-256':
+            h = hashlib.sha256
+        else:
+            raise ValueError('unknown hash algorithm')
+    
+        if draft == 0:
+            nonce = nonce or '{}:{}'.format(utils.generate_age(issue_time),
+                                              common.generate_nonce())
+        else:
+            ts = common.generate_timestamp()
+            nonce = common.generate_nonce()
+    
+        sch, net, path, par, query, fra = urlparse(uri)
+    
+        request_uri = path + '?' + query if query else path
+    
+        # Hash the body/payload
+        if body is not None and draft == 0:
+            body = body.encode('utf-8')
+            bodyhash = b2a_base64(h(body).digest())[:-1].decode('utf-8')
+        else:
+            bodyhash = ''
+    
+        # Create the normalized base string
+        base = []
+        if draft == 0:
+            base.append(nonce)
+        else:
+            base.append(ts)
+            base.append(nonce)
+        base.append(http_method.upper())
+        base.append(request_uri)
+        base.append(host)
+        base.append(port)
+        if draft == 0:
+            base.append(bodyhash)
+        base.append(ext or '')
+>       base_string = '\n'.join(base) + '\n'
+E       TypeError: sequence item 3: expected str instance, NoneType found
+
+oauthlib/oauth2/rfc6749/tokens.py:149: TypeError
+______________________ TokenTest.test_prepare_mac_header _______________________
+
+self = <tests.oauth2.rfc6749.test_tokens.TokenTest testMethod=test_prepare_mac_header>
+
+    def test_prepare_mac_header(self):
+        """Verify mac signatures correctness
+    
+        TODO: verify hmac-sha-256
+        """
+>       self.assertEqual(prepare_mac_header(**self.mac_plain), self.auth_plain)
+
+tests/oauth2/rfc6749/test_tokens.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+token = 'h480djs93hd8', uri = 'http://example.com/resource/1?b=1&a=2'
+key = '489dks293j39', http_method = 'GET', nonce = '264095:dj83hs9s'
+headers = None, body = None, ext = '', hash_algorithm = 'hmac-sha-1'
+issue_time = None, draft = 0
+
+    def prepare_mac_header(token, uri, key, http_method,
+                           nonce=None,
+                           headers=None,
+                           body=None,
+                           ext='',
+                           hash_algorithm='hmac-sha-1',
+                           issue_time=None,
+                           draft=0):
+        """Add an `MAC Access Authentication`_ signature to headers.
+    
+        Unlike OAuth 1, this HMAC signature does not require inclusion of the
+        request payload/body, neither does it use a combination of client_secret
+        and token_secret but rather a mac_key provided together with the access
+        token.
+    
+        Currently two algorithms are supported, "hmac-sha-1" and "hmac-sha-256",
+        `extension algorithms`_ are not supported.
+    
+        Example MAC Authorization header, linebreaks added for clarity
+    
+        Authorization: MAC id="h480djs93hd8",
+                           nonce="1336363200:dj83hs9s",
+                           mac="bhCQXTVyfj5cmA9uKkPFx1zeOXM="
+    
+        .. _`MAC Access Authentication`: https://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-01
+        .. _`extension algorithms`: https://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-01#section-7.1
+    
+        :param token:
+        :param uri: Request URI.
+        :param key: MAC given provided by token endpoint.
+        :param http_method: HTTP Request method.
+        :param nonce:
+        :param headers: Request headers as a dictionary.
+        :param body:
+        :param ext:
+        :param hash_algorithm: HMAC algorithm provided by token endpoint.
+        :param issue_time: Time when the MAC credentials were issued (datetime).
+        :param draft: MAC authentication specification version.
+        :return: headers dictionary with the authorization field added.
+        """
+        http_method = http_method.upper()
+        host, port = utils.host_from_uri(uri)
+    
+        if hash_algorithm.lower() == 'hmac-sha-1':
+            h = hashlib.sha1
+        elif hash_algorithm.lower() == 'hmac-sha-256':
+            h = hashlib.sha256
+        else:
+            raise ValueError('unknown hash algorithm')
+    
+        if draft == 0:
+            nonce = nonce or '{}:{}'.format(utils.generate_age(issue_time),
+                                              common.generate_nonce())
+        else:
+            ts = common.generate_timestamp()
+            nonce = common.generate_nonce()
+    
+        sch, net, path, par, query, fra = urlparse(uri)
+    
+        request_uri = path + '?' + query if query else path
+    
+        # Hash the body/payload
+        if body is not None and draft == 0:
+            body = body.encode('utf-8')
+            bodyhash = b2a_base64(h(body).digest())[:-1].decode('utf-8')
+        else:
+            bodyhash = ''
+    
+        # Create the normalized base string
+        base = []
+        if draft == 0:
+            base.append(nonce)
+        else:
+            base.append(ts)
+            base.append(nonce)
+        base.append(http_method.upper())
+        base.append(request_uri)
+        base.append(host)
+        base.append(port)
+        if draft == 0:
+            base.append(bodyhash)
+        base.append(ext or '')
+>       base_string = '\n'.join(base) + '\n'
+E       TypeError: sequence item 3: expected str instance, NoneType found
+
+oauthlib/oauth2/rfc6749/tokens.py:149: TypeError
+________________________ UtilsTests.test_host_from_uri _________________________
+
+self = <tests.oauth2.rfc6749.test_utils.UtilsTests testMethod=test_host_from_uri>
+
+    def test_host_from_uri(self):
+        """Test if hosts and ports are properly extracted from URIs.
+    
+        This should be done according to the MAC Authentication spec.
+        Defaults ports should be provided when none is present in the URI.
+        """
+        self.assertEqual(host_from_uri('http://a.b-c.com:8080'), ('a.b-c.com', '8080'))
+        self.assertEqual(host_from_uri('https://a.b.com:8080'), ('a.b.com', '8080'))
+>       self.assertEqual(host_from_uri('http://www.example.com'), ('www.example.com', '80'))
+E       AssertionError: Tuples differ: (None, 'www.example.com') != ('www.example.com', '80')
+E       
+E       First differing element 0:
+E       None
+E       'www.example.com'
+E       
+E       - (None, 'www.example.com')
+E       ?  ------
+E       
+E       + ('www.example.com', '80')
+E       ?                   ++++++
+
+tests/oauth2/rfc6749/test_utils.py:39: AssertionError
+=========================== short test summary info ============================
+FAILED tests/oauth2/rfc6749/clients/test_base.py::ClientTest::test_add_mac_token
+FAILED tests/oauth2/rfc6749/test_tokens.py::TokenTest::test_prepare_mac_header
+FAILED tests/oauth2/rfc6749/test_utils.py::UtilsTests::test_host_from_uri - A...
+3 failed, 670 passed in 4.61s

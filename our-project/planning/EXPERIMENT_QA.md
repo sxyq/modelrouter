@@ -10,7 +10,9 @@
 
 **独立评分决定与完成（11-01）**：用户已明确选TwinRouterBench 520题/970步，只评原ROUTE-003的旧四档 `routing_tier_choice`，不使用同源test.jsonl、Train成绩或新三模型动作映射替代。两组微调前导入权重与原Val前三8/8在CPU完整实算；F11/R11分别20.515464/18.969072分，较微调前增13.505155/5.670103个百分点，但八版本均低于恒选low71.030928分。Test不用于重选、温度拟合、训练或Serving晋升；数字和最终状态见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)，不增加Q-ID或新研究流程。原队列仍暂停、无活动训练，382/v4及新两条后没有加训。
 
-**2026-10-31 当前决定（沿 Q-003/Q-021）**：从ad1d392接续，五RQ、八图十二表、三正式身份、两固定教师参考及原mini/Harbor体系不变。使用允许训练且与Canary/Dev/Final元数据隔离的SWE-smith TextFSM任务，取得K=2任务级偏好1、步骤级偏好1；前缀6两失败不贴选择标签。新Task偏好为等Verifier结果下低费用的Luna low，Step偏好为前缀7一步完成修复的Sol low，不能互相复制终局目标；完整三模型最优和同模型Effort差异标签仍0。结果见[当前真实监督](../results/iterations/20261031-v9-real-route-supervision/review.md)。
+**2026-11-01 当前决定（沿 Q-003/Q-021）**：新增3个不同Train任务尝试、2组完整可比任务对照，取得任务级/步骤级各1条新偏好，累计各2条/同2标签任务。Scope两边均失败、SQLparse请求中断和无终局前缀保留观察；不复制任务胜负到步骤。原Prepare消费新2条，旧382视图不改。四档分析只读取原八份结果，不使用独立标签训练、调温度或选阈值；旧S1/S2/S3与外部能力档位语义不同，偏置因果贡献未知。教师关闭、AA v4、K=2 low；Flash原两账户仍无渠道，K=3与跨Effort目标0。当前无训练，F14归档及F11/R11代表、旧Serving不变，不启动新配方。费用与有效资格见[本轮结果](../results/iterations/20261101-v9-k2-supervision-expansion/review.md)。
+
+**2026-10-31 历史决定（沿 Q-003/Q-021）**：从ad1d392接续，五RQ、八图十二表、三正式身份、两固定教师参考及原mini/Harbor体系不变。使用允许训练且与Canary/Dev/Final元数据隔离的SWE-smith TextFSM任务，取得K=2任务级偏好1、步骤级偏好1；前缀6两失败不贴选择标签。新Task偏好为等Verifier结果下低费用的Luna low，Step偏好为前缀7一步完成修复的Sol low，不能互相复制终局目标；完整三模型最优和同模型Effort差异标签仍0。结果见[历史真实监督](../results/iterations/20261031-v9-real-route-supervision/review.md)。
 
 **教师决定与实证**：只摘要已观察事实，两个参考输入缩为摘录，去掉重复消息；使用Sol最低合法low、JSON Object、输出4096/context8000。保留首次约3生成与阶段/验证/重复错误触发，后续最少间隔3生成；不增加重试或第二教师。新真实step3前缀三字段成功，1462输入/1528输出含1435 reasoning、0.0189335USD；未执行新Router或工具，不计旧Trial。旧观察机会重算3/7/10而非旧3/5/6/7/8，不等于收益；新短评仍比Luna本次Episode贵约4.23倍。旧短评随信号变化清除并保留截止范围，不改变Agent行动或指定模型；新Episode教师关闭。
 

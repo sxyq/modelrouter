@@ -1,5 +1,21 @@
 # Laya / Kev 全历史训练研究报告
 
+## 2026-11-01 · 03:21训练状态与新动作材料
+
+| 对象 | 当前事实 |
+|---|---|
+| Laya / Kev | 活动训练均0；F01–F13、R01–R16完成状态保留，原队列PAUSED_USER_REQUEST/current_run=null |
+| F14 | 归档failed/NON_FINITE_LOSS、结束2026-10-31T09:01:02Z不变；未恢复或作父权重 |
+| 接续代表 / Serving | F11-e01、R11；Serving health/models均200，仍F05-e01/原Kev Adapter，原PID327621 |
+| 旧V9加训 / 本轮 | 原2轮、Laya8更新/Kev100更新与负结果保留；本轮无新训练、参数更新或Serving晋升 |
+| 新合法动作材料 | 本轮任务级/步骤级各1，累计各2、同2标签任务；原Prepare/serializer已消费新2条 |
+| 材料组合 | 原Train196/Val186 + 旧2条 + 新2条可组合Train200/Val186；原382视图不重新加工 |
+| 新配方准备 | 只有2标签任务、均low，完整K=3/跨Effort目标0；仍不足以支持有意义的继续微调 |
+
+旧四档分析未重评：旧S1候选偏好、S2终局和S3资源档位语义不同于外部能力档；R11继续训练4269行仅S2/S3，Laya原mid偏向早已存在；外部前400字符造成58个多步任务输入不变。偏置的独立因果贡献未知，不用独立标签训练、调参或重选前三。
+
+后续保留旧S1，并区分task/step的新目标；教师截止前摘要与AA v4卡沿原serializer进入状态，low缺测不赋Max分数。Laya encoder/head与Kev LoRA/pointer head的具体更新配方未启动或另造。原固定Val四指标及独立真实Dev用于判断新收益，原训练负结果不删。新任务/步骤、失败与费用见[本轮结果](../iterations/20261101-v9-k2-supervision-expansion/review.md)，以下独立评分和原训练历史保留。
+
 ## 2026-11-01 · 独立 TwinRouterBench：八版本完整成绩
 
 用户已明确采用独立 TwinRouterBench 520题/970步，不采用原同源 `test.jsonl`。已存在的 ROUTE-003 留出材料只用于评价，本轮没有 Train、Val、温度拟合或新模型参数更新；原固定 Val 选出的前三在打开独立集前已确定。

@@ -1,0 +1,796 @@
+FFFFFFFFFFFFFFFFFF...................................................... [ 10%]
+........................................................................ [ 21%]
+........................................................................ [ 32%]
+........................................................................ [ 42%]
+........................................................................ [ 53%]
+........................................................................ [ 64%]
+........................................................................ [ 74%]
+........................................................................ [ 85%]
+........................................................................ [ 96%]
+.........................                                                [100%]
+=================================== FAILURES ===================================
+____________ BackendApplicationClientTest.test_parse_token_response ____________
+
+self = <tests.oauth2.rfc6749.clients.test_backend_application.BackendApplicationClientTest testMethod=test_parse_token_response>
+
+    def test_parse_token_response(self):
+        client = BackendApplicationClient(self.client_id)
+    
+        # Parse code and state
+        response = client.parse_request_body_response(self.token_json, scope=self.scope)
+        self.assertEqual(response, self.token)
+        self.assertEqual(client.access_token, response.get("access_token"))
+        self.assertEqual(client.refresh_token, response.get("refresh_token"))
+        self.assertEqual(client.token_type, response.get("token_type"))
+    
+        # Mismatching state
+>       self.assertRaises(Warning, client.parse_request_body_response, self.token_json, scope="invalid")
+
+tests/oauth2/rfc6749/clients/test_backend_application.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc6749/clients/base.py:426: in parse_request_body_response
+    self.token = parse_token_response(body, scope=scope)
+oauthlib/oauth2/rfc6749/parameters.py:443: in parse_token_response
+    validate_token_parameters(params)
+oauthlib/oauth2/rfc6749/parameters.py:464: in validate_token_parameters
+    old=params.old_scope, new=params.scope,
+oauthlib/oauth2/rfc6749/tokens.py:44: in old_scope
+    return utils.list_to_scope(self._old_scope)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def list_to_scope(scope):
+        """Convert a list of scopes to a space separated string."""
+        if isinstance(scope, str) or scope is None:
+            return scope
+        elif isinstance(scope, (tuple, list)):
+            return " ".join(str(s) for s in reversed(scope))
+        else:
+>           raise ValueError("Invalid scope (%s), must be string, tuple, set, or list." % scope)
+E           ValueError: Invalid scope ({'invalid'}), must be string, tuple, set, or list.
+
+oauthlib/oauth2/rfc6749/utils.py:21: ValueError
+________________________ ClientTest.test_add_mac_token _________________________
+
+self = <tests.oauth2.rfc6749.clients.test_base.ClientTest testMethod=test_add_mac_token>
+
+    def test_add_mac_token(self):
+        # Missing access token
+        client = Client(self.client_id, token_type="MAC")
+        self.assertRaises(ValueError, client.add_token, self.uri)
+    
+        # Invalid hash algorithm
+        client = Client(self.client_id, token_type="MAC",
+                access_token=self.access_token, mac_key=self.mac_key,
+                mac_algorithm="hmac-sha-2")
+        self.assertRaises(ValueError, client.add_token, self.uri)
+    
+        orig_generate_timestamp = common.generate_timestamp
+        orig_generate_nonce = common.generate_nonce
+        orig_generate_age = utils.generate_age
+        self.addCleanup(setattr, common, 'generage_timestamp', orig_generate_timestamp)
+        self.addCleanup(setattr, common, 'generage_nonce', orig_generate_nonce)
+        self.addCleanup(setattr, utils, 'generate_age', orig_generate_age)
+        common.generate_timestamp = lambda: '123456789'
+        common.generate_nonce = lambda: 'abc123'
+        utils.generate_age = lambda *args: 0
+    
+        # Add the Authorization header (draft 00)
+        client = Client(self.client_id, token_type="MAC",
+                access_token=self.access_token, mac_key=self.mac_key,
+                mac_algorithm="hmac-sha-1")
+>       uri, headers, body = client.add_token(self.uri, body=self.body,
+                headers=self.headers, issue_time=datetime.datetime.now())
+
+tests/oauth2/rfc6749/clients/test_base.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc6749/clients/base.py:218: in add_token
+    return case_insensitive_token_types[self.token_type.lower()](uri, http_method, body,
+oauthlib/oauth2/rfc6749/clients/base.py:561: in _add_mac_token
+    headers = tokens.prepare_mac_header(self.access_token, uri,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+token = 'token', uri = 'https://example.com/path?query=world', key = 'secret'
+http_method = 'GET', nonce = '0:abc123', headers = {}, body = b'not=empty'
+ext = None, hash_algorithm = 'hmac-sha-1'
+issue_time = datetime.datetime(2026, 10, 31, 19, 1, 30, 713433), draft = 0
+
+    def prepare_mac_header(token, uri, key, http_method,
+                           nonce=None,
+                           headers=None,
+                           body=None,
+                           ext='',
+                           hash_algorithm='hmac-sha-1',
+                           issue_time=None,
+                           draft=0):
+        """Add an `MAC Access Authentication`_ signature to headers.
+    
+        Unlike OAuth 1, this HMAC signature does not require inclusion of the
+        request payload/body, neither does it use a combination of client_secret
+        and token_secret but rather a mac_key provided together with the access
+        token.
+    
+        Currently two algorithms are supported, "hmac-sha-1" and "hmac-sha-256",
+        `extension algorithms`_ are not supported.
+    
+        Example MAC Authorization header, linebreaks added for clarity
+    
+        Authorization: MAC id="h480djs93hd8",
+                           nonce="1336363200:dj83hs9s",
+                           mac="bhCQXTVyfj5cmA9uKkPFx1zeOXM="
+    
+        .. _`MAC Access Authentication`: https://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-01
+        .. _`extension algorithms`: https://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-01#section-7.1
+    
+        :param token:
+        :param uri: Request URI.
+        :param key: MAC given provided by token endpoint.
+        :param http_method: HTTP Request method.
+        :param nonce:
+        :param headers: Request headers as a dictionary.
+        :param body:
+        :param ext:
+        :param hash_algorithm: HMAC algorithm provided by token endpoint.
+        :param issue_time: Time when the MAC credentials were issued (datetime).
+        :param draft: MAC authentication specification version.
+        :return: headers dictionary with the authorization field added.
+        """
+        http_method = http_method.upper()
+        host, port = utils.host_from_uri(uri)
+    
+        if hash_algorithm.lower() == 'hmac-sha-1':
+            h = hashlib.sha1
+        elif hash_algorithm.lower() == 'hmac-sha-256':
+            h = hashlib.sha256
+        else:
+            raise ValueError('unknown hash algorithm')
+    
+        if draft == 0:
+            nonce = nonce or '{}:{}'.format(utils.generate_age(issue_time),
+                                              common.generate_nonce())
+        else:
+            ts = common.generate_timestamp()
+            nonce = common.generate_nonce()
+    
+        sch, net, path, par, query, fra = urlparse(uri)
+    
+        request_uri = path + '?' + query if query else path
+    
+        # Hash the body/payload
+        if body is not None and draft == 0:
+            body = body.encode('utf-8')
+            bodyhash = b2a_base64(h(body).digest())[:-1].decode('utf-8')
+        else:
+            bodyhash = ''
+    
+        # Create the normalized base string
+        base = []
+        if draft == 0:
+            base.append(nonce)
+        else:
+            base.append(ts)
+            base.append(nonce)
+        base.append(http_method.upper())
+        base.append(request_uri)
+        base.append(host)
+        base.append(port)
+        if draft == 0:
+            base.append(bodyhash)
+        base.append(ext or '')
+>       base_string = '\n'.join(base) + '\n'
+E       TypeError: sequence item 3: expected str instance, NoneType found
+
+oauthlib/oauth2/rfc6749/tokens.py:149: TypeError
+____________ LegacyApplicationClientTest.test_parse_token_response _____________
+
+self = <tests.oauth2.rfc6749.clients.test_legacy_application.LegacyApplicationClientTest testMethod=test_parse_token_response>
+
+    def test_parse_token_response(self):
+        client = LegacyApplicationClient(self.client_id)
+    
+        # Parse code and state
+        response = client.parse_request_body_response(self.token_json, scope=self.scope)
+        self.assertEqual(response, self.token)
+        self.assertEqual(client.access_token, response.get("access_token"))
+        self.assertEqual(client.refresh_token, response.get("refresh_token"))
+        self.assertEqual(client.token_type, response.get("token_type"))
+    
+        # Mismatching state
+>       self.assertRaises(Warning, client.parse_request_body_response, self.token_json, scope="invalid")
+
+tests/oauth2/rfc6749/clients/test_legacy_application.py:70: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc6749/clients/base.py:426: in parse_request_body_response
+    self.token = parse_token_response(body, scope=scope)
+oauthlib/oauth2/rfc6749/parameters.py:443: in parse_token_response
+    validate_token_parameters(params)
+oauthlib/oauth2/rfc6749/parameters.py:464: in validate_token_parameters
+    old=params.old_scope, new=params.scope,
+oauthlib/oauth2/rfc6749/tokens.py:44: in old_scope
+    return utils.list_to_scope(self._old_scope)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def list_to_scope(scope):
+        """Convert a list of scopes to a space separated string."""
+        if isinstance(scope, str) or scope is None:
+            return scope
+        elif isinstance(scope, (tuple, list)):
+            return " ".join(str(s) for s in reversed(scope))
+        else:
+>           raise ValueError("Invalid scope (%s), must be string, tuple, set, or list." % scope)
+E           ValueError: Invalid scope ({'invalid'}), must be string, tuple, set, or list.
+
+oauthlib/oauth2/rfc6749/utils.py:21: ValueError
+____________ MobileApplicationClientTest.test_parse_token_response _____________
+
+self = <tests.oauth2.rfc6749.clients.test_mobile_application.MobileApplicationClientTest testMethod=test_parse_token_response>
+
+    def test_parse_token_response(self):
+        client = MobileApplicationClient(self.client_id)
+    
+        # Parse code and state
+        response = client.parse_request_uri_response(self.response_uri, scope=self.scope)
+        self.assertEqual(response, self.token)
+        self.assertEqual(client.access_token, response.get("access_token"))
+        self.assertEqual(client.refresh_token, response.get("refresh_token"))
+        self.assertEqual(client.token_type, response.get("token_type"))
+    
+        # Mismatching scope
+>       self.assertRaises(Warning, client.parse_request_uri_response, self.response_uri, scope="invalid")
+
+tests/oauth2/rfc6749/clients/test_mobile_application.py:92: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc6749/clients/mobile_application.py:172: in parse_request_uri_response
+    self.token = parse_implicit_response(uri, state=state, scope=scope)
+oauthlib/oauth2/rfc6749/parameters.py:353: in parse_implicit_response
+    validate_token_parameters(params)
+oauthlib/oauth2/rfc6749/parameters.py:464: in validate_token_parameters
+    old=params.old_scope, new=params.scope,
+oauthlib/oauth2/rfc6749/tokens.py:44: in old_scope
+    return utils.list_to_scope(self._old_scope)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def list_to_scope(scope):
+        """Convert a list of scopes to a space separated string."""
+        if isinstance(scope, str) or scope is None:
+            return scope
+        elif isinstance(scope, (tuple, list)):
+            return " ".join(str(s) for s in reversed(scope))
+        else:
+>           raise ValueError("Invalid scope (%s), must be string, tuple, set, or list." % scope)
+E           ValueError: Invalid scope ({'invalid'}), must be string, tuple, set, or list.
+
+oauthlib/oauth2/rfc6749/utils.py:21: ValueError
+____________ ServiceApplicationClientTest.test_parse_token_response ____________
+
+self = <tests.oauth2.rfc6749.clients.test_service_application.ServiceApplicationClientTest testMethod=test_parse_token_response>
+t = <MagicMock name='time' id='140737431512032'>
+
+    @patch('time.time')
+    def test_parse_token_response(self, t):
+        t.return_value = time()
+        self.token['expires_at'] = self.token['expires_in'] + round(t.return_value)
+    
+        client = ServiceApplicationClient(self.client_id)
+    
+        # Parse code and state
+        response = client.parse_request_body_response(self.token_json, scope=self.scope)
+        self.assertEqual(response, self.token)
+        self.assertEqual(client.access_token, response.get("access_token"))
+        self.assertEqual(client.refresh_token, response.get("refresh_token"))
+        self.assertEqual(client.token_type, response.get("token_type"))
+    
+        # Mismatching state
+>       self.assertRaises(Warning, client.parse_request_body_response, self.token_json, scope="invalid")
+
+tests/oauth2/rfc6749/clients/test_service_application.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc6749/clients/base.py:426: in parse_request_body_response
+    self.token = parse_token_response(body, scope=scope)
+oauthlib/oauth2/rfc6749/parameters.py:443: in parse_token_response
+    validate_token_parameters(params)
+oauthlib/oauth2/rfc6749/parameters.py:464: in validate_token_parameters
+    old=params.old_scope, new=params.scope,
+oauthlib/oauth2/rfc6749/tokens.py:44: in old_scope
+    return utils.list_to_scope(self._old_scope)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def list_to_scope(scope):
+        """Convert a list of scopes to a space separated string."""
+        if isinstance(scope, str) or scope is None:
+            return scope
+        elif isinstance(scope, (tuple, list)):
+            return " ".join(str(s) for s in reversed(scope))
+        else:
+>           raise ValueError("Invalid scope (%s), must be string, tuple, set, or list." % scope)
+E           ValueError: Invalid scope ({'invalid'}), must be string, tuple, set, or list.
+
+oauthlib/oauth2/rfc6749/utils.py:21: ValueError
+______________ WebApplicationClientTest.test_parse_token_response ______________
+
+self = <tests.oauth2.rfc6749.clients.test_web_application.WebApplicationClientTest testMethod=test_parse_token_response>
+
+    def test_parse_token_response(self):
+        client = WebApplicationClient(self.client_id)
+    
+        # Parse code and state
+        response = client.parse_request_body_response(self.token_json, scope=self.scope)
+        self.assertEqual(response, self.token)
+        self.assertEqual(client.access_token, response.get("access_token"))
+        self.assertEqual(client.refresh_token, response.get("refresh_token"))
+        self.assertEqual(client.token_type, response.get("token_type"))
+    
+        # Mismatching state
+>       self.assertRaises(Warning, client.parse_request_body_response, self.token_json, scope="invalid")
+
+tests/oauth2/rfc6749/clients/test_web_application.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc6749/clients/base.py:426: in parse_request_body_response
+    self.token = parse_token_response(body, scope=scope)
+oauthlib/oauth2/rfc6749/parameters.py:443: in parse_token_response
+    validate_token_parameters(params)
+oauthlib/oauth2/rfc6749/parameters.py:464: in validate_token_parameters
+    old=params.old_scope, new=params.scope,
+oauthlib/oauth2/rfc6749/tokens.py:44: in old_scope
+    return utils.list_to_scope(self._old_scope)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def list_to_scope(scope):
+        """Convert a list of scopes to a space separated string."""
+        if isinstance(scope, str) or scope is None:
+            return scope
+        elif isinstance(scope, (tuple, list)):
+            return " ".join(str(s) for s in reversed(scope))
+        else:
+>           raise ValueError("Invalid scope (%s), must be string, tuple, set, or list." % scope)
+E           ValueError: Invalid scope ({'invalid'}), must be string, tuple, set, or list.
+
+oauthlib/oauth2/rfc6749/utils.py:21: ValueError
+___________________ ParameterTests.test_json_token_response ____________________
+
+self = <tests.oauth2.rfc6749.test_parameters.ParameterTests testMethod=test_json_token_response>
+
+    def test_json_token_response(self):
+        """Verify correct parameter parsing and validation for token responses. """
+        self.assertEqual(parse_token_response(self.json_response), self.json_dict)
+        self.assertRaises(AccessDeniedError, parse_token_response, self.json_error)
+        self.assertRaises(MissingTokenError, parse_token_response, self.json_notoken)
+    
+        self.assertEqual(parse_token_response(self.json_response_noscope,
+            scope=['all', 'the', 'scopes']), self.json_noscope_dict)
+        self.assertEqual(parse_token_response(self.json_response_noexpire), self.json_noexpire_dict)
+        self.assertEqual(parse_token_response(self.json_response_expirenull), self.json_noexpire_dict)
+    
+        scope_changes_recorded = []
+        def record_scope_change(sender, message, old, new):
+            scope_changes_recorded.append((message, old, new))
+    
+        os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
+        signals.scope_changed.connect(record_scope_change)
+        try:
+>           parse_token_response(self.json_response, scope='aaa')
+
+tests/oauth2/rfc6749/test_parameters.py:261: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc6749/parameters.py:443: in parse_token_response
+    validate_token_parameters(params)
+oauthlib/oauth2/rfc6749/parameters.py:464: in validate_token_parameters
+    old=params.old_scope, new=params.scope,
+oauthlib/oauth2/rfc6749/tokens.py:44: in old_scope
+    return utils.list_to_scope(self._old_scope)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scope = {'aaa'}
+
+    def list_to_scope(scope):
+        """Convert a list of scopes to a space separated string."""
+        if isinstance(scope, str) or scope is None:
+            return scope
+        elif isinstance(scope, (tuple, list)):
+            return " ".join(str(s) for s in reversed(scope))
+        else:
+>           raise ValueError("Invalid scope (%s), must be string, tuple, set, or list." % scope)
+E           ValueError: Invalid scope ({'aaa'}), must be string, tuple, set, or list.
+
+oauthlib/oauth2/rfc6749/utils.py:21: ValueError
+____________________ ParameterTests.test_prepare_grant_uri _____________________
+
+self = <tests.oauth2.rfc6749.test_parameters.ParameterTests testMethod=test_prepare_grant_uri>
+
+    def test_prepare_grant_uri(self):
+        """Verify correct authorization URI construction."""
+        self.assertURLEqual(prepare_grant_uri(**self.auth_grant), self.auth_grant_uri)
+>       self.assertURLEqual(prepare_grant_uri(**self.auth_grant_list_scope), self.auth_grant_uri_list_scope)
+
+tests/oauth2/rfc6749/test_parameters.py:199: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unittest/__init__.py:25: in url_equals
+    self.assertCountEqual(query_a, query_b)
+E   AssertionError: Element counts were not equal:
+E   First has 1, Second has 0:  ('scope', 'scopes of list')
+E   First has 0, Second has 1:  ('scope', 'list of scopes')
+________________ ParameterTests.test_url_encoded_token_response ________________
+
+self = <tests.oauth2.rfc6749.test_parameters.ParameterTests testMethod=test_url_encoded_token_response>
+
+    def test_url_encoded_token_response(self):
+        """Verify fallback parameter parsing and validation for token responses. """
+        self.assertEqual(parse_token_response(self.url_encoded_response), self.json_dict)
+        self.assertRaises(AccessDeniedError, parse_token_response, self.url_encoded_error)
+        self.assertRaises(MissingTokenError, parse_token_response, self.url_encoded_notoken)
+    
+        scope_changes_recorded = []
+        def record_scope_change(sender, message, old, new):
+            scope_changes_recorded.append((message, old, new))
+    
+        os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
+        signals.scope_changed.connect(record_scope_change)
+        try:
+>           token = parse_token_response(self.url_encoded_response, scope='aaa')
+
+tests/oauth2/rfc6749/test_parameters.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+oauthlib/oauth2/rfc6749/parameters.py:443: in parse_token_response
+    validate_token_parameters(params)
+oauthlib/oauth2/rfc6749/parameters.py:464: in validate_token_parameters
+    old=params.old_scope, new=params.scope,
+oauthlib/oauth2/rfc6749/tokens.py:44: in old_scope
+    return utils.list_to_scope(self._old_scope)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scope = {'aaa'}
+
+    def list_to_scope(scope):
+        """Convert a list of scopes to a space separated string."""
+        if isinstance(scope, str) or scope is None:
+            return scope
+        elif isinstance(scope, (tuple, list)):
+            return " ".join(str(s) for s in reversed(scope))
+        else:
+>           raise ValueError("Invalid scope (%s), must be string, tuple, set, or list." % scope)
+E           ValueError: Invalid scope ({'aaa'}), must be string, tuple, set, or list.
+
+oauthlib/oauth2/rfc6749/utils.py:21: ValueError
+__________________ TokenEndpointTest.test_authorization_grant __________________
+
+self = <tests.oauth2.rfc6749.test_server.TokenEndpointTest testMethod=test_authorization_grant>
+
+    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    def test_authorization_grant(self):
+        body = 'grant_type=authorization_code&code=abc&scope=all+of+them'
+        headers, body, status_code = self.endpoint.create_token_response(
+            '', body=body)
+        token = {
+            'token_type': 'Bearer',
+            'expires_in': self.expires_in,
+            'access_token': 'abc',
+            'refresh_token': 'abc',
+            'scope': 'all of them'
+        }
+        self.assertEqual(json.loads(body), token)
+    
+        body = 'grant_type=authorization_code&code=abc'
+        headers, body, status_code = self.endpoint.create_token_response(
+            '', body=body)
+        token = {
+            'token_type': 'Bearer',
+            'expires_in': self.expires_in,
+            'access_token': 'abc',
+            'refresh_token': 'abc'
+        }
+>       self.assertEqual(json.loads(body), token)
+E       AssertionError: {'access_token': 'abc', 'expires_in': 1800,[56 chars]abc'} != {'token_type': 'Bearer', 'expires_in': 1800[43 chars]abc'}
+E         {'access_token': 'abc',
+E          'expires_in': 1800,
+E          'refresh_token': 'abc',
+E       -  'scope': '',
+E          'token_type': 'Bearer'}
+
+tests/oauth2/rfc6749/test_server.py:167: AssertionError
+_______________ SignedTokenEndpointTest.test_authorization_grant _______________
+
+self = <tests.oauth2.rfc6749.test_server.SignedTokenEndpointTest testMethod=test_authorization_grant>
+
+    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    def test_authorization_grant(self):
+        body = 'client_id=me&redirect_uri=http%3A%2F%2Fback.to%2Fme&grant_type=authorization_code&code=abc&scope=all+of+them'
+        headers, body, status_code = self.endpoint.create_token_response(
+            '', body=body)
+        body = json.loads(body)
+        token = {
+            'token_type': 'Bearer',
+            'expires_in': self.expires_in,
+            'access_token': body['access_token'],
+            'refresh_token': 'abc',
+            'scope': 'all of them'
+        }
+        self.assertEqual(body, token)
+    
+        body = 'client_id=me&redirect_uri=http%3A%2F%2Fback.to%2Fme&grant_type=authorization_code&code=abc'
+        headers, body, status_code = self.endpoint.create_token_response(
+            '', body=body)
+        body = json.loads(body)
+        token = {
+            'token_type': 'Bearer',
+            'expires_in': self.expires_in,
+            'access_token': body['access_token'],
+            'refresh_token': 'abc'
+        }
+>       self.assertEqual(body, token)
+E       AssertionError: {'access_token': 'eyJhbGciOiJSUzI1NiIsInR5c[493 chars]abc'} != {'token_type': 'Bearer', 'expires_in': 1800[480 chars]abc'}
+E         {'access_token': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6bnVsbCwiZXhwIjoxNzkzNDc1MDkwLCJ1c2VyX2lkIjoxMjN9.Sr6TL6d1uQBXS9832ffLIx0XzdhYct47ls8XxBMOy67JBGNc9-tl_Uh-xqnTV6YCXbUuVeGisAskV93CZLxGEw1JLe20K38CXSOd0oKOUkEmoDkCT8HFZy_4cURcu5SURTfcyvfc96OBPrQoqxHz3916_zJvFtGbcqqjVQ8E9vQNV62n3dQJdYajFrMmBaCtMVrnLhvypyMpeVGwBnhW1Ema9NYJWFwyEGpoaoILVI6aK-JOTZg60DdS_7LLfWcrYPNQBB2OiDLzK5Or4n0g1ullBBaexXRfd6JC9hQTgYTx2qPEbKtJBwPJaBTaDmyEYbXs0Q5OgqsVTYHIGs4v6Q',
+E          'expires_in': 1800,
+E          'refresh_token': 'abc',
+E       -  'scope': '',
+E          'token_type': 'Bearer'}
+
+tests/oauth2/rfc6749/test_server.py:306: AssertionError
+______________________ TokenTest.test_prepare_mac_header _______________________
+
+self = <tests.oauth2.rfc6749.test_tokens.TokenTest testMethod=test_prepare_mac_header>
+
+    def test_prepare_mac_header(self):
+        """Verify mac signatures correctness
+    
+        TODO: verify hmac-sha-256
+        """
+>       self.assertEqual(prepare_mac_header(**self.mac_plain), self.auth_plain)
+
+tests/oauth2/rfc6749/test_tokens.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+token = 'h480djs93hd8', uri = 'http://example.com/resource/1?b=1&a=2'
+key = '489dks293j39', http_method = 'GET', nonce = '264095:dj83hs9s'
+headers = None, body = None, ext = '', hash_algorithm = 'hmac-sha-1'
+issue_time = None, draft = 0
+
+    def prepare_mac_header(token, uri, key, http_method,
+                           nonce=None,
+                           headers=None,
+                           body=None,
+                           ext='',
+                           hash_algorithm='hmac-sha-1',
+                           issue_time=None,
+                           draft=0):
+        """Add an `MAC Access Authentication`_ signature to headers.
+    
+        Unlike OAuth 1, this HMAC signature does not require inclusion of the
+        request payload/body, neither does it use a combination of client_secret
+        and token_secret but rather a mac_key provided together with the access
+        token.
+    
+        Currently two algorithms are supported, "hmac-sha-1" and "hmac-sha-256",
+        `extension algorithms`_ are not supported.
+    
+        Example MAC Authorization header, linebreaks added for clarity
+    
+        Authorization: MAC id="h480djs93hd8",
+                           nonce="1336363200:dj83hs9s",
+                           mac="bhCQXTVyfj5cmA9uKkPFx1zeOXM="
+    
+        .. _`MAC Access Authentication`: https://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-01
+        .. _`extension algorithms`: https://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-01#section-7.1
+    
+        :param token:
+        :param uri: Request URI.
+        :param key: MAC given provided by token endpoint.
+        :param http_method: HTTP Request method.
+        :param nonce:
+        :param headers: Request headers as a dictionary.
+        :param body:
+        :param ext:
+        :param hash_algorithm: HMAC algorithm provided by token endpoint.
+        :param issue_time: Time when the MAC credentials were issued (datetime).
+        :param draft: MAC authentication specification version.
+        :return: headers dictionary with the authorization field added.
+        """
+        http_method = http_method.upper()
+        host, port = utils.host_from_uri(uri)
+    
+        if hash_algorithm.lower() == 'hmac-sha-1':
+            h = hashlib.sha1
+        elif hash_algorithm.lower() == 'hmac-sha-256':
+            h = hashlib.sha256
+        else:
+            raise ValueError('unknown hash algorithm')
+    
+        if draft == 0:
+            nonce = nonce or '{}:{}'.format(utils.generate_age(issue_time),
+                                              common.generate_nonce())
+        else:
+            ts = common.generate_timestamp()
+            nonce = common.generate_nonce()
+    
+        sch, net, path, par, query, fra = urlparse(uri)
+    
+        request_uri = path + '?' + query if query else path
+    
+        # Hash the body/payload
+        if body is not None and draft == 0:
+            body = body.encode('utf-8')
+            bodyhash = b2a_base64(h(body).digest())[:-1].decode('utf-8')
+        else:
+            bodyhash = ''
+    
+        # Create the normalized base string
+        base = []
+        if draft == 0:
+            base.append(nonce)
+        else:
+            base.append(ts)
+            base.append(nonce)
+        base.append(http_method.upper())
+        base.append(request_uri)
+        base.append(host)
+        base.append(port)
+        if draft == 0:
+            base.append(bodyhash)
+        base.append(ext or '')
+>       base_string = '\n'.join(base) + '\n'
+E       TypeError: sequence item 3: expected str instance, NoneType found
+
+oauthlib/oauth2/rfc6749/tokens.py:149: TypeError
+________________________ UtilsTests.test_host_from_uri _________________________
+
+self = <tests.oauth2.rfc6749.test_utils.UtilsTests testMethod=test_host_from_uri>
+
+    def test_host_from_uri(self):
+        """Test if hosts and ports are properly extracted from URIs.
+    
+        This should be done according to the MAC Authentication spec.
+        Defaults ports should be provided when none is present in the URI.
+        """
+        self.assertEqual(host_from_uri('http://a.b-c.com:8080'), ('a.b-c.com', '8080'))
+        self.assertEqual(host_from_uri('https://a.b.com:8080'), ('a.b.com', '8080'))
+>       self.assertEqual(host_from_uri('http://www.example.com'), ('www.example.com', '80'))
+E       AssertionError: Tuples differ: (None, 'www.example.com') != ('www.example.com', '80')
+E       
+E       First differing element 0:
+E       None
+E       'www.example.com'
+E       
+E       - (None, 'www.example.com')
+E       ?  ------
+E       
+E       + ('www.example.com', '80')
+E       ?                   ++++++
+
+tests/oauth2/rfc6749/test_utils.py:39: AssertionError
+________________________ UtilsTests.test_list_to_scope _________________________
+
+self = <tests.oauth2.rfc6749.test_utils.UtilsTests testMethod=test_list_to_scope>
+
+    def test_list_to_scope(self):
+        expected = 'foo bar baz'
+    
+        string_list = ['foo', 'bar', 'baz']
+>       self.assertEqual(list_to_scope(string_list), expected)
+E       AssertionError: 'baz bar foo' != 'foo bar baz'
+E       - baz bar foo
+E       + foo bar baz
+
+tests/oauth2/rfc6749/test_utils.py:67: AssertionError
+_______________________ UtilsTests.test_params_from_uri ________________________
+
+self = <tests.oauth2.rfc6749.test_utils.UtilsTests testMethod=test_params_from_uri>
+
+    def test_params_from_uri(self):
+>       self.assertEqual(params_from_uri('http://i.b/?foo=bar&g&scope=a+d'),
+                         {'foo': 'bar', 'g': '', 'scope': ['a', 'd']})
+E       AssertionError: {'foo': 'bar', 'g': '', 'scope': ['d'], 'timestamp': None} != {'foo': 'bar', 'g': '', 'scope': ['a', 'd']}
+E       - {'foo': 'bar', 'g': '', 'scope': ['d'], 'timestamp': None}
+E       ?                                       -------------------
+E       
+E       + {'foo': 'bar', 'g': '', 'scope': ['a', 'd']}
+E       ?                                   +++++
+
+tests/oauth2/rfc6749/test_utils.py:55: AssertionError
+________________________ UtilsTests.test_scope_to_list _________________________
+
+self = <tests.oauth2.rfc6749.test_utils.UtilsTests testMethod=test_scope_to_list>
+
+    def test_scope_to_list(self):
+        expected = ['foo', 'bar', 'baz']
+    
+        string_scopes = 'foo bar baz '
+        self.assertEqual(scope_to_list(string_scopes), expected)
+    
+        string_list_scopes = ['foo', 'bar', 'baz']
+        self.assertEqual(scope_to_list(string_list_scopes), expected)
+    
+        tuple_list_scopes = ('foo', 'bar', 'baz')
+        self.assertEqual(scope_to_list(tuple_list_scopes), expected)
+    
+        obj_list_scopes = [ScopeObject('foo'), ScopeObject('bar'), ScopeObject('baz')]
+>       self.assertEqual(scope_to_list(obj_list_scopes), expected)
+E       AssertionError: Lists differ: [<tests.oauth2.rfc6749.test_utils.ScopeObj[169 chars]0c0>] != ['foo', 'bar', 'baz']
+E       
+E       First differing element 0:
+E       <tests.oauth2.rfc6749.test_utils.ScopeObject object at 0x7ffffc7ccfd0>
+E       'foo'
+E       
+E       + ['foo', 'bar', 'baz']
+E       - [<tests.oauth2.rfc6749.test_utils.ScopeObject object at 0x7ffffc7ccfd0>,
+E       -  <tests.oauth2.rfc6749.test_utils.ScopeObject object at 0x7ffffc7ccfa0>,
+E       -  <tests.oauth2.rfc6749.test_utils.ScopeObject object at 0x7ffffc7cd0c0>]
+
+tests/oauth2/rfc6749/test_utils.py:96: AssertionError
+______________________ DeviceClientTest.test_request_uri _______________________
+
+self = <tests.oauth2.rfc8628.clients.test_device.DeviceClientTest testMethod=test_request_uri>
+
+    def test_request_uri(self):
+        client = DeviceClient(self.client_id)
+    
+        uri = client.prepare_request_uri(self.uri)
+        self.assertURLEqual(uri, self.uri_grant)
+    
+        client = DeviceClient(self.client_id, client_secret=self.client_secret)
+        uri = client.prepare_request_uri(self.uri)
+        self.assertURLEqual(uri, self.uri_secret)
+    
+        uri = client.prepare_request_uri(self.uri, scope=self.scope)
+>       self.assertURLEqual(uri, self.uri_scope)
+
+tests/oauth2/rfc8628/clients/test_device.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unittest/__init__.py:25: in url_equals
+    self.assertCountEqual(query_a, query_b)
+E   AssertionError: Element counts were not equal:
+E   First has 1, Second has 0:  ('scope', 'email profile')
+E   First has 0, Second has 1:  ('scope', 'profile email')
+__________________ TokenEndpointTest.test_authorization_grant __________________
+
+self = <tests.openid.connect.core.test_server.TokenEndpointTest testMethod=test_authorization_grant>
+
+    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    def test_authorization_grant(self):
+        body = 'grant_type=authorization_code&code=abc&scope=all+of+them'
+        headers, body, status_code = self.endpoint.create_token_response(
+            '', body=body)
+        token = {
+            'token_type': 'Bearer',
+            'expires_in': self.expires_in,
+            'access_token': 'abc',
+            'refresh_token': 'abc',
+            'scope': 'all of them'
+        }
+        self.assertEqual(json.loads(body), token)
+    
+        body = 'grant_type=authorization_code&code=abc'
+        headers, body, status_code = self.endpoint.create_token_response(
+            '', body=body)
+        token = {
+            'token_type': 'Bearer',
+            'expires_in': self.expires_in,
+            'access_token': 'abc',
+            'refresh_token': 'abc'
+        }
+>       self.assertEqual(json.loads(body), token)
+E       AssertionError: {'access_token': 'abc', 'expires_in': 1800,[56 chars]abc'} != {'token_type': 'Bearer', 'expires_in': 1800[43 chars]abc'}
+E         {'access_token': 'abc',
+E          'expires_in': 1800,
+E          'refresh_token': 'abc',
+E       -  'scope': '',
+E          'token_type': 'Bearer'}
+
+tests/openid/connect/core/test_server.py:167: AssertionError
+=========================== short test summary info ============================
+FAILED tests/oauth2/rfc6749/clients/test_backend_application.py::BackendApplicationClientTest::test_parse_token_response
+FAILED tests/oauth2/rfc6749/clients/test_base.py::ClientTest::test_add_mac_token
+FAILED tests/oauth2/rfc6749/clients/test_legacy_application.py::LegacyApplicationClientTest::test_parse_token_response
+FAILED tests/oauth2/rfc6749/clients/test_mobile_application.py::MobileApplicationClientTest::test_parse_token_response
+FAILED tests/oauth2/rfc6749/clients/test_service_application.py::ServiceApplicationClientTest::test_parse_token_response
+FAILED tests/oauth2/rfc6749/clients/test_web_application.py::WebApplicationClientTest::test_parse_token_response
+FAILED tests/oauth2/rfc6749/test_parameters.py::ParameterTests::test_json_token_response
+FAILED tests/oauth2/rfc6749/test_parameters.py::ParameterTests::test_prepare_grant_uri
+FAILED tests/oauth2/rfc6749/test_parameters.py::ParameterTests::test_url_encoded_token_response
+FAILED tests/oauth2/rfc6749/test_server.py::TokenEndpointTest::test_authorization_grant
+FAILED tests/oauth2/rfc6749/test_server.py::SignedTokenEndpointTest::test_authorization_grant
+FAILED tests/oauth2/rfc6749/test_tokens.py::TokenTest::test_prepare_mac_header
+FAILED tests/oauth2/rfc6749/test_utils.py::UtilsTests::test_host_from_uri - A...
+FAILED tests/oauth2/rfc6749/test_utils.py::UtilsTests::test_list_to_scope - A...
+FAILED tests/oauth2/rfc6749/test_utils.py::UtilsTests::test_params_from_uri
+FAILED tests/oauth2/rfc6749/test_utils.py::UtilsTests::test_scope_to_list - A...
+FAILED tests/oauth2/rfc8628/clients/test_device.py::DeviceClientTest::test_request_uri
+FAILED tests/openid/connect/core/test_server.py::TokenEndpointTest::test_authorization_grant
+18 failed, 655 passed in 2.40s

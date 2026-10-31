@@ -170,7 +170,10 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
         verification_output = verified["output"]
         (record_dir / "verification.txt").write_text(verification_output, encoding="utf-8")
         usage = model.episode_usage
-        complete = lambda field: sum(item[field] for item in usage) if usage and all(item.get(field) is not None for item in usage) else None
+        failed_requests = sum(row["event"] == "ERROR" and row.get("category") == "PROVIDER"
+                              for row in rows(record_dir / "events.jsonl"))
+        complete = lambda field: sum(item[field] for item in usage) if not failed_requests and usage and all(item.get(field) is not None for item in usage) else None
+        total_cost = None if failed_requests else model.complete_episode_cost_usd
         agent_exit_status = agent_result.get("exit_status", error)
         success = not error and verification_exit_code == 0 and (
             observed_messages is not None or agent_exit_status == "Submitted")
@@ -198,10 +201,13 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
             "total_reasoning_tokens": complete("reasoning_tokens"),
             "total_cached_tokens": complete("cached_tokens"),
             "total_cache_write_tokens": complete("cache_write_tokens"),
-            "total_cost_usd": model.complete_episode_cost_usd,
+            "total_cost_usd": total_cost,
+            "known_model_rate_cost_usd": round(sum(item["cost_usd"] for item in usage
+                                                  if item.get("cost_usd") is not None), 10),
+            "failed_provider_requests": failed_requests,
             "actual_billed_cost_usd": complete("actual_billed_cost_usd"),
             "cost_status": ("MAPPED_EXPERIMENT_PRICE" if mode == "ALIAS_SMOKE" else "REQUEST_MODEL_RATE_ESTIMATE")
-                           if model.complete_episode_cost_usd is not None else "USAGE_INCOMPLETE",
+                           if total_cost is not None else "USAGE_INCOMPLETE",
             "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE" if mode == "ALIAS_SMOKE"
                           else "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
             "router_fallback_used": model.fallback_used,

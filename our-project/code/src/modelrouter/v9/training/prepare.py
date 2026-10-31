@@ -211,20 +211,20 @@ def build_offline_prefix_input(row, state_factory):
     state.status = EpisodeStatus.RUNNING
     state.tool_error_count = 0
     state.task_prompt = next((text_content(message) for message in messages if message.get("role") == "user"), "")
-    generation, command, thought = 0, None, ""
+    generation, commands, thought = 0, {}, ""
     for message in messages:
         if message.get("role") == "assistant":
             generation += 1
             thought = text_content(message)
-            calls = message.get("tool_calls") or []
-            if len(calls) != 1:
-                command = None
-                continue
-            function = calls[0].get("function", calls[0])
-            arguments = function.get("arguments")
-            arguments = json.loads(arguments) if isinstance(arguments, str) else arguments
-            command = arguments.get("command") if isinstance(arguments, dict) else None
+            commands = {}
+            for call in message.get("tool_calls") or []:
+                function = call.get("function", call)
+                arguments = function.get("arguments")
+                arguments = json.loads(arguments) if isinstance(arguments, str) else arguments
+                commands[call.get("id")] = arguments.get("command") if isinstance(arguments, dict) else None
         elif message.get("role") == "tool" or (message.get("role") == "user" and generation):
+            command = (commands.get(message.get("tool_call_id")) if message.get("role") == "tool"
+                       else next(iter(commands.values())) if len(commands) == 1 else None)
             code, output = tool_result(message)
             if command is None or code is None:
                 raise ValueError("Recorded tool command and exit status are required")
@@ -604,6 +604,7 @@ def prepare(typed_root=None, *, inputs=(), v8_views=None, preview_root=None, tra
     candidates = [candidate_action(action) for action in candidates]
     teacher_statuses, teacher_models, target_scopes, prefix_counts = Counter(), Counter(), Counter(), Counter()
     supervision_types = Counter()
+    comparison_tasks = {}
     inline_trajectories, inline_counts = [], Counter()
     fixed_reference_kinds = set()
     if references_path.is_file():
@@ -732,7 +733,10 @@ def prepare(typed_root=None, *, inputs=(), v8_views=None, preview_root=None, tra
                 saved_sources[f"{key}:{row['provenance']['source_id']}:{row['_meta']['target']}"] += 1
                 teacher = row["offline_teacher_state"]
                 if row["_meta"].get("supervision_type"):
-                    supervision_types[row["_meta"]["supervision_type"]] += 1
+                    kind = row["_meta"]["supervision_type"]
+                    supervision_types[kind] += 1
+                    comparison_tasks.setdefault(kind, set()).add(
+                        (row["provenance"]["source_id"], row["provenance"]["task_id"]))
                 if row["_meta"].get("input_kind") == "TRAJECTORY_PREFIX":
                     prefix_counts[row["provenance"]["split"]] += 1
                 teacher_statuses[teacher["status"]] += 1
@@ -802,6 +806,9 @@ def prepare(typed_root=None, *, inputs=(), v8_views=None, preview_root=None, tra
                "v9_model_choice_target_count": target_scopes["v9_model_choice"],
                "v9_model_effort_target_count": target_scopes["v9_model_effort_choice"],
                "supervision_type_counts": dict(supervision_types),
+               "comparison_task_count": len(set().union(*comparison_tasks.values())),
+               "comparison_tasks_by_supervision_type": {
+                   kind: len(tasks) for kind, tasks in comparison_tasks.items()},
                "auxiliary_not_model_choice_count": target_scopes["auxiliary_not_model_choice"],
                "supervision_qualification": "PRESERVED_SOURCE_TARGETS_AND_SPLITS",
                "feature_training_status": "FEATURE_NOT_TRAINED",
