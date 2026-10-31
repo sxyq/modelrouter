@@ -2,6 +2,8 @@
 
 ## 当前能力与数据来源（2026-10-31）
 
+**独立评价材料（11-01完成）**：本轮复用已有ROUTE-003 TwinRouterBench `test_twinrouterbench_holdout.jsonl`（520任务/970步），原 `EVAL_BENCHMARK_ONLY` 用途不变，没有下载、清洗或加入Train/Val。两组数据任务/state/instruction/criteria/gold逐条相同，8/8版本完整评价、7760条预测。只评分旧四档choice，不将每行score问题另算970个样本，不生成Sol/Luna/Flash最优Model×Effort目标；分数与原始概率见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)。既有合法K=2 Train动作目标仍2条（1任务），K=3最优仍0；新训练未启动。
+
 **10-31 当前真实监督**：从ad1d392接续，已有TRA-002对应的SWE-smith公开训练任务TextFSM取得1组有效K=2完整Episode与2个同历史步骤前缀对照，25次Sol/Luna low生成均身份匹配，无Alias。两Episode原96项通过，形成任务级Luna成本偏好1条；前缀7 Sol一步通过、Luna使用镜像不存在的apply_patch，形成步骤级即时修复偏好1条。前缀6两失败和6个候选结果只作观察；完整K=3最优/同模型Effort差异标签仍0。原Dev失败、教师前缀及旧成功题没有重跑，结果见[真实监督记录](../results/iterations/20261031-v9-real-route-supervision/review.md)。
 
 | 新材料 | 本地与服务器原目录中的对象 | 监督、身份及用途 |

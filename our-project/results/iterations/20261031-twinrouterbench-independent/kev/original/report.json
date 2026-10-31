@@ -1,0 +1,109 @@
+{
+  "total_samples": 970,
+  "correct": 129,
+  "accuracy": 0.133,
+  "predictions_distribution": {
+    "low": 16,
+    "mid": 379,
+    "mid_high": 413,
+    "high": 162
+  },
+  "confusion_matrix": {
+    "low": {
+      "low": 16,
+      "mid": 312,
+      "mid_high": 315,
+      "high": 46
+    },
+    "mid": {
+      "low": 0,
+      "mid": 23,
+      "mid_high": 21,
+      "high": 18
+    },
+    "mid_high": {
+      "low": 0,
+      "mid": 7,
+      "mid_high": 17,
+      "high": 25
+    },
+    "high": {
+      "low": 0,
+      "mid": 37,
+      "mid_high": 60,
+      "high": 73
+    }
+  },
+  "metrics": {
+    "n": 970,
+    "nll": 3.3445002650566944,
+    "acc": 0.13298969072164948,
+    "ece": 0.45191697870984554,
+    "brier": 1.2086401343225595,
+    "mean_conf": 0.584906669431495,
+    "confident_error_rate": 0.04329896907216495,
+    "coverage_at_0_9": 0.04329896907216495,
+    "accuracy_at_0_9": 0.0,
+    "coverage_at_5pct_error": 0.0,
+    "coverage_at_1pct_error": 0.0,
+    "aurc": 0.9438388164294909,
+    "error_rate_at_0_9": 1.0,
+    "confidence_bias": 0.4519169787098456,
+    "top_bins": {
+      "0.9": {
+        "n": 42,
+        "errors": 42,
+        "error_rate": 1.0
+      },
+      "0.95": {
+        "n": 7,
+        "errors": 7,
+        "error_rate": 1.0
+      },
+      "0.99": {
+        "n": 0,
+        "errors": 0,
+        "error_rate": null
+      }
+    },
+    "selective": {
+      "0.5": {
+        "coverage": 0.5,
+        "accuracy": 0.041237113402061855,
+        "confidence_cutoff": 0.5990135416340151
+      },
+      "0.8": {
+        "coverage": 0.8,
+        "accuracy": 0.09664948453608248,
+        "confidence_cutoff": 0.44776567789044247
+      }
+    }
+  },
+  "task_count": 520,
+  "tier_accuracy_score_100": 13.29896907216495,
+  "score_definition": "100 * exact step-level tier accuracy; not Agent task success or a cost score",
+  "model_type": "kev",
+  "checkpoint": "models/kev-4b-adapter",
+  "dataset": "data/kev/公开数据/test_twinrouterbench_holdout.jsonl",
+  "execution_mode": "REAL_LOCAL_ROUTER_INFERENCE",
+  "evaluation_scope": "INDEPENDENT_STATIC_FOUR_TIER",
+  "device": "cpu",
+  "threads": 32,
+  "dtype": "torch.bfloat16",
+  "context": {
+    "max_state": 1024,
+    "max_branch": 512,
+    "max_packed": 4096
+  },
+  "native_batch_size": 16,
+  "reused_prediction_count": 27,
+  "duration_scope": "CURRENT_PROCESS_SEGMENT",
+  "inference_temperature": 1.0,
+  "temperature_fitted_on_holdout": false,
+  "skipped": {},
+  "load_sec": 47.52396234497428,
+  "duration_sec": 3319.385205252096,
+  "generation_api_calls": 0,
+  "resource_cost_usd": null,
+  "train_eligible": false
+}

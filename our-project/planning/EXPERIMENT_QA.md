@@ -1,12 +1,14 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
-> **版本 v1.4｜建立：2026-10-09｜更新：2026-10-31｜V9 五 RQ 已确定，部分执行配置待明确**
+> **版本 v1.4｜建立：2026-10-09｜更新：2026-11-01｜V9 五 RQ 已确定，部分执行配置待明确**
 >
 > **职责**：记录每项实验设计的 Q-ID、问题、选项、Planning 推荐及理由、项目负责人回答、最终决策、日期，以及对实验设计、资源/预算和论文结论的影响。研究方法总览见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)，实时阶段见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，交接历史见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
 > **证据边界**：Planning 推荐、待回答事项、预案任务数量和费用均不代表执行已获批准或已经完成。历史数据清洗、训练和评测要求按对应日期保留；实际操作遵循当前人类明确范围。
 
 ## 0. 阶段入口与决策规则
+
+**独立评分决定与完成（11-01）**：用户已明确选TwinRouterBench 520题/970步，只评原ROUTE-003的旧四档 `routing_tier_choice`，不使用同源test.jsonl、Train成绩或新三模型动作映射替代。两组微调前导入权重与原Val前三8/8在CPU完整实算；F11/R11分别20.515464/18.969072分，较微调前增13.505155/5.670103个百分点，但八版本均低于恒选low71.030928分。Test不用于重选、温度拟合、训练或Serving晋升；数字和最终状态见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)，不增加Q-ID或新研究流程。原队列仍暂停、无活动训练，382/v4及新两条后没有加训。
 
 **2026-10-31 当前决定（沿 Q-003/Q-021）**：从ad1d392接续，五RQ、八图十二表、三正式身份、两固定教师参考及原mini/Harbor体系不变。使用允许训练且与Canary/Dev/Final元数据隔离的SWE-smith TextFSM任务，取得K=2任务级偏好1、步骤级偏好1；前缀6两失败不贴选择标签。新Task偏好为等Verifier结果下低费用的Luna low，Step偏好为前缀7一步完成修复的Sol low，不能互相复制终局目标；完整三模型最优和同模型Effort差异标签仍0。结果见[当前真实监督](../results/iterations/20261031-v9-real-route-supervision/review.md)。
 

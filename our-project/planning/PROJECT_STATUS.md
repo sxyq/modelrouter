@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**独立评分完成（2026-11-01）**：用户已选TwinRouterBench 520题/970步，复用已有ROUTE-003留出材料及原生模型入口，8/8版本全部完成。Laya微调前/F11-e01/P0_B03_C01_QB_PB-e02/F05-e01分别7.010309/20.515464/7.422680/12.061856分；Kev微调前/R11/R12/C09分别13.298969/18.969072/16.288660/15.567010分。F11/R11比微调前提高13.505155/5.670103个百分点，但八版本均低于恒选low的71.030928分。每版本970条、520任务，输入及输出任务身份/gold一致。原Val前三保持，不按Test重选；仅评旧四档，不增加新三模型动作监督或晋升。完整结果见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)。本轮起点main为e3c54a50f82648647922d15209a24a1fc57a6902，下方Test未执行描述保留原时点。
+
+**服务器与加训（01:43:44台北）**：训练进程0、原队列PAUSED_USER_REQUEST/current_run=null，F14归档仍failed/NON_FINITE_LOSS。Serving HTTP200/healthy、原PID327621及F05-e01/原Kev Adapter不变；共享图像服务未重启，GPU33009/49140MiB、30%、81°C。旧V9两轮8/100更新已完成并保留负结果，382/v4及新两条目标之后没有再加训。当前任务级/步骤级目标各1条、同1任务，仍不足以启动有意义新微调；详情见[原训练报告](../results/training/training_research.md)。本轮生成API0，CPU资源费用未计量。
+
 ## 2026-10-31 · 当前恢复点：有效K=2监督已取得，原训练接续停止
 
 本轮从main `ad1d392ac9621b8fcd3370f1b8815718d54d8e6f`接续，使用已有TRA-002的SWE-smith公开训练任务TextFSM；原mini-SWE-agent的run/step和原生Docker环境复用，教师关闭，五RQ、八图十二表、三正式身份及两条教师参考不变。完整结果见[真实监督采集](../results/iterations/20261031-v9-real-route-supervision/review.md)。
@@ -20,7 +24,7 @@ Sol/Luna请求和返回身份25次全部匹配，真实API分别Responses/Chat C
 
 台北20:42:35实读：两组活动训练0，原控制器562379退出，队列PAUSED_USER_REQUEST/current_run=null。F01–F13与Kev R01–R16训练及固定Val完成，F11-e01/R11代表不变。旧F14 failed/NON_FINITE_LOSS及721个NaN块在原failed_attempt_0001保留；遗留控制器的新F14/F15于20:12:59/20:14:59初始化UnboundLocalError，F16进入训练前停止，均无新Run/Cursor或有效更新。`laya_batch_train.py:1218`提前读取run_meta的入口问题未改，不继续派发。
 
-Serving HTTP200/healthy，原PID327621及10-30 20:53:21启动时间、F05/epoch_01与Kev导入适配器未变，健康图像服务没有重启。旧V9加训已做Laya2轮/8更新、Kev2轮/100更新/396记录曝光，负结果保留；当前382/v4及本轮2条后没有再加训。只有1个新增监督任务，尚不足以启动有意义的新微调，任何模型参数均未更新。详细进度、可加载前三和原独立Test未执行状态见[原训练报告](../results/training/training_research.md)。
+Serving HTTP200/healthy，原PID327621及10-30 20:53:21启动时间、F05/epoch_01与Kev导入适配器未变，健康图像服务没有重启。旧V9加训已做Laya2轮/8更新、Kev2轮/100更新/396记录曝光，负结果保留；当前382/v4及本轮2条后没有再加训。只有1个新增监督任务，尚不足以启动有意义的新微调，任何模型参数均未更新。详细进度、可加载前三和独立Test评分见[原训练报告](../results/training/training_research.md)。
 
 剩余研究工作是独立训练任务上的更多有效步骤分支、真实Flash/跨Effort条件、输入有效覆盖和保留旧S1的新训练目标，以及独立真实Dev上的动态Router和教师净收益。正式主表不填本次训练任务结果；不重复旧成功题、旧教师前缀或既有训练。
 

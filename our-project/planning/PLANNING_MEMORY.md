@@ -1,12 +1,16 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v2.4｜更新：2026-10-31｜角色：Planning Agent + Execution Agent**
+> **版本：v2.4｜更新：2026-11-01｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。项目记忆由执行者按事件维护：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；它与 ChatGPT 产品内置 Memory 分开，也不会自动在后台更新。
 >
 > **公开性**：仓库为 public。不得提交私有服务器 IP、SSH 用户名/命令凭据、密钥、原始私人会话、私有任务内容、个人本地绝对路径及未脱敏日志。必要的机器路径放在本地不跟踪的配置或安全通道内。
 
 ## 0. 30 秒恢复上下文
+
+**独立评分完成（11-01）**：用户已选TwinRouterBench 520题/970步；从main e3c54a50f82648647922d15209a24a1fc57a6902复用原评价入口，8/8版本完成、7760条预测，输入及输出任务/gold一致。F11-e01为20.515464分，比微调前高13.505155个百分点；R11为18.969072分，比微调前高5.670103个百分点，全部版本低于恒选low的71.030928分。原Val已选Laya F11/P0_B03_C01/F05、Kev R11/R12/C09保持；旧四档分不当新三模型目标，不按Test重选或晋升。结果见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)，下方未执行Test描述保留原时点。
+
+**最新机器状态（01:43:44台北）**：原队列PAUSED_USER_REQUEST/current_run=null、训练进程0、F14归档failed/NON_FINITE_LOSS；Serving HTTP200/healthy，原PID及F05-e01/导入Kev Adapter不变。旧V9已加训两轮8/100更新，382/v4与新两条目标之后未再加训；有效任务级/步骤级监督各1、同1任务，不启动新微调。新评分生成API0、资源费未知；未重启共享图像服务或占用GPU。详细进度仍见[训练报告](../results/training/training_research.md)。
 
 **2026-10-31 当前恢复点**：从main ad1d392接续，最新重点已转为真实训练监督。已有TRA-002的TextFSM公开训练任务取得1组完整K=2 Episode对照及2个同历史步骤前缀对照，25次生成均请求/返回身份匹配，无Alias。任务级Luna low成本偏好1条，前缀7 Sol low即时修复偏好1条；前缀6两失败保留为观察。两条允许Train、同1个任务，原Prepare与共享Trainer序列化已实际消费；完整三模型最优标签仍0。精确轨迹、费用和资格见[当前结果](../results/iterations/20261031-v9-real-route-supervision/review.md)。fix-git/db-wal/extract-elf、旧教师前缀和已完成训练未重跑。
 

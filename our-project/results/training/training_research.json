@@ -1,7 +1,46 @@
 {
   "generated_at": "2026-10-27T04:56:15.744135+00:00",
+  "independent_test_evaluation": {
+    "status": "COMPLETED",
+    "observed_completed_at": "2026-11-01T01:43:03.702691+08:00",
+    "dataset": "ROUTE-003 TwinRouterBench test_twinrouterbench_holdout.jsonl",
+    "task_count": 520,
+    "step_count": 970,
+    "identical_inference_records_across_laya_and_kev": 970,
+    "question_id": "routing_tier_choice",
+    "tier_names": ["low", "mid", "mid_high", "high"],
+    "label_distribution": {"low": 689, "mid": 62, "mid_high": 49, "high": 170},
+    "score_definition": "100 * exact step-level tier accuracy; not Agent task success or a cost score",
+    "constant_low_score_100": 71.03092783505154,
+    "candidate_selection_source": "Original fixed Val, before reading this independent test",
+    "temperature_fitted_on_test": false,
+    "inference_temperature": 1.0,
+    "train_eligible": false,
+    "serving_weights_replaced": false,
+    "generation_api_calls": 0,
+    "resource_cost_usd": null,
+    "completed_versions": 8,
+    "prediction_count": 7760,
+    "identical_ordered_output_ids_and_labels": true,
+    "planned_versions": 8,
+    "laya": [
+      {"checkpoint_id": "original", "correct": 68, "total": 970, "score_100": 7.010309278350515, "nll": 1.8011535492250967, "brier": 1.0086264179361482, "ece": 0.4968041276563081},
+      {"checkpoint_id": "F11-e01", "correct": 199, "total": 970, "score_100": 20.515463917525775, "nll": 1.39270127317418, "brier": 0.7701568253674469, "ece": 0.2382706473305931},
+      {"checkpoint_id": "P0_B03_C01_QB_PB-e02", "correct": 72, "total": 970, "score_100": 7.422680412371134, "nll": 1.5179646496201005, "brier": 0.8286478238765824, "ece": 0.28428780896734396},
+      {"checkpoint_id": "F05-e01", "correct": 117, "total": 970, "score_100": 12.061855670103093, "nll": 1.8767526580917993, "brier": 0.9689411728509394, "ece": 0.33465400314570326}
+    ],
+    "kev": [
+      {"checkpoint_id": "original", "correct": 129, "total": 970, "score_100": 13.29896907216495, "nll": 3.3445002650566944, "brier": 1.2086401343225595, "ece": 0.45191697870984554},
+      {"checkpoint_id": "R11", "correct": 184, "total": 970, "score_100": 18.969072164948454, "nll": 1.7126238072058546, "brier": 0.8892391254871861, "ece": 0.1996984414699178},
+      {"checkpoint_id": "R12", "correct": 158, "total": 970, "score_100": 16.288659793814432, "nll": 1.7362835815590056, "brier": 0.9014244309492007, "ece": 0.2401500245170958},
+      {"checkpoint_id": "C09", "correct": 151, "total": 970, "score_100": 15.56701030927835, "nll": 1.7111622013627077, "brier": 0.8966970742326692, "ece": 0.24077158701287985}
+    ],
+    "laya_f11_gain_percentage_points": 13.50515463917526,
+    "kev_r11_gain_percentage_points": 5.670103092783505,
+    "result_root": "our-project/results/iterations/20261031-twinrouterbench-independent"
+  },
   "current_execution": {
-    "sampled_at": "2026-10-31T21:28:44.516348+08:00",
+    "sampled_at": "2026-11-01T01:43:44.811218+08:00",
     "controller_pid": 562379,
     "controller_alive": false,
     "queue_status": "PAUSED_USER_REQUEST",
@@ -24,11 +63,12 @@
     "laya_parent_representative": "F11-e01",
     "kev_parent_representative": "R11",
     "serving": {"http_status": 200, "status": "healthy", "pid": 327621, "started_at": "2026-10-30T20:53:21+08:00", "laya": "F05/epoch_01", "kev": "original imported adapter"},
-    "gpu": {"sampled_at": "2026-10-31T20:42:35.976634+08:00", "total_mib": 49140, "used_mib": 34449, "utilization_pct": 100, "temperature_c": 85, "workload": "EXISTING_IMAGE_SERVICE_NOT_PROJECT_TRAINING"},
+    "gpu": {"sampled_at": "2026-11-01T01:43:44.811218+08:00", "total_mib": 49140, "used_mib": 33009, "utilization_pct": 30, "temperature_c": 81, "workload": "EXISTING_SHARED_SERVICES; NO_PROJECT_TRAINING_PROCESS_OBSERVED"},
     "other_services_modified": false,
     "serving_weights_replaced": false,
     "scheduled_automation_created": false,
-    "test_evaluation_status": "NOT_EVALUATED",
+    "test_evaluation_status": "COMPLETED_INDEPENDENT_STATIC_FOUR_TIER",
+    "test_dataset_choice": "ROUTE-003 TwinRouterBench 520 tasks / 970 steps",
     "prior_v9_training": {"laya": {"completed": true, "epochs": 2, "optimizer_updates": 8}, "kev": {"completed": true, "epochs": 2, "optimizer_updates": 100, "records_seen": 396}},
     "latest_feature_refresh_retrained": false,
     "resume_training_requested_in_current_task": false
@@ -295,7 +335,7 @@
       "current_fixed_val_questions": 9330,
       "matched_dataset_result_available": false
     },
-    "independent_test_score_computed": false
+    "independent_test_score_computed": true
   },
   "training_snapshot_1851": {
     "sampled_at": "2026-10-31T18:51:55.568875+08:00",
