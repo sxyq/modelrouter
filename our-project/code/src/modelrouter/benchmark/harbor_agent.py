@@ -161,6 +161,7 @@ class PolicyModel(LitellmModel):
               router_latency_ms=(time.perf_counter() - route_start) * 1000,
               inference_latency_ms=decision.inference_latency_ms,
               checkpoint_id=decision.checkpoint_id, fallback_used=decision.fallback_used,
+              ranked_actions=decision.ranked_actions, confidence=decision.confidence,
               **router_identity,
               policy_implementation_status=self.policy.implementation_status,
               effort_validation_status=self.action_validation[selected["action_id"]],
@@ -172,8 +173,20 @@ class PolicyModel(LitellmModel):
             body, metrics = self.provider.query_raw(
                 messages, spec, selected["native_effort"], self.max_output_tokens, [BASH_TOOL], True)
         except Exception as exc:
+            alias_mapping = getattr(self.provider, "alias_mapping", None)
+            alias_facts = (alias_mapping.resolve(spec.model_id, selected["native_effort"]) or {}
+                           if alias_mapping else {})
             event(self.record_dir, "ERROR", category="PROVIDER", error=type(exc).__name__,
-                  episode_id=self.state.episode_id, model=selected["model"],
+                  episode_id=self.state.episode_id, model=selected["model"], role="generator",
+                  selected_model_id=spec.model_id, cost_model_id=spec.model_id,
+                  actual_backend_model_id=alias_facts.get("actual_backend_model_id"),
+                  request_model_id=alias_facts.get("actual_backend_model_id", spec.model_id),
+                  returned_model_id=None, requested_native_effort=selected["native_effort"],
+                  effective_native_effort=alias_facts.get("effective_native_effort", selected["native_effort"]),
+                  router_checkpoint_id=decision.checkpoint_id,
+                  execution_mode=alias_facts.get("execution_mode", "REAL_API"),
+                  cost_usd=None, actual_billed_cost_usd=None, usage_status="MISSING",
+                  cost_status="MAPPED_USAGE_INCOMPLETE" if alias_facts else "UNKNOWN",
                   duration_ms=(time.perf_counter() - started) * 1000)
             raise
         metrics = dict(metrics, episode_id=self.state.episode_id, decision_id=decision_id,
@@ -370,7 +383,7 @@ class ModelRouterMiniSweAgent(BaseAgent):
             trajectory = convert_mini_swe_agent_to_atif(raw, state.episode_id).to_json_dict()
             generated = [step for step in trajectory["steps"] if step["source"] == "agent"]
             for step, usage in zip(generated, model.usage):
-                step["model_name"] = usage["returned_model_id"]
+                step["model_name"] = usage["selected_model_id"]
                 step["reasoning_effort"] = usage.get("effective_native_effort", usage["native_effort"])
                 step["metrics"] = {"prompt_tokens": usage.get("prompt_tokens"),
                                    "completion_tokens": usage.get("completion_tokens"),

@@ -49,18 +49,31 @@ class TrajectoryAssessor:
 
     def assess(self, state, messages, trigger_reason):
         started = time.perf_counter()
+        alias_mapping = getattr(self.provider, "alias_mapping", None)
+        backend_model_id = alias_mapping.backend_model_id if alias_mapping else None
+        effective_effort = alias_mapping.effective_native_effort if alias_mapping else self.native_effort
+        execution_mode = "TEACHER_ALIAS_SMOKE" if alias_mapping else "TEACHER"
         metrics = {
             "role": "teacher", "episode_id": state.episode_id,
             "assessed_through_decision_id": getattr(
                 state, "last_decision_id", f"{state.episode_id}-{state.step_index - 1}"),
             "assessed_through_step": state.step_index, "phase": state.current_phase,
             "trigger_reason": trigger_reason, "selected_model_id": self.model_id,
-            "teacher_model_id": None, "reference_ids": [],
+            "teacher_model_id": self.model_id, "cost_model_id": self.model_id,
+            "actual_backend_model_id": backend_model_id,
+            "request_model_id": backend_model_id, "returned_model_id": None,
+            "requested_native_effort": self.native_effort,
+            "effective_native_effort": effective_effort,
+            "router_checkpoint_id": getattr(state, "last_router_checkpoint_id", None),
+            "reference_ids": [],
             "prompt_tokens": None, "completion_tokens": None, "reasoning_tokens": None,
             "cached_tokens": None, "cost_usd": None, "actual_billed_cost_usd": None,
+            "cost_source": ModelRegistry().get_spec(self.model_id).pricing_source,
+            "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE" if alias_mapping else None,
+            "cost_status": "MAPPED_USAGE_INCOMPLETE" if alias_mapping else "UNKNOWN",
             "usage_status": "MISSING", "assessment_consumed_by_router": False,
             "provider_request_attempted": False,
-            "execution_mode": "TEACHER_ALIAS_SMOKE" if getattr(self.provider, "alias_mapping", None) else "TEACHER",
+            "execution_mode": execution_mode,
         }
         try:
             references = self.load_references()
@@ -76,11 +89,12 @@ class TrajectoryAssessor:
             body, usage = self.provider.query_raw(
                 [{"role": "system", "content": _INSTRUCTION}, {"role": "user", "content": context}],
                 ModelRegistry().get_spec(self.model_id), self.native_effort,
-                self.max_output_tokens, tools=None, stream=False)
+                self.max_output_tokens, tools=None, stream=True)
             metrics.update(usage)
             metrics["execution_mode"] = (
                 "TEACHER_ALIAS_SMOKE" if usage.get("execution_mode") == "ALIAS_SMOKE" else "TEACHER")
-            metrics["teacher_model_id"] = usage.get("returned_model_id")
+            metrics["teacher_model_id"] = self.model_id
+            metrics["raw_response"] = body
             content = body["choices"][0]["message"]["content"].strip()
             if content.startswith("```") and content.endswith("```"):
                 content = content.split("\n", 1)[1].rsplit("```", 1)[0].strip()

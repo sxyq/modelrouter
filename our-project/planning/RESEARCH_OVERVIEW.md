@@ -1,12 +1,16 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v1.5｜更新：2026-10-30｜原研究起点：2026-10-09；H1–H7 与历史证据保留**
+> **版本 v1.5｜更新：2026-10-31｜原研究起点：2026-10-09；H1–H7 与历史证据保留**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
 > **证据纪律**：论文/官方材料、现有仓库文献、E0 Agent 审计、我们提出的假设分开表述。**未运行的实验不得写成结果；“未见完全相同方案”不等于“首创”。**
 
-**2026-10-30 当前证据范围**：单 Luna none/low 官方开发 Episode 已 reward=1.0、CTRF 2/2，14 次真实路由、0 fallback；该结果支持原执行链与同模型双动作的实际运行，不证明独立三模型选择、教师净收益或五 RQ 总体结论。当前 Provider 实际返回 3 项，研究池仅 Luna 列出，Sol/托管Flash未列出；用户充分测试/部署授权已明确，实际可用性分开记录。费用按真实输入/输出/缓存读写与适用官方价核算，输出含 reasoning，不重复计费；供应商 bill 未知单列，不影响执行，官方价模型费用已保存并复核。原代码配置部署后Laya/Kev真实非回退前向通过，权重不变；Kev长前缀超时及82.28秒CPU时延不是科学效果或时延达标证据，F14非有限损失仍不用于父候选选择。API 不设总 Token 或美元预算，服务器资源规则、训练不中断及 Final 隔离保留。详细证据在 [PROJECT_STATUS](PROJECT_STATUS.md)，计费算法与官方来源在 [数据台账](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md#当前托管-api-身份与计费政策2026-10-30)。
+**2026-10-31 当前证据范围**：原 `20261031-v9-official-alias` 首次官方 Trial 已 reward=1.0、CTRF 2/2；三逻辑候选合法，13 次真实路由均 Luna none、0 fallback，实际生成后端为 Qwen3.8-27B。原 Sol 逻辑教师一次超时、usage/短评缺失，生成费用不能当完整 Episode 总额。保存 step3 的一次成功教师与 SystemOne 消费属于事后前缀复用，不改首次 Episode。原 Run 追加单任务 unit 后已完成同一续跑 Trial 的教师到终局：15真实路由/15生成全Luna none、F05epoch01/fallback0、24工具，3教师为2JSON失败+1成功，成功短评7次进入真实Router；最终reward=1.0、CTRF2/2、异常null。续跑完整实验模型费0.11227958USD、176070Token；两个Trial已知小计0.12257858USD，首次教师缺usage使完整总额null，前缀0.024872USD独列。两 Trial 属同题开发接续，不作独立科研两样本，不证明三个身份均被选择、独立三模型效果或教师净收益。五 RQ、8 图/12 表及 H1–H7 不变，正式总体结果仍留空；原失败与负结果保留。
+
+在线 AA v3 `20261030T172129978785Z-v3` 有 Luna Max 10 项指标，none 缺测、Sol/Flash404；prepared 390 行/198Train/192Val 仍绑定 v1，真实三身份与 Model×Effort 监督为 0。F14 的 Epoch1 Val 非有限及5692项全类别0预测保留，诱因/有效更新未知，不作父候选；Serving 仍旧权重，F11-e01/R11 本轮仅核文件结构与历史评估。映射用量按逻辑目标价格核算、reasoning 只计一次，供应商未报币种的 raw.cost 与资源费用仍未知；API 无累计上限，健康训练与 Final 隔离保持。执行、费用和服务器详细证据仅维护于 [PROJECT_STATUS](PROJECT_STATUS.md)，价格及数据资格见 [数据台账](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)。
+
+**2026-10-30 历史证据范围**：单 Luna none/low 官方开发 Episode 已 reward=1.0、CTRF 2/2，14 次真实路由、0 fallback；该结果不证明独立三模型选择、教师净收益或五 RQ 总体结论。映射实验真实请求走 Qwen3.8-27B，逻辑选择身份与教师目标身份保留；费用按真实用量乘目标身份价格，后端价格和供应商实收另列，缺失不影响映射实验。三原目录 `mapped_cost_accounting` 的结果和完整金额状态见 [PROJECT_STATUS](PROJECT_STATUS.md)。Flash 使用原 snapshot `20261018` 的 OpenRouter 公开 USD 参考价；阿里官方 v2 只有 CNY，USD 未确认。供应商研究池当前列出状态单独记录，仅关系独立真实模型质量证据，不作为映射实验条件。原代码配置部署后Laya/Kev真实非回退前向通过，权重不变；Kev长前缀超时及82.28秒CPU时延不属于科学效果或时延达标证据，F14非有限损失仍不用于父候选选择。API 不设总 Token 或美元预算，服务器资源规则、训练不中断及 Final 隔离保留。计费资料见 [数据台账](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md#当前托管-api-身份与计费政策2026-10-30)。
 
 **10-30 20:05历史证据范围（旧额度已取消）**：官方Oracle通过仅证明容器/Verifier通路；Luna真实Episode的9生成、18工具和3教师提供行为及用量证据，但路由回退、预算不足和缺少Verifier使终局收益不可测。双动作真实前缀前向仅涉及K=1、同Luna none/low，不能回答K=3独立模型选择或最优Effort监督。配置价估算与完整现金费用分开，后者仍缺。五RQ、八图十二表及先前训练负结果保持，正式效果/消融表不填该次结果；原实现和数据状态见 [PROJECT_STATUS](PROJECT_STATUS.md) 当前入口。
 
@@ -18,7 +22,7 @@
 
 > **历史论文 RQ（2026-10-13，已由 V8/V9 接续）**：[汇报三 V5](../../汇报/汇报三/ModelRouter论文实验与图表规划.md) 纳入候选模型池与公开前沿迁移，分别比较选池与路由收益；H1–H7 和批准决策保持原义。仅做当前科研需要的实现与验证，提交、推送、PR、CI 只按当前明确请求执行。
 
-原 `benchmark CLI → Harbor Job/Trial → ModelRouterMiniSweAgent → DefaultAgent` 继续作为唯一正式执行链；V9 三候选参数已接入原 run/resume，真实上游解析和实例构造通过，后续单 Luna none/low 已取得官方 reward=1.0 与 CTRF 2/2，独立三模型结果仍缺。历史配置联调的三逻辑身份共用 Qwen，不能充当模型池实验。
+原 `benchmark CLI → Harbor Job/Trial → ModelRouterMiniSweAgent → DefaultAgent` 继续作为唯一正式执行链；V9 三候选参数已接入原 run/resume，真实上游解析和实例构造通过，后续单 Luna none/low 已取得官方 reward=1.0 与 CTRF 2/2，独立三模型结果仍缺。映射实验的三逻辑身份共用 Qwen3.8-27B 后端，后端请求/返回身份、价格和供应商实收另列，不能充当独立三模型质量证据。
 
 ## 2026-10-16 · 五 RQ 研究逻辑（V8 起点，下表按 V9 同步）
 
@@ -52,7 +56,7 @@
 
 **正式研究版本**：下载讨论行 25981 明确保留 V9 五 RQ：RQ1 总体效果、RQ2 模型池、RQ3 任务拆分、RQ4 系统消融、RQ5 工作负载边界，以及 8 图/12 表。此前三核心 RQ/把消融归 RQ1 的建议已由该决定替代。旧方法证据、数据缺陷和历史负结果继续保留。
 
-**初始模型池与调用范围**：用户指定的三逻辑 ID 为 `gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`；高/中/低是候选角色，不预设实际能力次序。用户已充分授权测试及部署；原 Provider 实际返回 3 项，研究池当前仅 Luna 列出，Sol/托管Flash未列出。旧两Luna范围与三身份统一 Qwen 联调安排仅保留历史，原 `ALIAS_SMOKE` 映射已有实证。网关 `/models`/先前流式名 `Qwen3.8-27B` 与实际非流返回名 `self-dploy/Qwen3.8-27B` 分别保留；Alias 不能视为 K=3 个真实模型或正式 RQ1/RQ2 结果。27B 是用户非自部署的托管 API，返回字符串只记录 API 身份，不推断本地零费；物理对应 UNKNOWN，9002 物理 Qwen、Parfit API 及托管 `qwen3.8-flash` 分别保留身份，开源 Flash-Next 的分数不能直接赋给托管型号。审阅子 Agent `gpt-6.1-sol/max` 不等于生成器或教师配置。
+**初始模型池与调用范围**：用户指定的三逻辑 ID 为 `gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`；高/中/低是候选角色，不预设实际能力次序。映射实验真实请求后端统一为托管 Qwen3.8-27B，Router 选择与实验身份仍记录三逻辑 ID。实验费用按所选逻辑身份的 `ModelSpec` 价格乘真实 input/output/cache 用量；Sol 采用 v2 已保存官方 `2/10/0.1/2.5`，Flash 当前参考 `0.15/0.47/0.016` 来自 OpenRouter，厂商 USD 价格仍由资料分支核对。真实请求/返回身份、后端价格和供应商实收另列，缺失不影响映射实验；映射结果不能写成独立物理模型质量对照。网关 `/models` 与实际非流返回名 `self-dploy/Qwen3.8-27B` 分别保留，物理对应 UNKNOWN，9002 物理 Qwen、Parfit API 及托管 `qwen3.8-flash` 分别登记，开源 Flash-Next 的分数不能直接赋给托管型号。审阅子 Agent `gpt-6.1-sol/max` 不等于生成器或教师配置。
 
 **最小轨迹教师**：现有 Agent 在合法模型生成边界请求同一 Router 选择 `(model,native_effort)`，工具执行仍由原 Harness 完成。外置教师只加工当前轨迹前缀，首版对照两条许可适用、成功证据明确、与 Final 隔离的固定公开摘要（高效完成/失败恢复），不建在线检索服务。约三次生成或阶段/重复失败/停滞事件触发只作为 Dev 起点。输出固定 `progress_summary, main_blocker, next_milestone`，另记截止 `decision_id`、实际教师与参考 ID、Token、费用、时延和状态；顶级教师与 Qwen 联调教师分开记录，不用联调身份证明顶级教师效果。
 
@@ -71,7 +75,7 @@
 | 旧 Provider / Agent / Serving | 真实请求、原工具/Evaluator 执行、已有路由模型前向 | 必要参数传递和调用接点；不混放 V9 方法实现 |
 | 旧 Trainer / 队列 / telemetry | 优化器、训练运行、自然交接、原 usage 账本和展示 | 使用 V9 数据/配置，复用原记录，不重复计价或建立第二状态来源 |
 
-**训练、缓存与成本边界**：健康训练和正在使用的服务权重不干预，早先 F13 与最新原链 F14 快照按时点记录；旧 F14 与已完成的 V9 两项训练分别记录。代表权重用各自同协议 Val 加独立 Dev Episode 选择，不跨架构按最低 Loss 排名。上下文保存已发生消息/工具结果，模型切换额外重发 Token 与实际 KV/缓存用量分别记录；Alias 同后端不能证明跨 Provider 缓存共享。离线教师制作费用归数据/训练，在线教师含推理 Token 的费用归 Episode；Qwen API 联调保留实际用量、费用单位和时延，不套逻辑型号 API 单价。Mac 不存 Laya/Kev 权重，所有执行者、教师及重试按实际 API 用量记录，不设累计 Token 或默认美元上限；Final 不参与训练、选池、调参或教师输入。
+**训练、缓存与成本边界**：健康训练和正在使用的服务权重不干预，早先 F13 与最新原链 F14 快照按时点记录；旧 F14 与已完成的 V9 两项训练分别记录。代表权重用各自同协议 Val 加独立 Dev Episode 选择，不跨架构按最低 Loss 排名。上下文保存已发生消息/工具结果，模型切换额外重发 Token 与实际 KV/缓存用量分别记录；映射实验按所选逻辑目标身份价格乘真实 input/output/cache 用量，教师按配置教师目标身份计价。Qwen 后端请求/返回身份、后端价格和供应商实收另列，缺失不影响映射实验；映射结果不能写成独立物理模型质量对照。离线教师制作费用归数据/训练，在线教师含推理 Token 的费用归 Episode；Mac 不存 Laya/Kev 权重，所有执行者、教师及重试按实际 API 用量记录，不设累计 Token 或默认美元上限；Final 不参与训练、选池、调参或教师输入。
 
 **真实评测范围**：mini-SWE-agent 是框架，SWE 与 Terminal 的任务、Evaluator、划分和成绩独立。官方参考：https://mini-swe-agent.com/latest/usage/swebench/ 。宿主、模拟压力和身份联调分别记 `LOCAL_HOST_EXPERIMENTAL`、`MOCK_STRESS`、`ALIAS_SMOKE`；正式成绩来自官方环境/原版 Evaluator 的 `REAL_AGENT_OFFICIAL_EVAL`。文档子任务未执行评测；单题 Alias 控制链成功、原失败、教师、数据/语义缺口见 [PROJECT_STATUS](PROJECT_STATUS.md) 首页，不增加正式三模型成绩。
 
@@ -105,7 +109,7 @@
 
 **五 RQ 已最终再确认**：保持 RQ1 整体成功率/完整费用、RQ2 模型池、RQ3 任务粒度、RQ4 系统消融、RQ5 工作负载边界，保留 Fig.1–8 和 T1–T12。三 RQ/消融并入 RQ1 只是已经讨论但未采纳的历史备选。
 
-**最新负责人确认的初始 K=3 模型身份（2026-10-29 纠正较早草稿）**：`gpt-6.1-sol`（研究高档）、`gpt-6-luna`（中档）、`qwen3.8-flash`（第三档托管 Qwen3.8-Flash），**不是 Qwen3.8 27B 或 Qwen3.8-Flash-Next**。这是固定的首轮模型身份，而非已经核实的 `(provider, deployment, native_effort)` 可执行动作；合法动作仍取决于 API 可用性、工具支持、真实 effort 与计费。官方模型价参考 USD/百万输入/输出 Token：2/10、0.10/0.50、0.15/0.47，低/中/高**不能定义为绝对价位或严格能力排名**。AA v4.3.2 已核的 Sol Max 52、Luna Max 38 是综合指数，AA 曾测的 Flash-Next 40 是**不同开源变体**，生产 `qwen3.8-flash` 的同版本指数本轮未核到，按 `NOT_MEASURED` 保存；严禁把 Flash-Next 分数复制过来。官方来源：https://developers.openai.com/api/docs/models/gpt-6.1-sol 、https://developers.openai.com/api/docs/models/gpt-6-luna 、https://docs.qwencloud.com/developer-guides/getting-started/latest-model 、https://docs.qwencloud.com/developer-guides/getting-started/model-prices；AA：https://artificialanalysis.ai/models/releases/gpt-6-1-sol 、https://artificialanalysis.ai/models/releases/gpt-6-luna 。
+**最新负责人确认的初始 K=3 模型身份（2026-10-29 最新口径）**：逻辑身份为 `gpt-6.1-sol`（研究高档）、`gpt-6-luna`（中档）、`qwen3.8-flash`（第三档托管 Qwen3.8-Flash）；映射实验实际请求后端为 Qwen3.8-27B。实验费用按真实 input/output/cache 用量乘所选逻辑身份价格；Sol 采用 v2 已保存官方 `2/10/0.1/2.5`，Flash 当前参考 `0.15/0.47/0.016` 来自 OpenRouter，厂商 USD 价格仍由资料分支核对。三档是研究角色，独立物理模型质量证据另列；后端价格、返回身份和供应商实收缺失不影响映射实验继续。AA v4.3.2 已核的 Sol Max 52、Luna Max 38 是综合指数，AA 曾测的 Flash-Next 40 属不同开源变体，生产 `qwen3.8-flash` 的同版本指数本轮未核到，按 `NOT_MEASURED` 保存；不能把 Flash-Next 分数复制过来。官方来源：https://developers.openai.com/api/docs/models/gpt-6.1-sol 、https://developers.openai.com/api/docs/models/gpt-6-luna 、https://docs.qwencloud.com/developer-guides/getting-started/latest-model 、https://docs.qwencloud.com/developer-guides/getting-started/model-prices；AA：https://artificialanalysis.ai/models/releases/gpt-6-1-sol 、https://artificialanalysis.ai/models/releases/gpt-6-luna 。
 
 **可刷新的本地模型能力证据**：在现有 `our-project/code/` 下复用/扩展原 Provider/模型 Registry 与数据准备代码，保留已取得的原始能力数值、AA index 和 Benchmark score、`metric_unit`、`index_version`、`evaluated_effort`、`source_id/url`、采集时点、`evidence_status`。首次抓取 AA **官方授权 Data API** 并落盘带版本快照；**每次运行专门的能力数据刷新脚本时，均重新请求**，成功就保存新快照、失败则继续使用最后成功的带时间/错误状态版本（无凭据或额度不足不能谎称 refreshed），不每次 Router 推理联网；训练与已开始的 Agent Episode 始终绑定同一 frozen snapshot。官方当前接口文档：https://artificialanalysis.ai/data-api/docs/reference ，免费层可能只覆盖 headline 指数与价格，缺少逐 Benchmark/逐 Effort 数据时须保留 `NOT_MEASURED`，不能杜撰分数。密钥只读自本地环境、不得纳入 public Git；API 数据使用/再发布须遵守许可证和署名。该任务由未来本地 Agent 实际编码、抓取并报告，本轮仅文档。
 
@@ -601,7 +605,7 @@ Execution 报告已落地 80,970 个多来源 JSONL 行；Planning 从 main 966f
 
 统计使用任务层配对 bootstrap/分层分析，报告样本数、CI、seed 和失败案例。不要只报告均值、挑最好 seed 或仅展示成功任务的低成本。
 
-**已发生的金额单位问题**：hcnsec `raw_usage.cost` 没有 `currency/cost_currency`；主 Agent 的新 Provider 保留 `raw_reported_cost` 和 `reported_cost_unit=NOT_REPORTED`，仅响应明确 USD 时赋 `actual_billed_cost_usd`。当前 Episode 旧事件保留原版本输出，旧字段名不证明美元单位；完整费用含超时为 `None`，不能补成零或按逻辑模型价目猜金额。新请求使用新记录，最终有单位的费用/usage 待主 Agent 回报。
+**已发生的金额单位问题**：hcnsec `raw_usage.cost` 没有 `currency/cost_currency`；主 Agent 的新 Provider 保留 `raw_reported_cost` 和 `reported_cost_unit=NOT_REPORTED`，仅响应明确 USD 时赋 `actual_billed_cost_usd`。当前 Episode 旧事件保留原版本输出，旧字段名不证明美元单位；供应商实收缺少单位时仍为 UNKNOWN。映射实验费用另按所选逻辑目标身份价格与真实用量记录，不能用未知供应商实收替代该账本。新请求使用新记录，最终有单位的费用/usage 待主 Agent 回报。
 
 ## 9. 当前待解决的研究难点
 

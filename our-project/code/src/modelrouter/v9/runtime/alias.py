@@ -19,7 +19,7 @@ class AliasMapping:
     backend_model_id: str
     base_url: Optional[str] = None
     effective_native_effort: str = "none"
-    cost_status: str = "BACKEND_PRICE_NOT_MEASURED"
+    cost_status: str = "MAPPED_EXPERIMENT_PRICE"
 
     def resolve(self, selected_model_id: str, requested_native_effort: str) -> Optional[Dict[str, Any]]:
         """Return configured execution facts; leave other models unchanged."""
@@ -65,7 +65,7 @@ def alias_provider(config: dict, api_key=None):
                 raise ValueError("Configured credential field must be a string")
     mapping = AliasMapping(config["actual_backend_model_id"], config["base_url"],
                            effective_native_effort=config.get("effective_native_effort", "none"),
-                           cost_status=config.get("cost_status", "BACKEND_PRICE_NOT_MEASURED"))
+                           cost_status="MAPPED_EXPERIMENT_PRICE")
     return OpenAICompatibleProvider(
         base_url=config["base_url"], alias_mapping=mapping,
         api_key=credential if credential is not None else "",

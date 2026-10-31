@@ -58,12 +58,15 @@ class MultiModelLogger:
         Records a single LLM invocation event.
         Computes reference cost against OpenRouter snapshot automatically.
         """
-        ref_cost, ref_status = calculate_reference_cost(
-            model_id=model_id,
-            prompt_tokens=prompt_tokens,
-            completion_tokens=completion_tokens,
-            cache_read_tokens=cache_read_tokens,
-        )
+        if metadata and metadata.get("cost_basis") == "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE":
+            ref_cost, ref_status = metadata["cost_usd"], metadata["cost_status"]
+        else:
+            ref_cost, ref_status = calculate_reference_cost(
+                model_id=model_id,
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
+                cache_read_tokens=cache_read_tokens,
+            )
 
         record = {
             "call_id": f"call_{uuid.uuid4().hex[:12]}",

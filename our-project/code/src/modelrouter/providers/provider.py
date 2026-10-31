@@ -390,11 +390,16 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             payload["tools"] = tools
         return payload
 
-    def _usage_counts(self, usage):
+    @staticmethod
+    def _usage_counts(usage):
+        prompt = usage.get("prompt_tokens")
+        completion = usage.get("completion_tokens")
+        reasoning = (usage.get("completion_tokens_details") or {}).get("reasoning_tokens")
+        if prompt is not None and completion is not None and reasoning:
+            if usage.get("total_tokens") == prompt + completion + reasoning:
+                completion += reasoning
         return (
-            usage.get("prompt_tokens"),
-            usage.get("completion_tokens"),
-            (usage.get("completion_tokens_details") or {}).get("reasoning_tokens"),
+            prompt, completion, reasoning,
             (usage.get("prompt_tokens_details") or {}).get("cached_tokens"),
             (usage.get("prompt_tokens_details") or {}).get("cache_write_tokens"),
         )
@@ -419,9 +424,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         if alias_facts is not None:
             target = alias_facts["actual_backend_model_id"]
             effective_effort = alias_facts["effective_native_effort"]
-            target_spec = None
+            target_spec = model_spec
             request_base_url = (self.alias_mapping.base_url or self.base_url).rstrip("/")
-            provider_name = "local" if alias_facts["cost_status"] == "LOCAL_COMPUTE_UNPRICED" else "openai-compatible"
+            provider_name = "openai-compatible"
         else:
             model_spec.validate_effort(native_effort)
             target = self._normalize_model(model_spec.model_id)
@@ -450,12 +455,13 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 raise
             raw_usage = body.get("usage")
             p_tokens, c_tokens, r_tokens, cached, cache_written = self._usage_counts(raw_usage or {})
+            reported_completion = (raw_usage or {}).get("completion_tokens") if self.protocol == "chat_completions" else (raw_usage or {}).get("output_tokens")
             _record_budget(budget, p_tokens, c_tokens, request_bound)
         latency_ms = (time.perf_counter() - started) * 1000
         returned = body.get("model")
         identity_status = "MATCHED_REQUEST_ALIAS" if returned == target else ("MISSING" if not returned else "MISMATCH")
         usage_complete = p_tokens is not None and c_tokens is not None
-        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if target_spec is not None and usage_complete and returned == target else None
+        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and (alias_facts is not None or returned == target) else None
         # Vendor cost is distinct from the configured price estimate.
         reported_cost = (raw_usage or {}).get("cost")
         reported_cost_unit = (raw_usage or {}).get("cost_currency") or (raw_usage or {}).get("currency")
@@ -482,6 +488,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "alias_mapping_applied": alias_facts is not None or model_spec.model_id != target,
             "prompt_tokens": p_tokens,
             "completion_tokens": c_tokens,
+            "reported_completion_tokens": reported_completion,
             "reasoning_tokens": r_tokens,
             "cached_tokens": cached,
             "cache_write_tokens": cache_written,
@@ -493,22 +500,25 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "stream_output_tokens_per_s_status": "ESTIMATE" if stream_output_tokens_per_s is not None else "UNAVAILABLE",
             "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
             "cost_usd": cost,
-            "cost_source": target_spec.pricing_source if target_spec is not None else None,
+            "cost_model_id": target_spec.model_id,
+            "cost_source": target_spec.pricing_source,
+            "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE" if alias_facts is not None else "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
             "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
             "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
-            "cost_status": alias_facts["cost_status"] if alias_facts is not None else (target_spec.pricing_status if cost is not None else "UNKNOWN"),
+            "cost_status": "MAPPED_EXPERIMENT_PRICE" if alias_facts is not None and cost is not None else (target_spec.pricing_status if cost is not None else "UNKNOWN"),
             "actual_billed_cost_usd": billed_cost,
             "raw_reported_cost": reported_cost,
             "reported_cost_unit": reported_cost_unit or "NOT_REPORTED",
             "budget_accounted": True,
-            "status": "RECORDED" if usage_complete and returned == target else "NOT_EVALUATED",
+            "status": "RECORDED" if usage_complete and (alias_facts is not None or returned == target) else "NOT_EVALUATED",
         }
         if alias_facts is not None:
             metrics.update(alias_facts)
+            metrics["cost_status"] = "MAPPED_EXPERIMENT_PRICE" if cost is not None else "MAPPED_PRICE_NOT_MEASURED"
         if usage_complete:
             global_multi_model_logger.log_call(
-                protocol=self.protocol, model_id=returned or target, provider=provider_name,
-                reasoning_effort=effective_effort, stream=stream, ttft_ms=ttft_ms, total_latency_ms=latency_ms,
+                protocol=self.protocol, model_id=model_spec.model_id if alias_facts is not None else returned or target, provider=provider_name,
+                reasoning_effort=native_effort, stream=stream, ttft_ms=ttft_ms, total_latency_ms=latency_ms,
                 prompt_tokens=p_tokens, completion_tokens=c_tokens, reasoning_tokens=r_tokens or 0,
                 cache_read_tokens=cached or 0, actual_billed_cost_usd=billed_cost,
                 status=metrics["status"], metadata=metrics,

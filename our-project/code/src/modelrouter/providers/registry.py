@@ -56,19 +56,16 @@ class ModelSpec:
         visible_completion_tokens = completion_tokens - reasoning_tokens
         if visible_completion_tokens < 0:
             raise ValueError("reasoning_tokens must be a subset of completion_tokens")
-        if any(price is None for price in (
-            self.input_price_per_1m, self.output_price_per_1m,
-            self.reasoning_price_per_1m, self.cache_read_price_per_1m,
-            self.cache_write_price_per_1m,
-        )):
-            return None
-        cost = (
-            (net_prompt_tokens * self.input_price_per_1m / 1_000_000)
-            + (visible_completion_tokens * self.output_price_per_1m / 1_000_000)
-            + (reasoning_tokens * self.reasoning_price_per_1m / 1_000_000)
-            + (cache_read_tokens * self.cache_read_price_per_1m / 1_000_000)
-            + (cache_write_tokens * self.cache_write_price_per_1m / 1_000_000)
+        charges = (
+            (net_prompt_tokens, self.input_price_per_1m),
+            (visible_completion_tokens, self.output_price_per_1m),
+            (reasoning_tokens, self.reasoning_price_per_1m),
+            (cache_read_tokens, self.cache_read_price_per_1m),
+            (cache_write_tokens, self.cache_write_price_per_1m),
         )
+        if any(tokens and price is None for tokens, price in charges):
+            return None
+        cost = sum(tokens * price for tokens, price in charges if tokens) / 1_000_000
         return round(cost, 10)
 
     def validate_effort(self, native_effort: str) -> None:
@@ -271,20 +268,22 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
     "gpt-6.1-sol": ModelSpec(
         model_id="gpt-6.1-sol", pool="Reasoning", provider="openai",
         display_name="GPT 6.1 Sol", context_window=None, max_output_tokens=None,
-        native_efforts=(), input_price_per_1m=None, output_price_per_1m=None,
-        reasoning_price_per_1m=None, cache_read_price_per_1m=None,
-        cache_write_price_per_1m=None, rpm_limit=None, tpm_limit=None,
-        tool_supported=None, pricing_status="NOT_MEASURED",
+        native_efforts=(), input_price_per_1m=2.0, output_price_per_1m=10.0,
+        reasoning_price_per_1m=10.0, cache_read_price_per_1m=0.1,
+        cache_write_price_per_1m=2.5, rpm_limit=None, tpm_limit=None,
+        tool_supported=None, pricing_status="VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        pricing_source="https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
         identity_status="NOT_MEASURED", context_status="NOT_MEASURED",
         native_efforts_status="NOT_MEASURED",
     ),
     "qwen3.8-flash": ModelSpec(
         model_id="qwen3.8-flash", pool="Fast", provider="aliyun",
         display_name="Qwen 3.8 Flash", context_window=None, max_output_tokens=None,
-        native_efforts=(), input_price_per_1m=None, output_price_per_1m=None,
-        reasoning_price_per_1m=None, cache_read_price_per_1m=None,
+        native_efforts=(), input_price_per_1m=0.15, output_price_per_1m=0.47,
+        reasoning_price_per_1m=0.47, cache_read_price_per_1m=0.016,
         cache_write_price_per_1m=None, rpm_limit=None, tpm_limit=None,
-        tool_supported=None, pricing_status="NOT_MEASURED",
+        tool_supported=None, pricing_status="OPENROUTER_PUBLISHED_USD_REFERENCE",
+        pricing_source="https://openrouter.ai/api/v1/models",
         identity_status="NOT_MEASURED", context_status="NOT_MEASURED",
         native_efforts_status="NOT_MEASURED",
     ),

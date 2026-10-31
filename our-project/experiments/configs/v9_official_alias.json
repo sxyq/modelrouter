@@ -1,0 +1,26 @@
+{
+  "enabled": true,
+  "execution_scope": "OFFICIAL_SINGLE_ALIAS_DEVELOPMENT",
+  "execution_mode": "ALIAS_SMOKE",
+  "evidence_scope": "OFFICIAL_ENVIRONMENT_ALIAS_INTEGRATION",
+  "base_url": "https://api.hcnsec.cn/v1",
+  "actual_backend_model_id": "Qwen3.8-27B",
+  "api_key_env": "MODELROUTER_ALIAS_API_KEY",
+  "effective_native_effort": "none",
+  "backend_deployment_status": "API_IDENTITY_ONLY_UNVERIFIED_PHYSICAL_BACKEND",
+  "cost_status": "MAPPED_EXPERIMENT_PRICE",
+  "router_endpoint": "http://127.0.0.1:8000",
+  "router_timeout_sec": 60,
+  "router_context_chars": 6000,
+  "teacher_enabled": true,
+  "teacher_model_id": "gpt-6.1-sol",
+  "teacher_native_effort": "none",
+  "teacher_max_output_tokens": 1024,
+  "teacher_context_chars": 48000,
+  "feature_training_status": "FEATURE_NOT_TRAINED",
+  "candidate_actions": [
+    {"provider": "openai", "model": "gpt-6.1-sol", "native_effort": "none"},
+    {"provider": "jiji", "model": "gpt-6-luna", "native_effort": "none"},
+    {"provider": "aliyun", "model": "qwen3.8-flash", "native_effort": "none"}
+  ]
+}

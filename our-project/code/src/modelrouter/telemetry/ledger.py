@@ -228,6 +228,16 @@ class ExperimentLedger:
         billed = trial.get("actual_billed_cost_usd")
         components = [billed, metadata.get("sandbox_cost_usd"), metadata.get("router_compute_cost_usd")]
         full_cost = sum(components) if all(v is not None for v in components) else None
+        generator_cost = trial.get("cost_usd")
+        teacher_cost = None
+        model_usage = metadata.get("provider_metrics")
+        teacher_usage = (metadata.get("v9") or {}).get("teacher_metrics", [])
+        teacher_usage = [row for row in teacher_usage if row.get("provider_request_attempted", True)]
+        if model_usage is not None:
+            generator_cost = sum(row["cost_usd"] for row in model_usage) if all(
+                row.get("cost_usd") is not None for row in model_usage) else None
+            teacher_cost = sum(row["cost_usd"] for row in teacher_usage) if all(
+                row.get("cost_usd") is not None for row in teacher_usage) else None
         self._append_summary({
             "recorded_at": datetime.now(timezone.utc).isoformat(),
             "benchmark": trial.get("benchmark", "terminal-bench-2-1"),
@@ -257,7 +267,12 @@ class ExperimentLedger:
             "started_at": trial.get("started_at"), "finished_at": trial["finished_at"],
             "total_steps": len((trial.get("trace") or {}).get("steps", [])) or None,
             "elapsed_time_sec": trial.get("duration_sec"),
-            "total_cost_usd": full_cost, "generator_cost_usd": trial.get("cost_usd"),
+            "total_cost_usd": full_cost, "generator_cost_usd": generator_cost,
+            "teacher_cost_usd": teacher_cost, "episode_model_cost_usd": trial.get("cost_usd"),
+            "cost_model_ids": sorted({row["cost_model_id"] for row in (model_usage or []) + teacher_usage
+                                      if row.get("cost_model_id")}),
+            "execution_mode": "ALIAS_SMOKE" if any(row.get("execution_mode") in
+                ("ALIAS_SMOKE", "TEACHER_ALIAS_SMOKE") for row in (model_usage or []) + teacher_usage) else "REAL_API",
             "cost_statuses": trial.get("cost_statuses"),
             "generator_cost_source": "harbor_agent_context; not an invoice",
             "actual_billed_cost_usd": billed, "sandbox_cost_usd": components[1],

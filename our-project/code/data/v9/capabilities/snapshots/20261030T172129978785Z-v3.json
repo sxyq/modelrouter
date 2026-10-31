@@ -1,0 +1,768 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "20261030T172129978785Z-v3",
+  "snapshot_version": 3,
+  "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+  "status": "PARTIAL",
+  "models": {
+    "gpt-6.1-sol": {
+      "model_id": "gpt-6.1-sol",
+      "evidence_status": "NOT_MEASURED",
+      "model_revision": "NOT_REPORTED",
+      "model_creator": null,
+      "pricing": {},
+      "source_url": "https://artificialanalysis.ai/models/gpt-6.1-sol",
+      "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+      "metrics": [
+        {
+          "metric_name": "artificial_analysis_intelligence_index",
+          "score_raw": null,
+          "score_unit": "INDEX",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": null,
+          "score_scope": "model",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6.1-sol",
+          "evidence_status": "NOT_MEASURED",
+          "missing_reason": "MODEL_NOT_FOUND"
+        },
+        {
+          "metric_name": "artificial_analysis_coding_index",
+          "score_raw": null,
+          "score_unit": "INDEX",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": null,
+          "score_scope": "model",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6.1-sol",
+          "evidence_status": "NOT_MEASURED",
+          "missing_reason": "MODEL_NOT_FOUND"
+        },
+        {
+          "metric_name": "artificial_analysis_agentic_index",
+          "score_raw": null,
+          "score_unit": "INDEX",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": null,
+          "score_scope": "model",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6.1-sol",
+          "evidence_status": "NOT_MEASURED",
+          "missing_reason": "MODEL_NOT_FOUND"
+        }
+      ],
+      "provider_metadata": {
+        "model_id": "gpt-6.1-sol",
+        "source_url": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+        "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+        "model_revision": "NOT_REPORTED",
+        "evidence_status": "OFFICIAL_DOCUMENTATION",
+        "provider": "OpenAI",
+        "context_limits": {
+          "context_window_tokens": 1050000,
+          "max_input_tokens": 922000,
+          "max_output_tokens": 128000
+        },
+        "pricing": {
+          "currency": "USD",
+          "unit": "PER_MILLION_TOKENS",
+          "rates": {
+            "Input": 2.0,
+            "Cached input": 0.1,
+            "Cache writes": 2.5,
+            "Output": 10.0
+          },
+          "conditions": [
+            "Cached input tokens are priced at 5% of the uncached input token rate.",
+            "Cache writes are billed at 1.25x the uncached input token rate.",
+            "API prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+            "Fast mode prices are 2x Standard. Batch and Flex prices are 50% lower than Standard.",
+            "Ultrafast mode prices are 6x Standard.",
+            "Regional processing adds a 10% premium where available.",
+            "GPT-6.1 Sol uses a default context window of 500K tokens in Codex and ChatGPT Work. Usage drawn from your subscription has no long-context surcharge. See [Codex pricing](/codex/pricing)."
+          ]
+        },
+        "native_efforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ]
+      }
+    },
+    "gpt-6-luna": {
+      "model_id": "gpt-6-luna",
+      "evidence_status": "MEASURED",
+      "model_revision": "NOT_REPORTED",
+      "model_creator": {
+        "id": "e67e56e3-15cd-43db-b679-da4660a69f41",
+        "slug": "openai",
+        "name": "OpenAI",
+        "logo": "/img/logos/openai.svg",
+        "color": "#1f1f1f",
+        "country": "us"
+      },
+      "pricing": {
+        "currency": "USD",
+        "unit": "PER_MILLION_TOKENS",
+        "input": 0.1,
+        "output": 0.5,
+        "cached_input": 0.01,
+        "cache_write": 0.125
+      },
+      "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+      "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+      "metrics": [
+        {
+          "metric_name": "artificial_analysis_intelligence_index",
+          "score_raw": 27.7552004938153,
+          "score_unit": "INDEX",
+          "benchmark_version": "5.0",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": "max",
+          "score_scope": "effort",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "MEASURED",
+          "missing_reason": null
+        },
+        {
+          "metric_name": "aa-briefcase",
+          "score_raw": 1336.99,
+          "score_unit": "ELO",
+          "benchmark_version": "1.1",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": "max",
+          "score_scope": "effort",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "MEASURED",
+          "missing_reason": null,
+          "benchmark_name": "AA-Briefcase v1.1: Agentic Knowledge Work Benchmark"
+        },
+        {
+          "metric_name": "automationbench-aa",
+          "score_raw": 0.5316814034483175,
+          "score_unit": "NOT_REPORTED",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": "max",
+          "score_scope": "effort",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "MEASURED",
+          "missing_reason": null,
+          "benchmark_name": "AutomationBench-AA: Agentic SaaS Workflow Benchmark"
+        },
+        {
+          "metric_name": "terminalbench-4-0",
+          "score_raw": 0.126262626262626,
+          "score_unit": "NOT_REPORTED",
+          "benchmark_version": "4.0",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": "max",
+          "score_scope": "effort",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "MEASURED",
+          "missing_reason": null,
+          "benchmark_name": "Terminal-Bench 4.0 Benchmark"
+        },
+        {
+          "metric_name": "frontiercode-2-0",
+          "score_raw": 0.251747727272727,
+          "score_unit": "NOT_REPORTED",
+          "benchmark_version": "2.0",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": "max",
+          "score_scope": "effort",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "MEASURED",
+          "missing_reason": null,
+          "benchmark_name": "FrontierCode 2.0 Benchmark"
+        },
+        {
+          "metric_name": "omniscience",
+          "score_raw": -8.266666666666667,
+          "score_unit": "NOT_REPORTED",
+          "benchmark_version": "1.1",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": "max",
+          "score_scope": "effort",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "MEASURED",
+          "missing_reason": null,
+          "benchmark_name": "AA-Omniscience v1.1: Knowledge and Hallucination Benchmark"
+        },
+        {
+          "metric_name": "gdp-pdf",
+          "score_raw": 0.228,
+          "score_unit": "NOT_REPORTED",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": "max",
+          "score_scope": "effort",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "MEASURED",
+          "missing_reason": null,
+          "benchmark_name": "GDP.pdf Benchmark"
+        },
+        {
+          "metric_name": "hle-diamond",
+          "score_raw": 0.222,
+          "score_unit": "NOT_REPORTED",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": "max",
+          "score_scope": "effort",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "MEASURED",
+          "missing_reason": null,
+          "benchmark_name": "HLE-Diamond Benchmark"
+        },
+        {
+          "metric_name": "critpt-v2-hard",
+          "score_raw": 0.415,
+          "score_unit": "NOT_REPORTED",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": "max",
+          "score_scope": "effort",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "MEASURED",
+          "missing_reason": null,
+          "benchmark_name": "critpt-v2-hard"
+        },
+        {
+          "metric_name": "terminal-bench-science",
+          "score_raw": 0.0857142857142857,
+          "score_unit": "NOT_REPORTED",
+          "benchmark_version": "0.1",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": "max",
+          "score_scope": "effort",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "MEASURED",
+          "missing_reason": null,
+          "benchmark_name": "Terminal-Bench-Science 0.1 Benchmark"
+        },
+        {
+          "metric_name": "artificial_analysis_coding_index",
+          "score_raw": null,
+          "score_unit": "INDEX",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": null,
+          "score_scope": "model",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "NOT_MEASURED",
+          "missing_reason": "NOT_MEASURED"
+        },
+        {
+          "metric_name": "artificial_analysis_agentic_index",
+          "score_raw": null,
+          "score_unit": "INDEX",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": null,
+          "score_scope": "model",
+          "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+          "evidence_status": "NOT_MEASURED",
+          "missing_reason": "NOT_MEASURED"
+        }
+      ],
+      "provider": "OpenAI",
+      "context_limits": {
+        "context_window_tokens": 1000000
+      },
+      "release_date": "2026-09-22",
+      "provider_metadata": {
+        "model_id": "gpt-6-luna",
+        "source_url": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+        "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+        "model_revision": "NOT_REPORTED",
+        "evidence_status": "OFFICIAL_DOCUMENTATION",
+        "provider": "OpenAI",
+        "context_limits": {
+          "context_window_tokens": 1050000,
+          "max_input_tokens": 922000,
+          "max_output_tokens": 128000
+        },
+        "pricing": {
+          "currency": "USD",
+          "unit": "PER_MILLION_TOKENS",
+          "rates": {
+            "Input": 0.1,
+            "Cached input": 0.01,
+            "Cache writes": 0.125,
+            "Output": 0.5
+          },
+          "conditions": [
+            "Cached input tokens are priced at 10% of the uncached input token rate.",
+            "Cache writes are billed at 1.25x the uncached input token rate.",
+            "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+            "Regional processing adds a 10% premium where available. EU data residency is available with Standard, Fast, Flex, and Batch processing.",
+            "Batch and Flex are priced at 50% of Standard rates. Fast mode is priced at 2x the applicable rates."
+          ]
+        },
+        "native_efforts": [
+          "none",
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ]
+      }
+    },
+    "qwen3.8-flash": {
+      "model_id": "qwen3.8-flash",
+      "evidence_status": "NOT_MEASURED",
+      "model_revision": "NOT_REPORTED",
+      "model_creator": null,
+      "pricing": {},
+      "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+      "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+      "metrics": [
+        {
+          "metric_name": "artificial_analysis_intelligence_index",
+          "score_raw": null,
+          "score_unit": "INDEX",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": null,
+          "score_scope": "model",
+          "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+          "evidence_status": "NOT_MEASURED",
+          "missing_reason": "MODEL_NOT_FOUND"
+        },
+        {
+          "metric_name": "artificial_analysis_coding_index",
+          "score_raw": null,
+          "score_unit": "INDEX",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": null,
+          "score_scope": "model",
+          "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+          "evidence_status": "NOT_MEASURED",
+          "missing_reason": "MODEL_NOT_FOUND"
+        },
+        {
+          "metric_name": "artificial_analysis_agentic_index",
+          "score_raw": null,
+          "score_unit": "INDEX",
+          "benchmark_version": "NOT_REPORTED",
+          "harness_id": "NOT_REPORTED",
+          "evaluated_native_effort": null,
+          "score_scope": "model",
+          "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+          "evidence_status": "NOT_MEASURED",
+          "missing_reason": "MODEL_NOT_FOUND"
+        }
+      ],
+      "provider_metadata": {
+        "model_id": "qwen3.8-flash",
+        "source_url": "https://help.aliyun.com/en/model-studio/qwen3-8-flash",
+        "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+        "model_revision": "NOT_REPORTED",
+        "evidence_status": "OFFICIAL_DOCUMENTATION",
+        "provider": "Alibaba Cloud",
+        "document_modified_at": 1793285582000,
+        "context_limits": {
+          "Max input length": 991808,
+          "Max output length": 131072,
+          "Max input length (thinking mode)": 983616,
+          "Max output length (thinking mode)": 131072,
+          "Context length": 1000000,
+          "Max thinking chain length": 262144
+        },
+        "pricing": {
+          "regions": [
+            {
+              "region": "China (Beijing)",
+              "deployment_scope": null,
+              "currency": "CNY",
+              "rates": [
+                {
+                  "billing_item": "Input",
+                  "price": 0.8,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Output",
+                  "price": 2.7,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Input (cache hit)",
+                  "price": 0.1,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache creation",
+                  "price": 1.25,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache hit",
+                  "price": 0.1,
+                  "unit": "Per 1 million tokens"
+                }
+              ]
+            },
+            {
+              "region": "Singapore",
+              "deployment_scope": "International",
+              "currency": "CNY",
+              "rates": [
+                {
+                  "billing_item": "Input",
+                  "price": 1.094,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Output",
+                  "price": 3.427,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Input (cache hit)",
+                  "price": 0.117,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache creation",
+                  "price": 1.458,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache hit",
+                  "price": 0.117,
+                  "unit": "Per 1 million tokens"
+                }
+              ]
+            },
+            {
+              "region": "Germany (Frankfurt)",
+              "deployment_scope": "EU",
+              "currency": "CNY",
+              "rates": [
+                {
+                  "billing_item": "Input",
+                  "price": 1.094,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Output",
+                  "price": 3.427,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Input (cache hit)",
+                  "price": 0.117,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache creation",
+                  "price": 1.458,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache hit",
+                  "price": 0.117,
+                  "unit": "Per 1 million tokens"
+                }
+              ]
+            },
+            {
+              "region": "Germany (Frankfurt)",
+              "deployment_scope": "Global",
+              "currency": "CNY",
+              "rates": [
+                {
+                  "billing_item": "Input",
+                  "price": 0.8,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Output",
+                  "price": 2.7,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Input (cache hit)",
+                  "price": 0.1,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache creation",
+                  "price": 1.25,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache hit",
+                  "price": 0.1,
+                  "unit": "Per 1 million tokens"
+                }
+              ]
+            },
+            {
+              "region": "Japan (Tokyo)",
+              "deployment_scope": "Global",
+              "currency": "CNY",
+              "rates": [
+                {
+                  "billing_item": "Input",
+                  "price": 0.8,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Output",
+                  "price": 2.7,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Input (cache hit)",
+                  "price": 0.1,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache creation",
+                  "price": 1.25,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache hit",
+                  "price": 0.1,
+                  "unit": "Per 1 million tokens"
+                }
+              ]
+            },
+            {
+              "region": "US (Virginia)",
+              "deployment_scope": "Global",
+              "currency": "CNY",
+              "rates": [
+                {
+                  "billing_item": "Input",
+                  "price": 0.8,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Output",
+                  "price": 2.7,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Input (cache hit)",
+                  "price": 0.1,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache creation",
+                  "price": 1.25,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache hit",
+                  "price": 0.1,
+                  "unit": "Per 1 million tokens"
+                }
+              ]
+            },
+            {
+              "region": "US (Virginia)",
+              "deployment_scope": "US",
+              "currency": "CNY",
+              "rates": [
+                {
+                  "billing_item": "Input",
+                  "price": 1.094,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Output",
+                  "price": 3.427,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Input (cache hit)",
+                  "price": 0.117,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache creation",
+                  "price": 1.458,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache hit",
+                  "price": 0.117,
+                  "unit": "Per 1 million tokens"
+                }
+              ]
+            },
+            {
+              "region": "Hong Kong (China)",
+              "deployment_scope": "Hong Kong (China)",
+              "currency": "CNY",
+              "rates": [
+                {
+                  "billing_item": "Input",
+                  "price": 1.094,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Output",
+                  "price": 3.427,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Input (cache hit)",
+                  "price": 0.117,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache creation",
+                  "price": 1.458,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache hit",
+                  "price": 0.117,
+                  "unit": "Per 1 million tokens"
+                }
+              ]
+            },
+            {
+              "region": "Hong Kong (China)",
+              "deployment_scope": "Global",
+              "currency": "CNY",
+              "rates": [
+                {
+                  "billing_item": "Input",
+                  "price": 0.8,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Output",
+                  "price": 2.7,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Input (cache hit)",
+                  "price": 0.1,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache creation",
+                  "price": 1.25,
+                  "unit": "Per 1 million tokens"
+                },
+                {
+                  "billing_item": "Explicit cache hit",
+                  "price": 0.1,
+                  "unit": "Per 1 million tokens"
+                }
+              ]
+            }
+          ],
+          "promotions_included": false
+        }
+      }
+    }
+  },
+  "sources": [
+    {
+      "source_url": "https://artificialanalysis.ai/api/v2/data/llms/models",
+      "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+      "status": "API_KEY_MISSING"
+    },
+    {
+      "model_id": "gpt-6.1-sol",
+      "source_url": "https://artificialanalysis.ai/models/gpt-6.1-sol",
+      "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+      "source_kind": "AA_PUBLIC",
+      "status": "MODEL_NOT_FOUND",
+      "error_type": "HTTPError",
+      "capability_evidence_status": "NOT_MEASURED",
+      "measured_metric_count": 0,
+      "http_status": 404,
+      "response_headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "Date": "Fri, 30 Oct 2026 16:26:16 GMT"
+      }
+    },
+    {
+      "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+      "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+      "source_kind": "AA_PUBLIC",
+      "model_id": "gpt-6-luna",
+      "status": "FETCHED",
+      "http_status": 200,
+      "response_headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "Date": "Fri, 30 Oct 2026 15:03:44 GMT"
+      },
+      "response_bytes": 1655192,
+      "capability_evidence_status": "PARTIAL",
+      "measured_metric_count": 10,
+      "provider_metadata_model_count": 0
+    },
+    {
+      "model_id": "qwen3.8-flash",
+      "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+      "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+      "source_kind": "AA_PUBLIC",
+      "status": "MODEL_NOT_FOUND",
+      "error_type": "HTTPError",
+      "capability_evidence_status": "NOT_MEASURED",
+      "measured_metric_count": 0,
+      "http_status": 404,
+      "response_headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "Date": "Fri, 30 Oct 2026 17:21:33 GMT"
+      }
+    },
+    {
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "model_id": "gpt-6.1-sol",
+      "source_kind": "PROVIDER_DOCUMENTATION",
+      "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+      "status": "FETCHED_METADATA",
+      "http_status": 200,
+      "response_headers": {
+        "Content-Type": "text/markdown; charset=utf-8",
+        "Date": "Fri, 30 Oct 2026 17:21:33 GMT"
+      },
+      "response_bytes": 4079
+    },
+    {
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+      "model_id": "gpt-6-luna",
+      "source_kind": "PROVIDER_DOCUMENTATION",
+      "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+      "status": "FETCHED_METADATA",
+      "http_status": 200,
+      "response_headers": {
+        "Content-Type": "text/markdown; charset=utf-8",
+        "Date": "Fri, 30 Oct 2026 17:21:34 GMT"
+      },
+      "response_bytes": 4111
+    },
+    {
+      "source_url": "https://help.aliyun.com/en/model-studio/qwen3-8-flash",
+      "model_id": "qwen3.8-flash",
+      "source_kind": "PROVIDER_DOCUMENTATION",
+      "fetched_at_utc": "2026-10-30T17:21:29.978785Z",
+      "status": "FETCHED_METADATA",
+      "http_status": 200,
+      "response_headers": {
+        "Content-Type": "text/html;charset=UTF-8",
+        "Date": "Fri, 30 Oct 2026 17:21:34 GMT"
+      },
+      "response_bytes": 76715
+    }
+  ],
+  "capability_evidence_status": "PARTIAL",
+  "measured_metric_count": 10,
+  "provider_metadata_model_count": 3
+}

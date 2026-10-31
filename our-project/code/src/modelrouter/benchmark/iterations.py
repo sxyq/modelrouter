@@ -212,7 +212,7 @@ def summarize(path: Path, *, persist=True):
     costs = [c.get("official_rate_cost_usd", c.get("cost_usd")) for c in calls]
     native_only = native_contexts
     for c in calls:
-        model = c.get("returned_model") or c.get("returned_model_id") or c.get("model", "unknown")
+        model = c.get("selected_model_id") or c.get("returned_model") or c.get("returned_model_id") or c.get("model", "unknown")
         model_calls[model + " / " + c.get("protocol", "chat_completions")].append(c)
     native_costs = [r.get("cost_usd") for r in native_only]
     all_costs = costs + native_costs
@@ -254,6 +254,11 @@ def summarize(path: Path, *, persist=True):
                            else None for c in teachers]
     model_tokens = token_values + teacher_token_values
     model_costs = all_costs + teacher_costs
+    mapped_requests = [dict(row, role=role) for role, group in (("generator", calls), ("teacher", teachers))
+                       for row in group if row.get("cost_basis") == "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE"]
+    mapped_costs = [row.get("cost_usd") for row in mapped_requests]
+    mapped_specs = {row["cost_model_id"]: ModelRegistry().get_spec(row["cost_model_id"])
+                    for row in mapped_requests}
     metrics = {
         "timestamp": now(), "iteration_id": path.name, "status": state["status"],
         "reason": state.get("reason"),
@@ -271,6 +276,21 @@ def summarize(path: Path, *, persist=True):
         "teacher_cost_usd": teacher_cost,
         "known_teacher_cost_usd": round(sum(v for v in teacher_costs if v is not None), 10) if any(v is not None for v in teacher_costs) else None,
         "episode_model_cost_usd": round(sum(model_costs), 10) if model_costs and all(v is not None for v in model_costs) else None,
+        "execution_mode": "ALIAS_SMOKE" if mapped_requests else "REAL_API",
+        "mapped_cost_accounting": {
+            "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+            "requests": mapped_requests,
+            "known_cost_usd": round(sum(v for v in mapped_costs if v is not None), 10) if mapped_costs else None,
+            "total_cost_usd": round(sum(mapped_costs), 10) if mapped_costs and all(v is not None for v in mapped_costs) else None,
+            "missing_usage_requests": sum(row.get("usage_status") != "REPORTED" for row in mapped_requests),
+            "model_rates": {model: {
+                "source": spec.pricing_source, "pricing_status": spec.pricing_status,
+                "usd_per_1m_tokens": {
+                    "input": spec.input_price_per_1m, "output": spec.output_price_per_1m,
+                    "cache_read": spec.cache_read_price_per_1m, "cache_write": spec.cache_write_price_per_1m,
+                },
+            } for model, spec in mapped_specs.items()},
+        } if mapped_requests else None,
         "cost_source": "provider_usage_and_registry_rates; not an invoice",
         "official_rate_accounting": {
             "model": luna_spec.model_id,
@@ -293,7 +313,7 @@ def summarize(path: Path, *, persist=True):
                 "recorded_cost_usd": c.get("cost_usd"), "official_rate_cost_usd": c["official_rate_cost_usd"],
             } for role, group in (("generator", calls), ("teacher", teachers))
               for c in group if "official_rate_cost_usd" in c],
-        },
+        } if not mapped_requests else None,
         "actual_generator_cost_usd": billed_generator,
         "actual_teacher_cost_usd": billed_teacher,
         "sandbox_cost_usd": sandbox_cost, "router_compute_cost_usd": router_cost,
@@ -316,6 +336,8 @@ def summarize(path: Path, *, persist=True):
             "phase_wall_s": r.get("phase_wall_s"),
         } for r in trials],
         "models": {k: {
+            "actual_backend_model_ids": sorted({x.get("actual_backend_model_id") or x.get("returned_model_id") for x in v
+                                                if x.get("actual_backend_model_id") or x.get("returned_model_id")}),
             "calls": len(v), "ttft_p50_ms": percentile([x.get("ttft_ms") for x in v], .5),
             "ttft_p95_ms": percentile([x.get("ttft_ms") for x in v], .95),
             "output_tokens_per_s": percentile([x.get("output_tokens_per_s") for x in v], .5),
@@ -333,7 +355,7 @@ def summarize(path: Path, *, persist=True):
         "last_unit": state["units"][-1] if state["units"] else None,
         "measurement_scope": "Benchmark metrics exclude provider/router probes; original probe events remain in events.jsonl",
         "ttft_scope": "Upstream provider timing; native relay buffers the response before returning it",
-        "publication_status": "NOT_EVALUATED" if not verified else "AWAITING_PAIRED_SCIENTIFIC_ANALYSIS",
+        "publication_status": "ALIAS_SMOKE_ONLY" if mapped_requests else "NOT_EVALUATED" if not verified else "AWAITING_PAIRED_SCIENTIFIC_ANALYSIS",
         "missing_measurements": ["sandbox billing", "router infrastructure cost", "provider invoice reconciliation"],
     }
     if persist:
@@ -351,7 +373,8 @@ def display(metrics):
         f"{metrics['timestamp']} | {metrics['status']} | Job={show(trial.get('job_id'))} "
         f"JobName={show(current.get('job_name'))} Trial={show(trial.get('trial_id'))} "
         f"Task={current.get('task_id', '-')} Policy={current.get('policy', '-')} "
-        f"Step={show(call.get('step', tool.get('step')))} Model={show(call.get('returned_model', call.get('model')))} "
+        f"Step={show(call.get('step', tool.get('step')))} Model={show(call.get('selected_model_id', call.get('model')))} "
+        f"Backend={show(call.get('returned_model_id', call.get('returned_model')))} "
         f"Effort={show(call.get('effort'))} TTFT={show(call.get('ttft_ms'))}ms "
         f"TPS={show(call.get('output_tokens_per_s'))} Tokens={show(metrics['generator_tokens'])} "
         f"LastTool={show(tool.get('command'))} TrialStatus={trial.get('status', 'NOT_EVALUATED')} "

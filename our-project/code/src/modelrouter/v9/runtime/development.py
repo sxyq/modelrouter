@@ -13,7 +13,9 @@ from minisweagent.environments.local import LocalEnvironment
 from minisweagent.exceptions import Submitted
 
 from modelrouter.agent.state import AgentState, EpisodeStatus
-from modelrouter.benchmark.iterations import event, now, write_atomic
+from modelrouter.benchmark.iterations import event, now, rows, write_atomic
+from modelrouter.providers.provider import OpenAICompatibleProvider
+from modelrouter.providers.registry import ModelRegistry
 from modelrouter.telemetry.ledger import ExperimentLedger
 from .alias import alias_provider, DEFAULT_BACKEND_DEPLOYMENT_STATUS
 from .context import record_tool_result
@@ -89,7 +91,7 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
             "mini_swe_version": version("mini-swe-agent"), "started_at": now(),
             "max_steps": max_steps, "max_output_tokens": max_output_tokens,
             "instruction": instruction, "verify_command": verify_command,
-            "upstream_cost_counter_status": "UNPRICED_PLACEHOLDER_NOT_AN_INVOICE",
+            "upstream_cost_counter_status": "MAPPED_EXPERIMENT_PRICE_NOT_AN_INVOICE",
             "upstream_runtime_options": dict(runtime_options),
         }
         mini = mini_configuration(max_steps=max_steps, cost_limit=0)
@@ -162,7 +164,8 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
             "total_reasoning_tokens": complete("reasoning_tokens"),
             "total_cached_tokens": complete("cached_tokens"), "total_cost_usd": model.complete_episode_cost_usd,
             "actual_billed_cost_usd": complete("actual_billed_cost_usd"),
-            "cost_status": config.get("cost_status", "BACKEND_PRICE_NOT_MEASURED"),
+            "cost_status": "MAPPED_EXPERIMENT_PRICE" if model.complete_episode_cost_usd is not None else "MAPPED_USAGE_INCOMPLETE",
+            "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
             "router_fallback_used": model.fallback_used,
             "logical_models_selected": sorted({item["selected_model_id"] for item in model.usage}),
             "router_checkpoint_ids": sorted({item["router_checkpoint_id"] for item in model.usage}),
@@ -174,3 +177,50 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
         ExperimentLedger().record_development_episode(result)
         event(record_dir, "ITERATION_END", **result)
         return result
+
+
+def reprice_development(record_dir: Path) -> dict:
+    """Apply selected-model rates to saved calls; keep original events and outcomes."""
+    result = json.loads((record_dir / "metrics.json").read_text())
+    requests = []
+    for row in rows(record_dir / "events.jsonl"):
+        if row["event"] not in ("GENERATOR_END", "TEACHER_END", "TEACHER_ERROR"):
+            continue
+        if not row.get("provider_request_attempted", True):
+            continue
+        spec = ModelRegistry().get_spec(row["selected_model_id"])
+        prompt, completion, reasoning, cached, written = OpenAICompatibleProvider._usage_counts(row.get("raw_usage") or {})
+        cost = spec.calculate_cost(prompt, completion, reasoning or 0, cached or 0, written or 0) if prompt is not None and completion is not None else None
+        requests.append({
+            "role": "generator" if row["event"] == "GENERATOR_END" else "teacher",
+            "response_id": row.get("response_id"), "selected_model_id": spec.model_id,
+            "request_model_id": row.get("request_model_id"),
+            "returned_model_id": row.get("returned_model_id"),
+            "prompt_tokens": prompt, "completion_tokens": completion,
+            "reported_completion_tokens": (row.get("raw_usage") or {}).get("completion_tokens"),
+            "reasoning_tokens": reasoning, "cached_tokens": cached, "cache_write_tokens": written,
+            "recorded_cost_usd": row.get("cost_usd"), "cost_usd": cost,
+            "cost_model_id": spec.model_id, "cost_source": spec.pricing_source,
+            "pricing_status": spec.pricing_status,
+        })
+    totals = {}
+    for role in ("generator", "teacher"):
+        costs = [row["cost_usd"] for row in requests if row["role"] == role]
+        known = [cost for cost in costs if cost is not None]
+        totals[role + "_cost_usd"] = round(sum(known), 10) if len(known) == len(costs) else None
+        totals["known_" + role + "_cost_usd"] = round(sum(known), 10) if known else None
+    costs = [row["cost_usd"] for row in requests]
+    accounting = {
+        "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE", "requests": requests,
+        **totals,
+        "total_cost_usd": round(sum(costs), 10) if costs and all(cost is not None for cost in costs) else None,
+        "known_cost_usd": round(sum(cost for cost in costs if cost is not None), 10) if any(cost is not None for cost in costs) else None,
+        "missing_usage_requests": sum(row["prompt_tokens"] is None or row["completion_tokens"] is None for row in requests),
+        "repriced_at": now(),
+    }
+    result.update(mapped_cost_accounting=accounting, total_cost_usd=accounting["total_cost_usd"],
+                  cost_basis=accounting["cost_basis"],
+                  cost_status="MAPPED_EXPERIMENT_PRICE" if accounting["total_cost_usd"] is not None else "MAPPED_USAGE_INCOMPLETE")
+    write_atomic(record_dir / "metrics.json", result)
+    event(record_dir, "MAPPED_PRICE_RECONCILIATION", **accounting)
+    return result
