@@ -105,7 +105,7 @@ def process_tra_001(raw_root, cleaned_root, preview_root):
 
                 # 真实终局标签
                 res_val = row.get("resolved")
-                if res_val is None:
+                if res_val is None or res_val == -1:
                     resolved = None
                     resolved_counter["unknown"] += 1
                 else:

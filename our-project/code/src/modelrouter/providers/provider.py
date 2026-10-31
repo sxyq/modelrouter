@@ -412,6 +412,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         max_tokens: int = 1024,
         tools: Optional[List[Dict[str, Any]]] = None,
         stream: bool = True,
+        *,
+        response_format: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Return (native_response, metrics); one request, no execution or retry.
 
@@ -436,6 +438,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             request_base_url = self.base_url
             provider_name = target_spec.provider
         payload = self._make_payload(messages, target, effective_effort, max_tokens, tools, stream)
+        if response_format is not None:
+            payload["response_format"] = response_format
         endpoint = "/chat/completions" if self.protocol == "chat_completions" else "/responses"
         request = urllib.request.Request(
             request_base_url + endpoint,
@@ -515,6 +519,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         if alias_facts is not None:
             metrics.update(alias_facts)
             metrics["cost_status"] = "MAPPED_EXPERIMENT_PRICE" if cost is not None else "MAPPED_PRICE_NOT_MEASURED"
+        if response_format is not None:
+            metrics["requested_response_format"] = response_format
         if usage_complete:
             global_multi_model_logger.log_call(
                 protocol=self.protocol, model_id=model_spec.model_id if alias_facts is not None else returned or target, provider=provider_name,

@@ -1,10 +1,25 @@
 # ModelRouter · 数据源、模型能力与缓存政策统一台账
 
-## 当前能力与数据资格（2026-10-31）
+## 当前能力与数据来源（2026-10-31）
 
-**10-31 官方 Alias 开发资产**：原 `20261031-v9-official-alias` 首次 `fix-git` Trial `2963d109-d41c-4bc7-a673-5406c6369bae` 已 reward=1.0、CTRF 2/2；13 Router/13 生成/22 工具、三合法候选/0 fallback，全部逻辑 Luna none，实际 Qwen3.8-27B 后端。原 Sol 逻辑教师超时且无 usage/短评，完整模型费用 `null`。保存 step3 的成功教师补充属于 `POST_RUN_OBSERVED_PREFIX_REUSE`，不改首次 Episode。原Run的续跑Trial469a1fec-4d6f-4ac4-8fbd-8207cd47b189/fix-git__RsVfot4已reward=1.0、CTRF2/2、异常null：15路由/15生成全Luna none/F05epoch01/fallback0、24工具，2JSON失败教师usage已知照算、1成功教师短评7次进入真实Router。原任务、前缀补充与续跑分别留存，不加入原 Train/Val，不生成最优动作标签，不作两个独立科研样本；详细执行对象见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md)。
+**10-31 不同开发任务**：新 `20261031-v9-db-wal-recovery` 已 reward=1.0、CTRF 7/7，14 次真实 Laya 路由全 Luna、19 次工具调用；5 次教师均输出截断，费用全部保留。之后保存 step3 的三字段教师与真实 Router 消费只属于 `POST_RUN_OBSERVED_PREFIX_REUSE`，不改官方 Trial，也不加独立任务。原 `fix-git` 两次成功及其失败证据保留，本阶段未重跑。全部标为 `ALIAS_SMOKE`，不加入 Train/Val，不生成最优动作标签；详细对象与费用见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md)。
 
-[当前 AA v3 快照](../code/data/v9/capabilities/snapshots/20261030T172129978785Z-v3.json) 为 `20261030T172129978785Z-v3`，合法公开页来源，Luna Max 10 项已取得、none 缺测，Sol/托管 Flash 精确页面 404、`NOT_MEASURED`；AA Key 仍缺失。prepared 唯一390行，S1 `64/64`、S2 `70/64`、S3 `64/64`，Train/Val合计 `198/192`，继续绑定 AA v1。4条教师短评覆盖2任务、截止step3，用于观察step3/7；真实三身份与 Model×Effort 监督均0。在线v3不追写到已完成训练，Max参考分不成为none成绩或最优动作标签；旧v1/v2、原许可与划分保留。
+[当前 AA v4 快照](../code/data/v9/capabilities/snapshots/20261031T072548885180Z-v4.json) 为 `20261031T072548885180Z-v4`，2026-10-31 台北 15:25:48 明确运行原刷新入口取得。Sol 的 AA 原始 slug 是 `gpt-6-1-sol`，与厂商 ID `gpt-6.1-sol` 分别保存；Sol Max、Luna Max 各有 10 项，共 20 项，三份厂商元数据保留。none 档、托管 Flash 及两模型的 Coding/Agentic 综合指数仍为 `NOT_MEASURED`；AA Key 缺失。本次不访问原 Sol 点号 URL 或托管 Flash 已知 404 页，不借用 Flash-Next/27B 成绩。原 Dev Trial 和前缀复用仍绑定 v3，已完成训练与旧390材料仍绑定 v1，不追写旧结果；后续新训练/实验明确绑定所用版本。Sol 厂商原生档位不含 none，Alias 的 none 标签不证明原生档位或实际关闭思考。
+
+下表保留 AA 原分，不把未披露单位的值转换为百分比；完整精度、指标版本和来源见 v4 JSON。两列均为 **Max**，不用于 none 的动作成绩，也不生成最优选择标签。
+
+| 指标 | Sol Max 原分 | Luna Max 原分 |
+| --- | ---: | ---: |
+| Intelligence Index v5.0 | 54.5087338138148 | 27.7552004938153 |
+| AA-Briefcase v1.1（ELO） | 1555.26 | 1336.99 |
+| AutomationBench-AA | 0.6486844882398171 | 0.5316814034483175 |
+| Terminal-Bench 4.0 | 0.560606060606061 | 0.126262626262626 |
+| FrontierCode 2.0 | 0.406262878787879 | 0.251747727272727 |
+| AA-Omniscience v1.1 | 42.03333333333333 | -8.266666666666667 |
+| GDP.pdf | 0.31 | 0.228 |
+| HLE-Diamond | 0.588 | 0.222 |
+| CritPt v2 Hard | 0.685 | 0.415 |
+| Terminal-Bench-Science 0.1 | 0.580952380952381 | 0.0857142857142857 |
 
 **20:05历史运行资产**：原 `results/iterations/20261030-v9-official-luna/` 保存9次真实生成、18次工具、3条成功Luna教师及12个不同响应ID；总用量138,385Token、旧配置价估算0.182588USD（UNVERIFIED_CONFIG，保留历史），实际账单及完整费用未知。任务为既有canary `fix-git`，Verifier未执行，终局标签未知；这些轨迹只用于开发执行证据，不加入原198Train/192Val，不制造模型/Effort最优标签。三条新在线教师与旧训练中的四条教师分别登记，未重生成旧材料。Run保存能力快照 `20261030T041319933533Z-v2`；双动作none/low前向使用同快照，AA Max参考不转成动作分数。Oracle CTRF 2/2通过与真实模型结果分开，详细路径和运行限制见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md) 当前入口。
 
@@ -15,6 +30,86 @@
 **当前官方开发资产**：`our-project/results/iterations/20261030-v9-official-luna-complete/` 已取得 reward=1.0、官方 `verifier/ctrf.json` tests2/passed2/failed0；单 Luna none/low，14 次真实路由、0 fallback。模型用量合计218,578Token，生成165,028、教师53,550；详细 Job/Trial、执行统计与 runtime 只在 [PROJECT_STATUS](../planning/PROJECT_STATUS.md) 当前入口维护。旧失败目录、旧配置金额和旧训练材料保留；本次单模型双动作开发证据不当作独立三模型能力、全动作最优监督或五 RQ 总体结果。
 
 **实际供应商可用性**：主 Agent 已实际 GET 原项目 Provider/models，返回 3 项，研究池当前仅 `gpt-6-luna` 列出，Sol/托管Flash未列出；用户充分测试/部署授权已明确，两类信息分开记录。公开能力页与价格页不能证明具体凭据下模型可用，未列出也不转写为待用户批准。
+
+## V9 下一阶段数据筛选（2026-10-31）
+
+本节登记本轮实际读取的资产与标签。范围为 Open-SWE-Traces、SWE-smith-trajectories、RouterBench 及原 S1/S2/S3；未新增来源、下载、重做全量清洗或训练，原 390 行及其划分保持不动。原终局转换仅做一行调整，新加工将 `resolved=-1` 保留为未知。
+
+### 当前能提供多少监督
+
+**当前三身份 `gpt-6.1-sol / gpt-6-luna / qwen3.8-flash` 的真实最优模型选择监督为 0，Model×NativeEffort 最优监督为 0。** 来源中的已执行模型、模式字段、教师短评和候选卡均不增加这个数量；同后端 Alias 的成功结果与 AA 排名也不产生最优动作标签。
+
+原 prepared 实体仍为 Train198/Val192。本轮逐条对应原始 `resolved` 后，确认其中 Open-SWE 的 **Train2/Val6** 条原值为 `-1`，已保存的终局标签却为 `false`。仅扣除这 8 条已确认的错误终局，可核原目标为 **Train196/Val186**：
+
+| 原目标 | Train 可核标签 | Val 可核标签 | 说明 |
+| --- | ---: | ---: | --- |
+| S1 旧模型人类偏好 | 64 | 64 | 原 Arena 候选身份，当前三身份匹配 0 |
+| S2 已观察动作/轨迹终局 | 68 | 58 | Train 为 27 个动作标签、41 个已知终局；Val 为 58 个已知终局 |
+| S3 日志用量/前缀机会 | 64 | 64 | 原调用及负载辅助目标，与模型最优选择分开 |
+| 合计 | **196** | **186** | 标签条数，不代表独立任务数或新训练文件 |
+
+对应文件为 `our-project/code/data/v9/prepared/{model_comparison,agent_auxiliary,system_auxiliary}/{train,val}.jsonl`，本机与服务器原实体均可读；4 条教师短评、6 条原前缀和原 AA v1 绑定不变。错误来自原 `sources/tra.py` 对非空 `resolved` 使用 `int(value)==1`，使 `-1` 成为 `false`；本轮已在原函数将 `-1` 归为 `None/UNEVALUATED`。没有重加工历史资产、改 prepare 或旧材料；远程加工源码未部署。
+
+### 已存在位置、数量与许可
+
+下列路径相对于现有仓库根目录；远程根位置见原 `manifests/server_assets.json` 的 `base_workspace`。全量公开源在服务器，本机已有相应 `公开数据/数据预览/<来源目录>/` 的统计及预览。两端 `our-project/data/raw/`、`our-project/data/processed/` 均为空，远程 `our-project/data/training_views/` 也为空，不将空目录记成新资产。
+
+| 来源 | 服务器实际文件/目录 | 实际数量与原 Train 候选引用 | 本地材料与原许可 |
+| --- | --- | --- | --- |
+| TRA-001 Open-SWE-Traces | `data/公开数据/原始数据/TRA-001_Open-SWE-Traces/`；`data/公开数据/清洗数据/Agent轨迹/TRA-001_Open-SWE-Traces/cleaned_trajectories.jsonl` | 12 个 Parquet，30,000 个不同轨迹 ID、21,515 个任务；2,075,629 步；原 Train 引用 1,673,528 | 本地预览与旧 prepared；原登记 CC-BY-4.0，manifest 另声明 CC-BY-4.0/Apache-2.0。沿用原来源用途与署名要求，具体版本的许可差异未新增确认 |
+| TRA-002 SWE-smith-trajectories | `data/公开数据/原始数据/TRA-002_SWE-smith/`；`data/公开数据/清洗数据/Agent轨迹/TRA-002_SWE-smith/cleaned_trajectories.jsonl` | ticks/tool/xml 共 24 个 Parquet，76,002 原始行、49,897 个不同轨迹 ID、13,501 个任务；2,331,584 步；原 Train 引用 1,864,427 | 本地预览与旧 prepared；原 MIT 用途保留 |
+| ROUTE-002 RouterBench | `data/公开数据/原始数据/ROUTE-002_RouterBench/` 下 0-shot、5-shot、raw 三个 pkl；`data/公开数据/清洗数据/路由比较/ROUTE-002_RouterBench/cleaned_routerbench.jsonl` | 0-shot 已处理 36,497 题；11 模型；35,189 个有解 Oracle，排除 87 个同分同估价后为 35,102 题，原 Train/Val/Test 为 28,012/3,588/3,502 | 本地统计与预览；**LICENSE_PENDING，当前可加入训练 0**。原 manifest 的 Apache-2.0、预览的 CC-BY-4.0 与此前数据许可未明记录不一致；代码 MIT 不证明数据许可。未读取 pkl 内容或混入 5-shot |
+| 原 S1：ROUTE-004 Arena | `data/公开数据/清洗数据/路由比较/ROUTE-004_Arena/cleaned_arena_preference.jsonl` | 57,477 场，64 个旧模型；39,716 场明确偏好、17,761 场平局；原 Train 明确偏好 31,766 | 本地统计及原 S1；原已核 Apache-2.0，仅使用题面、两模型身份与人类胜负，沿用原不外发模型响应文本的范围 |
+| 原 S3：CACHE-001 Mooncake | `data/公开数据/清洗数据/缓存与时间/CACHE-001_Mooncake/cleaned_mooncake_traces.jsonl` | 39,632 条，含 3,993 条 synthetic；原 Train 候选 28,714，不将 synthetic 记成真实请求 | 本地统计及原 S3；原 Apache-2.0；只能作前缀复用机会与输出长度辅助 |
+| 原 S3：TIME-001 BurstGPT | `data/公开数据/清洗数据/缓存与时间/TIME-001_BurstGPT/cleaned_burstgpt.jsonl` | 原统计 1,404,294 次请求；原 Train 候选 1,122,577 | 本地统计及原 S3；原 manifest 声明 Apache-2.0，预览仅写 Open Source，具体数据许可版本未新增确认；沿用既有调用长度/到达辅助用途 |
+| 原 S3：OWN-002 Blog | `our-project/data/cleaned/sxyq-blog-gpt-usage-cleaned.csv`，本机与服务器均存在 | 本轮实读 221,128 行；原正向用量候选 178,621，原 Train 候选 142,888 | 原脱敏内部研究资产；不发布私人日志，不把 quotaUnits 换成 USD |
+
+原六源 Train 引用总数仍为 **4,863,900**：S1 31,766、S2 3,537,955、S3 1,294,179。这是来源候选引用量，不能作为独立任务数、当前三模型动作监督数或本轮新增材料量。数量沿用 `runs/MR-ALLDATA-PREP-20261011/quality_grading_v2_1/{train_candidate_summary,quality_summary}.json`；实际分级引用在同目录 `by_source/<SourceID>.jsonl.gz`。
+
+### 原模型、结果与动作空间匹配
+
+| 来源 | 原模型/任务 | 可信结果与模型、档位字段 | 当前三模型身份匹配 / Model×NativeEffort 匹配 |
+| --- | --- | --- | --- |
+| Open-SWE | Qwen3.6-27B 10,000；Qwen3.8-27B、DeepSeek-V4-Flash-0731、MiniMax-M2.5、Qwen3.5-122B-A10B 各 5,000；GitHub issue 修复，含 Scale-SWE/SWE-rebench | 原始 `resolved=1` 11,488、`0` 14,581、`-1` 3,931；只将 0/1 作已知轨迹终局。`metadata.teacher_model` 记录执行配置：`(enable_thinking=false, reasoning_effort=null)` 15,000，`(true,xhigh)` 5,000，`(true,max)` 5,000，`(true,null)` 5,000。null 不转成 none，模式名不证明当前 Provider 的有效档位 | **0 / 0**；Qwen3.8-27B 不改名为托管 Flash 或 Sol/Luna；观察配置没有最优选择标签 |
+| SWE-smith | claude-3-7-sonnet-20250219 54,629；claude-3-5-sonnet-20241022 19,736；gpt-4o-2024-08-06 1,637；合成代码修复任务 | 原始 `resolved` 全部为 bool：true 32,360、false 43,642；同轨迹 ID 的终局无冲突。原 `model` 有三种身份，旧预览仅写一种不代表全源。76,002 行均无 NativeEffort 字段；26,105 个重复轨迹行不能当新 Episode。已处理数据另有 823,082 个重复记录 ID；733,081 个 `INFERRED_COMMAND` 不当真实 Tool API 动作 | **0 / 0**；只保留原执行模型和观察终局 |
+| RouterBench | WizardLM-13B、Claude Instant/v1/v2、GPT-3.5-1106、GPT-4-1106、CodeLlama-34B、Llama2-70B、Mistral-7B、Mixtral-8x7B、Yi-34B；86 类静态题 | `candidate_evaluations[model].score` 是已报告评分，`cost_usd` 为历史估价；Oracle 只在该 11 模型池内解释。1,308 题全败、87 题并列均不作唯一胜者。无 NativeEffort，无 Agent 终局/全任务费用 | **0 / 0**；35,102 个旧池比较标签不能迁成当前三身份最优标签 |
+| 原 S1 Arena | 64 个旧型号的用户题面盲测偏好，含 GPT-3.5/4、Claude-1/2、Llama2、Vicuna 等 | `human_winner=model_a/model_b`；平局不作唯一偏好。候选模型与胜者身份是真实记录，NativeEffort 缺失；人类偏好不充当 Agent 成功 | **0 / 0** |
+| 原 S3 Mooncake/BurstGPT | Mooncake 未报模型；BurstGPT 原统计 ChatGPT 1,189,167、GPT-4 215,127；请求负载 | 原长度、时间戳、历史前缀块及输出长度；不提供模型选择/NativeEffort 或任务终局。Mooncake 复用机会不作 Provider 缓存命中 | 无当前目标身份可匹配 / **0** |
+| 原 S3 OWN-002 | 源日志规范化名以 gpt-5.6-luna 189,441、gpt-5.6-sol 14,771、gpt-5.6-terra 13,992 为主，其余 2,924 行为其他旧名；调用级资产 | 日志报告输入/输出/缓存读数与 quotaUnits。Effort 字段 198,359 行有值、22,769 行未指明，物理后端与档位实际效果未报；没有 task_id/episode_id/resolved | 本轮实读精确匹配 **0 / 0**；日志动作不是最优路由监督 |
+
+Open-SWE 的未知终局关联 **340,279 步**，其中原 Train **272,119**、Val **36,614**、Test **31,546**。原 Train 中与原始 0/1 终局相连的步为 **1,401,409**；这些步仍共享轨迹终局，不代表同样多的独立结果。本轮对分级引用与原始轨迹 ID 求得，Train 中原始终局已知的轨迹 ID 为 **20,981**（成功 9,254、失败 11,727），另 3,142 个轨迹 ID 为 `-1`。这组按原始终局统计的数量与旧摘要的失败单位口径不同，旧摘要不覆盖为新值；未完成全部目标单位口径的重新归并。
+
+### 与旧材料及 Train/Dev/Final 的任务交集
+
+当前项目的训练材料是上述离线 Train198/Val192；Terminal-Bench 原清单为 **Canary8 / external_dev24 / final_test57**，Canary 也不是可微调的 Train。这里只读任务 ID，没有读取 Final 题面、答案或执行结果。
+
+| 来源 | 旧390中的 Train/Val 行 | 与 Canary8 / Dev24 / Final57 的精确任务ID交集 |
+| --- | --- | --- |
+| Open-SWE | 39/32；源任务分别 22/32 个；扣未知终局后可核行 37/26 | **0 / 0 / 0**，已对全部原始 instance_id 求交 |
+| SWE-smith | 31/32；源任务分别 27/32 个；原始终局与现成 S2 标签对应一致 | **0 / 0 / 0**，已对全部原始 instance_id 求交 |
+| RouterBench | 0/0，不在现有六源入口中 | **0 / 0 / 0**，已对全部 sample_id 求交 |
+| 原 S1 Arena | 64/64，偏好对决单位 | **0 / 0 / 0**，已对全部 battle_id 求交 |
+| 原 S3 Mooncake / BurstGPT / OWN-002 | 分别 21/22、10/10、33/32 | 缺少可跨来源连接的 Agent task_id，**无法计算**，不填写 0 |
+
+上述 0 只表示标识严格相等时无交集，不证明题面、代码、近重复 issue 或派生数据完全独立。相关语义/仓库交集本轮未重新扫描；已有 SWE 与 ENV 的交集记录仍保留。多个轨迹、格式、前缀和同一任务的多次 Alias 执行不另计成独立任务。
+
+旧 S2 prepared 的 Train/Val `independent_unit_id` 与 `trajectory_id` 交集均为 0，但多数 prepared `task_id` 没有值，不能据此声称真实题目无交集。上表对 Benchmark 的任务交集使用原始 `instance_id`，不从空 `task_id` 推导 0；后续候选仍需保留原任务身份与单位区分。
+
+### 下一轮候选清单与未确定项
+
+优先复用已经存在的 `runs/MR-ALLDATA-PREP-20261011/quality_grading_v2_1/batch_preparation/batch1/train/{S1,S2,S3}.jsonl`，不另建加工入口：
+
+| 用途 | 可核候选标签数 | 现成文件与限制 |
+| --- | ---: | --- |
+| 旧模型偏好 S1 | **4,592** | 原 S1 人类偏好，可作旧池表示学习，当前三身份匹配 0 |
+| 观察性终局 S2 | **2,622** | 原 2,846 行中 Open-SWE 1,768 行含 224 条 `-1`；可核 Open-SWE 1,544、SWE-smith 1,078，后者全部对应原始 bool 终局。当前步工具是否成功与轨迹最终结果分开 |
+| 请求/前缀辅助 S3 | **6,000** | 原独立用途与单位保留，不与 S2 横向拼成同一任务的缓存或费用 |
+| 原监督候选合计 | **13,214** | 原文件仍有 **13,438** 行，224 条未知终局未被删除；未生成 13,214 行的新文件 |
+| 当前三身份最优 Model / Model×NativeEffort | **0 / 0** | 本轮没有提供同状态、独立真实模型动作的可比成功与费用记录 |
+
+这 13,214 个候选标签与旧390、原分级引用存在重合，不能相加成为新增样本；用途仅为已有偏好/辅助目标，不建议据此重复声称训练了当前三身份联合最优动作。原 prepare 只接受原六源和原 S1/S2/S3 目标，RouterBench 不在该入口支持范围，本分支未改变它。
+
+**仍未确定**：RouterBench 数据许可；Open-SWE/BurstGPT 当前数据版本的许可表述差异；原模型的不可变服务版本与原生档位有效性；全部重复记录/目标单位口径；近重复题面与代码交集；当前三身份的可比动作结果。原转换函数已调整，旧390的8个错误终局及原小批次224个未知终局仍在旧实体中，候选计数已排除，不重写历史。详细执行状态见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md)。
 
 ## 当前托管 API 身份与计费政策（2026-10-30）
 

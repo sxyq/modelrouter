@@ -1,4 +1,4 @@
-"""Read AA catalog records and public-page embedded JSON without model aliases."""
+"""Read AA catalog records and retain provider IDs and exact AA source slugs."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from typing import Any
 
 
 MODEL_IDS = ("gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash")
+AA_SLUGS = {"gpt-6.1-sol": "gpt-6-1-sol", "gpt-6-luna": "gpt-6-luna"}
 INDEX_METRICS = (
     "artificial_analysis_intelligence_index",
     "artificial_analysis_coding_index",
@@ -228,11 +229,12 @@ def normalize_catalog(payload: dict, source_url: str, fetched_at_utc: str) -> di
             if row["slug"] in MODEL_IDS or row["model_id"] in MODEL_IDS:
                 raise ValueError("AA model identities differ")
         for model_id in MODEL_IDS:
-            if model_id != identity:
+            if identity not in (model_id, AA_SLUGS.get(model_id, model_id)):
                 continue
             model = models[model_id]
             model.update(
                 evidence_status="NOT_MEASURED",
+                aa_model_slug=identity,
                 model_revision=row.get("model_revision") or row.get("revision") or "NOT_REPORTED",
                 model_creator=row.get("model_creator"),
                 pricing=row.get("pricing") or {},

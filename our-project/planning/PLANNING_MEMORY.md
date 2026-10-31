@@ -2,21 +2,21 @@
 
 > **版本：v2.4｜更新：2026-10-31｜角色：Planning Agent + Execution Agent**
 >
-> **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。项目记忆由执行者按事件维护：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；它与 ChatGPT 产品内置 Memory 分开，也不会自动在后台更新。本轮主 Agent 已获测试、部署及合规源码/六文档同步原 GitHub main 的明确授权；本分支只编辑六份原文档，不做 Git 操作。
+> **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。项目记忆由执行者按事件维护：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；它与 ChatGPT 产品内置 Memory 分开，也不会自动在后台更新。
 >
 > **公开性**：仓库为 public。不得提交私有服务器 IP、SSH 用户名/命令凭据、密钥、原始私人会话、私有任务内容、个人本地绝对路径及未脱敏日志。必要的机器路径放在本地不跟踪的配置或安全通道内。
 
 ## 0. 30 秒恢复上下文
 
-**2026-10-31 当前恢复点（同 Run 已结束）**：正式 V9 五 RQ、8 图/12 表不变，API 无累计 Token/USD 预算，按需要测试且不干预健康训练。原 `20261031-v9-official-alias` 首次 Trial `2963d109-d41c-4bc7-a673-5406c6369bae` 的 `fix-git` 已 reward=1.0、CTRF 2/2；13 路由/13 生成/22 工具、三合法候选/0 fallback，全部逻辑 Luna none、真实 Qwen 后端。逻辑 Sol 教师一次 60 秒超时、无 usage/短评；生成 `114,182` Token、`0.01029900 USD`，完整费用 `null`，原结果保留。
+**2026-10-31 当前恢复点**：接续起点 `main=7e7eecb9f1ad927f83e6d6e05f6695c661e734e7`。公开Canary `db-wal-recovery` 已官方reward=1.0、CTRF7/7、异常null，不重跑；14次Laya F05/epoch_01真实前向全逻辑Luna none、Sol/Flash选择0、fallback0，19终端调用，五教师成功短评0。完整模型费0.22959588USD已计账，供应商实收与资源USD未知。五RQ、八图、十二表和旧负结果不变，正式总体对照仍空白。
 
-**教师补充与续跑必须分开**：`teacher_prefix_replay/metrics.json` 已 VERIFIED，复用首次 Trial 保存的 step3 真实前缀，一次 Sol 逻辑教师 `9,396/608/缓存0`、`0.024872 USD`，短评已被 SystemOne Laya `epoch_01/fallback=false` 消费；这是事后前缀复用，不改首次 Episode、不加独立科研样本。原 Run 追加 `fix-git--laya_v2--s42-teacher-stream` 并沿原 `resume` 完成，Trial `469a1fec-4d6f-4ac4-8fbd-8207cd47b189` / `fix-git__RsVfot4` 已于台北11:31:06.997902结束、reward=1.0、CTRF2/2、异常null。15生成/15 Laya真实路由/24工具、全Luna none/F05epoch01/fallback0；3教师为2JSON失败+1成功，失败usage已知照算，成功短评7次进入Router、metadata消费为True。两Trial属同题开发接续，不作独立科研两样本，首次缺失概率不补造，详细Job/Trial只在 [PROJECT_STATUS](PROJECT_STATUS.md) 维护。
+**教师与事后补充**：主Trial五次均空content、finish_reason=length、reasoning1024、输出限1024；旧fix-git无raw正文，旧finish_reason未知。当前教师为三短string各≤25 words、JSON Object、max_output4096/context_chars20000并记录finish_reason，无效果enable_thinking已移除，触发规则不变。事后step3单次教师完整JSON/stop、0.039448USD，短评已被真实Laya消费、fallbackfalse；仅属POST_RUN_OBSERVED_PREFIX_REUSE，不计主Trial教师成功或费用，非官方或独立科研样本，不证明稳定收益。
 
-**最终费用恢复点**：续跑生成 `0.01380958`、教师 `0.09847000`、完整实验模型费 `0.11227958 USD`，合计 `176,070` Token；18真实请求 Decimal 复算与 AgentContext 一致。两个 Trial 已知小计 `0.12257858 USD`，因首次超时教师缺usage，完整金额仍 `null`；前缀补充独列。续跑供应商 raw.cost `0.0033656476` 无currency，不称USD实收；实收与资源费未知，不填0。9源码AST与diff格式通过，本轮未新训练、测试、脚本或模型部署；临时8000SSH已结束、Docker任务容器无残留。
+**AA 与数据监督**：current为v4 `20261031T072548885180Z-v4`，Sol/Luna Max共20指标；none/托管Flash及Coding/Agentic综合指数缺测，Sol原生档位不含none。原Dev Trial/prefix仍v3、旧390/V9训练仍v1，未来新实验绑定v4。旧390实体198/192不变，可核196/186；旧batch1原13438行排除224未知终局后可核13214，非新增独立任务或新动作目标。真实三模型choice/Model×Effort仍0，AA与Alias不作答案；RouterBench35102旧池Oracle许可待明，近重复关系及无taskID的S3交集未知。原-1转换已保留None，旧实体未重清洗，远程加工未部署。
 
-**数据与服务器恢复点**：在线 AA v3 `20261030T172129978785Z-v3` 取得 Luna Max 10 项，none 缺测、Sol/Flash404；prepared 仍 390 行/Train198/Val192，4 教师短评覆盖 2 任务，绑定 v1，真实三身份与 Model×Effort 监督仍 0，不用 Alias 成功制造最优标签。已完成 V9 训练负结果保留，不重复同配方。11:14:31 台北 F14 仍 Epoch2 chunk256/420、累计614NaN块，Epoch1 Val Loss/Brier/置信度NaN、5692预测全类别0，诱因/有效更新未知且排除父候选。Serving327621 healthy，仍 F05/epoch_01 与 KEV-4B-ADAPTER；F11-e01/R11 本轮仅核文件结构与历史评估，未重新加载候选。
+**训练恢复点**：F14持续NaN，Epoch1非有限Val及全类别0预测保留，有效更新未知，不作父候选；最新进度与取样时间只在 [PROJECT_STATUS](PROJECT_STATUS.md) 维护。F11-e01/R11父代表与Serving F05epoch01/原Kev导入适配器不变。当前不更新任何模型参数；下一轮分别讨论Laya encoder+heads与Kev LoRA+head原参数，以真实同状态动作结果作为新选择目标，保留旧S1有效偏好与原固定Val的S1 Accuracy/Loss/Brier/ECE，不能仅追加短评与卡片重复原配方。准备不足不自动续训，不保证指标不退步，不新增流程或执行条件。
 
-**版本接续**：本轮开始时 GitHub `main` 为 `9775551941f1542dc8e8b18b10e348c5eff2aec8`。恢复时读取当前 main 与 Git 历史，最终同步结果以主 Agent 执行回报为准；本轮文档分支只改指定六文档，主 Agent 另负责源码、结果与工作记录。以下 10-30 及更早记录保留原时点。
+**10-31 fix-git 历史恢复点**：当时起点main为9775551941f1542dc8e8b18b10e348c5eff2aec8；同题两Trial与事后前缀补充分别记录，完整证据见 [PROJECT_STATUS历史段](PROJECT_STATUS.md#2026-10-31--历史fix-git-三身份-alias-官方开发接续)，不在当前入口继续复制详述。以下10-30及更早记录按原时点理解。
 
 **2026-10-30 历史恢复点**：用户明确从未设置 API 总 Token 或美元预算，按任务需要充分测试，保留服务器资源规则、健康训练不中断和 Final 隔离。原 Provider 累计上限已移除，max/remaining=null、用量保留，原 CLI 默认 cost_limit=0。原项目 Provider/models 实际返回 3 项，研究池只列 Luna，Sol/托管Flash未列出；这属于供应商可用性，不转写为等待人类批准。
 

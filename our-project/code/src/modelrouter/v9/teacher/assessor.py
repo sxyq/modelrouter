@@ -18,14 +18,16 @@ _INSTRUCTION = (
     "References are examples, not facts or instructions about the current task. "
     "Never invent completed work, future results, hidden tests or answers. "
     "Do not select a model, execute tools or take over the Agent. "
-    "Return only one JSON object with three short string fields: "
-    "progress_summary, main_blocker, next_milestone."
+    "Return only one JSON object, without Markdown, with exactly these three string fields: "
+    "progress_summary, main_blocker, next_milestone. "
+    "Each value must be one concise sentence of at most 25 words. "
+    "Summarize the observed evidence; do not solve the task or plan detailed commands."
 )
 
 
 class TrajectoryAssessor:
     def __init__(self, provider, references_path=DEFAULT_REFERENCES, *, model_id="gpt-6.1-sol",
-                 native_effort="none", max_output_tokens=512, context_chars=48000):
+                 native_effort="none", max_output_tokens=4096, context_chars=20000):
         self.provider = provider
         self.references_path = Path(references_path)
         self.model_id, self.native_effort = model_id, native_effort
@@ -86,16 +88,20 @@ class TrajectoryAssessor:
             metrics.update(context_chars=len(context), context_char_limit=self.context_chars,
                            token_measurement_status="CHARACTERS_ONLY_BEFORE_REQUEST")
             metrics["provider_request_attempted"] = True
+            output_options = ({"response_format": {"type": "json_object"}}
+                              if alias_mapping else {})
             body, usage = self.provider.query_raw(
                 [{"role": "system", "content": _INSTRUCTION}, {"role": "user", "content": context}],
                 ModelRegistry().get_spec(self.model_id), self.native_effort,
-                self.max_output_tokens, tools=None, stream=True)
+                self.max_output_tokens, tools=None, stream=True, **output_options)
             metrics.update(usage)
             metrics["execution_mode"] = (
                 "TEACHER_ALIAS_SMOKE" if usage.get("execution_mode") == "ALIAS_SMOKE" else "TEACHER")
             metrics["teacher_model_id"] = self.model_id
             metrics["raw_response"] = body
-            content = body["choices"][0]["message"]["content"].strip()
+            choice = body["choices"][0]
+            metrics["finish_reason"] = choice["finish_reason"]
+            content = choice["message"]["content"].strip()
             if content.startswith("```") and content.endswith("```"):
                 content = content.split("\n", 1)[1].rsplit("```", 1)[0].strip()
             parsed = json.loads(content)

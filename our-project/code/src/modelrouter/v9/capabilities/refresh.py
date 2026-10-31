@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .features import DEFAULT_DATA_DIR, _evidence_summary, load_current
-from .normalize import MODEL_IDS, normalize_catalog, provider_metadata, public_catalog
+from .normalize import AA_SLUGS, MODEL_IDS, normalize_catalog, provider_metadata, public_catalog
 
 
 API_URL = "https://artificialanalysis.ai/api/v2/data/llms/models"
@@ -74,7 +74,7 @@ def refresh(data_dir: str | Path = DEFAULT_DATA_DIR, *, config_path: str | Path 
     try:
         key = _api_key(config_path)
         sources = [("AA_API", None, API_URL)] if key else [
-            ("AA_PUBLIC", model_id, PUBLIC_URL.format(model_id)) for model_id in MODEL_IDS]
+            ("AA_PUBLIC", model_id, PUBLIC_URL.format(slug)) for model_id, slug in AA_SLUGS.items()]
         sources.extend(("PROVIDER_DOCUMENTATION", model_id, url) for model_id, url in PROVIDER_URLS.items())
         if not key:
             attempts.append({"source_url": API_URL, "fetched_at_utc": utc, "status": "API_KEY_MISSING"})
@@ -100,7 +100,7 @@ def refresh(data_dir: str | Path = DEFAULT_DATA_DIR, *, config_path: str | Path 
                     payload = json.loads(body) if is_api else public_catalog(body)
                 if not is_api and not is_provider:
                     payload = {**payload, "data": [row for row in payload["data"] if
-                        row.get("slug") == model_id or row.get("model_id") == model_id or
+                        row.get("slug") == AA_SLUGS[model_id] or row.get("model_id") == model_id or
                         (not row.get("slug") and not row.get("model_id") and row.get("id") == model_id)]}
                 if not is_provider:
                     parsed = normalize_catalog(payload, source_url, utc)

@@ -1,6 +1,70 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-10-31 · 三身份 Alias 官方开发接续已完成
+## 2026-10-31 · 当前恢复点：db-wal-recovery 已结束，事后短评已消费
+
+新公开 Canary `db-wal-recovery` 已成功，不重跑。接续起点 `main` 为 `7e7eecb9f1ad927f83e6d6e05f6695c661e734e7`。
+
+### 主 Trial：官方终局成功，五次教师均未产出短评
+
+| 对象 | 已保存事实 | 适用范围 |
+| --- | --- | --- |
+| Run / Trial | `20261031-v9-db-wal-recovery`；`60320365-17ce-422a-84eb-e4ff6d8623d0` / `db-wal-recovery__5Y5JWoW` | [原 Trial result.json](../results/iterations/20261031-v9-db-wal-recovery/jobs/db-wal-recovery--laya_v2--s42/db-wal-recovery__5Y5JWoW/result.json)，迭代 `EVALUATED` |
+| 官方终局 | Verifier reward `1.0`；CTRF tests `7` / passed `7` / failed `0`；异常 `null` | 原 Harbor 容器与官方 Verifier 的公开 Canary 开发结果；不填五 RQ 总体对照 |
+| 路由 / 生成 / 终端调用 | `14 / 14 / 19`；14 次 Laya `F05/epoch_01` 真实前向，均逻辑 `gpt-6-luna:none`；Sol/Flash 选择 `0`、fallback `0`、模型切换 `0` | 阶段 `inspect/modify/recover`；实际生成后端 Qwen3.8-27B，不是独立物理三模型比较 |
+| 教师 | `5` 请求 / `0` 成功；step3 首次约三次生成触发，steps5/6/7/8 为阶段变化 | 五次均未向主 Trial Router 提供成功短评；触发规则不变 |
+| 映射模型费用 | 生成 `0.00949188`、失败教师 `0.220104`、完整模型合计 `0.22959588 USD` | 均已计原账本；供应商实收 USD、Router/工具/容器资源 USD 仍未知 |
+| 时间 | Trial `873.763569` 秒；Agent 执行 `756.048114` 秒；教师请求合计 `263.916096` 秒 | 教师时间包含于执行过程，不再加到 Trial 时长上 |
+
+逐次候选概率已保存在原 [events.jsonl](../results/iterations/20261031-v9-db-wal-recovery/events.jsonl) 的 `ROUTER_END`：
+
+| 逻辑候选 | 主 Trial 概率范围 |
+| --- | ---: |
+| Luna | `0.3941–0.4316` |
+| Sol | `0.3276–0.3672` |
+| Flash | `0.2266–0.2569` |
+
+五次教师 raw 均为 `content=""`、`finish_reason=length`、reasoning `1,024`，请求输出上限 `1,024`；JSON Object 与 `enable_thinking=false` 均未防止 thinking 消耗，随后出现 `JSONDecodeError`。旧 `fix-git` 两次同类错误没有 raw 正文，TTFT 为 `null`、reasoning 同为 `1,024`；只能据新五次实证推断同类原因，不能声称直接见到旧 `finish_reason`。旧失败费用 `0.037952/0.037730 USD` 已计账，完整证据保留在下方历史段。
+
+原 Assessor Prompt 要求 `progress_summary/main_blocker/next_milestone` 三个短 string 各不超过 25 words，使用 Alias ChatCompletions 已支持的 `response_format={"type":"json_object"}`；`max_output=4096/context_chars=20000`，记录 `finish_reason`。原 Provider 仅新增 `response_format` 参数，无效果的 `enable_thinking` 补丁已移除；没有重试、第二教师、触发规则或推理权重变更。
+
+### 事后 step3 前缀补充：单次教师成功，短评已送入 Laya
+
+| 对象 | 已保存事实 |
+| --- | --- |
+| 单次教师 | [teacher_prefix_replay/metrics.json](../results/iterations/20261031-v9-db-wal-recovery/teacher_prefix_replay/metrics.json)：完整三字段 JSON，`finish_reason=stop`；输入 `8,069`、输出 `2,331`（含 reasoning `1,112`）、缓存 `0`；`43.758924` 秒，逻辑 Sol 费用 `0.039448 USD` |
+| 原 RouterClient 远程前向 | [teacher_prefix_replay/router_response.json](../results/iterations/20261031-v9-db-wal-recovery/teacher_prefix_replay/router_response.json)：Laya `epoch_01`、`fallback_used=false`、`assessment_consumed_by_router=true`；Luna/Sol/Flash `0.4382/0.3059/0.2559`，选择仍 Luna none；决策约 `1.01937` 秒，新增生成 `0` / 教师 `0` |
+
+两项均为 `POST_RUN_OBSERVED_PREFIX_REUSE`，不是官方或独立科研样本。教师补充费用独列，不计入主 Trial 的教师成功次数或费用；随后 Router 前向复用同一短评，没有第二次教师请求。证据只支持该前缀完整 JSON 与短评传递，不表示主 Trial 教师有效参与，也不证明稳定收益。
+
+### AA v4 与数据监督
+
+原刷新入口已取得 [AA v4](../code/data/v9/capabilities/snapshots/20261031T072548885180Z-v4.json)，[current.json](../code/data/v9/capabilities/current.json) 指向 `20261031T072548885180Z-v4`。Sol 正确 slug 为 `gpt-6-1-sol`，旧点号 URL 未重访；Sol Max、Luna Max 各 10 项，共 20 项实测，厂商三份元数据保留。
+
+| AA Intelligence Index 5.0 | 精确原分 | 实测档位 |
+| --- | ---: | --- |
+| Sol | `54.5087338138148` | Max |
+| Luna | `27.7552004938153` | Max |
+
+`none`、托管 Flash，以及 Coding/Agentic 综合指数仍缺测。Sol 公开 NativeEffort 仅 `low/medium/high/xhigh/max`，不含 `none`；Alias `none` 不当作 Sol 原生档位或 Max 成绩。原 Dev Trial 与本次 prefix 仍绑定 v3，旧 390 材料及 V9 训练仍绑定 v1；未来新实验明确绑定 v4，不追写旧结果。AA 是能力特征，不是选择标签。
+
+| 现成资产 | 原实体不变 | 可核原监督候选 |
+| --- | --- | --- |
+| 旧 390 行 | Train `198` / Val `192`，AA v1、四条教师短评保留 | OpenSWE 原 `resolved=-1` 被写成 `false` 的 Train2/Val6 共八条扣除后，为 `196/186` |
+| 旧 batch1 S1/S2/S3 | 原文件 `13,438` 行，含 `224` 条未知终局 | `13,214 = 4,592` 旧偏好 + `2,622` 观察性终局 + `6,000` 辅助；未知终局不作终局监督 |
+
+这些计数不是新增独立任务或新的三模型动作目标，彼此与旧 390 存在重合，不能相加。真实三模型最优 choice 与 Model×Effort 监督仍为 `0`。原 `data_pipeline/sources/tra.py` 已将 `-1` 保留为 `None`，旧实体未重清洗或改写，远程数据加工源码未部署。OpenSWE/SWE-smith 只用于合法前缀、工具/恢复与有结果的观察性终局；RouterBench 旧 11 模型有 `35,102` 个唯一 Oracle，数据许可待明，不新增入训练。精确任务 ID 与 Canary/Dev/Final 交集 `0` 只证明 ID 相等关系，近重复未知；原 S3 无 Agent taskID，无法计算该交集。来源与详细计数见 [原数据 Registry](../data/DATA_SOURCE_AND_POLICY_REGISTRY.md)，不凭 AA 或 Alias 生成答案。
+
+### 服务器最后回报与训练准备
+
+台北 **15:55:17** 最后只读取样，原 cursor `updated_at=2026-10-31T07:53:42Z`（台北 15:53:42）；F14 第 2 轮已完成 `343/420`、step `97,606/107,404`、`latest_chunk_loss=NaN`。原 `continuous_queue.log` 实际累计 `701` 条 F14 `loss=nan`；未完成两轮。原 worker 与控制器没有被改动。Epoch1 Val 非有限及 `5,692` 项全类别 `0` 预测继续保留，具体诱因与有效更新次数未知，F14 仍排除父候选。
+
+台北 **15:55:17** Serving `/health` 为 `200/healthy`；未替换 Laya `F05/epoch_01` 与原 Kev 导入适配器。15:25:51 的进程读数为 PID `327621`，GPU `34,609/49,140 MiB`、`73%`，不把旧 GPU 读数当作本次取样。新数据加工源码未部署。F11-e01/R11 仍为接续父代表，依据已保存 Val 和实体证据；已完成 V9 的 Laya S1 退步、Kev 四指标退步等负结果保留。
+
+下一训练参数讨论区分原 Laya 完整 encoder+heads（`epochs=2/max_len=1024/head_max_len=512`）与 Kev LoRA+head（`epochs=2/max_state=8192/full_ft=0/resume=0`）；父 R11 原 `1 Epoch/384` 与在线导入适配器另记。当前不更新任何模型参数；下一轮需真实同状态动作结果作为新选择目标，保留旧 S1 有效偏好与原固定 Val 的 S1 Accuracy/Loss/Brier/ECE，不能仅追加短评与能力卡重复原配方。上述准备不保证指标不退步，不添加新流程或执行条件；新动作目标缺失只记录准备不足，不自动续训。五 RQ、八图、十二表与正式正文保持，未有总体对照的结果单元继续空白。
+
+## 2026-10-31 · 历史：fix-git 三身份 Alias 官方开发接续
+
+以下保留该 Run 当时完整证据；其 AA、材料与服务器读数不作为最新状态。当前恢复点只在上方更新，其他文档不再复制本段历史详述。
 
 本轮沿原 `our-project/results/iterations/20261031-v9-official-alias/` 和 Harbor 单任务入口完成接续，没有新建迭代。首次 Trial 的任务成功与教师失败分别保留；事后前缀补充不改首次 Episode。主 Agent 在原 `run_config.json`、`resume_state.json` 追加 `fix-git--laya_v2--s42-teacher-stream` 单任务 unit，执行原 `resume`，已完成同一官方 Trial 内成功教师输入到任务提交、官方 Verifier 的完整链路。两个 Trial 均 reward=1.0、CTRF2/2，属于同题开发接续，不能当作两个独立科研样本；整个迭代状态为 `EVALUATED`。
 
@@ -41,7 +105,7 @@
 
 原 `result.json`、CTRF、事件和 metrics 支持上述终局；主 Agent 对18条真实请求的 Decimal 复算与 AgentContext 一致。reasoning 已包含于上述输出，只计一次。本 Trial 实验模型费用完整，不将未知供应商实收或资源费用代填0。整个迭代两 Trial 已知费用小计为 `0.12257858 USD`，首次超时教师 usage 仍缺，完整模型费用保持 `null`；事后前缀补充 `0.024872 USD` 独列，不并入两个 Trial。
 
-### AA、训练材料与服务器最新证据
+### AA、训练材料与服务器当时证据
 
 在线最新快照为 [AA v3](../code/data/v9/capabilities/snapshots/20261030T172129978785Z-v3.json)，ID `20261030T172129978785Z-v3`，Luna Max 有 10 项指标；none 缺测，Sol/托管 Flash 精确页面 404，状态仍为 `NOT_MEASURED`。旧 v1/v2 与不同 AA 版本参考保留，不将 Max 指标复制成 none 成绩。
 

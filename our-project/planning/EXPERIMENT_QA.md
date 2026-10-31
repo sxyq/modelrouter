@@ -4,13 +4,19 @@
 >
 > **职责**：记录每项实验设计的 Q-ID、问题、选项、Planning 推荐及理由、项目负责人回答、最终决策、日期，以及对实验设计、资源/预算和论文结论的影响。研究方法总览见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)，实时阶段见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，交接历史见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
-> **证据边界**：Planning 推荐、待回答事项、预案任务数量和费用均不代表执行已获批准或已经完成。历史数据清洗、训练和评测要求按对应日期保留；实际操作遵循当前人类明确范围。用户本轮已充分授权按任务需要测试及部署，供应商可用性另记；本分支仅编辑指定六文件，不发请求或部署。
+> **证据边界**：Planning 推荐、待回答事项、预案任务数量和费用均不代表执行已获批准或已经完成。历史数据清洗、训练和评测要求按对应日期保留；实际操作遵循当前人类明确范围。
 
 ## 0. 阶段入口与决策规则
 
-**2026-10-31 当前决定（沿 Q-003/Q-021，不新增 Q-ID）**：保留 V9 五 RQ、8 图/12 表；API 无累计 Token/USD 预算，按需要测试且不干预健康训练，Final 隔离不变。首次三候选 Alias 官方 Trial 已 reward=1.0、CTRF 2/2，13 次 Router 均逻辑 Luna none、0 fallback，实际后端 Qwen3.8-27B；逻辑 Sol 教师一次 60 秒超时、usage/短评缺失，原任务成功与教师失败分别保留。一次成功教师与 SystemOne 消费的 step3 前缀补充属于事后复用，不改首次 Episode、不增加独立科研样本。
+**2026-10-31 当前决定（沿 Q-003/Q-021）**：五RQ、八图、十二表不变，API无累计预算、健康训练与Final隔离保持。公开Canary `db-wal-recovery` 已reward=1.0、CTRF7/7、异常null，不重跑；14次Laya F05epoch01真实前向全Luna none、Sol/Flash选择0、fallback0，19终端调用，五教师成功短评0。完整模型费0.22959588USD已计账，实收与资源USD未知，不填总体对照。
 
-**本轮必要续跑决定与完成范围**：为完成同一官方 Trial 内的成功教师输入到终局，在原 `20261031-v9-official-alias` 的配置与状态追加一个 `fix-git--laya_v2--s42-teacher-stream` 单任务 unit，沿原 Runner 的 `resume` 完成，不新建迭代或训练。前两次 JSONDecodeError 的真实 usage 与映射费用照算，第 3 次教师成功短评7次进入真实Router；15生成/15路由全Luna none/F05epoch01/fallback0、24工具，最终reward=1.0、CTRF2/2、异常null。续跑完整模型费0.11227958USD、176070Token，18请求Decimal复算与AgentContext一致；两个Trial已知小计0.12257858USD/完整null、前缀0.024872USD独列，供应商无currency的raw.cost不作USD实收。首次 Trial、前缀补充和续跑分别记录，两 Trial 不能作独立科研两样本，也不能把首次缺失概率补成续跑概率。在线 AA v3 的 Luna Max 10 项不代入 none；旧390行材料仍绑定 v1、真实三身份与 Model×Effort 监督为0，不用 Alias 成功制造最优标签。F14非有限Val及全类别0预测保留、继续排除父候选；F11-e01/R11本轮仅核文件结构与历史评估。详细证据与未知费用见 [PROJECT_STATUS](PROJECT_STATUS.md)，不改既有正式方法或方案；本轮未部署或替换服务器权重，源码与文档版本以当前 main 和 Git 历史为准。
+**教师与事后补充**：主Trial五次空content/length、reasoning1024、输出限1024；旧fix-git无raw正文，旧finish_reason未知。当前三短string各≤25 words、JSON Object、max_output4096/context_chars20000并记录finish_reason，无效果enable_thinking已移除，触发和推理权重不变，无重试/第二教师。事后step3单次教师完整JSON/stop、0.039448USD，短评已送入真实Laya、fallbackfalse；仅属POST_RUN_OBSERVED_PREFIX_REUSE，非官方或独立科研样本，不计主Trial教师成功/费用，不证明稳定收益。
+
+**AA v4 与数据监督**：Sol/Luna Max共20指标，none/托管Flash及Coding/Agentic综合指数缺测，Sol原生档位不含none。原Dev Trial/prefix仍v3、旧390/V9训练仍v1，未来新实验绑定v4。旧390实体198/192不变，可核196/186；旧batch1可核13214，224未知终局不作监督，非新增独立任务或动作目标。真实三模型choice/Model×Effort仍0，AA与Alias不作答案；RouterBench旧池Oracle许可待明，精确ID交集0不证明近重复独立，原S3无taskID无法计算。原-1已保留None，旧实体未重清洗，远程加工未部署。
+
+**训练讨论与运行事实**：F14非有限Val、全类别0预测与V9训练负结果保留，F14不作父候选，F11-e01/R11及旧Serving不变；最新进度只在 [PROJECT_STATUS](PROJECT_STATUS.md) 维护。当前不更新任何模型参数；下一轮区分Laya encoder+heads与Kev LoRA+head原参数，以真实同状态动作结果作为新选择目标，保留旧S1有效偏好及原固定Val的S1 Accuracy/Loss/Brier/ECE，不能仅追加短评与卡片重复原配方。准备不足不自动续训，不保证指标不退步，不添加新流程或执行条件，正式正文不变。
+
+**10-31 fix-git 历史决定与结果**：同题两Trial及事后补充已完成，任务成功、教师失败、原费用与缺测证据保留于 [PROJECT_STATUS历史段](PROJECT_STATUS.md#2026-10-31--历史fix-git-三身份-alias-官方开发接续)，不继续复制详述，不写成独立科研两样本。
 
 **2026-10-30 历史决定（沿 Q-003/Q-021）**：用户明确从未设置 API 总 Token 或美元预算，旧累计额度与等待费用批准的安排已撤销；测试按任务需要和服务器实际负载执行，保留资源规则、训练不中断及 Final 隔离。新单 Luna none/low 官方开发 Episode 已 reward=1.0、CTRF 2/2，通过范围仅限该次开发任务；真实 Luna 官方 Episode 费用与映射实验分开。映射实验真实请求统一走 Qwen3.8-27B，Router 选择仍记录三逻辑身份，费用按所选 `ModelSpec` 价格乘真实 input/output/cache 用量；教师按配置教师目标身份计价，实际返回身份和供应商实收另列。三原目录的 `mapped_cost_accounting` 已本地独立重算，结果和缺失 usage 对完整总额的影响见 [PROJECT_STATUS](PROJECT_STATUS.md)；旧 raw 与终局未改。原服务代码配置已部署，重启后两模型真实非回退前向通过，权重不变；Kev长前缀超时与82.28秒CPU时延保留，不改写成原60秒窗口达标。原 Provider 累计上限已移除、原 CLI 默认 cost_limit=0；部署身份、F14第420块NaN及剩余项见 [PROJECT_STATUS](PROJECT_STATUS.md) 当前入口。
 
