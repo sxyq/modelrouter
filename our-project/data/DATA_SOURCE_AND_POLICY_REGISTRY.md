@@ -2,9 +2,20 @@
 
 ## 当前能力与数据来源（2026-10-31）
 
-**10-31 真实模型资料**：新 `20261031-v9-real-model-comparison` 从e28872f接续，真实Sol Responses与项目jiji Luna Chat Completions均实调low、无Alias；Flash两账户实际POST返回model_not_found，档位未知。公开Dev `extract-elf`两次初始消息/工具/mini配置相等：Sol原900秒超时、无Verifier，Luna reward0/CTRF1/2、覆盖0%；另有COBOL同T0生成资料，原COBOL Luna混入3次旧型号返回。生成前缀、Episode尝试、可信Verifier终局和超时记录分开，不生成最优标签。旧fix-git/db-wal Alias成功及失败记录保留，本轮未重跑；详细对象见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md)。
+**10-31 当前真实监督**：从ad1d392接续，已有TRA-002对应的SWE-smith公开训练任务TextFSM取得1组有效K=2完整Episode与2个同历史步骤前缀对照，25次Sol/Luna low生成均身份匹配，无Alias。两Episode原96项通过，形成任务级Luna成本偏好1条；前缀7 Sol一步通过、Luna使用镜像不存在的apply_patch，形成步骤级即时修复偏好1条。前缀6两失败和6个候选结果只作观察；完整K=3最优/同模型Effort差异标签仍0。原Dev失败、教师前缀及旧成功题没有重跑，结果见[真实监督记录](../results/iterations/20261031-v9-real-route-supervision/review.md)。
 
-**教师与请求费用**：紧凑真实Sol step3前缀三字段成功，1462输入/1528输出含1435 reasoning、0.0189335USD，只属TEACHER_PREFIX_ONLY，未执行新Router或工具，不纳入Train。新Episode教师关闭。原调用日志现在使用Provider已算的REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE，保留cache读/写缺值；本轮65响应旧OpenRouter估价和raw Usage保留，已知模型费小计1.43331375USD。3条型号不匹配的估价及4次无Usage访问/教师失败未知，所以完整费用、实收和资源USD不填0。Sol一次截止前请求在Trial结束后返回的0.043293USD已计入其全部0.3912934USD，不改原Trial的12响应/0.3480004USD实体。
+| 新材料 | 本地与服务器原目录中的对象 | 监督、身份及用途 |
+|---|---|---|
+| 公开训练任务 | `results/iterations/20261031-v9-real-route-supervision/task_source.json`及原官方镜像 | SWE-bench/SWE-smith train，已有TRA-002任务ID；数据MIT、TextFSM代码Apache-2.0；与Canary8/Dev24/Final57精确ID及可识别TextFSM元数据交集0，任意近重复未作完整结论 |
+| 两条真实动作偏好 | 同迭代`supervision.jsonl`与`training_delta/model_comparison/train.jsonl` | TASK_LEVEL_PREFERENCE=1、STEP_LEVEL_PREFERENCE=1；仅Sol low/Luna low，旧S1和旧池Oracle身份不变 |
+| 六个已观察候选结果 | 同迭代`observed_outcomes.jsonl` | OBSERVED_OUTCOME_ONLY；两Episode可信终局与四个一步反馈分开，一步后结果不当完整Episode |
+| AA与教师状态 | 两条新状态固定AA v4、teacher=null | AUXILIARY_FEATURE_ONLY；能力数据/摘要不生成动作标签，本轮教师0调用 |
+
+原Prepare和Trainer共享序列化已实际读取2条新目标，问题ID/instruction分别对应任务与一步目标；未来候选反馈只进入监督，不进入决策前状态。原390实体、四教师及有效382视图未重加工，复用Train196/Val186，加new delta2可组合198/186；两条同属1个任务，旧13,214不算全量新增。尚未再训练。
+
+本轮25次真实生成input385,895/output14,866（已含reasoning）Token，模型费0.26274516USD，教师0；缓存读1次缺报、写缓存14次缺报保持null。使用请求型号的原Registry费率，供应商实收和资源费用未知，详见同迭代summary/request_model_rates。Flash本次两账户/models均200但未列出，旧404/503 model_not_found证据保留，没有重复相同失败POST或借用27B身份。
+
+**既有教师与请求费用**：紧凑真实Sol step3前缀三字段成功，1462输入/1528输出含1435 reasoning、0.0189335USD，只属TEACHER_PREFIX_ONLY，未执行新Router或工具，不纳入Train，本轮未重跑。原real-model-comparison的65响应已知费用1.43331375USD及3条混型号/4次无Usage缺失保留；旧OpenRouter估价与raw Usage不覆盖。该小计不包含本轮新25请求，未知实收不填0；详细历史仍在原实验及PROJECT_STATUS。
 
 [当前 AA v4 快照](../code/data/v9/capabilities/snapshots/20261031T072548885180Z-v4.json) 为 `20261031T072548885180Z-v4`，2026-10-31 台北15:25:48由原刷新入口取得；本轮未再运行刷新。新真实模型实验与382行视图均绑定v4，旧Alias Trial/前缀仍v3、旧390与已完成训练仍v1，不追写旧结果。Sol AA slug为gpt-6-1-sol，Sol/Luna Max各10项共20项，三份厂商资料保留；本轮low、none、托管Flash及Coding/Agentic综合指数仍NOT_MEASURED，AA Key缺失，不借用Flash-Next/27B成绩。Sol文档档位low/medium/high/xhigh/max，不含none；Luna文档none/low/medium/high/xhigh/max，本轮只实调low；Flash参数省略不证明none原生支持。
 
@@ -39,7 +50,7 @@
 
 ### 当前能提供多少监督
 
-**当前三身份 `gpt-6.1-sol / gpt-6-luna / qwen3.8-flash` 的Model选择、Model×NativeEffort选择及Train可用选择标签仍为0。** 新extract-elf有1个同初始状态、2个真实动作尝试、1个Verifier失败终局、1个超时记录；没有成功候选和完整双Verifier质量比较，不将低价失败者标最优或把未知reward填0。另有同T0单生成资料，不与完整Episode混算；没有同型号不同Effort比较。来源执行模型、短评、AA卡与Alias成功均不增加选择目标。
+**当前可训练的真实K=2 Model×NativeEffort偏好为2条（任务级1、步骤级1），完整三身份池最优标签仍0，同模型不同Effort偏好仍0。** 两条来自本轮允许训练的TextFSM任务，不来自旧extract-elf Dev。旧extract-elf、COBOL单生成、来源执行模型、教师短评、AA卡及Alias成功仍不增加选择目标；下面382行和全源表只描述既有材料，不包含本轮新delta2。
 
 原prepared实体仍为Train198/Val192。原54个Open-SWE终局中Train2/Val6原值-1，旧终局却为false；新视图将8条作为UNKNOWN_OUTCOME排除于终局目标，原历史不覆盖。新训练视图实际为 **Train196/Val186，共382行**：
 

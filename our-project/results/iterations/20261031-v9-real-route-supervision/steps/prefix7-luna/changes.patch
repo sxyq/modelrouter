@@ -1,0 +1,60 @@
+diff --git a/tests/texttable_test.py b/tests/texttable_test.py
+index 035ca1e..a6f32c6 100755
+--- a/tests/texttable_test.py
++++ b/tests/texttable_test.py
+@@ -721,6 +721,55 @@ a,b, c, d  # Trim comment
+         ' DeviceA  lo0.16384  up     up    127.0.0.1               \n',
+         t.FormattedTable(62, columns=['Host', 'Interface', 'Admin', 'Oper', 'Address']))
+ 
++  def testSortTableNumeric(self):
++    """Tests numeric default keys and reverse sorting."""
++    table = texttable.TextTable()
++    table.header = ('Col1', 'Col2')
++    for values in (('10', '100'), ('2', '10'), ('-3.5', '5'), ('2', '2')):
++      table.Append(values)
++
++    expected = [['-3.5', '5'], ['2', '2'], ['2', '10'], ['10', '100']]
++    table.sort()
++    self.assertEqual(expected, [row.values for row in table])
++
++    table.sort(reverse=True)
++    self.assertEqual(expected[::-1], [row.values for row in table])
++
++  def testSortTableMultipleColumns(self):
++    """Tests all fields, stable ties, and preservation of row metadata."""
++    table = texttable.TextTable()
++    table.header = ('Col1', 'Col2', 'Col3')
++    for values in (('group', '10', 'last'), ('group', '2', 'beta'),
++                   ('other', '1', 'first'), ('group', '2', 'alpha'),
++                   ('group', '2', 'alpha')):
++      table.Append(values)
++
++    header = table.header
++    rows = table[1:]
++    expected_rows = [header, rows[3], rows[4], rows[1], rows[0], rows[2]]
++    self.assertIsNone(table.sort())
++    for index, row in enumerate(expected_rows):
++      self.assertIs(table[index], row)
++      self.assertEqual(index, row.row)
++      if index:
++        self.assertIs(row.table, table)
++
++  def testSortTableEmptyAndSingleRow(self):
++    """Tests sorting tables with a header and zero or one data row."""
++    for rows in ([], [('only', 'row')]):
++      for reverse in (False, True):
++        with self.subTest(rows=rows, reverse=reverse):
++          table = texttable.TextTable()
++          table.header = ('Col1', 'Col2')
++          for values in rows:
++            table.Append(values)
++          header = table.header
++
++          self.assertIsNone(table.sort(reverse=reverse))
++          self.assertIs(table.header, header)
++          self.assertEqual(0, header.row)
++          self.assertEqual(rows, [tuple(row.values) for row in table])
++
+   def testSortTable(self):
+     # pylint: disable=invalid-name
+     def MakeTable():

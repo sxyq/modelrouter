@@ -1,5 +1,1420 @@
 {
   "generated_at": "2026-10-27T04:56:15.744135+00:00",
+  "current_execution": {
+    "sampled_at": "2026-10-31T21:28:44.516348+08:00",
+    "controller_pid": 562379,
+    "controller_alive": false,
+    "queue_status": "PAUSED_USER_REQUEST",
+    "current_run": null,
+    "interrupted_run": null,
+    "active_laya_training": 0,
+    "active_kev_training": 0,
+    "laya_completed_full_runs": "F01-F13",
+    "kev_r_training_and_fixed_val_completed": "R01-R16",
+    "archived_f14_status": "failed/NON_FINITE_LOSS",
+    "archived_attempt": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F14/failed_attempt_0001",
+    "initialization_attempts": [
+      {"run_id": "F14", "failed_at": "2026-10-31T12:12:59Z", "error": "UnboundLocalError", "training_loop_entered": false},
+      {"run_id": "F15", "failed_at": "2026-10-31T12:14:59Z", "error": "UnboundLocalError", "training_loop_entered": false},
+      {"run_id": "F16", "status": "STOPPED_AT_INITIALIZATION_ON_USER_REQUEST", "training_loop_entered": false}
+    ],
+    "initialization_error_location": "router_data/laya_batch_train.py:1218; run_meta referenced before assignment",
+    "initialization_error_fixed": false,
+    "new_training_started": false,
+    "laya_parent_representative": "F11-e01",
+    "kev_parent_representative": "R11",
+    "serving": {"http_status": 200, "status": "healthy", "pid": 327621, "started_at": "2026-10-30T20:53:21+08:00", "laya": "F05/epoch_01", "kev": "original imported adapter"},
+    "gpu": {"sampled_at": "2026-10-31T20:42:35.976634+08:00", "total_mib": 49140, "used_mib": 34449, "utilization_pct": 100, "temperature_c": 85, "workload": "EXISTING_IMAGE_SERVICE_NOT_PROJECT_TRAINING"},
+    "other_services_modified": false,
+    "serving_weights_replaced": false,
+    "scheduled_automation_created": false,
+    "test_evaluation_status": "NOT_EVALUATED",
+    "prior_v9_training": {"laya": {"completed": true, "epochs": 2, "optimizer_updates": 8}, "kev": {"completed": true, "epochs": 2, "optimizer_updates": 100, "records_seen": 396}},
+    "latest_feature_refresh_retrained": false,
+    "resume_training_requested_in_current_task": false
+  },
+  "restart_observation_2007": {
+    "sampled_at": "2026-10-31T20:07:50.762394+08:00",
+    "restart_requested": true,
+    "controller_pid": 562379,
+    "controller_alive": true,
+    "queue_status": "PAUSED_GPU_BUSY",
+    "current_run": null,
+    "archived_attempt": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F14/failed_attempt_0001",
+    "previous_checkpoint_tensor_count": 206,
+    "previous_checkpoint_non_finite_tensor_count": 201,
+    "restart_mode": "COLD_START_FROM_ORIGINAL_WEIGHTS",
+    "new_training_started": false,
+    "native_forward_dtype": "bf16",
+    "non_finite_loss_records_failure": true,
+    "remaining_executable_full_runs": [
+      "F14",
+      "F15",
+      "F16",
+      "F01_S3",
+      "F02_S3",
+      "F03_S3",
+      "F04_S3",
+      "F05_S3",
+      "F06_S3",
+      "F07_S3"
+    ],
+    "missing_parent_runs": [
+      "F17",
+      "F18",
+      "F19",
+      "F20"
+    ],
+    "existing_matrix_continuation_unchanged": true,
+    "gpu": {
+      "used_mib": 34705,
+      "free_mib": 13835,
+      "total_mib": 49140,
+      "utilization_pct": 100,
+      "existing_queue_required_free_mib": 16384,
+      "comfyui_running_requests": 1
+    },
+    "other_services_modified": false,
+    "serving_weights_replaced": false,
+    "scheduled_automation_created": false,
+    "test_dataset_choice": null,
+    "test_evaluation_status": "NOT_EVALUATED_PENDING_DATASET_IDENTITY",
+    "prior_v9_training": {
+      "laya": {
+        "completed": true,
+        "epochs": 2,
+        "optimizer_updates": 8
+      },
+      "kev": {
+        "completed": true,
+        "epochs": 2,
+        "optimizer_updates": 100,
+        "records_seen": 396
+      }
+    },
+    "latest_feature_refresh_retrained": false
+  },
+  "version_selection": {
+    "source": "Saved validation results and physical-file metadata; all old protocol groups remain separate.",
+    "laya": {
+      "observed_direct_run_records": 79,
+      "same_protocol_fixed_s1_epoch_records": 114,
+      "score_basis": "Existing compute_s1_composite_score on saved fixed-Val results; cross-recipe descriptive ordering, not a Test score or replacement of original comparable-group ranking",
+      "reference": {
+        "items": 561,
+        "accuracy": 0.4759,
+        "loss": 1.8071,
+        "brier": 0.9021,
+        "ece": 0.4402
+      },
+      "historical_top3": [
+        {
+          "checkpoint_id": "F11-e01",
+          "run_id": "F11",
+          "epoch": 1,
+          "score": 159.7985,
+          "metrics": {
+            "items": 561,
+            "accuracy": 0.6898,
+            "loss": 0.5941,
+            "brier": 0.4085,
+            "ece": 0.0378
+          },
+          "model_file_present": true,
+          "comparable_group": "MR-FULL-GRADED-P0-DATA-REPAIR-v1|sup:S1+S2+S3|val:S1:561|metric:soft-ce_raw_logit",
+          "source": "F11/run.json"
+        },
+        {
+          "checkpoint_id": "F05_S1-e02",
+          "run_id": "F05_S1",
+          "epoch": 2,
+          "score": 159.3007,
+          "metrics": {
+            "items": 561,
+            "accuracy": 0.6791,
+            "loss": 0.5933,
+            "brier": 0.4069,
+            "ece": 0.0348
+          },
+          "model_file_present": false,
+          "comparable_group": "MR-FULL-GRADED-P0-DATA-REPAIR-v1|sup:S1|val:S1:561|metric:soft-ce_raw_logit",
+          "source": "F05_S1/run.json"
+        },
+        {
+          "checkpoint_id": "P0_B03_C01_QB_PB-e02",
+          "run_id": "P0_B03_C01_QB_PB",
+          "epoch": 2,
+          "score": 159.2461,
+          "metrics": {
+            "items": 561,
+            "accuracy": 0.6863,
+            "loss": 0.6039,
+            "brier": 0.4165,
+            "ece": 0.0367
+          },
+          "model_file_present": true,
+          "comparable_group": "MR-FULL-GRADED-P0-DATA-REPAIR-v1|sup:S1|val:S1:561|metric:soft-ce_raw_logit",
+          "source": "P0_B03_C01_QB_PB/run.json"
+        }
+      ],
+      "available_top3": [
+        {
+          "checkpoint_id": "F11-e01",
+          "run_id": "F11",
+          "epoch": 1,
+          "score": 159.7985,
+          "metrics": {
+            "items": 561,
+            "accuracy": 0.6898,
+            "loss": 0.5941,
+            "brier": 0.4085,
+            "ece": 0.0378
+          },
+          "model_file_present": true,
+          "comparable_group": "MR-FULL-GRADED-P0-DATA-REPAIR-v1|sup:S1+S2+S3|val:S1:561|metric:soft-ce_raw_logit",
+          "source": "F11/run.json"
+        },
+        {
+          "checkpoint_id": "P0_B03_C01_QB_PB-e02",
+          "run_id": "P0_B03_C01_QB_PB",
+          "epoch": 2,
+          "score": 159.2461,
+          "metrics": {
+            "items": 561,
+            "accuracy": 0.6863,
+            "loss": 0.6039,
+            "brier": 0.4165,
+            "ece": 0.0367
+          },
+          "model_file_present": true,
+          "comparable_group": "MR-FULL-GRADED-P0-DATA-REPAIR-v1|sup:S1|val:S1:561|metric:soft-ce_raw_logit",
+          "source": "P0_B03_C01_QB_PB/run.json"
+        },
+        {
+          "checkpoint_id": "F05-e01",
+          "run_id": "F05",
+          "epoch": 1,
+          "score": 159.1254,
+          "metrics": {
+            "items": 561,
+            "accuracy": 0.6756,
+            "loss": 0.5978,
+            "brier": 0.413,
+            "ece": 0.0243
+          },
+          "model_file_present": true,
+          "comparable_group": "MR-FULL-GRADED-P0-DATA-REPAIR-v1|sup:S1+S2+S3|val:S1:561|metric:soft-ce_raw_logit",
+          "source": "F05/run.json"
+        }
+      ]
+    },
+    "kev": {
+      "group": "KEV_TYPED_COVERAGE_V1",
+      "shared_fixed_val_scope": "Descriptive ordering of 19 saved V8 candidates on the same fixed Val and KEV_FIXED_VAL_FOUR_METRIC_V1 score; original recipe groups retained; V9 separate; not a final Test score",
+      "shared_fixed_val_records": 8436,
+      "shared_fixed_val_questions": 9330,
+      "shared_fixed_val_source": "A6000: our-project/results/training/kev/candidate_ledger.json",
+      "shared_fixed_val_available_top3": [
+        {
+          "candidate": "KEV-V8-R11",
+          "score": 106.74866622586939,
+          "accuracy": 0.5690246516613076,
+          "nll": 1.0687237358658521,
+          "brier": 0.5356784886480057,
+          "ece": 0.018245896357096725,
+          "weights_present": true,
+          "checkpoint_path": "runs/KEV-V8-COVERAGE-R11/checkpoint"
+        },
+        {
+          "candidate": "KEV-V8-R12",
+          "score": 105.32987566537435,
+          "accuracy": 0.5684887459807074,
+          "nll": 1.0740358242273134,
+          "brier": 0.5378212823873345,
+          "ece": 0.02386122815106577,
+          "weights_present": true,
+          "checkpoint_path": "runs/KEV-V8-COVERAGE-R12/checkpoint"
+        },
+        {
+          "candidate": "KEV-V8-C09",
+          "score": 105.20094505844149,
+          "accuracy": 0.5667738478027867,
+          "nll": 1.0748016646459615,
+          "brier": 0.5385626193509407,
+          "ece": 0.023637797412261016,
+          "weights_present": true,
+          "checkpoint_path": "runs/KEV-V8-EXT-01/formal_run"
+        }
+      ],
+      "score_reference": "KEV-V8-C03 (already project-finetuned, not original weights)",
+      "historical_top3": [
+        {
+          "candidate": "R11",
+          "score": 106.74866622586939,
+          "weights_present": true
+        },
+        {
+          "candidate": "R12",
+          "score": 105.32987566537435,
+          "weights_present": true
+        },
+        {
+          "candidate": "R04",
+          "score": 104.0872,
+          "weights_present": false
+        }
+      ],
+      "available_top3": [
+        {
+          "candidate": "R11",
+          "score": 106.74866622586939
+        },
+        {
+          "candidate": "R12",
+          "score": 105.32987566537435
+        },
+        {
+          "candidate": "R01",
+          "score": 98.8609
+        }
+      ]
+    },
+    "laya_original_comparison": {
+      "dataset": "Existing fixed S1 Val, 561 items; not final Test",
+      "original_model": "models/laya-421m (before this project's fine-tuning)",
+      "original_accuracy": 0.4759,
+      "current_candidate": "F11-e01",
+      "current_accuracy": 0.6898,
+      "accuracy_gain_percentage_points": 21.39,
+      "original_reference_score": 100,
+      "current_score": 159.7985
+    },
+    "kev_original_comparison": {
+      "original_model": "models/kev-4b-adapter (before this project's fine-tuning, not bare Qwen)",
+      "old_result_questions": 1264,
+      "current_fixed_val_questions": 9330,
+      "matched_dataset_result_available": false
+    },
+    "independent_test_score_computed": false
+  },
+  "training_snapshot_1851": {
+    "sampled_at": "2026-10-31T18:51:55.568875+08:00",
+    "metadata_read_at": {
+      "laya": "2026-10-31T10:55:07.740339+00:00",
+      "kev": "2026-10-31T10:56:50.325328+00:00"
+    },
+    "scope": "Read-only server records for F01-F14, V9_LAYA_001 and the existing Kev candidate queue; historical full-report counts were not recomputed.",
+    "active_project_training_processes": 0,
+    "gpu": {
+      "name": "NVIDIA RTX A6000",
+      "memory_used_mib": 25433,
+      "memory_total_mib": 49140,
+      "utilization_pct": 0,
+      "temperature_c": 27,
+      "power_w": 10.14
+    },
+    "serving": {
+      "health_http_status": 200,
+      "status": "healthy",
+      "pid": 327621,
+      "started_at": "2026-10-30T20:53:21+08:00",
+      "laya_checkpoint": "F05/epoch_01",
+      "kev_checkpoint": "KEV-4B-ADAPTER",
+      "weights_replaced": false,
+      "new_forward_in_this_update": false
+    },
+    "laya": {
+      "source_root": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012",
+      "active_run": null,
+      "queue_status": "PAUSED_RUN_FAILED",
+      "f_series_completed_runs": 13,
+      "f_series_failed_runs": 1,
+      "f_series": [
+        {
+          "run_id": "F01",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 15174,
+          "total_updates": 15174,
+          "consumed_items": 971070,
+          "consumed_units": 139274,
+          "started_at": "2026-10-13T05:12:18Z",
+          "finished_at": "2026-10-13T13:11:42Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F02",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 31304,
+          "total_updates": 31304,
+          "consumed_items": 2003390,
+          "consumed_units": 278426,
+          "started_at": "2026-10-13T13:13:11Z",
+          "finished_at": "2026-10-14T05:59:33Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F03",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 45836,
+          "total_updates": 45836,
+          "consumed_items": 2933448,
+          "consumed_units": 417529,
+          "started_at": "2026-10-17T04:33:40Z",
+          "finished_at": "2026-10-18T00:10:47Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F04",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 59718,
+          "total_updates": 59904,
+          "consumed_items": 3821922,
+          "consumed_units": 509011,
+          "started_at": "2026-10-15T02:49:04Z",
+          "finished_at": "2026-10-16T04:42:02Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F05",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 46446,
+          "total_updates": 46446,
+          "consumed_items": 2972430,
+          "consumed_units": 417700,
+          "started_at": "2026-10-16T04:43:41Z",
+          "finished_at": "2026-10-17T04:31:26Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F06",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 92280,
+          "total_updates": 92280,
+          "consumed_items": 5905878,
+          "consumed_units": 835229,
+          "started_at": "2026-10-18T00:12:39Z",
+          "finished_at": "2026-10-19T23:47:49Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F07",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 151998,
+          "total_updates": 151998,
+          "consumed_items": 9727800,
+          "consumed_units": 1344240,
+          "started_at": "2026-10-19T23:50:05Z",
+          "finished_at": "2026-10-23T05:42:49Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F08",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 23002,
+          "total_updates": 23002,
+          "consumed_items": 1472010,
+          "consumed_units": 209037,
+          "started_at": "2026-10-23T05:44:34Z",
+          "finished_at": "2026-10-23T15:51:49Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F09",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 30826,
+          "total_updates": 30826,
+          "consumed_items": 1972758,
+          "consumed_units": 278596,
+          "started_at": "2026-10-23T15:53:19Z",
+          "finished_at": "2026-10-24T05:10:43Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F10",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 38732,
+          "total_updates": 38732,
+          "consumed_items": 2478784,
+          "consumed_units": 348358,
+          "started_at": "2026-10-24T05:12:12Z",
+          "finished_at": "2026-10-24T22:05:34Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F11",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 58200,
+          "total_updates": 58200,
+          "consumed_items": 3724718,
+          "consumed_units": 522161,
+          "started_at": "2026-10-24T22:07:16Z",
+          "finished_at": "2026-10-26T04:25:17Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F12",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 69990,
+          "total_updates": 69990,
+          "consumed_items": 4479326,
+          "consumed_units": 626940,
+          "started_at": "2026-10-26T04:27:19Z",
+          "finished_at": "2026-10-27T19:15:33Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F13",
+          "status": "completed",
+          "epochs_max": 2,
+          "epochs_recorded": 2,
+          "step": 81312,
+          "total_updates": 81312,
+          "consumed_items": 5203918,
+          "consumed_units": 730844,
+          "started_at": "2026-10-27T19:17:39Z",
+          "finished_at": "2026-10-29T09:08:13Z",
+          "failure_reason": null
+        },
+        {
+          "run_id": "F14",
+          "status": "failed",
+          "epochs_max": 2,
+          "epochs_recorded": 1,
+          "step": 100166,
+          "total_updates": 107404,
+          "consumed_items": 6410604,
+          "consumed_units": 962165,
+          "started_at": "2026-10-29T09:10:17Z",
+          "finished_at": "2026-10-31T09:01:02Z",
+          "failure_reason": "NON_FINITE_LOSS"
+        }
+      ],
+      "next_runs_started": {
+        "F15": false,
+        "F16": false
+      },
+      "continuation_representative": "F11-e01",
+      "recent_epochs": [
+        {
+          "run_id": "F11",
+          "parent_checkpoint_id": null,
+          "status": "completed",
+          "started_at": "2026-10-24T22:07:16Z",
+          "finished_at": "2026-10-26T04:25:17Z",
+          "training_parameters": {
+            "micro_batch": 8,
+            "grad_accum": 8,
+            "encoder_lr": 0.000025,
+            "head_lr": 0.0001,
+            "weight_decay": 0.01,
+            "freeze_encoder": false
+          },
+          "epochs": [
+            {
+              "epoch": 1,
+              "train_loss": 0.5229,
+              "global_step": 29100,
+              "optimizer_updates": 29100,
+              "validation": {
+                "S1": {
+                  "items": 561,
+                  "accuracy": 0.6898,
+                  "loss": 0.5941,
+                  "brier": 0.4085,
+                  "ece": 0.0378
+                },
+                "S2": {
+                  "items": 337,
+                  "accuracy": 0.5341,
+                  "loss": 2.2988,
+                  "brier": 0.8136,
+                  "ece": 0.4004
+                },
+                "S3": {
+                  "items": 4794,
+                  "accuracy": 0.4543,
+                  "loss": 1.2417,
+                  "brier": 0.7288,
+                  "ece": 0.2555
+                },
+                "all": {
+                  "items": 5692,
+                  "accuracy": 0.4823,
+                  "loss": 1.2405,
+                  "brier": 0.7023,
+                  "ece": 0.2355
+                }
+              },
+              "epoch_weight_present": true
+            },
+            {
+              "epoch": 2,
+              "train_loss": 0.4622,
+              "global_step": 58200,
+              "optimizer_updates": 58200,
+              "validation": {
+                "S1": {
+                  "items": 561,
+                  "accuracy": 0.6667,
+                  "loss": 0.6022,
+                  "brier": 0.4158,
+                  "ece": 0.0389
+                },
+                "S2": {
+                  "items": 337,
+                  "accuracy": 0.5846,
+                  "loss": 3.3946,
+                  "brier": 0.7829,
+                  "ece": 0.3841
+                },
+                "S3": {
+                  "items": 4794,
+                  "accuracy": 0.5008,
+                  "loss": 1.2885,
+                  "brier": 0.6834,
+                  "ece": 0.2281
+                },
+                "all": {
+                  "items": 5692,
+                  "accuracy": 0.5221,
+                  "loss": 1.3456,
+                  "brier": 0.663,
+                  "ece": 0.2159
+                }
+              },
+              "epoch_weight_present": false
+            }
+          ]
+        },
+        {
+          "run_id": "F12",
+          "parent_checkpoint_id": null,
+          "status": "completed",
+          "started_at": "2026-10-26T04:27:19Z",
+          "finished_at": "2026-10-27T19:15:33Z",
+          "training_parameters": {
+            "micro_batch": 8,
+            "grad_accum": 8,
+            "encoder_lr": 0.000025,
+            "head_lr": 0.0001,
+            "weight_decay": 0.01,
+            "freeze_encoder": false
+          },
+          "epochs": [
+            {
+              "epoch": 1,
+              "train_loss": 0.522,
+              "global_step": 34995,
+              "optimizer_updates": 34995,
+              "validation": {
+                "S1": {
+                  "items": 561,
+                  "accuracy": 0.656,
+                  "loss": 0.6023,
+                  "brier": 0.4163,
+                  "ece": 0.0373
+                },
+                "S2": {
+                  "items": 337,
+                  "accuracy": 0.5727,
+                  "loss": 2.3845,
+                  "brier": 0.7279,
+                  "ece": 0.3329
+                },
+                "S3": {
+                  "items": 4794,
+                  "accuracy": 0.462,
+                  "loss": 1.5799,
+                  "brier": 0.7586,
+                  "ece": 0.2983
+                },
+                "all": {
+                  "items": 5692,
+                  "accuracy": 0.4877,
+                  "loss": 1.5312,
+                  "brier": 0.723,
+                  "ece": 0.2682
+                }
+              },
+              "epoch_weight_present": true
+            },
+            {
+              "epoch": 2,
+              "train_loss": 0.4621,
+              "global_step": 69990,
+              "optimizer_updates": 69990,
+              "validation": {
+                "S1": {
+                  "items": 561,
+                  "accuracy": 0.6774,
+                  "loss": 0.6261,
+                  "brier": 0.4292,
+                  "ece": 0.066
+                },
+                "S2": {
+                  "items": 337,
+                  "accuracy": 0.5341,
+                  "loss": 3.6095,
+                  "brier": 0.8603,
+                  "ece": 0.4138
+                },
+                "S3": {
+                  "items": 4794,
+                  "accuracy": 0.4693,
+                  "loss": 1.533,
+                  "brier": 0.7631,
+                  "ece": 0.2941
+                },
+                "all": {
+                  "items": 5692,
+                  "accuracy": 0.4937,
+                  "loss": 1.5666,
+                  "brier": 0.736,
+                  "ece": 0.2759
+                }
+              },
+              "epoch_weight_present": true
+            }
+          ]
+        },
+        {
+          "run_id": "F13",
+          "parent_checkpoint_id": null,
+          "status": "completed",
+          "started_at": "2026-10-27T19:17:39Z",
+          "finished_at": "2026-10-29T09:08:13Z",
+          "training_parameters": {
+            "micro_batch": 8,
+            "grad_accum": 8,
+            "encoder_lr": 0.000025,
+            "head_lr": 0.0001,
+            "weight_decay": 0.01,
+            "freeze_encoder": false
+          },
+          "epochs": [
+            {
+              "epoch": 1,
+              "train_loss": 0.5243,
+              "global_step": 40656,
+              "optimizer_updates": 40656,
+              "validation": {
+                "S1": {
+                  "items": 561,
+                  "accuracy": 0.6506,
+                  "loss": 0.6091,
+                  "brier": 0.4227,
+                  "ece": 0.0282
+                },
+                "S2": {
+                  "items": 337,
+                  "accuracy": 0.5668,
+                  "loss": 2.2422,
+                  "brier": 0.7762,
+                  "ece": 0.3668
+                },
+                "S3": {
+                  "items": 4794,
+                  "accuracy": 0.5121,
+                  "loss": 1.2814,
+                  "brier": 0.6307,
+                  "ece": 0.2053
+                },
+                "all": {
+                  "items": 5692,
+                  "accuracy": 0.529,
+                  "loss": 1.2721,
+                  "brier": 0.6188,
+                  "ece": 0.1955
+                }
+              },
+              "epoch_weight_present": true
+            },
+            {
+              "epoch": 2,
+              "train_loss": 0.4623,
+              "global_step": 81312,
+              "optimizer_updates": 81312,
+              "validation": {
+                "S1": {
+                  "items": 561,
+                  "accuracy": 0.6827,
+                  "loss": 0.6057,
+                  "brier": 0.4174,
+                  "ece": 0.0394
+                },
+                "S2": {
+                  "items": 337,
+                  "accuracy": 0.5816,
+                  "loss": 4.1282,
+                  "brier": 0.7913,
+                  "ece": 0.3871
+                },
+                "S3": {
+                  "items": 4794,
+                  "accuracy": 0.5232,
+                  "loss": 1.4091,
+                  "brier": 0.6456,
+                  "ece": 0.2238
+                },
+                "all": {
+                  "items": 5692,
+                  "accuracy": 0.5423,
+                  "loss": 1.4909,
+                  "brier": 0.6317,
+                  "ece": 0.2109
+                }
+              },
+              "epoch_weight_present": true
+            }
+          ]
+        },
+        {
+          "run_id": "F14",
+          "parent_checkpoint_id": null,
+          "status": "failed",
+          "started_at": "2026-10-29T09:10:17Z",
+          "finished_at": "2026-10-31T09:01:02Z",
+          "training_parameters": {
+            "micro_batch": 8,
+            "grad_accum": 8,
+            "encoder_lr": 0.000025,
+            "head_lr": 0.0001,
+            "weight_decay": 0.01,
+            "freeze_encoder": false
+          },
+          "epochs": [
+            {
+              "epoch": 1,
+              "train_loss": null,
+              "global_step": 53702,
+              "optimizer_updates": 53702,
+              "validation": {
+                "S1": {
+                  "items": 561,
+                  "accuracy": 0.4742,
+                  "loss": null,
+                  "brier": null,
+                  "ece": 0
+                },
+                "S2": {
+                  "items": 337,
+                  "accuracy": 0.5519,
+                  "loss": null,
+                  "brier": null,
+                  "ece": 0
+                },
+                "S3": {
+                  "items": 4794,
+                  "accuracy": 0.2495,
+                  "loss": null,
+                  "brier": null,
+                  "ece": 0
+                },
+                "all": {
+                  "items": 5692,
+                  "accuracy": 0.2895,
+                  "loss": null,
+                  "brier": null,
+                  "ece": 0
+                }
+              },
+              "epoch_weight_present": false
+            }
+          ]
+        },
+        {
+          "run_id": "V9_LAYA_001",
+          "parent_checkpoint_id": "F11-e01",
+          "status": "completed",
+          "started_at": "2026-10-30T02:30:29Z",
+          "finished_at": "2026-10-30T02:34:16Z",
+          "training_parameters": {
+            "epochs": 2,
+            "micro_batch": 8,
+            "grad_accum": 8,
+            "encoder_lr": 0.000025,
+            "head_lr": 0.0001,
+            "weight_decay": 0.01,
+            "freeze_encoder": false,
+            "max_len": 1024,
+            "head_max_len": 512,
+            "amp": true,
+            "gradient_checkpointing": true
+          },
+          "epochs": [
+            {
+              "epoch": 1,
+              "train_loss": 0.9904379868507385,
+              "global_step": 4,
+              "optimizer_updates": 4,
+              "validation": {
+                "S1": {
+                  "items": 561,
+                  "accuracy": 0.6827,
+                  "loss": 0.5979,
+                  "brier": 0.4114,
+                  "ece": 0.062
+                },
+                "S2": {
+                  "items": 337,
+                  "accuracy": 0.5905,
+                  "loss": 1.3964,
+                  "brier": 0.6466,
+                  "ece": 0.2622
+                },
+                "S3": {
+                  "items": 4794,
+                  "accuracy": 0.4602,
+                  "loss": 1.0779,
+                  "brier": 0.6537,
+                  "ece": 0.2029
+                },
+                "all": {
+                  "items": 5692,
+                  "accuracy": 0.4898,
+                  "loss": 1.0494,
+                  "brier": 0.6294,
+                  "ece": 0.1817
+                }
+              },
+              "epoch_total_seconds": 122.93,
+              "epoch_weight_present": false
+            },
+            {
+              "epoch": 2,
+              "train_loss": 0.710400927066803,
+              "global_step": 8,
+              "optimizer_updates": 4,
+              "validation": {
+                "S1": {
+                  "items": 561,
+                  "accuracy": 0.6827,
+                  "loss": 0.5969,
+                  "brier": 0.4105,
+                  "ece": 0.0466
+                },
+                "S2": {
+                  "items": 337,
+                  "accuracy": 0.6024,
+                  "loss": 1.3626,
+                  "brier": 0.6394,
+                  "ece": 0.264
+                },
+                "S3": {
+                  "items": 4794,
+                  "accuracy": 0.4656,
+                  "loss": 1.0473,
+                  "brier": 0.636,
+                  "ece": 0.1896
+                },
+                "all": {
+                  "items": 5692,
+                  "accuracy": 0.4951,
+                  "loss": 1.0216,
+                  "brier": 0.614,
+                  "ece": 0.1698
+                }
+              },
+              "epoch_total_seconds": 102.511,
+              "epoch_weight_present": true
+            }
+          ]
+        }
+      ],
+      "f14": {
+        "failure_reason": "NON_FINITE_LOSS",
+        "cursor_epoch_index": 1,
+        "display_epoch": 2,
+        "chunk": 363,
+        "chunks_per_epoch": 420,
+        "step": 100166,
+        "total_steps": 107404,
+        "loop_progress_pct": 93.26,
+        "consumed_items": 6410604,
+        "consumed_units": 962165,
+        "nan_log_chunks": 721,
+        "first_logged_nan_chunk": 63,
+        "first_logged_nan_step": 8064,
+        "last_progress_at": "2026-10-31T08:57:59Z",
+        "finished_at": "2026-10-31T09:01:02Z",
+        "run_json_last_completed_epoch": 1,
+        "run_json_last_completed_step": 53702,
+        "epoch1_loss_non_finite": true,
+        "epoch1_weight_saved": false,
+        "latest_and_temp_recovery_weights_present": true,
+        "valid_optimizer_updates": null,
+        "root_cause": null
+      }
+    },
+    "kev": {
+      "source_queue": "our-project/results/training/kev/candidate_queue.json",
+      "candidate_entries": 26,
+      "completed_training_and_val_entries": 20,
+      "pending_training_entries": 5,
+      "selection_only_entries": 1,
+      "coverage_completed": 16,
+      "coverage_planned": 16,
+      "active_run": null,
+      "continuation_representative": "KEV-V8-R11",
+      "pending": [
+        {
+          "candidate_id": "KEV-V8-C05",
+          "kind": "TRAINING",
+          "training_status": "UNKNOWN",
+          "reason": "Missing training data: data/kev/公开数据/train_nostate.jsonl"
+        },
+        {
+          "candidate_id": "KEV-V8-C06",
+          "kind": "TRAINING",
+          "training_status": "UNKNOWN",
+          "reason": "Eight real state fields are not available in the current typed training records"
+        },
+        {
+          "candidate_id": "KEV-V8-C07",
+          "kind": "TRAINING",
+          "training_status": "UNKNOWN",
+          "reason": "warm_start lora: source rank 16, requested rank 8"
+        },
+        {
+          "candidate_id": "KEV-V8-C08",
+          "kind": "TRAINING",
+          "training_status": "UNKNOWN",
+          "reason": "warm_start lora: source rank 16, requested rank 32"
+        },
+        {
+          "candidate_id": "KEV-V8-C10",
+          "kind": "TRAINING",
+          "training_status": "UNKNOWN",
+          "reason": "Original train contains 35,645 ROUTE-001/002 rows excluded by current policy and 17 TRA-004 rows outside the legal source set; difficulty_tier is historical auxiliary supervision"
+        },
+        {
+          "candidate_id": "KEV-V8-C11",
+          "kind": "SELECTION",
+          "training_status": "NOT_APPLICABLE",
+          "reason": "Selection uses comparable completed Val results; no new training"
+        }
+      ],
+      "recent_completed": [
+        {
+          "candidate_id": "KEV-V8-R11",
+          "status": "COMPLETED",
+          "parent_checkpoint": "KEV-V8-C03",
+          "started_at": "2026-10-27T01:44:19Z",
+          "finished_at": "2026-10-27T04:54:57Z",
+          "epochs": 1,
+          "optimizer_steps": 1068,
+          "records_seen": 4269,
+          "requested_records": 4269,
+          "truncated_records": 0,
+          "rejected_records": 0,
+          "last_logged_loss": 0.789,
+          "last_logged_loss_step": 1060,
+          "training_seconds": 8181.146460056305,
+          "validation_seconds": 3209.4682243727148,
+          "training_parameters": {
+            "epochs": 1,
+            "lr": 0.00002,
+            "head_lr": 0,
+            "weight_decay": 0.01,
+            "lora": 16,
+            "accum": 4,
+            "batch": 1,
+            "dtype": "bf16",
+            "max_state": 384,
+            "full_ft": 0,
+            "resume": 0,
+            "checkpointing": 1,
+            "seed": 42
+          },
+          "ratio": {
+            "S2": 2,
+            "S3": 1
+          },
+          "validation": {
+            "n": 9330,
+            "acc": 0.5690246516613076,
+            "nll": 1.0687237358658521,
+            "brier": 0.5356784886480057,
+            "ece": 0.018245896357096725
+          },
+          "validation_coverage": {
+            "requested_records": 8436,
+            "requested_questions": 9330,
+            "evaluated_records": 8436,
+            "evaluated_questions": 9330,
+            "rejected_records": 0,
+            "truncated_records": 0
+          },
+          "weights_present": true,
+          "internal_selection_score": 106.74866622586939
+        },
+        {
+          "candidate_id": "KEV-V8-R12",
+          "status": "COMPLETED",
+          "parent_checkpoint": "KEV-V8-C03",
+          "started_at": "2026-10-27T04:54:58Z",
+          "finished_at": "2026-10-27T10:22:11Z",
+          "epochs": 1,
+          "optimizer_steps": 2135,
+          "records_seen": 8538,
+          "requested_records": 8538,
+          "truncated_records": 0,
+          "rejected_records": 0,
+          "last_logged_loss": 0.698,
+          "last_logged_loss_step": 2130,
+          "training_seconds": 16496.87581562996,
+          "validation_seconds": 3086.111373465508,
+          "training_parameters": {
+            "epochs": 1,
+            "lr": 0.00002,
+            "head_lr": 0,
+            "weight_decay": 0.01,
+            "lora": 16,
+            "accum": 4,
+            "batch": 1,
+            "dtype": "bf16",
+            "max_state": 384,
+            "full_ft": 0,
+            "resume": 0,
+            "checkpointing": 1,
+            "seed": 42
+          },
+          "ratio": {
+            "S2": 1,
+            "S3": 2
+          },
+          "validation": {
+            "n": 9330,
+            "acc": 0.5684887459807074,
+            "nll": 1.0740358242273134,
+            "brier": 0.5378212823873345,
+            "ece": 0.02386122815106577
+          },
+          "validation_coverage": {
+            "requested_records": 8436,
+            "requested_questions": 9330,
+            "evaluated_records": 8436,
+            "evaluated_questions": 9330,
+            "rejected_records": 0,
+            "truncated_records": 0
+          },
+          "weights_present": true,
+          "internal_selection_score": 105.32987566537435
+        },
+        {
+          "candidate_id": "KEV-V8-R13",
+          "status": "COMPLETED",
+          "parent_checkpoint": "KEV-V8-C03",
+          "started_at": "2026-10-27T10:22:12Z",
+          "finished_at": "2026-10-27T16:02:42Z",
+          "epochs": 1,
+          "optimizer_steps": 2135,
+          "records_seen": 8538,
+          "requested_records": 8538,
+          "truncated_records": 0,
+          "rejected_records": 0,
+          "last_logged_loss": 0.671,
+          "last_logged_loss_step": 2130,
+          "training_seconds": 17322.474386692047,
+          "validation_seconds": 3057.3671408481896,
+          "training_parameters": {
+            "epochs": 1,
+            "lr": 0.00002,
+            "head_lr": 0,
+            "weight_decay": 0.01,
+            "lora": 16,
+            "accum": 4,
+            "batch": 1,
+            "dtype": "bf16",
+            "max_state": 384,
+            "full_ft": 0,
+            "resume": 0,
+            "checkpointing": 1,
+            "seed": 42
+          },
+          "ratio": {
+            "S1": 1,
+            "S2": 1,
+            "S3": 1
+          },
+          "validation": {
+            "n": 9330,
+            "acc": 0.5710610932475885,
+            "nll": 1.0772480919990897,
+            "brier": 0.5400117173836336,
+            "ece": 0.03729033295023294
+          },
+          "validation_coverage": {
+            "requested_records": 8436,
+            "requested_questions": 9330,
+            "evaluated_records": 8436,
+            "evaluated_questions": 9330,
+            "rejected_records": 0,
+            "truncated_records": 0
+          },
+          "weights_present": false,
+          "internal_selection_score": 102.68423650867963
+        },
+        {
+          "candidate_id": "KEV-V8-R14",
+          "status": "COMPLETED",
+          "parent_checkpoint": "KEV-V8-C03",
+          "started_at": "2026-10-27T16:02:43Z",
+          "finished_at": "2026-10-27T21:50:10Z",
+          "epochs": 1,
+          "optimizer_steps": 2296,
+          "records_seen": 9184,
+          "requested_records": 9184,
+          "truncated_records": 0,
+          "rejected_records": 0,
+          "last_logged_loss": 0.542,
+          "last_logged_loss_step": 2290,
+          "training_seconds": 17788.058554172516,
+          "validation_seconds": 2998.153802447021,
+          "training_parameters": {
+            "epochs": 1,
+            "lr": 0.00002,
+            "head_lr": 0,
+            "weight_decay": 0.01,
+            "lora": 16,
+            "accum": 4,
+            "batch": 1,
+            "dtype": "bf16",
+            "max_state": 384,
+            "full_ft": 0,
+            "resume": 0,
+            "checkpointing": 1,
+            "seed": 42
+          },
+          "ratio": {
+            "S1": 2,
+            "S2": 1,
+            "S3": 1
+          },
+          "validation": {
+            "n": 9330,
+            "acc": 0.5708467309753483,
+            "nll": 1.0884253914471589,
+            "brier": 0.5424181885335775,
+            "ece": 0.0462875576977174
+          },
+          "validation_coverage": {
+            "requested_records": 8436,
+            "requested_questions": 9330,
+            "evaluated_records": 8436,
+            "evaluated_questions": 9330,
+            "rejected_records": 0,
+            "truncated_records": 0
+          },
+          "weights_present": false,
+          "internal_selection_score": 100.37360995113988
+        },
+        {
+          "candidate_id": "KEV-V8-R15",
+          "status": "COMPLETED",
+          "parent_checkpoint": "KEV-V8-C03",
+          "started_at": "2026-10-27T21:50:10Z",
+          "finished_at": "2026-10-28T01:43:48Z",
+          "epochs": 1,
+          "optimizer_steps": 1423,
+          "records_seen": 5692,
+          "requested_records": 5692,
+          "truncated_records": 0,
+          "rejected_records": 0,
+          "last_logged_loss": 0.682,
+          "last_logged_loss_step": 1420,
+          "training_seconds": 10868.390604019165,
+          "validation_seconds": 3099.864800872281,
+          "training_parameters": {
+            "epochs": 1,
+            "lr": 0.00002,
+            "head_lr": 0,
+            "weight_decay": 0.01,
+            "lora": 16,
+            "accum": 4,
+            "batch": 1,
+            "dtype": "bf16",
+            "max_state": 384,
+            "full_ft": 0,
+            "resume": 0,
+            "checkpointing": 1,
+            "seed": 42
+          },
+          "ratio": {
+            "S1": 1,
+            "S2": 2,
+            "S3": 1
+          },
+          "validation": {
+            "n": 9330,
+            "acc": 0.5732047159699892,
+            "nll": 1.080296165386948,
+            "brier": 0.5409919869468435,
+            "ece": 0.04570770565534802
+          },
+          "validation_coverage": {
+            "requested_records": 8436,
+            "requested_questions": 9330,
+            "evaluated_records": 8436,
+            "evaluated_questions": 9330,
+            "rejected_records": 0,
+            "truncated_records": 0
+          },
+          "weights_present": false,
+          "internal_selection_score": 101.03098291480666
+        },
+        {
+          "candidate_id": "KEV-V8-R16",
+          "status": "COMPLETED",
+          "parent_checkpoint": "KEV-V8-C03",
+          "started_at": "2026-10-28T01:43:48Z",
+          "finished_at": "2026-10-28T08:54:41Z",
+          "epochs": 1,
+          "optimizer_steps": 2846,
+          "records_seen": 11384,
+          "requested_records": 11384,
+          "truncated_records": 0,
+          "rejected_records": 0,
+          "last_logged_loss": 0.731,
+          "last_logged_loss_step": 2840,
+          "training_seconds": 22788.520597219467,
+          "validation_seconds": 3011.8440324403346,
+          "training_parameters": {
+            "epochs": 1,
+            "lr": 0.00002,
+            "head_lr": 0,
+            "weight_decay": 0.01,
+            "lora": 16,
+            "accum": 4,
+            "batch": 1,
+            "dtype": "bf16",
+            "max_state": 384,
+            "full_ft": 0,
+            "resume": 0,
+            "checkpointing": 1,
+            "seed": 42
+          },
+          "ratio": {
+            "S1": 1,
+            "S2": 1,
+            "S3": 2
+          },
+          "validation": {
+            "n": 9330,
+            "acc": 0.5681672025723473,
+            "nll": 1.0969011540027673,
+            "brier": 0.5477866507241165,
+            "ece": 0.0611018910610564
+          },
+          "validation_coverage": {
+            "requested_records": 8436,
+            "requested_questions": 9330,
+            "evaluated_records": 8436,
+            "evaluated_questions": 9330,
+            "rejected_records": 0,
+            "truncated_records": 0
+          },
+          "weights_present": false,
+          "internal_selection_score": 96.7807431542914
+        },
+        {
+          "candidate_id": "KEV-V9-001",
+          "status": "COMPLETED",
+          "parent_checkpoint": "KEV-V8-R11",
+          "started_at": "2026-10-29T19:03:33Z",
+          "finished_at": "2026-10-29T20:23:20Z",
+          "epochs": 2,
+          "optimizer_steps": 100,
+          "records_seen": 396,
+          "requested_records": 396,
+          "truncated_records": 0,
+          "rejected_records": 0,
+          "last_logged_loss": 0.782,
+          "last_logged_loss_step": 100,
+          "training_seconds": 1267.0303127765656,
+          "validation_seconds": 3468.2793178632855,
+          "training_parameters": {
+            "epochs": 2,
+            "lr": 0.00002,
+            "head_lr": 0,
+            "weight_decay": 0.01,
+            "lora": 16,
+            "accum": 4,
+            "batch": 1,
+            "dtype": "bf16",
+            "max_state": 8192,
+            "full_ft": 0,
+            "resume": 0,
+            "checkpointing": 1,
+            "seed": 42
+          },
+          "ratio": null,
+          "validation": {
+            "n": 9330,
+            "acc": 0.5658092175777063,
+            "nll": 1.1103247352468928,
+            "brier": 0.5461336121552054,
+            "ece": 0.08006657253210539
+          },
+          "validation_coverage": {
+            "requested_records": 8436,
+            "requested_questions": 9330,
+            "evaluated_records": 8436,
+            "evaluated_questions": 9330,
+            "rejected_records": 0,
+            "truncated_records": 0
+          },
+          "weights_present": true,
+          "internal_selection_score": 92.38703579133796
+        }
+      ],
+      "c03_reference_validation": {
+        "n": 9330,
+        "acc": 0.5715969989281886,
+        "nll": 1.0795525776246775,
+        "brier": 0.537533605673637,
+        "ece": 0.05104668378873653
+      },
+      "v9_config_continuation_snapshot_stale": true
+    },
+    "next_training": {
+      "started": false,
+      "prepared_view_records": 382,
+      "train_records": 196,
+      "val_records": 186,
+      "current_pool_model_choice_labels": 0,
+      "current_pool_model_effort_choice_labels": 0,
+      "completed_v9_training_used_original_train_records": 198,
+      "completed_v9_training_used_original_val_records": 192,
+      "completed_v9_capability_snapshot_version": "v1",
+      "next_prepared_capability_snapshot": "20261031T072548885180Z-v4",
+      "serving_promotion_performed": false
+    }
+  },
   "code_commit": "40932a7ce329faaa159fc483ce152a1f349684ad",
   "counts": {
     "laya": {

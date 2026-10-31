@@ -1,0 +1,67 @@
+diff --git a/tests/texttable_test.py b/tests/texttable_test.py
+index 035ca1e..852e20f 100755
+--- a/tests/texttable_test.py
++++ b/tests/texttable_test.py
+@@ -774,5 +774,62 @@ a,b, c, d  # Trim comment
+     self.assertEqual(['duis', 'aute', 'irure'], table[3].values)
+ 
+ 
++  def testSortTableNumeric(self):
++    """Default sorting compares numeric fields numerically in column order."""
++    table = texttable.TextTable()
++    table.header = ('Col1', 'Col2', 'Col3')
++    for values in (('10', '1', 'a'), ('2', '10', 'b'), ('2', '2', 'b'),
++                   ('-1.5', '0', 'd'), ('2', '2', 'a')):
++      table.Append(values)
++
++    table.sort()
++
++    self.assertEqual(
++        [['-1.5', '0', 'd'], ['2', '2', 'a'], ['2', '2', 'b'],
++         ['2', '10', 'b'], ['10', '1', 'a']],
++        [row.values for row in table])
++
++  def testSortTableRowMetadata(self):
++    """Sorting preserves the header and row objects and updates row numbers."""
++    table = self.BasicTable()
++    table.Append(('2', '4', '6'))
++    header = table.header
++    rows = list(table)
++
++    for reverse in (False, True):
++      with self.subTest(reverse=reverse):
++        self.assertIsNone(table.sort(reverse=reverse))
++        expected_rows = [rows[0], rows[2], rows[1]]
++        if reverse:
++          expected_rows.reverse()
++        self.assertIs(header, table.header)
++        self.assertEqual(0, header.row)
++        self.assertEqual(3, table.size)
++        for index, row in enumerate(expected_rows, start=1):
++          self.assertIs(row, table[index])
++          self.assertEqual(index, row.row)
++          self.assertIs(table, row.table)
++
++  def testSortTableSmall(self):
++    """Sorting works with a header and zero or one data rows."""
++    for row_count in (0, 1):
++      with self.subTest(row_count=row_count):
++        table = texttable.TextTable()
++        table.header = ('Col1',)
++        if row_count:
++          table.Append(('only',))
++        header = table.header
++
++        table.sort()
++
++        self.assertEqual(row_count, table.size)
++        self.assertIs(header, table.header)
++        self.assertEqual(['Col1'], header.values)
++        self.assertEqual(0, header.row)
++        if row_count:
++          self.assertEqual(['only'], table[1].values)
++          self.assertEqual(1, table[1].row)
++
++
+ if __name__ == '__main__':
+   unittest.main()

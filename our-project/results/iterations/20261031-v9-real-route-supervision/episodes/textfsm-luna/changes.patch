@@ -1,0 +1,21 @@
+diff --git a/textfsm/texttable.py b/textfsm/texttable.py
+index 4bdbfbe..daf2166 100755
+--- a/textfsm/texttable.py
++++ b/textfsm/texttable.py
+@@ -434,6 +434,7 @@ class TextTable(object):
+     """
+ 
+     def _DefaultKey(value):
++      result = []
+       for key in self.header:
+         # Try sorting as numerical value if possible.
+         try:
+@@ -441,8 +442,6 @@ class TextTable(object):
+         except ValueError:
+           result.append(value[key])
+       return result
+-      result = []
+-      """Default key func is to create a list of all fields."""
+     key = key or _DefaultKey
+     # Exclude header by copying table.
+     new_table = self._table[1:]

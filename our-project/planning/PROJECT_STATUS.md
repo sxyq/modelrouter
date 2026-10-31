@@ -1,8 +1,50 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-10-31 · 当前恢复点：真实模型对照、紧凑教师与有效数据视图
+## 2026-10-31 · 当前恢复点：有效K=2监督已取得，原训练接续停止
 
-本轮从 `main=e28872fc69604ab082eab5b703d7674073fb4356` 接续，结果位于 [20261031-v9-real-model-comparison](../results/iterations/20261031-v9-real-model-comparison/review.md)。`fix-git`、`db-wal-recovery` 已结束，本轮均未重跑；没有新 Alias Episode、训练或 Serving 权重替换。
+本轮从main `ad1d392ac9621b8fcd3370f1b8815718d54d8e6f`接续，使用已有TRA-002的SWE-smith公开训练任务TextFSM；原mini-SWE-agent的run/step和原生Docker环境复用，教师关闭，五RQ、八图十二表、三正式身份及两条教师参考不变。完整结果见[真实监督采集](../results/iterations/20261031-v9-real-route-supervision/review.md)。
+
+| 本轮结果 | 数量与资格 |
+|---|---|
+| 有效真实任务对照 | 1组；Sol low/Luna low均Submitted、原Verifier96/96 |
+| 真实步骤前缀 | 2组；前缀6两失败，前缀7 Sol一步96/96、Luna未改码 |
+| 新动作监督 | 任务级1条：等Verifier质量下低模型费Luna low；步骤级1条：前缀7即时修复Sol low |
+| 完整K=3最优/同模型Effort偏好 | 0/0；正式Flash仍未可访问，本轮实际K=2、档位均low |
+| 观察材料 | 6个候选结果；前缀6无选择标签，一步结果不当完整Episode |
+| 原材料与新delta | 原390/四教师及有效382视图保留；Train196/Val186可复用，加新2条为198/186，同属1个任务 |
+| 新费用与教师 | 25次生成合计0.26274516USD；教师0次/0费用，实收及资源USD未知 |
+
+新任务与Canary8/Dev24/Final57的ID交集均0，评测元数据未发现TextFSM派生题；该范围不证明任意近重复均已排除。相同过去消息、环境与原Verifier已记录，候选未来反馈仅用于监督，未进入状态。任务级与步骤级有不同问题ID/instruction；原Prepare与共享Trainer序列化已实际读取新两条，未重新加工旧材料或将13,214候选算为全量新增。
+
+Sol/Luna请求和返回身份25次全部匹配，真实API分别Responses/Chat Completions；供应商内部上下文及物理缓存同一性未知。Flash本次两个现有账户/models均HTTP200但未列出，旧model_not_found证据保留，不重复相同失败POST或以27B替代。AA固定v4，Max各10项，low/none/Flash等关键项缺测，没有再次刷新。
+
+台北20:42:35实读：两组活动训练0，原控制器562379退出，队列PAUSED_USER_REQUEST/current_run=null。F01–F13与Kev R01–R16训练及固定Val完成，F11-e01/R11代表不变。旧F14 failed/NON_FINITE_LOSS及721个NaN块在原failed_attempt_0001保留；遗留控制器的新F14/F15于20:12:59/20:14:59初始化UnboundLocalError，F16进入训练前停止，均无新Run/Cursor或有效更新。`laya_batch_train.py:1218`提前读取run_meta的入口问题未改，不继续派发。
+
+Serving HTTP200/healthy，原PID327621及10-30 20:53:21启动时间、F05/epoch_01与Kev导入适配器未变，健康图像服务没有重启。旧V9加训已做Laya2轮/8更新、Kev2轮/100更新/396记录曝光，负结果保留；当前382/v4及本轮2条后没有再加训。只有1个新增监督任务，尚不足以启动有意义的新微调，任何模型参数均未更新。详细进度、可加载前三和原独立Test未执行状态见[原训练报告](../results/training/training_research.md)。
+
+剩余研究工作是独立训练任务上的更多有效步骤分支、真实Flash/跨Effort条件、输入有效覆盖和保留旧S1的新训练目标，以及独立真实Dev上的动态Router和教师净收益。正式主表不填本次训练任务结果；不重复旧成功题、旧教师前缀或既有训练。
+
+## 2026-10-31 · 历史恢复点：真实模型对照与两组微调进度
+
+源码与已发布结果为 `main=ad1d392ac9621b8fcd3370f1b8815718d54d8e6f`；真实模型对照从 `e28872fc69604ab082eab5b703d7674073fb4356` 开始，结果位于 [20261031-v9-real-model-comparison](../results/iterations/20261031-v9-real-model-comparison/review.md)。用户随后要求恢复失败/退出训练、完成剩余、选前三并比较微调前后测试效果；本次沿原队列恢复，不另起V9配方。`fix-git`、`db-wal-recovery` 未重跑；没有新 Alias Episode 或 Serving 权重替换，本次修改尚未提交或推送。
+
+### 原训练队列已恢复：台北20:07:50
+
+F14旧恢复文件206个张量中201个非有限，原失败记录、游标、曲线及恢复文件已保留到原F14目录内的 `failed_attempt_0001/`。新F14将从项目微调前权重开始；其他已完成训练不重复。原native前向的FP16与已有BF16配置不一致，本次对齐BF16，原训练遇到非有限Loss立即记录失败并退出。新F14尚未实际启动，首次NaN诱因和改动后的稳定性仍待真实训练结果。
+
+| 当前对象 | 实际状态 |
+|---|---|
+| 原控制器 | PID562379，19:46:58启动，存活；`PAUSED_GPU_BUSY`、`current_run=null` |
+| GPU与共享任务 | 34,705/49,140 MiB、100%；空闲13,835 MiB，原队列需要16,384 MiB；ComfyUI运行1项、待排0项 |
+| 剩余完整覆盖训练 | 原38项中24完成、10可执行、4缺父权重；可执行F14/F15/F16及F01_S3–F07_S3 |
+| 新训练进度 | 新F14无步数或有效输出，F15/F16未启动；原控制器每30秒等待后继续 |
+| Serving | HTTP200/healthy，原PID327621及F05/epoch_01、Kev导入适配器不变 |
+
+F17–F20仍缺原课程父权重，Kev五项待准备原因保持；没有用替代父权重或重复健康训练解决。未停止、卸载或重启共享图像服务，不创建未来定时任务。原控制器恢复不等于剩余训练已完成。
+
+已有版本日志的前三、历史较高分但权重缺失的版本、微调前对照与加训状态已进入 [原训练报告](../results/training/training_research.md)。当前可加载Laya前三为F11-e01、P0_B03_C01_QB_PB-e02、F05-e01；Kev原R系列为R11、R12、R01。参考分来自已有固定Val，跨配方只作候选筛选，不是最终Test或两骨干间可比得分。
+
+最终Test尚未执行：用户所指材料待明确为原 `test.jsonl` 同源留出切分，或独立TwinRouterBench留出集520题/970步；后者原入口评价四级tier，尚无完整双模型权重接线，不等同于正式三模型动作监督。Laya旧固定Val为微调前47.59%与F11-e01 68.98%，提高21.39个百分点；Kev旧1264问题与当前9330问题不能并比。已有V9加训确已完成，Laya两轮/8更新、Kev两轮/100更新/396次记录曝光；教师调整、382行视图和AA v4之后没有再做V9加训。
 
 ### 教师：取得真实 Sol 输出，费用仍需收益证据
 
@@ -48,13 +90,22 @@
 
 AA固定v4 `20261031T072548885180Z-v4`：Sol/Luna Max各10项，Intelligence v5.0原分 `54.5087338138148 / 27.7552004938153`；本轮low、none、托管Flash及Coding/Agentic综合指数仍缺测。未再次刷新或在路由时联网，没有借用27B/Flash-Next成绩。
 
-### 服务器与下一轮训练
+### 两组微调：台北18:51:55历史取样（恢复前）
 
-F14原控制器及worker已于台北17:01按原训练管理范围结束，原Run记 `failed/NON_FINITE_LOSS`、原队列 `PAUSED_RUN_FAILED`；原cursor、Epoch1、曲线和权重保留，未启动F15。停止前为第二轮363/420、step100166/107404、loss NaN，首次诱因及有效更新未知。正式队列仅沿原失败筛选增加该原因，不影响其他健康对象。
+详细轮数、步数、材料曝光、参数、逐Epoch/固定Val和文件存在已更新到原 [两组训练报告](../results/training/training_research.md)，对应原JSON的 `training_snapshot_1851`；恢复后的状态与候选选择见 `current_execution/version_selection`。旧全历史报告生成时间10-27保留，不将其108/19等旧统计说成最新全库统计，也不重跑Val。
 
-台北18:27:28读取Serving 200/healthy，PID327621与10-30 20:53:21启动时间不变；Laya F05/epoch_01、原Kev导入适配器继续服务，GPU25433/49140MiB、0%。F14两进程均已退出，原Run仍failed/NON_FINITE_LOSS，图像对象启动时间不变。本轮没有部署Provider/教师到Serving或更换权重。
+| 组别 | 原训练完成范围 | 最近V9微调 | 活动训练 | 接续代表 / Serving |
+|---|---|---|---|---|
+| Laya | F01–F13均2轮完成；F12为69,990步、F13为81,312步；F14失败 | V9_LAYA_001完成2/2轮、8/8更新，每轮5,692项固定Val | 无；原队列PAUSED_RUN_FAILED | F11-e01 / F05epoch01 |
+| Kev | R01–R16为16/16完成；加C03/C04/C09与V9共20项完训且Val完成 | KEV-V9-001完成2/2轮、100/100更新、396次记录曝光；固定Val8436记录/9330问题齐全 | 无；5项待训练，另1项为选择记录 | R11 / 原导入适配器 |
 
-Laya F11-e01、Kev R11继续作为接续代表，已完成V9的S1/四指标退步保留。新Train选择监督仍0，**不启动继续微调**。现有Laya支持encoder/head分别设学习率与`freeze_encoder`；Kev为LoRA加pointer head，`head_lr=0`沿用主学习率，不等于head不更新。后续真实Train同状态结果才作为新choice目标，旧S1候选与人类偏好不改名，教师截止前短评和AA卡经原serializer进入输入，未知终局不作答案；收益通过原固定Val的S1四指标及真实Dev Episode判断，不重复旧配方，不承诺指标不退步。五RQ、八图十二表和正式结果格保持。
+F14原Run为 `failed/NON_FINITE_LOSS`，10-31 17:01:02结束；停止时第二轮363/420、step100,166/107,404（循环进度93.26%），原日志721个NaN块。原run.json的53,702步仅记录第一轮边界，不能覆盖动态Cursor。Epoch1正式权重未保存，latest/_temp_recovery模型和优化器文件仍在盘；非有限Loss/Brier及ECE=0不是有效模型质量证据。首次诱因、有效更新次数未知，F14不作父权重；F15/F16没有Run目录，本次未恢复队列。
+
+Laya V9第2轮S1为Accuracy68.27%、Loss0.5969、Brier0.4105、ECE0.0466，父F11-e01为68.98%/0.5941/0.4085/0.0378；总体Accuracy上升不能覆盖S1四项退步。Kev R11为Accuracy56.9025%、NLL1.068724、Brier0.535678、ECE0.018246；V9为56.5809%/1.110325/0.546134/0.080067，相对R11及C03均四项退步。新权重在盘，不晋升；Kev配置内部旧RUNNING快照不代表当前训练状态，完成依据为原队列、实际更新与完整Val。
+
+台北18:51:55读取Serving 200/healthy，PID327621与10-30 20:53:21启动时间不变；GPU25,433/49,140MiB、0%、27°C。GPU进程中无项目训练，显存主要由已有图像服务使用；不能由显存占用推断在训。Serving仍F05/epoch_01与原Kev导入适配器，本次只读health，不重新前向、部署或更换权重。
+
+已完成V9使用原198/192材料与AA v1；本次382行（196/186）和AA v4视图尚未训练。新Train选择监督仍0，**不启动继续微调**，F11-e01/R11继续为代表。Laya支持encoder/head分别设学习率与`freeze_encoder`；Kev为LoRA加pointer head，`head_lr=0`沿用主学习率。后续同状态真实Train动作结果才作新choice目标，旧S1偏好保留，教师截止前短评与AA卡经原serializer进入输入；收益通过原固定Val及真实Dev Episode判断。当前无新的训练ETA，不重复旧配方。五RQ、八图十二表保持。
 
 ## 2026-10-31 · 历史：db-wal-recovery 已结束，事后短评已消费
 

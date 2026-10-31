@@ -857,7 +857,8 @@ def run_continuous_full_coverage_queue(
             queue_state["queue_status"] = "PAUSED_GPU_BUSY"
             queue_state["stop_reason"] = f"GPU busy or unavailable: {gpu_info}"
             _write_json(state_path, queue_state)
-            break
+            time.sleep(30)
+            continue
 
         # Check disk space & active weight budget
         try:
@@ -868,6 +869,8 @@ def run_continuous_full_coverage_queue(
             _write_json(state_path, queue_state)
             break
 
+        queue_state["queue_status"] = "RUNNING"
+        queue_state.pop("stop_reason", None)
         queue_state["current_run"] = run_id
         queue_state["interrupted_run"] = run_id
         queue_state["updated_at"] = _now_iso()

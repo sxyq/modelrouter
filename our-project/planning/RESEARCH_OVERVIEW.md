@@ -6,13 +6,13 @@
 >
 > **证据纪律**：论文/官方材料、现有仓库文献、E0 Agent 审计、我们提出的假设分开表述。**未运行的实验不得写成结果；“未见完全相同方案”不等于“首创”。**
 
-**2026-10-31 当前证据范围**：本轮从e28872f接续，已获得真实Sol Responses与项目jiji Luna Chat Completions的low调用/工具证据，Flash两账户无可用渠道。公开Dev `extract-elf`初始消息、工具、mini配置直接相等；Sol900秒超时无Verifier，Luna reward0/CTRF1/2、覆盖0%。同条件生成及执行观测成立，完整双模型Verifier质量偏好不成立，不能赋最优选择标签或推导五RQ总体效果。旧成功Alias任务不重跑；精确次数、费用、COBOL混型号和时延限制见 [PROJECT_STATUS](PROJECT_STATUS.md)。
+**2026-10-31 当前证据范围**：本轮从ad1d392接续，在已有TRA-002的公开SWE-smith训练任务TextFSM上取得1组有效K=2完整Episode对照与2个真实步骤前缀对照。Sol/Luna low两Episode均通过原96项，任务级质量相等下的模型费偏好为Luna；前缀7中Sol一步通过、Luna调用镜像不存在的apply_patch而未改码，得到1条即时修复偏好。前缀6两者失败只作观察。新可训练动作目标共2条，同属1个任务，完整K=3最优标签仍0；不能据此宣称动态Router、三模型或五RQ总体收益。结果见[真实监督记录](../results/iterations/20261031-v9-real-route-supervision/review.md)，旧成功/失败题未重跑。
 
 **教师证据范围**：五次旧失败及真实Sol low/2048空正文均说明JSON Object不能避免reasoning占满输出额度。原Assessor缩短观察/固定参考视图并只做事实摘要，low/4096、context8000、首次约3生成、后续间隔至少3生成，验证/重复错误优先阶段变化。新step3真实前缀完整JSON，1462输入/1528输出含1435 reasoning、0.0189335USD，未执行新Router或工具；单次有效输出不证明稳定收益，价格仍约为本次Luna完整Episode的4.23倍。两固定参考不变，旧短评按信号变化清除并保留截止步，不修改Agent计划、工具或模型选择。
 
-**AA v4 与数据监督**：新实验/视图固定v4，Sol/Luna Max各10项、Index5.0原分54.5087338138148/27.7552004938153；本轮low、none、托管Flash及Coding/Agentic综合指数缺测，Sol无原生none。旧390/v1不变，原Prepare生成新382行196/186，四条旧教师保留，8个未知终局不作失败；旧13214与390重合，不作新增独立样本。当前三模型choice/Model×Effort与Train资格仍0；真实动作结果保留为Dev观测，不把超时未知reward写成0。旧池偏好、观察终局、辅助状态与AA特征继续分开，RouterBench许可未明、近重复及S3任务交集未明；真实请求估价沿用Provider费率，旧OpenRouter估价/raw Usage和未知实收保留。
+**AA v4 与数据监督**：新两条固定AA v4，Sol/Luna Max各10项，Intelligence v5.0原分54.5087338138148/27.7552004938153；low/none/托管Flash及Coding/Agentic综合指数仍缺测，本轮未刷新。原390实体、四条教师和已纠正未知终局的382行视图不变，Train196/Val186可复用并加2条真实动作目标；原13,214候选不算新增独立样本。任务级、步骤级、观察终局、辅助与无标签由原Prepare分别处理；候选结果/偏好不进入决策前输入。旧S1和RouterBench保留原身份，后者许可仍未明确。
 
-**训练与研究范围**：F14原异常作业已结束，非有限Val/全类别0预测、cursor和有效更新未知均保留，不作父权重；原队列PAUSED_RUN_FAILED，未启动F15。F11-e01/R11与旧Serving不变，旧V9负结果保留；当前不更新参数。后续真实Train同状态比较才提供新choice目标，旧S1候选顺序/人类偏好保留，教师截止前短评和AA卡使用原输入编码；Laya encoder/head原开关、Kev LoRA/pointer head及head_lr=0沿用主lr的行为不改。原固定Val的S1四指标和真实Dev Episode判断收益，不重复旧配方或承诺指标不退步。五RQ、八图十二表、H1–H7和正式正文不变；服务器最新事实见 [PROJECT_STATUS](PROJECT_STATUS.md)。
+**训练与研究范围**：台北20:42:35两组活动训练0，原队列PAUSED_USER_REQUEST，F01–F13与Kev R01–R16完训/固定Val完成；F11-e01/R11及原Serving权重不变。旧F14非有限失败保留，遗留控制器的新F14/F15初始化UnboundLocalError与F16进入训练前停止分别记录。旧V9负结果保留，当前只新增数据目标，不更新任何模型参数；仅1个训练任务不足以开始有意义的继续微调。后续保留旧S1，明确Laya encoder/head、Kev LoRA/pointer head的待更新部分和输入覆盖，用原固定Val四指标及独立真实Dev判断收益，五RQ、八图十二表不变。
 
 **10-31 fix-git 历史证据**：同题两Trial和事后补充的完整结果、失败与费用保留于 [PROJECT_STATUS历史段](PROJECT_STATUS.md#2026-10-31--历史fix-git-三身份-alias-官方开发接续)，不继续复制历史详述，不改写为独立科研两样本。
 

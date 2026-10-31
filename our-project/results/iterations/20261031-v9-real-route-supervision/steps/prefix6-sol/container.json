@@ -1,0 +1,28 @@
+{
+  "container_id": "a61a22e43392599369aeccf860d13cbbc062a2997564eaad4cd83d013297794b",
+  "prefix_image_id": "sha256:55535eb167b75324a932db9afef004fe3fd592b5c3debf156ec5e79b25afea1f",
+  "native_environment": {
+    "info": {
+      "config": {
+        "environment": {
+          "image": "modelrouter-v9-textfsm:20261031-prefix6",
+          "cwd": "/testbed",
+          "env": {},
+          "forward_env": [],
+          "timeout": 60,
+          "executable": "docker",
+          "run_args": [
+            "--rm"
+          ],
+          "container_timeout": "2h",
+          "pull_timeout": 120,
+          "interpreter": [
+            "bash",
+            "-lc"
+          ]
+        },
+        "environment_type": "minisweagent.environments.docker.DockerEnvironment"
+      }
+    }
+  }
+}

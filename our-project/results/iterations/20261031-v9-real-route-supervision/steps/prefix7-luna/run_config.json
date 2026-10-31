@@ -1,0 +1,869 @@
+{
+  "enabled": true,
+  "execution_scope": "REAL_TRAIN_SOURCE_STEP_COMPARISON",
+  "execution_mode": "REAL_API",
+  "generator_protocol": "responses",
+  "provider_timeout_sec": 180,
+  "formal_model_ids": [
+    "gpt-6.1-sol",
+    "gpt-6-luna",
+    "qwen3.8-flash"
+  ],
+  "teacher_enabled": false,
+  "teacher_model_id": "gpt-6.1-sol",
+  "teacher_native_effort": "low",
+  "teacher_max_output_tokens": 4096,
+  "teacher_context_chars": 8000,
+  "feature_training_status": "FEATURE_NOT_TRAINED",
+  "backend_deployment_status": "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION",
+  "candidate_actions": [
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "native_effort": "low"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "native_effort": "low"
+    }
+  ],
+  "evidence_scope": "TRAIN_SOURCE_DOCKER_VALIDATED",
+  "dataset": "SWE-bench/SWE-smith",
+  "source_id": "TRA-002",
+  "split": "train",
+  "initial_cwd": "/testbed",
+  "initial_environment_version": "sha256:71f82018cb2183dd8e9390272c1185102ba7f86d993fc2818d14ab61d9775b23",
+  "initial_environment_image": "modelrouter-v9-textfsm:20261031-prefix7",
+  "pre_decision_state": {
+    "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+    "phase": "verify",
+    "last_tool_exit_code": 1,
+    "last_observation_summary": "referenced before assignment\n\ntextfsm/texttable.py:440: UnboundLocalError\n=========================== short test summary info ============================\nFAILED tests/texttable_test.py::UnitTestTextTable::testSortTable - UnboundLoc...\nFAILED tests/texttable_test.py::UnitTestTextTable::testSortTableEmptyAndSingleRow\nFAILED tests/texttable_test.py::UnitTestTextTable::testSortTableMultipleColumns\nFAILED tests/texttable_test.py::UnitTestTextTable::testSortTableNumeric - Unb...\n4 failed, 37 deselected in 0.12s\n",
+    "history_length": 7,
+    "budget_remaining_usd": 0.0,
+    "steps_remaining": 23,
+    "context_tokens_approx": null,
+    "task_domain": "software_engineering",
+    "step_index": 7,
+    "context_chars": 76347,
+    "prior_tool_calls_count": 7,
+    "prior_error_signals_count": 4,
+    "prompt": "# Sorting tables doesn't work properly\n\nI'm trying to sort tables in my code but it's not working as expected. When I try to sort a table, I get an `UnboundLocalError` exception.\n\nHere's a simple reproduction script:\n\n```python\nfrom textfsm import texttable\n\n# Create a simple table\ntable = texttable.TextTable()\ntable.header = ('Col1', 'Col2', 'Col3')\ntable.Append(('lorem', 'ipsum', 'dolor'))\ntable.Append(('ut', 'enim', 'ad'))\ntable.Append(('duis', 'aute', 'irure'))\n\n# Try to sort the table\ntable.sort()  # This fails with UnboundLocalError\n```\n\nWhen running this code, I get:\n```\nUnboundLocalError: local variable 'result' referenced before assignment\n```\n\nThis happens with both the default sort and when using custom key functions. I'm using the latest version of textfsm.\n\nHas anyone else encountered this issue? It seems like the sorting functionality is completely broken.\n\nWorkspace and initial working directory (absolute CWD): /testbed",
+    "history_snippet": "step=7 phase=verify exit=1\ncommand=cd /testbed && python - <<'PY'\nfrom pathlib import Path\n\npath = Path('tests/texttable_test.py')\nsource = path.read_text()\nmarker = '  def testSortTable(self):\\n'\nassert source.count(marker) == 1\nnew_tests = '''  def testSortTableNumeric(self):\n    \"\"\"Tests\noutput=w_table.sort(key=key, reverse=reverse)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = Row('       lorem         ipsum         dolor  \\n')\n\n    def _DefaultKey(value):\n      for key in self.header:\n        # Try sorting as numerical value if possible.\n        try:\n>         result.append(float(value[key]))\nE         UnboundLocalError: local variable 'result' referenced before assignment\n\ntextfsm/texttable.py:440: UnboundLocalError\n_______________ UnitTestTextTable.testSortTableEmptyAndSingleRow _______________\n\nself = <tests.texttable_test.UnitTestTextTable testMethod=testSortTableEmptyAndSingleRow>\n\n    def testSortTableEmptyAndSingleRow(self):\n      \"\"\"Tests sorting tables with a header and zero or one data row.\"\"\"\n      for rows in ([], [('only', 'row')]):\n        for reverse in (False, True):\n          with self.subTest(rows=rows, reverse=reverse):\n            table = texttable.TextTable()\n            table.header = ('Col1', 'Col2')\n            for values in rows:\n              table.Append(values)\n            header = table.header\n    \n>           self.assertIsNone(table.sort(reverse=reverse))\n\ntests/texttable_test.py:768: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntextfsm/texttable.py:453: in sort\n    new_table.sort(key=key, reverse=reverse)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = Row('        only           row  \\n')\n\n    def _DefaultKey(value):\n      for key in self.header:\n        # Try sorting as numerical value if possible.\n        try:\n>         result.append(float(value[key]))\nE         UnboundLocalError: local variable 'result' referenced before assignment\n\ntextfsm/texttable.py:440: UnboundLocalError\n________________ UnitTestTextTable.testSortTableMultipleColumns ________________\n\nself = <tests.texttable_test.UnitTestTextTable testMethod=testSortTableMultipleColumns>\n\n    def testSortTableMultipleColumns(self):\n      \"\"\"Tests all fields, stable ties, and preservation of row metadata.\"\"\"\n      table = texttable.TextTable()\n      table.header = ('Col1', 'Col2', 'Col3')\n      for values in (('group', '10', 'last'), ('group', '2', 'beta'),\n                     ('other', '1', 'first'), ('group', '2', 'alpha'),\n                     ('group', '2', 'alpha')):\n        table.Append(values)\n    \n      header = table.header\n      rows = table[1:]\n      expected_rows = [header, rows[3], rows[4], rows[1], rows[0], rows[2]]\n>     self.assertIsNone(table.sort())\n\ntests/texttable_test.py:750: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntextfsm/texttable.py:453: in sort\n    new_table.sort(key=key, reverse=reverse)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = Row('       group            10          last  \\n')\n\n    def _DefaultKey(value):\n      for key in self.header:\n        # Try sorting as numerical value if possible.\n        try:\n>         result.append(float(value[key]))\nE         UnboundLocalError: local variable 'result' referenced before assignment\n\ntextfsm/texttable.py:440: UnboundLocalError\n____________________ UnitTestTextTable.testSortTableNumeric ____________________\n\nself = <tests.texttable_test.UnitTestTextTable testMethod=testSortTableNumeric>\n\n    def testSortTableNumeric(self):\n      \"\"\"Tests numeric default keys and reverse sorting.\"\"\"\n      table = texttable.TextTable()\n      table.header = ('Col1', 'Col2')\n      for values in (('10', '100'), ('2', '10'), ('-3.5', '5'), ('2', '2')):\n        table.Append(values)\n    \n      expected = [['-3.5', '5'], ['2', '2'], ['2', '10'], ['10', '100']]\n>     table.sort()\n\ntests/texttable_test.py:732: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntextfsm/texttable.py:453: in sort\n    new_table.sort(key=key, reverse=reverse)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = Row('          10           100  \\n')\n\n    def _DefaultKey(value):\n      for key in self.header:\n        # Try sorting as numerical value if possible.\n        try:\n>         result.append(float(value[key]))\nE         UnboundLocalError: local variable 'result' referenced before assignment\n\ntextfsm/texttable.py:440: UnboundLocalError\n=========================== short test summary info ============================\nFAILED tests/texttable_test.py::UnitTestTextTable::testSortTable - UnboundLoc...\nFAILED tests/texttable_test.py::UnitTestTextTable::testSortTableEmptyAndSingleRow\nFAILED tests/texttable_test.py::UnitTestTextTable::testSortTableMultipleColumns\nFAILED tests/texttable_test.py::UnitTestTextTable::testSortTableNumeric - Unb...\n4 failed, 37 deselected in 0.12s\n",
+    "teacher_assessment": null,
+    "capability_cards": [
+      {
+        "model_id": "gpt-6.1-sol",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "snapshot_id": "20261031T072548885180Z-v4",
+        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "model_revision": "NOT_REPORTED",
+        "model_evidence_status": "MEASURED",
+        "evidence_status": "NOT_MEASURED",
+        "model_metrics": [
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          }
+        ],
+        "reference_metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": 54.5087338138148,
+            "score_unit": "INDEX",
+            "benchmark_version": "5.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null
+          },
+          {
+            "metric_name": "aa-briefcase",
+            "score_raw": 1555.26,
+            "score_unit": "ELO",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Briefcase v1.1: Agentic Knowledge Work Benchmark"
+          },
+          {
+            "metric_name": "automationbench-aa",
+            "score_raw": 0.6486844882398171,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AutomationBench-AA: Agentic SaaS Workflow Benchmark"
+          },
+          {
+            "metric_name": "terminalbench-4-0",
+            "score_raw": 0.560606060606061,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "4.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench 4.0 Benchmark"
+          },
+          {
+            "metric_name": "frontiercode-2-0",
+            "score_raw": 0.406262878787879,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "2.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "FrontierCode 2.0 Benchmark"
+          },
+          {
+            "metric_name": "omniscience",
+            "score_raw": 42.03333333333333,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Omniscience v1.1: Knowledge and Hallucination Benchmark"
+          },
+          {
+            "metric_name": "gdp-pdf",
+            "score_raw": 0.31,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "GDP.pdf Benchmark"
+          },
+          {
+            "metric_name": "hle-diamond",
+            "score_raw": 0.588,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "HLE-Diamond Benchmark"
+          },
+          {
+            "metric_name": "critpt-v2-hard",
+            "score_raw": 0.685,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "critpt-v2-hard"
+          },
+          {
+            "metric_name": "terminal-bench-science",
+            "score_raw": 0.580952380952381,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "0.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench-Science 0.1 Benchmark"
+          }
+        ],
+        "action_metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "aa-briefcase",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "automationbench-aa",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "terminalbench-4-0",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "frontiercode-2-0",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "omniscience",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "gdp-pdf",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "hle-diamond",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "critpt-v2-hard",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "terminal-bench-science",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          }
+        ],
+        "model_pricing": {
+          "currency": "USD",
+          "unit": "PER_MILLION_TOKENS",
+          "rates": {
+            "Input": 2.0,
+            "Cached input": 0.1,
+            "Cache writes": 2.5,
+            "Output": 10.0
+          },
+          "conditions": [
+            "Cached input tokens are priced at 5% of the uncached input token rate.",
+            "Cache writes are billed at 1.25x the uncached input token rate.",
+            "API prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+            "Fast mode prices are 2x Standard. Batch and Flex prices are 50% lower than Standard.",
+            "Ultrafast mode prices are 6x Standard.",
+            "Regional processing adds a 10% premium where available.",
+            "GPT-6.1 Sol uses a default context window of 500K tokens in Codex and ChatGPT Work. Usage drawn from your subscription has no long-context surcharge. See [Codex pricing](/codex/pricing)."
+          ]
+        },
+        "model_provider": "OpenAI",
+        "model_context_limits": {
+          "context_window_tokens": 1050000,
+          "max_input_tokens": 922000,
+          "max_output_tokens": 128000
+        },
+        "model_provider_metadata": {
+          "model_id": "gpt-6.1-sol",
+          "source_url": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+          "model_revision": "NOT_REPORTED",
+          "evidence_status": "OFFICIAL_DOCUMENTATION",
+          "provider": "OpenAI",
+          "context_limits": {
+            "context_window_tokens": 1050000,
+            "max_input_tokens": 922000,
+            "max_output_tokens": 128000
+          },
+          "pricing": {
+            "currency": "USD",
+            "unit": "PER_MILLION_TOKENS",
+            "rates": {
+              "Input": 2.0,
+              "Cached input": 0.1,
+              "Cache writes": 2.5,
+              "Output": 10.0
+            },
+            "conditions": [
+              "Cached input tokens are priced at 5% of the uncached input token rate.",
+              "Cache writes are billed at 1.25x the uncached input token rate.",
+              "API prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+              "Fast mode prices are 2x Standard. Batch and Flex prices are 50% lower than Standard.",
+              "Ultrafast mode prices are 6x Standard.",
+              "Regional processing adds a 10% premium where available.",
+              "GPT-6.1 Sol uses a default context window of 500K tokens in Codex and ChatGPT Work. Usage drawn from your subscription has no long-context surcharge. See [Codex pricing](/codex/pricing)."
+            ]
+          },
+          "native_efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        }
+      },
+      {
+        "model_id": "gpt-6-luna",
+        "native_effort": "low",
+        "action_id": "gpt-6-luna:low",
+        "snapshot_id": "20261031T072548885180Z-v4",
+        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "model_revision": "NOT_REPORTED",
+        "model_evidence_status": "MEASURED",
+        "evidence_status": "NOT_MEASURED",
+        "model_metrics": [
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          }
+        ],
+        "reference_metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": 27.7552004938153,
+            "score_unit": "INDEX",
+            "benchmark_version": "5.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null
+          },
+          {
+            "metric_name": "aa-briefcase",
+            "score_raw": 1336.99,
+            "score_unit": "ELO",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Briefcase v1.1: Agentic Knowledge Work Benchmark"
+          },
+          {
+            "metric_name": "automationbench-aa",
+            "score_raw": 0.5316814034483175,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AutomationBench-AA: Agentic SaaS Workflow Benchmark"
+          },
+          {
+            "metric_name": "terminalbench-4-0",
+            "score_raw": 0.126262626262626,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "4.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench 4.0 Benchmark"
+          },
+          {
+            "metric_name": "frontiercode-2-0",
+            "score_raw": 0.251747727272727,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "2.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "FrontierCode 2.0 Benchmark"
+          },
+          {
+            "metric_name": "omniscience",
+            "score_raw": -8.266666666666667,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Omniscience v1.1: Knowledge and Hallucination Benchmark"
+          },
+          {
+            "metric_name": "gdp-pdf",
+            "score_raw": 0.228,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "GDP.pdf Benchmark"
+          },
+          {
+            "metric_name": "hle-diamond",
+            "score_raw": 0.222,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "HLE-Diamond Benchmark"
+          },
+          {
+            "metric_name": "critpt-v2-hard",
+            "score_raw": 0.415,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "critpt-v2-hard"
+          },
+          {
+            "metric_name": "terminal-bench-science",
+            "score_raw": 0.0857142857142857,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "0.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench-Science 0.1 Benchmark"
+          }
+        ],
+        "action_metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "aa-briefcase",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "automationbench-aa",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "terminalbench-4-0",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "frontiercode-2-0",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "omniscience",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "gdp-pdf",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "hle-diamond",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "critpt-v2-hard",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "terminal-bench-science",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          }
+        ],
+        "model_pricing": {
+          "currency": "USD",
+          "unit": "PER_MILLION_TOKENS",
+          "rates": {
+            "Input": 0.1,
+            "Cached input": 0.01,
+            "Cache writes": 0.125,
+            "Output": 0.5
+          },
+          "conditions": [
+            "Cached input tokens are priced at 10% of the uncached input token rate.",
+            "Cache writes are billed at 1.25x the uncached input token rate.",
+            "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+            "Regional processing adds a 10% premium where available. EU data residency is available with Standard, Fast, Flex, and Batch processing.",
+            "Batch and Flex are priced at 50% of Standard rates. Fast mode is priced at 2x the applicable rates."
+          ]
+        },
+        "model_provider": "OpenAI",
+        "model_context_limits": {
+          "context_window_tokens": 1050000,
+          "max_input_tokens": 922000,
+          "max_output_tokens": 128000
+        },
+        "model_provider_metadata": {
+          "model_id": "gpt-6-luna",
+          "source_url": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+          "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+          "model_revision": "NOT_REPORTED",
+          "evidence_status": "OFFICIAL_DOCUMENTATION",
+          "provider": "OpenAI",
+          "context_limits": {
+            "context_window_tokens": 1050000,
+            "max_input_tokens": 922000,
+            "max_output_tokens": 128000
+          },
+          "pricing": {
+            "currency": "USD",
+            "unit": "PER_MILLION_TOKENS",
+            "rates": {
+              "Input": 0.1,
+              "Cached input": 0.01,
+              "Cache writes": 0.125,
+              "Output": 0.5
+            },
+            "conditions": [
+              "Cached input tokens are priced at 10% of the uncached input token rate.",
+              "Cache writes are billed at 1.25x the uncached input token rate.",
+              "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+              "Regional processing adds a 10% premium where available. EU data residency is available with Standard, Fast, Flex, and Batch processing.",
+              "Batch and Flex are priced at 50% of Standard rates. Fast mode is priced at 2x the applicable rates."
+            ]
+          },
+          "native_efforts": [
+            "none",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        }
+      }
+    ],
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "feature_training_status": "FEATURE_NOT_TRAINED",
+    "agent_context": {
+      "message_count": 16,
+      "context_chars": 76347,
+      "router_task_tool_char_limit": 6000,
+      "router_task_chars": 948,
+      "router_tool_chars": 5051,
+      "observed_through_step": 7,
+      "token_measurement_status": "NOT_MEASURED",
+      "completed_generations": 7
+    },
+    "continuity": {
+      "episode_id": "textfsm-sol",
+      "decision_id": "textfsm-sol-6",
+      "message_count": 14,
+      "message_chars": 66545,
+      "capability_snapshot_id": "20261031T072548885180Z-v4",
+      "router_checkpoint_id": "none",
+      "router_family": "baseline_fixed_strong",
+      "router_fallback_used": false,
+      "router_run_id": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "previous_router_checkpoint_id": "none",
+      "previous_router_run_id": null,
+      "previous_selected_model_id": "gpt-6.1-sol",
+      "selected_model_id": "gpt-6.1-sol",
+      "previous_actual_backend_model_id": "gpt-6.1-sol",
+      "actual_backend_model_id": "gpt-6.1-sol",
+      "logical_model_changed": false,
+      "actual_backend_changed": false,
+      "context_delivery": "FULL_MESSAGE_HISTORY",
+      "history_messages_resent": true,
+      "observed_cached_tokens": 0,
+      "cache_usage_status": "REPORTED",
+      "physical_kv_cache_shared": null,
+      "switch_extra_tokens": null,
+      "switch_extra_cost_usd": null,
+      "switch_cost_status": "NOT_MEASURED"
+    }
+  },
+  "source_observed_through_step": 7,
+  "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+  "policy": "fixed_cheap",
+  "workspace": "<PROJECT_ROOT>/our-project/results/iterations/20261031-v9-real-route-supervision",
+  "mini_swe_version": "2.4.6",
+  "started_at": "2026-10-31T13:00:01.353714+00:00",
+  "max_steps": 30,
+  "max_output_tokens": 4096,
+  "instruction": "# Sorting tables doesn't work properly\n\nI'm trying to sort tables in my code but it's not working as expected. When I try to sort a table, I get an `UnboundLocalError` exception.\n\nHere's a simple reproduction script:\n\n```python\nfrom textfsm import texttable\n\n# Create a simple table\ntable = texttable.TextTable()\ntable.header = ('Col1', 'Col2', 'Col3')\ntable.Append(('lorem', 'ipsum', 'dolor'))\ntable.Append(('ut', 'enim', 'ad'))\ntable.Append(('duis', 'aute', 'irure'))\n\n# Try to sort the table\ntable.sort()  # This fails with UnboundLocalError\n```\n\nWhen running this code, I get:\n```\nUnboundLocalError: local variable 'result' referenced before assignment\n```\n\nThis happens with both the default sort and when using custom key functions. I'm using the latest version of textfsm.\n\nHas anyone else encountered this issue? It seems like the sorting functionality is completely broken.\n\nWorkspace and initial working directory (absolute CWD): /testbed",
+  "verify_command": "git restore --source=4c5a0ca738b2b6c4cd76a4a6d960cb920c2a363a --worktree -- tests && python -m pytest -q tests/clitable_test.py::UnitTestCliTable::testTableSort tests/texttable_test.py::UnitTestTextTable::testSortTable tests/clitable_test.py::UnitTestIndexTable::testCopy tests/clitable_test.py::UnitTestIndexTable::testGetRowMatch tests/clitable_test.py::UnitTestIndexTable::testParseIndex tests/clitable_test.py::UnitTestCliTable::testAddKey tests/clitable_test.py::UnitTestCliTable::testCliCompile tests/clitable_test.py::UnitTestCliTable::testCompletion tests/clitable_test.py::UnitTestCliTable::testCopy tests/clitable_test.py::UnitTestCliTable::testKeyValue tests/clitable_test.py::UnitTestCliTable::testParseCmd tests/clitable_test.py::UnitTestCliTable::testParseCmdFromIndex tests/clitable_test.py::UnitTestCliTable::testParseCmdItem tests/clitable_test.py::UnitTestCliTable::testParseWithMultiTemplates tests/clitable_test.py::UnitTestCliTable::testParseWithTemplate tests/clitable_test.py::UnitTestCliTable::testRepeatRead tests/clitable_test.py::UnitTestCliTable::testRequireCols tests/clitable_test.py::UnitTestCliTable::testSuperKey tests/terminal_test.py::TerminalTest::testAnsiCmd tests/terminal_test.py::TerminalTest::testAnsiText tests/terminal_test.py::TerminalTest::testEncloseAnsi tests/terminal_test.py::TerminalTest::testIssue1 tests/terminal_test.py::TerminalTest::testLineWrap tests/terminal_test.py::TerminalTest::testStripAnsi tests/terminal_test.py::PagerTest::testPage tests/terminal_test.py::PagerTest::testPager tests/textfsm_test.py::UnitTestFSM::testClear tests/textfsm_test.py::UnitTestFSM::testContinue tests/textfsm_test.py::UnitTestFSM::testEOF tests/textfsm_test.py::UnitTestFSM::testEnd tests/textfsm_test.py::UnitTestFSM::testError tests/textfsm_test.py::UnitTestFSM::testFSMRule tests/textfsm_test.py::UnitTestFSM::testFSMValue tests/textfsm_test.py::UnitTestFSM::testFillup tests/textfsm_test.py::UnitTestFSM::testGetValuesByAttrib tests/textfsm_test.py::UnitTestFSM::testImplicitDefaultRules tests/textfsm_test.py::UnitTestFSM::testInvalidRegexp tests/textfsm_test.py::UnitTestFSM::testInvalidStates tests/textfsm_test.py::UnitTestFSM::testKey tests/textfsm_test.py::UnitTestFSM::testList tests/textfsm_test.py::UnitTestFSM::testNestedMatching tests/textfsm_test.py::UnitTestFSM::testNestedNameConflict tests/textfsm_test.py::UnitTestFSM::testParseFSMState tests/textfsm_test.py::UnitTestFSM::testParseFSMVariables tests/textfsm_test.py::UnitTestFSM::testParseNullText tests/textfsm_test.py::UnitTestFSM::testParseText tests/textfsm_test.py::UnitTestFSM::testParseTextToDicts tests/textfsm_test.py::UnitTestFSM::testReEnteringState tests/textfsm_test.py::UnitTestFSM::testReset tests/textfsm_test.py::UnitTestFSM::testRulePrefixes tests/textfsm_test.py::UnitTestFSM::testRuleStartsWithCarrot tests/textfsm_test.py::UnitTestFSM::testSpacesAroundAction tests/textfsm_test.py::UnitTestFSM::testStateChange tests/textfsm_test.py::UnitTestFSM::testTextFSM tests/textfsm_test.py::UnitTestFSM::testValidRegexp tests/textfsm_test.py::UnitTestFSM::testValidateFSM tests/textfsm_test.py::UnitTestUnicode::testFSMRule tests/textfsm_test.py::UnitTestUnicode::testFSMValue tests/textfsm_test.py::UnitTestUnicode::testTemplateValue tests/texttable_test.py::UnitTestRow::testHeader tests/texttable_test.py::UnitTestRow::testIndex tests/texttable_test.py::UnitTestRow::testRowBasicMethods tests/texttable_test.py::UnitTestRow::testRowPublicMethods tests/texttable_test.py::UnitTestRow::testSetValues tests/texttable_test.py::UnitTestRow::testValue tests/texttable_test.py::UnitTestTextTable::testAddColumn tests/texttable_test.py::UnitTestTextTable::testAddTable tests/texttable_test.py::UnitTestTextTable::testAppend tests/texttable_test.py::UnitTestTextTable::testContains tests/texttable_test.py::UnitTestTextTable::testCsvToTable tests/texttable_test.py::UnitTestTextTable::testCustomRow tests/texttable_test.py::UnitTestTextTable::testDeleteRow tests/texttable_test.py::UnitTestTextTable::testExtendTable tests/texttable_test.py::UnitTestTextTable::testFilter tests/texttable_test.py::UnitTestTextTable::testFilterNone tests/texttable_test.py::UnitTestTextTable::testFormattedTable tests/texttable_test.py::UnitTestTextTable::testFormattedTable2 tests/texttable_test.py::UnitTestTextTable::testFormattedTableColor tests/texttable_test.py::UnitTestTextTable::testFormattedTableColoredCells tests/texttable_test.py::UnitTestTextTable::testFormattedTableColoredHeaders tests/texttable_test.py::UnitTestTextTable::testFormattedTableColoredMultilineCells tests/texttable_test.py::UnitTestTextTable::testHeaderIndex tests/texttable_test.py::UnitTestTextTable::testIteration tests/texttable_test.py::UnitTestTextTable::testMap tests/texttable_test.py::UnitTestTextTable::testRowNumberandParent tests/texttable_test.py::UnitTestTextTable::testSmallestColSize tests/texttable_test.py::UnitTestTextTable::testTableGetRow tests/texttable_test.py::UnitTestTextTable::testTableRepr tests/texttable_test.py::UnitTestTextTable::testTableRowDictWithInt tests/texttable_test.py::UnitTestTextTable::testTableRowListWithInt tests/texttable_test.py::UnitTestTextTable::testTableRowTypes tests/texttable_test.py::UnitTestTextTable::testTableRowWith tests/texttable_test.py::UnitTestTextTable::testTableSetRow tests/texttable_test.py::UnitTestTextTable::testTableStr tests/texttable_test.py::UnitTestTextTable::testTableWithLabels tests/texttable_test.py::UnitTestTextTable::testTextJustify",
+  "upstream_cost_counter_status": "MODEL_RATE_ESTIMATE_NOT_AN_INVOICE",
+  "upstream_runtime_options": {
+    "MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT": "1",
+    "LITELLM_LOCAL_MODEL_COST_MAP": "true"
+  },
+  "comparison_scope": "ONE_NATIVE_AGENT_STEP",
+  "capability_snapshot_id": "20261031T072548885180Z-v4"
+}

@@ -8,13 +8,13 @@
 
 ## 0. 阶段入口与决策规则
 
-**2026-10-31 当前决定（沿 Q-003/Q-021）**：本轮从e28872f接续，五RQ、八图十二表、三正式身份和两固定教师参考不变；不重跑fix-git/db-wal Alias题、不新建Harness、不启动训练。真实Sol Responses和项目jiji Luna Chat Completions均实调low；Flash两账户明确无型号渠道，不以27B代替。公开Dev extract-elf初始消息/工具/mini配置相等，Sol原900秒超时无Verifier，Luna reward0/CTRF1/2；保留同条件生成/执行观测，不赋失败者最优标签。真实调用、费用与COBOL混型号详见 [PROJECT_STATUS](PROJECT_STATUS.md)。
+**2026-10-31 当前决定（沿 Q-003/Q-021）**：从ad1d392接续，五RQ、八图十二表、三正式身份、两固定教师参考及原mini/Harbor体系不变。使用允许训练且与Canary/Dev/Final元数据隔离的SWE-smith TextFSM任务，取得K=2任务级偏好1、步骤级偏好1；前缀6两失败不贴选择标签。新Task偏好为等Verifier结果下低费用的Luna low，Step偏好为前缀7一步完成修复的Sol low，不能互相复制终局目标；完整三模型最优和同模型Effort差异标签仍0。结果见[当前真实监督](../results/iterations/20261031-v9-real-route-supervision/review.md)。
 
 **教师决定与实证**：只摘要已观察事实，两个参考输入缩为摘录，去掉重复消息；使用Sol最低合法low、JSON Object、输出4096/context8000。保留首次约3生成与阶段/验证/重复错误触发，后续最少间隔3生成；不增加重试或第二教师。新真实step3前缀三字段成功，1462输入/1528输出含1435 reasoning、0.0189335USD；未执行新Router或工具，不计旧Trial。旧观察机会重算3/7/10而非旧3/5/6/7/8，不等于收益；新短评仍比Luna本次Episode贵约4.23倍。旧短评随信号变化清除并保留截止范围，不改变Agent行动或指定模型；新Episode教师关闭。
 
-**AA、费用与监督决定**：新实验/视图固定v4，Sol/Luna Max共20项；low/none/托管Flash及Coding/Agentic综合指数缺测，不借用其他变体成绩。Sol正式合法档不含none，Flash支持未知；本轮只用了实调low。新382行196/186保留旧S1目标和四条旧教师，八个原未知终局不作失败；390/v1和旧13214保持、候选不算新增独立样本。当前三模型choice/Model×Effort及Train资格仍0，AA/Alias/低价失败不生成答案，Dev超时的reward未知。调用日志采用原Provider费率，旧估价/raw Usage保留，实收与未计量资源分开；RouterBench许可及近重复/S3交集未知。
+**AA、费用与监督决定**：新两条绑定AA v4并使用原Prepare/Trainer格式，任务级与步骤级有不同问题ID和instruction；完整过去消息保留，未来候选反馈只用于监督。原390/四教师/有效382行视图不重加工，复用Train196/Val186加新2条可组合为198/186；六个候选结果只作观察，旧13,214仍非新增独立样本。25次真实生成模型费0.26274516USD，教师0请求/0费用；请求型号费率、实收未知与资源未知分开。Flash两个账户本次/models未列出，既有model_not_found不重复；low/none/Flash等AA缺测不借用其他变体成绩。
 
-**训练讨论与运行事实**：F14已按原管理范围结束，failed/NON_FINITE_LOSS、原队列PAUSED_RUN_FAILED；旧实体和异常记录保留，未启动F15。F11-e01/R11与Serving权重不变，健康对象未受影响。没有新增Train选择标签，不启动微调；后续明确真实Train同状态choice目标，旧S1候选/偏好保留，教师截止前短评与AA卡经原serializer进入输入。Laya使用原encoder/head学习率和freeze_encoder，Kev为LoRA/pointer head、head_lr=0沿用主lr。原固定Val S1四指标和真实Dev Episode判断收益，不重复旧配方，不承诺指标不退步或添加执行条件；最新事实见 [PROJECT_STATUS](PROJECT_STATUS.md)。
+**训练讨论与运行事实**：20:42:35实读两组无活动训练，原队列PAUSED_USER_REQUEST；F01–F13、Kev R01–R16完成，F11-e01/R11与旧Serving不变。旧F14 failed/NON_FINITE_LOSS保留，新F14/F15在初始化提前读取run_meta而退出，F16进入训练前停止；不继续派发F15/F16或材料不足的Kev五项。旧V9两轮加训已做且负结果保留，本轮未再训练。新2条只来自1任务，不自动启动新配方；原S1、截止前教师摘要、AA卡和共享serializer沿用，训练参数及收益仍需真实后续数据支撑。
 
 **10-31 fix-git 历史决定与结果**：同题两Trial及事后补充已完成，任务成功、教师失败、原费用与缺测证据保留于 [PROJECT_STATUS历史段](PROJECT_STATUS.md#2026-10-31--历史fix-git-三身份-alias-官方开发接续)，不继续复制详述，不写成独立科研两样本。
 
@@ -156,7 +156,7 @@ Q-012 的旧五份独立保护与新合格独立 Run 最佳 Epoch 约 15% 原则
 | Q-ID | 主题 | 状态 | 对应关键假设 |
 |---|---|---|---|
 | Q-001 | 评测任务集、任务类型与 pilot 组成 | **已确认 A，2026-10-09** | H1/H3/H6 |
-| Q-002 | 真实可用的 Model × Effort 候选动作与 provider 能力 | **V9 三逻辑 ID 已定；测试/部署已充分授权；Provider 实际 3 项中研究池仅 Luna，Sol/托管Flash未列出** | H2/H5 |
+| Q-002 | 真实可用的 Model × Effort 候选动作与 provider 能力 | **V9三身份固定；Sol/Luna low已有真实请求与工具，Flash现有账户未可用；K=2合法偏好2条、完整K=3最优0** | H2/H5 |
 | Q-003 | API 用量、费用记录与服务器资源 | **2026-10-30 已明确：从未设置 API 总 Token 或美元预算；按任务需要测试，保留服务器资源规则、训练不中断及 Final 隔离** | H3/H7 |
 | Q-004 | 主要 estimand：成功率约束、总 USD、每成功任务成本与延迟 | **已确认 B，2026-10-09；成功率阈值待定** | H1/H3/H7 |
 | Q-005 | 固定、task-only、规则/sticky、MLP/GBDT、admission-only 基线 | **已确认 B，2026-10-09；实现细节暂缓** | H1/H2/H4 |

@@ -36,6 +36,7 @@ from modelrouter.v9.capabilities.normalize import MODEL_IDS
 from modelrouter.v9.training.trajectory_material import (
     action_excerpt, reference_candidate, text_content, tool_result,
 )
+from modelrouter.v9.training.real_supervision import prepare_comparison
 
 
 DATA_ROOT = Path(__file__).resolve().parents[4] / "data" / "v9"
@@ -383,6 +384,11 @@ def generate_offline_teacher_material(*, assessor, state_factory,
 
 def prepare_record(row, split, dataset_revision=None, *, capability_snapshot=None, candidates=()):
     """Keep actual choice identities and targets; auxiliary labels remain auxiliary."""
+    real_preference = "supervision_type" in row
+    if real_preference:
+        row, reason = prepare_comparison(row, split)
+        if reason:
+            return None, reason
     if "candidate_reference" in row:
         reference = copy.deepcopy(row["candidate_reference"])
         if reference.get("split") == "train" and reference.get("train_eligible") is not True:
@@ -404,7 +410,7 @@ def prepare_record(row, split, dataset_revision=None, *, capability_snapshot=Non
     group = meta.get("supervision_class")
     if source_id not in MATRIX_ALLOWED_SOURCES or group not in GROUPS:
         return None, "SOURCE_OR_TARGET_NOT_SUPPORTED"
-    if meta.get("target") not in MATRIX_TARGETS[group]:
+    if meta.get("target") not in MATRIX_TARGETS[group] and not real_preference:
         return None, "SOURCE_OR_TARGET_NOT_SUPPORTED"
     if provenance.get("split") not in (None, split):
         return None, "OTHER_SPLIT"
@@ -427,7 +433,7 @@ def prepare_record(row, split, dataset_revision=None, *, capability_snapshot=Non
         ):
             return None, "LABEL_OUTSIDE_CHOICES"
         question["label"] = label
-        if meta.get("target"):
+        if meta.get("target") and not real_preference:
             question["instructions"] = _neutral_instruction(meta["target"])
     state = row.get("pre_decision_state", row.get("state", {}))
     if isinstance(state, str):
@@ -455,7 +461,7 @@ def prepare_record(row, split, dataset_revision=None, *, capability_snapshot=Non
         teacher_data_status="GENERATED" if teacher["assessment"] else "NOT_GENERATED",
         offline_teacher_status=teacher["status"],
         feature_training_status="FEATURE_NOT_TRAINED", original_target=meta.get("target"),
-        supervision_qualification="PRESERVED_SOURCE_TARGET",
+        supervision_qualification=meta.get("supervision_qualification", "PRESERVED_SOURCE_TARGET"),
     )
     result = {**row, "provenance": provenance, "state": _router_input_text(row, decision),
               "pre_decision_state": decision.model_dump(), "questions": questions,
@@ -597,6 +603,7 @@ def prepare(typed_root=None, *, inputs=(), v8_views=None, preview_root=None, tra
     snapshot = load_current(capabilities_dir)
     candidates = [candidate_action(action) for action in candidates]
     teacher_statuses, teacher_models, target_scopes, prefix_counts = Counter(), Counter(), Counter(), Counter()
+    supervision_types = Counter()
     inline_trajectories, inline_counts = [], Counter()
     fixed_reference_kinds = set()
     if references_path.is_file():
@@ -724,6 +731,8 @@ def prepare(typed_root=None, *, inputs=(), v8_views=None, preview_root=None, tra
                 counts[key] += 1
                 saved_sources[f"{key}:{row['provenance']['source_id']}:{row['_meta']['target']}"] += 1
                 teacher = row["offline_teacher_state"]
+                if row["_meta"].get("supervision_type"):
+                    supervision_types[row["_meta"]["supervision_type"]] += 1
                 if row["_meta"].get("input_kind") == "TRAJECTORY_PREFIX":
                     prefix_counts[row["provenance"]["split"]] += 1
                 teacher_statuses[teacher["status"]] += 1
@@ -792,6 +801,7 @@ def prepare(typed_root=None, *, inputs=(), v8_views=None, preview_root=None, tra
                "supplied_auxiliary_candidates": candidates,
                "v9_model_choice_target_count": target_scopes["v9_model_choice"],
                "v9_model_effort_target_count": target_scopes["v9_model_effort_choice"],
+               "supervision_type_counts": dict(supervision_types),
                "auxiliary_not_model_choice_count": target_scopes["auxiliary_not_model_choice"],
                "supervision_qualification": "PRESERVED_SOURCE_TARGETS_AND_SPLITS",
                "feature_training_status": "FEATURE_NOT_TRAINED",

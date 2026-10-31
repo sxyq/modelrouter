@@ -1490,6 +1490,12 @@ def run_full_coverage_stream_run(
                     target_t = batch["target"].to(dev)
                     loss = soft_ce_loss(logits, target_t, mask)
 
+                    if not torch.isfinite(loss).item():
+                        run_meta.update(status="failed", failure_reason="NON_FINITE_LOSS",
+                                        finished_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+                        _write(run_root / "run.json", run_meta)
+                        raise FloatingPointError(f"[{run_id}] NON_FINITE_LOSS epoch={epoch + 1} chunk={chunk_idx + 1} step={global_step}")
+
                     window_start = (chunk_steps // config.grad_accum) * config.grad_accum
                     window_size = min(config.grad_accum, steps_in_chunk - window_start)
                     scaled = loss / max(1, window_size)
