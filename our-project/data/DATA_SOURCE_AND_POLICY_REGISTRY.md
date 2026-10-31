@@ -2,9 +2,11 @@
 
 ## 当前能力与数据来源（2026-10-31）
 
-**10-31 不同开发任务**：新 `20261031-v9-db-wal-recovery` 已 reward=1.0、CTRF 7/7，14 次真实 Laya 路由全 Luna、19 次工具调用；5 次教师均输出截断，费用全部保留。之后保存 step3 的三字段教师与真实 Router 消费只属于 `POST_RUN_OBSERVED_PREFIX_REUSE`，不改官方 Trial，也不加独立任务。原 `fix-git` 两次成功及其失败证据保留，本阶段未重跑。全部标为 `ALIAS_SMOKE`，不加入 Train/Val，不生成最优动作标签；详细对象与费用见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md)。
+**10-31 真实模型资料**：新 `20261031-v9-real-model-comparison` 从e28872f接续，真实Sol Responses与项目jiji Luna Chat Completions均实调low、无Alias；Flash两账户实际POST返回model_not_found，档位未知。公开Dev `extract-elf`两次初始消息/工具/mini配置相等：Sol原900秒超时、无Verifier，Luna reward0/CTRF1/2、覆盖0%；另有COBOL同T0生成资料，原COBOL Luna混入3次旧型号返回。生成前缀、Episode尝试、可信Verifier终局和超时记录分开，不生成最优标签。旧fix-git/db-wal Alias成功及失败记录保留，本轮未重跑；详细对象见 [PROJECT_STATUS](../planning/PROJECT_STATUS.md)。
 
-[当前 AA v4 快照](../code/data/v9/capabilities/snapshots/20261031T072548885180Z-v4.json) 为 `20261031T072548885180Z-v4`，2026-10-31 台北 15:25:48 明确运行原刷新入口取得。Sol 的 AA 原始 slug 是 `gpt-6-1-sol`，与厂商 ID `gpt-6.1-sol` 分别保存；Sol Max、Luna Max 各有 10 项，共 20 项，三份厂商元数据保留。none 档、托管 Flash 及两模型的 Coding/Agentic 综合指数仍为 `NOT_MEASURED`；AA Key 缺失。本次不访问原 Sol 点号 URL 或托管 Flash 已知 404 页，不借用 Flash-Next/27B 成绩。原 Dev Trial 和前缀复用仍绑定 v3，已完成训练与旧390材料仍绑定 v1，不追写旧结果；后续新训练/实验明确绑定所用版本。Sol 厂商原生档位不含 none，Alias 的 none 标签不证明原生档位或实际关闭思考。
+**教师与请求费用**：紧凑真实Sol step3前缀三字段成功，1462输入/1528输出含1435 reasoning、0.0189335USD，只属TEACHER_PREFIX_ONLY，未执行新Router或工具，不纳入Train。新Episode教师关闭。原调用日志现在使用Provider已算的REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE，保留cache读/写缺值；本轮65响应旧OpenRouter估价和raw Usage保留，已知模型费小计1.43331375USD。3条型号不匹配的估价及4次无Usage访问/教师失败未知，所以完整费用、实收和资源USD不填0。Sol一次截止前请求在Trial结束后返回的0.043293USD已计入其全部0.3912934USD，不改原Trial的12响应/0.3480004USD实体。
+
+[当前 AA v4 快照](../code/data/v9/capabilities/snapshots/20261031T072548885180Z-v4.json) 为 `20261031T072548885180Z-v4`，2026-10-31 台北15:25:48由原刷新入口取得；本轮未再运行刷新。新真实模型实验与382行视图均绑定v4，旧Alias Trial/前缀仍v3、旧390与已完成训练仍v1，不追写旧结果。Sol AA slug为gpt-6-1-sol，Sol/Luna Max各10项共20项，三份厂商资料保留；本轮low、none、托管Flash及Coding/Agentic综合指数仍NOT_MEASURED，AA Key缺失，不借用Flash-Next/27B成绩。Sol文档档位low/medium/high/xhigh/max，不含none；Luna文档none/low/medium/high/xhigh/max，本轮只实调low；Flash参数省略不证明none原生支持。
 
 下表保留 AA 原分，不把未披露单位的值转换为百分比；完整精度、指标版本和来源见 v4 JSON。两列均为 **Max**，不用于 none 的动作成绩，也不生成最优选择标签。
 
@@ -29,26 +31,26 @@
 
 **当前官方开发资产**：`our-project/results/iterations/20261030-v9-official-luna-complete/` 已取得 reward=1.0、官方 `verifier/ctrf.json` tests2/passed2/failed0；单 Luna none/low，14 次真实路由、0 fallback。模型用量合计218,578Token，生成165,028、教师53,550；详细 Job/Trial、执行统计与 runtime 只在 [PROJECT_STATUS](../planning/PROJECT_STATUS.md) 当前入口维护。旧失败目录、旧配置金额和旧训练材料保留；本次单模型双动作开发证据不当作独立三模型能力、全动作最优监督或五 RQ 总体结果。
 
-**实际供应商可用性**：主 Agent 已实际 GET 原项目 Provider/models，返回 3 项，研究池当前仅 `gpt-6-luna` 列出，Sol/托管Flash未列出；用户充分测试/部署授权已明确，两类信息分开记录。公开能力页与价格页不能证明具体凭据下模型可用，未列出也不转写为待用户批准。
+**实际供应商可用性**：当前以真实POST而非旧列表为准：Sol在现有账户Responses可调用，项目jiji的Luna Chat Completions可调用；另一个账户Luna有3次旧型号返回，不作纯型号Episode。Flash项目账户404、另一账户503正文均明确无可用型号/渠道；无Usage，金额未知，不重试或改生产渠道。公开能力/价格页不证明具体账户访问；实际返回身份而非物理权重读取构成本轮身份依据。
 
 ## V9 下一阶段数据筛选（2026-10-31）
 
-本节登记本轮实际读取的资产与标签。范围为 Open-SWE-Traces、SWE-smith-trajectories、RouterBench 及原 S1/S2/S3；未新增来源、下载、重做全量清洗或训练，原 390 行及其划分保持不动。原终局转换仅做一行调整，新加工将 `resolved=-1` 保留为未知。
+本节沿用Open-SWE-Traces、SWE-smith-trajectories、RouterBench与原S1/S2/S3；没有重下载或全量重清洗。读取现有54个Open-SWE终局并复用原Prepare形成唯一新training_view，原390及其划分不动；8个原resolved=-1保留未知，不作为失败目标。新真实对照来自external_dev，不能为增加Train标签而更换其划分。
 
 ### 当前能提供多少监督
 
-**当前三身份 `gpt-6.1-sol / gpt-6-luna / qwen3.8-flash` 的真实最优模型选择监督为 0，Model×NativeEffort 最优监督为 0。** 来源中的已执行模型、模式字段、教师短评和候选卡均不增加这个数量；同后端 Alias 的成功结果与 AA 排名也不产生最优动作标签。
+**当前三身份 `gpt-6.1-sol / gpt-6-luna / qwen3.8-flash` 的Model选择、Model×NativeEffort选择及Train可用选择标签仍为0。** 新extract-elf有1个同初始状态、2个真实动作尝试、1个Verifier失败终局、1个超时记录；没有成功候选和完整双Verifier质量比较，不将低价失败者标最优或把未知reward填0。另有同T0单生成资料，不与完整Episode混算；没有同型号不同Effort比较。来源执行模型、短评、AA卡与Alias成功均不增加选择目标。
 
-原 prepared 实体仍为 Train198/Val192。本轮逐条对应原始 `resolved` 后，确认其中 Open-SWE 的 **Train2/Val6** 条原值为 `-1`，已保存的终局标签却为 `false`。仅扣除这 8 条已确认的错误终局，可核原目标为 **Train196/Val186**：
+原prepared实体仍为Train198/Val192。原54个Open-SWE终局中Train2/Val6原值-1，旧终局却为false；新视图将8条作为UNKNOWN_OUTCOME排除于终局目标，原历史不覆盖。新训练视图实际为 **Train196/Val186，共382行**：
 
 | 原目标 | Train 可核标签 | Val 可核标签 | 说明 |
 | --- | ---: | ---: | --- |
 | S1 旧模型人类偏好 | 64 | 64 | 原 Arena 候选身份，当前三身份匹配 0 |
 | S2 已观察动作/轨迹终局 | 68 | 58 | Train 为 27 个动作标签、41 个已知终局；Val 为 58 个已知终局 |
 | S3 日志用量/前缀机会 | 64 | 64 | 原调用及负载辅助目标，与模型最优选择分开 |
-| 合计 | **196** | **186** | 标签条数，不代表独立任务数或新训练文件 |
+| 合计 | **196** | **186** | 新视图的既有目标条数，不代表新增独立任务或新三模型选择标签 |
 
-对应文件为 `our-project/code/data/v9/prepared/{model_comparison,agent_auxiliary,system_auxiliary}/{train,val}.jsonl`，本机与服务器原实体均可读；4 条教师短评、6 条原前缀和原 AA v1 绑定不变。错误来自原 `sources/tra.py` 对非空 `resolved` 使用 `int(value)==1`，使 `-1` 成为 `false`；本轮已在原函数将 `-1` 归为 `None/UNEVALUATED`。没有重加工历史资产、改 prepare 或旧材料；远程加工源码未部署。
+原文件仍为 `our-project/code/data/v9/prepared/{model_comparison,agent_auxiliary,system_auxiliary}/{train,val}.jsonl`，AA v1、4条旧教师与6个前缀不变。新唯一视图为 `our-project/results/iterations/20261031-v9-real-model-comparison/training_view/`，绑定AA v4，保留旧S1候选顺序/人类偏好；辅助候选仅已实调的Sol/Luna low。原sources/tra.py的int(value)==1曾把-1写为false，上一轮已将-1保留为None；本轮Prepare只将该类目标标UNKNOWN_OUTCOME。未覆写原始历史、未训练或给未知终局补答案。
 
 ### 已存在位置、数量与许可
 

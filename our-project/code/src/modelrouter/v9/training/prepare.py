@@ -414,12 +414,12 @@ def prepare_record(row, split, dataset_revision=None, *, capability_snapshot=Non
         return None, "MISSING_TARGET"
     for qid, question in questions.items():
         label = expected.get(qid)
+        if question.get("type") == "noul" and not isinstance(label, bool):
+            return None, "UNKNOWN_OUTCOME"
         if label is None:
             return None, "MISSING_TARGET"
         if question.get("type") == "choice" and label not in question.get("criteria", {}):
             return None, "LABEL_OUTSIDE_CHOICES"
-        if question.get("type") == "noul" and not isinstance(label, bool):
-            return None, "UNKNOWN_OUTCOME"
         if "label" in question and question["label"] != label:
             return None, "TARGET_CONFLICT"
         if question.get("type") == "score" and (

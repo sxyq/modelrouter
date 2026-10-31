@@ -312,6 +312,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
     def __init__(
         self, base_url: Optional[str] = None, api_key: Optional[str] = None,
         alias_mapping: Optional[AliasMapping] = None,
+        request_timeout_sec: float = 60.0,
     ):
         creds = {} if alias_mapping is not None else load_generator_credentials()
         self.base_url = (base_url or creds.get("base_url") or "https://api.openai.com/v1").rstrip("/")
@@ -323,11 +324,16 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         self.fallback_model = creds.get("fallback_model", "gpt-5.6-luna")
         self.allowed_models = set(creds.get("allowed_models", ["gpt-6-luna", "gpt-5.6-luna"]))
         self.alias_mapping = alias_mapping
+        self.request_timeout_sec = request_timeout_sec
 
     def _normalize_model(self, model_id: str) -> str:
+        from modelrouter.providers.registry import V9_MODEL_IDS
+
         aliases = {"gpt-6": "gpt-6-luna", "luna": "gpt-6-luna", "gpt-5.6": "gpt-5.6-luna"}
         model = model_id.lower().replace(" ", "-")
         target = aliases.get(model, model)
+        if target in V9_MODEL_IDS:
+            return target
         if target not in self.allowed_models:
             target = self.primary_model
         if target not in {"gpt-6-luna", "gpt-5.6-luna"}:
@@ -384,7 +390,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         payload = {"model": target_model, "messages": messages, "max_tokens": max_tokens, "stream": stream}
         if stream:
             payload["stream_options"] = {"include_usage": True}
-        if native_effort != "none":
+        if native_effort != "none" or target_model == "gpt-6-luna":
             payload["reasoning_effort"] = native_effort
         if tools:
             payload["tools"] = tools
@@ -439,7 +445,10 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             provider_name = target_spec.provider
         payload = self._make_payload(messages, target, effective_effort, max_tokens, tools, stream)
         if response_format is not None:
-            payload["response_format"] = response_format
+            if self.protocol == "responses":
+                payload["text"] = {"format": response_format}
+            else:
+                payload["response_format"] = response_format
         endpoint = "/chat/completions" if self.protocol == "chat_completions" else "/responses"
         request = urllib.request.Request(
             request_base_url + endpoint,
@@ -452,7 +461,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             input_bound = len(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
             request_bound = input_bound + max_tokens
             try:
-                with urllib.request.urlopen(request, timeout=60.0) as response:
+                with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:
                     body, ttft_ms = self._read_response(response, stream, started)
             except Exception:
                 _record_budget(budget, None, None, request_bound)
@@ -477,11 +486,16 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         )
         metrics = {
             "requested_model_id": model_spec.model_id,
+            "selected_model_id": model_spec.model_id,
             "response_id": body.get("id"),
             "request_model_id": target,
             "returned_model_id": returned,
             "provider": provider_name,
+            "provider_base_url": request_base_url,
             "protocol": self.protocol,
+            "finish_reason": (body.get("status") if self.protocol == "responses"
+                              else body["choices"][0]["finish_reason"]),
+            "incomplete_details": body.get("incomplete_details"),
             "native_effort": effective_effort,
             "stream": stream,
             "requested_max_output_tokens": max_tokens,
@@ -531,8 +545,10 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             )
         return body, metrics
 
-    def generate(self, messages, model_spec, native_effort="none", max_tokens=1024, tools=None, stream=False) -> GeneratorResponse:
-        body, metrics = self.query_raw(messages, model_spec, native_effort, max_tokens, tools, stream)
+    def generate(self, messages, model_spec, native_effort="none", max_tokens=1024, tools=None,
+                 stream=False, *, response_format=None) -> GeneratorResponse:
+        body, metrics = self.query_raw(messages, model_spec, native_effort, max_tokens, tools, stream,
+                                       response_format=response_format)
         message = body["choices"][0]["message"]
         return self._generation(message.get("content") or "", message.get("tool_calls", []), body, metrics)
 
@@ -707,11 +723,24 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
     protocol = "responses"
 
     def _make_payload(self, messages, target_model, native_effort, max_tokens, tools, stream):
-        payload = {"model": target_model, "input": messages, "max_output_tokens": max_tokens, "stream": stream}
-        if native_effort != "none":
+        inputs = []
+        for message in messages:
+            if message.get("role") == "tool":
+                inputs.append({"type": "function_call_output", "call_id": message["tool_call_id"],
+                               "output": message["content"]})
+            elif message.get("tool_calls"):
+                if message.get("content"):
+                    inputs.append({"role": message["role"], "content": message["content"]})
+                inputs.extend({"type": "function_call", "call_id": call["id"],
+                               **call["function"]} for call in message["tool_calls"])
+            else:
+                inputs.append(message)
+        payload = {"model": target_model, "input": inputs, "max_output_tokens": max_tokens, "stream": stream}
+        if native_effort != "none" or target_model == "gpt-6-luna":
             payload["reasoning"] = {"effort": native_effort}
         if tools:
-            payload["tools"] = tools
+            payload["tools"] = [{"type": tool["type"], **tool["function"]}
+                                if "function" in tool else tool for tool in tools]
         return payload
 
     def _usage_counts(self, usage):
@@ -759,8 +788,10 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
                 body["output"].append({"type": "message", "role": "assistant", "content": [{"type": "output_text", "text": text}]})
         return body, ttft
 
-    def generate(self, messages, model_spec, native_effort="none", max_tokens=1024, stream=True, tools=None, tool_executor=None):
-        body, metrics = self.query_raw(messages, model_spec, native_effort, max_tokens, tools, stream)
+    def generate(self, messages, model_spec, native_effort="none", max_tokens=1024, stream=True,
+                 tools=None, tool_executor=None, *, response_format=None):
+        body, metrics = self.query_raw(messages, model_spec, native_effort, max_tokens, tools, stream,
+                                       response_format=response_format)
         outputs = body.get("output", [])
         text = "".join(part.get("text", "") for item in outputs if item["type"] == "message" for part in item.get("content", []))
         calls = [item for item in outputs if item["type"] == "function_call"]

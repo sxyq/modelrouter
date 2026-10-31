@@ -56,9 +56,11 @@ class MultiModelLogger:
     ) -> Dict[str, Any]:
         """
         Records a single LLM invocation event.
-        Computes reference cost against OpenRouter snapshot automatically.
+        Uses recorded Provider rates; other callers retain the existing reference price.
         """
-        if metadata and metadata.get("cost_basis") == "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE":
+        if metadata and metadata.get("cost_basis") in (
+            "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE", "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE"
+        ):
             ref_cost, ref_status = metadata["cost_usd"], metadata["cost_status"]
         else:
             ref_cost, ref_status = calculate_reference_cost(
@@ -84,7 +86,8 @@ class MultiModelLogger:
                 "prompt_tokens": prompt_tokens,
                 "completion_tokens": completion_tokens,
                 "reasoning_tokens": reasoning_tokens,
-                "cache_read_tokens": cache_read_tokens,
+                "cache_read_tokens": metadata.get("cached_tokens", cache_read_tokens) if metadata else cache_read_tokens,
+                "cache_write_tokens": metadata.get("cache_write_tokens") if metadata else None,
                 "total_tokens": prompt_tokens + completion_tokens,
             },
             "cost": {

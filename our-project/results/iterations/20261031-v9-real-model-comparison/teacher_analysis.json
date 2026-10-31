@@ -1,0 +1,177 @@
+{
+  "scope": "RECORDED_REAL_PREFIX_ANALYSIS_NOT_A_NEW_EPISODE",
+  "old_episode_teacher_failures": [
+    {
+      "assessed_through_step": 3,
+      "trigger_reason": "INITIAL_THREE_GENERATIONS",
+      "requested_max_output_tokens": 1024,
+      "completion_tokens": 2048,
+      "reasoning_tokens": 1024,
+      "cost_usd": 0.041946,
+      "finish_reason": null
+    },
+    {
+      "assessed_through_step": 5,
+      "trigger_reason": "PHASE_CHANGED",
+      "requested_max_output_tokens": 1024,
+      "completion_tokens": 2048,
+      "reasoning_tokens": 1024,
+      "cost_usd": 0.04532,
+      "finish_reason": null
+    },
+    {
+      "assessed_through_step": 6,
+      "trigger_reason": "PHASE_CHANGED",
+      "requested_max_output_tokens": 1024,
+      "completion_tokens": 2048,
+      "reasoning_tokens": 1024,
+      "cost_usd": 0.045132,
+      "finish_reason": null
+    },
+    {
+      "assessed_through_step": 7,
+      "trigger_reason": "PHASE_CHANGED",
+      "requested_max_output_tokens": 1024,
+      "completion_tokens": 2048,
+      "reasoning_tokens": 1024,
+      "cost_usd": 0.043862,
+      "finish_reason": null
+    },
+    {
+      "assessed_through_step": 8,
+      "trigger_reason": "PHASE_CHANGED",
+      "requested_max_output_tokens": 1024,
+      "completion_tokens": 2048,
+      "reasoning_tokens": 1024,
+      "cost_usd": 0.043844,
+      "finish_reason": null
+    }
+  ],
+  "new_trigger_observation_replay": [
+    {
+      "step": 3,
+      "reason": "INITIAL_THREE_GENERATIONS"
+    },
+    {
+      "step": 7,
+      "reason": "PHASE_CHANGED"
+    },
+    {
+      "step": 10,
+      "reason": "PHASE_CHANGED"
+    }
+  ],
+  "observed_router_timeline": [
+    {
+      "step": 0,
+      "phase": "inspect",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": null
+    },
+    {
+      "step": 1,
+      "phase": "inspect",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": null
+    },
+    {
+      "step": 2,
+      "phase": "modify",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": null
+    },
+    {
+      "step": 3,
+      "phase": "modify",
+      "planned_trigger": "INITIAL_THREE_GENERATIONS",
+      "last_recorded_assessment_signals_still_current": true
+    },
+    {
+      "step": 4,
+      "phase": "modify",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": true
+    },
+    {
+      "step": 5,
+      "phase": "recover",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": false
+    },
+    {
+      "step": 6,
+      "phase": "modify",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": true
+    },
+    {
+      "step": 7,
+      "phase": "recover",
+      "planned_trigger": "PHASE_CHANGED",
+      "last_recorded_assessment_signals_still_current": true
+    },
+    {
+      "step": 8,
+      "phase": "modify",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": false
+    },
+    {
+      "step": 9,
+      "phase": "modify",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": false
+    },
+    {
+      "step": 10,
+      "phase": "modify",
+      "planned_trigger": "PHASE_CHANGED",
+      "last_recorded_assessment_signals_still_current": true
+    },
+    {
+      "step": 11,
+      "phase": "modify",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": true
+    },
+    {
+      "step": 12,
+      "phase": "modify",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": true
+    },
+    {
+      "step": 13,
+      "phase": "modify",
+      "planned_trigger": null,
+      "last_recorded_assessment_signals_still_current": true
+    }
+  ],
+  "compact_real_request": {
+    "record": "teacher_prefix_low/compact.metrics.json",
+    "status": "SUCCESS",
+    "assessment": {
+      "progress_summary": "The copied database returned five records; WAL inspection reported four frames, 0x42 key bytes, and a decrypted header.",
+      "main_blocker": "No observed result confirms SQLite can read the WAL changes or that /app/recovered.json has been created.",
+      "next_milestone": "The next milestone is confirmed WAL readability and an id-sorted /app/recovered.json containing all 11 requested records."
+    },
+    "prompt_tokens": 1462,
+    "completion_tokens": 1528,
+    "reasoning_tokens": 1435,
+    "cost_usd": 0.0189335,
+    "assessed_through_step": 3,
+    "new_router_execution": null
+  },
+  "original_episode_not_rerun": true,
+  "new_teacher_requests_on_compact_configuration": 1,
+  "replay_qualification": "Trigger opportunities are recomputed from recorded tool and phase facts, not executed teacher calls or a measured teacher benefit.",
+  "step3_successful_assessment_reuse_scope": {
+    "observed_replay_steps_available": [
+      3,
+      4
+    ],
+    "cleared_at_step": 5,
+    "not_restored_at_step6_without_new_success": true,
+    "actual_router_consumption": false
+  }
+}

@@ -44,18 +44,19 @@ class TeacherTrigger:
             return None
         if self.generation_count < self.initial_generations:
             return None
-        if self.last_attempt_generation == self.generation_count:
+        if (self.last_attempt_generation is not None
+                and self.generation_count - self.last_attempt_generation < self.initial_generations):
             return None
         if self.last_signals is None:
             return "INITIAL_THREE_GENERATIONS"
         phase, verification, repeated = self.signals(state)
         old_phase, old_verification, old_repeated = self.last_signals
-        if phase != old_phase:
-            return "PHASE_CHANGED"
         if verification is not None and verification != old_verification:
             return "NEW_VERIFICATION_RESULT"
         if repeated is not None and repeated != old_repeated:
             return "REPEATED_ERROR"
+        if phase != old_phase:
+            return "PHASE_CHANGED"
         return None
 
     def record_attempt(self, state):

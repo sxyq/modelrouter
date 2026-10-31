@@ -23,9 +23,9 @@ class V9DecisionHook:
         self.assessor = TrajectoryAssessor(
             provider, config.get("references_path", DEFAULT_REFERENCES),
             model_id=config.get("teacher_model_id", "gpt-6.1-sol"),
-            native_effort=config.get("teacher_native_effort", "none"),
+            native_effort=config.get("teacher_native_effort", "low"),
             max_output_tokens=config.get("teacher_max_output_tokens", 4096),
-            context_chars=config.get("teacher_context_chars", 20000))
+            context_chars=config.get("teacher_context_chars", 8000))
         self.trigger = TeacherTrigger()
         self.episode_id = None
         self.assessment = None

@@ -713,7 +713,9 @@ def build_ordered_full_coverage_queue(
             continue
 
         failed_info = (queue_state.get("failed_runs") or {}).get(run_id) or {}
-        if int(failed_info.get("attempts", 0)) >= 2 or failed_info.get("reason") == "RUN_FAILED":
+        if (int(failed_info.get("attempts", 0)) >= 2
+                or failed_info.get("reason") == "RUN_FAILED"
+                or failed_info.get("failure_reason") == "NON_FINITE_LOSS"):
             counts["FAILED"] += 1
             continue
 

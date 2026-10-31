@@ -8,13 +8,13 @@
 
 ## 0. 30 秒恢复上下文
 
-**2026-10-31 当前恢复点**：接续起点 `main=7e7eecb9f1ad927f83e6d6e05f6695c661e734e7`。公开Canary `db-wal-recovery` 已官方reward=1.0、CTRF7/7、异常null，不重跑；14次Laya F05/epoch_01真实前向全逻辑Luna none、Sol/Flash选择0、fallback0，19终端调用，五教师成功短评0。完整模型费0.22959588USD已计账，供应商实收与资源USD未知。五RQ、八图、十二表和旧负结果不变，正式总体对照仍空白。
+**2026-10-31 当前恢复点**：从 `main=e28872fc69604ab082eab5b703d7674073fb4356` 接续。`fix-git/db-wal-recovery`未重跑，无新Alias Episode。真实Sol Responses与项目jiji Luna Chat Completions均已接受low并执行原Bash工具；Flash两账户实际POST均无可用型号，Native Effort未知。公开Dev `extract-elf`两次初始消息/工具/mini配置相等：Sol13生成/10工具，原900秒超时、Verifier未知、完整调用模型费0.3912934USD；Luna8生成/10工具，reward0、CTRF1/2、覆盖0%、模型费0.00447894USD。不赋失败者最优标签，不把无Verifier写成reward0；详细结果、COBOL旧型号混入与时延限制只在 [PROJECT_STATUS](PROJECT_STATUS.md) 当前入口维护。
 
-**教师与事后补充**：主Trial五次均空content、finish_reason=length、reasoning1024、输出限1024；旧fix-git无raw正文，旧finish_reason未知。当前教师为三短string各≤25 words、JSON Object、max_output4096/context_chars20000并记录finish_reason，无效果enable_thinking已移除，触发规则不变。事后step3单次教师完整JSON/stop、0.039448USD，短评已被真实Laya消费、fallbackfalse；仅属POST_RUN_OBSERVED_PREFIX_REUSE，不计主Trial教师成功或费用，非官方或独立科研样本，不证明稳定收益。
+**教师恢复点**：旧五次为空正文/length且额度全部用于reasoning；新真实Sol长前缀low/2048仍为空。原Assessor现只摘要观察事实，两固定参考仅输入摘录，去掉重复消息；low/4096、context8000、JSON Object，首次约3生成、后续最少间隔3生成。新真实step3前缀完整三字段JSON，input1462/output1528含reasoning1435、模型费0.0189335USD；未运行新Router或工具，不计旧Trial。旧观察触发重算为3/7/10，不等于新调用或收益；旧短评随信号变化清除，截止步/阶段进入原formatter。新短评价格仍约为Luna本次Episode的4.23倍，可靠性及净收益未获稳定证据。新Episode教师关闭；不增加重试或其他教师。
 
-**AA 与数据监督**：current为v4 `20261031T072548885180Z-v4`，Sol/Luna Max共20指标；none/托管Flash及Coding/Agentic综合指数缺测，Sol原生档位不含none。原Dev Trial/prefix仍v3、旧390/V9训练仍v1，未来新实验绑定v4。旧390实体198/192不变，可核196/186；旧batch1原13438行排除224未知终局后可核13214，非新增独立任务或新动作目标。真实三模型choice/Model×Effort仍0，AA与Alias不作答案；RouterBench35102旧池Oracle许可待明，近重复关系及无taskID的S3交集未知。原-1转换已保留None，旧实体未重清洗，远程加工未部署。
+**AA、费用与有效数据**：新实验/视图绑定v4 `20261031T072548885180Z-v4`，Sol/Luna Max共20项；low/none/托管Flash及Coding/Agentic综合指数缺测，Sol原生无none；未再次刷新。旧390/v1不变，新唯一training_view为382行（196/186），8个原resolved=-1不作失败目标，四条旧教师保留；旧13214候选与390重合，不是新增独立样本。当前三模型choice/Model×Effort标签仍0、Train资格仍0，真实对照只有生成/执行观测与一条Dev Verifier终局。RouterBench35102旧池Oracle许可未明，AA与Alias不作答案。原调用日志现在采用Provider已算的真实请求费率；本轮65响应旧估价/raw Usage保留，已知模型费1.43331375USD，3条型号不匹配及无Usage请求仍使完整费用未知，实收未知。
 
-**训练恢复点**：F14持续NaN，Epoch1非有限Val及全类别0预测保留，有效更新未知，不作父候选；最新进度与取样时间只在 [PROJECT_STATUS](PROJECT_STATUS.md) 维护。F11-e01/R11父代表与Serving F05epoch01/原Kev导入适配器不变。当前不更新任何模型参数；下一轮分别讨论Laya encoder+heads与Kev LoRA+head原参数，以真实同状态动作结果作为新选择目标，保留旧S1有效偏好与原固定Val的S1 Accuracy/Loss/Brier/ECE，不能仅追加短评与卡片重复原配方。准备不足不自动续训，不保证指标不退步，不新增流程或执行条件。
+**训练恢复点**：F14已结束，原Run failed/NON_FINITE_LOSS、原队列PAUSED_RUN_FAILED；cursor/Epoch1/曲线/权重保留，未启动F15。Serving仍F05epoch01/原Kev导入适配器且healthy，F11-e01/R11接续代表及旧负结果保留。没有新增Train选择标签，不启动微调或换Serving权重。Laya现有encoder/head学习率和freeze_encoder、Kev LoRA/pointer head接点保留；Kev head_lr=0沿用主lr。新目标须来自同状态真实Train动作结果，旧S1候选/偏好不改名，教师截止前短评与AA卡经原serializer进入输入，原固定Val四指标和真实Dev Episode判断收益；不重复旧配方，不承诺指标不退步。五RQ、八图十二表保持。
 
 **10-31 fix-git 历史恢复点**：当时起点main为9775551941f1542dc8e8b18b10e348c5eff2aec8；同题两Trial与事后前缀补充分别记录，完整证据见 [PROJECT_STATUS历史段](PROJECT_STATUS.md#2026-10-31--历史fix-git-三身份-alias-官方开发接续)，不在当前入口继续复制详述。以下10-30及更早记录按原时点理解。
 

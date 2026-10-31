@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "execution_scope": "REAL_MODEL_DEVELOPMENT_COMPARISON",
+  "execution_mode": "REAL_API",
+  "generator_protocol": "responses",
+  "provider_timeout_sec": 180,
+  "formal_model_ids": ["gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash"],
+  "teacher_enabled": false,
+  "teacher_model_id": "gpt-6.1-sol",
+  "teacher_native_effort": "low",
+  "teacher_max_output_tokens": 4096,
+  "teacher_context_chars": 8000,
+  "feature_training_status": "FEATURE_NOT_TRAINED",
+  "backend_deployment_status": "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION",
+  "candidate_actions": [
+    {"provider": "openai", "model": "gpt-6.1-sol", "native_effort": "low"},
+    {"provider": "jiji", "model": "gpt-6-luna", "native_effort": "low"}
+  ]
+}

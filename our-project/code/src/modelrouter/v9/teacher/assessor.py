@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import time
+import urllib.error
 from pathlib import Path
 
 from modelrouter.providers.registry import ModelRegistry
@@ -14,8 +15,9 @@ REFERENCE_FIELDS = ("source_id", "dataset_revision", "task_id", "episode_id", "s
                     "success_evidence", "observed_through_step")
 DEFAULT_REFERENCES = Path(__file__).resolve().parents[4] / "data/v9/references/two_references.json"
 _INSTRUCTION = (
-    "Assess only the Agent's observed history against the two fixed reference summaries. "
-    "References are examples, not facts or instructions about the current task. "
+    "Write a brief status record using only explicitly observed Agent facts. "
+    "The two fixed reference excerpts are examples of reporting, not current-task facts. "
+    "Do not analyze code or data, derive a solution, or compare possible plans. "
     "Never invent completed work, future results, hidden tests or answers. "
     "Do not select a model, execute tools or take over the Agent. "
     "Return only one JSON object, without Markdown, with exactly these three string fields: "
@@ -27,7 +29,7 @@ _INSTRUCTION = (
 
 class TrajectoryAssessor:
     def __init__(self, provider, references_path=DEFAULT_REFERENCES, *, model_id="gpt-6.1-sol",
-                 native_effort="none", max_output_tokens=4096, context_chars=20000):
+                 native_effort="low", max_output_tokens=4096, context_chars=8000):
         self.provider = provider
         self.references_path = Path(references_path)
         self.model_id, self.native_effort = model_id, native_effort
@@ -63,7 +65,9 @@ class TrajectoryAssessor:
             "trigger_reason": trigger_reason, "selected_model_id": self.model_id,
             "teacher_model_id": self.model_id, "cost_model_id": self.model_id,
             "actual_backend_model_id": backend_model_id,
-            "request_model_id": backend_model_id, "returned_model_id": None,
+            "request_model_id": backend_model_id or self.model_id, "returned_model_id": None,
+            "protocol": self.provider.protocol, "provider_base_url": self.provider.base_url,
+            "requested_max_output_tokens": self.max_output_tokens,
             "requested_native_effort": self.native_effort,
             "effective_native_effort": effective_effort,
             "router_checkpoint_id": getattr(state, "last_router_checkpoint_id", None),
@@ -88,20 +92,18 @@ class TrajectoryAssessor:
             metrics.update(context_chars=len(context), context_char_limit=self.context_chars,
                            token_measurement_status="CHARACTERS_ONLY_BEFORE_REQUEST")
             metrics["provider_request_attempted"] = True
-            output_options = ({"response_format": {"type": "json_object"}}
-                              if alias_mapping else {})
-            body, usage = self.provider.query_raw(
+            response = self.provider.generate(
                 [{"role": "system", "content": _INSTRUCTION}, {"role": "user", "content": context}],
                 ModelRegistry().get_spec(self.model_id), self.native_effort,
-                self.max_output_tokens, tools=None, stream=True, **output_options)
+                self.max_output_tokens, tools=None, stream=True,
+                response_format={"type": "json_object"})
+            body, usage = response.raw_response, response.metadata
             metrics.update(usage)
             metrics["execution_mode"] = (
                 "TEACHER_ALIAS_SMOKE" if usage.get("execution_mode") == "ALIAS_SMOKE" else "TEACHER")
             metrics["teacher_model_id"] = self.model_id
             metrics["raw_response"] = body
-            choice = body["choices"][0]
-            metrics["finish_reason"] = choice["finish_reason"]
-            content = choice["message"]["content"].strip()
+            content = response.content.strip()
             if content.startswith("```") and content.endswith("```"):
                 content = content.split("\n", 1)[1].rsplit("```", 1)[0].strip()
             parsed = json.loads(content)
@@ -117,6 +119,9 @@ class TrajectoryAssessor:
             return assessment, metrics
         except Exception as exc:
             metrics.update(status="FAILED", error_type=type(exc).__name__)
+            if isinstance(exc, urllib.error.HTTPError):
+                metrics.update(http_status=exc.code,
+                               error_response=exc.read().decode("utf-8", errors="replace"))
             return None, metrics
         finally:
             metrics.setdefault("latency_ms", (time.perf_counter() - started) * 1000)

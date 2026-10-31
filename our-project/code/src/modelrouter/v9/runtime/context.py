@@ -92,7 +92,8 @@ def format_router_payload(payload: Mapping) -> str:
     result = {"prompt": prompt}
     teacher = data.pop("teacher_assessment", None)
     result["teacher_assessment"] = ({name: teacher.get(name) for name in
-        ("progress_summary", "main_blocker", "next_milestone")} if teacher is not None else None)
+        ("progress_summary", "main_blocker", "next_milestone", "assessed_through_step", "phase")}
+        if teacher is not None else None)
     continuity = data.pop("continuity", None)
     if continuity is not None:
         values = {name: continuity[name] for name in (
@@ -309,18 +310,18 @@ def build_teacher_context(state, messages, references, char_limit=48000):
         "steps_remaining": state.steps_remaining,
         "budget_remaining_usd": state.budget_remaining_usd,
     }
-    reference_fields = ("source_id", "dataset_revision", "task_id", "episode_id", "split",
-                        "success_evidence", "summary", "observed_through_step")
-    reference_text = json.dumps([{name: ref[name] for name in reference_fields}
-                                 for ref in references], ensure_ascii=False)
-    headings = ("OBSERVED STATE\n", "CURRENT TASK\n", "FIXED REFERENCES\n",
-                "OBSERVED TOOLS\n", "RECENT MESSAGES\n")
+    reference_text = json.dumps([{
+        "task_id": ref["task_id"], "reference_kind": ref["reference_kind"],
+        "observed_through_step": ref["observed_through_step"],
+        "summary_excerpt": ref["summary"][:300] + "\n...\n" + ref["summary"][-300:],
+    } for ref in references], ensure_ascii=False)
+    headings = ("OBSERVED STATE\n", "CURRENT TASK\n", "FIXED REFERENCE EXCERPTS\n", "OBSERVED TOOLS\n")
     available = max(0, char_limit - sum(map(len, headings)) - len(headings))
-    limits = [available // 10, available // 5, available // 4, available // 5]
-    limits.append(available - sum(limits))
+    limits = [available // 10, available // 5, len(reference_text)]
+    limits.append(min(1600, available - sum(limits)))
     sections = (
         json.dumps(facts, ensure_ascii=False), task_text(state, messages), reference_text,
-        recent_tools(state, limits[3]), recent_messages(observed_messages(state, messages), limits[4]),
+        recent_tools(state, limits[3]),
     )
     return "\n".join(heading + text[:limit]
                      for heading, text, limit in zip(headings, sections, limits))

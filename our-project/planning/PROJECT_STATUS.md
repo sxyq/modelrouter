@@ -1,6 +1,64 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-10-31 · 当前恢复点：db-wal-recovery 已结束，事后短评已消费
+## 2026-10-31 · 当前恢复点：真实模型对照、紧凑教师与有效数据视图
+
+本轮从 `main=e28872fc69604ab082eab5b703d7674073fb4356` 接续，结果位于 [20261031-v9-real-model-comparison](../results/iterations/20261031-v9-real-model-comparison/review.md)。`fix-git`、`db-wal-recovery` 已结束，本轮均未重跑；没有新 Alias Episode、训练或 Serving 权重替换。
+
+### 教师：取得真实 Sol 输出，费用仍需收益证据
+
+旧 `db-wal-recovery` 五次失败均为正文空、`length`、输出额度 1,024 全用于 reasoning；JSON Object 和旧关闭 thinking 参数没有解决额度分配。新真实 Sol 的长前缀 `low/2048` 也为空，reasoning=output=2,048，费用 `0.0305085 USD`；错误 Chat 入口和一次超时的 Usage 未知，均保留。
+
+原 Assessor 改为只摘要已观察事实，使用原生 Responses 的 JSON Object；两条固定参考实体不变，输入仅取首尾摘录，移除重复消息，工具视图最多 1,600 字符。默认最低合法档为 `low`，输出上限 4,096、上下文上限 8,000；首次仍约三次生成，后续至少间隔三次，验证与重复错误优先阶段变化。原 Hook 在信号变化时清除旧短评，formatter 保留短评截止步和阶段；教师不选择模型、不改变 Agent 计划或执行工具。
+
+| 新真实 step3 前缀 | 实测 |
+| --- | --- |
+| 输入 / 输出 / reasoning | `1,462 / 1,528 / 1,435` Token；上下文 `4,029` 字符 |
+| 缓存读 / 写 | `0 / 1,459` Token |
+| 结果 / 时间 / 模型费 | 三字段完整 JSON、`completed`；`41.768707` 秒；`0.0189335 USD` |
+| 资格 | `TEACHER_PREFIX_ONLY`；未运行新 Router 或工具，不计旧 Trial 成功次数和费用 |
+
+原观察记录上的触发重算为 `3/7/10`，旧实际为 `3/5/6/7/8`；这不是三次新教师调用。step3 成功短评在相同信号的 step4 可复用，step5 变化后清除，不会因 step6 回到旧阶段而自行恢复。单次成功不证明稳定可靠或净收益；这份 Sol 短评价格仍约为本次 Luna 整个 Episode 的 `4.23` 倍。原失败与成功输入、响应和费用见 [teacher_analysis.json](../results/iterations/20261031-v9-real-model-comparison/teacher_analysis.json)。
+
+### 三个正式身份的访问与同条件对照
+
+| 正式身份 | 当前 Provider 实证 | Native Effort |
+| --- | --- | --- |
+| `gpt-6.1-sol` | 现有账户原生 Responses，请求/返回身份匹配，真实 Bash 工具可执行 | 文档 `low/medium/high/xhigh/max`；本轮实调 `low`，不含 `none` |
+| `gpt-6-luna` | 项目 jiji Chat Completions，请求/返回身份匹配，真实 Bash 工具可执行 | 文档 `none/low/medium/high/xhigh/max`；本轮实调 `low` |
+| `qwen3.8-flash` | 两账户实际 POST 返回 `model_not_found`：jiji 404；另一账户 503 正文明确无可用渠道 | `NOT_MEASURED`；未把省略参数的占位值或 Alias `none` 声称为原生支持 |
+
+公开 Dev `extract-elf` 两次执行的初始两条消息、工具 Schema、mini 配置和候选动作直接相等；seed42、30步、输出4096、教师关闭、同上游镜像、原 Harbor/mini-SWE-agent 与未修改 Verifier。API 原生协议分别为 Responses/Chat Completions，供应商内部上下文是否相同未知；后续轨迹随各自行动展开。
+
+| 动作 / Trial | 真实生成 / 工具 | 官方结果与失败 | 模型费 USD | Trial / Agent 秒 |
+| --- | ---: | --- | ---: | ---: |
+| Sol low / `6dd69051-dec2-4706-9914-b4fcc722ed2e` | `13 / 10`，全部返回 Sol | 原900秒窗口AgentTimeoutError；随后Docker socket缺失使Verifier准备与容器清理失败，reward未知；3次截断中2次全reasoning、1次reasoning2070/4096 | `0.3912934` | `970.478263 / 900.056730` |
+| Luna low / `70324a19-498e-42ae-8f2a-a71b9207ef5e` | `8 / 10`，全部返回 Luna | reward `0`、CTRF `1/2`；匹配覆盖 `0.00%`，要求 `75%` | `0.00447894` | `522.321635 / 473.451437` |
+
+两者无Alias、无教师调用，均为固定动作策略。初始应用条件相等不代表整个Episode外部运行条件相等：Sol的Docker中断和共享Token账本串行等待限制终局/时延归因，不比较纯模型速度或推导神经Router收益。Sol原Trial保存12响应、模型费0.3480004；一条截止前发出、Trial结束后返回的响应费用0.043293另有事件证据，全部调用费用0.3912934。两次调用模型费0.39577234USD，实收与资源USD未知。
+
+另有同消息/工具 Schema 的 COBOL T0 生成对照，Luna 只生成未执行该前缀工具，不赋偏好。原 COBOL 首 Sol 归档缺 `selected_model_id` 已在原 Provider 补齐；该失败19响应/`0.5584418 USD`保留。接续 Sol 15响应/`0.421543 USD` 因原工具30秒超时而无 Verifier；Luna 7响应中3条返回旧 `gpt-5.6-luna`，虽 reward1/CTRF3/3，也不作纯 Luna Episode。未再次运行 COBOL。
+
+### 费用与监督口径
+
+原调用日志已直接采用 Provider 算出的 `REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE`，保留缓存读/写未知值；不再为真实请求另选旧 OpenRouter 估价。仅本轮65个已保存响应对应日志条目的费用已更新，旧参考估价及 raw Usage 保留，没有新增调用日志计数。已知模型费小计 `1.43331375 USD`；3条型号不匹配的价格和4次无Usage访问/教师失败金额未知，所以完整总额和供应商实收仍为未知，不能当作现金账单。
+
+新 [episode_comparison.json](../results/iterations/20261031-v9-real-model-comparison/episode_comparison.json) 有1个相同初始状态、2个真实动作执行结果、1个可信 Verifier 终局与1个超时记录。没有成功候选，也没有完整双模型 Verifier 质量对照，**当前 Model 选择及 Model×Effort 偏好标签仍为0，Train资格仍为0**。不把低价失败者标为最优，不把超时的未知 reward 写成0；单前缀资料和 Episode 尝试分开。
+
+原390实体与四条教师不变。读取原54个 Open-SWE 终局后，原 Prepare 形成唯一新视图 `training_view/`：Train196、Val186，共382行；8个 `resolved=-1`（Train2/Val6）不再作为失败目标。S1原64/64候选顺序和偏好保留；S2为68/58，S3为64/64。旧13,214候选与390重合，RouterBench35,102为旧池Oracle且许可未明，均不作为新三模型选择目标或新增独立样本。
+
+AA固定v4 `20261031T072548885180Z-v4`：Sol/Luna Max各10项，Intelligence v5.0原分 `54.5087338138148 / 27.7552004938153`；本轮low、none、托管Flash及Coding/Agentic综合指数仍缺测。未再次刷新或在路由时联网，没有借用27B/Flash-Next成绩。
+
+### 服务器与下一轮训练
+
+F14原控制器及worker已于台北17:01按原训练管理范围结束，原Run记 `failed/NON_FINITE_LOSS`、原队列 `PAUSED_RUN_FAILED`；原cursor、Epoch1、曲线和权重保留，未启动F15。停止前为第二轮363/420、step100166/107404、loss NaN，首次诱因及有效更新未知。正式队列仅沿原失败筛选增加该原因，不影响其他健康对象。
+
+台北18:27:28读取Serving 200/healthy，PID327621与10-30 20:53:21启动时间不变；Laya F05/epoch_01、原Kev导入适配器继续服务，GPU25433/49140MiB、0%。F14两进程均已退出，原Run仍failed/NON_FINITE_LOSS，图像对象启动时间不变。本轮没有部署Provider/教师到Serving或更换权重。
+
+Laya F11-e01、Kev R11继续作为接续代表，已完成V9的S1/四指标退步保留。新Train选择监督仍0，**不启动继续微调**。现有Laya支持encoder/head分别设学习率与`freeze_encoder`；Kev为LoRA加pointer head，`head_lr=0`沿用主学习率，不等于head不更新。后续真实Train同状态结果才作为新choice目标，旧S1候选与人类偏好不改名，教师截止前短评和AA卡经原serializer进入输入，未知终局不作答案；收益通过原固定Val的S1四指标及真实Dev Episode判断，不重复旧配方，不承诺指标不退步。五RQ、八图十二表和正式结果格保持。
+
+## 2026-10-31 · 历史：db-wal-recovery 已结束，事后短评已消费
+
+以下为上一轮时点，不作为当前服务器、教师配置或数据视图状态。
 
 新公开 Canary `db-wal-recovery` 已成功，不重跑。接续起点 `main` 为 `7e7eecb9f1ad927f83e6d6e05f6695c661e734e7`。
 

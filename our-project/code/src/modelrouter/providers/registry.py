@@ -239,9 +239,9 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
         pool="Reasoning",
         provider="jiji",
         display_name="GPT 6 Luna",
-        context_window=200_000,
-        max_output_tokens=65_536,
-        native_efforts=("none", "low", "medium", "high"),
+        context_window=1_050_000,
+        max_output_tokens=128_000,
+        native_efforts=("none", "low", "medium", "high", "xhigh", "max"),
         # Official Standard rates, <=272K input, 30m cache writes:
         # https://developers.openai.com/api/docs/models/gpt-6-luna
         input_price_per_1m=0.10,
@@ -251,6 +251,8 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
         cache_write_price_per_1m=0.125,
         pricing_status="VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
         pricing_source="https://developers.openai.com/api/docs/models/gpt-6-luna",
+        context_status="OFFICIAL_DOCUMENTATION",
+        native_efforts_status="OFFICIAL_DOCUMENTATION",
     ),
     "gpt-5.6-luna": ModelSpec(
         model_id="gpt-5.6-luna",
@@ -267,14 +269,14 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
     ),
     "gpt-6.1-sol": ModelSpec(
         model_id="gpt-6.1-sol", pool="Reasoning", provider="openai",
-        display_name="GPT 6.1 Sol", context_window=None, max_output_tokens=None,
-        native_efforts=(), input_price_per_1m=2.0, output_price_per_1m=10.0,
+        display_name="GPT 6.1 Sol", context_window=1_050_000, max_output_tokens=128_000,
+        native_efforts=("low", "medium", "high", "xhigh", "max"), input_price_per_1m=2.0, output_price_per_1m=10.0,
         reasoning_price_per_1m=10.0, cache_read_price_per_1m=0.1,
         cache_write_price_per_1m=2.5, rpm_limit=None, tpm_limit=None,
         tool_supported=None, pricing_status="VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
         pricing_source="https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
-        identity_status="NOT_MEASURED", context_status="NOT_MEASURED",
-        native_efforts_status="NOT_MEASURED",
+        identity_status="NOT_MEASURED", context_status="OFFICIAL_DOCUMENTATION",
+        native_efforts_status="OFFICIAL_DOCUMENTATION",
     ),
     "qwen3.8-flash": ModelSpec(
         model_id="qwen3.8-flash", pool="Fast", provider="aliyun",

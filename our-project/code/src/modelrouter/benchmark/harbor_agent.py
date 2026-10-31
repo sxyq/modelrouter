@@ -29,7 +29,7 @@ from minisweagent.models.utils.actions_toolcall import BASH_TOOL
 
 from modelrouter.agent.state import AgentState
 from modelrouter.baselines.policy import create_policy
-from modelrouter.providers.provider import OpenAICompatibleProvider
+from modelrouter.providers.provider import OpenAICompatibleProvider, OpenAIResponsesProvider
 from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS
 from modelrouter.serving.schemas import LegalAction, PreDecisionState
 from modelrouter.v9.runtime.alias import DEFAULT_BACKEND_DEPLOYMENT_STATUS
@@ -91,7 +91,11 @@ class PolicyModel(LitellmModel):
                 from modelrouter.v9.runtime.alias import alias_provider
                 self.provider = alias_provider(v9_config)
             else:
-                self.provider = OpenAICompatibleProvider()
+                provider_type = (OpenAIResponsesProvider if self.v9_enabled
+                                 and v9_config.get("generator_protocol") == "responses"
+                                 else OpenAICompatibleProvider)
+                self.provider = provider_type(request_timeout_sec=(
+                    v9_config.get("provider_timeout_sec", 60.0) if self.v9_enabled else 60.0))
         self.max_output_tokens = max_output_tokens
         self.last_metrics, self.usage = {}, []
         self.fallback_used = False
@@ -167,7 +171,6 @@ class PolicyModel(LitellmModel):
               effort_validation_status=self.action_validation[selected["action_id"]],
               selected_action=selected, pre_decision_state=snapshot, legal_actions=self.actions)
         spec = ModelRegistry().get_spec(selected["model"])
-        spec.validate_effort(selected["native_effort"])
         started = time.perf_counter()
         try:
             body, metrics = self.provider.query_raw(
@@ -210,6 +213,24 @@ class PolicyModel(LitellmModel):
               step=self.state.step_index, policy=self.policy_name, model=selected["model"],
               returned_model=metrics["returned_model_id"], effort=selected["native_effort"])
         self.state.step_index += 1
+        if self.provider.protocol == "responses":
+            calls = [{"id": item["call_id"], "type": "function",
+                      "function": {"name": item["name"], "arguments": item["arguments"]}}
+                     for item in body["output"] if item["type"] == "function_call"]
+            content = "".join(part.get("text", "") for item in body["output"]
+                              if item["type"] == "message" for part in item["content"])
+            message = {"role": "assistant", "content": content}
+            if calls:
+                message["tool_calls"] = calls
+            finish_reason = (body["incomplete_details"]["reason"]
+                             if body["status"] == "incomplete" else "tool_calls" if calls else "stop")
+            if finish_reason == "max_output_tokens":
+                finish_reason = "length"
+            body = {"id": body["id"], "model": body["model"],
+                    "choices": [{"index": 0, "message": message,
+                                 "finish_reason": finish_reason}],
+                    "usage": {"prompt_tokens": metrics["prompt_tokens"],
+                              "completion_tokens": metrics["completion_tokens"]}}
         return litellm.ModelResponse(**body)
 
     def _calculate_cost(self, response):

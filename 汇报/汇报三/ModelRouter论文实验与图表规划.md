@@ -1,12 +1,12 @@
 # ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-10-31 文档接续）
 
-> **当前结果资格（2026-10-31）**：公开Canary `db-wal-recovery` 已reward=1.0、CTRF7/7、异常null；14次Laya F05/epoch_01真实前向全Luna none、Sol/Flash选择0、fallback0，19终端调用，五教师成功短评0。完整模型费0.22959588USD已计账，实收与资源USD未知；不填五RQ总体对照，不证明独立物理三模型或教师收益。
+> **当前结果资格（2026-10-31）**：本轮从e28872f接续，真实Sol Responses与项目jiji Luna Chat Completions均实调low、无Alias，Flash两账户无可用型号。公开Dev extract-elf初始消息/工具/mini配置相等；Sol900秒超时无Verifier，Luna reward0/CTRF1/2、覆盖0%。同条件生成/执行观测成立，完整双模型质量偏好不成立，不能赋最优模型标签或填五RQ总体对照。旧fix-git/db-wal成功及失败记录保留、均未重跑；精确结果见 [PROJECT_STATUS](../../our-project/planning/PROJECT_STATUS.md)。
 >
-> **事后补充单列**：主Trial五次空content/length、reasoning1024、输出限1024；事后step3单次教师完整JSON/stop、0.039448USD，短评已送入真实Laya、fallbackfalse。补充仅属POST_RUN_OBSERVED_PREFIX_REUSE，非官方或独立科研样本，不计主Trial教师成功/费用，不证明稳定收益。旧fix-git缺失raw正文与旧finish_reason的完整历史证据见 [PROJECT_STATUS历史段](../../our-project/planning/PROJECT_STATUS.md#2026-10-31--历史fix-git-三身份-alias-官方开发接续)。
+> **教师证据**：旧五次失败与新真实Sol low/2048空正文均说明reasoning可用尽额度。原Assessor缩短固定参考/观察视图，仅做事实摘要；low/4096、context8000，首次约3生成、后续至少间隔3，验证/重复错误优先阶段变化。新真实step3三字段JSON成功，input1462/output1528含reasoning1435、模型费0.0189335USD；未执行新Router或工具，且该价格仍约为Luna本次Episode的4.23倍。单次有效输出不证明稳定收益，旧短评随信号变化清除并保留截止范围；不改变Agent计划、执行工具或指定模型。
 >
-> **AA v4 与数据监督**：Sol/Luna Max共20项，none/托管Flash及Coding/Agentic综合指数缺测，Sol原生档位不含none；原Dev Trial/prefix仍v3、旧390/V9训练仍v1，未来新实验绑定v4。旧390可核196/186、旧batch1可核13214，原实体不变、未知终局不作监督，非新增独立任务；真实三模型choice/Model×Effort仍0，AA与Alias不作答案，RouterBench许可及近重复关系仍未明确。
+> **AA、费用与监督**：新实验/382行视图固定v4，Sol/Luna Max各10项，low/none/托管Flash及Coding/Agentic综合指数缺测，Sol无原生none。旧390/v1不变，新196/186保留四条旧教师，8个未知终局不作失败；旧13214与390重合，非新增独立样本。当前三模型choice/Model×Effort/Train资格仍0，Dev超时未知reward不填0，AA/Alias/低价失败不作答案。调用日志采用Provider真实请求费率，旧估价/raw Usage、未知实收与资源费用分开；RouterBench许可及近重复关系仍未明确。
 >
-> **训练与正文范围**：F14非有限Val及旧训练负结果保留，F11-e01/R11父代表和旧Serving不变；服务器最新进度只在 [PROJECT_STATUS](../../our-project/planning/PROJECT_STATUS.md) 维护。当前不更新任何模型参数；下一轮区分Laya encoder+heads与Kev LoRA+head原参数，以真实同状态动作结果作为新选择目标，保留旧S1有效偏好与原固定Val的S1 Accuracy/Loss/Brier/ECE，不能仅追加短评与卡片重复原配方，不保证指标不退步，不新增流程或执行条件。五RQ、八图、十二表及正式正文不动，以下旧更新按原时点理解。
+> **训练与正文范围**：F14已按原管理范围结束，failed/NON_FINITE_LOSS、原队列PAUSED_RUN_FAILED，旧异常实体保留、未启动F15。F11-e01/R11、旧Serving与已完成V9负结果不变；新Train选择标签仍0，不启动微调。后续真实同状态Train结果才作新choice目标，旧S1候选/偏好保留，教师截止前短评与AA卡经原serializer进入输入；Laya原encoder/head开关、Kev LoRA/pointer head保留，head_lr=0沿用主lr。原固定Val S1四指标及真实Dev Episode判断收益，不重复旧配方或承诺指标不退步。五RQ、八图十二表与正式正文保持，最新服务器/费用只在 [PROJECT_STATUS](../../our-project/planning/PROJECT_STATUS.md) 维护。
 >
 > **10-30 历史结果资格**：新 `20261030-v9-official-luna-complete` 已取得官方 reward=1.0、CTRF tests2/passed2/failed0，真实 Luna none/low、14 路由/0 fallback。此为 K=1、同模型双动作的小开发结果；独立三模型与五 RQ 总体效果仍未得到证明，正式总体对照表保持空白。真实 Luna 官方 Episode 与映射实验分开。三原目录的 `mapped_cost_accounting` 已本地重算，旧 raw 与终局保留；金额和缺失 usage 的处理见 [PROJECT_STATUS](../../our-project/planning/PROJECT_STATUS.md)。Flash 使用原 snapshot `20261018` 的 OpenRouter 公开 USD 参考价；阿里官方 v2 只有 CNY，USD 未确认，不换汇。当前文档只记录本地结果，不新增请求、探针或部署状态。五 RQ、八图、十二表结构及旧失败不变；完整统计、F14第420块NaN与剩余项只在 [PROJECT_STATUS](../../our-project/planning/PROJECT_STATUS.md) 当前入口维护。
 >
