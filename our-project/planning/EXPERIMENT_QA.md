@@ -8,6 +8,10 @@
 
 ## 0. 阶段入口与决策规则
 
+
+**2026-11-02 · Fig.2 系统图表达（沿 Q-021，不新增 RQ）**：用户选择信息最完整的 C 版布局并要求提高中文文字可读性、删除外部说明标题、任务输入外围假循环和无意义图标。主图必须准确表现：任务输入仅初始化一次；Mini-SWE-agent 自行维护模型生成/工具/观察/继续的执行循环，每次下一次模型生成均经外部 Router；T/H/M 合成决策前状态，教师按已有低频策略条件触发、结果先进入状态而非直接控制动作；静态能力与 Provider 合法性先约束候选，单活跃 Laya 或 Kev 再选合法 Model×Native Effort；Agent 终止后 Harbor 才做正式结果验证。不能把目标三模型全部画作已实测可用，也不能将 AA Max 分复制为 Low 档。当前生图文件 `ModelRouter_V9_Fig2_中文高清.png` 仅在会话作为原型导出、尚未上传仓库；生成图中的连线偏差不视为新的科研决策。
+
+
 **独立评分决定与完成（11-01）**：用户已明确选TwinRouterBench 520题/970步，只评原ROUTE-003的旧四档 `routing_tier_choice`，不使用同源test.jsonl、Train成绩或新三模型动作映射替代。两组微调前导入权重与原Val前三8/8在CPU完整实算；F11/R11分别20.515464/18.969072分，较微调前增13.505155/5.670103个百分点，但八版本均低于恒选low71.030928分。Test不用于重选、温度拟合、训练或Serving晋升；数字和最终状态见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)，不增加Q-ID或新研究流程。本轮新head候选未在该独立集评价，原队列仍暂停。
 
 **2026-11-01 当前决定（沿 Q-003/Q-021）**：四个已有Train任务的新失败前缀新增步骤偏好4条，Sol质量3、Luna等质量成本1；新增来源任务0。累计17条、任务级9/步骤级8、9任务，步骤覆盖8任务/7仓库且Sol/Luna各4。只监督已执行该步及原验证范围，双方失败、未知Verifier/API中断不生造赢家。Provider实际effort参数已保存，但应用档位仍未知，目标仅MODEL_ONLY，确认的Native Effort/同模型Effort/K=3仍0。原Prepare与Trainer统一canonical文本，Laya5120完整保留17/17状态、两候选和价格，Kev8K可容纳，原384不适配。可组合213/186，旧382与历史材料不加工。详见[本轮结果](../results/iterations/20261101-v9-quality-step-supervision/review.md)。
