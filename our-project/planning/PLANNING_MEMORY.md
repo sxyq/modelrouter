@@ -8,6 +8,10 @@
 
 ## 0. 30 秒恢复上下文
 
+
+**2026-11-02 Fig.2 图示决定**：主图采用 C 版「左侧 T/H 执行上下文—中央单一 Router—右侧 M 能力卡，上方可选教师，下方 Mini-SWE-agent 内循环」的克制中文布局；取消封面标题、外围任务输入大回环和无意义图标。主循环：每次模型生成需要路由→组合截至当前的真实状态及已存能力快照→必要时教师补充三字段→过滤合法 Model×Effort→Router 选择→原 Agent 生成与工具执行→观察/更新→若继续，下一次生成前再次路由；若终止，Harbor Verifier 评分。**注意**：生成图片初稿尚有教师箭头直达 Router、筛选顺序等表现偏差，实际架构以 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 与 [论文 Fig.2 文字规范](../../汇报/汇报三/ModelRouter论文实验与图表规划.md) 为准；图像文件 `ModelRouter_V9_Fig2_中文高清.png` 已在当前会话导出、未写入仓库。仅图示讨论，不改变既有五 RQ 八图十二表或真实执行状态。
+
+
 **独立评分完成（11-01）**：用户已选TwinRouterBench 520题/970步；从main e3c54a50f82648647922d15209a24a1fc57a6902复用原评价入口，8/8版本完成、7760条预测，输入及输出任务/gold一致。F11-e01为20.515464分，比微调前高13.505155个百分点；R11为18.969072分，比微调前高5.670103个百分点，全部版本低于恒选low的71.030928分。原Val已选Laya F11/P0_B03_C01/F05、Kev R11/R12/C09保持；旧四档分不当新三模型目标，不按Test重选或晋升。结果见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)，下方未执行Test描述保留原时点。
 
 **最新机器状态（12:57:52台北）**：本轮Laya V9_LAYA_STEP_001-e01完成1轮/9次head更新，实体仍在服务器并有7次真实CPU路由；Kev R01–R16全COMPLETED/EVALUATED、本轮未加训。另项维护已冷启原F14，PID808492、Epoch1块25/420、3200/107404步、最新Loss0.5952016993，最近12块有限，固定Val未完成、不作父。旧failed/NON_FINITE_LOSS仍归档，先前12:32的归档读取不代表当前F14状态。原队列文件仍PAUSED_USER_REQUEST/current_run=null，已有handoff817520等待F14退出，本轮未创建或操作；不覆盖该维护的入口改动。Serving healthy、PID327621与F05-e01/导入Kev Adapter不变，F11/R11代表保持。12:56 GPU9929/49140MiB、0%、75°C，现含F14训练，未被干预。详情见[训练报告](../results/training/training_research.md)。
