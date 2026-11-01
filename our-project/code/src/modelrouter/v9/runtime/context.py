@@ -192,6 +192,8 @@ def record_tool_result(state, record_dir, action, output, duration_ms, *, submis
     from modelrouter.benchmark.iterations import append, event, now
 
     command = action["command"]
+    extra = output.get("extra", {})
+    exit_code = extra.get("actual_exit_code", output["returncode"])
     if TEST_COMMAND.search(command):
         state.current_phase = "verify"
     elif output["returncode"]:
@@ -203,8 +205,8 @@ def record_tool_result(state, record_dir, action, output, duration_ms, *, submis
     state.history.append(StepTrace(
         step_index=state.step_index, phase=state.current_phase,
         selected_action=dict(getattr(state, "last_selected_action", {})), thought="",
-        tool_action=command, tool_observation=output["output"],
-        tool_exit_code=output["returncode"], prompt_tokens=0, completion_tokens=0,
+        tool_action=command, tool_observation=output["output"] or output.get("exception_info", ""),
+        tool_exit_code=exit_code, prompt_tokens=0, completion_tokens=0,
         reasoning_tokens=0, cached_tokens=0, step_cost_usd=0,
         step_duration_sec=duration_ms / 1000,
     ))
@@ -213,8 +215,9 @@ def record_tool_result(state, record_dir, action, output, duration_ms, *, submis
         "step": state.step_index, "decision_id": getattr(state, "last_decision_id", None),
         "router_checkpoint_id": getattr(state, "last_router_checkpoint_id", None),
         "command": command, "tool_call_id": action.get("tool_call_id"),
-        "exit_code": output["returncode"], "duration_ms": duration_ms,
-        "output": output["output"], "exception_info": output.get("exception_info", ""),
+        "exit_code": exit_code, "duration_ms": duration_ms,
+        "output": extra.get("actual_output", output["output"]), "exception_info": output.get("exception_info", ""),
+        "adapter_returncode": output["returncode"],
         "submission": submission, "phase": state.current_phase,
         "phase_source": "COMMAND_HEURISTIC",
     }

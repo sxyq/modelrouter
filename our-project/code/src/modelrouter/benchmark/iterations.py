@@ -79,26 +79,8 @@ def start(path: Path, config: dict):
     write_atomic(path / "resume_state.json", {
         "status": "RUNNING", "units": config.get("units", []), "updated_at": now(),
     })
-    record_source(path)
     event(path, "ITERATION_START", previous_next_iteration=prior_plan)
     return config
-
-
-def record_source(path):
-    for name, argv in (("source_changes.patch", ["git", "diff", "--binary", "HEAD"]),
-                       ("working_tree_status.txt", ["git", "status", "--short"])):
-        started = time.perf_counter()
-        result = subprocess.run(argv, cwd=ROOT, text=True, capture_output=True)
-        (path / name).write_text(result.stdout, encoding="utf-8")
-        append(path / "tool_calls.jsonl", {"kind": "source_record", "argv": argv,
-                                           "duration_ms": (time.perf_counter() - started) * 1000,
-                                           "exit_code": result.returncode, "timestamp": now()})
-    argv = ["git", "ls-files", "--others", "--exclude-standard", "our-project/code/src", "our-project/code/tests", "our-project/dashboard/agent_benchmark.js"]
-    additions = subprocess.check_output(argv, cwd=ROOT, text=True).splitlines()
-    with (path / "source_changes.patch").open("a", encoding="utf-8") as stream:
-        for name in additions:
-            diff = subprocess.run(["git", "diff", "--no-index", "--", "/dev/null", name], cwd=ROOT, text=True, capture_output=True)
-            stream.write(diff.stdout)
 
 
 def event(path: Path, event_type: str, **data):
@@ -237,7 +219,8 @@ def summarize(path: Path, *, persist=True):
     router_cost = sum(router_costs) if router_costs and all(v is not None for v in router_costs) else None
     full_cost = (billed_generator + billed_teacher + sandbox_cost + router_cost
                  if all(v is not None for v in (billed_generator, billed_teacher, sandbox_cost, router_cost)) else None)
-    started = datetime.fromisoformat(json.loads((path / "run_config.json").read_text())["started_at"])
+    run_config = json.loads((path / "run_config.json").read_text())
+    started = datetime.fromisoformat(run_config["started_at"])
     elapsed = (datetime.fromisoformat(state.get("finished_at", now())) - started).total_seconds()
     current = next((u for u in state["units"] if u["status"] == "RUNNING"), None)
     unit = current or (state["units"][-1] if state["units"] else {})
@@ -261,6 +244,9 @@ def summarize(path: Path, *, persist=True):
     backend_costs = [row.get("backend_model_rate_cost_usd") for row in calls + teachers] + [None] * len(generator_failures)
     mapped_requests = [dict(row, role=role) for role, group in (("generator", calls), ("teacher", teachers))
                        for row in group if row.get("cost_basis") == "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE"]
+    mapped_requests.extend(dict(row, role="generator", cost_basis="SELECTED_MODEL_RATES_WITH_BACKEND_USAGE")
+                           for row in generator_failures if row.get("execution_mode") == "ALIAS_SMOKE")
+    is_alias = bool(mapped_requests) or (run_config.get("v9_config") or {}).get("execution_scope") == "ALIAS_SMOKE"
     mapped_costs = [row.get("cost_usd") for row in mapped_requests]
     mapped_specs = {row["cost_model_id"]: ModelRegistry().get_spec(row["cost_model_id"])
                     for row in mapped_requests}
@@ -285,7 +271,7 @@ def summarize(path: Path, *, persist=True):
         "backend_model_rate_reference_cost_usd": round(sum(backend_costs), 10) if backend_costs and all(v is not None for v in backend_costs) else None,
         "known_backend_model_rate_reference_cost_usd": round(sum(v for v in backend_costs if v is not None), 10) if any(v is not None for v in backend_costs) else None,
         "backend_model_rate_statuses": sorted({row.get("backend_model_rate_status", "NOT_MEASURED") for row in calls + teachers}),
-        "execution_mode": "ALIAS_SMOKE" if mapped_requests else "REAL_API",
+        "execution_mode": "ALIAS_SMOKE" if is_alias else "REAL_API",
         "mapped_cost_accounting": {
             "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
             "requests": mapped_requests,
@@ -364,7 +350,7 @@ def summarize(path: Path, *, persist=True):
         "last_unit": state["units"][-1] if state["units"] else None,
         "measurement_scope": "Benchmark metrics exclude provider/router probes; original probe events remain in events.jsonl",
         "ttft_scope": "Upstream provider timing; native relay buffers the response before returning it",
-        "publication_status": "ALIAS_SMOKE_ONLY" if mapped_requests else "NOT_EVALUATED" if not verified else "AWAITING_PAIRED_SCIENTIFIC_ANALYSIS",
+        "publication_status": "ALIAS_SMOKE_ONLY" if is_alias else "NOT_EVALUATED" if not verified else "AWAITING_PAIRED_SCIENTIFIC_ANALYSIS",
         "missing_measurements": ["sandbox billing", "router infrastructure cost", "provider invoice reconciliation"],
     }
     if persist:
@@ -478,7 +464,6 @@ def finish(path: Path, status: str, reason: str = ""):
     state = json.loads((path / "resume_state.json").read_text())
     state.update(status=status, updated_at=now(), finished_at=now(), reason=reason)
     write_atomic(path / "resume_state.json", state)
-    record_source(path)
     metrics = summarize(path)
     unresolved = [u for u in state["units"] if u["status"] not in ("EVALUATED",)]
     errors = [e for e in rows(path / "events.jsonl") if e["event"] == "ERROR"]

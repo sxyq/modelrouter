@@ -312,6 +312,13 @@ class HarborEnvironment(LocalEnvironment):
                 self.loop,
             ).result()
         except RuntimeError as exc:
+            if str(exc) == f"Command timed out after {timeout or self.config.timeout} seconds":
+                output = {"output": "", "returncode": -1, "exception_info": str(exc),
+                          "extra": {"actual_exit_code": None, "actual_output": None,
+                                    "exception_type": "RuntimeError"}}
+                record_tool_result(self.state, self.record_dir, action, output,
+                                   (time.perf_counter() - started) * 1000)
+                return output
             record = {"kind": "agent_tool", "timestamp": now(), "episode_id": self.state.episode_id,
                       "step": self.state.step_index, "command": action["command"],
                       "tool_call_id": action.get("tool_call_id"), "exit_code": None, "output": None,

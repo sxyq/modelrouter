@@ -36,7 +36,7 @@ class StepTrace:
     thought: str
     tool_action: str
     tool_observation: str
-    tool_exit_code: int
+    tool_exit_code: Optional[int]
     prompt_tokens: int
     completion_tokens: int
     reasoning_tokens: int
@@ -68,7 +68,7 @@ class StepTrace:
 class PreDecisionSnapshot:
     step_index: int
     phase: str
-    last_tool_exit_code: int
+    last_tool_exit_code: Optional[int]
     last_observation_summary: str
     history_length: int
     budget_remaining_usd: float
