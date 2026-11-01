@@ -110,6 +110,9 @@ class PolicyModel(LitellmModel):
                 self.policy.client.endpoint = v9_config["router_endpoint"].rstrip("/")
                 self.policy.client.timeout = v9_config.get(
                     "router_timeout_sec", 60.0 if self.policy.client.router_family == "kev" else 20.0)
+                if v9_config.get("router_checkpoint"):
+                    from modelrouter.v9.runtime.checkpoint import CheckpointRouterClient
+                    self.policy.client = CheckpointRouterClient(v9_config)
         self.teacher_metrics = self.v9_hook.teacher_metrics if self.v9_hook else []
         self.action_validation = {
             action["action_id"]: ("ALIAS_SMOKE_ONLY" if self.v9_enabled and

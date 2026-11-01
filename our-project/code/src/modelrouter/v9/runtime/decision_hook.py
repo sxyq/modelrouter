@@ -42,6 +42,8 @@ class V9DecisionHook:
                     "router_identity_status": "NOT_A_NEURAL_ROUTE"}
         if not neural_route or decision.fallback_used:
             return identity
+        if decision.router_identity is not None:
+            return decision.router_identity
         from modelrouter.serving.schemas import ModelsResponse
 
         url = self.config["router_endpoint"].rstrip("/") + "/models"
@@ -91,9 +93,14 @@ class V9DecisionHook:
                       assessment=self.assessment, **metrics)
             elif self.assessment is not None and self.trigger.signals(state) != self.trigger.last_signals:
                 self.assessment = None
+        card_actions = legal_actions
+        if self.config.get("selection_scope") == "MODEL_ONLY":
+            card_actions = [{"model_id": action["model"], "native_effort": None,
+                             "requested_native_effort": action["native_effort"],
+                             "action_id": action["model"]} for action in legal_actions]
         result.update(
             teacher_assessment=deepcopy(self.assessment) if self.teacher_enabled else None,
-            capability_cards=capability_cards(self.capability_snapshot, legal_actions),
+            capability_cards=capability_cards(self.capability_snapshot, card_actions),
             capability_snapshot_id=self.capability_snapshot.get("snapshot_id"),
             feature_training_status=self.config.get("feature_training_status", "FEATURE_NOT_TRAINED"),
             continuity=deepcopy(self.continuity),

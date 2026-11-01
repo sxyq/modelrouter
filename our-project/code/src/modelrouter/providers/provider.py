@@ -473,7 +473,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             try:
                 with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:
                     body, ttft_ms = transport._read_response(self, response, stream, started)
-            except Exception:
+            except (Exception, KeyboardInterrupt):
                 _record_budget(budget, None, None, request_bound)
                 raise
             raw_usage = body.get("usage")
@@ -513,6 +513,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "native_effort": effective_effort,
             "requested_native_effort": native_effort,
             "request_native_effort": effective_effort,
+            "sent_effort_parameter": {name: payload[name] for name in ("reasoning", "reasoning_effort")
+                                      if name in payload},
             "returned_native_effort": returned_effort,
             "native_effort_status": effort_status,
             "stream": stream,

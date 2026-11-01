@@ -242,7 +242,7 @@ def build_offline_prefix_input(row, state_factory):
 
 def _router_input_text(row, decision):
     """Reuse online task/tool compaction; the complete record remains unchanged."""
-    if row.get("_meta", {}).get("input_kind") != "TRAJECTORY_PREFIX":
+    if row.get("_meta", {}).get("input_kind") not in ("TRAJECTORY_PREFIX", "REAL_CANDIDATE_COMPARISON"):
         return decision.router_text()
     from modelrouter.agent.state import AgentState
     from modelrouter.v9.runtime.context import compact_router_state

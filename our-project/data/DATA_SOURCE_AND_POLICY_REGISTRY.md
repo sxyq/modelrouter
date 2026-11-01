@@ -2,15 +2,17 @@
 
 ## 当前能力与数据来源（2026-11-01）
 
-**新增真实监督**：12个不同SWE-smith Train任务/9仓库，7组双候选完整通过，新增任务级模型成本偏好7条、步骤级即时验证偏好2条，来自7任务。来源TRA-002/MIT，保留各原repo与instance_id、镜像版本、工具及原Verifier；与Canary/Dev/Final和独立TwinRouterBench的精确ID、可识别派生元数据关系见本轮task_isolation，不对任意近重复作全面结论。Mido仓库外路径、gTTS网络验证、PyASN1单边超时和其他接口/格式错误只作观察。结果见[本轮记录](../results/iterations/20261101-v9-overnight-real-supervision/review.md)。
+**训练对象范围（12:57台北）**：新Laya步骤head接续已完成、Kev本轮未训练；另项维护已冷启F14到块25/420、3200/107404步、最新Loss0.5952，最近12块有限，旧NON_FINITE_LOSS仍归档、不作父。原队列文件仍暂停，既有handoff等待F14结束，本轮未创建或操作；其入口改动保留但不并入本轮提交，Serving仍原权重。
 
-新视图13条含历史TextFSM/Device的4条，累计任务级9/步骤级4、9个任务、Luna12/Sol1；不能再加旧delta重复计数。原Prepare及本机/服务器serializer均消费13条，相对S1链接有效，原Train196可组合209、Val186不变，382与13,214候选不重加工。25份本轮比较中16份无目标，44份候选观察不等于44条动作监督。209请求/199Usage/10缺失、3响应无法计价；已知小计1.85298918USD，完整费用、实收和资源USD未知，采集教师0。Dev及其教师结果隔离，不入Train。
+**新增真实监督**：沿已有TRA-002/MIT的四个Train任务获取新失败前缀，Autograd、PyASN1 ChoiceDecoder、async-timeout形成Sol质量偏好3条，TinyDB cache形成Luna等质量成本偏好1条。新增来源任务0，新前缀覆盖4个已有任务/4仓库。保留原repo/instance_id、提交、相同已发生消息、环境恢复、真实工具与原Verifier；沿用已有Train与Canary/Dev/Final及可识别派生题隔离元数据，不对任意近重复作全面结论。首轮401、文本格式失败、中断只作观察或未标注。结果见[本轮记录](../results/iterations/20261101-v9-quality-step-supervision/review.md)。
 
-两个不同Dev共5个Episode/59生成及1教师请求，4个原Verifier终局均reward0，固定Sol工具超时的终局未知。HTML任务动态Sol3→Luna12/15生成与固定Luna3生成均CTRF0/2；Git教师开/关均CTRF0/1，新教师成功短评进入Router4次。Dev已知模型费0.18991261USD、全工作包269请求/已知2.04290179USD，完整费用仍未知；不产生Dev质量赢家或Train标签。临时快照17个、采集工具和自有隧道已清理，原镜像、失败和任务记录保留。
+唯一当前 `20261101-v9-quality-step-supervision/training_delta/model_comparison/train.jsonl` 为17条，已含原13条；任务级9/步骤级8、9任务、Sol4/Luna13，步骤覆盖8任务/7仓库、Sol4/Luna4，7质量/1等质量成本。17条允许Train，原Train196可组合213、Val186保持，382与13,214候选不重加工。原Prepare和Trainer统一canonical文本；Laya5120保留17/17完整视图和两选项，Kev最大3700Token在8K可容纳。实际本轮Laya仅使用64旧S1+8步骤目标72行，不用9条任务成本标签，教师和Effort目标0；不同监督类型和旧模型身份保留。
 
-Sol请求low/medium的110份原响应报告max；Luna low/none的89份不报告应用档位，执行与元数据原因未知。合法Model目标明确MODEL_ONLY_UNDER_RECORDED_PROVIDER_CONFIGURATION，native_effort目标为null，requested_native_effort只作为此前可见输入保留；确认的Model×Native Effort/同模型Effort/K=3标签均0，旧历史实体不改写。两个账户目录仍无Flash，不重发旧404/503；AA v4的Max不是low/none成绩，缺测继续NOT_MEASURED。旧四档标签和输入限制只用于既有独立结果解释，不用独立标签再训。
+新Dev custom-memory-heap-crash三策略各7生成/6完整工具结果：固定Luna原reward0/CTRF5/6，固定Sol和新Laya工具30秒超时、Verifier未运行，终局未知。新Laya7次真实前向全Sol、切换0/fallback0；三份只属OBSERVED_OUTCOME_ONLY，不进入Train或生成质量赢家。P0 16请求/11Usage/5未知，已知0.2559519USD；Dev21请求已知0.31958899USD；本轮37请求/32Usage/5未知、已知模型费率0.57554089USD，教师0，完整费用、实收和资源USD未知。上轮教师1成功/4消费/0.013086USD不证明净收益，旧Dev结果保留在原工作包。
 
-**独立评价材料（11-01完成）**：本轮复用已有ROUTE-003 TwinRouterBench `test_twinrouterbench_holdout.jsonl`（520任务/970步），原 `EVAL_BENCHMARK_ONLY` 用途不变，没有下载、清洗或加入Train/Val。两组数据任务/state/instruction/criteria/gold逐条相同，8/8版本完整评价、7760条预测。只评分旧四档choice，不将每行score问题另算970个样本，不生成Sol/Luna/Flash最优Model×Effort目标；分数与原始概率见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)。既有合法K=2 Train动作目标仍2条（1任务），K=3最优仍0；新训练未启动。
+Provider新增的发送参数证据为Sol reasoning.effort=low、Luna reasoning_effort=low；前者返回max，后者不报告应用档位，原因未知。合法Model目标明确MODEL_ONLY_UNDER_RECORDED_PROVIDER_CONFIGURATION，native_effort目标及Model-only卡为null，requested_native_effort另列；确认的Model×Native Effort/同模型Effort/K=3仍0，旧历史实体不改写。11:50 OneAPI目录HTTP200、5型号、Flash不存在，未重发旧404/503。AA固定v4，Sol/Luna Max各10项，指数54.5087338138148/27.7552004938153；low/none/Flash缺测保持，不借用Max成绩。
+
+**独立评价材料（11-01完成）**：已有ROUTE-003 TwinRouterBench `test_twinrouterbench_holdout.jsonl`（520任务/970步）的 `EVAL_BENCHMARK_ONLY` 用途不变，没有下载、清洗或加入Train/Val。原8/8版本完整评价、7760条预测，只评分旧四档choice，不将每行score问题另算970个样本，不生成Sol/Luna/Flash最优Model×Effort目标；分数与原始概率见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)。八版本不重评、不调参，本轮新Laya未在该独立集评价；当前17条真实Model-only训练监督另列，K=3仍0。
 
 **10-31 历史真实监督**：从ad1d392接续，已有TRA-002对应的SWE-smith公开训练任务TextFSM取得1组有效K=2完整Episode与2个同历史步骤前缀对照，25次Sol/Luna low生成均身份匹配，无Alias。两Episode原96项通过，形成任务级Luna成本偏好1条；前缀7 Sol一步通过、Luna使用镜像不存在的apply_patch，形成步骤级即时修复偏好1条。前缀6两失败和6个候选结果只作观察；完整K=3最优/同模型Effort差异标签仍0。原Dev失败、教师前缀及旧成功题没有重跑，结果见[真实监督记录](../results/iterations/20261031-v9-real-route-supervision/review.md)。
 

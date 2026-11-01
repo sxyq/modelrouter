@@ -1,0 +1,87 @@
+diff --git a/tests/test_tables.py b/tests/test_tables.py
+index 4335200..bbb6198 100644
+--- a/tests/test_tables.py
++++ b/tests/test_tables.py
+@@ -139,6 +139,28 @@ def test_lru_cache(db):
+     assert len(table._query_cache) == 0
+ 
+ 
++@pytest.mark.parametrize('has_results', [False, True])
++def test_query_cache_update_order(db, has_results):
++    table = db.table('table3', cache_size=3)
++    if has_results:
++        table.insert_multiple({'int': value} for value in range(4))
++
++    queries = [where('int') == value for value in range(4)]
++    results = table.search(queries[0])
++    for query in queries[1:3]:
++        table.search(query)
++
++    table._query_cache[queries[0]] = results[:]
++
++    assert table._query_cache.lru == [queries[1], queries[2], queries[0]]
++
++    table.search(queries[3])
++
++    assert table._query_cache.lru == [queries[2], queries[0], queries[3]]
++    assert queries[1] not in table._query_cache
++    assert table.search(queries[0]) == results
++
++
+ def test_table_is_iterable(db):
+     table = db.table('table1')
+ 
+diff --git a/tests/test_utils.py b/tests/test_utils.py
+index 031e086..0e4bc1e 100644
+--- a/tests/test_utils.py
++++ b/tests/test_utils.py
+@@ -37,6 +37,49 @@ def test_lru_cache_set_update():
+     assert cache["a"] == 2
+ 
+ 
++@pytest.mark.parametrize("setter", ["set", "__setitem__"])
++@pytest.mark.parametrize("initial_value", [1, 0, False, None, "", [], {}])
++def test_lru_cache_set_existing(setter, initial_value):
++    cache = LRUCache(capacity=3)
++    cache["a"] = initial_value
++    cache["b"] = 2
++    cache["c"] = 3
++
++    getattr(cache, setter)("a", 4)
++
++    assert cache.lru == ["b", "c", "a"]
++    assert len(cache) == 3
++    assert cache["a"] == 4
++
++    getattr(cache, setter)("a", 5)
++
++    assert cache.lru == ["b", "c", "a"]
++    assert len(cache) == 3
++    assert cache["a"] == 5
++
++    cache["d"] = 6
++
++    assert cache.lru == ["c", "a", "d"]
++    assert "b" not in cache
++
++
++@pytest.mark.parametrize("capacity", [0, 1, 3, None])
++def test_lru_cache_capacity(capacity):
++    cache = LRUCache(capacity=capacity)
++    for key in range(5):
++        cache[key] = key
++        start = 0 if capacity is None else max(0, key + 1 - capacity)
++        assert cache.lru == list(range(start, key + 1))
++        assert len(cache) == len(cache.lru)
++
++    if cache:
++        oldest = cache.lru[0]
++        expected_order = cache.lru[1:] + [oldest]
++        cache[oldest] = 0
++        assert cache.lru == expected_order
++        assert cache[oldest] == 0
++
++
+ def test_lru_cache_get():
+     cache = LRUCache(capacity=3)
+     cache["a"] = 1

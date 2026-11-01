@@ -1,0 +1,59 @@
+diff --git a/pyasn1/codec/ber/decoder.py b/pyasn1/codec/ber/decoder.py
+index 91f2533..2f39ede 100644
+--- a/pyasn1/codec/ber/decoder.py
++++ b/pyasn1/codec/ber/decoder.py
+@@ -1162,7 +1162,7 @@ class SetOfPayloadDecoder(SetOrSetOfPayloadDecoder):
+     protoComponent = univ.SetOf()
+ 
+ 
+-class ChoicePayloadDecoder():
++class ChoicePayloadDecoder(AbstractConstructedPayloadDecoder):
+     protoComponent = univ.Choice()
+ 
+     def valueDecoder(self, substrate, asn1Spec,
+diff --git a/tests/codec/ber/test_decoder.py b/tests/codec/ber/test_decoder.py
+index f69da11..549efa0 100644
+--- a/tests/codec/ber/test_decoder.py
++++ b/tests/codec/ber/test_decoder.py
+@@ -1596,6 +1596,41 @@ class ChoiceDecoderTestCase(BaseTestCase):
+         assert decoder.decode(bytes((164, 128, 5, 0, 0, 0)), asn1Spec=s) == (s, b'')
+ 
+ 
++    def testBySchemaWithTrailingData(self):
++        taggedChoice = self.s.subtype(explicitTag=tag.Tag(
++            tag.tagClassContext, tag.tagFormatConstructed, 4))
++        schemas = (
++            ('untagged', self.s),
++            ('explicit', taggedChoice),
++            ('explicit-indefinite', taggedChoice)
++        )
++        components = (
++            ('place-holder', univ.Null(b''), bytes((5, 0))),
++            ('number', univ.Integer(123), bytes((2, 1, 123))),
++            ('string', univ.OctetString(b''), bytes((4, 0))),
++            ('string', univ.OctetString(b'abc'), bytes((4, 3, 97, 98, 99)))
++        )
++        trailingData = bytes((5, 0))
++        for encoding, schema in schemas:
++            for name, value, substrate in components:
++                with self.subTest(encoding=encoding, component=name,
++                                  substrate=substrate):
++                    if encoding == 'explicit':
++                        substrate = bytes((164, len(substrate))) + substrate
++                    elif encoding == 'explicit-indefinite':
++                        substrate = bytes((164, 128)) + substrate + bytes((0, 0))
++
++                    result, rest = decoder.decode(
++                        substrate + trailingData, asn1Spec=schema)
++
++                    self.assertIsInstance(result, univ.Choice)
++                    self.assertEqual(result.getName(), name)
++                    self.assertEqual(result.getComponent(), value)
++                    self.assertEqual(result.tagSet, schema.tagSet)
++                    self.assertEqual(rest, trailingData)
++                    self.assertFalse(schema.isValue)
++
++
+ class AnyDecoderTestCase(BaseTestCase):
+     def setUp(self):
+         BaseTestCase.setUp(self)

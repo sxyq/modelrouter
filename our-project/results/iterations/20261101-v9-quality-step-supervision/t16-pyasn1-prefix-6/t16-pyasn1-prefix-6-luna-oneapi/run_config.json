@@ -1,0 +1,1780 @@
+{
+  "enabled": true,
+  "execution_scope": "REAL_API_K2_MODEL_ONLY",
+  "evidence_scope": "TRAIN_SOURCE_DOCKER_VALIDATED",
+  "generator_protocol": "responses",
+  "provider_timeout_sec": 180,
+  "formal_model_ids": [
+    "gpt-6.1-sol",
+    "gpt-6-luna",
+    "qwen3.8-flash"
+  ],
+  "teacher_enabled": false,
+  "teacher_model_id": "gpt-6.1-sol",
+  "teacher_native_effort": "low",
+  "candidate_actions": [
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "native_effort": "low"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "native_effort": "low"
+    }
+  ],
+  "capability_snapshot": {
+    "schema_version": 1,
+    "snapshot_id": "20261031T072548885180Z-v4",
+    "snapshot_version": 4,
+    "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+    "status": "PARTIAL",
+    "models": {
+      "gpt-6.1-sol": {
+        "model_id": "gpt-6.1-sol",
+        "evidence_status": "MEASURED",
+        "model_revision": "NOT_REPORTED",
+        "model_creator": {
+          "id": "e67e56e3-15cd-43db-b679-da4660a69f41",
+          "slug": "openai",
+          "name": "OpenAI",
+          "logo": "/img/logos/openai.svg",
+          "color": "#1f1f1f",
+          "country": "us"
+        },
+        "pricing": {
+          "currency": "USD",
+          "unit": "PER_MILLION_TOKENS",
+          "input": 2,
+          "output": 10,
+          "cached_input": 0.1,
+          "cache_write": 2.5
+        },
+        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": 54.5087338138148,
+            "score_unit": "INDEX",
+            "benchmark_version": "5.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null
+          },
+          {
+            "metric_name": "aa-briefcase",
+            "score_raw": 1555.26,
+            "score_unit": "ELO",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Briefcase v1.1: Agentic Knowledge Work Benchmark"
+          },
+          {
+            "metric_name": "automationbench-aa",
+            "score_raw": 0.6486844882398171,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AutomationBench-AA: Agentic SaaS Workflow Benchmark"
+          },
+          {
+            "metric_name": "terminalbench-4-0",
+            "score_raw": 0.560606060606061,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "4.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench 4.0 Benchmark"
+          },
+          {
+            "metric_name": "frontiercode-2-0",
+            "score_raw": 0.406262878787879,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "2.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "FrontierCode 2.0 Benchmark"
+          },
+          {
+            "metric_name": "omniscience",
+            "score_raw": 42.03333333333333,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Omniscience v1.1: Knowledge and Hallucination Benchmark"
+          },
+          {
+            "metric_name": "gdp-pdf",
+            "score_raw": 0.31,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "GDP.pdf Benchmark"
+          },
+          {
+            "metric_name": "hle-diamond",
+            "score_raw": 0.588,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "HLE-Diamond Benchmark"
+          },
+          {
+            "metric_name": "critpt-v2-hard",
+            "score_raw": 0.685,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "critpt-v2-hard"
+          },
+          {
+            "metric_name": "terminal-bench-science",
+            "score_raw": 0.580952380952381,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "0.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench-Science 0.1 Benchmark"
+          },
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          }
+        ],
+        "aa_model_slug": "gpt-6-1-sol",
+        "provider": "OpenAI",
+        "context_limits": {
+          "context_window_tokens": 1000000
+        },
+        "release_date": "2026-09-29",
+        "provider_metadata": {
+          "model_id": "gpt-6.1-sol",
+          "source_url": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+          "model_revision": "NOT_REPORTED",
+          "evidence_status": "OFFICIAL_DOCUMENTATION",
+          "provider": "OpenAI",
+          "context_limits": {
+            "context_window_tokens": 1050000,
+            "max_input_tokens": 922000,
+            "max_output_tokens": 128000
+          },
+          "pricing": {
+            "currency": "USD",
+            "unit": "PER_MILLION_TOKENS",
+            "rates": {
+              "Input": 2.0,
+              "Cached input": 0.1,
+              "Cache writes": 2.5,
+              "Output": 10.0
+            },
+            "conditions": [
+              "Cached input tokens are priced at 5% of the uncached input token rate.",
+              "Cache writes are billed at 1.25x the uncached input token rate.",
+              "API prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+              "Fast mode prices are 2x Standard. Batch and Flex prices are 50% lower than Standard.",
+              "Ultrafast mode prices are 6x Standard.",
+              "Regional processing adds a 10% premium where available.",
+              "GPT-6.1 Sol uses a default context window of 500K tokens in Codex and ChatGPT Work. Usage drawn from your subscription has no long-context surcharge. See [Codex pricing](/codex/pricing)."
+            ]
+          },
+          "native_efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        }
+      },
+      "gpt-6-luna": {
+        "model_id": "gpt-6-luna",
+        "evidence_status": "MEASURED",
+        "model_revision": "NOT_REPORTED",
+        "model_creator": {
+          "id": "e67e56e3-15cd-43db-b679-da4660a69f41",
+          "slug": "openai",
+          "name": "OpenAI",
+          "logo": "/img/logos/openai.svg",
+          "color": "#1f1f1f",
+          "country": "us"
+        },
+        "pricing": {
+          "currency": "USD",
+          "unit": "PER_MILLION_TOKENS",
+          "input": 0.1,
+          "output": 0.5,
+          "cached_input": 0.01,
+          "cache_write": 0.125
+        },
+        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": 27.7552004938153,
+            "score_unit": "INDEX",
+            "benchmark_version": "5.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null
+          },
+          {
+            "metric_name": "aa-briefcase",
+            "score_raw": 1336.99,
+            "score_unit": "ELO",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Briefcase v1.1: Agentic Knowledge Work Benchmark"
+          },
+          {
+            "metric_name": "automationbench-aa",
+            "score_raw": 0.5316814034483175,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AutomationBench-AA: Agentic SaaS Workflow Benchmark"
+          },
+          {
+            "metric_name": "terminalbench-4-0",
+            "score_raw": 0.126262626262626,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "4.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench 4.0 Benchmark"
+          },
+          {
+            "metric_name": "frontiercode-2-0",
+            "score_raw": 0.251747727272727,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "2.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "FrontierCode 2.0 Benchmark"
+          },
+          {
+            "metric_name": "omniscience",
+            "score_raw": -8.266666666666667,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Omniscience v1.1: Knowledge and Hallucination Benchmark"
+          },
+          {
+            "metric_name": "gdp-pdf",
+            "score_raw": 0.228,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "GDP.pdf Benchmark"
+          },
+          {
+            "metric_name": "hle-diamond",
+            "score_raw": 0.222,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "HLE-Diamond Benchmark"
+          },
+          {
+            "metric_name": "critpt-v2-hard",
+            "score_raw": 0.415,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "critpt-v2-hard"
+          },
+          {
+            "metric_name": "terminal-bench-science",
+            "score_raw": 0.0857142857142857,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "0.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench-Science 0.1 Benchmark"
+          },
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          }
+        ],
+        "aa_model_slug": "gpt-6-luna",
+        "provider": "OpenAI",
+        "context_limits": {
+          "context_window_tokens": 1000000
+        },
+        "release_date": "2026-09-22",
+        "provider_metadata": {
+          "model_id": "gpt-6-luna",
+          "source_url": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+          "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+          "model_revision": "NOT_REPORTED",
+          "evidence_status": "OFFICIAL_DOCUMENTATION",
+          "provider": "OpenAI",
+          "context_limits": {
+            "context_window_tokens": 1050000,
+            "max_input_tokens": 922000,
+            "max_output_tokens": 128000
+          },
+          "pricing": {
+            "currency": "USD",
+            "unit": "PER_MILLION_TOKENS",
+            "rates": {
+              "Input": 0.1,
+              "Cached input": 0.01,
+              "Cache writes": 0.125,
+              "Output": 0.5
+            },
+            "conditions": [
+              "Cached input tokens are priced at 10% of the uncached input token rate.",
+              "Cache writes are billed at 1.25x the uncached input token rate.",
+              "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+              "Regional processing adds a 10% premium where available. EU data residency is available with Standard, Fast, Flex, and Batch processing.",
+              "Batch and Flex are priced at 50% of Standard rates. Fast mode is priced at 2x the applicable rates."
+            ]
+          },
+          "native_efforts": [
+            "none",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        }
+      },
+      "qwen3.8-flash": {
+        "model_id": "qwen3.8-flash",
+        "evidence_status": "NOT_MEASURED",
+        "model_revision": "NOT_REPORTED",
+        "model_creator": null,
+        "pricing": {},
+        "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "MODEL_NOT_FOUND"
+          },
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "MODEL_NOT_FOUND"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "MODEL_NOT_FOUND"
+          }
+        ],
+        "provider_metadata": {
+          "model_id": "qwen3.8-flash",
+          "source_url": "https://help.aliyun.com/en/model-studio/qwen3-8-flash",
+          "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+          "model_revision": "NOT_REPORTED",
+          "evidence_status": "OFFICIAL_DOCUMENTATION",
+          "provider": "Alibaba Cloud",
+          "document_modified_at": 1793285582000,
+          "context_limits": {
+            "Max input length": 991808,
+            "Max output length": 131072,
+            "Max input length (thinking mode)": 983616,
+            "Max output length (thinking mode)": 131072,
+            "Context length": 1000000,
+            "Max thinking chain length": 262144
+          },
+          "pricing": {
+            "regions": [
+              {
+                "region": "China (Beijing)",
+                "deployment_scope": null,
+                "currency": "CNY",
+                "rates": [
+                  {
+                    "billing_item": "Input",
+                    "price": 0.8,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Output",
+                    "price": 2.7,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Input (cache hit)",
+                    "price": 0.1,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache creation",
+                    "price": 1.25,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache hit",
+                    "price": 0.1,
+                    "unit": "Per 1 million tokens"
+                  }
+                ]
+              },
+              {
+                "region": "Singapore",
+                "deployment_scope": "International",
+                "currency": "CNY",
+                "rates": [
+                  {
+                    "billing_item": "Input",
+                    "price": 1.094,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Output",
+                    "price": 3.427,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Input (cache hit)",
+                    "price": 0.117,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache creation",
+                    "price": 1.458,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache hit",
+                    "price": 0.117,
+                    "unit": "Per 1 million tokens"
+                  }
+                ]
+              },
+              {
+                "region": "Germany (Frankfurt)",
+                "deployment_scope": "EU",
+                "currency": "CNY",
+                "rates": [
+                  {
+                    "billing_item": "Input",
+                    "price": 1.094,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Output",
+                    "price": 3.427,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Input (cache hit)",
+                    "price": 0.117,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache creation",
+                    "price": 1.458,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache hit",
+                    "price": 0.117,
+                    "unit": "Per 1 million tokens"
+                  }
+                ]
+              },
+              {
+                "region": "Germany (Frankfurt)",
+                "deployment_scope": "Global",
+                "currency": "CNY",
+                "rates": [
+                  {
+                    "billing_item": "Input",
+                    "price": 0.8,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Output",
+                    "price": 2.7,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Input (cache hit)",
+                    "price": 0.1,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache creation",
+                    "price": 1.25,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache hit",
+                    "price": 0.1,
+                    "unit": "Per 1 million tokens"
+                  }
+                ]
+              },
+              {
+                "region": "Japan (Tokyo)",
+                "deployment_scope": "Global",
+                "currency": "CNY",
+                "rates": [
+                  {
+                    "billing_item": "Input",
+                    "price": 0.8,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Output",
+                    "price": 2.7,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Input (cache hit)",
+                    "price": 0.1,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache creation",
+                    "price": 1.25,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache hit",
+                    "price": 0.1,
+                    "unit": "Per 1 million tokens"
+                  }
+                ]
+              },
+              {
+                "region": "US (Virginia)",
+                "deployment_scope": "Global",
+                "currency": "CNY",
+                "rates": [
+                  {
+                    "billing_item": "Input",
+                    "price": 0.8,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Output",
+                    "price": 2.7,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Input (cache hit)",
+                    "price": 0.1,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache creation",
+                    "price": 1.25,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache hit",
+                    "price": 0.1,
+                    "unit": "Per 1 million tokens"
+                  }
+                ]
+              },
+              {
+                "region": "US (Virginia)",
+                "deployment_scope": "US",
+                "currency": "CNY",
+                "rates": [
+                  {
+                    "billing_item": "Input",
+                    "price": 1.094,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Output",
+                    "price": 3.427,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Input (cache hit)",
+                    "price": 0.117,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache creation",
+                    "price": 1.458,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache hit",
+                    "price": 0.117,
+                    "unit": "Per 1 million tokens"
+                  }
+                ]
+              },
+              {
+                "region": "Hong Kong (China)",
+                "deployment_scope": "Hong Kong (China)",
+                "currency": "CNY",
+                "rates": [
+                  {
+                    "billing_item": "Input",
+                    "price": 1.094,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Output",
+                    "price": 3.427,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Input (cache hit)",
+                    "price": 0.117,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache creation",
+                    "price": 1.458,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache hit",
+                    "price": 0.117,
+                    "unit": "Per 1 million tokens"
+                  }
+                ]
+              },
+              {
+                "region": "Hong Kong (China)",
+                "deployment_scope": "Global",
+                "currency": "CNY",
+                "rates": [
+                  {
+                    "billing_item": "Input",
+                    "price": 0.8,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Output",
+                    "price": 2.7,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Input (cache hit)",
+                    "price": 0.1,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache creation",
+                    "price": 1.25,
+                    "unit": "Per 1 million tokens"
+                  },
+                  {
+                    "billing_item": "Explicit cache hit",
+                    "price": 0.1,
+                    "unit": "Per 1 million tokens"
+                  }
+                ]
+              }
+            ],
+            "promotions_included": false
+          }
+        }
+      }
+    },
+    "sources": [
+      {
+        "source_url": "https://artificialanalysis.ai/api/v2/data/llms/models",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "status": "API_KEY_MISSING"
+      },
+      {
+        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "source_kind": "AA_PUBLIC",
+        "model_id": "gpt-6.1-sol",
+        "status": "FETCHED",
+        "http_status": 200,
+        "response_headers": {
+          "Content-Type": "text/html; charset=utf-8",
+          "Date": "Sat, 31 Oct 2026 03:04:45 GMT"
+        },
+        "response_bytes": 1650620,
+        "capability_evidence_status": "PARTIAL",
+        "measured_metric_count": 10,
+        "provider_metadata_model_count": 0
+      },
+      {
+        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "source_kind": "AA_PUBLIC",
+        "model_id": "gpt-6-luna",
+        "status": "FETCHED",
+        "http_status": 200,
+        "response_headers": {
+          "Content-Type": "text/html; charset=utf-8",
+          "Date": "Sat, 31 Oct 2026 03:04:44 GMT"
+        },
+        "response_bytes": 1651990,
+        "capability_evidence_status": "PARTIAL",
+        "measured_metric_count": 10,
+        "provider_metadata_model_count": 0
+      },
+      {
+        "source_url": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+        "model_id": "gpt-6.1-sol",
+        "source_kind": "PROVIDER_DOCUMENTATION",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "status": "FETCHED_METADATA",
+        "http_status": 200,
+        "response_headers": {
+          "Content-Type": "text/markdown; charset=utf-8",
+          "Date": "Sat, 31 Oct 2026 07:25:54 GMT"
+        },
+        "response_bytes": 4079
+      },
+      {
+        "source_url": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+        "model_id": "gpt-6-luna",
+        "source_kind": "PROVIDER_DOCUMENTATION",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "status": "FETCHED_METADATA",
+        "http_status": 200,
+        "response_headers": {
+          "Content-Type": "text/markdown; charset=utf-8",
+          "Date": "Sat, 31 Oct 2026 07:25:54 GMT"
+        },
+        "response_bytes": 4111
+      },
+      {
+        "source_url": "https://help.aliyun.com/en/model-studio/qwen3-8-flash",
+        "model_id": "qwen3.8-flash",
+        "source_kind": "PROVIDER_DOCUMENTATION",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "status": "FETCHED_METADATA",
+        "http_status": 200,
+        "response_headers": {
+          "Content-Type": "text/html;charset=UTF-8",
+          "Date": "Sat, 31 Oct 2026 07:25:55 GMT"
+        },
+        "response_bytes": 76715
+      }
+    ],
+    "capability_evidence_status": "PARTIAL",
+    "measured_metric_count": 20,
+    "provider_metadata_model_count": 3
+  },
+  "feature_training_status": "FEATURE_NOT_TRAINED",
+  "dataset": "SWE-bench/SWE-smith",
+  "source_id": "TRA-002",
+  "split": "train",
+  "initial_cwd": "/testbed",
+  "backend_deployment_status": "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION",
+  "initial_environment_image": "modelrouter-v9-quality:t16-pyasn1-prefix-6",
+  "initial_environment_version": "sha256:ed4ab48ec27614c3ce5e052b0be6994c6dbbec22f6224ead90d522fd823951c8",
+  "original_verifier_paths": [
+    "tests/codec/ber/test_decoder.py",
+    "tests/codec/ber/test_encoder.py",
+    "tests/codec/cer/test_decoder.py",
+    "tests/codec/cer/test_encoder.py",
+    "tests/codec/der/test_decoder.py",
+    "tests/codec/der/test_encoder.py",
+    "tests/codec/native/test_decoder.py",
+    "tests/codec/native/test_encoder.py",
+    "tests/codec/test_streaming.py",
+    "tests/test_debug.py",
+    "tests/type/test_char.py",
+    "tests/type/test_constraint.py",
+    "tests/type/test_namedtype.py",
+    "tests/type/test_namedval.py",
+    "tests/type/test_opentype.py",
+    "tests/type/test_tag.py",
+    "tests/type/test_univ.py",
+    "tests/type/test_useful.py"
+  ],
+  "router_endpoint": "http://127.0.0.1:8000",
+  "actual_backend_model_id": "gpt-6-luna",
+  "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+  "policy": "fixed_luna",
+  "workspace": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/t16-pyasn1-prefix-6",
+  "execution_mode": "REAL_API",
+  "mini_swe_version": "2.4.6",
+  "started_at": "2026-11-01T03:01:16.966358+00:00",
+  "max_steps": 30,
+  "max_output_tokens": 4096,
+  "instruction": "# ChoicePayloadDecoder fails to decode Choice ASN.1 types\n\nI found a bug in the ASN.1 decoder when working with Choice types. The decoder fails to properly handle Choice types, causing decoding operations to fail.\n\n## Reproduction\n\nHere's a simple example that demonstrates the issue:\n\n```python\nfrom pyasn1.type import univ, tag\nfrom pyasn1.codec.ber import decoder\n\n# Create a Choice type\nchoice = univ.Choice(\n    componentType=univ.NamedTypes(\n        univ.NamedType('null', univ.Null()),\n        univ.NamedType('boolean', univ.Boolean()),\n        univ.NamedType('octetString', univ.OctetString())\n    )\n)\n\n# Try to decode a simple Null value\nencoded_data = bytes((5, 0))  # Encoded Null value\nresult = decoder.decode(encoded_data, asn1Spec=choice)\n```\n\nThis code fails with an error instead of properly decoding the Choice type.\n\nThe issue also appears when using explicit tags:\n\n```python\n# Create a Choice with explicit tag\ntagged_choice = choice.subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 4))\ntagged_choice.setComponentByPosition(0, univ.Null(''))\n\n# Try to decode\nencoded_data = bytes((164, 2, 5, 0))  # Explicitly tagged Null\nresult = decoder.decode(encoded_data, asn1Spec=tagged_choice)\n```\n\nThis also fails to decode properly.\n\nThe problem seems to be related to the inheritance of the ChoicePayloadDecoder class. Can someone look into this?\n\n<END WRITING>\n\nWorkspace and initial working directory (absolute CWD): /testbed",
+  "verify_command": "python -m pytest -q tests/codec/ber/test_decoder.py::ChoiceDecoderTestCase::testBySpec tests/codec/ber/test_decoder.py::ChoiceDecoderTestCase::testExplicitTag tests/codec/ber/test_decoder.py::ChoiceDecoderTestCase::testExplicitTagUndefLength tests/codec/ber/test_decoder.py::ChoiceDecoderTestCase::testUndefLength tests/codec/ber/test_decoder.py::LargeTagDecoderTestCase::testLargeTag tests/codec/ber/test_decoder.py::LargeTagDecoderTestCase::testLongTag tests/codec/ber/test_decoder.py::LargeTagDecoderTestCase::testTagsEquivalence tests/codec/ber/test_decoder.py::DecoderCacheTestCase::testCache tests/codec/ber/test_decoder.py::IntegerDecoderTestCase::testMinusOne tests/codec/ber/test_decoder.py::IntegerDecoderTestCase::testNegInt tests/codec/ber/test_decoder.py::IntegerDecoderTestCase::testNegLong tests/codec/ber/test_decoder.py::IntegerDecoderTestCase::testPosInt tests/codec/ber/test_decoder.py::IntegerDecoderTestCase::testPosLong tests/codec/ber/test_decoder.py::IntegerDecoderTestCase::testSpec tests/codec/ber/test_decoder.py::IntegerDecoderTestCase::testTagFormat tests/codec/ber/test_decoder.py::IntegerDecoderTestCase::testZero tests/codec/ber/test_decoder.py::IntegerDecoderTestCase::testZeroLong tests/codec/ber/test_decoder.py::BooleanDecoderTestCase::testExtraTrue tests/codec/ber/test_decoder.py::BooleanDecoderTestCase::testFalse tests/codec/ber/test_decoder.py::BooleanDecoderTestCase::testTagFormat tests/codec/ber/test_decoder.py::BooleanDecoderTestCase::testTrue tests/codec/ber/test_decoder.py::BooleanDecoderTestCase::testTrueNeg tests/codec/ber/test_decoder.py::BitStringDecoderTestCase::testDefMode tests/codec/ber/test_decoder.py::BitStringDecoderTestCase::testDefModeChunked tests/codec/ber/test_decoder.py::BitStringDecoderTestCase::testDefModeChunkedSubst tests/codec/ber/test_decoder.py::BitStringDecoderTestCase::testDefModeChunkedSubstV04 tests/codec/ber/test_decoder.py::BitStringDecoderTestCase::testIndefMode tests/codec/ber/test_decoder.py::BitStringDecoderTestCase::testIndefModeChunked tests/codec/ber/test_decoder.py::BitStringDecoderTestCase::testIndefModeChunkedSubst tests/codec/ber/test_decoder.py::BitStringDecoderTestCase::testIndefModeChunkedSubstV04 tests/codec/ber/test_decoder.py::BitStringDecoderTestCase::testTypeChecking tests/codec/ber/test_decoder.py::OctetStringDecoderTestCase::testDefMode tests/codec/ber/test_decoder.py::OctetStringDecoderTestCase::testDefModeChunked tests/codec/ber/test_decoder.py::OctetStringDecoderTestCase::testDefModeChunkedSubst tests/codec/ber/test_decoder.py::OctetStringDecoderTestCase::testDefModeChunkedSubstV04 tests/codec/ber/test_decoder.py::OctetStringDecoderTestCase::testIndefMode tests/codec/ber/test_decoder.py::OctetStringDecoderTestCase::testIndefModeChunked tests/codec/ber/test_decoder.py::OctetStringDecoderTestCase::testIndefModeChunkedSubst tests/codec/ber/test_decoder.py::OctetStringDecoderTestCase::testIndefModeChunkedSubstV04 tests/codec/ber/test_decoder.py::ExpTaggedOctetStringDecoderTestCase::testDefMode tests/codec/ber/test_decoder.py::ExpTaggedOctetStringDecoderTestCase::testDefModeChunked tests/codec/ber/test_decoder.py::ExpTaggedOctetStringDecoderTestCase::testDefModeSubst tests/codec/ber/test_decoder.py::ExpTaggedOctetStringDecoderTestCase::testDefModeSubstV04 tests/codec/ber/test_decoder.py::ExpTaggedOctetStringDecoderTestCase::testIndefMode tests/codec/ber/test_decoder.py::ExpTaggedOctetStringDecoderTestCase::testIndefModeChunked tests/codec/ber/test_decoder.py::ExpTaggedOctetStringDecoderTestCase::testIndefModeSubst tests/codec/ber/test_decoder.py::ExpTaggedOctetStringDecoderTestCase::testIndefModeSubstV04 tests/codec/ber/test_decoder.py::NullDecoderTestCase::testNull tests/codec/ber/test_decoder.py::NullDecoderTestCase::testTagFormat tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testEdge1 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testEdge2 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testEdge3 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testEdge4 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testEdge5 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testEdge6 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testEdge7 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testEdge8 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testEdge9 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testIndefiniteLength tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testLarge1 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testLarge2 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testLeading0x80Case1 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testLeading0x80Case2 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testLeading0x80Case3 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testLeading0x80Case4 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testNonLeading0x80 tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testOne tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testReservedLength tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testTagFormat tests/codec/ber/test_decoder.py::ObjectIdentifierDecoderTestCase::testZeroLength tests/codec/ber/test_decoder.py::RelativeOIDDecoderTestCase::testIndefiniteLength tests/codec/ber/test_decoder.py::RelativeOIDDecoderTestCase::testLarge tests/codec/ber/test_decoder.py::RelativeOIDDecoderTestCase::testLeading0x80 tests/codec/ber/test_decoder.py::RelativeOIDDecoderTestCase::testNonLeading0x80 tests/codec/ber/test_decoder.py::RelativeOIDDecoderTestCase::testOne tests/codec/ber/test_decoder.py::RelativeOIDDecoderTestCase::testReservedLength tests/codec/ber/test_decoder.py::RelativeOIDDecoderTestCase::testTagFormat tests/codec/ber/test_decoder.py::RelativeOIDDecoderTestCase::testThree tests/codec/ber/test_decoder.py::RelativeOIDDecoderTestCase::testTwo tests/codec/ber/test_decoder.py::RelativeOIDDecoderTestCase::testZeroLength tests/codec/ber/test_decoder.py::RealDecoderTestCase::testBin1 tests/codec/ber/test_decoder.py::RealDecoderTestCase::testBin2 tests/codec/ber/test_decoder.py::RealDecoderTestCase::testBin3 tests/codec/ber/test_decoder.py::RealDecoderTestCase::testBin4 tests/codec/ber/test_decoder.py::RealDecoderTestCase::testBin5 tests/codec/ber/test_decoder.py::RealDecoderTestCase::testChar tests/codec/ber/test_decoder.py::RealDecoderTestCase::testEmpty tests/codec/ber/test_decoder.py::RealDecoderTestCase::testMinusInf tests/codec/ber/test_decoder.py::RealDecoderTestCase::testPlusInf tests/codec/ber/test_decoder.py::RealDecoderTestCase::testShortEncoding tests/codec/ber/test_decoder.py::RealDecoderTestCase::testTagFormat tests/codec/ber/test_decoder.py::UniversalStringDecoderTestCase::testDecoder tests/codec/ber/test_decoder.py::BMPStringDecoderTestCase::testDecoder tests/codec/ber/test_decoder.py::UTF8StringDecoderTestCase::testDecoder tests/codec/ber/test_decoder.py::SequenceOfDecoderTestCase::testDefMode tests/codec/ber/test_decoder.py::SequenceOfDecoderTestCase::testDefModeChunked tests/codec/ber/test_decoder.py::SequenceOfDecoderTestCase::testIndefMode tests/codec/ber/test_decoder.py::SequenceOfDecoderTestCase::testIndefModeChunked tests/codec/ber/test_decoder.py::SequenceOfDecoderTestCase::testSchemalessDecoder tests/codec/ber/test_decoder.py::ExpTaggedSequenceOfDecoderTestCase::testWithSchema tests/codec/ber/test_decoder.py::ExpTaggedSequenceOfDecoderTestCase::testWithoutSchema tests/codec/ber/test_decoder.py::SequenceOfDecoderWithSchemaTestCase::testDefMode tests/codec/ber/test_decoder.py::SequenceOfDecoderWithSchemaTestCase::testDefModeChunked tests/codec/ber/test_decoder.py::SequenceOfDecoderWithSchemaTestCase::testIndefMode tests/codec/ber/test_decoder.py::SequenceOfDecoderWithSchemaTestCase::testIndefModeChunked tests/codec/ber/test_decoder.py::SetOfDecoderTestCase::testDefMode tests/codec/ber/test_decoder.py::SetOfDecoderTestCase::testDefModeChunked tests/codec/ber/test_decoder.py::SetOfDecoderTestCase::testIndefMode tests/codec/ber/test_decoder.py::SetOfDecoderTestCase::testIndefModeChunked tests/codec/ber/test_decoder.py::SetOfDecoderTestCase::testSchemalessDecoder tests/codec/ber/test_decoder.py::SetOfDecoderWithSchemaTestCase::testDefMode tests/codec/ber/test_decoder.py::SetOfDecoderWithSchemaTestCase::testDefModeChunked tests/codec/ber/test_decoder.py::SetOfDecoderWithSchemaTestCase::testIndefMode tests/codec/ber/test_decoder.py::SetOfDecoderWithSchemaTestCase::testIndefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderTestCase::testTagFormat tests/codec/ber/test_decoder.py::SequenceDecoderTestCase::testWithOptionalAndDefaultedDefMode tests/codec/ber/test_decoder.py::SequenceDecoderTestCase::testWithOptionalAndDefaultedDefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderTestCase::testWithOptionalAndDefaultedDefModeSubst tests/codec/ber/test_decoder.py::SequenceDecoderTestCase::testWithOptionalAndDefaultedDefModeSubstV04 tests/codec/ber/test_decoder.py::SequenceDecoderTestCase::testWithOptionalAndDefaultedIndefMode tests/codec/ber/test_decoder.py::SequenceDecoderTestCase::testWithOptionalAndDefaultedIndefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderTestCase::testWithOptionalAndDefaultedIndefModeSubst tests/codec/ber/test_decoder.py::SequenceDecoderTestCase::testWithOptionalAndDefaultedIndefModeSubstV04 tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testDefMode tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testDefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testIndefMode tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testIndefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithDefaultedDefMode tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithDefaultedDefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithDefaultedIndefMode tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithDefaultedIndefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithOptionaIndefMode tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithOptionalAndDefaultedDefMode tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithOptionalAndDefaultedDefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithOptionalAndDefaultedIndefMode tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithOptionalAndDefaultedIndefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithOptionalDefMode tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithOptionalDefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderWithSchemaTestCase::testWithOptionalIndefModeChunked tests/codec/ber/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/ber/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesChoiceTwo tests/codec/ber/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/ber/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesUnknownType tests/codec/ber/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDontDecodeOpenTypesChoiceOne tests/codec/ber/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDontDecodeOpenTypesChoiceTwo tests/codec/ber/test_decoder.py::SequenceDecoderWithImplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/ber/test_decoder.py::SequenceDecoderWithImplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/ber/test_decoder.py::SequenceDecoderWithExplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/ber/test_decoder.py::SequenceDecoderWithExplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/ber/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/ber/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceTwo tests/codec/ber/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/ber/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownType tests/codec/ber/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDontDecodeOpenTypesChoiceOne tests/codec/ber/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDontDecodeOpenTypesChoiceTwo tests/codec/ber/test_decoder.py::SequenceDecoderWithImplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/ber/test_decoder.py::SequenceDecoderWithImplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/ber/test_decoder.py::SequenceDecoderWithExplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/ber/test_decoder.py::SequenceDecoderWithExplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/ber/test_decoder.py::SetDecoderTestCase::testTagFormat tests/codec/ber/test_decoder.py::SetDecoderTestCase::testWithOptionalAndDefaultedDefMode tests/codec/ber/test_decoder.py::SetDecoderTestCase::testWithOptionalAndDefaultedDefModeChunked tests/codec/ber/test_decoder.py::SetDecoderTestCase::testWithOptionalAndDefaultedDefModeSubst tests/codec/ber/test_decoder.py::SetDecoderTestCase::testWithOptionalAndDefaultedDefModeSubstV04 tests/codec/ber/test_decoder.py::SetDecoderTestCase::testWithOptionalAndDefaultedIndefMode tests/codec/ber/test_decoder.py::SetDecoderTestCase::testWithOptionalAndDefaultedIndefModeChunked tests/codec/ber/test_decoder.py::SetDecoderTestCase::testWithOptionalAndDefaultedIndefModeSubst tests/codec/ber/test_decoder.py::SetDecoderTestCase::testWithOptionalAndDefaultedIndefModeSubstV04 tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testDefMode tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testDefModeChunked tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testIndefMode tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testIndefModeChunked tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithDefaultedDefMode tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithDefaultedDefModeChunked tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithDefaultedIndefMode tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithDefaultedIndefModeChunked tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithOptionalAndDefaultedDefMode tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithOptionalAndDefaultedDefModeChunked tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithOptionalAndDefaultedDefModeReordered tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithOptionalAndDefaultedIndefMode tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithOptionalAndDefaultedIndefModeChunked tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithOptionalAndDefaultedIndefModeReordered tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithOptionalDefMode tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithOptionalDefModeChunked tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithOptionalIndefMode tests/codec/ber/test_decoder.py::SetDecoderWithSchemaTestCase::testWithOptionalIndefModeChunked tests/codec/ber/test_decoder.py::SequenceOfWithExpTaggedOctetStringDecoder::testDefModeNoComponent tests/codec/ber/test_decoder.py::SequenceOfWithExpTaggedOctetStringDecoder::testDefModeSchema tests/codec/ber/test_decoder.py::SequenceOfWithExpTaggedOctetStringDecoder::testDefModeSchemaless tests/codec/ber/test_decoder.py::SequenceOfWithExpTaggedOctetStringDecoder::testIndefModeNoComponent tests/codec/ber/test_decoder.py::SequenceOfWithExpTaggedOctetStringDecoder::testIndefModeSchema tests/codec/ber/test_decoder.py::SequenceOfWithExpTaggedOctetStringDecoder::testIndefModeSchemaless tests/codec/ber/test_decoder.py::SequenceWithExpTaggedOctetStringDecoder::testDefModeNoComponent tests/codec/ber/test_decoder.py::SequenceWithExpTaggedOctetStringDecoder::testDefModeSchema tests/codec/ber/test_decoder.py::SequenceWithExpTaggedOctetStringDecoder::testDefModeSchemaless tests/codec/ber/test_decoder.py::SequenceWithExpTaggedOctetStringDecoder::testIndefModeNoComponent tests/codec/ber/test_decoder.py::SequenceWithExpTaggedOctetStringDecoder::testIndefModeSchema tests/codec/ber/test_decoder.py::SequenceWithExpTaggedOctetStringDecoder::testIndefModeSchemaless tests/codec/ber/test_decoder.py::ChoiceDecoderTestCase::testWithoutSpec tests/codec/ber/test_decoder.py::AnyDecoderTestCase::testByUntagged tests/codec/ber/test_decoder.py::AnyDecoderTestCase::testByUntaggedIndefMode tests/codec/ber/test_decoder.py::AnyDecoderTestCase::testByUntaggedSubst tests/codec/ber/test_decoder.py::AnyDecoderTestCase::testByUntaggedSubstV04 tests/codec/ber/test_decoder.py::AnyDecoderTestCase::testTaggedEx tests/codec/ber/test_decoder.py::AnyDecoderTestCase::testTaggedExIndefMode tests/codec/ber/test_decoder.py::AnyDecoderTestCase::testTaggedExSubst tests/codec/ber/test_decoder.py::AnyDecoderTestCase::testTaggedExSubstV04 tests/codec/ber/test_decoder.py::AnyDecoderTestCase::testTaggedIm tests/codec/ber/test_decoder.py::AnyDecoderTestCase::testTaggedImIndefMode tests/codec/ber/test_decoder.py::EndOfOctetsTestCase::testDefiniteNoEoo tests/codec/ber/test_decoder.py::EndOfOctetsTestCase::testExpectedEoo tests/codec/ber/test_decoder.py::EndOfOctetsTestCase::testIndefiniteEoo tests/codec/ber/test_decoder.py::EndOfOctetsTestCase::testNoConstructedEoo tests/codec/ber/test_decoder.py::EndOfOctetsTestCase::testNoEooData tests/codec/ber/test_decoder.py::EndOfOctetsTestCase::testNoLongFormEoo tests/codec/ber/test_decoder.py::EndOfOctetsTestCase::testUnexpectedEoo tests/codec/ber/test_decoder.py::NonStringDecoderTestCase::testAny tests/codec/ber/test_decoder.py::NonStringDecoderTestCase::testOctetString tests/codec/ber/test_decoder.py::ErrorOnDecodingTestCase::testErrorCondition tests/codec/ber/test_decoder.py::ErrorOnDecodingTestCase::testRawDump tests/codec/ber/test_decoder.py::BinaryFileTestCase::testInvalidFileContent tests/codec/ber/test_decoder.py::BinaryFileTestCase::testMoreObjects tests/codec/ber/test_decoder.py::BinaryFileTestCase::testOneObject tests/codec/ber/test_decoder.py::BytesIOTestCase::testRead tests/codec/ber/test_decoder.py::UnicodeTestCase::testFail tests/codec/ber/test_decoder.py::RestartableDecoderTestCase::testPartialReadingFromNonBlockingStream tests/codec/ber/test_decoder.py::CompressedFilesTestCase::testGzip tests/codec/ber/test_decoder.py::CompressedFilesTestCase::testZipfile tests/codec/ber/test_decoder.py::CompressedFilesTestCase::testZipfileMany tests/codec/ber/test_decoder.py::NonStreamingCompatibilityTestCase::testPartialDecodeWithCustomSubstrateFun tests/codec/ber/test_decoder.py::NonStreamingCompatibilityTestCase::testPartialDecodeWithDefaultSubstrateFun tests/codec/ber/test_decoder.py::NonStreamingCompatibilityTestCase::testPropagateUserException tests/codec/ber/test_encoder.py::LargeTagEncoderTestCase::testEncoder tests/codec/ber/test_encoder.py::IntegerEncoderTestCase::testCompactZero tests/codec/ber/test_encoder.py::IntegerEncoderTestCase::testMinusOne tests/codec/ber/test_encoder.py::IntegerEncoderTestCase::testNegInt tests/codec/ber/test_encoder.py::IntegerEncoderTestCase::testNegLong tests/codec/ber/test_encoder.py::IntegerEncoderTestCase::testPosInt tests/codec/ber/test_encoder.py::IntegerEncoderTestCase::testPosLong tests/codec/ber/test_encoder.py::IntegerEncoderTestCase::testZero tests/codec/ber/test_encoder.py::IntegerEncoderWithSchemaTestCase::testNegInt tests/codec/ber/test_encoder.py::IntegerEncoderWithSchemaTestCase::testPosInt tests/codec/ber/test_encoder.py::IntegerEncoderWithSchemaTestCase::testPosLong tests/codec/ber/test_encoder.py::IntegerEncoderWithSchemaTestCase::testZero tests/codec/ber/test_encoder.py::BooleanEncoderTestCase::testFalse tests/codec/ber/test_encoder.py::BooleanEncoderTestCase::testTrue tests/codec/ber/test_encoder.py::BooleanEncoderWithSchemaTestCase::testFalse tests/codec/ber/test_encoder.py::BooleanEncoderWithSchemaTestCase::testTrue tests/codec/ber/test_encoder.py::BitStringEncoderTestCase::testDefMode tests/codec/ber/test_encoder.py::BitStringEncoderTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::BitStringEncoderTestCase::testEmptyValue tests/codec/ber/test_encoder.py::BitStringEncoderTestCase::testIndefMode tests/codec/ber/test_encoder.py::BitStringEncoderTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::BitStringEncoderWithSchemaTestCase::testDefMode tests/codec/ber/test_encoder.py::BitStringEncoderWithSchemaTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::BitStringEncoderWithSchemaTestCase::testEmptyValue tests/codec/ber/test_encoder.py::BitStringEncoderWithSchemaTestCase::testIndefMode tests/codec/ber/test_encoder.py::BitStringEncoderWithSchemaTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::OctetStringEncoderTestCase::testDefMode tests/codec/ber/test_encoder.py::OctetStringEncoderTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::OctetStringEncoderTestCase::testIndefMode tests/codec/ber/test_encoder.py::OctetStringEncoderTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::OctetStringEncoderWithSchemaTestCase::testDefMode tests/codec/ber/test_encoder.py::OctetStringEncoderWithSchemaTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::OctetStringEncoderWithSchemaTestCase::testIndefMode tests/codec/ber/test_encoder.py::OctetStringEncoderWithSchemaTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::ExpTaggedOctetStringEncoderTestCase::testDefMode tests/codec/ber/test_encoder.py::ExpTaggedOctetStringEncoderTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::ExpTaggedOctetStringEncoderTestCase::testIndefMode tests/codec/ber/test_encoder.py::ExpTaggedOctetStringEncoderTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::NullEncoderTestCase::testNull tests/codec/ber/test_encoder.py::NullEncoderWithSchemaTestCase::testNull tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testEdge1 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testEdge2 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testEdge3 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testEdge4 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testEdge5 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testEdge6 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testEdge7 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testEdge8 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testEdge9 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testEdgeA tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testImpossible1 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testImpossible2 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testImpossible3 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testImpossible4 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testLarge1 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testLarge2 tests/codec/ber/test_encoder.py::ObjectIdentifierEncoderTestCase::testOne tests/codec/ber/test_encoder.py::ObjectIdentifierWithSchemaEncoderTestCase::testOne tests/codec/ber/test_encoder.py::RelativeOIDEncoderTestCase::testLarge tests/codec/ber/test_encoder.py::RelativeOIDEncoderTestCase::testOne tests/codec/ber/test_encoder.py::RelativeOIDEncoderTestCase::testThree tests/codec/ber/test_encoder.py::RelativeOIDEncoderTestCase::testTwo tests/codec/ber/test_encoder.py::RelativeOIDWithSchemaEncoderTestCase::testOne tests/codec/ber/test_encoder.py::RealEncoderTestCase::testBin1 tests/codec/ber/test_encoder.py::RealEncoderTestCase::testBin2 tests/codec/ber/test_encoder.py::RealEncoderTestCase::testBin3 tests/codec/ber/test_encoder.py::RealEncoderTestCase::testBin4 tests/codec/ber/test_encoder.py::RealEncoderTestCase::testBin5 tests/codec/ber/test_encoder.py::RealEncoderTestCase::testBin6 tests/codec/ber/test_encoder.py::RealEncoderTestCase::testBin7 tests/codec/ber/test_encoder.py::RealEncoderTestCase::testChar tests/codec/ber/test_encoder.py::RealEncoderTestCase::testMinusInf tests/codec/ber/test_encoder.py::RealEncoderTestCase::testPlusInf tests/codec/ber/test_encoder.py::RealEncoderTestCase::testZero tests/codec/ber/test_encoder.py::RealEncoderWithSchemaTestCase::testChar tests/codec/ber/test_encoder.py::UniversalStringEncoderTestCase::testEncoding tests/codec/ber/test_encoder.py::UniversalStringEncoderWithSchemaTestCase::testEncoding tests/codec/ber/test_encoder.py::BMPStringEncoderTestCase::testEncoding tests/codec/ber/test_encoder.py::BMPStringEncoderWithSchemaTestCase::testEncoding tests/codec/ber/test_encoder.py::UTF8StringEncoderTestCase::testEncoding tests/codec/ber/test_encoder.py::UTF8StringEncoderWithSchemaTestCase::testEncoding tests/codec/ber/test_encoder.py::SequenceOfEncoderTestCase::testDefMode tests/codec/ber/test_encoder.py::SequenceOfEncoderTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SequenceOfEncoderTestCase::testEmpty tests/codec/ber/test_encoder.py::SequenceOfEncoderTestCase::testIndefMode tests/codec/ber/test_encoder.py::SequenceOfEncoderTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SequenceOfEncoderWithSchemaTestCase::testDefMode tests/codec/ber/test_encoder.py::SequenceOfEncoderWithSchemaTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SequenceOfEncoderWithSchemaTestCase::testEmpty tests/codec/ber/test_encoder.py::SequenceOfEncoderWithSchemaTestCase::testIndefMode tests/codec/ber/test_encoder.py::SequenceOfEncoderWithSchemaTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SequenceOfEncoderWithComponentsSchemaTestCase::testDefMode tests/codec/ber/test_encoder.py::SequenceOfEncoderWithComponentsSchemaTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SequenceOfEncoderWithComponentsSchemaTestCase::testIndefMode tests/codec/ber/test_encoder.py::SequenceOfEncoderWithComponentsSchemaTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SetOfEncoderTestCase::testDefMode tests/codec/ber/test_encoder.py::SetOfEncoderTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SetOfEncoderTestCase::testEmpty tests/codec/ber/test_encoder.py::SetOfEncoderTestCase::testIndefMode tests/codec/ber/test_encoder.py::SetOfEncoderTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SetOfEncoderWithSchemaTestCase::testDefMode tests/codec/ber/test_encoder.py::SetOfEncoderWithSchemaTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SetOfEncoderWithSchemaTestCase::testEmpty tests/codec/ber/test_encoder.py::SetOfEncoderWithSchemaTestCase::testIndefMode tests/codec/ber/test_encoder.py::SetOfEncoderWithSchemaTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SetOfEncoderWithComponentsSchemaTestCase::testDefMode tests/codec/ber/test_encoder.py::SetOfEncoderWithComponentsSchemaTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SetOfEncoderWithComponentsSchemaTestCase::testIndefMode tests/codec/ber/test_encoder.py::SetOfEncoderWithComponentsSchemaTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderTestCase::testDefMode tests/codec/ber/test_encoder.py::SequenceEncoderTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderTestCase::testIndefMode tests/codec/ber/test_encoder.py::SequenceEncoderTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderWithSchemaTestCase::testDefMode tests/codec/ber/test_encoder.py::SequenceEncoderWithSchemaTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderWithSchemaTestCase::testEmpty tests/codec/ber/test_encoder.py::SequenceEncoderWithSchemaTestCase::testIndefMode tests/codec/ber/test_encoder.py::SequenceEncoderWithSchemaTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/ber/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeChoiceTwo tests/codec/ber/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeIncompatibleType tests/codec/ber/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeUnknownId tests/codec/ber/test_encoder.py::SequenceEncoderWithImplicitlyTaggedOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/ber/test_encoder.py::SequenceEncoderWithExplicitlyTaggedOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/ber/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/ber/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceTwo tests/codec/ber/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeIncompatibleType tests/codec/ber/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeUnknownId tests/codec/ber/test_encoder.py::SequenceEncoderWithImplicitlyTaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/ber/test_encoder.py::SequenceEncoderWithExplicitlyTaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testDefMode tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testIndefMode tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithDefaultedDefMode tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithDefaultedDefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithDefaultedIndefMode tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithDefaultedIndefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithOptionalAndDefaultedDefMode tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithOptionalAndDefaultedDefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithOptionalAndDefaultedIndefMode tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithOptionalAndDefaultedIndefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithOptionalDefMode tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithOptionalDefModeChunked tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithOptionalIndefMode tests/codec/ber/test_encoder.py::SequenceEncoderWithComponentsSchemaTestCase::testWithOptionalIndefModeChunked tests/codec/ber/test_encoder.py::ExpTaggedSequenceEncoderTestCase::testDefMode tests/codec/ber/test_encoder.py::ExpTaggedSequenceEncoderTestCase::testIndefMode tests/codec/ber/test_encoder.py::ExpTaggedSequenceComponentEncoderTestCase::testDefMode tests/codec/ber/test_encoder.py::ExpTaggedSequenceComponentEncoderTestCase::testIndefMode tests/codec/ber/test_encoder.py::SetEncoderTestCase::testDefMode tests/codec/ber/test_encoder.py::SetEncoderTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SetEncoderTestCase::testIndefMode tests/codec/ber/test_encoder.py::SetEncoderTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SetEncoderWithSchemaTestCase::testDefMode tests/codec/ber/test_encoder.py::SetEncoderWithSchemaTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SetEncoderWithSchemaTestCase::testEmpty tests/codec/ber/test_encoder.py::SetEncoderWithSchemaTestCase::testIndefMode tests/codec/ber/test_encoder.py::SetEncoderWithSchemaTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testDefMode tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testIndefMode tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithDefaultedDefMode tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithDefaultedDefModeChunked tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithDefaultedIndefMode tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithDefaultedIndefModeChunked tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithOptionalAndDefaultedDefMode tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithOptionalAndDefaultedDefModeChunked tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithOptionalAndDefaultedIndefMode tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithOptionalAndDefaultedIndefModeChunked tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithOptionalDefMode tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithOptionalDefModeChunked tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithOptionalIndefMode tests/codec/ber/test_encoder.py::SetEncoderWithComponentsSchemaTestCase::testWithOptionalIndefModeChunked tests/codec/ber/test_encoder.py::ChoiceEncoderTestCase::testDefModeChunked tests/codec/ber/test_encoder.py::ChoiceEncoderTestCase::testDefModeOptionOne tests/codec/ber/test_encoder.py::ChoiceEncoderTestCase::testDefModeOptionTwo tests/codec/ber/test_encoder.py::ChoiceEncoderTestCase::testEmpty tests/codec/ber/test_encoder.py::ChoiceEncoderTestCase::testIndefMode tests/codec/ber/test_encoder.py::ChoiceEncoderTestCase::testIndefModeChunked tests/codec/ber/test_encoder.py::ChoiceEncoderWithSchemaTestCase::testFilled tests/codec/ber/test_encoder.py::ChoiceEncoderWithComponentsSchemaTestCase::testEmpty tests/codec/ber/test_encoder.py::ChoiceEncoderWithComponentsSchemaTestCase::testFilled tests/codec/ber/test_encoder.py::ChoiceEncoderWithComponentsSchemaTestCase::testTagged tests/codec/ber/test_encoder.py::ChoiceEncoderWithComponentsSchemaTestCase::testTaggedUndefLength tests/codec/ber/test_encoder.py::ChoiceEncoderWithComponentsSchemaTestCase::testUndefLength tests/codec/ber/test_encoder.py::AnyEncoderTestCase::testTaggedEx tests/codec/ber/test_encoder.py::AnyEncoderTestCase::testTaggedIm tests/codec/ber/test_encoder.py::AnyEncoderTestCase::testUntagged tests/codec/ber/test_encoder.py::AnyEncoderWithSchemaTestCase::testTaggedEx tests/codec/ber/test_encoder.py::AnyEncoderWithSchemaTestCase::testTaggedIm tests/codec/ber/test_encoder.py::AnyEncoderWithSchemaTestCase::testUntagged tests/codec/cer/test_decoder.py::BooleanDecoderTestCase::testEmpty tests/codec/cer/test_decoder.py::BooleanDecoderTestCase::testFalse tests/codec/cer/test_decoder.py::BooleanDecoderTestCase::testOverflow tests/codec/cer/test_decoder.py::BooleanDecoderTestCase::testTrue tests/codec/cer/test_decoder.py::BitStringDecoderTestCase::testLongMode tests/codec/cer/test_decoder.py::BitStringDecoderTestCase::testShortMode tests/codec/cer/test_decoder.py::OctetStringDecoderTestCase::testLongMode tests/codec/cer/test_decoder.py::OctetStringDecoderTestCase::testShortMode tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesChoiceTwo tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesUnknownType tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDontDecodeOpenTypesChoiceOne tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDontDecodeOpenTypesChoiceTwo tests/codec/cer/test_decoder.py::SequenceDecoderWithImplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/cer/test_decoder.py::SequenceDecoderWithImplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/cer/test_decoder.py::SequenceDecoderWithExplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/cer/test_decoder.py::SequenceDecoderWithExplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceTwo tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownType tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedSetOfOpenTypesTestCase::testDontDecodeOpenTypesChoiceOne tests/codec/cer/test_decoder.py::SequenceDecoderWithUntaggedSetOfOpenTypesTestCase::testDontDecodeOpenTypesChoiceTwo tests/codec/cer/test_decoder.py::SequenceDecoderWithImplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/cer/test_decoder.py::SequenceDecoderWithImplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/cer/test_decoder.py::SequenceDecoderWithExplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/cer/test_decoder.py::SequenceDecoderWithExplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/cer/test_encoder.py::BooleanEncoderTestCase::testFalse tests/codec/cer/test_encoder.py::BooleanEncoderTestCase::testTrue tests/codec/cer/test_encoder.py::BitStringEncoderTestCase::testLongMode tests/codec/cer/test_encoder.py::BitStringEncoderTestCase::testShortMode tests/codec/cer/test_encoder.py::OctetStringEncoderTestCase::testLongMode tests/codec/cer/test_encoder.py::OctetStringEncoderTestCase::testShortMode tests/codec/cer/test_encoder.py::GeneralizedTimeEncoderTestCase::testDecimalCommaPoint tests/codec/cer/test_encoder.py::GeneralizedTimeEncoderTestCase::testLocalTimezone tests/codec/cer/test_encoder.py::GeneralizedTimeEncoderTestCase::testMissingTimezone tests/codec/cer/test_encoder.py::GeneralizedTimeEncoderTestCase::testWithMinutes tests/codec/cer/test_encoder.py::GeneralizedTimeEncoderTestCase::testWithSeconds tests/codec/cer/test_encoder.py::GeneralizedTimeEncoderTestCase::testWithSubseconds tests/codec/cer/test_encoder.py::GeneralizedTimeEncoderTestCase::testWithSubsecondsDanglingDot tests/codec/cer/test_encoder.py::GeneralizedTimeEncoderTestCase::testWithSubsecondsMax tests/codec/cer/test_encoder.py::GeneralizedTimeEncoderTestCase::testWithSubsecondsMin tests/codec/cer/test_encoder.py::GeneralizedTimeEncoderTestCase::testWithSubsecondsWithZeros tests/codec/cer/test_encoder.py::UTCTimeEncoderTestCase::testFractionOfSecond tests/codec/cer/test_encoder.py::UTCTimeEncoderTestCase::testLocalTimezone tests/codec/cer/test_encoder.py::UTCTimeEncoderTestCase::testMissingTimezone tests/codec/cer/test_encoder.py::UTCTimeEncoderTestCase::testWithMinutes tests/codec/cer/test_encoder.py::UTCTimeEncoderTestCase::testWithSeconds tests/codec/cer/test_encoder.py::SequenceOfEncoderTestCase::testDefMode1 tests/codec/cer/test_encoder.py::SequenceOfEncoderTestCase::testDefMode2 tests/codec/cer/test_encoder.py::SequenceOfEncoderTestCase::testDefMode3 tests/codec/cer/test_encoder.py::SequenceOfEncoderTestCase::testDefMode4 tests/codec/cer/test_encoder.py::SequenceOfEncoderTestCase::testEmpty tests/codec/cer/test_encoder.py::SequenceOfEncoderWithSchemaTestCase::testEmpty tests/codec/cer/test_encoder.py::SequenceOfEncoderWithSchemaTestCase::testIndefMode1 tests/codec/cer/test_encoder.py::SequenceOfEncoderWithSchemaTestCase::testIndefMode2 tests/codec/cer/test_encoder.py::SequenceOfEncoderWithSchemaTestCase::testIndefMode3 tests/codec/cer/test_encoder.py::SequenceOfEncoderWithSchemaTestCase::testIndefMode4 tests/codec/cer/test_encoder.py::SetOfEncoderTestCase::testDefMode1 tests/codec/cer/test_encoder.py::SetOfEncoderTestCase::testDefMode2 tests/codec/cer/test_encoder.py::SetOfEncoderTestCase::testDefMode3 tests/codec/cer/test_encoder.py::SetOfEncoderTestCase::testDefMode4 tests/codec/cer/test_encoder.py::SetOfEncoderTestCase::testEmpty tests/codec/cer/test_encoder.py::SetOfEncoderWithSchemaTestCase::testEmpty tests/codec/cer/test_encoder.py::SetOfEncoderWithSchemaTestCase::testIndefMode1 tests/codec/cer/test_encoder.py::SetOfEncoderWithSchemaTestCase::testIndefMode2 tests/codec/cer/test_encoder.py::SetOfEncoderWithSchemaTestCase::testIndefMode3 tests/codec/cer/test_encoder.py::SetOfEncoderWithSchemaTestCase::testIndefMode4 tests/codec/cer/test_encoder.py::SetEncoderTestCase::testIndefMode tests/codec/cer/test_encoder.py::SetEncoderTestCase::testWithDefaultedIndefMode tests/codec/cer/test_encoder.py::SetEncoderTestCase::testWithOptionalAndDefaultedIndefMode tests/codec/cer/test_encoder.py::SetEncoderTestCase::testWithOptionalIndefMode tests/codec/cer/test_encoder.py::SetEncoderWithSchemaTestCase::testIndefMode tests/codec/cer/test_encoder.py::SetEncoderWithSchemaTestCase::testWithDefaultedIndefMode tests/codec/cer/test_encoder.py::SetEncoderWithSchemaTestCase::testWithOptionalAndDefaultedIndefMode tests/codec/cer/test_encoder.py::SetEncoderWithSchemaTestCase::testWithOptionalIndefMode tests/codec/cer/test_encoder.py::SetEncoderWithChoiceWithSchemaEncoderTestCase::testIndefMode tests/codec/cer/test_encoder.py::SetEncoderWithTaggedChoiceEncoderTestCase::testWithTaggedChoice tests/codec/cer/test_encoder.py::SetEncoderWithTaggedChoiceEncoderTestCase::testWithUntaggedChoice tests/codec/cer/test_encoder.py::SequenceEncoderTestCase::testIndefMode tests/codec/cer/test_encoder.py::SequenceEncoderTestCase::testWithDefaultedIndefMode tests/codec/cer/test_encoder.py::SequenceEncoderTestCase::testWithOptionalAndDefaultedIndefMode tests/codec/cer/test_encoder.py::SequenceEncoderTestCase::testWithOptionalIndefMode tests/codec/cer/test_encoder.py::SequenceEncoderWithSchemaTestCase::testIndefMode tests/codec/cer/test_encoder.py::SequenceEncoderWithSchemaTestCase::testWithDefaultedIndefMode tests/codec/cer/test_encoder.py::SequenceEncoderWithSchemaTestCase::testWithOptionalAndDefaultedIndefMode tests/codec/cer/test_encoder.py::SequenceEncoderWithSchemaTestCase::testWithOptionalIndefMode tests/codec/cer/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/cer/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeChoiceTwo tests/codec/cer/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeIncompatibleType tests/codec/cer/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeUnknownId tests/codec/cer/test_encoder.py::SequenceEncoderWithImplicitlyTaggedOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/cer/test_encoder.py::SequenceEncoderWithExplicitlyTaggedOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/cer/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/cer/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceTwo tests/codec/cer/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeIncompatibleType tests/codec/cer/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeUnknownId tests/codec/cer/test_encoder.py::SequenceEncoderWithImplicitlyTaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/cer/test_encoder.py::SequenceEncoderWithExplicitlyTaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/cer/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testDefaultWithDefault tests/codec/cer/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testDefaultWithDefaultAndOptional tests/codec/cer/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testDefaultWithOptional tests/codec/cer/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testOptional tests/codec/cer/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testOptionalWithDefault tests/codec/cer/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testOptionalWithDefaultAndOptional tests/codec/cer/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testOptionalWithOptional tests/codec/cer/test_encoder.py::NestedOptionalChoiceEncoderTestCase::testOptional tests/codec/cer/test_encoder.py::NestedOptionalChoiceEncoderTestCase::testOptionalWithDefault tests/codec/cer/test_encoder.py::NestedOptionalChoiceEncoderTestCase::testOptionalWithDefaultAndOptional tests/codec/cer/test_encoder.py::NestedOptionalChoiceEncoderTestCase::testOptionalWithOptional tests/codec/cer/test_encoder.py::NestedOptionalSequenceOfEncoderTestCase::testOptional tests/codec/cer/test_encoder.py::NestedOptionalSequenceOfEncoderTestCase::testOptionalWithValue tests/codec/der/test_decoder.py::BitStringDecoderTestCase::testDefModeChunked tests/codec/der/test_decoder.py::BitStringDecoderTestCase::testIndefMode tests/codec/der/test_decoder.py::BitStringDecoderTestCase::testShortMode tests/codec/der/test_decoder.py::OctetStringDecoderTestCase::testChunkedMode tests/codec/der/test_decoder.py::OctetStringDecoderTestCase::testIndefMode tests/codec/der/test_decoder.py::OctetStringDecoderTestCase::testShortMode tests/codec/der/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/der/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesChoiceTwo tests/codec/der/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/der/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDecodeOpenTypesUnknownType tests/codec/der/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDontDecodeOpenTypesChoiceOne tests/codec/der/test_decoder.py::SequenceDecoderWithUntaggedOpenTypesTestCase::testDontDecodeOpenTypesChoiceTwo tests/codec/der/test_decoder.py::SequenceDecoderWithImplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/der/test_decoder.py::SequenceDecoderWithImplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/der/test_decoder.py::SequenceDecoderWithExplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/der/test_decoder.py::SequenceDecoderWithExplicitlyTaggedOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/der/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/der/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceTwo tests/codec/der/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/der/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownType tests/codec/der/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDontDecodeOpenTypesChoiceOne tests/codec/der/test_decoder.py::SequenceDecoderWithUnaggedSetOfOpenTypesTestCase::testDontDecodeOpenTypesChoiceTwo tests/codec/der/test_decoder.py::SequenceDecoderWithImplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/der/test_decoder.py::SequenceDecoderWithImplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/der/test_decoder.py::SequenceDecoderWithExplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesChoiceOne tests/codec/der/test_decoder.py::SequenceDecoderWithExplicitlyTaggedSetOfOpenTypesTestCase::testDecodeOpenTypesUnknownId tests/codec/der/test_encoder.py::OctetStringEncoderTestCase::testDefModeLong tests/codec/der/test_encoder.py::OctetStringEncoderTestCase::testDefModeShort tests/codec/der/test_encoder.py::BitStringEncoderTestCase::testDefModeLong tests/codec/der/test_encoder.py::BitStringEncoderTestCase::testDefModeShort tests/codec/der/test_encoder.py::SetOfEncoderTestCase::testDefMode1 tests/codec/der/test_encoder.py::SetOfEncoderTestCase::testDefMode2 tests/codec/der/test_encoder.py::SetOfEncoderTestCase::testDefMode3 tests/codec/der/test_encoder.py::SetOfEncoderTestCase::testDefMode4 tests/codec/der/test_encoder.py::SetWithAlternatingChoiceEncoderTestCase::testComponentsOrdering1 tests/codec/der/test_encoder.py::SetWithAlternatingChoiceEncoderTestCase::testComponentsOrdering2 tests/codec/der/test_encoder.py::SetWithTaggedChoiceEncoderTestCase::testWithTaggedChoice tests/codec/der/test_encoder.py::SetWithTaggedChoiceEncoderTestCase::testWithUntaggedChoice tests/codec/der/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/der/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeChoiceTwo tests/codec/der/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeIncompatibleType tests/codec/der/test_encoder.py::SequenceEncoderWithUntaggedOpenTypesTestCase::testEncodeOpenTypeUnknownId tests/codec/der/test_encoder.py::SequenceEncoderWithImplicitlyTaggedOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/der/test_encoder.py::SequenceEncoderWithExplicitlyTaggedOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/der/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/der/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceTwo tests/codec/der/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeIncompatibleType tests/codec/der/test_encoder.py::SequenceEncoderWithUntaggedSetOfOpenTypesTestCase::testEncodeOpenTypeUnknownId tests/codec/der/test_encoder.py::SequenceEncoderWithImplicitlyTaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/der/test_encoder.py::SequenceEncoderWithExplicitlyTaggedSetOfOpenTypesTestCase::testEncodeOpenTypeChoiceOne tests/codec/der/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testDefModeDefaultWithDefault tests/codec/der/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testDefModeDefaultWithDefaultAndOptional tests/codec/der/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testDefModeDefaultWithOptional tests/codec/der/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testDefModeOptional tests/codec/der/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testDefModeOptionalWithDefault tests/codec/der/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testDefModeOptionalWithDefaultAndOptional tests/codec/der/test_encoder.py::NestedOptionalSequenceEncoderTestCase::testDefModeOptionalWithOptional tests/codec/der/test_encoder.py::NestedOptionalChoiceEncoderTestCase::testDefModeOptional tests/codec/der/test_encoder.py::NestedOptionalChoiceEncoderTestCase::testDefModeOptionalWithDefault tests/codec/der/test_encoder.py::NestedOptionalChoiceEncoderTestCase::testDefModeOptionalWithDefaultAndOptional tests/codec/der/test_encoder.py::NestedOptionalChoiceEncoderTestCase::testDefModeOptionalWithOptional tests/codec/der/test_encoder.py::NestedOptionalSequenceOfEncoderTestCase::testDefModeOptional tests/codec/der/test_encoder.py::NestedOptionalSequenceOfEncoderTestCase::testDefModeOptionalWithValue tests/codec/der/test_encoder.py::EmptyInnerFieldOfSequenceEncoderTestCase::testInitializedDefaultNullIsNotEncoded tests/codec/der/test_encoder.py::EmptyInnerFieldOfSequenceEncoderTestCase::testInitializedDefaultOctetStringIsNotEncoded tests/codec/der/test_encoder.py::EmptyInnerFieldOfSequenceEncoderTestCase::testInitializedOptionalNullIsEncoded tests/codec/der/test_encoder.py::EmptyInnerFieldOfSequenceEncoderTestCase::testInitializedOptionalOctetStringIsEncoded tests/codec/der/test_encoder.py::EmptyInnerFieldOfSequenceEncoderTestCase::testUninitializedOptionalNullIsNotEncoded tests/codec/der/test_encoder.py::EmptyInnerFieldOfSequenceEncoderTestCase::testUninitializedOptionalOctetStringIsNotEncoded tests/codec/der/test_encoder.py::ClassConstructorTestCase::testKeywords tests/codec/native/test_decoder.py::BadAsn1SpecTestCase::testBadSpec tests/codec/native/test_decoder.py::IntegerDecoderTestCase::testNegInt tests/codec/native/test_decoder.py::IntegerDecoderTestCase::testPosInt tests/codec/native/test_decoder.py::BooleanDecoderTestCase::testTrue tests/codec/native/test_decoder.py::BooleanDecoderTestCase::testTrueNeg tests/codec/native/test_decoder.py::BitStringDecoderTestCase::testSimple tests/codec/native/test_decoder.py::OctetStringDecoderTestCase::testSimple tests/codec/native/test_decoder.py::NullDecoderTestCase::testNull tests/codec/native/test_decoder.py::ObjectIdentifierDecoderTestCase::testOne tests/codec/native/test_decoder.py::RealDecoderTestCase::testSimple tests/codec/native/test_decoder.py::SequenceDecoderTestCase::testSimple tests/codec/native/test_decoder.py::ChoiceDecoderTestCase::testSimple tests/codec/native/test_decoder.py::AnyDecoderTestCase::testSimple tests/codec/native/test_encoder.py::BadAsn1SpecTestCase::testBadValueType tests/codec/native/test_encoder.py::IntegerEncoderTestCase::testNegInt tests/codec/native/test_encoder.py::IntegerEncoderTestCase::testPosInt tests/codec/native/test_encoder.py::BooleanEncoderTestCase::testFalse tests/codec/native/test_encoder.py::BooleanEncoderTestCase::testTrue tests/codec/native/test_encoder.py::BitStringEncoderTestCase::testValue tests/codec/native/test_encoder.py::OctetStringEncoderTestCase::testValue tests/codec/native/test_encoder.py::NullEncoderTestCase::testNull tests/codec/native/test_encoder.py::ObjectIdentifierEncoderTestCase::testOne tests/codec/native/test_encoder.py::RealEncoderTestCase::testChar tests/codec/native/test_encoder.py::RealEncoderTestCase::testMinusInf tests/codec/native/test_encoder.py::RealEncoderTestCase::testPlusInf tests/codec/native/test_encoder.py::SequenceEncoderTestCase::testSimple tests/codec/native/test_encoder.py::ChoiceEncoderTestCase::testEmpty tests/codec/native/test_encoder.py::ChoiceEncoderTestCase::testFilled tests/codec/native/test_encoder.py::AnyEncoderTestCase::testSimple tests/codec/test_streaming.py::CachingStreamWrapperTestCase::testMarkedPositionResets tests/codec/test_streaming.py::CachingStreamWrapperTestCase::testPeek tests/codec/test_streaming.py::CachingStreamWrapperTestCase::testReadFromCacheAndStream tests/codec/test_streaming.py::CachingStreamWrapperTestCase::testReadJustFromCache tests/codec/test_streaming.py::CachingStreamWrapperTestCase::testReadJustFromStream tests/test_debug.py::DebugCaseBase::testKnownFlags tests/test_debug.py::DebugCaseBase::testUnknownFlags tests/type/test_char.py::VisibleStringTestCase::testAdd tests/type/test_char.py::VisibleStringTestCase::testAsNumbers tests/type/test_char.py::VisibleStringTestCase::testAsOctets tests/type/test_char.py::VisibleStringTestCase::testContains tests/type/test_char.py::VisibleStringTestCase::testEmpty tests/type/test_char.py::VisibleStringTestCase::testInit tests/type/test_char.py::VisibleStringTestCase::testInitFromAsn1 tests/type/test_char.py::VisibleStringTestCase::testLength tests/type/test_char.py::VisibleStringTestCase::testMul tests/type/test_char.py::VisibleStringTestCase::testPrintable tests/type/test_char.py::VisibleStringTestCase::testRadd tests/type/test_char.py::VisibleStringTestCase::testReverse tests/type/test_char.py::VisibleStringTestCase::testRmul tests/type/test_char.py::VisibleStringTestCase::testSchemaPickling tests/type/test_char.py::VisibleStringTestCase::testSeq tests/type/test_char.py::VisibleStringTestCase::testSerialised tests/type/test_char.py::VisibleStringTestCase::testSizeConstraint tests/type/test_char.py::VisibleStringTestCase::testUnicode tests/type/test_char.py::VisibleStringTestCase::testValuePickling tests/type/test_char.py::GeneralStringTestCase::testAdd tests/type/test_char.py::GeneralStringTestCase::testAsNumbers tests/type/test_char.py::GeneralStringTestCase::testAsOctets tests/type/test_char.py::GeneralStringTestCase::testContains tests/type/test_char.py::GeneralStringTestCase::testEmpty tests/type/test_char.py::GeneralStringTestCase::testInit tests/type/test_char.py::GeneralStringTestCase::testInitFromAsn1 tests/type/test_char.py::GeneralStringTestCase::testLength tests/type/test_char.py::GeneralStringTestCase::testMul tests/type/test_char.py::GeneralStringTestCase::testPrintable tests/type/test_char.py::GeneralStringTestCase::testRadd tests/type/test_char.py::GeneralStringTestCase::testReverse tests/type/test_char.py::GeneralStringTestCase::testRmul tests/type/test_char.py::GeneralStringTestCase::testSchemaPickling tests/type/test_char.py::GeneralStringTestCase::testSeq tests/type/test_char.py::GeneralStringTestCase::testSerialised tests/type/test_char.py::GeneralStringTestCase::testSizeConstraint tests/type/test_char.py::GeneralStringTestCase::testUnicode tests/type/test_char.py::GeneralStringTestCase::testValuePickling tests/type/test_char.py::UTF8StringTestCase::testAdd tests/type/test_char.py::UTF8StringTestCase::testAsNumbers tests/type/test_char.py::UTF8StringTestCase::testAsOctets tests/type/test_char.py::UTF8StringTestCase::testContains tests/type/test_char.py::UTF8StringTestCase::testEmpty tests/type/test_char.py::UTF8StringTestCase::testInit tests/type/test_char.py::UTF8StringTestCase::testInitFromAsn1 tests/type/test_char.py::UTF8StringTestCase::testLength tests/type/test_char.py::UTF8StringTestCase::testMul tests/type/test_char.py::UTF8StringTestCase::testPrintable tests/type/test_char.py::UTF8StringTestCase::testRadd tests/type/test_char.py::UTF8StringTestCase::testReverse tests/type/test_char.py::UTF8StringTestCase::testRmul tests/type/test_char.py::UTF8StringTestCase::testSchemaPickling tests/type/test_char.py::UTF8StringTestCase::testSeq tests/type/test_char.py::UTF8StringTestCase::testSerialised tests/type/test_char.py::UTF8StringTestCase::testSizeConstraint tests/type/test_char.py::UTF8StringTestCase::testUnicode tests/type/test_char.py::UTF8StringTestCase::testValuePickling tests/type/test_char.py::BMPStringTestCase::testAdd tests/type/test_char.py::BMPStringTestCase::testAsNumbers tests/type/test_char.py::BMPStringTestCase::testAsOctets tests/type/test_char.py::BMPStringTestCase::testContains tests/type/test_char.py::BMPStringTestCase::testEmpty tests/type/test_char.py::BMPStringTestCase::testInit tests/type/test_char.py::BMPStringTestCase::testInitFromAsn1 tests/type/test_char.py::BMPStringTestCase::testLength tests/type/test_char.py::BMPStringTestCase::testMul tests/type/test_char.py::BMPStringTestCase::testPrintable tests/type/test_char.py::BMPStringTestCase::testRadd tests/type/test_char.py::BMPStringTestCase::testReverse tests/type/test_char.py::BMPStringTestCase::testRmul tests/type/test_char.py::BMPStringTestCase::testSchemaPickling tests/type/test_char.py::BMPStringTestCase::testSeq tests/type/test_char.py::BMPStringTestCase::testSerialised tests/type/test_char.py::BMPStringTestCase::testSizeConstraint tests/type/test_char.py::BMPStringTestCase::testUnicode tests/type/test_char.py::BMPStringTestCase::testValuePickling tests/type/test_char.py::UniversalStringTestCase::testAdd tests/type/test_char.py::UniversalStringTestCase::testAsNumbers tests/type/test_char.py::UniversalStringTestCase::testAsOctets tests/type/test_char.py::UniversalStringTestCase::testContains tests/type/test_char.py::UniversalStringTestCase::testEmpty tests/type/test_char.py::UniversalStringTestCase::testInit tests/type/test_char.py::UniversalStringTestCase::testInitFromAsn1 tests/type/test_char.py::UniversalStringTestCase::testLength tests/type/test_char.py::UniversalStringTestCase::testMul tests/type/test_char.py::UniversalStringTestCase::testPrintable tests/type/test_char.py::UniversalStringTestCase::testRadd tests/type/test_char.py::UniversalStringTestCase::testReverse tests/type/test_char.py::UniversalStringTestCase::testRmul tests/type/test_char.py::UniversalStringTestCase::testSchemaPickling tests/type/test_char.py::UniversalStringTestCase::testSeq tests/type/test_char.py::UniversalStringTestCase::testSerialised tests/type/test_char.py::UniversalStringTestCase::testSizeConstraint tests/type/test_char.py::UniversalStringTestCase::testUnicode tests/type/test_char.py::UniversalStringTestCase::testValuePickling tests/type/test_constraint.py::SingleValueConstraintTestCase::testAdd tests/type/test_constraint.py::SingleValueConstraintTestCase::testBadVal tests/type/test_constraint.py::SingleValueConstraintTestCase::testCmp tests/type/test_constraint.py::SingleValueConstraintTestCase::testContains tests/type/test_constraint.py::SingleValueConstraintTestCase::testGoodVal tests/type/test_constraint.py::SingleValueConstraintTestCase::testHash tests/type/test_constraint.py::SingleValueConstraintTestCase::testIter tests/type/test_constraint.py::SingleValueConstraintTestCase::testSub tests/type/test_constraint.py::ContainedSubtypeConstraintTestCase::testBadVal tests/type/test_constraint.py::ContainedSubtypeConstraintTestCase::testGoodVal tests/type/test_constraint.py::ValueRangeConstraintTestCase::testBadVal tests/type/test_constraint.py::ValueRangeConstraintTestCase::testGoodVal tests/type/test_constraint.py::ValueSizeConstraintTestCase::testBadVal tests/type/test_constraint.py::ValueSizeConstraintTestCase::testGoodVal tests/type/test_constraint.py::PermittedAlphabetConstraintTestCase::testAdd tests/type/test_constraint.py::PermittedAlphabetConstraintTestCase::testBadVal tests/type/test_constraint.py::PermittedAlphabetConstraintTestCase::testCmp tests/type/test_constraint.py::PermittedAlphabetConstraintTestCase::testContains tests/type/test_constraint.py::PermittedAlphabetConstraintTestCase::testGoodVal tests/type/test_constraint.py::PermittedAlphabetConstraintTestCase::testHash tests/type/test_constraint.py::PermittedAlphabetConstraintTestCase::testIter tests/type/test_constraint.py::PermittedAlphabetConstraintTestCase::testSub tests/type/test_constraint.py::WithComponentsConstraintTestCase::testBadVal tests/type/test_constraint.py::WithComponentsConstraintTestCase::testBadValExtraFields tests/type/test_constraint.py::WithComponentsConstraintTestCase::testEmptyConstraint tests/type/test_constraint.py::WithComponentsConstraintTestCase::testGoodVal tests/type/test_constraint.py::WithComponentsConstraintTestCase::testGoodValWithExtraFields tests/type/test_constraint.py::ConstraintsIntersectionTestCase::testBadVal tests/type/test_constraint.py::ConstraintsIntersectionTestCase::testCmp1 tests/type/test_constraint.py::ConstraintsIntersectionTestCase::testCmp2 tests/type/test_constraint.py::ConstraintsIntersectionTestCase::testCmp3 tests/type/test_constraint.py::ConstraintsIntersectionTestCase::testCmp4 tests/type/test_constraint.py::ConstraintsIntersectionTestCase::testGoodVal tests/type/test_constraint.py::InnerTypeConstraintTestCase::testConst1 tests/type/test_constraint.py::InnerTypeConstraintTestCase::testConst2 tests/type/test_constraint.py::ConstraintsIntersectionRangeTestCase::testBadVal tests/type/test_constraint.py::ConstraintsIntersectionRangeTestCase::testGoodVal tests/type/test_constraint.py::ConstraintsUnionTestCase::testBadVal tests/type/test_constraint.py::ConstraintsUnionTestCase::testGoodVal tests/type/test_constraint.py::ConstraintsExclusionTestCase::testBadVal tests/type/test_constraint.py::ConstraintsExclusionTestCase::testGoodVal tests/type/test_constraint.py::DirectDerivationTestCase::testBadVal tests/type/test_constraint.py::DirectDerivationTestCase::testGoodVal tests/type/test_constraint.py::IndirectDerivationTestCase::testBadVal tests/type/test_constraint.py::IndirectDerivationTestCase::testGoodVal tests/type/test_namedtype.py::NamedTypeCaseBase::testIter tests/type/test_namedtype.py::NamedTypeCaseBase::testRepr tests/type/test_namedtype.py::NamedTypesCaseBase::testContains tests/type/test_namedtype.py::NamedTypesCaseBase::testGetItem tests/type/test_namedtype.py::NamedTypesCaseBase::testGetNameByPosition tests/type/test_namedtype.py::NamedTypesCaseBase::testGetPositionByName tests/type/test_namedtype.py::NamedTypesCaseBase::testGetPositionNearType tests/type/test_namedtype.py::NamedTypesCaseBase::testGetTagMap tests/type/test_namedtype.py::NamedTypesCaseBase::testGetTagMapWithDups tests/type/test_namedtype.py::NamedTypesCaseBase::testGetTypeByPosition tests/type/test_namedtype.py::NamedTypesCaseBase::testGetTypesNearPosition tests/type/test_namedtype.py::NamedTypesCaseBase::testIter tests/type/test_namedtype.py::NamedTypesCaseBase::testRepr tests/type/test_namedtype.py::NamedTypesCaseBase::testReprTagMap tests/type/test_namedtype.py::NamedTypesCaseBase::testStrTagMap tests/type/test_namedtype.py::OrderedNamedTypesCaseBase::testGetTypeByPosition tests/type/test_namedtype.py::DuplicateNamedTypesCaseBase::testDuplicateDefaultTags tests/type/test_namedval.py::NamedValuesCaseBase::testAdd tests/type/test_namedval.py::NamedValuesCaseBase::testClone tests/type/test_namedval.py::NamedValuesCaseBase::testDict tests/type/test_namedval.py::NamedValuesCaseBase::testInit tests/type/test_namedval.py::NamedValuesCaseBase::testLen tests/type/test_namedval.py::NamedValuesCaseBase::testStrRepr tests/type/test_opentype.py::UntaggedAnyTestCase::testTypeCheckOnAssignment tests/type/test_opentype.py::TaggedAnyTestCase::testTypeCheckOnAssignment tests/type/test_opentype.py::TaggedAnyOpenTypeTestCase::testTypeCheckOnAssignment tests/type/test_tag.py::TagReprTestCase::testRepr tests/type/test_tag.py::TagCmpTestCase::testCmp tests/type/test_tag.py::TagCmpTestCase::testHash tests/type/test_tag.py::TagCmpTestCase::testSequence tests/type/test_tag.py::TagSetReprTestCase::testRepr tests/type/test_tag.py::TagSetCmpTestCase::testCmp tests/type/test_tag.py::TagSetCmpTestCase::testHash tests/type/test_tag.py::TagSetCmpTestCase::testLen tests/type/test_tag.py::TaggingTestSuite::testExplicitTag tests/type/test_tag.py::TaggingTestSuite::testImplicitTag tests/type/test_tag.py::TagSetAddTestSuite::testAdd tests/type/test_tag.py::TagSetAddTestSuite::testRadd tests/type/test_tag.py::SuperTagSetTestCase::testSuperTagCheck1 tests/type/test_tag.py::SuperTagSetTestCase::testSuperTagCheck2 tests/type/test_tag.py::SuperTagSetTestCase::testSuperTagCheck3 tests/type/test_univ.py::NoValueTestCase::testAdd tests/type/test_univ.py::NoValueTestCase::testBitShift tests/type/test_univ.py::NoValueTestCase::testBooleanEvaluation tests/type/test_univ.py::NoValueTestCase::testCmp tests/type/test_univ.py::NoValueTestCase::testInt tests/type/test_univ.py::NoValueTestCase::testIsInstance tests/type/test_univ.py::NoValueTestCase::testKey tests/type/test_univ.py::NoValueTestCase::testKeyAssignment tests/type/test_univ.py::NoValueTestCase::testLen tests/type/test_univ.py::NoValueTestCase::testRepr tests/type/test_univ.py::NoValueTestCase::testSingleton tests/type/test_univ.py::NoValueTestCase::testSizeOf tests/type/test_univ.py::NoValueTestCase::testStr tests/type/test_univ.py::NoValueTestCase::testSubs tests/type/test_univ.py::IntegerTestCase::testAdd tests/type/test_univ.py::IntegerTestCase::testAnd tests/type/test_univ.py::IntegerTestCase::testCeil tests/type/test_univ.py::IntegerTestCase::testDivFloat tests/type/test_univ.py::IntegerTestCase::testDivInt tests/type/test_univ.py::IntegerTestCase::testFloat tests/type/test_univ.py::IntegerTestCase::testFloor tests/type/test_univ.py::IntegerTestCase::testFloorDiv tests/type/test_univ.py::IntegerTestCase::testInt tests/type/test_univ.py::IntegerTestCase::testInvert tests/type/test_univ.py::IntegerTestCase::testLong tests/type/test_univ.py::IntegerTestCase::testLshift tests/type/test_univ.py::IntegerTestCase::testMod tests/type/test_univ.py::IntegerTestCase::testMul tests/type/test_univ.py::IntegerTestCase::testNamedVals tests/type/test_univ.py::IntegerTestCase::testNeg tests/type/test_univ.py::IntegerTestCase::testOr tests/type/test_univ.py::IntegerTestCase::testPos tests/type/test_univ.py::IntegerTestCase::testPow tests/type/test_univ.py::IntegerTestCase::testPrettyIn tests/type/test_univ.py::IntegerTestCase::testRadd tests/type/test_univ.py::IntegerTestCase::testRand tests/type/test_univ.py::IntegerTestCase::testRdivFloat tests/type/test_univ.py::IntegerTestCase::testRdivInt tests/type/test_univ.py::IntegerTestCase::testRepr tests/type/test_univ.py::IntegerTestCase::testRmod tests/type/test_univ.py::IntegerTestCase::testRmul tests/type/test_univ.py::IntegerTestCase::testRor tests/type/test_univ.py::IntegerTestCase::testRound tests/type/test_univ.py::IntegerTestCase::testRpow tests/type/test_univ.py::IntegerTestCase::testRshift tests/type/test_univ.py::IntegerTestCase::testRsub tests/type/test_univ.py::IntegerTestCase::testRxor tests/type/test_univ.py::IntegerTestCase::testStr tests/type/test_univ.py::IntegerTestCase::testSub tests/type/test_univ.py::IntegerTestCase::testSubtype tests/type/test_univ.py::IntegerTestCase::testTag tests/type/test_univ.py::IntegerTestCase::testTrueDiv tests/type/test_univ.py::IntegerTestCase::testTrunc tests/type/test_univ.py::IntegerTestCase::testXor tests/type/test_univ.py::IntegerPicklingTestCase::testSchemaPickling tests/type/test_univ.py::IntegerPicklingTestCase::testValuePickling tests/type/test_univ.py::BooleanTestCase::testConstraints tests/type/test_univ.py::BooleanTestCase::testFalse tests/type/test_univ.py::BooleanTestCase::testInt tests/type/test_univ.py::BooleanTestCase::testRepr tests/type/test_univ.py::BooleanTestCase::testStr tests/type/test_univ.py::BooleanTestCase::testTag tests/type/test_univ.py::BooleanTestCase::testTruth tests/type/test_univ.py::BooleanPicklingTestCase::testSchemaPickling tests/type/test_univ.py::BooleanPicklingTestCase::testValuePickling tests/type/test_univ.py::BitStringTestCase::testAsInteger tests/type/test_univ.py::BitStringTestCase::testAsInts tests/type/test_univ.py::BitStringTestCase::testAsOctets tests/type/test_univ.py::BitStringTestCase::testBinDefault tests/type/test_univ.py::BitStringTestCase::testGetItem tests/type/test_univ.py::BitStringTestCase::testHexDefault tests/type/test_univ.py::BitStringTestCase::testLen tests/type/test_univ.py::BitStringTestCase::testMultipleOfEightPadding tests/type/test_univ.py::BitStringTestCase::testRepr tests/type/test_univ.py::BitStringTestCase::testReverse tests/type/test_univ.py::BitStringTestCase::testSet tests/type/test_univ.py::BitStringTestCase::testStaticDef tests/type/test_univ.py::BitStringTestCase::testStr tests/type/test_univ.py::BitStringTestCase::testTag tests/type/test_univ.py::BitStringPicklingTestCase::testSchemaPickling tests/type/test_univ.py::BitStringPicklingTestCase::testValuePickling tests/type/test_univ.py::OctetStringWithAsciiTestCase::testAdd tests/type/test_univ.py::OctetStringWithAsciiTestCase::testAsInts tests/type/test_univ.py::OctetStringWithAsciiTestCase::testAsOctets tests/type/test_univ.py::OctetStringWithAsciiTestCase::testContains tests/type/test_univ.py::OctetStringWithAsciiTestCase::testInit tests/type/test_univ.py::OctetStringWithAsciiTestCase::testInitFromAsn1 tests/type/test_univ.py::OctetStringWithAsciiTestCase::testMul tests/type/test_univ.py::OctetStringWithAsciiTestCase::testPrintable tests/type/test_univ.py::OctetStringWithAsciiTestCase::testRadd tests/type/test_univ.py::OctetStringWithAsciiTestCase::testRepr tests/type/test_univ.py::OctetStringWithAsciiTestCase::testReverse tests/type/test_univ.py::OctetStringWithAsciiTestCase::testRmul tests/type/test_univ.py::OctetStringWithAsciiTestCase::testSeq tests/type/test_univ.py::OctetStringWithAsciiTestCase::testSerialised tests/type/test_univ.py::OctetStringUnicodeErrorTestCase::testDecodeError tests/type/test_univ.py::OctetStringUnicodeErrorTestCase::testEncodeError tests/type/test_univ.py::OctetStringWithUtf8TestCase::testAdd tests/type/test_univ.py::OctetStringWithUtf8TestCase::testAsInts tests/type/test_univ.py::OctetStringWithUtf8TestCase::testAsOctets tests/type/test_univ.py::OctetStringWithUtf8TestCase::testContains tests/type/test_univ.py::OctetStringWithUtf8TestCase::testInit tests/type/test_univ.py::OctetStringWithUtf8TestCase::testInitFromAsn1 tests/type/test_univ.py::OctetStringWithUtf8TestCase::testMul tests/type/test_univ.py::OctetStringWithUtf8TestCase::testPrintable tests/type/test_univ.py::OctetStringWithUtf8TestCase::testRadd tests/type/test_univ.py::OctetStringWithUtf8TestCase::testRepr tests/type/test_univ.py::OctetStringWithUtf8TestCase::testReverse tests/type/test_univ.py::OctetStringWithUtf8TestCase::testRmul tests/type/test_univ.py::OctetStringWithUtf8TestCase::testSeq tests/type/test_univ.py::OctetStringWithUtf8TestCase::testSerialised tests/type/test_univ.py::OctetStringWithUtf16TestCase::testAdd tests/type/test_univ.py::OctetStringWithUtf16TestCase::testAsInts tests/type/test_univ.py::OctetStringWithUtf16TestCase::testAsOctets tests/type/test_univ.py::OctetStringWithUtf16TestCase::testContains tests/type/test_univ.py::OctetStringWithUtf16TestCase::testInit tests/type/test_univ.py::OctetStringWithUtf16TestCase::testInitFromAsn1 tests/type/test_univ.py::OctetStringWithUtf16TestCase::testMul tests/type/test_univ.py::OctetStringWithUtf16TestCase::testPrintable tests/type/test_univ.py::OctetStringWithUtf16TestCase::testRadd tests/type/test_univ.py::OctetStringWithUtf16TestCase::testRepr tests/type/test_univ.py::OctetStringWithUtf16TestCase::testReverse tests/type/test_univ.py::OctetStringWithUtf16TestCase::testRmul tests/type/test_univ.py::OctetStringWithUtf16TestCase::testSeq tests/type/test_univ.py::OctetStringWithUtf16TestCase::testSerialised tests/type/test_univ.py::OctetStringWithUtf32TestCase::testAdd tests/type/test_univ.py::OctetStringWithUtf32TestCase::testAsInts tests/type/test_univ.py::OctetStringWithUtf32TestCase::testAsOctets tests/type/test_univ.py::OctetStringWithUtf32TestCase::testContains tests/type/test_univ.py::OctetStringWithUtf32TestCase::testInit tests/type/test_univ.py::OctetStringWithUtf32TestCase::testInitFromAsn1 tests/type/test_univ.py::OctetStringWithUtf32TestCase::testMul tests/type/test_univ.py::OctetStringWithUtf32TestCase::testPrintable tests/type/test_univ.py::OctetStringWithUtf32TestCase::testRadd tests/type/test_univ.py::OctetStringWithUtf32TestCase::testRepr tests/type/test_univ.py::OctetStringWithUtf32TestCase::testReverse tests/type/test_univ.py::OctetStringWithUtf32TestCase::testRmul tests/type/test_univ.py::OctetStringWithUtf32TestCase::testSeq tests/type/test_univ.py::OctetStringWithUtf32TestCase::testSerialised tests/type/test_univ.py::OctetStringTestCase::testBinDefault tests/type/test_univ.py::OctetStringTestCase::testBinStr tests/type/test_univ.py::OctetStringTestCase::testEmpty tests/type/test_univ.py::OctetStringTestCase::testHexDefault tests/type/test_univ.py::OctetStringTestCase::testHexStr tests/type/test_univ.py::OctetStringTestCase::testRepr tests/type/test_univ.py::OctetStringTestCase::testStaticDef tests/type/test_univ.py::OctetStringTestCase::testTag tests/type/test_univ.py::OctetStringTestCase::testTuple tests/type/test_univ.py::OctetStringPicklingTestCase::testSchemaPickling tests/type/test_univ.py::OctetStringPicklingTestCase::testValuePickling tests/type/test_univ.py::Null::testConstraints tests/type/test_univ.py::Null::testInit tests/type/test_univ.py::Null::testRepr tests/type/test_univ.py::Null::testStaticDef tests/type/test_univ.py::Null::testStr tests/type/test_univ.py::Null::testTag tests/type/test_univ.py::NullPicklingTestCase::testSchemaPickling tests/type/test_univ.py::NullPicklingTestCase::testValuePickling tests/type/test_univ.py::RealTestCase::testAdd tests/type/test_univ.py::RealTestCase::testAddInf tests/type/test_univ.py::RealTestCase::testCeil tests/type/test_univ.py::RealTestCase::testDiv tests/type/test_univ.py::RealTestCase::testFloat tests/type/test_univ.py::RealTestCase::testFloat4BinEnc tests/type/test_univ.py::RealTestCase::testFloatInf tests/type/test_univ.py::RealTestCase::testFloor tests/type/test_univ.py::RealTestCase::testInt tests/type/test_univ.py::RealTestCase::testIntInf tests/type/test_univ.py::RealTestCase::testLong tests/type/test_univ.py::RealTestCase::testLongInf tests/type/test_univ.py::RealTestCase::testMinusInf tests/type/test_univ.py::RealTestCase::testMod tests/type/test_univ.py::RealTestCase::testMul tests/type/test_univ.py::RealTestCase::testNeg tests/type/test_univ.py::RealTestCase::testPlusInf tests/type/test_univ.py::RealTestCase::testPos tests/type/test_univ.py::RealTestCase::testPow tests/type/test_univ.py::RealTestCase::testPrettyIn tests/type/test_univ.py::RealTestCase::testPrettyInInf tests/type/test_univ.py::RealTestCase::testRadd tests/type/test_univ.py::RealTestCase::testRaddInf tests/type/test_univ.py::RealTestCase::testRdiv tests/type/test_univ.py::RealTestCase::testRepr tests/type/test_univ.py::RealTestCase::testRmod tests/type/test_univ.py::RealTestCase::testRmul tests/type/test_univ.py::RealTestCase::testRound tests/type/test_univ.py::RealTestCase::testRpow tests/type/test_univ.py::RealTestCase::testRsub tests/type/test_univ.py::RealTestCase::testStaticDef tests/type/test_univ.py::RealTestCase::testStr tests/type/test_univ.py::RealTestCase::testStrInf tests/type/test_univ.py::RealTestCase::testSub tests/type/test_univ.py::RealTestCase::testTag tests/type/test_univ.py::RealTestCase::testTrunc tests/type/test_univ.py::RealPicklingTestCase::testSchemaPickling tests/type/test_univ.py::RealPicklingTestCase::testValuePickling tests/type/test_univ.py::ObjectIdentifier::testAdd tests/type/test_univ.py::ObjectIdentifier::testContains tests/type/test_univ.py::ObjectIdentifier::testEq tests/type/test_univ.py::ObjectIdentifier::testInput1 tests/type/test_univ.py::ObjectIdentifier::testInput2 tests/type/test_univ.py::ObjectIdentifier::testInput3 tests/type/test_univ.py::ObjectIdentifier::testLen tests/type/test_univ.py::ObjectIdentifier::testPrefix tests/type/test_univ.py::ObjectIdentifier::testRadd tests/type/test_univ.py::ObjectIdentifier::testRepr tests/type/test_univ.py::ObjectIdentifier::testStaticDef tests/type/test_univ.py::ObjectIdentifier::testStr tests/type/test_univ.py::ObjectIdentifier::testTag tests/type/test_univ.py::ObjectIdentifier::testUnicode tests/type/test_univ.py::ObjectIdentifierPicklingTestCase::testSchemaPickling tests/type/test_univ.py::ObjectIdentifierPicklingTestCase::testValuePickling tests/type/test_univ.py::RelativeOID::testAdd tests/type/test_univ.py::RelativeOID::testContains tests/type/test_univ.py::RelativeOID::testEq tests/type/test_univ.py::RelativeOID::testInput1 tests/type/test_univ.py::RelativeOID::testInput2 tests/type/test_univ.py::RelativeOID::testInput3 tests/type/test_univ.py::RelativeOID::testLen tests/type/test_univ.py::RelativeOID::testPrefix tests/type/test_univ.py::RelativeOID::testRadd tests/type/test_univ.py::RelativeOID::testRepr tests/type/test_univ.py::RelativeOID::testStaticDef tests/type/test_univ.py::RelativeOID::testStr tests/type/test_univ.py::RelativeOID::testTag tests/type/test_univ.py::RelativeOID::testUnicode tests/type/test_univ.py::RelativeOIDPicklingTestCase::testSchemaPickling tests/type/test_univ.py::RelativeOIDPicklingTestCase::testValuePickling tests/type/test_univ.py::SequenceOf::testAppend tests/type/test_univ.py::SequenceOf::testClear tests/type/test_univ.py::SequenceOf::testClone tests/type/test_univ.py::SequenceOf::testCmp tests/type/test_univ.py::SequenceOf::testComponentConstraintsMatching tests/type/test_univ.py::SequenceOf::testComponentTagsMatching tests/type/test_univ.py::SequenceOf::testConsistency tests/type/test_univ.py::SequenceOf::testCount tests/type/test_univ.py::SequenceOf::testExtend tests/type/test_univ.py::SequenceOf::testGetComponentNoInstantiation tests/type/test_univ.py::SequenceOf::testGetComponentTagMap tests/type/test_univ.py::SequenceOf::testGetComponentWithDefault tests/type/test_univ.py::SequenceOf::testGetItem tests/type/test_univ.py::SequenceOf::testGetItemSlice tests/type/test_univ.py::SequenceOf::testIndex tests/type/test_univ.py::SequenceOf::testIsInconsistentSizeConstraint tests/type/test_univ.py::SequenceOf::testLegacyInitializer tests/type/test_univ.py::SequenceOf::testRepr tests/type/test_univ.py::SequenceOf::testReset tests/type/test_univ.py::SequenceOf::testSeq tests/type/test_univ.py::SequenceOf::testSetComponents tests/type/test_univ.py::SequenceOf::testSetItem tests/type/test_univ.py::SequenceOf::testSetItemSlice tests/type/test_univ.py::SequenceOf::testSort tests/type/test_univ.py::SequenceOf::testStaticDef tests/type/test_univ.py::SequenceOf::testSubtype tests/type/test_univ.py::SequenceOf::testSubtypeSpec tests/type/test_univ.py::SequenceOf::testTag tests/type/test_univ.py::SequenceOf::testUntyped tests/type/test_univ.py::SequenceOfPicklingTestCase::testSchemaPickling tests/type/test_univ.py::SequenceOfPicklingTestCase::testValuePickling tests/type/test_univ.py::Sequence::testById tests/type/test_univ.py::Sequence::testByKey tests/type/test_univ.py::Sequence::testClone tests/type/test_univ.py::Sequence::testComponentConstraintsMatching tests/type/test_univ.py::Sequence::testComponentTagsMatching tests/type/test_univ.py::Sequence::testContains tests/type/test_univ.py::Sequence::testGetComponentNoInstantiation tests/type/test_univ.py::Sequence::testGetComponentWithConstructedDefault tests/type/test_univ.py::Sequence::testGetComponentWithDefault tests/type/test_univ.py::Sequence::testGetItem tests/type/test_univ.py::Sequence::testGetNearPosition tests/type/test_univ.py::Sequence::testIsInconsistentSizeConstraint tests/type/test_univ.py::Sequence::testIsInconsistentWithComponentsConstraint tests/type/test_univ.py::Sequence::testItems tests/type/test_univ.py::Sequence::testIter tests/type/test_univ.py::Sequence::testKeys tests/type/test_univ.py::Sequence::testRepr tests/type/test_univ.py::Sequence::testSchemaWithComponents tests/type/test_univ.py::Sequence::testSchemaWithOptionalComponents tests/type/test_univ.py::Sequence::testSetComponents tests/type/test_univ.py::Sequence::testSetDefaultComponents tests/type/test_univ.py::Sequence::testSetItem tests/type/test_univ.py::Sequence::testSetToDefault tests/type/test_univ.py::Sequence::testStaticDef tests/type/test_univ.py::Sequence::testTag tests/type/test_univ.py::Sequence::testUpdate tests/type/test_univ.py::Sequence::testValues tests/type/test_univ.py::SequenceWithoutSchema::testGetItem tests/type/test_univ.py::SequenceWithoutSchema::testItems tests/type/test_univ.py::SequenceWithoutSchema::testIter tests/type/test_univ.py::SequenceWithoutSchema::testKeys tests/type/test_univ.py::SequenceWithoutSchema::testSchema tests/type/test_univ.py::SequenceWithoutSchema::testSetItem tests/type/test_univ.py::SequenceWithoutSchema::testUpdate tests/type/test_univ.py::SequenceWithoutSchema::testValues tests/type/test_univ.py::SequencePicklingTestCase::testSchemaPickling tests/type/test_univ.py::SequencePicklingTestCase::testValuePickling tests/type/test_univ.py::SetOf::testSeq tests/type/test_univ.py::SetOf::testStaticDef tests/type/test_univ.py::SetOf::testTag tests/type/test_univ.py::SetOfPicklingTestCase::testSchemaPickling tests/type/test_univ.py::SetOfPicklingTestCase::testValuePickling tests/type/test_univ.py::Set::testByTypeWithInstance tests/type/test_univ.py::Set::testByTypeWithPythonValue tests/type/test_univ.py::Set::testGetComponentNoInstantiation tests/type/test_univ.py::Set::testGetComponentTagMap tests/type/test_univ.py::Set::testGetComponentWithDefault tests/type/test_univ.py::Set::testGetPositionByType tests/type/test_univ.py::Set::testGetTagMap tests/type/test_univ.py::Set::testIter tests/type/test_univ.py::Set::testSetToDefault tests/type/test_univ.py::Set::testStaticDef tests/type/test_univ.py::Set::testTag tests/type/test_univ.py::SetPicklingTestCase::testSchemaPickling tests/type/test_univ.py::SetPicklingTestCase::testValuePickling tests/type/test_univ.py::Choice::testClone tests/type/test_univ.py::Choice::testCmp tests/type/test_univ.py::Choice::testContains tests/type/test_univ.py::Choice::testGetComponent tests/type/test_univ.py::Choice::testGetComponentNoInstantiation tests/type/test_univ.py::Choice::testGetComponentWithDefault tests/type/test_univ.py::Choice::testGetName tests/type/test_univ.py::Choice::testInnerByTypeWithInstanceValue tests/type/test_univ.py::Choice::testInnerByTypeWithPythonValue tests/type/test_univ.py::Choice::testIter tests/type/test_univ.py::Choice::testOuterByTypeWithInstanceValue tests/type/test_univ.py::Choice::testOuterByTypeWithPythonValue tests/type/test_univ.py::Choice::testRepr tests/type/test_univ.py::Choice::testSetComponentByPosition tests/type/test_univ.py::Choice::testSetToDefault tests/type/test_univ.py::Choice::testStaticDef tests/type/test_univ.py::Choice::testTag tests/type/test_univ.py::ChoicePicklingTestCase::testSchemaPickling tests/type/test_univ.py::ChoicePicklingTestCase::testValuePickling tests/type/test_useful.py::GeneralizedTimeTestCase::testCopy tests/type/test_useful.py::GeneralizedTimeTestCase::testFromDateTime tests/type/test_useful.py::GeneralizedTimeTestCase::testToDateTime0 tests/type/test_useful.py::GeneralizedTimeTestCase::testToDateTime1 tests/type/test_useful.py::GeneralizedTimeTestCase::testToDateTime2 tests/type/test_useful.py::GeneralizedTimeTestCase::testToDateTime3 tests/type/test_useful.py::GeneralizedTimeTestCase::testToDateTime4 tests/type/test_useful.py::GeneralizedTimeTestCase::testToDateTime5 tests/type/test_useful.py::GeneralizedTimeTestCase::testToDateTime6 tests/type/test_useful.py::GeneralizedTimeTestCase::testToDateTime7 tests/type/test_useful.py::GeneralizedTimeTestCase::testToDateTime8 tests/type/test_useful.py::GeneralizedTimePicklingTestCase::testSchemaPickling tests/type/test_useful.py::GeneralizedTimePicklingTestCase::testValuePickling tests/type/test_useful.py::UTCTimeTestCase::testFromDateTime tests/type/test_useful.py::UTCTimeTestCase::testToDateTime0 tests/type/test_useful.py::UTCTimeTestCase::testToDateTime1 tests/type/test_useful.py::UTCTimeTestCase::testToDateTime2 tests/type/test_useful.py::UTCTimeTestCase::testToDateTime3 tests/type/test_useful.py::UTCTimeTestCase::testToDateTime4 tests/type/test_useful.py::UTCTimePicklingTestCase::testSchemaPickling tests/type/test_useful.py::UTCTimePicklingTestCase::testValuePickling",
+  "upstream_cost_counter_status": "MODEL_RATE_ESTIMATE_NOT_AN_INVOICE",
+  "upstream_runtime_options": {
+    "MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT": "1",
+    "LITELLM_LOCAL_MODEL_COST_MAP": "true"
+  },
+  "comparison_scope": "ONE_NATIVE_AGENT_STEP",
+  "capability_snapshot_id": "20261031T072548885180Z-v4",
+  "pre_decision_state": {
+    "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+    "phase": "verify",
+    "last_tool_exit_code": 1,
+    "last_observation_summary": "_iter__\n    for asn1Object in self._singleItemDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1822, in __call__\n    for value in concreteDecoder.indefLenValueDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1235, in indefLenValueDecoder\n    options = self._passAsn1Object(asn1Object, options)\nAttributeError: 'ChoicePayloadDecoder' object has no attribute '_passAsn1Object'\n\n----------------------------------------------------------------------\nRan 5 tests in 0.003s\n\nFAILED (errors=4)\n",
+    "history_length": 6,
+    "budget_remaining_usd": 0.0,
+    "steps_remaining": 24,
+    "context_tokens_approx": null,
+    "task_domain": "software_engineering",
+    "step_index": 6,
+    "context_chars": 65317,
+    "prior_tool_calls_count": 6,
+    "prior_error_signals_count": 2,
+    "prompt": "# ChoicePayloadDecoder fails to decode Choice ASN.1 types\n\nI found a bug in the ASN.1 decoder when working with Choice types. The decoder fails to properly handle Choice types, causing decoding operations to fail.\n\n## Reproduction\n\nHere's a simple example that demonstrates the issue:\n\n```python\nfrom pyasn1.type import univ, tag\nfrom pyasn1.codec.ber import decoder\n\n# Create a Choice type\nchoice = univ.Choice(\n    componentType=univ.NamedTypes(\n        univ.NamedType('null', univ.Null()),\n        univ.NamedType('boolean', univ.Boolean()),\n        univ.NamedType('octetString', univ.OctetString())\n    )\n)\n\n# Try to decode a simple Null value\nencoded_data = bytes((5, 0))  # Encoded Null value\nresult = decoder.decode(encoded_data, asn1Spec=choice)\n```\n\nThis code fails with an error instead of properly decoding the Choice type.\n\nThe issue also appears when using explicit tags:\n\n```python\n# Create a Choice with explicit tag\ntagged_choice = choice.subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 4))\ntagged_choice.setComponentByPosition(0, univ.Null(''))\n\n# Try to decode\nencoded_data = bytes((164, 2, 5, 0))  # Explicitly tagged Null\nresult = decoder.decode(encoded_data, asn1Spec=tagged_choice)\n```\n\nThis also fails to decode properly.\n\nThe problem seems to be related to the inheritance of the ChoicePayloadDecoder class. Can someone look into this?\n\n<END WRITING>\n\nWorkspace and initial working directory (absolute CWD): /testbed",
+    "history_snippet": "step=6 phase=verify exit=1\ncommand=cd /testbed && grep -nE 'Choice|asn1Object|SubstrateUnderrun|class ' tests/codec/test_streaming.py | head -95 && sed -n '1,205p' tests/codec/test_streaming.py && tail -28 tests/codec/ber/test_decoder.py && python -Werror -m unittest tests.codec.ber.test_de\noutput=gUndefLength (tests.codec.ber.test_decoder.ChoiceDecoderTestCase) ... ERROR\ntestUndefLength (tests.codec.ber.test_decoder.ChoiceDecoderTestCase) ... ERROR\ntestWithoutSpec (tests.codec.ber.test_decoder.ChoiceDecoderTestCase) ... ok\n\n======================================================================\nERROR: testBySpec (tests.codec.ber.test_decoder.ChoiceDecoderTestCase)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/testbed/tests/codec/ber/test_decoder.py\", line 1572, in testBySpec\n    assert decoder.decode(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 2104, in __call__\n    for asn1Object in streamingDecoder:\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1974, in __iter__\n    for asn1Object in self._singleItemDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1830, in __call__\n    for value in concreteDecoder.valueDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1184, in valueDecoder\n    options = self._passAsn1Object(asn1Object, options)\nAttributeError: 'ChoicePayloadDecoder' object has no attribute '_passAsn1Object'\n\n======================================================================\nERROR: testExplicitTag (tests.codec.ber.test_decoder.ChoiceDecoderTestCase)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/testbed/tests/codec/ber/test_decoder.py\", line 1590, in testExplicitTag\n    assert decoder.decode(bytes((164, 2, 5, 0)), asn1Spec=s) == (s, b'')\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 2104, in __call__\n    for asn1Object in streamingDecoder:\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1974, in __iter__\n    for asn1Object in self._singleItemDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1830, in __call__\n    for value in concreteDecoder.valueDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1184, in valueDecoder\n    options = self._passAsn1Object(asn1Object, options)\nAttributeError: 'ChoicePayloadDecoder' object has no attribute '_passAsn1Object'\n\n======================================================================\nERROR: testExplicitTagUndefLength (tests.codec.ber.test_decoder.ChoiceDecoderTestCase)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/testbed/tests/codec/ber/test_decoder.py\", line 1596, in testExplicitTagUndefLength\n    assert decoder.decode(bytes((164, 128, 5, 0, 0, 0)), asn1Spec=s) == (s, b'')\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 2104, in __call__\n    for asn1Object in streamingDecoder:\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1974, in __iter__\n    for asn1Object in self._singleItemDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1822, in __call__\n    for value in concreteDecoder.indefLenValueDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1235, in indefLenValueDecoder\n    options = self._passAsn1Object(asn1Object, options)\nAttributeError: 'ChoicePayloadDecoder' object has no attribute '_passAsn1Object'\n\n======================================================================\nERROR: testUndefLength (tests.codec.ber.test_decoder.ChoiceDecoderTestCase)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/testbed/tests/codec/ber/test_decoder.py\", line 1583, in testUndefLength\n    assert decoder.decode(bytes((36, 128, 4, 3, 97, 98, 99, 4, 3, 100, 101, 102, 4, 2, 103, 104, 0, 0)),\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 2104, in __call__\n    for asn1Object in streamingDecoder:\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1974, in __iter__\n    for asn1Object in self._singleItemDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1822, in __call__\n    for value in concreteDecoder.indefLenValueDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1235, in indefLenValueDecoder\n    options = self._passAsn1Object(asn1Object, options)\nAttributeError: 'ChoicePayloadDecoder' object has no attribute '_passAsn1Object'\n\n----------------------------------------------------------------------\nRan 5 tests in 0.003s\n\nFAILED (errors=4)\n",
+    "teacher_assessment": null,
+    "capability_cards": [
+      {
+        "model_id": "gpt-6.1-sol",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "snapshot_id": "20261031T072548885180Z-v4",
+        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "model_revision": "NOT_REPORTED",
+        "model_evidence_status": "MEASURED",
+        "evidence_status": "NOT_MEASURED",
+        "model_metrics": [
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          }
+        ],
+        "reference_metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": 54.5087338138148,
+            "score_unit": "INDEX",
+            "benchmark_version": "5.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null
+          },
+          {
+            "metric_name": "aa-briefcase",
+            "score_raw": 1555.26,
+            "score_unit": "ELO",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Briefcase v1.1: Agentic Knowledge Work Benchmark"
+          },
+          {
+            "metric_name": "automationbench-aa",
+            "score_raw": 0.6486844882398171,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AutomationBench-AA: Agentic SaaS Workflow Benchmark"
+          },
+          {
+            "metric_name": "terminalbench-4-0",
+            "score_raw": 0.560606060606061,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "4.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench 4.0 Benchmark"
+          },
+          {
+            "metric_name": "frontiercode-2-0",
+            "score_raw": 0.406262878787879,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "2.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "FrontierCode 2.0 Benchmark"
+          },
+          {
+            "metric_name": "omniscience",
+            "score_raw": 42.03333333333333,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Omniscience v1.1: Knowledge and Hallucination Benchmark"
+          },
+          {
+            "metric_name": "gdp-pdf",
+            "score_raw": 0.31,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "GDP.pdf Benchmark"
+          },
+          {
+            "metric_name": "hle-diamond",
+            "score_raw": 0.588,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "HLE-Diamond Benchmark"
+          },
+          {
+            "metric_name": "critpt-v2-hard",
+            "score_raw": 0.685,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "critpt-v2-hard"
+          },
+          {
+            "metric_name": "terminal-bench-science",
+            "score_raw": 0.580952380952381,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "0.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench-Science 0.1 Benchmark"
+          }
+        ],
+        "action_metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "aa-briefcase",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "automationbench-aa",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "terminalbench-4-0",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "frontiercode-2-0",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "omniscience",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "gdp-pdf",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "hle-diamond",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "critpt-v2-hard",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "terminal-bench-science",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          }
+        ],
+        "model_pricing": {
+          "currency": "USD",
+          "unit": "PER_MILLION_TOKENS",
+          "rates": {
+            "Input": 2.0,
+            "Cached input": 0.1,
+            "Cache writes": 2.5,
+            "Output": 10.0
+          },
+          "conditions": [
+            "Cached input tokens are priced at 5% of the uncached input token rate.",
+            "Cache writes are billed at 1.25x the uncached input token rate.",
+            "API prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+            "Fast mode prices are 2x Standard. Batch and Flex prices are 50% lower than Standard.",
+            "Ultrafast mode prices are 6x Standard.",
+            "Regional processing adds a 10% premium where available.",
+            "GPT-6.1 Sol uses a default context window of 500K tokens in Codex and ChatGPT Work. Usage drawn from your subscription has no long-context surcharge. See [Codex pricing](/codex/pricing)."
+          ]
+        },
+        "model_provider": "OpenAI",
+        "model_context_limits": {
+          "context_window_tokens": 1050000,
+          "max_input_tokens": 922000,
+          "max_output_tokens": 128000
+        },
+        "model_provider_metadata": {
+          "model_id": "gpt-6.1-sol",
+          "source_url": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+          "model_revision": "NOT_REPORTED",
+          "evidence_status": "OFFICIAL_DOCUMENTATION",
+          "provider": "OpenAI",
+          "context_limits": {
+            "context_window_tokens": 1050000,
+            "max_input_tokens": 922000,
+            "max_output_tokens": 128000
+          },
+          "pricing": {
+            "currency": "USD",
+            "unit": "PER_MILLION_TOKENS",
+            "rates": {
+              "Input": 2.0,
+              "Cached input": 0.1,
+              "Cache writes": 2.5,
+              "Output": 10.0
+            },
+            "conditions": [
+              "Cached input tokens are priced at 5% of the uncached input token rate.",
+              "Cache writes are billed at 1.25x the uncached input token rate.",
+              "API prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+              "Fast mode prices are 2x Standard. Batch and Flex prices are 50% lower than Standard.",
+              "Ultrafast mode prices are 6x Standard.",
+              "Regional processing adds a 10% premium where available.",
+              "GPT-6.1 Sol uses a default context window of 500K tokens in Codex and ChatGPT Work. Usage drawn from your subscription has no long-context surcharge. See [Codex pricing](/codex/pricing)."
+            ]
+          },
+          "native_efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        }
+      },
+      {
+        "model_id": "gpt-6-luna",
+        "native_effort": "low",
+        "action_id": "gpt-6-luna:low",
+        "snapshot_id": "20261031T072548885180Z-v4",
+        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+        "model_revision": "NOT_REPORTED",
+        "model_evidence_status": "MEASURED",
+        "evidence_status": "NOT_MEASURED",
+        "model_metrics": [
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "model",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "NOT_MEASURED"
+          }
+        ],
+        "reference_metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": 27.7552004938153,
+            "score_unit": "INDEX",
+            "benchmark_version": "5.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null
+          },
+          {
+            "metric_name": "aa-briefcase",
+            "score_raw": 1336.99,
+            "score_unit": "ELO",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Briefcase v1.1: Agentic Knowledge Work Benchmark"
+          },
+          {
+            "metric_name": "automationbench-aa",
+            "score_raw": 0.5316814034483175,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AutomationBench-AA: Agentic SaaS Workflow Benchmark"
+          },
+          {
+            "metric_name": "terminalbench-4-0",
+            "score_raw": 0.126262626262626,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "4.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench 4.0 Benchmark"
+          },
+          {
+            "metric_name": "frontiercode-2-0",
+            "score_raw": 0.251747727272727,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "2.0",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "FrontierCode 2.0 Benchmark"
+          },
+          {
+            "metric_name": "omniscience",
+            "score_raw": -8.266666666666667,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "1.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "AA-Omniscience v1.1: Knowledge and Hallucination Benchmark"
+          },
+          {
+            "metric_name": "gdp-pdf",
+            "score_raw": 0.228,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "GDP.pdf Benchmark"
+          },
+          {
+            "metric_name": "hle-diamond",
+            "score_raw": 0.222,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "HLE-Diamond Benchmark"
+          },
+          {
+            "metric_name": "critpt-v2-hard",
+            "score_raw": 0.415,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "critpt-v2-hard"
+          },
+          {
+            "metric_name": "terminal-bench-science",
+            "score_raw": 0.0857142857142857,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "0.1",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": "max",
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "MEASURED",
+            "missing_reason": null,
+            "benchmark_name": "Terminal-Bench-Science 0.1 Benchmark"
+          }
+        ],
+        "action_metrics": [
+          {
+            "metric_name": "artificial_analysis_intelligence_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_coding_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "artificial_analysis_agentic_index",
+            "score_raw": null,
+            "score_unit": "INDEX",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "aa-briefcase",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "automationbench-aa",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "terminalbench-4-0",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "frontiercode-2-0",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "omniscience",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "gdp-pdf",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "hle-diamond",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "critpt-v2-hard",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          },
+          {
+            "metric_name": "terminal-bench-science",
+            "score_raw": null,
+            "score_unit": "NOT_REPORTED",
+            "benchmark_version": "NOT_REPORTED",
+            "harness_id": "NOT_REPORTED",
+            "evaluated_native_effort": null,
+            "score_scope": "effort",
+            "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+            "evidence_status": "NOT_MEASURED",
+            "missing_reason": "EFFORT_NOT_MEASURED"
+          }
+        ],
+        "model_pricing": {
+          "currency": "USD",
+          "unit": "PER_MILLION_TOKENS",
+          "rates": {
+            "Input": 0.1,
+            "Cached input": 0.01,
+            "Cache writes": 0.125,
+            "Output": 0.5
+          },
+          "conditions": [
+            "Cached input tokens are priced at 10% of the uncached input token rate.",
+            "Cache writes are billed at 1.25x the uncached input token rate.",
+            "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+            "Regional processing adds a 10% premium where available. EU data residency is available with Standard, Fast, Flex, and Batch processing.",
+            "Batch and Flex are priced at 50% of Standard rates. Fast mode is priced at 2x the applicable rates."
+          ]
+        },
+        "model_provider": "OpenAI",
+        "model_context_limits": {
+          "context_window_tokens": 1050000,
+          "max_input_tokens": 922000,
+          "max_output_tokens": 128000
+        },
+        "model_provider_metadata": {
+          "model_id": "gpt-6-luna",
+          "source_url": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+          "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+          "model_revision": "NOT_REPORTED",
+          "evidence_status": "OFFICIAL_DOCUMENTATION",
+          "provider": "OpenAI",
+          "context_limits": {
+            "context_window_tokens": 1050000,
+            "max_input_tokens": 922000,
+            "max_output_tokens": 128000
+          },
+          "pricing": {
+            "currency": "USD",
+            "unit": "PER_MILLION_TOKENS",
+            "rates": {
+              "Input": 0.1,
+              "Cached input": 0.01,
+              "Cache writes": 0.125,
+              "Output": 0.5
+            },
+            "conditions": [
+              "Cached input tokens are priced at 10% of the uncached input token rate.",
+              "Cache writes are billed at 1.25x the uncached input token rate.",
+              "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+              "Regional processing adds a 10% premium where available. EU data residency is available with Standard, Fast, Flex, and Batch processing.",
+              "Batch and Flex are priced at 50% of Standard rates. Fast mode is priced at 2x the applicable rates."
+            ]
+          },
+          "native_efforts": [
+            "none",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        }
+      }
+    ],
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "feature_training_status": "FEATURE_NOT_TRAINED",
+    "agent_context": {
+      "message_count": 14,
+      "context_chars": 65317,
+      "router_task_tool_char_limit": 6000,
+      "router_task_chars": 1466,
+      "router_tool_chars": 4533,
+      "observed_through_step": 6,
+      "token_measurement_status": "NOT_MEASURED",
+      "completed_generations": 6
+    },
+    "continuity": {
+      "episode_id": "t16-pyasn1-sol-low",
+      "decision_id": "t16-pyasn1-sol-low-5",
+      "message_count": 12,
+      "message_chars": 55859,
+      "capability_snapshot_id": "20261031T072548885180Z-v4",
+      "router_checkpoint_id": "none",
+      "router_family": "baseline_fixed_strong",
+      "router_fallback_used": false,
+      "router_run_id": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "previous_router_checkpoint_id": "none",
+      "previous_router_run_id": null,
+      "previous_selected_model_id": "gpt-6.1-sol",
+      "selected_model_id": "gpt-6.1-sol",
+      "previous_actual_backend_model_id": "gpt-6.1-sol",
+      "actual_backend_model_id": "gpt-6.1-sol",
+      "logical_model_changed": false,
+      "actual_backend_changed": false,
+      "context_delivery": "FULL_MESSAGE_HISTORY",
+      "history_messages_resent": true,
+      "observed_cached_tokens": 11443,
+      "cache_usage_status": "REPORTED",
+      "physical_kv_cache_shared": null,
+      "switch_extra_tokens": null,
+      "switch_extra_cost_usd": null,
+      "switch_cost_status": "NOT_MEASURED"
+    }
+  }
+}

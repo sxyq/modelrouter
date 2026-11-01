@@ -1,0 +1,53 @@
+diff --git a/autograd/scipy/linalg.py b/autograd/scipy/linalg.py
+index dbeaf41..cca6430 100644
+--- a/autograd/scipy/linalg.py
++++ b/autograd/scipy/linalg.py
+@@ -133,14 +133,15 @@ def _vjp_sylvester(argnums, ans, args, _):
+ 
+     def vjp(g):
+         q_vjp = solve_sylvester(anp.transpose(a), anp.transpose(b), g)
+-        if 2 in argnums:
+-            vjps.append(q_vjp)
+-        return tuple(vjps)
+-        if 1 in argnums:
+-            vjps.append(-anp.dot(anp.transpose(ans), q_vjp))
+         vjps = []
+         if 0 in argnums:
+             vjps.append(-anp.dot(q_vjp, anp.transpose(ans)))
++        if 1 in argnums:
++            vjps.append(-anp.dot(anp.transpose(ans), q_vjp))
++        if 2 in argnums:
++            vjps.append(q_vjp)
++        return tuple(vjps)
++
+     return vjp
+ 
+ 
+diff --git a/tests/test_scipy.py b/tests/test_scipy.py
+index ba563ef..058af03 100644
+--- a/tests/test_scipy.py
++++ b/tests/test_scipy.py
+@@ -1,6 +1,7 @@
+ from functools import partial
+ 
+ import numpy as npo
++import pytest
+ 
+ try:
+     import scipy
+@@ -428,9 +429,12 @@ else:
+     def test_sqrtm():
+         combo_check(symmetrize_matrix_arg(spla.sqrtm, 0), modes=["fwd", "rev"], order=2)([R(3, 3)])
+ 
+-    def test_solve_sylvester():
+-        combo_check(spla.solve_sylvester, [0, 1, 2], modes=["rev", "fwd"], order=2)(
+-            [R(3, 3)], [R(3, 3)], [R(3, 3)]
++    @pytest.mark.parametrize("argnums", [0, 1, 2, (0, 1), (0, 2), (1, 2), (0, 1, 2)])
++    @pytest.mark.parametrize("shape", [(1, 1), (3, 3), (2, 3)])
++    def test_solve_sylvester(argnums, shape):
++        m, n = shape
++        combo_check(spla.solve_sylvester, argnums, modes=["rev", "fwd"], order=2)(
++            [R(m, m) + m * np.eye(m)], [R(n, n) + n * np.eye(n)], [R(m, n)]
+         )
+ 
+     def test_solve_banded():

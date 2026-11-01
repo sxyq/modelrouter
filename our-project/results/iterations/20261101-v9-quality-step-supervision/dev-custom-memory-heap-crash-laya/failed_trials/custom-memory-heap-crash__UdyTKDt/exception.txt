@@ -1,0 +1,63 @@
+Traceback (most recent call last):
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/trial.py", line 500, in run
+    await self._run()
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/single_step.py", line 40, in _run
+    await self._run_agent()
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/single_step.py", line 76, in _run_agent
+    await self._run_agent_phase(
+    ...<5 lines>...
+    )
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/trial.py", line 651, in _run_agent_phase
+    await asyncio.wait_for(
+    ...<6 lines>...
+    )
+  File "<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/tasks.py", line 507, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "<LOCAL_PROJECT_ROOT>/our-project/code/src/modelrouter/benchmark/harbor_agent.py", line 375, in run
+    await asyncio.to_thread(agent.run, instruction)
+  File "<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/threads.py", line 26, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py", line 98, in run
+    self.step()
+    ~~~~~~~~~^^
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py", line 128, in step
+    return self.execute_actions(self.query())
+                                ~~~~~~~~~~^^
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py", line 149, in query
+    message = self.model.query(self.messages)
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/models/litellm_model.py", line 82, in query
+    for attempt in retry(logger=logger, abort_exceptions=self.abort_exceptions):
+                   ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/tenacity/__init__.py", line 514, in __iter__
+    do = self.iter(retry_state=retry_state)
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/tenacity/__init__.py", line 440, in iter
+    result = action(retry_state)
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/tenacity/__init__.py", line 482, in exc_check
+    retry_exc.reraise()
+    ~~~~~~~~~~~~~~~~~^^
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/tenacity/__init__.py", line 216, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py", line 453, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py", line 402, in __get_result
+    raise self._exception
+  File "<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/models/litellm_model.py", line 84, in query
+    response = self._query(self._prepare_messages_for_api(messages), **kwargs)
+  File "<LOCAL_PROJECT_ROOT>/our-project/code/src/modelrouter/benchmark/harbor_agent.py", line 146, in _query
+    decision = self.policy.client.route(
+        episode_id=self.state.episode_id, decision_id=decision_id,
+        pre_decision_state=snapshot, legal_actions=self.actions,
+        policy_version="mini-v9" if self.v9_enabled else "mini-v10")
+  File "<LOCAL_PROJECT_ROOT>/our-project/code/src/modelrouter/v9/runtime/checkpoint.py", line 32, in route
+    result = subprocess.run(self.checkpoint["command"], input=json.dumps(payload),
+                            capture_output=True, text=True, check=True, timeout=self.timeout)
+  File "<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['ssh', '-i', '<SSH_PRIVATE_KEY_PATH>', '-o', 'IdentitiesOnly=yes', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8', '<SSH_TARGET>', 'env PYTHONPATH=<SERVER_PROJECT_ROOT>/our-project/code/src:<SERVER_PROJECT_ROOT> OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 <SERVER_PROJECT_ROOT>/.venv/bin/python -m modelrouter.v9.runtime.checkpoint']' returned non-zero exit status 1.

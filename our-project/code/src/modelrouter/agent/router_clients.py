@@ -39,6 +39,7 @@ class RouterDecision:
     fallback_reason: Optional[str] = None
     confidence: Optional[float] = None
     inference_latency_ms: Optional[float] = None
+    router_identity: Optional[Dict[str, Any]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {

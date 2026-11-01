@@ -1,0 +1,30 @@
+{
+  "enabled": true,
+  "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+  "selection_scope": "MODEL_ONLY",
+  "generator_protocol": "responses",
+  "provider_timeout_sec": 180,
+  "model_endpoints": {
+    "gpt-6.1-sol": {"base_url": "https://oneapi.sxyq27.online/v1", "protocol": "responses"},
+    "gpt-6-luna": {"base_url": "https://oneapi.sxyq27.online/v1", "protocol": "chat_completions"}
+  },
+  "formal_model_ids": ["gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash"],
+  "candidate_actions": [
+    {"provider": "openai", "model": "gpt-6.1-sol", "native_effort": "low"},
+    {"provider": "jiji", "model": "gpt-6-luna", "native_effort": "low"}
+  ],
+  "native_effort_observation_note": "Requested low; applied native effort remains unknown. Only the model is selected.",
+  "teacher_enabled": false,
+  "router_endpoint": "http://127.0.0.1:8000",
+  "router_timeout_sec": 60,
+  "router_checkpoint": {
+    "path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/best",
+    "command": [
+      "ssh", "-i", "<SSH_PRIVATE_KEY_PATH>",
+      "-o", "IdentitiesOnly=yes", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8",
+      "<SSH_TARGET>",
+      "env PYTHONPATH=<SERVER_PROJECT_ROOT>/our-project/code/src:<SERVER_PROJECT_ROOT> OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 <SERVER_PROJECT_ROOT>/.venv/bin/python -m modelrouter.v9.runtime.checkpoint"
+    ]
+  },
+  "feature_training_status": "FEATURE_PARTIALLY_TRAINED"
+}

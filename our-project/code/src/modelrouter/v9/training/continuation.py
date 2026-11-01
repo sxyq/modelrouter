@@ -69,7 +69,9 @@ def serialize_training_record(row):
         step = decision.step_index
         if step is not None and teacher["assessed_through_step"] > step:
             raise ValueError("Teacher assessment includes a later decision")
-    result["state"] = decision.router_text()
+    from .prepare import _router_input_text
+
+    result["state"] = _router_input_text(result, decision)
     result["pre_decision_state"] = decision.model_dump()
     for qid, question in result["questions"].items():
         if "label" not in question:

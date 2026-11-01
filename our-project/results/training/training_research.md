@@ -1,6 +1,55 @@
 # Laya / Kev 全历史训练研究报告
 
-## 2026-11-01 · 06:26训练状态与模型监督材料
+## 2026-11-01 · 当前：步骤Model-only接续已完成
+
+从main63057a4接续。本轮仅完成一个Laya定向实验，未恢复暂停队列、重训F14或启动Kev新候选。最新动作、编码与Dev证据见[本轮结果](../iterations/20261101-v9-quality-step-supervision/review.md)；原全历史取样、前三和独立四档成绩按原时点保留，不重新遍历或按Test重选。
+
+| 对象 | 12:57:52台北的实际状态 |
+|---|---|
+| 项目训练 / 原队列 | 本轮V9训练已结束、Kev活动0；另项维护的F14活动1。queue_state仍PAUSED_USER_REQUEST/current_run=null，但已有handoff817520等F14退出，本轮未创建或操作 |
+| 原系列 | Laya F01–F13完成；旧F14 failed/NON_FINITE_LOSS归档和结束2026-10-31T09:01:02Z保持；现行F14另项冷启running，未作父权重。Kev R01–R16全COMPLETED/EVALUATED |
+| 接续代表 | F11-e01 / R11保持；旧V9两轮8/100更新与负结果保留 |
+| 新Laya | V9_LAYA_STEP_001-e01，completed，1/1 epoch、9/9更新，实体已保存、7次真实CPU路由 |
+| 新Kev | 未启动、参数更新0；R11原384窗口不适合本轮长状态，8K可容纳 |
+| Serving | healthy，PID327621、10-30 20:53:21启动，仍F05-e01/原Kev Adapter；未替换或重启 |
+| 共享GPU | 12:56为9929/49140MiB、0%、75°C，现含F14训练；未操作共享服务 |
+
+现行F14 PID808492、started_at=2026-11-01T03:31:49Z，Epoch1块25/420、step3200/107404、consumed204800/6873816；最近读取的块14–25 Loss均有限，最新0.5952016992741846。固定Val未完成，旧NaN诱因仍未知；不加载它作父权重。先前12:32读取的failed为原归档，不能代表当前Run。冷启入口修改和既有handoff来自另项维护，本轮保留但不并入源码提交；不启动F15/F16或原Kev材料不足候选。
+
+### 新监督与实际训练范围
+
+四个已有训练任务的新前缀新增步骤偏好4条，Sol质量3/Luna等质量成本1，新增来源任务0。唯一17条视图已含旧13条：任务级9/步骤级8、9任务，Sol4/Luna13；步骤覆盖8任务/7仓库、Sol4/Luna4，7质量/1成本。原Train196可组合213、prepared Val186保持；本轮实际训练只有72行，不能把213写为实际曝光量。
+
+| Laya V9_LAYA_STEP_001 | 实际值 |
+|---|---|
+| 原入口 / 父权重 | run_sweep_experiment / F11-e01，weight_only接续 |
+| 数据 | 64原S1人类模型偏好 + 8真实步骤Model-only；9条任务成本目标不使用 |
+| 更新参数 | freeze_encoder=true，仅原pointer head；head_lr2e-5 |
+| 参数与次数 | 1 epoch、micro_batch2/grad_accum4、9更新、seed42、max_len5120/head512 |
+| 输入与信息 | AA v4、教师0/Effort0；实际72/72状态和能力信息完整保留，拒收0 |
+| 训练Loss / GPU峰值 | 0.644704312086 / 2493.08MiB |
+| 有效保存时间 | 2026-11-01T04:13:14Z–04:13:37Z |
+| 训练 / Val / epoch秒 | 7.948 / 12.678 / 22.8 |
+| 实体 | 原Run checkpoints/epoch_01，best指向该目录；model.safetensors842609220字节，目录846196996字节，PINNED_PARENT |
+
+原固定S1 Val **561项**（不是prepared Val186）完成：
+
+| 版本 | Accuracy | Loss | Brier | ECE |
+|---|---:|---:|---:|---:|
+| 父F11-e01 | 0.6898 | 0.5941 | 0.4085 | 0.0378 |
+| 新步骤接续 | 0.6898 | 0.5938 | 0.4083 | 0.0362 |
+
+未观察到该固定S1准确率退步，其他指标仅小幅变化，不代表真实动态收益。新目标和旧四档目标分开，教师/能力卡不是选择答案，请求low不作实际Effort监督。17条canonical视图原1024全裁、4096裁2条、5120完整保留17/17；最近命令/输出、候选价格和两选项进入原编码。完整原消息另存，不声称6k视图保留全部历史。Kev最大状态3700Token在8K可容纳，但本轮未做LoRA/head更新。
+
+### 产物恢复与Dev负结果
+
+首次计算完成后，原15%新候选保留额度在两个单成员组中给本组0个额度，权重被移除，原因outside_new_core_pool_15pct_quota(1/2)；元数据及缺权重Dev失败保留。沿同一Run从F11恢复产物，使用原explicit_pinned，并使public摘要复用调用方RetentionManager。最终实体存在，未新建候选或留存体系；两次计算尝试不累计为18更新。中间PYTHONPATH入口失败未进入训练，和F14非有限Loss分开记录。模型权重只在服务器，Mac未下载。
+
+独立Dev custom-memory-heap-crash三策略各7生成/6完整工具结果：固定Sol模型费0.1367668USD、Trial553.177141秒；固定Luna0.00188939USD、113.584711秒；新Laya0.1809328USD、601.404901秒。Luna原reward0/CTRF5/6；Sol与新Laya工具30秒超时，原Verifier未运行，reward及成功率未知。新Laya全Sol、7真实前向、切换0/fallback0，概率0.5042–0.5476；Router363.676257秒中前向141.258480秒，加载与SSH开销另列。之前工具通过和原空artifact manifest不能作为Episode成功；未重建或重跑，Dev不入Train或生成质量赢家。本轮教师0，上一轮1成功/4消费/0.013086USD的净收益仍未知。
+
+本轮37请求/32份Usage/5未知，已知模型费率0.57554089USD；完整模型费、供应商实收和工具/容器资源USD未知。确认的Native Effort与K=3目标仍0，Flash目录未列出。8个步骤任务支持这次有限Laya接续，尚不足以证明联合档位泛化或全面启动Kev新训练。独立TwinRouterBench八版本不重评、不入训练，新权重未在该集评价；Serving、F11/R11代表和五RQ保持。
+
+## 2026-11-01 · 06:26历史训练状态与模型监督材料
 
 | 对象 | 当前事实 |
 |---|---|

@@ -113,7 +113,7 @@ def format_router_payload(payload: Mapping) -> str:
                 same.append(current)
         if same:
             values["previous_equals_current"] = same
-        result["continuity"] = values
+        continuity = values
     for name in ("phase", "budget_remaining_usd", "steps_remaining", "step_index",
                  "last_tool_exit_code", "context_chars", "context_tokens_approx",
                  "backend_deployment_status"):
@@ -122,16 +122,18 @@ def format_router_payload(payload: Mapping) -> str:
     snapshot_id = data.pop("capability_snapshot_id", None)
     result["capability_snapshot_id"] = snapshot_id
     history = {name: data.pop(name) for name in ("last_observation_summary", "history_snippet") if name in data}
-    result.update({name: value and value[-128:] for name, value in history.items()
+    result.update({name: value for name, value in history.items()
                    if name == "last_observation_summary"})
     cards = [_router_card(card, snapshot_id) for card in data.pop("capability_cards", [])]
     # Keep all candidate identities ahead of verbose metric/pricing metadata.
     # The full evidence stays in this same view and the frozen snapshot.
-    priority_fields = ("model_id", "native_effort", "action_id", "model_provider",
+    priority_fields = ("model_id", "native_effort", "requested_native_effort", "action_id", "model_provider",
                        "model_evidence_status", "evidence_status")
     result["capability_summary"] = [{name: card[name] for name in priority_fields if name in card}
                                     for card in cards]
     for summary, card in zip(result["capability_summary"], cards):
+        if "model_pricing" in card:
+            summary["model_pricing"] = card.pop("model_pricing")
         intelligence = [row for row in card.get("reference_metrics", [])
                         if row[0] == "artificial_analysis_intelligence_index"]
         if intelligence:
@@ -139,6 +141,9 @@ def format_router_payload(payload: Mapping) -> str:
             summary["aa_intelligence_reference"] = {
                 "score_raw": row[1], "score_unit": row[2],
                 "benchmark_version": row[3], "evaluated_native_effort": row[5]}
+    result.update({name: value for name, value in history.items() if name == "history_snippet"})
+    if continuity is not None:
+        result["continuity"] = continuity
     missing_names, missing_sets = [], []
     for card in cards:
         missing = card.pop("NOT_MEASURED", None)
@@ -179,7 +184,6 @@ def format_router_payload(payload: Mapping) -> str:
             ("message_count", "context_chars", "completed_generations", "observed_through_step",
              "token_measurement_status") if name in agent_context}
     result.update(data)
-    result.update({name: value for name, value in history.items() if name == "history_snippet"})
     return json.dumps(result, ensure_ascii=False, separators=(",", ":"))
 
 
@@ -259,7 +263,7 @@ def recent_tools(state, char_limit):
         remaining -= len(part) + 1
         if remaining <= 0:
             break
-    return "\n".join(reversed(parts))
+    return "\n".join(parts)
 
 
 def recent_messages(messages, char_limit):
@@ -292,7 +296,8 @@ def compact_router_state(state, messages, snapshot, char_limit=6000):
                   last_tool_exit_code=0, last_observation_summary="Initial task prompt")
     if history:
         result.update(last_tool_exit_code=history[-1].tool_exit_code,
-                      last_observation_summary=history[-1].tool_observation[-512:])
+                      last_observation_summary=(f"command={history[-1].tool_action[:256]}\n"
+                                                f"output={history[-1].tool_observation[-512:]}"))
     result["agent_context"] = {
         "message_count": len(messages), "context_chars": result["context_chars"],
         "router_task_tool_char_limit": char_limit,

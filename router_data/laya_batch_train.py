@@ -482,10 +482,9 @@ def _s3_validation_breakdown(model, tok, rows, dev, train_mod, cfg, max_len, hea
     return enrich_s3_target_metrics(result)
 
 
-def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root):
+def _sweep_public_run(run_id, run_root, meta, history, manifest, out_root, retention_mgr):
     """Build the small public dashboard payload without server paths or row text."""
     root = Path(out_root)
-    retention_mgr = CheckpointRetentionManager(out_root=root)
     ckpt_manifest = retention_mgr.write_checkpoint_manifest(manifest=manifest)
     node_by_id = {n['checkpoint_id']: n for n in ckpt_manifest.get('checkpoints', [])}
 
@@ -669,7 +668,7 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
     parent_metrics = _groups(model, tok, val_groups, dev, sys.modules['laya.train'], cfg, max_len, head_max_len, val_rows=val_rows)
 
     config = TrainConfig(
-        epochs=epochs, micro_batch=8, grad_accum=8,
+        epochs=epochs, micro_batch=int(spec.get('micro_batch', 8)), grad_accum=int(spec.get('grad_accum', 8)),
         encoder_lr=float(spec.get('encoder_lr', 2.5e-5)),
         head_lr=float(spec.get('head_lr', 1e-4)), min_lr=1e-6,
         weight_decay=0.01, grad_clip=1.0, loss='soft-ce',
@@ -857,7 +856,7 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
             'updated_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
         })
         _write(run_root / 'run.json', run_meta)
-        _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root)
+        _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root, retention_mgr)
         print(json.dumps({
             'event': 'epoch_complete', 'run_id': run_id, 'epoch': epoch + 1,
             'checkpoint_id': epoch_id, 'best_epoch': best_epoch,
@@ -885,7 +884,7 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
         if input_exposure is not None:
             run_meta['v9_continuation']['input_exposure'] = input_exposure.summary()
         retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest)
-        _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root)
+        _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root, retention_mgr)
         raise
     finally:
         train_mod.encode_item = official_encode
@@ -899,7 +898,7 @@ def run_sweep_experiment(run_id, manifest_path, model_dir, out_root, data_root=N
             input_exposure=input_exposure.summary(),
             feature_training_status=feature_training_status(input_exposure.summary(), status in {'completed', 'early_stopped'}))
     retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest)
-    _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root)
+    _sweep_public_run(run_id, run_root, run_meta, run_meta['history'], manifest, out_root, retention_mgr)
     print(json.dumps({
         'event': 'run_complete', 'run_id': run_id, 'status': status,
         'best_epoch': best_epoch, 'epochs': len(run_meta['history']),
@@ -1674,7 +1673,7 @@ def run_full_coverage_stream_run(
         run_meta["finished_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         run_meta["history"] = history
         retention_mgr.finalize_run_checkpoints(run_id, run_meta, manifest=manifest_data)
-        _sweep_public_run(run_id, run_root, run_meta, history, manifest_data, out_root)
+        _sweep_public_run(run_id, run_root, run_meta, history, manifest_data, out_root, retention_mgr)
         raise
 
     run_meta["status"] = status
@@ -1703,7 +1702,7 @@ def run_full_coverage_stream_run(
         run_meta["regenerated_parent_artifact"]["regenerated_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         _atomic_write_json(run_root / "run.json", run_meta)
 
-    _sweep_public_run(run_id, run_root, run_meta, history, manifest_data, out_root)
+    _sweep_public_run(run_id, run_root, run_meta, history, manifest_data, out_root, retention_mgr)
     print(json.dumps({
         "event": "full_coverage_run_complete",
         "run_id": run_id,

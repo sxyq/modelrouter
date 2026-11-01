@@ -6,13 +6,15 @@
 >
 > **证据纪律**：论文/官方材料、现有仓库文献、E0 Agent 审计、我们提出的假设分开表述。**未运行的实验不得写成结果；“未见完全相同方案”不等于“首创”。**
 
+**服务器边界（12:57台北）**：另项维护的F14现行冷启到块25/420、3200/107404步，最近12块Loss有限；旧NON_FINITE_LOSS归档不覆盖当前状态，未完成Val、不作父。原队列文件仍暂停，但既有handoff等待F14退出，本轮未创建或操作。Kev无新训练、Serving仍F05/原Adapter，实验权重不自动上线。
+
 **独立静态评价完成（11-01）**：用户已选TwinRouterBench 520题/970步，微调前导入权重与原Val前三采用相同原始选项/状态、温度1.0及真实CPU前向，8/8完成。F11-e01 20.515464分相对微调前7.010309分提高13.505155个百分点；R11 18.969072分相对微调前13.298969分提高5.670103个百分点，NLL/Brier/ECE也改善，但全部版本低于恒选low的71.030928分，外部四档表现仍较弱。它不代表完整Agent成功率、三模型最优动作或五RQ总体收益，不用于Test调参、新训练或Serving晋升；完整指标见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)。独立静态评价不增加动作监督，当前Train模型目标见下段。
 
-**2026-11-01 当前证据范围**：12个不同Train任务/9仓库，7组双成功终局产生任务级成本偏好7条，TinyDB与Records真实恢复前缀产生步骤级即时验证偏好2条。新9条来自7任务；含历史4条的13条MODEL_ONLY视图覆盖9任务，任务级9/步骤级4、Luna12/Sol1。Sol low/medium均返回max、Luna不报告应用档位，执行与元数据原因未知；所以确认的Model×Native Effort、同模型Effort及K=3监督仍0，不把观察到的max变成合法动作标签。原Prepare及本机/服务器serializer已消费13条，旧196/186可组合209/186，未训练。原Verifier未知、请求中断和双方失败不生成胜者。结果见[本轮记录](../results/iterations/20261101-v9-overnight-real-supervision/review.md)。
+**2026-11-01 当前证据范围**：四个已有训练任务的新失败前缀新增步骤目标4条（Sol质量3/Luna等质量成本1），新增来源任务0。累计17条MODEL_ONLY目标、9任务，任务级9/步骤级8、Sol4/Luna13；步骤覆盖8任务/7仓库、Sol4/Luna4，其中7质量差异/1等质量成本。任务级成本目标不复制到各步骤。旧196/186可组合213/186，原材料不重加工。Provider已记录实际effort参数，但Sol请求low报告max、Luna未报告应用档位，实际原因未知；确认的Model×Native Effort/同模型Effort/K=3仍0。原Verifier未知、API中断或双方失败不生成胜者。结果见[本轮记录](../results/iterations/20261101-v9-quality-step-supervision/review.md)。
 
-**动态与教师证据范围**：旧F05在configure-git-webserver教师开/关均全Luna、官方reward0；一次新教师三字段成功、0.013086USD/23.281秒，短评实际进入Router4次，不干预Agent。不同Dev filter-js-from-html完成15次真实路由、Sol3→Luna12、fallback0，支持旧权重会随可见状态自然换模型；动态最终RepeatedFormatError，固定LunaSubmitted，但两者原Verifier均reward0/CTRF0/2，模型费0.07949004/0.00111207USD。这不证明路由收益，也不支持双方失败时的质量赢家。Dev不进入Train，不据单题切换或教师低费用主张稳定收益；当前Serving未学过本轮目标。
+**动态与教师证据范围**：本轮新Laya在独立Dev custom-memory-heap-crash完成7次真实CPU路由、全Sol、切换0/fallback0，概率0.5042–0.5476；未人为改变推理权重。新Laya和固定Sol工具30秒超时，无原Verifier终局；固定Luna reward0/CTRF5/6，不能形成质量赢家。三策略模型费Laya/Sol/Luna为0.1809328/0.1367668/0.00188939USD，完整成本未知，Dev不入Train。之前工具验证通过不替代Episode成功，原artifact为空，不重建或重跑。本轮教师0，原低频三字段与两参考保持；上一轮1成功/4次消费/0.013086USD仍未证明净收益。Serving仍旧权重，单次自然切换、固定Val稳定和此次选择Sol均不证明动态改善。
 
-**四档偏置证据**：原S1候选偏好、S2终局与S3资源档位不是外部能力四档；R11继续训练4269行没有S1或四档choice，Laya微调前已有950个mid。原外部前400字符的状态使970步只有318种Context，58个多步任务输入不变。训练目标与输入覆盖差异已确认，因果贡献及导入权重原始训练分布未知，未证明选项索引错位；未重评或用独立标签调参。新task/step模型目标须与旧S1/S2/S3分开并保留旧S1。当前13条稀疏模型目标可被原接口消费，但不支持联合档位学习，Laya encoder/head、Kev LoRA/pointer head本轮均未更新；固定Val与独立Dev的真实收益仍待新监督支撑。
+**输入与有限接续证据**：原Context/Serializer统一真实比较编码，Laya1024裁17/17状态，5120保留17/17完整canonical视图、两候选与价格；完整原消息另存。Kev最大状态3700Token、8K可容纳，R11父384不适配。Laya从F11-e01用64旧S1+8步骤模型目标训练1轮/9更新，仅原pointer head、lr2e-5，encoder不更新；任务成本、教师和Effort目标不训练。固定S1 Val561项Accuracy0.6898保持，Loss/Brier/ECE从0.5941/0.4085/0.0378至0.5938/0.4083/0.0362，不能替代独立Agent收益。Kev未新训练，F11/R11代表不变。旧四档语义/分布分析保留，独立八版本不重评或调参，本轮新权重未在该集评价；AA Max不能作low实测分。8个步骤任务支持有限接续，尚不足以证明联合档位泛化。
 
 **2026-10-31 历史证据范围**：本轮从ad1d392接续，在已有TRA-002的公开SWE-smith训练任务TextFSM上取得1组有效K=2完整Episode对照与2个真实步骤前缀对照。Sol/Luna low两Episode均通过原96项，任务级质量相等下的模型费偏好为Luna；前缀7中Sol一步通过、Luna调用镜像不存在的apply_patch而未改码，得到1条即时修复偏好。前缀6两者失败只作观察。新可训练动作目标共2条，同属1个任务，完整K=3最优标签仍0；不能据此宣称动态Router、三模型或五RQ总体收益。结果见[真实监督记录](../results/iterations/20261031-v9-real-route-supervision/review.md)，旧成功/失败题未重跑。
 

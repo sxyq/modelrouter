@@ -1,0 +1,1649 @@
+{
+  "timestamp": "2026-11-01T04:28:11.998213+00:00",
+  "iteration_id": "dev-custom-memory-heap-crash-laya",
+  "status": "BLOCKED",
+  "reason": "Harbor exit=0; official verifier result absent in <LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42",
+  "observed_trials": 1,
+  "verified_trials": 0,
+  "successes": 0,
+  "success_rate": null,
+  "total_units": 1,
+  "finished_units": 1,
+  "current": null,
+  "current_trial": {
+    "task_id": {
+      "path": "<LOCAL_PROJECT_ROOT>/external/benchmarks/terminal-bench-2-1/tasks/custom-memory-heap-crash"
+    },
+    "policy": "laya_v2",
+    "agent": "modelrouter",
+    "job_name": "custom-memory-heap-crash--laya_v2--s42",
+    "status": "NOT_EVALUATED",
+    "pipeline_stage": "DEV",
+    "trial_dir": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ",
+    "trial_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+    "trial_name": "custom-memory-heap-crash__KPdAsZZ",
+    "job_id": "b28d6f74-a530-432d-bbc7-b2aaa5525e86",
+    "task_name": "terminal-bench/custom-memory-heap-crash",
+    "task_version": null,
+    "task_digest": "sha256:61e021e0304c9818a9be2c9173c8a0938ce5d136e95c5422e099f1fdb2dc080e",
+    "task_git_sha": null,
+    "task_source": null,
+    "task_checksum": "949f44d01f9411e5858fdfd0861e2c35e9622cbfe91542b761039a7a16286381",
+    "agent_info": {
+      "name": "modelrouter-mini-swe-agent",
+      "version": "10.0-mini-2.4.6",
+      "model_info": {
+        "name": "gpt-6-luna",
+        "provider": "openai"
+      }
+    },
+    "environment": null,
+    "reward": null,
+    "rewards": null,
+    "success": null,
+    "error": {
+      "exception_type": "RuntimeError",
+      "exception_message": "Command timed out after 30 seconds",
+      "exception_traceback": "Traceback (most recent call last):\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/tasks.py\", line 507, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/subprocess.py\", line 201, in communicate\n    stdin, stdout, stderr = await tasks.gather(stdin, stdout, stderr)\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/subprocess.py\", line 181, in _read_stream\n    output = await stream.read()\n             ^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/streams.py\", line 723, in read\n    block = await self.read(self._limit)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/streams.py\", line 730, in read\n    await self._wait_for_data('read')\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/streams.py\", line 539, in _wait_for_data\n    await self._waiter\nasyncio.exceptions.CancelledError\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 775, in _collect_buffered_output\n    stdout_bytes, stderr_bytes = await asyncio.wait_for(\n                                 ^^^^^^^^^^^^^^^^^^^^^^^\n        process.communicate(input=stdin_data), timeout=timeout_sec\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/tasks.py\", line 506, in wait_for\n    async with timeouts.timeout(timeout):\n               ~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/timeouts.py\", line 117, in __aexit__\n    raise TimeoutError from exc_val\nTimeoutError\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/trial.py\", line 500, in run\n    await self._run()\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/single_step.py\", line 40, in _run\n    await self._run_agent()\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/single_step.py\", line 76, in _run_agent\n    await self._run_agent_phase(\n    ...<5 lines>...\n    )\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/trial/trial.py\", line 651, in _run_agent_phase\n    await asyncio.wait_for(\n    ...<6 lines>...\n    )\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/tasks.py\", line 507, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"<LOCAL_PROJECT_ROOT>/our-project/code/src/modelrouter/benchmark/harbor_agent.py\", line 375, in run\n    await asyncio.to_thread(agent.run, instruction)\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/asyncio/threads.py\", line 26, in to_thread\n    return await loop.run_in_executor(None, func_call)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/thread.py\", line 59, in run\n    result = self.fn(*self.args, **self.kwargs)\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py\", line 98, in run\n    self.step()\n    ~~~~~~~~~^^\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py\", line 128, in step\n    return self.execute_actions(self.query())\n           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/minisweagent/agents/default.py\", line 156, in execute_actions\n    outputs = [self.env.execute(action) for action in message.get(\"extra\", {}).get(\"actions\", [])]\n               ~~~~~~~~~~~~~~~~^^^^^^^^\n  File \"<LOCAL_PROJECT_ROOT>/our-project/code/src/modelrouter/benchmark/harbor_agent.py\", line 303, in execute\n    ).result()\n      ~~~~~~^^\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py\", line 460, in result\n    return self.__get_result()\n           ~~~~~~~~~~~~~~~~~^^\n  File \"<LOCAL_USER_ROOT>/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/concurrent/futures/_base.py\", line 402, in __get_result\n    raise self._exception\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 1359, in exec\n    return await self._compose_exec(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<6 lines>...\n    )\n    ^\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 1436, in _compose_exec\n    return await self._run_docker_compose_command(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<4 lines>...\n    )\n    ^\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 749, in _run_docker_compose_command\n    result = await self._collect_buffered_output(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"<LOCAL_USER_ROOT>/.cache/uv/archive-v0/DmDbs4Qmvj_jUJae/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 782, in _collect_buffered_output\n    raise RuntimeError(f\"Command timed out after {timeout_sec} seconds\")\nRuntimeError: Command timed out after 30 seconds\n",
+      "occurred_at": "2026-11-01T04:28:07.557757Z"
+    },
+    "reason": "Original verifier output or completed verifier timing absent",
+    "usage": {
+      "n_input_tokens": 80662,
+      "n_cache_tokens": 41813,
+      "n_output_tokens": 8014,
+      "cost_usd": 0.1809328
+    },
+    "model_usage": {
+      "gpt-6.1-sol": {
+        "n_input_tokens": 80662,
+        "n_cache_tokens": 41813,
+        "n_output_tokens": 8014,
+        "cost_usd": 0.1809328
+      }
+    },
+    "n_input_tokens": 80662,
+    "n_cache_tokens": 41813,
+    "n_output_tokens": 8014,
+    "cost_usd": 0.1809328,
+    "duration_sec": 601.404901,
+    "verifier_path": null,
+    "native_trace_path": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/mini-swe-agent.trajectory.json",
+    "router_fallback_used": false,
+    "agent_metadata": {
+      "harness": "minisweagent.agents.default.DefaultAgent",
+      "mini_version": "2.4.6",
+      "policy": "laya_v2",
+      "task_id": "custom-memory-heap-crash",
+      "task_identity_source": "harbor_task_config",
+      "fallback_used": false,
+      "policy_implementation_status": "REMOTE_NEURAL_ROUTER",
+      "action_validation": {
+        "gpt-6.1-sol:low": "PROVIDER_REPORTED_MISMATCH",
+        "gpt-6-luna:low": "REAL_API_NOT_OBSERVED"
+      },
+      "untested_native_efforts_used": [],
+      "neural_router_evidence_eligible": true,
+      "raw_trajectory": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/mini-swe-agent.trajectory.json",
+      "v9": {
+        "teacher_metrics": [],
+        "continuity": {
+          "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+          "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-6",
+          "message_count": 14,
+          "message_chars": 73755,
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_fallback_used": false,
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "previous_router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "previous_router_run_id": "V9_LAYA_STEP_001",
+          "previous_selected_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "previous_actual_backend_model_id": "gpt-6.1-sol",
+          "actual_backend_model_id": "gpt-6.1-sol",
+          "logical_model_changed": false,
+          "actual_backend_changed": false,
+          "context_delivery": "FULL_MESSAGE_HISTORY",
+          "history_messages_resent": true,
+          "observed_cached_tokens": 20029,
+          "cache_usage_status": "REPORTED",
+          "physical_kv_cache_shared": null,
+          "switch_extra_tokens": null,
+          "switch_extra_cost_usd": null,
+          "switch_cost_status": "NOT_MEASURED"
+        },
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "router_checkpoint_ids": [
+          "V9_LAYA_STEP_001-e01"
+        ],
+        "router_checkpoints": [
+          {
+            "router_family": "laya",
+            "run_id": "V9_LAYA_STEP_001",
+            "checkpoint_id": "V9_LAYA_STEP_001-e01"
+          }
+        ],
+        "feature_training_status": "FEATURE_PARTIALLY_TRAINED",
+        "backend_deployment_status": "API_IDENTITY_ONLY_UNVERIFIED_PHYSICAL_BACKEND",
+        "complete_episode_cost_usd": 0.1809328,
+        "upstream_cost_accounting": "KNOWN_COSTS_PLUS_UNKNOWN_PLACEHOLDERS_NOT_BILLING"
+      },
+      "provider_metrics": [
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_0b8c3d1f1cc33ada016ae6bdad5cc08197807250abeee754e1",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 1004,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0
+            },
+            "output_tokens": 323,
+            "output_tokens_details": {
+              "reasoning_tokens": 154
+            },
+            "total_tokens": 1327
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 1004,
+          "completion_tokens": 323,
+          "reported_completion_tokens": 323,
+          "reasoning_tokens": 154,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "ttft_ms": 5142.81829202082,
+          "latency_ms": 7286.057666991837,
+          "output_tokens_per_s": 44.33124396795443,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 150.70645107216168,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.005238,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+          "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-0",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_05dc69dc7ddab14d016ae6bdea3490819086c0adbc6993de5d",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 3232,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 3229
+            },
+            "output_tokens": 579,
+            "output_tokens_details": {
+              "reasoning_tokens": 168
+            },
+            "total_tokens": 3811
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 3232,
+          "completion_tokens": 579,
+          "reported_completion_tokens": 579,
+          "reasoning_tokens": 168,
+          "cached_tokens": 0,
+          "cache_write_tokens": 3229,
+          "ttft_ms": 5703.2553749741055,
+          "latency_ms": 11300.887582998257,
+          "output_tokens_per_s": 51.23491369572447,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 103.43659220232603,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0138685,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+          "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-1",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_04b15182295956e6016ae6be2ff584819380513d831dce3731",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 7042,
+            "input_tokens_details": {
+              "cached_tokens": 3229,
+              "cache_write_tokens": 3810
+            },
+            "output_tokens": 1955,
+            "output_tokens_details": {
+              "reasoning_tokens": 1034
+            },
+            "total_tokens": 8997
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 7042,
+          "completion_tokens": 1955,
+          "reported_completion_tokens": 1955,
+          "reasoning_tokens": 1034,
+          "cached_tokens": 3229,
+          "cache_write_tokens": 3810,
+          "ttft_ms": 27904.078707972076,
+          "latency_ms": 39991.320792003535,
+          "output_tokens_per_s": 48.88560720882497,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 161.7407830842376,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0294039,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+          "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-2",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_01b4a1efc08ea0d7016ae6be9b4188819396736f0eae4c8995",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 11519,
+            "input_tokens_details": {
+              "cached_tokens": 7039,
+              "cache_write_tokens": 4477
+            },
+            "output_tokens": 1455,
+            "output_tokens_details": {
+              "reasoning_tokens": 1030
+            },
+            "total_tokens": 12974
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 11519,
+          "completion_tokens": 1455,
+          "reported_completion_tokens": 1455,
+          "reasoning_tokens": 1030,
+          "cached_tokens": 7039,
+          "cache_write_tokens": 4477,
+          "ttft_ms": 29330.621333036106,
+          "latency_ms": 35628.9318750496,
+          "output_tokens_per_s": 40.837598081881154,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 231.0143315884919,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0264524,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+          "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-3",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_03440614f7d23816016ae6bef73cd48196ac69354d71d24757",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 15547,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 15544
+            },
+            "output_tokens": 1332,
+            "output_tokens_details": {
+              "reasoning_tokens": 815
+            },
+            "total_tokens": 16879
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 15547,
+          "completion_tokens": 1332,
+          "reported_completion_tokens": 1332,
+          "reasoning_tokens": 815,
+          "cached_tokens": 0,
+          "cache_write_tokens": 15544,
+          "ttft_ms": 19262.242750031874,
+          "latency_ms": 25244.162667018827,
+          "output_tokens_per_s": 52.764673464105066,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 222.6709849821791,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.052186,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+          "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-4",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_0d947557333f8634016ae6bf4956b48197959e76241447af6d",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 20032,
+            "input_tokens_details": {
+              "cached_tokens": 11516,
+              "cache_write_tokens": 8513
+            },
+            "output_tokens": 627,
+            "output_tokens_details": {
+              "reasoning_tokens": 75
+            },
+            "total_tokens": 20659
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 20032,
+          "completion_tokens": 627,
+          "reported_completion_tokens": 627,
+          "reasoning_tokens": 75,
+          "cached_tokens": 11516,
+          "cache_write_tokens": 8513,
+          "ttft_ms": 4484.859083022457,
+          "latency_ms": 12791.363833006471,
+          "output_tokens_per_s": 49.017447098338884,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 75.48301227435121,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0287101,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+          "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-5",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_01bca40e6f30ef29016ae6bf9a7dc481948da3d04e806594fb",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 22286,
+            "input_tokens_details": {
+              "cached_tokens": 20029,
+              "cache_write_tokens": 2254
+            },
+            "output_tokens": 1743,
+            "output_tokens_details": {
+              "reasoning_tokens": 516
+            },
+            "total_tokens": 24029
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 22286,
+          "completion_tokens": 1743,
+          "reported_completion_tokens": 1743,
+          "reasoning_tokens": 516,
+          "cached_tokens": 20029,
+          "cache_write_tokens": 2254,
+          "ttft_ms": 17166.428291995544,
+          "latency_ms": 31801.94954201579,
+          "output_tokens_per_s": 54.80796067854897,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 119.09381088819018,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0250739,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+          "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-6",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ],
+      "cost_statuses": [
+        "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+      ],
+      "actual_billed_cost_usd": null,
+      "atif_trajectory": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/trajectory.json"
+    },
+    "policy_implementation_status": "REMOTE_NEURAL_ROUTER",
+    "untested_native_efforts_used": [],
+    "neural_router_evidence_eligible": true,
+    "cost_statuses": [
+      "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+    ],
+    "actual_billed_cost_usd": null,
+    "started_at": "2026-11-01T04:18:09.914410Z",
+    "finished_at": "2026-11-01T04:28:11.319311Z",
+    "episode_wall_s": 601.404901,
+    "phase_wall_s": {
+      "environment_setup": 3.449953,
+      "agent_setup": 0.000456,
+      "agent_execution": 593.070983,
+      "verifier": null
+    },
+    "verifier_artifacts": [
+      {
+        "step_name": null,
+        "reward_path": null,
+        "rewards": null,
+        "result_rewards": null,
+        "stdout_path": null,
+        "ctrf_path": null
+      }
+    ],
+    "trace": {
+      "files": [
+        "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/trajectory.json"
+      ],
+      "steps": [
+        {
+          "trace_file": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/trajectory.json",
+          "step_id": 3,
+          "timestamp": "2026-11-01T04:18:59.867033+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 1004,
+            "completion_tokens": 323,
+            "cached_tokens": 0,
+            "cost_usd": 0.005238,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_0b8c3d1f1cc33ada016ae6bdad5cc08197807250abeee754e1",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 1004,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 0
+                },
+                "output_tokens": 323,
+                "output_tokens_details": {
+                  "reasoning_tokens": 154
+                },
+                "total_tokens": 1327
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 1004,
+              "completion_tokens": 323,
+              "reported_completion_tokens": 323,
+              "reasoning_tokens": 154,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "ttft_ms": 5142.81829202082,
+              "latency_ms": 7286.057666991837,
+              "output_tokens_per_s": 44.33124396795443,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 150.70645107216168,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.005238,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+              "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-0",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_uqvybvrRcSfpB9ntKOyiXqEo",
+              "function_name": "bash",
+              "arguments": {
+                "command": "ls -la /app && printf '\\n--- main.cpp ---\\n' && sed -n '1,240p' /app/main.cpp && printf '\\n--- user.cpp ---\\n' && sed -n '1,280p' /app/user.cpp && printf '\\n--- available tools ---\\n' && command -v g++ && command -v valgrind && command -v gdb && printf '\\n--- build directory ---\\n' && ls -la /build"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/trajectory.json",
+          "step_id": 4,
+          "timestamp": "2026-11-01T04:20:04.756330+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 3232,
+            "completion_tokens": 579,
+            "cached_tokens": 0,
+            "cost_usd": 0.0138685,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_05dc69dc7ddab14d016ae6bdea3490819086c0adbc6993de5d",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 3232,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 3229
+                },
+                "output_tokens": 579,
+                "output_tokens_details": {
+                  "reasoning_tokens": 168
+                },
+                "total_tokens": 3811
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 3232,
+              "completion_tokens": 579,
+              "reported_completion_tokens": 579,
+              "reasoning_tokens": 168,
+              "cached_tokens": 0,
+              "cache_write_tokens": 3229,
+              "ttft_ms": 5703.2553749741055,
+              "latency_ms": 11300.887582998257,
+              "output_tokens_per_s": 51.23491369572447,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 103.43659220232603,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0138685,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+              "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-1",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_6wTWSovmaNXF1rASTm9Bj93e",
+              "function_name": "bash",
+              "arguments": {
+                "command": "printf '\\n--- user.h ---\\n' && cat /app/user.h && printf '\\n--- library patches ---\\n' && find /build/patches -maxdepth 2 -type f -print && printf '\\n--- patch contents ---\\n' && for patch in /build/patches/*; do if [ -f \"$patch\" ]; then printf '\\n--- %s ---\\n' \"$patch\"; sed -n '1,260p' \"$patch\"; fi; done && printf '\\n--- compiler version ---\\n' && g++ --version && printf '\\n--- installed libraries ---\\n' && ls -l /usr/local/gcc-custom-{debug,release}/lib64/libstdc++* && printf '\\n--- baseline build and run ---\\n' && g++ -std=c++17 -o /app/release /app/main.cpp /app/user.cpp -O2 -DNDEBUG -L/usr/local/gcc-custom-release/lib64 -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lm && g++ -std=c++17 -o /app/debug /app/main.cpp /app/user.cpp -g -O0 -L/usr/local/gcc-custom-debug/lib64 -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lm && (ulimit -c 0; /app/release; printf 'Release exit status: %s\\n' \"$?\"; /app/debug; printf 'Debug exit status: %s\\n' \"$?\")"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/trajectory.json",
+          "step_id": 5,
+          "timestamp": "2026-11-01T04:21:42.879939+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 7042,
+            "completion_tokens": 1955,
+            "cached_tokens": 3229,
+            "cost_usd": 0.0294039,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_04b15182295956e6016ae6be2ff584819380513d831dce3731",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 7042,
+                "input_tokens_details": {
+                  "cached_tokens": 3229,
+                  "cache_write_tokens": 3810
+                },
+                "output_tokens": 1955,
+                "output_tokens_details": {
+                  "reasoning_tokens": 1034
+                },
+                "total_tokens": 8997
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 7042,
+              "completion_tokens": 1955,
+              "reported_completion_tokens": 1955,
+              "reasoning_tokens": 1034,
+              "cached_tokens": 3229,
+              "cache_write_tokens": 3810,
+              "ttft_ms": 27904.078707972076,
+              "latency_ms": 39991.320792003535,
+              "output_tokens_per_s": 48.88560720882497,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 161.7407830842376,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0294039,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+              "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-2",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_CgTqgmAeXfXkGkOufN1ncG3f",
+              "function_name": "bash",
+              "arguments": {
+                "command": "workdir=$(mktemp -d /tmp/app-verification.XXXXXX) && printf 'Verification directory: %s\\n' \"$workdir\" && cp /app/user.cpp \"$workdir/user.cpp.original\" && cat > \"$workdir/verify.sh\" <<'EOF'\n#!/usr/bin/env bash\nset -uo pipefail\nulimit -c 0\nresults=$(mktemp -d /tmp/app-verification-results.XXXXXX)\nprintf 'Results directory: %s\\n' \"$results\"\ng++ -std=c++17 -o /app/release /app/main.cpp /app/user.cpp -O2 -DNDEBUG -L/usr/local/gcc-custom-release/lib64 -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lm || exit 1\ng++ -std=c++17 -o /app/debug /app/main.cpp /app/user.cpp -g -O0 -L/usr/local/gcc-custom-debug/lib64 -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lm || exit 1\nfailed=0\nfor mode in release debug; do\n    printf '\\n--- %s execution ---\\n' \"$mode\"\n    /app/\"$mode\" > \"$results/$mode.stdout\" 2> \"$results/$mode.stderr\"\n    status=$?\n    cat \"$results/$mode.stdout\" \"$results/$mode.stderr\"\n    printf 'Exit status: %s\\n' \"$status\"\n    if [ \"$status\" -ne 0 ]; then failed=1; fi\n    if ! grep -q 'Estimated π: 3.142428' \"$results/$mode.stdout\" || ! grep -q 'Computation completed successfully' \"$results/$mode.stdout\"; then\n        printf 'Expected simulation output missing\\n'\n        failed=1\n    fi\n    printf '\\n--- %s Valgrind ---\\n' \"$mode\"\n    valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=99 --log-file=\"$results/$mode.valgrind\" /app/\"$mode\" > \"$results/$mode.valgrind.stdout\" 2> \"$results/$mode.valgrind.stderr\"\n    status=$?\n    cat \"$results/$mode.valgrind\"\n    printf 'Valgrind exit status: %s\\n' \"$status\"\n    if [ \"$status\" -ne 0 ]; then failed=1; fi\n    if ! grep -q 'ERROR SUMMARY: 0 errors' \"$results/$mode.valgrind\" || ! grep -q 'All heap blocks were freed -- no leaks are possible' \"$results/$mode.valgrind\"; then\n        failed=1\n    fi\ndone\nif ! cmp -s \"$results/release.stdout\" \"$results/debug.stdout\"; then\n    printf '\\nRelease/debug output differs\\n'\n    diff -u \"$results/debug.stdout\" \"$results/release.stdout\"\n    failed=1\nfi\nexit \"$failed\"\nEOF\nchmod +x \"$workdir/verify.sh\"\nprintf '\\n--- first-use facet implementation ---\\n'\nsed -n '70,145p' /build/gcc-13.2.0/libstdc++-v3/include/bits/locale_classes.tcc\nsed -n '255,410p' /build/gcc-13.2.0/libstdc++-v3/src/c++98/locale_init.cc\nprintf '\\n--- baseline verification ---\\n'\n\"$workdir/verify.sh\"\nstatus=$?\nprintf '\\nBaseline verification exit status: %s\\n' \"$status\"\nprintf '\\n--- release crash backtrace ---\\n'\ngdb -q -batch -ex run -ex bt /app/release"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/trajectory.json",
+          "step_id": 6,
+          "timestamp": "2026-11-01T04:23:25.370025+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 11519,
+            "completion_tokens": 1455,
+            "cached_tokens": 7039,
+            "cost_usd": 0.0264524,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_01b4a1efc08ea0d7016ae6be9b4188819396736f0eae4c8995",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 11519,
+                "input_tokens_details": {
+                  "cached_tokens": 7039,
+                  "cache_write_tokens": 4477
+                },
+                "output_tokens": 1455,
+                "output_tokens_details": {
+                  "reasoning_tokens": 1030
+                },
+                "total_tokens": 12974
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 11519,
+              "completion_tokens": 1455,
+              "reported_completion_tokens": 1455,
+              "reasoning_tokens": 1030,
+              "cached_tokens": 7039,
+              "cache_write_tokens": 4477,
+              "ttft_ms": 29330.621333036106,
+              "latency_ms": 35628.9318750496,
+              "output_tokens_per_s": 40.837598081881154,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 231.0143315884919,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0264524,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+              "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-3",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_FE4yJGpQPQx5KwlYmNCcSVgZ",
+              "function_name": "bash",
+              "arguments": {
+                "command": "printf '\\n--- exception pool allocation and cleanup ---\\n' && sed -n '70,275p' /build/gcc-13.2.0/libstdc++-v3/libsupc++/eh_alloc.cc && sed -n '345,460p' /build/gcc-13.2.0/libstdc++-v3/libsupc++/eh_alloc.cc && printf '\\n--- other freeres definitions/declarations ---\\n' && rg -n '__freeres' /build/gcc-13.2.0/libstdc++-v3 /usr/include/c++/13 2>/dev/null | head -60 && printf '\\n--- cleanup symbol in both static libraries ---\\n' && nm -C /usr/local/gcc-custom-release/lib64/libstdc++.a 2>/dev/null | grep -F '__gnu_cxx::__freeres' && nm -C /usr/local/gcc-custom-debug/lib64/libstdc++.a 2>/dev/null | grep -F '__gnu_cxx::__freeres' && printf '\\n--- installed facet implementation ---\\n' && sed -n '95,210p' /usr/include/c++/13/bits/locale_classes.tcc && printf '\\n--- stream numeric insertion entry points ---\\n' && rg -n '_M_insert|operator<<\\(double' /build/gcc-13.2.0/libstdc++-v3/include/bits/ostream.tcc /build/gcc-13.2.0/libstdc++-v3/include/std/ostream"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/trajectory.json",
+          "step_id": 7,
+          "timestamp": "2026-11-01T04:24:47.001349+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 15547,
+            "completion_tokens": 1332,
+            "cached_tokens": 0,
+            "cost_usd": 0.052186,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_03440614f7d23816016ae6bef73cd48196ac69354d71d24757",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 15547,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 15544
+                },
+                "output_tokens": 1332,
+                "output_tokens_details": {
+                  "reasoning_tokens": 815
+                },
+                "total_tokens": 16879
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 15547,
+              "completion_tokens": 1332,
+              "reported_completion_tokens": 1332,
+              "reasoning_tokens": 815,
+              "cached_tokens": 0,
+              "cache_write_tokens": 15544,
+              "ttft_ms": 19262.242750031874,
+              "latency_ms": 25244.162667018827,
+              "output_tokens_per_s": 52.764673464105066,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 222.6709849821791,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.052186,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+              "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-4",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_E6eQExnQH8qdMhUGqxShUGHi",
+              "function_name": "bash",
+              "arguments": {
+                "command": "printf '\\n--- exception pool free implementation ---\\n' && grep -n -A26 -B12 'void __freeres() noexcept' /build/gcc-13.2.0/libstdc++-v3/libsupc++/eh_alloc.cc && printf '\\n--- exception pool allocator ---\\n' && sed -n '245,345p' /build/gcc-13.2.0/libstdc++-v3/libsupc++/eh_alloc.cc && printf '\\n--- stream library runtime locale lookup ---\\n' && grep -n -A20 -B8 '_M_cache_locale' /build/gcc-13.2.0/libstdc++-v3/include/bits/basic_ios.tcc && printf '\\n--- number insertion code ---\\n' && sed -n '50,115p' /build/gcc-13.2.0/libstdc++-v3/include/bits/ostream.tcc && printf '\\n--- Valgrind interception options ---\\n' && valgrind --help | grep -A8 -B3 'soname-synonyms' && printf '\\n--- baseline Valgrind without replacing user new/delete ---\\n' && (ulimit -c 0; valgrind --soname-synonyms=somalloc=nouserintercepts --leak-check=full --show-leak-kinds=all --error-limit=yes --error-exitcode=99 --log-file=/tmp/app-verification.ag1fF5/baseline-custom-allocator.valgrind /app/release >/tmp/app-verification.ag1fF5/baseline-custom-allocator.stdout 2>/tmp/app-verification.ag1fF5/baseline-custom-allocator.stderr; printf 'Exit status: %s\\n' \"$?\"; sed -n '1,200p' /tmp/app-verification.ag1fF5/baseline-custom-allocator.valgrind)"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/trajectory.json",
+          "step_id": 8,
+          "timestamp": "2026-11-01T04:25:57.094060+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 20032,
+            "completion_tokens": 627,
+            "cached_tokens": 11516,
+            "cost_usd": 0.0287101,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_0d947557333f8634016ae6bf4956b48197959e76241447af6d",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 20032,
+                "input_tokens_details": {
+                  "cached_tokens": 11516,
+                  "cache_write_tokens": 8513
+                },
+                "output_tokens": 627,
+                "output_tokens_details": {
+                  "reasoning_tokens": 75
+                },
+                "total_tokens": 20659
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 20032,
+              "completion_tokens": 627,
+              "reported_completion_tokens": 627,
+              "reasoning_tokens": 75,
+              "cached_tokens": 11516,
+              "cache_write_tokens": 8513,
+              "ttft_ms": 4484.859083022457,
+              "latency_ms": 12791.363833006471,
+              "output_tokens_per_s": 49.017447098338884,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 75.48301227435121,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0287101,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+              "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-5",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_NPu6qtOEsaIwNuwEzwDtzJXr",
+              "function_name": "bash",
+              "arguments": {
+                "command": "printf '\\n--- resource-release hook ---\\n' && sed -n '365,405p' /build/gcc-13.2.0/libstdc++-v3/libsupc++/eh_alloc.cc && printf '\\n--- cache locale implementation ---\\n' && sed -n '145,194p' /build/gcc-13.2.0/libstdc++-v3/include/bits/basic_ios.tcc && printf '\\n--- patch user.cpp ---\\n' && python3 - <<'PY'\nfrom pathlib import Path\npath = Path('/app/user.cpp')\ntext = path.read_text()\ntext = text.replace('#include \"user.h\"\\n', '''#include \"user.h\"\n#include <sstream>\n\n// The statically linked libstdc++ retains its emergency exception pool.\n// This library-provided hook releases it when the application is done.\nnamespace __gnu_cxx {\nvoid __freeres() noexcept;\n}\n''')\ntext = text.replace('void user_init() {\\n}', '''void user_init() {\n    // Initialize the library's lazily registered locale facets before main.cpp\n    // enables its custom heap. They live until static destruction, after that\n    // heap has been destroyed, so they must be allocated on the normal heap.\n    // Use numeric stream formatting to enter the linked library's facet code\n    // even when the compiler's headers do not contain the in-house patch.\n    std::ostringstream warmup;\n    warmup << 0.0;\n}''')\ntext = text.replace('void user_cleanup() {\\n}', '''void user_cleanup() {\n    // Valgrind cannot automatically release this pool in a static library.\n    __gnu_cxx::__freeres();\n}''')\npath.write_text(text)\nPY\nprintf '\\n--- source diff ---\\n' && diff -u /tmp/app-verification.ag1fF5/user.cpp.original /app/user.cpp; printf '\\n--- verification ---\\n'; /tmp/app-verification.ag1fF5/verify.sh"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/trajectory.json",
+          "step_id": 9,
+          "timestamp": "2026-11-01T04:27:36.441490+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 22286,
+            "completion_tokens": 1743,
+            "cached_tokens": 20029,
+            "cost_usd": 0.0250739,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_01bca40e6f30ef29016ae6bf9a7dc481948da3d04e806594fb",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 22286,
+                "input_tokens_details": {
+                  "cached_tokens": 20029,
+                  "cache_write_tokens": 2254
+                },
+                "output_tokens": 1743,
+                "output_tokens_details": {
+                  "reasoning_tokens": 516
+                },
+                "total_tokens": 24029
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 22286,
+              "completion_tokens": 1743,
+              "reported_completion_tokens": 1743,
+              "reasoning_tokens": 516,
+              "cached_tokens": 20029,
+              "cache_write_tokens": 2254,
+              "ttft_ms": 17166.428291995544,
+              "latency_ms": 31801.94954201579,
+              "output_tokens_per_s": 54.80796067854897,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 119.09381088819018,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0250739,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+              "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-6",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_bI4onOjmFJQzyofsKbXTk36i",
+              "function_name": "bash",
+              "arguments": {
+                "command": "set -euo pipefail\nulimit -c 0\nworkdir=/tmp/app-verification.ag1fF5\nprintf '\\n--- Valgrind preserving the custom allocator ---\\n'\nfor mode in release debug; do\n    valgrind --soname-synonyms=somalloc=nouserintercepts --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=99 --log-file=\"$workdir/$mode.custom-allocator.valgrind\" /app/\"$mode\" > \"$workdir/$mode.custom-allocator.stdout\"\n    printf '\\n%s:\\n' \"$mode\"\n    cat \"$workdir/$mode.custom-allocator.valgrind\"\n    grep -q 'All heap blocks were freed -- no leaks are possible' \"$workdir/$mode.custom-allocator.valgrind\"\n    grep -q 'ERROR SUMMARY: 0 errors' \"$workdir/$mode.custom-allocator.valgrind\"\n    cmp \"$workdir/$mode.custom-allocator.stdout\" /tmp/app-verification-results.fEOW50/\"$mode\".stdout\ndone\nprintf '\\n--- repeated process exits with allocation perturbation ---\\n'\nfor mode in release debug; do\n    for iteration in $(seq 1 10); do\n        MALLOC_PERTURB_=$((iteration * 23)) LC_ALL=C /app/\"$mode\" > \"$workdir/$mode.repeat.$iteration.stdout\"\n        cmp \"$workdir/$mode.repeat.$iteration.stdout\" /tmp/app-verification-results.fEOW50/\"$mode\".stdout\n    done\n    printf '%s: 10/10 runs passed with identical output\\n' \"$mode\"\n    /app/\"$mode\" > /dev/null\n    printf '%s: output-to-/dev/null run passed\\n' \"$mode\"\ndone\nprintf '\\n--- disabled exception-pool cleanup edge case ---\\n'\nfor mode in release debug; do\n    GLIBCXX_TUNABLES=glibcxx.eh_pool.obj_count=0 valgrind --soname-synonyms=somalloc=nouserintercepts --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=99 --log-file=\"$workdir/$mode.no-exception-pool.valgrind\" /app/\"$mode\" > \"$workdir/$mode.no-exception-pool.stdout\"\n    grep -q 'All heap blocks were freed -- no leaks are possible' \"$workdir/$mode.no-exception-pool.valgrind\"\n    grep -q 'ERROR SUMMARY: 0 errors' \"$workdir/$mode.no-exception-pool.valgrind\"\n    cmp \"$workdir/$mode.no-exception-pool.stdout\" /tmp/app-verification-results.fEOW50/\"$mode\".stdout\n    printf '%s: disabled exception-pool run passed with no errors or leaks\\n' \"$mode\"\ndone\nprintf '\\n--- repeated lifecycle harness ---\\n'\ncat > \"$workdir/lifecycle.cpp\" <<'EOF'\n#define main original_application_main\n#include \"/app/main.cpp\"\n#undef main\n\nint main() {\n    // Repeated initialization must not duplicate persistent registration.\n    user_init();\n    user_init();\n    user_init();\n    for (int i = 0; i < 3; ++i) {\n        Application app;\n        app.init();\n        app.run();\n    }\n    // Resource-release cleanup must tolerate an already released pool.\n    user_cleanup();\n    user_cleanup();\n    return 0;\n}\nEOF\nfor mode in release debug; do\n    if [ \"$mode\" = release ]; then flags=(-O2 -DNDEBUG); else flags=(-g -O0); fi\n    g++ -std=c++17 -o \"$workdir/lifecycle-$mode\" \"$workdir/lifecycle.cpp\" /app/user.cpp \"${flags[@]}\" -L/usr/local/gcc-custom-\"$mode\"/lib64 -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lm\n    \"$workdir/lifecycle-$mode\" > \"$workdir/lifecycle-$mode.native.stdout\"\n    valgrind --soname-synonyms=somalloc=nouserintercepts --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=99 --log-file=\"$workdir/lifecycle-$mode.valgrind\" \"$workdir/lifecycle-$mode\" > \"$workdir/lifecycle-$mode.stdout\"\n    grep -q 'All heap blocks were freed -- no leaks are possible' \"$workdir/lifecycle-$mode.valgrind\"\n    grep -q 'ERROR SUMMARY: 0 errors' \"$workdir/lifecycle-$mode.valgrind\"\n    test \"$(grep -c 'Computation completed successfully' \"$workdir/lifecycle-$mode.stdout\")\" -eq 3\n    cmp \"$workdir/lifecycle-$mode.native.stdout\" \"$workdir/lifecycle-$mode.stdout\"\n    printf '%s: repeated initialization, 3 lifecycles, and repeated cleanup passed\\n' \"$mode\"\ndone\nprintf '\\nAll extended verification checks passed.\\n'"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        }
+      ],
+      "tool_call_count": 7
+    },
+    "runtime_log": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/trial.log",
+    "evidence_scope": "recorded_artifact_agreement",
+    "job_dir": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42"
+  },
+  "generator_tokens": 88676,
+  "teacher_calls": 0,
+  "teacher_tokens": 0,
+  "total_model_tokens": 88676,
+  "generator_cost_usd": 0.1809328,
+  "known_generator_cost_usd": 0.1809328,
+  "teacher_cost_usd": 0,
+  "known_teacher_cost_usd": null,
+  "episode_model_cost_usd": 0.1809328,
+  "execution_mode": "REAL_API",
+  "mapped_cost_accounting": null,
+  "cost_source": "provider_usage_and_registry_rates; not an invoice",
+  "official_rate_accounting": {
+    "model": "gpt-6-luna",
+    "pricing_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "price_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cache_write_price_source": "https://developers.openai.com/api/docs/pricing?latest-pricing-expanded=true",
+    "usd_per_1m_tokens": {
+      "input": 0.1,
+      "output": 0.5,
+      "cache_read": 0.01,
+      "cache_write_30m": 0.125
+    },
+    "service_tier": "standard",
+    "input_context": "<=272K",
+    "cache_policy": "Raw missing counts stay null; corresponding input charged at ordinary input rate",
+    "reasoning_policy": "Completion includes reasoning; counted once",
+    "requests": []
+  },
+  "actual_generator_cost_usd": null,
+  "actual_teacher_cost_usd": 0,
+  "sandbox_cost_usd": null,
+  "router_compute_cost_usd": null,
+  "complete_cost_usd": null,
+  "generator_cost_per_success_usd": null,
+  "actual_cost_per_success_usd": null,
+  "router_latency_ms": {
+    "laya": {
+      "n": 7,
+      "p50": 53534.71933299443,
+      "p95": 55698.34079203429
+    }
+  },
+  "router_inference_latency_ms": {
+    "laya": {
+      "p50": 21961.246816441417,
+      "p95": 23555.094737559557
+    }
+  },
+  "generator_request_time_ms": 164044.67395908432,
+  "teacher_request_time_ms": null,
+  "router_total_time_ms": {
+    "laya": 363676.2566670077
+  },
+  "container_time_resources": [
+    {
+      "trial_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+      "episode_wall_s": 601.404901,
+      "phase_wall_s": {
+        "environment_setup": 3.449953,
+        "agent_setup": 0.000456,
+        "agent_execution": 593.070983,
+        "verifier": null
+      }
+    }
+  ],
+  "models": {
+    "gpt-6.1-sol / responses": {
+      "actual_backend_model_ids": [
+        "gpt-6.1-sol"
+      ],
+      "calls": 7,
+      "ttft_p50_ms": 17166.428291995544,
+      "ttft_p95_ms": 29330.621333036106,
+      "output_tokens_per_s": 49.017447098338884,
+      "stream_output_tokens_per_s_estimate": 150.70645107216168
+    }
+  },
+  "tool_exec_p50_ms": 2267.1409160248004,
+  "tool_exec_p95_ms": 14918.166125018615,
+  "episode_p50_s": null,
+  "episode_p95_s": null,
+  "episodes_per_hour": null,
+  "failure_classes": {
+    "HARBOR": 3
+  },
+  "last_event": {
+    "timestamp": "2026-11-01T04:28:11.820116+00:00",
+    "event": "ERROR",
+    "category": "HARBOR",
+    "error": "Harbor exit=0; official verifier result absent in <LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42"
+  },
+  "last_generator": {
+    "timestamp": "2026-11-01T04:27:36.439850+00:00",
+    "event": "GENERATOR_END",
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "resp_01bca40e6f30ef29016ae6bf9a7dc481948da3d04e806594fb",
+    "request_model_id": "gpt-6.1-sol",
+    "returned_model_id": "gpt-6.1-sol",
+    "provider": "openai",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "low"
+      }
+    },
+    "returned_native_effort": "max",
+    "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": 4096,
+    "raw_usage": {
+      "input_tokens": 22286,
+      "input_tokens_details": {
+        "cached_tokens": 20029,
+        "cache_write_tokens": 2254
+      },
+      "output_tokens": 1743,
+      "output_tokens_details": {
+        "reasoning_tokens": 516
+      },
+      "total_tokens": 24029
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 22286,
+    "completion_tokens": 1743,
+    "reported_completion_tokens": 1743,
+    "reasoning_tokens": 516,
+    "cached_tokens": 20029,
+    "cache_write_tokens": 2254,
+    "ttft_ms": 17166.428291995544,
+    "latency_ms": 31801.94954201579,
+    "output_tokens_per_s": 54.80796067854897,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 119.09381088819018,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0250739,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+    "decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-6",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT_ROOT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "PROVIDER_REPORTED_MISMATCH",
+    "step": 6,
+    "policy": "laya_v2",
+    "model": "gpt-6.1-sol",
+    "returned_model": "gpt-6.1-sol",
+    "effort": "low"
+  },
+  "last_tool": {
+    "kind": "agent_tool",
+    "episode_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+    "job_id": "b28d6f74-a530-432d-bbc7-b2aaa5525e86",
+    "trial_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+    "task_id": {
+      "path": "<LOCAL_PROJECT_ROOT>/external/benchmarks/terminal-bench-2-1/tasks/custom-memory-heap-crash"
+    },
+    "job_name": "custom-memory-heap-crash--laya_v2--s42",
+    "tool_call_id": "call_bI4onOjmFJQzyofsKbXTk36i",
+    "timestamp": "2026-11-01T04:27:36.441490+00:00",
+    "step": 9,
+    "command": "set -euo pipefail\nulimit -c 0\nworkdir=/tmp/app-verification.ag1fF5\nprintf '\\n--- Valgrind preserving the custom allocator ---\\n'\nfor mode in release debug; do\n    valgrind --soname-synonyms=somalloc=nouserintercepts --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=99 --log-file=\"$workdir/$mode.custom-allocator.valgrind\" /app/\"$mode\" > \"$workdir/$mode.custom-allocator.stdout\"\n    printf '\\n%s:\\n' \"$mode\"\n    cat \"$workdir/$mode.custom-allocator.valgrind\"\n    grep -q 'All heap blocks were freed -- no leaks are possible' \"$workdir/$mode.custom-allocator.valgrind\"\n    grep -q 'ERROR SUMMARY: 0 errors' \"$workdir/$mode.custom-allocator.valgrind\"\n    cmp \"$workdir/$mode.custom-allocator.stdout\" /tmp/app-verification-results.fEOW50/\"$mode\".stdout\ndone\nprintf '\\n--- repeated process exits with allocation perturbation ---\\n'\nfor mode in release debug; do\n    for iteration in $(seq 1 10); do\n        MALLOC_PERTURB_=$((iteration * 23)) LC_ALL=C /app/\"$mode\" > \"$workdir/$mode.repeat.$iteration.stdout\"\n        cmp \"$workdir/$mode.repeat.$iteration.stdout\" /tmp/app-verification-results.fEOW50/\"$mode\".stdout\n    done\n    printf '%s: 10/10 runs passed with identical output\\n' \"$mode\"\n    /app/\"$mode\" > /dev/null\n    printf '%s: output-to-/dev/null run passed\\n' \"$mode\"\ndone\nprintf '\\n--- disabled exception-pool cleanup edge case ---\\n'\nfor mode in release debug; do\n    GLIBCXX_TUNABLES=glibcxx.eh_pool.obj_count=0 valgrind --soname-synonyms=somalloc=nouserintercepts --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=99 --log-file=\"$workdir/$mode.no-exception-pool.valgrind\" /app/\"$mode\" > \"$workdir/$mode.no-exception-pool.stdout\"\n    grep -q 'All heap blocks were freed -- no leaks are possible' \"$workdir/$mode.no-exception-pool.valgrind\"\n    grep -q 'ERROR SUMMARY: 0 errors' \"$workdir/$mode.no-exception-pool.valgrind\"\n    cmp \"$workdir/$mode.no-exception-pool.stdout\" /tmp/app-verification-results.fEOW50/\"$mode\".stdout\n    printf '%s: disabled exception-pool run passed with no errors or leaks\\n' \"$mode\"\ndone\nprintf '\\n--- repeated lifecycle harness ---\\n'\ncat > \"$workdir/lifecycle.cpp\" <<'EOF'\n#define main original_application_main\n#include \"/app/main.cpp\"\n#undef main\n\nint main() {\n    // Repeated initialization must not duplicate persistent registration.\n    user_init();\n    user_init();\n    user_init();\n    for (int i = 0; i < 3; ++i) {\n        Application app;\n        app.init();\n        app.run();\n    }\n    // Resource-release cleanup must tolerate an already released pool.\n    user_cleanup();\n    user_cleanup();\n    return 0;\n}\nEOF\nfor mode in release debug; do\n    if [ \"$mode\" = release ]; then flags=(-O2 -DNDEBUG); else flags=(-g -O0); fi\n    g++ -std=c++17 -o \"$workdir/lifecycle-$mode\" \"$workdir/lifecycle.cpp\" /app/user.cpp \"${flags[@]}\" -L/usr/local/gcc-custom-\"$mode\"/lib64 -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lm\n    \"$workdir/lifecycle-$mode\" > \"$workdir/lifecycle-$mode.native.stdout\"\n    valgrind --soname-synonyms=somalloc=nouserintercepts --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --error-exitcode=99 --log-file=\"$workdir/lifecycle-$mode.valgrind\" \"$workdir/lifecycle-$mode\" > \"$workdir/lifecycle-$mode.stdout\"\n    grep -q 'All heap blocks were freed -- no leaks are possible' \"$workdir/lifecycle-$mode.valgrind\"\n    grep -q 'ERROR SUMMARY: 0 errors' \"$workdir/lifecycle-$mode.valgrind\"\n    test \"$(grep -c 'Computation completed successfully' \"$workdir/lifecycle-$mode.stdout\")\" -eq 3\n    cmp \"$workdir/lifecycle-$mode.native.stdout\" \"$workdir/lifecycle-$mode.stdout\"\n    printf '%s: repeated initialization, 3 lifecycles, and repeated cleanup passed\\n' \"$mode\"\ndone\nprintf '\\nAll extended verification checks passed.\\n'",
+    "exit_code": null,
+    "duration_ms": null,
+    "source": "<LOCAL_PROJECT_ROOT>/our-project/results/iterations/20261101-v9-quality-step-supervision/dev-custom-memory-heap-crash-laya/jobs/custom-memory-heap-crash--laya_v2--s42/custom-memory-heap-crash__KPdAsZZ/agent/trajectory.json",
+    "observation": {}
+  },
+  "measurement_counts": {
+    "benchmark": 7
+  },
+  "last_unit": {
+    "task_id": "custom-memory-heap-crash",
+    "policy": "laya_v2",
+    "agent": "modelrouter",
+    "job_name": "custom-memory-heap-crash--laya_v2--s42",
+    "status": "NOT_EVALUATED",
+    "pipeline_stage": "DEV",
+    "exit_code": 0
+  },
+  "measurement_scope": "Benchmark metrics exclude provider/router probes; original probe events remain in events.jsonl",
+  "ttft_scope": "Upstream provider timing; native relay buffers the response before returning it",
+  "publication_status": "NOT_EVALUATED",
+  "missing_measurements": [
+    "sandbox billing",
+    "router infrastructure cost",
+    "provider invoice reconciliation"
+  ]
+}

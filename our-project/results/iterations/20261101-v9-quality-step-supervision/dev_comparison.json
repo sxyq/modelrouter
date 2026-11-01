@@ -1,0 +1,246 @@
+{
+  "task_id": "custom-memory-heap-crash",
+  "scope": "REAL_API_K2_MODEL_ONLY_DEV",
+  "train_eligible": false,
+  "teacher_enabled": false,
+  "capability_snapshot_id": "20261031T072548885180Z-v4",
+  "native_effort_confirmed": false,
+  "strategies": [
+    {
+      "strategy": "sol",
+      "trial_id": "4d75c755-80e6-41a2-ad7a-a70fc7c405f9",
+      "trial_name": "custom-memory-heap-crash__3kEnRZN",
+      "generations": 7,
+      "saved_usage_responses": 7,
+      "tool_results": 6,
+      "tool_action_attempts": 7,
+      "router_decisions": 7,
+      "neural_router_decisions": 0,
+      "selected_models": {
+        "gpt-6.1-sol": 7
+      },
+      "model_switches": 0,
+      "fallback_decisions": 0,
+      "checkpoint_ids": [
+        "none"
+      ],
+      "reward": null,
+      "success_rate": null,
+      "verifier": null,
+      "error_type": "RuntimeError",
+      "error_message": "Command timed out after 30 seconds",
+      "known_model_rate_cost_usd": "0.1367668",
+      "teacher_cost_usd": "0",
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "complete_cost_usd": null,
+      "total_tokens": 78281,
+      "prompt_tokens": 70638,
+      "completion_tokens": 7643,
+      "trial_seconds": 553.177141,
+      "agent_seconds": 313.339764,
+      "router_total_seconds": 0.0015479159774258733,
+      "router_inference_seconds": 0,
+      "provider_seconds": 252.5608316239086,
+      "tool_seconds_with_result": 30.197455626970623,
+      "model_identities_matched": true,
+      "requested_native_efforts": {
+        "low": 7
+      },
+      "reported_native_efforts": {
+        "max": 7
+      },
+      "observations": []
+    },
+    {
+      "strategy": "luna",
+      "trial_id": "b50f5371-9f72-4e7d-92b0-c721315ab441",
+      "trial_name": "custom-memory-heap-crash__unyYEN7",
+      "generations": 7,
+      "saved_usage_responses": 7,
+      "tool_results": 6,
+      "tool_action_attempts": 7,
+      "router_decisions": 7,
+      "neural_router_decisions": 0,
+      "selected_models": {
+        "gpt-6-luna": 7
+      },
+      "model_switches": 0,
+      "fallback_decisions": 0,
+      "checkpoint_ids": [
+        "none"
+      ],
+      "reward": 0,
+      "success_rate": 0,
+      "verifier": {
+        "tests": 6,
+        "passed": 5,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793505128.7641356,
+        "stop": 1793505139.980685
+      },
+      "error_type": null,
+      "error_message": null,
+      "known_model_rate_cost_usd": "0.00188939",
+      "teacher_cost_usd": "0",
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "complete_cost_usd": null,
+      "total_tokens": 32092,
+      "prompt_tokens": 30039,
+      "completion_tokens": 2053,
+      "trial_seconds": 113.584711,
+      "agent_seconds": 43.15479,
+      "router_total_seconds": 0.0004926660330966115,
+      "router_inference_seconds": 0,
+      "provider_seconds": 35.48006924899528,
+      "tool_seconds_with_result": 7.458092457964085,
+      "model_identities_matched": true,
+      "requested_native_efforts": {
+        "low": 7
+      },
+      "reported_native_efforts": {
+        "None": 7
+      },
+      "observations": []
+    },
+    {
+      "strategy": "laya",
+      "trial_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52",
+      "trial_name": "custom-memory-heap-crash__KPdAsZZ",
+      "generations": 7,
+      "saved_usage_responses": 7,
+      "tool_results": 6,
+      "tool_action_attempts": 7,
+      "router_decisions": 7,
+      "neural_router_decisions": 7,
+      "selected_models": {
+        "gpt-6.1-sol": 7
+      },
+      "model_switches": 0,
+      "fallback_decisions": 0,
+      "checkpoint_ids": [
+        "V9_LAYA_STEP_001-e01"
+      ],
+      "reward": null,
+      "success_rate": null,
+      "verifier": null,
+      "error_type": "RuntimeError",
+      "error_message": "Command timed out after 30 seconds",
+      "known_model_rate_cost_usd": "0.1809328",
+      "teacher_cost_usd": "0",
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "complete_cost_usd": null,
+      "total_tokens": 88676,
+      "prompt_tokens": 80662,
+      "completion_tokens": 8014,
+      "trial_seconds": 601.404901,
+      "agent_seconds": 593.070983,
+      "router_total_seconds": 363.6762566670077,
+      "router_inference_seconds": 141.2584803532809,
+      "provider_seconds": 164.04467395908432,
+      "tool_seconds_with_result": 35.02597333403537,
+      "model_identities_matched": true,
+      "requested_native_efforts": {
+        "low": 7
+      },
+      "reported_native_efforts": {
+        "max": 7
+      },
+      "observations": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5393,
+            "gpt-6-luna": 0.4607
+          },
+          "router_ms": 38977.43829200044,
+          "inference_ms": 6453.298307955265
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5476,
+            "gpt-6-luna": 0.4524
+          },
+          "router_ms": 53374.43654198432,
+          "inference_ms": 21961.246816441417
+        },
+        {
+          "step": 2,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5258,
+            "gpt-6-luna": 0.4742
+          },
+          "router_ms": 54460.31445800327,
+          "inference_ms": 22617.561971768737
+        },
+        {
+          "step": 3,
+          "phase": "recover",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5152,
+            "gpt-6-luna": 0.4848
+          },
+          "router_ms": 53534.71933299443,
+          "inference_ms": 21574.489511549473
+        },
+        {
+          "step": 4,
+          "phase": "recover",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5192,
+            "gpt-6-luna": 0.4808
+          },
+          "router_ms": 55698.34079203429,
+          "inference_ms": 23552.479723468423
+        },
+        {
+          "step": 5,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5088,
+            "gpt-6-luna": 0.4912
+          },
+          "router_ms": 55020.22449998185,
+          "inference_ms": 23555.094737559557
+        },
+        {
+          "step": 6,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5042,
+            "gpt-6-luna": 0.4958
+          },
+          "router_ms": 52610.78275000909,
+          "inference_ms": 21544.30928453803
+        }
+      ]
+    }
+  ],
+  "quality_preference": null,
+  "quality_preference_status": "NOT_IDENTIFIABLE_WITH_TWO_MISSING_VERIFIERS",
+  "same_initial_role_content": true,
+  "provider_internal_context_identity": "NOT_OBSERVED",
+  "known_dev_model_rate_cost_usd": "0.31958899",
+  "complete_cost_usd": null,
+  "artifact_regrade_status": "UNAVAILABLE_SOURCE_ARTIFACT_MANIFEST_EMPTY",
+  "initial_checkpoint_failure_preserved": "dev-custom-memory-heap-crash-laya/failed_trials/custom-memory-heap-crash__UdyTKDt",
+  "initial_checkpoint_failure_generations": 0,
+  "tool_action_count_note": "Seven Agent tool-action requests per strategy; each has six returned tool outputs. Luna's final request submits; Sol and Laya end on a 30-second tool timeout."
+}
+

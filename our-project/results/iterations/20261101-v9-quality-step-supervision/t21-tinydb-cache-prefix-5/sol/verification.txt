@@ -1,0 +1,195 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.18, pytest-7.4.4, pluggy-1.5.0
+rootdir: /testbed
+configfile: pytest.ini
+plugins: pycodestyle-2.3.1, cov-4.1.0, mypy-0.10.3
+collected 204 items
+
+tests/test_tables.py FFFFFF                                              [  2%]
+tests/test_utils.py FF                                                   [  3%]
+tests/test_middlewares.py ........                                       [  7%]
+tests/test_operations.py ..............                                  [ 14%]
+tests/test_queries.py ................................                   [ 30%]
+tests/test_storages.py .............                                     [ 36%]
+tests/test_tables.py ........................                            [ 48%]
+tests/test_tinydb.py ................................................... [ 73%]
+..............................................                           [ 96%]
+tests/test_utils.py ........                                             [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_zero_cache_size[memory] _________________________
+
+db = <TinyDB tables=['_default', 'table3'], tables_count=2, default_table_documents_count=3, all_tables_documents_count=['_default=3', 'table3=2']>
+
+    def test_zero_cache_size(db):
+        table = db.table('table3', cache_size=0)
+        query = where('int') == 1
+    
+        table.insert({'int': 1})
+        table.insert({'int': 1})
+    
+        assert table.count(query) == 2
+        assert table.count(where('int') == 2) == 0
+>       assert len(table._query_cache) == 0
+E       AssertionError: assert 2 == 0
+E        +  where 2 = len(<tinydb.utils.LRUCache object at 0x7ffffb61eb30>)
+E        +    where <tinydb.utils.LRUCache object at 0x7ffffb61eb30> = <Table name='table3', total=2, storage=<tinydb.storages.MemoryStorage object at 0x7ffffb61e5f0>>._query_cache
+
+tests/test_tables.py:107: AssertionError
+__________________________ test_zero_cache_size[json] __________________________
+
+db = <TinyDB tables=['_default', 'table3'], tables_count=2, default_table_documents_count=3, all_tables_documents_count=['_default=3', 'table3=2']>
+
+    def test_zero_cache_size(db):
+        table = db.table('table3', cache_size=0)
+        query = where('int') == 1
+    
+        table.insert({'int': 1})
+        table.insert({'int': 1})
+    
+        assert table.count(query) == 2
+        assert table.count(where('int') == 2) == 0
+>       assert len(table._query_cache) == 0
+E       AssertionError: assert 2 == 0
+E        +  where 2 = len(<tinydb.utils.LRUCache object at 0x7ffffb609810>)
+E        +    where <tinydb.utils.LRUCache object at 0x7ffffb609810> = <Table name='table3', total=2, storage=<tinydb.storages.JSONStorage object at 0x7ffffb60b850>>._query_cache
+
+tests/test_tables.py:107: AssertionError
+________________________ test_query_cache_size[memory] _________________________
+
+db = <TinyDB tables=['_default', 'table3'], tables_count=2, default_table_documents_count=3, all_tables_documents_count=['_default=3', 'table3=2']>
+
+    def test_query_cache_size(db):
+        table = db.table('table3', cache_size=1)
+        query = where('int') == 1
+    
+        table.insert({'int': 1})
+        table.insert({'int': 1})
+    
+        assert table.count(query) == 2
+        assert table.count(where('int') == 2) == 0
+>       assert len(table._query_cache) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len(<tinydb.utils.LRUCache object at 0x7ffffb61e7a0>)
+E        +    where <tinydb.utils.LRUCache object at 0x7ffffb61e7a0> = <Table name='table3', total=2, storage=<tinydb.storages.MemoryStorage object at 0x7ffffb61c8b0>>._query_cache
+
+tests/test_tables.py:119: AssertionError
+_________________________ test_query_cache_size[json] __________________________
+
+db = <TinyDB tables=['_default', 'table3'], tables_count=2, default_table_documents_count=3, all_tables_documents_count=['_default=3', 'table3=2']>
+
+    def test_query_cache_size(db):
+        table = db.table('table3', cache_size=1)
+        query = where('int') == 1
+    
+        table.insert({'int': 1})
+        table.insert({'int': 1})
+    
+        assert table.count(query) == 2
+        assert table.count(where('int') == 2) == 0
+>       assert len(table._query_cache) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len(<tinydb.utils.LRUCache object at 0x7ffffb6087c0>)
+E        +    where <tinydb.utils.LRUCache object at 0x7ffffb6087c0> = <Table name='table3', total=2, storage=<tinydb.storages.JSONStorage object at 0x7ffffb60ad40>>._query_cache
+
+tests/test_tables.py:119: AssertionError
+____________________________ test_lru_cache[memory] ____________________________
+
+db = <TinyDB tables=['_default'], tables_count=1, default_table_documents_count=3, all_tables_documents_count=['_default=3']>
+
+    def test_lru_cache(db):
+        # Test integration into TinyDB
+        table = db.table('table3', cache_size=2)
+        query = where('int') == 1
+    
+        table.search(query)
+        table.search(where('int') == 2)
+        table.search(where('int') == 3)
+>       assert query not in table._query_cache
+E       AssertionError: assert QueryImpl('==', ('int',), 1) not in <tinydb.utils.LRUCache object at 0x7ffffb6ebee0>
+E        +  where <tinydb.utils.LRUCache object at 0x7ffffb6ebee0> = <Table name='table3', total=0, storage=<tinydb.storages.MemoryStorage object at 0x7ffffb6e8e20>>._query_cache
+
+tests/test_tables.py:130: AssertionError
+_____________________________ test_lru_cache[json] _____________________________
+
+db = <TinyDB tables=['_default'], tables_count=1, default_table_documents_count=3, all_tables_documents_count=['_default=3']>
+
+    def test_lru_cache(db):
+        # Test integration into TinyDB
+        table = db.table('table3', cache_size=2)
+        query = where('int') == 1
+    
+        table.search(query)
+        table.search(where('int') == 2)
+        table.search(where('int') == 3)
+>       assert query not in table._query_cache
+E       AssertionError: assert QueryImpl('==', ('int',), 1) not in <tinydb.utils.LRUCache object at 0x7ffffb6e0dc0>
+E        +  where <tinydb.utils.LRUCache object at 0x7ffffb6e0dc0> = <Table name='table3', total=0, storage=<tinydb.storages.JSONStorage object at 0x7ffffb6e0a00>>._query_cache
+
+tests/test_tables.py:130: AssertionError
+________________________________ test_lru_cache ________________________________
+
+    def test_lru_cache():
+        cache = LRUCache(capacity=3)
+        cache["a"] = 1
+        cache["b"] = 2
+        cache["c"] = 3
+        _ = cache["a"]  # move to front in lru queue
+        cache["d"] = 4  # move oldest item out of lru queue
+    
+        try:
+            _ = cache['f']
+        except KeyError:
+            pass
+    
+>       assert cache.lru == ["c", "a", "d"]
+E       AssertionError: assert ['b', 'c', 'a', 'd'] == ['c', 'a', 'd']
+E         At index 0 diff: 'b' != 'c'
+E         Left contains one more item: 'd'
+E         Use -v to get more diff
+
+tests/test_utils.py:19: AssertionError
+______________________________ test_lru_cache_get ______________________________
+
+    def test_lru_cache_get():
+        cache = LRUCache(capacity=3)
+        cache["a"] = 1
+        cache["b"] = 1
+        cache["c"] = 1
+        cache.get("a")
+        cache["d"] = 4
+    
+>       assert cache.lru == ["c", "a", "d"]
+E       AssertionError: assert ['b', 'c', 'a', 'd'] == ['c', 'a', 'd']
+E         At index 0 diff: 'b' != 'c'
+E         Left contains one more item: 'd'
+E         Use -v to get more diff
+
+tests/test_utils.py:48: AssertionError
+
+---------- coverage: platform linux, python 3.10.18-final-0 ----------
+Name                    Stmts   Miss Branch BrPart  Cover
+---------------------------------------------------------
+tinydb/__init__.py          5      0      0      0   100%
+tinydb/database.py         53      0     10      0   100%
+tinydb/middlewares.py      33      0      6      0   100%
+tinydb/mypy_plugin.py      25     25      2      0     0%
+tinydb/operations.py       24      0      0      0   100%
+tinydb/queries.py         124      2     70      4    97%
+tinydb/storages.py         57      0     11      0   100%
+tinydb/table.py           216      1    102      1    99%
+tinydb/utils.py            73      2     20      2    96%
+tinydb/version.py           1      0      0      0   100%
+---------------------------------------------------------
+TOTAL                     611     30    221      7    95%
+
+=========================== short test summary info ============================
+FAILED tests/test_tables.py::test_zero_cache_size[memory] - AssertionError: a...
+FAILED tests/test_tables.py::test_zero_cache_size[json] - AssertionError: ass...
+FAILED tests/test_tables.py::test_query_cache_size[memory] - AssertionError: ...
+FAILED tests/test_tables.py::test_query_cache_size[json] - AssertionError: as...
+FAILED tests/test_tables.py::test_lru_cache[memory] - AssertionError: assert ...
+FAILED tests/test_tables.py::test_lru_cache[json] - AssertionError: assert Qu...
+FAILED tests/test_utils.py::test_lru_cache - AssertionError: assert ['b', 'c'...
+FAILED tests/test_utils.py::test_lru_cache_get - AssertionError: assert ['b',...
+======================== 8 failed, 196 passed in 0.91s =========================
