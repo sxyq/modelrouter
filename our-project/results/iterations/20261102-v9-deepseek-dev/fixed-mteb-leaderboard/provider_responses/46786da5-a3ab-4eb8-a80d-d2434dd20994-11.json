@@ -1,0 +1,112 @@
+{
+  "response": {
+    "id": "01a198724ff87796ba1f60fc20257645",
+    "object": "response",
+    "created_at": 1793558992,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_c23e45b79aa5fe25e6187065",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "The leaderboard is now a new Svelte app backed by mteb-leaderboard-backend.hf.space. We can use backend API. Need discover API endpoints from JS chunks. Let's get JS node chunks and chunks referencing backend. Search all JS for \"fetch(\" / endpoints."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item_88b8c6e0c87b38a52c568928",
+        "status": "completed",
+        "call_id": "call_00_wmFaBHlrx1Jq6YyiAJme1318",
+        "name": "bash",
+        "arguments": "{\"command\": \"mkdir -p /app/js && python3 - <<'PY'\\nimport requests,re,os\\nbase='https://mteb-leaderboard.hf.space'\\nr=requests.get(base+'/',timeout=30); txt=r.text\\nurls=set(re.findall(r'(?:src|href)=\\\"(/_app/[^\\\"]+\\\\.js)\\\"',txt))\\nprint(len(urls))\\nfor u in urls:\\n rr=requests.get(base+u,timeout=30)\\n fn='/app/js/'+u.split('/')[-1]\\n open(fn,'w').write(rr.text)\\n print(u,rr.status_code,len(rr.text))\\nPY\\ngrep -RnoE \\\".{160}(fetch\\\\(|leaderboard-backend|/api/|api\\\\.).{240}\\\" /app/js | head -100\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 35637,
+      "output_tokens": 273,
+      "total_tokens": 35910,
+      "input_tokens_details": {
+        "cached_tokens": 30976
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a198724ff87796ba1f60fc20257645",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 35637,
+      "output_tokens": 273,
+      "total_tokens": 35910,
+      "input_tokens_details": {
+        "cached_tokens": 30976
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 35637,
+    "completion_tokens": 273,
+    "reported_completion_tokens": 273,
+    "reasoning_tokens": null,
+    "cached_tokens": 30976,
+    "cache_write_tokens": null,
+    "ttft_ms": 2572.6259169750847,
+    "latency_ms": 3155.5342089850456,
+    "output_tokens_per_s": 86.51466975786913,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 468.34125323325287,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000955878,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000955878,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994",
+    "decision_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994-11",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

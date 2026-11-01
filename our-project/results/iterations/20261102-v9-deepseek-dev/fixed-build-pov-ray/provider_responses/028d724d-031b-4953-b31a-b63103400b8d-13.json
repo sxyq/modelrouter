@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a19878efe9747384182bed5ca5e6f3",
+    "object": "response",
+    "created_at": 1793559426,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_f62452d3c79e1af35ebe3bea",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Found POVSRC.TAR.Z. Need extract. But we need docs include. POVDOC.TAR.Z. Download both. The user wants source extracted to /app/povray-2.2 and compile install. POV-Ray 2.2 old C source likely has issues on 64-bit modern GCC. There may be a Debian patch/source package. Let's start download.\n\nNeed consider test likely POV-Ray 2.2 expected exact render. Need build correct version. POV-Ray 2.2 source is old and has 16-bit assumptions? It was distributed for Unix with patches maybe. Let's inspect.\n\nFirst wait apt, download archives in parallel."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_b8fa0945517a6425ee254a91",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "I found the official POV-Ray 2.2 archives: `POVSRC.TAR.Z` and `POVDOC.TAR.Z`. I'll download both and extract them into the required directory."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_aecec312db6e520ec6f51173",
+        "status": "completed",
+        "call_id": "call_00_S4SPalXLuIig9ZiIYiwt4640",
+        "name": "bash",
+        "arguments": "{\"command\": \"mkdir -p /app/povray-2.2 /tmp/pov22dl; cd /tmp/pov22dl; curl -L --max-time 60 -sS -O 'https://www.povray.org/ftp/pub/povray/Old-Versions/Official-2.2/POVSRC.TAR.Z'; echo src:$?; curl -L --max-time 60 -sS -O 'https://www.povray.org/ftp/pub/povray/Old-Versions/Official-2.2/POVDOC.TAR.Z'; echo doc:$?; ls -l; file *\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 15439,
+      "output_tokens": 354,
+      "total_tokens": 15793,
+      "input_tokens_details": {
+        "cached_tokens": 10624
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a19878efe9747384182bed5ca5e6f3",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 15439,
+      "output_tokens": 354,
+      "total_tokens": 15793,
+      "input_tokens_details": {
+        "cached_tokens": 10624
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 15439,
+    "completion_tokens": 354,
+    "reported_completion_tokens": 354,
+    "reasoning_tokens": null,
+    "cached_tokens": 10624,
+    "cache_write_tokens": null,
+    "ttft_ms": 3095.9762500133365,
+    "latency_ms": 4014.884083007928,
+    "output_tokens_per_s": 88.1719104913199,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 385.2399416885628,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000966522,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000966522,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "028d724d-031b-4953-b31a-b63103400b8d",
+    "decision_id": "028d724d-031b-4953-b31a-b63103400b8d-13",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

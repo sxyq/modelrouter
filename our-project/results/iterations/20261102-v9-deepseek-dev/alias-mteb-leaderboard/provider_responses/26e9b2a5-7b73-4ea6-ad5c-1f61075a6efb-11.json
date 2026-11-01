@@ -1,0 +1,145 @@
+{
+  "response": {
+    "id": "01a19881fbd078b0841222b99487b162",
+    "object": "response",
+    "created_at": 1793560018,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_53a11fd769b661fd79d52ca4",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Hmm only one page due to pagination p maybe wrong; the API may use ?page? HF commits endpoint uses ?p= maybe. Output first page 96 ending June 2026. So history might not go back to Aug 2025? Need p=1 with limit 100, then p=2. It says 96 only; maybe response length capped? Let's check Link headers or use until parameter. HF API supports ?p=0,1,...\n\nWait current date environment is apparently Nov 2026 (lastModified). Dataset may have been re-uploaded and only history back to June 2026. But leaderboard as of August 2025 could perhaps be accessible via Wayback or the prior leaderboard repo/dataset, or the Scandinavian benchmark's own leaderboard page.\n\nNeed determine task precisely. \"best embedding model to use according to the Scandinavian MTEB leaderboard (i.e. highest Mean (Task)) as of August 2025. Only consider models that have results for all tasks in the benchmark.\"\n\nMaybe they expect snapshot leaderboard from around Aug 2025. Could be a known model like \"BAAI/bge-m3\", \"intfloat/multilingual-e5-large-instruct\", \"jinaai/jina-embeddings-v3\", \"Alibaba-NLP/gte-multilingual-base\", \"Snowflake/snowflake-arctic-embed-l-v2.0\", \"nomic-ai/nomic-embed-text-v1.5\", \"sentence-transformers/paraphrase-multilingual-mpnet-base-v2\", etc.\n\nNeed exact data.\n\nLet's figure out leaderboard code to know aggregation and filtering. Fetch GitHub leaderboard repo tree."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_a07a3f22aaced860d1836799",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Only recent dataset history is retained. Let me inspect the MTEB leaderboard source code to understand the exact scoring/completeness logic, and look for historical leaderboard snapshots or the Scandinavian benchmark's own results."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_9afcdce3807fc500f3ef819d",
+        "status": "completed",
+        "call_id": "call_00_yMgfXTe3D8sAKeeMiDkP9158",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests,json\\nr=requests.get('https://api.github.com/repos/embeddings-benchmark/leaderboard/git/trees/main',params={'recursive':'1'},timeout=60)\\nprint(r.status_code)\\nj=r.json()\\nfor x in j.get('tree',[]):\\n p=x['path']\\n if p.endswith(('.py','.toml','.yaml','.yml','.md')): print(p)\\nPY\"}"
+      },
+      {
+        "type": "function_call",
+        "id": "item_b75a9cd26119003a3240e0aa",
+        "status": "completed",
+        "call_id": "call_01_PjQxvK02kEYsRRsu2gki2287",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests,re\\n# search web via duckduckgo html\\nq='Scandinavian MTEB leaderboard August 2025 Mean Task'\\nr=requests.get('https://html.duckduckgo.com/html/',params={'q':q},headers={'User-Agent':'Mozilla/5.0'},timeout=30)\\nprint(r.status_code,len(r.text))\\nfor m in re.finditer(r'class=\\\"result__a\\\"[^>]*href=\\\"([^\\\"]+)\\\"[^>]*>(.*?)</a>',r.text,re.S):\\n print(re.sub('<[^>]+>','',m.group(2)),m.group(1)[:200])\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 18834,
+      "output_tokens": 715,
+      "total_tokens": 19549,
+      "input_tokens_details": {
+        "cached_tokens": 18176
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a19881fbd078b0841222b99487b162",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 18834,
+      "output_tokens": 715,
+      "total_tokens": 19549,
+      "input_tokens_details": {
+        "cached_tokens": 18176
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 18834,
+    "completion_tokens": 715,
+    "reported_completion_tokens": 715,
+    "reasoning_tokens": null,
+    "cached_tokens": 18176,
+    "cache_write_tokens": null,
+    "ttft_ms": 3771.410665998701,
+    "latency_ms": 5081.335333001334,
+    "output_tokens_per_s": 140.71104407464466,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 545.8329154424288,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0102836,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000582228,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb",
+    "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-11",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

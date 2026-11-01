@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a1987835517525b8d89dd1f1f44ded",
+    "object": "response",
+    "created_at": 1793559378,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_48a64cecdfc05794c2d28c93",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Model downloaded. Now create Flask app. Need robust validation: JSON body, text string maybe non-empty? Error 400. Return sentiment and confidence probabilities. Load model from local dir with local_files_only maybe. Run background on 0.0.0.0:5000. Need maybe disable HF network? local only. Use softmax. Map labels via model.config.id2label. Model likely LABEL_0=NEGATIVE LABEL_1=POSITIVE? Let's check. Could use id2label. Must make /sentiment POST. Error if invalid JSON, missing text, non-string, empty. Return error with 400. Confidence keys pos/neg.\n\nAlso consider Flask dev server background with nohup. Need maybe suppress model warning. Create app with thread maybe. Start. Test with curl positive/negative, malformed, missing. Ensure no port conflict. Logs.\n\nLet's create script."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_0cc3eb98c910c21fab3bfe0a",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The model is fully downloaded. Next I'll create the Flask API with input validation and local-only model loading, then start it in the background on `0.0.0.0:5000`."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_dbf3f1c3cac612e9cc27b66c",
+        "status": "completed",
+        "call_id": "call_00_0ZQvqWKUvvYnriAh0DCO0634",
+        "name": "bash",
+        "arguments": "{\"command\": \"cat <<'PY' > /app/sentiment_service.py\\nimport os\\nfrom flask import Flask, jsonify, request\\nimport torch\\nfrom transformers import AutoTokenizer, AutoModelForSequenceClassification\\n\\nMODEL_DIR = \\\"/app/model_cache/sentiment_model\\\"\\n\\napp = Flask(__name__)\\n\\n# Load exclusively from the local cache downloaded in step 1.\\ntokenizer = AutoTokenizer.from_pretrained(MODEL_DIR, local_files_only=True)\\nmodel = AutoModelForSequenceClassification.from_pretrained(MODEL_DIR, local_files_only=True)\\nmodel.eval()\\n\\n\\ndef classify(text):\\n    inputs = tokenizer(text, return_tensors=\\\"pt\\\", truncation=True, padding=True)\\n    with torch.no_grad():\\n        logits = model(**inputs).logits\\n    probabilities = torch.softmax(logits, dim=-1)[0]\\n\\n    scores = {}\\n    for idx, label in model.config.id2label.items():\\n        scores[label.lower()] = float(probabilities[int(idx)].item())\\n\\n    # The SST-2 model exposes NEGATIVE and POSITIVE labels.\\n    positive = scores.get(\\\"positive\\\", 0.0)\\n    negative = scores.get(\\\"negative\\\", 0.0)\\n    sentiment = \\\"positive\\\" if positive >= negative else \\\"negative\\\"\\n    return {\\n        \\\"sentiment\\\": sentiment,\\n        \\\"confidence\\\": {\\n            \\\"positive\\\": positive,\\n            \\\"negative\\\": negative,\\n        },\\n    }\\n\\n\\n@app.route(\\\"/sentiment\\\", methods=[\\\"POST\\\"])\\ndef sentiment():\\n    data = request.get_json(silent=True)\\n    if not isinstance(data, dict):\\n        return jsonify({\\\"error\\\": \\\"Request body must be a JSON object.\\\"}), 400\\n\\n    text = data.get(\\\"text\\\")\\n    if not isinstance(text, str):\\n        return jsonify({\\\"error\\\": \\\"\\\\\\\"text\\\\\\\" must be a string.\\\"}), 400\\n    if not text.strip():\\n        return jsonify({\\\"error\\\": \\\"\\\\\\\"text\\\\\\\" must not be empty.\\\"}), 400\\n\\n    try:\\n        return jsonify(classify(text))\\n    except Exception as exc:\\n        return jsonify({\\\"error\\\": f\\\"Sentiment analysis failed: {exc}\\\"}), 400\\n\\n\\nif __name__ == \\\"__main__\\\":\\n    app.run(host=\\\"0.0.0.0\\\", port=5000, debug=False)\\nPY\\nnohup python3 /app/sentiment_service.py > /app/sentiment_service.log 2>&1 &\\necho $! > /app/sentiment_service.pid\\necho \\\"Started PID $(cat /app/sentiment_service.pid)\\\"\\nsleep 5\\ncat /app/sentiment_service.log\\nps -p $(cat /app/sentiment_service.pid) -o pid,stat,etime,cmd || true\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 2573,
+      "output_tokens": 836,
+      "total_tokens": 3409,
+      "input_tokens_details": {
+        "cached_tokens": 2176
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a1987835517525b8d89dd1f1f44ded",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 2573,
+      "output_tokens": 836,
+      "total_tokens": 3409,
+      "input_tokens_details": {
+        "cached_tokens": 2176
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 2573,
+    "completion_tokens": 836,
+    "reported_completion_tokens": 836,
+    "reasoning_tokens": null,
+    "cached_tokens": 2176,
+    "cache_write_tokens": null,
+    "ttft_ms": 3419.468209031038,
+    "latency_ms": 5653.685208992101,
+    "output_tokens_per_s": 147.86815485771203,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 374.1803056796047,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0093716,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000567678,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f",
+    "decision_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f-4",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

@@ -1,6 +1,12 @@
 # ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-02 文档接续）
 
-> **11-02最新真实结果**：三个既有Train任务8对前缀新增有效步骤2条、2个新标签任务：Mido质量Luna1、Schema等质量成本Luna1；PrettyTable六对双失败只存观察。累计19 Model-only、任务9/步骤10、11标签任务，总Sol4/Luna15、步骤Sol4/Luna6；215/186只是可组合数量，74行S1+步骤材料已准备但未训练。Effort/K=3仍0，AA v4与缺测保持。详见[本轮结果](../../our-project/results/iterations/20261101-v9-runtime-quality-dev/review.md)。
+> **11-02最新Dev批次**：9个公开Dev任务19 Episode全部结束，原Harbor Verifier9次，7成功/2失败/10未知。实际请求DeepSeek，动态三身份为ALIAS_SMOKE，正式K=3质量结果仍缺。Git/HF/POV-Ray三组同协议完整对照固定3/3、动态2/3；参考模型费按成功数分摊0.006153744/0.006720942USD，Trial合计738.50/1805.48秒，动态收益未证明。财务/MTEB跨处理版本只观察。详见[批次结果](../../our-project/results/iterations/20261102-v9-deepseek-dev/review.md)。
+>
+> **路由与成本**：124次真实CPU路由全Sol、无切换/fallback，10初始化/114复用，前向仍主要耗时。教师1成功/4次实际消费，仅三字段进入Router，映射0.009158USD；开启后同题总费/时长增加，净收益未证。227请求/223Usage/4未知，DeepSeek公开同系列参考费已知0.10950165USD、逻辑映射1.0058892USD，实收/资源/完整费用未知。原工具30秒、30步/4096输出与Verifier保持，超时反馈版本6次均有原Verifier。
+>
+> **研究接续**：Dev/Alias新增Train标签0，有效Model-only仍19、任务9/步骤10、11标签任务，74行未训练、215/186仅可组合，Effort/K=3目标0。AA v4和low/none/Flash缺测保持。03:36:36 F14独立维护284/420块、36352/107404步、最新Loss0.50280873、首轮/Val未完，旧归档/既有handoff不动；本轮训练0、Serving仍F05/原Kev、STEP_001/F11/R11不晋升。五RQ八图十二表、Fig.2和独立Twin旧评价不改；SWE-bench Verified原生入口仍待实现。
+
+> **11-02前一工作包真实结果**：三个既有Train任务8对前缀新增有效步骤2条、2个新标签任务：Mido质量Luna1、Schema等质量成本Luna1；PrettyTable六对双失败只存观察。累计19 Model-only、任务9/步骤10、11标签任务，总Sol4/Luna15、步骤Sol4/Luna6；215/186只是可组合数量，74行S1+步骤材料已准备但未训练。Effort/K=3仍0，AA v4与缺测保持。详见[本轮结果](../../our-project/results/iterations/20261101-v9-runtime-quality-dev/review.md)。
 >
 > **输入及路由成本**：QID不进入模型，但问题说明、顺序及状态进入；在线沿用步骤目标/Sol→Luna，Prepare保留捕获视图，新两条3874/3962 Token完整进入5120。新Checkpoint未重训。成功Dev5路由仅一次初始化28.62秒、后4次前向外0.0477秒；未证明前向加速。原取消状态用于停止超时后新增请求，30秒工具窗口/Verifier不变，保存/app；取消分支未另造旧900秒失败验证。
 >

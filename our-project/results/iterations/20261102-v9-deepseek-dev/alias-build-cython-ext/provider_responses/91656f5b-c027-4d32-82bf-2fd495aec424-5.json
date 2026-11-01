@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a198654a32714fbe76b9fbc3eb7585",
+    "object": "response",
+    "created_at": 1793558138,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_cd5f9f772249ed1f7d0ba6b1",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We need fix widespread aliases. Also Cython syntax np.int in pyx. Need build dependencies. Let's install Cython and package deps. Maybe pip install will attempt numpy upgrade? pinned numpy requirement no upper. Existing 2.3.0 satisfies. Need maybe package dependencies exist? Check pip list."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_b5ad76304bdf53af9ef2c741",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The codebase contains many removed aliases (`np.float`, `np.int`, `np.bool`, `np.complex`, `np.long`). I’ll first check installed dependencies and build tooling, then install Cython without changing NumPy."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_0903659afd215e443aae95f8",
+        "status": "completed",
+        "call_id": "call_00_qNgVdofMXReRmXXlBPSL8593",
+        "name": "bash",
+        "arguments": "{\"command\": \"python - <<'PY'\\nimport importlib.util\\nmods=['Cython','setuptools','wheel','numpy','networkx','planarity','peewee','vispy','sympy','appdirs','requests','tqdm','pytest']\\nfor m in mods:\\n    spec=importlib.util.find_spec(m)\\n    print(f'{m}: {bool(spec)}')\\nPY\\npip list --format=freeze | grep -Ei 'numpy|cython|setuptools|wheel|networkx|planarity|peewee|vispy|sympy|appdirs|requests|tqdm|pytest' || true\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 11150,
+      "output_tokens": 293,
+      "total_tokens": 11443,
+      "input_tokens_details": {
+        "cached_tokens": 8704
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a198654a32714fbe76b9fbc3eb7585",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 11150,
+      "output_tokens": 293,
+      "total_tokens": 11443,
+      "input_tokens_details": {
+        "cached_tokens": 8704
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 11150,
+    "completion_tokens": 293,
+    "reported_completion_tokens": 293,
+    "reasoning_tokens": null,
+    "cached_tokens": 8704,
+    "cache_write_tokens": null,
+    "ttft_ms": 2089.7752920282073,
+    "latency_ms": 2915.5812920071185,
+    "output_tokens_per_s": 100.49453973492042,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 354.80488154298035,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0086924,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000568812,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "91656f5b-c027-4d32-82bf-2fd495aec424",
+    "decision_id": "91656f5b-c027-4d32-82bf-2fd495aec424-5",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

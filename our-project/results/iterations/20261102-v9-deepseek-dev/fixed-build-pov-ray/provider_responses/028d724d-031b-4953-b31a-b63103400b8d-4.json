@@ -1,0 +1,114 @@
+{
+  "response": {
+    "id": "01a19877218b761787cd9e0cd8bd7e90",
+    "object": "response",
+    "created_at": 1793559307,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "message",
+        "id": "item_d72794dfadb4438baad83e73",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Now install the build dependencies. I'll keep output concise to avoid the timeout."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_c092bcc45f37e2cae12ac24b",
+        "status": "completed",
+        "call_id": "call_00_ET_EuucbOGP2Y2KTCBsIplb0475",
+        "name": "bash",
+        "arguments": "{\"command\": \"DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential bison flex zlib1g-dev libpng-dev libjpeg-dev wget curl unzip file patch > /tmp/apt-install.log 2>&1; echo $?; tail -20 /tmp/apt-install.log\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 2140,
+      "output_tokens": 119,
+      "total_tokens": 2259,
+      "input_tokens_details": {
+        "cached_tokens": 1920
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a19877218b761787cd9e0cd8bd7e90",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 2140,
+      "output_tokens": 119,
+      "total_tokens": 2259,
+      "input_tokens_details": {
+        "cached_tokens": 1920
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 2140,
+    "completion_tokens": 119,
+    "reported_completion_tokens": 119,
+    "reasoning_tokens": null,
+    "cached_tokens": 1920,
+    "cache_write_tokens": null,
+    "ttft_ms": 1592.95216598548,
+    "latency_ms": 2205.58687497396,
+    "output_tokens_per_s": 53.953893791376935,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 194.24299383311242,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00011016,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.00011016,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "028d724d-031b-4953-b31a-b63103400b8d",
+    "decision_id": "028d724d-031b-4953-b31a-b63103400b8d-4",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

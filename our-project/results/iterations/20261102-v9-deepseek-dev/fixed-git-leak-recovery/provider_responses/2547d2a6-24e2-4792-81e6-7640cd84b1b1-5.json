@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a198589f3a76deb42dc3853b57899a",
+    "object": "response",
+    "created_at": 1793557308,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_124417ff3395b2b75f8e5dd0",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Secret removed from repo. Need ensure irrelevant files and commit messages untouched. We removed ORIG_HEAD, arguably not \"irrelevant files\" in working tree. Could be okay. Need verify git log unchanged, status, README, secret external. Also perhaps file .git/COMMIT_EDITMSG includes latest commit message but no secret. Reflogs removed. Could check entire repo for secret pattern with grep binary-ish. Also secret.txt outside repo. Find /app maybe only secret. Run final verification. Need consider requirement \"clean up the secret in that repo to make sure it cannot be found anywhere in that repo.\" Grep with binary. Could use git grep across all reachable etc. Also verify object count and commit messages. Use `grep -R` excluding? Just `grep -R -a`. Note /app/repo/.git objects pack compressed; scan using `git cat-file --batch-all-objects` as done, plus strings pack. Could `grep -R -a` over .git. Do that. Also inspect commit messages to make sure untouched. And `git status`."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_97b04f581fcb94c364a92a34",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The unreachable history is gone and only the two intended commits remain. I’ll run a final audit of the working tree, commit messages, packed `.git` bytes, and the recovered secret file."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_39a16d1bab85ed651d579d50",
+        "status": "completed",
+        "call_id": "call_00_a8gpvr3POt0otKGUfNwF7813",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /app/repo && echo '--- status ---' && git status --short --branch && echo '--- log with messages ---' && git log --all --format='%H %s' && echo '--- trees ---' && git ls-tree -r HEAD && echo '--- repo secret scan (all files incl binary .git) ---' && if grep -R -a -n 'secret\\\\[[^]]*\\\\]' .; then echo 'FOUND SECRET'; else echo 'No secret pattern found anywhere under /app/repo'; fi && echo '--- fsck ---' && git fsck --full --unreachable --dangling 2>&1 && echo '--- recovered file ---' && cat /app/secret.txt && test \\\"$(cat /app/secret.txt)\\\" = 'secret[lost_and_found_in_git]' && echo 'secret.txt verification OK'\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 4454,
+      "output_tokens": 490,
+      "total_tokens": 4944,
+      "input_tokens_details": {
+        "cached_tokens": 3840
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a198589f3a76deb42dc3853b57899a",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 4454,
+      "output_tokens": 490,
+      "total_tokens": 4944,
+      "input_tokens_details": {
+        "cached_tokens": 3840
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 4454,
+    "completion_tokens": 490,
+    "reported_completion_tokens": 490,
+    "reasoning_tokens": null,
+    "cached_tokens": 3840,
+    "cache_write_tokens": null,
+    "ttft_ms": 3048.047750024125,
+    "latency_ms": 4137.3560000211,
+    "output_tokens_per_s": 118.43312492265618,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 449.82675932304807,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00039762,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.00039762,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "2547d2a6-24e2-4792-81e6-7640cd84b1b1",
+    "decision_id": "2547d2a6-24e2-4792-81e6-7640cd84b1b1-5",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

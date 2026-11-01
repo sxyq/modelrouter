@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a1987ab056773489a2b09d7854254a",
+    "object": "response",
+    "created_at": 1793559541,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_2de81de7dca284497e09d95a",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Output truncated middle. Need inspect files individually, all jpg list. Need classify and extract exact amounts. Let's list names and OCR text files. We have 11 jpg? Let's enumerate. Need identify documents:\njpg:\n2lgKzDuI4E4g invoice, Total 6558, Amount due 4382 -> total 6558, VAT absent => 0.\n6NVuAIhTV4KB other resume.\nF0oZMhSUm2dO other 70057287 maybe something.\nJOiylq2_7S18 invoice, totals need parse: Total likely $6860.45 gross? VAT 623.68, net worth 6236.77, gross 6860.45. Total likely 6860.45.\nKrJiw0OZx7jf invoice total 9963, amount due 7139, vat 0.\nQOoA_j33PD_E other memo.\nWqWMArQQlSMv unknown (middle truncated) likely other or invoice?\nivE2mt3HwvEO invoice total 819.06, vat 74.46.\nlxtL9XrYRsVG invoice total 797.91, vat 72.54.\nvvK89XK847m3 invoice total 6204.19? Summary says Total $5 640,17 $ 564,02 $ 6 204,19. Need total_amount including tax = gross 6204.19, vat 564.02.\nw0i40MJP2Dzm invoice total gross 44745.59, vat 4067.78.\nMissing 2 other jpgs? Let's list files and txt."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_0f2641cc648387c5f11be047",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Most files are now readable. I’ll list all extraction outputs and inspect the truncated/ambiguous JPGs individually, especially `WqWMArQQlSMv.jpg` and the remaining images."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_495a9ed52ab9868b405007a7",
+        "status": "completed",
+        "call_id": "call_00_aDlJdHVfxU9kf5snQk8V3609",
+        "name": "bash",
+        "arguments": "{\"command\": \"echo '--- all outputs ---'; ls -1 /tmp/extracted/*.txt | sed 's#.*/##'; echo '--- document count ---'; ls -1 /app/documents | wc -l; echo '--- WqWMArQQlSMv ---'; cat /tmp/extracted/WqWMArQQlSMv.jpg.txt; echo '--- other truncated candidates ---'; for b in 6NVuAIhTV4KB.jpg F0oZMhSUm2dO.jpg QOoA_j33PD_E.jpg; do echo \\\"===== $b =====\\\"; cat \\\"/tmp/extracted/$b.txt\\\"; done\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 11245,
+      "output_tokens": 577,
+      "total_tokens": 11822,
+      "input_tokens_details": {
+        "cached_tokens": 7040
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a1987ab056773489a2b09d7854254a",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 11245,
+      "output_tokens": 577,
+      "total_tokens": 11822,
+      "input_tokens_details": {
+        "cached_tokens": 7040
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 11245,
+    "completion_tokens": 577,
+    "reported_completion_tokens": 577,
+    "reasoning_tokens": null,
+    "cached_tokens": 7040,
+    "cache_write_tokens": null,
+    "ttft_ms": 4361.452582990751,
+    "latency_ms": 5458.435832988471,
+    "output_tokens_per_s": 105.70793862096112,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 525.9879765722942,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.014884,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.00099807,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "22ce4654-d417-4d33-af93-c0c81166b78d",
+    "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-10",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

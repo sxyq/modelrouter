@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a1987b0eec75ebaf0039e04d075a9e",
+    "object": "response",
+    "created_at": 1793559565,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_eea8e8e452a9d54396acfd76",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "It built! Surprising. But likely runtime bugs due to implicit int/function declarations, 64-bit pointers, old source. Let's run sanity check."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_f907cec8a467448312f94382",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "It compiled successfully. Now let me run the required sanity check."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_a2d8d0435ef91cc36e057785",
+        "status": "completed",
+        "call_id": "call_00_SPhmjqTvN7v1gJoP9Ecm8353",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /app/povray-2.2/build; ./povray +L/app/povray-2.2/povdoc/include +I/app/deps/illum1.pov +O/dev/null +P -V > /tmp/sanity1.log 2>&1; echo exit:$?; tail -60 /tmp/sanity1.log\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 32029,
+      "output_tokens": 155,
+      "total_tokens": 32184,
+      "input_tokens_details": {
+        "cached_tokens": 30336
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a1987b0eec75ebaf0039e04d075a9e",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 32029,
+      "output_tokens": 155,
+      "total_tokens": 32184,
+      "input_tokens_details": {
+        "cached_tokens": 30336
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 32029,
+    "completion_tokens": 155,
+    "reported_completion_tokens": 155,
+    "reasoning_tokens": null,
+    "cached_tokens": 30336,
+    "cache_write_tokens": null,
+    "ttft_ms": 2445.2433749684133,
+    "latency_ms": 3015.026874956675,
+    "output_tokens_per_s": 51.40916032538758,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 272.03314943867844,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000437958,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000437958,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "028d724d-031b-4953-b31a-b63103400b8d",
+    "decision_id": "028d724d-031b-4953-b31a-b63103400b8d-24",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

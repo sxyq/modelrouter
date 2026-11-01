@@ -1,0 +1,26 @@
+{
+  "status": "EVALUATED",
+  "reason": "",
+  "pending_units": [],
+  "unresolved_problems": [],
+  "hypotheses": [
+    "The same official mini-swe-agent can isolate policy effects on paired tasks."
+  ],
+  "required_config": "<LOCAL_PROJECT>/our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pov-ray/run_config.json",
+  "priority": "Continue the recorded task order",
+  "failure_categories": [],
+  "completed_units": [
+    {
+      "task_id": "build-pov-ray",
+      "policy": "fixed_strong",
+      "agent": "modelrouter",
+      "job_name": "build-pov-ray--fixed_strong--s42",
+      "status": "EVALUATED",
+      "pipeline_stage": "DEV",
+      "exit_code": 0
+    }
+  ],
+  "next_command": "python -m modelrouter.benchmark resume <LOCAL_PROJECT>/our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pov-ray",
+  "sealed_test": "REQUIRES_OWNER_CONFIRMATION",
+  "completed_development": []
+}

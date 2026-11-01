@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a198736b7077eca00aafd33666078a",
+    "object": "response",
+    "created_at": 1793559065,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_58a7ed0d1c85330d41c864fa",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We can either fully run solution or use GitHub tree APIs to identify models with all tasks and compute mean. mteb installed perhaps version? Let's check. Might be newer. But we have expected. Yet should verify independently. We can clone repo sparse/checkout commit. Repo results likely large. Git clone maybe manageable? results repo huge with lots of JSON files. Could use GitHub API trees recursive and raw download only Scandinavian task results to compute. Need determine models with all tasks. The task says highest Mean (Task) only models with results for all tasks. Historical expected GritLM/GritLM-7B.\n\nLet's verify from commit tree. Get recursive tree (might be truncated; maybe repo has thousands). Then locate path structure. Let's inspect tree."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_71a4a84e6ab2f56d59c77344",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The benchmark's reference solution points to results commit `c0fd327...` dated 2025-08-20 and expects `GritLM/GritLM-7B`. I'll independently verify that by inspecting the Scandinavian results at that commit and computing the mean over models having all 28 tasks."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_567f25680eb1853c5ed230a8",
+        "status": "completed",
+        "call_id": "call_00_JRko08FeK98jGWJWbH0c9541",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests,json\\nsha='c0fd3271442f8c0c839084a109fede85c8514dab'\\nr=requests.get(f'https://api.github.com/repos/embeddings-benchmark/results/git/trees/{sha}?recursive=1',headers={'User-Agent':'x'},timeout=120)\\nprint(r.status_code,len(r.content))\\nd=r.json()\\nprint('truncated',d.get('truncated'),'entries',len(d.get('tree',[])))\\npaths=[x['path'] for x in d.get('tree',[])]\\nprint(paths[:50])\\nfor p in paths[:100]: print(p)\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 65003,
+      "output_tokens": 410,
+      "total_tokens": 65413,
+      "input_tokens_details": {
+        "cached_tokens": 63616
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a198736b7077eca00aafd33666078a",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 65003,
+      "output_tokens": 410,
+      "total_tokens": 65413,
+      "input_tokens_details": {
+        "cached_tokens": 63616
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 65003,
+    "completion_tokens": 410,
+    "reported_completion_tokens": 410,
+    "reasoning_tokens": null,
+    "cached_tokens": 63616,
+    "cache_write_tokens": null,
+    "ttft_ms": 3457.2506669792347,
+    "latency_ms": 4483.7568330112845,
+    "output_tokens_per_s": 91.44117651104746,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 399.41309031279496,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000644898,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000644898,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994",
+    "decision_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994-23",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

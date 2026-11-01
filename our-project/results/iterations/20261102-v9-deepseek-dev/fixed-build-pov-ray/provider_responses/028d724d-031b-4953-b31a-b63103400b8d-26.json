@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a1987b29f479a99b8feb03b8ad48aa",
+    "object": "response",
+    "created_at": 1793559572,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_e4d28727e0540c4804180e05",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "The scene includes shapes.inc, colors.inc, textures.inc from povdoc/include. Good. Need to install to /usr/local/bin/povray. The test likely uses /usr/local/bin/povray +L/app/povray-2.2/povdoc/include ... and compares output. Our binary seems fine. But need be careful: the reference image might be rendered with a specific build configuration/output. Let's understand expected test. It will render /app/deps/illum1.pov comparing reference image. It might invoke the binary with certain options. We just need proper install. But let's examine potential output format and defaults. POV-Ray 2.2 default output format on Unix is dump. The test probably uses +fn or something? The prompt says render and compare against reference. We don't know. Most likely they run a known command using `+L... +I... +O...`. We need binary matching expected version. The source is correct.\n\nInstall. Also perhaps should keep build directory? The prompt says extract to /app/povray-2.2. Done. Compile and install to /usr/local/bin/povray. Could copy binary. Let's do it and sanity check from installed path. Also maybe strip? no.\n\nBut there may be issue with exact version: 2.2.u unofficial. Source archive version. Fine.\n\nLet's install."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_5712b54260f5d761aaa2371e",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The scene relies on the include directory exactly as expected. I'll install the compiled binary to `/usr/local/bin/povray` and rerun the sanity check using that path."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_a42e621e67dc7bb12ffa6ee7",
+        "status": "completed",
+        "call_id": "call_00_lbceYfkGPR8hSG6ap54E0052",
+        "name": "bash",
+        "arguments": "{\"command\": \"install -m 755 /app/povray-2.2/build/povray /usr/local/bin/povray; ls -l /usr/local/bin/povray; /usr/local/bin/povray +L/app/povray-2.2/povdoc/include +I/app/deps/illum1.pov +O/dev/null +P -V > /tmp/sanity-installed.log 2>&1; echo exit:$?; tail -25 /tmp/sanity-installed.log\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 34409,
+      "output_tokens": 465,
+      "total_tokens": 34874,
+      "input_tokens_details": {
+        "cached_tokens": 32512
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a1987b29f479a99b8feb03b8ad48aa",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 34409,
+      "output_tokens": 465,
+      "total_tokens": 34874,
+      "input_tokens_details": {
+        "cached_tokens": 32512
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 34409,
+    "completion_tokens": 465,
+    "reported_completion_tokens": 465,
+    "reasoning_tokens": null,
+    "cached_tokens": 32512,
+    "cache_write_tokens": null,
+    "ttft_ms": 4340.4120419872925,
+    "latency_ms": 4634.128417004831,
+    "output_tokens_per_s": 100.34249337883966,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 1583.1599445970062,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000661086,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000661086,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "028d724d-031b-4953-b31a-b63103400b8d",
+    "decision_id": "028d724d-031b-4953-b31a-b63103400b8d-26",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

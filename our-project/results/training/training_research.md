@@ -1,6 +1,25 @@
 # Laya / Kev 全历史训练研究报告
 
-## 2026-11-02 · 当前：新增材料已准备，本轮没有新训练
+## 2026-11-02 · 当前：DeepSeek批次结束，没有新参数更新
+
+从main6d040e7完成9个Dev任务19 Episode；本轮重点为原运行整合与官方结果，不新增训练、重评旧权重或晋升Serving。完整结果见[DeepSeek批次](../iterations/20261102-v9-deepseek-dev/review.md)和`server_snapshot.json`；既有历史统计、Val前三、独立Twin八版本和负结果保留。
+
+| 对象 | 03:36:36台北实际状态 |
+|---|---|
+| Laya / Kev原系列 | F01–F13、R01–R16及既有固定Val完成，F11-e01/R11接续代表保持 |
+| V9_LAYA_STEP_001-e01 | 前次72行、1轮/9次pointer head更新保持；本轮124次真实CPU决策全Sol，实验权重未晋升 |
+| 本轮新训练 | Laya0、Kev0；没有用Dev/Alias或独立Test生成训练答案 |
+| F14独立维护 | PID808492、running/COLD_START，首轮284/420块（67.62%），step36352/107404（33.85%） |
+| F14材料与损失 | 曝光2326528/6873816，最新Loss0.5028087299，首轮/固定Val完成0；旧非有限失败单独归档，不作父 |
+| 原队列 / handoff | 队列文件仍10-31 PAUSED_USER_REQUEST，既有817520等待808492，本轮未操作 |
+| Serving | PID327621、health/models200，F05-e01/原Kev Adapter，未重启或换权重 |
+| GPU | A6000 9929/49140MiB、90%、82°C、294.82W；F14驻留8974MiB，健康共享服务不干预 |
+
+当前合法Model-only仍19条，任务级9/步骤级10、11标签任务；步骤Sol4/Luna6，本轮新增0。74行S1+步骤材料已准备但未训练；215/186仅可组合，当前权重实际训练仍72行。未知应用Effort、Alias三候选和AA Max不能作为新动作答案。S1固定Val561项沿用Accuracy0.6898、Loss0.5938、Brier0.4083、ECE0.0362，未重复计算；Kev新LoRA/head更新0，旧V9两组加训负结果保留。
+
+新Dev原Verifier7成功/2失败/10未知；三组同协议固定DeepSeek3/3、动态Alias2/3，参考费按成功数分摊动态略高且Trial更长。Teacher1成功/4消费、映射0.009158USD，净收益未证。本轮227请求/223Usage/4未知，已知后端公开参考费0.10950165USD与Alias映射1.0058892USD分开，完整费用、实收和资源费用未知。没有新的训练依据来自这批Alias；下轮仍需要独立质量步骤覆盖和真实动态收益，不能因GPU或模型空闲自动续训。
+
+## 2026-11-02 · 前一工作包：新增材料已准备，本轮没有新训练
 
 从main62d7bb9接续，原全历史、Val前三、独立四档分与旧负结果保持。本轮只处理输入/运行并获取新真实结果，未重复训练或评测旧版本。依据见[本轮报告](../iterations/20261101-v9-runtime-quality-dev/review.md)、`server_snapshot.json`与`training_delta/summary.json`。
 

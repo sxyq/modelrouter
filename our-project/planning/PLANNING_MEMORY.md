@@ -10,6 +10,16 @@
 
 ### 2026-11-02 · 最新接续
 
+从main6d040e7完成DeepSeek Dev批次，原Provider/Registry/Responses和Harbor/mini复用，9任务19 Episode全部结束。恢复入口为[批次报告](../results/iterations/20261102-v9-deepseek-dev/review.md)、`summary.json`及`server_snapshot.json`。源码前两批8f4ed71/d77e067，公开结果与原文档随最终提交同步；用户其他dirty、私人文件、旧训练和Fig.2更新保留。
+
+原Verifier9次，7成功/2失败/另10未知。动态为ALIAS_SMOKE、实际DeepSeek；三组同协议完整对照固定3/3、动态2/3，按成功数分摊参考费动态略高，Trial更长；财务/MTEB跨超时处理版本仅观察。原工具30秒不变，超时现在作为工具观察继续，反馈组6次均有原Verifier。124次CPU路由全Sol，概率0.3706–0.4611，切换0/fallback0，10初始化/114复用；前向仍主要耗时。教师1成功/4次消费、映射0.009158USD，净收益未证，不改Agent行动。
+
+227模型请求/223Usage/4未知，已知DeepSeek公开同系列非高峰参考费0.10950165USD，Alias映射1.0058892USD；口径分开，实收/资源/完整费用未知。high只确认发送、应用档位未报告；正式Effort/K=3目标仍0，Flash不重探旧失败，AA v4缺测保持。
+
+03:36:36台北：F14独立维护running/COLD_START，284/420块、36352/107404步、最新Loss0.50280873、首轮/Val未完；原失败归档及handoff817520未动。Serving F05/原Kev、PID327621、health/models200，研究权重STEP_001/F11/R11不晋升。本轮训练0、Dev/Alias新增Train目标0；有效Model-only仍19、任务9/步骤10、11标签任务，74行待训、215/186仅可组合。下一步做真实独立质量步骤、CPU前向及动态净收益，不自动再训。SWE-bench Verified原生入口仍缺；五RQ、八图十二表、独立Twin与Fig.2文字保持。
+
+### 2026-11-02 · 前一工作包接续
+
 从main62d7bb9完成五处既有源码调整及新的真实结果，详见[本轮报告](../results/iterations/20261101-v9-runtime-quality-dev/review.md)。问题ID不进入模型内部字段，但说明、候选顺序与状态进入；在线复用步骤说明及Sol→Luna顺序，Prepare不再重建已捕获的比较视图。19行共享Serializer输入保留，新两条3874/3962 Token完整进入5120窗口；原Checkpoint未重训。一个Episode只加载一次原Adapter，成功Dev之后4次前向外开销共0.0477秒，初始化28.62秒；不新增Serving。
 
 本轮3个已有Train任务8对前缀，2个新标签任务新增Luna步骤2条（Mido质量1、Schema等质量成本1）；PrettyTable六对双失败仅观察。累计19 Model-only、任务9/步骤10、11标签任务，总Sol4/Luna15，步骤Sol4/Luna6；Native Effort/K=3仍0。215/186只是可组合视图，74行定向S1+步骤材料已准备，本轮训练更新0，Kev未训练。

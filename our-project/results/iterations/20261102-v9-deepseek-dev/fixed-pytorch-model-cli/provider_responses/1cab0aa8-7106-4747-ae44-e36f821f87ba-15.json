@@ -1,0 +1,112 @@
+{
+  "response": {
+    "id": "01a1986adc0e7d20a0e983c470026af2",
+    "object": "response",
+    "created_at": 1793558503,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_bbe74ff654ce2c8461c65209",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": " "
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item_1410cf3a893049636dc798d1",
+        "status": "completed",
+        "call_id": "call_00_KzVGTPX9wR8l0UJLyeSo0103",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /tmp && python3 - <<'PY'\\nimport json,gzip,struct,math\\nw=json.load(open('/app/weights.json'))\\nimg=gzip.open('t10k-images-idx3-ubyte.gz','rb').read()\\nlab=gzip.open('t10k-labels-idx1-ubyte.gz','rb').read()\\nmagic,n,rows,cols=struct.unpack('>IIII',img[:16]); print(magic,n,rows,cols)\\nlabels=list(lab[8:])\\ndef run(x):\\n def mv(x,W,b): return [sum(a*c for a,c in zip(x,r))+bb for r,bb in zip(W,b)]\\n def rl(x): return [v if v>0 else 0.0 for v in x]\\n h=rl(mv(x,w['input_layer.weight'],w['input_layer.bias']))\\n h=rl(mv(h,w['hidden_layer.weight'],w['hidden_layer.bias']))\\n return mv(h,w['output_layer.weight'],w['output_layer.bias'])\\nN=10000\\nvariants={\\n 'raw': lambda v: float(v),\\n 'div255': lambda v: v/255.0,\\n 'div255_norm': lambda v: (v/255.0-0.1307)/0.3081,\\n}\\nfor name,f in variants.items():\\n ok=0\\n for i in range(N):\\n  row=img[16+i*784:16+(i+1)*784]\\n  o=run([f(v) for v in row])\\n  p=max(range(10),key=lambda k:o[k])\\n  ok += p==labels[i]\\n print(name,ok,N,ok/N)\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 14279,
+      "output_tokens": 397,
+      "total_tokens": 14676,
+      "input_tokens_details": {
+        "cached_tokens": 13824
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a1986adc0e7d20a0e983c470026af2",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 14279,
+      "output_tokens": 397,
+      "total_tokens": 14676,
+      "input_tokens_details": {
+        "cached_tokens": 13824
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 14279,
+    "completion_tokens": 397,
+    "reported_completion_tokens": 397,
+    "reasoning_tokens": null,
+    "cached_tokens": 13824,
+    "cache_write_tokens": null,
+    "ttft_ms": 1919.952042051591,
+    "latency_ms": 3130.706333031412,
+    "output_tokens_per_s": 126.8084444111982,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 327.8947701921599,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000347922,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000347922,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "1cab0aa8-7106-4747-ae44-e36f821f87ba",
+    "decision_id": "1cab0aa8-7106-4747-ae44-e36f821f87ba-15",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

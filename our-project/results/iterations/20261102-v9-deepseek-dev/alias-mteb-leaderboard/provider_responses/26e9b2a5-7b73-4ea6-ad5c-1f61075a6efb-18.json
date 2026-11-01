@@ -1,0 +1,145 @@
+{
+  "response": {
+    "id": "01a198861ad07305a272b2e754f845ae",
+    "object": "response",
+    "created_at": 1793560289,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_66d7298d2e08bb92fdf897d7",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Now need determine exact scoring. MTEB leaderboard \"Mean (Task)\" likely unweighted mean of per-task scores across benchmark tasks, where each task score uses main score. Need identify per task main score metric. We can use mteb package BenchmarkResults and benchmark score. Could install mteb or inspect current results parquet which may already have task scores but not mean. Let's first inspect JSON format. Use git show."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_eee2da3acc46fcc756215c31",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The August 2025 snapshot is available. Now let me inspect the result JSON schema and retrieve the official MTEB scoring implementation to ensure the Mean (Task) calculation matches exactly."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_bd0d67d8983a692b35cde8d3",
+        "status": "completed",
+        "call_id": "call_00_O1FALG0zqgarrG1FLVOt7084",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /tmp/mteb-results-git && C=71f6b6257025bbe06232352b86b09ab7bd7c904e && for f in AngryTweetsClassification BornholmBitextMining DanFeverRetrieval SNLHierarchicalClusteringS2S; do echo ==== $f; git show $C:results/intfloat__multilingual-e5-large/4dc6d853a804b9c8886ede6dda8a073b7dc08a81/$f.json | head -c 3000; echo; done\"}"
+      },
+      {
+        "type": "function_call",
+        "id": "item_7d74d78df68cc5089300aae7",
+        "status": "completed",
+        "call_id": "call_01_iEWe4obLWjJ0F7lebVqe8972",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests\\nfor u in [\\n'https://raw.githubusercontent.com/embeddings-benchmark/mteb/main/mteb/results/benchmark_results.py',\\n'https://raw.githubusercontent.com/embeddings-benchmark/mteb/main/mteb/benchmarks/benchmark.py',\\n'https://raw.githubusercontent.com/embeddings-benchmark/mteb/main/mteb/benchmarks/_benchmark_metrics.py',\\n]:\\n r=requests.get(u,timeout=30); print('='*20,u,r.status_code,len(r.text)); open('/tmp/'+u.rsplit('/',1)[-1],'w').write(r.text); print(r.text[:3000])\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 35787,
+      "output_tokens": 468,
+      "total_tokens": 36255,
+      "input_tokens_details": {
+        "cached_tokens": 29824
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a198861ad07305a272b2e754f845ae",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 35787,
+      "output_tokens": 468,
+      "total_tokens": 36255,
+      "input_tokens_details": {
+        "cached_tokens": 29824
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 35787,
+    "completion_tokens": 468,
+    "reported_completion_tokens": 468,
+    "reasoning_tokens": null,
+    "cached_tokens": 29824,
+    "cache_write_tokens": null,
+    "ttft_ms": 3284.8355830064975,
+    "latency_ms": 4574.731958040502,
+    "output_tokens_per_s": 102.30107562421182,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 362.81984278594666,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0195884,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.001264722,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb",
+    "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-18",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

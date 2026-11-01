@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a19879292a7e9a845ef8940fb6913b",
+    "object": "response",
+    "created_at": 1793559440,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_77c05362a675876948ebd5c0",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "curl not installed. Use python urllib requests maybe requests installed. We'll test via python. Also maybe install curl but unnecessary. Let's test with urllib."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_50d71100122eac4b4c601917",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "`curl` isn't installed, so I'll use Python's standard library to exercise the API and verify status codes and JSON bodies."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_aa573b83de38c5fe503900f8",
+        "status": "completed",
+        "call_id": "call_00_svluKP5FPGJPXExDj2y62442",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport json\\nfrom urllib.request import Request, urlopen\\nfrom urllib.error import HTTPError\\n\\ndef call(payload, raw=None):\\n    data = raw if raw is not None else json.dumps(payload).encode()\\n    req = Request(\\\"http://127.0.0.1:5000/sentiment\\\", data=data, headers={\\\"Content-Type\\\": \\\"application/json\\\"}, method=\\\"POST\\\")\\n    try:\\n        with urlopen(req) as r:\\n            status, body = r.status, r.read().decode()\\n    except HTTPError as e:\\n        status, body = e.code, e.read().decode()\\n    print(status, body)\\n    return status, json.loads(body)\\n\\ns, p = call({\\\"text\\\": \\\"I absolutely love this product, it is fantastic!\\\"})\\nassert s == 200 and p[\\\"sentiment\\\"] == \\\"positive\\\" and set(p[\\\"confidence\\\"]) == {\\\"positive\\\", \\\"negative\\\"}\\n\\ns, n = call({\\\"text\\\": \\\"This is terrible and I hate it.\\\"})\\nassert s == 200 and n[\\\"sentiment\\\"] == \\\"negative\\\" and set(n[\\\"confidence\\\"]) == {\\\"positive\\\", \\\"negative\\\"}\\n\\ns, e = call({})\\nassert s == 400 and \\\"error\\\" in e\\ns, e = call(None, raw=b\\\"not-json\\\")\\nassert s == 400 and \\\"error\\\" in e\\ns, e = call({\\\"text\\\": \\\"   \\\"})\\nassert s == 400 and \\\"error\\\" in e\\ns, e = call({\\\"text\\\": 123})\\nassert s == 400 and \\\"error\\\" in e\\nprint(\\\"ALL TESTS PASSED\\\")\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 4075,
+      "output_tokens": 444,
+      "total_tokens": 4519,
+      "input_tokens_details": {
+        "cached_tokens": 3328
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a19879292a7e9a845ef8940fb6913b",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 4075,
+      "output_tokens": 444,
+      "total_tokens": 4519,
+      "input_tokens_details": {
+        "cached_tokens": 3328
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 4075,
+    "completion_tokens": 444,
+    "reported_completion_tokens": 444,
+    "reasoning_tokens": null,
+    "cached_tokens": 3328,
+    "cache_write_tokens": null,
+    "ttft_ms": 2055.725625017658,
+    "latency_ms": 3581.959041999653,
+    "output_tokens_per_s": 123.95451617228264,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 290.9122517301283,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0062668,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000388434,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f",
+    "decision_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f-6",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

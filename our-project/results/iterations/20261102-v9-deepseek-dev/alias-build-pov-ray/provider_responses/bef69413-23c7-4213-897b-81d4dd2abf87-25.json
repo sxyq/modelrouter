@@ -1,0 +1,125 @@
+{
+  "response": {
+    "id": "01a1988b10e27bff847b80adf81cbcbe",
+    "object": "response",
+    "created_at": 1793560614,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_7d44a474a2adb4deb6c5a906",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Source archive is POVSRC.TAR.Z (compress .Z), also POVSRC.ZIP and LZH. Need extract. `unzip` installed? We installed unzip. POVSRC.ZIP likely DOS zip of source. Need directory `/app/povray-2.2`. Download source, maybe also POVDOC for include files. User says +L/app/povray-2.2/povdoc/include, so need povdoc. Download POVDOC.TAR.Z or zip. Extract into povray-2.2. Let's inspect zip."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item_7dcdfab9f500d6efa3527abc",
+        "status": "completed",
+        "call_id": "call_00_6YCXNPwifYZOErR615KW5026",
+        "name": "bash",
+        "arguments": "{\"command\": \"mkdir -p /app/povray-2.2 && cd /app/povray-2.2 && timeout 60 curl -sSLO 'https://www.povray.org/ftp/pub/povray/Old-Versions/Official-2.2/POVSRC.ZIP' && timeout 60 curl -sSLO 'https://www.povray.org/ftp/pub/povray/Old-Versions/Official-2.2/POVDOC.ZIP' && ls -la && file *.ZIP && unzip -l POVSRC.ZIP | head -80\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 23891,
+      "output_tokens": 286,
+      "total_tokens": 24177,
+      "input_tokens_details": {
+        "cached_tokens": 23552
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a1988b10e27bff847b80adf81cbcbe",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 23891,
+      "output_tokens": 286,
+      "total_tokens": 24177,
+      "input_tokens_details": {
+        "cached_tokens": 23552
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 23891,
+    "completion_tokens": 286,
+    "reported_completion_tokens": 286,
+    "reasoning_tokens": null,
+    "cached_tokens": 23552,
+    "cache_write_tokens": null,
+    "ttft_ms": 2512.7653750241734,
+    "latency_ms": 3019.7477500187233,
+    "output_tokens_per_s": 94.70989753969573,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 564.1221748647072,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0058932,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000293106,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "bef69413-23c7-4213-897b-81d4dd2abf87",
+    "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-25",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

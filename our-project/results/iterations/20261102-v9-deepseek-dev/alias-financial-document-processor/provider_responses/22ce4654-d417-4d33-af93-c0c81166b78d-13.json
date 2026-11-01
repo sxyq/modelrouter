@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a1987cdd697b86919471873bc3588d",
+    "object": "response",
+    "created_at": 1793559683,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_4bfd4f21dbc0264639e2b870",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Could be handwritten? Let's inspect visual. Maybe can use image-to-ascii? Or leverage Python to crop, OCR, detect. Let's use pytesseract? We have tesseract CLI. Maybe image is rotated at a slight angle or low quality. We can inspect with OCR TSV to locate text and maybe crop. Let's get tesseract TSV for psm 6 and maybe identify visual by converting to base64? We as text model can't view images. Could use OCR with external? No internet maybe. Could use ImageMagick? Not installed, PIL.\n\nLet's gather histogram, maybe image contains a photo/screenshot. Use OCR at higher scale + adaptive threshold (OpenCV missing, but PIL). Try rotation small angles. Maybe it is a handwritten invoice? Only \"70057287\" visible. The image 1728x2292 likely scan of a page with handwritten text? OCR output gibberish could be handwritten. We need classify by content; if no invoice words, classify other.\n\nBut perhaps hidden content? JPG no metadata. Let's examine EXIF, maybe filename irrelevant. Let's use OCR with tesseract different languages? Maybe image is upside down? rot180 gave 28... Maybe it's a receipt? Need careful.\n\nCould use image analysis via OpenCV installation (pip unavailable? Python apt installed but no pip; apt install python3-opencv? Could). But visual understanding requires OCR. Could perhaps use `chafa` or `jp2`? No.\n\nLet's inspect OCR TSV word confidence and positions. Also try edge/threshold and rotations at multiples of 5 degrees. Also maybe OCR with psm 11. Could determine if text is printed but rotated/curved. Let's try using tesseract on larger image with smoothing/deskew perhaps. Install imagemagick? Or use Python PIL.\n\nLet's examine image colors (L grayscale), maybe a photo. Use numpy? Check installed modules. We can install pillow already, maybe numpy via apt. Let's see exif and pixel distribution. We can downsample and print ASCII art maybe see layout. That's possible: convert image to ASCII at e.g. 80x100, so we can discern document layout. Let's do."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_0d53937c7e0b025960633eb7",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The uncertain image may be handwritten or heavily degraded. I’ll inspect its layout via a coarse ASCII rendering and analyze OCR confidence/positions to decide its document type."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_004a8424e80f93bcdf932412",
+        "status": "completed",
+        "call_id": "call_00_bqoooFwk8z6FCF2gc7531481",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nfrom PIL import Image, ImageOps, ImageFilter\\nimport numpy as np\\np='/app/documents/F0oZMhSUm2dO.jpg'\\nim=Image.open(p)\\nprint('info', im.info)\\nprint('exif', dict(im.getexif()))\\na=np.array(im.convert('L'))\\nprint('shape', a.shape, 'mean', a.mean(), 'std', a.std())\\n# ascii render: crop dark pixel bounding box then downsample preserving aspect\\nmask=a<180\\nys,xs=np.where(mask)\\nprint('dark bbox', (xs.min(),ys.min(),xs.max(),ys.max()), 'dark frac', mask.mean())\\ncrop=a[max(0,ys.min()-5):min(a.shape[0],ys.max()+5), max(0,xs.min()-5):min(a.shape[1],xs.max()+5)]\\nprint('crop', crop.shape)\\n# use block min to emphasize ink\\nh=50; w=max(20,int(h*crop.shape[1]/crop.shape[0]*0.45))\\nfrom PIL import Image as I\\nsmall=I.fromarray(crop).resize((w,h), I.LANCZOS)\\nsa=np.array(small)\\nchars='@%#*+=-:. '\\nfor row in sa:\\n    print(''.join(chars[min(len(chars)-1,int(v/256*len(chars)))] for v in row))\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 18423,
+      "output_tokens": 844,
+      "total_tokens": 19267,
+      "input_tokens_details": {
+        "cached_tokens": 17152
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a1987cdd697b86919471873bc3588d",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 18423,
+      "output_tokens": 844,
+      "total_tokens": 19267,
+      "input_tokens_details": {
+        "cached_tokens": 17152
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 18423,
+    "completion_tokens": 844,
+    "reported_completion_tokens": 844,
+    "reasoning_tokens": null,
+    "cached_tokens": 17152,
+    "cache_write_tokens": null,
+    "ttft_ms": 5372.726292000152,
+    "latency_ms": 7292.738666990772,
+    "output_tokens_per_s": 115.73155690059338,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 439.58050010178886,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0126972,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000748506,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "22ce4654-d417-4d33-af93-c0c81166b78d",
+    "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-13",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

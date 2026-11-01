@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a1986d1d167820a06eb36d703b9e07",
+    "object": "response",
+    "created_at": 1793558650,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_e6b1eb455621194f784aeca9",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We have no tools installed. We can apt-get install python etc? Need inspect environment/network. Could use apt. Let's see PDFs raw strings maybe text-based. JPGs require OCR. Need OCR likely tesseract. Let's check apt-get update/install. Since root likely. Also maybe Python unavailable? We can install python3, tesseract, poppler-utils. Let's do apt-get update and install."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_936f66cc7493f5d2d1c0fbd9",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "I’ll install the document-processing tools needed for OCR and PDF text extraction, then inspect each document’s content to classify and extract fields."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_e93f7e77dea174c774272dea",
+        "status": "completed",
+        "call_id": "call_00_Crw8hi8wx4xF1g3Swk6H7294",
+        "name": "bash",
+        "arguments": "{\"command\": \"apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3 python3-pip tesseract-ocr poppler-utils >/tmp/apt.log 2>&1; rc=$?; tail -30 /tmp/apt.log; echo RC=$rc; command -v python3 tesseract pdftotext\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 2801,
+      "output_tokens": 234,
+      "total_tokens": 3035,
+      "input_tokens_details": {
+        "cached_tokens": 2304
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a1986d1d167820a06eb36d703b9e07",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 2801,
+      "output_tokens": 234,
+      "total_tokens": 3035,
+      "input_tokens_details": {
+        "cached_tokens": 2304
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 2801,
+    "completion_tokens": 234,
+    "reported_completion_tokens": 234,
+    "reasoning_tokens": null,
+    "cached_tokens": 2304,
+    "cache_write_tokens": null,
+    "ttft_ms": 1911.8860420421697,
+    "latency_ms": 2556.3068330520764,
+    "output_tokens_per_s": 91.53830712904605,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 363.1167759706914,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000221862,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000221862,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "2d80fd4f-f9f7-4f3a-9efc-dbd6c61004a9",
+    "decision_id": "2d80fd4f-f9f7-4f3a-9efc-dbd6c61004a9-4",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

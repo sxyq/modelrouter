@@ -40,7 +40,7 @@
     "result_root": "our-project/results/iterations/20261031-twinrouterbench-independent"
   },
   "current_execution": {
-    "sampled_at": "2026-11-02T01:08:59.581358+08:00",
+    "sampled_at": "2026-11-02T03:36:36.258818+08:00",
     "controller_pid": 562379,
     "controller_alive": false,
     "queue_status": "PAUSED_USER_REQUEST",
@@ -81,17 +81,18 @@
       "pid": 327621,
       "started_at": "2026-10-30T20:53:21+08:00",
       "laya": "F05/epoch_01",
-      "kev": "original imported adapter"
+      "kev": "original imported adapter",
+      "last_health_models_read_at": "2026-11-02T03:36:36.258818+08:00"
     },
     "gpu": {
-      "sampled_at": "2026-11-02T01:08:59.581358+08:00",
+      "sampled_at": "2026-11-02T03:36:36.258818+08:00",
       "index": 0,
       "model": "NVIDIA RTX A6000",
       "used_mib": 9929,
       "total_mib": 49140,
-      "utilization_pct": 94,
-      "temperature_c": 83,
-      "power_w": 289.92,
+      "utilization_pct": 90,
+      "temperature_c": 82,
+      "power_w": 294.82,
       "workload": "F14_INDEPENDENT_COLD_START_AND_EXISTING_SHARED_SERVICES"
     },
     "other_services_modified": false,
@@ -340,28 +341,27 @@
       "started_at": "2026-11-01T03:31:49Z",
       "epoch": 1,
       "epochs_planned": 2,
-      "chunk": 241,
+      "chunk": 284,
       "chunks_per_epoch": 420,
-      "step_count": 30848,
+      "step_count": 36352,
       "total_updates": 107404,
-      "consumed_items": 1974272,
+      "consumed_items": 2326528,
       "total_items": 6873816,
-      "latest_chunk_loss": 0.48724648079951294,
-      "cursor_updated_at": "2026-11-01T17:05:57Z",
-      "first_epoch_chunk_progress_pct": 57.38095238095238,
-      "optimizer_progress_pct": 28.721462887788164,
-      "recent_log_blocks_read": [
-        230,
-        241
-      ],
-      "recent_log_block_losses_all_finite": true,
+      "latest_chunk_loss": 0.5028087299469917,
+      "cursor_updated_at": "2026-11-01T19:34:14Z",
+      "first_epoch_chunk_progress_pct": 67.61904761904762,
+      "optimizer_progress_pct": 33.846039253659086,
+      "recent_log_blocks_read": null,
+      "recent_log_block_losses_all_finite": null,
       "fixed_validation_completed": false,
       "completed_epochs": 0,
       "restarted_by_this_work_package": false,
       "used_as_parent": false,
       "origin": "OTHER_MAINTENANCE_TASK",
       "archived_failed_attempt_preserved": true,
-      "maintenance_entry_changes_included_in_this_commit": false
+      "maintenance_entry_changes_included_in_this_commit": false,
+      "recent_log_status": "NOT_RECOLLECTED; latest cursor loss only",
+      "latest_chunk_loss_finite": true
     },
     "existing_queue_handoff": {
       "pid": 817520,
@@ -371,12 +371,156 @@
       "alive": true
     },
     "earlier_state_caveat": "Old failed archive and 10-31 queue_state do not describe the independent current F14 cold start; live cursor and PID are reported separately.",
-    "source_files_synced_to_original_server_tree": 5,
+    "source_files_synced_to_original_server_tree": 7,
     "core_documents_and_training_reports_synced": true,
-    "public_result_files_synced": 491,
+    "public_result_files_synced": 640,
     "server_trainer_unrelated_differences_preserved": true,
     "temporary_collector_directory_removed": true,
-    "other_user_code_tests_ledger_and_deletions_excluded_from_commit": true
+    "other_user_code_tests_ledger_and_deletions_excluded_from_commit": true,
+    "latest_deepseek_dev_experiment": {
+      "result_dir": "our-project/results/iterations/20261102-v9-deepseek-dev",
+      "starting_main": "6d040e786d0bd95a1060f793a8e680caa7bf1a93",
+      "source_commits": [
+        "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+        "d77e0673169cc122c299dfee3b4e3ca5b35d6b28"
+      ],
+      "counts": {
+        "different_dev_tasks": 9,
+        "episodes": 19,
+        "official_verifiers": 9,
+        "official_successes": 7,
+        "official_failures": 2,
+        "unknown_outcomes": 10,
+        "generation_completions": 222,
+        "generation_failed_requests": 4,
+        "teacher_requests": 1,
+        "tools_executed": 242,
+        "tool_timeouts": 19,
+        "neural_router_decisions": 124,
+        "neural_router_initializations": 10,
+        "neural_router_reused_decisions": 114,
+        "neural_router_fallbacks": 0,
+        "natural_logical_model_switches": 0,
+        "same_protocol_complete_episode_pairs": 3,
+        "protocol_mismatch_pairs": 2,
+        "new_train_model_preference_targets": 0,
+        "new_native_effort_targets": 0,
+        "new_formal_k3_targets": 0,
+        "all_model_request_attempts": 227,
+        "requests_with_usage": 223
+      },
+      "formal_model_pool": [
+        "gpt-6.1-sol",
+        "gpt-6-luna",
+        "qwen3.8-flash"
+      ],
+      "actual_backend_model_ids": [
+        "deepseek-v4.1-flash"
+      ],
+      "dynamic_execution_mode": "ALIAS_SMOKE",
+      "independent_backend_k": 1,
+      "logical_k": 3,
+      "router_checkpoint": "V9_LAYA_STEP_001-e01",
+      "logical_model_counts": {
+        "gpt-6.1-sol": 124
+      },
+      "candidate_probability_statistics": {
+        "gpt-6.1-sol:low": {
+          "minimum": 0.3706,
+          "maximum": 0.4611,
+          "mean": 0.3934427419354839
+        },
+        "gpt-6-luna:low": {
+          "minimum": 0.2367,
+          "maximum": 0.3531,
+          "mean": 0.3130120967741935
+        },
+        "qwen3.8-flash:none": {
+          "minimum": 0.2648,
+          "maximum": 0.3176,
+          "mean": 0.2935451612903226
+        }
+      },
+      "same_protocol_pair_aggregate": {
+        "tasks": [
+          "build-pov-ray",
+          "git-leak-recovery",
+          "hf-model-inference"
+        ],
+        "fixed_successes": 3,
+        "dynamic_successes": 2,
+        "fixed_backend_reference_cost_usd": 0.018461232,
+        "dynamic_backend_reference_cost_usd": 0.013441884,
+        "fixed_backend_reference_cost_per_success_usd": 0.006153744,
+        "dynamic_backend_reference_cost_per_success_usd": 0.006720942,
+        "fixed_trial_wall_sec": 738.499661,
+        "dynamic_trial_wall_sec": 1805.481871,
+        "actual_provider_invoice_or_resource_cost": null,
+        "interpretation": "Three descriptive Dev pairs on one API backend, not formal K3 quality or training targets"
+      },
+      "cost_scope": {
+        "known_backend_family_reference_cost_usd": 0.10950165,
+        "total_backend_family_reference_cost_usd": null,
+        "known_alias_logical_mapped_model_cost_usd": 1.0058892,
+        "total_alias_logical_mapped_model_cost_usd": null,
+        "actual_provider_billing_usd": null,
+        "router_tool_and_container_resource_billing_usd": null,
+        "complete_episode_cost_usd": null,
+        "backend_family_reference_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+        "cache_missing_policy": "Raw missing counts remain null; ordinary input rate for corresponding input",
+        "reasoning_policy": "Responses output tokens include reasoning; detail missing, counted once",
+        "failed_request_policy": "Missing Usage keeps complete model token and cost totals unknown; known subtotals retained"
+      },
+      "known_model_usage": {
+        "input_tokens": 3316883,
+        "completion_tokens_including_reasoning": 91810,
+        "reported_usage_requests": 223,
+        "unknown_usage_requests": 4,
+        "reasoning_detail_reported_requests": 0,
+        "reasoning_detail_unknown_requests": 223,
+        "cache_read_reported_requests": 215,
+        "cache_read_unknown_requests": 8,
+        "cache_write_reported_requests": 0,
+        "complete_model_token_total": null
+      },
+      "teacher_requests": 1,
+      "teacher_successes": 1,
+      "teacher_router_consumptions": 4,
+      "teacher_logical_mapped_cost_usd": 0.009158,
+      "teacher_backend_reference_cost_usd": 0.00059475,
+      "teacher_latency_sec": 4.6566798749845475,
+      "teacher_net_benefit_proven": false,
+      "backend_requested_native_effort": "high",
+      "backend_effective_native_effort_status": "NOT_REPORTED",
+      "new_train_model_targets": 0,
+      "new_native_effort_targets": 0,
+      "new_formal_k3_targets": 0,
+      "new_laya_parameter_updates": 0,
+      "new_kev_parameter_updates": 0,
+      "serving_weights_replaced": false,
+      "capability_snapshot_id": "20261031T072548885180Z-v4",
+      "existing_model_only_preferences": 19,
+      "task_preferences": 9,
+      "step_preferences": 10,
+      "label_tasks": 11,
+      "prepared_step_continuation_rows": 74,
+      "current_checkpoint_actual_train_rows": 72,
+      "combined_215_row_view_trained": false,
+      "independent_twinrouterbench_repeated": false,
+      "cleanup": {
+        "redundant_working_tree_status_copies_removed": 10,
+        "empty_filtered_patch_copies_removed": 5,
+        "related_source_patch_copies_retained": 5,
+        "user_files_and_real_failed_trials_preserved": true,
+        "large_task_artifacts_retained_locally_not_public_git": true,
+        "temporary_deepseek_documentation_tab_closed": true,
+        "original_user_alibaba_tab_preserved": true,
+        "remaining_docker_containers": 0
+      },
+      "original_server_results_and_documents_synced": true,
+      "original_dashboard_remote_snapshot_read": true,
+      "swe_bench_verified_native_entry_available": false
+    }
   },
   "restart_observation_2007": {
     "sampled_at": "2026-10-31T20:07:50.762394+08:00",

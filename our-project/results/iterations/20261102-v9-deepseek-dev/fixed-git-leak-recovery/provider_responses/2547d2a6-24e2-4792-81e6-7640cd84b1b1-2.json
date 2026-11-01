@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a198586e397780a934ebef1b5a6146",
+    "object": "response",
+    "created_at": 1793557295,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_5be23bec1505c0f52f2456f1",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We found unreachable commit/blob. Need recover secret and clean repo so secret cannot be found anywhere. Need preserve irrelevant files and commit messages. Likely goal: write /app/secret.txt with recovered secret, then purge secret from repo entirely, preserving current history/commit messages (two commits?) Let's inspect unreachable commit/tree/blob."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_88f9148a8b0173672ef38e47",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "I found an unreachable commit and blob likely containing the removed content. I’ll inspect them and verify the exact secret string."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_01dfcc7b922127f4187af146",
+        "status": "completed",
+        "call_id": "call_00_p7tqFgNbbvLVbWdolUmJ9836",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /app/repo && echo '--- unreachable commit ---' && git cat-file -p 6b4c75caa9a2aa9a630e16764007b0109b1f5c07 && echo '--- unreachable tree ---' && git cat-file -p aa7dfd0c18e6582cdc8959609bc02653870cd96a && echo '--- blobs ---' && for b in 52d18a091cd9755bacb8eaccab2882a24b080dc7 76b5bc97f7be571ac47e07457c73fa5048d9d04c 95b4cf817169b39ffb3edf07598c905d304e9c1b; do echo \\\"== $b ==\\\"; git cat-file -p \\\"$b\\\"; echo; done && echo '--- grep all objects ---' && for o in $(git cat-file --batch-all-objects --batch-check='%(objectname) %(objecttype)' | awk '$2==\\\"blob\\\"{print $1}'); do git cat-file -p \\\"$o\\\" | grep -EHn 'secret\\\\[[^]]*\\\\]' && echo \\\"in blob $o\\\"; done || true\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 2334,
+      "output_tokens": 403,
+      "total_tokens": 2737,
+      "input_tokens_details": {
+        "cached_tokens": 1280
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a198586e397780a934ebef1b5a6146",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 2334,
+      "output_tokens": 403,
+      "total_tokens": 2737,
+      "input_tokens_details": {
+        "cached_tokens": 1280
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 2334,
+    "completion_tokens": 403,
+    "reported_completion_tokens": 403,
+    "reasoning_tokens": null,
+    "cached_tokens": 1280,
+    "cache_write_tokens": null,
+    "ttft_ms": 2267.7454999648035,
+    "latency_ms": 3495.270084007643,
+    "output_tokens_per_s": 115.29867229542504,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 328.3029971365002,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00040374,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.00040374,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "2547d2a6-24e2-4792-81e6-7640cd84b1b1",
+    "decision_id": "2547d2a6-24e2-4792-81e6-7640cd84b1b1-2",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

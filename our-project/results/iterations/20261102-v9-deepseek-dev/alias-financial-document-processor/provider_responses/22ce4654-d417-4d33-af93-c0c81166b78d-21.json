@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a198821c0a797292a004e83e5a990f",
+    "object": "response",
+    "created_at": 1793560027,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_977d1e7bc6351325a7eaf663",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": " "
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_ba265c7f8f06b4ec3c53e224",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The regex requires the character before a digit not to be punctuation, but in `4031.0` the `0` after the dot is excluded; more importantly it requires exactly 1–3 digits before optional groups, so `4031` cannot match. I’ll replace it with a simpler boundary-aware numeric token pattern and test all invoices."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_474d00d5641dea2d9b555f7e",
+        "status": "completed",
+        "call_id": "call_00_cRx2pQccWLSn0VZsD34f0502",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\np='/app/process_documents.py'\\ns=open(p).read()\\ns=s.replace(\\n    'pattern = re.compile(r\\\"(?<![\\\\\\\\d.,])[-+]?\\\\\\\\d{1,3}(?:[ \\\\\\\\u00a0]\\\\\\\\d{3})*(?:[.,]\\\\\\\\d{1,2})?(?![\\\\\\\\d])\\\")',\\n    'pattern = re.compile(r\\\"(?<![\\\\\\\\d.,])[-+]?\\\\\\\\d[\\\\\\\\d]*(?:[ \\\\\\\\u00a0]\\\\\\\\d{3})*(?:[.,]\\\\\\\\d{1,2})?(?![\\\\\\\\d])\\\")'\\n)\\nopen(p,'w').write(s)\\nPY\\npython3 -m py_compile /app/process_documents.py\\npython3 - <<'PY'\\nimport importlib.util\\nfrom pathlib import Path\\nspec=importlib.util.spec_from_file_location('pd','/app/process_documents.py'); pd=importlib.util.module_from_spec(spec); spec.loader.exec_module(pd)\\nfor path in sorted(Path('/app/documents').iterdir()):\\n    text=pd.extract_text(path)\\n    if pd.is_invoice(text):\\n        try: print(path.name, pd.extract_amounts(text))\\n        except Exception as e: print(path.name, 'ERROR', e)\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 26008,
+      "output_tokens": 397,
+      "total_tokens": 26405,
+      "input_tokens_details": {
+        "cached_tokens": 25856
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a198821c0a797292a004e83e5a990f",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 26008,
+      "output_tokens": 397,
+      "total_tokens": 26405,
+      "input_tokens_details": {
+        "cached_tokens": 25856
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 26008,
+    "completion_tokens": 397,
+    "reported_completion_tokens": 397,
+    "reasoning_tokens": null,
+    "cached_tokens": 25856,
+    "cache_write_tokens": null,
+    "ttft_ms": 1887.1036670170724,
+    "latency_ms": 3512.454208044801,
+    "output_tokens_per_s": 113.02638454067963,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 244.25500221568953,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0068596,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000338568,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "22ce4654-d417-4d33-af93-c0c81166b78d",
+    "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-21",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

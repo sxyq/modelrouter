@@ -1,0 +1,222 @@
+{
+  "timestamp": "2026-11-01T19:23:39.797962+00:00",
+  "iteration_id": "fixed-build-pmars",
+  "status": "BLOCKED",
+  "reason": "Harbor exit=0; official verifier result absent in <LOCAL_PROJECT>/our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pmars/jobs/build-pmars--fixed_strong--s42",
+  "observed_trials": 1,
+  "verified_trials": 0,
+  "successes": 0,
+  "success_rate": null,
+  "total_units": 1,
+  "finished_units": 1,
+  "current": null,
+  "current_trial": {
+    "task_id": {
+      "path": "<LOCAL_PROJECT>/external/benchmarks/terminal-bench-2-1/tasks/build-pmars"
+    },
+    "policy": "fixed_strong",
+    "agent": "modelrouter",
+    "job_name": "build-pmars--fixed_strong--s42",
+    "status": "NOT_EVALUATED",
+    "pipeline_stage": "DEV",
+    "trial_dir": "our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pmars/jobs/build-pmars--fixed_strong--s42/build-pmars__LJ96zKC",
+    "trial_id": "a29e3347-f9d9-4b63-95c1-866d5d5435a0",
+    "trial_name": "build-pmars__LJ96zKC",
+    "job_id": "bedf7c19-fdf8-4f17-a749-9e4cb890d8d6",
+    "task_name": "terminal-bench/build-pmars",
+    "task_version": null,
+    "task_digest": "sha256:63f0449b276f081986740c941ea9372068b310a02b062c1e5e3400f575241893",
+    "task_git_sha": null,
+    "task_source": null,
+    "task_checksum": "2e95844c0822c9f25465be62f5bd7d081578a27f09749f3c6311a525df2f2b22",
+    "agent_info": {
+      "name": "modelrouter-mini-swe-agent",
+      "version": "10.0-mini-2.4.6",
+      "model_info": {
+        "name": "deepseek-v4.1-flash",
+        "provider": "openai"
+      }
+    },
+    "environment": null,
+    "reward": null,
+    "rewards": null,
+    "success": null,
+    "error": {
+      "exception_type": "HTTPError",
+      "exception_message": "HTTP Error 502: Bad Gateway",
+      "exception_traceback": "Traceback (most recent call last):\n  File \"<LOCAL_PROJECT>/external/benchmarks/harbor/src/harbor/trial/trial.py\", line 502, in run\n    await self._run()\n  File \"<LOCAL_PROJECT>/external/benchmarks/harbor/src/harbor/trial/single_step.py\", line 40, in _run\n    await self._run_agent()\n  File \"<LOCAL_PROJECT>/external/benchmarks/harbor/src/harbor/trial/single_step.py\", line 76, in _run_agent\n    await self._run_agent_phase(\n  File \"<LOCAL_PROJECT>/external/benchmarks/harbor/src/harbor/trial/trial.py\", line 653, in _run_agent_phase\n    await asyncio.wait_for(\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"<LOCAL_PROJECT>/our-project/code/src/modelrouter/benchmark/harbor_agent.py\", line 393, in run\n    await asyncio.to_thread(agent.run, instruction)\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/threads.py\", line 25, in to_thread\n    return await loop.run_in_executor(None, func_call)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/thread.py\", line 59, in run\n    result = self.fn(*self.args, **self.kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/agents/default.py\", line 98, in run\n    self.step()\n  File \"<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/agents/default.py\", line 128, in step\n    return self.execute_actions(self.query())\n                                ^^^^^^^^^^^^\n  File \"<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/agents/default.py\", line 149, in query\n    message = self.model.query(self.messages)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/models/litellm_model.py\", line 82, in query\n    for attempt in retry(logger=logger, abort_exceptions=self.abort_exceptions):\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/tenacity/__init__.py\", line 514, in __iter__\n    do = self.iter(retry_state=retry_state)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/tenacity/__init__.py\", line 440, in iter\n    result = action(retry_state)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/tenacity/__init__.py\", line 462, in <lambda>\n    self._add_action_func(lambda rs: rs.outcome.result())\n                                     ^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/models/litellm_model.py\", line 84, in query\n    response = self._query(self._prepare_messages_for_api(messages), **kwargs)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_PROJECT>/our-project/code/src/modelrouter/benchmark/harbor_agent.py\", line 186, in _query\n    body, metrics = self.provider.query_raw(\n                    ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_PROJECT>/our-project/code/src/modelrouter/providers/provider.py\", line 474, in query_raw\n    with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 215, in urlopen\n    return opener.open(url, data, timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 521, in open\n    response = meth(req, response)\n               ^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 630, in http_response\n    response = self.parent.error(\n               ^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 559, in error\n    return self._call_chain(*args)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 492, in _call_chain\n    result = func(*args)\n             ^^^^^^^^^^^\n  File \"<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py\", line 639, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 502: Bad Gateway\n",
+      "occurred_at": "2026-11-01T18:23:49.151039Z"
+    },
+    "reason": "Original verifier output or completed verifier timing absent",
+    "usage": {
+      "n_input_tokens": null,
+      "n_cache_tokens": null,
+      "n_output_tokens": null,
+      "cost_usd": null
+    },
+    "model_usage": null,
+    "n_input_tokens": null,
+    "n_cache_tokens": null,
+    "n_output_tokens": null,
+    "cost_usd": null,
+    "duration_sec": 25.625774,
+    "verifier_path": null,
+    "native_trace_path": "our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pmars/jobs/build-pmars--fixed_strong--s42/build-pmars__LJ96zKC/agent/mini-swe-agent.trajectory.json",
+    "router_fallback_used": false,
+    "agent_metadata": {
+      "harness": "minisweagent.agents.default.DefaultAgent",
+      "mini_version": "2.4.6",
+      "policy": "fixed_strong",
+      "task_id": "build-pmars",
+      "task_identity_source": "harbor_task_config",
+      "fallback_used": false,
+      "policy_implementation_status": "CONFIGURED_POLICY",
+      "action_validation": {
+        "deepseek-v4.1-flash:high": "REAL_API_NOT_OBSERVED"
+      },
+      "untested_native_efforts_used": [
+        "high"
+      ],
+      "neural_router_evidence_eligible": false,
+      "raw_trajectory": "<LOCAL_PROJECT>/our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pmars/jobs/build-pmars--fixed_strong--s42/build-pmars__LJ96zKC/agent/mini-swe-agent.trajectory.json",
+      "v9": {
+        "teacher_metrics": [],
+        "continuity": {},
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "router_checkpoint_ids": [],
+        "router_checkpoints": [],
+        "feature_training_status": "FIXED_MODEL_NO_ROUTER_TRAINING",
+        "backend_deployment_status": "API_IDENTITY_ONLY_UNVERIFIED_PHYSICAL_BACKEND",
+        "complete_episode_cost_usd": null,
+        "upstream_cost_accounting": "KNOWN_COSTS_PLUS_UNKNOWN_PLACEHOLDERS_NOT_BILLING"
+      },
+      "atif_trajectory": "<LOCAL_PROJECT>/our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pmars/jobs/build-pmars--fixed_strong--s42/build-pmars__LJ96zKC/agent/trajectory.json"
+    },
+    "policy_implementation_status": "CONFIGURED_POLICY",
+    "untested_native_efforts_used": [
+      "high"
+    ],
+    "neural_router_evidence_eligible": false,
+    "cost_statuses": null,
+    "actual_billed_cost_usd": null,
+    "started_at": "2026-11-01T18:23:27.795633Z",
+    "finished_at": "2026-11-01T18:23:53.421407Z",
+    "episode_wall_s": 25.625774,
+    "phase_wall_s": {
+      "environment_setup": 16.847957,
+      "agent_setup": 0.000951,
+      "agent_execution": 3.367694,
+      "verifier": null
+    },
+    "verifier_artifacts": [
+      {
+        "step_name": null,
+        "reward_path": null,
+        "rewards": null,
+        "result_rewards": null,
+        "stdout_path": null,
+        "ctrf_path": null
+      }
+    ],
+    "trace": {
+      "files": [
+        "our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pmars/jobs/build-pmars--fixed_strong--s42/build-pmars__LJ96zKC/agent/trajectory.json"
+      ],
+      "steps": [],
+      "tool_call_count": 0
+    },
+    "runtime_log": "our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pmars/jobs/build-pmars--fixed_strong--s42/build-pmars__LJ96zKC/trial.log",
+    "evidence_scope": "recorded_artifact_agreement",
+    "job_dir": "our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pmars/jobs/build-pmars--fixed_strong--s42"
+  },
+  "generator_tokens": null,
+  "teacher_calls": 0,
+  "generator_failed_requests": 1,
+  "teacher_tokens": 0,
+  "total_model_tokens": null,
+  "generator_cost_usd": null,
+  "known_generator_cost_usd": null,
+  "teacher_cost_usd": 0,
+  "known_teacher_cost_usd": null,
+  "episode_model_cost_usd": null,
+  "backend_model_rate_reference_cost_usd": null,
+  "known_backend_model_rate_reference_cost_usd": null,
+  "backend_model_rate_statuses": [],
+  "execution_mode": "REAL_API",
+  "mapped_cost_accounting": null,
+  "cost_source": "provider_usage_and_registry_rates; not an invoice",
+  "official_rate_accounting": null,
+  "actual_generator_cost_usd": null,
+  "actual_teacher_cost_usd": 0,
+  "sandbox_cost_usd": null,
+  "router_compute_cost_usd": null,
+  "complete_cost_usd": null,
+  "generator_cost_per_success_usd": null,
+  "actual_cost_per_success_usd": null,
+  "router_latency_ms": {
+    "baseline_fixed_strong": {
+      "n": 1,
+      "p50": 0.2065839944407344,
+      "p95": 0.2065839944407344
+    }
+  },
+  "router_inference_latency_ms": {
+    "baseline_fixed_strong": {
+      "p50": null,
+      "p95": null
+    }
+  },
+  "generator_request_time_ms": null,
+  "teacher_request_time_ms": null,
+  "router_total_time_ms": {
+    "baseline_fixed_strong": 0.2065839944407344
+  },
+  "container_time_resources": [
+    {
+      "trial_id": "a29e3347-f9d9-4b63-95c1-866d5d5435a0",
+      "episode_wall_s": 25.625774,
+      "phase_wall_s": {
+        "environment_setup": 16.847957,
+        "agent_setup": 0.000951,
+        "agent_execution": 3.367694,
+        "verifier": null
+      }
+    }
+  ],
+  "models": {},
+  "tool_exec_p50_ms": null,
+  "tool_exec_p95_ms": null,
+  "episode_p50_s": null,
+  "episode_p95_s": null,
+  "episodes_per_hour": null,
+  "failure_classes": {
+    "PROVIDER": 1,
+    "HARBOR": 1
+  },
+  "last_event": {
+    "timestamp": "2026-11-01T18:23:54.153263+00:00",
+    "event": "ERROR",
+    "category": "HARBOR",
+    "error": "Harbor exit=0; official verifier result absent in <LOCAL_PROJECT>/our-project/results/iterations/20261102-v9-deepseek-dev/fixed-build-pmars/jobs/build-pmars--fixed_strong--s42"
+  },
+  "last_generator": null,
+  "last_tool": null,
+  "measurement_counts": {},
+  "last_unit": {
+    "task_id": "build-pmars",
+    "policy": "fixed_strong",
+    "agent": "modelrouter",
+    "job_name": "build-pmars--fixed_strong--s42",
+    "status": "NOT_EVALUATED",
+    "pipeline_stage": "DEV",
+    "exit_code": 0
+  },
+  "measurement_scope": "Benchmark metrics exclude provider/router probes; original probe events remain in events.jsonl",
+  "ttft_scope": "Upstream provider timing; native relay buffers the response before returning it",
+  "publication_status": "NOT_EVALUATED",
+  "missing_measurements": [
+    "sandbox billing",
+    "router infrastructure cost",
+    "provider invoice reconciliation"
+  ]
+}

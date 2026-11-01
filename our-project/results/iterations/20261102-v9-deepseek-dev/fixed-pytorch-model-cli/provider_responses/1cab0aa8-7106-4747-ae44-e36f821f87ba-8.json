@@ -1,0 +1,112 @@
+{
+  "response": {
+    "id": "01a1986a0cdc732aac68d2846c58f3d4",
+    "object": "response",
+    "created_at": 1793558450,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_0a68383251ebe8013be42ecc",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Subclass overrides persistent_load method. Add method to U."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item_2e24ccdaaac1ca7848b9867b",
+        "status": "completed",
+        "call_id": "call_00_dgv5SZeLAZ00yZEZXuFk2895",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /app && python3 - <<'PY'\\np='/tmp/infer.py'\\ns=open(p).read()\\ns=s.replace(\\\"class U(pickle.Unpickler):\\\\n\\\", \\\"class U(pickle.Unpickler):\\\\n def persistent_load(self,pid):\\\\n  return persistent_load(pid)\\\\n\\\")\\ns=s.replace('U(io.BytesIO(z.read(\\\"simple_mnist/data.pkl\\\")), persistent_load=persistent_load).load()','U(io.BytesIO(z.read(\\\"simple_mnist/data.pkl\\\"))).load()')\\nopen(p,'w').write(s)\\nPY\\npython3 /tmp/infer.py\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 9025,
+      "output_tokens": 188,
+      "total_tokens": 9213,
+      "input_tokens_details": {
+        "cached_tokens": 8576
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a1986a0cdc732aac68d2846c58f3d4",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 9025,
+      "output_tokens": 188,
+      "total_tokens": 9213,
+      "input_tokens_details": {
+        "cached_tokens": 8576
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 9025,
+    "completion_tokens": 188,
+    "reported_completion_tokens": 188,
+    "reasoning_tokens": null,
+    "cached_tokens": 8576,
+    "cache_write_tokens": null,
+    "ttft_ms": 2387.0180000085384,
+    "latency_ms": 2846.5079580200836,
+    "output_tokens_per_s": 66.04583678408727,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 409.1493115835978,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000205878,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000205878,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "1cab0aa8-7106-4747-ae44-e36f821f87ba",
+    "decision_id": "1cab0aa8-7106-4747-ae44-e36f821f87ba-8",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

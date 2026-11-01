@@ -1,0 +1,38 @@
+This is mini-swe-agent version 2.4.6.
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration
+Loading global config from '<LOCAL_USER_HOME>/Library/Application 
+Support/mini-swe-agent/.env'
+2026-11-02 02:33:47,833 [DEBUG] harbor.utils.logger.harbor.agents.base: Agent 'modelrouter-mini-swe-agent' does not declare an options_model; leftover kwargs are ignored
+2026-11-02 02:33:47,836 [DEBUG] harbor.utils.logger.harbor.agents.base: Agent 'modelrouter-mini-swe-agent' does not declare an options_model; leftover kwargs are ignored
+2026-11-02 02:33:47,882 [DEBUG] harbor.utils.logger.harbor.agents.base: Agent 'modelrouter-mini-swe-agent' does not declare an options_model; leftover kwargs are ignored
+2026-11-02 02:33:53,142 [DEBUG] harbor.utils.logger.harbor.trial.trial.filter-js-from-html__rZVSxc9: Trial filter-js-from-html__rZVSxc9 failed: HTTP Error 502: Bad Gateway
+2026-11-02 02:33:53,147 [DEBUG] harbor.utils.logger.harbor.trial.trial.filter-js-from-html__rZVSxc9: Collecting main service artifacts
+2026-11-02 02:33:57,102 [DEBUG] harbor.utils.logger.harbor.trial.queue: Not retrying trial because the maximum number of retries has been reached
+  1/1 Mean: 0.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:09 0:00:00
+adhoc • modelrouter-mini-swe-agent • deepseek-v4.1-flash
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      0 │          1 │ 0.000 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━━━━┳━━━━━━━┓
+┃ Exception ┃ Count ┃
+┡━━━━━━━━━━━╇━━━━━━━┩
+│ HTTPError │     1 │
+└───────────┴───────┘
+
+Job Info
+Total runtime: 9s
+Results written to 
+<LOCAL_PROJECT>/our-project/results/iterations/20261102-v9
+-deepseek-dev/fixed-filter-js-from-html/jobs/filter-js-from-html--fixed_strong--
+s42/result.json
+Inspect results by running `harbor view 
+<LOCAL_PROJECT>/our-project/results/iterations/20261102-v9
+-deepseek-dev/fixed-filter-js-from-html/jobs`
+Share results by running `harbor upload 
+<LOCAL_PROJECT>/our-project/results/iterations/20261102-v9
+-deepseek-dev/fixed-filter-js-from-html/jobs/filter-js-from-html--fixed_strong--
+s42`
+

@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a1987b3af478daa19c70410db19dfb",
+    "object": "response",
+    "created_at": 1793559576,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_41e85f0d99115f40105b5341",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Need understand all images. F0oZMhSUm2dO only 70057287 perhaps invoice? Need inspect image visually / OCR better. Could use tesseract different PSM, image dimensions, maybe OCR with preprocessing. Also need exact classification. Let's catalog.\n\nFiles:\n2lgKzDuI4E4g.jpg - invoice, total 6558, amount due 4382, no VAT -> 0\n6NVuAIhTV4KB.jpg - resume/personal - other\nF0oZMhSUm2dO.jpg - OCR only number; maybe an invoice? Need inspect.\nGFAlpKoFg81H.pdf - Stock Report - other\nJOiylq2_7S18.jpg - invoice, total gross worth 6860.45, VAT 623.68\nKrJiw0OZx7jf.jpg - invoice, total 9963, amount due 7139, no VAT -> 0\nQOoA_j33PD_E.jpg - memo - other\nT0r6Ou8zvqTA.pdf - invoice, total price 4031.0, no VAT\nUsN9tVTKskms.pdf - invoice total price 896.0, no VAT\nWqWMArQQlSMv.jpg - memo - other\ndvkRkFVFhHga.pdf - Purchase Orders - other\ndx0AWchV01ZJ.pdf - order details no invoice? other. It has Total Price 440.0 but likely order, not invoice.\nivE2mt3HwvEO.jpg - invoice, total gross 819.06, VAT 74.46\nlxtL9XrYRsVG.jpg - invoice, total gross 797.91, VAT 72.54\nvvK89XK847m3.jpg - invoice, total gross 6204.19, VAT 564.02\nw0i40MJP2Dzm.jpg - invoice, total gross 44745.59, VAT 4067.78\nwIQEB5nR79b2.pdf - invoice, total 440.0, no VAT\n\nPotential F0oZMhSUm2dO maybe invoice. Need inspect. Could use image metadata and maybe OCR with different psm. Let's view dimensions via Python PIL and perhaps convert to ASCII? We can use Python PIL installed? apt installed python3-pil. Could use tesseract psm 6/11, invert, upscale. Let's run OCR variants and inspect. Also maybe image is something like a tiny receipt with a number. Need get actual content. Let's run `tesseract --psm` all modes, and maybe use `python3` PIL to get dimensions, crop etc. We can also use OCR with eng. Let's inspect all image dimensions."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_7e2a2e8019c7acea89efdcaa",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "One image yielded only a number, so I need to inspect it more carefully before classifying. I’ll check image dimensions and run OCR variants with different page-segmentation modes and preprocessing."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_f8516b32580a1f9d51a925c6",
+        "status": "completed",
+        "call_id": "call_00_HBVNeBI2tjpgqiV86BK44211",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nfrom PIL import Image\\nimport os\\nfor f in sorted(os.listdir('/app/documents')):\\n    p='/app/documents/'+f\\n    try:\\n        im=Image.open(p)\\n        print(f, im.format, im.size, im.mode)\\n    except Exception as e:\\n        print(f, 'ERR', e)\\nPY\\necho '--- OCR variants for F0oZMhSUm2dO ---'\\nfor psm in 3 4 6 11 12; do echo \\\"===== psm $psm =====\\\"; tesseract /app/documents/F0oZMhSUm2dO.jpg stdout --psm \\\"$psm\\\" 2>/dev/null; done\\necho '--- OCR variants for all images with psm 6 quick ---'\\nfor f in /app/documents/*.jpg; do echo \\\"===== $(basename \\\"$f\\\") =====\\\"; tesseract \\\"$f\\\" stdout --psm 6 2>/dev/null | head -40; done\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 12777,
+      "output_tokens": 891,
+      "total_tokens": 13668,
+      "input_tokens_details": {
+        "cached_tokens": 11136
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a1987b3af478daa19c70410db19dfb",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 12777,
+      "output_tokens": 891,
+      "total_tokens": 13668,
+      "input_tokens_details": {
+        "cached_tokens": 11136
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 12777,
+    "completion_tokens": 891,
+    "reported_completion_tokens": 891,
+    "reasoning_tokens": null,
+    "cached_tokens": 11136,
+    "cache_write_tokens": null,
+    "ttft_ms": 8602.926124993246,
+    "latency_ms": 9811.440290999599,
+    "output_tokens_per_s": 90.81235512561265,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 737.2689746322066,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0133056,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000814158,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "22ce4654-d417-4d33-af93-c0c81166b78d",
+    "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-11",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

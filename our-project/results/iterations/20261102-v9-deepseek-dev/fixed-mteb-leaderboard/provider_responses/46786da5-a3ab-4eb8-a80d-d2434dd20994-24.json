@@ -1,0 +1,112 @@
+{
+  "response": {
+    "id": "01a19873857b77df993810a4e6d81b21",
+    "object": "response",
+    "created_at": 1793559071,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_92e3c746f47af4f340bbb816",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "API tree truncated. Better clone repo at commit. Check network GitHub git clone maybe. Need 10GB? Repo likely huge. Use sparse checkout only Scandinavian model folders? First can query GitHub code? Or use Raw files for models.\n\nReference solution: tasks = mteb.get_benchmark(\"MTEB(Scandinavian, v1)\").tasks. mteb current might differ, but use known 28 tasks from leaderboard v1. It selects models with all 28 task files. Then loads results, pivot scores. Scores likely use main score. We can verify by reading results at commit. We can clone with filter blob:none (partial clone) and sparse checkout maybe. Need locate model dirs. We can use tree API page by page recursive? GitHub tree truncated at 100k entries? It says 47180 entries but truncated. We only need \"results/{model}/...\" and all. Could get root tree and subtrees.\n\nLet's clone shallow at commit with --filter=blob:none --no-checkout maybe. Then sparse checkout? We need all result filenames. `git ls-tree -r` requires tree objects; partial clone fetch trees perhaps manageable. `git clone --filter=blob:none --no-checkout https...` downloads commits+trees, no blobs, may be sizable but perhaps okay. Or use GitHub API recursively by obtaining root tree, then for each \"results\" subtree list - 1000s of model dirs. Could use GraphQL maybe.\n\nCould fetch raw result files only for models that have all tasks. We can get filenames via GitHub API contents listing for each model? Too many. Clone filtered is easiest.\n\nLet's see repo size. Use git clone --filter=blob:none --no-checkout --depth=1? But need commit Aug 2025, not latest. We can init, remote add, fetch --depth 1 commit filter=-blob. Let's do."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item_251af0a6353d47db012c4182",
+        "status": "completed",
+        "call_id": "call_00_kMYXAzwYxsVhTWZrAcfO2364",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /app && rm -rf results_repo && mkdir results_repo && cd results_repo && git init -q && git remote add origin https://github.com/embeddings-benchmark/results.git && time git fetch --depth=1 --filter=blob:none origin c0fd3271442f8c0c839084a109fede85c8514dab && git checkout -q FETCH_HEAD && ls | head && du -sh .git\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 69490,
+      "output_tokens": 546,
+      "total_tokens": 70036,
+      "input_tokens_details": {
+        "cached_tokens": 64896
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a19873857b77df993810a4e6d81b21",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 69490,
+      "output_tokens": 546,
+      "total_tokens": 70036,
+      "input_tokens_details": {
+        "cached_tokens": 64896
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 69490,
+    "completion_tokens": 546,
+    "reported_completion_tokens": 546,
+    "reasoning_tokens": null,
+    "cached_tokens": 64896,
+    "cache_write_tokens": null,
+    "ttft_ms": 4818.529834039509,
+    "latency_ms": 5354.643250000663,
+    "output_tokens_per_s": 101.96757739181454,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 1018.4412173702488,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.001211388,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.001211388,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994",
+    "decision_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994-24",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

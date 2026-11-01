@@ -1,0 +1,112 @@
+{
+  "response": {
+    "id": "01a19871587774839394fb207c23ad00",
+    "object": "response",
+    "created_at": 1793558928,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_21a86cd55dbd9adc991cdd68",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We need find Scandinavian MTEB leaderboard as of Aug 2025, highest Mean (Task), only models with results all tasks. Need name org/model_name.\n\nMTEB leaderboard has Scandinavian benchmark? Likely \"Scandinavian MTEB\" from MTEB (Nordic?) Let's investigate. The Hugging Face MTEB leaderboard has subsets? There is mteb/leaderboard and results repo. Scandinavian MTEB possibly a separate leaderboard on HF Space \"Scandinavian MTEB\" by Kenneth Enevoldsen? Let's search web via APIs. Network available. Need reliable data as of Aug 2025 (time travel? Current environment 2026, but asks as of Aug 2025). Could query HF datasets / results repo and filter.\n\nLet's understand MTEB leaderboard Scandinavian. Search web. Use urllib to fetch search engines? Maybe HF API. Let's query https://huggingface.co/api/spaces?search=scandinavian%20mteb."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item_86713c44c20be9ccc3ba4e00",
+        "status": "completed",
+        "call_id": "call_00_J55xz1x6BAbLp6W8qZ1Z0707",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests, json\\nfor url in [\\n 'https://huggingface.co/api/spaces?search=scandinavian',\\n 'https://huggingface.co/api/spaces?search=nordic%20mteb',\\n 'https://huggingface.co/api/datasets?search=mteb%20results',\\n 'https://huggingface.co/api/models?search=scandinavian%20mteb&limit=10',\\n]:\\n print('\\\\nURL',url)\\n try:\\n  r=requests.get(url,timeout=30)\\n  print(r.status_code)\\n  print(r.text[:5000])\\n except Exception as e: print('ERR',e)\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 1563,
+      "output_tokens": 393,
+      "total_tokens": 1956,
+      "input_tokens_details": {
+        "cached_tokens": 1280
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a19871587774839394fb207c23ad00",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 1563,
+      "output_tokens": 393,
+      "total_tokens": 1956,
+      "input_tokens_details": {
+        "cached_tokens": 1280
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 1563,
+    "completion_tokens": 393,
+    "reported_completion_tokens": 393,
+    "reasoning_tokens": null,
+    "cached_tokens": 1280,
+    "cache_write_tokens": null,
+    "ttft_ms": 2877.937541983556,
+    "latency_ms": 3614.4757919828407,
+    "output_tokens_per_s": 108.72945971078335,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 533.5771767459214,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00028209,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.00028209,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994",
+    "decision_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994-2",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

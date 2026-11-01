@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a19887a4f3711696f1dd96ebfdc063",
+    "object": "response",
+    "created_at": 1793560390,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_64a47f9fd8abd3fec54e14f7",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": " "
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_2eaaee1a04341d91c0d286aa",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The Aug 28, 2025 definition exactly matches the 27-task benchmark, and 877 model directories exist at the snapshot. I'll now write a script that extracts each model's Scandinavian task scores from git and evaluates only fully complete models."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_bb9080847db0dbce992721e8",
+        "status": "completed",
+        "call_id": "call_00_vdGh1lbqKstHXFWZGm453813",
+        "name": "bash",
+        "arguments": "{\"command\": \"cat > /tmp/analyze_seb.py <<'PY'\\nimport subprocess, json, re, sys, collections, math, os\\n\\nC = '71f6b6257025bbe06232352b86b09ab7bd7c904e'\\nTASKS = [\\n \\\"BornholmBitextMining\\\",\\\"NorwegianCourtsBitextMining\\\",\\n \\\"AngryTweetsClassification\\\",\\\"DanishPoliticalCommentsClassification\\\",\\\"DalajClassification\\\",\\n \\\"DKHateClassification\\\",\\\"LccSentimentClassification\\\",\\\"MassiveIntentClassification\\\",\\n \\\"MassiveScenarioClassification\\\",\\\"NordicLangClassification\\\",\\\"NoRecClassification\\\",\\n \\\"NorwegianParliamentClassification\\\",\\\"ScalaClassification\\\",\\\"SwedishSentimentClassification\\\",\\n \\\"SweRecClassification\\\",\\\"DanFeverRetrieval\\\",\\\"NorQuadRetrieval\\\",\\\"SNLRetrieval\\\",\\n \\\"SwednRetrieval\\\",\\\"SweFaqRetrieval\\\",\\\"TV2Nordretrieval\\\",\\\"TwitterHjerneRetrieval\\\",\\n \\\"SNLHierarchicalClusteringS2S\\\",\\\"SNLHierarchicalClusteringP2P\\\",\\\"SwednClusteringP2P\\\",\\n \\\"SwednClusteringS2S\\\",\\\"VGHierarchicalClusteringS2S\\\",\\\"VGHierarchicalClusteringP2P\\\",\\n]\\nassert len(TASKS)==28, len(TASKS)\\n\\ntree=open('/tmp/tree-2025-09-01.txt').read().splitlines()\\nmodel_dirs=collections.defaultdict(list)\\nfor p in tree:\\n    parts=p.split('/')\\n    if len(parts)==4 and parts[0]=='results' and parts[3].endswith('.json'):\\n        model_dirs[parts[1]].append(p)\\n\\n# Git batch cat-file for all scandinavian task files\\nfiles=[]\\nfor model, paths in model_dirs.items():\\n    for p in paths:\\n        base=os.path.basename(p)\\n        stem=base[:-5]\\n        # Match exact task name, also allow trailing .v2 etc for robustness\\n        if any(stem==t or stem.startswith(t+'.') for t in TASKS):\\n            files.append(p)\\nprint('files to read',len(files), file=sys.stderr)\\n\\nproc=subprocess.Popen(['git','-C','/tmp/mteb-results-git','cat-file','--batch'],stdin=subprocess.PIPE,stdout=subprocess.PIPE)\\nout={}\\nfor p in files:\\n    proc.stdin.write((C+':'+p+'\\\\n').encode()); proc.stdin.flush()\\n    header=proc.stdout.readline().decode().strip().split()\\n    if len(header)<3 or header[1]!='blob':\\n        print('BAD',p,header,file=sys.stderr); continue\\n    size=int(header[2])\\n    data=proc.stdout.read(size); proc.stdout.read(1)\\n    try: j=json.loads(data)\\n    except Exception as e:\\n        print('JSONERR',p,e,file=sys.stderr); continue\\n    out[p]=j\\nproc.stdin.close(); proc.wait()\\nprint('loaded',len(out), file=sys.stderr)\\n\\ndef get_scores(j):\\n    # Return (task_score, split, subset) for each result entry. task score is mean of split entries' main_score.\\n    res=[]\\n    for split, entries in j.get('scores',{}).items():\\n        vals=[]\\n        for e in entries:\\n            ms=e.get('main_score')\\n            if ms is not None and isinstance(ms,(int,float)) and not math.isnan(ms):\\n                vals.append(ms)\\n        if vals:\\n            res.append((sum(vals)/len(vals), split, tuple(e.get('hf_subset') for e in entries)))\\n    return res\\n\\n# Collapse per model: candidates keyed by metadata\\nmodel_results=collections.defaultdict(lambda: collections.defaultdict(list))\\nfor p,j in out.items():\\n    model=p.split('/')[1]\\n    task=j.get('task_name') or os.path.basename(p)[:-5]\\n    # match expected task\\n    matched=None\\n    for t in TASKS:\\n        if task==t or task.startswith(t+'.') or os.path.basename(p)[:-5]==t or os.path.basename(p)[:-5].startswith(t+'.'):\\n            matched=t; break\\n    if matched is None: continue\\n    r=get_scores(j)\\n    if not r: continue\\n    # use first split? store each\\n    for score,split,subsets in r:\\n        model_results[model][matched].append((score,split,subsets,p))\\n\\ncomplete=[]\\nfor model, tasks in model_results.items():\\n    if all(t in tasks for t in TASKS):\\n        # pick one score per task: prefer test then train then first; for multi-subset use mean already.\\n        scores=[]\\n        details=[]\\n        for t in TASKS:\\n            opts=tasks[t]\\n            # unique scores. Prefer test split, then train, then validation, else first\\n            pref={'test':0,'train':1,'validation':2,'dev':3}\\n            opts=sorted(opts,key=lambda x:(pref.get(x[1],9), -x[0]))\\n            sc=opts[0][0]\\n            scores.append(sc); details.append((t,sc,opts[0][1],len(opts)))\\n        mean=sum(scores)/len(scores)\\n        complete.append((mean,model,scores,details))\\ncomplete.sort(reverse=True,key=lambda x:x[0])\\nprint('complete models',len(complete))\\nfor mean,model,scores,details in complete[:40]:\\n    print(f'{mean:.6f}\\\\t{model}')\\nprint('--- top details',file=sys.stderr)\\nif complete:\\n    mean,model,scores,details=complete[0]\\n    for d in details: print(d,file=sys.stderr)\\n# also save all complete\\nwith open('/tmp/seb_complete.json','w') as f:\\n    json.dump([{'model':m,'mean':mean,'scores':s,'details':d} for mean,m,s,d in complete],f,indent=2)\\nPY\\ncd /tmp && python3 /tmp/analyze_seb.py 2>/tmp/analyze.err | head -50; echo '--- errors'; head -30 /tmp/analyze.err\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 44589,
+      "output_tokens": 1444,
+      "total_tokens": 46033,
+      "input_tokens_details": {
+        "cached_tokens": 43008
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a19887a4f3711696f1dd96ebfdc063",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 44589,
+      "output_tokens": 1444,
+      "total_tokens": 46033,
+      "input_tokens_details": {
+        "cached_tokens": 43008
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 44589,
+    "completion_tokens": 1444,
+    "reported_completion_tokens": 1444,
+    "reasoning_tokens": null,
+    "cached_tokens": 43008,
+    "cache_write_tokens": null,
+    "ttft_ms": 2066.6918749921024,
+    "latency_ms": 7660.124042013194,
+    "output_tokens_per_s": 188.50869673652116,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 258.1599198634842,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0219028,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.001232574,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb",
+    "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-21",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

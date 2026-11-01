@@ -8,7 +8,13 @@
 
 ## 0. 阶段入口与决策规则
 
-**11-02执行事实与结论范围**：从62d7bb9接续，仅对已发生的编码差异、权重重载和超时后继续请求作原位处理，原30秒工具窗口、Verifier、三正式身份及五RQ不变。[本轮报告](../results/iterations/20261101-v9-runtime-quality-dev/review.md)保存8个Dev尝试与8对Train步骤比较；不重复独立TwinRouterBench或旧成功任务。
+**11-02 DeepSeek批次决定与完成**：沿用户本地已授权配置、原Provider/Registry和Harbor/mini，完成9个Dev任务19次Episode；动态均ALIAS_SMOKE，固定为真实DeepSeek，正式三身份不改。7次官方成功、2次reward0、10次无Verifier终局；后者保持UNKNOWN。保留30步/4096输出/30秒工具和原Verifier，命令超时作为实际观察返回原Agent。Git/HF/POV-Ray三组同协议双Verifier为固定3/3、动态2/3；财务/MTEB跨处理版本不作胜负比较。完整依据见[批次报告](../results/iterations/20261102-v9-deepseek-dev/review.md)。
+
+124次神经路由全Sol、无切换/fallback；每Episode只初始化一次，不调概率。教师仅一次三字段成功、4次Router消费，开关同题均成功，开启后总费和时长增加，净收益未证。227请求/223Usage/4未知，参考费已知0.10950165USD、映射已知1.0058892USD，实收/资源及完整费用未知；公开同系列参考价不冒称AIHub费率。发送high不等于供应商应用档位已确认。
+
+本轮Dev/Alias不进入Train，新增Model-only/Effort/K=3目标均0；19条既有Model-only与74行待训练材料保持，不启动新微调、不晋升Serving。03:36:36 F14独立维护284/420块、36352/107404步，最新Loss0.50280873、首轮/Val未完；健康计算、旧失败和既有handoff不干预，Serving仍F05/原Kev。AA v4、五RQ、八图十二表及Fig.2决定不改，独立Twin旧结果不重评、不训练。
+
+**11-02前一工作包事实与结论范围**：从62d7bb9接续，仅对已发生的编码差异、权重重载和超时后继续请求作原位处理，原30秒工具窗口、Verifier、三正式身份及五RQ不变。[本轮报告](../results/iterations/20261101-v9-runtime-quality-dev/review.md)保存8个Dev尝试与8对Train步骤比较；不重复独立TwinRouterBench或旧成功任务。
 
 | 本轮问题 | 实际依据及沿用决定 |
 |---|---|

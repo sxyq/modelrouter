@@ -6,7 +6,13 @@
 >
 > **证据纪律**：论文/官方材料、现有仓库文献、E0 Agent 审计、我们提出的假设分开表述。**未运行的实验不得写成结果；“未见完全相同方案”不等于“首创”。**
 
-**11-02方法与证据补充**：真实比较保留捕获的Router视图，在线复用步骤目标说明与候选顺序；QID本身不进入模型，说明、选项、任务及工具状态进入。Episode内复用原Adapter和专属SSH进程，成功Dev后4路由前向外共0.0477秒；这是已发生的运行成本改善，不是任务质量提升或新服务。
+**11-02 DeepSeek运行证据**：复用原Provider/Registry、Harbor/mini完成9个Dev任务19 Episode。固定实际DeepSeek与三逻辑身份动态ALIAS_SMOKE分开，原Verifier9次、7成功/2失败/10未知。Git/HF/POV-Ray三组完整同协议为固定3/3、动态2/3，按成功数分摊模型参考费动态略高且Trial更长；财务/MTEB的处理版本不同，只作观察。原工具30秒和Verifier不变，命令超时改为原Agent工具观察，6次反馈版本均取得Verifier终局。详见[批次证据](../results/iterations/20261102-v9-deepseek-dev/review.md)。
+
+124次真实CPU路由全Sol、无切换/fallback，10次初始化和114次复用；前向仍耗时3081.16秒。教师1成功/4次实际消费，只向Router提供三字段，开启后同题总费/时长增加，净收益未知。227请求中223Usage，已知同系列公开参考费0.10950165USD、逻辑映射1.0058892USD，实收/资源/完整费用未知。实际发送high未获应用档位回报，不能生成Native Effort答案；Alias不证明正式三模型质量差异。
+
+本轮Dev/Alias新增Train目标0、参数更新0；既有19 Model-only、74行待训练材料、STEP_001/F11/R11及Serving原权重保持。03:36:36 F14独立维护284/420块、36352/107404步、最新Loss0.50280873，首轮/Val未完，不作父、不干预。AA v4 Max不当low，Flash缺口保持。完整链路已具有官方终局，RQ1完整资源成本、RQ2真实K=3/Effort、RQ3任务拆分、RQ4教师/能力卡收益、RQ5泛化仍需研究；SWE-bench Verified原生入口未完成。五RQ八图十二表不改。
+
+**11-02前一工作包方法与证据**：真实比较保留捕获的Router视图，在线复用步骤目标说明与候选顺序；QID本身不进入模型，说明、选项、任务及工具状态进入。Episode内复用原Adapter和专属SSH进程，成功Dev后4路由前向外共0.0477秒；这是已发生的运行成本改善，不是任务质量提升或新服务。
 
 本轮新增一步质量Luna1与等质量成本Luna1，累计19 Model-only、步骤10、11标签任务；六对双失败仍只有观察，任务与步骤目标分开。distribution-search固定Sol/Luna/新Laya原Verifier reward1/0/1；新Laya仍全Sol且比固定Sol贵，COBOL新Laya超时/reward0，未证明动态泛化收益。教师开关单题都成功，1请求/1消费，轨迹与缓存不同，净收益未知。详见[真实运行结果](../results/iterations/20261101-v9-runtime-quality-dev/review.md)。
 

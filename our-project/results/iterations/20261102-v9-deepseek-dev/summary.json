@@ -1,0 +1,4389 @@
+{
+  "iteration_id": "20261102-v9-deepseek-dev",
+  "generated_at": "2026-11-01T19:25:27.034391+00:00",
+  "status": "ALL_EPISODES_FINISHED",
+  "starting_main": "6d040e786d0bd95a1060f793a8e680caa7bf1a93",
+  "source_commits": [
+    "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+    "d77e0673169cc122c299dfee3b4e3ca5b35d6b28"
+  ],
+  "benchmark": "terminal-bench-2-1",
+  "dataset_version": "2.1.0",
+  "dataset_git_sha": "7131e4375048a0e408a8fb404b5f499d726b695b",
+  "split": "dev",
+  "formal_model_pool": [
+    "gpt-6.1-sol",
+    "gpt-6-luna",
+    "qwen3.8-flash"
+  ],
+  "actual_backend_model_ids": [
+    "deepseek-v4.1-flash"
+  ],
+  "logical_k": 3,
+  "independently_executed_backend_k": 1,
+  "router_checkpoint": "V9_LAYA_STEP_001-e01",
+  "checkpoint_training_scope": "K2_MODEL_ONLY_POINTER_HEAD; no formal K3 targets",
+  "capability_snapshot_id": "20261031T072548885180Z-v4",
+  "shared_protocol": {
+    "harbor": "0.24.0",
+    "mini_swe_agent": "2.4.6",
+    "max_steps": 30,
+    "generation_max_output_tokens": 4096,
+    "tool_timeout_sec": 30,
+    "verifier_modified": false,
+    "original_task_and_episode_timeouts_modified": false,
+    "teacher_input_destination": "ROUTER_PRE_DECISION_STATE_ONLY",
+    "backend_requested_effort": "high",
+    "backend_effective_effort_status": "NOT_REPORTED",
+    "provider": "AIHub Responses; API identity only, exact physical release not established"
+  },
+  "counts": {
+    "different_dev_tasks": 9,
+    "episodes": 19,
+    "official_verifiers": 9,
+    "official_successes": 7,
+    "official_failures": 2,
+    "unknown_outcomes": 10,
+    "generation_completions": 222,
+    "generation_failed_requests": 4,
+    "teacher_requests": 1,
+    "tools_executed": 242,
+    "tool_timeouts": 19,
+    "neural_router_decisions": 124,
+    "neural_router_initializations": 10,
+    "neural_router_reused_decisions": 114,
+    "neural_router_fallbacks": 0,
+    "natural_logical_model_switches": 0,
+    "same_protocol_complete_episode_pairs": 3,
+    "protocol_mismatch_pairs": 2,
+    "new_train_model_preference_targets": 0,
+    "new_native_effort_targets": 0,
+    "new_formal_k3_targets": 0,
+    "all_model_request_attempts": 227,
+    "requests_with_usage": 223
+  },
+  "logical_model_counts": {
+    "gpt-6.1-sol": 124
+  },
+  "logical_choices_by_phase": {
+    "inspect": {
+      "gpt-6.1-sol:low": 18
+    },
+    "modify": {
+      "gpt-6.1-sol:low": 86
+    },
+    "verify": {
+      "gpt-6.1-sol:low": 1
+    },
+    "recover": {
+      "gpt-6.1-sol:low": 19
+    }
+  },
+  "candidate_probability_statistics": {
+    "gpt-6.1-sol:low": {
+      "minimum": 0.3706,
+      "maximum": 0.4611,
+      "mean": 0.3934427419354839
+    },
+    "gpt-6-luna:low": {
+      "minimum": 0.2367,
+      "maximum": 0.3531,
+      "mean": 0.3130120967741935
+    },
+    "qwen3.8-flash:none": {
+      "minimum": 0.2648,
+      "maximum": 0.3176,
+      "mean": 0.2935451612903226
+    }
+  },
+  "strategy_aggregates": {
+    "fixed_deepseek": {
+      "episodes": 9,
+      "official_verifiers": 3,
+      "official_successes": 3,
+      "official_failures": 0,
+      "unknown_outcomes": 6,
+      "success_rate_on_verified_episodes": 1.0,
+      "success_rate_across_all_attempted_episodes": null,
+      "generation_completions": 100,
+      "generation_failed_requests": 2,
+      "tools_executed": 102,
+      "known_backend_family_reference_cost_usd": 0.049414434,
+      "total_backend_family_reference_cost_usd": null,
+      "known_backend_reference_subtotal_divided_by_successes_usd": 0.016471478,
+      "complete_backend_reference_cost_per_success_usd": null,
+      "known_logical_mapped_cost_usd": null,
+      "total_logical_mapped_cost_usd": null,
+      "trial_wall_sec_sum": 1426.542913,
+      "router_wall_sec_sum": 0.0,
+      "complete_episode_cost_usd": null
+    },
+    "alias_dynamic": {
+      "episodes": 9,
+      "official_verifiers": 5,
+      "official_successes": 3,
+      "official_failures": 2,
+      "unknown_outcomes": 4,
+      "success_rate_on_verified_episodes": 0.6,
+      "success_rate_across_all_attempted_episodes": null,
+      "generation_completions": 115,
+      "generation_failed_requests": 2,
+      "tools_executed": 133,
+      "known_backend_family_reference_cost_usd": 0.056746902,
+      "total_backend_family_reference_cost_usd": null,
+      "known_backend_reference_subtotal_divided_by_successes_usd": 0.018915634,
+      "complete_backend_reference_cost_per_success_usd": null,
+      "known_logical_mapped_cost_usd": 0.9525484,
+      "total_logical_mapped_cost_usd": null,
+      "trial_wall_sec_sum": 4833.85088,
+      "router_wall_sec_sum": 3204.2249976206804,
+      "complete_episode_cost_usd": null
+    },
+    "alias_teacher": {
+      "episodes": 1,
+      "official_verifiers": 1,
+      "official_successes": 1,
+      "official_failures": 0,
+      "unknown_outcomes": 0,
+      "success_rate_on_verified_episodes": 1.0,
+      "success_rate_across_all_attempted_episodes": 1.0,
+      "generation_completions": 7,
+      "generation_failed_requests": 0,
+      "tools_executed": 7,
+      "known_backend_family_reference_cost_usd": 0.003340314,
+      "total_backend_family_reference_cost_usd": 0.003340314,
+      "known_backend_reference_subtotal_divided_by_successes_usd": 0.003340314,
+      "complete_backend_reference_cost_per_success_usd": 0.003340314,
+      "known_logical_mapped_cost_usd": 0.0533408,
+      "total_logical_mapped_cost_usd": 0.0533408,
+      "trial_wall_sec_sum": 278.958213,
+      "router_wall_sec_sum": 195.62096554104937,
+      "complete_episode_cost_usd": null
+    }
+  },
+  "same_task_pairs": [
+    {
+      "task_id": "build-cython-ext",
+      "fixed_episode": "fixed-build-cython-ext",
+      "dynamic_episode": "alias-build-cython-ext",
+      "same_task_source_and_agent_generation_protocol": true,
+      "same_tool_timeout_behavior": true,
+      "both_official_verifiers": false,
+      "complete_episode_comparison_available": false,
+      "fixed_reward": null,
+      "dynamic_reward": null,
+      "comparison_scope": "MISSING_VERIFIER_OBSERVATION_ONLY",
+      "fixed_backend_family_reference_cost_usd": 0.00247929,
+      "dynamic_backend_family_reference_cost_usd": 0.00271623,
+      "fixed_trial_wall_sec": 120.197961,
+      "dynamic_trial_wall_sec": 251.454149,
+      "train_eligible": false,
+      "formal_three_model_preference_generated": false
+    },
+    {
+      "task_id": "build-pmars",
+      "fixed_episode": "fixed-build-pmars",
+      "dynamic_episode": "alias-build-pmars",
+      "same_task_source_and_agent_generation_protocol": true,
+      "same_tool_timeout_behavior": true,
+      "both_official_verifiers": false,
+      "complete_episode_comparison_available": false,
+      "fixed_reward": null,
+      "dynamic_reward": null,
+      "comparison_scope": "MISSING_VERIFIER_OBSERVATION_ONLY",
+      "fixed_backend_family_reference_cost_usd": null,
+      "dynamic_backend_family_reference_cost_usd": null,
+      "fixed_trial_wall_sec": 25.625774,
+      "dynamic_trial_wall_sec": 52.322095,
+      "train_eligible": false,
+      "formal_three_model_preference_generated": false
+    },
+    {
+      "task_id": "build-pov-ray",
+      "fixed_episode": "fixed-build-pov-ray",
+      "dynamic_episode": "alias-build-pov-ray",
+      "same_task_source_and_agent_generation_protocol": true,
+      "same_tool_timeout_behavior": true,
+      "both_official_verifiers": true,
+      "complete_episode_comparison_available": true,
+      "fixed_reward": 1.0,
+      "dynamic_reward": 0.0,
+      "comparison_scope": "SAME_PROTOCOL_REAL_DEEPSEEK_BACKEND_EPISODE_DESCRIPTIVE",
+      "fixed_backend_family_reference_cost_usd": 0.012813072,
+      "dynamic_backend_family_reference_cost_usd": 0.009043362,
+      "fixed_trial_wall_sec": 460.217711,
+      "dynamic_trial_wall_sec": 1257.623827,
+      "train_eligible": false,
+      "formal_three_model_preference_generated": false
+    },
+    {
+      "task_id": "filter-js-from-html",
+      "fixed_episode": "fixed-filter-js-from-html",
+      "dynamic_episode": "alias-filter-js-from-html",
+      "same_task_source_and_agent_generation_protocol": true,
+      "same_tool_timeout_behavior": true,
+      "both_official_verifiers": false,
+      "complete_episode_comparison_available": false,
+      "fixed_reward": null,
+      "dynamic_reward": null,
+      "comparison_scope": "MISSING_VERIFIER_OBSERVATION_ONLY",
+      "fixed_backend_family_reference_cost_usd": null,
+      "dynamic_backend_family_reference_cost_usd": null,
+      "fixed_trial_wall_sec": 9.213172,
+      "dynamic_trial_wall_sec": 50.191337,
+      "train_eligible": false,
+      "formal_three_model_preference_generated": false
+    },
+    {
+      "task_id": "financial-document-processor",
+      "fixed_episode": "fixed-financial-document-processor",
+      "dynamic_episode": "alias-financial-document-processor",
+      "same_task_source_and_agent_generation_protocol": true,
+      "same_tool_timeout_behavior": false,
+      "both_official_verifiers": false,
+      "complete_episode_comparison_available": false,
+      "fixed_reward": null,
+      "dynamic_reward": 1.0,
+      "comparison_scope": "PROTOCOL_MISMATCH_OBSERVATION_ONLY",
+      "fixed_backend_family_reference_cost_usd": 0.000931854,
+      "dynamic_backend_family_reference_cost_usd": 0.018786072,
+      "fixed_trial_wall_sec": 57.512486,
+      "dynamic_trial_wall_sec": 1183.902541,
+      "train_eligible": false,
+      "formal_three_model_preference_generated": false
+    },
+    {
+      "task_id": "git-leak-recovery",
+      "fixed_episode": "fixed-git-leak-recovery",
+      "dynamic_episode": "alias-git-leak-recovery",
+      "same_task_source_and_agent_generation_protocol": true,
+      "same_tool_timeout_behavior": true,
+      "both_official_verifiers": true,
+      "complete_episode_comparison_available": true,
+      "fixed_reward": 1.0,
+      "dynamic_reward": 1.0,
+      "comparison_scope": "SAME_PROTOCOL_REAL_DEEPSEEK_BACKEND_EPISODE_DESCRIPTIVE",
+      "fixed_backend_family_reference_cost_usd": 0.002285682,
+      "dynamic_backend_family_reference_cost_usd": 0.002141046,
+      "fixed_trial_wall_sec": 82.015338,
+      "dynamic_trial_wall_sec": 261.585412,
+      "train_eligible": false,
+      "formal_three_model_preference_generated": false
+    },
+    {
+      "task_id": "hf-model-inference",
+      "fixed_episode": "fixed-hf-model-inference",
+      "dynamic_episode": "alias-hf-model-inference",
+      "same_task_source_and_agent_generation_protocol": true,
+      "same_tool_timeout_behavior": true,
+      "both_official_verifiers": true,
+      "complete_episode_comparison_available": true,
+      "fixed_reward": 1.0,
+      "dynamic_reward": 1.0,
+      "comparison_scope": "SAME_PROTOCOL_REAL_DEEPSEEK_BACKEND_EPISODE_DESCRIPTIVE",
+      "fixed_backend_family_reference_cost_usd": 0.003362478,
+      "dynamic_backend_family_reference_cost_usd": 0.002257476,
+      "fixed_trial_wall_sec": 196.266612,
+      "dynamic_trial_wall_sec": 286.272632,
+      "train_eligible": false,
+      "formal_three_model_preference_generated": false
+    },
+    {
+      "task_id": "mteb-leaderboard",
+      "fixed_episode": "fixed-mteb-leaderboard",
+      "dynamic_episode": "alias-mteb-leaderboard",
+      "same_task_source_and_agent_generation_protocol": true,
+      "same_tool_timeout_behavior": false,
+      "both_official_verifiers": false,
+      "complete_episode_comparison_available": false,
+      "fixed_reward": null,
+      "dynamic_reward": 0.0,
+      "comparison_scope": "PROTOCOL_MISMATCH_OBSERVATION_ONLY",
+      "fixed_backend_family_reference_cost_usd": 0.018111612,
+      "dynamic_backend_family_reference_cost_usd": 0.02032986,
+      "fixed_trial_wall_sec": 306.167593,
+      "dynamic_trial_wall_sec": 1255.524839,
+      "train_eligible": false,
+      "formal_three_model_preference_generated": false
+    },
+    {
+      "task_id": "pytorch-model-cli",
+      "fixed_episode": "fixed-pytorch-model-cli",
+      "dynamic_episode": "alias-pytorch-model-cli",
+      "same_task_source_and_agent_generation_protocol": true,
+      "same_tool_timeout_behavior": true,
+      "both_official_verifiers": false,
+      "complete_episode_comparison_available": false,
+      "fixed_reward": null,
+      "dynamic_reward": null,
+      "comparison_scope": "MISSING_VERIFIER_OBSERVATION_ONLY",
+      "fixed_backend_family_reference_cost_usd": 0.009430446,
+      "dynamic_backend_family_reference_cost_usd": 0.001472856,
+      "fixed_trial_wall_sec": 169.326266,
+      "dynamic_trial_wall_sec": 234.974048,
+      "train_eligible": false,
+      "formal_three_model_preference_generated": false
+    }
+  ],
+  "episodes": [
+    {
+      "episode": "alias-build-cython-ext",
+      "task_id": "build-cython-ext",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "alias_dynamic",
+      "execution_mode": "ALIAS_SMOKE",
+      "source_commit": "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "BLOCKED",
+      "trial_id": "91656f5b-c027-4d32-82bf-2fd495aec424",
+      "official_verifier": false,
+      "reward": null,
+      "success": null,
+      "ctrf": [],
+      "started_at": "2026-11-01T18:32:39.153957Z",
+      "finished_at": "2026-11-01T18:36:50.608106Z",
+      "trial_wall_sec": 251.454149,
+      "phase_wall_sec": {
+        "environment_setup": 1.467319,
+        "agent_setup": 9e-05,
+        "agent_execution": 242.73266,
+        "verifier": null
+      },
+      "error_type": "RuntimeError",
+      "error_message": "Command timed out after 30 seconds",
+      "agent_exit_status": "RuntimeError",
+      "generation_completions": 7,
+      "generation_failed_requests": 0,
+      "tools_executed": 7,
+      "tools_os_exit_code_reported": 6,
+      "tool_timeouts": 1,
+      "tool_wall_sec": 38.35775258403737,
+      "generator_tokens": 43750,
+      "teacher_tokens": 0,
+      "total_model_tokens": 43750,
+      "known_input_tokens": 42053,
+      "known_completion_tokens_including_reasoning": 1697,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 7,
+      "known_cache_read_tokens": 31360,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 7
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 7
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.041492,
+      "known_generator_cost_usd": 0.041492,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.041492,
+      "logical_mapped_model_cost_usd": 0.041492,
+      "backend_family_reference_cost_usd": 0.00271623,
+      "known_backend_family_reference_cost_usd": 0.00271623,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 20.098885958024766,
+      "teacher_request_sec": null,
+      "router_decisions": 7,
+      "router_initializations": 1,
+      "router_reused_decisions": 6,
+      "router_wall_sec": 182.4444225410116,
+      "router_forward_sec": 151.67223716527224,
+      "router_initialization_sec": 30.00649841502309,
+      "router_non_forward_sec": 30.772185375739355,
+      "router_reused_non_forward_sec": 0.08972653915407136,
+      "router_fallbacks": 0,
+      "logical_model_counts": {
+        "gpt-6.1-sol": 7
+      },
+      "logical_model_switches": 0,
+      "routing_decisions": [
+        {
+          "step": 0,
+          "decision_id": "91656f5b-c027-4d32-82bf-2fd495aec424-0",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3815,
+            "gpt-6-luna:low": 0.3198,
+            "qwen3.8-flash:none": 0.2987
+          },
+          "router_latency_ms": 40280.34175001085,
+          "inference_latency_ms": 9597.882913425565,
+          "initialization_ms": 30006.49841502309,
+          "process_reused": false,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 1,
+          "decision_id": "91656f5b-c027-4d32-82bf-2fd495aec424-1",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3766,
+            "gpt-6-luna:low": 0.3442,
+            "qwen3.8-flash:none": 0.2791
+          },
+          "router_latency_ms": 12854.252625023946,
+          "inference_latency_ms": 12837.33238838613,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 2,
+          "decision_id": "91656f5b-c027-4d32-82bf-2fd495aec424-2",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3979,
+            "qwen3.8-flash:none": 0.3109,
+            "gpt-6-luna:low": 0.2912
+          },
+          "router_latency_ms": 19213.733916985802,
+          "inference_latency_ms": 19197.457436472178,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 3,
+          "decision_id": "91656f5b-c027-4d32-82bf-2fd495aec424-3",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3877,
+            "qwen3.8-flash:none": 0.3062,
+            "gpt-6-luna:low": 0.3061
+          },
+          "router_latency_ms": 27413.922958017793,
+          "inference_latency_ms": 27397.29088358581,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 4,
+          "decision_id": "91656f5b-c027-4d32-82bf-2fd495aec424-4",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3912,
+            "qwen3.8-flash:none": 0.3046,
+            "gpt-6-luna:low": 0.3042
+          },
+          "router_latency_ms": 28259.215875004884,
+          "inference_latency_ms": 28244.67529170215,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 5,
+          "decision_id": "91656f5b-c027-4d32-82bf-2fd495aec424-5",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.399,
+            "qwen3.8-flash:none": 0.3024,
+            "gpt-6-luna:low": 0.2986
+          },
+          "router_latency_ms": 27651.25308302231,
+          "inference_latency_ms": 27638.783395290375,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 6,
+          "decision_id": "91656f5b-c027-4d32-82bf-2fd495aec424-6",
+          "phase": "verify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3914,
+            "gpt-6-luna:low": 0.316,
+            "qwen3.8-flash:none": 0.2926
+          },
+          "router_latency_ms": 26771.702332946006,
+          "inference_latency_ms": 26758.814856410027,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "alias-build-pmars",
+      "task_id": "build-pmars",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "alias_dynamic",
+      "execution_mode": "ALIAS_SMOKE",
+      "source_commit": "6d040e786d0bd95a1060f793a8e680caa7bf1a93",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "BLOCKED",
+      "trial_id": "515a620f-37f3-45cf-ac1b-05f34e9cc21a",
+      "official_verifier": false,
+      "reward": null,
+      "success": null,
+      "ctrf": [],
+      "started_at": "2026-11-01T18:26:15.470800Z",
+      "finished_at": "2026-11-01T18:27:07.792895Z",
+      "trial_wall_sec": 52.322095,
+      "phase_wall_sec": {
+        "environment_setup": 1.338291,
+        "agent_setup": 0.000101,
+        "agent_execution": 45.642281,
+        "verifier": null
+      },
+      "error_type": "HTTPError",
+      "error_message": "HTTP Error 502: Bad Gateway",
+      "agent_exit_status": "HTTPError",
+      "generation_completions": 0,
+      "generation_failed_requests": 1,
+      "tools_executed": 0,
+      "tools_os_exit_code_reported": 0,
+      "tool_timeouts": 0,
+      "tool_wall_sec": 0.0,
+      "generator_tokens": null,
+      "teacher_tokens": 0,
+      "total_model_tokens": null,
+      "known_input_tokens": null,
+      "known_completion_tokens_including_reasoning": null,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 0,
+      "known_cache_read_tokens": null,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {},
+      "returned_model_ids": {},
+      "sent_effort_parameters": [],
+      "native_effort_statuses": [],
+      "generator_cost_usd": null,
+      "known_generator_cost_usd": null,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": null,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": null,
+      "known_backend_family_reference_cost_usd": null,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": null,
+      "teacher_request_sec": null,
+      "router_decisions": 1,
+      "router_initializations": 1,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 39.425006000034045,
+      "router_forward_sec": 8.565614718943834,
+      "router_initialization_sec": 30.16310990974307,
+      "router_non_forward_sec": 30.85939128109021,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {
+        "gpt-6.1-sol": 1
+      },
+      "logical_model_switches": 0,
+      "routing_decisions": [
+        {
+          "step": 0,
+          "decision_id": "515a620f-37f3-45cf-ac1b-05f34e9cc21a-0",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3885,
+            "gpt-6-luna:low": 0.3229,
+            "qwen3.8-flash:none": 0.2886
+          },
+          "router_latency_ms": 39425.006000034045,
+          "inference_latency_ms": 8565.614718943834,
+          "initialization_ms": 30163.10990974307,
+          "process_reused": false,
+          "fallback_used": false,
+          "teacher_present": false
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "alias-build-pov-ray",
+      "task_id": "build-pov-ray",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "alias_dynamic",
+      "execution_mode": "ALIAS_SMOKE",
+      "source_commit": "d77e0673169cc122c299dfee3b4e3ca5b35d6b28",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_AS_OBSERVATION",
+      "run_status": "EVALUATED",
+      "trial_id": "bef69413-23c7-4213-897b-81d4dd2abf87",
+      "official_verifier": true,
+      "reward": 0.0,
+      "success": false,
+      "ctrf": [
+        {
+          "path": "alias-build-pov-ray/jobs/build-pov-ray--laya_v2--s42/build-pov-ray__t8b9jbu/verifier/ctrf.json",
+          "summary": {
+            "tests": 3,
+            "passed": 0,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793560799.068344,
+            "stop": 1793560801.8880312
+          }
+        }
+      ],
+      "started_at": "2026-11-01T18:59:09.242716Z",
+      "finished_at": "2026-11-01T19:20:06.866543Z",
+      "trial_wall_sec": 1257.623827,
+      "phase_wall_sec": {
+        "environment_setup": 1.143027,
+        "agent_setup": 8.3e-05,
+        "agent_execution": 1199.054033,
+        "verifier": 51.55128
+      },
+      "error_type": null,
+      "error_message": null,
+      "agent_exit_status": "LimitsExceeded",
+      "generation_completions": 30,
+      "generation_failed_requests": 0,
+      "tools_executed": 30,
+      "tools_os_exit_code_reported": 26,
+      "tool_timeouts": 4,
+      "tool_wall_sec": 229.52356845897157,
+      "generator_tokens": 350233,
+      "teacher_tokens": 0,
+      "total_model_tokens": 350233,
+      "known_input_tokens": 344731,
+      "known_completion_tokens_including_reasoning": 5502,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 30,
+      "known_cache_read_tokens": 312704,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 30
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 30
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.1503444,
+      "known_generator_cost_usd": 0.1503444,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.1503444,
+      "logical_mapped_model_cost_usd": 0.1503444,
+      "backend_family_reference_cost_usd": 0.009043362,
+      "known_backend_family_reference_cost_usd": 0.009043362,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 119.21361279091798,
+      "teacher_request_sec": null,
+      "router_decisions": 30,
+      "router_initializations": 1,
+      "router_reused_decisions": 29,
+      "router_wall_sec": 848.3314017447992,
+      "router_forward_sec": 816.3635316323489,
+      "router_initialization_sec": 30.799548279494047,
+      "router_non_forward_sec": 31.967870112450328,
+      "router_reused_non_forward_sec": 0.46743515512207523,
+      "router_fallbacks": 0,
+      "logical_model_counts": {
+        "gpt-6.1-sol": 30
+      },
+      "logical_model_switches": 0,
+      "routing_decisions": [
+        {
+          "step": 0,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-0",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3988,
+            "gpt-6-luna:low": 0.3153,
+            "qwen3.8-flash:none": 0.2859
+          },
+          "router_latency_ms": 40164.61591597181,
+          "inference_latency_ms": 8664.180958643556,
+          "initialization_ms": 30799.548279494047,
+          "process_reused": false,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 1,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-1",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3912,
+            "gpt-6-luna:low": 0.3209,
+            "qwen3.8-flash:none": 0.2878
+          },
+          "router_latency_ms": 13101.008375000674,
+          "inference_latency_ms": 13090.191530063748,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 2,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-2",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3823,
+            "gpt-6-luna:low": 0.3109,
+            "qwen3.8-flash:none": 0.3068
+          },
+          "router_latency_ms": 16003.268333035521,
+          "inference_latency_ms": 15989.942381158471,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 3,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-3",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3995,
+            "gpt-6-luna:low": 0.3027,
+            "qwen3.8-flash:none": 0.2977
+          },
+          "router_latency_ms": 23688.021415960975,
+          "inference_latency_ms": 23677.01001651585,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 4,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-4",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3916,
+            "gpt-6-luna:low": 0.3216,
+            "qwen3.8-flash:none": 0.2867
+          },
+          "router_latency_ms": 22653.203999972902,
+          "inference_latency_ms": 22641.36140048504,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 5,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-5",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3899,
+            "gpt-6-luna:low": 0.322,
+            "qwen3.8-flash:none": 0.2881
+          },
+          "router_latency_ms": 22384.451167017687,
+          "inference_latency_ms": 22373.718118295074,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 6,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-6",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.406,
+            "gpt-6-luna:low": 0.3082,
+            "qwen3.8-flash:none": 0.2858
+          },
+          "router_latency_ms": 25532.039165962487,
+          "inference_latency_ms": 25520.07633820176,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 7,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-7",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3927,
+            "gpt-6-luna:low": 0.3131,
+            "qwen3.8-flash:none": 0.2942
+          },
+          "router_latency_ms": 30245.566124969628,
+          "inference_latency_ms": 30235.12908257544,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 8,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-8",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.397,
+            "gpt-6-luna:low": 0.317,
+            "qwen3.8-flash:none": 0.286
+          },
+          "router_latency_ms": 28706.100290990435,
+          "inference_latency_ms": 28695.00524364412,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 9,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-9",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4048,
+            "gpt-6-luna:low": 0.3095,
+            "qwen3.8-flash:none": 0.2856
+          },
+          "router_latency_ms": 28102.624333987478,
+          "inference_latency_ms": 27981.07054643333,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 10,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-10",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4097,
+            "gpt-6-luna:low": 0.3075,
+            "qwen3.8-flash:none": 0.2828
+          },
+          "router_latency_ms": 27272.478665981907,
+          "inference_latency_ms": 27260.70581562817,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 11,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-11",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4118,
+            "gpt-6-luna:low": 0.3035,
+            "qwen3.8-flash:none": 0.2847
+          },
+          "router_latency_ms": 27963.713707984425,
+          "inference_latency_ms": 27953.386291861534,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 12,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-12",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4017,
+            "gpt-6-luna:low": 0.3212,
+            "qwen3.8-flash:none": 0.277
+          },
+          "router_latency_ms": 26771.250375022646,
+          "inference_latency_ms": 26739.01899345219,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 13,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-13",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4071,
+            "gpt-6-luna:low": 0.2978,
+            "qwen3.8-flash:none": 0.2951
+          },
+          "router_latency_ms": 28036.95862501627,
+          "inference_latency_ms": 28026.431512087584,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 14,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-14",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3892,
+            "gpt-6-luna:low": 0.3118,
+            "qwen3.8-flash:none": 0.299
+          },
+          "router_latency_ms": 29610.9334169887,
+          "inference_latency_ms": 29599.782936275005,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 15,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-15",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3872,
+            "gpt-6-luna:low": 0.3135,
+            "qwen3.8-flash:none": 0.2994
+          },
+          "router_latency_ms": 27320.013499993365,
+          "inference_latency_ms": 27308.414980769157,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 16,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-16",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3883,
+            "qwen3.8-flash:none": 0.3104,
+            "gpt-6-luna:low": 0.3013
+          },
+          "router_latency_ms": 28789.998958003707,
+          "inference_latency_ms": 28776.274293661118,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 17,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-17",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3771,
+            "gpt-6-luna:low": 0.3254,
+            "qwen3.8-flash:none": 0.2975
+          },
+          "router_latency_ms": 29681.13587499829,
+          "inference_latency_ms": 29669.60314475,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 18,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-18",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4084,
+            "qwen3.8-flash:none": 0.3002,
+            "gpt-6-luna:low": 0.2914
+          },
+          "router_latency_ms": 30153.82645803038,
+          "inference_latency_ms": 30141.717806458473,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 19,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-19",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4143,
+            "qwen3.8-flash:none": 0.3176,
+            "gpt-6-luna:low": 0.2681
+          },
+          "router_latency_ms": 28053.822041954845,
+          "inference_latency_ms": 28041.984409093857,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 20,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-20",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.41,
+            "qwen3.8-flash:none": 0.3125,
+            "gpt-6-luna:low": 0.2776
+          },
+          "router_latency_ms": 34294.01087498991,
+          "inference_latency_ms": 34282.088255509734,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 21,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-21",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4218,
+            "qwen3.8-flash:none": 0.297,
+            "gpt-6-luna:low": 0.2812
+          },
+          "router_latency_ms": 34382.73279200075,
+          "inference_latency_ms": 34370.21498940885,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 22,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-22",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4053,
+            "qwen3.8-flash:none": 0.3049,
+            "gpt-6-luna:low": 0.2898
+          },
+          "router_latency_ms": 33174.509833042976,
+          "inference_latency_ms": 33163.58937881887,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 23,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-23",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4187,
+            "qwen3.8-flash:none": 0.3016,
+            "gpt-6-luna:low": 0.2797
+          },
+          "router_latency_ms": 33270.92854201328,
+          "inference_latency_ms": 33258.641842752695,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 24,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-24",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3849,
+            "gpt-6-luna:low": 0.3108,
+            "qwen3.8-flash:none": 0.3043
+          },
+          "router_latency_ms": 29374.61766600609,
+          "inference_latency_ms": 29364.041462540627,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 25,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-25",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3829,
+            "gpt-6-luna:low": 0.3116,
+            "qwen3.8-flash:none": 0.3055
+          },
+          "router_latency_ms": 31215.56366601726,
+          "inference_latency_ms": 31204.392263665795,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 26,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-26",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3897,
+            "qwen3.8-flash:none": 0.3073,
+            "gpt-6-luna:low": 0.303
+          },
+          "router_latency_ms": 30614.438415970653,
+          "inference_latency_ms": 30602.803371846676,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 27,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-27",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3819,
+            "gpt-6-luna:low": 0.312,
+            "qwen3.8-flash:none": 0.3061
+          },
+          "router_latency_ms": 29445.297290978488,
+          "inference_latency_ms": 29434.763019904494,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 28,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-28",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3758,
+            "gpt-6-luna:low": 0.3148,
+            "qwen3.8-flash:none": 0.3094
+          },
+          "router_latency_ms": 29039.54749996774,
+          "inference_latency_ms": 29024.151984602213,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 29,
+          "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-29",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3973,
+            "qwen3.8-flash:none": 0.3071,
+            "gpt-6-luna:low": 0.2956
+          },
+          "router_latency_ms": 29284.724416967947,
+          "inference_latency_ms": 29273.839263245463,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "alias-filter-js-from-html",
+      "task_id": "filter-js-from-html",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "alias_dynamic",
+      "execution_mode": "ALIAS_SMOKE",
+      "source_commit": "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "BLOCKED",
+      "trial_id": "4eabc6c7-a87d-4756-acfe-03c1470d9b9d",
+      "official_verifier": false,
+      "reward": null,
+      "success": null,
+      "ctrf": [],
+      "started_at": "2026-11-01T18:40:09.383663Z",
+      "finished_at": "2026-11-01T18:40:59.575000Z",
+      "trial_wall_sec": 50.191337,
+      "phase_wall_sec": {
+        "environment_setup": 1.460835,
+        "agent_setup": 0.000134,
+        "agent_execution": 44.132909,
+        "verifier": null
+      },
+      "error_type": "HTTPError",
+      "error_message": "HTTP Error 502: Bad Gateway",
+      "agent_exit_status": "HTTPError",
+      "generation_completions": 0,
+      "generation_failed_requests": 1,
+      "tools_executed": 0,
+      "tools_os_exit_code_reported": 0,
+      "tool_timeouts": 0,
+      "tool_wall_sec": 0.0,
+      "generator_tokens": null,
+      "teacher_tokens": 0,
+      "total_model_tokens": null,
+      "known_input_tokens": null,
+      "known_completion_tokens_including_reasoning": null,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 0,
+      "known_cache_read_tokens": null,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {},
+      "returned_model_ids": {},
+      "sent_effort_parameters": [],
+      "native_effort_statuses": [],
+      "generator_cost_usd": null,
+      "known_generator_cost_usd": null,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": null,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": null,
+      "known_backend_family_reference_cost_usd": null,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": null,
+      "teacher_request_sec": null,
+      "router_decisions": 1,
+      "router_initializations": 1,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 38.7586691659526,
+      "router_forward_sec": 8.086814882233739,
+      "router_initialization_sec": 29.997787388041615,
+      "router_non_forward_sec": 30.671854283718858,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {
+        "gpt-6.1-sol": 1
+      },
+      "logical_model_switches": 0,
+      "routing_decisions": [
+        {
+          "step": 0,
+          "decision_id": "4eabc6c7-a87d-4756-acfe-03c1470d9b9d-0",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3918,
+            "gpt-6-luna:low": 0.3191,
+            "qwen3.8-flash:none": 0.2892
+          },
+          "router_latency_ms": 38758.6691659526,
+          "inference_latency_ms": 8086.814882233739,
+          "initialization_ms": 29997.787388041615,
+          "process_reused": false,
+          "fallback_used": false,
+          "teacher_present": false
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "alias-financial-document-processor",
+      "task_id": "financial-document-processor",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "alias_dynamic",
+      "execution_mode": "ALIAS_SMOKE",
+      "source_commit": "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_AS_OBSERVATION",
+      "run_status": "EVALUATED",
+      "trial_id": "22ce4654-d417-4d33-af93-c0c81166b78d",
+      "official_verifier": true,
+      "reward": 1.0,
+      "success": true,
+      "ctrf": [
+        {
+          "path": "alias-financial-document-processor/jobs/financial-document-processor--laya_v2--s42/financial-document-processor__RN6LZ5Q/verifier/ctrf.json",
+          "summary": {
+            "tests": 7,
+            "passed": 7,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793560267.8574002,
+            "stop": 1793560269.4493122
+          }
+        }
+      ],
+      "started_at": "2026-11-01T18:51:30.265641Z",
+      "finished_at": "2026-11-01T19:11:14.168182Z",
+      "trial_wall_sec": 1183.902541,
+      "phase_wall_sec": {
+        "environment_setup": 1.51118,
+        "agent_setup": 0.000125,
+        "agent_execution": 1145.046157,
+        "verifier": 31.610379
+      },
+      "error_type": null,
+      "error_message": null,
+      "agent_exit_status": "Submitted",
+      "generation_completions": 26,
+      "generation_failed_requests": 0,
+      "tools_executed": 26,
+      "tools_os_exit_code_reported": 24,
+      "tool_timeouts": 2,
+      "tool_wall_sec": 243.65130183612928,
+      "generator_tokens": 425592,
+      "teacher_tokens": 0,
+      "total_model_tokens": 425592,
+      "known_input_tokens": 404116,
+      "known_completion_tokens_including_reasoning": 21476,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 26,
+      "known_cache_read_tokens": 372224,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 26
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 26
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.3157664,
+      "known_generator_cost_usd": 0.3157664,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.3157664,
+      "logical_mapped_model_cost_usd": 0.3157664,
+      "backend_family_reference_cost_usd": 0.018786072,
+      "known_backend_family_reference_cost_usd": 0.018786072,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 165.0170948758023,
+      "teacher_request_sec": null,
+      "router_decisions": 26,
+      "router_initializations": 1,
+      "router_reused_decisions": 25,
+      "router_wall_sec": 734.0890611229697,
+      "router_forward_sec": 701.6563793029636,
+      "router_initialization_sec": 29.71556969359517,
+      "router_non_forward_sec": 32.43268182000611,
+      "router_reused_non_forward_sec": 0.6212969570769928,
+      "router_fallbacks": 0,
+      "logical_model_counts": {
+        "gpt-6.1-sol": 26
+      },
+      "logical_model_switches": 0,
+      "routing_decisions": [
+        {
+          "step": 0,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-0",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4093,
+            "gpt-6-luna:low": 0.3157,
+            "qwen3.8-flash:none": 0.275
+          },
+          "router_latency_ms": 40919.93316699518,
+          "inference_latency_ms": 9108.548304066062,
+          "initialization_ms": 29715.56969359517,
+          "process_reused": false,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 1,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-1",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4001,
+            "gpt-6-luna:low": 0.3096,
+            "qwen3.8-flash:none": 0.2903
+          },
+          "router_latency_ms": 16020.802917017136,
+          "inference_latency_ms": 16008.35183635354,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 2,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-2",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3925,
+            "gpt-6-luna:low": 0.3235,
+            "qwen3.8-flash:none": 0.2839
+          },
+          "router_latency_ms": 25642.268416006118,
+          "inference_latency_ms": 25535.65808571875,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 3,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-3",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3849,
+            "gpt-6-luna:low": 0.3326,
+            "qwen3.8-flash:none": 0.2825
+          },
+          "router_latency_ms": 30060.909874970093,
+          "inference_latency_ms": 30043.037896975875,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 4,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-4",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4013,
+            "gpt-6-luna:low": 0.3055,
+            "qwen3.8-flash:none": 0.2933
+          },
+          "router_latency_ms": 29639.272583008278,
+          "inference_latency_ms": 29626.298854127526,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 5,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-5",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3789,
+            "gpt-6-luna:low": 0.3431,
+            "qwen3.8-flash:none": 0.278
+          },
+          "router_latency_ms": 29618.251125037204,
+          "inference_latency_ms": 29535.417076200247,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 6,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-6",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3985,
+            "gpt-6-luna:low": 0.3088,
+            "qwen3.8-flash:none": 0.2927
+          },
+          "router_latency_ms": 29287.45520801749,
+          "inference_latency_ms": 29275.395143777132,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 7,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-7",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3972,
+            "gpt-6-luna:low": 0.3306,
+            "qwen3.8-flash:none": 0.2722
+          },
+          "router_latency_ms": 29980.400583997834,
+          "inference_latency_ms": 29968.540832400322,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 8,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-8",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3802,
+            "gpt-6-luna:low": 0.3459,
+            "qwen3.8-flash:none": 0.2739
+          },
+          "router_latency_ms": 29506.400042038877,
+          "inference_latency_ms": 29495.371755212545,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 9,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-9",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3747,
+            "gpt-6-luna:low": 0.3357,
+            "qwen3.8-flash:none": 0.2896
+          },
+          "router_latency_ms": 22939.350375032518,
+          "inference_latency_ms": 22925.405118614435,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 10,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-10",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3908,
+            "gpt-6-luna:low": 0.3116,
+            "qwen3.8-flash:none": 0.2975
+          },
+          "router_latency_ms": 27676.43216595752,
+          "inference_latency_ms": 27664.46848027408,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 11,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-11",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3821,
+            "gpt-6-luna:low": 0.3402,
+            "qwen3.8-flash:none": 0.2777
+          },
+          "router_latency_ms": 26325.83808299387,
+          "inference_latency_ms": 26313.791071996093,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 12,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-12",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3831,
+            "gpt-6-luna:low": 0.3511,
+            "qwen3.8-flash:none": 0.2657
+          },
+          "router_latency_ms": 26809.489874984138,
+          "inference_latency_ms": 26764.89096134901,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 13,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-13",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3842,
+            "gpt-6-luna:low": 0.3224,
+            "qwen3.8-flash:none": 0.2934
+          },
+          "router_latency_ms": 29089.173707994632,
+          "inference_latency_ms": 29078.976921737194,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 14,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-14",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.382,
+            "gpt-6-luna:low": 0.3308,
+            "qwen3.8-flash:none": 0.2873
+          },
+          "router_latency_ms": 28588.279957999475,
+          "inference_latency_ms": 28577.84211076796,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 15,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-15",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3821,
+            "gpt-6-luna:low": 0.3531,
+            "qwen3.8-flash:none": 0.2648
+          },
+          "router_latency_ms": 24378.075124986935,
+          "inference_latency_ms": 24367.437759414315,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 16,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-16",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3823,
+            "gpt-6-luna:low": 0.3187,
+            "qwen3.8-flash:none": 0.2991
+          },
+          "router_latency_ms": 28738.509082992096,
+          "inference_latency_ms": 28727.02298872173,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 17,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-17",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3936,
+            "gpt-6-luna:low": 0.3138,
+            "qwen3.8-flash:none": 0.2926
+          },
+          "router_latency_ms": 25628.448791976552,
+          "inference_latency_ms": 25617.392234504223,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 18,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-18",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3916,
+            "gpt-6-luna:low": 0.3274,
+            "qwen3.8-flash:none": 0.281
+          },
+          "router_latency_ms": 29895.398124994244,
+          "inference_latency_ms": 29882.669381797314,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 19,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-19",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3823,
+            "gpt-6-luna:low": 0.3386,
+            "qwen3.8-flash:none": 0.2791
+          },
+          "router_latency_ms": 28950.284665974323,
+          "inference_latency_ms": 28820.366455242038,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 20,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-20",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3738,
+            "gpt-6-luna:low": 0.3438,
+            "qwen3.8-flash:none": 0.2824
+          },
+          "router_latency_ms": 29295.79995799577,
+          "inference_latency_ms": 29283.929251134396,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 21,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-21",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3837,
+            "gpt-6-luna:low": 0.3234,
+            "qwen3.8-flash:none": 0.2929
+          },
+          "router_latency_ms": 29386.79154199781,
+          "inference_latency_ms": 29374.623538926244,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 22,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-22",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4018,
+            "gpt-6-luna:low": 0.3001,
+            "qwen3.8-flash:none": 0.2981
+          },
+          "router_latency_ms": 29859.960875008255,
+          "inference_latency_ms": 29846.31676413119,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 23,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-23",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3872,
+            "gpt-6-luna:low": 0.3217,
+            "qwen3.8-flash:none": 0.2911
+          },
+          "router_latency_ms": 24551.384249993134,
+          "inference_latency_ms": 24538.02906163037,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 24,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-24",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3966,
+            "qwen3.8-flash:none": 0.3018,
+            "gpt-6-luna:low": 0.3017
+          },
+          "router_latency_ms": 30382.47637503082,
+          "inference_latency_ms": 30370.74744142592,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 25,
+          "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-25",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3903,
+            "gpt-6-luna:low": 0.3091,
+            "qwen3.8-flash:none": 0.3006
+          },
+          "router_latency_ms": 30917.674249969423,
+          "inference_latency_ms": 30905.849976465106,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "alias-git-leak-recovery",
+      "task_id": "git-leak-recovery",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "alias_dynamic",
+      "execution_mode": "ALIAS_SMOKE",
+      "source_commit": "6d040e786d0bd95a1060f793a8e680caa7bf1a93",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "EVALUATED",
+      "trial_id": "482fb77c-cb08-474d-be96-2d48e415e6f8",
+      "official_verifier": true,
+      "reward": 1.0,
+      "success": true,
+      "ctrf": [
+        {
+          "path": "alias-git-leak-recovery/jobs/git-leak-recovery--laya_v2--s42/git-leak-recovery__hFAN8h4/verifier/ctrf.json",
+          "summary": {
+            "tests": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793557832.2259536,
+            "stop": 1793557832.7461758
+          }
+        }
+      ],
+      "started_at": "2026-11-01T18:26:15.379512Z",
+      "finished_at": "2026-11-01T18:30:36.964924Z",
+      "trial_wall_sec": 261.585412,
+      "phase_wall_sec": {
+        "environment_setup": 1.457058,
+        "agent_setup": 0.000143,
+        "agent_execution": 214.355251,
+        "verifier": 40.20295
+      },
+      "error_type": null,
+      "error_message": null,
+      "agent_exit_status": "Submitted",
+      "generation_completions": 7,
+      "generation_failed_requests": 0,
+      "tools_executed": 7,
+      "tools_os_exit_code_reported": 7,
+      "tool_timeouts": 0,
+      "tool_wall_sec": 5.673160333011765,
+      "generator_tokens": 22106,
+      "teacher_tokens": 0,
+      "total_model_tokens": 22106,
+      "known_input_tokens": 19741,
+      "known_completion_tokens_including_reasoning": 2365,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 7,
+      "known_cache_read_tokens": 15232,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 7
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 7
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.0341912,
+      "known_generator_cost_usd": 0.0341912,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.0341912,
+      "logical_mapped_model_cost_usd": 0.0341912,
+      "backend_family_reference_cost_usd": 0.002141046,
+      "known_backend_family_reference_cost_usd": 0.002141046,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 24.924753041937947,
+      "teacher_request_sec": null,
+      "router_decisions": 7,
+      "router_initializations": 1,
+      "router_reused_decisions": 6,
+      "router_wall_sec": 182.1181440409855,
+      "router_forward_sec": 151.29590398818254,
+      "router_initialization_sec": 29.9236325584352,
+      "router_non_forward_sec": 30.822240052802954,
+      "router_reused_non_forward_sec": 0.20757424691691995,
+      "router_fallbacks": 0,
+      "logical_model_counts": {
+        "gpt-6.1-sol": 7
+      },
+      "logical_model_switches": 0,
+      "routing_decisions": [
+        {
+          "step": 0,
+          "decision_id": "482fb77c-cb08-474d-be96-2d48e415e6f8-0",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4096,
+            "gpt-6-luna:low": 0.3137,
+            "qwen3.8-flash:none": 0.2768
+          },
+          "router_latency_ms": 39152.48587500537,
+          "inference_latency_ms": 8537.820069119334,
+          "initialization_ms": 29923.6325584352,
+          "process_reused": false,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 1,
+          "decision_id": "482fb77c-cb08-474d-be96-2d48e415e6f8-1",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4122,
+            "qwen3.8-flash:none": 0.301,
+            "gpt-6-luna:low": 0.2867
+          },
+          "router_latency_ms": 11749.142916989513,
+          "inference_latency_ms": 11737.251156941056,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 2,
+          "decision_id": "482fb77c-cb08-474d-be96-2d48e415e6f8-2",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3915,
+            "gpt-6-luna:low": 0.3088,
+            "qwen3.8-flash:none": 0.2997
+          },
+          "router_latency_ms": 17513.740207999945,
+          "inference_latency_ms": 17498.100912198424,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 3,
+          "decision_id": "482fb77c-cb08-474d-be96-2d48e415e6f8-3",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3899,
+            "gpt-6-luna:low": 0.3102,
+            "qwen3.8-flash:none": 0.2998
+          },
+          "router_latency_ms": 25128.40733298799,
+          "inference_latency_ms": 25117.40881577134,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 4,
+          "decision_id": "482fb77c-cb08-474d-be96-2d48e415e6f8-4",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3987,
+            "qwen3.8-flash:none": 0.3038,
+            "gpt-6-luna:low": 0.2975
+          },
+          "router_latency_ms": 26717.470083967783,
+          "inference_latency_ms": 26701.315397396684,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 5,
+          "decision_id": "482fb77c-cb08-474d-be96-2d48e415e6f8-5",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3868,
+            "qwen3.8-flash:none": 0.3068,
+            "gpt-6-luna:low": 0.3063
+          },
+          "router_latency_ms": 31655.028208042495,
+          "inference_latency_ms": 31531.639168038964,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 6,
+          "decision_id": "482fb77c-cb08-474d-be96-2d48e415e6f8-6",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3862,
+            "gpt-6-luna:low": 0.3074,
+            "qwen3.8-flash:none": 0.3064
+          },
+          "router_latency_ms": 30201.869415992405,
+          "inference_latency_ms": 30172.36846871674,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "alias-hf-model-inference",
+      "task_id": "hf-model-inference",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "alias_dynamic",
+      "execution_mode": "ALIAS_SMOKE",
+      "source_commit": "d77e0673169cc122c299dfee3b4e3ca5b35d6b28",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_AS_OBSERVATION",
+      "run_status": "EVALUATED",
+      "trial_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f",
+      "official_verifier": true,
+      "reward": 1.0,
+      "success": true,
+      "ctrf": [
+        {
+          "path": "alias-hf-model-inference/jobs/hf-model-inference--laya_v2--s42/hf-model-inference__vaUPVte/verifier/ctrf.json",
+          "summary": {
+            "tests": 4,
+            "passed": 4,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793559485.4501016,
+            "stop": 1793559489.8192701
+          }
+        }
+      ],
+      "started_at": "2026-11-01T18:53:28.083444Z",
+      "finished_at": "2026-11-01T18:58:14.356076Z",
+      "trial_wall_sec": 286.272632,
+      "phase_wall_sec": {
+        "environment_setup": 1.571852,
+        "agent_setup": 0.000103,
+        "agent_execution": 266.184392,
+        "verifier": 11.569457
+      },
+      "error_type": null,
+      "error_message": null,
+      "agent_exit_status": "Submitted",
+      "generation_completions": 8,
+      "generation_failed_requests": 0,
+      "tools_executed": 8,
+      "tools_os_exit_code_reported": 7,
+      "tool_timeouts": 1,
+      "tool_wall_sec": 56.9708772910526,
+      "generator_tokens": 24440,
+      "teacher_tokens": 0,
+      "total_model_tokens": 24440,
+      "known_input_tokens": 21758,
+      "known_completion_tokens_including_reasoning": 2682,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 8,
+      "known_cache_read_tokens": 17792,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 8
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 8
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.0365312,
+      "known_generator_cost_usd": 0.0365312,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.0365312,
+      "logical_mapped_model_cost_usd": 0.0365312,
+      "backend_family_reference_cost_usd": 0.002257476,
+      "known_backend_family_reference_cost_usd": 0.002257476,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 29.911499752954114,
+      "teacher_request_sec": null,
+      "router_decisions": 8,
+      "router_initializations": 1,
+      "router_reused_decisions": 7,
+      "router_wall_sec": 177.6586825021077,
+      "router_forward_sec": 144.54422320239246,
+      "router_initialization_sec": 30.041612839326262,
+      "router_non_forward_sec": 33.114459299715236,
+      "router_reused_non_forward_sec": 0.30587465077405795,
+      "router_fallbacks": 0,
+      "logical_model_counts": {
+        "gpt-6.1-sol": 8
+      },
+      "logical_model_switches": 0,
+      "routing_decisions": [
+        {
+          "step": 0,
+          "decision_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f-0",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4198,
+            "gpt-6-luna:low": 0.2949,
+            "qwen3.8-flash:none": 0.2853
+          },
+          "router_latency_ms": 42149.024125013966,
+          "inference_latency_ms": 9340.439476072788,
+          "initialization_ms": 30041.612839326262,
+          "process_reused": false,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 1,
+          "decision_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f-1",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3889,
+            "gpt-6-luna:low": 0.3307,
+            "qwen3.8-flash:none": 0.2804
+          },
+          "router_latency_ms": 14341.30966704106,
+          "inference_latency_ms": 14326.317638158798,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 2,
+          "decision_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f-2",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3806,
+            "gpt-6-luna:low": 0.33,
+            "qwen3.8-flash:none": 0.2894
+          },
+          "router_latency_ms": 13440.073333040345,
+          "inference_latency_ms": 13315.722286701202,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 3,
+          "decision_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f-3",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3745,
+            "gpt-6-luna:low": 0.3309,
+            "qwen3.8-flash:none": 0.2946
+          },
+          "router_latency_ms": 14399.545583990403,
+          "inference_latency_ms": 14382.488431409001,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 4,
+          "decision_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f-4",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3928,
+            "gpt-6-luna:low": 0.3065,
+            "qwen3.8-flash:none": 0.3007
+          },
+          "router_latency_ms": 19106.98041698197,
+          "inference_latency_ms": 19095.317356288433,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 5,
+          "decision_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f-5",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3799,
+            "gpt-6-luna:low": 0.3491,
+            "qwen3.8-flash:none": 0.271
+          },
+          "router_latency_ms": 20605.96079204697,
+          "inference_latency_ms": 20594.864916056395,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 6,
+          "decision_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f-6",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3892,
+            "gpt-6-luna:low": 0.3175,
+            "qwen3.8-flash:none": 0.2933
+          },
+          "router_latency_ms": 25249.55987499561,
+          "inference_latency_ms": 25236.148634925485,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 7,
+          "decision_id": "4f7ecd97-9d23-4ed5-9d05-2db321c4d79f-7",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3843,
+            "gpt-6-luna:low": 0.3277,
+            "qwen3.8-flash:none": 0.288
+          },
+          "router_latency_ms": 28366.22870899737,
+          "inference_latency_ms": 28252.924462780356,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "alias-mteb-leaderboard",
+      "task_id": "mteb-leaderboard",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "alias_dynamic",
+      "execution_mode": "ALIAS_SMOKE",
+      "source_commit": "d77e0673169cc122c299dfee3b4e3ca5b35d6b28",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_AS_OBSERVATION",
+      "run_status": "EVALUATED",
+      "trial_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb",
+      "official_verifier": true,
+      "reward": 0.0,
+      "success": false,
+      "ctrf": [
+        {
+          "path": "alias-mteb-leaderboard/jobs/mteb-leaderboard--laya_v2--s42/mteb-leaderboard__RaJyyXJ/verifier/ctrf.json",
+          "summary": {
+            "tests": 2,
+            "passed": 0,
+            "failed": 2,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793560798.3784916,
+            "stop": 1793560798.6470866
+          }
+        }
+      ],
+      "started_at": "2026-11-01T18:59:08.185823Z",
+      "finished_at": "2026-11-01T19:20:03.710662Z",
+      "trial_wall_sec": 1255.524839,
+      "phase_wall_sec": {
+        "environment_setup": 1.341249,
+        "agent_setup": 0.000109,
+        "agent_execution": 1213.087583,
+        "verifier": 35.417689
+      },
+      "error_type": null,
+      "error_message": null,
+      "agent_exit_status": "LimitsExceeded",
+      "generation_completions": 30,
+      "generation_failed_requests": 0,
+      "tools_executed": 48,
+      "tools_os_exit_code_reported": 46,
+      "tool_timeouts": 2,
+      "tool_wall_sec": 176.24085208494216,
+      "generator_tokens": 839876,
+      "teacher_tokens": 0,
+      "total_model_tokens": 839876,
+      "known_input_tokens": 823150,
+      "known_completion_tokens_including_reasoning": 16726,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 30,
+      "known_cache_read_tokens": 769920,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 30
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 30
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.350712,
+      "known_generator_cost_usd": 0.350712,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.350712,
+      "logical_mapped_model_cost_usd": 0.350712,
+      "backend_family_reference_cost_usd": 0.02032986,
+      "known_backend_family_reference_cost_usd": 0.02032986,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 204.24919499782845,
+      "teacher_request_sec": null,
+      "router_decisions": 30,
+      "router_initializations": 1,
+      "router_reused_decisions": 29,
+      "router_wall_sec": 830.4352399189374,
+      "router_forward_sec": 795.2700456660241,
+      "router_initialization_sec": 33.523878291249275,
+      "router_non_forward_sec": 35.16519425291335,
+      "router_reused_non_forward_sec": 0.9362665371736512,
+      "router_fallbacks": 0,
+      "logical_model_counts": {
+        "gpt-6.1-sol": 30
+      },
+      "logical_model_switches": 0,
+      "routing_decisions": [
+        {
+          "step": 0,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-0",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3854,
+            "gpt-6-luna:low": 0.3291,
+            "qwen3.8-flash:none": 0.2855
+          },
+          "router_latency_ms": 42543.29204099486,
+          "inference_latency_ms": 8314.364325255156,
+          "initialization_ms": 33523.878291249275,
+          "process_reused": false,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 1,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-1",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3961,
+            "gpt-6-luna:low": 0.3089,
+            "qwen3.8-flash:none": 0.295
+          },
+          "router_latency_ms": 10663.973041984718,
+          "inference_latency_ms": 10653.387190774083,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 2,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-2",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3842,
+            "gpt-6-luna:low": 0.3151,
+            "qwen3.8-flash:none": 0.3007
+          },
+          "router_latency_ms": 20316.50091696065,
+          "inference_latency_ms": 20260.2426931262,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 3,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-3",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3922,
+            "qwen3.8-flash:none": 0.3044,
+            "gpt-6-luna:low": 0.3034
+          },
+          "router_latency_ms": 30982.143124972936,
+          "inference_latency_ms": 30969.505235552788,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 4,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-4",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3866,
+            "gpt-6-luna:low": 0.3112,
+            "qwen3.8-flash:none": 0.3022
+          },
+          "router_latency_ms": 30853.10304199811,
+          "inference_latency_ms": 30841.94769524038,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 5,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-5",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3908,
+            "gpt-6-luna:low": 0.3253,
+            "qwen3.8-flash:none": 0.2839
+          },
+          "router_latency_ms": 28034.59054196719,
+          "inference_latency_ms": 28023.80226366222,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 6,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-6",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3851,
+            "gpt-6-luna:low": 0.3176,
+            "qwen3.8-flash:none": 0.2973
+          },
+          "router_latency_ms": 29469.007333973423,
+          "inference_latency_ms": 29456.54097944498,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 7,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-7",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3852,
+            "gpt-6-luna:low": 0.3185,
+            "qwen3.8-flash:none": 0.2963
+          },
+          "router_latency_ms": 28805.023542023264,
+          "inference_latency_ms": 28790.460793301463,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 8,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-8",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3752,
+            "gpt-6-luna:low": 0.3318,
+            "qwen3.8-flash:none": 0.293
+          },
+          "router_latency_ms": 28479.752791987266,
+          "inference_latency_ms": 28467.716785147786,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 9,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-9",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3796,
+            "gpt-6-luna:low": 0.3107,
+            "qwen3.8-flash:none": 0.3097
+          },
+          "router_latency_ms": 30526.64925000863,
+          "inference_latency_ms": 30424.899224191904,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 10,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-10",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3706,
+            "gpt-6-luna:low": 0.3217,
+            "qwen3.8-flash:none": 0.3077
+          },
+          "router_latency_ms": 30059.41491702106,
+          "inference_latency_ms": 29935.372103005648,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 11,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-11",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3898,
+            "gpt-6-luna:low": 0.3255,
+            "qwen3.8-flash:none": 0.2847
+          },
+          "router_latency_ms": 30981.7134590121,
+          "inference_latency_ms": 30970.0251724571,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 12,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-12",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3718,
+            "gpt-6-luna:low": 0.3305,
+            "qwen3.8-flash:none": 0.2977
+          },
+          "router_latency_ms": 29695.899999991525,
+          "inference_latency_ms": 29685.170970857143,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 13,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-13",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3878,
+            "gpt-6-luna:low": 0.3165,
+            "qwen3.8-flash:none": 0.2957
+          },
+          "router_latency_ms": 24123.552749981172,
+          "inference_latency_ms": 24112.682627514005,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 14,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-14",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3773,
+            "gpt-6-luna:low": 0.3266,
+            "qwen3.8-flash:none": 0.2961
+          },
+          "router_latency_ms": 24331.122166011482,
+          "inference_latency_ms": 24311.25033274293,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 15,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-15",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3829,
+            "gpt-6-luna:low": 0.3295,
+            "qwen3.8-flash:none": 0.2876
+          },
+          "router_latency_ms": 24776.003832987044,
+          "inference_latency_ms": 24762.42248341441,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 16,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-16",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3919,
+            "gpt-6-luna:low": 0.3127,
+            "qwen3.8-flash:none": 0.2954
+          },
+          "router_latency_ms": 28768.09558295645,
+          "inference_latency_ms": 28756.82783871889,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 17,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-17",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3811,
+            "gpt-6-luna:low": 0.3114,
+            "qwen3.8-flash:none": 0.3075
+          },
+          "router_latency_ms": 29433.401375019457,
+          "inference_latency_ms": 29312.97306716442,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 18,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-18",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.391,
+            "gpt-6-luna:low": 0.3065,
+            "qwen3.8-flash:none": 0.3024
+          },
+          "router_latency_ms": 30073.642041999847,
+          "inference_latency_ms": 30062.038268893957,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 19,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-19",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3949,
+            "gpt-6-luna:low": 0.3057,
+            "qwen3.8-flash:none": 0.2995
+          },
+          "router_latency_ms": 25143.5491250013,
+          "inference_latency_ms": 25132.599586620927,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 20,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-20",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3825,
+            "gpt-6-luna:low": 0.3256,
+            "qwen3.8-flash:none": 0.2919
+          },
+          "router_latency_ms": 25248.657665972132,
+          "inference_latency_ms": 25236.712850630283,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 21,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-21",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3714,
+            "gpt-6-luna:low": 0.3335,
+            "qwen3.8-flash:none": 0.2951
+          },
+          "router_latency_ms": 28466.58775000833,
+          "inference_latency_ms": 28454.3543048203,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 22,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-22",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3781,
+            "gpt-6-luna:low": 0.3168,
+            "qwen3.8-flash:none": 0.3051
+          },
+          "router_latency_ms": 26540.400416997727,
+          "inference_latency_ms": 26529.92159128189,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 23,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-23",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3798,
+            "gpt-6-luna:low": 0.3168,
+            "qwen3.8-flash:none": 0.3034
+          },
+          "router_latency_ms": 26941.241000022274,
+          "inference_latency_ms": 26928.487062454224,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 24,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-24",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3799,
+            "gpt-6-luna:low": 0.3245,
+            "qwen3.8-flash:none": 0.2956
+          },
+          "router_latency_ms": 27231.45308403764,
+          "inference_latency_ms": 27218.135917559266,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 25,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-25",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3845,
+            "gpt-6-luna:low": 0.3175,
+            "qwen3.8-flash:none": 0.298
+          },
+          "router_latency_ms": 27220.212750020437,
+          "inference_latency_ms": 27208.82423222065,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 26,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-26",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3919,
+            "gpt-6-luna:low": 0.3209,
+            "qwen3.8-flash:none": 0.2873
+          },
+          "router_latency_ms": 28789.08716700971,
+          "inference_latency_ms": 28777.1809194237,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 27,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-27",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3769,
+            "gpt-6-luna:low": 0.3372,
+            "qwen3.8-flash:none": 0.2859
+          },
+          "router_latency_ms": 27620.96783402376,
+          "inference_latency_ms": 27610.0303940475,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 28,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-28",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3754,
+            "gpt-6-luna:low": 0.3232,
+            "qwen3.8-flash:none": 0.3014
+          },
+          "router_latency_ms": 27460.40279098088,
+          "inference_latency_ms": 27446.22990489006,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 29,
+          "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-29",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3846,
+            "gpt-6-luna:low": 0.3197,
+            "qwen3.8-flash:none": 0.2956
+          },
+          "router_latency_ms": 26855.798583012074,
+          "inference_latency_ms": 26615.938851609826,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "alias-pytorch-model-cli",
+      "task_id": "pytorch-model-cli",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "alias_dynamic",
+      "execution_mode": "ALIAS_SMOKE",
+      "source_commit": "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "BLOCKED",
+      "trial_id": "98bafddc-eaeb-4908-9b5c-744036e06fae",
+      "official_verifier": false,
+      "reward": null,
+      "success": null,
+      "ctrf": [],
+      "started_at": "2026-11-01T18:46:43.292355Z",
+      "finished_at": "2026-11-01T18:50:38.266403Z",
+      "trial_wall_sec": 234.974048,
+      "phase_wall_sec": {
+        "environment_setup": 1.485418,
+        "agent_setup": 0.000387,
+        "agent_execution": 227.960491,
+        "verifier": null
+      },
+      "error_type": "RuntimeError",
+      "error_message": "Command timed out after 30 seconds",
+      "agent_exit_status": "RuntimeError",
+      "generation_completions": 7,
+      "generation_failed_requests": 0,
+      "tools_executed": 7,
+      "tools_os_exit_code_reported": 6,
+      "tool_timeouts": 1,
+      "tool_wall_sec": 32.39831958402647,
+      "generator_tokens": 18938,
+      "teacher_tokens": 0,
+      "total_model_tokens": 18938,
+      "known_input_tokens": 17420,
+      "known_completion_tokens_including_reasoning": 1518,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 7,
+      "known_cache_read_tokens": 13952,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 7
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 7
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.0235112,
+      "known_generator_cost_usd": 0.0235112,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.0235112,
+      "logical_mapped_model_cost_usd": 0.0235112,
+      "backend_family_reference_cost_usd": 0.001472856,
+      "known_backend_family_reference_cost_usd": 0.001472856,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 22.850815250130836,
+      "teacher_request_sec": null,
+      "router_decisions": 7,
+      "router_initializations": 1,
+      "router_reused_decisions": 6,
+      "router_wall_sec": 170.96437058388256,
+      "router_forward_sec": 139.4115234799683,
+      "router_initialization_sec": 30.397429948672652,
+      "router_non_forward_sec": 31.552847103914246,
+      "router_reused_non_forward_sec": 0.37681556458119303,
+      "router_fallbacks": 0,
+      "logical_model_counts": {
+        "gpt-6.1-sol": 7
+      },
+      "logical_model_switches": 0,
+      "routing_decisions": [
+        {
+          "step": 0,
+          "decision_id": "98bafddc-eaeb-4908-9b5c-744036e06fae-0",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4253,
+            "gpt-6-luna:low": 0.3059,
+            "qwen3.8-flash:none": 0.2688
+          },
+          "router_latency_ms": 39450.993999955244,
+          "inference_latency_ms": 8274.962460622191,
+          "initialization_ms": 30397.429948672652,
+          "process_reused": false,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 1,
+          "decision_id": "98bafddc-eaeb-4908-9b5c-744036e06fae-1",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4301,
+            "gpt-6-luna:low": 0.2977,
+            "qwen3.8-flash:none": 0.2722
+          },
+          "router_latency_ms": 13392.96679198742,
+          "inference_latency_ms": 13267.980754375458,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 2,
+          "decision_id": "98bafddc-eaeb-4908-9b5c-744036e06fae-2",
+          "phase": "recover",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4488,
+            "qwen3.8-flash:none": 0.2926,
+            "gpt-6-luna:low": 0.2586
+          },
+          "router_latency_ms": 15874.519541976042,
+          "inference_latency_ms": 15756.205515936017,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 3,
+          "decision_id": "98bafddc-eaeb-4908-9b5c-744036e06fae-3",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4611,
+            "qwen3.8-flash:none": 0.2947,
+            "gpt-6-luna:low": 0.2442
+          },
+          "router_latency_ms": 17440.965874993708,
+          "inference_latency_ms": 17343.524035066366,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 4,
+          "decision_id": "98bafddc-eaeb-4908-9b5c-744036e06fae-4",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4132,
+            "qwen3.8-flash:none": 0.2954,
+            "gpt-6-luna:low": 0.2914
+          },
+          "router_latency_ms": 26386.976459005382,
+          "inference_latency_ms": 26375.194372609258,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 5,
+          "decision_id": "98bafddc-eaeb-4908-9b5c-744036e06fae-5",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4606,
+            "qwen3.8-flash:none": 0.3028,
+            "gpt-6-luna:low": 0.2367
+          },
+          "router_latency_ms": 29106.196957989596,
+          "inference_latency_ms": 29095.73150239885,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 6,
+          "decision_id": "98bafddc-eaeb-4908-9b5c-744036e06fae-6",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4292,
+            "gpt-6-luna:low": 0.2971,
+            "qwen3.8-flash:none": 0.2737
+          },
+          "router_latency_ms": 29311.750957975164,
+          "inference_latency_ms": 29297.92483896017,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "alias-teacher-git-leak-recovery",
+      "task_id": "git-leak-recovery",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "alias_teacher",
+      "execution_mode": "ALIAS_SMOKE",
+      "source_commit": "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "EVALUATED",
+      "trial_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277",
+      "official_verifier": true,
+      "reward": 1.0,
+      "success": true,
+      "ctrf": [
+        {
+          "path": "alias-teacher-git-leak-recovery/jobs/git-leak-recovery--laya_v2--s42/git-leak-recovery__9L57TzB/verifier/ctrf.json",
+          "summary": {
+            "tests": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793558397.7984316,
+            "stop": 1793558398.148802
+          }
+        }
+      ],
+      "started_at": "2026-11-01T18:35:23.498282Z",
+      "finished_at": "2026-11-01T18:40:02.456495Z",
+      "trial_wall_sec": 278.958213,
+      "phase_wall_sec": {
+        "environment_setup": 1.560779,
+        "agent_setup": 0.000131,
+        "agent_execution": 235.594232,
+        "verifier": 36.474273
+      },
+      "error_type": null,
+      "error_message": null,
+      "agent_exit_status": "Submitted",
+      "generation_completions": 7,
+      "generation_failed_requests": 0,
+      "tools_executed": 7,
+      "tools_os_exit_code_reported": 7,
+      "tool_timeouts": 0,
+      "tool_wall_sec": 5.580995126045309,
+      "generator_tokens": 26937,
+      "teacher_tokens": 2123,
+      "total_model_tokens": 29060,
+      "known_input_tokens": 25219,
+      "known_completion_tokens_including_reasoning": 3841,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 7,
+      "known_cache_read_tokens": 18688,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 8
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 8
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.0441828,
+      "known_generator_cost_usd": 0.0441828,
+      "teacher_cost_usd": 0.009158,
+      "model_rate_cost_usd": 0.0533408,
+      "logical_mapped_model_cost_usd": 0.0533408,
+      "backend_family_reference_cost_usd": 0.003340314,
+      "known_backend_family_reference_cost_usd": 0.003340314,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 28.0673273729044,
+      "teacher_request_sec": 4.6566798749845475,
+      "router_decisions": 7,
+      "router_initializations": 1,
+      "router_reused_decisions": 6,
+      "router_wall_sec": 195.62096554104937,
+      "router_forward_sec": 164.29107457213104,
+      "router_initialization_sec": 30.364628540351987,
+      "router_non_forward_sec": 31.329890968918335,
+      "router_reused_non_forward_sec": 0.21821772254770622,
+      "router_fallbacks": 0,
+      "logical_model_counts": {
+        "gpt-6.1-sol": 7
+      },
+      "logical_model_switches": 0,
+      "routing_decisions": [
+        {
+          "step": 0,
+          "decision_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277-0",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4096,
+            "gpt-6-luna:low": 0.3137,
+            "qwen3.8-flash:none": 0.2768
+          },
+          "router_latency_ms": 39108.264832990244,
+          "inference_latency_ms": 7996.591586619616,
+          "initialization_ms": 30364.628540351987,
+          "process_reused": false,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 1,
+          "decision_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277-1",
+          "phase": "inspect",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4131,
+            "qwen3.8-flash:none": 0.2968,
+            "gpt-6-luna:low": 0.2901
+          },
+          "router_latency_ms": 12489.390417002141,
+          "inference_latency_ms": 12477.368608117104,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 2,
+          "decision_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277-2",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3947,
+            "gpt-6-luna:low": 0.3105,
+            "qwen3.8-flash:none": 0.2948
+          },
+          "router_latency_ms": 21716.45183302462,
+          "inference_latency_ms": 21701.829701662064,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": false
+        },
+        {
+          "step": 3,
+          "decision_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277-3",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3995,
+            "qwen3.8-flash:none": 0.3013,
+            "gpt-6-luna:low": 0.2992
+          },
+          "router_latency_ms": 30333.117500005756,
+          "inference_latency_ms": 30191.823003813624,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": true
+        },
+        {
+          "step": 4,
+          "decision_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277-4",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.4035,
+            "qwen3.8-flash:none": 0.3148,
+            "gpt-6-luna:low": 0.2818
+          },
+          "router_latency_ms": 30709.175666968804,
+          "inference_latency_ms": 30685.98771840334,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": true
+        },
+        {
+          "step": 5,
+          "decision_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277-5",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3921,
+            "gpt-6-luna:low": 0.3184,
+            "qwen3.8-flash:none": 0.2895
+          },
+          "router_latency_ms": 30737.72800003644,
+          "inference_latency_ms": 30722.854310646653,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": true
+        },
+        {
+          "step": 6,
+          "decision_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277-6",
+          "phase": "modify",
+          "action_id": "gpt-6.1-sol:low",
+          "probabilities": {
+            "gpt-6.1-sol:low": 0.3891,
+            "gpt-6-luna:low": 0.317,
+            "qwen3.8-flash:none": 0.294
+          },
+          "router_latency_ms": 30526.837291021366,
+          "inference_latency_ms": 30514.619642868638,
+          "initialization_ms": 0.0,
+          "process_reused": true,
+          "fallback_used": false,
+          "teacher_present": true
+        }
+      ],
+      "teacher_requests": 1,
+      "teacher_successes": 1,
+      "teacher_router_consumptions": 4,
+      "teacher_records": [
+        {
+          "event": "TEACHER_END",
+          "assessment": {
+            "progress_summary": "Step 3 showed reflog entries for unreachable commit 6b4c75caa9a2aa9a630e16764007b0109b1f5c07 ('feat: add scratch notes') followed by reset to HEAD~1.",
+            "main_blocker": "No blocker is explicitly observed; reported budget_remaining_usd is 0.0.",
+            "next_milestone": "Recover the secret[...] string from the unreachable commit and write it to /app/secret.txt.",
+            "episode_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277",
+            "phase": "modify",
+            "assessed_through_decision_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277-2",
+            "assessed_through_step": 3,
+            "teacher_model_id": "gpt-6.1-sol",
+            "reference_ids": [
+              {
+                "source_id": "TRA-001",
+                "dataset_revision": "MR-ALLDATA-PREP-20261011/quality_grading_v2_1",
+                "task_id": "roniemartinez_latex2mathml_pr163",
+                "episode_id": "1197939a-b690-416b-a78a-b9ac72bb6059",
+                "split": "train",
+                "success_evidence": {
+                  "field": "resolved",
+                  "value": true,
+                  "source_path": "data/公开数据/原始数据/TRA-001_Open-SWE-Traces/minisweagent_qwen36_scaleswe_shard0.parquet",
+                  "source_row": 267,
+                  "label_nature": "PUBLIC_DATASET_RESOLVED_FIELD",
+                  "train_anchor": "TRA-001:roniemartinez_latex2mathml_pr163:1197939a-b690-416b-a78a-b9ac72bb6059:1"
+                },
+                "observed_through_step": 37
+              },
+              {
+                "source_id": "TRA-001",
+                "dataset_revision": "MR-ALLDATA-PREP-20261011/quality_grading_v2_1",
+                "task_id": "cloudtools_troposphere_pr2024",
+                "episode_id": "e8044c51-72a2-42d0-b67b-7f53caa54ba5",
+                "split": "train",
+                "success_evidence": {
+                  "field": "resolved",
+                  "value": true,
+                  "source_path": "data/公开数据/原始数据/TRA-001_Open-SWE-Traces/minisweagent_qwen36_scaleswe_shard0.parquet",
+                  "source_row": 47,
+                  "label_nature": "PUBLIC_DATASET_RESOLVED_FIELD",
+                  "train_anchor": "TRA-001:cloudtools_troposphere_pr2024:e8044c51-72a2-42d0-b67b-7f53caa54ba5:1"
+                },
+                "observed_through_step": 39
+              }
+            ]
+          },
+          "assessed_through_step": 3,
+          "trigger_reason": "INITIAL_THREE_GENERATIONS",
+          "teacher_model_id": "gpt-6.1-sol",
+          "actual_backend_model_id": "deepseek-v4.1-flash",
+          "prompt_tokens": 1509,
+          "completion_tokens": 614,
+          "reasoning_tokens": null,
+          "cached_tokens": null,
+          "cost_usd": 0.009158,
+          "backend_model_rate_cost_usd": 0.00059475,
+          "latency_ms": 4656.6798749845475,
+          "native_effort_status": "NOT_REPORTED",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "high"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "episode": "fixed-build-cython-ext",
+      "task_id": "build-cython-ext",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "fixed_deepseek",
+      "execution_mode": "REAL_DEEPSEEK_FIXED_DEV",
+      "source_commit": "6d040e786d0bd95a1060f793a8e680caa7bf1a93",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "BLOCKED",
+      "trial_id": "9b4525c8-dc08-4a28-8ae5-bde214368f38",
+      "official_verifier": false,
+      "reward": null,
+      "success": null,
+      "ctrf": [],
+      "started_at": "2026-11-01T18:28:52.395410Z",
+      "finished_at": "2026-11-01T18:30:52.593371Z",
+      "trial_wall_sec": 120.197961,
+      "phase_wall_sec": {
+        "environment_setup": 57.732288,
+        "agent_setup": 0.000736,
+        "agent_execution": 55.464289,
+        "verifier": null
+      },
+      "error_type": "RuntimeError",
+      "error_message": "Command timed out after 30 seconds",
+      "agent_exit_status": "RuntimeError",
+      "generation_completions": 5,
+      "generation_failed_requests": 0,
+      "tools_executed": 5,
+      "tools_os_exit_code_reported": 4,
+      "tool_timeouts": 1,
+      "tool_wall_sec": 38.38869354198687,
+      "generator_tokens": 25743,
+      "teacher_tokens": 0,
+      "total_model_tokens": 25743,
+      "known_input_tokens": 24215,
+      "known_completion_tokens_including_reasoning": 1528,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 4,
+      "known_cache_read_tokens": 14080,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 5
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 5
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.00247929,
+      "known_generator_cost_usd": 0.00247929,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.00247929,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": 0.00247929,
+      "known_backend_family_reference_cost_usd": 0.00247929,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 16.67582029098412,
+      "teacher_request_sec": null,
+      "router_decisions": 0,
+      "router_initializations": 0,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 0.0,
+      "router_forward_sec": 0.0,
+      "router_initialization_sec": 0.0,
+      "router_non_forward_sec": 0.0,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {},
+      "logical_model_switches": 0,
+      "routing_decisions": [],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "fixed-build-pmars",
+      "task_id": "build-pmars",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "fixed_deepseek",
+      "execution_mode": "REAL_DEEPSEEK_FIXED_DEV",
+      "source_commit": "6d040e786d0bd95a1060f793a8e680caa7bf1a93",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "BLOCKED",
+      "trial_id": "a29e3347-f9d9-4b63-95c1-866d5d5435a0",
+      "official_verifier": false,
+      "reward": null,
+      "success": null,
+      "ctrf": [],
+      "started_at": "2026-11-01T18:23:27.795633Z",
+      "finished_at": "2026-11-01T18:23:53.421407Z",
+      "trial_wall_sec": 25.625774,
+      "phase_wall_sec": {
+        "environment_setup": 16.847957,
+        "agent_setup": 0.000951,
+        "agent_execution": 3.367694,
+        "verifier": null
+      },
+      "error_type": "HTTPError",
+      "error_message": "HTTP Error 502: Bad Gateway",
+      "agent_exit_status": "HTTPError",
+      "generation_completions": 0,
+      "generation_failed_requests": 1,
+      "tools_executed": 0,
+      "tools_os_exit_code_reported": 0,
+      "tool_timeouts": 0,
+      "tool_wall_sec": 0.0,
+      "generator_tokens": null,
+      "teacher_tokens": 0,
+      "total_model_tokens": null,
+      "known_input_tokens": null,
+      "known_completion_tokens_including_reasoning": null,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 0,
+      "known_cache_read_tokens": null,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {},
+      "returned_model_ids": {},
+      "sent_effort_parameters": [],
+      "native_effort_statuses": [],
+      "generator_cost_usd": null,
+      "known_generator_cost_usd": null,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": null,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": null,
+      "known_backend_family_reference_cost_usd": null,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": null,
+      "teacher_request_sec": null,
+      "router_decisions": 0,
+      "router_initializations": 0,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 0.0,
+      "router_forward_sec": 0.0,
+      "router_initialization_sec": 0.0,
+      "router_non_forward_sec": 0.0,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {},
+      "logical_model_switches": 0,
+      "routing_decisions": [],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "fixed-build-pov-ray",
+      "task_id": "build-pov-ray",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "fixed_deepseek",
+      "execution_mode": "REAL_DEEPSEEK_FIXED_DEV",
+      "source_commit": "d77e0673169cc122c299dfee3b4e3ca5b35d6b28",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_AS_OBSERVATION",
+      "run_status": "EVALUATED",
+      "trial_id": "028d724d-031b-4953-b31a-b63103400b8d",
+      "official_verifier": true,
+      "reward": 1.0,
+      "success": true,
+      "ctrf": [
+        {
+          "path": "fixed-build-pov-ray/jobs/build-pov-ray--fixed_strong--s42/build-pov-ray__Ky8sYMU/verifier/ctrf.json",
+          "summary": {
+            "tests": 3,
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793559654.084591,
+            "stop": 1793559664.64347
+          }
+        }
+      ],
+      "started_at": "2026-11-01T18:53:28.513185Z",
+      "finished_at": "2026-11-01T19:01:08.730896Z",
+      "trial_wall_sec": 460.217711,
+      "phase_wall_sec": {
+        "environment_setup": 41.543255,
+        "agent_setup": 0.001065,
+        "agent_execution": 361.225954,
+        "verifier": 52.086159
+      },
+      "error_type": null,
+      "error_message": null,
+      "agent_exit_status": "LimitsExceeded",
+      "generation_completions": 30,
+      "generation_failed_requests": 0,
+      "tools_executed": 30,
+      "tools_os_exit_code_reported": 28,
+      "tool_timeouts": 2,
+      "tool_wall_sec": 225.83745645708404,
+      "generator_tokens": 517303,
+      "teacher_tokens": 0,
+      "total_model_tokens": 517303,
+      "known_input_tokens": 509356,
+      "known_completion_tokens_including_reasoning": 7947,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 29,
+      "known_cache_read_tokens": 465024,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 30
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 30
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.012813072,
+      "known_generator_cost_usd": 0.012813072,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.012813072,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": 0.012813072,
+      "known_backend_family_reference_cost_usd": 0.012813072,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 134.79563483287347,
+      "teacher_request_sec": null,
+      "router_decisions": 0,
+      "router_initializations": 0,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 0.0,
+      "router_forward_sec": 0.0,
+      "router_initialization_sec": 0.0,
+      "router_non_forward_sec": 0.0,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {},
+      "logical_model_switches": 0,
+      "routing_decisions": [],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "fixed-filter-js-from-html",
+      "task_id": "filter-js-from-html",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "fixed_deepseek",
+      "execution_mode": "REAL_DEEPSEEK_FIXED_DEV",
+      "source_commit": "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "BLOCKED",
+      "trial_id": "0b7e48dc-832b-4d0e-b0f6-5093f9211691",
+      "official_verifier": false,
+      "reward": null,
+      "success": null,
+      "ctrf": [],
+      "started_at": "2026-11-01T18:33:47.886119Z",
+      "finished_at": "2026-11-01T18:33:57.099291Z",
+      "trial_wall_sec": 9.213172,
+      "phase_wall_sec": {
+        "environment_setup": 1.484303,
+        "agent_setup": 0.002311,
+        "agent_execution": 3.06798,
+        "verifier": null
+      },
+      "error_type": "HTTPError",
+      "error_message": "HTTP Error 502: Bad Gateway",
+      "agent_exit_status": "HTTPError",
+      "generation_completions": 0,
+      "generation_failed_requests": 1,
+      "tools_executed": 0,
+      "tools_os_exit_code_reported": 0,
+      "tool_timeouts": 0,
+      "tool_wall_sec": 0.0,
+      "generator_tokens": null,
+      "teacher_tokens": 0,
+      "total_model_tokens": null,
+      "known_input_tokens": null,
+      "known_completion_tokens_including_reasoning": null,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 0,
+      "known_cache_read_tokens": null,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {},
+      "returned_model_ids": {},
+      "sent_effort_parameters": [],
+      "native_effort_statuses": [],
+      "generator_cost_usd": null,
+      "known_generator_cost_usd": null,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": null,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": null,
+      "known_backend_family_reference_cost_usd": null,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": null,
+      "teacher_request_sec": null,
+      "router_decisions": 0,
+      "router_initializations": 0,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 0.0,
+      "router_forward_sec": 0.0,
+      "router_initialization_sec": 0.0,
+      "router_non_forward_sec": 0.0,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {},
+      "logical_model_switches": 0,
+      "routing_decisions": [],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "fixed-financial-document-processor",
+      "task_id": "financial-document-processor",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "fixed_deepseek",
+      "execution_mode": "REAL_DEEPSEEK_FIXED_DEV",
+      "source_commit": "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "BLOCKED",
+      "trial_id": "2d80fd4f-f9f7-4f3a-9efc-dbd6c61004a9",
+      "official_verifier": false,
+      "reward": null,
+      "success": null,
+      "ctrf": [],
+      "started_at": "2026-11-01T18:43:50.040414Z",
+      "finished_at": "2026-11-01T18:44:47.552900Z",
+      "trial_wall_sec": 57.512486,
+      "phase_wall_sec": {
+        "environment_setup": 8.547643,
+        "agent_setup": 0.000111,
+        "agent_execution": 43.6126,
+        "verifier": null
+      },
+      "error_type": "RuntimeError",
+      "error_message": "Command timed out after 30 seconds",
+      "agent_exit_status": "RuntimeError",
+      "generation_completions": 5,
+      "generation_failed_requests": 0,
+      "tools_executed": 5,
+      "tools_os_exit_code_reported": 4,
+      "tool_timeouts": 1,
+      "tool_wall_sec": 30.685198749124538,
+      "generator_tokens": 11044,
+      "teacher_tokens": 0,
+      "total_model_tokens": 11044,
+      "known_input_tokens": 10313,
+      "known_completion_tokens_including_reasoning": 731,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 4,
+      "known_cache_read_tokens": 7168,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 5
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 5
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.000931854,
+      "known_generator_cost_usd": 0.000931854,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.000931854,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": 0.000931854,
+      "known_backend_family_reference_cost_usd": 0.000931854,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 12.691038625023793,
+      "teacher_request_sec": null,
+      "router_decisions": 0,
+      "router_initializations": 0,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 0.0,
+      "router_forward_sec": 0.0,
+      "router_initialization_sec": 0.0,
+      "router_non_forward_sec": 0.0,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {},
+      "logical_model_switches": 0,
+      "routing_decisions": [],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "fixed-git-leak-recovery",
+      "task_id": "git-leak-recovery",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "fixed_deepseek",
+      "execution_mode": "REAL_DEEPSEEK_FIXED_DEV",
+      "source_commit": "6d040e786d0bd95a1060f793a8e680caa7bf1a93",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "EVALUATED",
+      "trial_id": "2547d2a6-24e2-4792-81e6-7640cd84b1b1",
+      "official_verifier": true,
+      "reward": 1.0,
+      "success": true,
+      "ctrf": [
+        {
+          "path": "fixed-git-leak-recovery/jobs/git-leak-recovery--fixed_strong--s42/git-leak-recovery__C7UXBhS/verifier/ctrf.json",
+          "summary": {
+            "tests": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793557347.8982139,
+            "stop": 1793557348.2094352
+          }
+        }
+      ],
+      "started_at": "2026-11-01T18:21:09.953436Z",
+      "finished_at": "2026-11-01T18:22:31.968774Z",
+      "trial_wall_sec": 82.015338,
+      "phase_wall_sec": {
+        "environment_setup": 18.057082,
+        "agent_setup": 0.000187,
+        "agent_execution": 25.871233,
+        "verifier": 33.513698
+      },
+      "error_type": null,
+      "error_message": null,
+      "agent_exit_status": "Submitted",
+      "generation_completions": 7,
+      "generation_failed_requests": 0,
+      "tools_executed": 7,
+      "tools_os_exit_code_reported": 7,
+      "tool_timeouts": 0,
+      "tool_wall_sec": 2.150114126096014,
+      "generator_tokens": 23545,
+      "teacher_tokens": 0,
+      "total_model_tokens": 23545,
+      "known_input_tokens": 21171,
+      "known_completion_tokens_including_reasoning": 2374,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 6,
+      "known_cache_read_tokens": 15744,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 7
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 7
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.002285682,
+      "known_generator_cost_usd": 0.002285682,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.002285682,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": 0.002285682,
+      "known_backend_family_reference_cost_usd": 0.002285682,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 23.518061708076857,
+      "teacher_request_sec": null,
+      "router_decisions": 0,
+      "router_initializations": 0,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 0.0,
+      "router_forward_sec": 0.0,
+      "router_initialization_sec": 0.0,
+      "router_non_forward_sec": 0.0,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {},
+      "logical_model_switches": 0,
+      "routing_decisions": [],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "fixed-hf-model-inference",
+      "task_id": "hf-model-inference",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "fixed_deepseek",
+      "execution_mode": "REAL_DEEPSEEK_FIXED_DEV",
+      "source_commit": "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_AS_OBSERVATION",
+      "run_status": "EVALUATED",
+      "trial_id": "8bfbae6f-bf2a-479a-9f6c-97a2a4b1ed8a",
+      "official_verifier": true,
+      "reward": 1.0,
+      "success": true,
+      "ctrf": [
+        {
+          "path": "fixed-hf-model-inference/jobs/hf-model-inference--fixed_strong--s42/hf-model-inference__nVP8vvB/verifier/ctrf.json",
+          "summary": {
+            "tests": 4,
+            "passed": 4,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793559275.6631534,
+            "stop": 1793559280.76496
+          }
+        }
+      ],
+      "started_at": "2026-11-01T18:51:30.257412Z",
+      "finished_at": "2026-11-01T18:54:46.524024Z",
+      "trial_wall_sec": 196.266612,
+      "phase_wall_sec": {
+        "environment_setup": 59.913018,
+        "agent_setup": 0.000527,
+        "agent_execution": 114.672008,
+        "verifier": 14.261599
+      },
+      "error_type": null,
+      "error_message": null,
+      "agent_exit_status": "Submitted",
+      "generation_completions": 11,
+      "generation_failed_requests": 0,
+      "tools_executed": 13,
+      "tools_os_exit_code_reported": 11,
+      "tool_timeouts": 2,
+      "tool_wall_sec": 71.36294533399632,
+      "generator_tokens": 38210,
+      "teacher_tokens": 0,
+      "total_model_tokens": 38210,
+      "known_input_tokens": 34401,
+      "known_completion_tokens_including_reasoning": 3809,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 10,
+      "known_cache_read_tokens": 27776,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 11
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 11
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.003362478,
+      "known_generator_cost_usd": 0.003362478,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.003362478,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": 0.003362478,
+      "known_backend_family_reference_cost_usd": 0.003362478,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 43.05877545796102,
+      "teacher_request_sec": null,
+      "router_decisions": 0,
+      "router_initializations": 0,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 0.0,
+      "router_forward_sec": 0.0,
+      "router_initialization_sec": 0.0,
+      "router_non_forward_sec": 0.0,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {},
+      "logical_model_switches": 0,
+      "routing_decisions": [],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "fixed-mteb-leaderboard",
+      "task_id": "mteb-leaderboard",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "fixed_deepseek",
+      "execution_mode": "REAL_DEEPSEEK_FIXED_DEV",
+      "source_commit": "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "BLOCKED",
+      "trial_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994",
+      "official_verifier": false,
+      "reward": null,
+      "success": null,
+      "ctrf": [],
+      "started_at": "2026-11-01T18:46:43.799253Z",
+      "finished_at": "2026-11-01T18:51:49.966846Z",
+      "trial_wall_sec": 306.167593,
+      "phase_wall_sec": {
+        "environment_setup": 116.609461,
+        "agent_setup": 0.000614,
+        "agent_execution": 184.236962,
+        "verifier": null
+      },
+      "error_type": "RuntimeError",
+      "error_message": "Command timed out after 30 seconds",
+      "agent_exit_status": "RuntimeError",
+      "generation_completions": 25,
+      "generation_failed_requests": 0,
+      "tools_executed": 25,
+      "tools_os_exit_code_reported": 24,
+      "tool_timeouts": 1,
+      "tool_wall_sec": 91.01011795905652,
+      "generator_tokens": 884953,
+      "teacher_tokens": 0,
+      "total_model_tokens": 884953,
+      "known_input_tokens": 876558,
+      "known_completion_tokens_including_reasoning": 8395,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 24,
+      "known_cache_read_tokens": 805504,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 25
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 25
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.018111612,
+      "known_generator_cost_usd": 0.018111612,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.018111612,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": 0.018111612,
+      "known_backend_family_reference_cost_usd": 0.018111612,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 92.70901325100567,
+      "teacher_request_sec": null,
+      "router_decisions": 0,
+      "router_initializations": 0,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 0.0,
+      "router_forward_sec": 0.0,
+      "router_initialization_sec": 0.0,
+      "router_non_forward_sec": 0.0,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {},
+      "logical_model_switches": 0,
+      "routing_decisions": [],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    },
+    {
+      "episode": "fixed-pytorch-model-cli",
+      "task_id": "pytorch-model-cli",
+      "benchmark": "terminal-bench-2-1",
+      "split": "dev",
+      "train_eligible": false,
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "strategy": "fixed_deepseek",
+      "execution_mode": "REAL_DEEPSEEK_FIXED_DEV",
+      "source_commit": "8f4ed71745b4f2c647dfb6a6794b8de0011e6189",
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "run_status": "BLOCKED",
+      "trial_id": "1cab0aa8-7106-4747-ae44-e36f821f87ba",
+      "official_verifier": false,
+      "reward": null,
+      "success": null,
+      "ctrf": [],
+      "started_at": "2026-11-01T18:40:09.297166Z",
+      "finished_at": "2026-11-01T18:42:58.623432Z",
+      "trial_wall_sec": 169.326266,
+      "phase_wall_sec": {
+        "environment_setup": 4.22797,
+        "agent_setup": 0.0002,
+        "agent_execution": 159.25232,
+        "verifier": null
+      },
+      "error_type": "RuntimeError",
+      "error_message": "Command timed out after 30 seconds",
+      "agent_exit_status": "RuntimeError",
+      "generation_completions": 17,
+      "generation_failed_requests": 0,
+      "tools_executed": 17,
+      "tools_os_exit_code_reported": 16,
+      "tool_timeouts": 1,
+      "tool_wall_sec": 68.44737283291761,
+      "generator_tokens": 153900,
+      "teacher_tokens": 0,
+      "total_model_tokens": 153900,
+      "known_input_tokens": 142681,
+      "known_completion_tokens_including_reasoning": 11219,
+      "reasoning_count_reported_requests": 0,
+      "cache_read_count_reported_requests": 16,
+      "known_cache_read_tokens": 127232,
+      "cache_write_count_reported_requests": 0,
+      "finish_reasons": {
+        "completed": 17
+      },
+      "returned_model_ids": {
+        "deepseek-v4.1-flash": 17
+      },
+      "sent_effort_parameters": [
+        {
+          "reasoning": {
+            "effort": "high"
+          }
+        }
+      ],
+      "native_effort_statuses": [
+        "NOT_REPORTED"
+      ],
+      "generator_cost_usd": 0.009430446,
+      "known_generator_cost_usd": 0.009430446,
+      "teacher_cost_usd": 0,
+      "model_rate_cost_usd": 0.009430446,
+      "logical_mapped_model_cost_usd": null,
+      "backend_family_reference_cost_usd": 0.009430446,
+      "known_backend_family_reference_cost_usd": 0.009430446,
+      "actual_provider_billing_usd": null,
+      "complete_episode_cost_usd": null,
+      "generator_request_sec": 90.49368137301644,
+      "teacher_request_sec": null,
+      "router_decisions": 0,
+      "router_initializations": 0,
+      "router_reused_decisions": 0,
+      "router_wall_sec": 0.0,
+      "router_forward_sec": 0.0,
+      "router_initialization_sec": 0.0,
+      "router_non_forward_sec": 0.0,
+      "router_reused_non_forward_sec": 0.0,
+      "router_fallbacks": 0,
+      "logical_model_counts": {},
+      "logical_model_switches": 0,
+      "routing_decisions": [],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_records": []
+    }
+  ],
+  "cost_scope": {
+    "known_backend_family_reference_cost_usd": 0.10950165,
+    "total_backend_family_reference_cost_usd": null,
+    "known_alias_logical_mapped_model_cost_usd": 1.0058892,
+    "total_alias_logical_mapped_model_cost_usd": null,
+    "actual_provider_billing_usd": null,
+    "router_tool_and_container_resource_billing_usd": null,
+    "complete_episode_cost_usd": null,
+    "backend_family_reference_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_missing_policy": "Raw missing counts remain null; ordinary input rate for corresponding input",
+    "reasoning_policy": "Responses output tokens include reasoning; detail missing, counted once",
+    "failed_request_policy": "Missing Usage keeps complete model token and cost totals unknown; known subtotals retained"
+  },
+  "training_state": {
+    "new_training_started": false,
+    "current_model_only_preferences": 19,
+    "task_level_preferences": 9,
+    "step_level_preferences": 10,
+    "label_tasks": 11,
+    "sol_labels": 4,
+    "luna_labels": 15,
+    "step_sol_labels": 4,
+    "step_luna_labels": 6,
+    "native_effort_targets": 0,
+    "formal_k3_targets": 0,
+    "prepared_continuation_rows": 74,
+    "current_checkpoint_actual_train_rows": 72,
+    "new_215_row_view_trained": false,
+    "serving_weights_replaced": false,
+    "fixed_val_or_twinrouterbench_repeated": false,
+    "f14_snapshot": "server_snapshot.json"
+  },
+  "cleanup": {
+    "redundant_working_tree_status_copies_removed": 10,
+    "empty_filtered_patch_copies_removed": 5,
+    "related_source_patch_copies_retained": 5,
+    "user_files_and_real_failed_trials_preserved": true,
+    "large_task_artifacts_retained_locally_not_public_git": true,
+    "temporary_deepseek_documentation_tab_closed": true,
+    "original_user_alibaba_tab_preserved": true,
+    "remaining_docker_containers": 0
+  },
+  "research_conclusion": {
+    "dynamic_quality_or_cost_advantage_proven": false,
+    "teacher_net_benefit_proven": false,
+    "formal_three_model_quality_comparison_completed": false,
+    "swe_bench_verified_native_entry_available": false,
+    "all_results_dev_not_train": true
+  },
+  "known_model_usage": {
+    "input_tokens": 3316883,
+    "completion_tokens_including_reasoning": 91810,
+    "reported_usage_requests": 223,
+    "unknown_usage_requests": 4,
+    "reasoning_detail_reported_requests": 0,
+    "reasoning_detail_unknown_requests": 223,
+    "cache_read_reported_requests": 215,
+    "cache_read_unknown_requests": 8,
+    "cache_write_reported_requests": 0,
+    "complete_model_token_total": null
+  },
+  "protocol_groups": [
+    {
+      "tool_timeout_behavior": "TOOL_TIMEOUT_PROPAGATES",
+      "episodes": 13,
+      "official_verifiers": 3,
+      "successes": 3,
+      "failures": 0,
+      "unknown_outcomes": 10,
+      "tool_timeouts": 6
+    },
+    {
+      "tool_timeout_behavior": "TOOL_TIMEOUT_AS_OBSERVATION",
+      "episodes": 6,
+      "official_verifiers": 6,
+      "successes": 4,
+      "failures": 2,
+      "unknown_outcomes": 0,
+      "tool_timeouts": 13
+    }
+  ],
+  "complete_same_protocol_pair_aggregate": {
+    "tasks": [
+      "build-pov-ray",
+      "git-leak-recovery",
+      "hf-model-inference"
+    ],
+    "fixed_successes": 3,
+    "dynamic_successes": 2,
+    "fixed_backend_reference_cost_usd": 0.018461232,
+    "dynamic_backend_reference_cost_usd": 0.013441884,
+    "fixed_backend_reference_cost_per_success_usd": 0.006153744,
+    "dynamic_backend_reference_cost_per_success_usd": 0.006720942,
+    "fixed_trial_wall_sec": 738.499661,
+    "dynamic_trial_wall_sec": 1805.481871,
+    "actual_provider_invoice_or_resource_cost": null,
+    "interpretation": "Three descriptive Dev pairs on one API backend, not formal K3 quality or training targets"
+  },
+  "dashboard": {
+    "original_remote_snapshot_read": true,
+    "last_episode": "alias-build-pov-ray",
+    "status": "EVALUATED",
+    "timestamp": "2026-11-01T19:30:53.797956+00:00",
+    "snapshot_scope": "ORIGINAL_SINGLE_EPISODE_DASHBOARD; batch summary remains in this result directory",
+    "post_batch_source_change": "Original upload temporary name uses process ID; upload stderr retained"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "response": {
+    "id": "01a1987cf99e78988784c4615a72c585",
+    "object": "response",
+    "created_at": 1793559690,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_5b72065be59824b3ce2a1010",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We need \"Scandinavian MTEB leaderboard\". Maybe MTEB has a benchmark named \"Scandinavian\" in results. There could be a leaderboard at \"https://huggingface.co/spaces/mteb/leaderboard\" with benchmark selector including \"Scandinavian\". Need highest Mean (Task) as of August 2025, only models with results for all tasks.\n\nCould query MTEB results dataset and benchmark metadata. Let's install mteb or use HF dataset. The mteb/results dataset likely has per-model files and scores. Better: mteb package contains benchmark definitions including \"Scandinavian\" perhaps. Let's check latest package / GitHub.\n\nAlso maybe \"SEB\" (Scandinavian Embedding Benchmark) is a separate leaderboard? Search web. The phrase \"Scandinavian MTEB leaderboard\" could refer to MTEB's benchmark tab selecting \"Scandinavian\". There's an \"MTEB(Scandinavian, v1)\" benchmark added around 2025. Need identify exact model with highest mean task, all tasks.\n\nLet's investigate mteb GitHub. Search API for \"Scandinavian\"."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_a5581726cfece243573012c7",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The phrase likely refers to the \"Scandinavian\" benchmark within the official MTEB leaderboard, not a separate space. Let me inspect MTEB's benchmark definitions and results data to confirm the task set and derive the ranking."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_308ec8b8d85b5cebaa6c1bff",
+        "status": "completed",
+        "call_id": "call_00_2yeiyIqaCr50wttBbz7E3740",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests\\nurls=[\\n 'https://raw.githubusercontent.com/embeddings-benchmark/mteb/main/mteb/benchmarks/benchmarks.py',\\n 'https://api.github.com/search/code?q=Scandinavian+repo:embeddings-benchmark/mteb',\\n]\\nfor u in urls:\\n    r=requests.get(u,timeout=30)\\n    print('===',u,r.status_code,len(r.text))\\n    print(r.text[:2000])\\nPY\"}"
+      },
+      {
+        "type": "function_call",
+        "id": "item_31cc5e4c200ae180d08f59e3",
+        "status": "completed",
+        "call_id": "call_01_kWAWO4ouNeRNx4ea0aT22359",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests, json\\nr=requests.get('https://huggingface.co/api/datasets/mteb/results',timeout=30)\\nprint(r.status_code)\\nj=r.json(); print(json.dumps({k:j.get(k) for k in ['id','lastModified','cardData']},indent=2)[:3000])\\nr=requests.get('https://huggingface.co/api/datasets/mteb/results/tree/main',params={'recursive':'false','limit':100},timeout=30)\\nprint(r.status_code)\\nfor x in r.json()[:30]: print(x)\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 5140,
+      "output_tokens": 595,
+      "total_tokens": 5735,
+      "input_tokens_details": {
+        "cached_tokens": 2304
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a1987cf99e78988784c4615a72c585",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 5140,
+      "output_tokens": 595,
+      "total_tokens": 5735,
+      "input_tokens_details": {
+        "cached_tokens": 2304
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 5140,
+    "completion_tokens": 595,
+    "reported_completion_tokens": 595,
+    "reasoning_tokens": null,
+    "cached_tokens": 2304,
+    "cache_write_tokens": null,
+    "ttft_ms": 10322.703541023657,
+    "latency_ms": 11756.635249999817,
+    "output_tokens_per_s": 50.60971845664849,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 414.94305222166753,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0118524,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000789312,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb",
+    "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-3",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

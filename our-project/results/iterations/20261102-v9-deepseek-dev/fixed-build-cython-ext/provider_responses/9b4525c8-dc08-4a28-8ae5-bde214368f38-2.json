@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a1986028ae7a3198c178b2be0e8142",
+    "object": "response",
+    "created_at": 1793557802,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_74cec087732a3e1d38c63f6d",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We need build/install. Need inspect code for numpy 2 issues, Python 3.13 Cython. Let's attempt pip install -e? User asks compile extensions install from source global env. likely pip install . Need fix. First check dependencies installed and build attempt. Also inspect pyx imports."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_42628f3dd9d10bca9bb92a2d",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The package uses legacy Cython extension definitions and directly includes NumPy headers. I’ll inspect the extension sources and then attempt a source install to collect the actual compiler/Cython errors."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_d2beceb036dfed93ddebcbfc",
+        "status": "completed",
+        "call_id": "call_00_tB5TL63JCwr01mwS2p2i8348",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /app/pyknotid && echo '--- Cython/numpy/deps ---' && python - <<'PY'\\nmods=['Cython','numpy','networkx','planarity','peewee','vispy','sympy','appdirs','requests','tqdm']\\nfor m in mods:\\n    try:\\n        mod=__import__(m)\\n        print(m, getattr(mod,'__version__','ok'))\\n    except Exception as e:\\n        print(m, 'FAIL', repr(e))\\nPY\\necho '--- pyx numpy usage ---'\\ngrep -RIn --include='*.pyx' --include='*.pxd' -E 'cimport numpy|import numpy|np\\\\.|PyArray|import_array|dtype|int_t|float_t|object' pyknotid | head -200\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 4497,
+      "output_tokens": 310,
+      "total_tokens": 4807,
+      "input_tokens_details": {
+        "cached_tokens": 2048
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a1986028ae7a3198c178b2be0e8142",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 4497,
+      "output_tokens": 310,
+      "total_tokens": 4807,
+      "input_tokens_details": {
+        "cached_tokens": 2048
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 4497,
+    "completion_tokens": 310,
+    "reported_completion_tokens": 310,
+    "reasoning_tokens": null,
+    "cached_tokens": 2048,
+    "cache_write_tokens": null,
+    "ttft_ms": 2173.786624975037,
+    "latency_ms": 3373.9845829550177,
+    "output_tokens_per_s": 91.87949511271758,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 258.29072440829026,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000559494,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000559494,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "9b4525c8-dc08-4a28-8ae5-bde214368f38",
+    "decision_id": "9b4525c8-dc08-4a28-8ae5-bde214368f38-2",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

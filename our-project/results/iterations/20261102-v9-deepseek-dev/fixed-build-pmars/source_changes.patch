@@ -1,0 +1,106 @@
+diff --git a/our-project/code/src/modelrouter/benchmark/harbor_agent.py b/our-project/code/src/modelrouter/benchmark/harbor_agent.py
+index 88ea77a..41e09c3 100644
+--- a/our-project/code/src/modelrouter/benchmark/harbor_agent.py
++++ b/our-project/code/src/modelrouter/benchmark/harbor_agent.py
+@@ -83,6 +83,7 @@ class PolicyModel(LitellmModel):
+         target = "gpt-6-luna" if policy == "fixed_strong" else "gpt-5.6-luna"
+         if self.v9_enabled:
+             target = "gpt-6.1-sol" if policy == "fixed_strong" else "qwen3.8-flash"
++            target = v9_config.get("fixed_model_id", target)
+         self.policy = create_policy(policy_key, seed=seed, target_model=target)
+         self.state, self.record_dir = state, record_dir
+         self.provider = provider
+@@ -116,7 +117,8 @@ class PolicyModel(LitellmModel):
+         self.teacher_metrics = self.v9_hook.teacher_metrics if self.v9_hook else []
+         self.action_validation = {
+             action["action_id"]: ("ALIAS_SMOKE_ONLY" if self.v9_enabled and
+-                                  getattr(self.provider, "alias_mapping", None) is not None else
++                                  getattr(self.provider, "alias_mapping", None) is not None and
++                                  self.provider.alias_mapping.resolve(action["model"], action["native_effort"]) else
+                                   "REAL_API_NOT_OBSERVED" if self.v9_enabled else
+                                   "REAL_TESTED_LOW" if action["native_effort"] == "low" else "NOT_TESTED")
+             for action in self.actions
+diff --git a/our-project/code/src/modelrouter/providers/provider.py b/our-project/code/src/modelrouter/providers/provider.py
+index 6ac5b97..abc7fec 100644
+--- a/our-project/code/src/modelrouter/providers/provider.py
++++ b/our-project/code/src/modelrouter/providers/provider.py
+@@ -334,7 +334,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
+         aliases = {"gpt-6": "gpt-6-luna", "luna": "gpt-6-luna", "gpt-5.6": "gpt-5.6-luna"}
+         model = model_id.lower().replace(" ", "-")
+         target = aliases.get(model, model)
+-        if target in V9_MODEL_IDS:
++        if target in V9_MODEL_IDS or target in self.model_endpoints:
+             return target
+         if target not in self.allowed_models:
+             target = self.primary_model
+@@ -489,6 +489,10 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
+                          "PROVIDER_REPORTED_MISMATCH")
+         usage_complete = p_tokens is not None and c_tokens is not None
+         cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and (alias_facts is not None or returned == target) else None
++        backend_spec = MODEL_REGISTRY.get(target)
++        backend_cost = (backend_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0)
++                        if alias_facts is not None and backend_spec is not None and usage_complete and returned == target
++                        else cost if alias_facts is None else None)
+         # Vendor cost is distinct from the configured price estimate.
+         reported_cost = (raw_usage or {}).get("cost")
+         reported_cost_unit = (raw_usage or {}).get("cost_currency") or (raw_usage or {}).get("currency")
+@@ -541,6 +545,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
+             "cost_model_id": target_spec.model_id,
+             "cost_source": target_spec.pricing_source,
+             "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE" if alias_facts is not None else "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
++            "backend_model_rate_cost_usd": backend_cost,
++            "backend_model_rate_source": backend_spec.pricing_source if backend_spec else None,
++            "backend_model_rate_status": backend_spec.pricing_status if backend_spec else "NOT_MEASURED",
+             "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+             "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+             "cost_status": "MAPPED_EXPERIMENT_PRICE" if alias_facts is not None and cost is not None else (target_spec.pricing_status if cost is not None else "UNKNOWN"),
+diff --git a/our-project/code/src/modelrouter/providers/registry.py b/our-project/code/src/modelrouter/providers/registry.py
+index 9091c46..d557c05 100644
+--- a/our-project/code/src/modelrouter/providers/registry.py
++++ b/our-project/code/src/modelrouter/providers/registry.py
+@@ -81,6 +81,19 @@ V9_MODEL_IDS = ("gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash")
+ 
+ # 5 Major Model Pools
+ MODEL_REGISTRY: Dict[str, ModelSpec] = {
++    "deepseek-v4.1-flash": ModelSpec(
++        model_id="deepseek-v4.1-flash", pool="Fast", provider="aihub",
++        display_name="DeepSeek V4.1 Flash (configured AIHub endpoint)",
++        context_window=1_000_000, max_output_tokens=393_216,
++        native_efforts=("none", "low", "high", "max"),
++        input_price_per_1m=0.15, output_price_per_1m=0.60, reasoning_price_per_1m=0.60,
++        cache_read_price_per_1m=0.003, cache_write_price_per_1m=0.15,
++        pricing_status="OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
++        pricing_source="https://api-docs.deepseek.com/quick_start/pricing",
++        identity_status="CONFIGURED_API_ID_UNVERIFIED_PHYSICAL_RELEASE",
++        context_status="OFFICIAL_FAMILY_DOCUMENTATION",
++        native_efforts_status="OFFICIAL_FAMILY_DOCUMENTATION_APPLICATION_UNVERIFIED",
++    ),
+     # 1. Fast Pool
+     "gpt-4o-mini": ModelSpec(
+         model_id="gpt-4o-mini",
+diff --git a/our-project/code/src/modelrouter/v9/runtime/alias.py b/our-project/code/src/modelrouter/v9/runtime/alias.py
+index c5aa5bc..8550164 100644
+--- a/our-project/code/src/modelrouter/v9/runtime/alias.py
++++ b/our-project/code/src/modelrouter/v9/runtime/alias.py
+@@ -39,7 +39,7 @@ class AliasMapping:
+ 
+ def alias_provider(config: dict, api_key=None):
+     """Use the same configured Provider in local and Harbor episodes."""
+-    from modelrouter.providers.provider import OpenAICompatibleProvider
++    from modelrouter.providers.provider import OpenAICompatibleProvider, OpenAIResponsesProvider
+ 
+     credential = api_key
+     if credential is None:
+@@ -66,7 +66,11 @@ def alias_provider(config: dict, api_key=None):
+     mapping = AliasMapping(config["actual_backend_model_id"], config["base_url"],
+                            effective_native_effort=config.get("effective_native_effort", "none"),
+                            cost_status="MAPPED_EXPERIMENT_PRICE")
+-    return OpenAICompatibleProvider(
++    provider = (OpenAIResponsesProvider if config.get("generator_protocol") == "responses"
++                else OpenAICompatibleProvider)
++    return provider(
+         base_url=config["base_url"], alias_mapping=mapping,
+         api_key=credential if credential is not None else "",
++        request_timeout_sec=config.get("provider_timeout_sec", 60.0),
++        model_endpoints=config.get("model_endpoints"),
+     )

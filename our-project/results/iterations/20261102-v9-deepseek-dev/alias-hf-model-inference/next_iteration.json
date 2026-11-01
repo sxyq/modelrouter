@@ -1,0 +1,26 @@
+{
+  "status": "EVALUATED",
+  "reason": "",
+  "pending_units": [],
+  "unresolved_problems": [],
+  "hypotheses": [
+    "The same official mini-swe-agent can isolate policy effects on paired tasks."
+  ],
+  "required_config": "<LOCAL_PROJECT>/our-project/results/iterations/20261102-v9-deepseek-dev/alias-hf-model-inference/run_config.json",
+  "priority": "Continue the recorded task order",
+  "failure_categories": [],
+  "completed_units": [
+    {
+      "task_id": "hf-model-inference",
+      "policy": "laya_v2",
+      "agent": "modelrouter",
+      "job_name": "hf-model-inference--laya_v2--s42",
+      "status": "EVALUATED",
+      "pipeline_stage": "DEV",
+      "exit_code": 0
+    }
+  ],
+  "next_command": "python -m modelrouter.benchmark resume <LOCAL_PROJECT>/our-project/results/iterations/20261102-v9-deepseek-dev/alias-hf-model-inference",
+  "sealed_test": "REQUIRES_OWNER_CONFIRMATION",
+  "completed_development": []
+}

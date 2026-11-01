@@ -1,6 +1,16 @@
 # ModelRouter · 数据源、模型能力与缓存政策统一台账
 
-## 当前能力与数据来源（2026-11-02）
+## 当前：DeepSeek Dev证据与训练资格（2026-11-02）
+
+原Terminal-Bench 2.1 Dev资产本轮9个不同任务、19 Episode，所有任务/来源与逐步状态保留在[批次结果](../results/iterations/20261102-v9-deepseek-dev/summary.json)。原Verifier执行9次，7成功/2失败/10未知；固定为DeepSeek、动态为ALIAS_SMOKE，三组同协议完整对照可作Dev分析。全部明确`OBSERVED_OUTCOME_ONLY`、`train_eligible=false`，不生成正式Sol/Luna/Flash或Native Effort选择目标；财务/MTEB跨处理版本不作有效胜负比较。
+
+有效Train目标仍19 Model-only、任务9/步骤10、11标签任务，总Sol4/Luna15、步骤Sol4/Luna6；本轮新增0。原382行、13,214候选和旧模型身份保持，215/186仅可组合，74行定向材料未训练。Dev教师1成功/4次Router消费不等于新的Train教师目标；两固定参考和截止范围保持。
+
+AA固定`20261031T072548885180Z-v4`，Max各10项，low/none/托管Flash缺测，不运行逐次联网或借用Max成绩。DeepSeek请求high但应用档位未报告；正式Native Effort/K=3目标0，Flash旧访问障碍未重探。227请求/223Usage/4未知，DeepSeek同系列公开参考费小计0.10950165USD、逻辑映射1.0058892USD，实际供应商费率和实收、资源费用未知，原Usage/缓存/reasoning缺项分别保留。
+
+03:36:36台北F14独立维护284/420块、36352/107404步，首轮/Val未完；本轮未训练或干预，Serving仍F05/原Kev。以下Train来源结果为前一工作包已完成资产，不重复加工。
+
+## 前一工作包能力与数据来源（2026-11-02）
 
 本轮沿已有TRA-002原资产比较Schema、Mido、PrettyTable三个训练任务，8对相同已发生前缀，各方实际工具与同范围原测试均保存；未重复下载或清洗旧数据。Schema、Mido许可证为MIT；PrettyTable原镜像/LICENSE为BSD-3-Clause，其观察记录的来源字段已按该原文更新。Train与Canary/Dev/Sealed Final及可识别派生题的既有隔离记录保持，不对不可识别近重复作全面结论。
 

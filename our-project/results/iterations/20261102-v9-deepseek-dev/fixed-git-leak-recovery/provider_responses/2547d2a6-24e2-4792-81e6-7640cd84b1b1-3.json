@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a198587d8475d1b206647cc876626e",
+    "object": "response",
+    "created_at": 1793557299,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_3992d860435a08de8cf6e437",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We recovered secret. Need write /app/secret.txt. Then clean up repo to ensure cannot be found anywhere. Need preserve irrelevant files and commit messages untouched. Current branch history: c6d9997 \"chore: init...\" and predecessor 7a2420e same message. Unreachable commit/objects remain in repo. Need remove secret and perhaps all unreachable objects referencing it, reflogs. Need ensure secret cannot be found anywhere in repo. Should not rewrite branch commit messages, preserve README. We can delete orphan objects and expire reflogs, prune, gc. Need be thorough: remove secret from .git loose objects, packs, reflogs, maybe ORIG_HEAD, logs, index? Let's inspect .git. Also will write /app/secret.txt (outside repo). Then repo cleanup remove unreachable commit 6b4c75c and objects 52d18..., 76b5..., aa7dfd... Maybe `git reflog expire --expire=now --all && git gc --prune=now --aggressive` should remove unreachable. But reflog currently references only reachable commits? Reflog entries c6d... and 7a2420e and 6b4c75c. The 6b4 commit is only reflog-entry; after expire all reflogs removes. Note commit object 6b4 unreachable; its tree etc. `git gc --prune=now` removes. But could secret content remain in commit object? no, only blob. Need search all .git files including compressed data. `grep -R` may not find compressed. Better use git cat-file all objects after prune and raw file search. Also pack may be deleted. Could use `git count-objects -v`. Need check config, alternates, worktrees, etc. Let's inspect. Also potentially `.git/lost-found`? Let's look."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_baf5e859b07a6bb27b6e81e4",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The secret is `secret[lost_and_found_in_git]` in the unreachable scratch-notes commit. I’ll save it to `/app/secret.txt`, then expire reflogs and prune unreachable objects so no Git object or reflog reference retains it."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_7482ea9af550f922c8d40b60",
+        "status": "completed",
+        "call_id": "call_00_WH0PHWDdfquYgmb29m9S3748",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /app && printf '%s\\\\n' 'secret[lost_and_found_in_git]' > /app/secret.txt && echo '--- secret.txt ---' && cat /app/secret.txt && cd /app/repo && echo '--- before cleanup ---' && git count-objects -v && find .git -maxdepth 3 -type f -printf '%p %s bytes\\\\n' | sort\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 3041,
+      "output_tokens": 583,
+      "total_tokens": 3624,
+      "input_tokens_details": {
+        "cached_tokens": 2304
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a198587d8475d1b206647cc876626e",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 3041,
+      "output_tokens": 583,
+      "total_tokens": 3624,
+      "input_tokens_details": {
+        "cached_tokens": 2304
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 3041,
+    "completion_tokens": 583,
+    "reported_completion_tokens": 583,
+    "reasoning_tokens": null,
+    "cached_tokens": 2304,
+    "cache_write_tokens": null,
+    "ttft_ms": 3840.7849579816684,
+    "latency_ms": 4572.815499966964,
+    "output_tokens_per_s": 127.49256995044122,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 796.4148577993494,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000467262,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000467262,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "2547d2a6-24e2-4792-81e6-7640cd84b1b1",
+    "decision_id": "2547d2a6-24e2-4792-81e6-7640cd84b1b1-3",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

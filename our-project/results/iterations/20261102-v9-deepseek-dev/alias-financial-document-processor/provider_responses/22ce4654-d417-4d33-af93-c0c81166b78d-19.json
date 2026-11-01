@@ -1,0 +1,127 @@
+{
+  "response": {
+    "id": "01a19880e5577ca9a805419b99102887",
+    "object": "response",
+    "created_at": 1793559947,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "message",
+        "id": "item_ff69f50861f8a23008416a97",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The issue is the label “TotalPrice” containing digits (`Price` token starts with `P`, but the regex matched `4031` as `403` plus `1` due to boundary handling). I’ll anchor extraction after the total label and improve tokenization so adjacent numbers don’t split incorrectly."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_4193643b652df0d8d5cb47b1",
+        "status": "completed",
+        "call_id": "call_00_ET_w1RG6qjW7m0YF7lKd9Hm0514",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\np='/app/process_documents.py'\\ns=open(p).read()\\n# Improve numeric token regex: enforce boundaries around groups.\\ns=s.replace(\\n    'pattern = re.compile(r\\\"[-+]?\\\\\\\\d{1,3}(?:[ \\\\\\\\u00a0]\\\\\\\\d{3})*(?:[.,]\\\\\\\\d{1,2})?\\\")',\\n    'pattern = re.compile(r\\\"(?<![\\\\\\\\d.,])[-+]?\\\\\\\\d{1,3}(?:[ \\\\\\\\u00a0]\\\\\\\\d{3})*(?:[.,]\\\\\\\\d{1,2})?(?![\\\\\\\\d])\\\")'\\n)\\n# Add helper to prefer amount after total label.\\nold='''        if re.search(r\\\"\\\\\\\\b(?:grand\\\\\\\\s+)?total(?:\\\\\\\\s*price)?\\\\\\\\b\\\", lower):\\n            vals = currency_amounts(line)\\n            if vals:\\n                total_values = vals\\n                break\\n'''\\nnew='''        total_match = re.search(\\n            r\\\"\\\\\\\\b(?:grand\\\\\\\\s+total|total\\\\\\\\s*price|total)\\\\\\\\b\\\", lower\\n        )\\n        if total_match:\\n            # Prefer amounts appearing after the label (e.g. \\\"TotalPrice 4031.0\\\"),\\n            # not digits embedded in the label itself.\\n            vals = currency_amounts(line[total_match.end():])\\n            if not vals:\\n                vals = currency_amounts(line)\\n            if vals:\\n                total_values = vals\\n                break\\n'''\\nassert old in s\\ns=s.replace(old,new)\\nopen(p,'w').write(s)\\nPY\\npython3 -m py_compile /app/process_documents.py\\npython3 - <<'PY'\\nimport importlib.util\\nfrom pathlib import Path\\nspec=importlib.util.spec_from_file_location('pd','/app/process_documents.py'); pd=importlib.util.module_from_spec(spec); spec.loader.exec_module(pd)\\nfor path in sorted(Path('/app/documents').iterdir()):\\n    text=pd.extract_text(path)\\n    if pd.is_invoice(text):\\n        print(path.name, pd.extract_amounts(text))\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 24934,
+      "output_tokens": 559,
+      "total_tokens": 25493,
+      "input_tokens_details": {
+        "cached_tokens": 24704
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a19880e5577ca9a805419b99102887",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 24934,
+      "output_tokens": 559,
+      "total_tokens": 25493,
+      "input_tokens_details": {
+        "cached_tokens": 24704
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 24934,
+    "completion_tokens": 559,
+    "reported_completion_tokens": 559,
+    "reasoning_tokens": null,
+    "cached_tokens": 24704,
+    "cache_write_tokens": null,
+    "ttft_ms": 2092.2235409962013,
+    "latency_ms": 4461.573124979623,
+    "output_tokens_per_s": 125.2921300046053,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 235.9297267818928,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0085204,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000444012,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "22ce4654-d417-4d33-af93-c0c81166b78d",
+    "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-19",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

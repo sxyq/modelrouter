@@ -1,0 +1,145 @@
+{
+  "response": {
+    "id": "01a19886a22e7b9c994fceb02c4f88e5",
+    "object": "response",
+    "created_at": 1793560323,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_722d930a793ecc5223845546",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "The official scoring is mean of main scores across tasks. For \"all tasks\" we need every one of the 27 tasks present and valid.\n\nBut subtle: tasks were renamed/have versions. Around Aug 2025, task names likely include \"NorwegianParliamentClassification\" etc. The benchmark list is in current repo but likely same. Need find which files each model has.\n\nAlso, the leaderboard Mean (Task) in Aug 2025 may have been based on subset of tasks, or benchmark task list may have evolved. Question explicitly \"according to the Scandinavian MTEB leaderboard (i.e. highest Mean (Task)) as of August 2025. Only consider models that have results for all tasks in the benchmark.\" We need likely fetch snapshot of leaderboard data around August 2025.\n\nCould possibly find leaderboard cached data in GitHub repo mteb/results or a static leaderboard data artifact. Let's inspect old leaderboard frontend or current leaderboard API. New leaderboard likely pulls results and computes. Maybe there is endpoint. Let's inspect HF Space mteb/leaderboard API? It says Docker frontend from ghcr. Could have backend endpoints. Possibly current leaderboard website allows selecting benchmark \"Scandinavian\" and gives results. But as of current time (2026) is not August 2025.\n\nNeed reconstruct August 2025 precisely. We can use results repo commit just before Sept 1 2025 and calculate mean across 27 tasks.\n\nBut concern: benchmark definition as of Aug 2025 may differ. Find mteb repo commit around Aug 2025 and benchmark definition. Let's check git history of mteb repo for SEB benchmark. Clone with history maybe. Or GitHub API commits for file. Need task list at that date.\n\nAlso result files in repo may have date metadata but files are added over time and results commit history doesn't reflect evaluation date necessarily. Snapshot at Sept 1 is right for \"as of August 2025\" based on submissions present then.\n\nNeed parse all results in snapshot. Rather than checkout all 100k files (~?), can use `git ls-tree` and retrieve relevant model folder files efficiently. We can get tree recursively and filter paths containing task names. Then get blobs. Let's do that.\n\nFirst identify exact 27 task names and matching filename patterns (case; some tasks model versions). Need inspect current benchmark and old benchmark at commit. Let's retrieve mteb repo commit around Aug 29 2025 and file. GitHub API. Clone maybe repo size manageable? Use API commits. \\nLet's query GitHub API commits until date."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_56d4253bfdee63262529dd0e",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The scoring rule is confirmed: Mean (Task) is the unweighted mean of the main score across all benchmark tasks, and any missing task invalidates a model. I need to verify the benchmark definition as it stood in August 2025 and then compute over the Sept 1, 2025 results snapshot."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_5605cd44445d831f4fe9c9ac",
+        "status": "completed",
+        "call_id": "call_00_mbL0a3u1h16xrdrlSQEw1277",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests,json\\nu='https://api.github.com/repos/embeddings-benchmark/mteb/commits'\\nr=requests.get(u,params={'path':'mteb/benchmarks/benchmarks/benchmarks.py','until':'2025-09-01T00:00:00Z','per_page':5},timeout=30)\\nprint(r.status_code)\\nfor c in r.json(): print(c['sha'],c['commit']['author']['date'],c['commit']['message'].splitlines()[0])\\nPY\"}"
+      },
+      {
+        "type": "function_call",
+        "id": "item_5234a12d30e824e861bb71f7",
+        "status": "completed",
+        "call_id": "call_01_MCKabYwXKo2dI1C0WQez5259",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /tmp/mteb-results-git && C=71f6b6257025bbe06232352b86b09ab7bd7c904e && git ls-tree -r --name-only $C > /tmp/tree-2025-09-01.txt && wc -l /tmp/tree-2025-09-01.txt && du -sh /tmp/mteb-results-git/.git\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 42175,
+      "output_tokens": 877,
+      "total_tokens": 43052,
+      "input_tokens_details": {
+        "cached_tokens": 35712
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a19886a22e7b9c994fceb02c4f88e5",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 42175,
+      "output_tokens": 877,
+      "total_tokens": 43052,
+      "input_tokens_details": {
+        "cached_tokens": 35712
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 42175,
+    "completion_tokens": 877,
+    "reported_completion_tokens": 877,
+    "reasoning_tokens": null,
+    "cached_tokens": 35712,
+    "cache_write_tokens": null,
+    "ttft_ms": 5476.19095799746,
+    "latency_ms": 6831.724249990657,
+    "output_tokens_per_s": 128.37169181721575,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 646.9778390396046,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0252672,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.001602786,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb",
+    "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-19",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

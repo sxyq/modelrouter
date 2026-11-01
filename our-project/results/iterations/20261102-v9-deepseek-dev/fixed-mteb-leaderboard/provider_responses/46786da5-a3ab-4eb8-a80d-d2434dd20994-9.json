@@ -1,0 +1,112 @@
+{
+  "response": {
+    "id": "01a198721e5475bbbcd0cdf48bea15a2",
+    "object": "response",
+    "created_at": 1793558979,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_fb21416f69409327b016c213",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "The main MTEB leaderboard space includes benchmarks with results and probably supports selecting benchmark like \"MTEB(Scandinavian, v1)\" and average task. Need likely fetch leaderboard data via HF datasets or API. We have current date environment maybe 2026, but user asks as of August 2025. They want best according to Scandinavian MTEB leaderboard highest Mean (Task) only models results all tasks. Need determine exact model.\n\nMTEB(Scandinavian, v1) benchmark has tasks, likely ~? Models results. Could use mteb results dataset filtered by benchmark? Alternatively leaderboard has a backend API with cached data. Let's inspect space files recursively maybe app files omitted due to API weird (only models.py). Dockerfile app_port, app maybe entrypoint from image? Yet only few files? Maybe app.py is in another private? The tree shows only models.py. Could be space uses Docker and app copied? Let's query full expanded tree."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item_c27737311f781933cfdf397d",
+        "status": "completed",
+        "call_id": "call_00_5aOFFt11CCBJkyVL7t009045",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests\\nfor url in [\\n'https://huggingface.co/api/spaces/mteb/leaderboard',\\n'https://huggingface.co/api/spaces/mteb/leaderboard/tree/main?recursive=true',\\n'https://mteb-leaderboard.hf.space/',\\n'https://mteb-leaderboard.hf.space/config',\\n'https://huggingface.co/api/spaces/mteb/leaderboard-analytics-service',\\n'https://huggingface.co/api/spaces/mteb/leaderboard-backend',\\n]:\\n print('\\\\n###',url)\\n try:\\n  r=requests.get(url,timeout=60); print(r.status_code,len(r.content)); print(r.text[:3000])\\n except Exception as e: print('ERR',repr(e))\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 26323,
+      "output_tokens": 413,
+      "total_tokens": 26736,
+      "input_tokens_details": {
+        "cached_tokens": 21504
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a198721e5475bbbcd0cdf48bea15a2",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 26323,
+      "output_tokens": 413,
+      "total_tokens": 26736,
+      "input_tokens_details": {
+        "cached_tokens": 21504
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 26323,
+    "completion_tokens": 413,
+    "reported_completion_tokens": 413,
+    "reasoning_tokens": null,
+    "cached_tokens": 21504,
+    "cache_write_tokens": null,
+    "ttft_ms": 3429.3376250425354,
+    "latency_ms": 4173.14216599334,
+    "output_tokens_per_s": 98.96619467352674,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 555.2533995988547,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.001035162,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.001035162,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994",
+    "decision_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994-9",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

@@ -393,14 +393,15 @@ def publish(path: Path, output: Path = DASHBOARD):
         target = config["dashboard_ssh"]
         remote_path = config["dashboard_remote_path"]
         import shlex
-        command = f"cat > {shlex.quote(remote_path + '.tmp')} && mv {shlex.quote(remote_path + '.tmp')} {shlex.quote(remote_path)}"
+        remote_tmp = f"{remote_path}.{os.getpid()}.tmp"
+        command = f"cat > {shlex.quote(remote_tmp)} && mv {shlex.quote(remote_tmp)} {shlex.quote(remote_path)}"
         try:
             result = subprocess.run([
                 "ssh", "-i", config["dashboard_ssh_key"], "-o", "IdentitiesOnly=yes", "-o", "BatchMode=yes",
                 "-o", "ConnectTimeout=4", target, command,
             ], input=json.dumps(metrics, ensure_ascii=False), text=True, capture_output=True, timeout=8)
             if result.returncode:
-                print(f"Dashboard upload failed: exit {result.returncode}", flush=True)
+                print(f"Dashboard upload failed: exit {result.returncode}: {result.stderr.strip()}", flush=True)
         except subprocess.TimeoutExpired:
             print("Dashboard upload timed out; local experiment records remain available", flush=True)
     print(display(metrics), flush=True)

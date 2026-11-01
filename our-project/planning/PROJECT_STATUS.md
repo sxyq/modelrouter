@@ -1,6 +1,18 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-11-02 · 当前：运行开销下降，新增两条步骤目标
+## 2026-11-02 · 当前：DeepSeek Dev批次全部结束
+
+从main `6d040e786d0bd95a1060f793a8e680caa7bf1a93`接续，复用原Provider、Harbor和mini-SWE-agent完成9个公开Dev任务、19个Episode。原Verifier执行9次：7成功、2失败；另外10次终局未知，含4次HTTP502缺Usage与6次旧致命工具超时。完整表、每步概率和费用见[DeepSeek批次报告](../results/iterations/20261102-v9-deepseek-dev/review.md)与同目录`summary.json`。动态统一`ALIAS_SMOKE`，实际请求DeepSeek，不作Sol/Luna/Flash独立质量比较。
+
+**真实对照**：Git、HF、POV-Ray三组同协议完整对照，固定DeepSeek3/3成功、动态2/3成功；模型公开参考费总计0.018461232/0.013441884USD，按成功数分摊0.006153744/0.006720942USD，Trial合计738.50/1805.48秒。财务和MTEB的两策略超时处理版本不同，只作观察。原30步/输出4096/工具30秒及Verifier保持，工具超时已沿原循环返回观察；新反馈组6次均运行Verifier、4成功/2失败。未证明动态优势。
+
+**Router与教师**：124次服务器CPU神经路由全Sol，概率0.3706–0.4611，Luna/Flash选择0、切换0/fallback0；10次初始化、114次复用，复用的前向外开销共3.2232秒，前向仍耗时3081.16秒。Git教师第3次生成后1请求/1成功/4次实际消费，逻辑Sol、实际DeepSeek，映射费0.009158USD、参考费0.00059475USD；开启后同题仍成功但总映射费和Trial增加，净收益未证明。教师只向Router提供三字段，两参考和低频机制不变。
+
+**费用和研究范围**：227请求/223Usage/4未知，已知DeepSeek同系列非高峰参考费0.10950165USD，动态逻辑映射费1.0058892USD，两种口径分开；供应商实收、完整模型费及CPU/工具/容器USD未知。实际发送high但未报告应用档位，不作Native Effort答案；AA沿v4，Max不替代low、Flash仍缺。Dev/Alias新增Train目标0，真实K=2 Model-only仍19条、任务9/步骤10、11标签任务；74行定向材料未训练，215/186仅可组合。正式K=3/Effort监督仍0。
+
+**训练与系统（03:36:36台北）**：F14独立维护running/COLD_START，首轮284/420块（67.62%）、36352/107404步（33.85%），曝光2326528/6873816，最新Loss0.50280873；首轮/Val未完，不作父，旧失败归档和既有handoff保留。Laya F01–F13、Kev R01–R16已完训；本轮新增训练0，V9_LAYA_STEP_001-e01/F11/R11研究代表不变，Serving仍F05-e01/原Kev Adapter、health/models200。原看板终局已同步，无新服务或调度。下步需要更多独立质量步骤、较低CPU前向开销和真实动态净收益；SWE-bench Verified原生执行入口仍缺，五RQ、八图十二表和Fig.2文字保留。
+
+## 2026-11-02 · 前一工作包：运行开销下降，新增两条步骤目标
 
 接续 main `62d7bb98326af035512ffb089aba03f366e7924f`。本轮修改五个既有源码对象，未重复旧联调、独立静态评分或训练。完整概率、原工具反馈、Verifier、费用与服务器取样见[本轮结果](../results/iterations/20261101-v9-runtime-quality-dev/review.md)及同目录 `summary.json`。
 

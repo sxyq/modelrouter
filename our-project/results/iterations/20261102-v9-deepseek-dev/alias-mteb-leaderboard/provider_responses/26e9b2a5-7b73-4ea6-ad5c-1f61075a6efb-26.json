@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a1988ad36a7d288f2b5b713b209eb5",
+    "object": "response",
+    "created_at": 1793560598,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_ef99637fed5814ca03ba2d13",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Interesting: Only 12 complete models by filename, and 27-task models all missing DanFeverRetrieval. There might be a naming issue: task may be \"DanFever\" or \"DanFeverRetrieval\" files maybe absent due to it being a new task? But at commit there were DanFeverRetrieval.json for e5-large. Yet many model directories missing that one. Could be that results are stored in different revisions/split across subdirs and my grouping is correct per all paths. Hmm.\n\nBut also: 678 model dirs and only 12 complete. That seems plausible since the benchmark required those newer tasks and the leaderboard filters incomplete ones. The model list likely on the leaderboard has few complete entries. But would the best be among these 12?\n\nNeed compute scores. But our earlier script loaded all 5710 files and got killed. Now only 12*28 = 336 files, easy. Also potentially some results missing at filename level but files use variant names, e.g., \"DanFeverRetrieval.v2.json\"? We matched startswith. Fine.\n\nHowever, there is a subtlety: model dirs with multiple revisions/subdirs where one subdir might have result sets that merge? The leaderboard normally picks a revision, likely latest or specific. But if spread across revisions, one model row could combine all results? The results dataset likely aggregates. The user says \"Only consider models that have results for all tasks in the benchmark.\" The leaderboard computes \"Mean (Task)\" only if all task results exist, possibly across the model's results regardless of revision? Let's inspect how MTEB loads results. In benchmark_results.py ModelResult loading. But likely for each model, all JSON files under its model directory (all revisions) are loaded; then duplicate tasks resolved by choosing latest mteb version/revision. Could mean models with 27 files in one dir plus DanFever in another revision count as complete. Need to check.\n\nFirst compute means for 12 complete. Then decide if likely answer. Let's run focused script."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_89ecc86513d4cb15e3221f1e",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Filename analysis finds only 12 model directories with all 28 task files (the 27-task models mostly lack the recently added `DanFeverRetrieval`). Let me compute exact means for these 12 and inspect the top scores."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_ca297ff552520890823f2b47",
+        "status": "completed",
+        "call_id": "call_00_BgMGPScIqJIIQmRquOAY6105",
+        "name": "bash",
+        "arguments": "{\"command\": \"cat > /tmp/score_complete.py <<'PY'\\nimport subprocess, json, os, math, collections, sys\\nC='71f6b6257025bbe06232352b86b09ab7bd7c904e'\\nTASKS = [\\n \\\"BornholmBitextMining\\\",\\\"NorwegianCourtsBitextMining\\\",\\n \\\"AngryTweetsClassification\\\",\\\"DanishPoliticalCommentsClassification\\\",\\\"DalajClassification\\\",\\n \\\"DKHateClassification\\\",\\\"LccSentimentClassification\\\",\\\"MassiveIntentClassification\\\",\\n \\\"MassiveScenarioClassification\\\",\\\"NordicLangClassification\\\",\\\"NoRecClassification\\\",\\n \\\"NorwegianParliamentClassification\\\",\\\"ScalaClassification\\\",\\\"SwedishSentimentClassification\\\",\\n \\\"SweRecClassification\\\",\\\"DanFeverRetrieval\\\",\\\"NorQuadRetrieval\\\",\\\"SNLRetrieval\\\",\\n \\\"SwednRetrieval\\\",\\\"SweFaqRetrieval\\\",\\\"TV2Nordretrieval\\\",\\\"TwitterHjerneRetrieval\\\",\\n \\\"SNLHierarchicalClusteringS2S\\\",\\\"SNLHierarchicalClusteringP2P\\\",\\\"SwednClusteringP2P\\\",\\n \\\"SwednClusteringS2S\\\",\\\"VGHierarchicalClusteringS2S\\\",\\\"VGHierarchicalClusteringP2P\\\",\\n]\\nmodels=open('/tmp/complete_models.txt').read().splitlines()\\ntree=open('/tmp/tree-2025-09-01.txt').read().splitlines()\\nby_model=collections.defaultdict(list)\\nfor p in tree:\\n    parts=p.split('/')\\n    if len(parts)==4 and parts[0]=='results' and parts[1] in models:\\n        stem=parts[3][:-5]\\n        for t in TASKS:\\n            if stem==t or stem.startswith(t+'.'):\\n                by_model[(parts[1],t)].append(p)\\n# load only selected\\nres={}\\nfor key,paths in by_model.items():\\n    for p in paths:\\n        out=subprocess.check_output(['git','-C','/tmp/mteb-results-git','show',f'{C}:{p}'])\\n        j=json.loads(out)\\n        # task score = mean of main_score over all split entries\\n        vals=[]\\n        splits=[]\\n        for split,entries in j.get('scores',{}).items():\\n            for e in entries:\\n                ms=e.get('main_score')\\n                if isinstance(ms,(int,float)) and not math.isnan(ms):\\n                    vals.append(ms)\\n            splits.append(split)\\n        if vals:\\n            res.setdefault(key,[]).append((sum(vals)/len(vals),splits,p))\\nrows=[]\\nfor m in models:\\n    scores=[]; details=[]; ok=True\\n    for t in TASKS:\\n        opts=res.get((m,t),[])\\n        if not opts: ok=False; break\\n        # choose best revision? only one per complete generally; if multiple pick max? inspect\\n        opts=sorted(opts,key=lambda x:-x[0])\\n        scores.append(opts[0][0]); details.append((t,opts[0][0],opts[0][1],len(opts)))\\n    if ok:\\n        rows.append((sum(scores)/len(scores),m,scores,details))\\nrows.sort(reverse=True,key=lambda x:x[0])\\nprint('complete',len(rows))\\nfor mean,m,scores,details in rows:\\n    print(f'{mean:.6f}\\\\t{m}')\\njson.dump([{'model':m,'mean':mean,'scores':s,'details':d} for mean,m,s,d in rows],open('/tmp/seb_scores12.json','w'),indent=2)\\nPY\\ncd /tmp && timeout 20 python3 /tmp/score_complete.py; echo EXIT=$?\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 52032,
+      "output_tokens": 1315,
+      "total_tokens": 53347,
+      "input_tokens_details": {
+        "cached_tokens": 46720
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a1988ad36a7d288f2b5b713b209eb5",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 52032,
+      "output_tokens": 1315,
+      "total_tokens": 53347,
+      "input_tokens_details": {
+        "cached_tokens": 46720
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 52032,
+    "completion_tokens": 1315,
+    "reported_completion_tokens": 1315,
+    "reasoning_tokens": null,
+    "cached_tokens": 46720,
+    "cache_write_tokens": null,
+    "ttft_ms": 5244.818749953993,
+    "latency_ms": 8419.908457959536,
+    "output_tokens_per_s": 156.17746992924842,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 414.1615264237769,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.028446,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.00172596,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb",
+    "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-26",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

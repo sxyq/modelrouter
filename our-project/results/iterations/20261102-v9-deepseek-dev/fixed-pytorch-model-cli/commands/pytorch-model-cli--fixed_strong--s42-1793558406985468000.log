@@ -1,0 +1,38 @@
+This is mini-swe-agent version 2.4.6.
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration
+Loading global config from '<LOCAL_USER_HOME>/Library/Application 
+Support/mini-swe-agent/.env'
+2026-11-02 02:40:09,248 [DEBUG] harbor.utils.logger.harbor.agents.base: Agent 'modelrouter-mini-swe-agent' does not declare an options_model; leftover kwargs are ignored
+2026-11-02 02:40:09,250 [DEBUG] harbor.utils.logger.harbor.agents.base: Agent 'modelrouter-mini-swe-agent' does not declare an options_model; leftover kwargs are ignored
+2026-11-02 02:40:09,294 [DEBUG] harbor.utils.logger.harbor.agents.base: Agent 'modelrouter-mini-swe-agent' does not declare an options_model; leftover kwargs are ignored
+2026-11-02 02:40:09,687 [DEBUG] harbor.utils.logger.harbor.trial.trial.pytorch-model-cli__PNfAyEu.harbor.environments.base: Skipping image OS validation for alexgshaw/pytorch-model-cli:20251031: docker inspect returned 1
+2026-11-02 02:42:54,127 [DEBUG] harbor.utils.logger.harbor.trial.trial.pytorch-model-cli__PNfAyEu: Trial pytorch-model-cli__PNfAyEu failed: Command timed out after 30 seconds
+2026-11-02 02:42:54,132 [DEBUG] harbor.utils.logger.harbor.trial.trial.pytorch-model-cli__PNfAyEu: Collecting main service artifacts
+2026-11-02 02:42:58,628 [DEBUG] harbor.utils.logger.harbor.trial.queue: Not retrying trial because the maximum number of retries has been reached
+  1/1 Mean: 0.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:02:49 0:00:00
+adhoc • modelrouter-mini-swe-agent • deepseek-v4.1-flash
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      0 │          1 │ 0.000 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ Exception    ┃ Count ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━┩
+│ RuntimeError │     1 │
+└──────────────┴───────┘
+
+Job Info
+Total runtime: 2m 49s
+Results written to 
+<LOCAL_PROJECT>/our-project/results/iterations/20261102-v9
+-deepseek-dev/fixed-pytorch-model-cli/jobs/pytorch-model-cli--fixed_strong--s42/
+result.json
+Inspect results by running `harbor view 
+<LOCAL_PROJECT>/our-project/results/iterations/20261102-v9
+-deepseek-dev/fixed-pytorch-model-cli/jobs`
+Share results by running `harbor upload 
+<LOCAL_PROJECT>/our-project/results/iterations/20261102-v9
+-deepseek-dev/fixed-pytorch-model-cli/jobs/pytorch-model-cli--fixed_strong--s42`
+

@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a19858b0e47040b4f292a2377fef84",
+    "object": "response",
+    "created_at": 1793557313,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_653946f002095ac7253b6f51",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Everything done. Need submit command exactly standalone."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_54e1521ceb561c18b20b7c36",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "All requirements are verified: the secret was recovered to `/app/secret.txt`, the repository contains no occurrence of the secret, unreachable objects/reflogs are purged, and the original two commits and README are unchanged."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_76832847ebb3600e74359d42",
+        "status": "completed",
+        "call_id": "call_00_i2zZYK3jzy0WPsqXHrPx4192",
+        "name": "bash",
+        "arguments": "{\"command\": \"echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 4948,
+      "output_tokens": 105,
+      "total_tokens": 5053,
+      "input_tokens_details": {
+        "cached_tokens": 4352
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a19858b0e47040b4f292a2377fef84",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 4948,
+      "output_tokens": 105,
+      "total_tokens": 5053,
+      "input_tokens_details": {
+        "cached_tokens": 4352
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 4948,
+    "completion_tokens": 105,
+    "reported_completion_tokens": 105,
+    "reasoning_tokens": null,
+    "cached_tokens": 4352,
+    "cache_write_tokens": null,
+    "ttft_ms": 2020.7193330279551,
+    "latency_ms": 2591.2311249994673,
+    "output_tokens_per_s": 40.52127924328695,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 184.04527562375617,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000165456,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000165456,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "2547d2a6-24e2-4792-81e6-7640cd84b1b1",
+    "decision_id": "2547d2a6-24e2-4792-81e6-7640cd84b1b1-6",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

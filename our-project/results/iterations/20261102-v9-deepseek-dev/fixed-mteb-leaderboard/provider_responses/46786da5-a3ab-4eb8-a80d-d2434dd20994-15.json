@@ -1,0 +1,112 @@
+{
+  "response": {
+    "id": "01a19872c276731c88bf061b6108365a",
+    "object": "response",
+    "created_at": 1793559021,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_f5615bc8bca25735ab8a2707",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Great. Need understand API returned data. We need \"highest Mean (Task)\" among models with results for all tasks in benchmark. Let's query /benchmarks/MTEB(Scandinavian, v1)/scores."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item_e2e0aae244ea537b955935e7",
+        "status": "completed",
+        "call_id": "call_00_YN8kbF4YUoxWZOW1IoLj6280",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests,json\\nbase='https://mteb-leaderboard-backend.hf.space/v1'\\nname='MTEB(Scandinavian, v1)'\\nfor ep in [f'/benchmarks/{requests.utils.quote(name,safe=\\\"\\\")}',f'/benchmarks/{requests.utils.quote(name,safe=\\\"\\\")}/scores',f'/benchmarks/{requests.utils.quote(name,safe=\\\"\\\")}/per-language']:\\n print('\\\\n###',ep)\\n r=requests.get(base+ep,timeout=180); print(r.status_code,len(r.content)); open('/app/'+ep.split('/')[-1].split('?')[0]+'.json','w').write(r.text); print(r.text[:8000])\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 46420,
+      "output_tokens": 246,
+      "total_tokens": 46666,
+      "input_tokens_details": {
+        "cached_tokens": 44928
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a19872c276731c88bf061b6108365a",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 46420,
+      "output_tokens": 246,
+      "total_tokens": 46666,
+      "input_tokens_details": {
+        "cached_tokens": 44928
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 46420,
+    "completion_tokens": 246,
+    "reported_completion_tokens": 246,
+    "reasoning_tokens": null,
+    "cached_tokens": 44928,
+    "cache_write_tokens": null,
+    "ttft_ms": 2461.905707954429,
+    "latency_ms": 3229.715915978886,
+    "output_tokens_per_s": 76.16768979058658,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 320.39167678292205,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000506184,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000506184,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994",
+    "decision_id": "46786da5-a3ab-4eb8-a80d-d2434dd20994-15",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

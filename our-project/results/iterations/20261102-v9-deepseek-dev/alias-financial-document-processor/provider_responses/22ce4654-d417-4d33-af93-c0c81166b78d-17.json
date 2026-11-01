@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a1987f6543792485963b48ff8e0908",
+    "object": "response",
+    "created_at": 1793559849,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_603ecff5bebcca52dfa9c2b1",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Now I should test extraction logic on current files without moving first, or make dry-run. Could import module and iterate. Let's test classification and amounts from extracted text using functions. The extraction uses live OCR. We can run a dry-run snippet. Need note parse_amount on \"$4382 USD due...\" works. currency_amounts splits '$' and regex captures \"4382 \". good. For Total line with \"Total: $6558\" returns [6558]. For Stripe uses Total. For summary lines \"Total $ 6 236,77 $ 623,68 $ 6 860,45\": split $ parts -> \"6 236,77 \", \"623,68 \", \"6 860,45\". parse_amount with spaces. For \"6 236,77\": no comma? Actually has comma, s `6 236,77`, only comma, final comma followed by 2 digits => matches regex? `[-+]?\\d+(?:,\\d{1,2})` doesn't match because space. Then replace comma with \"\" => 623677? Wait! That's wrong. Need handle decimal comma and space thousand separators. For \"6 236,77\", should remove spaces and replace comma with dot. For \"1 394,67\" similarly. For \"44 745,59\". Our parse currently: if \",\" in s and \".\" not in s: if fullmatch `[-+]?\\d+(?:,\\d{1,2})` - with space not match. else s.replace(\",\",\"\") => 623677. That's incorrect. Need fix parse_amount to normalize spaces. Approach:\n- strip spaces around.\n- Determine separators. If both '.' and ',': last separator is decimal if digits after <=2, remove thousands.\n- If only comma: if comma followed by 1-2 digits and comma is last separator => decimal comma, remove spaces, replace comma with dot. Else remove commas/spaces.\n- If only dot: if multiple dots, last one decimal; else treat decimal.\n- If spaces and no punctuation: could be thousands, remove spaces.\nAlso tokens regex `[-+]?\\d[\\d\\s.,]*` may capture trailing spaces and punctuation. We can normalize.\nFor `Total $ 6 236,77 $ 623,68 $ 6 860,45`, parse should work.\n\nFor \"10% 6 236,77 623,68 6 860,45\" if no $, tokens: \"10\" (then % stops), \"6 236,77\", \"623,68\", \"6 860,45\" - parse. But currency_amounts might also pick \"10\" as percentage. We skip if $ available. For summary table no $ in some? In OCR output lines do include $ mostly. But need robust. We can handle labeled VAT lines differently.\n\nAlso `extract_amounts` selection of total line: The regex `\\b(?:grand\\s+)?total(?:\\s*price)?\\b` matches \"TotalPrice\" because \\b before total and after price, yes. For line \"Total $ 6 236,77 $ 623,68 $ 6 860,45\" values 3 -> total last and vat second last. good.\nFor PDFs: \"TotalPrice   4031.0\" only one value -> total. good.\nFor invoices where \"Total: $6558\" and \"Amount due: $4382\": first total. good.\nFor summary where no $: \"10% 6 236,77 623,68 6 860,45\", our token regex first token might be \"10\" (percentage). then three values. total_values len 4 -> logic last two still right (total last, vat second last), okay but percentage is irrelevant. Yet parse amounts currently broken on spaces/comma.\n\nNeed fix parse_amount robust. Also if only 2 values on Total line e.g. \"Total 6 236,77 6 860,45\" where net and gross maybe no VAT. But our datasets all three.\n\nPotential issue: `currency_amounts` regex when no `$`: `[-+]?\\d[\\d\\s.,]*` can gobble multiple numbers separated by spaces into one token! E.g. \"10% 6 236,77 623,68 6 860,45\": the regex after 6 matches `6 236,77 ` then stops at `6`? Actually character class includes digits and spaces, so it would consume `6 236,77 623,68 6 860,45` all as one token because spaces and digits included. parse_amount then weird. So need better tokenization.\n\nWe can parse amounts more carefully:\n- If line contains `$`: split by `$`, each following part take leading numeric including spaces/commas/dots: regex `^\\s*(\\d[\\d\\s.,]*)` but this can consume spaces and subsequent? If part is \"6 236,77 $ 623,68\", splitting handles each. Good.\n- If no `$`, find numeric candidates. Need handle spaces as thousands. Could use regex for either:\n  - `\\d{1,3}(?:[ \\u00a0]\\d{3})+(?:[.,]\\d{1,2})?`\n  - `\\d+(?:[.,]\\d{1,2})?`\n  But greediness.\nCould simply process line by removing `%` and percent numbers, then use regex:\n`[-+]?\\d{1,3}(?:[ \\u00a0]\\d{3})*(?:[.,]\\d{1,2})?`? This matches first number but may match \"10\" in \"10%\". Skip values followed by `%`. Could use finditer and check char after match. For line \"10% 6 236,77 623,68 6 860,45\":\n  - \"10\" followed by % -> skip\n  - \"6 236,77\" matches\n  - \"623,68\" matches\n  - \"6 860,45\" matches\nGreat.\nFor \"TotalPrice   4031.0\" matches 4031.0.\nFor \"Total: $6558\" `$` branch.\nFor \"Amount due: $4382 USD\" branch.\nFor line with \"VAT 623,68\" matches.\nFor amount with commas thousand e.g. \"$1,234.56\" branch parse.\nNeed handle line \"Total $ 6 236,77 $ 623,68 $ 6 860,45\" branch splits each and matches leading. Good.\n\nCould use currency amounts with dollar. Fix parse_amount:\n```\ns = remove currency codes/symbols\ns = s.strip()\n# remove trailing nonnumeric? already filter.\nif ',' in s and '.' in s:\n    if s.rfind(',') > s.rfind('.'):\n       s=s.replace('.','').replace(',','.')\n    else:\n       s=s.replace(',','')\nelif ',' in s:\n    # remove spaces\n    s_nospace = s.replace(' ','')\n    if re.search(r',\\d{1,2}$', s_nospace):\n       s=s_nospace.replace(',','.')\n    else: s=s_nospace.replace(',','')\nelse:\n    s=s.replace(' ','')\n```\nBut if \"1,234\" (three digits after comma) should be thousand -> 1234. yes.\nIf \"1 234\" -> remove spaces -> 1234.\nIf \"4031.0\" -> 4031.0.\nIf \"$1.234,56\" both and comma last -> remove dots then comma to dot -> 1234.56.\nIf \"$1,234.56\" dot last -> remove comma -> 1234.56.\nIf \"1.234\" only dot -> treat 1.234, but in our datasets no European dot thousand without comma. Could infer if exactly 3 digits after dot then maybe thousand, but decimal .000 possible. Not needed.\nIf multiple dots \"1.234.567\" -> currently Decimal invalid. Could normalize last dot decimal if 1-2 digits after, else remove. Add.\nLet's fix.\n\nNeed test dry run and inspect extracted amounts. Let's patch script."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_3eba6fecdaab3b3961b4fdb2",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Before moving anything, I’ll fix number parsing for European-style formats with spaces and decimal commas (e.g. `6 236,77`) and run a dry-run against all documents."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_05ec756d160ba8c0b4089e9c",
+        "status": "completed",
+        "call_id": "call_00_RJu0PMMXapePY91TpfiZ5267",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\np='/app/process_documents.py'\\ns=open(p).read()\\nold='''    if \\\",\\\" in s and \\\".\\\" in s:\\n        # Conventional thousands separator plus decimal point.\\n        s = s.replace(\\\",\\\", \\\"\\\")\\n    elif \\\",\\\" in s:\\n        # If the final comma is followed by 1-2 digits, it is a decimal comma.\\n        if re.fullmatch(r\\\"[-+]?\\\\\\\\d+(?:,\\\\\\\\d{1,2})\\\", s):\\n            s = s.replace(\\\",\\\", \\\".\\\")\\n        else:\\n            s = s.replace(\\\",\\\", \\\"\\\")\\n    try:\\n        return Decimal(s)\\n    except InvalidOperation:\\n        return None\\n'''\\nnew='''    if \\\",\\\" in s and \\\".\\\" in s:\\n        # The rightmost separator is the decimal separator.\\n        if s.rfind(\\\",\\\") > s.rfind(\\\".\\\"):\\n            s = s.replace(\\\".\\\", \\\"\\\").replace(\\\",\\\", \\\".\\\")\\n        else:\\n            s = s.replace(\\\",\\\", \\\"\\\")\\n    elif \\\",\\\" in s:\\n        compact = s.replace(\\\" \\\", \\\"\\\")\\n        # A trailing comma with 1-2 digits is a decimal comma; otherwise it is\\n        # a thousands separator.\\n        if re.search(r\\\",\\\\\\\\d{1,2}$\\\", compact):\\n            s = compact.replace(\\\",\\\", \\\".\\\")\\n        else:\\n            s = compact.replace(\\\",\\\", \\\"\\\")\\n    elif \\\".\\\" in s:\\n        # Handle multiple dots as thousands separators if the last group is\\n        # not a conventional one/two-digit decimal.\\n        if s.count(\\\".\\\") > 1:\\n            if re.search(r\\\"\\\\\\\\.\\\\\\\\d{1,2}$\\\", s):\\n                s = s.replace(\\\".\\\", \\\"\\\", s.count(\\\".\\\") - 1)\\n            else:\\n                s = s.replace(\\\".\\\", \\\"\\\")\\n        else:\\n            s = s.replace(\\\" \\\", \\\"\\\")\\n    else:\\n        s = s.replace(\\\" \\\", \\\"\\\")\\n    try:\\n        return Decimal(s)\\n    except InvalidOperation:\\n        return None\\n'''\\nassert old in s\\ns=s.replace(old,new)\\nold2='''    # No currency delimiter: extract numeric runs. A space may be a thousands\\n    # separator, so first try tokens containing a decimal separator, then plain.\\n    tokens = re.findall(r\\\"[-+]?\\\\\\\\d[\\\\\\\\d\\\\\\\\s.,]*\\\", line)\\n    for token in tokens:\\n        # Avoid treating a bare percentage as an amount.\\n        value = parse_amount(token)\\n        if value is not None:\\n            values.append(value)\\n    return values\\n'''\\nnew2='''    # No currency delimiter: extract numeric candidates. A space may be a\\n    # thousands separator, so consume groups of three digits when present.\\n    pattern = re.compile(r\\\"[-+]?\\\\\\\\d{1,3}(?:[ \\\\\\\\u00a0]\\\\\\\\d{3})*(?:[.,]\\\\\\\\d{1,2})?\\\")\\n    for match in pattern.finditer(line):\\n        token = match.group(0)\\n        # Ignore percentages such as the 10 in \\\"VAT [%] 10%\\\".\\n        if match.end() < len(line) and line[match.end()] == \\\"%\\\":\\n            continue\\n        value = parse_amount(token)\\n        if value is not None:\\n            values.append(value)\\n    return values\\n'''\\nassert old2 in s\\ns=s.replace(old2,new2)\\nopen(p,'w').write(s)\\nPY\\npython3 -m py_compile /app/process_documents.py\\npython3 - <<'PY'\\nimport importlib.util, sys\\nspec=importlib.util.spec_from_file_location('pd','/app/process_documents.py')\\npd=importlib.util.module_from_spec(spec); spec.loader.exec_module(pd)\\nfrom pathlib import Path\\nfor path in sorted(Path('/app/documents').iterdir()):\\n    text=pd.extract_text(path)\\n    inv=pd.is_invoice(text)\\n    print(f'{path.name}: invoice={inv}', end='')\\n    if inv:\\n        try:\\n            total,vat=pd.extract_amounts(text)\\n            print(f' total={total} vat={vat}')\\n        except Exception as e:\\n            print(' ERROR',e)\\n    else:\\n        print()\\nprint('parse checks:', pd.parse_amount('6 236,77'), pd.parse_amount('$1,234.56'), pd.parse_amount('1.234,56'), pd.parse_amount('1 394,67'))\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 23124,
+      "output_tokens": 2743,
+      "total_tokens": 25867,
+      "input_tokens_details": {
+        "cached_tokens": 21120
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a1987f6543792485963b48ff8e0908",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 23124,
+      "output_tokens": 2743,
+      "total_tokens": 25867,
+      "input_tokens_details": {
+        "cached_tokens": 21120
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 23124,
+    "completion_tokens": 2743,
+    "reported_completion_tokens": 2743,
+    "reasoning_tokens": null,
+    "cached_tokens": 21120,
+    "cache_write_tokens": null,
+    "ttft_ms": 11732.911166967824,
+    "latency_ms": 15221.166584000457,
+    "output_tokens_per_s": 180.20957755519677,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 786.3529679066328,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.03355,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.00200976,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "22ce4654-d417-4d33-af93-c0c81166b78d",
+    "decision_id": "22ce4654-d417-4d33-af93-c0c81166b78d-17",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

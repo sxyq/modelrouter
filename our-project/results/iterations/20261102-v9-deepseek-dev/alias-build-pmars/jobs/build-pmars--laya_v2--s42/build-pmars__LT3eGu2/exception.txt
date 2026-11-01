@@ -1,0 +1,72 @@
+Traceback (most recent call last):
+  File "<LOCAL_PROJECT>/external/benchmarks/harbor/src/harbor/trial/trial.py", line 502, in run
+    await self._run()
+  File "<LOCAL_PROJECT>/external/benchmarks/harbor/src/harbor/trial/single_step.py", line 40, in _run
+    await self._run_agent()
+  File "<LOCAL_PROJECT>/external/benchmarks/harbor/src/harbor/trial/single_step.py", line 76, in _run_agent
+    await self._run_agent_phase(
+  File "<LOCAL_PROJECT>/external/benchmarks/harbor/src/harbor/trial/trial.py", line 653, in _run_agent_phase
+    await asyncio.wait_for(
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "<LOCAL_PROJECT>/our-project/code/src/modelrouter/benchmark/harbor_agent.py", line 393, in run
+    await asyncio.to_thread(agent.run, instruction)
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/agents/default.py", line 98, in run
+    self.step()
+  File "<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/agents/default.py", line 128, in step
+    return self.execute_actions(self.query())
+                                ^^^^^^^^^^^^
+  File "<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/agents/default.py", line 149, in query
+    message = self.model.query(self.messages)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/models/litellm_model.py", line 82, in query
+    for attempt in retry(logger=logger, abort_exceptions=self.abort_exceptions):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/tenacity/__init__.py", line 514, in __iter__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/tenacity/__init__.py", line 440, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/tenacity/__init__.py", line 462, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "<LOCAL_PROJECT>/.runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/models/litellm_model.py", line 84, in query
+    response = self._query(self._prepare_messages_for_api(messages), **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_PROJECT>/our-project/code/src/modelrouter/benchmark/harbor_agent.py", line 186, in _query
+    body, metrics = self.provider.query_raw(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_PROJECT>/our-project/code/src/modelrouter/providers/provider.py", line 474, in query_raw
+    with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py", line 521, in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py", line 630, in http_response
+    response = self.parent.error(
+               ^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py", line 559, in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "<LOCAL_USER_HOME>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/urllib/request.py", line 639, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 502: Bad Gateway

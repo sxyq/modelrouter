@@ -1,0 +1,145 @@
+{
+  "response": {
+    "id": "01a1988164dc7d009db0ed3fbdb4f74d",
+    "object": "response",
+    "created_at": 1793559980,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_925f7f35e4d5613cc25554a9",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We need as of August 2025. There are commits. Need identify commit around Aug 2025. The API commits limit param may accept until? Let's query with pagination. We can use git clone or HF API with `p=`? Better use huggingface_hub list_repo_commits. Need dataset historical content. Could download parquet at a revision from HF resolve endpoint, but parquet conversion at old commit? Or use git LFS pointer at commit. The data files likely updated often. We can inspect repository via git clone (but LFS maybe). git clone with GIT_LFS_SKIP_SMUDGE and then fetch needed old commit parquet? Old commits may have different files perhaps snapshots.\n\nAlternatively, the official leaderboard can provide historical state? The task says \"as of August 2025\" likely benchmark data intentionally has date-specific expectations. Must use data available by end of August 2025. Need identify leaderboard at that time. Could use Wayback Machine for leaderboard? Or repository commits.\n\nFirst understand Mean (Task) computation. Official MTEB leaderboard frontend probably computes mean over task-level scores for benchmark. Need rank models with complete tasks. We can query mteb/results current, but likely new models after Aug 2025 could outrank. Need cutoff.\n\nLet's inspect GitHub repo for leaderboard source (embeddings-benchmark/leaderboard perhaps). Search GitHub org repos."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_c88e61b6c21ed7e097ccdabb",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The benchmark definition is confirmed. Next I need to reproduce the leaderboard's exact Mean (Task) aggregation and get data as it stood in August 2025. Let me inspect the leaderboard source and the results dataset's commit history."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_7184dfeb7345578b0c5985fa",
+        "status": "completed",
+        "call_id": "call_00_KPW2wJBNNUeKTGpLN5n46707",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests,json\\nr=requests.get('https://api.github.com/orgs/embeddings-benchmark/repos',params={'per_page':100},timeout=30)\\nprint(r.status_code)\\nfor x in r.json(): print(x['name'],x.get('description'))\\nPY\"}"
+      },
+      {
+        "type": "function_call",
+        "id": "item_2bfa7f6ddb5061966c329813",
+        "status": "completed",
+        "call_id": "call_01_XmInvB0fVAlbErD3FdNu6605",
+        "name": "bash",
+        "arguments": "{\"command\": \"python3 - <<'PY'\\nimport requests,json\\n# paginate commits to Aug 2025\\nurl='https://huggingface.co/api/datasets/mteb/results/commits/main'\\nparams={'limit':100}\\nfor page in range(1,20):\\n r=requests.get(url,params={**params,'p':page},timeout=30)\\n js=r.json()\\n if not js: break\\n first=js[0]['date']; last=js[-1]['date']\\n print(page,len(js),first,last)\\n if last < '2025-07-01': break\\nPY\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 18233,
+      "output_tokens": 606,
+      "total_tokens": 18839,
+      "input_tokens_details": {
+        "cached_tokens": 16768
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a1988164dc7d009db0ed3fbdb4f74d",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 18233,
+      "output_tokens": 606,
+      "total_tokens": 18839,
+      "input_tokens_details": {
+        "cached_tokens": 16768
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 18233,
+    "completion_tokens": 606,
+    "reported_completion_tokens": 606,
+    "reasoning_tokens": null,
+    "cached_tokens": 16768,
+    "cache_write_tokens": null,
+    "ttft_ms": 4136.548083042726,
+    "latency_ms": 5551.680375006981,
+    "output_tokens_per_s": 109.15613995505603,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 428.22851505907613,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0106668,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000633654,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb",
+    "decision_id": "26e9b2a5-7b73-4ea6-ad5c-1f61075a6efb-10",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

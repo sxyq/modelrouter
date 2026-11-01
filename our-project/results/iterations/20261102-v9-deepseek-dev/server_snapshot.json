@@ -1,0 +1,125 @@
+{
+  "sampled_at": "2026-11-02T03:36:36.258818+08:00",
+  "probe_mode": "READ_ONLY_ORIGINAL_RESEARCH_SERVER",
+  "server": "RTX_A6000_RESEARCH_SERVER",
+  "uptime": "164 days, 15:42",
+  "load_average": [1.03, 1.43, 4.12],
+  "f14": {
+    "pid": 808492,
+    "alive": true,
+    "status": "running",
+    "resume_mode": "COLD_START",
+    "started_at": "2026-11-01T03:31:49Z",
+    "cursor": {
+      "run_id": "F14",
+      "epoch": 0,
+      "chunk_idx": 284,
+      "total_chunks": 420,
+      "step_count": 36352,
+      "total_updates": 107404,
+      "consumed_items": 2326528,
+      "consumed_units": 659281,
+      "latest_chunk_loss": 0.5028087299469917,
+      "updated_at": "2026-11-01T19:34:14Z"
+    },
+    "epochs_planned": 2,
+    "epoch_completed": 0,
+    "first_epoch_chunk_progress_pct": 67.61904761904762,
+    "optimizer_progress_pct": 33.846039253659086,
+    "fixed_val_completed": false,
+    "latest_chunk_loss_finite": true,
+    "recent_chunks": null,
+    "recent_chunks_status": "NOT_RECOLLECTED; latest cursor loss only",
+    "total_items_two_epochs": 6873816,
+    "configuration": {
+      "micro_batch": 8,
+      "grad_accum": 8,
+      "encoder_lr": 0.000025,
+      "head_lr": 0.0001,
+      "weight_decay": 0.01,
+      "loss": "soft-ce",
+      "freeze_encoder": false
+    },
+    "independent_maintenance_modified_by_this_task": false,
+    "used_as_parent": false,
+    "old_failed_attempt_preserved": true
+  },
+  "existing_handoff": {
+    "pid": 817520,
+    "alive": true,
+    "waiting_for_pid": 808492,
+    "next_command": "router_data/run_full_graded_queue.py --no-continue-matrix",
+    "created_or_modified_in_this_work_package": false
+  },
+  "queue_state": {
+    "queue_status": "PAUSED_USER_REQUEST",
+    "current_run": null,
+    "updated_at": "2026-10-31T12:16:27.792171+00:00",
+    "state_scope": "ORIGINAL_QUEUE_FILE; independent F14 and existing handoff are separately active"
+  },
+  "serving": {
+    "pid": 327621,
+    "alive": true,
+    "started_at": "2026-10-30T20:53:21+08:00",
+    "health_http_status": 200,
+    "models_http_status": 200,
+    "status": "healthy",
+    "uptime_seconds": 196994.42,
+    "models_loaded": {"laya": true, "kev": true},
+    "inference_verified_reported_by_existing_service": {"laya": true, "kev": true},
+    "models": [
+      {
+        "family": "laya",
+        "run_id": "F05",
+        "checkpoint_id": "epoch_01",
+        "weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+        "best_val_accuracy_s1": 0.6756,
+        "val_loss": 0.5978
+      },
+      {
+        "family": "kev",
+        "run_id": "KEV-4B-ADAPTER",
+        "checkpoint_id": "1001bb4d826a52d1f399e183466143f4da7b741b",
+        "weights_path": "models/kev-4b-adapter",
+        "base": "Qwen3.5-4B-Base",
+        "lora_rank": 16,
+        "inference_engine": "torch_cpu"
+      }
+    ],
+    "model_generation_requests_sent_by_this_probe": 0,
+    "api_call_counters": "NOT_COLLECTED",
+    "weights_replaced": false,
+    "restarted": false
+  },
+  "gpu": {
+    "index": 0,
+    "model": "NVIDIA RTX A6000",
+    "used_mib": 9929,
+    "total_mib": 49140,
+    "utilization_pct": 90,
+    "temperature_c": 82,
+    "power_w": 294.82
+  },
+  "gpu_resident_processes": [
+    {"pid": 808492, "component": "F14 independent training", "memory_mib": 8974},
+    {"pid": 2931285, "component": "existing Image API", "memory_mib": 378},
+    {"pid": 809312, "component": "existing ComfyUI", "memory_mib": 262},
+    {"pid": 222398, "component": "existing remote desktop", "memory_mib": 266}
+  ],
+  "gpu_process_measurement_scope": "Resident memory only; no API call counts inferred",
+  "dashboard": {
+    "iteration_id": "alias-build-pov-ray",
+    "status": "EVALUATED",
+    "timestamp": "2026-11-01T19:30:53.797956+00:00",
+    "verified_trials": 1,
+    "successes": 0,
+    "original_remote_snapshot_read": true
+  },
+  "v9_laya_step_checkpoint": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+  "v9_laya_step_checkpoint_exists": true,
+  "v9_laya_step_model_safetensors_bytes": 842609220,
+  "new_v9_training_in_this_work_package": false,
+  "kev_new_training_in_this_work_package": false,
+  "other_shared_services_modified": false,
+  "scheduled_automation_created": false
+}

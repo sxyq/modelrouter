@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a19874e65674c8aedaa0b493950e71",
+    "object": "response",
+    "created_at": 1793559161,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_bd4e548eda3ea59fd7049311",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We have packages. Need download model save local directory. Need possibly transformers mismatch? Use AutoModelForSequenceClassification, AutoTokenizer save_pretrained. Download all files. Then create Flask app.py. Need run background. Need test. Port 5000 accessible. We can create app. We need ensure no old service. ps unavailable; use /proc or pkill maybe? pgrep likely unavailable. We can use fuser? Check. Could launch nohup. Need service persists after shell exits? yes background with nohup. Need maybe use setsid. We need test using curl.\n\nLet's download model. Could use huggingface_hub snapshot_download to ensure full model local. But save_pretrained likely enough. User wants download and save to /app/model_cache/sentiment_model. Use from_pretrained then save_pretrained with safe serialization. Could snapshot_download(local_dir, local_dir_use_symlinks=False) to preserve exact all files. But transformers version 4.56 and torch 2.7.1 should work. Do direct. Model download ~268MB? distilbert small. Use python.\n\nWe also need maybe create reproducible script? Probably directly. Let's download."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_e91cab6a2dff0ca3e72a2bff",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "All required libraries are already installed and Hugging Face is reachable. I’ll download the model and tokenizer into the exact local directory, then verify the saved files load offline."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_973ee07ccbfbe76f51d0f854",
+        "status": "completed",
+        "call_id": "call_00_JWO1qCFxq4Fv4Nt2ySUW7804",
+        "name": "bash",
+        "arguments": "{\"command\": \"mkdir -p /app/model_cache/sentiment_model && python3 - <<'PY'\\nfrom transformers import AutoTokenizer, AutoModelForSequenceClassification\\n\\nmodel_name = \\\"distilbert-base-uncased-finetuned-sst-2-english\\\"\\nsave_dir = \\\"/app/model_cache/sentiment_model\\\"\\nprint(f\\\"Downloading {model_name} to {save_dir} ...\\\")\\ntokenizer = AutoTokenizer.from_pretrained(model_name)\\nmodel = AutoModelForSequenceClassification.from_pretrained(model_name)\\ntokenizer.save_pretrained(save_dir)\\nmodel.save_pretrained(save_dir)\\nprint(\\\"Model and tokenizer saved successfully.\\\")\\nPY\\nfind /app/model_cache/sentiment_model -maxdepth 1 -type f -printf '%f %s bytes\\\\n' | sort\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 2002,
+      "output_tokens": 488,
+      "total_tokens": 2490,
+      "input_tokens_details": {
+        "cached_tokens": 1664
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a19874e65674c8aedaa0b493950e71",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 2002,
+      "output_tokens": 488,
+      "total_tokens": 2490,
+      "input_tokens_details": {
+        "cached_tokens": 1664
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 2002,
+    "completion_tokens": 488,
+    "reported_completion_tokens": 488,
+    "reasoning_tokens": null,
+    "cached_tokens": 1664,
+    "cache_write_tokens": null,
+    "ttft_ms": 2883.0160420038737,
+    "latency_ms": 4238.74329199316,
+    "output_tokens_per_s": 115.12846293896004,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 359.95440823650665,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000348492,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000348492,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "8bfbae6f-bf2a-479a-9f6c-97a2a4b1ed8a",
+    "decision_id": "8bfbae6f-bf2a-479a-9f6c-97a2a4b1ed8a-2",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

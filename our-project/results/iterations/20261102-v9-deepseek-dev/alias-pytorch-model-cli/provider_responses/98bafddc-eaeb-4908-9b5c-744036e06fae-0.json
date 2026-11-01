@@ -1,0 +1,125 @@
+{
+  "response": {
+    "id": "01a198701752735c8ecd0a2f2be8f435",
+    "object": "response",
+    "created_at": 1793558846,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_35e7a8a816a6edd27ea2f2ce",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "We need solve. Need inspect /app. We have tools. Must provide executable binary cli_tool and weights.json, prediction.txt. Need infer MNIST model format maybe repo. Let's inspect."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item_83b9c7fa2ecf570de3a9de86",
+        "status": "completed",
+        "call_id": "call_00_QAITZPxPoIYAMqiNmInY2831",
+        "name": "bash",
+        "arguments": "{\"command\": \"ls -la /app && find /app -maxdepth 3 -type f -printf '%p %s bytes\\\\n' | sort | head -200\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 1120,
+      "output_tokens": 109,
+      "total_tokens": 1229,
+      "input_tokens_details": {
+        "cached_tokens": 896
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a198701752735c8ecd0a2f2be8f435",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 1120,
+      "output_tokens": 109,
+      "total_tokens": 1229,
+      "input_tokens_details": {
+        "cached_tokens": 896
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 1120,
+    "completion_tokens": 109,
+    "reported_completion_tokens": 109,
+    "reasoning_tokens": null,
+    "cached_tokens": 896,
+    "cache_write_tokens": null,
+    "ttft_ms": 2038.194167020265,
+    "latency_ms": 2895.8937920397148,
+    "output_tokens_per_s": 37.63950193878697,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 127.08411758665308,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0016276,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000101688,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "98bafddc-eaeb-4908-9b5c-744036e06fae",
+    "decision_id": "98bafddc-eaeb-4908-9b5c-744036e06fae-0",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 30397.429948672652,
+    "router_process_reused": false,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

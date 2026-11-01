@@ -1,0 +1,125 @@
+{
+  "response": {
+    "id": "01a19887d895780ea365f19075aaa214",
+    "object": "response",
+    "created_at": 1793560403,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_04a67c872ef5d1f7240e9477",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Need find source archives. Maybe GitHub POV-Ray repo history contains v2.2? Search. Could use apt source? Debian package povray maybe source contains 3.7 only. Task specifically build POV-Ray 2.2. We need source archives. Maybe old source on ftp mirrors, sourceforge, ibiblio, sunsite. Let's search web via apt? curl search engines maybe. Use GitHub code search unauth limited. Let's query general internet.\n\nKnown POV-Ray 2.2 source archive name maybe povray22.zip / povray-2.2.tar.gz. POV-Ray old versions from ftp.povray.org: /pub/povray/Old-Versions/ maybe unavailable. Mirrors: ftp://ftp.povray.org/pub/povray/Old-Versions/2.2/ maybe. Could be in Debian snapshot source package povray 2.2? Let's search Debian sources. `apt-cache showsrc povray` maybe source versions available? snapshot.debian.org. POV-Ray 2.2 likely in Debian non-free around 1999. Sources on snapshot. We can download orig tar. Search packages.debian.org maybe old.\n\nLet's query DuckDuckGo/Bing with curl."
+          }
+        ]
+      },
+      {
+        "type": "function_call",
+        "id": "item_531072d5ece0a2d4c9791e12",
+        "status": "completed",
+        "call_id": "call_00_GxfxY0sCEPkljZkyiYwN2732",
+        "name": "bash",
+        "arguments": "{\"command\": \"curl -s --max-time 20 'https://html.duckduckgo.com/html/?q=povray-2.2.tar.gz' | sed 's/<[^>]*>/ /g' | grep -iE 'povray|tar.gz|zip' | head -40\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 19979,
+      "output_tokens": 368,
+      "total_tokens": 20347,
+      "input_tokens_details": {
+        "cached_tokens": 12928
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a19887d895780ea365f19075aaa214",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 19979,
+      "output_tokens": 368,
+      "total_tokens": 20347,
+      "input_tokens_details": {
+        "cached_tokens": 12928
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 19979,
+    "completion_tokens": 368,
+    "reported_completion_tokens": 368,
+    "reasoning_tokens": null,
+    "cached_tokens": 12928,
+    "cache_write_tokens": null,
+    "ttft_ms": 3390.60437498847,
+    "latency_ms": 3838.368500000797,
+    "output_tokens_per_s": 95.87406732832545,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 821.8612868770335,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0190748,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.001317234,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "bef69413-23c7-4213-897b-81d4dd2abf87",
+    "decision_id": "bef69413-23c7-4213-897b-81d4dd2abf87-20",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}

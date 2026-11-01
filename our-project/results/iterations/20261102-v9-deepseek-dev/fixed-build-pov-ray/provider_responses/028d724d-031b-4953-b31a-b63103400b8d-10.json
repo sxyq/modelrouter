@@ -1,0 +1,124 @@
+{
+  "response": {
+    "id": "01a19878a59e7051943221bdc86d783d",
+    "object": "response",
+    "created_at": 1793559406,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_ccc271aba9385aa5d7c560b5",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "The original apt install apparently did not complete or got killed when timeout? Actually process gone but packages not installed. Let's inspect apt install log? It was overwritten by second failed one. Need install again. Maybe apt install is slow due network. Run with no output and longer? Command timeout 30 secs hard. Could run in background with nohup and poll. Let's do that."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_bd0d03e10cdbe115b6299fcc",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The earlier process ended without installing packages. I'll run apt in the background with logging, then poll for completion so it can exceed the per-command timeout."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_3a10314f9b5068cdd7006504",
+        "status": "completed",
+        "call_id": "call_00_UIJatWZ9DuvIrqHYp3L98278",
+        "name": "bash",
+        "arguments": "{\"command\": \"nohup env DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential bison flex zlib1g-dev libpng-dev libjpeg-dev unzip file > /tmp/apt-install2.log 2>&1 & echo $! > /tmp/apt-install2.pid; cat /tmp/apt-install2.pid\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 3931,
+      "output_tokens": 227,
+      "total_tokens": 4158,
+      "input_tokens_details": {
+        "cached_tokens": 3712
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "deepseek-v4.1-flash",
+    "selected_model_id": "deepseek-v4.1-flash",
+    "response_id": "01a19878a59e7051943221bdc86d783d",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "aihub",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "high",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 3931,
+      "output_tokens": 227,
+      "total_tokens": 4158,
+      "input_tokens_details": {
+        "cached_tokens": 3712
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 3931,
+    "completion_tokens": 227,
+    "reported_completion_tokens": 227,
+    "reasoning_tokens": null,
+    "cached_tokens": 3712,
+    "cache_write_tokens": null,
+    "ttft_ms": 1945.2634589979425,
+    "latency_ms": 2491.054666985292,
+    "output_tokens_per_s": 91.126061185449,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 415.9099609484026,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.000180186,
+    "cost_model_id": "deepseek-v4.1-flash",
+    "cost_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.000180186,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "028d724d-031b-4953-b31a-b63103400b8d",
+    "decision_id": "028d724d-031b-4953-b31a-b63103400b8d-10",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

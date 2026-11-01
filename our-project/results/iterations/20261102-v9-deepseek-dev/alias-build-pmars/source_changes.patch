@@ -1,0 +1,186 @@
+diff --git a/our-project/code/src/modelrouter/benchmark/harbor_agent.py b/our-project/code/src/modelrouter/benchmark/harbor_agent.py
+index 88ea77a..41e09c3 100644
+--- a/our-project/code/src/modelrouter/benchmark/harbor_agent.py
++++ b/our-project/code/src/modelrouter/benchmark/harbor_agent.py
+@@ -83,6 +83,7 @@ class PolicyModel(LitellmModel):
+         target = "gpt-6-luna" if policy == "fixed_strong" else "gpt-5.6-luna"
+         if self.v9_enabled:
+             target = "gpt-6.1-sol" if policy == "fixed_strong" else "qwen3.8-flash"
++            target = v9_config.get("fixed_model_id", target)
+         self.policy = create_policy(policy_key, seed=seed, target_model=target)
+         self.state, self.record_dir = state, record_dir
+         self.provider = provider
+@@ -116,7 +117,8 @@ class PolicyModel(LitellmModel):
+         self.teacher_metrics = self.v9_hook.teacher_metrics if self.v9_hook else []
+         self.action_validation = {
+             action["action_id"]: ("ALIAS_SMOKE_ONLY" if self.v9_enabled and
+-                                  getattr(self.provider, "alias_mapping", None) is not None else
++                                  getattr(self.provider, "alias_mapping", None) is not None and
++                                  self.provider.alias_mapping.resolve(action["model"], action["native_effort"]) else
+                                   "REAL_API_NOT_OBSERVED" if self.v9_enabled else
+                                   "REAL_TESTED_LOW" if action["native_effort"] == "low" else "NOT_TESTED")
+             for action in self.actions
+diff --git a/our-project/code/src/modelrouter/benchmark/iterations.py b/our-project/code/src/modelrouter/benchmark/iterations.py
+index cf1d5cc..ce8d8be 100644
+--- a/our-project/code/src/modelrouter/benchmark/iterations.py
++++ b/our-project/code/src/modelrouter/benchmark/iterations.py
+@@ -126,6 +126,8 @@ def collect_trials(path: Path):
+             trials.append({**unit, **row, "job_name": job.name, "job_dir": str(job)})
+     recorded_tools = {(r.get("episode_id"), r.get("tool_call_id")) for r in rows(path / "tool_calls.jsonl") if r.get("kind") == "agent_tool"}
+     for trial in trials:
++        if not trial.get("trial_id"):
++            continue
+         for step in trial.get("trace", {}).get("steps", []):
+             for call in step.get("tool_calls", []):
+                 identity = (str(trial["trial_id"]), call.get("tool_call_id"))
+@@ -158,6 +160,8 @@ def summarize(path: Path, *, persist=True):
+     events = rows(path / "events.jsonl")
+     benchmark_events = [e for e in events if e.get("sample_kind", "benchmark").lower() == "benchmark"]
+     calls = [e for e in benchmark_events if e["event"] == "GENERATOR_END"]
++    generator_failures = [e for e in benchmark_events if e["event"] == "ERROR"
++                          and e.get("category") == "PROVIDER" and e.get("role") == "generator"]
+     teachers = [e for e in benchmark_events if e["event"] in ("TEACHER_END", "TEACHER_ERROR")
+                 and e.get("provider_request_attempted", True)]
+     verified = [r for r in trials if r["status"] == "OFFICIAL_ARTIFACT_VERIFIED"]
+@@ -215,13 +219,13 @@ def summarize(path: Path, *, persist=True):
+         model = c.get("selected_model_id") or c.get("returned_model") or c.get("returned_model_id") or c.get("model", "unknown")
+         model_calls[model + " / " + c.get("protocol", "chat_completions")].append(c)
+     native_costs = [r.get("cost_usd") for r in native_only]
+-    all_costs = costs + native_costs
++    all_costs = costs + native_costs + [None] * len(generator_failures)
+     known_cost = round(sum(v for v in all_costs if isinstance(v, (int, float))), 10)
+     complete_cost = bool(all_costs) and all(isinstance(v, (int, float)) for v in all_costs)
+     durations = [r.get("duration_sec", r.get("episode_wall_s")) for r in verified]
+     billed_calls = [c.get("actual_billed_cost_usd") for c in calls]
+     native_billed = [r.get("actual_billed_cost_usd") for r in native_only]
+-    all_billed = billed_calls + native_billed
++    all_billed = billed_calls + native_billed + [None] * len(generator_failures)
+     billed_generator = sum(all_billed) if all_billed and all(v is not None for v in all_billed) else None
+     teacher_costs = [c.get("official_rate_cost_usd", c.get("cost_usd")) for c in teachers]
+     teacher_billed = [c.get("actual_billed_cost_usd") for c in teachers]
+@@ -248,12 +252,13 @@ def summarize(path: Path, *, persist=True):
+                      for r in native_only]
+     call_tokens = [c["prompt_tokens"] + c["completion_tokens"]
+                    if c.get("prompt_tokens") is not None and c.get("completion_tokens") is not None else None for c in calls]
+-    token_values = call_tokens + native_tokens
++    token_values = call_tokens + native_tokens + [None] * len(generator_failures)
+     teacher_token_values = [c["prompt_tokens"] + c["completion_tokens"]
+                            if c.get("prompt_tokens") is not None and c.get("completion_tokens") is not None
+                            else None for c in teachers]
+     model_tokens = token_values + teacher_token_values
+     model_costs = all_costs + teacher_costs
++    backend_costs = [row.get("backend_model_rate_cost_usd") for row in calls + teachers] + [None] * len(generator_failures)
+     mapped_requests = [dict(row, role=role) for role, group in (("generator", calls), ("teacher", teachers))
+                        for row in group if row.get("cost_basis") == "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE"]
+     mapped_costs = [row.get("cost_usd") for row in mapped_requests]
+@@ -269,6 +274,7 @@ def summarize(path: Path, *, persist=True):
+         "current": current, "current_trial": current_trial,
+         "generator_tokens": sum(token_values) if token_values and all(v is not None for v in token_values) else None,
+         "teacher_calls": len(teachers),
++        "generator_failed_requests": len(generator_failures),
+         "teacher_tokens": sum(teacher_token_values) if all(v is not None for v in teacher_token_values) else None,
+         "total_model_tokens": sum(model_tokens) if model_tokens and all(v is not None for v in model_tokens) else None,
+         "generator_cost_usd": known_cost if complete_cost else None,
+@@ -276,6 +282,9 @@ def summarize(path: Path, *, persist=True):
+         "teacher_cost_usd": teacher_cost,
+         "known_teacher_cost_usd": round(sum(v for v in teacher_costs if v is not None), 10) if any(v is not None for v in teacher_costs) else None,
+         "episode_model_cost_usd": round(sum(model_costs), 10) if model_costs and all(v is not None for v in model_costs) else None,
++        "backend_model_rate_reference_cost_usd": round(sum(backend_costs), 10) if backend_costs and all(v is not None for v in backend_costs) else None,
++        "known_backend_model_rate_reference_cost_usd": round(sum(v for v in backend_costs if v is not None), 10) if any(v is not None for v in backend_costs) else None,
++        "backend_model_rate_statuses": sorted({row.get("backend_model_rate_status", "NOT_MEASURED") for row in calls + teachers}),
+         "execution_mode": "ALIAS_SMOKE" if mapped_requests else "REAL_API",
+         "mapped_cost_accounting": {
+             "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+@@ -313,7 +322,7 @@ def summarize(path: Path, *, persist=True):
+                 "recorded_cost_usd": c.get("cost_usd"), "official_rate_cost_usd": c["official_rate_cost_usd"],
+             } for role, group in (("generator", calls), ("teacher", teachers))
+               for c in group if "official_rate_cost_usd" in c],
+-        } if not mapped_requests else None,
++        } if not mapped_requests and any("official_rate_cost_usd" in row for row in calls + teachers) else None,
+         "actual_generator_cost_usd": billed_generator,
+         "actual_teacher_cost_usd": billed_teacher,
+         "sandbox_cost_usd": sandbox_cost, "router_compute_cost_usd": router_cost,
+diff --git a/our-project/code/src/modelrouter/providers/provider.py b/our-project/code/src/modelrouter/providers/provider.py
+index 6ac5b97..abc7fec 100644
+--- a/our-project/code/src/modelrouter/providers/provider.py
++++ b/our-project/code/src/modelrouter/providers/provider.py
+@@ -334,7 +334,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
+         aliases = {"gpt-6": "gpt-6-luna", "luna": "gpt-6-luna", "gpt-5.6": "gpt-5.6-luna"}
+         model = model_id.lower().replace(" ", "-")
+         target = aliases.get(model, model)
+-        if target in V9_MODEL_IDS:
++        if target in V9_MODEL_IDS or target in self.model_endpoints:
+             return target
+         if target not in self.allowed_models:
+             target = self.primary_model
+@@ -489,6 +489,10 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
+                          "PROVIDER_REPORTED_MISMATCH")
+         usage_complete = p_tokens is not None and c_tokens is not None
+         cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and (alias_facts is not None or returned == target) else None
++        backend_spec = MODEL_REGISTRY.get(target)
++        backend_cost = (backend_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0)
++                        if alias_facts is not None and backend_spec is not None and usage_complete and returned == target
++                        else cost if alias_facts is None else None)
+         # Vendor cost is distinct from the configured price estimate.
+         reported_cost = (raw_usage or {}).get("cost")
+         reported_cost_unit = (raw_usage or {}).get("cost_currency") or (raw_usage or {}).get("currency")
+@@ -541,6 +545,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
+             "cost_model_id": target_spec.model_id,
+             "cost_source": target_spec.pricing_source,
+             "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE" if alias_facts is not None else "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
++            "backend_model_rate_cost_usd": backend_cost,
++            "backend_model_rate_source": backend_spec.pricing_source if backend_spec else None,
++            "backend_model_rate_status": backend_spec.pricing_status if backend_spec else "NOT_MEASURED",
+             "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+             "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+             "cost_status": "MAPPED_EXPERIMENT_PRICE" if alias_facts is not None and cost is not None else (target_spec.pricing_status if cost is not None else "UNKNOWN"),
+diff --git a/our-project/code/src/modelrouter/providers/registry.py b/our-project/code/src/modelrouter/providers/registry.py
+index 9091c46..d557c05 100644
+--- a/our-project/code/src/modelrouter/providers/registry.py
++++ b/our-project/code/src/modelrouter/providers/registry.py
+@@ -81,6 +81,19 @@ V9_MODEL_IDS = ("gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash")
+ 
+ # 5 Major Model Pools
+ MODEL_REGISTRY: Dict[str, ModelSpec] = {
++    "deepseek-v4.1-flash": ModelSpec(
++        model_id="deepseek-v4.1-flash", pool="Fast", provider="aihub",
++        display_name="DeepSeek V4.1 Flash (configured AIHub endpoint)",
++        context_window=1_000_000, max_output_tokens=393_216,
++        native_efforts=("none", "low", "high", "max"),
++        input_price_per_1m=0.15, output_price_per_1m=0.60, reasoning_price_per_1m=0.60,
++        cache_read_price_per_1m=0.003, cache_write_price_per_1m=0.15,
++        pricing_status="OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
++        pricing_source="https://api-docs.deepseek.com/quick_start/pricing",
++        identity_status="CONFIGURED_API_ID_UNVERIFIED_PHYSICAL_RELEASE",
++        context_status="OFFICIAL_FAMILY_DOCUMENTATION",
++        native_efforts_status="OFFICIAL_FAMILY_DOCUMENTATION_APPLICATION_UNVERIFIED",
++    ),
+     # 1. Fast Pool
+     "gpt-4o-mini": ModelSpec(
+         model_id="gpt-4o-mini",
+diff --git a/our-project/code/src/modelrouter/v9/runtime/alias.py b/our-project/code/src/modelrouter/v9/runtime/alias.py
+index c5aa5bc..8550164 100644
+--- a/our-project/code/src/modelrouter/v9/runtime/alias.py
++++ b/our-project/code/src/modelrouter/v9/runtime/alias.py
+@@ -39,7 +39,7 @@ class AliasMapping:
+ 
+ def alias_provider(config: dict, api_key=None):
+     """Use the same configured Provider in local and Harbor episodes."""
+-    from modelrouter.providers.provider import OpenAICompatibleProvider
++    from modelrouter.providers.provider import OpenAICompatibleProvider, OpenAIResponsesProvider
+ 
+     credential = api_key
+     if credential is None:
+@@ -66,7 +66,11 @@ def alias_provider(config: dict, api_key=None):
+     mapping = AliasMapping(config["actual_backend_model_id"], config["base_url"],
+                            effective_native_effort=config.get("effective_native_effort", "none"),
+                            cost_status="MAPPED_EXPERIMENT_PRICE")
+-    return OpenAICompatibleProvider(
++    provider = (OpenAIResponsesProvider if config.get("generator_protocol") == "responses"
++                else OpenAICompatibleProvider)
++    return provider(
+         base_url=config["base_url"], alias_mapping=mapping,
+         api_key=credential if credential is not None else "",
++        request_timeout_sec=config.get("provider_timeout_sec", 60.0),
++        model_endpoints=config.get("model_endpoints"),
+     )

@@ -1,0 +1,137 @@
+{
+  "response": {
+    "id": "01a19865f4297f29962f6ffaf3376f7d",
+    "object": "response",
+    "created_at": 1793558181,
+    "model": "deepseek-v4.1-flash",
+    "status": "completed",
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "item_d42494cf7e321f18fa61b116",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "Only two commits. Need recover secret (probably dangling/unreachable objects in git). Search git objects, reflog, fsck."
+          }
+        ]
+      },
+      {
+        "type": "message",
+        "id": "item_300ef45af1cea04f89eb1e01",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "The working tree is clean and only has README.md. I’ll search all Git objects, reflogs, and unreachable commits/blobs for the secret pattern."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "item_b2ae7c1d9cfd35788657c3aa",
+        "status": "completed",
+        "call_id": "call_00_sNy15qB8MRA5Tdxpir4t9789",
+        "name": "bash",
+        "arguments": "{\"command\": \"cd /app/repo && echo '--- reflog ---' && git reflog --all --date=iso && echo '--- fsck ---' && git fsck --full --unreachable --lost-found --dangling 2>&1 | head -100 && echo '--- all objects grep ---' && git rev-list --objects --all && echo '--- grep tracked history ---' && git log --all -p -- . | grep -nE 'secret\\\\[[^]]*\\\\]' || true && echo '--- git object files ---' && find .git/objects -type f | sort\"}"
+      }
+    ],
+    "usage": {
+      "input_tokens": 1447,
+      "output_tokens": 226,
+      "total_tokens": 1673,
+      "input_tokens_details": {
+        "cached_tokens": 1024
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "01a19865f4297f29962f6ffaf3376f7d",
+    "request_model_id": "deepseek-v4.1-flash",
+    "returned_model_id": "deepseek-v4.1-flash",
+    "provider": "openai-compatible",
+    "provider_base_url": "https://aihub.dog/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "high",
+    "requested_native_effort": "low",
+    "request_native_effort": "high",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "high"
+      }
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "input_tokens": 1447,
+      "output_tokens": 226,
+      "total_tokens": 1673,
+      "input_tokens_details": {
+        "cached_tokens": 1024
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": true,
+    "prompt_tokens": 1447,
+    "completion_tokens": 226,
+    "reported_completion_tokens": 226,
+    "reasoning_tokens": null,
+    "cached_tokens": 1024,
+    "cache_write_tokens": null,
+    "ttft_ms": 1642.3238749848679,
+    "latency_ms": 2423.816957976669,
+    "output_tokens_per_s": 93.24136431022339,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 289.1900196157859,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0032084,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
+    "backend_model_rate_cost_usd": 0.000202122,
+    "backend_model_rate_source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "backend_model_rate_status": "OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "MAPPED_EXPERIMENT_PRICE",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "actual_backend_model_id": "deepseek-v4.1-flash",
+    "effective_native_effort": "high",
+    "execution_mode": "ALIAS_SMOKE",
+    "context_resend_required": null,
+    "context_resend_status": "UNKNOWN",
+    "episode_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277",
+    "decision_id": "7aa34c2a-2d41-4729-8f5d-c1912c387277-1",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "qwen3.8-flash"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "model_validation_status": "ALIAS_SMOKE_ONLY",
+    "effort_validation_status": "ALIAS_SMOKE_ONLY"
+  }
+}
