@@ -220,6 +220,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--environment", choices=["docker", "daytona", "modal", "e2b"], default="docker")
     p.add_argument("--docker-host", help="Docker endpoint for this run; overrides runtime config")
     p.add_argument("--force-build", action="store_true", help="Build the task environment from its upstream Dockerfile")
+    p.add_argument("--artifact", action="append", default=[], help="Environment path retained by Harbor after the trial")
     p.add_argument("--execute", action="store_true", help="Actually start a real Harbor task")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--iteration-dir", type=Path)
@@ -314,6 +315,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         config.update(runtime)
         config["single_episode"] = args.single_episode
         config["force_build"] = args.force_build
+        config["artifacts"] = args.artifact
         config["docker_host"] = _runtime_env(docker_host).get("DOCKER_HOST")
         os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "true"
         from modelrouter.providers.registry import ModelRegistry
@@ -465,6 +467,8 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
             task_source = config.get("task_source") or str(iterations.ROOT / "external/benchmarks/terminal-bench-2-1/tasks")
             cmd = build_harbor_command(unit["task_id"], unit["agent"], None if unit["agent"] == "oracle" else config["model"], config["environment"], custom, task_source)
             cmd += ["--jobs-dir", str(path / "jobs"), "--job-name", unit["job_name"], "--max-retries", "0"]
+            for artifact in config.get("artifacts", []):
+                cmd += ["--artifact", artifact]
             if config.get("force_build"):
                 cmd += ["--force-build"]
             if custom:

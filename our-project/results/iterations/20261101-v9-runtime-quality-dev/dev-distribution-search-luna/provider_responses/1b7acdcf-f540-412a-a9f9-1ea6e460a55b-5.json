@@ -1,0 +1,112 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "sg_call_dd6da1c624f39_0",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cat <<'EOF' > /tmp/find_dist.py\\nimport numpy as np\\nfrom scipy.optimize import root\\nN=150000\\n# Two-level distribution, with k high entries; solve forward and backward KL=10\\n# jointly for k (continuous relaxation) and high mass a, then choose integer k.\\ndef calc(k,a):\\n b=(1-k*a)/(N-k)\\n if b<=0 or a<=0 or k<=0 or k>=N: return None\\n f=k*a*np.log(N*a)+(N-k)*b*np.log(N*b)\\n r=-(k*np.log(N*a)+(N-k)*np.log(N*b))/N\\n return f,r,b\\nsols=[]\\nfor k0 in np.geomspace(1, N-1, 100):\\n for frac in [0.2,0.5,0.8,0.99]:\\n  def fun(z):\\n   k,a=z\\n   c=calc(k,a)\\n   return [1e3,1e3] if c is None else [c[0]-10,c[1]-10]\\n  s=root(fun,[k0,frac/k0],method='hybr')\\n  k,a=s.x\\n  if s.success and 0<k<N and 0<a<1/k and np.linalg.norm(fun([k,a]))<1e-5:\\n   sols.append((k,a))\\nprint('solutions',sols[:5])\\n# Search integer k; for each, find a matching forward KL, rank reverse KL error.\\nbest=None\\nfor k in range(1,N):\\n if k>2000 and k%100==0: pass\\n # broad logarithmic candidate grid, then refine around roots\\n if k not in set(range(1,101)) and k not in set(range(100,2001,5)) and k not in set(range(2000,N,100)): continue\\n hi=(1-1e-12)/k\\n def ffun(a):\\n  c=calc(k,a)\\n  return np.nan if c is None else c[0]-10\\n try:\\n  a=__import__('scipy').optimize.brentq(ffun,1/N,hi)\\n except ValueError: continue\\n f,r,b=calc(k,a); err=abs(r-10)\\n if best is None or err<best[0]: best=(err,k,a,f,r,b)\\nprint('best',best)\\nerr,k,a,f,r,b=best\\np=np.r_[np.full(k,a),np.full(N-k,b)]\\nnp.save('/app/dist.npy',p)\\nprint(p.sum(),p.min(),p.max())\\nEOF\\npython /tmp/find_dist.py\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_route_eaa784a5a6414826bacdbea0eb2dd890",
+    "model": "gpt-6-luna",
+    "created": 1793549641,
+    "usage": {
+      "prompt_tokens": 3559,
+      "completion_tokens": 840,
+      "total_tokens": 4399,
+      "prompt_tokens_details": {
+        "cached_tokens": 2793
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 248
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_eaa784a5a6414826bacdbea0eb2dd890",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "sent_effort_parameter": {
+      "reasoning_effort": "low"
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 3559,
+      "completion_tokens": 840,
+      "total_tokens": 4399,
+      "prompt_tokens_details": {
+        "cached_tokens": 2793
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 248
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 3559,
+    "completion_tokens": 840,
+    "reported_completion_tokens": 840,
+    "reasoning_tokens": 248,
+    "cached_tokens": 2793,
+    "cache_write_tokens": null,
+    "ttft_ms": 19276.381417002995,
+    "latency_ms": 32256.95845898008,
+    "output_tokens_per_s": 26.04089288418793,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 64.71206921568864,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00052453,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "1b7acdcf-f540-412a-a9f9-1ea6e460a55b",
+    "decision_id": "1b7acdcf-f540-412a-a9f9-1ea6e460a55b-5",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

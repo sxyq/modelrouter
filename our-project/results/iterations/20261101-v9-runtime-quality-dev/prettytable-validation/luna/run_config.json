@@ -1,0 +1,68 @@
+{
+  "enabled": true,
+  "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+  "selection_scope": "MODEL_ONLY",
+  "generator_protocol": "responses",
+  "provider_timeout_sec": 180,
+  "model_endpoints": {
+    "gpt-6.1-sol": {
+      "base_url": "https://oneapi.sxyq27.online/v1",
+      "protocol": "responses"
+    },
+    "gpt-6-luna": {
+      "base_url": "https://oneapi.sxyq27.online/v1",
+      "protocol": "chat_completions"
+    }
+  },
+  "formal_model_ids": [
+    "gpt-6.1-sol",
+    "gpt-6-luna",
+    "qwen3.8-flash"
+  ],
+  "candidate_actions": [
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "native_effort": "low"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "native_effort": "low"
+    }
+  ],
+  "native_effort_observation_note": "Requested low; applied native effort remains unknown. Only the model is selected.",
+  "teacher_enabled": false,
+  "router_endpoint": "http://127.0.0.1:8000",
+  "router_timeout_sec": 60,
+  "feature_training_status": "FEATURE_PARTIALLY_TRAINED",
+  "dataset": "SWE-bench/SWE-smith",
+  "source_id": "TRA-002",
+  "initial_cwd": "/testbed",
+  "original_verifier_paths": [
+    "tests"
+  ],
+  "evidence_scope": "REAL_TRAIN_TASK_VERIFICATION",
+  "pre_decision_state": {
+    "phase": "modify"
+  },
+  "actual_backend_model_id": "gpt-6-luna",
+  "task_id": "prettytable__prettytable.ca90b055.combine_file__huv4rtpp",
+  "policy": "fixed_luna",
+  "workspace": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-validation",
+  "execution_mode": "REAL_API",
+  "backend_deployment_status": "API_IDENTITY_ONLY_UNVERIFIED_PHYSICAL_BACKEND",
+  "mini_swe_version": "2.4.6",
+  "started_at": "2026-11-01T16:13:19.656870+00:00",
+  "max_steps": 30,
+  "max_output_tokens": 4096,
+  "instruction": "PrettyTable validation methods called with wrong arguments\n\n#### Description\n\nWhen setting various options on PrettyTable instances, the validation methods are being called with incorrect argument order or wrong parameters, causing validation to fail unexpectedly.\n\n#### Steps/Code to Reproduce\n\n```python\nfrom prettytable import PrettyTable\n\n# Create a simple table\ntable = PrettyTable()\ntable.field_names = [\"Name\", \"Age\", \"City\"]\ntable.add_row([\"Alice\", 25, \"New York\"])\n\n# Try to set basic options that should work\ntable.none_format = \"N/A\"  # This should work but fails validation\ntable.sortby = \"Name\"      # This should work but fails validation\ntable.header = True        # This should work but fails validation\n\n# Try to get string output\nprint(table.get_string())\n```\n\nThe above code raises validation errors when it should work normally. Similar issues occur when trying to set other table formatting options like `left_padding_width`, `right_padding_width`, `sort_key`, etc.\n\n#### Expected Behavior\n\nSetting valid options on PrettyTable should work without validation errors. The table should format and display correctly with the specified options.\n\n#### Actual Behavior\n\nVarious validation methods are called with incorrect arguments, causing TypeError or ValueError exceptions when setting perfectly valid option values.\n\nWorkspace and initial working directory (absolute CWD): /testbed",
+  "verify_command": "python -m pytest -q tests",
+  "upstream_cost_counter_status": "MODEL_RATE_ESTIMATE_NOT_AN_INVOICE",
+  "upstream_runtime_options": {
+    "MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT": "1",
+    "LITELLM_LOCAL_MODEL_COST_MAP": "true"
+  },
+  "comparison_scope": "ONE_NATIVE_AGENT_STEP",
+  "capability_snapshot_id": "20261031T072548885180Z-v4"
+}

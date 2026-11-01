@@ -1,0 +1,26 @@
+{
+  "status": "EVALUATED",
+  "reason": "",
+  "pending_units": [],
+  "unresolved_problems": [],
+  "hypotheses": [
+    "The same official mini-swe-agent can isolate policy effects on paired tasks."
+  ],
+  "required_config": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-sol/run_config.json",
+  "priority": "Continue the recorded task order",
+  "failure_categories": [],
+  "completed_units": [
+    {
+      "task_id": "distribution-search",
+      "policy": "fixed_strong",
+      "agent": "modelrouter",
+      "job_name": "distribution-search--fixed_strong--s42",
+      "status": "EVALUATED",
+      "pipeline_stage": "DEV",
+      "exit_code": 0
+    }
+  ],
+  "next_command": "python -m modelrouter.benchmark resume our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-sol",
+  "sealed_test": "REQUIRES_OWNER_CONFIRMATION",
+  "completed_development": []
+}

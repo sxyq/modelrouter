@@ -27,7 +27,7 @@ from minisweagent.exceptions import Submitted
 from minisweagent.models.litellm_model import LitellmModel
 from minisweagent.models.utils.actions_toolcall import BASH_TOOL
 
-from modelrouter.agent.state import AgentState
+from modelrouter.agent.state import AgentState, EpisodeStatus
 from modelrouter.baselines.policy import create_policy
 from modelrouter.providers.provider import OpenAICompatibleProvider, OpenAIResponsesProvider
 from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS
@@ -123,6 +123,8 @@ class PolicyModel(LitellmModel):
         }
 
     def _query(self, messages, **kwargs):
+        if self.state.status == EpisodeStatus.TIMEOUT:
+            raise RuntimeError("Harbor episode timed out")
         decision_id = f"{self.state.episode_id}-{self.state.step_index}"
         snapshot = self.state.build_pre_decision_snapshot().to_dict()
         if self.v9_hook:
@@ -175,6 +177,8 @@ class PolicyModel(LitellmModel):
               effort_validation_status=self.action_validation[selected["action_id"]],
               selected_action=selected, pre_decision_state=snapshot, legal_actions=self.actions)
         spec = ModelRegistry().get_spec(selected["model"])
+        if self.state.status == EpisodeStatus.TIMEOUT:
+            raise RuntimeError("Harbor episode timed out")
         started = time.perf_counter()
         try:
             body, metrics = self.provider.query_raw(
@@ -296,11 +300,23 @@ class HarborEnvironment(LocalEnvironment):
         self.record_dir, self.state, self.system_info = record_dir, state, system_info
 
     def execute(self, action, cwd="", *, timeout=None):
+        if self.state.status == EpisodeStatus.TIMEOUT:
+            raise RuntimeError("Harbor episode timed out")
         started = time.perf_counter()
-        result = asyncio.run_coroutine_threadsafe(
-            self.environment.exec(command=action["command"], timeout_sec=timeout or self.config.timeout),
-            self.loop,
-        ).result()
+        try:
+            result = asyncio.run_coroutine_threadsafe(
+                self.environment.exec(command=action["command"], timeout_sec=timeout or self.config.timeout),
+                self.loop,
+            ).result()
+        except RuntimeError as exc:
+            record = {"kind": "agent_tool", "timestamp": now(), "episode_id": self.state.episode_id,
+                      "step": self.state.step_index, "command": action["command"],
+                      "tool_call_id": action.get("tool_call_id"), "exit_code": None, "output": None,
+                      "duration_ms": (time.perf_counter() - started) * 1000,
+                      "exception_info": str(exc), "submission": False, "phase": self.state.current_phase}
+            append(self.record_dir / "tool_calls.jsonl", record)
+            event(self.record_dir, "TOOL_ERROR", **record)
+            raise
         output = {"output": (result.stdout or "") + (result.stderr or ""),
                   "returncode": result.return_code, "exception_info": ""}
         duration = (time.perf_counter() - started) * 1000
@@ -373,7 +389,13 @@ class ModelRouterMiniSweAgent(BaseAgent):
         try:
             state.start()
             await asyncio.to_thread(agent.run, instruction)
+        except asyncio.CancelledError:
+            state.finish(EpisodeStatus.TIMEOUT)
+            event(record_dir, "AGENT_CANCELLED", episode_id=state.episode_id, step=state.step_index)
+            raise
         finally:
+            if self.v9_config and self.v9_config.get("router_checkpoint") and hasattr(model.policy, "client"):
+                model.policy.client.close()
             context.metadata = {**(context.metadata or {}), "harness": "minisweagent.agents.default.DefaultAgent",
                                 "mini_version": version("mini-swe-agent"), "policy": self.policy,
                                 "task_id": task_id,

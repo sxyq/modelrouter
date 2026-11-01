@@ -1,0 +1,23 @@
+........................................................................ [ 34%]
+..................................................................F..... [ 69%]
+...............................................................          [100%]
+=================================== FAILURES ===================================
+___ TestCustomFormatter.test_init_custom_format_throw_error_is_not_callable ____
+
+self = <test_prettytable.TestCustomFormatter object at 0x7ffffdbcb010>
+
+    def test_init_custom_format_throw_error_is_not_callable(self) -> None:
+        with pytest.raises(ValueError) as e:
+            PrettyTable(custom_format={"col1": "{:.2}"})
+    
+>       assert "Invalid value for custom_format.col1. Must be a function." in str(
+            e.value
+        )
+E       AssertionError: assert 'Invalid value for custom_format.col1. Must be a function.' in 'Invalid value for col1. Must be a function.'
+E        +  where 'Invalid value for col1. Must be a function.' = str(ValueError('Invalid value for col1. Must be a function.'))
+E        +    where ValueError('Invalid value for col1. Must be a function.') = <ExceptionInfo ValueError('Invalid value for col1. Must be a function.') tblen=4>.value
+
+tests/test_prettytable.py:2128: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_prettytable.py::TestCustomFormatter::test_init_custom_format_throw_error_is_not_callable
+1 failed, 206 passed in 0.32s

@@ -1,0 +1,85 @@
+{
+  "counts": {
+    "model_comparison/train.jsonl": 19
+  },
+  "skipped": {
+    "NO_ROUTING_TARGET": 6
+  },
+  "missing_inputs": [],
+  "eligible_counts": {
+    "model_comparison/train.jsonl": 19
+  },
+  "source_target_counts": {
+    "model_comparison/train.jsonl:TRA-002:step_model_preference": 10,
+    "model_comparison/train.jsonl:TRA-002:task_model_preference": 9
+  },
+  "limited_counts": {},
+  "trainer_root": ".",
+  "trainer_views": {
+    "train": {
+      "S1": "train/S1.jsonl"
+    }
+  },
+  "trajectory_prefix_count": 0,
+  "references_status": "READY",
+  "fixed_references_reused": 2,
+  "missing_reference_kinds": [],
+  "references_path": "../../../../code/data/v9/references/two_references.json",
+  "dataset_revision": "20261102-runtime-quality-model-only-v1",
+  "teacher_data_status": "NOT_GENERATED",
+  "offline_teacher_schema_version": 1,
+  "teacher_status_counts": {
+    "NOT_GENERATED": 19
+  },
+  "teacher_model_ids": {},
+  "teacher_generation_requests": 0,
+  "capability_snapshot_id": "20261031T072548885180Z-v4",
+  "capability_evidence_status": "PARTIAL",
+  "capability_measured_metric_count": 20,
+  "supplied_auxiliary_candidates": [],
+  "v9_model_choice_target_count": 19,
+  "v9_model_effort_target_count": 0,
+  "v9_native_effort_target_count": 0,
+  "supervision_type_counts": {
+    "STEP_LEVEL_PREFERENCE": 10,
+    "TASK_LEVEL_PREFERENCE": 9
+  },
+  "comparison_axis_counts": {
+    "MODEL": 19
+  },
+  "comparison_task_count": 11,
+  "comparison_tasks_by_supervision_type": {
+    "STEP_LEVEL_PREFERENCE": 10,
+    "TASK_LEVEL_PREFERENCE": 9
+  },
+  "auxiliary_not_model_choice_count": 0,
+  "supervision_qualification": "PRESERVED_SOURCE_TARGETS_AND_SPLITS",
+  "feature_training_status": "FEATURE_NOT_TRAINED",
+  "schema_fields_missing": [],
+  "supervision_note": "S2/S3 and trajectory prefixes are auxiliary, not optimal model labels.",
+  "continuation_views": {
+    "laya_step_s1": {
+      "path": "train/S1-step-continuation.jsonl",
+      "records": 74,
+      "old_s1_records": 64,
+      "step_model_only_records": 10,
+      "task_level_records_used": 0,
+      "native_effort_target_count": 0,
+      "training_started": false
+    }
+  },
+  "source_views": {
+    "previous_model_preferences": "our-project/results/iterations/20261101-v9-quality-step-supervision/training_delta/model_comparison/train.jsonl",
+    "new_model_preferences": "our-project/results/iterations/20261101-v9-runtime-quality-dev/new_supervision.jsonl",
+    "base_auxiliary_and_old_s1_view": "our-project/results/iterations/20261031-v9-real-model-comparison/training_view/summary.json"
+  },
+  "material_consumption": {
+    "serialized_records": 19,
+    "captured_router_text_retained": 19,
+    "requested_effort_fields_retained": 38,
+    "native_effort_targets_none": true,
+    "old_preference_changes": [],
+    "weights_loaded": false,
+    "optimizer_updates": 0
+  }
+}

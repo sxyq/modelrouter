@@ -1,6 +1,30 @@
 # Laya / Kev 全历史训练研究报告
 
-## 2026-11-01 · 当前：步骤Model-only接续已完成
+## 2026-11-02 · 当前：新增材料已准备，本轮没有新训练
+
+从main62d7bb9接续，原全历史、Val前三、独立四档分与旧负结果保持。本轮只处理输入/运行并获取新真实结果，未重复训练或评测旧版本。依据见[本轮报告](../iterations/20261101-v9-runtime-quality-dev/review.md)、`server_snapshot.json`与`training_delta/summary.json`。
+
+| 对象 | 01:08:59台北取样与本轮状态 |
+|---|---|
+| Laya原系列 | F01–F13完训；F11-e01代表保持，F14旧failed/NON_FINITE_LOSS另存 |
+| 当前实验Laya | V9_LAYA_STEP_001-e01实体仍在，沿用上一轮1 epoch/9次pointer head更新；本轮更新0，不晋升 |
+| Kev | R01–R16训练/固定Val已完成，R11代表保持；本轮未训练或更新LoRA/head |
+| F14独立维护 | PID808492、running/COLD_START；Epoch1完成241/420块（57.38%），总step30848/107404（28.72%） |
+| F14材料曝光 | consumed1974272/6873816，首轮完成0，固定Val未完成；最新Loss0.4872464808 |
+| F14最近损失 | 块230–241均有限，范围0.4850–0.5127；不能据此宣称整轮恢复成功或选择其作父 |
+| 原队列及handoff | queue_state时间仍10-31且PAUSED_USER_REQUEST/current_run=null；既有PID817520等待F14退出，本轮未创建、恢复或操作 |
+| Serving | health/models200、PID327621，F05-e01/原Kev Adapter保持；未重启或换权重 |
+| GPU | A6000，9929/49140MiB、94%、83°C、289.92W，含独立F14；本轮未占GPU训练 |
+
+F14沿原配置：micro_batch8、grad_accum8、encoder_lr2.5e-5、head_lr1e-4、soft-ce、freeze_encoder=false、两轮。该维护与旧失败归档是不同Run事实；本轮不干预其入口、健康计算或既有handoff，不启动重复F14/F15/F16。
+
+### 新材料与下次更新的实际范围
+
+新增2个标签任务的步骤Luna2（质量1、等质量成本1），累计19 Model-only、任务级9/步骤级10、11标签任务；步骤Sol4/Luna6。原196/186可组合215/186，但尚未生成完整215行；已准备64原S1+10步骤的74行定向视图，任务级成本目标不混入步骤训练。原Serializer实际消费19行，捕获输入保留；新两条3874/3962 Token无裁，teacher=null、AA v4、Native Effort目标0。此前8步中6条Prepare重建差异已移除，但本轮没有据此重训原Checkpoint。
+
+原S1 Val561项沿用上轮新Laya的Accuracy0.6898、Loss0.5938、Brier0.4083、ECE0.0362，本轮未再跑。新的官方Dev成功发生在distribution-search；新Laya仍全部Sol且比固定Sol贵，COBOL仍失败，不能认定动态收益。仅新增1质量+1成本不足以自动开启下一轮；若继续，需要更广独立质量步骤，仍沿原Trainer分别更新已获监督的head目标并保留S1，Kev不因空闲而启动。固定Val与独立Agent Dev分别评价，独立TwinRouterBench不用于训练或调参。
+
+## 2026-11-01 · 历史：步骤Model-only接续已完成
 
 从main63057a4接续。本轮仅完成一个Laya定向实验，未恢复暂停队列、重训F14或启动Kev新候选。最新动作、编码与Dev证据见[本轮结果](../iterations/20261101-v9-quality-step-supervision/review.md)；原全历史取样、前三和独立四档成绩按原时点保留，不重新遍历或按Test重选。
 

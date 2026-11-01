@@ -1,0 +1,51 @@
+diff --git a/schema/__init__.py b/schema/__init__.py
+index f524541..cb916be 100644
+--- a/schema/__init__.py
++++ b/schema/__init__.py
+@@ -341,10 +341,14 @@ def _priority(s: Any) -> int:
+ 
+ 
+ def _invoke_with_optional_kwargs(f: Callable[..., Any], **kwargs: Any) -> Any:
+-    return f(**kwargs)
+-    s = inspect.signature(f)
++    try:
++        s = inspect.signature(f)
++    except (TypeError, ValueError):
++        # Some built-in callables (for example dict) do not expose a signature.
++        return f(**kwargs)
+     if len(s.parameters) == 0:
+         return f()
++    return f(**kwargs)
+ 
+ class Schema(object):
+     """
+diff --git a/test_schema.py b/test_schema.py
+index 2d7a495..03f21a7 100644
+--- a/test_schema.py
++++ b/test_schema.py
+@@ -824,6 +824,25 @@ def test_optional_callable_default_get_inherited_schema_validate_kwargs():
+     assert d["k"] == 1 and d["d"]["k"] == 12 and d["d"]["l"][0]["l"] == [3, 4, 5]
+ 
+ 
++def test_optional_callable_default_without_kwargs_ignores_schema_validate_kwargs():
++    s = {
++        "k": int,
++        "d": {
++            Optional("k", default=lambda: 42): int,
++            "l": [{"l": [int]}],
++        },
++    }
++    v = {"k": 1, "d": {"l": [{"l": [3, 4, 5]}]}}
++    assert Schema(s).validate(v, increment=1) == {
++        "k": 1, "d": {"k": 42, "l": [{"l": [3, 4, 5]}]}
++    }
++
++
++def test_optional_callable_default_receives_schema_validate_kwargs():
++    s = {Optional("value", default=lambda increment: increment + 41): int}
++    assert Schema(s).validate({}, increment=1) == {"value": 42}
++
++
+ def test_optional_callable_default_ignore_inherited_schema_validate_kwargs():
+     def convert(data, increment):
+         if isinstance(data, int):

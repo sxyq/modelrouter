@@ -1,0 +1,2217 @@
+{
+  "sampled_at": "2026-11-01T17:02:56.803667+00:00",
+  "starting_commit": "62d7bb98326af035512ffb089aba03f366e7924f",
+  "experiment_scope": "REAL_API_K2_MODEL_ONLY_EFFORT_UNCONFIRMED",
+  "backend_deployment_status": "API_IDENTITY_ONLY_UNVERIFIED_PHYSICAL_BACKEND",
+  "checkpoint_id": "V9_LAYA_STEP_001-e01",
+  "training_this_work_package": false,
+  "serving_weights_replaced": false,
+  "runtime": {
+    "scope": "SAVED_REAL_STATE_CPU_FORWARD_NOT_NEW_EPISODE",
+    "checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "old_episode_router_sec": 363.6762566670077,
+    "old_episode_forward_sec": 141.2584803532809,
+    "samples": [
+      {
+        "request_id": "4867ff1c-1698-4c9e-b688-353a3644ca21",
+        "router_family": "laya",
+        "checkpoint_id": "V9_LAYA_STEP_001-e01",
+        "selected_action": {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        },
+        "ranked_actions": [
+          {
+            "action": {
+              "provider": "openai",
+              "model": "gpt-6.1-sol",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "gpt-6.1-sol:low",
+              "pool": "Reasoning"
+            },
+            "score": 0.5393,
+            "probability": 0.5393
+          },
+          {
+            "action": {
+              "provider": "jiji",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "gpt-6-luna:low",
+              "pool": "Reasoning"
+            },
+            "score": 0.4607,
+            "probability": 0.4607
+          }
+        ],
+        "decision_latency_ms": 37362.34733404126,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "confidence": 0.0045,
+        "inference_latency_ms": 6293.505162000656,
+        "router_identity": {
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_initialization_ms": 30381.058836355805,
+          "router_process_reused": false,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6-luna",
+            "gpt-6.1-sol"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+        },
+        "sample": "saved_step0_old_order",
+        "source_step": 0,
+        "source_decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-0"
+      },
+      {
+        "request_id": "9aba7dc9-002a-47c6-bb28-946aa7421488",
+        "router_family": "laya",
+        "checkpoint_id": "V9_LAYA_STEP_001-e01",
+        "selected_action": {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        },
+        "ranked_actions": [
+          {
+            "action": {
+              "provider": "openai",
+              "model": "gpt-6.1-sol",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "gpt-6.1-sol:low",
+              "pool": "Reasoning"
+            },
+            "score": 0.5652,
+            "probability": 0.5652
+          },
+          {
+            "action": {
+              "provider": "jiji",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "gpt-6-luna:low",
+              "pool": "Reasoning"
+            },
+            "score": 0.4348,
+            "probability": 0.4348
+          }
+        ],
+        "decision_latency_ms": 6365.03312503919,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "confidence": 0.0123,
+        "inference_latency_ms": 6355.244521051645,
+        "router_identity": {
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_initialization_ms": 0.0,
+          "router_process_reused": true,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+        },
+        "sample": "saved_step0_training_order",
+        "source_step": 0,
+        "source_decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-0"
+      },
+      {
+        "request_id": "4c10a8ef-5b78-468e-aac8-710bc53f3956",
+        "router_family": "laya",
+        "checkpoint_id": "V9_LAYA_STEP_001-e01",
+        "selected_action": {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        },
+        "ranked_actions": [
+          {
+            "action": {
+              "provider": "openai",
+              "model": "gpt-6.1-sol",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "gpt-6.1-sol:low",
+              "pool": "Reasoning"
+            },
+            "score": 0.5452,
+            "probability": 0.5452
+          },
+          {
+            "action": {
+              "provider": "jiji",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "gpt-6-luna:low",
+              "pool": "Reasoning"
+            },
+            "score": 0.4548,
+            "probability": 0.4548
+          }
+        ],
+        "decision_latency_ms": 21810.919540992472,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "confidence": 0.0059,
+        "inference_latency_ms": 21799.7909784317,
+        "router_identity": {
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_initialization_ms": 0.0,
+          "router_process_reused": true,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+        },
+        "sample": "saved_step6_training_order",
+        "source_step": 6,
+        "source_decision_id": "91528f8a-0ddf-49bf-844c-40a31ffd0b52-6"
+      }
+    ],
+    "sample_router_sec": 65.53830000007292,
+    "sample_forward_sec": 34.448540661484,
+    "new_generation_requests": 0,
+    "new_model_cost_usd": 0,
+    "resource_cost_usd": null
+  },
+  "encoding_native_vs_trainer": {
+    "native_vs_trainer_token_ids_equal": true,
+    "native_vs_trainer_marker_positions_equal": true,
+    "token_count": 3707,
+    "max_len": 5120,
+    "head_max_len": 512,
+    "question_id_in_internal_fields": false,
+    "internal_fields": [
+      "t",
+      "ins",
+      "crit"
+    ],
+    "candidate_order_changed_token_positions": 28,
+    "candidate_order_length_equal": true,
+    "markers": [
+      70,
+      88
+    ],
+    "weights_loaded": false,
+    "scope": "ACTUAL_TRAINED_STEP_ROW_NATIVE_VS_ORIGINAL_TRAINER_ENCODING",
+    "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy"
+  },
+  "training_supervision": {
+    "new_distinct_label_tasks": 2,
+    "new_label_task_ids": [
+      "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+      "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u"
+    ],
+    "new_step_preferences": 2,
+    "new_task_preferences": 0,
+    "new_quality_preferences": 1,
+    "new_equal_quality_cost_preferences": 1,
+    "new_sol_preferences": 0,
+    "new_luna_preferences": 2,
+    "cumulative_model_only_preferences": 19,
+    "task_level_preferences": 9,
+    "step_level_preferences": 10,
+    "distinct_label_tasks": 11,
+    "distinct_step_label_tasks": 10,
+    "model_label_counts": {
+      "gpt-6-luna": 15,
+      "gpt-6.1-sol": 4
+    },
+    "step_label_counts": {
+      "gpt-6-luna": 6,
+      "gpt-6.1-sol": 4
+    },
+    "confirmed_native_effort_targets": 0,
+    "full_k3_targets": 0,
+    "observed_prefix_pairs_without_label": 6,
+    "actual_compared_train_tasks": 3,
+    "prepared_delta_rows": 19,
+    "composable_train_rows": 215,
+    "existing_val_rows": 186,
+    "full_215_row_view_generated": false,
+    "targeted_head_material_rows": 74,
+    "new_training_optimizer_updates": 0,
+    "comparisons": [
+      {
+        "iteration": "mido-prefix-5",
+        "provenance": {
+          "source_id": "TRA-002",
+          "dataset": "SWE-bench/SWE-smith",
+          "source_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith",
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "task_cluster": "swesmith/mido__mido.a0158ff9",
+          "episode_id": "mido-prefix-5",
+          "observed_through_step": 5,
+          "split": "train",
+          "train_eligible": true,
+          "source_license": "MIT"
+        },
+        "supervision_type": "STEP_LEVEL_PREFERENCE",
+        "candidate_results": [
+          {
+            "action_id": "gpt-6.1-sol:low",
+            "model_id": "gpt-6.1-sol",
+            "requested_native_effort": "low",
+            "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.053721,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/mido-prefix-5/sol/metrics.json"
+          },
+          {
+            "action_id": "gpt-6-luna:low",
+            "model_id": "gpt-6-luna",
+            "requested_native_effort": "low",
+            "native_effort_status": "NOT_REPORTED",
+            "resolved": true,
+            "verification_exit_code": 0,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.00089895,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/mido-prefix-5/luna/metrics.json"
+          }
+        ],
+        "verification_horizon": "IMMEDIATELY_AFTER_ONE_NATIVE_AGENT_STEP"
+      },
+      {
+        "iteration": "schema-prefix-5",
+        "provenance": {
+          "source_id": "TRA-002",
+          "dataset": "SWE-bench/SWE-smith",
+          "source_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith",
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "task_cluster": "swesmith/keleshev__schema.24a30457",
+          "episode_id": "schema-prefix-5",
+          "observed_through_step": 5,
+          "split": "train",
+          "train_eligible": true,
+          "source_license": "MIT"
+        },
+        "supervision_type": "STEP_LEVEL_PREFERENCE",
+        "candidate_results": [
+          {
+            "action_id": "gpt-6.1-sol:low",
+            "model_id": "gpt-6.1-sol",
+            "requested_native_effort": "low",
+            "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+            "resolved": true,
+            "verification_exit_code": 0,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.0667135,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/schema-prefix-5/sol/metrics.json"
+          },
+          {
+            "action_id": "gpt-6-luna:low",
+            "model_id": "gpt-6-luna",
+            "requested_native_effort": "low",
+            "native_effort_status": "NOT_REPORTED",
+            "resolved": true,
+            "verification_exit_code": 0,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.00053786,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/schema-prefix-5/luna/metrics.json"
+          }
+        ],
+        "verification_horizon": "IMMEDIATELY_AFTER_ONE_NATIVE_AGENT_STEP"
+      },
+      {
+        "iteration": "prettytable-validation",
+        "provenance": {
+          "source_id": "TRA-002",
+          "dataset": "SWE-bench/SWE-smith",
+          "source_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith",
+          "task_id": "prettytable__prettytable.ca90b055.combine_file__huv4rtpp",
+          "task_cluster": "swesmith/prettytable__prettytable.ca90b055",
+          "episode_id": "prettytable-validation-prefix",
+          "observed_through_step": 4,
+          "split": "train",
+          "train_eligible": true,
+          "source_license": "BSD-3-Clause"
+        },
+        "supervision_type": "OBSERVED_OUTCOME_ONLY",
+        "candidate_results": [
+          {
+            "action_id": "gpt-6.1-sol:low",
+            "model_id": "gpt-6.1-sol",
+            "requested_native_effort": "low",
+            "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.0283685,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-validation/sol/metrics.json"
+          },
+          {
+            "action_id": "gpt-6-luna:low",
+            "model_id": "gpt-6-luna",
+            "requested_native_effort": "low",
+            "native_effort_status": "NOT_REPORTED",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.00029886,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-validation/luna/metrics.json"
+          }
+        ],
+        "verification_horizon": "IMMEDIATELY_AFTER_ONE_NATIVE_AGENT_STEP"
+      },
+      {
+        "iteration": "prettytable-prefix-5",
+        "provenance": {
+          "source_id": "TRA-002",
+          "dataset": "SWE-bench/SWE-smith",
+          "source_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith",
+          "task_id": "prettytable__prettytable.ca90b055.combine_file__huv4rtpp",
+          "task_cluster": "swesmith/prettytable__prettytable.ca90b055",
+          "episode_id": "prettytable-prefix-5",
+          "observed_through_step": 5,
+          "split": "train",
+          "train_eligible": true,
+          "source_license": "BSD-3-Clause"
+        },
+        "supervision_type": "OBSERVED_OUTCOME_ONLY",
+        "candidate_results": [
+          {
+            "action_id": "gpt-6.1-sol:low",
+            "model_id": "gpt-6.1-sol",
+            "requested_native_effort": "low",
+            "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.0577235,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-prefix-5/sol/metrics.json"
+          },
+          {
+            "action_id": "gpt-6-luna:low",
+            "model_id": "gpt-6-luna",
+            "requested_native_effort": "low",
+            "native_effort_status": "NOT_REPORTED",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.00142184,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-prefix-5/luna/metrics.json"
+          }
+        ],
+        "verification_horizon": "IMMEDIATELY_AFTER_ONE_NATIVE_AGENT_STEP"
+      },
+      {
+        "iteration": "prettytable-prefix-6",
+        "provenance": {
+          "source_id": "TRA-002",
+          "dataset": "SWE-bench/SWE-smith",
+          "source_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith",
+          "task_id": "prettytable__prettytable.ca90b055.combine_file__huv4rtpp",
+          "task_cluster": "swesmith/prettytable__prettytable.ca90b055",
+          "episode_id": "prettytable-prefix-6",
+          "observed_through_step": 6,
+          "split": "train",
+          "train_eligible": true,
+          "source_license": "BSD-3-Clause"
+        },
+        "supervision_type": "OBSERVED_OUTCOME_ONLY",
+        "candidate_results": [
+          {
+            "action_id": "gpt-6.1-sol:low",
+            "model_id": "gpt-6.1-sol",
+            "requested_native_effort": "low",
+            "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.0624935,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-prefix-6/sol/metrics.json"
+          },
+          {
+            "action_id": "gpt-6-luna:low",
+            "model_id": "gpt-6-luna",
+            "requested_native_effort": "low",
+            "native_effort_status": "NOT_REPORTED",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.0008414,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-prefix-6/luna/metrics.json"
+          }
+        ],
+        "verification_horizon": "IMMEDIATELY_AFTER_ONE_NATIVE_AGENT_STEP"
+      },
+      {
+        "iteration": "prettytable-prefix-7",
+        "provenance": {
+          "source_id": "TRA-002",
+          "dataset": "SWE-bench/SWE-smith",
+          "source_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith",
+          "task_id": "prettytable__prettytable.ca90b055.combine_file__huv4rtpp",
+          "task_cluster": "swesmith/prettytable__prettytable.ca90b055",
+          "episode_id": "prettytable-prefix-7",
+          "observed_through_step": 7,
+          "split": "train",
+          "train_eligible": true,
+          "source_license": "BSD-3-Clause"
+        },
+        "supervision_type": "OBSERVED_OUTCOME_ONLY",
+        "candidate_results": [
+          {
+            "action_id": "gpt-6.1-sol:low",
+            "model_id": "gpt-6.1-sol",
+            "requested_native_effort": "low",
+            "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.0325799,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-prefix-7/sol/metrics.json"
+          },
+          {
+            "action_id": "gpt-6-luna:low",
+            "model_id": "gpt-6-luna",
+            "requested_native_effort": "low",
+            "native_effort_status": "NOT_REPORTED",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.00138192,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-prefix-7/luna/metrics.json"
+          }
+        ],
+        "verification_horizon": "IMMEDIATELY_AFTER_ONE_NATIVE_AGENT_STEP"
+      },
+      {
+        "iteration": "prettytable-prefix-8-luna",
+        "provenance": {
+          "source_id": "TRA-002",
+          "dataset": "SWE-bench/SWE-smith",
+          "source_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith",
+          "task_id": "prettytable__prettytable.ca90b055.combine_file__huv4rtpp",
+          "task_cluster": "swesmith/prettytable__prettytable.ca90b055",
+          "episode_id": "prettytable-prefix-8-luna",
+          "observed_through_step": 8,
+          "split": "train",
+          "train_eligible": true,
+          "source_license": "BSD-3-Clause"
+        },
+        "supervision_type": "OBSERVED_OUTCOME_ONLY",
+        "candidate_results": [
+          {
+            "action_id": "gpt-6.1-sol:low",
+            "model_id": "gpt-6.1-sol",
+            "requested_native_effort": "low",
+            "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.0135472,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-prefix-8-luna/sol/metrics.json"
+          },
+          {
+            "action_id": "gpt-6-luna:low",
+            "model_id": "gpt-6-luna",
+            "requested_native_effort": "low",
+            "native_effort_status": "NOT_REPORTED",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.0007026,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-prefix-8-luna/luna/metrics.json"
+          }
+        ],
+        "verification_horizon": "IMMEDIATELY_AFTER_ONE_NATIVE_AGENT_STEP"
+      },
+      {
+        "iteration": "prettytable-prefix-9",
+        "provenance": {
+          "source_id": "TRA-002",
+          "dataset": "SWE-bench/SWE-smith",
+          "source_url": "https://huggingface.co/datasets/SWE-bench/SWE-smith",
+          "task_id": "prettytable__prettytable.ca90b055.combine_file__huv4rtpp",
+          "task_cluster": "swesmith/prettytable__prettytable.ca90b055",
+          "episode_id": "prettytable-prefix-9",
+          "observed_through_step": 9,
+          "split": "train",
+          "train_eligible": true,
+          "source_license": "BSD-3-Clause"
+        },
+        "supervision_type": "OBSERVED_OUTCOME_ONLY",
+        "candidate_results": [
+          {
+            "action_id": "gpt-6.1-sol:low",
+            "model_id": "gpt-6.1-sol",
+            "requested_native_effort": "low",
+            "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.0479957,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-prefix-9/sol/metrics.json"
+          },
+          {
+            "action_id": "gpt-6-luna:low",
+            "model_id": "gpt-6-luna",
+            "requested_native_effort": "low",
+            "native_effort_status": "NOT_REPORTED",
+            "resolved": false,
+            "verification_exit_code": 1,
+            "trusted": true,
+            "candidate_identity_matched": true,
+            "model_rate_cost_usd": 0.00097935,
+            "result_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/prettytable-prefix-9/luna/metrics.json"
+          }
+        ],
+        "verification_horizon": "IMMEDIATELY_AFTER_ONE_NATIVE_AGENT_STEP"
+      }
+    ],
+    "distinct_label_repositories": 10,
+    "distinct_step_label_repositories": 9,
+    "new_label_repositories": [
+      "keleshev__schema",
+      "mido__mido"
+    ],
+    "multiple_task_ids_per_repository": {
+      "msiemens__tinydb": [
+        "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+        "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y"
+      ]
+    }
+  },
+  "dev": [
+    {
+      "iteration": "dev-cobol-modernization-laya",
+      "task": "terminal-bench/cobol-modernization",
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "train_eligible": false,
+      "generation_completions": 16,
+      "provider_failed_requests": 0,
+      "generation_model_rate_cost_usd": "0.8735645",
+      "teacher_model_rate_cost_usd": "0",
+      "known_total_model_rate_cost_usd": "0.8735645",
+      "total_model_rate_cost_usd": "0.8735645",
+      "usage": {
+        "prompt_tokens": {
+          "known_sum": 442125,
+          "unknown_calls": 0
+        },
+        "completion_tokens": {
+          "known_sum": 24422,
+          "unknown_calls": 0
+        },
+        "reasoning_tokens": {
+          "known_sum": 14014,
+          "unknown_calls": 0
+        },
+        "cached_tokens": {
+          "known_sum": 198310,
+          "unknown_calls": 0
+        },
+        "cache_write_tokens": {
+          "known_sum": 243767,
+          "unknown_calls": 0
+        }
+      },
+      "verifier_executed": true,
+      "reward": 0.0,
+      "ctrf_summary": {
+        "tests": 3,
+        "passed": 1,
+        "failed": 2,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793549984.4234827,
+        "stop": 1793549984.61109
+      },
+      "exception_type": "AgentTimeoutError",
+      "exception_message": "Agent execution timed out after 900.0 seconds",
+      "trial_duration_sec": 930.20475,
+      "agent_duration_sec": 901.343344,
+      "verifier_duration_sec": 21.419716,
+      "router_decisions": 16,
+      "neural_router": true,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 16
+      },
+      "natural_switches": 0,
+      "router_fallbacks": 0,
+      "router_total_sec": 431.6801216659951,
+      "router_forward_sec": 369.32408823259175,
+      "router_non_forward_sec": 62.356033433403354,
+      "router_initialization_sec": 60.598285088315606,
+      "post_initialization_reused_overhead_sec": 0.3904013691935688,
+      "route_sequence": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5743,
+            "gpt-6-luna": 0.4257
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 37123.14137496287,
+          "inference_latency_ms": 6393.470136448741,
+          "initialization_ms": 30042.34174825251,
+          "process_reused": false
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5602,
+            "gpt-6-luna": 0.4398
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 18693.538833002094,
+          "inference_latency_ms": 18681.024158373475,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 2,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.556,
+            "gpt-6-luna": 0.444
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 22365.363333025016,
+          "inference_latency_ms": 22351.42957419157,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 3,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5661,
+            "gpt-6-luna": 0.4339
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 21979.83595804544,
+          "inference_latency_ms": 21967.330433428288,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 4,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5536,
+            "gpt-6-luna": 0.4464
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 19605.83187500015,
+          "inference_latency_ms": 19511.911906301975,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 5,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5517,
+            "gpt-6-luna": 0.4483
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 19770.837541960645,
+          "inference_latency_ms": 19736.04902252555,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 6,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5944,
+            "gpt-6-luna": 0.4056
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 30369.4112089579,
+          "inference_latency_ms": 30355.435295030475,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 7,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5537,
+            "gpt-6-luna": 0.4463
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 21953.840458008926,
+          "inference_latency_ms": 21941.749779507518,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 8,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5577,
+            "gpt-6-luna": 0.4423
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 19821.505500003695,
+          "inference_latency_ms": 19810.011176392436,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 9,
+          "phase": "recover",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5552,
+            "gpt-6-luna": 0.4448
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 23284.71170802368,
+          "inference_latency_ms": 23273.97014386952,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 10,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.6078,
+            "gpt-6-luna": 0.3922
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 27167.318666994106,
+          "inference_latency_ms": 27155.651558190584,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 11,
+          "phase": "recover",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5403,
+            "gpt-6-luna": 0.4597
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 24429.30812499253,
+          "inference_latency_ms": 24305.737294256687,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 12,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5972,
+            "gpt-6-luna": 0.4028
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 28951.169541978743,
+          "inference_latency_ms": 28937.317419797182,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 13,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.6044,
+            "gpt-6-luna": 0.3956
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 28340.16529103974,
+          "inference_latency_ms": 28329.77170497179,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 14,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.6037,
+            "gpt-6-luna": 0.3963
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 59210.811999975704,
+          "inference_latency_ms": 27974.851174280047,
+          "initialization_ms": 30555.943340063095,
+          "process_reused": false
+        },
+        {
+          "step": 15,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.6033,
+            "gpt-6-luna": 0.3967
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 28613.330250023864,
+          "inference_latency_ms": 28598.37745502591,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_latency_sec": 0.0,
+      "calls_returned_after_official_deadline": [
+        {
+          "step": 13,
+          "cost_usd": "0.1466728",
+          "returned_at": "2026-11-01T16:20:46.364396+00:00",
+          "estimated_requested_at": "2026-11-01T16:17:08.883237+00:00"
+        },
+        {
+          "step": 14,
+          "cost_usd": "0.164556",
+          "returned_at": "2026-11-01T16:23:23.102033+00:00",
+          "estimated_requested_at": "2026-11-01T16:21:45.598594+00:00"
+        },
+        {
+          "step": 15,
+          "cost_usd": "0.037824",
+          "returned_at": "2026-11-01T16:24:51.682298+00:00",
+          "estimated_requested_at": "2026-11-01T16:23:51.736804+00:00"
+        }
+      ],
+      "known_post_deadline_return_cost_usd": "0.3490528",
+      "resource_cost_usd": null,
+      "actual_billed_cost_usd": null
+    },
+    {
+      "iteration": "dev-cobol-modernization-luna",
+      "task": "terminal-bench/cobol-modernization",
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "train_eligible": false,
+      "generation_completions": 5,
+      "provider_failed_requests": 0,
+      "generation_model_rate_cost_usd": "0.00140699",
+      "teacher_model_rate_cost_usd": "0",
+      "known_total_model_rate_cost_usd": "0.00140699",
+      "total_model_rate_cost_usd": "0.00140699",
+      "usage": {
+        "prompt_tokens": {
+          "known_sum": 14606,
+          "unknown_calls": 0
+        },
+        "completion_tokens": {
+          "known_sum": 1761,
+          "unknown_calls": 0
+        },
+        "reasoning_tokens": {
+          "known_sum": 589,
+          "unknown_calls": 0
+        },
+        "cached_tokens": {
+          "known_sum": 10379,
+          "unknown_calls": 0
+        },
+        "cache_write_tokens": {
+          "known_sum": 0,
+          "unknown_calls": 5
+        }
+      },
+      "verifier_executed": true,
+      "reward": 1.0,
+      "ctrf_summary": {
+        "tests": 3,
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793549049.308077,
+        "stop": 1793549049.9912043
+      },
+      "exception_type": null,
+      "exception_message": null,
+      "trial_duration_sec": 146.947497,
+      "agent_duration_sec": 114.2076,
+      "verifier_duration_sec": 25.933959,
+      "router_decisions": 5,
+      "neural_router": false,
+      "model_selection_counts": {
+        "gpt-6-luna": 5
+      },
+      "natural_switches": 0,
+      "router_fallbacks": 0,
+      "router_total_sec": 0.0009169999393634498,
+      "router_forward_sec": null,
+      "router_non_forward_sec": null,
+      "router_initialization_sec": null,
+      "post_initialization_reused_overhead_sec": null,
+      "route_sequence": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.0747090089134872,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.18945802003145218,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 2,
+          "phase": "modify",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.2567909541539848,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 3,
+          "phase": "modify",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.16654195496812463,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 4,
+          "phase": "modify",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.22950000129640102,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_latency_sec": 0.0,
+      "calls_returned_after_official_deadline": [],
+      "known_post_deadline_return_cost_usd": "0",
+      "resource_cost_usd": null,
+      "actual_billed_cost_usd": null
+    },
+    {
+      "iteration": "dev-cobol-modernization-sol",
+      "task": "terminal-bench/cobol-modernization",
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "train_eligible": false,
+      "generation_completions": 11,
+      "provider_failed_requests": 0,
+      "generation_model_rate_cost_usd": "0.4150422",
+      "teacher_model_rate_cost_usd": "0",
+      "known_total_model_rate_cost_usd": "0.4150422",
+      "total_model_rate_cost_usd": "0.4150422",
+      "usage": {
+        "prompt_tokens": {
+          "known_sum": 223855,
+          "unknown_calls": 0
+        },
+        "completion_tokens": {
+          "known_sum": 13757,
+          "unknown_calls": 0
+        },
+        "reasoning_tokens": {
+          "known_sum": 5409,
+          "unknown_calls": 0
+        },
+        "cached_tokens": {
+          "known_sum": 117562,
+          "unknown_calls": 0
+        },
+        "cache_write_tokens": {
+          "known_sum": 106260,
+          "unknown_calls": 0
+        }
+      },
+      "verifier_executed": false,
+      "reward": null,
+      "ctrf_summary": null,
+      "exception_type": "RuntimeError",
+      "exception_message": "Command timed out after 30 seconds",
+      "trial_duration_sec": 376.177317,
+      "agent_duration_sec": 366.82366,
+      "verifier_duration_sec": null,
+      "router_decisions": 11,
+      "neural_router": false,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 11
+      },
+      "natural_switches": 0,
+      "router_fallbacks": 0,
+      "router_total_sec": 0.0015699569485150278,
+      "router_forward_sec": null,
+      "router_non_forward_sec": null,
+      "router_initialization_sec": null,
+      "post_initialization_reused_overhead_sec": null,
+      "route_sequence": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.2483339630998671,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.0981249613687396,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 2,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.10900001507252455,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 3,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.0891250092536211,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 4,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.15883299056440592,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 5,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.17683301120996475,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 6,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.11479097884148359,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 7,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.11620798613876104,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 8,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.12470799265429378,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 9,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.13699999544769526,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 10,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.19700004486367106,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_latency_sec": 0.0,
+      "calls_returned_after_official_deadline": [],
+      "known_post_deadline_return_cost_usd": "0",
+      "resource_cost_usd": null,
+      "actual_billed_cost_usd": null
+    },
+    {
+      "iteration": "dev-distribution-search-laya",
+      "task": "terminal-bench/distribution-search",
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "train_eligible": false,
+      "generation_completions": 1,
+      "provider_failed_requests": 1,
+      "generation_model_rate_cost_usd": "0.002884",
+      "teacher_model_rate_cost_usd": "0",
+      "known_total_model_rate_cost_usd": "0.002884",
+      "total_model_rate_cost_usd": null,
+      "usage": {
+        "prompt_tokens": {
+          "known_sum": 1017,
+          "unknown_calls": 0
+        },
+        "completion_tokens": {
+          "known_sum": 85,
+          "unknown_calls": 0
+        },
+        "reasoning_tokens": {
+          "known_sum": 0,
+          "unknown_calls": 0
+        },
+        "cached_tokens": {
+          "known_sum": 0,
+          "unknown_calls": 0
+        },
+        "cache_write_tokens": {
+          "known_sum": 0,
+          "unknown_calls": 0
+        }
+      },
+      "verifier_executed": false,
+      "reward": null,
+      "ctrf_summary": null,
+      "exception_type": "RemoteDisconnected",
+      "exception_message": "Remote end closed connection without response",
+      "trial_duration_sec": 239.817171,
+      "agent_duration_sec": 233.611233,
+      "verifier_duration_sec": null,
+      "router_decisions": 2,
+      "neural_router": true,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 2
+      },
+      "natural_switches": 0,
+      "router_fallbacks": 0,
+      "router_total_sec": 46.46602620795602,
+      "router_forward_sec": 14.939261708408594,
+      "router_non_forward_sec": 31.526764499547426,
+      "router_initialization_sec": 30.817456506192684,
+      "post_initialization_reused_overhead_sec": 0.01333467202493921,
+      "route_sequence": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5663,
+            "gpt-6-luna": 0.4337
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 37785.63191695139,
+          "inference_latency_ms": 6272.202089428902,
+          "initialization_ms": 30817.456506192684,
+          "process_reused": false
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5467,
+            "gpt-6-luna": 0.4533
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 8680.394291004632,
+          "inference_latency_ms": 8667.059618979692,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_latency_sec": 0.0,
+      "calls_returned_after_official_deadline": [],
+      "known_post_deadline_return_cost_usd": "0",
+      "resource_cost_usd": null,
+      "actual_billed_cost_usd": null
+    },
+    {
+      "iteration": "dev-distribution-search-laya-api-retry",
+      "task": "terminal-bench/distribution-search",
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "train_eligible": false,
+      "generation_completions": 5,
+      "provider_failed_requests": 0,
+      "generation_model_rate_cost_usd": "0.1362464",
+      "teacher_model_rate_cost_usd": "0",
+      "known_total_model_rate_cost_usd": "0.1362464",
+      "total_model_rate_cost_usd": "0.1362464",
+      "usage": {
+        "prompt_tokens": {
+          "known_sum": 11265,
+          "unknown_calls": 0
+        },
+        "completion_tokens": {
+          "known_sum": 12008,
+          "unknown_calls": 0
+        },
+        "reasoning_tokens": {
+          "known_sum": 6681,
+          "unknown_calls": 0
+        },
+        "cached_tokens": {
+          "known_sum": 4784,
+          "unknown_calls": 0
+        },
+        "cache_write_tokens": {
+          "known_sum": 5452,
+          "unknown_calls": 0
+        }
+      },
+      "verifier_executed": true,
+      "reward": 1.0,
+      "ctrf_summary": {
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793550860.7912085,
+        "stop": 1793550861.3786523
+      },
+      "exception_type": null,
+      "exception_message": null,
+      "trial_duration_sec": 421.388167,
+      "agent_duration_sec": 390.08806,
+      "verifier_duration_sec": 25.240417,
+      "router_decisions": 5,
+      "neural_router": true,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 5
+      },
+      "natural_switches": 0,
+      "router_fallbacks": 0,
+      "router_total_sec": 79.22926870913943,
+      "router_forward_sec": 49.86944525130093,
+      "router_non_forward_sec": 29.359823457838502,
+      "router_initialization_sec": 28.619072668254375,
+      "post_initialization_reused_overhead_sec": 0.047701064264401793,
+      "route_sequence": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5663,
+            "gpt-6-luna": 0.4337
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 35565.073291014414,
+          "inference_latency_ms": 6252.950897440314,
+          "initialization_ms": 28619.072668254375,
+          "process_reused": false
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5526,
+            "gpt-6-luna": 0.4474
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 8765.77462500427,
+          "inference_latency_ms": 8753.789132460952,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 2,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5347,
+            "gpt-6-luna": 0.4653
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 11218.460709031206,
+          "inference_latency_ms": 11204.438669607043,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 3,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5357,
+            "gpt-6-luna": 0.4643
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 11275.687625049613,
+          "inference_latency_ms": 11265.109930187464,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 4,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5326,
+            "gpt-6-luna": 0.4674
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 12404.27245903993,
+          "inference_latency_ms": 12393.156621605158,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_latency_sec": 0.0,
+      "calls_returned_after_official_deadline": [],
+      "known_post_deadline_return_cost_usd": "0",
+      "resource_cost_usd": null,
+      "actual_billed_cost_usd": null
+    },
+    {
+      "iteration": "dev-distribution-search-laya-teacher",
+      "task": "terminal-bench/distribution-search",
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "train_eligible": false,
+      "generation_completions": 5,
+      "provider_failed_requests": 0,
+      "generation_model_rate_cost_usd": "0.0919130",
+      "teacher_model_rate_cost_usd": "0.019706",
+      "known_total_model_rate_cost_usd": "0.1116190",
+      "total_model_rate_cost_usd": "0.1116190",
+      "usage": {
+        "prompt_tokens": {
+          "known_sum": 12922,
+          "unknown_calls": 0
+        },
+        "completion_tokens": {
+          "known_sum": 8727,
+          "unknown_calls": 0
+        },
+        "reasoning_tokens": {
+          "known_sum": 5692,
+          "unknown_calls": 0
+        },
+        "cached_tokens": {
+          "known_sum": 3100,
+          "unknown_calls": 0
+        },
+        "cache_write_tokens": {
+          "known_sum": 8790,
+          "unknown_calls": 0
+        }
+      },
+      "verifier_executed": true,
+      "reward": 1.0,
+      "ctrf_summary": {
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793551294.8746846,
+        "stop": 1793551295.7394927
+      },
+      "exception_type": null,
+      "exception_message": null,
+      "trial_duration_sec": 365.617835,
+      "agent_duration_sec": 329.775753,
+      "verifier_duration_sec": 28.855176,
+      "router_decisions": 5,
+      "neural_router": true,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 5
+      },
+      "natural_switches": 0,
+      "router_fallbacks": 0,
+      "router_total_sec": 82.1678322069929,
+      "router_forward_sec": 51.128921929746866,
+      "router_non_forward_sec": 31.038910277246032,
+      "router_initialization_sec": 30.31213913857937,
+      "post_initialization_reused_overhead_sec": 0.04786803881870583,
+      "route_sequence": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5663,
+            "gpt-6-luna": 0.4337
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 37203.778208000585,
+          "inference_latency_ms": 6212.735969573259,
+          "initialization_ms": 30312.13913857937,
+          "process_reused": false
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5815,
+            "gpt-6-luna": 0.4185
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 8045.383082993794,
+          "inference_latency_ms": 8035.170912742615,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 2,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5406,
+            "gpt-6-luna": 0.4594
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 9911.063292005565,
+          "inference_latency_ms": 9901.100538671017,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 3,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5426,
+            "gpt-6-luna": 0.4574
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 11346.398165973369,
+          "inference_latency_ms": 11334.191223606467,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        },
+        {
+          "step": 4,
+          "phase": "verify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5321,
+            "gpt-6-luna": 0.4679
+          },
+          "probability_scope": "NEURAL_MODEL_PROBABILITY",
+          "router_latency_ms": 15661.209458019584,
+          "inference_latency_ms": 15645.723285153508,
+          "initialization_ms": 0.0,
+          "process_reused": true
+        }
+      ],
+      "teacher_requests": 1,
+      "teacher_successes": 1,
+      "teacher_router_consumptions": 1,
+      "teacher_latency_sec": 29.05196212499868,
+      "calls_returned_after_official_deadline": [],
+      "known_post_deadline_return_cost_usd": "0",
+      "resource_cost_usd": null,
+      "actual_billed_cost_usd": null
+    },
+    {
+      "iteration": "dev-distribution-search-luna",
+      "task": "terminal-bench/distribution-search",
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "train_eligible": false,
+      "generation_completions": 8,
+      "provider_failed_requests": 0,
+      "generation_model_rate_cost_usd": "0.00228552",
+      "teacher_model_rate_cost_usd": "0",
+      "known_total_model_rate_cost_usd": "0.00228552",
+      "total_model_rate_cost_usd": "0.00228552",
+      "usage": {
+        "prompt_tokens": {
+          "known_sum": 21365,
+          "unknown_calls": 0
+        },
+        "completion_tokens": {
+          "known_sum": 3326,
+          "unknown_calls": 0
+        },
+        "reasoning_tokens": {
+          "known_sum": 1065,
+          "unknown_calls": 0
+        },
+        "cached_tokens": {
+          "known_sum": 16822,
+          "unknown_calls": 1
+        },
+        "cache_write_tokens": {
+          "known_sum": 0,
+          "unknown_calls": 8
+        }
+      },
+      "verifier_executed": true,
+      "reward": 0.0,
+      "ctrf_summary": {
+        "tests": 4,
+        "passed": 3,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793549707.6981936,
+        "stop": 1793549708.355426
+      },
+      "exception_type": null,
+      "exception_message": null,
+      "trial_duration_sec": 225.323827,
+      "agent_duration_sec": 192.833386,
+      "verifier_duration_sec": 26.10812,
+      "router_decisions": 8,
+      "neural_router": false,
+      "model_selection_counts": {
+        "gpt-6-luna": 8
+      },
+      "natural_switches": 0,
+      "router_fallbacks": 0,
+      "router_total_sec": 0.0014857930946163833,
+      "router_forward_sec": null,
+      "router_non_forward_sec": null,
+      "router_initialization_sec": null,
+      "post_initialization_reused_overhead_sec": null,
+      "route_sequence": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.07874995935708284,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.13879203470423818,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 2,
+          "phase": "recover",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.13341702288016677,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 3,
+          "phase": "recover",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.175916007719934,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 4,
+          "phase": "modify",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.17037504585459828,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 5,
+          "phase": "recover",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.2819590154103935,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 6,
+          "phase": "modify",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.15054200775921345,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 7,
+          "phase": "modify",
+          "selected_model": "gpt-6-luna",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.35604200093075633,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_latency_sec": 0.0,
+      "calls_returned_after_official_deadline": [],
+      "known_post_deadline_return_cost_usd": "0",
+      "resource_cost_usd": null,
+      "actual_billed_cost_usd": null
+    },
+    {
+      "iteration": "dev-distribution-search-sol",
+      "task": "terminal-bench/distribution-search",
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "train_eligible": false,
+      "generation_completions": 4,
+      "provider_failed_requests": 0,
+      "generation_model_rate_cost_usd": "0.0866944",
+      "teacher_model_rate_cost_usd": "0",
+      "known_total_model_rate_cost_usd": "0.0866944",
+      "total_model_rate_cost_usd": "0.0866944",
+      "usage": {
+        "prompt_tokens": {
+          "known_sum": 8470,
+          "unknown_calls": 0
+        },
+        "completion_tokens": {
+          "known_sum": 6897,
+          "unknown_calls": 0
+        },
+        "reasoning_tokens": {
+          "known_sum": 4252,
+          "unknown_calls": 0
+        },
+        "cached_tokens": {
+          "known_sum": 1224,
+          "unknown_calls": 0
+        },
+        "cache_write_tokens": {
+          "known_sum": 6220,
+          "unknown_calls": 0
+        }
+      },
+      "verifier_executed": true,
+      "reward": 1.0,
+      "ctrf_summary": {
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793549478.5452685,
+        "stop": 1793549479.2154634
+      },
+      "exception_type": null,
+      "exception_message": null,
+      "trial_duration_sec": 254.679994,
+      "agent_duration_sec": 184.170606,
+      "verifier_duration_sec": 29.853445,
+      "router_decisions": 4,
+      "neural_router": false,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 4
+      },
+      "natural_switches": 0,
+      "router_fallbacks": 0,
+      "router_total_sec": 0.000599416031036526,
+      "router_forward_sec": null,
+      "router_non_forward_sec": null,
+      "router_initialization_sec": null,
+      "post_initialization_reused_overhead_sec": null,
+      "route_sequence": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.20249997032806277,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.1289999927394092,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 2,
+          "phase": "modify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.10970805305987597,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        },
+        {
+          "step": 3,
+          "phase": "verify",
+          "selected_model": "gpt-6.1-sol",
+          "probabilities": null,
+          "probability_scope": "FIXED_SELECTION_NOT_NEURAL_PROBABILITY",
+          "router_latency_ms": 0.15820801490917802,
+          "inference_latency_ms": null,
+          "initialization_ms": null,
+          "process_reused": null
+        }
+      ],
+      "teacher_requests": 0,
+      "teacher_successes": 0,
+      "teacher_router_consumptions": 0,
+      "teacher_latency_sec": 0.0,
+      "calls_returned_after_official_deadline": [],
+      "known_post_deadline_return_cost_usd": "0",
+      "resource_cost_usd": null,
+      "actual_billed_cost_usd": null
+    }
+  ],
+  "teacher_comparison": {
+    "task": "distribution-search",
+    "teacher_on_reward": 1,
+    "teacher_off_reward": 1,
+    "teacher_on_cost_usd": "0.111619",
+    "teacher_off_cost_usd": "0.1362464",
+    "observed_difference_usd": "-0.0246274",
+    "causal_net_benefit_proven": false,
+    "limitation": "Single stochastic episode per condition; cache and generated trajectory differ"
+  },
+  "provider_access": {
+    "provider": "EXISTING_AUTHORIZED_ONEAPI",
+    "http_status": 200,
+    "model_ids": [
+      "claude-opus-5-5",
+      "deepseek-v4-flash",
+      "gpt-6-astra",
+      "gpt-6-luna",
+      "gpt-6.1-sol"
+    ]
+  },
+  "capability_snapshot_id": "20261031T072548885180Z-v4",
+  "capabilities_refreshed": false,
+  "costs": {
+    "train_completed_generation_requests": 20,
+    "dev_completed_generation_requests": 55,
+    "teacher_completed_requests": 1,
+    "known_usage_requests": 76,
+    "dev_requests_without_usage": 1,
+    "known_train_model_rate_cost_usd": "0.37132183",
+    "known_dev_generation_model_rate_cost_usd": "1.61003701",
+    "known_teacher_model_rate_cost_usd": "0.019706",
+    "known_total_model_rate_cost_usd": "2.00106484",
+    "total_model_rate_cost_usd": null,
+    "actual_billed_cost_usd": null,
+    "router_cpu_cost_usd": null,
+    "tool_container_resource_cost_usd": null,
+    "reasoning_policy": "Included in completion; charged once",
+    "observation_policy": "All recorded real calls including the post-timeout COBOL calls; original official snapshot alone omits them"
+  },
+  "new_input_encoding": {
+    "scope": "TWO_NEW_TRAIN_STEP_ROWS_ACTUAL_TOKENIZER_NO_MODEL_WEIGHTS",
+    "max_len": 5120,
+    "head_max_len": 512,
+    "tokenizer_location": "checkpoint/tokenizer",
+    "weights_loaded": false,
+    "samples": [
+      {
+        "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+        "question_id": "step_model_preference",
+        "candidate_order": [
+          "gpt-6.1-sol",
+          "gpt-6-luna"
+        ],
+        "state_chars": 11310,
+        "token_count": 3874,
+        "token_ids_equal": true,
+        "marker_positions_equal": true,
+        "truncation": {
+          "state_tokens": 3768,
+          "state_tokens_used": 3768,
+          "state_tokens_dropped": 0,
+          "truncated": false
+        },
+        "snapshot_id": "20261031T072548885180Z-v4",
+        "state_tail_in_encoded": true,
+        "decoded_head": "[CLS]choice question: For this observed decision prefix, select a model under the recorded Provider configuration for one native Agent step. Prefer passing the original task verifi",
+        "state_head": "{\"prompt\":\"Optional callable default values not receiving schema validation kwargs\\n\\nDescription\\n\\nI have a schema with an optional key that has a callable default value. When I "
+      },
+      {
+        "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+        "question_id": "step_model_preference",
+        "candidate_order": [
+          "gpt-6.1-sol",
+          "gpt-6-luna"
+        ],
+        "state_chars": 11203,
+        "token_count": 3962,
+        "token_ids_equal": true,
+        "marker_positions_equal": true,
+        "truncation": {
+          "state_tokens": 3856,
+          "state_tokens_used": 3856,
+          "state_tokens_dropped": 0,
+          "truncated": false
+        },
+        "snapshot_id": "20261031T072548885180Z-v4",
+        "state_tail_in_encoded": true,
+        "decoded_head": "[CLS]choice question: For this observed decision prefix, select a model under the recorded Provider configuration for one native Agent step. Prefer passing the original task verifi",
+        "state_head": "{\"prompt\":\"# str2msg incorrectly parses data and value fields\\n\\nWhile working with the mido library, I noticed that parsing string messages with data fields is not working correct"
+      }
+    ]
+  },
+  "server_snapshot": {
+    "sampled_at": "2026-11-02T01:08:59.581358+08:00",
+    "probe_mode": "READ_ONLY_EXISTING_SERVER_PROJECT",
+    "f14": {
+      "pid": 808492,
+      "status": "running",
+      "resume_mode": "COLD_START",
+      "started_at": "2026-11-01T03:31:49Z",
+      "cursor": {
+        "run_id": "F14",
+        "epoch": 0,
+        "chunk_idx": 241,
+        "total_chunks": 420,
+        "step_count": 30848,
+        "total_updates": 107404,
+        "consumed_items": 1974272,
+        "consumed_units": 562945,
+        "latest_chunk_loss": 0.48724648079951294,
+        "updated_at": "2026-11-01T17:05:57Z"
+      },
+      "epoch_completed": 0,
+      "fixed_val_completed": false,
+      "recent_chunks": [
+        {
+          "epoch": 1,
+          "chunk": 230,
+          "loss": 0.4943,
+          "step": 29440
+        },
+        {
+          "epoch": 1,
+          "chunk": 231,
+          "loss": 0.5127,
+          "step": 29568
+        },
+        {
+          "epoch": 1,
+          "chunk": 232,
+          "loss": 0.485,
+          "step": 29696
+        },
+        {
+          "epoch": 1,
+          "chunk": 233,
+          "loss": 0.498,
+          "step": 29824
+        },
+        {
+          "epoch": 1,
+          "chunk": 234,
+          "loss": 0.4984,
+          "step": 29952
+        },
+        {
+          "epoch": 1,
+          "chunk": 235,
+          "loss": 0.4941,
+          "step": 30080
+        },
+        {
+          "epoch": 1,
+          "chunk": 236,
+          "loss": 0.4903,
+          "step": 30208
+        },
+        {
+          "epoch": 1,
+          "chunk": 237,
+          "loss": 0.4873,
+          "step": 30336
+        },
+        {
+          "epoch": 1,
+          "chunk": 238,
+          "loss": 0.4987,
+          "step": 30464
+        },
+        {
+          "epoch": 1,
+          "chunk": 239,
+          "loss": 0.495,
+          "step": 30592
+        },
+        {
+          "epoch": 1,
+          "chunk": 240,
+          "loss": 0.4996,
+          "step": 30720
+        },
+        {
+          "epoch": 1,
+          "chunk": 241,
+          "loss": 0.4872,
+          "step": 30848
+        }
+      ],
+      "recent_chunk_losses_finite": true,
+      "eligible_items_per_epoch": 3436908,
+      "total_items_two_epochs": 6873816,
+      "optimizer_progress_pct": 28.721462887788164,
+      "first_epoch_chunk_progress_pct": 57.38095238095238,
+      "configuration": {
+        "micro_batch": 8,
+        "grad_accum": 8,
+        "encoder_lr": 2.5e-05,
+        "head_lr": 0.0001,
+        "weight_decay": 0.01,
+        "loss": "soft-ce",
+        "freeze_encoder": false
+      },
+      "independent_maintenance_modified_by_this_task": false,
+      "old_failed_attempt_preserved": true
+    },
+    "existing_handoff": {
+      "pid": 817520,
+      "alive": true,
+      "modified_by_this_task": false
+    },
+    "queue_state": {
+      "updated_at": "2026-10-31T12:16:27.792171+00:00",
+      "queue_status": "PAUSED_USER_REQUEST",
+      "current_run": null,
+      "interrupted_run": null,
+      "resumed_by_this_task": false
+    },
+    "serving": {
+      "pid": 327621,
+      "alive": true,
+      "health": {
+        "http_status": 200,
+        "body": {
+          "status": "healthy",
+          "uptime_seconds": 188137.58,
+          "gpu_available": true,
+          "gpu_name": "NVIDIA RTX A6000",
+          "gpu_memory_used_mb": 9929.0,
+          "gpu_memory_total_mb": 49140.0,
+          "gpu_utilization_pct": 94.0,
+          "models_loaded": {
+            "laya": true,
+            "kev": true
+          },
+          "weights_loaded": {
+            "laya": true,
+            "kev": true
+          },
+          "inference_verified": {
+            "laya": true,
+            "kev": true
+          }
+        }
+      },
+      "models": {
+        "http_status": 200,
+        "body": {
+          "models": [
+            {
+              "family": "laya",
+              "run_id": "F05",
+              "checkpoint_id": "epoch_01",
+              "epoch": 1,
+              "loaded": true,
+              "weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+              "metrics": {
+                "best_val_accuracy_s1": 0.6756,
+                "val_loss": 0.5978
+              }
+            },
+            {
+              "family": "kev",
+              "run_id": "KEV-4B-ADAPTER",
+              "checkpoint_id": "1001bb4d826a52d1f399e183466143f4da7b741b",
+              "epoch": null,
+              "loaded": true,
+              "weights_path": "models/kev-4b-adapter",
+              "metrics": {
+                "base": "Qwen3.5-4B-Base",
+                "lora_rank": 16,
+                "inference_engine": "torch_cpu"
+              }
+            }
+          ]
+        }
+      },
+      "weights_replaced": false,
+      "restarted": false
+    },
+    "gpu": {
+      "index": 0,
+      "model": "NVIDIA RTX A6000",
+      "used_mib": 9929,
+      "total_mib": 49140,
+      "utilization_pct": 94,
+      "temperature_c": 83,
+      "power_w": 289.92
+    },
+    "v9_laya_step_checkpoint": "V9_LAYA_STEP_001-e01",
+    "v9_laya_step_checkpoint_exists": true,
+    "new_v9_training_in_this_work_package": false,
+    "kev_new_training_in_this_work_package": false
+  },
+  "server_material_consumption": {
+    "records_consumed": 19,
+    "target_counts": {
+      "step_model_preference": 10,
+      "task_model_preference": 9
+    },
+    "captured_state_retained": 19,
+    "requested_low_fields": 38,
+    "native_effort_targets": 0,
+    "teacher_records": 0,
+    "capability_snapshots": {
+      "20261031T072548885180Z-v4": 19
+    },
+    "s1_link_target": "../model_comparison/train.jsonl",
+    "public_result_files": 491,
+    "weights_loaded": false,
+    "optimizer_updates": 0
+  }
+}

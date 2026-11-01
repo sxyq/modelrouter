@@ -1,0 +1,69 @@
+{
+  "enabled": true,
+  "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+  "selection_scope": "MODEL_ONLY",
+  "generator_protocol": "responses",
+  "provider_timeout_sec": 180,
+  "model_endpoints": {
+    "gpt-6.1-sol": {
+      "base_url": "https://oneapi.sxyq27.online/v1",
+      "protocol": "responses"
+    },
+    "gpt-6-luna": {
+      "base_url": "https://oneapi.sxyq27.online/v1",
+      "protocol": "chat_completions"
+    }
+  },
+  "formal_model_ids": [
+    "gpt-6.1-sol",
+    "gpt-6-luna",
+    "qwen3.8-flash"
+  ],
+  "candidate_actions": [
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "native_effort": "low"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "native_effort": "low"
+    }
+  ],
+  "native_effort_observation_note": "Requested low; applied native effort remains unknown. Only the model is selected.",
+  "teacher_enabled": false,
+  "router_endpoint": "http://127.0.0.1:8000",
+  "router_timeout_sec": 60,
+  "feature_training_status": "FEATURE_PARTIALLY_TRAINED",
+  "dataset": "SWE-bench/SWE-smith",
+  "source_id": "TRA-002",
+  "initial_cwd": "/testbed",
+  "original_verifier_paths": [
+    "test_schema.py",
+    "README.rst"
+  ],
+  "evidence_scope": "REAL_TRAIN_TASK_VERIFICATION",
+  "pre_decision_state": {
+    "phase": "verify"
+  },
+  "actual_backend_model_id": "gpt-6.1-sol",
+  "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+  "policy": "fixed_strong",
+  "workspace": "our-project/results/iterations/20261101-v9-runtime-quality-dev/schema-prefix-5",
+  "execution_mode": "REAL_API",
+  "backend_deployment_status": "API_IDENTITY_ONLY_UNVERIFIED_PHYSICAL_BACKEND",
+  "mini_swe_version": "2.4.6",
+  "started_at": "2026-11-01T16:01:33.562210+00:00",
+  "max_steps": 30,
+  "max_output_tokens": 4096,
+  "instruction": "Optional callable default values not receiving schema validation kwargs\n\nDescription\n\nI have a schema with an optional key that has a callable default value. When I validate data against this schema and pass additional keyword arguments, the callable default value doesn't receive these arguments.\n\nFor example, with this schema:\n\n```python\ns = {\n    'k': int, \n    'd': {\n        Optional('k', default=lambda: 42): int, \n        'l': [{'l': [int]}]\n    }\n}\n```\n\nAnd this data:\n\n```python\nv = {'k': 1, 'd': {'l': [{'l': [3, 4, 5]}]}}\n```\n\nWhen I validate with additional arguments:\n\n```python\nd = Schema(s).validate(v, increment=1)\n```\n\nThe callable default value for the optional key doesn't receive the `increment` parameter. This worked fine in previous versions but seems to be broken now.\n\nThe issue appears to be in how optional callable defaults are handled when schema validation kwargs are passed. The callable default function is being invoked without the kwargs that were passed to the validate method.\n\nWorkspace and initial working directory (absolute CWD): /testbed",
+  "verify_command": "python -m pytest -q test_schema.py",
+  "upstream_cost_counter_status": "MODEL_RATE_ESTIMATE_NOT_AN_INVOICE",
+  "upstream_runtime_options": {
+    "MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT": "1",
+    "LITELLM_LOCAL_MODEL_COST_MAP": "true"
+  },
+  "comparison_scope": "ONE_NATIVE_AGENT_STEP",
+  "capability_snapshot_id": "20261031T072548885180Z-v4"
+}

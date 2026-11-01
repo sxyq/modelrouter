@@ -1,0 +1,133 @@
+........................................................................ [ 34%]
+...FFFF...........................................................F..... [ 69%]
+...............................................................          [100%]
+=================================== FAILURES ===================================
+________________ TestSorting.test_sort_by_different_per_columns ________________
+
+self = <test_prettytable.TestSorting object at 0x7ffffdc31e10>
+city_data_prettytable = +-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+-...   646.9      |
+|   Perth   | 5386 |  1554769   |      869.4      |
++-----------+------+------------+-----------------+
+
+    def test_sort_by_different_per_columns(
+        self, city_data_prettytable: PrettyTable
+    ) -> None:
+        city_data_prettytable.sortby = city_data_prettytable.field_names[0]
+        old = city_data_prettytable.get_string()
+        for field in city_data_prettytable.field_names[1:]:
+            city_data_prettytable.sortby = field
+            new = city_data_prettytable.get_string()
+>           assert new != old
+E           AssertionError: assert '+-----------+------+------------+-----------------+\n| City name | Area | Population | Annual Rainfall |\n+----------...646.9      |\n|   Perth   | 5386 |  1554769   |      869.4      |\n+-----------+------+------------+-----------------+' != '+-----------+------+------------+-----------------+\n| City name | Area | Population | Annual Rainfall |\n+----------...646.9      |\n|   Perth   | 5386 |  1554769   |      869.4      |\n+-----------+------+------------+-----------------+'
+
+tests/test_prettytable.py:752: AssertionError
+________________________ TestSorting.test_reverse_sort _________________________
+
+self = <test_prettytable.TestSorting object at 0x7ffffdc32350>
+city_data_prettytable = +-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+-...   646.9      |
+|   Perth   | 5386 |  1554769   |      869.4      |
++-----------+------+------------+-----------------+
+
+    def test_reverse_sort(self, city_data_prettytable: PrettyTable) -> None:
+        for field in city_data_prettytable.field_names:
+            city_data_prettytable.sortby = field
+            city_data_prettytable.reversesort = False
+            forward = city_data_prettytable.get_string()
+            city_data_prettytable.reversesort = True
+            backward = city_data_prettytable.get_string()
+            forward_lines = forward.split("\n")[2:]  # Discard header lines
+            backward_lines = backward.split("\n")[2:]
+            backward_lines.reverse()
+>           assert forward_lines == backward_lines
+E           AssertionError: assert ['+----------...8     |', ...] == ['+----------...7     |', ...]
+E             
+E             At index 1 diff: '|  Adelaide | 1295 |  1158259   |      600.5      |' != '|   Perth   | 5386 |  1554769   |      869.4      |'
+E             Use -v to get more diff
+
+tests/test_prettytable.py:764: AssertionError
+__________________________ TestSorting.test_sort_key ___________________________
+
+self = <test_prettytable.TestSorting object at 0x7ffffdc320b0>
+city_data_prettytable = +-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+-...   646.9      |
+|   Perth   | 5386 |  1554769   |      869.4      |
++-----------+------+------------+-----------------+
+
+        def test_sort_key(self, city_data_prettytable: PrettyTable) -> None:
+            # Test sorting by length of city name
+            def key(vals):
+                vals[0] = len(vals[0])
+                return vals
+    
+            city_data_prettytable.sortby = "City name"
+            city_data_prettytable.sort_key = key
+>           assert (
+                city_data_prettytable.get_string().strip()
+                == """
+    +-----------+------+------------+-----------------+
+    | City name | Area | Population | Annual Rainfall |
+    +-----------+------+------------+-----------------+
+    |   Perth   | 5386 |  1554769   |      869.4      |
+    |   Darwin  | 112  |   120900   |      1714.7     |
+    |   Hobart  | 1357 |   205556   |      619.5      |
+    |   Sydney  | 2058 |  4336374   |      1214.8     |
+    |  Adelaide | 1295 |  1158259   |      600.5      |
+    |  Brisbane | 5905 |  1857594   |      1146.4     |
+    | Melbourne | 1566 |  3806092   |      646.9      |
+    +-----------+------+------------+-----------------+
+    """.strip()
+            )
+E           AssertionError: assert '+-----------...------------+' == '+-----------...------------+'
+E             
+E             Skipping 149 identical leading characters in diff, use -v to show
+E             Skipping 50 identical trailing characters in diff, use -v to show
+E               -----+
+E             - |   Perth   | 5386 |  1554769   |      869.4      |
+E             + |  Adelaide | 1295 |  1158259   |      600.5      |
+E             + |  Brisbane | 5905 |  1857594   |      1146.4     |...
+E             
+E             ...Full output truncated (8 lines hidden), use '-vv' to show
+
+tests/test_prettytable.py:774: AssertionError
+_________________________ TestSorting.test_sort_slice __________________________
+
+self = <test_prettytable.TestSorting object at 0x7ffffdc31c60>
+
+    def test_sort_slice(self) -> None:
+        """Make sure sorting and slicing interact in the expected way"""
+        table = PrettyTable(["Foo"])
+        for i in range(20, 0, -1):
+            table.add_row([i])
+        new_style = table.get_string(sortby="Foo", end=10)
+>       assert "10" in new_style
+E       AssertionError: assert '10' in '+-----+\n| Foo |\n+-----+\n|  20 |\n|  19 |\n|  18 |\n|  17 |\n|  16 |\n|  15 |\n|  14 |\n|  13 |\n|  12 |\n|  11 |\n+-----+'
+
+tests/test_prettytable.py:797: AssertionError
+___ TestCustomFormatter.test_init_custom_format_throw_error_is_not_callable ____
+
+self = <test_prettytable.TestCustomFormatter object at 0x7ffffdc291b0>
+
+    def test_init_custom_format_throw_error_is_not_callable(self) -> None:
+        with pytest.raises(ValueError) as e:
+            PrettyTable(custom_format={"col1": "{:.2}"})
+    
+>       assert "Invalid value for custom_format.col1. Must be a function." in str(
+            e.value
+        )
+E       AssertionError: assert 'Invalid value for custom_format.col1. Must be a function.' in 'Invalid value for col1. Must be a function.'
+E        +  where 'Invalid value for col1. Must be a function.' = str(ValueError('Invalid value for col1. Must be a function.'))
+E        +    where ValueError('Invalid value for col1. Must be a function.') = <ExceptionInfo ValueError('Invalid value for col1. Must be a function.') tblen=4>.value
+
+tests/test_prettytable.py:2128: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_prettytable.py::TestSorting::test_sort_by_different_per_columns
+FAILED tests/test_prettytable.py::TestSorting::test_reverse_sort - AssertionE...
+FAILED tests/test_prettytable.py::TestSorting::test_sort_key - AssertionError...
+FAILED tests/test_prettytable.py::TestSorting::test_sort_slice - AssertionErr...
+FAILED tests/test_prettytable.py::TestCustomFormatter::test_init_custom_format_throw_error_is_not_callable
+5 failed, 202 passed in 0.55s

@@ -1,0 +1,1902 @@
+{
+    "id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104",
+    "task_name": "terminal-bench/distribution-search",
+    "trial_name": "distribution-search__WtUjyDx",
+    "trial_uri": "file://<LOCAL_USER>/Desktop/Project/%E8%B7%AF%E7%94%B1/our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-teacher/jobs/distribution-search--laya_v2--s42/distribution-search__WtUjyDx",
+    "task_id": {
+        "path": "external/benchmarks/terminal-bench-2-1/tasks/distribution-search"
+    },
+    "source": null,
+    "task_checksum": "dcd92ac5501340d190b2276e1f60ece558c8da07c104617b9d216b47cf5fc32f",
+    "config": {
+        "task": {
+            "path": "external/benchmarks/terminal-bench-2-1/tasks/distribution-search",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "distribution-search__WtUjyDx",
+        "trials_dir": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-teacher/jobs/distribution-search--laya_v2--s42",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "modelrouter.benchmark.harbor_agent:ModelRouterMiniSweAgent",
+            "import_path": null,
+            "model_name": "openai/gpt-6-luna",
+            "model_base_url": null,
+            "model_api_key_name": null,
+            "model_api_format": null,
+            "skip_model_parsing": false,
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "policy": "laya_v2",
+                "seed": 42,
+                "max_steps": 30,
+                "max_output_tokens": 4096,
+                "cost_limit": 0.0,
+                "v9_config": {
+                    "enabled": true,
+                    "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+                    "selection_scope": "MODEL_ONLY",
+                    "generator_protocol": "responses",
+                    "provider_timeout_sec": 180,
+                    "model_endpoints": {
+                        "gpt-6.1-sol": {
+                            "base_url": "https://oneapi.sxyq27.online/v1",
+                            "protocol": "responses"
+                        },
+                        "gpt-6-luna": {
+                            "base_url": "https://oneapi.sxyq27.online/v1",
+                            "protocol": "chat_completions"
+                        }
+                    },
+                    "formal_model_ids": [
+                        "gpt-6.1-sol",
+                        "gpt-6-luna",
+                        "qwen3.8-flash"
+                    ],
+                    "candidate_actions": [
+                        {
+                            "provider": "openai",
+                            "model": "gpt-6.1-sol",
+                            "native_effort": "low"
+                        },
+                        {
+                            "provider": "jiji",
+                            "model": "gpt-6-luna",
+                            "native_effort": "low"
+                        }
+                    ],
+                    "native_effort_observation_note": "Requested low; applied native effort remains unknown. Only the model is selected.",
+                    "teacher_enabled": true,
+                    "router_endpoint": "http://127.0.0.1:8000",
+                    "router_timeout_sec": 60,
+                    "router_checkpoint": {
+                        "path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/best",
+                        "command": [
+                            "ssh",
+                            "-i",
+                            "<LOCAL_SSH_KEY>",
+                            "-o",
+                            "IdentitiesOnly=yes",
+                            "-o",
+                            "BatchMode=yes",
+                            "-o",
+                            "ConnectTimeout=8",
+                            "<SERVER_SSH_TARGET>",
+                            "env PYTHONPATH=<SERVER_PROJECT>/our-project/code/src:<SERVER_USER>/路由 OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 <SERVER_PROJECT>/.venv/bin/python -m modelrouter.v9.runtime.checkpoint"
+                        ]
+                    },
+                    "feature_training_status": "FEATURE_PARTIALLY_TRAINED",
+                    "capability_snapshot": {
+                        "schema_version": 1,
+                        "snapshot_id": "20261031T072548885180Z-v4",
+                        "snapshot_version": 4,
+                        "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                        "status": "PARTIAL",
+                        "models": {
+                            "gpt-6.1-sol": {
+                                "model_id": "gpt-6.1-sol",
+                                "evidence_status": "MEASURED",
+                                "model_revision": "NOT_REPORTED",
+                                "model_creator": {
+                                    "id": "e67e56e3-15cd-43db-b679-da4660a69f41",
+                                    "slug": "openai",
+                                    "name": "OpenAI",
+                                    "logo": "/img/logos/openai.svg",
+                                    "color": "#1f1f1f",
+                                    "country": "us"
+                                },
+                                "pricing": {
+                                    "currency": "USD",
+                                    "unit": "PER_MILLION_TOKENS",
+                                    "input": 2,
+                                    "output": 10,
+                                    "cached_input": 0.1,
+                                    "cache_write": 2.5
+                                },
+                                "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                "metrics": [
+                                    {
+                                        "metric_name": "artificial_analysis_intelligence_index",
+                                        "score_raw": 54.5087338138148,
+                                        "score_unit": "INDEX",
+                                        "benchmark_version": "5.0",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null
+                                    },
+                                    {
+                                        "metric_name": "aa-briefcase",
+                                        "score_raw": 1555.26,
+                                        "score_unit": "ELO",
+                                        "benchmark_version": "1.1",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "AA-Briefcase v1.1: Agentic Knowledge Work Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "automationbench-aa",
+                                        "score_raw": 0.6486844882398171,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "AutomationBench-AA: Agentic SaaS Workflow Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "terminalbench-4-0",
+                                        "score_raw": 0.560606060606061,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "4.0",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "Terminal-Bench 4.0 Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "frontiercode-2-0",
+                                        "score_raw": 0.406262878787879,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "2.0",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "FrontierCode 2.0 Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "omniscience",
+                                        "score_raw": 42.03333333333333,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "1.1",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "AA-Omniscience v1.1: Knowledge and Hallucination Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "gdp-pdf",
+                                        "score_raw": 0.31,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "GDP.pdf Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "hle-diamond",
+                                        "score_raw": 0.588,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "HLE-Diamond Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "critpt-v2-hard",
+                                        "score_raw": 0.685,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "critpt-v2-hard"
+                                    },
+                                    {
+                                        "metric_name": "terminal-bench-science",
+                                        "score_raw": 0.580952380952381,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "0.1",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "Terminal-Bench-Science 0.1 Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "artificial_analysis_coding_index",
+                                        "score_raw": null,
+                                        "score_unit": "INDEX",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": null,
+                                        "score_scope": "model",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "NOT_MEASURED",
+                                        "missing_reason": "NOT_MEASURED"
+                                    },
+                                    {
+                                        "metric_name": "artificial_analysis_agentic_index",
+                                        "score_raw": null,
+                                        "score_unit": "INDEX",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": null,
+                                        "score_scope": "model",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                        "evidence_status": "NOT_MEASURED",
+                                        "missing_reason": "NOT_MEASURED"
+                                    }
+                                ],
+                                "aa_model_slug": "gpt-6-1-sol",
+                                "provider": "OpenAI",
+                                "context_limits": {
+                                    "context_window_tokens": 1000000
+                                },
+                                "release_date": "2026-09-29",
+                                "provider_metadata": {
+                                    "model_id": "gpt-6.1-sol",
+                                    "source_url": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+                                    "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                    "model_revision": "NOT_REPORTED",
+                                    "evidence_status": "OFFICIAL_DOCUMENTATION",
+                                    "provider": "OpenAI",
+                                    "context_limits": {
+                                        "context_window_tokens": 1050000,
+                                        "max_input_tokens": 922000,
+                                        "max_output_tokens": 128000
+                                    },
+                                    "pricing": {
+                                        "currency": "USD",
+                                        "unit": "PER_MILLION_TOKENS",
+                                        "rates": {
+                                            "Input": 2.0,
+                                            "Cached input": 0.1,
+                                            "Cache writes": 2.5,
+                                            "Output": 10.0
+                                        },
+                                        "conditions": [
+                                            "Cached input tokens are priced at 5% of the uncached input token rate.",
+                                            "Cache writes are billed at 1.25x the uncached input token rate.",
+                                            "API prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+                                            "Fast mode prices are 2x Standard. Batch and Flex prices are 50% lower than Standard.",
+                                            "Ultrafast mode prices are 6x Standard.",
+                                            "Regional processing adds a 10% premium where available.",
+                                            "GPT-6.1 Sol uses a default context window of 500K tokens in Codex and ChatGPT Work. Usage drawn from your subscription has no long-context surcharge. See [Codex pricing](/codex/pricing)."
+                                        ]
+                                    },
+                                    "native_efforts": [
+                                        "low",
+                                        "medium",
+                                        "high",
+                                        "xhigh",
+                                        "max"
+                                    ]
+                                }
+                            },
+                            "gpt-6-luna": {
+                                "model_id": "gpt-6-luna",
+                                "evidence_status": "MEASURED",
+                                "model_revision": "NOT_REPORTED",
+                                "model_creator": {
+                                    "id": "e67e56e3-15cd-43db-b679-da4660a69f41",
+                                    "slug": "openai",
+                                    "name": "OpenAI",
+                                    "logo": "/img/logos/openai.svg",
+                                    "color": "#1f1f1f",
+                                    "country": "us"
+                                },
+                                "pricing": {
+                                    "currency": "USD",
+                                    "unit": "PER_MILLION_TOKENS",
+                                    "input": 0.1,
+                                    "output": 0.5,
+                                    "cached_input": 0.01,
+                                    "cache_write": 0.125
+                                },
+                                "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                "metrics": [
+                                    {
+                                        "metric_name": "artificial_analysis_intelligence_index",
+                                        "score_raw": 27.7552004938153,
+                                        "score_unit": "INDEX",
+                                        "benchmark_version": "5.0",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null
+                                    },
+                                    {
+                                        "metric_name": "aa-briefcase",
+                                        "score_raw": 1336.99,
+                                        "score_unit": "ELO",
+                                        "benchmark_version": "1.1",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "AA-Briefcase v1.1: Agentic Knowledge Work Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "automationbench-aa",
+                                        "score_raw": 0.5316814034483175,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "AutomationBench-AA: Agentic SaaS Workflow Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "terminalbench-4-0",
+                                        "score_raw": 0.126262626262626,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "4.0",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "Terminal-Bench 4.0 Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "frontiercode-2-0",
+                                        "score_raw": 0.251747727272727,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "2.0",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "FrontierCode 2.0 Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "omniscience",
+                                        "score_raw": -8.266666666666667,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "1.1",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "AA-Omniscience v1.1: Knowledge and Hallucination Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "gdp-pdf",
+                                        "score_raw": 0.228,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "GDP.pdf Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "hle-diamond",
+                                        "score_raw": 0.222,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "HLE-Diamond Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "critpt-v2-hard",
+                                        "score_raw": 0.415,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "critpt-v2-hard"
+                                    },
+                                    {
+                                        "metric_name": "terminal-bench-science",
+                                        "score_raw": 0.0857142857142857,
+                                        "score_unit": "NOT_REPORTED",
+                                        "benchmark_version": "0.1",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": "max",
+                                        "score_scope": "effort",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "MEASURED",
+                                        "missing_reason": null,
+                                        "benchmark_name": "Terminal-Bench-Science 0.1 Benchmark"
+                                    },
+                                    {
+                                        "metric_name": "artificial_analysis_coding_index",
+                                        "score_raw": null,
+                                        "score_unit": "INDEX",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": null,
+                                        "score_scope": "model",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "NOT_MEASURED",
+                                        "missing_reason": "NOT_MEASURED"
+                                    },
+                                    {
+                                        "metric_name": "artificial_analysis_agentic_index",
+                                        "score_raw": null,
+                                        "score_unit": "INDEX",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": null,
+                                        "score_scope": "model",
+                                        "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                        "evidence_status": "NOT_MEASURED",
+                                        "missing_reason": "NOT_MEASURED"
+                                    }
+                                ],
+                                "aa_model_slug": "gpt-6-luna",
+                                "provider": "OpenAI",
+                                "context_limits": {
+                                    "context_window_tokens": 1000000
+                                },
+                                "release_date": "2026-09-22",
+                                "provider_metadata": {
+                                    "model_id": "gpt-6-luna",
+                                    "source_url": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+                                    "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                    "model_revision": "NOT_REPORTED",
+                                    "evidence_status": "OFFICIAL_DOCUMENTATION",
+                                    "provider": "OpenAI",
+                                    "context_limits": {
+                                        "context_window_tokens": 1050000,
+                                        "max_input_tokens": 922000,
+                                        "max_output_tokens": 128000
+                                    },
+                                    "pricing": {
+                                        "currency": "USD",
+                                        "unit": "PER_MILLION_TOKENS",
+                                        "rates": {
+                                            "Input": 0.1,
+                                            "Cached input": 0.01,
+                                            "Cache writes": 0.125,
+                                            "Output": 0.5
+                                        },
+                                        "conditions": [
+                                            "Cached input tokens are priced at 10% of the uncached input token rate.",
+                                            "Cache writes are billed at 1.25x the uncached input token rate.",
+                                            "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.",
+                                            "Regional processing adds a 10% premium where available. EU data residency is available with Standard, Fast, Flex, and Batch processing.",
+                                            "Batch and Flex are priced at 50% of Standard rates. Fast mode is priced at 2x the applicable rates."
+                                        ]
+                                    },
+                                    "native_efforts": [
+                                        "none",
+                                        "low",
+                                        "medium",
+                                        "high",
+                                        "xhigh",
+                                        "max"
+                                    ]
+                                }
+                            },
+                            "qwen3.8-flash": {
+                                "model_id": "qwen3.8-flash",
+                                "evidence_status": "NOT_MEASURED",
+                                "model_revision": "NOT_REPORTED",
+                                "model_creator": null,
+                                "pricing": {},
+                                "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+                                "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                "metrics": [
+                                    {
+                                        "metric_name": "artificial_analysis_intelligence_index",
+                                        "score_raw": null,
+                                        "score_unit": "INDEX",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": null,
+                                        "score_scope": "model",
+                                        "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+                                        "evidence_status": "NOT_MEASURED",
+                                        "missing_reason": "MODEL_NOT_FOUND"
+                                    },
+                                    {
+                                        "metric_name": "artificial_analysis_coding_index",
+                                        "score_raw": null,
+                                        "score_unit": "INDEX",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": null,
+                                        "score_scope": "model",
+                                        "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+                                        "evidence_status": "NOT_MEASURED",
+                                        "missing_reason": "MODEL_NOT_FOUND"
+                                    },
+                                    {
+                                        "metric_name": "artificial_analysis_agentic_index",
+                                        "score_raw": null,
+                                        "score_unit": "INDEX",
+                                        "benchmark_version": "NOT_REPORTED",
+                                        "harness_id": "NOT_REPORTED",
+                                        "evaluated_native_effort": null,
+                                        "score_scope": "model",
+                                        "source_url": "https://artificialanalysis.ai/models/qwen3.8-flash",
+                                        "evidence_status": "NOT_MEASURED",
+                                        "missing_reason": "MODEL_NOT_FOUND"
+                                    }
+                                ],
+                                "provider_metadata": {
+                                    "model_id": "qwen3.8-flash",
+                                    "source_url": "https://help.aliyun.com/en/model-studio/qwen3-8-flash",
+                                    "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                    "model_revision": "NOT_REPORTED",
+                                    "evidence_status": "OFFICIAL_DOCUMENTATION",
+                                    "provider": "Alibaba Cloud",
+                                    "document_modified_at": 1793285582000,
+                                    "context_limits": {
+                                        "Max input length": 991808,
+                                        "Max output length": 131072,
+                                        "Max input length (thinking mode)": 983616,
+                                        "Max output length (thinking mode)": 131072,
+                                        "Context length": 1000000,
+                                        "Max thinking chain length": 262144
+                                    },
+                                    "pricing": {
+                                        "regions": [
+                                            {
+                                                "region": "China (Beijing)",
+                                                "deployment_scope": null,
+                                                "currency": "CNY",
+                                                "rates": [
+                                                    {
+                                                        "billing_item": "Input",
+                                                        "price": 0.8,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Output",
+                                                        "price": 2.7,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Input (cache hit)",
+                                                        "price": 0.1,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache creation",
+                                                        "price": 1.25,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache hit",
+                                                        "price": 0.1,
+                                                        "unit": "Per 1 million tokens"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "region": "Singapore",
+                                                "deployment_scope": "International",
+                                                "currency": "CNY",
+                                                "rates": [
+                                                    {
+                                                        "billing_item": "Input",
+                                                        "price": 1.094,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Output",
+                                                        "price": 3.427,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Input (cache hit)",
+                                                        "price": 0.117,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache creation",
+                                                        "price": 1.458,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache hit",
+                                                        "price": 0.117,
+                                                        "unit": "Per 1 million tokens"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "region": "Germany (Frankfurt)",
+                                                "deployment_scope": "EU",
+                                                "currency": "CNY",
+                                                "rates": [
+                                                    {
+                                                        "billing_item": "Input",
+                                                        "price": 1.094,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Output",
+                                                        "price": 3.427,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Input (cache hit)",
+                                                        "price": 0.117,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache creation",
+                                                        "price": 1.458,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache hit",
+                                                        "price": 0.117,
+                                                        "unit": "Per 1 million tokens"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "region": "Germany (Frankfurt)",
+                                                "deployment_scope": "Global",
+                                                "currency": "CNY",
+                                                "rates": [
+                                                    {
+                                                        "billing_item": "Input",
+                                                        "price": 0.8,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Output",
+                                                        "price": 2.7,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Input (cache hit)",
+                                                        "price": 0.1,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache creation",
+                                                        "price": 1.25,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache hit",
+                                                        "price": 0.1,
+                                                        "unit": "Per 1 million tokens"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "region": "Japan (Tokyo)",
+                                                "deployment_scope": "Global",
+                                                "currency": "CNY",
+                                                "rates": [
+                                                    {
+                                                        "billing_item": "Input",
+                                                        "price": 0.8,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Output",
+                                                        "price": 2.7,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Input (cache hit)",
+                                                        "price": 0.1,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache creation",
+                                                        "price": 1.25,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache hit",
+                                                        "price": 0.1,
+                                                        "unit": "Per 1 million tokens"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "region": "US (Virginia)",
+                                                "deployment_scope": "Global",
+                                                "currency": "CNY",
+                                                "rates": [
+                                                    {
+                                                        "billing_item": "Input",
+                                                        "price": 0.8,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Output",
+                                                        "price": 2.7,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Input (cache hit)",
+                                                        "price": 0.1,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache creation",
+                                                        "price": 1.25,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache hit",
+                                                        "price": 0.1,
+                                                        "unit": "Per 1 million tokens"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "region": "US (Virginia)",
+                                                "deployment_scope": "US",
+                                                "currency": "CNY",
+                                                "rates": [
+                                                    {
+                                                        "billing_item": "Input",
+                                                        "price": 1.094,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Output",
+                                                        "price": 3.427,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Input (cache hit)",
+                                                        "price": 0.117,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache creation",
+                                                        "price": 1.458,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache hit",
+                                                        "price": 0.117,
+                                                        "unit": "Per 1 million tokens"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "region": "Hong Kong (China)",
+                                                "deployment_scope": "Hong Kong (China)",
+                                                "currency": "CNY",
+                                                "rates": [
+                                                    {
+                                                        "billing_item": "Input",
+                                                        "price": 1.094,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Output",
+                                                        "price": 3.427,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Input (cache hit)",
+                                                        "price": 0.117,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache creation",
+                                                        "price": 1.458,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache hit",
+                                                        "price": 0.117,
+                                                        "unit": "Per 1 million tokens"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "region": "Hong Kong (China)",
+                                                "deployment_scope": "Global",
+                                                "currency": "CNY",
+                                                "rates": [
+                                                    {
+                                                        "billing_item": "Input",
+                                                        "price": 0.8,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Output",
+                                                        "price": 2.7,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Input (cache hit)",
+                                                        "price": 0.1,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache creation",
+                                                        "price": 1.25,
+                                                        "unit": "Per 1 million tokens"
+                                                    },
+                                                    {
+                                                        "billing_item": "Explicit cache hit",
+                                                        "price": 0.1,
+                                                        "unit": "Per 1 million tokens"
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        "promotions_included": false
+                                    }
+                                }
+                            }
+                        },
+                        "sources": [
+                            {
+                                "source_url": "https://artificialanalysis.ai/api/v2/data/llms/models",
+                                "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                "status": "API_KEY_MISSING"
+                            },
+                            {
+                                "source_url": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+                                "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                "source_kind": "AA_PUBLIC",
+                                "model_id": "gpt-6.1-sol",
+                                "status": "FETCHED",
+                                "http_status": 200,
+                                "response_headers": {
+                                    "Content-Type": "text/html; charset=utf-8",
+                                    "Date": "Sat, 31 Oct 2026 03:04:45 GMT"
+                                },
+                                "response_bytes": 1650620,
+                                "capability_evidence_status": "PARTIAL",
+                                "measured_metric_count": 10,
+                                "provider_metadata_model_count": 0
+                            },
+                            {
+                                "source_url": "https://artificialanalysis.ai/models/gpt-6-luna",
+                                "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                "source_kind": "AA_PUBLIC",
+                                "model_id": "gpt-6-luna",
+                                "status": "FETCHED",
+                                "http_status": 200,
+                                "response_headers": {
+                                    "Content-Type": "text/html; charset=utf-8",
+                                    "Date": "Sat, 31 Oct 2026 03:04:44 GMT"
+                                },
+                                "response_bytes": 1651990,
+                                "capability_evidence_status": "PARTIAL",
+                                "measured_metric_count": 10,
+                                "provider_metadata_model_count": 0
+                            },
+                            {
+                                "source_url": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+                                "model_id": "gpt-6.1-sol",
+                                "source_kind": "PROVIDER_DOCUMENTATION",
+                                "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                "status": "FETCHED_METADATA",
+                                "http_status": 200,
+                                "response_headers": {
+                                    "Content-Type": "text/markdown; charset=utf-8",
+                                    "Date": "Sat, 31 Oct 2026 07:25:54 GMT"
+                                },
+                                "response_bytes": 4079
+                            },
+                            {
+                                "source_url": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+                                "model_id": "gpt-6-luna",
+                                "source_kind": "PROVIDER_DOCUMENTATION",
+                                "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                "status": "FETCHED_METADATA",
+                                "http_status": 200,
+                                "response_headers": {
+                                    "Content-Type": "text/markdown; charset=utf-8",
+                                    "Date": "Sat, 31 Oct 2026 07:25:54 GMT"
+                                },
+                                "response_bytes": 4111
+                            },
+                            {
+                                "source_url": "https://help.aliyun.com/en/model-studio/qwen3-8-flash",
+                                "model_id": "qwen3.8-flash",
+                                "source_kind": "PROVIDER_DOCUMENTATION",
+                                "fetched_at_utc": "2026-10-31T07:25:48.885180Z",
+                                "status": "FETCHED_METADATA",
+                                "http_status": 200,
+                                "response_headers": {
+                                    "Content-Type": "text/html;charset=UTF-8",
+                                    "Date": "Sat, 31 Oct 2026 07:25:55 GMT"
+                                },
+                                "response_bytes": 76715
+                            }
+                        ],
+                        "capability_evidence_status": "PARTIAL",
+                        "measured_metric_count": 20,
+                        "provider_metadata_model_count": 3
+                    }
+                },
+                "candidate_actions": [
+                    {
+                        "provider": "openai",
+                        "model": "gpt-6.1-sol",
+                        "revision": "latest",
+                        "native_effort": "low",
+                        "action_id": "gpt-6.1-sol:low",
+                        "pool": "Reasoning"
+                    },
+                    {
+                        "provider": "jiji",
+                        "model": "gpt-6-luna",
+                        "revision": "latest",
+                        "native_effort": "low",
+                        "action_id": "gpt-6-luna:low",
+                        "pool": "Reasoning"
+                    }
+                ]
+            },
+            "mcp_servers": []
+        },
+        "user_agent": null,
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "stream": false,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [
+            "/app"
+        ],
+        "extra_instruction_paths": [],
+        "extra_instructions": [],
+        "job_id": "1f8871c6-5a88-4392-a297-e05affcf4c51",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "modelrouter-mini-swe-agent",
+        "version": "10.0-mini-2.4.6",
+        "model_info": {
+            "name": "gpt-6-luna",
+            "provider": "openai"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 12922,
+        "n_cache_tokens": 3100,
+        "n_output_tokens": 8727,
+        "cost_usd": 0.111619,
+        "model_usage": {
+            "gpt-6.1-sol": {
+                "n_input_tokens": 11591,
+                "n_cache_tokens": 3100,
+                "n_output_tokens": 7089,
+                "cost_usd": 0.091913
+            }
+        },
+        "rollout_details": null,
+        "metadata": {
+            "harness": "minisweagent.agents.default.DefaultAgent",
+            "mini_version": "2.4.6",
+            "policy": "laya_v2",
+            "task_id": "distribution-search",
+            "task_identity_source": "harbor_task_config",
+            "fallback_used": false,
+            "policy_implementation_status": "REMOTE_NEURAL_ROUTER",
+            "action_validation": {
+                "gpt-6.1-sol:low": "PROVIDER_REPORTED_MISMATCH",
+                "gpt-6-luna:low": "REAL_API_NOT_OBSERVED"
+            },
+            "untested_native_efforts_used": [],
+            "neural_router_evidence_eligible": true,
+            "raw_trajectory": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-teacher/jobs/distribution-search--laya_v2--s42/distribution-search__WtUjyDx/agent/mini-swe-agent.trajectory.json",
+            "v9": {
+                "teacher_metrics": [
+                    {
+                        "role": "teacher",
+                        "episode_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104",
+                        "assessed_through_decision_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104-2",
+                        "assessed_through_step": 3,
+                        "phase": "modify",
+                        "trigger_reason": "INITIAL_THREE_GENERATIONS",
+                        "selected_model_id": "gpt-6.1-sol",
+                        "teacher_model_id": "gpt-6.1-sol",
+                        "cost_model_id": "gpt-6.1-sol",
+                        "actual_backend_model_id": null,
+                        "request_model_id": "gpt-6.1-sol",
+                        "returned_model_id": "gpt-6.1-sol",
+                        "protocol": "responses",
+                        "provider_base_url": "https://oneapi.sxyq27.online/v1",
+                        "requested_max_output_tokens": 4096,
+                        "requested_native_effort": "low",
+                        "effective_native_effort": null,
+                        "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+                        "reference_ids": [
+                            {
+                                "source_id": "TRA-001",
+                                "dataset_revision": "MR-ALLDATA-PREP-20261011/quality_grading_v2_1",
+                                "task_id": "roniemartinez_latex2mathml_pr163",
+                                "episode_id": "1197939a-b690-416b-a78a-b9ac72bb6059",
+                                "split": "train",
+                                "success_evidence": {
+                                    "field": "resolved",
+                                    "value": true,
+                                    "source_path": "data/公开数据/原始数据/TRA-001_Open-SWE-Traces/minisweagent_qwen36_scaleswe_shard0.parquet",
+                                    "source_row": 267,
+                                    "label_nature": "PUBLIC_DATASET_RESOLVED_FIELD",
+                                    "train_anchor": "TRA-001:roniemartinez_latex2mathml_pr163:1197939a-b690-416b-a78a-b9ac72bb6059:1"
+                                },
+                                "observed_through_step": 37
+                            },
+                            {
+                                "source_id": "TRA-001",
+                                "dataset_revision": "MR-ALLDATA-PREP-20261011/quality_grading_v2_1",
+                                "task_id": "cloudtools_troposphere_pr2024",
+                                "episode_id": "e8044c51-72a2-42d0-b67b-7f53caa54ba5",
+                                "split": "train",
+                                "success_evidence": {
+                                    "field": "resolved",
+                                    "value": true,
+                                    "source_path": "data/公开数据/原始数据/TRA-001_Open-SWE-Traces/minisweagent_qwen36_scaleswe_shard0.parquet",
+                                    "source_row": 47,
+                                    "label_nature": "PUBLIC_DATASET_RESOLVED_FIELD",
+                                    "train_anchor": "TRA-001:cloudtools_troposphere_pr2024:e8044c51-72a2-42d0-b67b-7f53caa54ba5:1"
+                                },
+                                "observed_through_step": 39
+                            }
+                        ],
+                        "prompt_tokens": 1331,
+                        "completion_tokens": 1638,
+                        "reasoning_tokens": 1552,
+                        "cached_tokens": 0,
+                        "cost_usd": 0.019706,
+                        "actual_billed_cost_usd": null,
+                        "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+                        "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+                        "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+                        "usage_status": "REPORTED",
+                        "assessment_consumed_by_router": true,
+                        "provider_request_attempted": true,
+                        "execution_mode": "TEACHER",
+                        "context_chars": 4184,
+                        "context_char_limit": 8000,
+                        "token_measurement_status": "CHARACTERS_ONLY_BEFORE_REQUEST",
+                        "requested_model_id": "gpt-6.1-sol",
+                        "response_id": "resp_0915021b0eb36181006ae76b334dbc8197b46131c733514074",
+                        "provider": "openai",
+                        "finish_reason": "completed",
+                        "incomplete_details": null,
+                        "native_effort": "low",
+                        "request_native_effort": "low",
+                        "sent_effort_parameter": {
+                            "reasoning": {
+                                "effort": "low"
+                            }
+                        },
+                        "returned_native_effort": "max",
+                        "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+                        "stream": true,
+                        "reported_max_output_tokens": 4096,
+                        "raw_usage": {
+                            "input_tokens": 1331,
+                            "input_tokens_details": {
+                                "cache_write_tokens": 1328,
+                                "cached_tokens": 0
+                            },
+                            "output_tokens": 1638,
+                            "output_tokens_details": {
+                                "reasoning_tokens": 1552
+                            },
+                            "total_tokens": 2969
+                        },
+                        "identity_status": "MATCHED_REQUEST_ALIAS",
+                        "alias_mapping_applied": false,
+                        "reported_completion_tokens": 1638,
+                        "cache_write_tokens": 1328,
+                        "ttft_ms": 28037.44062501937,
+                        "latency_ms": 29051.96212499868,
+                        "output_tokens_per_s": 56.381733975569624,
+                        "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+                        "stream_output_tokens_per_s": 1614.5542504849877,
+                        "stream_output_tokens_per_s_status": "ESTIMATE",
+                        "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+                        "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+                        "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+                        "raw_reported_cost": null,
+                        "reported_cost_unit": "NOT_REPORTED",
+                        "budget_accounted": true,
+                        "status": "SUCCESS",
+                        "requested_response_format": {
+                            "type": "json_object"
+                        },
+                        "raw_response": {
+                            "id": "resp_0915021b0eb36181006ae76b334dbc8197b46131c733514074",
+                            "object": "response",
+                            "created_at": 1793551155,
+                            "status": "completed",
+                            "access_programs": null,
+                            "background": false,
+                            "completed_at": 1793551182,
+                            "content_filters": [
+                                {
+                                    "blocked": false,
+                                    "source_type": "prompt",
+                                    "content_filter_raw": [],
+                                    "content_filter_results": {
+                                        "hate": {
+                                            "filtered": false,
+                                            "severity": "safe"
+                                        },
+                                        "sexual": {
+                                            "filtered": false,
+                                            "severity": "safe"
+                                        },
+                                        "violence": {
+                                            "filtered": false,
+                                            "severity": "safe"
+                                        },
+                                        "self_harm": {
+                                            "filtered": false,
+                                            "severity": "safe"
+                                        },
+                                        "jailbreak": {
+                                            "detected": false,
+                                            "filtered": false
+                                        }
+                                    },
+                                    "content_filter_offsets": {
+                                        "start_offset": 0,
+                                        "end_offset": 5113,
+                                        "check_offset": 0
+                                    }
+                                },
+                                {
+                                    "blocked": false,
+                                    "source_type": "completion",
+                                    "content_filter_raw": [],
+                                    "content_filter_results": {
+                                        "protected_material_text": {
+                                            "detected": false,
+                                            "filtered": false
+                                        },
+                                        "protected_material_code": {
+                                            "detected": false,
+                                            "filtered": false
+                                        },
+                                        "hate": {
+                                            "filtered": false,
+                                            "severity": "safe"
+                                        },
+                                        "sexual": {
+                                            "filtered": false,
+                                            "severity": "safe"
+                                        },
+                                        "violence": {
+                                            "filtered": false,
+                                            "severity": "safe"
+                                        },
+                                        "self_harm": {
+                                            "filtered": false,
+                                            "severity": "safe"
+                                        }
+                                    },
+                                    "content_filter_offsets": {
+                                        "start_offset": 0,
+                                        "end_offset": 7972,
+                                        "check_offset": 0
+                                    }
+                                }
+                            ],
+                            "error": null,
+                            "frequency_penalty": 0.0,
+                            "incomplete_details": null,
+                            "instructions": null,
+                            "max_output_tokens": 4096,
+                            "max_tool_calls": null,
+                            "model": "gpt-6.1-sol",
+                            "moderation": null,
+                            "output": [
+                                {
+                                    "id": "rs_0915021b0eb36181006ae76b34bb08819782f8d98b8dbaff4f",
+                                    "type": "reasoning",
+                                    "content": [],
+                                    "encrypted_content": "gAAAAABq52tO7dnRetftWtjFUm4xEIXlKwewQPi48TDOAklOsM6offB165tn8-foDbLNQhbecMx_kHcZCt3n2YX0p_CWEDaOWW4HlfosVkhkrubAtn421BKU77iNmT4dTQ6QVlOvm_2VkZXsaPDqcpuI-pg2s-uUGfyk3NkDLqALW0DQvvTGEaIIZfWBTG-OLPA2IuHhxuIdlDRbbxfe8XMCU-GheeSRgw6cjCYq1quE806LRDJGJQkxgELWkLafGIJSV-Byg1kNy3GILbK8q6GBe_5d8UH6zTaKJRzB4Oi1vGVfCBVR3iCo4gVIN3LzlNpTQ4Q61vN-myKkjoXrTIiyH2tQPi_0kxf2Kd6wp2cXZEEiF19oaQawQpSJBGgl3zmh5uSSkXMRBWE9TQoRXJSR8XiloqGx_zMxRO8iY9tumTmXVJvJh7JbA-_jQzzAokuxIij47neSjs9Cj4X18E7xx3-JXbwKwdcFHzPa8GcSJ5s4Z14hY3evmQd2jkEJCEklNHMAnD-Swd5U21h9ng1U3wcIqzHJ5RMSpqPFhsaDCr3zM4CiVrlZnPhMPHYdcB4ZeHlFtMb1GjgsHBTrwheBevK_VbrfFFFy-o9uJMF_G_wNQjymDKJAY0PibeFpC4iy_W1bevmQ0jLKVZc82ohhnxg2tKBmkSMRB_pJ_Pt3uG4S8evDsLHv-8s3iO7Crt_OoIAXgdbooeUD1Lc85pmN_MJ5MtZCCMbSjvq75LaCG88xh-LGQd9_qMN6RS4RKIKfC4K-R1jFpplSsuRXHTPl1aCbfgWgcxpTJLTcuTJYnU3LTmrOZk3K_ahFy0BjbZc2Ve9tfDc9UkyjyALPn_Go1JZqTw4y9s1DlXa8baxziynLfZvzc1DmmYRD9XDNvONdqpn_Fl-pdnvsmzJ_3HsouY_kiNAoGLhhEPtCZ8qGLEGE93olaUAhdUQPucJZTFPq2bUya_vTRWwVp5n9MbJ-YwDUR-w8KRLTBWwaFUq3a89ne5yGtyKhtx-zXU9asqDDv-r02WEuEoQ6jeAblhndBgoklQnHbMPL06ZLwaS0Cgz4OuIhc7S97e1nsRukTraIZ6f9qVG3utlgowJI32KnhrFKGlL4h-bRe98n_MDkL2idF0TCATz_EWBj8q9e-fCMBd7MkPSrtHae_nB3Gl4_ELJSDlRht_ymgeFDPUXaeAIvzmTdBaaX0Nve6O6KogQ1vIGmvigj_EXvnG34EwpwMfwUWFkOCZzy_bITbZwx1Ipgrtxe4Qeoe2JgGVLdn0hLJzfCMlLRGXIU2-7cdfxABfF7R0dFleUAjSLtH19rS4NJcepBwZHi1fjF7D6nolMEs5lVGlYIkUSRuBsrvU4KqdbjS6Ys7-KxEnY82mqMWYyzWwRvfyaRWE-az2IGC9Xlaxct0SP9Fcyqq-Mv8PG2VmRalXqGAJFUdiWRXsZXqq4Z6w4b0aPxc9FUirKNIm09ZcF9vXhqZBtCJqbRmDCW79Qxkif7G9qJBIy6RhoQW0pRQsyJD3CLPGmJQS7xL2PcUogyFMrHgOtUUq-D1VX92gMoF3w-xh4S1x0B89MzXOCBHNUqa1249GfC9aijKfX15Y1B5CPlo2A3CMtaHtWTUr4lH80dSLAw9PEMgU4kbGSjoa3Vg8r2XO6WDRD-JpFPnrx7fLomreqVkYbYtCtUgMmzD23aj9QOeva0xwWfPA3xN_USVrJCZ92Hv24lTu2NaDf4g0-KF92AbpJPGm6x2ZjyDNX2J0QmEmb3ymO7nCE65cLTfhvJzY5yQ6p_a6cqgVW86g_jlGvJ0RZzqDV9Rl26X1eVG-6z-kKOmEQ7B_5WERT2_28_1lzcDqQxKomHvSN5hOEFQf1gFuIV4aJN1LFy0_2I1puGOneV8P1smteQBZZXRX2hOChOayqMAwHXbf2S6syBR0E3rpEz6yA1NO5WFwTaCLKot3v5xHxfgmK3FenFgdOqEMoo5R206j_QDMtswkqyCX2TKTTWRXhTVk5heIDOBm3pjGZLlql3dNL_OWE-rwUOa3rsf0p-Q8cRHyuv5_wlMV1uVuwv8GXRQgLBVMpkzy5z5L82J43fjp-PV6X7uIh5PWQDbwx8sxuZVMFZFDHJSwpeBY1PqtNWAZzxFSoPQw1wSQwt6p04sdEIHTF1ZYKxqSpNUHfaAxbfPdAq3xSg6qxP082Az0Upk8Jzzf8E3RRMBVDJXsQK_JGoZSeDnTk7h6TU4YT6tcZzCU-YJYOBFlAyy38_PXnqL4WpIcdPyK_H8EPJJhxpxBvJnbTXm8IScc_EKfKJlf9ZR3S_86_a6xREh5BXv56WJNNI2cVeVFXwKlQsZ1_CHx778fq76elC3BCCOWhJL0ymyw2MBGOwlex8uAH_daL44tOfAZ6qXga-5CMLpw6wI7K3r7uAZjjqXN-a8_BRWz40xKjQY0Nax7mBfTXspxia2dfdNVMVUiYZ2tUHtX1tRQGkEAgamLaxmJ1A08wus38Vxp1slmr0ChoojDoOq6ZHvUTjDwDVMuVH3qgxC3GYX3LwHyMkydv8ukVKjBv8ROgZnOjiv8Kj740uabC4e2GTX0nsjYyMT5nRKv_B90WJhv25G2TkaUF__bI947zB8zPzOJmgxZRBQX4WXa64AgDO4jtYmcaDUAWKVIdwZF_eGj0thRP8V1nvwaZAnnJIlvH2Z18F9g9yPH82sFakaT-T-hI4s34JUn6JYYbXjQXk1i1UKwoJG31Z8IcNjGfs_zB82gw1F3Xn_TW9jnoXINXgOwVBUxnk6qZndtpJB374BrnhQ3aHzulVLiEaZXUc5thZ1IMtWn3B6IZN_f9VTr8rEspUggA8TYD10KNO74xfseRu5wvrhJF5FzMjLaomsDxvukO6UeeNPhTdSdB0hbIYpJ90ng5340GTxExt706-9zx8Q_-iKxkuTkIHVEsktT8jKc5M8hLchaciYefGx8WM1-3sFPW2hm666slfdHj3FR6fFxWbgX_LrwllYxK1WgKF04cI6sYnrMNiRpm00JmaPN20UgG_3jIRJs7Re9r33qtHJWcXbYqaVckZCf-tGBgvgoPB4YE6e6SlD6oKN-jTOuA-Lnfv19WkoZUkzp42wgFIgKJmD4pzz4CeXEb2If6nMnM5PdY_vnXlXlbdTSNagYwQFcg02sTAGVMqE8QVli1danKYUhy9qxoBypl1GeQKgvfYQOX1VWSwKWFeiT8ZWUQgPG7fT0Jk9xZsOlO-FdgAYJV8rCo03ow88ygqO1yHZt_RIeokIedIAfufBvHsy0aF4XNyK1gvYKSniZQzMAz37rQwL0qaJDfwhubbu-nnhBF3Ulyi-prnMrNEN_GJAE6NdFlD0kIbkudwE_MZ7qvEAKs-sPiQZljFJhz3e3P-E9DjbkqZ-5p2V8rfdu3-LbSkdOcvnXw56JvhKCBEcogwPVt8o_J5_4YOuHH1XRCscN0Y0gYSzeEEyjXcxFqYWJQowEwZatMCF8LZ3iVlWSgppnMC7sPaCghHR3i6xaBGhXgirbrnBLgf0D3_tKMbiNDrgMovCPeBAtLNvnWk-W-X5W7GRAQ8DnS5WNqfuYioqsjpXsLF0_t7113SJwQ7Ccgs5oMJdSXsI2M2tgPr782HuIMUo2_kLwSvz0M-IOERlEuuhAGzXTNpy31LTbgLaWNX--mi86gWVNtGTKHLS8aF8o_z9Hl9EbEC5th_Z606riLfQzjKGEGKru1qX39ImZsSBVwy3Dc6qH6adYqO-xoiUPUBlR4zQppEpxqoaR4g-OrU8Q2y70AzMykVT-PvqAmOL4ClWD0CzeJScL-GIZfMxG375kQzIzQ1Pgyi0T2O-ygY0yCFOAJagcx490WqohLBukXREQIdWrCcr0q2O4oEXzVNJHy1bI2aK8IR-kuCs1mhrKr9k4OI1Ecu-J5Sjra9V57fjtg86fAl-rkBPE_ZYzU3_pDpPIOrkCw5fbgYtZn6QCzbzi_QUkylxVxiWC_1FOIAzCooahcbn4XIhH1jNv0B8KUUqW077pMMz2uZLdDa9ElkaBELAG8pOpAYdmbRyJERfHRaimaK_yNlCdKnumm9qvlVOsAd8Ty5mCloEXHlakKSS5OowkI50aRUimCmy6PwXT23dz8E1u7L80cujCeZGewPE12Rc6dU05lOnWCTrCud5vrrLBKK3z8KMmw5cmPTj4EPkU_b6PLChno0USnAF2-ccVbx1rltNCNM7058NUb3g1rCsjFd6FrB9vEUH-4PZdiAHCMTUT0ss0-2MGdgbo3MIT0We8OPjoCQcwHWggxihw2PGuEiyM2g-rQGHrBu2LSnHcRL7R3o2kims8W8oSr-jyao6Dw7CVMW_wPSmU3TaifeJYB4jai4pduSLex1vM3GNFBR-rIK3LyxvAfYSaB5d8maxfkcMmxvAV1YVH-kgUW8qo68Gn5DCKSc7HA5vntYJV1E2J59qbs-g2tgmsb9sP4JZQmMyAlCFa1arYmm_z_qJQjXZRORKnm692Tr0l8ThFbvS3LLxV3EcWi-z75inqhG9RCtfbp3_Jrt-54jwPsWF0kXMgFOo0ODxLDIj_1RWV4-A0j2e5wDJEvkGrPczqLVhNAGwSg1EgaPBBL0mrzBmOOU0JdiTremYAd2J4du5gp-s9V8-BW0LQWvZFejq8JdpYn5OOpJ9odIv1e-aV6edf5iKT-wjcAJH6P4V-abgNgsn8dK4D6uuWynh8lwrXKv2u-m03rUpiMVgFlTwxlyr-NTH9SYbbvP9elzK7B3bqErX3qTtH1keHBvxeei1Xj5OqwFK8UEfoEoS06u8_V2-JWptBhsvgPssdVOutxzdW0OOTwB-feY24nR36rJACfrwNZRyODhliABsrzJB0LmLjChgxb4GLv4zcjvHfp2RFPk0L3GCXa58wGuIDYfQ5UnhUn2N6du0AIkYqzqu8qivxcBPqewkboDi-G0zrAzLOcA4Qqkt8e4A4EUzC4jP-mwLiHXU4gJbkEfnxhMU3Ij6wkJmvC0tejo4AcQhOvhtxlVmq7HsjgEeDHlARSW4-trpAyHXn8cj7o1FIjB-Ua3p0Pr12_bjHqRl1PrbIIpND7nNoKFtMK33IAivl5U1j2opp6gA9TVkdOiyt3L4TiTU-lF39iOQI--QFZcuFoMLR3l6bmXcnR0tvbZuE1UKw22Z3ObGku1UNGUyvEX40Bt_2C9Vpm-I2Eq5Pb3CitCHSFF_AMARMJEoCQg4Bij_1WWvbGBni1BJ6mbL90rzAMAMiJe0dHFVXql72zkK7BxF6JPYGFIKBFNnCN1wIPDgxJZcWbfugNI3kcFmp2msKi-Nw19eLWsD7gBDdB_4wjfEci5dQg9BlPwpYgkb09KtFS7hJdzcIfQyoVzr5bUbVCcMQBz5OVkEuDuIpWVRMhz-TtCfmlmb9f-MP5P3r-_21BEtJqJCMFNSVAIOvBJfeAR4h0wC5p-pggxXb_2HGxV13IApvoqqCI9XYAgcScq-bf-KTaewEW1TN5XhYfgYWp2X3fJVKU9fzlIVjyia1e6ilTZO8hVh6VowRwg9mqdWVuyh9w1AdSsb5WtTplnwcrZp0-rS9b4ic5nxQ3kSoWB2o3Fp0rHFAnchw-mky6E8NcYBRkuoy7qz_jjEAF_8dI4Onc9ICKX4K0S10cM94J5xrovEsfF0PloumhUmdH0o91kNpMTCyLZk4R4D-t9TF64L3tzr6FMa7_VUHR2_ZLEhr-twTYVrdKoBvic5i3ro0_I5YrxHOY8jljSk55YjlrsBChpqlCPK3FBDJEamqHMtJ11BVx9p7BVixzyU3NUzPAKfAhNHQsh3JxnnTJCGGn7waghbdL6c6HnrS6TSywbBlufHcTMz8FHWJBaOjg7iMAyr3gBuNNB1n9qpd68nKvCPZ6ZhjOJhpDst93hN2ySiy9_-gX7t3oYMjytyiM9E5w0suZKtTEZXCpgK60i-bebhc26l2QhC8XDoHGJbG_UHZ7iwPGkxjRuvOAQk2j25rSAyS0iX28_DqKtAMGQbMbVGtHjjliYNI2Ehqa667s09zy9t4B3A5dTLuRWIClpthkAgXUNWdj4Kt_E-wDbwNrdNjBYrc2z3dGtCKQMMaYJGDRCWhm3VV2pIOXaLduw7dX6RDFAyBQMcon33voXCU9mhsTmcrbO9DAqX2UBNXGrlnKVTaRYw3gnjbFXcu2j0M4VZDxflGqMFYhp36tFjD7P7DjTHirn5kcL6ZrPMRRkT-g7IDco-SInvkWnss788zWh0SeOzlJjYopDWEqxKQxuKIXZ1ByopIs6n7ECT9gMaNk3XnFtXBVWZxjCsRSxJWZUB5FXYaMssQiXX-Utcsl6Tuxs0Y8FVuBMJXdn7o-ND1nzg-3UngIB1X1o_1MwrgxIfJ2NnW3dUDszcTfAA1u_wTwDo6XiQt231tHJqhJfF-1bhHiL_AEqOtfo_2oxehQ8SZOltZob6XF7kYGidHJAOPYHWUl_kQQ4RjfQoCmJhWrehfccqf4KPqH5VBlpOER7ldvgfuWDUkaHEYiAUMxSNj_6MPQsPzSO3qfhi64xzEeQbbLcoli5qubKD4R9Kd-_7gFv-DnaTlNoOJljlD-cylp461bjbBWwPii2k7UcsbhP2cTDW3LOWHNOYBzIY6T7xo7s0cUoUMNFma6UdnG5BVvYcn-dtQYa-WUehL91F4nUGf_2vayUdCKmDERw5sXScLNez79UBMs3ZRqZRZgFWhcnnRO_C5iYaNaNwVKsNTMJzLdLCbsaaH1eVtgkFxT3eQyBEYTUzP1C_GoAD2z0vyVWUgK1WiW-MhD0wVVD9ZeV06y-s3UjJnBPRaSIcBmDjC8SEZqkiA0pE_dRoRvuNcYcSxvgex6T3pMF5MfA7K59p9EP6arzH0Ybrz0CvMhBquy33DZWzLSW9Wo7ACkxvE_ceX57WUQGtztH1yM375gscH5Z9lG4EdEARXNqCE7cRJQ7DMzuGUDvF8Nu46PF2YlFgmfRKycIJMiDWRSvIPDajWhhCEdRzGXO8WU_Z8vOfyWVFvZmUY3MA54DtS1XxStu4DHIjxpGmMvmFXBnrmSwn2-RxKBLLMGQ1iQ3aGQY42-rn9jtdaIWTJRm7xLWVylmGeSXqck_fM2e35RwYq45M98CSJHNrApVZ_PT70E9P_GfG4pjjdHhZ1LGNo1-aR4eZnCA_m2IFPKMBP90vxhtVzolXp7lffue00BxmRlVqLV358QkfcLm73hgWLa5dbngD4mXI5Gz85oFy3_IBuSwrgdwN6e2h7SkNMMrrSzxRA68Kb63yJx7fuGDO7cdwsq-JK_w9Mwl5Ar6rUaB5-EF_6-r5vpxSSpj1j3AhFqjVf930MDpVZVy0-MErM5-5OexwHfsMoQI7xyGUohIrOCSFG8qe-3-8J9PgU8b7VoAa-p0lCVtrfxlzk0cfm1OwRejwtljmDbZovcCQReIbVv6FMeQirq9aQgG-SB2EEsdVjq3C7VH5k11Sfdech-wREvhvdQ0EEk-sPpTglXEWYF3b1SxwxYsZahgRv1KWAG-SezXPKKm0B4H36rAl3muogulwI2sABG6DckZgkZh2t72GvGuZq0skXz1MS7IO8t_SRURFm8XaFXG69YjiHMaAAn_bj96bzcYEUE-QukQ4eIzi5fvzA2y8nE1kr3CgtLHJOcXWrS-FA6z_oT-nDM03eTIVLDxepJ2i4gNo2g_RNA-ACYJI3ppEQh2WB-qnLnXKPcdinSgZEalVzpwo7tCg6fo0yHIldEH4i7wWbWS_d6W-0cKci6t_Y3N7duON7su7R8CHBD8KHpIEpPo20ZWIZRVJlof_ebaGIZ8yGWadEtik6_AfsfixEm6GNIfv_T9BCmpY4axE9_NSD_hyY9lIGgHKFlc5LUbRZD7sSr2lRERmKVfJB0D8czooFHGjnh5TSh8j7clwZj7tJ_M_swdrvA_fRYXxwRhGj8VEjvb3x-Rv4DHGV_emvn2Wax_1EZ-PM0fXfJWddoddZGMcI_Da9y3WMllLxfBXDC7S-90424agu5SA3s_V2xhWY04IIDQbtZIhZqZgcPQotzhivPfrUI3BjaEK8H1PjgoUKT53NrYjPQ6tMBPam6evbmONvsT2IklfNdsC5H01LdeB6eM2ieU3Ep078q1W3cSg4FZ9F0_ulma5a-y2bFps84XgKY_WPuKgvy0dSkwqiExry6uzdIKWDg-U0Ue5gPqcASQr8I5dJEE2H5w6OTYz-gH-lZDoq2hZFwNAIIIF2TcF6MCHfQCsYRf02_tBqPTFg==",
+                                    "summary": []
+                                },
+                                {
+                                    "id": "rs_0915021b0eb36181006ae76b3cee208197ac5d47e92e338d9d",
+                                    "type": "reasoning",
+                                    "content": [],
+                                    "encrypted_content": "gAAAAABq52tOckC7gKR5ad4KB5Wwyhrs0ZLSgSowArK1tBw1c3XN770lAigNARkGJUcBaAOCf9jH0JPkZ9OUzDVLVdfFunDKTwtMPSDoBDdU_NN7X9pIPsqqRqp08vjFJgkp1R5-8dQwVjWwv4IcaSOFkJuc3QQLVWdKnRApt0ch_LDAu9f7HNTEHKUkMPeSiwZA308F6D9P25waEw8IuvjtbWMMuu6ZKQq66MpObP75UkxyXyh9coR__zJE3hEkbhByPcKsxggCu9QOF5hw_ccCwXNf15mbFuv0iQdrsbiuMVfn4BcBO6CZsv8VK1HFjrzK0N5fHW_zD_QbjF9Am9oc5HNILiXY2hwMNUX4ZcpPl7Zeh7mPOh-BSqeKdEeqkgtKRcWv9fzLGVCQY3DOswlZgks8OoQrHNBjymSnOYkPTDqpKdWmtN9B1m4dYz1ficrW-Ya9F5lZ3edLPAGW8B1rUWMkW0NyoR1kXf06-lXp80pQG3Cd6lUY3b5XCGb7zo95gBgbYX9sBipBYuHhFHVlCJ1oE6SGZPyPaUYzvR0cEsjqd19DkX0aX9YcFWrrNHENgxQOSPSQDTlwcixtBFWwza8nCitPklVG9ZuS6nabLBkDWJJrch2dMjSV0VRMZmlAa4HNkC68OEeM-SMSheCNIBBpWVQNXwqkLCplk8Eb4x-2uHm-WFR1Z-n0kba4LIPeu96X2QHNBB8kEmAQfPVzeKDEbwpprhwVyPQBscpo-WD1vJYTuRomBF_bUO1LK61voLIsBQ77L1p8wbuSfbNfSiDpMMJvS22HURhw8cO4do_O3PAV6W57nmAyOQgFD1b-mBHD_48QKvmAxY-rtOvEsIBTAFNdKk8Sf7FovT9IEN92a7mTc1Yo-1TehOPKdBvORNt4qfjTNRyDzc6wLzJhKARtBUe5UGcBvfQYJCltGBX1k_oBrkS2qskKZFhTrzSZvLIB40mziMJPQ5Eg6PkF05tPd-mZFN_RhIzWHhsYOG61GXucnc3UK5rEjP9oJD6ZPKielmBe3jxssAcDeJRSudv35Ot59mB5g837admRDgCMxC43T--ck9W3DF9IJnErfve6_jKmOm7VLE4k5AyFGL-H9GutxW-s_7bX9As8U2murl5xD5llSg0tEgzMT88X2HaIc96G48bW3bG1wHZUV-GIB4x026_Wj_WR104dgF_vLFuec8iMQDJhtp5nQ-UmAEgz7hBnD6rzkjZ1IHSbDW5PJ5tS_l9XXVfl-sSDI5SUU5CeGgiNlK4QpEaGSEsAOtktLSMG-76gTU_oIiAe0s3l4MVONWeBwYXLee_KsFYjYMsM7dSzjHoctx5ro4nlLaRYkRZtsx7Az8P9jPFcvY0U30EC9xHfnG8B0CaNLZrHzvuDS2dAZSP_d8Ye8766L-GaFqUmKsTrLMLLzmS26vCkDsxJCn07ntr8cG08cAWyrCctkm6vJ2rikHXm3J5LEmi1z-Cln9-ulT-ftjL9JJuixO42bZkPIqleN0--Ezg3hCNn4fYQFBTZnXMo2DY979EgbAPImzECWj3LQZT8Sixw8oF1iAABCV6Jp8uTmHwbMm5VSWq4jsleuwun2tglxcxXbgugghKrXWsZXdJ6pE066JG6r7wIacEVWTxiC-uym5X5TRBigK1BUA5g0WwFXbYvfl7lEb8kdnhfFpnF3MrMykJ5hTAFZxPeKojXvbC89Spg-WZytZwGvM_M9V_hg9cte0-M4f4GJ9ecBk31tL0LF-jtq9VwSsd8Y2piTgg6gifrMTvHazUjshPACUWybd00sZQ5M-qZxOVLR3NPANFrhg1EJJUradsiLjEWHseJl_SngMVS2eXg7_AUTzt5ee-h-JHTkLmWZNZkwghxlAB1Un7Xxt6GbceWS8LwLx4MI_qQOEB1zFV-tG7vXIH2WKsqiWopVhhReyvGR7IV8CJzL2v10JjMs1oribkrkjxzjLXU-vFs-Ovoga7MWEYfNRLYM2fA78lxRUr3xH1pUHGhywUirRyFVBZcEhtuynkvxZkvfyQB5AXtMk9zlquMBQLg9bqbSBjVsbdH84zo-j0xmKL0HFGclMp-Oy_prsH9z4GyTkMdyYtuG-AAyXSOVuJgJ0pQp0HcKnq4Ro9L3Lt42fqS72Ee8YzKxKmtF8zi1Iuytb0YETde5grF-7H-GIcZBRPaJJ6sb1kHYgQ6na6Vpsk6iICCAXTnpg4Sy5vTB90daplcT488MdlrDpylmLqV2YjhdKUUuTr7Q9qA9l4RWrXe4xtXM1lcejCNhfVGz28I4lLyZhJ4oBe0U9tpe7mh2_fJVZCWk8Ys98PgX1suWype2VwSdB47E9HR4xC2axUrC2s-nBFkyhx6ksy8hOcn5dRRPfeDUlPHJldQ1TQdSo-SNZpq9M-m84zokhvZC10qea9bGMTlb7cHdi4Lmt_crp-P9wqzyn6_pXo2H7ZIVM6siaxyqKkSJ7Lcb82BVaIBapnXpP3skAArJbys5UFj9t8aF6LnvTU0Q2yUkibW8oqkqq-TV5lkZAXRZlvbN1SAjg2iFYbwgHpnyjK4HAEjfihcyzDQf8zYu1IgAgtEJ12qCQuD222wpCYmNKrcsmoDeCJmy8a6wAhv0yfe2PglXlFsVUZkhuKWGJJEbKBwbofSUCOr3Y-3agnDsAQgVqk3o6TW4hciQ7BxWyzWYp2s8NrxnohmGUEgX1p36eAB2cHgITxRCRh0-ZIlWI_TLeMLBcIKWn1QAHyL81jINtsGdvA3M8y-tUAOrRP73k_Gw2SxHxolrtOJMR_2JQm3ZrJJrWzTWqsJ_WxctRm0U2rF0aq11VCmv4T6LzEDaylhKl6cKP02DYvLXdYqrnP38jzQQFiXlI3ZWyyBICdZtg0-icnl4wSM5UwDsc6xPkNEBsZGvSE9VyRbgI-Jxq1CXcxHH5k2-CMuwBURCxwAJME1vlpshA0cMKoffguEvM7so079y2ts5QP5RmKRSqUaSOl3rSfpKtI4DeDvbo2WiZ3522QgKn38xGXJ1QtWKZwFIwrui5sMYwstR51DupNzH6cL_bz0gCynbTHc3tirxsGbxj1pedUjSlJIVSZghVjgkmCNgtCpvmuoaziZySqKA2I-exnQRs5JmDczEfzni2dnG295Ls6V5u7gTprZ2w7hNIwiPm9sHhQxnAzLgnElpVA1wbu7794DFEFdMFaj-BlYFhmT1WQvKoiQ0X9QCkAhLNwBhBCgjebCaVGdgYhjqOx1wJ3vIl5-Ie2oeCnW93wecimijfcvKZi7AfxDfj-esNl3jX3A6nczFYN9kOC2E0spx16KgzbG_zbvO9XbK8ZtKJkBkogJcyy88kM6Zp7H_Xiler5Ct_ZK-oEFdZX7P8hO5YwDEh1-DbD-SM72LQ4P7Prfw4Fj2oL5LsEex_KoF-MZZX8akoSx__2BhzutBxC1u-4eFj8TiYXKmTWXxt22-ZkSZB0R49JqGuYI15vZwbkJgnyWYKhsnUNJtKD7E9ZilglMQIWPqncl7mZOVtJT6ce0uFoskKbkPKMNNM4R8VOLZYyeWE3iUjDU0Dm8rXYSUxf8U3Nh0DRZFBt5Vvk_bMpaE9pyTToCXsdN-9tgBuAod-18FmZZA-tifMEQVytcR5K48gJHVmpzW99V9jE4uUJcZnx6A7r8YlfAWv2djQJHFRwtgnrCs7WvVS8S3TjfnGUTiXOQonUUBrGtmPeSqYOpWwF1pxSg3LXR-2jSz7v8q0JenIM6exwyFgEbhWUDfoU_NiJ9aeEL_Z9RInfFiY8Pr_nwi0zn5DfUeMD0hRjB3jsl7Ce3R0WeDQGTEX4EjkJOZ4LZEfpAQANxrX_hH0uTe0f3oFVBxeNtiqgdE1ZvTzwZo-HP4NQppRJijloQovZEQ-qzUXDNl764-lFUWfBeWvULKFF0SgE7NowF79fVCQMyblis_4mOlCXF_hXojnihuxu8FHvs4wT3kB1Fzyc2dATWITib_B0xiSRGsNR6-lSSDiWUYcGew4m97aSf3OX19Bb5zNFbQBfWG_KvqYZkBx3_GoX6Sq6DccmKeqdYA56ZjpAhg5N2V7sQT2RbeJTCAi28lflHqcELZ0oVRqUnfLHfqzWtk3MesdKYq6-C0J_BeEo7BQJZACw4WQ3FP1VaF_Cl0F4bMO3K1-kjgHPIp0oXqqM426KRCVnrRhNip0UbFG3guBYctrBEsEMTsdqR7nWaVuViYKucZVx726Bgkorac9eOAjnB6lvkW1dGRDcvXJRJXEWbis9r3GL8lz4XWnsbQDNYQMeVA6KVEHtbFEkTvMenfgZsp1cHz3O9WJVy_J6ssjAmUTvKkeeO_kRf2zOr93wRcewOZMs2tdooyJeZcec0jqJj8T6D9BQyynLzQ5MBWbNAvPIi4bgTUMS6pOQrK0zR4LFPIvK5_KstsZ3i2rOekLC4QO03vdIRSgbUaBsBeTD1D0MhfKx4HBGce00LQ3akg8fiqXIaD3nNu-gGstbmua9up-dKuBoXJs-8J_bhAIZc0Hf9FmxzTrbSvH_4QqkoVrLY275YTVcYvPiEjDggJB3X6Ogr03dn07s-hBuG6hOwY-A_A-qb6iM8dEhgmb5W-J_7AoLswOTqRJusj47Ga8e9mnDpwquc8ev3IPX-gSNNkXY5ypZSOKop0ttHTu1JKqfFmauW4L1KeSmwucSNY-gxVG04vIHmL2LGFcJUC6BBPvgvdl4noFO7WP5p8jSI_ouaJqmNgG15xqN5ZyNOprhRcCz4rSQqyXIIjh4UvilyM2XL1kS539nd0fKRIow4nAPd_41fwxKEV7FqzsUPOMTXzkPV-FUS3V2G8p3zq16Y8MmhXnXYXJ9mbDbnqK55XxMtPGV01c8Md4qsY2vDrOHHuwdRDgLZwIDZDB2PqqMfaHeYD-Au2i4FxFSJU7ZcRWJAfOMEqN0q7f5wAiS6tMNFubU73q_MzXkcTPD-flOR0PfWO0d5t6ejgqAyF4PSmHb-PYq7lfGPdxynkcztCTlMLCrR5QReOX9Ly2Z5O6FRZTl0Hvut0YdWp_rlX9B2BeRMGFBuYEiQxWYUNBZMuVveNhivW2psCeemIiovF5KxfTjhJGfc4MrRJ5zgsxhmtjpnOPxGdaN-aRStXBSxvE6Ll9mUEPraUjv3q_vMhnSN6J6UbUftmjZcapiCTrjZtvYv1Dmt-ELeI0iySgK7YSYLVhHQiS8uk7Q-LRzSTDZcr8_6xvhIyvL5jlUmomTk-JNAnX1sJwep8o8fXWMX7fEbkuJxrPX0JUAVwNT0UmMWtCj439FhUwZua8qc82dHJSojgqok1dsqgYPGbRZ3A7sT05Z8SMd6os6n7_ygCZLPuvCMCVTi7Yp5sxdCGziHs-aFKj5Sj7ZySY_HgU0woAfYrC7DTZ67aSg5bviM7iw8DZ-2F54nNT15JZbocO9aNU3vuETmToT7cv9kcntwAW4ViUNU86raMlE6E_gcTpBjvfQU9DgHyQJaCsMWesIGSdQJB_AzkMxL_g-LWrce2oyA_YulFAs2sYLJ1RCfdYCt3dZP21kga_XlAwOMljzWv5MiauO2Gv340LcwDqpL0t2-Hf0NpUBlD-m6Bj1lWCp2ednpeGlJ21QfTpWhLF4HOQfGJR7XcpF-ZAtawmyC9ukMbnUkfnED9zht2X_goTdIHqSNLvWnEqTUb5q2Nj49npIB1cGwY0S-w6elUzlTzTcuV6wUIMqcmX4M6NGTQJlaOeO07x08dNyk__qu8lUhsxPJzPtibrsjmFsiiEZPjmL1SzfLUY_L3AD_gUupmX2VumAgEmM2lAYKME1qx7IQqXbxHHZtm6Ed6t9arPQRWVza_dOKiF1qNsjXvKUWkaNbDeoex5cJNPg_1pI13vzX3fdnQoTbZJ4fhMdQFmi-APAZb5roueQzpdyv96DfG2U6rv-2dg75NeqhsTtBbU7sk1JGp2lwyduigB5UtjXKb9qE_wWSRtx08PbPVk7S7MA4cyTODP1w3H_IoKlvUmGextA7Z-Egr2fhZVmtCDVSo9RIYQza_gGukJEEq7e3Cq23OvY2FYjgY8RgnND2xOYkizTtRvxUS_hfii8t2jimUsdoCUcL7Ku2JelU1eWoiIh0dIdjGwC23DP0xzfwqrEWlW8Y1GzYgCFSJHgfd1nIZc_59KIHnuPeka6qmdNjiKuLIC9IPxQrgrxeP8VIvUueV5URNc8JgaSNDvnDkr_L7GFc6CflmS2Da3sa96GoSXlHflMBpp6txoLQ88pS7hj-0g0lP-DYoym-5Iy06rK2AbZ8HYusykfO9STFas6su_1Jf3GFRUaxhqu1SeeE-DgWjgDOWcZE0cG2leLgaQm9TLD_N0VV9PhZM47FvKEowCtMYguekG_U2H5qUyDpMtFfoqw5D4jIE-T5dYgi4VK4JMt4H2F1wAnoJNyPBJ0kPCAUfFVxobLH48tV2RX7F2k2UgqT8UbdMrWYi8WHBfbM_JphL4CS5OOdl7DzNuyiMgfckRc8mVczHvGQm4QcPWnKUBKNu76gR6w_dniUaWJIcVOOJ95oiKAe52aNxDSt0U8iSPy5Md_udYx5dOu7Az85t3BD-ciLct5IQYrbypqfbgjBgqndMS0V6S74tIF8UC37PS1_9VHQSLmcNRzGdbNeGchBBC2MSqQcb-i1zW7jYevOuPgkibTXwWYiSk7cvRWJadYzb4QgeTzxXLF7ISx9LEuhJe1idpx-R5sZZAk55cfjWiI1ZfT_qi45yMfiFgiVql6stAJtJ8tjzA2J3wfyj7alnBeIg04snwtTHOgOBAVshMtNphS238jIPxJYwWf8iHmxkfw2wpMV2TBW6Fy1DoNn-whNc2nLSw3UCZFTSrxfmJToFqh1R0z5uObnvxX9SwmPEWqxUHZaW-PM6vhtwvxW6guye0kLTkuOu1SMm6EUHxSAcp5QtMZZCfPUMDR_z7eBTlRHABCGwGZWRMEK8VYYdat34zqqO4wsz2VBEbyh9Pf_Cq1B1KMFtstMM6q31y41OHzr447g-v-mpaR4ADZRoI99g0oJ4azqY5C-oPq3Wpmx1KHy7R2xqqqZJVBaifyCrBhG2Dn6ag1bmDbXMzPHBK7fzvmeQrKis1ClGtWo-hX_Yyc1lfdKb1WIUpQBntnIufGuZY1moKebuj5eswnkHJAdo4ZbpIfjfsOrUTdoBCYhan6vOL-BoEF2umeIKV2OmKtQdTaKwM60R7mnNMEjbj8LpNbnXBPpWpBNKCuvoAQHPhh6-9M9fAfWdz5t5loupR7Zm4OXNtW0PpCKms4pmp7mgy0PTE42MhaK5KVnw4a_EBgQWjWYVoG5o8Ob0w5zSlluyjleaB_q13fseAFxkyMJnQus_SBf9scy9BMlJVTtXwkgGRS-yp7uydVZbOPz-6t6nim9_pi4P805z3xUGjC4C1zgjF-ZlqXrD2-8vBchZwiTN9siKlzoMNUhg7mIX0-gV9z5htktV6wb_loHFb5gu0d3j-YN7CRtQhGC_BN_CgTQ-5_m6LcXd6ok0JuZQwJwKJd178vbaWtlzv83rqSGM0JsDtwLd_CIYTVfaQXkYhQjx1zSxVyYQlyufOnRsZcO7rPGxWNusH2vU7t3Z8fN0hteWfmOd5duRv-ibFY1gfUR_QAOhuCrOL8An9zzBCA5dnbUp3JiH55xeg_EDfV0UuzdhKTwZQAme0MemQqxn3mHj6sO9tCwyuM4JmNsjak7APP4H6FZniztY61CJklaQH-3gNsFBkS7RG4NZ9yiLlI051hGieeSJDgbtuOhtKiksCVchkIijXCegxa79uxf4I76qk6THPtmlO1vALtov2L2WQvUS6PQaW0KTUVKEgQObwqsKWx1ZTQ5dAtKnr6rJOmoL-SRy4zMC9KvEq7pN2sKYRXOdhM0kwdNO7qkHMawAJniW2otcsvzC-9llMGIT21eMOMyYJRXJH6o5CwxIgRqzav4Ly_RD-S8zE9qhUatPVStvbBE3BZbuQKV0BWlP4-3jgts_aB3r1FCK1o48E48cLHy_5uqFNnI-QoXKwkFjJBYlO3HSt0D_g-RPgqawzEBKvRzPtkN6t6XDuSaLvWMFIVfTcshnl0yFJpUsDXYuvSS77FibGTH3kRV6xQRo5fv18suuDEz8idqPfOiHmQhpEb2zEiHb_GiGIglc2Th0GVGAvPK4WO2bfFJ0bOqznTZJat0rSBgPwf-w9wSRf7jQgLY7N0-RSIT3ThdMp55HJltKRfPlksEeHYBZHhIKBC1",
+                                    "summary": []
+                                },
+                                {
+                                    "id": "rs_0915021b0eb36181006ae76b45cdc48197ac66698ba69a2b7a",
+                                    "type": "reasoning",
+                                    "content": [],
+                                    "encrypted_content": "gAAAAABq52tOWY8c8sL7Ains-DaLKmCMmTGCOAhZPr7RDla67vCdjKjcfa9bKWvtubqeYQmWCb2dvUQHsWJJOXVqgSFWXKSr6HyrqH-OA2h7_xiLLsLnAH2nHoy4DLSxYrBkW7kEmfXA8TiAZvzsihmNxIZ_h_OI9xB1BXSos7FH_t2wBfF1BacVMHL5MVIGaxKiAevipwi3ZLtQepyVungh0VivJ48p55VXcxWiUj1d7WkcCPH8NLc2w9Oc30jmHH3elTmHZRFEpW8VvAb1t-wx4c7xjKSGKqxRfT1axi7i4aS73aqHBp0MXFjB06RIk9Ttf8FndQOkLWnZnir3EqB5l9bOCNw4TO7sauWRtesvQM-5Q4O3g2vcrz1-ktLX2wjyQp9pLDtzfs6UK-wNcOjQNms8vtwdWwCOsb0wN-xNabK0mqHBFOw0drfU2zT0rC0lQLNdlIgr7vzCCuUqboLAA125FeSS_06UYCKgVZS8uZ26GRTY5pPxyiBSjGtStzo9DLfwM_eGMcFRLDIFN65mr6qCbebSFMZ0lY3EWTCMd8CkY9Ws0oJgo_TCdqXOlR5k-S0WkzAjNUmYUDOoOqs3xlSwV0eDAN8ETqnkVDDhBrb3emdOA3_PmtU0DThX5XzCo98m86xxSyubOf9Ic4F4SC8a9SaioL_uVvjd8p9uZfUTXOfC6zhUeOt3OkQg5vOuriQpi_lKAquvXLkLvpJhEAxry5LXEm1GmkNWI1Y_k1I62cjOk_Iq5MouZbos3G6xmy_-5U1rb2AKAuEuwCj0xH9T9BmwrqRGyh9uKpWkLQVxaoeJHqSGO2c-7aGEsWVSQBXACtlgQNeM29GItKhqya552RxkKLgBc1BF9FcmxvJaehwUzQDi0Ngf-x7z1ycdED8G0nJsBtB-UETtFIEk5qTfrZKJRmmCpoLKn-xlUBysh6rLc_FvFr8Rwj9UsXoWDaCPm5tOAwTPZXGAU-N-A1eSbytnPIbdmwJnxNvJcUxc4G7A_lkOF-OJz3C_3JTUteH80DVoWiu52PSQ75gkNQwC6t85ncK7dzGBdaKpuL6gn6bAk0IwB5GB0Vd4QTT5rg7otSbjKVa42jLIC8zGQiSU6TrP_mWLZ-YcnFAsrcaUPgC6IrBfmo8glOqULvXY1UmBG3MrKzA545DKU5EPuC7k0wY4Ftv2gzGU2BC1VccB2v8x9GpyoQ5KbmFjJsfKjOqw0hMrDqGWG10SZTCEvk7ns26E0p804iMAV9EIZcPXxhmx7f0CGI_uEYIal9lE75JvfRwaPL608umoujLBytnC7eHZa1Aanmu3uuvN1tk4_d3moV9f1Xs1WwHOpWLh44D-hlYC7--I5Kkwp7tF15DnADfGFOJmVVJj5aNFWWlOU0Kh7W_m6lGhv5gHs6M_F0N5YwONln7yyS8WQpsO4ZLz1lMZe4fjEt56Lw0TArp_wiIQ0tCxpG7qpCaFUwCgu8tN4wo4q6Zclz5ypLntJMDXYqeMpY-bTBRrkViNXpbQJDwOy5CUfFtTJ2trUK5mqAlL2fiuo0AY9yXRgeKbVTztdC5rT7_y_5Ug-eOsJpnoErecpiQUvxSWE-kHJzHxeNOhg5XbSSCyyCsFw71FrEqfJp8vIefBP5D6SmLOW7eUv1E14sQeNGuEG5v-6pSC0-rF4OiwIQe8f7ZdB72cNM8beGOYSf_RdVMfGnHlH2zqxMlQ9VXY1yKu8vqDXg-IVTbEF0kyz9aPzpXMHQLIzfteE31YV8K4dDg4A75JZGIYpArje9G4pykWkOVNQNg1b90TLc7VRKcX8h2NCyVCY82nink_OmS-qtjLD-zYhPBARgEJwZNSWi_7t4R2L_I2tVwcfrANCGcw0uYwyviTs1kjexTkNv-M5OinvqF7a4DcCbx-UlNQDYZrn979Kg36KlLWg1K0tvwDYRusDljmwPZSxK6kS2NZwS4ntrsbSPLUNA8InSTrbhFhwiVjXuwBeYQxKU_Pwy1tFrEQxlCSAmbdg6w61ktQy5RRKpi0TovKWgU7ENI7T24gltcwAV2iGM84XcMWdo52FS8PD_-PoPjas5Wm30EVCcHNRfTi6jNMK4tTPcYRMIOx_DiNYI1XQaTxoOIUFI_a8spkMosVz_pmW43yjPgEXsx0hWCyQ3GqH4Zz7wptg3luXlhSgIgXY5doaJFowb9my_xG4qOUJlVNWzBDHxvwVzYBE1hFqf7KRXAOv_BrzV6lm3_IaDJQrZdICr6An0YhIpdcCeruG7oiks70IYu8-gjuEylYcxyqsul4rsrk0bHIBqQIPFRB7Cb3PsOI-99M22MCr7gjXI1XkFHeL0FHVFiIAzubL8IZKs5WtFppXqegxD5IONaQ7_qVv_i8ZvyJtRyq-AB4_hFPf8fpqS0BzzniX3pou51VtvdJmpAG0BFJURPeb70W3uteONoUb7WB0kdljWG_DPl-7eZ--X3BeaRjkag_x5QefiHw3ux5X0hdpNOM5UrcKJn7Gq0heO2erbV18LJMXKgR9Ro6oSK6VLTLQ90UzoZySIvZkZkIYRqHZcJZHCuTUX8I7rBtDaLhovhYCnzP5mBw0SA2DCyUQcI_n6x-W1OhSjjlX92yyl73wS2bOnW9UwJDbDDZEGKV-MDweQZJuaLu50uapW1UY7tednGI9Z9OplUskQ-co6x1Z6a20hVaNKYF5_0qHx7stOEUHYuOWYbGNDUYkR2WBtvnTW_ywEgNqiIhiD5G8uiPJ8oy7QYhQiV3dA7M8eHg6CnVtKnXNrJnwLeHEmBmu0VRmwDN_aax372EUuGXQpROpuZI-N51GAo3ZJvhuzPesT6q8IYzvrDYlSWNZ9emACU-t1XEof5u_Fco9kQn7QOtQQ9Mx_I36QbfDlnpmhJW9t9YeMarAOrmuJhtycSOtyvuWQvD4Vy60KExrl6mc13MKAzvOIE6nuJV_7_3pJ3N4h6KqvoS5U3C2pdD3Tqwa3m88R5lsjG1TR6oxmaFeECuYGtkS8EjlNkF2t4MqiKKGfv0RmFRMpFtLxR8JdjjU4SvBKXegE3EMwi4A_wXBvaeYUp9A5CcAmhtD1J2OXi3aD_dwNXyYgnzp3SFin9xWxrLhO1rV-fvF_3Q7khIeQ5k4M8bbUYrI9NjH9XhFLZKx0AdqaiaA53Szy1VgvdYsxpMg9zYozMxM-CSTD_sHaqFuukb000pxBBQmp8YQw_7w-tikkvTk6wSs_emQqJV9dIfz3t9FJY9YJpJikIfGolC0hxEKXgBTK0vQEy1rb41nfY_bKHaq2y897f8TSIXXjopxSYY5_ddf3aa8LW3P1kTnunuoIIkODKD9ILcRiOr3RjpsI6rvCKAkEFdvKxS8JyhgAUJXSPsPZL0ZdmIFuWBg-qe_UmYy8nDW6FW1Ydpozew4q-ZeiZWNx2Dl__Ze4ur_hpv49VbDZIQBUdEQ22J4EWEIfQcr8s5iE-twJa8MJ8urNfm3ioFeWKg9P7sD6a1LlOP9ohQCSQPOioBGEuTSWERS_UCWCmFxmHAjJvY_BBfcZfx6xgz7uzXR8eX12oXLJdlMvgRwoouhMlT4yTconVFpFDKVu2ygcAU4HDNbDHIxvE3AR0lfVkCzyn44PEl1IZPERfTpupUKnTL2uASCAD68J2O5TRJ6yWpeVpFXkQrLVbC1uB-e6eHAZ_pyLMr8_bvdjCXiHzL2lRHCSSXOFxGqU_f6bIbUClax9wTuDwEQNg-nlbB8efEP3KkeHOzo7TZRGMBke-bkb7l8wqmgFABXf084mxpnx3_qktLNtIzjiEIV_DMTYMvq-OAToHlhMjgIRDHqSV545h3zMwNL0WwVXjZOORLNVXTkPrJlA_xeiFa53_HW3NHvzMuD9NQGVUszNNOonKc-uUXTvYNK4iadNPAMqtO0_tneHc7Ir34Q0WUyFLbwkf2vWlSBloxGXaKEzg70XI0Cl67ormxVsDJ9Lu6mMLxxrkxjitT2RoW8vyUNClAaJG3Vc4SWlxxhRkAzCZEuwPGVAebi866PqksuOKeUZg8vvftimnp38kxyF-inDleb-Uz8iPb49w1lx10iGR5JmhCfveOOzMgVY3aLll6qae64G5S_vxotsNy_mOpMDlLZsHfpQ04QKtNfwTKwJUGYaStTVpKYeH5sNdDZagKKlr40Y9Tg5FRgPfTzhvtUoxDesHsQPm4893LzVRnI3CpxucShCeBj4wrEvFvGSs5pR3JxRCCiy-csLyMbszImCYqrzVhjFwGcXj9la8Q_RxcBNg-CTv06HF0FGiOl4gKq6aprmckJKXta1t4uVeN1ZSKJIShC1kk0oAt9A6TqoNpMr47dh4HT8jauGLTODycOWdYVy_PEGpXEcpboIwpIO_stAtGXzUOv97x9EOgcgiQswYBbjhn7dbyDmRIijXONv0Zo2fRlqaJ8Q3_gat72hMJCXyQM6KS7iKCAklMcpgOJw4bdcT8ujp6j-gWCFc_3qgIvzYz8BbZIG-WfjMGjeDU16jWRc_Ap3i8uzvnbQ9Ksq8SN-pscZYAm1phWW2_xCBeKdHSIs5c-Z3CMUa1KUbT6lOcgUeNm4HtrbRdSvP6EO9cI7ORudSliSimD3d9KP80NOel6GGBJ9Jcx-A0_X512x_Ey0R5m979Qmeoa_BYnKoKbWJ-g9J5M7sSnIEtSZlwugNowC7iliqVzLKD61iafvS-BEzMh1aAH-B9kMJU4j70yCK36GO1GvEBphQf5U8t9fr8h4O2iLc0n1PJOVyZGwkuy_lMdD4x3J2s3-sV25tSkppO_Ey65NN_U07khMO_h8VEEMHx0MCtNNxmsS6hRk4T3lRmDDCxMYMIFC5FfhzoNpgFb0dCr0yNMJrpJ7wMl5PlmmI3IHMOI0gAnAafLzgjRKYtLG9q-H2s03fjvsCV3M1NqJMgFZjkT4mDtsQnWynmTMttraQr6Qmy6wc36-vl0o7Nim_jhniCANivGkgd8Nrm83viij1A40FFy5JzjZPqOsTMLBZMuwVJdoOCzWvRs7VTG8hbgpZzCpZYjT4W8qLfUs1pBnZM-LPkrrF52KcSSnRDtuYFxh5tDQs3X4KDnKDd_7G8prfvHVHCTNk_CKpmLVXFS_EYvPpZq5IctXkJONbAX3zQ0Npfdl7GQlbSfyh7dX8H949o9cd-KxbkmB85tyNTUm7B0imiWShYBMizi8Wvivlt9CQvZ6egSA_54HdrLG2fB2_t21BRTj6sfRiI6_Zoq4woy5y22jnlkzAQ7LsztsEQMT1_GYZQOqVCsuI1JA8kUHv2MfGPAykAmST2ym8yINT--fyHOYbbKXCi3npz45XNOyjx8ifMCzU2UzPiIvm5l3_wH3WSY3Ux8c_t7tKvqKV-x_uXC_UJ5cQU48qvlKs7sFQNHKmlcRvNQzKOUFoggzCenMXmLV078FleAAOUCwwk30RFoIsPT5lps2hNvGvkS2SUCd0iGLovyvEIaUru3I9ulEQ7S55FZkU2z1xyGP7vNricBj4Lic10dP4idyeYztBP8ysY5mtdKjCSyOnanSxlOYGLUP1ABWXA2ABbmB73WWptJSzsuvZopZcjfL1eeWSLoeNcKRivvdwFRYhcbfWWIW9TiO2Wjdr0yBo-hahlXO3gje9U8iLoFWhF_655fM31Ah7t1IL9T07VUqhRthCzvPdruwuBFKdxndxtSLHmGtl5uXG9zjG5YRTj8sXykLrJhPBWALLDocy3f5nQBVCUfU1kFtwRwnmBIXZ32eXvYHePrSuD35hnJ3fmImKDLYtDvxIF8hVsrRrAjIYWneg40rVpLeEoNoWz-R7Dw_P5spxsgOB9ZWw5VZLPDiRSzhHOyS5uvf02O0LQ4JfHkxygA_eUH2l_5qPvXwKPhyJ2dbO9W0Vaq8VQdF0fTk8gDQH8X2gAKY5wvfG_az8027SDZggptQ5JvwXGodK76S-fl-UkUIYYZqvgC-GP7s-Jvvt_RfvIaDrvz9LHIFkdztHyAkpf5J3FIjKDJAZK4_Uf2Upv4DCIWlKKmM98EUAvRP3teWQmxOFYawjIymn8qwd0MaM_MO0Id0Is3uo7S6EqAp2LzuSVjM19Bt3GL48A4NEAj2rUC1C2UU0Ju8WLVBj_QIM96M5imdUtO-7y-5ZZcFuSU01lRzeuQW_zMzywgu7WYwEudU1Pc2Mw5I6gT8Q5qD87AEu3IDXJDT9G9piPRO1FiimgvkAwl3AtzMxIFJqP7vIjzotc-503yjcHFehAisyutgnvk0xBR-rUocaO9kZUZDGnZqSHqQ61hH_gC-moBt22fr83THRz1DKymU9wbI4_u51iS5oi4IQjP1S9iFC4fyj8ojkbqwNQXoatZty4HfFgCEG4U6SxzVdJ068YlT445a8ITvqdnmf-uCbrxB03jwUmT0qx4j32LfZbHo8c7HGsQu42XdxCY2sf3JhgX2nO_Mp7RwXwESbiUZVp_Tcr9MzjU7db-7Y_v3yqZk5o_vy3mOPJwRpO65oBXi3CmEp_bupSfC7UjYFXWcejExwAQ0uGbMD82POydzAxnEqOQXAQZBTxUA3OTQeAOpCAOr_81hfcd3AUUq3wKDjDarmH5-I8UuIEa2LClE9RJSq-bGHN_bgqFFZE7e3DVVmdNCmmAj3W-0k77fc_T34Wto72NcqXPc494p0g2uodTfm8AVSslN-fzJTmftV5WHun64EYfheMO__XeyrhJrfrIPbNsXkaCWb8gVw2Kn_ypw9eUnnQDDRRHBdWTbxQvPFIb3DDbdaZ33UvaPuJgGPhnSveLVXdqKlNuXXNmB9pFeCQPSBtwIq_3qAzgO_HgSSdNUkNvzhmi_obQqPn_EIoZTWKkxHDy6VBQd8vl6E60cGy4u5UmPwBkWNfG0lD0Ih4HYbv6RTdKdtKPcF3wHmfAQellJ8yYFnHKDHMPz7XGOQIBpr1PE4bkiVW8GLUYg-nrSfmKfvTn9HfBY8QRpedqlFYJpwI71sSNo1o1FEq_01C6jiN0iXSyogOnfvhru3fIz0vzn4w-eYplaHOweASJjuAo-_6m7uKOAtIoVOS0lpj9PJAd8GfknyfmPWyZM4yZvM4O3AoYn7uoO8_o60EOm3lNmCLvaCTbFyETI2OiiSHTpHcNhoK8qQBP98tX8Zdzu-xTMO9ZyZUeEIVPD2vgNPULZ7-zzs1UMOQp-MLjVjaEVP5BmnnRKkmQ-5lp05-izQPkjnU6agL3-TZrtkf_xYOJRj8SoOM7avAQxKbGop2esjV9_VQtAgufC9S3j35gPnKd5JT2IjNO7mxVmoWJgYMBvAhYi2a0-YGyMBFvK7dioPQ9oC10V0F9QBRzwzGmjPI1FssjfNTUW3XO3pmmkoWX9v9ju3jcqAXMJXrmC82L4m_93wCUcjoTK1gQJnBKUKZGx5D33dJadSculLwkHr1rTMsClV2D4Uj1kMDrmVKKv5q30ZFeWKdgDbDiKFDxnwbw4mylWDuFUya1pxwAYU1IDXyLjTDcZZoUUZQuYXKq9GkUObtut6jLw5BzZ3SN6huMhmJXOF4GsczFE4xbvECpWs-xmjIn59-H_CWBFayEDJ8IVBE8rmk0pxjeGyIpLJVaagaVLWzBZ0eiifaeh5MGO9Bl7mxsq1bc5T_Wf2kru19ykzDv-Y9QxiAwVVWQVl3VHEnaCHkMZNF7nLy3FHkuIsFRVmdSg93KPNZnL6W5XoWCUOonnSk6gn0eYETLAWWRuquW_orlh9IJUxLfKS-1Q18e-tfAbj5KPY6zhC51MLBVqhvLFxCAFve3YuA2HfwKqgG-XemIBJilFqLKWHwUXRoBG7V5PcybUMpwEBaQt6uPk_qGl09pPMrAyboI3hkjrI0uX1-9WK_BR59d4AJk4c1e-vFh3XPzU22QviWV4e2tAbfeWf7pt3cnVUfuWhs8YpwcPwPXX5G1gfkogMNFrkIp3n0tpOf6YNYP4AYniTsD9ytN1P1BYRBTp-JSoB345IPUYSAREs1K99bE9Lp1rp0Z19zebnUpHnpqjY469KBPWc71nhCTLcsLGhnZ3HmFZMckzpJ-k-_uM4nX1HJfPAIoH5o9KKrLbaniCrbsUcwQxN9Jw==",
+                                    "summary": []
+                                },
+                                {
+                                    "id": "msg_0915021b0eb36181006ae76b4da5bc819786933216c7aace6f",
+                                    "type": "message",
+                                    "status": "completed",
+                                    "content": [
+                                        {
+                                            "type": "output_text",
+                                            "annotations": [],
+                                            "logprobs": [],
+                                            "text": "{\"progress_summary\":\"Created /app/generate_distribution.py; its output reports saving /app/dist.npy with 150,000 probabilities and both KL divergences approximately 10.\",\"main_blocker\":\"No blocker is evident in the observed outputs; the solver converged and generation exited successfully.\",\"next_milestone\":\"Independent verification of the saved array is not shown in the observed record.\"}"
+                                        }
+                                    ],
+                                    "phase": "final_answer",
+                                    "role": "assistant"
+                                }
+                            ],
+                            "parallel_tool_calls": true,
+                            "presence_penalty": 0.0,
+                            "previous_response_id": null,
+                            "prompt_cache_key": "maas-default",
+                            "prompt_cache_retention": "24h",
+                            "reasoning": {
+                                "context": "all_turns",
+                                "effort": "max",
+                                "mode": "standard",
+                                "summary": null
+                            },
+                            "safety_identifier": null,
+                            "service_tier": "default",
+                            "store": true,
+                            "temperature": 1.0,
+                            "text": {
+                                "format": {
+                                    "type": "json_object"
+                                },
+                                "verbosity": "medium"
+                            },
+                            "tool_choice": "auto",
+                            "tool_usage": {
+                                "image_gen": {
+                                    "input_tokens": 0,
+                                    "input_tokens_details": {
+                                        "image_tokens": 0,
+                                        "text_tokens": 0
+                                    },
+                                    "output_tokens": 0,
+                                    "output_tokens_details": {
+                                        "image_tokens": 0,
+                                        "text_tokens": 0
+                                    },
+                                    "total_tokens": 0
+                                },
+                                "web_search": {
+                                    "num_requests": 0
+                                }
+                            },
+                            "tools": [],
+                            "top_logprobs": 0,
+                            "top_p": 0.98,
+                            "truncation": "disabled",
+                            "usage": {
+                                "input_tokens": 1331,
+                                "input_tokens_details": {
+                                    "cache_write_tokens": 1328,
+                                    "cached_tokens": 0
+                                },
+                                "output_tokens": 1638,
+                                "output_tokens_details": {
+                                    "reasoning_tokens": 1552
+                                },
+                                "total_tokens": 2969
+                            },
+                            "user": null,
+                            "metadata": {}
+                        }
+                    }
+                ],
+                "continuity": {
+                    "episode_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104",
+                    "decision_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104-4",
+                    "message_count": 10,
+                    "message_chars": 18348,
+                    "capability_snapshot_id": "20261031T072548885180Z-v4",
+                    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+                    "router_family": "laya",
+                    "router_fallback_used": false,
+                    "router_run_id": "V9_LAYA_STEP_001",
+                    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+                    "router_initialization_ms": 0.0,
+                    "router_process_reused": true,
+                    "router_question_id": "step_model_preference",
+                    "router_candidate_order": [
+                        "gpt-6.1-sol",
+                        "gpt-6-luna"
+                    ],
+                    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+                    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+                    "previous_router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+                    "previous_router_run_id": "V9_LAYA_STEP_001",
+                    "previous_selected_model_id": "gpt-6.1-sol",
+                    "selected_model_id": "gpt-6.1-sol",
+                    "previous_actual_backend_model_id": "gpt-6.1-sol",
+                    "actual_backend_model_id": "gpt-6.1-sol",
+                    "logical_model_changed": false,
+                    "actual_backend_changed": false,
+                    "context_delivery": "FULL_MESSAGE_HISTORY",
+                    "history_messages_resent": true,
+                    "observed_cached_tokens": 3100,
+                    "cache_usage_status": "REPORTED",
+                    "physical_kv_cache_shared": null,
+                    "switch_extra_tokens": null,
+                    "switch_extra_cost_usd": null,
+                    "switch_cost_status": "NOT_MEASURED"
+                },
+                "capability_snapshot_id": "20261031T072548885180Z-v4",
+                "router_checkpoint_ids": [
+                    "V9_LAYA_STEP_001-e01"
+                ],
+                "router_checkpoints": [
+                    {
+                        "router_family": "laya",
+                        "run_id": "V9_LAYA_STEP_001",
+                        "checkpoint_id": "V9_LAYA_STEP_001-e01"
+                    }
+                ],
+                "feature_training_status": "FEATURE_PARTIALLY_TRAINED",
+                "backend_deployment_status": "API_IDENTITY_ONLY_UNVERIFIED_PHYSICAL_BACKEND",
+                "complete_episode_cost_usd": 0.111619,
+                "upstream_cost_accounting": "KNOWN_COSTS_PLUS_UNKNOWN_PLACEHOLDERS_NOT_BILLING"
+            },
+            "provider_metrics": [
+                {
+                    "requested_model_id": "gpt-6.1-sol",
+                    "selected_model_id": "gpt-6.1-sol",
+                    "response_id": "resp_03ddb76f194ef14a006ae76aa9f8c881938b55168fdc4ea226",
+                    "request_model_id": "gpt-6.1-sol",
+                    "returned_model_id": "gpt-6.1-sol",
+                    "provider": "openai",
+                    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+                    "protocol": "responses",
+                    "finish_reason": "completed",
+                    "incomplete_details": null,
+                    "native_effort": "low",
+                    "requested_native_effort": "low",
+                    "request_native_effort": "low",
+                    "sent_effort_parameter": {
+                        "reasoning": {
+                            "effort": "low"
+                        }
+                    },
+                    "returned_native_effort": "max",
+                    "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+                    "stream": true,
+                    "requested_max_output_tokens": 4096,
+                    "reported_max_output_tokens": 4096,
+                    "raw_usage": {
+                        "input_tokens": 1017,
+                        "input_tokens_details": {
+                            "cache_write_tokens": 0,
+                            "cached_tokens": 0
+                        },
+                        "output_tokens": 79,
+                        "output_tokens_details": {
+                            "reasoning_tokens": 0
+                        },
+                        "total_tokens": 1096
+                    },
+                    "usage_status": "REPORTED",
+                    "identity_status": "MATCHED_REQUEST_ALIAS",
+                    "alias_mapping_applied": false,
+                    "prompt_tokens": 1017,
+                    "completion_tokens": 79,
+                    "reported_completion_tokens": 79,
+                    "reasoning_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "ttft_ms": 46247.73895798717,
+                    "latency_ms": 48040.10729200672,
+                    "output_tokens_per_s": 1.6444592748264868,
+                    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+                    "stream_output_tokens_per_s": 44.07576194053539,
+                    "stream_output_tokens_per_s_status": "ESTIMATE",
+                    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+                    "cost_usd": 0.002824,
+                    "cost_model_id": "gpt-6.1-sol",
+                    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+                    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+                    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+                    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+                    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+                    "actual_billed_cost_usd": null,
+                    "raw_reported_cost": null,
+                    "reported_cost_unit": "NOT_REPORTED",
+                    "budget_accounted": true,
+                    "status": "RECORDED",
+                    "episode_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104",
+                    "decision_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104-0",
+                    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+                    "router_family": "laya",
+                    "router_run_id": "V9_LAYA_STEP_001",
+                    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+                    "router_initialization_ms": 30312.13913857937,
+                    "router_process_reused": false,
+                    "router_question_id": "step_model_preference",
+                    "router_candidate_order": [
+                        "gpt-6.1-sol",
+                        "gpt-6-luna"
+                    ],
+                    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+                    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+                    "capability_snapshot_id": "20261031T072548885180Z-v4",
+                    "execution_mode": "REAL_API",
+                    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+                    "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+                },
+                {
+                    "requested_model_id": "gpt-6.1-sol",
+                    "selected_model_id": "gpt-6.1-sol",
+                    "response_id": "resp_0e251216c9460bdb006ae76abf9e348194ac4d6b8f0e2c0f0a",
+                    "request_model_id": "gpt-6.1-sol",
+                    "returned_model_id": "gpt-6.1-sol",
+                    "provider": "openai",
+                    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+                    "protocol": "responses",
+                    "finish_reason": "completed",
+                    "incomplete_details": null,
+                    "native_effort": "low",
+                    "requested_native_effort": "low",
+                    "request_native_effort": "low",
+                    "sent_effort_parameter": {
+                        "reasoning": {
+                            "effort": "low"
+                        }
+                    },
+                    "returned_native_effort": "max",
+                    "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+                    "stream": true,
+                    "requested_max_output_tokens": 4096,
+                    "reported_max_output_tokens": 4096,
+                    "raw_usage": {
+                        "input_tokens": 1176,
+                        "input_tokens_details": {
+                            "cache_write_tokens": 1173,
+                            "cached_tokens": 0
+                        },
+                        "output_tokens": 2038,
+                        "output_tokens_details": {
+                            "reasoning_tokens": 1626
+                        },
+                        "total_tokens": 3214
+                    },
+                    "usage_status": "REPORTED",
+                    "identity_status": "MATCHED_REQUEST_ALIAS",
+                    "alias_mapping_applied": false,
+                    "prompt_tokens": 1176,
+                    "completion_tokens": 2038,
+                    "reported_completion_tokens": 2038,
+                    "reasoning_tokens": 1626,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 1173,
+                    "ttft_ms": 52641.10908302246,
+                    "latency_ms": 58841.58979204949,
+                    "output_tokens_per_s": 34.63536602601055,
+                    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+                    "stream_output_tokens_per_s": 328.6841933131018,
+                    "stream_output_tokens_per_s_status": "ESTIMATE",
+                    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+                    "cost_usd": 0.0233185,
+                    "cost_model_id": "gpt-6.1-sol",
+                    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+                    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+                    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+                    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+                    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+                    "actual_billed_cost_usd": null,
+                    "raw_reported_cost": null,
+                    "reported_cost_unit": "NOT_REPORTED",
+                    "budget_accounted": true,
+                    "status": "RECORDED",
+                    "episode_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104",
+                    "decision_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104-1",
+                    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+                    "router_family": "laya",
+                    "router_run_id": "V9_LAYA_STEP_001",
+                    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+                    "router_initialization_ms": 0.0,
+                    "router_process_reused": true,
+                    "router_question_id": "step_model_preference",
+                    "router_candidate_order": [
+                        "gpt-6.1-sol",
+                        "gpt-6-luna"
+                    ],
+                    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+                    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+                    "capability_snapshot_id": "20261031T072548885180Z-v4",
+                    "execution_mode": "REAL_API",
+                    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+                    "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+                },
+                {
+                    "requested_model_id": "gpt-6.1-sol",
+                    "selected_model_id": "gpt-6.1-sol",
+                    "response_id": "resp_0777a4777e7fd481006ae76aff2ad08194aa84760323ba1ab7",
+                    "request_model_id": "gpt-6.1-sol",
+                    "returned_model_id": "gpt-6.1-sol",
+                    "provider": "openai",
+                    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+                    "protocol": "responses",
+                    "finish_reason": "completed",
+                    "incomplete_details": null,
+                    "native_effort": "low",
+                    "requested_native_effort": "low",
+                    "request_native_effort": "low",
+                    "sent_effort_parameter": {
+                        "reasoning": {
+                            "effort": "low"
+                        }
+                    },
+                    "returned_native_effort": "max",
+                    "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+                    "stream": true,
+                    "requested_max_output_tokens": 4096,
+                    "reported_max_output_tokens": 4096,
+                    "raw_usage": {
+                        "input_tokens": 1723,
+                        "input_tokens_details": {
+                            "cache_write_tokens": 1720,
+                            "cached_tokens": 0
+                        },
+                        "output_tokens": 3003,
+                        "output_tokens_details": {
+                            "reasoning_tokens": 1715
+                        },
+                        "total_tokens": 4726
+                    },
+                    "usage_status": "REPORTED",
+                    "identity_status": "MATCHED_REQUEST_ALIAS",
+                    "alias_mapping_applied": false,
+                    "prompt_tokens": 1723,
+                    "completion_tokens": 3003,
+                    "reported_completion_tokens": 3003,
+                    "reasoning_tokens": 1715,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 1720,
+                    "ttft_ms": 37554.96458400739,
+                    "latency_ms": 51886.66233397089,
+                    "output_tokens_per_s": 57.87614513863028,
+                    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+                    "stream_output_tokens_per_s": 209.53553810522197,
+                    "stream_output_tokens_per_s_status": "ESTIMATE",
+                    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+                    "cost_usd": 0.034336,
+                    "cost_model_id": "gpt-6.1-sol",
+                    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+                    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+                    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+                    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+                    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+                    "actual_billed_cost_usd": null,
+                    "raw_reported_cost": null,
+                    "reported_cost_unit": "NOT_REPORTED",
+                    "budget_accounted": true,
+                    "status": "RECORDED",
+                    "episode_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104",
+                    "decision_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104-2",
+                    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+                    "router_family": "laya",
+                    "router_run_id": "V9_LAYA_STEP_001",
+                    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+                    "router_initialization_ms": 0.0,
+                    "router_process_reused": true,
+                    "router_question_id": "step_model_preference",
+                    "router_candidate_order": [
+                        "gpt-6.1-sol",
+                        "gpt-6-luna"
+                    ],
+                    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+                    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+                    "capability_snapshot_id": "20261031T072548885180Z-v4",
+                    "execution_mode": "REAL_API",
+                    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+                    "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+                },
+                {
+                    "requested_model_id": "gpt-6.1-sol",
+                    "selected_model_id": "gpt-6.1-sol",
+                    "response_id": "resp_0ed1db5be0f09edb006ae76b5bc3148194804a7260cae4e7b4",
+                    "request_model_id": "gpt-6.1-sol",
+                    "returned_model_id": "gpt-6.1-sol",
+                    "provider": "openai",
+                    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+                    "protocol": "responses",
+                    "finish_reason": "completed",
+                    "incomplete_details": null,
+                    "native_effort": "low",
+                    "requested_native_effort": "low",
+                    "request_native_effort": "low",
+                    "sent_effort_parameter": {
+                        "reasoning": {
+                            "effort": "low"
+                        }
+                    },
+                    "returned_native_effort": "max",
+                    "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+                    "stream": true,
+                    "requested_max_output_tokens": 4096,
+                    "reported_max_output_tokens": 4096,
+                    "raw_usage": {
+                        "input_tokens": 3103,
+                        "input_tokens_details": {
+                            "cache_write_tokens": 3100,
+                            "cached_tokens": 0
+                        },
+                        "output_tokens": 1606,
+                        "output_tokens_details": {
+                            "reasoning_tokens": 516
+                        },
+                        "total_tokens": 4709
+                    },
+                    "usage_status": "REPORTED",
+                    "identity_status": "MATCHED_REQUEST_ALIAS",
+                    "alias_mapping_applied": false,
+                    "prompt_tokens": 3103,
+                    "completion_tokens": 1606,
+                    "reported_completion_tokens": 1606,
+                    "reasoning_tokens": 516,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 3100,
+                    "ttft_ms": 18067.28779099649,
+                    "latency_ms": 31636.862125014886,
+                    "output_tokens_per_s": 50.763567943426196,
+                    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+                    "stream_output_tokens_per_s": 118.35301244297841,
+                    "stream_output_tokens_per_s_status": "ESTIMATE",
+                    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+                    "cost_usd": 0.023816,
+                    "cost_model_id": "gpt-6.1-sol",
+                    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+                    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+                    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+                    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+                    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+                    "actual_billed_cost_usd": null,
+                    "raw_reported_cost": null,
+                    "reported_cost_unit": "NOT_REPORTED",
+                    "budget_accounted": true,
+                    "status": "RECORDED",
+                    "episode_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104",
+                    "decision_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104-3",
+                    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+                    "router_family": "laya",
+                    "router_run_id": "V9_LAYA_STEP_001",
+                    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+                    "router_initialization_ms": 0.0,
+                    "router_process_reused": true,
+                    "router_question_id": "step_model_preference",
+                    "router_candidate_order": [
+                        "gpt-6.1-sol",
+                        "gpt-6-luna"
+                    ],
+                    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+                    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+                    "capability_snapshot_id": "20261031T072548885180Z-v4",
+                    "execution_mode": "REAL_API",
+                    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+                    "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+                },
+                {
+                    "requested_model_id": "gpt-6.1-sol",
+                    "selected_model_id": "gpt-6.1-sol",
+                    "response_id": "resp_08bb7ea9838e307d006ae76b9548848190bd0e58b95eb8c8a3",
+                    "request_model_id": "gpt-6.1-sol",
+                    "returned_model_id": "gpt-6.1-sol",
+                    "provider": "openai",
+                    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+                    "protocol": "responses",
+                    "finish_reason": "completed",
+                    "incomplete_details": null,
+                    "native_effort": "low",
+                    "requested_native_effort": "low",
+                    "request_native_effort": "low",
+                    "sent_effort_parameter": {
+                        "reasoning": {
+                            "effort": "low"
+                        }
+                    },
+                    "returned_native_effort": "max",
+                    "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+                    "stream": true,
+                    "requested_max_output_tokens": 4096,
+                    "reported_max_output_tokens": 4096,
+                    "raw_usage": {
+                        "input_tokens": 4572,
+                        "input_tokens_details": {
+                            "cache_write_tokens": 1469,
+                            "cached_tokens": 3100
+                        },
+                        "output_tokens": 363,
+                        "output_tokens_details": {
+                            "reasoning_tokens": 283
+                        },
+                        "total_tokens": 4935
+                    },
+                    "usage_status": "REPORTED",
+                    "identity_status": "MATCHED_REQUEST_ALIAS",
+                    "alias_mapping_applied": false,
+                    "prompt_tokens": 4572,
+                    "completion_tokens": 363,
+                    "reported_completion_tokens": 363,
+                    "reasoning_tokens": 283,
+                    "cached_tokens": 3100,
+                    "cache_write_tokens": 1469,
+                    "ttft_ms": 11868.450416019186,
+                    "latency_ms": 13265.52975003142,
+                    "output_tokens_per_s": 27.3641540775362,
+                    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+                    "stream_output_tokens_per_s": 259.82776436718916,
+                    "stream_output_tokens_per_s_status": "ESTIMATE",
+                    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+                    "cost_usd": 0.0076185,
+                    "cost_model_id": "gpt-6.1-sol",
+                    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+                    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+                    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+                    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+                    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+                    "actual_billed_cost_usd": null,
+                    "raw_reported_cost": null,
+                    "reported_cost_unit": "NOT_REPORTED",
+                    "budget_accounted": true,
+                    "status": "RECORDED",
+                    "episode_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104",
+                    "decision_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104-4",
+                    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+                    "router_family": "laya",
+                    "router_run_id": "V9_LAYA_STEP_001",
+                    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+                    "router_initialization_ms": 0.0,
+                    "router_process_reused": true,
+                    "router_question_id": "step_model_preference",
+                    "router_candidate_order": [
+                        "gpt-6.1-sol",
+                        "gpt-6-luna"
+                    ],
+                    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+                    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+                    "capability_snapshot_id": "20261031T072548885180Z-v4",
+                    "execution_mode": "REAL_API",
+                    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+                    "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+                }
+            ],
+            "cost_statuses": [
+                "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+            ],
+            "actual_billed_cost_usd": null,
+            "atif_trajectory": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-teacher/jobs/distribution-search--laya_v2--s42/distribution-search__WtUjyDx/agent/trajectory.json"
+        }
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-11-01T16:35:35.021348Z",
+    "finished_at": "2026-11-01T16:41:40.639183Z",
+    "environment_setup": {
+        "started_at": "2026-11-01T16:35:35.118322Z",
+        "finished_at": "2026-11-01T16:35:36.300345Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-11-01T16:35:36.300401Z",
+        "finished_at": "2026-11-01T16:35:36.300482Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-11-01T16:35:36.301149Z",
+        "finished_at": "2026-11-01T16:41:06.076902Z"
+    },
+    "verifier": {
+        "started_at": "2026-11-01T16:41:07.234610Z",
+        "finished_at": "2026-11-01T16:41:36.089786Z"
+    },
+    "step_results": null
+}

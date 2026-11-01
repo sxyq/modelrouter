@@ -1,0 +1,30 @@
+{
+  "status": "BLOCKED",
+  "reason": "Harbor exit=0; official verifier result absent in our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42",
+  "pending_units": [
+    {
+      "task_id": "cobol-modernization",
+      "policy": "fixed_strong",
+      "agent": "modelrouter",
+      "job_name": "cobol-modernization--fixed_strong--s42",
+      "status": "NOT_EVALUATED",
+      "pipeline_stage": "DEV",
+      "exit_code": 0
+    }
+  ],
+  "unresolved_problems": [
+    "Harbor exit=0; official verifier result absent in our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42"
+  ],
+  "hypotheses": [
+    "The same official mini-swe-agent can isolate policy effects on paired tasks."
+  ],
+  "required_config": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/run_config.json",
+  "priority": "Resolve the recorded cause before another paid attempt",
+  "failure_categories": [
+    "HARBOR"
+  ],
+  "completed_units": [],
+  "next_command": "python -m modelrouter.benchmark resume our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol",
+  "sealed_test": "REQUIRES_OWNER_CONFIRMATION",
+  "completed_development": []
+}

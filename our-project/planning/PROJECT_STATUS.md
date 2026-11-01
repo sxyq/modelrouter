@@ -1,10 +1,28 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-02 · 当前：运行开销下降，新增两条步骤目标
+
+接续 main `62d7bb98326af035512ffb089aba03f366e7924f`。本轮修改五个既有源码对象，未重复旧联调、独立静态评分或训练。完整概率、原工具反馈、Verifier、费用与服务器取样见[本轮结果](../results/iterations/20261101-v9-runtime-quality-dev/review.md)及同目录 `summary.json`。
+
+**输入与运行**：在线沿用 `step_model_preference` 的说明及 Sol→Luna 顺序；问题 ID 本身不进入内部 `t/ins/crit`，说明和顺序会进入编码，同状态换顺序影响28个Token位置。原8条步骤中6条曾被Prepare重建为不同文本，现在真实比较保留捕获的Router视图；累计19行可由原Serializer消费，新两条在5120窗口为3874/3962 Token、无裁减。已训Checkpoint没有因此重新训练。Episode内复用一个原LayaAdapter及SSH进程：旧7路由前向外开销222.42秒，新成功Dev的5路由前向外29.36秒，其中初始化28.62秒，之后4次合计0.0477秒；不同任务不作同负载加速比，前向本身未证明加速。
+
+**真实监督**：比较3个既有Train任务、8个相同前缀候选对。Schema两方验证通过，产生Luna等质量成本偏好；Mido用镜像中实际存在的原项目tests，Sol只读取后验证失败、Luna改parser后通过，产生Luna一步质量偏好。新增有效标签任务2个、步骤2条、Sol0/Luna2，任务级新增0。PrettyTable六对均未全通过，只存观察。累计Model-only 19条、任务级9/步骤级10，11个标签任务、10个步骤任务；总Sol4/Luna15，步骤Sol4/Luna6。原196/186可组合215/186；已准备64旧S1+10步骤的74行定向材料，但未训练。旧382行及13,214候选不重复加工。
+
+**独立Dev**：distribution-search固定Sol、固定Luna、新Laya关闭教师分别reward1/0/1，CTRF4/4、3/4、4/4，模型费0.0866944/0.00228552/0.1362464USD；新Laya成功前保留一次无Usage的API断连，仅对该瞬时错误作一次原协议重试。COBOL固定Luna reward1/3/3，Sol30秒工具超时无Verifier，新Laya900秒超时后原Verifier reward0/1/3。新Laya本轮28次实际路由全Sol、切换0/fallback0，其中COBOL两次在官方截止后启动，属于旧取消问题额外调用，不作协议内动态证据。未证明优于固定Sol的质量或费用。
+
+**取消与费用**：原Harbor取消等待后后台Agent曾继续请求，COBOL全部16次生成费用0.8735645USD，而官方截止时13次快照仅0.5245117USD。沿现有TIMEOUT状态停止后续Router、Provider及工具调用，关闭本Episode专属进程；这一取消分支未再制造900秒失败验证。原30秒工具窗口及Verifier不变，沿Harbor原参数保存/app；artifact-only regrade缺活环境退出，未补分。全工作包77次模型请求、76份Usage、1份未知，已知模型费率2.00106484USD；完整费用、供应商实收及CPU/容器资源USD仍未知。
+
+**教师与访问**：新成功Dev教师1请求/1成功/1次Router消费，step3触发，只摘要此前轨迹，成本0.019706USD、延迟29.052秒。教师开/关均reward1，总模型费0.111619/0.1362464USD；单题轨迹和缓存不同，不能证明稳定或因果净收益。两参考、三字段与低频规则不变。Sol请求low仍报告max，Luna应用档位未知；Native Effort/完整K=3目标仍0。现有OneAPI目录200且仍无正式Flash，未重发旧失败渠道；AA沿用v4，Max不作low成绩。
+
+**服务器与接续（01:08:59台北取样）**：F14独立维护仍running，Epoch1已完成241/420块（57.38%），step30848/107404（28.72%），consumed1974272/6873816，最新Loss0.48724648，最近12块有限；首轮与固定Val未完成，不作父。旧NON_FINITE_LOSS归档、原暂停队列及等待F14的既有handoff保留，本轮未干预。Laya沿用V9_LAYA_STEP_001-e01、F11-e01代表，Kev沿用R11且无新训练；Serving health/models200，仍F05-e01/原Kev Adapter、PID327621。本轮未新增更新或晋升。更广独立质量步骤与完整动态净收益仍是下次微调依据，五RQ、八图十二表保持。
+
+## 2026-11-01 · 历史记录
+
 **独立评分完成（2026-11-01）**：用户已选TwinRouterBench 520题/970步，复用已有ROUTE-003留出材料及原生模型入口，8/8版本全部完成。Laya微调前/F11-e01/P0_B03_C01_QB_PB-e02/F05-e01分别7.010309/20.515464/7.422680/12.061856分；Kev微调前/R11/R12/C09分别13.298969/18.969072/16.288660/15.567010分。F11/R11比微调前提高13.505155/5.670103个百分点，但八版本均低于恒选low的71.030928分。每版本970条、520任务，输入及输出任务身份/gold一致。原Val前三保持，不按Test重选；仅评旧四档，不增加新三模型动作监督或晋升。完整结果见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)。本轮起点main为e3c54a50f82648647922d15209a24a1fc57a6902，下方Test未执行描述保留原时点。
 
 **服务器与加训（12:57:52台北）**：本轮Laya `V9_LAYA_STEP_001-e01`已完成1轮/9次head更新、实体仍在服务器；Kev R01–R16全COMPLETED/EVALUATED、本轮未加训。另项维护已在原F14冷启，现PID808492、Epoch1块25/420、step3200/107404、consumed204800/6873816，最近12块Loss有限、最新0.5952016993；未完成固定Val、不作父权重。旧F14 failed/NON_FINITE_LOSS归档不变，不能用归档替代当前Run状态。原队列文件仍PAUSED_USER_REQUEST/current_run=null，但既有handoff817520正在等待F14退出，本轮未创建或操作。Serving health/models均200，仍PID327621及F05-e01/原Kev Adapter，未晋升或重启；12:56 GPU9929/49140MiB、0%、75°C，现含F14训练，未干预共享服务。F11-e01/R11代表与旧V9负结果保持。详情见[原训练报告](../results/training/training_research.md)。
 
-## 2026-11-01 · 当前：质量步骤监督与一次Laya定向接续
+## 2026-11-01 · 历史：质量步骤监督与一次Laya定向接续
 
 从main `63057a4a7586e9a9b717ccf53697d1e448c029a6`接续，复用四个已有Train任务的新失败前缀：Autograd、PyASN1 ChoiceDecoder、async-timeout均Sol一步原验证全通过而Luna仍有失败；TinyDB cache两者204/204，Luna模型费较低。新增步骤目标4条（Sol3/Luna1），新增来源任务0，覆盖4个已有任务/4仓库，不把前缀计为新独立题。累计17条Model-only目标：任务级9/步骤级8、9个任务、Sol4/Luna13；步骤目标覆盖8任务/7仓库，Sol4/Luna4，7条质量差异、1条等质量成本。唯一视图已含旧13条，可组合Train213/Val186；原390、382和13,214历史材料不重加工。完整证据见[本轮结果](../results/iterations/20261101-v9-quality-step-supervision/review.md)。
 

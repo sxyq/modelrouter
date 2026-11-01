@@ -1,0 +1,277 @@
+{
+  "response": {
+    "id": "resp_03ddb76f194ef14a006ae76aa9f8c881938b55168fdc4ea226",
+    "object": "response",
+    "created_at": 1793551017,
+    "status": "completed",
+    "access_programs": null,
+    "background": false,
+    "completed_at": 1793551021,
+    "content_filters": [
+      {
+        "blocked": false,
+        "source_type": "prompt",
+        "content_filter_raw": [],
+        "content_filter_results": {
+          "hate": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "sexual": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "violence": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "self_harm": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "jailbreak": {
+            "detected": false,
+            "filtered": false
+          }
+        },
+        "content_filter_offsets": {
+          "start_offset": 0,
+          "end_offset": 4147,
+          "check_offset": 0
+        }
+      },
+      {
+        "blocked": false,
+        "source_type": "completion",
+        "content_filter_raw": [],
+        "content_filter_results": {
+          "protected_material_code": {
+            "detected": false,
+            "filtered": false
+          },
+          "protected_material_text": {
+            "detected": false,
+            "filtered": false
+          },
+          "hate": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "sexual": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "violence": {
+            "filtered": false,
+            "severity": "safe"
+          },
+          "self_harm": {
+            "filtered": false,
+            "severity": "safe"
+          }
+        },
+        "content_filter_offsets": {
+          "start_offset": 0,
+          "end_offset": 212,
+          "check_offset": 0
+        }
+      }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "model": "gpt-6.1-sol",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_03ddb76f194ef14a006ae76aab9b008193a5b625930c748675",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "I’ll inspect `/app`, then build and verify a distribution with both KL divergences within the required tolerance.\n"
+          }
+        ],
+        "phase": "commentary",
+        "role": "assistant"
+      },
+      {
+        "id": "fc_03ddb76f194ef14a006ae76aac6b788193bcbcebb4037658a9",
+        "type": "function_call",
+        "status": "completed",
+        "arguments": "{\"command\":\"pwd && ls -la /app && find /app -maxdepth 2 -type f -not -path '*/.git/*' | head -80\"}",
+        "call_id": "call_rsBrPAfSHxsFFhp2eVtfEbYS",
+        "name": "bash"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": "maas-default",
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "max",
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1.0,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
+    "tools": [
+      {
+        "type": "function",
+        "description": "Execute a bash command",
+        "name": "bash",
+        "output_schema": null,
+        "parameters": {
+          "properties": {
+            "command": {
+              "description": "The bash command to execute",
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": 0.98,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 1017,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 0
+      },
+      "output_tokens": 79,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1096
+    },
+    "user": null,
+    "metadata": {}
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "resp_03ddb76f194ef14a006ae76aa9f8c881938b55168fdc4ea226",
+    "request_model_id": "gpt-6.1-sol",
+    "returned_model_id": "gpt-6.1-sol",
+    "provider": "openai",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "low"
+      }
+    },
+    "returned_native_effort": "max",
+    "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": 4096,
+    "raw_usage": {
+      "input_tokens": 1017,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 0
+      },
+      "output_tokens": 79,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1096
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 1017,
+    "completion_tokens": 79,
+    "reported_completion_tokens": 79,
+    "reasoning_tokens": 0,
+    "cached_tokens": 0,
+    "cache_write_tokens": 0,
+    "ttft_ms": 46247.73895798717,
+    "latency_ms": 48040.10729200672,
+    "output_tokens_per_s": 1.6444592748264868,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 44.07576194053539,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.002824,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104",
+    "decision_id": "e2d74e2f-f5b3-4a3a-b978-bee090d88104-0",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 30312.13913857937,
+    "router_process_reused": false,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+  }
+}

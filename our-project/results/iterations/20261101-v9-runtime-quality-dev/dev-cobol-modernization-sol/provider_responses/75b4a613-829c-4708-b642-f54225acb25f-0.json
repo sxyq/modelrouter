@@ -1,0 +1,169 @@
+{
+  "response": {
+    "background": false,
+    "completed_at": 1793548535,
+    "created_at": 1793548531,
+    "frequency_penalty": 0.0,
+    "id": "resp_031920329861a654016ae760f3cfc8819694a771c4f4db5e92",
+    "max_output_tokens": 4096,
+    "metadata": {},
+    "model": "gpt-6.1-sol",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_031920329861a654016ae760f52c44819693f63d591cefe90f",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "I’ll inspect the COBOL code and file formats, then implement the Python equivalent and compare its output against GnuCOBOL.\n"
+          }
+        ],
+        "phase": "commentary",
+        "role": "assistant"
+      },
+      {
+        "id": "fc_031920329861a654016ae760f5c8988196ada8c987edb45bd5",
+        "type": "function_call",
+        "status": "completed",
+        "arguments": "{\"command\":\"cd /app && ls -la && find src data -maxdepth 2 -type f -printf '%p %s bytes\\\\n' && sed -n '1,240p' /app/src/program.cbl && command -v cobc && cobc -V\"}",
+        "call_id": "call_8GPIOMOEMHCFQ4PcNopBnvmo",
+        "name": "bash"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "mode": "standard",
+      "context": "all_turns",
+      "effort": "max"
+    },
+    "service_tier": "default",
+    "status": "completed",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [
+      {
+        "type": "function",
+        "description": "Execute a bash command",
+        "name": "bash",
+        "parameters": {
+          "properties": {
+            "command": {
+              "description": "The bash command to execute",
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "top_logprobs": 0,
+    "top_p": 0.98,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 1049,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1046
+      },
+      "output_tokens": 107,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1156
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "resp_031920329861a654016ae760f3cfc8819694a771c4f4db5e92",
+    "request_model_id": "gpt-6.1-sol",
+    "returned_model_id": "gpt-6.1-sol",
+    "provider": "openai",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "low"
+      }
+    },
+    "returned_native_effort": "max",
+    "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": 4096,
+    "raw_usage": {
+      "input_tokens": 1049,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1046
+      },
+      "output_tokens": 107,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1156
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 1049,
+    "completion_tokens": 107,
+    "reported_completion_tokens": 107,
+    "reasoning_tokens": 0,
+    "cached_tokens": 0,
+    "cache_write_tokens": 1046,
+    "ttft_ms": 2441.3369580288418,
+    "latency_ms": 4785.302875039633,
+    "output_tokens_per_s": 22.360131175419863,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 45.64912792608126,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.003691,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+    "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-0",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+  }
+}

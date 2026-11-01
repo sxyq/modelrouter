@@ -1,0 +1,201 @@
+{
+  "sampled_at": "2026-11-02T01:08:59.581358+08:00",
+  "probe_mode": "READ_ONLY_EXISTING_SERVER_PROJECT",
+  "f14": {
+    "pid": 808492,
+    "status": "running",
+    "resume_mode": "COLD_START",
+    "started_at": "2026-11-01T03:31:49Z",
+    "cursor": {
+      "run_id": "F14",
+      "epoch": 0,
+      "chunk_idx": 241,
+      "total_chunks": 420,
+      "step_count": 30848,
+      "total_updates": 107404,
+      "consumed_items": 1974272,
+      "consumed_units": 562945,
+      "latest_chunk_loss": 0.48724648079951294,
+      "updated_at": "2026-11-01T17:05:57Z"
+    },
+    "epoch_completed": 0,
+    "fixed_val_completed": false,
+    "recent_chunks": [
+      {
+        "epoch": 1,
+        "chunk": 230,
+        "loss": 0.4943,
+        "step": 29440
+      },
+      {
+        "epoch": 1,
+        "chunk": 231,
+        "loss": 0.5127,
+        "step": 29568
+      },
+      {
+        "epoch": 1,
+        "chunk": 232,
+        "loss": 0.485,
+        "step": 29696
+      },
+      {
+        "epoch": 1,
+        "chunk": 233,
+        "loss": 0.498,
+        "step": 29824
+      },
+      {
+        "epoch": 1,
+        "chunk": 234,
+        "loss": 0.4984,
+        "step": 29952
+      },
+      {
+        "epoch": 1,
+        "chunk": 235,
+        "loss": 0.4941,
+        "step": 30080
+      },
+      {
+        "epoch": 1,
+        "chunk": 236,
+        "loss": 0.4903,
+        "step": 30208
+      },
+      {
+        "epoch": 1,
+        "chunk": 237,
+        "loss": 0.4873,
+        "step": 30336
+      },
+      {
+        "epoch": 1,
+        "chunk": 238,
+        "loss": 0.4987,
+        "step": 30464
+      },
+      {
+        "epoch": 1,
+        "chunk": 239,
+        "loss": 0.495,
+        "step": 30592
+      },
+      {
+        "epoch": 1,
+        "chunk": 240,
+        "loss": 0.4996,
+        "step": 30720
+      },
+      {
+        "epoch": 1,
+        "chunk": 241,
+        "loss": 0.4872,
+        "step": 30848
+      }
+    ],
+    "recent_chunk_losses_finite": true,
+    "eligible_items_per_epoch": 3436908,
+    "total_items_two_epochs": 6873816,
+    "optimizer_progress_pct": 28.721462887788164,
+    "first_epoch_chunk_progress_pct": 57.38095238095238,
+    "configuration": {
+      "micro_batch": 8,
+      "grad_accum": 8,
+      "encoder_lr": 2.5e-05,
+      "head_lr": 0.0001,
+      "weight_decay": 0.01,
+      "loss": "soft-ce",
+      "freeze_encoder": false
+    },
+    "independent_maintenance_modified_by_this_task": false,
+    "old_failed_attempt_preserved": true
+  },
+  "existing_handoff": {
+    "pid": 817520,
+    "alive": true,
+    "modified_by_this_task": false
+  },
+  "queue_state": {
+    "updated_at": "2026-10-31T12:16:27.792171+00:00",
+    "queue_status": "PAUSED_USER_REQUEST",
+    "current_run": null,
+    "interrupted_run": null,
+    "resumed_by_this_task": false
+  },
+  "serving": {
+    "pid": 327621,
+    "alive": true,
+    "health": {
+      "http_status": 200,
+      "body": {
+        "status": "healthy",
+        "uptime_seconds": 188137.58,
+        "gpu_available": true,
+        "gpu_name": "NVIDIA RTX A6000",
+        "gpu_memory_used_mb": 9929.0,
+        "gpu_memory_total_mb": 49140.0,
+        "gpu_utilization_pct": 94.0,
+        "models_loaded": {
+          "laya": true,
+          "kev": true
+        },
+        "weights_loaded": {
+          "laya": true,
+          "kev": true
+        },
+        "inference_verified": {
+          "laya": true,
+          "kev": true
+        }
+      }
+    },
+    "models": {
+      "http_status": 200,
+      "body": {
+        "models": [
+          {
+            "family": "laya",
+            "run_id": "F05",
+            "checkpoint_id": "epoch_01",
+            "epoch": 1,
+            "loaded": true,
+            "weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
+            "metrics": {
+              "best_val_accuracy_s1": 0.6756,
+              "val_loss": 0.5978
+            }
+          },
+          {
+            "family": "kev",
+            "run_id": "KEV-4B-ADAPTER",
+            "checkpoint_id": "1001bb4d826a52d1f399e183466143f4da7b741b",
+            "epoch": null,
+            "loaded": true,
+            "weights_path": "models/kev-4b-adapter",
+            "metrics": {
+              "base": "Qwen3.5-4B-Base",
+              "lora_rank": 16,
+              "inference_engine": "torch_cpu"
+            }
+          }
+        ]
+      }
+    },
+    "weights_replaced": false,
+    "restarted": false
+  },
+  "gpu": {
+    "index": 0,
+    "model": "NVIDIA RTX A6000",
+    "used_mib": 9929,
+    "total_mib": 49140,
+    "utilization_pct": 94,
+    "temperature_c": 83,
+    "power_w": 289.92
+  },
+  "v9_laya_step_checkpoint": "V9_LAYA_STEP_001-e01",
+  "v9_laya_step_checkpoint_exists": true,
+  "new_v9_training_in_this_work_package": false,
+  "kev_new_training_in_this_work_package": false
+}

@@ -1,12 +1,25 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
-> **版本 v1.4｜建立：2026-10-09｜更新：2026-11-01｜V9 五 RQ 已确定，部分执行配置待明确**
+> **版本 v1.5｜建立：2026-10-09｜更新：2026-11-02｜V9 五 RQ 已确定，部分执行配置待明确**
 >
 > **职责**：记录每项实验设计的 Q-ID、问题、选项、Planning 推荐及理由、项目负责人回答、最终决策、日期，以及对实验设计、资源/预算和论文结论的影响。研究方法总览见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)，实时阶段见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，交接历史见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
 > **证据边界**：Planning 推荐、待回答事项、预案任务数量和费用均不代表执行已获批准或已经完成。历史数据清洗、训练和评测要求按对应日期保留；实际操作遵循当前人类明确范围。
 
 ## 0. 阶段入口与决策规则
+
+**11-02执行事实与结论范围**：从62d7bb9接续，仅对已发生的编码差异、权重重载和超时后继续请求作原位处理，原30秒工具窗口、Verifier、三正式身份及五RQ不变。[本轮报告](../results/iterations/20261101-v9-runtime-quality-dev/review.md)保存8个Dev尝试与8对Train步骤比较；不重复独立TwinRouterBench或旧成功任务。
+
+| 本轮问题 | 实际依据及沿用决定 |
+|---|---|
+| 训练/推理是否同目标 | QID不进入内部编码，说明与顺序进入；在线沿用step_model_preference、Sol→Luna，真实比较保留捕获文本。原Checkpoint未重训 |
+| 步骤标签范围 | 新增Mido质量Luna1、Schema等质量成本Luna1，限一步原验证；PrettyTable六对仍失败不造赢家，Dev不入Train |
+| 动态是否获益 | distribution-search三策略reward1/0/1，新Laya与固定Sol均成功但更贵；新Laya全Sol、无自然切换，不能称动态优于固定策略 |
+| 教师是否获益 | 1成功/1消费，开关均reward1；费用差来自单题不同轨迹与缓存，不作稳定或因果收益 |
+| 是否再训练 | 累计19模型目标、步骤10，新增仅1质量+1成本；74行材料已准备，本轮0新训练，不晋升Serving |
+| Effort与第三候选 | Sol仍报告max、Luna不报告应用档位，确认目标0；目录无Flash，正式池不替换，实际K=2 |
+
+01:08:59台北F14另项维护241/420块、30848/107404步、最近12块有限，首轮/固定Val未完成；既有handoff、旧失败归档、Serving原权重不变，本轮不干预。以下11-01执行项为历史，不作为本轮重新运行指令。
 
 **独立评分决定与完成（11-01）**：用户已明确选TwinRouterBench 520题/970步，只评原ROUTE-003的旧四档 `routing_tier_choice`，不使用同源test.jsonl、Train成绩或新三模型动作映射替代。两组微调前导入权重与原Val前三8/8在CPU完整实算；F11/R11分别20.515464/18.969072分，较微调前增13.505155/5.670103个百分点，但八版本均低于恒选low71.030928分。Test不用于重选、温度拟合、训练或Serving晋升；数字和最终状态见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)，不增加Q-ID或新研究流程。本轮新head候选未在该独立集评价，原队列仍暂停。
 

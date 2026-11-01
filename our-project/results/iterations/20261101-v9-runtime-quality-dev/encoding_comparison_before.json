@@ -1,0 +1,303 @@
+{
+  "scope": "EXISTING_TRAIN_TEXT_VS_SAVED_ONLINE_PREDECISION",
+  "rows": [
+    {
+      "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+      "step": 7,
+      "training_chars": 11485,
+      "saved_online_chars": 11485,
+      "different_fields": {},
+      "question_id": [
+        "step_model_preference"
+      ],
+      "criteria_order": [
+        "gpt-6.1-sol",
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "step": 6,
+      "training_chars": 11536,
+      "saved_online_chars": 11536,
+      "different_fields": {},
+      "question_id": [
+        "step_model_preference"
+      ],
+      "criteria_order": [
+        "gpt-6.1-sol",
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+      "step": 7,
+      "training_chars": 11765,
+      "saved_online_chars": 11509,
+      "different_fields": {
+        "agent_context": {
+          "train_chars": 118,
+          "online_chars": 145,
+          "train_excerpt": "{'message_count': 16, 'context_chars': 167140, 'observed_through_step': 7, 'token_measurement_status': 'NOT_MEASURED'}",
+          "online_excerpt": "{'message_count': 16, 'context_chars': 76347, 'completed_generations': 7, 'observed_through_step': 7, 'token_measurement_status': 'NOT_MEASURED'}"
+        },
+        "history_snippet": {
+          "train_chars": 3999,
+          "online_chars": 5051,
+          "train_excerpt": "step=7 phase=verify exit=1\ncommand=cd /testbed && python - <<'PY'\nfrom pathlib import Path\n\npath = Path('tests/texttable_test.py')\nsource = path.read_text()\nmarker = '  d",
+          "online_excerpt": "step=7 phase=verify exit=1\ncommand=cd /testbed && python - <<'PY'\nfrom pathlib import Path\n\npath = Path('tests/texttable_test.py')\nsource = path.read_text()\nmarker = '  d"
+        },
+        "prompt": {
+          "train_chars": 2000,
+          "online_chars": 948,
+          "train_excerpt": "Please solve this issue: # Sorting tables doesn't work properly\n\nI'm trying to sort tables in my code but it's not working as expected. When I try to sort a table, I get ",
+          "online_excerpt": "# Sorting tables doesn't work properly\n\nI'm trying to sort tables in my code but it's not working as expected. When I try to sort a table, I get an `UnboundLocalError` ex"
+        },
+        "context_chars": {
+          "train_chars": 6,
+          "online_chars": 5,
+          "train_excerpt": "167140",
+          "online_excerpt": "76347"
+        },
+        "last_observation_summary": {
+          "train_chars": 784,
+          "online_chars": 512,
+          "train_excerpt": "command=cd /testbed && python - <<'PY'\nfrom pathlib import Path\n\npath = Path('tests/texttable_test.py')\nsource = path.read_text()\nmarker = '  def testSortTable(self):\\n'\n",
+          "online_excerpt": "referenced before assignment\n\ntextfsm/texttable.py:440: UnboundLocalError\n=========================== short test summary info ============================\nFAILED tests/te"
+        }
+      },
+      "question_id": [
+        "step_model_preference"
+      ],
+      "criteria_order": [
+        "gpt-6.1-sol",
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+      "step": 6,
+      "training_chars": 11382,
+      "saved_online_chars": 11135,
+      "different_fields": {
+        "agent_context": {
+          "train_chars": 117,
+          "online_chars": 145,
+          "train_excerpt": "{'message_count': 15, 'context_chars': 71347, 'observed_through_step': 6, 'token_measurement_status': 'NOT_MEASURED'}",
+          "online_excerpt": "{'message_count': 15, 'context_chars': 34266, 'completed_generations': 6, 'observed_through_step': 6, 'token_measurement_status': 'NOT_MEASURED'}"
+        },
+        "history_snippet": {
+          "train_chars": 3999,
+          "online_chars": 4303,
+          "train_excerpt": "step=6 phase=recover exit=127\ncommand=cd /testbed && apply_patch <<'PATCH'\n*** Begin Patch\n*** Update File: oauthlib/oauth2/rfc8628/endpoints/device_authorization.py\n@@\n-",
+          "online_excerpt": "step=5 phase=modify exit=0\ncommand=cd /testbed && sed -n '1,220p' tests/oauth2/rfc8628/test_server.py && sed -n '1,70p' oauthlib/oauth2/rfc8628/endpoints/pre_configured.p"
+        },
+        "prompt": {
+          "train_chars": 2000,
+          "online_chars": 1696,
+          "train_excerpt": "Please solve this issue: DeviceAuthorizationEndpoint constructor parameters incorrectly assigned\n\n#### Description\n\nThe DeviceAuthorizationEndpoint class has incorrect pa",
+          "online_excerpt": "DeviceAuthorizationEndpoint constructor parameters incorrectly assigned\n\n#### Description\n\nThe DeviceAuthorizationEndpoint class has incorrect parameter assignments in it"
+        },
+        "context_chars": {
+          "train_chars": 5,
+          "online_chars": 5,
+          "train_excerpt": "71347",
+          "online_excerpt": "34266"
+        },
+        "last_observation_summary": {
+          "train_chars": 363,
+          "online_chars": 91,
+          "train_excerpt": "command=cd /testbed && apply_patch <<'PATCH'\n*** Begin Patch\n*** Update File: oauthlib/oauth2/rfc8628/endpoints/device_authorization.py\n@@\n-        self.request_validator",
+          "online_excerpt": "bash: line 1: apply_patch: command not found\nbash: line 26: apply_patch: command not found\n"
+        }
+      },
+      "question_id": [
+        "step_model_preference"
+      ],
+      "criteria_order": [
+        "gpt-6.1-sol",
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+      "step": 4,
+      "training_chars": 11824,
+      "saved_online_chars": 11584,
+      "different_fields": {
+        "agent_context": {
+          "train_chars": 117,
+          "online_chars": 145,
+          "train_excerpt": "{'message_count': 10, 'context_chars': 87934, 'observed_through_step': 4, 'token_measurement_status': 'NOT_MEASURED'}",
+          "online_excerpt": "{'message_count': 10, 'context_chars': 42155, 'completed_generations': 4, 'observed_through_step': 4, 'token_measurement_status': 'NOT_MEASURED'}"
+        },
+        "history_snippet": {
+          "train_chars": 3999,
+          "online_chars": 4915,
+          "train_excerpt": "step=4 phase=verify exit=0\ncommand=cd /testbed && sed -n '375,460p' tests/test_scipy.py && sed -n '1,110p' autograd/test_util.py && sed -n '1,125p' autograd/tracer.py && ",
+          "online_excerpt": "step=4 phase=verify exit=0\ncommand=cd /testbed && sed -n '375,460p' tests/test_scipy.py && sed -n '1,110p' autograd/test_util.py && sed -n '1,125p' autograd/tracer.py && "
+        },
+        "prompt": {
+          "train_chars": 2000,
+          "online_chars": 1084,
+          "train_excerpt": "Please solve this issue: Sylvester solver VJP returns UnboundLocalError when computing gradients\n\n#### Description\n\nWhen computing gradients for the Sylvester equation so",
+          "online_excerpt": "Sylvester solver VJP returns UnboundLocalError when computing gradients\n\n#### Description\n\nWhen computing gradients for the Sylvester equation solver, an `UnboundLocalErr"
+        },
+        "context_chars": {
+          "train_chars": 5,
+          "online_chars": 5,
+          "train_excerpt": "87934",
+          "online_excerpt": "42155"
+        },
+        "last_observation_summary": {
+          "train_chars": 784,
+          "online_chars": 512,
+          "train_excerpt": "command=cd /testbed && sed -n '375,460p' tests/test_scipy.py && sed -n '1,110p' autograd/test_util.py && sed -n '1,125p' autograd/tracer.py && sed -n '1,80p' autograd/wra",
+          "online_excerpt": "get_name(op), argnum=argnum)\n\n\nget_name = lambda f: getattr(f, \"__name__\", \"[unknown name]\")\nget_doc = lambda f: getattr(f, \"__doc__\", \"\")\ntests/test_linalg.py:196:@pytes"
+        }
+      },
+      "question_id": [
+        "step_model_preference"
+      ],
+      "criteria_order": [
+        "gpt-6.1-sol",
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+      "step": 6,
+      "training_chars": 11751,
+      "saved_online_chars": 11499,
+      "different_fields": {
+        "agent_context": {
+          "train_chars": 118,
+          "online_chars": 145,
+          "train_excerpt": "{'message_count': 14, 'context_chars': 144535, 'observed_through_step': 6, 'token_measurement_status': 'NOT_MEASURED'}",
+          "online_excerpt": "{'message_count': 14, 'context_chars': 65317, 'completed_generations': 6, 'observed_through_step': 6, 'token_measurement_status': 'NOT_MEASURED'}"
+        },
+        "history_snippet": {
+          "train_chars": 3999,
+          "online_chars": 4533,
+          "train_excerpt": "step=6 phase=verify exit=1\ncommand=cd /testbed && grep -nE 'Choice|asn1Object|SubstrateUnderrun|class ' tests/codec/test_streaming.py | head -95 && sed -n '1,205p' tests/",
+          "online_excerpt": "step=6 phase=verify exit=1\ncommand=cd /testbed && grep -nE 'Choice|asn1Object|SubstrateUnderrun|class ' tests/codec/test_streaming.py | head -95 && sed -n '1,205p' tests/"
+        },
+        "prompt": {
+          "train_chars": 2000,
+          "online_chars": 1466,
+          "train_excerpt": "Please solve this issue: # ChoicePayloadDecoder fails to decode Choice ASN.1 types\n\nI found a bug in the ASN.1 decoder when working with Choice types. The decoder fails t",
+          "online_excerpt": "# ChoicePayloadDecoder fails to decode Choice ASN.1 types\n\nI found a bug in the ASN.1 decoder when working with Choice types. The decoder fails to properly handle Choice "
+        },
+        "context_chars": {
+          "train_chars": 6,
+          "online_chars": 5,
+          "train_excerpt": "144535",
+          "online_excerpt": "65317"
+        },
+        "last_observation_summary": {
+          "train_chars": 784,
+          "online_chars": 512,
+          "train_excerpt": "command=cd /testbed && grep -nE 'Choice|asn1Object|SubstrateUnderrun|class ' tests/codec/test_streaming.py | head -95 && sed -n '1,205p' tests/codec/test_streaming.py && ",
+          "online_excerpt": "_iter__\n    for asn1Object in self._singleItemDecoder(\n  File \"/testbed/pyasn1/codec/ber/decoder.py\", line 1822, in __call__\n    for value in concreteDecoder.indefLenValu"
+        }
+      },
+      "question_id": [
+        "step_model_preference"
+      ],
+      "criteria_order": [
+        "gpt-6.1-sol",
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "step": 6,
+      "training_chars": 11734,
+      "saved_online_chars": 11481,
+      "different_fields": {
+        "agent_context": {
+          "train_chars": 118,
+          "online_chars": 145,
+          "train_excerpt": "{'message_count': 14, 'context_chars': 140117, 'observed_through_step': 6, 'token_measurement_status': 'NOT_MEASURED'}",
+          "online_excerpt": "{'message_count': 14, 'context_chars': 58983, 'completed_generations': 6, 'observed_through_step': 6, 'token_measurement_status': 'NOT_MEASURED'}"
+        },
+        "history_snippet": {
+          "train_chars": 3999,
+          "online_chars": 4661,
+          "train_excerpt": "step=6 phase=verify exit=1\ncommand=cd /testbed && python - <<'PY'\nfrom pathlib import Path\n\npath = Path('tests/test_timeout.py')\nsource = path.read_text()\nsource = source",
+          "online_excerpt": "step=5 phase=verify exit=1\ncommand=cd /testbed && cat <<'PY' > /tmp/reproduce_timeout_rescheduling.py\nimport asyncio\n\nfrom async_timeout import timeout\n\n\nasync def main()"
+        },
+        "prompt": {
+          "train_chars": 2000,
+          "online_chars": 1338,
+          "train_excerpt": "Please solve this issue: # Cannot reschedule timeout after exit or expiration\n\n```\n>>> import asyncio\n>>> from async_timeout import timeout\n>>> \n>>> async def main():\n...",
+          "online_excerpt": "# Cannot reschedule timeout after exit or expiration\n\n```\n>>> import asyncio\n>>> from async_timeout import timeout\n>>> \n>>> async def main():\n...     try:\n...         asy"
+        },
+        "context_chars": {
+          "train_chars": 6,
+          "online_chars": 5,
+          "train_excerpt": "140117",
+          "online_excerpt": "58983"
+        },
+        "last_observation_summary": {
+          "train_chars": 784,
+          "online_chars": 512,
+          "train_excerpt": "command=cd /testbed && python - <<'PY'\nfrom pathlib import Path\n\npath = Path('tests/test_timeout.py')\nsource = path.read_text()\nsource = source.replace(\n    'from typing ",
+          "online_excerpt": "annot change state of finished Timeout)'\nE    Input: 'invalid state EXIT'\n=========================== short test summary info ============================\nFAILED tests/te"
+        }
+      },
+      "question_id": [
+        "step_model_preference"
+      ],
+      "criteria_order": [
+        "gpt-6.1-sol",
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+      "step": 5,
+      "training_chars": 11710,
+      "saved_online_chars": 11450,
+      "different_fields": {
+        "agent_context": {
+          "train_chars": 118,
+          "online_chars": 145,
+          "train_excerpt": "{'message_count': 12, 'context_chars': 133740, 'observed_through_step': 5, 'token_measurement_status': 'NOT_MEASURED'}",
+          "online_excerpt": "{'message_count': 12, 'context_chars': 63979, 'completed_generations': 5, 'observed_through_step': 5, 'token_measurement_status': 'NOT_MEASURED'}"
+        },
+        "history_snippet": {
+          "train_chars": 3999,
+          "online_chars": 5171,
+          "train_excerpt": "step=5 phase=verify exit=1\ncommand=cd /testbed || exit 1\ncat > /tmp/tinydb_lru_repro.py <<'PY'\nfrom tinydb.utils import LRUCache\n\n\ndef check(label, operation, expected_or",
+          "online_excerpt": "step=5 phase=verify exit=1\ncommand=cd /testbed || exit 1\ncat > /tmp/tinydb_lru_repro.py <<'PY'\nfrom tinydb.utils import LRUCache\n\n\ndef check(label, operation, expected_or"
+        },
+        "prompt": {
+          "train_chars": 2000,
+          "online_chars": 828,
+          "train_excerpt": "Please solve this issue: LRU cache not properly updating order when setting existing keys\n\nWhen setting a value for an existing key in the LRU cache, the key is not being",
+          "online_excerpt": "LRU cache not properly updating order when setting existing keys\n\nWhen setting a value for an existing key in the LRU cache, the key is not being moved to the end of the "
+        },
+        "context_chars": {
+          "train_chars": 6,
+          "online_chars": 5,
+          "train_excerpt": "133740",
+          "online_excerpt": "63979"
+        },
+        "last_observation_summary": {
+          "train_chars": 784,
+          "online_chars": 512,
+          "train_excerpt": "command=cd /testbed || exit 1\ncat > /tmp/tinydb_lru_repro.py <<'PY'\nfrom tinydb.utils import LRUCache\n\n\ndef check(label, operation, expected_order, expected_values):\n    ",
+          "online_excerpt": "st_utils.py::test_lru_cache_capacity[1] - assert [0, 1] == [1]\nFAILED tests/test_utils.py::test_lru_cache_capacity[3] - assert [0, 1, 2, 3] ...\nFAILED tests/test_tables.p"
+        }
+      },
+      "question_id": [
+        "step_model_preference"
+      ],
+      "criteria_order": [
+        "gpt-6.1-sol",
+        "gpt-6-luna"
+      ]
+    }
+  ]
+}

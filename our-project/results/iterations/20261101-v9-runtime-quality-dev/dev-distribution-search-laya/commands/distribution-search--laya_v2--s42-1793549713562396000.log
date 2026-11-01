@@ -1,0 +1,40 @@
+This is mini-swe-agent version 2.4.6.
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration
+Loading global config from '<LOCAL_USER>/Library/Application 
+Support/mini-swe-agent/.env'
+2026-11-02 00:15:16,031 [DEBUG] harbor.utils.logger.harbor.agents.base: Agent 'modelrouter-mini-swe-agent' does not declare an options_model; leftover kwargs are ignored
+2026-11-02 00:15:16,033 [DEBUG] harbor.utils.logger.harbor.agents.base: Agent 'modelrouter-mini-swe-agent' does not declare an options_model; leftover kwargs are ignored
+2026-11-02 00:15:16,069 [DEBUG] harbor.utils.logger.harbor.agents.base: Agent 'modelrouter-mini-swe-agent' does not declare an options_model; leftover kwargs are ignored
+2026-11-02 00:15:20,270 [INFO] router_serving.laya: Loading Laya RLAgent from <SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01 on device=cpu...
+2026-11-02 00:15:49,236 [INFO] router_serving.laya: Laya RLAgent loaded successfully in 28.97s (run=laya-base, ckpt=epoch_01).
+2026-11-02 00:19:12,045 [DEBUG] harbor.utils.logger.harbor.trial.trial.distribution-search__MrftAJQ: Trial distribution-search__MrftAJQ failed: Remote end closed connection without response
+2026-11-02 00:19:12,049 [DEBUG] harbor.utils.logger.harbor.trial.trial.distribution-search__MrftAJQ: Collecting main service artifacts
+2026-11-02 00:19:15,892 [DEBUG] harbor.utils.logger.harbor.trial.queue: Not retrying trial because the maximum number of retries has been reached
+  1/1 Mean: 0.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:03:59 0:00:00
+adhoc • modelrouter-mini-swe-agent • gpt-6-luna
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      0 │          1 │ 0.000 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ Exception          ┃ Count ┃
+┡━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ RemoteDisconnected │     1 │
+└────────────────────┴───────┘
+
+Job Info
+Total runtime: 3m 59s
+Results written to 
+our-project/results/iterations/20261101-v9
+-runtime-quality-dev/dev-distribution-search-laya/jobs/distribution-search--laya
+_v2--s42/result.json
+Inspect results by running `harbor view 
+our-project/results/iterations/20261101-v9
+-runtime-quality-dev/dev-distribution-search-laya/jobs`
+Share results by running `harbor upload 
+our-project/results/iterations/20261101-v9
+-runtime-quality-dev/dev-distribution-search-laya/jobs/distribution-search--laya
+_v2--s42`
+

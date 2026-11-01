@@ -1,0 +1,37 @@
+........................................................................ [ 59%]
+........F.........................................                       [100%]
+=================================== FAILURES ===================================
+______________________________ test_decode_sysex _______________________________
+
+    def test_decode_sysex():
+>       assert Message.from_str('sysex data=(1,2,3)').data == (1, 2, 3)
+
+tests/messages/test_strings.py:11: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+mido/messages/messages.py:193: in from_str
+    return cl(**str2msg(text))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = 'sysex data=(1,2,3)'
+
+    def str2msg(text):
+        """Parse str format and return message dict.
+    
+        No type or value checking is done. The caller is responsible for
+        calling check_msgdict().
+        """
+        words = text.split()
+        type_ = words[0]
+        args = words[1:]
+    
+        msg = {}
+    
+        for arg in args:
+            name, value = arg.split('=', 1)
+            if name == 'time':
+                value = _parse_time(value)
+            elif name == 'data':
+>               value = int(value)
+E               ValueError: invalid literal for int() with base 10: '(1,2,3)'
+
+mido/messages/strings.py:69: ValueError

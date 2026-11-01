@@ -1,0 +1,1273 @@
+{
+  "timestamp": "2026-11-01T16:34:28.270149+00:00",
+  "iteration_id": "dev-distribution-search-laya-api-retry",
+  "status": "EVALUATED",
+  "reason": "",
+  "observed_trials": 1,
+  "verified_trials": 1,
+  "successes": 1,
+  "success_rate": 1.0,
+  "total_units": 1,
+  "finished_units": 1,
+  "current": null,
+  "current_trial": {
+    "task_id": {
+      "path": "external/benchmarks/terminal-bench-2-1/tasks/distribution-search"
+    },
+    "policy": "laya_v2",
+    "agent": "modelrouter",
+    "job_name": "distribution-search--laya_v2--s42",
+    "status": "OFFICIAL_ARTIFACT_VERIFIED",
+    "pipeline_stage": "DEV",
+    "trial_dir": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq",
+    "trial_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+    "trial_name": "distribution-search__kFj8yeq",
+    "job_id": "ce76f240-a7c3-4d8f-a2b4-3408d8ccb2cc",
+    "task_name": "terminal-bench/distribution-search",
+    "task_version": null,
+    "task_digest": "sha256:8787d3004ac4dd9d78f0c14f5b5ef94a4ad3e69d8828d7d35b9fbd7828a69ed1",
+    "task_git_sha": null,
+    "task_source": null,
+    "task_checksum": "dcd92ac5501340d190b2276e1f60ece558c8da07c104617b9d216b47cf5fc32f",
+    "agent_info": {
+      "name": "modelrouter-mini-swe-agent",
+      "version": "10.0-mini-2.4.6",
+      "model_info": {
+        "name": "gpt-6-luna",
+        "provider": "openai"
+      }
+    },
+    "environment": null,
+    "reward": 1.0,
+    "rewards": {
+      "reward": 1.0
+    },
+    "success": true,
+    "error": null,
+    "reason": "Original Harbor task lock and verifier artifacts recorded",
+    "usage": {
+      "n_input_tokens": 11265,
+      "n_cache_tokens": 4784,
+      "n_output_tokens": 12008,
+      "cost_usd": 0.1362464
+    },
+    "model_usage": {
+      "gpt-6.1-sol": {
+        "n_input_tokens": 7041,
+        "n_cache_tokens": 2364,
+        "n_output_tokens": 11398,
+        "cost_usd": 0.1253959
+      }
+    },
+    "n_input_tokens": 11265,
+    "n_cache_tokens": 4784,
+    "n_output_tokens": 12008,
+    "cost_usd": 0.1362464,
+    "duration_sec": 421.388167,
+    "verifier_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/verifier/reward.txt",
+    "native_trace_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/agent/mini-swe-agent.trajectory.json",
+    "router_fallback_used": false,
+    "agent_metadata": {
+      "harness": "minisweagent.agents.default.DefaultAgent",
+      "mini_version": "2.4.6",
+      "policy": "laya_v2",
+      "task_id": "distribution-search",
+      "task_identity_source": "harbor_task_config",
+      "fallback_used": false,
+      "policy_implementation_status": "REMOTE_NEURAL_ROUTER",
+      "action_validation": {
+        "gpt-6.1-sol:low": "PROVIDER_REPORTED_MISMATCH",
+        "gpt-6-luna:low": "REAL_API_NOT_OBSERVED"
+      },
+      "untested_native_efforts_used": [],
+      "neural_router_evidence_eligible": true,
+      "raw_trajectory": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/agent/mini-swe-agent.trajectory.json",
+      "v9": {
+        "teacher_metrics": [],
+        "continuity": {
+          "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+          "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-4",
+          "message_count": 9,
+          "message_chars": 15057,
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_fallback_used": false,
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_initialization_ms": 0.0,
+          "router_process_reused": true,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "previous_router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "previous_router_run_id": "V9_LAYA_STEP_001",
+          "previous_selected_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "previous_actual_backend_model_id": "gpt-6.1-sol",
+          "actual_backend_model_id": "gpt-6.1-sol",
+          "logical_model_changed": false,
+          "actual_backend_changed": false,
+          "context_delivery": "FULL_MESSAGE_HISTORY",
+          "history_messages_resent": true,
+          "observed_cached_tokens": 2420,
+          "cache_usage_status": "REPORTED",
+          "physical_kv_cache_shared": null,
+          "switch_extra_tokens": null,
+          "switch_extra_cost_usd": null,
+          "switch_cost_status": "NOT_MEASURED"
+        },
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "router_checkpoint_ids": [
+          "V9_LAYA_STEP_001-e01"
+        ],
+        "router_checkpoints": [
+          {
+            "router_family": "laya",
+            "run_id": "V9_LAYA_STEP_001",
+            "checkpoint_id": "V9_LAYA_STEP_001-e01"
+          }
+        ],
+        "feature_training_status": "FEATURE_PARTIALLY_TRAINED",
+        "backend_deployment_status": "API_IDENTITY_ONLY_UNVERIFIED_PHYSICAL_BACKEND",
+        "complete_episode_cost_usd": 0.1362464,
+        "upstream_cost_accounting": "KNOWN_COSTS_PLUS_UNKNOWN_PLACEHOLDERS_NOT_BILLING"
+      },
+      "provider_metrics": [
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_0ea3000787ff05d6016ae768916f8481958a8886c9e1c34d64",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 1017,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0
+            },
+            "output_tokens": 605,
+            "output_tokens_details": {
+              "reasoning_tokens": 516
+            },
+            "total_tokens": 1622
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 1017,
+          "completion_tokens": 605,
+          "reported_completion_tokens": 605,
+          "reasoning_tokens": 516,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "ttft_ms": 15550.558167044073,
+          "latency_ms": 18049.07008301234,
+          "output_tokens_per_s": 33.519732441474744,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 242.14413232667744,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.008084,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+          "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-0",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_initialization_ms": 28619.072668254375,
+          "router_process_reused": false,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_01d3492a6ccef104016ae768c9f34c8196ab6a826b15fd4959",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 1234,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 1231
+            },
+            "output_tokens": 3982,
+            "output_tokens_details": {
+              "reasoning_tokens": 3063
+            },
+            "total_tokens": 5216
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 1234,
+          "completion_tokens": 3982,
+          "reported_completion_tokens": 3982,
+          "reasoning_tokens": 3063,
+          "cached_tokens": 0,
+          "cache_write_tokens": 1231,
+          "ttft_ms": 112329.67304199701,
+          "latency_ms": 123021.01766696433,
+          "output_tokens_per_s": 32.368452769427165,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 372.4508132214636,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0429035,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+          "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-1",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_initialization_ms": 0.0,
+          "router_process_reused": true,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_08ba466b52fe026e006ae76934ddfc8190b674b16424ac8867",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "incomplete",
+          "incomplete_details": {
+            "reason": "max_output_tokens"
+          },
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 2367,
+            "input_tokens_details": {
+              "cache_write_tokens": 2364,
+              "cached_tokens": 0
+            },
+            "output_tokens": 4096,
+            "output_tokens_details": {
+              "reasoning_tokens": 1552
+            },
+            "total_tokens": 6463
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 2367,
+          "completion_tokens": 4096,
+          "reported_completion_tokens": 4096,
+          "reasoning_tokens": 1552,
+          "cached_tokens": 0,
+          "cache_write_tokens": 2364,
+          "ttft_ms": 42872.29191698134,
+          "latency_ms": 77693.17079195753,
+          "output_tokens_per_s": 52.72020639971101,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 117.6305748831505,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.046876,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+          "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-2",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_initialization_ms": 0.0,
+          "router_process_reused": true,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_04293b9325070f14006ae7699db2808197b22158fe925818db",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 2423,
+            "input_tokens_details": {
+              "cache_write_tokens": 56,
+              "cached_tokens": 2364
+            },
+            "output_tokens": 2715,
+            "output_tokens_details": {
+              "reasoning_tokens": 1034
+            },
+            "total_tokens": 5138
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 2423,
+          "completion_tokens": 2715,
+          "reported_completion_tokens": 2715,
+          "reasoning_tokens": 1034,
+          "cached_tokens": 2364,
+          "cache_write_tokens": 56,
+          "ttft_ms": 47020.370374957565,
+          "latency_ms": 68374.86012495356,
+          "output_tokens_per_s": 39.70757665958507,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 127.13953982443012,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0275324,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+          "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-3",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_initialization_ms": 0.0,
+          "router_process_reused": true,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_04a4ef69d1e8dc15006ae769e1e6a08196977bc982e46670ad",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 4224,
+            "input_tokens_details": {
+              "cache_write_tokens": 1801,
+              "cached_tokens": 2420
+            },
+            "output_tokens": 610,
+            "output_tokens_details": {
+              "reasoning_tokens": 516
+            },
+            "total_tokens": 4834
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 4224,
+          "completion_tokens": 610,
+          "reported_completion_tokens": 610,
+          "reasoning_tokens": 516,
+          "cached_tokens": 2420,
+          "cache_write_tokens": 1801,
+          "ttft_ms": 15064.307458989788,
+          "latency_ms": 16799.043709004764,
+          "output_tokens_per_s": 36.31159074090763,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 351.63846953376,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0108505,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+          "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-4",
+          "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+          "router_family": "laya",
+          "router_run_id": "V9_LAYA_STEP_001",
+          "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+          "router_initialization_ms": 0.0,
+          "router_process_reused": true,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ],
+      "cost_statuses": [
+        "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+      ],
+      "actual_billed_cost_usd": null,
+      "atif_trajectory": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/agent/trajectory.json"
+    },
+    "policy_implementation_status": "REMOTE_NEURAL_ROUTER",
+    "untested_native_efforts_used": [],
+    "neural_router_evidence_eligible": true,
+    "cost_statuses": [
+      "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+    ],
+    "actual_billed_cost_usd": null,
+    "started_at": "2026-11-01T16:27:23.910034Z",
+    "finished_at": "2026-11-01T16:34:25.298201Z",
+    "episode_wall_s": 421.388167,
+    "phase_wall_s": {
+      "environment_setup": 1.083557,
+      "agent_setup": 7e-05,
+      "agent_execution": 390.08806,
+      "verifier": 25.240417
+    },
+    "verifier_artifacts": [
+      {
+        "step_name": null,
+        "reward_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/verifier/reward.txt",
+        "rewards": {
+          "reward": 1.0
+        },
+        "result_rewards": {
+          "reward": 1.0
+        },
+        "stdout_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/verifier/test-stdout.txt",
+        "ctrf_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/verifier/ctrf.json"
+      }
+    ],
+    "trace": {
+      "files": [
+        "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/agent/trajectory.json"
+      ],
+      "steps": [
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/agent/trajectory.json",
+          "step_id": 3,
+          "timestamp": "2026-11-01T16:28:18.815142+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 1017,
+            "completion_tokens": 605,
+            "cached_tokens": 0,
+            "cost_usd": 0.008084,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_0ea3000787ff05d6016ae768916f8481958a8886c9e1c34d64",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 1017,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 0
+                },
+                "output_tokens": 605,
+                "output_tokens_details": {
+                  "reasoning_tokens": 516
+                },
+                "total_tokens": 1622
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 1017,
+              "completion_tokens": 605,
+              "reported_completion_tokens": 605,
+              "reasoning_tokens": 516,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "ttft_ms": 15550.558167044073,
+              "latency_ms": 18049.07008301234,
+              "output_tokens_per_s": 33.519732441474744,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 242.14413232667744,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.008084,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+              "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-0",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_initialization_ms": 28619.072668254375,
+              "router_process_reused": false,
+              "router_question_id": "step_model_preference",
+              "router_candidate_order": [
+                "gpt-6.1-sol",
+                "gpt-6-luna"
+              ],
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_gJwRmtAOtYidXJjwBY1h81AP",
+              "function_name": "bash",
+              "arguments": {
+                "command": "pwd && ls -la && ls -la /app && find /app -maxdepth 2 -type f -not -name '*.npy' -print | head -80"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/agent/trajectory.json",
+          "step_id": 4,
+          "timestamp": "2026-11-01T16:30:30.974283+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 1234,
+            "completion_tokens": 3982,
+            "cached_tokens": 0,
+            "cost_usd": 0.0429035,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_01d3492a6ccef104016ae768c9f34c8196ab6a826b15fd4959",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 1234,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 1231
+                },
+                "output_tokens": 3982,
+                "output_tokens_details": {
+                  "reasoning_tokens": 3063
+                },
+                "total_tokens": 5216
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 1234,
+              "completion_tokens": 3982,
+              "reported_completion_tokens": 3982,
+              "reasoning_tokens": 3063,
+              "cached_tokens": 0,
+              "cache_write_tokens": 1231,
+              "ttft_ms": 112329.67304199701,
+              "latency_ms": 123021.01766696433,
+              "output_tokens_per_s": 32.368452769427165,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 372.4508132214636,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0429035,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+              "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-1",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_initialization_ms": 0.0,
+              "router_process_reused": true,
+              "router_question_id": "step_model_preference",
+              "router_candidate_order": [
+                "gpt-6.1-sol",
+                "gpt-6-luna"
+              ],
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_6u01DSve32Max4pv841zLIJn",
+              "function_name": "bash",
+              "arguments": {
+                "command": "cd /app && python - <<'PY'\nimport numpy as np\nimport scipy\nfrom scipy.optimize import brentq\n\nn = 150_000\nlog_n = np.log(n)\ntarget = 10.0\nprint(f'NumPy {np.__version__}; SciPy {scipy.__version__}')\nprint(f'Required entropy: {log_n - target:.15f}')\n\ndef single_heavy_kls(a):\n    b = (1.0 - a) / (n - 1)\n    forward = a * np.log(n * a) + (1.0 - a) * np.log(n * b)\n    backward = -(np.log(n * a) + (n - 1) * np.log(n * b)) / n\n    return forward, backward\n\na = brentq(lambda a: single_heavy_kls(a)[0] - target,\n           1.0 / n, np.nextafter(1.0, 0.0))\nprint('One-heavy-token baseline (forward, backward):', single_heavy_kls(a))\n\ncore_size = 7\ntail_size = n - core_size\n\ndef grouped_kls(q, log_tail_mass):\n    tail_mass = np.exp(log_tail_mass)\n    log_core_mass = np.log1p(-tail_mass)\n    log_common = log_core_mass + np.log1p(-q) - np.log(core_size - 1)\n    log_special = log_core_mass + np.log(q)\n    log_tail = log_tail_mass - np.log(tail_size)\n    forward = ((1.0 - tail_mass) * (1.0 - q) * (log_n + log_common)\n               + (1.0 - tail_mass) * q * (log_n + log_special)\n               + tail_mass * (log_n + log_tail))\n    backward = -((core_size - 1) * (log_n + log_common)\n                 + (log_n + log_special)\n                 + tail_size * (log_n + log_tail)) / n\n    return forward, backward\n\ndef solve_tail(q):\n    return brentq(lambda x: grouped_kls(q, x)[1] - target,\n                  -100.0, np.log(tail_size / n), xtol=1e-13, rtol=1e-14)\n\ndef forward_residual(q):\n    return grouped_kls(q, solve_tail(q))[0] - target\n\nfor q in [1e-12, 1.0 / core_size]:\n    print(f'Forward residual at core fraction {q:.12g}: {forward_residual(q):.15f}')\nq = brentq(forward_residual, 1e-12, 1.0 / core_size, xtol=1e-14, rtol=1e-14)\ntail_mass = np.exp(solve_tail(q))\np = np.full(n, tail_mass / tail_size, dtype=np.float64)\np[:core_size - 1] = (1.0 - tail_mass) * (1.0 - q) / (core_size - 1)\np[core_size - 1] = (1.0 - tail_mass) * q\np /= p.sum()\nlog_ratio = np.log(p) + log_n\nprint(f'Core fraction: {q:.17g}; tail mass: {tail_mass:.17g}')\nprint(f'Candidate shape: {p.shape}; sum: {p.sum():.17g}; minimum: {p.min():.17g}')\nprint(f'Forward KL: {np.sum(p * log_ratio):.15f}')\nprint(f'Backward KL: {-np.mean(log_ratio):.15f}')\nPY"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/agent/trajectory.json",
+          "step_id": 5,
+          "timestamp": "2026-11-01T16:33:21.448653+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 2367,
+            "completion_tokens": 4096,
+            "cached_tokens": 0,
+            "cost_usd": 0.046876,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_08ba466b52fe026e006ae76934ddfc8190b674b16424ac8867",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "incomplete",
+              "incomplete_details": {
+                "reason": "max_output_tokens"
+              },
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 2367,
+                "input_tokens_details": {
+                  "cache_write_tokens": 2364,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 4096,
+                "output_tokens_details": {
+                  "reasoning_tokens": 1552
+                },
+                "total_tokens": 6463
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 2367,
+              "completion_tokens": 4096,
+              "reported_completion_tokens": 4096,
+              "reasoning_tokens": 1552,
+              "cached_tokens": 0,
+              "cache_write_tokens": 2364,
+              "ttft_ms": 42872.29191698134,
+              "latency_ms": 77693.17079195753,
+              "output_tokens_per_s": 52.72020639971101,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 117.6305748831505,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.046876,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+              "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-2",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_initialization_ms": 0.0,
+              "router_process_reused": true,
+              "router_question_id": "step_model_preference",
+              "router_candidate_order": [
+                "gpt-6.1-sol",
+                "gpt-6-luna"
+              ],
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_TdP1jZ78WF0ZeG1U8sUsjKAx",
+              "function_name": "bash",
+              "arguments": {
+                "command": "cat <<'PY' > /app/find_distribution.py\n#!/usr/bin/env python3\n\"\"\"Construct P with KL(P || U) = KL(U || P) = 10 using natural logs.\"\"\"\nfrom pathlib import Path\n\nimport numpy as np\nfrom scipy.optimize import brentq\n\nVOCAB_SIZE = 150_000\nCORE_SIZE = 7\nTAIL_SIZE = VOCAB_SIZE - CORE_SIZE\nTARGET = 10.0\nTOLERANCE = 0.001\nOUTPUT = Path('/app/dist.npy')\nLOG_N = np.log(VOCAB_SIZE)\n\n\ndef kl_to_uniform(probabilities):\n    \"\"\"Return forward and backward KL for a strictly positive distribution.\"\"\"\n    p = np.asarray(probabilities, dtype=np.float64)\n    if p.ndim != 1 or p.size == 0:\n        raise ValueError('Expected a nonempty one-dimensional array.')\n    if not np.all(np.isfinite(p)) or np.any(p <= 0):\n        raise ValueError('Probabilities must be finite and strictly positive.')\n    if not np.isclose(p.sum(), 1.0, atol=1e-12, rtol=0.0):\n        raise ValueError('Probabilities must sum to one.')\n    log_ratio = np.log(p) + np.log(p.size)\n    return float(np.sum(p * log_ratio)), float(-np.mean(log_ratio))\n\n\ndef grouped_kl(q, log_tail_mass):\n    \"\"\"KL values for six equal core tokens, one special token, and a tail.\n\n    q is the special token's fraction of the core mass. All tail tokens\n    share the remaining mass equally. Logarithmic arithmetic keeps the\n    backward-KL calculation stable even for very small tail probabilities.\n    \"\"\"\n    tail_mass = np.exp(log_tail_mass)\n    core_mass = 1.0 - tail_mass\n    log_core_mass = np.log1p(-tail_mass)\n    log_common = log_core_mass + np.log1p(-q) - np.log(CORE_SIZE - 1)\n    log_special = log_core_mass + np.log(q)\n    log_tail = log_tail_mass - np.log(TAIL_SIZE)\n    forward = (\n        core_mass * (1.0 - q) * (LOG_N + log_common)\n        + core_mass * q * (LOG_N + log_special)\n        + tail_mass * (LOG_N + log_tail)\n    )\n    backward = -(\n        (CORE_SIZE - 1) * (LOG_N + log_common)\n        + (LOG_N + log_special)\n        + TAIL_SIZE * (LOG_N + log_tail)\n    ) / VOCAB_SIZE\n    return forward, backward\n\n\ndef solve_log_tail(q):\n    return brentq(\n        lambda log_mass: grouped_kl(q, log_mass)[1] - TARGET,\n        -100.0,\n        np.log(TAIL_SIZE / VOCAB_SIZE),\n        xtol=1e-13,\n        rtol=1e-14,\n    )\n\n\ndef find_distribution():\n    # First satisfy backward KL by solving for the tail mass; then tune q\n    # to satisfy forward KL without changing backward KL.\n    q = brentq(\n        lambda q: grouped_kl(q, solve_log_tail(q))[0] - TARGET,\n        1e-12,\n        1.0 / CORE_SIZE,\n        xtol=1e-14,\n        rtol=1e-14,\n    )\n    tail_mass = np.exp(solve_log_tail(q))\n    p = np.full(VOCAB_SIZE, tail_mass / TAIL_SIZE, dtype=np.float64)\n    p[:CORE_SIZE - 1] = (1.0 - tail_mass) * (1.0 - q) / (CORE_SIZE - 1)\n    p[CORE_SIZE - 1] = (1.0 - tail_mass) * q\n    p /= p.sum()\n    forward, backward = kl_to_uniform(p)\n    if max(abs(forward - TARGET), abs(backward - TARGET)) > TOLERANCE:\n        raise RuntimeError(f'KL targets not satisfied: {forward}, {backward}')\n    return p\n\n\ndef main():\n    p = find_distribution()\n    np.save(OUTPUT, p, allow_pickle=False)\n    # Verify the artifact, not just the in-memory candidate.\n    saved = np.load(OUTPUT, allow_pickle=False)\n    if saved.shape != (VOCAB_SIZE,) or not np.array_equal(p, saved):\n        raise RuntimeError('Saved distribution failed the round-trip check.')\n    forward, backward = kl_to_uniform(saved)\n    print(f'Saved {OUTPUT}: shape={saved.shape}, dtype={saved.dtype}')\n    print(f'Sum={saved.sum():.17g}; minimum={saved.min():.17g}')\n    print(f'KL(P||U)={forward:.15f}')\n    print(f'KL(U||P)={backward:.15f}')\n\n\nif __name__ == '__main__':\n    main()\nPY\npython /app/find_distribution.py\ncd /app && python - <<'PY'\nimport numpy as np\nfrom scipy.stats import entropy\nfrom find_distribution import kl_to_uniform\n\np = np.load('/app/dist.npy', allow_pickle=False)\nu = np.full(150_000, 1.0 / 150_000, dtype=np.float64)\nassert p.shape == (150_000,)\nassert p.dtype == np.float64\nassert np.all(np.isfinite(p)) and np.all(p > 0)\nassert abs(p.sum() - 1.0) <= 1e-12\nforward = entropy(p, u)\nbackward = entropy(u, p)\nassert abs(forward - 10.0) <= 0.001\nassert abs(backward - 10.0) <= 0.001\nprint(f'Independent SciPy verification: forward={forward:.15f}, backward={backward:.15f}')\n\n# Uniform distributions must have both divergences zero.\nfor size in (1, 7, 150_000):\n    kls = kl_to_uniform(np.full(size, 1.0 / size))\n    assert max(abs(value) for value in kls) < 1e-12\n\n# Invalid distributions must fail validation, including zero probabilities\n# (which would make backward KL infinite).\ninvalid = (\n    [], [[1.0]], [0.0, 1.0], [-0.1, 1.1], [0.2, 0.2],\n    [np.nan, 1.0], [np.inf, 1.0],\n)\nfor values in invalid:\n    try:\n        kl_to_uniform(values)\n    except ValueError:\n        pass\n    else:\n        raise AssertionError(f'Invalid distribution accepted: {values}')\n\n# The smallest positive float must not overflow the logarithm calculation.\ntiny = np.nextafter(0.0, 1.0)\nassert all(np.isfinite(kl_to_uniform([1.0, tiny])))\nprint('All probability-validation and numerical edge-case checks passed.')\nPY"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/agent/trajectory.json",
+          "step_id": 6,
+          "timestamp": "2026-11-01T16:33:53.542580+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 2423,
+            "completion_tokens": 2715,
+            "cached_tokens": 2364,
+            "cost_usd": 0.0275324,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_04293b9325070f14006ae7699db2808197b22158fe925818db",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 2423,
+                "input_tokens_details": {
+                  "cache_write_tokens": 56,
+                  "cached_tokens": 2364
+                },
+                "output_tokens": 2715,
+                "output_tokens_details": {
+                  "reasoning_tokens": 1034
+                },
+                "total_tokens": 5138
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 2423,
+              "completion_tokens": 2715,
+              "reported_completion_tokens": 2715,
+              "reasoning_tokens": 1034,
+              "cached_tokens": 2364,
+              "cache_write_tokens": 56,
+              "ttft_ms": 47020.370374957565,
+              "latency_ms": 68374.86012495356,
+              "output_tokens_per_s": 39.70757665958507,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 127.13953982443012,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0275324,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+              "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-3",
+              "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+              "router_family": "laya",
+              "router_run_id": "V9_LAYA_STEP_001",
+              "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+              "router_initialization_ms": 0.0,
+              "router_process_reused": true,
+              "router_question_id": "step_model_preference",
+              "router_candidate_order": [
+                "gpt-6.1-sol",
+                "gpt-6-luna"
+              ],
+              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_ANULkHsYyexSp8tHMfjr6US9",
+              "function_name": "bash",
+              "arguments": {
+                "command": "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        }
+      ],
+      "tool_call_count": 4
+    },
+    "runtime_log": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42/distribution-search__kFj8yeq/trial.log",
+    "evidence_scope": "recorded_artifact_agreement",
+    "job_dir": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya-api-retry/jobs/distribution-search--laya_v2--s42"
+  },
+  "generator_tokens": 23273,
+  "teacher_calls": 0,
+  "teacher_tokens": 0,
+  "total_model_tokens": 23273,
+  "generator_cost_usd": 0.1362464,
+  "known_generator_cost_usd": 0.1362464,
+  "teacher_cost_usd": 0,
+  "known_teacher_cost_usd": null,
+  "episode_model_cost_usd": 0.1362464,
+  "execution_mode": "REAL_API",
+  "mapped_cost_accounting": null,
+  "cost_source": "provider_usage_and_registry_rates; not an invoice",
+  "official_rate_accounting": {
+    "model": "gpt-6-luna",
+    "pricing_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "price_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cache_write_price_source": "https://developers.openai.com/api/docs/pricing?latest-pricing-expanded=true",
+    "usd_per_1m_tokens": {
+      "input": 0.1,
+      "output": 0.5,
+      "cache_read": 0.01,
+      "cache_write_30m": 0.125
+    },
+    "service_tier": "standard",
+    "input_context": "<=272K",
+    "cache_policy": "Raw missing counts stay null; corresponding input charged at ordinary input rate",
+    "reasoning_policy": "Completion includes reasoning; counted once",
+    "requests": []
+  },
+  "actual_generator_cost_usd": null,
+  "actual_teacher_cost_usd": 0,
+  "sandbox_cost_usd": null,
+  "router_compute_cost_usd": null,
+  "complete_cost_usd": null,
+  "generator_cost_per_success_usd": 0.1362464,
+  "actual_cost_per_success_usd": null,
+  "router_latency_ms": {
+    "laya": {
+      "n": 5,
+      "p50": 11275.687625049613,
+      "p95": 35565.073291014414
+    }
+  },
+  "router_inference_latency_ms": {
+    "laya": {
+      "p50": 11204.438669607043,
+      "p95": 12393.156621605158
+    }
+  },
+  "generator_request_time_ms": 303937.1623758925,
+  "teacher_request_time_ms": null,
+  "router_total_time_ms": {
+    "laya": 79229.26870913943
+  },
+  "container_time_resources": [
+    {
+      "trial_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+      "episode_wall_s": 421.388167,
+      "phase_wall_s": {
+        "environment_setup": 1.083557,
+        "agent_setup": 7e-05,
+        "agent_execution": 390.08806,
+        "verifier": 25.240417
+      }
+    }
+  ],
+  "models": {
+    "gpt-6.1-sol / responses": {
+      "actual_backend_model_ids": [
+        "gpt-6.1-sol"
+      ],
+      "calls": 5,
+      "ttft_p50_ms": 42872.29191698134,
+      "ttft_p95_ms": 112329.67304199701,
+      "output_tokens_per_s": 36.31159074090763,
+      "stream_output_tokens_per_s_estimate": 242.14413232667744
+    }
+  },
+  "tool_exec_p50_ms": 352.66012500505894,
+  "tool_exec_p95_ms": 2866.0991659853607,
+  "episode_p50_s": 421.388167,
+  "episode_p95_s": 421.388167,
+  "episodes_per_hour": 8.461024649545417,
+  "failure_classes": {},
+  "last_event": {
+    "timestamp": "2026-11-01T16:34:27.817386+00:00",
+    "event": "JOB_END",
+    "task_id": "distribution-search",
+    "policy": "laya_v2",
+    "agent": "modelrouter",
+    "job_name": "distribution-search--laya_v2--s42",
+    "status": "EVALUATED",
+    "pipeline_stage": "DEV",
+    "exit_code": 0
+  },
+  "last_generator": {
+    "timestamp": "2026-11-01T16:33:53.536089+00:00",
+    "event": "GENERATOR_END",
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "resp_04a4ef69d1e8dc15006ae769e1e6a08196977bc982e46670ad",
+    "request_model_id": "gpt-6.1-sol",
+    "returned_model_id": "gpt-6.1-sol",
+    "provider": "openai",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "low"
+      }
+    },
+    "returned_native_effort": "max",
+    "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": 4096,
+    "raw_usage": {
+      "input_tokens": 4224,
+      "input_tokens_details": {
+        "cache_write_tokens": 1801,
+        "cached_tokens": 2420
+      },
+      "output_tokens": 610,
+      "output_tokens_details": {
+        "reasoning_tokens": 516
+      },
+      "total_tokens": 4834
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 4224,
+    "completion_tokens": 610,
+    "reported_completion_tokens": 610,
+    "reasoning_tokens": 516,
+    "cached_tokens": 2420,
+    "cache_write_tokens": 1801,
+    "ttft_ms": 15064.307458989788,
+    "latency_ms": 16799.043709004764,
+    "output_tokens_per_s": 36.31159074090763,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 351.63846953376,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0108505,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+    "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-4",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "router_family": "laya",
+    "router_run_id": "V9_LAYA_STEP_001",
+    "router_weights_path": "<SERVER_PROJECT>/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "router_initialization_ms": 0.0,
+    "router_process_reused": true,
+    "router_question_id": "step_model_preference",
+    "router_candidate_order": [
+      "gpt-6.1-sol",
+      "gpt-6-luna"
+    ],
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "PROVIDER_REPORTED_MISMATCH",
+    "step": 4,
+    "policy": "laya_v2",
+    "model": "gpt-6.1-sol",
+    "returned_model": "gpt-6.1-sol",
+    "effort": "low"
+  },
+  "last_tool": {
+    "kind": "agent_tool",
+    "timestamp": "2026-11-01T16:33:53.863391+00:00",
+    "episode_id": "23015bf7-51d2-44ba-b773-05dcebc6f108",
+    "step": 5,
+    "decision_id": "23015bf7-51d2-44ba-b773-05dcebc6f108-4",
+    "router_checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "command": "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT",
+    "tool_call_id": "call_ANULkHsYyexSp8tHMfjr6US9",
+    "exit_code": 0,
+    "duration_ms": 320.51087502622977,
+    "output": "COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\n",
+    "exception_info": "",
+    "submission": true,
+    "phase": "modify",
+    "phase_source": "COMMAND_HEURISTIC"
+  },
+  "measurement_counts": {
+    "benchmark": 5
+  },
+  "last_unit": {
+    "task_id": "distribution-search",
+    "policy": "laya_v2",
+    "agent": "modelrouter",
+    "job_name": "distribution-search--laya_v2--s42",
+    "status": "EVALUATED",
+    "pipeline_stage": "DEV",
+    "exit_code": 0
+  },
+  "measurement_scope": "Benchmark metrics exclude provider/router probes; original probe events remain in events.jsonl",
+  "ttft_scope": "Upstream provider timing; native relay buffers the response before returning it",
+  "publication_status": "AWAITING_PAIRED_SCIENTIFIC_ANALYSIS",
+  "missing_measurements": [
+    "sandbox billing",
+    "router infrastructure cost",
+    "provider invoice reconciliation"
+  ]
+}

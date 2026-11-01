@@ -1,4 +1,14 @@
-# ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-01 文档接续）
+# ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-02 文档接续）
+
+> **11-02最新真实结果**：三个既有Train任务8对前缀新增有效步骤2条、2个新标签任务：Mido质量Luna1、Schema等质量成本Luna1；PrettyTable六对双失败只存观察。累计19 Model-only、任务9/步骤10、11标签任务，总Sol4/Luna15、步骤Sol4/Luna6；215/186只是可组合数量，74行S1+步骤材料已准备但未训练。Effort/K=3仍0，AA v4与缺测保持。详见[本轮结果](../../our-project/results/iterations/20261101-v9-runtime-quality-dev/review.md)。
+>
+> **输入及路由成本**：QID不进入模型，但问题说明、顺序及状态进入；在线沿用步骤目标/Sol→Luna，Prepare保留捕获视图，新两条3874/3962 Token完整进入5120。新Checkpoint未重训。成功Dev5路由仅一次初始化28.62秒、后4次前向外0.0477秒；未证明前向加速。原取消状态用于停止超时后新增请求，30秒工具窗口/Verifier不变，保存/app；取消分支未另造旧900秒失败验证。
+>
+> **Dev与收益范围**：distribution-search固定Sol/Luna/新Laya关闭教师reward1/0/1，CTRF4/4、3/4、4/4，费0.0866944/0.00228552/0.1362464USD。COBOL Luna成功，Sol无Verifier，新LayaAgentTimeout后Verifier reward0。本轮新Laya28次实际选择全Sol、无切换/fallback，含2次旧取消问题截止后额外调用。教师开/关同题都成功，1成功/1消费/0.019706USD，合计费0.111619/0.1362464USD；单题轨迹与缓存不同，不证明净收益。77请求/76Usage/1未知，已知2.00106484USD，完整费用及实收/资源未知。
+>
+> **训练现场**：01:08:59台北F14另项维护241/420块、30848/107404步，最新Loss0.48724648、最近12块有限，首轮/Val未完成，不作父；既有handoff等待，本轮未干预。Serving仍F05/原Kev、V9_LAYA_STEP_001-e01不晋升，F11/R11研究代表保持。独立静态八版本不重评、不训练；五RQ、八图十二表沿用，有限K=2与单题教师结果不能填成正式三模型主表。
+
+## 2026-11-01 · 以下为原时点执行记录
 
 > **本轮真实增量（11-01）**：四个已有Train任务的新失败前缀新增步骤偏好4条（Sol质量3、Luna等质量成本1），新增来源任务0。累计17条MODEL_ONLY目标、9任务、任务级9/步骤级8、Sol4/Luna13；步骤覆盖8任务/7仓库、Sol4/Luna4，7质量差异/1成本。唯一视图含旧13条，可组合213/186，旧382与13,214候选不重加工。实际effort发送参数已保存，但Sol请求low报告max、Luna未报告应用档位，确认的Native Effort/同模型Effort/K=3仍0。11:50现有目录仍无Flash，AA固定v4、Max不作low成绩；五RQ、八图十二表保持，训练任务结果不填正式效果表。详情见[本轮结果](../../our-project/results/iterations/20261101-v9-quality-step-supervision/review.md)。
 >

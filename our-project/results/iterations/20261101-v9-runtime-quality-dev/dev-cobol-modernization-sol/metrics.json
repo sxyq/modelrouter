@@ -1,0 +1,2341 @@
+{
+  "timestamp": "2026-11-01T16:01:43.944828+00:00",
+  "iteration_id": "dev-cobol-modernization-sol",
+  "status": "BLOCKED",
+  "reason": "Harbor exit=0; official verifier result absent in our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42",
+  "observed_trials": 1,
+  "verified_trials": 0,
+  "successes": 0,
+  "success_rate": null,
+  "total_units": 1,
+  "finished_units": 1,
+  "current": null,
+  "current_trial": {
+    "task_id": {
+      "path": "external/benchmarks/terminal-bench-2-1/tasks/cobol-modernization"
+    },
+    "policy": "fixed_strong",
+    "agent": "modelrouter",
+    "job_name": "cobol-modernization--fixed_strong--s42",
+    "status": "NOT_EVALUATED",
+    "pipeline_stage": "DEV",
+    "trial_dir": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU",
+    "trial_id": "75b4a613-829c-4708-b642-f54225acb25f",
+    "trial_name": "cobol-modernization__Ti47KTU",
+    "job_id": "d1ba040b-3bd9-4377-bd01-f2ed2b0772b5",
+    "task_name": "terminal-bench/cobol-modernization",
+    "task_version": null,
+    "task_digest": "sha256:e03aa03965eee48c9f772d566ff9bcd741fceeac9693123f82a13fdd46be0d88",
+    "task_git_sha": null,
+    "task_source": null,
+    "task_checksum": "1d068f63a7d36ec098b620a8b2062419c1a9a2eff6458bc3ff56eb325ebf5903",
+    "agent_info": {
+      "name": "modelrouter-mini-swe-agent",
+      "version": "10.0-mini-2.4.6",
+      "model_info": {
+        "name": "gpt-6-luna",
+        "provider": "openai"
+      }
+    },
+    "environment": null,
+    "reward": null,
+    "rewards": null,
+    "success": null,
+    "error": {
+      "exception_type": "RuntimeError",
+      "exception_message": "Command timed out after 30 seconds",
+      "exception_traceback": "Traceback (most recent call last):\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/subprocess.py\", line 201, in communicate\n    stdin, stdout, stderr = await tasks.gather(stdin, stdout, stderr)\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/subprocess.py\", line 181, in _read_stream\n    output = await stream.read()\n             ^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/streams.py\", line 706, in read\n    block = await self.read(self._limit)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/streams.py\", line 713, in read\n    await self._wait_for_data('read')\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/streams.py\", line 545, in _wait_for_data\n    await self._waiter\nasyncio.exceptions.CancelledError\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"external/benchmarks/harbor/src/harbor/environments/docker/docker.py\", line 780, in _collect_buffered_output\n    stdout_bytes, stderr_bytes = await asyncio.wait_for(\n                                 ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/tasks.py\", line 519, in wait_for\n    async with timeouts.timeout(timeout):\n               ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/timeouts.py\", line 115, in __aexit__\n    raise TimeoutError from exc_val\nTimeoutError\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"external/benchmarks/harbor/src/harbor/trial/trial.py\", line 502, in run\n    await self._run()\n  File \"external/benchmarks/harbor/src/harbor/trial/single_step.py\", line 40, in _run\n    await self._run_agent()\n  File \"external/benchmarks/harbor/src/harbor/trial/single_step.py\", line 76, in _run_agent\n    await self._run_agent_phase(\n  File \"external/benchmarks/harbor/src/harbor/trial/trial.py\", line 653, in _run_agent_phase\n    await asyncio.wait_for(\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"our-project/code/src/modelrouter/benchmark/harbor_agent.py\", line 375, in run\n    await asyncio.to_thread(agent.run, instruction)\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/threads.py\", line 25, in to_thread\n    return await loop.run_in_executor(None, func_call)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/thread.py\", line 59, in run\n    result = self.fn(*self.args, **self.kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \".runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/agents/default.py\", line 98, in run\n    self.step()\n  File \".runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/agents/default.py\", line 128, in step\n    return self.execute_actions(self.query())\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \".runtime/benchmark-venv/lib/python3.12/site-packages/minisweagent/agents/default.py\", line 156, in execute_actions\n    outputs = [self.env.execute(action) for action in message.get(\"extra\", {}).get(\"actions\", [])]\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"our-project/code/src/modelrouter/benchmark/harbor_agent.py\", line 303, in execute\n    ).result()\n      ^^^^^^^^\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 456, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"<LOCAL_USER>/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"external/benchmarks/harbor/src/harbor/environments/docker/docker.py\", line 1364, in exec\n    return await self._compose_exec(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"external/benchmarks/harbor/src/harbor/environments/docker/docker.py\", line 1441, in _compose_exec\n    return await self._run_docker_compose_command(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"external/benchmarks/harbor/src/harbor/environments/docker/docker.py\", line 754, in _run_docker_compose_command\n    result = await self._collect_buffered_output(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"external/benchmarks/harbor/src/harbor/environments/docker/docker.py\", line 787, in _collect_buffered_output\n    raise RuntimeError(f\"Command timed out after {timeout_sec} seconds\")\nRuntimeError: Command timed out after 30 seconds\n",
+      "occurred_at": "2026-11-01T16:01:38.842890Z"
+    },
+    "reason": "Original verifier output or completed verifier timing absent",
+    "usage": {
+      "n_input_tokens": 223855,
+      "n_cache_tokens": 117562,
+      "n_output_tokens": 13757,
+      "cost_usd": 0.41504220000000003
+    },
+    "model_usage": {
+      "gpt-6.1-sol": {
+        "n_input_tokens": 223855,
+        "n_cache_tokens": 117562,
+        "n_output_tokens": 13757,
+        "cost_usd": 0.41504220000000003
+      }
+    },
+    "n_input_tokens": 223855,
+    "n_cache_tokens": 117562,
+    "n_output_tokens": 13757,
+    "cost_usd": 0.41504220000000003,
+    "duration_sec": 376.177317,
+    "verifier_path": null,
+    "native_trace_path": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/mini-swe-agent.trajectory.json",
+    "router_fallback_used": false,
+    "agent_metadata": {
+      "harness": "minisweagent.agents.default.DefaultAgent",
+      "mini_version": "2.4.6",
+      "policy": "fixed_strong",
+      "task_id": "cobol-modernization",
+      "task_identity_source": "harbor_task_config",
+      "fallback_used": false,
+      "policy_implementation_status": "CONFIGURED_POLICY",
+      "action_validation": {
+        "gpt-6.1-sol:low": "PROVIDER_REPORTED_MISMATCH",
+        "gpt-6-luna:low": "REAL_API_NOT_OBSERVED"
+      },
+      "untested_native_efforts_used": [],
+      "neural_router_evidence_eligible": false,
+      "raw_trajectory": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/mini-swe-agent.trajectory.json",
+      "v9": {
+        "teacher_metrics": [],
+        "continuity": {
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-10",
+          "message_count": 22,
+          "message_chars": 122547,
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_fallback_used": false,
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "previous_router_checkpoint_id": "none",
+          "previous_router_run_id": null,
+          "previous_selected_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "previous_actual_backend_model_id": "gpt-6.1-sol",
+          "actual_backend_model_id": "gpt-6.1-sol",
+          "logical_model_changed": false,
+          "actual_backend_changed": false,
+          "context_delivery": "FULL_MESSAGE_HISTORY",
+          "history_messages_resent": true,
+          "observed_cached_tokens": 40196,
+          "cache_usage_status": "REPORTED",
+          "physical_kv_cache_shared": null,
+          "switch_extra_tokens": null,
+          "switch_extra_cost_usd": null,
+          "switch_cost_status": "NOT_MEASURED"
+        },
+        "capability_snapshot_id": "20261031T072548885180Z-v4",
+        "router_checkpoint_ids": [
+          "none"
+        ],
+        "router_checkpoints": [
+          {
+            "router_family": "baseline_fixed_strong",
+            "run_id": null,
+            "checkpoint_id": "none"
+          }
+        ],
+        "feature_training_status": "FEATURE_PARTIALLY_TRAINED",
+        "backend_deployment_status": "API_IDENTITY_ONLY_UNVERIFIED_PHYSICAL_BACKEND",
+        "complete_episode_cost_usd": 0.41504220000000003,
+        "upstream_cost_accounting": "KNOWN_COSTS_PLUS_UNKNOWN_PLACEHOLDERS_NOT_BILLING"
+      },
+      "provider_metrics": [
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_031920329861a654016ae760f3cfc8819694a771c4f4db5e92",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 1049,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 1046
+            },
+            "output_tokens": 107,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 1156
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 1049,
+          "completion_tokens": 107,
+          "reported_completion_tokens": 107,
+          "reasoning_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 1046,
+          "ttft_ms": 2441.3369580288418,
+          "latency_ms": 4785.302875039633,
+          "output_tokens_per_s": 22.360131175419863,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 45.64912792608126,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.003691,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-0",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_0ce3d667bae7f03a016ae760f8c4ec8193b0c2233a2a6e9a80",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 3099,
+            "input_tokens_details": {
+              "cached_tokens": 1046,
+              "cache_write_tokens": 2050
+            },
+            "output_tokens": 443,
+            "output_tokens_details": {
+              "reasoning_tokens": 151
+            },
+            "total_tokens": 3542
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 3099,
+          "completion_tokens": 443,
+          "reported_completion_tokens": 443,
+          "reasoning_tokens": 151,
+          "cached_tokens": 1046,
+          "cache_write_tokens": 2050,
+          "ttft_ms": 6353.368041978683,
+          "latency_ms": 10055.548166972585,
+          "output_tokens_per_s": 44.05528098955679,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 119.6592237663557,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0096656,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-1",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_002596720e1c61dd006ae76105cb448193a480c68bd01b1147",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 6098,
+            "input_tokens_details": {
+              "cache_write_tokens": 6095,
+              "cached_tokens": 0
+            },
+            "output_tokens": 447,
+            "output_tokens_details": {
+              "reasoning_tokens": 138
+            },
+            "total_tokens": 6545
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 6098,
+          "completion_tokens": 447,
+          "reported_completion_tokens": 447,
+          "reasoning_tokens": 138,
+          "cached_tokens": 0,
+          "cache_write_tokens": 6095,
+          "ttft_ms": 7635.72037499398,
+          "latency_ms": 11428.881749976426,
+          "output_tokens_per_s": 39.111438002315666,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 117.84365488591125,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0197135,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-2",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_0ec7f08f2cd283f6006ae761105af881969d13765c77f08b5b",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 10494,
+            "input_tokens_details": {
+              "cache_write_tokens": 4396,
+              "cached_tokens": 6095
+            },
+            "output_tokens": 1200,
+            "output_tokens_details": {
+              "reasoning_tokens": 246
+            },
+            "total_tokens": 11694
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 10494,
+          "completion_tokens": 1200,
+          "reported_completion_tokens": 1200,
+          "reasoning_tokens": 246,
+          "cached_tokens": 6095,
+          "cache_write_tokens": 4396,
+          "ttft_ms": 10681.31941696629,
+          "latency_ms": 18650.846417003777,
+          "output_tokens_per_s": 64.3402435026205,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 150.5735534862176,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0236055,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-3",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_08151c230d53e7a9016ae7612ae4488196aa67916b1c99a60f",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 15738,
+            "input_tokens_details": {
+              "cached_tokens": 3096,
+              "cache_write_tokens": 12639
+            },
+            "output_tokens": 1780,
+            "output_tokens_details": {
+              "reasoning_tokens": 1521
+            },
+            "total_tokens": 17518
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 15738,
+          "completion_tokens": 1780,
+          "reported_completion_tokens": 1780,
+          "reasoning_tokens": 1521,
+          "cached_tokens": 3096,
+          "cache_write_tokens": 12639,
+          "ttft_ms": 48306.09866598388,
+          "latency_ms": 53035.976790997665,
+          "output_tokens_per_s": 33.56212344338565,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 376.33104975507433,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0497131,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-4",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_0ac3338e52d03baa006ae7615a96048197ae480c2571c2bb7b",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 16829,
+            "input_tokens_details": {
+              "cache_write_tokens": 16826,
+              "cached_tokens": 0
+            },
+            "output_tokens": 1232,
+            "output_tokens_details": {
+              "reasoning_tokens": 392
+            },
+            "total_tokens": 18061
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 16829,
+          "completion_tokens": 1232,
+          "reported_completion_tokens": 1232,
+          "reasoning_tokens": 392,
+          "cached_tokens": 0,
+          "cache_write_tokens": 16826,
+          "ttft_ms": 13932.607707974967,
+          "latency_ms": 26230.06070795236,
+          "output_tokens_per_s": 46.96901062171333,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 100.18334690949945,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.054391,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-5",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_0426214b9eea0004006ae7617daf40819783fa8499d1cd64e2",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 23221,
+            "input_tokens_details": {
+              "cache_write_tokens": 6392,
+              "cached_tokens": 16826
+            },
+            "output_tokens": 1678,
+            "output_tokens_details": {
+              "reasoning_tokens": 1034
+            },
+            "total_tokens": 24899
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 23221,
+          "completion_tokens": 1678,
+          "reported_completion_tokens": 1678,
+          "reasoning_tokens": 1034,
+          "cached_tokens": 16826,
+          "cache_write_tokens": 6392,
+          "ttft_ms": 40336.04833402205,
+          "latency_ms": 49632.82608403824,
+          "output_tokens_per_s": 33.808270299958586,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 180.49264434627125,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0344486,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-6",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_0340e64a79e0ebbc006ae761a999308197bada287384e3c9d4",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 28983,
+            "input_tokens_details": {
+              "cache_write_tokens": 28980,
+              "cached_tokens": 0
+            },
+            "output_tokens": 844,
+            "output_tokens_details": {
+              "reasoning_tokens": 516
+            },
+            "total_tokens": 29827
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 28983,
+          "completion_tokens": 844,
+          "reported_completion_tokens": 844,
+          "reasoning_tokens": 516,
+          "cached_tokens": 0,
+          "cache_write_tokens": 28980,
+          "ttft_ms": 18867.669583007228,
+          "latency_ms": 23954.42558301147,
+          "output_tokens_per_s": 35.23357289763469,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 165.92107032444568,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.080896,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-7",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_050d24c396ee120d016ae761c485e48190b914cee0cfe83934",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 34571,
+            "input_tokens_details": {
+              "cached_tokens": 15735,
+              "cache_write_tokens": 18833
+            },
+            "output_tokens": 812,
+            "output_tokens_details": {
+              "reasoning_tokens": 516
+            },
+            "total_tokens": 35383
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 34571,
+          "completion_tokens": 812,
+          "reported_completion_tokens": 812,
+          "reasoning_tokens": 516,
+          "cached_tokens": 15735,
+          "cache_write_tokens": 18833,
+          "ttft_ms": 21913.47616596613,
+          "latency_ms": 26376.005499972962,
+          "output_tokens_per_s": 30.7855562132345,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 181.9595882120328,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.056782,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-8",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_042a848089e24edb016ae761e540988196a0eca1489069ca8a",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 40199,
+            "input_tokens_details": {
+              "cached_tokens": 34568,
+              "cache_write_tokens": 5628
+            },
+            "output_tokens": 2566,
+            "output_tokens_details": {
+              "reasoning_tokens": 379
+            },
+            "total_tokens": 42765
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 40199,
+          "completion_tokens": 2566,
+          "reported_completion_tokens": 2566,
+          "reasoning_tokens": 379,
+          "cached_tokens": 34568,
+          "cache_write_tokens": 5628,
+          "ttft_ms": 24764.78562504053,
+          "latency_ms": 52236.551792011596,
+          "output_tokens_per_s": 49.12269114196033,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 93.40498839441446,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0431928,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-9",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        },
+        {
+          "requested_model_id": "gpt-6.1-sol",
+          "selected_model_id": "gpt-6.1-sol",
+          "response_id": "resp_0715b230961a8163016ae76219a7248190855278bd93ca4a1b",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "provider": "openai",
+          "provider_base_url": "https://oneapi.sxyq27.online/v1",
+          "protocol": "responses",
+          "finish_reason": "completed",
+          "incomplete_details": null,
+          "native_effort": "low",
+          "requested_native_effort": "low",
+          "request_native_effort": "low",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "returned_native_effort": "max",
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "stream": true,
+          "requested_max_output_tokens": 4096,
+          "reported_max_output_tokens": 4096,
+          "raw_usage": {
+            "input_tokens": 43574,
+            "input_tokens_details": {
+              "cached_tokens": 40196,
+              "cache_write_tokens": 3375
+            },
+            "output_tokens": 2648,
+            "output_tokens_details": {
+              "reasoning_tokens": 516
+            },
+            "total_tokens": 46222
+          },
+          "usage_status": "REPORTED",
+          "identity_status": "MATCHED_REQUEST_ALIAS",
+          "alias_mapping_applied": false,
+          "prompt_tokens": 43574,
+          "completion_tokens": 2648,
+          "reported_completion_tokens": 2648,
+          "reasoning_tokens": 516,
+          "cached_tokens": 40196,
+          "cache_write_tokens": 3375,
+          "ttft_ms": 25919.467625033576,
+          "latency_ms": 52546.10016703373,
+          "output_tokens_per_s": 50.3938444828927,
+          "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+          "stream_output_tokens_per_s": 99.44930121460587,
+          "stream_output_tokens_per_s_status": "ESTIMATE",
+          "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+          "cost_usd": 0.0389431,
+          "cost_model_id": "gpt-6.1-sol",
+          "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+          "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+          "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+          "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+          "actual_billed_cost_usd": null,
+          "raw_reported_cost": null,
+          "reported_cost_unit": "NOT_REPORTED",
+          "budget_accounted": true,
+          "status": "RECORDED",
+          "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+          "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-10",
+          "router_checkpoint_id": "none",
+          "router_family": "baseline_fixed_strong",
+          "router_run_id": null,
+          "router_identity_source": null,
+          "router_identity_status": "NOT_A_NEURAL_ROUTE",
+          "capability_snapshot_id": "20261031T072548885180Z-v4",
+          "execution_mode": "REAL_API",
+          "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+          "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+        }
+      ],
+      "cost_statuses": [
+        "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+      ],
+      "actual_billed_cost_usd": null,
+      "atif_trajectory": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json"
+    },
+    "policy_implementation_status": "CONFIGURED_POLICY",
+    "untested_native_efforts_used": [],
+    "neural_router_evidence_eligible": false,
+    "cost_statuses": [
+      "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+    ],
+    "actual_billed_cost_usd": null,
+    "started_at": "2026-11-01T15:55:26.858693Z",
+    "finished_at": "2026-11-01T16:01:43.036010Z",
+    "episode_wall_s": 376.177317,
+    "phase_wall_s": {
+      "environment_setup": 3.717295,
+      "agent_setup": 0.000632,
+      "agent_execution": 366.82366,
+      "verifier": null
+    },
+    "verifier_artifacts": [
+      {
+        "step_name": null,
+        "reward_path": null,
+        "rewards": null,
+        "result_rewards": null,
+        "stdout_path": null,
+        "ctrf_path": null
+      }
+    ],
+    "trace": {
+      "files": [
+        "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json"
+      ],
+      "steps": [
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 3,
+          "timestamp": "2026-11-01T15:55:35.746713+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 1049,
+            "completion_tokens": 107,
+            "cached_tokens": 0,
+            "cost_usd": 0.003691,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_031920329861a654016ae760f3cfc8819694a771c4f4db5e92",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 1049,
+                "input_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 1046
+                },
+                "output_tokens": 107,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 1156
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 1049,
+              "completion_tokens": 107,
+              "reported_completion_tokens": 107,
+              "reasoning_tokens": 0,
+              "cached_tokens": 0,
+              "cache_write_tokens": 1046,
+              "ttft_ms": 2441.3369580288418,
+              "latency_ms": 4785.302875039633,
+              "output_tokens_per_s": 22.360131175419863,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 45.64912792608126,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.003691,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-0",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_8GPIOMOEMHCFQ4PcNopBnvmo",
+              "function_name": "bash",
+              "arguments": {
+                "command": "cd /app && ls -la && find src data -maxdepth 2 -type f -printf '%p %s bytes\\n' && sed -n '1,240p' /app/src/program.cbl && command -v cobc && cobc -V"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 4,
+          "timestamp": "2026-11-01T15:55:46.060878+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 3099,
+            "completion_tokens": 443,
+            "cached_tokens": 1046,
+            "cost_usd": 0.0096656,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_0ce3d667bae7f03a016ae760f8c4ec8193b0c2233a2a6e9a80",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 3099,
+                "input_tokens_details": {
+                  "cached_tokens": 1046,
+                  "cache_write_tokens": 2050
+                },
+                "output_tokens": 443,
+                "output_tokens_details": {
+                  "reasoning_tokens": 151
+                },
+                "total_tokens": 3542
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 3099,
+              "completion_tokens": 443,
+              "reported_completion_tokens": 443,
+              "reasoning_tokens": 151,
+              "cached_tokens": 1046,
+              "cache_write_tokens": 2050,
+              "ttft_ms": 6353.368041978683,
+              "latency_ms": 10055.548166972585,
+              "output_tokens_per_s": 44.05528098955679,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 119.6592237663557,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0096656,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-1",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_nEGqMViE79xB5DWkp9tquQk3",
+              "function_name": "bash",
+              "arguments": {
+                "command": "cd /app && for f in src/INPUT.DAT data/*.DAT; do echo \"--- $f\"; xxd -g 1 \"$f\"; done; mkdir -p /tmp/bookforum-test/original/src /tmp/bookforum-test/original/data; cp src/INPUT.DAT /tmp/bookforum-test/original/src/; cp data/*.DAT /tmp/bookforum-test/original/data/; cobc -x -o /tmp/bookforum-test/bookforum src/program.cbl; cobc -C -o /tmp/bookforum-test/program.c src/program.cbl; cp -a /tmp/bookforum-test/original /tmp/bookforum-test/baseline; cd /tmp/bookforum-test/baseline && /tmp/bookforum-test/bookforum; echo \"exit status=$?\"; for f in data/*.DAT; do echo \"--- $f\"; xxd -g 1 \"$f\"; done; sed -n '1,260p' /tmp/bookforum-test/program.c"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 5,
+          "timestamp": "2026-11-01T15:55:58.660943+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 6098,
+            "completion_tokens": 447,
+            "cached_tokens": 0,
+            "cost_usd": 0.0197135,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_002596720e1c61dd006ae76105cb448193a480c68bd01b1147",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 6098,
+                "input_tokens_details": {
+                  "cache_write_tokens": 6095,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 447,
+                "output_tokens_details": {
+                  "reasoning_tokens": 138
+                },
+                "total_tokens": 6545
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 6098,
+              "completion_tokens": 447,
+              "reported_completion_tokens": 447,
+              "reasoning_tokens": 138,
+              "cached_tokens": 0,
+              "cache_write_tokens": 6095,
+              "ttft_ms": 7635.72037499398,
+              "latency_ms": 11428.881749976426,
+              "output_tokens_per_s": 39.111438002315666,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 117.84365488591125,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0197135,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-2",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_iJupFDc3yKFoHMH8PDHLw2c6",
+              "function_name": "bash",
+              "arguments": {
+                "command": "python3 - <<'PY'\nfrom pathlib import Path\nfor f in [Path('/app/src/INPUT.DAT'), *Path('/app/data').glob('*.DAT')]:\n    b = f.read_bytes()\n    print(f, len(b), repr(b))\n    size = {'ACCOUNTS.DAT':34, 'BOOKS.DAT':28, 'TRANSACTIONS.DAT':22, 'INPUT.DAT':22}[f.name]\n    for off in range(0,len(b),size):\n        print(off, repr(b[off:off+size]))\nPY\nsed -n '320,680p' /tmp/bookforum-test/program.c; cat /tmp/bookforum-test/program.c.l.h; cat /tmp/bookforum-test/program.c.h; ls /usr/include/libcob; grep -R 'cob_add\\|cob_sub\\|cob_move' -n /usr/include/libcob/numeric.h /usr/include/libcob/move.h 2>/dev/null; ls -la /app/src"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 6,
+          "timestamp": "2026-11-01T15:56:17.835955+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 10494,
+            "completion_tokens": 1200,
+            "cached_tokens": 6095,
+            "cost_usd": 0.0236055,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_0ec7f08f2cd283f6006ae761105af881969d13765c77f08b5b",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 10494,
+                "input_tokens_details": {
+                  "cache_write_tokens": 4396,
+                  "cached_tokens": 6095
+                },
+                "output_tokens": 1200,
+                "output_tokens_details": {
+                  "reasoning_tokens": 246
+                },
+                "total_tokens": 11694
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 10494,
+              "completion_tokens": 1200,
+              "reported_completion_tokens": 1200,
+              "reasoning_tokens": 246,
+              "cached_tokens": 6095,
+              "cache_write_tokens": 4396,
+              "ttft_ms": 10681.31941696629,
+              "latency_ms": 18650.846417003777,
+              "output_tokens_per_s": 64.3402435026205,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 150.5735534862176,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0236055,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-3",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_OO4jPYYu29CdTecAJUiCUVd3",
+              "function_name": "bash",
+              "arguments": {
+                "command": "sed -n '570,790p' /tmp/bookforum-test/program.c; cat > /tmp/bookforum-test/probe.py <<'PY'\nfrom pathlib import Path\nimport shutil\nimport subprocess\n\nROOT = Path('/tmp/bookforum-test/probes')\nBIN = '/tmp/bookforum-test/bookforum'\n\ndef acct(uid, bal, name=b'Name'):\n    if isinstance(bal, int):\n        bal = f'{bal:010d}'.encode()\n    return uid + name.ljust(20, b' ')[:20] + bal\n\ndef book(bid=b'B001', owner=b'U002', title=b'Title'):\n    return bid + title.ljust(20, b' ')[:20] + owner\n\ndef run(name, inp, accts=None, books=None, trans=b'', verbose=True):\n    d = ROOT / name\n    if d.exists():\n        shutil.rmtree(d)\n    (d/'src').mkdir(parents=True)\n    (d/'data').mkdir()\n    (d/'src/INPUT.DAT').write_bytes(inp)\n    fs = {'ACCOUNTS.DAT': accts if accts is not None else acct(b'U001',1000)+acct(b'U002',2000),\n          'BOOKS.DAT': books if books is not None else book(),\n          'TRANSACTIONS.DAT': trans}\n    for fn, data in fs.items():\n        if data is not None:\n            (d/'data'/fn).write_bytes(data)\n    p = subprocess.run([BIN],cwd=d,capture_output=True)\n    if verbose:\n        print(name, 'input', repr(inp), 'rc',p.returncode, 'stdout',repr(p.stdout),'stderr',repr(p.stderr))\n        for fn in fs:\n            path=d/'data'/fn\n            print(fn, repr(path.read_bytes()) if path.exists() else None)\n    return d, p\n\nif __name__ == '__main__':\n    run('normal',b'U001U002B0010000000200')\n    run('short',b'U001U002B001200')\n    run('short-missing-amount',b'U001U002B001')\n    run('underflow',b'U001U002B0010000002000')\n    run('overflow',b'U001U002B0019999999999')\n    run('self',b'U001U001B0010000000200',books=book(owner=b'U001'))\n    run('self-underflow',b'U001U001B0010000002000',books=book(owner=b'U001'))\n    run('duplicates',b'U001U002B0010000000200',accts=acct(b'U001',1000)+acct(b'U001',50)+acct(b'U002',2000)+acct(b'U002',2000),books=book()+book(owner=b'U003'))\n    run('trailing-accounts',b'U001U002B0010000000200',accts=acct(b'U001',1000)+acct(b'U002',2000)+b'U001X')\n    run('trailing-books',b'U001U002B0010000000200',books=book()+b'B001X')\n    run('newline',b'U001U002B0010000000200\\n',accts=acct(b'U001',1000)+b'\\n'+acct(b'U002',2000)+b'\\n')\n    run('empty',b'')\n    run('amount-spaces',b'U001U002B001          ')\n    run('amount-signed',b'U001U002B001-000000200')\n    run('amount-dot',b'U001U002B00100000200.5')\n    run('amount-letters',b'U001U002B001abcdefghij')\nPY\npython3 /tmp/bookforum-test/probe.py"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 7,
+          "timestamp": "2026-11-01T15:57:12.155792+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 15738,
+            "completion_tokens": 1780,
+            "cached_tokens": 3096,
+            "cost_usd": 0.0497131,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_08151c230d53e7a9016ae7612ae4488196aa67916b1c99a60f",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 15738,
+                "input_tokens_details": {
+                  "cached_tokens": 3096,
+                  "cache_write_tokens": 12639
+                },
+                "output_tokens": 1780,
+                "output_tokens_details": {
+                  "reasoning_tokens": 1521
+                },
+                "total_tokens": 17518
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 15738,
+              "completion_tokens": 1780,
+              "reported_completion_tokens": 1780,
+              "reasoning_tokens": 1521,
+              "cached_tokens": 3096,
+              "cache_write_tokens": 12639,
+              "ttft_ms": 48306.09866598388,
+              "latency_ms": 53035.976790997665,
+              "output_tokens_per_s": 33.56212344338565,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 376.33104975507433,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0497131,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-4",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_9ggEaWZC5dtD31yKAxrFzLd3",
+              "function_name": "bash",
+              "arguments": {
+                "command": "grep -n -A 24 -B 6 'typedef struct __cob_field\\|cob_field_attr;\\|cob_field;\\|cob_move (\\|cob_add (\\|cob_sub (\\|cob_init (' /usr/include/libcob/common.h; ldconfig -p | grep libcob; command -v objdump; find /usr/share -iname '*gnucobol*' -o -iname '*libcob*' | head -25; nm -D /usr/lib/x86_64-linux-gnu/libcob.so.4 | grep -E 'cob_move|cob_decimal_set_field|cob_get_numdisp|cob_add$|cob_sub$|cob_get_field_str|cob_get_s64'"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 8,
+          "timestamp": "2026-11-01T15:57:38.992602+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 16829,
+            "completion_tokens": 1232,
+            "cached_tokens": 0,
+            "cost_usd": 0.054391,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_0ac3338e52d03baa006ae7615a96048197ae480c2571c2bb7b",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 16829,
+                "input_tokens_details": {
+                  "cache_write_tokens": 16826,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 1232,
+                "output_tokens_details": {
+                  "reasoning_tokens": 392
+                },
+                "total_tokens": 18061
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 16829,
+              "completion_tokens": 1232,
+              "reported_completion_tokens": 1232,
+              "reasoning_tokens": 392,
+              "cached_tokens": 0,
+              "cache_write_tokens": 16826,
+              "ttft_ms": 13932.607707974967,
+              "latency_ms": 26230.06070795236,
+              "output_tokens_per_s": 46.96901062171333,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 100.18334690949945,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.054391,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-5",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_86mxLIah6mhoKkW1BO9ZNAbL",
+              "function_name": "bash",
+              "arguments": {
+                "command": "cat > /tmp/bookforum-test/numeric_probe.py <<'PY'\nimport ctypes as c\n\nclass Attr(c.Structure):\n    _fields_ = [('type',c.c_ushort),('digits',c.c_ushort),('scale',c.c_short),('flags',c.c_ushort),('pic',c.c_void_p)]\nclass Field(c.Structure):\n    _fields_ = [('size',c.c_size_t),('data',c.POINTER(c.c_ubyte)),('attr',c.POINTER(Attr))]\nlib=c.CDLL('libcob.so.4')\nlib.cob_init.argtypes=[c.c_int,c.c_void_p]\nlib.cob_init(0,None)\nfor fn in ('cob_move','cob_add','cob_sub'):\n    getattr(lib,fn).argtypes = [c.POINTER(Field),c.POINTER(Field)] + ([] if fn=='cob_move' else [c.c_int])\n\ndef field(b,scale=0):\n    a=Attr(0x10,len(b),scale,0,None)\n    buf=(c.c_ubyte*len(b)).from_buffer_copy(b)\n    f=Field(len(b),buf,c.pointer(a))\n    return a,buf,f\n\ndef result(amount, balance=b'0000001000', verbose=True):\n    a1,b1,f1=field(amount)\n    a2,b2,f2=field(b'0'*12,2)\n    a3,b3,f3=field(balance)\n    a4,b4,f4=field(b'0'*10)\n    a5,b5,f5=field(balance)\n    lib.cob_move(c.byref(f1),c.byref(f2))\n    lib.cob_move(c.byref(f2),c.byref(f4))\n    lib.cob_sub(c.byref(f3),c.byref(f2),0)\n    lib.cob_add(c.byref(f5),c.byref(f2),0)\n    r=(bytes(b2),bytes(b4),bytes(b3),bytes(b5))\n    if verbose: print(repr(amount), repr(balance), [repr(x) for x in r])\n    return r\n\nif __name__=='__main__':\n    for a in (b'0000000200',b'200'+b'\\0'*7,b' '*10,b'-000000200',b'00000200.5',b'abcdefghij',b'000000000a',b'a000000000',b'00000000-2',b'000000000:', b'000000000/', b'00000000\\x002',b'00000 0002',b'00000\\xff0002',b'\\xff'*10,b'\\0'*10):\n        result(a)\n    print('last byte digit decoding:')\n    for ch in range(256):\n        r=result(b'000000000'+bytes([ch]),balance=b'0000000000',verbose=False)\n        if ch%16==0: print()\n        print(f'{ch:02x}:{r[2].decode(\"ascii\")} ',end='')\n    print()\nPY\npython3 /tmp/bookforum-test/numeric_probe.py\nobjdump -d --start-address=0x22110 --stop-address=0x22510 /lib/x86_64-linux-gnu/libcob.so.4"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 9,
+          "timestamp": "2026-11-01T15:58:29.150862+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 23221,
+            "completion_tokens": 1678,
+            "cached_tokens": 16826,
+            "cost_usd": 0.0344486,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_0426214b9eea0004006ae7617daf40819783fa8499d1cd64e2",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 23221,
+                "input_tokens_details": {
+                  "cache_write_tokens": 6392,
+                  "cached_tokens": 16826
+                },
+                "output_tokens": 1678,
+                "output_tokens_details": {
+                  "reasoning_tokens": 1034
+                },
+                "total_tokens": 24899
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 23221,
+              "completion_tokens": 1678,
+              "reported_completion_tokens": 1678,
+              "reasoning_tokens": 1034,
+              "cached_tokens": 16826,
+              "cache_write_tokens": 6392,
+              "ttft_ms": 40336.04833402205,
+              "latency_ms": 49632.82608403824,
+              "output_tokens_per_s": 33.808270299958586,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 180.49264434627125,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0344486,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-6",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_KEHuE3fqaljwnmxzWi8gz6PK",
+              "function_name": "bash",
+              "arguments": {
+                "command": "objdump -d --start-address=0x22240 --stop-address=0x22430 /lib/x86_64-linux-gnu/libcob.so.4; objdump -d --start-address=0x22520 --stop-address=0x227a0 /lib/x86_64-linux-gnu/libcob.so.4; objdump -d --start-address=0x1e3b0 --stop-address=0x1e5a0 /lib/x86_64-linux-gnu/libcob.so.4; python3 - <<'PY'\nimport sys\nsys.path.insert(0,'/tmp/bookforum-test')\nfrom probe import run, acct, book\nrun('partial-acct-id',b'U001U002B0010000000200',accts=acct(b'U001',1000)+acct(b'U002',2000)+b'U')\nrun('partial-unrelated-acct',b'U001U002B0010000000200',accts=acct(b'U001',1000)+acct(b'U002',2000)+b'X')\nrun('partial-first-acct',b'U001U001B0010000000200',accts=b'U001',books=book(owner=b'U001'))\nrun('partial-only-book',b'U001U002B0010000000200',books=b'B001')\nrun('partial-inherited-owner',b'U001U002B0010000000200',books=book(bid=b'B002')+b'B001')\nrun('partial-not-matching-book',b'U001U002B0010000000200',books=book()+b'X')\nrun('null-input-id',b'U',accts=acct(b'U\\0\\0\\0',1000)+acct(b'\\0\\0\\0\\0',2000),books=book(bid=b'\\0\\0\\0\\0',owner=b'\\0\\0\\0\\0'))\nd,p=run('missing-trans',b'U001U002B0010000000200',verbose=False)\n(d/'data/TRANSACTIONS.DAT').unlink()\nimport subprocess\n(d/'data/BOOKS.DAT').write_bytes(book())\np=subprocess.run(['/tmp/bookforum-test/bookforum'],cwd=d,capture_output=True)\nprint('missing-trans',p.returncode,repr(p.stdout),repr(p.stderr),(d/'data/TRANSACTIONS.DAT').exists())\nif (d/'data/TRANSACTIONS.DAT').exists(): print(repr((d/'data/TRANSACTIONS.DAT').read_bytes()))\nPY"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 10,
+          "timestamp": "2026-11-01T15:58:53.908554+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 28983,
+            "completion_tokens": 844,
+            "cached_tokens": 0,
+            "cost_usd": 0.080896,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_0340e64a79e0ebbc006ae761a999308197bada287384e3c9d4",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 28983,
+                "input_tokens_details": {
+                  "cache_write_tokens": 28980,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 844,
+                "output_tokens_details": {
+                  "reasoning_tokens": 516
+                },
+                "total_tokens": 29827
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 28983,
+              "completion_tokens": 844,
+              "reported_completion_tokens": 844,
+              "reasoning_tokens": 516,
+              "cached_tokens": 0,
+              "cache_write_tokens": 28980,
+              "ttft_ms": 18867.669583007228,
+              "latency_ms": 23954.42558301147,
+              "output_tokens_per_s": 35.23357289763469,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 165.92107032444568,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.080896,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-7",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_OuGlIhxurnsAsgRFtUkhRZdv",
+              "function_name": "bash",
+              "arguments": {
+                "command": "objdump -d --start-address=0x22388 --stop-address=0x22430 /lib/x86_64-linux-gnu/libcob.so.4; objdump -d --start-address=0x1de20 --stop-address=0x1e030 /lib/x86_64-linux-gnu/libcob.so.4; grep -n -A 15 -B 8 'cob_decimal' /usr/include/libcob/common.h | head -75; python3 - <<'PY'\nimport sys\nsys.path.insert(0,'/tmp/bookforum-test')\nfrom numeric_probe import result\nfor x in [b'@@@@@@@@@@',b'000000000@',b'00000000@1',b'00000000\\x001',b'00000000 1',b'@000000001',b'00000000\\xff1',b'000000000/',b'/000000000',b'000000000a',b'abcdefghij',b' '*10,b'\\x00'*10,b'\\xff'*10]:\n    result(b'0000000001',balance=x)\nPY"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 11,
+          "timestamp": "2026-11-01T15:59:20.881466+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 34571,
+            "completion_tokens": 812,
+            "cached_tokens": 15735,
+            "cost_usd": 0.056782,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_050d24c396ee120d016ae761c485e48190b914cee0cfe83934",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 34571,
+                "input_tokens_details": {
+                  "cached_tokens": 15735,
+                  "cache_write_tokens": 18833
+                },
+                "output_tokens": 812,
+                "output_tokens_details": {
+                  "reasoning_tokens": 516
+                },
+                "total_tokens": 35383
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 34571,
+              "completion_tokens": 812,
+              "reported_completion_tokens": 812,
+              "reasoning_tokens": 516,
+              "cached_tokens": 15735,
+              "cache_write_tokens": 18833,
+              "ttft_ms": 21913.47616596613,
+              "latency_ms": 26376.005499972962,
+              "output_tokens_per_s": 30.7855562132345,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 181.9595882120328,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.056782,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-8",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_XfbxSvnAOhCukaSrdSi4ffAp",
+              "function_name": "bash",
+              "arguments": {
+                "command": "objdump -d --start-address=0x22110 --stop-address=0x22240 /lib/x86_64-linux-gnu/libcob.so.4; objdump -d --start-address=0x22570 --stop-address=0x22760 /lib/x86_64-linux-gnu/libcob.so.4; python3 - <<'PY'\nfrom pathlib import Path\nimport sys\nsys.path.insert(0,'/tmp/bookforum-test')\nfrom numeric_probe import result\nfor a in (b'@'*10, b'000000000@', b'00000000@1', b'00000000 1', b'\\x10'*10, b'\\x10'+b'123456789', b'000000001 ',b'1         ',b'000000000\\x10'):\n    result(a)\nPY\nnm -D /lib/x86_64-linux-gnu/libcob.so.4 | grep 'cob_.*display'"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 12,
+          "timestamp": "2026-11-01T16:00:13.848486+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 40199,
+            "completion_tokens": 2566,
+            "cached_tokens": 34568,
+            "cost_usd": 0.0431928,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_042a848089e24edb016ae761e540988196a0eca1489069ca8a",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 40199,
+                "input_tokens_details": {
+                  "cached_tokens": 34568,
+                  "cache_write_tokens": 5628
+                },
+                "output_tokens": 2566,
+                "output_tokens_details": {
+                  "reasoning_tokens": 379
+                },
+                "total_tokens": 42765
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 40199,
+              "completion_tokens": 2566,
+              "reported_completion_tokens": 2566,
+              "reasoning_tokens": 379,
+              "cached_tokens": 34568,
+              "cache_write_tokens": 5628,
+              "ttft_ms": 24764.78562504053,
+              "latency_ms": 52236.551792011596,
+              "output_tokens_per_s": 49.12269114196033,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 93.40498839441446,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0431928,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-9",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_YfQud3qBMlsb1N04EVoLywFT",
+              "function_name": "bash",
+              "arguments": {
+                "command": "objdump -d --start-address=0x22580 --stop-address=0x225e5 /lib/x86_64-linux-gnu/libcob.so.4; cat > /app/program.py <<'PY'\n#!/usr/bin/env python3\n\"\"\"Byte-for-byte Python implementation of src/program.cbl (GnuCOBOL 3).\n\nThe COBOL files are SEQUENTIAL, not LINE SEQUENTIAL: records have fixed\nbyte widths and there are no line separators or record headers.\n\"\"\"\n\nimport os\nfrom pathlib import Path\nimport sys\n\n\nBASE_DIR = Path(__file__).resolve().parent\nBALANCE_MODULUS = 10 ** 10\nUINT64_MASK = (1 << 64) - 1\n\n\nclass CobolFileError(Exception):\n    \"\"\"An unhandled COBOL file status stops the program, without rollback.\"\"\"\n\n    def __init__(self, name, relative_path, status, message, opened=False):\n        self.name = name\n        self.relative_path = relative_path\n        self.status = status\n        self.message = message\n        self.opened = opened\n        super().__init__(message)\n\n    def report(self):\n        directory = self.relative_path.split('/')[0]\n        print(\n            f\"libcob: error: {self.message} (status = {self.status:02d}) \"\n            f\"for file {self.name} ('{directory}' => {self.relative_path})\",\n            file=sys.stderr,\n        )\n        if self.opened:\n            print(\n                f\"libcob: warning: implicit CLOSE of {self.name} \"\n                f\"('{self.relative_path}')\",\n                file=sys.stderr,\n            )\n\n\nclass SequentialFile:\n    \"\"\"A fixed-size FD buffer persists through short reads and CLOSE/OPEN.\"\"\"\n\n    def __init__(self, name, relative_path, size):\n        self.name = name\n        self.relative_path = relative_path\n        self.path = BASE_DIR / relative_path\n        self.size = size\n        # GnuCOBOL's file-section storage starts as binary zeroes.\n        self.record = bytearray(size)\n        self.stream = None\n        self.read_done = False\n\n    def fail(self, status, message):\n        raise CobolFileError(\n            self.name, self.relative_path, status, message,\n            opened=self.stream is not None,\n        )\n\n    def open(self, mode):\n        try:\n            if mode == 'extend':\n                # OPEN EXTEND on this non-OPTIONAL file must not create it.\n                fd = os.open(self.path, os.O_WRONLY | os.O_APPEND)\n                self.stream = os.fdopen(fd, 'wb', buffering=0)\n            else:\n                self.stream = self.path.open(mode, buffering=0)\n        except FileNotFoundError:\n            self.fail(35, 'file does not exist')\n        except PermissionError:\n            self.fail(37, 'permission denied')\n        except OSError:\n            self.fail(30, 'permanent file error')\n        self.read_done = False\n        return self\n\n    def __enter__(self):\n        return self\n\n    def __exit__(self, exc_type, exc, traceback):\n        if self.stream is not None:\n            self.stream.close()\n            self.stream = None\n\n    def read(self):\n        try:\n            data = self.stream.read(self.size)\n        except OSError:\n            self.fail(30, 'permanent file error')\n        self.read_done = len(data) == self.size\n        if not data:\n            return False\n        # A short read is processed, but the unread tail remains unchanged.\n        self.record[:len(data)] = data\n        return True\n\n    def rewrite(self):\n        if not self.read_done:\n            self.fail(43, 'READ must be executed first')\n        try:\n            self.stream.seek(-self.size, os.SEEK_CUR)\n            self.stream.write(self.record)\n        except OSError:\n            self.fail(30, 'permanent file error')\n        # A second REWRITE without another full READ is status 43.\n        self.read_done = False\n\n    def write(self, record):\n        try:\n            self.stream.write(record)\n        except OSError:\n            self.fail(30, 'permanent file error')\n\n\ndef display_number(data):\n    \"\"\"GnuCOBOL's unsigned numeric-display to decimal conversion.\n\n    Leading bytes with a zero low nibble are skipped. The remaining ASCII\n    digit conversion uses an unsigned 64-bit accumulator. This intentionally\n    does not reject nonnumeric bytes, just as the original does not.\n    \"\"\"\n    if data == b'\\xff' * len(data):\n        return 10 ** len(data) - 1\n    if data == b'\\x00' * len(data):\n        return 0\n    start = 0\n    while start < len(data) - 1 and data[start] & 0x0F == 0:\n        start += 1\n    value = 0\n    for byte in data[start:]:\n        value = (value * 10 + byte - ord('0')) & UINT64_MASK\n    return value\n\n\ndef balance_bytes(value):\n    # Unsigned PIC 9(10) discards the sign and excess high-order digits.\n    return f'{abs(value) % BALANCE_MODULUS:010d}'.encode('ascii')\n\n\ndef main():\n    inputs = SequentialFile('INPUT-FILE', 'src/INPUT.DAT', 22)\n    accounts = SequentialFile('ACCOUNTS-FILE', 'data/ACCOUNTS.DAT', 34)\n    books = SequentialFile('BOOKS-FILE', 'data/BOOKS.DAT', 28)\n    transactions = SequentialFile(\n        'TRANSACTIONS-FILE', 'data/TRANSACTIONS.DAT', 22,\n    )\n\n    with inputs.open('rb'):\n        if not inputs.read():\n            print('Error: Input file is empty')\n            print(\n                \"libcob: warning: implicit CLOSE of INPUT-FILE ('src/INPUT.DAT')\",\n                file=sys.stderr,\n            )\n            return 0\n        buyer = bytes(inputs.record[:4])\n        seller = bytes(inputs.record[4:8])\n        book_id = bytes(inputs.record[8:12])\n        # MOVE PIC 9(10) to PIC 9(10)V99 copies the integer digits and adds\n        # two fractional zeroes. Spaces and binary zeroes become ASCII zeroes.\n        amount_digits = bytes(inputs.record[12:22]).translate(\n            bytes.maketrans(b'\\x00 ', b'00')\n        )\n        amount_scaled = display_number(amount_digits + b'00')\n\n    buyer_found = seller_found = False\n    with accounts.open('rb'):\n        while accounts.read():\n            account_id = bytes(accounts.record[:4])\n            if account_id == buyer:\n                buyer_found = True\n            if account_id == seller:\n                seller_found = True\n\n    book_found = valid_owner = False\n    with books.open('rb'):\n        while books.read():\n            if books.record[:4] == book_id:\n                book_found = True\n                if books.record[24:28] == seller:\n                    valid_owner = True\n    print(' ')\n\n    if not (buyer_found and seller_found and book_found and valid_owner):\n        print('Transaction failed due to validation errors')\n        return 0\n\n    with accounts.open('r+b'):\n        while accounts.read():\n            if accounts.record[:4] == buyer:\n                balance = display_number(bytes(accounts.record[24:34]))\n                # Arithmetic aligns the balance with WS-AMOUNT's two decimal\n                # places. Truncate fractional digits after taking magnitude.\n                result = abs(balance * 100 - amount_scaled) // 100\n                accounts.record[24:34] = balance_bytes(result)\n                accounts.rewrite()\n            if accounts.record[:4] == seller:\n                balance = display_number(bytes(accounts.record[24:34]))\n                result = (balance * 100 + amount_scaled) // 100\n                accounts.record[24:34] = balance_bytes(result)\n                accounts.rewrite()\n\n    with books.open('r+b'):\n        while books.read():\n            if books.record[:4] == book_id:\n                books.record[24:28] = buyer\n                books.rewrite()\n\n    with transactions.open('extend'):\n        # MOVE back to PIC 9(10) preserves the original integer digit bytes.\n        transactions.write(book_id + amount_digits + seller + buyer)\n    print('Transaction completed successfully')\n    return 0\n\n\nif __name__ == '__main__':\n    try:\n        sys.exit(main())\n    except CobolFileError as error:\n        error.report()\n        sys.exit(1)\nPY\nchmod +x /app/program.py\npython3 -m py_compile /app/program.py\ncd /app && python3 /app/program.py && sha256sum data/*.DAT /tmp/bookforum-test/original/data/*.DAT"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        },
+        {
+          "trace_file": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+          "step_id": 13,
+          "timestamp": "2026-11-01T16:01:07.451540+00:00",
+          "model": "gpt-6.1-sol",
+          "effort": "low",
+          "metrics": {
+            "prompt_tokens": 43574,
+            "completion_tokens": 2648,
+            "cached_tokens": 40196,
+            "cost_usd": 0.0389431,
+            "extra": {
+              "requested_model_id": "gpt-6.1-sol",
+              "selected_model_id": "gpt-6.1-sol",
+              "response_id": "resp_0715b230961a8163016ae76219a7248190855278bd93ca4a1b",
+              "request_model_id": "gpt-6.1-sol",
+              "returned_model_id": "gpt-6.1-sol",
+              "provider": "openai",
+              "provider_base_url": "https://oneapi.sxyq27.online/v1",
+              "protocol": "responses",
+              "finish_reason": "completed",
+              "incomplete_details": null,
+              "native_effort": "low",
+              "requested_native_effort": "low",
+              "request_native_effort": "low",
+              "sent_effort_parameter": {
+                "reasoning": {
+                  "effort": "low"
+                }
+              },
+              "returned_native_effort": "max",
+              "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+              "stream": true,
+              "requested_max_output_tokens": 4096,
+              "reported_max_output_tokens": 4096,
+              "raw_usage": {
+                "input_tokens": 43574,
+                "input_tokens_details": {
+                  "cached_tokens": 40196,
+                  "cache_write_tokens": 3375
+                },
+                "output_tokens": 2648,
+                "output_tokens_details": {
+                  "reasoning_tokens": 516
+                },
+                "total_tokens": 46222
+              },
+              "usage_status": "REPORTED",
+              "identity_status": "MATCHED_REQUEST_ALIAS",
+              "alias_mapping_applied": false,
+              "prompt_tokens": 43574,
+              "completion_tokens": 2648,
+              "reported_completion_tokens": 2648,
+              "reasoning_tokens": 516,
+              "cached_tokens": 40196,
+              "cache_write_tokens": 3375,
+              "ttft_ms": 25919.467625033576,
+              "latency_ms": 52546.10016703373,
+              "output_tokens_per_s": 50.3938444828927,
+              "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+              "stream_output_tokens_per_s": 99.44930121460587,
+              "stream_output_tokens_per_s_status": "ESTIMATE",
+              "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+              "cost_usd": 0.0389431,
+              "cost_model_id": "gpt-6.1-sol",
+              "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+              "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+              "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+              "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+              "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+              "actual_billed_cost_usd": null,
+              "raw_reported_cost": null,
+              "reported_cost_unit": "NOT_REPORTED",
+              "budget_accounted": true,
+              "status": "RECORDED",
+              "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+              "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-10",
+              "router_checkpoint_id": "none",
+              "router_family": "baseline_fixed_strong",
+              "router_run_id": null,
+              "router_identity_source": null,
+              "router_identity_status": "NOT_A_NEURAL_ROUTE",
+              "capability_snapshot_id": "20261031T072548885180Z-v4",
+              "execution_mode": "REAL_API",
+              "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+              "effort_validation_status": "PROVIDER_REPORTED_MISMATCH"
+            }
+          },
+          "tool_calls": [
+            {
+              "tool_call_id": "call_ZhJS3vdLZ6NK6ljhnzqAlK4u",
+              "function_name": "bash",
+              "arguments": {
+                "command": "cat > /tmp/bookforum-test/differential.py <<'PY'\nfrom pathlib import Path\nimport random\nimport shutil\nimport subprocess\nimport sys\n\nsys.path.insert(0, '/tmp/bookforum-test')\nfrom probe import acct, book\n\nROOT = Path('/tmp/bookforum-test/differential')\nBINARY = '/tmp/bookforum-test/bookforum'\nSCRIPT = Path('/app/program.py')\nDEFAULT_ACCOUNTS = acct(b'U001', 1000) + acct(b'U002', 2000) + acct(b'U003', 3000)\nDEFAULT_BOOKS = book() + book(b'B002', b'U003')\nNAMES = ('ACCOUNTS.DAT', 'BOOKS.DAT', 'TRANSACTIONS.DAT')\n\n\ndef check(name, inp, accounts=DEFAULT_ACCOUNTS, books=DEFAULT_BOOKS, transactions=b'', repeat=1):\n    case = ROOT / name\n    if case.exists():\n        shutil.rmtree(case)\n    sides = [case / 'cobol', case / 'python']\n    for d in sides:\n        (d / 'src').mkdir(parents=True)\n        (d / 'data').mkdir()\n        (d / 'src/INPUT.DAT').write_bytes(inp)\n        for fname, content in zip(NAMES, (accounts, books, transactions)):\n            if content is not None:\n                (d / 'data' / fname).write_bytes(content)\n    shutil.copyfile(SCRIPT, sides[1] / 'program.py')\n    for run in range(repeat):\n        cs = subprocess.run([BINARY], cwd=sides[0], capture_output=True)\n        ps = subprocess.run([sys.executable, str(sides[1] / 'program.py')], cwd=sides[1], capture_output=True)\n        errors = []\n        for fname in NAMES:\n            cp, pp = [d / 'data' / fname for d in sides]\n            cb = cp.read_bytes() if cp.exists() else None\n            pb = pp.read_bytes() if pp.exists() else None\n            if cb != pb:\n                errors.append((fname, cb, pb))\n        if cs.returncode != ps.returncode:\n            errors.append(('exit', cs.returncode, ps.returncode))\n        if cs.stdout != ps.stdout:\n            errors.append(('stdout', cs.stdout, ps.stdout))\n        if errors:\n            print('FAIL', name, 'iteration', run, 'INPUT',repr(inp))\n            print('initial accounts',repr(accounts),'initial books',repr(books))\n            print('COBOL STDERR', repr(cs.stderr), 'PYTHON STDERR', repr(ps.stderr))\n            for fname, cb, pb in errors:\n                print(fname, '\\n  COBOL ',repr(cb),'\\n  PYTHON',repr(pb))\n            return False\n    shutil.rmtree(case)\n    return True\n\n\ndef cases():\n    inp = b'U001U002B0010000000200'\n    yield 'original', Path('/app/src/INPUT.DAT').read_bytes(), *(Path('/app/data') / n for n in ())\n    yield 'empty', b''\n    yield 'normal', inp\n    yield 'zero', b'U001U002B0010000000000'\n    yield 'underflow', b'U001U002B0010000002000'\n    yield 'overflow', b'U001U002B0019999999999'\n    yield 'buyer-missing', b'XXXXU002B0010000000200'\n    yield 'seller-missing', b'U001XXXXB0010000000200'\n    yield 'book-missing', b'U001U002XXXX0000000200'\n    yield 'wrong-owner', b'U001U003B0010000000200'\n    yield 'self', b'U001U001B0010000000200', DEFAULT_ACCOUNTS, book(owner=b'U001')\n    yield 'self-zero', b'U001U001B0010000000000', DEFAULT_ACCOUNTS, book(owner=b'U001')\n    yield 'duplicates', inp, DEFAULT_ACCOUNTS+acct(b'U001',50)+acct(b'U002',9999999999), book()+book(owner=b'U003')+book()\n    yield 'multiple-input', inp + b'U002U003B0020000000100'\n    yield 'input-newline', inp+b'\\n'\n    yield 'accounts-newlines', inp, b'\\n'.join([acct(b'U001',1000),acct(b'U002',2000)])+b'\\n'\n    yield 'transactions-tail', inp, DEFAULT_ACCOUNTS, DEFAULT_BOOKS, b'old\\npartial\\0'\n    yield 'missing-accounts', inp, None\n    yield 'missing-books', inp, DEFAULT_ACCOUNTS, None\n    yield 'missing-transactions', inp, DEFAULT_ACCOUNTS, DEFAULT_BOOKS, None\n    yield 'empty-accounts', inp, b''\n    yield 'empty-books', inp, DEFAULT_ACCOUNTS, b''\n    for length in range(22):\n        yield f'input-length-{length}', inp[:length]\n    for length in range(1,34):\n        for tail in (b'U001', b'X001'):\n            yield f'account-tail-{length}-{tail!r}', inp, DEFAULT_ACCOUNTS+acct(tail,10)[:length]\n    for length in range(1,28):\n        for tail in (b'B001',b'X001'):\n            yield f'book-tail-{length}-{tail!r}', inp, DEFAULT_ACCOUNTS, DEFAULT_BOOKS+book(tail)[:length]\n    for length in range(1,34):\n        yield f'partial-first-account-{length}', inp, acct(b'U001',1000)[:length]\n    for length in range(1,28):\n        yield f'partial-first-book-{length}', inp, DEFAULT_ACCOUNTS, book()[:length]\n    bad_digits = [b' '*10, b'\\0'*10, b'\\xff'*10, b'@'*10, b'\\x10'*10, b'abcdefghij', b'-000000200', b'00000200.5', b'000000000@',b'000000000/',b'000000000a',b'\\xff123456789',b'\\x00123456789',b'0000\\x00\\xff1234']\n    for i,digits in enumerate(bad_digits):\n        yield f'malformed-input-{i}', b'U001U002B001'+digits\n        yield f'malformed-balance-{i}', inp, acct(b'U001',digits)+acct(b'U002',digits)\n    rng = random.Random(12478)\n    ids = [b'U001',b'U002',b'U003',b'    ',b'\\0'*4,b'\\xff'*4,b'ab\\nc']\n    book_ids = [b'B001',b'B002',b'    ',b'\\0'*4,b'\\xff'*4]\n    for i in range(250):\n        buyer,seller = rng.choices(ids,k=2)\n        bid = rng.choice(book_ids)\n        recs = [acct(rng.choice(ids),rng.randrange(10**10),rng.randbytes(20)) for _ in range(rng.randrange(10))]\n        brecs = [book(rng.choice(book_ids),rng.choice(ids),rng.randbytes(20)) for _ in range(rng.randrange(10))]\n        if i%3:\n            recs += [acct(buyer,rng.randrange(10**10),rng.randbytes(20)),acct(seller,rng.randrange(10**10),rng.randbytes(20))]\n            brecs += [book(bid,seller,rng.randbytes(20))]\n        rng.shuffle(recs)\n        rng.shuffle(brecs)\n        amount = f'{rng.randrange(10**10):010d}'.encode()\n        if i%5==0:\n            amount = rng.randbytes(10)\n            recs = [r[:24] + rng.randbytes(10) for r in recs]\n        inp = buyer+seller+bid+amount\n        if i%4==0:\n            inp = inp[:rng.randrange(1,23)]\n        if i%6==0 and recs:\n            recs.append(rng.choice(recs)[:rng.randrange(1,34)])\n        if i%8==0 and brecs:\n            brecs.append(rng.choice(brecs)[:rng.randrange(1,28)])\n        yield f'random-{i}', inp, b''.join(recs), b''.join(brecs), rng.randbytes(rng.randrange(80))\n\n\nif __name__ == '__main__':\n    ok = fail = 0\n    for case in cases():\n        if check(*case):\n            ok += 1\n        else:\n            fail += 1\n    print(f'{ok} passed; {fail} failed')\n    sys.exit(bool(fail))\nPY\npython3 /tmp/bookforum-test/differential.py"
+              },
+              "observation": {},
+              "exit_code": null,
+              "duration_ms": null
+            }
+          ]
+        }
+      ],
+      "tool_call_count": 11
+    },
+    "runtime_log": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/trial.log",
+    "evidence_scope": "recorded_artifact_agreement",
+    "job_dir": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42"
+  },
+  "generator_tokens": 237612,
+  "teacher_calls": 0,
+  "teacher_tokens": 0,
+  "total_model_tokens": 237612,
+  "generator_cost_usd": 0.4150422,
+  "known_generator_cost_usd": 0.4150422,
+  "teacher_cost_usd": 0,
+  "known_teacher_cost_usd": null,
+  "episode_model_cost_usd": 0.4150422,
+  "execution_mode": "REAL_API",
+  "mapped_cost_accounting": null,
+  "cost_source": "provider_usage_and_registry_rates; not an invoice",
+  "official_rate_accounting": {
+    "model": "gpt-6-luna",
+    "pricing_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "price_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cache_write_price_source": "https://developers.openai.com/api/docs/pricing?latest-pricing-expanded=true",
+    "usd_per_1m_tokens": {
+      "input": 0.1,
+      "output": 0.5,
+      "cache_read": 0.01,
+      "cache_write_30m": 0.125
+    },
+    "service_tier": "standard",
+    "input_context": "<=272K",
+    "cache_policy": "Raw missing counts stay null; corresponding input charged at ordinary input rate",
+    "reasoning_policy": "Completion includes reasoning; counted once",
+    "requests": []
+  },
+  "actual_generator_cost_usd": null,
+  "actual_teacher_cost_usd": 0,
+  "sandbox_cost_usd": null,
+  "router_compute_cost_usd": null,
+  "complete_cost_usd": null,
+  "generator_cost_per_success_usd": null,
+  "actual_cost_per_success_usd": null,
+  "router_latency_ms": {
+    "baseline_fixed_strong": {
+      "n": 11,
+      "p50": 0.12470799265429378,
+      "p95": 0.2483339630998671
+    }
+  },
+  "router_inference_latency_ms": {
+    "baseline_fixed_strong": {
+      "p50": null,
+      "p95": null
+    }
+  },
+  "generator_request_time_ms": 328932.52583401045,
+  "teacher_request_time_ms": null,
+  "router_total_time_ms": {
+    "baseline_fixed_strong": 1.5699569485150278
+  },
+  "container_time_resources": [
+    {
+      "trial_id": "75b4a613-829c-4708-b642-f54225acb25f",
+      "episode_wall_s": 376.177317,
+      "phase_wall_s": {
+        "environment_setup": 3.717295,
+        "agent_setup": 0.000632,
+        "agent_execution": 366.82366,
+        "verifier": null
+      }
+    }
+  ],
+  "models": {
+    "gpt-6.1-sol / responses": {
+      "actual_backend_model_ids": [
+        "gpt-6.1-sol"
+      ],
+      "calls": 11,
+      "ttft_p50_ms": 18867.669583007228,
+      "ttft_p95_ms": 48306.09866598388,
+      "output_tokens_per_s": 39.111438002315666,
+      "stream_output_tokens_per_s_estimate": 119.6592237663557
+    }
+  },
+  "tool_exec_p50_ms": 588.7625420000404,
+  "tool_exec_p95_ms": 1264.616958971601,
+  "episode_p50_s": null,
+  "episode_p95_s": null,
+  "episodes_per_hour": null,
+  "failure_classes": {
+    "HARBOR": 1
+  },
+  "last_event": {
+    "timestamp": "2026-11-01T16:01:43.693364+00:00",
+    "event": "ERROR",
+    "category": "HARBOR",
+    "error": "Harbor exit=0; official verifier result absent in our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42"
+  },
+  "last_generator": {
+    "timestamp": "2026-11-01T16:01:07.446386+00:00",
+    "event": "GENERATOR_END",
+    "requested_model_id": "gpt-6.1-sol",
+    "selected_model_id": "gpt-6.1-sol",
+    "response_id": "resp_0715b230961a8163016ae76219a7248190855278bd93ca4a1b",
+    "request_model_id": "gpt-6.1-sol",
+    "returned_model_id": "gpt-6.1-sol",
+    "provider": "openai",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "responses",
+    "finish_reason": "completed",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "sent_effort_parameter": {
+      "reasoning": {
+        "effort": "low"
+      }
+    },
+    "returned_native_effort": "max",
+    "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": 4096,
+    "raw_usage": {
+      "input_tokens": 43574,
+      "input_tokens_details": {
+        "cached_tokens": 40196,
+        "cache_write_tokens": 3375
+      },
+      "output_tokens": 2648,
+      "output_tokens_details": {
+        "reasoning_tokens": 516
+      },
+      "total_tokens": 46222
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 43574,
+    "completion_tokens": 2648,
+    "reported_completion_tokens": 2648,
+    "reasoning_tokens": 516,
+    "cached_tokens": 40196,
+    "cache_write_tokens": 3375,
+    "ttft_ms": 25919.467625033576,
+    "latency_ms": 52546.10016703373,
+    "output_tokens_per_s": 50.3938444828927,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 99.44930121460587,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0389431,
+    "cost_model_id": "gpt-6.1-sol",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+    "decision_id": "75b4a613-829c-4708-b642-f54225acb25f-10",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "PROVIDER_REPORTED_MISMATCH",
+    "step": 10,
+    "policy": "fixed_strong",
+    "model": "gpt-6.1-sol",
+    "returned_model": "gpt-6.1-sol",
+    "effort": "low"
+  },
+  "last_tool": {
+    "kind": "agent_tool",
+    "episode_id": "75b4a613-829c-4708-b642-f54225acb25f",
+    "job_id": "d1ba040b-3bd9-4377-bd01-f2ed2b0772b5",
+    "trial_id": "75b4a613-829c-4708-b642-f54225acb25f",
+    "task_id": {
+      "path": "external/benchmarks/terminal-bench-2-1/tasks/cobol-modernization"
+    },
+    "job_name": "cobol-modernization--fixed_strong--s42",
+    "tool_call_id": "call_ZhJS3vdLZ6NK6ljhnzqAlK4u",
+    "timestamp": "2026-11-01T16:01:07.451540+00:00",
+    "step": 13,
+    "command": "cat > /tmp/bookforum-test/differential.py <<'PY'\nfrom pathlib import Path\nimport random\nimport shutil\nimport subprocess\nimport sys\n\nsys.path.insert(0, '/tmp/bookforum-test')\nfrom probe import acct, book\n\nROOT = Path('/tmp/bookforum-test/differential')\nBINARY = '/tmp/bookforum-test/bookforum'\nSCRIPT = Path('/app/program.py')\nDEFAULT_ACCOUNTS = acct(b'U001', 1000) + acct(b'U002', 2000) + acct(b'U003', 3000)\nDEFAULT_BOOKS = book() + book(b'B002', b'U003')\nNAMES = ('ACCOUNTS.DAT', 'BOOKS.DAT', 'TRANSACTIONS.DAT')\n\n\ndef check(name, inp, accounts=DEFAULT_ACCOUNTS, books=DEFAULT_BOOKS, transactions=b'', repeat=1):\n    case = ROOT / name\n    if case.exists():\n        shutil.rmtree(case)\n    sides = [case / 'cobol', case / 'python']\n    for d in sides:\n        (d / 'src').mkdir(parents=True)\n        (d / 'data').mkdir()\n        (d / 'src/INPUT.DAT').write_bytes(inp)\n        for fname, content in zip(NAMES, (accounts, books, transactions)):\n            if content is not None:\n                (d / 'data' / fname).write_bytes(content)\n    shutil.copyfile(SCRIPT, sides[1] / 'program.py')\n    for run in range(repeat):\n        cs = subprocess.run([BINARY], cwd=sides[0], capture_output=True)\n        ps = subprocess.run([sys.executable, str(sides[1] / 'program.py')], cwd=sides[1], capture_output=True)\n        errors = []\n        for fname in NAMES:\n            cp, pp = [d / 'data' / fname for d in sides]\n            cb = cp.read_bytes() if cp.exists() else None\n            pb = pp.read_bytes() if pp.exists() else None\n            if cb != pb:\n                errors.append((fname, cb, pb))\n        if cs.returncode != ps.returncode:\n            errors.append(('exit', cs.returncode, ps.returncode))\n        if cs.stdout != ps.stdout:\n            errors.append(('stdout', cs.stdout, ps.stdout))\n        if errors:\n            print('FAIL', name, 'iteration', run, 'INPUT',repr(inp))\n            print('initial accounts',repr(accounts),'initial books',repr(books))\n            print('COBOL STDERR', repr(cs.stderr), 'PYTHON STDERR', repr(ps.stderr))\n            for fname, cb, pb in errors:\n                print(fname, '\\n  COBOL ',repr(cb),'\\n  PYTHON',repr(pb))\n            return False\n    shutil.rmtree(case)\n    return True\n\n\ndef cases():\n    inp = b'U001U002B0010000000200'\n    yield 'original', Path('/app/src/INPUT.DAT').read_bytes(), *(Path('/app/data') / n for n in ())\n    yield 'empty', b''\n    yield 'normal', inp\n    yield 'zero', b'U001U002B0010000000000'\n    yield 'underflow', b'U001U002B0010000002000'\n    yield 'overflow', b'U001U002B0019999999999'\n    yield 'buyer-missing', b'XXXXU002B0010000000200'\n    yield 'seller-missing', b'U001XXXXB0010000000200'\n    yield 'book-missing', b'U001U002XXXX0000000200'\n    yield 'wrong-owner', b'U001U003B0010000000200'\n    yield 'self', b'U001U001B0010000000200', DEFAULT_ACCOUNTS, book(owner=b'U001')\n    yield 'self-zero', b'U001U001B0010000000000', DEFAULT_ACCOUNTS, book(owner=b'U001')\n    yield 'duplicates', inp, DEFAULT_ACCOUNTS+acct(b'U001',50)+acct(b'U002',9999999999), book()+book(owner=b'U003')+book()\n    yield 'multiple-input', inp + b'U002U003B0020000000100'\n    yield 'input-newline', inp+b'\\n'\n    yield 'accounts-newlines', inp, b'\\n'.join([acct(b'U001',1000),acct(b'U002',2000)])+b'\\n'\n    yield 'transactions-tail', inp, DEFAULT_ACCOUNTS, DEFAULT_BOOKS, b'old\\npartial\\0'\n    yield 'missing-accounts', inp, None\n    yield 'missing-books', inp, DEFAULT_ACCOUNTS, None\n    yield 'missing-transactions', inp, DEFAULT_ACCOUNTS, DEFAULT_BOOKS, None\n    yield 'empty-accounts', inp, b''\n    yield 'empty-books', inp, DEFAULT_ACCOUNTS, b''\n    for length in range(22):\n        yield f'input-length-{length}', inp[:length]\n    for length in range(1,34):\n        for tail in (b'U001', b'X001'):\n            yield f'account-tail-{length}-{tail!r}', inp, DEFAULT_ACCOUNTS+acct(tail,10)[:length]\n    for length in range(1,28):\n        for tail in (b'B001',b'X001'):\n            yield f'book-tail-{length}-{tail!r}', inp, DEFAULT_ACCOUNTS, DEFAULT_BOOKS+book(tail)[:length]\n    for length in range(1,34):\n        yield f'partial-first-account-{length}', inp, acct(b'U001',1000)[:length]\n    for length in range(1,28):\n        yield f'partial-first-book-{length}', inp, DEFAULT_ACCOUNTS, book()[:length]\n    bad_digits = [b' '*10, b'\\0'*10, b'\\xff'*10, b'@'*10, b'\\x10'*10, b'abcdefghij', b'-000000200', b'00000200.5', b'000000000@',b'000000000/',b'000000000a',b'\\xff123456789',b'\\x00123456789',b'0000\\x00\\xff1234']\n    for i,digits in enumerate(bad_digits):\n        yield f'malformed-input-{i}', b'U001U002B001'+digits\n        yield f'malformed-balance-{i}', inp, acct(b'U001',digits)+acct(b'U002',digits)\n    rng = random.Random(12478)\n    ids = [b'U001',b'U002',b'U003',b'    ',b'\\0'*4,b'\\xff'*4,b'ab\\nc']\n    book_ids = [b'B001',b'B002',b'    ',b'\\0'*4,b'\\xff'*4]\n    for i in range(250):\n        buyer,seller = rng.choices(ids,k=2)\n        bid = rng.choice(book_ids)\n        recs = [acct(rng.choice(ids),rng.randrange(10**10),rng.randbytes(20)) for _ in range(rng.randrange(10))]\n        brecs = [book(rng.choice(book_ids),rng.choice(ids),rng.randbytes(20)) for _ in range(rng.randrange(10))]\n        if i%3:\n            recs += [acct(buyer,rng.randrange(10**10),rng.randbytes(20)),acct(seller,rng.randrange(10**10),rng.randbytes(20))]\n            brecs += [book(bid,seller,rng.randbytes(20))]\n        rng.shuffle(recs)\n        rng.shuffle(brecs)\n        amount = f'{rng.randrange(10**10):010d}'.encode()\n        if i%5==0:\n            amount = rng.randbytes(10)\n            recs = [r[:24] + rng.randbytes(10) for r in recs]\n        inp = buyer+seller+bid+amount\n        if i%4==0:\n            inp = inp[:rng.randrange(1,23)]\n        if i%6==0 and recs:\n            recs.append(rng.choice(recs)[:rng.randrange(1,34)])\n        if i%8==0 and brecs:\n            brecs.append(rng.choice(brecs)[:rng.randrange(1,28)])\n        yield f'random-{i}', inp, b''.join(recs), b''.join(brecs), rng.randbytes(rng.randrange(80))\n\n\nif __name__ == '__main__':\n    ok = fail = 0\n    for case in cases():\n        if check(*case):\n            ok += 1\n        else:\n            fail += 1\n    print(f'{ok} passed; {fail} failed')\n    sys.exit(bool(fail))\nPY\npython3 /tmp/bookforum-test/differential.py",
+    "exit_code": null,
+    "duration_ms": null,
+    "source": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-cobol-modernization-sol/jobs/cobol-modernization--fixed_strong--s42/cobol-modernization__Ti47KTU/agent/trajectory.json",
+    "observation": {}
+  },
+  "measurement_counts": {
+    "benchmark": 11
+  },
+  "last_unit": {
+    "task_id": "cobol-modernization",
+    "policy": "fixed_strong",
+    "agent": "modelrouter",
+    "job_name": "cobol-modernization--fixed_strong--s42",
+    "status": "NOT_EVALUATED",
+    "pipeline_stage": "DEV",
+    "exit_code": 0
+  },
+  "measurement_scope": "Benchmark metrics exclude provider/router probes; original probe events remain in events.jsonl",
+  "ttft_scope": "Upstream provider timing; native relay buffers the response before returning it",
+  "publication_status": "NOT_EVALUATED",
+  "missing_measurements": [
+    "sandbox billing",
+    "router infrastructure cost",
+    "provider invoice reconciliation"
+  ]
+}

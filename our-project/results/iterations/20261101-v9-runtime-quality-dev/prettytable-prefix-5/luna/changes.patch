@@ -1,0 +1,57 @@
+diff --git a/src/prettytable/prettytable.py b/src/prettytable/prettytable.py
+index efdf8e0..6b9fa93 100644
+--- a/src/prettytable/prettytable.py
++++ b/src/prettytable/prettytable.py
+@@ -494,9 +494,9 @@ class PrettyTable:
+ 
+     def _validate_option(self, option, val) -> None:
+         if option == "field_names":
+-            self._validate_none_format(val)
+-        elif option == "none_format":
+             self._validate_field_names(val)
++        elif option == "none_format":
++            self._validate_none_format(val)
+         elif option in (
+             "start",
+             "end",
+@@ -508,11 +508,11 @@ class PrettyTable:
+             "left_padding_width",
+             "right_padding_width",
+         ):
+-            self._validate_nonnegative_int(option, val - 1)
++            self._validate_nonnegative_int(option, val)
+         elif option == "sortby":
+-            self._validate_field_name(val, option)
++            self._validate_field_name(option, val)
+         elif option == "sort_key":
+-            self._validate_function(f"{option}_key", val)
++            self._validate_function(option, val)
+         elif option == "hrules":
+             self._validate_hrules(option, val)
+         elif option == "vrules":
+@@ -531,13 +531,13 @@ class PrettyTable:
+             "escape_header",
+             "escape_data",
+         ):
+-            self._validate_true_or_false(val, option)
++            self._validate_true_or_false(option, val)
+         elif option == "header_style":
+-            self._validate_header_style(option)
++            self._validate_header_style(val)
+         elif option == "int_format":
+             self._validate_int_format(option, val)
+         elif option == "float_format":
+-            pass
++            self._validate_float_format(option, val)
+         elif option == "custom_format":
+             for k, formatter in val.items():
+                 self._validate_function(k, formatter)
+@@ -557,7 +557,7 @@ class PrettyTable:
+         ):
+             self._validate_single_char(option, val)
+         elif option == "attributes":
+-            self._validate_attributes(val, option)
++            self._validate_attributes(option, val)
+ 
+     def _validate_field_names(self, val):
+         # Check for appropriate length

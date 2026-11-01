@@ -1,12 +1,24 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v2.4｜更新：2026-11-01｜角色：Planning Agent + Execution Agent**
+> **版本：v2.5｜更新：2026-11-02｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。项目记忆由执行者按事件维护：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；它与 ChatGPT 产品内置 Memory 分开，也不会自动在后台更新。
 >
 > **公开性**：仓库为 public。不得提交私有服务器 IP、SSH 用户名/命令凭据、密钥、原始私人会话、私有任务内容、个人本地绝对路径及未脱敏日志。必要的机器路径放在本地不跟踪的配置或安全通道内。
 
 ## 0. 30 秒恢复上下文
+
+### 2026-11-02 · 最新接续
+
+从main62d7bb9完成五处既有源码调整及新的真实结果，详见[本轮报告](../results/iterations/20261101-v9-runtime-quality-dev/review.md)。问题ID不进入模型内部字段，但说明、候选顺序与状态进入；在线复用步骤说明及Sol→Luna顺序，Prepare不再重建已捕获的比较视图。19行共享Serializer输入保留，新两条3874/3962 Token完整进入5120窗口；原Checkpoint未重训。一个Episode只加载一次原Adapter，成功Dev之后4次前向外开销共0.0477秒，初始化28.62秒；不新增Serving。
+
+本轮3个已有Train任务8对前缀，2个新标签任务新增Luna步骤2条（Mido质量1、Schema等质量成本1）；PrettyTable六对双失败仅观察。累计19 Model-only、任务9/步骤10、11标签任务，总Sol4/Luna15，步骤Sol4/Luna6；Native Effort/K=3仍0。215/186只是可组合视图，74行定向S1+步骤材料已准备，本轮训练更新0，Kev未训练。
+
+distribution-search原Verifier：固定Sol/Luna/新Laya关闭教师reward1/0/1，费用0.0866944/0.00228552/0.1362464USD。COBOL Luna成功、Sol工具超时无Verifier、新LayaAgentTimeout但Verifier reward0。28个实际神经决策全Sol、无切换或fallback，其中2次COBOL截止后调用不作协议内证据。修复原取消生命周期并保留/app产物，30秒工具窗口及Verifier不变；新取消分支没有另造旧超时验证。77模型请求/76Usage/1未知，已知2.00106484USD，完整费用及实收/资源未知。
+
+教师新Dev1成功/1次消费/0.019706USD，开关均reward1，单题费用差-0.0246274USD不证明净收益。Flash现有目录仍无渠道；AA v4、Sol报告max/Luna档位未知、两固定参考保持。01:08:59台北F14独立维护running，241/420块、30848/107404步、最新Loss0.48724648、最近12块有限，未完成首轮/Val；既有handoff等待、本轮未干预。Serving仍F05/原Kev、PID327621，V9_LAYA_STEP_001-e01未晋升，F11/R11代表保持。下次需更广质量步骤及真实动态收益，不自动再训。
+
+### 2026-11-01 · 以下为原时点记录
 
 **独立评分完成（11-01）**：用户已选TwinRouterBench 520题/970步；从main e3c54a50f82648647922d15209a24a1fc57a6902复用原评价入口，8/8版本完成、7760条预测，输入及输出任务/gold一致。F11-e01为20.515464分，比微调前高13.505155个百分点；R11为18.969072分，比微调前高5.670103个百分点，全部版本低于恒选low的71.030928分。原Val已选Laya F11/P0_B03_C01/F05、Kev R11/R12/C09保持；旧四档分不当新三模型目标，不按Test重选或晋升。结果见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)，下方未执行Test描述保留原时点。
 

@@ -1,0 +1,68 @@
+{
+  "enabled": true,
+  "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+  "selection_scope": "MODEL_ONLY",
+  "generator_protocol": "responses",
+  "provider_timeout_sec": 180,
+  "model_endpoints": {
+    "gpt-6.1-sol": {
+      "base_url": "https://oneapi.sxyq27.online/v1",
+      "protocol": "responses"
+    },
+    "gpt-6-luna": {
+      "base_url": "https://oneapi.sxyq27.online/v1",
+      "protocol": "chat_completions"
+    }
+  },
+  "formal_model_ids": [
+    "gpt-6.1-sol",
+    "gpt-6-luna",
+    "qwen3.8-flash"
+  ],
+  "candidate_actions": [
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "native_effort": "low"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "native_effort": "low"
+    }
+  ],
+  "native_effort_observation_note": "Requested low; applied native effort remains unknown. Only the model is selected.",
+  "teacher_enabled": false,
+  "router_endpoint": "http://127.0.0.1:8000",
+  "router_timeout_sec": 60,
+  "feature_training_status": "FEATURE_PARTIALLY_TRAINED",
+  "dataset": "SWE-bench/SWE-smith",
+  "source_id": "TRA-002",
+  "initial_cwd": "/testbed",
+  "original_verifier_paths": [
+    "tests"
+  ],
+  "evidence_scope": "REAL_TRAIN_TASK_VERIFICATION",
+  "pre_decision_state": {
+    "phase": "verify"
+  },
+  "actual_backend_model_id": "gpt-6.1-sol",
+  "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+  "policy": "fixed_strong",
+  "workspace": "our-project/results/iterations/20261101-v9-runtime-quality-dev/mido-prefix-5",
+  "execution_mode": "REAL_API",
+  "backend_deployment_status": "API_IDENTITY_ONLY_UNVERIFIED_PHYSICAL_BACKEND",
+  "mini_swe_version": "2.4.6",
+  "started_at": "2026-11-01T16:28:09.988371+00:00",
+  "max_steps": 30,
+  "max_output_tokens": 4096,
+  "instruction": "# str2msg incorrectly parses data and value fields\n\nWhile working with the mido library, I noticed that parsing string messages with data fields is not working correctly.\n\n## Description\n\nI'm trying to create MIDI messages from strings that include data fields, but the messages are not being parsed correctly. The issue seems to be in the `str2msg` function where the data field is being treated as an integer instead of being parsed with the `_parse_data` function.\n\n## Steps to reproduce\n\nHere's a simple reproduction script:\n\n```python\nimport mido\n\n# Try to create a sysex message from a string\nmessage_str = \"sysex data=10,20,30\"\ntry:\n    message = mido.parse_string(message_str)\n    print(f\"Successfully parsed: {message}\")\nexcept Exception as e:\n    print(f\"Error parsing message: {e}\")\n\n# This should work but fails\n```\n\n## Expected behavior\n\nThe string should be parsed correctly, with the data field being interpreted as a sequence of bytes.\n\n## Actual behavior\n\nThe parser tries to convert the entire data field to a single integer, which fails for sysex messages where data should be a sequence of bytes.\n\nI noticed this issue when trying to parse some MIDI messages from text files in my project. It seems like the logic for parsing data fields and other integer values might be swapped.\n\nWorkspace and initial working directory (absolute CWD): /testbed",
+  "verify_command": "python -m pytest -q tests",
+  "upstream_cost_counter_status": "MODEL_RATE_ESTIMATE_NOT_AN_INVOICE",
+  "upstream_runtime_options": {
+    "MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT": "1",
+    "LITELLM_LOCAL_MODEL_COST_MAP": "true"
+  },
+  "comparison_scope": "ONE_NATIVE_AGENT_STEP",
+  "capability_snapshot_id": "20261031T072548885180Z-v4"
+}

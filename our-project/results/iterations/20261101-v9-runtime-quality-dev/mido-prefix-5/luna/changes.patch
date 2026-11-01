@@ -1,0 +1,40 @@
+diff --git a/mido/messages/strings.py b/mido/messages/strings.py
+index 08a7926..fe44587 100644
+--- a/mido/messages/strings.py
++++ b/mido/messages/strings.py
+@@ -66,9 +66,9 @@ def str2msg(text):
+         if name == 'time':
+             value = _parse_time(value)
+         elif name == 'data':
+-            value = int(value)
+-        else:
+             value = _parse_data(value)
++        else:
++            value = int(value)
+ 
+         msg[name] = value
+ 
+diff --git a/tests/messages/test_strings.py b/tests/messages/test_strings.py
+index 2085e6a..4cef59a 100644
+--- a/tests/messages/test_strings.py
++++ b/tests/messages/test_strings.py
+@@ -11,6 +11,19 @@ def test_decode_sysex():
+     assert Message.from_str('sysex data=(1,2,3)').data == (1, 2, 3)
+ 
+ 
++def test_decode_integer_values_and_time():
++    msg = Message.from_str(
++        'control_change channel=2 control=1 value=122 time=0.5')
++    assert msg.channel == 2
++    assert msg.control == 1
++    assert msg.value == 122
++    assert msg.time == 0.5
++
++
++def test_decode_empty_sysex():
++    assert Message.from_str('sysex data=()').data == ()
++
++
+ def test_decode_invalid_sysex_with_spaces():
+     with raises(ValueError):
+         Message.from_str('sysex data=(1, 2, 3)')

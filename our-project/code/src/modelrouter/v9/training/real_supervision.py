@@ -55,7 +55,8 @@ def prepare_comparison(row, split):
     model_only = row.get("selection_scope") == "MODEL_ONLY"
     if model_only:
         actions = [{**action, "action_id": action["model_id"], "native_effort": None,
-                    "requested_native_effort": action["native_effort"]} for action in actions]
+                    "requested_native_effort": action.get("requested_native_effort", action["native_effort"])}
+                   for action in actions]
         results = [{**item, "action_id": item["model_id"]} for item in results]
     elif any(item.get("native_effort_status") == "PROVIDER_REPORTED_MISMATCH" for item in results):
         return None, "NATIVE_EFFORT_MISMATCH"

@@ -1,0 +1,31 @@
+{
+  "status": "BLOCKED",
+  "reason": "Harbor exit=0; official verifier result absent in our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya/jobs/distribution-search--laya_v2--s42",
+  "pending_units": [
+    {
+      "task_id": "distribution-search",
+      "policy": "laya_v2",
+      "agent": "modelrouter",
+      "job_name": "distribution-search--laya_v2--s42",
+      "status": "NOT_EVALUATED",
+      "pipeline_stage": "DEV",
+      "exit_code": 0
+    }
+  ],
+  "unresolved_problems": [
+    "Harbor exit=0; official verifier result absent in our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya/jobs/distribution-search--laya_v2--s42"
+  ],
+  "hypotheses": [
+    "The same official mini-swe-agent can isolate policy effects on paired tasks."
+  ],
+  "required_config": "our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya/run_config.json",
+  "priority": "Resolve the recorded cause before another paid attempt",
+  "failure_categories": [
+    "PROVIDER",
+    "HARBOR"
+  ],
+  "completed_units": [],
+  "next_command": "python -m modelrouter.benchmark resume our-project/results/iterations/20261101-v9-runtime-quality-dev/dev-distribution-search-laya",
+  "sealed_test": "REQUIRES_OWNER_CONFIRMATION",
+  "completed_development": []
+}

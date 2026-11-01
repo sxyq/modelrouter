@@ -1,0 +1,112 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The full suite confirms a single existing failure, and the reproduction shows that normal integer fields are also being sent to `_parse_data`. I’ll correct the two branches, keep data parsing in the documented parenthesized format, and add regression tests for SysEx, integer-valued fields, and time.",
+          "tool_calls": [
+            {
+              "id": "sg_call_30442b2aeb302_1",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cd /testbed && python - <<'PY'\\nfrom pathlib import Path\\np = Path('mido/messages/strings.py')\\ns = p.read_text()\\ns = s.replace(\\\"        elif name == 'data':\\\\n            value = int(value)\\\\n        else:\\\\n            value = _parse_data(value)\\\\n\\\", \\\"        elif name == 'data':\\\\n            value = _parse_data(value)\\\\n        else:\\\\n            value = int(value)\\\\n\\\")\\np.write_text(s)\\n\\np = Path('tests/messages/test_strings.py')\\ns = p.read_text()\\ns = s.replace(\\\"def test_decode_sysex():\\\\n    assert Message.from_str('sysex data=(1,2,3)').data == (1, 2, 3)\\\\n\\\", \\\"def test_decode_sysex():\\\\n    assert Message.from_str('sysex data=(1,2,3)').data == (1, 2, 3)\\\\n\\\\n\\\\ndef test_decode_integer_values_and_time():\\\\n    msg = Message.from_str(\\\\n        'control_change channel=2 control=1 value=122 time=0.5')\\\\n    assert msg.channel == 2\\\\n    assert msg.control == 1\\\\n    assert msg.value == 122\\\\n    assert msg.time == 0.5\\\\n\\\\n\\\\ndef test_decode_empty_sysex():\\\\n    assert Message.from_str('sysex data=()').data == ()\\\\n\\\")\\np.write_text(s)\\nPY\\ncat > /tmp/reproduce_mido_string_parsing.py <<'PY'\\nimport mido\\n\\ncases = [\\n    ('sysex data=(10,20,30)', mido.Message('sysex', data=(10, 20, 30))),\\n    ('sysex data=()', mido.Message('sysex', data=())),\\n    (\\n        'control_change channel=2 control=1 value=122 time=0.5',\\n        mido.Message('control_change', channel=2, control=1, value=122, time=0.5),\\n    ),\\n    ('pitchwheel pitch=-200', mido.Message('pitchwheel', pitch=-200)),\\n]\\nfor text, expected in cases:\\n    message = mido.parse_string(text)\\n    assert message == expected, (message, expected)\\n    print(f'PASS {text!r}: {message}')\\nPY\\nPYTHONPATH=/testbed python /tmp/reproduce_mido_string_parsing.py && python -m pytest && git diff --check && git diff -- mido/messages/strings.py tests/messages/test_strings.py\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_route_c94f571e73384878a05debeb6fce01ab",
+    "model": "gpt-6-luna",
+    "created": 1793550633,
+    "usage": {
+      "prompt_tokens": 15337,
+      "completion_tokens": 859,
+      "total_tokens": 16196,
+      "prompt_tokens_details": {
+        "cached_tokens": 11825
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 218
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_route_c94f571e73384878a05debeb6fce01ab",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "sent_effort_parameter": {
+      "reasoning_effort": "low"
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 15337,
+      "completion_tokens": 859,
+      "total_tokens": 16196,
+      "prompt_tokens_details": {
+        "cached_tokens": 11825
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 218
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 15337,
+    "completion_tokens": 859,
+    "reported_completion_tokens": 859,
+    "reasoning_tokens": 218,
+    "cached_tokens": 11825,
+    "cache_write_tokens": null,
+    "ttft_ms": 93207.39441702608,
+    "latency_ms": 100926.37883400312,
+    "output_tokens_per_s": 8.511154466493098,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 111.2840697165713,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.00089895,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "luna",
+    "decision_id": "luna-5",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

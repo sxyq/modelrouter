@@ -1,6 +1,23 @@
 # ModelRouter · 数据源、模型能力与缓存政策统一台账
 
-## 当前能力与数据来源（2026-11-01）
+## 当前能力与数据来源（2026-11-02）
+
+本轮沿已有TRA-002原资产比较Schema、Mido、PrettyTable三个训练任务，8对相同已发生前缀，各方实际工具与同范围原测试均保存；未重复下载或清洗旧数据。Schema、Mido许可证为MIT；PrettyTable原镜像/LICENSE为BSD-3-Clause，其观察记录的来源字段已按该原文更新。Train与Canary/Dev/Sealed Final及可识别派生题的既有隔离记录保持，不对不可识别近重复作全面结论。
+
+| 数据结果 | 可用目标与用途 |
+|---|---|
+| Schema新前缀 | 双方原验证通过，Luna等质量成本步骤目标1 |
+| Mido新前缀 | 镜像原tests路径用于验证，Sol失败/Luna通过，Luna一步质量目标1；不外推完整Episode |
+| PrettyTable六对前缀 | 双方未全通过，OBSERVED_OUTCOME_ONLY；不能作为质量赢家目标 |
+| 当前累计视图 | 19 Model-only，任务9/步骤10，11标签任务；总Sol4/Luna15、步骤Sol4/Luna6 |
+| 实际准备与训练 | 原196/186可组合215/186，未生成完整215行；64旧S1+10步骤74行已准备，训练更新0 |
+| 输入与档位 | 原Serializer保留19/19捕获视图；新两条3874/3962 Token无裁。38个requested low保留为输入，实际native_effort目标均null |
+
+独立Dev的8个尝试不进入Train；distribution-search成功与COBOL失败不自动复制为步骤标签。教师Train目标0，两固定参考沿用；新Dev三字段短评只包含此前真实信息。AA固定`20261031T072548885180Z-v4`、20项Max测量，low/none/托管Flash缺测；现有目录仍无Flash，Effort及完整K=3目标0。当前材料见[本轮训练视图](../results/iterations/20261101-v9-runtime-quality-dev/training_delta/summary.json)。原382行、13,214候选与旧模型监督保留原身份，数量不当新增独立样本。
+
+01:08:59台北F14独立维护241/420块、30848/107404步，最新Loss0.48724648，最近12块有限但首轮/Val未完成；本轮未训练或干预，Serving仍原权重。
+
+## 2026-11-01 · 历史能力与数据记录
 
 **训练对象范围（12:57台北）**：新Laya步骤head接续已完成、Kev本轮未训练；另项维护已冷启F14到块25/420、3200/107404步、最新Loss0.5952，最近12块有限，旧NON_FINITE_LOSS仍归档、不作父。原队列文件仍暂停，既有handoff等待F14结束，本轮未创建或操作；其入口改动保留但不并入本轮提交，Serving仍原权重。
 

@@ -1,0 +1,140 @@
+diff --git a/src/prettytable/prettytable.py b/src/prettytable/prettytable.py
+index efdf8e0..8a7b93d 100644
+--- a/src/prettytable/prettytable.py
++++ b/src/prettytable/prettytable.py
+@@ -494,9 +494,9 @@ class PrettyTable:
+ 
+     def _validate_option(self, option, val) -> None:
+         if option == "field_names":
+-            self._validate_none_format(val)
+-        elif option == "none_format":
+             self._validate_field_names(val)
++        elif option == "none_format":
++            self._validate_none_format(val)
+         elif option in (
+             "start",
+             "end",
+@@ -508,11 +508,11 @@ class PrettyTable:
+             "left_padding_width",
+             "right_padding_width",
+         ):
+-            self._validate_nonnegative_int(option, val - 1)
++            self._validate_nonnegative_int(option, val)
+         elif option == "sortby":
+-            self._validate_field_name(val, option)
++            self._validate_field_name(option, val)
+         elif option == "sort_key":
+-            self._validate_function(f"{option}_key", val)
++            self._validate_function(option, val)
+         elif option == "hrules":
+             self._validate_hrules(option, val)
+         elif option == "vrules":
+@@ -531,13 +531,13 @@ class PrettyTable:
+             "escape_header",
+             "escape_data",
+         ):
+-            self._validate_true_or_false(val, option)
++            self._validate_true_or_false(option, val)
+         elif option == "header_style":
+-            self._validate_header_style(option)
++            self._validate_header_style(val)
+         elif option == "int_format":
+             self._validate_int_format(option, val)
+         elif option == "float_format":
+-            pass
++            self._validate_float_format(option, val)
+         elif option == "custom_format":
+             for k, formatter in val.items():
+                 self._validate_function(k, formatter)
+@@ -557,7 +557,7 @@ class PrettyTable:
+         ):
+             self._validate_single_char(option, val)
+         elif option == "attributes":
+-            self._validate_attributes(val, option)
++            self._validate_attributes(option, val)
+ 
+     def _validate_field_names(self, val):
+         # Check for appropriate length
+@@ -589,8 +589,7 @@ class PrettyTable:
+     def _validate_none_format(self, val):
+         try:
+             if val is not None:
+-                if isinstance(val, str):
+-                    pass
++                assert isinstance(val, str)
+         except AssertionError:
+             msg = "Replacement for None value must be a string if being supplied."
+             raise TypeError(msg)
+@@ -970,8 +969,8 @@ class PrettyTable:
+ 
+     @sort_key.setter
+     def sort_key(self, val: Callable[[RowType], SupportsRichComparison]) -> None:
+-        self._validate_option("sort_key", self._sort_key)
+-        self._sort_key = None
++        self._validate_option("sort_key", val)
++        self._sort_key = val
+ 
+     @property
+     def header(self) -> bool:
+diff --git a/tests/test_prettytable.py b/tests/test_prettytable.py
+index 75254ca..43305b2 100644
+--- a/tests/test_prettytable.py
++++ b/tests/test_prettytable.py
+@@ -24,6 +24,57 @@ from prettytable import (
+ )
+ 
+ 
++def test_option_validation_uses_values_and_validator_arguments() -> None:
++    table = PrettyTable()
++    table.field_names = ["Name", "Age", "City"]
++    table.add_row(["Alice", 25, "New York"])
++
++    table.none_format = "N/A"
++    table.sortby = "Name"
++    table.header = True
++    table.border = False
++    table.padding_width = 0
++    table.left_padding_width = 0
++    table.right_padding_width = 0
++    table.attributes = {"class": "prettytable"}
++    table.header_style = "upper"
++    table.sort_key = lambda row: row
++
++    assert table.sort_key(["Alice", 25, "New York"]) == ["Alice", 25, "New York"]
++    assert table.get_string().count("Alice") == 1
++    assert "N/A" in table.get_string()
++
++    with pytest.raises(ValueError, match="Invalid value for header"):
++        table.header = "yes"
++    with pytest.raises(ValueError, match="Invalid field name: Missing"):
++        table.sortby = "Missing"
++    with pytest.raises(TypeError, match="Replacement for None value"):
++        table.none_format = 1
++    with pytest.raises(ValueError, match="Invalid value for float_format"):
++        table.float_format = "invalid"
++
++
++def test_option_validation_in_constructor_and_get_string() -> None:
++    table = PrettyTable(
++        ["Name", "Age"],
++        header=True,
++        sortby="Name",
++        padding_width=0,
++        left_padding_width=0,
++        right_padding_width=0,
++        attributes={"class": "prettytable"},
++        header_style="upper",
++        float_format=".2f",
++    )
++    table.add_row(["Alice", 25])
++
++    assert "ALICE" in table.get_string(header=True, sortby="Name", padding_width=0)
++    with pytest.raises(ValueError, match="Invalid field name: Missing"):
++        table.get_string(sortby="Missing")
++    with pytest.raises(ValueError, match="Invalid header style"):
++        PrettyTable(["Name"], header_style="invalid")
++
++
+ def test_version() -> None:
+     assert isinstance(prettytable.__version__, str)
+     assert prettytable.__version__[0].isdigit()
