@@ -334,7 +334,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         aliases = {"gpt-6": "gpt-6-luna", "luna": "gpt-6-luna", "gpt-5.6": "gpt-5.6-luna"}
         model = model_id.lower().replace(" ", "-")
         target = aliases.get(model, model)
-        if target in V9_MODEL_IDS:
+        if target in V9_MODEL_IDS or target in self.model_endpoints:
             return target
         if target not in self.allowed_models:
             target = self.primary_model
@@ -489,6 +489,10 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                          "PROVIDER_REPORTED_MISMATCH")
         usage_complete = p_tokens is not None and c_tokens is not None
         cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and (alias_facts is not None or returned == target) else None
+        backend_spec = MODEL_REGISTRY.get(target)
+        backend_cost = (backend_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0)
+                        if alias_facts is not None and backend_spec is not None and usage_complete and returned == target
+                        else cost if alias_facts is None else None)
         # Vendor cost is distinct from the configured price estimate.
         reported_cost = (raw_usage or {}).get("cost")
         reported_cost_unit = (raw_usage or {}).get("cost_currency") or (raw_usage or {}).get("currency")
@@ -541,6 +545,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "cost_model_id": target_spec.model_id,
             "cost_source": target_spec.pricing_source,
             "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE" if alias_facts is not None else "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+            "backend_model_rate_cost_usd": backend_cost,
+            "backend_model_rate_source": backend_spec.pricing_source if backend_spec else None,
+            "backend_model_rate_status": backend_spec.pricing_status if backend_spec else "NOT_MEASURED",
             "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
             "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
             "cost_status": "MAPPED_EXPERIMENT_PRICE" if alias_facts is not None and cost is not None else (target_spec.pricing_status if cost is not None else "UNKNOWN"),

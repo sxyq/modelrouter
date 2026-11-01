@@ -39,7 +39,7 @@ class AliasMapping:
 
 def alias_provider(config: dict, api_key=None):
     """Use the same configured Provider in local and Harbor episodes."""
-    from modelrouter.providers.provider import OpenAICompatibleProvider
+    from modelrouter.providers.provider import OpenAICompatibleProvider, OpenAIResponsesProvider
 
     credential = api_key
     if credential is None:
@@ -66,7 +66,11 @@ def alias_provider(config: dict, api_key=None):
     mapping = AliasMapping(config["actual_backend_model_id"], config["base_url"],
                            effective_native_effort=config.get("effective_native_effort", "none"),
                            cost_status="MAPPED_EXPERIMENT_PRICE")
-    return OpenAICompatibleProvider(
+    provider = (OpenAIResponsesProvider if config.get("generator_protocol") == "responses"
+                else OpenAICompatibleProvider)
+    return provider(
         base_url=config["base_url"], alias_mapping=mapping,
         api_key=credential if credential is not None else "",
+        request_timeout_sec=config.get("provider_timeout_sec", 60.0),
+        model_endpoints=config.get("model_endpoints"),
     )

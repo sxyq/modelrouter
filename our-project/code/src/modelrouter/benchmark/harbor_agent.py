@@ -83,6 +83,7 @@ class PolicyModel(LitellmModel):
         target = "gpt-6-luna" if policy == "fixed_strong" else "gpt-5.6-luna"
         if self.v9_enabled:
             target = "gpt-6.1-sol" if policy == "fixed_strong" else "qwen3.8-flash"
+            target = v9_config.get("fixed_model_id", target)
         self.policy = create_policy(policy_key, seed=seed, target_model=target)
         self.state, self.record_dir = state, record_dir
         self.provider = provider
@@ -116,7 +117,8 @@ class PolicyModel(LitellmModel):
         self.teacher_metrics = self.v9_hook.teacher_metrics if self.v9_hook else []
         self.action_validation = {
             action["action_id"]: ("ALIAS_SMOKE_ONLY" if self.v9_enabled and
-                                  getattr(self.provider, "alias_mapping", None) is not None else
+                                  getattr(self.provider, "alias_mapping", None) is not None and
+                                  self.provider.alias_mapping.resolve(action["model"], action["native_effort"]) else
                                   "REAL_API_NOT_OBSERVED" if self.v9_enabled else
                                   "REAL_TESTED_LOW" if action["native_effort"] == "low" else "NOT_TESTED")
             for action in self.actions
@@ -188,6 +190,7 @@ class PolicyModel(LitellmModel):
             alias_facts = (alias_mapping.resolve(spec.model_id, selected["native_effort"]) or {}
                            if alias_mapping else {})
             event(self.record_dir, "ERROR", category="PROVIDER", error=type(exc).__name__,
+                  error_message=str(exc), http_status=exc.code if isinstance(exc, urllib.error.HTTPError) else None,
                   episode_id=self.state.episode_id, model=selected["model"], role="generator",
                   selected_model_id=spec.model_id, cost_model_id=spec.model_id,
                   actual_backend_model_id=alias_facts.get("actual_backend_model_id"),

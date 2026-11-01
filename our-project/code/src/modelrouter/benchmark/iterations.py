@@ -126,6 +126,8 @@ def collect_trials(path: Path):
             trials.append({**unit, **row, "job_name": job.name, "job_dir": str(job)})
     recorded_tools = {(r.get("episode_id"), r.get("tool_call_id")) for r in rows(path / "tool_calls.jsonl") if r.get("kind") == "agent_tool"}
     for trial in trials:
+        if not trial.get("trial_id"):
+            continue
         for step in trial.get("trace", {}).get("steps", []):
             for call in step.get("tool_calls", []):
                 identity = (str(trial["trial_id"]), call.get("tool_call_id"))
@@ -158,6 +160,8 @@ def summarize(path: Path, *, persist=True):
     events = rows(path / "events.jsonl")
     benchmark_events = [e for e in events if e.get("sample_kind", "benchmark").lower() == "benchmark"]
     calls = [e for e in benchmark_events if e["event"] == "GENERATOR_END"]
+    generator_failures = [e for e in benchmark_events if e["event"] == "ERROR"
+                          and e.get("category") == "PROVIDER" and e.get("role") == "generator"]
     teachers = [e for e in benchmark_events if e["event"] in ("TEACHER_END", "TEACHER_ERROR")
                 and e.get("provider_request_attempted", True)]
     verified = [r for r in trials if r["status"] == "OFFICIAL_ARTIFACT_VERIFIED"]
@@ -215,13 +219,13 @@ def summarize(path: Path, *, persist=True):
         model = c.get("selected_model_id") or c.get("returned_model") or c.get("returned_model_id") or c.get("model", "unknown")
         model_calls[model + " / " + c.get("protocol", "chat_completions")].append(c)
     native_costs = [r.get("cost_usd") for r in native_only]
-    all_costs = costs + native_costs
+    all_costs = costs + native_costs + [None] * len(generator_failures)
     known_cost = round(sum(v for v in all_costs if isinstance(v, (int, float))), 10)
     complete_cost = bool(all_costs) and all(isinstance(v, (int, float)) for v in all_costs)
     durations = [r.get("duration_sec", r.get("episode_wall_s")) for r in verified]
     billed_calls = [c.get("actual_billed_cost_usd") for c in calls]
     native_billed = [r.get("actual_billed_cost_usd") for r in native_only]
-    all_billed = billed_calls + native_billed
+    all_billed = billed_calls + native_billed + [None] * len(generator_failures)
     billed_generator = sum(all_billed) if all_billed and all(v is not None for v in all_billed) else None
     teacher_costs = [c.get("official_rate_cost_usd", c.get("cost_usd")) for c in teachers]
     teacher_billed = [c.get("actual_billed_cost_usd") for c in teachers]
@@ -248,12 +252,13 @@ def summarize(path: Path, *, persist=True):
                      for r in native_only]
     call_tokens = [c["prompt_tokens"] + c["completion_tokens"]
                    if c.get("prompt_tokens") is not None and c.get("completion_tokens") is not None else None for c in calls]
-    token_values = call_tokens + native_tokens
+    token_values = call_tokens + native_tokens + [None] * len(generator_failures)
     teacher_token_values = [c["prompt_tokens"] + c["completion_tokens"]
                            if c.get("prompt_tokens") is not None and c.get("completion_tokens") is not None
                            else None for c in teachers]
     model_tokens = token_values + teacher_token_values
     model_costs = all_costs + teacher_costs
+    backend_costs = [row.get("backend_model_rate_cost_usd") for row in calls + teachers] + [None] * len(generator_failures)
     mapped_requests = [dict(row, role=role) for role, group in (("generator", calls), ("teacher", teachers))
                        for row in group if row.get("cost_basis") == "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE"]
     mapped_costs = [row.get("cost_usd") for row in mapped_requests]
@@ -269,6 +274,7 @@ def summarize(path: Path, *, persist=True):
         "current": current, "current_trial": current_trial,
         "generator_tokens": sum(token_values) if token_values and all(v is not None for v in token_values) else None,
         "teacher_calls": len(teachers),
+        "generator_failed_requests": len(generator_failures),
         "teacher_tokens": sum(teacher_token_values) if all(v is not None for v in teacher_token_values) else None,
         "total_model_tokens": sum(model_tokens) if model_tokens and all(v is not None for v in model_tokens) else None,
         "generator_cost_usd": known_cost if complete_cost else None,
@@ -276,6 +282,9 @@ def summarize(path: Path, *, persist=True):
         "teacher_cost_usd": teacher_cost,
         "known_teacher_cost_usd": round(sum(v for v in teacher_costs if v is not None), 10) if any(v is not None for v in teacher_costs) else None,
         "episode_model_cost_usd": round(sum(model_costs), 10) if model_costs and all(v is not None for v in model_costs) else None,
+        "backend_model_rate_reference_cost_usd": round(sum(backend_costs), 10) if backend_costs and all(v is not None for v in backend_costs) else None,
+        "known_backend_model_rate_reference_cost_usd": round(sum(v for v in backend_costs if v is not None), 10) if any(v is not None for v in backend_costs) else None,
+        "backend_model_rate_statuses": sorted({row.get("backend_model_rate_status", "NOT_MEASURED") for row in calls + teachers}),
         "execution_mode": "ALIAS_SMOKE" if mapped_requests else "REAL_API",
         "mapped_cost_accounting": {
             "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE",
@@ -313,7 +322,7 @@ def summarize(path: Path, *, persist=True):
                 "recorded_cost_usd": c.get("cost_usd"), "official_rate_cost_usd": c["official_rate_cost_usd"],
             } for role, group in (("generator", calls), ("teacher", teachers))
               for c in group if "official_rate_cost_usd" in c],
-        } if not mapped_requests else None,
+        } if not mapped_requests and any("official_rate_cost_usd" in row for row in calls + teachers) else None,
         "actual_generator_cost_usd": billed_generator,
         "actual_teacher_cost_usd": billed_teacher,
         "sandbox_cost_usd": sandbox_cost, "router_compute_cost_usd": router_cost,

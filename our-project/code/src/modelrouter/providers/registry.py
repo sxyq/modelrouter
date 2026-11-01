@@ -81,6 +81,19 @@ V9_MODEL_IDS = ("gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash")
 
 # 5 Major Model Pools
 MODEL_REGISTRY: Dict[str, ModelSpec] = {
+    "deepseek-v4.1-flash": ModelSpec(
+        model_id="deepseek-v4.1-flash", pool="Fast", provider="aihub",
+        display_name="DeepSeek V4.1 Flash (configured AIHub endpoint)",
+        context_window=1_000_000, max_output_tokens=393_216,
+        native_efforts=("none", "low", "high", "max"),
+        input_price_per_1m=0.15, output_price_per_1m=0.60, reasoning_price_per_1m=0.60,
+        cache_read_price_per_1m=0.003, cache_write_price_per_1m=0.15,
+        pricing_status="OFFICIAL_FAMILY_OFF_PEAK_REFERENCE_NOT_PROVIDER_TARIFF",
+        pricing_source="https://api-docs.deepseek.com/quick_start/pricing",
+        identity_status="CONFIGURED_API_ID_UNVERIFIED_PHYSICAL_RELEASE",
+        context_status="OFFICIAL_FAMILY_DOCUMENTATION",
+        native_efforts_status="OFFICIAL_FAMILY_DOCUMENTATION_APPLICATION_UNVERIFIED",
+    ),
     # 1. Fast Pool
     "gpt-4o-mini": ModelSpec(
         model_id="gpt-4o-mini",
