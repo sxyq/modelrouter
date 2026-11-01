@@ -18,6 +18,9 @@ distribution-search原Verifier：固定Sol/Luna/新Laya关闭教师reward1/0/1�
 
 教师新Dev1成功/1次消费/0.019706USD，开关均reward1，单题费用差-0.0246274USD不证明净收益。Flash现有目录仍无渠道；AA v4、Sol报告max/Luna档位未知、两固定参考保持。01:08:59台北F14独立维护running，241/420块、30848/107404步、最新Loss0.48724648、最近12块有限，未完成首轮/Val；既有handoff等待、本轮未干预。Serving仍F05/原Kev、PID327621，V9_LAYA_STEP_001-e01未晋升，F11/R11代表保持。下次需更广质量步骤及真实动态收益，不自动再训。
 
+
+**2026-11-02 Fig.2 图示决定**：主图采用 C 版「左侧 T/H 执行上下文—中央单一 Router—右侧 M 能力卡，上方可选教师，下方 Mini-SWE-agent 内循环」的克制中文布局；取消封面标题、外围任务输入大回环和无意义图标。主循环：每次模型生成需要路由→组合截至当前的真实状态及已存能力快照→必要时教师补充三字段→过滤合法 Model×Effort→Router 选择→原 Agent 生成与工具执行→观察/更新→若继续，下一次生成前再次路由；若终止，Harbor Verifier 评分。**注意**：生成图片初稿尚有教师箭头直达 Router、筛选顺序等表现偏差，实际架构以 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 与 [论文 Fig.2 文字规范](../../汇报/汇报三/ModelRouter论文实验与图表规划.md) 为准；图像文件 `ModelRouter_V9_Fig2_中文高清.png` 已在当前会话导出、未写入仓库。仅图示讨论，不改变既有五 RQ 八图十二表或真实执行状态。
+
 ### 2026-11-01 · 以下为原时点记录
 
 **独立评分完成（11-01）**：用户已选TwinRouterBench 520题/970步；从main e3c54a50f82648647922d15209a24a1fc57a6902复用原评价入口，8/8版本完成、7760条预测，输入及输出任务/gold一致。F11-e01为20.515464分，比微调前高13.505155个百分点；R11为18.969072分，比微调前高5.670103个百分点，全部版本低于恒选low的71.030928分。原Val已选Laya F11/P0_B03_C01/F05、Kev R11/R12/C09保持；旧四档分不当新三模型目标，不按Test重选或晋升。结果见[独立评分](../results/iterations/20261031-twinrouterbench-independent/review.md)，下方未执行Test描述保留原时点。
