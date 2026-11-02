@@ -1,0 +1,110 @@
+{
+  "response": {
+    "object": "chat.completion",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The source confirms both reported edge cases: list input is explicitly reversed, and `None` becomes an empty list. I’m checking the existing utility tests and URI decoder semantics before making the smallest compatible patch.",
+          "reasoning_content": "**Inspecting tests and expectations**\n\nI need to understand what is expected from the tests. It seems like there’s a chance that they are intentionally reversed — that's interesting, right? I’ll have to inspect them carefully to see if that's the case. It's important to ensure everything is clear and working as intended, so I guess I’m already diving into the analysis part to figure this out! I want to make sure I get this right.",
+          "tool_calls": [
+            {
+              "id": "call_URMYQDqRAeNj73nfMh1ukEX2",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"cd /testbed && rg -n \\\"list_to_scope|scope_to_list|params_from_uri\\\" tests oauthlib\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "id": "resp_0e9095c88cc5ad18016ae8070eab5087d2a704384309e77c1f",
+    "model": "gpt-6-luna",
+    "created": 1793591055,
+    "usage": {
+      "prompt_tokens": 21171,
+      "completion_tokens": 107,
+      "total_tokens": 21278,
+      "completion_tokens_details": {
+        "reasoning_tokens": 16
+      }
+    }
+  },
+  "metrics": {
+    "requested_model_id": "gpt-6-luna",
+    "selected_model_id": "gpt-6-luna",
+    "response_id": "resp_0e9095c88cc5ad18016ae8070eab5087d2a704384309e77c1f",
+    "request_model_id": "gpt-6-luna",
+    "returned_model_id": "gpt-6-luna",
+    "provider": "jiji",
+    "provider_base_url": "https://oneapi.sxyq27.online/v1",
+    "protocol": "chat_completions",
+    "finish_reason": "tool_calls",
+    "incomplete_details": null,
+    "native_effort": "low",
+    "requested_native_effort": "low",
+    "request_native_effort": "low",
+    "sent_effort_parameter": {
+      "reasoning_effort": "low"
+    },
+    "returned_native_effort": null,
+    "native_effort_status": "NOT_REPORTED",
+    "stream": true,
+    "requested_max_output_tokens": 4096,
+    "reported_max_output_tokens": null,
+    "raw_usage": {
+      "prompt_tokens": 21171,
+      "completion_tokens": 107,
+      "total_tokens": 21278,
+      "completion_tokens_details": {
+        "reasoning_tokens": 16
+      }
+    },
+    "usage_status": "REPORTED",
+    "identity_status": "MATCHED_REQUEST_ALIAS",
+    "alias_mapping_applied": false,
+    "prompt_tokens": 21171,
+    "completion_tokens": 107,
+    "reported_completion_tokens": 107,
+    "reasoning_tokens": 16,
+    "cached_tokens": null,
+    "cache_write_tokens": null,
+    "ttft_ms": 3105.755834025331,
+    "latency_ms": 3203.1675840262324,
+    "output_tokens_per_s": 33.404433952689416,
+    "throughput_definition": "reported_output_including_reasoning / complete_request_seconds",
+    "stream_output_tokens_per_s": 1098.4301175064584,
+    "stream_output_tokens_per_s_status": "ESTIMATE",
+    "stream_throughput_definition": "reported completion including reasoning / (request latency - TTFT); not token counts from output chunks",
+    "cost_usd": 0.0021706,
+    "cost_model_id": "gpt-6-luna",
+    "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+    "backend_model_rate_cost_usd": 0.0021706,
+    "backend_model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "backend_model_rate_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+    "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
+    "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+    "actual_billed_cost_usd": null,
+    "raw_reported_cost": null,
+    "reported_cost_unit": "NOT_REPORTED",
+    "budget_accounted": true,
+    "status": "RECORDED",
+    "episode_id": "20261102-C1-prefix-1",
+    "decision_id": "20261102-C1-prefix-1-1",
+    "router_checkpoint_id": "none",
+    "router_family": "baseline_fixed_strong",
+    "router_run_id": null,
+    "router_identity_source": null,
+    "router_identity_status": "NOT_A_NEURAL_ROUTE",
+    "capability_snapshot_id": "20261031T072548885180Z-v4",
+    "execution_mode": "REAL_API",
+    "model_validation_status": "REAL_API_IDENTITY_MATCHED",
+    "effort_validation_status": "NOT_REPORTED"
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "task": "B_server_cpu_forward_measurement",
+  "status": "BLOCKED_MISSING_PHYSICAL_CHECKPOINT",
+  "sampled_at_utc": "2026-11-02T03:28:14Z",
+  "scope": {
+    "planned_forward_count": 12,
+    "executed_forward_count": 0,
+    "model_calls": 0,
+    "agent_runs": 0,
+    "gpu_compute": false,
+    "serving_or_training_changes": false,
+    "candidate_order": ["gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash"]
+  },
+  "resource_snapshot": {
+    "logical_cpus": 80,
+    "load_average_1_5_15m": [1.24, 1.16, 1.11],
+    "memory_available_gib": 327,
+    "f14": {
+      "pid": 808492,
+      "state": "RUNNING",
+      "cpu_percent_of_one_core": 100,
+      "progress": "epoch_02_chunk_007_of_420",
+      "step": 54598,
+      "steps_total": 107404,
+      "consumed": 3494252,
+      "consumed_total": 6873816,
+      "latest_loss": 0.4703
+    },
+    "gpu_read_only_snapshot": {
+      "device": "NVIDIA RTX A6000",
+      "memory_used_mib": 9931,
+      "memory_total_mib": 49140,
+      "utilization_percent": 95,
+      "temperature_c": 82,
+      "power_w": 293.21,
+      "used_by_this_task": false
+    },
+    "interpretation": "System load was low; F14 remained active and was left untouched."
+  },
+  "serving_snapshot": {
+    "pid": 327621,
+    "started_at_server_local": "2026-10-30 20:53:21",
+    "health": "healthy",
+    "loaded_models": [
+      {"family": "laya", "run_id": "F05", "checkpoint_id": "epoch_01", "loaded": true},
+      {"family": "kev", "run_id": "KEV-4B-ADAPTER", "loaded": true, "inference_engine": "torch_cpu"}
+    ],
+    "metadata_route": "/models",
+    "modified": false
+  },
+  "imported_source_identity": {
+    "adapter": "our-project/code/src/modelrouter/serving/laya_adapter.py:140",
+    "rl_agent": "models/laya-421m/rl_agent_api.py:40",
+    "rl_agent_system_one_decorator": "torch.no_grad",
+    "sequence_builder": "models/laya-421m/rl_common.py:47",
+    "decision_model": "models/laya-421m/rl_common.py:81",
+    "full_sequence_head": "nn.TransformerEncoder; configured by head_layers; source lines 92-93",
+    "collator": "models/laya-421m/rl_common.py:265",
+    "encoder_loader": "AutoConfig.from_pretrained(checkpoint/encoder) then AutoModel.from_config(..., attn_implementation=sdpa); source lines 127-133",
+    "resolved_modernbert_runtime_class": null,
+    "source_revision": "No server Git revision was established; paths identify the files actually imported."
+  },
+  "checkpoint_entity": {
+    "run_id": "V9_LAYA_STEP_001",
+    "checkpoint_id": "V9_LAYA_STEP_001-e01",
+    "run_relative_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001",
+    "expected_e01_relative_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/checkpoints/epoch_01",
+    "run_directory_present": true,
+    "checkpoints_directory_present": true,
+    "e01_directory_present": false,
+    "model_safetensors_present": false,
+    "rl_agent_config_present": false,
+    "run_metadata_status": "completed",
+    "best_epoch": 1,
+    "best_checkpoint": null,
+    "metadata_base_model_reference": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F11/checkpoints/best",
+    "matching_entity_found_in_runs_models_experiments": false,
+    "fallback_used": false,
+    "run_report": {
+      "started_at_utc": "2026-11-01T04:13:14Z",
+      "finished_at_utc": "2026-11-01T04:13:37Z",
+      "reported_output_dir": null,
+      "reported_checkpoint_path": null,
+      "history_e01": {
+        "weights_saved": false,
+        "loadable": false,
+        "was_previously_saved": true,
+        "retention_status": "PRUNED_LOW_SCORE",
+        "retention_reason": "outside_new_core_pool_15pct_quota(1/2)",
+        "freed_bytes": 846196996,
+        "checkpoint_size_bytes": 0,
+        "checkpoint_seconds": 2.143
+      },
+      "last_modified_server_local": "2026-11-02T11:05:32+08:00"
+    },
+    "manifest_entry": {
+      "relative_path": "V9_LAYA_STEP_001/checkpoints/epoch_01",
+      "weights_saved": true,
+      "loadable": true,
+      "retention_status": "PINNED_PARENT",
+      "actual_weight_bytes": 846196996,
+      "modified_server_local": "2026-11-01T12:13:38+08:00",
+      "stale_after_cleanup_audit": true
+    },
+    "cleanup_audit": {
+      "relative_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/cleanup_audit_log.json",
+      "executed_at_utc": "2026-11-02T03:05:32Z",
+      "dry_run": false,
+      "phase2_executed_count": 1,
+      "phase2_freed_bytes": 846196996,
+      "e01_item": {
+        "kind": "PRUNED_LOW_SCORE",
+        "reason": "outside_new_core_pool_15pct_quota(1/2)",
+        "relative_path": "V9_LAYA_STEP_001/checkpoints/epoch_01",
+        "bytes": 846196996,
+        "freed_bytes": 846196996,
+        "history_persisted": true,
+        "deleted_at_utc": "2026-11-02T03:05:32Z"
+      },
+      "actor_recorded": false
+    },
+    "source_path_trace": {
+      "continuation_source": "our-project/code/src/modelrouter/v9/training/continuation.py",
+      "continuation_candidate_path": "out_root/<run_id>/checkpoints/best",
+      "continuation_records_checkpoint_path_only_when_physical_and_loadable": true,
+      "runtime_source": "our-project/code/src/modelrouter/v9/runtime/checkpoint.py",
+      "runtime_reads_rl_agent_config_from_selected_checkpoint_path": true,
+      "run_report_save_pretrained_or_output_dir": null
+    },
+    "handoff_snapshot": {
+      "pid": 817520,
+      "state": "WAITING_FOR_F14_EXIT",
+      "wait_target_pid": 808492,
+      "checkpoint_or_archive_action": false
+    },
+    "archive_assessment": {
+      "archive_destination_recorded": false,
+      "archive_directory_or_symlink_in_known_run_dir": false,
+      "finding": "The executed retention audit records PRUNED_LOW_SCORE and freed bytes, not an archive move. The cleanup implementation removes the epoch directory; no destination is recorded.",
+      "unknown": "The audit records no initiating actor; no claim is made about unrecorded actions outside the inspected report, manifest, cleanup audit, run directory, and handoff."
+    },
+    "reason": "The exact e01 checkpoint existed at the manifest path and was removed by the recorded non-dry-run retention cleanup. Its weights/configuration are absent now; the F11 parent/base is not an acceptable substitute."
+  },
+  "forward_records": [
+    {"id":"S1-old-no_grad","state":"S1","source":"alias-build-pmars/events.jsonl:4","step":0,"formatter":"old","grad_mode":"no_grad","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S1-old-inference_mode","state":"S1","source":"alias-build-pmars/events.jsonl:4","step":0,"formatter":"old","grad_mode":"inference_mode","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S1-new-no_grad","state":"S1","source":"alias-build-pmars/events.jsonl:4","step":0,"formatter":"new","grad_mode":"no_grad","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S1-new-inference_mode","state":"S1","source":"alias-build-pmars/events.jsonl:4","step":0,"formatter":"new","grad_mode":"inference_mode","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S2-old-no_grad","state":"S2","source":"alias-build-pov-ray/events.jsonl:84","step":20,"formatter":"old","grad_mode":"no_grad","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S2-old-inference_mode","state":"S2","source":"alias-build-pov-ray/events.jsonl:84","step":20,"formatter":"old","grad_mode":"inference_mode","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S2-new-no_grad","state":"S2","source":"alias-build-pov-ray/events.jsonl:84","step":20,"formatter":"new","grad_mode":"no_grad","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S2-new-inference_mode","state":"S2","source":"alias-build-pov-ray/events.jsonl:84","step":20,"formatter":"new","grad_mode":"inference_mode","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S3-old-no_grad","state":"S3","source":"alias-financial-document-processor/events.jsonl:64","step":15,"formatter":"old","grad_mode":"no_grad","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S3-old-inference_mode","state":"S3","source":"alias-financial-document-processor/events.jsonl:64","step":15,"formatter":"old","grad_mode":"inference_mode","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S3-new-no_grad","state":"S3","source":"alias-financial-document-processor/events.jsonl:64","step":15,"formatter":"new","grad_mode":"no_grad","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null},
+    {"id":"S3-new-inference_mode","state":"S3","source":"alias-financial-document-processor/events.jsonl:64","step":15,"formatter":"new","grad_mode":"inference_mode","status":"NOT_EXECUTED","elapsed_ms":null,"tokens":null,"probabilities":null}
+  ],
+  "comparison": {
+    "formatter_input_or_token_position_differences": null,
+    "same_mode_probability_differences": null,
+    "timing_ratios": null,
+    "conclusion": "No performance or output comparison is available because no forward ran."
+  },
+  "cleanup": {
+    "containers_created": 0,
+    "backups_created": 0,
+    "temporary_scripts_or_builds_created": 0,
+    "stdout_saved": false,
+    "temporary_artifacts_remaining": 0
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "messages": [
+    {
+      "content": "",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"command\":\"cd /testbed && python - <<'PY'\\nimport records\\n\\ndb = records.Database('sqlite:///:memory:')\\ndb.query('CREATE table users (id text)')\\ntry:\\n    rows = db.query('SELECT * FROM users WHERE id = :user', user=\\\"Te'ArnaLambert\\\")\\n    print('query returned:', rows)\\n    print('rows:', rows.all())\\nexcept Exception:\\n    import traceback\\n    traceback.print_exc()\\nPY\\npytest -q tests/test_69.py\",\"yield_time_ms\":1000}",
+            "name": "bash"
+          },
+          "id": "call_T7UXDhsEfO2oIm9xOtBu6JdT",
+          "type": "function"
+        }
+      ],
+      "function_call": null,
+      "provider_specific_fields": null,
+      "extra": {
+        "actions": [
+          {
+            "command": "cd /testbed && python - <<'PY'\nimport records\n\ndb = records.Database('sqlite:///:memory:')\ndb.query('CREATE table users (id text)')\ntry:\n    rows = db.query('SELECT * FROM users WHERE id = :user', user=\"Te'ArnaLambert\")\n    print('query returned:', rows)\n    print('rows:', rows.all())\nexcept Exception:\n    import traceback\n    traceback.print_exc()\nPY\npytest -q tests/test_69.py",
+            "tool_call_id": "call_T7UXDhsEfO2oIm9xOtBu6JdT"
+          }
+        ],
+        "response": {
+          "id": "resp_0adec05332d8bd16016ae80694d10087d2935f14707e3986e3",
+          "created": 1793590933,
+          "model": "gpt-6-luna",
+          "object": "chat.completion",
+          "system_fingerprint": null,
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "index": 0,
+              "message": {
+                "content": "",
+                "role": "assistant",
+                "tool_calls": [
+                  {
+                    "function": {
+                      "arguments": "{\"command\":\"cd /testbed && python - <<'PY'\\nimport records\\n\\ndb = records.Database('sqlite:///:memory:')\\ndb.query('CREATE table users (id text)')\\ntry:\\n    rows = db.query('SELECT * FROM users WHERE id = :user', user=\\\"Te'ArnaLambert\\\")\\n    print('query returned:', rows)\\n    print('rows:', rows.all())\\nexcept Exception:\\n    import traceback\\n    traceback.print_exc()\\nPY\\npytest -q tests/test_69.py\",\"yield_time_ms\":1000}",
+                      "name": "bash"
+                    },
+                    "id": "call_T7UXDhsEfO2oIm9xOtBu6JdT",
+                    "type": "function"
+                  }
+                ],
+                "function_call": null
+              }
+            }
+          ],
+          "usage": {
+            "completion_tokens": 300,
+            "prompt_tokens": 26485,
+            "total_tokens": 26785,
+            "completion_tokens_details": {
+              "reasoning_tokens": 159
+            },
+            "prompt_tokens_details": null
+          }
+        },
+        "cost": 0.0027985,
+        "timestamp": 1793590936.0156832
+      }
+    },
+    {
+      "content": "{\n  \"returncode\": 1,\n  \"output\": \"Traceback (most recent call last):\\n  File \\\"\\u003cstdin\\u003e\\\", line 4, in \\u003cmodule\\u003e\\n  File \\\"/testbed/records.py\\\", line 315, in query\\n    return conn.query(query, fetchall, **params)\\n  File \\\"/testbed/records.py\\\", line 386, in query\\n    keys = cursor.keys()\\n  File \\\"/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/result.py\\\", line 901, in keys\\n    return self._metadata.keys\\n  File \\\"/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py\\\", line 1369, in keys\\n    self._we_dont_return_rows()\\n  File \\\"/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py\\\", line 1341, in _we_dont_return_rows\\n    raise exc.ResourceClosedError(\\nsqlalchemy.exc.ResourceClosedError: This result object does not return rows. It has been closed automatically.\\nF                                                                        [100%]\\n=================================== FAILURES ===================================\\n_________________________ test_issue69[sqlite_memory] __________________________\\n\\ndb = \\u003cDatabase open=True\\u003e\\n\\n    def test_issue69(db):\\n\\u003e       db.query(\\\"CREATE table users (id text)\\\")\\n\\ntests/test_69.py:2: \\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \\nrecords.py:315: in query\\n    return conn.query(query, fetchall, **params)\\nrecords.py:386: in query\\n    keys = cursor.keys()\\n/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/result.py:901: in keys\\n    return self._metadata.keys\\n/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py:1369: in keys\\n    self._we_dont_return_rows()\\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \\n\\nself = \\u003csqlalchemy.engine.cursor._NoResultMetaData object at 0x7ffffd5ccc00\\u003e\\nerr = None\\n\\n    def _we_dont_return_rows(self, err=None):\\n\\u003e       raise exc.ResourceClosedError(\\n            \\\"This result object does not return rows. \\\"\\n            \\\"It has been closed automatically.\\\"\\n        ) from err\\nE       sqlalchemy.exc.ResourceClosedError: This result object does not return rows. It has been closed automatically.\\n\\n/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py:1341: ResourceClosedError\\n=========================== short test summary info ============================\\nFAILED tests/test_69.py::test_issue69[sqlite_memory] - sqlalchemy.exc.Resourc...\\n1 failed in 0.09s\\n\"\n}",
+      "extra": {
+        "raw_output": "Traceback (most recent call last):\n  File \"<stdin>\", line 4, in <module>\n  File \"/testbed/records.py\", line 315, in query\n    return conn.query(query, fetchall, **params)\n  File \"/testbed/records.py\", line 386, in query\n    keys = cursor.keys()\n  File \"/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/result.py\", line 901, in keys\n    return self._metadata.keys\n  File \"/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py\", line 1369, in keys\n    self._we_dont_return_rows()\n  File \"/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py\", line 1341, in _we_dont_return_rows\n    raise exc.ResourceClosedError(\nsqlalchemy.exc.ResourceClosedError: This result object does not return rows. It has been closed automatically.\nF                                                                        [100%]\n=================================== FAILURES ===================================\n_________________________ test_issue69[sqlite_memory] __________________________\n\ndb = <Database open=True>\n\n    def test_issue69(db):\n>       db.query(\"CREATE table users (id text)\")\n\ntests/test_69.py:2: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nrecords.py:315: in query\n    return conn.query(query, fetchall, **params)\nrecords.py:386: in query\n    keys = cursor.keys()\n/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/result.py:901: in keys\n    return self._metadata.keys\n/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py:1369: in keys\n    self._we_dont_return_rows()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <sqlalchemy.engine.cursor._NoResultMetaData object at 0x7ffffd5ccc00>\nerr = None\n\n    def _we_dont_return_rows(self, err=None):\n>       raise exc.ResourceClosedError(\n            \"This result object does not return rows. \"\n            \"It has been closed automatically.\"\n        ) from err\nE       sqlalchemy.exc.ResourceClosedError: This result object does not return rows. It has been closed automatically.\n\n/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py:1341: ResourceClosedError\n=========================== short test summary info ============================\nFAILED tests/test_69.py::test_issue69[sqlite_memory] - sqlalchemy.exc.Resourc...\n1 failed in 0.09s\n",
+        "returncode": 1,
+        "timestamp": 1793590937.511488,
+        "exception_info": ""
+      },
+      "tool_call_id": "call_T7UXDhsEfO2oIm9xOtBu6JdT",
+      "role": "tool"
+    }
+  ],
+  "api_calls": 1
+}

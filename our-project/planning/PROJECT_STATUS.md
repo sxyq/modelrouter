@@ -1,6 +1,16 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-11-02 · 当前：Model-only 覆盖处理与六份质量前缀准备
+## 2026-11-02 · 当前：六前缀真实比较完成，指定 CPU 权重已缺失
+
+接续main `be716e8341a043c9ce29c066290cf0a270bea3b1`，用户已授权本机Docker/最多12次真实Sol、Luna一步生成及原验证，以及原服务器CPU的12次前向。[本轮完整结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)与原summary的`quality_prefix_execution`为当前入口。A完成六个已有Train任务/五仓库、12生成、13条模型工具命令、12次原范围验证；六组两方均未通过，新增质量/成本偏好0。inspect2/modify3/recover1是决策前阶段，实际多为继续读取/复现；OAuth请求缺失rg，Autograd Luna请求缺失apply_patch，均只存观察，不补赢家。构造配置首次缺少model_name的12个错误发生在生成前，付费0；补齐原调用参数后才产生上述12请求，无自动重试。
+
+累计Model-only仍19（任务9/步骤10，步骤质量Sol4/Luna4、步骤成本Luna2），有效步骤verify9/recover1、inspect/modify0；74行材料与可组合215/186保持，新增来源任务0。模型费率估算0.13404708USD（Sol0.11662600/Luna0.01742108），Usage12/12，教师0；实收/资源费用未知。请求/返回12/12匹配，无Alias；Sol发送low仍报告max，Luna未报告应用档位，Native Effort/K=3目标仍0，Flash未接通，AA沿v4。
+
+B实际0/12：[CPU实体及清理记录](../results/iterations/20261102-v9-deepseek-dev/cpu_forward_measurements.json)确认，原服务器在11:05:32台北已按`outside_new_core_pool_15pct_quota(1/2)`删除STEP_001-e01的846196996字节，未记录归档去向；前一天manifest仍称PINNED_PARENT/loadable，与现场及更新后的run报告不同。清理发起者未知，删除早于本轮B；没有改用F11、基座或重训。各段耗时、inference_mode提速、新布局概率仍未测。11:28:14只读取样F14独立维护Epoch2第7/420块、54598/107404步、Loss0.4703；Serving仍PID327621、F05-e01/原Kev且healthy。原训练事实和F11/R11代表保留，STEP_001当前实体不可加载，不作仍在盘的候选；未干预F14/handoff/Serving。
+
+本轮永久源码和Laya/Kev参数未改、未新训。24个自有容器全部删除，Docker剩余容器0，临时驱动和12份重复成功重放日志已移除；无新镜像、备份、依赖、服务器构建。真实失败、基础镜像、其他权重、用户Trainer/tests/私人数据/删除和Fig.2并行内容保留。下一步先明确inspect一步质量目标与原工具可用性，并找回精确STEP_001实体；当前数据不足以再训，现有12次A结束，不扩大收费范围。只同步公开结果与必要规划/训练报告，服务器源码未部署，Research/五RQ八图十二表不变。
+
+## 2026-11-02 · 前轮：Model-only 覆盖处理与六份质量前缀准备
 
 接续实际 main `75bad09780d559fc5027be8cd0818e9d6b61637e`。当前任务仅授权本地源码/保存材料、必要修改及定向 GitHub 提交；服务器、下载权重/依赖、付费 API、GPU、训练、新 Agent Episode 和 Serving 操作均未授权。本轮这些资源使用为 0，未重复 124 条诊断、19 次 Episode、独立 Twin 或历史训练。
 

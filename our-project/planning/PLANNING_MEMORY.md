@@ -8,7 +8,17 @@
 
 ## 0. 30 秒恢复上下文
 
-### 2026-11-02 · 最新：Model-only 覆盖处理与 Train 质量前缀准备
+### 2026-11-02 · 最新：真实六前缀结束，CPU指定权重已被旧清理删除
+
+从main be716e8接续，A/B均获用户明确授权，不再把本轮记为资源未授权。恢复入口为[逐任务结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、`quality-prefix-execution/summary.json`、[CPU状态](../results/iterations/20261102-v9-deepseek-dev/cpu_forward_measurements.json)和原summary.quality_prefix_execution。A按C3/C4/C5/C6/C1/C2执行12次真实Sol/Luna生成、13工具命令、12原验证，六组全部双失败，新增质量/费用目标0，全部仅观察；模型费率0.13404708USD、Usage12/12、教师0，实收/资源未知。六个已有Train任务/五仓库，新增来源任务0，inspect2/modify3/recover1不等于成功修改。OAuth缺rg、Autograd Luna缺apply_patch，不安装替代工具、不改验证或人为补标签。原配置缺model_name的首次12构造错误付费0，错误记录保留，不算12次模型失败。
+
+累计真实Model-only仍19、任务9/步骤10，质量Sol4/Luna4、步骤成本Luna2，有效阶段仍verify9/recover1。74行及215/186可组合材料保持，没有新训练、概率变化或动态收益。Sol返回max/Luna档位未报仍UNKNOWN，正式Effort/K=3仍0，Flash无新渠道、AA v4不变。没有新增诊断或Episode；124条旧决策、19个DeepSeek Episode与Twin不重跑。
+
+B0/12：服务器原清理记录在11:05:32台北删除STEP_001-e01，846196996字节、outside_new_core_pool_15pct_quota(1/2)，未记录归档目标；旧manifest仍写PINNED_PARENT/loadable，新run已写weights_saved/loadable=false。不能沿用“实体仍在”的旧交接，不替换F11或重新训练。实际导入源码已只读，Token位置/分段耗时/新概率/inference_mode均未测；缺失原因和未知发起者已记录。11:28:14取样F14独立维护Epoch2第7/420块、54598/107404步、Loss0.4703；Serving仍PID327621/F05-e01/原Kev/healthy，原handoff未操作，F11/R11研究代表不变。
+
+24个本轮容器和临时驱动、12份重复成功重放日志已移除，没有新镜像、备份或服务器临时构建；失败及原权重/历史保留。没有永久源码或服务器部署变更，用户Trainer/tests/私人账本/删除/Fig.2保持。下一步先解决准确STEP_001实体与原额度清理的关系，再继续原12次CPU；新收费前缀或步骤质量定义需另定具体范围，不能复采本批或直接凭74行训练。Research、五RQ八图十二表不变。
+
+### 2026-11-02 · 前轮：Model-only 覆盖处理与 Train 质量前缀准备
 
 本轮从实际main75bad09接续，只做本地接口/保存材料及定向GitHub同步。[本轮准备](../results/iterations/20261102-v9-deepseek-dev/next_execution.md)与原summary.local_followup_preparation为恢复入口。Checkpoint MODEL_ONLY原字典会合并同模型多Effort，现于进程启动前明确ValueError；三不同模型原映射/顺序保持，普通联合Serving Schema、Harbor与Hook不改，没有新前向或调概率。
 

@@ -1,5 +1,13 @@
 # Laya / Kev 全历史训练研究报告
 
+## 2026-11-02 · 最新：真实比较未增训练目标，STEP_001实体已缺失
+
+从main be716e8接续，[六前缀真实结果](../iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)完成12次真实生成和原验证，六组两失败，仅观察，无新增质量/成本标签。累计Model-only仍19（任务9/步骤10、质量Sol4/Luna4、步骤成本Luna2），有效步骤verify9/recover1，inspect/modify0；原74行材料未训练，215/186仅可组合。Laya/Kev本轮更新0，旧固定Val、Twin八版本、父代表F11-e01/R11和负结果不重算或替换。
+
+[CPU实体记录](../iterations/20261102-v9-deepseek-dev/cpu_forward_measurements.json)确认STEP_001-e01在11:05:32台北被原额度清理删除，原因outside_new_core_pool_15pct_quota(1/2)、846196996字节；run仍保存已完成1轮/9更新的训练事实，但当前weights_saved/loadable=false。原manifest前一天的PINNED_PARENT记录与后续清理不同，不能据此继续声称实体可加载。限定目录无对应权重/配置或归档去向，发起者未知，删除不是本轮B动作。12次同权重CPU前向实际0，没有换F11、重建权重或运行训练；速度和概率结论仍未取得。
+
+11:28:14台北只读取样：F14独立维护running、Epoch2第7/420块、54598/107404步、曝光3494252/6873816、最新Loss0.4703；部分有限块不代表整个候选恢复或晋升。Serving PID327621 healthy，F05-e01与原Kev Adapter保持，原handoff未干预。本轮仅公开结果与报告更新，没有服务器源码部署、模型加载或GPU计算；B临时资产0，A自有容器/驱动均已清理，其他权重和训练历史保留。
+
 ## 2026-11-02 · 离线材料诊断：可有限K=2接续，不启动训练
 
 从main6e4541c复用已保存训练记录，[离线诊断](../iterations/20261102-v9-deepseek-dev/offline_router_analysis.md)确认现行19条目标及74行材料的实际范围。任务级9条全为Luna等Verifier质量成本偏好；步骤10条为Sol4/Luna6，其中质量差异4:4、等质量费用Luna2。步骤来自10任务/9仓库，phase为verify9/recover1，inspect/modify0；不能用终局成本偏好覆盖每一步或用Alias/旧独立四档补赢家。

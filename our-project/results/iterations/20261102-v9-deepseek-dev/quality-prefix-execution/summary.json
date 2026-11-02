@@ -1,0 +1,678 @@
+{
+  "schema_version": 1,
+  "starting_main": "be716e8341a043c9ce29c066290cf0a270bea3b1",
+  "execution_scope": "REAL_API_NATIVE_MINI_ONE_STEP_K2",
+  "status": "COMPLETED_WITH_ZERO_ROUTING_TARGETS",
+  "formal_model_pool": [
+    "gpt-6.1-sol",
+    "gpt-6-luna",
+    "qwen3.8-flash"
+  ],
+  "independently_executed_k": 2,
+  "capability_snapshot_id": "20261031T072548885180Z-v4",
+  "teacher_enabled": false,
+  "counting_scope": {
+    "existing_train_tasks_compared": 6,
+    "new_source_tasks": 0,
+    "repositories": 5,
+    "paired_prefixes": 6,
+    "trusted_same_condition_comparisons": 6,
+    "candidate_generations": 12,
+    "candidate_tool_calls": 13,
+    "original_verifier_runs": 12,
+    "new_full_episodes": 0,
+    "pre_generation_setup_failures": 12,
+    "pre_generation_setup_failures_paid_calls": 0,
+    "new_task_level_preferences": 0,
+    "new_step_quality_preferences": 0,
+    "new_step_cost_preferences": 0,
+    "new_native_effort_targets": 0,
+    "new_k3_targets": 0,
+    "new_supervised_train_rows": 0,
+    "cumulative_model_only_preferences": 19,
+    "cumulative_task_level_preferences": 9,
+    "cumulative_step_level_preferences": 10,
+    "cumulative_quality_step_winners": {
+      "gpt-6.1-sol": 4,
+      "gpt-6-luna": 4
+    },
+    "cumulative_cost_step_winners": {
+      "gpt-6-luna": 2
+    },
+    "cumulative_labeled_train_tasks": 11,
+    "targeted_training_material_rows": 74,
+    "new_training_runs": 0
+  },
+  "phase_counts": {
+    "modify": 3,
+    "recover": 1,
+    "inspect": 2
+  },
+  "new_preferences_by_phase": {
+    "modify": {
+      "quality": 0,
+      "cost": 0
+    },
+    "recover": {
+      "quality": 0,
+      "cost": 0
+    },
+    "inspect": {
+      "quality": 0,
+      "cost": 0
+    }
+  },
+  "new_observed_pairs_by_phase": {
+    "modify": 3,
+    "recover": 1,
+    "inspect": 2
+  },
+  "model_call_counts": {
+    "gpt-6.1-sol": 6,
+    "gpt-6-luna": 6
+  },
+  "model_rate_cost_usd_by_model": {
+    "gpt-6.1-sol": 0.116626,
+    "gpt-6-luna": 0.01742108
+  },
+  "total_model_rate_cost_usd": 0.13404708,
+  "teacher_cost_usd": 0,
+  "supplier_actual_billed_cost_usd": null,
+  "tool_container_resource_cost_usd": null,
+  "usage_totals": {
+    "prompt_tokens": 220325,
+    "completion_tokens": 4911,
+    "reasoning_tokens": 1706,
+    "cached_tokens": 23998,
+    "cache_write_tokens": 36968
+  },
+  "usage_note": "completion_tokens already includes reasoning_tokens; cached_tokens is a subset of prompt_tokens.",
+  "timing": {
+    "generation_latency_ms_sum": 145867.68937692977,
+    "candidate_tool_latency_ms_sum": 20402.755125891417,
+    "container_setup_and_verifier_timing": "NOT_INSTRUMENTED",
+    "full_experiment_latency_ms": null
+  },
+  "limitations": [
+    "All candidates failed the original whole-task verification immediately after the one native Agent step.",
+    "Phase markers describe the observed state, not a requirement that the generated action edits code.",
+    "C1 both models and C2 Luna requested rg unavailable in the original image; C5 Luna requested apply_patch unavailable in the original image.",
+    "The original image plus saved task fault patch and observed commands reconstructs the decision-prefix environment; historical transient snapshots no longer exist.",
+    "Provider reported Sol max despite requested low; Luna did not report applied effort.",
+    "Physical provider cache state was not observed and was not required to be equal.",
+    "No Episode-level or subjective inspect-progress labels were created."
+  ],
+  "cleanup": {
+    "docker_containers_created": 24,
+    "docker_containers_removed": 24,
+    "remaining_docker_containers_at_cleanup": 0,
+    "new_images_created": 0,
+    "backups_created": 0,
+    "temporary_driver_removed": true,
+    "downloads_or_dependency_installations": 0,
+    "historical_assets_preserved": true,
+    "pre_generation_duplicate_replays_removed": 12,
+    "pre_generation_setup_failure_records_preserved": 12
+  },
+  "cases": [
+    {
+      "candidate_id": "C3",
+      "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "repository": "swesmith/andialbrecht__sqlparse.e57923b3",
+      "observed_through_step": 4,
+      "phase_before_decision": "modify",
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "new_routing_target": false,
+      "candidate_results": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "identity_matched": true,
+          "protocol": "responses",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": "max",
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "PROVIDER_REPORTED_MISMATCH",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 3,
+            "passed": 328
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            1
+          ],
+          "tool_latency_ms": 955.3650000598282,
+          "generation_latency_ms": 21907.549374969676,
+          "usage": {
+            "prompt_tokens": 12484,
+            "completion_tokens": 891,
+            "reasoning_tokens": 516,
+            "cached_tokens": 0,
+            "cache_write_tokens": 12481
+          },
+          "model_rate_cost_usd": 0.0401185,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "sol"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "request_model_id": "gpt-6-luna",
+          "returned_model_id": "gpt-6-luna",
+          "identity_matched": true,
+          "protocol": "chat_completions",
+          "sent_effort_parameter": {
+            "reasoning_effort": "low"
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": null,
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "NOT_REPORTED",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 3,
+            "passed": 328
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            1
+          ],
+          "tool_latency_ms": 501.2909589568153,
+          "generation_latency_ms": 42838.15829199739,
+          "usage": {
+            "prompt_tokens": 40194,
+            "completion_tokens": 629,
+            "reasoning_tokens": 378,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "model_rate_cost_usd": 0.0043339,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "luna"
+        }
+      ],
+      "evidence": "C3/comparison.json"
+    },
+    {
+      "candidate_id": "C4",
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "repository": "swesmith/kennethreitz__records.5941ab27",
+      "observed_through_step": 3,
+      "phase_before_decision": "modify",
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "new_routing_target": false,
+      "candidate_results": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "identity_matched": true,
+          "protocol": "responses",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": "max",
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "PROVIDER_REPORTED_MISMATCH",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 1,
+            "passed": 23
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            1
+          ],
+          "tool_latency_ms": 2901.319458032958,
+          "generation_latency_ms": 6962.633082992397,
+          "usage": {
+            "prompt_tokens": 7923,
+            "completion_tokens": 189,
+            "reasoning_tokens": 52,
+            "cached_tokens": 0,
+            "cache_write_tokens": 7920
+          },
+          "model_rate_cost_usd": 0.021696,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "sol"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "request_model_id": "gpt-6-luna",
+          "returned_model_id": "gpt-6-luna",
+          "identity_matched": true,
+          "protocol": "chat_completions",
+          "sent_effort_parameter": {
+            "reasoning_effort": "low"
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": null,
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "NOT_REPORTED",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 1,
+            "passed": 23
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            1
+          ],
+          "tool_latency_ms": 1487.9355420125648,
+          "generation_latency_ms": 4632.145417039283,
+          "usage": {
+            "prompt_tokens": 26485,
+            "completion_tokens": 300,
+            "reasoning_tokens": 159,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "model_rate_cost_usd": 0.0027985,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "luna"
+        }
+      ],
+      "evidence": "C4/comparison.json"
+    },
+    {
+      "candidate_id": "C5",
+      "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "repository": "swesmith/HIPS__autograd.ac044f0d",
+      "observed_through_step": 3,
+      "phase_before_decision": "modify",
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "new_routing_target": false,
+      "candidate_results": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "identity_matched": true,
+          "protocol": "responses",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": "max",
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "PROVIDER_REPORTED_MISMATCH",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 2,
+            "passed": 583
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            1
+          ],
+          "tool_latency_ms": 2389.73154197447,
+          "generation_latency_ms": 12602.271874900907,
+          "usage": {
+            "prompt_tokens": 4845,
+            "completion_tokens": 513,
+            "reasoning_tokens": 224,
+            "cached_tokens": 0,
+            "cache_write_tokens": 4842
+          },
+          "model_rate_cost_usd": 0.017241,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "sol"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "request_model_id": "gpt-6-luna",
+          "returned_model_id": "gpt-6-luna",
+          "identity_matched": true,
+          "protocol": "chat_completions",
+          "sent_effort_parameter": {
+            "reasoning_effort": "low"
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": null,
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "NOT_REPORTED",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 2,
+            "passed": 583
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            1
+          ],
+          "tool_latency_ms": 9496.714042034,
+          "generation_latency_ms": 14074.664250016212,
+          "usage": {
+            "prompt_tokens": 48637,
+            "completion_tokens": 1111,
+            "reasoning_tokens": 54,
+            "cached_tokens": 23998,
+            "cache_write_tokens": null
+          },
+          "model_rate_cost_usd": 0.00325938,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "luna"
+        }
+      ],
+      "evidence": "C5/comparison.json"
+    },
+    {
+      "candidate_id": "C6",
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "repository": "swesmith/aio-libs__async-timeout.d0baa9f1",
+      "observed_through_step": 2,
+      "phase_before_decision": "recover",
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "new_routing_target": false,
+      "candidate_results": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "identity_matched": true,
+          "protocol": "responses",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": "max",
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "PROVIDER_REPORTED_MISMATCH",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 3,
+            "passed": 29
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            0
+          ],
+          "tool_latency_ms": 424.7065408853814,
+          "generation_latency_ms": 9959.498417098075,
+          "usage": {
+            "prompt_tokens": 5246,
+            "completion_tokens": 347,
+            "reasoning_tokens": 108,
+            "cached_tokens": 0,
+            "cache_write_tokens": 5243
+          },
+          "model_rate_cost_usd": 0.0165835,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "sol"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "request_model_id": "gpt-6-luna",
+          "returned_model_id": "gpt-6-luna",
+          "identity_matched": true,
+          "protocol": "chat_completions",
+          "sent_effort_parameter": {
+            "reasoning_effort": "low"
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": null,
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "NOT_REPORTED",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 3,
+            "passed": 29
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            0
+          ],
+          "tool_latency_ms": 318.8207090133801,
+          "generation_latency_ms": 6753.890666994266,
+          "usage": {
+            "prompt_tokens": 24409,
+            "completion_tokens": 126,
+            "reasoning_tokens": 29,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "model_rate_cost_usd": 0.0025039,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "luna"
+        }
+      ],
+      "evidence": "C6/comparison.json"
+    },
+    {
+      "candidate_id": "C1",
+      "task_id": "oauthlib__oauthlib.1fd52536.combine_file__09vlzwgc",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "repository": "swesmith/oauthlib__oauthlib.1fd52536",
+      "observed_through_step": 1,
+      "phase_before_decision": "inspect",
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "new_routing_target": false,
+      "candidate_results": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "identity_matched": true,
+          "protocol": "responses",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": "max",
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "PROVIDER_REPORTED_MISMATCH",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 18,
+            "passed": 655
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            127
+          ],
+          "tool_latency_ms": 336.26841695513576,
+          "generation_latency_ms": 7653.22474995628,
+          "usage": {
+            "prompt_tokens": 2609,
+            "completion_tokens": 245,
+            "reasoning_tokens": 85,
+            "cached_tokens": 0,
+            "cache_write_tokens": 2606
+          },
+          "model_rate_cost_usd": 0.008971,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "sol"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "request_model_id": "gpt-6-luna",
+          "returned_model_id": "gpt-6-luna",
+          "identity_matched": true,
+          "protocol": "chat_completions",
+          "sent_effort_parameter": {
+            "reasoning_effort": "low"
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": null,
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "NOT_REPORTED",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 18,
+            "passed": 655
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            127
+          ],
+          "tool_latency_ms": 296.50145792402327,
+          "generation_latency_ms": 3203.1675840262324,
+          "usage": {
+            "prompt_tokens": 21171,
+            "completion_tokens": 107,
+            "reasoning_tokens": 16,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "model_rate_cost_usd": 0.0021706,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "luna"
+        }
+      ],
+      "evidence": "C1/comparison.json"
+    },
+    {
+      "candidate_id": "C2",
+      "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+      "source_id": "TRA-002",
+      "dataset": "SWE-bench/SWE-smith",
+      "split": "train",
+      "repository": "swesmith/oauthlib__oauthlib.1fd52536",
+      "observed_through_step": 1,
+      "phase_before_decision": "inspect",
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "new_routing_target": false,
+      "candidate_results": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "request_model_id": "gpt-6.1-sol",
+          "returned_model_id": "gpt-6.1-sol",
+          "identity_matched": true,
+          "protocol": "responses",
+          "sent_effort_parameter": {
+            "reasoning": {
+              "effort": "low"
+            }
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": "max",
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "PROVIDER_REPORTED_MISMATCH",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 13,
+            "passed": 660
+          },
+          "tool_calls": 1,
+          "tool_exit_codes": [
+            0
+          ],
+          "tool_latency_ms": 649.5271660387516,
+          "generation_latency_ms": 10849.959833896719,
+          "usage": {
+            "prompt_tokens": 3879,
+            "completion_tokens": 232,
+            "reasoning_tokens": 68,
+            "cached_tokens": 0,
+            "cache_write_tokens": 3876
+          },
+          "model_rate_cost_usd": 0.012016,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "sol"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "request_model_id": "gpt-6-luna",
+          "returned_model_id": "gpt-6-luna",
+          "identity_matched": true,
+          "protocol": "chat_completions",
+          "sent_effort_parameter": {
+            "reasoning_effort": "low"
+          },
+          "requested_native_effort": "low",
+          "returned_native_effort": null,
+          "applied_native_effort_status": "UNKNOWN",
+          "native_effort_evidence_status": "NOT_REPORTED",
+          "trusted_verifier": true,
+          "verifier_exit_code": 1,
+          "resolved_at_one_step": false,
+          "test_counts": {
+            "failed": 13,
+            "passed": 660
+          },
+          "tool_calls": 2,
+          "tool_exit_codes": [
+            127,
+            127
+          ],
+          "tool_latency_ms": 644.5742920041084,
+          "generation_latency_ms": 4430.5258330423385,
+          "usage": {
+            "prompt_tokens": 22443,
+            "completion_tokens": 221,
+            "reasoning_tokens": 17,
+            "cached_tokens": null,
+            "cache_write_tokens": null
+          },
+          "model_rate_cost_usd": 0.0023548,
+          "model_rate_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+          "actual_billed_cost_usd": null,
+          "evidence_dir": "luna"
+        }
+      ],
+      "evidence": "C2/comparison.json"
+    }
+  ]
+}
