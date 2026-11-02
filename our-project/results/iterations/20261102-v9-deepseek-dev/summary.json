@@ -1,4 +1,55 @@
 {
+  "provider_generation_validation": {
+    "prepared_at_taipei": "2026-11-02T18:05:59+08:00",
+    "starting_main": "dfa1992c2e054d8713454cbacacabde4dc6b3eed",
+    "source_commit": "06bb7fe35efb3e46777a3c6963a273e50aa4f2ea",
+    "status": "LOCAL_PREPARATION_COMPLETE_NEW_PAID_REQUESTS_NOT_AUTHORIZED",
+    "report": "quality_prefix_execution.md",
+    "model_requests": 0,
+    "tool_executions": 0,
+    "verifier_runs": 0,
+    "new_agent_episodes": 0,
+    "server_access": false,
+    "gpu_usage": false,
+    "training_runs": 0,
+    "serving_modified": false,
+    "diagnostics": {
+      "entry_point": "OpenAICompatibleProvider.query_raw(raw_response_path=...)",
+      "default_enabled": false,
+      "private_directory": ".runtime/diagnostics/20261102-v9-provider-validity/",
+      "gitignored": true,
+      "private_directory_created": false,
+      "persistent_raw_files_created": 0,
+      "file_mode": "0600",
+      "response_bytes_only": true,
+      "request_authentication_headers_recorded": false,
+      "echoed_request_api_key_redaction_implemented": true,
+      "flush_before_parsing": true,
+      "http_error_body_preservation_implemented": true
+    },
+    "offline_replays": [
+      {"source": "C4/luna", "kind": "SAVED_ASSEMBLED_JSON_NOT_RAW_SSE", "response_status": "COMPLETE", "body_preserved": true, "captured_bytes_preserved": true, "cost_usd": 0.0027985},
+      {"source": "A1/luna", "kind": "SAVED_ASSEMBLED_JSON_NOT_RAW_SSE", "response_status": "EMPTY_RESPONSE", "body_preserved": true, "captured_bytes_preserved": true, "cost_usd": null},
+      {"source": "A2/sol", "kind": "SAVED_ASSEMBLED_JSON_NOT_RAW_SSE", "response_status": "INCOMPLETE_TOOL_CALL", "body_preserved": true, "captured_bytes_preserved": true, "cost_usd": 0.074136}
+    ],
+    "temporary_captures_retained": 0,
+    "raw_sse_replay_or_live_validation_performed": false,
+    "http_error_capture_live_validation_performed": false,
+    "requests": [
+      {"object": "Luna stream=true", "prefix": "A1 Records cutoff4", "model": "gpt-6-luna", "protocol": "chat_completions", "stream": true, "max_tokens": 4096, "reasoning_effort": "low", "status": "NOT_EXECUTED", "complete_response": null, "parsed_actions": null, "finish_reason": null, "usage": null, "cost_usd": null},
+      {"object": "Luna stream=false", "prefix": "A1 Records cutoff4", "model": "gpt-6-luna", "protocol": "chat_completions", "stream": false, "max_tokens": 4096, "reasoning_effort": "low", "status": "NOT_EXECUTED", "complete_response": null, "parsed_actions": null, "finish_reason": null, "usage": null, "cost_usd": null},
+      {"object": "Sol 8192", "prefix": "A2 async-timeout cutoff5", "model": "gpt-6.1-sol", "protocol": "responses", "stream": true, "max_output_tokens": 8192, "reasoning_effort": "low", "status": "NOT_EXECUTED", "complete_response": null, "parsed_actions": null, "finish_reason": null, "usage": null, "cost_usd": null}
+    ],
+    "paid_request_limit_if_authorized": 3,
+    "new_paid_request_authorization_present": false,
+    "new_model_only_preferences": 0,
+    "cumulative_model_only_preferences": 19,
+    "targeted_training_rows": 74,
+    "new_native_effort_targets": 0,
+    "new_k3_targets": 0,
+    "research_method_changed": false,
+    "next_action": "Obtain explicit authorization for the three specified requests, then validate generation only with private raw evidence; do not execute tools or create labels."
+  },
   "generation_validity_analysis": {
     "analyzed_at_taipei": "2026-11-02T17:20:18+08:00",
     "starting_main": "27c84277bb550b450d73040d8a3ce432197c7e98",

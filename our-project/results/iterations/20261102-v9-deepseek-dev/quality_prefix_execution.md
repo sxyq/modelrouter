@@ -1,5 +1,27 @@
 # V9 六个 Train 前缀真实比较与 CPU 实测状态
 
+## 2026-11-02 18:05 · 可选原始响应记录已准备，新增三请求未获单独授权
+
+接续main `dfa1992c2e054d8713454cbacacabde4dc6b3eed`，本轮只完成已授权的本地工作；代码提交 `06bb7fe35efb3e46777a3c6963a273e50aa4f2ea`。没有本轮三次新增付费请求的单独明确授权，因此停止在请求前，模型/工具/Verifier/新Episode/服务器/GPU/训练均0。原始四请求、六组比较、Dev、Router诊断和Twin未重跑。
+
+原query_raw新增可选raw_response_path，默认关闭，仅指定的这一次请求记录。两个原流读取器在解码/组装前写入实际读取的响应字节并及时flush，保留event/data顺序、[DONE]、终局与错误数据；非流式记录实际读取的JSON实体。只保存响应，不保存请求认证头；供应商原样回显当前请求Key时遮蔽该值。HTTP错误实体也能保存，原HTTPError仍抛出且原调用者仍可读取同一实体；没有追加请求或重试。
+
+建议实际诊断仅使用`.runtime/diagnostics/20261102-v9-provider-validity/`，该路径已被原Git忽略规则覆盖，不增加新忽略体系。文件以0600创建，不覆盖旧证据；目录/持久原始文件当前均未创建。公开Git只写必要的脱敏配置、统计与结论，不能提交完整请求、原始SSE或私人配置。新增安全HTTP状态/Content-Type及诊断开关信息进入原metrics，不改变Usage、身份、Effort或费用口径；本地文件创建失败不记作已发出的Provider请求。
+
+仅以三份原组装JSON做离线读回和临时字节记录：C4 Luna仍COMPLETE，A1 Luna仍EMPTY_RESPONSE，A2 Sol仍INCOMPLETE_TOOL_CALL；三份最终响应与捕获字节均保持，Usage/模型名不变，原费用为0.0027985/UNKNOWN/0.074136USD。这些是旧费用，不是本轮新增消费。临时文件随句柄关闭删除，未创建测试文件、SSE模拟或新客户端；语法有效。没有原始SSE，故真实流写入、HTTP错误捕获及Key回显遮蔽尚未经过供应商实测。
+
+Harbor和Native Relay原ProviderResponseError传递路径已读：原响应/metrics先保留，费用及模型身份继续进入原记录，异常保持失败状态，不进入工具或伪造成功SSE；这两处本轮无需再次修改。教师三字段、Trainer、Verifier、研究定义与原19条/74行不动。
+
+| 对象 | 完整响应 | 可解析工具动作 | 结束状态 | Usage | 费用 |
+|---|---|---|---|---|---|
+| Luna stream=true，A1/4，4096/low | 未执行 | 未执行 | 未请求 | 未产生 | 未发生请求 |
+| Luna stream=false，A1/4，4096/low | 未执行 | 未执行 | 未请求 | 未产生 | 未发生请求 |
+| Sol Responses stream=true，A2/5，8192/low | 未执行 | 未执行 | 未请求 | 未产生 | 未发生请求 |
+
+结构化记录为原summary.provider_generation_validation，三项结果均NOT_EXECUTED，不能借用旧返回写成实测。Luna空流和Sol预算问题是否改善仍未知，不能排除供应商原因或声称Agent恢复。下一项仍是负责人单独明确授权这三次请求后，仅生成/解析并保存私人原始证据；无需Docker、服务器、GPU、教师、工具执行或Verifier。得到完整生成实证后，再另定小范围工具质量对照。
+
+新增Model-only/Effort/K=3标签均0；STEP精确权重仍缺失，CPU0/12、Serving/F14/handoff不处理，路线B仍待决。Research五RQ八图十二表不变，没有新备份、构建、权重或其他持久临时产物。
+
 ## 2026-11-02 17:20 · 本地生成异常处理已实施，供应商有效生成仍待实证
 
 接续main `27c84277bb550b450d73040d8a3ce432197c7e98`，只分析源码与原保存数据，代码提交 `c0989d1f3edd64563d91a0629b1209a8f8cb342f`。模型请求、工具执行、Docker/服务器、训练、GPU和新Episode均0；旧A1/A2、六组比较、Dev、Twin与原始响应不重跑或改写。结构化记录在原summary.generation_validity_analysis。

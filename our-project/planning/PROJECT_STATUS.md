@@ -1,5 +1,13 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-02 18:05 · 当前：私人原始响应记录准备完成，三次接口请求未执行
+
+接续maindfa1992，代码提交06bb7fe35efb3e46777a3c6963a273e50aa4f2ea；[结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、summary.provider_generation_validation为入口。原Provider新增按请求显式开启的raw_response_path，记录收到的SSE/JSON字节及错误、结束信息，默认关闭；只用原Git忽略的私人路径，认证头不记录，当前请求Key回显遮蔽，文件0600。Harbor/Relay原异常身份和费用传递保持。
+
+离线三份原组装JSON读回和字节捕获一致：完整Luna1、空Luna1、Sol不完整工具1；Usage/模型名/旧费用保持，无SSE模拟、新测试文件或持久临时数据。真实SSE、HTTP错误记录与供应商恢复尚未实测。本轮独立的三请求付费授权未提供，故Luna stream开/关及Sol8192均NOT_EXECUTED，API/工具/Verifier/新Episode/服务器/GPU/训练/Serving操作0，新标签0；不借用旧结果。
+
+下一项仍只缺这三次请求的明确新增付费范围，无需Docker/服务器/GPU，先验证完整生成再谈工具质量对照。原19/74行、K=3/Effort0、STEP缺失/CPU0/12、F14/handoff/Serving及Research五RQ八图十二表保持，用户其他内容不动。
+
 ## 2026-11-02 17:20 · 当前：生成异常原位处理已提交，真实接口恢复尚未验证
 
 接续main27c8427，本地代码提交 `c0989d1f3edd64563d91a0629b1209a8f8cb342f`；[结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)与summary.generation_validity_analysis为入口。原Chat解析器在空choice/缺finish_reason时仍返回普通响应，现明确ProviderResponseError；Sol的A2原生终局已incomplete/max_output_tokens、函数参数未结束，不补命令。已知Usage、身份和费用先保留，缺失不填0；异常在Agent工具消费前结束，旧重试配置保持。

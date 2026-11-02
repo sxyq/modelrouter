@@ -1,5 +1,13 @@
 # V9 Model-only 接口与质量前缀准备
 
+## 2026-11-02 18:05 · 当前：原始响应记录入口已就绪，三请求尚未获新增付费授权
+
+代码06bb7fe、[本轮准备结果](quality_prefix_execution.md)和summary.provider_generation_validation为最新入口。query_raw可按单请求传raw_response_path，默认关闭；私人原始数据只用原Git忽略的`.runtime/diagnostics/20261102-v9-provider-validity/`。两个原读取器保留实际收到字节、错误与结束信息，原Usage/费用及ProviderResponseError传递不变，正常工具返回仍接受；本轮仅离线三份组装JSON，不是SSE实测，持久私人记录0。
+
+没有本轮三次新付费请求的单独明确授权，故Luna两模式及Sol8192均NOT_EXECUTED，不能把下方推荐写成已授权或已完成。获得该范围的明确授权后，沿原Provider/相同截止历史/原bash Schema仅发这3次：Luna A1 cutoff4 stream=true/false各1，4096/low保持；Sol A2 cutoff5 Responses stream=true1，只改变输出4096→8192。分别传私人raw_response_path保存SSE/JSON；异常仍保留证据，不重试或补全。不执行命令、Verifier、Docker、教师、Agent Episode或训练，不访问服务器，不提交未脱敏原始数据。
+
+首先只判断完整生成和解析；供应商是否恢复、实际Effort及训练收益仍未知，原19/74行、K=3/Effort0、STEP缺失、CPU0/12与路线B待决保持。以下各节保留历史。
+
 ## 2026-11-02 17:20 · 当前：本地异常处理完成，下一项仅建议3次生成有效性请求
 
 [本地分析与修改](quality_prefix_execution.md)及summary.generation_validity_analysis为最新入口，代码提交c0989d1。两Luna按EMPTY_RESPONSE、A2 Sol按INCOMPLETE_TOOL_CALL处理，已知Usage/成本先保留；两完整返回仍各解析1动作。未调用模型或验证新增SSE字段，供应商有效生成仍未知，原19/74行不变。下方A1/A2与旧六前缀只作历史，不自动重采。
