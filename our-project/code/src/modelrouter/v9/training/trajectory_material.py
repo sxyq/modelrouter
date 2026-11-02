@@ -56,6 +56,26 @@ def action_excerpt(message):
     return (command.group(1).strip() if command else content)[:500]
 
 
+def link_task_trajectory(task, trajectory_row):
+    """Match exact identities and retain unavailable trajectory-version evidence."""
+    task_id_matches = task["instance_id"] == trajectory_row["instance_id"]
+    trace_repo = trajectory_row.get("repo")
+    trace_commit = trajectory_row.get("base_commit")
+    identities_match = task_id_matches and (trace_repo is None or trace_repo == task["repo"])
+    reference = trajectory_row.get("metadata", {}).get("reference_patch", {}).get("patch")
+    return {
+        "instance_id_matches": task_id_matches,
+        "repo_matches": task["repo"] == trace_repo if trace_repo else None,
+        "base_commit_matches": task["base_commit"] == trace_commit if trace_commit else None,
+        "task_base_commit": task["base_commit"],
+        "trajectory_base_commit": trace_commit,
+        "reference_patch_matches": task["patch"] == reference if reference is not None else None,
+        "identity_status": ("EXACT_ID_VERSION_UNREPORTED" if identities_match and trace_commit is None else
+                            "EXACT_ID_VERSION_MATCHED" if identities_match and trace_commit == task["base_commit"] else
+                            "IDENTITY_OR_VERSION_MISMATCH"),
+    }
+
+
 
 
 def reference_candidate(episode):

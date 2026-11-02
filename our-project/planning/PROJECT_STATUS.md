@@ -1,5 +1,13 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-02 · 当前：本机可执行候选明确为2，四条公开轨迹仅新增观察
+
+接续 main `4360c28cc5e8b137cef77e713a3f6425ecdd4565`，本轮事实见 [任务与轨迹执行记录](../results/iterations/20261102-v9-task-links/review.md) / [summary](../results/iterations/20261102-v9-task-links/summary.json)。原位处理 SWE-smith 不完整任务身份、实际可执行分类和动作前消息字段保留。8 候选完整历史 8、历史复现依据 7，但本机精确镜像及原验证可运行只有 2；分类为可复现 2 / 观察 6，不把历史 7 当本机可执行 7。Records/timeout 沿用上一轮原环境结果，本轮不重复原测试。
+
+实际读取 Open-SWE 两条、Gym OpenHands 两条完整公开轨迹，提取 Inspect4 / Modify2 共六份完整动作前切片；Open-SWE 四前缀由正式状态入口恢复，Gym 两前缀只有完整消息、editor 退出码未知且无真实编辑。Gym 两组精确 ID 与已读任务元字段相同，完整任务行缺失、轨迹版本未报告；Open-SWE 两组只明确轨迹报告来源，rebench 精确原任务行查询超时。完整任务配对 0，新源原环境执行 0，全为 observation / train_eligible=false。Gym 轨迹官方未声明许可，不能沿用任务 MIT；公开提交只保留引用与摘要，原始小样本不提交。
+
+API/新增赢家/训练/服务器/GPU/部署均 0。原19 Model-only、74行、有效 Inspect/Modify0、K3/Effort0、STEP实体缺失及动态收益未证保持。删除322,343字节重复派生前缀，保留两原始小样本，可通过同一正式入口重建；移除本轮临时脚本。建议补齐rebench精确任务/版本关系、确认Gym许可，再寻找已有镜像中的未比较Inspect/Modify状态；新付费比较与短期进展目标均仅建议，不启动训练、不改研究方法。Research总览、用户Trainer/tests/账本/历史删除/Fig.2及Serving不改。
+
 ## 2026-11-02 · 当前：三来源候选视图与两项离线原环境完成，新赢家 0
 
 接续 main `65e91e3532e86f919f47b6e5f340420f2fc0e08f`，结果见 [多来源执行记录](../results/iterations/20261102-v9-multi-source/review.md) 与 [summary](../results/iterations/20261102-v9-multi-source/summary.json)。本机只读取 35/33/35 条三源预览，另复用 8 份 SWE-smith Train 任务及真实 Sol/Luna 历史；三源各选 8 条独立候选。SWE-smith 完整历史 8，Inspect2/Modify4/Verify1/Recover1；其中 7 有原测试依据，Mido 原验证退出4仅观察。Gym8仅任务观察，rebench8缺版本/环境/测试字段为未知，均不进 Train。旧全量 6,600,628 / 通用导出 84,310 未重新测量。

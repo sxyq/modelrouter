@@ -27,6 +27,7 @@ from modelrouter.data_pipeline.batch_prep import (
 )
 from modelrouter.data_pipeline.v8_extension_loader import V8ExtensionDataset
 from modelrouter.datasets.public_sources import PublicDatasetLoader
+from modelrouter.data_pipeline.sources.tra import extract_swesmith_action
 from modelrouter.serving.schemas import PreDecisionState
 from modelrouter.training.supervision_loaders import MultiViewSupervisionLoader
 from modelrouter.v9.capabilities.features import (
@@ -211,12 +212,13 @@ def build_offline_prefix_input(row, state_factory):
     state.status = EpisodeStatus.RUNNING
     state.tool_error_count = 0
     state.task_prompt = next((text_content(message) for message in messages if message.get("role") == "user"), "")
-    generation, commands, thought = 0, {}, ""
+    generation, commands, thought, tool_cursor = 0, {}, "", 0
     for message in messages:
         if message.get("role") == "assistant":
             generation += 1
             thought = text_content(message)
             commands = {}
+            tool_cursor = 0
             for call in message.get("tool_calls") or []:
                 function = call.get("function", call)
                 arguments = function.get("arguments")
@@ -227,6 +229,10 @@ def build_offline_prefix_input(row, state_factory):
         elif message.get("role") == "tool" or (message.get("role") == "user" and generation):
             command = (commands.get(message.get("tool_call_id")) if message.get("role") == "tool"
                        else next(iter(commands.values())) if len(commands) == 1 else None)
+            if (message.get("role") == "tool" and "tool_call_id" not in message
+                    and provenance.get("tool_result_alignment") == "OPEN_SWE_ORDERED_RESULTS"):
+                command = list(commands.values())[tool_cursor]
+                tool_cursor += 1
             code, output = tool_result(message)
             if command is None or code is None:
                 raise ValueError("Recorded tool command and exit status are required")
@@ -274,7 +280,18 @@ def prepare_candidate_view(records, output_path):
             reproducible = state_available and all(evidence.get(name) for name in (
                 "image_name", "verify_command_available", "original_test_ids_complete", "historical_verifier_trusted",
             ))
-            category = "REPRODUCIBLE_CANDIDATE" if reproducible else "OBSERVATION_ONLY"
+            local_image_present = evidence.get("local_image_status") == "PRESENT"
+            local_verifier_runnable = evidence.get("local_original_verifier_status") == "RUNNABLE"
+            row.update(historical_state_complete=state_available,
+                       historical_reproduction_evidence_complete=reproducible,
+                       local_exact_image_present=local_image_present,
+                       local_original_verifier_runnable=local_verifier_runnable,
+                       currently_executable=reproducible and local_image_present and local_verifier_runnable)
+            category = "REPRODUCIBLE_CANDIDATE" if row["currently_executable"] else "OBSERVATION_ONLY"
+            if reproducible and not local_image_present:
+                reasons.append("LOCAL_EXACT_IMAGE_MISSING")
+            if reproducible and not local_verifier_runnable:
+                reasons.append("LOCAL_ORIGINAL_VERIFIER_NOT_CONFIRMED")
             if not state_available:
                 reasons.append("FULL_DECISION_HISTORY_UNAVAILABLE")
             if not evidence.get("original_test_ids_complete"):
@@ -299,6 +316,11 @@ def prepare_candidate_view(records, output_path):
     return {"input_records": len(records), "output_records": len(rows), "classification": dict(counts),
             "independent_tasks": len({tuple(row["task_identity"]) for row in rows}),
             "repositories": len({row["provenance"]["repo"] for row in rows}),
+            "historical_state_complete": sum(row.get("historical_state_complete", False) for row in rows),
+            "historical_reproduction_evidence_complete": sum(row.get("historical_reproduction_evidence_complete", False) for row in rows),
+            "local_exact_images_present": sum(row.get("local_exact_image_present", False) for row in rows),
+            "local_original_verifiers_runnable": sum(row.get("local_original_verifier_runnable", False) for row in rows),
+            "currently_executable": sum(row.get("currently_executable", False) for row in rows),
             "trainer_targets_added": 0}
 
 
@@ -612,8 +634,8 @@ def trajectory(row, source_id, path, row_number, anchor):
             "split": "train", "messages": messages, "resolved": outcome, "anchor": anchor}
 
 
-def trajectory_prefixes(episode):
-    """Emit causal states before generations 1, 4 and 8, with observed auxiliary targets."""
+def trajectory_prefixes(episode, cutoffs=(1, 4, 8)):
+    """Emit selected pre-action histories with observed auxiliary targets."""
     history, prompt, step, calls, errors = [], None, 0, 0, 0
     last_code = last_result = None
     for index, message in enumerate(episode["messages"]):
@@ -623,7 +645,7 @@ def trajectory_prefixes(episode):
         if role == "assistant":
             step += 1
             action, nature, has_action = extract_swesmith_action(message, "tool")
-            if step in (1, 4, 8) and has_action:
+            if step in cutoffs and has_action:
                 pre = {"prompt": prompt, "history_snippet": json.dumps(history[-8:], ensure_ascii=False),
                        "task_domain": "software_engineering",
                        "history_length": len(history), "step_index": step,
@@ -634,19 +656,20 @@ def trajectory_prefixes(episode):
                        "source_file": episode["source_path"], "source_line": episode["source_row"],
                        "task_id": episode["task_id"], "trajectory_id": episode["episode_id"],
                        "stable_record_id": f"{episode['source_id']}:{episode['episode_id']}:{step}",
-                       "primary_supervision_class": "S2", "split": "train",
+                       "primary_supervision_class": "S2", "split": episode["split"],
                        "label_evidence": {"observed_action": [f"messages[{index}]"]}}
                 raw = {"pre_decision_state": pre, "observed_decision": {"action_type": action}}
                 sample = _example(episode["source_id"], raw, ref, "observed_action")
                 sample["provenance"].update(task_id=episode["task_id"], episode_id=episode["episode_id"],
-                    dataset_revision=episode["dataset_revision"], observed_through_step=step - 1)
+                    dataset_revision=episode["dataset_revision"], observed_through_step=step - 1,
+                    message_cutoff_exclusive=index)
                 sample["provenance"].update({name: episode["anchor"][name] for name in (
                     "assigned_layer", "quality_grade", "train_eligible", "source_policy_train_allowed",
                     "train_anchor_file", "qualification_source_path") if name in episode["anchor"]})
                 sample["provenance"]["train_anchor_stable_id"] = episode["anchor"].get("stable_record_id")
                 sample["_meta"].update(action_nature=nature, observed_outcome=episode["resolved"],
                                       input_kind="TRAJECTORY_PREFIX")
-                sample["observed_messages"] = copy.deepcopy(history)
+                sample["observed_messages"] = copy.deepcopy(episode["messages"][:index])
                 yield sample
         elif role == "tool" or (role == "user" and step > 0):
             calls += 1

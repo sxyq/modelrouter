@@ -1,5 +1,11 @@
 # Laya / Kev 全历史训练研究报告
 
+## 2026-11-02 · 任务与轨迹新增观察，不增训练目标
+
+[本轮执行记录](../iterations/20261102-v9-task-links/review.md) / [summary](../iterations/20261102-v9-task-links/summary.json)：SWE-smith历史复现依据7与当前本机可执行2分开；新Open-SWE/Gym完整轨迹各2、Inspect4/Modify2共六完整动作前前缀，但完整原任务配对0、新环境实测0。Gym轨迹版本/许可未知，Open仅报告rebench任务来源，全部observation/train_eligible=false。既有Records/timeout原环境证据沿用，不重复执行。
+
+新增Model-only/Effort/K3目标及Laya/Kev训练0，原19偏好、74行、有效Verify9/Recover1/InspectModify0保持；不把其他模型成功、工具返回或采样阶段作选择目标。一步全任务通过目标的质量信息损失本轮无法量化，独立短期进展目标仍仅建议，不改Trainer/旧标签。优先补真实任务版本、许可与可执行Inspect/Modify状态，再决定有限比较及训练；STEP实体缺失和动态收益未证不变，服务器/Serving/F14/GPU未访问。
+
 ## 2026-11-02 · 多来源候选已区分，新增监督与训练仍0
 
 [本轮执行记录](../iterations/20261102-v9-multi-source/review.md)给出各源8条候选：SWE-smith8完整历史/7原验证可信，阶段Inspect2/Modify4/Verify1/Recover1；Gym仅8任务观察、rebench8复现条件未知，均无真实新偏好。两已有SWE-smith环境实际原测试符合F2P/P2P预期，属于环境结果，不是Router监督。旧19 Model-only（任务9/步骤10）、74行（旧S1 64+步骤10）、有效Verify9/Recover1/InspectModify0保持，不互相相加或重写。

@@ -8,6 +8,16 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-11-02 · 最新：四完整公开轨迹、六观察前缀，完整任务配对0
+
+接续main4360c28，本轮 [执行记录](../results/iterations/20261102-v9-task-links/review.md) / [summary](../results/iterations/20261102-v9-task-links/summary.json)。SWE-smith身份解析保留缺失原因；原候选历史状态8/历史复现依据7与本机镜像2/原验证可运行2分开，实际可复现2、观察6。Records/timeout相同截止沿用上一轮证据，原测试没有重跑。旧19偏好、74行及S2/S3语义不变。
+
+两Open-SWE完整轨迹为argo-4594与pybamm-875，各有Inspect/首次编辑前状态；两Gym轨迹为moto-5321/5699，只有Inspect，无真实代码编辑。六前缀保留完整messages[:cutoff]、原字段及split；当前assistant/未来结果/参考补丁不进输入，阶段仅采样元数据。Open工具响应缺tool_call_id，仅显式OPEN_SWE_ORDERED_RESULTS按原顺序恢复；Gym editor退出码未知，不称正式bash状态。引用在code/data/v9/candidate_views/20261102-task-links，完整原始小样本只留本机Git忽略目录。
+
+Gym两精确ID和已读取任务元字段关联，完整本地任务行缺失、轨迹版本未报；Open两条明确报告rebench V2来源，但精确任务原行查询超时。完整任务配对0、新环境实测0、所有新前缀observation/train_eligible=false。Gym OpenHands数据卡/仓库未声明许可，任务MIT不可替代；Open/rebench CC-BY-4.0与原仓库许可分别保留。四ID与既有Twin/Terminal及官方Verified无精确交集，只证明身份关系，不宣称全来源语义排除。
+
+本轮API/训练/服务器/GPU/部署0、新质量赢家0；Inspect/Modify有效监督仍0、K3/Effort0、STEP实体缺失和动态收益未知。删除322,343字节重复派生副本及本轮临时脚本，保留两原始小样本，前缀可由正式入口重建。下一步只建议补齐rebench精确任务/版本、Gym许可并找已有本机镜像对应的未比较Inspect/Modify状态；短期进展目标与未来最多Luna2+Sol/Luna6仍待Planning独立决定，不改Trainer、Q-ID或Research。用户其他改动及历史记录保留。
+
 ### 2026-11-02 · 最新：24条独立候选视图，2项真实离线原测试，未请求模型
 
 接续main65e91e3，本轮结果 [多来源执行记录](../results/iterations/20261102-v9-multi-source/review.md) / [summary](../results/iterations/20261102-v9-multi-source/summary.json)。35/33/35预览与8份已有SWE-smith真实Train任务历史分开；各源候选8，来源/状态/任务版本及引用保留在code/data/v9/candidate_views/20261102-multi-source，不复制私人历史或原响应。SWE-smith完整历史8、原验证可信7，Inspect2/Modify4/Verify1/Recover1；Gym8观察、rebench8复现条件未知，两个新来源仍unassigned，不进训练。Mido原验证退出4保留观察，不冒称可复现。

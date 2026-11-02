@@ -4,9 +4,38 @@ import glob
 import json
 import os
 import random
+import re
 from collections import Counter
 
 from .shared import StreamingFieldTracker, write_json, write_jsonl
+
+
+def swesmith_task_identity(instance_id):
+    """Retain unknown identity fields instead of inventing a repository or version."""
+    identity = {"repo": None, "base_commit_prefix": None, "fault_identity": None,
+                "identity_missing_reasons": []}
+    if not isinstance(instance_id, str) or not instance_id.strip():
+        identity["identity_missing_reasons"].append("MISSING_OR_NON_STRING_INSTANCE_ID")
+        return identity
+    parts = instance_id.rsplit(".", 2)
+    if len(parts) != 3:
+        identity["identity_missing_reasons"].append("INCOMPLETE_TASK_ID")
+        return identity
+    repository, version, fault = parts
+    owner, separator, repo = repository.partition("__")
+    if separator and owner and repo:
+        identity["repo"] = owner + "/" + repo
+    else:
+        identity["identity_missing_reasons"].append("OWNER_REPO_UNAVAILABLE")
+    if re.fullmatch(r"[0-9a-fA-F]{8,40}", version):
+        identity["base_commit_prefix"] = version
+    else:
+        identity["identity_missing_reasons"].append("VERSION_UNAVAILABLE_OR_INVALID")
+    if fault:
+        identity["fault_identity"] = fault
+    else:
+        identity["identity_missing_reasons"].append("FAULT_IDENTITY_UNAVAILABLE")
+    return identity
 
 
 def process_tra_001(raw_root, cleaned_root, preview_root):
@@ -404,11 +433,16 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
             raw_trajectories_count += len(df)
 
             for raw_row_index, row in df.iterrows():
-                inst_id = str(row.get("instance_id") or "unknown")
-                instance_ids.add(inst_id)
-                identity, base_commit_prefix, fault_identity = inst_id.split(".", 2)
+                raw_instance_id = row.get("instance_id")
+                inst_id = raw_instance_id if isinstance(raw_instance_id, str) else None
+                if inst_id:
+                    instance_ids.add(inst_id)
+                identity = swesmith_task_identity(raw_instance_id)
                 model_name = str(row.get("model") or "claude-3-7-sonnet-20250219")
-                traj_id = str(row.get("traj_id") or inst_id)
+                traj_id = row.get("traj_id")
+                if not isinstance(traj_id, str) or not traj_id:
+                    traj_id = None
+                    identity["identity_missing_reasons"].append("TRAJECTORY_ID_UNAVAILABLE")
 
                 resolved_raw = row.get("resolved")
                 if resolved_raw is None:
@@ -494,9 +528,7 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
                                 "source_name": source_name,
                                 "split_type": split_type,
                                 "instance_id": inst_id,
-                                "repo": identity.replace("__", "/", 1),
-                                "base_commit_prefix": base_commit_prefix,
-                                "fault_identity": fault_identity,
+                                **identity,
                                 "raw_source_file": fname,
                                 "raw_trajectory_row": int(raw_row_index),
                                 "message_cutoff_exclusive": message_index,

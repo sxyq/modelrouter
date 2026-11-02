@@ -8,6 +8,8 @@
 
 ## 0. 阶段入口与决策规则
 
+**11-02任务与轨迹本轮结果**：[执行记录](../results/iterations/20261102-v9-task-links/review.md)明确SWE-smith历史复现依据7、当前本机可执行2；新公开完整轨迹4、完整动作前切片6（Inspect4/Modify2），全为观察。Gym仅两组ID/已读任务元字段关联、轨迹版本及许可未知；Open两条只指向rebench来源，完整任务配对0。新源原验证0，Records/timeout证据沿用且不重跑，本轮模型请求/新赢家/训练/服务器/GPU0。旧19/74行、严格一步目标及有效Inspect/Modify0保持；没有新前后测试足以量化一步目标丢失的质量信息。固定原测试修复集合/无新增回归的独立短期目标仍是待决建议，不改Trainer或旧标签、不新增已批准Q-ID。先建议补齐任务/版本与许可、寻找已有镜像的未比较状态；未来付费与来源路线由Planning独立判断。
+
 **11-02三来源本地结果**：[执行记录](../results/iterations/20261102-v9-multi-source/review.md)已完成24候选、8份真实SWE-smith历史恢复和2项/4次原范围Docker验证，模型请求0。新源仅任务预览，Gym/rebench环境执行各0，不把准备数作实测或将缺赢家作脏数据。原19/74行、一步全范围目标、有效Inspect/Modify0、路线B待决均保持，不新增Q-ID。旧7对的总可信字段7与单方结果可信4分开，原记录不改。当前保留SWE-smith可用子集；下一批补齐rebench完整资产优先，但实际迁移取决于真实环境和质量监督，不启动训练。P3没有新付费授权；未来最多Luna2+Sol/Luna6生成、同历史/环境/工具、教师关闭，缺来源额度不转移。本轮未连接服务器或部署。
 
 **11-02 17:20 本地生成有效性处理**：沿main27c8427/原A1/A2记录，仅本地分析和修改，代码c0989d1。Luna上游空流原因没有原SSE可核实；已确定原解析器缺少生成异常分类，mini因无tool_calls报FormatError。Sol A2已上游incomplete/max_output_tokens，4096含3624 reasoning、参数未结束，不改上限或补命令。Provider异常携原响应/metrics，费用先记录，Agent消费前结束；原正常工具返回保持，Teacher只传递已知失败Usage，身份/Effort/成本口径不变。
