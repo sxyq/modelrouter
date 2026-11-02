@@ -1,5 +1,13 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-02 17:20 · 当前：生成异常原位处理已提交，真实接口恢复尚未验证
+
+接续main27c8427，本地代码提交 `c0989d1f3edd64563d91a0629b1209a8f8cb342f`；[结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)与summary.generation_validity_analysis为入口。原Chat解析器在空choice/缺finish_reason时仍返回普通响应，现明确ProviderResponseError；Sol的A2原生终局已incomplete/max_output_tokens、函数参数未结束，不补命令。已知Usage、身份和费用先保留，缺失不填0；异常在Agent工具消费前结束，旧重试配置保持。
+
+离线复用5份真实返回：Luna空2、Sol不完整工具1、正常完整2且各解析1动作；mini2.4.6/LiteLLM1.106.0，异常对象保留响应/metrics，语法有效。两个流解析器追加结束标志记录，但旧无逐条SSE，尚未真实验证新增字段或供应商已恢复生成；Sol请求low报告max、Luna档位未知继续UNKNOWN。教师只保留失败已知费用，不改三字段职责。
+
+本轮API/工具/Docker/服务器/训练/GPU/新Episode/Serving操作0，新增标签0，原19/74行保持。下一项只建议Luna同状态两种stream各1与Sol8192输出1，共3新付费请求，先验证生成并保存SSE、不执行工具，须下一轮明确范围。STEP缺失、CPU0/12、F14/handoff/Serving和保留代码未部署事实不变；Research五RQ八图十二表及用户其他内容不动。
+
 ## 2026-11-02 15:21 · 当前：原镜像已恢复，A1/A2请求与验证结束，新增标签0
 
 从实际main909f3fc继续，负责人明确授权拉取原镜像并执行A，不重复询问；两份指定SWE-smith镜像已拉取。[本轮结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、late_prefix_completion_summary.json与summary.late_quality_prefix_completion为恢复入口。4次正式Sol/Luna请求、4候选分支、6次原范围验证完成，无Alias/完整Episode。Records真实前后23/24，timeout真实前后29/32；同消息/状态/恢复环境/工具/原验证均对应，不复用旧成绩。

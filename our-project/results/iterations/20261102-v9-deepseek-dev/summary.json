@@ -1,4 +1,52 @@
 {
+  "generation_validity_analysis": {
+    "analyzed_at_taipei": "2026-11-02T17:20:18+08:00",
+    "starting_main": "27c84277bb550b450d73040d8a3ce432197c7e98",
+    "source_commit": "c0989d1f3edd64563d91a0629b1209a8f8cb342f",
+    "report": "quality_prefix_execution.md",
+    "scope": "LOCAL_SOURCE_AND_SAVED_RESPONSES_ONLY",
+    "model_requests": 0,
+    "tool_executions": 0,
+    "server_access": false,
+    "training_runs": 0,
+    "serving_modified": false,
+    "runtime": {"mini_swe_agent": "2.4.6", "litellm": "1.106.0"},
+    "offline_cases": [
+      {"case": "A1/luna", "response_status": "EMPTY_RESPONSE", "old_agent_parse": "FormatError", "usage_status": "MISSING", "cost_usd": null},
+      {"case": "A2/luna", "response_status": "EMPTY_RESPONSE", "old_agent_parse": "FormatError", "usage_status": "MISSING", "cost_usd": null},
+      {"case": "A2/sol", "response_status": "INCOMPLETE_TOOL_CALL", "old_agent_parse": "FormatError", "input_tokens": 13271, "output_tokens": 4096, "reasoning_tokens": 3624, "cost_usd": 0.074136},
+      {"case": "A1/sol", "response_status": "COMPLETE", "old_agent_parse": "PARSED", "actions": 1, "cost_usd": 0.037901},
+      {"case": "C4/luna", "response_status": "COMPLETE", "old_agent_parse": "PARSED", "actions": 1, "cost_usd": 0.0027985}
+    ],
+    "offline_exception_response_and_metrics_preserved": true,
+    "existing_agent_abort_type_matched": true,
+    "historical_raw_sse_available": false,
+    "historical_stream_end_markers": null,
+    "sse_parser_live_validation_performed": false,
+    "new_model_only_preferences": 0,
+    "cumulative_model_only_preferences": 19,
+    "targeted_training_rows": 74,
+    "supervision_definition_changed": false,
+    "proposed_next_requests": {
+      "luna_stream_true": 1,
+      "luna_stream_false": 1,
+      "sol_responses_stream_true_max_output_tokens_8192": 1,
+      "total": 3,
+      "executed": false,
+      "purpose": "GENERATION_VALIDITY_NOT_QUALITY_SUPERVISION",
+      "requires_new_paid_request_authorization": true,
+      "docker_required": false,
+      "server_required": false,
+      "gpu_required": false,
+      "raw_luna_sse_evidence_required": true
+    },
+    "remaining_unknowns": [
+      "Supplier SSE frames, termination and cause of Luna empty responses",
+      "Supplier actually applied native effort",
+      "Whether a larger Sol output budget produces a complete action",
+      "Live end-marker capture and post-change Provider behavior"
+    ]
+  },
   "late_quality_prefix_completion": {
     "starting_main": "909f3fcde6922d856957fc59fe9459ae445b6a78",
     "finished_at_taipei": "2026-11-02T15:21:35.920265+08:00",

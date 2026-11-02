@@ -1,5 +1,49 @@
 # V9 六个 Train 前缀真实比较与 CPU 实测状态
 
+## 2026-11-02 17:20 · 本地生成异常处理已实施，供应商有效生成仍待实证
+
+接续main `27c84277bb550b450d73040d8a3ce432197c7e98`，只分析源码与原保存数据，代码提交 `c0989d1f3edd64563d91a0629b1209a8f8cb342f`。模型请求、工具执行、Docker/服务器、训练、GPU和新Episode均0；旧A1/A2、六组比较、Dev、Twin与原始响应不重跑或改写。结构化记录在原summary.generation_validity_analysis。
+
+### Luna：已确定的是本地处理问题，上游空流原因未知
+
+两份请求归档均为gpt-6-luna、Chat Completions、stream=true、max_tokens=4096、reasoning_effort=low、include_usage=true及原bash(command)工具。原解析器按choice/tool索引累计delta.content、reasoning_content、工具name/arguments并保留finish_reason与Usage；流结束时却直接返回，没有记录[DONE]，也没有把空choice或缺结束原因作为生成异常。
+
+两份组装结果都只有匹配模型名、空assistant、finish_reason=null，Usage/TTFT均缺失。旧query_raw返回普通响应，原mini的parse_toolcall_actions因没有工具调用报FormatError，随后原Agent可以进入格式反馈流程。这只能证明本地错误分类过晚，不能说明供应商究竟发送了什么SSE帧、为何空输出，或推断Luna任务能力。
+
+对照为同一实际端点的[C4 Luna完整返回](quality-prefix-execution/C4/luna/provider_responses/20261102-C4-prefix-3-3.json)：正文也为空，但工具参数完整、finish_reason=tool_calls、Usage已报。空正文本身不是错误，完整工具动作仍按原行为接受。当前mini的_prepare_messages_for_api会去掉历史extra；请求归档字符与原生整理后的字段应分开，缺失的Luna Token不由归档长度估算。
+
+### Sol：截断发生在上游生成，不是本地丢掉完整命令
+
+[A2 Sol原生返回](quality-prefix-execution/A2/sol/provider_responses/20261102-A2-late-prefix-5-5.json)明确status=incomplete、原因max_output_tokens，工具项status=incomplete、JSON参数停在字符串中间。4096输出包含3624 reasoning，留给其他输出的报告差值为472；原Responses解析器拿到的终局对象已不完整。旧Agent桥接把状态转成length，mini因此报FormatError，未执行该命令。
+
+请求是单一原bash Schema，4096输出上限与reasoning.effort=low；供应商返回strict工具Schema及reasoning.effort=max。模型名匹配，实际应用档位仍UNKNOWN，无法凭此确定参数替换或内部预算分配。本轮不改上限、Effort、Schema或Prompt；reasoning仍只计一次。
+
+### 实际源码与离线结果
+
+原Provider加入ProviderResponseError，携带原响应和metrics；query_raw在原Usage/费用记录完成后区分EMPTY_RESPONSE、INCOMPLETE_RESPONSE、INCOMPLETE_TOOL_CALL、INVALID_TOOL_ARGUMENTS，异常不进入动作消费。两个流解析器只追加实际观察到的结束标志记录；缺[DONE]本身不替代finish_reason/Responses状态，也不虚构旧结束事件。status继续表示原费用记录状态，response_status表示生成有效性，两者分开。
+
+原PolicyModel先按已有路径保存异常响应、身份、费用与GENERATOR_END，再在桥接或工具解析前抛出异常。异常继承RuntimeError，命中原abort_exceptions；原Benchmark CLI的单次重试配置保持，未增加请求。原native_generator_relay也保留这些记录并返回明确错误，不向客户端拼造成功SSE。教师只补异常时已知Usage/原响应的传递，三字段职责与触发规则不变。
+
+使用本机现有mini-swe-agent2.4.6/LiteLLM1.106.0对保存数据离线解析，没有伪造SSE、调用Provider、执行工具或新建测试文件：
+
+| 保存对象 | 新Provider分类 | 原mini解析 | Usage/费用 |
+|---|---|---|---|
+| A1 Luna | EMPTY_RESPONSE | FormatError，0动作 | UNKNOWN |
+| A2 Luna | EMPTY_RESPONSE | FormatError，0动作 | UNKNOWN |
+| A2 Sol | INCOMPLETE_TOOL_CALL | FormatError，0动作 | 原13271/4096/3624与0.074136USD保留 |
+| A1 Sol | COMPLETE | 1动作 | 原0.037901USD保留 |
+| C4 Luna | COMPLETE | 1动作 | 原0.0027985USD保留 |
+
+异常对象保留原响应/metrics，原Agent中止类型匹配；三修改文件语法有效。原始SSE没有保存，故本轮没有直接验证流读取新增结束字段、真实HTTP异常回传或供应商已恢复生成。
+
+### 下一项仅推荐3请求，不自动执行
+
+先验证生成有效性，不恢复质量比较：A1相同截止状态给Luna各1次stream=true/false，其他请求字段与4096输出保持；流式请求须定向保存原SSE含结束事件。A2给Sol1次Responses stream=true、仅把输出上限提议为8192、low保持，记录终局/完整工具参数/Usage/应用Effort是否仍未知。保存SSE沿原Provider，不创建第二客户端；这3次需下一轮明确新增收费范围，本轮没有实施参数变化或请求。
+
+只判断是否完整可解析，不执行工具，因而不需Docker、服务器、GPU或新Agent Episode；也不能据此产生训练标签。8192可能给工具输出更多空间，但不能保证生成完成。若接口有效，再另行恢复同状态工具分支与原验证比较。
+
+原19 Model-only目标、74行材料、原一步标签条件和路线B待决状态保持；STEP_001实体仍缺失、CPU0/12，F14/Serving/handoff及权重保留部署不处理。没有新增备份、构建、镜像或持久驱动，临时计时/重放文件未创建；Research方法与五RQ八图十二表不变。
+
 ## 2026-11-02 15:21 · A1/A2有限运行结束，原验证齐全，新增标签0
 
 从实际main `909f3fcde6922d856957fc59fe9459ae445b6a78`接续。负责人明确追加原基础镜像拉取与继续A的授权；两份指定SWE-smith镜像已拉取，未重复询问，也没有扩大4次请求/4候选分支/6次原范围验证。原14:49缺镜像记录保留为之前的尝试，不再代表当前状态。

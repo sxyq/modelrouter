@@ -1,5 +1,15 @@
 # V9 Model-only 接口与质量前缀准备
 
+## 2026-11-02 17:20 · 当前：本地异常处理完成，下一项仅建议3次生成有效性请求
+
+[本地分析与修改](quality_prefix_execution.md)及summary.generation_validity_analysis为最新入口，代码提交c0989d1。两Luna按EMPTY_RESPONSE、A2 Sol按INCOMPLETE_TOOL_CALL处理，已知Usage/成本先保留；两完整返回仍各解析1动作。未调用模型或验证新增SSE字段，供应商有效生成仍未知，原19/74行不变。下方A1/A2与旧六前缀只作历史，不自动重采。
+
+下一轮若负责人明确授权新增3次付费请求，可沿原Provider完成：
+
+> 仅验证接口/完整生成。对A1保存截止历史用Luna low发1次stream=true和1次stream=false，输出4096、工具Schema与其他字段保持；第一份须在原Provider定向保存原始SSE包括结束事件，不增客户端或自动重试。对A2保存截止历史用Sol low发1次Responses stream=true，唯一配置变化是max_output_tokens=8192。三请求均保存原始请求、模型名、实际结束、完整参数、Usage、费用及未知档位；不执行工具、不启动Episode或训练、不访问服务器/GPU/Serving/F14，也不生成质量标签。空响应或截断保存异常并结束，不追加补全。正常结束标志字段的真实效果与供应商行为需此次实测，不能提前承诺成功。后续质量对照另定实际工具及原验证范围。
+
+这项接口实验不需Docker或模型权重，3请求尚未获本轮许可也未执行；low/max未知不作为训练答案。路线B仍待决，STEP精确权重缺失和CPU0/12保持。
+
 ## 2026-11-02 15:21 · 当前：A1/A2已执行，不再按下文作为未执行候选
 
 负责人已明确授权并拉取两份原基础镜像；从main909f3fc完成4次请求、4候选分支和6次原范围验证，原14:49缺镜像限制已被新授权解决。[本轮结果](quality_prefix_execution.md)和[结构化数据](quality-prefix-execution/late_prefix_completion_summary.json)为当前入口。Records前后均23/24，timeout前后均29/32；1完整工具动作、3FormatError、Usage2/4，新有效标签0，两组不能当可信质量双失败。

@@ -8,6 +8,14 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-11-02 17:20 · 最新：本地生成异常处理完成，下一项仅建议3次接口请求
+
+从main27c8427继续，代码提交c0989d1f3edd64563d91a0629b1209a8f8cb342f；[结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、summary.generation_validity_analysis和next_execution顶部为入口。API/工具/Docker/服务器/训练/GPU/新Episode均0，不重跑A1/A2、旧六对、Dev或Twin。
+
+Chat原解析器没有记录[DONE]，空choice/缺finish仍普通返回；现Provider分类并携原响应/metrics，费用先保留，再于Agent消费前结束。Sol A2上游终局不完整且JSON参数截断，low报告max不能当应用档位证据；缺Usage继续UNKNOWN。原NativeRelay保留异常费用/响应，教师只传递已知失败Usage、三字段不变，旧重试配置保持。mini2.4.6/LiteLLM1.106.0离线5份：空2/不完整工具1/正常2，正常各1动作；没有执行模型/工具或模拟SSE，旧SSE结束未知，新增记录字段尚未经真实调用。
+
+下一轮先3次生成有效性：Luna用A1同截止stream=true/false各1，4096/low保持且流式须原SSE；Sol用A2 Responses stream=true1，仅提议8192输出、low不变。不用Docker/服务器/GPU，不执行工具或生成质量标签，需下一轮明确新增付费范围。本轮不改变请求配置、不补全/重试、不批准路线B或训练。原19/74行、STEP精确权重缺失/CPU0/12、F14/Serving/handoff/保留代码未部署、五RQ八图十二表及用户Trainer/tests/私人文件/删除/Fig.2保持，无新备份/临时构建或持久驱动。
+
 ### 2026-11-02 15:21 · 最新：A1/A2已实际结束，不再重新拉镜像或重采
 
 从main909f3fc继续，负责人追加原镜像下载/直接执行授权，未重复询问。两原基础镜像已拉取；[结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、[实际汇总](../results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/late_prefix_completion_summary.json)、summary.late_quality_prefix_completion为入口，14:49缺镜像记录保留为历史。
