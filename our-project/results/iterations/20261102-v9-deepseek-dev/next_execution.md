@@ -1,5 +1,15 @@
 # V9 Model-only 接口与质量前缀准备
 
+## 2026-11-02 18:43 · 当前：3次接口请求结束，下一项只推荐Luna原端点两请求
+
+本轮3次请求已明确授权并执行，不再讨论是否已给许可；[实际结果](quality_prefix_execution.md)、[脱敏证据](quality-prefix-execution/provider_generation_validation.json)及summary.provider_generation_validation为入口。Sol A2在8192上限下completed、1个原Agent可解析bash、13271输入/1548输出含1034 reasoning、0.048656USD参考费；124条真实SSE、response.completed、无[DONE]，原读取器离线读回与保存对象一致。仅生成，没有执行工具或验证，不能称任务修复。
+
+Luna两次均HTTP404：执行Agent将`/v1/chat`误传为base_url，实际路径成为`/v1/chat/chat/completions`。两份120字节错误JSON已保存，不是空Chat响应或真实SSE；本轮Luna生成、stream差异及旧空流边界仍未测得。原Provider无此源码问题，不增URL容错；下一次直接使用原供应商配置中的base_url（止于`/v1`），让原Provider追加协议后缀，不能用原完整Chat URL的rsplit('/', 1)结果。
+
+下一轮最小建议仅2次Luna A1 cutoff4生成，沿原11消息/原bash Schema/low/4096，两种stream各1次，只生成解析，保存私人SSE或JSON。需明确该新增2请求范围；不重采Sol、不执行命令、不用Docker/服务器/GPU、教师、Episode、Verifier或训练，不自动重试。若两种有效请求仍异常，依据原始实体区分传输与解析，再决定具体源码改动。
+
+本轮额度已用完，没有第4次请求；两次404用量及实收未知，完整批次费用未知。Model-only19/74行、Effort/K=3为0、STEP缺失/CPU0/12、Serving/F14/handoff与路线B待决保持。Provider永久源码未改，GitHub结果同步不代表服务器部署。以下章节只保留历史，不是当前执行队列。
+
 ## 2026-11-02 18:05 · 当前：原始响应记录入口已就绪，三请求尚未获新增付费授权
 
 代码06bb7fe、[本轮准备结果](quality_prefix_execution.md)和summary.provider_generation_validation为最新入口。query_raw可按单请求传raw_response_path，默认关闭；私人原始数据只用原Git忽略的`.runtime/diagnostics/20261102-v9-provider-validity/`。两个原读取器保留实际收到字节、错误与结束信息，原Usage/费用及ProviderResponseError传递不变，正常工具返回仍接受；本轮仅离线三份组装JSON，不是SSE实测，持久私人记录0。

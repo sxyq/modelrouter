@@ -8,6 +8,18 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-11-02 18:43 · 最新：3请求已结束，Sol完整，Luna两个404来自执行调用参数
+
+接续main88144d2856c256f9624269bbf53283d58d1af3b6，负责人已明确授权本轮新增3次并直接执行；[报告](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、summary.provider_generation_validation及[脱敏结果](../results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/provider_generation_validation.json)为恢复入口。请求3/额外0、工具/Verifier/Docker/服务器/GPU/训练/Episode/教师0。
+
+Sol A2只改上限8192，返回completed/1个原mini可解析bash、13271输入/1548输出含1034 reasoning、缓存0/13268、46.8338秒/0.048656USD参考费。真实SSE78181字节/124条data含response.completed、无[DONE]；原读取器离线读回逐值一致。输出低于旧4096，一次独立成功不证明上限变化必然有效；low返回max，应用EffortUNKNOWN。
+
+Luna两次HTTP404因执行Agent把原Chat URL去掉最后一段后/v1/chat误作base_url，Provider正常追加/chat/completions导致/v1/chat/chat/completions。已保存两个120字节原错误JSON，不是旧空流复现，无Usage/返回模型/finish_reason，费用未知。私人请求元数据明确实际路径与原参考路径，原响应不改。不得称Luna供应商失效、三次生成成功或真实stream对照；现有Provider源码无需因此增加URL处理分支。
+
+本轮额度结束，不追加请求。下一项只推荐Luna A1原11消息/Schema/4096/low两模式各1次，**直接复用原供应商配置止于/v1的base_url**；不使用原完整Chat URL的rsplit结果。需新的2请求范围，不重复Sol，不直接执行质量工具或原验证。原始SSE/完整请求/生成参数只留本机忽略目录，公开只脱敏摘要；删3重复私人摘要，没有备份、构建或持久驱动。
+
+永久源码未改，已知参考费0.048656USD、其余及实收UNKNOWN；原预算+3尝试/+2未知、已知13271/1548。Model-only19/74行、Effort/K=3为0、STEP缺失/CPU0/12、路线B待决及Serving/F14/handoff不变，服务器未访问。用户Trainer/tests/私人内容/原删除/Fig.2和Research五RQ八图十二表保持，GitHub同步不等于部署或模型改善。
+
 ### 2026-11-02 18:05 · 最新：原始响应记录准备完成，未执行三次新增付费请求
 
 从maindfa1992继续，代码06bb7fe35efb3e46777a3c6963a273e50aa4f2ea；[结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、summary.provider_generation_validation、next_execution顶部为入口。当前仅有本地授权，本轮三次新付费请求须独立明确授权且尚未给出，不能继承上一轮旧四请求许可。三项NOT_EXECUTED，API/工具/Verifier/新Episode/服务器/GPU/训练0。

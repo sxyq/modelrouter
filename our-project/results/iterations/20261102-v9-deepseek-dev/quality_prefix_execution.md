@@ -1,5 +1,39 @@
 # V9 六个 Train 前缀真实比较与 CPU 实测状态
 
+## 2026-11-02 18:43 · 三次真实接口请求结束：Sol完整生成，Luna因本轮调用路径错误未取得生成证据
+
+接续main `88144d2856c256f9624269bbf53283d58d1af3b6`，负责人已明确授权本轮3次新增请求，直接执行，没有再次索取许可。只调用原Provider，关闭工具执行和教师，没有Docker、服务器、GPU、训练、Agent Episode或Verifier。三次HTTP请求用完后停止，没有重试或第4次请求。
+
+完整脱敏结果见 [provider_generation_validation.json](quality-prefix-execution/provider_generation_validation.json) 与原summary.provider_generation_validation。完整历史、供应商响应、SSE和工具参数仅保留在本机不跟踪的`.runtime/diagnostics/20261102-v9-provider-validity/`；公开文件不含认证、完整请求或生成命令。
+
+| 对象 | HTTP与生成状态 | 原Agent工具解析 | 终局 | 输入/输出Token | Reasoning（含于输出） | 缓存读/写Token | 模型参考费USD | 延迟秒 |
+|---|---|---|---|---|---|---|---|---:|
+| Luna A1 stream=true，4096/low | 404，调用路径错误；生成未测得 | 0，未消费 | HTTP invalid_request_error，无模型终局 | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | 0.1385 |
+| Luna A1 stream=false，4096/low | 404，同一调用路径错误；生成未测得 | 0，未消费 | HTTP invalid_request_error，无模型终局 | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | 0.1154 |
+| Sol A2 stream=true，8192/low | 200，COMPLETE | 1个bash，参数完整1677字符；未执行 | completed / response.completed | 13271 / 1548 | 1034 | 0 / 13268 | 0.048656 | 46.8338 |
+
+### Luna：本轮错误在执行调用参数，不是供应商空流证据
+
+执行Agent从原`/v1/chat/completions` URL仅去掉最后一个路径段，将`/v1/chat`误传为base_url。原Provider照原行为追加`/chat/completions`，实际请求成为`/v1/chat/chat/completions`。两份原始HTTP实体各120字节，均明确返回`Invalid URL (POST /v1/chat/chat/completions)`。这两次没有Chat Completions正文、模型身份、finish_reason或Usage，不能归类为Luna模型任务失败，也不能用于比较两种stream方式或解释旧空响应。
+
+请求体仍沿原A1完整11条实际请求消息（10条原历史加已有共同容器说明）；流式请求体没有主动变化，非流式仅stream及必需stream_options变化。但URL不符合原端点，因此两项指定生成验证实际未完成。私人请求元数据最初误写原参考URL，现已明确记录实际URL、原参考URL及依据说明；原请求体、HTTP响应字节和历史记录不改。下一次必须直接复用已存在的供应商base_url（止于`/v1`），不再从协议URL截取最后一段。无需为此给Provider增加URL容错、备用客户端或自动重试。
+
+### Sol：取得完整独立生成，但不能把一次成功归因于扩大上限
+
+相同A2历史经原mini消息整理与原Responses编码，与旧请求相比只改变max_output_tokens为8192；返回模型字符串匹配`gpt-6.1-sol`，不证明物理后端。原SSE捕获78181字节、124条data事件，包括77条函数参数delta、1条arguments.done和1条response.completed；没有[DONE]。原Provider按实际completed终局接受响应，原mini工具解析器得到1个完整bash动作。用捕获的真实SSE离线读回，组装对象与保存响应逐值一致，没有模拟事件或额外模型调用。
+
+本次输出1548含1034 reasoning，低于旧4096上限；原A2是4096含3624 reasoning、上游incomplete/max_output_tokens。两次为独立生成，本次完整不能证明单独增加上限必然解决截断，也不是补全旧函数调用。请求仍low、返回仍报告max，真实应用Effort继续UNKNOWN，不调整参数或生成Effort标签。
+
+### 捕获、费用与研究状态
+
+原始捕获已在真实Sol SSE和两份HTTP错误实体中生效，文件0600；没有实际Luna SSE，Chat流解析及旧空流发生位置仍未知。HTTP异常保持HTTPError，原Provider未返回生成metrics，缺Usage和实收保持UNKNOWN；不伪造零用量或零费用。Sol原Usage、身份、费用和completed状态均保留。当前请求Key回显遮蔽没有遇到可验证的真实回显，本轮不声称该项已实测。
+
+本轮已知参考费用0.048656USD，只有Sol可计量；两次404没有Usage，批次完整费用与供应商实收未知。原用量记录增加3次请求、2次未知用量，已知输入13271/输出1548，reasoning只计一次。无累计额度、自动补采或外部教师。
+
+没有修改Provider或其他永久源码：其协议URL拼接及本次Sol解析没有发现源码错误，Luna问题属于本轮临时调用参数。新增Model-only/Effort/K=3标签0，原19条和74行不变，不能据此启动微调或称Router更会选择。STEP精确权重仍缺失，CPU0/12，路线B待决；Serving/F14/handoff未访问，实时状态未知。
+
+下一项只推荐正确原端点的Luna A1两种stream各1次生成，不重复Sol，不直接恢复质量比较。先取得Luna完整动作证据，才另定工具分支及原验证范围。删除本轮3份与公开结果重复的私人摘要，原始响应、完整请求和解析证据保留；未创建备份、镜像、构建产物或永久驱动。用户Trainer/tests、私人文件、原删除和Fig.2保留，Research五RQ八图十二表不变。
+
 ## 2026-11-02 18:05 · 可选原始响应记录已准备，新增三请求未获单独授权
 
 接续main `dfa1992c2e054d8713454cbacacabde4dc6b3eed`，本轮只完成已授权的本地工作；代码提交 `06bb7fe35efb3e46777a3c6963a273e50aa4f2ea`。没有本轮三次新增付费请求的单独明确授权，因此停止在请求前，模型/工具/Verifier/新Episode/服务器/GPU/训练均0。原始四请求、六组比较、Dev、Router诊断和Twin未重跑。

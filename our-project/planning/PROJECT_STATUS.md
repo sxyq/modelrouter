@@ -1,5 +1,17 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-02 18:43 · 当前：真实接口3请求结束，Sol完整生成，Luna调用路径错误未完成验证
+
+从main `88144d2856c256f9624269bbf53283d58d1af3b6`继续，负责人已明确授权3次新增请求并直接执行；[结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、summary.provider_generation_validation及[脱敏明细](../results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/provider_generation_validation.json)为入口。只沿原Provider生成解析，工具/Docker/服务器/GPU/训练/Episode/Verifier/教师均0，不追加第4次。
+
+Sol A2只把输出上限4096→8192，实际completed、1个原mini可解析bash，13271输入/1548输出含1034 reasoning、缓存读0/写13268、46.8338秒、0.048656USD参考费。原SSE78181字节/124条data、response.completed且无[DONE]，离线真实SSE读回与组装对象一致。输出未触及旧4096，独立一次完整生成不证明扩大上限的因果收益，也不是任务修复；请求low仍报告max，应用档位UNKNOWN。
+
+Luna两次因本轮执行调用参数错误而HTTP404：原完整Chat URL仅去掉最后一段，误传/v1/chat，实际/v1/chat/chat/completions；两份120字节错误实体已捕获。不是供应商空流或模型失败，缺Usage/身份/实收保持UNKNOWN，Luna两种stream生成验证未完成。后续调用直接复用现有配置止于/v1的base_url；原Provider永久源码未改，不增加自动容错或重试。3次HTTP尝试包含2次无生成证据请求，不能写三次有效生成。
+
+本轮已知参考费仅Sol0.048656USD，完整费用及实收未知；原用量记录+3请求/+2未知、已知13271/1548。私人原始响应留本机不跟踪目录、文件0600；删除3份重复摘要，原始证据保留，无备份/构建/权重副本。下一项仅建议原端点Luna A1两模式各1新请求，先完成生成有效性，不直接恢复工具质量对照。
+
+新增标签/参数更新0，原Model-only19、74行未训、K=3/Effort0、STEP实体缺失/CPU0/12、路线B待决不变。Laya/Kev历史训练与F11/R11代表保留；Serving/F14/handoff本轮未访问，最后记录不冒称当前在线。正式Agent原链、Research五RQ八图十二表与用户Trainer/tests/私人文件/删除/Fig.2均不改。
+
 ## 2026-11-02 18:05 · 当前：私人原始响应记录准备完成，三次接口请求未执行
 
 接续maindfa1992，代码提交06bb7fe35efb3e46777a3c6963a273e50aa4f2ea；[结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、summary.provider_generation_validation为入口。原Provider新增按请求显式开启的raw_response_path，记录收到的SSE/JSON字节及错误、结束信息，默认关闭；只用原Git忽略的私人路径，认证头不记录，当前请求Key回显遮蔽，文件0600。Harbor/Relay原异常身份和费用传递保持。
