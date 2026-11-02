@@ -1,5 +1,11 @@
 # Laya / Kev 全历史训练研究报告
 
+## 2026-11-02 · 多来源候选已区分，新增监督与训练仍0
+
+[本轮执行记录](../iterations/20261102-v9-multi-source/review.md)给出各源8条候选：SWE-smith8完整历史/7原验证可信，阶段Inspect2/Modify4/Verify1/Recover1；Gym仅8任务观察、rebench8复现条件未知，均无真实新偏好。两已有SWE-smith环境实际原测试符合F2P/P2P预期，属于环境结果，不是Router监督。旧19 Model-only（任务9/步骤10）、74行（旧S1 64+步骤10）、有效Verify9/Recover1/InspectModify0保持，不互相相加或重写。
+
+原清洗器现保留必要来源、版本、消息截止和原测试字段，原材料及Trainer/tests不动；没有全量重清洗、Laya/Kev/F14微调、STEP重建或Serving部署。当前采集优先已在本机的SWE-smith可信子集，下一批优先补齐rebench完整环境与轨迹资产，但本轮新源执行0，不据此宣称迁移收益。正式K=3/Effort0和动态收益未证保持；P3缺新付费许可未执行。
+
 ## 2026-11-02 15:21 · 当前：A1/A2有限运行结束，新有效标签和训练仍0
 
 接续main909f3fc，已获原镜像下载及A直接执行授权，两基础镜像已拉取，4次正式请求/6次原范围验证结束。Records前后23/24、timeout前后29/32；1完整工具动作仅读取，另3次FormatError（两Luna空输出/Usage缺失，timeout Sol4096输出含3624 reasoning且工具调用未完成）。原验证全部可信，但两候选有效终局不齐，无可训练偏好，不写成可信双失败，详见[本轮结果](../iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)。

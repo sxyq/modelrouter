@@ -8,6 +8,25 @@ from collections import Counter
 from .shared import StreamingFieldTracker, write_json, write_jsonl
 
 
+def retain_task_fields(item, row):
+    """Keep reproduction evidence outside the model's decision input."""
+    item["pre_decision_state"]["problem_statement"] = row.get("problem_statement")
+    item["provenance"].update({name: row[name] for name in (
+        "base_commit", "image_name", "install_config", "version", "environment_setup_commit",
+    ) if name in row})
+    if "license" in row:
+        item["provenance"]["repository_license"] = row["license"]
+    outcome = item["ground_truth_outcome"]
+    for name in ("FAIL_TO_PASS", "PASS_TO_PASS"):
+        if name in row:
+            value = row[name]
+            outcome[name] = json.loads(value) if isinstance(value, str) else list(value)
+    for name in ("test_patch", "patch"):
+        if name in row:
+            outcome["reference_patch" if name == "patch" else name] = row[name]
+    return item
+
+
 def process_env_001(raw_root, cleaned_root, preview_root):
     """
     ENV-001: SWE-Gym/SWE-Gym (train.parquet)
@@ -82,7 +101,7 @@ def process_env_001(raw_root, cleaned_root, preview_root):
             },
             "policy_tag": "TRAIN_ROUTER_CANDIDATE",
         }
-        cleaned_records.append(item)
+        cleaned_records.append(retain_task_fields(item, json.loads(row.to_json())))
         tracker.update(item)
 
     write_jsonl(cleaned_file, cleaned_records)
@@ -212,7 +231,7 @@ def process_env_002(raw_root, cleaned_root, preview_root):
             },
             "policy_tag": "TRAIN_ROUTER_CANDIDATE",
         }
-        cleaned_records.append(item)
+        cleaned_records.append(retain_task_fields(item, json.loads(row.to_json())))
         tracker.update(item)
 
     write_jsonl(cleaned_file, cleaned_records)
@@ -237,7 +256,7 @@ def process_env_002(raw_root, cleaned_root, preview_root):
         "source_id": source_id,
         "source_name": source_name,
         "official_origin": "https://huggingface.co/datasets/nebius/SWE-rebench-V2",
-        "license": "MIT",
+        "license": "CC-BY-4.0; individual repository licenses apply",
         "valid_cleaned_records": len(cleaned_records),
         "language_distribution": dict(lang_counter),
         "unique_repos_count": len(repo_counter),
@@ -251,7 +270,7 @@ def process_env_002(raw_root, cleaned_root, preview_root):
     readme_content = f"""# ENV-002 · SWE-rebench-V2 多语言任务环境清洗样本说明
 
 ## 1. 来源背景与数据集含义
-- **官方来源**：`nebius/SWE-rebench-V2` (`train.parquet`, MIT)。
+- **官方来源**：`nebius/SWE-rebench-V2`；数据集 CC-BY-4.0，各任务另保留原仓库许可证。
 - **数据性质**：跨多编程语言（Python, TypeScript/JavaScript, Go, Java, Rust 等）的超大规模软件工程修复任务基准（32,079 个任务）。
 - **独有研究价值**：提供了多语言生态下的代码复杂度与语言特征分布，为多语言代码路由决策提供了真实多语言特征先验。
 

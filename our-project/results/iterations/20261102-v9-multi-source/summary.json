@@ -1,0 +1,398 @@
+{
+  "iteration_id": "20261102-v9-multi-source",
+  "starting_main": "65e91e3532e86f919f47b6e5f340420f2fc0e08f",
+  "data_scope": "LOCAL_PREVIEWS_AND_SAVED_REAL_TRAIN_STATES_NOT_FULL_SOURCES",
+  "sources": {
+    "TRA-002": {
+      "input_records": 8,
+      "output_records": 8,
+      "classification": {
+        "REPRODUCIBLE_CANDIDATE": 7,
+        "OBSERVATION_ONLY": 1
+      },
+      "independent_tasks": 8,
+      "repositories": 7,
+      "trainer_targets_added": 0,
+      "preview_rows_read": 35,
+      "preview_independent_tasks": 10,
+      "preview_repositories": 9,
+      "saved_task_records_read": 8,
+      "preview_only_used_for_real_execution": false,
+      "candidate_view_bytes": 24833
+    },
+    "ENV-001": {
+      "input_records": 8,
+      "output_records": 8,
+      "classification": {
+        "OBSERVATION_ONLY": 8
+      },
+      "independent_tasks": 8,
+      "repositories": 8,
+      "trainer_targets_added": 0,
+      "preview_rows_read": 33,
+      "preview_independent_tasks": 33,
+      "preview_repositories": 11,
+      "candidate_view_bytes": 12622
+    },
+    "ENV-002": {
+      "input_records": 8,
+      "output_records": 8,
+      "classification": {
+        "INVALID_OR_UNKNOWN": 8
+      },
+      "independent_tasks": 8,
+      "repositories": 8,
+      "trainer_targets_added": 0,
+      "preview_rows_read": 35,
+      "preview_independent_tasks": 35,
+      "preview_repositories": 35,
+      "candidate_view_bytes": 12880
+    }
+  },
+  "selected_candidates": 24,
+  "saved_history_recovered": 8,
+  "source_candidate_views": "our-project/code/data/v9/candidate_views/20261102-multi-source",
+  "new_model_only_preferences": 0,
+  "old_model_only_preferences_retained": 19,
+  "old_directed_training_rows_retained": 74,
+  "paid_model_requests": 0,
+  "pair_comparisons": "NOT_EXECUTED_NO_NEW_PAID_AUTHORIZATION",
+  "model_fee_usd": 0,
+  "server_accesses": 0,
+  "training_runs": 0,
+  "environment_results": [
+    {
+      "source_id": "TRA-002",
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "episode_id": "t18-records-sol-low",
+      "scope": "OFFLINE_ORIGINAL_TESTS_ONLY",
+      "model_requests": 0,
+      "reporting_option": "-rA (individual statuses only; original IDs unchanged)",
+      "observed_through_step": 3,
+      "source_image": "jyangballin/swesmith.x86_64.kennethreitz_1776_records.5941ab27",
+      "container_id": "39e24dc1b2d299a2fee1b4108cfbc33a2b844580890f2246f2d007f7ebd01403",
+      "reference_mode": "PUBLIC_ORIGINAL_SOURCE_BEFORE_SWE_SMITH_FAULT_PATCH",
+      "reference_verifier_exit_code": 0,
+      "prefix_returncodes_matched": true,
+      "fault_verifier_exit_code": 1,
+      "FAIL_TO_PASS_counts": {
+        "PASSED": 0,
+        "FAILED": 1,
+        "ERROR": 0,
+        "SKIPPED": 0,
+        "UNKNOWN": 0
+      },
+      "PASS_TO_PASS_counts": {
+        "PASSED": 23,
+        "FAILED": 0,
+        "ERROR": 0,
+        "SKIPPED": 0,
+        "UNKNOWN": 0
+      },
+      "all_F2P_fail": true,
+      "all_P2P_pass": true,
+      "environment_errors": false,
+      "container_removed": true
+    },
+    {
+      "source_id": "TRA-002",
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "episode_id": "t15-async-timeout-sol-low",
+      "scope": "OFFLINE_ORIGINAL_TESTS_ONLY",
+      "model_requests": 0,
+      "reporting_option": "-rA (individual statuses only; original IDs unchanged)",
+      "observed_through_step": 2,
+      "source_image": "jyangballin/swesmith.x86_64.aio-libs_1776_async-timeout.d0baa9f1",
+      "container_id": "9845994371a9c2404a7555c1344d99420e62d13da4c0f7354ec9865ca1db7c63",
+      "reference_mode": "PUBLIC_ORIGINAL_SOURCE_BEFORE_SWE_SMITH_FAULT_PATCH",
+      "reference_verifier_exit_code": 0,
+      "prefix_returncodes_matched": true,
+      "fault_verifier_exit_code": 1,
+      "FAIL_TO_PASS_counts": {
+        "PASSED": 0,
+        "FAILED": 3,
+        "ERROR": 0,
+        "SKIPPED": 0,
+        "UNKNOWN": 0
+      },
+      "PASS_TO_PASS_counts": {
+        "PASSED": 29,
+        "FAILED": 0,
+        "ERROR": 0,
+        "SKIPPED": 0,
+        "UNKNOWN": 0
+      },
+      "all_F2P_fail": true,
+      "all_P2P_pass": true,
+      "environment_errors": false,
+      "container_removed": true
+    }
+  ],
+  "exact_id_overlap": {
+    "canary": [],
+    "external_dev": [],
+    "final_test": [],
+    "twinrouter_preview": []
+  },
+  "overlap_scope": "LOCAL_TERMINAL_METADATA_AND_TWIN_PREVIEW; OLD_SWE_SMITH_ISOLATION_REUSED; FULL_SWE_BENCH_HOLDOUT_IDS_UNAVAILABLE",
+  "new_environment_sources_train_status": "UNASSIGNED_METADATA_ONLY_NOT_EXPORTED_TO_TRAIN",
+  "candidate_phases": {
+    "inspect": 2,
+    "modify": 4,
+    "verify": 1,
+    "recover": 1
+  },
+  "environment_tasks_completed": 2,
+  "original_verifier_invocations": 4,
+  "new_source_environments_not_executed": {
+    "ENV-001": [
+      "No complete local task/trajectory",
+      "No exact image retained",
+      "Original test IDs truncated"
+    ],
+    "ENV-002": [
+      "No complete local task/trajectory",
+      "base_commit/image_name/install_config not retained",
+      "No original test IDs retained"
+    ]
+  },
+  "preview_raw_files_modified": false,
+  "candidate_duplicates_removed": 0,
+  "license_metadata": {
+    "source_id": "ENV-002",
+    "current_official_license": "CC-BY-4.0",
+    "repository_license_field": "license",
+    "official_card": "https://huggingface.co/datasets/nebius/SWE-rebench-V2/blob/main/README.md",
+    "historical_revision_card": "ENTRY_NOT_FOUND",
+    "full_dataset_read": false
+  },
+  "prepared_view_identity_coverage": {
+    "train/model_comparison": {
+      "physical_rows": 64,
+      "independent_units": 64,
+      "known_task_ids": 0,
+      "rows_missing_task_id": 64,
+      "known_repositories": 0,
+      "rows_missing_repo": 64,
+      "full_observed_messages_rows": 0,
+      "environment_candidates": null,
+      "original_verifier_candidates": null,
+      "sol_luna_pairs": 0,
+      "trusted_sol_luna_pairs": 0,
+      "v9_winners": 0
+    },
+    "train/agent_auxiliary": {
+      "physical_rows": 70,
+      "independent_units": 49,
+      "known_task_ids": 2,
+      "rows_missing_task_id": 64,
+      "known_repositories": 0,
+      "rows_missing_repo": 70,
+      "full_observed_messages_rows": 6,
+      "environment_candidates": null,
+      "original_verifier_candidates": null,
+      "sol_luna_pairs": 0,
+      "trusted_sol_luna_pairs": 0,
+      "v9_winners": 0
+    },
+    "train/system_auxiliary": {
+      "physical_rows": 64,
+      "independent_units": 32,
+      "known_task_ids": 0,
+      "rows_missing_task_id": 64,
+      "known_repositories": 0,
+      "rows_missing_repo": 64,
+      "full_observed_messages_rows": 0,
+      "environment_candidates": null,
+      "original_verifier_candidates": null,
+      "sol_luna_pairs": 0,
+      "trusted_sol_luna_pairs": 0,
+      "v9_winners": 0
+    },
+    "val/model_comparison": {
+      "physical_rows": 64,
+      "independent_units": 64,
+      "known_task_ids": 0,
+      "rows_missing_task_id": 64,
+      "known_repositories": 0,
+      "rows_missing_repo": 64,
+      "full_observed_messages_rows": 0,
+      "environment_candidates": null,
+      "original_verifier_candidates": null,
+      "sol_luna_pairs": 0,
+      "trusted_sol_luna_pairs": 0,
+      "v9_winners": 0
+    },
+    "val/agent_auxiliary": {
+      "physical_rows": 64,
+      "independent_units": 64,
+      "known_task_ids": 0,
+      "rows_missing_task_id": 64,
+      "known_repositories": 0,
+      "rows_missing_repo": 64,
+      "full_observed_messages_rows": 0,
+      "environment_candidates": null,
+      "original_verifier_candidates": null,
+      "sol_luna_pairs": 0,
+      "trusted_sol_luna_pairs": 0,
+      "v9_winners": 0
+    },
+    "val/system_auxiliary": {
+      "physical_rows": 64,
+      "independent_units": 32,
+      "known_task_ids": 0,
+      "rows_missing_task_id": 64,
+      "known_repositories": 0,
+      "rows_missing_repo": 64,
+      "full_observed_messages_rows": 0,
+      "environment_candidates": null,
+      "original_verifier_candidates": null,
+      "sol_luna_pairs": 0,
+      "trusted_sol_luna_pairs": 0,
+      "v9_winners": 0
+    }
+  },
+  "retained_supervision": {
+    "model_only_preferences": 19,
+    "task_level": 9,
+    "step_level": 10,
+    "unique_labeled_tasks": 11,
+    "winners": {
+      "Sol": 4,
+      "Luna": 15
+    },
+    "quality_labels": 8,
+    "equal_quality_cost_labels": 11,
+    "step_phases": {
+      "verify": 9,
+      "recover": 1,
+      "inspect": 0,
+      "modify": 0
+    },
+    "continuation_rows": 74,
+    "continuation_composition": {
+      "legacy": 64,
+      "step_overlapping_with_19": 10
+    },
+    "new_labels": 0,
+    "effort_labels": 0,
+    "formal_k3_labels": 0,
+    "repository_count_from_task_identity": 10,
+    "repository_count_scope": "Public SWE-smith owner/repo identity in the 11 task IDs, not missing task_cluster field"
+  },
+  "historical_loss_cohorts": {
+    "20261101_quality_step": {
+      "comparisons": 7,
+      "valid_preferences": 4,
+      "without_valid_preference": 3,
+      "path": "our-project/results/iterations/20261101-v9-quality-step-supervision/comparisons.jsonl",
+      "independent_task_ids": 4,
+      "known_repositories": 4,
+      "full_observed_history_rows": 7,
+      "original_verifier_unchanged_rows": 7,
+      "same_initial_environment_rows": 7,
+      "recorded_trusted_outcomes_flags": 7,
+      "trusted_outcome_pairs": 4,
+      "candidate_error_counts": {
+        "HTTPError": 3,
+        "FormatError": 3
+      },
+      "both_verified_not_passed": 0,
+      "unknown_result_pairs": 3,
+      "real_equal_quality_passed_pairs": 1
+    },
+    "20261102_quality_prefix": {
+      "comparisons": 8,
+      "comparable_both_fail": 6,
+      "generation_error_pairs": 2,
+      "generation_error_candidates": 3,
+      "valid_preferences": 0,
+      "invalid_labeled_records": 0,
+      "path": "our-project/results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/comparisons.jsonl",
+      "independent_task_ids": 6,
+      "known_repositories": 5,
+      "full_observed_history_rows": 8,
+      "original_verifier_unchanged_rows": 8,
+      "same_initial_environment_rows": 8,
+      "recorded_trusted_outcomes_flags": 6,
+      "trusted_outcome_pairs": 6,
+      "candidate_error_counts": {
+        "FormatError": 3
+      },
+      "both_verified_not_passed": 6,
+      "unknown_result_pairs": 2,
+      "real_equal_quality_passed_pairs": 0,
+      "error_evidence": "our-project/results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/late_prefix_completion_summary.json"
+    }
+  },
+  "loss_category_definitions": {
+    "NO_ORIGINAL_ROUTING_SUPERVISION": "S2/S3/task environment is not an optimal-model target",
+    "NOT_COMPARABLE": "different models/horizon/identity or missing paired observations",
+    "EXECUTION_FAILED": "API/tool/environment/verifier cannot yield a trusted candidate result",
+    "EQUAL_QUALITY": "both false has no selectable winner; both true may use measured cost",
+    "INVALID_LABEL": "a written winner without required evidence; none newly written"
+  },
+  "verification_scope": "Actual original tests in two existing Docker images; four original-scope verifier invocations; no new test files or model API requests",
+  "cleanup": {
+    "containers_created_and_removed": 2,
+    "remaining_task_containers": 0,
+    "new_images": 0,
+    "original_images_retained": 2,
+    "temporary_scripts_removed": true,
+    "duplicate_legacy_source_bodies_removed": true,
+    "raw_and_private_data_retained": true
+  },
+  "source_statistics_from_old_field_files": {
+    "TRA-002": {
+      "cleaned_step_records": 2331584,
+      "raw_episodes": 76002,
+      "independent_tasks": 13501,
+      "measured_in_this_round": false
+    },
+    "ENV-001": {
+      "registered_tasks": 2438,
+      "registered_repositories": 11,
+      "measured_in_this_round": false
+    },
+    "ENV-002": {
+      "registered_tasks": 32079,
+      "registered_repositories": 3617,
+      "measured_in_this_round": false
+    }
+  },
+  "historical_collection_loss_rates": {
+    "20261101_quality_step": {
+      "valid_preferences": {
+        "numerator": 4,
+        "denominator": 7,
+        "unit": "comparison"
+      },
+      "unknown_due_to_api_or_format": {
+        "numerator": 3,
+        "denominator": 7,
+        "unit": "comparison"
+      },
+      "trusted_flags_overstated_pairs": 3
+    },
+    "20261102_quality_prefix": {
+      "valid_preferences": {
+        "numerator": 0,
+        "denominator": 8,
+        "unit": "comparison"
+      },
+      "verified_both_not_passed": {
+        "numerator": 6,
+        "denominator": 8,
+        "unit": "comparison"
+      },
+      "incomplete_generation_pairs": {
+        "numerator": 2,
+        "denominator": 8,
+        "unit": "comparison"
+      }
+    }
+  },
+  "resource_cost_usd": null,
+  "new_paid_generation_authorized": false,
+  "progress_status": "LOCAL_CANDIDATE_PREPARATION_AND_AVAILABLE_ENVIRONMENTS_COMPLETED; P3_NOT_AUTHORIZED; FULL_SOURCE_ASSETS_UNAVAILABLE"
+}

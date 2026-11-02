@@ -403,9 +403,10 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
             df = table.to_pandas()
             raw_trajectories_count += len(df)
 
-            for _, row in df.iterrows():
+            for raw_row_index, row in df.iterrows():
                 inst_id = str(row.get("instance_id") or "unknown")
                 instance_ids.add(inst_id)
+                identity, base_commit_prefix, fault_identity = inst_id.split(".", 2)
                 model_name = str(row.get("model") or "claude-3-7-sonnet-20250219")
                 traj_id = str(row.get("traj_id") or inst_id)
 
@@ -444,7 +445,7 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
                 step_count = 0
                 user_prompt_snippet = ""
 
-                for msg in msg_list:
+                for message_index, msg in enumerate(msg_list):
                     if not isinstance(msg, dict):
                         continue
                     role = msg.get("role")
@@ -493,7 +494,12 @@ def process_tra_002(raw_root, cleaned_root, preview_root):
                                 "source_name": source_name,
                                 "split_type": split_type,
                                 "instance_id": inst_id,
-                                "repo": inst_id.split("__")[0] if "__" in inst_id else "unknown",
+                                "repo": identity.replace("__", "/", 1),
+                                "base_commit_prefix": base_commit_prefix,
+                                "fault_identity": fault_identity,
+                                "raw_source_file": fname,
+                                "raw_trajectory_row": int(raw_row_index),
+                                "message_cutoff_exclusive": message_index,
                                 "trajectory_id": traj_id,
                                 "step_index": step_count,
                                 "agent_framework": f"SWE-smith-{split_type}",

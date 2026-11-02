@@ -8,6 +8,16 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-11-02 · 最新：24条独立候选视图，2项真实离线原测试，未请求模型
+
+接续main65e91e3，本轮结果 [多来源执行记录](../results/iterations/20261102-v9-multi-source/review.md) / [summary](../results/iterations/20261102-v9-multi-source/summary.json)。35/33/35预览与8份已有SWE-smith真实Train任务历史分开；各源候选8，来源/状态/任务版本及引用保留在code/data/v9/candidate_views/20261102-multi-source，不复制私人历史或原响应。SWE-smith完整历史8、原验证可信7，Inspect2/Modify4/Verify1/Recover1；Gym8观察、rebench8复现条件未知，两个新来源仍unassigned，不进训练。Mido原验证退出4保留观察，不冒称可复现。
+
+原清洗器的仓库身份、消息截止与环境/测试字段丢失已在同一包实现内处理，旧目录脚本改薄导入；没有重新清洗服务器全量或改原JSONL。rebench当前官方许可CC-BY-4.0及逐仓库许可已同步，历史revision README返回Entry not found。旧7对的总trusted标志7，但双方真实可信4；候选分类使用单方证据，不更改旧记录或Trainer。
+
+Records/timeout两已有镜像实测各一任务，原来源24/24与32/32通过，故障恢复后F2P1/1与3/3失败、P2P23/23与29/29通过，未知0；4次原范围验证、生成0。两容器移除、原镜像保留。Gym/rebench因无完整任务、原测试及精确镜像实测0；服务器/下载/GPU/训练/部署0。付费许可本轮未给，P3不执行或沿用旧许可；未来最多Luna2+比较6，不转移缺来源额度。
+
+原19标签/74行、有效步骤Verify9/Recover1/InspectModify0、K3/Effort0与动态收益未证保持。当前只推荐已有本地环境的SWE-smith可信子集继续采集；下一批完整资产优先rebench，但不以字段齐全宣称来源整体更优或启动训练。保留Trainer/tests、账本、历史删除、Fig.2、旧训练/Serving身份；无新Q-ID或研究架构变化。
+
 ### 2026-11-02 18:43 · 最新：3请求已结束，Sol完整，Luna两个404来自执行调用参数
 
 接续main88144d2856c256f9624269bbf53283d58d1af3b6，负责人已明确授权本轮新增3次并直接执行；[报告](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、summary.provider_generation_validation及[脱敏结果](../results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/provider_generation_validation.json)为恢复入口。请求3/额外0、工具/Verifier/Docker/服务器/GPU/训练/Episode/教师0。

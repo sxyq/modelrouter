@@ -289,7 +289,7 @@ Q（记录质量）、S（监督类型）、L（覆盖层级）是三个独立�
 | TRA-003 | [CMU Agent Trajectories](https://huggingface.co/datasets/cx-cmu/agent_trajectories) | 上游 Hugging Face 接口返回 HTTP 403 Forbidden | 任务、工具、时间 | **S1·`GATED`**：0 条；遵循零造假规范合规审计 | 待授权，不进训练包 |
 | TRA-004 | [AgentSuite multi_challenge](https://huggingface.co/datasets/AgentSuite/multi_challenge-trajectories) | 全部 8 个模型/思考模式全量 JSONL (44 MB) | 任务、模型比较、思考模式 | **S5·已加工**：2,736 步；同题思考开关对照 | **P0·已就绪**，Thinking-On/Off 对照 |
 | ENV-001 | [SWE-Gym](https://huggingface.co/datasets/SWE-Gym/SWE-Gym) | 真实 Python 仓库/Issue/可执行回归测试套件 | 任务、环境、验证规范 | **S5·已加工**：2,438 个标准任务基准；MIT | 任务环境特征源 |
-| ENV-002 | [SWE-rebench-V2](https://huggingface.co/datasets/nebius/SWE-rebench-V2) | 跨 20 种编程语言的超大规模任务基准 (409 MB) | 任务、多语言环境、复杂度 | **S5·已加工**：32,079 个任务；MIT | 多语言路由特征源 |
+| ENV-002 | [SWE-rebench-V2](https://huggingface.co/datasets/nebius/SWE-rebench-V2) | 跨 20 种编程语言的超大规模任务基准 (409 MB) | 任务、多语言环境、复杂度 | **S5·已加工**：32,079 个任务；CC-BY-4.0，各任务另遵循原仓库许可证（2026-11-02 官方数据卡） | 多语言路由特征源 |
 | ENV-004 | [Terminal-Bench 2.1](https://github.com/harbor-framework/terminal-bench-2-1) | 89 个终端系统/DevOps/开发真实挑战任务套件 (Commit 7131e43) | 终端环境、执行交互、沙盒验证 | **S2·可评测·禁训**：89 个任务；MIT；严禁并入训练集；划分 CANARY (8) / DEV (24) / TEST (57 封存) | 外部独立 Agent Benchmark 泛化评测基准 (历史 160 题已作废驳回) |
 
 ### 1.2 请求级模型选择与偏好监督

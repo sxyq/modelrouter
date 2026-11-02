@@ -1,5 +1,15 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-02 · 当前：三来源候选视图与两项离线原环境完成，新赢家 0
+
+接续 main `65e91e3532e86f919f47b6e5f340420f2fc0e08f`，结果见 [多来源执行记录](../results/iterations/20261102-v9-multi-source/review.md) 与 [summary](../results/iterations/20261102-v9-multi-source/summary.json)。本机只读取 35/33/35 条三源预览，另复用 8 份 SWE-smith Train 任务及真实 Sol/Luna 历史；三源各选 8 条独立候选。SWE-smith 完整历史 8，Inspect2/Modify4/Verify1/Recover1；其中 7 有原测试依据，Mido 原验证退出4仅观察。Gym8仅任务观察，rebench8缺版本/环境/测试字段为未知，均不进 Train。旧全量 6,600,628 / 通用导出 84,310 未重新测量。
+
+原清洗入口保留完整环境/测试字段、SWE-smith 正确 owner/repo 及原轨迹行/消息截止；原目录脚本仅导入同一包实现，重复主体移除。rebench 当前官方许可 CC-BY-4.0/逐仓库许可已同步元数据，历史 revision 数据卡无法读取；原始与预览 JSONL、Trainer/tests 不改。旧7对的可信总字段虽为7，双方实际可信仅4；另旧8对可信6、双方未通过6、含生成异常2，不把总字段或工具成功作赢家。
+
+本轮2个已有 Docker 任务/4次原范围验证：Records 原来源24/24通过，故障版 F2P1/1失败、P2P23/23通过；timeout 原来源32/32通过，故障版 F2P3/3失败、P2P29/29通过，未知/环境错误0。恢复历史退出码对应；没有模型请求或官方Agent成绩。两容器已移除，两原镜像保留。Gym/rebench实测各0，缺完整本地任务及精确环境，不下载或访问服务器。
+
+API/新偏好/训练/服务器/部署0；旧19 Model-only、74行、有效步骤Verify9/Recover1及Inspect/Modify0保持，K=3/Effort0、STEP实体缺失、动态收益未证明。当前采集优先两条已具备本地环境的 SWE-smith Train 状态；下一批完整资产优先补齐rebench，尚无环境或标签结果支持整体迁移。P3需新付费授权，Luna沿原base_url止于/v1，最多2+6生成且缺来源额度不转移；本轮未执行。私人账本、历史删除、Fig.2及原训练/Serving结果保留，本轮不刷新服务器状态。
+
 ## 2026-11-02 18:43 · 当前：真实接口3请求结束，Sol完整生成，Luna调用路径错误未完成验证
 
 从main `88144d2856c256f9624269bbf53283d58d1af3b6`继续，负责人已明确授权3次新增请求并直接执行；[结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、summary.provider_generation_validation及[脱敏明细](../results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/provider_generation_validation.json)为入口。只沿原Provider生成解析，工具/Docker/服务器/GPU/训练/Episode/Verifier/教师均0，不追加第4次。

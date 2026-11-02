@@ -240,6 +240,68 @@ def build_offline_prefix_input(row, state_factory):
     return state, messages
 
 
+def prepare_candidate_view(records, output_path):
+    """Export source/state identities without creating Trainer choice targets."""
+    seen, rows, counts = set(), [], Counter()
+    for original in records:
+        row = copy.deepcopy(original)
+        provenance = row["provenance"]
+        task_key = (provenance["source_id"], provenance["task_id"], provenance["repo"],
+                    provenance.get("base_commit", provenance.get("base_commit_prefix")),
+                    provenance.get("fault_identity"))
+        state_key = (*task_key, provenance.get("episode_id"),
+                     provenance.get("message_cutoff_exclusive"))
+        if state_key in seen:
+            counts["DUPLICATE_STATE"] += 1
+            continue
+        seen.add(state_key)
+        reasons = []
+        if "candidate_results" in row:
+            prepared, reason = prepare_comparison(row, "train")
+            conditions = row["comparison_conditions"]
+            comparable = all(conditions[name] for name in (
+                "same_observed_messages", "same_initial_environment", "same_agent_protocol",
+                "original_verifier_unchanged", "candidate_identity_matched", "trusted_outcomes",
+            )) and all(item["trusted_outcome"] and item["identities_matched"]
+                       and item["resolved"] is not None for item in row["candidate_results"])
+            category = ("VALID_PREFERENCE" if prepared and comparable else
+                        "COMPARABLE_UNLABELED" if comparable else "INVALID_OR_UNKNOWN")
+            if reason:
+                reasons.append(reason)
+        else:
+            state_available = row["decision_state_status"] == "FULL_HISTORY_RECOVERED"
+            evidence = row["environment_evidence"]
+            reproducible = state_available and all(evidence.get(name) for name in (
+                "image_name", "verify_command_available", "original_test_ids_complete", "historical_verifier_trusted",
+            ))
+            category = "REPRODUCIBLE_CANDIDATE" if reproducible else "OBSERVATION_ONLY"
+            if not state_available:
+                reasons.append("FULL_DECISION_HISTORY_UNAVAILABLE")
+            if not evidence.get("original_test_ids_complete"):
+                reasons.append("ORIGINAL_TEST_IDS_UNAVAILABLE")
+            if not evidence.get("image_name"):
+                reasons.append("ENVIRONMENT_IMAGE_UNAVAILABLE")
+            if not evidence.get("historical_verifier_trusted"):
+                reasons.append("ORIGINAL_VERIFIER_EVIDENCE_UNAVAILABLE")
+            if not all(task_key[1:4]):
+                category = "INVALID_OR_UNKNOWN"
+                reasons.append("TASK_VERSION_IDENTITY_INCOMPLETE")
+        row.update(cleaning_status=category, label_loss_reasons=reasons,
+                   trainer_target_created=False, supervision_type=row.get("supervision_type", "UNLABELED"),
+                   task_identity=list(task_key), decision_identity=list(state_key))
+        counts[category] += 1
+        rows.append(row)
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf8") as stream:
+        for row in rows:
+            stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+    return {"input_records": len(records), "output_records": len(rows), "classification": dict(counts),
+            "independent_tasks": len({tuple(row["task_identity"]) for row in rows}),
+            "repositories": len({row["provenance"]["repo"] for row in rows}),
+            "trainer_targets_added": 0}
+
+
 def _router_input_text(row, decision):
     """Retain captured online state; compact public trajectory prefixes only."""
     if row.get("_meta", {}).get("input_kind") != "TRAJECTORY_PREFIX":
