@@ -29,7 +29,7 @@ from minisweagent.models.utils.actions_toolcall import BASH_TOOL
 
 from modelrouter.agent.state import AgentState, EpisodeStatus
 from modelrouter.baselines.policy import create_policy
-from modelrouter.providers.provider import OpenAICompatibleProvider, OpenAIResponsesProvider
+from modelrouter.providers.provider import OpenAICompatibleProvider, OpenAIResponsesProvider, ProviderResponseError
 from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS
 from modelrouter.serving.schemas import LegalAction, PreDecisionState
 from modelrouter.v9.runtime.alias import DEFAULT_BACKEND_DEPLOYMENT_STATUS
@@ -182,9 +182,13 @@ class PolicyModel(LitellmModel):
         if self.state.status == EpisodeStatus.TIMEOUT:
             raise RuntimeError("Harbor episode timed out")
         started = time.perf_counter()
+        response_error = None
         try:
             body, metrics = self.provider.query_raw(
                 messages, spec, selected["native_effort"], self.max_output_tokens, [BASH_TOOL], True)
+        except ProviderResponseError as exc:
+            body, metrics = exc.response, exc.metrics
+            response_error = exc
         except Exception as exc:
             alias_mapping = getattr(self.provider, "alias_mapping", None)
             alias_facts = (alias_mapping.resolve(spec.model_id, selected["native_effort"]) or {}
@@ -226,6 +230,8 @@ class PolicyModel(LitellmModel):
               step=self.state.step_index, policy=self.policy_name, model=selected["model"],
               returned_model=metrics["returned_model_id"], effort=selected["native_effort"])
         self.state.step_index += 1
+        if response_error is not None:
+            raise response_error
         if metrics["protocol"] == "responses":
             calls = [{"id": item["call_id"], "type": "function",
                       "function": {"name": item["name"], "arguments": item["arguments"]}}

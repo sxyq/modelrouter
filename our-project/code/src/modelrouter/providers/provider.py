@@ -38,6 +38,13 @@ except ImportError:
 logger = logging.getLogger("modelrouter.providers.provider")
 
 
+class ProviderResponseError(RuntimeError):
+    def __init__(self, reason, response, metrics):
+        super().__init__(reason)
+        self.response = response
+        self.metrics = metrics
+
+
 @dataclass
 class GeneratorResponse:
     content: str
@@ -349,12 +356,14 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         choices: Dict[int, Dict[str, Any]] = {}
         tool_calls: Dict[Tuple[int, int], Dict[str, Any]] = {}
         ttft = None
+        done_received = False
         for raw_line in response:
             line = raw_line.decode("utf-8").strip()
             if not line.startswith("data:"):
                 continue
             data = line[5:].strip()
             if data == "[DONE]":
+                done_received = True
                 break
             chunk = json.loads(data)
             if "error" in chunk:
@@ -386,6 +395,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             if calls:
                 choice["message"]["tool_calls"] = calls
             body["choices"].append(choice)
+        body["_stream_end"] = {"done_received": done_received}
         return body, ttft
 
     def _make_payload(self, messages, target_model, native_effort, max_tokens, tools, stream):
@@ -411,6 +421,37 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             (usage.get("prompt_tokens_details") or {}).get("cached_tokens"),
             (usage.get("prompt_tokens_details") or {}).get("cache_write_tokens"),
         )
+
+    @staticmethod
+    def _response_error(body, protocol):
+        if protocol == "responses":
+            outputs = body.get("output", [])
+            calls = [item for item in outputs if item["type"] == "function_call"]
+            if any(call.get("status") == "incomplete" for call in calls):
+                return "INCOMPLETE_TOOL_CALL"
+            if body.get("status") != "completed":
+                return "INCOMPLETE_RESPONSE"
+            content = any(part.get("text") for item in outputs if item["type"] == "message"
+                          for part in item.get("content", []))
+        else:
+            choices = body.get("choices", [])
+            if not choices:
+                return "EMPTY_RESPONSE"
+            message = choices[0].get("message") or {}
+            content = message.get("content")
+            calls = [call.get("function", {}) for call in message.get("tool_calls") or []]
+            if choices[0].get("finish_reason") in (None, "length"):
+                return "INCOMPLETE_RESPONSE" if content or calls else "EMPTY_RESPONSE"
+        if not content and not calls:
+            return "EMPTY_RESPONSE"
+        for call in calls:
+            if not call.get("name") or not call.get("arguments"):
+                return "INCOMPLETE_TOOL_CALL"
+            try:
+                json.loads(call["arguments"])
+            except json.JSONDecodeError:
+                return "INVALID_TOOL_ARGUMENTS"
+        return None
 
     def query_raw(
         self,
@@ -502,6 +543,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             c_tokens * 1000 / stream_elapsed_ms
             if usage_complete and stream_elapsed_ms is not None and stream_elapsed_ms > 0 else None
         )
+        response_error = self._response_error(body, request_protocol)
         metrics = {
             "requested_model_id": model_spec.model_id,
             "selected_model_id": model_spec.model_id,
@@ -512,7 +554,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "provider_base_url": request_base_url,
             "protocol": request_protocol,
             "finish_reason": (body.get("status") if request_protocol == "responses"
-                              else body["choices"][0]["finish_reason"]),
+                              else next((choice.get("finish_reason") for choice in body.get("choices", [])), None)),
+            "response_status": response_error or "COMPLETE",
+            "stream_end": body.get("_stream_end"),
             "incomplete_details": body.get("incomplete_details"),
             "native_effort": effective_effort,
             "requested_native_effort": native_effort,
@@ -570,6 +614,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 cache_read_tokens=cached or 0, actual_billed_cost_usd=billed_cost,
                 status=metrics["status"], metadata=metrics,
             )
+        if response_error:
+            raise ProviderResponseError(response_error, body, metrics)
         return body, metrics
 
     def generate(self, messages, model_spec, native_effort="none", max_tokens=1024, tools=None,
@@ -604,7 +650,7 @@ def native_generator_relay(record_dir: str | Path, bind: str = "0.0.0.0"):
     An explicitly positive cost_limit applies after a completed call;
     this does not predict or cap the bill of an in-flight provider request.
     """
-    from modelrouter.benchmark.iterations import event, rows
+    from modelrouter.benchmark.iterations import event, rows, write_atomic
     from modelrouter.providers.registry import MODEL_REGISTRY
 
     record_dir = Path(record_dir)
@@ -650,6 +696,7 @@ def native_generator_relay(record_dir: str | Path, bind: str = "0.0.0.0"):
             request_id = "native-" + secrets.token_hex(12)
             episode_id = self.headers.get("X-Session-ID") or None
             step = None
+            response_error = None
             if episode_id is not None:
                 with step_lock:
                     step = episode_steps.get(episode_id, 0)
@@ -671,12 +718,16 @@ def native_generator_relay(record_dir: str | Path, bind: str = "0.0.0.0"):
                               episode_estimated_cost_usd=previous_cost, episode_cost_limit_usd=cost_limit)
                         self.send_json(402, {"error": {"type": reason, "message": "Episode budget cannot fund another request"}})
                         return
-                    raw, metrics = provider.query_raw(
-                        messages=payload["messages"], model_spec=MODEL_REGISTRY[model],
-                        native_effort=payload.get("reasoning_effort", "low"),
-                        max_tokens=payload.get("max_completion_tokens", payload.get("max_tokens", 1024)),
-                        tools=payload.get("tools"), stream=True,
-                    )
+                    try:
+                        raw, metrics = provider.query_raw(
+                            messages=payload["messages"], model_spec=MODEL_REGISTRY[model],
+                            native_effort=payload.get("reasoning_effort", "low"),
+                            max_tokens=payload.get("max_completion_tokens", payload.get("max_tokens", 1024)),
+                            tools=payload.get("tools"), stream=True,
+                        )
+                    except ProviderResponseError as exc:
+                        raw, metrics = exc.response, exc.metrics
+                        response_error = exc
                     cost = metrics["cost_usd"]
                     episode_cost = previous_cost + cost if previous_cost is not None and cost is not None else None
                     episode_costs[episode_id] = episode_cost
@@ -694,6 +745,12 @@ def native_generator_relay(record_dir: str | Path, bind: str = "0.0.0.0"):
                   episode_estimated_cost_usd=episode_cost, episode_cost_limit_usd=cost_limit,
                   model=metrics["request_model_id"], returned_model=metrics["returned_model_id"],
                   effort=metrics["native_effort"])
+            if response_error is not None:
+                write_atomic(record_dir / "provider_responses" / f"{request_id}.json",
+                             {"response": raw, "metrics": metrics})
+                self.send_json(502, {"error": {"type": str(response_error),
+                                              "message": "Provider response is not executable"}})
+                return
             if not payload.get("stream", False):
                 self.send_json(200, raw)
                 return
@@ -787,6 +844,8 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
         text = ""
         ttft = None
         event = ""
+        done_received = False
+        terminal_event = None
         for raw_line in response:
             line = raw_line.decode("utf-8").strip()
             if line.startswith("event:"):
@@ -795,6 +854,7 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
                 continue
             data = line[5:].strip()
             if data == "[DONE]":
+                done_received = True
                 break
             item = json.loads(data)
             kind = item.get("type", event)
@@ -808,12 +868,14 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
                 output[value.get("id") or value.get("call_id") or str(item.get("output_index", 0))] = value
             if kind in ("response.completed", "response.done", "response.incomplete"):
                 body = item.get("response", {})
+                terminal_event = kind
             if kind in ("error", "response.failed"):
                 raise RuntimeError(f"Provider stream ended with {kind}")
         if "output" not in body:
             body["output"] = list(output.values())
             if text:
                 body["output"].append({"type": "message", "role": "assistant", "content": [{"type": "output_text", "text": text}]})
+        body["_stream_end"] = {"done_received": done_received, "terminal_event": terminal_event}
         return body, ttft
 
     def generate(self, messages, model_spec, native_effort="none", max_tokens=1024, stream=True,

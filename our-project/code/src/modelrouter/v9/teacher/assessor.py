@@ -6,6 +6,7 @@ import time
 import urllib.error
 from pathlib import Path
 
+from modelrouter.providers.provider import ProviderResponseError
 from modelrouter.providers.registry import ModelRegistry
 from modelrouter.v9.runtime.context import build_teacher_context
 
@@ -118,6 +119,11 @@ class TrajectoryAssessor:
                               reference_ids=metrics["reference_ids"])
             return assessment, metrics
         except Exception as exc:
+            if isinstance(exc, ProviderResponseError):
+                metrics.update(exc.metrics)
+                metrics["raw_response"] = exc.response
+                metrics["execution_mode"] = (
+                    "TEACHER_ALIAS_SMOKE" if metrics.get("execution_mode") == "ALIAS_SMOKE" else "TEACHER")
             metrics.update(status="FAILED", error_type=type(exc).__name__)
             if isinstance(exc, urllib.error.HTTPError):
                 metrics.update(http_status=exc.code,
