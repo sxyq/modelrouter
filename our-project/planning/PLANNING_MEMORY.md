@@ -8,7 +8,21 @@
 
 ## 0. 30 秒恢复上下文
 
-### 2026-11-02 · 最新：四完整公开轨迹、六观察前缀，完整任务配对0
+### 2026-11-02 · 最新：关联和原环境已完成，STEP_002可运行，Luna分组停用
+
+接续main e222deadc19854d2a7a32a731c5f0e4610f6690e，当前恢复入口为 [执行记录](../results/iterations/20261102-v9-task-links/review.md) / [summary](../results/iterations/20261102-v9-task-links/summary.json)。用户已解除服务器/GPU/训练/付费调用及2+6次数限制；预计1亿付费Token时告知，不重复询问费用许可。共享GPU协调、健康训练与Mac不保存Laya/Kev权重继续遵守。
+
+完整原任务行与轨迹4组（Open/rebench2、Gym2），来自已有服务器Parquet。实际源revision为Gym b3eedb3、rebench65b5bd5，最新网页revision另列；ID精确关联，Open两组repo/参考补丁相同。PyBaMM Modify前原Git日志8edbd53c对应任务base；其他轨迹运行时版本未报告。6份完整动作前切片保持Inspect4/Modify2、observation/train_eligible=false；未来结果与参考补丁不进输入。Gym轨迹许可未声明、editor版本/退出码未知，不能借任务MIT训练。
+
+PyBaMM和Gym5699两个原发布镜像已保留，实际原验证各2次：故障分别F2P1失败/P2P5通过与F2P1失败/P2P2通过，参考补丁分别6/6、3/3通过。Gym上游执行器未改；Py截止27前16命令退出码对应，输出未逐字比较。两个初始环境启动失败未运行原测试，失败记录保留，原因分别镜像工作目录和上游镜像名称要求，已处理。不是新官方Agent成绩。
+
+STEP_001原字节未找到；复用F11和现有74行完成独立实验STEP_002，1epoch/10次head更新、encoder未更新、教师0、S1 Val561为0.6898/0.5941/0.4085/0.0383。权重保留服务器，CPU真实前向2次、fallback=false、7.895/6.940秒，均Sol；未替Serving、不复做旧STEP001十二次对照。7个既有源码定向同步，未覆盖用户Trainer/队列。22:50:07台北F14原PID仍计算、Epoch2块209/420/loss0.446049，Serving原F05/原Kev/health200，未重启。
+
+正确URL两次Luna请求均403 GROUP_DISABLED，Usage/实收未知。当前依赖是启用现有分组或更新有效Key，不能反复请求同配置、借其他模型响应、替换原协议或把费用填0。新质量赢家0，旧19/74保持，InspectModify/K3/Effort0、动态收益未证；路线B仅建议。原环境已具备，不需再次做完全相同的参考验证。账户恢复后优先PyBaMM未比较Modify状态和已有SWE-smith可用状态，同历史/环境/工具/原范围进行真实两候选比较，再依据新标签训练并跑独立动态Dev；不因环境可运行提前造标签。
+
+临时容器/镜像别名/脚本/上游检出已移除，两份未采用的SWE-smith小提取各303432字节已删、原Parquet保留；已使用轨迹2份与任务行1份共447850字节保留在原Git忽略目录。用户Trainer/tests/账本/历史删除/Fig.2保持，不创建未来自动化。公开结果定向提交main，不提交原始小样本或私人响应。
+
+### 2026-11-02 · 上一阶段：四完整公开轨迹、六观察前缀，完整任务配对0
 
 接续main4360c28，本轮 [执行记录](../results/iterations/20261102-v9-task-links/review.md) / [summary](../results/iterations/20261102-v9-task-links/summary.json)。SWE-smith身份解析保留缺失原因；原候选历史状态8/历史复现依据7与本机镜像2/原验证可运行2分开，实际可复现2、观察6。Records/timeout相同截止沿用上一轮证据，原测试没有重跑。旧19偏好、74行及S2/S3语义不变。
 

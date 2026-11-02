@@ -1,0 +1,90 @@
+{
+  "task_id": "getmoto__moto-5699",
+  "image": "xingyaoww/sweb.eval.x86_64.getmoto_s_moto-5699:latest",
+  "base_commit": "b4f59b771cc8a89976cbea8c889758c132d405d0",
+  "source_version": "b4f59b771cc8a89976cbea8c889758c132d405d0",
+  "source_version_exit_code": 0,
+  "scope": "ORIGINAL_TASK_ENVIRONMENT_NOT_AGENT_BENCHMARK",
+  "model_requests": 0,
+  "teacher_requests": 0,
+  "harness_repository": "https://github.com/SWE-Gym/SWE-Bench-Fork",
+  "harness_revision": "242429c188fcfd06aad13fce9a54d450470bf0ac",
+  "harness_modified": false,
+  "original_test_command": "pytest -n0 -rA tests/test_cloudfront/test_cloudfront_invalidation.py",
+  "original_verifier_runs": 2,
+  "official_report_files": {
+    "fault": "logs/run_evaluation/v9_environment_verified/original_fault/getmoto__moto-5699/report.json",
+    "reference": "logs/run_evaluation/v9_environment_verified/original_reference/getmoto__moto-5699/report.json"
+  },
+  "trajectory_license_train_permission": false,
+  "image_alias_scope": "SAME_PUBLISHER_IMAGE_NO_BUILD",
+  "original_fault": [
+    "getmoto__moto-5699",
+    {
+      "getmoto__moto-5699": {
+        "patch_is_None": false,
+        "patch_exists": true,
+        "patch_successfully_applied": true,
+        "resolved": false,
+        "tests_status": {
+          "FAIL_TO_PASS": {
+            "success": [],
+            "failure": [
+              "tests/test_cloudfront/test_cloudfront_invalidation.py::test_list_invalidations__no_entries"
+            ]
+          },
+          "PASS_TO_PASS": {
+            "success": [
+              "tests/test_cloudfront/test_cloudfront_invalidation.py::test_list_invalidations",
+              "tests/test_cloudfront/test_cloudfront_invalidation.py::test_create_invalidation"
+            ],
+            "failure": []
+          },
+          "FAIL_TO_FAIL": {
+            "success": [],
+            "failure": []
+          },
+          "PASS_TO_FAIL": {
+            "success": [],
+            "failure": []
+          }
+        }
+      }
+    }
+  ],
+  "original_reference": [
+    "getmoto__moto-5699",
+    {
+      "getmoto__moto-5699": {
+        "patch_is_None": false,
+        "patch_exists": true,
+        "patch_successfully_applied": true,
+        "resolved": true,
+        "tests_status": {
+          "FAIL_TO_PASS": {
+            "success": [
+              "tests/test_cloudfront/test_cloudfront_invalidation.py::test_list_invalidations__no_entries"
+            ],
+            "failure": []
+          },
+          "PASS_TO_PASS": {
+            "success": [
+              "tests/test_cloudfront/test_cloudfront_invalidation.py::test_list_invalidations",
+              "tests/test_cloudfront/test_cloudfront_invalidation.py::test_create_invalidation"
+            ],
+            "failure": []
+          },
+          "FAIL_TO_FAIL": {
+            "success": [],
+            "failure": []
+          },
+          "PASS_TO_FAIL": {
+            "success": [],
+            "failure": []
+          }
+        }
+      }
+    }
+  ],
+  "temporary_image_alias_removed": true
+}

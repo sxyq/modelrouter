@@ -1,6 +1,20 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-11-02 · 当前：本机可执行候选明确为2，四条公开轨迹仅新增观察
+## 2026-11-02 · 当前：四组完整任务关联、两项新原环境、STEP_002训练完成
+
+接续 main `e222deadc19854d2a7a32a731c5f0e4610f6690e`，最新事实见 [执行记录](../results/iterations/20261102-v9-task-links/review.md) / [summary](../results/iterations/20261102-v9-task-links/summary.json)。用户已解除服务器、GPU、训练、付费调用与原2+6请求数量限制；预计需要1亿付费Token时才告知。不再要求重复费用授权，仍遵守共享GPU协调和不中断健康训练。
+
+从服务器已有Parquet定向取得4条完整原任务行，Open-SWE/rebench与Gym/OpenHands各关联2组，共4独立任务、3仓库；没有整集下载。两rebench的ID/repo/参考补丁逐值一致，PyBaMM动作前Git日志前缀与任务版本一致；另外三轨迹未报告运行时Git版本，不能补造。Gym轨迹官方数据卡和文件树未声明许可，继续观察，不借任务MIT写入Trainer。
+
+新增两个发布者原镜像、4次原范围验证：PyBaMM故障F2P1失败/P2P5通过、参考补丁后6全通过；Gym moto-5699故障F2P1失败/P2P2通过、参考补丁后3全通过。Gym用未修改的官方SWE-Bench-Fork执行器。PyBaMM截止27前16条原工具命令已重放、退出码对应，未逐字比较输出；Gym editor版本和退出码仍未报告。这些是任务环境结果，不是Agent成绩或模型赢家。原Records/timeout证据沿用，没有重复执行。
+
+沿原Trainer从F11父权重完成 `V9_LAYA_STEP_002-e01`：74行、1轮、10次pointer head更新，encoder未更新、教师0；固定S1 Val561，Accuracy0.6898/Loss0.5941/Brier0.4085/ECE0.0383。权重仅在服务器，已保存且两次原Adapter真实CPU前向成功、fallback=false；前向7.895/6.940秒，均选Sol。原STEP_001字节未找回，新实验不冒充原实体，也未晋升Serving或证明动态收益。
+
+正确 `/v1/chat/completions` 路径两次Luna调用均HTTP403、`GROUP_DISABLED`，原响应为“API Key 所属分组已停用”；Usage和实收未知，不能填0。当前需要启用现有分组或更新有效Luna Key，不是接口拼接或费用许可问题。新质量比较/InspectModify赢家/动态Agent实验仍0，旧19偏好和74行不改，严格一步目标及路线B/K3/Effort定义未变。
+
+7个相关既有源码已定向同步服务器，没有覆盖用户Trainer或队列。22:50:07台北取样F14仍原PID、Epoch2第209/420块、loss0.446049，Serving原PID/F05/原Kev、health200；没有停止或重启。临时容器、镜像别名、脚本与上游临时检出已移除；删两份未采用的SWE-smith提取小样本各303432字节，原Parquet保留可重提。保留两个新原镜像和三份已使用小样本447850字节；私人凭据、账本、用户Trainer/tests、历史删除和Fig.2不提交。
+
+## 2026-11-02 · 上一阶段：本机可执行候选明确为2，四条公开轨迹仅新增观察
 
 接续 main `4360c28cc5e8b137cef77e713a3f6425ecdd4565`，本轮事实见 [任务与轨迹执行记录](../results/iterations/20261102-v9-task-links/review.md) / [summary](../results/iterations/20261102-v9-task-links/summary.json)。原位处理 SWE-smith 不完整任务身份、实际可执行分类和动作前消息字段保留。8 候选完整历史 8、历史复现依据 7，但本机精确镜像及原验证可运行只有 2；分类为可复现 2 / 观察 6，不把历史 7 当本机可执行 7。Records/timeout 沿用上一轮原环境结果，本轮不重复原测试。
 

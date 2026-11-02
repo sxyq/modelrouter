@@ -1,6 +1,21 @@
 # Laya / Kev 全历史训练研究报告
 
-## 2026-11-02 · 任务与轨迹新增观察，不增训练目标
+## 2026-11-02 · 当前执行：STEP_002完成，原训练目标不增加
+
+[执行记录](../iterations/20261102-v9-task-links/review.md) / [训练原记录](../iterations/20261102-v9-task-links/completion_execution/laya_step_training.json) / [真实CPU前向](../iterations/20261102-v9-task-links/completion_execution/step_cpu_forward.json)：原STEP_001权重未找到，沿原Trainer从F11-e01使用现有74行完成独立实验 `V9_LAYA_STEP_002-e01`，不冒充原checkpoint。
+
+| 项目 | 实际结果 |
+|---|---|
+| 输入 | 原64行S1+10条已有步骤，全74行实际消费；完整状态/能力输入74/74，教师0 |
+| 参数更新 | 1epoch，10次pointer head更新；encoder未更新，seed42，batch2×accum4，head_lr2e-5，max_len5120/head_max_len512 |
+| 固定S1 Val | 561项，Accuracy0.6898、Loss0.5941、Brier0.4085、ECE0.0383 |
+| GPU与保存 | epoch23.881秒，GPU峰值2486.88MiB；权重仅留服务器，model.safetensors842609220字节，checkpoint总846196996字节 |
+| 原Adapter实际前向 | Records/timeout两次，fallback=false，Sol概率0.5645/0.5890、Luna0.4355/0.4110；前向7.895/6.940秒，第二次复用同进程 |
+| 推广结论 | 只证明新权重可运行；新InspectModify标签0、动态收益未证，Serving未替换 |
+
+完整任务关联4组、两个新来源原环境已运行，但仍全为观察；正确URL两次Luna403 GROUP_DISABLED，Usage/实收未知，没有新成对质量比较。原19偏好、74行、Verify9/Recover1/InspectModify0及K3/Effort0保持；Gym轨迹许可未声明，不进Trainer。7个必要既有源码定向同步服务器，用户Trainer/队列未覆盖、健康F14/Serving未重启。授权已经解除原资源和2+6请求数量限制，当前缺有效Luna账户，不缺费用许可；预计1亿付费Token时才告知。旧训练与失败记录原样保留。
+
+## 2026-11-02 · 上一阶段：任务与轨迹新增观察，不增训练目标
 
 [本轮执行记录](../iterations/20261102-v9-task-links/review.md) / [summary](../iterations/20261102-v9-task-links/summary.json)：SWE-smith历史复现依据7与当前本机可执行2分开；新Open-SWE/Gym完整轨迹各2、Inspect4/Modify2共六完整动作前前缀，但完整原任务配对0、新环境实测0。Gym轨迹版本/许可未知，Open仅报告rebench任务来源，全部observation/train_eligible=false。既有Records/timeout原环境证据沿用，不重复执行。
 

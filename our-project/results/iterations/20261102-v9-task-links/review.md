@@ -1,5 +1,74 @@
 # ModelRouter V9 · 真实来源关联与动作前状态执行记录
 
+## 当前执行结果（接续 e222deadc19854d2a7a32a731c5f0e4610f6690e）
+
+任务关联、原环境和新STEP训练已完成；真实Sol/Luna比较仍因现有Key分组停用未执行。用户已解除服务器、GPU、训练、付费模型及原2+6请求次数限制；预计需要1亿付费Token时才告知，不重复请求费用授权。共享GPU协调及健康训练、Mac不保存Laya/Kev权重继续遵守。当前数字见 [summary.json](summary.json)，下方早期阶段数字仅为历史。
+
+### 1. 研究目标
+
+用真实Agent动作前状态及候选实际质量/成本训练动态Router。完整任务、公开成功轨迹、可运行环境和新的模型选择赢家分别统计；不将参考补丁或未来结果放入输入。
+
+### 2. 实际进度与修改对象
+
+从服务器保留的原Parquet定向提取4条完整任务行，没有整集下载。关联结果在 `our-project/code/data/v9/candidate_views/20261102-task-links/source_links.jsonl`；原6份切片不变、Inspect4/Modify2、全为观察，旧19条偏好与74行保留。
+
+| 关联 | 完整任务行/轨迹 | 实际版本依据 | 原环境结果 |
+|---|---:|---|---|
+| rebench/Open-SWE：argo-4594 | 1 | ID/repo/参考补丁相同，轨迹Git版本未报 | 本轮不运行 |
+| rebench/Open-SWE：pybamm-875 | 1 | ID/repo/参考补丁相同，动作前Git日志8edbd53c对应任务base | 新原镜像、2次原范围验证完成 |
+| Gym/OpenHands：moto-5321 | 1 | 精确ID和完整任务行，轨迹Git版本未报 | 本轮不运行 |
+| Gym/OpenHands：moto-5699 | 1 | 精确ID和完整任务行；当前原镜像完整base一致，不替代历史轨迹版本证据 | 新原镜像、2次官方原范围验证完成 |
+
+任务文件来自原下载记录的Gym revision `b3eedb3ea0f3ff984919be1f2d98be633f368d2b`、rebench `65b5bd5b05f06b65abbe746b3b279884bf4c2ca8`；最新网页revision另列，不冒充原文件版本。Open轨迹CC-BY-4.0，原仓库许可分别保留。Gym轨迹官方数据卡/文件树无许可声明，不能用任务MIT或执行器代码Apache-2.0代替，继续研究观察。
+
+| 实际原验证 | 故障版本 | 参考补丁版本 | 证据 |
+|---|---|---|---|
+| PyBaMM，原 `tests/unit/test_util.py` 范围 | F2P1失败、P2P5通过 | 原6项全通过 | [原命令与结果](completion_execution/pybamm/observation.json) |
+| Gym moto-5699，原cloudfront范围 | F2P1失败、P2P2通过 | 原3项全通过 | [官方报告引用](completion_execution/gym/observation.json) |
+
+Gym使用上游 [SWE-Bench-Fork](https://github.com/SWE-Gym/SWE-Bench-Fork) revision `242429c188fcfd06aad13fce9a54d450470bf0ac` 的原TestSpec/run_instance，没有改源程序。发布镜像同一实体以临时名称供上游使用，没有另建镜像；名称已清理。PyBaMM以镜像原 `/PyBaMM` 恢复独立 `/testbed`，重放截止27前16个原命令、实际退出码与记录对应，未逐字比较输出。Gym editor版本/退出码仍未报，不声称全部历史环境完全恢复。两次初始启动失败未执行原测试，原失败记录保留；原因分别是工作目录与上游镜像名称要求，已在当前执行中处理。以上是任务环境验证，不是官方Agent Benchmark成绩或Sol/Luna赢家。Records/timeout旧四次原验证不重复。
+
+原STEP_001字节未找到；沿原Trainer从F11-e01和现有74行完成独立新实验STEP_002，不冒充原checkpoint。
+
+| 训练与前向 | 实际值 |
+|---|---|
+| 新checkpoint | `V9_LAYA_STEP_002-e01`，权重仅在服务器原runs目录，未替换Serving |
+| 更新 | 1epoch、10次pointer head更新；encoder未更新、教师0、74行实际消费 |
+| 固定S1 Val561 | Accuracy0.6898、Loss0.5941、Brier0.4085、ECE0.0383 |
+| GPU与保存 | epoch23.881秒、峰值2486.88MiB；checkpoint总846196996字节 |
+| 两次原Adapter CPU前向 | Records Sol/Luna0.5645/0.4355；timeout0.5890/0.4110；fallback=false，前向7.895/6.940秒 |
+
+原记录见 [训练](completion_execution/laya_step_training.json) / [CPU前向](completion_execution/step_cpu_forward.json)。第二次复用同一原进程；未复做旧STEP001十二次对照，没有新旧实体混淆或动态收益结论。
+
+正确URL `https://www.jiji.cc/v1/chat/completions` 两次Luna分别stream开/关，均HTTP403、`GROUP_DISABLED`，原响应“API Key 所属分组已停用”。[脱敏结果](completion_execution/provider_validation.json)保留Usage/实收未知，不填0，不重复同配置调用。当前正式本机凭据即该停用Key，服务器同路径无另一套凭据。新生成动作/成对质量比较/InspectModify赢家/动态Agent实验均0；不是旧URL拼接问题或模型质量失败。
+
+7个相关既有源码定向同步服务器，保留用户Trainer与队列；22:50:07台北取样F14原进程仍计算、Epoch2块209/420、loss0.446049，Serving原F05/原Kev、health200。没有停止健康训练、重启服务、改Serving权重或创建未来自动化。
+
+### 3. 还剩四项核心研究工作
+
+1. 取得未比较Inspect/Modify同状态的真实两候选质量结果，并按原一步目标产生合法标签；数量由实际结果决定，不能承诺必有赢家。
+2. 新标签实际出现后沿原Trainer训练，分别衡量新步骤选择和旧固定Val；本轮STEP002只用了原74行。
+3. 在独立Dev开展固定候选与动态Router原协议比较，记录完整失败用量、教师和Router开销，测量质量/成本净收益。
+4. 汇集上述可比较证据完成论文主要结果；K3/应用Effort仍缺真实目标，不随本轮观察自动扩展定义。
+
+Gym许可与其历史版本需发布者资料支持，不能自行补造；原STEP001字节未恢复，但当前STEP运行能力已由STEP002重建。当前最直接外部依赖是有效Luna Key，不是新增费用授权。
+
+### 4. 接下来的三项具体执行
+
+第一：启用现有Key分组或在原私人配置中填入有效Luna Key；账户状态改变后沿原正确Provider路径取得完整动作，旧Sol8192探测不重做。第二：优先PyBaMM未比较Modify截止与已有SWE-smith可运行未比较状态，同历史/环境/工具/固定原范围开展成对生成，教师关闭。第三：只有实际合法标签出现才增加训练材料并接续原Trainer，然后用独立Dev比较，不把环境参考结果当训练目标。
+
+### 5. 执行建议及真实依赖
+
+优先rebench/Open-SWE的PyBaMM：任务行、动作前Git依据、原bash历史和6项原验证已具备，许可明确，比当前Gym观察更适合继续质量比较。已有Records/timeout镜像继续保留但不复采原失败前缀。账号恢复后值得开展必要付费比较；目前403重复调用不能推进研究。STEP002已完成，不为原标签再重复训练。早期Inspect读取是否能被一步全任务通过目标区分仍是探索问题，本轮无新模型前后结果，不能量化损失或自动采用路线B；原严格一步目标、Q-ID和研究方法未改。
+
+### 6. 通俗结论与清理
+
+数据现在更有用：4组原任务已关联，两个新环境真正能跑，STEP新权重也能用；新的可信赢家仍0，Router是否学到新的动态选择依据尚未证明。后两项没有被宣布技术不可行，当前质量实验只因账户停用未执行。
+
+临时容器、两个镜像别名、6个脚本和上游临时源码检出已移除。删未采用的SWE-smith提取小样本Mac/服务器各303432字节，可从原Parquet重提；原数据、失败、两个新原镜像保留。已使用轨迹2份+任务行1份共447850字节留原Git忽略目录，任务行版本元字段已同步服务器。公开只提交脱敏引用、训练/环境结果和必要规划，不提交原始小样本、参考patch、私人响应/凭据/账本或用户Trainer/tests/历史删除/Fig.2。
+
+## 上一阶段记录（权限解除前，以下不代表当前执行状态）
+
 接续 main `4360c28cc5e8b137cef77e713a3f6425ecdd4565`。本轮完成已有清洗问题处理、四条公开完整轨迹读取和六份动作前观察前缀提取；完整任务配对、新来源环境实测、新赢家与训练均为 0。结构化数字见 [summary.json](summary.json)。
 
 ## 1. 研究目标与实际范围

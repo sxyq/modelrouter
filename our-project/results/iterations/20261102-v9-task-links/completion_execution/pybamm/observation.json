@@ -1,0 +1,143 @@
+{
+  "task_id": "pybamm-team__pybamm-875",
+  "base_commit": "8edbd53cf8f866b0d5c4af2e98be197c3fa18208",
+  "image": "docker.io/swerebenchv2/pybamm-team-pybamm:875-8edbd53",
+  "model_requests": 0,
+  "teacher_requests": 0,
+  "scope": "ORIGINAL_TASK_ENVIRONMENT_NOT_AGENT_BENCHMARK",
+  "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/unit/test_util.py",
+  "FAIL_TO_PASS": [
+    "tests/unit/test_util.py::TestSearch::test_url_gets_to_stdout"
+  ],
+  "PASS_TO_PASS": [
+    "tests/unit/test_util.py::TestUtil::test_fuzzy_dict",
+    "tests/unit/test_util.py::TestUtil::test_get_parameters_filepath",
+    "tests/unit/test_util.py::TestUtil::test_infinite_nested_dict",
+    "tests/unit/test_util.py::TestUtil::test_load_function",
+    "tests/unit/test_util.py::TestUtil::test_rmse"
+  ],
+  "container_id": "bfd194e9125cdc8c6ecac07f2ba30c9b25af363482dedcb9ab0e64e3d9bedb5a",
+  "source_image_directory": "/PyBaMM",
+  "source_version": {
+    "returncode": 0,
+    "output": "8edbd53cf8f866b0d5c4af2e98be197c3fa18208\n"
+  },
+  "runtime_import": {
+    "returncode": 0,
+    "output": "3.10.19 (main, Dec 30 2025, 00:42:16) [GCC 14.2.0]\n/PyBaMM/pybamm/__init__.py\n"
+  },
+  "recorded_workspace_init": {
+    "returncode": 0,
+    "output": ""
+  },
+  "history_replay": [
+    {
+      "command": "ls -la /testbed",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "find /testbed -name \"util.py\" -path \"*pybamm*\" | head -20",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "grep -n \"class FuzzyDict\" -A 100 /testbed/pybamm/util.py | head -150",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "grep -n \"FuzzyDict\\|_dict_items\" /testbed/pybamm/parameters/parameter_values.py | head -30",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "sed -n '1,130p' /testbed/pybamm/parameters/parameter_values.py",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "grep -rn \"search\" /testbed/tests/ | head -30",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "grep -rn \"search\" /testbed/pybamm/ | head -30",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "find /testbed/tests -name \"test_util.py\" -o -name \"test_parameter_values.py\" | head",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "grep -rn \"FuzzyDict\" /testbed/tests/ /testbed/pybamm/ | head -20",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "sed -n '70,110p' /testbed/tests/unit/test_util.py",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "sed -n '1,60p' /testbed/tests/unit/test_parameters/test_parameter_values.py",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "cd /testbed && git log --oneline -5 && git status",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "sed -n '1,25p' /testbed/pybamm/util.py",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "sed -n '1,60p' /testbed/CHANGELOG.md",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "grep -n \"def \" /testbed/pybamm/parameters/parameter_values.py | head -40",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    },
+    {
+      "command": "cat > /tmp/repro.py << 'EOF'\nimport pybamm\n\n# Test FuzzyDict.search\nd = pybamm.FuzzyDict({\"test param\": 1, \"another test\": 2, \"xyz\": 3})\ntry:\n    d.search(\"test\")\n    print(\"--- FuzzyDict.search exists (print_values=False) ---\")\nexcept AttributeError as e:\n    print(\"FuzzyDict.search missing:\", e)\n\ntry:\n    d.search(\"bad var\")\n    print(\"--- FuzzyDict.search no-match case ---\")\nexcept AttributeError as e:\n    print(\"FuzzyDict.search missing:\", e)\n\n# Test ParameterValues.search\nparam = pybamm.ParameterValues({\"a\": 1, \"another parameter\": 2, \"xyz\": 3})\ntry:\n    param.search(\"parameter\")\n    print(\"--- ParameterValues.search exists ---\")\nexcept AttributeError as e:\n    print(\"ParameterValues.search missing:\", e)\nEOF\ncd /testbed && python /tmp/repro.py",
+      "recorded_exit_code": 0,
+      "actual_exit_code": 0
+    }
+  ],
+  "test_patch_apply": {
+    "returncode": 0,
+    "output": ""
+  },
+  "fault_verifier_exit_code": 1,
+  "fault_statuses": {
+    "tests/unit/test_util.py::TestSearch::test_url_gets_to_stdout": "FAILED",
+    "tests/unit/test_util.py::TestUtil::test_fuzzy_dict": "PASSED",
+    "tests/unit/test_util.py::TestUtil::test_get_parameters_filepath": "PASSED",
+    "tests/unit/test_util.py::TestUtil::test_infinite_nested_dict": "PASSED",
+    "tests/unit/test_util.py::TestUtil::test_load_function": "PASSED",
+    "tests/unit/test_util.py::TestUtil::test_rmse": "PASSED"
+  },
+  "reference_patch_apply": {
+    "returncode": 0,
+    "output": ""
+  },
+  "reference_verifier_exit_code": 0,
+  "reference_statuses": {
+    "tests/unit/test_util.py::TestSearch::test_url_gets_to_stdout": "PASSED",
+    "tests/unit/test_util.py::TestUtil::test_fuzzy_dict": "PASSED",
+    "tests/unit/test_util.py::TestUtil::test_get_parameters_filepath": "PASSED",
+    "tests/unit/test_util.py::TestUtil::test_infinite_nested_dict": "PASSED",
+    "tests/unit/test_util.py::TestUtil::test_load_function": "PASSED",
+    "tests/unit/test_util.py::TestUtil::test_rmse": "PASSED"
+  },
+  "status": "ORIGINAL_COMMAND_EXECUTED",
+  "container_removed": true
+}

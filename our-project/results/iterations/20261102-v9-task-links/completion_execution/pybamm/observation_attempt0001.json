@@ -1,0 +1,31 @@
+{
+  "task_id": "pybamm-team__pybamm-875",
+  "base_commit": "8edbd53cf8f866b0d5c4af2e98be197c3fa18208",
+  "image": "docker.io/swerebenchv2/pybamm-team-pybamm:875-8edbd53",
+  "model_requests": 0,
+  "teacher_requests": 0,
+  "scope": "ORIGINAL_TASK_ENVIRONMENT_NOT_AGENT_BENCHMARK",
+  "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/unit/test_util.py",
+  "FAIL_TO_PASS": [
+    "tests/unit/test_util.py::TestSearch::test_url_gets_to_stdout"
+  ],
+  "PASS_TO_PASS": [
+    "tests/unit/test_util.py::TestUtil::test_fuzzy_dict",
+    "tests/unit/test_util.py::TestUtil::test_get_parameters_filepath",
+    "tests/unit/test_util.py::TestUtil::test_infinite_nested_dict",
+    "tests/unit/test_util.py::TestUtil::test_load_function",
+    "tests/unit/test_util.py::TestUtil::test_rmse"
+  ],
+  "container_id": "850bca9dcd8b58e09c9f121492c0dcf7f470cd357faeac4c94568355b4ba6736",
+  "source_version": {
+    "returncode": 127,
+    "output": "OCI runtime exec failed: exec failed: unable to start container process: chdir to cwd (\"/testbed\") set in config.json failed: no such file or directory\n"
+  },
+  "runtime_import": {
+    "returncode": 127,
+    "output": "OCI runtime exec failed: exec failed: unable to start container process: chdir to cwd (\"/testbed\") set in config.json failed: no such file or directory\n"
+  },
+  "status": "ENVIRONMENT_NOT_REPRODUCED",
+  "error": "Exact source version differs from the original task",
+  "container_removed": true
+}

@@ -1,0 +1,129 @@
+{
+  "records": [
+    {
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "state_source": "our-project/results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/A1/decision_prefix.json",
+      "generation_requests": 0,
+      "router_result": {
+        "request_id": "7caabd9d-639f-4614-b782-ab72a417433e",
+        "router_family": "laya",
+        "checkpoint_id": "V9_LAYA_STEP_002-e01",
+        "selected_action": {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        },
+        "ranked_actions": [
+          {
+            "action": {
+              "provider": "openai",
+              "model": "gpt-6.1-sol",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "gpt-6.1-sol:low",
+              "pool": "Reasoning"
+            },
+            "score": 0.5645,
+            "probability": 0.5645
+          },
+          {
+            "action": {
+              "provider": "jiji",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "gpt-6-luna:low",
+              "pool": "Reasoning"
+            },
+            "score": 0.4355,
+            "probability": 0.4355
+          }
+        ],
+        "decision_latency_ms": 37576.587334042415,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "confidence": 0.012,
+        "inference_latency_ms": 7895.134320482612,
+        "router_identity": {
+          "router_run_id": "V9_LAYA_STEP_002",
+          "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_002/checkpoints/epoch_01",
+          "router_initialization_ms": 28943.66981461644,
+          "router_process_reused": false,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+        }
+      }
+    },
+    {
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "state_source": "our-project/results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/A2/decision_prefix.json",
+      "generation_requests": 0,
+      "router_result": {
+        "request_id": "4f04bb44-78b4-42cf-8b8a-1f45bf44c32b",
+        "router_family": "laya",
+        "checkpoint_id": "V9_LAYA_STEP_002-e01",
+        "selected_action": {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        },
+        "ranked_actions": [
+          {
+            "action": {
+              "provider": "openai",
+              "model": "gpt-6.1-sol",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "gpt-6.1-sol:low",
+              "pool": "Reasoning"
+            },
+            "score": 0.589,
+            "probability": 0.589
+          },
+          {
+            "action": {
+              "provider": "jiji",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "gpt-6-luna:low",
+              "pool": "Reasoning"
+            },
+            "score": 0.411,
+            "probability": 0.411
+          }
+        ],
+        "decision_latency_ms": 6952.006582985632,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "confidence": 0.023,
+        "inference_latency_ms": 6940.062342211604,
+        "router_identity": {
+          "router_run_id": "V9_LAYA_STEP_002",
+          "router_weights_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_002/checkpoints/epoch_01",
+          "router_initialization_ms": 0.0,
+          "router_process_reused": true,
+          "router_question_id": "step_model_preference",
+          "router_candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ],
+          "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+          "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+        }
+      }
+    }
+  ],
+  "scope": "ACTUAL_NEW_CHECKPOINT_FORWARD_NOT_DYNAMIC_AGENT_RESULT"
+}
