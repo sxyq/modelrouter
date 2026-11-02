@@ -1,5 +1,15 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-03 · 当前：Luna仍403，PyBaMM保留Test，两新Modify状态已恢复
+
+接续main `351399b543012257f95c15f69f7b43c5be32e19c`，最新事实见 [执行记录](../results/iterations/20261103-v9-quality-supervision/review.md) / [summary](../results/iterations/20261103-v9-quality-supervision/summary.json)。本轮正确URL一次Luna流式请求仍403 GROUP_DISABLED，无完整动作，Usage/费用未知；未追加非流式、Sol、工具或原验证。私人配置未更新且无另一套有效Luna配置，当前需要有效账户，不缺费用授权。
+
+只读查询现有V2.1来源引用发现：PyBaMM875为Test/L3、30条任务引用，当前同trajectory_id存在，不能转为Train；Argo4594为Train/L2、121条，但本机原镜像不存在。原两个链接和六前缀只补保留分割与来源资格，仍observation/train_eligible=false。Gym许可仍未知；PyBaMM上一轮原环境结果有效，但Train推荐不再沿用，不重新划分保留任务。
+
+复用原准备入口恢复两个不同于旧Sol失败前缀的真实Luna历史：Records cutoff12/5生成/5工具/2错误，async-timeout cutoff8/3生成/3工具/0错误；原事件均modify，截止前未改源码，当前动作/未来反馈/最终结果不进输入。两条保留Train身份，原24/32项及已有镜像沿用；恢复只是内存canonical状态，容器重放/新质量比较0，没有新增赢家或Trainer目标。原19偏好/74行保持，有效InspectModify/K3/Effort仍0。
+
+本轮新训练、权重加载、CPU前向、GPU、动态Dev均0；STEP002原训练与前向不重做，Serving/F14及用户Trainer/tests/私人账本未操作。不因账户不可用而制造STEP003。局部进展和“读取动作→固定Sol一次修复→原范围”的Inspect信息价值设计仅建议，不改一步目标或研究方法。后续顺序为有效Luna账户→两个真正Train的未比较Modify状态→合法新标签后训练/独立动态Dev。
+
 ## 2026-11-02 · 当前：四组完整任务关联、两项新原环境、STEP_002训练完成
 
 接续 main `e222deadc19854d2a7a32a731c5f0e4610f6690e`，最新事实见 [执行记录](../results/iterations/20261102-v9-task-links/review.md) / [summary](../results/iterations/20261102-v9-task-links/summary.json)。用户已解除服务器、GPU、训练、付费调用与原2+6请求数量限制；预计需要1亿付费Token时才告知。不再要求重复费用授权，仍遵守共享GPU协调和不中断健康训练。

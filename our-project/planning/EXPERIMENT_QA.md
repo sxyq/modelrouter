@@ -8,6 +8,10 @@
 
 ## 0. 阶段入口与决策规则
 
+**11-03最新执行与分割依据**：[执行记录](../results/iterations/20261103-v9-quality-supervision/review.md)确认一次正确URL流式Luna仍403 GROUP_DISABLED、Usage/费用未知，无完整生成，未追加非流式或Sol。费用权限已足够，预计1亿付费Token才告知；当前缺有效账户，不能自行猜Key/改服务商权限。现有V2.1来源引用中PyBaMM875为Test/L3/30任务引用、Argo4594为Train/L2/121，精确trajectory_id示例对应原轨迹；PyBaMM不可用于新Train标签，上轮Train推荐不沿用，Argo无本机原镜像。原来源视图仍观察，Gym许可未知。
+
+原准备入口恢复两个不同旧Sol前缀的真正Train/Modify状态：Records Luna cutoff12、async-timeout Luna cutoff8；完整原切片只在内存恢复，原事件阶段不改、截止前未编辑源码、旧比较精确历史匹配0。原24/32项及镜像证据沿用，本轮质量对照/原测试/新赢家/训练/Dev0，旧19/74保持，不训练STEP003。严格一步含义不变；局部修复进展须固定ID/完整状态/修复集合可比较且无新P2P回归，读取信息价值建议同一初始代码及公共前缀、两候选读取后交固定Sol一次修复、原范围评价及全费用。两者尚未成为新目标，不混S1或Trainer，不新增Q-ID。后续优先有效Luna和上述两Train状态，而非将PyBaMM Test转Train。
+
 **11-02继续执行的最新事实与权限**：用户明确解除服务器/GPU/训练/付费调用和原2+6请求次数限制，预计1亿付费Token时才告知；无需再次费用授权，不中断健康训练。最新 [执行记录](../results/iterations/20261102-v9-task-links/review.md) 已完成4组完整原任务行关联、两个新原镜像/4次原验证；PyBaMM故障1失败5通过、参考6全通过，Gym5699故障1失败2通过、参考3全通过，Gym官方执行器未改。Py动作前Git前缀确认、16原工具命令退出码对应；其他轨迹运行时版本和Gym许可仍未报告，不补造。原Records/timeout证据不重复。
 
 复用原Trainer/F11/74行完成STEP_002，1轮10次head更新，encoder未更新、教师0；固定Val561为Accuracy0.6898/Loss0.5941/Brier0.4085/ECE0.0383，权重服务器已保存，两次真实CPU前向fallback=false。这是新实验恢复可运行能力，原STEP001字节未找回；不晋升Serving或宣称InspectModify已学会。正确URL两次Luna均403 GROUP_DISABLED、Usage/实收未知，需要启用现有分组或有效Key。新质量赢家/动态Agent实验0，旧19/74和一步目标保持，路线B/K3/Effort没有新决定，不新增Q-ID。优先PyBaMM真实Modify比较的建议取决于账户可用和原协议，不将建议自动视为研究路线。

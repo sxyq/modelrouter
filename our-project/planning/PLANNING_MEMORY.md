@@ -8,6 +8,16 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-11-03 · 最新：原分割明确，两个未比较Modify状态，Luna账户仍停用
+
+接续main351399b543012257f95c15f69f7b43c5be32e19c；[执行记录](../results/iterations/20261103-v9-quality-supervision/review.md) / [summary](../results/iterations/20261103-v9-quality-supervision/summary.json)。本任务资源/付费授权继续有效，预计约1亿付费Token才告知，不是预算或用量目标。一次原Provider正确路径流式Luna请求仍403 GROUP_DISABLED，Usage/实收未知，无完整生成；不追加非流式、Sol或同配置请求。私人配置mtime未变、无分组列表/另一有效Luna配置，不创建凭据或改服务商权限。
+
+服务器现有V2.1/by_source/TRA-001引用按精确ID查询：PyBaMM875为test/L3/30任务引用，Argo4594为train/L2/121；返回示例trajectory_id对应本机两轨迹。PyBaMM不能因为原数据文件含train或环境通过进入Train，上轮Train推荐不沿用；Argo来源辅助资格不等于质量赢家，本机原镜像缺失，不大量下载。原source_links/prefix_states补保留分割字段、原split仍observation/train_eligible=false；Gym许可未声明继续观察。没有读保留Test答案或分数作筛选、新分割或重建质量体系。
+
+新状态引用code/data/v9/candidate_views/20261103-quality-supervision/selected_states.jsonl：Records t18-records-luna-low cutoff12/5生成/5工具/2错误、事件22；async-timeout t15-async-timeout-luna-low cutoff8/3生成/3工具/0错误、事件14。原阶段均modify，保持Train、教师关、截止前源码未改，原24/32测试和镜像保留；与已知比较精确历史匹配0，不复采旧Sol前缀。原入口实际恢复内存状态2，没有完整消息副本、容器重放、模型动作或新测试结果，不称已完成两组真实对照。
+
+新合法赢家/InspectModify标签/训练/动态Dev0；旧19/74及STEP002保持，不用旧74再训练STEP003，不替Serving或重训Kev/F14。服务器只读分割查询，未重新取服务实时状态；用户Trainer/tests/账本/历史删除/Fig.2保留。局部修复集合和相同固定Sol后续一次修复的Inspect设计仅建议，不改原STEP_LEVEL_PREFERENCE/S1/Trainer或新增方法决定。有效Luna账户恢复后优先两真正Train的未比较Modify状态，再依据真实新标签训练和独立Dev；无费用再授权需求。
+
 ### 2026-11-02 · 最新：关联和原环境已完成，STEP_002可运行，Luna分组停用
 
 接续main e222deadc19854d2a7a32a731c5f0e4610f6690e，当前恢复入口为 [执行记录](../results/iterations/20261102-v9-task-links/review.md) / [summary](../results/iterations/20261102-v9-task-links/summary.json)。用户已解除服务器/GPU/训练/付费调用及2+6次数限制；预计1亿付费Token时告知，不重复询问费用许可。共享GPU协调、健康训练与Mac不保存Laya/Kev权重继续遵守。

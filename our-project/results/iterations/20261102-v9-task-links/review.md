@@ -1,5 +1,7 @@
 # ModelRouter V9 · 真实来源关联与动作前状态执行记录
 
+> 2026-11-03新依据：[本轮分割与质量推进](../20261103-v9-quality-supervision/review.md)确认现有V2.1将PyBaMM875保留为Test（30条任务引用）、Argo4594为Train（121条）。下方推荐PyBaMM作Train比较时尚未取得这一依据，不能沿用该推荐改变原分割。环境结果和STEP002训练事实不变；本轮一次Luna请求仍403，没有新标签或训练。
+
 ## 当前执行结果（接续 e222deadc19854d2a7a32a731c5f0e4610f6690e）
 
 任务关联、原环境和新STEP训练已完成；真实Sol/Luna比较仍因现有Key分组停用未执行。用户已解除服务器、GPU、训练、付费模型及原2+6请求次数限制；预计需要1亿付费Token时才告知，不重复请求费用授权。共享GPU协调及健康训练、Mac不保存Laya/Kev权重继续遵守。当前数字见 [summary.json](summary.json)，下方早期阶段数字仅为历史。
