@@ -1,0 +1,41 @@
+{
+  "output": "F.......................                                                 [100%]\n=================================== FAILURES ===================================\n_________________________ test_issue69[sqlite_memory] __________________________\n\ndb = <Database open=True>\n\n    def test_issue69(db):\n>       db.query(\"CREATE table users (id text)\")\n\ntests/test_69.py:2: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nrecords.py:315: in query\n    return conn.query(query, fetchall, **params)\nrecords.py:386: in query\n    keys = cursor.keys()\n/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/result.py:901: in keys\n    return self._metadata.keys\n/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py:1369: in keys\n    self._we_dont_return_rows()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <sqlalchemy.engine.cursor._NoResultMetaData object at 0x7ffffd5d0c40>\nerr = None\n\n    def _we_dont_return_rows(self, err=None):\n>       raise exc.ResourceClosedError(\n            \"This result object does not return rows. \"\n            \"It has been closed automatically.\"\n        ) from err\nE       sqlalchemy.exc.ResourceClosedError: This result object does not return rows. It has been closed automatically.\n\n/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py:1341: ResourceClosedError\n=========================== short test summary info ============================\nFAILED tests/test_69.py::test_issue69[sqlite_memory] - sqlalchemy.exc.Resourc...\n1 failed, 23 passed in 0.28s\n",
+  "returncode": 1,
+  "exception_info": "",
+  "command": "python -m pytest -q 'tests/test_69.py::test_issue69[sqlite_memory]' tests/test_records.py::TestRecordCollection::test_iter tests/test_records.py::TestRecordCollection::test_next tests/test_records.py::TestRecordCollection::test_iter_and_next tests/test_records.py::TestRecordCollection::test_multiple_iter tests/test_records.py::TestRecordCollection::test_slice_iter tests/test_records.py::TestRecordCollection::test_all_returns_a_list_of_records tests/test_records.py::TestRecordCollection::test_first_returns_a_single_record tests/test_records.py::TestRecordCollection::test_first_defaults_to_None tests/test_records.py::TestRecordCollection::test_first_default_is_overridable tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_subclass tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_instance tests/test_records.py::TestRecordCollection::test_one_returns_a_single_record tests/test_records.py::TestRecordCollection::test_one_defaults_to_None tests/test_records.py::TestRecordCollection::test_one_default_is_overridable tests/test_records.py::TestRecordCollection::test_one_raises_when_more_than_one tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_subclass tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_instance tests/test_records.py::TestRecordCollection::test_scalar_returns_a_single_record tests/test_records.py::TestRecordCollection::test_scalar_defaults_to_None tests/test_records.py::TestRecordCollection::test_scalar_default_is_overridable tests/test_records.py::TestRecordCollection::test_scalar_raises_when_more_than_one tests/test_records.py::TestRecord::test_record_dir tests/test_records.py::TestRecord::test_record_duplicate_column",
+  "counts": {
+    "failed": 1,
+    "passed": 23
+  },
+  "expected_test_count": 24,
+  "trusted_result": true,
+  "resolved": false,
+  "test_states": {
+    "tests/test_69.py::test_issue69[sqlite_memory]": "FAIL",
+    "tests/test_records.py::TestRecordCollection::test_iter": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_next": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_iter_and_next": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_multiple_iter": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_slice_iter": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_all_returns_a_list_of_records": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_first_returns_a_single_record": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_first_defaults_to_None": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_first_default_is_overridable": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_subclass": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_instance": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_one_returns_a_single_record": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_one_defaults_to_None": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_one_default_is_overridable": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_one_raises_when_more_than_one": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_subclass": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_instance": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_scalar_returns_a_single_record": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_scalar_defaults_to_None": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_scalar_default_is_overridable": "PASS",
+    "tests/test_records.py::TestRecordCollection::test_scalar_raises_when_more_than_one": "PASS",
+    "tests/test_records.py::TestRecord::test_record_dir": "PASS",
+    "tests/test_records.py::TestRecord::test_record_duplicate_column": "PASS"
+  },
+  "test_state_basis": "FIXED_SELECTED_IDS_AND_COMPLETE_PYTEST_FAILURE_SUMMARY",
+  "elapsed_ms": 2853.731165989302
+}

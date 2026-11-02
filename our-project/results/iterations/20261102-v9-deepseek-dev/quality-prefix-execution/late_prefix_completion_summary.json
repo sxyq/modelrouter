@@ -1,0 +1,262 @@
+{
+  "finished_at_taipei": "2026-11-02T15:21:35.920265+08:00",
+  "execution_result": "LIMITED_REQUESTS_AND_VERIFIERS_COMPLETED_NO_QUALIFIED_PREFERENCE",
+  "counts": {
+    "model_requests": 4,
+    "recorded_response_identities_matched": 4,
+    "usage_reported": 2,
+    "usage_missing": 2,
+    "native_steps_with_executable_actions": 1,
+    "candidate_tool_calls": 1,
+    "format_error_candidates": 3,
+    "original_verifier_runs": 6,
+    "trusted_original_verifier_results": 6,
+    "valid_same_condition_preference_pairs": 0,
+    "new_model_only_preferences": 0,
+    "new_native_effort_targets": 0,
+    "new_k3_targets": 0,
+    "new_training_runs": 0,
+    "new_full_agent_episodes": 0,
+    "existing_train_tasks_attempted": 2,
+    "repositories": 2,
+    "new_source_tasks": 0,
+    "cumulative_model_only_preferences": 19,
+    "cumulative_task_preferences": 9,
+    "cumulative_step_preferences": 10,
+    "targeted_training_rows": 74
+  },
+  "cost": {
+    "known_model_rate_cost_usd": 0.112037,
+    "full_model_rate_cost_usd": null,
+    "known_model_rate_cost_usd_by_model": {"gpt-6.1-sol": 0.112037, "gpt-6-luna": null},
+    "teacher_cost_usd": 0,
+    "supplier_actual_billed_cost_usd": null,
+    "tool_container_resource_cost_usd": null,
+    "unknown_model_rate_requests": 2,
+    "basis": "REAL_REQUEST_MODEL_RATES_WITH_REPORTED_USAGE_NOT_AN_INVOICE"
+  },
+  "known_usage": {
+    "prompt_tokens": 24604,
+    "completion_tokens": 5053,
+    "reasoning_tokens": 4374,
+    "cached_tokens": 0,
+    "cache_write_tokens": 24598,
+    "scope": "TWO_SOL_REQUESTS_ONLY_LUNA_USAGE_UNKNOWN",
+    "reasoning_included_in_completion": true
+  },
+  "timing": {
+    "generator_latency_ms_sum": 480730.64045910724,
+    "candidate_tool_latency_ms_sum": 2321.8291249359027,
+    "image_pull_latency_ms": null,
+    "router_model_forward_count": 0
+  },
+  "environment_and_cleanup": {
+    "exact_source_images_pulled": 2,
+    "platform": "linux/amd64",
+    "new_initial_or_branch_images_built": 0,
+    "containers_created": 6,
+    "containers_removed": 6,
+    "docker_containers_remaining": 0,
+    "docker_source_images_retained": 2,
+    "docker_image_storage_reported": "6.503GB",
+    "docker_build_cache_bytes": 0,
+    "backups_created": 0,
+    "generated_bytecode_and_package_metadata_files_removed": 28,
+    "retained_case_evidence_files": 59,
+    "retained_case_evidence_bytes": 2312129,
+    "temporary_drivers_or_builds_retained": 0,
+    "model_weights_downloaded": false
+  },
+  "quality_progress": {
+    "fixed_test_ids_before_and_after_recorded": true,
+    "repaired_original_tests": 0,
+    "new_original_test_regressions": 0,
+    "partial_progress_labels_created": 0,
+    "route_b_definition_approved": false
+  },
+  "limitations": [
+    "All six verifier outputs are trusted, but only Records Sol produced a complete native Agent action.",
+    "Both Luna responses have matching model strings but empty assistant content, no tool call, no finish reason and no Usage.",
+    "Async-timeout Sol used 4096 output tokens including 3624 reasoning tokens and returned an incomplete function call.",
+    "These are not two qualified quality comparisons with verified candidate failures.",
+    "Provider-assembled response JSON is saved; individual raw SSE frames were not retained.",
+    "The exact supplier cause of the empty Luna streams is unknown.",
+    "Native effort requested low is not a confirmed applied effort; results remain MODEL_ONLY.",
+    "Historic prefix commands containing tests were replayed for restoration and are separate from the six fixed-scope verifier calls."
+  ],
+  "starting_main": "909f3fcde6922d856957fc59fe9459ae445b6a78",
+  "status": "COMPLETED",
+  "cases": [
+    {
+      "candidate_id": "A1",
+      "started_at": "2026-11-02T07:11:59.632768+00:00",
+      "finished_at": "2026-11-02T07:15:59.116010+00:00",
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "source_episode_id": "t18-records-sol-low",
+      "observed_through_step": 4,
+      "phase_before_decision": "verify",
+      "before_counts": {
+        "failed": 1,
+        "passed": 23
+      },
+      "candidate_results": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "test_counts": {
+            "failed": 1,
+            "passed": 23
+          },
+          "resolved": false,
+          "trusted_outcome": true,
+          "execution_status": "ONE_STEP_COMPLETED",
+          "model_rate_cost_usd": 0.037901,
+          "actual_billed_cost_usd": null,
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "applied_native_effort_status": "UNKNOWN"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "test_counts": {
+            "failed": 1,
+            "passed": 23
+          },
+          "resolved": null,
+          "trusted_outcome": false,
+          "execution_status": "FormatError",
+          "model_rate_cost_usd": null,
+          "actual_billed_cost_usd": null,
+          "native_effort_status": "NOT_REPORTED",
+          "applied_native_effort_status": "UNKNOWN"
+        }
+      ],
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "preparation_note": "COMPARISON_NOT_VALID",
+      "preferred_action_id": null,
+      "preference_basis": null,
+      "comparison_conditions": {
+        "same_observed_messages": true,
+        "same_pre_decision_state": true,
+        "same_initial_environment": true,
+        "same_agent_protocol": true,
+        "original_verifier_unchanged": true,
+        "candidate_identity_matched": true,
+        "trusted_outcomes": false,
+        "teacher_disabled": true,
+        "physical_cache_state_matched": "NOT_OBSERVED"
+      },
+      "evidence": "our-project/results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/A1/comparison.json"
+    },
+    {
+      "candidate_id": "A2",
+      "started_at": "2026-11-02T07:15:59.187463+00:00",
+      "finished_at": "2026-11-02T07:21:35.920265+00:00",
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "source_episode_id": "t15-async-timeout-sol-low",
+      "observed_through_step": 5,
+      "phase_before_decision": "verify",
+      "before_counts": {
+        "failed": 3,
+        "passed": 29
+      },
+      "candidate_results": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "test_counts": {
+            "failed": 3,
+            "passed": 29
+          },
+          "resolved": null,
+          "trusted_outcome": false,
+          "execution_status": "FormatError",
+          "model_rate_cost_usd": 0.074136,
+          "actual_billed_cost_usd": null,
+          "native_effort_status": "PROVIDER_REPORTED_MISMATCH",
+          "applied_native_effort_status": "UNKNOWN"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "test_counts": {
+            "failed": 3,
+            "passed": 29
+          },
+          "resolved": null,
+          "trusted_outcome": false,
+          "execution_status": "FormatError",
+          "model_rate_cost_usd": null,
+          "actual_billed_cost_usd": null,
+          "native_effort_status": "NOT_REPORTED",
+          "applied_native_effort_status": "UNKNOWN"
+        }
+      ],
+      "supervision_type": "OBSERVED_OUTCOME_ONLY",
+      "preparation_note": "COMPARISON_NOT_VALID",
+      "preferred_action_id": null,
+      "preference_basis": null,
+      "comparison_conditions": {
+        "same_observed_messages": true,
+        "same_pre_decision_state": true,
+        "same_initial_environment": true,
+        "same_agent_protocol": true,
+        "original_verifier_unchanged": true,
+        "candidate_identity_matched": true,
+        "trusted_outcomes": false,
+        "teacher_disabled": true,
+        "physical_cache_state_matched": "NOT_OBSERVED"
+      },
+      "evidence": "our-project/results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/A2/comparison.json"
+    }
+  ],
+  "new_supervised_rows": 0,
+  "new_train_tasks_with_comparison": 2,
+  "new_source_tasks": 0,
+  "containers_created": [
+    "e9d083f2e900f7404f5bc6074075daf9c2483f1d7cfeb918dcf6af00e9f44630",
+    "1e81078f12a6fb2bd0d32a87ed4a1aa0f6872180d49d805650c54608c6cf427c",
+    "85cbf14f053ed8657513a04b254beb895fdf32aea51e3396a16dd86f39cb125d",
+    "c2330447f98176becd001f6730539a175caceb5bf796b8e96c0229544f3aeeec",
+    "8aaef705e3a8366d45a9b0376bee09c8ddafe49e5300bbc21e091031d10db900",
+    "771fe4c48a955f4fe5e974d777b69f13eea583b82c0f1947641861666fe15059"
+  ],
+  "containers_removed": [
+    {
+      "container_id": "e9d083f2e900f7404f5bc6074075daf9c2483f1d7cfeb918dcf6af00e9f44630",
+      "returncode": 0,
+      "output": "e9d083f2e900f7404f5bc6074075daf9c2483f1d7cfeb918dcf6af00e9f44630",
+      "stderr": ""
+    },
+    {
+      "container_id": "1e81078f12a6fb2bd0d32a87ed4a1aa0f6872180d49d805650c54608c6cf427c",
+      "returncode": 0,
+      "output": "1e81078f12a6fb2bd0d32a87ed4a1aa0f6872180d49d805650c54608c6cf427c",
+      "stderr": ""
+    },
+    {
+      "container_id": "85cbf14f053ed8657513a04b254beb895fdf32aea51e3396a16dd86f39cb125d",
+      "returncode": 0,
+      "output": "85cbf14f053ed8657513a04b254beb895fdf32aea51e3396a16dd86f39cb125d",
+      "stderr": ""
+    },
+    {
+      "container_id": "c2330447f98176becd001f6730539a175caceb5bf796b8e96c0229544f3aeeec",
+      "returncode": 0,
+      "output": "c2330447f98176becd001f6730539a175caceb5bf796b8e96c0229544f3aeeec",
+      "stderr": ""
+    },
+    {
+      "container_id": "8aaef705e3a8366d45a9b0376bee09c8ddafe49e5300bbc21e091031d10db900",
+      "returncode": 0,
+      "output": "8aaef705e3a8366d45a9b0376bee09c8ddafe49e5300bbc21e091031d10db900",
+      "stderr": ""
+    },
+    {
+      "container_id": "771fe4c48a955f4fe5e974d777b69f13eea583b82c0f1947641861666fe15059",
+      "returncode": 0,
+      "output": "771fe4c48a955f4fe5e974d777b69f13eea583b82c0f1947641861666fe15059",
+      "stderr": ""
+    }
+  ],
+  "teacher_cost_usd": 0,
+  "server_access": false,
+  "training_runs": 0,
+  "gpu_usage": false
+}

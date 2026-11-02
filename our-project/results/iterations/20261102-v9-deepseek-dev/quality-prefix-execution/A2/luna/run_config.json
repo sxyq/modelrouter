@@ -1,0 +1,16 @@
+{
+  "source_run_config": "our-project/results/iterations/20261101-v9-overnight-real-supervision/t15-async-timeout/episodes/t15-async-timeout-sol-low/run_config.json",
+  "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+  "source_episode_id": "t15-async-timeout-sol-low",
+  "observed_through_step": 5,
+  "generator_protocol": "chat_completions",
+  "actual_requested_model": "gpt-6-luna",
+  "native_effort_request": "low",
+  "selection_scope": "MODEL_ONLY",
+  "teacher_enabled": false,
+  "capability_snapshot_id": "20261031T072548885180Z-v4",
+  "verify_command": "python -m pytest -q tests/test_timeout.py::test_shift_by_expired tests/test_timeout.py::test_shift_to_expired tests/test_timeout.py::test_shift_by_after_cm_exit tests/test_timeout.py::test_timeout tests/test_timeout.py::test_timeout_finish_in_time tests/test_timeout.py::test_timeout_disable tests/test_timeout.py::test_timeout_is_none_no_schedule tests/test_timeout.py::test_timeout_no_loop tests/test_timeout.py::test_timeout_zero tests/test_timeout.py::test_timeout_not_relevant_exception tests/test_timeout.py::test_timeout_canceled_error_is_not_converted_to_timeout tests/test_timeout.py::test_timeout_blocking_loop tests/test_timeout.py::test_for_race_conditions tests/test_timeout.py::test_timeout_time tests/test_timeout.py::test_outer_coro_is_not_cancelled tests/test_timeout.py::test_cancel_outer_coro tests/test_timeout.py::test_timeout_suppress_exception_chain tests/test_timeout.py::test_timeout_expired tests/test_timeout.py::test_timeout_inner_timeout_error tests/test_timeout.py::test_timeout_inner_other_error tests/test_timeout.py::test_timeout_at tests/test_timeout.py::test_timeout_at_not_fired tests/test_timeout.py::test_expired_after_rejecting tests/test_timeout.py::test_reject_finished tests/test_timeout.py::test_expired_after_timeout tests/test_timeout.py::test_deadline tests/test_timeout.py::test_async_timeout tests/test_timeout.py::test_async_no_timeout tests/test_timeout.py::test_shift tests/test_timeout.py::test_shift_nonscheduled tests/test_timeout.py::test_shift_negative_expired tests/test_timeout.py::test_enter_twice",
+  "tool_timeout_sec": 30,
+  "max_output_tokens": 4096,
+  "full_episode": false
+}
