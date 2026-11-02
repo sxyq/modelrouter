@@ -1,5 +1,13 @@
 # Laya / Kev 全历史训练研究报告
 
+## 2026-11-02 · 离线材料诊断：可有限K=2接续，不启动训练
+
+从main6e4541c复用已保存训练记录，[离线诊断](../iterations/20261102-v9-deepseek-dev/offline_router_analysis.md)确认现行19条目标及74行材料的实际范围。任务级9条全为Luna等Verifier质量成本偏好；步骤10条为Sol4/Luna6，其中质量差异4:4、等质量费用Luna2。步骤来自10任务/9仓库，phase为verify9/recover1，inspect/modify0；不能用终局成本偏好覆盖每一步或用Alias/旧独立四档补赢家。
+
+74行=64原ROUTE-004人类偏好+10步骤，无9条任务目标，64旧行值保持。原soft-ce按问题平均，无专用任务/步骤loss权重，步骤占13.51%；现行Serializer重编码74条为563–4302Token、两选项、无5120裁减，只证明有限K=2 head接续的输入条件。没有新导出材料、重加工旧382/13214或运行训练。
+
+当前STEP_001仍是72行/8步骤、1轮9更新、encoder冻结、head_lr2e-5，原S1 Val561项不重算；随后6条输入纠正、两新步骤及本轮布局修复未进入该权重。124次全Sol均严格argmax，有限训练不足以证明真实动态选择；缺独立Train inspect/modify及恢复质量步骤、真实第三模型、确认Effort与长期任务/教师收益。优先补质量差异，再讨论原Trainer有限接续及非Alias独立Dev；本轮Laya/Kev新训练0、GPU0、服务器未连接，Serving/F14/handoff保持旧取样身份。
+
 ## 2026-11-02 · 当前：DeepSeek批次结束，没有新参数更新
 
 从main6d040e7完成9个Dev任务19 Episode；本轮重点为原运行整合与官方结果，不新增训练、重评旧权重或晋升Serving。完整结果见[DeepSeek批次](../iterations/20261102-v9-deepseek-dev/review.md)和`server_snapshot.json`；既有历史统计、Val前三、独立Twin八版本和负结果保留。

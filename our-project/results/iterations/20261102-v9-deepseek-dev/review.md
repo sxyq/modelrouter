@@ -1,5 +1,7 @@
 # DeepSeek Dev 批次：完整结果与训练接续
 
+2026-11-02后续离线诊断见[Router恒选Sol、CPU与材料分析](offline_router_analysis.md)及`summary.json.offline_router_analysis`。仅复用本批输入、修正既有源码；没有重跑以下Episode、新训练或部署，原结果与快照按原时点保留。
+
 9个公开Dev任务、19个Episode全部结束：原Harbor Verifier实际执行9次，7次reward 1、2次reward 0；另外10次终局未知。动态实验属于`ALIAS_SMOKE`，实际请求型号统一为`deepseek-v4.1-flash`。本批次取得完整运行和失败证据，未证明动态Router或教师的净收益，没有新增正式三模型训练标签。
 
 源码接续`6d040e786d0bd95a1060f793a8e680caa7bf1a93`；原Provider接入提交`8f4ed71745b4f2c647dfb6a6794b8de0011e6189`，工具反馈及费用处理提交`d77e0673169cc122c299dfee3b4e3ca5b35d6b28`。公开结果、原规划和训练报告随本报告同步；最终提交见Git记录和本轮最终回复。

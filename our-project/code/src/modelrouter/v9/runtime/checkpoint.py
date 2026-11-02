@@ -73,6 +73,7 @@ class CheckpointRouterClient:
 
 def main():
     initialized = time.perf_counter()
+    import torch
     from modelrouter.serving.laya_adapter import LayaAdapter
 
     adapter = None
@@ -85,7 +86,9 @@ def main():
             run = json.loads((checkpoint / "rl_agent_config.json").read_text())["training_run"]
             adapter = LayaAdapter(model_dir=str(checkpoint), device="cpu")
             initialization_ms = (time.perf_counter() - initialized) * 1000
-        answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
+        # This process only returns JSON; no inference tensor is reused for training.
+        with torch.inference_mode():
+            answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
         print(json.dumps({"answers": answers, "decision_latency_ms": latency, "usage": usage,
                           "initialization_latency_ms": initialization_ms, "process_reused": reused,
                           "run_id": run["run_id"], "checkpoint_id": f"{run['run_id']}-e{run['epoch']:02d}",

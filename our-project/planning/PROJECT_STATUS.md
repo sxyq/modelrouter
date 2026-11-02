@@ -1,5 +1,17 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-02 · 当前接续：Router与CPU离线诊断，未重跑实验
+
+从main `6e4541c58443e278c72b03a3dd35d2e1441ff5b9`接续。本轮仅复用原124条决策、19条监督与74行材料；结论和改动见[离线诊断](../results/iterations/20261102-v9-deepseek-dev/offline_router_analysis.md)，结构化数字追加在原`summary.json.offline_router_analysis`，旧Episode结果不改。
+
+**恒选Sol**：124/124选择均对应原生概率严格Top-1，最小/中位/最大领先差0.0290/0.0739/0.1664，Luna/Flash第二名99/25次；123种canonical状态，未发现索引错位、平局或客户端强制Sol。当前STEP_001仅72行中8条K=2步骤、1轮9次head更新且encoder冻结；随后输入修正与两新目标未训练。稀疏步骤监督、输入变化及任务/阶段分布差异支持动态泛化不足的解释，具体因果占比未核实，不当三模型能力证明。
+
+**真实输入问题已原位修复**：公开原生Tokenizer以TinyDB/Schema/Mido保存Token数对照一致；本批重编码41/124条超过5120。原尾部task_id、计数和agent_context分别只有88/94或93或91/86条完整，前移后关键状态及continuity均124/124完整。所有JSON值、候选顺序和MASK标记保持，整序列Token位置改变；总截断41条不变，3条超长工具history多裁一段，不能称完整历史或新概率不变。原LayaAdapter指定权重缺失时改为明确报错、不加载基座；这是已保存历史加载问题，未证明是124次全Sol原因。
+
+**CPU**：3081.157349秒是Adapter/system_one整段，包含编码、模型与输出转换，占Router90.63%，非单独Transformer计时。输入2395–5120Token，中位4943，与旧时延r=0.986941；主要方向为长序列ModernBERT及两层全序列head，但层内占比未知。旧入口已eval/no_grad、配置OMP/MKL各8线程；仅原Checkpoint进程改用inference_mode，线程/模型/概率不改。无本机权重及同服务器测量，模型加速和前后输出均未实测。
+
+**材料与下一步**：19目标仍任务9/步骤10，任务全Luna成本偏好，步骤质量Sol4/Luna4、成本Luna2；步骤phase为verify9/recover1，与Dev inspect18/modify86差异明显。74行=64原S1+10步、无任务目标，现行Serializer重编码全部两选项且无5120截断，可供有限K=2 head接续，不构成自动训练或K=3收益条件。优先补独立Train质量步骤，再明确授权同服务器CPU分段回放与有限接续/非Alias独立Dev。本轮付费API、Episode、训练、Benchmark、GPU和服务器连接均0；Serving/F14/handoff未动，服务器状态仍仅引用03:36:36旧快照。
+
 ## 2026-11-02 · 当前：DeepSeek Dev批次全部结束
 
 从main `6d040e786d0bd95a1060f793a8e680caa7bf1a93`接续，复用原Provider、Harbor和mini-SWE-agent完成9个公开Dev任务、19个Episode。原Verifier执行9次：7成功、2失败；另外10次终局未知，含4次HTTP502缺Usage与6次旧致命工具超时。完整表、每步概率和费用见[DeepSeek批次报告](../results/iterations/20261102-v9-deepseek-dev/review.md)与同目录`summary.json`。动态统一`ALIAS_SMOKE`，实际请求DeepSeek，不作Sol/Luna/Flash独立质量比较。

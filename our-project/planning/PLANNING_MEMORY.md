@@ -8,6 +8,14 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-11-02 · 最新：离线Router与CPU诊断
+
+从main6e4541c接续，复用旧124决策/19目标/74材料，不运行API、Episode、训练、Benchmark或服务器操作。[离线诊断](../results/iterations/20261102-v9-deepseek-dev/offline_router_analysis.md)与原summary新增offline_router_analysis为本轮恢复入口。124次均原生strict Top-1 Sol，最小差0.029、状态123种，无错位或客户端硬选证据；STEP_001仅8条K=2步骤+64旧S1、1轮9更新、encoder冻结，后来修正输入未训练，不能从概率接近推出K=3能力。
+
+三处原位改动：context.format_router_payload前移会被右截断的动态状态；LayaAdapter._load不再在指定权重缺失时加载基座；checkpoint.main采用inference_mode。旧124重编码41条超过5120，修复后关键计数/task_id/agent_context/continuity全124完整，JSON值与候选标记相同，但Token位置变、新概率未实测；总截断不减，POV-Ray三步history多裁一段，不称全历史。3081秒是system_one整段非单层，旧时延与输入长度r0.986941，encoder/head比例未测；线程原8不改，性能收益UNKNOWN。
+
+现74行全部原格式、两候选、无5120截断；任务目标9条均Luna成本，步骤10为质量Sol4/Luna4+成本Luna2，verify9/recover1、inspect/modify0。仅具有限K=2 head材料条件，先补独立Train质量步骤，后续CPU回放/训练/非AliasDev需按下一任务明确范围执行，不能自动启动。Mac零权重、用户Trainer/tests/账本/删除保持；本轮只本地修改并定向推送main，服务器源码未同步、Serving/F14/handoff未动，实时服务器状态未刷新，最后取样仍03:36:36台北。五RQ、八图十二表、独立Twin旧结果保持。
+
 ### 2026-11-02 · 最新接续
 
 从main6d040e7完成DeepSeek Dev批次，原Provider/Registry/Responses和Harbor/mini复用，9任务19 Episode全部结束。恢复入口为[批次报告](../results/iterations/20261102-v9-deepseek-dev/review.md)、`summary.json`及`server_snapshot.json`。源码前两批8f4ed71/d77e067，公开结果与原文档随最终提交同步；用户其他dirty、私人文件、旧训练和Fig.2更新保留。

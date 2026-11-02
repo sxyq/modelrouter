@@ -8,6 +8,10 @@
 
 ## 0. 阶段入口与决策规则
 
+**11-02离线接续范围与结果**：用户明确要求解释恒选Sol及CPU内部开销、修复真实问题、评估19/74材料；本轮禁止付费API、GPU、训练/Benchmark/旧Episode、服务器Serving和F14/handoff操作。沿main6e4541c完成[离线诊断](../results/iterations/20261102-v9-deepseek-dev/offline_router_analysis.md)：124选择均为严格原生argmax，无候选错位证据；有限K=2 head与输入/任务分布变化尚未证明动态泛化，不调概率、阈值或候选顺序。
+
+修正右截断的尾部动态状态位置、去掉指定权重缺失的隐式基座回退，原Checkpoint进程采用inference_mode。124条JSON值/候选MASK保持，关键状态恢复完整，但41条总截断仍在；新模型输出和加速未实测。74行可由原Serializer消费、无5120截断，只支持有限K=2接续的格式条件；没有因此启动训练。任务9条全Luna成本、步骤质量4:4加Luna成本2且verify9/recover1，先补独立Train质量步骤；Alias Dev、旧独立四档、未知Effort/双失败不生成新赢家。服务器未连接/同步，五RQ与原Verifier不改，无新Q-ID或执行体系。
+
 **11-02 DeepSeek批次决定与完成**：沿用户本地已授权配置、原Provider/Registry和Harbor/mini，完成9个Dev任务19次Episode；动态均ALIAS_SMOKE，固定为真实DeepSeek，正式三身份不改。7次官方成功、2次reward0、10次无Verifier终局；后者保持UNKNOWN。保留30步/4096输出/30秒工具和原Verifier，命令超时作为实际观察返回原Agent。Git/HF/POV-Ray三组同协议双Verifier为固定3/3、动态2/3；财务/MTEB跨处理版本不作胜负比较。完整依据见[批次报告](../results/iterations/20261102-v9-deepseek-dev/review.md)。
 
 124次神经路由全Sol、无切换/fallback；每Episode只初始化一次，不调概率。教师仅一次三字段成功、4次Router消费，开关同题均成功，开启后总费和时长增加，净收益未证。227请求/223Usage/4未知，参考费已知0.10950165USD、映射已知1.0058892USD，实收/资源及完整费用未知；公开同系列参考价不冒称AIHub费率。发送high不等于供应商应用档位已确认。

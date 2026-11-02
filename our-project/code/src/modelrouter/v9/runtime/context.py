@@ -114,11 +114,20 @@ def format_router_payload(payload: Mapping) -> str:
         if same:
             values["previous_equals_current"] = same
         continuity = values
+    # Keep decision-varying state ahead of verbose evidence in right-truncated inputs.
     for name in ("phase", "budget_remaining_usd", "steps_remaining", "step_index",
                  "last_tool_exit_code", "context_chars", "context_tokens_approx",
-                 "backend_deployment_status"):
+                 "backend_deployment_status", "history_length", "prior_tool_calls_count",
+                 "prior_error_signals_count", "feature_training_status", "task_id"):
         if name in data:
             result[name] = data.pop(name)
+    agent_context = data.pop("agent_context", None)
+    if agent_context is not None:
+        result["agent_context"] = {name: agent_context[name] for name in
+            ("message_count", "context_chars", "completed_generations", "observed_through_step",
+             "token_measurement_status") if name in agent_context}
+    if continuity is not None:
+        result["continuity"] = continuity
     snapshot_id = data.pop("capability_snapshot_id", None)
     result["capability_snapshot_id"] = snapshot_id
     history = {name: data.pop(name) for name in ("last_observation_summary", "history_snippet") if name in data}
@@ -142,8 +151,6 @@ def format_router_payload(payload: Mapping) -> str:
                 "score_raw": row[1], "score_unit": row[2],
                 "benchmark_version": row[3], "evaluated_native_effort": row[5]}
     result.update({name: value for name, value in history.items() if name == "history_snippet"})
-    if continuity is not None:
-        result["continuity"] = continuity
     missing_names, missing_sets = [], []
     for card in cards:
         missing = card.pop("NOT_MEASURED", None)
@@ -174,15 +181,6 @@ def format_router_payload(payload: Mapping) -> str:
     if any(card.get("model_metrics") or card.get("action_metrics") or card.get("reference_metrics") for card in cards):
         result["metric_fields"] = list(_METRIC_FIELDS)
     result["capability_cards"] = cards
-    for name in ("history_length", "prior_tool_calls_count", "prior_error_signals_count",
-                 "feature_training_status", "task_id"):
-        if name in data:
-            result[name] = data.pop(name)
-    agent_context = data.pop("agent_context", None)
-    if agent_context is not None:
-        result["agent_context"] = {name: agent_context[name] for name in
-            ("message_count", "context_chars", "completed_generations", "observed_through_step",
-             "token_measurement_status") if name in agent_context}
     result.update(data)
     return json.dumps(result, ensure_ascii=False, separators=(",", ":"))
 

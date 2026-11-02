@@ -37,13 +37,9 @@ class LayaAdapter:
         # Resolve best target dir
         target_dir = self.model_dir
         if not os.path.exists(os.path.join(target_dir, "model.safetensors")):
-            logger.warning(f"Target model_dir {target_dir} not found or missing safetensors. Falling back to {self.fallback_dir}")
-            target_dir = self.fallback_dir
+            raise FileNotFoundError(f"No Laya weights found in the requested checkpoint: {target_dir}")
 
-        if not os.path.exists(os.path.join(target_dir, "model.safetensors")):
-            raise FileNotFoundError(f"No valid Laya weights found in {self.model_dir} or {self.fallback_dir}")
-
-        # Ensure models/laya-421m is in sys.path for rl_common
+        # fallback_dir locates native code only; weights must come from model_dir.
         laya_code_dir = self.fallback_dir
         if laya_code_dir not in sys.path:
             sys.path.insert(0, laya_code_dir)

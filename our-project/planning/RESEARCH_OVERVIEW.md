@@ -6,6 +6,10 @@
 >
 > **证据纪律**：论文/官方材料、现有仓库文献、E0 Agent 审计、我们提出的假设分开表述。**未运行的实验不得写成结果；“未见完全相同方案”不等于“首创”。**
 
+**11-02离线诊断新增证据**：[124条保存输入分析](../results/iterations/20261102-v9-deepseek-dev/offline_router_analysis.md)确认输出映射与严格argmax一致，Sol最小领先0.029；状态123种且概率随任务/反馈变化，不能说模型完全未读取状态。稀疏K=2一步head训练与真实Terminal/逻辑K=3分布变化是有依据的泛化不足解释，因素因果占比未知。右截断41条使部分计数/身份丢失，唯一formatter将其前移后完整124/124；值和候选保持，部分长history仍裁、新输出未实测，不能当动态收益。
+
+CPU的3081.16秒是原Adapter/system_one总段；重编码输入2395–5120Token、与旧时延r0.986941，长序列encoder与两层全序列head是主要测量方向，不把相关性当层内profile。原已eval/no_grad、线程8；新增inference_mode尚无同机模型速度对照。19目标/74行只支持有限K=2 head材料，步骤质量4:4加Luna成本2、verify9/recover1，不涵盖inspect/modify动态质量、K=3/有效Effort或教师净收益。此次无新实验、训练、服务器操作或研究主线；五RQ与正式证据边界保持。
+
 **11-02 DeepSeek运行证据**：复用原Provider/Registry、Harbor/mini完成9个Dev任务19 Episode。固定实际DeepSeek与三逻辑身份动态ALIAS_SMOKE分开，原Verifier9次、7成功/2失败/10未知。Git/HF/POV-Ray三组完整同协议为固定3/3、动态2/3，按成功数分摊模型参考费动态略高且Trial更长；财务/MTEB的处理版本不同，只作观察。原工具30秒和Verifier不变，命令超时改为原Agent工具观察，6次反馈版本均取得Verifier终局。详见[批次证据](../results/iterations/20261102-v9-deepseek-dev/review.md)。
 
 124次真实CPU路由全Sol、无切换/fallback，10次初始化和114次复用；前向仍耗时3081.16秒。教师1成功/4次实际消费，只向Router提供三字段，开启后同题总费/时长增加，净收益未知。227请求中223Usage，已知同系列公开参考费0.10950165USD、逻辑映射1.0058892USD，实收/资源/完整费用未知。实际发送high未获应用档位回报，不能生成Native Effort答案；Alias不证明正式三模型质量差异。
