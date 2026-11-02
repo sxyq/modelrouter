@@ -1,0 +1,136 @@
+{
+  "job_dir": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/jobs/fixed_sol",
+  "job_id": "31f356b5-32c3-4eca-b220-936ca19fd86d",
+  "job_name": "fixed_sol",
+  "harbor": {
+    "version": "0.24.0",
+    "git_commit_hash": "36232c205abfa42a5df4eee664e36dab0908acb6",
+    "is_editable": true
+  },
+  "status": "OFFICIAL_ARTIFACT_VERIFIED",
+  "missing_job_files": [],
+  "trials": [
+    {
+      "trial_dir": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/jobs/fixed_sol/filter-js-from-html__fDVhkqj",
+      "trial_id": "bb43e05f-b32b-4cc8-9be2-541553511df1",
+      "trial_name": "filter-js-from-html__fDVhkqj",
+      "job_id": "31f356b5-32c3-4eca-b220-936ca19fd86d",
+      "task_id": {
+        "path": "external/benchmarks/terminal-bench-2-1/tasks/filter-js-from-html"
+      },
+      "task_name": "terminal-bench/filter-js-from-html",
+      "task_version": null,
+      "task_digest": "sha256:2d1496b6fc62adeccdba7a56f4bc24e5ef265840434d2011234ed20b6c240759",
+      "task_git_sha": null,
+      "task_source": null,
+      "task_checksum": "ed037d7c41a92817e75d6a776fb2a669d1a50b19f77d37df8c049951ba75993e",
+      "agent_info": {
+        "name": "modelrouter-mini-swe-agent",
+        "version": "10.0-mini-2.4.6",
+        "model_info": null
+      },
+      "environment": null,
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "rewards": {
+        "reward": 0.0
+      },
+      "success": false,
+      "error": null,
+      "reason": "Original Harbor task lock and verifier artifacts recorded",
+      "usage": {
+        "n_input_tokens": 14414,
+        "n_cache_tokens": null,
+        "n_output_tokens": 1670,
+        "cost_usd": 0.0277795
+      },
+      "model_usage": {
+        "gpt-6.1-sol": {
+          "n_input_tokens": 14414,
+          "n_cache_tokens": 10395,
+          "n_output_tokens": 1670,
+          "cost_usd": 0.0277795
+        }
+      },
+      "n_input_tokens": 14414,
+      "n_cache_tokens": null,
+      "n_output_tokens": 1670,
+      "cost_usd": 0.0277795,
+      "duration_sec": 145.09238,
+      "verifier_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/jobs/fixed_sol/filter-js-from-html__fDVhkqj/verifier/reward.txt",
+      "native_trace_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/jobs/fixed_sol/filter-js-from-html__fDVhkqj/agent/mini-swe-agent.trajectory.json",
+      "router_fallback_used": false,
+      "policy_implementation_status": "CONFIGURED_POLICY",
+      "untested_native_efforts_used": [],
+      "neural_router_evidence_eligible": false,
+      "cost_statuses": [
+        "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+      ],
+      "actual_billed_cost_usd": null,
+      "started_at": "2026-11-02T18:49:21.172325Z",
+      "finished_at": "2026-11-02T18:51:46.264705Z",
+      "episode_wall_s": 145.09238,
+      "phase_wall_s": {
+        "environment_setup": 1.199201,
+        "agent_setup": 0.000115,
+        "agent_execution": 51.292535,
+        "verifier": 87.974729
+      },
+      "verifier_artifacts": [
+        {
+          "step_name": null,
+          "reward_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/jobs/fixed_sol/filter-js-from-html__fDVhkqj/verifier/reward.txt",
+          "rewards": {
+            "reward": 0.0
+          },
+          "result_rewards": {
+            "reward": 0.0
+          },
+          "stdout_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/jobs/fixed_sol/filter-js-from-html__fDVhkqj/verifier/test-stdout.txt",
+          "ctrf_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/jobs/fixed_sol/filter-js-from-html__fDVhkqj/verifier/ctrf.json"
+        }
+      ],
+      "runtime_log": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/jobs/fixed_sol/filter-js-from-html__fDVhkqj/trial.log",
+      "evidence_scope": "recorded_artifact_agreement"
+    }
+  ],
+  "counts": {
+    "OFFICIAL_ARTIFACT_VERIFIED": 1
+  },
+  "n_total_trials": 1,
+  "stats": {
+    "n_completed_trials": 1,
+    "n_errored_trials": 0,
+    "n_running_trials": 0,
+    "n_pending_trials": 0,
+    "n_cancelled_trials": 0,
+    "n_retries": 0,
+    "evals": {
+      "modelrouter-mini-swe-agent__adhoc": {
+        "n_trials": 1,
+        "n_errors": 0,
+        "metrics": [
+          {
+            "mean": 0.0
+          }
+        ],
+        "pass_at_k": {},
+        "reward_stats": {
+          "reward": {
+            "0.0": [
+              "filter-js-from-html__fDVhkqj"
+            ]
+          }
+        },
+        "exception_stats": {}
+      }
+    },
+    "n_input_tokens": 14414,
+    "n_cache_tokens": null,
+    "n_output_tokens": 1670,
+    "cost_usd": 0.0277795
+  },
+  "started_at": "2026-11-03T02:49:21.140868",
+  "finished_at": "2026-11-03T02:51:46.271401",
+  "job_wall_s": 145.130533
+}

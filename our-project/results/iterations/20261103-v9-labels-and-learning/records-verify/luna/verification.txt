@@ -1,0 +1,32 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0 -- /opt/miniconda3/envs/testbed/bin/python
+cachedir: .pytest_cache
+rootdir: /testbed
+collecting ... collected 24 items
+
+tests/test_69.py::test_issue69[sqlite_memory] PASSED                     [  4%]
+tests/test_records.py::TestRecordCollection::test_iter PASSED            [  8%]
+tests/test_records.py::TestRecordCollection::test_next PASSED            [ 12%]
+tests/test_records.py::TestRecordCollection::test_iter_and_next PASSED   [ 16%]
+tests/test_records.py::TestRecordCollection::test_multiple_iter PASSED   [ 20%]
+tests/test_records.py::TestRecordCollection::test_slice_iter PASSED      [ 25%]
+tests/test_records.py::TestRecordCollection::test_all_returns_a_list_of_records PASSED [ 29%]
+tests/test_records.py::TestRecordCollection::test_first_returns_a_single_record PASSED [ 33%]
+tests/test_records.py::TestRecordCollection::test_first_defaults_to_None PASSED [ 37%]
+tests/test_records.py::TestRecordCollection::test_first_default_is_overridable PASSED [ 41%]
+tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_subclass PASSED [ 45%]
+tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_instance PASSED [ 50%]
+tests/test_records.py::TestRecordCollection::test_one_returns_a_single_record PASSED [ 54%]
+tests/test_records.py::TestRecordCollection::test_one_defaults_to_None PASSED [ 58%]
+tests/test_records.py::TestRecordCollection::test_one_default_is_overridable PASSED [ 62%]
+tests/test_records.py::TestRecordCollection::test_one_raises_when_more_than_one PASSED [ 66%]
+tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_subclass PASSED [ 70%]
+tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_instance PASSED [ 75%]
+tests/test_records.py::TestRecordCollection::test_scalar_returns_a_single_record PASSED [ 79%]
+tests/test_records.py::TestRecordCollection::test_scalar_defaults_to_None PASSED [ 83%]
+tests/test_records.py::TestRecordCollection::test_scalar_default_is_overridable PASSED [ 87%]
+tests/test_records.py::TestRecordCollection::test_scalar_raises_when_more_than_one PASSED [ 91%]
+tests/test_records.py::TestRecord::test_record_dir PASSED                [ 95%]
+tests/test_records.py::TestRecord::test_record_duplicate_column PASSED   [100%]
+
+============================== 24 passed in 0.14s ==============================

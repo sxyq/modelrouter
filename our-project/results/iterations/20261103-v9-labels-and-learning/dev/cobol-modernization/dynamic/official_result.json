@@ -1,0 +1,136 @@
+{
+  "job_dir": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/jobs/dynamic",
+  "job_id": "b8c448e7-072b-4de9-b1c8-6bb119edb3c1",
+  "job_name": "dynamic",
+  "harbor": {
+    "version": "0.24.0",
+    "git_commit_hash": "36232c205abfa42a5df4eee664e36dab0908acb6",
+    "is_editable": true
+  },
+  "status": "OFFICIAL_ARTIFACT_VERIFIED",
+  "missing_job_files": [],
+  "trials": [
+    {
+      "trial_dir": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/jobs/dynamic/cobol-modernization__sVw7RZg",
+      "trial_id": "df04f8be-afa8-4bd9-a9bd-f00d922a78a2",
+      "trial_name": "cobol-modernization__sVw7RZg",
+      "job_id": "b8c448e7-072b-4de9-b1c8-6bb119edb3c1",
+      "task_id": {
+        "path": "external/benchmarks/terminal-bench-2-1/tasks/cobol-modernization"
+      },
+      "task_name": "terminal-bench/cobol-modernization",
+      "task_version": null,
+      "task_digest": "sha256:e03aa03965eee48c9f772d566ff9bcd741fceeac9693123f82a13fdd46be0d88",
+      "task_git_sha": null,
+      "task_source": null,
+      "task_checksum": "1d068f63a7d36ec098b620a8b2062419c1a9a2eff6458bc3ff56eb325ebf5903",
+      "agent_info": {
+        "name": "modelrouter-mini-swe-agent",
+        "version": "10.0-mini-2.4.6",
+        "model_info": null
+      },
+      "environment": null,
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "rewards": {
+        "reward": 1.0
+      },
+      "success": true,
+      "error": null,
+      "reason": "Original Harbor task lock and verifier artifacts recorded",
+      "usage": {
+        "n_input_tokens": 22373,
+        "n_cache_tokens": null,
+        "n_output_tokens": 1821,
+        "cost_usd": 0.0348086
+      },
+      "model_usage": {
+        "gpt-6.1-sol": {
+          "n_input_tokens": 22373,
+          "n_cache_tokens": 16386,
+          "n_output_tokens": 1821,
+          "cost_usd": 0.0348086
+        }
+      },
+      "n_input_tokens": 22373,
+      "n_cache_tokens": null,
+      "n_output_tokens": 1821,
+      "cost_usd": 0.0348086,
+      "duration_sec": 235.179684,
+      "verifier_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/jobs/dynamic/cobol-modernization__sVw7RZg/verifier/reward.txt",
+      "native_trace_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/jobs/dynamic/cobol-modernization__sVw7RZg/agent/mini-swe-agent.trajectory.json",
+      "router_fallback_used": false,
+      "policy_implementation_status": "REMOTE_NEURAL_ROUTER",
+      "untested_native_efforts_used": [],
+      "neural_router_evidence_eligible": true,
+      "cost_statuses": [
+        "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+      ],
+      "actual_billed_cost_usd": null,
+      "started_at": "2026-11-02T18:57:14.047975Z",
+      "finished_at": "2026-11-02T19:01:09.227659Z",
+      "episode_wall_s": 235.179684,
+      "phase_wall_s": {
+        "environment_setup": 1.752823,
+        "agent_setup": 0.000191,
+        "agent_execution": 200.351207,
+        "verifier": 27.91992
+      },
+      "verifier_artifacts": [
+        {
+          "step_name": null,
+          "reward_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/jobs/dynamic/cobol-modernization__sVw7RZg/verifier/reward.txt",
+          "rewards": {
+            "reward": 1.0
+          },
+          "result_rewards": {
+            "reward": 1.0
+          },
+          "stdout_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/jobs/dynamic/cobol-modernization__sVw7RZg/verifier/test-stdout.txt",
+          "ctrf_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/jobs/dynamic/cobol-modernization__sVw7RZg/verifier/ctrf.json"
+        }
+      ],
+      "runtime_log": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/jobs/dynamic/cobol-modernization__sVw7RZg/trial.log",
+      "evidence_scope": "recorded_artifact_agreement"
+    }
+  ],
+  "counts": {
+    "OFFICIAL_ARTIFACT_VERIFIED": 1
+  },
+  "n_total_trials": 1,
+  "stats": {
+    "n_completed_trials": 1,
+    "n_errored_trials": 0,
+    "n_running_trials": 0,
+    "n_pending_trials": 0,
+    "n_cancelled_trials": 0,
+    "n_retries": 0,
+    "evals": {
+      "modelrouter-mini-swe-agent__adhoc": {
+        "n_trials": 1,
+        "n_errors": 0,
+        "metrics": [
+          {
+            "mean": 1.0
+          }
+        ],
+        "pass_at_k": {},
+        "reward_stats": {
+          "reward": {
+            "1.0": [
+              "cobol-modernization__sVw7RZg"
+            ]
+          }
+        },
+        "exception_stats": {}
+      }
+    },
+    "n_input_tokens": 22373,
+    "n_cache_tokens": null,
+    "n_output_tokens": 1821,
+    "cost_usd": 0.0348086
+  },
+  "started_at": "2026-11-03T02:57:13.996121",
+  "finished_at": "2026-11-03T03:01:09.241023",
+  "job_wall_s": 235.244902
+}

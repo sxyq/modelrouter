@@ -1,0 +1,636 @@
+{
+  "tasks": 3,
+  "episodes": 9,
+  "initial_no_request_config_failures": 2,
+  "comparison_scope": "INDEPENDENT_DEV_K2_NOT_TRAIN_NOT_FULL_K3_OR_EFFORT",
+  "episodes_detail": [
+    {
+      "task": "cobol-modernization",
+      "policy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "success": true,
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/official_result.json",
+      "episode_seconds": 235.179684,
+      "phase_seconds": {
+        "environment_setup": 1.752823,
+        "agent_setup": 0.000191,
+        "agent_execution": 200.351207,
+        "verifier": 27.91992
+      },
+      "complete_generations": 5,
+      "known_model_rate_cost_usd": 0.0348086,
+      "known_input_tokens": 22373,
+      "known_output_tokens": 1821,
+      "unknown_usage_generations": 0,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 5
+      },
+      "switches": 0,
+      "phase_selection_counts": {
+        "inspect/gpt-6.1-sol": 2,
+        "modify/gpt-6.1-sol": 2,
+        "recover/gpt-6.1-sol": 1
+      },
+      "router_total_ms": 64535.08845809847,
+      "router_forward_ms": 33132.58765079081,
+      "router_initialization_ms": 30589.570347219706,
+      "router_reuses": 4,
+      "checkpoint_ids": [
+        "V9_LAYA_STEP_004-e03"
+      ],
+      "fallbacks": 0,
+      "provider_errors": 0,
+      "original_output_reverification": null,
+      "original_test_reports": [
+        {
+          "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/jobs/dynamic/cobol-modernization__sVw7RZg/verifier/ctrf.json",
+          "summary": {
+            "tests": 3,
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793646064.6407847,
+            "stop": 1793646065.24312
+          },
+          "tests": [
+            {
+              "name": "test_outputs.py::test_required_files_exist",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_data_files_exist",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_program_output",
+              "status": "passed",
+              "message": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task": "cobol-modernization",
+      "policy": "fixed_luna",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "success": null,
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/official_result.json",
+      "episode_seconds": 108.266594,
+      "phase_seconds": {
+        "environment_setup": 2.636617,
+        "agent_setup": 0.000794,
+        "agent_execution": 80.060103,
+        "verifier": 19.952689
+      },
+      "complete_generations": 8,
+      "known_model_rate_cost_usd": 0.005440955,
+      "known_input_tokens": 58549,
+      "known_output_tokens": 2330,
+      "unknown_usage_generations": 0,
+      "model_selection_counts": {
+        "gpt-6-luna": 8
+      },
+      "switches": 0,
+      "phase_selection_counts": {
+        "inspect/gpt-6-luna": 2,
+        "modify/gpt-6-luna": 6
+      },
+      "router_total_ms": 2.669166075065732,
+      "router_forward_ms": 0,
+      "router_initialization_ms": 0,
+      "router_reuses": 0,
+      "checkpoint_ids": [
+        "none"
+      ],
+      "fallbacks": 0,
+      "provider_errors": 0,
+      "original_output_reverification": {
+        "scope": "REAL_AGENT_RECORDED_COMMANDS_REPLAY_ORIGINAL_HARBOR_DOCKER_UNMODIFIED_VERIFIER",
+        "rewards": {
+          "reward": 1.0
+        },
+        "original_agent_requests_repeated": 0,
+        "started_at": "2026-11-02T18:52:34.500576+00:00",
+        "finished_at": "2026-11-02T18:52:59.362929+00:00",
+        "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/original_output_verification.json"
+      },
+      "original_test_reports": []
+    },
+    {
+      "task": "cobol-modernization",
+      "policy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "success": true,
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_sol/official_result.json",
+      "episode_seconds": 123.501975,
+      "phase_seconds": {
+        "environment_setup": 2.684065,
+        "agent_setup": 0.000359,
+        "agent_execution": 83.634851,
+        "verifier": 31.898376
+      },
+      "complete_generations": 7,
+      "known_model_rate_cost_usd": 0.0380484,
+      "known_input_tokens": 33565,
+      "known_output_tokens": 1964,
+      "unknown_usage_generations": 0,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 7
+      },
+      "switches": 0,
+      "phase_selection_counts": {
+        "inspect/gpt-6.1-sol": 2,
+        "recover/gpt-6.1-sol": 3,
+        "modify/gpt-6.1-sol": 2
+      },
+      "router_total_ms": 2.798749948851764,
+      "router_forward_ms": 0,
+      "router_initialization_ms": 0,
+      "router_reuses": 0,
+      "checkpoint_ids": [
+        "none"
+      ],
+      "fallbacks": 0,
+      "provider_errors": 0,
+      "original_output_reverification": null,
+      "original_test_reports": [
+        {
+          "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_sol/jobs/fixed_sol/cobol-modernization__dQaD3KD/verifier/ctrf.json",
+          "summary": {
+            "tests": 3,
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793641772.0038035,
+            "stop": 1793641772.7553158
+          },
+          "tests": [
+            {
+              "name": "test_outputs.py::test_required_files_exist",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_data_files_exist",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_program_output",
+              "status": "passed",
+              "message": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task": "filter-js-from-html",
+      "policy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "success": false,
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/dynamic/official_result.json",
+      "episode_seconds": 202.807649,
+      "phase_seconds": {
+        "environment_setup": 1.36905,
+        "agent_setup": 0.00016,
+        "agent_execution": 84.350043,
+        "verifier": 112.11788
+      },
+      "complete_generations": 4,
+      "known_model_rate_cost_usd": 0.0217921,
+      "known_input_tokens": 10973,
+      "known_output_tokens": 1556,
+      "unknown_usage_generations": 0,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 4
+      },
+      "switches": 0,
+      "phase_selection_counts": {
+        "inspect/gpt-6.1-sol": 2,
+        "modify/gpt-6.1-sol": 2
+      },
+      "router_total_ms": 46832.62183400802,
+      "router_forward_ms": 15340.486565604806,
+      "router_initialization_ms": 30762.48243637383,
+      "router_reuses": 3,
+      "checkpoint_ids": [
+        "V9_LAYA_STEP_004-e03"
+      ],
+      "fallbacks": 0,
+      "provider_errors": 0,
+      "original_output_reverification": null,
+      "original_test_reports": [
+        {
+          "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/dynamic/jobs/dynamic/filter-js-from-html__on5RQW4/verifier/ctrf.json",
+          "summary": {
+            "tests": 2,
+            "passed": 1,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793646724.0377092,
+            "stop": 1793646810.8574662
+          },
+          "tests": [
+            {
+              "name": "test_outputs.py::test_filter_blocks_xss",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_clean_html_unchanged",
+              "status": "failed",
+              "message": "The test failed in the call phase due to an assertion error"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task": "filter-js-from-html",
+      "policy": "fixed_luna",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "success": false,
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_luna/official_result.json",
+      "episode_seconds": 974.373288,
+      "phase_seconds": {
+        "environment_setup": 1.173534,
+        "agent_setup": 0.000129,
+        "agent_execution": 150.442963,
+        "verifier": 802.549001
+      },
+      "complete_generations": 5,
+      "known_model_rate_cost_usd": 0.006556865,
+      "known_input_tokens": 41829,
+      "known_output_tokens": 4743,
+      "unknown_usage_generations": 0,
+      "model_selection_counts": {
+        "gpt-6-luna": 5
+      },
+      "switches": 0,
+      "phase_selection_counts": {
+        "inspect/gpt-6-luna": 2,
+        "modify/gpt-6-luna": 2,
+        "recover/gpt-6-luna": 1
+      },
+      "router_total_ms": 0.5015420028939843,
+      "router_forward_ms": 0,
+      "router_initialization_ms": 0,
+      "router_reuses": 0,
+      "checkpoint_ids": [
+        "none"
+      ],
+      "fallbacks": 0,
+      "provider_errors": 0,
+      "original_output_reverification": null,
+      "original_test_reports": [
+        {
+          "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_luna/jobs/fixed_luna/filter-js-from-html__qt3uxaT/verifier/ctrf.json",
+          "summary": {
+            "tests": 2,
+            "passed": 1,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793645727.9794192,
+            "stop": 1793646502.97107
+          },
+          "tests": [
+            {
+              "name": "test_outputs.py::test_filter_blocks_xss",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_clean_html_unchanged",
+              "status": "failed",
+              "message": "The test failed in the call phase due to an assertion error"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task": "filter-js-from-html",
+      "policy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "success": false,
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/official_result.json",
+      "episode_seconds": 145.09238,
+      "phase_seconds": {
+        "environment_setup": 1.199201,
+        "agent_setup": 0.000115,
+        "agent_execution": 51.292535,
+        "verifier": 87.974729
+      },
+      "complete_generations": 5,
+      "known_model_rate_cost_usd": 0.0277795,
+      "known_input_tokens": 14414,
+      "known_output_tokens": 1670,
+      "unknown_usage_generations": 0,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 5
+      },
+      "switches": 0,
+      "phase_selection_counts": {
+        "inspect/gpt-6.1-sol": 2,
+        "modify/gpt-6.1-sol": 3
+      },
+      "router_total_ms": 0.5288339452818036,
+      "router_forward_ms": 0,
+      "router_initialization_ms": 0,
+      "router_reuses": 0,
+      "checkpoint_ids": [
+        "none"
+      ],
+      "fallbacks": 0,
+      "provider_errors": 0,
+      "original_output_reverification": null,
+      "original_test_reports": [
+        {
+          "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/jobs/fixed_sol/filter-js-from-html__fDVhkqj/verifier/ctrf.json",
+          "summary": {
+            "tests": 2,
+            "passed": 1,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793645438.5510406,
+            "stop": 1793645502.4147177
+          },
+          "tests": [
+            {
+              "name": "test_outputs.py::test_filter_blocks_xss",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_clean_html_unchanged",
+              "status": "failed",
+              "message": "The test failed in the call phase due to an assertion error"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task": "git-leak-recovery",
+      "policy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "success": true,
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/official_result.json",
+      "episode_seconds": 190.006008,
+      "phase_seconds": {
+        "environment_setup": 1.543104,
+        "agent_setup": 0.00012,
+        "agent_execution": 134.475929,
+        "verifier": 48.535784
+      },
+      "complete_generations": 6,
+      "known_model_rate_cost_usd": 0.0327625,
+      "known_input_tokens": 19539,
+      "known_output_tokens": 1978,
+      "unknown_usage_generations": 0,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 6
+      },
+      "switches": 0,
+      "phase_selection_counts": {
+        "inspect/gpt-6.1-sol": 2,
+        "recover/gpt-6.1-sol": 2,
+        "modify/gpt-6.1-sol": 2
+      },
+      "router_total_ms": 59826.35641586967,
+      "router_forward_ms": 28786.537166684866,
+      "router_initialization_ms": 30298.88978973031,
+      "router_reuses": 5,
+      "checkpoint_ids": [
+        "V9_LAYA_STEP_004-e03"
+      ],
+      "fallbacks": 0,
+      "provider_errors": 0,
+      "original_output_reverification": null,
+      "original_test_reports": [
+        {
+          "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/jobs/dynamic/git-leak-recovery__Pt7wbb3/verifier/ctrf.json",
+          "summary": {
+            "tests": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793646310.2393827,
+            "stop": 1793646310.8039653
+          },
+          "tests": [
+            {
+              "name": "test_outputs.py::test_flag_file_exists_and_correct",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_no_secrets_in_commits",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_good_commits_preserved",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_no_secrets_in_unreachable_objects",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_repository_contents_checksum",
+              "status": "passed",
+              "message": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task": "git-leak-recovery",
+      "policy": "fixed_luna",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "success": true,
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/fixed_luna/official_result.json",
+      "episode_seconds": 166.083441,
+      "phase_seconds": {
+        "environment_setup": 2.95926,
+        "agent_setup": 0.000371,
+        "agent_execution": 111.955659,
+        "verifier": 46.161136
+      },
+      "complete_generations": 5,
+      "known_model_rate_cost_usd": 0.003673925,
+      "known_input_tokens": 29402,
+      "known_output_tokens": 1617,
+      "unknown_usage_generations": 0,
+      "model_selection_counts": {
+        "gpt-6-luna": 5
+      },
+      "switches": 0,
+      "phase_selection_counts": {
+        "inspect/gpt-6-luna": 2,
+        "modify/gpt-6-luna": 3
+      },
+      "router_total_ms": 1.9436251604929566,
+      "router_forward_ms": 0,
+      "router_initialization_ms": 0,
+      "router_reuses": 0,
+      "checkpoint_ids": [
+        "none"
+      ],
+      "fallbacks": 0,
+      "provider_errors": 0,
+      "original_output_reverification": null,
+      "original_test_reports": [
+        {
+          "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/fixed_luna/jobs/fixed_luna/git-leak-recovery__KFAoPCt/verifier/ctrf.json",
+          "summary": {
+            "tests": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793645241.35906,
+            "stop": 1793645241.8219452
+          },
+          "tests": [
+            {
+              "name": "test_outputs.py::test_flag_file_exists_and_correct",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_no_secrets_in_commits",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_good_commits_preserved",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_no_secrets_in_unreachable_objects",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_repository_contents_checksum",
+              "status": "passed",
+              "message": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task": "git-leak-recovery",
+      "policy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "success": true,
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/fixed_sol/official_result.json",
+      "episode_seconds": 120.005145,
+      "phase_seconds": {
+        "environment_setup": 1.709744,
+        "agent_setup": 0.000206,
+        "agent_execution": 68.592978,
+        "verifier": 43.348102
+      },
+      "complete_generations": 7,
+      "known_model_rate_cost_usd": 0.0322172,
+      "known_input_tokens": 23029,
+      "known_output_tokens": 1882,
+      "unknown_usage_generations": 0,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 7
+      },
+      "switches": 0,
+      "phase_selection_counts": {
+        "inspect/gpt-6.1-sol": 2,
+        "recover/gpt-6.1-sol": 2,
+        "modify/gpt-6.1-sol": 3
+      },
+      "router_total_ms": 1.3661249540746212,
+      "router_forward_ms": 0,
+      "router_initialization_ms": 0,
+      "router_reuses": 0,
+      "checkpoint_ids": [
+        "none"
+      ],
+      "fallbacks": 0,
+      "provider_errors": 0,
+      "original_output_reverification": null,
+      "original_test_reports": [
+        {
+          "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/fixed_sol/jobs/fixed_sol/git-leak-recovery__LGortAa/verifier/ctrf.json",
+          "summary": {
+            "tests": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1793641940.3808029,
+            "stop": 1793641940.926663
+          },
+          "tests": [
+            {
+              "name": "test_outputs.py::test_flag_file_exists_and_correct",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_no_secrets_in_commits",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_good_commits_preserved",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_no_secrets_in_unreachable_objects",
+              "status": "passed",
+              "message": null
+            },
+            {
+              "name": "test_outputs.py::test_repository_contents_checksum",
+              "status": "passed",
+              "message": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "job_dir": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/jobs/dynamic",
+  "job_id": "e5d5b79c-4877-4e34-8c07-55dd36af868c",
+  "job_name": "dynamic",
+  "harbor": {
+    "version": "0.24.0",
+    "git_commit_hash": "36232c205abfa42a5df4eee664e36dab0908acb6",
+    "is_editable": true
+  },
+  "status": "OFFICIAL_ARTIFACT_VERIFIED",
+  "missing_job_files": [],
+  "trials": [
+    {
+      "trial_dir": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/jobs/dynamic/git-leak-recovery__Pt7wbb3",
+      "trial_id": "324e409f-e965-499f-94e0-9ecf4e4ecd68",
+      "trial_name": "git-leak-recovery__Pt7wbb3",
+      "job_id": "e5d5b79c-4877-4e34-8c07-55dd36af868c",
+      "task_id": {
+        "path": "external/benchmarks/terminal-bench-2-1/tasks/git-leak-recovery"
+      },
+      "task_name": "terminal-bench/git-leak-recovery",
+      "task_version": null,
+      "task_digest": "sha256:22a9ec10dbd4cd8b99477b70e1944103775ca41de9b9e0025ec4898cd17bd334",
+      "task_git_sha": null,
+      "task_source": null,
+      "task_checksum": "285cc112a989ee2d0aee8db362c34d82340d6f4797488be88a42fd785cfea346",
+      "agent_info": {
+        "name": "modelrouter-mini-swe-agent",
+        "version": "10.0-mini-2.4.6",
+        "model_info": null
+      },
+      "environment": null,
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "rewards": {
+        "reward": 1.0
+      },
+      "success": true,
+      "error": null,
+      "reason": "Original Harbor task lock and verifier artifacts recorded",
+      "usage": {
+        "n_input_tokens": 19539,
+        "n_cache_tokens": null,
+        "n_output_tokens": 1978,
+        "cost_usd": 0.0327625
+      },
+      "model_usage": {
+        "gpt-6.1-sol": {
+          "n_input_tokens": 19539,
+          "n_cache_tokens": 14940,
+          "n_output_tokens": 1978,
+          "cost_usd": 0.03276249999999999
+        }
+      },
+      "n_input_tokens": 19539,
+      "n_cache_tokens": null,
+      "n_output_tokens": 1978,
+      "cost_usd": 0.0327625,
+      "duration_sec": 190.006008,
+      "verifier_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/jobs/dynamic/git-leak-recovery__Pt7wbb3/verifier/reward.txt",
+      "native_trace_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/jobs/dynamic/git-leak-recovery__Pt7wbb3/agent/mini-swe-agent.trajectory.json",
+      "router_fallback_used": false,
+      "policy_implementation_status": "REMOTE_NEURAL_ROUTER",
+      "untested_native_efforts_used": [],
+      "neural_router_evidence_eligible": true,
+      "cost_statuses": [
+        "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+      ],
+      "actual_billed_cost_usd": null,
+      "started_at": "2026-11-02T19:02:05.204809Z",
+      "finished_at": "2026-11-02T19:05:15.210817Z",
+      "episode_wall_s": 190.006008,
+      "phase_wall_s": {
+        "environment_setup": 1.543104,
+        "agent_setup": 0.00012,
+        "agent_execution": 134.475929,
+        "verifier": 48.535784
+      },
+      "verifier_artifacts": [
+        {
+          "step_name": null,
+          "reward_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/jobs/dynamic/git-leak-recovery__Pt7wbb3/verifier/reward.txt",
+          "rewards": {
+            "reward": 1.0
+          },
+          "result_rewards": {
+            "reward": 1.0
+          },
+          "stdout_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/jobs/dynamic/git-leak-recovery__Pt7wbb3/verifier/test-stdout.txt",
+          "ctrf_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/jobs/dynamic/git-leak-recovery__Pt7wbb3/verifier/ctrf.json"
+        }
+      ],
+      "runtime_log": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/jobs/dynamic/git-leak-recovery__Pt7wbb3/trial.log",
+      "evidence_scope": "recorded_artifact_agreement"
+    }
+  ],
+  "counts": {
+    "OFFICIAL_ARTIFACT_VERIFIED": 1
+  },
+  "n_total_trials": 1,
+  "stats": {
+    "n_completed_trials": 1,
+    "n_errored_trials": 0,
+    "n_running_trials": 0,
+    "n_pending_trials": 0,
+    "n_cancelled_trials": 0,
+    "n_retries": 0,
+    "evals": {
+      "modelrouter-mini-swe-agent__adhoc": {
+        "n_trials": 1,
+        "n_errors": 0,
+        "metrics": [
+          {
+            "mean": 1.0
+          }
+        ],
+        "pass_at_k": {},
+        "reward_stats": {
+          "reward": {
+            "1.0": [
+              "git-leak-recovery__Pt7wbb3"
+            ]
+          }
+        },
+        "exception_stats": {}
+      }
+    },
+    "n_input_tokens": 19539,
+    "n_cache_tokens": null,
+    "n_output_tokens": 1978,
+    "cost_usd": 0.0327625
+  },
+  "started_at": "2026-11-03T03:02:05.155169",
+  "finished_at": "2026-11-03T03:05:15.221747",
+  "job_wall_s": 190.066578
+}

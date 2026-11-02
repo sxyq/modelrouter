@@ -1,0 +1,115 @@
+{
+  "expected": {
+    "step_model_preference": "gpt-6-luna"
+  },
+  "native_target": [
+    1.0,
+    0.0
+  ],
+  "native_criteria": {
+    "gpt-6-luna": "gpt-6-luna",
+    "gpt-6.1-sol": "gpt-6.1-sol"
+  },
+  "skipped": {},
+  "real_train_row_order_forwards": [
+    {
+      "order": [
+        "gpt-6-luna",
+        "gpt-6.1-sol"
+      ],
+      "answers": {
+        "step_model_preference": {
+          "type": "choice",
+          "choice": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6-luna": 0.4535,
+            "gpt-6.1-sol": 0.5465
+          },
+          "confidence": 0.0062,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      }
+    },
+    {
+      "order": [
+        "gpt-6.1-sol",
+        "gpt-6-luna"
+      ],
+      "answers": {
+        "step_model_preference": {
+          "type": "choice",
+          "choice": "gpt-6.1-sol",
+          "probabilities": {
+            "gpt-6.1-sol": 0.5589,
+            "gpt-6-luna": 0.4411
+          },
+          "confidence": 0.01,
+          "rl_agent": {
+            "act_probability": 1.0
+          }
+        }
+      }
+    }
+  ],
+  "head_change_l2": 0.20750835192079906,
+  "parent_head_l2": 153.41076415227406,
+  "head_max_absolute_change": 0.0001220703125,
+  "previous_training": {
+    "rows": 75,
+    "new_quality_rows": 1,
+    "epochs": 1,
+    "updates": 10,
+    "head_lr": 2e-05,
+    "encoder_updated": false
+  },
+  "scope": "REAL_TRAIN_STATE_NATIVE_CPU_FORWARD_NOT_DEV_SELECTION",
+  "training_target_counts": {
+    "old_model_choice": 64,
+    "real_step_targets": 14,
+    "step_target_Sol": 5,
+    "step_target_Luna": 9
+  },
+  "step004_recent_train_forward": {
+    "run_id": "V9_LAYA_STEP_004",
+    "epoch": 3,
+    "items": 4,
+    "correct": 1,
+    "scope": "TRAIN_PREFERENCE_DIAGNOSIS_NOT_INDEPENDENT_DEV_SCORE",
+    "fallback": false,
+    "source": "our-project/results/iterations/20261103-v9-labels-and-learning/new_step_forwards.json"
+  },
+  "step005_all_train_forward": {
+    "run_id": "V9_LAYA_STEP_005",
+    "epoch": 3,
+    "items": 14,
+    "correct": 5,
+    "scope": "TRAIN_PREFERENCE_DIAGNOSIS_NOT_INDEPENDENT_DEV_SCORE",
+    "fallback": false,
+    "source": "our-project/results/iterations/20261103-v9-labels-and-learning/focused_step_forwards.json"
+  },
+  "interpretation": {
+    "input_and_label_loss_observed": false,
+    "candidate_order_explains_all_sol": false,
+    "old_target_dilution_is_sufficient_explanation": false,
+    "evidence": "STEP003_NATIVE_TARGET_CORRECT;STEP004_1_OF_4;STEP005_STEP_ONLY_STILL_ALL_SOL_5_OF_14",
+    "fixed_validation_relevance": "561_OLD_MODEL_CHOICE_TARGETS_NOT_REAL_SOL_LUNA_STEP_TARGETS",
+    "conclusion": "HEAD_ONLY_SMALL_STEP_UPDATES_DID_NOT_LEARN_THIS_MAPPING;EXACT_CAUSAL_SHARE_UNKNOWN",
+    "step005_deployed_or_used_as_dev_router": false
+  },
+  "same_14_train_state_probability_comparison": {
+    "STEP003": {
+      "mean_expected_probability": 0.4809,
+      "mean_expected_nll": 0.7469005774677498,
+      "correct": 5,
+      "items": 14
+    },
+    "STEP005_E03_DIAGNOSTIC": {
+      "mean_expected_probability": 0.4879428571428571,
+      "mean_expected_nll": 0.7252403550801281,
+      "correct": 5,
+      "items": 14
+    }
+  }
+}

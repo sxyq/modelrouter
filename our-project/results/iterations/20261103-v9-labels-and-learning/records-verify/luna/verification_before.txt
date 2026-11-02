@@ -1,0 +1,49 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0 -- /opt/miniconda3/envs/testbed/bin/python
+cachedir: .pytest_cache
+rootdir: /testbed
+collecting ... collected 24 items
+
+tests/test_69.py::test_issue69[sqlite_memory] FAILED                     [  4%]
+tests/test_records.py::TestRecordCollection::test_iter PASSED            [  8%]
+tests/test_records.py::TestRecordCollection::test_next PASSED            [ 12%]
+tests/test_records.py::TestRecordCollection::test_iter_and_next PASSED   [ 16%]
+tests/test_records.py::TestRecordCollection::test_multiple_iter PASSED   [ 20%]
+tests/test_records.py::TestRecordCollection::test_slice_iter PASSED      [ 25%]
+tests/test_records.py::TestRecordCollection::test_all_returns_a_list_of_records PASSED [ 29%]
+tests/test_records.py::TestRecordCollection::test_first_returns_a_single_record PASSED [ 33%]
+tests/test_records.py::TestRecordCollection::test_first_defaults_to_None PASSED [ 37%]
+tests/test_records.py::TestRecordCollection::test_first_default_is_overridable PASSED [ 41%]
+tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_subclass PASSED [ 45%]
+tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_instance PASSED [ 50%]
+tests/test_records.py::TestRecordCollection::test_one_returns_a_single_record PASSED [ 54%]
+tests/test_records.py::TestRecordCollection::test_one_defaults_to_None PASSED [ 58%]
+tests/test_records.py::TestRecordCollection::test_one_default_is_overridable PASSED [ 62%]
+tests/test_records.py::TestRecordCollection::test_one_raises_when_more_than_one PASSED [ 66%]
+tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_subclass PASSED [ 70%]
+tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_instance PASSED [ 75%]
+tests/test_records.py::TestRecordCollection::test_scalar_returns_a_single_record PASSED [ 79%]
+tests/test_records.py::TestRecordCollection::test_scalar_defaults_to_None PASSED [ 83%]
+tests/test_records.py::TestRecordCollection::test_scalar_default_is_overridable PASSED [ 87%]
+tests/test_records.py::TestRecordCollection::test_scalar_raises_when_more_than_one PASSED [ 91%]
+tests/test_records.py::TestRecord::test_record_dir PASSED                [ 95%]
+tests/test_records.py::TestRecord::test_record_duplicate_column PASSED   [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_issue69[sqlite_memory] __________________________
+tests/test_69.py:2: in test_issue69
+    db.query("CREATE table users (id text)")
+records.py:315: in query
+    return conn.query(query, fetchall, **params)
+records.py:386: in query
+    keys = cursor.keys()
+/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/result.py:901: in keys
+    return self._metadata.keys
+/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py:1369: in keys
+    self._we_dont_return_rows()
+/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py:1341: in _we_dont_return_rows
+    raise exc.ResourceClosedError(
+E   sqlalchemy.exc.ResourceClosedError: This result object does not return rows. It has been closed automatically.
+=========================== short test summary info ============================
+FAILED tests/test_69.py::test_issue69[sqlite_memory] - sqlalchemy.exc.Resourc...
+========================= 1 failed, 23 passed in 0.33s =========================

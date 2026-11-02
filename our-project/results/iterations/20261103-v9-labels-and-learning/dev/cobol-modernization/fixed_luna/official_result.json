@@ -1,0 +1,134 @@
+{
+  "job_dir": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/jobs/fixed_luna",
+  "job_id": "83735ec3-8395-43e4-92a3-f6007efc1c0c",
+  "job_name": "fixed_luna",
+  "harbor": {
+    "version": "0.24.0",
+    "git_commit_hash": "36232c205abfa42a5df4eee664e36dab0908acb6",
+    "is_editable": true
+  },
+  "status": "PARTIAL_OR_UNVERIFIED",
+  "missing_job_files": [],
+  "trials": [
+    {
+      "trial_dir": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/jobs/fixed_luna/cobol-modernization__Cb4Jsgq",
+      "trial_id": "e05d54df-fe0c-4cab-91f9-ec3235dfec07",
+      "trial_name": "cobol-modernization__Cb4Jsgq",
+      "job_id": "83735ec3-8395-43e4-92a3-f6007efc1c0c",
+      "task_id": {
+        "path": "external/benchmarks/terminal-bench-2-1/tasks/cobol-modernization"
+      },
+      "task_name": "terminal-bench/cobol-modernization",
+      "task_version": null,
+      "task_digest": "sha256:e03aa03965eee48c9f772d566ff9bcd741fceeac9693123f82a13fdd46be0d88",
+      "task_git_sha": null,
+      "task_source": null,
+      "task_checksum": "1d068f63a7d36ec098b620a8b2062419c1a9a2eff6458bc3ff56eb325ebf5903",
+      "agent_info": {
+        "name": "modelrouter-mini-swe-agent",
+        "version": "10.0-mini-2.4.6",
+        "model_info": null
+      },
+      "environment": null,
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "rewards": null,
+      "success": null,
+      "error": null,
+      "reason": "Task pytest CTRF report absent; verifier reward is not a measured task outcome",
+      "usage": {
+        "n_input_tokens": 58549,
+        "n_cache_tokens": null,
+        "n_output_tokens": 2330,
+        "cost_usd": 0.005440955
+      },
+      "model_usage": {
+        "gpt-6-luna": {
+          "n_input_tokens": 52555,
+          "n_cache_tokens": 13334,
+          "n_output_tokens": 2242,
+          "cost_usd": 0.00532329
+        }
+      },
+      "n_input_tokens": 58549,
+      "n_cache_tokens": null,
+      "n_output_tokens": 2330,
+      "cost_usd": 0.005440955,
+      "duration_sec": 108.266594,
+      "verifier_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/jobs/fixed_luna/cobol-modernization__Cb4Jsgq/verifier/reward.txt",
+      "native_trace_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/jobs/fixed_luna/cobol-modernization__Cb4Jsgq/agent/mini-swe-agent.trajectory.json",
+      "router_fallback_used": false,
+      "policy_implementation_status": "CONFIGURED_POLICY",
+      "untested_native_efforts_used": [],
+      "neural_router_evidence_eligible": false,
+      "cost_statuses": [
+        "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+      ],
+      "actual_billed_cost_usd": null,
+      "started_at": "2026-11-02T17:47:33.586865Z",
+      "finished_at": "2026-11-02T17:49:21.853459Z",
+      "episode_wall_s": 108.266594,
+      "phase_wall_s": {
+        "environment_setup": 2.636617,
+        "agent_setup": 0.000794,
+        "agent_execution": 80.060103,
+        "verifier": 19.952689
+      },
+      "verifier_artifacts": [
+        {
+          "step_name": null,
+          "reward_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/jobs/fixed_luna/cobol-modernization__Cb4Jsgq/verifier/reward.txt",
+          "rewards": {
+            "reward": 0.0
+          },
+          "result_rewards": {
+            "reward": 0.0
+          },
+          "stdout_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/jobs/fixed_luna/cobol-modernization__Cb4Jsgq/verifier/test-stdout.txt",
+          "ctrf_path": null
+        }
+      ],
+      "runtime_log": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/jobs/fixed_luna/cobol-modernization__Cb4Jsgq/trial.log",
+      "evidence_scope": "recorded_artifact_agreement"
+    }
+  ],
+  "counts": {
+    "NOT_EVALUATED": 1
+  },
+  "n_total_trials": 1,
+  "stats": {
+    "n_completed_trials": 1,
+    "n_errored_trials": 0,
+    "n_running_trials": 0,
+    "n_pending_trials": 0,
+    "n_cancelled_trials": 0,
+    "n_retries": 0,
+    "evals": {
+      "modelrouter-mini-swe-agent__adhoc": {
+        "n_trials": 1,
+        "n_errors": 0,
+        "metrics": [
+          {
+            "mean": 0.0
+          }
+        ],
+        "pass_at_k": {},
+        "reward_stats": {
+          "reward": {
+            "0.0": [
+              "cobol-modernization__Cb4Jsgq"
+            ]
+          }
+        },
+        "exception_stats": {}
+      }
+    },
+    "n_input_tokens": 58549,
+    "n_cache_tokens": null,
+    "n_output_tokens": 2330,
+    "cost_usd": 0.005440955
+  },
+  "started_at": "2026-11-03T01:47:33.483081",
+  "finished_at": "2026-11-03T01:49:21.866119",
+  "job_wall_s": 108.383038
+}

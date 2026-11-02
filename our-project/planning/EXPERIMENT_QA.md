@@ -8,6 +8,10 @@
 
 ## 0. 阶段入口与决策规则
 
+**11-03三项任务继续执行**：[本轮记录](../results/iterations/20261103-v9-labels-and-learning/review.md)完成四组Train真实比较、新增质量差异1和等质量费用2，累计23偏好/78行，旧75保持。原严格一步目标未变，SQLparse原阶段Verify不随目录名改成Modify；Modify总2含质量1，Inspect/K3/实际Effort0。STEP004混合78行、提高head lr至1e-4后近期四状态仍全Sol1/4；STEP005仅14步骤参与损失，三轮21更新后全Sol5/14、ValLoss升至0.6005。没有批准局部进展或Inspect新目标，没有根据Dev调参；旧64行比例不是充分原因，不宣称完全确定各因素因果占比。
+
+STEP004首次删除权重后误用基础模型的14次输出明确无效，同run原位重建、e03实际身份已取得；STEP005 e03只作原因实验，不冒称原Val最佳e01、不部署。三次实际训练含重建9轮81更新，健康F14与Serving保留。独立Dev选原24中三个任务，原Harbor Docker/未改Evaluator、九个策略Episode已执行；动态STEP004成功2/3、15路由全Sol、无切换/fallback。COBOL Luna因原依赖下载502无CTRF，原奖励不记质量败者，真实命令重放后的原评价单列reward1。HTML三策略均原reward0，保留依赖/HTML变动的失败及原XSS子项语义局限；不改上游取得成绩。60完整请求/354177Token/0.313254145USD参考费，实收/资源费未知。三项及必要后续已执行，负面探索结果不改成收益，不再留待执行建议。
+
 **11-03当前执行结果**：[执行记录](../results/iterations/20261103-v9-quality-supervision/review.md)与[summary](../results/iterations/20261103-v9-quality-supervision/summary.json)记录四个现有Luna账户完整返回，aihope的Sol也实际完整返回；无Alias、无Key复制、无供应商权限操作。5组真实比较含4Train/1Test观察，新增async-timeout Modify质量Luna1（32/32、无P2P回归），原STEP_LEVEL_PREFERENCE/MODEL_ONLY不变。累计20偏好/75训练行，原19/74保留；PyBaMM双6/6仍Test不入Train，Gym许可未知、Argo原镜像缺失仍如实记录。
 
 STEP003从STEP002父沿原Trainer完成1轮10次head更新，Encoder未更新、教师0；Val561 Accuracy0.6898，三版本对新增赢家均仍选Sol。独立distribution-search固定Sol/Luna/动态官方reward均1，参考模型费0.0180706/0.005740635/0.0152233USD；动态全Sol无切换，尚未证明选择收益。新批次Provider异常/fallback0，前6个账户/传输失败Dev没有原终局，不记质量败者。58物理请求/50完整返回/8Usage未知，已知497681Token、0.632776675USD参考费，完整费与实收未知。资源授权已实际使用，预计一亿付费Token才通知；当前无账户或费用许可依赖。

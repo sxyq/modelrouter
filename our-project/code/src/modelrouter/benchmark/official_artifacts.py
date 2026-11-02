@@ -180,8 +180,13 @@ def audit_trial(trial_dir: str | Path) -> dict[str, Any]:
             row["status"] = "VERIFIER_MISMATCH"
             row["reason"] = "Trial result rewards differ from original verifier artifact"
             return row
-        if row["task_name"] == "terminal-bench/fix-git" and not (directory / "verifier" / "ctrf.json").is_file():
-            row["reason"] = "fix-git pytest CTRF report absent; verifier reward is not a measured task outcome"
+        task_path = (config.get("task") or {}).get("path")
+        script = Path(task_path) / "tests" / "test.sh" if task_path else None
+        expects_ctrf = row["task_name"] == "terminal-bench/fix-git"
+        if script is not None and script.is_file():
+            expects_ctrf = expects_ctrf or "--ctrf" in script.read_text()
+        if expects_ctrf and not (directory / "verifier" / "ctrf.json").is_file():
+            row["reason"] = "Task pytest CTRF report absent; verifier reward is not a measured task outcome"
             return row
 
     exceptions = [p["exception_info"] for p in [data, *phases] if p.get("exception_info")]

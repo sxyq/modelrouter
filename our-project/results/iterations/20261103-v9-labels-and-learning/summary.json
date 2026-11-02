@@ -1,0 +1,334 @@
+{
+  "parent_main": "36d6bef95783a78cf3902d0730ff542587a27265",
+  "objective": "REAL_TRAIN_LABELS_TRAINING_DIAGNOSIS_EXPANDED_INDEPENDENT_DEV",
+  "train_comparisons": [
+    {
+      "state_name": "records-verify",
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "phase": "verify",
+      "eligible": true,
+      "expected": {
+        "step_model_preference": "gpt-6-luna"
+      },
+      "test_counts": {
+        "sol": {
+          "before": {
+            "FAIL": 1,
+            "PASS": 23
+          },
+          "after": {
+            "PASS": 24
+          }
+        },
+        "luna": {
+          "before": {
+            "FAIL": 1,
+            "PASS": 23
+          },
+          "after": {
+            "PASS": 24
+          }
+        }
+      },
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/records-verify/comparison.json"
+    },
+    {
+      "state_name": "schema-modify",
+      "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+      "phase": "modify",
+      "eligible": false,
+      "expected": null,
+      "test_counts": {
+        "sol": {
+          "before": {
+            "FAIL": 1,
+            "PASS": 115
+          },
+          "after": {
+            "FAIL": 1,
+            "PASS": 115
+          }
+        },
+        "luna": {
+          "before": {
+            "FAIL": 1,
+            "PASS": 115
+          },
+          "after": {
+            "FAIL": 1,
+            "PASS": 115
+          }
+        }
+      },
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/schema-modify/comparison.json"
+    },
+    {
+      "state_name": "schema-modify-next",
+      "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+      "phase": "modify",
+      "eligible": true,
+      "expected": {
+        "step_model_preference": "gpt-6-luna"
+      },
+      "test_counts": {
+        "sol": {
+          "before": {
+            "FAIL": 1,
+            "PASS": 115
+          },
+          "after": {
+            "PASS": 116
+          }
+        },
+        "luna": {
+          "before": {
+            "FAIL": 1,
+            "PASS": 115
+          },
+          "after": {
+            "PASS": 116
+          }
+        }
+      },
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/schema-modify-next/comparison.json"
+    },
+    {
+      "state_name": "sqlparse-modify",
+      "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+      "phase": "verify",
+      "eligible": true,
+      "expected": {
+        "step_model_preference": "gpt-6.1-sol"
+      },
+      "test_counts": {
+        "sol": {
+          "before": {
+            "FAIL": 3,
+            "PASS": 328
+          },
+          "after": {
+            "PASS": 331
+          }
+        },
+        "luna": {
+          "before": {
+            "FAIL": 3,
+            "PASS": 328
+          },
+          "after": {
+            "FAIL": 3,
+            "PASS": 328
+          }
+        }
+      },
+      "source": "our-project/results/iterations/20261103-v9-labels-and-learning/sqlparse-modify/comparison.json"
+    }
+  ],
+  "new_comparison_states": 4,
+  "new_train_dataset_tasks": 0,
+  "new_train_targets": 3,
+  "new_quality_difference_targets": 1,
+  "new_equal_quality_cost_targets": 2,
+  "training_material": {
+    "dataset_revision": "20261103-expanded-real-steps",
+    "unique_training_rows": 78,
+    "old_rows_reused": 75,
+    "new_real_targets": 3,
+    "new_quality_difference_targets": 1,
+    "new_equal_quality_cost_targets": 2,
+    "new_phase_targets": {
+      "verify": 2,
+      "modify": 1
+    },
+    "total_preferences": 23,
+    "task_preferences": 9,
+    "step_preferences": 14,
+    "new_dataset_tasks": 0,
+    "teacher_generation_requests": 0,
+    "selection_scope": "MODEL_ONLY",
+    "native_effort_targets": 0,
+    "parent_checkpoint_id": "V9_LAYA_STEP_003-e01",
+    "training": {
+      "epochs_requested": 4,
+      "head_lr": 0.0001,
+      "encoder_updated": false,
+      "trainer": "router_data.laya_batch_train.run_sweep_experiment",
+      "selection": "ORIGINAL_FIXED_VAL_LOSS_RULE_NOT_DEV_RESULTS"
+    }
+  },
+  "usage": {
+    "physical_requests": 60,
+    "complete_returns": 60,
+    "by_model": {
+      "gpt-6.1-sol": 38,
+      "gpt-6-luna": 22
+    },
+    "unknown_usage_requests": 0,
+    "known_input_tokens": 330403,
+    "known_output_tokens_including_reasoning": 23774,
+    "known_reasoning_tokens_already_in_output": 1676,
+    "known_model_rate_cost_usd": 0.313254145,
+    "actual_billed_cost_usd": null,
+    "resource_cost_usd": null,
+    "teacher_requests": 0,
+    "reasoning_counting": "INCLUDED_IN_COMPLETION_NOT_ADDED_AGAIN",
+    "known_total_tokens": 354177
+  },
+  "tool_end_events": 58,
+  "training_executions": 3,
+  "training_completed_epochs": 9,
+  "training_optimizer_updates": 81,
+  "training_executions_explanation": "STEP004_FIRST_3_EPOCHS_PLUS_SAME_RUN_REBUILD_3_PLUS_STEP005_3",
+  "step004": {
+    "source": "our-project/results/iterations/20261103-v9-labels-and-learning/training_run.json",
+    "run_id": "V9_LAYA_STEP_004",
+    "parent_checkpoint_id": "V9_LAYA_STEP_003-e01",
+    "status": "early_stopped",
+    "best_epoch": 3,
+    "completed_epochs": 3,
+    "optimizer_updates": 30,
+    "loaded": {
+      "train_S1": {
+        "rows": 78,
+        "items": 78,
+        "skipped": {}
+      },
+      "val_S1": {
+        "rows": 561,
+        "items": 561,
+        "skipped": {}
+      }
+    },
+    "last_fixed_validation": {
+      "items": 561,
+      "loss": 0.594,
+      "accuracy": 0.6898,
+      "mean_confidence": 0.6555,
+      "ece": 0.038,
+      "brier": 0.4083,
+      "brier_top1": 0.2042,
+      "by_type": {
+        "choice": {
+          "items": 561,
+          "loss": 0.594,
+          "accuracy": 0.6898,
+          "mean_confidence": 0.6555,
+          "ece": 0.038,
+          "brier": 0.4083,
+          "brier_top1": 0.2042
+        }
+      },
+      "num_classes": 2,
+      "majority_class": 1,
+      "majority_baseline_accuracy": 0.5258,
+      "majority_balanced_accuracy": 0.5,
+      "prior_baseline_loss": 0.6918,
+      "balanced_accuracy": 0.6897,
+      "macro_f1": 0.6894,
+      "beats_majority_baseline": true,
+      "gold_counts": {
+        "0": 266,
+        "1": 295
+      },
+      "pred_counts": {
+        "0": 274,
+        "1": 287
+      },
+      "confusion_matrix": {
+        "tn": 183,
+        "fp": 83,
+        "fn": 91,
+        "tp": 204
+      }
+    }
+  },
+  "step005_focused_diagnostic": {
+    "source": "our-project/results/iterations/20261103-v9-labels-and-learning/focused_training_run.json",
+    "run_id": "V9_LAYA_STEP_005",
+    "parent_checkpoint_id": "V9_LAYA_STEP_004-e03",
+    "status": "early_stopped",
+    "best_epoch": 1,
+    "completed_epochs": 3,
+    "optimizer_updates": 21,
+    "loaded": {
+      "train_S1": {
+        "rows": 78,
+        "items": 14,
+        "skipped": {}
+      },
+      "val_S1": {
+        "rows": 561,
+        "items": 561,
+        "skipped": {}
+      }
+    },
+    "last_fixed_validation": {
+      "items": 561,
+      "loss": 0.6005,
+      "accuracy": 0.6898,
+      "mean_confidence": 0.6307,
+      "ece": 0.0598,
+      "brier": 0.4132,
+      "brier_top1": 0.2066,
+      "by_type": {
+        "choice": {
+          "items": 561,
+          "loss": 0.6005,
+          "accuracy": 0.6898,
+          "mean_confidence": 0.6307,
+          "ece": 0.0598,
+          "brier": 0.4132,
+          "brier_top1": 0.2066
+        }
+      },
+      "num_classes": 2,
+      "majority_class": 1,
+      "majority_baseline_accuracy": 0.5258,
+      "majority_balanced_accuracy": 0.5,
+      "prior_baseline_loss": 0.6918,
+      "balanced_accuracy": 0.6897,
+      "macro_f1": 0.6894,
+      "beats_majority_baseline": true,
+      "gold_counts": {
+        "0": 266,
+        "1": 295
+      },
+      "pred_counts": {
+        "0": 274,
+        "1": 287
+      },
+      "confusion_matrix": {
+        "tn": 183,
+        "fp": 83,
+        "fn": 91,
+        "tp": 204
+      }
+    }
+  },
+  "model_identity_failure": "FIRST_STEP004_FORWARDS_LOADED_BASE_WEIGHTS_EXCLUDED_FROM_STEP004_RESULTS",
+  "offline_cpu_forwards": 48,
+  "invalid_step004_identity_forwards_included_in_physical_count": 14,
+  "dev_cpu_forwards": 15,
+  "original_train_verifications": 16,
+  "original_dev_verifier_attempts": 9,
+  "complete_original_dev_reports": 8,
+  "original_output_reverifications": 1,
+  "dev": {
+    "summary_path": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/summary.json",
+    "tasks": 3,
+    "full_episode_records": 9
+  },
+  "effective_inspect_targets": 0,
+  "effective_modify_targets": 2,
+  "native_effort_targets": 0,
+  "k3_targets": 0,
+  "dynamic_gain_proven": false,
+  "serving_weights_replaced": false,
+  "healthy_F14_interrupted": false,
+  "cleanup": {
+    "local_temporary_scripts_removed": 7,
+    "server_temporary_scripts_removed": 3,
+    "task_containers_remaining": 0,
+    "raw_data_and_retained_weights_preserved": true
+  }
+}

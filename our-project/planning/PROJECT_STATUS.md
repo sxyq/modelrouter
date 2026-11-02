@@ -1,5 +1,15 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-03 · Train目标23、STEP004/005原因实验与三任务独立Dev推进
+
+接续main `36d6bef95783a78cf3902d0730ff542587a27265`；本轮 [执行记录](../results/iterations/20261103-v9-labels-and-learning/review.md) / [summary](../results/iterations/20261103-v9-labels-and-learning/summary.json)。上一轮三项任务已直接继续，四组真实Train状态比较新增三个步骤目标：SQLparse Verify质量Sol1、Records Verify和Schema Modify等质量费用Luna各1。旧75行保持，实际78行；累计23偏好=任务9/步骤14，步骤Sol5/Luna9、Verify11/Recover1/Modify2，其中Modify质量赢家1，Inspect/K3/NativeEffort仍0。新独立数据任务0，原目标定义及Dev/Test隔离不变。
+
+STEP003目标编码及两种候选顺序真实CPU已确认，head相对变化约0.135%。STEP004提高原head学习率至1e-4、78行/3轮30更新，Val561 Accuracy0.6898/Loss0.5940。首次权重被原保留处理删除，误标STEP004的14次前向实际基础模型，已排除；原位重建同run、e03实际保留，正确权重近期四状态全Sol、1/4。正式Adapter已同步服务器，缺指定权重报错；Serving不重启。
+
+STEP005沿原Trainer仅使同78行中的14个真实步骤目标参与损失，3轮21更新、Encoder未更新、教师0，Val561 Loss0.6005/Brier0.4132/ECE0.0598；e03作为诊断权重保留，原最佳e01不冒充e03。14状态仍全Sol、5/14，旧64行混合不是充分解释，新学习改善未证；没有用Dev选参数或部署STEP005。本轮三次训练含STEP004重建，共9轮81更新，权重仅服务器。
+
+三个独立Dev任务九个策略Episode均已执行，8份完整原官方报告及1份原输出重放报告；动态STEP004在COBOL/Git reward1、HTML reward0，成功2/3，15次全Sol、切换0、fallback0。动态/固定Sol/固定Luna模型参考费总计0.089363200/0.098045100/0.015671745USD，动态收益未证。COBOL Luna原502无CTRF的奖励0保持为未评价，真实已执行命令重放后原Evaluator3/3、reward1，无新生成；该范围不冒称新完整Episode。HTML原Evaluator未改，三策略均失败；Sol及动态缺nh3、Luna改5/12干净HTML，XSS子项存在跳过/超时通过语义，不称安全证明。原两个无API配置失败保留。本轮60完整请求、354177Token、0.313254145USD参考费、实收/资源费未知；原Serving/F14及用户Trainer/tests/账本/历史删除保持。三项任务及必要依赖已执行，不再留下一步菜单。
+
 ## 2026-11-03 · 当前：四账户可用，Modify赢家1，STEP_003与独立Dev对照完成
 
 接续 main `12cbea5d2e6771aa94b502838dae7d7519e84eb4`；[执行记录](../results/iterations/20261103-v9-quality-supervision/review.md) / [summary](../results/iterations/20261103-v9-quality-supervision/summary.json)。复用Code Generation正式ProviderRegistry及四个Luna账户，均完整返回gpt-6-luna；现用aihope也实际返回gpt-6.1-sol。私人配置只引用，不复制Key；只改Provider账户选择/真实失败换端点/用量写锁与Harbor流式配置，未改Code Generation工程或供应商权限。

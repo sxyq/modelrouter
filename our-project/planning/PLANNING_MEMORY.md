@@ -1,5 +1,15 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · 原三项任务实际继续，23偏好/78行，学习负面结果保留
+
+接续main `36d6bef95783a78cf3902d0730ff542587a27265`，入口 [执行记录](../results/iterations/20261103-v9-labels-and-learning/review.md) / [summary](../results/iterations/20261103-v9-labels-and-learning/summary.json)。四组真实Train状态比较取得Sol Verify质量1及Luna等质量费用2，累计23=任务9/步骤14，原75行加3形成78，步骤Verify11/Recover1/Modify2。Modify质量1保持、Inspect/K3/实际Effort0，新独立任务0。Schema首次双115/116仅观察，读取后的新状态双116/116；原严格一步目标不改，PyBaMM Test及Gym观察不入Train。
+
+STEP003编码与原native目标正确，双候选顺序仍Sol，head变化约0.135%。STEP004提高原学习率至1e-4、3轮30更新；首次权重被原保留处理移除，误标STEP004的14次CPU实际基础模型，8/14已排除。沿原实现原位重建同run并保留e03，真实cfg/近期四状态全Sol1/4。正式Adapter已同步服务器，缺指定权重不加载别的权重，原Serving未重启。
+
+STEP005仅使原78行中的14真实步骤参与损失，3轮21更新、Encoder未更新、教师0；原64行及全部标签不改。Val561 Loss0.6005，e03诊断权重不冒称原最佳e01；14状态全Sol5/14，旧目标混合不是充分原因，没有通过手改概率、阈值或Dev调参制造改善。STEP005不用于Dev/Serving。含STEP004重建，三次训练共9轮81更新，权重只在服务器；用户Trainer/tests、账本与历史删除不提交。
+
+独立Dev三个原任务沿Harbor Docker/未改Evaluator比较固定Sol/Luna/动态STEP004，九个Episode已执行：8份完整原报告加1份原输出重放报告。动态COBOL、Git官方成功、HTML失败，2/3、15路由全Sol、切换0/fallback0；三策略模型参考费总计动态0.089363200/Sol0.098045100/Luna0.015671745USD，没有候选改变，收益未证。COBOL Luna原502缺CTRF不作模型失败；原已执行命令重放后的原官方3/3、reward1单列，无新生成，不冒称新完整Episode。HTML三策略失败，Sol与动态缺nh3、Luna改5/12干净HTML，原XSS子项跳过/超时通过不称完整安全证明。两个无API配置失败保留。60完整请求/354177Token/0.313254145USD参考费，实收/资源费未知；63CPU前向中14为基础模型错误身份，只计物理运行。三项及必要后续已执行，保留真实探索负面结果，不再留下一步菜单。
+
 > **版本：v2.5｜更新：2026-11-03｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。项目记忆由执行者按事件维护：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；它与 ChatGPT 产品内置 Memory 分开，也不会自动在后台更新。

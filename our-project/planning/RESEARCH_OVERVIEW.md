@@ -1,5 +1,9 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
+**11-03新增Train与学习原因证据**：[本轮执行](../results/iterations/20261103-v9-labels-and-learning/review.md)四组真实状态比较新增三个步骤目标，其中SQLparse原Verify中Sol331/331、Luna328/331形成质量差异；Records24/24、Schema后续116/116形成Luna等质量费用目标，Schema此前双方115/116无目标。累计23偏好/78行，真实Modify目标2含质量1；Inspect/K3/实际Effort0，原方法及分割不改。
+
+STEP003 native目标正确、候选两顺序均偏Sol、head变化约0.135%。STEP004原lr1e-4更新三轮后近期四状态1/4且全Sol；首次错误基础模型身份已排除，原位重建权重e03并取得实际cfg。STEP005仅14真实步骤参与损失、三轮21更新、全14状态5/14且全Sol，Val561 Loss0.6005；同14个Train目标平均概率0.480900→0.487943、负对数似然0.746901→0.725240，但选择正确数未变。去除旧64行也未改变选择，混合比例不是充分因果解释，旧Val稳定不代表步骤学习成功。STEP005未进入Dev或Serving。独立Dev扩展三个原任务、九个策略Episode，同原Harbor Docker/未改Evaluator；动态COBOL/Git成功、HTML失败，2/3、15次全Sol、无切换/fallback。模型参考费动态0.089363200/Sol0.098045100/Luna0.015671745USD，没有候选改变，收益未证。COBOL Luna原输出重放评价与完整Episode分开，原502未知不算模型败者；HTML原XSS子项跳过/超时通过不能解释为完整安全证明。五RQ和K2研究范围保持，三项执行已完成，负面结果不改写。
+
 > **版本 v1.6｜更新：2026-11-03｜原研究起点：2026-10-09；H1–H7 与历史证据保留**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
