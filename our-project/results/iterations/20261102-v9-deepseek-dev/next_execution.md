@@ -1,5 +1,36 @@
 # V9 Model-only 接口与质量前缀准备
 
+## 2026-11-02 · 当前推荐：两份较晚 Train 前缀，旧六组不重跑
+
+从main `db65d3476c4709cd8b43e2c31ab40c1ace3671df`继续本地分析，[权重与质量研究](step_quality_research.md)确认两份未比较前缀。旧C1–C6已执行且全双失败；以下历史六项清单不再是待执行队列。SQLparse cutoff5也已比较，未列入下一轮。STEP_001实体已删除，同权重CPU对照仍0/12，不使用替代权重。
+
+| 下一轮候选 | 原来源 | 精确截止与状态 | 原验证 |
+|---|---|---|---|
+| A1 Records | [task_source](../20261101-v9-overnight-real-supervision/t18-records/task_source.json)；TRA-002 Train | `t18-records-sol-low / 4`；[trajectory](../20261101-v9-overnight-real-supervision/t18-records/episodes/t18-records-sol-low/mini-swe-agent.trajectory.json) messages[0:10]；[events](../20261101-v9-overnight-real-supervision/t18-records/episodes/t18-records-sol-low/events.jsonl)第18行，verify | 24项（1 FAIL_TO_PASS / 23 PASS_TO_PASS）；原[run_config.verify_command](../20261101-v9-overnight-real-supervision/t18-records/episodes/t18-records-sol-low/run_config.json) |
+| A2 async-timeout | [task_source](../20261101-v9-overnight-real-supervision/t15-async-timeout/task_source.json)；TRA-002 Train | `t15-async-timeout-sol-low / 5`；[trajectory](../20261101-v9-overnight-real-supervision/t15-async-timeout/episodes/t15-async-timeout-sol-low/mini-swe-agent.trajectory.json) messages[0:12]；[events](../20261101-v9-overnight-real-supervision/t15-async-timeout/episodes/t15-async-timeout-sol-low/events.jsonl)第22行，verify | 32项（3 FAIL_TO_PASS / 29 PASS_TO_PASS）；原[run_config.verify_command](../20261101-v9-overnight-real-supervision/t15-async-timeout/episodes/t15-async-timeout-sol-low/run_config.json) |
+
+两项均已有真实复现与失败测试反馈、尚未修改源码或测试；阶段verify来自保存状态，不重标成modify。完整消息与已有比较无结构相同记录，原准备入口恢复消息/生成/工具计数一致。来源为两个已有任务/两个仓库，不新增来源任务，仍UNLABELED。旧19条与74行不增加；路线B仅推荐，不改现行标签条件。
+
+### 下一轮执行提示词（资源范围待负责人批准）
+
+继续最新main，仅执行上表A1、A2两份不同历史前缀，不重新选任务，不重跑旧六对、旧Episode、Twin或训练。
+
+申请的最小执行范围是本机已有Docker/基础镜像和现有付费Provider：每前缀真实Sol low/Luna low各一步，最多4次生成、4个隔离工具分支。每前缀恢复后取一次原范围前值，两分支各运行一次原验证，共6次原验证。教师关闭；不访问服务器、下载模型/依赖、占GPU、训练、启动完整Agent Episode、修改Serving/F14/handoff或接触Dev/Final答案。本文件本身不授予这些资源权限。
+
+复用原Provider、DefaultAgent/DockerEnvironment、工具解析/执行、反馈保存和real_supervision/prepare。按原environment/task_source恢复同任务初始版本，只重放截止前已发生命令；同一截止历史、同一环境、同一工具窗口/测试范围，不把原后续动作、解答或终局放进输入。现存基础镜像未知是否齐全；资产缺失时报告具体缺项，不自动安装、下载或重建。
+
+从实际容器读取uname，使用原Agent变量描述当前工具环境。保存的Darwin历史文件不改；若直接恢复已渲染历史，两候选共同追加同一条真实环境事实说明并保存完整新请求消息，明确区分原历史与当前说明。不要指导修复计划、指定下一工具命令或给单个模型安装rg/apply_patch。
+
+逐候选保存实际请求/返回身份、请求Effort与供应商应用档位证据、Usage/缓存/费率、原命令、工具退出状态/反馈、原测试结果和未知原因。应用Effort未确认时为UNKNOWN，仅允许MODEL_ONLY；AA沿原v4，Max分不当low实测。恢复后的前值与新结果只作验证依据，不加入此前截止输入。
+
+原Verifier/测试文件与run_config.verify_command保持。只在一步后原范围一方可信通过而另一方未通过时产生原步骤质量偏好；双方通过且费用可确认时产生等质量费用偏好；双失败、未知、API/身份/环境异常只保留观察。不按测试通过总数、仅读取或教师判断造赢家。
+
+保存原固定测试ID的前后结果、已知修复项和新增回归供路线B研究，日志缺单项状态时为UNKNOWN；不新增报告依赖、变更Verifier或为部分改善创建新训练标签。Records额外全suite的7个errors、timeout的2个skip与原24/32项分开记录。
+
+四次生成及原验证结束即报告真实质量/费用/观察数量；如果仍双失败，停止扩大同类收费采集，提交负责人决定独立质量进展目标。不要自动训练或开展CPU对照。保存原始结果并按范围更新现有报告；及时移除本次自有容器和无用临时文件，不建备份、不删基础镜像/研究权重/真实失败。GitHub与服务器状态分别报告。
+
+## 历史准备：75bad09（以下各节不作为当前执行任务）
+
 从 main `75bad09780d559fc5027be8cd0818e9d6b61637e` 接续。本轮完成一个原入口的候选覆盖处理，筛出六个未比较前缀，并确定三份 CPU 对照输入。新模型调用、工具分支、CPU 模型前向、训练和服务器访问均为 0；新增有效监督为 0。
 
 原 124 次诊断、19 次 DeepSeek Episode、独立 TwinRouterBench、历史训练和真实比较均不重跑。原结果见 [离线分析](offline_router_analysis.md) 和 [summary.json](summary.json)，本轮事实在 `local_followup_preparation`。

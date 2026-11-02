@@ -8,6 +8,14 @@
 
 ## 0. 阶段入口与决策规则
 
+**11-02本地根因与待决推荐**：从main db65d34接续，[研究说明](../results/iterations/20261102-v9-deepseek-dev/step_quality_research.md)确认原STEP history明确EXPLICIT_PIN，而旧集合不读它；原位持续保留该声明，删除后同步原manifest。不能只根据旧manifest与新run不同认定错误；清理发起者/完整排序/当时源码版本仍未知，精确权重无可信本机副本、未恢复，源码未部署服务器。
+
+推荐先沿原路线A执行Records cutoff4与async-timeout cutoff5两份较晚真实前缀，最多4次生成/4分支/6次原验证含前值；两个已有Train任务、两个仓库、均verify，UNLABELED，本轮未调用Docker/API。SQLparse cutoff5曾比较，不重采。原19条及74行保持，不能凭准备启动训练。
+
+路线B仅待负责人决定：固定FAIL_TO_PASS/PASS_TO_PASS测试ID，记录before/after、修复集合与新回归，不能按通过数量排序、把skip当通过或把仅读取当质量。部分改善须与现有一步完整验证目标分开；未修改STEP_LEVEL_PREFERENCE/prepare_comparison、未给旧双失败补标签、未记录新已批准Q-ID。明确推荐先做上述小量A，同次原验证观察供B研究；若仍无区分，再决定新目标，不扩大同类收费采集。
+
+原直接Docker提示取宿主Darwin；当前Harbor容器uname已正确，不重复修改。未来恢复历史时共同环境事实说明必须两候选一致、原历史文件保留，不指导行动、不安装额外工具。路线A资源须在下一任务获明确授权，本轮服务器/训练/GPU/CPU/API/Serving0，Research与五RQ不变。
+
 **11-02真实有限执行与当前判断**：从main be716e8接续，用户分别授权A本机Docker/真实Sol、Luna最多12次一步及原验证，B原服务器CPU同STEP_001的12次前向。A完成六个已有Train前缀、12生成/13模型工具命令/12原验证，六组均两失败，全部OBSERVED_OUTCOME_ONLY，新增选择目标0；不按读取进展、拟议patch、通过测试项数或更低费用造赢家。模型费率0.13404708USD、Usage12/12、教师0，实收与资源未知；应用Effort仍UNKNOWN、K=3未具备，协议未变。详见[本轮结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)。
 
 **B的真实未完成原因**：指定e01于11:05:32台北被原额度清理删除，理由outside_new_core_pool_15pct_quota(1/2)、846196996字节；没有归档去向，旧manifest的PINNED_PARENT/loadable不能当当前实体。B0/12，不替换父权重、不重训、不推断encoder/head比例或inference_mode收益。11:28取样F14仍Epoch2第7/420块，Serving仍F05/原Kev；本轮未操作它们。原19目标/74行保持，不能以这批双失败启动训练；当前一步立即通过整项验证的目标是否要扩展为其他实际步骤质量范围，留给负责人决定，本轮未改定义、不新增Q-ID。所有自有容器、临时驱动及重复重放已清理，失败保留，服务器部署0。

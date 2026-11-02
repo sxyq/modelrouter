@@ -1,5 +1,13 @@
 # Laya / Kev 全历史训练研究报告
 
+## 2026-11-02 · 当前：研究权重保留处理与两份质量前缀准备，无新训练
+
+接续main db65d34，[本地权重与监督研究](../iterations/20261102-v9-deepseek-dev/step_quality_research.md)确认STEP原history明确EXPLICIT_PIN，旧保留集合未持续读取它；原位沿用history声明并在实际清理后写原manifest。源码提交26321fedaa6bb970b378a029131d2f139d8cd499，未部署服务器。真实删除及846196996字节记录保留，发起者/当时完整排序与源码版本未知；本机没有可信精确副本线索，STEP物理权重未恢复，不能用F11或重训产物替代。原1轮/9次head更新及Val561项指标保持历史含义。
+
+下一轮只推荐Records cutoff4和async-timeout cutoff5，两份新前缀、两个已有Train任务/两个仓库，均verify；已有真实失败反馈、未源码编辑且无相同历史比较。原prepare恢复消息10/12、工具4/5一致，教师null、AA v4。原测试24/32项保持，7个额外errors/2个skip另列；预计4次真实生成/6次原验证含前值，需另获Docker/Provider授权。本轮新目标/参数更新0，原19/74行/215与186保持，inspect/modify有效监督仍0。
+
+路线A保留一步原范围完整验证；路线B的固定测试ID改善与回归只作待决研究方向，不改原标签、不进Trainer、不把双失败改成赢家。当前不启动Laya/Kev加训、不自动晋升Serving；F11-e01/R11研究代表保留。CPU仍0/12，未取得encoder/head占比或inference_mode速度结论；服务器/F14/handoff本轮未访问，最后11:28:14台北取样仅作历史状态，原训练负结果和用户其他修改保持。
+
 ## 2026-11-02 · 最新：真实比较未增训练目标，STEP_001实体已缺失
 
 从main be716e8接续，[六前缀真实结果](../iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)完成12次真实生成和原验证，六组两失败，仅观察，无新增质量/成本标签。累计Model-only仍19（任务9/步骤10、质量Sol4/Luna4、步骤成本Luna2），有效步骤verify9/recover1，inspect/modify0；原74行材料未训练，215/186仅可组合。Laya/Kev本轮更新0，旧固定Val、Twin八版本、父代表F11-e01/R11和负结果不重算或替换。

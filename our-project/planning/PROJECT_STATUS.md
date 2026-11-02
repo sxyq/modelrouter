@@ -1,5 +1,17 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-02 · 当前：明确保留声明持续生效，下一轮只推荐两份较晚质量前缀
+
+从main `db65d3476c4709cd8b43e2c31ab40c1ace3671df`继续，本轮仅本地源码和保存材料；API、Docker执行、服务器、训练、GPU/CPU模型前向均0。[权重与步骤质量研究](../results/iterations/20261102-v9-deepseek-dev/step_quality_research.md)及原summary.local_weight_and_step_quality_research为最新入口。原19目标、74行、215/186可组合材料保持，新增有效标签0，不能称模型更会选择。
+
+原训练history明确写STEP_001-e01的EXPLICIT_PIN；旧collect_pinned_parent_ids只看当前参数/父关系，不读历史声明，后续可进入15%池。现原位读取明确声明，普通依赖不永久保留；two_phase_cleanup删除后写原manifest，finalize避免重复写。源码提交 `26321fedaa6bb970b378a029131d2f139d8cd499`，未部署服务器。11:05:32旧额度删除及846196996字节已有真实记录，但发起者/调用参数/当时完整排序与源码版本未知；1/2不证明跨组性能排序。本机限定记录没有可信精确副本线索，STEP实体仍不可用，不重建或以F11替代。
+
+新推荐A1 Records Sol cutoff4（10消息/4工具，events18）、A2 async-timeout Sol cutoff5（12消息/5工具，events22），两个已有Train任务/两个仓库、verify2；均有真实失败反馈且尚未源码编辑，完整消息与既有比较无同前缀，原prepare恢复一致。SQLparse cutoff5已有失败比较被剔除；不重跑旧六对。下一轮建议最多4次真实生成、4隔离分支、6次原验证含前值，需本机Docker/付费Provider另获授权；无服务器/GPU/Dev/Final，教师关闭，Effort仍UNKNOWN。
+
+路线A保持原一步全范围验证标签；路线B的固定测试ID前后改善/回归仅研究推荐，未获批准、未改STEP_LEVEL_PREFERENCE或prepare_comparison、不新增Q-ID。原直接Docker模板读取Mac宿主uname，历史提示有Darwin/专用sed；当前Harbor已读取容器Linux，不重复改源码/历史或安装工具。研究仍缺inspect/modify质量目标，当前不足以只凭74行再训。
+
+F11-e01/R11研究代表、原Laya/Kev训练结果及负结果保留；F14/Serving/handoff本轮未访问，最后仅11:28:14台北历史取样，不能写成当前在线状态。CPU仍0/12，精确权重与分段速度未知；Research五RQ八图十二表不变。用户Trainer/tests/账本/删除/Fig.2保持，无新增备份、权重、镜像或临时构建。
+
 ## 2026-11-02 · 当前：六前缀真实比较完成，指定 CPU 权重已缺失
 
 接续main `be716e8341a043c9ce29c066290cf0a270bea3b1`，用户已授权本机Docker/最多12次真实Sol、Luna一步生成及原验证，以及原服务器CPU的12次前向。[本轮完整结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)与原summary的`quality_prefix_execution`为当前入口。A完成六个已有Train任务/五仓库、12生成、13条模型工具命令、12次原范围验证；六组两方均未通过，新增质量/成本偏好0。inspect2/modify3/recover1是决策前阶段，实际多为继续读取/复现；OAuth请求缺失rg，Autograd Luna请求缺失apply_patch，均只存观察，不补赢家。构造配置首次缺少model_name的12个错误发生在生成前，付费0；补齐原调用参数后才产生上述12请求，无自动重试。

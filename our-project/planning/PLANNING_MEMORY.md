@@ -8,6 +8,18 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-11-02 · 最新：权重明确保留持续生效，两份较晚质量前缀待授权
+
+从main db65d34接续，本轮只本地源码/保存材料分析与定向Git同步。[研究说明](../results/iterations/20261102-v9-deepseek-dev/step_quality_research.md)、[当前下一轮提示词](../results/iterations/20261102-v9-deepseek-dev/next_execution.md)和summary.local_weight_and_step_quality_research为恢复入口。旧六对已结束不重跑，新增目标0，API/Docker/服务器/模型前向/训练/GPU0。
+
+STEP原history写明EXPLICIT_PIN，旧collect_pinned_parent_ids只看当前参数与父关系，自己的F11父关系不会保护自己。现读取history的明确声明，普通依赖仍从当前runs/plans生成；two_phase_cleanup实际删除后写原manifest，finalize不重复写。源码提交26321fedaa6bb970b378a029131d2f139d8cd499，未部署服务器。旧11:05:32额度删除846196996字节事实保留，发起者、调用参数、完整候选排序/当时服务器源码版本未记录；配额1/2不是跨组性能结论。限定本机runs/.runtime/结果无可信精确副本，STEP仍缺失，CPU0/12，不换F11或重训。
+
+路线A只有两份可靠新前缀：A1 Records t18-records-sol-low/4，trajectory messages[0:10]、events第18行，verify、4工具、last0，原24测试；A2 async-timeout t15-async-timeout-sol-low/5，messages[0:12]、events第22行，verify、5工具、last1，原32测试。两份经原build_offline_prefix_input恢复、消息保持、均无既有同前缀比较；两个已有Train任务/两个仓库、新来源任务0。Records额外7errors与timeout额外2skips不并入原范围。SQLparse cutoff5已有失败比较已排除；Records原step5中断与assistant数不同，不选它。
+
+推荐下一轮最多4真实Sol/Luna生成、4隔离分支、6次原验证含2次前值，教师关闭、EffortUNKNOWN、AA v4；本机Docker/付费Provider须另获授权，不依赖服务器/GPU/权重或完整Episode，不碰Dev/Final答案。均UNLABELED、未进74行；原19/215/186保持，不自动训练。B仅研究推荐：固定测试ID的前后改善/回归与完整成功分开，待负责人决定新目标，不改现行标签或旧双失败。
+
+直接Docker上游get_template_vars取Mac uname，已渲染历史含Darwin/Mac sed；当前Harbor真实容器uname已正确，无需再改。新渲染可沿原extra_template_vars，历史恢复则两候选共同追加实际环境事实，保留旧文件、不指导计划或给单模型装工具。F14/Serving/handoff没刷新，仍只引用11:28:14台北取样；F11/R11代表与负结果保留，Research五RQ八图十二表及用户Trainer/tests/账本/删除/Fig.2不动，无新备份/临时构建。
+
 ### 2026-11-02 · 最新：真实六前缀结束，CPU指定权重已被旧清理删除
 
 从main be716e8接续，A/B均获用户明确授权，不再把本轮记为资源未授权。恢复入口为[逐任务结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、`quality-prefix-execution/summary.json`、[CPU状态](../results/iterations/20261102-v9-deepseek-dev/cpu_forward_measurements.json)和原summary.quality_prefix_execution。A按C3/C4/C5/C6/C1/C2执行12次真实Sol/Luna生成、13工具命令、12原验证，六组全部双失败，新增质量/费用目标0，全部仅观察；模型费率0.13404708USD、Usage12/12、教师0，实收/资源未知。六个已有Train任务/五仓库，新增来源任务0，inspect2/modify3/recover1不等于成功修改。OAuth缺rg、Autograd Luna缺apply_patch，不安装替代工具、不改验证或人为补标签。原配置缺model_name的首次12构造错误付费0，错误记录保留，不算12次模型失败。
