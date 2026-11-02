@@ -1,5 +1,17 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-02 15:21 · 当前：原镜像已恢复，A1/A2请求与验证结束，新增标签0
+
+从实际main909f3fc继续，负责人明确授权拉取原镜像并执行A，不重复询问；两份指定SWE-smith镜像已拉取。[本轮结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、late_prefix_completion_summary.json与summary.late_quality_prefix_completion为恢复入口。4次正式Sol/Luna请求、4候选分支、6次原范围验证完成，无Alias/完整Episode。Records真实前后23/24，timeout真实前后29/32；同消息/状态/恢复环境/工具/原验证均对应，不复用旧成绩。
+
+只有Records Sol完成1条读取/复现动作，原失败未修复；两次Luna返回匹配型号但正文/工具/finish_reason/Usage均空，原Agent报FormatError；timeout Sol4096输出含3624 reasoning，function_call未完整生成。六份原验证可信，但两组trusted_outcomes不齐，只能OBSERVED_OUTCOME_ONLY，不能称可信双失败或质量对照。完整有效偏好对新增0，标签0，原19（任务9/步骤10、质量Sol4/Luna4、费用Luna2）/74行/215与186保持；verify9/recover1、inspect/modify有效0。
+
+已知Sol费率0.112037USD；Luna2次Usage缺失，完整模型费及供应商实收/资源USD未知，不填0。Sol输入24604/输出5053含reasoning4374/缓存写24598，reasoning不重复计价；教师0。Sol low仍报告max，Luna应用档位未知，仅MODEL_ONLY，Effort/K=3标签0，AA v4保持。
+
+原prepare_comparison/Trainer/Provider未改，不训练或自动晋升Serving。下一项先用保存的请求/组装响应定位生成有效性问题，停止当前同通道同配置收费采集；本轮不能据此否定原一步目标。B仅待决的固定测试ID修复集合包含/无新回归定义，当前集合全空，不补标签。
+
+6容器全删、剩余0，另删28份自动字节码/安装元数据副本，无新构建镜像/备份/长期驱动/研究权重；保留两份原基础镜像，Docker镜像总6.503GB、build cache/volume0，59份真实执行证据约2.3MB保留。服务器/F14/Serving/handoff/GPU/训练/CPU前向未操作，保留代码未部署，STEP实体未恢复；最后11:28服务器取样仅作历史。F11/R11代表、用户Trainer/tests/账本/删除/Fig.2及Research五RQ八图十二表不动。
+
 ## 2026-11-02 14:49 · 当前：A已授权，原Docker镜像缺失，真实生成前停止
 
 从main `8fb6e16a442fa73451a5a3e6c989ebb167627ba7`接续，负责人已明确授权本轮A的Docker/真实Sol、Luna最多4次生成、4分支及6次原验证，不再询问。恢复Status/QA/Memory/Research、原两前缀和配置后，Docker Desktop29.9.2可响应，但desktop-linux/default镜像列表均为空；原Records/async-timeout基础镜像inspect报No such image。[实际环境证据](../results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/late_prefix_environment.json)与[本轮结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)为入口。

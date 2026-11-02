@@ -1,5 +1,13 @@
 # Laya / Kev 全历史训练研究报告
 
+## 2026-11-02 15:21 · 当前：A1/A2有限运行结束，新有效标签和训练仍0
+
+接续main909f3fc，已获原镜像下载及A直接执行授权，两基础镜像已拉取，4次正式请求/6次原范围验证结束。Records前后23/24、timeout前后29/32；1完整工具动作仅读取，另3次FormatError（两Luna空输出/Usage缺失，timeout Sol4096输出含3624 reasoning且工具调用未完成）。原验证全部可信，但两候选有效终局不齐，无可训练偏好，不写成可信双失败，详见[本轮结果](../iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)。
+
+原19 Model-only/74行待训练/215与186可组合视图保持，新任务/步骤质量/步骤费用/Effort/K=3标签均0，不创建空训练增量、不更新Laya/Kev参数。当前两题来自两个已有Train任务/两个仓库、verify阶段，无新增来源任务；原有效步骤仍verify9/recover1、inspect/modify0。前后固定测试ID无修复或回归，不给部分改善造赢家。
+
+先定位当前生成有效性再开展限定新比较；保留原一步目标，B修复集合包含/无新回归仅待决独立目标，不改Trainer或旧19条。不重训STEP、用F11冒充或自动上线，F11/R11代表与负结果保持。已知费率0.112037USD仅Sol，Luna和完整费用未知、教师0；6容器已删、原两镜像保留，无新构建/备份。服务器/F14/Serving/handoff/GPU/CPU前向未访问，STEP实体未恢复、保留代码未部署；11:28服务器快照仅历史。
+
 ## 2026-11-02 14:49 · 当前：A已授权但环境缺失，没有新标签或训练
 
 接续main8fb6e16，本轮A1 Records cutoff4、A2 async-timeout cutoff5的最多4次真实生成及6次原验证已获明确授权。Docker可响应，但本机两个现有context镜像列表均为空，原基础镜像缺失；[实际证据](../iterations/20261102-v9-deepseek-dev/quality-prefix-execution/late_prefix_environment.json)记录生成/工具/验证0、无模型费用，未下载重建。不把旧原验证结果当新结果，也不称两模型失败或资源未授权。

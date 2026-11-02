@@ -1,5 +1,52 @@
 # V9 六个 Train 前缀真实比较与 CPU 实测状态
 
+## 2026-11-02 15:21 · A1/A2有限运行结束，原验证齐全，新增标签0
+
+从实际main `909f3fcde6922d856957fc59fe9459ae445b6a78`接续。负责人明确追加原基础镜像拉取与继续A的授权；两份指定SWE-smith镜像已拉取，未重复询问，也没有扩大4次请求/4候选分支/6次原范围验证。原14:49缺镜像记录保留为之前的尝试，不再代表当前状态。
+
+本轮实际4次正式Sol/Luna请求、6次原范围验证，均未使用Alias或启动完整Episode。4/4请求与返回模型字符串匹配，但只有1次完整可执行Agent动作，另外3次FormatError；**两组均不具备有效偏好资格，新增选择标签0。** 完整数据见 [late_prefix_completion_summary.json](quality-prefix-execution/late_prefix_completion_summary.json)。
+
+| 前缀 | 新取得的原前值 | Sol一步后的原验证与状态 | Luna一步后的原验证与状态 | Sol模型费率USD | Luna模型费率USD |
+|---|---|---|---|---:|---|
+| A1 Records cutoff4，verify | 23/24，1 failed | 23/24；完整一步但只读取/复现，没有源码修改 | 23/24；空正文、无工具调用/finish_reason/Usage，FormatError；不当可信修复失败 | 0.037901 | UNKNOWN |
+| A2 async-timeout cutoff5，verify | 29/32，3 failed | 29/32；4096输出含3624 reasoning，function_call未完整生成，FormatError | 29/32；空正文、无工具调用/finish_reason/Usage，FormatError | 0.074136 | UNKNOWN |
+
+每题先取一次真实原范围前值，再为两候选分别用同一基础镜像、原task_source故障patch和截至cutoff的原命令恢复环境。两方当前源码/故障提交、完整消息、状态、工具协议和原测试范围一致；原Darwin历史文件不改，两方共同追加实际Linux容器说明。不是复用旧23/24或29/32作为新验证结果，也不声称重建的环境与已删除临时镜像字节相同。
+
+原24/32项的六份输出全部可信、原测试文件与verify_command保持。Records原全suite额外7个errors、timeout额外2个skip属于恢复历史中的范围，不并入原24/32项；历史工具中已有的pytest命令只用于恢复，另有27条截止前命令重放记录，不能作为候选新增监督。实际候选工具调用只有Records Sol的1条，耗时2.321829秒，继续读query/事务文档、复现脚本及原失败摘要。
+
+### 失败发生在哪里
+
+- Records Sol收到完整工具调用并真实执行，但没有修复原失败，是可信单候选一步失败观察。
+- 两次Luna的Provider组装响应均有匹配模型名，assistant为空、无工具调用、无finish_reason和Usage；延迟141.219743/166.214070秒。原Agent拒绝这样的输出是正常行为，不能据此宣称Luna修复能力低。供应商具体结束原因未知，单条原始SSE事件没有保存，不能猜测为某一种超时或模型替换。
+- async-timeout Sol响应为incomplete/max_output_tokens，4096输出中3624为reasoning，带未完成的function_call；未人工补齐参数、执行截断命令、追加请求或提高上限。它不是完成一步修复后的可信失败终局。
+
+原 [prepare_comparison](../../../code/src/modelrouter/v9/training/real_supervision.py)与prepare_record均未修改，两组因trusted_outcomes不齐而返回COMPARISON_NOT_VALID，保存为OBSERVED_OUTCOME_ONLY。不能写成两组“可信双失败”，也不能将它们作为两个模型的质量胜负或低费用偏好。
+
+### 费用、档位及原始证据
+
+已知Sol模型费率合计 **0.112037USD**；两次Luna缺Usage，完整模型费用UNKNOWN，不是0。已知输入24604、输出5053、其中reasoning4374、缓存读取0/写入24598，仅覆盖Sol两请求；reasoning已包含在completion，不重复计价。四请求生成延迟合计480.730640秒，教师0；供应商实收、工具/容器/镜像资源USD未计量。
+
+Sol两次发送reasoning.effort=low但仍报告max，Luna发送reasoning_effort=low且不报告应用档位。实际应用Effort继续UNKNOWN，仅MODEL_ONLY范围，Effort/K=3标签0，AA沿原v4。返回型号是API身份记录，不是物理权重实读。
+
+[A1 comparison](quality-prefix-execution/A1/comparison.json)、[A2 comparison](quality-prefix-execution/A2/comparison.json)分别指向两题原始请求body、原Provider组装响应、metrics、Agent消息、实际工具反馈、环境重放、前后验证和固定测试ID状态。原比较集合追加两行，旧六对不覆盖；没有创建空训练增量或新调用器/Agent Loop。保留59份新执行文件共2312129字节，约2.3MB；请求不含授权密钥。
+
+### 监督判断与下一项
+
+新增任务级/步骤质量/步骤费用目标均0；原19条仍任务9/步骤10，质量Sol4/Luna4、费用Luna2、有效阶段verify9/recover1，inspect/modify0；74行及215/186可组合视图保持。当前两题来自两个已有Train任务/两个仓库，新增来源任务0。六次固定验证前后修复集合/新增回归均为空，不把读取或空输出转成标签。
+
+原一步目标仍可用于具备真实可执行动作和原验证终局的比较，已有19条含义不变；本轮首先暴露生成有效性问题，没有提供否定原目标的新可信对照。**停止当前同通道同配置的收费采集，先利用已保存请求/响应定位Luna空流及Sol输出截断，再决定有限真实比较范围。** 不重试本轮四次、不启动训练或Dev/Final。
+
+路线B仍仅待负责人选择：固定原FAIL_TO_PASS/PASS_TO_PASS测试ID，若一个候选实际修复集合严格包含另一个、没有新增原PASS_TO_PASS回归且单项状态完整，才考虑独立的“部分质量进展偏好”；集合交叉、skip/error/未知、仅读取均无赢家。它与现有一步全范围通过目标分开；本轮没有批准新目标、修改Trainer或给旧双失败补标签。当前修复集合为空，采用这条规则也不能制造新答案。
+
+### 清理与其他状态
+
+6个本轮容器全部移除，Docker剩余容器0；另删两Records分支自动生成的28份字节码和records.egg-info副本，原untracked_files.json清单保留，这些内容可由原环境重新生成。没有构建初始/分支镜像、备份、长期驱动或下载研究权重。保留两份指定原基础镜像供原实验复用，Docker报告总镜像6.503GB；build cache/volume为0。没有删除原始请求、验证结果、用户文件或其他研究资产。
+
+源码无永久修改，只有原数据/报告与必要规划更新。服务器/F14/Serving/handoff/训练/GPU/CPU模型前向均未访问或执行，权重保留代码仍未部署；STEP精确权重仍缺失，F11/R11研究代表及历史负结果保留。最后服务器状态仍为11:28:14台北历史取样，不写成当前在线。RESEARCH_OVERVIEW、五RQ、八图十二表、用户Trainer/tests/私人账本/原删除/Fig.2不改。
+
+## 历史：14:49缺镜像尝试（已由后续授权拉取解决）
+
 ## 2026-11-02 14:49 · A1/A2已授权，原基础镜像缺失，生成前停止
 
 接续main `8fb6e16a442fa73451a5a3e6c989ebb167627ba7`，负责人末尾明确要求“让你做就是授权直接做”，本轮A的Docker/真实Sol、Luna最多4次一步生成、4分支及6次原验证已授权；没有再次询问。实际环境证据见 [late_prefix_environment.json](quality-prefix-execution/late_prefix_environment.json)。

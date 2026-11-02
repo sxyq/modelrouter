@@ -1,5 +1,17 @@
 # V9 Model-only 接口与质量前缀准备
 
+## 2026-11-02 15:21 · 当前：A1/A2已执行，不再按下文作为未执行候选
+
+负责人已明确授权并拉取两份原基础镜像；从main909f3fc完成4次请求、4候选分支和6次原范围验证，原14:49缺镜像限制已被新授权解决。[本轮结果](quality_prefix_execution.md)和[结构化数据](quality-prefix-execution/late_prefix_completion_summary.json)为当前入口。Records前后均23/24，timeout前后均29/32；1完整工具动作、3FormatError、Usage2/4，新有效标签0，两组不能当可信质量双失败。
+
+下一项优先是**生成有效性离线定位**，而非继续采集相同类型前缀。可直接使用以下提示词：
+
+> 继续最新main，仅使用A1/A2保存的四份request.json、provider_responses、metrics、Agent消息与原Provider/mini-SWE-agent源码，定位Luna空正文/缺Usage与Sol输出截断发生在哪个现有边界。Records Sol有效但只读取；两次Luna没有工具/finish_reason/Usage；timeout Sol4096输出含3624 reasoning并留下未完成function_call。区分已有源码能确定的行为和供应商尚未知原因，不从组装JSON猜测未保存SSE事件。不要重复原4次请求、提高Token、调用新API、训练、跑Agent、访问服务器或部署权重保留代码。只有真实源码与已保存数据足以证明问题时才原位修改必要函数，不加第二个调用器、自动重试或新监测系统。给出下一次能取得完整动作的最小真实比较配置与具体请求数量，新的收费范围在下一任务单独明确；已有本轮A授权不重复询问。
+
+原一步目标保留；若负责人决定路线B，可选固定F2P修复集合严格包含、无P2P新增回归且单项状态完整的独立部分质量目标，不按通过数量排序。本轮修复集合均为空，B未获批准，旧19条/74行/215与186不变。当前不启动训练、CPU对照或新Dev/Final；基础镜像保留且可用，不再提出重复拉取。以下各节为旧准备或缺镜像历史，不作为新执行许可或任务队列。
+
+## 历史：14:49原基础镜像缺失
+
 ## 2026-11-02 14:49 · A已授权，现因原基础镜像缺失停止
 
 负责人已明确授权本轮A（Docker、最多4次真实Sol/Luna生成、4分支、6次原验证），不再询问此范围许可。[本次真实环境结果](quality_prefix_execution.md)及 [环境证据](quality-prefix-execution/late_prefix_environment.json)确认Docker可响应，但desktop-linux/default两个现有本机context镜像列表均为空，两份原基础镜像inspect报No such image。

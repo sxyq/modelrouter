@@ -8,6 +8,18 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-11-02 15:21 · 最新：A1/A2已实际结束，不再重新拉镜像或重采
+
+从main909f3fc继续，负责人追加原镜像下载/直接执行授权，未重复询问。两原基础镜像已拉取；[结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、[实际汇总](../results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/late_prefix_completion_summary.json)、summary.late_quality_prefix_completion为入口，14:49缺镜像记录保留为历史。
+
+A1 Records Sol4/10原消息、A2 timeout Sol5/12原消息均按原task_source/环境/截止恢复，各1前值+2分支原验证，共4请求/6验证。前后Records23/24、timeout29/32，6份原验证可信。仅Records Sol1读取/复现命令有效且未修复；两Luna模型名匹配但空正文/工具/finish_reason/Usage，FormatError；timeout Sol4096输出含3624 reasoning，未完成function_call、FormatError。同消息/状态/环境/原协议一致，但两对trusted_outcomes不齐，均OBSERVED_OUTCOME_ONLY，新合法标签0；不是两个模型可信双失败。
+
+费用已知Sol0.037901+0.074136=0.112037USD，Luna2次无Usage，完整模型费/实收/资源未知；Sol输入24604、输出5053含reasoning4374、缓存写24598，reasoning只计一次。教师关闭，low请求Sol仍报告max/Luna不报告应用档位，EffortUNKNOWN/K=3目标0。原19/74行/215与186保持，任务9/步骤10、质量4:4/成本Luna2、verify9/recover1；不训练、不改原标签。
+
+下一项是已保存四请求/响应的生成有效性离线定位，停止当前同通道同配置收费采集；不要重跑本轮或旧六对/19 Episode/124诊断/Twin。B仅待负责人选固定F2P修复集合严格包含且无P2P回归的独立部分目标；当前前后集合为空，不能补赢家或混入旧19标签。
+
+6容器全删、Docker剩余0，2原基础镜像保留且镜像总6.503GB，build cache/volume0；另删28份自动字节码/安装元数据副本，无临时驱动、备份、初始/分支构建镜像或研究权重下载，59份真实执行文件约2.3MB保留。服务器/F14/Serving/handoff/训练/GPU/CPU前向未访问，保留代码不部署、STEP精确实体仍缺失，F11/R11代表不替换。最后11:28历史服务器状态不作当前在线；用户Trainer/tests/账本/原删除/Fig.2/Research五RQ八图十二表保持。
+
 ### 2026-11-02 14:49 · 最新：A已授权，原镜像缺失，模型请求0
 
 从main8fb6e16继续，用户已明确授权本轮A的Docker/真实Sol、Luna最多4次生成、4分支和6次原验证，不重问许可。[本轮实际结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、[环境证据](../results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/late_prefix_environment.json)、summary.late_quality_prefix_execution与next_execution顶部为恢复入口。Docker desktop-linux29.9.2可响应，但desktop-linux/default镜像列表均为空；两个原基础镜像inspect报No such image，原临时initial tag也无。原因/时间未记录，不归因维护者。
