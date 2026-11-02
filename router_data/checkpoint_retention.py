@@ -1158,6 +1158,13 @@ def collect_pinned_parent_ids(
         if cid:
             pinned[str(cid)].append("EXPLICIT_PIN")
     for rid, r in (runs or {}).items():
+        # Explicit retention declarations survive the process that supplied them.
+        # Ordinary dependency statuses are still derived from current runs/plans.
+        for entry in r.get("history") or []:
+            cid = entry.get("checkpoint_id")
+            if cid and "EXPLICIT_PIN" in (entry.get("retention_reason") or ""):
+                if "EXPLICIT_PIN" not in pinned[str(cid)]:
+                    pinned[str(cid)].append("EXPLICIT_PIN")
         parent = r.get("parent_checkpoint_id")
         if parent and parent != "Base":
             if rid not in pinned[str(parent)]:
@@ -3102,6 +3109,8 @@ class CheckpointRetentionManager:
             ],
         }
         _atomic_write_json(self.out_root / "cleanup_audit_log.json", audit_log)
+        if executed:
+            self.write_checkpoint_manifest(manifest=manifest)
         return audit_log
 
     def _sync_run_best_symlink(self, run_id: str, rdata: Dict[str, Any]) -> None:
@@ -3426,8 +3435,9 @@ class CheckpointRetentionManager:
                 latest_link.unlink(missing_ok=True)
         _atomic_write_json(run_root / "run.json", run_meta)
         _atomic_write_json(run_root / "epoch_metrics.json", run_meta.get("history") or [])
-        self.two_phase_cleanup(manifest=manifest, allow_legacy_cleanup=False, dry_run=False)
-        self.write_checkpoint_manifest(manifest=manifest)
+        cleanup = self.two_phase_cleanup(manifest=manifest, allow_legacy_cleanup=False, dry_run=False)
+        if not cleanup["phase2_executed_count"]:
+            self.write_checkpoint_manifest(manifest=manifest)
 
     def write_checkpoint_manifest(self, manifest: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Write comprehensive `checkpoint_manifest.json` in `out_root` covering P4 & P5."""
