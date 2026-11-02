@@ -1,5 +1,26 @@
 # V9 六个 Train 前缀真实比较与 CPU 实测状态
 
+## 2026-11-02 14:49 · A1/A2已授权，原基础镜像缺失，生成前停止
+
+接续main `8fb6e16a442fa73451a5a3e6c989ebb167627ba7`，负责人末尾明确要求“让你做就是授权直接做”，本轮A的Docker/真实Sol、Luna最多4次一步生成、4分支及6次原验证已授权；没有再次询问。实际环境证据见 [late_prefix_environment.json](quality-prefix-execution/late_prefix_environment.json)。
+
+Docker Desktop当前context为desktop-linux、Server29.9.2且可响应。两个现有本机context（desktop-linux/default）的镜像列表均为空；原Records与async-timeout基础镜像inspect均报No such image，原临时initial tag也不存在。未确定镜像何时、因何丢失，不归因到本轮或某个维护者。
+
+| 对象 | 许可Train历史与截止 | 原范围 | 本轮Sol/Luna | 本轮前值/分支验证 | 新标签 |
+|---|---|---:|---|---|---:|
+| A1 Records | `t18-records-sol-low / 4`，messages[0:10]，events第18行，verify | 24项 | 均未请求；原基础镜像缺失 | 未执行 | 0 |
+| A2 async-timeout | `t15-async-timeout-sol-low / 5`，messages[0:12]，events第22行，verify | 32项 | 均未请求；原基础镜像缺失 | 未执行 | 0 |
+
+精确任务ID、原环境和命令来源仍使用 [next_execution.md](next_execution.md) 与 [step_quality_research.md](step_quality_research.md)。本轮确认两个task_source故障patch、完整截止消息与原run_config.verify_command都在；没有重新选任务、改写问题或复制原后续答案。
+
+缺失对象为 `jyangballin/swesmith.x86_64.kennethreitz_1776_records.5941ab27`、`jyangballin/swesmith.x86_64.aio-libs_1776_async-timeout.d0baa9f1`。按“缺原资产停止，不自行下载/安装/重建”的范围，未创建容器或发付费请求。不是API失败、模型双失败或未获许可，不能把此前23/24、29/32写成本轮结果，也没有新的固定测试ID前后观察。
+
+本轮请求/工具/验证/可信候选对均0，新增Model-only/Effort/K=3目标0；原19条（任务9/步骤10）和74行待训练材料保持。未发生模型调用费用；逐候选Usage、返回身份、应用Effort、实收与结果不存在，保持null，不填虚构Token或成绩。没有触发两组双失败后的路线B研究结论；原一步目标的早期适用限制仍沿上一轮证据，不能从本次环境缺项得出新模型质量判断。
+
+下一项实质工作是恢复这两个精确原基础镜像的可用性，然后在原A范围完成未执行的4次生成及6次验证。当前范围不包含下载/环境重建，故本轮不执行恢复；也不重问已经给出的A许可。未访问服务器/F14/Serving/handoff/权重或GPU，没有训练/新Episode、临时脚本、镜像、备份或构建产物；本轮无需删除任何研究资产，原结果和用户修改保持。
+
+## 历史：此前六组已完成结果（不重跑）
+
 从 main `be716e8341a043c9ce29c066290cf0a270bea3b1` 接续。用户已分别授权 A 的本机 Docker/真实 Sol、Luna 一步比较和 B 的原服务器 CPU 前向。本轮 A 完成 12 次生成、13 条模型工具命令和 12 次原范围验证；六组均未通过，新增路由答案 0。B 因指定 e01 权重已被此前清理删除，实际前向 0/12。没有新 Episode、训练、GPU 计算、Serving 部署或旧实验重跑。
 
 ## 1. 项目与执行范围

@@ -8,6 +8,14 @@
 
 ## 0. 30 秒恢复上下文
 
+### 2026-11-02 14:49 · 最新：A已授权，原镜像缺失，模型请求0
+
+从main8fb6e16继续，用户已明确授权本轮A的Docker/真实Sol、Luna最多4次生成、4分支和6次原验证，不重问许可。[本轮实际结果](../results/iterations/20261102-v9-deepseek-dev/quality_prefix_execution.md)、[环境证据](../results/iterations/20261102-v9-deepseek-dev/quality-prefix-execution/late_prefix_environment.json)、summary.late_quality_prefix_execution与next_execution顶部为恢复入口。Docker desktop-linux29.9.2可响应，但desktop-linux/default镜像列表均为空；两个原基础镜像inspect报No such image，原临时initial tag也无。原因/时间未记录，不归因维护者。
+
+A1 Records t18-records-sol-low/4、messages[0:10]、events18、verify、原24项；A2 async-timeout t15-async-timeout-sol-low/5、messages[0:12]、events22、verify、原32项。原task_source故障patch与run_config.verify_command齐全，不重新选题。缺原基础镜像而未恢复环境/创建分支，API/生成/工具/验证/新增标签/费用均0；不是双模型失败。原19/74行/215与186保持，没有新路线B前后数据或训练。
+
+下一项缺 `jyangballin/swesmith.x86_64.kennethreitz_1776_records.5941ab27`、`jyangballin/swesmith.x86_64.aio-libs_1776_async-timeout.d0baa9f1`；当前明确不下载/安装/重建，因此停在原资产缺项，不把A许可当未给。恢复镜像后仍需完成原A4/6真实比较，不能拿旧验证结果充数。无服务器/CPU前向/GPU/训练/Serving/F14/handoff操作，STEP缺失与保留源码未部署事实不变。无本轮容器/镜像/备份/脚本/临时构建或删除；用户Trainer/tests/私人账本/原删除/Fig.2与真实失败保留，Research五RQ不变。
+
 ### 2026-11-02 · 最新：权重明确保留持续生效，两份较晚质量前缀待授权
 
 从main db65d34接续，本轮只本地源码/保存材料分析与定向Git同步。[研究说明](../results/iterations/20261102-v9-deepseek-dev/step_quality_research.md)、[当前下一轮提示词](../results/iterations/20261102-v9-deepseek-dev/next_execution.md)和summary.local_weight_and_step_quality_research为恢复入口。旧六对已结束不重跑，新增目标0，API/Docker/服务器/模型前向/训练/GPU0。

@@ -1,5 +1,15 @@
 # V9 Model-only 接口与质量前缀准备
 
+## 2026-11-02 14:49 · A已授权，现因原基础镜像缺失停止
+
+负责人已明确授权本轮A（Docker、最多4次真实Sol/Luna生成、4分支、6次原验证），不再询问此范围许可。[本次真实环境结果](quality_prefix_execution.md)及 [环境证据](quality-prefix-execution/late_prefix_environment.json)确认Docker可响应，但desktop-linux/default两个现有本机context镜像列表均为空，两份原基础镜像inspect报No such image。
+
+A1/A2截止、task_source故障patch与原验证命令都在，候选没有替换；生成、工具、验证、费用、新标签均0。没有新的双失败，也没有路线B单项前后数据。按当前“缺资产即停、不下载/安装/重建”范围，本轮不恢复镜像或调用模型。
+
+直接缺项为 `jyangballin/swesmith.x86_64.kennethreitz_1776_records.5941ab27` 与 `jyangballin/swesmith.x86_64.aio-libs_1776_async-timeout.d0baa9f1`。下一项需要这两个精确原镜像恢复可用；当前下载/环境重建未在范围内，不把已给出的A许可误记为未授权。镜像恢复后再沿下表两前缀与原4/6范围完成实际比较，不重跑旧六对、不扩大任务、训练或服务器操作。
+
+以下“待批准”的字样属于上一轮准备历史；本轮A已明确授权，但实际实验尚未发生。原19条与74行保持，STEP精确权重仍缺失，CPU与服务器不属于本轮。
+
 ## 2026-11-02 · 当前推荐：两份较晚 Train 前缀，旧六组不重跑
 
 从main `db65d3476c4709cd8b43e2c31ab40c1ace3671df`继续本地分析，[权重与质量研究](step_quality_research.md)确认两份未比较前缀。旧C1–C6已执行且全双失败；以下历史六项清单不再是待执行队列。SQLparse cutoff5也已比较，未列入下一轮。STEP_001实体已删除，同权重CPU对照仍0/12，不使用替代权重。
