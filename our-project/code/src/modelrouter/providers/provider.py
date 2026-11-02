@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import fcntl
+import io
 import logging
 import os
 import random
@@ -20,7 +21,7 @@ import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
@@ -349,15 +350,25 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             raise ValueError("Only the two authorized Luna endpoints may be requested")
         return target
 
-    def _read_response(self, response, stream: bool, started: float) -> Tuple[Dict[str, Any], Optional[float]]:
+    @staticmethod
+    def _record_response_bytes(raw, capture, secret):
+        if capture is not None:
+            capture.write(raw.replace(secret, b"[REDACTED_API_KEY]") if secret else raw)
+            capture.flush()
+
+    def _read_response(self, response, stream: bool, started: float, capture=None,
+                       secret=b"") -> Tuple[Dict[str, Any], Optional[float]]:
         if not stream:
-            return json.loads(response.read().decode("utf-8")), None
+            raw = response.read()
+            self._record_response_bytes(raw, capture, secret)
+            return json.loads(raw.decode("utf-8")), None
         body: Dict[str, Any] = {"object": "chat.completion", "choices": []}
         choices: Dict[int, Dict[str, Any]] = {}
         tool_calls: Dict[Tuple[int, int], Dict[str, Any]] = {}
         ttft = None
         done_received = False
         for raw_line in response:
+            self._record_response_bytes(raw_line, capture, secret)
             line = raw_line.decode("utf-8").strip()
             if not line.startswith("data:"):
                 continue
@@ -463,11 +474,14 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         stream: bool = True,
         *,
         response_format: Optional[Dict[str, Any]] = None,
+        raw_response_path: Optional[str | Path] = None,
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Return (native_response, metrics); one request, no execution or retry.
 
         Usage accounting is completed here. Callers must not charge it again.
         Missing usage, returned identity or billing remains explicitly unknown.
+        raw_response_path enables local-only diagnostic capture for this request.
+        Capture contains response bytes only, with any echoed request key removed.
         """
         from modelrouter.providers.registry import MODEL_REGISTRY
 
@@ -511,12 +525,30 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         with _token_budget() as budget:
             input_bound = len(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
             request_bound = input_bound + max_tokens
-            try:
-                with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:
-                    body, ttft_ms = transport._read_response(self, response, stream, started)
-            except (Exception, KeyboardInterrupt):
-                _record_budget(budget, None, None, request_bound)
-                raise
+            with ExitStack() as files:
+                capture = None
+                if raw_response_path is not None:
+                    capture_path = Path(raw_response_path)
+                    capture_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+                    capture = files.enter_context(os.fdopen(os.open(
+                        capture_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "wb"))
+                try:
+                    try:
+                        with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:
+                            http_status = response.status
+                            response_content_type = response.headers.get("Content-Type")
+                            body, ttft_ms = transport._read_response(
+                                self, response, stream, started, capture, request_api_key.encode("utf-8"))
+                    except urllib.error.HTTPError as exc:
+                        if capture is not None:
+                            raw = exc.read()
+                            self._record_response_bytes(raw, capture, request_api_key.encode("utf-8"))
+                            # Existing HTTPError consumers must still be able to read the body.
+                            exc.read = io.BytesIO(raw).read
+                        raise
+                except (Exception, KeyboardInterrupt):
+                    _record_budget(budget, None, None, request_bound)
+                    raise
             raw_usage = body.get("usage")
             p_tokens, c_tokens, r_tokens, cached, cache_written = transport._usage_counts(raw_usage or {})
             reported_completion = (raw_usage or {}).get("completion_tokens") if request_protocol == "chat_completions" else (raw_usage or {}).get("output_tokens")
@@ -553,6 +585,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "provider": provider_name,
             "provider_base_url": request_base_url,
             "protocol": request_protocol,
+            "http_status": http_status,
+            "response_content_type": response_content_type,
+            "diagnostic_capture_enabled": raw_response_path is not None,
             "finish_reason": (body.get("status") if request_protocol == "responses"
                               else next((choice.get("finish_reason") for choice in body.get("choices", [])), None)),
             "response_status": response_error or "COMPLETE",
@@ -836,9 +871,11 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
             (usage.get("input_tokens_details") or {}).get("cache_write_tokens"),
         )
 
-    def _read_response(self, response, stream, started):
+    def _read_response(self, response, stream, started, capture=None, secret=b""):
         if not stream:
-            return json.loads(response.read().decode("utf-8")), None
+            raw = response.read()
+            self._record_response_bytes(raw, capture, secret)
+            return json.loads(raw.decode("utf-8")), None
         body: Dict[str, Any] = {}
         output = {}
         text = ""
@@ -847,6 +884,7 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
         done_received = False
         terminal_event = None
         for raw_line in response:
+            self._record_response_bytes(raw_line, capture, secret)
             line = raw_line.decode("utf-8").strip()
             if line.startswith("event:"):
                 event = line[6:].strip()
