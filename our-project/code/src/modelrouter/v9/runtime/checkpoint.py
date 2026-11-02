@@ -22,6 +22,11 @@ class CheckpointRouterClient:
 
     def route(self, *, pre_decision_state, legal_actions, **_):
         actions = {action["model"]: action for action in legal_actions}
+        if len(actions) != len(legal_actions):
+            raise ValueError(
+                "Checkpoint MODEL_ONLY routing requires one action per model; "
+                "multiple Native Effort actions for the same model are unsupported"
+            )
         target, instruction = MODEL_TARGETS["STEP_LEVEL_PREFERENCE"]
         payload = {
             "checkpoint_path": self.checkpoint["path"],

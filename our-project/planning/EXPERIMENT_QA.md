@@ -8,6 +8,12 @@
 
 ## 0. 阶段入口与决策规则
 
+**11-02 本轮资源范围与实际结果**：接续main75bad09；只授权本地阅读/必要源码修改、保存材料分析、候选整理及定向提交推送。服务器、下载、付费API、GPU、训练、新Episode、Serving均未授权，也未执行。只在Checkpoint MODEL_ONLY入口对同模型多动作明确报错，避免low/high候选被字典覆盖；三不同模型原动作映射保持，普通联合Serving Schema不改，无新模型输出或概率调整。
+
+[六前缀与CPU准备](../results/iterations/20261102-v9-deepseek-dev/next_execution.md)覆盖inspect2/modify3/recover1、六个已有Train任务/五仓库；共享仓库关系保留。原准备入口恢复六份真实截止历史，模型候选比较0、赢家0，均UNLABELED，原19目标/74行不增加。不能把后续原Episode成功复制到这些前缀，inspect读取有效但原验证仍失败时也不主观造赢家。下一步需要明确的六前缀12次真实两模型一步比较授权，应用Effort未知仍不作目标。
+
+CPU仅定位原调用边界并选三保存状态，授权后同实体旧/新布局与no_grad/inference_mode共12次前向；当前未实测、不称提速。公开原生参考不代替服务器实读，不改权重、attention、线程、Serving或F14。无新训练、研究方法或Q-ID，Status/Memory记录本轮事实，Research保持；旧结果与用户其他修改保留。
+
 **11-02离线接续范围与结果**：用户明确要求解释恒选Sol及CPU内部开销、修复真实问题、评估19/74材料；本轮禁止付费API、GPU、训练/Benchmark/旧Episode、服务器Serving和F14/handoff操作。沿main6e4541c完成[离线诊断](../results/iterations/20261102-v9-deepseek-dev/offline_router_analysis.md)：124选择均为严格原生argmax，无候选错位证据；有限K=2 head与输入/任务分布变化尚未证明动态泛化，不调概率、阈值或候选顺序。
 
 修正右截断的尾部动态状态位置、去掉指定权重缺失的隐式基座回退，原Checkpoint进程采用inference_mode。124条JSON值/候选MASK保持，关键状态恢复完整，但41条总截断仍在；新模型输出和加速未实测。74行可由原Serializer消费、无5120截断，只支持有限K=2接续的格式条件；没有因此启动训练。任务9条全Luna成本、步骤质量4:4加Luna成本2且verify9/recover1，先补独立Train质量步骤；Alias Dev、旧独立四档、未知Effort/双失败不生成新赢家。服务器未连接/同步，五RQ与原Verifier不改，无新Q-ID或执行体系。

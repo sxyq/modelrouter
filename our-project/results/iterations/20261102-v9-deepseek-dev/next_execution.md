@@ -1,0 +1,120 @@
+# V9 Model-only 接口与质量前缀准备
+
+从 main `75bad09780d559fc5027be8cd0818e9d6b61637e` 接续。本轮完成一个原入口的候选覆盖处理，筛出六个未比较前缀，并确定三份 CPU 对照输入。新模型调用、工具分支、CPU 模型前向、训练和服务器访问均为 0；新增有效监督为 0。
+
+原 124 次诊断、19 次 DeepSeek Episode、独立 TwinRouterBench、历史训练和真实比较均不重跑。原结果见 [离线分析](offline_router_analysis.md) 和 [summary.json](summary.json)，本轮事实在 `local_followup_preparation`。
+
+## 1. Model-only 接口
+
+`CheckpointRouterClient.route` 用 `action["model"]` 建立字典。同一模型的 low/high 等合法候选会共享键，后者覆盖前者；问题说明和输出标签又只有模型身份，不能表达联合动作。已有 `RouteRequest` 只拒绝重复 `action_id`，所以两个不同档位可以通过该 Schema。原 Harbor 的成员判定只能确认选中动作属于候选集，不能找出被丢掉的候选。
+
+只在 `v9/runtime/checkpoint.py:CheckpointRouterClient.route` 比较原候选数量与模型字典数量；不一致时在启动推理进程前抛出 `ValueError`，说明这个 Checkpoint 的 MODEL_ONLY 入口每模型只能有一个动作，不支持同模型多档 Native Effort。保留原问题、说明、候选顺序、概率计算、排序、权重和输出字段。
+
+少量离线确认已完成：
+
+- 使用 [build-pmars 原事件](alias-build-pmars/events.jsonl) 的 Sol/Luna/Flash 三个候选，原顺序、保存的 Top-1 与全部排序动作仍映射到同一原始候选；没有产生新的概率。
+- 使用该记录中的 Luna low 与原 Registry 合法的 Luna high，普通 `RouteRequest` 保留四个不同动作，Checkpoint Model-only 明确报错，`process` 仍为 `None`。这只证明接口行为，不证明供应商实际应用了档位。
+- 原文件语法有效；未使用模型实体、SSH、模拟 Router 或新测试文件。不同模型正常路径的完整前向未执行。
+
+职责和调用方已读取：`checkpoint.py`、`benchmark/harbor_agent.py`、`serving/schemas.py`、`v9/runtime/decision_hook.py`。普通 Serving 联合动作、Harbor 原候选成员判定、Provider、教师和 Trainer 均未修改。
+
+## 2. 六个未比较的 Train 前缀
+
+六个前缀来自六个**已有**公开训练任务、五个仓库；OAuthlib 两题共享代码版本，分别涉及 RFC6749 工具函数与 RFC8628 endpoint，不能计为两个独立仓库。阶段为 inspect 2、modify 3、recover 1，来自原事件启发式状态，不是新人工标签。本轮新执行任务数为 0。
+
+来源均为已保存 `TRA-002 / SWE-bench/SWE-smith / train`，数据许可 MIT。沿用各批次 `task_isolation.json` 的精确任务 ID、可识别仓库/镜像证据：Canary8、Dev24、Final57 及 TwinRouterBench 交集均为 0；不据此声称所有语义近重复都已排除，也没有读取 Final 答案或验证器。源码许可证仍以原任务环境记录为准。
+
+| 候选 | 任务 ID | 截止阶段与实际可见信息 | 已发生工具数 / 末次退出码 |
+|---|---|---|---:|
+| C1 OAuth2 scope | `oauthlib__oauthlib.1fd52536.combine_file__09vlzwgc` | inspect；已读 `rfc6749/utils.py`，任务描述包含顺序、空值和 URI scope 处理异常；还没有产生下一步命令 | 1 / 0 |
+| C2 Device authorization | `oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d` | inspect；已读 `rfc8628/endpoints/device_authorization.py` 并定位原 device 测试目录，尚未编辑 | 1 / 0 |
+| C3 SQL output formatters | `andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8` | modify；已见 Python/PHP formatter、formatter/filter_stack、入口及原输出测试；适合判断跨文件调用与输出状态，尚未写后续复现脚本 | 4 / 0 |
+| C4 Records parameters | `kennethreitz__records.5941ab27.lm_rewrite__letryq82` | modify；已读 `records.py` 的连接/query 路径及原测试；此前已见 SQLAlchemy 2.0.36，尚未执行后续复现和修改 | 3 / 0 |
+| C5 Autograd Sylvester | `HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be` | modify；已读 `autograd/scipy/linalg.py` 中 VJP 的实际赋值/返回顺序及原梯度测试；下一条修改尚未发生 | 3 / 0 |
+| C6 Timeout recovery | `aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb` | recover；已读取 timeout 实现和原测试，组合读取命令末尾因镜像没有 `rg` 返回 127；保留实际失败和此前输出，不伪造测试败因 | 2 / 127 |
+
+### 精确历史与状态位置
+
+路径都引用原资产，不复制完整消息、环境、任务 patch 或新训练视图。`messages[0:N]` 是零起点、末端不包含 N，包含截止前全部真实消息；下一条 assistant 及其工具结果不在输入内。
+
+| 候选 | 原 Episode 与截止 | 完整消息引用 | 原决策前状态 |
+|---|---|---|---|
+| C1 | `oauth2-scope-sol / 1` | [trajectory](../20261101-v9-k2-supervision-expansion/oauth2-scope/episodes/oauth2-scope-sol/mini-swe-agent.trajectory.json)，`messages[0:4]` | [events](../20261101-v9-k2-supervision-expansion/oauth2-scope/episodes/oauth2-scope-sol/events.jsonl) 第 6 行 |
+| C2 | `oauthlib-sol / 1` | [trajectory](../20261101-v9-k2-supervision-expansion/oauthlib/episodes/oauthlib-sol/mini-swe-agent.trajectory.json)，`messages[0:4]` | [events](../20261101-v9-k2-supervision-expansion/oauthlib/episodes/oauthlib-sol/events.jsonl) 第 6 行 |
+| C3 | `sqlparse-sol / 4` | [trajectory](../20261101-v9-k2-supervision-expansion/sqlparse/episodes/sqlparse-sol/mini-swe-agent.trajectory.json)，`messages[0:10]` | [events](../20261101-v9-k2-supervision-expansion/sqlparse/episodes/sqlparse-sol/events.jsonl) 第 18 行 |
+| C4 | `t18-records-sol-low / 3` | [trajectory](../20261101-v9-overnight-real-supervision/t18-records/episodes/t18-records-sol-low/mini-swe-agent.trajectory.json)，`messages[0:8]` | [events](../20261101-v9-overnight-real-supervision/t18-records/episodes/t18-records-sol-low/events.jsonl) 第 14 行 |
+| C5 | `t19-autograd-luna-low / 3` | [trajectory](../20261101-v9-overnight-real-supervision/t19-autograd/episodes/t19-autograd-luna-low/mini-swe-agent.trajectory.json)，`messages[0:8]` | [events](../20261101-v9-overnight-real-supervision/t19-autograd/episodes/t19-autograd-luna-low/events.jsonl) 第 14 行 |
+| C6 | `t15-async-timeout-sol-low / 2` | [trajectory](../20261101-v9-overnight-real-supervision/t15-async-timeout/episodes/t15-async-timeout-sol-low/mini-swe-agent.trajectory.json)，`messages[0:6]` | [events](../20261101-v9-overnight-real-supervision/t15-async-timeout/episodes/t15-async-timeout-sol-low/events.jsonl) 第 10 行 |
+
+已用原 `v9/training/prepare.py:build_offline_prefix_input` 在内存恢复六份截止历史；生成数、工具数、末次退出码与保存状态全部对应，4/4/10/8/8/6 条消息均截止正确。六份教师值均为 null，能力快照均为 `20261031T072548885180Z-v4`。没有运行工具、原任务测试或 Tokenizer/模型前向，也没有把轨迹终局写入这些状态。
+
+### 原环境、验证范围与资源
+
+六题均沿用 `minisweagent.environments.docker.DockerEnvironment`、mini-SWE-agent 2.4.6、`/testbed` 和原 bash 协议。下表的配置文件给出完整 `verify_command`、原初始镜像版本 `initial_environment_version`、模型协议和输出参数；命令按原字段执行，不人工替换或删减测试。
+
+| 候选 | 任务与环境依据 | 原验证范围与完整命令来源 |
+|---|---|---|
+| C1 | [task_source](../20261101-v9-k2-supervision-expansion/oauth2-scope/task_source.json)、[environment](../20261101-v9-k2-supervision-expansion/oauth2-scope/environment.json)；OAuthlib 1fd52536、scope 任务初始版本 | 673 项；[run_config.verify_command](../20261101-v9-k2-supervision-expansion/oauth2-scope/episodes/oauth2-scope-sol/run_config.json) |
+| C2 | [task_source](../20261101-v9-k2-supervision-expansion/oauthlib/task_source.json)、[environment](../20261101-v9-k2-supervision-expansion/oauthlib/environment.json)；同仓库版本、不同任务初始镜像 | 673 项；[run_config.verify_command](../20261101-v9-k2-supervision-expansion/oauthlib/episodes/oauthlib-sol/run_config.json) |
+| C3 | [task_source](../20261101-v9-k2-supervision-expansion/sqlparse/task_source.json)、[environment](../20261101-v9-k2-supervision-expansion/sqlparse/environment.json)；SQLparse e57923b3 | 331 项；[run_config.verify_command](../20261101-v9-k2-supervision-expansion/sqlparse/episodes/sqlparse-sol/run_config.json) |
+| C4 | [task_source](../20261101-v9-overnight-real-supervision/t18-records/task_source.json)、[environment](../20261101-v9-overnight-real-supervision/t18-records/environment.json)；Records 5941ab27 | 24 项；[run_config.verify_command](../20261101-v9-overnight-real-supervision/t18-records/episodes/t18-records-sol-low/run_config.json) |
+| C5 | [task_source](../20261101-v9-overnight-real-supervision/t19-autograd/task_source.json)、[environment](../20261101-v9-overnight-real-supervision/t19-autograd/environment.json)；Autograd ac044f0d | 585 项；[run_config.verify_command](../20261101-v9-overnight-real-supervision/t19-autograd/episodes/t19-autograd-luna-low/run_config.json) |
+| C6 | [task_source](../20261101-v9-overnight-real-supervision/t15-async-timeout/task_source.json)、[environment](../20261101-v9-overnight-real-supervision/t15-async-timeout/environment.json)；async-timeout d0baa9f1 | 32 项；[run_config.verify_command](../20261101-v9-overnight-real-supervision/t15-async-timeout/episodes/t15-async-timeout-sol-low/run_config.json) |
+
+原清理已移除临时初始/分支快照，不能假定这些旧 tag 现在存在。后续复用原基础镜像与保存的初始化操作：恢复同一任务的原问题状态，仅重放截至上述截止的原命令，保存实际反馈，再为两个候选建立同一环境起点。原测试恢复方式、结果和 Artifact 保存沿既有实现。任务 patch 只供原环境构造/验证使用，不进入模型状态。当前本机 Docker 和基础镜像是否仍可用未取样；本轮没有启动 Docker、恢复快照或下载任何资产。
+
+C1–C6 都是 **UNLABELED / 可准备同状态候选对 / 未执行新比较**。原任务终局和旧比较是 `OBSERVED_OUTCOME_ONLY` 或既有监督，不能成为这六个新前缀的答案；没有一条新真实赢家。原 `real_supervision.prepare_comparison` 对 UNLABELED 不产生路由目标，不能把这些引用混入现有 74 行训练材料。
+
+本轮还看到 h11、python-json-logger、boltons、dotenv、addict、xmltodict 等目录只有元数据获取失败，不具备本地真实历史和完整环境依据，未列入这六项。没有因候选不足重下载原始轨迹或访问服务器。
+
+### 取得授权后的最小真实比较
+
+六个前缀各比较真实 `gpt-6.1-sol:low`、`gpt-6-luna:low`：共 12 次候选一步生成、12 个隔离工具分支及同范围原验证，不运行完整新 Episode。沿原 Provider、DefaultAgent 工具解析、DockerEnvironment、反馈/费用保存和 `v9/training/real_supervision.py → prepare.py`。
+
+两个候选必须看到同一截止消息、同一问题说明、Sol→Luna 候选身份/价格及上述 AA v4；采集关闭教师。请求 low 仅为配置，应用档位仍未知，目标只允许 MODEL_ONLY，Native Effort 不产生答案。只在原验证有可信差异时产生一步质量偏好；双方通过且费用可计量时才产生等质量费用偏好。双方失败、未知、API/身份/环境问题均只存观察。
+
+特别是 inspect：如果两方只完成有效读取、原任务验证仍失败，不把定位说明或教师评价升级为质量赢家。现有步骤目标是“该步后立即通过原范围验证”，没有改成长程收益或主观进展评分。本轮选择依据是可见问题和阶段覆盖，未根据后续赢家安排模型标签比例。
+
+## 3. CPU 对照准备，未实测
+
+现行实际路径为 `CheckpointRouterClient.route → checkpoint.main → LayaAdapter.system_one → 原生 RLAgent.system_one`。`LayaAdapter.route` 的联合问题不是这批 124 次调用入口。客户侧 `PreDecisionState.router_text` 在请求 payload 构造时执行，原客户端路由计时从 payload 构造之后开始；不能将这个状态格式化段误当服务器 encoder 时间。
+
+| 待计时段 | 现有边界与记录方法 |
+|---|---|
+| 输入整理与原生 Token 编码 | Adapter 的 `formatted_questions` 到原生问题/state 转换、Tokenizer 与 build_sequence 完成；状态布局生成单列，原总段不包含客户侧 formatter |
+| Batch / Collate | 原生编码项到 padded batch、mask 与选项位置完成，保留同一 CPU 张量与窗口 |
+| Transformer Encoder | 原 DecisionModel 的 ModernBERT encoder 实际 forward 进入/返回；用该模块临时 forward hook 计时，输出原样继续 |
+| Transformer Head | 原两层全序列 Transformer head 实际进入/返回；与后续候选 gather/logits 分清，不把整个模型 forward 重复相加 |
+| 输出概率转换 | 原 logits/act 到既有 softmax、标签、置信度与 JSON 概率；原算法及精度保持 |
+| 完整 system_one | 沿 Adapter 已有 `perf_counter` 入口到返回；问题整理、原生编码/模型/解码均包含，初始化另列，段间剩余时间单列 |
+
+原生参考来自上一轮已读取的 [RLAgent](https://huggingface.co/convaiinnovations/laya/blob/7b928d828b7b0e022f929d9bd2e44165aa270148/rl_agent_api.py) 和 [DecisionModel](https://huggingface.co/convaiinnovations/laya/blob/7b928d828b7b0e022f929d9bd2e44165aa270148/rl_common.py)，本轮没有重新下载。授权后应实读原服务器实际导入版本再确定段内函数/模块名称；当前没有把公开参考称为服务器源码实读。原 Trainer 编码入口及 encoder/head 分组只读，用户已有修改未动。
+
+### 三份保存输入
+
+全部来自旧结果、只用于 CPU 对照；Dev/Alias 不进入 Train，也不调用生成模型。
+
+| 输入 | 精确状态位置 | 原保存 system_one 秒 | 原保存概率 Sol / Luna / Flash |
+|---|---|---:|---|
+| S1 短历史：build-pmars / 0 | [events](alias-build-pmars/events.jsonl) 第 4 行，history 为空；授权后记录实际 Token 数 | 8.565615 | 0.3885 / 0.3229 / 0.2886 |
+| S2 长窗口：build-pov-ray / 20 | [events](alias-build-pov-ray/events.jsonl) 第 84 行；原离线分析属于触及 5120 且工具 history 仍裁减的状态 | 34.282088 | 0.4100 / 0.2776 / 0.3125 |
+| S3 最小 Sol 领先：financial-document-processor / 15 | [events](alias-financial-document-processor/events.jsonl) 第 64 行，原领先差 0.0290 | 24.367438 | 0.3821 / 0.3531 / 0.2648 |
+
+获明确授权后：同一服务器 CPU、同一 `V9_LAYA_STEP_001-e01` 实体，仅加载一次 Adapter；三份状态分别进行旧/新布局 × no_grad/inference_mode，共 12 次真实 system_one。旧布局从已有 Git 历史的 formatter 在内存取得，新布局使用当前唯一 formatter，原状态字段值、候选及问题说明保持。不改 attention、模型、窗口、概率、线程或 Serving。记录实际 CPU/PyTorch 线程、Checkpoint 元数据、调用次序、Token/候选位置、原概率和选择、各段及总耗时；初始化另列，不将单次样本当稳定速度结论。
+
+仅在这一个临时进程内，对实际原函数边界加少量 `perf_counter` 与模块 hook，使用完移除；不添加长期计时选项、第二套推理程序、服务或依赖。没有必要在未接触服务器实际实现前给产品加入 profiling 分支。
+
+当前已保存 3081.16 秒及 r≈0.98694 仍只有整段/输入相关证据；encoder/head 占比、新旧概率差、inference_mode 耗时差均未知。本轮 CPU 前向为 0，没有性能改善结论。
+
+## 4. 接续判断与权限
+
+优先实施上述真实质量前缀比较，并在独立 CPU 范围测量开销；当前没有新增动作答案，不能仅凭 74 行再训。Laya 保留 F11-e01、STEP_001；Kev 保留 R11，无新参数更新。原 S1 固定 Val 与独立真实 Dev 的用途保持，任务级成本和步骤级质量不混用。正式 K=3、确认的 Native Effort 和教师净收益仍未具备证据。
+
+下一次最小资源范围分开授权：
+
+1. 本机原 Docker/既有基础镜像及现有两模型付费 Provider：六前缀、12 次一步生成和分支原验证，教师关闭；若资产缺失，另说明具体缺项，不自行下载依赖或访问服务器。
+2. 原服务器 CPU：只读实际导入源码/指定 Checkpoint，在单独短生命周期进程执行三状态共12次前向；不占 GPU、不操作 F14/handoff、Serving、队列或健康服务，不运行 Agent/外部生成 API。
+
+两项本轮均未获得资源授权、未执行。F14/Serving 实时状态未刷新；最后保存快照仍是 2026-11-02 03:36:36 台北，F14 独立维护首轮 284/420、Val 未完，Serving F05-e01/原 Kev。不能把这个历史取样写成当前在线状态。
+
+本轮改善的是接口覆盖与可追溯训练条件；没有使模型已经更会选择。原始实验、失败、训练报告、用户 Trainer/tests、私人文件和用户删除全部保留；没有临时模型/依赖或运行环境需要清理。

@@ -8,7 +8,17 @@
 
 ## 0. 30 秒恢复上下文
 
-### 2026-11-02 · 最新：离线Router与CPU诊断
+### 2026-11-02 · 最新：Model-only 覆盖处理与 Train 质量前缀准备
+
+本轮从实际main75bad09接续，只做本地接口/保存材料及定向GitHub同步。[本轮准备](../results/iterations/20261102-v9-deepseek-dev/next_execution.md)与原summary.local_followup_preparation为恢复入口。Checkpoint MODEL_ONLY原字典会合并同模型多Effort，现于进程启动前明确ValueError；三不同模型原映射/顺序保持，普通联合Serving Schema、Harbor与Hook不改，没有新前向或调概率。
+
+准备六个未比较前缀，来自六个已有Train任务/五仓库：OAuth2 scope1与Device1为inspect；SQLparse Sol4、Records Sol3、Autograd Luna3为modify；async-timeout Sol2为recover。OAuth两题共享仓库，不能按两个仓库统计。任务/消息/状态/环境和原验证引用全部保存于上述材料，不复制轨迹。六份经原build_offline_prefix_input恢复，教师null、AA v4，无未来消息；均UNLABELED，新比较/标签/执行任务0，原19目标和74行保持，inspect/modify有效答案仍0。
+
+CPU仅选build-pmars0、POV-Ray20、财务15三状态并界定六个计时段，原Checkpoint→Adapter→RLAgent路径不变。待明确授权原服务器CPU同STEP_001实体三状态×旧新布局×no_grad/inference_mode共12次前向；原生物理源码未读、新概率/提速未测，不加长期计时分支。更直接下一步是六前缀12次真实Sol/Luna一步与原验证，教师关闭，应用档位仍未知；两项资源权限分开，本轮均不执行。
+
+不因准备完成启动训练：F11/STEP_001/R11保持，Serving未改、F14/handoff未干预，最后服务器取样仍03:36:36台北而非实时。没有下载依赖/权重、API、GPU、Episode或Benchmark；用户Trainer/tests/私人数据/删除保留。只改必要原入口、既有summary和Status/Memory/QA及一份请求所需材料；Research/五RQ八图十二表不变。GitHub同步不等于服务器部署。
+
+### 2026-11-02 · 前轮：离线Router与CPU诊断
 
 从main6e4541c接续，复用旧124决策/19目标/74材料，不运行API、Episode、训练、Benchmark或服务器操作。[离线诊断](../results/iterations/20261102-v9-deepseek-dev/offline_router_analysis.md)与原summary新增offline_router_analysis为本轮恢复入口。124次均原生strict Top-1 Sol，最小差0.029、状态123种，无错位或客户端硬选证据；STEP_001仅8条K=2步骤+64旧S1、1轮9更新、encoder冻结，后来修正输入未训练，不能从概率接近推出K=3能力。
 

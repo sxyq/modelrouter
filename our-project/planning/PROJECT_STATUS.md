@@ -1,6 +1,18 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-11-02 · 当前接续：Router与CPU离线诊断，未重跑实验
+## 2026-11-02 · 当前：Model-only 覆盖处理与六份质量前缀准备
+
+接续实际 main `75bad09780d559fc5027be8cd0818e9d6b61637e`。当前任务仅授权本地源码/保存材料、必要修改及定向 GitHub 提交；服务器、下载权重/依赖、付费 API、GPU、训练、新 Agent Episode 和 Serving 操作均未授权。本轮这些资源使用为 0，未重复 124 条诊断、19 次 Episode、独立 Twin 或历史训练。
+
+原 `CheckpointRouterClient.route` 按模型名建字典，同模型不同 Effort 会覆盖。现仅在这个 MODEL_ONLY 入口比较原候选与唯一模型数量，不一致时于推理进程启动前明确 `ValueError`；不扩展联合输出层。原三模型保存动作映射和顺序保持，少量 Luna low/high 输入明确拒绝，普通 Serving Schema 仍接受不同档位动作；语法有效，无权重前向或模拟验证。Harbor、Schema、Hook 和原 Trainer 未修改。
+
+[本轮材料与 CPU 准备](../results/iterations/20261102-v9-deepseek-dev/next_execution.md)给出六个未比较前缀的精确任务 ID、消息截止、状态行、初始环境版本来源和原验证命令：OAuth2 scope/Device inspect2，SQLparse/Records/Autograd modify3，async-timeout recover1。来自六个已有 Train 任务、五仓库；OAuth 两题同仓库关联保留，新增执行任务0。原 `build_offline_prefix_input` 恢复六份历史，生成数/工具数/末次退出码对应；全部教师null、AA v4、UNLABELED，未执行新候选或验证，不增加 Train 标签。只有获取失败的候选不计作可执行材料。
+
+有效 Model-only 仍19（任务9、步骤10；质量Sol4/Luna4、步骤成本Luna2），inspect/modify**有效监督**仍0；六份准备不能加入74行材料当答案。已选三份保存状态及六个计时边界，后续同服务器同STEP_001实体三状态×两布局×两推理模式共12次前向；本轮CPU模型实测0，速度/新概率仍未知。原原生导入版本需获授权后实读，不新建计时系统。
+
+下一项实质工作是获授权后六前缀×Sol/Luna共12次真实一步生成与原范围验证，优先取得质量差异；同时独立授权CPU有限对照。无新监督，不启动续训。F11/STEP_001/R11代表保持；服务器源码未同步，F14/Serving/handoff实时状态未刷新，仍仅引用03:36:36台北快照。原始结果、训练报告、用户Trainer/tests/私人数据及删除不动；Research方法、五RQ八图十二表不变。结构化事实追加原summary的`local_followup_preparation`。
+
+## 2026-11-02 · 前轮：Router与CPU离线诊断，未重跑实验
 
 从main `6e4541c58443e278c72b03a3dd35d2e1441ff5b9`接续。本轮仅复用原124条决策、19条监督与74行材料；结论和改动见[离线诊断](../results/iterations/20261102-v9-deepseek-dev/offline_router_analysis.md)，结构化数字追加在原`summary.json.offline_router_analysis`，旧Episode结果不改。
 
