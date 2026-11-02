@@ -13,6 +13,7 @@ import fcntl
 import io
 import logging
 import os
+import sys
 import random
 import re
 import secrets
@@ -277,7 +278,7 @@ def load_generator_credentials() -> Dict[str, Any]:
 
 @contextmanager
 def _token_budget():
-    """Serialize requests and accounting against the existing shared file."""
+    """Serialize accounting writes against the existing shared file."""
     with _pilot_file("token_budget.json").open("r+", encoding="utf-8") as handle:
         fcntl.flock(handle, fcntl.LOCK_EX)
         data = json.load(handle)
@@ -335,6 +336,13 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         self.alias_mapping = alias_mapping
         self.request_timeout_sec = request_timeout_sec
         self.model_endpoints = model_endpoints or {}
+        self.account_endpoints = creds.get("account_endpoints", {})
+        self.luna_registry = None
+        if creds.get("luna_provider_project"):
+            source = Path(creds["luna_provider_project"]) / "code/cweaver_v2/src"
+            sys.path.insert(0, str(source))
+            from cweaver.models.provider import ProviderRegistry
+            self.luna_registry = ProviderRegistry()
 
     def _normalize_model(self, model_id: str) -> str:
         from modelrouter.providers.registry import V9_MODEL_IDS
@@ -464,7 +472,51 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 return "INVALID_TOOL_ARGUMENTS"
         return None
 
-    def query_raw(
+    def query_raw(self, messages, model_spec, native_effort="none", max_tokens=1024,
+                  tools=None, stream=True, *, response_format=None, raw_response_path=None):
+        """Switch only registered Luna accounts after a failed transport response."""
+        excluded, attempts = [], []
+        while True:
+            attempt_started = time.perf_counter()
+            try:
+                body, metrics = self._query_raw(
+                    messages, model_spec, native_effort, max_tokens, tools, stream,
+                    response_format=response_format, raw_response_path=raw_response_path,
+                    excluded_endpoints=excluded)
+            except (urllib.error.HTTPError, ProviderResponseError) as exc:
+                endpoint = self.last_account_endpoint
+                retry = (model_spec.model_id == "gpt-6-luna" and endpoint is not None and
+                         (isinstance(exc, urllib.error.HTTPError) and exc.code in (401, 403, 429, 509, 520)
+                          or isinstance(exc, ProviderResponseError) and str(exc) in
+                          ("EMPTY_RESPONSE", "INCOMPLETE_RESPONSE", "INCOMPLETE_TOOL_CALL")))
+                attempt = dict(exc.metrics) if isinstance(exc, ProviderResponseError) else {
+                    "http_status": exc.code, "usage_status": "MISSING", "cost_usd": None,
+                    "prompt_tokens": None, "completion_tokens": None,
+                    "latency_ms": (time.perf_counter() - attempt_started) * 1000}
+                attempt.update(provider_endpoint_id=endpoint, error=str(exc))
+                attempts.append(attempt)
+                exc.account_attempts = attempts
+                if isinstance(exc, ProviderResponseError):
+                    exc.metrics["account_attempts"] = attempts
+                if not retry:
+                    raise
+                excluded.append(endpoint)
+                if not self.luna_registry.list_active_endpoints("luna", "gpt-6-luna", excluded):
+                    raise
+                raw_response_path = None
+                continue
+            attempts.append(dict(metrics))
+            if len(attempts) > 1:
+                metrics["account_attempts"] = attempts
+                metrics["account_attempts_elapsed_ms"] = sum(item["latency_ms"] for item in attempts)
+                metrics["known_model_rate_cost_usd"] = sum(item["cost_usd"] for item in attempts if item.get("cost_usd") is not None)
+                for field in ("prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "cost_usd", "actual_billed_cost_usd"):
+                    values = [item.get(field) for item in attempts]
+                    metrics[field] = sum(values) if all(value is not None for value in values) else None
+                metrics["usage_status"] = "REPORTED" if metrics["prompt_tokens"] is not None and metrics["completion_tokens"] is not None else "PARTIAL_ACCOUNT_SWITCH"
+            return body, metrics
+
+    def _query_raw(
         self,
         messages: List[Dict[str, Any]],
         model_spec: ModelSpec,
@@ -475,6 +527,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         *,
         response_format: Optional[Dict[str, Any]] = None,
         raw_response_path: Optional[str | Path] = None,
+        excluded_endpoints=(),
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Return (native_response, metrics); one request, no execution or retry.
 
@@ -488,6 +541,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         alias_facts = self.alias_mapping.resolve(model_spec.model_id, native_effort) if self.alias_mapping is not None else None
         request_api_key = self.api_key
         request_protocol = self.protocol
+        pool_endpoint = None
+        self.last_account_endpoint = None
         if alias_facts is not None:
             target = alias_facts["actual_backend_model_id"]
             effective_effort = alias_facts["effective_native_effort"]
@@ -507,6 +562,16 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 request_base_url = endpoint_credentials.get("base_url", request_base_url).rstrip("/")
                 request_api_key = endpoint_credentials.get("api_key", request_api_key)
                 request_protocol = endpoint_credentials.get("protocol", request_protocol)
+            if self.luna_registry is not None and (target == "gpt-6-luna" or target in self.account_endpoints):
+                pool_endpoint = (self.luna_registry.get_endpoint(self.account_endpoints[target])
+                                 if target in self.account_endpoints else
+                                 self.luna_registry.select_active_endpoint("luna", target, excluded_endpoints))
+                if pool_endpoint is None:
+                    raise RuntimeError("No active Luna account endpoint")
+                request_base_url = pool_endpoint.base_url
+                request_api_key = pool_endpoint.api_key
+                request_protocol = "chat_completions"
+                self.last_account_endpoint = pool_endpoint.endpoint_id
         transport = OpenAIResponsesProvider if request_protocol == "responses" else OpenAICompatibleProvider
         payload = transport._make_payload(self, messages, target, effective_effort, max_tokens, tools, stream)
         if response_format is not None:
@@ -518,40 +583,47 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         request = urllib.request.Request(
             request_base_url + endpoint,
             data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json", "Authorization": f"Bearer {request_api_key}", "User-Agent": "ModelRouter/10"},
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {request_api_key}",
+                     "User-Agent": "curl/8.7.1" if pool_endpoint or target == "gpt-6-luna" else "ModelRouter/10"},
             method="POST",
         )
         started = time.perf_counter()
-        with _token_budget() as budget:
-            input_bound = len(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
-            request_bound = input_bound + max_tokens
-            with ExitStack() as files:
-                capture = None
-                if raw_response_path is not None:
-                    capture_path = Path(raw_response_path)
-                    capture_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-                    capture = files.enter_context(os.fdopen(os.open(
-                        capture_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "wb"))
+        input_bound = len(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
+        request_bound = input_bound + max_tokens
+        with ExitStack() as files:
+            capture = None
+            if raw_response_path is not None:
+                capture_path = Path(raw_response_path)
+                capture_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+                capture = files.enter_context(os.fdopen(os.open(
+                    capture_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "wb"))
+            try:
                 try:
-                    try:
-                        with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:
-                            http_status = response.status
-                            response_content_type = response.headers.get("Content-Type")
-                            body, ttft_ms = transport._read_response(
-                                self, response, stream, started, capture, request_api_key.encode("utf-8"))
-                    except urllib.error.HTTPError as exc:
-                        if capture is not None:
-                            raw = exc.read()
-                            self._record_response_bytes(raw, capture, request_api_key.encode("utf-8"))
-                            # Existing HTTPError consumers must still be able to read the body.
-                            exc.read = io.BytesIO(raw).read
-                        raise
-                except (Exception, KeyboardInterrupt):
-                    _record_budget(budget, None, None, request_bound)
+                    with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:
+                        http_status = response.status
+                        response_content_type = response.headers.get("Content-Type")
+                        body, ttft_ms = transport._read_response(
+                            self, response, stream, started, capture, request_api_key.encode("utf-8"))
+                except urllib.error.HTTPError as exc:
+                    if capture is not None:
+                        raw = exc.read()
+                        self._record_response_bytes(raw, capture, request_api_key.encode("utf-8"))
+                        # Existing HTTPError consumers must still be able to read the body.
+                        exc.read = io.BytesIO(raw).read
                     raise
-            raw_usage = body.get("usage")
-            p_tokens, c_tokens, r_tokens, cached, cache_written = transport._usage_counts(raw_usage or {})
-            reported_completion = (raw_usage or {}).get("completion_tokens") if request_protocol == "chat_completions" else (raw_usage or {}).get("output_tokens")
+            except (Exception, KeyboardInterrupt) as exc:
+                with _token_budget() as budget:
+                    _record_budget(budget, None, None, request_bound)
+                if pool_endpoint is not None:
+                    self.luna_registry.record_request_complete(
+                        pool_endpoint.endpoint_id, (time.perf_counter() - started) * 1000,
+                        status="failed", error=f"HTTP {exc.code}" if isinstance(exc, urllib.error.HTTPError)
+                        else type(exc).__name__)
+                raise
+        raw_usage = body.get("usage")
+        p_tokens, c_tokens, r_tokens, cached, cache_written = transport._usage_counts(raw_usage or {})
+        reported_completion = (raw_usage or {}).get("completion_tokens") if request_protocol == "chat_completions" else (raw_usage or {}).get("output_tokens")
+        with _token_budget() as budget:
             _record_budget(budget, p_tokens, c_tokens, request_bound)
         latency_ms = (time.perf_counter() - started) * 1000
         returned = body.get("model")
@@ -576,6 +648,14 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             if usage_complete and stream_elapsed_ms is not None and stream_elapsed_ms > 0 else None
         )
         response_error = self._response_error(body, request_protocol)
+        if pool_endpoint is not None:
+            matched = (returned == target if target in self.account_endpoints else
+                       self.luna_registry.resolve_response_model(pool_endpoint, returned) == target)
+            self.luna_registry.record_request_complete(
+                pool_endpoint.endpoint_id, latency_ms, tokens=(p_tokens or 0) + (c_tokens or 0),
+                status="success" if matched and not response_error else "failed",
+                error=response_error if response_error or matched else "model identity mismatch",
+                request_id=body.get("id", ""))
         metrics = {
             "requested_model_id": model_spec.model_id,
             "selected_model_id": model_spec.model_id,
@@ -583,7 +663,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "request_model_id": target,
             "returned_model_id": returned,
             "provider": provider_name,
-            "provider_base_url": request_base_url,
+            "provider_base_url": "PRIVATE_ACCOUNT_POOL" if pool_endpoint else request_base_url,
+            "provider_endpoint_id": pool_endpoint.endpoint_id if pool_endpoint else None,
             "protocol": request_protocol,
             "http_status": http_status,
             "response_content_type": response_content_type,

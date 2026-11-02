@@ -1,6 +1,6 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
-> **版本 v1.5｜建立：2026-10-09｜更新：2026-11-02｜V9 五 RQ 已确定，部分执行配置待明确**
+> **版本 v1.5｜建立：2026-10-09｜更新：2026-11-03｜V9 五 RQ 已确定，部分执行配置待明确**
 >
 > **职责**：记录每项实验设计的 Q-ID、问题、选项、Planning 推荐及理由、项目负责人回答、最终决策、日期，以及对实验设计、资源/预算和论文结论的影响。研究方法总览见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)，实时阶段见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，交接历史见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
@@ -8,7 +8,13 @@
 
 ## 0. 阶段入口与决策规则
 
-**11-03最新执行与分割依据**：[执行记录](../results/iterations/20261103-v9-quality-supervision/review.md)确认一次正确URL流式Luna仍403 GROUP_DISABLED、Usage/费用未知，无完整生成，未追加非流式或Sol。费用权限已足够，预计1亿付费Token才告知；当前缺有效账户，不能自行猜Key/改服务商权限。现有V2.1来源引用中PyBaMM875为Test/L3/30任务引用、Argo4594为Train/L2/121，精确trajectory_id示例对应原轨迹；PyBaMM不可用于新Train标签，上轮Train推荐不沿用，Argo无本机原镜像。原来源视图仍观察，Gym许可未知。
+**11-03当前执行结果**：[执行记录](../results/iterations/20261103-v9-quality-supervision/review.md)与[summary](../results/iterations/20261103-v9-quality-supervision/summary.json)记录四个现有Luna账户完整返回，aihope的Sol也实际完整返回；无Alias、无Key复制、无供应商权限操作。5组真实比较含4Train/1Test观察，新增async-timeout Modify质量Luna1（32/32、无P2P回归），原STEP_LEVEL_PREFERENCE/MODEL_ONLY不变。累计20偏好/75训练行，原19/74保留；PyBaMM双6/6仍Test不入Train，Gym许可未知、Argo原镜像缺失仍如实记录。
+
+STEP003从STEP002父沿原Trainer完成1轮10次head更新，Encoder未更新、教师0；Val561 Accuracy0.6898，三版本对新增赢家均仍选Sol。独立distribution-search固定Sol/Luna/动态官方reward均1，参考模型费0.0180706/0.005740635/0.0152233USD；动态全Sol无切换，尚未证明选择收益。新批次Provider异常/fallback0，前6个账户/传输失败Dev没有原终局，不记质量败者。58物理请求/50完整返回/8Usage未知，已知497681Token、0.632776675USD参考费，完整费与实收未知。资源授权已实际使用，预计一亿付费Token才通知；当前无账户或费用许可依赖。
+
+本轮未批准或训练局部进展/Inspect信息价值新目标，不新增Q-ID。下一研究范围是扩大合法阶段质量标签、分析新模型仍选错及更多独立收益对照；Inspect0、K3/Effort0，不把单题三策略成功当完整V9收益。Serving与健康F14未干预，权重只在服务器。
+
+**11-03账户补充前执行与分割依据**：[执行记录](../results/iterations/20261103-v9-quality-supervision/review.md)确认一次正确URL流式Luna仍403 GROUP_DISABLED、Usage/费用未知，无完整生成，未追加非流式或Sol。费用权限已足够，预计1亿付费Token才告知；当时缺有效账户，不能自行猜Key/改服务商权限。现有V2.1来源引用中PyBaMM875为Test/L3/30任务引用、Argo4594为Train/L2/121，精确trajectory_id示例对应原轨迹；PyBaMM不可用于新Train标签，上轮Train推荐不沿用，Argo无本机原镜像。原来源视图仍观察，Gym许可未知。
 
 原准备入口恢复两个不同旧Sol前缀的真正Train/Modify状态：Records Luna cutoff12、async-timeout Luna cutoff8；完整原切片只在内存恢复，原事件阶段不改、截止前未编辑源码、旧比较精确历史匹配0。原24/32项及镜像证据沿用，本轮质量对照/原测试/新赢家/训练/Dev0，旧19/74保持，不训练STEP003。严格一步含义不变；局部修复进展须固定ID/完整状态/修复集合可比较且无新P2P回归，读取信息价值建议同一初始代码及公共前缀、两候选读取后交固定Sol一次修复、原范围评价及全费用。两者尚未成为新目标，不混S1或Trainer，不新增Q-ID。后续优先有效Luna和上述两Train状态，而非将PyBaMM Test转Train。
 

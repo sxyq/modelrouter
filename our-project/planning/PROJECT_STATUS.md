@@ -1,6 +1,16 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-11-03 · 当前：Luna仍403，PyBaMM保留Test，两新Modify状态已恢复
+## 2026-11-03 · 当前：四账户可用，Modify赢家1，STEP_003与独立Dev对照完成
+
+接续 main `12cbea5d2e6771aa94b502838dae7d7519e84eb4`；[执行记录](../results/iterations/20261103-v9-quality-supervision/review.md) / [summary](../results/iterations/20261103-v9-quality-supervision/summary.json)。复用Code Generation正式ProviderRegistry及四个Luna账户，均完整返回gpt-6-luna；现用aihope也实际返回gpt-6.1-sol。私人配置只引用，不复制Key；只改Provider账户选择/真实失败换端点/用量写锁与Harbor流式配置，未改Code Generation工程或供应商权限。
+
+五组成对比较（Train4/Test观察1）取得async-timeout真实Modify质量赢家Luna1：原32项全部通过、P2P29无新回归，Sol29/32且只读取。Records及另外两timeout状态双方未完成，不产标签。PyBaMM两方原6项通过，但保留Test/L3，不进入Train。累计20偏好=任务9/步骤11；旧19/74保留，实际75行从STEP002父训练STEP003，1轮10次head更新、Encoder未更新，Val561 Accuracy0.6898/Loss0.5940/Brier0.4084/ECE0.0376。权重只在服务器，不替Serving；三版本对新增赢家真实CPU输出仍选Sol，fallback=false。
+
+独立distribution-search上游Harbor Docker/未修改官方Evaluator三策略reward均1；固定Sol/Luna/动态参考模型费0.0180706/0.005740635/0.0152233USD，Job166.208/235.985/161.303秒。动态3次全Sol、切换0，Router初始化30.021秒/前向10.566秒/复用2次；较固定Sol费用差不能归因于选择改变，比固定Luna贵，动态收益未证明。另6个账户/传输失败Episode无原终局，保留但不计质量败者。
+
+本轮58物理请求、50完整返回（Agent49/诊断1）、Usage未知8；已知497681Token/0.632776675USD参考模型费，完整总用量/实收未知，教师0。Modify有效1/Inspect0/K3及NativeEffort0。最后01:15:49台北取样F14活跃、原Serving健康，未重启；本任务临时脚本/派生输入已清理，用户Trainer/tests/账本/历史删除保持。后续核心是增加真实阶段监督、让输出对应质量赢家并扩展独立收益证据，不再重复账户探测。
+
+## 2026-11-03 · 账户补充前记录：Luna403，PyBaMM保留Test，两新Modify状态已恢复
 
 接续main `351399b543012257f95c15f69f7b43c5be32e19c`，最新事实见 [执行记录](../results/iterations/20261103-v9-quality-supervision/review.md) / [summary](../results/iterations/20261103-v9-quality-supervision/summary.json)。本轮正确URL一次Luna流式请求仍403 GROUP_DISABLED，无完整动作，Usage/费用未知；未追加非流式、Sol、工具或原验证。私人配置未更新且无另一套有效Luna配置，当前需要有效账户，不缺费用授权。
 

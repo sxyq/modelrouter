@@ -1,0 +1,230 @@
+/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/pytest_asyncio/plugin.py:208: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+FFF.............................                                         [100%]
+=================================== FAILURES ===================================
+____________________________ test_shift_by_expired _____________________________
+
+    @pytest.mark.asyncio
+    async def test_shift_by_expired() -> None:
+        async with timeout(0.001) as cm:
+            with pytest.raises(asyncio.CancelledError):
+                await asyncio.sleep(10)
+            with pytest.raises(
+                RuntimeError,
+                match=(
+                    "(cannot reschedule expired timeout)|"
+                    "(Cannot change state of expiring Timeout)"
+                ),
+            ):
+>               cm.shift(10)
+
+tests/test_timeout.py:367: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+async_timeout/__init__.py:215: in shift
+    self.update(deadline + delay)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <async_timeout.Timeout object at 0x7ffffd918270>
+deadline = 94.16703145400001
+
+    def update(self, deadline: float) ->None:
+        """Set deadline to absolute value.
+    
+        deadline argument points on the time in the same clock system
+        as loop.time().
+    
+        If new deadline is in the past the timeout is raised immediately.
+    
+        Please note: it is not POSIX time but a time with
+        undefined starting base, e.g. the time of the system power on.
+        """
+        if self._state not in (_State.INIT, _State.ENTER):
+>           raise RuntimeError(f"invalid state {self._state.value}")
+E           RuntimeError: invalid state TIMEOUT
+
+async_timeout/__init__.py:229: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+    @pytest.mark.asyncio
+    async def test_shift_by_expired() -> None:
+        async with timeout(0.001) as cm:
+            with pytest.raises(asyncio.CancelledError):
+                await asyncio.sleep(10)
+>           with pytest.raises(
+                RuntimeError,
+                match=(
+                    "(cannot reschedule expired timeout)|"
+                    "(Cannot change state of expiring Timeout)"
+                ),
+            ):
+E           AssertionError: Regex pattern did not match.
+E            Regex: '(cannot reschedule expired timeout)|(Cannot change state of expiring Timeout)'
+E            Input: 'invalid state TIMEOUT'
+
+tests/test_timeout.py:360: AssertionError
+____________________________ test_shift_to_expired _____________________________
+
+    @pytest.mark.asyncio
+    async def test_shift_to_expired() -> None:
+        loop = asyncio.get_event_loop()
+        t0 = loop.time()
+        async with timeout_at(t0 + 0.001) as cm:
+            with pytest.raises(asyncio.CancelledError):
+                await asyncio.sleep(10)
+            with pytest.raises(
+                RuntimeError,
+                match=(
+                    "(cannot reschedule expired timeout)|"
+                    "(Cannot change state of expiring Timeout)"
+                ),
+            ):
+>               cm.update(t0 + 10)
+
+tests/test_timeout.py:384: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <async_timeout.Timeout object at 0x7ffffd900950>, deadline = 94.214843204
+
+    def update(self, deadline: float) ->None:
+        """Set deadline to absolute value.
+    
+        deadline argument points on the time in the same clock system
+        as loop.time().
+    
+        If new deadline is in the past the timeout is raised immediately.
+    
+        Please note: it is not POSIX time but a time with
+        undefined starting base, e.g. the time of the system power on.
+        """
+        if self._state not in (_State.INIT, _State.ENTER):
+>           raise RuntimeError(f"invalid state {self._state.value}")
+E           RuntimeError: invalid state TIMEOUT
+
+async_timeout/__init__.py:229: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+    @pytest.mark.asyncio
+    async def test_shift_to_expired() -> None:
+        loop = asyncio.get_event_loop()
+        t0 = loop.time()
+        async with timeout_at(t0 + 0.001) as cm:
+            with pytest.raises(asyncio.CancelledError):
+                await asyncio.sleep(10)
+>           with pytest.raises(
+                RuntimeError,
+                match=(
+                    "(cannot reschedule expired timeout)|"
+                    "(Cannot change state of expiring Timeout)"
+                ),
+            ):
+E           AssertionError: Regex pattern did not match.
+E            Regex: '(cannot reschedule expired timeout)|(Cannot change state of expiring Timeout)'
+E            Input: 'invalid state TIMEOUT'
+
+tests/test_timeout.py:377: AssertionError
+_________________________ test_shift_by_after_cm_exit __________________________
+
+    @pytest.mark.asyncio
+    async def test_shift_by_after_cm_exit() -> None:
+        async with timeout(1) as cm:
+            await asyncio.sleep(0)
+        with pytest.raises(
+            RuntimeError,
+            match=(
+                "(cannot reschedule after exit from context manager)|"
+                "(Cannot change state of finished Timeout)"
+            ),
+        ):
+>           cm.shift(1)
+
+tests/test_timeout.py:398: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+async_timeout/__init__.py:215: in shift
+    self.update(deadline + delay)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <async_timeout.Timeout object at 0x7ffffda21990>, deadline = 86.244223954
+
+    def update(self, deadline: float) ->None:
+        """Set deadline to absolute value.
+    
+        deadline argument points on the time in the same clock system
+        as loop.time().
+    
+        If new deadline is in the past the timeout is raised immediately.
+    
+        Please note: it is not POSIX time but a time with
+        undefined starting base, e.g. the time of the system power on.
+        """
+        if self._state not in (_State.INIT, _State.ENTER):
+>           raise RuntimeError(f"invalid state {self._state.value}")
+E           RuntimeError: invalid state EXIT
+
+async_timeout/__init__.py:229: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+    @pytest.mark.asyncio
+    async def test_shift_by_after_cm_exit() -> None:
+        async with timeout(1) as cm:
+            await asyncio.sleep(0)
+>       with pytest.raises(
+            RuntimeError,
+            match=(
+                "(cannot reschedule after exit from context manager)|"
+                "(Cannot change state of finished Timeout)"
+            ),
+        ):
+E       AssertionError: Regex pattern did not match.
+E        Regex: '(cannot reschedule after exit from context manager)|(Cannot change state of finished Timeout)'
+E        Input: 'invalid state EXIT'
+
+tests/test_timeout.py:391: AssertionError
+==================================== PASSES ====================================
+
+---------- coverage: platform linux, python 3.10.16-final-0 ----------
+Name                        Stmts   Miss Branch BrPart  Cover
+-------------------------------------------------------------
+async_timeout/__init__.py     127     31     28      1    78%
+-------------------------------------------------------------
+TOTAL                         127     31     28      1    78%
+Coverage HTML written to dir htmlcov
+
+=========================== short test summary info ============================
+PASSED tests/test_timeout.py::test_timeout
+PASSED tests/test_timeout.py::test_timeout_finish_in_time
+PASSED tests/test_timeout.py::test_timeout_disable
+PASSED tests/test_timeout.py::test_timeout_is_none_no_schedule
+PASSED tests/test_timeout.py::test_timeout_no_loop
+PASSED tests/test_timeout.py::test_timeout_zero
+PASSED tests/test_timeout.py::test_timeout_not_relevant_exception
+PASSED tests/test_timeout.py::test_timeout_canceled_error_is_not_converted_to_timeout
+PASSED tests/test_timeout.py::test_timeout_blocking_loop
+PASSED tests/test_timeout.py::test_for_race_conditions
+PASSED tests/test_timeout.py::test_timeout_time
+PASSED tests/test_timeout.py::test_outer_coro_is_not_cancelled
+PASSED tests/test_timeout.py::test_cancel_outer_coro
+PASSED tests/test_timeout.py::test_timeout_suppress_exception_chain
+PASSED tests/test_timeout.py::test_timeout_expired
+PASSED tests/test_timeout.py::test_timeout_inner_timeout_error
+PASSED tests/test_timeout.py::test_timeout_inner_other_error
+PASSED tests/test_timeout.py::test_timeout_at
+PASSED tests/test_timeout.py::test_timeout_at_not_fired
+PASSED tests/test_timeout.py::test_expired_after_rejecting
+PASSED tests/test_timeout.py::test_reject_finished
+PASSED tests/test_timeout.py::test_expired_after_timeout
+PASSED tests/test_timeout.py::test_deadline
+PASSED tests/test_timeout.py::test_async_timeout
+PASSED tests/test_timeout.py::test_async_no_timeout
+PASSED tests/test_timeout.py::test_shift
+PASSED tests/test_timeout.py::test_shift_nonscheduled
+PASSED tests/test_timeout.py::test_shift_negative_expired
+PASSED tests/test_timeout.py::test_enter_twice
+FAILED tests/test_timeout.py::test_shift_by_expired - AssertionError: Regex p...
+FAILED tests/test_timeout.py::test_shift_to_expired - AssertionError: Regex p...
+FAILED tests/test_timeout.py::test_shift_by_after_cm_exit - AssertionError: R...
+3 failed, 29 passed in 0.87s

@@ -1,6 +1,6 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
-> **版本：v2.5｜更新：2026-11-02｜角色：Planning Agent + Execution Agent**
+> **版本：v2.5｜更新：2026-11-03｜角色：Planning Agent + Execution Agent**
 >
 > **定位**：供后续 ChatGPT Planning Agent、本地 Execution Agent 快速恢复项目上下文的唯一**公开安全**交接入口。项目记忆由执行者按事件维护：Memory/Status 随事件更新，Research 仅在研究证据、方法或实验协议变化时修改；它与 ChatGPT 产品内置 Memory 分开，也不会自动在后台更新。
 >
@@ -8,7 +8,17 @@
 
 ## 0. 30 秒恢复上下文
 
-### 2026-11-03 · 最新：原分割明确，两个未比较Modify状态，Luna账户仍停用
+### 2026-11-03 · 当前：真实Modify标签、STEP_003和独立官方对照已完成
+
+接续main `12cbea5d2e6771aa94b502838dae7d7519e84eb4`；[执行记录](../results/iterations/20261103-v9-quality-supervision/review.md) / [summary](../results/iterations/20261103-v9-quality-supervision/summary.json)。用户补充Code Generation账户位置后只读复用正式ProviderRegistry与四账户，全部完整返回gpt-6-luna；Sol现用账户aihope在新Dev实际返回gpt-6.1-sol。私人配置引用不复制Key；本项目只改Provider与Harbor Agent，账户真实失败换同模型端点、不重复同端点、每次物理请求计量一次，用量锁仅覆盖写入，空SSE后针对性采用非流式。
+
+五组比较（4Train/1Test观察）、10成对生成；async-timeout较晚diff后Modify新质量Luna1，原F2P3恢复/P2P29保持，Sol只读取且29/32。其他三Train比较双方未完成，不产赢家；PyBaMM双6/6保留Test，不能入Train。累计20MODEL_ONLY（任务9/步骤11），旧19/74保留，原Prepare形成1新行并沿原Trainer从STEP002更新STEP003：75行、1轮10次head更新、Encoder未更新、教师0，Val561 Accuracy0.6898/Loss0.5940/Brier0.4084/ECE0.0376。三版本对新增赢家CPU真实前向仍选Sol、fallback=false；权重只在服务器，STEP001原字节仍缺，不替Serving。
+
+独立distribution-search上游Harbor Docker/未改官方Evaluator三策略reward1/1/1，固定Sol/Luna/动态参考模型费0.0180706/0.005740635/0.0152233USD，Job166.208/235.985/161.303秒。动态3次全Sol，Inspect2/Modify1、切换0；初始化30.021秒/前向10.566秒/复用2次，收益未证明。前6个账户/传输失败Episode无原终局，不作质量败者；Dev不进入Train。
+
+58物理请求（Sol35/Luna23）、50完整返回（Agent49/诊断1）、Usage未知8，已知497681Token与0.632776675USD参考费，完整总费/实收未知。教师0、Modify有效1/Inspect0/K3/Effort0，局部进展及Inspect独立信息价值仍未进入S1。最后01:15:49台北取样F14活跃、原Serving健康；本任务容器与临时脚本结束/清理，原完整材料及失败保留，用户Trainer/tests/账本/历史删除未纳入提交。资源许可继续有效，预计约一亿付费Token才告知；当前没有账户或费用许可依赖，后续围绕质量监督与实际选择收益展开。
+
+### 2026-11-03 · 账户补充前记录：原分割明确，两个未比较Modify状态，Luna停用
 
 接续main351399b543012257f95c15f69f7b43c5be32e19c；[执行记录](../results/iterations/20261103-v9-quality-supervision/review.md) / [summary](../results/iterations/20261103-v9-quality-supervision/summary.json)。本任务资源/付费授权继续有效，预计约1亿付费Token才告知，不是预算或用量目标。一次原Provider正确路径流式Luna请求仍403 GROUP_DISABLED，Usage/实收未知，无完整生成；不追加非流式、Sol或同配置请求。私人配置mtime未变、无分组列表/另一有效Luna配置，不创建凭据或改服务商权限。
 

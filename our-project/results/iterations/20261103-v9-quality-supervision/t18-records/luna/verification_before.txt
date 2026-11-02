@@ -1,0 +1,59 @@
+F.......................                                                 [100%]
+=================================== FAILURES ===================================
+_________________________ test_issue69[sqlite_memory] __________________________
+
+db = <Database open=True>
+
+    def test_issue69(db):
+>       db.query("CREATE table users (id text)")
+
+tests/test_69.py:2: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+records.py:315: in query
+    return conn.query(query, fetchall, **params)
+records.py:386: in query
+    keys = cursor.keys()
+/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/result.py:901: in keys
+    return self._metadata.keys
+/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py:1369: in keys
+    self._we_dont_return_rows()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.engine.cursor._NoResultMetaData object at 0x7ffffd5d0c40>
+err = None
+
+    def _we_dont_return_rows(self, err=None):
+>       raise exc.ResourceClosedError(
+            "This result object does not return rows. "
+            "It has been closed automatically."
+        ) from err
+E       sqlalchemy.exc.ResourceClosedError: This result object does not return rows. It has been closed automatically.
+
+/opt/miniconda3/envs/testbed/lib/python3.10/site-packages/sqlalchemy/engine/cursor.py:1341: ResourceClosedError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_records.py::TestRecordCollection::test_iter
+PASSED tests/test_records.py::TestRecordCollection::test_next
+PASSED tests/test_records.py::TestRecordCollection::test_iter_and_next
+PASSED tests/test_records.py::TestRecordCollection::test_multiple_iter
+PASSED tests/test_records.py::TestRecordCollection::test_slice_iter
+PASSED tests/test_records.py::TestRecordCollection::test_all_returns_a_list_of_records
+PASSED tests/test_records.py::TestRecordCollection::test_first_returns_a_single_record
+PASSED tests/test_records.py::TestRecordCollection::test_first_defaults_to_None
+PASSED tests/test_records.py::TestRecordCollection::test_first_default_is_overridable
+PASSED tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_subclass
+PASSED tests/test_records.py::TestRecordCollection::test_first_raises_default_if_its_an_exception_instance
+PASSED tests/test_records.py::TestRecordCollection::test_one_returns_a_single_record
+PASSED tests/test_records.py::TestRecordCollection::test_one_defaults_to_None
+PASSED tests/test_records.py::TestRecordCollection::test_one_default_is_overridable
+PASSED tests/test_records.py::TestRecordCollection::test_one_raises_when_more_than_one
+PASSED tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_subclass
+PASSED tests/test_records.py::TestRecordCollection::test_one_raises_default_if_its_an_exception_instance
+PASSED tests/test_records.py::TestRecordCollection::test_scalar_returns_a_single_record
+PASSED tests/test_records.py::TestRecordCollection::test_scalar_defaults_to_None
+PASSED tests/test_records.py::TestRecordCollection::test_scalar_default_is_overridable
+PASSED tests/test_records.py::TestRecordCollection::test_scalar_raises_when_more_than_one
+PASSED tests/test_records.py::TestRecord::test_record_dir
+PASSED tests/test_records.py::TestRecord::test_record_duplicate_column
+FAILED tests/test_69.py::test_issue69[sqlite_memory] - sqlalchemy.exc.Resourc...
+1 failed, 23 passed in 0.16s

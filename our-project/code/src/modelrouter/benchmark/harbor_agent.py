@@ -99,6 +99,7 @@ class PolicyModel(LitellmModel):
                     v9_config.get("provider_timeout_sec", 60.0) if self.v9_enabled else 60.0),
                     model_endpoints=v9_config.get("model_endpoints") if self.v9_enabled else None)
         self.max_output_tokens = max_output_tokens
+        self.generator_stream = v9_config.get("generator_stream", True) if self.v9_enabled else True
         self.last_metrics, self.usage = {}, []
         self.fallback_used = False
         self.untested_efforts_used = set()
@@ -185,7 +186,7 @@ class PolicyModel(LitellmModel):
         response_error = None
         try:
             body, metrics = self.provider.query_raw(
-                messages, spec, selected["native_effort"], self.max_output_tokens, [BASH_TOOL], True)
+                messages, spec, selected["native_effort"], self.max_output_tokens, [BASH_TOOL], self.generator_stream)
         except ProviderResponseError as exc:
             body, metrics = exc.response, exc.metrics
             response_error = exc
@@ -205,7 +206,8 @@ class PolicyModel(LitellmModel):
                   execution_mode=alias_facts.get("execution_mode", "REAL_API"),
                   cost_usd=None, actual_billed_cost_usd=None, usage_status="MISSING",
                   cost_status="MAPPED_USAGE_INCOMPLETE" if alias_facts else "UNKNOWN",
-                  duration_ms=(time.perf_counter() - started) * 1000)
+                  duration_ms=(time.perf_counter() - started) * 1000,
+                  account_attempts=getattr(exc, "account_attempts", []))
             raise
         metrics = dict(metrics, episode_id=self.state.episode_id, decision_id=decision_id,
                        router_checkpoint_id=decision.checkpoint_id,

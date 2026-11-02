@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+collected 6 items
+
+tests/unit/test_util.py F.....                                           [100%]
+
+=================================== FAILURES ===================================
+E   AttributeError: 'FuzzyDict' object has no attribute 'search'
+/testbed/tests/unit/test_util.py:111: AttributeError: 'FuzzyDict' object has no attribute 'search'
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/unit/test_util.py::TestUtil::test_fuzzy_dict
+PASSED tests/unit/test_util.py::TestUtil::test_get_parameters_filepath
+PASSED tests/unit/test_util.py::TestUtil::test_infinite_nested_dict
+PASSED tests/unit/test_util.py::TestUtil::test_load_function
+PASSED tests/unit/test_util.py::TestUtil::test_rmse
+FAILED tests/unit/test_util.py::TestSearch::test_url_gets_to_stdout - Attribu...
+========================= 1 failed, 5 passed in 2.57s ==========================

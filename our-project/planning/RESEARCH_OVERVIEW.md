@@ -1,10 +1,16 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-> **版本 v1.6｜更新：2026-11-02｜原研究起点：2026-10-09；H1–H7 与历史证据保留**
+> **版本 v1.6｜更新：2026-11-03｜原研究起点：2026-10-09；H1–H7 与历史证据保留**
 >
 > **目的**：为论文与开源实现建立可检验的研究命题、近邻工作边界、方法设计和实验协议。项目实际进度见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，跨 Agent 决策记录见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。
 >
 > **证据纪律**：论文/官方材料、现有仓库文献、E0 Agent 审计、我们提出的假设分开表述。**未运行的实验不得写成结果；“未见完全相同方案”不等于“首创”。**
+
+**11-03真实质量与独立动态证据**：[本轮记录](../results/iterations/20261103-v9-quality-supervision/review.md)完成四Train状态及一PyBaMM Test观察的同状态Sol/Luna真实比较；当前账户四个Luna端点与现用Sol均完整返回精确候选ID，非Alias，物理权重身份未查看。async-timeout较晚Modify中Luna修改业务文件、原32项全通过且P2P29保持，Sol只读取且29/32，新增原STEP_LEVEL_PREFERENCE/MODEL_ONLY质量标签1；其余Train比较双方未完成，不产标签，PyBaMM双6/6仍Test不进Train。累计20偏好（任务9/步骤11），有效Modify1/Inspect0；没有引入局部进展或Inspect独立信息价值目标。
+
+沿原Trainer从STEP002完成STEP003：75行=旧74+新1，1轮10次head更新，Encoder未更新，Val561 Accuracy0.6898/Loss0.5940/Brier0.4084/ECE0.0376。对新增赢家F11/STEP002/STEP003真实CPU输出均选Sol，Sol概率0.5640/0.5587/0.5589、fallback=false；参数更新和指标微变不等于学会新质量标签。原STEP001字节仍缺，权重只在服务器且Serving未替换。
+
+一个独立distribution-search同原任务环境的三策略上游Harbor Docker/未修改官方Evaluator全部reward1，固定Sol/Luna/动态参考模型费0.0180706/0.005740635/0.0152233USD，Job166.208/235.985/161.303秒。动态3次全Sol、切换0，初始化30.021秒/前向10.566秒/复用2次；与固定Sol的费用差不能归因于不同候选选择，较固定Luna更贵，尚无动态收益证明。前6个账户/传输失败Episode无原终局，保留且不算质量败者。58请求中50完整返回、8Usage未知，已知497681Token/0.632776675USD参考费，完整总费用及实收未知；教师0，真实K3/NativeEffort目标仍0。五RQ及原方法范围不变，单题结果不概括完整V9或跨来源泛化。
 
 **11-02离线诊断新增证据**：[124条保存输入分析](../results/iterations/20261102-v9-deepseek-dev/offline_router_analysis.md)确认输出映射与严格argmax一致，Sol最小领先0.029；状态123种且概率随任务/反馈变化，不能说模型完全未读取状态。稀疏K=2一步head训练与真实Terminal/逻辑K=3分布变化是有依据的泛化不足解释，因素因果占比未知。右截断41条使部分计数/身份丢失，唯一formatter将其前移后完整124/124；值和候选保持，部分长history仍裁、新输出未实测，不能当动态收益。
 
