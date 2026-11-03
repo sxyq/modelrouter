@@ -1,6 +1,8 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-**11-04用户空间Docker与新Recover/Modify已完成**：[本轮结果](../results/iterations/20261104-v9-recover-modify/review.md)。A6000 syy用户空间QEMU/Alpine Docker实际可用，系统权限不变、无需sudo；原工程、Serving和权重保持。四新合法L4 Train来源事前分工，34条原动作恢复、8有效生成/1限流异常；Chai双181/181新增Luna费用1，brutils双8/9、Boxwood双518/519、W3C双143/144，无新质量赢家。Boxwood原AVA超时及V8段错误通过同固定范围串行、60秒等待和JITless解决，未知不冒充失败。原35保留，共36（步骤质量19/费用8、任务费用9）。
+**11-04阶段来源接续已完成**：[本轮结果](../results/iterations/20261104-v9-recover-modify/review.md)。Chai/W3C的原Modify来自下一写动作抽样，当前实际阶段为Recover/Inspect；四状态覆盖3 Recover、1 Inspect、0 Modify，用途不变。Provider没有接收抽样阶段，原9请求/8有效、Chai费用偏好1及36总偏好保持。原context/prepare逐条使用已观察工具反馈重建历史阶段，并传播顶层phase；四真实保存前缀与新Chai准备材料序列化一致，旧材料保留、梯度0。新增8前向使全迭代24，选择变化0、B4独立关系仍0/2，33494本地编码Token/3.374917秒前向，不计付费Token。没有STEP011、新Dev或Serving替换；服务器原prepare既有11行差异保留。当前第一行动是取得真正修改机会与新的局部质量差异，可靠泛化及完整净收益仍未证明，不重复本工作包采集。
+
+**11-04用户空间Docker与四新任务比较已完成**：[本轮结果](../results/iterations/20261104-v9-recover-modify/review.md)。A6000 syy用户空间QEMU/Alpine Docker实际可用，系统权限不变、无需sudo；原工程、Serving和权重保持。四新合法L4 Train来源事前分工，34条原动作恢复、8有效生成/1限流异常；Chai双181/181新增Luna费用1，brutils双8/9、Boxwood双518/519、W3C双143/144，无新质量赢家。Boxwood原AVA超时及V8段错误通过同固定范围串行、60秒等待和JITless解决，未知不冒充失败。原35保留，共36（步骤质量19/费用8、任务费用9）。
 
 精确请求输入009/010各4前向，相对初始构造输入2次原生选择变化；原生均选对Chai费用。B4原Torch固定参照用21正式Train/22关系状态，两个新留出均双失败、关系0/2、正式赢家动作正确率null；009保留旧pipdeptree费用，mpmath仍错，010仍失去该费用选择。没有独立双方向改善，不新训STEP011、不扩Dev、不替Serving、不重跑旧Val。59946已知Token/$0.077301025参考费，异常Token/实收/资源USD未知。任务容器及8Benchmark镜像删除、下载代理撤除后用户Docker仍可用；Mac Docker收尾停止，Infinite Canvas数据不删。原维护Skill更新，私人证据留原服务器路径。K2两核心证据与V9五RQ仍未闭环；旧段落中Docker待授权属于历史，不代表当前状态。
 

@@ -187,6 +187,17 @@ def format_router_payload(payload: Mapping) -> str:
     return json.dumps(result, ensure_ascii=False, separators=(",", ":"))
 
 
+def tool_result_phase(command, returncode, output):
+    """Derive the phase from an observed command and its actual feedback."""
+    if TEST_COMMAND.search(command):
+        return "verify"
+    if returncode or TOOL_FAILURE.search(output):
+        return "recover"
+    if WRITE_COMMAND.search(command):
+        return "modify"
+    return "inspect"
+
+
 def record_tool_result(state, record_dir, action, output, duration_ms, *, submission=False):
     """Keep the upstream result and attach it to its generating decision."""
     from modelrouter.benchmark.iterations import append, event, now
@@ -194,14 +205,7 @@ def record_tool_result(state, record_dir, action, output, duration_ms, *, submis
     command = action["command"]
     extra = output.get("extra", {})
     exit_code = extra.get("actual_exit_code", output["returncode"])
-    if TEST_COMMAND.search(command):
-        state.current_phase = "verify"
-    elif output["returncode"] or TOOL_FAILURE.search(output["output"]):
-        state.current_phase = "recover"
-    elif WRITE_COMMAND.search(command):
-        state.current_phase = "modify"
-    else:
-        state.current_phase = "inspect"
+    state.current_phase = tool_result_phase(command, output["returncode"], output["output"])
     state.last_output = output
     state.tool_error_count += int(output["returncode"] != 0)
     state.history.append(StepTrace(
@@ -310,7 +314,7 @@ def compact_router_state(state, messages, snapshot, char_limit=6000):
     history = visible_history(state)
     task = task_text(state, messages, router_view=True)[:min(char_limit, 2000)]
     tools = recent_tools(state, char_limit - len(task))
-    result = dict(snapshot, prompt=task, history_snippet=tools,
+    result = dict(snapshot, prompt=task, history_snippet=tools, phase=state.current_phase,
                   context_chars=message_chars(messages), context_tokens_approx=None,
                   history_length=len(history), prior_tool_calls_count=len(history),
                   prior_error_signals_count=state.tool_error_count,

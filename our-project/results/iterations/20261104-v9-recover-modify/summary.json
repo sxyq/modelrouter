@@ -28,9 +28,15 @@
   "independent_holdout_states": 2,
   "independent_holdout_formal_winners": 0,
   "independent_winner_accuracy": null,
-  "B4_independent_relation_correct": {"009": 0, "010": 0},
+  "B4_independent_relation_correct": {
+    "009": 0,
+    "010": 0
+  },
   "B4_independent_relation_total": 2,
-  "B17_new_state_relation_correct": {"009": 1, "010": 0},
+  "B17_new_state_relation_correct": {
+    "009": 1,
+    "010": 0
+  },
   "B17_new_state_relation_total": 4,
   "new_quality_preferences": 0,
   "new_equal_verifier_cost_preferences": 1,
@@ -45,7 +51,7 @@
   "actual_request_input_forwards": 8,
   "actual_router_encoded_tokens": 33506,
   "initial_router_encoded_tokens": 25890,
-  "total_new_router_forwards": 16,
+  "total_new_router_forwards": 24,
   "encoded_router_tokens_are_paid_tokens": false,
   "initial_constructed_predictions_are_not_final_evidence": true,
   "native_selections_changed_with_actual_input": 2,
@@ -55,7 +61,7 @@
   "serving_replaced": false,
   "independent_bidirectional_improvement_proven": false,
   "dynamic_net_benefit_proven": false,
-  "training_decision": "New Train preference is an already-correct equal-quality cost state; new failed-pair relationship adds no independent model winner. No justified checkpoint update.",
+  "training_decision": "The observed-prefix phase error was fixed, but eight corrected-state forwards changed no native choice and held-out B4 relations remain 0/2. New Train preference is an already-correct equal-quality cost state; no justified checkpoint update.",
   "dev_decision": "New holdouts do not establish model-choice differences; no new full Dev.",
   "benchmark_evidence_scope": "REAL_A6000_CONTAINER_ORIGINAL_FIXED_TEST_STEP_RESULTS_NOT_FULL_OFFICIAL_EPISODES",
   "source_runtime_version_known": false,
@@ -68,5 +74,32 @@
   "infinite_canvas_data_deleted": false,
   "remaining_K2_core_evidence_items": 2,
   "V9_RQs_not_fully_closed": 5,
-  "round_status": "COMPARISON_ANALYSIS_AND_DELIVERY_COMPLETE_NEGATIVE_GENERALIZATION_RESULT"
+  "round_status": "COMPARISON_ANALYSIS_AND_DELIVERY_COMPLETE_NEGATIVE_GENERALIZATION_RESULT",
+  "phase_reconstruction_parent_commit": "72fb341205c1a72b518e61e78511edd64edda3b5",
+  "phase_reconstruction_new_provider_requests": 0,
+  "phase_reconstruction_new_test_runs": 0,
+  "phase_reconstruction_forwards": 8,
+  "phase_reconstruction_encoded_tokens": 33494,
+  "phase_reconstruction_forward_seconds": 3.3749172650277615,
+  "phase_reconstruction_total_analysis_seconds": 12.681382738053799,
+  "observed_runtime_phase_counts": {
+    "recover": 3,
+    "inspect": 1,
+    "modify": 0,
+    "verify": 0
+  },
+  "final_router_evaluation": "phase_router_predictions.json",
+  "final_quality_learning_evaluation": "phase_quality_learning.json",
+  "saved_prefix_preparation_evidence": "phase_preparation.json",
+  "phase_clean_prepared_records": 1,
+  "server_preexisting_prepare_difference_preserved": true,
+  "original_capture_phase_is_sampling_annotation": true,
+  "original_generation_messages_received_future_phase": false,
+  "original_formal_preferences_changed": 0,
+  "phase_reconstruction_native_selection_changes": 0,
+  "phase_reconstruction_B4_independent_relation_correct": {
+    "009": 0,
+    "010": 0
+  },
+  "phase_reconstruction_B4_independent_relation_total": 2
 }

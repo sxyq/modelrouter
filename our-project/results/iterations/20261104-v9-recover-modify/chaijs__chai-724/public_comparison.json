@@ -31,7 +31,7 @@
   "source_runtime_version_known": false,
   "replayed_actions": 3,
   "selected_before_request": true,
-  "sampling_reason": "New L4-only task selected by stage and pre-action history; no outcome used",
+  "sampling_reason": "Purpose fixed before requests; Modify cutoff was selected at a source next-write action. This label is not used as an observed online phase.",
   "replay_exit_statuses_match": true,
   "f2p_count": 1,
   "p2p_count": 180,
@@ -94,5 +94,13 @@
       "elapsed_time_sec": 26.626340208924375
     }
   ],
-  "same_canonical_router_input": true
+  "same_canonical_router_input": true,
+  "sampling_stage": "Modify",
+  "observed_runtime_phase": "recover",
+  "current_phase_source": "ORIGINAL_ONLINE_COMMAND_HEURISTIC_FROM_OBSERVED_FEEDBACK",
+  "sampling_stage_is_not_current_phase": true,
+  "source_next_action_used_for_sampling": true,
+  "original_generator_messages_changed": false,
+  "original_generator_received_sampling_phase": false,
+  "final_router_evaluation": "phase_router_predictions.json"
 }

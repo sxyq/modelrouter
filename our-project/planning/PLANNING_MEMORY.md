@@ -1,5 +1,11 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-04 · 抽样阶段与在线阶段分开，真实前缀转换完成
+
+接续已发布main `72fb341205c1a72b518e61e78511edd64edda3b5`，不重采四任务。原Modify由下一原写动作抽样而来，Chai当前Recover、W3C当前Inspect；四状态3 Recover/1 Inspect/0 Modify，不改变Train/留出用途。Provider只读原messages，无阶段标签/教师，原比较和费用偏好不变。原context抽出在线规则供prepare逐条工具反馈复用，compact传播当前phase。四保存前缀转换成功，Chai同一费用标签的新私有准备材料仅留服务器，旧材料保留；服务器prepare本轮前已有的11行差异不覆盖。
+
+新增8真实权重前向、33494本地编码Token、3.374917秒前向/12.681383秒分析，动作变化0；全迭代前向24、B17-009/010关系1/4和0/4、B4新独立关系仍0/2。没有新生成、测试、标签、Trainer、STEP011或Dev，Serving不换。阶段传播处理有效但没有证明选择能力提升，也未证明阶段错误是泛化失败的唯一原因。后续只在真实修改和局部质量差异提供新信息时推进，不重跑本轮负结果。正式36、原9请求/59946Token/$0.077301025及未知账单/资源项保持，原Skill与项目日期记录更新。
+
 ### 2026-11-04 · syy用户空间Docker可用、四新Recover/Modify完成
 
 接续main `0e7f6bda1462d955bee71d7b17c37c9dc548b015`，复用原工程和维护Skill；不再把系统Docker socket拒绝访问作为不能执行的原因。QEMU/Alpine Docker由syy手工运行，原系统权限/共享GPU服务/Serving不变，Mac不执行Benchmark。四新任务仅L4/train，Chai/brutils训练候选、Boxwood/W3C独立留出，首次请求前定用途；原镜像HEAD、34原动作与固定F2P/P2P保持。Chai双181/181费用Luna1，另三组8/9、518/519、143/144均双失败无局部改善。原35保留，总36；Train梯度仍原20条。

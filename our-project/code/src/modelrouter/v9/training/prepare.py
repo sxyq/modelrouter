@@ -188,6 +188,7 @@ def candidate_inputs(row, pre, questions, group, supplied=()):
 def build_offline_prefix_input(row, state_factory):
     """Replay recorded messages into an injected AgentState; limits come from the caller."""
     from modelrouter.agent.state import EpisodeStatus, StepTrace
+    from modelrouter.v9.runtime.context import tool_result_phase
 
     provenance = row["provenance"]
     messages = copy.deepcopy(row.get("observed_messages"))
@@ -236,6 +237,7 @@ def build_offline_prefix_input(row, state_factory):
             code, output = tool_result(message)
             if command is None or code is None:
                 raise ValueError("Recorded tool command and exit status are required")
+            state.current_phase = tool_result_phase(command, code, output)
             state.history.append(StepTrace(
                 step_index=generation, phase=state.current_phase, selected_action={}, thought=thought,
                 tool_action=command, tool_observation=output, tool_exit_code=code,
