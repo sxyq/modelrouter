@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-03晚期Modify与局部质量研究已完成**：[最新结果](../results/iterations/20261103-v9-modify-quality/review.md)。四原Train任务的新晚截止恢复了真实历史写入与候选相同文件起点；公开轨迹运行时Git版本仍未知。8次有效真实生成，7个候选改源码：Click双4/4新增Luna等质量费用1；留出mpmath Sol12/12对Luna11/12新增Sol质量1；Stingray双失败但Sol修复8项严格包含Luna2项且无新P2P失败；music21 Sol仅消除原P2P失败1。局部信号不混入旧赢家。原29保留、累计31；182候选中51通过/74未通过/57UNKNOWN。prepare.py与real_supervision.py分别保留单候选信任、配对一致性和正式赢家条件。
+
+新增Train正式偏好仅费用，mpmath质量继续留出。A/B/C真实分析复用147份特征、补12次GPU前向；C45行未证明双方向迁移，原008新4状态仍全Luna、独立质量0/4，固定Sol4/4。新Trainer/STEP009/完整Dev均0，Serving与旧权重未换。204230 Token、参考费$0.26692865，实收/资源费未知；K2两核心结论及V9五RQ仍未闭环。本轮执行与发布完成，后续问题见结果，不重复早期读取或旧Dev。
+
 **11-03逐候选执行结果研究**：[本轮结果](../results/iterations/20261103-v9-candidate-outcomes/summary.json)。复用原真实比较和29条正式偏好，原准备入口单独导出候选当次Verifier通过/未通过/UNKNOWN；可信双方未完成不产生赢家。拟合函数迁至现有continuation.py，分别学习Sol/Luna结果，分类分数不是长期通过率。旧任务/Dev/费用语义与原Serving保持。
 
 本轮按固定来源顺序事前选择原Train新仓库Click/Stingray为训练候选、mpmath/music21为仓库留出，不按赢家改用途。原资格、原镜像、完整截止前历史及固定F2P/P2P沿用；首次诊断脚本前采样，未执行历史模拟脚本。具体双候选、原验证与Usage见本轮结果，不复用旧Dev作为新的最终评价集。

@@ -266,7 +266,18 @@ def prepare_candidate_view(records, output_path):
             prepared, reason = prepare_comparison(row, "train")
             observations = prepare_candidate_outcomes(row, "train")
             row["candidate_outcome_observations"] = observations
-            comparable = all(item["outcome_status"] != "UNKNOWN" for item in observations)
+            actions = list(map(candidate_action, row["candidate_actions"]))
+            identities = {(item["action_id"], item["model_id"]) for item in actions}
+            comparable = (
+                all(row["comparison_conditions"][name] for name in (
+                    "same_observed_messages", "same_initial_environment", "same_agent_protocol",
+                    "original_verifier_unchanged", "candidate_identity_matched", "trusted_outcomes",
+                ))
+                and len(actions) == len(observations) == len(identities) >= 2
+                and identities == {(item["action_id"], item["model_id"]) for item in observations}
+                and all(item["outcome_status"] != "UNKNOWN" for item in observations)
+            )
+            row["pair_comparable"] = comparable
             category = ("VALID_PREFERENCE" if prepared and comparable else
                         "COMPARABLE_UNLABELED" if comparable else "INVALID_OR_UNKNOWN")
             if reason:
