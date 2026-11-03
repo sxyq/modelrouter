@@ -1,5 +1,13 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-04 · syy用户空间Docker可用、四新Recover/Modify完成
+
+接续main `0e7f6bda1462d955bee71d7b17c37c9dc548b015`，复用原工程和维护Skill；不再把系统Docker socket拒绝访问作为不能执行的原因。QEMU/Alpine Docker由syy手工运行，原系统权限/共享GPU服务/Serving不变，Mac不执行Benchmark。四新任务仅L4/train，Chai/brutils训练候选、Boxwood/W3C独立留出，首次请求前定用途；原镜像HEAD、34原动作与固定F2P/P2P保持。Chai双181/181费用Luna1，另三组8/9、518/519、143/144均双失败无局部改善。原35保留，总36；Train梯度仍原20条。
+
+Boxwood三次原环境异常记录保留，最终串行60秒/JITless初始及双候选未知0。Luna流内rate_limit_error无动作，取消无目的原测试、保存错误；原Provider5新增/2删除行沿既有错误计量和账户切换，只补一次Luna，200完整且工具执行0。准确旧HTTP状态/Usage未知；新请求没有再触发限流，不冒称自动切换已实测。共9物理请求、8有效、59946已知Token/$0.077301025，实收/缓存读/资源USD未知。
+
+初始8构造前向不是最终评价，另8精确请求输入前向使2次原生选择改变。原生009/010都选对新Chai费用；B17关系1/4与0/4。原Torch A21赢家/B4-22关系固定参照，两个新留出双失败、B4关系0/2、动作正确率null；009旧费用保留不等于新泛化，mpmath仍错。没有新质量信息或双方向改善，不启动STEP011、旧Val或新完整Dev。任务容器0、8Benchmark镜像删除、临时代理撤除后用户Docker仍可用；本机Docker停止、Infinite Canvas定义/镜像/数据不删。原维护Skill和本地项目访问记录沿原位置更新，不建新Skill或未来任务。K2两证据和V9五RQ继续保留，实际科研结果见[review](../results/iterations/20261104-v9-recover-modify/review.md)。
+
 ### 2026-11-03 · Encoder候选表示、质量关系与真实截止
 
 接续main `ad29e4b72d78dfd8927d30cd6652b877331fb3df`，[新结果](../results/iterations/20261103-v9-encoder-migration/review.md)。23旧状态×2 Encoder，原Head前真实ID对齐差向量以原NPZ形式仅留服务器；未重跑上轮四组件、S1、在线状态或Trainer。pipdeptree的CLS近似保留但差向量反向，mpmath持续接近Luna最终赢家样本；Luna质量/费用中心更靠近。原固定Torch/ridge1，19/20标签及三个多行任务移除均不改变旧三观察最终动作。旧B17 pipdeptree关系错误保留；009新参照判断同过正确，但不是新独立评价。

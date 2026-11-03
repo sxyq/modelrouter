@@ -1,0 +1,98 @@
+{
+  "task_id": "buxlabs__boxwood-639",
+  "purpose": "INDEPENDENT_HOLDOUT",
+  "stage": "Recover",
+  "resolved": [
+    false,
+    false
+  ],
+  "formal_preference": null,
+  "preference_basis": null,
+  "exclusion_reason": "NO_VERIFIED_ACTION",
+  "relationship": "NO_LOCAL_IMPROVEMENT",
+  "source_id": "TRA-001",
+  "environment_id": "ENV-002",
+  "source_split": "train",
+  "qualification_layer": 4,
+  "dataset_license": "CC-BY-4.0",
+  "repository_license": "MIT",
+  "source_file": "TRA-001_Open-SWE-Traces/minisweagent_qwen38_swerebench_shard0.parquet",
+  "base_commit": "56eb7dd6b7cee6eb3858924241b883b9a3b9c600",
+  "image": "docker.io/swerebenchv2/buxlabs-boxwood:639-56eb7dd",
+  "original_parser": "parse_log_js",
+  "original_evaluator_source_commit": "c71902a8cf8d2b725f63d51f199f4d3e56f68d2d",
+  "test_code_unchanged": true,
+  "fixed_failure_detection": "Original parser plus explicit numbered Mocha or AVA failure lines",
+  "cutoff": 13,
+  "completed_generations": 4,
+  "gradient_use": false,
+  "source_runtime_version_known": false,
+  "replayed_actions": 7,
+  "selected_before_request": true,
+  "sampling_reason": "New L4-only task selected by stage and pre-action history; no outcome used",
+  "replay_exit_statuses_match": true,
+  "f2p_count": 1,
+  "p2p_count": 518,
+  "initial_fixed_status_counts": {
+    "FAILED": 1,
+    "PASSED": 518
+  },
+  "runtime_adjustment": "AVA --concurrency=1 --timeout=60s after TCG worker timeouts; NODE_OPTIONS=--jitless after V8 segfault; fixed tests and official parser unchanged; explicit AVA failure lines supplement mapping",
+  "candidate_results": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "trusted_outcome": true,
+      "resolved": false,
+      "fixed_status_counts": {
+        "FAILED": 1,
+        "PASSED": 518
+      },
+      "failed_test_ids": [
+        "test › spec › tags › script › basic › script: src with other characters syntax"
+      ],
+      "unknown_test_ids": [],
+      "verification_exit_code": 1,
+      "runner_command_resolved": false,
+      "runner_evaluation_status": "LOCAL_VERIFICATION_ONLY",
+      "official_episode": false,
+      "model_rate_cost_usd": 0.020542,
+      "actual_billed_cost_usd": null,
+      "tool_exit_codes": [
+        1
+      ],
+      "recorded_workspace_diff_files": [],
+      "repaired_f2p": 0,
+      "restored_p2p": 0,
+      "new_p2p_regressions": [],
+      "elapsed_time_sec": 566.3383793329122
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "trusted_outcome": true,
+      "resolved": false,
+      "fixed_status_counts": {
+        "FAILED": 1,
+        "PASSED": 518
+      },
+      "failed_test_ids": [
+        "test › spec › tags › script › basic › script: src with other characters syntax"
+      ],
+      "unknown_test_ids": [],
+      "verification_exit_code": 1,
+      "runner_command_resolved": false,
+      "runner_evaluation_status": "LOCAL_VERIFICATION_ONLY",
+      "official_episode": false,
+      "model_rate_cost_usd": 0.001034,
+      "actual_billed_cost_usd": null,
+      "tool_exit_codes": [
+        0
+      ],
+      "recorded_workspace_diff_files": [],
+      "repaired_f2p": 0,
+      "restored_p2p": 0,
+      "new_p2p_regressions": [],
+      "elapsed_time_sec": 557.1876542920945
+    }
+  ],
+  "same_canonical_router_input": true
+}

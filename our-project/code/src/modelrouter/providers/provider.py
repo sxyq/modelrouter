@@ -386,7 +386,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 break
             chunk = json.loads(data)
             if "error" in chunk:
-                raise RuntimeError(f"Provider stream error: {chunk['error'].get('type', 'unknown')}")
+                body["error"] = chunk["error"]
+                break
             for key in ("id", "model", "created", "system_fingerprint", "reasoning", "reasoning_effort"):
                 if key in chunk:
                     body[key] = chunk[key]
@@ -443,6 +444,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
 
     @staticmethod
     def _response_error(body, protocol):
+        if "error" in body:
+            return body["error"].get("type", "unknown")
         if protocol == "responses":
             outputs = body.get("output", [])
             calls = [item for item in outputs if item["type"] == "function_call"]
@@ -496,7 +499,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 retry = (model_spec.model_id == "gpt-6-luna" and endpoint is not None and
                          (isinstance(exc, urllib.error.HTTPError) and exc.code in (401, 403, 429, 503, 509, 520)
                           or isinstance(exc, ProviderResponseError) and str(exc) in
-                          ("EMPTY_RESPONSE", "INCOMPLETE_RESPONSE", "INCOMPLETE_TOOL_CALL")))
+                          ("EMPTY_RESPONSE", "INCOMPLETE_RESPONSE", "INCOMPLETE_TOOL_CALL", "rate_limit_error")))
                 attempt = dict(exc.metrics) if isinstance(exc, ProviderResponseError) else {
                     "http_status": exc.code, "usage_status": "MISSING", "cost_usd": None,
                     "prompt_tokens": None, "completion_tokens": None,

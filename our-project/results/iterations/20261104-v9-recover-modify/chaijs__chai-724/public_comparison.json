@@ -1,0 +1,98 @@
+{
+  "task_id": "chaijs__chai-724",
+  "purpose": "TRAIN",
+  "stage": "Modify",
+  "resolved": [
+    true,
+    true
+  ],
+  "formal_preference": {
+    "step_model_preference": "gpt-6-luna"
+  },
+  "preference_basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+  "exclusion_reason": null,
+  "relationship": "EQUAL_LOCAL_PROGRESS",
+  "source_id": "TRA-001",
+  "environment_id": "ENV-002",
+  "source_split": "train",
+  "qualification_layer": 4,
+  "dataset_license": "CC-BY-4.0",
+  "repository_license": "MIT",
+  "source_file": "TRA-001_Open-SWE-Traces/minisweagent_qwen38_swerebench_shard0.parquet",
+  "base_commit": "89231de9b7e26d55531cf39ba006621257dcc5da",
+  "image": "docker.io/swerebenchv2/chaijs-chai:724-89231de",
+  "original_parser": "parse_log_js_4",
+  "original_evaluator_source_commit": "c71902a8cf8d2b725f63d51f199f4d3e56f68d2d",
+  "test_code_unchanged": true,
+  "fixed_failure_detection": "Original parser plus explicit numbered Mocha or AVA failure lines",
+  "cutoff": 8,
+  "completed_generations": 3,
+  "gradient_use": true,
+  "source_runtime_version_known": false,
+  "replayed_actions": 3,
+  "selected_before_request": true,
+  "sampling_reason": "New L4-only task selected by stage and pre-action history; no outcome used",
+  "replay_exit_statuses_match": true,
+  "f2p_count": 1,
+  "p2p_count": 180,
+  "initial_fixed_status_counts": {
+    "FAILED": 1,
+    "PASSED": 180
+  },
+  "runtime_adjustment": null,
+  "candidate_results": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "trusted_outcome": true,
+      "resolved": true,
+      "fixed_status_counts": {
+        "PASSED": 181
+      },
+      "failed_test_ids": [],
+      "unknown_test_ids": [],
+      "verification_exit_code": 4,
+      "runner_command_resolved": false,
+      "runner_evaluation_status": "LOCAL_VERIFICATION_ONLY",
+      "official_episode": false,
+      "model_rate_cost_usd": 0.014061,
+      "actual_billed_cost_usd": null,
+      "tool_exit_codes": [
+        0
+      ],
+      "recorded_workspace_diff_files": [
+        "lib/chai.js"
+      ],
+      "repaired_f2p": 1,
+      "restored_p2p": 0,
+      "new_p2p_regressions": [],
+      "elapsed_time_sec": 108.07770700007677
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "trusted_outcome": true,
+      "resolved": true,
+      "fixed_status_counts": {
+        "PASSED": 181
+      },
+      "failed_test_ids": [],
+      "unknown_test_ids": [],
+      "verification_exit_code": 4,
+      "runner_command_resolved": false,
+      "runner_evaluation_status": "LOCAL_VERIFICATION_ONLY",
+      "official_episode": false,
+      "model_rate_cost_usd": 0.00069805,
+      "actual_billed_cost_usd": null,
+      "tool_exit_codes": [
+        0
+      ],
+      "recorded_workspace_diff_files": [
+        "lib/chai.js"
+      ],
+      "repaired_f2p": 1,
+      "restored_p2p": 0,
+      "new_p2p_regressions": [],
+      "elapsed_time_sec": 26.626340208924375
+    }
+  ],
+  "same_canonical_router_input": true
+}

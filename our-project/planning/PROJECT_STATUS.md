@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-04用户空间Docker与新Recover/Modify已完成**：[本轮结果](../results/iterations/20261104-v9-recover-modify/review.md)。A6000 syy用户空间QEMU/Alpine Docker实际可用，系统权限不变、无需sudo；原工程、Serving和权重保持。四新合法L4 Train来源事前分工，34条原动作恢复、8有效生成/1限流异常；Chai双181/181新增Luna费用1，brutils双8/9、Boxwood双518/519、W3C双143/144，无新质量赢家。Boxwood原AVA超时及V8段错误通过同固定范围串行、60秒等待和JITless解决，未知不冒充失败。原35保留，共36（步骤质量19/费用8、任务费用9）。
+
+精确请求输入009/010各4前向，相对初始构造输入2次原生选择变化；原生均选对Chai费用。B4原Torch固定参照用21正式Train/22关系状态，两个新留出均双失败、关系0/2、正式赢家动作正确率null；009保留旧pipdeptree费用，mpmath仍错，010仍失去该费用选择。没有独立双方向改善，不新训STEP011、不扩Dev、不替Serving、不重跑旧Val。59946已知Token/$0.077301025参考费，异常Token/实收/资源USD未知。任务容器及8Benchmark镜像删除、下载代理撤除后用户Docker仍可用；Mac Docker收尾停止，Infinite Canvas数据不删。原维护Skill更新，私人证据留原服务器路径。K2两核心证据与V9五RQ仍未闭环；旧段落中Docker待授权属于历史，不代表当前状态。
+
 **11-03 Encoder迁移接续**：[实际结果](../results/iterations/20261103-v9-encoder-migration/review.md)。009/010各补23个保存状态的Encoder特征，未重做四组件、S1或在线重放。pipdeptree整体CLS相似度.9926而候选差向量-.2699，候选表示转向Sol质量附近；Luna独过与双方同过类中心距离23.897降至5.604。保持009特征的三类参照在旧三观察关系2/3、质量动作1/2、费用1/1，010分别1/3、1/2、0/1，没有新未见任务。010 Head任务留出动作20/20而关系13/20，不称全模型泛化。
 
 Planet/Trestle旧步数0与真实9/14截止不符，原`continuation.py`保留完整步骤前缀的来源截止；20行实际序列化只改变两行步数、标签0变化，四新输入前向动作不变。50次新前向、付费生成/新偏好/Trainer/STEP011/Dev均0，Serving不换。A6000现场Docker仍拒绝syy，需管理员授予该账户现有daemon访问权限；SSH资料已齐，不再次请求登录方式。不在无法原验证时收费生成，不回Mac Docker。新采集尚未执行，K2两证据及V9五RQ仍未闭环。

@@ -1,0 +1,102 @@
+{
+  "task_id": "w3c__webidl2.js-106",
+  "purpose": "INDEPENDENT_HOLDOUT",
+  "stage": "Modify",
+  "resolved": [
+    false,
+    false
+  ],
+  "formal_preference": null,
+  "preference_basis": null,
+  "exclusion_reason": "NO_VERIFIED_ACTION",
+  "relationship": "NO_LOCAL_IMPROVEMENT",
+  "source_id": "TRA-001",
+  "environment_id": "ENV-002",
+  "source_split": "train",
+  "qualification_layer": 4,
+  "dataset_license": "CC-BY-4.0",
+  "repository_license": "MIT",
+  "source_file": "TRA-001_Open-SWE-Traces/minisweagent_qwen36_swerebench_shard0.parquet",
+  "base_commit": "da93c9373b5a445b70429ddee403dbfdb18b585b",
+  "image": "docker.io/swerebenchv2/w3c-webidl2.js:106-da93c93",
+  "original_parser": "parse_log_js_4",
+  "original_evaluator_source_commit": "c71902a8cf8d2b725f63d51f199f4d3e56f68d2d",
+  "test_code_unchanged": true,
+  "fixed_failure_detection": "Original parser plus explicit numbered Mocha or AVA failure lines",
+  "cutoff": 38,
+  "completed_generations": 18,
+  "gradient_use": false,
+  "source_runtime_version_known": false,
+  "replayed_actions": 18,
+  "selected_before_request": true,
+  "sampling_reason": "New L4-only task selected by stage and pre-action history; no outcome used",
+  "replay_exit_statuses_match": true,
+  "f2p_count": 1,
+  "p2p_count": 143,
+  "initial_fixed_status_counts": {
+    "FAILED": 1,
+    "PASSED": 143
+  },
+  "runtime_adjustment": null,
+  "candidate_results": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "trusted_outcome": true,
+      "resolved": false,
+      "fixed_status_counts": {
+        "FAILED": 1,
+        "PASSED": 143
+      },
+      "failed_test_ids": [
+        "Parses all of the invalid IDLs to check that they blow up correctly should produce the right error for /webidl2.js/test/invalid/idl/implements.widl:"
+      ],
+      "unknown_test_ids": [],
+      "verification_exit_code": 1,
+      "runner_command_resolved": false,
+      "runner_evaluation_status": "LOCAL_VERIFICATION_ONLY",
+      "official_episode": false,
+      "model_rate_cost_usd": 0.0180785,
+      "actual_billed_cost_usd": null,
+      "tool_exit_codes": [
+        0
+      ],
+      "recorded_workspace_diff_files": [
+        "package-lock.json"
+      ],
+      "repaired_f2p": 0,
+      "restored_p2p": 0,
+      "new_p2p_regressions": [],
+      "elapsed_time_sec": 21.206412084051408
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "trusted_outcome": true,
+      "resolved": false,
+      "fixed_status_counts": {
+        "FAILED": 1,
+        "PASSED": 143
+      },
+      "failed_test_ids": [
+        "Parses all of the invalid IDLs to check that they blow up correctly should produce the right error for /webidl2.js/test/invalid/idl/implements.widl:"
+      ],
+      "unknown_test_ids": [],
+      "verification_exit_code": 1,
+      "runner_command_resolved": false,
+      "runner_evaluation_status": "LOCAL_VERIFICATION_ONLY",
+      "official_episode": false,
+      "model_rate_cost_usd": 0.000870925,
+      "actual_billed_cost_usd": null,
+      "tool_exit_codes": [
+        0
+      ],
+      "recorded_workspace_diff_files": [
+        "package-lock.json"
+      ],
+      "repaired_f2p": 0,
+      "restored_p2p": 0,
+      "new_p2p_regressions": [],
+      "elapsed_time_sec": 20.936313041951507
+    }
+  ],
+  "same_canonical_router_input": true
+}

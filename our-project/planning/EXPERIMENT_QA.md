@@ -1,5 +1,9 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**11-04实际比较和关系预测**：[本轮结果](../results/iterations/20261104-v9-recover-modify/review.md)。A6000 syy用户空间Docker已运行四新任务，原系统权限不变。Chai固定181项双过，原命令四项范围外旧失败单列；新增Luna费用1，不称Luna质量独胜。brutils、Boxwood、W3C双未完成且无局部改善，不制造赢家。Boxwood原超时/段错误沿同固定测试串行/JITless/等待时间处理，初始与两候选最终未知0；Evaluator源码和测试不改。Luna流内rate_limit_error无动作，原Provider仅补错误类型进入既有计量/账户切换路径；一次补采200有效动作。没有再触发限流，不声称已实测自动切换分支。
+
+初始构造与真实请求输入不同，8次精确前向中2次选择改变；B17-009/010关系1/4、0/4。A21正式Train与B4-22关系状态原Torch固定ridge1、调参0，质量/费用分开、整任务排除全部截止；B4新两留出关系均0/2，双失败的正式动作正确率为null。旧Encoder已见旧折，010 A21/21不等于全模型泛化。保持009仍可保留旧pipdeptree费用，未得到新未见双方向条件信号；不新Trainer/STEP011/Dev。36偏好、59946已知Token/$0.077301025；异常Token、实收、缓存读和资源USD未知，Serving保持，镜像/临时代理清理。本轮执行完成，可靠泛化和完整收益仍未证明。
+
 **11-03 Encoder保持的实际证据**：[本轮结果](../results/iterations/20261103-v9-encoder-migration/review.md)。同权重补取46次Encoder特征，010候选表示按最终赢家更集中，Luna独过/双方同过中心距由23.897缩为5.604；pipdeptree CLS未明显丢失，但候选差向量改变方向。三个多行任务单独移除、只加入Vetiver目标而保持特征，均不能解释旧三观察最终翻转；没有据此选参、删正式标签或断言唯一原因。009三类参照关系2/3仍含mpmath错误，010为1/3；没有新未见任务，不启动原Head训练。
 
 Planet/Trestle完整消息9/14与捕获步数0不符，原Serializer采用真实来源截止，20行处理只改两个step_index、标签不变，四次新输入前向动作不变。原Context改动不重复；50次模型前向、生成/新偏好/Trainer/Dev0。Docker高权限需管理员授予现有syy daemon访问，SSH路径和授权继续有效；未恢复时不收费生成，不回Mac，不假称原Verifier执行或净收益成立。

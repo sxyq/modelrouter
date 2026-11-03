@@ -1,0 +1,972 @@
+{
+  "reference_fitter": "modelrouter.v9.training.continuation.fit_preference_reference",
+  "fixed_ridge_penalty": 1,
+  "parameter_searches": 0,
+  "gradient_checkpoint_training": false,
+  "formal_train_states": 21,
+  "candidate_relationship_train_states": 22,
+  "independent_known_states": 2,
+  "train_relation_counts": {
+    "SOL_ONLY_VERIFIED": 9,
+    "LUNA_ONLY_VERIFIED": 5,
+    "BOTH_VERIFIED": 7,
+    "NEITHER_VERIFIED": 1
+  },
+  "reports": {
+    "009": {
+      "A_SINGLE_WINNER": {
+        "independent": [
+          {
+            "task_id": "buxlabs__boxwood-639",
+            "purpose": "INDEPENDENT_HOLDOUT",
+            "actual_relation": "NEITHER_VERIFIED",
+            "formal_winner": null,
+            "basis": null,
+            "predicted_relation": null,
+            "selection": "gpt-6-luna",
+            "relation_correct": null,
+            "action_correct": null,
+            "categorical_scores": [
+              0.46309189713970184,
+              0.5369081028602981
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "w3c__webidl2.js-106",
+            "purpose": "INDEPENDENT_HOLDOUT",
+            "actual_relation": "NEITHER_VERIFIED",
+            "formal_winner": null,
+            "basis": null,
+            "predicted_relation": null,
+            "selection": "gpt-6.1-sol",
+            "relation_correct": null,
+            "action_correct": null,
+            "categorical_scores": [
+              0.857736365358392,
+              0.14226363464160774
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        ],
+        "previously_examined_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "predicted_relation": null,
+            "selection": "gpt-6-luna",
+            "relation_correct": null,
+            "action_correct": false,
+            "categorical_scores": [
+              0.24422010574783676,
+              0.7557798942521632
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "predicted_relation": null,
+            "selection": "gpt-6-luna",
+            "relation_correct": null,
+            "action_correct": true,
+            "categorical_scores": [
+              0.02193250565889876,
+              0.9780674943411014
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "predicted_relation": null,
+            "selection": "gpt-6.1-sol",
+            "relation_correct": null,
+            "action_correct": true,
+            "categorical_scores": [
+              0.5379643173565412,
+              0.4620356826434588
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        ],
+        "task_leaveout_correct": 19,
+        "task_leaveout_by_basis": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "total": 14,
+            "action_correct": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "total": 7,
+            "action_correct": 6
+          }
+        },
+        "task_leaveout_total": 21,
+        "task_count": 18,
+        "task_equal_accuracy": 0.8888888888888888,
+        "old_encoder_has_seen_old_fold_tasks": true,
+        "task_leaveout": [
+          {
+            "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": false,
+            "action_correct": false
+          },
+          {
+            "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "argoproj__argo-4594",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "planetlabs__planet-client-python-553",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "oscal-compass__compliance-trestle-1578",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "pallets__click-2417",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "researchobject__ro-crate-py-95",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "rstudio__vetiver-python-201",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": false
+          },
+          {
+            "task_id": "chaijs__chai-724",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          }
+        ]
+      },
+      "B4_RECORDED_RELATION": {
+        "independent": [
+          {
+            "task_id": "buxlabs__boxwood-639",
+            "purpose": "INDEPENDENT_HOLDOUT",
+            "actual_relation": "NEITHER_VERIFIED",
+            "formal_winner": null,
+            "basis": null,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "selection": "gpt-6.1-sol",
+            "relation_correct": false,
+            "action_correct": null,
+            "categorical_scores": [
+              0.4464905872573614,
+              0.1483181381757897,
+              0.33916524509991236,
+              0.06602602946693656
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "w3c__webidl2.js-106",
+            "purpose": "INDEPENDENT_HOLDOUT",
+            "actual_relation": "NEITHER_VERIFIED",
+            "formal_winner": null,
+            "basis": null,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "selection": "gpt-6.1-sol",
+            "relation_correct": false,
+            "action_correct": null,
+            "categorical_scores": [
+              0.8517736404748981,
+              -0.09242757658227421,
+              0.22004746199677744,
+              0.02060647411059817
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        ],
+        "previously_examined_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "predicted_relation": "LUNA_ONLY_VERIFIED",
+            "selection": "gpt-6-luna",
+            "relation_correct": false,
+            "action_correct": false,
+            "categorical_scores": [
+              0.23576637364414682,
+              0.4345351820747917,
+              0.297355254123303,
+              0.032343190157758814
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "predicted_relation": "BOTH_VERIFIED",
+            "selection": "gpt-6-luna",
+            "relation_correct": true,
+            "action_correct": true,
+            "categorical_scores": [
+              0.0012282599402727024,
+              0.43581625099365395,
+              0.4810120528132491,
+              0.08194343625282462
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "selection": "gpt-6.1-sol",
+            "relation_correct": true,
+            "action_correct": true,
+            "categorical_scores": [
+              0.5275427500912835,
+              0.16265418673575924,
+              0.2712451278407781,
+              0.03855793533217895
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        ],
+        "task_leaveout_correct": 10,
+        "task_leaveout_by_basis": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "total": 14,
+            "action_correct": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "total": 7,
+            "action_correct": 6
+          }
+        },
+        "task_leaveout_total": 22,
+        "task_count": 19,
+        "task_equal_accuracy": 0.47368421052631576,
+        "old_encoder_has_seen_old_fold_tasks": true,
+        "task_leaveout": [
+          {
+            "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": false,
+            "action_correct": false
+          },
+          {
+            "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "argoproj__argo-4594",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "planetlabs__planet-client-python-553",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "oscal-compass__compliance-trestle-1578",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "pallets__click-2417",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "researchobject__ro-crate-py-95",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "rstudio__vetiver-python-201",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": false
+          },
+          {
+            "task_id": "brazilian-utils__brutils-python-89",
+            "basis": null,
+            "correct": false,
+            "action_correct": null
+          },
+          {
+            "task_id": "chaijs__chai-724",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          }
+        ]
+      }
+    },
+    "010": {
+      "A_SINGLE_WINNER": {
+        "independent": [
+          {
+            "task_id": "buxlabs__boxwood-639",
+            "purpose": "INDEPENDENT_HOLDOUT",
+            "actual_relation": "NEITHER_VERIFIED",
+            "formal_winner": null,
+            "basis": null,
+            "predicted_relation": null,
+            "selection": "gpt-6-luna",
+            "relation_correct": null,
+            "action_correct": null,
+            "categorical_scores": [
+              0.3715045872229862,
+              0.6284954127770137
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "w3c__webidl2.js-106",
+            "purpose": "INDEPENDENT_HOLDOUT",
+            "actual_relation": "NEITHER_VERIFIED",
+            "formal_winner": null,
+            "basis": null,
+            "predicted_relation": null,
+            "selection": "gpt-6-luna",
+            "relation_correct": null,
+            "action_correct": null,
+            "categorical_scores": [
+              0.022008193249749286,
+              0.9779918067502507
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        ],
+        "previously_examined_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "predicted_relation": null,
+            "selection": "gpt-6-luna",
+            "relation_correct": null,
+            "action_correct": false,
+            "categorical_scores": [
+              -0.01539990663016122,
+              1.015399906630161
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "predicted_relation": null,
+            "selection": "gpt-6.1-sol",
+            "relation_correct": null,
+            "action_correct": false,
+            "categorical_scores": [
+              0.5547678659249131,
+              0.44523213407508677
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "predicted_relation": null,
+            "selection": "gpt-6.1-sol",
+            "relation_correct": null,
+            "action_correct": true,
+            "categorical_scores": [
+              0.7145741273038659,
+              0.285425872696134
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        ],
+        "task_leaveout_correct": 21,
+        "task_leaveout_by_basis": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "total": 14,
+            "action_correct": 14
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "total": 7,
+            "action_correct": 7
+          }
+        },
+        "task_leaveout_total": 21,
+        "task_count": 18,
+        "task_equal_accuracy": 1.0,
+        "old_encoder_has_seen_old_fold_tasks": true,
+        "task_leaveout": [
+          {
+            "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "argoproj__argo-4594",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "planetlabs__planet-client-python-553",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "oscal-compass__compliance-trestle-1578",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "pallets__click-2417",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "researchobject__ro-crate-py-95",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "rstudio__vetiver-python-201",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "chaijs__chai-724",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          }
+        ]
+      },
+      "B4_RECORDED_RELATION": {
+        "independent": [
+          {
+            "task_id": "buxlabs__boxwood-639",
+            "purpose": "INDEPENDENT_HOLDOUT",
+            "actual_relation": "NEITHER_VERIFIED",
+            "formal_winner": null,
+            "basis": null,
+            "predicted_relation": "LUNA_ONLY_VERIFIED",
+            "selection": "gpt-6-luna",
+            "relation_correct": false,
+            "action_correct": null,
+            "categorical_scores": [
+              0.31733040265088064,
+              0.32034608009250465,
+              0.2824794958957647,
+              0.07984402136085003
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "w3c__webidl2.js-106",
+            "purpose": "INDEPENDENT_HOLDOUT",
+            "actual_relation": "NEITHER_VERIFIED",
+            "formal_winner": null,
+            "basis": null,
+            "predicted_relation": "BOTH_VERIFIED",
+            "selection": "gpt-6-luna",
+            "relation_correct": false,
+            "action_correct": null,
+            "categorical_scores": [
+              0.0017676228650475023,
+              0.4313260519668167,
+              0.5383969207138515,
+              0.02850940445428407
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        ],
+        "previously_examined_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "predicted_relation": "BOTH_VERIFIED",
+            "selection": "gpt-6-luna",
+            "relation_correct": false,
+            "action_correct": false,
+            "categorical_scores": [
+              -0.029623697231642876,
+              0.4333083315007714,
+              0.5766916282178978,
+              0.019623737512973964
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "selection": "gpt-6.1-sol",
+            "relation_correct": false,
+            "action_correct": false,
+            "categorical_scores": [
+              0.5097438929802303,
+              0.16224042567618066,
+              0.26278926168012545,
+              0.06522641966346386
+            ],
+            "scores_are_pass_probabilities": false
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "purpose": "PREVIOUSLY_EXAMINED_HOLDOUT",
+            "actual_relation": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "selection": "gpt-6.1-sol",
+            "relation_correct": true,
+            "action_correct": true,
+            "categorical_scores": [
+              0.6532850094199629,
+              0.11496671088177088,
+              0.14189354385192238,
+              0.08985473584634379
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        ],
+        "task_leaveout_correct": 13,
+        "task_leaveout_by_basis": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "total": 14,
+            "action_correct": 14
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "total": 7,
+            "action_correct": 6
+          }
+        },
+        "task_leaveout_total": 22,
+        "task_count": 19,
+        "task_equal_accuracy": 0.631578947368421,
+        "old_encoder_has_seen_old_fold_tasks": true,
+        "task_leaveout": [
+          {
+            "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": false,
+            "action_correct": true
+          },
+          {
+            "task_id": "argoproj__argo-4594",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "planetlabs__planet-client-python-553",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "oscal-compass__compliance-trestle-1578",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "pallets__click-2417",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "researchobject__ro-crate-py-95",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "rstudio__vetiver-python-201",
+            "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+            "correct": true,
+            "action_correct": true
+          },
+          {
+            "task_id": "brazilian-utils__brutils-python-89",
+            "basis": null,
+            "correct": false,
+            "action_correct": null
+          },
+          {
+            "task_id": "chaijs__chai-724",
+            "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+            "correct": false,
+            "action_correct": false
+          }
+        ]
+      }
+    }
+  },
+  "independent_holdout_outcomes_used_for_fit": false,
+  "new_train_states_used_for_reference_fit": 2,
+  "new_holdout_states_used_for_reference_fit": 0
+}
