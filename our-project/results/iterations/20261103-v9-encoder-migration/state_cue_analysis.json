@@ -1,0 +1,134 @@
+{
+  "paired_training_states": [
+    {
+      "indices": [
+        1,
+        11
+      ],
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "relations": [
+        "LUNA_ONLY_VERIFIED",
+        "BOTH_VERIFIED"
+      ],
+      "009": {
+        "cosine": 0.9961473786403738,
+        "distance": 6.975695460475771
+      },
+      "010": {
+        "cosine": 0.999892271051997,
+        "distance": 1.207826687320165
+      }
+    },
+    {
+      "indices": [
+        6,
+        10
+      ],
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "relations": [
+        "SOL_ONLY_VERIFIED",
+        "LUNA_ONLY_VERIFIED"
+      ],
+      "009": {
+        "cosine": -0.8333820997706758,
+        "distance": 126.19952891318184
+      },
+      "010": {
+        "cosine": -0.9418009238013911,
+        "distance": 158.75510770082226
+      }
+    },
+    {
+      "indices": [
+        8,
+        13
+      ],
+      "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+      "relations": [
+        "BOTH_VERIFIED",
+        "BOTH_VERIFIED"
+      ],
+      "009": {
+        "cosine": 0.9971952053135351,
+        "distance": 6.112976387321171
+      },
+      "010": {
+        "cosine": 0.9880577380698645,
+        "distance": 12.581142816524762
+      }
+    }
+  ],
+  "phase_pairs": {
+    "009": {
+      "same_winner|same_phase": {
+        "pairs": 28,
+        "mean_cosine": 0.6043485928685638
+      },
+      "different_winner|same_phase": {
+        "pairs": 36,
+        "mean_cosine": -0.48209041602122715
+      },
+      "same_winner|different_phase": {
+        "pairs": 36,
+        "mean_cosine": 0.6289598081948251
+      },
+      "different_winner|different_phase": {
+        "pairs": 33,
+        "mean_cosine": -0.6806526704598596
+      }
+    },
+    "010": {
+      "same_winner|same_phase": {
+        "pairs": 28,
+        "mean_cosine": 0.9831030194870143
+      },
+      "different_winner|same_phase": {
+        "pairs": 36,
+        "mean_cosine": -0.901890870909838
+      },
+      "same_winner|different_phase": {
+        "pairs": 36,
+        "mean_cosine": 0.9858191446205952
+      },
+      "different_winner|different_phase": {
+        "pairs": 33,
+        "mean_cosine": -0.8991462442912465
+      }
+    }
+  },
+  "class_source_counts": {
+    "TRA-002|LUNA_ONLY_VERIFIED": 5,
+    "TRA-002|SOL_ONLY_VERIFIED": 5,
+    "TRA-002|BOTH_VERIFIED": 4,
+    "TRA-001|SOL_ONLY_VERIFIED": 4,
+    "TRA-001|BOTH_VERIFIED": 2
+  },
+  "phase_label_counts": {
+    "verify|LUNA_ONLY_VERIFIED": 3,
+    "verify|SOL_ONLY_VERIFIED": 5,
+    "recover|LUNA_ONLY_VERIFIED": 1,
+    "verify|BOTH_VERIFIED": 3,
+    "modify|LUNA_ONLY_VERIFIED": 1,
+    "modify|BOTH_VERIFIED": 2,
+    "None|SOL_ONLY_VERIFIED": 2,
+    "None|BOTH_VERIFIED": 1,
+    "modify|SOL_ONLY_VERIFIED": 2
+  },
+  "phase_effect_causal_evidence": false,
+  "original_S1_distribution": {
+    "rows": 561,
+    "source_id": "ROUTE-004",
+    "target": "HUMAN_PAIRWISE_PREFERENCE",
+    "state_fields": ["source_id", "pre_decision_state"],
+    "decision_fields": ["candidate_model_a", "candidate_model_b", "prompt_snippet"],
+    "mean_serialized_state_chars": 287.8983957219251,
+    "new_S1_forwards": 0,
+    "is_agent_verifier_success": false
+  },
+  "legacy_captured_step_counts": [
+    {"training_index": 15, "captured_step_index": 0, "recorded_generations": 9},
+    {"training_index": 16, "captured_step_index": 0, "recorded_generations": 14}
+  ],
+  "source_serializer_now_retains_recorded_cutoff": true,
+  "geometry_uses_original_saved_inputs_not_reencoded_inputs": true
+}

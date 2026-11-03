@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-03 Encoder迁移接续**：[实际结果](../results/iterations/20261103-v9-encoder-migration/review.md)。009/010各补23个保存状态的Encoder特征，未重做四组件、S1或在线重放。pipdeptree整体CLS相似度.9926而候选差向量-.2699，候选表示转向Sol质量附近；Luna独过与双方同过类中心距离23.897降至5.604。保持009特征的三类参照在旧三观察关系2/3、质量动作1/2、费用1/1，010分别1/3、1/2、0/1，没有新未见任务。010 Head任务留出动作20/20而关系13/20，不称全模型泛化。
+
+Planet/Trestle旧步数0与真实9/14截止不符，原`continuation.py`保留完整步骤前缀的来源截止；20行实际序列化只改变两行步数、标签0变化，四新输入前向动作不变。50次新前向、付费生成/新偏好/Trainer/STEP011/Dev均0，Serving不换。A6000现场Docker仍拒绝syy，需管理员授予该账户现有daemon访问权限；SSH资料已齐，不再次请求登录方式。不在无法原验证时收费生成，不回Mac Docker。新采集尚未执行，K2两证据及V9五RQ仍未闭环。
+
 **11-03 STEP010迁移研究更新**：[实际结果](../results/iterations/20261103-v9-step010-transfer/review.md)。四种009/010 Encoder与完整分类组件对照表明，pipdeptree费用选择主要随Encoder翻转；训练20条为质量Sol9/Luna5、费用Luna6，010训练Sol选择从10降至9，不能解释为统一Sol多数偏置。统一原Trainer S1口径009/010为.6881/.6720；旧010的.5526来自另一种Serving序列化输入，原温度还改变Loss/Brier/ECE，旧两组指标不可直接相减。原历史记录保留，新口径单列。
 
 Context保留长命令首尾256字符、组合命令中的真实错误，并取消仅凭步数归类Modify；Python仍缺NumPy但R退出0的实际状态现在为Recover。真实保存状态009/010有效GPU重放16次，最终选择不变；新标签/生成/Trainer/Dev均0，未替Serving。新成对Train及在线文件系统比较尚未执行：A6000 SSH可用、已授权资源保持，但syy无Docker socket权限且本地访问资料无sudo认证；没有退回Mac Docker。K2两核心证据和V9五RQ仍未完成，不称全任务完成或技术不可行。

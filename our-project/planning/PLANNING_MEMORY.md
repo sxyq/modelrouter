@@ -1,5 +1,13 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · Encoder候选表示、质量关系与真实截止
+
+接续main `ad29e4b72d78dfd8927d30cd6652b877331fb3df`，[新结果](../results/iterations/20261103-v9-encoder-migration/review.md)。23旧状态×2 Encoder，原Head前真实ID对齐差向量以原NPZ形式仅留服务器；未重跑上轮四组件、S1、在线状态或Trainer。pipdeptree的CLS近似保留但差向量反向，mpmath持续接近Luna最终赢家样本；Luna质量/费用中心更靠近。原固定Torch/ridge1，19/20标签及三个多行任务移除均不改变旧三观察最终动作。旧B17 pipdeptree关系错误保留；009新参照判断同过正确，但不是新独立评价。
+
+原20条Head任务留出010 A/B动作20/20、B关系13/20，Encoder已见这些状态，不当全模型泛化。原S1只读来源/结构，没有新前向；Arena人类偏好与步骤Verifier定义分开。两个完整前缀的旧步数默认0经消息与来源9/14定位，原Serializer两行处理后只改step_index、四次前向动作不变。没有新Trainer/Dev或Serving替换，50次前向均属A6000诊断，未知账单/资源费用不填零。
+
+本轮按原Skill及权威访问文件确认syy SSH正常、Docker context只有不可访问的root:docker/0660 socket。明确所需管理员动作是授予syy已有Docker daemon访问，若加组需要新SSH会话；不是重新寻找登录资料。没有猜密码、放宽socket或换Mac执行。新Recover/Modify采集未执行，无新Train标签，不用旧pipdeptree选择训练参数、不创建未来任务。
+
 ### 2026-11-03 · STEP010组件证据、Val口径与Docker访问缺项
 
 接续main `8ec460c043007c2694d432898400e7916815846d`，[本轮结果](../results/iterations/20261103-v9-step010-transfer/review.md)。四种原Encoder/完整分类组件组合没有训练；010 Encoder配009组件仍丢pipdeptree费用选择，009 Encoder配010组件保持正确。14质量/6费用训练状态分别9Sol5Luna/全Luna，20状态17任务、三任务多行；唯一训练动作翻转是tinydb费用从错误Sol转Luna，不能归给整体Sol推移。

@@ -1,5 +1,9 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**11-03 Encoder保持的实际证据**：[本轮结果](../results/iterations/20261103-v9-encoder-migration/review.md)。同权重补取46次Encoder特征，010候选表示按最终赢家更集中，Luna独过/双方同过中心距由23.897缩为5.604；pipdeptree CLS未明显丢失，但候选差向量改变方向。三个多行任务单独移除、只加入Vetiver目标而保持特征，均不能解释旧三观察最终翻转；没有据此选参、删正式标签或断言唯一原因。009三类参照关系2/3仍含mpmath错误，010为1/3；没有新未见任务，不启动原Head训练。
+
+Planet/Trestle完整消息9/14与捕获步数0不符，原Serializer采用真实来源截止，20行处理只改两个step_index、标签不变，四次新输入前向动作不变。原Context改动不重复；50次模型前向、生成/新偏好/Trainer/Dev0。Docker高权限需管理员授予现有syy daemon访问，SSH路径和授权继续有效；未恢复时不收费生成，不回Mac，不假称原Verifier执行或净收益成立。
+
 **11-03 STEP010机制研究**：[实际结果](../results/iterations/20261103-v9-step010-transfer/review.md)。20/20不支持统一Sol偏置：质量9Sol5Luna、费用6Luna，训练动作Sol数减少一条。四种组件对照把pipdeptree翻转主要定位到Encoder；不能进一步声称某个样本单独造成遗忘。原固定Val是Arena偏好而非Agent成功，009与010旧指标混用了输入转换和温度；统一原Trainer口径为.6881/.6720，旧记录另保留。
 
 原Context头尾摘要及组合错误/阶段语义已处理，6000预算不变、无未来反馈；真实重放的选择没改善。关系正确、最终动作正确和工具可执行三轴分别保留：pipdeptree B17碰巧选对，ro-crate C关系错，Build D缺实际无改善训练类；不可用apply_patch是真实动作失败，不是补丁内容能力证据。本轮无新Train信息，不训练STEP011、不扩Dev、不改Serving。新成对采集尚缺A6000 Docker访问，授权与认证分开，不回Mac或声称技术不可行。

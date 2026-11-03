@@ -89,6 +89,8 @@ def serialize_training_record(row):
             state = json.loads(state)
         state = state.get("pre_decision_state", state)
     state = dict(state)
+    if result.get("supervision_type") == "STEP_LEVEL_PREFERENCE" and result.get("observed_messages"):
+        state["step_index"] = result["provenance"]["observed_through_step"]
     for name in ("teacher_assessment", "capability_cards", "capability_snapshot_id",
                  "feature_training_status", "agent_context", "continuity"):
         if name in result and (name not in state or state[name] is None or state[name] == []):
