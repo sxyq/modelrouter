@@ -1,0 +1,174 @@
+{
+  "states": [
+    {
+      "id": "online0",
+      "recorded_phase": "inspect",
+      "actual_semantics": "READ_EXPLORE",
+      "previous_exit": 0,
+      "tool_count": 0,
+      "original_tool_chars": 0,
+      "new_tool_chars": 0,
+      "task_chars": 1256,
+      "char_budget": 6000,
+      "long_commands": [],
+      "filesystem_snapshot_available": false,
+      "same_state_quality_pair_available": false
+    },
+    {
+      "id": "online1",
+      "recorded_phase": "inspect",
+      "actual_semantics": "READ_EXPLORE",
+      "previous_exit": 0,
+      "tool_count": 1,
+      "original_tool_chars": 693,
+      "new_tool_chars": 693,
+      "task_chars": 1256,
+      "char_budget": 6000,
+      "long_commands": [],
+      "filesystem_snapshot_available": false,
+      "same_state_quality_pair_available": false
+    },
+    {
+      "id": "online2",
+      "recorded_phase": "recover",
+      "actual_semantics": "TOOL_UNAVAILABLE",
+      "previous_exit": 127,
+      "tool_count": 2,
+      "original_tool_chars": 1078,
+      "new_tool_chars": 1078,
+      "task_chars": 1256,
+      "char_budget": 6000,
+      "long_commands": [
+        {
+          "completed_step": 2,
+          "command_chars": 3833,
+          "terminal_command": "OPENBLAS_NUM_THREADS=1 python /app/recover_bn.py",
+          "terminal_command_visible_before": false,
+          "terminal_command_visible_after": true
+        }
+      ],
+      "filesystem_snapshot_available": false,
+      "same_state_quality_pair_available": false
+    },
+    {
+      "id": "online3",
+      "recorded_phase": "recover",
+      "actual_semantics": "DEPENDENCY_MISSING",
+      "previous_exit": 1,
+      "tool_count": 3,
+      "original_tool_chars": 1369,
+      "new_tool_chars": 1369,
+      "task_chars": 1256,
+      "char_budget": 6000,
+      "long_commands": [
+        {
+          "completed_step": 2,
+          "command_chars": 3833,
+          "terminal_command": "OPENBLAS_NUM_THREADS=1 python /app/recover_bn.py",
+          "terminal_command_visible_before": false,
+          "terminal_command_visible_after": true
+        }
+      ],
+      "filesystem_snapshot_available": false,
+      "same_state_quality_pair_available": false
+    },
+    {
+      "id": "online4",
+      "recorded_phase": "recover",
+      "actual_semantics": "RECOVERY_DIAGNOSIS",
+      "previous_exit": 1,
+      "tool_count": 4,
+      "original_tool_chars": 1630,
+      "new_tool_chars": 1630,
+      "task_chars": 1256,
+      "char_budget": 6000,
+      "long_commands": [
+        {
+          "completed_step": 2,
+          "command_chars": 3833,
+          "terminal_command": "OPENBLAS_NUM_THREADS=1 python /app/recover_bn.py",
+          "terminal_command_visible_before": false,
+          "terminal_command_visible_after": true
+        }
+      ],
+      "filesystem_snapshot_available": false,
+      "same_state_quality_pair_available": false
+    },
+    {
+      "id": "online5",
+      "recorded_phase": "recover",
+      "actual_semantics": "DEPENDENCY_RECOVERY_UNCONFIRMED",
+      "previous_exit": null,
+      "tool_count": 5,
+      "original_tool_chars": 1767,
+      "new_tool_chars": 1767,
+      "task_chars": 1256,
+      "char_budget": 6000,
+      "long_commands": [
+        {
+          "completed_step": 2,
+          "command_chars": 3833,
+          "terminal_command": "OPENBLAS_NUM_THREADS=1 python /app/recover_bn.py",
+          "terminal_command_visible_before": false,
+          "terminal_command_visible_after": true
+        }
+      ],
+      "filesystem_snapshot_available": false,
+      "same_state_quality_pair_available": false
+    },
+    {
+      "id": "online6",
+      "recorded_phase": "modify",
+      "actual_semantics": "DEPENDENCY_PROBE",
+      "previous_exit": 0,
+      "tool_count": 6,
+      "original_tool_chars": 2794,
+      "new_tool_chars": 2794,
+      "task_chars": 1256,
+      "char_budget": 6000,
+      "long_commands": [
+        {
+          "completed_step": 2,
+          "command_chars": 3833,
+          "terminal_command": "OPENBLAS_NUM_THREADS=1 python /app/recover_bn.py",
+          "terminal_command_visible_before": false,
+          "terminal_command_visible_after": true
+        }
+      ],
+      "filesystem_snapshot_available": false,
+      "same_state_quality_pair_available": false
+    },
+    {
+      "id": "online7",
+      "recorded_phase": "modify",
+      "actual_semantics": "AFTER_ARTIFACT_WRITE",
+      "previous_exit": 0,
+      "tool_count": 7,
+      "original_tool_chars": 4743,
+      "new_tool_chars": 4743,
+      "task_chars": 1256,
+      "char_budget": 6000,
+      "long_commands": [
+        {
+          "completed_step": 2,
+          "command_chars": 3833,
+          "terminal_command": "OPENBLAS_NUM_THREADS=1 python /app/recover_bn.py",
+          "terminal_command_visible_before": false,
+          "terminal_command_visible_after": true
+        },
+        {
+          "completed_step": 7,
+          "command_chars": 2873,
+          "terminal_command": "Rscript /app/recover_bn.R",
+          "terminal_command_visible_before": false,
+          "terminal_command_visible_after": true
+        }
+      ],
+      "filesystem_snapshot_available": false,
+      "same_state_quality_pair_available": false
+    }
+  ],
+  "future_outputs_injected": false,
+  "actual_semantics_are_manual_log_analysis": true,
+  "online_candidate_quality_unknown": true
+}

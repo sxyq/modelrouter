@@ -9,6 +9,8 @@ from modelrouter.agent.state import StepTrace
 
 
 TEST_COMMAND = re.compile(r"\b(?:pytest|unittest|ctest)\b|\b(?:npm|pnpm|yarn|cargo|go|mvn)\s+test\b")
+TOOL_FAILURE = re.compile(r"^(?:E\s|FAILED |ERROR |FAIL:)|(?:Error|Exception):|command not found", re.MULTILINE)
+WRITE_COMMAND = re.compile(r"\b(?:cat\s*>|sed\s+-i\b|git\s+apply\b|apply_patch\b)")
 _EXTENSIONS = ("teacher_assessment", "capability_cards", "capability_snapshot_id",
                "feature_training_status", "agent_context", "continuity")
 _METRIC_FIELDS = ("metric_name", "score_raw", "score_unit", "benchmark_version",
@@ -194,10 +196,12 @@ def record_tool_result(state, record_dir, action, output, duration_ms, *, submis
     exit_code = extra.get("actual_exit_code", output["returncode"])
     if TEST_COMMAND.search(command):
         state.current_phase = "verify"
-    elif output["returncode"]:
+    elif output["returncode"] or TOOL_FAILURE.search(output["output"]):
         state.current_phase = "recover"
-    elif state.step_index > 1:
+    elif WRITE_COMMAND.search(command):
         state.current_phase = "modify"
+    else:
+        state.current_phase = "inspect"
     state.last_output = output
     state.tool_error_count += int(output["returncode"] != 0)
     state.history.append(StepTrace(
@@ -252,20 +256,26 @@ def message_chars(messages):
     return sum(len(json.dumps(message, ensure_ascii=False)) for message in messages)
 
 
+def command_summary(command):
+    if len(command) <= 256:
+        return command
+    return command[:126] + "\n...\n" + command[-125:]
+
+
 def recent_tools(state, char_limit):
     parts, remaining = [], char_limit
     history = list(reversed(visible_history(state)))
-    failure = next((step for step in history if step.tool_exit_code != 0), None)
+    failure = next((step for step in history if step.tool_exit_code != 0
+                    or TOOL_FAILURE.search(step.tool_observation)), None)
     reserve_failure = bool(history and failure is not None and failure is not history[0])
     if reserve_failure:
         history = [history[0], failure] + [step for step in history[1:] if step is not failure]
     for index, step in enumerate(history):
         allowance = remaining // 2 if index == 0 and reserve_failure else remaining
         heading = (f"step={step.step_index} phase={step.phase} exit={step.tool_exit_code}\n"
-                   f"command={step.tool_action[:256]}\noutput=")
+                   f"command={command_summary(step.tool_action)}\noutput=")
         room = max(0, allowance - len(heading) - 1)
-        highlights = "\n".join(line for line in step.tool_observation.splitlines() if re.search(
-            r"^(?:E\s|FAILED |ERROR |FAIL:)|(?:Error|Exception):|command not found", line)) if step.tool_exit_code != 0 else ""
+        highlights = "\n".join(line for line in step.tool_observation.splitlines() if TOOL_FAILURE.search(line))
         highlights = highlights[:room // 2]
         tail_room = max(0, room - len(highlights) - bool(highlights))
         output = highlights + ("\n" if highlights else "") + (step.tool_observation[-tail_room:] if tail_room else "")
@@ -307,7 +317,7 @@ def compact_router_state(state, messages, snapshot, char_limit=6000):
                   last_tool_exit_code=0, last_observation_summary="Initial task prompt")
     if history:
         result.update(last_tool_exit_code=history[-1].tool_exit_code,
-                      last_observation_summary=(f"command={history[-1].tool_action[:256]}\n"
+                      last_observation_summary=(f"command={command_summary(history[-1].tool_action)}\n"
                                                 f"output={history[-1].tool_observation[-512:]}"))
     result["agent_context"] = {
         "message_count": len(messages), "context_chars": result["context_chars"],

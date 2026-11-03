@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-03 STEP010迁移研究更新**：[实际结果](../results/iterations/20261103-v9-step010-transfer/review.md)。四种009/010 Encoder与完整分类组件对照表明，pipdeptree费用选择主要随Encoder翻转；训练20条为质量Sol9/Luna5、费用Luna6，010训练Sol选择从10降至9，不能解释为统一Sol多数偏置。统一原Trainer S1口径009/010为.6881/.6720；旧010的.5526来自另一种Serving序列化输入，原温度还改变Loss/Brier/ECE，旧两组指标不可直接相减。原历史记录保留，新口径单列。
+
+Context保留长命令首尾256字符、组合命令中的真实错误，并取消仅凭步数归类Modify；Python仍缺NumPy但R退出0的实际状态现在为Recover。真实保存状态009/010有效GPU重放16次，最终选择不变；新标签/生成/Trainer/Dev均0，未替Serving。新成对Train及在线文件系统比较尚未执行：A6000 SSH可用、已授权资源保持，但syy无Docker socket权限且本地访问资料无sudo认证；没有退回Mac Docker。K2两核心证据和V9五RQ仍未完成，不称全任务完成或技术不可行。
+
 **11-03离线—在线迁移本轮**：[最新结果](../results/iterations/20261103-v9-offline-online/review.md)。旧bn-fit-modify八个保存状态真实GPU重放仍全选Sol；在线2014–4494 Token、未裁剪，早期读取/依赖失败与离线诊断后修改状态不同。同一Serializer与消息顺序正常，6000字符摘要未包含完整当前文件或长命令正文。去掉前次reference不改变输入；去掉continuity改变类别分数但不改变B选择。原checkpoint.py参照分支已按真实模型ID组织marker与动作；正常/倒序/跨任务复用输出一致，旧Dev本来Sol在前，不能归因于该候选位置错误。
 
 四新合法L4 Train来源事前分工：Cogent3/Vetiver训练候选、PlasmaPy/Copier仓库留出。Vetiver6/6对5/6、PlasmaPy127/127对120/127，新增质量Sol2；原33保持，共35（步骤质量19、步骤费用7、任务费用9）。Cogent3 Sol拒绝无动作与Luna524为UNKNOWN；Copier原Sol403余额不足，既有账户同一Sol模型补采36/40，Luna使用不可用apply_patch、没有源码改变，完整验证见本轮summary，异常不造赢家。原CG工程、凭据和Serving不变。

@@ -1,0 +1,316 @@
+{
+  "iteration_id": "20261103-v9-step010-transfer",
+  "parent_commit": "8ec460c043007c2694d432898400e7916815846d",
+  "status": "ANALYSIS_AND_CONTEXT_UPDATE_DONE_NEW_PAIRED_COLLECTION_AWAITS_SERVER_DOCKER_ACCESS",
+  "new_trainer_runs": 0,
+  "new_step011": false,
+  "new_provider_requests": 0,
+  "new_paid_tokens": 0,
+  "new_formal_preferences": 0,
+  "total_formal_preferences": 35,
+  "step_quality_preferences": 19,
+  "step_cost_preferences": 7,
+  "task_cost_preferences": 9,
+  "train_rows": 20,
+  "train_unique_tasks": 17,
+  "train_quality_winners": {
+    "gpt-6.1-sol": 9,
+    "gpt-6-luna": 5
+  },
+  "train_cost_winners": {
+    "gpt-6-luna": 6
+  },
+  "component_configurations": 4,
+  "component_state_evaluation_rows": 184,
+  "serving_serialized_s1_rows": 2244,
+  "original_trainer_s1_rows": 2244,
+  "transformed_trainer_s1_rows": 1122,
+  "runtime_forward_rows_including_invalid": 40,
+  "total_evaluated_question_rows": 5834,
+  "physical_model_forward_batches": 2684,
+  "valid_runtime_rows": 20,
+  "invalid_initial_runtime_rows": 20,
+  "original_val_accuracy": {
+    "009": 0.6881,
+    "010": 0.672
+  },
+  "older_recorded_val_not_same_input_or_temperature_protocol": true,
+  "canonical_component_results": {
+    "E009_H009": {
+      "train_correct": 19,
+      "train_total": 20,
+      "quality_correct": 14,
+      "quality_total": 14,
+      "cost_correct": 5,
+      "cost_total": 6,
+      "pipdeptree_selection": "gpt-6-luna",
+      "pipdeptree_scores": {
+        "gpt-6.1-sol": 0.0791,
+        "gpt-6-luna": 0.9209
+      },
+      "original_s1_val": {
+        "items": 561,
+        "loss": 0.6361,
+        "accuracy": 0.6881,
+        "mean_confidence": 0.7687,
+        "ece": 0.0883,
+        "brier": 0.4273,
+        "brier_top1": 0.2136,
+        "by_type": {
+          "choice": {
+            "items": 561,
+            "loss": 0.6361,
+            "accuracy": 0.6881,
+            "mean_confidence": 0.7687,
+            "ece": 0.0883,
+            "brier": 0.4273,
+            "brier_top1": 0.2136
+          }
+        },
+        "num_classes": 2,
+        "majority_class": 1,
+        "majority_baseline_accuracy": 0.5258,
+        "majority_balanced_accuracy": 0.5,
+        "prior_baseline_loss": 0.6918,
+        "balanced_accuracy": 0.6864,
+        "macro_f1": 0.6866,
+        "beats_majority_baseline": true,
+        "gold_counts": {
+          "0": 266,
+          "1": 295
+        },
+        "pred_counts": {
+          "0": 257,
+          "1": 304
+        },
+        "confusion_matrix": {
+          "tn": 174,
+          "fp": 92,
+          "fn": 83,
+          "tp": 212
+        }
+      },
+      "known_unseen_quality_correct": 1,
+      "known_unseen_quality_total": 2,
+      "known_unseen_cost_correct": 1,
+      "known_unseen_cost_total": 1
+    },
+    "E010_H010": {
+      "train_correct": 20,
+      "train_total": 20,
+      "quality_correct": 14,
+      "quality_total": 14,
+      "cost_correct": 6,
+      "cost_total": 6,
+      "pipdeptree_selection": "gpt-6.1-sol",
+      "pipdeptree_scores": {
+        "gpt-6.1-sol": 0.6301,
+        "gpt-6-luna": 0.3699
+      },
+      "original_s1_val": {
+        "items": 561,
+        "loss": 0.6652,
+        "accuracy": 0.672,
+        "mean_confidence": 0.7878,
+        "ece": 0.1171,
+        "brier": 0.4382,
+        "brier_top1": 0.2191,
+        "by_type": {
+          "choice": {
+            "items": 561,
+            "loss": 0.6652,
+            "accuracy": 0.672,
+            "mean_confidence": 0.7878,
+            "ece": 0.1171,
+            "brier": 0.4382,
+            "brier_top1": 0.2191
+          }
+        },
+        "num_classes": 2,
+        "majority_class": 1,
+        "majority_baseline_accuracy": 0.5258,
+        "majority_balanced_accuracy": 0.5,
+        "prior_baseline_loss": 0.6918,
+        "balanced_accuracy": 0.6711,
+        "macro_f1": 0.6711,
+        "beats_majority_baseline": true,
+        "gold_counts": {
+          "0": 266,
+          "1": 295
+        },
+        "pred_counts": {
+          "0": 266,
+          "1": 295
+        },
+        "confusion_matrix": {
+          "tn": 174,
+          "fp": 92,
+          "fn": 92,
+          "tp": 203
+        }
+      },
+      "known_unseen_quality_correct": 1,
+      "known_unseen_quality_total": 2,
+      "known_unseen_cost_correct": 0,
+      "known_unseen_cost_total": 1
+    },
+    "E009_H010": {
+      "train_correct": 19,
+      "train_total": 20,
+      "quality_correct": 14,
+      "quality_total": 14,
+      "cost_correct": 5,
+      "cost_total": 6,
+      "pipdeptree_selection": "gpt-6-luna",
+      "pipdeptree_scores": {
+        "gpt-6.1-sol": 0.0627,
+        "gpt-6-luna": 0.9373
+      },
+      "original_s1_val": {
+        "items": 561,
+        "loss": 0.6576,
+        "accuracy": 0.6898,
+        "mean_confidence": 0.7862,
+        "ece": 0.1,
+        "brier": 0.435,
+        "brier_top1": 0.2175,
+        "by_type": {
+          "choice": {
+            "items": 561,
+            "loss": 0.6576,
+            "accuracy": 0.6898,
+            "mean_confidence": 0.7862,
+            "ece": 0.1,
+            "brier": 0.435,
+            "brier_top1": 0.2175
+          }
+        },
+        "num_classes": 2,
+        "majority_class": 1,
+        "majority_baseline_accuracy": 0.5258,
+        "majority_balanced_accuracy": 0.5,
+        "prior_baseline_loss": 0.6918,
+        "balanced_accuracy": 0.6881,
+        "macro_f1": 0.6883,
+        "beats_majority_baseline": true,
+        "gold_counts": {
+          "0": 266,
+          "1": 295
+        },
+        "pred_counts": {
+          "0": 256,
+          "1": 305
+        },
+        "confusion_matrix": {
+          "tn": 174,
+          "fp": 92,
+          "fn": 82,
+          "tp": 213
+        }
+      },
+      "known_unseen_quality_correct": 1,
+      "known_unseen_quality_total": 2,
+      "known_unseen_cost_correct": 1,
+      "known_unseen_cost_total": 1
+    },
+    "E010_H009": {
+      "train_correct": 20,
+      "train_total": 20,
+      "quality_correct": 14,
+      "quality_total": 14,
+      "cost_correct": 6,
+      "cost_total": 6,
+      "pipdeptree_selection": "gpt-6.1-sol",
+      "pipdeptree_scores": {
+        "gpt-6.1-sol": 0.6244,
+        "gpt-6-luna": 0.3756
+      },
+      "original_s1_val": {
+        "items": 561,
+        "loss": 0.6427,
+        "accuracy": 0.672,
+        "mean_confidence": 0.7704,
+        "ece": 0.102,
+        "brier": 0.4302,
+        "brier_top1": 0.2151,
+        "by_type": {
+          "choice": {
+            "items": 561,
+            "loss": 0.6427,
+            "accuracy": 0.672,
+            "mean_confidence": 0.7704,
+            "ece": 0.102,
+            "brier": 0.4302,
+            "brier_top1": 0.2151
+          }
+        },
+        "num_classes": 2,
+        "majority_class": 1,
+        "majority_baseline_accuracy": 0.5258,
+        "majority_balanced_accuracy": 0.5,
+        "prior_baseline_loss": 0.6918,
+        "balanced_accuracy": 0.6711,
+        "macro_f1": 0.6711,
+        "beats_majority_baseline": true,
+        "gold_counts": {
+          "0": 266,
+          "1": 295
+        },
+        "pred_counts": {
+          "0": 266,
+          "1": 295
+        },
+        "confusion_matrix": {
+          "tn": 174,
+          "fp": 92,
+          "fn": 92,
+          "tp": 203
+        }
+      },
+      "known_unseen_quality_correct": 1,
+      "known_unseen_quality_total": 2,
+      "known_unseen_cost_correct": 0,
+      "known_unseen_cost_total": 1
+    }
+  },
+  "unchanged_choices_after_valid_state_update": 16,
+  "online_quality_labels_added": 0,
+  "new_independent_bidirectional_choice_evidence": false,
+  "new_dynamic_net_benefit_proven": false,
+  "new_official_dev_episodes": 0,
+  "router_forward_ms_median": 107.93236270546913,
+  "gpu_forward_is_not_whole_episode_cost": true,
+  "original_serving_restarted": false,
+  "serving_weights_replaced": false,
+  "mac_weights_downloaded": false,
+  "new_docker_containers": 0,
+  "new_docker_images": 0,
+  "docker_permission_issue": "syy lacks root:docker socket access; saved SSH works; sudo authentication not available in saved access records",
+  "docker_permission_issue_is_not_technical_infeasibility": true,
+  "inspected_formal_targets": 0,
+  "native_effort_formal_targets": 0,
+  "k3_formal_targets": 0,
+  "actual_billed_cost_usd": null,
+  "resource_cost_usd": null,
+  "prior_unknown_usage_preserved": true,
+  "no_parameter_selection_using_dev_or_test": true,
+  "new_train_sampling_performed": false,
+  "new_online_same_filesystem_comparison_performed": false,
+  "unresolved_core_evidence": [
+    "Reliable unseen quality/cost conditional selection",
+    "Independent full-episode dynamic net benefit"
+  ],
+  "five_V9_RQs_not_completed": true,
+  "final_server_snapshot": {
+    "timestamp": "2026-11-03T22:59:41+08:00",
+    "serving_pid": 327621,
+    "serving_start": "2026-10-30T20:53:21+08:00",
+    "health": "healthy",
+    "gpu_memory_used_mib": 26261,
+    "gpu_memory_total_mib": 49140,
+    "gpu_utilization_percent": 0,
+    "old_F14_pid_808492_present": false
+  },
+  "local_temporary_files_removed": 9,
+  "server_temporary_scripts_removed": 4
+}

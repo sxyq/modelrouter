@@ -1,0 +1,94 @@
+{
+  "cases": [
+    {
+      "category": "QUALITY_RELATION_WRONG",
+      "method": "C",
+      "task": "rocrate",
+      "actual": [
+        true,
+        false
+      ],
+      "predicted": [
+        false,
+        false
+      ],
+      "final_choice": null,
+      "cause_evidence": "Nearest recorded states include two candidate failures; not proof of causality"
+    },
+    {
+      "category": "WRONG_RELATION_RIGHT_ACTION",
+      "method": "B17",
+      "task": "pipdeptree",
+      "actual": "BOTH_VERIFIED",
+      "predicted": "LUNA_ONLY_VERIFIED",
+      "final_choice": "gpt-6-luna",
+      "choice_correct": true
+    },
+    {
+      "category": "RIGHT_RELATION_RIGHT_ACTION",
+      "method": "B17",
+      "task": "rocrate",
+      "actual": "SOL_ONLY_VERIFIED",
+      "predicted": "SOL_ONLY_VERIFIED",
+      "final_choice": "gpt-6.1-sol",
+      "choice_correct": true
+    },
+    {
+      "category": "TOOL_ACTION_NOT_EXECUTABLE",
+      "tasks": [
+        "rocrate",
+        "vetiver",
+        "copier"
+      ],
+      "model": "gpt-6-luna",
+      "observed_error": "apply_patch: command not found",
+      "exit_code": 127,
+      "business_source_modified": false,
+      "result_interpretation": "Trusted native action failure in the supplied shell environment, not patch correctness assessment"
+    },
+    {
+      "category": "BOTH_UNFINISHED_LOCAL_PROGRESS_DIFFERS",
+      "task": "stingray",
+      "sol_repaired_f2p": 8,
+      "luna_repaired_f2p": 2,
+      "sol_set_strictly_contains_luna": true,
+      "new_p2p_regression": false,
+      "formal_preference_created": false
+    },
+    {
+      "category": "BOTH_VERIFIED_COST_DECIDES",
+      "task": "pipdeptree",
+      "fixed_ids_passed": [
+        27,
+        27
+      ],
+      "formal_winner": "gpt-6-luna",
+      "local_initial_id_sets_unknown": true
+    },
+    {
+      "category": "PROVIDER_OR_VERIFIER_UNKNOWN",
+      "task": "cogent3",
+      "formal_winner": null,
+      "provider_failure_is_not_model_quality_failure": true
+    },
+    {
+      "category": "LOCAL_RELATION_WRONG",
+      "method": "D",
+      "task": "build",
+      "actual": "NO_LOCAL_IMPROVEMENT",
+      "predicted": "SOL_DOMINATES",
+      "train_labels_after_repository_exclusion": [
+        "EQUAL_LOCAL_PROGRESS",
+        "SOL_DOMINATES"
+      ],
+      "actual_class_absent_from_training": true,
+      "formal_winner": null
+    }
+  ],
+  "categories_are_not_mutually_exclusive": true,
+  "tool_execution_quality_final_action_are_separate": true,
+  "existing_35_formal_preferences_changed": false,
+  "new_reliable_local_cross_task_improvement": false,
+  "current_model_scores_are_not_observed_pass_probabilities": true,
+  "B17_prior_small_bidirectional_signal_preserved_but_not_new_evidence": true
+}

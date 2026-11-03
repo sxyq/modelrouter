@@ -1,5 +1,13 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · STEP010组件证据、Val口径与Docker访问缺项
+
+接续main `8ec460c043007c2694d432898400e7916815846d`，[本轮结果](../results/iterations/20261103-v9-step010-transfer/review.md)。四种原Encoder/完整分类组件组合没有训练；010 Encoder配009组件仍丢pipdeptree费用选择，009 Encoder配010组件保持正确。14质量/6费用训练状态分别9Sol5Luna/全Luna，20状态17任务、三任务多行；唯一训练动作翻转是tinydb费用从错误Sol转Luna，不能归给整体Sol推移。
+
+原S1全561 Arena偏好、不是Agent一步或完整成功；沿原Trainer不变换Val及单位温度复算009/010 .6881/.6720。Serving变换输入及保存choice:2温度复现旧010 .5526/.7007/.5052/.0726，解释旧报告与009不同口径。原记录不覆写，近界一条精度差与温度对分数影响另列。Context命令首尾、组合错误和真实Recover语义已原位处理并同步A6000；16有效状态重放选择不变，首次20行额外元数据实验无效并排除，实际消耗保留。
+
+没有新Provider、正式标签、Trainer、STEP011或Dev，不替Serving；健康服务/权重/用户修改保持。A6000 SSH认证已可用，原Skill及权威访问资料没有sudo认证，Docker socket访问仍缺，Rootless必要程序也缺；新Train和同文件系统采集尚未完成，不自行回Mac、不创建未来任务。后续先解决现有Docker访问，再补真正阶段多样的独立状态；不再把未执行采集写成已完成。
+
 ### 2026-11-03 · 离线—在线机制、真实新任务与STEP010负结果
 
 接续main `d64edb6ad07a233cc028979b65653272f0c5cffc`，[本轮入口](../results/iterations/20261103-v9-offline-online/review.md)。旧57份特征与历史A/B/C/D复用，仅补保存在线状态、新状态及必要顺序前向。B八步全Sol是三类拟合在这些表示上均把SOL_ONLY_VERIFIED排第一；17条先验7/5/5，类别分数不是通过率。训练前缀以Verify/诊断后Modify为主，在线前六步读数据与依赖失败为主；未见分词裁剪，Router没有完整当前文件字段。原continuity中reference原已省略，不存在前次分数直接进入本次Encoder的证据。候选顺序真实错误在checkpoint参照分支按模型ID处理，四次同进程结果一致；不解释旧Sol在前Dev。
