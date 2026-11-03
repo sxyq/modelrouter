@@ -1,0 +1,1186 @@
+{
+  "summary": {
+    "task_id": "build-cython-ext",
+    "strategy": "dynamic",
+    "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+    "reward": 1.0,
+    "generation_calls": 16,
+    "model_reference_cost_usd": 0.1313958,
+    "actual_billed_cost_usd": null,
+    "actual_billed_unknown_requests": 16,
+    "resource_cost_usd": null,
+    "prompt_tokens": 250446,
+    "completion_tokens": 3954,
+    "reasoning_tokens_already_in_completion": 183,
+    "models": {
+      "gpt-6.1-sol": 16
+    },
+    "model_switches": 0,
+    "fallback_count": 0,
+    "provider_errors": 0,
+    "router_total_seconds": 343.4820089599816,
+    "router_inference_seconds": 312.55265362374485,
+    "router_initialization_seconds": 29.98152169957757,
+    "router_reused_calls": 15,
+    "trial_total_seconds": 634.98673,
+    "phase_seconds": {
+      "environment_setup": 3.311853,
+      "agent_setup": 0.000361,
+      "agent_execution": 615.524465,
+      "verifier": 10.947005
+    },
+    "official_trial_result": "our-project/results/iterations/20261103-v9-independent-train/dev/build-cython-ext/dynamic/jobs/dynamic/build-cython-ext__VoAWFxd/result.json",
+    "verifier_tests": {
+      "passed": 11
+    }
+  },
+  "tests": [
+    {
+      "name": "test_outputs.py::test_numpy_version",
+      "status": "passed",
+      "duration": 0.4574587079999901
+    },
+    {
+      "name": "test_outputs.py::test_repo_cloned",
+      "status": "passed",
+      "duration": 0.0009148749999212669
+    },
+    {
+      "name": "test_outputs.py::test_pyknotid_core_import",
+      "status": "passed",
+      "duration": 0.0008539589999827513
+    },
+    {
+      "name": "test_outputs.py::test_chelpers_cython_extension",
+      "status": "passed",
+      "duration": 0.4806723750000401
+    },
+    {
+      "name": "test_outputs.py::test_ccomplexity_cython_extension",
+      "status": "passed",
+      "duration": 0.001050415999998222
+    },
+    {
+      "name": "test_outputs.py::test_cinvariants_cython_extension",
+      "status": "passed",
+      "duration": 0.0007341660001429773
+    },
+    {
+      "name": "test_outputs.py::test_chelpers",
+      "status": "passed",
+      "duration": 0.0008341249999830325
+    },
+    {
+      "name": "test_outputs.py::test_ccomplexity",
+      "status": "passed",
+      "duration": 0.005621291000238671
+    },
+    {
+      "name": "test_outputs.py::test_cinvariants_python_vs_cython",
+      "status": "passed",
+      "duration": 0.010055332999968414
+    },
+    {
+      "name": "test_outputs.py::test_example_usage",
+      "status": "passed",
+      "duration": 0.01334216700001889
+    },
+    {
+      "name": "test_outputs.py::test_pyknotid_repository_tests",
+      "status": "passed",
+      "duration": 5.812442792999946
+    }
+  ],
+  "routes": [
+    {
+      "step": 0,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 37199.35699994676,
+      "inference_latency_ms": 6521.814463660121,
+      "router_initialization_ms": 29981.52169957757,
+      "router_process_reused": false,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5352,
+          "probability": 0.5352
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4648,
+          "probability": 0.4648
+        }
+      ]
+    },
+    {
+      "step": 1,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 19026.790667092428,
+      "inference_latency_ms": 19015.170458704233,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5327,
+          "probability": 0.5327
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4673,
+          "probability": 0.4673
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 19124.23695810139,
+      "inference_latency_ms": 19112.863624468446,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5325,
+          "probability": 0.5325
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4675,
+          "probability": 0.4675
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 17330.32041694969,
+      "inference_latency_ms": 17318.385617807508,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5424,
+          "probability": 0.5424
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4576,
+          "probability": 0.4576
+        }
+      ]
+    },
+    {
+      "step": 4,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 21993.638665997423,
+      "inference_latency_ms": 21980.46646080911,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.55,
+          "probability": 0.55
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.45,
+          "probability": 0.45
+        }
+      ]
+    },
+    {
+      "step": 5,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 22148.868791991845,
+      "inference_latency_ms": 22137.781240046024,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.548,
+          "probability": 0.548
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.452,
+          "probability": 0.452
+        }
+      ]
+    },
+    {
+      "step": 6,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 23236.36816709768,
+      "inference_latency_ms": 23225.976327434182,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5308,
+          "probability": 0.5308
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4692,
+          "probability": 0.4692
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 21793.301832978614,
+      "inference_latency_ms": 21781.991988420486,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5291,
+          "probability": 0.5291
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4709,
+          "probability": 0.4709
+        }
+      ]
+    },
+    {
+      "step": 8,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 19219.290749984793,
+      "inference_latency_ms": 19205.677803605795,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5366,
+          "probability": 0.5366
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4634,
+          "probability": 0.4634
+        }
+      ]
+    },
+    {
+      "step": 9,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 20243.720291997306,
+      "inference_latency_ms": 20232.810370624065,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5306,
+          "probability": 0.5306
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4694,
+          "probability": 0.4694
+        }
+      ]
+    },
+    {
+      "step": 10,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 20416.158541920595,
+      "inference_latency_ms": 20362.165730446577,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5299,
+          "probability": 0.5299
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4701,
+          "probability": 0.4701
+        }
+      ]
+    },
+    {
+      "step": 11,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 19867.206749971956,
+      "inference_latency_ms": 19855.878258123994,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5312,
+          "probability": 0.5312
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4688,
+          "probability": 0.4688
+        }
+      ]
+    },
+    {
+      "step": 12,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 20452.096083085053,
+      "inference_latency_ms": 20441.551242023706,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5285,
+          "probability": 0.5285
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4715,
+          "probability": 0.4715
+        }
+      ]
+    },
+    {
+      "step": 13,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 21496.837749960832,
+      "inference_latency_ms": 21471.962986513972,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5449,
+          "probability": 0.5449
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4551,
+          "probability": 0.4551
+        }
+      ]
+    },
+    {
+      "step": 14,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 19642.323583946563,
+      "inference_latency_ms": 19631.72611221671,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5272,
+          "probability": 0.5272
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4728,
+          "probability": 0.4728
+        }
+      ]
+    },
+    {
+      "step": 15,
+      "checkpoint_id": "V9_LAYA_STEP_006-e03",
+      "router_run_id": "V9_LAYA_STEP_006",
+      "router_latency_ms": 20291.492708958685,
+      "inference_latency_ms": 20256.430938839912,
+      "router_initialization_ms": 0.0,
+      "router_process_reused": true,
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "action": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.5386,
+          "probability": 0.5386
+        },
+        {
+          "action": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "score": 0.4614,
+          "probability": 0.4614
+        }
+      ]
+    }
+  ],
+  "request_usage": [
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 2178,
+      "completion_tokens": 135,
+      "reasoning_tokens": null,
+      "cached_tokens": null,
+      "cache_write_tokens": 2175,
+      "cost_usd": 0.0067935,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 7934.399874997325,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 0
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 4150,
+      "completion_tokens": 194,
+      "reasoning_tokens": 6,
+      "cached_tokens": 2175,
+      "cache_write_tokens": 1972,
+      "cost_usd": 0.0070935,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 7651.474458980374,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 1
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 5794,
+      "completion_tokens": 348,
+      "reasoning_tokens": 16,
+      "cached_tokens": 4147,
+      "cache_write_tokens": 1644,
+      "cost_usd": 0.0080107,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 7157.905166968703,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 2
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 6250,
+      "completion_tokens": 128,
+      "reasoning_tokens": 6,
+      "cached_tokens": 5791,
+      "cache_write_tokens": 456,
+      "cost_usd": 0.0030051,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 4475.407416932285,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 3
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 10840,
+      "completion_tokens": 396,
+      "reasoning_tokens": 15,
+      "cached_tokens": 6247,
+      "cache_write_tokens": 4590,
+      "cost_usd": 0.0160657,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 8269.650332978927,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 4
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 11447,
+      "completion_tokens": 150,
+      "reasoning_tokens": 11,
+      "cached_tokens": 10837,
+      "cache_write_tokens": 607,
+      "cost_usd": 0.0041072,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 4929.292790940963,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 5
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 14201,
+      "completion_tokens": 164,
+      "reasoning_tokens": 17,
+      "cached_tokens": 11444,
+      "cache_write_tokens": 2754,
+      "cost_usd": 0.0096754,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 5053.158874972723,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 6
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 15748,
+      "completion_tokens": 215,
+      "reasoning_tokens": 13,
+      "cached_tokens": 14198,
+      "cache_write_tokens": 1547,
+      "cost_usd": 0.0074433,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 7370.605582953431,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 7
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 17234,
+      "completion_tokens": 123,
+      "reasoning_tokens": 16,
+      "cached_tokens": 15745,
+      "cache_write_tokens": 1486,
+      "cost_usd": 0.0065255,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 7491.403208114207,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 8
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 18068,
+      "completion_tokens": 236,
+      "reasoning_tokens": 15,
+      "cached_tokens": 17231,
+      "cache_write_tokens": 834,
+      "cost_usd": 0.0061741,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 5154.41529196687,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 9
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 19207,
+      "completion_tokens": 170,
+      "reasoning_tokens": 13,
+      "cached_tokens": 18065,
+      "cache_write_tokens": 1139,
+      "cost_usd": 0.00636,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 25570.596750010736,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 10
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 20331,
+      "completion_tokens": 273,
+      "reasoning_tokens": 14,
+      "cached_tokens": 19204,
+      "cache_write_tokens": 1124,
+      "cost_usd": 0.0074664,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 9872.05762497615,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 11
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 23720,
+      "completion_tokens": 212,
+      "reasoning_tokens": 8,
+      "cached_tokens": 20328,
+      "cache_write_tokens": 3389,
+      "cost_usd": 0.0126313,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 7821.288165985607,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 12
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 26073,
+      "completion_tokens": 912,
+      "reasoning_tokens": 15,
+      "cached_tokens": 23717,
+      "cache_write_tokens": 2353,
+      "cost_usd": 0.0173802,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 10342.95870794449,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 13
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 27402,
+      "completion_tokens": 184,
+      "reasoning_tokens": 9,
+      "cached_tokens": 26070,
+      "cache_write_tokens": 1329,
+      "cost_usd": 0.0077755,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 4494.172667036764,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 14
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 27803,
+      "completion_tokens": 114,
+      "reasoning_tokens": 9,
+      "cached_tokens": 27399,
+      "cache_write_tokens": 401,
+      "cost_usd": 0.0048884,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 25590.120499953628,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "dynamic",
+      "step": 15
+    }
+  ]
+}

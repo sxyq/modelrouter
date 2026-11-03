@@ -8,6 +8,8 @@
 
 ## 0. 阶段入口与决策规则
 
+**11-03独立Train补充已完成**：[本轮记录](../results/iterations/20261103-v9-independent-train/review.md)新增Argo原890项中的Sol质量目标1；Luna只因实际载荷解码改动导致TestController失败，不用计时波动生成赢家。PrettyTable新cutoff8双191/193仅观察。原一步定义、Test/Gym边界保持，24偏好/79行、15步骤，Inspect/K3/Effort0；明确Modify2含质量1，Argo为phase未知的Modify采样，来源采样合计3含质量2。原go命令的范围外失败与正式F2P/P2P结果分开；原生Go运行库属于实际环境依赖，未改测试。Provider请求内端点及未知费用直接改原实现，文件写锁和四账户框架沿用。STEP006原Trainer/CPU三轮24更新已完成，原64行保持但不参与损失，仅保留e03并显式保留；新15目标全Sol6/15、同旧14目标仍5/14，不因旧Val不变继续过拟合或用Dev调参数。ELF/Cython六个原官方Episode已完成，动态20次全Sol、两题均成功，固定Sol也两题成功且模型参考费更低（0.161107300对0.170223400USD）；动态Router433.296秒，收益未证。62完整生成/983210Token/0.450076775USD参考费，实收/资源费未知。所有本轮指定工作已执行，不新增Q-ID、监督定义或执行限制，不将负面结果称为技术不可行。
+
 **11-03三项任务继续执行**：[本轮记录](../results/iterations/20261103-v9-labels-and-learning/review.md)完成四组Train真实比较、新增质量差异1和等质量费用2，累计23偏好/78行，旧75保持。原严格一步目标未变，SQLparse原阶段Verify不随目录名改成Modify；Modify总2含质量1，Inspect/K3/实际Effort0。STEP004混合78行、提高head lr至1e-4后近期四状态仍全Sol1/4；STEP005仅14步骤参与损失，三轮21更新后全Sol5/14、ValLoss升至0.6005。没有批准局部进展或Inspect新目标，没有根据Dev调参；旧64行比例不是充分原因，不宣称完全确定各因素因果占比。
 
 STEP004首次删除权重后误用基础模型的14次输出明确无效，同run原位重建、e03实际身份已取得；STEP005 e03只作原因实验，不冒称原Val最佳e01、不部署。三次实际训练含重建9轮81更新，健康F14与Serving保留。独立Dev选原24中三个任务，原Harbor Docker/未改Evaluator、九个策略Episode已执行；动态STEP004成功2/3、15路由全Sol、无切换/fallback。COBOL Luna因原依赖下载502无CTRF，原奖励不记质量败者，真实命令重放后的原评价单列reward1。HTML三策略均原reward0，保留依赖/HTML变动的失败及原XSS子项语义局限；不改上游取得成绩。60完整请求/354177Token/0.313254145USD参考费，实收/资源费未知。三项及必要后续已执行，负面探索结果不改成收益，不再留待执行建议。

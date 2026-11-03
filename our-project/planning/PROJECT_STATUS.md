@@ -1,5 +1,13 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-03 · 独立 Argo 质量目标与 STEP006 CPU 更新
+
+接续main `d2c492b36803314442e2bd20a960c234458e768f`；[本轮记录](../results/iterations/20261103-v9-independent-train/review.md)。Argo4594 cutoff26 新仓库真实比较 Sol890/890、Luna889/890，Luna载荷解码使原TestController失败；新增合法质量目标Sol1。PrettyTable新cutoff8双方191/193，无目标，未重复旧cutoff12。累计24偏好/79行、步骤15，原观察轨迹不因新比较自动变为偏好。Argo原镜像、同版本原生Go及固定F2P/P2P890实际可运行，整条go命令另有范围外失败，单独报告，不称Harbor成绩。
+
+Provider失败账户改为请求内来源、固定端点遵守排除列表、未知费用保持未知；原验证沿用环境timeout，不改Code Generation或原评价器。STEP006从真实STEP004-e03在服务器CPU完成15步骤目标、三轮24更新，2388.10秒；只保留e03，沿原字段显式保留，Serving未重启。Val561 Accuracy0.6898/Loss0.5972；20次真实CPU均无fallback，新模型15目标全Sol6/15，同旧14目标仍5/14、目标概率0.480900→0.486029/NLL0.746901→0.731267，没有选择改善。明确phase的Modify2含质量1；Argo为未知phase的Modify采样，含该来源统计3含质量2，Inspect/K3/Effort0。
+
+两个新独立Dev的六个完整原官方Episode已完成：ELF三方均reward1，Cython固定Sol/动态1、Luna0。动态20次全Sol、切换0、fallback/Provider错误0；固定Sol/动态/Luna成功2/2、2/2、1/2，参考模型费0.161107300/0.170223400/0.012113075USD；Agent执行336.337/745.134/487.269秒，动态Router433.296秒含初始化60.392/前向371.224、复用18次。62完整生成、983210Token、0.450076775USD参考费，实收及资源费未知。环境准备另列，动态收益未成立；数据、诊断、训练、前向、独立对照均已执行，研究负面结果不称技术不可行，也不重跑旧题或再留本轮待跑菜单。
+
 ## 2026-11-03 · Train目标23、STEP004/005原因实验与三任务独立Dev推进
 
 接续main `36d6bef95783a78cf3902d0730ff542587a27265`；本轮 [执行记录](../results/iterations/20261103-v9-labels-and-learning/review.md) / [summary](../results/iterations/20261103-v9-labels-and-learning/summary.json)。上一轮三项任务已直接继续，四组真实Train状态比较新增三个步骤目标：SQLparse Verify质量Sol1、Records Verify和Schema Modify等质量费用Luna各1。旧75行保持，实际78行；累计23偏好=任务9/步骤14，步骤Sol5/Luna9、Verify11/Recover1/Modify2，其中Modify质量赢家1，Inspect/K3/NativeEffort仍0。新独立数据任务0，原目标定义及Dev/Test隔离不变。

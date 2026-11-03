@@ -173,7 +173,7 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
             event(record_dir, "ORIGINAL_VERIFIER_RESTORED", **verifier_restore)
             if verifier_restore["returncode"] != 0:
                 raise RuntimeError("Original verifier files could not be restored")
-        verified = task_environment.execute({"command": verify_command}, timeout=60)
+        verified = task_environment.execute({"command": verify_command}, timeout=task_environment.config.timeout)
         verification_error = verified.get("extra", {}).get("exception_type")
         verification_exit_code = None if verification_error else verified["returncode"]
         verification_output = verified["output"]

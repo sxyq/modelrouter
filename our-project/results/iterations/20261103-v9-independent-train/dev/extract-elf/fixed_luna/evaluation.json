@@ -1,0 +1,313 @@
+{
+  "summary": {
+    "task_id": "extract-elf",
+    "strategy": "fixed_luna",
+    "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+    "reward": 1.0,
+    "generation_calls": 5,
+    "model_reference_cost_usd": 0.00329197,
+    "actual_billed_cost_usd": null,
+    "actual_billed_unknown_requests": 5,
+    "resource_cost_usd": null,
+    "prompt_tokens": 16512,
+    "completion_tokens": 4099,
+    "reasoning_tokens_already_in_completion": 1902,
+    "models": {
+      "gpt-6-luna": 5
+    },
+    "model_switches": 0,
+    "fallback_count": 0,
+    "provider_errors": 0,
+    "router_total_seconds": 0.0014946658629924059,
+    "router_inference_seconds": 0.0,
+    "router_initialization_seconds": 0.0,
+    "router_reused_calls": 0,
+    "trial_total_seconds": 292.825187,
+    "phase_seconds": {
+      "environment_setup": 104.077636,
+      "agent_setup": 0.005182,
+      "agent_execution": 138.887821,
+      "verifier": 43.929348
+    },
+    "official_trial_result": "our-project/results/iterations/20261103-v9-independent-train/dev/extract-elf/fixed_luna/jobs/fixed_luna/extract-elf__MzHcjwH/result.json",
+    "verifier_tests": {
+      "passed": 2
+    }
+  },
+  "tests": [
+    {
+      "name": "test_outputs.py::test_extract_js_exists",
+      "status": "passed",
+      "duration": 0.0012038749999874199
+    },
+    {
+      "name": "test_outputs.py::test_output_matches_reference",
+      "status": "passed",
+      "duration": 1.5744248750000907
+    }
+  ],
+  "routes": [
+    {
+      "step": 0,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.9250409202650189,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "jiji",
+        "model": "gpt-6-luna",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6-luna:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 1,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.15912496019154787,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "jiji",
+        "model": "gpt-6-luna",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6-luna:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.08274998981505632,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "jiji",
+        "model": "gpt-6-luna",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6-luna:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.12324994895607233,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "jiji",
+        "model": "gpt-6-luna",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6-luna:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 4,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.20450004376471043,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "jiji",
+        "model": "gpt-6-luna",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6-luna:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        }
+      ]
+    }
+  ],
+  "request_usage": [
+    {
+      "selected_model_id": "gpt-6-luna",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "prompt_tokens": 1931,
+      "completion_tokens": 142,
+      "reasoning_tokens": 62,
+      "cached_tokens": null,
+      "cache_write_tokens": 1928,
+      "cost_usd": 0.0003123,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 9262.161041027866,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6-luna",
+      "task_id": "extract-elf",
+      "strategy": "fixed_luna",
+      "step": 0
+    },
+    {
+      "selected_model_id": "gpt-6-luna",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "prompt_tokens": 1107,
+      "completion_tokens": 410,
+      "reasoning_tokens": 121,
+      "cached_tokens": 0,
+      "cache_write_tokens": null,
+      "cost_usd": 0.0003157,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 9339.045291999355,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6-luna",
+      "task_id": "extract-elf",
+      "strategy": "fixed_luna",
+      "step": 1
+    },
+    {
+      "selected_model_id": "gpt-6-luna",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "prompt_tokens": 6331,
+      "completion_tokens": 972,
+      "reasoning_tokens": null,
+      "cached_tokens": null,
+      "cache_write_tokens": null,
+      "cost_usd": 0.0011191,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 12172.693291911855,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6-luna",
+      "task_id": "extract-elf",
+      "strategy": "fixed_luna",
+      "step": 2
+    },
+    {
+      "selected_model_id": "gpt-6-luna",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "prompt_tokens": 3122,
+      "completion_tokens": 1015,
+      "reasoning_tokens": 171,
+      "cached_tokens": 1955,
+      "cache_write_tokens": null,
+      "cost_usd": 0.00064375,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 8328.187457984313,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6-luna",
+      "task_id": "extract-elf",
+      "strategy": "fixed_luna",
+      "step": 3
+    },
+    {
+      "selected_model_id": "gpt-6-luna",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "prompt_tokens": 4021,
+      "completion_tokens": 1560,
+      "reasoning_tokens": 1548,
+      "cached_tokens": 3122,
+      "cache_write_tokens": null,
+      "cost_usd": 0.00090112,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 95203.93587497529,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6-luna",
+      "task_id": "extract-elf",
+      "strategy": "fixed_luna",
+      "step": 4
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+diff --git a/server/event/dispatch/operation.go b/server/event/dispatch/operation.go
+index 545fd83a..21da306c 100644
+--- a/server/event/dispatch/operation.go
++++ b/server/event/dispatch/operation.go
+@@ -113,7 +113,11 @@ func (o *Operation) dispatch(wfeb wfv1.WorkflowEventBinding, nameSuffix string)
+ 				if err != nil {
+ 					return nil, fmt.Errorf("failed to evaluate workflow template parameter \"%s\" expression: %w", p.Name, err)
+ 				}
+-				wf.Spec.Arguments.Parameters = append(wf.Spec.Arguments.Parameters, wfv1.Parameter{Name: p.Name, Value: wfv1.AnyStringPtr(result)})
++				value, err := eventParameterValue(result)
++				if err != nil {
++					return nil, fmt.Errorf("failed to marshal workflow template parameter \"%s\": %w", p.Name, err)
++				}
++				wf.Spec.Arguments.Parameters = append(wf.Spec.Arguments.Parameters, wfv1.Parameter{Name: p.Name, Value: wfv1.AnyStringPtr(value)})
+ 			}
+ 		}
+ 		wf, err = client.ArgoprojV1alpha1().Workflows(wfeb.Namespace).Create(wf)
+@@ -126,18 +130,30 @@ func (o *Operation) dispatch(wfeb wfv1.WorkflowEventBinding, nameSuffix string)
+ }
+ 
+ func expressionEnvironment(ctx context.Context, namespace, discriminator string, payload *wfv1.Item) (map[string]interface{}, error) {
++	var payloadValue interface{}
++	if payload != nil {
++		if err := json.Unmarshal(payload.Value, &payloadValue); err != nil {
++			return nil, fmt.Errorf("failed to decode event payload: %w", err)
++		}
++	}
+ 	src := map[string]interface{}{
+ 		"namespace":     namespace,
+ 		"discriminator": discriminator,
+ 		"metadata":      metaData(ctx),
+-		"payload":       payload,
++		"payload":       payloadValue,
++	}
++	return src, nil
++}
++
++func eventParameterValue(value interface{}) (string, error) {
++	if str, ok := value.(string); ok {
++		return str, nil
+ 	}
+-	data, err := json.Marshal(src)
++	data, err := json.Marshal(value)
+ 	if err != nil {
+-		return nil, err
++		return "", err
+ 	}
+-	env := make(map[string]interface{})
+-	return env, json.Unmarshal(data, &env)
++	return string(data), nil
+ }
+ 
+ func metaData(ctx context.Context) map[string]interface{} {

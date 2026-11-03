@@ -1,5 +1,9 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
+**11-03独立Go质量与新Dev负面证据**：[本轮执行](../results/iterations/20261103-v9-independent-train/review.md)将Argo4594的公开观察前缀关联到真实原环境与新Sol/Luna比较，原F2P1/P2P889中Sol890/890、Luna889/890，新增独立仓库质量目标Sol1；Luna载荷解码错误可由原TestController及实际补丁说明。PrettyTable新状态双方191/193，不造偏好。累计24偏好/79行、15步骤；明确phase的Modify2含质量1，Argo为未知phase的Modify采样，含来源采样合计3含质量2，Inspect/K3/Effort0。STEP003编码诊断与STEP004/005负面结果沿用；STEP006原Trainer/服务器CPU完成三轮24更新，仅15步骤参与损失。20次真实CPU无fallback，新15目标全Sol6/15，同旧14目标仍5/14，平均目标概率0.480900→0.486029/NLL0.746901→0.731267；有学习信号，没有选择改善，也没区分各因素因果贡献。
+
+两个新独立Dev沿原Harbor Docker/未改Evaluator完成六个Episode，动态STEP006与固定Sol均成功2/2，固定Luna1/2；动态20次全Sol、切换0、fallback/Provider错误0。固定Sol/动态/Luna参考费0.161107300/0.170223400/0.012113075USD，Agent执行336.337/745.134/487.269秒；动态Router433.296秒含初始化60.392/前向371.224、18次复用，资源费未知。镜像准备时间另列，不因Token或缓存随机差声明收益。本批新增标签的赢家原模型本来已选Sol，动态仍无便宜模型选择，质量—成本收益未成立；两个任务不足以证明跨来源泛化或完整V9。62完整生成/983210Token/0.450076775USD参考费，实收未知62。账户请求归属与未知费用直接处理原Provider，原监督定义与共享服务不改；本轮指定工作均执行，研究负面结果不等于技术不可行。
+
 **11-03新增Train与学习原因证据**：[本轮执行](../results/iterations/20261103-v9-labels-and-learning/review.md)四组真实状态比较新增三个步骤目标，其中SQLparse原Verify中Sol331/331、Luna328/331形成质量差异；Records24/24、Schema后续116/116形成Luna等质量费用目标，Schema此前双方115/116无目标。累计23偏好/78行，真实Modify目标2含质量1；Inspect/K3/实际Effort0，原方法及分割不改。
 
 STEP003 native目标正确、候选两顺序均偏Sol、head变化约0.135%。STEP004原lr1e-4更新三轮后近期四状态1/4且全Sol；首次错误基础模型身份已排除，原位重建权重e03并取得实际cfg。STEP005仅14真实步骤参与损失、三轮21更新、全14状态5/14且全Sol，Val561 Loss0.6005；同14个Train目标平均概率0.480900→0.487943、负对数似然0.746901→0.725240，但选择正确数未变。去除旧64行也未改变选择，混合比例不是充分因果解释，旧Val稳定不代表步骤学习成功。STEP005未进入Dev或Serving。独立Dev扩展三个原任务、九个策略Episode，同原Harbor Docker/未改Evaluator；动态COBOL/Git成功、HTML失败，2/3、15次全Sol、无切换/fallback。模型参考费动态0.089363200/Sol0.098045100/Luna0.015671745USD，没有候选改变，收益未证。COBOL Luna原输出重放评价与完整Episode分开，原502未知不算模型败者；HTML原XSS子项跳过/超时通过不能解释为完整安全证明。五RQ和K2研究范围保持，三项执行已完成，负面结果不改写。

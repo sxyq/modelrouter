@@ -1,0 +1,261 @@
+{
+  "summary": {
+    "task_id": "extract-elf",
+    "strategy": "fixed_sol",
+    "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+    "reward": 1.0,
+    "generation_calls": 4,
+    "model_reference_cost_usd": 0.0374122,
+    "actual_billed_cost_usd": null,
+    "actual_billed_unknown_requests": 4,
+    "resource_cost_usd": null,
+    "prompt_tokens": 20906,
+    "completion_tokens": 1847,
+    "reasoning_tokens_already_in_completion": 61,
+    "models": {
+      "gpt-6.1-sol": 4
+    },
+    "model_switches": 0,
+    "fallback_count": 0,
+    "provider_errors": 0,
+    "router_total_seconds": 0.0005558758275583386,
+    "router_inference_seconds": 0.0,
+    "router_initialization_seconds": 0.0,
+    "router_reused_calls": 0,
+    "trial_total_seconds": 106.808662,
+    "phase_seconds": {
+      "environment_setup": 1.187643,
+      "agent_setup": 0.000156,
+      "agent_execution": 52.139818,
+      "verifier": 48.087796
+    },
+    "official_trial_result": "our-project/results/iterations/20261103-v9-independent-train/dev/extract-elf/fixed_sol/jobs/fixed_sol/extract-elf__uH6S4xD/result.json",
+    "verifier_tests": {
+      "passed": 2
+    }
+  },
+  "tests": [
+    {
+      "name": "test_outputs.py::test_extract_js_exists",
+      "status": "passed",
+      "duration": 0.001070749999939835
+    },
+    {
+      "name": "test_outputs.py::test_output_matches_reference",
+      "status": "passed",
+      "duration": 1.9613197080001328
+    }
+  ],
+  "routes": [
+    {
+      "step": 0,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.07162499241530895,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 1,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.06737490184605122,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.23979193065315485,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.17708400264382362,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    }
+  ],
+  "request_usage": [
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 1931,
+      "completion_tokens": 84,
+      "reasoning_tokens": null,
+      "cached_tokens": null,
+      "cache_write_tokens": 1928,
+      "cost_usd": 0.005666,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 6187.572582974099,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "extract-elf",
+      "strategy": "fixed_sol",
+      "step": 0
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 5277,
+      "completion_tokens": 1394,
+      "reasoning_tokens": 50,
+      "cached_tokens": 1928,
+      "cache_write_tokens": 3346,
+      "cost_usd": 0.0225038,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 16093.054416938685,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "extract-elf",
+      "strategy": "fixed_sol",
+      "step": 1
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 6683,
+      "completion_tokens": 309,
+      "reasoning_tokens": 11,
+      "cached_tokens": 5274,
+      "cache_write_tokens": 1406,
+      "cost_usd": 0.0071384,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 20250.092417001724,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "extract-elf",
+      "strategy": "fixed_sol",
+      "step": 2
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 7015,
+      "completion_tokens": 60,
+      "reasoning_tokens": null,
+      "cached_tokens": 6680,
+      "cache_write_tokens": 332,
+      "cost_usd": 0.002104,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 4148.444833001122,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "extract-elf",
+      "strategy": "fixed_sol",
+      "step": 3
+    }
+  ]
+}

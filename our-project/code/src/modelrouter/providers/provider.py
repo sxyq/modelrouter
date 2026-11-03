@@ -484,7 +484,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                     response_format=response_format, raw_response_path=raw_response_path,
                     excluded_endpoints=excluded)
             except (urllib.error.HTTPError, ProviderResponseError) as exc:
-                endpoint = self.last_account_endpoint
+                endpoint = (exc.metrics["provider_endpoint_id"] if isinstance(exc, ProviderResponseError)
+                            else exc.provider_endpoint_id)
                 retry = (model_spec.model_id == "gpt-6-luna" and endpoint is not None and
                          (isinstance(exc, urllib.error.HTTPError) and exc.code in (401, 403, 429, 509, 520)
                           or isinstance(exc, ProviderResponseError) and str(exc) in
@@ -509,7 +510,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             if len(attempts) > 1:
                 metrics["account_attempts"] = attempts
                 metrics["account_attempts_elapsed_ms"] = sum(item["latency_ms"] for item in attempts)
-                metrics["known_model_rate_cost_usd"] = sum(item["cost_usd"] for item in attempts if item.get("cost_usd") is not None)
+                known_costs = [item["cost_usd"] for item in attempts if item.get("cost_usd") is not None]
+                metrics["known_model_rate_cost_usd"] = sum(known_costs) if known_costs else None
                 for field in ("prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "cost_usd", "actual_billed_cost_usd"):
                     values = [item.get(field) for item in attempts]
                     metrics[field] = sum(values) if all(value is not None for value in values) else None
@@ -542,7 +544,6 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         request_api_key = self.api_key
         request_protocol = self.protocol
         pool_endpoint = None
-        self.last_account_endpoint = None
         if alias_facts is not None:
             target = alias_facts["actual_backend_model_id"]
             effective_effort = alias_facts["effective_native_effort"]
@@ -564,14 +565,13 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 request_protocol = endpoint_credentials.get("protocol", request_protocol)
             if self.luna_registry is not None and (target == "gpt-6-luna" or target in self.account_endpoints):
                 pool_endpoint = (self.luna_registry.get_endpoint(self.account_endpoints[target])
-                                 if target in self.account_endpoints else
+                                 if target in self.account_endpoints and self.account_endpoints[target] not in excluded_endpoints else
                                  self.luna_registry.select_active_endpoint("luna", target, excluded_endpoints))
                 if pool_endpoint is None:
                     raise RuntimeError("No active Luna account endpoint")
                 request_base_url = pool_endpoint.base_url
                 request_api_key = pool_endpoint.api_key
                 request_protocol = "chat_completions"
-                self.last_account_endpoint = pool_endpoint.endpoint_id
         transport = OpenAIResponsesProvider if request_protocol == "responses" else OpenAICompatibleProvider
         payload = transport._make_payload(self, messages, target, effective_effort, max_tokens, tools, stream)
         if response_format is not None:
@@ -605,6 +605,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                         body, ttft_ms = transport._read_response(
                             self, response, stream, started, capture, request_api_key.encode("utf-8"))
                 except urllib.error.HTTPError as exc:
+                    exc.provider_endpoint_id = pool_endpoint.endpoint_id if pool_endpoint else None
                     if capture is not None:
                         raw = exc.read()
                         self._record_response_bytes(raw, capture, request_api_key.encode("utf-8"))

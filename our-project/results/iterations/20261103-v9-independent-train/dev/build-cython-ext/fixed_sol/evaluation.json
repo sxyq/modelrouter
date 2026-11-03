@@ -1,0 +1,722 @@
+{
+  "summary": {
+    "task_id": "build-cython-ext",
+    "strategy": "fixed_sol",
+    "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+    "reward": 1.0,
+    "generation_calls": 12,
+    "model_reference_cost_usd": 0.1236951,
+    "actual_billed_cost_usd": null,
+    "actual_billed_unknown_requests": 12,
+    "resource_cost_usd": null,
+    "prompt_tokens": 201295,
+    "completion_tokens": 3023,
+    "reasoning_tokens_already_in_completion": 100,
+    "models": {
+      "gpt-6.1-sol": 12
+    },
+    "model_switches": 0,
+    "fallback_count": 0,
+    "provider_errors": 0,
+    "router_total_seconds": 0.0018917496781796217,
+    "router_inference_seconds": 0.0,
+    "router_initialization_seconds": 0.0,
+    "router_reused_calls": 0,
+    "trial_total_seconds": 410.888501,
+    "phase_seconds": {
+      "environment_setup": 112.273955,
+      "agent_setup": 0.002453,
+      "agent_execution": 284.1972,
+      "verifier": 9.883553
+    },
+    "official_trial_result": "our-project/results/iterations/20261103-v9-independent-train/dev/build-cython-ext/fixed_sol/jobs/fixed_sol/build-cython-ext__ki5vsDK/result.json",
+    "verifier_tests": {
+      "passed": 11
+    }
+  },
+  "tests": [
+    {
+      "name": "test_outputs.py::test_numpy_version",
+      "status": "passed",
+      "duration": 0.44790362600008393
+    },
+    {
+      "name": "test_outputs.py::test_repo_cloned",
+      "status": "passed",
+      "duration": 0.000535124999942127
+    },
+    {
+      "name": "test_outputs.py::test_pyknotid_core_import",
+      "status": "passed",
+      "duration": 0.010021039999969616
+    },
+    {
+      "name": "test_outputs.py::test_chelpers_cython_extension",
+      "status": "passed",
+      "duration": 0.38697804300011285
+    },
+    {
+      "name": "test_outputs.py::test_ccomplexity_cython_extension",
+      "status": "passed",
+      "duration": 0.0005883340000991666
+    },
+    {
+      "name": "test_outputs.py::test_cinvariants_cython_extension",
+      "status": "passed",
+      "duration": 0.000533373999928699
+    },
+    {
+      "name": "test_outputs.py::test_chelpers",
+      "status": "passed",
+      "duration": 0.0006587089999356976
+    },
+    {
+      "name": "test_outputs.py::test_ccomplexity",
+      "status": "passed",
+      "duration": 0.003950958000018545
+    },
+    {
+      "name": "test_outputs.py::test_cinvariants_python_vs_cython",
+      "status": "passed",
+      "duration": 0.006771790999891891
+    },
+    {
+      "name": "test_outputs.py::test_example_usage",
+      "status": "passed",
+      "duration": 0.008678708999923401
+    },
+    {
+      "name": "test_outputs.py::test_pyknotid_repository_tests",
+      "status": "passed",
+      "duration": 5.497938294999813
+    }
+  ],
+  "routes": [
+    {
+      "step": 0,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.4034999292343855,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 1,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.23291702382266521,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.0903330510482192,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.15124992933124304,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 4,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.09966595098376274,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 5,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.13908394612371922,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 6,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.10016700252890587,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.10333303362131119,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 8,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.15262491069734097,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 9,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.14004192780703306,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 10,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.11154194362461567,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    },
+    {
+      "step": 11,
+      "checkpoint_id": "none",
+      "router_run_id": null,
+      "router_latency_ms": 0.16729102935642004,
+      "inference_latency_ms": null,
+      "router_initialization_ms": null,
+      "router_process_reused": null,
+      "router_identity_source": null,
+      "router_identity_status": "NOT_A_NEURAL_ROUTE",
+      "fallback_used": false,
+      "selected_action": {
+        "provider": "openai",
+        "model": "gpt-6.1-sol",
+        "revision": "latest",
+        "native_effort": "low",
+        "action_id": "gpt-6.1-sol:low",
+        "pool": "Reasoning"
+      },
+      "ranked_actions": [
+        {
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-sol:low",
+          "pool": "Reasoning"
+        }
+      ]
+    }
+  ],
+  "request_usage": [
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 2178,
+      "completion_tokens": 130,
+      "reasoning_tokens": null,
+      "cached_tokens": null,
+      "cache_write_tokens": 2175,
+      "cost_usd": 0.0067435,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 6699.342750012875,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 0
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 4145,
+      "completion_tokens": 353,
+      "reasoning_tokens": 7,
+      "cached_tokens": 2175,
+      "cache_write_tokens": 1967,
+      "cost_usd": 0.008671,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 7708.23075005319,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 1
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 5506,
+      "completion_tokens": 201,
+      "reasoning_tokens": 6,
+      "cached_tokens": 4142,
+      "cache_write_tokens": 1361,
+      "cost_usd": 0.0058327,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 7417.015208047815,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 2
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 5738,
+      "completion_tokens": 94,
+      "reasoning_tokens": 6,
+      "cached_tokens": 5503,
+      "cache_write_tokens": 232,
+      "cost_usd": 0.0020763,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 4927.714625024237,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 3
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 9849,
+      "completion_tokens": 339,
+      "reasoning_tokens": 8,
+      "cached_tokens": 5735,
+      "cache_write_tokens": 4111,
+      "cost_usd": 0.014247,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 106583.10420904309,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 4
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 12380,
+      "completion_tokens": 158,
+      "reasoning_tokens": 8,
+      "cached_tokens": 9846,
+      "cache_write_tokens": 2531,
+      "cost_usd": 0.0088981,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 11661.865833099,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 5
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 21244,
+      "completion_tokens": 270,
+      "reasoning_tokens": 14,
+      "cached_tokens": 12377,
+      "cache_write_tokens": 8864,
+      "cost_usd": 0.0261037,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 8556.199708022177,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 6
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 24941,
+      "completion_tokens": 159,
+      "reasoning_tokens": 15,
+      "cached_tokens": 21241,
+      "cache_write_tokens": 3697,
+      "cost_usd": 0.0129626,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 5336.147499969229,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 7
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 26145,
+      "completion_tokens": 243,
+      "reasoning_tokens": 18,
+      "cached_tokens": 24938,
+      "cache_write_tokens": 1204,
+      "cost_usd": 0.0079398,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 7171.847625053488,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 8
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 28805,
+      "completion_tokens": 814,
+      "reasoning_tokens": 9,
+      "cached_tokens": 26142,
+      "cache_write_tokens": 2660,
+      "cost_usd": 0.0174102,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 10675.803749938495,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 9
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 29833,
+      "completion_tokens": 175,
+      "reasoning_tokens": 9,
+      "cached_tokens": 28802,
+      "cache_write_tokens": 1028,
+      "cost_usd": 0.0072062,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 12051.934084040113,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 10
+    },
+    {
+      "selected_model_id": "gpt-6.1-sol",
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "prompt_tokens": 30531,
+      "completion_tokens": 87,
+      "reasoning_tokens": null,
+      "cached_tokens": 29830,
+      "cache_write_tokens": 698,
+      "cost_usd": 0.005604,
+      "actual_billed_cost_usd": null,
+      "usage_status": "REPORTED",
+      "identity_status": "MATCHED_REQUEST_ALIAS",
+      "native_effort_status": "NOT_REPORTED",
+      "latency_ms": 34520.46858309768,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+      "cost_model_id": "gpt-6.1-sol",
+      "task_id": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "step": 11
+    }
+  ]
+}

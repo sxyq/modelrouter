@@ -1,0 +1,54 @@
+{
+  "task_id": "argoproj__argo-4594",
+  "repo": "argoproj/argo",
+  "base_commit": "39c805fa0ed167a3cc111556cf1eb864b87627e8",
+  "original_image": "swerebenchv2/argoproj-argo:4594-39c805f",
+  "message_cutoff_exclusive": 26,
+  "completed_generations": 9,
+  "recorded_tool_results": 15,
+  "recorded_tool_errors": 1,
+  "tool_id_restoration": "ORDERED_ORIGINAL_TOOL_IDS",
+  "teacher_calls": 0,
+  "source_patch_or_future_feedback_in_input": false,
+  "original_test_count": 890,
+  "original_f2p_count": 1,
+  "original_p2p_count": 889,
+  "source_full_command": "env KUBECONFIG=/dev/null go test -v ./...",
+  "scope": "ORIGINAL_F2P_P2P_IDS_NOT_ALL_UNLISTED_GO_TESTS",
+  "runtime_go_version": "1.19.13",
+  "runtime_architecture": "linux/arm64",
+  "CGO_ENABLED": "0",
+  "original_evaluator_or_test_patch_modified": false,
+  "model_patches_present": true,
+  "native_runtime_assets": ".runtime/benchmark-venv/argo-native",
+  "results": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "passed": 890,
+      "failed": [],
+      "missing": [],
+      "original_id_range_resolved": true,
+      "full_go_command_exit_code": 1,
+      "model_reference_cost_usd": 0.082316,
+      "agent_error": null
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "passed": 889,
+      "failed": [
+        "TestController"
+      ],
+      "missing": [],
+      "original_id_range_resolved": false,
+      "full_go_command_exit_code": 1,
+      "model_reference_cost_usd": 0.0015876,
+      "agent_error": null
+    }
+  ],
+  "known_timing_issue": "TestMetricGC waits only 1ms beyond TTL; original emulation failed. Both final candidate results pass this ID.",
+  "non_scope_suite_failures": [
+    "TestCleanFieldsExclude",
+    "TestHTTPArtifactDriver_Load"
+  ],
+  "initial_environment_attempts_preserved": true
+}

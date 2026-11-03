@@ -1,5 +1,13 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · Argo新质量目标、STEP006及两个新Dev对照已完成
+
+接续main `d2c492b36803314442e2bd20a960c234458e768f`；[执行记录](../results/iterations/20261103-v9-independent-train/review.md)。Argo原F2P1/P2P889下Sol全通过，Luna新增TestController空载荷解码错误，合法新质量Sol1；PrettyTablecutoff8双191/193无目标。24偏好/79行、15步骤；原Qwen观察前缀与新Model-only偏好分开，Inspect/K3/Effort仍0。原镜像跨架构计时失败、原生Go库及C编译器错误均保留；同版本Go原生执行后参考与Sol890/890，范围外go测试不冒充原目标或官方Harbor成绩。
+
+Provider只处理已明确的请求内账户、排除列表和未知计量；开发验证使用环境timeout。STEP005当前实体未保留，记录继续有效、不重建；STEP006父为实际STEP004-e03，服务器CPU完成15真实步骤、三轮24更新、2388.10秒，仅保留e03并沿原字段显式保留，权重不下载Mac、不替Serving。Val561 Accuracy0.6898/Loss0.5972/Brier0.4107/ECE0.0537；20次真实CPU无fallback，新模型全15目标Sol6/15，同14旧目标仍5/14，目标概率0.480900→0.486029/NLL0.746901→0.731267。明确Modify2含质量1，Argo只为Modify采样、phase未知；含来源采样3含质量2，Inspect/K3/Effort0。
+
+ELF/Cython六个完整原官方Episode均完成：ELF三策略成功，Cython Sol/动态成功、Luna原2/11通过。动态20步全Sol、无切换/fallback/Provider异常，固定Sol/动态/Luna成功2/2、2/2、1/2；参考费0.161107300/0.170223400/0.012113075USD，Agent执行336.337/745.134/487.269秒，动态Router433.296秒含初始化60.392/前向371.224、复用18次。整Trial及镜像准备分段列出，动态收益未证；62完整请求/983210Token/0.450076775USD参考费、实收未知62。新数据、原因诊断、训练、真实前向、独立对照均已执行，保留负面研究结果，不称技术不可行或另留本轮待跑菜单。原Serving最后12:10仍健康、GPU949MiB/0%，未干预；没有继续宣称原F14仍在运行。完整材料、原始失败及私密响应保留，用户Trainer/tests/账本/历史删除不提交。
+
 ### 2026-11-03 · 原三项任务实际继续，23偏好/78行，学习负面结果保留
 
 接续main `36d6bef95783a78cf3902d0730ff542587a27265`，入口 [执行记录](../results/iterations/20261103-v9-labels-and-learning/review.md) / [summary](../results/iterations/20261103-v9-labels-and-learning/summary.json)。四组真实Train状态比较取得Sol Verify质量1及Luna等质量费用2，累计23=任务9/步骤14，原75行加3形成78，步骤Verify11/Recover1/Modify2。Modify质量1保持、Inspect/K3/实际Effort0，新独立任务0。Schema首次双115/116仅观察，读取后的新状态双116/116；原严格一步目标不改，PyBaMM Test及Gym观察不入Train。
