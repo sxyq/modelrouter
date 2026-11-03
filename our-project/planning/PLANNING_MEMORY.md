@@ -1,5 +1,13 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · 晚期Modify、局部集合与配对边界
+
+接续main `c2a4037b77636802120238a865414bf56e426fef`，[本轮结果](../results/iterations/20261103-v9-modify-quality/review.md)。Click28、mpmath82、Stingray72、music2172为新晚截止，原训练候选/仓库留出用途保持。按截止前真实写入恢复原镜像文件，候选起点逐文件内容一致；原轨迹运行时版本未知。8有效生成/7候选修改业务代码，原初始与候选固定测试真实执行。Click首次Luna并行初始化无HTTP，UNKNOWN保留，仅补缺失Luna；原四账户可用、Code Generation未改。
+
+Click双4/4新增费用Luna1；mpmath12/12对11/12新增留出质量Sol1；Stingray198/206对192/206均失败，修复8集合严格包含2、无新P2P失败，只是局部研究信号；music21 Sol消除已有P2P失败1，无F2P修复。原29不改，累计31；新局部目标未进入正式Trainer。prepare_candidate_outcomes保留自身可信结果，prepare_candidate_view另外要求共享条件和完整身份对应，真实四行2偏好/2可比较无标签。
+
+原A/B/C与三个Encoder复用，147份特征保留、12新GPU前向，C45行和3未知候选省略。同仓库整体留出，旧Encoder仅Head层；新状态已研究查看不能称完全未看过。008仍全选Luna、独立Sol质量0/4；A/B/C未超过固定Sol4/4，Stingray局部差异仍被C双失败目标丢失。只有新Train费用标签，质量留出、局部目标未验证迁移，不启动STEP009或新完整Dev，不替Serving。204230 Token/$0.26692865参考费；实收/资源未知。K2两核心证据及五RQ未完成，本轮执行/发布完成。
+
 ### 2026-11-03 · 逐候选质量结果研究
 
 接续main `6c3c4354ce94b889a4ab687805de5ea3946be582`，[summary](../results/iterations/20261103-v9-candidate-outcomes/summary.json)、candidate_outcome_inventory.json、candidate_quality_learning.json为最新入口。原29偏好、STEP00817/17、旧独立观察/Dev与用户未提交改动保留。真实执行记录按候选来源去重，保留双方失败、单方可信及UNKNOWN；原候选视图独立导出辅助结果，不改变旧赢家目标。fit_preference_reference已迁至原continuation.py，原位置不再保留另一份拟合实现。

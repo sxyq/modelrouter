@@ -103,15 +103,13 @@ def prepare_comparison(row, split):
 def prepare_candidate_outcomes(row, split):
     """Separate observed candidate completion from the existing preference target."""
     conditions = row["comparison_conditions"]
-    shared = all(conditions[name] for name in (
-        "same_observed_messages", "same_initial_environment", "same_agent_protocol",
-        "original_verifier_unchanged",
-    ))
     eligible = split != "train" or row["provenance"].get("train_eligible") is True
-    actions = {candidate_action(action)["action_id"] for action in row["candidate_actions"]}
+    actions = {(action["action_id"], action["model_id"])
+               for action in map(candidate_action, row["candidate_actions"])}
     observations = []
     for item in row["candidate_results"]:
-        known = (shared and eligible and item["action_id"] in actions
+        known = (conditions["original_verifier_unchanged"] and eligible
+                 and (item["action_id"], item["model_id"]) in actions
                  and item.get("trusted_outcome") is True
                  and item.get("identities_matched") is True
                  and item["resolved"] is not None)
