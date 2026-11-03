@@ -466,10 +466,17 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         for call in calls:
             if not call.get("name") or not call.get("arguments"):
                 return "INCOMPLETE_TOOL_CALL"
+            def unique_arguments(pairs):
+                arguments = dict(pairs)
+                if len(arguments) != len(pairs):
+                    raise ValueError("DUPLICATE_TOOL_ARGUMENT")
+                return arguments
             try:
-                json.loads(call["arguments"])
+                json.loads(call["arguments"], object_pairs_hook=unique_arguments)
             except json.JSONDecodeError:
                 return "INVALID_TOOL_ARGUMENTS"
+            except ValueError as exc:
+                return str(exc)
         return None
 
     def query_raw(self, messages, model_spec, native_effort="none", max_tokens=1024,
@@ -487,7 +494,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 endpoint = (exc.metrics["provider_endpoint_id"] if isinstance(exc, ProviderResponseError)
                             else exc.provider_endpoint_id)
                 retry = (model_spec.model_id == "gpt-6-luna" and endpoint is not None and
-                         (isinstance(exc, urllib.error.HTTPError) and exc.code in (401, 403, 429, 509, 520)
+                         (isinstance(exc, urllib.error.HTTPError) and exc.code in (401, 403, 429, 503, 509, 520)
                           or isinstance(exc, ProviderResponseError) and str(exc) in
                           ("EMPTY_RESPONSE", "INCOMPLETE_RESPONSE", "INCOMPLETE_TOOL_CALL")))
                 attempt = dict(exc.metrics) if isinstance(exc, ProviderResponseError) else {

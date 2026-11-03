@@ -1,5 +1,21 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
+**11-03跨任务接续的科学结论**：[最新结果](../results/iterations/20261103-v9-cross-task-quality/summary.json)核对三组真实动作：Tox两次Luna完整200、读取动作执行0，原验证未完成与Sol184声明ID全过构成合法的一步质量差异，不能概括整个模型的任务能力。Pydantic的Callable导入错误来自有效生成并执行的源码；Canvas503和旧200重复command覆盖修复均为候选质量未知。只补一次Canvas有效Luna，原20/22与Sol相同，两报错字符串大小写失败，没有新偏好。不从Provider异常编模型质量失败，也不选取歧义字段代模型作决定。
+
+原28与Tox新增1保留=29，步骤质量15（Sol10/Luna5）/等质量费用5全Luna/任务费用9全Luna；20步骤来自17任务，三任务多截止。质量胜者更贵10/15，单赢家目标的质量与价格确有冲突，但008训练质量12/12与费用5/5均正确，不能断言它主要只拟合费用。未知repo/phase、Inspect步骤质量/Effort/K3缺口不改。
+
+方法A原目标及00817/17保持；B在相同Encoder表示/原Torch上学习Sol独过、Luna独过、双过三种已观察关系，再按预测双过选择较低模型费率，类别不是成功概率。原训练入口保存候选信任与未知终局，新增小型固定Encoder拟合函数供A/B复用，不建新模型系统。按任务整体排除全部截止：006 B质量6/12低于固定Sol7/12，007/008更高head留出分含Encoder已见同状态信息；这些分数不证明全模型独立泛化。候选以ID对齐，原一条Luna/Sol倒序仅是探针初稿的实验错误，原Serializer/Trainer无此问题。
+
+Moto/Qiskit/Tox三个祖先未训练质量状态均Sol赢家，原006/007/008分别3/3、0/3、0/3，B各3/3、2/3、1/3，固定Sol3/3。新独立Luna赢家0；008还把Tox关系误判双过，不能以最终选择分数替代质量关系能力。因此本轮无新原Trainer Run/STEP009、无新Dev，原Val/权重未变，旧动态失败不重跑也不改写收益。缺少独立双方向条件选择及完整Episode净收益是K2的两核心问题；完整V9五RQ仍未闭环。数据、目标与表示问题均有实证边界，尚不能唯一断言某种捷径或方法技术不可行。
+
+两轮10物理请求/8有效生成/1歧义/1传输失败，193569已知Token/$0.23481747模型参考费；reasoning已计输出，503Token/实收/资源完整费未知。GPU约2.054GB allocated峰值与8.713秒成功特征前向只属分析子段，不能当完整动态运行开销。原代码与脱敏研究结果按本轮请求定向发布，Serving不重启、不替权重，不扩大Dev或增加研究限制。
+
+**11-03跨任务质量监督证据**：[本轮结果](../results/iterations/20261103-v9-cross-task-quality/summary.json)完成用户任务一。28原偏好中步骤质量14（Sol9/Luna5）、步骤等质量费用5（全Luna）、任务等质量费用9（全Luna）；STEP008参与梯度12质量+5费用，初始Inspect任务费用不当步骤诊断质量。现有准备入口已分preference_basis，Trainer仍用同一步目标和未加权soft_ce_loss。质量主要Verify、TRA-001质量原4条全Sol，费用全Luna；来源/阶段/模型语义集中支持数据分布问题，但不能唯一识别学到哪种捷径。长期完成概率不由单次原验证通过估计。
+
+三个新原Train仓库按故障与用途事前选择：Pydantic训练候选，Tox/CanvasAPI独立Train观察；不按赢家改变用途。原完整历史/原镜像base/独立容器/固定ID、轨迹CC-BY-4.0/仓库MIT保持，历史诊断脚本不执行、教师0、参考不泄漏。Pydantic补齐原环境所需pytest-timeout后保存Sol代码15/16、LunaCallable收集错误；CanvasAPI Sol20/22、有效Luna缺RateLimitExceeded，均无正式赢家。Tox Sol184/184、Luna缺get_version_info收集失败，新增合法一步质量Sol1；整条命令两范围外失败不称Episode成功。Tox一次必要有限重复仍同结果，不增加独立状态或训练标签；Canvas503未知费用保留、只补一次，不为Luna赢家筛选或追加生成。
+
+累计29偏好/20步骤，质量15（Sol10/Luna5）/费用5；新梯度0/训练0。旧Moto/Qiskit与新Tox均独立Sol质量赢家，STEP008事前均选Luna，0/3、固定Sol3/3；17/17训练拟合未迁移，未取得新独立Luna质量赢家。此次没有新完整Dev收益证据，Inspect步骤质量/实际Effort/K3仍0，原独立动态失败保持；五RQ不变，不由小样本负结果断言技术不可行。9请求/8完整/179008Token/0.232794545USD参考费，1次未知及实收/资源费分开，reasoning只计一次。
+
 **11-03训练条件区分与独立负面证据**：[本轮执行](../results/iterations/20261103-v9-state-conditions/review.md)在相同17状态的组件交换中，006→007共同margin方向占88.96%，主要随Encoder变化；共享scalar bias相减抵消。原Encoder单一线性对照训练13/16但按任务整体留出3/16，未证明可泛化的线性信息，不能据此断言数学不可分。质量/费用目标分别分析，标签不改。
 
 Trestle/Qiskit两个新原Train/许可明确来源取得Luna等质量费用1、Sol质量1，累计28偏好/19步骤；来源phase未知，Inspect/实际Effort/K3仍0。只在原预算内调整当前工具/最近失败反馈取舍，旧17相关失败行72→74；原Trainer007父、17状态三轮27更新形成008训练17/17、Sol7/Luna10。Moto/Qiskit事前不参与梯度，真实Sol赢家均被选Luna，0/2，不优于固定Sol2/2；Val Acc0.6809下降、Loss/Brier/ECE改善。继续训练、数据和表示同时变化，不能唯一归因，原加载温度范围处理下概率校准未建立。

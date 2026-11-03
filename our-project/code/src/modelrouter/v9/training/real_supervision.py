@@ -50,6 +50,8 @@ def prepare_comparison(row, split):
         return None, "COMPARISON_NOT_VALID"
     actions = [candidate_action(action) for action in row["candidate_actions"]]
     results = row["candidate_results"]
+    if any(item.get("trusted_outcome") is False or item["resolved"] is None for item in results):
+        return None, "COMPARISON_NOT_VALID"
     if {action["action_id"] for action in actions} != {item["action_id"] for item in results}:
         return None, "CANDIDATE_IDENTITY_CONFLICT"
     model_only = row.get("selection_scope") == "MODEL_ONLY"
@@ -96,3 +98,20 @@ def prepare_comparison(row, split):
                "full_three_model_optimum": False},
     )
     return prepared, None
+
+
+def fit_preference_reference(features, targets, training_indices, evaluation_indices, classes):
+    """Fit the fixed-Encoder reference; categorical scores are not pass probabilities."""
+    import torch
+
+    inputs = features[training_indices]
+    center = inputs.mean(0)
+    scale = (inputs - center).square().sum(1).mean().sqrt()
+    inputs = (inputs - center) / scale
+    labels = torch.nn.functional.one_hot(targets[training_indices], classes).double()
+    prior = labels.mean(0)
+    coefficients = torch.linalg.solve(
+        inputs @ inputs.T + torch.eye(len(training_indices), dtype=torch.float64), labels - prior
+    )
+    scores = ((features[evaluation_indices] - center) / scale) @ inputs.T @ coefficients + prior
+    return scores.argmax(1).tolist(), scores.tolist()

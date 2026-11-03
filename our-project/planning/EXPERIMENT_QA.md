@@ -8,6 +8,20 @@
 
 ## 0. 阶段入口与决策规则
 
+**11-03跨任务接续本轮完成**：[实际结果](../results/iterations/20261103-v9-cross-task-quality/summary.json)。Tox两次Luna均200完整工具参数且真实执行读取，原验证未完成可信，故原Sol一步偏好可保留；不是只有Sol重复成功。Pydantic生成代码的Callable运行时引用导致NameError，pytest-timeout原环境缺失与此分开。Canvas503属现有Luna池，另一次200重复command让.PLACEHOLDER覆盖修复，旧候选质量未知；只补一次有效Luna后原20/22，与Sol相同，字符串大小写两项失败，无新偏好。不补生成追求赢家。
+
+原Provider增加已发生503的原账户切换及重复工具参数异常，原比较入口拒绝每候选信任为false或结果未知，行级标记不能覆盖；保留原28+Tox1，总29。步骤质量15=Sol10/Luna5、费用5全Luna，任务费用9全Luna；20步骤来自17任务、三个任务多截止，质量胜者更贵10/15。新梯度0、Inspect/Effort/K3仍0。
+
+按原输入/固定Encoder/唯一ridge=1做A单赢家线性参照与B三类真实质量关系学习，核心Torch函数复用原real_supervision.py；原A/STEP00817/17保持。候选ID对齐保存向量，原Trainer并无顺序错误。A/B各按task排除所有截止，不随机拆同题；006 B质量6/12低于固定Sol7/12，007/008 Encoder已见同状态，高分不称未见模型泛化。B三独立Sol观察006/007/008为3/3、2/3、1/3，固定Sol3/3；独立Luna赢家0，008还把Tox误判同过。B不是成功概率模型，不能据同选择正确率证明质量分类或动态收益。
+
+没有新入梯度赢家、表达错误或有意义的双方向独立信号，故本轮不启动原Trainer Run、不重评Val/不替Serving、不跑新Dev；旧git-multibranch不重跑，不追加同类型无依据训练。K2核心缺两项、完整V9五RQ未闭环。10物理请求/8有效生成/1歧义/1传输失败，已知193569Token/0.23481747USD参考费，未知503/实收/资源费不填0；本轮定向发布范围只含两源码、四规划和脱敏结果，无新Q-ID或流程。
+
+**11-03跨任务质量监督本轮**：[结果](../results/iterations/20261103-v9-cross-task-quality/summary.json)。原prepare_comparison按真实语义保留质量/等质量费用、任务/步骤和观察身份，原28条不是28条质量标签：步骤质量14、步骤费用5、任务费用9；STEP008梯度12质量+5费用，Trainer仍同一步目标/未加权soft_ce_loss。TRA-001原4质量全Sol，Luna费用全胜，阶段和来源集中已量化；不是已确认的唯一迁移失败原因。
+
+Pydantic训练候选、Tox/CanvasAPI独立Train观察在请求前按新仓库/故障选择；原Train、三仓库MIT、轨迹CC-BY-4.0、完整历史/固定原ID/原版本独立容器保持，无事后按赢家分配。Pydantic补齐原配置所需pytest-timeout后只评价保存代码，Sol15/16、LunaCallable错误；CanvasAPI Sol20/22、有效Luna仍缺RateLimitExceeded，均NO_VERIFIED_ACTION。Tox Sol184/184、Luna缺get_version_info原收集失败，形成合法一步Sol质量1；MISSING保留真实失败形式，不伪造逐项FAILED或新增排除条件。整条Tox命令两范围外失败单列，不算Harbor完整Episode。
+
+Tox矛盾状态有限重复一对结果一致，不计第二独立状态或训练目标；Canvas首个503只补一次、未知Usage保留。不反复请求追求Luna赢家。累计29偏好/20步骤，质量15/费用5；新梯度0、训练0。旧Moto/Qiskit和新Tox独立质量0/3，固定Sol3/3；无新独立Luna质量赢家。本轮任务一已实际完成，跨任务规律及独立动态收益未证明，不新增目标、Q-ID、参数扫描、Dev或Serving变更。9请求/8已知/179008Token/0.232794545USD参考费，未知503费和实收不填0。
+
 **11-03状态条件本轮证据**：[执行记录](../results/iterations/20261103-v9-state-conditions/review.md)。006→007共同margin方向占88.96%，组件交换主要随Encoder，不唯一归因训练；共享scalar bias相减抵消。单一ridge=1线性对照训练13/16、按task整体留出3/16，质量2/12/费用1/4正确，不足替换正式Router。相同task多个截止不能当独立泛化。
 
 两新来源事前选定Trestle入梯度/Qiskit留出：真实原55/228范围得到Luna等质量费用1及Sol质量1，累计28偏好/19步骤，许可与原Train保持，未知phase不改为Modify。唯一方向为原预算当前工具/最近失败反馈取舍，旧17失败行72→74；原Trainer007父、17状态三轮27更新形成008训练17/17、Sol7/Luna10，但Moto/Qiskit仍0/2。Val Accuracy降至0.6809，其余三指标改善；新样本/继续训练/表示共同变化，不能单独归因。原温度加载范围处理保留，概率校准未知。

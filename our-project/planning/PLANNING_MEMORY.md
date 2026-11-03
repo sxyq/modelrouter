@@ -1,5 +1,35 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · 跨任务接续完成：恢复有效Canvas比较、B学习分析、无新Trainer或Dev
+
+起点main e8f9a754f689bfd73924dac5d0baa1143fa27a7d及未提交跨任务材料继续复用；[最新summary](../results/iterations/20261103-v9-cross-task-quality/summary.json)、request_audit.json、quality_cost_distribution.json、quality_method_analysis.json。本轮用户明确授权定向提交推送main，不含原用户Trainer/tests/账本/历史删除，不含私人轨迹/完整响应/密钥。四项工作实际完成，不重新开始旧P0–P5或旧生成/Dev。
+
+原8返回的实际工具参数/HTTP/终止原因逐项核对：Tox两Luna200/完整tool_calls/读取动作返回0，原get_version_info收集失败是可信一步未完成，Sol184/184赢家可保留，重复不新增状态。Pydantic有效Luna写源码，Callable只在TYPE_CHECKING中定义却在新签名运行时使用，NameError为模型动作结果；原pytest-timeout问题只评价保存代码。Canvas503发生在原Luna池，另一个200有重复command，实际执行.PLACEHOLDER而未执行修复，质量未知。旧“缺RateLimitExceeded”等该生成质量描述不再作为结论。
+
+原Provider仅补已发生503账户切换和重复工具参数错误；原prepare_comparison不许候选trusted=false/resolved=null被总标记覆盖。只补一次同截止Canvas Luna，200身份一致、有效代码/工具执行0，固定22项20过、两RateLimit报错大小写失败，同Sol20/22，NO_VERIFIED_ACTION。没有Sol再生成/Pydantic再生成/追求Luna类别。原28及Tox新增1保留=29；步骤质量15Sol10/Luna5、费用5全Luna，任务费用9全Luna，新梯度0。20步骤17任务，records/async-timeout/schema各两个截止；质量胜者更贵10/15。
+
+原006/007/008相同22状态真实GPU特征及pointer前向，17训练分别7全Sol/10全Luna/17 Sol7Luna10正确，Moto/Qiskit/Tox独立分别3/0/0正确。B在原Torch固定Encoder差向量上用ridge1学习Sol独过/Luna独过/双过三类，双过预测才选低费率Luna；原A目标保留、线性A参照同函数。候选按真实ID对齐，async-timeout Modify原倒序只影响初稿探针，保存特征重算，原Trainer逻辑正常；原Adapter该状态Luna真实输出保留。核心fit_preference_reference在原real_supervision.py，不创建新Trainer/服务。
+
+A/B按task整体留出质量/费用：006 A2/12+2/5，B6/12+0/5；007 A11/12+4/5，B9/12+4/5；008 A11/12+5/5，B同值。006 B质量低于固定Sol7/12，007/008 Encoder已训练这些Train状态，head留出不是全模型未见证据。独立B006/007/008为3/3、2/3、1/3，固定Sol3/3、固定Luna0/3，全为Sol赢家，独立Luna质量0。008 Tox关系被判双过，说明分类与真实验证不是一回事；分类分数不作成功概率，三关系不算K3。
+
+无新梯度赢家/状态表达错误/有意义双向未见信号，不新训原Trainer、不生成STEP009、不重跑固定Val或旧git-multibranch，不新Dev、Serving不晋升。旧008训练17/17及固定Val0.6809/.6003/.4131/.0564保持原结果，无参数变化。不把负结果称技术不可行；K2尚缺双向独立状态和完整独立任务净收益两核心项，V9五RQ未闭环。
+
+10请求=旧9+Canvas针对性1，9返回中8有效/1歧义、另1个503；可信2成功/6未完成/2未知，已知188483输入+5086输出193569Token/$0.23481747参考费，reasoning只计一次，503及实收/完整资源费未知。成功特征66前向8.713秒/初始化6.488秒、最大allocated约2.054GB，失败导出前22前向及额外原Adapter1另列。源码两文件已同步服务器、不重启Serving或影响健康训练；5本机/1服务器临时脚本清理，Docker任务容器0，真实失败/原镜像/私密输入和特征/权重保留，无未来自动化。
+
+### 2026-11-03 · 跨任务质量监督任务一完成：独立Sol新增1、留出0/3
+
+接续main/实际HEAD `e8f9a754f689bfd73924dac5d0baa1143fa27a7d`；[summary](../results/iterations/20261103-v9-cross-task-quality/summary.json)、supervision_semantics.json及三个来源public_comparison.json为本轮入口。用户当前消息止于任务一真实成对比较/必要有限重复；资源授权有效，不重复费用审批，本轮无新训练要求或发布要求。旧P0–P5、006–008、旧比较/Dev不重跑。
+
+28原偏好=质量步骤14（Sol9/Luna5）+费用步骤5（全Luna）+任务费用9（全Luna），STEP008梯度12质量+5费用。原准备入口已有preference_basis/任务步骤区分，Trainer同一目标与未加权soft_ce_loss，未改损失或新增步骤语义。原TRA-001质量4全Sol，两留出也Sol；不同任务/阶段/来源分布集中，未知repo不补推断，单次成功不作概率。
+
+三事前来源Pydantic1663/cutoff43训练候选、Tox628/cutoff46与CanvasAPI467/cutoff25独立Train观察，均未进STEP002–008、原Train/轨迹CC-BY-4.0/仓库实际MIT。原镜像base一致、轨迹Git版本未知。历史截至当时只读取/诊断，无源码写入；历史脚本不重执行。三次新状态STEP008 CUDA真实前向事前均选Luna、fallback=false。只走原Provider四Luna账户/Sol端点，同历史/工具/原故障/独立容器/教师0，原测试在候选一步后注入。
+
+Pydantic原配置缺pytest-timeout，参考改变配置掩盖该缺失；仅补齐插件评价原状态/参考/保存Sol/Luna代码，12/16、16/16、15/16、Callable错误收集失败。CanvasAPI Sol20/22、有效Luna缺RateLimitExceeded；原503保留、只补一次，双方失败不产偏好。Tox原184固定范围Sol全过、Luna缺get_version_info收集失败，现有入口产生Sol质量1；实际MISSING记录与原错误保存，整条命令的两范围外失败不称任务完成。因008事前选Luna做一次有理由的重复对，仍Sol全过/Luna收集失败；不增加独立状态或第二标签、不入梯度。
+
+累计29偏好（任务9/步骤20）、步骤质量15=Sol10/Luna5、费用5=全Luna；新梯度0、新训练0。Moto/Qiskit/Tox三留出质量状态0/3，固定Sol3/3；新Luna质量未取得，Inspect/Effort/K3仍0。当前任务一实跑已完成，不追加生成追求类别、不造STEP009、不更新Serving或跑新Dev。动态收益原结论未成立，非宣称方法技术不可行。
+
+9物理请求、8完整、1次503用量未知；174463输入/4545输出=179008Token、0.232794545USD模型参考费，reasoning已在输出，实收/完整费用/资源费未知。身份请求返回一致/Alias0/教师0，供应商物理权重未查看。只修改结果、四规划与项目日期记录，本轮未提交推送；用户Trainer/tests/账本及历史删除保持。四本机临时脚本清理，容器0；数据、真实失败、原镜像和服务器权重保留，无新调度。
+
 ### 2026-11-03 · 状态条件本轮完成：008拟合17/17、独立两个状态0/2、新Dev失败
 
 接续main `e20514ff033779304ab215052e6dd789c743eda6`；[恢复入口](../results/iterations/20261103-v9-state-conditions/review.md)及同目录summary.json。P0–P5实际执行，不重跑006/007训练或历史同截止比较。006/007相同17状态组件交换：共同margin变化占88.96%，Encoder均值贡献-0.615277/Head-0.015955；共享最终bias抵消。单一原Encoder线性对照训练13/16、task整体留出3/16，Moto错误，不替生产。

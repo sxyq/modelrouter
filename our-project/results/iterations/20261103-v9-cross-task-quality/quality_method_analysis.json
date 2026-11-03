@@ -1,0 +1,2220 @@
+{
+  "method": "FIXED_ENCODER_MARKER_DIFFERENCE_TORCH_RIDGE_A_BINARY_B_QUALITY_RELATION",
+  "training_states": 17,
+  "training_tasks": 14,
+  "head_folds_exclude_all_same_task_cutoffs": true,
+  "ancestor_encoder_task_exposure": "STEP007/008 encoder already trained on these 17 Train states; head-only task leave-out is not unseen-encoder evaluation. STEP006 ancestry also not declared clean for old Train sources.",
+  "true_independent_quality_task_ids": [
+    "getmoto__moto-7208",
+    "qiskit__qiskit-11466",
+    "tox-dev__tox-628"
+  ],
+  "score_is_success_probability": false,
+  "new_production_training_runs": 0,
+  "serving_replaced": false,
+  "candidate_orders_preserved": true,
+  "one_reverse_order_state_aligned_by_model_id": 10,
+  "reused_saved_encoder_features_for_alignment": true,
+  "learning_implementation": "modelrouter.v9.training.real_supervision.fit_preference_reference",
+  "reports": {
+    "006": {
+      "encoder_checkpoint": "V9_LAYA_STEP_006-e03",
+      "encoder_frozen_during_analysis": true,
+      "ridge_penalty": 1.0,
+      "parameter_searches": 0,
+      "native_pointer_head": {
+        "train": {
+          "items": 17,
+          "correct": 7,
+          "Sol_selections": 17,
+          "Luna_selections": 0
+        },
+        "quality": {
+          "items": 12,
+          "correct": 7,
+          "Sol_selections": 12,
+          "Luna_selections": 0
+        },
+        "cost": {
+          "items": 5,
+          "correct": 0,
+          "Sol_selections": 5,
+          "Luna_selections": 0
+        }
+      },
+      "A_single_winner_linear_reference": {
+        "train": {
+          "items": 17,
+          "correct": 14,
+          "Sol_selections": 4,
+          "Luna_selections": 13
+        },
+        "task_heldout": {
+          "items": 17,
+          "correct": 4,
+          "Sol_selections": 6,
+          "Luna_selections": 11
+        },
+        "quality_heldout": {
+          "items": 12,
+          "correct": 2,
+          "Sol_selections": 3,
+          "Luna_selections": 9
+        },
+        "cost_heldout": {
+          "items": 5,
+          "correct": 2,
+          "Sol_selections": 3,
+          "Luna_selections": 2
+        },
+        "task_weighted_heldout_accuracy": 0.21428571428571427
+      },
+      "B_quality_relation_then_lower_rate": {
+        "train": {
+          "items": 17,
+          "correct": 15,
+          "Sol_selections": 9,
+          "Luna_selections": 8
+        },
+        "task_heldout": {
+          "items": 17,
+          "correct": 6,
+          "Sol_selections": 14,
+          "Luna_selections": 3
+        },
+        "quality_heldout": {
+          "items": 12,
+          "correct": 6,
+          "Sol_selections": 9,
+          "Luna_selections": 3
+        },
+        "cost_heldout": {
+          "items": 5,
+          "correct": 0,
+          "Sol_selections": 5,
+          "Luna_selections": 0
+        },
+        "quality_relation_classes": [
+          "SOL_ONLY_VERIFIED",
+          "LUNA_ONLY_VERIFIED",
+          "BOTH_VERIFIED"
+        ],
+        "relation_heldout_correct": 5,
+        "cost_tiebreak": "Luna lower input/output model rates only when class predicts BOTH_VERIFIED; not future realized cost",
+        "task_weighted_heldout_accuracy": 0.35714285714285715
+      },
+      "per_state": [
+        {
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.3030609127651807,
+            0.6969390872348192
+          ],
+          "B_scores": [
+            0.3030609127651807,
+            0.47458285891651675,
+            0.22235622831830254
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.3058877758673999,
+            0.6941122241326001
+          ],
+          "B_scores": [
+            0.3058877758673999,
+            0.26704123661444035,
+            0.4270709875181596
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.5214476893219644,
+            0.47855231067803566
+          ],
+          "B_scores": [
+            0.5214476893219644,
+            0.2963362025485521,
+            0.1822161081294837
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.4110575273315184,
+            0.5889424726684817
+          ],
+          "B_scores": [
+            0.4110575273315184,
+            0.4820461749734012,
+            0.10689629769508058
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.46925916267741263,
+            0.5307408373225874
+          ],
+          "B_scores": [
+            0.46925916267741263,
+            0.25008574580168785,
+            0.28065509152089957
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.4208686392558272,
+            0.5791313607441728
+          ],
+          "B_scores": [
+            0.4208686392558272,
+            0.3109531355428225,
+            0.2681782252013503
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.5692006348724725,
+            0.4307993651275275
+          ],
+          "B_scores": [
+            0.5692006348724725,
+            0.17936334425176642,
+            0.2514360208757613
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.42591071306287087,
+            0.5740892869371291
+          ],
+          "B_scores": [
+            0.42591071306287087,
+            0.21775525072326704,
+            0.35633403621386267
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.4691742413768605,
+            0.5308257586231395
+          ],
+          "B_scores": [
+            0.4691742413768605,
+            0.20770352758223987,
+            0.3231222310408996
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.3621260052208785,
+            0.6378739947791214
+          ],
+          "B_scores": [
+            0.3621260052208785,
+            0.5035289362694111,
+            0.13434505850971024
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.2619532370422517,
+            0.7380467629577483
+          ],
+          "B_scores": [
+            0.2619532370422517,
+            0.45407115138111365,
+            0.28397561157663465
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6-luna",
+            "gpt-6.1-sol"
+          ]
+        },
+        {
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.29695861470261503,
+            0.7030413852973849
+          ],
+          "B_scores": [
+            0.29695861470261503,
+            0.2804539581598889,
+            0.42258742713749564
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.4179033634286533,
+            0.5820966365713467
+          ],
+          "B_scores": [
+            0.4179033634286533,
+            0.21764918448725107,
+            0.36444745208409535
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.3503118247799846,
+            0.6496881752200154
+          ],
+          "B_scores": [
+            0.3503118247799846,
+            0.24630845428269024,
+            0.40337972093732544
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "argoproj__argo-4594",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.5321468611986883,
+            0.4678531388013117
+          ],
+          "B_scores": [
+            0.5321468611986883,
+            0.20888025923483478,
+            0.25897287956647713
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "planetlabs__planet-client-python-553",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.563005783481382,
+            0.436994216518618
+          ],
+          "B_scores": [
+            0.563005783481382,
+            0.18081758636031442,
+            0.25617663015830316
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "oscal-compass__compliance-trestle-1578",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.3197270136140389,
+            0.6802729863859611
+          ],
+          "B_scores": [
+            0.3197270136140389,
+            0.2224229928698011,
+            0.4578499935161598
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "getmoto__moto-7208",
+          "scope": "UNSEEN_ANCESTOR_TRAIN_QUALITY_OBSERVATION",
+          "basis": null,
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.4095065977864493,
+            0.5904934022135506
+          ],
+          "B_scores": [
+            0.4095065977864493,
+            0.20831124352288682,
+            0.38218215869066385
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "qiskit__qiskit-11466",
+          "scope": "UNSEEN_ANCESTOR_TRAIN_QUALITY_OBSERVATION",
+          "basis": null,
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.4875597687426457,
+            0.5124402312573543
+          ],
+          "B_scores": [
+            0.4875597687426457,
+            0.17436409772545086,
+            0.33807613353190324
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "tox-dev__tox-628",
+          "scope": "UNSEEN_ANCESTOR_TRAIN_QUALITY_OBSERVATION",
+          "basis": null,
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.44624690871038103,
+            0.553753091289619
+          ],
+          "B_scores": [
+            0.44624690871038103,
+            0.17410686221088678,
+            0.37964622907873224
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "samuelcolvin__pydantic-1663",
+          "scope": "COMPARABLE_BOTH_UNRESOLVED_NO_TARGET",
+          "basis": null,
+          "known_winner": null,
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.5104106909679847,
+            0.48958930903201525
+          ],
+          "B_scores": [
+            0.5104106909679847,
+            0.298834113239975,
+            0.19075519579204014
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "ucfopen__canvasapi-467",
+          "scope": "COMPARABLE_BOTH_UNRESOLVED_NO_TARGET",
+          "basis": null,
+          "known_winner": null,
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.3584927986167327,
+            0.6415072013832672
+          ],
+          "B_scores": [
+            0.3584927986167327,
+            0.21939604718076905,
+            0.42211115420249795
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        }
+      ],
+      "initialization_sec": 5.070110624656081,
+      "gpu_wait_sec": 1.280568540096283e-05,
+      "forward_sec": [
+        1.8378834500908852,
+        0.1082143671810627,
+        0.10668523237109184,
+        0.09646172821521759,
+        0.12550357542932034,
+        0.10312912799417973,
+        0.10004707798361778,
+        0.12347517721354961,
+        0.09982531704008579,
+        0.10813296400010586,
+        0.11054516956210136,
+        0.10697123222053051,
+        0.10136117599904537,
+        0.09709521196782589,
+        0.11702114343643188,
+        0.09667038731276989,
+        0.09819549135863781,
+        0.12357949279248714,
+        0.10087044909596443,
+        0.09980331175029278,
+        0.08794492110610008,
+        0.09948856383562088
+      ],
+      "input_tokens": [
+        3721,
+        3957,
+        3938,
+        3710,
+        4397,
+        3851,
+        3766,
+        4299,
+        3805,
+        3957,
+        3972,
+        3925,
+        3868,
+        3651,
+        4256,
+        3707,
+        3773,
+        4229,
+        3818,
+        3816,
+        3442,
+        3759
+      ],
+      "gpu_peak_memory_bytes": 2053854720,
+      "marker_difference_direction": "SOL_MODEL_ID_MINUS_LUNA_MODEL_ID",
+      "independent_quality_choices": {
+        "items": 3,
+        "native_correct": 3,
+        "A_linear_correct": 0,
+        "B_correct": 3,
+        "fixed_sol_correct": 3,
+        "fixed_luna_correct": 0,
+        "independent_luna_winner_items": 0
+      }
+    },
+    "007": {
+      "encoder_checkpoint": "V9_LAYA_STEP_007-e03",
+      "encoder_frozen_during_analysis": true,
+      "ridge_penalty": 1.0,
+      "parameter_searches": 0,
+      "native_pointer_head": {
+        "train": {
+          "items": 17,
+          "correct": 10,
+          "Sol_selections": 0,
+          "Luna_selections": 17
+        },
+        "quality": {
+          "items": 12,
+          "correct": 5,
+          "Sol_selections": 0,
+          "Luna_selections": 12
+        },
+        "cost": {
+          "items": 5,
+          "correct": 5,
+          "Sol_selections": 0,
+          "Luna_selections": 5
+        }
+      },
+      "A_single_winner_linear_reference": {
+        "train": {
+          "items": 17,
+          "correct": 16,
+          "Sol_selections": 6,
+          "Luna_selections": 11
+        },
+        "task_heldout": {
+          "items": 17,
+          "correct": 15,
+          "Sol_selections": 7,
+          "Luna_selections": 10
+        },
+        "quality_heldout": {
+          "items": 12,
+          "correct": 11,
+          "Sol_selections": 6,
+          "Luna_selections": 6
+        },
+        "cost_heldout": {
+          "items": 5,
+          "correct": 4,
+          "Sol_selections": 1,
+          "Luna_selections": 4
+        },
+        "task_weighted_heldout_accuracy": 0.8571428571428571
+      },
+      "B_quality_relation_then_lower_rate": {
+        "train": {
+          "items": 17,
+          "correct": 16,
+          "Sol_selections": 8,
+          "Luna_selections": 9
+        },
+        "task_heldout": {
+          "items": 17,
+          "correct": 13,
+          "Sol_selections": 9,
+          "Luna_selections": 8
+        },
+        "quality_heldout": {
+          "items": 12,
+          "correct": 9,
+          "Sol_selections": 8,
+          "Luna_selections": 4
+        },
+        "cost_heldout": {
+          "items": 5,
+          "correct": 4,
+          "Sol_selections": 1,
+          "Luna_selections": 4
+        },
+        "quality_relation_classes": [
+          "SOL_ONLY_VERIFIED",
+          "LUNA_ONLY_VERIFIED",
+          "BOTH_VERIFIED"
+        ],
+        "relation_heldout_correct": 8,
+        "cost_tiebreak": "Luna lower input/output model rates only when class predicts BOTH_VERIFIED; not future realized cost",
+        "task_weighted_heldout_accuracy": 0.75
+      },
+      "per_state": [
+        {
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            -0.049543143958698355,
+            1.0495431439586984
+          ],
+          "B_scores": [
+            -0.049543143958698355,
+            0.6610313660469591,
+            0.38851177791173896
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.003273682516540921,
+            0.9967263174834591
+          ],
+          "B_scores": [
+            0.003273682516540921,
+            0.5283983322104249,
+            0.46832798527303365
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.9210842795369389,
+            0.07891572046306106
+          ],
+          "B_scores": [
+            0.9210842795369389,
+            0.0847447174667536,
+            -0.005828997003692382
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.34554620961872184,
+            0.6544537903812782
+          ],
+          "B_scores": [
+            0.34554620961872184,
+            0.4516517690570081,
+            0.2028020213242701
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.8821841911455266,
+            0.11781580885447335
+          ],
+          "B_scores": [
+            0.8821841911455266,
+            0.01571090076187598,
+            0.10210490809259776
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.7939404756264722,
+            0.2060595243735278
+          ],
+          "B_scores": [
+            0.7939404756264722,
+            0.13194842548284416,
+            0.07411109889068387
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.6309926395943327,
+            0.3690073604056673
+          ],
+          "B_scores": [
+            0.6309926395943327,
+            0.21812493042992565,
+            0.1508824299757417
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.18665255665601307,
+            0.8133474433439869
+          ],
+          "B_scores": [
+            0.18665255665601307,
+            0.3637611318762023,
+            0.4495863114677845
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.0394883052688052,
+            0.9605116947311948
+          ],
+          "B_scores": [
+            0.0394883052688052,
+            0.28854922224992074,
+            0.6719624724812738
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.20221655621965884,
+            0.7977834437803412
+          ],
+          "B_scores": [
+            0.20221655621965884,
+            0.4335316286412678,
+            0.3642518151390731
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.14485190663616848,
+            0.8551480933638316
+          ],
+          "B_scores": [
+            0.14485190663616848,
+            0.7187507200538306,
+            0.1363973733100009
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6-luna",
+            "gpt-6.1-sol"
+          ]
+        },
+        {
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.02601128002338704,
+            0.973988719976613
+          ],
+          "B_scores": [
+            0.02601128002338704,
+            0.459557185889301,
+            0.5144315340873115
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.4798602874281189,
+            0.5201397125718811
+          ],
+          "B_scores": [
+            0.4798602874281189,
+            0.21891426581905787,
+            0.30122544675282326
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.003640264662258308,
+            0.9963597353377417
+          ],
+          "B_scores": [
+            0.003640264662258308,
+            0.2995339307608325,
+            0.696825804576909
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "argoproj__argo-4594",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            1.0247305062888201,
+            -0.02473050628882023
+          ],
+          "B_scores": [
+            1.0247305062888201,
+            -0.008104761045795938,
+            -0.01662574524302407
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "planetlabs__planet-client-python-553",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.93332531447257,
+            0.06667468552743006
+          ],
+          "B_scores": [
+            0.93332531447257,
+            -0.014993267882268402,
+            0.08166795340969887
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "oscal-compass__compliance-trestle-1578",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.43174468826436446,
+            0.5682553117356356
+          ],
+          "B_scores": [
+            0.43174468826436446,
+            0.14888950218186014,
+            0.41936580955377556
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "getmoto__moto-7208",
+          "scope": "UNSEEN_ANCESTOR_TRAIN_QUALITY_OBSERVATION",
+          "basis": null,
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.3366253292384019,
+            0.6633746707615982
+          ],
+          "B_scores": [
+            0.3366253292384019,
+            0.3444113557668209,
+            0.31896331499477715
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "qiskit__qiskit-11466",
+          "scope": "UNSEEN_ANCESTOR_TRAIN_QUALITY_OBSERVATION",
+          "basis": null,
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.6012437376692623,
+            0.39875626233073763
+          ],
+          "B_scores": [
+            0.6012437376692623,
+            0.1576638130738857,
+            0.24109244925685241
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "tox-dev__tox-628",
+          "scope": "UNSEEN_ANCESTOR_TRAIN_QUALITY_OBSERVATION",
+          "basis": null,
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.6003828813201779,
+            0.399617118679822
+          ],
+          "B_scores": [
+            0.6003828813201779,
+            0.1171811019466188,
+            0.2824360167332034
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "samuelcolvin__pydantic-1663",
+          "scope": "COMPARABLE_BOTH_UNRESOLVED_NO_TARGET",
+          "basis": null,
+          "known_winner": null,
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.9360537323385425,
+            0.0639462676614575
+          ],
+          "B_scores": [
+            0.9360537323385425,
+            -0.0401548184454012,
+            0.10410108610685889
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "ucfopen__canvasapi-467",
+          "scope": "COMPARABLE_BOTH_UNRESOLVED_NO_TARGET",
+          "basis": null,
+          "known_winner": null,
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.6846499656542289,
+            0.3153500343457711
+          ],
+          "B_scores": [
+            0.6846499656542289,
+            0.06499928627421789,
+            0.25035074807155366
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        }
+      ],
+      "initialization_sec": 0.7281876690685749,
+      "gpu_wait_sec": 1.0110437870025635e-05,
+      "forward_sec": [
+        0.10188226774334908,
+        0.10791660659015179,
+        0.10779176466166973,
+        0.09721664898097515,
+        0.1264860201627016,
+        0.10431603342294693,
+        0.10136661864817142,
+        0.12467674538493156,
+        0.10080035030841827,
+        0.10849011316895485,
+        0.11110966093838215,
+        0.10738162510097027,
+        0.1023549884557724,
+        0.09847470745444298,
+        0.11680709011852741,
+        0.09719434194266796,
+        0.09857630729675293,
+        0.12439476884901524,
+        0.10168521478772163,
+        0.10027034394443035,
+        0.08859019540250301,
+        0.09996676817536354
+      ],
+      "input_tokens": [
+        3721,
+        3957,
+        3938,
+        3710,
+        4397,
+        3851,
+        3766,
+        4299,
+        3805,
+        3957,
+        3972,
+        3925,
+        3868,
+        3651,
+        4256,
+        3707,
+        3773,
+        4229,
+        3818,
+        3816,
+        3442,
+        3759
+      ],
+      "gpu_peak_memory_bytes": 2052920832,
+      "marker_difference_direction": "SOL_MODEL_ID_MINUS_LUNA_MODEL_ID",
+      "independent_quality_choices": {
+        "items": 3,
+        "native_correct": 0,
+        "A_linear_correct": 2,
+        "B_correct": 2,
+        "fixed_sol_correct": 3,
+        "fixed_luna_correct": 0,
+        "independent_luna_winner_items": 0
+      }
+    },
+    "008": {
+      "encoder_checkpoint": "V9_LAYA_STEP_008-e03",
+      "encoder_frozen_during_analysis": true,
+      "ridge_penalty": 1.0,
+      "parameter_searches": 0,
+      "native_pointer_head": {
+        "train": {
+          "items": 17,
+          "correct": 17,
+          "Sol_selections": 7,
+          "Luna_selections": 10
+        },
+        "quality": {
+          "items": 12,
+          "correct": 12,
+          "Sol_selections": 7,
+          "Luna_selections": 5
+        },
+        "cost": {
+          "items": 5,
+          "correct": 5,
+          "Sol_selections": 0,
+          "Luna_selections": 5
+        }
+      },
+      "A_single_winner_linear_reference": {
+        "train": {
+          "items": 17,
+          "correct": 16,
+          "Sol_selections": 8,
+          "Luna_selections": 9
+        },
+        "task_heldout": {
+          "items": 17,
+          "correct": 16,
+          "Sol_selections": 8,
+          "Luna_selections": 9
+        },
+        "quality_heldout": {
+          "items": 12,
+          "correct": 11,
+          "Sol_selections": 8,
+          "Luna_selections": 4
+        },
+        "cost_heldout": {
+          "items": 5,
+          "correct": 5,
+          "Sol_selections": 0,
+          "Luna_selections": 5
+        },
+        "task_weighted_heldout_accuracy": 0.9642857142857143
+      },
+      "B_quality_relation_then_lower_rate": {
+        "train": {
+          "items": 17,
+          "correct": 16,
+          "Sol_selections": 8,
+          "Luna_selections": 9
+        },
+        "task_heldout": {
+          "items": 17,
+          "correct": 16,
+          "Sol_selections": 8,
+          "Luna_selections": 9
+        },
+        "quality_heldout": {
+          "items": 12,
+          "correct": 11,
+          "Sol_selections": 8,
+          "Luna_selections": 4
+        },
+        "cost_heldout": {
+          "items": 5,
+          "correct": 5,
+          "Sol_selections": 0,
+          "Luna_selections": 5
+        },
+        "quality_relation_classes": [
+          "SOL_ONLY_VERIFIED",
+          "LUNA_ONLY_VERIFIED",
+          "BOTH_VERIFIED"
+        ],
+        "relation_heldout_correct": 10,
+        "cost_tiebreak": "Luna lower input/output model rates only when class predicts BOTH_VERIFIED; not future realized cost",
+        "task_weighted_heldout_accuracy": 0.9642857142857143
+      },
+      "per_state": [
+        {
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.02692804299652174,
+            0.9730719570034783
+          ],
+          "B_scores": [
+            0.02692804299652174,
+            0.5232718629397228,
+            0.44980009406375565
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            -0.1334423976296092,
+            1.1334423976296093
+          ],
+          "B_scores": [
+            -0.1334423976296092,
+            0.49148601900661576,
+            0.6419563786229945
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.8275027083160931,
+            0.17249729168390693
+          ],
+          "B_scores": [
+            0.8275027083160931,
+            0.17436891579124073,
+            -0.0018716241073339357
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.06592438246944571,
+            0.9340756175305542
+          ],
+          "B_scores": [
+            0.06592438246944571,
+            0.49611111633510036,
+            0.43796450119545394
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.9265182055143597,
+            0.0734817944856403
+          ],
+          "B_scores": [
+            0.9265182055143597,
+            0.11909141763091083,
+            -0.04560962314527134
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.7998207707519429,
+            0.20017922924805703
+          ],
+          "B_scores": [
+            0.7998207707519429,
+            0.18079310774156412,
+            0.01938612150649288
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.7474273327758011,
+            0.2525726672241989
+          ],
+          "B_scores": [
+            0.7474273327758011,
+            0.18486849168545993,
+            0.06770417553873886
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.28188252877091513,
+            0.7181174712290849
+          ],
+          "B_scores": [
+            0.28188252877091513,
+            0.27779064003621606,
+            0.44032683119286886
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            -0.0335227658755855,
+            1.0335227658755854
+          ],
+          "B_scores": [
+            -0.0335227658755855,
+            0.40790031539071736,
+            0.6256224504848682
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.31863900353815733,
+            0.6813609964618427
+          ],
+          "B_scores": [
+            0.31863900353815733,
+            0.3466676985702303,
+            0.33469329789161245
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.5952636661044093,
+            0.4047363338955907
+          ],
+          "B_scores": [
+            0.5952636661044093,
+            0.28232499101118463,
+            0.12241134288440594
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6-luna",
+            "gpt-6.1-sol"
+          ]
+        },
+        {
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            -0.13165636134480874,
+            1.1316563613448087
+          ],
+          "B_scores": [
+            -0.13165636134480874,
+            0.4933409099691758,
+            0.6383154513756342
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.7905338812493009,
+            0.2094661187506991
+          ],
+          "B_scores": [
+            0.7905338812493009,
+            0.19597270080591603,
+            0.013493417944782815
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            -0.058160430543170716,
+            1.0581604305431707
+          ],
+          "B_scores": [
+            -0.058160430543170716,
+            0.4206100431356742,
+            0.6375503874074966
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "argoproj__argo-4594",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            1.0725108328621238,
+            -0.07251083286212379
+          ],
+          "B_scores": [
+            1.0725108328621238,
+            -0.15925263386956462,
+            0.08674180100744136
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "planetlabs__planet-client-python-553",
+          "scope": "TRAIN_STATE",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.7980587625180915,
+            0.2019412374819085
+          ],
+          "B_scores": [
+            0.7980587625180915,
+            0.17747069769339768,
+            0.02447053978851066
+          ],
+          "A_task_heldout_selection": "gpt-6.1-sol",
+          "B_task_heldout_selection": "gpt-6.1-sol",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "oscal-compass__compliance-trestle-1578",
+          "scope": "TRAIN_STATE",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "known_winner": "gpt-6-luna",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.10577183752601071,
+            0.8942281624739893
+          ],
+          "B_scores": [
+            0.10577183752601071,
+            0.38718370612643954,
+            0.50704445634755
+          ],
+          "A_task_heldout_selection": "gpt-6-luna",
+          "B_task_heldout_selection": "gpt-6-luna",
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "getmoto__moto-7208",
+          "scope": "UNSEEN_ANCESTOR_TRAIN_QUALITY_OBSERVATION",
+          "basis": null,
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "LUNA_ONLY_VERIFIED",
+          "A_scores": [
+            0.14695730914924682,
+            0.8530426908507531
+          ],
+          "B_scores": [
+            0.14695730914924682,
+            0.4460832596428902,
+            0.40695943120786304
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "qiskit__qiskit-11466",
+          "scope": "UNSEEN_ANCESTOR_TRAIN_QUALITY_OBSERVATION",
+          "basis": null,
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.3908895221614383,
+            0.6091104778385618
+          ],
+          "B_scores": [
+            0.3908895221614383,
+            0.3250701535952765,
+            0.28404032424328524
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "tox-dev__tox-628",
+          "scope": "UNSEEN_ANCESTOR_TRAIN_QUALITY_OBSERVATION",
+          "basis": null,
+          "known_winner": "gpt-6.1-sol",
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "A_scores": [
+            0.26008481988631893,
+            0.7399151801136811
+          ],
+          "B_scores": [
+            0.26008481988631893,
+            0.35307764550111487,
+            0.3868375346125663
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "samuelcolvin__pydantic-1663",
+          "scope": "COMPARABLE_BOTH_UNRESOLVED_NO_TARGET",
+          "basis": null,
+          "known_winner": null,
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.5303669831849018,
+            0.46963301681509817
+          ],
+          "B_scores": [
+            0.5303669831849018,
+            0.29244416490673947,
+            0.17718885190835865
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        },
+        {
+          "task_id": "ucfopen__canvasapi-467",
+          "scope": "COMPARABLE_BOTH_UNRESOLVED_NO_TARGET",
+          "basis": null,
+          "known_winner": null,
+          "native_selection": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "A_scores": [
+            0.4908752562392018,
+            0.5091247437607982
+          ],
+          "B_scores": [
+            0.4908752562392018,
+            0.28468961391530523,
+            0.224435129845493
+          ],
+          "A_task_heldout_selection": null,
+          "B_task_heldout_selection": null,
+          "candidate_order": [
+            "gpt-6.1-sol",
+            "gpt-6-luna"
+          ]
+        }
+      ],
+      "initialization_sec": 0.6893221959471703,
+      "gpu_wait_sec": 8.782371878623962e-06,
+      "forward_sec": [
+        0.10201231949031353,
+        0.10847100988030434,
+        0.10851038061082363,
+        0.09770102985203266,
+        0.12664418667554855,
+        0.10451188124716282,
+        0.10205638222396374,
+        0.12469168938696384,
+        0.10095706768333912,
+        0.10861050337553024,
+        0.11123815551400185,
+        0.10745328478515148,
+        0.10237225703895092,
+        0.09905370511114597,
+        0.116815485060215,
+        0.09782355092465878,
+        0.09928255900740623,
+        0.12485998682677746,
+        0.10259712487459183,
+        0.10120175778865814,
+        0.08913791179656982,
+        0.10072808526456356
+      ],
+      "input_tokens": [
+        3721,
+        3957,
+        3938,
+        3710,
+        4397,
+        3851,
+        3766,
+        4299,
+        3805,
+        3957,
+        3972,
+        3925,
+        3868,
+        3651,
+        4256,
+        3707,
+        3773,
+        4229,
+        3818,
+        3816,
+        3442,
+        3759
+      ],
+      "gpu_peak_memory_bytes": 2053780992,
+      "marker_difference_direction": "SOL_MODEL_ID_MINUS_LUNA_MODEL_ID",
+      "independent_quality_choices": {
+        "items": 3,
+        "native_correct": 0,
+        "A_linear_correct": 0,
+        "B_correct": 1,
+        "fixed_sol_correct": 3,
+        "fixed_luna_correct": 0,
+        "independent_luna_winner_items": 0
+      }
+    }
+  },
+  "candidate_alignment_observation": {
+    "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+    "answers": {
+      "step_model_preference": {
+        "type": "choice",
+        "choice": "gpt-6-luna",
+        "probabilities": {
+          "gpt-6-luna": 0.5118,
+          "gpt-6.1-sol": 0.4882
+        },
+        "confidence": 0.0004,
+        "answer_confidence": 0.5118,
+        "action": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "latency_ms": 1888.4182833135128,
+    "usage": {
+      "input_tokens": 3972,
+      "output_tokens": 0,
+      "state_tokens": 3866,
+      "state_tokens_dropped": 0,
+      "truncated": false,
+      "truncated_questions": []
+    },
+    "dtype": "torch.bfloat16"
+  },
+  "candidate_alignment_explanation": "The async-timeout Modify row records Luna then Sol; marker vectors and pointer scores were mapped to actual IDs. Initial position-based probe statistics were superseded using saved features only; original Trainer already handles order. No product state-expression error was found.",
+  "original_A_step008_preserved": {
+    "training_correct": 17,
+    "quality_correct": 12,
+    "cost_correct": 5,
+    "independent_quality_correct": 0,
+    "independent_quality_items": 3
+  },
+  "summary_table": [
+    {
+      "encoder": "006",
+      "native_train_correct": 7,
+      "A_group_quality_correct": 2,
+      "A_group_cost_correct": 2,
+      "B_group_quality_correct": 6,
+      "B_group_cost_correct": 0,
+      "items": 3,
+      "native_correct": 3,
+      "A_linear_correct": 0,
+      "B_correct": 3,
+      "fixed_sol_correct": 3,
+      "fixed_luna_correct": 0,
+      "independent_luna_winner_items": 0
+    },
+    {
+      "encoder": "007",
+      "native_train_correct": 10,
+      "A_group_quality_correct": 11,
+      "A_group_cost_correct": 4,
+      "B_group_quality_correct": 9,
+      "B_group_cost_correct": 4,
+      "items": 3,
+      "native_correct": 0,
+      "A_linear_correct": 2,
+      "B_correct": 2,
+      "fixed_sol_correct": 3,
+      "fixed_luna_correct": 0,
+      "independent_luna_winner_items": 0
+    },
+    {
+      "encoder": "008",
+      "native_train_correct": 17,
+      "A_group_quality_correct": 11,
+      "A_group_cost_correct": 5,
+      "B_group_quality_correct": 11,
+      "B_group_cost_correct": 5,
+      "items": 3,
+      "native_correct": 0,
+      "A_linear_correct": 0,
+      "B_correct": 1,
+      "fixed_sol_correct": 3,
+      "fixed_luna_correct": 0,
+      "independent_luna_winner_items": 0
+    }
+  ],
+  "training_decision": {
+    "new_original_trainer_run": false,
+    "reason": "No new in-gradient preference: Tox remains held out, Pydantic/Canvas both unresolved. B006 quality heldout6/12 is below fixedSol7/12, B007/008 head-folds have encoder exposure, B008 improves only one of three Sol states. No independent Luna quality winner or dual-direction signal; do not continue same-type unsupported training.",
+    "fixed_val_rerun": false,
+    "original_fixed_val_weights_changed": false,
+    "new_dev": false,
+    "new_dev_reason": "No dual-direction independent selection evidence; original git-multibranch not repeated."
+  },
+  "successful_encoder_state_forwards": 66,
+  "encoder_forwards_in_failed_json_export": 22,
+  "additional_native_alignment_forward": 1,
+  "execution_notes": [
+    "Initial import failure did not run GPU work; after locating the existing Trainer helper, one export failed after22 STEP006 forwards because a Tensor count was not serializable. The temporary experiment implementation was edited before rerunning.",
+    "Original fixedVal and STEP006/007/008 training were not rerun. Head-only grouped fits on trained encoder features are not whole-pipeline task-unseen experiments.",
+    "B learns three observed quality relation classes, not three model identities or success probabilities. Class BOTH_VERIFIED can be wrong, as on Tox with008; it is not proof of true equality."
+  ]
+}

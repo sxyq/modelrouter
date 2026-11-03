@@ -1,0 +1,639 @@
+{
+  "iteration": "20261103-v9-cross-task-quality",
+  "head_at_start": "e8f9a754f689bfd73924dac5d0baa1143fa27a7d",
+  "execution_status": "COMPLETED_CONTINUATION_TASKS_ONE_TO_FOUR",
+  "old_experiments_reexecuted": 0,
+  "original_preferences": 28,
+  "original_task_preferences": 9,
+  "original_step_preferences": 19,
+  "original_step_quality": {
+    "items": 14,
+    "Sol": 9,
+    "Luna": 5
+  },
+  "original_step_equal_quality_cost": {
+    "items": 5,
+    "Sol": 0,
+    "Luna": 5
+  },
+  "step008_gradient_composition": {
+    "quality": 12,
+    "equal_quality_cost": 5,
+    "task_level": 0
+  },
+  "trainer_basis_changes_loss": false,
+  "new_independent_task_states": 3,
+  "new_unique_quality_preferences": 1,
+  "new_independent_luna_quality_winners": 0,
+  "new_preferences_used_in_gradient": 0,
+  "new_training_runs": 0,
+  "new_dev_episodes": 0,
+  "total_preferences": 29,
+  "task_preferences": 9,
+  "step_preferences": 20,
+  "step_quality": {
+    "items": 15,
+    "Sol": 10,
+    "Luna": 5
+  },
+  "step_equal_quality_cost": {
+    "items": 5,
+    "Sol": 0,
+    "Luna": 5
+  },
+  "independent_quality_observations": {
+    "task_ids": [
+      "getmoto__moto-7208",
+      "qiskit__qiskit-11466",
+      "tox-dev__tox-628"
+    ],
+    "independent_states": 3,
+    "step008_correct": 0,
+    "fixed_sol_correct": 3,
+    "scope": "HELD_OUT_TRAIN_ONE_STEP_QUALITY_NOT_COMPLETE_DEV_EPISODES",
+    "tox_repeat_same_result": true,
+    "tox_repeat_additional_independent_states": 0
+  },
+  "remaining_evidence_gaps": {
+    "inspect_step_quality": 0,
+    "native_effort_targets": 0,
+    "k3_targets": 0,
+    "cross_task_generalization_proven": false,
+    "independent_dynamic_quality_cost_gain_proven": false
+  },
+  "usage": {
+    "physical_requests": 10,
+    "completed_returns": 9,
+    "valid_generations": 8,
+    "generation_anomalies": 1,
+    "unknown_usage_requests": 1,
+    "known_prompt_tokens": 188483,
+    "known_completion_tokens": 5086,
+    "known_total_tokens": 193569,
+    "known_model_rate_cost_usd": 0.23481747,
+    "complete_cost_usd": null,
+    "supplier_billed_cost_usd": null,
+    "reasoning_included_in_completion": true,
+    "alias_requests": 0,
+    "teacher_requests": 0,
+    "records": [
+      {
+        "record": "canvasapi/luna_attempt2",
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "prompt_tokens": 14020,
+        "completion_tokens": 433,
+        "reasoning_tokens": 46,
+        "cached_tokens": null,
+        "cache_write_tokens": 14017,
+        "cost_usd": 0.001968925,
+        "actual_billed_cost_usd": null
+      },
+      {
+        "record": "canvasapi/luna_recovered",
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "prompt_tokens": 14020,
+        "completion_tokens": 541,
+        "reasoning_tokens": 44,
+        "cached_tokens": null,
+        "cache_write_tokens": 14017,
+        "cost_usd": 0.002022925,
+        "actual_billed_cost_usd": null
+      },
+      {
+        "record": "canvasapi/sol",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "prompt_tokens": 14020,
+        "completion_tokens": 356,
+        "reasoning_tokens": 8,
+        "cached_tokens": null,
+        "cache_write_tokens": 14017,
+        "cost_usd": 0.0386085,
+        "actual_billed_cost_usd": null
+      },
+      {
+        "record": "pydantic/luna",
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "prompt_tokens": 19841,
+        "completion_tokens": 1209,
+        "reasoning_tokens": 224,
+        "cached_tokens": 19712,
+        "cache_write_tokens": null,
+        "cost_usd": 0.00081452,
+        "actual_billed_cost_usd": null
+      },
+      {
+        "record": "pydantic/sol",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "prompt_tokens": 39304,
+        "completion_tokens": 758,
+        "reasoning_tokens": 8,
+        "cached_tokens": null,
+        "cache_write_tokens": 39301,
+        "cost_usd": 0.1058385,
+        "actual_billed_cost_usd": null
+      },
+      {
+        "record": "tox/luna",
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "prompt_tokens": 16970,
+        "completion_tokens": 133,
+        "reasoning_tokens": 73,
+        "cached_tokens": 0,
+        "cache_write_tokens": null,
+        "cost_usd": 0.0017635,
+        "actual_billed_cost_usd": null
+      },
+      {
+        "record": "tox/luna_repeat",
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "prompt_tokens": 16970,
+        "completion_tokens": 400,
+        "reasoning_tokens": 305,
+        "cached_tokens": 0,
+        "cache_write_tokens": null,
+        "cost_usd": 0.001897,
+        "actual_billed_cost_usd": null
+      },
+      {
+        "record": "tox/sol",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "prompt_tokens": 26669,
+        "completion_tokens": 622,
+        "reasoning_tokens": 8,
+        "cached_tokens": null,
+        "cache_write_tokens": 26666,
+        "cost_usd": 0.072891,
+        "actual_billed_cost_usd": null
+      },
+      {
+        "record": "tox/sol_repeat",
+        "request_model_id": "gpt-6.1-sol",
+        "returned_model_id": "gpt-6.1-sol",
+        "prompt_tokens": 26669,
+        "completion_tokens": 634,
+        "reasoning_tokens": 8,
+        "cached_tokens": 26666,
+        "cache_write_tokens": null,
+        "cost_usd": 0.0090126,
+        "actual_billed_cost_usd": null
+      }
+    ],
+    "reported_cache_read_tokens": 46378,
+    "reported_cache_write_tokens": 108018,
+    "cache_counts_are_partial": true
+  },
+  "research_findings": [
+    "Tox两次Luna200完整返回并实际执行读取动作，原验证收集失败是合法的一步未完成；Sol通过184声明ID。因此Tox可保留真实步骤Sol偏好，但不代表Luna整任务质量更差。",
+    "Canvas旧503无动作，旧200重复command使修复未执行，两条质量均未知；补一次有效Luna动作后双方20/22，两失败是固定报错字符串大小写不符。Pydantic的Luna运行时Callable引用来自真实生成代码，原pytest-timeout缺失单列。",
+    "累计29偏好：原28与Tox新增1均保留；本轮补采新增0、新梯度0。20步骤来自17任务，三任务有多个截止；质量15Sol10/Luna5、费用5全Luna，任务费用9全Luna。质量胜者更贵10/15。",
+    "A原单赢家目标与STEP008训练17/17保留；B用原Torch固定Encoder三类观察关系学习，没有把分类分数叫通过率。候选按真实ID对齐，原Trainer目标/状态没有改。",
+    "B006/007/008独立Sol观察为3/3、2/3、1/3，固定Sol3/3；真正独立Luna赢家0。006任务留出质量6/12低于固定Sol7/12，007/008的高分存在Encoder训练内信息。不能据此宣称独立泛化或质量优先净收益。",
+    "没有新的入梯度赢家、真实状态表达错误或有意义的双方向独立信号，因此没有启动新原Trainer Run或新Dev；不自动替换Serving，不重跑旧Dev，保留负结果。"
+  ],
+  "comparisons": [
+    {
+      "task_id": "samuelcolvin__pydantic-1663",
+      "repo": "samuelcolvin/pydantic",
+      "base_commit": "0a465b6216065b06782f4637e57b4e22eca0fbb7",
+      "split": "train",
+      "train_eligible": true,
+      "source_license": "CC-BY-4.0",
+      "repository_license": "MIT",
+      "message_cutoff_exclusive": 43,
+      "phase": null,
+      "original_f2p": 16,
+      "original_p2p": 0,
+      "selected_before_quality_requests": true,
+      "sampling_reason": "New repository; function decorator configuration and user-defined types; before diagnostic-script creation.",
+      "sampling_purpose": "TRAIN_CANDIDATE",
+      "gradient_use": true,
+      "actually_used_in_gradient": false,
+      "used_in_step002_through008": false,
+      "eligible": false,
+      "reason": "NO_VERIFIED_ACTION",
+      "expected": null,
+      "preference_basis": null,
+      "outcomes": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "action_id": "gpt-6.1-sol:low",
+          "resolved": false,
+          "model_rate_cost_usd": 0.1058385,
+          "passed": 15,
+          "failed": 1,
+          "missing": 0,
+          "trusted_outcome": true,
+          "identities_matched": true,
+          "generation_status": "COMPLETE",
+          "action_executed": true,
+          "actual_candidate_record": "sol",
+          "verification_record": "pydantic/sol_with_required_plugin.json",
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "action_id": "gpt-6-luna:low",
+          "resolved": false,
+          "model_rate_cost_usd": 0.00081452,
+          "passed": 0,
+          "failed": 0,
+          "missing": 16,
+          "trusted_outcome": true,
+          "identities_matched": true,
+          "generation_status": "COMPLETE",
+          "action_executed": true,
+          "actual_candidate_record": "luna",
+          "verification_record": "pydantic/luna_with_required_plugin.json",
+          "native_effort_status": "NOT_REPORTED"
+        }
+      ],
+      "source_link": {
+        "instance_id_matches": true,
+        "repo_matches": true,
+        "base_commit_matches": null,
+        "task_base_commit": "0a465b6216065b06782f4637e57b4e22eca0fbb7",
+        "trajectory_base_commit": null,
+        "reference_patch_matches": true,
+        "identity_status": "EXACT_ID_VERSION_UNREPORTED"
+      },
+      "verification_note": "Initial configuration lacked pytest-timeout; original state, reference and both saved candidate codes were evaluated with that required plugin in separate containers. No new generation. Before 12/16, reference 16/16, Sol 15/16; Luna NameError: Callable is not defined.",
+      "evidence_scope": "TRAIN_SOURCE_DOCKER_VALIDATED",
+      "complete_harbor_episode": false,
+      "test_patch_injected_after_candidate_step": true,
+      "historical_diagnostic_scripts_reexecuted": false,
+      "prefix_filesystem_writes_before_cutoff": false,
+      "step008_prediction_before_generation": {
+        "task_id": "samuelcolvin__pydantic-1663",
+        "prediction_before_quality_requests": true,
+        "selected_model": "gpt-6-luna",
+        "checkpoint_id": "V9_LAYA_STEP_008-e03",
+        "probabilities": {
+          "gpt-6-luna": 0.5256,
+          "gpt-6.1-sol": 0.4744
+        },
+        "decision_latency_ms": 12282.15112502221,
+        "inference_latency_ms": 2202.0896915346384,
+        "fallback_used": false,
+        "scope": "NEW_TRAIN_CANDIDATE"
+      },
+      "paired_quality_outcomes_complete": true
+    },
+    {
+      "task_id": "tox-dev__tox-628",
+      "repo": "tox-dev/tox",
+      "base_commit": "f1a933b59c2682f40054c0cabe8c1f42a3635168",
+      "split": "train",
+      "train_eligible": true,
+      "source_license": "CC-BY-4.0",
+      "repository_license": "MIT",
+      "message_cutoff_exclusive": 46,
+      "phase": null,
+      "original_f2p": 184,
+      "original_p2p": 0,
+      "selected_before_quality_requests": true,
+      "sampling_reason": "New repository; command-line plugin identity and interpreter behavior; before historical simulated-plugin observation.",
+      "sampling_purpose": "INDEPENDENT_TRAIN_OBSERVATION",
+      "gradient_use": false,
+      "actually_used_in_gradient": false,
+      "used_in_step002_through008": false,
+      "eligible": true,
+      "reason": null,
+      "expected": {
+        "step_model_preference": "gpt-6.1-sol"
+      },
+      "preference_basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+      "outcomes": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "action_id": "gpt-6.1-sol:low",
+          "resolved": true,
+          "model_rate_cost_usd": 0.072891,
+          "passed": 184,
+          "failed": 0,
+          "missing": 0,
+          "trusted_outcome": true,
+          "identities_matched": true,
+          "generation_status": "COMPLETE",
+          "action_executed": true,
+          "actual_candidate_record": "sol",
+          "verification_record": "tox/sol/original_test_results.json",
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "action_id": "gpt-6-luna:low",
+          "resolved": false,
+          "model_rate_cost_usd": 0.0017635,
+          "passed": 0,
+          "failed": 0,
+          "missing": 184,
+          "trusted_outcome": true,
+          "identities_matched": true,
+          "generation_status": "COMPLETE",
+          "action_executed": true,
+          "actual_candidate_record": "luna",
+          "verification_record": "tox/luna/original_test_results.json",
+          "native_effort_status": "NOT_REPORTED"
+        }
+      ],
+      "source_link": {
+        "instance_id_matches": true,
+        "repo_matches": true,
+        "base_commit_matches": null,
+        "task_base_commit": "f1a933b59c2682f40054c0cabe8c1f42a3635168",
+        "trajectory_base_commit": null,
+        "reference_patch_matches": true,
+        "identity_status": "EXACT_ID_VERSION_UNREPORTED"
+      },
+      "verification_note": "Both Luna requests returned200/complete tool_calls and executed their read-only action successfully. Original verifier then failed collection on missing get_version_info. Genuine one-step noncompletion, not HTTP/empty/ambiguous generation. Sol passed all184 declared IDs; two outside-scope full-command failures remain.",
+      "evidence_scope": "TRAIN_SOURCE_DOCKER_VALIDATED",
+      "complete_harbor_episode": false,
+      "test_patch_injected_after_candidate_step": true,
+      "historical_diagnostic_scripts_reexecuted": false,
+      "prefix_filesystem_writes_before_cutoff": false,
+      "step008_prediction_before_generation": {
+        "task_id": "tox-dev__tox-628",
+        "prediction_before_quality_requests": true,
+        "selected_model": "gpt-6-luna",
+        "checkpoint_id": "V9_LAYA_STEP_008-e03",
+        "probabilities": {
+          "gpt-6-luna": 0.5852,
+          "gpt-6.1-sol": 0.4148
+        },
+        "decision_latency_ms": 1233.3904169499874,
+        "inference_latency_ms": 110.57136580348015,
+        "fallback_used": false,
+        "scope": "INDEPENDENT_TRAIN_OBSERVATION"
+      },
+      "repeat": {
+        "eligible": true,
+        "reason": null,
+        "expected": {
+          "step_model_preference": "gpt-6.1-sol"
+        },
+        "outcomes": [
+          {
+            "model_id": "gpt-6.1-sol",
+            "action_id": "gpt-6.1-sol:low",
+            "resolved": true,
+            "model_rate_cost_usd": 0.0090126,
+            "passed": 184,
+            "failed": 0,
+            "missing": 0,
+            "trusted_outcome": true,
+            "identities_matched": true,
+            "native_effort_status": "NOT_REPORTED",
+            "actual_candidate_record": "sol_repeat"
+          },
+          {
+            "model_id": "gpt-6-luna",
+            "action_id": "gpt-6-luna:low",
+            "resolved": false,
+            "model_rate_cost_usd": 0.001897,
+            "passed": 0,
+            "failed": 0,
+            "missing": 184,
+            "trusted_outcome": true,
+            "identities_matched": true,
+            "native_effort_status": "NOT_REPORTED",
+            "actual_candidate_record": "luna_repeat"
+          }
+        ],
+        "source_link": {
+          "instance_id_matches": true,
+          "repo_matches": true,
+          "base_commit_matches": null,
+          "task_base_commit": "f1a933b59c2682f40054c0cabe8c1f42a3635168",
+          "trajectory_base_commit": null,
+          "reference_patch_matches": true,
+          "identity_status": "EXACT_ID_VERSION_UNREPORTED"
+        },
+        "gradient_use": false,
+        "test_patch_injected_after_candidate_step": true,
+        "historical_diagnostic_scripts_reexecuted": false
+      },
+      "repeat_counts_as_independent_state": false,
+      "repeat_counts_as_additional_target": false,
+      "paired_quality_outcomes_complete": true
+    },
+    {
+      "task_id": "ucfopen__canvasapi-467",
+      "repo": "ucfopen/canvasapi",
+      "base_commit": "8482c3fb852198a5bcb2cb81ecc38525c366c1c2",
+      "split": "train",
+      "train_eligible": true,
+      "source_license": "CC-BY-4.0",
+      "repository_license": "MIT",
+      "message_cutoff_exclusive": 25,
+      "phase": null,
+      "original_f2p": 22,
+      "original_p2p": 0,
+      "selected_before_quality_requests": true,
+      "sampling_reason": "New repository; HTTP error classification and rate-limit feedback; before historical requests-mock script.",
+      "sampling_purpose": "INDEPENDENT_TRAIN_OBSERVATION",
+      "gradient_use": false,
+      "actually_used_in_gradient": false,
+      "used_in_step002_through008": false,
+      "eligible": false,
+      "reason": "NO_VERIFIED_ACTION",
+      "expected": null,
+      "preference_basis": null,
+      "outcomes": [
+        {
+          "model_id": "gpt-6.1-sol",
+          "action_id": "gpt-6.1-sol:low",
+          "resolved": false,
+          "model_rate_cost_usd": 0.0386085,
+          "passed": 20,
+          "failed": 2,
+          "missing": 0,
+          "trusted_outcome": true,
+          "identities_matched": true,
+          "generation_status": "COMPLETE",
+          "action_executed": true,
+          "actual_candidate_record": "sol",
+          "verification_record": "canvasapi/sol/original_test_results.json",
+          "native_effort_status": "NOT_REPORTED"
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "action_id": "gpt-6-luna:low",
+          "resolved": false,
+          "model_rate_cost_usd": 0.002022925,
+          "passed": 20,
+          "failed": 2,
+          "missing": 0,
+          "trusted_outcome": true,
+          "identities_matched": true,
+          "generation_status": "COMPLETE",
+          "action_executed": true,
+          "actual_candidate_record": "luna_recovered",
+          "verification_record": "canvasapi/luna_recovered/original_test_results.json",
+          "native_effort_status": "NOT_REPORTED"
+        }
+      ],
+      "source_link": {
+        "instance_id_matches": true,
+        "repo_matches": true,
+        "base_commit_matches": null,
+        "task_base_commit": "8482c3fb852198a5bcb2cb81ecc38525c366c1c2",
+        "trajectory_base_commit": null,
+        "reference_patch_matches": true,
+        "identity_status": "EXACT_ID_VERSION_UNREPORTED"
+      },
+      "verification_note": "Original 503 and ambiguous 200 are not model-quality failures. One recovered Luna action actually executed; Sol/Luna both20/22, no verified action. No Sol regeneration.",
+      "evidence_scope": "TRAIN_SOURCE_DOCKER_VALIDATED",
+      "complete_harbor_episode": false,
+      "test_patch_injected_after_candidate_step": true,
+      "historical_diagnostic_scripts_reexecuted": false,
+      "prefix_filesystem_writes_before_cutoff": false,
+      "step008_prediction_before_generation": {
+        "task_id": "ucfopen__canvasapi-467",
+        "prediction_before_quality_requests": true,
+        "selected_model": "gpt-6-luna",
+        "checkpoint_id": "V9_LAYA_STEP_008-e03",
+        "probabilities": {
+          "gpt-6-luna": 0.5348,
+          "gpt-6.1-sol": 0.4652
+        },
+        "decision_latency_ms": 1004.4208749895915,
+        "inference_latency_ms": 112.37109638750553,
+        "fallback_used": false,
+        "scope": "INDEPENDENT_TRAIN_OBSERVATION"
+      },
+      "paired_quality_outcomes_complete": true,
+      "prior_luna_outcomes_unknown": [
+        "HTTP503 no action",
+        "HTTP200 duplicate command keys, .PLACEHOLDER executed instead of repair"
+      ],
+      "one_targeted_recovery_generation": true
+    }
+  ],
+  "state_preservation": {
+    "serving_restarted": false,
+    "serving_weights_replaced": false,
+    "model_weights_downloaded_to_mac": false,
+    "user_changes_preserved": true,
+    "new_persistent_scheduling": false,
+    "temporary_local_scripts_removed": 5,
+    "remaining_task_containers": 0,
+    "original_results_images_and_weights_retained": true,
+    "temporary_server_scripts_removed": 1,
+    "public_main_commit_requested": true,
+    "publication_excludes_private_records": true
+  },
+  "prior_task_one_completed": true,
+  "continuation": {
+    "new_physical_requests": 1,
+    "sol_generations_repeated": 0,
+    "tox_comparison_complete": true,
+    "canvas_old_ambiguous_result_is_quality_failure": false,
+    "canvas_recovery": {
+      "passed": 20,
+      "expected": 22,
+      "trusted": true,
+      "new_preference": false
+    },
+    "pydantic_luna_failure_is_actual_generated_code": true,
+    "new_formal_preferences": 0,
+    "provider_changes": [
+      "Recognize duplicate tool-argument keys as ambiguous output",
+      "Include observed Luna503 in existing account switching"
+    ],
+    "supervision_changes": [
+      "Reject false per-candidate trust or unknown outcome even if row condition says trusted"
+    ],
+    "outcome_generation_audit_complete": true,
+    "quality_and_cost_learning_analysis_complete": true,
+    "train_and_dev_decisions_complete": true,
+    "original_preferences_preserved": 28,
+    "tox_prior_addition_confirmed": 1,
+    "additional_preferences_from_recovery": 0,
+    "source_files_synced_without_service_restart": [
+      "providers/provider.py",
+      "v9/training/real_supervision.py"
+    ]
+  },
+  "method_analysis": {
+    "file": "quality_method_analysis.json",
+    "table": [
+      {
+        "encoder": "006",
+        "native_train_correct": 7,
+        "A_group_quality_correct": 2,
+        "A_group_cost_correct": 2,
+        "B_group_quality_correct": 6,
+        "B_group_cost_correct": 0,
+        "items": 3,
+        "native_correct": 3,
+        "A_linear_correct": 0,
+        "B_correct": 3,
+        "fixed_sol_correct": 3,
+        "fixed_luna_correct": 0,
+        "independent_luna_winner_items": 0
+      },
+      {
+        "encoder": "007",
+        "native_train_correct": 10,
+        "A_group_quality_correct": 11,
+        "A_group_cost_correct": 4,
+        "B_group_quality_correct": 9,
+        "B_group_cost_correct": 4,
+        "items": 3,
+        "native_correct": 0,
+        "A_linear_correct": 2,
+        "B_correct": 2,
+        "fixed_sol_correct": 3,
+        "fixed_luna_correct": 0,
+        "independent_luna_winner_items": 0
+      },
+      {
+        "encoder": "008",
+        "native_train_correct": 17,
+        "A_group_quality_correct": 11,
+        "A_group_cost_correct": 5,
+        "B_group_quality_correct": 11,
+        "B_group_cost_correct": 5,
+        "items": 3,
+        "native_correct": 0,
+        "A_linear_correct": 0,
+        "B_correct": 1,
+        "fixed_sol_correct": 3,
+        "fixed_luna_correct": 0,
+        "independent_luna_winner_items": 0
+      }
+    ],
+    "target_definition": "A original model winner; B categorical SOL_ONLY_VERIFIED/LUNA_ONLY_VERIFIED/BOTH_VERIFIED at one recorded native step, lower model rate only after predicted equality.",
+    "original_step008_training_correct": 17,
+    "true_independent_step008_correct": 0,
+    "true_independent_quality_states": 3,
+    "new_original_trainer_run": false,
+    "independent_dual_direction_improvement": false,
+    "quality_priority_net_gain_proven": false,
+    "why_not_train": "No new in-gradient preference: Tox remains held out, Pydantic/Canvas both unresolved. B006 quality heldout6/12 is below fixedSol7/12, B007/008 head-folds have encoder exposure, B008 improves only one of three Sol states. No independent Luna quality winner or dual-direction signal; do not continue same-type unsupported training."
+  },
+  "core_research_work_remaining": {
+    "K2": 2,
+    "K2_items": [
+      "True unseen-task Sol/Luna dual-direction conditional choice",
+      "Independent complete-task quality-cost gain including Router time and resource cost"
+    ],
+    "full_v9_uncompleted_research_questions": 5
+  },
+  "resource_measurement": {
+    "successful_feature_initialization_sec": 6.487620489671826,
+    "successful_feature_forward_sec": 8.713384063914418,
+    "max_allocated_gpu_bytes": 2053854720,
+    "complete_resource_cost_usd": null,
+    "failed_export_and_runtime_initialization_total_cost_unknown": true,
+    "measurement_scope": "Encoder/Pointer analysis, not a dynamic Episode or full resource bill"
+  }
+}

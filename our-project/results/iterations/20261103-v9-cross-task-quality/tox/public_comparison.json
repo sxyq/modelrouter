@@ -1,0 +1,138 @@
+{
+  "task_id": "tox-dev__tox-628",
+  "repo": "tox-dev/tox",
+  "base_commit": "f1a933b59c2682f40054c0cabe8c1f42a3635168",
+  "split": "train",
+  "train_eligible": true,
+  "source_license": "CC-BY-4.0",
+  "repository_license": "MIT",
+  "message_cutoff_exclusive": 46,
+  "phase": null,
+  "original_f2p": 184,
+  "original_p2p": 0,
+  "selected_before_quality_requests": true,
+  "sampling_reason": "New repository; command-line plugin identity and interpreter behavior; before historical simulated-plugin observation.",
+  "sampling_purpose": "INDEPENDENT_TRAIN_OBSERVATION",
+  "gradient_use": false,
+  "actually_used_in_gradient": false,
+  "used_in_step002_through008": false,
+  "eligible": true,
+  "reason": null,
+  "expected": {
+    "step_model_preference": "gpt-6.1-sol"
+  },
+  "preference_basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+  "outcomes": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "action_id": "gpt-6.1-sol:low",
+      "resolved": true,
+      "model_rate_cost_usd": 0.072891,
+      "passed": 184,
+      "failed": 0,
+      "missing": 0,
+      "trusted_outcome": true,
+      "identities_matched": true,
+      "generation_status": "COMPLETE",
+      "action_executed": true,
+      "actual_candidate_record": "sol",
+      "verification_record": "tox/sol/original_test_results.json",
+      "native_effort_status": "NOT_REPORTED"
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "action_id": "gpt-6-luna:low",
+      "resolved": false,
+      "model_rate_cost_usd": 0.0017635,
+      "passed": 0,
+      "failed": 0,
+      "missing": 184,
+      "trusted_outcome": true,
+      "identities_matched": true,
+      "generation_status": "COMPLETE",
+      "action_executed": true,
+      "actual_candidate_record": "luna",
+      "verification_record": "tox/luna/original_test_results.json",
+      "native_effort_status": "NOT_REPORTED"
+    }
+  ],
+  "source_link": {
+    "instance_id_matches": true,
+    "repo_matches": true,
+    "base_commit_matches": null,
+    "task_base_commit": "f1a933b59c2682f40054c0cabe8c1f42a3635168",
+    "trajectory_base_commit": null,
+    "reference_patch_matches": true,
+    "identity_status": "EXACT_ID_VERSION_UNREPORTED"
+  },
+  "verification_note": "Both Luna requests returned200/complete tool_calls and executed their read-only action successfully. Original verifier then failed collection on missing get_version_info. Genuine one-step noncompletion, not HTTP/empty/ambiguous generation. Sol passed all184 declared IDs; two outside-scope full-command failures remain.",
+  "evidence_scope": "TRAIN_SOURCE_DOCKER_VALIDATED",
+  "complete_harbor_episode": false,
+  "test_patch_injected_after_candidate_step": true,
+  "historical_diagnostic_scripts_reexecuted": false,
+  "prefix_filesystem_writes_before_cutoff": false,
+  "step008_prediction_before_generation": {
+    "task_id": "tox-dev__tox-628",
+    "prediction_before_quality_requests": true,
+    "selected_model": "gpt-6-luna",
+    "checkpoint_id": "V9_LAYA_STEP_008-e03",
+    "probabilities": {
+      "gpt-6-luna": 0.5852,
+      "gpt-6.1-sol": 0.4148
+    },
+    "decision_latency_ms": 1233.3904169499874,
+    "inference_latency_ms": 110.57136580348015,
+    "fallback_used": false,
+    "scope": "INDEPENDENT_TRAIN_OBSERVATION"
+  },
+  "repeat": {
+    "eligible": true,
+    "reason": null,
+    "expected": {
+      "step_model_preference": "gpt-6.1-sol"
+    },
+    "outcomes": [
+      {
+        "model_id": "gpt-6.1-sol",
+        "action_id": "gpt-6.1-sol:low",
+        "resolved": true,
+        "model_rate_cost_usd": 0.0090126,
+        "passed": 184,
+        "failed": 0,
+        "missing": 0,
+        "trusted_outcome": true,
+        "identities_matched": true,
+        "native_effort_status": "NOT_REPORTED",
+        "actual_candidate_record": "sol_repeat"
+      },
+      {
+        "model_id": "gpt-6-luna",
+        "action_id": "gpt-6-luna:low",
+        "resolved": false,
+        "model_rate_cost_usd": 0.001897,
+        "passed": 0,
+        "failed": 0,
+        "missing": 184,
+        "trusted_outcome": true,
+        "identities_matched": true,
+        "native_effort_status": "NOT_REPORTED",
+        "actual_candidate_record": "luna_repeat"
+      }
+    ],
+    "source_link": {
+      "instance_id_matches": true,
+      "repo_matches": true,
+      "base_commit_matches": null,
+      "task_base_commit": "f1a933b59c2682f40054c0cabe8c1f42a3635168",
+      "trajectory_base_commit": null,
+      "reference_patch_matches": true,
+      "identity_status": "EXACT_ID_VERSION_UNREPORTED"
+    },
+    "gradient_use": false,
+    "test_patch_injected_after_candidate_step": true,
+    "historical_diagnostic_scripts_reexecuted": false
+  },
+  "repeat_counts_as_independent_state": false,
+  "repeat_counts_as_additional_target": false,
+  "paired_quality_outcomes_complete": true
+}

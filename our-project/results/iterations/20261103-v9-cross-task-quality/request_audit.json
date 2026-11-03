@@ -1,0 +1,327 @@
+{
+  "physical_requests": 10,
+  "generation_categories": {
+    "TRANSPORT_ERROR": 1,
+    "GENERATION_ANOMALY": 1,
+    "COMPLETE_GENERATION": 8
+  },
+  "outcome_categories": {
+    "OUTCOME_UNKNOWN": 2,
+    "TRUSTED_VERIFIER_NONCOMPLETION": 6,
+    "TRUSTED_VERIFIED_SUCCESS": 2
+  },
+  "http_status_counts": {
+    "503": 1,
+    "200": 9
+  },
+  "pydantic_initial_environment_affected_candidates": 2,
+  "canvas_503_in_existing_luna_pool": true,
+  "canvas_503_endpoint_disclosed_only_in_private_audit": true,
+  "canvas_old_200_ambiguous_command_keys": true,
+  "records": [
+    {
+      "task": "canvasapi",
+      "record": "luna",
+      "http_status": 503,
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": null,
+      "finish_reason": null,
+      "recorded_response_status": null,
+      "current_response_status": "HTTP_503",
+      "generation_category": "TRANSPORT_ERROR",
+      "tool_calls_executed": 0,
+      "tool_exit_codes": [],
+      "tool_environment_exception": [],
+      "trusted_outcome": false,
+      "outcome_category": "OUTCOME_UNKNOWN",
+      "verification_record": "canvasapi/luna/original_test_results.json",
+      "fixed_verifier": {
+        "passed": 0,
+        "failed": 0,
+        "missing": 22,
+        "resolved": false
+      },
+      "model_rate_cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "initial_verifier_environment_issue": null
+    },
+    {
+      "task": "canvasapi",
+      "record": "luna_attempt2",
+      "http_status": 200,
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "finish_reason": "tool_calls",
+      "recorded_response_status": "COMPLETE",
+      "current_response_status": "DUPLICATE_TOOL_ARGUMENT",
+      "generation_category": "GENERATION_ANOMALY",
+      "tool_calls_executed": 1,
+      "tool_exit_codes": [
+        127
+      ],
+      "tool_environment_exception": [
+        ""
+      ],
+      "trusted_outcome": false,
+      "outcome_category": "OUTCOME_UNKNOWN",
+      "verification_record": "canvasapi/luna_attempt2/original_test_results.json",
+      "fixed_verifier": {
+        "passed": 0,
+        "failed": 0,
+        "missing": 22,
+        "resolved": false
+      },
+      "model_rate_cost_usd": 0.001968925,
+      "actual_billed_cost_usd": null,
+      "initial_verifier_environment_issue": null
+    },
+    {
+      "task": "canvasapi",
+      "record": "luna_recovered",
+      "http_status": 200,
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "finish_reason": "tool_calls",
+      "recorded_response_status": "COMPLETE",
+      "current_response_status": "COMPLETE",
+      "generation_category": "COMPLETE_GENERATION",
+      "tool_calls_executed": 1,
+      "tool_exit_codes": [
+        0
+      ],
+      "tool_environment_exception": [
+        ""
+      ],
+      "trusted_outcome": true,
+      "outcome_category": "TRUSTED_VERIFIER_NONCOMPLETION",
+      "verification_record": "canvasapi/luna_recovered/original_test_results.json",
+      "fixed_verifier": {
+        "passed": 20,
+        "failed": 2,
+        "missing": 0,
+        "resolved": false
+      },
+      "model_rate_cost_usd": 0.002022925,
+      "actual_billed_cost_usd": null,
+      "initial_verifier_environment_issue": null
+    },
+    {
+      "task": "canvasapi",
+      "record": "sol",
+      "http_status": 200,
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "finish_reason": "tool_calls",
+      "recorded_response_status": "COMPLETE",
+      "current_response_status": "COMPLETE",
+      "generation_category": "COMPLETE_GENERATION",
+      "tool_calls_executed": 1,
+      "tool_exit_codes": [
+        0
+      ],
+      "tool_environment_exception": [
+        ""
+      ],
+      "trusted_outcome": true,
+      "outcome_category": "TRUSTED_VERIFIER_NONCOMPLETION",
+      "verification_record": "canvasapi/sol/original_test_results.json",
+      "fixed_verifier": {
+        "passed": 20,
+        "failed": 2,
+        "missing": 0,
+        "resolved": false
+      },
+      "model_rate_cost_usd": 0.0386085,
+      "actual_billed_cost_usd": null,
+      "initial_verifier_environment_issue": null
+    },
+    {
+      "task": "pydantic",
+      "record": "luna",
+      "http_status": 200,
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "finish_reason": "tool_calls",
+      "recorded_response_status": "COMPLETE",
+      "current_response_status": "COMPLETE",
+      "generation_category": "COMPLETE_GENERATION",
+      "tool_calls_executed": 1,
+      "tool_exit_codes": [
+        1
+      ],
+      "tool_environment_exception": [
+        ""
+      ],
+      "trusted_outcome": true,
+      "outcome_category": "TRUSTED_VERIFIER_NONCOMPLETION",
+      "verification_record": "pydantic/luna_with_required_plugin.json",
+      "fixed_verifier": {
+        "passed": 0,
+        "failed": 0,
+        "missing": 16,
+        "resolved": false
+      },
+      "model_rate_cost_usd": 0.00081452,
+      "actual_billed_cost_usd": null,
+      "initial_verifier_environment_issue": "pytest-timeout absent; saved code re-evaluated with required plugin"
+    },
+    {
+      "task": "pydantic",
+      "record": "sol",
+      "http_status": 200,
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "finish_reason": "tool_calls",
+      "recorded_response_status": "COMPLETE",
+      "current_response_status": "COMPLETE",
+      "generation_category": "COMPLETE_GENERATION",
+      "tool_calls_executed": 1,
+      "tool_exit_codes": [
+        4
+      ],
+      "tool_environment_exception": [
+        ""
+      ],
+      "trusted_outcome": true,
+      "outcome_category": "TRUSTED_VERIFIER_NONCOMPLETION",
+      "verification_record": "pydantic/sol_with_required_plugin.json",
+      "fixed_verifier": {
+        "passed": 15,
+        "failed": 1,
+        "missing": 0,
+        "resolved": false
+      },
+      "model_rate_cost_usd": 0.1058385,
+      "actual_billed_cost_usd": null,
+      "initial_verifier_environment_issue": "pytest-timeout absent; saved code re-evaluated with required plugin"
+    },
+    {
+      "task": "tox",
+      "record": "luna",
+      "http_status": 200,
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "finish_reason": "tool_calls",
+      "recorded_response_status": "COMPLETE",
+      "current_response_status": "COMPLETE",
+      "generation_category": "COMPLETE_GENERATION",
+      "tool_calls_executed": 1,
+      "tool_exit_codes": [
+        0
+      ],
+      "tool_environment_exception": [
+        ""
+      ],
+      "trusted_outcome": true,
+      "outcome_category": "TRUSTED_VERIFIER_NONCOMPLETION",
+      "verification_record": "tox/luna/original_test_results.json",
+      "fixed_verifier": {
+        "passed": 0,
+        "failed": 0,
+        "missing": 184,
+        "resolved": false
+      },
+      "model_rate_cost_usd": 0.0017635,
+      "actual_billed_cost_usd": null,
+      "initial_verifier_environment_issue": null
+    },
+    {
+      "task": "tox",
+      "record": "luna_repeat",
+      "http_status": 200,
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "finish_reason": "tool_calls",
+      "recorded_response_status": "COMPLETE",
+      "current_response_status": "COMPLETE",
+      "generation_category": "COMPLETE_GENERATION",
+      "tool_calls_executed": 1,
+      "tool_exit_codes": [
+        0
+      ],
+      "tool_environment_exception": [
+        ""
+      ],
+      "trusted_outcome": true,
+      "outcome_category": "TRUSTED_VERIFIER_NONCOMPLETION",
+      "verification_record": "tox/luna_repeat/original_test_results.json",
+      "fixed_verifier": {
+        "passed": 0,
+        "failed": 0,
+        "missing": 184,
+        "resolved": false
+      },
+      "model_rate_cost_usd": 0.001897,
+      "actual_billed_cost_usd": null,
+      "initial_verifier_environment_issue": null
+    },
+    {
+      "task": "tox",
+      "record": "sol",
+      "http_status": 200,
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "finish_reason": "tool_calls",
+      "recorded_response_status": "COMPLETE",
+      "current_response_status": "COMPLETE",
+      "generation_category": "COMPLETE_GENERATION",
+      "tool_calls_executed": 1,
+      "tool_exit_codes": [
+        0
+      ],
+      "tool_environment_exception": [
+        ""
+      ],
+      "trusted_outcome": true,
+      "outcome_category": "TRUSTED_VERIFIED_SUCCESS",
+      "verification_record": "tox/sol/original_test_results.json",
+      "fixed_verifier": {
+        "passed": 184,
+        "failed": 0,
+        "missing": 0,
+        "resolved": true
+      },
+      "model_rate_cost_usd": 0.072891,
+      "actual_billed_cost_usd": null,
+      "initial_verifier_environment_issue": null
+    },
+    {
+      "task": "tox",
+      "record": "sol_repeat",
+      "http_status": 200,
+      "request_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "finish_reason": "tool_calls",
+      "recorded_response_status": "COMPLETE",
+      "current_response_status": "COMPLETE",
+      "generation_category": "COMPLETE_GENERATION",
+      "tool_calls_executed": 1,
+      "tool_exit_codes": [
+        0
+      ],
+      "tool_environment_exception": [
+        ""
+      ],
+      "trusted_outcome": true,
+      "outcome_category": "TRUSTED_VERIFIED_SUCCESS",
+      "verification_record": "tox/sol_repeat/original_test_results.json",
+      "fixed_verifier": {
+        "passed": 184,
+        "failed": 0,
+        "missing": 0,
+        "resolved": true
+      },
+      "model_rate_cost_usd": 0.0090126,
+      "actual_billed_cost_usd": null,
+      "initial_verifier_environment_issue": null
+    }
+  ],
+  "stored_ambiguous_pair_preparation": {
+    "eligible": false,
+    "reason": "COMPARISON_NOT_VALID",
+    "candidate_resolved": null,
+    "candidate_trusted": false,
+    "row_trusted_condition": true,
+    "per_candidate_condition_not_overridden_by_row": true
+  }
+}
