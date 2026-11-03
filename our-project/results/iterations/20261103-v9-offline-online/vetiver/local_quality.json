@@ -1,0 +1,53 @@
+{
+  "relationship": "STRICT_MULTIDIMENSIONAL_DOMINANCE",
+  "dominant_model_id": "gpt-6.1-sol",
+  "candidates": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "fixed_test_ids": [
+        "vetiver/tests/test_server.py::test_complex_prototype",
+        "vetiver/tests/test_server.py::test_get_docs",
+        "vetiver/tests/test_server.py::test_get_metadata",
+        "vetiver/tests/test_server.py::test_get_ping",
+        "vetiver/tests/test_server.py::test_get_prototype",
+        "vetiver/tests/test_server.py::test_vetiver_endpoint"
+      ],
+      "initial_f2p_failed_ids": [
+        "vetiver/tests/test_server.py::test_vetiver_endpoint"
+      ],
+      "repaired_initial_f2p_ids": [
+        "vetiver/tests/test_server.py::test_vetiver_endpoint"
+      ],
+      "initial_p2p_failed_ids": [],
+      "restored_initial_p2p_ids": [],
+      "new_p2p_regressions": [],
+      "new_f2p_regressions": [],
+      "unknown_test_ids": [],
+      "trusted_outcome": true
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "fixed_test_ids": [
+        "vetiver/tests/test_server.py::test_complex_prototype",
+        "vetiver/tests/test_server.py::test_get_docs",
+        "vetiver/tests/test_server.py::test_get_metadata",
+        "vetiver/tests/test_server.py::test_get_ping",
+        "vetiver/tests/test_server.py::test_get_prototype",
+        "vetiver/tests/test_server.py::test_vetiver_endpoint"
+      ],
+      "initial_f2p_failed_ids": [
+        "vetiver/tests/test_server.py::test_vetiver_endpoint"
+      ],
+      "repaired_initial_f2p_ids": [],
+      "initial_p2p_failed_ids": [],
+      "restored_initial_p2p_ids": [],
+      "new_p2p_regressions": [],
+      "new_f2p_regressions": [],
+      "unknown_test_ids": [],
+      "trusted_outcome": true
+    }
+  ],
+  "pair_comparable": true,
+  "auxiliary_target": "RECORDED_F2P_REPAIR_AND_P2P_RESTORATION_RELATION",
+  "formal_preference_created": false
+}

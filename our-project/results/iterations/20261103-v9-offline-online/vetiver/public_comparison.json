@@ -1,0 +1,208 @@
+{
+  "provenance": {
+    "source_id": "TRA-001",
+    "task_id": "rstudio__vetiver-python-201",
+    "repo": "rstudio/vetiver-python",
+    "episode_id": "ac80fe4c-c978-4ae8-9239-d9bce8ecdbd2",
+    "observed_through_step": 7,
+    "message_cutoff_exclusive": 16,
+    "base_commit": "6a88d238d735a87be13ff4be024fc7978ce40655",
+    "split": "train",
+    "train_eligible": true,
+    "source_license": "MIT",
+    "repository_license": "MIT",
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS"
+  },
+  "gradient_use": true,
+  "supervision_type": "STEP_LEVEL_PREFERENCE",
+  "selection_scope": "MODEL_ONLY",
+  "candidate_actions": [
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "native_effort": "low"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "native_effort": "low"
+    }
+  ],
+  "candidate_results": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "action_id": "gpt-6.1-sol:low",
+      "native_effort": "low",
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": true,
+      "model_rate_cost_usd": 0.020361,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "same_restored_filesystem": true,
+      "actual_modified_files": [
+        "vetiver/server.py"
+      ],
+      "passed": 6,
+      "failed": 0,
+      "unknown_test_ids": [],
+      "verification_record": "sol/original_test_results.json",
+      "verification_horizon": "ONE_NATIVE_AGENT_STEP",
+      "usage": {
+        "total_prompt_tokens": 6645,
+        "total_completion_tokens": 375,
+        "total_reasoning_tokens": 8,
+        "total_cached_tokens": null,
+        "total_cache_write_tokens": 6642
+      },
+      "elapsed_time_sec": 19.31432479189243,
+      "teacher_calls": 0,
+      "http_statuses": [
+        200
+      ],
+      "returned_model_ids": [
+        "gpt-6.1-sol"
+      ],
+      "agent_error": null,
+      "quality_status": "PASSED"
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "action_id": "gpt-6-luna:low",
+      "native_effort": "low",
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.0011047,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "same_restored_filesystem": true,
+      "actual_modified_files": [],
+      "passed": 5,
+      "failed": 1,
+      "unknown_test_ids": [],
+      "verification_record": "luna/original_test_results.json",
+      "verification_horizon": "ONE_NATIVE_AGENT_STEP",
+      "usage": {
+        "total_prompt_tokens": 9982,
+        "total_completion_tokens": 213,
+        "total_reasoning_tokens": null,
+        "total_cached_tokens": null,
+        "total_cache_write_tokens": null
+      },
+      "elapsed_time_sec": 16.73107808304485,
+      "teacher_calls": 0,
+      "http_statuses": [
+        200
+      ],
+      "returned_model_ids": [
+        "gpt-6-luna"
+      ],
+      "agent_error": null,
+      "quality_status": "FAILED"
+    }
+  ],
+  "native_efforts_confirmed": false,
+  "comparison_conditions": {
+    "same_observed_messages": true,
+    "same_initial_environment": true,
+    "same_agent_protocol": true,
+    "original_verifier_unchanged": true,
+    "candidate_identity_matched": true,
+    "trusted_outcomes": true
+  },
+  "expected": {
+    "step_model_preference": "gpt-6.1-sol"
+  },
+  "preference_basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+  "preparation_reason": null,
+  "candidate_outcome_observations": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "action_id": "gpt-6.1-sol:low",
+      "native_effort": "low",
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": true,
+      "model_rate_cost_usd": 0.020361,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "same_restored_filesystem": true,
+      "actual_modified_files": [
+        "vetiver/server.py"
+      ],
+      "passed": 6,
+      "failed": 0,
+      "unknown_test_ids": [],
+      "verification_record": "sol/original_test_results.json",
+      "verification_horizon": "ONE_NATIVE_AGENT_STEP",
+      "usage": {
+        "total_prompt_tokens": 6645,
+        "total_completion_tokens": 375,
+        "total_reasoning_tokens": 8,
+        "total_cached_tokens": null,
+        "total_cache_write_tokens": 6642
+      },
+      "elapsed_time_sec": 19.31432479189243,
+      "teacher_calls": 0,
+      "http_statuses": [
+        200
+      ],
+      "returned_model_ids": [
+        "gpt-6.1-sol"
+      ],
+      "agent_error": null,
+      "quality_status": "PASSED",
+      "observed_verifier_completion": true,
+      "outcome_status": "PASSED",
+      "auxiliary_target": "CANDIDATE_VERIFIER_COMPLETION_AT_RECORDED_HORIZON"
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "action_id": "gpt-6-luna:low",
+      "native_effort": "low",
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.0011047,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "same_restored_filesystem": true,
+      "actual_modified_files": [],
+      "passed": 5,
+      "failed": 1,
+      "unknown_test_ids": [],
+      "verification_record": "luna/original_test_results.json",
+      "verification_horizon": "ONE_NATIVE_AGENT_STEP",
+      "usage": {
+        "total_prompt_tokens": 9982,
+        "total_completion_tokens": 213,
+        "total_reasoning_tokens": null,
+        "total_cached_tokens": null,
+        "total_cache_write_tokens": null
+      },
+      "elapsed_time_sec": 16.73107808304485,
+      "teacher_calls": 0,
+      "http_statuses": [
+        200
+      ],
+      "returned_model_ids": [
+        "gpt-6-luna"
+      ],
+      "agent_error": null,
+      "quality_status": "FAILED",
+      "observed_verifier_completion": false,
+      "outcome_status": "FAILED",
+      "auxiliary_target": "CANDIDATE_VERIFIER_COMPLETION_AT_RECORDED_HORIZON"
+    }
+  ]
+}

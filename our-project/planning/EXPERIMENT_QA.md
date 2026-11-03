@@ -1,5 +1,11 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**11-03离线—在线研究结论**：[本轮结果](../results/iterations/20261103-v9-offline-online/review.md)。候选位置不能代替模型身份，原checkpoint参照分支按Sol/Luna真实ID组织问题、marker与输出，正常/倒序/跨任务复用结果一致。历史Dev候选顺序始终Sol在前，该错误不是八步全Sol的解释。在线三类分数全以SOL_ONLY_VERIFIED最高，17条没有双方未完成目标；这些分数不作通过率，不根据固定Luna整Episode成功标注动态中间步骤。
+
+旧pipdeptree B动作正确却关系错误，说明选择与质量关系须分别评价。C在ro-crate的双失败预测不由Sol失败多数解释（23通过、22未通过）；D的Build留出没有无改善类别，三条局部训练不能证明可学习该类。保留F2P/P2P集合与当前步骤/完整Episode质量的不同语义，动作后集合不进动作前输入。
+
+四新任务事前合法用途保持，Vetiver新增Train质量Sol1、PlasmaPy新增留出质量Sol1，原33保持总35，未出现新增等质量费用赢家。Cogent3拒绝/524与Copier余额不足403不当模型失败；仅针对已知原因补PlasmaPy Luna和Copier Sol，保存动作验证不再收费生成。必要010沿009与原目标/参数，两次实际调用的18条遗漏及补齐20条均保留；最终20/20却新四全Sol、旧费用留出变差，没有新双方向改善。不继续同类训练、不新Dev、不替Serving；未知实收/失败Token/资源USD保留。
+
 **11-03当前质量—费用定义**：[当前结果](../results/iterations/20261103-v9-local-relations/review.md)。双方向包括Sol独过时选Sol、双方均过时选较低费率Luna，Luna绝对质量独胜不是必要条件。多维局部关系分别采用F2P修复、已有P2P失败恢复与两种新增回归集合，不给测试任意权重，不覆盖正式STEP_LEVEL_PREFERENCE。music21旧P2P恢复与Sphinx新F2P优势能被表达；pipdeptree动作前收集错误仍为局部UNKNOWN，动作后双27/27可形成正式费用偏好。
 
 新bn-fit-modify三策略均官方成功；动态B17八步全Sol、切换0、Router19.046秒、参考费高于固定Sol，不建立选择收益。动态首次Sol Responses403未取得动作，改用真实支持的Chat Completions后只重启该分支；失败不当作质量结果，用量未知保留。完整任务结果不由两点离线选择替代，原Serving不晋升。

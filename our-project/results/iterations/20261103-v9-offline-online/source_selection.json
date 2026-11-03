@@ -1,0 +1,147 @@
+{
+  "selection_time": "BEFORE_ALL_MODEL_REQUESTS",
+  "tasks": [
+    {
+      "short_name": "cogent3",
+      "task_id": "cogent3__cogent3-2050",
+      "repo": "cogent3/cogent3",
+      "message_cutoff_exclusive": 30,
+      "observed_through_step": 14,
+      "sampling_purpose": "TRAIN_CANDIDATE",
+      "sampling_reason": "Newick support parsing after diagnosed function semantics",
+      "qualification_count": 29,
+      "qualification_layers": [
+        "L4"
+      ],
+      "split": "train",
+      "train_eligible": true,
+      "source_license": "BSD-3-Clause",
+      "repository_license": "BSD-3-Clause",
+      "base_commit": "7cf9ba361be9822e92989476c5fb690351481a3a",
+      "image_name": "docker.io/swerebenchv2/cogent3-cogent3:2050-7cf9ba3",
+      "ancestor_exposure": "No L1-L3 qualification; no explicit STEP002-009 task match",
+      "selected_at": "2026-11-03T13:14:40.385623+00:00",
+      "source_id": "TRA-001",
+      "source_policy_train_allowed": true,
+      "ancestor_qualification_layers": [
+        "L4"
+      ],
+      "F11_training_layers": [
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "known_STEP002_to_009_task_overlap": false,
+      "source_runtime_version": null
+    },
+    {
+      "short_name": "vetiver",
+      "task_id": "rstudio__vetiver-python-201",
+      "repo": "rstudio/vetiver-python",
+      "message_cutoff_exclusive": 16,
+      "observed_through_step": 7,
+      "sampling_purpose": "TRAIN_CANDIDATE",
+      "sampling_reason": "URL normalization after observed malformed trailing-slash endpoint",
+      "qualification_count": 28,
+      "qualification_layers": [
+        "L4"
+      ],
+      "split": "train",
+      "train_eligible": true,
+      "source_license": "MIT",
+      "repository_license": "MIT",
+      "base_commit": "6a88d238d735a87be13ff4be024fc7978ce40655",
+      "image_name": "docker.io/swerebenchv2/rstudio-vetiver-python:201-6a88d23",
+      "ancestor_exposure": "No L1-L3 qualification; no explicit STEP002-009 task match",
+      "selected_at": "2026-11-03T13:14:40.385781+00:00",
+      "source_id": "TRA-001",
+      "source_policy_train_allowed": true,
+      "ancestor_qualification_layers": [
+        "L4"
+      ],
+      "F11_training_layers": [
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "known_STEP002_to_009_task_overlap": false,
+      "source_runtime_version": null
+    },
+    {
+      "short_name": "plasmapy",
+      "task_id": "plasmapy__plasmapy-517",
+      "repo": "PlasmaPy/PlasmaPy",
+      "message_cutoff_exclusive": 34,
+      "observed_through_step": 16,
+      "sampling_purpose": "REPOSITORY_HOLDOUT",
+      "sampling_reason": "Particle argument copy after observed type rejection",
+      "qualification_count": 50,
+      "qualification_layers": [
+        "L4"
+      ],
+      "split": "train",
+      "train_eligible": true,
+      "source_license": "BSD-3-Clause",
+      "repository_license": "BSD-3-Clause",
+      "base_commit": "0a5eb2eb13d06b2cc9b758a82bcf888197c105af",
+      "image_name": "docker.io/swerebenchv2/plasmapy-plasmapy:517-0a5eb2e",
+      "ancestor_exposure": "No L1-L3 qualification; no explicit STEP002-009 task match",
+      "selected_at": "2026-11-03T13:14:40.385792+00:00",
+      "source_id": "TRA-001",
+      "source_policy_train_allowed": true,
+      "ancestor_qualification_layers": [
+        "L4"
+      ],
+      "F11_training_layers": [
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "known_STEP002_to_009_task_overlap": false,
+      "source_runtime_version": null
+    },
+    {
+      "short_name": "copier",
+      "task_id": "copier-org__copier-1597",
+      "repo": "copier-org/copier",
+      "message_cutoff_exclusive": 32,
+      "observed_through_step": 15,
+      "sampling_purpose": "REPOSITORY_HOLDOUT",
+      "sampling_reason": "Multiselect default casting after original reproduction and code read; before business edit",
+      "qualification_count": 248,
+      "qualification_layers": [
+        "L4"
+      ],
+      "split": "train",
+      "train_eligible": true,
+      "source_license": "MIT",
+      "repository_license": "MIT",
+      "base_commit": "ae49a492f4dd872b5763507ba4eed4d48a1dfc49",
+      "image_name": "docker.io/swerebenchv2/copier-org-copier:1597-ae49a49",
+      "ancestor_exposure": "No L1-L3 qualification; no explicit STEP002-009 task match",
+      "selected_at": "2026-11-03T13:16:20.379898+00:00",
+      "source_id": "TRA-001",
+      "source_policy_train_allowed": true,
+      "ancestor_qualification_layers": [
+        "L4"
+      ],
+      "F11_training_layers": [
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "known_STEP002_to_009_task_overlap": false,
+      "source_runtime_version": null
+    }
+  ],
+  "rejected_before_requests": [
+    {
+      "task_id": "pallets__werkzeug-2307",
+      "reason": "All 70 qualification records are val; no collection or gradient"
+    },
+    {
+      "task_id": "http-apis__hydrus-308",
+      "reason": "All 147 records test; no generation or gradient"
+    }
+  ]
+}

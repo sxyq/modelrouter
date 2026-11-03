@@ -1,5 +1,13 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · 离线—在线机制、真实新任务与STEP010负结果
+
+接续main `d64edb6ad07a233cc028979b65653272f0c5cffc`，[本轮入口](../results/iterations/20261103-v9-offline-online/review.md)。旧57份特征与历史A/B/C/D复用，仅补保存在线状态、新状态及必要顺序前向。B八步全Sol是三类拟合在这些表示上均把SOL_ONLY_VERIFIED排第一；17条先验7/5/5，类别分数不是通过率。训练前缀以Verify/诊断后Modify为主，在线前六步读数据与依赖失败为主；未见分词裁剪，Router没有完整当前文件字段。原continuity中reference原已省略，不存在前次分数直接进入本次Encoder的证据。候选顺序真实错误在checkpoint参照分支按模型ID处理，四次同进程结果一致；不解释旧Sol在前Dev。
+
+C排除ro-crate后46条，Sol23通过/22未通过/1未知，Luna19/25/2；最近Click早期、Build均双失败，但不能单凭邻居证明原因。D排除Build后只有三条，没有NO_LOCAL_IMPROVEMENT，故该类分数为0；局部F2P/P2P集合只能在动作后得到，不进当前输入，不训练四条辅助网络。旧pipdeptree B选对Luna却误判LUNA_ONLY_VERIFIED，旧2/2动作不等于2/2质量关系。
+
+事前Cogent3/Vetiver训练候选、PlasmaPy/Copier留出；全L4、原Train/镜像/原测试/完整历史/独立容器、教师0，不按赢家改用途。Vetiver与PlasmaPy新质量Sol2，费用0，原33保留总35；拒绝、524与余额不足403分别保留，Code Generation/凭据不改。Copier完整验证与全部请求见summary。必要STEP010两次实际调用：首次18条遗漏两条旧行；补原Serializer后从009同参数重做20条/30更新/20正确。局部目标未入梯度、Dev不选参。新四全Sol，未训练PlasmaPy原009也正确，旧pipdeptree费用反而错；旧Moto/Qiskit/Tox/mpmath为2/4、真正未见mpmath仍错。Val准确率.5526，停止同类训练、不新完整Dev、不替Serving。K2两核心证据、五RQ尚未闭环；本轮已确定执行事项见公开交付，不称技术不可行。
+
 ### 2026-11-03 · 当前局部关系、祖先范围与一次必要训练
 
 本轮完成：四新任务成对采集、集合分析、A/B/C/D固定Encoder研究、一次009训练及新bn-fit-modify官方三策略。三策略奖励均1，动态B原17条八步全Sol、Router19.046秒，费用高于固定Sol，净收益未成立。两点独立分工信号与完整收益分开。36模型请求、292442已知Token、$.28447344已知参考费，两失败请求及实收/资源费用未知；临时实验文件清理，用户其他修改不发布。

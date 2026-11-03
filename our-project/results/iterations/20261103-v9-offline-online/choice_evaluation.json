@@ -1,0 +1,156 @@
+{
+  "before_new_gradient": {
+    "006": [
+      {
+        "task": "vetiver",
+        "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+        "expected": "gpt-6.1-sol",
+        "native": "gpt-6.1-sol",
+        "native_correct": true,
+        "A": "gpt-6-luna",
+        "B": "gpt-6.1-sol",
+        "B_relation": "SOL_ONLY_VERIFIED",
+        "B_correct": true,
+        "C_pair": [
+          1,
+          0
+        ],
+        "D_relation": "SOL_DOMINATES"
+      },
+      {
+        "task": "plasmapy",
+        "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+        "expected": "gpt-6.1-sol",
+        "native": "gpt-6.1-sol",
+        "native_correct": true,
+        "A": "gpt-6-luna",
+        "B": "gpt-6-luna",
+        "B_relation": "BOTH_VERIFIED",
+        "B_correct": false,
+        "C_pair": [
+          1,
+          1
+        ],
+        "D_relation": "EQUAL_LOCAL_PROGRESS"
+      }
+    ],
+    "007": [
+      {
+        "task": "vetiver",
+        "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+        "expected": "gpt-6.1-sol",
+        "native": "gpt-6-luna",
+        "native_correct": false,
+        "A": "gpt-6-luna",
+        "B": "gpt-6.1-sol",
+        "B_relation": "SOL_ONLY_VERIFIED",
+        "B_correct": true,
+        "C_pair": [
+          1,
+          0
+        ],
+        "D_relation": "EQUAL_LOCAL_PROGRESS"
+      },
+      {
+        "task": "plasmapy",
+        "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+        "expected": "gpt-6.1-sol",
+        "native": "gpt-6-luna",
+        "native_correct": false,
+        "A": "gpt-6-luna",
+        "B": "gpt-6-luna",
+        "B_relation": "BOTH_VERIFIED",
+        "B_correct": false,
+        "C_pair": [
+          0,
+          1
+        ],
+        "D_relation": "EQUAL_LOCAL_PROGRESS"
+      }
+    ],
+    "008": [
+      {
+        "task": "vetiver",
+        "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+        "expected": "gpt-6.1-sol",
+        "native": "gpt-6-luna",
+        "native_correct": false,
+        "A": "gpt-6-luna",
+        "B": "gpt-6.1-sol",
+        "B_relation": "SOL_ONLY_VERIFIED",
+        "B_correct": true,
+        "C_pair": [
+          1,
+          0
+        ],
+        "D_relation": "SOL_DOMINATES"
+      },
+      {
+        "task": "plasmapy",
+        "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+        "expected": "gpt-6.1-sol",
+        "native": "gpt-6-luna",
+        "native_correct": false,
+        "A": "gpt-6-luna",
+        "B": "gpt-6-luna",
+        "B_relation": "BOTH_VERIFIED",
+        "B_correct": false,
+        "C_pair": [
+          0,
+          1
+        ],
+        "D_relation": "EQUAL_LOCAL_PROGRESS"
+      }
+    ],
+    "009": [
+      {
+        "task": "vetiver",
+        "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+        "expected": "gpt-6.1-sol",
+        "native": "gpt-6.1-sol",
+        "native_correct": true,
+        "A": null,
+        "B": null,
+        "B_relation": null,
+        "B_correct": false,
+        "C_pair": null,
+        "D_relation": null
+      },
+      {
+        "task": "plasmapy",
+        "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+        "expected": "gpt-6.1-sol",
+        "native": "gpt-6.1-sol",
+        "native_correct": true,
+        "A": null,
+        "B": null,
+        "B_relation": null,
+        "B_correct": false,
+        "C_pair": null,
+        "D_relation": null
+      }
+    ]
+  },
+  "after_010": [
+    {
+      "task": "vetiver",
+      "expected": "gpt-6.1-sol",
+      "native": "gpt-6.1-sol",
+      "entered_gradient": true
+    },
+    {
+      "task": "plasmapy",
+      "expected": "gpt-6.1-sol",
+      "native": "gpt-6.1-sol",
+      "entered_gradient": false
+    }
+  ],
+  "formal_new_quality": 2,
+  "formal_new_cost": 0,
+  "fixed_sol_correct": 2,
+  "fixed_luna_correct": 0,
+  "new_formal_total": 2,
+  "whole_ancestor_unseen_new_tasks": true,
+  "older_observation_ancestor_scope_not_uniform": true,
+  "selection_not_episode_success_probability": true
+}

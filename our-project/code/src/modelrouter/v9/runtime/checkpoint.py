@@ -137,17 +137,25 @@ def main():
                         answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
                     else:
                         from modelrouter.v9.training.continuation import fit_preference_reference
+                        models = ("gpt-6.1-sol", "gpt-6-luna")
+                        question_id, question = next(iter(payload["questions"].items()))
+                        questions = {question_id: dict(question, criteria={
+                            model: question["criteria"][model] for model in models
+                        })}
+                        internal = adapter.agent._to_internal(questions[question_id])
+                        marker_order = list(internal["crit"])
                         marker, features = {}, []
                         def positions(model, args):
                             marker["positions"] = args[2][0]
                         def encode(model, args, result):
                             h, p = result.last_hidden_state[0], marker["positions"]
-                            features.append((h[p[0]] - h[p[1]]).double().cpu())
+                            features.append((h[p[marker_order.index(models[0])]] -
+                                             h[p[marker_order.index(models[1])]]).double().cpu())
                         hooks = [adapter.agent.model.register_forward_pre_hook(positions),
                                  adapter.agent.model.encoder.register_forward_hook(encode)]
                         before = time.perf_counter()
                         try:
-                            _, _, usage = adapter.system_one(payload["state"], payload["questions"])
+                            _, _, usage = adapter.system_one(payload["state"], questions)
                         finally:
                             for hook in hooks:
                                 hook.remove()
@@ -159,9 +167,8 @@ def main():
                         class_scores = torch.softmax(torch.tensor(scores[0]), dim=0)
                         model_scores = torch.stack([class_scores[0], class_scores[1:].max()])
                         model_scores /= model_scores.sum()
-                        models = list(next(iter(payload["questions"].values()))["criteria"])
                         choice = models[0] if classes[0] == 0 else models[1]
-                        answers = {next(iter(payload["questions"])): {
+                        answers = {question_id: {
                             "type": "choice", "choice": choice,
                             "probabilities": dict(zip(models, model_scores.tolist())), "confidence": None,
                         }}

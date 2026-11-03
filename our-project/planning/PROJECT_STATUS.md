@@ -1,5 +1,11 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-03离线—在线迁移本轮**：[最新结果](../results/iterations/20261103-v9-offline-online/review.md)。旧bn-fit-modify八个保存状态真实GPU重放仍全选Sol；在线2014–4494 Token、未裁剪，早期读取/依赖失败与离线诊断后修改状态不同。同一Serializer与消息顺序正常，6000字符摘要未包含完整当前文件或长命令正文。去掉前次reference不改变输入；去掉continuity改变类别分数但不改变B选择。原checkpoint.py参照分支已按真实模型ID组织marker与动作；正常/倒序/跨任务复用输出一致，旧Dev本来Sol在前，不能归因于该候选位置错误。
+
+四新合法L4 Train来源事前分工：Cogent3/Vetiver训练候选、PlasmaPy/Copier仓库留出。Vetiver6/6对5/6、PlasmaPy127/127对120/127，新增质量Sol2；原33保持，共35（步骤质量19、步骤费用7、任务费用9）。Cogent3 Sol拒绝无动作与Luna524为UNKNOWN；Copier原Sol403余额不足，既有账户同一Sol模型补采36/40，Luna使用不可用apply_patch、没有源码改变，完整验证见本轮summary，异常不造赢家。原CG工程、凭据和Serving不变。
+
+新增Train质量支持必要STEP010，父009、原目标/参数不变、局部目标不入梯度。首次漏序列化两旧行，仅18条，实际记录保留；补齐后从009重新运行20条/30更新/20正确，35.712秒训练、64.598秒总段、峰值约8.35GB。新四状态全Sol，PlasmaPy独立质量选对但009本已选对，旧pipdeptree费用由Luna正确变Sol错误；Val561 Acc .5526、Loss .7008、Brier .5052、ECE .0727。没有双方向改善，不继续同类训练、不开展新完整Dev、不替Serving。K2可靠未见条件选择与完整净收益两项仍未证明，完整V9五RQ保持。
+
 **11-03局部关系与真正新任务**：[当前结果](../results/iterations/20261103-v9-local-relations/review.md)。Build、Sphinx、ro-crate、pipdeptree四任务全部资格为L4，F11只使用L1–L3，且未进入STEP002–008显式Train材料。恢复真实晚期文件与完整消息后：Build双47/54无改善；Sphinx170/175对166/175，仅Sol局部严格优势；ro-crate17/17对14/17，新增Train质量Sol1；pipdeptree双27/27，新增仓库留出费用Luna1。原31保留，共33；190候选为54通过、79未通过、57UNKNOWN。Luna断连不算质量失败，缺失用量保持未知。
 
 旧music21恢复已有P2P失败1，现在表达为辅助多维优势，不改变正式一步赢家。B原17条同一固定Encoder参照在未见ro-crate质量状态和pipdeptree同过费用状态2/2，认可质量—费用双方向价值，不要求Luna质量独胜。原生006全Sol、007/008全Luna。一次原Trainer形成009：19状态18正确，原S1固定Val561项准确率.6809→.6898，Loss/Brier/ECE变差；旧四观察1/4，但Moto/Tox在祖先L2、Qiskit在候选L3，不能统称全流程未见；真正未见mpmath仍错。新Dev选择原external_dev的bn-fit-modify，动态采用B原17条，不用Dev选参数。Serving和旧权重保持。
