@@ -8,6 +8,12 @@
 
 ## 0. 阶段入口与决策规则
 
+**11-03状态条件本轮证据**：[执行记录](../results/iterations/20261103-v9-state-conditions/review.md)。006→007共同margin方向占88.96%，组件交换主要随Encoder，不唯一归因训练；共享scalar bias相减抵消。单一ridge=1线性对照训练13/16、按task整体留出3/16，质量2/12/费用1/4正确，不足替换正式Router。相同task多个截止不能当独立泛化。
+
+两新来源事前选定Trestle入梯度/Qiskit留出：真实原55/228范围得到Luna等质量费用1及Sol质量1，累计28偏好/19步骤，许可与原Train保持，未知phase不改为Modify。唯一方向为原预算当前工具/最近失败反馈取舍，旧17失败行72→74；原Trainer007父、17状态三轮27更新形成008训练17/17、Sol7/Luna10，但Moto/Qiskit仍0/2。Val Accuracy降至0.6809，其余三指标改善；新样本/继续训练/表示共同变化，不能单独归因。原温度加载范围处理保留，概率校准未知。
+
+GPU真实缺口在原checkpoint用finally清理，异常不成为正常选择，无额外测试或资源系统。训练出现分工后，按当前要求实际完成一个新的独立git-multibranch三策略官方Dev，不另设独立状态优于固定模型的额外前置条件。Sol reward1、Luna/动态008 CUDA reward0；动态4步全Luna、无切换/fallback，Router16.135秒，失败更便宜不能称收益。22完整请求/211745Token/0.21791663USD参考费，实收/资源费未知；路由后GPU949MiB/0%，未取得动态峰值。不追加第二调整、参数扫描或大批量Dev，不新增Q-ID，不晋升Serving，本轮P0–P5已实际执行。
+
 **11-03恒选原因与成本本轮已执行**：[执行记录](../results/iterations/20261103-v9-separation-cost/review.md)完成旧15逐项目标/概率/阶段分析，12任务/11仓库、质量11/费用4；14共同状态Sol概率全部下降却无排名变化，15序列无窗口截断。测量特征秩14，不把cosine关系当不可分证明。正式Adapter复用laya.load与SDPA，CPU初始化27.817→4.979秒、前向约18–20→12–13秒；原Checkpoint客户端复用GPU锁、每步释放，STEP007复用总段0.985–1.328秒，无fallback，不干预Serving。
 
 两个独立Train仓库Planet/Moto取得原23及176范围的Sol质量目标2，累计26偏好/17步骤，Moto按事前决定不参与梯度；新phase未知、Inspect/Effort/K3仍0。只调整Encoder参与更新，STEP007原Trainer三轮24更新后17状态全Luna，训练7/16→9/16但Sol7目标全部选错，未参与Moto也选错；Val准确率略升但Loss/Brier/ECE变差。遵守至多一个训练方向，无Dev调参；没有状态分工，不扩大新Dev。4完整请求/66709Token/0.1201328USD参考费，实收未知；本轮指定执行完成，研究负结果不等于技术不可行，不另留待跑本轮菜单或新增Q-ID。

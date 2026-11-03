@@ -1,5 +1,15 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-03 · STEP008训练分工成立、独立泛化仍未成立
+
+接续main `e20514ff033779304ab215052e6dd789c743eda6`；[本轮结果](../results/iterations/20261103-v9-state-conditions/review.md)。同17状态的006/007组件交换显示margin变化共同方向占88.96%，主要随Encoder改变；共享scalar bias在候选差中抵消，不是原因。线性原Encoder对照训练13/16、按任务整体留出3/16，低于固定Luna9/16，不替生产。
+
+新Trestle/Qiskit原Train及许可明确，原范围分别Sol/Luna55/55对55/55、228/228对226/228，新增Luna等质量费用1、Sol质量1。累计28偏好/19步骤，Inspect/Effort/K3仍0；来源phase未知。Trestle事前入梯度，Moto/Qiskit事前留出。
+
+唯一表示调整是在原字符预算保留当前工具及最近失败反馈，相关失败行72→74，长命令未完整恢复。STEP008沿原Trainer/007父训练17状态、三轮27更新、51.845秒、峰值8.35GB，仅保存服务器e03；训练10/17全Luna→17/17 Sol7/Luna10，Moto/Qiskit0/2、固定Sol2/2。Val561 Accuracy0.6809较007下降，Loss0.6003/Brier0.4131/ECE0.0564改善；不能唯一归因表示调整。原Laya温度超支持范围沿原加载器采用0.5，概率校准未知。
+
+原checkpoint GPU范围增加finally清理，异常传播、原锁释放，无新服务/备用选择。新独立git-multibranch三策略原Harbor/镜像/官方Evaluator终局为Sol1、Luna0、动态008 CUDA0；动态4步全Luna、无切换/fallback，Router16.135秒含初始化6.570/前向2.518/迁移6.322，复用1.935/1.085/1.174秒。参考费Sol0.0471975/Luna0.0051949/动态0.00177993USD，失败任务更便宜不是收益；动态峰值未知，路由后单卡949MiB/0%。22完整请求/211745Token/0.21791663USD参考费，实收及资源费未知。Serving未重启/不替权重，用户Trainer/tests/账本/历史删除保留；本轮P0–P5已执行，不重跑历史比较、不追加参数方向或大批量Dev。
+
 ## 2026-11-03 · STEP007全Luna负结果与正式推理提速
 
 接续main `407e4ff3fa73b5bcedce02f8381a6ad915833fa7`；[本轮执行记录](../results/iterations/20261103-v9-separation-cost/review.md)。旧15目标来自12任务/11仓库，质量11/等质量费用4，3652–4302Token均未被5120窗口截断；共同14状态Sol概率全下降、平均0.014571、排名变化0。Encoder特征中心化秩14，不证明不可分，未见按赢家聚集；原混合比例及Encoder不更新都不是充分原因。

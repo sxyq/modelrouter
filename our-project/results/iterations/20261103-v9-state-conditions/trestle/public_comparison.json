@@ -1,0 +1,93 @@
+{
+  "task_id": "oscal-compass__compliance-trestle-1578",
+  "trajectory_id": "520841ad-1791-41ff-bb4a-826ea99ef347",
+  "repo": "oscal-compass/compliance-trestle",
+  "base_commit": "dbe8e051cd4ad2ab073438a4e837356924d6e062",
+  "trajectory_base_commit": null,
+  "docker_image": "docker.io/swerebenchv2/oscal-compass-compliance-trestle:1578-dbe8e05",
+  "split": "train",
+  "train_eligible": true,
+  "trajectory_license": "CC-BY-4.0",
+  "repository_license": "Apache-2.0",
+  "message_cutoff_exclusive": 37,
+  "phase": null,
+  "source_sampling_stage": "BEFORE_FIRST_BUSINESS_EDIT",
+  "gradient_use": true,
+  "evidence_scope": "TRAIN_SOURCE_DOCKER_VALIDATED",
+  "official_episode_score": false,
+  "teacher_calls": 0,
+  "original_fail_to_pass_count": 1,
+  "original_pass_to_pass_count": 54,
+  "verification_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/trestle/tasks/csv_to_oscal_cd_test.py",
+  "before_passed": 54,
+  "reference_passed": 55,
+  "original_test_status_changes": {
+    "tests/trestle/tasks/csv_to_oscal_cd_test.py::test_execute_correct_rule_key": {
+      "before": "FAILED",
+      "reference": "PASSED",
+      "sol": "PASSED",
+      "luna": "PASSED"
+    }
+  },
+  "complete_original_statuses_retained_privately": true,
+  "winner": "gpt-6-luna",
+  "preference_basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+  "candidates": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "alias_mapping_applied": false,
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "resolved": true,
+      "passed": 55,
+      "failed": [],
+      "missing": [],
+      "modified_business_files": [
+        "trestle/tasks/csv_to_oscal_cd.py"
+      ],
+      "prompt_tokens": 29353,
+      "completion_tokens": 188,
+      "reasoning_tokens_already_in_completion": 8,
+      "cached_tokens": null,
+      "cache_write_tokens": 29350,
+      "model_reference_cost_usd": 0.075261,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol.md",
+      "actual_billed_cost_usd": null,
+      "elapsed_seconds": 38.691978582995944
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "alias_mapping_applied": false,
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "resolved": true,
+      "passed": 55,
+      "failed": [],
+      "missing": [],
+      "modified_business_files": [
+        "trestle/tasks/csv_to_oscal_cd.py"
+      ],
+      "prompt_tokens": 23488,
+      "completion_tokens": 424,
+      "reasoning_tokens_already_in_completion": 0,
+      "cached_tokens": 0,
+      "cache_write_tokens": null,
+      "model_reference_cost_usd": 0.0025608,
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "actual_billed_cost_usd": null,
+      "elapsed_seconds": 66.21068812499288
+    }
+  ],
+  "source_link": {
+    "instance_id_matches": true,
+    "repo_matches": true,
+    "base_commit_matches": null,
+    "task_base_commit": "dbe8e051cd4ad2ab073438a4e837356924d6e062",
+    "trajectory_base_commit": null,
+    "reference_patch_matches": true,
+    "identity_status": "EXACT_ID_VERSION_UNREPORTED"
+  },
+  "historical_reproduction_reexecuted": false
+}

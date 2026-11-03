@@ -103,27 +103,29 @@ def main():
         gpu_wait_ms, transfer_ms = 0.0, 0.0
         lock = open(payload["gpu_lock_path"], "a") if device == "cuda" else nullcontext()
         with lock as lock_file:
-            if device == "cuda":
-                from laya.agent import _cuda_amp_dtype
-                before = time.perf_counter()
-                fcntl.flock(lock_file, fcntl.LOCK_EX)
-                gpu_wait_ms = (time.perf_counter() - before) * 1000
-                before = time.perf_counter()
-                adapter.agent.model.to("cuda")
-                adapter.agent.device = torch.device("cuda")
-                adapter.agent.dtype = _cuda_amp_dtype(adapter.agent.cfg.get("amp_dtype", "fp16"))
-                adapter.agent.amp_enabled = True
-                transfer_ms += (time.perf_counter() - before) * 1000
-            with torch.inference_mode():
-                answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
-            if device == "cuda":
-                before = time.perf_counter()
-                adapter.agent.model.to("cpu")
-                adapter.agent.device = torch.device("cpu")
-                adapter.agent.dtype = torch.float32
-                adapter.agent.amp_enabled = False
-                torch.cuda.empty_cache()
-                transfer_ms += (time.perf_counter() - before) * 1000
+            try:
+                if device == "cuda":
+                    from laya.agent import _cuda_amp_dtype
+                    before = time.perf_counter()
+                    fcntl.flock(lock_file, fcntl.LOCK_EX)
+                    gpu_wait_ms = (time.perf_counter() - before) * 1000
+                    before = time.perf_counter()
+                    adapter.agent.model.to("cuda")
+                    adapter.agent.device = torch.device("cuda")
+                    adapter.agent.dtype = _cuda_amp_dtype(adapter.agent.cfg.get("amp_dtype", "fp16"))
+                    adapter.agent.amp_enabled = True
+                    transfer_ms += (time.perf_counter() - before) * 1000
+                with torch.inference_mode():
+                    answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
+            finally:
+                if device == "cuda":
+                    before = time.perf_counter()
+                    adapter.agent.model.to("cpu")
+                    adapter.agent.device = torch.device("cpu")
+                    adapter.agent.dtype = torch.float32
+                    adapter.agent.amp_enabled = False
+                    torch.cuda.empty_cache()
+                    transfer_ms += (time.perf_counter() - before) * 1000
         print(json.dumps({"answers": answers, "decision_latency_ms": latency, "usage": usage,
                           "initialization_latency_ms": initialization_ms, "process_reused": reused,
                           "device": device, "gpu_wait_ms": gpu_wait_ms, "device_transfer_ms": transfer_ms,

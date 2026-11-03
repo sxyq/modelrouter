@@ -254,12 +254,22 @@ def message_chars(messages):
 
 def recent_tools(state, char_limit):
     parts, remaining = [], char_limit
-    for step in reversed(visible_history(state)):
+    history = list(reversed(visible_history(state)))
+    failure = next((step for step in history if step.tool_exit_code != 0), None)
+    reserve_failure = bool(history and failure is not None and failure is not history[0])
+    if reserve_failure:
+        history = [history[0], failure] + [step for step in history[1:] if step is not failure]
+    for index, step in enumerate(history):
+        allowance = remaining // 2 if index == 0 and reserve_failure else remaining
         heading = (f"step={step.step_index} phase={step.phase} exit={step.tool_exit_code}\n"
                    f"command={step.tool_action[:256]}\noutput=")
-        room = max(0, remaining - len(heading) - 1)
-        output = step.tool_observation[-room:] if room else ""
-        part = (heading + output)[:remaining]
+        room = max(0, allowance - len(heading) - 1)
+        highlights = "\n".join(line for line in step.tool_observation.splitlines() if re.search(
+            r"^(?:E\s|FAILED |ERROR |FAIL:)|(?:Error|Exception):|command not found", line)) if step.tool_exit_code != 0 else ""
+        highlights = highlights[:room // 2]
+        tail_room = max(0, room - len(highlights) - bool(highlights))
+        output = highlights + ("\n" if highlights else "") + (step.tool_observation[-tail_room:] if tail_room else "")
+        part = (heading + output)[:allowance]
         parts.append(part)
         remaining -= len(part) + 1
         if remaining <= 0:

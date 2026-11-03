@@ -1,0 +1,120 @@
+{
+  "iteration_id": "20261103-v9-state-conditions",
+  "parent_commit": "e20514ff033779304ab215052e6dd789c743eda6",
+  "completed_priorities": [
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5"
+  ],
+  "total_preferences": 28,
+  "task_preferences": 9,
+  "step_preferences": 19,
+  "new_quality_preferences": 1,
+  "new_equal_quality_cost_preferences": 1,
+  "training_step_preferences": 17,
+  "training_target_counts": {
+    "gpt-6.1-sol": 7,
+    "gpt-6-luna": 10
+  },
+  "training_correct_before": 10,
+  "training_correct_after": 17,
+  "training_selection_counts": {
+    "gpt-6-luna": 10,
+    "gpt-6.1-sol": 7
+  },
+  "heldout_train_observations": [
+    {
+      "index": 17,
+      "task_id": "getmoto__moto-7208",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.3809,
+        "gpt-6-luna": 0.6191
+      },
+      "correct": false,
+      "usage": {
+        "input_tokens": 4229,
+        "output_tokens": 0,
+        "state_tokens": 4123,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 136.53029315173626,
+      "reported_inference_ms": 135.8312163501978,
+      "scope": "HELD_OUT_TRAIN_TASK",
+      "fallback_used": false
+    },
+    {
+      "index": 18,
+      "task_id": "qiskit__qiskit-11466",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4429,
+        "gpt-6-luna": 0.5571
+      },
+      "correct": false,
+      "usage": {
+        "input_tokens": 3818,
+        "output_tokens": 0,
+        "state_tokens": 3712,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 113.63872326910496,
+      "reported_inference_ms": 112.87546530365944,
+      "scope": "HELD_OUT_TRAIN_TASK",
+      "fallback_used": false
+    }
+  ],
+  "heldout_correct": 0,
+  "heldout_fixed_sol_correct": 2,
+  "heldout_fixed_luna_correct": 0,
+  "inspect_targets": 0,
+  "native_effort_targets": 0,
+  "k3_targets": 0,
+  "training_run_id": "V9_LAYA_STEP_008",
+  "training_adjustment": "SAME_CHAR_BUDGET_RECENT_FAILURE_AND_CURRENT_TOOL_CONTEXT",
+  "training_seconds": 51.84486693330109,
+  "optimizer_updates": 27,
+  "gpu_peak_training_bytes": 8350877184,
+  "gpu_exception_cleanup_applied": true,
+  "injected_exception_tests": 0,
+  "dynamic_gpu_peak_memory_bytes": null,
+  "post_route_gpu_observation": {
+    "sample_count": 975,
+    "server_local_started_at": "2026-11-03 16:04:16.827",
+    "server_local_finished_at": "2026-11-03 16:07:31.866",
+    "whole_card_memory_mib": 949,
+    "whole_card_utilization_percent": 0,
+    "scope": "AFTER_ALL_DYNAMIC_ROUTING_CALLS_NOT_FORWARD_PEAK_OR_ENERGY_MEASUREMENT"
+  },
+  "new_official_dev_episodes": 3,
+  "dev_successes": {
+    "fixed_sol": 1,
+    "fixed_luna": 0,
+    "dynamic": 0
+  },
+  "requests": 22,
+  "complete_requests": 22,
+  "prompt_tokens": 200304,
+  "completion_tokens": 11441,
+  "reported_tokens": 211745,
+  "model_reference_cost_usd": 0.21791663,
+  "actual_billed_cost_usd": null,
+  "resource_cost_usd": null,
+  "requested_returned_models_matched": true,
+  "alias_requests": 0,
+  "teacher_calls": 0,
+  "dynamic_quality_cost_benefit_proven": false,
+  "serving_restarted": false,
+  "serving_weights_replaced": false,
+  "confidence_caveat": "Original Laya loader clamps choice:11+ temperature 0.10058280825614929 to 0.5; ranking unaffected by shared positive temperature, probability calibration not established.",
+  "single_adjustment_causal_attribution": false
+}

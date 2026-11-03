@@ -1,5 +1,15 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · 状态条件本轮完成：008拟合17/17、独立两个状态0/2、新Dev失败
+
+接续main `e20514ff033779304ab215052e6dd789c743eda6`；[恢复入口](../results/iterations/20261103-v9-state-conditions/review.md)及同目录summary.json。P0–P5实际执行，不重跑006/007训练或历史同截止比较。006/007相同17状态组件交换：共同margin变化占88.96%，Encoder均值贡献-0.615277/Head-0.015955；共享最终bias抵消。单一原Encoder线性对照训练13/16、task整体留出3/16，Moto错误，不替生产。
+
+Trestle/Qiskit事前按来源/故障选择，原Train/轨迹CC-BY-4.0/仓库Apache-2.0、原镜像实际base一致，轨迹运行Git版本仍未知。原范围55/228下新Luna费用目标1和Sol质量目标1，累计28偏好/19步骤；完整材料保留私密目录，公开两份public_comparison。未知phase不造Modify，历史mock CSV未执行。Trestle入梯度，Moto/Qiskit事前留出；Qiskit标签在训练时尚未知，不重训。
+
+唯一表示调整原字符预算内保留当前工具/最近失败反馈，旧17相关失败行72→74，非完整历史。008从007-e03沿原Trainer/CUDA AMP完成17目标三轮27更新、51.845秒/峰值8.35GB，仅e03实体留服务器；训练10/17全Luna→17/17 Sol7/Luna10，独立Moto/Qiskit0/2、固定Sol2/2。Val561 Acc0.6809/Loss0.6003/Brier0.4131/ECE0.0564，Acc下降；旧加载器温度0.10058沿原范围取0.5，概率校准未知。不得把拟合改善唯一归因表示。
+
+checkpoint原GPU范围finally清理CPU/AMP/显存，异常传播、原锁释放。新git-multibranch原Harbor/镜像/Evaluator三策略Sol1/Luna0/动态008 CUDA0；动态4步全Luna、切换/fallback/Provider异常0，Router16.135秒，首次11.940、复用1.935/1.085/1.174秒；参考费0.0471975/0.0051949/0.00177993USD，失败少步骤不称收益。两失败原404及部署问题保存，不人为改Evaluator。路由后975点GPU949MiB/0%，无动态峰值。22完整请求/211745Token/0.21791663USD参考费，实收及资源费未知。Serving及用户修改保持，不额外训练/调参/扩Dev；源码、四规划和脱敏结果定向发布，临时脚本清理，无未来调度。
+
 ### 2026-11-03 · 原任务继续完成：CPU/GPU提速、两独立标签、STEP007全Luna
 
 接续main `407e4ff3fa73b5bcedce02f8381a6ad915833fa7`；[执行记录](../results/iterations/20261103-v9-separation-cost/review.md)。旧15步骤来自12任务/11仓库，质量11/等质量费用4；共同14状态Sol概率全下降、排名0变化，窗口截断0，原canonical字符预算仍存在。特征中心化秩14，不声称数学不可分；原64混合目标及Encoder不更新都不是恒选的充分解释。
