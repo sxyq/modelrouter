@@ -1,0 +1,84 @@
+{
+  "task_id": "getmoto__moto-7208",
+  "repo": "getmoto/moto",
+  "base_commit": "624de34d82a1b2c521727b14a2173380e196f1d8",
+  "image_name": "docker.io/swerebenchv2/getmoto-moto:7208-624de34",
+  "source_license": "CC-BY-4.0",
+  "repository_license": "Apache-2.0",
+  "split": "train",
+  "f2p_count": 3,
+  "p2p_count": 173,
+  "message_cutoff_exclusive": 24,
+  "gradient_use": false,
+  "trajectory_runtime_git_version_reported": false,
+  "outcomes": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "passed": 176,
+      "resolved": true,
+      "failed_ids": [],
+      "missing_ids": [],
+      "command_exit_code": 1,
+      "outside_scope_failed_ids": [
+        "tests/test_dynamodb/test_dynamodb.py::test_list_table_tags",
+        "tests/test_dynamodb/test_dynamodb.py::test_list_table_tags_empty",
+        "tests/test_dynamodb/test_dynamodb.py::test_list_table_tags_paginated",
+        "tests/test_dynamodb/test_dynamodb.py::test_transact_write_items_put_conditional_expressions",
+        "tests/test_dynamodb/test_dynamodb.py::test_transact_write_items_failure__return_item",
+        "tests/test_dynamodb/test_dynamodb.py::test_describe_backup_for_non_existent_backup_raises_error",
+        "tests/test_dynamodb/test_dynamodb.py::test_describe_backup",
+        "tests/test_dynamodb/test_dynamodb.py::test_delete_non_existent_backup_raises_error",
+        "tests/test_dynamodb/test_dynamodb.py::test_delete_backup"
+      ],
+      "model_rate_cost_usd": 0.035756,
+      "elapsed_seconds": 48.58565054193605,
+      "generation_calls": 1,
+      "tool_calls": 1,
+      "teacher_calls": 0,
+      "changed_business_files": [
+        "moto/dynamodb/models/table.py"
+      ]
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "passed": 175,
+      "resolved": false,
+      "failed_ids": [
+        "tests/test_dynamodb/test_dynamodb_table_with_range_key.py::test_query_pagination"
+      ],
+      "missing_ids": [],
+      "command_exit_code": 1,
+      "outside_scope_failed_ids": [
+        "tests/test_dynamodb/test_dynamodb.py::test_list_table_tags",
+        "tests/test_dynamodb/test_dynamodb.py::test_list_table_tags_empty",
+        "tests/test_dynamodb/test_dynamodb.py::test_list_table_tags_paginated",
+        "tests/test_dynamodb/test_dynamodb.py::test_transact_write_items_put_conditional_expressions",
+        "tests/test_dynamodb/test_dynamodb.py::test_transact_write_items_failure__return_item",
+        "tests/test_dynamodb/test_dynamodb.py::test_describe_backup_for_non_existent_backup_raises_error",
+        "tests/test_dynamodb/test_dynamodb.py::test_describe_backup",
+        "tests/test_dynamodb/test_dynamodb.py::test_delete_non_existent_backup_raises_error",
+        "tests/test_dynamodb/test_dynamodb.py::test_delete_backup"
+      ],
+      "model_rate_cost_usd": 0.0011331,
+      "elapsed_seconds": 52.753262499929406,
+      "generation_calls": 1,
+      "tool_calls": 1,
+      "teacher_calls": 0,
+      "changed_business_files": [
+        "moto/dynamodb/models/table.py"
+      ]
+    }
+  ],
+  "winner": "gpt-6.1-sol",
+  "preference_basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+  "evidence_scope": "TRAIN_SOURCE_DOCKER_VALIDATED_NOT_HARBOR_OFFICIAL_EPISODE",
+  "source_link": {
+    "instance_id_matches": true,
+    "repo_matches": true,
+    "base_commit_matches": null,
+    "task_base_commit": "624de34d82a1b2c521727b14a2173380e196f1d8",
+    "trajectory_base_commit": null,
+    "reference_patch_matches": true,
+    "identity_status": "EXACT_ID_VERSION_UNREPORTED"
+  }
+}

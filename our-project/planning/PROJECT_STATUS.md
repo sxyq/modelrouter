@@ -1,5 +1,15 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-03 · STEP007全Luna负结果与正式推理提速
+
+接续main `407e4ff3fa73b5bcedce02f8381a6ad915833fa7`；[本轮执行记录](../results/iterations/20261103-v9-separation-cost/review.md)。旧15目标来自12任务/11仓库，质量11/等质量费用4，3652–4302Token均未被5120窗口截断；共同14状态Sol概率全下降、平均0.014571、排名变化0。Encoder特征中心化秩14，不证明不可分，未见按赢家聚集；原混合比例及Encoder不更新都不是充分原因。
+
+正式Adapter沿现有laya.load/SDPA原位改动，CPU初始化27.817→4.979秒，两旧状态前向17.984/20.216→12.455/13.395秒、概率不变。原Checkpoint客户端沿现有共享GPU锁逐步迁移并释放GPU，新STEP007首次总段12.282秒、复用0.985–1.328秒，fallback=false；不把0.110–0.128秒前向单段当完整成本。Serving未重启、权重未替换。
+
+Planet553及Moto7208原Train/许可明确，独立原镜像与固定原验证范围得到Sol23/23对Luna22/23、Sol176/176对Luna175/176，两独立仓库质量目标Sol2。Moto另9个范围外凭据相关失败单列；不是Harbor官方完整Episode。累计26偏好=任务9/步骤17，本轮16参与梯度（Sol7/Luna9），Moto事前指定不参与；原79行保留，Inspect/实际Effort/K3仍0，新来源phase未知。
+
+STEP007原Trainer从STEP006-e03完成Encoder/Head共同更新，三轮24次、47.41秒、峰值8.36GB，只保存e03服务器实体。训练7/16→9/16，9个Luna目标正确切换但7个Sol目标错误切换，包含Moto在内17状态全Luna；Moto正确→错误。Val561 Accuracy0.6898→0.6916，Loss0.5972→0.6217、Brier0.4107→0.4311、ECE0.0537→0.1109。正确数变化只是多数类别偏置改变，没有状态分工，按本轮条件不扩大新Dev、不追加训练方向，动态收益未证。4完整请求/66709报告Token/0.1201328USD模型参考费，实收/资源费/物理后端权重身份未知。两源码、四规划及脱敏结果定向发布；原数据、失败、权重与用户修改保留，临时文件清理，不创建未来调度。
+
 ## 2026-11-03 · 独立 Argo 质量目标与 STEP006 CPU 更新
 
 接续main `d2c492b36803314442e2bd20a960c234458e768f`；[本轮记录](../results/iterations/20261103-v9-independent-train/review.md)。Argo4594 cutoff26 新仓库真实比较 Sol890/890、Luna889/890，Luna载荷解码使原TestController失败；新增合法质量目标Sol1。PrettyTable新cutoff8双方191/193，无目标，未重复旧cutoff12。累计24偏好/79行、步骤15，原观察轨迹不因新比较自动变为偏好。Argo原镜像、同版本原生Go及固定F2P/P2P890实际可运行，整条go命令另有范围外失败，单独报告，不称Harbor成绩。

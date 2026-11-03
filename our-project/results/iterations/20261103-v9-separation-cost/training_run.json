@@ -1,0 +1,451 @@
+{
+  "run_id": "V9_LAYA_STEP_007",
+  "parent_checkpoint_id": "V9_LAYA_STEP_006-e03",
+  "trainer": "laya.train.train_model",
+  "training_items": 16,
+  "held_out_task": "getmoto__moto-7208",
+  "teacher_calls": 0,
+  "adjustment": "ENCODER_AND_HEAD_UPDATE_INSTEAD_OF_HEAD_ONLY",
+  "status": "completed",
+  "parent_new_states": [
+    {
+      "index": 15,
+      "task_id": "planetlabs__planet-client-python-553",
+      "phase": null,
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.5787,
+        "gpt-6-luna": 0.4213
+      },
+      "inference_ms": 2247.4415078759193,
+      "reported_ms": 2244.6564454585314,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 16,
+      "task_id": "getmoto__moto-7208",
+      "phase": null,
+      "expected": null,
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.5897,
+        "gpt-6-luna": 0.4103
+      },
+      "inference_ms": 127.22992710769176,
+      "reported_ms": 126.43419578671455,
+      "fallback_used": false,
+      "scope": "HELD_OUT_TRAIN_TASK"
+    }
+  ],
+  "config": {
+    "epochs": 3,
+    "micro_batch": 2,
+    "grad_accum": 1,
+    "encoder_lr": 2.5e-05,
+    "head_lr": 0.0001,
+    "min_lr": 1e-06,
+    "weight_decay": 0.01,
+    "grad_clip": 1.0,
+    "loss": "soft-ce",
+    "rl_samples": 4,
+    "sigma_start": 0.4,
+    "sigma_end": 0.1,
+    "w_sph": 0.75,
+    "w_rps": 1.0,
+    "shuffle_options": [
+      "choice"
+    ],
+    "option_layout": null,
+    "freeze_encoder": false,
+    "calib_max": 400,
+    "calib_frac": 0.0,
+    "calib_seed": 20260922,
+    "seed": 42,
+    "max_len": 5120,
+    "head_max_len": 512,
+    "amp": true,
+    "gradient_checkpointing": true,
+    "log_every": 8,
+    "label_smoothing": 0.0,
+    "text_column": "text",
+    "label_column": "label",
+    "question_id": "label",
+    "instructions": null,
+    "eval_data": null,
+    "target_error": 0.1,
+    "min_abstain_n": 10
+  },
+  "optimizer_updates": 24,
+  "encoder_updated": true,
+  "device": "cuda",
+  "validation_items": 561,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.7473047971725464
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6856545954942703
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6676749289035797
+    }
+  ],
+  "training_losses": [
+    0.7473047971725464,
+    0.6856545954942703,
+    0.6676749289035797
+  ],
+  "validation": {
+    "S1": {
+      "items": 561,
+      "loss": 0.6217,
+      "accuracy": 0.6916,
+      "mean_confidence": 0.5836,
+      "ece": 0.1109,
+      "brier": 0.4311,
+      "brier_top1": 0.2156,
+      "by_type": {
+        "choice": {
+          "items": 561,
+          "loss": 0.6217,
+          "accuracy": 0.6916,
+          "mean_confidence": 0.5836,
+          "ece": 0.1109,
+          "brier": 0.4311,
+          "brier_top1": 0.2156
+        }
+      },
+      "num_classes": 2,
+      "majority_class": 1,
+      "majority_baseline_accuracy": 0.5258,
+      "majority_balanced_accuracy": 0.5,
+      "prior_baseline_loss": 0.6918,
+      "balanced_accuracy": 0.6907,
+      "macro_f1": 0.6907,
+      "beats_majority_baseline": true,
+      "gold_counts": {
+        "0": 266,
+        "1": 295
+      },
+      "pred_counts": {
+        "0": 265,
+        "1": 296
+      },
+      "confusion_matrix": {
+        "tn": 179,
+        "fp": 87,
+        "fn": 86,
+        "tp": 209
+      }
+    },
+    "all": {
+      "items": 561,
+      "loss": 0.6217,
+      "accuracy": 0.6916,
+      "mean_confidence": 0.5836,
+      "ece": 0.1109,
+      "brier": 0.4311,
+      "brier_top1": 0.2156,
+      "by_type": {
+        "choice": {
+          "items": 561,
+          "loss": 0.6217,
+          "accuracy": 0.6916,
+          "mean_confidence": 0.5836,
+          "ece": 0.1109,
+          "brier": 0.4311,
+          "brier_top1": 0.2156
+        }
+      },
+      "num_classes": 2,
+      "majority_class": 1,
+      "majority_baseline_accuracy": 0.5258,
+      "majority_balanced_accuracy": 0.5,
+      "prior_baseline_loss": 0.6918,
+      "balanced_accuracy": 0.6907,
+      "macro_f1": 0.6907,
+      "beats_majority_baseline": true,
+      "gold_counts": {
+        "0": 266,
+        "1": 295
+      },
+      "pred_counts": {
+        "0": 265,
+        "1": 296
+      },
+      "confusion_matrix": {
+        "tn": 179,
+        "fp": 87,
+        "fn": 86,
+        "tp": 209
+      }
+    }
+  },
+  "validation_skipped": {},
+  "checkpoint_path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_007/checkpoints/epoch_03",
+  "checkpoint_id": "V9_LAYA_STEP_007-e03",
+  "new_forwards": [
+    {
+      "index": 0,
+      "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+      "phase": "verify",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4754,
+        "gpt-6-luna": 0.5246
+      },
+      "inference_ms": 110.99875718355179,
+      "reported_ms": 110.41420325636864,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 1,
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "phase": "verify",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4765,
+        "gpt-6-luna": 0.5235
+      },
+      "inference_ms": 124.01477247476578,
+      "reported_ms": 123.2374869287014,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 2,
+      "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+      "phase": "verify",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4928,
+        "gpt-6-luna": 0.5072
+      },
+      "inference_ms": 117.89005436003208,
+      "reported_ms": 117.12733097374439,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 3,
+      "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+      "phase": "recover",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4816,
+        "gpt-6-luna": 0.5184
+      },
+      "inference_ms": 108.81741531193256,
+      "reported_ms": 108.02912153303623,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 4,
+      "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+      "phase": "verify",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4928,
+        "gpt-6-luna": 0.5072
+      },
+      "inference_ms": 137.19944283366203,
+      "reported_ms": 136.44550181925297,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 5,
+      "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+      "phase": "verify",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4898,
+        "gpt-6-luna": 0.5102
+      },
+      "inference_ms": 115.16544222831726,
+      "reported_ms": 114.43018913269043,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 6,
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "phase": "verify",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4826,
+        "gpt-6-luna": 0.5174
+      },
+      "inference_ms": 111.81716434657574,
+      "reported_ms": 111.07553541660309,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 7,
+      "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+      "phase": "verify",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4775,
+        "gpt-6-luna": 0.5225
+      },
+      "inference_ms": 122.51762486994267,
+      "reported_ms": 121.78211472928524,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 8,
+      "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+      "phase": "verify",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4754,
+        "gpt-6-luna": 0.5246
+      },
+      "inference_ms": 116.36246368288994,
+      "reported_ms": 115.65553955733776,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 9,
+      "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+      "phase": "verify",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4765,
+        "gpt-6-luna": 0.5235
+      },
+      "inference_ms": 115.21161533892155,
+      "reported_ms": 114.49744366109371,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 10,
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "phase": "modify",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4724,
+        "gpt-6-luna": 0.5276
+      },
+      "inference_ms": 123.51051159203053,
+      "reported_ms": 122.77092412114143,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 11,
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "phase": "verify",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4765,
+        "gpt-6-luna": 0.5235
+      },
+      "inference_ms": 119.14671212434769,
+      "reported_ms": 118.41713637113571,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 12,
+      "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+      "phase": "verify",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4816,
+        "gpt-6-luna": 0.5184
+      },
+      "inference_ms": 114.64047990739346,
+      "reported_ms": 113.82884532213211,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 13,
+      "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+      "phase": "modify",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4754,
+        "gpt-6-luna": 0.5246
+      },
+      "inference_ms": 109.32360403239727,
+      "reported_ms": 108.61059464514256,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 14,
+      "task_id": "argoproj__argo-4594",
+      "phase": null,
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4959,
+        "gpt-6-luna": 0.5041
+      },
+      "inference_ms": 129.3669492006302,
+      "reported_ms": 128.65191884338856,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 15,
+      "task_id": "planetlabs__planet-client-python-553",
+      "phase": null,
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4939,
+        "gpt-6-luna": 0.5061
+      },
+      "inference_ms": 108.09674672782421,
+      "reported_ms": 107.39166103303432,
+      "fallback_used": false,
+      "scope": "TRAIN_TARGET"
+    },
+    {
+      "index": 16,
+      "task_id": "getmoto__moto-7208",
+      "phase": null,
+      "expected": null,
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.4805,
+        "gpt-6-luna": 0.5195
+      },
+      "inference_ms": 126.5773382037878,
+      "reported_ms": 125.89200399816036,
+      "fallback_used": false,
+      "scope": "HELD_OUT_TRAIN_TASK"
+    }
+  ],
+  "elapsed_seconds": 47.40947592072189,
+  "gpu_peak_memory_bytes": 8361066496
+}

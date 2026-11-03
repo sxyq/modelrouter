@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import json
+import fcntl
 import select
 import subprocess
 import sys
 import time
 from pathlib import Path
+from contextlib import nullcontext
 from uuid import uuid4
 
 from modelrouter.agent.router_clients import RouterDecision
@@ -30,12 +32,15 @@ class CheckpointRouterClient:
         target, instruction = MODEL_TARGETS["STEP_LEVEL_PREFERENCE"]
         payload = {
             "checkpoint_path": self.checkpoint["path"],
+            "device": self.checkpoint.get("device", "cpu"),
             "state": PreDecisionState.model_validate(pre_decision_state).router_text(),
             "questions": {target: {
                 "type": "choice", "instructions": instruction,
                 "criteria": {model: model for model in actions},
             }},
         }
+        if payload["device"] == "cuda":
+            payload["gpu_lock_path"] = self.checkpoint["gpu_lock_path"]
         started = time.perf_counter()
         if self.process is None:
             self.process = subprocess.Popen(self.checkpoint["command"], stdin=subprocess.PIPE,
@@ -59,6 +64,9 @@ class CheckpointRouterClient:
                              "router_weights_path": body["weights_path"],
                              "router_initialization_ms": body["initialization_latency_ms"],
                              "router_process_reused": body["process_reused"],
+                             "router_device": body["device"],
+                             "router_gpu_wait_ms": body["gpu_wait_ms"],
+                             "router_device_transfer_ms": body["device_transfer_ms"],
                              "router_question_id": target,
                              "router_candidate_order": list(actions),
                              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
@@ -91,11 +99,34 @@ def main():
             run = json.loads((checkpoint / "rl_agent_config.json").read_text())["training_run"]
             adapter = LayaAdapter(model_dir=str(checkpoint), device="cpu")
             initialization_ms = (time.perf_counter() - initialized) * 1000
-        # This process only returns JSON; no inference tensor is reused for training.
-        with torch.inference_mode():
-            answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
+        device = payload.get("device", "cpu")
+        gpu_wait_ms, transfer_ms = 0.0, 0.0
+        lock = open(payload["gpu_lock_path"], "a") if device == "cuda" else nullcontext()
+        with lock as lock_file:
+            if device == "cuda":
+                from laya.agent import _cuda_amp_dtype
+                before = time.perf_counter()
+                fcntl.flock(lock_file, fcntl.LOCK_EX)
+                gpu_wait_ms = (time.perf_counter() - before) * 1000
+                before = time.perf_counter()
+                adapter.agent.model.to("cuda")
+                adapter.agent.device = torch.device("cuda")
+                adapter.agent.dtype = _cuda_amp_dtype(adapter.agent.cfg.get("amp_dtype", "fp16"))
+                adapter.agent.amp_enabled = True
+                transfer_ms += (time.perf_counter() - before) * 1000
+            with torch.inference_mode():
+                answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
+            if device == "cuda":
+                before = time.perf_counter()
+                adapter.agent.model.to("cpu")
+                adapter.agent.device = torch.device("cpu")
+                adapter.agent.dtype = torch.float32
+                adapter.agent.amp_enabled = False
+                torch.cuda.empty_cache()
+                transfer_ms += (time.perf_counter() - before) * 1000
         print(json.dumps({"answers": answers, "decision_latency_ms": latency, "usage": usage,
                           "initialization_latency_ms": initialization_ms, "process_reused": reused,
+                          "device": device, "gpu_wait_ms": gpu_wait_ms, "device_transfer_ms": transfer_ms,
                           "run_id": run["run_id"], "checkpoint_id": f"{run['run_id']}-e{run['epoch']:02d}",
                           "weights_path": str(checkpoint)}), flush=True)
 

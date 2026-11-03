@@ -8,6 +8,10 @@
 
 ## 0. 阶段入口与决策规则
 
+**11-03恒选原因与成本本轮已执行**：[执行记录](../results/iterations/20261103-v9-separation-cost/review.md)完成旧15逐项目标/概率/阶段分析，12任务/11仓库、质量11/费用4；14共同状态Sol概率全部下降却无排名变化，15序列无窗口截断。测量特征秩14，不把cosine关系当不可分证明。正式Adapter复用laya.load与SDPA，CPU初始化27.817→4.979秒、前向约18–20→12–13秒；原Checkpoint客户端复用GPU锁、每步释放，STEP007复用总段0.985–1.328秒，无fallback，不干预Serving。
+
+两个独立Train仓库Planet/Moto取得原23及176范围的Sol质量目标2，累计26偏好/17步骤，Moto按事前决定不参与梯度；新phase未知、Inspect/Effort/K3仍0。只调整Encoder参与更新，STEP007原Trainer三轮24更新后17状态全Luna，训练7/16→9/16但Sol7目标全部选错，未参与Moto也选错；Val准确率略升但Loss/Brier/ECE变差。遵守至多一个训练方向，无Dev调参；没有状态分工，不扩大新Dev。4完整请求/66709Token/0.1201328USD参考费，实收未知；本轮指定执行完成，研究负结果不等于技术不可行，不另留待跑本轮菜单或新增Q-ID。
+
 **11-03独立Train补充已完成**：[本轮记录](../results/iterations/20261103-v9-independent-train/review.md)新增Argo原890项中的Sol质量目标1；Luna只因实际载荷解码改动导致TestController失败，不用计时波动生成赢家。PrettyTable新cutoff8双191/193仅观察。原一步定义、Test/Gym边界保持，24偏好/79行、15步骤，Inspect/K3/Effort0；明确Modify2含质量1，Argo为phase未知的Modify采样，来源采样合计3含质量2。原go命令的范围外失败与正式F2P/P2P结果分开；原生Go运行库属于实际环境依赖，未改测试。Provider请求内端点及未知费用直接改原实现，文件写锁和四账户框架沿用。STEP006原Trainer/CPU三轮24更新已完成，原64行保持但不参与损失，仅保留e03并显式保留；新15目标全Sol6/15、同旧14目标仍5/14，不因旧Val不变继续过拟合或用Dev调参数。ELF/Cython六个原官方Episode已完成，动态20次全Sol、两题均成功，固定Sol也两题成功且模型参考费更低（0.161107300对0.170223400USD）；动态Router433.296秒，收益未证。62完整生成/983210Token/0.450076775USD参考费，实收/资源费未知。所有本轮指定工作已执行，不新增Q-ID、监督定义或执行限制，不将负面结果称为技术不可行。
 
 **11-03三项任务继续执行**：[本轮记录](../results/iterations/20261103-v9-labels-and-learning/review.md)完成四组Train真实比较、新增质量差异1和等质量费用2，累计23偏好/78行，旧75保持。原严格一步目标未变，SQLparse原阶段Verify不随目录名改成Modify；Modify总2含质量1，Inspect/K3/实际Effort0。STEP004混合78行、提高head lr至1e-4后近期四状态仍全Sol1/4；STEP005仅14步骤参与损失，三轮21更新后全Sol5/14、ValLoss升至0.6005。没有批准局部进展或Inspect新目标，没有根据Dev调参；旧64行比例不是充分原因，不宣称完全确定各因素因果占比。

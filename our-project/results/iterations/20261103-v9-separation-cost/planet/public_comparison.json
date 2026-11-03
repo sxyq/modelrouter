@@ -1,0 +1,64 @@
+{
+  "task_id": "planetlabs__planet-client-python-553",
+  "repo": "planetlabs/planet-client-python",
+  "base_commit": "19726c09cde31a8c2d922794b8c092b4a19202b3",
+  "image_name": "docker.io/swerebenchv2/planetlabs-planet-client-python:553-19726c0",
+  "source_license": "CC-BY-4.0",
+  "repository_license": "Apache-2.0",
+  "split": "train",
+  "f2p_count": 23,
+  "p2p_count": 0,
+  "message_cutoff_exclusive": 26,
+  "gradient_use": true,
+  "trajectory_runtime_git_version_reported": false,
+  "outcomes": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "passed": 23,
+      "resolved": true,
+      "failed_ids": [],
+      "missing_ids": [],
+      "command_exit_code": 0,
+      "outside_scope_failed_ids": [],
+      "model_rate_cost_usd": 0.081121,
+      "elapsed_seconds": 13.9724939170992,
+      "generation_calls": 1,
+      "tool_calls": 1,
+      "teacher_calls": 0,
+      "changed_business_files": [
+        "planet/data_filter.py"
+      ]
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "passed": 22,
+      "resolved": false,
+      "failed_ids": [
+        "tests/unit/test_data_filter.py::test__datetime_to_rfc3339_basic[dtime4-2022-06-01T01:00:00Z]"
+      ],
+      "missing_ids": [],
+      "command_exit_code": 1,
+      "outside_scope_failed_ids": [],
+      "model_rate_cost_usd": 0.0021227,
+      "elapsed_seconds": 49.82100962498225,
+      "generation_calls": 1,
+      "tool_calls": 1,
+      "teacher_calls": 0,
+      "changed_business_files": [
+        "planet/data_filter.py"
+      ]
+    }
+  ],
+  "winner": "gpt-6.1-sol",
+  "preference_basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+  "evidence_scope": "TRAIN_SOURCE_DOCKER_VALIDATED_NOT_HARBOR_OFFICIAL_EPISODE",
+  "source_link": {
+    "instance_id_matches": true,
+    "repo_matches": true,
+    "base_commit_matches": null,
+    "task_base_commit": "19726c09cde31a8c2d922794b8c092b4a19202b3",
+    "trajectory_base_commit": null,
+    "reference_patch_matches": true,
+    "identity_status": "EXACT_ID_VERSION_UNREPORTED"
+  }
+}

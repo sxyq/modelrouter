@@ -8,6 +8,7 @@ import logging
 import os
 import sys
 import time
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from .schemas import ActionScore, LegalAction, PreDecisionState
@@ -39,18 +40,12 @@ class LayaAdapter:
         if not os.path.exists(os.path.join(target_dir, "model.safetensors")):
             raise FileNotFoundError(f"No Laya weights found in the requested checkpoint: {target_dir}")
 
-        # fallback_dir locates native code only; weights must come from model_dir.
-        laya_code_dir = self.fallback_dir
-        if laya_code_dir not in sys.path:
-            sys.path.insert(0, laya_code_dir)
+        sys.path.insert(0, str(Path(__file__).resolve().parents[5] / "external/laya"))
+        from laya import load
+        import torch
 
-        # Import RLAgent
-        try:
-            from rl_agent_api import RLAgent
-        except ImportError:
-            # Try finding rl_agent_api in parent
-            sys.path.insert(0, os.path.abspath(os.path.join(laya_code_dir, "..")))
-            from rl_agent_api import RLAgent
+        # SDPA avoids the slower fused CPU attention path on these long states.
+        torch.backends.mha.set_fastpath_enabled(False)
 
         # Check recovery/metrics
         rec_path = os.path.join(target_dir, "recovery_state.json")
@@ -69,7 +64,7 @@ class LayaAdapter:
 
         logger.info(f"Loading Laya RLAgent from {target_dir} on device={self.device_str or 'auto'}...")
         t0 = time.time()
-        self.agent = RLAgent(target_dir, device=self.device_str)
+        self.agent = load(target_dir, device=self.device_str, backend="eager")
         load_time = time.time() - t0
         self.is_loaded = True
         logger.info(f"Laya RLAgent loaded successfully in {load_time:.2f}s (run={self.run_id}, ckpt={self.checkpoint_id}).")

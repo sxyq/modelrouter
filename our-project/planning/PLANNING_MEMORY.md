@@ -1,5 +1,15 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · 原任务继续完成：CPU/GPU提速、两独立标签、STEP007全Luna
+
+接续main `407e4ff3fa73b5bcedce02f8381a6ad915833fa7`；[执行记录](../results/iterations/20261103-v9-separation-cost/review.md)。旧15步骤来自12任务/11仓库，质量11/等质量费用4；共同14状态Sol概率全下降、排名0变化，窗口截断0，原canonical字符预算仍存在。特征中心化秩14，不声称数学不可分；原64混合目标及Encoder不更新都不是恒选的充分解释。
+
+原正式Adapter改用已有laya.load/SDPA，CPU初始化27.817→4.979秒，两个真实旧状态前向17.984/20.216→12.455/13.395秒，四位概率不变。原Checkpoint客户端支持既有GPU锁下逐步迁移、每次释放显存，新STEP007首次12.282秒、复用0.985–1.328秒，前向0.110–0.128只是子段；fallback=false，原Serving不重启/不替权重，无新缓存或推理链。
+
+Planet553/Moto7208原来源Train与许可明确，新独立镜像实际Git版本等于原base；原轨迹运行Git版本未报告。原23/176范围分别Sol全通过、Luna22/175，取得新Sol质量目标2，累计26（任务9/步骤17）。Planet参与梯度，Moto事前保留，训练16=Sol7/Luna9；原79行保留、phase未知，Inspect/Effort/K3仍0。Moto整命令另9项范围外凭据失败单列，不当Harbor成绩。
+
+唯一训练调整为Encoder共同更新，STEP007原Trainer/共享GPU完成三轮24更新、47.41秒、峰值8.36GB，仅e03实体留服务器，父STEP006保持。训练7/16→9/16但17个评价状态全Luna，9个Luna正确切换与7个Sol错误切换并存，Moto由正确变错误；Val561 Accuracy0.6916、Loss0.6217、Brier0.4311、ECE0.1109。仍无状态分工，按要求不扩新Dev、不追加参数方向；动态收益未证。本轮4完整请求/66709Token/0.1201328USD参考费，实收和资源费未知，原Key/账本/响应留忽略目录。用户Trainer/tests/历史删除保持，不纳入本轮提交，临时文件清理，未创建未来执行。
+
 ### 2026-11-03 · Argo新质量目标、STEP006及两个新Dev对照已完成
 
 接续main `d2c492b36803314442e2bd20a960c234458e768f`；[执行记录](../results/iterations/20261103-v9-independent-train/review.md)。Argo原F2P1/P2P889下Sol全通过，Luna新增TestController空载荷解码错误，合法新质量Sol1；PrettyTablecutoff8双191/193无目标。24偏好/79行、15步骤；原Qwen观察前缀与新Model-only偏好分开，Inspect/K3/Effort仍0。原镜像跨架构计时失败、原生Go库及C编译器错误均保留；同版本Go原生执行后参考与Sol890/890，范围外go测试不冒充原目标或官方Harbor成绩。

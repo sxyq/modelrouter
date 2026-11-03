@@ -1,0 +1,131 @@
+{
+  "iteration_id": "20261103-v9-separation-cost",
+  "parent_commit": "407e4ff3fa73b5bcedce02f8381a6ad915833fa7",
+  "diagnosis": {
+    "target_counts": {
+      "gpt-6-luna": 9,
+      "gpt-6.1-sol": 6
+    },
+    "phase_counts": {
+      "verify": 11,
+      "recover": 1,
+      "modify": 2,
+      "UNKNOWN": 1
+    },
+    "basis_counts": {
+      "VERIFIED_QUALITY_AT_RECORDED_HORIZON": 11,
+      "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": 4
+    },
+    "unique_tasks": 12,
+    "unique_repositories": 11,
+    "repeated_tasks": {
+      "kennethreitz__records.5941ab27.lm_rewrite__letryq82": 2,
+      "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb": 2,
+      "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235": 2
+    },
+    "same14_sol_probability_change": {
+      "mean": -0.014571428571428577,
+      "stddev": 0.006163768394117888,
+      "minimum": -0.027200000000000002,
+      "maximum": -0.006199999999999983,
+      "decreased_count": 14
+    },
+    "rank_changes": 0,
+    "scope": "EXISTING_TRAIN_TARGETS_ONLY_NO_NEW_FORWARD",
+    "feature_description": {
+      "within_label_mean_cosine": 0.9188043545274174,
+      "between_label_mean_cosine": 0.9305267852765543,
+      "first_component_variance_fraction": 0.8818666447384447,
+      "centered_rank_at_relative_tolerance_1e_minus5": 14,
+      "interpretation": "15_POINTS_AFFINELY_INDEPENDENT_IN_MEASURED_FEATURE_SPACE; NO_PROOF_OF_INSEPARABILITY_OR_HEAD_GENERALIZATION"
+    }
+  },
+  "new_independent_repositories": 2,
+  "new_quality_preferences": 2,
+  "total_preferences": 26,
+  "total_task_preferences": 9,
+  "total_step_preferences": 17,
+  "training_step_preferences": 16,
+  "training_target_counts": {
+    "gpt-6-luna": 9,
+    "gpt-6.1-sol": 7
+  },
+  "held_out_train_task_preferences": 1,
+  "old_mixed_rows_in_loss": 0,
+  "inspect_targets": 0,
+  "native_effort_targets": 0,
+  "k3_targets": 0,
+  "training_run_id": "V9_LAYA_STEP_007",
+  "training_elapsed_seconds": 47.40947592072189,
+  "encoder_updated": true,
+  "optimizer_updates": 24,
+  "training_loss": [
+    0.7473047971725464,
+    0.6856545954942703,
+    0.6676749289035797
+  ],
+  "before_train_correct": 7,
+  "after_train_correct": 9,
+  "after_selection_counts": {
+    "gpt-6-luna": 17
+  },
+  "held_out_correct_before": true,
+  "held_out_correct_after": false,
+  "validation": {
+    "items": 561,
+    "loss": 0.6217,
+    "accuracy": 0.6916,
+    "mean_confidence": 0.5836,
+    "ece": 0.1109,
+    "brier": 0.4311,
+    "brier_top1": 0.2156,
+    "by_type": {
+      "choice": {
+        "items": 561,
+        "loss": 0.6217,
+        "accuracy": 0.6916,
+        "mean_confidence": 0.5836,
+        "ece": 0.1109,
+        "brier": 0.4311,
+        "brier_top1": 0.2156
+      }
+    },
+    "num_classes": 2,
+    "majority_class": 1,
+    "majority_baseline_accuracy": 0.5258,
+    "majority_balanced_accuracy": 0.5,
+    "prior_baseline_loss": 0.6918,
+    "balanced_accuracy": 0.6907,
+    "macro_f1": 0.6907,
+    "beats_majority_baseline": true,
+    "gold_counts": {
+      "0": 266,
+      "1": 295
+    },
+    "pred_counts": {
+      "0": 265,
+      "1": 296
+    },
+    "confusion_matrix": {
+      "tn": 179,
+      "fp": 87,
+      "fn": 86,
+      "tp": 209
+    }
+  },
+  "generation_requests": 4,
+  "reported_tokens": 66709,
+  "model_rate_cost_usd": 0.12013280000000001,
+  "actual_billed_cost_usd": null,
+  "resource_cost_usd": null,
+  "new_dev_episodes": 0,
+  "dev_not_expanded_reason": "ALL_LUNA_NOT_STATE_DEPENDENT_SELECTION",
+  "dynamic_quality_cost_benefit_proven": false,
+  "serving_restarted": false,
+  "serving_weights_replaced": false,
+  "generator_initial_configuration_failure": "KeyError: base_url; no API call; existing Provider passed explicitly",
+  "paired_task_ids": [
+    "planetlabs__planet-client-python-553",
+    "getmoto__moto-7208"
+  ]
+}
