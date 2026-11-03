@@ -1,5 +1,11 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-03逐候选执行结果研究**：[本轮结果](../results/iterations/20261103-v9-candidate-outcomes/summary.json)。复用原真实比较和29条正式偏好，原准备入口单独导出候选当次Verifier通过/未通过/UNKNOWN；可信双方未完成不产生赢家。拟合函数迁至现有continuation.py，分别学习Sol/Luna结果，分类分数不是长期通过率。旧任务/Dev/费用语义与原Serving保持。
+
+本轮按固定来源顺序事前选择原Train新仓库Click/Stingray为训练候选、mpmath/music21为仓库留出，不按赢家改用途。原资格、原镜像、完整截止前历史及固定F2P/P2P沿用；首次诊断脚本前采样，未执行历史模拟脚本。具体双候选、原验证与Usage见本轮结果，不复用旧Dev作为新的最终评价集。
+
+原17状态的单赢家参照A与逐候选参照C比较，并加入原可信失败观察，按任务及仓库排除全部相关截止；旧Encoder已接触部分Train材料，head留出不代表全模型未见。C的负结果识别可改善，真正Sol/Luna双方向独立选择与完整动态净收益仍未成立；不以此启动同类重复训练、替换Serving或重复旧Dev。K2仍缺两项核心证据，完整V9五RQ仍未完成。
+
 ## 2026-11-03 · 接续完成：恢复Canvas有效动作，质量优先分析未证明独立双方向收益
 
 实际起点仍为main `e8f9a754f689bfd73924dac5d0baa1143fa27a7d`，上轮本地材料没有覆盖；[最新summary](../results/iterations/20261103-v9-cross-task-quality/summary.json)、[逐请求记录](../results/iterations/20261103-v9-cross-task-quality/request_audit.json)、[质量/费用分布](../results/iterations/20261103-v9-cross-task-quality/quality_cost_distribution.json)、[方法比较](../results/iterations/20261103-v9-cross-task-quality/quality_method_analysis.json)。本轮任务一至四的实际处理与条件判断均完成；定向提交/推送main按本轮明确要求执行，不包含用户其他修改、私人轨迹/响应/账本。

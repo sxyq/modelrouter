@@ -1,5 +1,9 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**11-03逐候选结果目标**：[结果](../results/iterations/20261103-v9-candidate-outcomes/summary.json)。29条原正式偏好及质量/费用依据不变，辅助目标只预测候选当次完成原一步Verifier的类别。Provider、工具参数、身份或环境异常保留UNKNOWN，单个可信候选可独立保留；双方可信未通过不造原赢家。原准备入口与continuation.py中固定Encoder/Torch拟合共用，没有新增Runner或Serving。
+
+A保留原17单赢家；C分别拟合两个候选，先比较当次完成类别，仅预测双过时选低模型费率；预测双未完成保留不确定，不设置置信阈值。同任务所有截止及同仓库全部任务一并留出；旧007/008 Encoder曝光仍明确标注。新增原Train仓库事前指定用途，原参考版本、固定测试与候选执行分开，答案不用于改变采样规则或训练参数。完整动态Dev只在独立双向信号出现后开展，本轮结果不支持该信号。
+
 > **版本 v1.5｜建立：2026-10-09｜更新：2026-11-03｜V9 五 RQ 已确定，部分执行配置待明确**
 >
 > **职责**：记录每项实验设计的 Q-ID、问题、选项、Planning 推荐及理由、项目负责人回答、最终决策、日期，以及对实验设计、资源/预算和论文结论的影响。研究方法总览见 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md)，实时阶段见 [PROJECT_STATUS.md](PROJECT_STATUS.md)，交接历史见 [PLANNING_MEMORY.md](PLANNING_MEMORY.md)。

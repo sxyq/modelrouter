@@ -1,5 +1,13 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · 逐候选质量结果研究
+
+接续main `6c3c4354ce94b889a4ab687805de5ea3946be582`，[summary](../results/iterations/20261103-v9-candidate-outcomes/summary.json)、candidate_outcome_inventory.json、candidate_quality_learning.json为最新入口。原29偏好、STEP00817/17、旧独立观察/Dev与用户未提交改动保留。真实执行记录按候选来源去重，保留双方失败、单方可信及UNKNOWN；原候选视图独立导出辅助结果，不改变旧赢家目标。fit_preference_reference已迁至原continuation.py，原位置不再保留另一份拟合实现。
+
+Click/Stingray事前指定训练候选，mpmath/music21指定新的仓库留出，均从既有合法Train资格及原任务/轨迹配对中取得；四原仓库未进入已知项目梯度材料。选择固定来源顺序、原pytest范围最多300项、首次诊断文件前历史，不按结果补类别；完整轨迹、参考修复与未来测试结果不进入Router输入。旧Moto/Qiskit/Tox/Canvas仍保持原观察身份，不称新的最终评价集，也不加入辅助训练。
+
+复用原22状态的66份Encoder输出，仅补新的状态前向；A单赢家、C原17逐候选、C加入可信执行观察做最小对照。没有参数搜索；按任务/仓库整体排除全部截止；旧Encoder训练曝光保留。细项结果与新增双候选见本轮summary。没有未见Sol/Luna双向质量选择，不将失败识别、训练内拟合或低费用称完整动态收益；原Trainer/Val/Serving未变，未新建完整Dev。原服务器/GPU/账户及付费授权继续有效，预计约一亿付费Token时通知，不作为目标消耗。
+
 ### 2026-11-03 · 跨任务接续完成：恢复有效Canvas比较、B学习分析、无新Trainer或Dev
 
 起点main e8f9a754f689bfd73924dac5d0baa1143fa27a7d及未提交跨任务材料继续复用；[最新summary](../results/iterations/20261103-v9-cross-task-quality/summary.json)、request_audit.json、quality_cost_distribution.json、quality_method_analysis.json。本轮用户明确授权定向提交推送main，不含原用户Trainer/tests/账本/历史删除，不含私人轨迹/完整响应/密钥。四项工作实际完成，不重新开始旧P0–P5或旧生成/Dev。

@@ -37,7 +37,7 @@ from modelrouter.v9.capabilities.normalize import MODEL_IDS
 from modelrouter.v9.training.trajectory_material import (
     action_excerpt, reference_candidate, text_content, tool_result,
 )
-from modelrouter.v9.training.real_supervision import prepare_comparison
+from modelrouter.v9.training.real_supervision import prepare_comparison, prepare_candidate_outcomes
 
 
 DATA_ROOT = Path(__file__).resolve().parents[4] / "data" / "v9"
@@ -264,12 +264,9 @@ def prepare_candidate_view(records, output_path):
         reasons = []
         if "candidate_results" in row:
             prepared, reason = prepare_comparison(row, "train")
-            conditions = row["comparison_conditions"]
-            comparable = all(conditions[name] for name in (
-                "same_observed_messages", "same_initial_environment", "same_agent_protocol",
-                "original_verifier_unchanged", "candidate_identity_matched", "trusted_outcomes",
-            )) and all(item["trusted_outcome"] and item["identities_matched"]
-                       and item["resolved"] is not None for item in row["candidate_results"])
+            observations = prepare_candidate_outcomes(row, "train")
+            row["candidate_outcome_observations"] = observations
+            comparable = all(item["outcome_status"] != "UNKNOWN" for item in observations)
             category = ("VALID_PREFERENCE" if prepared and comparable else
                         "COMPARABLE_UNLABELED" if comparable else "INVALID_OR_UNKNOWN")
             if reason:

@@ -100,18 +100,25 @@ def prepare_comparison(row, split):
     return prepared, None
 
 
-def fit_preference_reference(features, targets, training_indices, evaluation_indices, classes):
-    """Fit the fixed-Encoder reference; categorical scores are not pass probabilities."""
-    import torch
-
-    inputs = features[training_indices]
-    center = inputs.mean(0)
-    scale = (inputs - center).square().sum(1).mean().sqrt()
-    inputs = (inputs - center) / scale
-    labels = torch.nn.functional.one_hot(targets[training_indices], classes).double()
-    prior = labels.mean(0)
-    coefficients = torch.linalg.solve(
-        inputs @ inputs.T + torch.eye(len(training_indices), dtype=torch.float64), labels - prior
-    )
-    scores = ((features[evaluation_indices] - center) / scale) @ inputs.T @ coefficients + prior
-    return scores.argmax(1).tolist(), scores.tolist()
+def prepare_candidate_outcomes(row, split):
+    """Separate observed candidate completion from the existing preference target."""
+    conditions = row["comparison_conditions"]
+    shared = all(conditions[name] for name in (
+        "same_observed_messages", "same_initial_environment", "same_agent_protocol",
+        "original_verifier_unchanged",
+    ))
+    eligible = split != "train" or row["provenance"].get("train_eligible") is True
+    actions = {candidate_action(action)["action_id"] for action in row["candidate_actions"]}
+    observations = []
+    for item in row["candidate_results"]:
+        known = (shared and eligible and item["action_id"] in actions
+                 and item.get("trusted_outcome") is True
+                 and item.get("identities_matched") is True
+                 and item["resolved"] is not None)
+        observations.append({
+            **item,
+            "observed_verifier_completion": item["resolved"] if known else None,
+            "outcome_status": ("PASSED" if item["resolved"] else "FAILED") if known else "UNKNOWN",
+            "auxiliary_target": "CANDIDATE_VERIFIER_COMPLETION_AT_RECORDED_HORIZON",
+        })
+    return observations

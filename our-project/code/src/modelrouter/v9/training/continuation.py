@@ -20,6 +20,36 @@ V9_PROTOCOL = "MODELROUTER_V9_FEATURES_V1"
 KEV_COMPLETION_GROUP = "KEV_TYPED_COVERAGE_V1"
 
 
+def fit_preference_reference(features, targets, training_indices, evaluation_indices, classes):
+    """Fit the fixed-Encoder reference; categorical scores are not pass probabilities."""
+    import torch
+
+    inputs = features[training_indices]
+    center = inputs.mean(0)
+    scale = (inputs - center).square().sum(1).mean().sqrt()
+    inputs = (inputs - center) / scale
+    labels = torch.nn.functional.one_hot(targets[training_indices], classes).double()
+    prior = labels.mean(0)
+    coefficients = torch.linalg.solve(
+        inputs @ inputs.T + torch.eye(len(training_indices), dtype=torch.float64), labels - prior
+    )
+    scores = ((features[evaluation_indices] - center) / scale) @ inputs.T @ coefficients + prior
+    return scores.argmax(1).tolist(), scores.tolist()
+
+
+def fit_candidate_outcome_reference(features, targets, training_indices, evaluation_indices):
+    """Learn each candidate's recorded completion independently; unknown labels are -1."""
+    predictions, scores = [], []
+    for column in range(targets.shape[1]):
+        known = [index for index in training_indices if targets[index, column] != -1]
+        predicted, values = fit_preference_reference(
+            features, targets[:, column], known, evaluation_indices, 2
+        )
+        predictions.append(predicted)
+        scores.append(values)
+    return list(zip(*predictions)), list(zip(*scores))
+
+
 def _now():
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
