@@ -1,0 +1,2664 @@
+{
+  "methods": {
+    "A": "Formal single-winner fixed-Encoder reference, includes new Train preferences only",
+    "B": "Four recorded complete-verifier relationships, cost only on predicted both-verified",
+    "C": "Each candidate recorded verifier completion; no choice if neither predicted passing",
+    "D": "Separate multidimensional local relationship; no formal preference rewrite"
+  },
+  "implementation": "modelrouter.v9.training.continuation",
+  "ridge_penalty": 1,
+  "parameter_searches": 0,
+  "new_holdout_labels_used_for_fit": false,
+  "old_encoder_fold_scope": "HEAD_ONLY; ancestor exposure not excluded",
+  "new_task_scope": "All qualification records L4, F11 only L1-L3; STEP002-008 explicit training task overlap false",
+  "training_formal_rows": 19,
+  "training_candidate_rows": 47,
+  "training_local_rows": 4,
+  "training_local_class_distribution": {
+    "EQUAL_LOCAL_PROGRESS": 1,
+    "SOL_DOMINATES": 2,
+    "NO_LOCAL_IMPROVEMENT": 1
+  },
+  "reports": {
+    "006": {
+      "evaluations": [
+        {
+          "index": 17,
+          "task_id": "getmoto__moto-7208",
+          "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+          "basis": null,
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": null,
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.3297120578612841,
+              0.6702879421387159
+            ],
+            [
+              0.5306409940549626,
+              0.4693590059450374
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 7,
+              "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+              "winner": "gpt-6-luna",
+              "distance": 4.946063707624544
+            },
+            {
+              "index": 6,
+              "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+              "winner": "gpt-6.1-sol",
+              "distance": 5.577669489236948
+            },
+            {
+              "index": 15,
+              "task_id": "planetlabs__planet-client-python-553",
+              "winner": "gpt-6.1-sol",
+              "distance": 6.476946074230054
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 18,
+          "task_id": "qiskit__qiskit-11466",
+          "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+          "basis": null,
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": null,
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.37602618172801916,
+              0.6239738182719808
+            ],
+            [
+              0.6676032189902048,
+              0.33239678100979536
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 13,
+              "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+              "winner": "gpt-6-luna",
+              "distance": 3.8793625267157172
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 3.9066898326972126
+            },
+            {
+              "index": 5,
+              "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+              "winner": "gpt-6.1-sol",
+              "distance": 4.0406223469699105
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 19,
+          "task_id": "tox-dev__tox-628",
+          "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+          "basis": null,
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": null,
+          "A_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "B_selection": "gpt-6-luna",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.3512317476866569,
+              0.6487682523133431
+            ],
+            [
+              0.5998904271544018,
+              0.4001095728455983
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 3.412472816909394
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 3.421086789573231
+            },
+            {
+              "index": 13,
+              "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+              "winner": "gpt-6-luna",
+              "distance": 4.516784280127706
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 49,
+          "task_id": "pallets__click-2417",
+          "role": "TRAIN_NEW_MODIFY",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "observed_pair": [
+            true,
+            true
+          ],
+          "formal_winner": "gpt-6-luna",
+          "local_class": "EQUAL_LOCAL_PROGRESS",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.340793669628841,
+              0.659206330371159
+            ],
+            [
+              0.6428280665791853,
+              0.3571719334208147
+            ]
+          ],
+          "D_local_relation": "NO_LOCAL_IMPROVEMENT",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 3.8304022832179636
+            },
+            {
+              "index": 5,
+              "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+              "winner": "gpt-6.1-sol",
+              "distance": 5.337599709778233
+            },
+            {
+              "index": 12,
+              "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+              "winner": "gpt-6.1-sol",
+              "distance": 5.596666325606854
+            }
+          ],
+          "formal_train_rows": 18,
+          "candidate_train_rows": 45,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 50,
+          "task_id": "mpmath__mpmath-922",
+          "role": "EXPOSED_REPOSITORY_HOLDOUT_MODIFY",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.39073480493788354,
+              0.6092651950621164
+            ],
+            [
+              0.6445550126232767,
+              0.3554449873767231
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 8,
+              "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+              "winner": "gpt-6-luna",
+              "distance": 3.1580114563281567
+            },
+            {
+              "index": 15,
+              "task_id": "planetlabs__planet-client-python-553",
+              "winner": "gpt-6.1-sol",
+              "distance": 3.451809262231576
+            },
+            {
+              "index": 4,
+              "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+              "winner": "gpt-6.1-sol",
+              "distance": 4.213138976233074
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 51,
+          "task_id": "stingraysoftware__stingray-234",
+          "role": "TRAIN_NEW_MODIFY",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.38288199361783626,
+              0.6171180063821637
+            ],
+            [
+              0.6908374883798193,
+              0.3091625116201807
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 8,
+              "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+              "winner": "gpt-6-luna",
+              "distance": 4.395973675919057
+            },
+            {
+              "index": 0,
+              "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+              "winner": "gpt-6-luna",
+              "distance": 5.118307386705605
+            },
+            {
+              "index": 15,
+              "task_id": "planetlabs__planet-client-python-553",
+              "winner": "gpt-6.1-sol",
+              "distance": 5.698504924827883
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 45,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 52,
+          "task_id": "cuthbertlab__music21-1062",
+          "role": "EXPOSED_REPOSITORY_HOLDOUT_MODIFY",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.46607393072242953,
+              0.5339260692775705
+            ],
+            [
+              0.668364648042459,
+              0.331635351957541
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 8,
+              "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+              "winner": "gpt-6-luna",
+              "distance": 4.51351955335427
+            },
+            {
+              "index": 0,
+              "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+              "winner": "gpt-6-luna",
+              "distance": 5.06242543282606
+            },
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 5.25677004078738
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 53,
+          "task_id": "pypa__build-365",
+          "role": "NEW_INDEPENDENT_TRAIN",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "NO_LOCAL_IMPROVEMENT",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.2951562989789606,
+              0.7048437010210393
+            ],
+            [
+              0.597217062006757,
+              0.4027829379932432
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 8,
+              "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+              "winner": "gpt-6-luna",
+              "distance": 4.2146877186605
+            },
+            {
+              "index": 15,
+              "task_id": "planetlabs__planet-client-python-553",
+              "winner": "gpt-6.1-sol",
+              "distance": 4.311566244233899
+            },
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 4.5130943722908565
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 46,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 54,
+          "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+          "role": "NEW_REPOSITORY_HOLDOUT",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.32491506122249314,
+              0.6750849387775069
+            ],
+            [
+              0.705391378870412,
+              0.294608621129588
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 14,
+              "task_id": "argoproj__argo-4594",
+              "winner": "gpt-6.1-sol",
+              "distance": 4.243567736012564
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 4.353284195555724
+            },
+            {
+              "index": 13,
+              "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+              "winner": "gpt-6-luna",
+              "distance": 4.40268924255871
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 55,
+          "task_id": "researchobject__ro-crate-py-95",
+          "role": "NEW_INDEPENDENT_TRAIN",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            0,
+            0
+          ],
+          "C_selection": null,
+          "C_categorical_scores": [
+            [
+              0.6621803317409336,
+              0.33781966825906584
+            ],
+            [
+              0.7208509615898268,
+              0.2791490384101742
+            ]
+          ],
+          "D_local_relation": "NO_LOCAL_IMPROVEMENT",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": null,
+          "nearest_formal_training_states": [
+            {
+              "index": 2,
+              "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+              "winner": "gpt-6.1-sol",
+              "distance": 4.967646871778559
+            },
+            {
+              "index": 7,
+              "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+              "winner": "gpt-6-luna",
+              "distance": 5.890906762236534
+            },
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 5.927411101140744
+            }
+          ],
+          "formal_train_rows": 18,
+          "candidate_train_rows": 46,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 56,
+          "task_id": "tox-dev__pipdeptree-171",
+          "role": "NEW_REPOSITORY_HOLDOUT",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "observed_pair": [
+            true,
+            true
+          ],
+          "formal_winner": "gpt-6-luna",
+          "local_class": "UNKNOWN",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "B_selection": "gpt-6-luna",
+          "C_recorded_completion_prediction": [
+            1,
+            1
+          ],
+          "C_selection": "gpt-6-luna",
+          "C_categorical_scores": [
+            [
+              0.43474772378194537,
+              0.5652522762180546
+            ],
+            [
+              0.45680395871307033,
+              0.5431960412869288
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6-luna",
+          "D_then_C_selection": "gpt-6-luna",
+          "nearest_formal_training_states": [
+            {
+              "index": 1,
+              "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+              "winner": "gpt-6-luna",
+              "distance": 3.496974212966872
+            },
+            {
+              "index": 11,
+              "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+              "winner": "gpt-6-luna",
+              "distance": 3.5870385351326814
+            },
+            {
+              "index": 12,
+              "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+              "winner": "gpt-6.1-sol",
+              "distance": 5.44478453090896
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        }
+      ],
+      "repository_leaveout": [
+        {
+          "index": 0,
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": null
+        },
+        {
+          "index": 1,
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 2,
+          "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": null
+        },
+        {
+          "index": 3,
+          "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 4,
+          "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": null
+        },
+        {
+          "index": 5,
+          "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 6,
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 7,
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 8,
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 9,
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": null
+        },
+        {
+          "index": 10,
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 11,
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 12,
+          "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 13,
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": null
+        },
+        {
+          "index": 14,
+          "task_id": "argoproj__argo-4594",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": null
+        },
+        {
+          "index": 15,
+          "task_id": "planetlabs__planet-client-python-553",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 16,
+          "task_id": "oscal-compass__compliance-trestle-1578",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 49,
+          "task_id": "pallets__click-2417",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 55,
+          "task_id": "researchobject__ro-crate-py-95",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": null
+        }
+      ],
+      "A_training_correct": 16,
+      "A_training_total": 19,
+      "native_new_choices": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol"
+      ],
+      "original17_same_fit_new_bidirectional": {
+        "A": 2,
+        "B": 2
+      },
+      "original17_same_fit_new_formal_total": 2,
+      "repository_leaveout_by_method": {
+        "A": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "correct": 5,
+            "total": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "correct": 4,
+            "total": 6
+          }
+        },
+        "B": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "correct": 8,
+            "total": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "correct": 2,
+            "total": 6
+          }
+        },
+        "C": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "correct": 4,
+            "total": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "correct": 2,
+            "total": 6
+          }
+        }
+      }
+    },
+    "007": {
+      "evaluations": [
+        {
+          "index": 17,
+          "task_id": "getmoto__moto-7208",
+          "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+          "basis": null,
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": null,
+          "A_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "B_selection": "gpt-6-luna",
+          "C_recorded_completion_prediction": [
+            0,
+            0
+          ],
+          "C_selection": null,
+          "C_categorical_scores": [
+            [
+              0.534085249371785,
+              0.46591475062821497
+            ],
+            [
+              0.5397868778514298,
+              0.4602131221485702
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6-luna",
+          "D_then_C_selection": null,
+          "nearest_formal_training_states": [
+            {
+              "index": 3,
+              "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+              "winner": "gpt-6-luna",
+              "distance": 1.5085524071551555
+            },
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 1.7018225483315166
+            },
+            {
+              "index": 6,
+              "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.7168165813380327
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 18,
+          "task_id": "qiskit__qiskit-11466",
+          "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+          "basis": null,
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": null,
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.4762167053379186,
+              0.5237832946620814
+            ],
+            [
+              0.6956932022510718,
+              0.30430679774892794
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.1917144766417962
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 1.3280096166201125
+            },
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 1.3741041338684978
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 19,
+          "task_id": "tox-dev__tox-628",
+          "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+          "basis": null,
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": null,
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.4591944253877761,
+              0.5408055746122239
+            ],
+            [
+              0.7508749693525192,
+              0.24912503064748087
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.100327309401062
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 1.2166102440614779
+            },
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 1.3944727379790753
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 49,
+          "task_id": "pallets__click-2417",
+          "role": "TRAIN_NEW_MODIFY",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "observed_pair": [
+            true,
+            true
+          ],
+          "formal_winner": "gpt-6-luna",
+          "local_class": "EQUAL_LOCAL_PROGRESS",
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.4822085008601925,
+              0.5177914991398075
+            ],
+            [
+              0.6571598030318836,
+              0.3428401969681164
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.041720986408884
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 1.1307538234940784
+            },
+            {
+              "index": 12,
+              "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.776276701435854
+            }
+          ],
+          "formal_train_rows": 18,
+          "candidate_train_rows": 45,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 50,
+          "task_id": "mpmath__mpmath-922",
+          "role": "EXPOSED_REPOSITORY_HOLDOUT_MODIFY",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.40264475479054773,
+              0.5973552452094523
+            ],
+            [
+              0.789695403822241,
+              0.21030459617775915
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.274149621437191
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 1.3449919163155304
+            },
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 1.3951157966699885
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 51,
+          "task_id": "stingraysoftware__stingray-234",
+          "role": "TRAIN_NEW_MODIFY",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.17375877234864773,
+              0.8262412276513524
+            ],
+            [
+              0.853550318310757,
+              0.146449681689243
+            ]
+          ],
+          "D_local_relation": "NO_LOCAL_IMPROVEMENT",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 15,
+              "task_id": "planetlabs__planet-client-python-553",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.1604630604572537
+            },
+            {
+              "index": 14,
+              "task_id": "argoproj__argo-4594",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.8462706630238217
+            },
+            {
+              "index": 4,
+              "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.9617985804589146
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 45,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 52,
+          "task_id": "cuthbertlab__music21-1062",
+          "role": "EXPOSED_REPOSITORY_HOLDOUT_MODIFY",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            0,
+            0
+          ],
+          "C_selection": null,
+          "C_categorical_scores": [
+            [
+              0.5115398905684224,
+              0.4884601094315776
+            ],
+            [
+              0.5530435512120195,
+              0.44695644878798035
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": null,
+          "nearest_formal_training_states": [
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 1.3899573169091726
+            },
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.4320570844961962
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 1.6209021740690353
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 53,
+          "task_id": "pypa__build-365",
+          "role": "NEW_INDEPENDENT_TRAIN",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "NO_LOCAL_IMPROVEMENT",
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.29601109184455854,
+              0.7039889081554415
+            ],
+            [
+              0.7979192696295561,
+              0.20208073037044422
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.3786066600869975
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 1.4854735864840323
+            },
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 1.58594879613473
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 46,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 54,
+          "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+          "role": "NEW_REPOSITORY_HOLDOUT",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.48643834870227975,
+              0.5135616512977202
+            ],
+            [
+              0.6832097493968492,
+              0.316790250603151
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.003818823347525
+            },
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 1.0156930501845478
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 1.1807943141543307
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 55,
+          "task_id": "researchobject__ro-crate-py-95",
+          "role": "NEW_INDEPENDENT_TRAIN",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            0,
+            0
+          ],
+          "C_selection": null,
+          "C_categorical_scores": [
+            [
+              0.583128727976983,
+              0.4168712720230169
+            ],
+            [
+              0.6764732614467934,
+              0.32352673855320646
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": null,
+          "nearest_formal_training_states": [
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 1.041720986408884
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 1.2738966444808917
+            },
+            {
+              "index": 5,
+              "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.9001280888086853
+            }
+          ],
+          "formal_train_rows": 18,
+          "candidate_train_rows": 46,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 56,
+          "task_id": "tox-dev__pipdeptree-171",
+          "role": "NEW_REPOSITORY_HOLDOUT",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "observed_pair": [
+            true,
+            true
+          ],
+          "formal_winner": "gpt-6-luna",
+          "local_class": "UNKNOWN",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "B_selection": "gpt-6-luna",
+          "C_recorded_completion_prediction": [
+            0,
+            0
+          ],
+          "C_selection": null,
+          "C_categorical_scores": [
+            [
+              0.5696928717832763,
+              0.4303071282167237
+            ],
+            [
+              0.5494115637475241,
+              0.45058843625247574
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6-luna",
+          "D_then_C_selection": null,
+          "nearest_formal_training_states": [
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 1.3251721160079448
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 1.357564509454368
+            },
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 1.5255727849533063
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        }
+      ],
+      "repository_leaveout": [
+        {
+          "index": 0,
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 1,
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 2,
+          "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 3,
+          "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 4,
+          "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 5,
+          "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 6,
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 7,
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 8,
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 9,
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 10,
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 11,
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 12,
+          "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": null
+        },
+        {
+          "index": 13,
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 14,
+          "task_id": "argoproj__argo-4594",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 15,
+          "task_id": "planetlabs__planet-client-python-553",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 16,
+          "task_id": "oscal-compass__compliance-trestle-1578",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": null
+        },
+        {
+          "index": 49,
+          "task_id": "pallets__click-2417",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 55,
+          "task_id": "researchobject__ro-crate-py-95",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": null
+        }
+      ],
+      "A_training_correct": 18,
+      "A_training_total": 19,
+      "native_new_choices": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "original17_same_fit_new_bidirectional": {
+        "A": 2,
+        "B": 2
+      },
+      "original17_same_fit_new_formal_total": 2,
+      "repository_leaveout_by_method": {
+        "A": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "correct": 11,
+            "total": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "correct": 4,
+            "total": 6
+          }
+        },
+        "B": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "correct": 11,
+            "total": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "correct": 4,
+            "total": 6
+          }
+        },
+        "C": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "correct": 9,
+            "total": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "correct": 4,
+            "total": 6
+          }
+        }
+      }
+    },
+    "008": {
+      "evaluations": [
+        {
+          "index": 17,
+          "task_id": "getmoto__moto-7208",
+          "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+          "basis": null,
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": null,
+          "A_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "B_selection": "gpt-6-luna",
+          "C_recorded_completion_prediction": [
+            0,
+            1
+          ],
+          "C_selection": "gpt-6-luna",
+          "C_categorical_scores": [
+            [
+              0.6686765793700277,
+              0.33132342062997233
+            ],
+            [
+              0.422753583297313,
+              0.577246416702687
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6-luna",
+          "D_then_C_selection": "gpt-6-luna",
+          "nearest_formal_training_states": [
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 7.203841220795194
+            },
+            {
+              "index": 3,
+              "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+              "winner": "gpt-6-luna",
+              "distance": 7.210691320956131
+            },
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 7.771120546118808
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 18,
+          "task_id": "qiskit__qiskit-11466",
+          "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+          "basis": null,
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": null,
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.48041268769704903,
+              0.519587312302951
+            ],
+            [
+              0.6155978792488386,
+              0.3844021207511614
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 4.762530197054592
+            },
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 5.512367136582073
+            },
+            {
+              "index": 7,
+              "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+              "winner": "gpt-6-luna",
+              "distance": 10.237330764779404
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 19,
+          "task_id": "tox-dev__tox-628",
+          "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+          "basis": null,
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": null,
+          "A_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "B_selection": "gpt-6-luna",
+          "C_recorded_completion_prediction": [
+            1,
+            1
+          ],
+          "C_selection": "gpt-6-luna",
+          "C_categorical_scores": [
+            [
+              0.4911871654217366,
+              0.5088128345782634
+            ],
+            [
+              0.4849313450678394,
+              0.5150686549321605
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6-luna",
+          "D_then_C_selection": "gpt-6-luna",
+          "nearest_formal_training_states": [
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 4.515890874366906
+            },
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 5.531434712074839
+            },
+            {
+              "index": 7,
+              "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+              "winner": "gpt-6-luna",
+              "distance": 7.651959919675911
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 49,
+          "task_id": "pallets__click-2417",
+          "role": "TRAIN_NEW_MODIFY",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "observed_pair": [
+            true,
+            true
+          ],
+          "formal_winner": "gpt-6-luna",
+          "local_class": "EQUAL_LOCAL_PROGRESS",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "B_selection": "gpt-6-luna",
+          "C_recorded_completion_prediction": [
+            0,
+            1
+          ],
+          "C_selection": "gpt-6-luna",
+          "C_categorical_scores": [
+            [
+              0.5211008913283385,
+              0.4788991086716615
+            ],
+            [
+              0.4381505879265191,
+              0.5618494120734809
+            ]
+          ],
+          "D_local_relation": "NO_LOCAL_IMPROVEMENT",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6-luna",
+          "D_then_C_selection": "gpt-6-luna",
+          "nearest_formal_training_states": [
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 7.526954654276054
+            },
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 7.88140141476964
+            },
+            {
+              "index": 7,
+              "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+              "winner": "gpt-6-luna",
+              "distance": 8.91839606038536
+            }
+          ],
+          "formal_train_rows": 18,
+          "candidate_train_rows": 45,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 50,
+          "task_id": "mpmath__mpmath-922",
+          "role": "EXPOSED_REPOSITORY_HOLDOUT_MODIFY",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "B_selection": "gpt-6-luna",
+          "C_recorded_completion_prediction": [
+            1,
+            1
+          ],
+          "C_selection": "gpt-6-luna",
+          "C_categorical_scores": [
+            [
+              0.4427348914309923,
+              0.5572651085690077
+            ],
+            [
+              0.48226415920120574,
+              0.5177358407987942
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6-luna",
+          "D_then_C_selection": "gpt-6-luna",
+          "nearest_formal_training_states": [
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 4.242885835821238
+            },
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 5.595145204915128
+            },
+            {
+              "index": 7,
+              "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+              "winner": "gpt-6-luna",
+              "distance": 5.765262114494322
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 51,
+          "task_id": "stingraysoftware__stingray-234",
+          "role": "TRAIN_NEW_MODIFY",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.34249597727765496,
+              0.6575040227223452
+            ],
+            [
+              0.7985381771715834,
+              0.20146182282841657
+            ]
+          ],
+          "D_local_relation": "NO_LOCAL_IMPROVEMENT",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 10,
+              "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+              "winner": "gpt-6-luna",
+              "distance": 6.139232900287116
+            },
+            {
+              "index": 6,
+              "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+              "winner": "gpt-6.1-sol",
+              "distance": 10.250551384646334
+            },
+            {
+              "index": 12,
+              "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+              "winner": "gpt-6.1-sol",
+              "distance": 12.572528684704134
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 45,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 52,
+          "task_id": "cuthbertlab__music21-1062",
+          "role": "EXPOSED_REPOSITORY_HOLDOUT_MODIFY",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6.1-sol",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.3731904805668325,
+              0.6268095194331675
+            ],
+            [
+              0.7086105638199504,
+              0.2913894361800496
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6.1-sol",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 10,
+              "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+              "winner": "gpt-6-luna",
+              "distance": 8.772100969084011
+            },
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 10.193330191601689
+            },
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 14.014238238739654
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 53,
+          "task_id": "pypa__build-365",
+          "role": "NEW_INDEPENDENT_TRAIN",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "NO_LOCAL_IMPROVEMENT",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            1,
+            0
+          ],
+          "C_selection": "gpt-6.1-sol",
+          "C_categorical_scores": [
+            [
+              0.4425055984551646,
+              0.5574944015448354
+            ],
+            [
+              0.6202287538639433,
+              0.37977124613605673
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 55,
+              "task_id": "researchobject__ro-crate-py-95",
+              "winner": "gpt-6.1-sol",
+              "distance": 4.641305237272786
+            },
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 6.542446010383967
+            },
+            {
+              "index": 7,
+              "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+              "winner": "gpt-6-luna",
+              "distance": 10.85649498103213
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 46,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 54,
+          "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+          "role": "NEW_REPOSITORY_HOLDOUT",
+          "basis": null,
+          "observed_pair": [
+            false,
+            false
+          ],
+          "formal_winner": null,
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "B_selection": "gpt-6-luna",
+          "C_recorded_completion_prediction": [
+            0,
+            1
+          ],
+          "C_selection": "gpt-6-luna",
+          "C_categorical_scores": [
+            [
+              0.5222956884910763,
+              0.4777043115089237
+            ],
+            [
+              0.44651814358918523,
+              0.5534818564108147
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6-luna",
+          "D_then_C_selection": "gpt-6-luna",
+          "nearest_formal_training_states": [
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 2.741687081601365
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 7.842699537854769
+            },
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 7.880400723109996
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 55,
+          "task_id": "researchobject__ro-crate-py-95",
+          "role": "NEW_INDEPENDENT_TRAIN",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "observed_pair": [
+            true,
+            false
+          ],
+          "formal_winner": "gpt-6.1-sol",
+          "local_class": "SOL_DOMINATES",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "SOL_ONLY_VERIFIED",
+          "B_selection": "gpt-6.1-sol",
+          "C_recorded_completion_prediction": [
+            0,
+            0
+          ],
+          "C_selection": null,
+          "C_categorical_scores": [
+            [
+              0.5716856710737992,
+              0.4283143289262008
+            ],
+            [
+              0.6740065481305967,
+              0.3259934518694033
+            ]
+          ],
+          "D_local_relation": "SOL_DOMINATES",
+          "D_selection": "gpt-6.1-sol",
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6.1-sol",
+          "D_then_C_selection": "gpt-6.1-sol",
+          "nearest_formal_training_states": [
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 8.205739886627988
+            },
+            {
+              "index": 7,
+              "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+              "winner": "gpt-6-luna",
+              "distance": 13.428167423506325
+            },
+            {
+              "index": 10,
+              "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+              "winner": "gpt-6-luna",
+              "distance": 14.27107482796257
+            }
+          ],
+          "formal_train_rows": 18,
+          "candidate_train_rows": 46,
+          "local_train_rows": 3,
+          "entire_evaluation_repo_excluded": true
+        },
+        {
+          "index": 56,
+          "task_id": "tox-dev__pipdeptree-171",
+          "role": "NEW_REPOSITORY_HOLDOUT",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "observed_pair": [
+            true,
+            true
+          ],
+          "formal_winner": "gpt-6-luna",
+          "local_class": "UNKNOWN",
+          "A_selection": "gpt-6-luna",
+          "B_relation": "BOTH_VERIFIED",
+          "B_selection": "gpt-6-luna",
+          "C_recorded_completion_prediction": [
+            0,
+            0
+          ],
+          "C_selection": null,
+          "C_categorical_scores": [
+            [
+              0.5710070300044109,
+              0.4289929699955891
+            ],
+            [
+              0.5015304487270601,
+              0.4984695512729399
+            ]
+          ],
+          "D_local_relation": "EQUAL_LOCAL_PROGRESS",
+          "D_selection": null,
+          "A_original17_selection": "gpt-6-luna",
+          "B_original17_selection": "gpt-6-luna",
+          "D_then_C_selection": null,
+          "nearest_formal_training_states": [
+            {
+              "index": 49,
+              "task_id": "pallets__click-2417",
+              "winner": "gpt-6-luna",
+              "distance": 4.4505282085492075
+            },
+            {
+              "index": 9,
+              "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+              "winner": "gpt-6-luna",
+              "distance": 7.360796565388202
+            },
+            {
+              "index": 16,
+              "task_id": "oscal-compass__compliance-trestle-1578",
+              "winner": "gpt-6-luna",
+              "distance": 9.887529538883257
+            }
+          ],
+          "formal_train_rows": 19,
+          "candidate_train_rows": 47,
+          "local_train_rows": 4,
+          "entire_evaluation_repo_excluded": true
+        }
+      ],
+      "repository_leaveout": [
+        {
+          "index": 0,
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 1,
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 2,
+          "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 3,
+          "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 4,
+          "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 5,
+          "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 6,
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 7,
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 8,
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 9,
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 10,
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 11,
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 12,
+          "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 13,
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 14,
+          "task_id": "argoproj__argo-4594",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 15,
+          "task_id": "planetlabs__planet-client-python-553",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6.1-sol",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": "gpt-6.1-sol"
+        },
+        {
+          "index": 16,
+          "task_id": "oscal-compass__compliance-trestle-1578",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 49,
+          "task_id": "pallets__click-2417",
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "winner": "gpt-6-luna",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6-luna",
+          "C_selection": "gpt-6-luna"
+        },
+        {
+          "index": 55,
+          "task_id": "researchobject__ro-crate-py-95",
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "winner": "gpt-6.1-sol",
+          "A_selection": "gpt-6-luna",
+          "B_selection": "gpt-6.1-sol",
+          "C_selection": null
+        }
+      ],
+      "A_training_correct": 17,
+      "A_training_total": 19,
+      "native_new_choices": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "original17_same_fit_new_bidirectional": {
+        "A": 1,
+        "B": 2
+      },
+      "original17_same_fit_new_formal_total": 2,
+      "repository_leaveout_by_method": {
+        "A": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "correct": 11,
+            "total": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "correct": 6,
+            "total": 6
+          }
+        },
+        "B": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "correct": 12,
+            "total": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "correct": 6,
+            "total": 6
+          }
+        },
+        "C": {
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON": {
+            "correct": 10,
+            "total": 13
+          },
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT": {
+            "correct": 6,
+            "total": 6
+          }
+        }
+      }
+    }
+  },
+  "scores_are_pass_probabilities": false,
+  "original_trainer_runs": 0,
+  "new_checkpoint": null,
+  "execution_scope": "BEFORE_STEP009_GRADIENTS_ON_FIXED_STEP006_007_008_ENCODERS",
+  "older_task_ancestor_exposure": {
+    "getmoto__moto-7208": {
+      "L2": 188
+    },
+    "qiskit__qiskit-11466": {
+      "L3": 316
+    },
+    "tox-dev__tox-628": {
+      "L2": 54
+    },
+    "mpmath__mpmath-922": {
+      "L4": 175
+    }
+  },
+  "older_L2_tasks_not_whole_pipeline_unseen": [
+    "getmoto__moto-7208",
+    "tox-dev__tox-628"
+  ],
+  "older_L3_membership_unknown": [
+    "qiskit__qiskit-11466",
+    "pallets__click-2417",
+    "cuthbertlab__music21-1062"
+  ]
+}

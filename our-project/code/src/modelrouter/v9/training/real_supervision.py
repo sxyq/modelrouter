@@ -120,3 +120,53 @@ def prepare_candidate_outcomes(row, split):
             "auxiliary_target": "CANDIDATE_VERIFIER_COMPLETION_AT_RECORDED_HORIZON",
         })
     return observations
+
+
+def prepare_local_quality_relation(initial, candidates, f2p_ids, p2p_ids, *, pair_comparable):
+    """Compare recorded repair sets on two axes without creating a formal preference."""
+    f2p, p2p = set(f2p_ids), set(p2p_ids)
+    fixed = f2p | p2p
+    before = initial["original_test_status"]
+    initial_f2p_failed = {name for name in f2p if before[name] == "FAILED"}
+    initial_p2p_failed = {name for name in p2p if before[name] == "FAILED"}
+    results = []
+    for candidate in candidates:
+        after = candidate["original_test_status"]
+        passed = {name for name in fixed if after[name] == "PASSED"}
+        failed = {name for name in fixed if after[name] == "FAILED"}
+        unknown = {name for name in fixed if before[name] not in ("PASSED", "FAILED")
+                   or after[name] not in ("PASSED", "FAILED")}
+        unknown.update(initial.get("unknown_test_ids", []))
+        unknown.update(candidate.get("unknown_test_ids", []))
+        results.append({
+            "model_id": candidate["model_id"], "fixed_test_ids": sorted(fixed),
+            "initial_f2p_failed_ids": sorted(initial_f2p_failed),
+            "repaired_initial_f2p_ids": sorted(initial_f2p_failed & passed),
+            "initial_p2p_failed_ids": sorted(initial_p2p_failed),
+            "restored_initial_p2p_ids": sorted(initial_p2p_failed & passed),
+            "new_p2p_regressions": sorted({name for name in p2p if before[name] == "PASSED"} & failed),
+            "new_f2p_regressions": sorted({name for name in f2p if before[name] == "PASSED"} & failed),
+            "unknown_test_ids": sorted(unknown),
+            "trusted_outcome": candidate["trusted_outcome"],
+        })
+    trusted = (pair_comparable and initial["trusted_outcome"]
+               and all(item["trusted_outcome"] and not item["unknown_test_ids"] for item in results))
+    repairs = [(set(item["repaired_initial_f2p_ids"]), set(item["restored_initial_p2p_ids"]))
+               for item in results]
+    regressions = [(set(item["new_f2p_regressions"]), set(item["new_p2p_regressions"]))
+                   for item in results]
+    dominant = None
+    if trusted:
+        for index, other in ((0, 1), (1, 0)):
+            if (not any(regressions[index])
+                    and all(a >= b for a, b in zip(repairs[index], repairs[other]))
+                    and (repairs[index] != repairs[other] or any(regressions[other]))):
+                dominant = results[index]["model_id"]
+    relationship = ("UNKNOWN" if not trusted else "STRICT_MULTIDIMENSIONAL_DOMINANCE" if dominant else
+                    "NO_LOCAL_IMPROVEMENT" if not any(any(pair) for pair in repairs + regressions) else
+                    "EQUAL_LOCAL_PROGRESS" if repairs[0] == repairs[1] and regressions[0] == regressions[1] else
+                    "INCOMPARABLE_LOCAL_RESULTS")
+    return {"relationship": relationship, "dominant_model_id": dominant,
+            "candidates": results, "pair_comparable": trusted,
+            "auxiliary_target": "RECORDED_F2P_REPAIR_AND_P2P_RESTORATION_RELATION",
+            "formal_preference_created": False}

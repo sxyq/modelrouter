@@ -1,5 +1,13 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-03 · 当前局部关系、祖先范围与一次必要训练
+
+本轮完成：四新任务成对采集、集合分析、A/B/C/D固定Encoder研究、一次009训练及新bn-fit-modify官方三策略。三策略奖励均1，动态B原17条八步全Sol、Router19.046秒，费用高于固定Sol，净收益未成立。两点独立分工信号与完整收益分开。36模型请求、292442已知Token、$.28447344已知参考费，两失败请求及实收/资源费用未知；临时实验文件清理，用户其他修改不发布。
+
+接续main `0265db6d8032f1d944e4352db509ce5420c78b72`；[当前结果](../results/iterations/20261103-v9-local-relations/review.md)。旧比较与P0–P5未重跑。原31保留，新增ro-crate Train质量Sol1、pipdeptree仓库留出费用Luna1，共33。新四任务全部资格为L4，F11只L1–L3；旧Moto/Tox在L2，旧Qiskit/Click/music21候选L3的25%成员未知，旧独立观察身份不等同全流程祖先未见。
+
+旧159份Encoder特征复用、补12次真实前向。B原17条同一参照在未见ro-crate质量和pipdeptree费用状态2/2；A006/007也2/2，有限样本不作稳定通过率。一次原Trainer009仅加入Click费用与ro-crate质量，19状态、30更新、18正确；固定Val准确率升而Loss/Brier/ECE变差，真正未见mpmath仍错。新Dev用原external_dev的bn-fit-modify，B原17条沿原checkpoint入口运行，不另建服务，不用Dev调参。原Serving、权重和用户其他修改保持；原服务器/GPU/模型调用授权继续有效，约一亿Token预计才通知。
+
 ### 2026-11-03 · 晚期Modify、局部集合与配对边界
 
 接续main `c2a4037b77636802120238a865414bf56e426fef`，[本轮结果](../results/iterations/20261103-v9-modify-quality/review.md)。Click28、mpmath82、Stingray72、music2172为新晚截止，原训练候选/仓库留出用途保持。按截止前真实写入恢复原镜像文件，候选起点逐文件内容一致；原轨迹运行时版本未知。8有效生成/7候选修改业务代码，原初始与候选固定测试真实执行。Click首次Luna并行初始化无HTTP，UNKNOWN保留，仅补缺失Luna；原四账户可用、Code Generation未改。

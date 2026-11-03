@@ -1,0 +1,783 @@
+{
+  "run_id": "V9_LAYA_STEP_009",
+  "parent_checkpoint_id": "V9_LAYA_STEP_008-e03",
+  "trainer": "laya.train.train_model",
+  "adjustment": "ADD_CLICK_EQUAL_COST_AND_NEW_ROCRATE_VERIFIED_QUALITY; ORIGINAL_TARGET_AND_PARAMETERS",
+  "training_items": 19,
+  "training_task_ids": [
+    "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+    "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+    "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+    "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+    "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+    "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+    "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+    "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+    "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+    "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+    "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+    "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+    "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+    "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+    "argoproj__argo-4594",
+    "planetlabs__planet-client-python-553",
+    "oscal-compass__compliance-trestle-1578",
+    "pallets__click-2417",
+    "researchobject__ro-crate-py-95"
+  ],
+  "training_skipped": {},
+  "config": {
+    "epochs": 3,
+    "micro_batch": 2,
+    "grad_accum": 1,
+    "encoder_lr": 2.5e-05,
+    "head_lr": 0.0001,
+    "min_lr": 1e-06,
+    "weight_decay": 0.01,
+    "grad_clip": 1.0,
+    "loss": "soft-ce",
+    "rl_samples": 4,
+    "sigma_start": 0.4,
+    "sigma_end": 0.1,
+    "w_sph": 0.75,
+    "w_rps": 1.0,
+    "shuffle_options": [
+      "choice"
+    ],
+    "option_layout": null,
+    "freeze_encoder": false,
+    "calib_max": 400,
+    "calib_frac": 0.0,
+    "calib_seed": 20260922,
+    "seed": 42,
+    "max_len": 5120,
+    "head_max_len": 512,
+    "amp": true,
+    "gradient_checkpointing": true,
+    "log_every": 8,
+    "label_smoothing": 0.0,
+    "text_column": "text",
+    "label_column": "label",
+    "question_id": "label",
+    "instructions": null,
+    "eval_data": null,
+    "target_error": 0.1,
+    "min_abstain_n": 10
+  },
+  "heldout_task_ids": [
+    "getmoto__moto-7208",
+    "qiskit__qiskit-11466",
+    "tox-dev__tox-628",
+    "mpmath__mpmath-922",
+    "tox-dev__sphinx-autodoc-typehints-537",
+    "tox-dev__pipdeptree-171"
+  ],
+  "teacher_calls": 0,
+  "status": "completed",
+  "history": [
+    {
+      "epoch": 0,
+      "train_loss": 0.3720912320539355
+    },
+    {
+      "epoch": 1,
+      "train_loss": 0.4312110186205246
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.0032848619695869273
+    }
+  ],
+  "optimizer_updates": 30,
+  "device": "cuda",
+  "validation_source": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/val/S1.jsonl",
+  "validation_material": {
+    "rows": 561,
+    "items": 561,
+    "skipped": {}
+  },
+  "serving_replaced": false,
+  "gpu_wait_ms": 0.01541338860988617,
+  "device_to_gpu_ms": 726.9180417060852,
+  "training_losses": [
+    0.3720912320539355,
+    0.4312110186205246,
+    0.0032848619695869273
+  ],
+  "training_seconds": 33.80911095067859,
+  "checkpoint_id": "V9_LAYA_STEP_009-e03",
+  "checkpoint_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_009/checkpoints/epoch_03",
+  "validation": {
+    "S1": {
+      "items": 561,
+      "loss": 0.636,
+      "accuracy": 0.6898,
+      "mean_confidence": 0.7686,
+      "ece": 0.09,
+      "brier": 0.4272,
+      "brier_top1": 0.2136,
+      "by_type": {
+        "choice": {
+          "items": 561,
+          "loss": 0.636,
+          "accuracy": 0.6898,
+          "mean_confidence": 0.7686,
+          "ece": 0.09,
+          "brier": 0.4272,
+          "brier_top1": 0.2136
+        }
+      },
+      "num_classes": 2,
+      "majority_class": 1,
+      "majority_baseline_accuracy": 0.5258,
+      "majority_balanced_accuracy": 0.5,
+      "prior_baseline_loss": 0.6918,
+      "balanced_accuracy": 0.6881,
+      "macro_f1": 0.6883,
+      "beats_majority_baseline": true,
+      "gold_counts": {
+        "0": 266,
+        "1": 295
+      },
+      "pred_counts": {
+        "0": 256,
+        "1": 305
+      },
+      "confusion_matrix": {
+        "tn": 174,
+        "fp": 92,
+        "fn": 82,
+        "tp": 213
+      }
+    }
+  },
+  "validation_seconds": 6.522504113614559,
+  "after_forwards": [
+    {
+      "index": 0,
+      "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.0097,
+        "gpt-6-luna": 0.9903
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3721,
+        "output_tokens": 0,
+        "state_tokens": 3615,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 110.28655990958214,
+      "fallback_used": false
+    },
+    {
+      "index": 1,
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.029,
+        "gpt-6-luna": 0.971
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3957,
+        "output_tokens": 0,
+        "state_tokens": 3851,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 118.03706176578999,
+      "fallback_used": false
+    },
+    {
+      "index": 2,
+      "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9956,
+        "gpt-6-luna": 0.0044
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3938,
+        "output_tokens": 0,
+        "state_tokens": 3832,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 117.94899217784405,
+      "fallback_used": false
+    },
+    {
+      "index": 3,
+      "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.0179,
+        "gpt-6-luna": 0.9821
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3710,
+        "output_tokens": 0,
+        "state_tokens": 3604,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 107.82354511320591,
+      "fallback_used": false
+    },
+    {
+      "index": 4,
+      "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9844,
+        "gpt-6-luna": 0.0156
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 4397,
+        "output_tokens": 0,
+        "state_tokens": 4291,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 137.6203391700983,
+      "fallback_used": false
+    },
+    {
+      "index": 5,
+      "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9826,
+        "gpt-6-luna": 0.0174
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3851,
+        "output_tokens": 0,
+        "state_tokens": 3745,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 113.90135250985622,
+      "fallback_used": false
+    },
+    {
+      "index": 6,
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9936,
+        "gpt-6-luna": 0.0064
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3766,
+        "output_tokens": 0,
+        "state_tokens": 3660,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 110.99069938063622,
+      "fallback_used": false
+    },
+    {
+      "index": 7,
+      "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9437,
+        "gpt-6-luna": 0.0563
+      },
+      "correct": false,
+      "usage": {
+        "input_tokens": 4299,
+        "output_tokens": 0,
+        "state_tokens": 4193,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 134.98719595372677,
+      "fallback_used": false
+    },
+    {
+      "index": 8,
+      "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.0173,
+        "gpt-6-luna": 0.9827
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3805,
+        "output_tokens": 0,
+        "state_tokens": 3699,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 110.08462868630886,
+      "fallback_used": false
+    },
+    {
+      "index": 9,
+      "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.0205,
+        "gpt-6-luna": 0.9795
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3957,
+        "output_tokens": 0,
+        "state_tokens": 3851,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 117.75494925677776,
+      "fallback_used": false
+    },
+    {
+      "index": 10,
+      "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6-luna": 0.9825,
+        "gpt-6.1-sol": 0.0175
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3972,
+        "output_tokens": 0,
+        "state_tokens": 3866,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 122.10635468363762,
+      "fallback_used": false
+    },
+    {
+      "index": 11,
+      "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.0249,
+        "gpt-6-luna": 0.9751
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3925,
+        "output_tokens": 0,
+        "state_tokens": 3819,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 117.55992844700813,
+      "fallback_used": false
+    },
+    {
+      "index": 12,
+      "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9762,
+        "gpt-6-luna": 0.0238
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3868,
+        "output_tokens": 0,
+        "state_tokens": 3762,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 112.23691329360008,
+      "fallback_used": false
+    },
+    {
+      "index": 13,
+      "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.0101,
+        "gpt-6-luna": 0.9899
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3651,
+        "output_tokens": 0,
+        "state_tokens": 3545,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 108.88264887034893,
+      "fallback_used": false
+    },
+    {
+      "index": 14,
+      "task_id": "argoproj__argo-4594",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9862,
+        "gpt-6-luna": 0.0138
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 4256,
+        "output_tokens": 0,
+        "state_tokens": 4150,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 126.81171111762524,
+      "fallback_used": false
+    },
+    {
+      "index": 15,
+      "task_id": "planetlabs__planet-client-python-553",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9878,
+        "gpt-6-luna": 0.0122
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3707,
+        "output_tokens": 0,
+        "state_tokens": 3601,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 107.13584534823895,
+      "fallback_used": false
+    },
+    {
+      "index": 16,
+      "task_id": "oscal-compass__compliance-trestle-1578",
+      "role": "ORIGINAL_FORMAL_TRAIN",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.0076,
+        "gpt-6-luna": 0.9924
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3773,
+        "output_tokens": 0,
+        "state_tokens": 3667,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 108.3737201988697,
+      "fallback_used": false
+    },
+    {
+      "index": 17,
+      "task_id": "getmoto__moto-7208",
+      "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.3568,
+        "gpt-6-luna": 0.6432
+      },
+      "correct": false,
+      "usage": {
+        "input_tokens": 4229,
+        "output_tokens": 0,
+        "state_tokens": 4123,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 135.59980876743793,
+      "fallback_used": false
+    },
+    {
+      "index": 18,
+      "task_id": "qiskit__qiskit-11466",
+      "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.7605,
+        "gpt-6-luna": 0.2395
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3818,
+        "output_tokens": 0,
+        "state_tokens": 3712,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 112.22650110721588,
+      "fallback_used": false
+    },
+    {
+      "index": 19,
+      "task_id": "tox-dev__tox-628",
+      "role": "EXPOSED_INDEPENDENT_OBSERVATION",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.1069,
+        "gpt-6-luna": 0.8931
+      },
+      "correct": false,
+      "usage": {
+        "input_tokens": 3816,
+        "output_tokens": 0,
+        "state_tokens": 3710,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 111.03316955268383,
+      "fallback_used": false
+    },
+    {
+      "index": 49,
+      "task_id": "pallets__click-2417",
+      "role": "TRAIN_NEW_MODIFY",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.0407,
+        "gpt-6-luna": 0.9593
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3731,
+        "output_tokens": 0,
+        "state_tokens": 3625,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 110.65155453979969,
+      "fallback_used": false
+    },
+    {
+      "index": 50,
+      "task_id": "mpmath__mpmath-922",
+      "role": "EXPOSED_REPOSITORY_HOLDOUT_MODIFY",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.0995,
+        "gpt-6-luna": 0.9005
+      },
+      "correct": false,
+      "usage": {
+        "input_tokens": 3878,
+        "output_tokens": 0,
+        "state_tokens": 3772,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 114.97367173433304,
+      "fallback_used": false
+    },
+    {
+      "index": 51,
+      "task_id": "stingraysoftware__stingray-234",
+      "role": "TRAIN_NEW_MODIFY",
+      "expected": null,
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9349,
+        "gpt-6-luna": 0.0651
+      },
+      "correct": null,
+      "usage": {
+        "input_tokens": 3629,
+        "output_tokens": 0,
+        "state_tokens": 3523,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 105.47252558171749,
+      "fallback_used": false
+    },
+    {
+      "index": 52,
+      "task_id": "cuthbertlab__music21-1062",
+      "role": "EXPOSED_REPOSITORY_HOLDOUT_MODIFY",
+      "expected": null,
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9645,
+        "gpt-6-luna": 0.0355
+      },
+      "correct": null,
+      "usage": {
+        "input_tokens": 4120,
+        "output_tokens": 0,
+        "state_tokens": 4014,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 126.9427090883255,
+      "fallback_used": false
+    },
+    {
+      "index": 53,
+      "task_id": "pypa__build-365",
+      "role": "NEW_INDEPENDENT_TRAIN",
+      "expected": null,
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9036,
+        "gpt-6-luna": 0.0964
+      },
+      "correct": null,
+      "usage": {
+        "input_tokens": 3730,
+        "output_tokens": 0,
+        "state_tokens": 3624,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 110.44212803244591,
+      "fallback_used": false
+    },
+    {
+      "index": 54,
+      "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+      "role": "NEW_REPOSITORY_HOLDOUT",
+      "expected": null,
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9431,
+        "gpt-6-luna": 0.0569
+      },
+      "correct": null,
+      "usage": {
+        "input_tokens": 3773,
+        "output_tokens": 0,
+        "state_tokens": 3667,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 108.82994160056114,
+      "fallback_used": false
+    },
+    {
+      "index": 55,
+      "task_id": "researchobject__ro-crate-py-95",
+      "role": "NEW_INDEPENDENT_TRAIN",
+      "expected": "gpt-6.1-sol",
+      "selected_model": "gpt-6.1-sol",
+      "probabilities": {
+        "gpt-6.1-sol": 0.9588,
+        "gpt-6-luna": 0.0412
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3644,
+        "output_tokens": 0,
+        "state_tokens": 3538,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 104.32700626552105,
+      "fallback_used": false
+    },
+    {
+      "index": 56,
+      "task_id": "tox-dev__pipdeptree-171",
+      "role": "NEW_REPOSITORY_HOLDOUT",
+      "expected": "gpt-6-luna",
+      "selected_model": "gpt-6-luna",
+      "probabilities": {
+        "gpt-6.1-sol": 0.0794,
+        "gpt-6-luna": 0.9206
+      },
+      "correct": true,
+      "usage": {
+        "input_tokens": 3947,
+        "output_tokens": 0,
+        "state_tokens": 3841,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      },
+      "inference_ms": 115.5383549630642,
+      "fallback_used": false
+    }
+  ],
+  "gpu_peak_memory_bytes": 8352944128,
+  "device_to_cpu_ms": 1797.295616939664,
+  "elapsed_seconds": 52.98532825149596,
+  "epoch_index_base": 0,
+  "old_checkpoint_weight_files_changed": false,
+  "training_correct": 18,
+  "older_holdout_correct": 1,
+  "older_holdout_total": 4,
+  "whole_pipeline_unseen_old_quality_correct": 0,
+  "whole_pipeline_unseen_old_quality_total": 1
+}

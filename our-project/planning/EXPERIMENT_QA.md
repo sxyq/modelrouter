@@ -1,5 +1,11 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**11-03当前质量—费用定义**：[当前结果](../results/iterations/20261103-v9-local-relations/review.md)。双方向包括Sol独过时选Sol、双方均过时选较低费率Luna，Luna绝对质量独胜不是必要条件。多维局部关系分别采用F2P修复、已有P2P失败恢复与两种新增回归集合，不给测试任意权重，不覆盖正式STEP_LEVEL_PREFERENCE。music21旧P2P恢复与Sphinx新F2P优势能被表达；pipdeptree动作前收集错误仍为局部UNKNOWN，动作后双27/27可形成正式费用偏好。
+
+新bn-fit-modify三策略均官方成功；动态B17八步全Sol、切换0、Router19.046秒、参考费高于固定Sol，不建立选择收益。动态首次Sol Responses403未取得动作，改用真实支持的Chat Completions后只重启该分支；失败不当作质量结果，用量未知保留。完整任务结果不由两点离线选择替代，原Serving不晋升。
+
+四新任务用途事前确定：Build/ro-crate为Train候选、Sphinx/pipdeptree为仓库留出。原31保留，新增质量Sol1及费用Luna1。B原17条同一拟合在两个未见正式状态2/2，A006/007原17条也2/2，不能唯一归因于质量目标。C在ro-crate预测双方失败，D常把Build无改善判为Sol优势，局部目标未证明迁移。一次009训练19条18正确，真正未见mpmath仍错，不重复相同训练。新原Harbor Dev三策略评价B原17条，源任务、Evaluator、Test隔离与Serving不变。
+
 **11-03晚期状态与局部目标结论**：[本轮结果](../results/iterations/20261103-v9-modify-quality/review.md)。四个新晚截止按真实历史恢复源码，消息与文件起点一致；运行时版本未报告。两正式新增：Click等质量费用Luna1、仓库留出mpmath质量Sol1；旧29保持，共31。Stingray双未完成下修复8对2严格包含且无新P2P失败，只作局部信号，不改STEP_LEVEL_PREFERENCE。music21只恢复P2P一项，无F2P支配。候选自身信任、配对共享条件及正式赢家三层已在原准备入口分开。
 
 A/B/C固定Encoder参照实际比较，旧特征147复用、新前向12；C45行未在独立任务形成双方向选择，008新4状态全Luna、独立质量0/4。仅Train费用新增、质量继续留出、局部辅助目标无跨仓库评价依据，因此不改原Trainer目标、不启动STEP009、不开展新完整Dev。原Val/Serving/用户修改保持。8有效HTTP/204230Token/$0.26692865参考费，首次无HTTP初始化错误UNKNOWN；实收/完整资源未知。本轮所需实验与发布完成，后续未证明问题另列。

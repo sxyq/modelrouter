@@ -1,0 +1,121 @@
+{
+  "provenance": {
+    "source_id": "TRA-001",
+    "task_id": "pypa__build-365",
+    "repo": "pypa/build",
+    "episode_id": "26f3c004-ea1d-4a91-a73b-901476306151",
+    "observed_through_step": 32,
+    "message_cutoff_exclusive": 66,
+    "base_commit": "cccaf931f88dff9e21ce89570e017278e7364dc6",
+    "split": "train",
+    "train_eligible": true,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "sampling_purpose": "TRAIN_CANDIDATE"
+  },
+  "gradient_use": false,
+  "supervision_type": "STEP_LEVEL_PREFERENCE",
+  "selection_scope": "MODEL_ONLY",
+  "candidate_actions": [
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "native_effort": "low"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "native_effort": "low"
+    }
+  ],
+  "candidate_results": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "action_id": "gpt-6.1-sol:low",
+      "native_effort": "low",
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.055891,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "same_restored_filesystem": true,
+      "actual_modified_files": [
+        "build/src/build/__init__.py"
+      ],
+      "passed": 47,
+      "failed": 7,
+      "unknown_test_ids": [],
+      "verification_record": "sol/original_test_results.json",
+      "verification_horizon": "ONE_NATIVE_AGENT_STEP",
+      "usage": {
+        "total_prompt_tokens": 20285,
+        "total_completion_tokens": 518,
+        "total_reasoning_tokens": 8,
+        "total_cached_tokens": null
+      },
+      "elapsed_time_sec": 97.93923408398405,
+      "teacher_calls": 0,
+      "post_verifier_test_artifacts": [
+        "build/tests/packages/test-no-prepare/build/lib/backend_no_prepare.py",
+        "build/tests/packages/test-no-prepare/test_no_prepare.egg-info/PKG-INFO",
+        "build/tests/packages/test-no-prepare/test_no_prepare.egg-info/SOURCES.txt",
+        "build/tests/packages/test-no-prepare/test_no_prepare.egg-info/dependency_links.txt",
+        "build/tests/packages/test-no-prepare/test_no_prepare.egg-info/top_level.txt"
+      ],
+      "business_source_modified_files": [
+        "build/src/build/__init__.py"
+      ]
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "action_id": "gpt-6-luna:low",
+      "native_effort": "low",
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.0019951,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "same_restored_filesystem": true,
+      "actual_modified_files": [],
+      "passed": 47,
+      "failed": 7,
+      "unknown_test_ids": [],
+      "verification_record": "luna/original_test_results.json",
+      "verification_horizon": "ONE_NATIVE_AGENT_STEP",
+      "usage": {
+        "total_prompt_tokens": 19246,
+        "total_completion_tokens": 141,
+        "total_reasoning_tokens": 0,
+        "total_cached_tokens": 0
+      },
+      "elapsed_time_sec": 29.902340417029336,
+      "teacher_calls": 0,
+      "post_verifier_test_artifacts": [
+        "build/tests/packages/test-no-prepare/build/lib/backend_no_prepare.py",
+        "build/tests/packages/test-no-prepare/test_no_prepare.egg-info/PKG-INFO",
+        "build/tests/packages/test-no-prepare/test_no_prepare.egg-info/SOURCES.txt",
+        "build/tests/packages/test-no-prepare/test_no_prepare.egg-info/dependency_links.txt",
+        "build/tests/packages/test-no-prepare/test_no_prepare.egg-info/top_level.txt"
+      ],
+      "business_source_modified_files": []
+    }
+  ],
+  "native_efforts_confirmed": false,
+  "comparison_conditions": {
+    "same_observed_messages": true,
+    "same_initial_environment": true,
+    "same_agent_protocol": true,
+    "original_verifier_unchanged": true,
+    "candidate_identity_matched": true,
+    "trusted_outcomes": true
+  },
+  "expected": {},
+  "preference_basis": null,
+  "preparation_reason": "NO_VERIFIED_ACTION"
+}

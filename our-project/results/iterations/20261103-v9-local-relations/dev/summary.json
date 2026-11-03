@@ -1,0 +1,781 @@
+{
+  "task_id": "bn-fit-modify",
+  "strategies": [
+    {
+      "strategy": "fixed_sol",
+      "task_id": "bn-fit-modify",
+      "reward": 1.0,
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "official_artifact_status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "complete_generations": 7,
+      "provider_failures": 0,
+      "prompt_tokens": 20724,
+      "completion_tokens": 2062,
+      "reasoning_tokens": 113,
+      "cache_tokens_status": "PARTLY_UNREPORTED",
+      "model_reference_cost_usd": 0.0344539,
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "selected_models": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol"
+      ],
+      "model_switches": 0,
+      "fallback_calls": 0,
+      "teacher_calls": 0,
+      "router_total_seconds": 0.0021034160163253546,
+      "router_inference_seconds": null,
+      "router_initialization_seconds": null,
+      "router_device_transfer_seconds": null,
+      "router_gpu_wait_seconds": null,
+      "router_calls": [
+        {
+          "step": 0,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.8064160356298089,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 1,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.3708750009536743,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 2,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.279415980912745,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 3,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.14124996960163116,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 4,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.13591698370873928,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 5,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.21891703363507986,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 6,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.15062501188367605,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        }
+      ],
+      "router_gpu_peak_bytes": null,
+      "trial_total_seconds": 566.395795,
+      "phase_seconds": {
+        "environment_setup": 190.903813,
+        "agent_setup": 0.005061,
+        "agent_execution": 87.714254,
+        "verifier": 279.940376
+      },
+      "requested_returned_models_match": true,
+      "physical_backend_independently_confirmed": false,
+      "original_evaluator_artifacts": "dev/official_evaluator/fixed_sol",
+      "original_private_trial_result": "our-project/results/iterations/20261103-v9-local-relations/dev/bn-fit-modify/fixed_sol/jobs/fixed_sol/bn-fit-modify__cZ8ivPu/result.json",
+      "model_calls": [
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 2089,
+          "completion_tokens": 122,
+          "cached_tokens": null,
+          "cache_write_tokens": 2086,
+          "cost_usd": 0.006441
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 2329,
+          "completion_tokens": 64,
+          "cached_tokens": 2086,
+          "cache_write_tokens": 240,
+          "cost_usd": 0.0014546
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 2474,
+          "completion_tokens": 139,
+          "cached_tokens": 2326,
+          "cache_write_tokens": 145,
+          "cost_usd": 0.0019911
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 2849,
+          "completion_tokens": 41,
+          "cached_tokens": 2471,
+          "cache_write_tokens": 375,
+          "cost_usd": 0.0016006
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 3013,
+          "completion_tokens": 31,
+          "cached_tokens": 2846,
+          "cache_write_tokens": 164,
+          "cost_usd": 0.0010106
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 3083,
+          "completion_tokens": 1502,
+          "cached_tokens": 3010,
+          "cache_write_tokens": 70,
+          "cost_usd": 0.015502
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 4887,
+          "completion_tokens": 163,
+          "cached_tokens": 3080,
+          "cache_write_tokens": 1804,
+          "cost_usd": 0.006454
+        }
+      ]
+    },
+    {
+      "strategy": "fixed_luna",
+      "task_id": "bn-fit-modify",
+      "reward": 1.0,
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "official_artifact_status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "complete_generations": 11,
+      "provider_failures": 0,
+      "prompt_tokens": 89410,
+      "completion_tokens": 2889,
+      "reasoning_tokens": 483,
+      "cache_tokens_status": "PARTLY_UNREPORTED",
+      "model_reference_cost_usd": 0.00702773,
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "selected_models": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "model_switches": 0,
+      "fallback_calls": 0,
+      "teacher_calls": 0,
+      "router_total_seconds": 0.004880541819147766,
+      "router_inference_seconds": null,
+      "router_initialization_seconds": null,
+      "router_device_transfer_seconds": null,
+      "router_gpu_wait_seconds": null,
+      "router_calls": [
+        {
+          "step": 0,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 1.6139999497681856,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 1,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.11924991849809885,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 2,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.32283400651067495,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 3,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.21579198073595762,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 4,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.26666594203561544,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 5,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.350042013451457,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 6,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.20262505859136581,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 7,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.29200001154094934,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 8,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.13824994675815105,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 9,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.9068329818546772,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 10,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.4522500094026327,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        }
+      ],
+      "router_gpu_peak_bytes": null,
+      "trial_total_seconds": 629.916601,
+      "phase_seconds": {
+        "environment_setup": 190.904847,
+        "agent_setup": 0.001801,
+        "agent_execution": 130.67093,
+        "verifier": 301.93021
+      },
+      "requested_returned_models_match": true,
+      "physical_backend_independently_confirmed": false,
+      "original_evaluator_artifacts": "dev/official_evaluator/fixed_luna",
+      "original_private_trial_result": "our-project/results/iterations/20261103-v9-local-relations/dev/bn-fit-modify/fixed_luna/jobs/fixed_luna/bn-fit-modify__82tgz4N/result.json",
+      "model_calls": [
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 2089,
+          "completion_tokens": 449,
+          "cached_tokens": null,
+          "cache_write_tokens": 2086,
+          "cost_usd": 0.00048555
+        },
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 1227,
+          "completion_tokens": 156,
+          "cached_tokens": 1024,
+          "cache_write_tokens": null,
+          "cost_usd": 0.00010854
+        },
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 6031,
+          "completion_tokens": 81,
+          "cached_tokens": null,
+          "cache_write_tokens": null,
+          "cost_usd": 0.0006436
+        },
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 20529,
+          "completion_tokens": 207,
+          "cached_tokens": null,
+          "cache_write_tokens": null,
+          "cost_usd": 0.0021564
+        },
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 6727,
+          "completion_tokens": 376,
+          "cached_tokens": 5888,
+          "cache_write_tokens": null,
+          "cost_usd": 0.00033078
+        },
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 7326,
+          "completion_tokens": 455,
+          "cached_tokens": 6528,
+          "cache_write_tokens": null,
+          "cost_usd": 0.00037258
+        },
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 7820,
+          "completion_tokens": 134,
+          "cached_tokens": null,
+          "cache_write_tokens": null,
+          "cost_usd": 0.000849
+        },
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 8679,
+          "completion_tokens": 533,
+          "cached_tokens": 7168,
+          "cache_write_tokens": null,
+          "cost_usd": 0.00048928
+        },
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 9281,
+          "completion_tokens": 378,
+          "cached_tokens": null,
+          "cache_write_tokens": null,
+          "cost_usd": 0.0011171
+        },
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 9774,
+          "completion_tokens": 95,
+          "cached_tokens": 7680,
+          "cache_write_tokens": null,
+          "cost_usd": 0.0003337
+        },
+        {
+          "model": "gpt-6-luna",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 9927,
+          "completion_tokens": 25,
+          "cached_tokens": 9600,
+          "cache_write_tokens": null,
+          "cost_usd": 0.0001412
+        }
+      ]
+    },
+    {
+      "strategy": "dynamic",
+      "task_id": "bn-fit-modify",
+      "reward": 1.0,
+      "evidence_scope": "REAL_AGENT_OFFICIAL_EVAL",
+      "official_artifact_status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "complete_generations": 8,
+      "provider_failures": 0,
+      "prompt_tokens": 32605,
+      "completion_tokens": 2960,
+      "reasoning_tokens": 112,
+      "cache_tokens_status": "PARTLY_UNREPORTED",
+      "model_reference_cost_usd": 0.0444189,
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "selected_models": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol"
+      ],
+      "model_switches": 0,
+      "fallback_calls": 0,
+      "teacher_calls": 0,
+      "router_total_seconds": 19.046084751025774,
+      "router_inference_seconds": 2.8407173696905375,
+      "router_initialization_seconds": 6.637269655242562,
+      "router_device_transfer_seconds": 8.77532116137445,
+      "router_gpu_wait_seconds": 0.00010089389979839325,
+      "router_calls": [
+        {
+          "step": 0,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 11842.850707937032,
+          "inference_latency_ms": 2176.160756498575,
+          "router_initialization_ms": 6637.269655242562,
+          "router_gpu_wait_ms": 0.01397542655467987,
+          "router_device_transfer_ms": 2321.7073511332273,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.5258876427194333,
+              0.2589900153688376,
+              0.21512234191172905
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 1,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 1205.4040000075474,
+          "inference_latency_ms": 80.89501410722733,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.010928139090538025,
+          "router_device_transfer_ms": 1111.651847139001,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.7142985990250322,
+              0.22750797962457164,
+              0.05819342135039596
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 2,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 979.5489999232814,
+          "inference_latency_ms": 84.86004173755646,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.025175511837005615,
+          "router_device_transfer_ms": 877.4468954652548,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.7264055617311542,
+              0.2242522710244027,
+              0.04934216724444279
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 3,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 952.5150420377031,
+          "inference_latency_ms": 82.35132321715355,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.00838935375213623,
+          "router_device_transfer_ms": 860.6377523392439,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.6870324885133107,
+              0.2307038677928669,
+              0.08226364369382216
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 4,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 933.4422500105575,
+          "inference_latency_ms": 86.12541295588017,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.016033649444580078,
+          "router_device_transfer_ms": 836.3224882632494,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.64447442089941,
+              0.23740138015116213,
+              0.11812419894942772
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 5,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 1059.9383340450004,
+          "inference_latency_ms": 84.60441045463085,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.009045004844665527,
+          "router_device_transfer_ms": 963.4077791124582,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.4616036025441165,
+              0.2527997265163458,
+              0.2855966709395377
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 6,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 955.4978749947622,
+          "inference_latency_ms": 102.48877480626106,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.008087605237960815,
+          "router_device_transfer_ms": 842.7102360874414,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.6624459570537371,
+              0.23666547902918134,
+              0.10088856391708134
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 7,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 1116.8875420698896,
+          "inference_latency_ms": 143.23163591325283,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.009259209036827087,
+          "router_device_transfer_ms": 961.4368118345737,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.6129025828277976,
+              0.2430495068525264,
+              0.14404791031967573
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        }
+      ],
+      "router_gpu_peak_bytes": null,
+      "trial_total_seconds": 333.46396,
+      "phase_seconds": {
+        "environment_setup": 1.863717,
+        "agent_setup": 0.000209,
+        "agent_execution": 125.244005,
+        "verifier": 200.196311
+      },
+      "requested_returned_models_match": true,
+      "physical_backend_independently_confirmed": false,
+      "original_evaluator_artifacts": "dev/official_evaluator/dynamic",
+      "original_private_trial_result": "our-project/results/iterations/20261103-v9-local-relations/dev/bn-fit-modify/dynamic/jobs/dynamic/bn-fit-modify__o4Vzubd/result.json",
+      "model_calls": [
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 2089,
+          "completion_tokens": 91,
+          "cached_tokens": 2086,
+          "cache_write_tokens": null,
+          "cost_usd": 0.0011246
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 2493,
+          "completion_tokens": 1357,
+          "cached_tokens": 2086,
+          "cache_write_tokens": 404,
+          "cost_usd": 0.0147946
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 3931,
+          "completion_tokens": 70,
+          "cached_tokens": 2490,
+          "cache_write_tokens": 1438,
+          "cost_usd": 0.00455
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 4076,
+          "completion_tokens": 41,
+          "cached_tokens": 3928,
+          "cache_write_tokens": 145,
+          "cost_usd": 0.0011713
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 4187,
+          "completion_tokens": 78,
+          "cached_tokens": 4073,
+          "cache_write_tokens": 111,
+          "cost_usd": 0.0014708
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 4296,
+          "completion_tokens": 50,
+          "cached_tokens": 4184,
+          "cache_write_tokens": 109,
+          "cost_usd": 0.0011969
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 4647,
+          "completion_tokens": 1131,
+          "cached_tokens": 4293,
+          "cache_write_tokens": 351,
+          "cost_usd": 0.0126228
+        },
+        {
+          "model": "gpt-6.1-sol",
+          "http_status": 200,
+          "finish_reason": "tool_calls",
+          "prompt_tokens": 6886,
+          "completion_tokens": 142,
+          "cached_tokens": 4644,
+          "cache_write_tokens": 2239,
+          "cost_usd": 0.0074879
+        }
+      ],
+      "all_attempts_running_seconds": 542.451129,
+      "first_start_to_final_finish_seconds": 649.599198
+    }
+  ],
+  "failed_attempts": [
+    {
+      "strategy": "dynamic",
+      "status": "PROVIDER_FAILURE_NOT_TASK_QUALITY",
+      "http_status": 403,
+      "attempted_model": "gpt-6.1-sol",
+      "original_protocol": "responses",
+      "applied_protocol": "chat_completions",
+      "valid_generations": 0,
+      "model_tokens": null,
+      "model_reference_cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "trial_total_seconds": 208.987169,
+      "verifier_executed": false
+    }
+  ],
+  "completed_official_episodes": 3,
+  "observed_successes": 3,
+  "dynamic_net_benefit_proven": false,
+  "selection_benefit_attribution": "NO_MODEL_SWITCH; DYNAMIC_ALWAYS_SOL",
+  "wall_time_comparison_caveat": "Fixed arms initial image pull; successful dynamic warm image after protocol repair",
+  "same_fit_independent_step_signal_not_episode_benefit": true
+}

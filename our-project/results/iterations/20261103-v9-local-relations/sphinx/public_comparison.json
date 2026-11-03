@@ -1,0 +1,114 @@
+{
+  "provenance": {
+    "source_id": "TRA-001",
+    "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+    "repo": "tox-dev/sphinx-autodoc-typehints",
+    "episode_id": "18a7f3d9-e1ea-47d4-9051-1fba1d733856",
+    "observed_through_step": 32,
+    "message_cutoff_exclusive": 66,
+    "base_commit": "9bc4b14f1c6d919c0154eb3b82c3ecf381b14f07",
+    "split": "train",
+    "train_eligible": true,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "sampling_purpose": "REPOSITORY_HOLDOUT"
+  },
+  "gradient_use": false,
+  "supervision_type": "STEP_LEVEL_PREFERENCE",
+  "selection_scope": "MODEL_ONLY",
+  "candidate_actions": [
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "native_effort": "low"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "native_effort": "low"
+    }
+  ],
+  "candidate_results": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "action_id": "gpt-6.1-sol:low",
+      "native_effort": "low",
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.0447535,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "same_restored_filesystem": true,
+      "actual_modified_files": [
+        "sphinx-autodoc-typehints/src/sphinx_autodoc_typehints/__init__.py",
+        "sphinx-autodoc-typehints/src/sphinx_autodoc_typehints/__init__.py.backup"
+      ],
+      "post_verifier_test_artifacts": [],
+      "passed": 170,
+      "failed": 5,
+      "unknown_test_ids": [],
+      "verification_record": "sol/original_test_results.json",
+      "verification_horizon": "ONE_NATIVE_AGENT_STEP",
+      "usage": {
+        "total_prompt_tokens": 16118,
+        "total_completion_tokens": 446,
+        "total_reasoning_tokens": 13,
+        "total_cached_tokens": null
+      },
+      "elapsed_time_sec": 24.280734124942683,
+      "teacher_calls": 0,
+      "business_source_modified_files": [
+        "sphinx-autodoc-typehints/src/sphinx_autodoc_typehints/__init__.py"
+      ]
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "action_id": "gpt-6-luna:low",
+      "native_effort": "low",
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.00030306,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "same_restored_filesystem": true,
+      "actual_modified_files": [
+        "sphinx-autodoc-typehints/src/sphinx_autodoc_typehints/__init__.py"
+      ],
+      "post_verifier_test_artifacts": [],
+      "passed": 166,
+      "failed": 9,
+      "unknown_test_ids": [],
+      "verification_record": "luna/original_test_results.json",
+      "verification_horizon": "ONE_NATIVE_AGENT_STEP",
+      "usage": {
+        "total_prompt_tokens": 15079,
+        "total_completion_tokens": 286,
+        "total_reasoning_tokens": 0,
+        "total_cached_tokens": 14976
+      },
+      "elapsed_time_sec": 65.28698562493082,
+      "teacher_calls": 0,
+      "business_source_modified_files": [
+        "sphinx-autodoc-typehints/src/sphinx_autodoc_typehints/__init__.py"
+      ]
+    }
+  ],
+  "native_efforts_confirmed": false,
+  "comparison_conditions": {
+    "same_observed_messages": true,
+    "same_initial_environment": true,
+    "same_agent_protocol": true,
+    "original_verifier_unchanged": true,
+    "candidate_identity_matched": true,
+    "trusted_outcomes": true
+  },
+  "expected": {},
+  "preference_basis": null,
+  "preparation_reason": "NO_VERIFIED_ACTION"
+}

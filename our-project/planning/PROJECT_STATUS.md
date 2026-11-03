@@ -1,5 +1,11 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-03局部关系与真正新任务**：[当前结果](../results/iterations/20261103-v9-local-relations/review.md)。Build、Sphinx、ro-crate、pipdeptree四任务全部资格为L4，F11只使用L1–L3，且未进入STEP002–008显式Train材料。恢复真实晚期文件与完整消息后：Build双47/54无改善；Sphinx170/175对166/175，仅Sol局部严格优势；ro-crate17/17对14/17，新增Train质量Sol1；pipdeptree双27/27，新增仓库留出费用Luna1。原31保留，共33；190候选为54通过、79未通过、57UNKNOWN。Luna断连不算质量失败，缺失用量保持未知。
+
+旧music21恢复已有P2P失败1，现在表达为辅助多维优势，不改变正式一步赢家。B原17条同一固定Encoder参照在未见ro-crate质量状态和pipdeptree同过费用状态2/2，认可质量—费用双方向价值，不要求Luna质量独胜。原生006全Sol、007/008全Luna。一次原Trainer形成009：19状态18正确，原S1固定Val561项准确率.6809→.6898，Loss/Brier/ECE变差；旧四观察1/4，但Moto/Tox在祖先L2、Qiskit在候选L3，不能统称全流程未见；真正未见mpmath仍错。新Dev选择原external_dev的bn-fit-modify，动态采用B原17条，不用Dev选参数。Serving和旧权重保持。
+
+bn-fit-modify三策略已完成原Harbor/官方Evaluator，奖励均1；动态B原17条8步全Sol、切换0、Router19.046秒，参考费$.04441890高于固定Sol$.03445390，未证明净收益。动态完成分支复用镜像，不能用冷热差异声称时间收益。旧段落中把“缺独立Luna质量独胜”视为双方向必要条件的判断由本轮替代，历史执行事实保留。全轮36请求、292442已知Token、$.28447344已知参考费；两失败请求Token、供应商实收和资源USD仍未知。本轮执行与公开交付完成。
+
 **11-03晚期Modify与局部质量研究已完成**：[最新结果](../results/iterations/20261103-v9-modify-quality/review.md)。四原Train任务的新晚截止恢复了真实历史写入与候选相同文件起点；公开轨迹运行时Git版本仍未知。8次有效真实生成，7个候选改源码：Click双4/4新增Luna等质量费用1；留出mpmath Sol12/12对Luna11/12新增Sol质量1；Stingray双失败但Sol修复8项严格包含Luna2项且无新P2P失败；music21 Sol仅消除原P2P失败1。局部信号不混入旧赢家。原29保留、累计31；182候选中51通过/74未通过/57UNKNOWN。prepare.py与real_supervision.py分别保留单候选信任、配对一致性和正式赢家条件。
 
 新增Train正式偏好仅费用，mpmath质量继续留出。A/B/C真实分析复用147份特征、补12次GPU前向；C45行未证明双方向迁移，原008新4状态仍全Luna、独立质量0/4，固定Sol4/4。新Trainer/STEP009/完整Dev均0，Serving与旧权重未换。204230 Token、参考费$0.26692865，实收/资源费未知；K2两核心结论及V9五RQ仍未闭环。本轮执行与发布完成，后续问题见结果，不重复早期读取或旧Dev。

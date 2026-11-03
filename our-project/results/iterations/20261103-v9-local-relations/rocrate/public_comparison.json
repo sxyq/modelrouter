@@ -1,0 +1,112 @@
+{
+  "provenance": {
+    "source_id": "TRA-001",
+    "task_id": "researchobject__ro-crate-py-95",
+    "repo": "ResearchObject/ro-crate-py",
+    "episode_id": "0a65813c-ccca-49ec-9758-9d16502bf1d6",
+    "observed_through_step": 25,
+    "message_cutoff_exclusive": 52,
+    "base_commit": "7a5d25f3f4f8f4ca68f42cc582cf61378589bbe2",
+    "split": "train",
+    "train_eligible": true,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "Apache-2.0",
+    "sampling_purpose": "TRAIN_CANDIDATE"
+  },
+  "gradient_use": false,
+  "supervision_type": "STEP_LEVEL_PREFERENCE",
+  "selection_scope": "MODEL_ONLY",
+  "candidate_actions": [
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol",
+      "native_effort": "low"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "native_effort": "low"
+    }
+  ],
+  "candidate_results": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "action_id": "gpt-6.1-sol:low",
+      "native_effort": "low",
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": true,
+      "model_rate_cost_usd": 0.0616785,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "same_restored_filesystem": true,
+      "actual_modified_files": [
+        "ro-crate-py/rocrate/rocrate.py",
+        "tmp/out_crate/ro-crate-metadata.json"
+      ],
+      "post_verifier_test_artifacts": [],
+      "passed": 17,
+      "failed": 0,
+      "unknown_test_ids": [],
+      "verification_record": "sol/original_test_results.json",
+      "verification_horizon": "ONE_NATIVE_AGENT_STEP",
+      "usage": {
+        "total_prompt_tokens": 21556,
+        "total_completion_tokens": 779,
+        "total_reasoning_tokens": 43,
+        "total_cached_tokens": null
+      },
+      "elapsed_time_sec": 24.77979833399877,
+      "teacher_calls": 0,
+      "business_source_modified_files": [
+        "ro-crate-py/rocrate/rocrate.py"
+      ]
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "action_id": "gpt-6-luna:low",
+      "native_effort": "low",
+      "requested_native_effort": "low",
+      "native_effort_status": "NOT_REPORTED",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.0025693,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "same_restored_filesystem": true,
+      "actual_modified_files": [],
+      "post_verifier_test_artifacts": [],
+      "passed": 14,
+      "failed": 3,
+      "unknown_test_ids": [],
+      "verification_record": "luna/original_test_results.json",
+      "verification_horizon": "ONE_NATIVE_AGENT_STEP",
+      "usage": {
+        "total_prompt_tokens": 24893,
+        "total_completion_tokens": 160,
+        "total_reasoning_tokens": null,
+        "total_cached_tokens": null
+      },
+      "elapsed_time_sec": 12.722047957940958,
+      "teacher_calls": 0,
+      "business_source_modified_files": []
+    }
+  ],
+  "native_efforts_confirmed": false,
+  "comparison_conditions": {
+    "same_observed_messages": true,
+    "same_initial_environment": true,
+    "same_agent_protocol": true,
+    "original_verifier_unchanged": true,
+    "candidate_identity_matched": true,
+    "trusted_outcomes": true
+  },
+  "expected": {
+    "step_model_preference": "gpt-6.1-sol"
+  },
+  "preference_basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+  "preparation_reason": null
+}
