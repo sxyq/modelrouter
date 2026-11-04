@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-05跨任务质量关系本批完成**：[实际结果](../results/iterations/20261104-v9-cross-task-relations/review.md)、[汇总](../results/iterations/20261104-v9-cross-task-relations/summary.json)。五个当前Modify共恢复110条原动作，四组配对完成；Optax固定157/157不收费。APIFlask恢复独立/testbed源码评价后Sol25/25、Luna24/25；Datumaro原编译扩展恢复后Sol133/133、Luna131/133；Hikari411/411对410/411，Relé双7/8无局部改善。新增合法Train1、仓库留出2，正式37→40：步骤质量23（Sol18/Luna5）、步骤费用8、任务费用9。原Prepare/S1保存成功，梯度0。
+
+A22→23、B4 27→29、F2P轴8→10（相同5/Sol5）；新两个仓库留出原生/A/B4正式动作均1/2，B4关系1/2，新增Train不改变预测，固定Sol2/2。候选是否有F2P修复的最小辅助目标009/010联合1/2、2/2，但旧/新Train不变、正式动作仍1/2，没有独立费用方向。CWD对齐未改变选择，表示因果收益未证明；不训STEP011、不替Serving、不扩完整Dev，K2两核心证据及五RQ仍未闭环。8有效生成/4次502，266225 Token/$0.2841456参考费；16次CPU前向61272编码Token、含载入362.385秒，GPU allocated0。原Provider仅加入已发生的Luna账户502切换，不改Code Generation凭据；原38组训练及用户其他改动保留。
+
 **11-04局部质量学习本批完成**：[实际结果](../results/iterations/20261104-v9-local-quality-learning/review.md)、[汇总](../results/iterations/20261104-v9-local-quality-learning/summary.json)。复用16组既有比较，八新状态恢复340条历史动作。Dynaconf当前Modify初始29/30，Sol修复剩余F2P后30/30，Luna诊断后29/30，无回归，新增合法Train质量偏好1；原prepare与S1序列化成功，梯度0。正式共37：步骤质量20（Sol15/Luna5）、步骤费用8、任务费用9；记录数不等于独立任务数。Vuex Sol50/50、Luna未运行50项，关系UNKNOWN，不造赢家。其余六状态已完成原范围，其中PennyLane6/6无候选请求、没有新的双模型真值。
 
 完整关系B4旧7观察009/010仍2/7、1/7，正式动作2/3、1/3，固定Sol2/3；摘要扩长及真实阶段未提高旧留出结果。原19行分轴导出随结果发布，不改变正式赢家。新增Train后A22、完整关系27、F2P8（相同4/Sol4），F2P Head任务留出5/8、6/8不能称整个Encoder独立泛化。额外局部信息仍仅Stingray F2P与Narwhals P2P各1；Dynaconf局部与正式赢家重合。实际输入重放在Dyn结果后发生，局部轴改善而009完整关系退化，动作未变；PennyLane事前预测无候选真值，正确率null。4有效生成353386 Token/$0.4537541参考费，126前向484042本地编码Token，实收/缓存/完整资源费用未知。适用A–F完成，不训STEP011、不换Serving、不扩完整Dev；K2两核心证据及五RQ仍未闭环。任务与仓库祖先暴露分别保留；当前用户Docker可用，旧权限段落仅为历史。

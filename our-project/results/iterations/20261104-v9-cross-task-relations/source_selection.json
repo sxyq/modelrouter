@@ -1,0 +1,306 @@
+[
+  {
+    "source_id": "TRA-001",
+    "task_id": "mercadona__rele-160",
+    "repo": "mercadona/rele",
+    "base_commit": "e0a7b3d23034c5b2b69bcabc9454c85b5e1fcd1e",
+    "episode_id": "64647dce-ca95-4a2a-a288-448eb9519657",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 13,
+    "message_cutoff_exclusive": 32,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": 144,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "Apache-2.0",
+    "selected_before_request": "2026-11-04T14:52:45.309020+00:00",
+    "sampling_reason": "Standalone subscription prefix and worker initialization; successful source writes are observed. Preserve separate /testbed and editable /rele, then measure original remaining F2P failures.",
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        34
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        34
+      ]
+    ],
+    "fixed_f2p": 8,
+    "fixed_p2p": 0,
+    "image": "docker.io/swerebenchv2/mercadona-rele:160-e0a7b3d",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/commands/test_runrele.py tests/test_worker.py",
+    "original_parser": "parse_log_pytest",
+    "prior_successful_write_confirmed_by_restoration": true,
+    "restored_tool_actions": 17,
+    "replay_exit_differences": [],
+    "repository_qualification_is_not_encoder_exposure": true,
+    "ancestor_training_scope": "F11 starts from original base; recorded Encoder sources L1/L2 full, L3 25%, not L4. No original S1 task match was recorded. Base pretraining membership unknown."
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "deepmind__optax-467",
+    "repo": "deepmind/optax",
+    "base_commit": "507ce1369241a9c05490bf0e0e020cbf51d249c7",
+    "episode_id": "b736d8c8-b5bf-480d-8ef6-c33cd15c4219",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 18,
+    "message_cutoff_exclusive": 45,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": 495,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "Apache-2.0",
+    "selected_before_request": "2026-11-04T14:52:45.314312+00:00",
+    "sampling_reason": "Numerical loss implementation is written but export remains incomplete. Different mathematical and import mechanism; original fixed numerical tests decide whether collection is informative.",
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        99
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        99
+      ]
+    ],
+    "fixed_f2p": 19,
+    "fixed_p2p": 138,
+    "image": "docker.io/swerebenchv2/deepmind-optax:467-507ce13",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning optax/_src/loss_test.py",
+    "original_parser": "parse_log_pytest",
+    "prior_successful_write_confirmed_by_restoration": true,
+    "restored_tool_actions": 25,
+    "replay_exit_differences": [],
+    "repository_qualification_is_not_encoder_exposure": true,
+    "ancestor_training_scope": "F11 starts from original base; recorded Encoder sources L1/L2 full, L3 25%, not L4. No original S1 task match was recorded. Base pretraining membership unknown."
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "greyli__apiflask-178",
+    "repo": "greyli/apiflask",
+    "base_commit": "a09b449f9198b9929773283fd68b7a0fc2d44967",
+    "episode_id": "5fda8103-c9df-444e-9ec8-91e78c10118d",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 10,
+    "message_cutoff_exclusive": 28,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": 1721,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "selected_before_request": "2026-11-04T14:52:45.318255+00:00",
+    "sampling_reason": "Reserve previously unstudied HTTP exception subclass repository before any outcome. Partial type changes precede remaining custom-error behavior; original fixed tests define quality.",
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        76
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        76
+      ]
+    ],
+    "fixed_f2p": 1,
+    "fixed_p2p": 24,
+    "image": "docker.io/swerebenchv2/greyli-apiflask:178-a09b449",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/test_app.py tests/test_exceptions.py",
+    "original_parser": "parse_log_pytest",
+    "prior_successful_write_confirmed_by_restoration": true,
+    "restored_tool_actions": 16,
+    "replay_exit_differences": [],
+    "repository_qualification_is_not_encoder_exposure": true,
+    "ancestor_training_scope": "F11 starts from original base; recorded Encoder sources L1/L2 full, L3 25%, not L4. No original S1 task match was recorded. Base pretraining membership unknown."
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "openvinotoolkit__datumaro-1138",
+    "repo": "openvinotoolkit/datumaro",
+    "base_commit": "01b4f35cd4b4e9a6ef7fa11d41d3b019ffef1bc5",
+    "episode_id": "0dd28388-88be-4190-9ef7-0414af6871c0",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 25,
+    "message_cutoff_exclusive": 68,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": 2097,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "selected_before_request": "2026-11-04T14:52:45.322242+00:00",
+    "sampling_reason": "Reserve previously unstudied dataset/VCS exception repository before any outcome. Error class has been added but project initialization remains unresolved; preserve original environment adjustment and fixed tests.",
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        128
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        128
+      ]
+    ],
+    "fixed_f2p": 133,
+    "fixed_p2p": 0,
+    "image": "docker.io/swerebenchv2/openvinotoolkit-datumaro:1138-01b4f35",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/integration/cli/test_generator.py tests/integration/cli/test_kitti_raw_format.py tests/integration/cli/test_patch.py tests/integration/cli/test_project.py tests/integration/cli/test_sly_point_cloud_format.py tests/integration/cli/test_utils.py tests/integration/cli/test_video.py tests/integration/cli/test_voc_format.py tests/integration/cli/test_yolo_format.py tests/unit/data_formats/test_yolo_strict_format.py tests/unit/test_fractal_image_generator.py tests/unit/test_images.py tests/unit/test_project.py tests/utils/test_utils.py",
+    "original_parser": "parse_log_pytest",
+    "prior_successful_write_confirmed_by_restoration": true,
+    "restored_tool_actions": 41,
+    "replay_exit_differences": [
+      {
+        "message_index": 50,
+        "recorded_exit": 0,
+        "restored_exit": 1
+      }
+    ],
+    "repository_qualification_is_not_encoder_exposure": true,
+    "ancestor_training_scope": "F11 starts from original base; recorded Encoder sources L1/L2 full, L3 25%, not L4. No original S1 task match was recorded. Base pretraining membership unknown."
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "hikari-py__hikari-2224",
+    "repo": "hikari-py/hikari",
+    "base_commit": "102f3fc832d9109ac095437d765a3d3cf545cfa7",
+    "episode_id": "1a08a16b-b03a-4a01-b4ba-9ba95a1f252d",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 11,
+    "message_cutoff_exclusive": 24,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": 410,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "selected_before_request": "2026-11-04T16:13:44.184170+00:00",
+    "sampling_reason": "Interface source is already changed but implementation has not been changed: inspect the fixed REST parameter test after patch export. Different protocol-removal mechanism. Supplemental Train purpose is fixed before any candidate generation; repository L1/L2 exposure remains recorded, not called globally unseen.",
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        39
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "val",
+          "L4",
+          false
+        ],
+        77
+      ],
+      [
+        [
+          "train",
+          "L1",
+          true
+        ],
+        185
+      ],
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        553
+      ],
+      [
+        [
+          "val",
+          "L3",
+          false
+        ],
+        81
+      ],
+      [
+        [
+          "train",
+          "L2",
+          true
+        ],
+        83
+      ],
+      [
+        [
+          "test",
+          "L3",
+          false
+        ],
+        88
+      ],
+      [
+        [
+          "test",
+          "L4",
+          false
+        ],
+        49
+      ]
+    ],
+    "fixed_f2p": 1,
+    "fixed_p2p": 410,
+    "image": "docker.io/swerebenchv2/hikari-py-hikari:2224-102f3fc",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/hikari/impl/test_rest.py",
+    "original_parser": "parse_log_pytest",
+    "prior_successful_write_confirmed_by_restoration": true,
+    "restored_tool_actions": 11,
+    "replay_exit_differences": [],
+    "repository_qualification_is_not_encoder_exposure": true,
+    "ancestor_training_scope": "Task has L4 Train qualification only; other repository tasks have L1/L2 Train records. Exact ancestor Encoder membership unknown; not an unseen repository claim."
+  }
+]

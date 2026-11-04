@@ -497,7 +497,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 endpoint = (exc.metrics["provider_endpoint_id"] if isinstance(exc, ProviderResponseError)
                             else exc.provider_endpoint_id)
                 retry = (model_spec.model_id == "gpt-6-luna" and endpoint is not None and
-                         (isinstance(exc, urllib.error.HTTPError) and exc.code in (401, 403, 429, 503, 509, 520)
+                         (isinstance(exc, urllib.error.HTTPError) and exc.code in (401, 403, 429, 502, 503, 509, 520)
                           or isinstance(exc, ProviderResponseError) and str(exc) in
                           ("EMPTY_RESPONSE", "INCOMPLETE_RESPONSE", "INCOMPLETE_TOOL_CALL", "rate_limit_error")))
                 attempt = dict(exc.metrics) if isinstance(exc, ProviderResponseError) else {

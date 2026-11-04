@@ -1,5 +1,9 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**11-05跨任务质量与局部目标（沿Q-003/Q-021）**：[本批结果](../results/iterations/20261104-v9-cross-task-relations/review.md)。四组真实比较形成APIFlask/Datumaro两个事前仓库留出Sol质量赢家及Hikari Train Sol质量赢家，正式40；Relé双未完成且无局部改善，不造成本赢家，Optax全过不生成。APIFlask原目录评价有误，复用保存动作恢复为25/25对24/25；Datumaro漏恢复原编译扩展已处理，Sol保存动作源码不变，Luna缺失请求只定向补采。Luna自行调用未提供的shell apply_patch而未改码，固定131/133，是实际动作结果，与4次502无结果分开。
+
+A/B4/F2P旧新Train分别22→23、27→29、8→10，新留出完整关系与正式动作仍1/2，固定Sol2/2。独立候选修复辅助目标010联合2/2是有限不同目标信号，新增Train不改善，不能代替完整关系、最终动作或独立双方向选择。原生/A完整关系不适用，无费用机会则费用正确率null。初始Verifier机会集合不进入Router，留出不入拟合/梯度或调参，原预训练成员未知不当未见。本批不训STEP011、不替Serving、不扩完整Dev；原数据分割、公开许可及Inspect/Effort/K3正式0保持。
+
 **11-04局部关系、真实Modify与独立评价（沿Q-003/Q-021）**：[本批结果](../results/iterations/20261104-v9-local-quality-learning/review.md)。八状态恢复340动作后，Dynaconf当前Modify产生真实F2P差异：Sol30/30、Luna29/30，合法Train质量新增1、正式37；原prepare/S1转换成功，梯度0。Vuex Sol50/50而Luna编译未完成、50 UNKNOWN，不能组成完整关系赢家。PennyLane原固定6/6，未请求候选；它的事前预测没有动作后真值，关系/动作正确率null。四有效请求无Provider异常、353386 Token/$0.4537541参考费，实收未知。
 
 原单赢家、完整关系和局部轴分开评价。B4旧7观察009/010仍2/7、1/7，真实阶段及扩长摘要未提高旧结果；新Train参考A22/B4 27/F2P8，Head任务留出5/8、6/8不是整个Encoder未见。Dyn实际输入重放在结果已知后计算：局部预测较好、009完整关系较差、最终动作不变，不提供独立表示依据。局部组合依赖原Verifier机会集合，不是可部署Router；额外局部信息Train仍仅Stingray/Narwhals各1，回归仅相同类别。祖先任务资格与仓库其他资格/实际梯度范围分别保留，旧研究观察不作最终测试。没有可信新独立双方向选择，不训011、不替Serving、不扩Dev；本批适用工作已完成，科研负结果不等于技术不可行。
