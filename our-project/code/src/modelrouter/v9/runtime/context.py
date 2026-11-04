@@ -10,7 +10,10 @@ from modelrouter.agent.state import StepTrace
 
 TEST_COMMAND = re.compile(r"\b(?:pytest|unittest|ctest)\b|\b(?:npm|pnpm|yarn|cargo|go|mvn)\s+test\b")
 TOOL_FAILURE = re.compile(r"^(?:E\s|FAILED |ERROR |FAIL:)|(?:Error|Exception):|command not found", re.MULTILINE)
-WRITE_COMMAND = re.compile(r"\b(?:cat\s*>|sed\s+-i\b|git\s+apply\b|apply_patch\b)")
+WRITE_COMMAND = re.compile(
+    r"\b(?:cat\s*>|sed\s+-i\b|git\s+apply\b|apply_patch\b|"
+    r"open\([^\n]*,\s*['\"]w['\"]\)|\w+\.write_text\()"
+)
 _EXTENSIONS = ("teacher_assessment", "capability_cards", "capability_snapshot_id",
                "feature_training_status", "agent_context", "continuity")
 _METRIC_FIELDS = ("metric_name", "score_raw", "score_unit", "benchmark_version",
