@@ -1,0 +1,73 @@
+{
+  "formal_preferences_total": 36,
+  "formal_step_quality_preferences": 19,
+  "formal_step_equal_quality_cost_preferences": 8,
+  "formal_task_cost_preferences": 9,
+  "old_saved_s1_train_rows": 20,
+  "old_saved_s1_quality_rows": 14,
+  "old_saved_s1_quality_winners": {"gpt-6.1-sol": 9, "gpt-6-luna": 5},
+  "old_saved_s1_cost_rows": 6,
+  "old_saved_s1_phase_fields": {"verify": 11, "modify": 5, "recover": 1, "unknown": 3},
+  "saved_phase_fields_do_not_prove_remaining_business_failure": true,
+  "reference_formal_train_rows_including_previous_chai": 21,
+  "reference_relation_train_rows_including_previous_brutils": 22,
+  "reference_relation_classes": {
+    "SOL_ONLY_VERIFIED": 9, "LUNA_ONLY_VERIFIED": 5,
+    "BOTH_VERIFIED": 7, "NEITHER_VERIFIED": 1
+  },
+  "new_train_relation_observations": 2,
+  "new_repository_holdout_relation_observations": 2,
+  "new_formal_train_targets": 0,
+  "new_independent_formal_targets": 0,
+  "new_train_auxiliary_strict_dominance": 1,
+  "strict_dominance_task": "narwhals-dev__narwhals-1948",
+  "strict_dominance_axis": "RESTORATION_OF_ONE_PREEXISTING_P2P_FAILURE",
+  "strict_dominance_f2p_repairs": 0,
+  "both_failed_target_collapses_observed_local_difference": true,
+  "source_selection": {
+    "existing_source_rows": 2500,
+    "coarse_cutoffs": 1516,
+    "qualification_record_tasks_in_coarse_pool": 455,
+    "qualified_l4_train_tasks_in_coarse_pool": 139,
+    "coarse_tasks_without_recorded_l1_l3_train_repository_exposure": 19,
+    "restored_task_states": 9,
+    "restored_source_tool_actions": 268,
+    "fully_passing_fixed_ranges_not_requested": [
+      "humbug__php-scoper-598", "webpack-contrib__uglifyjs-webpack-plugin-284", "arb__celebrate-144"
+    ],
+    "unknown_fixed_ranges_not_requested": ["fgnass__node-dev-227", "uber-web__baseui-1645"],
+    "apiflask_not_selected": "Recorded failure followed edits in a directory different from the imported package; not a demonstrated repair opportunity."
+  },
+  "representation": {
+    "task_and_tool_character_budget": 6000,
+    "full_write_command_bodies_are_not_retained_in_router_summary": true,
+    "new_checkpoint_token_window_truncations": 0,
+    "last_observation_and_recent_error_are_retained": true,
+    "omitted_content_caused_selection_errors": null
+  },
+  "evaluation": {
+    "b4_new_holdout_relation_correct": {"009": 0, "010": 0},
+    "b4_new_holdout_relation_total": 2,
+    "b4_previous_holdout_relation_correct": 0,
+    "b4_previous_holdout_relation_total": 2,
+    "formal_action_accuracy": null,
+    "quality_preference_accuracy": null,
+    "cost_preference_accuracy": null,
+    "fixed_sol_recorded_one_step_completions": 0,
+    "fixed_luna_recorded_one_step_completions": 0,
+    "recorded_comparison_states": 4,
+    "new_states_in_fit_or_gradient": 0,
+    "new_checkpoint_forwards": 8,
+    "router_encoded_input_tokens": 32632,
+    "inference_ms_sum": 3095.3146424144506,
+    "inference_ms_min": 111.9823195040226,
+    "inference_ms_max": 2219.9102267622948,
+    "analysis_elapsed_seconds_including_model_loads": 12.87892784923315,
+    "cuda_peak_allocated_bytes": 2026837504
+  },
+  "training_decision": "No STEP011: no new formal Train target, only one local P2P dominance observation, and no independent improvement by existing relation methods. Transport repair does not establish an Encoder defect.",
+  "dev_decision": "No new full Dev: no independently supported quality/cost bidirectional selection advantage over fixed strategies.",
+  "main_obstacle": "Confirmed local-information loss in the completion-only target and insufficient new Train quality diversity; contribution of state representation to overall transfer failure remains unresolved.",
+  "technical_impossibility_established": false,
+  "scores_are_pass_probabilities": false
+}

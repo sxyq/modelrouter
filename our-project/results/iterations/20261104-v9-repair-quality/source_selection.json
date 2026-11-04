@@ -1,0 +1,804 @@
+[
+  {
+    "task_id": "humbug__php-scoper-598",
+    "repo": "humbug/php-scoper",
+    "base_commit": "d0393f0f331493c0ab89faa74e9306764a77b4d0",
+    "episode_id": "7a0b52f7-6eb0-48c9-b2f4-15c05353aa80",
+    "message_cutoff_exclusive": 57,
+    "observed_through_step": 21,
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": null,
+    "source_id": "TRA-001",
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "fixed_f2p": 1,
+    "fixed_p2p": 934,
+    "image": "docker.io/swerebenchv2/humbug-php-scoper:598-d0393f0",
+    "original_test_command": "bin/phpunit --testdox --colors=never",
+    "original_parser": "parse_log_phpunit",
+    "selected_before_request": "2026-11-04T03:20:56.076118+00:00",
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        123
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      {
+        "split": "train",
+        "layer": "L2",
+        "train_eligible": true,
+        "record_count": 142,
+        "task_ids": [
+          "humbug__php-scoper-741",
+          "humbug__php-scoper-882"
+        ]
+      },
+      {
+        "split": "train",
+        "layer": "L4",
+        "train_eligible": true,
+        "record_count": 211,
+        "task_ids": [
+          "humbug__php-scoper-598",
+          "humbug__php-scoper-712"
+        ]
+      },
+      {
+        "split": "test",
+        "layer": "L3",
+        "train_eligible": false,
+        "record_count": 22,
+        "task_ids": [
+          "humbug__php-scoper-629"
+        ]
+      },
+      {
+        "split": "val",
+        "layer": "L3",
+        "train_eligible": false,
+        "record_count": 61,
+        "task_ids": [
+          "humbug__php-scoper-753"
+        ]
+      }
+    ],
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "source_runtime_version": null,
+    "initial": {
+      "passed": 935,
+      "fixed": 935,
+      "resolved": true,
+      "trusted_outcome": true,
+      "exit_code": 2,
+      "unknown_test_ids": [],
+      "outside_fixed_failed": [
+        "Configuration Factory > It cannot create a configuration with an invalid key",
+        "Configuration Factory > It can create a complete configuration",
+        "Add Prefix Command > Get help menu"
+      ],
+      "failed_f2p": [],
+      "failed_p2p": []
+    },
+    "additional_verifications": [],
+    "restoration": {
+      "tool_actions": 34,
+      "exit_mismatches": 0,
+      "image_head": "d0393f0f331493c0ab89faa74e9306764a77b4d0"
+    }
+  },
+  {
+    "task_id": "fgnass__node-dev-227",
+    "repo": "fgnass/node-dev",
+    "base_commit": "b959aeba1371a65d34cb0333470d364c2c46d5b1",
+    "episode_id": "c28fd507-d403-46b9-982a-6af2ad18d17e",
+    "message_cutoff_exclusive": 27,
+    "observed_through_step": 10,
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": null,
+    "source_id": "TRA-001",
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "fixed_f2p": 2,
+    "fixed_p2p": 26,
+    "image": "docker.io/swerebenchv2/fgnass-node-dev:227-b959aeb",
+    "original_test_command": "npm test",
+    "original_parser": "parse_log_js_3",
+    "selected_before_request": "2026-11-04T03:20:56.076118+00:00",
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        71
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      {
+        "split": "train",
+        "layer": "L4",
+        "train_eligible": true,
+        "record_count": 213,
+        "task_ids": [
+          "fgnass__node-dev-227",
+          "fgnass__node-dev-237"
+        ]
+      },
+      {
+        "split": "train",
+        "layer": "L2",
+        "train_eligible": true,
+        "record_count": 113,
+        "task_ids": [
+          "fgnass__node-dev-232",
+          "fgnass__node-dev-262"
+        ]
+      }
+    ],
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "source_runtime_version": null,
+    "initial": {
+      "passed": 12,
+      "fixed": 28,
+      "resolved": null,
+      "trusted_outcome": false,
+      "exit_code": 137,
+      "unknown_test_ids": [
+        "should not match pattern provided",
+        "should *not* set NODE_ENV",
+        "should restart the server twice",
+        "should handle errors",
+        "should watch if no such module",
+        "should run async code un uncaughtException handlers",
+        "should ignore caught errors",
+        "should not show up in argv",
+        "should pass through the exit code",
+        "should conceal the wrapper",
+        "should relay stdin",
+        "should kill the forked processes",
+        "should allow graceful shutdowns",
+        "should send IPC message when configured",
+        "should be resistant to breaking `require.extensions`",
+        "Logs timestamp by default"
+      ],
+      "outside_fixed_failed": [],
+      "failed_f2p": [],
+      "failed_p2p": []
+    },
+    "additional_verifications": [
+      {
+        "record": "init-alone",
+        "passed": 12,
+        "fixed": 28,
+        "resolved": null,
+        "trusted_outcome": false,
+        "exit_code": 143,
+        "unknown_test_ids": [
+          "should not match pattern provided",
+          "should *not* set NODE_ENV",
+          "should restart the server twice",
+          "should handle errors",
+          "should watch if no such module",
+          "should run async code un uncaughtException handlers",
+          "should ignore caught errors",
+          "should not show up in argv",
+          "should pass through the exit code",
+          "should conceal the wrapper",
+          "should relay stdin",
+          "should kill the forked processes",
+          "should allow graceful shutdowns",
+          "should send IPC message when configured",
+          "should be resistant to breaking `require.extensions`",
+          "Logs timestamp by default"
+        ],
+        "outside_fixed_failed": []
+      },
+      {
+        "record": "init-recheck",
+        "passed": 12,
+        "fixed": 28,
+        "resolved": null,
+        "trusted_outcome": false,
+        "exit_code": 143,
+        "unknown_test_ids": [
+          "should not match pattern provided",
+          "should *not* set NODE_ENV",
+          "should restart the server twice",
+          "should handle errors",
+          "should watch if no such module",
+          "should run async code un uncaughtException handlers",
+          "should ignore caught errors",
+          "should not show up in argv",
+          "should pass through the exit code",
+          "should conceal the wrapper",
+          "should relay stdin",
+          "should kill the forked processes",
+          "should allow graceful shutdowns",
+          "should send IPC message when configured",
+          "should be resistant to breaking `require.extensions`",
+          "Logs timestamp by default"
+        ],
+        "outside_fixed_failed": []
+      },
+      {
+        "record": "low-contention-recheck",
+        "passed": 21,
+        "fixed": 28,
+        "resolved": null,
+        "trusted_outcome": false,
+        "exit_code": 1,
+        "unknown_test_ids": [
+          "should not match pattern provided",
+          "should *not* set NODE_ENV",
+          "should allow graceful shutdowns",
+          "should send IPC message when configured",
+          "should be resistant to breaking `require.extensions`",
+          "Logs timestamp by default"
+        ],
+        "outside_fixed_failed": [
+          "child must no longer run",
+          "test unfinished",
+          "child test left in queue: t.test should *not* set NODE_ENV",
+          "child test left in queue: t.test should allow graceful shutdowns",
+          "child test left in queue: t.test should send IPC message when configured",
+          "child test left in queue: t.test should be resistant to breaking `require.extensions`",
+          "child test left in queue: t.test Logs timestamp by default"
+        ]
+      }
+    ],
+    "restoration": {
+      "tool_actions": 15,
+      "exit_mismatches": 0,
+      "image_head": "b959aeba1371a65d34cb0333470d364c2c46d5b1"
+    }
+  },
+  {
+    "task_id": "webpack-contrib__uglifyjs-webpack-plugin-284",
+    "repo": "webpack-contrib/uglifyjs-webpack-plugin",
+    "base_commit": "39ed7c75f499956890be9347e1983070da5cedea",
+    "episode_id": "355965e0-a2fe-40db-8bdf-c5e245882282",
+    "message_cutoff_exclusive": 22,
+    "observed_through_step": 8,
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": 611,
+    "source_id": "TRA-001",
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "fixed_f2p": 1,
+    "fixed_p2p": 62,
+    "image": "docker.io/swerebenchv2/webpack-contrib-uglifyjs-webpack-plugin:284-39ed7c7",
+    "original_test_command": "npm test -- --verbose --no-color",
+    "original_parser": "parse_log_js_4",
+    "selected_before_request": "2026-11-04T12:16:26.716981+08:00",
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        198
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        249
+      ]
+    ],
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "source_runtime_version": null,
+    "initial": {
+      "passed": 63,
+      "fixed": 63,
+      "resolved": true,
+      "trusted_outcome": true,
+      "exit_code": 1,
+      "unknown_test_ids": [],
+      "outside_fixed_failed": [],
+      "failed_f2p": [],
+      "failed_p2p": []
+    },
+    "additional_verifications": [],
+    "restoration": {
+      "tool_actions": 12,
+      "exit_mismatches": 0,
+      "image_head": "39ed7c75f499956890be9347e1983070da5cedea"
+    }
+  },
+  {
+    "task_id": "bustlelabs__shep-69",
+    "repo": "bustlelabs/shep",
+    "base_commit": "56b63883a1a3b83156cbd4d2a5993a9e0fd09885",
+    "episode_id": "cc26ab57-30a1-4f8c-b670-3c1f4163ca30",
+    "message_cutoff_exclusive": 39,
+    "observed_through_step": 13,
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": 2047,
+    "source_id": "TRA-001",
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "fixed_f2p": 1,
+    "fixed_p2p": 15,
+    "image": "docker.io/swerebenchv2/bustlelabs-shep:69-56b6388",
+    "original_test_command": "npx ava --tap",
+    "original_parser": "parse_log_js_3",
+    "selected_before_request": "2026-11-04T12:16:26.717127+08:00",
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        44
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        100
+      ]
+    ],
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "source_runtime_version": null,
+    "initial": {
+      "passed": 15,
+      "fixed": 16,
+      "resolved": false,
+      "trusted_outcome": true,
+      "exit_code": 1,
+      "unknown_test_ids": [],
+      "outside_fixed_failed": [
+        "push › index › before",
+        "pull › index › before"
+      ],
+      "failed_f2p": [
+        "run › index › Throws an exception for unbuilt function"
+      ],
+      "failed_p2p": []
+    },
+    "additional_verifications": [],
+    "restoration": {
+      "tool_actions": 24,
+      "exit_mismatches": 0,
+      "image_head": "56b63883a1a3b83156cbd4d2a5993a9e0fd09885"
+    }
+  },
+  {
+    "task_id": "uber-web__baseui-1645",
+    "repo": "uber-web/baseui",
+    "base_commit": "3ec36b5d43d673c4fa99116d617508300b9764c4",
+    "episode_id": "01ddcedf-4a73-46ba-ad64-68830ac5c93c",
+    "message_cutoff_exclusive": 68,
+    "observed_through_step": 27,
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": 298,
+    "source_id": "TRA-001",
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "fixed_f2p": 1,
+    "fixed_p2p": 385,
+    "image": "docker.io/swerebenchv2/uber-web-baseui:1645-3ec36b5",
+    "original_test_command": "./node_modules/.bin/jest --verbose --no-color --passWithNoTests",
+    "original_parser": "parse_log_js_4",
+    "selected_before_request": "2026-11-04T12:16:26.717213+08:00",
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        59
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        59
+      ],
+      [
+        [
+          "test",
+          "L3",
+          false
+        ],
+        276
+      ],
+      [
+        [
+          "val",
+          "L3",
+          false
+        ],
+        127
+      ],
+      [
+        [
+          "val",
+          "L2",
+          false
+        ],
+        48
+      ]
+    ],
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "source_runtime_version": null,
+    "initial": {
+      "passed": 385,
+      "fixed": 386,
+      "resolved": null,
+      "trusted_outcome": false,
+      "exit_code": 1,
+      "unknown_test_ids": [
+        "With component overrides"
+      ],
+      "outside_fixed_failed": [],
+      "failed_f2p": [],
+      "failed_p2p": []
+    },
+    "additional_verifications": [],
+    "restoration": {
+      "tool_actions": 39,
+      "exit_mismatches": 0,
+      "image_head": "3ec36b5d43d673c4fa99116d617508300b9764c4"
+    }
+  },
+  {
+    "task_id": "arb__celebrate-144",
+    "repo": "arb/celebrate",
+    "base_commit": "eaecbf4ba2344eba564665c64dfe0a2ecc034ca1",
+    "episode_id": "995dacee-d2a9-465c-8bd3-c292afae1783",
+    "message_cutoff_exclusive": 45,
+    "observed_through_step": 16,
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": 1538,
+    "source_id": "TRA-001",
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "fixed_f2p": 3,
+    "fixed_p2p": 32,
+    "image": "docker.io/swerebenchv2/arb-celebrate:144-eaecbf4",
+    "original_test_command": "npx jest --ci --verbose --no-color",
+    "original_parser": "parse_log_js_4",
+    "selected_before_request": "2026-11-04T12:16:26.717287+08:00",
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        189
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        189
+      ]
+    ],
+    "current_phase": "recover",
+    "phase_assigned_from_next_action": false,
+    "source_runtime_version": null,
+    "initial": {
+      "passed": 35,
+      "fixed": 35,
+      "resolved": true,
+      "trusted_outcome": true,
+      "exit_code": 1,
+      "unknown_test_ids": [],
+      "outside_fixed_failed": [
+        "1 problem (1 error, 0 warnings)"
+      ],
+      "failed_f2p": [],
+      "failed_p2p": []
+    },
+    "additional_verifications": [],
+    "restoration": {
+      "tool_actions": 27,
+      "exit_mismatches": 0,
+      "image_head": "eaecbf4ba2344eba564665c64dfe0a2ecc034ca1"
+    }
+  },
+  {
+    "task_id": "narwhals-dev__narwhals-1948",
+    "repo": "narwhals-dev/narwhals",
+    "base_commit": "46fec73e84d050eb2ee856e56ab66da1d97d3006",
+    "episode_id": "18bdc8b5-cfb9-4a03-b1b3-822700c32b5e",
+    "message_cutoff_exclusive": 68,
+    "observed_through_step": 27,
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": 487,
+    "source_id": "TRA-001",
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "fixed_f2p": 1,
+    "fixed_p2p": 9,
+    "image": "docker.io/swerebenchv2/narwhals-dev-narwhals:1948-46fec73",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/frame/is_duplicated_test.py",
+    "original_parser": "parse_log_pytest",
+    "selected_before_request": "2026-11-04T12:52:23.391084+08:00",
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        199
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "test",
+          "L1",
+          false
+        ],
+        278
+      ],
+      [
+        [
+          "test",
+          "L4",
+          false
+        ],
+        307
+      ],
+      [
+        [
+          "train",
+          "L2",
+          true
+        ],
+        541
+      ],
+      [
+        [
+          "train",
+          "L3",
+          true
+        ],
+        179
+      ],
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        1443
+      ],
+      [
+        [
+          "val",
+          "L2",
+          false
+        ],
+        418
+      ],
+      [
+        [
+          "train",
+          "L1",
+          true
+        ],
+        329
+      ],
+      [
+        [
+          "test",
+          "L3",
+          false
+        ],
+        122
+      ]
+    ],
+    "current_phase": "recover",
+    "phase_assigned_from_next_action": false,
+    "source_runtime_version": null,
+    "initial": {
+      "passed": 8,
+      "fixed": 10,
+      "resolved": false,
+      "trusted_outcome": true,
+      "exit_code": 1,
+      "unknown_test_ids": [],
+      "outside_fixed_failed": [],
+      "failed_f2p": [
+        "tests/frame/is_duplicated_test.py::test_is_duplicated_with_nulls[pyarrow]"
+      ],
+      "failed_p2p": [
+        "tests/frame/is_duplicated_test.py::test_is_duplicated[pyarrow]"
+      ]
+    },
+    "additional_verifications": [],
+    "restoration": {
+      "tool_actions": 39,
+      "exit_mismatches": 1,
+      "image_head": "46fec73e84d050eb2ee856e56ab66da1d97d3006"
+    }
+  },
+  {
+    "task_id": "pgmpy__pgmpy-878",
+    "repo": "pgmpy/pgmpy",
+    "base_commit": "c302a5dcbb3152793cf11309ae82dcd938b14865",
+    "episode_id": "fe70b22f-8eec-4bae-84c2-bd5a5fe84f1b",
+    "message_cutoff_exclusive": 46,
+    "observed_through_step": 22,
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": 2446,
+    "source_id": "TRA-001",
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "fixed_f2p": 1,
+    "fixed_p2p": 41,
+    "image": "docker.io/swerebenchv2/pgmpy-pgmpy:878-c302a5d",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning pgmpy/tests/test_models/test_BayesianModel.py",
+    "original_parser": "parse_log_pytest",
+    "selected_before_request": "2026-11-04T13:06:17.689076+08:00",
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        40
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        40
+      ]
+    ],
+    "current_phase": "verify",
+    "phase_assigned_from_next_action": false,
+    "source_runtime_version": null,
+    "initial": {
+      "passed": 41,
+      "fixed": 42,
+      "resolved": false,
+      "trusted_outcome": true,
+      "exit_code": 1,
+      "unknown_test_ids": [],
+      "outside_fixed_failed": [
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBaseModelCreation::test_add_edge_string",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBaseModelCreation::test_add_edges_from_string",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBaseModelCreation::test_add_node_string",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBaseModelCreation::test_class_init_with_data_string",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBaseModelCreation::test_update_node_parents",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBaseModelCreation::test_update_node_parents_bm_constructor",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBayesianModelMethods::test_local_independencies",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBayesianModelFitPredict::test_bayesian_fit",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBayesianModelFitPredict::test_connected_predict",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBayesianModelFitPredict::test_connected_predict_probability",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBayesianModelFitPredict::test_disconnected_fit",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBayesianModelFitPredict::test_fit_missing_data",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBayesianModelFitPredict::test_predict",
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBayesianModelFitPredict::test_predict_probability_errors"
+      ],
+      "failed_f2p": [],
+      "failed_p2p": [
+        "pgmpy/tests/test_models/test_BayesianModel.py::TestBayesianModelCPD::test_check_model"
+      ]
+    },
+    "additional_verifications": [],
+    "restoration": {
+      "tool_actions": 22,
+      "exit_mismatches": 0,
+      "image_head": "c302a5dcbb3152793cf11309ae82dcd938b14865"
+    }
+  },
+  {
+    "task_id": "idsia__sacred-765",
+    "repo": "IDSIA/sacred",
+    "base_commit": "caa9f963fcbbbe13e244f21d1ae7000c580f76d5",
+    "episode_id": "663c2098-e1c0-406c-bae2-0cb926dcde3b",
+    "message_cutoff_exclusive": 99,
+    "observed_through_step": 41,
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": 142,
+    "source_id": "TRA-001",
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "fixed_f2p": 1,
+    "fixed_p2p": 20,
+    "image": "docker.io/swerebenchv2/idsia-sacred:765-caa9f96",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/test_commands.py",
+    "original_parser": "parse_log_pytest",
+    "selected_before_request": "2026-11-04T13:47:00.358403+08:00",
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        230
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        341
+      ]
+    ],
+    "current_phase": "recover",
+    "phase_assigned_from_next_action": false,
+    "source_runtime_version": null,
+    "initial": {
+      "passed": 20,
+      "fixed": 21,
+      "resolved": false,
+      "trusted_outcome": true,
+      "exit_code": 1,
+      "unknown_test_ids": [],
+      "outside_fixed_failed": [
+        "tests/test_commands.py::test_non_unicode_repr",
+        "tests/test_commands.py::test_format_entry[entry0-a",
+        "tests/test_commands.py::test_format_entry[entry1-foo",
+        "tests/test_commands.py::test_format_entry[entry2-b",
+        "tests/test_commands.py::test_format_entry[entry3-c",
+        "tests/test_commands.py::test_format_entry[entry4-d",
+        "tests/test_commands.py::test_format_entry[entry5-e",
+        "tests/test_commands.py::test_format_entry_colors[entry0-\\x1b[32m]",
+        "tests/test_commands.py::test_format_entry_colors[entry1-\\x1b[34m]",
+        "tests/test_commands.py::test_format_entry_colors[entry2-\\x1b[31m]",
+        "tests/test_commands.py::test_format_entry_colors[entry3-\\x1b[32m]",
+        "tests/test_commands.py::test_format_entry_colors[entry4-\\x1b[31m]",
+        "tests/test_commands.py::test_format_entry_colors[entry5-\\x1b[31m]",
+        "tests/test_commands.py::test_format_entry_colors[entry6-\\x1b[31m]",
+        "tests/test_commands.py::test_format_config"
+      ],
+      "failed_f2p": [
+        "tests/test_commands.py::test_save_config"
+      ],
+      "failed_p2p": []
+    },
+    "additional_verifications": [],
+    "restoration": {
+      "tool_actions": 56,
+      "exit_mismatches": 1,
+      "image_head": "caa9f963fcbbbe13e244f21d1ae7000c580f76d5"
+    }
+  }
+]

@@ -1,5 +1,9 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**11-04真实修复差异与学习目标（沿Q-003/Q-021）**：[本轮研究](../results/iterations/20261104-v9-repair-quality/review.md)完成四组尚有原固定故障的真实比较，1 Modify/2 Recover/1 Verify；8有效动作均双未完成。Narwhals的Sol恢复一个初始P2P失败、无回归，Luna无改善；完整一步目标仍将两者压为NEITHER，局部严格优势不变成正式赢家。其他三组无局部改善，原36正式监督保持。原消息关联遗漏已沿prepare/development补齐，400的未知用量与无动作不记模型失败。
+
+B4原22关系Train只有1 NEITHER，009/010新两仓库留出仍各0/2；A无完整关系输出，双方失败时正式动作正确率null，不能用固定Sol/Luna的当步0/4代替赢家正确率。009选对单个Train候选的局部优势不证明独立泛化，010在该处选择不同也不构成独立因果实验。没有新正式Train目标，仅一条局部P2P优势，当前不启动011/原Trainer/新Dev，不换Serving。监督压缩局部信息有直接证据，表示取舍是否造成选择错误仍未知，不唯一归因于费用偏置或宣布技术不可行。node-dev时序/进程测试及BaseUI上游解析问题保留UNKNOWN，均未收费；完整数据、预算未知项见本轮summary，不新增Q-ID或审批流程。
+
 **11-04Modify与剩余故障（沿Q-003/Q-021）**：[候选结果](../results/iterations/20261104-v9-modify-candidates/review.md)。原入口确认PHP-Scoper598/node-dev227两个当前Modify，完整工具组已结束；真实写入不等于尚有修复机会，原主要修复后续复现均通过，原固定全范围结果本轮未知。两任务仅L4/train，仓库另有L2祖先暴露；本批仓库留出不等于全流程新仓库。Recover自写断言、导入另一目录、搜索无匹配分别保留，不造质量失败。先选择与已有证据分析，无收费、原测试、新质量目标或训练；保留36偏好、B4旧独立0/2、009旧费用/质量负结果，不预设Encoder、不启动011/Dev。后续定向建议4请求仅是候选范围，先恢复原固定935/28项确认剩余业务问题，不新增Q-ID或重复费用审批。
 
 **11-04阶段来源与质量目标（沿Q-003/Q-021）**：Chai/W3C原Modify是下一写动作的抽样标签，不进当前Router输入；按原在线规则四状态实际为3 Recover/1 Inspect，无当前Modify。原Provider消息不含该标签、教师0，真实生成和36偏好保持。离线前缀逐条阶段及compact顶层phase已沿原入口处理，四真实保存前缀转换与Chai同一费用标签一致，原材料不覆盖。新增8前向选择变化0、B4两留出仍0/2，阶段错误不是全部泛化失败的已证原因。未见双向选择/净收益仍无新证据，不继续同类训练或新Dev；新增付费请求0、原59946已知Token/$0.077301025及未知项不变。记录见[phase_preparation](../results/iterations/20261104-v9-recover-modify/phase_preparation.json)及原review，不新建Q-ID。

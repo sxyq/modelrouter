@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-04综合修复质量研究完成**：[本轮结果](../results/iterations/20261104-v9-repair-quality/review.md)。复用2500条既有分片，九任务恢复268原工具动作；PHP-Scoper/UglifyJS/Celebrate固定全过，node-dev/BaseUI原范围UNKNOWN，不为补数量收费。最终Shep/Narwhals为Train，pgmpy/Sacred为仓库留出，事前分工不变；四状态实际1 Modify/2 Recover/1 Verify，8有效真实生成、2先前400异常，双候选均未完成。Narwhals仅Sol恢复一个初始P2P失败，目标F2P仍失败；新增正式0，36（质量19/步骤费用8/任务费用9）保持。
+
+原prepare返回的深拷贝消息补齐顺序tool_call_id，development实际使用并传递来源；400后同状态有效动作成功，异常不冒充模型失败。009/010各4真实前向，A用原21正式Train、B17原17、B4原22关系Train，新状态不拟合/不入梯度。B4两个新留出均0/2，旧0/2保持；四项无正式赢家，动作/质量/费用正确率null。009在Narwhals局部优势选择较好但仓库祖先已见，不能支持预设Encoder。无STEP011、Trainer/Val重跑或新完整Dev，Serving原权重保持。332653已知生成Token/$0.368502参考费，2异常用量/实收/资源USD未知；8前向32632本地编码Token，含载入12.879秒、allocated峰值2.027GB。K2两核心证据与五RQ仍未闭环；下一优先是保留局部修复信息与真正独立关系选择，而非继续训练拟合。
+
 **11-04真实Modify候选分析完成**：[实际结果](../results/iterations/20261104-v9-modify-candidates/review.md)。既有分片前300条轨迹中85任务为合法L4/train；原prepare实际重建PHP-Scoper598截止57/21步和node-dev227截止27/10步，两项均当前Modify，49工具反馈/待返回0，不靠下一动作赋阶段。两任务未匹配保存的步骤训练材料，但仓库另有F11的L2 Train，不能称全流程未见仓库。主要修复已写入，剩余原业务失败未证明；晚期Recover的自写预期错误、导入另一目录和搜索/补丁定位失败不作为质量监督。两项仅OBSERVATION_ONLY，本轮生成/容器恢复/原验证/新偏好/前向/训练/Dev0，正式36、原权重与Serving保持。没有改变训练方向；如后续推进候选，先A6000恢复原固定935/28项确认剩余故障，定向初始方案4请求而非自动收费。K2两证据及五RQ缺口保持。
 
 **11-04阶段来源接续已完成**：[本轮结果](../results/iterations/20261104-v9-recover-modify/review.md)。Chai/W3C的原Modify来自下一写动作抽样，当前实际阶段为Recover/Inspect；四状态覆盖3 Recover、1 Inspect、0 Modify，用途不变。Provider没有接收抽样阶段，原9请求/8有效、Chai费用偏好1及36总偏好保持。原context/prepare逐条使用已观察工具反馈重建历史阶段，并传播顶层phase；四真实保存前缀与新Chai准备材料序列化一致，旧材料保留、梯度0。新增8前向使全迭代24，选择变化0、B4独立关系仍0/2，33494本地编码Token/3.374917秒前向，不计付费Token。没有STEP011、新Dev或Serving替换；服务器原prepare既有11行差异保留。当前第一行动是取得真正修改机会与新的局部质量差异，可靠泛化及完整净收益仍未证明，不重复本工作包采集。

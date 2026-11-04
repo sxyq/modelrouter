@@ -93,9 +93,10 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
             prefix = {"observed_messages": observed_messages,
                       "pre_decision_state": config["pre_decision_state"],
                       "provenance": {"task_id": task_id, "episode_id": state.episode_id,
+                                     "tool_result_alignment": config.get("tool_result_alignment"),
                                      "observed_through_step": sum(message.get("role") == "assistant"
                                                                   for message in observed_messages)}}
-            state, _ = build_offline_prefix_input(prefix, lambda _: state)
+            state, observed_messages = build_offline_prefix_input(prefix, lambda _: state)
         state.task_prompt = instruction
         started = time.perf_counter()
         run_config = {
@@ -173,8 +174,10 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
             event(record_dir, "ORIGINAL_VERIFIER_RESTORED", **verifier_restore)
             if verifier_restore["returncode"] != 0:
                 raise RuntimeError("Original verifier files could not be restored")
-        verified = task_environment.execute({"command": verify_command}, timeout=task_environment.config.timeout)
-        verification_error = verified.get("extra", {}).get("exception_type")
+        step_error = error if observed_messages is not None else None
+        verified = ({"returncode": None, "output": ""} if step_error else
+                    task_environment.execute({"command": verify_command}, timeout=task_environment.config.timeout))
+        verification_error = step_error or verified.get("extra", {}).get("exception_type")
         verification_exit_code = None if verification_error else verified["returncode"]
         verification_output = verified["output"]
         (record_dir / "verification.txt").write_text(verification_output, encoding="utf-8")
@@ -195,7 +198,8 @@ def run_development(*, workspace: Path, instruction: str, verify_command: str,
             "backend_deployment_status": run_config["backend_deployment_status"],
             "evidence_scope": evidence_scope, "official_result_eligible": False,
             "scientific_result_eligible": False, "evaluation_status": "LOCAL_VERIFICATION_ONLY",
-            "resolved": verification_exit_code == 0, "verification_exit_code": verification_exit_code,
+            "resolved": None if verification_error else verification_exit_code == 0,
+            "verification_exit_code": verification_exit_code,
             "comparison_scope": run_config["comparison_scope"],
             "verification_error": verification_error, "agent_exit_status": agent_exit_status,
             "original_verifier_restore_exit_code": verifier_restore["returncode"] if verifier_restore else None,

@@ -232,7 +232,8 @@ def build_offline_prefix_input(row, state_factory):
                        else next(iter(commands.values())) if len(commands) == 1 else None)
             if (message.get("role") == "tool" and "tool_call_id" not in message
                     and provenance.get("tool_result_alignment") == "OPEN_SWE_ORDERED_RESULTS"):
-                command = list(commands.values())[tool_cursor]
+                message["tool_call_id"] = list(commands)[tool_cursor]
+                command = commands[message["tool_call_id"]]
                 tool_cursor += 1
             code, output = tool_result(message)
             if command is None or code is None:

@@ -1,0 +1,126 @@
+{
+  "task_id": "bustlelabs__shep-69",
+  "purpose": "TRAIN_CANDIDATE",
+  "phase": "modify",
+  "actual_relation": "NEITHER_VERIFIED",
+  "formal_winner": null,
+  "preference_basis": null,
+  "preparation_reason": "NO_VERIFIED_ACTION",
+  "local_relation": {
+    "relationship": "NO_LOCAL_IMPROVEMENT",
+    "dominant_model_id": null,
+    "candidates": [
+      {
+        "model_id": "gpt-6.1-sol",
+        "fixed_test_ids": [
+          "build › index › Throws error with no matches",
+          "build › index › [anonymous]",
+          "generate › function › index › [anonymous]",
+          "new › index › [anonymous]",
+          "run › index › Calls the function",
+          "run › index › Throws an exception for an event that does not exist",
+          "run › index › Throws an exception for unbuilt function",
+          "util › load-envs › Loads the possible envs",
+          "util › load-events › Loads a single event",
+          "util › load-events › Loads all events",
+          "util › load-events › No events exist",
+          "util › load-funcs › Loads all functions",
+          "util › load-funcs › Loads matching functions",
+          "util › load-funcs › No functions exist",
+          "util › shep-config › Loads all functions",
+          "util › shep-config › Updates package.json"
+        ],
+        "initial_f2p_failed_ids": [
+          "run › index › Throws an exception for unbuilt function"
+        ],
+        "repaired_initial_f2p_ids": [],
+        "initial_p2p_failed_ids": [],
+        "restored_initial_p2p_ids": [],
+        "new_p2p_regressions": [],
+        "new_f2p_regressions": [],
+        "unknown_test_ids": [],
+        "trusted_outcome": true
+      },
+      {
+        "model_id": "gpt-6-luna",
+        "fixed_test_ids": [
+          "build › index › Throws error with no matches",
+          "build › index › [anonymous]",
+          "generate › function › index › [anonymous]",
+          "new › index › [anonymous]",
+          "run › index › Calls the function",
+          "run › index › Throws an exception for an event that does not exist",
+          "run › index › Throws an exception for unbuilt function",
+          "util › load-envs › Loads the possible envs",
+          "util › load-events › Loads a single event",
+          "util › load-events › Loads all events",
+          "util › load-events › No events exist",
+          "util › load-funcs › Loads all functions",
+          "util › load-funcs › Loads matching functions",
+          "util › load-funcs › No functions exist",
+          "util › shep-config › Loads all functions",
+          "util › shep-config › Updates package.json"
+        ],
+        "initial_f2p_failed_ids": [
+          "run › index › Throws an exception for unbuilt function"
+        ],
+        "repaired_initial_f2p_ids": [],
+        "initial_p2p_failed_ids": [],
+        "restored_initial_p2p_ids": [],
+        "new_p2p_regressions": [],
+        "new_f2p_regressions": [],
+        "unknown_test_ids": [],
+        "trusted_outcome": true
+      }
+    ],
+    "pair_comparable": true,
+    "auxiliary_target": "RECORDED_F2P_REPAIR_AND_P2P_RESTORATION_RELATION",
+    "formal_preference_created": false
+  },
+  "candidates": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.070332,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "actual_modified_files": [
+        "src/commands/run.js",
+        "src/run/index.js"
+      ],
+      "passed": 15,
+      "fixed": 16,
+      "unknown_test_ids": [],
+      "entire_verification_command_exit_code": 1,
+      "generator_token_usage": {
+        "total_prompt_tokens": 32916,
+        "total_completion_tokens": 450,
+        "total_reasoning_tokens": 25
+      }
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.0033365,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "actual_modified_files": [],
+      "passed": 15,
+      "fixed": 16,
+      "unknown_test_ids": [],
+      "entire_verification_command_exit_code": 1,
+      "generator_token_usage": {
+        "total_prompt_tokens": 32400,
+        "total_completion_tokens": 193,
+        "total_reasoning_tokens": 0
+      }
+    }
+  ],
+  "actual_router_states_equal": true,
+  "backend_physical_identity_independently_verified": false,
+  "resolved_scope": "FIXED_ORIGINAL_F2P_AND_P2P_AT_ONE_STEP"
+}

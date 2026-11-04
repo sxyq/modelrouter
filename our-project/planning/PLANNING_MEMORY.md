@@ -1,5 +1,11 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-04 · 四个新故障状态完成比较，局部P2P优势未形成正式赢家
+
+[本轮结果](../results/iterations/20261104-v9-repair-quality/review.md)：原2500条分片定向筛选、九任务268动作恢复，不重新清洗全量。Shep/Narwhals固定Train，pgmpy/Sacred固定仓库留出；四组均有可信初始故障，8有效200、2原400无动作。当前阶段1 Modify/2 Recover/1 Verify；Narwhals Sol9/10对Luna8/10，仅恢复一个初始P2P，F2P仍失败，其他三对无改善。原正式36不改，新Train关系2/新留出关系2/局部优势1，各语义独立。PHP/UglifyJS/Celebrate已全过；Node/BaseUI的UNKNOWN及失败不造质量赢家，替换不依据模型结果。
+
+prepare深拷贝消息补关联ID，development实际使用规范化消息并保持单步异常resolved=null；源码问题不等于Encoder缺陷。009/010新8前向、参照仅旧Train拟合，B4两个新留出各0/2，原旧0/2保持；正式动作正确率null。009在Narwhals与局部优势一致，010不一致，但该仓库祖先L1–L3已见，不据此预设父Encoder或训011。新增正式Train0，独立双方向证据0，新Trainer/Val/Dev0，Serving不替。目标丢掉局部差异已证明；表示贡献与总体泛化根因尚不能唯一识别。332653商业生成Token/$0.368502参考费与32632本地编码Token分开，实收/异常用量/资源USD未知。接续完整范围见本轮next_execution，当前已授权采集和评价全部完成。
+
 ### 2026-11-04 · 找到真实当前Modify，但剩余修复机会尚未证明
 
 接续main c077bf3，旧四任务和用户未提交改动保持。沿原Skill的101转发/原syy密钥登录；Docker29.9.2、容器0/镜像0、Serving原PID327621 healthy，009/010 e03实体在，不加载模型。既有前300轨迹及原资格索引得到85合法L4/train任务；PHP-Scoper598/node-dev227原完整前缀经prepare转换均Modify，21/10生成、34/15工具反馈、待返回0。Train/本批仓库留出在新赢家前确定；两任务未匹配旧保存训练，仓库另有L2祖先Train，不能称全流程未见。

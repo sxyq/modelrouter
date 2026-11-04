@@ -1,0 +1,139 @@
+{
+  "task_id": "idsia__sacred-765",
+  "purpose": "REPOSITORY_HOLDOUT",
+  "phase": "recover",
+  "actual_relation": "NEITHER_VERIFIED",
+  "formal_winner": null,
+  "preference_basis": null,
+  "preparation_reason": "NO_VERIFIED_ACTION",
+  "local_relation": {
+    "relationship": "NO_LOCAL_IMPROVEMENT",
+    "dominant_model_id": null,
+    "candidates": [
+      {
+        "model_id": "gpt-6.1-sol",
+        "fixed_test_ids": [
+          "tests/test_commands.py::test_format_entry[entry6-f:]",
+          "tests/test_commands.py::test_format_entry[entry7-\\x1b[2m\"\"\"multiline\\ndocstring\"\"\"\\x1b[0m]",
+          "tests/test_commands.py::test_format_entry_colors[entry10-\\x1b[32m]",
+          "tests/test_commands.py::test_format_entry_colors[entry11-\\x1b[31m]",
+          "tests/test_commands.py::test_format_entry_colors[entry12-\\x1b[31m]",
+          "tests/test_commands.py::test_format_entry_colors[entry13-\\x1b[31m]",
+          "tests/test_commands.py::test_format_entry_colors[entry7-\\x1b[32m]",
+          "tests/test_commands.py::test_format_entry_colors[entry8-\\x1b[34m]",
+          "tests/test_commands.py::test_format_entry_colors[entry9-\\x1b[31m]",
+          "tests/test_commands.py::test_format_named_config[0-a-None-a]",
+          "tests/test_commands.py::test_format_named_config[0-c-named_config3-c\\x1b[2m",
+          "tests/test_commands.py::test_format_named_config[0-d-named_config4-d\\x1b[2m\\n",
+          "tests/test_commands.py::test_format_named_config[1-b-None-",
+          "tests/test_commands.py::test_format_named_config[4-a.b.c-None-",
+          "tests/test_commands.py::test_format_named_configs",
+          "tests/test_commands.py::test_help_for_command",
+          "tests/test_commands.py::test_iterate_marked",
+          "tests/test_commands.py::test_iterate_marked_added",
+          "tests/test_commands.py::test_iterate_marked_typechanged",
+          "tests/test_commands.py::test_iterate_marked_updated",
+          "tests/test_commands.py::test_save_config"
+        ],
+        "initial_f2p_failed_ids": [
+          "tests/test_commands.py::test_save_config"
+        ],
+        "repaired_initial_f2p_ids": [],
+        "initial_p2p_failed_ids": [],
+        "restored_initial_p2p_ids": [],
+        "new_p2p_regressions": [],
+        "new_f2p_regressions": [],
+        "unknown_test_ids": [],
+        "trusted_outcome": true
+      },
+      {
+        "model_id": "gpt-6-luna",
+        "fixed_test_ids": [
+          "tests/test_commands.py::test_format_entry[entry6-f:]",
+          "tests/test_commands.py::test_format_entry[entry7-\\x1b[2m\"\"\"multiline\\ndocstring\"\"\"\\x1b[0m]",
+          "tests/test_commands.py::test_format_entry_colors[entry10-\\x1b[32m]",
+          "tests/test_commands.py::test_format_entry_colors[entry11-\\x1b[31m]",
+          "tests/test_commands.py::test_format_entry_colors[entry12-\\x1b[31m]",
+          "tests/test_commands.py::test_format_entry_colors[entry13-\\x1b[31m]",
+          "tests/test_commands.py::test_format_entry_colors[entry7-\\x1b[32m]",
+          "tests/test_commands.py::test_format_entry_colors[entry8-\\x1b[34m]",
+          "tests/test_commands.py::test_format_entry_colors[entry9-\\x1b[31m]",
+          "tests/test_commands.py::test_format_named_config[0-a-None-a]",
+          "tests/test_commands.py::test_format_named_config[0-c-named_config3-c\\x1b[2m",
+          "tests/test_commands.py::test_format_named_config[0-d-named_config4-d\\x1b[2m\\n",
+          "tests/test_commands.py::test_format_named_config[1-b-None-",
+          "tests/test_commands.py::test_format_named_config[4-a.b.c-None-",
+          "tests/test_commands.py::test_format_named_configs",
+          "tests/test_commands.py::test_help_for_command",
+          "tests/test_commands.py::test_iterate_marked",
+          "tests/test_commands.py::test_iterate_marked_added",
+          "tests/test_commands.py::test_iterate_marked_typechanged",
+          "tests/test_commands.py::test_iterate_marked_updated",
+          "tests/test_commands.py::test_save_config"
+        ],
+        "initial_f2p_failed_ids": [
+          "tests/test_commands.py::test_save_config"
+        ],
+        "repaired_initial_f2p_ids": [],
+        "initial_p2p_failed_ids": [],
+        "restored_initial_p2p_ids": [],
+        "new_p2p_regressions": [],
+        "new_f2p_regressions": [],
+        "unknown_test_ids": [],
+        "trusted_outcome": true
+      }
+    ],
+    "pair_comparable": true,
+    "auxiliary_target": "RECORDED_F2P_REPAIR_AND_P2P_RESTORATION_RELATION",
+    "formal_preference_created": false
+  },
+  "candidates": [
+    {
+      "model_id": "gpt-6.1-sol",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.098478,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "actual_modified_files": [
+        "sacred/commands.py",
+        "sacred/utils.py"
+      ],
+      "passed": 20,
+      "fixed": 21,
+      "unknown_test_ids": [],
+      "entire_verification_command_exit_code": 1,
+      "generator_token_usage": {
+        "total_prompt_tokens": 47324,
+        "total_completion_tokens": 383,
+        "total_reasoning_tokens": 42
+      }
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "identities_matched": true,
+      "trusted_outcome": true,
+      "resolved": false,
+      "model_rate_cost_usd": 0.0055159,
+      "actual_billed_cost_usd": null,
+      "action_executed": true,
+      "actual_modified_files": [
+        "sacred/commands.py",
+        "sacred/utils.py"
+      ],
+      "passed": 20,
+      "fixed": 21,
+      "unknown_test_ids": [],
+      "entire_verification_command_exit_code": 1,
+      "generator_token_usage": {
+        "total_prompt_tokens": 51429,
+        "total_completion_tokens": 746,
+        "total_reasoning_tokens": 243
+      }
+    }
+  ],
+  "actual_router_states_equal": true,
+  "backend_physical_identity_independently_verified": false,
+  "resolved_scope": "FIXED_ORIGINAL_F2P_AND_P2P_AT_ONE_STEP"
+}
