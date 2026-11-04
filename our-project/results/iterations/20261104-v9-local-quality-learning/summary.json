@@ -1,0 +1,53 @@
+{
+  "iteration": "20261104-v9-local-quality-learning",
+  "initial_main": "27341ccf9ecae49f86ba7fac761565454d340619",
+  "resumed_main": "7595391a7ff8ee01742ab46c57d2bf397efe7125",
+  "status": "RESEARCH_COMPLETE",
+  "restored_actions_total": 340,
+  "applicable_work_completed": ["A", "B", "C", "D", "E_TRAINING_NOT_JUSTIFIED", "F_NEW_DEV_NOT_JUSTIFIED"],
+  "existing_comparisons_reused": 16,
+  "formal_preferences": {"total": 37, "step_quality": 20, "step_equal_quality_cost": 8, "task_cost": 9, "new": 1},
+  "formal_winners_by_basis": {"step_quality": {"gpt-6.1-sol": 15, "gpt-6-luna": 5}, "step_equal_quality_cost": {"gpt-6-luna": 8}, "task_equal_quality_cost": {"gpt-6-luna": 9}, "counts_are_independent_tasks": false},
+  "local_train": {"f2p_tasks": 8, "f2p_equal": 4, "f2p_sol_advantage": 4, "p2p_restoration_tasks": 1, "extra_f2p_information_beyond_formal_winners_tasks": 1, "extra_p2p_information_tasks": 1, "regression_classes_observed": ["EQUAL"]},
+  "evaluation": {
+    "old_holdout_is_final_independent_test": false,
+    "fixed_reference_ridge": 1,
+    "parameter_searches": 0,
+    "scores_are_pass_probabilities": false,
+    "local_selection_uses_initial_verifier_opportunities": true,
+    "local_selection_is_deployable": false,
+    "009": {"f2p_task_head_holdout": [3, 7], "f2p_old_observations": [2, 5], "b4_original_full_relation": [2, 7], "b4_expanded_full_relation": [2, 7], "formal_action_old_observations": [2, 3]},
+    "010": {"f2p_task_head_holdout": [5, 7], "f2p_old_observations": [1, 5], "b4_original_full_relation": [1, 7], "b4_expanded_full_relation": [1, 7], "formal_action_old_observations": [1, 3]},
+    "fixed_sol_formal_action_old_observations": [2, 3],
+    "fixed_luna_formal_action_old_observations": [1, 3]
+  },
+  "representation": {"task_tool_character_budget": 6000, "command_summary_variants": [256, 1024], "new_independent_improvement_demonstrated": false, "phase_source": "OBSERVED_TOOL_FEEDBACK", "python_successful_write_phase": "modify", "long_summary_deployed": false},
+  "new_states": [
+    {"task_id": "marketsquare__robotframework-robocop-1374", "purpose": "TRAIN_CANDIDATE", "current_phase": "verify", "restored_actions": 61, "exit_differences": 0, "initial_passed": 15, "fixed_tests": 15, "unknown_tests": 0, "requests": 0, "disposition": "FIXED_RANGE_ALREADY_PASSES"},
+    {"task_id": "websockets__ws-2229", "purpose": "TRAIN_CANDIDATE", "current_phase": "recover", "restored_actions": 37, "exit_differences": 0, "initial_passed": 416, "fixed_tests": 417, "unknown_tests": 1, "requests": 0, "disposition": "PARSER_UNKNOWN_AND_TASK_TARGET_ALIGNMENT_UNCERTAIN"},
+    {"task_id": "kentcdodds__dom-testing-library-29", "purpose": "REPOSITORY_HOLDOUT", "current_phase": "modify", "restored_actions": 31, "exit_differences": 1, "initial_passed": 99, "fixed_tests": 102, "unknown_tests": 3, "requests": 0, "disposition": "PARSER_UNKNOWN"},
+    {"task_id": "ktsn__vuex-smart-module-240", "purpose": "REPOSITORY_HOLDOUT", "current_phase": "modify", "restored_actions": 30, "exit_differences": 0, "initial_passed": 0, "fixed_tests": 50, "unknown_tests": 50, "requests": 2, "full_relation": "UNKNOWN", "local_relation": "UNKNOWN", "formal_winner": null, "formal_action_correctness": null, "disposition": "SOL_VERIFIED_LUNA_TESTS_NOT_RUN"},
+    {"task_id": "moscajs__aedes-468", "purpose": "TRAIN_CANDIDATE", "current_phase": "recover", "restored_actions": 36, "exit_differences": 2, "initial_passed": 1, "fixed_tests": 450, "unknown_tests": 434, "requests": 0, "disposition": "RESTORATION_AND_VERIFIER_UNKNOWN"},
+    {"task_id": "buildo__react-components-474", "purpose": "REPOSITORY_HOLDOUT", "current_phase": "recover", "restored_actions": 27, "exit_differences": 0, "initial_passed": 47, "fixed_tests": 47, "unknown_tests": 0, "requests": 0, "disposition": "FIXED_RANGE_ALREADY_PASSES"},
+    {"task_id": "rochacbruno__dynaconf-375", "purpose": "TRAIN_CANDIDATE", "current_phase": "modify", "message_cutoff_exclusive": 119, "fixed_f2p": 8, "fixed_p2p": 22, "restored_actions": 71, "exit_differences": 0, "initial_passed": 29, "initial_f2p_failed": ["tests/test_utils.py::test_cast_bool"], "initial_p2p_failed": [], "unknown_tests": 0, "requests": 2, "full_relation": "SOL_ONLY_VERIFIED", "local_relation": "STRICT_MULTIDIMENSIONAL_DOMINANCE", "formal_winner": "gpt-6.1-sol", "preference_basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON", "sol_f2p_repaired": 1, "luna_f2p_repaired": 0, "new_regressions": 0, "ancestor_train_repository_layers": ["L2", "L3"], "disposition": "NEW_FORMAL_TRAIN_QUALITY_PREFERENCE"},
+    {"task_id": "pennylaneai__pennylane-4831", "purpose": "REPOSITORY_HOLDOUT", "current_phase": "verify", "message_cutoff_exclusive": 96, "fixed_f2p": 2, "fixed_p2p": 4, "restored_actions": 47, "exit_differences": 0, "initial_passed": 6, "fixed_tests": 6, "unknown_tests": 0, "requests": 0, "full_relation": "UNKNOWN", "formal_winner": null, "formal_action_correctness": null, "candidate_results_observed": false, "ancestor_train_repository_layers": ["L1", "L2", "L3"], "disposition": "FIXED_RANGE_ALREADY_PASSES_NO_NEW_CANDIDATE_TRUTH"}
+  ],
+  "new_generation": {
+    "requests": 4, "http_200": 4, "valid_generations": 4, "executed_candidate_steps": 4,
+    "teacher_calls": 0, "provider_errors": 0,
+    "known_total_tokens": 353386, "known_reference_usd": 0.4537541, "known_prompt_tokens": 351915, "known_completion_tokens": 1471, "trusted_candidate_successes": 2, "trusted_candidate_failures": 1, "unknown_candidates": 1,
+    "vuex_sol": {"request_model": "gpt-6.1-sol", "response_model": "gpt-6.1-sol", "http_status": 200, "finish_reason": "tool_calls", "prompt_tokens": 89853, "completion_tokens": 523, "reasoning_tokens_in_completion": 60, "cached_tokens": null, "reference_usd": 0.184936, "fixed_passed": 50, "fixed_unknown": 0, "trusted_outcome": true, "resolved": true, "modified_files": ["src/module.ts"], "step_elapsed_seconds": 286.76585566590074},
+    "vuex_luna": {"request_model": "gpt-6-luna", "response_model": "gpt-6-luna", "http_status": 200, "finish_reason": "tool_calls", "prompt_tokens": 55445, "completion_tokens": 101, "cached_tokens": 0, "reference_usd": 0.005595, "fixed_passed": 0, "fixed_unknown": 50, "trusted_outcome": false, "resolved": null, "modified_files": [], "step_elapsed_seconds": 209.85955824994016},
+    "dynaconf_sol": {"request_model": "gpt-6.1-sol", "response_model": "gpt-6.1-sol", "http_status": 200, "finish_reason": "tool_calls", "prompt_tokens": 125586, "completion_tokens": 371, "reasoning_tokens_in_completion": 11, "cached_tokens": null, "reference_usd": 0.254882, "fixed_passed": 30, "fixed_unknown": 0, "trusted_outcome": true, "resolved": true, "modified_files": ["dynaconf/utils/parse_conf.py", "dynaconf/base.py"], "step_elapsed_seconds": 152.18999904103111},
+    "dynaconf_luna": {"request_model": "gpt-6-luna", "response_model": "gpt-6-luna", "http_status": 200, "finish_reason": "tool_calls", "prompt_tokens": 81031, "completion_tokens": 476, "reasoning_tokens_in_completion": 322, "cached_tokens": 0, "reference_usd": 0.0083411, "fixed_passed": 29, "fixed_unknown": 0, "trusted_outcome": true, "resolved": false, "modified_files": [], "step_elapsed_seconds": 77.19116329203825},
+    "actual_billed_usd": null, "physical_backends_independently_confirmed": false
+  },
+  "encoder_analysis": {"new_forwards": 126, "encoded_tokens": 484042, "analysis_segments_elapsed_seconds_approx": 102.52, "peak_allocated_bytes": 2033286656, "commercial_generation_tokens": false},
+  "native_input_evaluation_before_holdout_outcome": {"computed_utc": "2026-11-04T12:47:39Z", "formal_train_rows": 22, "full_relation_train_rows": 27, "local_f2p_train_rows": 8, "009_f2p_task_head_holdout": [5, 8], "010_f2p_task_head_holdout": [6, 8], "dynaconf_actual_input_reconstruction_equal": true, "pennylane_unlabeled_during_fitting": true, "pennylane_native_a_b4_009_010": "gpt-6.1-sol", "pennylane_f2p_axis_before_new_train": {"009": "EQUAL", "010": "EQUAL"}, "pennylane_f2p_axis_after_new_train": {"009": "EQUAL", "010": "gpt-6.1-sol"}, "new_forwards": 4, "encoded_tokens": 16600, "elapsed_seconds": 12.691354166716337},
+  "last_two_states_pre_outcome_predictions": {"computed_utc": "2026-11-04T12:08:51Z", "new_forwards": 4, "encoded_tokens": 16318, "elapsed_seconds": 13.012375056743622, "native_009_010": "gpt-6.1-sol", "a_009_010": "gpt-6.1-sol", "b4_009_010": "SOL_ONLY_VERIFIED", "f2p_axis_009_010": "EQUAL", "holdout_used_for_fitting": false},
+  "decisions": {"local_quality_new_task_prediction_improved": false, "representation_independent_improvement_demonstrated": false, "step011_started": false, "serving_weights_changed": false, "new_complete_dev_started": false, "new_independent_bidirectional_choice_demonstrated": false, "new_complete_agent_net_benefit_demonstrated": false},
+  "unknown_costs": ["supplier_actual_billing", "sol_cached_tokens", "complete_cpu_gpu_resource_usd", "router_complete_episode_resource_cost", "provider_physical_backend_identity"],
+  "new_train_preparation": {"task_id": "rochacbruno__dynaconf-375", "prepare_record_train_succeeded": true, "serialize_training_record_succeeded": true, "target": "STEP_LEVEL_PREFERENCE", "current_phase": "modify", "winner": "gpt-6.1-sol", "captured_state_text_preserved": true, "gradient_updates": 0},
+  "cleanup": {"verified_at": "2026-11-04T21:34:46+08:00", "a6000_user_docker_version": "29.9.2", "containers": 0, "images": 0, "temporary_download_proxy_removed": true, "temporary_mac_forwarding_closed": true, "failed_pennylane_pull_lease_removed": true, "temporary_server_scripts_removed": 3, "mac_control_directories_moved_to_trash": true, "original_vm_socket_dependencies_and_private_evidence_preserved": true, "serving_status": "healthy", "serving_pid": 327621, "shared_serving_or_training_interrupted": false, "gpu_used_mib": 34133, "gpu_total_mib": 49140, "gpu_utilization_percent": 0},
+  "private_evidence_published": false
+}

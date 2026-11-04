@@ -166,7 +166,26 @@ def prepare_local_quality_relation(initial, candidates, f2p_ids, p2p_ids, *, pai
                     "NO_LOCAL_IMPROVEMENT" if not any(any(pair) for pair in repairs + regressions) else
                     "EQUAL_LOCAL_PROGRESS" if repairs[0] == repairs[1] and regressions[0] == regressions[1] else
                     "INCOMPARABLE_LOCAL_RESULTS")
+    axis_relations, axis_opportunities = {}, {}
+    for name, initial_ids, regression in (
+        ("f2p_repair", initial_f2p_failed, False),
+        ("p2p_restoration", initial_p2p_failed, False),
+        ("f2p_regression", {name for name in f2p if before[name] == "PASSED"}, True),
+        ("p2p_regression", {name for name in p2p if before[name] == "PASSED"}, True),
+    ):
+        field = {"f2p_repair": "repaired_initial_f2p_ids",
+                 "p2p_restoration": "restored_initial_p2p_ids",
+                 "f2p_regression": "new_f2p_regressions",
+                 "p2p_regression": "new_p2p_regressions"}[name]
+        first, second = (set(item[field]) for item in results)
+        better_first = first < second if regression else first > second
+        better_second = second < first if regression else second > first
+        axis_opportunities[name] = bool(initial_ids)
+        axis_relations[name] = ("UNKNOWN" if not trusted else "EQUAL" if first == second else
+                                results[0]["model_id"] if better_first else
+                                results[1]["model_id"] if better_second else "INCOMPARABLE")
     return {"relationship": relationship, "dominant_model_id": dominant,
             "candidates": results, "pair_comparable": trusted,
+            "axis_relations": axis_relations, "axis_opportunities": axis_opportunities,
             "auxiliary_target": "RECORDED_F2P_REPAIR_AND_P2P_RESTORATION_RELATION",
             "formal_preference_created": False}

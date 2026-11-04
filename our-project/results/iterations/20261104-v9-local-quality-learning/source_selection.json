@@ -194,7 +194,8 @@
     "repository_license": "MIT",
     "selected_before_request": "2026-11-04T07:45:44.551437+00:00",
     "sampling_reason": "Vuex getter/mutation/action initialization after business edits",
-    "current_phase": "inspect",
+    "original_constructed_phase": "inspect",
+    "current_phase": "modify",
     "phase_assigned_from_next_action": false,
     "corrected_phase_before_new_candidate_results": "modify",
     "phase_correction_reason": "The last observed command successfully wrote src/module.ts through Python open(..., 'w').",
@@ -339,6 +340,194 @@
     "image": "docker.io/swerebenchv2/buildo-react-components:474-cfd4dca",
     "original_test_command": "./node_modules/.bin/mocha --reporter spec test/index.js --no-colors",
     "original_parser": "parse_log_js_4",
+    "prior_successful_write_confirmed_by_restoration": null
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "rochacbruno__dynaconf-375",
+    "repo": "rochacbruno/dynaconf",
+    "base_commit": "fbdae133aa73df9b60151fc04bc18f5abfc5a01e",
+    "episode_id": "b73e7f0c-2316-4e29-bfe4-55f1da73b8c7",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 46,
+    "message_cutoff_exclusive": 119,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": 876,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "selected_before_request": "2026-11-04T11:49:58.626443+00:00",
+    "sampling_reason": "Partial lazy-variable parsing and boxing writes are complete; the observed Settings lookup failure and remaining integration provide a different F2P mechanism. Restore fixed tests before generation; repository L2/L3 exposure is recorded.",
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        96
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L2",
+          true
+        ],
+        173
+      ],
+      [
+        [
+          "train",
+          "L3",
+          true
+        ],
+        826
+      ],
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        320
+      ]
+    ],
+    "fixed_f2p": 8,
+    "fixed_p2p": 22,
+    "image": "docker.io/swerebenchv2/rochacbruno-dynaconf:375-fbdae13",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/test_dynabox.py tests/test_utils.py",
+    "original_parser": "parse_log_pytest",
+    "prior_successful_write_confirmed_by_restoration": null
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "pennylaneai__pennylane-4831",
+    "repo": "PennyLaneAI/pennylane",
+    "base_commit": "47e74e16d0fb27aedc5ffab69aefaf5188115038",
+    "episode_id": "c5e04ec4-489c-43df-b88d-b24475e27dfb",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 47,
+    "message_cutoff_exclusive": 96,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": 2060,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "Apache-2.0",
+    "selected_before_request": "2026-11-04T12:03:23.442026+00:00",
+    "sampling_reason": "The recorded numerical assertion failure names an original target F2P: test_multi_amplitude_embedding_qnode. Quantum batching is a different mechanism from variable references and P2P recovery. Reserve the repository before outcomes; preserve ancestor L1/L2/L3 exposure and restore the original fixed NumPy tests before generation.",
+    "current_phase": "verify",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        72
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        2597
+      ],
+      [
+        [
+          "train",
+          "L3",
+          true
+        ],
+        2303
+      ],
+      [
+        [
+          "val",
+          "L4",
+          false
+        ],
+        114
+      ],
+      [
+        [
+          "train",
+          "L2",
+          true
+        ],
+        1843
+      ],
+      [
+        [
+          "train",
+          "L1",
+          true
+        ],
+        1599
+      ],
+      [
+        [
+          "test",
+          "L4",
+          false
+        ],
+        736
+      ],
+      [
+        [
+          "val",
+          "L2",
+          false
+        ],
+        442
+      ],
+      [
+        [
+          "val",
+          "L3",
+          false
+        ],
+        42
+      ],
+      [
+        [
+          "test",
+          "L3",
+          false
+        ],
+        441
+      ],
+      [
+        [
+          "test",
+          "L2",
+          false
+        ],
+        46
+      ],
+      [
+        [
+          "test",
+          "L1",
+          false
+        ],
+        137
+      ]
+    ],
+    "fixed_f2p": 2,
+    "fixed_p2p": 4,
+    "image": "docker.io/swerebenchv2/pennylaneai-pennylane:4831-47e74e1",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/transforms/test_optimization/test_merge_amplitude_embedding.py",
+    "original_parser": "parse_log_pytest",
     "prior_successful_write_confirmed_by_restoration": null
   }
 ]
