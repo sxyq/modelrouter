@@ -1,0 +1,224 @@
+{
+  "selected_at": "2026-11-04T03:20:56.076118+00:00",
+  "selection_time": "BEFORE_ANY_NEW_MODEL_REQUEST",
+  "tasks": [
+    {
+      "task_id": "humbug__php-scoper-598",
+      "repo": "humbug/php-scoper",
+      "trajectory_id": "7a0b52f7-6eb0-48c9-b2f4-15c05353aa80",
+      "source_parquet_row_zero_based": 2,
+      "source_anchor": {
+        "stable_record_id": "TRA-001:humbug__php-scoper-598:7a0b52f7-6eb0-48c9-b2f4-15c05353aa80:1",
+        "source_line": 413398,
+        "source_file": "Agent轨迹/TRA-001_Open-SWE-Traces/cleaned_trajectories.jsonl"
+      },
+      "message_cutoff_exclusive": 57,
+      "observed_through_step": 21,
+      "tool_result_count": 34,
+      "pending_tool_results": 0,
+      "current_phase": "modify",
+      "phase_source": "build_offline_prefix_input/tool_result_phase",
+      "phase_assigned_from_next_action": false,
+      "last_observed_command_start": "cat > /testbed/src/RegexChecker.php <<'EOF'",
+      "last_observed_exit_code": 0,
+      "history_phase_counts": {
+        "inspect": 30,
+        "recover": 3,
+        "modify": 1
+      },
+      "sampling_purpose": "TRAIN_CANDIDATE",
+      "source_id": "TRA-001",
+      "source_license": "CC-BY-4.0",
+      "repository_license": "MIT",
+      "split": "train",
+      "qualification": [
+        [
+          [
+            "train",
+            "L4",
+            true
+          ],
+          123
+        ]
+      ],
+      "base_commit": "d0393f0f331493c0ab89faa74e9306764a77b4d0",
+      "image_name": "docker.io/swerebenchv2/humbug-php-scoper:598-d0393f0",
+      "fixed_f2p_ids": [
+        "Regex Checker > It can tell if a string looks like a regex with data set \"fake regex (2)\""
+      ],
+      "fixed_p2p_count": 934,
+      "test_command": "bin/phpunit --testdox --colors=never",
+      "original_log_parser": "parse_log_phpunit",
+      "source_runtime_version": null,
+      "prefix_filesystem_restored_in_this_iteration": false,
+      "prefix_verifier_run_in_this_iteration": false,
+      "base_commit_prefix_observed_in_trace": true,
+      "ancestor_task_qualification_layers": [
+        "L4"
+      ],
+      "F11_training_layers": [
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "ancestor_repository_train_exposure_present": true,
+      "fully_unseen_repository": false,
+      "remaining_repair_opportunity": "Not established: the recorded source action already replaces the regex implementation; subsequent recorded reproductions pass without another business-source edit."
+    },
+    {
+      "task_id": "fgnass__node-dev-227",
+      "repo": "fgnass/node-dev",
+      "trajectory_id": "c28fd507-d403-46b9-982a-6af2ad18d17e",
+      "source_parquet_row_zero_based": 87,
+      "source_anchor": {
+        "stable_record_id": "TRA-001:fgnass__node-dev-227:c28fd507-d403-46b9-982a-6af2ad18d17e:1",
+        "source_line": 418555,
+        "source_file": "Agent轨迹/TRA-001_Open-SWE-Traces/cleaned_trajectories.jsonl"
+      },
+      "message_cutoff_exclusive": 27,
+      "observed_through_step": 10,
+      "tool_result_count": 15,
+      "pending_tool_results": 0,
+      "current_phase": "modify",
+      "phase_source": "build_offline_prefix_input/tool_result_phase",
+      "phase_assigned_from_next_action": false,
+      "last_observed_command_start": "cd /testbed && sed -i '17,19d' lib/wrap.js && cat -n lib/wrap.js | sed -n '1,25p'",
+      "last_observed_exit_code": 0,
+      "history_phase_counts": {
+        "inspect": 11,
+        "recover": 3,
+        "modify": 1
+      },
+      "sampling_purpose": "REPOSITORY_HOLDOUT",
+      "source_id": "TRA-001",
+      "source_license": "CC-BY-4.0",
+      "repository_license": "MIT",
+      "split": "train",
+      "qualification": [
+        [
+          [
+            "train",
+            "L4",
+            true
+          ],
+          71
+        ]
+      ],
+      "base_commit": "b959aeba1371a65d34cb0333470d364c2c46d5b1",
+      "image_name": "docker.io/swerebenchv2/fgnass-node-dev:227-b959aeb",
+      "fixed_f2p_ids": [
+        "should not match pattern provided",
+        "should *not* set NODE_ENV"
+      ],
+      "fixed_p2p_count": 26,
+      "test_command": "npm test",
+      "original_log_parser": "parse_log_js_3",
+      "source_runtime_version": null,
+      "prefix_filesystem_restored_in_this_iteration": false,
+      "prefix_verifier_run_in_this_iteration": false,
+      "base_commit_prefix_observed_in_trace": true,
+      "ancestor_task_qualification_layers": [
+        "L4"
+      ],
+      "F11_training_layers": [
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "ancestor_repository_train_exposure_present": true,
+      "fully_unseen_repository": false,
+      "remaining_repair_opportunity": "Not established: the recorded action removes NODE_ENV assignment; subsequent real reproduction passes. Full original two F2P plus 26 P2P at this prefix remains unmeasured."
+    }
+  ],
+  "candidate_preparation": {
+    "input_records": 2,
+    "output_records": 2,
+    "classification": {
+      "OBSERVATION_ONLY": 2
+    },
+    "independent_tasks": 2,
+    "repositories": 2,
+    "historical_state_complete": 2,
+    "historical_reproduction_evidence_complete": 0,
+    "local_exact_images_present": 0,
+    "local_original_verifiers_runnable": 0,
+    "currently_executable": 0,
+    "trainer_targets_added": 0
+  },
+  "repository_exposure": {
+    "humbug/php-scoper": [
+      {
+        "split": "train",
+        "layer": "L2",
+        "train_eligible": true,
+        "record_count": 142,
+        "task_ids": [
+          "humbug__php-scoper-741",
+          "humbug__php-scoper-882"
+        ]
+      },
+      {
+        "split": "train",
+        "layer": "L4",
+        "train_eligible": true,
+        "record_count": 211,
+        "task_ids": [
+          "humbug__php-scoper-598",
+          "humbug__php-scoper-712"
+        ]
+      },
+      {
+        "split": "test",
+        "layer": "L3",
+        "train_eligible": false,
+        "record_count": 22,
+        "task_ids": [
+          "humbug__php-scoper-629"
+        ]
+      },
+      {
+        "split": "val",
+        "layer": "L3",
+        "train_eligible": false,
+        "record_count": 61,
+        "task_ids": [
+          "humbug__php-scoper-753"
+        ]
+      }
+    ],
+    "fgnass/node-dev": [
+      {
+        "split": "train",
+        "layer": "L4",
+        "train_eligible": true,
+        "record_count": 213,
+        "task_ids": [
+          "fgnass__node-dev-227",
+          "fgnass__node-dev-237"
+        ]
+      },
+      {
+        "split": "train",
+        "layer": "L2",
+        "train_eligible": true,
+        "record_count": 113,
+        "task_ids": [
+          "fgnass__node-dev-232",
+          "fgnass__node-dev-262"
+        ]
+      }
+    ]
+  },
+  "evidence_scope": "OBSERVED_PUBLIC_PREFIX_AND_SOURCE_METADATA_NOT_NEW_MODEL_COMPARISON",
+  "task_training_exposure": {
+    "explicit_saved_training_files_read": 6,
+    "matching_task_or_repo_rows": 0,
+    "STEP009_training_task_matches": 0,
+    "STEP010_training_task_matches": 0,
+    "scope": "Saved STEP materials and prior published selections; repository exposure in F11 remains present."
+  },
+  "requests_executed": 0,
+  "proposed_initial_pairs": 2,
+  "proposed_initial_requests": 4,
+  "selection_locked_before_winner": true
+}

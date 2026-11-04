@@ -1,5 +1,7 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-04真实Modify候选分析完成**：[实际结果](../results/iterations/20261104-v9-modify-candidates/review.md)。既有分片前300条轨迹中85任务为合法L4/train；原prepare实际重建PHP-Scoper598截止57/21步和node-dev227截止27/10步，两项均当前Modify，49工具反馈/待返回0，不靠下一动作赋阶段。两任务未匹配保存的步骤训练材料，但仓库另有F11的L2 Train，不能称全流程未见仓库。主要修复已写入，剩余原业务失败未证明；晚期Recover的自写预期错误、导入另一目录和搜索/补丁定位失败不作为质量监督。两项仅OBSERVATION_ONLY，本轮生成/容器恢复/原验证/新偏好/前向/训练/Dev0，正式36、原权重与Serving保持。没有改变训练方向；如后续推进候选，先A6000恢复原固定935/28项确认剩余故障，定向初始方案4请求而非自动收费。K2两证据及五RQ缺口保持。
+
 **11-04阶段来源接续已完成**：[本轮结果](../results/iterations/20261104-v9-recover-modify/review.md)。Chai/W3C的原Modify来自下一写动作抽样，当前实际阶段为Recover/Inspect；四状态覆盖3 Recover、1 Inspect、0 Modify，用途不变。Provider没有接收抽样阶段，原9请求/8有效、Chai费用偏好1及36总偏好保持。原context/prepare逐条使用已观察工具反馈重建历史阶段，并传播顶层phase；四真实保存前缀与新Chai准备材料序列化一致，旧材料保留、梯度0。新增8前向使全迭代24，选择变化0、B4独立关系仍0/2，33494本地编码Token/3.374917秒前向，不计付费Token。没有STEP011、新Dev或Serving替换；服务器原prepare既有11行差异保留。当前第一行动是取得真正修改机会与新的局部质量差异，可靠泛化及完整净收益仍未证明，不重复本工作包采集。
 
 **11-04用户空间Docker与四新任务比较已完成**：[本轮结果](../results/iterations/20261104-v9-recover-modify/review.md)。A6000 syy用户空间QEMU/Alpine Docker实际可用，系统权限不变、无需sudo；原工程、Serving和权重保持。四新合法L4 Train来源事前分工，34条原动作恢复、8有效生成/1限流异常；Chai双181/181新增Luna费用1，brutils双8/9、Boxwood双518/519、W3C双143/144，无新质量赢家。Boxwood原AVA超时及V8段错误通过同固定范围串行、60秒等待和JITless解决，未知不冒充失败。原35保留，共36（步骤质量19/费用8、任务费用9）。

@@ -1,5 +1,11 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-04 · 找到真实当前Modify，但剩余修复机会尚未证明
+
+接续main c077bf3，旧四任务和用户未提交改动保持。沿原Skill的101转发/原syy密钥登录；Docker29.9.2、容器0/镜像0、Serving原PID327621 healthy，009/010 e03实体在，不加载模型。既有前300轨迹及原资格索引得到85合法L4/train任务；PHP-Scoper598/node-dev227原完整前缀经prepare转换均Modify，21/10生成、34/15工具反馈、待返回0。Train/本批仓库留出在新赢家前确定；两任务未匹配旧保存训练，仓库另有L2祖先Train，不能称全流程未见。
+
+两主要修复已写入，原后续复现通过；完整固定935/28项本轮未执行，只有两项OBSERVATION_ONLY，不假称文件系统已恢复。PHP晚期Recover等自写预期失败、dataclasses导入另一目录、搜索及补丁锚点失败分别分析，不形成新质量关系。生成/原测试/标签/前向/Trainer/Dev0、正式36保持，不改变训练方向或选009 Encoder。后续如推进这两项先A6000恢复和原验证，建议初始2对/4请求，不自动扩收费；结果及完整执行工作包见[本目录](../results/iterations/20261104-v9-modify-candidates/review.md)。
+
 ### 2026-11-04 · 抽样阶段与在线阶段分开，真实前缀转换完成
 
 接续已发布main `72fb341205c1a72b518e61e78511edd64edda3b5`，不重采四任务。原Modify由下一原写动作抽样而来，Chai当前Recover、W3C当前Inspect；四状态3 Recover/1 Inspect/0 Modify，不改变Train/留出用途。Provider只读原messages，无阶段标签/教师，原比较和费用偏好不变。原context抽出在线规则供prepare逐条工具反馈复用，compact传播当前phase。四保存前缀转换成功，Chai同一费用标签的新私有准备材料仅留服务器，旧材料保留；服务器prepare本轮前已有的11行差异不覆盖。

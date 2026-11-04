@@ -1,5 +1,7 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**11-04Modify与剩余故障（沿Q-003/Q-021）**：[候选结果](../results/iterations/20261104-v9-modify-candidates/review.md)。原入口确认PHP-Scoper598/node-dev227两个当前Modify，完整工具组已结束；真实写入不等于尚有修复机会，原主要修复后续复现均通过，原固定全范围结果本轮未知。两任务仅L4/train，仓库另有L2祖先暴露；本批仓库留出不等于全流程新仓库。Recover自写断言、导入另一目录、搜索无匹配分别保留，不造质量失败。先选择与已有证据分析，无收费、原测试、新质量目标或训练；保留36偏好、B4旧独立0/2、009旧费用/质量负结果，不预设Encoder、不启动011/Dev。后续定向建议4请求仅是候选范围，先恢复原固定935/28项确认剩余业务问题，不新增Q-ID或重复费用审批。
+
 **11-04阶段来源与质量目标（沿Q-003/Q-021）**：Chai/W3C原Modify是下一写动作的抽样标签，不进当前Router输入；按原在线规则四状态实际为3 Recover/1 Inspect，无当前Modify。原Provider消息不含该标签、教师0，真实生成和36偏好保持。离线前缀逐条阶段及compact顶层phase已沿原入口处理，四真实保存前缀转换与Chai同一费用标签一致，原材料不覆盖。新增8前向选择变化0、B4两留出仍0/2，阶段错误不是全部泛化失败的已证原因。未见双向选择/净收益仍无新证据，不继续同类训练或新Dev；新增付费请求0、原59946已知Token/$0.077301025及未知项不变。记录见[phase_preparation](../results/iterations/20261104-v9-recover-modify/phase_preparation.json)及原review，不新建Q-ID。
 
 **11-04实际比较和关系预测**：[本轮结果](../results/iterations/20261104-v9-recover-modify/review.md)。A6000 syy用户空间Docker已运行四新任务，原系统权限不变。Chai固定181项双过，原命令四项范围外旧失败单列；新增Luna费用1，不称Luna质量独胜。brutils、Boxwood、W3C双未完成且无局部改善，不制造赢家。Boxwood原超时/段错误沿同固定测试串行/JITless/等待时间处理，初始与两候选最终未知0；Evaluator源码和测试不改。Luna流内rate_limit_error无动作，原Provider仅补错误类型进入既有计量/账户切换路径；一次补采200有效动作。没有再触发限流，不声称已实测自动切换分支。
