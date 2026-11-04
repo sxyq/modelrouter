@@ -1,0 +1,342 @@
+[
+  {
+    "source_id": "TRA-001",
+    "task_id": "marketsquare__robotframework-robocop-1374",
+    "repo": "MarketSquare/robotframework-robocop",
+    "base_commit": "271e73253a70710cc80374128efa9eabb549b5f2",
+    "episode_id": "a7457a1a-8d8d-40aa-a30b-4be167eab178",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 61,
+    "message_cutoff_exclusive": 124,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": 642,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "Apache-2.0",
+    "selected_before_request": "2026-11-04T07:45:44.527328+00:00",
+    "sampling_reason": "Formatter CLI behavior and remaining original formatting failures",
+    "current_phase": "verify",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        197
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "val",
+          "L3",
+          false
+        ],
+        212
+      ],
+      [
+        [
+          "test",
+          "L3",
+          false
+        ],
+        199
+      ],
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        370
+      ],
+      [
+        [
+          "test",
+          "L2",
+          false
+        ],
+        248
+      ],
+      [
+        [
+          "val",
+          "L2",
+          false
+        ],
+        78
+      ]
+    ],
+    "fixed_f2p": 1,
+    "fixed_p2p": 14,
+    "image": "docker.io/swerebenchv2/marketsquare-robotframework-robocop:1374-271e732",
+    "original_test_command": "pytest --no-header -rA --tb=line --color=no -p no:cacheprovider -W ignore::DeprecationWarning tests/formatter/__init__.py tests/test_cli.py",
+    "original_parser": "parse_log_pytest",
+    "prior_successful_write_confirmed_by_restoration": null
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "websockets__ws-2229",
+    "repo": "websockets/ws",
+    "base_commit": "0d1b5e6c4acad16a6b1a1904426eb266a5ba2f72",
+    "episode_id": "657822a6-be93-44c9-8337-ac450c3ae2de",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 25,
+    "message_cutoff_exclusive": 64,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": 685,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "selected_before_request": "2026-11-04T07:45:44.538264+00:00",
+    "sampling_reason": "WebSocket Blob send and buffering failure after business edits",
+    "current_phase": "recover",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        57
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "test",
+          "L4",
+          false
+        ],
+        115
+      ],
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        384
+      ]
+    ],
+    "fixed_f2p": 1,
+    "fixed_p2p": 416,
+    "image": "docker.io/swerebenchv2/websockets-ws:2229-0d1b5e6",
+    "original_test_command": "npx mocha --reporter list --no-colors test/*.test.js",
+    "original_parser": "parse_log_js_4",
+    "prior_successful_write_confirmed_by_restoration": null
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "kentcdodds__dom-testing-library-29",
+    "repo": "kentcdodds/dom-testing-library",
+    "base_commit": "6e0c752673abb7c5934f3d11407c022a243ac9b2",
+    "episode_id": "ff2461ca-9fcd-43ad-8541-16de90d4b63f",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 29,
+    "message_cutoff_exclusive": 62,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": 1398,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "selected_before_request": "2026-11-04T07:45:44.546648+00:00",
+    "sampling_reason": "DOM exact/partial matching after successful file write",
+    "current_phase": "modify",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        207
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        317
+      ]
+    ],
+    "fixed_f2p": 4,
+    "fixed_p2p": 98,
+    "image": "docker.io/swerebenchv2/kentcdodds-dom-testing-library:29-6e0c752",
+    "original_test_command": "npm test -- --verbose --no-color --watchAll=false --testURL=http://localhost",
+    "original_parser": "parse_log_js_4",
+    "prior_successful_write_confirmed_by_restoration": null
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "ktsn__vuex-smart-module-240",
+    "repo": "ktsn/vuex-smart-module",
+    "base_commit": "fbb6e53563390409db49d8f71aab6ed14a6a6092",
+    "episode_id": "dc0d5c39-8575-49e4-b293-f7d969d83fc3",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 30,
+    "message_cutoff_exclusive": 62,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": 1190,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "selected_before_request": "2026-11-04T07:45:44.551437+00:00",
+    "sampling_reason": "Vuex getter/mutation/action initialization after business edits",
+    "current_phase": "inspect",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        183
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "val",
+          "L3",
+          false
+        ],
+        287
+      ],
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        306
+      ]
+    ],
+    "fixed_f2p": 1,
+    "fixed_p2p": 49,
+    "image": "docker.io/swerebenchv2/ktsn-vuex-smart-module:240-fbb6e53",
+    "original_test_command": "FORCE_COLOR=0 npm run test:unit -- --verbose",
+    "original_parser": "parse_log_js_4",
+    "prior_successful_write_confirmed_by_restoration": null
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "moscajs__aedes-468",
+    "repo": "moscajs/aedes",
+    "base_commit": "ae63c0ece61253f441ea05a741ba537fda566cc8",
+    "episode_id": "efe44b32-6da6-42fe-b2d7-fe593afdfcf5",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 35,
+    "message_cutoff_exclusive": 73,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "TRAIN_CANDIDATE",
+    "source_row_zero_based": 857,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "selected_before_request": "2026-11-04T08:39:07.387157+00:00",
+    "sampling_reason": "MQTT subscribe event after observed business edit and a remaining subscription behavior error",
+    "current_phase": "recover",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        45
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "val",
+          "L4",
+          false
+        ],
+        259
+      ],
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        261
+      ],
+      [
+        [
+          "val",
+          "L2",
+          false
+        ],
+        55
+      ]
+    ],
+    "fixed_f2p": 1,
+    "fixed_p2p": 449,
+    "image": "docker.io/swerebenchv2/moscajs-aedes:468-ae63c0e",
+    "original_test_command": "npm run unit -- --no-color",
+    "original_parser": "parse_log_js_3",
+    "prior_successful_write_confirmed_by_restoration": null
+  },
+  {
+    "source_id": "TRA-001",
+    "task_id": "buildo__react-components-474",
+    "repo": "buildo/react-components",
+    "base_commit": "cfd4dca3ea96da3e5b56e5f5e1005ffdb1281f8c",
+    "episode_id": "dfb7b892-5b85-4825-9196-f0215be1fe9a",
+    "train_eligible": true,
+    "split": "train",
+    "observed_through_step": 20,
+    "message_cutoff_exclusive": 49,
+    "tool_result_alignment": "OPEN_SWE_ORDERED_RESULTS",
+    "sampling_purpose": "REPOSITORY_HOLDOUT",
+    "source_row_zero_based": 1819,
+    "source_license": "CC-BY-4.0",
+    "repository_license": "MIT",
+    "selected_before_request": "2026-11-04T09:04:27.617864+00:00",
+    "sampling_reason": "Meter range background after observed business edit and remaining behavior errors",
+    "current_phase": "recover",
+    "phase_assigned_from_next_action": false,
+    "qualification": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        88
+      ]
+    ],
+    "ancestor_repository_exposure": [
+      [
+        [
+          "train",
+          "L4",
+          true
+        ],
+        109
+      ]
+    ],
+    "fixed_f2p": 3,
+    "fixed_p2p": 44,
+    "image": "docker.io/swerebenchv2/buildo-react-components:474-cfd4dca",
+    "original_test_command": "./node_modules/.bin/mocha --reporter spec test/index.js --no-colors",
+    "original_parser": "parse_log_js_4",
+    "prior_successful_write_confirmed_by_restoration": null
+  }
+]

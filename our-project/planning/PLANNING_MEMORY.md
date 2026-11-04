@@ -1,5 +1,11 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-04 · 局部目标、阶段表达与新候选接续
+
+16组既有真实比较的固定测试集合及Train/留出身份见 `20261104-v9-local-quality-learning/`：双未完成仍可包含F2P修复或旧P2P恢复，但不产生正式赢家。B4关系Train 22扩至26，旧7项留出009/010仍2/7、1/7；F2P局部轴7条、P2P恢复1条，两个回归轴仅相同类别。旧留出均已用于方法研究，不称最终独立测试。任务级L4不能推出整个仓库未见：同仓库其他任务的L1/L2 Train资格和实际梯度未知需分别记录，见本轮 `ancestor_scope.json`。
+
+8条旧状态的保存阶段与真实反馈阶段不同；在同一009/010与目标上补32次前向，真实阶段未提高旧留出关系或动作，扩长命令摘要使009旧完整关系2/7降至1/7，不能归因全部泛化问题。Robocop固定15/15；WebSocket固定416/417可识别、1 UNKNOWN；DOM固定99/102可识别、3 UNKNOWN，均无新成对标签。Vuex留出与Aedes Train已事前定用途，原环境准备中；按真实固定结果决定是否生成。不训STEP011、不换Serving、不扩完整Dev。
+
 ### 2026-11-04 · 四个新故障状态完成比较，局部P2P优势未形成正式赢家
 
 [本轮结果](../results/iterations/20261104-v9-repair-quality/review.md)：原2500条分片定向筛选、九任务268动作恢复，不重新清洗全量。Shep/Narwhals固定Train，pgmpy/Sacred固定仓库留出；四组均有可信初始故障，8有效200、2原400无动作。当前阶段1 Modify/2 Recover/1 Verify；Narwhals Sol9/10对Luna8/10，仅恢复一个初始P2P，F2P仍失败，其他三对无改善。原正式36不改，新Train关系2/新留出关系2/局部优势1，各语义独立。PHP/UglifyJS/Celebrate已全过；Node/BaseUI的UNKNOWN及失败不造质量赢家，替换不依据模型结果。

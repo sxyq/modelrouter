@@ -1,0 +1,826 @@
+{
+  "phase_changes": [
+    {
+      "task_id": "pallets__click-2417",
+      "saved_phase": "modify",
+      "observed_phase": "inspect"
+    },
+    {
+      "task_id": "mpmath__mpmath-922",
+      "saved_phase": "modify",
+      "observed_phase": "modify"
+    },
+    {
+      "task_id": "cuthbertlab__music21-1062",
+      "saved_phase": "modify",
+      "observed_phase": "verify"
+    },
+    {
+      "task_id": "stingraysoftware__stingray-234",
+      "saved_phase": "modify",
+      "observed_phase": "modify"
+    },
+    {
+      "task_id": "pypa__build-365",
+      "saved_phase": "modify",
+      "observed_phase": "inspect"
+    },
+    {
+      "task_id": "tox-dev__pipdeptree-171",
+      "saved_phase": "modify",
+      "observed_phase": "recover"
+    },
+    {
+      "task_id": "researchobject__ro-crate-py-95",
+      "saved_phase": "modify",
+      "observed_phase": "recover"
+    },
+    {
+      "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+      "saved_phase": "modify",
+      "observed_phase": "inspect"
+    },
+    {
+      "task_id": "cogent3__cogent3-2050",
+      "saved_phase": "modify",
+      "observed_phase": "modify"
+    },
+    {
+      "task_id": "copier-org__copier-1597",
+      "saved_phase": "modify",
+      "observed_phase": "modify"
+    },
+    {
+      "task_id": "plasmapy__plasmapy-517",
+      "saved_phase": "modify",
+      "observed_phase": "inspect"
+    },
+    {
+      "task_id": "rstudio__vetiver-python-201",
+      "saved_phase": "modify",
+      "observed_phase": "inspect"
+    },
+    {
+      "task_id": "bustlelabs__shep-69",
+      "saved_phase": "modify",
+      "observed_phase": "modify"
+    },
+    {
+      "task_id": "idsia__sacred-765",
+      "saved_phase": "recover",
+      "observed_phase": "recover"
+    },
+    {
+      "task_id": "narwhals-dev__narwhals-1948",
+      "saved_phase": "recover",
+      "observed_phase": "recover"
+    },
+    {
+      "task_id": "pgmpy__pgmpy-878",
+      "saved_phase": "verify",
+      "observed_phase": "verify"
+    }
+  ],
+  "reports": {
+    "009": {
+      "256_saved_phase": {
+        "local_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "EQUAL",
+            "predicted": "gpt-6.1-sol",
+            "correct": false
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "gpt-6.1-sol",
+            "predicted": "gpt-6.1-sol",
+            "correct": true
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "EQUAL",
+            "predicted": "EQUAL",
+            "correct": true
+          }
+        ],
+        "local_correct": 2,
+        "local_total": 5,
+        "task_fold_correct": 4,
+        "task_fold_total": 7,
+        "full_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "LUNA_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "actual": "BOTH_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "pgmpy__pgmpy-878",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          }
+        ],
+        "full_correct": 2,
+        "full_total": 7
+      },
+      "256_observed_phase": {
+        "local_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "EQUAL",
+            "predicted": "gpt-6.1-sol",
+            "correct": false
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "gpt-6.1-sol",
+            "predicted": "gpt-6.1-sol",
+            "correct": true
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "EQUAL",
+            "predicted": "EQUAL",
+            "correct": true
+          }
+        ],
+        "local_correct": 2,
+        "local_total": 5,
+        "task_fold_correct": 4,
+        "task_fold_total": 7,
+        "full_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "LUNA_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "actual": "BOTH_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "pgmpy__pgmpy-878",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          }
+        ],
+        "full_correct": 2,
+        "full_total": 7
+      },
+      "1024_saved_phase": {
+        "local_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "EQUAL",
+            "predicted": "gpt-6.1-sol",
+            "correct": false
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "gpt-6.1-sol",
+            "predicted": "gpt-6.1-sol",
+            "correct": true
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "EQUAL",
+            "predicted": "EQUAL",
+            "correct": true
+          }
+        ],
+        "local_correct": 2,
+        "local_total": 5,
+        "task_fold_correct": 4,
+        "task_fold_total": 7,
+        "full_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "LUNA_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "actual": "BOTH_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "pgmpy__pgmpy-878",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          }
+        ],
+        "full_correct": 1,
+        "full_total": 7
+      },
+      "1024_observed_phase": {
+        "local_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "EQUAL",
+            "predicted": "gpt-6.1-sol",
+            "correct": false
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "gpt-6.1-sol",
+            "predicted": "gpt-6.1-sol",
+            "correct": true
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "EQUAL",
+            "predicted": "EQUAL",
+            "correct": true
+          }
+        ],
+        "local_correct": 2,
+        "local_total": 5,
+        "task_fold_correct": 4,
+        "task_fold_total": 7,
+        "full_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "LUNA_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "actual": "BOTH_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "pgmpy__pgmpy-878",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          }
+        ],
+        "full_correct": 1,
+        "full_total": 7
+      }
+    },
+    "010": {
+      "256_saved_phase": {
+        "local_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "EQUAL",
+            "predicted": "gpt-6.1-sol",
+            "correct": false
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "EQUAL",
+            "predicted": "EQUAL",
+            "correct": true
+          }
+        ],
+        "local_correct": 1,
+        "local_total": 5,
+        "task_fold_correct": 5,
+        "task_fold_total": 7,
+        "full_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "actual": "BOTH_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "pgmpy__pgmpy-878",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          }
+        ],
+        "full_correct": 1,
+        "full_total": 7
+      },
+      "256_observed_phase": {
+        "local_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "EQUAL",
+            "predicted": "gpt-6.1-sol",
+            "correct": false
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "EQUAL",
+            "predicted": "EQUAL",
+            "correct": true
+          }
+        ],
+        "local_correct": 1,
+        "local_total": 5,
+        "task_fold_correct": 5,
+        "task_fold_total": 7,
+        "full_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "actual": "BOTH_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "pgmpy__pgmpy-878",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          }
+        ],
+        "full_correct": 1,
+        "full_total": 7
+      },
+      "1024_saved_phase": {
+        "local_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "EQUAL",
+            "predicted": "gpt-6.1-sol",
+            "correct": false
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "EQUAL",
+            "predicted": "EQUAL",
+            "correct": true
+          }
+        ],
+        "local_correct": 1,
+        "local_total": 5,
+        "task_fold_correct": 5,
+        "task_fold_total": 7,
+        "full_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "actual": "BOTH_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "pgmpy__pgmpy-878",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          }
+        ],
+        "full_correct": 1,
+        "full_total": 7
+      },
+      "1024_observed_phase": {
+        "local_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "EQUAL",
+            "predicted": "gpt-6.1-sol",
+            "correct": false
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "gpt-6.1-sol",
+            "predicted": "EQUAL",
+            "correct": false
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "EQUAL",
+            "predicted": "EQUAL",
+            "correct": true
+          }
+        ],
+        "local_correct": 1,
+        "local_total": 5,
+        "task_fold_correct": 5,
+        "task_fold_total": 7,
+        "full_old_holdout": [
+          {
+            "task_id": "mpmath__mpmath-922",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "cuthbertlab__music21-1062",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__pipdeptree-171",
+            "actual": "BOTH_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6-luna",
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "plasmapy__plasmapy-517",
+            "actual": "SOL_ONLY_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": "gpt-6.1-sol",
+            "selected": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "idsia__sacred-765",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "BOTH_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6-luna"
+          },
+          {
+            "task_id": "pgmpy__pgmpy-878",
+            "actual": "NEITHER_VERIFIED",
+            "predicted": "SOL_ONLY_VERIFIED",
+            "formal_winner": null,
+            "selected": "gpt-6.1-sol"
+          }
+        ],
+        "full_correct": 1,
+        "full_total": 7
+      }
+    }
+  },
+  "new_forwards": 32,
+  "encoded_tokens": 121038,
+  "elapsed_seconds": 16.35844773426652,
+  "gpu_peak_allocated_bytes": 1985631232,
+  "previous_observations_are_final_test": false,
+  "future_evidence_in_input": false,
+  "gradient_training": false,
+  "router_source_changed": false
+}

@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-04局部关系与动作前表达接续**：[实际结果](../results/iterations/20261104-v9-local-quality-learning/review.md)。复用16组既有真实比较，区分F2P修复、原失败P2P恢复和新增回归；Stingray/Sphinx的F2P差异及music21/Narwhals的P2P恢复不能称完整一步赢家。原B4扩展至26条关系Train后，009/010在7条已观察留出分别仍2/7、1/7；3条有正式赢家的动作分别2/3、1/3，固定Sol为2/3。局部F2P轴仅7条Train，P2P恢复仅1条，回归轴均只有相同类别。任务级L4资格不代表同仓库其他任务未涉及祖先L1/L2，逐仓库资格及不确定性见本轮结果。
+
+旧16状态中8条保存阶段与真实反馈重建阶段不同；本次同目标补32次GPU前向比较，真实阶段没有提高旧留出结果。命令摘要从256扩至1024字符后，009旧完整关系2/7降为1/7，010仍1/7；旧观察不作最终独立测试。Robocop原固定15/15，WebSocket固定416/417可识别、1 UNKNOWN，DOM固定99/102可识别、3 UNKNOWN；均未产生新成对标签。Vuex和事前选定的Train候选Aedes仍在原环境准备中。当前不训STEP011、不换Serving、不扩完整Dev；K2两项证据及五RQ仍未闭环。
+
 **11-04综合修复质量研究完成**：[本轮结果](../results/iterations/20261104-v9-repair-quality/review.md)。复用2500条既有分片，九任务恢复268原工具动作；PHP-Scoper/UglifyJS/Celebrate固定全过，node-dev/BaseUI原范围UNKNOWN，不为补数量收费。最终Shep/Narwhals为Train，pgmpy/Sacred为仓库留出，事前分工不变；四状态实际1 Modify/2 Recover/1 Verify，8有效真实生成、2先前400异常，双候选均未完成。Narwhals仅Sol恢复一个初始P2P失败，目标F2P仍失败；新增正式0，36（质量19/步骤费用8/任务费用9）保持。
 
 原prepare返回的深拷贝消息补齐顺序tool_call_id，development实际使用并传递来源；400后同状态有效动作成功，异常不冒充模型失败。009/010各4真实前向，A用原21正式Train、B17原17、B4原22关系Train，新状态不拟合/不入梯度。B4两个新留出均0/2，旧0/2保持；四项无正式赢家，动作/质量/费用正确率null。009在Narwhals局部优势选择较好但仓库祖先已见，不能支持预设Encoder。无STEP011、Trainer/Val重跑或新完整Dev，Serving原权重保持。332653已知生成Token/$0.368502参考费，2异常用量/实收/资源USD未知；8前向32632本地编码Token，含载入12.879秒、allocated峰值2.027GB。K2两核心证据与五RQ仍未闭环；下一优先是保留局部修复信息与真正独立关系选择，而非继续训练拟合。

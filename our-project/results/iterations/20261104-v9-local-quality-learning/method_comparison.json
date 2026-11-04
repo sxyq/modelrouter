@@ -1,0 +1,3454 @@
+{
+  "reports": {
+    "009": {
+      "evaluations": [
+        {
+          "task_id": "pallets__click-2417",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "BOTH_VERIFIED",
+          "formal_winner": "gpt-6-luna",
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6-luna",
+            "latency_ms": 2251.4502946287394,
+            "usage": {
+              "input_tokens": 3731,
+              "output_tokens": 0,
+              "state_tokens": 3625,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "mpmath__mpmath-922",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "SOL_ONLY_VERIFIED",
+          "formal_winner": "gpt-6.1-sol",
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6-luna",
+            "latency_ms": 120.8152063190937,
+            "usage": {
+              "input_tokens": 3878,
+              "output_tokens": 0,
+              "state_tokens": 3772,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": false,
+              "local_selection_agreement": false
+            },
+            "B17": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": false
+            },
+            "B4_ORIGINAL": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": false
+            },
+            "B4_EXPANDED": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": false
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": false
+        },
+        {
+          "task_id": "cuthbertlab__music21-1062",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "gpt-6.1-sol",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": true,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 126.88045017421246,
+            "usage": {
+              "input_tokens": 4120,
+              "output_tokens": 0,
+              "state_tokens": 4014,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": false
+        },
+        {
+          "task_id": "stingraysoftware__stingray-234",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": true,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 105.22585175931454,
+            "usage": {
+              "input_tokens": 3629,
+              "output_tokens": 0,
+              "state_tokens": 3523,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": "gpt-6.1-sol",
+          "local_auxiliary_agreement": true
+        },
+        {
+          "task_id": "pypa__build-365",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": true,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 109.90486480295658,
+            "usage": {
+              "input_tokens": 3730,
+              "output_tokens": 0,
+              "state_tokens": 3624,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": "gpt-6.1-sol",
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "tox-dev__pipdeptree-171",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "BOTH_VERIFIED",
+          "formal_winner": "gpt-6-luna",
+          "actual_local_axes": {
+            "f2p_repair": "UNKNOWN",
+            "p2p_restoration": "UNKNOWN",
+            "f2p_regression": "UNKNOWN",
+            "p2p_regression": "UNKNOWN"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": false,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": false
+          },
+          "native": {
+            "choice": "gpt-6-luna",
+            "latency_ms": 115.64096435904503,
+            "usage": {
+              "input_tokens": 3947,
+              "output_tokens": 0,
+              "state_tokens": 3841,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "researchobject__ro-crate-py-95",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "SOL_ONLY_VERIFIED",
+          "formal_winner": "gpt-6.1-sol",
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 103.86180132627487,
+            "usage": {
+              "input_tokens": 3644,
+              "output_tokens": 0,
+              "state_tokens": 3538,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": "gpt-6.1-sol",
+          "local_auxiliary_agreement": true
+        },
+        {
+          "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 108.68258588016033,
+            "usage": {
+              "input_tokens": 3773,
+              "output_tokens": 0,
+              "state_tokens": 3667,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": "gpt-6.1-sol",
+          "local_auxiliary_agreement": true
+        },
+        {
+          "task_id": "cogent3__cogent3-2050",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "UNKNOWN",
+            "p2p_restoration": "UNKNOWN",
+            "f2p_regression": "UNKNOWN",
+            "p2p_regression": "UNKNOWN"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": false,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": false
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 106.62326775491238,
+            "usage": {
+              "input_tokens": 3661,
+              "output_tokens": 0,
+              "state_tokens": 3555,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "copier-org__copier-1597",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "UNKNOWN",
+            "p2p_restoration": "UNKNOWN",
+            "f2p_regression": "UNKNOWN",
+            "p2p_regression": "UNKNOWN"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": true,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6-luna",
+            "latency_ms": 114.80769142508507,
+            "usage": {
+              "input_tokens": 3863,
+              "output_tokens": 0,
+              "state_tokens": 3757,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "plasmapy__plasmapy-517",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "SOL_ONLY_VERIFIED",
+          "formal_winner": "gpt-6.1-sol",
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 100.55540129542351,
+            "usage": {
+              "input_tokens": 3476,
+              "output_tokens": 0,
+              "state_tokens": 3370,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": false
+        },
+        {
+          "task_id": "rstudio__vetiver-python-201",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "SOL_ONLY_VERIFIED",
+          "formal_winner": "gpt-6.1-sol",
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 115.68166688084602,
+            "usage": {
+              "input_tokens": 3949,
+              "output_tokens": 0,
+              "state_tokens": 3843,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": false
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "NEITHER_VERIFIED",
+              "selection": null,
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": false
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": "gpt-6.1-sol",
+          "local_auxiliary_agreement": true
+        },
+        {
+          "task_id": "bustlelabs__shep-69",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": null,
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "NEITHER_VERIFIED",
+              "selection": null,
+              "relation_correct": true,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "idsia__sacred-765",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": null,
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "narwhals-dev__narwhals-1948",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "gpt-6.1-sol",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": true,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": null,
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": false
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": false
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": false
+        },
+        {
+          "task_id": "pgmpy__pgmpy-878",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": false,
+            "p2p_restoration": true,
+            "f2p_regression": true,
+            "p2p_regression": true
+          },
+          "native": null,
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        }
+      ],
+      "axis_training": {
+        "f2p_repair": {
+          "known_train_rows": 7,
+          "train_classes": {
+            "EQUAL": 4,
+            "gpt-6.1-sol": 3
+          }
+        },
+        "p2p_restoration": {
+          "known_train_rows": 1,
+          "train_classes": {
+            "gpt-6.1-sol": 1
+          },
+          "not_estimable": "FEWER_THAN_TWO_TRAIN_TASKS"
+        },
+        "f2p_regression": {
+          "known_train_rows": 2,
+          "train_classes": {
+            "EQUAL": 2
+          }
+        },
+        "p2p_regression": {
+          "known_train_rows": 7,
+          "train_classes": {
+            "EQUAL": 7
+          }
+        }
+      },
+      "task_holdout": {
+        "f2p_repair": [
+          {
+            "task_id": "bustlelabs__shep-69",
+            "actual": "EQUAL",
+            "prediction": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "narwhals-dev__narwhals-1948",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "pallets__click-2417",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "pypa__build-365",
+            "actual": "EQUAL",
+            "prediction": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "researchobject__ro-crate-py-95",
+            "actual": "gpt-6.1-sol",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "rstudio__vetiver-python-201",
+            "actual": "gpt-6.1-sol",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "stingraysoftware__stingray-234",
+            "actual": "gpt-6.1-sol",
+            "prediction": "gpt-6.1-sol"
+          }
+        ],
+        "f2p_regression": [
+          {
+            "task_id": "pypa__build-365",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "stingraysoftware__stingray-234",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          }
+        ],
+        "p2p_regression": [
+          {
+            "task_id": "bustlelabs__shep-69",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "narwhals-dev__narwhals-1948",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "pallets__click-2417",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "pypa__build-365",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "researchobject__ro-crate-py-95",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "rstudio__vetiver-python-201",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "stingraysoftware__stingray-234",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          }
+        ]
+      },
+      "methods": {
+        "A_SINGLE_WINNER": [
+          {
+            "prediction": "gpt-6-luna",
+            "scores": [
+              0.017705452414539302,
+              0.9822945475854605
+            ]
+          },
+          {
+            "prediction": "gpt-6-luna",
+            "scores": [
+              0.2441586244516878,
+              0.7558413755483122
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.9034793758937667,
+              0.09652062410623347
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.9064776113523261,
+              0.09352238864767393
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.8584455998501259,
+              0.14155440014987392
+            ]
+          },
+          {
+            "prediction": "gpt-6-luna",
+            "scores": [
+              0.0219513481721465,
+              0.9780486518278533
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.9292450254813511,
+              0.07075497451864887
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.8643623857631431,
+              0.13563761423685677
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.9004201280704229,
+              0.09957987192957723
+            ]
+          },
+          {
+            "prediction": "gpt-6-luna",
+            "scores": [
+              0.11800664552351892,
+              0.8819933544764811
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.5379030559305076,
+              0.46209694406949225
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.5593413443203679,
+              0.440658655679632
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.6088767701928984,
+              0.3911232298071015
+            ]
+          },
+          {
+            "prediction": "gpt-6-luna",
+            "scores": [
+              0.1941847175373561,
+              0.8058152824626439
+            ]
+          },
+          {
+            "prediction": "gpt-6-luna",
+            "scores": [
+              0.44877967671139113,
+              0.5512203232886088
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.7553833428191288,
+              0.24461665718087106
+            ]
+          }
+        ],
+        "B17": [
+          {
+            "prediction": "LUNA_ONLY_VERIFIED",
+            "scores": [
+              0.026964027003725854,
+              0.5540489283467902,
+              0.41898704464948344
+            ]
+          },
+          {
+            "prediction": "LUNA_ONLY_VERIFIED",
+            "scores": [
+              0.2813628815848048,
+              0.4623055955218704,
+              0.25633152289332467
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8208092965089776,
+              -0.0522439166848791,
+              0.23143462017590138
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8155956304814254,
+              -0.06429549207967161,
+              0.24869986159824714
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8020185378492499,
+              -0.008251147906589817,
+              0.20623261005734006
+            ]
+          },
+          {
+            "prediction": "LUNA_ONLY_VERIFIED",
+            "scores": [
+              0.021892028538160968,
+              0.5488290649588012,
+              0.4292789065030379
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8563822817067102,
+              -0.052940334444334214,
+              0.19655805273762436
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.757325446344326,
+              -0.0678343920434007,
+              0.3105089456990753
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8032306557361968,
+              -0.06920930182387841,
+              0.26597864608768274
+            ]
+          },
+          {
+            "prediction": "LUNA_ONLY_VERIFIED",
+            "scores": [
+              0.13472136324770873,
+              0.5207614965432049,
+              0.34451714020908625
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5043916451667637,
+              0.20524078047116656,
+              0.29036757436206984
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.43635742144385165,
+              0.12443201554934158,
+              0.43921056300680705
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.4952117474871351,
+              0.08716365118701924,
+              0.4176246013258458
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.14835327869087095,
+              0.41695136355044005,
+              0.43469535775868884
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.3978909365109989,
+              0.23506015853136467,
+              0.3670489049576364
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.6755216522813969,
+              0.02730938834800284,
+              0.2971689593706002
+            ]
+          }
+        ],
+        "B4_ORIGINAL": [
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.0012643890830595361,
+              0.4599735367100224,
+              0.4792461329855351,
+              0.059515941221382124
+            ]
+          },
+          {
+            "prediction": "LUNA_ONLY_VERIFIED",
+            "scores": [
+              0.23550719467918863,
+              0.43548146021133827,
+              0.29837492767161805,
+              0.030636417437855
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8953833402164593,
+              -0.0746112518167498,
+              0.15045515286581662,
+              0.02877275873447338
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8987036399819661,
+              -0.08693156340643612,
+              0.16119992377388676,
+              0.027027999650583855
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8565966137526418,
+              -0.004693643278279452,
+              0.14382817582706153,
+              0.004268853698576769
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.0008089918728110268,
+              0.4381450547239115,
+              0.48349061403233284,
+              0.07755533937094439
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.9223124641969058,
+              -0.06560741682333662,
+              0.11743878304847089,
+              0.02585616957796041
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8545921907522245,
+              -0.11119475864140835,
+              0.2239032541583293,
+              0.032699313730855176
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8909001733567599,
+              -0.10160221775525477,
+              0.17736691875130406,
+              0.03333512564719176
+            ]
+          },
+          {
+            "prediction": "LUNA_ONLY_VERIFIED",
+            "scores": [
+              0.09886281362317567,
+              0.4399491770555983,
+              0.3906567902964717,
+              0.07053121902475423
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5261527455657109,
+              0.1625429864136833,
+              0.27077766420624994,
+              0.04052660381435623
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5374208990645416,
+              0.008345348162206917,
+              0.37287099968153675,
+              0.08136275309171524
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5909976079569205,
+              -0.011566597961039649,
+              0.35590157394828165,
+              0.06466741605583787
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.16934666337986776,
+              0.29425688978086695,
+              0.4444204571033432,
+              0.09197598973592191
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.4330165166418593,
+              0.16045187492536164,
+              0.3508493281906928,
+              0.05568228024208634
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.7483250342870107,
+              -0.006394502284677028,
+              0.23477590417120478,
+              0.023293563826461236
+            ]
+          }
+        ],
+        "B4_EXPANDED": [
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.019552393403606816,
+              0.45234456457056094,
+              0.475046734777093,
+              0.05305630724873944
+            ]
+          },
+          {
+            "prediction": "LUNA_ONLY_VERIFIED",
+            "scores": [
+              0.22258645284663486,
+              0.4306520362667518,
+              0.30408446599109384,
+              0.042677044895519156
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.63709004258838,
+              -0.07083010726499314,
+              0.07359416484294462,
+              0.3601458998336686
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5987199246007515,
+              -0.08164298161448133,
+              0.07266752661892353,
+              0.41025553039480656
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5668020543380041,
+              -0.00046268995405904234,
+              0.06833751159501061,
+              0.3653231240210445
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.041382117655442086,
+              0.4282383757144147,
+              0.4784915587848582,
+              0.05188794784528397
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.6818732043614071,
+              -0.061546157643400184,
+              0.048102607368672584,
+              0.33157034591331996
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5472009600906764,
+              -0.10852130748029207,
+              0.12282862706725611,
+              0.4384917203223598
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.6021810057692345,
+              -0.09772515280406666,
+              0.0878750429751054,
+              0.40766910405972634
+            ]
+          },
+          {
+            "prediction": "LUNA_ONLY_VERIFIED",
+            "scores": [
+              0.1333116957149949,
+              0.43115574151160446,
+              0.3932475706526253,
+              0.04228499212077441
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.3648399278846248,
+              0.1591597322636658,
+              0.21650090859934085,
+              0.25949943125236846
+            ]
+          },
+          {
+            "prediction": "NEITHER_VERIFIED",
+            "scores": [
+              0.33057396602252365,
+              0.007282952218820221,
+              0.2825067469527305,
+              0.3796363348059262
+            ]
+          },
+          {
+            "prediction": "NEITHER_VERIFIED",
+            "scores": [
+              0.3401503647446817,
+              -0.011970443476546355,
+              0.2525551156746695,
+              0.4192649630571954
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.13875813954179989,
+              0.2861119980637026,
+              0.40715374270938903,
+              0.16797611968510917
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.28187675736907364,
+              0.15496166828871566,
+              0.2909818375740969,
+              0.2721797367681138
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.4701966052061777,
+              -0.003333428096642971,
+              0.14952224541223263,
+              0.38361457747823313
+            ]
+          }
+        ]
+      }
+    },
+    "010": {
+      "evaluations": [
+        {
+          "task_id": "pallets__click-2417",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "BOTH_VERIFIED",
+          "formal_winner": "gpt-6-luna",
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6-luna",
+            "latency_ms": 113.89635503292084,
+            "usage": {
+              "input_tokens": 3731,
+              "output_tokens": 0,
+              "state_tokens": 3625,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "mpmath__mpmath-922",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "SOL_ONLY_VERIFIED",
+          "formal_winner": "gpt-6.1-sol",
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6-luna",
+            "latency_ms": 117.61564016342163,
+            "usage": {
+              "input_tokens": 3878,
+              "output_tokens": 0,
+              "state_tokens": 3772,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": false,
+              "local_selection_agreement": false
+            },
+            "B17": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": false
+            },
+            "B4_ORIGINAL": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": false
+            },
+            "B4_EXPANDED": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": false
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": false
+        },
+        {
+          "task_id": "cuthbertlab__music21-1062",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "gpt-6.1-sol",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": true,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 130.2628070116043,
+            "usage": {
+              "input_tokens": 4120,
+              "output_tokens": 0,
+              "state_tokens": 4014,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": false
+        },
+        {
+          "task_id": "stingraysoftware__stingray-234",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": true,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 107.0682629942894,
+            "usage": {
+              "input_tokens": 3629,
+              "output_tokens": 0,
+              "state_tokens": 3523,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": "gpt-6.1-sol",
+          "local_auxiliary_agreement": true
+        },
+        {
+          "task_id": "pypa__build-365",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": true,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 112.1037770062685,
+            "usage": {
+              "input_tokens": 3730,
+              "output_tokens": 0,
+              "state_tokens": 3624,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": "gpt-6.1-sol",
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "tox-dev__pipdeptree-171",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "BOTH_VERIFIED",
+          "formal_winner": "gpt-6-luna",
+          "actual_local_axes": {
+            "f2p_repair": "UNKNOWN",
+            "p2p_restoration": "UNKNOWN",
+            "f2p_regression": "UNKNOWN",
+            "p2p_regression": "UNKNOWN"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": false,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": false
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 118.52848902344704,
+            "usage": {
+              "input_tokens": 3947,
+              "output_tokens": 0,
+              "state_tokens": 3841,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": false,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": false,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "researchobject__ro-crate-py-95",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "SOL_ONLY_VERIFIED",
+          "formal_winner": "gpt-6.1-sol",
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 106.58068582415581,
+            "usage": {
+              "input_tokens": 3644,
+              "output_tokens": 0,
+              "state_tokens": 3538,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": "gpt-6.1-sol",
+          "local_auxiliary_agreement": true
+        },
+        {
+          "task_id": "tox-dev__sphinx-autodoc-typehints-537",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 111.18056811392307,
+            "usage": {
+              "input_tokens": 3773,
+              "output_tokens": 0,
+              "state_tokens": 3667,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": false
+        },
+        {
+          "task_id": "cogent3__cogent3-2050",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "UNKNOWN",
+            "p2p_restoration": "UNKNOWN",
+            "f2p_regression": "UNKNOWN",
+            "p2p_regression": "UNKNOWN"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": false,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": false
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 109.66228693723679,
+            "usage": {
+              "input_tokens": 3661,
+              "output_tokens": 0,
+              "state_tokens": 3555,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "copier-org__copier-1597",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "UNKNOWN",
+            "p2p_restoration": "UNKNOWN",
+            "f2p_regression": "UNKNOWN",
+            "p2p_regression": "UNKNOWN"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": true,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 117.82542616128922,
+            "usage": {
+              "input_tokens": 3863,
+              "output_tokens": 0,
+              "state_tokens": 3757,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "plasmapy__plasmapy-517",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "SOL_ONLY_VERIFIED",
+          "formal_winner": "gpt-6.1-sol",
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 101.48834623396397,
+            "usage": {
+              "input_tokens": 3476,
+              "output_tokens": 0,
+              "state_tokens": 3370,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": false
+        },
+        {
+          "task_id": "rstudio__vetiver-python-201",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "SOL_ONLY_VERIFIED",
+          "formal_winner": "gpt-6.1-sol",
+          "actual_local_axes": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": {
+            "choice": "gpt-6.1-sol",
+            "latency_ms": 117.37289652228355,
+            "usage": {
+              "input_tokens": 3949,
+              "output_tokens": 0,
+              "state_tokens": 3843,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": true,
+              "formal_action_correct": true,
+              "local_selection_agreement": true
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": "gpt-6.1-sol",
+          "local_auxiliary_agreement": true
+        },
+        {
+          "task_id": "bustlelabs__shep-69",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": null,
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "idsia__sacred-765",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": false,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": null,
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        },
+        {
+          "task_id": "narwhals-dev__narwhals-1948",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "gpt-6.1-sol",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": "gpt-6.1-sol",
+          "axis_opportunities": {
+            "f2p_repair": true,
+            "p2p_restoration": true,
+            "f2p_regression": false,
+            "p2p_regression": true
+          },
+          "native": null,
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": false
+            },
+            "B17": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": false
+            },
+            "B4_ORIGINAL": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": false
+            },
+            "B4_EXPANDED": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": false
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": false
+        },
+        {
+          "task_id": "pgmpy__pgmpy-878",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "NEITHER_VERIFIED",
+          "formal_winner": null,
+          "actual_local_axes": {
+            "f2p_repair": "EQUAL",
+            "p2p_restoration": "EQUAL",
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_dominant_model_id": null,
+          "axis_opportunities": {
+            "f2p_repair": false,
+            "p2p_restoration": true,
+            "f2p_regression": true,
+            "p2p_regression": true
+          },
+          "native": null,
+          "methods": {
+            "A_SINGLE_WINNER": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B17": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_ORIGINAL": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_EXPANDED": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "relation_correct": false,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axis_predictions": {
+            "f2p_repair": "gpt-6.1-sol",
+            "p2p_restoration": null,
+            "f2p_regression": "EQUAL",
+            "p2p_regression": "EQUAL"
+          },
+          "local_auxiliary_selection": null,
+          "local_auxiliary_agreement": null
+        }
+      ],
+      "axis_training": {
+        "f2p_repair": {
+          "known_train_rows": 7,
+          "train_classes": {
+            "EQUAL": 4,
+            "gpt-6.1-sol": 3
+          }
+        },
+        "p2p_restoration": {
+          "known_train_rows": 1,
+          "train_classes": {
+            "gpt-6.1-sol": 1
+          },
+          "not_estimable": "FEWER_THAN_TWO_TRAIN_TASKS"
+        },
+        "f2p_regression": {
+          "known_train_rows": 2,
+          "train_classes": {
+            "EQUAL": 2
+          }
+        },
+        "p2p_regression": {
+          "known_train_rows": 7,
+          "train_classes": {
+            "EQUAL": 7
+          }
+        }
+      },
+      "task_holdout": {
+        "f2p_repair": [
+          {
+            "task_id": "bustlelabs__shep-69",
+            "actual": "EQUAL",
+            "prediction": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "narwhals-dev__narwhals-1948",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "pallets__click-2417",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "pypa__build-365",
+            "actual": "EQUAL",
+            "prediction": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "researchobject__ro-crate-py-95",
+            "actual": "gpt-6.1-sol",
+            "prediction": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "rstudio__vetiver-python-201",
+            "actual": "gpt-6.1-sol",
+            "prediction": "gpt-6.1-sol"
+          },
+          {
+            "task_id": "stingraysoftware__stingray-234",
+            "actual": "gpt-6.1-sol",
+            "prediction": "gpt-6.1-sol"
+          }
+        ],
+        "f2p_regression": [
+          {
+            "task_id": "pypa__build-365",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "stingraysoftware__stingray-234",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          }
+        ],
+        "p2p_regression": [
+          {
+            "task_id": "bustlelabs__shep-69",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "narwhals-dev__narwhals-1948",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "pallets__click-2417",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "pypa__build-365",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "researchobject__ro-crate-py-95",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "rstudio__vetiver-python-201",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          },
+          {
+            "task_id": "stingraysoftware__stingray-234",
+            "actual": "EQUAL",
+            "prediction": "EQUAL"
+          }
+        ]
+      },
+      "methods": {
+        "A_SINGLE_WINNER": [
+          {
+            "prediction": "gpt-6-luna",
+            "scores": [
+              -0.020613514432450186,
+              1.0206135144324502
+            ]
+          },
+          {
+            "prediction": "gpt-6-luna",
+            "scores": [
+              -0.015345080514693576,
+              1.0153450805146935
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.8353637895233508,
+              0.16463621047664917
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.9025365078785413,
+              0.0974634921214586
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.9033988756737361,
+              0.09660112432626372
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.5548347742029749,
+              0.4451652257970251
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.9712387692663753,
+              0.028761230733624576
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.5985807476303587,
+              0.40141925236964116
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.9295114147134533,
+              0.07048858528654656
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.7472083269226871,
+              0.25279167307731276
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.7148331700168176,
+              0.28516682998318227
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.9625572810991145,
+              0.037442718900885574
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.6892270622767112,
+              0.3107729377232888
+            ]
+          },
+          {
+            "prediction": "gpt-6-luna",
+            "scores": [
+              0.3177415138275297,
+              0.6822584861724703
+            ]
+          },
+          {
+            "prediction": "gpt-6-luna",
+            "scores": [
+              0.13326377342343632,
+              0.8667362265765637
+            ]
+          },
+          {
+            "prediction": "gpt-6.1-sol",
+            "scores": [
+              0.7556660950648042,
+              0.24433390493519558
+            ]
+          }
+        ],
+        "B17": [
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.004391178285938546,
+              0.49065879963913506,
+              0.5049500220749267
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.007440326446142398,
+              0.49220401497778166,
+              0.5003556585760762
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8525686396202601,
+              0.07844999896197608,
+              0.06898136141776379
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.9213286745422435,
+              0.03846443923131099,
+              0.040206886226446026
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.919856474661105,
+              0.042955003357098176,
+              0.03718852198179712
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5834162991241747,
+              0.2052396228804721,
+              0.21134407799535332
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.9890543322029192,
+              0.008741523109522642,
+              0.0022041446875581405
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.618388019678155,
+              0.1984904001722918,
+              0.18312158014955338
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.9619578440336487,
+              0.0019116286196019239,
+              0.036130527346749375
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.7721628836520387,
+              0.11032927672471046,
+              0.11750783962325093
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.7295131145794567,
+              0.1455244776344073,
+              0.12496240778613613
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.9818748410954041,
+              0.012822155618362141,
+              0.00530300328623412
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.701527001387336,
+              0.16426531714047493,
+              0.1342076814721893
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.3697047428866049,
+              0.2853453571587237,
+              0.3449498999546714
+            ]
+          },
+          {
+            "prediction": "LUNA_ONLY_VERIFIED",
+            "scores": [
+              0.13537645925483188,
+              0.46498108545785044,
+              0.3996424552873176
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.7832225549693733,
+              0.10074903502804419,
+              0.11602841000258268
+            ]
+          }
+        ],
+        "B4_ORIGINAL": [
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              -0.03400904587942438,
+              0.42980794340267525,
+              0.585957657784921,
+              0.01824344469182778
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              -0.029470076487478458,
+              0.43332079064401124,
+              0.5767285502987158,
+              0.019420735544751436
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.7736504564754778,
+              0.05121098238631225,
+              0.0848815997729993,
+              0.09025696136521053
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8447013872967911,
+              0.012768419780274626,
+              0.05782698661262964,
+              0.08470320631030409
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8437396449547215,
+              0.01858299070468747,
+              0.050221309773725575,
+              0.08745605456686524
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5095741890527498,
+              0.162253305894204,
+              0.26283695123375883,
+              0.06533555381928721
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.9241154491330601,
+              -0.012174936747521292,
+              0.018684567368158544,
+              0.06937492024630232
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5462454346982618,
+              0.1620378696786569,
+              0.21563578694102287,
+              0.07608090868205841
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.8803542103242759,
+              -0.029710732682341118,
+              0.07785202067733449,
+              0.07150450168073078
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.6886338479175939,
+              0.07524165137366592,
+              0.1509512689778872,
+              0.08517323173085306
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.6532517566846596,
+              0.11513194659991928,
+              0.14166372582670878,
+              0.08995257088871189
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.9167543882345306,
+              -0.008945101864937799,
+              0.024804988680920625,
+              0.06738572494948666
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.6290005492756163,
+              0.13399918385871545,
+              0.14895597871594282,
+              0.08804428814972544
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.3029326974786078,
+              0.22441176791503661,
+              0.45301191087341885,
+              0.019643623732936745
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.09885596793134643,
+              0.42403865777394434,
+              0.4270292815295838,
+              0.05007609276512559
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.6972261480023749,
+              0.06460894607300866,
+              0.15330324282681568,
+              0.08486166309780058
+            ]
+          }
+        ],
+        "B4_EXPANDED": [
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              -0.04466452357310696,
+              0.4030604071139194,
+              0.5600717164304461,
+              0.08153240002874147
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              -0.04215967941698301,
+              0.4042665778985415,
+              0.5481183961318341,
+              0.08977470538660781
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.590746038857952,
+              0.028450649674974182,
+              0.05437293132865692,
+              0.32643038013841646
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.6572502460079579,
+              -0.0024855902484165193,
+              0.03498775712238683,
+              0.3102475871180723
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.6549295092407155,
+              0.0005430755625180084,
+              0.02421961700062686,
+              0.32030779819613986
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.39016603105215053,
+              0.14045566402749513,
+              0.23720580266480973,
+              0.23217250225554464
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.7654653657402039,
+              -0.023497479006457933,
+              0.0005566062236936897,
+              0.2574755070425606
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.40835038191148204,
+              0.13150480574361723,
+              0.1793559977017271,
+              0.2807888146431736
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.7197856230784749,
+              -0.026589604642592274,
+              0.07594012490152627,
+              0.2308638566625914
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5217134686675853,
+              0.05684622243264162,
+              0.12651447521535342,
+              0.29492583368442
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.4802492824354764,
+              0.08197453186406732,
+              0.10094497768567526,
+              0.33683120801478106
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.767737075352207,
+              -0.01910961283008833,
+              0.00822763973645213,
+              0.2431448977414297
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.46497832933425404,
+              0.0977384248726709,
+              0.10509387054597974,
+              0.33218937524709546
+            ]
+          },
+          {
+            "prediction": "BOTH_VERIFIED",
+            "scores": [
+              0.26980301015936364,
+              0.22721317149753908,
+              0.45799559747029395,
+              0.0449882208728031
+            ]
+          },
+          {
+            "prediction": "LUNA_ONLY_VERIFIED",
+            "scores": [
+              0.03132321196327714,
+              0.36281430978279305,
+              0.3606453964099884,
+              0.24521708184394134
+            ]
+          },
+          {
+            "prediction": "SOL_ONLY_VERIFIED",
+            "scores": [
+              0.5336761643886374,
+              0.05077471021332661,
+              0.1338301240496942,
+              0.28171900134834205
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "formal_train_rows": 21,
+  "original_full_relation_train_rows": 22,
+  "expanded_full_relation_train_rows": 26,
+  "local_train_rows": 7,
+  "old_observations_are_final_test": false,
+  "ridge_penalty": 1,
+  "parameter_searches": 0,
+  "scores_are_pass_probabilities": false,
+  "gradient_training": false,
+  "new_checkpoint_forwards": 24,
+  "encoded_tokens": 90802,
+  "elapsed_seconds": 15.099284756928682,
+  "gpu_peak_allocated_bytes": 1984578560,
+  "auxiliary_heads_do_not_change_complete_relation_scores": true
+}
