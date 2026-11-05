@@ -217,3 +217,88 @@ def test_mock_fallback_is_recorded_without_stopping_loop(tmp_path, monkeypatch):
     assert context.metadata["neural_router_evidence_eligible"] is False
     trajectory = json.loads((tmp_path / "agent/mini-swe-agent.trajectory.json").read_text())
     assert trajectory["info"]["exit_status"] == "Submitted"
+
+
+def test_v9_harbor_hook_includes_teacher_usage_and_alias_scope(tmp_path, monkeypatch):
+    """Unit responses and environment only; no official task is scored."""
+    references = tmp_path / "unit-references.json"
+    references.write_text(json.dumps([{
+        "source_id": "UNIT_TEST_ONLY", "dataset_revision": "fixture", "task_id": f"unit-ref-{index}",
+        "episode_id": f"unit-ref-episode-{index}", "split": "UNIT_TEST_ONLY",
+        "success_evidence": {"fixture_only": True}, "observed_through_step": 2,
+        "summary": "Synthetic unit reference; not research evidence.",
+    } for index in range(2)]))
+
+    class V9Provider(FixtureProvider):
+        def query_raw(self, messages, spec, effort, max_tokens, tools, stream):
+            if tools is None:
+                assert stream is False
+                body = {"choices": [{"message": {"content": json.dumps({
+                    "progress_summary": "Unit progress", "main_blocker": "Unit issue",
+                    "next_milestone": "Unit target"})}}]}
+                return body, {"cost_usd": .002, "returned_model_id": "UNIT_TEST_ONLY-backend",
+                              "usage_status": "REPORTED", "prompt_tokens": 10, "completion_tokens": 5,
+                              "cached_tokens": 0, "actual_billed_cost_usd": None,
+                              "execution_mode": "ALIAS_SMOKE"}
+            body, metrics = super().query_raw(messages, spec, effort, max_tokens, tools, stream)
+            command = "echo fixture-output" if self.count < 4 else "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT"
+            body["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"] = json.dumps({"command": command})
+            metrics["execution_mode"] = "ALIAS_SMOKE"
+            return body, metrics
+
+    routed = []
+    def route(self, **kwargs):
+        routed.append(kwargs)
+        return RouterDecision("unit-route", "laya", "UNIT_TEST_ONLY-checkpoint", kwargs["legal_actions"][0])
+    monkeypatch.setattr(RouterClient, "route", route)
+    monkeypatch.setenv("MODELROUTER_ITERATION", str(tmp_path))
+    context = AgentContext()
+    agent = harbor_agent.ModelRouterMiniSweAgent(
+        logs_dir=tmp_path / "agent", policy="laya_v2", max_steps=6, cost_limit=0, provider=V9Provider(),
+        v9_config={"router_endpoint": "http://unit-only.invalid", "references_path": str(references),
+                   "capability_snapshot": {"snapshot_id": "UNIT_TEST_ONLY-bound"}},
+    )
+    asyncio.run(agent.run("Unit task", FixtureEnvironment(), context))
+    assert len(routed) == 4
+    assert routed[-1]["pre_decision_state"]["teacher_assessment"]["progress_summary"] == "Unit progress"
+    assert context.n_input_tokens == 50 and context.n_output_tokens == 25
+    assert context.cost_usd == pytest.approx(.006)
+    assert context.metadata["neural_router_evidence_eligible"] is False
+    assert context.metadata["actual_billed_cost_usd"] is None
+    assert context.metadata["v9"]["capability_snapshot_id"] == "UNIT_TEST_ONLY-bound"
+    assert context.metadata["v9"]["router_checkpoint_ids"] == ["UNIT_TEST_ONLY-checkpoint"]
+    assert len(context.metadata["v9"]["teacher_metrics"]) == 1
+
+
+def test_upstream_policy_query_does_not_repeat_type_error(tmp_path, monkeypatch):
+    from modelrouter.v9.runtime import development
+    import os
+
+    assert TypeError in harbor_agent.PolicyModel.abort_exceptions
+    monkeypatch.setenv("MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT", "7")
+    monkeypatch.setenv("LITELLM_LOCAL_MODEL_COST_MAP", "false")
+    class NullableFixtureProvider:
+        count = 0
+        def query_raw(self, *args, **kwargs):
+            self.count += 1
+            raise TypeError("UNIT_TEST_ONLY nullable response")
+    provider = NullableFixtureProvider()
+    state = AgentState(task_id="UNIT_TEST_ONLY", episode_id="unit-nullable", policy_id="fixed_strong")
+    model = harbor_agent.PolicyModel(policy="fixed_strong", state=state, record_dir=tmp_path,
+                                    provider=provider, model_name="openai/gpt-6-luna")
+    with pytest.raises(TypeError):
+        model.query([{"role": "user", "content": "Unit task"}])
+    assert provider.count == 1 and state.step_index == 0
+    events = [json.loads(line) for line in (tmp_path / "events.jsonl").read_text().splitlines()]
+    failures = [row for row in events if row["event"] == "ERROR" and row.get("category") == "PROVIDER"]
+    assert len(failures) == 1 and failures[0]["error"] == "TypeError"
+    def fail_provider(config, api_key):
+        assert os.environ["MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT"] == "1"
+        assert os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] == "true"
+        raise TypeError("UNIT_TEST_ONLY setup failure")
+    monkeypatch.setattr(development, "alias_provider", fail_provider)
+    with pytest.raises(TypeError):
+        development.run_development(workspace=tmp_path, instruction="Unit task", verify_command="true",
+                                    config={}, record_dir=tmp_path / "unit-profile", task_id="UNIT_TEST_ONLY")
+    assert os.environ["MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT"] == "7"
+    assert os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] == "false"

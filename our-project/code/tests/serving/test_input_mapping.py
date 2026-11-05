@@ -113,3 +113,49 @@ def test_router_client_uses_service_schema(actions, state):
         request.pop("request_id")
     assert captured[0] == captured[1]
     assert MockRouter.route("laya", {}, [a.model_dump() for a in actions]).fallback_used
+
+
+def test_v9_state_reaches_both_native_inputs(actions, state, monkeypatch):
+    state.teacher_assessment = {"progress_summary": "Read parser", "main_blocker": "Failing assertion",
+                                "next_milestone": "Run the affected test"}
+    state.capability_cards = [{"model_id": actions[0].model, "native_effort": actions[0].native_effort,
+                               "metric": 37.5, "unit": "index_points", "missing": False}]
+    text = state.router_text()
+    assert json.loads(text)["teacher_assessment"]["main_blocker"] == "Failing assertion"
+    assert json.loads(text)["capability_cards"][0]["metric"] == 37.5
+    laya = LayaAdapter.__new__(LayaAdapter)
+    captured = []
+    def system_one(encoded, questions):
+        captured.append(encoded)
+        key = next(iter(questions["route_decision"]["criteria"]))
+        return {"answers": {"route_decision": {"choice": key, "probabilities": {key: 1.0}}}}
+    laya.agent = SimpleNamespace(system_one=system_one)
+    laya.route(state, actions[:1])
+    monkeypatch.setitem(sys.modules, "kev.model", SimpleNamespace(admit=lambda model, tokenizer, record: captured.append(record["state"]) or record))
+    kev = KevAdapter.__new__(KevAdapter)
+    kev.tokenizer = object()
+    kev.model = SimpleNamespace(probs=lambda record: [[1.0]])
+    kev.route(state, actions[:1])
+    assert captured == [text, text]
+
+
+def test_system_one_client_reuses_loaded_router(actions, state):
+    client = RouterClient(protocol="system_one", max_retries=0)
+    captured = []
+    def open_response(request, **kwargs):
+        payload = json.loads(request.data)
+        captured.append((request.full_url, payload))
+        keys = list(payload["questions"]["route_decision"]["criteria"])
+        body = {"router_family": "laya", "checkpoint_id": "fixture", "fallback_used": False,
+                "decision_latency_ms": 2.5, "answers": {"route_decision": {
+                    "choice": keys[-1], "probabilities": {key: float(key == keys[-1]) for key in keys},
+                }}}
+        response = io.BytesIO(json.dumps(body).encode())
+        response.status = 200
+        return response
+    client._opener = SimpleNamespace(open=open_response)
+    result = client.route("ep", "dec", state.model_dump(), [a.model_dump() for a in actions[:2]])
+    assert captured[0][0].endswith("/v1/systemone")
+    assert captured[0][1]["state"] == state.router_text()
+    assert result.selected_action["action_id"] == sorted(actions[:2], key=lambda a: a.action_id)[-1].action_id
+    assert not result.fallback_used

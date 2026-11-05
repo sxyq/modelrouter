@@ -41,9 +41,10 @@ from modelrouter.providers.provider import (
     update_token_budget,
     native_generator_relay,
 )
-from modelrouter.providers.registry import ModelSpec
+from modelrouter.providers.registry import ModelRegistry, ModelSpec, V9_MODEL_IDS
 from modelrouter.providers.registry import MODEL_REGISTRY
 from modelrouter.providers import provider as provider_module
+from modelrouter.v9.runtime.alias import AliasMapping
 
 
 @pytest.fixture(autouse=True)
@@ -54,6 +55,50 @@ def isolated_accounting(tmp_path, monkeypatch):
     monkeypatch.setattr(provider_module, "load_generator_credentials", lambda: {})
     monkeypatch.setattr(provider_module.global_multi_model_logger, "log_call", lambda **kwargs: kwargs)
     return budget
+
+
+def test_alias_credentials_stay_with_the_configured_endpoint(monkeypatch):
+    monkeypatch.setattr(provider_module, "load_generator_credentials", lambda: {
+        "base_url": "https://original.invalid/v1", "api_key": "original-provider-key",
+    })
+    alias = AliasMapping("Qwen3.8-27B", "http://127.0.0.1:19002/v1")
+    isolated = OpenAICompatibleProvider(base_url=alias.base_url, alias_mapping=alias)
+    assert isolated.api_key == ""
+    assert OpenAICompatibleProvider(base_url=alias.base_url).api_key == ""
+    assert OpenAICompatibleProvider().api_key == "original-provider-key"
+    explicit = OpenAICompatibleProvider(base_url=alias.base_url, alias_mapping=alias,
+                                        api_key="alias-provider-key")
+    assert explicit.api_key == "alias-provider-key"
+
+
+def test_nullable_stream_fields_are_absent_actions():
+    chunks = [
+        {"choices": None},
+        {"model": "Qwen3.8-27B", "choices": [{"index": 0,
+            "delta": {"content": "observed", "tool_calls": None}}]},
+        {"choices": [{"index": 0, "delta": {"tool_calls": [{"index": 0, "id": "tool-1",
+            "function": {"name": "bash", "arguments": None}}]}}]},
+        {"choices": [{"index": 0, "delta": {"tool_calls": [{"index": 0,
+            "function": {"name": None, "arguments": "{\"command\":\"pwd\"}"}}]}}]},
+        {"choices": [], "usage": {"prompt_tokens": 10, "completion_tokens": 1}},
+    ]
+    stream = io.BytesIO(("".join("data: " + json.dumps(chunk) + "\n\n" for chunk in chunks)
+                         + "data: [DONE]\n\n").encode())
+    body, ttft = OpenAICompatibleProvider()._read_response(stream, True, time.perf_counter())
+    assert body["choices"][0]["message"]["content"] == "observed"
+    assert body["usage"]["completion_tokens"] == 1
+    assert body["choices"][0]["message"]["tool_calls"][0]["function"] == {
+        "name": "bash", "arguments": '{"command":"pwd"}',
+    }
+    assert ttft is not None
+
+
+def test_unknown_usage_reserves_the_existing_request_allowance():
+    data = {"max_tokens": 1000000, "consumed_total_tokens": 100}
+    provider_module._record_budget(data, None, None, 2048)
+    assert data["consumed_total_tokens"] == 100
+    assert data["reserved_unknown_tokens"] == 2048
+    assert data["remaining_tokens"] == 1000000 - 100 - 2048
 
 
 class MockResponsesSSEHandler(BaseHTTPRequestHandler):
@@ -264,6 +309,183 @@ def test_invalid_effort_is_not_sent(provider_cls, monkeypatch):
     monkeypatch.setattr(provider_module.urllib.request, "urlopen", lambda *a, **kw: pytest.fail("unexpected paid request"))
     with pytest.raises(ValueError, match="Unsupported native_effort"):
         provider_cls(api_key="fixture").query_raw([], MODEL_REGISTRY["gpt-6-luna"], "invalid")
+
+
+def test_v9_registry_keeps_unknown_capabilities():
+    registry = ModelRegistry()
+    actions = registry.list_legal_actions()
+    assert set(V9_MODEL_IDS) <= {action["model"] for action in actions}
+    for model_id in ("gpt-6.1-sol", "qwen3.8-flash"):
+        spec = registry.get_spec(model_id)
+        assert spec.context_window is spec.max_output_tokens is None
+        assert spec.native_efforts == ()
+        assert spec.context_status == spec.native_efforts_status == "NOT_MEASURED"
+        assert spec.pricing_status == spec.identity_status == "NOT_MEASURED"
+        assert spec.calculate_cost(100, 20) is None
+        assert all(price is None for price in (
+            spec.input_price_per_1m, spec.output_price_per_1m,
+            spec.reasoning_price_per_1m, spec.cache_read_price_per_1m,
+            spec.cache_write_price_per_1m,
+        ))
+        action = next(action for action in actions if action["model"] == model_id)
+        assert action["native_effort"] == "none"
+        assert action["native_efforts_status"] == "NOT_MEASURED"
+        spec.validate_effort("none")
+
+
+@pytest.mark.parametrize("model_id,target", [
+    ("gpt-6-luna", "gpt-6-luna"),
+    ("gpt-5.6-luna", "gpt-5.6-luna"),
+    ("gpt-6.1-sol", "gpt-6-luna"),
+    ("qwen3.8-flash", "gpt-6-luna"),
+])
+def test_authorized_luna_default_without_alias(monkeypatch, model_id, target):
+    sent = []
+    def open_response(request, **kwargs):
+        payload = json.loads(request.data)
+        sent.append(payload)
+        return io.BytesIO(json.dumps({
+            "model": payload["model"], "choices": [{"message": {"content": "hi"}}],
+            "usage": {"prompt_tokens": 10, "completion_tokens": 2},
+        }).encode())
+    monkeypatch.setattr(provider_module.urllib.request, "urlopen", open_response)
+    _, metrics = OpenAICompatibleProvider(api_key="fixture").query_raw(
+        [], MODEL_REGISTRY[model_id], stream=False,
+    )
+    assert len(sent) == 1 and sent[0]["model"] == target
+    assert metrics["request_model_id"] == target
+    assert metrics.get("execution_mode") != "ALIAS_SMOKE"
+    assert metrics["cost_usd"] is not None
+
+
+@pytest.mark.parametrize("model_id", V9_MODEL_IDS)
+@pytest.mark.parametrize("stream", [False, True])
+def test_v9_alias_query_reuses_transport_and_accounting(monkeypatch, isolated_accounting, model_id, stream):
+    backend = "fixture-qwen3.8-27b"
+    mapping = AliasMapping(backend, "http://alias.invalid/v1/")
+    usage = {"prompt_tokens": 100, "completion_tokens": 20, "cost": 99.0, "cost_currency": "USD",
+             "completion_tokens_details": {"reasoning_tokens": 5},
+             "prompt_tokens_details": {"cached_tokens": 40}}
+    tool_call = {"id": "fixture-tool", "type": "function",
+                 "function": {"name": "bash", "arguments": '{"command":"echo fixture"}'}}
+    message = {"role": "assistant", "content": "Thought: Next step.\nAction: echo fixture", "tool_calls": [tool_call]}
+    body = {"id": "fixture-response", "model": backend,
+            "choices": [{"index": 0, "message": message, "finish_reason": "tool_calls"}], "usage": usage}
+    sent, logged = [], []
+    def open_response(request, **kwargs):
+        payload = json.loads(request.data)
+        sent.append((request.full_url, payload))
+        if not stream:
+            return io.BytesIO(json.dumps(body).encode())
+        delta = {**message, "tool_calls": [{"index": 0, **tool_call}]}
+        chunks = [
+            {"id": body["id"], "model": backend, "choices": [{"index": 0, "delta": delta, "finish_reason": "tool_calls"}]},
+            {"choices": [], "usage": usage},
+        ]
+        return io.BytesIO(("".join(f"data: {json.dumps(chunk)}\n\n" for chunk in chunks) + "data: [DONE]\n\n").encode())
+    monkeypatch.setattr(provider_module.urllib.request, "urlopen", open_response)
+    monkeypatch.setattr(provider_module.global_multi_model_logger, "log_call", lambda **kwargs: logged.append(kwargs))
+    messages = [{"role": "user", "content": "Task"}, {"role": "assistant", "content": "Prior step"},
+                {"role": "user", "content": "Actual prior tool output"}]
+    tools = [{"type": "function", "function": {"name": "bash"}}]
+    result = OpenAICompatibleProvider(
+        base_url="http://original.invalid/v1", api_key="fixture", alias_mapping=mapping,
+    ).generate(messages, MODEL_REGISTRY[model_id], "high", tools=tools, stream=stream)
+    assert len(sent) == 1
+    url, payload = sent[0]
+    assert url == "http://alias.invalid/v1/chat/completions"
+    assert payload["model"] == backend
+    assert payload["messages"] == messages and payload["tools"] == tools
+    assert "reasoning_effort" not in payload
+    assert payload["stream"] is stream
+    if stream:
+        assert payload["stream_options"] == {"include_usage": True}
+        assert result.ttft_ms is not None
+    metrics = result.metadata
+    assert metrics["selected_model_id"] == model_id
+    assert metrics["actual_backend_model_id"] == metrics["returned_model_id"] == backend
+    assert metrics["requested_native_effort"] == "high"
+    assert metrics["native_effort"] == metrics["effective_native_effort"] == "none"
+    assert metrics["execution_mode"] == "ALIAS_SMOKE"
+    assert metrics["alias_mapping_applied"] is True
+    assert metrics["context_resend_required"] is None and metrics["context_resend_status"] == "UNKNOWN"
+    assert metrics["raw_usage"] == usage
+    assert result.cost_usd is None
+    assert metrics["actual_billed_cost_usd"] == usage["cost"]
+    assert metrics["cost_status"] == "LOCAL_COMPUTE_UNPRICED"
+    assert result.tool_calls == [tool_call]
+    assert result.prompt_tokens == 100 and result.completion_tokens == 20
+    assert result.reasoning_tokens == 5 and result.cached_tokens == 40
+    assert logged[0]["model_id"] == backend and logged[0]["provider"] == "local"
+    assert logged[0]["reasoning_effort"] == "none"
+    assert logged[0]["actual_billed_cost_usd"] == usage["cost"]
+    budget = json.loads(isolated_accounting.read_text())
+    assert budget["total_calls"] == 1 and budget["consumed_total_tokens"] == 120
+    assert budget["max_tokens"] == 1000000
+
+
+@pytest.mark.parametrize("reported_cost", [None, 0.125])
+def test_v9_alias_keeps_backend_reported_cost(monkeypatch, isolated_accounting, reported_cost):
+    mapping = AliasMapping("Qwen3.8-27B", "https://public-gateway.invalid/v1",
+                           cost_status="BACKEND_PRICE_NOT_MEASURED")
+    usage = {"prompt_tokens": 10, "completion_tokens": 2}
+    if reported_cost is not None:
+        usage["cost"] = reported_cost
+    body = {"model": mapping.backend_model_id,
+            "choices": [{"message": {"content": "hi"}}], "usage": usage}
+    sent, logged = [], []
+    def open_response(request, **kwargs):
+        sent.append((request.full_url, json.loads(request.data)))
+        return io.BytesIO(json.dumps(body).encode())
+    monkeypatch.setattr(provider_module.urllib.request, "urlopen", open_response)
+    monkeypatch.setattr(provider_module.global_multi_model_logger, "log_call", lambda **kwargs: logged.append(kwargs))
+    result = OpenAICompatibleProvider(api_key="fixture", alias_mapping=mapping).generate(
+        [], MODEL_REGISTRY["gpt-6.1-sol"], "high",
+    )
+    assert len(sent) == 1 and sent[0][0] == "https://public-gateway.invalid/v1/chat/completions"
+    assert sent[0][1]["model"] == "Qwen3.8-27B"
+    assert "reasoning_effort" not in sent[0][1]
+    assert result.cost_usd is None
+    assert result.metadata["cost_status"] == "BACKEND_PRICE_NOT_MEASURED"
+    assert result.metadata["actual_billed_cost_usd"] is None
+    assert result.metadata["raw_reported_cost"] == reported_cost
+    assert result.metadata["reported_cost_unit"] == "NOT_REPORTED"
+    assert result.metadata["raw_usage"] == usage
+    assert result.metadata["provider"] == logged[0]["provider"] == "openai-compatible"
+    assert logged[0]["actual_billed_cost_usd"] is None
+    assert json.loads(isolated_accounting.read_text())["total_calls"] == 1
+
+
+def test_v9_alias_can_be_disabled(monkeypatch, isolated_accounting):
+    sent = []
+    def open_response(request, **kwargs):
+        payload = json.loads(request.data)
+        sent.append((request.full_url, payload["model"]))
+        return io.BytesIO(json.dumps({"model": payload["model"],
+            "choices": [{"message": {"content": "hi"}}],
+            "usage": {"prompt_tokens": 10, "completion_tokens": 2}}).encode())
+    monkeypatch.setattr(provider_module.urllib.request, "urlopen", open_response)
+    provider = OpenAICompatibleProvider(base_url="http://original.invalid/v1", api_key="fixture",
+        alias_mapping=AliasMapping("fixture-qwen3.8-27b", "http://alias.invalid/v1"))
+    _, aliased = provider.query_raw([], MODEL_REGISTRY["gpt-6-luna"], stream=False)
+    provider.alias_mapping = None
+    _, normal = provider.query_raw([], MODEL_REGISTRY["gpt-6-luna"], stream=False)
+    assert sent == [("http://alias.invalid/v1/chat/completions", "fixture-qwen3.8-27b"),
+                    ("http://original.invalid/v1/chat/completions", "gpt-6-luna")]
+    assert aliased["cost_usd"] is None and normal["cost_usd"] is not None
+    assert normal.get("execution_mode") != "ALIAS_SMOKE"
+    assert AliasMapping("fixture-qwen3.8-27b").resolve("gpt-5.6-luna", "low") is None
+    assert json.loads(isolated_accounting.read_text())["total_calls"] == 2
+
+
+def test_v9_alias_uses_shared_token_limit(monkeypatch, isolated_accounting):
+    isolated_accounting.write_text(json.dumps({"max_tokens": 1000000, "consumed_total_tokens": 999999}))
+    monkeypatch.setattr(provider_module.urllib.request, "urlopen", lambda *a, **kw: pytest.fail("unexpected request"))
+    with pytest.raises(RuntimeError, match="Existing total-token budget"):
+        OpenAICompatibleProvider(api_key="fixture", alias_mapping=AliasMapping("fixture-qwen3.8-27b")).query_raw(
+            [], MODEL_REGISTRY["gpt-6.1-sol"], "high", stream=False,
+        )
+    assert json.loads(isolated_accounting.read_text()).get("total_calls", 0) == 0
 
 
 def test_responses_single_request_has_no_implicit_tools(monkeypatch, isolated_accounting):

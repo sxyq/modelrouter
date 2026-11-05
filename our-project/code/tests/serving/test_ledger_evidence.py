@@ -10,6 +10,22 @@ from modelrouter.benchmark import iterations
 from modelrouter.telemetry.ledger import ExperimentLedger
 
 
+def test_loggers_use_the_original_budget_directory(tmp_path, monkeypatch):
+    from modelrouter.telemetry import ledger as ledger_module
+    from modelrouter.telemetry import multi_model_logger
+
+    package = tmp_path / "our-project/code/src/modelrouter"
+    (package / "runs").mkdir(parents=True)
+    (package / "experiments").mkdir()
+    budget = tmp_path / "experiments/agent_pilot/token_budget.json"
+    budget.parent.mkdir(parents=True)
+    budget.write_text("{}")
+    monkeypatch.setattr(ledger_module, "__file__", str(package / "telemetry/ledger.py"))
+
+    assert ledger_module._find_project_root() == tmp_path
+    assert multi_model_logger._find_project_root() == tmp_path
+
+
 def episode(fallback):
     return SimpleNamespace(
         task_id="fixture", episode_id="fixture-episode", policy_id="laya", seed=1,
