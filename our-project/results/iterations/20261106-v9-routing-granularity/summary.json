@@ -1,0 +1,731 @@
+{
+  "starting_main": "1dc52eb5a80be45a914186e567aa6d2cfe717206",
+  "server_project_is_deployed_directory_not_git_checkout": true,
+  "server_git_revision": null,
+  "server_state_source_functions_match_starting_main": ["tool_result_phase", "compact_router_state", "build_offline_prefix_input"],
+  "analysis_scope": "NEW_OBSERVED_TURN_AND_CALL_GRANULARITY_ANALYSIS_REUSING_EXISTING_EIGHT_EPISODES",
+  "historical_checkpoint_and_protocols_differ_across_five_rounds": true,
+  "aggregate_is_one_common_checkpoint_strategy_trial": false,
+  "scenarios_are_offline_counterfactuals_not_new_execution": true,
+  "recorded_phase_not_relabelled": true,
+  "new_success_or_reward_measured": false,
+  "fixed_generation_trajectory_quality_and_cost_assumption": true,
+  "retained_latency_is_selected_old_calls_not_actual_new_runtime": true,
+  "models_are_API_request_response_identity_not_verified_physical_backend": true,
+  "supplier_and_resource_cash_costs_unknown": true,
+  "new_research": {
+    "selection_and_methods_recorded_before_outcomes": true,
+    "prediction_recorded_utc": "2026-11-05T19:04:31.680450+00:00",
+    "state_count": 3,
+    "unique_historical_actions": 72,
+    "trajectory_source": "NVIDIA/Open-SWE-Traces TRA-001",
+    "trajectory_license": "CC-BY-4.0",
+    "environment_source": "SWE-rebench-V2 ENV-002 original Train",
+    "repository_licenses": "MIT",
+    "fixed_test_ids_are_not_independent_tasks": true,
+    "observed_phases": {"inspect": 1, "recover": 1, "modify": 1},
+    "business_source_modified_at_current_modify": false,
+    "ancestor_encoder_exact_task_membership": "NOT_FULLY_RECORDED",
+    "base_pretraining_exposure": "UNKNOWN",
+    "repositories_have_other_lower_layer_records": true,
+    "states": [
+      {
+        "task_id": "yannickcr__eslint-plugin-react-1250",
+        "purpose": "TRAIN_CANDIDATE",
+        "qualification": "TRA001_L4_TRAIN_ENV002_ORIGINAL_VERSION",
+        "message_cutoff_exclusive": 45,
+        "current_phase": "recover",
+        "business_source_diff_bytes": 1917,
+        "history_actions": 24,
+        "history_exit_mismatches": 0,
+        "f2p_count": 3,
+        "p2p_count": 857,
+        "initial_fixed_passed": 859,
+        "fixed_count": 860,
+        "missing_fixed_ids": 1,
+        "original_runner_passed": 2257,
+        "original_runner_failed": 3,
+        "original_command_exit": 3,
+        "trusted_outcome": false,
+        "reason": "ORIGINAL_JS_PARSER_MISSES_NUMBERED_MOCHA_FAILURE_AND_COLLAPSES_REPEATED_NAMES",
+        "valid_target_luna_generations": 1,
+        "luna_action": "READ_RULE_AND_RUN_DIAGNOSTIC_NO_SOURCE_DIFF",
+        "luna_fixed_passed": 859,
+        "luna_missing_fixed_ids": 1,
+        "luna_original_command_exit": 3,
+        "candidate_completion": null,
+        "pair_full_relation": "UNKNOWN",
+        "pair_local_relation": "UNKNOWN",
+        "formal_winner": null,
+        "formal_action_correct": null,
+        "collection_started_before_initial_verifier_was_trusted": true,
+        "no_further_generation_requested": true
+      },
+      {
+        "task_id": "reubeno__brush-353",
+        "purpose": "NEW_TASK_EVALUATION",
+        "qualification": "TRA001_L4_TRAIN_ENV002_ORIGINAL_VERSION",
+        "message_cutoff_exclusive": 40,
+        "current_phase": "inspect",
+        "history_actions": 24,
+        "first_restore_exit_mismatches": [12, 13],
+        "f2p_count": 5,
+        "p2p_count": 70,
+        "fixed_count": 75,
+        "initial_verification_status": "ORIGINAL_COMMAND_COMPLETED_FIXED_VERIFIER_UNKNOWN",
+        "first_original_verifier_timeout_seconds": 2400.56230154098,
+        "first_original_verifier_missing_ids": 75,
+        "prefix_build_recovered_exit_code": 0,
+        "prefix_reproduction_recovered_exit_code": 1,
+        "recovered_prefix_exit_mismatches": 0,
+        "business_source_diff_bytes": 0,
+        "original_verifier_seconds": 871.5094956250396,
+        "original_command_exit": 0,
+        "original_library_tests_run": 71,
+        "original_library_tests_passed": 71,
+        "original_library_tests_failed": 0,
+        "initial_fixed_passed": 67,
+        "missing_fixed_ids": 8,
+        "fixed_ids_missing_due_to_interleaved_nocapture_output": 4,
+        "fixed_arithmetic_ids_not_present_in_original_word_source_or_library_run": 4,
+        "original_test_patch_scope": "BRUSH_SHELL_COMPAT_ARITHMETIC_YAML",
+        "original_command_scope": "LIBRARIES_ONLY_EXCLUDES_COMPAT_TEST_TARGET",
+        "trusted_outcome": false,
+        "reason": "FIXED_IDS_AND_ORIGINAL_LIB_TEST_COMMAND_DO_NOT_ALIGN_PLUS_PARSER_OUTPUT_INTERLEAVING",
+        "test_definition_or_original_parser_changed": false,
+        "original_command": "cargo test --lib --all -- --nocapture",
+        "original_parser": "parse_log_cargo",
+        "model_generations": 0,
+        "pair_full_relation": "UNKNOWN",
+        "pair_local_relation": "UNKNOWN",
+        "formal_winner": null,
+        "formal_action_correct": null
+      },
+      {
+        "task_id": "fxamacker__cbor-342",
+        "purpose": "NEW_TASK_EVALUATION",
+        "qualification": "TRA001_L4_TRAIN_ENV002_ORIGINAL_VERSION",
+        "message_cutoff_exclusive": 50,
+        "current_phase": "modify",
+        "history_actions": 24,
+        "history_exit_mismatches": 0,
+        "business_source_diff_bytes": 0,
+        "observed_write_scope": "TMP_DIAGNOSTIC_FILE_ONLY",
+        "f2p_count": 975,
+        "p2p_count": 0,
+        "fixed_count": 975,
+        "missing_fixed_ids": 975,
+        "original_command_exit": 1,
+        "trusted_outcome": false,
+        "reason": "ORIGINAL_TEST_PATCH_REQUIRES_NOT_YET_IMPLEMENTED_UTF8_DECODING_OPTIONS_COMPILE_STOP",
+        "initial_verifier_seconds": 91.23433370806742,
+        "model_generations": 0,
+        "pair_full_relation": "UNKNOWN",
+        "pair_local_relation": "UNKNOWN",
+        "formal_winner": null,
+        "formal_action_correct": null
+      }
+    ]
+  },
+  "missing_sol_recovery": {
+    "task_id": "iamolegga__nestjs-pino-650",
+    "existing_target_luna_original_verifier": "32/32",
+    "existing_luna_generation_reused": true,
+    "new_sol_requests": 1,
+    "new_sol_http_status": 502,
+    "sol_valid_generation": false,
+    "model_directory_http_status": 200,
+    "other_registered_sol_endpoint": false,
+    "comparison_prepare_reason": "COMPARISON_NOT_VALID",
+    "pair_full_relation": "UNKNOWN",
+    "formal_winner": null,
+    "code_generation_accounts_changed": false,
+    "scikit_returned_gpt_5_6_luna_replaces_target": false
+  },
+  "model_evaluation": {
+    "checkpoints": ["STEP009", "STEP010"],
+    "neural_forward_calls": 6,
+    "native_selection_each_state": "gpt-6.1-sol",
+    "A_selection_each_state": "gpt-6.1-sol",
+    "B4_relation_each_state": "SOL_ONLY_VERIFIED",
+    "B4_selection_each_state": "gpt-6.1-sol",
+    "candidate_completion_each_state_sol_luna": [1, 0],
+    "candidate_f2p_progress_each_state_sol_luna": [1, 0],
+    "train_rows": {"A": 23, "B4": 30, "candidate_f2p_progress": 11},
+    "ridge": 1,
+    "parameter_searches": 0,
+    "gradient_updates": 0,
+    "new_train_targets": 0,
+    "new_formal_preferences": 0,
+    "formal_preferences_total": 40,
+    "relation_accuracy": null,
+    "formal_action_accuracy": null,
+    "local_selection_consistency": null,
+    "native_and_A_full_relation_accuracy": "NOT_APPLICABLE",
+    "independent_quality_and_cost_bidirectional_improvement": false,
+    "new_neural_training": false,
+    "STEP011_created": false,
+    "new_complete_dev": false,
+    "serving_weights_changed": false,
+    "input_modified": false,
+    "state_tokens_dropped": 0,
+    "scores_are_pass_probabilities": false,
+    "cpu_forward_seconds": 90.061940908432,
+    "cpu_wall_seconds_including_loading_and_reference_fit": 96.69718105532229,
+    "local_encoded_tokens": 18426,
+    "gpu_allocated_bytes": 0
+  },
+  "new_generation_usage": {
+    "known_valid_generations": 1,
+    "known_valid_prompt_tokens": 18063,
+    "known_valid_output_tokens": 334,
+    "known_valid_total_tokens": 18397,
+    "known_valid_cached_tokens": 0,
+    "known_valid_model_rate_cost_usd": 0.0019733,
+    "known_success_cost_is_not_total_logical_call_cost": true,
+    "physical_requests": 3,
+    "http_502_requests": 2,
+    "http_200_generations": 1,
+    "failed_request_usage": null,
+    "total_model_rate_cost_usd": null,
+    "supplier_actual_billed_usd": null,
+    "resource_cash_cost_usd": null,
+    "physical_model_weights_independently_verified": false
+  },
+  "economic_analysis": {
+    "equal_verified_episode_quality_tasks": ["extract-elf", "git-leak-recovery", "bn-fit-modify", "distribution-search"],
+    "recorded_only_sol_success_tasks": ["build-cython-ext", "git-multibranch"],
+    "fixed_both_failure_task": "filter-js-from-html",
+    "fixed_luna_reward_unknown_task": "cobol-modernization",
+    "equal_success_fixed_model_rate_difference_usd": 0.10241964,
+    "dynamic_acquired_net_saving": false,
+    "recorded_dynamic_model_switches": 0,
+    "recorded_adjacent_same_model_selections": 42,
+    "router_wall_clock_share_percent_range": [5.7, 54.1],
+    "fixed_trajectory_conditional_resource_hourly_ceiling_usd": {
+      "every_step": 1.7559683773835277,
+      "task_start": 3.1869275410790925,
+      "phase_change": 2.464650066961398
+    },
+    "condition": "ALL_RECORDED_MODEL_SAVINGS_ACQUIRED_WITH_UNCHANGED_QUALITY_AND_GENERATION_TRAJECTORY_AND_NO_OTHER_INCREMENTAL_COST",
+    "task_start_or_phase_subset_is_new_strategy_success": false,
+    "initialization_eliminated_by_reduced_call_count": false,
+    "production_every_step_protocol_changed": false,
+    "recommended_research_arms_require_owner_decision": ["TASK_START_ONLY", "OBSERVED_PHASE_OR_TOOL_FAILURE_TRANSITIONS"],
+    "workload_priority": ["QUALITY_CRITICAL_COMPILATION_PARSING_DEPLOYMENT", "EQUAL_QUALITY_EXTRACTION_CONFIGURATION"],
+    "unique_cause_of_generalization_failure": "UNKNOWN"
+  },
+  "original_training_observation": {
+    "sample_local_time": "2026-11-06T04:53:33+08:00",
+    "F15_and_original_queue_processes_alive": false,
+    "completed_queue_items": 25,
+    "planned_queue_items": 38,
+    "F15_last_update_local_time": "2026-11-06T04:36:39+08:00",
+    "F15_epoch": 2,
+    "F15_chunk": 3,
+    "F15_chunks_per_epoch": 478,
+    "F15_updates": 61564,
+    "F15_planned_updates": 122360,
+    "F15_last_loss": 0.47617740397618036,
+    "recorded_exact_resume_started_local_time": "2026-11-06T04:25:56+08:00",
+    "resume_physical_checkpoint": "epoch_01",
+    "resume_physical_checkpoint_step": 61180,
+    "earlier_cursor_retained_in_original_log": {"last_update_local_time": "2026-11-06T02:54:46+08:00", "chunk": 27, "updates": 64636},
+    "exit_reason": "UNKNOWN",
+    "stale_running_field_is_completion": false,
+    "training_signals_sent": false,
+    "training_restarted_by_this_execution": false,
+    "original_serving_health": "healthy"
+  },
+  "cleanup": {
+    "temporary_containers_remaining": 0,
+    "temporary_local_scripts_removed": 4,
+    "temporary_server_scripts_removed": 2,
+    "unneeded_rust_original_and_snapshot_tags_removed": 2,
+    "unneeded_js_and_go_tags_already_removed_in_this_batch": 4,
+    "retained_image_tags": 4,
+    "retained_image_purpose": "EXISTING_SCikit_BUILD_AND_NESTJS_ORIGINAL_AND_PRE_DECISION_IMAGES_FOR_MISSING_TARGET_COMPARISONS",
+    "temporary_download_forward_stopped": true,
+    "temporary_local_docker_control_forward_stopped": true,
+    "temporary_local_socket_removed": true,
+    "user_docker_vm_and_disk_preserved": true,
+    "private_evidence_and_ledgers_preserved": true,
+    "mac_benchmark_containers_started": 0,
+    "shared_serving_and_model_weights_changed": false,
+    "deleted_original_images_recoverable_from_upstream": true
+  },
+  "future_complete_dev_candidates": {
+    "purpose": "OFFICIAL_COMPLETE_DEV_CANDIDATES_NOT_TRAIN_OR_FINAL_BLIND_TEST",
+    "selection_before_candidate_model_outcomes": true,
+    "new_episodes_executed": 0,
+    "task_success_and_model_saving_unknown": true,
+    "ancestor_training_exposure": "UNKNOWN",
+    "prompt_source": "INSTRUCTION_MD_ONLY_NO_SOLUTION_TESTS_OR_ANSWER_BEARING_TASK_METADATA",
+    "tasks": [
+      {
+        "task_id": "terminal-bench/fix-code-vulnerability",
+        "opportunity_hypothesis": "QUALITY_CRITICAL_PYTHON_BUSINESS_REPAIR_WITHOUT_LARGE_NATIVE_COMPILE",
+        "official_image": "alexgshaw/fix-code-vulnerability:20251031",
+        "model_results": null
+      },
+      {
+        "task_id": "terminal-bench/log-summary-date-ranges",
+        "opportunity_hypothesis": "EQUAL_QUALITY_STRUCTURED_DATA_TRANSFORM_WITH_POSSIBLE_LONG_CONTEXT_PRICE_DIFFERENCE",
+        "official_image": "alexgshaw/log-summary-date-ranges:20251031",
+        "model_results": null
+      },
+      {
+        "task_id": "terminal-bench/nginx-request-logging",
+        "opportunity_hypothesis": "OBSERVABLE_INSTALL_CONFIGURE_VERIFY_RECOVERY_TRANSITIONS",
+        "official_image": "alexgshaw/nginx-request-logging:20251031",
+        "model_results": null
+      }
+    ],
+    "official_evaluator": "UNMODIFIED_TEST_SH_PYTEST_JSON_CTRF_AND_REWARD_TXT",
+    "reason_not_running": "NO_INDEPENDENT_BIDIRECTIONAL_SELECTION_EVIDENCE_AND_SOL_GENERATION_UNAVAILABLE"
+  },
+  "episodes": [
+    {
+      "task": "extract-elf",
+      "source_events": "our-project/results/iterations/20261103-v9-independent-train/dev/extract-elf/dynamic/events.jsonl",
+      "observed_phases": [
+        "inspect",
+        "inspect",
+        "modify",
+        "modify"
+      ],
+      "phase_counts": {
+        "inspect": 2,
+        "modify": 2
+      },
+      "model_switches": 0,
+      "repeated_same_selection": 3,
+      "scenarios": {
+        "every_step": {
+          "calls": 4,
+          "retained_recorded_router_seconds": 89.81428933376446
+        },
+        "task_start": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 36.700939582893625
+        },
+        "phase_change": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 54.11292649980169
+        },
+        "phase_or_exit_change": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 54.11292649980169
+        },
+        "every_2": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 54.11292649980169
+        },
+        "every_4": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 36.700939582893625
+        }
+      },
+      "recorded_initialization_seconds": 30.410219317302108,
+      "devices": {
+        "NOT_REPORTED": 4
+      },
+      "observed_full_relations": null,
+      "full_relation_changes": 0
+    },
+    {
+      "task": "build-cython-ext",
+      "source_events": "our-project/results/iterations/20261103-v9-independent-train/dev/build-cython-ext/dynamic/events.jsonl",
+      "observed_phases": [
+        "inspect",
+        "inspect",
+        "modify",
+        "verify",
+        "verify",
+        "modify",
+        "modify",
+        "modify",
+        "verify",
+        "modify",
+        "verify",
+        "verify",
+        "modify",
+        "modify",
+        "verify",
+        "verify"
+      ],
+      "phase_counts": {
+        "inspect": 2,
+        "modify": 7,
+        "verify": 7
+      },
+      "model_switches": 0,
+      "repeated_same_selection": 15,
+      "scenarios": {
+        "every_step": {
+          "calls": 16,
+          "retained_recorded_router_seconds": 343.4820089599816
+        },
+        "task_start": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 37.19935699994676
+        },
+        "phase_change": {
+          "calls": 9,
+          "retained_recorded_router_seconds": 195.776372417924
+        },
+        "phase_or_exit_change": {
+          "calls": 10,
+          "retained_recorded_router_seconds": 217.77001108392142
+        },
+        "every_2": {
+          "calls": 8,
+          "retained_recorded_router_seconds": 181.28346975008026
+        },
+        "every_4": {
+          "calls": 4,
+          "retained_recorded_router_seconds": 98.86438249901403
+        }
+      },
+      "recorded_initialization_seconds": 29.98152169957757,
+      "devices": {
+        "NOT_REPORTED": 16
+      },
+      "observed_full_relations": null,
+      "full_relation_changes": 0
+    },
+    {
+      "task": "cobol-modernization",
+      "source_events": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/events.jsonl",
+      "observed_phases": [
+        "inspect",
+        "inspect",
+        "modify",
+        "recover",
+        "modify"
+      ],
+      "phase_counts": {
+        "inspect": 2,
+        "modify": 2,
+        "recover": 1
+      },
+      "model_switches": 0,
+      "repeated_same_selection": 4,
+      "scenarios": {
+        "every_step": {
+          "calls": 5,
+          "retained_recorded_router_seconds": 64.53508845809847
+        },
+        "task_start": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 34.23913104098756
+        },
+        "phase_change": {
+          "calls": 4,
+          "retained_recorded_router_seconds": 56.94094583299011
+        },
+        "phase_or_exit_change": {
+          "calls": 4,
+          "retained_recorded_router_seconds": 56.94094583299011
+        },
+        "every_2": {
+          "calls": 3,
+          "retained_recorded_router_seconds": 49.41812595794909
+        },
+        "every_4": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 42.059115165960975
+        }
+      },
+      "recorded_initialization_seconds": 30.589570347219706,
+      "devices": {
+        "NOT_REPORTED": 5
+      },
+      "observed_full_relations": null,
+      "full_relation_changes": 0
+    },
+    {
+      "task": "filter-js-from-html",
+      "source_events": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/dynamic/events.jsonl",
+      "observed_phases": [
+        "inspect",
+        "inspect",
+        "modify",
+        "modify"
+      ],
+      "phase_counts": {
+        "inspect": 2,
+        "modify": 2
+      },
+      "model_switches": 0,
+      "repeated_same_selection": 3,
+      "scenarios": {
+        "every_step": {
+          "calls": 4,
+          "retained_recorded_router_seconds": 46.83262183400802
+        },
+        "task_start": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 34.22692391707096
+        },
+        "phase_change": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 38.652302250033244
+        },
+        "phase_or_exit_change": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 38.652302250033244
+        },
+        "every_2": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 38.652302250033244
+        },
+        "every_4": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 34.22692391707096
+        }
+      },
+      "recorded_initialization_seconds": 30.76248243637383,
+      "devices": {
+        "NOT_REPORTED": 4
+      },
+      "observed_full_relations": null,
+      "full_relation_changes": 0
+    },
+    {
+      "task": "git-leak-recovery",
+      "source_events": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/events.jsonl",
+      "observed_phases": [
+        "inspect",
+        "inspect",
+        "recover",
+        "recover",
+        "modify",
+        "modify"
+      ],
+      "phase_counts": {
+        "inspect": 2,
+        "recover": 2,
+        "modify": 2
+      },
+      "model_switches": 0,
+      "repeated_same_selection": 5,
+      "scenarios": {
+        "every_step": {
+          "calls": 6,
+          "retained_recorded_router_seconds": 59.82635641586967
+        },
+        "task_start": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 33.581986334058456
+        },
+        "phase_change": {
+          "calls": 3,
+          "retained_recorded_router_seconds": 44.14633091597352
+        },
+        "phase_or_exit_change": {
+          "calls": 3,
+          "retained_recorded_router_seconds": 44.14633091597352
+        },
+        "every_2": {
+          "calls": 3,
+          "retained_recorded_router_seconds": 44.14633091597352
+        },
+        "every_4": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 39.02449125004932
+        }
+      },
+      "recorded_initialization_seconds": 30.29888978973031,
+      "devices": {
+        "NOT_REPORTED": 6
+      },
+      "observed_full_relations": null,
+      "full_relation_changes": 0
+    },
+    {
+      "task": "bn-fit-modify",
+      "source_events": "our-project/results/iterations/20261103-v9-local-relations/dev/bn-fit-modify/dynamic/events.jsonl",
+      "observed_phases": [
+        "inspect",
+        "inspect",
+        "recover",
+        "recover",
+        "recover",
+        "recover",
+        "modify",
+        "modify"
+      ],
+      "phase_counts": {
+        "inspect": 2,
+        "recover": 4,
+        "modify": 2
+      },
+      "model_switches": 0,
+      "repeated_same_selection": 7,
+      "scenarios": {
+        "every_step": {
+          "calls": 8,
+          "retained_recorded_router_seconds": 19.046084751025774
+        },
+        "task_start": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 11.842850707937032
+        },
+        "phase_change": {
+          "calls": 3,
+          "retained_recorded_router_seconds": 13.777897582855076
+        },
+        "phase_or_exit_change": {
+          "calls": 5,
+          "retained_recorded_router_seconds": 15.790350958937779
+        },
+        "every_2": {
+          "calls": 4,
+          "retained_recorded_router_seconds": 14.711339832865633
+        },
+        "every_4": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 12.77629295794759
+        }
+      },
+      "recorded_initialization_seconds": 6.637269655242562,
+      "devices": {
+        "cuda": 8
+      },
+      "observed_full_relations": [
+        "SOL_ONLY_VERIFIED",
+        "SOL_ONLY_VERIFIED",
+        "SOL_ONLY_VERIFIED",
+        "SOL_ONLY_VERIFIED",
+        "SOL_ONLY_VERIFIED",
+        "SOL_ONLY_VERIFIED",
+        "SOL_ONLY_VERIFIED",
+        "SOL_ONLY_VERIFIED"
+      ],
+      "full_relation_changes": 0
+    },
+    {
+      "task": "distribution-search",
+      "source_events": "our-project/results/iterations/20261103-v9-quality-supervision/dev/complete-comparison/dynamic/events.jsonl",
+      "observed_phases": [
+        "inspect",
+        "inspect",
+        "modify"
+      ],
+      "phase_counts": {
+        "inspect": 2,
+        "modify": 1
+      },
+      "model_switches": 0,
+      "repeated_same_selection": 2,
+      "scenarios": {
+        "every_step": {
+          "calls": 3,
+          "retained_recorded_router_seconds": 41.28897791693453
+        },
+        "task_start": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 33.56894791696686
+        },
+        "phase_change": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 37.56246116699185
+        },
+        "phase_or_exit_change": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 37.56246116699185
+        },
+        "every_2": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 37.56246116699185
+        },
+        "every_4": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 33.56894791696686
+        }
+      },
+      "recorded_initialization_seconds": 30.0205702111125,
+      "devices": {
+        "NOT_REPORTED": 3
+      },
+      "observed_full_relations": null,
+      "full_relation_changes": 0
+    },
+    {
+      "task": "git-multibranch",
+      "source_events": "our-project/results/iterations/20261103-v9-state-conditions/dev/git-multibranch/dynamic/events.jsonl",
+      "observed_phases": [
+        "inspect",
+        "inspect",
+        "modify",
+        "recover"
+      ],
+      "phase_counts": {
+        "inspect": 2,
+        "modify": 1,
+        "recover": 1
+      },
+      "model_switches": 0,
+      "repeated_same_selection": 3,
+      "scenarios": {
+        "every_step": {
+          "calls": 4,
+          "retained_recorded_router_seconds": 16.134519540821202
+        },
+        "task_start": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 11.93986458296422
+        },
+        "phase_change": {
+          "calls": 3,
+          "retained_recorded_router_seconds": 14.199600790860131
+        },
+        "phase_or_exit_change": {
+          "calls": 3,
+          "retained_recorded_router_seconds": 14.199600790860131
+        },
+        "every_2": {
+          "calls": 2,
+          "retained_recorded_router_seconds": 13.025101957959123
+        },
+        "every_4": {
+          "calls": 1,
+          "retained_recorded_router_seconds": 11.93986458296422
+        }
+      },
+      "recorded_initialization_seconds": 6.5697498340159655,
+      "devices": {
+        "cuda": 4
+      },
+      "observed_full_relations": null,
+      "full_relation_changes": 0
+    }
+  ],
+  "aggregate": {
+    "every_step": {
+      "calls": 50,
+      "retained_recorded_router_seconds": 680.9599472105037
+    },
+    "task_start": {
+      "calls": 8,
+      "retained_recorded_router_seconds": 233.30000108282547
+    },
+    "phase_change": {
+      "calls": 28,
+      "retained_recorded_router_seconds": 455.1688374574296
+    },
+    "phase_or_exit_change": {
+      "calls": 31,
+      "retained_recorded_router_seconds": 479.17492949950974
+    },
+    "every_2": {
+      "calls": 26,
+      "retained_recorded_router_seconds": 432.9120583316544
+    },
+    "every_4": {
+      "calls": 14,
+      "retained_recorded_router_seconds": 309.1609578728676
+    }
+  }
+}
