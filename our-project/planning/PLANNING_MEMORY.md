@@ -1,5 +1,9 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+**11-06完整任务本批已收尾**：[公开结果及完整关联工作包](../results/iterations/20261106-v9-complete-opportunities/review.md)。漏洞、日期汇总、Nginx三题原final_test，本轮负责人指定Dev使用、不改原manifest、不再作为最终盲评价。20次Luna有效生成不再重复；原Trial Reward缺失，原Verifier终态恢复结果分别1/1/0，不能报为新完整成功率。Nginx原网络安装失败与真实终态未运行分开保留。Sol仅一次服务请求仍502，不重复NestJS/scikit已有Luna或扩大失败请求。
+
+原009/010三初始状态六CPU前向得到Sol/Luna、Luna/Luna、Sol/Sol，无新关系/正式动作正确率或双方向选择；正式40和原Train方法不变、不训011。原训练25/38，F15物理epoch_01/61180，61564日志并未保存新权重；07:09无队列/Worker，ComfyUI持锁，未启动第二套队列，停止原因仍需原维护权限方取得证据。Serving保持。下一优先：原训练安全接续、正确Sol完整反事实及两低频/RQ4设计决定；未知费用、私人终态及失败保留。
+
 **11-06 04:53原训练另有变化**：原目录出现04:25:56从epoch_01/61180更新的EXACT_RESUME，游标04:36:39为61564更新/第2轮第3块；当前无队列或worker，停止原因未知。先前64636游标仍保留历史，不能把未保存块计为物理检查点。不是本分支启动或终止的训练，不覆盖另一执行方的Trainer、游标或权重；最新整体进度以Status该时刻记录为准。
 
 **11-06本批收尾事实**：Rust两次超时及必要缓存重跑全部保留，原构建0/复现1恢复成功；原库验证71通过/exit0，而固定75中8UNKNOWN，原ID/补丁/命令范围不对应，停止该候选的收费比较，不把它记为失败模型或改原测试。JS/Go/Rust当前Recover/Modify/Inspect，只有JS有业务源码diff，三项无正式赢家。轨迹CC-BY-4.0、仓库MIT，祖先成员仍未完整登记。服务器主目录不是Git副本，阶段判断、前缀恢复及摘要三个实际函数与本地起点一致；未改变表示或原权重。下一完整Dev候选为fix-code-vulnerability、log-summary-date-ranges、nginx-request-logging，机会未测，不作最终盲评价。

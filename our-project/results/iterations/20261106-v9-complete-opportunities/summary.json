@@ -1,0 +1,406 @@
+{
+  "starting_local_and_remote_main": "38a38af7406d7c0f85df8f281c14dd01ba8b4b1a",
+  "dataset": "terminal-bench/terminal-bench-2-1",
+  "dataset_version": "2.1.0",
+  "dataset_upstream_commit": "7131e4375048a0e408a8fb404b5f499d726b695b",
+  "tasks": [
+    {
+      "task_id": "terminal-bench/fix-code-vulnerability",
+      "purpose": "OWNER_NAMED_DEVELOPMENT_OPPORTUNITY_EXPLORATION",
+      "original_manifest_subset": "final_test",
+      "current_research_use": "dev",
+      "final_blind_evaluation_eligible": false,
+      "used_for_gradient_or_parameter_selection": false,
+      "ancestor_encoder_membership": "UNKNOWN_NOT_ASSUMED_UNSEEN",
+      "luna_completed_generations": 10,
+      "luna_physical_requests": 11,
+      "luna_http_status_counts": {
+        "502": 1,
+        "200": 10
+      },
+      "returned_success_identity": [
+        "gpt-6-luna"
+      ],
+      "luna_finish_reasons": {
+        "tool_calls": 9,
+        "stop": 1
+      },
+      "known_prompt_tokens": 172063,
+      "known_output_tokens": 2176,
+      "known_cached_tokens": 106527,
+      "cache_unreported_successful_requests": 2,
+      "known_model_reference_usd": 0.00870687,
+      "provider_usage_unknown_failed_requests": 1,
+      "complete_model_reference_usd": null,
+      "actual_billed_usd": null,
+      "tool_feedback_count": 9,
+      "visible_phase_counts": {
+        "inspect": 7,
+        "recover": 1,
+        "verify": 2
+      },
+      "original_trial_id": "3758c209-07f4-45d4-b8c9-646a48796b34",
+      "original_trial_exception": "RewardFileNotFoundError",
+      "original_trial_reward": null,
+      "original_remote_raw_reward": 0.0,
+      "original_remote_business_evaluator_valid": false,
+      "original_remote_ctrf_produced": false,
+      "original_trial_wall_seconds": 488.751518,
+      "original_agent_seconds": 137.756334,
+      "original_verifier_seconds": 315.609815,
+      "saved_terminal_output_verifier_reward": 1.0,
+      "saved_terminal_output_verifier_tests": {
+        "ctrf.json": {
+          "tests": 6,
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0
+        },
+        "original-repo-ctrf.json": {
+          "tests": 367,
+          "passed": 367,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "saved_terminal_output_verifier_seconds": 69.950084,
+      "verification_recovery_scope": "OFFICIAL_VERIFIER_SAVED_TERMINAL_OUTPUT_REPLAY_NOT_NEW_EPISODE",
+      "restored_state": "/app_saved_artifacts",
+      "new_generations_for_verifier_recovery": 0,
+      "official_evaluator_modified": false,
+      "sol_episode_reward": null,
+      "full_pair_relation": "UNKNOWN",
+      "formal_winner": null,
+      "native_initial_predictions": [
+        {
+          "version": "009",
+          "computed_at": "2026-11-05T22:55:58.250271+00:00",
+          "checkpoint_id": "V9_LAYA_STEP_009-e03",
+          "choice": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "latency_ms": 10513.229584088549,
+          "inference_ms": 2500.614643096924,
+          "relation_correct": null,
+          "formal_action_correct": null
+        },
+        {
+          "version": "010",
+          "computed_at": "2026-11-05T22:56:09.919089+00:00",
+          "checkpoint_id": "V9_LAYA_STEP_010-e03",
+          "choice": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "latency_ms": 10237.64491698239,
+          "inference_ms": 2589.4204154610634,
+          "relation_correct": null,
+          "formal_action_correct": null
+        }
+      ]
+    },
+    {
+      "task_id": "terminal-bench/log-summary-date-ranges",
+      "purpose": "OWNER_NAMED_DEVELOPMENT_OPPORTUNITY_EXPLORATION",
+      "original_manifest_subset": "final_test",
+      "current_research_use": "dev",
+      "final_blind_evaluation_eligible": false,
+      "used_for_gradient_or_parameter_selection": false,
+      "ancestor_encoder_membership": "UNKNOWN_NOT_ASSUMED_UNSEEN",
+      "luna_completed_generations": 5,
+      "luna_physical_requests": 6,
+      "luna_http_status_counts": {
+        "502": 1,
+        "200": 5
+      },
+      "returned_success_identity": [
+        "gpt-6-luna"
+      ],
+      "luna_finish_reasons": {
+        "tool_calls": 5
+      },
+      "known_prompt_tokens": 68039,
+      "known_output_tokens": 1964,
+      "known_cached_tokens": 30209,
+      "cache_unreported_successful_requests": 1,
+      "known_model_reference_usd": 0.00506709,
+      "provider_usage_unknown_failed_requests": 1,
+      "complete_model_reference_usd": null,
+      "actual_billed_usd": null,
+      "tool_feedback_count": 5,
+      "visible_phase_counts": {
+        "inspect": 4,
+        "recover": 1
+      },
+      "original_trial_id": "aa727480-d5e6-49f9-9bdf-71de1a99a22b",
+      "original_trial_exception": "RewardFileNotFoundError",
+      "original_trial_reward": null,
+      "original_remote_raw_reward": 0.0,
+      "original_remote_business_evaluator_valid": false,
+      "original_remote_ctrf_produced": false,
+      "original_trial_wall_seconds": 160.973585,
+      "original_agent_seconds": 109.891194,
+      "original_verifier_seconds": 7.769375,
+      "saved_terminal_output_verifier_reward": 1.0,
+      "saved_terminal_output_verifier_tests": {
+        "ctrf.json": {
+          "tests": 2,
+          "passed": 2,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "saved_terminal_output_verifier_seconds": 135.733891,
+      "verification_recovery_scope": "OFFICIAL_VERIFIER_SAVED_TERMINAL_OUTPUT_REPLAY_NOT_NEW_EPISODE",
+      "restored_state": "/app_saved_artifacts",
+      "new_generations_for_verifier_recovery": 0,
+      "official_evaluator_modified": false,
+      "sol_episode_reward": null,
+      "full_pair_relation": "UNKNOWN",
+      "formal_winner": null,
+      "native_initial_predictions": [
+        {
+          "version": "009",
+          "computed_at": "2026-11-05T22:58:45.756952+00:00",
+          "checkpoint_id": "V9_LAYA_STEP_009-e03",
+          "choice": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "latency_ms": 10272.094208048657,
+          "inference_ms": 2445.962280035019,
+          "relation_correct": null,
+          "formal_action_correct": null
+        },
+        {
+          "version": "010",
+          "computed_at": "2026-11-05T22:58:56.835198+00:00",
+          "checkpoint_id": "V9_LAYA_STEP_010-e03",
+          "choice": {
+            "provider": "jiji",
+            "model": "gpt-6-luna",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6-luna:low",
+            "pool": "Reasoning"
+          },
+          "latency_ms": 9924.759999965318,
+          "inference_ms": 2393.2874128222466,
+          "relation_correct": null,
+          "formal_action_correct": null
+        }
+      ]
+    },
+    {
+      "task_id": "terminal-bench/nginx-request-logging",
+      "purpose": "OWNER_NAMED_DEVELOPMENT_OPPORTUNITY_EXPLORATION",
+      "original_manifest_subset": "final_test",
+      "current_research_use": "dev",
+      "final_blind_evaluation_eligible": false,
+      "used_for_gradient_or_parameter_selection": false,
+      "ancestor_encoder_membership": "UNKNOWN_NOT_ASSUMED_UNSEEN",
+      "luna_completed_generations": 5,
+      "luna_physical_requests": 6,
+      "luna_http_status_counts": {
+        "502": 1,
+        "200": 5
+      },
+      "returned_success_identity": [
+        "gpt-6-luna"
+      ],
+      "luna_finish_reasons": {
+        "tool_calls": 5
+      },
+      "known_prompt_tokens": 97756,
+      "known_output_tokens": 2203,
+      "known_cached_tokens": 55426,
+      "cache_unreported_successful_requests": 1,
+      "known_model_reference_usd": 0.00588876,
+      "provider_usage_unknown_failed_requests": 1,
+      "complete_model_reference_usd": null,
+      "actual_billed_usd": null,
+      "tool_feedback_count": 5,
+      "visible_phase_counts": {
+        "inspect": 3,
+        "recover": 1,
+        "modify": 1
+      },
+      "original_trial_id": "6eef01de-8cc6-405a-a8db-ad38c8301ab3",
+      "original_trial_exception": "RewardFileNotFoundError",
+      "original_trial_reward": null,
+      "original_remote_raw_reward": 0.0,
+      "original_remote_business_evaluator_valid": false,
+      "original_remote_ctrf_produced": false,
+      "original_trial_wall_seconds": 527.22283,
+      "original_agent_seconds": 90.670149,
+      "original_verifier_seconds": 382.293892,
+      "saved_terminal_output_verifier_reward": 0.0,
+      "saved_terminal_output_verifier_tests": {
+        "ctrf.json": {
+          "tests": 8,
+          "passed": 1,
+          "failed": 7,
+          "skipped": 0
+        }
+      },
+      "saved_terminal_output_verifier_seconds": 121.119013,
+      "verification_recovery_scope": "OFFICIAL_VERIFIER_SAVED_TERMINAL_OUTPUT_REPLAY_NOT_NEW_EPISODE",
+      "restored_state": "full_container_snapshot",
+      "new_generations_for_verifier_recovery": 0,
+      "official_evaluator_modified": false,
+      "sol_episode_reward": null,
+      "full_pair_relation": "UNKNOWN",
+      "formal_winner": null,
+      "native_initial_predictions": [
+        {
+          "version": "009",
+          "computed_at": "2026-11-05T23:01:36.702230+00:00",
+          "checkpoint_id": "V9_LAYA_STEP_009-e03",
+          "choice": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "latency_ms": 9543.559749959968,
+          "inference_ms": 2484.481330960989,
+          "relation_correct": null,
+          "formal_action_correct": null
+        },
+        {
+          "version": "010",
+          "computed_at": "2026-11-05T23:01:47.302247+00:00",
+          "checkpoint_id": "V9_LAYA_STEP_010-e03",
+          "choice": {
+            "provider": "openai",
+            "model": "gpt-6.1-sol",
+            "revision": "latest",
+            "native_effort": "low",
+            "action_id": "gpt-6.1-sol:low",
+            "pool": "Reasoning"
+          },
+          "latency_ms": 9525.306708062999,
+          "inference_ms": 2522.7350126951933,
+          "relation_correct": null,
+          "formal_action_correct": null
+        }
+      ]
+    }
+  ],
+  "protocol": {
+    "harbor_version": "0.24.0",
+    "mini_swe_agent_version": "2.4.6",
+    "seed": 42,
+    "max_steps": 30,
+    "max_output_tokens": 4096,
+    "native_effort_requested": "low",
+    "native_effort_returned": "NOT_REPORTED",
+    "teacher_enabled": false,
+    "docker_location": "A6000_EXISTING_SYY_USER_VM",
+    "docker_cpus": 4,
+    "docker_ram_gib_approx": 8,
+    "virtualization": "QEMU_TCG_SOFTWARE",
+    "physical_model_weights_independently_verified": false
+  },
+  "sol_service": {
+    "target": "gpt-6.1-sol",
+    "new_real_service_requests": 1,
+    "http_status": 502,
+    "returned_model_id": null,
+    "effective_actions": 0,
+    "usage": null,
+    "actual_billed_usd": null,
+    "same_failed_request_repeated": false,
+    "substituted_model": false,
+    "pre_service_environment_failed_attempts": 2,
+    "pre_service_attempt_model_requests": 0
+  },
+  "totals": {
+    "luna_generations": 20,
+    "luna_physical_requests": 23,
+    "known_prompt_tokens": 337858,
+    "known_output_tokens": 6343,
+    "known_cached_tokens": 192162,
+    "known_model_reference_usd": 0.01966272,
+    "all_provider_usage_known": false,
+    "complete_model_reference_usd": null,
+    "actual_billed_usd": null,
+    "resource_usd": null,
+    "original_harbor_trials_scored": 0,
+    "saved_terminal_output_official_verifier_passes": 2,
+    "new_formal_preferences": 0,
+    "formal_preferences_total": 40,
+    "new_neural_trainings": 0,
+    "new_native_cpu_forwards": 6,
+    "native_cpu_forward_seconds": 14.936501095071435
+  },
+  "training": {
+    "completed_original_groups": 25,
+    "planned_original_groups": 38,
+    "f15_persisted_updates": 61180,
+    "f15_planned_updates": 122360,
+    "last_resume_log_updates": 61564,
+    "last_saved_checkpoint": "F15/checkpoints/epoch_01",
+    "model_optimizer_recovery_files_present": true,
+    "worker_or_queue_present_at_0709": false,
+    "exit_cause": "UNKNOWN_NO_RECORDED_EXIT_AND_SYSTEM_LOG_ACCESS_LIMITED",
+    "gpu_lock_holder": "ACTIVE_COMFYUI",
+    "resumed_this_branch": false,
+    "serving": "HEALTHY_UNCHANGED",
+    "resume_entry": "router_data/run_full_graded_queue.py",
+    "resume_original_scope_argument": "--no-continue-matrix"
+  },
+  "research": {
+    "new_complementarity_proved": false,
+    "new_independent_bidirectional_selection": false,
+    "native_relation_accuracy": null,
+    "formal_action_accuracy": null,
+    "new_causal_representation_experiment": false,
+    "new_auxiliary_fit": false,
+    "new_neural_training_justified": false,
+    "STEP011_created": false,
+    "low_frequency_arms_approved_or_executed": false,
+    "new_dynamic_episodes": 0,
+    "dynamic_total_cost_net_benefit": "NOT_PROVED_COUNTERFACTUAL_AND_RESOURCE_COSTS_MISSING",
+    "rq4_formal_matrix_executed": false,
+    "rq4_reference_recommendations_require_owner_decision": true
+  },
+  "environment_findings": [
+    "DEPENDENCY_DOWNLOAD_FAILED_WITHOUT_EXISTING_PROXY",
+    "HARBOR_MOUNTED_LOGS_REFER_TO_REMOTE_ENGINE_NOT_MAC_FILESYSTEM",
+    "CANONICAL_VERIFIER_AND_EXPLICIT_LOG_COPY_RECOVER_SAVED_OUTPUT_EVALUATION"
+  ],
+  "cleanup": {
+    "task_verifier_and_evidence_containers_remaining": 0,
+    "temporary_nginx_snapshot_image_removed": true,
+    "private_nginx_terminal_configuration_and_pages_preserved": true,
+    "original_vm_reward_and_stdout_preserved_before_duplicate_removal": true,
+    "original_vm_disk_socket_and_gpu_lock_preserved": true,
+    "shared_serving_or_other_training_modified": false,
+    "kept_images": [
+      "modelrouter-v9-global:iamolegga-nestjs-pino-650",
+      "modelrouter-v9-global:scikit-build-scikit-build-core-391",
+      "swerebenchv2/iamolegga-nestjs-pino:650-4827c1a",
+      "swerebenchv2/scikit-build-scikit-build-core:391-7fe4eee",
+      "alexgshaw/fix-code-vulnerability:20251031",
+      "alexgshaw/log-summary-date-ranges:20251031",
+      "alexgshaw/nginx-request-logging:20251031"
+    ],
+    "new_original_images_retained_reason": "MISSING_SOL_DEVELOPMENT_EPISODES_NOT_DUPLICATE_LUNA_GENERATION"
+  }
+}
