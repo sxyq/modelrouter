@@ -1,0 +1,378 @@
+{
+  "iteration": "20261105-v9-quality-action",
+  "starting_main": "e7eda8609aa7d3226386000b430f824fedd9006d",
+  "research_scope": "K2_SOL_LUNA_PRE_DECISION_QUALITY_FIRST_COST_SECOND",
+  "tasks": [
+    {
+      "task_id": "kamilkisiela__graphql-inspector-56",
+      "purpose": "TRAIN_CANDIDATE",
+      "phase": "modify",
+      "restored_tool_actions": 36,
+      "initial_passed": 10,
+      "fixed": 11,
+      "trusted": false
+    },
+    {
+      "task_id": "behat__behat-1611",
+      "purpose": "REPOSITORY_HOLDOUT",
+      "phase": "modify",
+      "restored_tool_actions": 53,
+      "initial_passed": 88,
+      "fixed": 88,
+      "trusted": true
+    },
+    {
+      "task_id": "nock__nock-2809",
+      "purpose": "REPOSITORY_HOLDOUT",
+      "phase": "modify",
+      "restored_tool_actions": 88,
+      "initial_passed": 593,
+      "fixed": 596,
+      "trusted": false
+    },
+    {
+      "task_id": "wtforms__wtforms-797",
+      "purpose": "TRAIN_CANDIDATE",
+      "phase": "recover",
+      "restored_tool_actions": 37,
+      "initial_passed": 3,
+      "fixed": 3,
+      "trusted": true
+    },
+    {
+      "task_id": "jlowin__fastmcp-63",
+      "purpose": "TRAIN_CANDIDATE",
+      "phase": "modify",
+      "restored_tool_actions": 29,
+      "initial_passed": 4,
+      "fixed": 4,
+      "trusted": true
+    },
+    {
+      "task_id": "pycqa__docformatter-143",
+      "purpose": "REPOSITORY_HOLDOUT",
+      "phase": "modify",
+      "restored_tool_actions": 37,
+      "initial_passed": 54,
+      "fixed": 55,
+      "trusted": true
+    },
+    {
+      "task_id": "blitz-js__superjson-244",
+      "purpose": "REPOSITORY_HOLDOUT",
+      "phase": "modify",
+      "restored_tool_actions": 32,
+      "initial_passed": 64,
+      "fixed": 65,
+      "trusted": false
+    },
+    {
+      "task_id": "xknx__xknx-910",
+      "purpose": "TRAIN_CANDIDATE",
+      "phase": "modify",
+      "restored_tool_actions": 14,
+      "initial_passed": 15,
+      "fixed": 15,
+      "trusted": true
+    },
+    {
+      "task_id": "pypa__setuptools-4985",
+      "purpose": "TRAIN_CANDIDATE",
+      "phase": "modify",
+      "restored_tool_actions": 27,
+      "initial_passed": 46,
+      "fixed": 47,
+      "trusted": true
+    },
+    {
+      "task_id": "dbt-labs__dbt-bigquery-1251",
+      "purpose": "TRAIN_CANDIDATE",
+      "phase": "modify",
+      "restored_tool_actions": 20,
+      "initial_passed": 53,
+      "fixed": 53,
+      "trusted": true
+    }
+  ],
+  "candidate_states": 10,
+  "train_candidates": 6,
+  "repository_holdout_candidates": 4,
+  "restored_history_actions": 373,
+  "current_phases": {
+    "modify": 9,
+    "recover": 1
+  },
+  "trusted_initial_verifiers": 7,
+  "unknown_initial_verifiers": 3,
+  "paired_states": 2,
+  "effective_candidate_generations": 4,
+  "physical_provider_requests": 6,
+  "http_status_counts": {
+    "200": 4,
+    "524": 2
+  },
+  "http_failures_requested_model": "gpt-6.1-sol",
+  "pre_http_configuration_failures": 4,
+  "earlier_pre_http_failures": 3,
+  "recorded_generation_attempts": [
+    {
+      "task_id": "pycqa__docformatter-143",
+      "attempt": "private_sol_transport_failure",
+      "recorded_at": "2026-11-05T05:29:47.981478+00:00",
+      "http_status": 524,
+      "requested_model_id": "gpt-6.1-sol",
+      "returned_model_id": null,
+      "finish_reason": null,
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "reasoning_tokens_included_in_completion": null,
+      "model_rate_cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "generation_error": "HTTPError",
+      "verifier_resolved": null,
+      "trusted_verifier": false,
+      "original_verifier_passed": null,
+      "original_verifier_fixed": null
+    },
+    {
+      "task_id": "pycqa__docformatter-143",
+      "attempt": "luna",
+      "recorded_at": "2026-11-05T05:30:10.565670+00:00",
+      "http_status": 200,
+      "requested_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "finish_reason": "tool_calls",
+      "prompt_tokens": 39667,
+      "completion_tokens": 151,
+      "reasoning_tokens_included_in_completion": 68,
+      "model_rate_cost_usd": 0.0040422,
+      "actual_billed_cost_usd": null,
+      "generation_error": null,
+      "verifier_resolved": false,
+      "trusted_verifier": true,
+      "original_verifier_passed": 54,
+      "original_verifier_fixed": 55
+    },
+    {
+      "task_id": "pycqa__docformatter-143",
+      "attempt": "private_sol_endpoint_construction_failure",
+      "recorded_at": "2026-11-05T05:31:56.423608+00:00",
+      "http_status": null,
+      "requested_model_id": "gpt-6.1-sol",
+      "returned_model_id": null,
+      "finish_reason": null,
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "reasoning_tokens_included_in_completion": null,
+      "model_rate_cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "generation_error": "RuntimeError",
+      "verifier_resolved": null,
+      "trusted_verifier": false,
+      "original_verifier_passed": null,
+      "original_verifier_fixed": null
+    },
+    {
+      "task_id": "pycqa__docformatter-143",
+      "attempt": "sol",
+      "recorded_at": "2026-11-05T05:34:44.028674+00:00",
+      "http_status": 200,
+      "requested_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "finish_reason": "tool_calls",
+      "prompt_tokens": 58539,
+      "completion_tokens": 131,
+      "reasoning_tokens_included_in_completion": 8,
+      "model_rate_cost_usd": 0.118388,
+      "actual_billed_cost_usd": null,
+      "generation_error": null,
+      "verifier_resolved": false,
+      "trusted_verifier": true,
+      "original_verifier_passed": 54,
+      "original_verifier_fixed": 55
+    },
+    {
+      "task_id": "pypa__setuptools-4985",
+      "attempt": "private_sol_transport_failure",
+      "recorded_at": "2026-11-05T06:42:44.663596+00:00",
+      "http_status": 524,
+      "requested_model_id": "gpt-6.1-sol",
+      "returned_model_id": null,
+      "finish_reason": null,
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "reasoning_tokens_included_in_completion": null,
+      "model_rate_cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "generation_error": "HTTPError",
+      "verifier_resolved": null,
+      "trusted_verifier": false,
+      "original_verifier_passed": null,
+      "original_verifier_fixed": null
+    },
+    {
+      "task_id": "pypa__setuptools-4985",
+      "attempt": "luna",
+      "recorded_at": "2026-11-05T06:43:04.491750+00:00",
+      "http_status": 200,
+      "requested_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "finish_reason": "tool_calls",
+      "prompt_tokens": 33466,
+      "completion_tokens": 52,
+      "reasoning_tokens_included_in_completion": 0,
+      "model_rate_cost_usd": 0.0033726,
+      "actual_billed_cost_usd": null,
+      "generation_error": null,
+      "verifier_resolved": false,
+      "trusted_verifier": true,
+      "original_verifier_passed": 46,
+      "original_verifier_fixed": 47
+    },
+    {
+      "task_id": "pypa__setuptools-4985",
+      "attempt": "sol",
+      "recorded_at": "2026-11-05T06:46:17.760414+00:00",
+      "http_status": 200,
+      "requested_model_id": "gpt-6.1-sol",
+      "returned_model_id": "gpt-6.1-sol",
+      "finish_reason": "tool_calls",
+      "prompt_tokens": 45166,
+      "completion_tokens": 223,
+      "reasoning_tokens_included_in_completion": 8,
+      "model_rate_cost_usd": 0.092562,
+      "actual_billed_cost_usd": null,
+      "generation_error": null,
+      "verifier_resolved": false,
+      "trusted_verifier": true,
+      "original_verifier_passed": 46,
+      "original_verifier_fixed": 47
+    }
+  ],
+  "trusted_candidate_successes": 0,
+  "trusted_candidate_noncompletions": 4,
+  "provider_failures_are_quality_unknown": true,
+  "pair_relations": {
+    "NEITHER_VERIFIED": 2
+  },
+  "local_relations": {
+    "NO_LOCAL_IMPROVEMENT": 2
+  },
+  "new_formal_preferences": 0,
+  "formal_preferences_total": 40,
+  "formal_preference_types": {
+    "step_quality": 23,
+    "step_equal_quality_cost": 8,
+    "task_cost": 9
+  },
+  "new_train_auxiliary_observations": {
+    "task": "pypa__setuptools-4985",
+    "complete_relation": "NEITHER_VERIFIED",
+    "candidate_f2p_progress": [
+      0,
+      0
+    ],
+    "full_relation_count_before": 29,
+    "full_relation_count_after": 30,
+    "local_progress_count_before": 10,
+    "local_progress_count_after": 11
+  },
+  "formal_action_accuracy": null,
+  "independent_cost_opportunities": 0,
+  "independent_bidirectional_selection_demonstrated": false,
+  "independent_local_prediction_improvement_demonstrated": false,
+  "representation_gain_demonstrated": false,
+  "neural_training_started": false,
+  "gradient_updates": 0,
+  "new_checkpoint": null,
+  "serving_weights_replaced": false,
+  "new_full_dev_runs": 0,
+  "new_dynamic_net_benefit_evidence": false,
+  "reference_fit": {
+    "ridge": 1,
+    "parameter_searches": 0,
+    "train_A_states": 23,
+    "train_A_tasks": 20,
+    "train_B4_states": 30,
+    "train_B4_tasks": 27,
+    "train_candidate_progress_states": 11,
+    "train_candidate_progress_tasks": 11,
+    "whole_task_holdout": {
+      "nominal_low": {
+        "encoder009": {
+          "A_action": "22/23",
+          "B4_relation": "10/30",
+          "B4_action": "19/23",
+          "F2P_joint": "2/11"
+        },
+        "encoder010": {
+          "A_action": "23/23",
+          "B4_relation": "15/30",
+          "B4_action": "22/23",
+          "F2P_joint": "3/11"
+        }
+      },
+      "actual_protocol_replay": {
+        "encoder009": {
+          "A_action": "22/23",
+          "B4_relation": "10/30",
+          "B4_action": "19/23",
+          "F2P_joint": "0/11"
+        },
+        "encoder010": {
+          "A_action": "23/23",
+          "B4_relation": "14/30",
+          "B4_action": "21/23",
+          "F2P_joint": "3/11"
+        }
+      }
+    },
+    "task_holdout_is_not_unseen_encoder_evaluation": true,
+    "single_label_fit_is_constant_prior_not_state_learning": true
+  },
+  "cost": {
+    "known_input_tokens": 176838,
+    "known_output_tokens": 557,
+    "known_total_tokens": 177395,
+    "reasoning_tokens_already_in_output": 84,
+    "known_model_rate_cost_usd": 0.2183648,
+    "actual_billed_cost_usd": null,
+    "http_failure_usage_unknown_requests": 2,
+    "Sol_cache_usage": "UNKNOWN",
+    "Luna_cache_usage": "PROVIDER_REPORTED_ZERO",
+    "resource_cost_usd": null,
+    "total_cash_cost_usd": null
+  },
+  "router_resources": {
+    "forwards": 46,
+    "encoded_input_tokens": 177138,
+    "pure_forward_sec": 977.765999119729,
+    "device": "cpu",
+    "threads": 4,
+    "gpu_allocated_bytes": 0,
+    "initialization_record": "cpu_resources.json",
+    "paid_tokens_are_separate_from_encoder_tokens": true
+  },
+  "independence": {
+    "purposes_fixed_before_requests": true,
+    "holdout_not_used_in_fit": true,
+    "ancestor_encoder_task_membership": "NOT_FULLY_RECORDED",
+    "base_pretraining_exposure": "UNKNOWN",
+    "post_outcome_runtime_replay_task": "pycqa__docformatter-143",
+    "reviewed_holdouts_are_development_observations": true
+  },
+  "cleanup": {
+    "status": "COMPLETE",
+    "task_containers_remaining": 0,
+    "user_docker_images_remaining": 0,
+    "unused_images_removed": 12,
+    "guest_temporary_patch_directory_removed": true,
+    "temporary_control_scripts_removed": true,
+    "temporary_proxy_and_mac_forward_removed": true,
+    "original_user_socket_preserved": true,
+    "live_prior_training_and_serving_confirmed": true,
+    "preserve_user_docker_vm": true,
+    "preserve_prior_training_and_serving": true
+  },
+  "scientific_decision": "No new repair dominance, verified cost opportunity or independent final-action gain; no STEP011 or new full Dev."
+}

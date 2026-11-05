@@ -24,12 +24,15 @@ def fit_preference_reference(features, targets, training_indices, evaluation_ind
     """Fit the fixed-Encoder reference; categorical scores are not pass probabilities."""
     import torch
 
+    labels = torch.nn.functional.one_hot(targets[training_indices], classes).double()
+    prior = labels.mean(0)
+    if torch.all(labels == prior):
+        scores = prior.expand(len(evaluation_indices), -1)
+        return scores.argmax(1).tolist(), scores.tolist()
     inputs = features[training_indices]
     center = inputs.mean(0)
     scale = (inputs - center).square().sum(1).mean().sqrt()
     inputs = (inputs - center) / scale
-    labels = torch.nn.functional.one_hot(targets[training_indices], classes).double()
-    prior = labels.mean(0)
     coefficients = torch.linalg.solve(
         inputs @ inputs.T + torch.eye(len(training_indices), dtype=torch.float64), labels - prior
     )

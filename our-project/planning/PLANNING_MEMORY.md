@@ -1,5 +1,11 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-05 · 质量关系、动作选择与夜间任务收尾
+
+`20261105-v9-quality-action/`本批适用工作完成。10任务373动作、9 Modify/1 Recover；Docformatter旧P2P与Setuptools剩余F2P的可信双候选均无改善，原正式40不变。Setuptools原下载网络与2次Sol524已定向处理，不重发已保存Luna或历史比较；5个固定全过状态及3个Parser/TCG未知状态不收费。4有效生成177395 Token/0.2183648 USD参考费，异常用量与实收未知。
+
+原A23保持，B4新增合法Train负例至30、F2P至11；留出关系/动作未改善，公开快照的NaN轴不可评分。原固定拟合只消除同标签数据的无效归一化，单P2P观察只提供恒定先验，不支持新增Head或训练。46次CPU前向与固定Torch拟合不称STEP011；不换Serving、不新Dev。原队列/F15健康，镜像及临时脚本/代理清理，VM与私人输入保留。Docformatter已经查看，后续是开发观察；新完整工作包见本目录next_execution，不重复本批请求、恢复、前向或旧训练。
+
 ### 2026-11-05 · 跨任务质量关系与本批连续收尾
 
 结果见`20261104-v9-cross-task-relations/`。复用原分片、用户Docker和Provider，五个真实Modify恢复110动作，四组成对比较完成；APIFlask25/25对24/25、Datumaro133/133对131/133、Hikari411/411对410/411均Sol质量，Relé双7/8无局部改善，Optax157/157不收费。APIFlask两处源码目录对齐和Datumaro原扩展恢复均复用保存Sol动作，无重复生成；四次502保留未知用量。新增Train1/仓库留出2，正式40；Hikari私有S1沿原入口保存，梯度0，两个留出不入拟合或参数选择。

@@ -1,0 +1,133 @@
+{
+  "A": {
+    "items": 23,
+    "tasks": 20,
+    "distribution": [
+      {
+        "label": [
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "gpt-6-luna"
+        ],
+        "count": 5
+      },
+      {
+        "label": [
+          "VERIFIED_QUALITY_AT_RECORDED_HORIZON",
+          "gpt-6.1-sol"
+        ],
+        "count": 11
+      },
+      {
+        "label": [
+          "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT",
+          "gpt-6-luna"
+        ],
+        "count": 7
+      }
+    ]
+  },
+  "B4": {
+    "items": 29,
+    "tasks": 26,
+    "distribution": [
+      {
+        "label": "LUNA_ONLY_VERIFIED",
+        "count": 5
+      },
+      {
+        "label": "SOL_ONLY_VERIFIED",
+        "count": 11
+      },
+      {
+        "label": "BOTH_VERIFIED",
+        "count": 7
+      },
+      {
+        "label": "NEITHER_VERIFIED",
+        "count": 6
+      }
+    ]
+  },
+  "local": {
+    "items": 10,
+    "tasks": 10,
+    "distribution": [
+      {
+        "label": [
+          1,
+          1
+        ],
+        "count": 2
+      },
+      {
+        "label": [
+          0,
+          0
+        ],
+        "count": 4
+      },
+      {
+        "label": [
+          1,
+          0
+        ],
+        "count": 4
+      }
+    ]
+  },
+  "task_level_preferences_in_this_step_reference": 0,
+  "quality_then_local_rule_scope": "LOCAL_RESEARCH_SELECTION_WHEN_NO_PREDICTED_COMPLETE_ACTION",
+  "new_neural_training_started": false,
+  "new_train_observations": {
+    "A": {
+      "items": 23,
+      "tasks": 20,
+      "added": 0
+    },
+    "B4": {
+      "items": 30,
+      "tasks": 27,
+      "distribution": {
+        "SOL_ONLY_VERIFIED": 11,
+        "LUNA_ONLY_VERIFIED": 5,
+        "BOTH_VERIFIED": 7,
+        "NEITHER_VERIFIED": 7
+      },
+      "added_task": "pypa__setuptools-4985"
+    },
+    "local": {
+      "items": 11,
+      "tasks": 11,
+      "distribution": [
+        {
+          "label": [
+            1,
+            1
+          ],
+          "count": 2
+        },
+        {
+          "label": [
+            0,
+            0
+          ],
+          "count": 5
+        },
+        {
+          "label": [
+            1,
+            0
+          ],
+          "count": 4
+        }
+      ],
+      "added_task": "pypa__setuptools-4985"
+    }
+  },
+  "single_P2P_axis_training_observation": {
+    "task": "narwhals-dev__narwhals-1948",
+    "target": "gpt-6.1-sol",
+    "scope": "CONSTANT_SINGLE_LABEL_REFERENCE_NOT_STATE_DISCRIMINATION",
+    "previous_nonfinite_scores": "PRESERVED_IN_PRIVATE_PRE_OUTCOME_RECORDS"
+  }
+}

@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-05质量关系与最终动作本批完成**：[研究结果](../results/iterations/20261105-v9-quality-action/review.md)、[汇总](../results/iterations/20261105-v9-quality-action/summary.json)。10个事前候选恢复373动作、9 Modify/1 Recover；7项初始Verifier可信、3项UNKNOWN。Docformatter原54/55、Setuptools网络恢复后46/47，两组有效Sol/Luna均保持同一失败、无F2P修复/P2P恢复或新回归；完整关系NEITHER、局部无改善、新正式0，原40保持（步骤质量23/步骤费用8/任务费用9）。其余固定全过或原Parser/TCG问题的状态不收费，异常不编码为模型质量失败。
+
+A仍23状态/20任务；新增Setuptools Train负观察使B4 29→30、F2P双候选10→11，Docformatter留出不入拟合。名义low卡按任务留出B4关系009/010为10/30、15/30，F2P联合2/11、3/11；实际协议重放对应10/30、14/30及0/11、3/11。旧Encoder暴露与已查看留出不称最终独立测试，关系与最终动作没有独立改善，正式动作正确率null。原局部入口保留缺失项UNKNOWN；原固定拟合消除单标签/单观察的NaN，恒定先验不作状态学习。无STEP011、新完整Dev或Serving替换。6物理请求/4有效/2次Sol524，177395已知Token、0.2183648 USD参考费，异常用量/全部实收/资源USD未知；46次CPU前向177138编码Token、977.766秒纯前向，GPU allocated0。原F15/38组队列及Serving现场仍运行；容器0/镜像0，12个无用途镜像与临时控制/代理已清理，原VM、socket、权重、私人证据及用户改动保留。K2两核心证据及五RQ仍未闭环。
+
 **11-05跨任务质量关系本批完成**：[实际结果](../results/iterations/20261104-v9-cross-task-relations/review.md)、[汇总](../results/iterations/20261104-v9-cross-task-relations/summary.json)。五个当前Modify共恢复110条原动作，四组配对完成；Optax固定157/157不收费。APIFlask恢复独立/testbed源码评价后Sol25/25、Luna24/25；Datumaro原编译扩展恢复后Sol133/133、Luna131/133；Hikari411/411对410/411，Relé双7/8无局部改善。新增合法Train1、仓库留出2，正式37→40：步骤质量23（Sol18/Luna5）、步骤费用8、任务费用9。原Prepare/S1保存成功，梯度0。
 
 A22→23、B4 27→29、F2P轴8→10（相同5/Sol5）；新两个仓库留出原生/A/B4正式动作均1/2，B4关系1/2，新增Train不改变预测，固定Sol2/2。候选是否有F2P修复的最小辅助目标009/010联合1/2、2/2，但旧/新Train不变、正式动作仍1/2，没有独立费用方向。CWD对齐未改变选择，表示因果收益未证明；不训STEP011、不替Serving、不扩完整Dev，K2两核心证据及五RQ仍未闭环。8有效生成/4次502，266225 Token/$0.2841456参考费；16次CPU前向61272编码Token、含载入362.385秒，GPU allocated0。原Provider仅加入已发生的Luna账户502切换，不改Code Generation凭据；原38组训练及用户其他改动保留。

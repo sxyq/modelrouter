@@ -1,5 +1,9 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**11-05质量关系与实际决策（沿Q-003/Q-021）**：[本批结果](../results/iterations/20261105-v9-quality-action/review.md)。10个真实状态恢复373动作，Docformatter与Setuptools可信成对均未完成、无局部改善，正式40保持；524无动作和原Parser/网络/TCG未知分开。新增Setuptools Train的NEITHER和F2P[0,0]只支持负观察，固定拟合B4为30状态、F2P为11任务，没有独立最终动作改善或可信费用机会。
+
+原拟合的单观察中心化尺度0导致NaN，按同标签岭回归的恒定先验解处理；公开事前快照中的40个无效轴输出不可评价，原数值私下保留，恒定类别不代表跨任务学习。名义卡与真实协议重放分别报告，后者Docformatter已知结果后的关系变化不能支持表示因果收益；无正式赢家时动作正确率null。没有STEP011或新完整Dev，原Serving/健康队列保留；全部有效用量177395 Token/0.2183648 USD仅参考费，2次524用量、实收及资源费未知。
+
 **11-05跨任务质量与局部目标（沿Q-003/Q-021）**：[本批结果](../results/iterations/20261104-v9-cross-task-relations/review.md)。四组真实比较形成APIFlask/Datumaro两个事前仓库留出Sol质量赢家及Hikari Train Sol质量赢家，正式40；Relé双未完成且无局部改善，不造成本赢家，Optax全过不生成。APIFlask原目录评价有误，复用保存动作恢复为25/25对24/25；Datumaro漏恢复原编译扩展已处理，Sol保存动作源码不变，Luna缺失请求只定向补采。Luna自行调用未提供的shell apply_patch而未改码，固定131/133，是实际动作结果，与4次502无结果分开。
 
 A/B4/F2P旧新Train分别22→23、27→29、8→10，新留出完整关系与正式动作仍1/2，固定Sol2/2。独立候选修复辅助目标010联合2/2是有限不同目标信号，新增Train不改善，不能代替完整关系、最终动作或独立双方向选择。原生/A完整关系不适用，无费用机会则费用正确率null。初始Verifier机会集合不进入Router，留出不入拟合/梯度或调参，原预训练成员未知不当未见。本批不训STEP011、不替Serving、不扩完整Dev；原数据分割、公开许可及Inspect/Effort/K3正式0保持。

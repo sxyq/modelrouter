@@ -132,10 +132,10 @@ def prepare_local_quality_relation(initial, candidates, f2p_ids, p2p_ids, *, pai
     results = []
     for candidate in candidates:
         after = candidate["original_test_status"]
-        passed = {name for name in fixed if after[name] == "PASSED"}
-        failed = {name for name in fixed if after[name] == "FAILED"}
+        passed = {name for name in fixed if after.get(name) == "PASSED"}
+        failed = {name for name in fixed if after.get(name) == "FAILED"}
         unknown = {name for name in fixed if before[name] not in ("PASSED", "FAILED")
-                   or after[name] not in ("PASSED", "FAILED")}
+                   or after.get(name) not in ("PASSED", "FAILED")}
         unknown.update(initial.get("unknown_test_ids", []))
         unknown.update(candidate.get("unknown_test_ids", []))
         results.append({

@@ -1,0 +1,4476 @@
+{
+  "reports": {
+    "009": {
+      "evaluations": [
+        {
+          "task_id": "kamilkisiela__graphql-inspector-56",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "kamilkisiela__graphql-inspector-56",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.8476,
+              "gpt-6-luna": 0.1524
+            },
+            "latency_ms": 22179.512795060873,
+            "usage": {
+              "input_tokens": 4084,
+              "output_tokens": 0,
+              "state_tokens": 3978,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.8004103051553917,
+                0.19958969484460837
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.5850259313916459,
+                0.0968816713551525,
+                0.06575329461274446,
+                0.25233910264045756
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.3492207739956101,
+                  0.6507792260043899
+                ],
+                [
+                  0.8373650340321035,
+                  0.16263496596789628
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.38675310774414595,
+                  0.613246892255854
+                ],
+                [
+                  0.6773539731751682,
+                  0.3226460268248318
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.8004103051553917,
+                0.19958969484460837
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.5850259313916459,
+                0.0968816713551525,
+                0.06575329461274446,
+                0.25233910264045756
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.3492207739956101,
+                  0.6507792260043899
+                ],
+                [
+                  0.8373650340321035,
+                  0.16263496596789628
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.38675310774414595,
+                  0.613246892255854
+                ],
+                [
+                  0.6773539731751682,
+                  0.3226460268248318
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.4674334361381964,
+                0,
+                0.5325665638618037
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.4674334361381964,
+                0,
+                0.5325665638618037
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "behat__behat-1611",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "behat__behat-1611",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.9199,
+              "gpt-6-luna": 0.0801
+            },
+            "latency_ms": 20427.338493987918,
+            "usage": {
+              "input_tokens": 3864,
+              "output_tokens": 0,
+              "state_tokens": 3758,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.9495772969903402,
+                0.05042270300965973
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.607988775802999,
+                -0.0751736972348036,
+                0.05756003053752992,
+                0.40962489089427556
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.3344511936594715,
+                  0.6655488063405285
+                ],
+                [
+                  1.017613666697274,
+                  -0.017613666697273878
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4198068292551579,
+                  0.5801931707448421
+                ],
+                [
+                  0.9186295154770903,
+                  0.08137048452290974
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.9495772969903402,
+                0.05042270300965973
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.607988775802999,
+                -0.0751736972348036,
+                0.05756003053752992,
+                0.40962489089427556
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.3344511936594715,
+                  0.6655488063405285
+                ],
+                [
+                  1.017613666697274,
+                  -0.017613666697273878
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4198068292551579,
+                  0.5801931707448421
+                ],
+                [
+                  0.9186295154770903,
+                  0.08137048452290974
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.6677202406859084,
+                0,
+                0.33227975931409154
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.6677202406859084,
+                0,
+                0.33227975931409154
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "nock__nock-2809",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "nock__nock-2809",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.7062,
+              "gpt-6-luna": 0.2938
+            },
+            "latency_ms": 19834.286235272884,
+            "usage": {
+              "input_tokens": 3779,
+              "output_tokens": 0,
+              "state_tokens": 3673,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.6119264556277613,
+                0.38807354437223873
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.4427282922135263,
+                0.17281474180646494,
+                0.1644508969242332,
+                0.22000606905577555
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.3928208108622406,
+                  0.6071791891377595
+                ],
+                [
+                  0.6627343612693019,
+                  0.33726563873069815
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.3696522299216236,
+                  0.6303477700783764
+                ],
+                [
+                  0.6170956184498143,
+                  0.38290438155018575
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.6119264556277613,
+                0.38807354437223873
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.4427282922135263,
+                0.17281474180646494,
+                0.1644508969242332,
+                0.22000606905577555
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.3928208108622406,
+                  0.6071791891377595
+                ],
+                [
+                  0.6627343612693019,
+                  0.33726563873069815
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.3696522299216236,
+                  0.6303477700783764
+                ],
+                [
+                  0.6170956184498143,
+                  0.38290438155018575
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.3605497384553188,
+                0,
+                0.6394502615446812
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.3605497384553188,
+                0,
+                0.6394502615446812
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "wtforms__wtforms-797",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "wtforms__wtforms-797",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.972,
+              "gpt-6-luna": 0.028
+            },
+            "latency_ms": 20795.61267606914,
+            "usage": {
+              "input_tokens": 3882,
+              "output_tokens": 0,
+              "state_tokens": 3776,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.9707719377566031,
+                0.02922806224339697
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.6831190406107865,
+                -0.0652835181836584,
+                0.0309238572746125,
+                0.3512406202982602
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.2859571021146023,
+                  0.7140428978853977
+                ],
+                [
+                  1.0343596609090462,
+                  -0.034359660909046186
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4030231113892817,
+                  0.5969768886107183
+                ],
+                [
+                  0.8702215149078821,
+                  0.12977848509211784
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.9707719377566031,
+                0.02922806224339697
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.6831190406107865,
+                -0.0652835181836584,
+                0.0309238572746125,
+                0.3512406202982602
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.2859571021146023,
+                  0.7140428978853977
+                ],
+                [
+                  1.0343596609090462,
+                  -0.034359660909046186
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4030231113892817,
+                  0.5969768886107183
+                ],
+                [
+                  0.8702215149078821,
+                  0.12977848509211784
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.6544808436996824,
+                0,
+                0.3455191563003176
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.6544808436996824,
+                0,
+                0.3455191563003176
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "jlowin__fastmcp-63",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "jlowin__fastmcp-63",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.6476,
+              "gpt-6-luna": 0.3524
+            },
+            "latency_ms": 23049.736550077796,
+            "usage": {
+              "input_tokens": 3943,
+              "output_tokens": 0,
+              "state_tokens": 3837,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.5578937899735575,
+                0.44210621002644246
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "NEITHER_VERIFIED",
+              "selection": null,
+              "scores": [
+                0.32488872136510916,
+                0.05926325554631856,
+                0.26457125252775193,
+                0.3512767705608204
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.410540026107139,
+                  0.589459973892861
+                ],
+                [
+                  0.6761654919259295,
+                  0.3238345080740705
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.3857054847642076,
+                  0.6142945152357925
+                ],
+                [
+                  0.8201702969538371,
+                  0.17982970304616303
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.5578937899735575,
+                0.44210621002644246
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "NEITHER_VERIFIED",
+              "selection": null,
+              "scores": [
+                0.32488872136510916,
+                0.05926325554631856,
+                0.26457125252775193,
+                0.3512767705608204
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.410540026107139,
+                  0.589459973892861
+                ],
+                [
+                  0.6761654919259295,
+                  0.3238345080740705
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.3857054847642076,
+                  0.6142945152357925
+                ],
+                [
+                  0.8201702969538371,
+                  0.17982970304616303
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.4555180846281069,
+                0,
+                0.544481915371893
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.4555180846281069,
+                0,
+                0.544481915371893
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "pycqa__docformatter-143",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "pycqa__docformatter-143",
+            "choice": "gpt-6-luna",
+            "probabilities": {
+              "gpt-6.1-sol": 0.4377,
+              "gpt-6-luna": 0.5623
+            },
+            "latency_ms": 21867.82749183476,
+            "usage": {
+              "input_tokens": 3865,
+              "output_tokens": 0,
+              "state_tokens": 3759,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.49534356804363255,
+                0.5046564319563674
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.3376955605602404,
+                0.17994957530337952,
+                0.25589868184212733,
+                0.22645618229425266
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.4064057575976322,
+                  0.5935942424023678
+                ],
+                [
+                  0.5641517428544931,
+                  0.4358482571455069
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.3558445950692631,
+                  0.6441554049307369
+                ],
+                [
+                  0.6491995763134383,
+                  0.3508004236865619
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.49534356804363255,
+                0.5046564319563674
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.3376955605602404,
+                0.17994957530337952,
+                0.25589868184212733,
+                0.22645618229425266
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.4064057575976322,
+                  0.5935942424023678
+                ],
+                [
+                  0.5641517428544931,
+                  0.4358482571455069
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.3558445950692631,
+                  0.6441554049307369
+                ],
+                [
+                  0.6491995763134383,
+                  0.3508004236865619
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.34136706486686397,
+                0,
+                0.658632935133136
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.34136706486686397,
+                0,
+                0.658632935133136
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "blitz-js__superjson-244",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "blitz-js__superjson-244",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.9773,
+              "gpt-6-luna": 0.0227
+            },
+            "latency_ms": 21632.42020830512,
+            "usage": {
+              "input_tokens": 3821,
+              "output_tokens": 0,
+              "state_tokens": 3715,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.9357701607613458,
+                0.06422983923865422
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.6736420240624753,
+                -0.034291077295770744,
+                0.041278857698941934,
+                0.319370195534354
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.2850791182385821,
+                  0.7149208817614179
+                ],
+                [
+                  0.9930122195968287,
+                  0.006987780403171051
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4185434593956154,
+                  0.5814565406043846
+                ],
+                [
+                  0.8306264084984716,
+                  0.16937359150152836
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.9357701607613458,
+                0.06422983923865422
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.6736420240624753,
+                -0.034291077295770744,
+                0.041278857698941934,
+                0.319370195534354
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.2850791182385821,
+                  0.7149208817614179
+                ],
+                [
+                  0.9930122195968287,
+                  0.006987780403171051
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4185434593956154,
+                  0.5814565406043846
+                ],
+                [
+                  0.8306264084984716,
+                  0.16937359150152836
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.5931559039936284,
+                0,
+                0.4068440960063716
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.5931559039936284,
+                0,
+                0.4068440960063716
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "xknx__xknx-910",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "xknx__xknx-910",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.8777,
+              "gpt-6-luna": 0.1223
+            },
+            "latency_ms": 24761.235374957323,
+            "usage": {
+              "input_tokens": 4331,
+              "output_tokens": 0,
+              "state_tokens": 4225,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.8943149419568177,
+                0.10568505804318223
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.5997673331349564,
+                0.005407557486410197,
+                0.05397205999592736,
+                0.34085304938270633
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.3462606068691154,
+                  0.6537393931308846
+                ],
+                [
+                  0.9406203825176627,
+                  0.059379617482337055
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.39995513649169234,
+                  0.6000448635083077
+                ],
+                [
+                  0.7997130610398887,
+                  0.2002869389601112
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.8943149419568177,
+                0.10568505804318223
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.5997673331349564,
+                0.005407557486410197,
+                0.05397205999592736,
+                0.34085304938270633
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.3462606068691154,
+                  0.6537393931308846
+                ],
+                [
+                  0.9406203825176627,
+                  0.059379617482337055
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.39995513649169234,
+                  0.6000448635083077
+                ],
+                [
+                  0.7997130610398887,
+                  0.2002869389601112
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.5810281951440358,
+                0,
+                0.4189718048559642
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.5810281951440358,
+                0,
+                0.4189718048559642
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "pypa__setuptools-4985",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "pypa__setuptools-4985",
+            "choice": "gpt-6-luna",
+            "probabilities": {
+              "gpt-6.1-sol": 0.1023,
+              "gpt-6-luna": 0.8977
+            },
+            "latency_ms": 21046.691039577127,
+            "usage": {
+              "input_tokens": 3800,
+              "output_tokens": 0,
+              "state_tokens": 3694,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.052746715501759855,
+                0.9472532844982402
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.03766142586205529,
+                0.35869240186895507,
+                0.4824600633973791,
+                0.1211861088716094
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                1,
+                1
+              ],
+              "candidate_f2p_progress": [
+                1,
+                1
+              ],
+              "local_selection": null,
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.4798785107405643,
+                  0.5201214892594357
+                ],
+                [
+                  0.1588475347336652,
+                  0.8411524652663347
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.3055889906567084,
+                  0.6944110093432916
+                ],
+                [
+                  0.4816394989817947,
+                  0.5183605010182057
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.052746715501759855,
+                0.9472532844982402
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.03766142586205529,
+                0.35869240186895507,
+                0.4824600633973791,
+                0.1211861088716094
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                1,
+                1
+              ],
+              "candidate_f2p_progress": [
+                1,
+                1
+              ],
+              "local_selection": null,
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.4798785107405643,
+                  0.5201214892594357
+                ],
+                [
+                  0.1588475347336652,
+                  0.8411524652663347
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.3055889906567084,
+                  0.6944110093432916
+                ],
+                [
+                  0.4816394989817947,
+                  0.5183605010182057
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.08283828953574174,
+                0,
+                0.9171617104642582
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.08283828953574174,
+                0,
+                0.9171617104642582
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "dbt-labs__dbt-bigquery-1251",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "dbt-labs__dbt-bigquery-1251",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.9615,
+              "gpt-6-luna": 0.0385
+            },
+            "latency_ms": 18562.35871464014,
+            "usage": {
+              "input_tokens": 3494,
+              "output_tokens": 0,
+              "state_tokens": 3388,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.9563075381016993,
+                0.04369246189830067
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.6347186317459996,
+                -0.07271400008059936,
+                0.045688654286854674,
+                0.3923067140477456
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.3195927139671454,
+                  0.6804072860328546
+                ],
+                [
+                  1.0270253457937448,
+                  -0.02702534579374488
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4339991813704062,
+                  0.5660008186295938
+                ],
+                [
+                  0.8956561522290829,
+                  0.10434384777091713
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.9563075381016993,
+                0.04369246189830067
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.6347186317459996,
+                -0.07271400008059936,
+                0.045688654286854674,
+                0.3923067140477456
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.3195927139671454,
+                  0.6804072860328546
+                ],
+                [
+                  1.0270253457937448,
+                  -0.02702534579374488
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4339991813704062,
+                  0.5660008186295938
+                ],
+                [
+                  0.8956561522290829,
+                  0.10434384777091713
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.6393398381664603,
+                0,
+                0.36066016183353966
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.6393398381664603,
+                0,
+                0.36066016183353966
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        }
+      ]
+    },
+    "010": {
+      "evaluations": [
+        {
+          "task_id": "kamilkisiela__graphql-inspector-56",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "kamilkisiela__graphql-inspector-56",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.7775,
+              "gpt-6-luna": 0.2225
+            },
+            "latency_ms": 23117.104591801763,
+            "usage": {
+              "input_tokens": 4084,
+              "output_tokens": 0,
+              "state_tokens": 3978,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.763504656430065,
+                0.23649534356993496
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.5107591027647489,
+                0.07098213461480463,
+                0.0731090555655092,
+                0.34514970705493714
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.41613184166974165,
+                  0.5838681583302584
+                ],
+                [
+                  0.8559088098196861,
+                  0.14409119018031397
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4432134352450423,
+                  0.5567865647549577
+                ],
+                [
+                  0.8440165133450866,
+                  0.15598348665491343
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.763504656430065,
+                0.23649534356993496
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.5107591027647489,
+                0.07098213461480463,
+                0.0731090555655092,
+                0.34514970705493714
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.41613184166974165,
+                  0.5838681583302584
+                ],
+                [
+                  0.8559088098196861,
+                  0.14409119018031397
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4432134352450423,
+                  0.5567865647549577
+                ],
+                [
+                  0.8440165133450866,
+                  0.15598348665491343
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.5075627622967536,
+                0,
+                0.4924372377032464
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.5075627622967536,
+                0,
+                0.4924372377032464
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "behat__behat-1611",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "behat__behat-1611",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.9105,
+              "gpt-6-luna": 0.0895
+            },
+            "latency_ms": 20655.102740973234,
+            "usage": {
+              "input_tokens": 3864,
+              "output_tokens": 0,
+              "state_tokens": 3758,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.9631567810081989,
+                0.03684321899180104
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.7096321293602703,
+                -0.028456260960320362,
+                0.03443344942436549,
+                0.2843906821756859
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.25593442121536525,
+                  0.7440655787846348
+                ],
+                [
+                  0.9940228115359553,
+                  0.005977188464044547
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.3091642768230668,
+                  0.6908357231769332
+                ],
+                [
+                  0.8615877125448641,
+                  0.138412287455136
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.9631567810081989,
+                0.03684321899180104
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.7096321293602703,
+                -0.028456260960320362,
+                0.03443344942436549,
+                0.2843906821756859
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.25593442121536525,
+                  0.7440655787846348
+                ],
+                [
+                  0.9940228115359553,
+                  0.005977188464044547
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.3091642768230668,
+                  0.6908357231769332
+                ],
+                [
+                  0.8615877125448641,
+                  0.138412287455136
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.7086608156617864,
+                0,
+                0.29133918433821354
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.7086608156617864,
+                0,
+                0.29133918433821354
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "nock__nock-2809",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "nock__nock-2809",
+            "choice": "gpt-6-luna",
+            "probabilities": {
+              "gpt-6.1-sol": 0.0783,
+              "gpt-6-luna": 0.9217
+            },
+            "latency_ms": 20510.631205514073,
+            "usage": {
+              "input_tokens": 3779,
+              "output_tokens": 0,
+              "state_tokens": 3673,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.12665105749986433,
+                0.8733489425001357
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.03516141576226972,
+                0.37801269165914486,
+                0.3667385310453444,
+                0.22008736153324118
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                0,
+                1
+              ],
+              "candidate_f2p_progress": [
+                0,
+                0
+              ],
+              "local_selection": null,
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.5981000531923858,
+                  0.4018999468076142
+                ],
+                [
+                  0.25524877729551104,
+                  0.744751222704489
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.5871200351860549,
+                  0.41287996481394507
+                ],
+                [
+                  0.6287803811656403,
+                  0.37121961883435994
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.12665105749986433,
+                0.8733489425001357
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.03516141576226972,
+                0.37801269165914486,
+                0.3667385310453444,
+                0.22008736153324118
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                0,
+                1
+              ],
+              "candidate_f2p_progress": [
+                0,
+                0
+              ],
+              "local_selection": null,
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.5981000531923858,
+                  0.4018999468076142
+                ],
+                [
+                  0.25524877729551104,
+                  0.744751222704489
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.5871200351860549,
+                  0.41287996481394507
+                ],
+                [
+                  0.6287803811656403,
+                  0.37121961883435994
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.026255477043192477,
+                0,
+                0.9737445229568076
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.026255477043192477,
+                0,
+                0.9737445229568076
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "wtforms__wtforms-797",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "wtforms__wtforms-797",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.8185,
+              "gpt-6-luna": 0.1815
+            },
+            "latency_ms": 21256.056366488338,
+            "usage": {
+              "input_tokens": 3882,
+              "output_tokens": 0,
+              "state_tokens": 3776,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.7874497263752205,
+                0.21255027362477952
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.5280613356976842,
+                0.07916431549993758,
+                0.015151808746645623,
+                0.37762254005573215
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.45678685555567017,
+                  0.5432131444443298
+                ],
+                [
+                  0.9056838757534165,
+                  0.09431612424658353
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4936649530071355,
+                  0.5063350469928646
+                ],
+                [
+                  0.8791631150654049,
+                  0.12083688493459514
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.7874497263752205,
+                0.21255027362477952
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.5280613356976842,
+                0.07916431549993758,
+                0.015151808746645623,
+                0.37762254005573215
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.45678685555567017,
+                  0.5432131444443298
+                ],
+                [
+                  0.9056838757534165,
+                  0.09431612424658353
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4936649530071355,
+                  0.5063350469928646
+                ],
+                [
+                  0.8791631150654049,
+                  0.12083688493459514
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.492905606280772,
+                0,
+                0.507094393719228
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.492905606280772,
+                0,
+                0.507094393719228
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "jlowin__fastmcp-63",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "jlowin__fastmcp-63",
+            "choice": "gpt-6-luna",
+            "probabilities": {
+              "gpt-6.1-sol": 0.0734,
+              "gpt-6-luna": 0.9266
+            },
+            "latency_ms": 21369.662880897522,
+            "usage": {
+              "input_tokens": 3943,
+              "output_tokens": 0,
+              "state_tokens": 3837,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.06516334138550756,
+                0.9348366586144925
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.0010855004532227541,
+                0.38780582838197775,
+                0.44133263614059015,
+                0.16977603502421043
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                0,
+                1
+              ],
+              "candidate_f2p_progress": [
+                0,
+                0
+              ],
+              "local_selection": null,
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.5575818634061871,
+                  0.4424181365938129
+                ],
+                [
+                  0.17086153547743277,
+                  0.829138464522567
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.5438466385290894,
+                  0.4561533614709105
+                ],
+                [
+                  0.58086871232982,
+                  0.41913128767017993
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.06516334138550756,
+                0.9348366586144925
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.0010855004532227541,
+                0.38780582838197775,
+                0.44133263614059015,
+                0.16977603502421043
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                0,
+                1
+              ],
+              "candidate_f2p_progress": [
+                0,
+                0
+              ],
+              "local_selection": null,
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.5575818634061871,
+                  0.4424181365938129
+                ],
+                [
+                  0.17086153547743277,
+                  0.829138464522567
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.5438466385290894,
+                  0.4561533614709105
+                ],
+                [
+                  0.58086871232982,
+                  0.41913128767017993
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.011995468950961208,
+                0,
+                0.9880045310490388
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.011995468950961208,
+                0,
+                0.9880045310490388
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "pycqa__docformatter-143",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "pycqa__docformatter-143",
+            "choice": "gpt-6-luna",
+            "probabilities": {
+              "gpt-6.1-sol": 0.0612,
+              "gpt-6-luna": 0.9388
+            },
+            "latency_ms": 22028.452476486564,
+            "usage": {
+              "input_tokens": 3865,
+              "output_tokens": 0,
+              "state_tokens": 3759,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.06968885064241798,
+                0.930311149357582
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.006327260433810988,
+                0.3938868086426346,
+                0.4279958103146001,
+                0.17179012060895504
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                0,
+                1
+              ],
+              "candidate_f2p_progress": [
+                0,
+                0
+              ],
+              "local_selection": null,
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.5656769292515895,
+                  0.4343230707484104
+                ],
+                [
+                  0.1781173810427657,
+                  0.8218826189572341
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.5528382048195161,
+                  0.44716179518048393
+                ],
+                [
+                  0.5863577275831693,
+                  0.4136422724168307
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.06968885064241798,
+                0.930311149357582
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.006327260433810988,
+                0.3938868086426346,
+                0.4279958103146001,
+                0.17179012060895504
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                0,
+                1
+              ],
+              "candidate_f2p_progress": [
+                0,
+                0
+              ],
+              "local_selection": null,
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.5656769292515895,
+                  0.4343230707484104
+                ],
+                [
+                  0.1781173810427657,
+                  0.8218826189572341
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.5528382048195161,
+                  0.44716179518048393
+                ],
+                [
+                  0.5863577275831693,
+                  0.4136422724168307
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.009897584230200762,
+                0,
+                0.9901024157697993
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.009897584230200762,
+                0,
+                0.9901024157697993
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "blitz-js__superjson-244",
+          "purpose": "REPOSITORY_HOLDOUT",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "blitz-js__superjson-244",
+            "choice": "gpt-6-luna",
+            "probabilities": {
+              "gpt-6.1-sol": 0.0698,
+              "gpt-6-luna": 0.9302
+            },
+            "latency_ms": 21449.901580810547,
+            "usage": {
+              "input_tokens": 3821,
+              "output_tokens": 0,
+              "state_tokens": 3715,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.0906446988499856,
+                0.9093553011500144
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.014057075335871305,
+                0.38621624195419946,
+                0.405068713011548,
+                0.19465796969838228
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                0,
+                1
+              ],
+              "candidate_f2p_progress": [
+                0,
+                0
+              ],
+              "local_selection": null,
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.5808742116525811,
+                  0.41912578834741887
+                ],
+                [
+                  0.2087150450342532,
+                  0.7912849549657466
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.5698787658862918,
+                  0.43012123411370823
+                ],
+                [
+                  0.6043666165452184,
+                  0.3956333834547816
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.0906446988499856,
+                0.9093553011500144
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.014057075335871305,
+                0.38621624195419946,
+                0.405068713011548,
+                0.19465796969838228
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "LUNA_ONLY_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                0,
+                1
+              ],
+              "candidate_f2p_progress": [
+                0,
+                0
+              ],
+              "local_selection": null,
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.5808742116525811,
+                  0.41912578834741887
+                ],
+                [
+                  0.2087150450342532,
+                  0.7912849549657466
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.5698787658862918,
+                  0.43012123411370823
+                ],
+                [
+                  0.6043666165452184,
+                  0.3956333834547816
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.01230805076364111,
+                0,
+                0.987691949236359
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.01230805076364111,
+                0,
+                0.987691949236359
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "xknx__xknx-910",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "xknx__xknx-910",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.874,
+              "gpt-6-luna": 0.126
+            },
+            "latency_ms": 26159.50870141387,
+            "usage": {
+              "input_tokens": 4331,
+              "output_tokens": 0,
+              "state_tokens": 4225,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.8980717150253331,
+                0.10192828497466688
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.6184940237366121,
+                0.02234516504487219,
+                -0.01447743176330299,
+                0.37363824298181847
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.39598340802669146,
+                  0.6040165919733085
+                ],
+                [
+                  0.9921322667184308,
+                  0.00786773328156909
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4411277219883032,
+                  0.5588722780116968
+                ],
+                [
+                  0.8967898142731863,
+                  0.10321018572681376
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.8980717150253331,
+                0.10192828497466688
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.6184940237366121,
+                0.02234516504487219,
+                -0.01447743176330299,
+                0.37363824298181847
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.39598340802669146,
+                  0.6040165919733085
+                ],
+                [
+                  0.9921322667184308,
+                  0.00786773328156909
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4411277219883032,
+                  0.5588722780116968
+                ],
+                [
+                  0.8967898142731863,
+                  0.10321018572681376
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.5900226416190003,
+                0,
+                0.4099773583809997
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "scores": [
+                0.5900226416190003,
+                0,
+                0.4099773583809997
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "pypa__setuptools-4985",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "pypa__setuptools-4985",
+            "choice": "gpt-6-luna",
+            "probabilities": {
+              "gpt-6.1-sol": 0.2632,
+              "gpt-6-luna": 0.7368
+            },
+            "latency_ms": 20632.8361928463,
+            "usage": {
+              "input_tokens": 3800,
+              "output_tokens": 0,
+              "state_tokens": 3694,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.2809636159182781,
+                0.7190363840817219
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.18902751833195447,
+                0.26184709617504853,
+                0.39881016951761966,
+                0.15031521597537745
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                1,
+                1
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.4121623121504261,
+                  0.5878376878495739
+                ],
+                [
+                  0.33934273430733186,
+                  0.660657265692668
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4180798748301545,
+                  0.5819201251698455
+                ],
+                [
+                  0.6330113897452205,
+                  0.3669886102547796
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6-luna",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.2809636159182781,
+                0.7190363840817219
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "scores": [
+                0.18902751833195447,
+                0.26184709617504853,
+                0.39881016951761966,
+                0.15031521597537745
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "BOTH_VERIFIED",
+              "selection": "gpt-6-luna",
+              "candidate_completion": [
+                1,
+                1
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6-luna",
+              "completion_scores": [
+                [
+                  0.4121623121504261,
+                  0.5878376878495739
+                ],
+                [
+                  0.33934273430733186,
+                  0.660657265692668
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4180798748301545,
+                  0.5819201251698455
+                ],
+                [
+                  0.6330113897452205,
+                  0.3669886102547796
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.23044278378745026,
+                0,
+                0.7695572162125497
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.23044278378745026,
+                0,
+                0.7695572162125497
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        },
+        {
+          "task_id": "dbt-labs__dbt-bigquery-1251",
+          "purpose": "TRAIN_CANDIDATE",
+          "actual_relation": "UNKNOWN",
+          "formal_winner": null,
+          "basis": null,
+          "actual_local": null,
+          "native": {
+            "task_id": "dbt-labs__dbt-bigquery-1251",
+            "choice": "gpt-6.1-sol",
+            "probabilities": {
+              "gpt-6.1-sol": 0.7542,
+              "gpt-6-luna": 0.2458
+            },
+            "latency_ms": 18563.624573871493,
+            "usage": {
+              "input_tokens": 3494,
+              "output_tokens": 0,
+              "state_tokens": 3388,
+              "state_tokens_dropped": 0,
+              "truncated": false,
+              "truncated_questions": []
+            }
+          },
+          "methods": {
+            "A_BEFORE": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.7282737832585249,
+                0.27172621674147507
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.4850574577722555,
+                0.07677732875304881,
+                0.11880088373024002,
+                0.31936432974445594
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_BEFORE": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.39614165849750455,
+                  0.6038583415024955
+                ],
+                [
+                  0.8044217875167116,
+                  0.19557821248328844
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4206918889604162,
+                  0.5793081110395838
+                ],
+                [
+                  0.8132961299000928,
+                  0.1867038700999072
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "A_WITH_NEW_TRAIN": {
+              "prediction": "gpt-6.1-sol",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.7282737832585249,
+                0.27172621674147507
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "B4_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "scores": [
+                0.4850574577722555,
+                0.07677732875304881,
+                0.11880088373024002,
+                0.31936432974445594
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            },
+            "CANDIDATE_QUALITY_WITH_NEW_TRAIN": {
+              "prediction": "SOL_ONLY_VERIFIED",
+              "selection": "gpt-6.1-sol",
+              "candidate_completion": [
+                1,
+                0
+              ],
+              "candidate_f2p_progress": [
+                1,
+                0
+              ],
+              "local_selection": "gpt-6.1-sol",
+              "progress_used_only_when_no_predicted_complete_action": false,
+              "quality_then_local_selection": "gpt-6.1-sol",
+              "completion_scores": [
+                [
+                  0.39614165849750455,
+                  0.6038583415024955
+                ],
+                [
+                  0.8044217875167116,
+                  0.19557821248328844
+                ]
+              ],
+              "progress_scores": [
+                [
+                  0.4206918889604162,
+                  0.5793081110395838
+                ],
+                [
+                  0.8132961299000928,
+                  0.1867038700999072
+                ]
+              ],
+              "relation_correct": null,
+              "formal_action_correct": null,
+              "local_selection_agreement": null
+            }
+          },
+          "axes": {
+            "f2p_repair_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.4966336238658131,
+                0,
+                0.5033663761341869
+              ],
+              "correct": null
+            },
+            "p2p_restoration_BEFORE": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_BEFORE": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "f2p_repair_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0.4966336238658131,
+                0,
+                0.5033663761341869
+              ],
+              "correct": null
+            },
+            "p2p_restoration_WITH_NEW_TRAIN": {
+              "prediction": null,
+              "scores": null,
+              "correct": null,
+              "unavailable_reason": "SINGLE_TRAINING_OBSERVATION_ZERO_CENTERED_SCALE"
+            },
+            "f2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            },
+            "p2p_regression_WITH_NEW_TRAIN": {
+              "prediction": "EQUAL",
+              "scores": [
+                0,
+                0,
+                1
+              ],
+              "correct": null
+            }
+          }
+        }
+      ]
+    }
+  },
+  "old_train_indices": {
+    "A": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      38,
+      43
+    ],
+    "B4": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      25,
+      26,
+      34,
+      36,
+      38,
+      39,
+      43
+    ],
+    "local": [
+      22,
+      25,
+      26,
+      28,
+      33,
+      34,
+      36,
+      38,
+      39,
+      43
+    ]
+  },
+  "new_train_indices": {
+    "A": [],
+    "B4": [],
+    "local": []
+  },
+  "ridge_penalty": 1,
+  "parameter_searches": 0,
+  "gradient_updates": 0,
+  "scores_are_pass_probabilities": false,
+  "local_progress_is_not_complete_success": true,
+  "local_labels_are_not_online_inputs": true,
+  "computed_utc": "2026-11-05T05:26:36Z",
+  "invalid_axis_outputs_removed_from_scientific_scores": 40,
+  "original_numeric_outputs_preserved_privately": true
+}
