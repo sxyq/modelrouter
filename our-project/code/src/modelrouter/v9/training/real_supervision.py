@@ -50,7 +50,8 @@ def prepare_comparison(row, split):
         return None, "COMPARISON_NOT_VALID"
     actions = [candidate_action(action) for action in row["candidate_actions"]]
     results = row["candidate_results"]
-    if any(item.get("trusted_outcome") is False or item["resolved"] is None for item in results):
+    if any(item.get("trusted_outcome") is False or item.get("identities_matched") is False
+           or item["resolved"] is None for item in results):
         return None, "COMPARISON_NOT_VALID"
     if {action["action_id"] for action in actions} != {item["action_id"] for item in results}:
         return None, "CANDIDATE_IDENTITY_CONFLICT"

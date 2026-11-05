@@ -9,7 +9,7 @@ from modelrouter.agent.state import StepTrace
 
 
 TEST_COMMAND = re.compile(r"\b(?:pytest|unittest|ctest)\b|\b(?:npm|pnpm|yarn|cargo|go|mvn)\s+test\b")
-TOOL_FAILURE = re.compile(r"^(?:E\s|FAILED |ERROR |FAIL:)|(?:Error|Exception):|command not found", re.MULTILINE)
+TOOL_FAILURE = re.compile(r"^(?:E\s|FAILED |ERROR |FAIL:)|^\w*(?:Error|Exception):|command not found", re.MULTILINE)
 WRITE_COMMAND = re.compile(
     r"\b(?:cat\s*>|sed\s+-i\b|git\s+apply\b|apply_patch\b|"
     r"open\([^\n]*,\s*['\"]w['\"]\)|\w+\.write_text\()"
