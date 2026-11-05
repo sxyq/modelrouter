@@ -1,0 +1,37 @@
+[
+  {
+    "task_id": "pybamm-team__pybamm-875",
+    "phase": "modify",
+    "comparison_conditions": {
+      "same_observed_messages": true,
+      "same_initial_environment": true,
+      "same_agent_protocol": true,
+      "original_verifier_unchanged": true,
+      "candidate_identity_matched": true,
+      "trusted_outcomes": true
+    },
+    "eligible": false,
+    "reason": "SOURCE_NOT_TRAIN_ELIGIBLE",
+    "expected": null,
+    "results": [
+      {
+        "model_id": "gpt-6-luna",
+        "resolved": true,
+        "writes": [
+          "pybamm/parameters/parameter_values.py",
+          "pybamm/util.py"
+        ],
+        "cost_usd": 0.002379175
+      },
+      {
+        "model_id": "gpt-6.1-sol",
+        "resolved": true,
+        "writes": [
+          "pybamm/parameters/parameter_values.py",
+          "pybamm/util.py"
+        ],
+        "cost_usd": 0.048316
+      }
+    ]
+  }
+]
