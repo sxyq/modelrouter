@@ -1,0 +1,2991 @@
+{
+  "new_research": {
+    "task_selection_fixed_before_outcomes": true,
+    "methods_fixed_before_outcomes": ["STEP009_NATIVE", "STEP010_NATIVE", "A", "B4", "CANDIDATE", "F2P"],
+    "parameter_searches": 0,
+    "ridge": 1,
+    "historical_actions_restored": 110,
+    "historical_exit_mismatches_after_dependency_restore": 0,
+    "current_observed_phase_counts": {"inspect": 4, "modify": 0, "recover": 0},
+    "task_qualification": "ORIGINAL_TRA001_L4_TRAIN_AND_ENV002_ORIGINAL_VERSION",
+    "ancestor_task_membership": "NOT_FULLY_RECORDED",
+    "base_pretraining_exposure": "UNKNOWN",
+    "new_states": [
+      {
+        "task_id": "laravel__framework-44979", "repo": "laravel/framework",
+        "purpose": "TRAIN_CANDIDATE", "message_cutoff_exclusive": 51,
+        "historical_actions": 31, "phase": "inspect",
+        "initial_fixed_passed": 19, "fixed_count": 19, "initial_verifier_completed": true,
+        "requests": 0,
+        "reason_no_request": "ORIGINAL_ENCRYPTION_FALLBACK_ALREADY_PASSES_AND_QUESTION_TEST_SCOPE_MISMATCH"
+      },
+      {
+        "task_id": "scikit-build__scikit-build-core-391", "repo": "scikit-build/scikit-build-core",
+        "purpose": "TRAIN_CANDIDATE", "message_cutoff_exclusive": 22,
+        "historical_actions": 12, "phase": "inspect",
+        "initial_fixed_passed": 3, "fixed_count": 3, "initial_verifier_completed": true,
+        "sol_requests": 2, "sol_http_statuses": [502, 502], "sol_actions": 0,
+        "luna_requests": 1, "luna_http_status": 200,
+        "requested_luna": "gpt-6-luna", "returned_model": "gpt-5.6-luna",
+        "returned_model_action_executed": true, "returned_model_fixed_passed": 3,
+        "target_luna_identity_matched": false,
+        "full_target_relation": "UNKNOWN", "formal_winner": null, "local_relation": "UNKNOWN"
+      },
+      {
+        "task_id": "defstudio__telegraph-599", "repo": "defstudio/telegraph",
+        "purpose": "NEW_TASK_EVALUATION", "message_cutoff_exclusive": 69,
+        "historical_actions": 41, "phase": "inspect",
+        "first_missing_python_exit_mismatches": 5,
+        "initial_fixed_passed": 1, "fixed_count": 1, "initial_verifier_completed": false,
+        "original_verifier_exit": 255, "additional_passed_outside_fixed": 3,
+        "requests": 0,
+        "reason_no_request": "FIXED_TARGET_ALREADY_PASSES_AND_ORIGINAL_FULL_COMMAND_HAS_RESPONSE_DUMP_DEPENDENCY_SIGNATURE_FAILURE"
+      },
+      {
+        "task_id": "iamolegga__nestjs-pino-650", "repo": "iamolegga/nestjs-pino",
+        "purpose": "NEW_TASK_EVALUATION", "message_cutoff_exclusive": 50,
+        "historical_actions": 26, "phase": "inspect",
+        "initial_fixed_passed": 32, "fixed_count": 32, "initial_verifier_completed": true,
+        "sol_requests": 1, "sol_http_statuses": [502], "sol_actions": 0,
+        "luna_requests": 1, "luna_http_status": 200,
+        "requested_luna": "gpt-6-luna", "returned_model": "gpt-6-luna",
+        "target_luna_identity_matched": true, "luna_action_executed": true,
+        "luna_action_exit": 0, "luna_action_reported_tests_passed": 81,
+        "luna_action_seconds": 270.520036916947,
+        "candidate_original_verifier_status": "PASSED",
+        "luna_original_fixed_passed": 32, "luna_original_verifier_exit": 0,
+        "luna_original_verifier_seconds": 231.8255319999298,
+        "full_target_relation": "UNKNOWN", "formal_winner": null, "local_relation": "UNKNOWN"
+      }
+    ],
+    "source_changes": [
+      "context.py: match exception type at output line start; successful source diff no longer misread as tool failure",
+      "real_supervision.py: explicit candidate identity mismatch remains invalid alongside verifier/provider unknown"
+    ],
+    "temporary_verifier_environment_work": "REFRESH_GIT_INDEX_AFTER_ORIGINAL_HEAD_RESTORE_AND_INSTALL_TELEGRAPH_HISTORY_PYTHON_DEPENDENCY",
+    "original_tests_commands_parsers_exact_success_criterion_changed": false,
+    "representation_comparison": {
+      "new_forward_calls": 16, "encoder_input_tokens": 62510,
+      "forward_seconds": 354.0895865056664, "wall_with_loading_seconds": 367.81792218983173,
+      "gpu_allocated_bytes": 0, "device": "cpu", "new_native_action_changes": 0,
+      "new_A_B4_class_changes": 0, "independent_representation_benefit_proved": false,
+      "old_46_forward_calls_repeated": false
+    },
+    "new_formal_preferences": 0, "new_valid_train_relation_observations": 0,
+    "reference_train_counts_unchanged": {"A": 23, "B4": 30, "F2P": 11},
+    "incremental_fit_performed": false,
+    "incremental_fit_reason": "NO_NEW_COMPARABLE_LEGAL_TRAIN_TARGETS_IDENTICAL_OLD_FITS_REUSED",
+    "new_pair_relation_accuracy": null, "new_formal_selection_accuracy": null,
+    "independent_single_candidate_evaluation": {
+      "task_id": "iamolegga__nestjs-pino-650",
+      "known_candidate": "gpt-6-luna", "observed_completion": true,
+      "observed_initial_failed_F2P_repairs": 0,
+      "009_candidate_completion_prediction": true, "009_completion_correct": true,
+      "010_candidate_completion_prediction": false, "010_completion_correct": false,
+      "009_local_F2P_progress_prediction": true, "009_local_progress_correct": false,
+      "010_local_F2P_progress_prediction": false, "010_local_progress_correct": true,
+      "010_B4_SOL_ONLY_incompatible_with_observed_luna_pass": true,
+      "009_B4_BOTH_verified_by_single_candidate": false,
+      "single_candidate_evaluation_is_pair_relation_or_action_accuracy": false,
+      "new_task_is_permanent_final_test_after_this_analysis": false
+    },
+    "new_quality_direction_accuracy": null, "new_cost_direction_accuracy": null,
+    "independent_bidirectional_selection_proved": false,
+    "step011_started": false, "new_full_dev_started": false, "serving_weights_replaced": false,
+    "training_and_dev_decision": "NO_NEW_TRAIN_TRUTH_OR_INDEPENDENT_BIDIRECTIONAL_SELECTION",
+    "new_net_benefit_evidence": false,
+    "provider_requests": {
+      "physical": 5, "successful_generations": 2, "sol_http_502_no_actions": 3,
+      "target_identity_matched_generations": 1, "identity_mismatch_generations": 1,
+      "known_prompt_tokens": 68287, "known_completion_tokens": 688,
+      "known_total_tokens": 68975, "failed_request_tokens": null,
+      "known_target_model_rate_cost_usd": 0.0044017,
+      "total_model_rate_cost_usd": null, "identity_mismatch_generation_model_rate_cost_usd": null,
+      "supplier_billed_usd": null, "cpu_gpu_vm_resource_usd": null,
+      "cost_status": "PARTIAL_502_AND_IDENTITY_MISMATCH_COSTS_UNKNOWN",
+      "physical_backend_identity": "UNVERIFIED_API_IDENTITY_ONLY",
+      "reasoning_is_in_completion_counted_once": true
+    },
+    "resources": {
+      "benchmark_location": "A6000_SYY_USER_DOCKER_4CPU_8GIB_TCG",
+      "serving_pid": 327621, "queue_controller_pid": 1639711, "f15_worker_pid": 1639726,
+      "health_snapshot_time": "2026-11-05T21:54:10+08:00",
+      "gpu_used_mib": 10029, "gpu_total_mib": 49140, "gpu_utilization_percent": 91,
+      "original_training_and_serving_running": true,
+      "temporary_cleanup_status": "COMPLETE",
+      "temporary_local_scripts_deleted": 4, "temporary_remote_scripts_deleted": 2,
+      "temporary_ssh_forwards_stopped": 2, "temporary_local_docker_socket_removed": true,
+      "original_vm_and_socket_forward_running": true, "original_vm_disk_preserved": true,
+      "task_containers_remaining": 0, "unused_image_tags_deleted": 4,
+      "retained_image_tags": [
+        "modelrouter-v9-global:iamolegga-nestjs-pino-650",
+        "modelrouter-v9-global:scikit-build-scikit-build-core-391",
+        "swerebenchv2/iamolegga-nestjs-pino:650-4827c1a",
+        "swerebenchv2/scikit-build-scikit-build-core:391-7fe4eee"
+      ],
+      "retention_reason": "SCIKIT_NEEDS_IDENTITY_VALID_TARGET_PAIR_NESTJS_NEEDS_SOL_REUSE_COMPLETED_MATCHED_NESTJS_LUNA"
+    }
+  },
+  "starting_main": "7707186a6bba208a1330a9afec9c99a3e9d59364",
+  "local_starting_head": "c1ddc00b8e5f410edb3714085cac1024a2d0e090",
+  "historical_complete_episode_scope": "FIVE_REAL_K2_ITERATIONS_NOT_MAPPING_OR_TEACHER_ARMS",
+  "episodes": [
+    {
+      "task": "extract-elf",
+      "strategy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-independent-train/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-independent-train/dev/extract-elf/fixed_sol/jobs/fixed_sol/extract-elf__uH6S4xD/result.json",
+      "original_result_rewards": {
+        "reward": 1.0
+      },
+      "cost": 0.0374122,
+      "input_tokens": 20906,
+      "output_tokens": 1847,
+      "calls": 4,
+      "selected_models": {
+        "gpt-6.1-sol": 4
+      },
+      "switches": 0,
+      "router_seconds": 0.0005558758275583386,
+      "wall_seconds": 106.808662,
+      "phase_seconds": {
+        "environment_setup": 1.187643,
+        "agent_setup": 0.000156,
+        "agent_execution": 52.139818,
+        "verifier": 48.087796
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "extract-elf",
+      "strategy": "fixed_luna",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-independent-train/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-independent-train/dev/extract-elf/fixed_luna/jobs/fixed_luna/extract-elf__MzHcjwH/result.json",
+      "original_result_rewards": {
+        "reward": 1.0
+      },
+      "cost": 0.00329197,
+      "input_tokens": 16512,
+      "output_tokens": 4099,
+      "calls": 5,
+      "selected_models": {
+        "gpt-6-luna": 5
+      },
+      "switches": 0,
+      "router_seconds": 0.0014946658629924059,
+      "wall_seconds": 292.825187,
+      "phase_seconds": {
+        "environment_setup": 104.077636,
+        "agent_setup": 0.005182,
+        "agent_execution": 138.887821,
+        "verifier": 43.929348
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "extract-elf",
+      "strategy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-independent-train/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-independent-train/dev/extract-elf/dynamic/jobs/dynamic/extract-elf__nPMPWEE/result.json",
+      "original_result_rewards": {
+        "reward": 1.0
+      },
+      "cost": 0.0388276,
+      "input_tokens": 21152,
+      "output_tokens": 1940,
+      "calls": 4,
+      "selected_models": {
+        "gpt-6.1-sol": 4
+      },
+      "switches": 0,
+      "router_seconds": 89.81428933376446,
+      "wall_seconds": 191.57398,
+      "phase_seconds": {
+        "environment_setup": 3.663514,
+        "agent_setup": 0.000642,
+        "agent_execution": 129.609449,
+        "verifier": 52.509413
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "build-cython-ext",
+      "strategy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-independent-train/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-independent-train/dev/build-cython-ext/fixed_sol/jobs/fixed_sol/build-cython-ext__ki5vsDK/result.json",
+      "original_result_rewards": {
+        "reward": 1.0
+      },
+      "cost": 0.1236951,
+      "input_tokens": 201295,
+      "output_tokens": 3023,
+      "calls": 12,
+      "selected_models": {
+        "gpt-6.1-sol": 12
+      },
+      "switches": 0,
+      "router_seconds": 0.0018917496781796217,
+      "wall_seconds": 410.888501,
+      "phase_seconds": {
+        "environment_setup": 112.273955,
+        "agent_setup": 0.002453,
+        "agent_execution": 284.1972,
+        "verifier": 9.883553
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "build-cython-ext",
+      "strategy": "fixed_luna",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-independent-train/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-independent-train/dev/build-cython-ext/fixed_luna/jobs/fixed_luna/build-cython-ext__nUhtho2/result.json",
+      "original_result_rewards": {
+        "reward": 0.0
+      },
+      "cost": 0.008821105,
+      "input_tokens": 396235,
+      "output_tokens": 2034,
+      "calls": 17,
+      "selected_models": {
+        "gpt-6-luna": 17
+      },
+      "switches": 0,
+      "router_seconds": 0.0035446687834337354,
+      "wall_seconds": 403.957607,
+      "phase_seconds": {
+        "environment_setup": 1.245987,
+        "agent_setup": 9.2e-05,
+        "agent_execution": 348.381145,
+        "verifier": 46.303505
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "build-cython-ext",
+      "strategy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-independent-train/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-independent-train/dev/build-cython-ext/dynamic/jobs/dynamic/build-cython-ext__VoAWFxd/result.json",
+      "original_result_rewards": {
+        "reward": 1.0
+      },
+      "cost": 0.1313958,
+      "input_tokens": 250446,
+      "output_tokens": 3954,
+      "calls": 16,
+      "selected_models": {
+        "gpt-6.1-sol": 16
+      },
+      "switches": 0,
+      "router_seconds": 343.4820089599816,
+      "wall_seconds": 634.98673,
+      "phase_seconds": {
+        "environment_setup": 3.311853,
+        "agent_setup": 0.000361,
+        "agent_execution": 615.524465,
+        "verifier": 10.947005
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "cobol-modernization",
+      "strategy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/dynamic/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.0348086,
+      "input_tokens": 22373,
+      "output_tokens": 1821,
+      "calls": 5,
+      "selected_models": {
+        "gpt-6.1-sol": 5
+      },
+      "switches": 0,
+      "router_seconds": 64.53508845809847,
+      "wall_seconds": 235.179684,
+      "phase_seconds": {
+        "environment_setup": 1.752823,
+        "agent_setup": 0.000191,
+        "agent_execution": 200.351207,
+        "verifier": 27.91992
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "cobol-modernization",
+      "strategy": "fixed_luna",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "source_summary": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.005440955,
+      "input_tokens": 58549,
+      "output_tokens": 2330,
+      "calls": 8,
+      "selected_models": {
+        "gpt-6-luna": 8
+      },
+      "switches": 0,
+      "router_seconds": 0.002669166075065732,
+      "wall_seconds": 108.266594,
+      "phase_seconds": {
+        "environment_setup": 2.636617,
+        "agent_setup": 0.000794,
+        "agent_execution": 80.060103,
+        "verifier": 19.952689
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": {
+        "scope": "REAL_AGENT_RECORDED_COMMANDS_REPLAY_ORIGINAL_HARBOR_DOCKER_UNMODIFIED_VERIFIER",
+        "rewards": {
+          "reward": 1.0
+        },
+        "original_agent_requests_repeated": 0,
+        "started_at": "2026-11-02T18:52:34.500576+00:00",
+        "finished_at": "2026-11-02T18:52:59.362929+00:00",
+        "source": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_luna/original_output_verification.json"
+      },
+      "router_calls": null
+    },
+    {
+      "task": "cobol-modernization",
+      "strategy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/cobol-modernization/fixed_sol/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.0380484,
+      "input_tokens": 33565,
+      "output_tokens": 1964,
+      "calls": 7,
+      "selected_models": {
+        "gpt-6.1-sol": 7
+      },
+      "switches": 0,
+      "router_seconds": 0.002798749948851764,
+      "wall_seconds": 123.501975,
+      "phase_seconds": {
+        "environment_setup": 2.684065,
+        "agent_setup": 0.000359,
+        "agent_execution": 83.634851,
+        "verifier": 31.898376
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "filter-js-from-html",
+      "strategy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/dynamic/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.0217921,
+      "input_tokens": 10973,
+      "output_tokens": 1556,
+      "calls": 4,
+      "selected_models": {
+        "gpt-6.1-sol": 4
+      },
+      "switches": 0,
+      "router_seconds": 46.83262183400802,
+      "wall_seconds": 202.807649,
+      "phase_seconds": {
+        "environment_setup": 1.36905,
+        "agent_setup": 0.00016,
+        "agent_execution": 84.350043,
+        "verifier": 112.11788
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "filter-js-from-html",
+      "strategy": "fixed_luna",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_luna/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.006556865,
+      "input_tokens": 41829,
+      "output_tokens": 4743,
+      "calls": 5,
+      "selected_models": {
+        "gpt-6-luna": 5
+      },
+      "switches": 0,
+      "router_seconds": 0.0005015420028939843,
+      "wall_seconds": 974.373288,
+      "phase_seconds": {
+        "environment_setup": 1.173534,
+        "agent_setup": 0.000129,
+        "agent_execution": 150.442963,
+        "verifier": 802.549001
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "filter-js-from-html",
+      "strategy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/filter-js-from-html/fixed_sol/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.0277795,
+      "input_tokens": 14414,
+      "output_tokens": 1670,
+      "calls": 5,
+      "selected_models": {
+        "gpt-6.1-sol": 5
+      },
+      "switches": 0,
+      "router_seconds": 0.0005288339452818036,
+      "wall_seconds": 145.09238,
+      "phase_seconds": {
+        "environment_setup": 1.199201,
+        "agent_setup": 0.000115,
+        "agent_execution": 51.292535,
+        "verifier": 87.974729
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "git-leak-recovery",
+      "strategy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/dynamic/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.0327625,
+      "input_tokens": 19539,
+      "output_tokens": 1978,
+      "calls": 6,
+      "selected_models": {
+        "gpt-6.1-sol": 6
+      },
+      "switches": 0,
+      "router_seconds": 59.82635641586967,
+      "wall_seconds": 190.006008,
+      "phase_seconds": {
+        "environment_setup": 1.543104,
+        "agent_setup": 0.00012,
+        "agent_execution": 134.475929,
+        "verifier": 48.535784
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "git-leak-recovery",
+      "strategy": "fixed_luna",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/fixed_luna/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.003673925,
+      "input_tokens": 29402,
+      "output_tokens": 1617,
+      "calls": 5,
+      "selected_models": {
+        "gpt-6-luna": 5
+      },
+      "switches": 0,
+      "router_seconds": 0.0019436251604929566,
+      "wall_seconds": 166.083441,
+      "phase_seconds": {
+        "environment_setup": 2.95926,
+        "agent_setup": 0.000371,
+        "agent_execution": 111.955659,
+        "verifier": 46.161136
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "git-leak-recovery",
+      "strategy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-labels-and-learning/dev/git-leak-recovery/fixed_sol/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.0322172,
+      "input_tokens": 23029,
+      "output_tokens": 1882,
+      "calls": 7,
+      "selected_models": {
+        "gpt-6.1-sol": 7
+      },
+      "switches": 0,
+      "router_seconds": 0.0013661249540746212,
+      "wall_seconds": 120.005145,
+      "phase_seconds": {
+        "environment_setup": 1.709744,
+        "agent_setup": 0.000206,
+        "agent_execution": 68.592978,
+        "verifier": 43.348102
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "bn-fit-modify",
+      "strategy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-local-relations/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-local-relations/dev/bn-fit-modify/fixed_sol/jobs/fixed_sol/bn-fit-modify__cZ8ivPu/result.json",
+      "original_result_rewards": {
+        "reward": 1.0
+      },
+      "cost": 0.0344539,
+      "input_tokens": 20724,
+      "output_tokens": 2062,
+      "calls": 7,
+      "selected_models": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol"
+      ],
+      "switches": 0,
+      "router_seconds": 0.0021034160163253546,
+      "wall_seconds": 566.395795,
+      "phase_seconds": {
+        "environment_setup": 190.903813,
+        "agent_setup": 0.005061,
+        "agent_execution": 87.714254,
+        "verifier": 279.940376
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": [
+        {
+          "step": 0,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.8064160356298089,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 1,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.3708750009536743,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 2,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.279415980912745,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 3,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.14124996960163116,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 4,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.13591698370873928,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 5,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.21891703363507986,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 6,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 0.15062501188367605,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        }
+      ]
+    },
+    {
+      "task": "bn-fit-modify",
+      "strategy": "fixed_luna",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-local-relations/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-local-relations/dev/bn-fit-modify/fixed_luna/jobs/fixed_luna/bn-fit-modify__82tgz4N/result.json",
+      "original_result_rewards": {
+        "reward": 1.0
+      },
+      "cost": 0.00702773,
+      "input_tokens": 89410,
+      "output_tokens": 2889,
+      "calls": 11,
+      "selected_models": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "switches": 0,
+      "router_seconds": 0.004880541819147766,
+      "wall_seconds": 629.916601,
+      "phase_seconds": {
+        "environment_setup": 190.904847,
+        "agent_setup": 0.001801,
+        "agent_execution": 130.67093,
+        "verifier": 301.93021
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": [
+        {
+          "step": 0,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 1.6139999497681856,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 1,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.11924991849809885,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 2,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.32283400651067495,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 3,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.21579198073595762,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 4,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.26666594203561544,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 5,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.350042013451457,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 6,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.20262505859136581,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 7,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.29200001154094934,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 8,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.13824994675815105,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 9,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.9068329818546772,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        },
+        {
+          "step": 10,
+          "model": "gpt-6-luna",
+          "router_latency_ms": 0.4522500094026327,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_reference": null
+        }
+      ]
+    },
+    {
+      "task": "bn-fit-modify",
+      "strategy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-local-relations/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-local-relations/dev/bn-fit-modify/dynamic/jobs/dynamic/bn-fit-modify__o4Vzubd/result.json",
+      "original_result_rewards": {
+        "reward": 1.0
+      },
+      "cost": 0.0444189,
+      "input_tokens": 32605,
+      "output_tokens": 2960,
+      "calls": 8,
+      "selected_models": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol"
+      ],
+      "switches": 0,
+      "router_seconds": 19.046084751025774,
+      "wall_seconds": 333.46396,
+      "phase_seconds": {
+        "environment_setup": 1.863717,
+        "agent_setup": 0.000209,
+        "agent_execution": 125.244005,
+        "verifier": 200.196311
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": [
+        {
+          "step": 0,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 11842.850707937032,
+          "inference_latency_ms": 2176.160756498575,
+          "router_initialization_ms": 6637.269655242562,
+          "router_gpu_wait_ms": 0.01397542655467987,
+          "router_device_transfer_ms": 2321.7073511332273,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.5258876427194333,
+              0.2589900153688376,
+              0.21512234191172905
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 1,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 1205.4040000075474,
+          "inference_latency_ms": 80.89501410722733,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.010928139090538025,
+          "router_device_transfer_ms": 1111.651847139001,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.7142985990250322,
+              0.22750797962457164,
+              0.05819342135039596
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 2,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 979.5489999232814,
+          "inference_latency_ms": 84.86004173755646,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.025175511837005615,
+          "router_device_transfer_ms": 877.4468954652548,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.7264055617311542,
+              0.2242522710244027,
+              0.04934216724444279
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 3,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 952.5150420377031,
+          "inference_latency_ms": 82.35132321715355,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.00838935375213623,
+          "router_device_transfer_ms": 860.6377523392439,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.6870324885133107,
+              0.2307038677928669,
+              0.08226364369382216
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 4,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 933.4422500105575,
+          "inference_latency_ms": 86.12541295588017,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.016033649444580078,
+          "router_device_transfer_ms": 836.3224882632494,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.64447442089941,
+              0.23740138015116213,
+              0.11812419894942772
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 5,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 1059.9383340450004,
+          "inference_latency_ms": 84.60441045463085,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.009045004844665527,
+          "router_device_transfer_ms": 963.4077791124582,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.4616036025441165,
+              0.2527997265163458,
+              0.2855966709395377
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 6,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 955.4978749947622,
+          "inference_latency_ms": 102.48877480626106,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.008087605237960815,
+          "router_device_transfer_ms": 842.7102360874414,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.6624459570537371,
+              0.23666547902918134,
+              0.10088856391708134
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        },
+        {
+          "step": 7,
+          "model": "gpt-6.1-sol",
+          "router_latency_ms": 1116.8875420698896,
+          "inference_latency_ms": 143.23163591325283,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.009259209036827087,
+          "router_device_transfer_ms": 961.4368118345737,
+          "router_reference": {
+            "method": "B_ORIGINAL17_QUALITY_THEN_COST",
+            "training_rows": 17,
+            "predicted_relation": "SOL_ONLY_VERIFIED",
+            "categorical_scores": [
+              0.6129025828277976,
+              0.2430495068525264,
+              0.14404791031967573
+            ],
+            "scores_are_pass_probabilities": false
+          }
+        }
+      ]
+    },
+    {
+      "task": "distribution-search",
+      "strategy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-quality-supervision/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-quality-supervision/dev/complete-comparison/fixed_sol/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.0180706,
+      "input_tokens": 7331,
+      "output_tokens": 995,
+      "calls": 3,
+      "selected_models": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol"
+      ],
+      "switches": 0,
+      "router_seconds": null,
+      "wall_seconds": 166.207659,
+      "phase_seconds": null,
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "distribution-search",
+      "strategy": "fixed_luna",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-quality-supervision/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-quality-supervision/dev/complete-comparison/fixed_luna/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.005740635,
+      "input_tokens": 68763,
+      "output_tokens": 6556,
+      "calls": 11,
+      "selected_models": [
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna",
+        "gpt-6-luna"
+      ],
+      "switches": 0,
+      "router_seconds": null,
+      "wall_seconds": 235.984914,
+      "phase_seconds": null,
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "distribution-search",
+      "strategy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-quality-supervision/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-quality-supervision/dev/complete-comparison/dynamic/official_result.json",
+      "original_result_rewards": null,
+      "cost": 0.0152233,
+      "input_tokens": 7286,
+      "output_tokens": 1214,
+      "calls": 3,
+      "selected_models": [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol",
+        "gpt-6.1-sol"
+      ],
+      "switches": 0,
+      "router_seconds": 41.28897791693453,
+      "wall_seconds": 161.30335,
+      "phase_seconds": null,
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": null
+    },
+    {
+      "task": "git-multibranch",
+      "strategy": "fixed_sol",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 1.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-state-conditions/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-state-conditions/dev/git-multibranch/fixed_sol/jobs/fixed_sol/git-multibranch__WXXjpmu/result.json",
+      "original_result_rewards": {
+        "reward": 1.0
+      },
+      "cost": 0.047197499999999996,
+      "input_tokens": 32345,
+      "output_tokens": 2482,
+      "calls": 6,
+      "selected_models": {
+        "gpt-6.1-sol": 6
+      },
+      "switches": 0,
+      "router_seconds": 0.0010027928510680795,
+      "wall_seconds": 304.13769,
+      "phase_seconds": {
+        "environment_setup": 21.636746,
+        "agent_setup": 0.000296,
+        "agent_execution": 63.027226,
+        "verifier": 213.381089
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.21812506020069122,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6.1-sol"
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.11049991007894278,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6.1-sol"
+        },
+        {
+          "step": 2,
+          "phase": "modify",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.17549993935972452,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6.1-sol"
+        },
+        {
+          "step": 3,
+          "phase": "modify",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.12370897457003593,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6.1-sol"
+        },
+        {
+          "step": 4,
+          "phase": "modify",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.2168749924749136,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6.1-sol"
+        },
+        {
+          "step": 5,
+          "phase": "modify",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.15808397438377142,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6.1-sol"
+        }
+      ]
+    },
+    {
+      "task": "git-multibranch",
+      "strategy": "fixed_luna",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-state-conditions/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-state-conditions/dev/git-multibranch/fixed_luna/jobs/fixed_luna/git-multibranch__jWC7sSy/result.json",
+      "original_result_rewards": {
+        "reward": 0.0
+      },
+      "cost": 0.0051949000000000006,
+      "input_tokens": 46630,
+      "output_tokens": 5411,
+      "calls": 8,
+      "selected_models": {
+        "gpt-6-luna": 8
+      },
+      "switches": 0,
+      "router_seconds": 0.001296709175221622,
+      "wall_seconds": 338.649208,
+      "phase_seconds": {
+        "environment_setup": 21.865377,
+        "agent_setup": 0.000383,
+        "agent_execution": 222.224274,
+        "verifier": 89.364091
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.10579207446426153,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6-luna"
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.11170899961143732,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6-luna"
+        },
+        {
+          "step": 2,
+          "phase": "modify",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.20720798056572676,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6-luna"
+        },
+        {
+          "step": 3,
+          "phase": "recover",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.2855840139091015,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6-luna"
+        },
+        {
+          "step": 4,
+          "phase": "recover",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.2098330296576023,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6-luna"
+        },
+        {
+          "step": 5,
+          "phase": "modify",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.13041601050645113,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6-luna"
+        },
+        {
+          "step": 6,
+          "phase": "recover",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.12787501327693462,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6-luna"
+        },
+        {
+          "step": 7,
+          "phase": "recover",
+          "checkpoint_id": "none",
+          "router_latency_ms": 0.11829205323010683,
+          "inference_latency_ms": null,
+          "router_initialization_ms": null,
+          "router_gpu_wait_ms": null,
+          "router_device_transfer_ms": null,
+          "router_process_reused": null,
+          "router_device": null,
+          "model": "gpt-6-luna"
+        }
+      ]
+    },
+    {
+      "task": "git-multibranch",
+      "strategy": "dynamic",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "source_summary": "our-project/results/iterations/20261103-v9-state-conditions/dev/summary.json",
+      "original_result": "our-project/results/iterations/20261103-v9-state-conditions/dev/git-multibranch/dynamic/jobs/dynamic/git-multibranch__hjVYHvW/result.json",
+      "original_result_rewards": {
+        "reward": 0.0
+      },
+      "cost": 0.00177993,
+      "input_tokens": 12952,
+      "output_tokens": 1744,
+      "calls": 4,
+      "selected_models": {
+        "gpt-6-luna": 4
+      },
+      "switches": 0,
+      "router_seconds": 16.134519540821202,
+      "wall_seconds": 232.546265,
+      "phase_seconds": {
+        "environment_setup": 20.493532,
+        "agent_setup": 0.000729,
+        "agent_execution": 88.125248,
+        "verifier": 118.776063
+      },
+      "actual_billed_cost_usd": null,
+      "resource_cost_usd": null,
+      "replay_only": null,
+      "router_calls": [
+        {
+          "step": 0,
+          "phase": "inspect",
+          "checkpoint_id": "V9_LAYA_STEP_008-e03",
+          "router_latency_ms": 11939.86458296422,
+          "inference_latency_ms": 2228.8879957050085,
+          "router_initialization_ms": 6569.7498340159655,
+          "router_gpu_wait_ms": 0.018594786524772644,
+          "router_device_transfer_ms": 2452.3903727531433,
+          "router_process_reused": false,
+          "router_device": "cuda",
+          "model": "gpt-6-luna"
+        },
+        {
+          "step": 1,
+          "phase": "inspect",
+          "checkpoint_id": "V9_LAYA_STEP_008-e03",
+          "router_latency_ms": 1934.9187499610707,
+          "inference_latency_ms": 70.81879302859306,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.01572445034980774,
+          "router_device_transfer_ms": 1854.2988002300262,
+          "router_process_reused": true,
+          "router_device": "cuda",
+          "model": "gpt-6-luna"
+        },
+        {
+          "step": 2,
+          "phase": "modify",
+          "checkpoint_id": "V9_LAYA_STEP_008-e03",
+          "router_latency_ms": 1085.2373749949038,
+          "inference_latency_ms": 103.52166928350925,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.007631257176399231,
+          "router_device_transfer_ms": 968.971149995923,
+          "router_process_reused": true,
+          "router_device": "cuda",
+          "model": "gpt-6-luna"
+        },
+        {
+          "step": 3,
+          "phase": "recover",
+          "checkpoint_id": "V9_LAYA_STEP_008-e03",
+          "router_latency_ms": 1174.4988329010084,
+          "inference_latency_ms": 114.94137905538082,
+          "router_initialization_ms": 0.0,
+          "router_gpu_wait_ms": 0.013221055269241333,
+          "router_device_transfer_ms": 1046.7783939093351,
+          "router_process_reused": true,
+          "router_device": "cuda",
+          "model": "gpt-6-luna"
+        }
+      ]
+    }
+  ],
+  "opportunities": [
+    {
+      "task": "extract-elf",
+      "relation": "BOTH_SUCCESS",
+      "observed_fixed_saving_usd": 0.03412023,
+      "dynamic_model_cost_delta_vs_sol": 0.0014153999999999972,
+      "dynamic_model_cost_delta_vs_luna": 0.03553563,
+      "same_trace_reprice_is_counterfactual_only": true,
+      "resource_hourly_ceiling_if_all_fixed_saving_available": 1.3676312412107754
+    },
+    {
+      "task": "build-cython-ext",
+      "relation": "SOL_SUCCESS_LUNA_FAILURE",
+      "observed_fixed_saving_usd": null,
+      "dynamic_model_cost_delta_vs_sol": 0.007700700000000005,
+      "dynamic_model_cost_delta_vs_luna": 0.12257469500000001,
+      "same_trace_reprice_is_counterfactual_only": true,
+      "resource_hourly_ceiling_if_all_fixed_saving_available": null
+    },
+    {
+      "task": "cobol-modernization",
+      "relation": "UNKNOWN",
+      "observed_fixed_saving_usd": null,
+      "dynamic_model_cost_delta_vs_sol": -0.003239800000000001,
+      "dynamic_model_cost_delta_vs_luna": 0.029367645,
+      "same_trace_reprice_is_counterfactual_only": true,
+      "resource_hourly_ceiling_if_all_fixed_saving_available": null
+    },
+    {
+      "task": "filter-js-from-html",
+      "relation": "BOTH_FAILURE",
+      "observed_fixed_saving_usd": null,
+      "dynamic_model_cost_delta_vs_sol": -0.0059874,
+      "dynamic_model_cost_delta_vs_luna": 0.015235234999999998,
+      "same_trace_reprice_is_counterfactual_only": true,
+      "resource_hourly_ceiling_if_all_fixed_saving_available": null
+    },
+    {
+      "task": "git-leak-recovery",
+      "relation": "BOTH_SUCCESS",
+      "observed_fixed_saving_usd": 0.028543275,
+      "dynamic_model_cost_delta_vs_sol": 0.0005452999999999986,
+      "dynamic_model_cost_delta_vs_luna": 0.029088575,
+      "same_trace_reprice_is_counterfactual_only": true,
+      "resource_hourly_ceiling_if_all_fixed_saving_available": 1.7175672421986705
+    },
+    {
+      "task": "bn-fit-modify",
+      "relation": "BOTH_SUCCESS",
+      "observed_fixed_saving_usd": 0.027426170000000003,
+      "dynamic_model_cost_delta_vs_sol": 0.009964999999999995,
+      "dynamic_model_cost_delta_vs_luna": 0.037391169999999994,
+      "same_trace_reprice_is_counterfactual_only": true,
+      "resource_hourly_ceiling_if_all_fixed_saving_available": 5.18396370123694
+    },
+    {
+      "task": "distribution-search",
+      "relation": "BOTH_SUCCESS",
+      "observed_fixed_saving_usd": 0.012329964999999998,
+      "dynamic_model_cost_delta_vs_sol": -0.002847299999999999,
+      "dynamic_model_cost_delta_vs_luna": 0.009482665000000001,
+      "same_trace_reprice_is_counterfactual_only": true,
+      "resource_hourly_ceiling_if_all_fixed_saving_available": 1.075053833720463
+    },
+    {
+      "task": "git-multibranch",
+      "relation": "SOL_SUCCESS_LUNA_FAILURE",
+      "observed_fixed_saving_usd": null,
+      "dynamic_model_cost_delta_vs_sol": -0.04541757,
+      "dynamic_model_cost_delta_vs_luna": -0.0034149700000000007,
+      "same_trace_reprice_is_counterfactual_only": true,
+      "resource_hourly_ceiling_if_all_fixed_saving_available": null
+    }
+  ],
+  "counts": {
+    "BOTH_SUCCESS": 4,
+    "SOL_SUCCESS_LUNA_FAILURE": 2,
+    "UNKNOWN": 1,
+    "BOTH_FAILURE": 1
+  },
+  "sampled_workload_frequency_is_identifiable": false,
+  "native_full_episode_switches": 0,
+  "prior_reference_errors": {
+    "009": {
+      "fold_fields": "list",
+      "folds": [
+        {
+          "method": "A",
+          "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+          "row_index": 4,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "row_index": 6,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "row_index": 10,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+          "row_index": 12,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "argoproj__argo-4594",
+          "row_index": 14,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "chaijs__chai-724",
+          "row_index": 20,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+          "row_index": 2,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "hikari-py__hikari-2224",
+          "row_index": 43,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "row_index": 8,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "row_index": 13,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "row_index": 1,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "row_index": 11,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "row_index": 9,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+          "row_index": 0,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+          "row_index": 7,
+          "relation_correct": null,
+          "formal_action_correct": false,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+          "row_index": 3,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "oscal-compass__compliance-trestle-1578",
+          "row_index": 16,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "pallets__click-2417",
+          "row_index": 17,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "planetlabs__planet-client-python-553",
+          "row_index": 15,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+          "row_index": 5,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "researchobject__ro-crate-py-95",
+          "row_index": 18,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "rochacbruno__dynaconf-375",
+          "row_index": 38,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "rstudio__vetiver-python-201",
+          "row_index": 19,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+          "row_index": 4,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "row_index": 6,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "row_index": 10,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+          "row_index": 12,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "argoproj__argo-4594",
+          "row_index": 14,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "bustlelabs__shep-69",
+          "row_index": 34,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "buxlabs__boxwood-639",
+          "row_index": 21,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "chaijs__chai-724",
+          "row_index": 20,
+          "relation_correct": false,
+          "formal_action_correct": false,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+          "row_index": 2,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "hikari-py__hikari-2224",
+          "row_index": 43,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "row_index": 8,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "row_index": 13,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "row_index": 1,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "row_index": 11,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "mercadona__rele-160",
+          "row_index": 39,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "row_index": 9,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+          "row_index": 0,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+          "row_index": 7,
+          "relation_correct": false,
+          "formal_action_correct": false,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "narwhals-dev__narwhals-1948",
+          "row_index": 36,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+          "row_index": 3,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "oscal-compass__compliance-trestle-1578",
+          "row_index": 16,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "pallets__click-2417",
+          "row_index": 17,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "planetlabs__planet-client-python-553",
+          "row_index": 15,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+          "row_index": 5,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "pypa__build-365",
+          "row_index": 26,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "pypa__setuptools-4985",
+          "row_index": 52,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "researchobject__ro-crate-py-95",
+          "row_index": 18,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "rochacbruno__dynaconf-375",
+          "row_index": 38,
+          "relation_correct": false,
+          "formal_action_correct": false,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "rstudio__vetiver-python-201",
+          "row_index": 19,
+          "relation_correct": false,
+          "formal_action_correct": false,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "stingraysoftware__stingray-234",
+          "row_index": 25,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        }
+      ],
+      "progress": [
+        {
+          "task_id": "bustlelabs__shep-69",
+          "row_index": 34,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "hikari-py__hikari-2224",
+          "row_index": 43,
+          "candidate_progress": [
+            0,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "mercadona__rele-160",
+          "row_index": 39,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "narwhals-dev__narwhals-1948",
+          "row_index": 36,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "pallets__click-2417",
+          "row_index": 22,
+          "candidate_progress": [
+            0,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "pypa__build-365",
+          "row_index": 26,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "pypa__setuptools-4985",
+          "row_index": 52,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "researchobject__ro-crate-py-95",
+          "row_index": 28,
+          "candidate_progress": [
+            0,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "rochacbruno__dynaconf-375",
+          "row_index": 38,
+          "candidate_progress": [
+            0,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "rstudio__vetiver-python-201",
+          "row_index": 33,
+          "candidate_progress": [
+            0,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "stingraysoftware__stingray-234",
+          "row_index": 25,
+          "candidate_progress": [
+            0,
+            0
+          ],
+          "joint_correct": false
+        }
+      ],
+      "train_fit": {
+        "A": {
+          "items": 23,
+          "tasks": 20,
+          "target_correct": 22
+        },
+        "B4": {
+          "items": 30,
+          "tasks": 27,
+          "target_correct": 19
+        },
+        "candidate_f2p_progress": {
+          "items": 11,
+          "tasks": 11,
+          "joint_correct": 5
+        }
+      }
+    },
+    "010": {
+      "fold_fields": "list",
+      "folds": [
+        {
+          "method": "A",
+          "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+          "row_index": 4,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "row_index": 6,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "row_index": 10,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+          "row_index": 12,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "argoproj__argo-4594",
+          "row_index": 14,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "chaijs__chai-724",
+          "row_index": 20,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+          "row_index": 2,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "hikari-py__hikari-2224",
+          "row_index": 43,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "row_index": 8,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "row_index": 13,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "row_index": 1,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "row_index": 11,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "row_index": 9,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+          "row_index": 0,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+          "row_index": 7,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+          "row_index": 3,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "oscal-compass__compliance-trestle-1578",
+          "row_index": 16,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "pallets__click-2417",
+          "row_index": 17,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "A",
+          "task_id": "planetlabs__planet-client-python-553",
+          "row_index": 15,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+          "row_index": 5,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "researchobject__ro-crate-py-95",
+          "row_index": 18,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "rochacbruno__dynaconf-375",
+          "row_index": 38,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "A",
+          "task_id": "rstudio__vetiver-python-201",
+          "row_index": 19,
+          "relation_correct": null,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "HIPS__autograd.ac044f0d.func_pm_ctrl_shuffle__fhf7s9be",
+          "row_index": 4,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "row_index": 6,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "aio-libs__async-timeout.d0baa9f1.lm_rewrite__kqd6t1mb",
+          "row_index": 10,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "andialbrecht__sqlparse.e57923b3.combine_file__kep88kh8",
+          "row_index": 12,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "argoproj__argo-4594",
+          "row_index": 14,
+          "relation_correct": false,
+          "formal_action_correct": false,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "bustlelabs__shep-69",
+          "row_index": 34,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "buxlabs__boxwood-639",
+          "row_index": 21,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "chaijs__chai-724",
+          "row_index": 20,
+          "relation_correct": false,
+          "formal_action_correct": false,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "google__textfsm.c31b6007.func_pm_ctrl_shuffle__hjtsbxdc",
+          "row_index": 2,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "hikari-py__hikari-2224",
+          "row_index": 43,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "row_index": 8,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "keleshev__schema.24a30457.func_pm_ctrl_shuffle__t2num235",
+          "row_index": 13,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "row_index": 1,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "kennethreitz__records.5941ab27.lm_rewrite__letryq82",
+          "row_index": 11,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "mercadona__rele-160",
+          "row_index": 39,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "mido__mido.a0158ff9.func_pm_ctrl_invert_if__i99ulr3u",
+          "row_index": 9,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_class_rm_funcs__k83qfoxy",
+          "row_index": 0,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "msiemens__tinydb.10644a0e.func_pm_ctrl_invert_if__dhlrwy9y",
+          "row_index": 7,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "narwhals-dev__narwhals-1948",
+          "row_index": 36,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "oauthlib__oauthlib.1fd52536.combine_file__0mvyid7d",
+          "row_index": 3,
+          "relation_correct": false,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "oscal-compass__compliance-trestle-1578",
+          "row_index": 16,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "pallets__click-2417",
+          "row_index": 17,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "LOWER_MODEL_RATE_COST_AT_EQUAL_VERIFIER_RESULT"
+        },
+        {
+          "method": "B4",
+          "task_id": "planetlabs__planet-client-python-553",
+          "row_index": 15,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "pyasn1__pyasn1.0f07d724.func_pm_class_rm_base__w0abbacm",
+          "row_index": 5,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "pypa__build-365",
+          "row_index": 26,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "pypa__setuptools-4985",
+          "row_index": 52,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        },
+        {
+          "method": "B4",
+          "task_id": "researchobject__ro-crate-py-95",
+          "row_index": 18,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "rochacbruno__dynaconf-375",
+          "row_index": 38,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "rstudio__vetiver-python-201",
+          "row_index": 19,
+          "relation_correct": true,
+          "formal_action_correct": true,
+          "basis": "VERIFIED_QUALITY_AT_RECORDED_HORIZON"
+        },
+        {
+          "method": "B4",
+          "task_id": "stingraysoftware__stingray-234",
+          "row_index": 25,
+          "relation_correct": false,
+          "formal_action_correct": null,
+          "basis": null
+        }
+      ],
+      "progress": [
+        {
+          "task_id": "bustlelabs__shep-69",
+          "row_index": 34,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "hikari-py__hikari-2224",
+          "row_index": 43,
+          "candidate_progress": [
+            0,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "mercadona__rele-160",
+          "row_index": 39,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "narwhals-dev__narwhals-1948",
+          "row_index": 36,
+          "candidate_progress": [
+            1,
+            1
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "pallets__click-2417",
+          "row_index": 22,
+          "candidate_progress": [
+            0,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "pypa__build-365",
+          "row_index": 26,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "pypa__setuptools-4985",
+          "row_index": 52,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": false
+        },
+        {
+          "task_id": "researchobject__ro-crate-py-95",
+          "row_index": 28,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": true
+        },
+        {
+          "task_id": "rochacbruno__dynaconf-375",
+          "row_index": 38,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": true
+        },
+        {
+          "task_id": "rstudio__vetiver-python-201",
+          "row_index": 33,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": true
+        },
+        {
+          "task_id": "stingraysoftware__stingray-234",
+          "row_index": 25,
+          "candidate_progress": [
+            1,
+            0
+          ],
+          "joint_correct": false
+        }
+      ],
+      "train_fit": {
+        "A": {
+          "items": 23,
+          "tasks": 20,
+          "target_correct": 23
+        },
+        "B4": {
+          "items": 30,
+          "tasks": 27,
+          "target_correct": 18
+        },
+        "candidate_f2p_progress": {
+          "items": 11,
+          "tasks": 11,
+          "joint_correct": 7
+        }
+      }
+    }
+  },
+  "economics": {
+    "formula": "model_saving > (router_seconds * resource_USD_per_hour / 3600) + other_incremental_cost",
+    "quality_condition": "VERIFIED_EQUAL_EPISODE_QUALITY_REQUIRED",
+    "cpu_recent_observed_seconds_per_forward": 21.25578260869565,
+    "lower_frequency_quality_and_trajectory_unchanged": "UNOBSERVED_ASSUMPTION_NOT_AN_EPISODE",
+    "supplier_invoice_and_cache_and_resource_prices": "UNKNOWN",
+    "price_basis": {
+      "Sol_input_per_1M": 2,
+      "Sol_output_per_1M": 10,
+      "Luna_input_per_1M": 0.1,
+      "Luna_output_per_1M": 0.5,
+      "source": "EXISTING_MODEL_REGISTRY_NOT_SUPPLIER_INVOICE"
+    },
+    "equal_token_no_cache_examples": [
+      {
+        "input_tokens": 1000,
+        "output_tokens": 100,
+        "hypothetical_model_saving_usd": 0.00285,
+        "cpu_hourly_ceiling": 0.4826921778830518
+      },
+      {
+        "input_tokens": 10000,
+        "output_tokens": 1000,
+        "hypothetical_model_saving_usd": 0.0285,
+        "cpu_hourly_ceiling": 4.826921778830519
+      },
+      {
+        "input_tokens": 50000,
+        "output_tokens": 1000,
+        "hypothetical_model_saving_usd": 0.1045,
+        "cpu_hourly_ceiling": 17.698713189045232
+      }
+    ],
+    "known_both_success_fixed_saving_sum_usd": 0.10241964,
+    "catalogue_only_known_successful_task_choices": {
+      "tasks": 6,
+      "observed_fixed_sol_cost_usd": 0.2930465,
+      "result_informed_catalogue_cost_usd": 0.19062686,
+      "deployable_initial_selector_proven": false,
+      "step_mixed_episode_constructed": false
+    }
+  },
+  "formal_supervision": {
+    "total": 40,
+    "step_quality": {
+      "Sol": 18,
+      "Luna": 5
+    },
+    "step_equal_verified_cost": {
+      "Sol": 0,
+      "Luna": 8
+    },
+    "task_cost": {
+      "Sol": 0,
+      "Luna": 9
+    },
+    "step_states": 31,
+    "step_tasks": 28,
+    "step_repositories": 27,
+    "all_preference_tasks": 29,
+    "all_preference_repositories": 28,
+    "source_quality": {
+      "TRA_002": {
+        "Sol": 5,
+        "Luna": 5
+      },
+      "TRA_001": {
+        "Sol": 13,
+        "Luna": 0
+      }
+    },
+    "reference_fit_scope": {
+      "A_states": 23,
+      "A_tasks": 20,
+      "B4_states": 30,
+      "B4_tasks": 27,
+      "F2P_states": 11,
+      "F2P_tasks": 11
+    },
+    "local_train_only_extra_mechanisms": [
+      "Stingray F2P repair sets",
+      "Narwhals initial P2P restoration"
+    ],
+    "single_observation_stability_is_success_probability": false
+  },
+  "historical_dynamic_calls": 50,
+  "historical_dynamic_router_seconds": 680.9599472105037,
+  "earlier_real_episodes_separate_protocol_and_teacher_scope": [
+    {
+      "result_dir": "dev-configure-git-webserver-laya-no-teacher",
+      "task_id": "configure-git-webserver",
+      "policy": "laya_v2",
+      "status": "EVALUATED",
+      "reward": 0.0,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+      "generation_calls": 30,
+      "selection_counts": {
+        "gpt-6-luna": 30
+      },
+      "model_switches": 0,
+      "generation_cost_usd": 0.01776893,
+      "total_model_rate_cost_usd": 0.01776893,
+      "teacher_requests": 0,
+      "teacher_cost_usd": 0,
+      "router_total_time_ms": {
+        "laya": 31149.208793707658
+      },
+      "trial_duration_sec": 877.831667,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null
+    },
+    {
+      "result_dir": "dev-configure-git-webserver-laya-teacher",
+      "task_id": "configure-git-webserver",
+      "policy": "laya_v2",
+      "status": "EVALUATED",
+      "reward": 0.0,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+      "generation_calls": 7,
+      "selection_counts": {
+        "gpt-6-luna": 7
+      },
+      "model_switches": 0,
+      "generation_cost_usd": 0.00403457,
+      "total_model_rate_cost_usd": 0.01712057,
+      "teacher_requests": 1,
+      "teacher_cost_usd": 0.013086,
+      "router_total_time_ms": {
+        "laya": 7550.110957934521
+      },
+      "trial_duration_sec": 146.896552,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null
+    },
+    {
+      "result_dir": "dev-configure-git-webserver-sol-fixed",
+      "task_id": "configure-git-webserver",
+      "policy": "fixed_strong",
+      "status": "BLOCKED",
+      "reward": null,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+      "generation_calls": 4,
+      "selection_counts": {
+        "gpt-6.1-sol": 4
+      },
+      "model_switches": 0,
+      "generation_cost_usd": 0.074421,
+      "total_model_rate_cost_usd": 0.074421,
+      "teacher_requests": 0,
+      "teacher_cost_usd": 0,
+      "router_total_time_ms": {
+        "baseline_fixed_strong": 0.27066702023148537
+      },
+      "trial_duration_sec": 199.337526,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null
+    },
+    {
+      "result_dir": "dev-filter-js-from-html-laya-no-teacher",
+      "task_id": "filter-js-from-html",
+      "policy": "laya_v2",
+      "status": "EVALUATED",
+      "reward": 0.0,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+      "generation_calls": 15,
+      "selection_counts": {
+        "gpt-6.1-sol": 3,
+        "gpt-6-luna": 12
+      },
+      "model_switches": 1,
+      "generation_cost_usd": 0.07949004,
+      "total_model_rate_cost_usd": 0.07949004,
+      "teacher_requests": 0,
+      "teacher_cost_usd": 0,
+      "router_total_time_ms": {
+        "laya": 15391.738334030379
+      },
+      "trial_duration_sec": 1349.535347,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null
+    },
+    {
+      "result_dir": "dev-filter-js-from-html-luna-fixed",
+      "task_id": "filter-js-from-html",
+      "policy": "fixed_cheap",
+      "status": "EVALUATED",
+      "reward": 0.0,
+      "execution_scope": "REAL_API_K2_MODEL_ONLY_DEV",
+      "generation_calls": 3,
+      "selection_counts": {
+        "gpt-6-luna": 3
+      },
+      "model_switches": 0,
+      "generation_cost_usd": 0.00111207,
+      "total_model_rate_cost_usd": 0.00111207,
+      "teacher_requests": 0,
+      "teacher_cost_usd": 0,
+      "router_total_time_ms": {
+        "baseline_fixed_cheap": 0.32720802119001746
+      },
+      "trial_duration_sec": 856.316198,
+      "supplier_billed_usd": null,
+      "resource_cost_usd": null
+    },
+    {
+      "iteration": "dev-cobol-modernization-laya",
+      "task": "terminal-bench/cobol-modernization",
+      "reward": 0.0,
+      "generation_completions": 16,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 16
+      },
+      "natural_switches": 0,
+      "generation_model_rate_cost_usd": "0.8735645",
+      "total_model_rate_cost_usd": "0.8735645",
+      "teacher_requests": 0,
+      "teacher_model_rate_cost_usd": "0",
+      "router_total_sec": 431.6801216659951,
+      "trial_duration_sec": 930.20475,
+      "resource_cost_usd": null
+    },
+    {
+      "iteration": "dev-cobol-modernization-luna",
+      "task": "terminal-bench/cobol-modernization",
+      "reward": 1.0,
+      "generation_completions": 5,
+      "model_selection_counts": {
+        "gpt-6-luna": 5
+      },
+      "natural_switches": 0,
+      "generation_model_rate_cost_usd": "0.00140699",
+      "total_model_rate_cost_usd": "0.00140699",
+      "teacher_requests": 0,
+      "teacher_model_rate_cost_usd": "0",
+      "router_total_sec": 0.0009169999393634498,
+      "trial_duration_sec": 146.947497,
+      "resource_cost_usd": null
+    },
+    {
+      "iteration": "dev-cobol-modernization-sol",
+      "task": "terminal-bench/cobol-modernization",
+      "reward": null,
+      "generation_completions": 11,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 11
+      },
+      "natural_switches": 0,
+      "generation_model_rate_cost_usd": "0.4150422",
+      "total_model_rate_cost_usd": "0.4150422",
+      "teacher_requests": 0,
+      "teacher_model_rate_cost_usd": "0",
+      "router_total_sec": 0.0015699569485150278,
+      "trial_duration_sec": 376.177317,
+      "resource_cost_usd": null
+    },
+    {
+      "iteration": "dev-distribution-search-laya",
+      "task": "terminal-bench/distribution-search",
+      "reward": null,
+      "generation_completions": 1,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 2
+      },
+      "natural_switches": 0,
+      "generation_model_rate_cost_usd": "0.002884",
+      "total_model_rate_cost_usd": null,
+      "teacher_requests": 0,
+      "teacher_model_rate_cost_usd": "0",
+      "router_total_sec": 46.46602620795602,
+      "trial_duration_sec": 239.817171,
+      "resource_cost_usd": null
+    },
+    {
+      "iteration": "dev-distribution-search-laya-api-retry",
+      "task": "terminal-bench/distribution-search",
+      "reward": 1.0,
+      "generation_completions": 5,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 5
+      },
+      "natural_switches": 0,
+      "generation_model_rate_cost_usd": "0.1362464",
+      "total_model_rate_cost_usd": "0.1362464",
+      "teacher_requests": 0,
+      "teacher_model_rate_cost_usd": "0",
+      "router_total_sec": 79.22926870913943,
+      "trial_duration_sec": 421.388167,
+      "resource_cost_usd": null
+    },
+    {
+      "iteration": "dev-distribution-search-laya-teacher",
+      "task": "terminal-bench/distribution-search",
+      "reward": 1.0,
+      "generation_completions": 5,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 5
+      },
+      "natural_switches": 0,
+      "generation_model_rate_cost_usd": "0.0919130",
+      "total_model_rate_cost_usd": "0.1116190",
+      "teacher_requests": 1,
+      "teacher_model_rate_cost_usd": "0.019706",
+      "router_total_sec": 82.1678322069929,
+      "trial_duration_sec": 365.617835,
+      "resource_cost_usd": null
+    },
+    {
+      "iteration": "dev-distribution-search-luna",
+      "task": "terminal-bench/distribution-search",
+      "reward": 0.0,
+      "generation_completions": 8,
+      "model_selection_counts": {
+        "gpt-6-luna": 8
+      },
+      "natural_switches": 0,
+      "generation_model_rate_cost_usd": "0.00228552",
+      "total_model_rate_cost_usd": "0.00228552",
+      "teacher_requests": 0,
+      "teacher_model_rate_cost_usd": "0",
+      "router_total_sec": 0.0014857930946163833,
+      "trial_duration_sec": 225.323827,
+      "resource_cost_usd": null
+    },
+    {
+      "iteration": "dev-distribution-search-sol",
+      "task": "terminal-bench/distribution-search",
+      "reward": 1.0,
+      "generation_completions": 4,
+      "model_selection_counts": {
+        "gpt-6.1-sol": 4
+      },
+      "natural_switches": 0,
+      "generation_model_rate_cost_usd": "0.0866944",
+      "total_model_rate_cost_usd": "0.0866944",
+      "teacher_requests": 0,
+      "teacher_model_rate_cost_usd": "0",
+      "router_total_sec": 0.000599416031036526,
+      "trial_duration_sec": 254.679994,
+      "resource_cost_usd": null
+    }
+  ],
+  "earlier_failed_filter_episode_observed_switches": 1,
+  "earlier_reference_scope_notes": [
+    "Configure-git-webserver fixed Sol had no official ending and fixed Luna absent; no paired task relation",
+    "Earlier filter-js-from-html dynamic switched once but reward=0; cannot claim absence of historical switching or net benefit",
+    "Earlier distribution-search fixed Luna reward=0, later fixed Luna reward=1; differing recorded episodes/configuration cannot establish permanent task/model suitability",
+    "DeepSeek alias/deployment experiments have one actually executed backend, not observed K2 quality complementarity"
+  ]
+}
