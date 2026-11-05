@@ -1063,6 +1063,7 @@ def run_full_coverage_stream_run(
             best_ep_no = p_data.get("best_epoch")
         except Exception:
             pass
+    best_epoch = best_ep_no
 
     if ck_dir.is_dir():
         if best_link.exists() and has_physical_weights(best_link.resolve()):
@@ -1214,7 +1215,6 @@ def run_full_coverage_stream_run(
     materialized_total_items = 0
     encoded_total_items = 0
     consumed_units_set = set()
-    best_epoch = run_meta.get("best_epoch")
 
     if resume_mode == "COMPLETED":
         if is_regenerate:

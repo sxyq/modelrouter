@@ -715,7 +715,7 @@ def build_ordered_full_coverage_queue(
         failed_info = (queue_state.get("failed_runs") or {}).get(run_id) or {}
         if (int(failed_info.get("attempts", 0)) >= 2
                 or failed_info.get("reason") == "RUN_FAILED"
-                or failed_info.get("failure_reason") == "NON_FINITE_LOSS"):
+                or failed_info.get("failure_reason") == "NON_FINITE_LOSS") and not failed_info.get("retry_authorized_at"):
             counts["FAILED"] += 1
             continue
 
@@ -736,6 +736,11 @@ def build_ordered_full_coverage_queue(
                 counts["PENDING_PARENT"] += 1
                 pending_parents[run_id] = {"parent_run_id": parent_id, "best_epoch": best_epoch,
                                           "reason": "missing_completed_parent_weights"}
+                if parent and parent_id not in {r["run_id"] for r in ordered}:
+                    regeneration = dict(plans.get(parent_id) or get_full_coverage_plan_spec(parent_id))
+                    regeneration.update(run_id=parent_id, regenerate_parent=True, _stage=st, _prio=prio)
+                    ordered.append(regeneration)
+                    counts["PARENT_REGENERATION_REQUIRED"] += 1
                 continue
 
         spec.pop("regenerate_parent", None)
@@ -894,7 +899,10 @@ def run_continuous_full_coverage_queue(
         if queue_state.get("s2_audit_passed"):
             cmd.append("--s2-audit-passed")
 
-        proc = subprocess.run(cmd, cwd=str(project_root))
+        if spec.get("regenerate_parent"):
+            cmd.append("--regenerate-parent")
+        proc = subprocess.run(
+            ["flock", str(Path.home() / "ai-serving/state/gpu.lock"), *cmd], cwd=str(project_root))
         if proc.returncode == 0:
             if run_id not in queue_state["completed_runs"]:
                 queue_state["completed_runs"].append(run_id)
