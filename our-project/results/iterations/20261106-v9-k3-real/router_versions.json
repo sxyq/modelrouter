@@ -1,0 +1,302 @@
+[
+  {
+    "version": "LAYA_ORIGINAL",
+    "selected_action": {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "gpt-6-luna:low",
+      "pool": "Reasoning"
+    },
+    "latency_ms": 8080.592541955411,
+    "inference_latency_ms": 658.91651250422,
+    "identity": {
+      "router_run_id": "laya-base",
+      "router_weights_path": "/home/syy/路由/models/laya-421m",
+      "router_initialization_ms": 6722.7513287216425,
+      "router_process_reused": false,
+      "router_device": "cpu",
+      "router_gpu_wait_ms": 0.0,
+      "router_device_transfer_ms": 0.0,
+      "router_question_id": "route_decision",
+      "router_candidate_order": [
+        "gpt-6-luna:low",
+        "hy4:none",
+        "gpt-6.1-terra:low"
+      ],
+      "router_input_usage": {
+        "input_tokens": 512,
+        "output_tokens": 0,
+        "state_tokens": 1103,
+        "state_tokens_dropped": 701,
+        "truncated": true,
+        "truncated_questions": [
+          "route_decision"
+        ]
+      },
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+    },
+    "ranked_actions": [
+      {
+        "action": {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        },
+        "score": 0.5218,
+        "probability": 0.5218
+      },
+      {
+        "action": {
+          "provider": "jiji",
+          "model": "gpt-6.1-terra",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-terra:low",
+          "pool": "Reasoning"
+        },
+        "score": 0.3035,
+        "probability": 0.3035
+      },
+      {
+        "action": {
+          "provider": "oranexa",
+          "model": "hy4",
+          "revision": "latest",
+          "native_effort": "none",
+          "action_id": "hy4:none",
+          "pool": "Reasoning"
+        },
+        "score": 0.1747,
+        "probability": 0.1747
+      }
+    ]
+  },
+  {
+    "version": "LAYA_F05_E01",
+    "selected_action": {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "gpt-6-luna:low",
+      "pool": "Reasoning"
+    },
+    "latency_ms": 8168.618333991617,
+    "inference_latency_ms": 1094.4645684212446,
+    "identity": {
+      "router_run_id": "F05",
+      "router_weights_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/epoch_01",
+      "router_initialization_ms": 6357.754368335009,
+      "router_process_reused": false,
+      "router_device": "cpu",
+      "router_gpu_wait_ms": 0.0,
+      "router_device_transfer_ms": 0.0,
+      "router_question_id": "route_decision",
+      "router_candidate_order": [
+        "gpt-6-luna:low",
+        "hy4:none",
+        "gpt-6.1-terra:low"
+      ],
+      "router_input_usage": {
+        "input_tokens": 1024,
+        "output_tokens": 0,
+        "state_tokens": 1103,
+        "state_tokens_dropped": 189,
+        "truncated": true,
+        "truncated_questions": [
+          "route_decision"
+        ]
+      },
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+    },
+    "ranked_actions": [
+      {
+        "action": {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        },
+        "score": 0.3753,
+        "probability": 0.3753
+      },
+      {
+        "action": {
+          "provider": "jiji",
+          "model": "gpt-6.1-terra",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-terra:low",
+          "pool": "Reasoning"
+        },
+        "score": 0.3176,
+        "probability": 0.3176
+      },
+      {
+        "action": {
+          "provider": "oranexa",
+          "model": "hy4",
+          "revision": "latest",
+          "native_effort": "none",
+          "action_id": "hy4:none",
+          "pool": "Reasoning"
+        },
+        "score": 0.3071,
+        "probability": 0.3071
+      }
+    ]
+  },
+  {
+    "version": "KEV_IMPORTED_ORIGINAL",
+    "selected_action": {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "gpt-6-luna:low",
+      "pool": "Reasoning"
+    },
+    "latency_ms": 73453.89091700781,
+    "inference_latency_ms": 25711.074771359563,
+    "identity": {
+      "router_run_id": "KEV-4B-ADAPTER",
+      "router_weights_path": "/home/syy/路由/models/kev-4b-adapter",
+      "router_initialization_ms": 47077.273176983,
+      "router_process_reused": false,
+      "router_device": "cpu",
+      "router_gpu_wait_ms": 0.0,
+      "router_device_transfer_ms": 0.0,
+      "router_question_id": "route_decision",
+      "router_candidate_order": [
+        "gpt-6-luna:low",
+        "hy4:none",
+        "gpt-6.1-terra:low"
+      ],
+      "router_input_usage": {
+        "input_tokens": 1046,
+        "output_tokens": 89
+      },
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+    },
+    "ranked_actions": [
+      {
+        "action": {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        },
+        "score": 0.5559,
+        "probability": 0.5559
+      },
+      {
+        "action": {
+          "provider": "oranexa",
+          "model": "hy4",
+          "revision": "latest",
+          "native_effort": "none",
+          "action_id": "hy4:none",
+          "pool": "Reasoning"
+        },
+        "score": 0.2464,
+        "probability": 0.2464
+      },
+      {
+        "action": {
+          "provider": "jiji",
+          "model": "gpt-6.1-terra",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-terra:low",
+          "pool": "Reasoning"
+        },
+        "score": 0.1977,
+        "probability": 0.1977
+      }
+    ]
+  },
+  {
+    "version": "KEV_R11",
+    "selected_action": {
+      "provider": "jiji",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "gpt-6-luna:low",
+      "pool": "Reasoning"
+    },
+    "latency_ms": 66475.75487499125,
+    "inference_latency_ms": 29970.959527418017,
+    "identity": {
+      "router_run_id": "KEV-4B-ADAPTER",
+      "router_weights_path": "/home/syy/路由/runs/KEV-V8-COVERAGE-R11/checkpoint",
+      "router_initialization_ms": 35817.929189652205,
+      "router_process_reused": false,
+      "router_device": "cpu",
+      "router_gpu_wait_ms": 0.0,
+      "router_device_transfer_ms": 0.0,
+      "router_question_id": "route_decision",
+      "router_candidate_order": [
+        "gpt-6-luna:low",
+        "hy4:none",
+        "gpt-6.1-terra:low"
+      ],
+      "router_input_usage": {
+        "input_tokens": 1046,
+        "output_tokens": 89
+      },
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+    },
+    "ranked_actions": [
+      {
+        "action": {
+          "provider": "jiji",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        },
+        "score": 0.4474,
+        "probability": 0.4474
+      },
+      {
+        "action": {
+          "provider": "jiji",
+          "model": "gpt-6.1-terra",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6.1-terra:low",
+          "pool": "Reasoning"
+        },
+        "score": 0.3552,
+        "probability": 0.3552
+      },
+      {
+        "action": {
+          "provider": "oranexa",
+          "model": "hy4",
+          "revision": "latest",
+          "native_effort": "none",
+          "action_id": "hy4:none",
+          "pool": "Reasoning"
+        },
+        "score": 0.1974,
+        "probability": 0.1974
+      }
+    ]
+  }
+]

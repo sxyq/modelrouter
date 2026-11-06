@@ -1,5 +1,25 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-06正式转向真实K=3**：负责人已将主线确定为Luna／HY4／Terra、Model×Native Effort、缓存、Laya／Kev原始及训练代表、Luna教师和完整Episode净收益。[统一研究入口](../results/README.md)及[本批结果](../results/iterations/20261106-v9-k3-real/review.md)为当前入口。旧K=2正式40条和STEP009/010保留历史身份，不作为新池联合监督。历史Alias源码与配置已按本轮要求保留，新正式入口不调用。下列此前“仅本地、未生成、Alias已删除”的段落描述各自当时状态，不代表本批执行结论。
+
+**本批真实执行已结束**：两开发任务五策略共10个主位置，6个原Reward／CTRF、5通过／1业务失败／4未知；Hy4两题都返回preview，未执行身份不符动作，所以三有效模型比较仍未成立。Laya F05-e01、Kev R11共16次CPU前向全选Luna low、切换0、620.979秒；第二题两个动态策略同成功但均比固定Luna参考费高，没有净收益。四个原始／训练版本另各一次相同输入真实CPU前向，均Luna low；不确认新池最优或训练贡献。38 Agent请求＋3身份诊断、345373已知Token／$0.06117485已知参考费，实收、HY4费率及资源USD未知。教师关闭、新联合监督与神经训练0，旧40保留；不扩原始Episode／档位／教师组合。
+
+原38组实际25完成，F15物理61180；原入口／锁及用户级托管等待队列曾启动、随后消失，可读资料没有退出原因，最新无Worker／新更新，不能称安全接续成功。完成组8份优化器状态实际删除、释放25.10GiB，模型参数／指标／F15恢复保留。Serving healthy、未换权重；本批用户容器0，9镜像按后续用途保留。研究源码原位更新；完整记录及后续工作见本批结果，不据缺失Reward补造失败。
+
+**11-06后续联合动作**：负责人要求后续动态实验去掉只选模型的执行方式，统一选择Model×Native Effort。本地原Checkpoint改为按组合ID评分并返回模型、档位及组合概率，移除在线B17模型关系替代分支；DecisionHook保留档位能力卡，连续状态记录上次所选、实际请求和供应商返回档位。原Provider不再用渠道默认Max覆盖Router。原 `v9_real_comparison.json` 与默认新池为Luna/Terra/HY4，共13动作；Luna/Terra各6档，HY4沿先前要求只用none表示服务默认、不发送思考强度。旧40条Model-only监督、STEP009/010、原训练、历史配置及结果不改写；原监督入口保留历史解析，不能据旧偏好产生新联合标签。本批仅更新本地入口与说明，未生成、训练、部署服务器、重启Serving或提交推送；组合输出能力不等于联合选择已有效。
+
+**11-06新渠道与容量配置**：负责人重新提供Luna、Terra和HY4三个渠道，私人Key只写统一文件。原DeepSeek条目及参数保留。Luna/Terra协议Responses、上下文1050000、输出128000，保留完整输出时输入预算922000；HY4协议Chat Completions，按腾讯TokenHub的1024k/960k/64k记录为1024000/960000/64000，供应商实际额度尚未实测。Luna/Terra普通客户端默认Max，动态请求遵从Router所选档位；HY4不传思考强度。登记文本/图像输入、文本输出，GPT图像detail为original、HY4在Chat协议为high，不宣称音频/视频输入或直接图像输出。
+
+此前三渠道只执行 `/v1/models` 元数据查询，均HTTP200并列出精确模型ID；没有模型生成、Token容量压测或多模态验证。原Provider读取渠道协议和输出额度，但档位使用调用方所选值。此次11个相关源码对象语法可解析，实际当前配置展开13组合并读到原账户绑定；复用已有16条历史消息核对13种协议请求参数，GPT档位原值发送、HY4参数省略、输出额度保持。没有发送模型请求或执行Router权重前向；供应商身份、完整输出上限及应用档位仍未知，不重跑旧实验或替换Serving权重。
+
+**11-06旧渠道清理**：负责人要求除DeepSeek外删除此前全部渠道。统一私人配置当前只保留 `deepseek-aihub` 及原DeepSeek参数，已移除Luna四账户、Jiji顶层默认凭据、Qwen、Embedding和旧账户绑定；Space Bunny此前已不在当前配置。新GPT 6 Luna、GPT 6.1 Terra及hy4渠道待负责人重新提供，不自动转用DeepSeek。原实验结果、历史日志及已运行进程未改，未撤销供应商账户、重启服务或发起模型请求。
+
+**11-06取消模型替换与Qwen连通性**：按负责人本轮要求，本地生成和教师入口已删除Sol/Luna/Flash→Qwen、简称归一化及未知模型→默认Luna的替换逻辑，直接发送选中精确模型ID；同模型供应商切换仍沿原账户池。删除原Alias实现与配置，移除映射费用重算入口，原CLI改为 `development`。旧映射轨迹、费用与监督身份保持历史，不变成正式多模型证据。未部署服务器源码、重启服务或追加模型生成。
+
+当前共享配置中的Qwen为 `Qwen3.8-27B`，不是由本轮改名得到的型号。14:06–14:12台北时间以保存身份成功登录A6000和server3：A6000访问配置网关443在6秒连接窗口内超时（HTTP000）；server3的9002/9010均无监听，绕过代理直连原9002 `/health`立即Connection refused（HTTP000）。这证明当前配置入口和原后端端口不可用，不推断权重删除、停止原因或其他端口的模型状态。仅元数据与连接请求，未生成Token、改变模型定义或修复服务。
+
+**11-06外部文本模型配置统一**：ModelRouter与Code Generation的URL、Key、供应商池和模型账户绑定统一维护在 `~/.agent-global/外部文本模型.local.json`（私人文件，权限600，不提交Git）。`EXTERNAL_TEXT_MODEL_CONFIG`仅指定此文件的位置；Provider与原Shell入口读取同一来源。账户现统一列在 `providers`，各组默认在 `defaults`，运行参数在 `provider_settings`；另一执行分支新增和整理的配置保留。本批移除Alias后不再由其调用Qwen。原项目凭据JSON、Code Generation的本地env及两份旧示例已删除。实验配置继续保留模型、协议、预算、费率和Router地址，不存外部文本模型凭据。下文旧路径与环境变量加载方式仅为历史记录，不作为当前调用说明；后续供应商更新也只维护统一文件。此迁移未发送模型生成请求、未部署服务器或重启健康服务。
+
 本批原始远端脚本Reward已取回：三个均0、没有CTRF，分别由插件/下载依赖问题产生；原Trial仍为空。这些原始0与恢复后的业务验证分开，均保留依据，不计为三个模型质量失败。
 
 **11-06完整任务机会与训练接续本批**：[实际结果](../results/iterations/20261106-v9-complete-opportunities/review.md)、[摘要](../results/iterations/20261106-v9-complete-opportunities/summary.json)。三个负责人点名官方任务原manifest为final_test，本轮开发使用、不改划分、不入Train，今后不作盲评价。Luna20有效生成/23物理请求，Sol一次真实服务请求仍502；原三个Trial均缺Reward，保留null。依赖下载与远程日志挂载问题处理后，原Verifier对保存终态得到漏洞原库367/367＋附加6/6、汇总2/2、Nginx1/8；这是终态恢复验证，不把它改为原完整成功率2/3。Nginx安装已受原网络影响，不能归为Luna固有质量失败。新互补、双方向条件选择和动态净收益仍未证明。
@@ -802,7 +822,7 @@ AA Key 当前缺失，仍为 `FAILED/NOT_MEASURED`、分数 null；原 Luna HTTP
 
 这组概率只证明真实路由模型前向，Laya/Kev 分别选过 Luna/Flash；它们与下列单题全部选择 Sol 的实际生成记录分开。单题控制链成功不证明旧状态布局语义正确、新特征已学习或正式三模型收益。
 
-**Qwen 与凭据演进**：前一阶段只找到 Parfit 网关和凭据候选，状态为待验证；现已回报 `<ALIAS_API_ENDPOINT>` 的 `/models` 真实返回 `Qwen3.8-27B`，来源确认为 `PCG/config/pi-sag.local.env`，仅按 `QWEN_API_KEY` 读取，不改源、不记录密钥。校园 `root9002` 在 NPU5/6 已存在、无有效认证的记录继续保留，共享模型/认证未改。Alias 的物理后端仍为 `UNKNOWN`；网关返回名不能证明与 9002 是同一物理部署。Project jiji 与当前 Codex oneapi 均无 Qwen，不使用未批准替代模型。此前 Provider 凭据隔离新增 1 项测试通过的事实保留，不据此推断两类新解析问题或整任务已全部验证。
+**Qwen 与凭据演进**：前一阶段只找到 Parfit 网关和凭据候选，状态为待验证；当时已回报 `<ALIAS_API_ENDPOINT>` 的 `/models` 真实返回 `Qwen3.8-27B`，来源确认为Code Generation旧本地env。11-06已迁入 `~/.agent-global/外部文本模型.local.json`，账户现列在 `providers`，由 `defaults.qwen`指定默认Qwen账户；旧env已删除。本轮Alias已停用，不再作为实验模型调用入口，不记录密钥。校园 `root9002` 在 NPU5/6 已存在、无有效认证的记录继续保留，共享模型/认证未改。原Alias的物理后端记录仍为 `UNKNOWN`；网关返回名不能证明与 9002 是同一物理部署。Project jiji 与当时 Codex oneapi 均无 Qwen，不使用未批准替代模型。此前 Provider 凭据隔离新增 1 项测试通过的事实保留，不据此推断两类新解析问题或整任务已全部验证。
 
 **SSE 失败与工具联调阶段**：首次 SSE 的工具字段为 null，暴露 `choices/tool_calls` nullable 及 `function.name/arguments` nullable 两类 Provider 解析问题；主 Agent 已在现有解析中处理。原失败完整保留，后续运行不能覆盖它们。
 
@@ -2009,7 +2029,7 @@ configs/
 
 负责人提交最新执行报告：F03 正规两轮完训（S1 e01 64.71%，e02 67.20%，S2 e02 53.12%），F06 据报正执行 E1 Chunk 69/361，GPU 72–88%；Laya/ Kev 服务器路由服务提供两条 API 推理样例；本机 8 策略×2 题共 16 次实际 API/主机 Shell 尝试，**官方报告中 0/16 solved**、多数任务失败/超时。服务器进程与 Mac 当前真实状态来自执行方报告，非本次 GitHub 审查直接 SSH 测量。
 
-**紧急秘密凭证事件**：本公开仓库的 `experiments/agent_pilot/configs/generator_credentials.json` 确实曾在 `main` 跟踪一个非空 API Key，且该 Key 在执行报告的聊天文本中也暴露。审查时已从 HEAD 删除此文件，并更新 `.gitignore`，使其未来不能正常重新加入；`provider.py` 默认只从 `~/.config/modelrouter/generator_credentials.json`（或 `MODELROUTER_CREDENTIALS_FILE` 指定的仓库外 0600 文件）或环境变量加载凭据，另有不含秘密的 `generator_credentials.example.json`。**Git 历史中的 Secret 不会因普通删除而消失，必须立即在 Provider 端撤销/轮换原 Key，核对异常使用，并请仓库管理员按 GitHub 秘密泄露响应流程清理历史/缓存；不得再次将 Secret 写入 AGENTS.md 规则或本仓库。** 用户本地 `AGENTS.md` 当前含相反的“禁止加入 .gitignore”指令（该文件本身被 ignore），执行方须就地删除错误指令并替换为“必须忽略 Secret”规则。不要打印/复制任何旧 Key。
+**历史秘密凭证事件**：本公开仓库的 `experiments/agent_pilot/configs/generator_credentials.json` 确实曾在 `main` 跟踪一个非空 API Key，且该 Key 在执行报告的聊天文本中也暴露。当时从HEAD删除文件并更新 `.gitignore`，另采用仓库外凭据、环境变量及空Key示例。这些是10-18处理记录，不能作为现行入口；11-06已统一到 `~/.agent-global/外部文本模型.local.json`，删除旧文件及示例，`provider.py`不再从旧凭据环境变量加载，AGENTS也已采用统一私人文件规则。**Git历史中的Secret不会因普通删除而消失，原Key撤销/轮换、异常使用及历史公开范围仍须依据实际Provider和仓库记录确认；本次配置迁移不能证明这些事项已完成。** 不打印或复制任何旧Key，不把Secret写入本仓库。
 
 **Host 执行隔离缺陷**：报告使用 `LocalHarborSandboxEnvironment`；在 `083ee2c` 实际源码中，其 `exec()` 是 Mac 主机上的 `subprocess.run(..., shell=True, env=os.environ)`，不是 Harbor/Docker 容器，可能暴露宿主文件与私有凭据；其 `evaluate()` 动态自写 `test_verifier.py`，即使生成 CTRF 也不代表实际官方任务镜像与原版 Evaluator。已在 `experiments/harbor/environment.py` 中将该不安全实现设置 fail-closed，不得继续用于真实 Agent。**下一步唯一正确修复是接入上游 Harbor 隔离容器 + 未改写的官方任务验证器**；在此之前所有 16 次应标 `LOCAL_HOST_EXPERIMENTAL` / `NOT_OFFICIAL_HARBOR`，真实任务 0/16，不能称其为完整官方 Benchmark 通过。
 
@@ -2030,12 +2050,11 @@ configs/
 
 本轮执行严格遵循负责人最新安全与生成能力指导方针，完成了 API 凭证隔离、官方基准隔离语义更正、GPT Responses SSE 流式与工具往返验证、OpenRouter 官方定价快照及通用多模型审计日志机制：
 
-1. **凭证安全隔离与 AGENTS.md 更正**：
-   - 彻底停用公开出现的旧 Key，并向负责人提示在 Provider 处撤销与消费核验；
-   - 将 `experiments/agent_pilot/configs/generator_credentials.json` 从 Git 跟踪中移除（`git rm --cached`）并加入 `.gitignore`；
-   - 纠正 `AGENTS.md` 第 5.2 节中旧有的“禁止将其加入 .gitignore”规则，更新为强隔离规范；
-   - 仓库仅保留脱敏的 `generator_credentials.example.json` 模板；
-   - `provider.py` 中的 `load_generator_credentials()` 优先使用环境变量（`MODELROUTER_GENERATOR_API_KEY`、`MODELROUTER_GENERATOR_BASE_URL`），未设置前暂停一切付费调用。
+1. **凭据处理历史及现行入口**：
+   - 当时报告停用已公开的旧Key，并提示Provider撤销与消费核验；实际撤销状态不由本次迁移推断。
+   - 当时移除项目凭据的Git跟踪并调整AGENTS规则，保留过空Key示例和环境变量加载方式。
+   - 11-06旧私人配置及示例已删除，`load_generator_credentials()`统一读取 `~/.agent-global/外部文本模型.local.json`；`EXTERNAL_TEXT_MODEL_CONFIG`只用于指定位置，不再由旧凭据环境变量覆盖。
+   - 供应商、URL、Key、模型绑定仅在统一私人文件维护，不提交Git；原用量记录及实验授权保持。
 
 2. **官方隔离评测定性与看板重校**：
    - 将此前在 Mac 宿主运行的 16 次 Canary 执行重定性为 `LOCAL_HOST_EXPERIMENTAL`（宿主无隔离进程执行，0/16 解决），严禁列为主表基准通过成绩；
@@ -2068,10 +2087,10 @@ configs/
 
 本轮执行严格遵循负责人最新长周期一体化指令，保持主 Agent + 2 名专业子代理（Benchmark 架构工程 / 外部基准与看板工程）分工协作，在不中断 A6000 正式训练的前提下，全面完成了凭证本地持久化、双模型远程前向推理验证、Harbor 官方基准环境标准对齐、8 策略全矩阵适配、OpenRouter 定价审计及高密度看板联调：
 
-1. **凭证还原与本地持久化（严格遵从负责人直接指示）**：
-   - 遵照负责人要求，还原真实 API 凭证（URL: `https://www.jiji.cc/v1`，Key: `sk-dae50f...492d`，主力模型: `gpt-6-luna`，备用模型: `gpt-5.6-luna`），保存在本地 `experiments/agent_pilot/configs/generator_credentials.json`；
-   - 从 `.gitignore` 中彻底移除该文件规则，保证本地持久化存储且便于负责人随时直观修改；
-   - `provider.py` 恢复直接读取该本地配置，并保持环境变量覆盖能力，端到端生成及工具调用已全线恢复畅通。
+1. **凭据本地持久化历史（当前已统一）**：
+   - 10-18报告按负责人要求恢复本地凭据，主力 `gpt-6-luna`、备用 `gpt-5.6-luna`；旧项目JSON路径与当时环境变量覆盖方式只保留为历史事实，不再列出Key片段。
+   - 当时移除忽略规则的做法已被现行私人文件规则取代；11-06旧文件已删除，账户与设置保留在 `~/.agent-global/外部文本模型.local.json`，不提交Git。
+   - 当前Provider只从统一文件加载；`EXTERNAL_TEXT_MODEL_CONFIG`仅指定位置，此次迁移未重新生成模型动作或重跑旧验证。
 
 2. **A6000 硬件负载与 F06 全覆盖训练连续推进**：
    - **零中断守护**：正式队列控制器（PID `499841`）与训练子进程（PID `1202621`，`laya_batch_train.py --full-coverage-run F06`）持续平稳运转；

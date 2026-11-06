@@ -1,0 +1,1647 @@
+[
+  {
+    "task_id": "extract-elf",
+    "policy": "fixed_luna",
+    "source": "DEVELOPMENT_NOT_BLIND_NOT_TRAIN",
+    "trial_path": "jobs/extract-elf--fixed_luna--s42/extract-elf__FPWpgLL/result.json",
+    "previous_startup_job": null,
+    "reward": null,
+    "business_tests": null,
+    "exception_type": "RuntimeError",
+    "exception_message": "Provider stream ended with response.failed",
+    "model_request_count": 3,
+    "usable_generation_count": 2,
+    "identity_mismatch_count": 0,
+    "unreported_response_errors": 1,
+    "usage_missing_count": 1,
+    "model_requests": [
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 19877,
+        "completion_tokens": 156,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": null,
+        "cost_usd": 0.0020657,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 12590.719375060871,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 20219,
+        "completion_tokens": 232,
+        "reasoning_tokens": 72,
+        "cached_tokens": 19874,
+        "cache_write_tokens": null,
+        "cost_usd": 0.00034924,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 14464.724167017266,
+        "alias_mapping_applied": false
+      }
+    ],
+    "input_tokens_known": 40096,
+    "output_tokens_known": 388,
+    "reasoning_tokens_known": 72,
+    "cached_tokens_known": 19874,
+    "cache_write_unknown_count": 3,
+    "reference_cost_known_usd": 0.00241494,
+    "complete_reference_cost_usd": null,
+    "actual_billed_cost_usd": null,
+    "action_sequence": [
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low"
+    ],
+    "model_switches": 0,
+    "router_call_count": 0,
+    "router_total_seconds": 0,
+    "router_inference_seconds": 0,
+    "router_initialization_seconds": 0,
+    "router_device": null,
+    "router_resource_usd": null,
+    "tool_executions": 2,
+    "tool_failed_executions": 0,
+    "wall_seconds": 119.924601,
+    "agent_seconds": 93.063489,
+    "environment_setup_seconds": 7.91726,
+    "verifier_seconds": null,
+    "teacher_calls": 0,
+    "teacher_reference_usd": 0,
+    "resource_usd": null
+  },
+  {
+    "task_id": "extract-elf",
+    "policy": "fixed_hy4",
+    "source": "DEVELOPMENT_NOT_BLIND_NOT_TRAIN",
+    "trial_path": "jobs/extract-elf--fixed_hy4--s42/extract-elf__spRQp2R/result.json",
+    "previous_startup_job": null,
+    "reward": null,
+    "business_tests": null,
+    "exception_type": "ProviderResponseError",
+    "exception_message": "MODEL_IDENTITY_MISMATCH",
+    "model_request_count": 1,
+    "usable_generation_count": 0,
+    "identity_mismatch_count": 1,
+    "unreported_response_errors": 0,
+    "usage_missing_count": 0,
+    "model_requests": [
+      {
+        "step": null,
+        "request_model_id": "hy4",
+        "returned_model_id": "hy4-preview",
+        "provider_endpoint_id": "hy4-oranexa",
+        "protocol": "chat_completions",
+        "http_status": 200,
+        "request_native_effort": "none",
+        "returned_native_effort": null,
+        "native_effort_status": "NOT_REPORTED",
+        "sent_effort_parameter": {},
+        "finish_reason": "tool_calls",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": true
+        },
+        "prompt_tokens": 1071,
+        "completion_tokens": 175,
+        "reasoning_tokens": 96,
+        "cached_tokens": 0,
+        "cache_write_tokens": null,
+        "cost_usd": null,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 11191.083166981116,
+        "alias_mapping_applied": false
+      }
+    ],
+    "input_tokens_known": 1071,
+    "output_tokens_known": 175,
+    "reasoning_tokens_known": 96,
+    "cached_tokens_known": 0,
+    "cache_write_unknown_count": 1,
+    "reference_cost_known_usd": null,
+    "complete_reference_cost_usd": null,
+    "actual_billed_cost_usd": null,
+    "action_sequence": [
+      "hy4:none"
+    ],
+    "model_switches": 0,
+    "router_call_count": 0,
+    "router_total_seconds": 0,
+    "router_inference_seconds": 0,
+    "router_initialization_seconds": 0,
+    "router_device": null,
+    "router_resource_usd": null,
+    "tool_executions": 0,
+    "tool_failed_executions": 0,
+    "wall_seconds": 39.966778,
+    "agent_seconds": 13.007388,
+    "environment_setup_seconds": 7.458391,
+    "verifier_seconds": null,
+    "teacher_calls": 0,
+    "teacher_reference_usd": 0,
+    "resource_usd": null
+  },
+  {
+    "task_id": "extract-elf",
+    "policy": "fixed_terra",
+    "source": "DEVELOPMENT_NOT_BLIND_NOT_TRAIN",
+    "trial_path": "jobs/extract-elf--fixed_terra--s42/extract-elf__3iE3L68/result.json",
+    "previous_startup_job": null,
+    "reward": 0.0,
+    "business_tests": {
+      "tests": 2,
+      "passed": 1,
+      "failed": 1,
+      "skipped": 0
+    },
+    "exception_type": null,
+    "exception_message": null,
+    "model_request_count": 8,
+    "usable_generation_count": 8,
+    "identity_mismatch_count": 0,
+    "unreported_response_errors": 0,
+    "usage_missing_count": 0,
+    "model_requests": [
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 5274,
+        "completion_tokens": 119,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.005869,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 4742.042334051803,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 5705,
+        "completion_tokens": 169,
+        "reasoning_tokens": 0,
+        "cached_tokens": 5248,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0015644,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 6342.459583072923,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 7470,
+        "completion_tokens": 73,
+        "reasoning_tokens": 8,
+        "cached_tokens": 5760,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.002363,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 4482.692374964245,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 7602,
+        "completion_tokens": 1207,
+        "reasoning_tokens": 109,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.013637,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 24240.79225002788,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 8738,
+        "completion_tokens": 51,
+        "reasoning_tokens": 0,
+        "cached_tokens": 7296,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0020618,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 5157.434792025015,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 8821,
+        "completion_tokens": 987,
+        "reasoning_tokens": 0,
+        "cached_tokens": 8704,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0054872,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 20908.777500037104,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 9841,
+        "completion_tokens": 210,
+        "reasoning_tokens": 0,
+        "cached_tokens": 9728,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0016494,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 6917.208416969515,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 10154,
+        "completion_tokens": 75,
+        "reasoning_tokens": 0,
+        "cached_tokens": 9856,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0011658,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 5753.748832968995,
+        "alias_mapping_applied": false
+      }
+    ],
+    "input_tokens_known": 63605,
+    "output_tokens_known": 2891,
+    "reasoning_tokens_known": 117,
+    "cached_tokens_known": 46592,
+    "cache_write_unknown_count": 0,
+    "reference_cost_known_usd": 0.0337976,
+    "complete_reference_cost_usd": 0.0337976,
+    "actual_billed_cost_usd": null,
+    "action_sequence": [
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low"
+    ],
+    "model_switches": 0,
+    "router_call_count": 0,
+    "router_total_seconds": 0,
+    "router_inference_seconds": 0,
+    "router_initialization_seconds": 0,
+    "router_device": null,
+    "router_resource_usd": null,
+    "tool_executions": 17,
+    "tool_failed_executions": 3,
+    "wall_seconds": 287.268605,
+    "agent_seconds": 112.50404,
+    "environment_setup_seconds": 7.839031,
+    "verifier_seconds": 142.558731,
+    "teacher_calls": 0,
+    "teacher_reference_usd": 0,
+    "resource_usd": null
+  },
+  {
+    "task_id": "extract-elf",
+    "policy": "laya_v2",
+    "source": "DEVELOPMENT_NOT_BLIND_NOT_TRAIN",
+    "trial_path": "jobs/extract-elf--laya_v2--s42/extract-elf__iNiRhnh/result.json",
+    "previous_startup_job": null,
+    "reward": null,
+    "business_tests": null,
+    "exception_type": "ProviderResponseError",
+    "exception_message": "INCOMPLETE_RESPONSE",
+    "model_request_count": 2,
+    "usable_generation_count": 1,
+    "identity_mismatch_count": 0,
+    "unreported_response_errors": 0,
+    "usage_missing_count": 1,
+    "model_requests": [
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 1192,
+        "completion_tokens": 147,
+        "reasoning_tokens": 8,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0001927,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 17954.786458984017,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": null,
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": null,
+        "native_effort_status": "NOT_REPORTED",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": null,
+        "response_status": "INCOMPLETE_RESPONSE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": null
+        },
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "reasoning_tokens": null,
+        "cached_tokens": null,
+        "cache_write_tokens": null,
+        "cost_usd": null,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 20427.081082947552,
+        "alias_mapping_applied": false
+      }
+    ],
+    "input_tokens_known": 1192,
+    "output_tokens_known": 147,
+    "reasoning_tokens_known": 8,
+    "cached_tokens_known": 0,
+    "cache_write_unknown_count": 1,
+    "reference_cost_known_usd": 0.0001927,
+    "complete_reference_cost_usd": null,
+    "actual_billed_cost_usd": null,
+    "action_sequence": [
+      "gpt-6-luna:low",
+      "gpt-6-luna:low"
+    ],
+    "model_switches": 0,
+    "router_call_count": 2,
+    "router_total_seconds": 9.707654000027105,
+    "router_inference_seconds": 2.187730783596635,
+    "router_initialization_seconds": 6.8222413044422865,
+    "router_device": "CPU",
+    "router_resource_usd": null,
+    "tool_executions": 1,
+    "tool_failed_executions": 0,
+    "wall_seconds": 90.616554,
+    "agent_seconds": 53.225771,
+    "environment_setup_seconds": 13.839453,
+    "verifier_seconds": null,
+    "teacher_calls": 0,
+    "teacher_reference_usd": 0,
+    "resource_usd": null
+  },
+  {
+    "task_id": "extract-elf",
+    "policy": "kev_4b",
+    "source": "DEVELOPMENT_NOT_BLIND_NOT_TRAIN",
+    "trial_path": "jobs/extract-elf--kev_4b--s42/extract-elf__QQFUe6k/result.json",
+    "previous_startup_job": null,
+    "reward": 1.0,
+    "business_tests": {
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "exception_type": null,
+    "exception_message": null,
+    "model_request_count": 4,
+    "usable_generation_count": 4,
+    "identity_mismatch_count": 0,
+    "unreported_response_errors": 0,
+    "usage_missing_count": 0,
+    "model_requests": [
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 1192,
+        "completion_tokens": 87,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0001627,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 6818.791624973528,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 1418,
+        "completion_tokens": 113,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0001983,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 7362.650249968283,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 4667,
+        "completion_tokens": 713,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0008232,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 19071.915042004548,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 5452,
+        "completion_tokens": 58,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0005742,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 6561.131834052503,
+        "alias_mapping_applied": false
+      }
+    ],
+    "input_tokens_known": 12729,
+    "output_tokens_known": 971,
+    "reasoning_tokens_known": 0,
+    "cached_tokens_known": 0,
+    "cache_write_unknown_count": 0,
+    "reference_cost_known_usd": 0.0017584,
+    "complete_reference_cost_usd": 0.0017584,
+    "actual_billed_cost_usd": null,
+    "action_sequence": [
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low"
+    ],
+    "model_switches": 0,
+    "router_call_count": 4,
+    "router_total_seconds": 311.88137833494693,
+    "router_inference_seconds": 276.65801452845335,
+    "router_initialization_seconds": 34.47240081243217,
+    "router_device": "CPU",
+    "router_resource_usd": null,
+    "tool_executions": 4,
+    "tool_failed_executions": 0,
+    "wall_seconds": 536.263636,
+    "agent_seconds": 366.510143,
+    "environment_setup_seconds": 7.874767,
+    "verifier_seconds": 138.837385,
+    "teacher_calls": 0,
+    "teacher_reference_usd": 0,
+    "resource_usd": null
+  },
+  {
+    "task_id": "git-leak-recovery",
+    "policy": "fixed_luna",
+    "source": "DEVELOPMENT_NOT_BLIND_NOT_TRAIN",
+    "trial_path": "jobs/git-leak-recovery--fixed_luna--s42/git-leak-recovery__6mPSYZY/result.json",
+    "previous_startup_job": null,
+    "reward": 1.0,
+    "business_tests": {
+      "tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "exception_type": null,
+    "exception_message": null,
+    "model_request_count": 4,
+    "usable_generation_count": 4,
+    "identity_mismatch_count": 0,
+    "unreported_response_errors": 0,
+    "usage_missing_count": 0,
+    "model_requests": [
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 1149,
+        "completion_tokens": 215,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0002224,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 9171.551333973184,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 1685,
+        "completion_tokens": 255,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.000296,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 9529.15016701445,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 2597,
+        "completion_tokens": 297,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0004082,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 11891.835917020217,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 3023,
+        "completion_tokens": 25,
+        "reasoning_tokens": 0,
+        "cached_tokens": 2432,
+        "cache_write_tokens": 0,
+        "cost_usd": 9.592e-05,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 5435.766084003262,
+        "alias_mapping_applied": false
+      }
+    ],
+    "input_tokens_known": 8454,
+    "output_tokens_known": 792,
+    "reasoning_tokens_known": 0,
+    "cached_tokens_known": 2432,
+    "cache_write_unknown_count": 0,
+    "reference_cost_known_usd": 0.00102252,
+    "complete_reference_cost_usd": 0.00102252,
+    "actual_billed_cost_usd": null,
+    "action_sequence": [
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low"
+    ],
+    "model_switches": 0,
+    "router_call_count": 0,
+    "router_total_seconds": 0,
+    "router_inference_seconds": 0,
+    "router_initialization_seconds": 0,
+    "router_device": null,
+    "router_resource_usd": null,
+    "tool_executions": 4,
+    "tool_failed_executions": 0,
+    "wall_seconds": 208.600452,
+    "agent_seconds": 47.272924,
+    "environment_setup_seconds": 8.063065,
+    "verifier_seconds": 130.888971,
+    "teacher_calls": 0,
+    "teacher_reference_usd": 0,
+    "resource_usd": null
+  },
+  {
+    "task_id": "git-leak-recovery",
+    "policy": "fixed_hy4",
+    "source": "DEVELOPMENT_NOT_BLIND_NOT_TRAIN",
+    "trial_path": "jobs/git-leak-recovery--fixed_hy4--s42--startup-recovered/git-leak-recovery__ZXYAayu/result.json",
+    "previous_startup_job": "git-leak-recovery--fixed_hy4--s42",
+    "reward": null,
+    "business_tests": null,
+    "exception_type": "ProviderResponseError",
+    "exception_message": "MODEL_IDENTITY_MISMATCH",
+    "model_request_count": 1,
+    "usable_generation_count": 0,
+    "identity_mismatch_count": 1,
+    "unreported_response_errors": 0,
+    "usage_missing_count": 0,
+    "model_requests": [
+      {
+        "step": null,
+        "request_model_id": "hy4",
+        "returned_model_id": "hy4-preview",
+        "provider_endpoint_id": "hy4-oranexa",
+        "protocol": "chat_completions",
+        "http_status": 200,
+        "request_native_effort": "none",
+        "returned_native_effort": null,
+        "native_effort_status": "NOT_REPORTED",
+        "sent_effort_parameter": {},
+        "finish_reason": "tool_calls",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": true
+        },
+        "prompt_tokens": 1028,
+        "completion_tokens": 266,
+        "reasoning_tokens": 171,
+        "cached_tokens": 0,
+        "cache_write_tokens": null,
+        "cost_usd": null,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 17927.03595897183,
+        "alias_mapping_applied": false
+      }
+    ],
+    "input_tokens_known": 1028,
+    "output_tokens_known": 266,
+    "reasoning_tokens_known": 171,
+    "cached_tokens_known": 0,
+    "cache_write_unknown_count": 1,
+    "reference_cost_known_usd": null,
+    "complete_reference_cost_usd": null,
+    "actual_billed_cost_usd": null,
+    "action_sequence": [
+      "hy4:none"
+    ],
+    "model_switches": 0,
+    "router_call_count": 0,
+    "router_total_seconds": 0,
+    "router_inference_seconds": 0,
+    "router_initialization_seconds": 0,
+    "router_device": null,
+    "router_resource_usd": null,
+    "tool_executions": 0,
+    "tool_failed_executions": 0,
+    "wall_seconds": 45.532299,
+    "agent_seconds": 19.223886,
+    "environment_setup_seconds": 7.774122,
+    "verifier_seconds": null,
+    "teacher_calls": 0,
+    "teacher_reference_usd": 0,
+    "resource_usd": null
+  },
+  {
+    "task_id": "git-leak-recovery",
+    "policy": "fixed_terra",
+    "source": "DEVELOPMENT_NOT_BLIND_NOT_TRAIN",
+    "trial_path": "jobs/git-leak-recovery--fixed_terra--s42--startup-recovered/git-leak-recovery__eXwrXji/result.json",
+    "previous_startup_job": "git-leak-recovery--fixed_terra--s42",
+    "reward": 1.0,
+    "business_tests": {
+      "tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "exception_type": null,
+    "exception_message": null,
+    "model_request_count": 5,
+    "usable_generation_count": 5,
+    "identity_mismatch_count": 0,
+    "unreported_response_errors": 0,
+    "usage_missing_count": 0,
+    "model_requests": [
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 5231,
+        "completion_tokens": 170,
+        "reasoning_tokens": 0,
+        "cached_tokens": 4352,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0019466,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 5134.781333035789,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 6372,
+        "completion_tokens": 282,
+        "reasoning_tokens": 0,
+        "cached_tokens": 5248,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0027964,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 7758.101999992505,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 7161,
+        "completion_tokens": 188,
+        "reasoning_tokens": 0,
+        "cached_tokens": 6528,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0018994,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 5835.3007500991225,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 7375,
+        "completion_tokens": 333,
+        "reasoning_tokens": 0,
+        "cached_tokens": 7168,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0022304,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 8444.080458022654,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6.1-terra",
+        "returned_model_id": "gpt-6.1-terra",
+        "provider_endpoint_id": "terra-jiji",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 7989,
+        "completion_tokens": 68,
+        "reasoning_tokens": 0,
+        "cached_tokens": 7552,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0011546,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 4743.771584006026,
+        "alias_mapping_applied": false
+      }
+    ],
+    "input_tokens_known": 34128,
+    "output_tokens_known": 1041,
+    "reasoning_tokens_known": 0,
+    "cached_tokens_known": 30848,
+    "cache_write_unknown_count": 0,
+    "reference_cost_known_usd": 0.0100274,
+    "complete_reference_cost_usd": 0.0100274,
+    "actual_billed_cost_usd": null,
+    "action_sequence": [
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:low"
+    ],
+    "model_switches": 0,
+    "router_call_count": 0,
+    "router_total_seconds": 0,
+    "router_inference_seconds": 0,
+    "router_initialization_seconds": 0,
+    "router_device": null,
+    "router_resource_usd": null,
+    "tool_executions": 16,
+    "tool_failed_executions": 0,
+    "wall_seconds": 214.389233,
+    "agent_seconds": 54.185449,
+    "environment_setup_seconds": 7.393229,
+    "verifier_seconds": 130.234739,
+    "teacher_calls": 0,
+    "teacher_reference_usd": 0,
+    "resource_usd": null
+  },
+  {
+    "task_id": "git-leak-recovery",
+    "policy": "laya_v2",
+    "source": "DEVELOPMENT_NOT_BLIND_NOT_TRAIN",
+    "trial_path": "jobs/git-leak-recovery--laya_v2--s42--startup-recovered/git-leak-recovery__Zfyvjpe/result.json",
+    "previous_startup_job": "git-leak-recovery--laya_v2--s42",
+    "reward": 1.0,
+    "business_tests": {
+      "tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "exception_type": null,
+    "exception_message": null,
+    "model_request_count": 5,
+    "usable_generation_count": 5,
+    "identity_mismatch_count": 0,
+    "unreported_response_errors": 0,
+    "usage_missing_count": 0,
+    "model_requests": [
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 19415,
+        "completion_tokens": 458,
+        "reasoning_tokens": 262,
+        "cached_tokens": 18618,
+        "cache_write_tokens": null,
+        "cost_usd": 0.00049488,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 11675.549165927805,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 19781,
+        "completion_tokens": 932,
+        "reasoning_tokens": 170,
+        "cached_tokens": 19412,
+        "cache_write_tokens": null,
+        "cost_usd": 0.00069702,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 15028.499500011094,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 2310,
+        "completion_tokens": 291,
+        "reasoning_tokens": 67,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0003765,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 10892.790916957892,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 2571,
+        "completion_tokens": 416,
+        "reasoning_tokens": 93,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0004651,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 12527.601417037658,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 2941,
+        "completion_tokens": 74,
+        "reasoning_tokens": 0,
+        "cached_tokens": 2176,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.00013526,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 10221.51316597592,
+        "alias_mapping_applied": false
+      }
+    ],
+    "input_tokens_known": 47018,
+    "output_tokens_known": 2171,
+    "reasoning_tokens_known": 592,
+    "cached_tokens_known": 40206,
+    "cache_write_unknown_count": 2,
+    "reference_cost_known_usd": 0.00216876,
+    "complete_reference_cost_usd": 0.00216876,
+    "actual_billed_cost_usd": null,
+    "action_sequence": [
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low"
+    ],
+    "model_switches": 0,
+    "router_call_count": 5,
+    "router_total_seconds": 13.9830867088167,
+    "router_inference_seconds": 6.442601161077619,
+    "router_initialization_seconds": 6.818695995956659,
+    "router_device": "CPU",
+    "router_resource_usd": null,
+    "tool_executions": 5,
+    "tool_failed_executions": 1,
+    "wall_seconds": 257.666051,
+    "agent_seconds": 93.798464,
+    "environment_setup_seconds": 8.103167,
+    "verifier_seconds": 132.860705,
+    "teacher_calls": 0,
+    "teacher_reference_usd": 0,
+    "resource_usd": null
+  },
+  {
+    "task_id": "git-leak-recovery",
+    "policy": "kev_4b",
+    "source": "DEVELOPMENT_NOT_BLIND_NOT_TRAIN",
+    "trial_path": "jobs/git-leak-recovery--kev_4b--s42/git-leak-recovery__9ShQPVV/result.json",
+    "previous_startup_job": null,
+    "reward": 1.0,
+    "business_tests": {
+      "tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "exception_type": null,
+    "exception_message": null,
+    "model_request_count": 5,
+    "usable_generation_count": 5,
+    "identity_mismatch_count": 0,
+    "unreported_response_errors": 0,
+    "usage_missing_count": 0,
+    "model_requests": [
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 19833,
+        "completion_tokens": 380,
+        "reasoning_tokens": 157,
+        "cached_tokens": 0,
+        "cache_write_tokens": null,
+        "cost_usd": 0.0021733,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 27159.316499950364,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 19815,
+        "completion_tokens": 314,
+        "reasoning_tokens": 96,
+        "cached_tokens": 0,
+        "cache_write_tokens": null,
+        "cost_usd": 0.0021385,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 7525.282665970735,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 20354,
+        "completion_tokens": 687,
+        "reasoning_tokens": 312,
+        "cached_tokens": 19812,
+        "cache_write_tokens": null,
+        "cost_usd": 0.00059582,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 11631.870249984786,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 20925,
+        "completion_tokens": 375,
+        "reasoning_tokens": 25,
+        "cached_tokens": 20351,
+        "cache_write_tokens": null,
+        "cost_usd": 0.00044841,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 8600.581791019067,
+        "alias_mapping_applied": false
+      },
+      {
+        "step": null,
+        "request_model_id": "gpt-6-luna",
+        "returned_model_id": "gpt-6-luna",
+        "provider_endpoint_id": "luna-codegoai",
+        "protocol": "responses",
+        "http_status": 200,
+        "request_native_effort": "low",
+        "returned_native_effort": "low",
+        "native_effort_status": "PROVIDER_REPORTED_MATCH",
+        "sent_effort_parameter": {
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "finish_reason": "completed",
+        "response_status": "COMPLETE",
+        "stream_end": {
+          "done_received": false,
+          "terminal_event": "response.completed"
+        },
+        "prompt_tokens": 21400,
+        "completion_tokens": 76,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": null,
+        "cost_usd": 0.002178,
+        "actual_billed_cost_usd": null,
+        "latency_ms": 6938.464208971709,
+        "alias_mapping_applied": false
+      }
+    ],
+    "input_tokens_known": 102327,
+    "output_tokens_known": 1832,
+    "reasoning_tokens_known": 590,
+    "cached_tokens_known": 40163,
+    "cache_write_unknown_count": 5,
+    "reference_cost_known_usd": 0.00753403,
+    "complete_reference_cost_usd": 0.00753403,
+    "actual_billed_cost_usd": null,
+    "action_sequence": [
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low",
+      "gpt-6-luna:low"
+    ],
+    "model_switches": 0,
+    "router_call_count": 5,
+    "router_total_seconds": 285.4070129992906,
+    "router_inference_seconds": 250.9863966703415,
+    "router_initialization_seconds": 33.678827891126275,
+    "router_device": "CPU",
+    "router_resource_usd": null,
+    "tool_executions": 5,
+    "tool_failed_executions": 0,
+    "wall_seconds": 520.259897,
+    "agent_seconds": 363.015184,
+    "environment_setup_seconds": 7.615232,
+    "verifier_seconds": 126.269108,
+    "teacher_calls": 0,
+    "teacher_reference_usd": 0,
+    "resource_usd": null
+  }
+]
