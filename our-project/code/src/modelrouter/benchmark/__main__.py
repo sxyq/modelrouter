@@ -242,7 +242,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--once", action="store_true")
     p.add_argument("--interval", type=float, default=10.0)
     p.add_argument("--output", type=Path, help="Optional progress JSON file for the dashboard")
-    p = sub.add_parser("alias-smoke", help="Run the original mini agent in a local development workspace")
+    p = sub.add_parser("development", help="Run the original mini agent with the selected real models")
     p.add_argument("--config", type=Path, required=True)
     p.add_argument("--workspace", type=Path, required=True)
     p.add_argument("--instruction-file", type=Path, required=True)
@@ -257,7 +257,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         p.add_argument("job_dir", type=Path, nargs="?")
     args = parser.parse_args(argv)
 
-    if args.command == "alias-smoke":
+    if args.command == "development":
         from modelrouter.v9.runtime.development import run_development
         result = run_development(
             workspace=args.workspace, instruction=args.instruction_file.read_text(),
@@ -324,22 +324,21 @@ def main(argv: Optional[List[str]] = None) -> int:
         config["model_registry"] = {k: asdict(v) for k, v in MODEL_REGISTRY.items()}
         config["experiment_model_registry"] = json.loads((iterations.ROOT / "our-project/experiments/configs/model_registry.json").read_text())
         config["harness_config"] = mini_configuration(args.max_steps, args.cost_limit)
-        config["legal_actions"] = {policy: legal_actions(policy.startswith("joint_")) for policy in policies}
-        config["credential_source"] = "experiments/agent_pilot/configs/generator_credentials.json; secret values excluded"
+        config["legal_actions"] = {policy: legal_actions() for policy in policies}
+        config["credential_source"] = "EXTERNAL_TEXT_MODEL_CONFIG or ~/.agent-global/外部文本模型.local.json; secret values excluded"
         if args.v9_config is not None:
             from modelrouter.providers.registry import V9_MODEL_IDS
             from modelrouter.serving.schemas import LegalAction
 
             v9_config = json.loads(args.v9_config.read_text())
+            v9_config["selection_scope"] = "MODEL_NATIVE_EFFORT"
             if "capability_snapshot" not in v9_config:
                 from modelrouter.v9.capabilities.features import load_current
 
                 v9_config["capability_snapshot"] = load_current()
             candidates = v9_config.get("candidate_actions")
             if candidates is None:
-                registry = ModelRegistry()
-                candidate_actions = [LegalAction(provider=registry.get_spec(model).provider, model=model,
-                                                 native_effort="none").model_dump() for model in V9_MODEL_IDS]
+                candidate_actions = legal_actions(v9_config.get("formal_model_ids", V9_MODEL_IDS))
             else:
                 candidate_actions = [LegalAction.model_validate(action).model_dump() for action in candidates]
             config.update(v9_config=v9_config, candidate_actions=candidate_actions,
@@ -443,7 +442,7 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
     if config.get("router_endpoint"):
         env["ROUTER_SERVING_ENDPOINT"] = config["router_endpoint"]
     for unit in state["units"]:
-        if unit["status"] == "EVALUATED":
+        if unit["status"] == "EVALUATED" or (resume and unit["status"] == "NOT_EVALUATED"):
             continue
         job_path = path / "jobs" / unit["job_name"]
         prior = audit_job(job_path)
@@ -465,18 +464,20 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
             if unit["agent"] == "modelrouter":
                 custom = custom or "modelrouter.benchmark.harbor_agent:ModelRouterMiniSweAgent"
             task_source = config.get("task_source") or str(iterations.ROOT / "external/benchmarks/terminal-bench-2-1/tasks")
-            cmd = build_harbor_command(unit["task_id"], unit["agent"], None if unit["agent"] == "oracle" else config["model"], config["environment"], custom, task_source)
+            cmd = build_harbor_command(unit["task_id"], unit["agent"], None if unit["agent"] == "oracle" else config["model"], config.get("environment_import_path", config["environment"]), custom, task_source)
             cmd += ["--jobs-dir", str(path / "jobs"), "--job-name", unit["job_name"], "--max-retries", "0"]
             for artifact in config.get("artifacts", []):
                 cmd += ["--artifact", artifact]
             if config.get("force_build"):
                 cmd += ["--force-build"]
             if custom:
-                for key, value in {"policy": unit["policy"], "seed": config["seed"], "max_steps": config["max_steps"], "max_output_tokens": config["max_output_tokens"], "cost_limit": config.get("cost_limit", 0.0)}.items():
+                strategy = config.get("strategy_configs", {}).get(unit["policy"], {})
+                for key, value in {"policy": strategy.get("policy", unit["policy"]), "seed": config["seed"], "max_steps": config["max_steps"], "max_output_tokens": config["max_output_tokens"], "cost_limit": config.get("cost_limit", 0.0)}.items():
                     cmd += ["--agent-kwarg", f"{key}={value}"]
                 if "v9_config" in config:
                     for key in ("v9_config", "candidate_actions"):
-                        cmd += ["--agent-kwarg", f"{key}={json.dumps(config[key])}"]
+                        value = {**config[key], **strategy.get(key, {})} if key == "v9_config" else config[key]
+                        cmd += ["--agent-kwarg", f"{key}={json.dumps(value)}"]
             elif unit["agent"] == "mini-swe-agent":
                 from .harbor_agent import mini_configuration
                 from modelrouter.providers.registry import ModelRegistry
@@ -492,6 +493,8 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
                         "--agent-kwarg", f"cost_limit={config.get('cost_limit', 0.0)}",
                         "--agent-kwarg", "config=" + json.dumps(mini_configuration(config["max_steps"], config.get("cost_limit", 0.0))),
                         "--agent-kwarg", "litellm_model_registry=" + json.dumps(pricing)]
+            for key, value in config.get("environment_kwargs", {}).items():
+                cmd += ["--environment-kwarg", f"{key}={json.dumps(value)}"]
         unit["status"] = "RUNNING"
         state.update(status="RUNNING", updated_at=iterations.now())
         iterations.write_atomic(path / "resume_state.json", state)
@@ -542,11 +545,11 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
                 elif "permission denied" in output.lower() and "docker" in output.lower():
                     reason += "; Docker socket permission denied"
             iterations.event(path, "ERROR", category="HARBOR", error=reason)
-            iterations.finish(path, "BLOCKED", reason)
-            return 2
+            continue
     iterations.write_atomic(path / "resume_state.json", state)
-    iterations.finish(path, "EVALUATED")
-    return 0
+    complete = all(unit["status"] == "EVALUATED" for unit in state["units"])
+    iterations.finish(path, "EVALUATED" if complete else "PARTIAL")
+    return 0 if complete else 2
 
 
 if __name__ == "__main__":

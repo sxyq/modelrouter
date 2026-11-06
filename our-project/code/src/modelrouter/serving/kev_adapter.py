@@ -78,7 +78,8 @@ class KevAdapter:
                 rec = {
                     "state": state_text,
                     "questions": [{
-                        "instr": "Select optimal model and native effort action:",
+                        "instr": "Select the model and native effort for the next agent generation. "
+                                 "Prioritize task quality; among adequate candidates, prefer lower cost.",
                         "options": options,
                         "label": 0
                     }]

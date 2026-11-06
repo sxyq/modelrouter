@@ -99,7 +99,8 @@ class LayaAdapter:
         questions = {
             "route_decision": {
                 "type": "choice",
-                "instructions": "Select the optimal model and reasoning effort for the next agent execution step.",
+                "instructions": "Select the model and native effort for the next agent generation. "
+                                "Prioritize task quality; among adequate candidates, prefer lower cost.",
                 "criteria": criteria
             }
         }

@@ -101,7 +101,7 @@
 
 ### 阶段 D1：CPU/本地凭证能实测的研发（在 GPU 满载期间持续推进）
 
-15. **本地 URL+Key 真探针**：使用已有 `experiments/agent_pilot/configs/generator_credentials.json`（或现有环境变量），先真实 `GET /models`（若支持），再已验证模型 ID 的小样本 `chat/completions` 与 `responses` 流式 SSE/非流式、工具调用回合、多轮关联、真实 native effort(按支持菜单)、usage、Provider 异常和 fallback。**不能只跑 Mock**；每次明确模型、endpoint、请求耗时、官方返回 usage 与实际 USD/Quota 报价/失败原因。不在 README/Git/日志输出 Key、带 Authorization header 的命令或完整敏感对话。利用用户现有总体金额上限，轻量短批即可，不每秒重试。
+15. **本地URL与Key调用来源**：11-06起统一读取 `~/.agent-global/外部文本模型.local.json`；`EXTERNAL_TEXT_MODEL_CONFIG`只指定位置，旧项目JSON与凭据环境变量覆盖已停用。原方案中的 `GET /models`、`chat/completions`、`responses`、流式、工具往返及usage观察仅在相应实验范围与授权内执行，本次迁移没有发送模型请求。实际调用沿原Provider保留模型、端点、耗时、Usage、费用未知项及失败原因；不在README、Git或公开日志输出Key、Authorization header或敏感对话，不因配置迁移新增收费请求或重启健康实验。
 16. **资源竞争测试**：真实 Laya/Kev Router API 分别少量调用验证输出/动作合法性/无 fallback，Kev CPU 延迟至少 P50/P95，统计显著耗时来自 Tokenization、编码、Checkpoint 还是 CPU；只做 CPU 测试，不强行并发上 GPU。
 17. **模型池与 Effort**：从已验证 Provider 能力生成 `provider/model/revision/native_effort/legal_actions` 注册表、价格版本快照、模型 Tool/Cache 支持及故障降级，支持不同模型具有不同原生 Effort 菜单；写合法动作过滤单测与用户预算/会话上下文测试。
 18. **RQ1 真基线**：FixedStrong、FixedCheap、BestFixedOnDev、RandomEpisodeMix、TaskOnly、Greedy/Sticky、已可复现的 RouteLLM/SR-KNN、Laya、Kev 共用同一 HARNESS/Episode Ledger，不同策略同 Task IDs；任务 Score 未经官方 Verifier 为空/NOT_EVALUATED。

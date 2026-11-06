@@ -42,6 +42,8 @@ class ModelSpec:
     identity_status: str = "UNVERIFIED_CONFIG"
     context_status: str = "UNVERIFIED_CONFIG"
     native_efforts_status: str = "UNVERIFIED_CONFIG"
+    protocol: Optional[str] = None
+    pricing_as_of: Optional[str] = None
 
     def calculate_cost(
         self,
@@ -76,7 +78,7 @@ class ModelSpec:
             raise ValueError(f"Unsupported native_effort {native_effort!r} for {self.model_id}")
 
 
-V9_MODEL_IDS = ("gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash")
+V9_MODEL_IDS = ("gpt-6-luna", "gpt-6.1-terra", "hy4")
 
 
 # 5 Major Model Pools
@@ -250,7 +252,7 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
     "gpt-6-luna": ModelSpec(
         model_id="gpt-6-luna",
         pool="Reasoning",
-        provider="jiji",
+        provider="codegoai",
         display_name="GPT 6 Luna",
         context_window=1_050_000,
         max_output_tokens=128_000,
@@ -264,8 +266,36 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
         cache_write_price_per_1m=0.125,
         pricing_status="VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
         pricing_source="https://developers.openai.com/api/docs/models/gpt-6-luna",
-        context_status="OFFICIAL_DOCUMENTATION",
-        native_efforts_status="OFFICIAL_DOCUMENTATION",
+        identity_status="API_ID_MATCHED_20261106_PHYSICAL_UNVERIFIED",
+        context_status="OFFICIAL_DOCUMENTATION_PROVIDER_LIMIT_NOT_MEASURED",
+        native_efforts_status="LOW_RETURNED_OTHER_LEVELS_NOT_MEASURED",
+        protocol="responses", pricing_as_of="2026-11-06",
+    ),
+    "gpt-6.1-terra": ModelSpec(
+        model_id="gpt-6.1-terra", pool="Reasoning", provider="jiji",
+        display_name="GPT 6.1 Terra", context_window=1_050_000, max_output_tokens=128_000,
+        native_efforts=("none", "low", "medium", "high", "xhigh", "max"),
+        input_price_per_1m=1.0, output_price_per_1m=5.0, reasoning_price_per_1m=5.0,
+        cache_read_price_per_1m=0.05, cache_write_price_per_1m=1.25,
+        rpm_limit=None, tpm_limit=None,
+        pricing_status="VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+        pricing_source="https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        identity_status="API_ID_MATCHED_20261106_PHYSICAL_UNVERIFIED",
+        context_status="OFFICIAL_DOCUMENTATION_PROVIDER_LIMIT_NOT_MEASURED",
+        native_efforts_status="LOW_RETURNED_OTHER_LEVELS_NOT_MEASURED",
+        protocol="responses", pricing_as_of="2026-11-06",
+    ),
+    "hy4": ModelSpec(
+        model_id="hy4", pool="Reasoning", provider="oranexa", display_name="Tencent HY4",
+        context_window=1_024_000, max_output_tokens=64_000,
+        native_efforts=("none",),
+        input_price_per_1m=None, output_price_per_1m=None, reasoning_price_per_1m=None,
+        cache_read_price_per_1m=None, cache_write_price_per_1m=None,
+        rpm_limit=None, tpm_limit=None, pricing_status="UNKNOWN",
+        identity_status="RETURNED_HY4_PREVIEW_20261106_NOT_FORMAL_HY4",
+        context_status="TOKENHUB_OFFICIAL_PROVIDER_UNVERIFIED",
+        native_efforts_status="USER_SELECTED_PROVIDER_DEFAULT_PARAMETER_OMITTED",
+        tool_supported=None, protocol="chat_completions", pricing_as_of="2026-11-06",
     ),
     "gpt-5.6-luna": ModelSpec(
         model_id="gpt-5.6-luna",

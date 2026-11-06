@@ -22,7 +22,7 @@ class V9DecisionHook:
         self.teacher_enabled = config.get("teacher_enabled", True)
         self.assessor = TrajectoryAssessor(
             provider, config.get("references_path", DEFAULT_REFERENCES),
-            model_id=config.get("teacher_model_id", "gpt-6.1-sol"),
+            model_id=config.get("teacher_model_id", "gpt-6-luna"),
             native_effort=config.get("teacher_native_effort", "low"),
             max_output_tokens=config.get("teacher_max_output_tokens", 4096),
             context_chars=config.get("teacher_context_chars", 8000))
@@ -34,6 +34,7 @@ class V9DecisionHook:
         self.continuity = {}
         self.previous_selected = None
         self.previous_backend = None
+        self.previous_messages = []
         self.current_context = {}
         self._identity_opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
@@ -70,13 +71,19 @@ class V9DecisionHook:
             self.trigger.reset(state.episode_id)
             self.assessment, self.continuity = None, {}
             self.previous_selected = self.previous_backend = None
+            self.previous_messages = []
             self.teacher_metrics.clear()
         self.last_teacher_metrics = []
         self.current_context = {
             "episode_id": state.episode_id, "decision_id": f"{state.episode_id}-{state.step_index}",
             "message_count": len(messages), "message_chars": message_chars(messages),
             "capability_snapshot_id": self.capability_snapshot.get("snapshot_id"),
+            "input_prefix_continuity": ("FIRST_REQUEST" if not self.previous_messages else
+                "EXACT_PREVIOUS_MESSAGES" if messages[:len(self.previous_messages)] == self.previous_messages
+                else "PREFIX_CHANGED"),
+            "previous_request_message_count": len(self.previous_messages),
         }
+        self.previous_messages = deepcopy(messages)
         result = compact_router_state(state, messages, snapshot,
                                       self.config.get("router_context_chars", 6000))
         if self.teacher_enabled:
@@ -93,14 +100,9 @@ class V9DecisionHook:
                       assessment=self.assessment, **metrics)
             elif self.assessment is not None and self.trigger.signals(state) != self.trigger.last_signals:
                 self.assessment = None
-        card_actions = legal_actions
-        if self.config.get("selection_scope") == "MODEL_ONLY":
-            card_actions = [{"model_id": action["model"], "native_effort": None,
-                             "requested_native_effort": action["native_effort"],
-                             "action_id": action["model"]} for action in legal_actions]
         result.update(
             teacher_assessment=deepcopy(self.assessment) if self.teacher_enabled else None,
-            capability_cards=capability_cards(self.capability_snapshot, card_actions),
+            capability_cards=capability_cards(self.capability_snapshot, legal_actions),
             capability_snapshot_id=self.capability_snapshot.get("snapshot_id"),
             feature_training_status=self.config.get("feature_training_status", "FEATURE_NOT_TRAINED"),
             continuity=deepcopy(self.continuity),
@@ -133,6 +135,22 @@ class V9DecisionHook:
             "previous_router_run_id": self.continuity.get("router_run_id"),
             "previous_selected_model_id": self.previous_selected,
             "selected_model_id": model_id,
+            "previous_request_model_id": self.continuity.get("request_model_id"),
+            "request_model_id": metrics["request_model_id"],
+            "previous_provider": self.continuity.get("provider"),
+            "provider": metrics["provider"],
+            "previous_provider_endpoint_id": self.continuity.get("provider_endpoint_id"),
+            "provider_endpoint_id": metrics.get("provider_endpoint_id"),
+            "previous_provider_base_url": self.continuity.get("provider_base_url"),
+            "provider_base_url": metrics.get("provider_base_url"),
+            "previous_request_input_tokens": self.continuity.get("request_input_tokens"),
+            "request_input_tokens": metrics.get("prompt_tokens"),
+            "context_tokens_resent": None,
+            "previous_selected_native_effort": self.continuity.get("selected_native_effort"),
+            "selected_native_effort": selected["native_effort"],
+            "request_native_effort": metrics["request_native_effort"],
+            "returned_native_effort": metrics["returned_native_effort"],
+            "native_effort_status": metrics["native_effort_status"],
             "previous_actual_backend_model_id": self.previous_backend,
             "actual_backend_model_id": backend,
             "logical_model_changed": self.previous_selected is not None and self.previous_selected != model_id,
@@ -140,6 +158,7 @@ class V9DecisionHook:
             "context_delivery": "FULL_MESSAGE_HISTORY",
             "history_messages_resent": self.previous_selected is not None and self.current_context["message_count"] > 1,
             "observed_cached_tokens": cached,
+            "observed_cache_write_tokens": metrics.get("cache_write_tokens"),
             "cache_usage_status": "REPORTED" if cached is not None else "NOT_REPORTED",
             "physical_kv_cache_shared": None,
             "switch_extra_tokens": None, "switch_extra_cost_usd": None,

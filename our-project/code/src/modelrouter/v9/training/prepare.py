@@ -422,7 +422,6 @@ def generate_offline_teacher_material(*, assessor, state_factory,
                                    teacher_model_id=assessment.get("teacher_model_id"))
             alias = ("ALIAS_SMOKE" in str(metrics.get("execution_mode", ""))
                      or "ALIAS_SMOKE" in str((assessment or {}).get("execution_mode", ""))
-                     or bool(getattr(assessor.provider, "alias_mapping", None))
                      or (metrics.get("teacher_model_id") is not None and
                          metrics["teacher_model_id"] != assessor.model_id))
             mode = "OFFLINE_TEACHER_ALIAS_SMOKE" if alias else "OFFLINE_TEACHER"

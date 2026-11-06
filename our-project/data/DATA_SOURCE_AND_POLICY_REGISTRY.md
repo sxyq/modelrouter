@@ -445,7 +445,7 @@ Q（记录质量）、S（监督类型）、L（覆盖层级）是三个独立�
 
 **三逻辑身份与实际后端**：规划身份为 `gpt-6.1-sol`、`gpt-6-luna`、`qwen3.8-flash`；映射实验真实请求后端为托管 Qwen3.8-27B，Router 选择和实验身份仍按逻辑目标记录。映射费用按目标身份 `ModelSpec` 价乘实际 input/output/cache 用量；教师按配置教师目标身份计价。`returned_model_id` 保留真实返回身份，后端请求/返回身份、后端价格与供应商实收另列；后两项缺失不影响映射实验。映射结果不作为独立物理模型质量对照。托管 Flash、开源 Flash-Next、校园 9002 物理模型与 Parfit API 身份分别记录。审阅子 Agent 的 `gpt-6.1-sol/max` 不充当生成或教师配置证明；本台账不存密钥。
 
-**状态与用途**：hcnsec 源 `PCG/config/pi-sag.local.env` 仅读 `QWEN_API_KEY`、未改；三逻辑身份真实 Provider 映射均已确认。网关 `/models`/先前流式名 `Qwen3.8-27B` 与实际非流返回名 `self-dploy/Qwen3.8-27B` 原样分列，托管 API 物理对应 UNKNOWN，不据返回名推断本地零费或关联 9002。单题 9 次生成/13 次 Bash/7 项 unittest 成功终局、仅选 Sol，在线 Teacher 3/6 成功、失败继续；先前两次三字段送到下次 Router，保留 `TEACHER_ALIAS_SMOKE`，与离线 2/2 和 4 条字段分开，不当顶级教师成绩。额外 Luna/Flash 短 Provider 映射不算新 Agent 题。数据/语义/学习及 usage 缺口保留，SWE/Terminal 成绩独立、8/24/57 划分、Mac 零权重与 Final 隔离保留；当前 API 不设总 Token 或美元上限。
+**状态与用途**：hcnsec当时来源为Code Generation旧本地env，原实验只读取Key、未改源；11-06已迁入 `~/.agent-global/外部文本模型.local.json` 的 `provider_settings`，当前Provider沿统一文件读取，旧env已删除；三逻辑身份真实 Provider 映射均已确认。网关 `/models`/先前流式名 `Qwen3.8-27B` 与实际非流返回名 `self-dploy/Qwen3.8-27B` 原样分列，托管 API 物理对应 UNKNOWN，不据返回名推断本地零费或关联 9002。单题 9 次生成/13 次 Bash/7 项 unittest 成功终局、仅选 Sol，在线 Teacher 3/6 成功、失败继续；先前两次三字段送到下次 Router，保留 `TEACHER_ALIAS_SMOKE`，与离线 2/2 和 4 条字段分开，不当顶级教师成绩。额外 Luna/Flash 短 Provider 映射不算新 Agent 题。数据/语义/学习及 usage 缺口保留，SWE/Terminal 成绩独立、8/24/57 划分、Mac 零权重与 Final 隔离保留；当前 API 不设总 Token 或美元上限。
 
 **Native 回放与导入身份**：成功目录 `router_input_replay.json` 记录 Laya 新输入选 `gpt-6-luna`、`epoch_01`、`fallback=false`；Kev 首次 20 秒客户端窗口超时模拟 fallback，一次 60 秒窗口重测约 53,516 ms 真实前向成功，选 `gpt-6.1-sol`、`fallback=false`，两路均有三候选真实概率。Kev ID `1001bb4d826a52d1f399e183466143f4da7b741b` 是 Serving 导入适配器，不能称 R11 候选。回放不新增题目或正式/科学成绩，不替代最终 Tokenizer、新训练或部署结果。
 

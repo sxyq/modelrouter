@@ -146,7 +146,7 @@
 - `our-project/external/` 汇聚所有外部方法、Benchmark checkout、研究笔记/论文/索引；`our-project/data/` 将数据源码、原始实体、清洗数据、训练集版本和许可证分清；`our-project/results/` 按训练模型、Benchmark、策略、任务、种子分类并保留原始结果与官方评价引用。
 - `our-project/docs/` 是唯一当前文档入口；`our-project/dashboard/` 是正式可视化源，但保留旧 8765 入口与真实刷新。
 - 保持两个长期训练任务科学推进：Laya 正式历史队列不破坏；Kev 实际 GPU/LoRA/Head 与 Val、Checkpoint 可核；本次不以目录重构为由启动新的大数据全量训练或重复下载。
-- 不删除本机 CC Switch 凭证，也不要求负责人重新配置 Key；只做 Git 暂存前的**路径拦截**：`generator_credentials.json` 等私有配置不能 `git add` / Push，必要时 `.gitignore`（仅影响 Git，不改本地文件）；基于 Git 历史检查只关注**本轮新增泄露**，不另开无关密钥专项工程。
+- 不删除本机CC Switch凭据，也不要求负责人重新提供Key。11-06起外部文本模型的URL、Key及供应商池统一维护在 `~/.agent-global/外部文本模型.local.json`，该私人文件不提交Git；`EXTERNAL_TEXT_MODEL_CONFIG`只指定位置。旧项目凭据及示例已删除，代码与当前使用说明沿同一入口，实验参数与历史记录保留，不另开无关密钥专项工程。
 - **工程负责人：主 Agent + 两名子代理**。子 A 扫本机代码/Agent/Benchmark & `our-project/code/`；子 B 外部论文/Benchmark 索引、文档/结果/看板 & 外部目录；主 Agent 亲自管理 A6000 训练与服务的兼容迁移、最终 Git 提交。所有工程迁移可拆小阶段，但每段具备实测和版本记录，无人等待、无新 Watcher/CI/PR/重复框架。
 
 **本文件是目录重构的实施规范，非已经完成 Mac/A6000 物理迁移的证明。**

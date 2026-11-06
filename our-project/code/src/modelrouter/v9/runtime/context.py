@@ -102,8 +102,14 @@ def format_router_payload(payload: Mapping) -> str:
     continuity = data.pop("continuity", None)
     if continuity is not None:
         values = {name: continuity[name] for name in (
-            "observed_cached_tokens", "cache_usage_status", "physical_kv_cache_shared",
+            "observed_cached_tokens", "observed_cache_write_tokens", "cache_usage_status", "physical_kv_cache_shared",
+            "request_model_id", "previous_request_model_id", "provider", "previous_provider",
+            "provider_endpoint_id", "previous_provider_endpoint_id", "provider_base_url", "previous_provider_base_url",
+            "input_prefix_continuity", "previous_request_message_count", "request_input_tokens",
+            "previous_request_input_tokens", "context_tokens_resent",
             "actual_backend_model_id", "selected_model_id", "router_checkpoint_id",
+            "selected_native_effort", "previous_selected_native_effort", "request_native_effort",
+            "returned_native_effort", "native_effort_status",
             "backend_deployment_status", "identity_status", "logical_model_changed",
             "actual_backend_changed", "router_fallback_used", "context_delivery",
             "history_messages_resent", "previous_selected_model_id", "previous_actual_backend_model_id",

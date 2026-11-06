@@ -2,6 +2,10 @@
 
 本目录是 **ModelRouter 代码、数据规范、科研实验及研究文档的唯一目标主目录**。本仓库的 Git 根目录仍为上一层 `路由/`；现有 `router_data/`、`experiments/`、`docs/` 和 `research/` 等旧入口目前仍有训练和脚本在使用，**已迁移部分冷文件并建立 Shim，但训练/清洗主线仍在旧目录中，尚未完成迁移**。
 
+外部文本模型统一读取 `~/.agent-global/外部文本模型.local.json`，URL、Key和供应商池不再保存在项目实验配置中。维护字段及调用规则见[根目录说明](../README.md#外部文本模型配置)；旧凭据和示例已删除，实验定义与历史结果保留。
+
+后续动态实验统一选择模型与原生档位；原Checkpoint和在线状态保留组合身份，渠道默认档位不覆盖Router输出。当前新池为Luna/Terra/HY4；HY4的none表示不传思考强度。历史Model-only监督与原权重保持原语义，接口更新不作为联合选择效果证据。[研究结果统一入口](results/README.md)区分真实API、单后端映射、训练、模拟和无效终局；首批真实执行见[本轮结果](results/iterations/20261106-v9-k3-real/review.md)。历史Alias定义仍保留，新正式入口不使用。
+
 **最新目录盘点与逐步迁移手册**：[REPOSITORY_STRUCTURE_MIGRATION_20261018.md](planning/REPOSITORY_STRUCTURE_MIGRATION_20261018.md)。执行前先核对 Mac 和 A6000 实体位置，保护正在运行的正式训练，先迁本机非训练文件，后在安全 Run 边界迁服务器训练入口。
 
 ## 规范目录（渐进实施）

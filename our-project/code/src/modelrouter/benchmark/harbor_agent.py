@@ -16,6 +16,7 @@ from pathlib import Path
 import litellm
 import yaml
 from harbor.agents.base import BaseAgent
+from harbor.environments.docker.docker import DockerEnvironment
 from harbor.agents.capabilities import AgentCapabilities
 from harbor.agents.installed.mini_swe_agent import convert_mini_swe_agent_to_atif
 from harbor.models.agent.context import AgentContext
@@ -32,9 +33,16 @@ from modelrouter.baselines.policy import create_policy
 from modelrouter.providers.provider import OpenAICompatibleProvider, OpenAIResponsesProvider, ProviderResponseError
 from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS
 from modelrouter.serving.schemas import LegalAction, PreDecisionState
-from modelrouter.v9.runtime.alias import DEFAULT_BACKEND_DEPLOYMENT_STATUS
 from modelrouter.v9.runtime.context import record_tool_result
 from .iterations import append, event, now, rows
+
+
+class A6000DockerEnvironment(DockerEnvironment):
+    """Use upstream Docker transfers when its engine is on the remote VM."""
+
+    @property
+    def capabilities(self):
+        return super().capabilities.model_copy(update={"mounted": False})
 
 
 def mini_configuration(max_steps=30, cost_limit=0.0):
@@ -48,13 +56,12 @@ def mini_configuration(max_steps=30, cost_limit=0.0):
     return config
 
 
-def legal_actions(joint=False):
+def legal_actions(model_ids=V9_MODEL_IDS):
     registry = ModelRegistry()
     actions = []
-    for model in ("gpt-6-luna", "gpt-5.6-luna"):
+    for model in model_ids:
         spec = registry.get_spec(model)
-        efforts = spec.native_efforts if joint else ("low",)
-        for effort in efforts:
+        for effort in spec.native_efforts or ("none",):
             spec.validate_effort(effort)
             actions.append(LegalAction(provider=spec.provider, model=model, revision="latest",
                                        native_effort=effort).model_dump())
@@ -73,31 +80,22 @@ class PolicyModel(LitellmModel):
         self.v9_enabled = v9_config is not None and v9_config.get("enabled", True)
         if candidate_actions is not None:
             self.actions = [LegalAction.model_validate(action).model_dump() for action in candidate_actions]
-        elif self.v9_enabled:
-            registry = ModelRegistry()
-            self.actions = [LegalAction(provider=registry.get_spec(model).provider, model=model,
-                                        native_effort="none").model_dump() for model in V9_MODEL_IDS]
         else:
-            self.actions = legal_actions(joint=policy.startswith("joint_"))
+            self.actions = legal_actions(v9_config.get("formal_model_ids", V9_MODEL_IDS)
+                                         if self.v9_enabled else V9_MODEL_IDS)
         policy_key = {"joint_laya": "laya_v2", "joint_kev": "kev_4b"}.get(policy, policy)
-        target = "gpt-6-luna" if policy == "fixed_strong" else "gpt-5.6-luna"
+        target = "gpt-6.1-terra" if policy == "fixed_strong" else "gpt-6-luna"
         if self.v9_enabled:
-            target = "gpt-6.1-sol" if policy == "fixed_strong" else "qwen3.8-flash"
             target = v9_config.get("fixed_model_id", target)
         self.policy = create_policy(policy_key, seed=seed, target_model=target)
         self.state, self.record_dir = state, record_dir
         self.provider = provider
         if self.provider is None:
-            if self.v9_enabled and v9_config.get("actual_backend_model_id"):
-                from modelrouter.v9.runtime.alias import alias_provider
-                self.provider = alias_provider(v9_config)
-            else:
-                provider_type = (OpenAIResponsesProvider if self.v9_enabled
-                                 and v9_config.get("generator_protocol") == "responses"
-                                 else OpenAICompatibleProvider)
-                self.provider = provider_type(request_timeout_sec=(
-                    v9_config.get("provider_timeout_sec", 60.0) if self.v9_enabled else 60.0),
-                    model_endpoints=v9_config.get("model_endpoints") if self.v9_enabled else None)
+            provider_type = (OpenAIResponsesProvider if self.v9_enabled
+                             and v9_config.get("generator_protocol") == "responses"
+                             else OpenAICompatibleProvider)
+            self.provider = provider_type(request_timeout_sec=(
+                v9_config.get("provider_timeout_sec", 60.0) if self.v9_enabled else 60.0))
         self.max_output_tokens = max_output_tokens
         self.generator_stream = v9_config.get("generator_stream", True) if self.v9_enabled else True
         self.last_metrics, self.usage = {}, []
@@ -117,10 +115,7 @@ class PolicyModel(LitellmModel):
                     self.policy.client = CheckpointRouterClient(v9_config)
         self.teacher_metrics = self.v9_hook.teacher_metrics if self.v9_hook else []
         self.action_validation = {
-            action["action_id"]: ("ALIAS_SMOKE_ONLY" if self.v9_enabled and
-                                  getattr(self.provider, "alias_mapping", None) is not None and
-                                  self.provider.alias_mapping.resolve(action["model"], action["native_effort"]) else
-                                  "REAL_API_NOT_OBSERVED" if self.v9_enabled else
+            action["action_id"]: ("REAL_API_NOT_OBSERVED" if self.v9_enabled else
                                   "REAL_TESTED_LOW" if action["native_effort"] == "low" else "NOT_TESTED")
             for action in self.actions
         }
@@ -191,21 +186,17 @@ class PolicyModel(LitellmModel):
             body, metrics = exc.response, exc.metrics
             response_error = exc
         except Exception as exc:
-            alias_mapping = getattr(self.provider, "alias_mapping", None)
-            alias_facts = (alias_mapping.resolve(spec.model_id, selected["native_effort"]) or {}
-                           if alias_mapping else {})
             event(self.record_dir, "ERROR", category="PROVIDER", error=type(exc).__name__,
                   error_message=str(exc), http_status=exc.code if isinstance(exc, urllib.error.HTTPError) else None,
                   episode_id=self.state.episode_id, model=selected["model"], role="generator",
                   selected_model_id=spec.model_id, cost_model_id=spec.model_id,
-                  actual_backend_model_id=alias_facts.get("actual_backend_model_id"),
-                  request_model_id=alias_facts.get("actual_backend_model_id", spec.model_id),
+                  actual_backend_model_id=None, request_model_id=spec.model_id,
                   returned_model_id=None, requested_native_effort=selected["native_effort"],
-                  effective_native_effort=alias_facts.get("effective_native_effort"),
+                  effective_native_effort=selected["native_effort"],
                   router_checkpoint_id=decision.checkpoint_id,
-                  execution_mode=alias_facts.get("execution_mode", "REAL_API"),
+                  execution_mode="REAL_API",
                   cost_usd=None, actual_billed_cost_usd=None, usage_status="MISSING",
-                  cost_status="MAPPED_USAGE_INCOMPLETE" if alias_facts else "UNKNOWN",
+                  cost_status="UNKNOWN",
                   duration_ms=(time.perf_counter() - started) * 1000,
                   account_attempts=getattr(exc, "account_attempts", []))
             raise
@@ -214,12 +205,10 @@ class PolicyModel(LitellmModel):
                        router_family=decision.router_family, **router_identity,
                        capability_snapshot_id=snapshot.get("capability_snapshot_id"))
         if self.v9_enabled:
-            is_alias = metrics.get("execution_mode") == "ALIAS_SMOKE" or metrics["alias_mapping_applied"]
-            metrics["execution_mode"] = "ALIAS_SMOKE" if is_alias else "REAL_API"
-            identity_status = ("ALIAS_SMOKE_ONLY" if is_alias else
-                               "REAL_API_IDENTITY_MATCHED" if metrics["identity_status"] == "MATCHED_REQUEST_ALIAS"
+            metrics["execution_mode"] = "REAL_API"
+            identity_status = ("REAL_API_IDENTITY_MATCHED" if metrics["identity_status"] == "MATCHED_REQUEST_ALIAS"
                                else "REAL_API_IDENTITY_UNVERIFIED")
-            effort_status = metrics["native_effort_status"] if not is_alias else "ALIAS_SMOKE_ONLY"
+            effort_status = metrics["native_effort_status"]
             self.action_validation[selected["action_id"]] = effort_status
             metrics["model_validation_status"] = identity_status
             metrics["effort_validation_status"] = effort_status
@@ -234,6 +223,8 @@ class PolicyModel(LitellmModel):
         self.state.step_index += 1
         if response_error is not None:
             raise response_error
+        if metrics["identity_status"] != "MATCHED_REQUEST_ALIAS":
+            raise ProviderResponseError("MODEL_IDENTITY_MISMATCH", body, metrics)
         if metrics["protocol"] == "responses":
             calls = [{"id": item["call_id"], "type": "function",
                       "function": {"name": item["name"], "arguments": item["arguments"]}}
@@ -295,7 +286,7 @@ class PolicyModel(LitellmModel):
                                            {(row["router_family"], row.get("router_run_id"), row["router_checkpoint_id"])
                                             for row in self.usage}, key=lambda item: (item[0], item[1] or "", item[2]))],
                 "feature_training_status": self.v9_hook.config.get("feature_training_status", "FEATURE_NOT_TRAINED"),
-                "backend_deployment_status": self.v9_hook.config.get("backend_deployment_status", DEFAULT_BACKEND_DEPLOYMENT_STATUS),
+                "backend_deployment_status": self.v9_hook.config.get("backend_deployment_status", "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION"),
                 "complete_episode_cost_usd": self.complete_episode_cost_usd,
                 "upstream_cost_accounting": "KNOWN_COSTS_PLUS_UNKNOWN_PLACEHOLDERS_NOT_BILLING",
             }

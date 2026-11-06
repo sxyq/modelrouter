@@ -25,10 +25,7 @@ from dataclasses import dataclass, field
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
-
-if TYPE_CHECKING:
-    from modelrouter.v9.runtime.alias import AliasMapping
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     from modelrouter.providers.registry import ModelSpec
@@ -257,23 +254,10 @@ def _pilot_file(name: str) -> Path:
 
 
 def load_generator_credentials() -> Dict[str, Any]:
-    """Read the existing local settings without changing them."""
-    cfg: Dict[str, Any] = {
-        "primary_model": "gpt-6-luna",
-        "fallback_model": "gpt-5.6-luna",
-        "allowed_models": ["gpt-6-luna", "gpt-5.6-luna"],
-    }
-    try:
-        cfg.update(json.loads(_pilot_file("configs/generator_credentials.json").read_text()))
-    except FileNotFoundError:
-        pass
-    env_key = os.environ.get("MODELROUTER_GENERATOR_API_KEY") or os.environ.get("OPENAI_API_KEY")
-    env_base = os.environ.get("MODELROUTER_GENERATOR_BASE_URL") or os.environ.get("OPENAI_BASE_URL")
-    if env_key:
-        cfg["api_key"] = env_key
-    if env_base:
-        cfg["base_url"] = env_base
-    return cfg
+    """Read the shared external text-model settings; never copy credentials."""
+    path = Path(os.environ.get("EXTERNAL_TEXT_MODEL_CONFIG",
+                               str(Path.home() / ".agent-global/外部文本模型.local.json")))
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 @contextmanager
@@ -320,22 +304,18 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
 
     def __init__(
         self, base_url: Optional[str] = None, api_key: Optional[str] = None,
-        alias_mapping: Optional[AliasMapping] = None,
         request_timeout_sec: float = 60.0,
         model_endpoints: Optional[Dict[str, Dict[str, str]]] = None,
     ):
-        creds = {} if alias_mapping is not None else load_generator_credentials()
+        creds = load_generator_credentials()
         self.base_url = (base_url or creds.get("base_url") or "https://api.openai.com/v1").rstrip("/")
         credential_endpoint = (creds.get("base_url") or "https://api.openai.com/v1").rstrip("/")
         self.api_key = api_key if api_key is not None else (
             creds.get("api_key", "") if self.base_url == credential_endpoint else ""
         )
         self.primary_model = creds.get("primary_model", "gpt-6-luna")
-        self.fallback_model = creds.get("fallback_model", "gpt-5.6-luna")
-        self.allowed_models = set(creds.get("allowed_models", ["gpt-6-luna", "gpt-5.6-luna"]))
-        self.alias_mapping = alias_mapping
         self.request_timeout_sec = request_timeout_sec
-        self.model_endpoints = model_endpoints or {}
+        self.model_endpoints = model_endpoints or creds.get("model_endpoints", {})
         self.account_endpoints = creds.get("account_endpoints", {})
         self.luna_registry = None
         if creds.get("luna_provider_project"):
@@ -343,20 +323,6 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             sys.path.insert(0, str(source))
             from cweaver.models.provider import ProviderRegistry
             self.luna_registry = ProviderRegistry()
-
-    def _normalize_model(self, model_id: str) -> str:
-        from modelrouter.providers.registry import V9_MODEL_IDS
-
-        aliases = {"gpt-6": "gpt-6-luna", "luna": "gpt-6-luna", "gpt-5.6": "gpt-5.6-luna"}
-        model = model_id.lower().replace(" ", "-")
-        target = aliases.get(model, model)
-        if target in V9_MODEL_IDS or target in self.model_endpoints:
-            return target
-        if target not in self.allowed_models:
-            target = self.primary_model
-        if target not in {"gpt-6-luna", "gpt-5.6-luna"}:
-            raise ValueError("Only the two authorized Luna endpoints may be requested")
-        return target
 
     @staticmethod
     def _record_response_bytes(raw, capture, secret):
@@ -444,7 +410,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
 
     @staticmethod
     def _response_error(body, protocol):
-        if "error" in body:
+        if body.get("error") is not None:
             return body["error"].get("type", "unknown")
         if protocol == "responses":
             outputs = body.get("output", [])
@@ -548,40 +514,32 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         raw_response_path enables local-only diagnostic capture for this request.
         Capture contains response bytes only, with any echoed request key removed.
         """
-        from modelrouter.providers.registry import MODEL_REGISTRY
-
-        alias_facts = self.alias_mapping.resolve(model_spec.model_id, native_effort) if self.alias_mapping is not None else None
+        target = model_spec.model_id
+        target_spec = model_spec
+        effective_effort = native_effort
         request_api_key = self.api_key
         request_protocol = self.protocol
+        request_base_url = self.base_url
+        provider_name = model_spec.provider
         pool_endpoint = None
-        if alias_facts is not None:
-            target = alias_facts["actual_backend_model_id"]
-            effective_effort = alias_facts["effective_native_effort"]
-            target_spec = model_spec
-            request_base_url = (self.alias_mapping.base_url or self.base_url).rstrip("/")
-            provider_name = "openai-compatible"
-        else:
-            model_spec.validate_effort(native_effort)
-            target = self._normalize_model(model_spec.model_id)
-            target_spec = MODEL_REGISTRY[target]
-            target_spec.validate_effort(native_effort)
-            effective_effort = native_effort
-            request_base_url = self.base_url
-            provider_name = target_spec.provider
-            endpoint_credentials = self.model_endpoints.get(target)
-            if endpoint_credentials is not None:
-                request_base_url = endpoint_credentials.get("base_url", request_base_url).rstrip("/")
-                request_api_key = endpoint_credentials.get("api_key", request_api_key)
-                request_protocol = endpoint_credentials.get("protocol", request_protocol)
-            if self.luna_registry is not None and (target == "gpt-6-luna" or target in self.account_endpoints):
-                pool_endpoint = (self.luna_registry.get_endpoint(self.account_endpoints[target])
-                                 if target in self.account_endpoints and self.account_endpoints[target] not in excluded_endpoints else
-                                 self.luna_registry.select_active_endpoint("luna", target, excluded_endpoints))
-                if pool_endpoint is None:
-                    raise RuntimeError("No active Luna account endpoint")
-                request_base_url = pool_endpoint.base_url
-                request_api_key = pool_endpoint.api_key
-                request_protocol = "chat_completions"
+        endpoint_credentials = self.model_endpoints.get(target)
+        if endpoint_credentials is not None:
+            request_base_url = endpoint_credentials.get("base_url", request_base_url).rstrip("/")
+            request_api_key = endpoint_credentials.get("api_key", request_api_key)
+            request_protocol = endpoint_credentials.get("protocol", request_protocol)
+        if self.luna_registry is not None and (target == "gpt-6-luna" or target in self.account_endpoints):
+            pool_endpoint = (self.luna_registry.get_endpoint(self.account_endpoints[target])
+                             if target in self.account_endpoints and self.account_endpoints[target] not in excluded_endpoints else
+                             self.luna_registry.select_active_endpoint("luna", target, excluded_endpoints))
+            if pool_endpoint is None:
+                raise RuntimeError("No active Luna account endpoint")
+            request_base_url = pool_endpoint.base_url
+            request_api_key = pool_endpoint.api_key
+            request_protocol = ("chat_completions" if pool_endpoint.protocol == "openai-compatible"
+                                else pool_endpoint.protocol)
+            if pool_endpoint.max_output_tokens is not None:
+                max_tokens = min(max_tokens, pool_endpoint.max_output_tokens)
+        model_spec.validate_effort(effective_effort)
         transport = OpenAIResponsesProvider if request_protocol == "responses" else OpenAICompatibleProvider
         payload = transport._make_payload(self, messages, target, effective_effort, max_tokens, tools, stream)
         if response_format is not None:
@@ -613,7 +571,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                         http_status = response.status
                         response_content_type = response.headers.get("Content-Type")
                         body, ttft_ms = transport._read_response(
-                            self, response, stream, started, capture, request_api_key.encode("utf-8"))
+                            self, response, stream or "text/event-stream" in (response_content_type or ""),
+                            started, capture, request_api_key.encode("utf-8"))
                 except urllib.error.HTTPError as exc:
                     exc.provider_endpoint_id = pool_endpoint.endpoint_id if pool_endpoint else None
                     if capture is not None:
@@ -644,11 +603,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                          "PROVIDER_REPORTED_MATCH" if returned_effort == effective_effort else
                          "PROVIDER_REPORTED_MISMATCH")
         usage_complete = p_tokens is not None and c_tokens is not None
-        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and (alias_facts is not None or returned == target) else None
-        backend_spec = MODEL_REGISTRY.get(target)
-        backend_cost = (backend_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0)
-                        if alias_facts is not None and backend_spec is not None and usage_complete and returned == target
-                        else cost if alias_facts is None else None)
+        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and returned == target else None
         # Vendor cost is distinct from the configured price estimate.
         reported_cost = (raw_usage or {}).get("cost")
         reported_cost_unit = (raw_usage or {}).get("cost_currency") or (raw_usage or {}).get("currency")
@@ -660,8 +615,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         )
         response_error = self._response_error(body, request_protocol)
         if pool_endpoint is not None:
-            matched = (returned == target if target in self.account_endpoints else
-                       self.luna_registry.resolve_response_model(pool_endpoint, returned) == target)
+            matched = returned == target
             self.luna_registry.record_request_complete(
                 pool_endpoint.endpoint_id, latency_ms, tokens=(p_tokens or 0) + (c_tokens or 0),
                 status="success" if matched and not response_error else "failed",
@@ -698,7 +652,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "raw_usage": raw_usage,
             "usage_status": "REPORTED" if usage_complete else "MISSING",
             "identity_status": identity_status,
-            "alias_mapping_applied": alias_facts is not None or model_spec.model_id != target,
+            "alias_mapping_applied": False,
             "prompt_tokens": p_tokens,
             "completion_tokens": c_tokens,
             "reported_completion_tokens": reported_completion,
@@ -715,27 +669,24 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "cost_usd": cost,
             "cost_model_id": target_spec.model_id,
             "cost_source": target_spec.pricing_source,
-            "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE" if alias_facts is not None else "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
-            "backend_model_rate_cost_usd": backend_cost,
-            "backend_model_rate_source": backend_spec.pricing_source if backend_spec else None,
-            "backend_model_rate_status": backend_spec.pricing_status if backend_spec else "NOT_MEASURED",
+            "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+            "backend_model_rate_cost_usd": cost,
+            "backend_model_rate_source": target_spec.pricing_source,
+            "backend_model_rate_status": target_spec.pricing_status,
             "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
             "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once",
-            "cost_status": "MAPPED_EXPERIMENT_PRICE" if alias_facts is not None and cost is not None else (target_spec.pricing_status if cost is not None else "UNKNOWN"),
+            "cost_status": target_spec.pricing_status if cost is not None else "UNKNOWN",
             "actual_billed_cost_usd": billed_cost,
             "raw_reported_cost": reported_cost,
             "reported_cost_unit": reported_cost_unit or "NOT_REPORTED",
             "budget_accounted": True,
-            "status": "RECORDED" if usage_complete and (alias_facts is not None or returned == target) else "NOT_EVALUATED",
+            "status": "RECORDED" if usage_complete and returned == target else "NOT_EVALUATED",
         }
-        if alias_facts is not None:
-            metrics.update(alias_facts)
-            metrics["cost_status"] = "MAPPED_EXPERIMENT_PRICE" if cost is not None else "MAPPED_PRICE_NOT_MEASURED"
         if response_format is not None:
             metrics["requested_response_format"] = response_format
         if usage_complete:
             global_multi_model_logger.log_call(
-                protocol=request_protocol, model_id=model_spec.model_id if alias_facts is not None else returned or target, provider=provider_name,
+                protocol=request_protocol, model_id=returned or target, provider=provider_name,
                 reasoning_effort=native_effort, stream=stream, ttft_ms=ttft_ms, total_latency_ms=latency_ms,
                 prompt_tokens=p_tokens, completion_tokens=c_tokens, reasoning_tokens=r_tokens or 0,
                 cache_read_tokens=cached or 0, actual_billed_cost_usd=billed_cost,
@@ -947,7 +898,7 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
             else:
                 inputs.append(message)
         payload = {"model": target_model, "input": inputs, "max_output_tokens": max_tokens, "stream": stream}
-        if native_effort != "none" or target_model == "gpt-6-luna":
+        if native_effort != "none" or target_model in ("gpt-6-luna", "gpt-6.1-terra"):
             payload["reasoning"] = {"effort": native_effort}
         if tools:
             payload["tools"] = [{"type": tool["type"], **tool["function"]}
@@ -1052,8 +1003,8 @@ class AnthropicMessagesProvider(BaseGeneratorProvider):
 
     def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None):
         creds = load_generator_credentials()
-        self.base_url = (base_url or os.environ.get("ANTHROPIC_BASE_URL") or creds.get("base_url") or "https://api.anthropic.com/v1").rstrip("/")
-        self.api_key = api_key or os.environ.get("ANTHROPIC_API_KEY") or creds.get("api_key", "")
+        self.base_url = (base_url or creds.get("base_url") or "https://api.anthropic.com/v1").rstrip("/")
+        self.api_key = api_key or creds.get("api_key", "")
         self.primary_model = creds.get("primary_model", "gpt-6-luna")
         self.status = "BLOCKED_PROTOCOL"
         self.status_details: Dict[str, Any] = {}

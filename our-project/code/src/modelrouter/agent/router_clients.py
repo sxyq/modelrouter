@@ -206,7 +206,8 @@ class RouterClient:
                 "state": route_request.pre_decision_state.router_text(),
                 "questions": {"route_decision": {
                     "type": "choice",
-                    "instructions": "Select the model and native effort for the next agent generation.",
+                    "instructions": "Select the model and native effort for the next agent generation. "
+                                    "Prioritize task quality; among adequate candidates, prefer lower cost.",
                     "criteria": {key: f"{action.provider}/{action.model} (effort={action.native_effort})"
                                  for key, action in native_options.items()},
                 }},

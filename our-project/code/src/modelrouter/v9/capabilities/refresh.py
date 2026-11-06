@@ -23,7 +23,8 @@ PROVIDER_URLS = {
     "gpt-6-luna": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
     "qwen3.8-flash": "https://help.aliyun.com/en/model-studio/qwen3-8-flash",
 }
-DEFAULT_CONFIG = Path(__file__).resolve().parents[6] / "experiments" / "agent_pilot" / "configs" / "generator_credentials.json"
+DEFAULT_CONFIG = Path(os.environ.get("EXTERNAL_TEXT_MODEL_CONFIG",
+                                    str(Path.home() / ".agent-global/外部文本模型.local.json")))
 
 
 def _safe_headers(headers) -> dict:

@@ -12,37 +12,35 @@ from contextlib import nullcontext
 from uuid import uuid4
 
 from modelrouter.agent.router_clients import RouterDecision
-from modelrouter.serving.schemas import PreDecisionState
-from modelrouter.v9.training.real_supervision import MODEL_TARGETS
+from modelrouter.serving.schemas import LegalAction, PreDecisionState
 
 
 class CheckpointRouterClient:
     def __init__(self, config):
         self.checkpoint = config["router_checkpoint"]
+        self.family = self.checkpoint.get("family", "laya")
         self.timeout = config.get("router_timeout_sec", 20.0)
         self.process = None
 
     def route(self, *, pre_decision_state, legal_actions, **_):
-        actions = {action["model"]: action for action in legal_actions}
-        if len(actions) != len(legal_actions):
-            raise ValueError(
-                "Checkpoint MODEL_ONLY routing requires one action per model; "
-                "multiple Native Effort actions for the same model are unsupported"
-            )
-        target, instruction = MODEL_TARGETS["STEP_LEVEL_PREFERENCE"]
+        actions = {action.action_id: action.model_dump()
+                   for action in map(LegalAction.model_validate, legal_actions)}
+        target = "route_decision"
         payload = {
             "checkpoint_path": self.checkpoint["path"],
             "device": self.checkpoint.get("device", "cpu"),
+            "router_family": self.family,
             "state": PreDecisionState.model_validate(pre_decision_state).router_text(),
             "questions": {target: {
-                "type": "choice", "instructions": instruction,
-                "criteria": {model: model for model in actions},
+                "type": "choice",
+                "instructions": "Select the model and native effort for the next agent generation. "
+                                "Prioritize task quality; among adequate candidates, prefer lower cost.",
+                "criteria": {key: f"{action['provider']}/{action['model']} (effort={action['native_effort']})"
+                             for key, action in actions.items()},
             }},
         }
         if payload["device"] == "cuda":
             payload["gpu_lock_path"] = self.checkpoint["gpu_lock_path"]
-        if "reference" in self.checkpoint:
-            payload["reference"] = self.checkpoint["reference"]
         started = time.perf_counter()
         if self.process is None:
             self.process = subprocess.Popen(self.checkpoint["command"], stdin=subprocess.PIPE,
@@ -55,10 +53,10 @@ class CheckpointRouterClient:
         answer = body["answers"][target]
         probabilities = answer["probabilities"]
         return RouterDecision(
-            request_id=str(uuid4()), router_family="laya", checkpoint_id=body["checkpoint_id"],
+            request_id=str(uuid4()), router_family=self.family, checkpoint_id=body["checkpoint_id"],
             selected_action=actions[answer["choice"]],
-            ranked_actions=[{"action": actions[model], "score": probability, "probability": probability}
-                            for model, probability in sorted(probabilities.items(),
+            ranked_actions=[{"action": actions[key], "score": probability, "probability": probability}
+                            for key, probability in sorted(probabilities.items(),
                                                               key=lambda item: item[1], reverse=True)],
             decision_latency_ms=(time.perf_counter() - started) * 1000,
             inference_latency_ms=body["decision_latency_ms"], confidence=answer.get("confidence"),
@@ -71,7 +69,7 @@ class CheckpointRouterClient:
                              "router_device_transfer_ms": body["device_transfer_ms"],
                              "router_question_id": target,
                              "router_candidate_order": list(actions),
-                             "router_reference": body.get("reference"),
+                             "router_input_usage": body["usage"],
                              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
                              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"},
         )
@@ -90,31 +88,20 @@ class CheckpointRouterClient:
 def main():
     initialized = time.perf_counter()
     import torch
-    from modelrouter.serving.laya_adapter import LayaAdapter
 
     adapter = None
-    reference = None
     for line in sys.stdin:
         payload = json.loads(line)
         reused = adapter is not None
         initialization_ms = 0.0
         if not reused:
             checkpoint = Path(payload["checkpoint_path"]).resolve()
-            run = json.loads((checkpoint / "rl_agent_config.json").read_text())["training_run"]
-            adapter = LayaAdapter(model_dir=str(checkpoint), device="cpu")
-            if "reference" in payload:
-                import numpy as np
-                settings = payload["reference"]
-                material = json.loads(Path(settings["records_path"]).read_text())
-                indices = settings["training_indices"]
-                reference = {
-                    "features": torch.tensor(np.load(settings["features_path"])[settings["encoder_key"]][indices],
-                                             dtype=torch.float64),
-                    "targets": torch.tensor([0 if material[i]["observed_pair"] == [True, False] else
-                                             1 if material[i]["observed_pair"] == [False, True] else 2
-                                             for i in indices]),
-                    "method": "B_ORIGINAL17_QUALITY_THEN_COST", "training_rows": len(indices),
-                }
+            if payload["router_family"] == "kev":
+                from modelrouter.serving.kev_adapter import KevAdapter
+                adapter = KevAdapter(adapter_dir=str(checkpoint), device="cpu")
+            else:
+                from modelrouter.serving.laya_adapter import LayaAdapter
+                adapter = LayaAdapter(model_dir=str(checkpoint), device="cpu")
             initialization_ms = (time.perf_counter() - initialized) * 1000
         device = payload.get("device", "cpu")
         gpu_wait_ms, transfer_ms = 0.0, 0.0
@@ -133,48 +120,7 @@ def main():
                     adapter.agent.amp_enabled = True
                     transfer_ms += (time.perf_counter() - before) * 1000
                 with torch.inference_mode():
-                    if reference is None:
-                        answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
-                    else:
-                        from modelrouter.v9.training.continuation import fit_preference_reference
-                        models = ("gpt-6.1-sol", "gpt-6-luna")
-                        question_id, question = next(iter(payload["questions"].items()))
-                        questions = {question_id: dict(question, criteria={
-                            model: question["criteria"][model] for model in models
-                        })}
-                        internal = adapter.agent._to_internal(questions[question_id])
-                        marker_order = list(internal["crit"])
-                        marker, features = {}, []
-                        def positions(model, args):
-                            marker["positions"] = args[2][0]
-                        def encode(model, args, result):
-                            h, p = result.last_hidden_state[0], marker["positions"]
-                            features.append((h[p[marker_order.index(models[0])]] -
-                                             h[p[marker_order.index(models[1])]]).double().cpu())
-                        hooks = [adapter.agent.model.register_forward_pre_hook(positions),
-                                 adapter.agent.model.encoder.register_forward_hook(encode)]
-                        before = time.perf_counter()
-                        try:
-                            _, _, usage = adapter.system_one(payload["state"], questions)
-                        finally:
-                            for hook in hooks:
-                                hook.remove()
-                        count = reference["training_rows"]
-                        classes, scores = fit_preference_reference(
-                            torch.cat([reference["features"], features[0][None]]),
-                            reference["targets"], list(range(count)), [count], 3)
-                        relation = ("SOL_ONLY_VERIFIED", "LUNA_ONLY_VERIFIED", "BOTH_VERIFIED")[classes[0]]
-                        class_scores = torch.softmax(torch.tensor(scores[0]), dim=0)
-                        model_scores = torch.stack([class_scores[0], class_scores[1:].max()])
-                        model_scores /= model_scores.sum()
-                        choice = models[0] if classes[0] == 0 else models[1]
-                        answers = {question_id: {
-                            "type": "choice", "choice": choice,
-                            "probabilities": dict(zip(models, model_scores.tolist())), "confidence": None,
-                        }}
-                        reference.update(predicted_relation=relation, categorical_scores=scores[0],
-                                         scores_are_pass_probabilities=False)
-                        latency = (time.perf_counter() - before) * 1000
+                    answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
             finally:
                 if device == "cuda":
                     before = time.perf_counter()
@@ -187,9 +133,7 @@ def main():
         print(json.dumps({"answers": answers, "decision_latency_ms": latency, "usage": usage,
                           "initialization_latency_ms": initialization_ms, "process_reused": reused,
                           "device": device, "gpu_wait_ms": gpu_wait_ms, "device_transfer_ms": transfer_ms,
-                          "run_id": run["run_id"], "checkpoint_id": f"{run['run_id']}-e{run['epoch']:02d}",
-                          "reference": {key: value for key, value in reference.items()
-                                        if key not in ("features", "targets")} if reference is not None else None,
+                          "run_id": adapter.run_id, "checkpoint_id": str(checkpoint),
                           "weights_path": str(checkpoint)}), flush=True)
 
 

@@ -29,7 +29,7 @@ _INSTRUCTION = (
 
 
 class TrajectoryAssessor:
-    def __init__(self, provider, references_path=DEFAULT_REFERENCES, *, model_id="gpt-6.1-sol",
+    def __init__(self, provider, references_path=DEFAULT_REFERENCES, *, model_id="gpt-6-luna",
                  native_effort="low", max_output_tokens=4096, context_chars=8000):
         self.provider = provider
         self.references_path = Path(references_path)
@@ -54,10 +54,6 @@ class TrajectoryAssessor:
 
     def assess(self, state, messages, trigger_reason):
         started = time.perf_counter()
-        alias_mapping = getattr(self.provider, "alias_mapping", None)
-        backend_model_id = alias_mapping.backend_model_id if alias_mapping else None
-        effective_effort = alias_mapping.effective_native_effort if alias_mapping else None
-        execution_mode = "TEACHER_ALIAS_SMOKE" if alias_mapping else "TEACHER"
         metrics = {
             "role": "teacher", "episode_id": state.episode_id,
             "assessed_through_decision_id": getattr(
@@ -65,22 +61,22 @@ class TrajectoryAssessor:
             "assessed_through_step": state.step_index, "phase": state.current_phase,
             "trigger_reason": trigger_reason, "selected_model_id": self.model_id,
             "teacher_model_id": self.model_id, "cost_model_id": self.model_id,
-            "actual_backend_model_id": backend_model_id,
-            "request_model_id": backend_model_id or self.model_id, "returned_model_id": None,
+            "actual_backend_model_id": None,
+            "request_model_id": self.model_id, "returned_model_id": None,
             "protocol": self.provider.protocol, "provider_base_url": self.provider.base_url,
             "requested_max_output_tokens": self.max_output_tokens,
             "requested_native_effort": self.native_effort,
-            "effective_native_effort": effective_effort,
+            "effective_native_effort": self.native_effort,
             "router_checkpoint_id": getattr(state, "last_router_checkpoint_id", None),
             "reference_ids": [],
             "prompt_tokens": None, "completion_tokens": None, "reasoning_tokens": None,
             "cached_tokens": None, "cost_usd": None, "actual_billed_cost_usd": None,
             "cost_source": ModelRegistry().get_spec(self.model_id).pricing_source,
-            "cost_basis": "SELECTED_MODEL_RATES_WITH_BACKEND_USAGE" if alias_mapping else None,
-            "cost_status": "MAPPED_USAGE_INCOMPLETE" if alias_mapping else "UNKNOWN",
+            "cost_basis": "REQUEST_MODEL_RATES_WITH_PROVIDER_USAGE",
+            "cost_status": "UNKNOWN",
             "usage_status": "MISSING", "assessment_consumed_by_router": False,
             "provider_request_attempted": False,
-            "execution_mode": execution_mode,
+            "execution_mode": "TEACHER",
         }
         try:
             references = self.load_references()
