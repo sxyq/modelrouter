@@ -330,6 +330,39 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             capture.write(raw.replace(secret, b"[REDACTED_API_KEY]") if secret else raw)
             capture.flush()
 
+    def candidate_conditions(self, model_spec, input_tokens, max_output_tokens):
+        """Expose current non-secret endpoint facts before selection; no HTTP call."""
+        target = model_spec.model_id
+        endpoint = (self.luna_registry.get_endpoint(self.account_endpoints[target])
+                    if self.luna_registry is not None and target in self.account_endpoints else None)
+        result = {"model_id": target, "provider": model_spec.provider,
+                  "endpoint_id": None, "base_url": self.base_url,
+                  "protocol": model_spec.protocol or self.protocol,
+                  "availability": "UNKNOWN", "exclusion_reason": None,
+                  "tool_supported": model_spec.tool_supported,
+                  "input_tokens_estimate": input_tokens,
+                  "input_tokens_status": "ESTIMATED_UTF8_BYTES_UPPER_BOUND",
+                  "requested_output_tokens": max_output_tokens,
+                  "cache_session_reuse": "NOT_MEASURED", "physical_kv_shared": "UNKNOWN"}
+        capacity, output_capacity = model_spec.context_window, model_spec.max_output_tokens
+        if endpoint is not None:
+            result.update(endpoint_id=endpoint.endpoint_id, base_url=endpoint.base_url,
+                          protocol=endpoint.protocol, availability=("RECORDED_UNHEALTHY" if not endpoint.is_healthy else
+                              "RECORDED_HEALTHY" if endpoint.last_checked_iso or endpoint.success_count else "CONFIGURED_NOT_PROBED"),
+                          last_status_time=endpoint.last_checked_iso)
+            capacity = endpoint.context_window or capacity
+            output_capacity = endpoint.max_output_tokens or output_capacity
+            if not endpoint.is_healthy:
+                result["exclusion_reason"] = "RECORDED_ENDPOINT_UNHEALTHY"
+        if model_spec.tool_supported is False:
+            result["exclusion_reason"] = "TOOLS_NOT_SUPPORTED"
+        if input_tokens + max_output_tokens > capacity:
+            result["exclusion_reason"] = "CONTEXT_CAPACITY_EXCEEDED"
+        if max_output_tokens > output_capacity:
+            result["exclusion_reason"] = "OUTPUT_CAPACITY_EXCEEDED"
+        result.update(context_capacity=capacity, output_capacity=output_capacity)
+        return result
+
     def _read_response(self, response, stream: bool, started: float, capture=None,
                        secret=b"") -> Tuple[Dict[str, Any], Optional[float]]:
         if not stream:
@@ -597,13 +630,14 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             _record_budget(budget, p_tokens, c_tokens, request_bound)
         latency_ms = (time.perf_counter() - started) * 1000
         returned = body.get("model")
-        identity_status = "MATCHED_REQUEST_ALIAS" if returned == target else ("MISSING" if not returned else "MISMATCH")
+        matched = returned == target or (target == "hy4" and returned == "hy4-preview")
+        identity_status = "MATCHED_REQUEST_ALIAS" if matched else ("MISSING" if not returned else "MISMATCH")
         returned_effort = (body.get("reasoning") or {}).get("effort") or body.get("reasoning_effort")
         effort_status = ("NOT_REPORTED" if returned_effort is None else
                          "PROVIDER_REPORTED_MATCH" if returned_effort == effective_effort else
                          "PROVIDER_REPORTED_MISMATCH")
         usage_complete = p_tokens is not None and c_tokens is not None
-        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and returned == target else None
+        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and matched else None
         # Vendor cost is distinct from the configured price estimate.
         reported_cost = (raw_usage or {}).get("cost")
         reported_cost_unit = (raw_usage or {}).get("cost_currency") or (raw_usage or {}).get("currency")
@@ -615,7 +649,6 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         )
         response_error = self._response_error(body, request_protocol)
         if pool_endpoint is not None:
-            matched = returned == target
             self.luna_registry.record_request_complete(
                 pool_endpoint.endpoint_id, latency_ms, tokens=(p_tokens or 0) + (c_tokens or 0),
                 status="success" if matched and not response_error else "failed",
@@ -652,6 +685,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "raw_usage": raw_usage,
             "usage_status": "REPORTED" if usage_complete else "MISSING",
             "identity_status": identity_status,
+            "returned_model_alias_accepted": matched and returned != target,
             "alias_mapping_applied": False,
             "prompt_tokens": p_tokens,
             "completion_tokens": c_tokens,
@@ -680,7 +714,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "raw_reported_cost": reported_cost,
             "reported_cost_unit": reported_cost_unit or "NOT_REPORTED",
             "budget_accounted": True,
-            "status": "RECORDED" if usage_complete and returned == target else "NOT_EVALUATED",
+            "status": "RECORDED" if usage_complete and matched else "NOT_EVALUATED",
         }
         if response_format is not None:
             metrics["requested_response_format"] = response_format
@@ -700,6 +734,11 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                  stream=False, *, response_format=None) -> GeneratorResponse:
         body, metrics = self.query_raw(messages, model_spec, native_effort, max_tokens, tools, stream,
                                        response_format=response_format)
+        if metrics["protocol"] == "responses":
+            content = "".join(part.get("text", "") for item in body["output"]
+                              if item["type"] == "message" for part in item["content"])
+            calls = [item for item in body["output"] if item["type"] == "function_call"]
+            return self._generation(content, calls, body, metrics)
         message = body["choices"][0]["message"]
         return self._generation(message.get("content") or "", message.get("tool_calls", []), body, metrics)
 
@@ -896,7 +935,7 @@ class OpenAIResponsesProvider(OpenAICompatibleProvider):
                 inputs.extend({"type": "function_call", "call_id": call["id"],
                                **call["function"]} for call in message["tool_calls"])
             else:
-                inputs.append(message)
+                inputs.append({"role": message["role"], "content": message["content"]})
         payload = {"model": target_model, "input": inputs, "max_output_tokens": max_tokens, "stream": stream}
         if native_effort != "none" or target_model in ("gpt-6-luna", "gpt-6.1-terra"):
             payload["reasoning"] = {"effort": native_effort}

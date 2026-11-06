@@ -1,5 +1,7 @@
 # 真实K=3首批Harbor开发执行：两模型身份有效，净收益尚未成立
 
+**负责人后续说明**：hy4与hy4-preview是同一个模型，当前Provider已将这对名称作为允许返回别名，仍发送hy4并保留实际返回hy4-preview，不使用单后端映射。下文严格名称相等导致的身份问题属于当时执行事实，不再作为当前模型不可用的依据；两条旧HY4轨迹已在动作执行前结束，原Reward仍null，不能据名称说明改为任务成功。本批实际16次Router前向；候选仅Luna low／Terra low／HY4默认，没有Max，不能据此评价同模型档位选择。原数据集实际为Terminal-Bench 2.1，不是2.0。
+
 ## 1. 整体目标与本批范围
 
 负责人正式转向真实K=3 Luna／HY4／Terra、Model×Native Effort、缓存连续性、Laya／Kev原始与训练代表、GPT-6 Luna教师，以及含全部开销的完整Episode收益。起点main为7631b5fd12bc3518c74a0cb22b0892b370d3b05d。旧40条K=2监督、旧STEP、Val及完整任务没有重做或改成联合标签。

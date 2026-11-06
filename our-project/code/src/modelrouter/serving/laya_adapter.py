@@ -60,7 +60,7 @@ class LayaAdapter:
                 logger.warning(f"Could not read recovery_state.json: {e}")
         else:
             self.checkpoint_id = os.path.basename(os.path.realpath(target_dir))
-            self.run_id = "F05" if "F05" in target_dir else "laya-base"
+            self.run_id = self.checkpoint_id
 
         logger.info(f"Loading Laya RLAgent from {target_dir} on device={self.device_str or 'auto'}...")
         t0 = time.time()
@@ -156,5 +156,9 @@ class LayaAdapter:
 
         res = self.agent.system_one(state, formatted_questions)
         latency_ms = (time.perf_counter() - t0) * 1000.0
+        if res.get("usage") is not None:
+            from modelrouter.v9.runtime.context import encoded_group_coverage
+            res["usage"]["state_group_coverage"] = encoded_group_coverage(
+                state, self.agent.tok, res["usage"].get("state_tokens_dropped", 0))
         return res["answers"], latency_ms, res.get("usage")
 

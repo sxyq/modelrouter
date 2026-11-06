@@ -292,7 +292,7 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
         input_price_per_1m=None, output_price_per_1m=None, reasoning_price_per_1m=None,
         cache_read_price_per_1m=None, cache_write_price_per_1m=None,
         rpm_limit=None, tpm_limit=None, pricing_status="UNKNOWN",
-        identity_status="RETURNED_HY4_PREVIEW_20261106_NOT_FORMAL_HY4",
+        identity_status="USER_CONFIRMED_HY4_PREVIEW_RESPONSE_ALIAS",
         context_status="TOKENHUB_OFFICIAL_PROVIDER_UNVERIFIED",
         native_efforts_status="USER_SELECTED_PROVIDER_DEFAULT_PARAMETER_OMITTED",
         tool_supported=None, protocol="chat_completions", pricing_as_of="2026-11-06",

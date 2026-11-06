@@ -71,11 +71,15 @@ class PreDecisionSnapshot:
     last_tool_exit_code: Optional[int]
     last_observation_summary: str
     history_length: int
-    budget_remaining_usd: float
+    budget_remaining_usd: Optional[float]
     steps_remaining: int
     context_tokens_approx: int
     task_id: str
     episode_id: str
+    budget_status: str
+    elapsed_time_sec: float
+    time_remaining_sec: Optional[float]
+    time_budget_sec: Optional[float]
     timestamp: float = field(default_factory=time.time)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -85,7 +89,11 @@ class PreDecisionSnapshot:
             "last_tool_exit_code": self.last_tool_exit_code,
             "last_observation_summary": self.last_observation_summary,
             "history_length": self.history_length,
-            "budget_remaining_usd": round(self.budget_remaining_usd, 4),
+            "budget_remaining_usd": round(self.budget_remaining_usd, 4) if self.budget_remaining_usd is not None else None,
+            "budget_status": self.budget_status,
+            "elapsed_time_sec": self.elapsed_time_sec,
+            "time_remaining_sec": self.time_remaining_sec,
+            "time_budget_sec": self.time_budget_sec,
             "steps_remaining": self.steps_remaining,
             "context_tokens_approx": self.context_tokens_approx,
             "task_id": self.task_id,
@@ -104,8 +112,8 @@ class AgentState:
         policy_id: str,
         seed: int = 42,
         max_steps: int = 20,
-        time_budget_sec: float = 300.0,
-        usd_budget: float = 2.0,
+        time_budget_sec: Optional[float] = 300.0,
+        usd_budget: Optional[float] = 2.0,
         max_tool_error_budget: int = 5,
     ):
         self.task_id = task_id
@@ -129,6 +137,7 @@ class AgentState:
         self.total_reasoning_tokens: int = 0
         self.total_cached_tokens: int = 0
         self.tool_error_count: int = 0
+        self.model_time_sec: float = 0.0
 
         self.start_time: float = time.time()
         self.end_time: Optional[float] = None
@@ -140,7 +149,9 @@ class AgentState:
         return round(time.time() - self.start_time, 3)
 
     @property
-    def budget_remaining_usd(self) -> float:
+    def budget_remaining_usd(self) -> Optional[float]:
+        if self.usd_budget is None or self.usd_budget == 0:
+            return None
         return max(0.0, self.usd_budget - self.accumulated_cost_usd)
 
     @property
@@ -155,9 +166,9 @@ class AgentState:
         """Checks if budget or step limits have been exceeded."""
         if self.step_index >= self.max_steps:
             return EpisodeStatus.TIMEOUT
-        if self.elapsed_time_sec >= self.time_budget_sec:
+        if self.time_budget_sec is not None and self.time_budget_sec > 0 and self.elapsed_time_sec >= self.time_budget_sec:
             return EpisodeStatus.TIMEOUT
-        if self.accumulated_cost_usd >= self.usd_budget:
+        if self.usd_budget is not None and self.usd_budget > 0 and self.accumulated_cost_usd >= self.usd_budget:
             return EpisodeStatus.BUDGET_EXCEEDED
         if self.tool_error_count >= self.max_tool_error_budget:
             return EpisodeStatus.TOOL_ERROR_BUDGET_EXCEEDED
@@ -186,6 +197,10 @@ class AgentState:
             context_tokens_approx=approx_tokens,
             task_id=self.task_id,
             episode_id=self.episode_id,
+            budget_status="UNKNOWN" if self.usd_budget is None else "UNLIMITED" if self.usd_budget == 0 else "LIMITED_REFERENCE_USD",
+            elapsed_time_sec=self.elapsed_time_sec,
+            time_budget_sec=self.time_budget_sec,
+            time_remaining_sec=max(0, self.time_budget_sec - self.elapsed_time_sec) if self.time_budget_sec else None,
         )
 
     def record_step(

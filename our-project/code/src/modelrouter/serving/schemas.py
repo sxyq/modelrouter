@@ -3,7 +3,7 @@ Pydantic schemas for ModelRouter FastAPI Serving Endpoint.
 Conforms strictly to V8 §7.1 specifications.
 """
 
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Literal
 import json
 from pydantic import BaseModel, Field, model_validator
 
@@ -35,12 +35,23 @@ class LegalAction(BaseModel):
 
 
 class PreDecisionState(BaseModel):
+    disabled_information_groups: List[Literal["T", "M", "H"]] = Field(default_factory=list)
+    episode_id: Optional[str] = None
+    timestamp: Optional[float] = None
     task_id: Optional[str] = None
     phase: Optional[str] = None
     last_tool_exit_code: Optional[int] = None
     last_observation_summary: Optional[str] = None
     history_length: Optional[int] = None
     budget_remaining_usd: Optional[float] = None
+    budget_status: str = "UNKNOWN"
+    elapsed_time_sec: Optional[float] = None
+    time_remaining_sec: Optional[float] = None
+    time_budget_sec: Optional[float] = None
+    agent_state: Optional[Dict[str, Any]] = None
+    candidate_conditions: List[Dict[str, Any]] = Field(default_factory=list)
+    model_time_sec: Optional[float] = None
+    tool_time_sec: Optional[float] = None
     steps_remaining: Optional[int] = None
     context_tokens_approx: Optional[int] = None
     task_domain: Optional[str] = "software_engineering"

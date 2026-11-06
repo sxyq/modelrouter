@@ -30,6 +30,8 @@ class CheckpointRouterClient:
             "checkpoint_path": self.checkpoint["path"],
             "device": self.checkpoint.get("device", "cpu"),
             "router_family": self.family,
+            "router_max_len": self.checkpoint.get("max_len", self.checkpoint.get("router_max_len", 8192)),
+            "router_head_max_len": self.checkpoint.get("head_max_len", 512),
             "state": PreDecisionState.model_validate(pre_decision_state).router_text(),
             "questions": {target: {
                 "type": "choice",
@@ -102,6 +104,8 @@ def main():
             else:
                 from modelrouter.serving.laya_adapter import LayaAdapter
                 adapter = LayaAdapter(model_dir=str(checkpoint), device="cpu")
+                adapter.agent.cfg["max_len"] = payload["router_max_len"]
+                adapter.agent.cfg["head_max_len"] = payload["router_head_max_len"]
             initialization_ms = (time.perf_counter() - initialized) * 1000
         device = payload.get("device", "cpu")
         gpu_wait_ms, transfer_ms = 0.0, 0.0
@@ -114,20 +118,26 @@ def main():
                     fcntl.flock(lock_file, fcntl.LOCK_EX)
                     gpu_wait_ms = (time.perf_counter() - before) * 1000
                     before = time.perf_counter()
-                    adapter.agent.model.to("cuda")
-                    adapter.agent.device = torch.device("cuda")
-                    adapter.agent.dtype = _cuda_amp_dtype(adapter.agent.cfg.get("amp_dtype", "fp16"))
-                    adapter.agent.amp_enabled = True
+                    if payload["router_family"] == "kev":
+                        adapter.model.to("cuda")
+                    else:
+                        adapter.agent.model.to("cuda")
+                        adapter.agent.device = torch.device("cuda")
+                        adapter.agent.dtype = _cuda_amp_dtype(adapter.agent.cfg.get("amp_dtype", "fp16"))
+                        adapter.agent.amp_enabled = True
                     transfer_ms += (time.perf_counter() - before) * 1000
                 with torch.inference_mode():
                     answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
             finally:
                 if device == "cuda":
                     before = time.perf_counter()
-                    adapter.agent.model.to("cpu")
-                    adapter.agent.device = torch.device("cpu")
-                    adapter.agent.dtype = torch.float32
-                    adapter.agent.amp_enabled = False
+                    if payload["router_family"] == "kev":
+                        adapter.model.to("cpu")
+                    else:
+                        adapter.agent.model.to("cpu")
+                        adapter.agent.device = torch.device("cpu")
+                        adapter.agent.dtype = torch.float32
+                        adapter.agent.amp_enabled = False
                     torch.cuda.empty_cache()
                     transfer_ms += (time.perf_counter() - before) * 1000
         print(json.dumps({"answers": answers, "decision_latency_ms": latency, "usage": usage,

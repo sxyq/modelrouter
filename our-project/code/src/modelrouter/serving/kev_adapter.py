@@ -8,6 +8,7 @@ import logging
 import os
 import sys
 import time
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from .schemas import ActionScore, LegalAction, PreDecisionState
@@ -49,7 +50,7 @@ class KevAdapter:
             logger.info(f"Loading Kev checkpoint from {self.adapter_dir} on {self.device_str}...")
             ck = Checkpoint(self.adapter_dir)
             self.checkpoint_id = getattr(ck.meta, "base_revision", "kev-4b-adapter")
-            self.run_id = "KEV-4B-ADAPTER"
+            self.run_id = Path(self.adapter_dir).name
             self.tokenizer, self.model = ck.load(self.device_str)
             self.is_loaded = True
             self.inference_verified = True
@@ -123,7 +124,7 @@ class KevAdapter:
             raise RuntimeError("NO_MODEL_LOADED: Kev model or tokenizer is not loaded")
 
         from kev.api import SystemOneRequest as KevSysOneReq, to_record, to_answers, output_tokens
-        from kev.model import admit
+        from kev.model import admit, SERVE_MAX_STATE
 
         formatted_questions = {}
         for qid, q in questions.items():
@@ -152,7 +153,12 @@ class KevAdapter:
         n_tokens = len(enc.get("ids", []))
         usage = {
             "input_tokens": n_tokens,
-            "output_tokens": output_tokens(self.tokenizer, answers)
+            "output_tokens": output_tokens(self.tokenizer, answers),
+            "state_tokens": enc["state_tokens"],
+            "state_limit_tokens": SERVE_MAX_STATE,
+            "truncated": enc["state_truncated"],
         }
+        from modelrouter.v9.runtime.context import encoded_group_coverage
+        usage["state_group_coverage"] = encoded_group_coverage(state, self.tokenizer)
         return answers, latency_ms, usage
 

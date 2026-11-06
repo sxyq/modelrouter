@@ -94,6 +94,7 @@ def prepare_comparison(row, split):
                "comparison_size_k": len({action["model_id"] for action in actions}),
                "candidate_action_count": len(actions),
                "comparison_axis": ("NATIVE_EFFORT" if len({action["model_id"] for action in actions}) == 1
+                                   else "MODEL_NATIVE_EFFORT" if len(actions) > len({action["model_id"] for action in actions})
                                    else "MODEL"),
                "selection_scope": "MODEL_ONLY" if model_only else "MODEL_NATIVE_EFFORT",
                "full_three_model_optimum": False},

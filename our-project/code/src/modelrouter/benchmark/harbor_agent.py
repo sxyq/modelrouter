@@ -125,8 +125,18 @@ class PolicyModel(LitellmModel):
             raise RuntimeError("Harbor episode timed out")
         decision_id = f"{self.state.episode_id}-{self.state.step_index}"
         snapshot = self.state.build_pre_decision_snapshot().to_dict()
+        available_actions = self.actions
+        if self.v9_enabled:
+            input_bound = len(json.dumps(messages, ensure_ascii=False).encode("utf-8"))
+            conditions = [self.provider.candidate_conditions(ModelRegistry().get_spec(model), input_bound, self.max_output_tokens)
+                          for model in dict.fromkeys(action["model"] for action in self.actions)]
+            excluded = {row["model_id"] for row in conditions if row["exclusion_reason"]}
+            available_actions = [action for action in self.actions if action["model"] not in excluded]
+            snapshot["candidate_conditions"] = conditions
+            if not available_actions:
+                raise RuntimeError("No available model/effort candidate: " + json.dumps(conditions))
         if self.v9_hook:
-            snapshot = self.v9_hook.before_route(self.state, messages, snapshot, self.actions)
+            snapshot = self.v9_hook.before_route(self.state, messages, snapshot, available_actions)
         else:
             snapshot.update(prompt=json.dumps(messages, ensure_ascii=False))
             snapshot.update(context_chars=len(snapshot["prompt"]), prior_tool_calls_count=len(self.state.history),
@@ -145,10 +155,18 @@ class PolicyModel(LitellmModel):
         if hasattr(self.policy, "client"):
             decision = self.policy.client.route(
                 episode_id=self.state.episode_id, decision_id=decision_id,
-                pre_decision_state=snapshot, legal_actions=self.actions,
+                pre_decision_state=snapshot, legal_actions=available_actions,
                 policy_version="mini-v9" if self.v9_enabled else "mini-v10")
         else:
-            decision = self.policy.select(self.state, self.actions)
+            fixed_effort = self.v9_hook.config.get("fixed_native_effort") if self.v9_hook else None
+            if fixed_effort is not None and self.policy_name in ("fixed_strong", "fixed_cheap"):
+                fixed_actions = [action for action in available_actions if action["model"] == self.policy.target_model
+                                 and action["native_effort"] == fixed_effort]
+                if not fixed_actions:
+                    raise RuntimeError("The fixed model/effort is unavailable")
+                decision = self.policy.select(self.state, fixed_actions)
+            else:
+                decision = self.policy.select(self.state, available_actions)
         selected = LegalAction.model_validate(decision.selected_action).model_dump()
         if selected not in self.actions:
             raise ValueError("Selected action is not part of this trial's candidate set")
@@ -173,7 +191,7 @@ class PolicyModel(LitellmModel):
               **router_identity,
               policy_implementation_status=self.policy.implementation_status,
               effort_validation_status=self.action_validation[selected["action_id"]],
-              selected_action=selected, pre_decision_state=snapshot, legal_actions=self.actions)
+              selected_action=selected, pre_decision_state=snapshot, legal_actions=available_actions)
         spec = ModelRegistry().get_spec(selected["model"])
         if self.state.status == EpisodeStatus.TIMEOUT:
             raise RuntimeError("Harbor episode timed out")
@@ -215,6 +233,7 @@ class PolicyModel(LitellmModel):
         self.last_metrics = metrics
         self.usage.append(metrics)
         self.state.accumulated_cost_usd += metrics.get("cost_usd") or 0
+        self.state.model_time_sec += metrics.get("latency_ms", 0) / 1000
         if self.v9_hook:
             self.v9_hook.after_generation(metrics, selected, body)
         event(self.record_dir, "GENERATOR_END", **metrics,
@@ -377,6 +396,18 @@ class ModelRouterMiniSweAgent(BaseAgent):
                            policy_id=self.policy, seed=self.seed, max_steps=self.max_steps,
                            usd_budget=self.cost_limit)
         state.task_prompt = instruction
+        state.model_time_sec = 0.0
+        state.agent_state = {"agent_id": state.episode_id, "framework": "Mini-SWE-agent", "role": "terminal_task_executor",
+                             "subtask": "NOT_APPLICABLE_SINGLE_AGENT", "coordination": "NOT_APPLICABLE_SINGLE_AGENT",
+                             "handoffs": "NOT_APPLICABLE_SINGLE_AGENT"}
+        if trial_config.is_file():
+            from harbor.models.task.task import Task
+            task_definition = Task(task.path).config
+            state.time_budget_sec = task_definition.agent.timeout_sec
+            state.task_domain = task_definition.metadata.get("category", "UNKNOWN")
+            agent_budget = json.loads(trial_config.read_text()).get("agent", {}).get("override_timeout_sec")
+            if agent_budget is not None:
+                state.time_budget_sec = agent_budget
         record_dir = Path(os.environ.get("MODELROUTER_ITERATION", str(self.logs_dir)))
         model = PolicyModel(policy=self.policy, state=state, record_dir=record_dir, seed=self.seed,
                             provider=self.provider, v9_config=self.v9_config,

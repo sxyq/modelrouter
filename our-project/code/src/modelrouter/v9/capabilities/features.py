@@ -8,6 +8,7 @@ from copy import deepcopy
 from pathlib import Path
 
 from .normalize import INDEX_METRICS, MODEL_IDS, missing_metric
+from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS
 
 
 DEFAULT_DATA_DIR = Path(__file__).resolve().parents[4] / "data" / "v9" / "capabilities"
@@ -70,7 +71,19 @@ def capability_cards(snapshot: dict, legal_actions: list) -> list[dict]:
         effort = action["native_effort"]
         model = snapshot.get("models", {}).get(model_id, {})
         model_status = model.get("evidence_status", "NOT_MEASURED")
-        metadata = model.get("provider_metadata", {})
+        metadata = deepcopy(model.get("provider_metadata", {}))
+        if model_id in V9_MODEL_IDS:
+            spec = ModelRegistry().get_spec(model_id)
+            metadata.update(provider=spec.provider, native_efforts=list(spec.native_efforts or ("none",)),
+                            tool_supported=spec.tool_supported,
+                            input_modalities=["text", "image"], output_modalities=["text"],
+                            capability_status="REGISTERED_PROVIDER_MODALITIES_NOT_FULLY_MEASURED")
+            metadata["pricing"] = {"input": spec.input_price_per_1m, "output": spec.output_price_per_1m,
+                "reasoning": spec.reasoning_price_per_1m, "cache_read": spec.cache_read_price_per_1m,
+                "cache_write": spec.cache_write_price_per_1m, "unit": "USD_PER_MILLION_TOKENS",
+                "status": spec.pricing_status, "as_of": spec.pricing_as_of, "source": spec.pricing_source}
+            metadata["context_limits"] = {"context_window": spec.context_window,
+                "max_output_tokens": spec.max_output_tokens, "status": spec.context_status}
         evidence = model.get("metrics", [])
         names = list(dict.fromkeys([*INDEX_METRICS, *(item["metric_name"] for item in evidence)]))
         action_metrics = []

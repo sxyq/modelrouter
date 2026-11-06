@@ -59,6 +59,7 @@ class TrajectoryAssessor:
             "assessed_through_decision_id": getattr(
                 state, "last_decision_id", f"{state.episode_id}-{state.step_index - 1}"),
             "assessed_through_step": state.step_index, "phase": state.current_phase,
+            "for_decision_id": f"{state.episode_id}-{state.step_index}",
             "trigger_reason": trigger_reason, "selected_model_id": self.model_id,
             "teacher_model_id": self.model_id, "cost_model_id": self.model_id,
             "actual_backend_model_id": None,
@@ -109,6 +110,7 @@ class TrajectoryAssessor:
                 raise ValueError("Teacher fields must be strings")
             metrics["status"] = "SUCCESS"
             assessment.update(episode_id=state.episode_id, phase=state.current_phase,
+                              for_decision_id=metrics["for_decision_id"],
                               assessed_through_decision_id=metrics["assessed_through_decision_id"],
                               assessed_through_step=state.step_index,
                               teacher_model_id=metrics["teacher_model_id"],

@@ -69,6 +69,7 @@ class V9DecisionHook:
         if state.episode_id != self.episode_id:
             self.episode_id = state.episode_id
             self.trigger.reset(state.episode_id)
+            self.trigger.generation_count = state.step_index
             self.assessment, self.continuity = None, {}
             self.previous_selected = self.previous_backend = None
             self.previous_messages = []
@@ -101,13 +102,20 @@ class V9DecisionHook:
             elif self.assessment is not None and self.trigger.signals(state) != self.trigger.last_signals:
                 self.assessment = None
         result.update(
+            disabled_information_groups=self.config.get("disabled_information_groups", []),
             teacher_assessment=deepcopy(self.assessment) if self.teacher_enabled else None,
             capability_cards=capability_cards(self.capability_snapshot, legal_actions),
             capability_snapshot_id=self.capability_snapshot.get("snapshot_id"),
             feature_training_status=self.config.get("feature_training_status", "FEATURE_NOT_TRAINED"),
-            continuity=deepcopy(self.continuity),
+            continuity={**deepcopy(self.continuity),
+                        "input_prefix_continuity": self.current_context["input_prefix_continuity"],
+                        "previous_request_message_count": self.current_context["previous_request_message_count"],
+                        "message_count": len(messages),
+                        "prefix_reuse_estimate": "PREVIOUS_MESSAGES_RETAINED" if self.current_context["input_prefix_continuity"] == "EXACT_PREVIOUS_MESSAGES" else "NO_EXACT_PREFIX_EVIDENCE"},
         )
         result["agent_context"]["completed_generations"] = self.trigger.generation_count
+        result.update(elapsed_time_sec=state.elapsed_time_sec,
+                      time_remaining_sec=max(0, state.time_budget_sec - state.elapsed_time_sec) if state.time_budget_sec else None)
         return result
 
     def after_route(self, decision, neural_route=True):
@@ -118,10 +126,13 @@ class V9DecisionHook:
         if self.assessment is None:
             return
         consumed = neural_route and not decision.fallback_used
-        self.teacher_metrics[-1]["assessment_consumed_by_router"] |= consumed
+        coverage = (decision.router_identity or {}).get("router_input_usage", {}).get("state_group_coverage", {})
+        encoded = coverage.get("teacher_assessment", {}).get("status") == "FULL"
+        self.teacher_metrics[-1]["assessment_consumed_by_router"] |= consumed and encoded
         event(self.record_dir, "TEACHER_ROUTER_INPUT", **self.current_context,
               assessed_through_decision_id=self.assessment["assessed_through_decision_id"],
-              checkpoint_id=decision.checkpoint_id, assessment_consumed_by_router=consumed)
+              checkpoint_id=decision.checkpoint_id, assessment_consumed_by_router=consumed and encoded,
+              assessment_sent_to_router=consumed, teacher_encoding_status=coverage.get("teacher_assessment"))
 
     def after_generation(self, metrics, selected, response):
         write_atomic(self.record_dir / "provider_responses" / f"{metrics['decision_id']}.json",
@@ -145,6 +156,11 @@ class V9DecisionHook:
             "provider_base_url": metrics.get("provider_base_url"),
             "previous_request_input_tokens": self.continuity.get("request_input_tokens"),
             "request_input_tokens": metrics.get("prompt_tokens"),
+            "previous_response_output_tokens": metrics.get("completion_tokens"),
+            "previous_response_reasoning_tokens": metrics.get("reasoning_tokens"),
+            "previous_response_cost_usd": metrics.get("cost_usd"),
+            "previous_response_latency_ms": metrics.get("latency_ms"),
+            "previous_response_status": metrics.get("status"),
             "context_tokens_resent": None,
             "previous_selected_native_effort": self.continuity.get("selected_native_effort"),
             "selected_native_effort": selected["native_effort"],

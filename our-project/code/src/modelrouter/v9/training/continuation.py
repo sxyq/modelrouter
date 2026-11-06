@@ -168,7 +168,7 @@ def _material(metadata_path, metadata):
 
 def _input_feature_values(text):
     values = {}
-    for name in ("teacher_assessment", "capability_cards"):
+    for name in ("teacher_assessment", "capability_cards", "M"):
         marker = json.dumps(name) + ":"
         start = text.find(marker)
         if start < 0:
@@ -179,8 +179,9 @@ def _input_feature_values(text):
             continue
         if (name == "teacher_assessment" and isinstance(value, dict)
                 and any(value.get(key) for key in ("progress_summary", "main_blocker", "next_milestone"))
-                or name == "capability_cards" and isinstance(value, list) and value):
-            values[name] = value
+                or name == "capability_cards" and isinstance(value, list) and value
+                or name == "M" and isinstance(value, dict) and value):
+            values["capability_cards" if name == "M" else name] = value
     return values
 
 

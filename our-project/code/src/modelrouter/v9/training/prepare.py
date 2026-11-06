@@ -56,6 +56,7 @@ TEACHER_METADATA = (
     "episode_id", "phase", "assessed_through_decision_id", "assessed_through_step",
     "teacher_model_id", "reference_ids", "teacher_dataset_revision", "native_effort",
     "execution_mode", "cost_scope",
+    "for_decision_id",
 )
 
 
@@ -90,7 +91,7 @@ def iter_rows(path):
 
 def decision_state(pre, task_id=None):
     """Use the same serializer consumed by the existing serving adapters."""
-    values = {name: pre.get(name) for name in PreDecisionState.model_fields}
+    values = {name: pre[name] for name in PreDecisionState.model_fields if name in pre}
     features = {name: pre[name] for name in SOURCE_PRE_FIELDS if name in pre}
     history = pre.get("history_snippet")
     if features:
@@ -108,6 +109,7 @@ def decision_state(pre, task_id=None):
         history_snippet=history,
         feature_training_status="FEATURE_NOT_TRAINED",
     )
+    values["budget_status"] = pre.get("budget_status") or "UNKNOWN"
     values["capability_cards"] = pre.get("capability_cards") or []
     return PreDecisionState.model_validate(values)
 
