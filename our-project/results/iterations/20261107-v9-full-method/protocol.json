@@ -1,0 +1,92 @@
+{
+  "research_scope": "REAL_K3_MODEL_NATIVE_EFFORT",
+  "benchmark": "Terminal-Bench 2.1",
+  "models": [
+    "gpt-6-luna",
+    "hy4",
+    "gpt-6.1-terra"
+  ],
+  "registered_actions": 13,
+  "teacher": {
+    "model": "gpt-6-luna",
+    "effort": "low",
+    "enabled": true
+  },
+  "router_window_tokens": {"laya_sequence": 8192, "kev_native_state": 65536, "training_state_max": 8192},
+  "window_scope": "router_max_len applies to Laya; Kev uses original strict admit with SERVE_MAX_STATE=65536, not silent truncation. Native Qwen base position limit=262144; both trained datasets fit 8192.",
+  "training_tasks": [
+    "rochacbruno__dynaconf-375",
+    "hikari-py__hikari-2224"
+  ],
+  "environment_observation": "cancel-async-tasks original Oracle Reward 0 includes short subprocess timing failures under TCG; no paid candidate requests. Terminal-Bench canary tasks only provide environment observations, not training material.",
+  "training_scope": "Saved TRA-001 Train prefixes, CC-BY-4.0 trajectories and MIT repositories; original test definitions and fixed cutoffs retained",
+  "training_comparisons": [
+    "gpt-6-luna:low",
+    "gpt-6-luna:medium",
+    "hy4:none",
+    "gpt-6.1-terra:low",
+    "gpt-6.1-terra:medium"
+  ],
+  "training_label_scope": "Only observed trusted candidates; not 13-action global optimum",
+  "formal_tasks": [
+    "regex-log",
+    "sqlite-db-truncate",
+    "openssl-selfsigned-cert"
+  ],
+  "formal_scope": "Assigned evaluation before outcomes; no use for gradient or parameter selection; three-task subset cannot establish stable overall benefit",
+  "main_strategies": [
+    "fixed_luna",
+    "fixed_hy4",
+    "fixed_terra",
+    "laya_trained",
+    "kev_trained"
+  ],
+  "training_contribution_strategies": [
+    "laya_original",
+    "kev_original"
+  ],
+  "fixed_efforts": {
+    "gpt-6-luna": "low",
+    "hy4": "none",
+    "gpt-6.1-terra": "low"
+  },
+  "max_steps": 30,
+  "max_output_tokens": 4096,
+  "cost_limit": 0,
+  "budget_semantics": "UNLIMITED_REFERENCE_USD_NOT_ZERO_BALANCE",
+  "router_device": "cpu unless original shared GPU lock is available",
+  "serving_replacement": false,
+  "training_recipe": {
+    "hypothesis": "Same serializer and authentic partial joint outcomes can update joint-request selection; no claim that missing actions are globally optimal or that two tasks establish transfer",
+    "laya_parent": "/home/syy/路由/models/laya-421m",
+    "kev_parent": "/home/syy/路由/models/kev-4b-adapter",
+    "epochs": 1,
+    "laya_freeze_encoder": true,
+    "kev_update": "original LoRA and pointer Head",
+    "auxiliary_replay": "first eight existing legal Train rows per S2/S3, unchanged auxiliary targets, shared current serializer",
+    "formal_data_use": "none: no gradients, calibration or parameter choice",
+    "final_outputs": {
+      "laya": "runs/V9-K3-LAYA-20261107",
+      "kev": "runs/V9-K3-KEV-20261107"
+    },
+    "cpu_threads": 8
+  },
+  "formal_router_cpu_threads": {"laya": 8, "kev_initial": 8, "kev_comparable_followup": 40},
+  "thread_scope": "Laya original/updated use 8 CPU threads; Kev comparable followup original/updated use 40 after recorded 8-thread timeouts. Training remains 8 threads; field-retention forwards are not a speed comparison",
+  "additional_train_cutoffs": {
+    "reason": "Original one-step GPT candidates only verify/read and currently yield no winner; one deterministic continuation from the already saved first Luna-low action per Train task, without hidden-verifier feedback in inputs",
+    "comparisons": [
+      "gpt-6-luna:low",
+      "gpt-6-luna:max",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:max"
+    ],
+    "provider_unknown": "HY4 retained as unavailable observation from repeated actual 502 and one bounded service diagnostic; no identical further calls",
+    "source": "Same preassigned Train tasks plus owned real action/tool feedback; not independent new tasks",
+    "cutoff_rule": "Only recorded assistant message and its actual tool outputs appended; no reference patch or verifier outcome appended"
+  },
+  "fixed_high_followup": "FOLLOWUP_FIXED_HIGH_CONTROL_AFTER_OBSERVING_ORIGINAL_ROUTER_HIGH; no fitting or method selection; not a new untouched test",
+  "native_effort_followup": "Luna max requests returned xhigh in both additional Train cutoffs. Preserve those observations but exclude mismatch from max labels. One explicit Luna xhigh comparison at the already assigned Dynaconf Train cutoff; no final-task fitting.",
+  "kev_deployment_amendment": "Initial eight-thread full trials timed out. One identical saved input measured 252.066s at 8 threads and 120.084s at 40 threads. Continue original and trained Kev full episodes at the same 40 threads and unchanged 300s route timeout. Initial failures remain recorded; this is a deployment followup, not a newly untouched evaluation.",
+  "laya_sqlite_provider_recovery": "One complete fresh Episode after actual TLS UNEXPECTED_EOF. Preserve first attempted Episode, valid actions and missing Reward. Do not merge the aborted prefix with the new Episode or turn it into zero Reward."
+}

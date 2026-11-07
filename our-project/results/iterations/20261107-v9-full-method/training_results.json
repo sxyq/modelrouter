@@ -1,0 +1,50 @@
+{
+  "data": {
+    "records": 18,
+    "S1": 2,
+    "S2": 8,
+    "S3": 8,
+    "S1_unique_task_cutoffs": 1,
+    "joint_target": "OBSERVED_CANDIDATES_NOT_FULL_13_ACTION_OPTIMUM",
+    "evaluation_data_used_for_training_or_parameter_selection": false,
+    "legacy_40_model_only_preferences_changed": false
+  },
+  "laya": {
+    "status": "COMPLETED",
+    "trainer": "laya.train.finetune",
+    "parent_checkpoint": "models/laya-421m",
+    "final_checkpoint": "runs/V9-K3-LAYA-20261107",
+    "epochs": 1,
+    "optimizer_updates": 18,
+    "updated_components": "HEAD_ONLY",
+    "encoder_updated": false,
+    "mean_loss": 1.1570837133460574,
+    "wall_seconds": 546.8283957187086,
+    "peak_rss_bytes": 18386227200,
+    "cpu_threads": 8,
+    "calibration_items": 0,
+    "evaluation_items": 0,
+    "serving_replaced": false,
+    "globally_best_checkpoint_proven": false
+  },
+  "kev": {
+    "status": "COMPLETED",
+    "trainer": "kev.train",
+    "parent_checkpoint": "models/kev-4b-adapter",
+    "final_checkpoint": "runs/V9-K3-KEV-20261107",
+    "epochs_requested": 1,
+    "updated_components": "ORIGINAL_LORA_AND_POINTER_HEAD",
+    "cpu_threads": 8,
+    "dtype": "fp32",
+    "trainable_parameters_approx": 33800000,
+    "optimizer_updates": 18,
+    "records_seen": 18,
+    "truncated_records": 0,
+    "rejected_records": 0,
+    "forward_tokens": 43213,
+    "wall_seconds": 8495.464012622833,
+    "peak_rss_bytes": 158022168576,
+    "saved_at_local": "2026-11-07T03:51:00+08:00",
+    "serving_replaced": false
+  }
+}

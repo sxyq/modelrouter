@@ -1,0 +1,484 @@
+{
+  "scope": "REAL_K3_FULL_METHOD_TRAINING_AND_PREREGISTERED_THREE_TASK_RQ1_SUBSET",
+  "starting_main_sha": "fa964b8a0da859177101c303ca31011392dbf57c",
+  "formal_tasks": [
+    "regex-log",
+    "sqlite-db-truncate",
+    "openssl-selfsigned-cert"
+  ],
+  "models": [
+    "gpt-6-luna",
+    "hy4",
+    "gpt-6.1-terra"
+  ],
+  "registered_joint_actions": 13,
+  "actual_native_windows": {
+    "laya_sequence": 8192,
+    "kev_native_state": 65536,
+    "training_state_max": 8192
+  },
+  "all_registered_actions_physically_available_or_optimal": false,
+  "method": {
+    "groups": [
+      "T",
+      "M",
+      "H"
+    ],
+    "teacher": "gpt-6-luna",
+    "current_prefix_computed_before_current_route": true,
+    "future_request_cache_usage_used_as_input": false,
+    "shared_training_online_serializer": true,
+    "legacy_alias_used": false,
+    "serving_replaced": false,
+    "input_group_masking_implemented_not_evaluated": true,
+    "summary_full_token_coverage_is_not_full_raw_history_or_effective_learning": true
+  },
+  "training": {
+    "data": {
+      "records": 18,
+      "S1": 2,
+      "S2": 8,
+      "S3": 8,
+      "S1_unique_task_cutoffs": 1,
+      "joint_target": "OBSERVED_CANDIDATES_NOT_FULL_13_ACTION_OPTIMUM",
+      "evaluation_data_used_for_training_or_parameter_selection": false,
+      "legacy_40_model_only_preferences_changed": false
+    },
+    "laya": {
+      "status": "COMPLETED",
+      "trainer": "laya.train.finetune",
+      "parent_checkpoint": "models/laya-421m",
+      "final_checkpoint": "runs/V9-K3-LAYA-20261107",
+      "epochs": 1,
+      "optimizer_updates": 18,
+      "updated_components": "HEAD_ONLY",
+      "encoder_updated": false,
+      "mean_loss": 1.1570837133460574,
+      "wall_seconds": 546.8283957187086,
+      "peak_rss_bytes": 18386227200,
+      "cpu_threads": 8,
+      "calibration_items": 0,
+      "evaluation_items": 0,
+      "serving_replaced": false,
+      "globally_best_checkpoint_proven": false
+    },
+    "kev": {
+      "status": "COMPLETED",
+      "trainer": "kev.train",
+      "parent_checkpoint": "models/kev-4b-adapter",
+      "final_checkpoint": "runs/V9-K3-KEV-20261107",
+      "epochs_requested": 1,
+      "updated_components": "ORIGINAL_LORA_AND_POINTER_HEAD",
+      "cpu_threads": 8,
+      "dtype": "fp32",
+      "trainable_parameters_approx": 33800000,
+      "optimizer_updates": 18,
+      "records_seen": 18,
+      "truncated_records": 0,
+      "rejected_records": 0,
+      "forward_tokens": 43213,
+      "wall_seconds": 8495.464012622833,
+      "peak_rss_bytes": 158022168576,
+      "saved_at_local": "2026-11-07T03:51:00+08:00",
+      "serving_replaced": false
+    }
+  },
+  "train_observations": {
+    "assigned_tasks": 2,
+    "cutoffs": 4,
+    "valid_gpt_generations": 17,
+    "effort_mismatch_observations": 2,
+    "unknown_hy4_candidates": 2,
+    "known_tokens": 708249,
+    "known_reference_subtotal_usd": 0.29017667999999996,
+    "unknown_usage_or_cost_not_zero": true
+  },
+  "official_episodes": {
+    "completed_attempts": 28,
+    "status_counts": {
+      "EVALUATED": 19,
+      "PROVIDER_UNKNOWN": 4,
+      "ROUTER_CPU_TIMEOUT": 3,
+      "ENVIRONMENT_UNKNOWN": 2
+    },
+    "strategy_results": {
+      "fixed_luna_high": {
+        "episodes": 3,
+        "original_rewards": {
+          "regex-log": 1.0,
+          "sqlite-db-truncate": 1.0,
+          "openssl-selfsigned-cert": 1.0
+        },
+        "trusted_business_rewards": {
+          "regex-log": 1.0,
+          "sqlite-db-truncate": 1.0,
+          "openssl-selfsigned-cert": 1.0
+        },
+        "status_counts": {
+          "EVALUATED": 3
+        },
+        "model_and_teacher_reference_usd": 0.006780679999999999,
+        "known_reference_subtotal_usd": 0.006780679999999999,
+        "returned_router_calls": 14,
+        "returned_router_seconds": 0.0050437889294698834,
+        "agent_timeouts": 0,
+        "issued_generator_router_calls": 14,
+        "returned_after_cancellation_router_calls": 0,
+        "unreturned_router_calls": 0,
+        "model_switches": 0,
+        "actions": {
+          "gpt-6-luna:high": 14
+        }
+      },
+      "fixed_luna": {
+        "episodes": 3,
+        "original_rewards": {
+          "regex-log": 0.0,
+          "openssl-selfsigned-cert": 1.0,
+          "sqlite-db-truncate": 1.0
+        },
+        "trusted_business_rewards": {
+          "regex-log": 0.0,
+          "openssl-selfsigned-cert": 1.0,
+          "sqlite-db-truncate": 1.0
+        },
+        "status_counts": {
+          "EVALUATED": 3
+        },
+        "model_and_teacher_reference_usd": 0.01305303,
+        "known_reference_subtotal_usd": 0.01305303,
+        "returned_router_calls": 13,
+        "returned_router_seconds": 0.005229707807302475,
+        "agent_timeouts": 0,
+        "issued_generator_router_calls": 13,
+        "returned_after_cancellation_router_calls": 0,
+        "unreturned_router_calls": 0,
+        "model_switches": 0,
+        "actions": {
+          "gpt-6-luna:low": 13
+        }
+      },
+      "fixed_hy4": {
+        "episodes": 3,
+        "original_rewards": {
+          "regex-log": null,
+          "openssl-selfsigned-cert": null,
+          "sqlite-db-truncate": null
+        },
+        "trusted_business_rewards": {
+          "regex-log": null,
+          "openssl-selfsigned-cert": null,
+          "sqlite-db-truncate": null
+        },
+        "status_counts": {
+          "PROVIDER_UNKNOWN": 3
+        },
+        "model_and_teacher_reference_usd": null,
+        "known_reference_subtotal_usd": null,
+        "returned_router_calls": 3,
+        "returned_router_seconds": 0.000499917077831924,
+        "agent_timeouts": 0,
+        "issued_generator_router_calls": 0,
+        "returned_after_cancellation_router_calls": 0,
+        "unreturned_router_calls": 0,
+        "model_switches": 0,
+        "actions": {}
+      },
+      "fixed_terra": {
+        "episodes": 3,
+        "original_rewards": {
+          "regex-log": 1.0,
+          "openssl-selfsigned-cert": 1.0,
+          "sqlite-db-truncate": 1.0
+        },
+        "trusted_business_rewards": {
+          "regex-log": 1.0,
+          "openssl-selfsigned-cert": 1.0,
+          "sqlite-db-truncate": 1.0
+        },
+        "status_counts": {
+          "EVALUATED": 3
+        },
+        "model_and_teacher_reference_usd": 0.07365440000000001,
+        "known_reference_subtotal_usd": 0.07365440000000001,
+        "returned_router_calls": 23,
+        "returned_router_seconds": 0.02452733484096825,
+        "agent_timeouts": 0,
+        "issued_generator_router_calls": 23,
+        "returned_after_cancellation_router_calls": 0,
+        "unreturned_router_calls": 0,
+        "model_switches": 0,
+        "actions": {
+          "gpt-6.1-terra:low": 23
+        }
+      },
+      "kev_original": {
+        "episodes": 3,
+        "original_rewards": {
+          "regex-log": null,
+          "sqlite-db-truncate": null,
+          "openssl-selfsigned-cert": null
+        },
+        "trusted_business_rewards": {
+          "regex-log": null,
+          "sqlite-db-truncate": null,
+          "openssl-selfsigned-cert": null
+        },
+        "status_counts": {
+          "ROUTER_CPU_TIMEOUT": 3
+        },
+        "model_and_teacher_reference_usd": 0.0024166,
+        "known_reference_subtotal_usd": 0.0024166,
+        "returned_router_calls": 5,
+        "returned_router_seconds": 1289.870179582038,
+        "agent_timeouts": 0,
+        "issued_generator_router_calls": 5,
+        "returned_after_cancellation_router_calls": 0,
+        "unreturned_router_calls": 3,
+        "model_switches": 0,
+        "actions": {
+          "gpt-6-luna:high": 5
+        }
+      },
+      "kev_original_cpu40": {
+        "episodes": 3,
+        "original_rewards": {
+          "regex-log": 0.0,
+          "sqlite-db-truncate": 0.0,
+          "openssl-selfsigned-cert": 1.0
+        },
+        "trusted_business_rewards": {
+          "regex-log": null,
+          "sqlite-db-truncate": 0.0,
+          "openssl-selfsigned-cert": 1.0
+        },
+        "status_counts": {
+          "ENVIRONMENT_UNKNOWN": 1,
+          "EVALUATED": 2
+        },
+        "model_and_teacher_reference_usd": 0.006985460000000001,
+        "known_reference_subtotal_usd": 0.006985460000000001,
+        "returned_router_calls": 14,
+        "returned_router_seconds": 2252.2291439579567,
+        "agent_timeouts": 1,
+        "issued_generator_router_calls": 13,
+        "returned_after_cancellation_router_calls": 1,
+        "unreturned_router_calls": 0,
+        "model_switches": 0,
+        "actions": {
+          "gpt-6-luna:high": 13
+        }
+      },
+      "kev_trained": {
+        "episodes": 3,
+        "original_rewards": {
+          "regex-log": 1.0,
+          "sqlite-db-truncate": 0.0,
+          "openssl-selfsigned-cert": 1.0
+        },
+        "trusted_business_rewards": {
+          "regex-log": 1.0,
+          "sqlite-db-truncate": null,
+          "openssl-selfsigned-cert": 1.0
+        },
+        "status_counts": {
+          "EVALUATED": 2,
+          "ENVIRONMENT_UNKNOWN": 1
+        },
+        "model_and_teacher_reference_usd": 0.065009,
+        "known_reference_subtotal_usd": 0.065009,
+        "returned_router_calls": 18,
+        "returned_router_seconds": 2726.63837437483,
+        "agent_timeouts": 3,
+        "issued_generator_router_calls": 15,
+        "returned_after_cancellation_router_calls": 3,
+        "unreturned_router_calls": 0,
+        "model_switches": 4,
+        "actions": {
+          "gpt-6-luna:medium": 3,
+          "gpt-6.1-terra:high": 11,
+          "gpt-6-luna:xhigh": 1
+        }
+      },
+      "laya_original": {
+        "episodes": 3,
+        "original_rewards": {
+          "regex-log": 1.0,
+          "sqlite-db-truncate": 1.0,
+          "openssl-selfsigned-cert": 1.0
+        },
+        "trusted_business_rewards": {
+          "regex-log": 1.0,
+          "sqlite-db-truncate": 1.0,
+          "openssl-selfsigned-cert": 1.0
+        },
+        "status_counts": {
+          "EVALUATED": 3
+        },
+        "model_and_teacher_reference_usd": 0.010577119999999999,
+        "known_reference_subtotal_usd": 0.010577119999999999,
+        "returned_router_calls": 14,
+        "returned_router_seconds": 314.02517337410245,
+        "agent_timeouts": 0,
+        "issued_generator_router_calls": 14,
+        "returned_after_cancellation_router_calls": 0,
+        "unreturned_router_calls": 0,
+        "model_switches": 0,
+        "actions": {
+          "gpt-6-luna:high": 14
+        }
+      },
+      "laya_trained": {
+        "episodes": 3,
+        "original_rewards": {
+          "regex-log": 1.0,
+          "sqlite-db-truncate": null,
+          "openssl-selfsigned-cert": 1.0
+        },
+        "trusted_business_rewards": {
+          "regex-log": 1.0,
+          "sqlite-db-truncate": null,
+          "openssl-selfsigned-cert": 1.0
+        },
+        "status_counts": {
+          "EVALUATED": 2,
+          "PROVIDER_UNKNOWN": 1
+        },
+        "model_and_teacher_reference_usd": null,
+        "known_reference_subtotal_usd": 0.01329922,
+        "returned_router_calls": 12,
+        "returned_router_seconds": 319.6654688328272,
+        "agent_timeouts": 0,
+        "issued_generator_router_calls": 11,
+        "returned_after_cancellation_router_calls": 0,
+        "unreturned_router_calls": 0,
+        "model_switches": 1,
+        "actions": {
+          "gpt-6-luna:high": 10,
+          "gpt-6.1-terra:high": 1
+        }
+      },
+      "laya_trained_provider_recovery": {
+        "episodes": 1,
+        "original_rewards": {
+          "sqlite-db-truncate": 1.0
+        },
+        "trusted_business_rewards": {
+          "sqlite-db-truncate": 1.0
+        },
+        "status_counts": {
+          "EVALUATED": 1
+        },
+        "model_and_teacher_reference_usd": 0.014443240000000001,
+        "known_reference_subtotal_usd": 0.014443240000000001,
+        "returned_router_calls": 5,
+        "returned_router_seconds": 185.9117858337704,
+        "agent_timeouts": 0,
+        "issued_generator_router_calls": 5,
+        "returned_after_cancellation_router_calls": 0,
+        "unreturned_router_calls": 0,
+        "model_switches": 2,
+        "actions": {
+          "gpt-6-luna:high": 4,
+          "gpt-6.1-terra:high": 1
+        }
+      }
+    },
+    "recoveries_are_separate_not_merged_with_original_trials": true
+  },
+  "episode_usage": {
+    "requests_with_saved_metrics": 135,
+    "known_prompt_tokens": 757370,
+    "known_completion_tokens_including_reasoning": 53243,
+    "known_cache_read_tokens": 344491,
+    "known_model_and_teacher_reference_subtotal_usd": 0.20621875,
+    "missing_usage_and_failed_requests_not_counted_as_zero": true,
+    "all_paid_requests_and_training_teacher_recovery_included": false,
+    "actual_billed_usd": null
+  },
+  "terminal_verifier_recoveries": [
+    {
+      "scope": "SAVED_TERMINAL_STATE_VERIFIER_RECOVERY_NOT_NEW_EPISODE",
+      "task_id": "regex-log",
+      "source_strategy": "kev_original_cpu40",
+      "original_reward": 0,
+      "original_trusted_business_reward": null,
+      "recovered_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793989960.2167275,
+        "stop": 1793989961.334399
+      },
+      "paid_requests": 0,
+      "original_assertions_unchanged": true,
+      "environment_change": "Fresh original image with public CA roots; original HTTP apt source and exact tool commands",
+      "does_not_rewrite_original_episode": true,
+      "failed_recovery_attempts_preserved": [
+        "Recovery orchestration lacked verifier log directory and HTTPS CA dependencies; no model request",
+        "CA-restored HTTPS dependency preparation exceeded 180 seconds; no model request"
+      ]
+    },
+    {
+      "scope": "SAVED_TERMINAL_STATE_VERIFIER_RECOVERY_NOT_NEW_EPISODE",
+      "task_id": "sqlite-db-truncate",
+      "source_strategy": "kev_trained",
+      "original_reward": 0,
+      "original_trusted_business_reward": null,
+      "recovered_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1794026467.6482503,
+        "stop": 1794026470.0568044
+      },
+      "paid_requests": 0,
+      "original_assertions_unchanged": true,
+      "environment_change": "Fresh original image with public CA roots; original HTTP apt source and exact tool commands",
+      "does_not_rewrite_original_episode": true
+    }
+  ],
+  "research_conclusions": {
+    "new_k3_joint_supervision_and_real_training": true,
+    "full_13_action_optimum_known": false,
+    "independent_bidirectional_selection_improvement_proven": false,
+    "training_caused_useful_cross_model_division_proven": false,
+    "causal_effort_or_cache_benefit_proven": false,
+    "complete_agent_dynamic_net_benefit_proven": false,
+    "full_rq4_ablation_completed": false,
+    "supplier_billing_and_cpu_gpu_vm_resource_usd": null
+  },
+  "original_training_queue": {
+    "sample_time_local": "2026-11-07T13:00:00+08:00",
+    "completed_of_38": 25,
+    "f15_physical_updates": 61180,
+    "f15_total_updates": 122360,
+    "f15_last_failed_compute_cursor_updates": 80124,
+    "f15_last_failed_run_reported_updates": 80252,
+    "last_failed_at_local": "2026-11-07T10:47:55+08:00",
+    "last_failed_run_error": "BrokenPipeError(32, 'Broken pipe')",
+    "last_worker_returncode": 120,
+    "error_scope": "The final run records a broken output pipe. The exact external event that closed the pipe is not recorded; older exits remain unknown.",
+    "controller": "ORIGINAL_38_RUN_QUEUE_RESUMED_WITH_REGULAR_FILE_STDOUT",
+    "f15_worker_status": "RUNNING_UNDER_ORIGINAL_GPU_LOCK",
+    "f15_resume_mode": "EXACT_RESUME",
+    "f15_latest_observed_log_updates": 61820,
+    "stdout": "original continuous_queue.log, append mode, detached existing controller",
+    "new_scheduler_or_second_queue_created": false,
+    "serving_replaced": false,
+    "attempted_resume_execution_error": {
+      "reason": "Resolving the virtualenv Python symlink launched system Python without torch",
+      "training_updates": 0,
+      "action": "Stopped only the faulty controller, retained errors, then used the original virtualenv executable without resolving its symlink"
+    },
+    "previous_exit_cause": "UNKNOWN"
+  }
+}

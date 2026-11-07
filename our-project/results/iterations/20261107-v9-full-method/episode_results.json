@@ -1,0 +1,3136 @@
+{
+  "benchmark": "Terminal-Bench 2.1",
+  "environment": "A6000 user Docker VM, TCG 4 CPU / 8 GiB; Mac controls only",
+  "scope": "Preregistered three-task subset; fixed high is a followup; incomplete strategies are not zero-reward trials",
+  "episodes": [
+    {
+      "task_id": "regex-log",
+      "strategy": "fixed_luna_high",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793985690.06595,
+        "stop": 1793985691.2533433
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 410.19787,
+      "generator_requests": 5,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 7.79357,
+      "agent_setup_seconds": 0.00158,
+      "agent_seconds": 117.934361,
+      "verifier_seconds": 258.993859,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6-luna:high": 5
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 5
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 5,
+      "router_seconds": 0.001633583102375269,
+      "issued_generator_router_calls": 5,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 5
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 5
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 5
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 5
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": 9.811958707985468,
+      "generator_reference_usd": 0.0027944,
+      "teacher_reference_usd": 0.0002234,
+      "generator_provider_seconds": 98.94856004405301,
+      "teacher_provider_seconds": 6.737797792069614,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.0030177999999999997,
+      "known_reference_usd": 0.0030177999999999997,
+      "prompt_tokens": 13010,
+      "completion_tokens_including_reasoning": 3664,
+      "reasoning_tokens": 2366,
+      "cache_read_tokens": 1280,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 5
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 5
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 5
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 5
+      },
+      "generator_protocol_counts": {
+        "responses": 5
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "baseline_fixed_strong",
+          "run_id": null,
+          "checkpoint_id": "none"
+        }
+      ]
+    },
+    {
+      "task_id": "sqlite-db-truncate",
+      "strategy": "fixed_luna_high",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793985949.3807619,
+        "stop": 1793985950.652329
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 239.230648,
+      "generator_requests": 6,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 12.196198,
+      "agent_setup_seconds": 0.005212,
+      "agent_seconds": 91.508872,
+      "verifier_seconds": 113.300378,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6-luna:high": 6
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 6
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 6,
+      "router_seconds": 0.002835623803548515,
+      "issued_generator_router_calls": 6,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 6
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 6
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 6
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 6
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": 13.858305667061359,
+      "generator_reference_usd": 0.00242626,
+      "teacher_reference_usd": 0.0001921,
+      "generator_provider_seconds": 68.92910337506328,
+      "teacher_provider_seconds": 6.1489771250635386,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.00261836,
+      "known_reference_usd": 0.00261836,
+      "prompt_tokens": 18149,
+      "completion_tokens_including_reasoning": 2229,
+      "reasoning_tokens": 479,
+      "cache_read_tokens": 3456,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 6
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 6
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 6
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 6
+      },
+      "generator_protocol_counts": {
+        "responses": 6
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "baseline_fixed_strong",
+          "run_id": null,
+          "checkpoint_id": "none"
+        }
+      ]
+    },
+    {
+      "task_id": "openssl-selfsigned-cert",
+      "strategy": "fixed_luna_high",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793986161.9148595,
+        "stop": 1793986168.3881922
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 209.314027,
+      "generator_requests": 3,
+      "teacher_requests": 0,
+      "environment_setup_seconds": 9.884194,
+      "agent_setup_seconds": 0.000982,
+      "agent_seconds": 58.308853,
+      "verifier_seconds": 118.68929,
+      "teacher_successes": 0,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6-luna:high": 3
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 3
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 3,
+      "router_seconds": 0.0005745820235460997,
+      "issued_generator_router_calls": 3,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 3
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 3
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 3
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 3
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": 18.11439720808994,
+      "generator_reference_usd": 0.00114452,
+      "teacher_reference_usd": null,
+      "generator_provider_seconds": 38.78641383291688,
+      "teacher_provider_seconds": 0,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.00114452,
+      "known_reference_usd": 0.00114452,
+      "prompt_tokens": 6027,
+      "completion_tokens_including_reasoning": 1291,
+      "reasoning_tokens": 314,
+      "cache_read_tokens": 1152,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 3
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 3
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 3
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 3
+      },
+      "generator_protocol_counts": {
+        "responses": 3
+      },
+      "teacher_returned_model_counts": {},
+      "router_checkpoint_ids": [
+        {
+          "router_family": "baseline_fixed_strong",
+          "run_id": null,
+          "checkpoint_id": "none"
+        }
+      ]
+    },
+    {
+      "task_id": "regex-log",
+      "strategy": "fixed_luna",
+      "reward": 0.0,
+      "trusted_business_reward": 0.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793982843.4342299,
+        "stop": 1793982844.9563165
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 381.018077,
+      "generator_requests": 4,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 15.353845,
+      "agent_setup_seconds": 0.001261,
+      "agent_seconds": 56.249565,
+      "verifier_seconds": 262.507561,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6-luna:low": 4
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:low": 4
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 4,
+      "router_seconds": 0.0016395829152315855,
+      "issued_generator_router_calls": 4,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 4
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 4
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 4
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 4
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": 6.109518626122735,
+      "generator_reference_usd": 0.00287522,
+      "teacher_reference_usd": 0.0002211,
+      "generator_provider_seconds": 41.39519091602415,
+      "teacher_provider_seconds": 6.233262124937028,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.00309632,
+      "known_reference_usd": 0.00309632,
+      "prompt_tokens": 28703,
+      "completion_tokens_including_reasoning": 1005,
+      "reasoning_tokens": 48,
+      "cache_read_tokens": 3072,
+      "cache_write_tokens": null,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "low": 4
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 4
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "generator_protocol_counts": {
+        "responses": 4
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "baseline_fixed_strong",
+          "run_id": null,
+          "checkpoint_id": "none"
+        }
+      ]
+    },
+    {
+      "task_id": "regex-log",
+      "strategy": "fixed_hy4",
+      "reward": null,
+      "trusted_business_reward": null,
+      "official_test_summary": null,
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "PROVIDER_UNKNOWN",
+      "exception_type": "HTTPError",
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 32.243223,
+      "generator_requests": 0,
+      "teacher_requests": 0,
+      "environment_setup_seconds": 9.150564,
+      "agent_setup_seconds": 0.000291,
+      "agent_seconds": 2.297208,
+      "verifier_seconds": null,
+      "teacher_successes": 0,
+      "teacher_encoded_decisions": 0,
+      "actions": {},
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "hy4:none": 1
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 1,
+      "router_seconds": 0.00017600005958229303,
+      "issued_generator_router_calls": 0,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": null,
+      "generator_reference_usd": null,
+      "teacher_reference_usd": null,
+      "generator_provider_seconds": null,
+      "teacher_provider_seconds": 0,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": null,
+      "known_reference_usd": null,
+      "prompt_tokens": null,
+      "completion_tokens_including_reasoning": null,
+      "reasoning_tokens": null,
+      "cache_read_tokens": null,
+      "cache_write_tokens": null,
+      "unknown_provider_requests": 1,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {},
+      "effort_status_counts": {},
+      "request_model_counts": {},
+      "returned_model_counts": {},
+      "generator_protocol_counts": {},
+      "teacher_returned_model_counts": {},
+      "router_checkpoint_ids": []
+    },
+    {
+      "task_id": "regex-log",
+      "strategy": "fixed_terra",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793983363.4998024,
+        "stop": 1793983365.115609
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 412.88855,
+      "generator_requests": 10,
+      "teacher_requests": 2,
+      "environment_setup_seconds": 10.214602,
+      "agent_setup_seconds": 0.000932,
+      "agent_seconds": 127.032946,
+      "verifier_seconds": 240.291478,
+      "teacher_successes": 2,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6.1-terra:low": 10
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6.1-terra:low": 10
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 10,
+      "router_seconds": 0.017206499818712473,
+      "issued_generator_router_calls": 10,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 10
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 10
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 10
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 10
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": 33.94651399785653,
+      "generator_reference_usd": 0.028258800000000004,
+      "teacher_reference_usd": 0.0004127,
+      "generator_provider_seconds": 72.90900316520128,
+      "teacher_provider_seconds": 14.438937916071154,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.028671500000000006,
+      "known_reference_usd": 0.028671500000000006,
+      "prompt_tokens": 67853,
+      "completion_tokens_including_reasoning": 2440,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 50176,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "low": 10
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 10
+      },
+      "request_model_counts": {
+        "gpt-6.1-terra": 10
+      },
+      "returned_model_counts": {
+        "gpt-6.1-terra": 10
+      },
+      "generator_protocol_counts": {
+        "responses": 10
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 2
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "baseline_fixed_strong",
+          "run_id": null,
+          "checkpoint_id": "none"
+        }
+      ]
+    },
+    {
+      "task_id": "regex-log",
+      "strategy": "kev_original",
+      "reward": null,
+      "trusted_business_reward": null,
+      "official_test_summary": null,
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "ROUTER_CPU_TIMEOUT",
+      "exception_type": "TimeoutExpired",
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 927.91674,
+      "generator_requests": 2,
+      "teacher_requests": 0,
+      "environment_setup_seconds": 11.295955,
+      "agent_setup_seconds": 0.000903,
+      "agent_seconds": 894.182021,
+      "verifier_seconds": null,
+      "teacher_successes": 0,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6-luna:high": 2
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 2
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 2,
+      "router_seconds": 513.6575015409617,
+      "issued_generator_router_calls": 2,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 1,
+      "unreturned_router_time_status": "NOT_SEPARATELY_REPORTED_INCLUDED_IN_AGENT_SECONDS",
+      "router_time_complete": false,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 8
+      },
+      "maximum_reported_router_input_tokens": 3856,
+      "encoded_groups": {
+        "T": {
+          "FULL": 2
+        },
+        "M": {
+          "FULL": 2
+        },
+        "H": {
+          "FULL": 2
+        },
+        "teacher_assessment": {
+          "FULL": 2
+        }
+      },
+      "unreturned_router_input_status": "UNKNOWN",
+      "router_initialization_seconds": 50.0520174652338,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 462.86254167184234,
+      "tool_seconds": 3.2998946249717847,
+      "generator_reference_usd": 0.0016904,
+      "teacher_reference_usd": null,
+      "generator_provider_seconds": 61.07543916802388,
+      "teacher_provider_seconds": 0,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.0016904,
+      "known_reference_usd": 0.0016904,
+      "prompt_tokens": 2719,
+      "completion_tokens_including_reasoning": 2837,
+      "reasoning_tokens": 1892,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 2
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 2
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 2
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 2
+      },
+      "generator_protocol_counts": {
+        "responses": 2
+      },
+      "teacher_returned_model_counts": {},
+      "router_checkpoint_ids": [
+        {
+          "router_family": "kev",
+          "run_id": "KEV-4B-ADAPTER",
+          "checkpoint_id": "/home/syy/路由/models/kev-4b-adapter"
+        }
+      ]
+    },
+    {
+      "task_id": "sqlite-db-truncate",
+      "strategy": "kev_original",
+      "reward": null,
+      "trusted_business_reward": null,
+      "official_test_summary": null,
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "ROUTER_CPU_TIMEOUT",
+      "exception_type": "TimeoutExpired",
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 922.558994,
+      "generator_requests": 2,
+      "teacher_requests": 0,
+      "environment_setup_seconds": 8.43812,
+      "agent_setup_seconds": 0.000652,
+      "agent_seconds": 893.563645,
+      "verifier_seconds": null,
+      "teacher_successes": 0,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6-luna:high": 2
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 2
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 2,
+      "router_seconds": 513.1426496250788,
+      "issued_generator_router_calls": 2,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 1,
+      "unreturned_router_time_status": "NOT_SEPARATELY_REPORTED_INCLUDED_IN_AGENT_SECONDS",
+      "router_time_complete": false,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 8
+      },
+      "maximum_reported_router_input_tokens": 4004,
+      "encoded_groups": {
+        "T": {
+          "FULL": 2
+        },
+        "M": {
+          "FULL": 2
+        },
+        "H": {
+          "FULL": 2
+        },
+        "teacher_assessment": {
+          "FULL": 2
+        }
+      },
+      "unreturned_router_input_status": "UNKNOWN",
+      "router_initialization_seconds": 53.594064723700285,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 458.76542403921485,
+      "tool_seconds": 4.608503833063878,
+      "generator_reference_usd": 0.0005265,
+      "teacher_reference_usd": null,
+      "generator_provider_seconds": 19.598076666123234,
+      "teacher_provider_seconds": 0,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.0005265,
+      "known_reference_usd": 0.0005265,
+      "prompt_tokens": 2535,
+      "completion_tokens_including_reasoning": 546,
+      "reasoning_tokens": 30,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 2
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 2
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 2
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 2
+      },
+      "generator_protocol_counts": {
+        "responses": 2
+      },
+      "teacher_returned_model_counts": {},
+      "router_checkpoint_ids": [
+        {
+          "router_family": "kev",
+          "run_id": "KEV-4B-ADAPTER",
+          "checkpoint_id": "/home/syy/路由/models/kev-4b-adapter"
+        }
+      ]
+    },
+    {
+      "task_id": "openssl-selfsigned-cert",
+      "strategy": "kev_original",
+      "reward": null,
+      "trusted_business_reward": null,
+      "official_test_summary": null,
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "ROUTER_CPU_TIMEOUT",
+      "exception_type": "TimeoutExpired",
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 652.159529,
+      "generator_requests": 1,
+      "teacher_requests": 0,
+      "environment_setup_seconds": 9.597394,
+      "agent_setup_seconds": 0.000348,
+      "agent_seconds": 614.222861,
+      "verifier_seconds": null,
+      "teacher_successes": 0,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6-luna:high": 1
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 1
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 1,
+      "router_seconds": 263.0700284159975,
+      "issued_generator_router_calls": 1,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 1,
+      "unreturned_router_time_status": "NOT_SEPARATELY_REPORTED_INCLUDED_IN_AGENT_SECONDS",
+      "router_time_complete": false,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 4
+      },
+      "maximum_reported_router_input_tokens": 3282,
+      "encoded_groups": {
+        "T": {
+          "FULL": 1
+        },
+        "M": {
+          "FULL": 1
+        },
+        "H": {
+          "FULL": 1
+        },
+        "teacher_assessment": {
+          "FULL": 1
+        }
+      },
+      "unreturned_router_input_status": "UNKNOWN",
+      "router_initialization_seconds": 51.65932379104197,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 210.6863613575697,
+      "tool_seconds": 1.7441999589791521,
+      "generator_reference_usd": 0.0001997,
+      "teacher_reference_usd": null,
+      "generator_provider_seconds": 8.056187917012721,
+      "teacher_provider_seconds": 0,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.0001997,
+      "known_reference_usd": 0.0001997,
+      "prompt_tokens": 1347,
+      "completion_tokens_including_reasoning": 130,
+      "reasoning_tokens": 27,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 1
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 1
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "generator_protocol_counts": {
+        "responses": 1
+      },
+      "teacher_returned_model_counts": {},
+      "router_checkpoint_ids": [
+        {
+          "router_family": "kev",
+          "run_id": "KEV-4B-ADAPTER",
+          "checkpoint_id": "/home/syy/路由/models/kev-4b-adapter"
+        }
+      ]
+    },
+    {
+      "task_id": "regex-log",
+      "strategy": "kev_original_cpu40",
+      "reward": 0.0,
+      "trusted_business_reward": null,
+      "official_test_summary": null,
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "ENVIRONMENT_UNKNOWN",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 722.557527,
+      "generator_requests": 4,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 8.117341,
+      "agent_setup_seconds": 0.000319,
+      "agent_seconds": 654.705522,
+      "verifier_seconds": 39.273163,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6-luna:high": 4
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 4
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 4,
+      "router_seconds": 563.6071047490695,
+      "issued_generator_router_calls": 4,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 16
+      },
+      "maximum_reported_router_input_tokens": 5367,
+      "encoded_groups": {
+        "T": {
+          "FULL": 4
+        },
+        "M": {
+          "FULL": 4
+        },
+        "H": {
+          "FULL": 4
+        },
+        "teacher_assessment": {
+          "FULL": 4
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 51.68232939206064,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 510.9734643083066,
+      "tool_seconds": 6.781770249130204,
+      "generator_reference_usd": 0.00214262,
+      "teacher_reference_usd": 0.0002197,
+      "generator_provider_seconds": 73.11103466711938,
+      "teacher_provider_seconds": 6.7851022919639945,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.0023623200000000002,
+      "known_reference_usd": 0.0023623200000000002,
+      "prompt_tokens": 9485,
+      "completion_tokens_including_reasoning": 3035,
+      "reasoning_tokens": 1936,
+      "cache_read_tokens": 1152,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 4
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 4
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "generator_protocol_counts": {
+        "responses": 4
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "kev",
+          "run_id": "KEV-4B-ADAPTER",
+          "checkpoint_id": "/home/syy/路由/models/kev-4b-adapter"
+        }
+      ]
+    },
+    {
+      "task_id": "sqlite-db-truncate",
+      "strategy": "kev_original_cpu40",
+      "reward": 0.0,
+      "trusted_business_reward": 0.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793988578.882367,
+        "stop": 1793988581.30335
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": "AgentTimeoutError",
+      "agent_timed_out": true,
+      "official_reward_after_timeout_is_not_normal_agent_completion": true,
+      "cancelled_at": "2026-11-06T18:05:37.959722+00:00",
+      "wall_seconds": 1178.966253,
+      "generator_requests": 4,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 9.117001,
+      "agent_setup_seconds": 0.000298,
+      "agent_seconds": 1017.210121,
+      "verifier_seconds": 124.698364,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 2,
+      "actions": {
+        "gpt-6-luna:high": 4
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 5
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 5,
+      "router_seconds": 929.2206091668922,
+      "issued_generator_router_calls": 4,
+      "returned_after_cancellation_router_calls": 1,
+      "returned_after_cancellation_router_seconds": 277.1477770829806,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 20
+      },
+      "maximum_reported_router_input_tokens": 8925,
+      "encoded_groups": {
+        "T": {
+          "FULL": 5
+        },
+        "M": {
+          "FULL": 5
+        },
+        "H": {
+          "FULL": 5
+        },
+        "teacher_assessment": {
+          "FULL": 5
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 50.94685932062566,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 877.130549505353,
+      "tool_seconds": 9.506101417937316,
+      "generator_reference_usd": 0.0023455,
+      "teacher_reference_usd": 0.0002125,
+      "generator_provider_seconds": 67.16338120924775,
+      "teacher_provider_seconds": 6.907924375031143,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.002558,
+      "known_reference_usd": 0.002558,
+      "prompt_tokens": 14078,
+      "completion_tokens_including_reasoning": 2646,
+      "reasoning_tokens": 1779,
+      "cache_read_tokens": 1920,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 4
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 4
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "generator_protocol_counts": {
+        "responses": 4
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "kev",
+          "run_id": "KEV-4B-ADAPTER",
+          "checkpoint_id": "/home/syy/路由/models/kev-4b-adapter"
+        }
+      ]
+    },
+    {
+      "task_id": "openssl-selfsigned-cert",
+      "strategy": "kev_original_cpu40",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793989614.6006336,
+        "stop": 1793989620.2972555
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 1011.743768,
+      "generator_requests": 5,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 9.6579,
+      "agent_setup_seconds": 0.001157,
+      "agent_seconds": 859.429491,
+      "verifier_seconds": 119.122082,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6-luna:high": 5
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 5
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 5,
+      "router_seconds": 759.4014300419949,
+      "issued_generator_router_calls": 5,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 20
+      },
+      "maximum_reported_router_input_tokens": 6009,
+      "encoded_groups": {
+        "T": {
+          "FULL": 5
+        },
+        "M": {
+          "FULL": 5
+        },
+        "H": {
+          "FULL": 5
+        },
+        "teacher_assessment": {
+          "FULL": 5
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 49.28978856280446,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 709.0823441315442,
+      "tool_seconds": 26.634050624910742,
+      "generator_reference_usd": 0.00184144,
+      "teacher_reference_usd": 0.0002237,
+      "generator_provider_seconds": 62.86174066597596,
+      "teacher_provider_seconds": 6.676227084011771,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.00206514,
+      "known_reference_usd": 0.00206514,
+      "prompt_tokens": 15977,
+      "completion_tokens_including_reasoning": 2156,
+      "reasoning_tokens": 400,
+      "cache_read_tokens": 6784,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 5
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 5
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 5
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 5
+      },
+      "generator_protocol_counts": {
+        "responses": 5
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "kev",
+          "run_id": "KEV-4B-ADAPTER",
+          "checkpoint_id": "/home/syy/路由/models/kev-4b-adapter"
+        }
+      ]
+    },
+    {
+      "task_id": "regex-log",
+      "strategy": "kev_trained",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793995892.3801887,
+        "stop": 1793995893.4741147
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": "AgentTimeoutError",
+      "agent_timed_out": true,
+      "official_reward_after_timeout_is_not_normal_agent_completion": true,
+      "cancelled_at": "2026-11-06T20:06:47.416739+00:00",
+      "wall_seconds": 1217.609529,
+      "generator_requests": 6,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 7.9647,
+      "agent_setup_seconds": 9.7e-05,
+      "agent_seconds": 962.538144,
+      "verifier_seconds": 224.021528,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6-luna:medium": 2,
+        "gpt-6.1-terra:high": 4
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:medium": 2,
+        "gpt-6.1-terra:high": 5
+      },
+      "joint_action_switches": 2,
+      "model_switches": 2,
+      "router_calls": 7,
+      "router_seconds": 847.4687405409059,
+      "issued_generator_router_calls": 6,
+      "returned_after_cancellation_router_calls": 1,
+      "returned_after_cancellation_router_seconds": 124.05509620788507,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 28
+      },
+      "maximum_reported_router_input_tokens": 5162,
+      "encoded_groups": {
+        "T": {
+          "FULL": 7
+        },
+        "M": {
+          "FULL": 7
+        },
+        "H": {
+          "FULL": 7
+        },
+        "teacher_assessment": {
+          "FULL": 7
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 49.091819643974304,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 797.2715887613595,
+      "tool_seconds": 8.48966508207377,
+      "generator_reference_usd": 0.020332700000000002,
+      "teacher_reference_usd": 0.0001931,
+      "generator_provider_seconds": 96.04370670788921,
+      "teacher_provider_seconds": 6.293094334076159,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.020525800000000004,
+      "known_reference_usd": 0.020525800000000004,
+      "prompt_tokens": 48927,
+      "completion_tokens_including_reasoning": 3105,
+      "reasoning_tokens": 1487,
+      "cache_read_tokens": 17152,
+      "cache_write_tokens": null,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "medium": 2,
+        "high": 4
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 6
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 2,
+        "gpt-6.1-terra": 4
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 2,
+        "gpt-6.1-terra": 4
+      },
+      "generator_protocol_counts": {
+        "responses": 6
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "kev",
+          "run_id": "V9-K3-KEV-20261107",
+          "checkpoint_id": "/home/syy/路由/runs/V9-K3-KEV-20261107"
+        }
+      ]
+    },
+    {
+      "task_id": "sqlite-db-truncate",
+      "strategy": "kev_trained",
+      "reward": 0.0,
+      "trusted_business_reward": null,
+      "official_test_summary": null,
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "ENVIRONMENT_UNKNOWN",
+      "exception_type": "AgentTimeoutError",
+      "agent_timed_out": true,
+      "official_reward_after_timeout_is_not_normal_agent_completion": true,
+      "cancelled_at": "2026-11-06T20:27:08.109020+00:00",
+      "wall_seconds": 1236.837011,
+      "generator_requests": 4,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 8.289851,
+      "agent_setup_seconds": 0.00012,
+      "agent_seconds": 1143.8549,
+      "verifier_seconds": 64.642635,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6.1-terra:high": 2,
+        "gpt-6-luna:xhigh": 1,
+        "gpt-6-luna:medium": 1
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6.1-terra:high": 3,
+        "gpt-6-luna:xhigh": 1,
+        "gpt-6-luna:medium": 1
+      },
+      "joint_action_switches": 3,
+      "model_switches": 2,
+      "router_calls": 5,
+      "router_seconds": 1046.7491067099618,
+      "issued_generator_router_calls": 4,
+      "returned_after_cancellation_router_calls": 1,
+      "returned_after_cancellation_router_seconds": 268.3634316669777,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 20
+      },
+      "maximum_reported_router_input_tokens": 9380,
+      "encoded_groups": {
+        "T": {
+          "FULL": 5
+        },
+        "M": {
+          "FULL": 5
+        },
+        "H": {
+          "FULL": 5
+        },
+        "teacher_assessment": {
+          "FULL": 5
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 48.15798422694206,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 997.6785317119211,
+      "tool_seconds": 18.03534350125119,
+      "generator_reference_usd": 0.0193473,
+      "teacher_reference_usd": 0.0002462,
+      "generator_provider_seconds": 68.10817366698757,
+      "teacher_provider_seconds": 7.47470154101029,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.0195935,
+      "known_reference_usd": 0.0195935,
+      "prompt_tokens": 31251,
+      "completion_tokens_including_reasoning": 2055,
+      "reasoning_tokens": 360,
+      "cache_read_tokens": 5120,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 2,
+        "xhigh": 1,
+        "medium": 1
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 4
+      },
+      "request_model_counts": {
+        "gpt-6.1-terra": 2,
+        "gpt-6-luna": 2
+      },
+      "returned_model_counts": {
+        "gpt-6.1-terra": 2,
+        "gpt-6-luna": 2
+      },
+      "generator_protocol_counts": {
+        "responses": 4
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "kev",
+          "run_id": "V9-K3-KEV-20261107",
+          "checkpoint_id": "/home/syy/路由/runs/V9-K3-KEV-20261107"
+        }
+      ]
+    },
+    {
+      "task_id": "openssl-selfsigned-cert",
+      "strategy": "kev_trained",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793998234.7549498,
+        "stop": 1793998240.7889028
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": "AgentTimeoutError",
+      "agent_timed_out": true,
+      "official_reward_after_timeout_is_not_normal_agent_completion": true,
+      "cancelled_at": "2026-11-06T20:47:50.587612+00:00",
+      "wall_seconds": 1101.71495,
+      "generator_requests": 5,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 9.43935,
+      "agent_setup_seconds": 0.00032,
+      "agent_seconds": 950.973391,
+      "verifier_seconds": 119.854131,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6.1-terra:high": 5
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6.1-terra:high": 6
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 6,
+      "router_seconds": 832.4205271239625,
+      "issued_generator_router_calls": 5,
+      "returned_after_cancellation_router_calls": 1,
+      "returned_after_cancellation_router_seconds": 165.91477729100734,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 24
+      },
+      "maximum_reported_router_input_tokens": 5998,
+      "encoded_groups": {
+        "T": {
+          "FULL": 6
+        },
+        "M": {
+          "FULL": 6
+        },
+        "H": {
+          "FULL": 6
+        },
+        "teacher_assessment": {
+          "FULL": 6
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 47.77303626202047,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 783.8133394420147,
+      "tool_seconds": 32.250073084491305,
+      "generator_reference_usd": 0.024687599999999997,
+      "teacher_reference_usd": 0.0002021,
+      "generator_provider_seconds": 76.29084229201544,
+      "teacher_provider_seconds": 6.601549166953191,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.024889699999999997,
+      "known_reference_usd": 0.024889699999999997,
+      "prompt_tokens": 34085,
+      "completion_tokens_including_reasoning": 2270,
+      "reasoning_tokens": 328,
+      "cache_read_tokens": 19712,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 5
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 5
+      },
+      "request_model_counts": {
+        "gpt-6.1-terra": 5
+      },
+      "returned_model_counts": {
+        "gpt-6.1-terra": 5
+      },
+      "generator_protocol_counts": {
+        "responses": 5
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "kev",
+          "run_id": "V9-K3-KEV-20261107",
+          "checkpoint_id": "/home/syy/路由/runs/V9-K3-KEV-20261107"
+        }
+      ]
+    },
+    {
+      "task_id": "regex-log",
+      "strategy": "laya_original",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793984782.8292966,
+        "stop": 1793984783.9932027
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 487.072281,
+      "generator_requests": 5,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 10.874921,
+      "agent_setup_seconds": 0.001476,
+      "agent_seconds": 201.703749,
+      "verifier_seconds": 248.362832,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 2,
+      "actions": {
+        "gpt-6-luna:high": 5
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 5
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 5,
+      "router_seconds": 102.11734374903608,
+      "issued_generator_router_calls": 5,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 20
+      },
+      "maximum_reported_router_input_tokens": 6008,
+      "encoded_groups": {
+        "T": {
+          "FULL": 5
+        },
+        "M": {
+          "FULL": 5
+        },
+        "H": {
+          "FULL": 5
+        },
+        "teacher_assessment": {
+          "FULL": 5
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 6.865894619375467,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 94.21490506082773,
+      "tool_seconds": 7.489944917964749,
+      "generator_reference_usd": 0.00439406,
+      "teacher_reference_usd": 0.0020853,
+      "generator_provider_seconds": 80.61709491710644,
+      "teacher_provider_seconds": 7.860454416018911,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.00647936,
+      "known_reference_usd": 0.00647936,
+      "prompt_tokens": 49367,
+      "completion_tokens_including_reasoning": 3477,
+      "reasoning_tokens": 2171,
+      "cache_read_tokens": 2176,
+      "cache_write_tokens": null,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 5
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 5
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 5
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 5
+      },
+      "generator_protocol_counts": {
+        "responses": 5
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "laya",
+          "run_id": "laya-base",
+          "checkpoint_id": "/home/syy/路由/models/laya-421m"
+        }
+      ]
+    },
+    {
+      "task_id": "sqlite-db-truncate",
+      "strategy": "laya_original",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793985159.805113,
+        "stop": 1793985161.1235433
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 370.515952,
+      "generator_requests": 5,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 8.733714,
+      "agent_setup_seconds": 0.000987,
+      "agent_seconds": 219.405067,
+      "verifier_seconds": 118.200431,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6-luna:high": 5
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 5
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 5,
+      "router_seconds": 124.29140320792794,
+      "issued_generator_router_calls": 5,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 20
+      },
+      "maximum_reported_router_input_tokens": 7388,
+      "encoded_groups": {
+        "T": {
+          "FULL": 5
+        },
+        "M": {
+          "FULL": 5
+        },
+        "H": {
+          "FULL": 5
+        },
+        "teacher_assessment": {
+          "FULL": 5
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 6.9369010999798775,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 116.4167067129165,
+      "tool_seconds": 12.194804126978852,
+      "generator_reference_usd": 0.0023157,
+      "teacher_reference_usd": 0.0002011,
+      "generator_provider_seconds": 72.25310808198992,
+      "teacher_provider_seconds": 6.263238666928373,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.0025168,
+      "known_reference_usd": 0.0025168,
+      "prompt_tokens": 14036,
+      "completion_tokens_including_reasoning": 2572,
+      "reasoning_tokens": 959,
+      "cache_read_tokens": 1920,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 5
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 5
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 5
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 5
+      },
+      "generator_protocol_counts": {
+        "responses": 5
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "laya",
+          "run_id": "laya-base",
+          "checkpoint_id": "/home/syy/路由/models/laya-421m"
+        }
+      ]
+    },
+    {
+      "task_id": "openssl-selfsigned-cert",
+      "strategy": "laya_original",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793985491.4700778,
+        "stop": 1793985496.8571794
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 329.519885,
+      "generator_requests": 4,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 9.549345,
+      "agent_setup_seconds": 0.000361,
+      "agent_seconds": 162.410249,
+      "verifier_seconds": 133.322563,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6-luna:high": 4
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 4
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 4,
+      "router_seconds": 87.61642641713843,
+      "issued_generator_router_calls": 4,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 16
+      },
+      "maximum_reported_router_input_tokens": 6144,
+      "encoded_groups": {
+        "T": {
+          "FULL": 4
+        },
+        "M": {
+          "FULL": 4
+        },
+        "H": {
+          "FULL": 4
+        },
+        "teacher_assessment": {
+          "FULL": 4
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 7.3132476806640625,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 79.45666571892798,
+      "tool_seconds": 16.716143374098465,
+      "generator_reference_usd": 0.00135846,
+      "teacher_reference_usd": 0.0002225,
+      "generator_provider_seconds": 47.70671070890967,
+      "teacher_provider_seconds": 6.674297499936074,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.00158096,
+      "known_reference_usd": 0.00158096,
+      "prompt_tokens": 10754,
+      "completion_tokens_including_reasoning": 1518,
+      "reasoning_tokens": 406,
+      "cache_read_tokens": 2816,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 4
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 4
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "generator_protocol_counts": {
+        "responses": 4
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "laya",
+          "run_id": "laya-base",
+          "checkpoint_id": "/home/syy/路由/models/laya-421m"
+        }
+      ]
+    },
+    {
+      "task_id": "regex-log",
+      "strategy": "laya_trained",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793987314.7550278,
+        "stop": 1793987317.354133
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 569.340641,
+      "generator_requests": 4,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 14.166545,
+      "agent_setup_seconds": 0.000676,
+      "agent_seconds": 200.914962,
+      "verifier_seconds": 321.357006,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6-luna:high": 4
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 4
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 4,
+      "router_seconds": 105.96515375003219,
+      "issued_generator_router_calls": 4,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 16
+      },
+      "maximum_reported_router_input_tokens": 5750,
+      "encoded_groups": {
+        "T": {
+          "FULL": 4
+        },
+        "M": {
+          "FULL": 4
+        },
+        "H": {
+          "FULL": 4
+        },
+        "teacher_assessment": {
+          "FULL": 4
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 9.53495498932898,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 95.28897569328547,
+      "tool_seconds": 10.165332416654564,
+      "generator_reference_usd": 0.00208182,
+      "teacher_reference_usd": 0.0002075,
+      "generator_provider_seconds": 74.4025652500568,
+      "teacher_provider_seconds": 6.361193125019781,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.00228932,
+      "known_reference_usd": 0.00228932,
+      "prompt_tokens": 8985,
+      "completion_tokens_including_reasoning": 2989,
+      "reasoning_tokens": 2082,
+      "cache_read_tokens": 1152,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 4
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 4
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "generator_protocol_counts": {
+        "responses": 4
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "laya",
+          "run_id": "laya-base",
+          "checkpoint_id": "/home/syy/路由/runs/V9-K3-LAYA-20261107"
+        }
+      ]
+    },
+    {
+      "task_id": "sqlite-db-truncate",
+      "strategy": "laya_trained",
+      "reward": null,
+      "trusted_business_reward": null,
+      "official_test_summary": null,
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "PROVIDER_UNKNOWN",
+      "exception_type": "URLError",
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 176.858673,
+      "generator_requests": 3,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 8.187107,
+      "agent_setup_seconds": 0.000168,
+      "agent_seconds": 143.036032,
+      "verifier_seconds": null,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6-luna:high": 3
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 4
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 4,
+      "router_seconds": 90.94868012494408,
+      "issued_generator_router_calls": 3,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 16
+      },
+      "maximum_reported_router_input_tokens": 6769,
+      "encoded_groups": {
+        "T": {
+          "FULL": 4
+        },
+        "M": {
+          "FULL": 4
+        },
+        "H": {
+          "FULL": 4
+        },
+        "teacher_assessment": {
+          "FULL": 4
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 7.168441319838166,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 82.95457827672362,
+      "tool_seconds": 8.228573958971538,
+      "generator_reference_usd": 0.0007626,
+      "teacher_reference_usd": 0.0002691,
+      "generator_provider_seconds": 26.26530604204163,
+      "teacher_provider_seconds": 9.161922083934769,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": null,
+      "known_reference_usd": 0.0010317,
+      "prompt_tokens": null,
+      "completion_tokens_including_reasoning": null,
+      "reasoning_tokens": null,
+      "cache_read_tokens": null,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 1,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 3
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 3
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 3
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 3
+      },
+      "generator_protocol_counts": {
+        "responses": 3
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "laya",
+          "run_id": "V9-K3-LAYA-20261107",
+          "checkpoint_id": "/home/syy/路由/runs/V9-K3-LAYA-20261107"
+        }
+      ]
+    },
+    {
+      "task_id": "openssl-selfsigned-cert",
+      "strategy": "laya_trained",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793987943.3524806,
+        "stop": 1793987952.4196494
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 438.429415,
+      "generator_requests": 4,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 20.561127,
+      "agent_setup_seconds": 0.008389,
+      "agent_seconds": 218.879514,
+      "verifier_seconds": 170.145374,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6-luna:high": 3,
+        "gpt-6.1-terra:high": 1
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 3,
+        "gpt-6.1-terra:high": 1
+      },
+      "joint_action_switches": 1,
+      "model_switches": 1,
+      "router_calls": 4,
+      "router_seconds": 122.75163495785091,
+      "issued_generator_router_calls": 4,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 16
+      },
+      "maximum_reported_router_input_tokens": 6808,
+      "encoded_groups": {
+        "T": {
+          "FULL": 4
+        },
+        "M": {
+          "FULL": 4
+        },
+        "H": {
+          "FULL": 4
+        },
+        "teacher_assessment": {
+          "FULL": 4
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 8.212531248107553,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 113.41473473794758,
+      "tool_seconds": 31.90545512503013,
+      "generator_reference_usd": 0.0097552,
+      "teacher_reference_usd": 0.000223,
+      "generator_provider_seconds": 51.40286445885431,
+      "teacher_provider_seconds": 6.106450374936685,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.0099782,
+      "known_reference_usd": 0.0099782,
+      "prompt_tokens": 15993,
+      "completion_tokens_including_reasoning": 1906,
+      "reasoning_tokens": 533,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 4
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 4
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 3,
+        "gpt-6.1-terra": 1
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 3,
+        "gpt-6.1-terra": 1
+      },
+      "generator_protocol_counts": {
+        "responses": 4
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "laya",
+          "run_id": "V9-K3-LAYA-20261107",
+          "checkpoint_id": "/home/syy/路由/runs/V9-K3-LAYA-20261107"
+        }
+      ]
+    },
+    {
+      "task_id": "sqlite-db-truncate",
+      "strategy": "laya_trained_provider_recovery",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793988292.9130301,
+        "stop": 1793988294.2628202
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 481.51231,
+      "generator_requests": 5,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 15.817582,
+      "agent_setup_seconds": 0.001002,
+      "agent_seconds": 284.3463,
+      "verifier_seconds": 151.798551,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 1,
+      "actions": {
+        "gpt-6-luna:high": 4,
+        "gpt-6.1-terra:high": 1
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:high": 4,
+        "gpt-6.1-terra:high": 1
+      },
+      "joint_action_switches": 2,
+      "model_switches": 2,
+      "router_calls": 5,
+      "router_seconds": 185.9117858337704,
+      "issued_generator_router_calls": 5,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [
+        "cpu"
+      ],
+      "encoded_group_status_counts": {
+        "FULL": 20
+      },
+      "maximum_reported_router_input_tokens": 7742,
+      "encoded_groups": {
+        "T": {
+          "FULL": 5
+        },
+        "M": {
+          "FULL": 5
+        },
+        "H": {
+          "FULL": 5
+        },
+        "teacher_assessment": {
+          "FULL": 5
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 9.487700756639242,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": 175.2490612398833,
+      "tool_seconds": 21.154116999940015,
+      "generator_reference_usd": 0.014242340000000001,
+      "teacher_reference_usd": 0.0002009,
+      "generator_provider_seconds": 66.23341812414583,
+      "teacher_provider_seconds": 6.425102791981772,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.014443240000000001,
+      "known_reference_usd": 0.014443240000000001,
+      "prompt_tokens": 38547,
+      "completion_tokens_including_reasoning": 2434,
+      "reasoning_tokens": 819,
+      "cache_read_tokens": 13056,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "high": 5
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 5
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 4,
+        "gpt-6.1-terra": 1
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 4,
+        "gpt-6.1-terra": 1
+      },
+      "generator_protocol_counts": {
+        "responses": 5
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "laya",
+          "run_id": "V9-K3-LAYA-20261107",
+          "checkpoint_id": "/home/syy/路由/runs/V9-K3-LAYA-20261107"
+        }
+      ]
+    },
+    {
+      "task_id": "openssl-selfsigned-cert",
+      "strategy": "fixed_luna",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793983790.1007438,
+        "stop": 1793983795.570828
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 232.04475,
+      "generator_requests": 4,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 10.73421,
+      "agent_setup_seconds": 0.000462,
+      "agent_seconds": 74.774111,
+      "verifier_seconds": 123.966311,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6-luna:low": 4
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:low": 4
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 4,
+      "router_seconds": 0.002195333829149604,
+      "issued_generator_router_calls": 4,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 4
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 4
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 4
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 4
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": 22.384803917026147,
+      "generator_reference_usd": 0.00345703,
+      "teacher_reference_usd": 0.0002703,
+      "generator_provider_seconds": 35.787631209008396,
+      "teacher_provider_seconds": 14.69653583294712,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.00372733,
+      "known_reference_usd": 0.00372733,
+      "prompt_tokens": 84230,
+      "completion_tokens_including_reasoning": 1537,
+      "reasoning_tokens": 316,
+      "cache_read_tokens": 60713,
+      "cache_write_tokens": null,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "low": 4
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 4
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 4
+      },
+      "generator_protocol_counts": {
+        "responses": 4
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "baseline_fixed_strong",
+          "run_id": null,
+          "checkpoint_id": "none"
+        }
+      ]
+    },
+    {
+      "task_id": "openssl-selfsigned-cert",
+      "strategy": "fixed_hy4",
+      "reward": null,
+      "trusted_business_reward": null,
+      "official_test_summary": null,
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "PROVIDER_UNKNOWN",
+      "exception_type": "HTTPError",
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 38.817461,
+      "generator_requests": 0,
+      "teacher_requests": 0,
+      "environment_setup_seconds": 8.782417,
+      "agent_setup_seconds": 0.000766,
+      "agent_seconds": 2.726755,
+      "verifier_seconds": null,
+      "teacher_successes": 0,
+      "teacher_encoded_decisions": 0,
+      "actions": {},
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "hy4:none": 1
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 1,
+      "router_seconds": 0.00019791699014604092,
+      "issued_generator_router_calls": 0,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": null,
+      "generator_reference_usd": null,
+      "teacher_reference_usd": null,
+      "generator_provider_seconds": null,
+      "teacher_provider_seconds": 0,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": null,
+      "known_reference_usd": null,
+      "prompt_tokens": null,
+      "completion_tokens_including_reasoning": null,
+      "reasoning_tokens": null,
+      "cache_read_tokens": null,
+      "cache_write_tokens": null,
+      "unknown_provider_requests": 1,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {},
+      "effort_status_counts": {},
+      "request_model_counts": {},
+      "returned_model_counts": {},
+      "generator_protocol_counts": {},
+      "teacher_returned_model_counts": {},
+      "router_checkpoint_ids": []
+    },
+    {
+      "task_id": "openssl-selfsigned-cert",
+      "strategy": "fixed_terra",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793984082.4167747,
+        "stop": 1793984087.6263466
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 243.12555,
+      "generator_requests": 6,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 11.860627,
+      "agent_setup_seconds": 0.004387,
+      "agent_seconds": 95.724031,
+      "verifier_seconds": 114.166596,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6.1-terra:low": 6
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6.1-terra:low": 6
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 6,
+      "router_seconds": 0.00367395905777812,
+      "issued_generator_router_calls": 6,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 6
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 6
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 6
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 6
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": 28.51117649814114,
+      "generator_reference_usd": 0.016376,
+      "teacher_reference_usd": 0.0020814,
+      "generator_provider_seconds": 56.68539837398566,
+      "teacher_provider_seconds": 7.523777958005667,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.018457400000000002,
+      "known_reference_usd": 0.018457400000000002,
+      "prompt_tokens": 60452,
+      "completion_tokens_including_reasoning": 1914,
+      "reasoning_tokens": 115,
+      "cache_read_tokens": 34560,
+      "cache_write_tokens": null,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "low": 6
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 6
+      },
+      "request_model_counts": {
+        "gpt-6.1-terra": 6
+      },
+      "returned_model_counts": {
+        "gpt-6.1-terra": 6
+      },
+      "generator_protocol_counts": {
+        "responses": 6
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "baseline_fixed_strong",
+          "run_id": null,
+          "checkpoint_id": "none"
+        }
+      ]
+    },
+    {
+      "task_id": "sqlite-db-truncate",
+      "strategy": "fixed_luna",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793983568.3053253,
+        "stop": 1793983569.8509736
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 265.973529,
+      "generator_requests": 5,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 13.600875,
+      "agent_setup_seconds": 0.000469,
+      "agent_seconds": 81.538688,
+      "verifier_seconds": 146.992182,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6-luna:low": 5
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6-luna:low": 5
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 5,
+      "router_seconds": 0.0013947910629212856,
+      "issued_generator_router_calls": 5,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 5
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 5
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 5
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 5
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": 19.564341709017754,
+      "generator_reference_usd": 0.00415568,
+      "teacher_reference_usd": 0.0020737,
+      "generator_provider_seconds": 51.60705816699192,
+      "teacher_provider_seconds": 8.14138983306475,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.00622938,
+      "known_reference_usd": 0.00622938,
+      "prompt_tokens": 123112,
+      "completion_tokens_including_reasoning": 2398,
+      "reasoning_tokens": 752,
+      "cache_read_tokens": 80898,
+      "cache_write_tokens": null,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "low": 5
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 5
+      },
+      "request_model_counts": {
+        "gpt-6-luna": 5
+      },
+      "returned_model_counts": {
+        "gpt-6-luna": 5
+      },
+      "generator_protocol_counts": {
+        "responses": 5
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "baseline_fixed_strong",
+          "run_id": null,
+          "checkpoint_id": "none"
+        }
+      ]
+    },
+    {
+      "task_id": "sqlite-db-truncate",
+      "strategy": "fixed_hy4",
+      "reward": null,
+      "trusted_business_reward": null,
+      "official_test_summary": null,
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "PROVIDER_UNKNOWN",
+      "exception_type": "HTTPError",
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 33.186928,
+      "generator_requests": 0,
+      "teacher_requests": 0,
+      "environment_setup_seconds": 9.034841,
+      "agent_setup_seconds": 0.000255,
+      "agent_seconds": 2.392199,
+      "verifier_seconds": null,
+      "teacher_successes": 0,
+      "teacher_encoded_decisions": 0,
+      "actions": {},
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "hy4:none": 1
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 1,
+      "router_seconds": 0.00012600002810359,
+      "issued_generator_router_calls": 0,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 1
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": null,
+      "generator_reference_usd": null,
+      "teacher_reference_usd": null,
+      "generator_provider_seconds": null,
+      "teacher_provider_seconds": 0,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": null,
+      "known_reference_usd": null,
+      "prompt_tokens": null,
+      "completion_tokens_including_reasoning": null,
+      "reasoning_tokens": null,
+      "cache_read_tokens": null,
+      "cache_write_tokens": null,
+      "unknown_provider_requests": 1,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {},
+      "effort_status_counts": {},
+      "request_model_counts": {},
+      "returned_model_counts": {},
+      "generator_protocol_counts": {},
+      "teacher_returned_model_counts": {},
+      "router_checkpoint_ids": []
+    },
+    {
+      "task_id": "sqlite-db-truncate",
+      "strategy": "fixed_terra",
+      "reward": 1.0,
+      "trusted_business_reward": 1.0,
+      "official_test_summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "pending": 0,
+        "other": 0,
+        "start": 1793983872.723942,
+        "stop": 1793983874.068
+      },
+      "result_scope": "ORIGINAL_FULL_EPISODE",
+      "status": "EVALUATED",
+      "exception_type": null,
+      "agent_timed_out": false,
+      "official_reward_after_timeout_is_not_normal_agent_completion": false,
+      "cancelled_at": null,
+      "wall_seconds": 252.782818,
+      "generator_requests": 7,
+      "teacher_requests": 1,
+      "environment_setup_seconds": 9.656177,
+      "agent_setup_seconds": 0.000711,
+      "agent_seconds": 105.115562,
+      "verifier_seconds": 114.360028,
+      "teacher_successes": 1,
+      "teacher_encoded_decisions": 0,
+      "actions": {
+        "gpt-6.1-terra:low": 7
+      },
+      "actions_scope": "ROUTER_DECISIONS_WITH_RECORDED_GENERATOR_RESPONSE_METRICS; FAILED_REQUEST_SELECTIONS_REMAIN_IN_ALL_RETURNED_ACTIONS",
+      "all_returned_actions": {
+        "gpt-6.1-terra:low": 7
+      },
+      "joint_action_switches": 0,
+      "model_switches": 0,
+      "router_calls": 7,
+      "router_seconds": 0.0036468759644776583,
+      "issued_generator_router_calls": 7,
+      "returned_after_cancellation_router_calls": 0,
+      "returned_after_cancellation_router_seconds": 0.0,
+      "post_cancellation_generator_requests": 0,
+      "router_seconds_scope": "RETURNED_CALLS_ONLY",
+      "unreturned_router_calls": 0,
+      "unreturned_router_time_status": "NOT_APPLICABLE",
+      "router_time_complete": true,
+      "router_device": [],
+      "encoded_group_status_counts": {},
+      "maximum_reported_router_input_tokens": null,
+      "encoded_groups": {
+        "T": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 7
+        },
+        "M": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 7
+        },
+        "H": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 7
+        },
+        "teacher_assessment": {
+          "NOT_APPLICABLE_FIXED_POLICY_NO_NEURAL_ENCODER": 7
+        }
+      },
+      "unreturned_router_input_status": "NOT_APPLICABLE",
+      "router_initialization_seconds": 0.0,
+      "router_gpu_wait_seconds": 0.0,
+      "router_device_transfer_seconds": 0.0,
+      "router_forward_seconds": null,
+      "tool_seconds": 28.890381498844363,
+      "generator_reference_usd": 0.0263102,
+      "teacher_reference_usd": 0.0002153,
+      "generator_provider_seconds": 63.82610683317762,
+      "teacher_provider_seconds": 9.674179375055246,
+      "teacher_time_scope": "REPORTED_REQUEST_LATENCY; LOCAL_ASSESSMENT_OVERHEAD_NOT_SEPARATELY_TIMED_AND_INCLUDED_IN_AGENT_SECONDS",
+      "complete_model_and_teacher_reference_usd": 0.0265255,
+      "known_reference_usd": 0.0265255,
+      "prompt_tokens": 51506,
+      "completion_tokens_including_reasoning": 2274,
+      "reasoning_tokens": 55,
+      "cache_read_tokens": 36224,
+      "cache_write_tokens": 0,
+      "unknown_provider_requests": 0,
+      "actual_billed_usd": null,
+      "router_resource_usd": null,
+      "vm_resource_usd": null,
+      "reported_native_efforts": {
+        "low": 7
+      },
+      "effort_status_counts": {
+        "PROVIDER_REPORTED_MATCH": 7
+      },
+      "request_model_counts": {
+        "gpt-6.1-terra": 7
+      },
+      "returned_model_counts": {
+        "gpt-6.1-terra": 7
+      },
+      "generator_protocol_counts": {
+        "responses": 7
+      },
+      "teacher_returned_model_counts": {
+        "gpt-6-luna": 1
+      },
+      "router_checkpoint_ids": [
+        {
+          "router_family": "baseline_fixed_strong",
+          "run_id": null,
+          "checkpoint_id": "none"
+        }
+      ]
+    }
+  ],
+  "total_cost_status": "UNKNOWN_SUPPLIER_AND_RESOURCE_USD"
+}

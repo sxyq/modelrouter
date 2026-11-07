@@ -1,0 +1,68 @@
+{
+  "same_saved_input": true,
+  "original_threads": 8,
+  "followup_threads": 40,
+  "original_inference_ms": 252066.47202931345,
+  "followup_inference_ms": 120084.162928164,
+  "choice": {
+    "provider": "codegoai",
+    "model": "gpt-6-luna",
+    "revision": "latest",
+    "native_effort": "high",
+    "action_id": "gpt-6-luna:high",
+    "pool": "Reasoning"
+  },
+  "identity": {
+    "router_run_id": "KEV-4B-ADAPTER",
+    "router_weights_path": "/home/syy/\u8def\u7531/models/kev-4b-adapter",
+    "router_initialization_ms": 52049.45409856737,
+    "router_process_reused": false,
+    "router_device": "cpu",
+    "router_gpu_wait_ms": 0.0,
+    "router_device_transfer_ms": 0.0,
+    "router_question_id": "route_decision",
+    "router_candidate_order": [
+      "gpt-6-luna:high",
+      "gpt-6-luna:low",
+      "gpt-6-luna:max",
+      "gpt-6-luna:medium",
+      "gpt-6-luna:none",
+      "gpt-6-luna:xhigh",
+      "gpt-6.1-terra:high",
+      "gpt-6.1-terra:low",
+      "gpt-6.1-terra:max",
+      "gpt-6.1-terra:medium",
+      "gpt-6.1-terra:none",
+      "gpt-6.1-terra:xhigh",
+      "hy4:none"
+    ],
+    "router_input_usage": {
+      "input_tokens": 3856,
+      "output_tokens": 274,
+      "state_group_coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 414
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 417,
+          "token_end": 423
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 424,
+          "token_end": 2591
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 2593,
+          "token_end": 3444
+        }
+      }
+    },
+    "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+    "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+  }
+}

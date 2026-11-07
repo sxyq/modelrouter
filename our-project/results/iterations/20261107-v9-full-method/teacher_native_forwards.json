@@ -1,0 +1,142 @@
+[
+  {
+    "family": "laya",
+    "checkpoint": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/epoch_01",
+    "decision_id": "24299ad6-50db-4f37-b41c-f68452a5f078-3",
+    "selected_action": {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    },
+    "latency_ms": 17531.843249918893,
+    "identity": {
+      "router_run_id": "F05",
+      "router_weights_path": "/home/syy/\u8def\u7531/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/epoch_01",
+      "router_initialization_ms": 7058.4535375237465,
+      "router_process_reused": false,
+      "router_device": "cpu",
+      "router_gpu_wait_ms": 0.0,
+      "router_device_transfer_ms": 0.0,
+      "router_question_id": "route_decision",
+      "router_candidate_order": [
+        "gpt-6-luna:high",
+        "gpt-6-luna:low",
+        "gpt-6-luna:max",
+        "gpt-6-luna:medium",
+        "gpt-6-luna:none",
+        "gpt-6-luna:xhigh",
+        "gpt-6.1-terra:high",
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:max",
+        "gpt-6.1-terra:medium",
+        "gpt-6.1-terra:none",
+        "gpt-6.1-terra:xhigh",
+        "hy4:none"
+      ],
+      "router_input_usage": {
+        "input_tokens": 6021,
+        "output_tokens": 0,
+        "state_tokens": 5611,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": [],
+        "state_group_coverage": {
+          "T": {
+            "status": "FULL",
+            "token_start": 2,
+            "token_end": 469
+          },
+          "teacher_assessment": {
+            "status": "FULL",
+            "token_start": 475,
+            "token_end": 628
+          },
+          "M": {
+            "status": "FULL",
+            "token_start": 630,
+            "token_end": 3128
+          },
+          "H": {
+            "status": "FULL",
+            "token_start": 3130,
+            "token_end": 5572
+          }
+        }
+      },
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+    },
+    "teacher_source": "REAL_LUNA_TEACHER_IN_CURRENT_FORMAL_PREFIX"
+  },
+  {
+    "family": "kev",
+    "checkpoint": "runs/KEV-V8-COVERAGE-R11/checkpoint",
+    "decision_id": "24299ad6-50db-4f37-b41c-f68452a5f078-3",
+    "selected_action": {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "medium",
+      "action_id": "gpt-6-luna:medium",
+      "pool": "Reasoning"
+    },
+    "latency_ms": 201211.93212503567,
+    "identity": {
+      "router_run_id": "KEV-4B-ADAPTER",
+      "router_weights_path": "/home/syy/\u8def\u7531/runs/KEV-V8-COVERAGE-R11/checkpoint",
+      "router_initialization_ms": 34488.9919757843,
+      "router_process_reused": false,
+      "router_device": "cpu",
+      "router_gpu_wait_ms": 0.0,
+      "router_device_transfer_ms": 0.0,
+      "router_question_id": "route_decision",
+      "router_candidate_order": [
+        "gpt-6-luna:high",
+        "gpt-6-luna:low",
+        "gpt-6-luna:max",
+        "gpt-6-luna:medium",
+        "gpt-6-luna:none",
+        "gpt-6-luna:xhigh",
+        "gpt-6.1-terra:high",
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:max",
+        "gpt-6.1-terra:medium",
+        "gpt-6.1-terra:none",
+        "gpt-6.1-terra:xhigh",
+        "hy4:none"
+      ],
+      "router_input_usage": {
+        "input_tokens": 5453,
+        "output_tokens": 269,
+        "state_group_coverage": {
+          "T": {
+            "status": "FULL",
+            "token_start": 2,
+            "token_end": 415
+          },
+          "teacher_assessment": {
+            "status": "FULL",
+            "token_start": 418,
+            "token_end": 578
+          },
+          "M": {
+            "status": "FULL",
+            "token_start": 579,
+            "token_end": 2746
+          },
+          "H": {
+            "status": "FULL",
+            "token_start": 2748,
+            "token_end": 5045
+          }
+        }
+      },
+      "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
+      "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"
+    },
+    "teacher_source": "REAL_LUNA_TEACHER_IN_CURRENT_FORMAL_PREFIX"
+  }
+]

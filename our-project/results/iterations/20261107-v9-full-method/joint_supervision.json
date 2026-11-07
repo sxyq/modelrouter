@@ -1,0 +1,967 @@
+{
+  "comparisons": [
+    {
+      "task_id": "hikari-py__hikari-2224",
+      "comparison": "route_decision",
+      "observed_actions": [
+        "gpt-6-luna:low",
+        "gpt-6-luna:medium",
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:medium"
+      ],
+      "winner": null,
+      "reason": "NO_VERIFIED_ACTION"
+    },
+    {
+      "task_id": "hikari-py__hikari-2224",
+      "comparison": "gpt-6-luna_effort",
+      "observed_actions": [
+        "gpt-6-luna:low",
+        "gpt-6-luna:medium"
+      ],
+      "winner": null,
+      "reason": "NO_VERIFIED_ACTION"
+    },
+    {
+      "task_id": "hikari-py__hikari-2224",
+      "comparison": "gpt-6.1-terra_effort",
+      "observed_actions": [
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:medium"
+      ],
+      "winner": null,
+      "reason": "NO_VERIFIED_ACTION"
+    },
+    {
+      "task_id": "hikari-py__hikari-2224-continued",
+      "comparison": "route_decision",
+      "observed_actions": [
+        "gpt-6-luna:low",
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:max"
+      ],
+      "winner": null,
+      "reason": "NO_VERIFIED_ACTION"
+    },
+    {
+      "task_id": "hikari-py__hikari-2224-continued",
+      "comparison": "gpt-6.1-terra_effort",
+      "observed_actions": [
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:max"
+      ],
+      "winner": null,
+      "reason": "NO_VERIFIED_ACTION"
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375",
+      "comparison": "route_decision",
+      "observed_actions": [
+        "gpt-6-luna:low",
+        "gpt-6-luna:medium",
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:medium"
+      ],
+      "winner": null,
+      "reason": "NO_VERIFIED_ACTION"
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375",
+      "comparison": "gpt-6-luna_effort",
+      "observed_actions": [
+        "gpt-6-luna:low",
+        "gpt-6-luna:medium"
+      ],
+      "winner": null,
+      "reason": "NO_VERIFIED_ACTION"
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375",
+      "comparison": "gpt-6.1-terra_effort",
+      "observed_actions": [
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:medium"
+      ],
+      "winner": null,
+      "reason": "NO_VERIFIED_ACTION"
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375-continued",
+      "comparison": "route_decision",
+      "observed_actions": [
+        "gpt-6-luna:low",
+        "gpt-6-luna:xhigh",
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:max"
+      ],
+      "winner": "gpt-6-luna:xhigh",
+      "reason": null
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375-continued",
+      "comparison": "gpt-6-luna_effort",
+      "observed_actions": [
+        "gpt-6-luna:low",
+        "gpt-6-luna:xhigh"
+      ],
+      "winner": "gpt-6-luna:xhigh",
+      "reason": null
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375-continued",
+      "comparison": "gpt-6.1-terra_effort",
+      "observed_actions": [
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:max"
+      ],
+      "winner": null,
+      "reason": "NO_VERIFIED_ACTION"
+    }
+  ],
+  "joint_preference_rows": 2,
+  "independent_train_tasks": 1,
+  "auxiliary_replay_rows": 16,
+  "full_13_action_optimum_known": false,
+  "local_relations": [
+    {
+      "task_id": "hikari-py__hikari-2224",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6-luna:medium"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": false,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "hikari-py__hikari-2224",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6.1-terra:low"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": false,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "hikari-py__hikari-2224",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6.1-terra:medium"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": false,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "hikari-py__hikari-2224",
+      "action_ids": [
+        "gpt-6-luna:medium",
+        "gpt-6.1-terra:low"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": false,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "hikari-py__hikari-2224",
+      "action_ids": [
+        "gpt-6-luna:medium",
+        "gpt-6.1-terra:medium"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": false,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "hikari-py__hikari-2224",
+      "action_ids": [
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:medium"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": false,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "hikari-py__hikari-2224-continued",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6.1-terra:low"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": false,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "hikari-py__hikari-2224-continued",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6.1-terra:max"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": false,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "hikari-py__hikari-2224-continued",
+      "action_ids": [
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:max"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": false,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6-luna:medium"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6.1-terra:low"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6.1-terra:medium"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375",
+      "action_ids": [
+        "gpt-6-luna:medium",
+        "gpt-6.1-terra:low"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375",
+      "action_ids": [
+        "gpt-6-luna:medium",
+        "gpt-6.1-terra:medium"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375",
+      "action_ids": [
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:medium"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375-continued",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6-luna:xhigh"
+      ],
+      "relationship": "EQUAL_LOCAL_PROGRESS",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 1,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 1,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375-continued",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6.1-terra:low"
+      ],
+      "relationship": "STRICT_MULTIDIMENSIONAL_DOMINANCE",
+      "axis_relations": {
+        "f2p_repair": "gpt-6-luna",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 1,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375-continued",
+      "action_ids": [
+        "gpt-6-luna:low",
+        "gpt-6.1-terra:max"
+      ],
+      "relationship": "STRICT_MULTIDIMENSIONAL_DOMINANCE",
+      "axis_relations": {
+        "f2p_repair": "gpt-6-luna",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 1,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375-continued",
+      "action_ids": [
+        "gpt-6-luna:xhigh",
+        "gpt-6.1-terra:low"
+      ],
+      "relationship": "STRICT_MULTIDIMENSIONAL_DOMINANCE",
+      "axis_relations": {
+        "f2p_repair": "gpt-6-luna",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 1,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375-continued",
+      "action_ids": [
+        "gpt-6-luna:xhigh",
+        "gpt-6.1-terra:max"
+      ],
+      "relationship": "STRICT_MULTIDIMENSIONAL_DOMINANCE",
+      "axis_relations": {
+        "f2p_repair": "gpt-6-luna",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6-luna",
+          "repaired_initial_f2p_ids": 1,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    },
+    {
+      "task_id": "rochacbruno__dynaconf-375-continued",
+      "action_ids": [
+        "gpt-6.1-terra:low",
+        "gpt-6.1-terra:max"
+      ],
+      "relationship": "NO_LOCAL_IMPROVEMENT",
+      "axis_relations": {
+        "f2p_repair": "EQUAL",
+        "p2p_restoration": "EQUAL",
+        "f2p_regression": "EQUAL",
+        "p2p_regression": "EQUAL"
+      },
+      "axis_opportunities": {
+        "f2p_repair": true,
+        "p2p_restoration": false,
+        "f2p_regression": true,
+        "p2p_regression": true
+      },
+      "pair_comparable": true,
+      "formal_preference_created": false,
+      "candidate_counts": [
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        },
+        {
+          "model_id": "gpt-6.1-terra",
+          "repaired_initial_f2p_ids": 0,
+          "restored_initial_p2p_ids": 0,
+          "new_p2p_regressions": 0,
+          "new_f2p_regressions": 0,
+          "unknown_test_ids": 0
+        }
+      ]
+    }
+  ]
+}
