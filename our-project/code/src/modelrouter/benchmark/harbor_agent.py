@@ -82,8 +82,7 @@ class PolicyModel(LitellmModel):
             provider_type = (OpenAIResponsesProvider if self.v9_enabled
                              and v9_config.get("generator_protocol") == "responses"
                              else OpenAICompatibleProvider)
-            self.provider = provider_type(request_timeout_sec=(
-                v9_config.get("provider_timeout_sec", 60.0) if self.v9_enabled else 60.0))
+            self.provider = provider_type(request_timeout_sec=None if self.v9_enabled else 60.0)
         self.max_output_tokens = max_output_tokens
         self.generator_stream = v9_config.get("generator_stream", True) if self.v9_enabled else True
         self.last_metrics, self.usage = {}, []
@@ -126,6 +125,7 @@ class PolicyModel(LitellmModel):
             if not available_actions:
                 raise RuntimeError("No available model/effort candidate: " + json.dumps(conditions))
         if self.v9_hook:
+            self.provider.request_timeout_sec = snapshot["time_remaining_sec"]
             snapshot = self.v9_hook.before_route(self.state, messages, snapshot, available_actions)
         else:
             snapshot.update(prompt=json.dumps(messages, ensure_ascii=False))
@@ -192,6 +192,8 @@ class PolicyModel(LitellmModel):
         spec = ModelRegistry().get_spec(selected["model"])
         if self.state.status == EpisodeStatus.TIMEOUT:
             raise RuntimeError("Harbor episode timed out")
+        if self.v9_enabled:
+            self.provider.request_timeout_sec = self.state.time_budget_sec - self.state.elapsed_time_sec
         started = time.perf_counter()
         event(self.record_dir, "GENERATOR_START", episode_id=self.state.episode_id, decision_id=decision_id,
               decision_sequence=self.state.step_index, selected_action=selected,

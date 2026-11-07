@@ -34,7 +34,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
 
     def __init__(
         self, base_url: Optional[str] = None, api_key: Optional[str] = None,
-        request_timeout_sec: float = 60.0,
+        request_timeout_sec: Optional[float] = 60.0,
         model_endpoints: Optional[Dict[str, Dict[str, str]]] = None,
     ):
         creds = load_generator_credentials()

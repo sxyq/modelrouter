@@ -179,7 +179,9 @@ def response_error(body, protocol):
         message = choices[0].get("message") or {}
         content = message.get("content")
         calls = [call.get("function", {}) for call in message.get("tool_calls") or []]
-        if choices[0].get("finish_reason") in (None, "length"):
+        if choices[0].get("finish_reason") == "length":
+            return "INCOMPLETE_RESPONSE"
+        if choices[0].get("finish_reason") is None:
             return "INCOMPLETE_RESPONSE" if content or calls else "EMPTY_RESPONSE"
     if not content and not calls:
         return "EMPTY_RESPONSE"

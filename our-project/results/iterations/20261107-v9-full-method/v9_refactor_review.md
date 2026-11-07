@@ -6,7 +6,7 @@
 
 当前只研究 Single-Agent。RQ3 已改为单 Agent 的任务阶段、真实子任务边界和路由决策粒度；多 Agent、角色协作、委派和 handoff 正式取消。`inspect/modify/verify/recover` 只是观察到的阶段，不表示已经实现任务拆分算法。
 
-本批已完成主要源码收敛、GLM授权接入、AA与原生输入工作，并新增10个真实Harbor尝试。整个科研工作包仍未完成：GLM多轮响应和Luna Max渠道档位存在实际问题，新池合法训练、最终四实体比较及完整任务净收益证明尚未取得。
+本批已完成主要源码收敛、GLM授权接入、AA与原生输入工作，并新增10个真实Harbor尝试。11-08接口定位进一步确认GLM正常接收和生成；本地180秒等待过短、长度耗尽误归为空响应两处已处理。完整科研仍未完成：GLM任务生成的推理预算、实际返回档位、Luna Max身份、新池合法训练、最终四实体比较及完整任务净收益尚缺证据。
 
 ## 二、真实进度与唯一职责
 
@@ -69,7 +69,7 @@ A6000 原 `/home/syy/路由/` 已定向部署源码；删除28个实际存在的
 
 ## 四、前三任务
 
-1. 解决Colink GLM多轮空流、矛盾Usage及未报告Effort的问题，取得渠道档位和计价说明；确认Luna Max为何返回xhigh。现有授权Key不用重新提供。
+1. 沿统一Harbor剩余时间取得GLM合法档位与4096额度内的有效工具生成；保留真实限流、预算耗尽及旧空流的区别，取得渠道档位/计价说明并确认Luna Max身份。现有Key不用重新提供。
 2. 原A6000环境继续开发题RQ1/RQ2；固定同批AA版本，取得可比完整Episode及所有已知/未知成本。当前10尝试不升级为论文效果结论。
 3. 根据真实新池任务结果形成合法监督，沿原Trainer比较每架构原始与选定训练实体；再推进RQ4、RQ3其他粒度及RQ5独立评价。
 
@@ -86,6 +86,22 @@ Registry 登记GLM的 `low/high/max`，官方Chat参数使用顶层 `reasoning_e
 GLM Low1024第二次生成只有reasoning、finish=length，无工具/文本；High/Max出现reasoning大于completion。Provider现保留原Usage，完整用量及费用标未知，不让计费异常掩盖有效生成；旧失败不重写。更新后的Laya真实GLM High仍返回矛盾Usage（prompt4561、completion1024、reasoning1025、cached1024）。单独4096输出组的第二请求182.345秒仅有role及keepalive，无DONE、内容或Usage，原229字节SSE保留。GLM完整多轮任务尚未跑通。
 
 Colink自身Key接口 `https://www.colink.site/v1/usage`真实返回USD用量及多个费用字段；完整私人查询保留在private/glm_channel，不公开账户账目。这是累计模型汇总，未取得逐请求关联及费率说明，不能分摊给Episode或冒称本批实收。公开模型广场接口返回401，不使用admin接口。Registry仍明确使用官方标准参考价，不冒称Colink费率。
+
+11-08负责人要求直接核对请求侧：在原A6000环境用同一Key、精确小写GLM和当前Provider完成真实调用；没有启动Benchmark容器或改变共享服务。
+
+| 实际调用 | 结果 | 证据 |
+| --- | --- | --- |
+| 短请求，现有Provider SSE | HTTP200、OK、DONE | 13.216秒，prompt20/completion15/reasoning13 |
+| 同短请求，有效curl POST SSE | HTTP200、OK、DONE | 5.035秒，prompt20/completion14/reasoning12 |
+| 原失败工具历史，High4096，Provider非流式 | 本地TimeoutError | 180.955秒，尚未取得HTTP响应 |
+| 同历史与参数，curl非流式、不设180秒等待 | 先429、按Retry-After只重试一次后HTTP200 | 333.097秒，prompt4706/completion4096/reasoning4096、cached4608；finish=length，无文本或工具，原JSON有14888字符推理 |
+| 同历史，Low4096，更新后Provider SSE | 两次HTTP429 | 没有形成Low质量或耗时对照，不继续补发 |
+
+GLM接入与请求协议可以工作。333秒响应说明180秒本地等待不适配这一生成；4096额度全部耗于推理，不能将它称为成功工具生成，也不能把“输出上限较大”与“答案额度充足”混为一件事。旧229字节SSE确实没有可见输出，其精确原因尚未由这组非流式结果证明；不能据旧失败推断渠道整体不可用。
+
+正式Agent请求现在在教师前、Router后分别读取同一AgentState的实际剩余时间，不再使用独立provider_timeout_sec；Harbor总任务时间仍有效。Chat finish=length统一为INCOMPLETE_RESPONSE，真实无内容/工具且无完成原因的空流仍按EMPTY_RESPONSE保存。复用333秒原JSON已确认新解释为INCOMPLETE_RESPONSE，部署环境的Harbor Adapter实际导入成功。没有扩大1024/4096额度、换模型、添加产品自动重试或重跑全仓测试。
+
+三个直接curl控制在请求体装载不正确时得到404/400，只属于诊断命令问题，不能计作GLM质量或可用性失败；有效POST对照已经补齐。全部新请求、响应、限流和超时材料保留于private/glm_channel/request_diagnosis，不作为完整Episode、AA成绩、训练标签或新盲测。
 
 ### AA 精确记录
 
@@ -147,7 +163,7 @@ GLM High4096第一请求原Usage为prompt1119/completion75/reasoning1/cached1024
 
 ## 六、独立判断
 
-源码、数据链和原生消费已收敛，三个精确API模型都实际被请求，但GLM完整多轮任务和15档位渠道证据尚不成立。当前支持“当前能力与真实教师能进入Router”，不支持“Router学会新池”或“完整任务净收益成立”。AA分数是外部能力参考，不能用作Terminal-Bench赢家标签。新开发题Terra Low/Max与Luna Low均失败，也没有证据说明Max更有质量收益；单题结果不作总体档位结论。
+源码、数据链和原生消费已收敛，GLM接入与333秒非流式生成已确认正常；当前障碍包括推理预算耗尽、真实429以及尚无完整任务和档位回报证据，不再概括为渠道不可用。当前支持“当前能力与真实教师能进入Router”，不支持“Router学会新池”或“完整任务净收益成立”。AA分数是外部能力参考，不能用作Terminal-Bench赢家标签。新开发题Terra Low/Max与Luna Low均失败，没有Max总体质量收益证据。
 
 原始Laya在CPU上的路由时间不能忽略；Kev更大的原生状态容量也不能直接解释成任务收益。论文主表需要完整Episode和所有成本项，部分已知参考模型费用须与未知实收/资源费用分开。
 
@@ -159,4 +175,4 @@ GLM High4096第一请求原Usage为prompt1119/completion75/reasoning1/cached1024
 
 事前选定开发用途 `circuit-fibsqrt`已真实运行并成为已观察开发题；独立评价用途 `constraints-scheduling`仍未运行、未阅读终局，不用于挑权重。可见旧运行目录未包含这两题，不等于证明模型预训练无暴露。
 
-当前可以自行完成的源码、原生编码、证据同步及临时容器清理已处理。临时17898 SSH反向代理已结束，memfd凭据已关闭；原Docker VM/用户socket保留，其镜像联网仍需任务内代理，不建立持久调度。进一步付费比较依赖渠道解决GLM空流、Usage/Effort及Luna Max身份问题，不继续重复同一失败烧Token。得到有效渠道事实后沿唯一Harbor路径补RQ1/RQ2开发结果，形成新池合法监督，原Trainer选择每架构一个训练实体；最后在事前独立题报告完整质量与全部成本，推进RQ4、RQ3和RQ5。不创建后台调度、第二工作区或训练队列，不改共享服务。
+源码、原生编码、证据同步及临时容器清理已处理。11-08接口定位后的临时17898代理及memfd按运行结束清理；原Docker VM/用户socket保留，镜像联网仍需任务内代理，不建立持久调度。接下来沿统一Harbor剩余时间和合法Model×Effort取得RQ1/RQ2完整开发结果，区分额度耗尽/限流/旧空流；不反复补发相同失败，不根据API成功宣称方法有效。之后形成真实新池监督、沿原Trainer选择训练实体，最后做独立题完整质量与全部成本，并推进RQ4/RQ3/RQ5。实际Effort与费用资料仍需补齐，不换Key、第二工作区或共享服务。
