@@ -1,7 +1,7 @@
 """Official mini-swe-agent v2 with a per-request ModelRouter model hook.
 
 Upstream owns the loop, parsing, observations and exit semantics.
-The historical SingleAgent remains in modelrouter.agent.agent.
+The historical Agent Pilot loop is isolated in modelrouter.agent.legacy.
 """
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ from minisweagent.models.utils.actions_toolcall import BASH_TOOL
 from modelrouter.agent.state import AgentState, EpisodeStatus
 from modelrouter.baselines.policy import create_policy
 from modelrouter.providers.provider import OpenAICompatibleProvider, OpenAIResponsesProvider, ProviderResponseError
-from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS
+from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS, legal_actions
 from modelrouter.serving.schemas import LegalAction, PreDecisionState
 from modelrouter.v9.runtime.context import record_tool_result
 from .iterations import append, event, now, rows
@@ -54,18 +54,6 @@ def mini_configuration(max_steps=30, cost_limit=0.0):
     config["model"]["model_kwargs"]["_skip_responses_api_bridge"] = True
     config["model"]["model_kwargs"]["num_retries"] = 0
     return config
-
-
-def legal_actions(model_ids=V9_MODEL_IDS):
-    registry = ModelRegistry()
-    actions = []
-    for model in model_ids:
-        spec = registry.get_spec(model)
-        for effort in spec.native_efforts or ("none",):
-            spec.validate_effort(effort)
-            actions.append(LegalAction(provider=spec.provider, model=model, revision="latest",
-                                       native_effort=effort).model_dump())
-    return sorted(actions, key=lambda action: action["action_id"])
 
 
 class PolicyModel(LitellmModel):
@@ -99,6 +87,7 @@ class PolicyModel(LitellmModel):
         self.max_output_tokens = max_output_tokens
         self.generator_stream = v9_config.get("generator_stream", True) if self.v9_enabled else True
         self.last_metrics, self.usage = {}, []
+        self.provider_failures = []
         self.fallback_used = False
         self.untested_efforts_used = set()
         self.v9_hook = None
@@ -125,6 +114,7 @@ class PolicyModel(LitellmModel):
             raise RuntimeError("Harbor episode timed out")
         decision_id = f"{self.state.episode_id}-{self.state.step_index}"
         snapshot = self.state.build_pre_decision_snapshot().to_dict()
+        snapshot.update(decision_id=decision_id, decision_sequence=self.state.step_index)
         available_actions = self.actions
         if self.v9_enabled:
             input_bound = len(json.dumps(messages, ensure_ascii=False).encode("utf-8"))
@@ -152,6 +142,10 @@ class PolicyModel(LitellmModel):
         snapshot = PreDecisionState.model_validate(snapshot).model_dump()
         self.state.pre_decision_snapshot = snapshot
         route_start = time.perf_counter()
+        event(self.record_dir, "ROUTER_START", episode_id=self.state.episode_id,
+              decision_id=decision_id, decision_sequence=self.state.step_index,
+              elapsed_time_sec=snapshot["elapsed_time_sec"], time_remaining_sec=snapshot["time_remaining_sec"],
+              capability_snapshot_id=snapshot.get("capability_snapshot_id"))
         if hasattr(self.policy, "client"):
             decision = self.policy.client.route(
                 episode_id=self.state.episode_id, decision_id=decision_id,
@@ -168,7 +162,10 @@ class PolicyModel(LitellmModel):
             else:
                 decision = self.policy.select(self.state, available_actions)
         selected = LegalAction.model_validate(decision.selected_action).model_dump()
-        if selected not in self.actions:
+        router_wall_ms = (time.perf_counter() - route_start) * 1000
+        if self.state.router_time_sec is not None:
+            self.state.router_time_sec += router_wall_ms / 1000
+        if selected not in available_actions:
             raise ValueError("Selected action is not part of this trial's candidate set")
         self.state.last_decision_id = decision_id
         self.state.last_router_checkpoint_id = decision.checkpoint_id
@@ -184,7 +181,7 @@ class PolicyModel(LitellmModel):
         event(self.record_dir, "ROUTER_END", episode_id=self.state.episode_id, step=self.state.step_index,
               decision_id=decision_id,
               policy=self.policy_name, router_family=decision.router_family,
-              router_latency_ms=(time.perf_counter() - route_start) * 1000,
+              router_latency_ms=router_wall_ms,
               inference_latency_ms=decision.inference_latency_ms,
               checkpoint_id=decision.checkpoint_id, fallback_used=decision.fallback_used,
               ranked_actions=decision.ranked_actions, confidence=decision.confidence,
@@ -196,6 +193,9 @@ class PolicyModel(LitellmModel):
         if self.state.status == EpisodeStatus.TIMEOUT:
             raise RuntimeError("Harbor episode timed out")
         started = time.perf_counter()
+        event(self.record_dir, "GENERATOR_START", episode_id=self.state.episode_id, decision_id=decision_id,
+              decision_sequence=self.state.step_index, selected_action=selected,
+              elapsed_time_sec=self.state.elapsed_time_sec)
         response_error = None
         try:
             body, metrics = self.provider.query_raw(
@@ -204,9 +204,13 @@ class PolicyModel(LitellmModel):
             body, metrics = exc.response, exc.metrics
             response_error = exc
         except Exception as exc:
-            event(self.record_dir, "ERROR", category="PROVIDER", error=type(exc).__name__,
+            duration_ms = (time.perf_counter() - started) * 1000
+            if self.state.model_time_sec is not None:
+                self.state.model_time_sec += duration_ms / 1000
+            failed = event(self.record_dir, "ERROR", category="PROVIDER", error=type(exc).__name__,
                   error_message=str(exc), http_status=exc.code if isinstance(exc, urllib.error.HTTPError) else None,
-                  episode_id=self.state.episode_id, model=selected["model"], role="generator",
+                  episode_id=self.state.episode_id, decision_id=decision_id,
+                  model=selected["model"], role="generator",
                   selected_model_id=spec.model_id, cost_model_id=spec.model_id,
                   actual_backend_model_id=None, request_model_id=spec.model_id,
                   returned_model_id=None, requested_native_effort=selected["native_effort"],
@@ -215,8 +219,9 @@ class PolicyModel(LitellmModel):
                   execution_mode="REAL_API",
                   cost_usd=None, actual_billed_cost_usd=None, usage_status="MISSING",
                   cost_status="UNKNOWN",
-                  duration_ms=(time.perf_counter() - started) * 1000,
+                  duration_ms=duration_ms,
                   account_attempts=getattr(exc, "account_attempts", []))
+            self.provider_failures.append(failed)
             raise
         metrics = dict(metrics, episode_id=self.state.episode_id, decision_id=decision_id,
                        router_checkpoint_id=decision.checkpoint_id,
@@ -224,7 +229,7 @@ class PolicyModel(LitellmModel):
                        capability_snapshot_id=snapshot.get("capability_snapshot_id"))
         if self.v9_enabled:
             metrics["execution_mode"] = "REAL_API"
-            identity_status = ("REAL_API_IDENTITY_MATCHED" if metrics["identity_status"] == "MATCHED_REQUEST_ALIAS"
+            identity_status = ("REAL_API_IDENTITY_MATCHED" if metrics["identity_status"] == "MATCHED_REQUEST"
                                else "REAL_API_IDENTITY_UNVERIFIED")
             effort_status = metrics["native_effort_status"]
             self.action_validation[selected["action_id"]] = effort_status
@@ -233,7 +238,9 @@ class PolicyModel(LitellmModel):
         self.last_metrics = metrics
         self.usage.append(metrics)
         self.state.accumulated_cost_usd += metrics.get("cost_usd") or 0
-        self.state.model_time_sec += metrics.get("latency_ms", 0) / 1000
+        metrics["agent_request_wall_ms"] = (time.perf_counter() - started) * 1000
+        if self.state.model_time_sec is not None:
+            self.state.model_time_sec += metrics["agent_request_wall_ms"] / 1000
         if self.v9_hook:
             self.v9_hook.after_generation(metrics, selected, body)
         event(self.record_dir, "GENERATOR_END", **metrics,
@@ -242,8 +249,6 @@ class PolicyModel(LitellmModel):
         self.state.step_index += 1
         if response_error is not None:
             raise response_error
-        if metrics["identity_status"] != "MATCHED_REQUEST_ALIAS":
-            raise ProviderResponseError("MODEL_IDENTITY_MISMATCH", body, metrics)
         if metrics["protocol"] == "responses":
             calls = [{"id": item["call_id"], "type": "function",
                       "function": {"name": item["name"], "arguments": item["arguments"]}}
@@ -273,7 +278,7 @@ class PolicyModel(LitellmModel):
 
     @property
     def episode_usage(self):
-        return self.usage + [row for row in self.teacher_metrics
+        return self.usage + self.provider_failures + [row for row in self.teacher_metrics
                             if row.get("provider_request_attempted", True)]
 
     @property
@@ -294,7 +299,8 @@ class PolicyModel(LitellmModel):
                                     "legal_actions": self.actions,
                                     "action_validation": self.action_validation,
                                     "policy_implementation_status": self.policy.implementation_status},
-                         "fallback_used": self.fallback_used, "provider_metrics": self.usage}}
+                         "fallback_used": self.fallback_used, "provider_metrics": self.usage,
+                         "provider_failures": self.provider_failures}}
         if self.v9_hook:
             result["info"]["v9"] = {
                 "teacher_metrics": self.teacher_metrics, "continuity": self.v9_hook.continuity,
@@ -396,10 +402,8 @@ class ModelRouterMiniSweAgent(BaseAgent):
                            policy_id=self.policy, seed=self.seed, max_steps=self.max_steps,
                            usd_budget=self.cost_limit)
         state.task_prompt = instruction
-        state.model_time_sec = 0.0
-        state.agent_state = {"agent_id": state.episode_id, "framework": "Mini-SWE-agent", "role": "terminal_task_executor",
-                             "subtask": "NOT_APPLICABLE_SINGLE_AGENT", "coordination": "NOT_APPLICABLE_SINGLE_AGENT",
-                             "handoffs": "NOT_APPLICABLE_SINGLE_AGENT"}
+        state.agent_state = {"framework": "Mini-SWE-agent", "responsibility": "terminal_task_executor"}
+        state.start()
         if trial_config.is_file():
             from harbor.models.task.task import Task
             task_definition = Task(task.path).config
@@ -409,6 +413,8 @@ class ModelRouterMiniSweAgent(BaseAgent):
             if agent_budget is not None:
                 state.time_budget_sec = agent_budget
         record_dir = Path(os.environ.get("MODELROUTER_ITERATION", str(self.logs_dir)))
+        event(record_dir, "AGENT_START", episode_id=state.episode_id, task_id=task_id,
+              time_budget_sec=state.time_budget_sec, execution_scope="SINGLE_AGENT")
         model = PolicyModel(policy=self.policy, state=state, record_dir=record_dir, seed=self.seed,
                             provider=self.provider, v9_config=self.v9_config,
                             candidate_actions=self.candidate_actions,
@@ -426,14 +432,20 @@ class ModelRouterMiniSweAgent(BaseAgent):
         agent_config = {k: v for k, v in config["agent"].items() if k != "mode"}
         agent_config.update(step_limit=self.max_steps, output_path=self.logs_dir / "mini-swe-agent.trajectory.json")
         agent = DefaultAgent(model, env, **agent_config)
+        agent_result = {}
         try:
-            state.start()
-            await asyncio.to_thread(agent.run, instruction)
+            agent_result = await asyncio.to_thread(agent.run, instruction)
         except asyncio.CancelledError:
             state.finish(EpisodeStatus.TIMEOUT)
             event(record_dir, "AGENT_CANCELLED", episode_id=state.episode_id, step=state.step_index)
             raise
         finally:
+            if state.status != EpisodeStatus.TIMEOUT:
+                state.finish(EpisodeStatus.SUBMITTED if agent_result.get("exit_status") == "Submitted"
+                             else EpisodeStatus.FAILED)
+            event(record_dir, "AGENT_END", episode_id=state.episode_id, step=state.step_index,
+                  elapsed_time_sec=state.elapsed_time_sec, status=state.status.value,
+                  reward_status="AWAITING_OFFICIAL_EVALUATOR")
             if self.v9_config and self.v9_config.get("router_checkpoint") and hasattr(model.policy, "client"):
                 model.policy.client.close()
             context.metadata = {**(context.metadata or {}), "harness": "minisweagent.agents.default.DefaultAgent",
@@ -446,11 +458,11 @@ class ModelRouterMiniSweAgent(BaseAgent):
                                 "untested_native_efforts_used": sorted(model.untested_efforts_used),
                                 "neural_router_evidence_eligible": bool(model.usage) and (
                                     model.policy.implementation_status == "REMOTE_NEURAL_ROUTER"
-                                    and not model.fallback_used and not model.untested_efforts_used
-                                    and not any(u.get("execution_mode") in ("ALIAS_SMOKE", "TEACHER_ALIAS_SMOKE")
-                                                or (model.v9_enabled and u.get("alias_mapping_applied"))
-                                                for u in model.episode_usage)),
+                                    and not model.fallback_used
+                                    and all(u.get("identity_status") == "MATCHED_REQUEST"
+                                            for u in model.episode_usage)),
                                 "raw_trajectory": str(self.logs_dir / "mini-swe-agent.trajectory.json")}
+            context.metadata["provider_failures"] = model.provider_failures
             if model.v9_hook:
                 context.metadata["v9"] = model.serialize()["info"]["v9"]
             if model.usage:
@@ -492,5 +504,3 @@ class ModelRouterMiniSweAgent(BaseAgent):
             context.metadata["atif_trajectory"] = str(self.logs_dir / "trajectory.json")
 
 
-# Existing callers share the official loop. SingleAgent stays historical.
-ModelRouterHarborAgent = ModelRouterMiniSweAgent

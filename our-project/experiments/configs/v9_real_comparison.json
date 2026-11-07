@@ -2,20 +2,45 @@
   "enabled": true,
   "execution_scope": "REAL_K3_JOINT_RESEARCH",
   "execution_mode": "REAL_API",
+  "execution_model": "singleAgent",
   "selection_scope": "MODEL_NATIVE_EFFORT",
   "router_endpoint": "http://127.0.0.1:8000",
-  "router_timeout_sec": 60,
+  "router_timeout_sec": null,
   "router_context_chars": 6000,
   "router_max_len": 8192,
   "router_head_max_len": 512,
   "generator_protocol": "responses",
   "provider_timeout_sec": 180,
-  "formal_model_ids": ["gpt-6-luna", "gpt-6.1-terra", "hy4"],
+  "formal_model_ids": ["gpt-6-luna", "glm-5.3-flash", "gpt-6.1-terra"],
   "teacher_enabled": true,
   "teacher_model_id": "gpt-6-luna",
   "teacher_native_effort": "low",
   "teacher_max_output_tokens": 4096,
   "teacher_context_chars": 8000,
   "feature_training_status": "FEATURE_NOT_TRAINED",
-  "backend_deployment_status": "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION"
+  "backend_deployment_status": "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION",
+  "strategy_configs": {
+    "joint_laya": {
+      "v9_config": {
+        "router_checkpoint": {
+          "family": "laya",
+          "path": "/home/syy/路由/models/laya-421m",
+          "device": "cpu",
+          "max_len": 8192,
+          "head_max_len": 512,
+          "command": ["env", "OMP_NUM_THREADS=40", "HF_HUB_OFFLINE=1", "/home/syy/路由/.runtime/benchmark-venv/bin/python", "-m", "modelrouter.v9.runtime.checkpoint"]
+        }
+      }
+    },
+    "joint_kev": {
+      "v9_config": {
+        "router_checkpoint": {
+          "family": "kev",
+          "path": "/home/syy/路由/models/kev-4b-adapter",
+          "device": "cpu",
+          "command": ["env", "OMP_NUM_THREADS=40", "HF_HUB_OFFLINE=1", "/home/syy/路由/.runtime/benchmark-venv/bin/python", "-m", "modelrouter.v9.runtime.checkpoint"]
+        }
+      }
+    }
+  }
 }

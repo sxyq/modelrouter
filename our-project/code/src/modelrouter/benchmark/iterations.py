@@ -84,7 +84,7 @@ def start(path: Path, config: dict):
 
 
 def event(path: Path, event_type: str, **data):
-    record = {"timestamp": now(), "event": event_type, **data}
+    record = {**data, "timestamp": now(), "monotonic_ns": time.monotonic_ns(), "event": event_type}
     append(path / "events.jsonl", record)
     return record
 
@@ -125,9 +125,15 @@ def collect_trials(path: Path):
                 recorded_tools.add(identity)
     terminal = [trial for trial in trials if trial.get("trial_id") and trial.get("finished_at")]
     if terminal:
+        recorded_terminal = {r["trial_id"] for r in rows(path / "events.jsonl") if r.get("event") == "HARBOR_END"}
         ledger = ExperimentLedger(runs_root=config.get("ledger_runs_root"),
                                   ledgers_root=config.get("ledger_root"))
         for trial in terminal:
+            if trial["trial_id"] not in recorded_terminal:
+                event(path, "HARBOR_END", trial_id=trial["trial_id"], task_id=trial.get("task_id"),
+                      episode_id=str(trial["trial_id"]), official_finished_at=trial["finished_at"],
+                      reward=trial.get("reward"), status=trial["status"],
+                      verifier_path=trial.get("verifier_path"), duration_sec=trial.get("duration_sec"))
             ledger.record_official_trial(trial, events_path=path / "events.jsonl")
     # Rebuild from the immutable original results, never increment counters on resume.
     with tempfile.NamedTemporaryFile(mode="w", dir=path, prefix="official_trials.", suffix=".tmp", delete=False, encoding="utf-8") as stream:
@@ -184,32 +190,25 @@ def summarize(path: Path, *, persist=True):
     teachers.extend(row for row in native_teachers if str(row.get("episode_id")) not in teacher_ids)
     calls = [dict(row) for row in calls]
     teachers = [dict(row) for row in teachers]
-    luna_spec = ModelRegistry().get_spec("gpt-6-luna")
-    for row in calls + teachers:
-        if (row.get("request_model_id") == luna_spec.model_id
-                and row.get("returned_model_id") == luna_spec.model_id
-                and row.get("usage_status") == "REPORTED"):
-            row["official_rate_cost_usd"] = luna_spec.calculate_cost(
-                row["prompt_tokens"], row["completion_tokens"],
-                row.get("reasoning_tokens") or 0, row.get("cached_tokens") or 0,
-                row.get("cache_write_tokens") or 0)
-            row["official_rate_cost_status"] = luna_spec.pricing_status
     # Recompute costs from the recovered generator rows, not combined contexts.
-    costs = [c.get("official_rate_cost_usd", c.get("cost_usd")) for c in calls]
+    costs = [c.get("cost_usd") for c in calls]
     native_only = native_contexts
     for c in calls:
         model = c.get("selected_model_id") or c.get("returned_model") or c.get("returned_model_id") or c.get("model", "unknown")
         model_calls[model + " / " + c.get("protocol", "chat_completions")].append(c)
     native_costs = [r.get("cost_usd") for r in native_only]
     all_costs = costs + native_costs + [None] * len(generator_failures)
-    known_cost = round(sum(v for v in all_costs if isinstance(v, (int, float))), 10)
+    from modelrouter.providers.usage import known_request_cost
+    known_generator_costs = [known_request_cost(row) for row in calls + generator_failures] + native_costs
+    known_cost = round(sum(v for v in known_generator_costs if v is not None), 10)
     complete_cost = bool(all_costs) and all(isinstance(v, (int, float)) for v in all_costs)
     durations = [r.get("duration_sec", r.get("episode_wall_s")) for r in verified]
     billed_calls = [c.get("actual_billed_cost_usd") for c in calls]
     native_billed = [r.get("actual_billed_cost_usd") for r in native_only]
     all_billed = billed_calls + native_billed + [None] * len(generator_failures)
     billed_generator = sum(all_billed) if all_billed and all(v is not None for v in all_billed) else None
-    teacher_costs = [c.get("official_rate_cost_usd", c.get("cost_usd")) for c in teachers]
+    teacher_costs = [c.get("cost_usd") for c in teachers]
+    known_teacher_costs = [known_request_cost(row) for row in teachers]
     teacher_billed = [c.get("actual_billed_cost_usd") for c in teachers]
     teacher_cost = round(sum(teacher_costs), 10) if all(v is not None for v in teacher_costs) else None
     billed_teacher = sum(teacher_billed) if all(v is not None for v in teacher_billed) else None
@@ -264,9 +263,9 @@ def summarize(path: Path, *, persist=True):
         "teacher_tokens": sum(teacher_token_values) if all(v is not None for v in teacher_token_values) else None,
         "total_model_tokens": sum(model_tokens) if model_tokens and all(v is not None for v in model_tokens) else None,
         "generator_cost_usd": known_cost if complete_cost else None,
-        "known_generator_cost_usd": known_cost if any(v is not None for v in all_costs) else None,
+        "known_generator_cost_usd": known_cost if any(v is not None for v in known_generator_costs) else None,
         "teacher_cost_usd": teacher_cost,
-        "known_teacher_cost_usd": round(sum(v for v in teacher_costs if v is not None), 10) if any(v is not None for v in teacher_costs) else None,
+        "known_teacher_cost_usd": round(sum(v for v in known_teacher_costs if v is not None), 10) if any(v is not None for v in known_teacher_costs) else None,
         "episode_model_cost_usd": round(sum(model_costs), 10) if model_costs and all(v is not None for v in model_costs) else None,
         "backend_model_rate_reference_cost_usd": round(sum(backend_costs), 10) if backend_costs and all(v is not None for v in backend_costs) else None,
         "known_backend_model_rate_reference_cost_usd": round(sum(v for v in backend_costs if v is not None), 10) if any(v is not None for v in backend_costs) else None,
@@ -331,8 +330,8 @@ def summarize(path: Path, *, persist=True):
             "phase_wall_s": r.get("phase_wall_s"),
         } for r in trials],
         "models": {k: {
-            "actual_backend_model_ids": sorted({x.get("actual_backend_model_id") or x.get("returned_model_id") for x in v
-                                                if x.get("actual_backend_model_id") or x.get("returned_model_id")}),
+            "actual_backend_model_ids": sorted({x["actual_backend_model_id"] for x in v if x.get("actual_backend_model_id")}),
+            "returned_model_ids": sorted({x["returned_model_id"] for x in v if x.get("returned_model_id")}),
             "calls": len(v), "ttft_p50_ms": percentile([x.get("ttft_ms") for x in v], .5),
             "ttft_p95_ms": percentile([x.get("ttft_ms") for x in v], .95),
             "output_tokens_per_s": percentile([x.get("output_tokens_per_s") for x in v], .5),

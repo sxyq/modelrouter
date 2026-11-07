@@ -3,11 +3,10 @@ from __future__ import annotations
 
 from copy import deepcopy
 from pathlib import Path
-import json
-import urllib.request
 
 from modelrouter.benchmark.iterations import event, write_atomic
-from modelrouter.v9.capabilities.features import capability_cards, load_current, DEFAULT_DATA_DIR
+from modelrouter.v9.capabilities.features import capability_cards, DEFAULT_DATA_DIR
+from modelrouter.v9.capabilities.refresh import ensure_current, DEFAULT_MAX_AGE_SECONDS
 from modelrouter.v9.teacher.assessor import TrajectoryAssessor, DEFAULT_REFERENCES
 from modelrouter.v9.teacher.trigger import TeacherTrigger
 from .context import compact_router_state, message_chars
@@ -18,7 +17,9 @@ class V9DecisionHook:
         self.config, self.record_dir = dict(config), Path(record_dir)
         self.capability_snapshot = (
             deepcopy(config["capability_snapshot"]) if "capability_snapshot" in config
-            else load_current(config.get("capabilities_path", DEFAULT_DATA_DIR)))
+            else ensure_current(config.get("capabilities_path", DEFAULT_DATA_DIR),
+                                max_age_seconds=config.get("capability_max_age_seconds", DEFAULT_MAX_AGE_SECONDS),
+                                force=config.get("capability_force_refresh", False)))
         self.teacher_enabled = config.get("teacher_enabled", True)
         self.assessor = TrajectoryAssessor(
             provider, config.get("references_path", DEFAULT_REFERENCES),
@@ -36,40 +37,19 @@ class V9DecisionHook:
         self.previous_backend = None
         self.previous_messages = []
         self.current_context = {}
-        self._identity_opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
     def _router_identity(self, decision, neural_route):
         identity = {"router_run_id": None, "router_identity_source": None,
                     "router_identity_status": "NOT_A_NEURAL_ROUTE"}
         if not neural_route or decision.fallback_used:
             return identity
-        if decision.router_identity is not None:
-            return decision.router_identity
-        from modelrouter.serving.schemas import ModelsResponse
-
-        url = self.config["router_endpoint"].rstrip("/") + "/models"
-        identity.update(router_identity_source=url, router_identity_status="UNAVAILABLE")
-        try:
-            with self._identity_opener.open(url, timeout=3.0) as response:
-                models = ModelsResponse.model_validate(json.load(response)).models
-            matches = [model for model in models if model.loaded
-                       and model.family == decision.router_family
-                       and model.checkpoint_id == decision.checkpoint_id]
-            if len(matches) == 1 and matches[0].run_id and matches[0].run_id != "unknown":
-                identity.update(router_run_id=matches[0].run_id,
-                                router_weights_path=matches[0].weights_path,
-                                router_identity_status="SERVING_MODELS_SNAPSHOT_NOT_ATOMIC_WITH_ROUTE")
-            else:
-                identity["router_identity_status"] = "MISSING_OR_AMBIGUOUS_MATCH"
-        except (OSError, ValueError) as exc:
-            identity["router_identity_error"] = type(exc).__name__
-        return identity
+        return decision.router_identity or {"router_run_id": None,
+            "router_identity_status": "NOT_REPORTED_BY_RUNNING_SERVING"}
 
     def before_route(self, state, messages, snapshot, legal_actions):
         if state.episode_id != self.episode_id:
             self.episode_id = state.episode_id
             self.trigger.reset(state.episode_id)
-            self.trigger.generation_count = state.step_index
             self.assessment, self.continuity = None, {}
             self.previous_selected = self.previous_backend = None
             self.previous_messages = []
@@ -89,23 +69,34 @@ class V9DecisionHook:
                                       self.config.get("router_context_chars", 6000))
         if self.teacher_enabled:
             reason = self.trigger.reason(state)
+            teacher_status = "CARRIED_ASSESSMENT" if self.assessment else "NOT_TRIGGERED"
             if reason:
+                event(self.record_dir, "TEACHER_START", episode_id=state.episode_id,
+                      decision_id=self.current_context["decision_id"], trigger_reason=reason)
                 self.assessment, metrics = self.assessor.assess(state, messages, reason)
+                teacher_status = metrics["status"]
                 self.trigger.record_attempt(state)
                 self.teacher_metrics.append(metrics)
                 self.last_teacher_metrics.append(metrics)
+                if state.teacher_time_sec is not None:
+                    state.teacher_time_sec += metrics["teacher_wall_ms"] / 1000
                 if metrics.get("cost_usd") is not None:
                     state.accumulated_cost_usd += metrics["cost_usd"]
                     result["budget_remaining_usd"] = state.budget_remaining_usd
                 event(self.record_dir, "TEACHER_END" if self.assessment is not None else "TEACHER_ERROR",
                       assessment=self.assessment, **metrics)
-            elif self.assessment is not None and self.trigger.signals(state) != self.trigger.last_signals:
+            elif self.assessment is not None and not self.trigger.assessment_is_current(state):
                 self.assessment = None
+                teacher_status = "PRIOR_ASSESSMENT_OUTDATED"
         result.update(
             disabled_information_groups=self.config.get("disabled_information_groups", []),
             teacher_assessment=deepcopy(self.assessment) if self.teacher_enabled else None,
+            teacher_status=teacher_status if self.teacher_enabled else "DISABLED",
             capability_cards=capability_cards(self.capability_snapshot, legal_actions),
             capability_snapshot_id=self.capability_snapshot.get("snapshot_id"),
+            aa_fetched_at=self.capability_snapshot.get("aa_fetched_at"),
+            aa_index_version=self.capability_snapshot.get("aa_index_version"),
+            capability_freshness=self.capability_snapshot.get("freshness_status"),
             feature_training_status=self.config.get("feature_training_status", "FEATURE_NOT_TRAINED"),
             continuity={**deepcopy(self.continuity),
                         "input_prefix_continuity": self.current_context["input_prefix_continuity"],
@@ -113,9 +104,10 @@ class V9DecisionHook:
                         "message_count": len(messages),
                         "prefix_reuse_estimate": "PREVIOUS_MESSAGES_RETAINED" if self.current_context["input_prefix_continuity"] == "EXACT_PREVIOUS_MESSAGES" else "NO_EXACT_PREFIX_EVIDENCE"},
         )
-        result["agent_context"]["completed_generations"] = self.trigger.generation_count
-        result.update(elapsed_time_sec=state.elapsed_time_sec,
-                      time_remaining_sec=max(0, state.time_budget_sec - state.elapsed_time_sec) if state.time_budget_sec else None)
+        result["agent_context"]["completed_generations"] = state.step_index
+        elapsed = state.elapsed_time_sec
+        result.update(elapsed_time_sec=elapsed, teacher_time_sec=state.teacher_time_sec,
+                      time_remaining_sec=max(0, state.time_budget_sec - elapsed) if state.time_budget_sec and elapsed is not None else None)
         return result
 
     def after_route(self, decision, neural_route=True):
@@ -126,7 +118,8 @@ class V9DecisionHook:
         if self.assessment is None:
             return
         consumed = neural_route and not decision.fallback_used
-        coverage = (decision.router_identity or {}).get("router_input_usage", {}).get("state_group_coverage", {})
+        usage = (decision.router_identity or {}).get("router_input_usage") or {}
+        coverage = usage.get("state_group_coverage", {})
         encoded = coverage.get("teacher_assessment", {}).get("status") == "FULL"
         self.teacher_metrics[-1]["assessment_consumed_by_router"] |= consumed and encoded
         event(self.record_dir, "TEACHER_ROUTER_INPUT", **self.current_context,
@@ -137,7 +130,7 @@ class V9DecisionHook:
     def after_generation(self, metrics, selected, response):
         write_atomic(self.record_dir / "provider_responses" / f"{metrics['decision_id']}.json",
                      {"response": response, "metrics": metrics})
-        backend = metrics.get("actual_backend_model_id") or metrics.get("returned_model_id")
+        backend = metrics.get("actual_backend_model_id")
         model_id = selected["model"]
         cached = metrics.get("cached_tokens")
         self.continuity = {
@@ -148,6 +141,7 @@ class V9DecisionHook:
             "selected_model_id": model_id,
             "previous_request_model_id": self.continuity.get("request_model_id"),
             "request_model_id": metrics["request_model_id"],
+            "previous_returned_model_id": metrics.get("returned_model_id"),
             "previous_provider": self.continuity.get("provider"),
             "provider": metrics["provider"],
             "previous_provider_endpoint_id": self.continuity.get("provider_endpoint_id"),
@@ -170,7 +164,7 @@ class V9DecisionHook:
             "previous_actual_backend_model_id": self.previous_backend,
             "actual_backend_model_id": backend,
             "logical_model_changed": self.previous_selected is not None and self.previous_selected != model_id,
-            "actual_backend_changed": None if self.previous_backend is None else self.previous_backend != backend,
+            "actual_backend_changed": None if self.previous_backend is None or backend is None else self.previous_backend != backend,
             "context_delivery": "FULL_MESSAGE_HISTORY",
             "history_messages_resent": self.previous_selected is not None and self.current_context["message_count"] > 1,
             "observed_cached_tokens": cached,
@@ -181,5 +175,4 @@ class V9DecisionHook:
             "switch_cost_status": "NOT_MEASURED",
         }
         self.previous_selected, self.previous_backend = model_id, backend
-        self.trigger.after_generation()
         event(self.record_dir, "V9_CONTEXT_END", **self.continuity)

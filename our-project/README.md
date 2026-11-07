@@ -1,42 +1,32 @@
-# Our Project · ModelRouter 自有项目主目录
+# ModelRouter 自有项目目录
 
-本目录是 **ModelRouter 代码、数据规范、科研实验及研究文档的唯一目标主目录**。本仓库的 Git 根目录仍为上一层 `路由/`；现有 `router_data/`、`experiments/`、`docs/` 和 `research/` 等旧入口目前仍有训练和脚本在使用，**已迁移部分冷文件并建立 Shim，但训练/清洗主线仍在旧目录中，尚未完成迁移**。
+`our-project/` 汇集项目代码、数据规范、真实实验结果和科研文档。当前研究以单 Agent 执行中的模型×Provider 原生档位联合选择为中心；完整任务仍由原 Harbor、Mini-SWE 与 Evaluator 链路执行。
 
-外部文本模型统一读取 `~/.agent-global/外部文本模型.local.json`，URL、Key和供应商池不再保存在项目实验配置中。维护字段及调用规则见[根目录说明](../README.md#外部文本模型配置)；旧凭据和示例已删除，实验定义与历史结果保留。
+## 当前研究入口
 
-后续动态实验统一选择模型与原生档位；原Checkpoint和在线状态保留组合身份，渠道默认档位不覆盖Router输出。当前新池为Luna/Terra/HY4；HY4的none表示不传思考强度。历史Model-only监督与原权重保持原语义，接口更新不作为联合选择效果证据。[研究结果统一入口](results/README.md)区分真实API、单后端映射、训练、模拟和无效终局；首批真实执行见[本轮结果](results/iterations/20261106-v9-k3-real/review.md)。历史Alias定义仍保留，新正式入口不使用。
+- [项目现状](planning/PROJECT_STATUS.md)：最新真实执行、训练状态和仍缺结果。
+- [研究总纲](planning/RESEARCH_OVERVIEW.md)：五个 RQ、单 Agent 方法与证据边界。
+- [论文实验与图表规划](../汇报/汇报三/ModelRouter论文实验与图表规划.md)：保留 Fig.1–8、Table 1–12 结构。
+- [结果入口](results/README.md)：按实验批次查看原始报告与结果。
+- [数据来源及许可](data/DATA_SOURCE_AND_POLICY_REGISTRY.md)：来源登记与使用信息。
 
-**最新目录盘点与逐步迁移手册**：[REPOSITORY_STRUCTURE_MIGRATION_20261018.md](planning/REPOSITORY_STRUCTURE_MIGRATION_20261018.md)。执行前先核对 Mac 和 A6000 实体位置，保护正在运行的正式训练，先迁本机非训练文件，后在安全 Run 边界迁服务器训练入口。
+RQ3 正式研究单 Agent 阶段识别、真实子任务边界及生成决策粒度。`inspect/modify/verify/recover` 是执行阶段标签，本身不是任务拆分；只有原任务或现有执行记录中可辨认的子任务边界才作为拆分单位。取消多 Agent 架构、角色分工、handoff 和 Agent 数量变量。
 
-## 规范目录（渐进实施）
+## 模型候选与能力证据
 
-- `code/`：自有代码，按 `baselines/agent/sandbox/data_pipeline/datasets/training/serving/benchmark/providers/telemetry` 分类。
-- `data/`：数据来源政策、清洗后的数据、训练视图、哈希与样本清单；大型原始数据保存在受保护实体存储。
-- `external/`：外部算法的原始源码/版本、官方 Benchmark 及论文、项目登记与文献笔记。
-- `experiments/`：RQ1–RQ5 的配置、冻结实验矩阵、协议及可复现入口（逐步建设）。
-- `results/`：Laya/Kev 训练、竞品路由、Harbor 官方 Trial、评分、每请求使用量及费用；详细敏感原文不入 Git。
-- `dashboard/`：现有训练与 Benchmark 图表及监控的规范目标位置，保留本地端口 8765 的旧入口。
-- `docs/`：Planning、系统架构、运维、论文及组会文档；迁移过渡时 `planning/` 仍是当前权威目录。
-- `.runtime/`：模型和 API 服务之外的短期缓存/临时文件/锁与进程日志，不入 Git。
+当前目标候选为 GPT-6 Luna、GLM-5.3-Flash 与 GPT-6.1 Terra，共规划 15 个 Model×Native Effort 组合。GLM 预期使用 Chat Completions 与 low/high/max 原生档位；渠道授权、绑定和精确模型 ID 尚待确认，当前不得写成已验证或可调用。确认前不启动新的固定 K=3 Harbor 实验。每批可用动作以实际 Registry/Provider 的精确模型 ID、原生档位、工具支持与上下文条件为准；不以规划数量填补未支持或未证实动作。旧 HY4 及其真实结果只作为历史，不替代新池候选证据。
 
-## 当前唯一权威文档
+AA 记录按精确模型和 Effort 保存真实测量及来源。目标刷新方式为 TTL 自动更新、显式 force 刷新和批次固定 `snapshot_id`；不在单次 Router 决策中联网。目前真实刷新正在进行，结果待写回；现有代码仍是手动刷新，TTL/force 与 GLM 新池逐档能力结果尚未完成，不能作为已交付能力描述。
 
-- [最新运行与交接状态](planning/PROJECT_STATUS.md)
-- [研究问题/用户批准](planning/EXPERIMENT_QA.md)
-- [科学方法总览](planning/RESEARCH_OVERVIEW.md)
-- [数据来源及许可](data/DATA_SOURCE_AND_POLICY_REGISTRY.md)
-- [V8 长周期执行协议](planning/V8_DATA_TRAINING_AGENT_BENCHMARK_EXECUTION_20261018.md)
-- [目录结构重构执行清单](planning/REPOSITORY_STRUCTURE_MIGRATION_20261018.md)
-- [813 文件/116 代码路径完整架构审查](docs/operations/FULL_CODE_ARCHITECTURE_AUDIT_20261019.md)
-- [代码/脚本逐项分类与迁移台账](docs/operations/code_classification_inventory_20261019.csv)
-- [V9 双子代理 RQ1–RQ5 长期执行](planning/V9_RQ_LONG_RUNNING_TWO_SUBAGENTS_20261019.md)
-- [双模型12候选演进矩阵](planning/CANDIDATE_PROGRESSION_MATRIX.md)
+实验结果必须区分模型执行、教师、Router 与环境费用；供应商 Usage、返回身份、终局和不完整费用按原记录表达。旧 Model-only、HY4、映射和多 Agent 相关数据保留原始身份，不重写为新池联合监督。
 
-## 最新里程碑状态（2026-10-24 同步）
+## 目录
 
-- **Laya-421M 训练**：F01–F09 已全部完成训练并完成固定 Val 验证，物理留存全局最佳检查点 `F06-e02`（S1 Acc 68.09%）；当前正在执行 `F10` 训练（Chunk 135/152，GPU 93-100%）。
-- **Kev-4B 训练**：C03 与 C04（16,857 步）全部顺利完训，C04 固定验证（8,436 题）已完成（Acc 57.12%，NLL 1.0873，Brier 0.5403，ECE 0.0599）；C05/C07/C09 处于合法待决状态。
-- **服务与网络**：RTX A6000 上的 8765 训练看板与 8000 路由 API 持续稳定在线；通过 NetBird P2P 直连与 `~/.ssh/config` 隧道配置可从外部网络流畅访问。
+- `code/`：ModelRouter Python 包及现有执行、Provider、训练和能力代码。
+- `data/`：数据来源和已保存材料；大型原始数据及模型权重按各自实体位置管理。
+- `experiments/`：实验配置与协议。
+- `results/`：真实运行记录与报告；历史结果保持原样。
+- `planning/`：研究问题、当前状态及注明历史性质的早期方案。
+- `external/`：第三方仓库、Benchmark 与文献资料。
 
-此 README 描述**目标归属**，不表示已经搬动服务器运行目录、完成 12 组实体模型训练或通过官方 Harbor Benchmark。保留所有能复现历史研究的原有路径和结果，直到迁移验收。
-
+2026-10-18 的 V8 执行协议、目录迁移清单、双子代理计划和旧候选矩阵仅供追溯，不能覆盖本 README 和上述现行入口。正式实验只经 Harbor `DefaultAgent` 与原 Evaluator；旧 `agent/legacy.py` 留作历史但不导出或调用，已删除的 development 命令、`sandbox/canary_verifier.py` 和 `experiments/harbor` 同名 shim 不是入口。旧 Mock `pwd`/`fix-git` 分数只保留历史记录，不推荐为 smoke 命令。

@@ -54,6 +54,7 @@ def cmd_status(args):
 def cmd_route(args):
     """Executes a sample routing decision via local FastAPI server."""
     import time
+    from modelrouter.providers.registry import legal_actions
     payload = {
         "request_id": f"cli-test-{int(time.time())}",
         "episode_id": "ep-cli",
@@ -65,10 +66,7 @@ def cmd_route(args):
             "prompt": args.prompt or "Fix git merge conflicts",
             "context_chars": len(args.prompt or "")
         },
-        "legal_actions": [
-            {"provider": "openai", "model": "gpt-6-luna", "revision": "latest", "native_effort": "medium"},
-            {"provider": "openai", "model": "gpt-5.6-luna", "revision": "latest", "native_effort": "low"}
-        ]
+        "legal_actions": legal_actions()
     }
     req = urllib.request.Request(
         "http://127.0.0.1:8000/route",

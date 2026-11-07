@@ -11,7 +11,6 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from .schemas import ActionScore, LegalAction, PreDecisionState
 
 logger = logging.getLogger("router_serving.kev")
 
@@ -41,78 +40,15 @@ class KevAdapter:
         if os.path.exists(kev_code_dir) and kev_code_dir not in sys.path:
             sys.path.insert(0, kev_code_dir)
 
-        if not os.path.exists(self.adapter_dir):
-            logger.warning(f"Kev adapter directory {self.adapter_dir} does not exist.")
-            return
-
-        try:
-            from kev.checkpoint import Checkpoint
-            logger.info(f"Loading Kev checkpoint from {self.adapter_dir} on {self.device_str}...")
-            ck = Checkpoint(self.adapter_dir)
-            self.checkpoint_id = getattr(ck.meta, "base_revision", "kev-4b-adapter")
-            self.run_id = Path(self.adapter_dir).name
-            self.tokenizer, self.model = ck.load(self.device_str)
-            self.is_loaded = True
-            self.inference_verified = True
-            logger.info("Kev model loaded successfully and verified for true forward inference.")
-        except Exception as e:
-            logger.warning(f"Kev model true loading failed: {e}. Falling back to standby.")
-            self.is_loaded = False
-            self.inference_verified = False
-
-    def route(
-        self,
-        pre_decision_state: PreDecisionState,
-        legal_actions: List[LegalAction]
-    ) -> Tuple[LegalAction, List[ActionScore], float, Optional[float], bool, Optional[str]]:
-        t0 = time.perf_counter()
-
-        if not legal_actions:
-            raise ValueError("legal_actions cannot be empty")
-
-        if self.model is not None and self.tokenizer is not None:
-            try:
-                from kev.model import admit
-                state_text = pre_decision_state.router_text()
-                ordered_actions = sorted(legal_actions, key=lambda action: action.action_id)
-                options = [f"{act.provider}/{act.model} (effort={act.native_effort})" for act in ordered_actions]
-                rec = {
-                    "state": state_text,
-                    "questions": [{
-                        "instr": "Select the model and native effort for the next agent generation. "
-                                 "Prioritize task quality; among adequate candidates, prefer lower cost.",
-                        "options": options,
-                        "label": 0
-                    }]
-                }
-                enc = admit(self.model, self.tokenizer, rec)
-                probs_tensor = self.model.probs(enc)
-                raw_probs = probs_tensor[0].tolist() if hasattr(probs_tensor[0], "tolist") else list(probs_tensor[0])
-                if len(raw_probs) != len(ordered_actions):
-                    raise ValueError("Kev probability count differs from candidate count")
-
-                ranked = []
-                for idx, act in enumerate(ordered_actions):
-                    p = float(raw_probs[idx])
-                    ranked.append(ActionScore(action=act, score=p, probability=p))
-
-                ranked.sort(key=lambda x: x.probability, reverse=True)
-                latency_ms = (time.perf_counter() - t0) * 1000.0
-                selected_action = ranked[0].action
-                confidence = ranked[0].probability
-
-                return selected_action, ranked, latency_ms, confidence, False, None
-            except Exception as e:
-                logger.error(f"Kev true forward failed during route: {e}", exc_info=True)
-
-        # Fallback if model not available
-        latency_ms = (time.perf_counter() - t0) * 1000.0
-        ranked = []
-        n = len(legal_actions)
-        base_prob = 1.0 / n
-        for idx, act in enumerate(legal_actions):
-            ranked.append(ActionScore(action=act, score=round(base_prob, 4), probability=round(base_prob, 4)))
-        return legal_actions[0], ranked, latency_ms, base_prob, True, "HEURISTIC_FALLBACK: true forward unavailable or errored"
+        from kev.checkpoint import Checkpoint
+        logger.info(f"Loading Kev checkpoint from {self.adapter_dir} on {self.device_str}...")
+        ck = Checkpoint(self.adapter_dir)
+        self.checkpoint_id = str(Path(self.adapter_dir).resolve())
+        self.metrics["base_revision"] = ck.meta.base_revision
+        self.run_id = Path(self.adapter_dir).name
+        self.tokenizer, self.model = ck.load(self.device_str)
+        self.is_loaded = True
+        logger.info("Kev model loaded successfully; inference has not yet run.")
 
     def system_one(
         self,
@@ -126,26 +62,11 @@ class KevAdapter:
         from kev.api import SystemOneRequest as KevSysOneReq, to_record, to_answers, output_tokens
         from kev.model import admit, SERVE_MAX_STATE
 
-        formatted_questions = {}
-        for qid, q in questions.items():
-            if hasattr(q, "model_dump"):
-                q_dict = q.model_dump()
-            elif hasattr(q, "dict"):
-                q_dict = q.dict()
-            elif isinstance(q, dict):
-                q_dict = dict(q)
-            else:
-                q_dict = {
-                    "type": getattr(q, "type", "choice"),
-                    "instructions": getattr(q, "instructions", ""),
-                    "criteria": getattr(q, "criteria", {})
-                }
-            formatted_questions[qid] = q_dict
-
-        kev_req = KevSysOneReq(state=state, model="kev-4b", questions=formatted_questions)
+        kev_req = KevSysOneReq(state=state, model="kev-4b", questions=questions)
         rec, meta = to_record(kev_req)
         enc = admit(self.model, self.tokenizer, rec)
         probs_tensor = self.model.probs(enc)
+        self.inference_verified = True
         raw_probs = [p.tolist() if hasattr(p, "tolist") else list(p) for p in probs_tensor]
         answers = to_answers(raw_probs, meta)
         latency_ms = (time.perf_counter() - t0) * 1000.0

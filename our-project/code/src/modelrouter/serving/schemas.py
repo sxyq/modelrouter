@@ -4,8 +4,27 @@ Conforms strictly to V8 §7.1 specifications.
 """
 
 from typing import Dict, List, Optional, Any, Literal
-import json
 from pydantic import BaseModel, Field, model_validator
+
+ROUTE_INSTRUCTION = ("Select the model and native effort for the next agent generation. "
+                     "Prioritize task quality; among adequate candidates, prefer lower cost.")
+
+
+def route_questions(actions):
+    return {"route_decision": {"type": "choice", "instructions": ROUTE_INSTRUCTION,
+            "criteria": {a.action_id: f"{a.provider}/{a.model} (effort={a.native_effort})"
+                         for a in sorted(actions, key=lambda a: a.action_id)}}}
+
+
+def route_scores(answers, actions):
+    probabilities = answers["route_decision"]["probabilities"]
+    candidates = {a.action_id: a for a in actions}
+    if set(probabilities) != set(candidates):
+        raise ValueError("Router probability IDs differ from candidate IDs")
+    ranked = sorted([ActionScore(action=candidates[key], score=value, probability=value)
+                     for key, value in probabilities.items()], key=lambda item: item.probability, reverse=True)
+    selected = candidates[answers["route_decision"]["choice"]]
+    return selected, ranked, answers["route_decision"].get("confidence")
 
 
 class LegalAction(BaseModel):
@@ -38,6 +57,8 @@ class PreDecisionState(BaseModel):
     disabled_information_groups: List[Literal["T", "M", "H"]] = Field(default_factory=list)
     episode_id: Optional[str] = None
     timestamp: Optional[float] = None
+    decision_id: Optional[str] = None
+    decision_sequence: Optional[int] = None
     task_id: Optional[str] = None
     phase: Optional[str] = None
     last_tool_exit_code: Optional[int] = None
@@ -51,6 +72,8 @@ class PreDecisionState(BaseModel):
     agent_state: Optional[Dict[str, Any]] = None
     candidate_conditions: List[Dict[str, Any]] = Field(default_factory=list)
     model_time_sec: Optional[float] = None
+    router_time_sec: Optional[float] = None
+    teacher_time_sec: Optional[float] = None
     tool_time_sec: Optional[float] = None
     steps_remaining: Optional[int] = None
     context_tokens_approx: Optional[int] = None
@@ -62,24 +85,20 @@ class PreDecisionState(BaseModel):
     prompt: Optional[str] = Field("", description="Pre-decision prompt snippet or observation")
     history_snippet: Optional[str] = Field("", description="Recent tool execution history snippet")
     teacher_assessment: Optional[Dict[str, Any]] = None
+    teacher_status: Optional[str] = None
     capability_cards: List[Dict[str, Any]] = Field(default_factory=list)
     capability_snapshot_id: Optional[str] = None
+    aa_fetched_at: Optional[str] = None
+    aa_index_version: Optional[str] = None
+    capability_freshness: Optional[str] = None
     feature_training_status: Optional[str] = None
     agent_context: Optional[Dict[str, Any]] = None
     continuity: Optional[Dict[str, Any]] = None
 
     def router_text(self) -> str:
         """Both adapters consume the same named pre-decision fields."""
-        payload = self.model_dump()
-        extensions = ("teacher_assessment", "capability_cards", "capability_snapshot_id",
-                      "feature_training_status", "agent_context", "continuity")
-        for name in extensions:
-            if payload[name] is None or payload[name] == []:
-                payload.pop(name)
-        if not any(name in payload for name in extensions):
-            return json.dumps(payload, sort_keys=True, ensure_ascii=False)
         from modelrouter.v9.runtime.context import format_router_payload
-        return format_router_payload(payload)
+        return format_router_payload(self.model_dump())
 
 
 class RouteRequest(BaseModel):
@@ -117,6 +136,7 @@ class RouteResponse(BaseModel):
     fallback_used: bool = False
     fallback_reason: Optional[str] = None
     confidence_if_defined: Optional[float] = None
+    router_identity: Optional[Dict[str, Any]] = None
 
 
 class ModelInfo(BaseModel):
@@ -162,4 +182,5 @@ class SystemOneResponse(BaseModel):
     fallback_used: bool = False
     fallback_reason: Optional[str] = None
     usage: Optional[Dict[str, Any]] = None
+    router_identity: Optional[Dict[str, Any]] = None
 

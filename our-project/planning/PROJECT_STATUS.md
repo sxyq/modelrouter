@@ -1,5 +1,17 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**当前重构状态（2026-11-07）**：主要自有源码已按职责收敛并定向部署原A6000主工程。正式链为Harbor→ModelRouterMiniSweAgent→DefaultAgent；源文件语法和正式模块导入通过，4条保存状态在两个原生Encoder均保留T/M/H、130条当前AA分数与真实教师/缺失状态，两个原始实体真实CPU前向均返回15候选概率。8线程下Laya40.877秒、Kev575.349秒；正式配置复用Checkpoint入口和历史40线程参数，由上游管理任务时间，不误用旧Serving容量。新付费请求、训练与Harbor Episode仍为0：GLM未获私有绑定，真实K=3尚不能执行。详细[八部分结果](../results/iterations/20261107-v9-full-method/v9_refactor_review.md)不覆盖原三题记录。
+
+**方法范围**：只研究单Agent，取消多Agent角色协作、handoff及Agent数量变量。RQ3为单Agent阶段、真实子任务边界与路由粒度；现阶段主要实现观察阶段和逐生成路由，不冒称自动拆分。Luna/GLM-5.3-Flash/Terra登记15个Model×Effort，登记不代表渠道全部实测可用。AA已实现TTL更新、force刷新、STALE识别及同一比较批次固定快照。旧HY4数据、权重与结果保留历史身份。
+
+**唯一执行与事实来源**：取消旧Agent Pilot runner、开发执行命令、Alias、重复logger、预填RQ结果生成器、原生mini中继和另一自定义Agent入口。旧SingleAgent仅在legacy位置保留，正式包不导出，正式CLI不调用；Oracle仅保留上游工具用途。AgentState与runtime/context、teacher/trigger/assessor、providers/registry/protocols/usage、iterations.event分别统一状态、教师、模型/协议/费用和UTC/单调事件，Ledger/Dashboard/RQ从保存事实派生。根router_data和scripts复用正式包，不保留重复完整实现。
+
+**Provider与AA**：Terra /models实际200但未列精确GLM，Luna/HY4/DeepSeek403，不能据其列表推断GLM支持。GLM官方low/high/max按Chat顶层reasoning_effort与thinking.enabled适配，当前MODEL_ENDPOINT_UNBOUND，没有GLM请求。AA v6为130条独立metric，版本5.0.1，取得时间2026-11-07T12:15:19.946883Z；Luna/Terra各六档、GLM仅Max10项，Low/High缺测。Coding/Agentic Index、模型revision和官方发布时间仍缺，Luna Max旧10项单列STALE。公开原始响应保留；匿名免费API401且无专用Key，不冒称授权API数据已取得。
+
+**原生输入与资源**：M共享来源/版本定义和模型字段，逐档保留原分数，不复制Max。H头尾摘要上限2500字符并记录源/保留量，原轨迹未删。最终8个编码均无Token截断，真实教师仅第四条，前三条保留缺失。原始Laya保存配置512、本批运行8192；Kev原生状态65536，不统一Tokenizer限制。Serving PID327621未重启或换权重。A6000专用Benchmark环境、上游89题及用户Docker实际可用，容器0/镜像20；服务器尚无统一私有模型配置且公网不可直达。临时wheel已清理，唯一上版源码包保留。自有实现最大982行；既有1491行测试文件按不改测试要求保留，因此不能称所有Python无例外达标。
+
+**科研接续**：事前选开发circuit-fibsqrt、独立评价constraints-scheduling，只核对可见旧run_config身份未使用，不宣称模型预训练无暴露。GLM授权绑定与任务内网络接入到位后先RQ1/RQ2，再由真实新池监督沿原Trainer选择每架构一个训练实体并推进RQ4/RQ3/RQ5。原V9-K3两个18更新实体属于旧HY4池，不改成新GLM训练版；完整Agent净收益仍未证明。F15/controller本批无进程，原日志末尾KeyboardInterrupt不是本批停止；恢复材料和共享GPU锁保留，没有重训或第二队列。
+
 **11-07完整方法与正式子集**：[本批研究](../results/iterations/20261107-v9-full-method/review.md)。原State/Schema/Serializer/Provider/原生Adapter已原位表达T/M/H、13登记联合动作、当前缓存时序和Luna三字段教师；新方法不走旧Alias。18条Train记录在两Tokenizer下36项编码无截断，最长5515状态Token；已保存的真实新Luna教师另实际进入原生前向。FULL指序列化摘要，不是全部原轨迹，也不代表已经学会有效利用。
 
 两合法Train任务、四真实截止、17个有效GPT候选；Dynaconf新增2条S1来自同一个截止（联合问题及low/xhigh档位问题），并重放S2/S3各8条。Luna请求max返回xhigh的两条不用于max监督，HY4两次502及一次短诊断未知，旧40保持Model-only身份。两原Trainer各完成18更新：Laya Head 546.828秒、Kev LoRA/Head 8495.464秒；最终研究实体均保存并实际执行正式三题，不使用正式任务拟合、不替Serving。
@@ -8,7 +20,7 @@ Terminal-Bench 2.1事前三题以原Harbor/Mini-SWE/官方Evaluator完整执行�
 
 28次原完整Episode尝试已结束：19个可信业务终局、4个Provider未知、3个CPU路由超时、2个环境未知。更新Kev原Reward1/0/1、可信业务1/UNKNOWN/1，SQLite终态恢复1/1单列；三题均Agent超时。有效生成15次、实际模型切换4，另3次取消后返回路由不算执行动作；三题参考费$0.065009、返回路由2726.638秒，没有可归因训练的有用分工或独立双方向收益。
 
-当前没有完整K=3稳定净收益或独立质量—费用双方向选择证明。五RQ仍需有效第三模型、不同Train机制、独立分层任务及真实组件消融和全部资源费用。原38组25完成；F15上次10:47明确BrokenPipeError/返回120，报告80252而保存点仍61180。现在原Controller使用原虚拟环境、普通文件输出与GPU锁再次EXACT_RESUME，13:00新游标61820；期间系统Python缺torch的接续错误保留、未产生更新。Serving保持原F05-e01和导入Kev。下文按日期保留历史事实，不将旧“无新联合训练”或HY4身份不符口径当成本批状态。
+原报告的实验结论以 11-07 `review.md` 所载为准。F15 接续记录属当时的历史快照；当前共享日志末尾 `KeyboardInterrupt`，Controller 与训练进程均不存在，停止原因不归入本批。Serving 保持 PID 327621 healthy 和原权重。上方 Provider/AA/本机现场为当前接续状态；下文按日期保留过去的池、任务和运行状态，不把旧授权或旧进度续写成现状。
 
 **11-06正式转向真实K=3**：负责人已将主线确定为Luna／HY4／Terra、Model×Native Effort、缓存、Laya／Kev原始及训练代表、Luna教师和完整Episode净收益。[统一研究入口](../results/README.md)及[本批结果](../results/iterations/20261106-v9-k3-real/review.md)为当前入口。旧K=2正式40条和STEP009/010保留历史身份，不作为新池联合监督。历史Alias源码与配置已按本轮要求保留，新正式入口不调用。下列此前“仅本地、未生成、Alias已删除”的段落描述各自当时状态，不代表本批执行结论。
 

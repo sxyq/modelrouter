@@ -1,9 +1,65 @@
 """Turn paired real candidate outcomes into separately scoped routing targets."""
 from __future__ import annotations
 
+import copy
+import json
+from collections import Counter
 from copy import deepcopy
+from pathlib import Path
+from types import SimpleNamespace
 
 from modelrouter.v9.capabilities.features import candidate_action
+from modelrouter.serving.schemas import route_questions
+from modelrouter.providers.registry import legal_actions
+
+
+ACTION_POOL_ID = "LUNA_GLM53FLASH_TERRA_MODEL_EFFORT_15_V1"
+ACTION_POOL = tuple(
+    {**action, "model_id": action["model"]} for action in legal_actions()
+)
+ACTION_POOL_IDS = {action["action_id"] for action in ACTION_POOL}
+
+
+def action_pool_question(actions=ACTION_POOL):
+    return route_questions([SimpleNamespace(**{
+        "action_id": action["action_id"], "provider": action["provider"],
+        "model": action["model"], "native_effort": action["native_effort"],
+    }) for action in actions])
+
+
+def prepare_action_pool_comparison(row, split):
+    """Prepare only a complete, confirmed 15-action next-step verifier comparison."""
+    if (row.get("supervision_type") != "STEP_LEVEL_PREFERENCE"
+            or row.get("selection_scope") == "MODEL_ONLY"
+            or row.get("native_efforts_confirmed") is not True):
+        return None, "ACTION_POOL_SCOPE_NOT_CONFIRMED"
+    actions = [candidate_action(action) for action in row["candidate_actions"]]
+    if (len(actions) != len(ACTION_POOL) or {action["action_id"] for action in actions} != ACTION_POOL_IDS
+            or any((action["model_id"], action["native_effort"]) !=
+                   (pool_action["model_id"], pool_action["native_effort"])
+                   for action in actions
+                   for pool_action in ACTION_POOL if action["action_id"] == pool_action["action_id"])):
+        return None, "ACTION_POOL_CANDIDATES_INCOMPLETE"
+    results = row["candidate_results"]
+    pool_by_id = {action["action_id"]: action for action in ACTION_POOL}
+    if (len(results) != len(ACTION_POOL)
+            or {item["action_id"] for item in results} != ACTION_POOL_IDS
+            or any((item["model_id"], item["native_effort"]) !=
+                   (pool_by_id[item["action_id"]]["model_id"],
+                    pool_by_id[item["action_id"]]["native_effort"]) for item in results)):
+        return None, "ACTION_POOL_RESULTS_INCOMPLETE"
+    prepared, reason = prepare_comparison(row, split)
+    if reason:
+        return None, reason
+    previous_target = next(iter(prepared["expected"]))
+    winner = prepared["expected"][previous_target]
+    question = action_pool_question()["route_decision"]
+    prepared.update(questions={"route_decision": question},
+                    expected={"route_decision": winner}, candidate_actions=list(ACTION_POOL))
+    prepared["_meta"].update(target="route_decision", input_kind="REAL_ACTION_POOL_COMPARISON",
+                             action_pool_id=ACTION_POOL_ID, selection_scope="MODEL_NATIVE_EFFORT",
+                             comparison_axis="MODEL_NATIVE_EFFORT", full_action_pool_optimum=True)
+    return prepared, None
 
 
 SUPERVISION_TYPES = (
@@ -122,6 +178,92 @@ def prepare_candidate_outcomes(row, split):
             "auxiliary_target": "CANDIDATE_VERIFIER_COMPLETION_AT_RECORDED_HORIZON",
         })
     return observations
+
+
+def prepare_candidate_view(records, output_path):
+    """Export source/state identities without creating Trainer choice targets."""
+    seen, rows, counts = set(), [], Counter()
+    for original in records:
+        row = copy.deepcopy(original)
+        provenance = row["provenance"]
+        task_key = (provenance["source_id"], provenance["task_id"], provenance["repo"],
+                    provenance.get("base_commit", provenance.get("base_commit_prefix")),
+                    provenance.get("fault_identity"))
+        state_key = (*task_key, provenance.get("episode_id"),
+                     provenance.get("message_cutoff_exclusive"))
+        if state_key in seen:
+            counts["DUPLICATE_STATE"] += 1
+            continue
+        seen.add(state_key)
+        reasons = []
+        if "candidate_results" in row:
+            prepared, reason = prepare_comparison(row, "train")
+            observations = prepare_candidate_outcomes(row, "train")
+            row["candidate_outcome_observations"] = observations
+            actions = list(map(candidate_action, row["candidate_actions"]))
+            identities = {(item["action_id"], item["model_id"]) for item in actions}
+            comparable = (
+                all(row["comparison_conditions"][name] for name in (
+                    "same_observed_messages", "same_initial_environment", "same_agent_protocol",
+                    "original_verifier_unchanged", "candidate_identity_matched", "trusted_outcomes",
+                ))
+                and len(actions) == len(observations) == len(identities) >= 2
+                and identities == {(item["action_id"], item["model_id"]) for item in observations}
+                and all(item["outcome_status"] != "UNKNOWN" for item in observations)
+            )
+            row["pair_comparable"] = comparable
+            category = ("VALID_PREFERENCE" if prepared and comparable else
+                        "COMPARABLE_UNLABELED" if comparable else "INVALID_OR_UNKNOWN")
+            if reason:
+                reasons.append(reason)
+        else:
+            state_available = row["decision_state_status"] == "FULL_HISTORY_RECOVERED"
+            evidence = row["environment_evidence"]
+            reproducible = state_available and all(evidence.get(name) for name in (
+                "image_name", "verify_command_available", "original_test_ids_complete", "historical_verifier_trusted",
+            ))
+            local_image_present = evidence.get("local_image_status") == "PRESENT"
+            local_verifier_runnable = evidence.get("local_original_verifier_status") == "RUNNABLE"
+            row.update(historical_state_complete=state_available,
+                       historical_reproduction_evidence_complete=reproducible,
+                       local_exact_image_present=local_image_present,
+                       local_original_verifier_runnable=local_verifier_runnable,
+                       currently_executable=reproducible and local_image_present and local_verifier_runnable)
+            category = "REPRODUCIBLE_CANDIDATE" if row["currently_executable"] else "OBSERVATION_ONLY"
+            if reproducible and not local_image_present:
+                reasons.append("LOCAL_EXACT_IMAGE_MISSING")
+            if reproducible and not local_verifier_runnable:
+                reasons.append("LOCAL_ORIGINAL_VERIFIER_NOT_CONFIRMED")
+            if not state_available:
+                reasons.append("FULL_DECISION_HISTORY_UNAVAILABLE")
+            if not evidence.get("original_test_ids_complete"):
+                reasons.append("ORIGINAL_TEST_IDS_UNAVAILABLE")
+            if not evidence.get("image_name"):
+                reasons.append("ENVIRONMENT_IMAGE_UNAVAILABLE")
+            if not evidence.get("historical_verifier_trusted"):
+                reasons.append("ORIGINAL_VERIFIER_EVIDENCE_UNAVAILABLE")
+            if not all(task_key[1:4]):
+                category = "INVALID_OR_UNKNOWN"
+                reasons.append("TASK_VERSION_IDENTITY_INCOMPLETE")
+        row.update(cleaning_status=category, label_loss_reasons=reasons,
+                   trainer_target_created=False, supervision_type=row.get("supervision_type", "UNLABELED"),
+                   task_identity=list(task_key), decision_identity=list(state_key))
+        counts[category] += 1
+        rows.append(row)
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf8") as stream:
+        for row in rows:
+            stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+    return {"input_records": len(records), "output_records": len(rows), "classification": dict(counts),
+            "independent_tasks": len({tuple(row["task_identity"]) for row in rows}),
+            "repositories": len({row["provenance"]["repo"] for row in rows}),
+            "historical_state_complete": sum(row.get("historical_state_complete", False) for row in rows),
+            "historical_reproduction_evidence_complete": sum(row.get("historical_reproduction_evidence_complete", False) for row in rows),
+            "local_exact_images_present": sum(row.get("local_exact_image_present", False) for row in rows),
+            "local_original_verifiers_runnable": sum(row.get("local_original_verifier_runnable", False) for row in rows),
+            "currently_executable": sum(row.get("currently_executable", False) for row in rows),
+            "trainer_targets_added": 0}
 
 
 def prepare_local_quality_relation(initial, candidates, f2p_ids, p2p_ids, *, pair_comparable):

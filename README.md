@@ -1,6 +1,6 @@
 # ModelRouter
 
-> **2026-10-18 项目目录升级（实施中）**：将 [`our-project/`](our-project/README.md) 作为正式代码、数据、实验和科研文档的主目录。当前 `router_data/`、`experiments/`、`research/`、`docs/` 等旧位置仍有活跃消费者，**尚未物理迁移**。详见 [完整文件分类与安全迁移实施清单](our-project/planning/REPOSITORY_STRUCTURE_MIGRATION_20261018.md)。最新 RQ1 已调整为整体任务收益对照，系统消融题编号暂未定，以 [EXPERIMENT_QA](our-project/planning/EXPERIMENT_QA.md) 为准。
+ModelRouter 研究长程 **单 Agent** 执行中的模型与 Provider 原生推理档位联合路由，并以真实任务成功率和完整执行成本评价阶段、实际子任务边界及生成决策粒度。当前方法与结果入口见 [研究总纲](our-project/planning/RESEARCH_OVERVIEW.md)、[项目现状](our-project/planning/PROJECT_STATUS.md) 和 [实验决策记录](our-project/planning/EXPERIMENT_QA.md)。旧目录迁移和双子代理计划仅为历史资料。
 
 ModelRouter 是面向长程 Agent 任务的模型、推理档位与成本研究项目。
 
@@ -9,44 +9,46 @@ ModelRouter 是面向长程 Agent 任务的模型、推理档位与成本研究�
 - `our-project/`：本项目的研究报告、文献笔记、清洗数据、汇总数据和规划文档。
 - `external-projects/`：外部项目的来源登记，仅用于说明文献和实验参考，不包含外部仓库源码。
 
-**训练数据/Provider 政策唯一详细台账**：[DATA_SOURCE_AND_POLICY_REGISTRY.md](our-project/data/DATA_SOURCE_AND_POLICY_REGISTRY.md)：公开轨迹、静态模型比较、KV Cache、长记忆、多 Agent、时间/预算、国内外 Provider 能力与缓存/定价政策，包含来源状态、选择栏及未来数据清洗质量合同。**具体选择批准仍以 EXPERIMENT_QA.md 为准；台账是来源登记，不代表已下载或获准训练。**
+**数据来源与 Provider 政策台账**：[DATA_SOURCE_AND_POLICY_REGISTRY.md](our-project/data/DATA_SOURCE_AND_POLICY_REGISTRY.md)：公开轨迹、模型比较、缓存、时间/预算与 Provider 来源状态。台账是来源登记，不代表已有原生档位实测分数或新实验结果。
 
 原始服务器日志、凭据、浏览器调试文件和外部仓库源码不纳入本仓库。
 
 ## 外部文本模型配置
 
-当前私人配置保留原DeepSeek，并接入负责人重新提供的Luna、Terra和HY4三个渠道。Luna/Terra使用Responses，HY4使用Chat Completions；ModelRouter按Router选中的精确模型及原生档位请求，渠道默认档位不覆盖路由动作，不改变旧Serving权重。发布输出额度是上限，实验的明确输出预算不会被自动升高。
+当前联合候选为 GPT-6 Luna、GLM-5.3-Flash 与 GPT-6.1 Terra。精确 `model_id`、Provider、协议、原生 Effort 菜单和当前可用条件按 Registry 与实际 Provider 能力记录，不假设不同模型支持相同档位，也不将旧 HY4 结果改写为 GLM 结果。
 
-Luna/Terra按官方105万上下文、12.8万输出配置，保留最大输出时输入额度为92.2万；HY4按腾讯TokenHub的1024k上下文、960k输入、64k输出配置。Luna/Terra可选 `none/low/medium/high/xhigh/max`，普通客户端的Max默认值与Router的本次选择分开。HY4沿负责人要求不传思考强度，动作中的 `native_effort=none` 表示服务默认，不表示关闭思考。三者登记文本/图像输入、文本输出；发布容量、文档档位和供应商实际应用情况分开记录。
+GLM 渠道授权、绑定和精确模型 ID 仍待确认；确认前不启动新的固定 K=3 Harbor 实验。既有 2026-11-07 报告中的结果保留原身份，本次接续新增正式 Harbor 实验为 0。
 
-后续动态实验统一使用Model×Native Effort，不再运行只选模型的Checkpoint或在线B17分支。原 `v9_real_comparison.json` 默认展开三个新模型的13个组合，输出 `selected_action.model/native_effort/action_id` 及组合概率；调用和返回档位分别记录，未知保持未知。旧40条Model-only偏好、STEP009/010、历史配置与结果保留原语义，不改成联合监督。接口支持组合选择不代表权重已经学会选择档位，正式效果仍需真实独立实验。
+候选动作是实际支持的 `(model, native_effort)` 组合；请求与返回身份、档位分别记录，未知保持未知。15 个联合候选是本轮规划目标，实际每批动作集合按 Provider 支持、工具与上下文条件生成；不支持或未证实的组合不补齐成可运行候选。
+
+AA 能力证据按精确模型和原生档位保存实际测量、版本、来源和时间；没有同档测量的字段保持 `NOT_MEASURED`，不复制模型级分数。能力快照按 TTL 刷新并可强制更新；一个实验批次固定所用 `snapshot_id`，批次中不漂移，路由决策不逐次联网查询。自动 TTL/强制刷新和新池能力结果尚待实际实现与运行，本文不将其写成已完成。
 
 ModelRouter与Code Generation统一读取本机 `~/.agent-global/外部文本模型.local.json`。URL、Key、供应商池及模型账户绑定仅在此文件维护；`EXTERNAL_TEXT_MODEL_CONFIG`只指定文件位置。账户统一列在 `providers`，各组默认账户在 `defaults`，ModelRouter模型账户绑定在 `account_endpoints`，并发及输出等运行参数在 `provider_settings`。
 
 旧项目凭据JSON、env和示例已删除。实验JSON只保留模型、协议、预算、费率及Router地址。统一文件为私人文件，不提交Git；后续接入也使用同一来源，现有进程在下一次正常启动时加载，不为迁移重启健康任务。此范围不包含图像、视频或客户端登录凭据。
 
-实验直接请求选中的精确模型ID，生成和教师调用均不再替换为Qwen或默认Luna。同模型账户切换保留，不改变模型；旧映射配置和实现已删除，历史轨迹与费用仍按原事实保存。原 `alias-smoke` 命令已改为 `development`，使用现有真实模型配置，不作为官方完整成绩。
+实验直接请求选中的精确模型 ID，生成和教师调用均不替换为其他模型。同模型账户切换不改变模型身份；旧映射调用仅保留历史数据。正式 Agent Benchmark 只使用 Harbor `DefaultAgent` 与原 Evaluator；本地 development 命令、`sandbox/canary_verifier.py` 和 `experiments/harbor` 同名 shim 已删除。旧 Mock `pwd`/`fix-git` 分数仅作历史记录，不是可运行或推荐的 smoke 入口。
 
 ## 当前研究与跨对话恢复入口
 
-**每次新开 ChatGPT 对话先读取 GitHub `main` 当前 HEAD 的以下四份正式文档**，不依赖旧会话摘要或写死的 SHA：
+**当前研究入口**（以共享工作树中的现行文件为准）：
 
 1. **[PROJECT_STATUS.md · 唯一实时状态源](our-project/planning/PROJECT_STATUS.md)**：当前阶段、任务、授权、阻塞及唯一下一行动。
 2. **[EXPERIMENT_QA.md · 问答批准记录](our-project/planning/EXPERIMENT_QA.md)**：实验 Q-ID、用户明确确认的决策、未答事项及影响。
-3. **[PLANNING_MEMORY.md · 长期交接与新会话启动提示词](our-project/planning/PLANNING_MEMORY.md)**：长期研究决定、历史、Agent 协作规范；第 10 节包含**长期通用的新窗口启动提示词**。
-4. **[RESEARCH_OVERVIEW.md · 研究方法与证据](our-project/planning/RESEARCH_OVERVIEW.md)**：学术问题、Kev 路线、假设、数据与评测方法。
+3. **[RESEARCH_OVERVIEW.md · 研究方法与证据](our-project/planning/RESEARCH_OVERVIEW.md)**：五个 RQ、单 Agent 方法、评测和证据范围。
+4. **[汇报三 · 论文实验与图表规划](汇报/汇报三/ModelRouter论文实验与图表规划.md)**：Fig.1–8、Table 1–12 及各结果位置。
 
-**恢复顺序**：本地 `main` HEAD → Status → Q&A → Memory → Research。当前任务以最新版 Status 为准；推荐和历史章节分开记录，避免把旧资料当成当前进度。
+**状态顺序**：项目现状 → 决策记录 → 研究总纲 → 论文图表规划。历史协作草案不覆盖当前方法。
 
 旧 `our-project/planning/IMPLEMENTATION_RESEARCH.md` 与 `our-project/literature/report.md` 仅是历史参考，不代表现在唯一实现方案。坚持一个研究主线，不因开启新聊天而新建重复工程链。
 
-**协作**：ChatGPT = Planning Agent，本地 Agent = Execution Agent。默认直接 `main`，本地频繁 commit；任务或决定发生真实变化时按职责更新相关文档。公开仓库不得提交私人地址、密钥或原始私人日志。
+2026-10-19 双子代理长周期文档保留为历史计划，不是当前协作或研究方法。
 
 ## 论文实验方案专题与汇报资料
 
 现有**数据来源台账 + 上述四份正式规划文档**保持原有职责与新对话必读顺序。下面的资料排在这些入口之后，主要用于论文实验设计和组会展示，**不是新的实验状态源**：
 
-- **[汇报三 · 论文实验方案专题](汇报/汇报三/README.md)**：V5 五个 RQ：模型池与公开前沿迁移、真实路由前沿、Model×Effort、缓存历史、决策时机与状态；[详细论文设计（8 图、12 张结果空白表）](汇报/汇报三/ModelRouter论文实验与图表规划.md)；[纯 HTML 交互式原型](汇报/汇报三/交互式原型/index.html)。
+- **[汇报三 · 论文实验方案专题](汇报/汇报三/README.md)**：V9 五个 RQ、8 图和 12 表；RQ3 研究单 Agent 阶段、真实子任务边界与生成决策粒度，阶段识别不等于任务拆分。
 - **[全部汇报目录](汇报/README.md)**：汇报一、汇报二、汇报三的主题与入口。
 
 **提醒**：实验方案内的结果数值单元格有意留空，不以预测值或空白的“0”代替未运行的实验。

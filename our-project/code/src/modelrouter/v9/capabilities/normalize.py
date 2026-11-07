@@ -1,40 +1,39 @@
-"""Read AA catalog records and retain provider IDs and exact AA source slugs."""
+"""Normalize AA catalog data without conflating model and effort scores."""
 
 from __future__ import annotations
 
 import json
 import math
 import re
-from html import unescape
 from html.parser import HTMLParser
-from typing import Any
+
+from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS
+
+INDEX_METRICS = ("artificial_analysis_intelligence_index", "artificial_analysis_coding_index",
+                 "artificial_analysis_agentic_index")
+REGISTRY = ModelRegistry()
 
 
-MODEL_IDS = ("gpt-6.1-sol", "gpt-6-luna", "qwen3.8-flash")
-AA_SLUGS = {"gpt-6.1-sol": "gpt-6-1-sol", "gpt-6-luna": "gpt-6-luna"}
-INDEX_METRICS = (
-    "artificial_analysis_intelligence_index",
-    "artificial_analysis_coding_index",
-    "artificial_analysis_agentic_index",
-)
+def matches_model(row, model_id):
+    slug = model_id.replace(".", "-")
+    suffixes = {"non-reasoning", *REGISTRY.get_spec(model_id).native_efforts}
+    return row.get("model_id") == model_id or row.get("slug") in {slug, *(f"{slug}-{effort}" for effort in suffixes)}
 
 
 class _Scripts(HTMLParser):
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__()
-        self.scripts: list[tuple[dict, str]] = []
-        self.attrs: dict | None = None
-        self.parts: list[str] = []
+        self.scripts, self.attrs, self.parts = [], None, []
 
-    def handle_starttag(self, tag: str, attrs: list) -> None:
+    def handle_starttag(self, tag, attrs):
         if tag == "script":
             self.attrs, self.parts = dict(attrs), []
 
-    def handle_data(self, data: str) -> None:
+    def handle_data(self, data):
         if self.attrs is not None:
             self.parts.append(data)
 
-    def handle_endtag(self, tag: str) -> None:
+    def handle_endtag(self, tag):
         if tag == "script" and self.attrs is not None:
             self.scripts.append((self.attrs, "".join(self.parts)))
             self.attrs = None
@@ -54,63 +53,40 @@ def _json_values(text: str) -> list:
     return values
 
 
-def _records(value: Any) -> list[dict]:
-    result, pending = [], [value]
+def _records(value) -> list[dict]:
+    records, pending = [], [value]
     while pending:
         item = pending.pop()
         if isinstance(item, dict):
-            if ("evaluations" in item or "intelligenceIndexEvaluations" in item) and any(
-                key in item for key in ("slug", "model_id", "id")
-            ):
-                result.append(item)
+            if "intelligenceIndexEvaluations" in item and any(k in item for k in ("slug", "id")):
+                records.append(item)
             else:
                 pending.extend(item.values())
         elif isinstance(item, list):
             pending.extend(reversed(item))
-    return result
+    return records
 
 
-def _public_record(row: dict, benchmark_names: dict, index_version: str) -> dict:
-    if "intelligenceIndexEvaluations" not in row:
-        return row
-    effort = (row.get("effort") or {}).get("slug")
-    evaluations = {}
-    if row.get("intelligenceIndex") is not None and not row.get("intelligenceIndexIsEstimated"):
-        evaluations[INDEX_METRICS[0]] = {
-            "score_raw": row["intelligenceIndex"], "score_unit": "INDEX",
-            "benchmark_version": index_version,
-        }
-    for entry in row["intelligenceIndexEvaluations"]:
-        name = benchmark_names.get(entry["slug"], entry["slug"])
-        version = re.search(r"\bv?(\d+(?:\.\d+)+)\b", name)
-        evaluations[entry["slug"]] = {
-            "score_raw": entry["score"],
-            "score_unit": "ELO" if entry["slug"] == "aa-briefcase" else "NOT_REPORTED",
-            "benchmark_version": version.group(1) if version else "NOT_REPORTED",
-            "benchmark_name": name,
-        }
-    return {
-        "slug": row["slug"], "evaluated_native_effort": effort,
-        "model_creator": row.get("creator"), "release_date": row.get("releaseDate"),
-        "context_limits": {"context_window_tokens": row.get("contextWindowTokens")},
-        "provider": (row.get("performanceDataSource") or {}).get("providerName"),
-        "pricing": {"currency": "USD", "unit": "PER_MILLION_TOKENS",
-                    "input": row.get("price1mInputTokens"), "output": row.get("price1mOutputTokens"),
-                    "cached_input": row.get("cacheHitPrice"), "cache_write": row.get("cacheWritePrice")},
-        "evaluations": evaluations,
-    }
+def _effort_label(row: dict) -> str | None:
+    reported = (row.get("effort") or {}).get("slug")
+    if reported:
+        return reported
+    match = re.search(r"\(([^()]*)\)$", row.get("name", ""))
+    if not match:
+        return None
+    label = match.group(1).split(",", 1)[0].strip().lower()
+    return "none" if label == "non-reasoning" else label
 
 
 def public_catalog(html: str) -> dict:
-    """Decode Next.js JSON/Flight data; never evaluate page JavaScript."""
+    """Decode public AA page records, retaining AA IDs and each reported effort."""
     parser, documents, chunks = _Scripts(), [], []
     parser.feed(html)
-    decoder = json.JSONDecoder()
     for attrs, body in parser.scripts:
         if attrs.get("id") == "__NEXT_DATA__" or attrs.get("type") == "application/json":
             documents.append(json.loads(body))
         for match in re.finditer(r"self\.__next_f\.push\(", body):
-            payload, _ = decoder.raw_decode(body[match.end():])
+            payload, _ = json.JSONDecoder().raw_decode(body[match.end():])
             if len(payload) > 1 and payload[0] == 1 and isinstance(payload[1], str):
                 chunks.append(payload[1])
     documents.extend(_json_values("".join(chunks)))
@@ -123,166 +99,214 @@ def public_catalog(html: str) -> dict:
             pending.extend(item.values())
         elif isinstance(item, list):
             pending.extend(item)
-    version = re.search(r"Artificial Analysis Intelligence Index v(\d+(?:\.\d+)+)", html)
-    rows = [_public_record(row, names, version.group(1) if version else "NOT_REPORTED")
-            for document in documents for row in _records(document)]
+    page_version = re.search(r"Artificial Analysis Intelligence Index v(\d+(?:\.\d+)+)", html)
+    rows = []
+    for row in (record for doc in documents for record in _records(doc)):
+        effort = _effort_label(row)
+        evaluations = {}
+        if row.get("intelligenceIndex") is not None and not row.get("intelligenceIndexIsEstimated"):
+            evaluations[INDEX_METRICS[0]] = {"score_raw": row["intelligenceIndex"], "score_unit": "INDEX",
+                "benchmark_version": page_version.group(1) if page_version else "NOT_REPORTED"}
+        for entry in row["intelligenceIndexEvaluations"]:
+            name = names.get(entry["slug"], entry["slug"])
+            version = re.search(r"\bv?(\d+(?:\.\d+)+)\b", name)
+            evaluations[entry["slug"]] = {"score_raw": entry["score"],
+                "score_unit": "ELO" if entry["slug"] == "aa-briefcase" else "NOT_REPORTED",
+                "benchmark_version": version.group(1) if version else "NOT_REPORTED",
+                "benchmark_name": name}
+        rows.append({"id": row.get("id"), "slug": row["slug"], "name": row.get("name"),
+            "model_revision": row.get("revision") or row.get("modelRevision") or "NOT_REPORTED",
+            "publication_at": row.get("publishedAt") or row.get("publicationDate") or "NOT_REPORTED",
+            "release_date": row.get("releaseDate"), "model_creator": row.get("creator"),
+            "context_limits": {"context_window_tokens": row.get("contextWindowTokens")},
+            "provider": (row.get("performanceDataSource") or {}).get("providerName"),
+            "pricing": {"currency": "USD", "unit": "PER_MILLION_TOKENS",
+                "input": row.get("price1mInputTokens"), "output": row.get("price1mOutputTokens"),
+                "cached_input": row.get("cacheHitPrice"), "cache_write": row.get("cacheWritePrice")},
+            "effort_records": [{"aa_model_id": row.get("id"), "aa_model_slug": row["slug"],
+                "aa_model_name": row.get("name"),
+                "evaluated_native_effort": effort, "model_revision": row.get("revision") or
+                row.get("modelRevision") or "NOT_REPORTED", "publication_at": row.get("publishedAt") or
+                row.get("publicationDate") or "NOT_REPORTED", "evaluations": evaluations}],
+            "model_metrics": []})
     if not rows:
         raise ValueError("No embedded AA evaluation records")
-    return {"data": rows}
+    return {"data": rows, "aa_index_version": page_version.group(1) if page_version else "NOT_REPORTED"}
 
 
-def _table_rows(html: str) -> list[list[str]]:
-    return [[unescape(re.sub(r"<[^>]+>", "", cell)).strip()
-             for cell in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", row, re.S)]
-            for row in re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.S)]
+def _metric(name, value, *, model_id, slug, effort, source_url, fetched_at, index_version,
+            revision, publication_at, freshness):
+    detail = value if isinstance(value, dict) else {"score_raw": value}
+    score = detail.get("score_raw", detail.get("score", detail.get("value")))
+    if score is not None and (isinstance(score, bool) or not isinstance(score, (int, float))
+                              or not math.isfinite(score)):
+        raise ValueError("AA scores must be finite numbers")
+    benchmark_version = detail.get("benchmark_version", detail.get("version", "NOT_REPORTED"))
+    return {"metric_name": name, "score_raw": score,
+        "score_unit": detail.get("score_unit", detail.get("unit",
+            "INDEX" if name in INDEX_METRICS else "NOT_REPORTED")),
+        "benchmark_version": benchmark_version,
+        "harness_id": detail.get("harness_id", "NOT_REPORTED"),
+        "score_scope": "effort" if effort else "model", "evaluated_native_effort": effort,
+        "aa_index_version": index_version, "aa_model_id": model_id, "aa_model_slug": slug,
+        "aa_model_name": detail.get("aa_model_name"),
+        "evaluation_identity": f"aa:{model_id or slug}:{slug}:{effort or 'model'}",
+        "comparability_status": ("COMPARABLE_WITH_MATCHING_EFFORT_AND_VERSION"
+            if effort and benchmark_version != "NOT_REPORTED" else
+            "EXACT_EFFORT_VERSION_NOT_REPORTED" if effort else "MODEL_LEVEL_ONLY"),
+        "model_revision": revision, "publication_at": publication_at,
+        "source_url": source_url, "fetched_at_utc": fetched_at, "freshness_status": freshness,
+        "evidence_status": "MEASURED" if score is not None else "NOT_MEASURED",
+        "missing_reason": None if score is not None else "NOT_MEASURED",
+        **({"benchmark_name": detail["benchmark_name"]} if detail.get("benchmark_name") else {})}
 
 
-def provider_metadata(body: str, model_id: str, source_url: str, fetched_at_utc: str) -> dict:
-    """Read exact vendor documents; published prices are not episode billing."""
-    result = {"model_id": model_id, "source_url": source_url, "fetched_at_utc": fetched_at_utc,
-              "model_revision": "NOT_REPORTED", "evidence_status": "OFFICIAL_DOCUMENTATION"}
-    if model_id in MODEL_IDS[:2]:
-        identity = re.search(r"Model ID: `([^`]+)`", body)
-        if identity is None or identity.group(1) != model_id:
-            raise ValueError("Official document model identity differs")
-        result["provider"] = "OpenAI"
-        result["context_limits"] = {name: int(match.group(1).replace(",", ""))
-            for name, pattern in (("context_window_tokens", r"([\d,]+) context window"),
-                                  ("max_input_tokens", r"Maximum input tokens: ([\d,]+)"),
-                                  ("max_output_tokens", r"([\d,]+) max output tokens"))
-            if (match := re.search(pattern, body))}
-        pricing_section = body.split("### Text tokens", 1)[1].split("## Endpoints", 1)[0]
-        rates = {name: float(value) for name, value in re.findall(
-            r"\| (Input|Cached input|Cache writes|Output) \| \$([\d.]+) \| 1M tokens \|", pricing_section)}
-        result["pricing"] = {"currency": "USD", "unit": "PER_MILLION_TOKENS",
-                             "rates": rates, "conditions": [line[2:] for line in pricing_section.splitlines()
-                                                            if line.startswith("- ")]}
-        effort_section = body.split("`reasoning.effort` supports", 1)[1].split(".", 1)[0]
-        result["native_efforts"] = re.findall(r"`([^`]+)`", effort_section)
-    else:
-        marker = "window.__ICE_PAGE_PROPS__="
-        document, _ = json.JSONDecoder().raw_decode(body.split(marker, 1)[1])
-        data = document["docDetailData"]["storeData"]["data"]
-        content = data["content"]
-        if data["docTitle"] != model_id or f"<code>{model_id}</code>" not in content:
-            raise ValueError("Official document model identity differs")
-        result.update(provider="Alibaba Cloud", document_modified_at=data["lastModifiedTime"])
-        limits = content.split('<h2 id="context-limits">', 1)[1].split('<h2 id="model-pricing">', 1)[0]
-        result["context_limits"] = {row[index]: int(row[index + 1])
-            for row in _table_rows(limits)[1:] for index in (0, 2)}
-        price_content = content.split('<h2 id="model-pricing">', 1)[1].split("<h2 ", 1)[0]
-        regions = []
-        for section in re.findall(r"<h4[^>]*>(.*?)</h4>(.*?)(?=<h4|\Z)", price_content, re.S):
-            region = unescape(re.sub(r"<[^>]+>", "", section[0])).strip()
-            for table in re.finditer(r"<table[^>]*>(.*?)</table>", section[1], re.S):
-                scopes = re.findall(r"Deployment scope: ([^<]+)", section[1][:table.start()])
-                rows = _table_rows(table.group(1))
-                currency = re.search(r"Price \((\w+)\)", rows[0][1]).group(1)
-                regions.append({"region": region, "deployment_scope": scopes[-1] if scopes else None,
-                                "currency": currency, "rates": [
-                                    {"billing_item": row[0], "price": float(row[1]), "unit": row[2]}
-                                    for row in rows[1:]]})
-        result["pricing"] = {"regions": regions, "promotions_included": False}
-    return result
+def _dedupe_metrics(rows):
+    unique, seen = [], set()
+    for row in rows:
+        identity = tuple(row.get(name) for name in (
+            "aa_model_id", "aa_model_slug", "evaluated_native_effort", "metric_name",
+            "benchmark_version", "aa_index_version", "score_scope"))
+        if identity not in seen:
+            seen.add(identity)
+            unique.append(row)
+    return unique
 
 
-def missing_metric(name: str, source_url: str, reason: str = "NOT_MEASURED") -> dict:
-    return {
-        "metric_name": name,
-        "score_raw": None,
-        "score_unit": "INDEX" if name in INDEX_METRICS else "NOT_REPORTED",
-        "benchmark_version": "NOT_REPORTED",
-        "harness_id": "NOT_REPORTED",
-        "evaluated_native_effort": None,
-        "score_scope": "model",
-        "source_url": source_url,
-        "evidence_status": "NOT_MEASURED",
-        "missing_reason": reason,
-    }
-
-
-def normalize_catalog(payload: dict, source_url: str, fetched_at_utc: str) -> dict:
-    """Keep exact identities, original score values, and reported measurement scope."""
-    if not isinstance(payload, dict):
-        raise ValueError("AA catalog must be a JSON object")
+def normalize_catalog(payload: dict, source_url: str, fetched_at_utc: str,
+                      freshness_status="FRESH") -> dict:
+    """Build model-level metadata and independent registry effort observations."""
     rows = payload.get("data")
     if not isinstance(rows, list):
         raise ValueError("AA catalog data must be a list")
-    models = {
-        model_id: {
-            "model_id": model_id,
-            "evidence_status": "MODEL_NOT_FOUND",
-            "model_revision": "NOT_REPORTED",
-            "model_creator": None,
-            "pricing": {},
-            "source_url": source_url,
-            "fetched_at_utc": fetched_at_utc,
-            "metrics": [],
-        }
-        for model_id in MODEL_IDS
-    }
-    for row in rows:
-        if not isinstance(row, dict):
-            raise ValueError("AA model records must be JSON objects")
-        identity = row.get("slug") or row.get("model_id") or row.get("id")
-        if row.get("slug") and row.get("model_id") and row["slug"] != row["model_id"]:
-            if row["slug"] in MODEL_IDS or row["model_id"] in MODEL_IDS:
-                raise ValueError("AA model identities differ")
-        for model_id in MODEL_IDS:
-            if identity not in (model_id, AA_SLUGS.get(model_id, model_id)):
-                continue
-            model = models[model_id]
-            model.update(
-                evidence_status="NOT_MEASURED",
-                aa_model_slug=identity,
-                model_revision=row.get("model_revision") or row.get("revision") or "NOT_REPORTED",
-                model_creator=row.get("model_creator"),
-                pricing=row.get("pricing") or {},
-                provider=row.get("provider"), context_limits=row.get("context_limits") or {},
-                release_date=row.get("release_date"),
-            )
-            evaluations = row.get("evaluations") or {}
-            if not isinstance(evaluations, dict):
-                raise ValueError("AA evaluations must be a JSON object")
-            effort = row.get("evaluated_native_effort", row.get("native_effort", row.get("reasoning_effort")))
+    index_version = str(payload.get("aa_index_version", payload.get("intelligence_index_version", "NOT_REPORTED")))
+    if index_version != "NOT_REPORTED" and "." not in index_version:
+        index_version += ".0"
+    models = {}
+    for model_id in V9_MODEL_IDS:
+        spec, slug = REGISTRY.get_spec(model_id), model_id.replace(".", "-")
+        matched = [row for row in rows if matches_model(row, model_id)]
+        model_metrics, effort_rows = [], {}
+        source = source_url
+        for row in matched:
+            source = row.get("source_url", source)
+            row_fetched = row.get("fetched_at_utc", fetched_at_utc)
+            row_index = row.get("aa_index_version", index_version)
+            shared = {"aa_model_id": row.get("id"), "aa_model_slug": row.get("slug", slug),
+                "aa_model_name": row.get("name"),
+                "model_revision": row.get("model_revision", row.get("revision", "NOT_REPORTED")),
+                "publication_at": row.get("publication_at", "NOT_REPORTED")}
+            evaluations = row.get("evaluations", {})
             for name, value in evaluations.items():
-                if name.endswith("_version") or not isinstance(value, (int, float, dict)) or isinstance(value, bool):
-                    continue
-                detail = value if isinstance(value, dict) else {"score_raw": value}
-                raw = detail.get("score_raw", detail.get("score", detail.get("value")))
-                if raw is None:
-                    continue
-                if isinstance(raw, bool) or not isinstance(raw, (int, float)) or not math.isfinite(raw):
-                    raise ValueError("AA scores must be finite numeric values")
-                metric = missing_metric(name, source_url)
-                unit = detail.get("score_unit") or detail.get("unit") or metric["score_unit"]
-                if name in INDEX_METRICS and str(unit).upper() != "INDEX":
-                    raise ValueError("AA composite indices use INDEX units")
-                if name in INDEX_METRICS:
-                    unit = "INDEX"
-                measured_effort = detail.get("evaluated_native_effort", detail.get("native_effort", effort))
-                metric.update(
-                    score_raw=raw,
-                    score_unit=unit,
-                    benchmark_version=(detail.get("benchmark_version") or detail.get("version")
-                                       or evaluations.get(f"{name}_version")
-                                       or row.get("benchmark_version") or payload.get("benchmark_version")
-                                       or "NOT_REPORTED"),
-                    harness_id=detail.get("harness_id") or row.get("harness_id") or "NOT_REPORTED",
-                    evaluated_native_effort=measured_effort,
-                    score_scope="effort" if measured_effort is not None else "model",
-                    evidence_status="MEASURED",
-                    missing_reason=None,
-                )
-                if detail.get("benchmark_name"):
-                    metric["benchmark_name"] = detail["benchmark_name"]
-                model["metrics"].append(metric)
-    for model in models.values():
-        known = {metric["metric_name"] for metric in model["metrics"]}
-        reason = model["evidence_status"]
-        model["metrics"].extend(
-            missing_metric(name, source_url, reason) for name in INDEX_METRICS if name not in known
-        )
-        if any(metric["evidence_status"] == "MEASURED" for metric in model["metrics"]):
-            model["evidence_status"] = "MEASURED"
+                if value is None or isinstance(value, (dict, int, float)) and not isinstance(value, bool):
+                    model_metrics.append(_metric(name, value, model_id=shared["aa_model_id"],
+                        slug=shared["aa_model_slug"], effort=None, source_url=source,
+                        fetched_at=row_fetched, index_version=row_index,
+                        revision=shared["model_revision"], publication_at=shared["publication_at"],
+                        freshness=freshness_status))
+            if not row.get("effort_records"):
+                effort = row.get("evaluated_native_effort", row.get("native_effort"))
+                if effort:
+                    effort_rows.setdefault(effort, []).append(({**row, "aa_model_id": row.get("id"),
+                        "aa_model_slug": row.get("slug", slug), "aa_model_name": row.get("name"),
+                        "model_revision": shared["model_revision"], "publication_at": shared["publication_at"],
+                        "source_url": source, "fetched_at_utc": row_fetched,
+                        "aa_index_version": row_index}, evaluations))
+            for record in row.get("effort_records", []):
+                effort = record.get("evaluated_native_effort") or _effort_label(row)
+                if effort:
+                    effort_rows.setdefault(effort, []).append(({**record,
+                        "aa_model_name": record.get("aa_model_name", row.get("name")),
+                        "source_url": source, "fetched_at_utc": row_fetched,
+                        "aa_index_version": row_index}, record.get("evaluations", {})))
+                else:
+                    for name, value in record.get("evaluations", {}).items():
+                        model_metrics.append(_metric(name, value, model_id=record.get("aa_model_id"),
+                            slug=record.get("aa_model_slug", slug), effort=None, source_url=source,
+                            fetched_at=row_fetched, index_version=row_index,
+                            revision=record.get("model_revision", "NOT_REPORTED"),
+                            publication_at=record.get("publication_at", "NOT_REPORTED"),
+                            freshness=freshness_status))
+        available_metrics = set(INDEX_METRICS)
+        available_metrics.update(metric["metric_name"] for metric in model_metrics)
+        available_metrics.update(name for values in effort_rows.values() for _, items in values for name in items)
+        first = matched[0] if matched else {}
+        actions = {}
+        for effort in spec.native_efforts or ("none",):
+            records = effort_rows.get(effort, [])
+            observations, missing = [], []
+            for record, evaluations in records:
+                rid, rslug = record.get("aa_model_id", shared.get("aa_model_id") if matched else None), record.get("aa_model_slug", slug)
+                revision = record.get("model_revision", shared.get("model_revision", "NOT_REPORTED") if matched else "NOT_REPORTED")
+                publication = record.get("publication_at", shared.get("publication_at", "NOT_REPORTED") if matched else "NOT_REPORTED")
+                for name, value in evaluations.items():
+                    if value is None or isinstance(value, (dict, int, float)) and not isinstance(value, bool):
+                        observations.append(_metric(name, {**value, "aa_model_name": record.get("aa_model_name")}
+                            if isinstance(value, dict) else {"score_raw": value, "aa_model_name": record.get("aa_model_name")}, model_id=rid, slug=rslug,
+                            effort=effort, source_url=record.get("source_url", source), fetched_at=record.get("fetched_at_utc", fetched_at_utc),
+                            index_version=record.get("aa_index_version", index_version),
+                            revision=revision, publication_at=publication,
+                            freshness=freshness_status))
+            observations = _dedupe_metrics(observations)
+            present = {metric["metric_name"] for metric in observations if metric["score_raw"] is not None}
+            for name in sorted(available_metrics - present):
+                source_record = records[0][0] if records else matched[0] if matched else {}
+                exact_record = bool(records)
+                metric = _metric(name, {"score_raw": None, "aa_model_name": source_record.get("aa_model_name", source_record.get("name"))},
+                    model_id=source_record.get("aa_model_id", source_record.get("id")) if exact_record else None,
+                    slug=source_record.get("aa_model_slug", source_record.get("slug")) if exact_record else None,
+                    effort=effort, source_url=source_record.get("source_url", source) if exact_record else None,
+                    fetched_at=source_record.get("fetched_at_utc", fetched_at_utc) if exact_record else None,
+                    index_version=source_record.get("aa_index_version", index_version) if exact_record else "NOT_REPORTED",
+                    revision=source_record.get("model_revision", "NOT_REPORTED") if exact_record else "NOT_REPORTED",
+                    publication_at=source_record.get("publication_at", "NOT_REPORTED") if exact_record else "NOT_REPORTED",
+                    freshness=freshness_status if exact_record else "NOT_MEASURED")
+                metric["missing_reason"] = ("EXACT_EFFORT_SCORE_NOT_REPORTED" if exact_record else
+                    "MODEL_LEVEL_ONLY" if any(item["metric_name"] == name for item in model_metrics) else
+                    "EFFORT_NOT_MEASURED" if matched else "MODEL_NOT_FOUND")
+                if not exact_record:
+                    metric["evaluation_identity"] = f"NOT_MEASURED:{model_id}:{effort}:{name}"
+                missing.append(metric)
+            aa_identity = (records[0][0].get("aa_model_id") or slug) if records else slug
+            aa_slug = records[0][0].get("aa_model_slug", slug) if records else first.get("slug", slug)
+            model_level_only = not records and bool(model_metrics)
+            other_effort_reference = ("SEE_INDEPENDENT_EFFORT_ROWS" if not records and not model_level_only
+                and any(name != effort and entries for name, entries in effort_rows.items()) else None)
+            actions[effort] = {"evaluation_identity": (f"aa:{aa_identity}:{aa_slug}:{effort}" if records
+                    else f"MODEL_LEVEL_ONLY:{model_id}:{effort}" if model_level_only else
+                    f"NOT_MEASURED:{model_id}:{effort}"),
+                "other_effort_reference": other_effort_reference,
+                "aa_model_id": records[0][0].get("aa_model_id") if records else first.get("id") if model_level_only else None,
+                "aa_model_slug": records[0][0].get("aa_model_slug") if records else first.get("slug") if model_level_only else None,
+                "aa_model_name": records[0][0].get("aa_model_name") if records else first.get("name") if model_level_only else None,
+                "native_effort": effort, "evaluation_status": "EXACT_EFFORT" if records else
+                    "MODEL_LEVEL_ONLY" if model_level_only else "NOT_MEASURED",
+                        "freshness_status": freshness_status,
+                "aa_fetched_at": records[0][0].get("fetched_at_utc", fetched_at_utc) if records else
+                    matched[0].get("fetched_at_utc", fetched_at_utc) if matched else None,
+                "aa_index_version": records[0][0].get("aa_index_version", index_version) if records else
+                    matched[0].get("aa_index_version", index_version) if matched else "NOT_REPORTED",
+                "source_url": records[0][0].get("source_url", source) if records else source if matched else None,
+                "model_revision": records[0][0].get("model_revision", "NOT_REPORTED") if records else
+                    matched[0].get("model_revision", "NOT_REPORTED") if matched else "NOT_REPORTED",
+                "publication_at": records[0][0].get("publication_at", "NOT_REPORTED") if records else
+                    matched[0].get("publication_at", "NOT_REPORTED") if matched else "NOT_REPORTED",
+                "metrics": [metric for metric in observations if metric["score_raw"] is not None],
+                "missing_metrics": missing}
+        models[model_id] = {"model_id": model_id, "aa_model_id": first.get("id"),
+            "aa_model_slug": first.get("slug", slug), "model_revision": first.get("model_revision", "NOT_REPORTED"),
+            "aa_model_name": first.get("name"),
+            "publication_at": first.get("publication_at", "NOT_REPORTED"),
+            "model_creator": first.get("model_creator"), "release_date": first.get("release_date"),
+            "provider": spec.provider, "aa_provider": first.get("provider"),
+            "context_limits": first.get("context_limits", {"context_window_tokens": spec.context_window,
+                                                               "max_output_tokens": spec.max_output_tokens}),
+            "pricing": first.get("pricing", {"input": spec.input_price_per_1m,
+                "output": spec.output_price_per_1m, "source": spec.pricing_source,
+                "status": spec.pricing_status}), "source_url": source if matched else None,
+            "aa_fetched_at": max((row.get("fetched_at_utc", fetched_at_utc) for row in matched), default=None),
+            "aa_index_version": first.get("aa_index_version", index_version) if matched else "NOT_REPORTED",
+            "freshness_status": freshness_status if matched else "NOT_MEASURED",
+            "evidence_status": "MEASURED" if model_metrics else "NOT_MEASURED",
+            "model_metrics": model_metrics, "evaluations": actions}
     return models

@@ -11,7 +11,6 @@ class TeacherTrigger:
 
     def reset(self, episode_id):
         self.episode_id = episode_id
-        self.generation_count = 0
         self.last_attempt_generation = None
         self.last_signals = None
 
@@ -42,10 +41,10 @@ class TeacherTrigger:
             self.reset(state.episode_id)
         if state.status not in ("INITIALIZED", "RUNNING") or state.steps_remaining <= 1:
             return None
-        if self.generation_count < self.initial_generations:
+        if state.step_index < self.initial_generations:
             return None
         if (self.last_attempt_generation is not None
-                and self.generation_count - self.last_attempt_generation < self.initial_generations):
+                and state.step_index - self.last_attempt_generation < self.initial_generations):
             return None
         if self.last_signals is None:
             return "INITIAL_THREE_GENERATIONS"
@@ -60,8 +59,9 @@ class TeacherTrigger:
         return None
 
     def record_attempt(self, state):
-        self.last_attempt_generation = self.generation_count
+        self.last_attempt_generation = state.step_index
         self.last_signals = self.signals(state)
 
-    def after_generation(self):
-        self.generation_count += 1
+    def assessment_is_current(self, state):
+        return self.signals(state) == self.last_signals
+

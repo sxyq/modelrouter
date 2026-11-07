@@ -8,7 +8,6 @@ from .environment import (
     ExecResult,
 )
 from .task_loader import TerminalBenchLoader, TerminalBenchTask
-from .canary_verifier import run_canary_smoke_verification
 from .twinrouterbench import TwinRouterBenchEvaluator, TwinRouterRecord
 
 __all__ = [
@@ -19,7 +18,6 @@ __all__ = [
     "ExecResult",
     "TerminalBenchLoader",
     "TerminalBenchTask",
-    "run_canary_smoke_verification",
     "TwinRouterBenchEvaluator",
     "TwinRouterRecord",
 ]

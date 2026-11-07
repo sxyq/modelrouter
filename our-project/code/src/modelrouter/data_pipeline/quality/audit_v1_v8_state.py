@@ -33,7 +33,7 @@ VARIABLE_DEFINITIONS = {
     "Agent/Coordination": {
         "id": "V2",
         "name": "Agent/Coordination",
-        "description": "Agent architecture, multi-agent role, subtask handoff, and step trajectory progress",
+        "description": "Single-agent framework, trajectory identity, and step progress",
         "fields": [
             ("provenance.agent_framework", "TRA-001/002", "Framework ('open-swe', 'swe-smith')", "Pre-decision (agent architecture)", False),
             ("provenance.trajectory_id", "TRA-001/002", "Trajectory ID", "Pre-decision (session identity)", False),
@@ -137,7 +137,7 @@ ALLOWED_SOURCES = ["TRA-001", "TRA-002", "ROUTE-004", "CACHE-001", "TIME-001", "
 
 def run_variable_audit(graded_root: str, cleaned_root: str, project_root: str) -> dict:
     """Run full statistical extraction on V2.1 indexes and cleaned source files."""
-    from router_data.quality_v2 import OWN_FILES, PUBLIC_FILES
+    from modelrouter.data_pipeline.quality.quality_v2 import OWN_FILES, PUBLIC_FILES
 
     # 1. Source x Variable Coverage and Quality
     source_stats = {}
@@ -298,7 +298,7 @@ def run_variable_audit(graded_root: str, cleaned_root: str, project_root: str) -
 
 def audit_full_coverage_refs_pipeline(graded_root: str, cleaned_root: str, project_root: str) -> dict:
     """Audit discrepancy between collect_full_coverage_refs, levelN indexes, and materialized items."""
-    from router_data.batch_prep import (
+    from modelrouter.data_pipeline.batch_prep import (
         MATRIX_ALLOWED_SOURCES,
         MATRIX_TARGETS,
         OWN_FILES,

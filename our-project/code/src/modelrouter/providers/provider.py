@@ -1,256 +1,22 @@
-"""Generator Provider Abstraction for Single Agent Loop.
-
-Supports:
-- BaseGeneratorProvider: Abstract contract
-- MockGeneratorProvider: Zero-cost realistic ReAct generator for offline stress testing
-- OracleGeneratorProvider: Perfect execution for pipeline verification
-- OpenAICompatibleProvider: Ready for production API key activation tomorrow morning
-"""
+"""Provider interface for the single-agent generation path."""
 from __future__ import annotations
 
 import json
-import fcntl
 import io
-import logging
 import os
 import sys
-import random
-import re
-import secrets
-import threading
 import time
 import urllib.error
 import urllib.request
-from dataclasses import dataclass, field
-from contextlib import ExitStack, contextmanager
+from contextlib import ExitStack
 from pathlib import Path
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, Dict, List, Optional, Tuple
 
-try:
-    from modelrouter.providers.registry import ModelSpec
-    from modelrouter.telemetry.multi_model_logger import global_multi_model_logger
-except ImportError:
-    from experiments.agent_pilot.registry import ModelSpec
-    from experiments.agent_pilot.multi_model_logger import global_multi_model_logger
-
-logger = logging.getLogger("modelrouter.providers.provider")
-
-
-class ProviderResponseError(RuntimeError):
-    def __init__(self, reason, response, metrics):
-        super().__init__(reason)
-        self.response = response
-        self.metrics = metrics
-
-
-@dataclass
-class GeneratorResponse:
-    content: str
-    thought: str
-    action: str
-    prompt_tokens: Optional[int]
-    completion_tokens: Optional[int]
-    reasoning_tokens: Optional[int]
-    cached_tokens: Optional[int]
-    latency_ms: float
-    cost_usd: Optional[float]
-    is_finish: bool
-    ttft_ms: Optional[float] = None
-    tool_calls: Optional[List[Dict[str, Any]]] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    raw_response: Dict[str, Any] = field(default_factory=dict)
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "content": self.content[:300] if len(self.content) > 300 else self.content,
-            "thought": self.thought[:300] if len(self.thought) > 300 else self.thought,
-            "action": self.action,
-            "prompt_tokens": self.prompt_tokens,
-            "completion_tokens": self.completion_tokens,
-            "reasoning_tokens": self.reasoning_tokens,
-            "cached_tokens": self.cached_tokens,
-            "latency_ms": round(self.latency_ms, 2),
-            "ttft_ms": round(self.ttft_ms, 2) if self.ttft_ms is not None else None,
-            "tool_calls": self.tool_calls or [],
-            "cost_usd": self.cost_usd,
-            "is_finish": self.is_finish,
-            **self.metadata,
-        }
-
-
-def parse_react_response(text: str) -> tuple[str, str, bool]:
-    """Extracts thought and single bash command from ReAct format."""
-    thought = ""
-    action = ""
-    is_finish = False
-
-    thought_match = re.search(r"Thought:\s*(.*?)(?=Action:|$)", text, re.DOTALL | re.IGNORECASE)
-    if thought_match:
-        thought = thought_match.group(1).strip()
-
-    action_match = re.search(r"Action:\s*(.*)", text, re.DOTALL | re.IGNORECASE)
-    if action_match:
-        action = action_match.group(1).strip()
-        # Clean multi-line if any
-        if "\n" in action:
-            action = action.split("\n")[0].strip()
-
-    if not action:
-        # Fallback to whole text or simple echo
-        action = "pwd"
-        thought = text.strip()
-
-    if action.upper() in ("FINISH", "AGENT_DONE", "EXIT", "COMPLETED"):
-        is_finish = True
-
-    return thought, action, is_finish
-
-
-class BaseGeneratorProvider:
-    def generate(
-        self,
-        messages: List[Dict[str, str]],
-        model_spec: ModelSpec,
-        native_effort: str = "none",
-        max_tokens: int = 1024,
-    ) -> GeneratorResponse:
-        raise NotImplementedError
-
-
-class MockGeneratorProvider(BaseGeneratorProvider):
-    """Zero-cost ReAct generator simulating valid agent steps and token statistics."""
-
-    def __init__(self, failure_rate: float = 0.0):
-        self.failure_rate = failure_rate
-
-    def generate(
-        self,
-        messages: List[Dict[str, str]],
-        model_spec: ModelSpec,
-        native_effort: str = "none",
-        max_tokens: int = 1024,
-    ) -> GeneratorResponse:
-        t0 = time.time()
-        
-        # Analyze messages to detect task and step
-        user_msg = ""
-        for m in messages:
-            if m.get("role") == "user":
-                user_msg = m.get("content", "")
-                break
-
-        # Count history turns to determine step count
-        step_count = sum(1 for m in messages if m.get("role") == "assistant")
-
-        # Scenario-specific scripts
-        if "fix-git" in user_msg.lower():
-            plan = [
-                ("Checking git branch and log status.", "git status"),
-                ("Switching back to master branch.", "git checkout master"),
-                ("Merging detached commit into master branch.", "git merge e5f6g7h"),
-                ("Master branch is up to date and verified.", "FINISH"),
-            ]
-        elif "count-dataset-tokens" in user_msg.lower():
-            plan = [
-                ("Checking workspace files.", "ls -la"),
-                ("Running tokenizer token count on dataset.", "python -m count_tokens dataset.jsonl"),
-                ("Token count verified successfully.", "FINISH"),
-            ]
-        else:
-            plan = [
-                ("Inspecting current workspace and directory layout.", "pwd && ls -la"),
-                ("Running automated tests and environment checks.", "cat Makefile || ls -la"),
-                ("Verifying changes and build outputs.", "echo 'build verified'"),
-                ("All execution requirements satisfied.", "FINISH"),
-            ]
-
-        idx = min(step_count, len(plan) - 1)
-        thought, action = plan[idx]
-        is_finish = (action == "FINISH")
-
-        content = f"Thought: {thought}\nAction: {action}"
-
-        # Simulate token counts
-        prompt_tokens = random.randint(350, 1200) + step_count * 250
-        completion_tokens = random.randint(45, 120)
-        reasoning_tokens = 0
-        if native_effort in ("medium", "high") or model_spec.pool == "Reasoning":
-            effort_mult = 2 if native_effort == "high" else 1
-            reasoning_tokens = random.randint(200, 600) * effort_mult
-            completion_tokens += reasoning_tokens
-
-        cached_tokens = int(prompt_tokens * 0.4) if step_count > 0 else 0
-
-        # Latency simulation: 15-45ms
-        latency_ms = (time.time() - t0) * 1000 + random.uniform(12.0, 35.0)
-
-        # In mock mode, actual USD is recorded as 0.0 (or simulated theoretical cost for benchmarking)
-        # We record theoretical cost so benchmark can compare policies!
-        theoretical_cost = model_spec.calculate_cost(
-            prompt_tokens=prompt_tokens,
-            completion_tokens=completion_tokens,
-            reasoning_tokens=reasoning_tokens,
-            cache_read_tokens=cached_tokens,
-        )
-
-        return GeneratorResponse(
-            content=content,
-            thought=thought,
-            action=action,
-            prompt_tokens=prompt_tokens,
-            completion_tokens=completion_tokens,
-            reasoning_tokens=reasoning_tokens,
-            cached_tokens=cached_tokens,
-            latency_ms=latency_ms,
-            cost_usd=theoretical_cost,
-            is_finish=is_finish,
-        )
-
-
-class OracleGeneratorProvider(BaseGeneratorProvider):
-    """Oracle provider that always executes correct actions and succeeds."""
-
-    def generate(
-        self,
-        messages: List[Dict[str, str]],
-        model_spec: ModelSpec,
-        native_effort: str = "none",
-        max_tokens: int = 1024,
-    ) -> GeneratorResponse:
-        t0 = time.time()
-        step_count = sum(1 for m in messages if m.get("role") == "assistant")
-
-        if step_count == 0:
-            thought = "Oracle inspecting task."
-            action = "pwd"
-            is_finish = False
-        else:
-            thought = "Oracle completing task."
-            action = "FINISH"
-            is_finish = True
-
-        content = f"Thought: {thought}\nAction: {action}"
-        return GeneratorResponse(
-            content=content,
-            thought=thought,
-            action=action,
-            prompt_tokens=250,
-            completion_tokens=40,
-            reasoning_tokens=0,
-            cached_tokens=0,
-            latency_ms=(time.time() - t0) * 1000 + 5.0,
-            cost_usd=0.0,
-            is_finish=is_finish,
-        )
-
-
-def _pilot_file(name: str) -> Path:
-    for parent in Path(__file__).resolve().parents:
-        candidate = parent / "experiments" / "agent_pilot" / name
-        if candidate.is_file():
-            return candidate
-    raise FileNotFoundError(f"Existing experiments/agent_pilot/{name} not found")
+from .base import BaseGeneratorProvider, GeneratorResponse, ProviderResponseError, parse_react_response
+from .protocols import ChatCompletions, Responses, response_error as protocol_response_error
+from .simulation import MockGeneratorProvider, OracleGeneratorProvider
+from .usage import _record_budget, _token_budget, update_token_budget
+from .registry import ModelSpec
 
 
 def load_generator_credentials() -> Dict[str, Any]:
@@ -259,42 +25,6 @@ def load_generator_credentials() -> Dict[str, Any]:
                                str(Path.home() / ".agent-global/外部文本模型.local.json")))
     return json.loads(path.read_text(encoding="utf-8"))
 
-
-@contextmanager
-def _token_budget():
-    """Serialize accounting writes against the existing shared file."""
-    with _pilot_file("token_budget.json").open("r+", encoding="utf-8") as handle:
-        fcntl.flock(handle, fcntl.LOCK_EX)
-        data = json.load(handle)
-        try:
-            yield data
-        finally:
-            handle.seek(0)
-            json.dump(data, handle, indent=2)
-            handle.truncate()
-            handle.flush()
-            os.fsync(handle.fileno())
-            fcntl.flock(handle, fcntl.LOCK_UN)
-
-
-def _record_budget(data: Dict[str, Any], prompt_tokens: Optional[int], completion_tokens: Optional[int],
-                   unknown_token_bound: int = 0) -> None:
-    data["total_calls"] = data.get("total_calls", 0) + 1
-    if prompt_tokens is None or completion_tokens is None:
-        data["unknown_usage_calls"] = data.get("unknown_usage_calls", 0) + 1
-        data["reserved_unknown_tokens"] = data.get("reserved_unknown_tokens", 0) + unknown_token_bound
-    else:
-        data["consumed_prompt_tokens"] = data.get("consumed_prompt_tokens", 0) + prompt_tokens
-        data["consumed_completion_tokens"] = data.get("consumed_completion_tokens", 0) + completion_tokens
-        data["consumed_total_tokens"] = data.get("consumed_total_tokens", 0) + prompt_tokens + completion_tokens
-    data["max_tokens"] = None
-    data["remaining_tokens"] = None
-    data["last_updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-
-
-def update_token_budget(prompt_tokens: int, completion_tokens: int) -> None:
-    with _token_budget() as data:
-        _record_budget(data, prompt_tokens, completion_tokens)
 
 
 class OpenAICompatibleProvider(BaseGeneratorProvider):
@@ -313,9 +43,10 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         self.api_key = api_key if api_key is not None else (
             creds.get("api_key", "") if self.base_url == credential_endpoint else ""
         )
-        self.primary_model = creds.get("primary_model", "gpt-6-luna")
         self.request_timeout_sec = request_timeout_sec
-        self.model_endpoints = model_endpoints or creds.get("model_endpoints", {})
+        self.model_endpoints = {item["model"]: item for item in creds.get("providers", [])}
+        self.model_endpoints.update(creds.get("model_endpoints", {}))
+        self.model_endpoints.update(model_endpoints or {})
         self.account_endpoints = creds.get("account_endpoints", {})
         self.luna_registry = None
         if creds.get("luna_provider_project"):
@@ -345,9 +76,17 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                   "requested_output_tokens": max_output_tokens,
                   "cache_session_reuse": "NOT_MEASURED", "physical_kv_shared": "UNKNOWN"}
         capacity, output_capacity = model_spec.context_window, model_spec.max_output_tokens
+        credentials = self.model_endpoints.get(target)
+        if credentials is not None:
+            result.update(endpoint_id=credentials.get("endpoint_id"), base_url=credentials.get("base_url"),
+                          availability="CONFIGURED_NOT_PROBED")
+            capacity = credentials.get("context_window") or capacity
+            output_capacity = credentials.get("max_output_tokens") or output_capacity
+        elif target == "glm-5.3-flash" and endpoint is None:
+            result.update(base_url=None, availability="UNAVAILABLE", exclusion_reason="MODEL_ENDPOINT_UNBOUND")
         if endpoint is not None:
             result.update(endpoint_id=endpoint.endpoint_id, base_url=endpoint.base_url,
-                          protocol=endpoint.protocol, availability=("RECORDED_UNHEALTHY" if not endpoint.is_healthy else
+                          availability=("RECORDED_UNHEALTHY" if not endpoint.is_healthy else
                               "RECORDED_HEALTHY" if endpoint.last_checked_iso or endpoint.success_count else "CONFIGURED_NOT_PROBED"),
                           last_status_time=endpoint.last_checked_iso)
             capacity = endpoint.context_window or capacity
@@ -363,123 +102,6 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         result.update(context_capacity=capacity, output_capacity=output_capacity)
         return result
 
-    def _read_response(self, response, stream: bool, started: float, capture=None,
-                       secret=b"") -> Tuple[Dict[str, Any], Optional[float]]:
-        if not stream:
-            raw = response.read()
-            self._record_response_bytes(raw, capture, secret)
-            return json.loads(raw.decode("utf-8")), None
-        body: Dict[str, Any] = {"object": "chat.completion", "choices": []}
-        choices: Dict[int, Dict[str, Any]] = {}
-        tool_calls: Dict[Tuple[int, int], Dict[str, Any]] = {}
-        ttft = None
-        done_received = False
-        for raw_line in response:
-            self._record_response_bytes(raw_line, capture, secret)
-            line = raw_line.decode("utf-8").strip()
-            if not line.startswith("data:"):
-                continue
-            data = line[5:].strip()
-            if data == "[DONE]":
-                done_received = True
-                break
-            chunk = json.loads(data)
-            if "error" in chunk:
-                body["error"] = chunk["error"]
-                break
-            for key in ("id", "model", "created", "system_fingerprint", "reasoning", "reasoning_effort"):
-                if key in chunk:
-                    body[key] = chunk[key]
-            if chunk.get("usage") is not None:
-                body["usage"] = chunk["usage"]
-            for item in chunk.get("choices") or []:
-                index = item["index"]
-                choice = choices.setdefault(index, {"index": index, "message": {"role": "assistant", "content": ""}, "finish_reason": None})
-                delta = item.get("delta", {})
-                if (delta.get("content") or delta.get("tool_calls")) and ttft is None:
-                    ttft = (time.perf_counter() - started) * 1000
-                for key in ("content", "reasoning_content"):
-                    if delta.get(key):
-                        choice["message"][key] = choice["message"].get(key, "") + delta[key]
-                for tc in delta.get("tool_calls") or []:
-                    tool = tool_calls.setdefault((index, tc["index"]), {"id": "", "type": "function", "function": {"name": "", "arguments": ""}})
-                    if tc.get("id"):
-                        tool["id"] = tc["id"]
-                    for key in ("name", "arguments"):
-                        tool["function"][key] += (tc.get("function") or {}).get(key) or ""
-                if item.get("finish_reason") is not None:
-                    choice["finish_reason"] = item["finish_reason"]
-        for index, choice in sorted(choices.items()):
-            calls = [tool for (choice_index, _), tool in sorted(tool_calls.items()) if choice_index == index]
-            if calls:
-                choice["message"]["tool_calls"] = calls
-            body["choices"].append(choice)
-        body["_stream_end"] = {"done_received": done_received}
-        return body, ttft
-
-    def _make_payload(self, messages, target_model, native_effort, max_tokens, tools, stream):
-        payload = {"model": target_model, "messages": messages, "max_tokens": max_tokens, "stream": stream}
-        if stream:
-            payload["stream_options"] = {"include_usage": True}
-        if native_effort != "none" or target_model == "gpt-6-luna":
-            payload["reasoning_effort"] = native_effort
-        if tools:
-            payload["tools"] = tools
-        return payload
-
-    @staticmethod
-    def _usage_counts(usage):
-        prompt = usage.get("prompt_tokens")
-        completion = usage.get("completion_tokens")
-        reasoning = (usage.get("completion_tokens_details") or {}).get("reasoning_tokens")
-        if prompt is not None and completion is not None and reasoning:
-            if usage.get("total_tokens") == prompt + completion + reasoning:
-                completion += reasoning
-        return (
-            prompt, completion, reasoning,
-            (usage.get("prompt_tokens_details") or {}).get("cached_tokens"),
-            (usage.get("prompt_tokens_details") or {}).get("cache_write_tokens"),
-        )
-
-    @staticmethod
-    def _response_error(body, protocol):
-        if body.get("error") is not None:
-            return body["error"].get("type", "unknown")
-        if protocol == "responses":
-            outputs = body.get("output", [])
-            calls = [item for item in outputs if item["type"] == "function_call"]
-            if any(call.get("status") == "incomplete" for call in calls):
-                return "INCOMPLETE_TOOL_CALL"
-            if body.get("status") != "completed":
-                return "INCOMPLETE_RESPONSE"
-            content = any(part.get("text") for item in outputs if item["type"] == "message"
-                          for part in item.get("content", []))
-        else:
-            choices = body.get("choices", [])
-            if not choices:
-                return "EMPTY_RESPONSE"
-            message = choices[0].get("message") or {}
-            content = message.get("content")
-            calls = [call.get("function", {}) for call in message.get("tool_calls") or []]
-            if choices[0].get("finish_reason") in (None, "length"):
-                return "INCOMPLETE_RESPONSE" if content or calls else "EMPTY_RESPONSE"
-        if not content and not calls:
-            return "EMPTY_RESPONSE"
-        for call in calls:
-            if not call.get("name") or not call.get("arguments"):
-                return "INCOMPLETE_TOOL_CALL"
-            def unique_arguments(pairs):
-                arguments = dict(pairs)
-                if len(arguments) != len(pairs):
-                    raise ValueError("DUPLICATE_TOOL_ARGUMENT")
-                return arguments
-            try:
-                json.loads(call["arguments"], object_pairs_hook=unique_arguments)
-            except json.JSONDecodeError:
-                return "INVALID_TOOL_ARGUMENTS"
-            except ValueError as exc:
-                return str(exc)
-        return None
 
     def query_raw(self, messages, model_spec, native_effort="none", max_tokens=1024,
                   tools=None, stream=True, *, response_format=None, raw_response_path=None):
@@ -551,7 +173,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         target_spec = model_spec
         effective_effort = native_effort
         request_api_key = self.api_key
-        request_protocol = self.protocol
+        request_protocol = model_spec.protocol or self.protocol
         request_base_url = self.base_url
         provider_name = model_spec.provider
         pool_endpoint = None
@@ -559,7 +181,6 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         if endpoint_credentials is not None:
             request_base_url = endpoint_credentials.get("base_url", request_base_url).rstrip("/")
             request_api_key = endpoint_credentials.get("api_key", request_api_key)
-            request_protocol = endpoint_credentials.get("protocol", request_protocol)
         if self.luna_registry is not None and (target == "gpt-6-luna" or target in self.account_endpoints):
             pool_endpoint = (self.luna_registry.get_endpoint(self.account_endpoints[target])
                              if target in self.account_endpoints and self.account_endpoints[target] not in excluded_endpoints else
@@ -568,13 +189,13 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 raise RuntimeError("No active Luna account endpoint")
             request_base_url = pool_endpoint.base_url
             request_api_key = pool_endpoint.api_key
-            request_protocol = ("chat_completions" if pool_endpoint.protocol == "openai-compatible"
-                                else pool_endpoint.protocol)
             if pool_endpoint.max_output_tokens is not None:
                 max_tokens = min(max_tokens, pool_endpoint.max_output_tokens)
+        if target == "glm-5.3-flash" and endpoint_credentials is None and pool_endpoint is None:
+            raise RuntimeError("No configured provider endpoint for glm-5.3-flash")
         model_spec.validate_effort(effective_effort)
-        transport = OpenAIResponsesProvider if request_protocol == "responses" else OpenAICompatibleProvider
-        payload = transport._make_payload(self, messages, target, effective_effort, max_tokens, tools, stream)
+        transport = Responses if request_protocol == "responses" else ChatCompletions
+        payload = transport.payload(messages, target, effective_effort, max_tokens, tools, stream)
         if response_format is not None:
             if request_protocol == "responses":
                 payload["text"] = {"format": response_format}
@@ -603,9 +224,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                     with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:
                         http_status = response.status
                         response_content_type = response.headers.get("Content-Type")
-                        body, ttft_ms = transport._read_response(
-                            self, response, stream or "text/event-stream" in (response_content_type or ""),
-                            started, capture, request_api_key.encode("utf-8"))
+                        body, ttft_ms = transport.read(
+                            response, stream or "text/event-stream" in (response_content_type or ""),
+                            started, capture, request_api_key.encode("utf-8"), self._record_response_bytes)
                 except urllib.error.HTTPError as exc:
                     exc.provider_endpoint_id = pool_endpoint.endpoint_id if pool_endpoint else None
                     if capture is not None:
@@ -624,14 +245,14 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                         else type(exc).__name__)
                 raise
         raw_usage = body.get("usage")
-        p_tokens, c_tokens, r_tokens, cached, cache_written = transport._usage_counts(raw_usage or {})
+        p_tokens, c_tokens, r_tokens, cached, cache_written = transport.usage(raw_usage or {})
         reported_completion = (raw_usage or {}).get("completion_tokens") if request_protocol == "chat_completions" else (raw_usage or {}).get("output_tokens")
         with _token_budget() as budget:
             _record_budget(budget, p_tokens, c_tokens, request_bound)
         latency_ms = (time.perf_counter() - started) * 1000
         returned = body.get("model")
-        matched = returned == target or (target == "hy4" and returned == "hy4-preview")
-        identity_status = "MATCHED_REQUEST_ALIAS" if matched else ("MISSING" if not returned else "MISMATCH")
+        matched = returned == target
+        identity_status = "MATCHED_REQUEST" if matched else ("MISSING" if not returned else "MISMATCH")
         returned_effort = (body.get("reasoning") or {}).get("effort") or body.get("reasoning_effort")
         effort_status = ("NOT_REPORTED" if returned_effort is None else
                          "PROVIDER_REPORTED_MATCH" if returned_effort == effective_effort else
@@ -647,7 +268,11 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             c_tokens * 1000 / stream_elapsed_ms
             if usage_complete and stream_elapsed_ms is not None and stream_elapsed_ms > 0 else None
         )
-        response_error = self._response_error(body, request_protocol)
+        response_error = protocol_response_error(body, request_protocol)
+        if not response_error and not matched:
+            response_error = "MODEL_IDENTITY_MISMATCH"
+        elif not response_error and effort_status == "PROVIDER_REPORTED_MISMATCH":
+            response_error = "NATIVE_EFFORT_MISMATCH"
         if pool_endpoint is not None:
             self.luna_registry.record_request_complete(
                 pool_endpoint.endpoint_id, latency_ms, tokens=(p_tokens or 0) + (c_tokens or 0),
@@ -662,7 +287,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "returned_model_id": returned,
             "provider": provider_name,
             "provider_base_url": "PRIVATE_ACCOUNT_POOL" if pool_endpoint else request_base_url,
-            "provider_endpoint_id": pool_endpoint.endpoint_id if pool_endpoint else None,
+            "provider_endpoint_id": pool_endpoint.endpoint_id if pool_endpoint else (endpoint_credentials or {}).get("endpoint_id"),
+            "actual_backend_model_id": None,
+            "physical_backend_identity_status": "NOT_REPORTED",
             "protocol": request_protocol,
             "http_status": http_status,
             "response_content_type": response_content_type,
@@ -675,7 +302,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "native_effort": effective_effort,
             "requested_native_effort": native_effort,
             "request_native_effort": effective_effort,
-            "sent_effort_parameter": {name: payload[name] for name in ("reasoning", "reasoning_effort")
+            "sent_effort_parameter": {name: payload[name] for name in ("thinking", "reasoning", "reasoning_effort")
                                       if name in payload},
             "returned_native_effort": returned_effort,
             "native_effort_status": effort_status,
@@ -685,8 +312,6 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "raw_usage": raw_usage,
             "usage_status": "REPORTED" if usage_complete else "MISSING",
             "identity_status": identity_status,
-            "returned_model_alias_accepted": matched and returned != target,
-            "alias_mapping_applied": False,
             "prompt_tokens": p_tokens,
             "completion_tokens": c_tokens,
             "reported_completion_tokens": reported_completion,
@@ -718,14 +343,6 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         }
         if response_format is not None:
             metrics["requested_response_format"] = response_format
-        if usage_complete:
-            global_multi_model_logger.log_call(
-                protocol=request_protocol, model_id=returned or target, provider=provider_name,
-                reasoning_effort=native_effort, stream=stream, ttft_ms=ttft_ms, total_latency_ms=latency_ms,
-                prompt_tokens=p_tokens, completion_tokens=c_tokens, reasoning_tokens=r_tokens or 0,
-                cache_read_tokens=cached or 0, actual_billed_cost_usd=billed_cost,
-                status=metrics["status"], metadata=metrics,
-            )
         if response_error:
             raise ProviderResponseError(response_error, body, metrics)
         return body, metrics
@@ -754,359 +371,14 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         )
 
 
-@contextmanager
-def native_generator_relay(record_dir: str | Path, bind: str = "0.0.0.0"):
-    """Expose query_raw to native mini for this context's lifetime only.
-
-    Yields port, api_key and a Docker-facing base_url. api_key is a temporary
-    in-memory credential: pass it as the native client's API key, never log it.
-    Provider credentials and shared usage accounting remain on the host.
-    Upstream requests stream for timing; downstream may request JSON or SSE.
-    SSE is replayed after the single upstream response, not live forwarded.
-    X-Session-ID identifies the episode. Existing events restore steps and cost.
-    An explicitly positive cost_limit applies after a completed call;
-    this does not predict or cap the bill of an in-flight provider request.
-    """
-    from modelrouter.benchmark.iterations import event, rows, write_atomic
-    from modelrouter.providers.registry import MODEL_REGISTRY
-
-    record_dir = Path(record_dir)
-    provider = OpenAICompatibleProvider()
-    relay_key = secrets.token_urlsafe(32)
-    episode_steps: Dict[str, int] = {}
-    episode_costs: Dict[Optional[str], Optional[float]] = {}
-    config_path = record_dir / "run_config.json"
-    config = json.loads(config_path.read_text()) if config_path.is_file() else {}
-    cost_limit = float(config.get("cost_limit", 0.0))
-    for record in rows(record_dir / "events.jsonl"):
-        if record.get("source") != "native_generator_relay":
-            continue
-        episode = record.get("episode_id")
-        if episode is not None and record.get("step") is not None:
-            episode_steps[episode] = max(episode_steps.get(episode, 0), record["step"] + 1)
-        if record["event"] == "GENERATOR_END":
-            previous = episode_costs.get(episode, 0.0)
-            cost = record.get("cost_usd")
-            episode_costs[episode] = previous + cost if previous is not None and cost is not None else None
-    step_lock = threading.Lock()
-
-    class Handler(BaseHTTPRequestHandler):
-        def log_message(self, format, *args):
-            pass
-
-        def send_json(self, code, body):
-            data = json.dumps(body).encode("utf-8")
-            self.send_response(code)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(data)))
-            self.end_headers()
-            self.wfile.write(data)
-
-        def do_POST(self):
-            if not secrets.compare_digest(self.headers.get("Authorization", "").encode(),
-                                          f"Bearer {relay_key}".encode()):
-                self.send_json(401, {"error": {"type": "authentication_error", "message": "Invalid relay credential"}})
-                return
-            if self.path != "/v1/chat/completions":
-                self.send_json(404, {"error": {"type": "not_found", "message": "Use /v1/chat/completions"}})
-                return
-            request_id = "native-" + secrets.token_hex(12)
-            episode_id = self.headers.get("X-Session-ID") or None
-            step = None
-            response_error = None
-            if episode_id is not None:
-                with step_lock:
-                    step = episode_steps.get(episode_id, 0)
-                    episode_steps[episode_id] = step + 1
-            attribution = {"episode_id": episode_id, "step": step,
-                           "policy": "mini-swe-agent", "sample_kind": "benchmark"}
-            started = time.perf_counter()
-            try:
-                payload = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
-                model = payload["model"].removeprefix("openai/")
-                if model not in ("gpt-6-luna", "gpt-5.6-luna"):
-                    raise ValueError("Only the two Luna models are authorized")
-                with step_lock:
-                    previous_cost = episode_costs.get(episode_id, 0.0)
-                    if cost_limit > 0 and previous_cost is not None and previous_cost >= cost_limit:
-                        reason = "EPISODE_COST_LIMIT"
-                        event(record_dir, "ERROR", source="native_generator_relay", category="BUDGET",
-                              **attribution, request_id=request_id, error=reason,
-                              episode_estimated_cost_usd=previous_cost, episode_cost_limit_usd=cost_limit)
-                        self.send_json(402, {"error": {"type": reason, "message": "Episode budget cannot fund another request"}})
-                        return
-                    try:
-                        raw, metrics = provider.query_raw(
-                            messages=payload["messages"], model_spec=MODEL_REGISTRY[model],
-                            native_effort=payload.get("reasoning_effort", "low"),
-                            max_tokens=payload.get("max_completion_tokens", payload.get("max_tokens", 1024)),
-                            tools=payload.get("tools"), stream=True,
-                        )
-                    except ProviderResponseError as exc:
-                        raw, metrics = exc.response, exc.metrics
-                        response_error = exc
-                    cost = metrics["cost_usd"]
-                    episode_cost = previous_cost + cost if previous_cost is not None and cost is not None else None
-                    episode_costs[episode_id] = episode_cost
-            except Exception as exc:
-                event(record_dir, "ERROR", source="native_generator_relay", category="PROVIDER",
-                      **attribution,
-                      request_id=request_id, error=type(exc).__name__,
-                      duration_ms=(time.perf_counter() - started) * 1000)
-                code = 400 if isinstance(exc, (ValueError, KeyError, TypeError)) else 502
-                self.send_json(code, {"error": {"type": type(exc).__name__, "message": "Native relay request failed; see host iteration metrics"}})
-                return
-            event(record_dir, "GENERATOR_END", **metrics, source="native_generator_relay",
-                  **attribution,
-                  request_id=request_id, native_stream=bool(payload.get("stream", False)),
-                  episode_estimated_cost_usd=episode_cost, episode_cost_limit_usd=cost_limit,
-                  model=metrics["request_model_id"], returned_model=metrics["returned_model_id"],
-                  effort=metrics["native_effort"])
-            if response_error is not None:
-                write_atomic(record_dir / "provider_responses" / f"{request_id}.json",
-                             {"response": raw, "metrics": metrics})
-                self.send_json(502, {"error": {"type": str(response_error),
-                                              "message": "Provider response is not executable"}})
-                return
-            if not payload.get("stream", False):
-                self.send_json(200, raw)
-                return
-            self.send_response(200)
-            self.send_header("Content-Type", "text/event-stream")
-            self.end_headers()
-            chunk = {key: raw[key] for key in ("id", "model", "created") if key in raw}
-            chunk.update(object="chat.completion.chunk", choices=[])
-            for choice in raw["choices"]:
-                delta = dict(choice["message"])
-                if delta.get("tool_calls"):
-                    delta["tool_calls"] = [{"index": index, **call} for index, call in enumerate(delta["tool_calls"])]
-                chunk["choices"].append({"index": choice["index"], "delta": delta, "finish_reason": None})
-            self.wfile.write(f"data: {json.dumps(chunk)}\n\n".encode())
-            chunk["choices"] = [{"index": choice["index"], "delta": {}, "finish_reason": choice.get("finish_reason")} for choice in raw["choices"]]
-            self.wfile.write(f"data: {json.dumps(chunk)}\n\n".encode())
-            if "usage" in raw:
-                chunk.update(choices=[], usage=raw["usage"])
-                self.wfile.write(f"data: {json.dumps(chunk)}\n\n".encode())
-            self.wfile.write(b"data: [DONE]\n\n")
-
-    server = ThreadingHTTPServer((bind, 0), Handler)
-    server.daemon_threads = False
-    port = server.server_address[1]
-    thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.1}, daemon=True)
-    thread.start()
-    try:
-        event(record_dir, "NATIVE_RELAY_START", bind=bind, port=port, cost_limit=cost_limit)
-        yield {"port": port, "api_key": relay_key, "base_url": f"http://host.docker.internal:{port}/v1"}
-    finally:
-        server.shutdown()
-        server.server_close()
-        thread.join()
-        event(record_dir, "NATIVE_RELAY_STOP", port=port)
-
-
-GET_TEST_STATUS_TOOL = {
-    "type": "function", "name": "get_test_status",
-    "description": "Returns local fixture status",
-    "parameters": {"type": "object", "properties": {}, "required": []},
-}
-
-
-def execute_safe_tool(name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
-    """Explicit legacy fixture executor; never invoked by query_raw."""
-    if name == "get_test_status":
-        return {"status": "ready", "evidence_type": "FIXTURE", "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
-    return {"error": f"Tool '{name}' not found"}
 
 
 class OpenAIResponsesProvider(OpenAICompatibleProvider):
-    """Native Responses transport, sharing identity and usage accounting."""
+    """Native Responses protocol selected by ModelSpec.protocol."""
 
     protocol = "responses"
-
-    def _make_payload(self, messages, target_model, native_effort, max_tokens, tools, stream):
-        inputs = []
-        for message in messages:
-            if message.get("role") == "tool":
-                inputs.append({"type": "function_call_output", "call_id": message["tool_call_id"],
-                               "output": message["content"]})
-            elif message.get("tool_calls"):
-                if message.get("content"):
-                    inputs.append({"role": message["role"], "content": message["content"]})
-                inputs.extend({"type": "function_call", "call_id": call["id"],
-                               **call["function"]} for call in message["tool_calls"])
-            else:
-                inputs.append({"role": message["role"], "content": message["content"]})
-        payload = {"model": target_model, "input": inputs, "max_output_tokens": max_tokens, "stream": stream}
-        if native_effort != "none" or target_model in ("gpt-6-luna", "gpt-6.1-terra"):
-            payload["reasoning"] = {"effort": native_effort}
-        if tools:
-            payload["tools"] = [{"type": tool["type"], **tool["function"]}
-                                if "function" in tool else tool for tool in tools]
-        return payload
-
-    @staticmethod
-    def _usage_counts(usage):
-        return (
-            usage.get("input_tokens"), usage.get("output_tokens"),
-            (usage.get("output_tokens_details") or {}).get("reasoning_tokens"),
-            (usage.get("input_tokens_details") or {}).get("cached_tokens"),
-            (usage.get("input_tokens_details") or {}).get("cache_write_tokens"),
-        )
-
-    def _read_response(self, response, stream, started, capture=None, secret=b""):
-        if not stream:
-            raw = response.read()
-            self._record_response_bytes(raw, capture, secret)
-            return json.loads(raw.decode("utf-8")), None
-        body: Dict[str, Any] = {}
-        output = {}
-        text = ""
-        ttft = None
-        event = ""
-        done_received = False
-        terminal_event = None
-        for raw_line in response:
-            self._record_response_bytes(raw_line, capture, secret)
-            line = raw_line.decode("utf-8").strip()
-            if line.startswith("event:"):
-                event = line[6:].strip()
-            if not line.startswith("data:"):
-                continue
-            data = line[5:].strip()
-            if data == "[DONE]":
-                done_received = True
-                break
-            item = json.loads(data)
-            kind = item.get("type", event)
-            if kind in ("response.output_text.delta", "response.function_call_arguments.delta"):
-                if item.get("delta") and ttft is None:
-                    ttft = (time.perf_counter() - started) * 1000
-                if kind == "response.output_text.delta":
-                    text += item.get("delta", "")
-            if kind in ("response.output_item.added", "response.output_item.done"):
-                value = item["item"]
-                output[value.get("id") or value.get("call_id") or str(item.get("output_index", 0))] = value
-            if kind in ("response.completed", "response.done", "response.incomplete"):
-                body = item.get("response", {})
-                terminal_event = kind
-            if kind in ("error", "response.failed"):
-                raise RuntimeError(f"Provider stream ended with {kind}")
-        if "output" not in body:
-            body["output"] = list(output.values())
-            if text:
-                body["output"].append({"type": "message", "role": "assistant", "content": [{"type": "output_text", "text": text}]})
-        body["_stream_end"] = {"done_received": done_received, "terminal_event": terminal_event}
-        return body, ttft
-
-    def generate(self, messages, model_spec, native_effort="none", max_tokens=1024, stream=True,
-                 tools=None, tool_executor=None, *, response_format=None):
-        body, metrics = self.query_raw(messages, model_spec, native_effort, max_tokens, tools, stream,
-                                       response_format=response_format)
-        outputs = body.get("output", [])
-        text = "".join(part.get("text", "") for item in outputs if item["type"] == "message" for part in item.get("content", []))
-        calls = [item for item in outputs if item["type"] == "function_call"]
-        if calls and tool_executor is not None:
-            executed = []
-            followup = list(messages) + outputs
-            for call in calls:
-                args = json.loads(call.get("arguments") or "{}")
-                value = tool_executor(call["name"], args)
-                executed.append({"call_id": call["call_id"], "name": call["name"], "args": args, "output": value})
-                followup.append({"type": "function_call_output", "call_id": call["call_id"], "output": json.dumps(value)})
-            body2, metrics2 = self.query_raw(followup, model_spec, native_effort, max_tokens, tools, stream)
-            text += "".join(part.get("text", "") for item in body2.get("output", []) if item["type"] == "message" for part in item.get("content", []))
-            combined = dict(metrics)
-            for key in ("prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cost_usd", "actual_billed_cost_usd", "latency_ms"):
-                combined[key] = metrics[key] + metrics2[key] if metrics[key] is not None and metrics2[key] is not None else None
-            combined["requests"] = [metrics, metrics2]
-            combined["raw_usage"] = [metrics["raw_usage"], metrics2["raw_usage"]]
-            combined["status"] = "RECORDED" if all(m["status"] == "RECORDED" for m in (metrics, metrics2)) else "NOT_EVALUATED"
-            combined["output_tokens_per_s"] = None
-            combined["stream_output_tokens_per_s"] = None
-            combined["stream_output_tokens_per_s_status"] = "PER_REQUEST_ONLY"
-            return self._generation(text, executed, {"responses": [body, body2]}, combined)
-        return self._generation(text, calls, body, metrics)
 
 
 OpenAIChatCompletionsProvider = OpenAICompatibleProvider
 
 
-class AnthropicMessagesProvider(BaseGeneratorProvider):
-    """Provider for Anthropic /v1/messages protocol.
-    
-    Reports BLOCKED_PROTOCOL when upstream endpoint forbids dispatch.
-    """
-
-    PROTOCOL_STATUS = "BLOCKED_PROTOCOL"
-    BLOCKED_REASON = "This group does not allow /v1/messages dispatch (HTTP 403 permission_error)"
-
-    def __init__(self, base_url: Optional[str] = None, api_key: Optional[str] = None):
-        creds = load_generator_credentials()
-        self.base_url = (base_url or creds.get("base_url") or "https://api.anthropic.com/v1").rstrip("/")
-        self.api_key = api_key or creds.get("api_key", "")
-        self.primary_model = creds.get("primary_model", "gpt-6-luna")
-        self.status = "BLOCKED_PROTOCOL"
-        self.status_details: Dict[str, Any] = {}
-
-    def probe(self) -> Dict[str, Any]:
-        """Probes the /v1/messages endpoint and records protocol status."""
-        url = f"{self.base_url}/messages"
-        headers = {
-            "Content-Type": "application/json",
-            "x-api-key": self.api_key,
-            "anthropic-version": "2023-06-01",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) ModelRouter/1.0",
-        }
-        payload = {
-            "model": self.primary_model,
-            "max_tokens": 10,
-            "messages": [{"role": "user", "content": "ping"}],
-        }
-        req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
-        try:
-            with urllib.request.urlopen(req, timeout=10.0) as resp:
-                self.status = "SUPPORTED"
-                self.status_details = {"status": "SUPPORTED", "code": resp.status}
-                return self.status_details
-        except urllib.error.HTTPError as e:
-            err_body = e.read().decode("utf-8")
-            try:
-                parsed_err = json.loads(err_body)
-                err_msg = parsed_err.get("error", {}).get("message", err_body)
-            except Exception:
-                err_msg = err_body
-
-            self.status = "BLOCKED_PROTOCOL"
-            self.status_details = {
-                "status": "BLOCKED_PROTOCOL",
-                "http_code": e.code,
-                "reason": err_msg,
-                "error_type": "permission_error" if "permission_error" in err_body else "http_error",
-                "endpoint": url,
-            }
-            logger.warning("AnthropicMessagesProvider protocol probe blocked: %s", self.status_details)
-            return self.status_details
-        except Exception as e:
-            self.status = "BLOCKED_PROTOCOL"
-            self.status_details = {
-                "status": "BLOCKED_PROTOCOL",
-                "http_code": 0,
-                "reason": str(e),
-                "endpoint": url,
-            }
-            return self.status_details
-
-    def generate(
-        self,
-        messages: List[Dict[str, str]],
-        model_spec: ModelSpec,
-        native_effort: str = "none",
-        max_tokens: int = 1024,
-    ) -> GeneratorResponse:
-        probe_res = self.probe()
-        if self.status == "BLOCKED_PROTOCOL":
-            raise PermissionError(
-                f"Protocol BLOCKED_PROTOCOL: /v1/messages is not supported or permitted on endpoint {self.base_url}. "
-                f"Details: {probe_res.get('reason', self.BLOCKED_REASON)}"
-            )
-        raise NotImplementedError("Anthropic message generation not implemented for blocked protocol.")

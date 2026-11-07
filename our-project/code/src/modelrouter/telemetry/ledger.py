@@ -29,10 +29,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 if TYPE_CHECKING:
-    try:
-        from modelrouter.agent.agent import EpisodeResult
-    except ImportError:
-        from experiments.agent_pilot.agent import EpisodeResult
+    from modelrouter.agent.legacy import EpisodeResult
 
 logger = logging.getLogger("modelrouter.telemetry.ledger")
 
@@ -53,12 +50,10 @@ class ExperimentLedger:
         self,
         runs_root: Optional[str | Path] = None,
         ledgers_root: Optional[str | Path] = None,
-        pricing_sha256: str = "v8-pricing-sha",
     ):
         base_dir = _find_project_root()
         self.runs_root = Path(runs_root or base_dir / "runs" / "agent_pilot")
         self.ledgers_root = Path(ledgers_root or base_dir / "experiments" / "agent_pilot" / "ledgers")
-        self.pricing_sha256 = pricing_sha256
 
         self.runs_root.mkdir(parents=True, exist_ok=True)
         self.ledgers_root.mkdir(parents=True, exist_ok=True)
@@ -108,7 +103,6 @@ class ExperimentLedger:
             "task_id": result.task_id,
             "policy_id": result.policy_id,
             "seed": result.seed,
-            "pricing_sha256": self.pricing_sha256,
             "recorded_at": now.isoformat(),
             "status": result.status,
             "resolved": result.resolved,
@@ -231,8 +225,13 @@ class ExperimentLedger:
         generator_cost = trial.get("cost_usd")
         teacher_cost = None
         model_usage = metadata.get("provider_metrics")
+        if model_usage is not None:
+            model_usage = model_usage + metadata.get("provider_failures", [])
         teacher_usage = (metadata.get("v9") or {}).get("teacher_metrics", [])
         teacher_usage = [row for row in teacher_usage if row.get("provider_request_attempted", True)]
+        from modelrouter.providers.usage import known_request_cost
+        known_generator = [known_request_cost(row) for row in (model_usage or [])]
+        known_teacher = [known_request_cost(row) for row in teacher_usage]
         if model_usage is not None:
             generator_cost = sum(row["cost_usd"] for row in model_usage) if all(
                 row.get("cost_usd") is not None for row in model_usage) else None
@@ -269,6 +268,8 @@ class ExperimentLedger:
             "elapsed_time_sec": trial.get("duration_sec"),
             "total_cost_usd": full_cost, "generator_cost_usd": generator_cost,
             "teacher_cost_usd": teacher_cost, "episode_model_cost_usd": trial.get("cost_usd"),
+            "known_generator_cost_usd": sum(v for v in known_generator if v is not None) if any(v is not None for v in known_generator) else None,
+            "known_teacher_cost_usd": sum(v for v in known_teacher if v is not None) if any(v is not None for v in known_teacher) else None,
             "cost_model_ids": sorted({row["cost_model_id"] for row in (model_usage or []) + teacher_usage
                                       if row.get("cost_model_id")}),
             "execution_mode": "ALIAS_SMOKE" if any(row.get("execution_mode") in
@@ -282,14 +283,6 @@ class ExperimentLedger:
             "total_cached_tokens": trial.get("n_cache_tokens"),
             "agent_metadata": metadata,
         })
-
-    def record_development_episode(self, result: dict) -> None:
-        """Index local evidence in the original ledger without copying its files."""
-        self._append_summary({**result, "official_result_eligible": False,
-                              "scientific_result_eligible": False,
-                              "official_success": None,
-                              "router_evidence_status": "ROUTER_FALLBACK" if result.get("router_fallback_used")
-                                                       else "NO_REPORTED_FALLBACK"})
 
     def _append_summary(self, summary_entry: dict) -> None:
         """Share the existing JSONL/CSV ledger; a Harbor Trial ID is recorded once."""

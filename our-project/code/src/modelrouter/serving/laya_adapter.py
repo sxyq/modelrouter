@@ -11,7 +11,6 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from .schemas import ActionScore, LegalAction, PreDecisionState
 
 logger = logging.getLogger("router_serving.laya")
 
@@ -20,16 +19,15 @@ class LayaAdapter:
     def __init__(
         self,
         model_dir: str = "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/best",
-        fallback_dir: str = "/home/syy/路由/models/laya-421m",
         device: Optional[str] = None
     ):
         self.model_dir = model_dir
-        self.fallback_dir = fallback_dir
         self.device_str = device
         self.agent = None
         self.checkpoint_id = "unknown"
         self.run_id = "unknown"
         self.is_loaded = False
+        self.inference_verified = False
         self.metrics = {}
 
         self._load()
@@ -54,7 +52,7 @@ class LayaAdapter:
                 with open(rec_path, "r", encoding="utf-8") as f:
                     rec = json.load(f)
                     self.checkpoint_id = rec.get("checkpoint_id", os.path.basename(os.path.realpath(target_dir)))
-                    self.run_id = rec.get("run_id", "F05")
+                    self.run_id = rec.get("run_id", os.path.basename(os.path.realpath(target_dir)))
                     self.metrics = rec.get("metrics", {})
             except Exception as e:
                 logger.warning(f"Could not read recovery_state.json: {e}")
@@ -69,66 +67,6 @@ class LayaAdapter:
         self.is_loaded = True
         logger.info(f"Laya RLAgent loaded successfully in {load_time:.2f}s (run={self.run_id}, ckpt={self.checkpoint_id}).")
 
-    def route(
-        self,
-        pre_decision_state: PreDecisionState,
-        legal_actions: List[LegalAction]
-    ) -> Tuple[LegalAction, List[ActionScore], float, Optional[float]]:
-        """
-        Routes the pre-decision state across legal_actions.
-        Returns: (selected_action, ranked_action_scores, latency_ms, confidence)
-        """
-        t0 = time.perf_counter()
-
-        if not legal_actions:
-            raise ValueError("legal_actions cannot be empty")
-
-        # Construct candidate option mapping
-        # Keys must be string identifiers
-        criteria = {}
-        key_to_action = {}
-        for idx, act in enumerate(sorted(legal_actions, key=lambda action: action.action_id)):
-            key = f"opt_{idx}_{act.provider}_{act.model}_{act.native_effort}".replace("/", "_").replace(".", "_")
-            desc = f"{act.provider}/{act.model} (effort={act.native_effort})"
-            criteria[key] = desc
-            key_to_action[key] = act
-
-        # Format state
-        state_text = pre_decision_state.router_text()
-
-        questions = {
-            "route_decision": {
-                "type": "choice",
-                "instructions": "Select the model and native effort for the next agent generation. "
-                                "Prioritize task quality; among adequate candidates, prefer lower cost.",
-                "criteria": criteria
-            }
-        }
-
-        # Run inference
-        res = self.agent.system_one(state_text, questions)
-        latency_ms = (time.perf_counter() - t0) * 1000.0
-
-        q_ans = res["answers"]["route_decision"]
-        selected_key = q_ans["choice"]
-        probs = q_ans["probabilities"]
-        confidence = q_ans.get("confidence")
-        if set(probs) != set(key_to_action):
-            raise ValueError("Laya probability IDs differ from candidate IDs")
-
-        # Selected action
-        selected_action = key_to_action[selected_key]
-
-        # Rank all actions
-        ranked = []
-        for k, act in key_to_action.items():
-            prob = float(probs[k])
-            ranked.append(ActionScore(action=act, score=prob, probability=prob))
-
-        ranked.sort(key=lambda x: x.probability, reverse=True)
-
-        return selected_action, ranked, latency_ms, confidence
-
     def system_one(
         self,
         state: Any,
@@ -138,23 +76,8 @@ class LayaAdapter:
         if not self.is_loaded or self.agent is None:
             raise RuntimeError("NO_MODEL_LOADED: Laya RLAgent is not loaded")
 
-        formatted_questions = {}
-        for qid, q in questions.items():
-            if hasattr(q, "model_dump"):
-                q_dict = q.model_dump()
-            elif hasattr(q, "dict"):
-                q_dict = q.dict()
-            elif isinstance(q, dict):
-                q_dict = dict(q)
-            else:
-                q_dict = {
-                    "type": getattr(q, "type", "choice"),
-                    "instructions": getattr(q, "instructions", ""),
-                    "criteria": getattr(q, "criteria", {})
-                }
-            formatted_questions[qid] = q_dict
-
-        res = self.agent.system_one(state, formatted_questions)
+        res = self.agent.system_one(state, questions)
+        self.inference_verified = True
         latency_ms = (time.perf_counter() - t0) * 1000.0
         if res.get("usage") is not None:
             from modelrouter.v9.runtime.context import encoded_group_coverage

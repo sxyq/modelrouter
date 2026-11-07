@@ -1,5 +1,13 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-07 · 单 Agent 方法与当前执行事实
+
+现行研究采用 Harbor 官方 `DefaultAgent` 单 Agent 链路。RQ3 为阶段识别、真实子任务边界与生成决策粒度；`inspect/modify/verify/recover` 仅是阶段标签，不等于任务拆分。取消多 Agent 设计、角色/协作/handoff/Agent 数量变量；下方旧条目保留为历史记录，不恢复为当前方法。
+
+新池目标 Luna、GLM-5.3-Flash、Terra，规划 15 个联合候选；私有配置没有 GLM 绑定，Provider `/models` 查询和 AA 刷新正在进行，结果待主 Agent 补入。两项 11-07 训练仍是 HY4 池有限监督，原标签与结果不改。正式实验仅沿 Harbor `DefaultAgent`；`runtime/development.py` 与 benchmark development 命令、RQ4/RQ5 模拟结果生成源码已删除；`agent/legacy.py` 保留历史但不导出或正式调用，观察汇总沿 `benchmark.rq1_analysis`。F15/controller 当前无进程，`continuous_queue.log` 的 `KeyboardInterrupt` 属既有历史尾项，不记作本批停止；不据此重训。
+
+实际完整报告：[20261107-v9-full-method](../results/iterations/20261107-v9-full-method/review.md)。当前详细状态见 [PROJECT_STATUS](PROJECT_STATUS.md)；RQ1–RQ5、Fig.1–8 与 Table 1–12 的科研结构继续保留。
+
 **11-07接续约定与有效工作**：[本批结果及接续入口](../results/iterations/20261107-v9-full-method/review.md)。沿统一私人文本模型配置、原Provider、原State/Serializer、Prepare、Trainer、Mini-SWE和Harbor；Mac没有权重或Benchmark执行，A6000用户VM未重部署。T/M/H八类可得信息、13登记联合动作、真实缓存时序和Luna低频教师已进入本轮原生编码。未知历史/物理KV/实收不造数，字符摘要保留范围与Encoder窗口分开。
 
 新联合监督2条来自Dynaconf同一个Train截止，明确xhigh比low参考费低且缓存不同；Max返回xhigh的两次结果不用于max标签。Hikari没有修复赢家，HY4仍不可用；不无限扩大采集或把两个问题算两任务。原始父实体在正式结果前固定，本轮一次原Trainer研究不宣称全13动作最优，不按正式题换父权重。Laya/Kev各18更新已保存，原始/更新三题及本批28次原尝试均结束，Serving不替换。

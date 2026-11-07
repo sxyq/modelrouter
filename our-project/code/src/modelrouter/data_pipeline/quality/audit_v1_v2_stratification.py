@@ -104,7 +104,6 @@ def audit_stratification(project_root: Path):
     print("Auditing Train vs Fixed Validation true intersection...", flush=True)
     val_ids = set()
     val_units = set()
-    val_file_hashes = {}
     val_file_counts = {}
 
     # Read from canonical validation directory
@@ -121,14 +120,6 @@ def audit_stratification(project_root: Path):
         checked_dirs.append(vdir)
         for vf in sorted(vdir.glob("*.jsonl*")):
             opener = gzip.open if vf.name.endswith(".gz") else open
-            # Calculate SHA256
-            import hashlib
-            h = hashlib.sha256()
-            with open(vf, "rb") as f_bin:
-                for chunk in iter(lambda: f_bin.read(65536), b""):
-                    h.update(chunk)
-            val_file_hashes[vf.name] = h.hexdigest()
-
             count = 0
             try:
                 with opener(vf, "rt", encoding="utf-8") as f:
@@ -200,7 +191,6 @@ def audit_stratification(project_root: Path):
         "validation_leakage_audit": {
             "status": "PASS" if zero_leakage_verified else "FAIL_LEAKAGE_DETECTED",
             "val_files": val_file_counts,
-            "val_file_sha256": val_file_hashes,
             "total_val_records": len(val_ids),
             "total_val_units": len(val_units),
             "train_val_record_overlap": len(train_val_id_intersection),

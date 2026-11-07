@@ -1,5 +1,9 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**2026-11-07 当前方法与执行状态**：当前研究为 Harbor 官方链路中的单 Agent。RQ3 研究阶段识别、原任务或真实执行材料中可定位的子任务边界，以及生成决策粒度；`inspect/modify/verify/recover` 只作阶段状态，不自动构成任务拆分。当前池目标为 Luna、GLM-5.3-Flash、Terra，规划 15 个 Model×Native Effort 候选；私有配置尚无 GLM 绑定，Provider `/models` 查询与 AA 刷新正在进行，均无本次可报告新结果。两项 2026-11-07 训练仍是 HY4 池的有限监督；原标签与结果保持原貌。正式 Benchmark 只用 Harbor `DefaultAgent`，本地 development 入口及模拟结果生成源码已删除；`agent/legacy.py` 留作历史、不导出或正式调用。RQ4/RQ5 观察汇总沿 `benchmark.rq1_analysis`。详细执行事实见[本批报告](../results/iterations/20261107-v9-full-method/review.md)和[项目现状](PROJECT_STATUS.md)。
+
+本文件早期 Q-ID、研究建议和协作记录保留其原始时间与语义；它们不覆盖以上现行方法。
+
 **11-07当前方法的实际证据**：[完整研究](../results/iterations/20261107-v9-full-method/review.md)。T/M/H、13动作及Luna教师进入原生编码；当前前缀连续性不再沿上一轮输入。Responses消息字段及通用生成解析按实际协议处理；HY4/preview遵从负责人同模型口径，502仍UNKNOWN。Train新S1为2条但仅一个任务截止，旧40不是新池联合数据，16辅助标签不变。Luna max→xhigh不当max标签；明确xhigh和low同过后的缓存/参考费差不能推广成档位价格规律。
 
 两架构各18次真实更新及原始/训练完整Episode不同于旧Demo。三正式题不参与梯度/校准/参数选择；固定high、CPU40和网络恢复均标注接续性质。原始Laya全high，训练版虽实际切Terra，但同一保存状态原始也选Terra，训练贡献尚未证明；固定Luna也通过同题。更新Kev有4次实际模型切换，却三题Agent超时；原Reward1/0/1、可信1/UNKNOWN/1，SQLite终态恢复1/1不改原0。3次取消后返回路由不算实际动作但耗时仍计入。完整模型/教师费、Router加载/前向、工具/Verifier和墙钟分别记录，实收和资源美元未知不填0。RQ4本批仅推进原始/更新权重对照，信息/教师/监督的完整消融仍未执行。

@@ -7,11 +7,13 @@ Runs lightweight forward-pass evaluation on the fixed validation set under 6 mas
   - Mask G3: Verification & Recovery (V5)
   - Mask G4: KV Cache & System State (V6)
   - Mask G5: Execution Budget & Provider (V7 + V8)
-  - Mask V2: Multi-Agent & Trajectory Coordination (Agent/Coordination)
+  - Mask V2: Single-Agent Framework & Trajectory Progress
 
 NOTE: This is a low-cost screening of feature group sensitivity, NOT claimed as a full ablation study.
 Full ablation requires multi-seed re-training from scratch on each feature subset.
 """
+from __future__ import annotations
+
 import argparse
 import copy
 import json
@@ -19,23 +21,12 @@ import os
 import sys
 from pathlib import Path
 
-_ROOT = str(Path(__file__).resolve().parent.parent)
+_ROOT = str(Path(__file__).resolve().parents[4])
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 _LAYA = str(Path(_ROOT) / "external" / "laya")
 if _LAYA not in sys.path:
     sys.path.insert(0, _LAYA)
-
-import torch
-from laya.train import (
-    items_from_rows,
-    load_checkpoint,
-    read_data,
-    calibration_records,
-    evaluate_records,
-)
-from router_data.checkpoint_retention import classification_metrics_from_records
-
 
 def mask_row_features(row: dict, group: str) -> dict:
     """Return a masked copy of a validation data row according to feature group."""
@@ -87,6 +78,10 @@ def mask_row_features(row: dict, group: str) -> dict:
 
 def evaluate_masked_group(model, tok, val_rows: dict, group_name: str, dev: torch.device, max_len=1024, head_max_len=512) -> dict:
     """Evaluate model on validation groups with masked feature set."""
+    import torch
+    from laya.train import items_from_rows, calibration_records, evaluate_records
+    from modelrouter.training.common.checkpoint_retention import classification_metrics_from_records
+
     all_records = []
     group_results = {}
 
@@ -122,6 +117,9 @@ def evaluate_masked_group(model, tok, val_rows: dict, group_name: str, dev: torc
 
 
 def main():
+    import torch
+    from laya.train import load_checkpoint, read_data
+
     parser = argparse.ArgumentParser(description="Feature group sensitivity screening on fixed validation set.")
     parser.add_argument("--checkpoint-dir", default="runs/MR-FULL-GRADED-TRAINING/B01_C13_QB_PB/checkpoints/best")
     parser.add_argument("--val-dir", default="runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/val")
@@ -150,7 +148,7 @@ def main():
         ("G3", "Verification & Recovery (V5)"),
         ("G4", "KV Cache & Continuity (V6)"),
         ("G5", "Execution Budget & Provider (V7+V8)"),
-        ("V2", "Multi-Agent Coordination (V2 alone)"),
+        ("V2", "Single-Agent Framework & Trajectory Progress (V2 alone)"),
     ]
 
     results = {}

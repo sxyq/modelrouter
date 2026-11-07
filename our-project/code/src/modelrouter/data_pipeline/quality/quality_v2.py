@@ -172,7 +172,6 @@ def run_quality_v2(args):
  for d in ['by_source','level1','level2','level3','level4']:os.makedirs(os.path.join(out,d),exist_ok=True)
  sources={s:os.path.join(args.cleaned_root,p) for s,p in PUBLIC_FILES.items()};sources.update(OWN_FILES)
  quality={}; supervision={}; matrix={}; candidates={}; layerstats={l:defaultdict(Counter) for l in ['L1','L2','L3','L4']}; validation={}; targetstats={}; sizes={}
- codefiles=['prepare_router_data.py',__file__]; codeversion={p:hashlib.sha256(open(p,'rb').read()).hexdigest() for p in codefiles}
  for src,path in sources.items():
   print('processing',src,flush=True); before=os.stat(path); ref=os.path.join(v1,'by_source',src+'.jsonl.gz'); groups={}; trajectories={}; unit_splits={}; duplicates=0; record_ids=set()
   for i,r,m in rows(src,path,ref):
@@ -212,7 +211,7 @@ def run_quality_v2(args):
   validation[src]=dict(source_unchanged=unchanged,rows=sum(q.values()),layer_rows=sum(layerstats[l][src]['rows'] for l in layerstats),primary_rows=sum(s.values()),preserved_split_conflicts=0,units=len(groups))
   if not unchanged:raise ValueError('input changed '+src)
   print(src,quality[src],candidates[src],flush=True)
- metadata={'entrypoint':'prepare_router_data.py --mode quality_v2','command':__import__('sys').argv,'code_sha256':codeversion,'rules':RULES,'identity_reference':v1+'/by_source/*.jsonl.gz','grouping':'Existing task/unit and split identity retained; observed outcome deduplicated per trajectory; action identity per source record','sorting':'Per-source quality, low group repetition, context length, stable unit identity; representatives by scenario, diversity by model/effort/length/tool; complex tail > source-group context p90; rest L4','random_sampling':False,'seed':None,'runtime_joint_route_labels':0}
+ metadata={'entrypoint':'prepare_router_data.py --mode quality_v2','command':__import__('sys').argv,'rules':RULES,'identity_reference':v1+'/by_source/*.jsonl.gz','grouping':'Existing task/unit and split identity retained; observed outcome deduplicated per trajectory; action identity per source record','sorting':'Per-source quality, low group repetition, context length, stable unit identity; representatives by scenario, diversity by model/effort/length/tool; complex tail > source-group context p90; rest L4','random_sampling':False,'seed':None,'runtime_joint_route_labels':0}
  public=sum(quality[s]['rows'] for s in PUBLIC_FILES)
  summary={'generation':metadata,'public_rows':public,'own_rows':{s:quality[s]['rows'] for s in OWN_FILES},'quality_by_source':quality,'layer_details':{l:{s:dict(v) for s,v in ss.items()} for l,ss in layerstats.items()},'validation':validation,'target_statistics':targetstats}
  dump(os.path.join(out,'quality_summary.json'),summary);dump(os.path.join(out,'supervision_summary.json'),{'generation':metadata,'by_source':supervision,'specific_targets':targetstats});dump(os.path.join(out,'source_variable_matrix.json'),matrix);dump(os.path.join(out,'train_candidate_summary.json'),{'by_source':candidates,'by_target':targetstats,'runtime_joint_route_labels':0})

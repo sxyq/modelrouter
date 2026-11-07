@@ -34,6 +34,8 @@ class TrajectoryAssessor:
         self.provider = provider
         self.references_path = Path(references_path)
         self.model_id, self.native_effort = model_id, native_effort
+        if model_id != "gpt-6-luna":
+            raise ValueError("The V9 trajectory teacher is gpt-6-luna")
         self.max_output_tokens, self.context_chars = max_output_tokens, context_chars
         self.references = None
 
@@ -97,14 +99,13 @@ class TrajectoryAssessor:
                 response_format={"type": "json_object"})
             body, usage = response.raw_response, response.metadata
             metrics.update(usage)
-            metrics["execution_mode"] = (
-                "TEACHER_ALIAS_SMOKE" if usage.get("execution_mode") == "ALIAS_SMOKE" else "TEACHER")
+            metrics["execution_mode"] = "TEACHER"
             metrics["teacher_model_id"] = self.model_id
             metrics["raw_response"] = body
             content = response.content.strip()
-            if content.startswith("```") and content.endswith("```"):
-                content = content.split("\n", 1)[1].rsplit("```", 1)[0].strip()
             parsed = json.loads(content)
+            if set(parsed) != set(FIELDS):
+                raise ValueError("Teacher must return exactly the three assessment fields")
             assessment = {name: parsed[name] for name in FIELDS}
             if any(not isinstance(value, str) for value in assessment.values()):
                 raise ValueError("Teacher fields must be strings")
@@ -120,12 +121,13 @@ class TrajectoryAssessor:
             if isinstance(exc, ProviderResponseError):
                 metrics.update(exc.metrics)
                 metrics["raw_response"] = exc.response
-                metrics["execution_mode"] = (
-                    "TEACHER_ALIAS_SMOKE" if metrics.get("execution_mode") == "ALIAS_SMOKE" else "TEACHER")
+                metrics["execution_mode"] = "TEACHER"
+            metrics["account_attempts"] = getattr(exc, "account_attempts", [])
             metrics.update(status="FAILED", error_type=type(exc).__name__)
             if isinstance(exc, urllib.error.HTTPError):
                 metrics.update(http_status=exc.code,
                                error_response=exc.read().decode("utf-8", errors="replace"))
             return None, metrics
         finally:
-            metrics.setdefault("latency_ms", (time.perf_counter() - started) * 1000)
+            metrics["teacher_wall_ms"] = (time.perf_counter() - started) * 1000
+            metrics.setdefault("latency_ms", metrics["teacher_wall_ms"])

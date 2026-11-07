@@ -7,4 +7,4 @@ if os.path.isdir(_src_dir) and _src_dir not in sys.path:
     sys.path.insert(0, _src_dir)
 
 from modelrouter.agent.router_clients import *
-from modelrouter.agent.router_clients import RouterClient, RouterDecision, MockRouter
+from modelrouter.agent.router_clients import RouterClient, RouterDecision

@@ -1,0 +1,431 @@
+{
+  "capability_snapshot_id": "20261107T123907543910Z-v6",
+  "cpu_only": true,
+  "results": [
+    {
+      "answers": {
+        "route_decision": {
+          "type": "choice",
+          "choice": "gpt-6-luna:high",
+          "probabilities": {
+            "glm-5.3-flash:high": 0.1721,
+            "glm-5.3-flash:low": 0.0099,
+            "glm-5.3-flash:max": 0.0423,
+            "gpt-6-luna:high": 0.1783,
+            "gpt-6-luna:low": 0.0064,
+            "gpt-6-luna:max": 0.0314,
+            "gpt-6-luna:medium": 0.0334,
+            "gpt-6-luna:none": 0.0705,
+            "gpt-6-luna:xhigh": 0.0411,
+            "gpt-6.1-terra:high": 0.1588,
+            "gpt-6.1-terra:low": 0.0078,
+            "gpt-6.1-terra:max": 0.0865,
+            "gpt-6.1-terra:medium": 0.0566,
+            "gpt-6.1-terra:none": 0.0642,
+            "gpt-6.1-terra:xhigh": 0.0406
+          },
+          "confidence": 0.1235,
+          "answer_confidence": 0.1783,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "decision_latency_ms": 40877.058578655124,
+      "usage": {
+        "input_tokens": 7939,
+        "output_tokens": 0,
+        "state_tokens": 7458,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": [],
+        "state_group_coverage": {
+          "T": {
+            "status": "FULL",
+            "token_start": 2,
+            "token_end": 402
+          },
+          "teacher_assessment": {
+            "status": "FULL",
+            "token_start": 408,
+            "token_end": 600
+          },
+          "M": {
+            "status": "FULL",
+            "token_start": 602,
+            "token_end": 6184
+          },
+          "H": {
+            "status": "FULL",
+            "token_start": 6186,
+            "token_end": 7380
+          },
+          "candidate_actions": {
+            "glm-5.3-flash:high": {
+              "status": "FULL",
+              "token_start": 1653,
+              "token_end": 1736,
+              "measured_metrics": 0,
+              "evidence_status": "NOT_MEASURED",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "glm-5.3-flash:low": {
+              "status": "FULL",
+              "token_start": 1736,
+              "token_end": 1819,
+              "measured_metrics": 0,
+              "evidence_status": "NOT_MEASURED",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "glm-5.3-flash:max": {
+              "status": "FULL",
+              "token_start": 1819,
+              "token_end": 1983,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6-luna:high": {
+              "status": "FULL",
+              "token_start": 3264,
+              "token_end": 3422,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6-luna:low": {
+              "status": "FULL",
+              "token_start": 3422,
+              "token_end": 3574,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6-luna:max": {
+              "status": "FULL",
+              "token_start": 3574,
+              "token_end": 3828,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 10
+            },
+            "gpt-6-luna:medium": {
+              "status": "FULL",
+              "token_start": 3828,
+              "token_end": 3991,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6-luna:none": {
+              "status": "FULL",
+              "token_start": 3991,
+              "token_end": 4155,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6-luna:xhigh": {
+              "status": "FULL",
+              "token_start": 4155,
+              "token_end": 4320,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:high": {
+              "status": "FULL",
+              "token_start": 5190,
+              "token_end": 5353,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:low": {
+              "status": "FULL",
+              "token_start": 5353,
+              "token_end": 5519,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:max": {
+              "status": "FULL",
+              "token_start": 5519,
+              "token_end": 5681,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:medium": {
+              "status": "FULL",
+              "token_start": 5681,
+              "token_end": 5844,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:none": {
+              "status": "FULL",
+              "token_start": 5844,
+              "token_end": 6014,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:xhigh": {
+              "status": "FULL",
+              "token_start": 6014,
+              "token_end": 6183,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            }
+          },
+          "teacher_fields": [
+            "progress_summary",
+            "main_blocker",
+            "next_milestone"
+          ]
+        }
+      },
+      "initialization_latency_ms": 6606.560597196221,
+      "process_reused": false,
+      "device": "cpu",
+      "gpu_wait_ms": 0.0,
+      "device_transfer_ms": 0.0,
+      "run_id": "laya-421m",
+      "checkpoint_id": "/home/syy/路由/models/laya-421m",
+      "weights_path": "/home/syy/路由/models/laya-421m",
+      "family": "laya",
+      "decision_id": "saved-legal-train-teacher-3",
+      "ssh_wall_ms": 49847.99037501216,
+      "scope": "SAVED_OBSERVED_T_H_TEACHER_WITH_CURRENT_M_REENCODING_NOT_NEW_AGENT_DECISION"
+    },
+    {
+      "answers": {
+        "route_decision": {
+          "type": "choice",
+          "choice": "gpt-6-luna:low",
+          "confidence": 0.0864,
+          "probabilities": {
+            "glm-5.3-flash:high": 0.0753,
+            "glm-5.3-flash:low": 0.1465,
+            "glm-5.3-flash:max": 0.057,
+            "gpt-6-luna:high": 0.0927,
+            "gpt-6-luna:low": 0.1473,
+            "gpt-6-luna:max": 0.06,
+            "gpt-6-luna:medium": 0.1053,
+            "gpt-6-luna:none": 0.0605,
+            "gpt-6-luna:xhigh": 0.0323,
+            "gpt-6.1-terra:high": 0.0292,
+            "gpt-6.1-terra:low": 0.0487,
+            "gpt-6.1-terra:max": 0.0237,
+            "gpt-6.1-terra:medium": 0.0457,
+            "gpt-6.1-terra:none": 0.0494,
+            "gpt-6.1-terra:xhigh": 0.0264
+          }
+        }
+      },
+      "decision_latency_ms": 575349.4072910398,
+      "usage": {
+        "input_tokens": 7949,
+        "output_tokens": 312,
+        "state_tokens": 7522,
+        "state_limit_tokens": 65536,
+        "truncated": false,
+        "state_group_coverage": {
+          "T": {
+            "status": "FULL",
+            "token_start": 2,
+            "token_end": 358
+          },
+          "teacher_assessment": {
+            "status": "FULL",
+            "token_start": 361,
+            "token_end": 540
+          },
+          "M": {
+            "status": "FULL",
+            "token_start": 541,
+            "token_end": 6114
+          },
+          "H": {
+            "status": "FULL",
+            "token_start": 6116,
+            "token_end": 7434
+          },
+          "candidate_actions": {
+            "glm-5.3-flash:high": {
+              "status": "FULL",
+              "token_start": 1368,
+              "token_end": 1440,
+              "measured_metrics": 0,
+              "evidence_status": "NOT_MEASURED",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "glm-5.3-flash:low": {
+              "status": "FULL",
+              "token_start": 1439,
+              "token_end": 1511,
+              "measured_metrics": 0,
+              "evidence_status": "NOT_MEASURED",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "glm-5.3-flash:max": {
+              "status": "FULL",
+              "token_start": 1510,
+              "token_end": 1722,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6-luna:high": {
+              "status": "FULL",
+              "token_start": 2739,
+              "token_end": 2938,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6-luna:low": {
+              "status": "FULL",
+              "token_start": 2937,
+              "token_end": 3122,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6-luna:max": {
+              "status": "FULL",
+              "token_start": 3121,
+              "token_end": 3497,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 10
+            },
+            "gpt-6-luna:medium": {
+              "status": "FULL",
+              "token_start": 3496,
+              "token_end": 3711,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6-luna:none": {
+              "status": "FULL",
+              "token_start": 3710,
+              "token_end": 3914,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6-luna:xhigh": {
+              "status": "FULL",
+              "token_start": 3913,
+              "token_end": 4129,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:high": {
+              "status": "FULL",
+              "token_start": 4834,
+              "token_end": 5048,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:low": {
+              "status": "FULL",
+              "token_start": 5047,
+              "token_end": 5265,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:max": {
+              "status": "FULL",
+              "token_start": 5264,
+              "token_end": 5478,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:medium": {
+              "status": "FULL",
+              "token_start": 5477,
+              "token_end": 5680,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:none": {
+              "status": "FULL",
+              "token_start": 5679,
+              "token_end": 5896,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            },
+            "gpt-6.1-terra:xhigh": {
+              "status": "FULL",
+              "token_start": 5895,
+              "token_end": 6113,
+              "measured_metrics": 10,
+              "evidence_status": "EXACT_EFFORT",
+              "freshness": "FRESH",
+              "stale_metrics": 0
+            }
+          },
+          "teacher_fields": [
+            "progress_summary",
+            "main_blocker",
+            "next_milestone"
+          ]
+        }
+      },
+      "initialization_latency_ms": 52140.53646475077,
+      "process_reused": false,
+      "device": "cpu",
+      "gpu_wait_ms": 0.0,
+      "device_transfer_ms": 0.0,
+      "run_id": "kev-4b-adapter",
+      "checkpoint_id": "/home/syy/路由/models/kev-4b-adapter",
+      "weights_path": "/home/syy/路由/models/kev-4b-adapter",
+      "family": "kev",
+      "decision_id": "saved-legal-train-teacher-3",
+      "ssh_wall_ms": 630657.9416249879,
+      "scope": "SAVED_OBSERVED_T_H_TEACHER_WITH_CURRENT_M_REENCODING_NOT_NEW_AGENT_DECISION"
+    }
+  ]
+}

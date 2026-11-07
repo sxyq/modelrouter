@@ -14,10 +14,9 @@ Follows V8 §7.3 & §7.5 standards:
 """
 from __future__ import annotations
 
-import hashlib
 import json
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, Tuple
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
 
 
 @dataclass(frozen=True)
@@ -44,6 +43,9 @@ class ModelSpec:
     native_efforts_status: str = "UNVERIFIED_CONFIG"
     protocol: Optional[str] = None
     pricing_as_of: Optional[str] = None
+    # None means the registered provider's modality support is unknown.
+    input_modalities: Optional[Tuple[str, ...]] = None
+    output_modalities: Optional[Tuple[str, ...]] = None
 
     def calculate_cost(
         self,
@@ -78,7 +80,7 @@ class ModelSpec:
             raise ValueError(f"Unsupported native_effort {native_effort!r} for {self.model_id}")
 
 
-V9_MODEL_IDS = ("gpt-6-luna", "gpt-6.1-terra", "hy4")
+V9_MODEL_IDS = ("gpt-6-luna", "glm-5.3-flash", "gpt-6.1-terra")
 
 
 # 5 Major Model Pools
@@ -270,6 +272,7 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
         context_status="OFFICIAL_DOCUMENTATION_PROVIDER_LIMIT_NOT_MEASURED",
         native_efforts_status="LOW_RETURNED_OTHER_LEVELS_NOT_MEASURED",
         protocol="responses", pricing_as_of="2026-11-06",
+        input_modalities=("text", "image"), output_modalities=("text",),
     ),
     "gpt-6.1-terra": ModelSpec(
         model_id="gpt-6.1-terra", pool="Reasoning", provider="jiji",
@@ -284,6 +287,22 @@ MODEL_REGISTRY: Dict[str, ModelSpec] = {
         context_status="OFFICIAL_DOCUMENTATION_PROVIDER_LIMIT_NOT_MEASURED",
         native_efforts_status="LOW_RETURNED_OTHER_LEVELS_NOT_MEASURED",
         protocol="responses", pricing_as_of="2026-11-06",
+        input_modalities=("text", "image"), output_modalities=("text",),
+    ),
+    "glm-5.3-flash": ModelSpec(
+        model_id="glm-5.3-flash", pool="Reasoning", provider="z.ai",
+        display_name="GLM-5.3-Flash", context_window=1_000_000, max_output_tokens=131_072,
+        native_efforts=("low", "high", "max"),
+        input_price_per_1m=0.15, output_price_per_1m=0.50, reasoning_price_per_1m=0.50,
+        cache_read_price_per_1m=0.03, cache_write_price_per_1m=None,
+        rpm_limit=None, tpm_limit=None, tool_supported=True,
+        pricing_status="VERIFIED_OFFICIAL_STANDARD_API",
+        pricing_source="https://docs.z.ai/guides/overview/pricing",
+        identity_status="OFFICIAL_API_MODEL_ID_UNBOUND_PRIVATE_ENDPOINT",
+        context_status="OFFICIAL_DOCUMENTATION",
+        native_efforts_status="OFFICIAL_DOCUMENTATION",
+        protocol="chat_completions", pricing_as_of="2026-11-07",
+        input_modalities=("text",), output_modalities=("text",),
     ),
     "hy4": ModelSpec(
         model_id="hy4", pool="Reasoning", provider="oranexa", display_name="Tencent HY4",
@@ -354,23 +373,7 @@ class ModelRegistry:
         
         Unknown effort support exposes parameter omission with its evidence status.
         """
-        actions = []
-        for model in self._models.values():
-            if allowed_pools and model.pool.lower() not in [p.lower() for p in allowed_pools]:
-                continue
-            efforts = model.native_efforts or ("none",)
-            for effort in efforts:
-                action = {
-                    "provider": model.provider,
-                    "model": model.model_id,
-                    "pool": model.pool,
-                    "native_effort": effort,
-                    "action_id": f"{model.model_id}:{effort}",
-                }
-                if not model.native_efforts:
-                    action["native_efforts_status"] = model.native_efforts_status
-                actions.append(action)
-        return actions
+        return _legal_actions(self._models, self._models, allowed_pools)
 
     def compute_cost(
         self,
@@ -390,10 +393,21 @@ class ModelRegistry:
             cache_write_tokens=cache_write_tokens,
         )
 
-    def get_pricing_sha256(self) -> str:
-        """Returns a deterministic SHA256 of the active pricing table."""
-        records = [
-            f"{m.model_id}:{m.input_price_per_1m}:{m.output_price_per_1m}:{m.reasoning_price_per_1m}"
-            for m in sorted(self._models.values(), key=lambda x: x.model_id)
-        ]
-        return hashlib.sha256(";".join(records).encode("utf-8")).hexdigest()[:16]
+def _legal_actions(models, model_ids, allowed_pools=None):
+    actions = []
+    for model_id in model_ids:
+        model = models[model_id]
+        if allowed_pools and model.pool.lower() not in [pool.lower() for pool in allowed_pools]:
+            continue
+        for effort in model.native_efforts or ("none",):
+            model.validate_effort(effort)
+            action = {"provider": model.provider, "model": model.model_id, "revision": "latest",
+                      "native_effort": effort, "action_id": f"{model.model_id}:{effort}", "pool": model.pool}
+            if not model.native_efforts:
+                action["native_efforts_status"] = model.native_efforts_status
+            actions.append(action)
+    return sorted(actions, key=lambda action: action["action_id"])
+
+
+def legal_actions(model_ids=V9_MODEL_IDS):
+    return _legal_actions(MODEL_REGISTRY, model_ids)

@@ -7,6 +7,7 @@ import json
 import re
 
 from modelrouter.data_pipeline.sources.tra import extract_swesmith_action
+from modelrouter.data_pipeline.batch_prep import _example
 from modelrouter.datasets.public_sources import PublicDatasetLoader
 
 
@@ -137,3 +138,65 @@ def reference_candidate(episode):
             "verification_evidence": verification, "verification_action": verification_action,
             "selection_metric": {"assistant_steps": steps, "tool_results": len(observations),
             "failed_tool_results": len(failures), "unknown_tool_results": len(unknowns)}}
+
+
+def trajectory(row, source_id, path, row_number, anchor):
+    messages = row.get("messages")
+    if isinstance(messages, str):
+        messages = json.loads(messages)
+    if not isinstance(messages, list):
+        return None
+    messages = [message for message in messages if isinstance(message, dict)]
+    outcome = row.get("resolved")
+    outcome = True if outcome is True or outcome == 1 else False if outcome is False or outcome == 0 else None
+    return {"source_id": source_id, "source_path": row.get("source_path") or str(path),
+            "source_row": row.get("source_row", row_number),
+            "task_id": row.get("instance_id"), "episode_id": row.get("trajectory_id", row.get("traj_id")),
+            "dataset_revision": row.get("dataset_revision") or anchor.get("dataset_revision"),
+            "split": "train", "messages": messages, "resolved": outcome, "anchor": anchor}
+
+
+def trajectory_prefixes(episode, cutoffs=(1, 4, 8)):
+    """Emit pre-action histories; final episode outcomes remain targets only."""
+    history, prompt, step, calls, errors = [], None, 0, 0, 0
+    last_code = last_result = None
+    for index, message in enumerate(episode["messages"]):
+        role = message.get("role")
+        if role == "user" and prompt is None:
+            prompt = text_content(message)
+        if role == "assistant":
+            step += 1
+            action, nature, has_action = extract_swesmith_action(message, "tool")
+            if step in cutoffs and has_action:
+                pre = {"prompt": prompt, "history_snippet": json.dumps(history[-8:], ensure_ascii=False),
+                       "task_domain": "software_engineering",
+                       "history_length": len(history), "step_index": step,
+                       "context_chars": sum(len(text_content(item)) for item in history),
+                       "prior_tool_calls_count": calls, "prior_error_signals_count": errors,
+                       "last_tool_exit_code": last_code, "last_observation_summary": last_result}
+                ref = {**episode["anchor"], "source_id": episode["source_id"],
+                       "source_file": episode["source_path"], "source_line": episode["source_row"],
+                       "task_id": episode["task_id"], "trajectory_id": episode["episode_id"],
+                       "stable_record_id": f"{episode['source_id']}:{episode['episode_id']}:{step}",
+                       "primary_supervision_class": "S2", "split": episode["split"],
+                       "label_evidence": {"observed_action": [f"messages[{index}]"]}}
+                sample = _example(episode["source_id"], {"pre_decision_state": pre,
+                                  "observed_decision": {"action_type": action}}, ref, "observed_action")
+                sample["provenance"].update(task_id=episode["task_id"], episode_id=episode["episode_id"],
+                    dataset_revision=episode["dataset_revision"], observed_through_step=step - 1,
+                    message_cutoff_exclusive=index)
+                sample["provenance"].update({name: episode["anchor"][name] for name in (
+                    "assigned_layer", "quality_grade", "train_eligible", "source_policy_train_allowed",
+                    "train_anchor_file", "qualification_source_path") if name in episode["anchor"]})
+                sample["provenance"]["train_anchor_stable_id"] = episode["anchor"].get("stable_record_id")
+                sample["_meta"].update(action_nature=nature, observed_outcome=episode["resolved"],
+                                      input_kind="TRAJECTORY_PREFIX")
+                sample["observed_messages"] = copy.deepcopy(episode["messages"][:index])
+                yield sample
+        elif role == "tool" or (role == "user" and step > 0):
+            calls += 1
+            last_code, last_result = tool_result(message)
+            errors += int(last_code is not None and last_code != 0)
+            last_result = last_result[:2000]
+        history.append({name: message[name] for name in ("role", "content", "tool_calls", "tool_call_id")
+                        if name in message})

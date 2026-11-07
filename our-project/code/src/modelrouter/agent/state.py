@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 class EpisodeStatus(str, Enum):
     INITIALIZED = "INITIALIZED"
     RUNNING = "RUNNING"
+    SUBMITTED = "SUBMITTED"
     SUCCESS = "SUCCESS"
     FAILED = "FAILED"
     TIMEOUT = "TIMEOUT"
@@ -26,6 +27,7 @@ class PhaseType(str, Enum):
     INSPECT = "inspect"
     MODIFY = "modify"
     VERIFY = "verify"
+    RECOVER = "recover"
 
 
 @dataclass
@@ -77,7 +79,7 @@ class PreDecisionSnapshot:
     task_id: str
     episode_id: str
     budget_status: str
-    elapsed_time_sec: float
+    elapsed_time_sec: Optional[float]
     time_remaining_sec: Optional[float]
     time_budget_sec: Optional[float]
     timestamp: float = field(default_factory=time.time)
@@ -138,15 +140,23 @@ class AgentState:
         self.total_cached_tokens: int = 0
         self.tool_error_count: int = 0
         self.model_time_sec: float = 0.0
+        self.router_time_sec: float = 0.0
+        self.teacher_time_sec: float = 0.0
 
         self.start_time: float = time.time()
         self.end_time: Optional[float] = None
+        self.start_monotonic = time.monotonic()
+        self.end_monotonic = None
+        self.replayed_elapsed_sec = 0.0
 
     @property
-    def elapsed_time_sec(self) -> float:
-        if self.end_time is not None:
-            return round(self.end_time - self.start_time, 3)
-        return round(time.time() - self.start_time, 3)
+    def elapsed_time_sec(self) -> Optional[float]:
+        if self.replayed_elapsed_sec is None:
+            return None
+        if self.start_monotonic is None:
+            return self.replayed_elapsed_sec
+        ending = self.end_monotonic if self.end_monotonic is not None else time.monotonic()
+        return round(self.replayed_elapsed_sec + ending - self.start_monotonic, 3)
 
     @property
     def budget_remaining_usd(self) -> Optional[float]:
@@ -160,6 +170,8 @@ class AgentState:
 
     def start(self) -> None:
         self.start_time = time.time()
+        self.start_monotonic = time.monotonic()
+        self.end_monotonic = None
         self.status = EpisodeStatus.RUNNING
 
     def check_termination(self) -> Optional[EpisodeStatus]:
@@ -175,7 +187,7 @@ class AgentState:
         return None
 
     def build_pre_decision_snapshot(self) -> PreDecisionSnapshot:
-        last_exit = 0
+        last_exit = None
         last_obs = "Initial task prompt"
         if self.history:
             last = self.history[-1]
@@ -186,6 +198,7 @@ class AgentState:
         approx_chars = sum(len(h.thought) + len(h.tool_action) + len(h.tool_observation) for h in self.history)
         approx_tokens = approx_chars // 4
 
+        elapsed = self.elapsed_time_sec
         return PreDecisionSnapshot(
             step_index=self.step_index,
             phase=self.current_phase,
@@ -198,9 +211,9 @@ class AgentState:
             task_id=self.task_id,
             episode_id=self.episode_id,
             budget_status="UNKNOWN" if self.usd_budget is None else "UNLIMITED" if self.usd_budget == 0 else "LIMITED_REFERENCE_USD",
-            elapsed_time_sec=self.elapsed_time_sec,
+            elapsed_time_sec=elapsed,
             time_budget_sec=self.time_budget_sec,
-            time_remaining_sec=max(0, self.time_budget_sec - self.elapsed_time_sec) if self.time_budget_sec else None,
+            time_remaining_sec=max(0, self.time_budget_sec - elapsed) if self.time_budget_sec and elapsed is not None else None,
         )
 
     def record_step(
@@ -255,6 +268,7 @@ class AgentState:
     def finish(self, status: EpisodeStatus) -> None:
         self.status = status
         self.end_time = time.time()
+        self.end_monotonic = time.monotonic()
 
     def to_summary_dict(self) -> Dict[str, Any]:
         return {

@@ -1,5 +1,7 @@
 # 路由实现调研与可发表、可开源方案
 
+> **全文为历史方案，不是现行方法或实现指令。** 本文的 admission-only、GBDT/MLP 与多 Agent 讨论仅供追溯。当前链路为 Harbor `DefaultAgent`、ModelRouterMiniSweAgent、mini-SWE-agent 与原 Evaluator，研究单 Agent；RQ2 固定目标身份 K=3（Luna、GLM-5.3-Flash、Terra），但 GLM 授权与绑定待确认，暂无新的 K=3 Harbor 实验；RQ3 研究阶段识别、原任务中真实存在的子任务边界与生成决策粒度。阶段标签不构成任务拆分，本文旧 RQ 和池规模建议不覆盖现行定义。
+
 ## 结论
 
 建议实现一套“执行前一次选择 + 全量轨迹记账 + 可选在线扩展”的路由框架。第一版不要直接复刻某一篇论文，也不要把 KV 缓存、多 Agent 结构搜索和强化学习同时加入主方法。

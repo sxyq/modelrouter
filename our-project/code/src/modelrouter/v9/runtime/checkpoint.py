@@ -12,7 +12,7 @@ from contextlib import nullcontext
 from uuid import uuid4
 
 from modelrouter.agent.router_clients import RouterDecision
-from modelrouter.serving.schemas import LegalAction, PreDecisionState
+from modelrouter.serving.schemas import LegalAction, PreDecisionState, route_questions
 
 
 class CheckpointRouterClient:
@@ -33,13 +33,7 @@ class CheckpointRouterClient:
             "router_max_len": self.checkpoint.get("max_len", self.checkpoint.get("router_max_len", 8192)),
             "router_head_max_len": self.checkpoint.get("head_max_len", 512),
             "state": PreDecisionState.model_validate(pre_decision_state).router_text(),
-            "questions": {target: {
-                "type": "choice",
-                "instructions": "Select the model and native effort for the next agent generation. "
-                                "Prioritize task quality; among adequate candidates, prefer lower cost.",
-                "criteria": {key: f"{action['provider']}/{action['model']} (effort={action['native_effort']})"
-                             for key, action in actions.items()},
-            }},
+            "questions": route_questions([LegalAction.model_validate(a) for a in actions.values()]),
         }
         if payload["device"] == "cuda":
             payload["gpu_lock_path"] = self.checkpoint["gpu_lock_path"]
@@ -70,7 +64,7 @@ class CheckpointRouterClient:
                              "router_gpu_wait_ms": body["gpu_wait_ms"],
                              "router_device_transfer_ms": body["device_transfer_ms"],
                              "router_question_id": target,
-                             "router_candidate_order": list(actions),
+                             "router_candidate_order": list(payload["questions"][target]["criteria"]),
                              "router_input_usage": body["usage"],
                              "router_identity_source": "SERVER_NATIVE_ADAPTER_OVER_SSH_STDIO",
                              "router_identity_status": "SERVER_NATIVE_CHECKPOINT_METADATA"},

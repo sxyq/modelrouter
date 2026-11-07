@@ -592,7 +592,7 @@ def validate_candidate(candidate, queue, device="auto", timeout=None):
 
 
 def update_retention(queue, apply=False):
-    from router_data.checkpoint_retention import evaluate_kev_retention
+    from .common.checkpoint_retention import evaluate_kev_retention
     result = evaluate_kev_retention(queue, project_root=PROJECT_ROOT, apply=apply, persist=save_queue,
         protected_paths=("models/kev-4b-adapter", "models/qwen3.5-4b-base"))
     scientific_selection(queue)

@@ -14,7 +14,6 @@ import shutil
 import subprocess
 import sys
 import time
-from contextlib import nullcontext
 from dataclasses import asdict
 from importlib.metadata import version
 from datetime import datetime, timezone
@@ -129,11 +128,7 @@ def progress(job_dir: Path) -> dict:
     }
 
 
-def _write_atomic(path: Path, value: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    tmp.replace(path)
+_write_atomic = iterations.write_atomic
 
 
 
@@ -181,16 +176,7 @@ def _task_in_subset(task: str, subset: str) -> bool:
 def execution_units(tasks, policies, agent, seed, manifest, subset, *, single_episode=False):
     if single_episode and (len(tasks) != 1 or len(policies) != 1 or not policies[0].strip()):
         raise ValueError("Single Episode planning requires exactly one task and one policy")
-    planned = []
-    if not single_episode and agent != "oracle":
-        planned.append(("fix-git", "oracle", "oracle", "ORACLE_SINGLE"))
-    if not single_episode and agent == "modelrouter":
-        planned.extend([("fix-git", "mini-swe-agent", "mini-swe-agent", "NATIVE_SINGLE"),
-                        ("fix-git", "fixed_strong", "modelrouter", "ROUTED_SINGLE")])
-        if subset == "dev":
-            for task in manifest["subsets"]["canary"]["tasks"]:
-                planned.extend((task["task_id"], policy, agent, "CANARY") for policy in policies)
-    planned.extend((task["task_id"], policy, agent, subset.upper()) for task in tasks for policy in policies)
+    planned = [(task["task_id"], policy, agent, subset.upper()) for task in tasks for policy in policies]
     unique = {}
     for task, policy, harness, stage in planned:
         name = f"{task}--{policy}--s{seed}"
@@ -212,9 +198,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--canary", action="store_true")
     p.add_argument("--dev", action="store_true")
     p.add_argument("--subset", choices=["canary", "dev", "sealed"], default="canary")
-    p.add_argument("--agent", choices=["oracle", "mini-swe-agent", "modelrouter"], default="modelrouter")
-    p.add_argument("--policies", default="fixed_strong,fixed_cheap,random,rule_sticky,routellm,sr_knn,laya_v2,kev_4b,joint_laya,joint_kev")
-    p.add_argument("--custom-agent", help="Official Harbor import path; requires installed adapter")
+    p.add_argument("--agent", choices=["oracle", "modelrouter"], default="modelrouter")
+    p.add_argument("--policies", default="fixed_strong,fixed_cheap,random,rule_sticky,joint_laya,joint_kev")
     p.add_argument("--model", help="Verified provider/model name; do not supply unverified aliases")
     p.add_argument("--v9-config", type=Path, help="Existing V9 JSON configuration for the routed mini agent")
     p.add_argument("--environment", choices=["docker", "daytona", "modal", "e2b"], default="docker")
@@ -224,11 +209,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--execute", action="store_true", help="Actually start a real Harbor task")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--iteration-dir", type=Path)
+    p.add_argument("--source-revision", help="Deployed Git revision when the server source directory has no .git")
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--max-steps", type=int, default=30)
     p.add_argument("--max-output-tokens", type=int, default=2048)
     p.add_argument("--cost-limit", type=float, default=0.0)
-    p.add_argument("--allow-sealed", action="store_true", help="Explicitly acknowledge sealed-test run authorization")
     p = sub.add_parser("resume", help="Continue the saved iteration without rerunning completed trials")
     p.add_argument("job_dir", type=Path, nargs="?")
     p.add_argument("--execute", action="store_true")
@@ -242,32 +227,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--once", action="store_true")
     p.add_argument("--interval", type=float, default=10.0)
     p.add_argument("--output", type=Path, help="Optional progress JSON file for the dashboard")
-    p = sub.add_parser("development", help="Run the original mini agent with the selected real models")
-    p.add_argument("--config", type=Path, required=True)
-    p.add_argument("--workspace", type=Path, required=True)
-    p.add_argument("--instruction-file", type=Path, required=True)
-    p.add_argument("--verify-command", required=True)
-    p.add_argument("--task-id", required=True)
-    p.add_argument("--policy", choices=["laya_v2", "kev_4b"], default="laya_v2")
-    p.add_argument("--iteration-dir", type=Path)
-    p.add_argument("--max-steps", type=int, default=15)
-    p.add_argument("--max-output-tokens", type=int, default=4096)
     for command in ("summarize", "export"):
         p = sub.add_parser(command, help="Compute results from original official trials")
         p.add_argument("job_dir", type=Path, nargs="?")
     args = parser.parse_args(argv)
-
-    if args.command == "development":
-        from modelrouter.v9.runtime.development import run_development
-        result = run_development(
-            workspace=args.workspace, instruction=args.instruction_file.read_text(),
-            verify_command=args.verify_command, config=json.loads(args.config.read_text()),
-            record_dir=args.iteration_dir or iterations.ITERATIONS / iterations.iteration_name(),
-            task_id=args.task_id, policy=args.policy, max_steps=args.max_steps,
-            max_output_tokens=args.max_output_tokens,
-        )
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-        return 0 if result["status"] == "RUNTIME_VERIFIED" else 2
 
     if args.command == "preflight":
         result = preflight(args.environment, args.docker_host)
@@ -275,9 +238,6 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 0 if result["status"] == "READY_FOR_ORACLE" else 2
 
     if args.command == "run":
-        if args.subset == "sealed" and not args.allow_sealed:
-            print("BLOCKED: sealed tasks need explicit separate authorization", file=sys.stderr)
-            return 2
         subset = "dev" if args.dev else args.subset
         manifest = json.loads((iterations.ROOT / "router_data/terminal_bench_manifest.json").read_text())
         key = {"canary": "canary", "dev": "external_dev", "sealed": "final_test"}[subset]
@@ -302,13 +262,13 @@ def main(argv: Optional[List[str]] = None) -> int:
         if (path / "run_config.json").exists():
             print(f"Use resume {path} to retain this iteration's records", file=sys.stderr)
             return 2
-        config = {"git_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=iterations.ROOT, text=True).strip(),
+        config = {"git_sha": args.source_revision or subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=iterations.ROOT, text=True).strip(),
                   "dataset": "terminal-bench/terminal-bench-2-1", "dataset_version": manifest["version"],
                   "dataset_git_sha": manifest["upstream_commit"], "tasks": tasks, "subset": subset,
                   "task_source": str(iterations.ROOT / "external/benchmarks/terminal-bench-2-1/tasks"),
                   "agent": args.agent, "mini_swe_version": "2.4.6", "harbor_version": "0.24.0",
                   "environment": args.environment, "model": args.model or "openai/gpt-6-luna",
-                  "custom_agent": args.custom_agent, "policies": policies,
+                  "custom_agent": "modelrouter.benchmark.harbor_agent:ModelRouterMiniSweAgent" if args.agent == "modelrouter" else None, "policies": policies,
                   "seed": args.seed, "max_steps": args.max_steps, "max_output_tokens": args.max_output_tokens,
                   "cost_limit": args.cost_limit, "reasoning_effort": "low",
                   "units": units, "token_budget_path": str(iterations.ROOT / "experiments/agent_pilot/token_budget.json")}
@@ -322,7 +282,6 @@ def main(argv: Optional[List[str]] = None) -> int:
         from .harbor_agent import mini_configuration, legal_actions
         from modelrouter.providers.registry import MODEL_REGISTRY
         config["model_registry"] = {k: asdict(v) for k, v in MODEL_REGISTRY.items()}
-        config["experiment_model_registry"] = json.loads((iterations.ROOT / "our-project/experiments/configs/model_registry.json").read_text())
         config["harness_config"] = mini_configuration(args.max_steps, args.cost_limit)
         config["legal_actions"] = {policy: legal_actions() for policy in policies}
         config["credential_source"] = "EXTERNAL_TEXT_MODEL_CONFIG or ~/.agent-global/外部文本模型.local.json; secret values excluded"
@@ -331,11 +290,14 @@ def main(argv: Optional[List[str]] = None) -> int:
             from modelrouter.serving.schemas import LegalAction
 
             v9_config = json.loads(args.v9_config.read_text())
+            config["strategy_configs"] = v9_config.pop("strategy_configs", {})
             v9_config["selection_scope"] = "MODEL_NATIVE_EFFORT"
             if "capability_snapshot" not in v9_config:
-                from modelrouter.v9.capabilities.features import load_current
+                from modelrouter.v9.capabilities.refresh import ensure_current, DEFAULT_MAX_AGE_SECONDS
 
-                v9_config["capability_snapshot"] = load_current()
+                v9_config["capability_snapshot"] = ensure_current(
+                    max_age_seconds=v9_config.get("capability_max_age_seconds", DEFAULT_MAX_AGE_SECONDS),
+                    force=v9_config.get("capability_force_refresh", True))
             candidates = v9_config.get("candidate_actions")
             if candidates is None:
                 candidate_actions = legal_actions(v9_config.get("formal_model_ids", V9_MODEL_IDS))
@@ -392,8 +354,6 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0 if result["status"] == "OFFICIAL_ARTIFACT_VERIFIED" else 2
 
-    if not 5 <= args.interval <= 15:
-        parser.error("--interval must be between 5 and 15 seconds")
     try:
         while True:
             args.job_dir = args.job_dir or iterations.latest()
@@ -437,7 +397,6 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
         return 2
     env = _runtime_env(docker_host)
     env["MODELROUTER_ITERATION"] = str(path)
-    env["MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT"] = "1"
     env["LITELLM_LOCAL_MODEL_COST_MAP"] = "true"
     if config.get("router_endpoint"):
         env["ROUTER_SERVING_ENDPOINT"] = config["router_endpoint"]
@@ -460,9 +419,7 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
         if resume and (job_path / "config.json").exists():
             cmd = ["harbor", "jobs", "resume", "--job-path", str(job_path)]
         else:
-            custom = config.get("custom_agent")
-            if unit["agent"] == "modelrouter":
-                custom = custom or "modelrouter.benchmark.harbor_agent:ModelRouterMiniSweAgent"
+            custom = "modelrouter.benchmark.harbor_agent:ModelRouterMiniSweAgent" if unit["agent"] == "modelrouter" else None
             task_source = config.get("task_source") or str(iterations.ROOT / "external/benchmarks/terminal-bench-2-1/tasks")
             cmd = build_harbor_command(unit["task_id"], unit["agent"], None if unit["agent"] == "oracle" else config["model"], config.get("environment_import_path", config["environment"]), custom, task_source)
             cmd += ["--jobs-dir", str(path / "jobs"), "--job-name", unit["job_name"], "--max-retries", "0"]
@@ -477,22 +434,9 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
                 if "v9_config" in config:
                     for key in ("v9_config", "candidate_actions"):
                         value = {**config[key], **strategy.get(key, {})} if key == "v9_config" else config[key]
+                        if key == "v9_config":
+                            value["capability_snapshot"] = config[key]["capability_snapshot"]
                         cmd += ["--agent-kwarg", f"{key}={json.dumps(value)}"]
-            elif unit["agent"] == "mini-swe-agent":
-                from .harbor_agent import mini_configuration
-                from modelrouter.providers.registry import ModelRegistry
-                spec = ModelRegistry().get_spec(config["model"].removeprefix("openai/"))
-                pricing = {config["model"]: {"input_cost_per_token": spec.input_price_per_1m / 1e6,
-                           "output_cost_per_token": spec.output_price_per_1m / 1e6,
-                           "cache_read_input_token_cost": spec.cache_read_price_per_1m / 1e6,
-                           "supports_reasoning": True, "supports_function_calling": True,
-                           "litellm_provider": "openai", "mode": "chat"}}
-                cmd += ["--agent-kwarg", "version=2.4.6", "--agent-env", "MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT=1",
-                        "--agent-kwarg", "reasoning_effort=low",
-                        "--agent-kwarg", f"max_tokens={config['max_output_tokens']}",
-                        "--agent-kwarg", f"cost_limit={config.get('cost_limit', 0.0)}",
-                        "--agent-kwarg", "config=" + json.dumps(mini_configuration(config["max_steps"], config.get("cost_limit", 0.0))),
-                        "--agent-kwarg", "litellm_model_registry=" + json.dumps(pricing)]
             for key, value in config.get("environment_kwargs", {}).items():
                 cmd += ["--environment-kwarg", f"{key}={json.dumps(value)}"]
         unit["status"] = "RUNNING"
@@ -500,25 +444,7 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
         iterations.write_atomic(path / "resume_state.json", state)
         iterations.event(path, "JOB_START", **unit)
         try:
-            from modelrouter.providers.provider import native_generator_relay
-            relay_context = native_generator_relay(path) if unit["agent"] == "mini-swe-agent" else nullcontext()
-            with relay_context as relay:
-                if relay:
-                    relay_host = config.get("native_relay_host", "host.docker.internal")
-                    env["MODELROUTER_NATIVE_RELAY_KEY"] = relay["api_key"]
-                    relay_url = f"http://{relay_host}:{relay['port']}/v1"
-                    if cmd[1:3] == ["jobs", "resume"]:
-                        saved = json.loads((job_path / "config.json").read_text())
-                        for agent_config in saved["agents"]:
-                            agent_config.update(model_base_url=relay_url,
-                                                model_api_key_name="MODELROUTER_NATIVE_RELAY_KEY",
-                                                model_api_format="openai_chat_completions")
-                        iterations.write_atomic(job_path / "config.json", saved)
-                        iterations.event(path, "NATIVE_RELAY_RECONNECTED", job_name=unit["job_name"], port=relay["port"])
-                    else:
-                        cmd += ["--base-url", relay_url, "--api-key-name", "MODELROUTER_NATIVE_RELAY_KEY",
-                                "--api-format", "openai_chat_completions"]
-                code = iterations.execute(path, cmd, env=env, label=unit["job_name"])
+            code = iterations.execute(path, cmd, env=env, label=unit["job_name"])
         except KeyboardInterrupt:
             unit["status"] = "INTERRUPTED"
             iterations.write_atomic(path / "resume_state.json", state)

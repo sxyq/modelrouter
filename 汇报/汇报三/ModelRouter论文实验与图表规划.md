@@ -1,4 +1,8 @@
-# ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-02 文档接续）
+# ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-07 更新）
+
+> **2026-11-07 当前方法定义**：只研究单 Agent。RQ3 为阶段识别、实际子任务边界和生成决策粒度；`inspect/modify/verify/recover` 仅是阶段标签，不自动表示拆分。取消多 Agent 结构、角色/协作/handoff/Agent 数量变量及相关图表内容。RQ2 固定用户选定的 K=3 目标身份 Luna、GLM-5.3-Flash、Terra，不扩 K、不换池；GLM 渠道授权、绑定及精确 ID 尚待确认，确认前不开展新 K=3 Harbor 实验。15 个 Model×Native Effort 动作是规划数，真实可用组合以 Provider 能力为准。旧 HY4 及本文件上方的历史批次结果保持原貌，不可改写成 GLM 结果。
+>
+> AA 能力按真实 `model×effort` 分数保存，目标 TTL 自动刷新、`force` 强制刷新、实验批次固定 `snapshot_id`。当前 AA 刷新正在实际运行；Provider 正在 GET `/models` 确认 GLM 精确 ID，授权与绑定仍待确认。原生 Effort 能力 M 特征过大，主 Agent 正在压紧；同源 Serializer 保留 130 项分数及其 `slug/version/source`。A6000 源码同步已完成，4 条原生 Encoder 均保留全字段；CPU forward 进行中，结果待回报。自 11-07 报告批次后新增正式 Harbor 实验为 0。响应、快照和后续 Episode 结果须由主 Agent 实际补入原八部分报告；尚未取得的结果保持待补，不视为完成。
 
 > **11-02最新Dev批次**：9个公开Dev任务19 Episode全部结束，原Harbor Verifier9次，7成功/2失败/10未知。实际请求DeepSeek，动态三身份为ALIAS_SMOKE，正式K=3质量结果仍缺。Git/HF/POV-Ray三组同协议完整对照固定3/3、动态2/3；参考模型费按成功数分摊0.006153744/0.006720942USD，Trial合计738.50/1805.48秒，动态收益未证明。财务/MTEB跨处理版本只观察。详见[批次结果](../../our-project/results/iterations/20261102-v9-deepseek-dev/review.md)。
 >
@@ -40,9 +44,9 @@
 
 > **历史正式执行参数接入**：原 Harbor CLI/Agent 已接入 V9 配置和三候选，参数解析与真实实例构造通过，该时点尚无官方 Trial；后续单 Luna 双动作已取得官方成功。三逻辑身份共用 Qwen 的配置联调不计 K=3 独立模型；五 RQ 的正式表格仍留空。
 
-> **更新日期：2026-10-31；现行已确定：五个 RQ、八张图、十二张空白表。** 2026-10-28 用户明确保留正式 V9（下载讨论行 25981），此前三 RQ/消融归 RQ1 的建议已被替代。系统消融为 RQ4，工作负载适用边界为 RQ5；原 V8 角色互补性只留历史。Q-ID/H1–H7、原数据证据、失败和负结果继续保留，未取得真实结果的表格不填数。
+> **图表结构：五个 RQ、八张图、十二张结果表。** 2026-11-07 当前定义见文首；以下早期批次事实按发生时间作为历史证据保留，不覆盖现行方法。
 >
-> **最终五个 RQ**：**RQ1 整体效果**（与同类 Router 横向比较）；**RQ2 模型池选择**（池成员与 K）；**RQ3 任务拆分粒度**（固定池/Router 比 G）；**RQ4 系统消融**（动作 Model×Native Effort、信息组 T/M/H、训练数据/监督与必要运行机制）；**RQ5 工作负载适用边界**（何种任务条件下动态路由有/无净收益）。**原角色互补性不再是独立 RQ**，角色字段仅在实际 Agent 状态和 RQ4 状态消融中按需研究。
+> **现行五个 RQ**：**RQ1 整体效果**（完整策略与固定/混合/同类策略比较）；**RQ2 固定 K=3 目标池中的 Model×Native Effort 候选**（按 Provider 实际能力确定联合动作，不做扩 K 或换池比较）；**RQ3 单 Agent 阶段识别、真实子任务边界与生成决策粒度**；**RQ4 系统消融**（Model×Native Effort、T/M/H、教师和训练监督）；**RQ5 工作负载适用边界**（按事前可观察任务属性研究净收益）。不含多 Agent、角色、协作、handoff 或 Agent 数量变量。
 >
 > **导师汇报 / PPT 大纲（V8｜14 页，约 12–15 分钟）**：[汇报提纲.md](汇报提纲.md)——逐页标题、讲述重点、主方法 Fig.2 的每个模块/变量/箭头、各 RQ 图的坐标和对照、12 张空白表的用途、后续生图素材数量。**当前只规划，不制作 PPT 或图片**。
 >
@@ -74,16 +78,16 @@
 
 ### 0.1 新的统一思路
 
-**先选择值得路由的模型集合，再决定在什么任务粒度、对哪个子 Agent、以什么推理档位调用，以及当前节省是否会在未来缓存重读、失败或重试中被抵消，最后用真实 Agent Benchmark 检验动态策略是否创造新的非支配策略点。**
+**选择实际可用的模型与原生档位候选，在单 Agent 执行中研究任务阶段、真实子任务边界和生成决策粒度，并用完整任务成功率及全成本检验路由是否带来净收益。**
 
 - **配置层**：`provider / model / revision / native_effort`；同一模型的不同原生 Effort 是不同可执行动作，同模型不同 Provider 属部署/价格/可用性差异。
-- **模型池层**：公开能力—成本 Pareto 仅用于初选；与 Agent 开发集实际能力、互补模型、前沿外模型对照。**等 K 选池**与**同池对比 Router**必须分开。
-- **工作流层**：同一原任务可按 G0–G3 固定分解（单 Agent、阶段、功能、可验证细粒度），路由 F0–F3（任务、阶段、子任务、合法调用）；两维不能混淆，不新增 Agent 架构搜索。
+- **模型池层**：本轮固定用户选定的 K=3 目标池 Luna/GLM-5.3-Flash/Terra；RQ2 记录实际 Provider 身份、Effort 菜单与 Model×Native Effort 合法候选，不扩 K 或替换池成员。公开能力—成本 Pareto 仅作能力来源，不当作已验证的任务结果。
+- **单 Agent 粒度层**：G 仅指原任务及其资料中实际存在的子任务边界；F 指模型生成路由粒度（每次生成、任务开始、真实阶段转折、真实子任务边界）。阶段识别不等于任务拆分，不研究 Agent 架构、角色或协作数量。
 - **决策层**：单一 Router 在真实执行前观测状态与合法动作，选择 `Model×Native Effort`。执行后的真实费用、缓存和成败反馈成为下一决策输入。
 - **经济层**：主指标是同任务完整 Episode 成功率与平均实际成本。目标是**在观测到的固定/随机混合前沿之外获得新有效点**，不是宣称超越理论所有策略的最优边界。
 - **学术层**：模型池、任务粒度、Model×Effort、缓存历史各自建立可否证对照；最终端到端结果作为总评，不以 Laya/Kev 的训练 Accuracy 替代。
 
-**当前正式主线（V9）**：**Overall Performance → Model Pool Selection → Task Decomposition → Systematic Ablation → Workload Applicability**。不以多 Agent 角色互补性作为独立研究贡献；但 Agent 状态中合法可见的角色/子任务仍可作为消融信息。
+**当前正式主线（V9）**：**Overall Performance → Fixed-K=3 Model×Native-Effort Candidate Pool → Single-Agent Stage/Subtask/Generation Granularity → Systematic Ablation → Workload Applicability**。用户选定的三个目标身份保持固定；实际可用动作随 Provider 证据，不做扩 K 或成员替换实验。不包含多 Agent 设计、角色、协作、handoff 或 Agent 数量变量。
 
 ### 0.2 与项目现有资产的关系
 
@@ -108,7 +112,7 @@
 | V6 历史草案 | 模型池、任务拆分/频率、联合分配、缓存/历史、端到端前沿收益 | 当时同时保留模型池与多子代理问题，5 个 RQ 不扩张 |
 | V7 历史 | 模型池、任务结构、候选泛化、稀疏反馈、整任务经济收益 | 2026-10-13 方案，已被 V8 的 RQ 编号替代 |
 | V8 历史 | 总体效果/机制、模型池、任务拆分、角色模型互补性、任务适用边界 | 2026-10-16 版本，原 RQ4 已废止，历史记录保留 |
-| **V9 当前** | **总体效果、模型池、任务拆分、系统消融、任务适用边界** | 2026-10-18 确定系统消融 RQ4，2026-10-28 明确保留五 RQ/八图/十二表 |
+| **V9 当前** | **总体效果、模型池、单 Agent 阶段/真实子任务边界/生成粒度、系统消融、任务适用边界** | 保留五 RQ、八图、十二表；RQ3 当前定义见文首 |
 
 **V9 修订**：RQ1 只回答完整方法与强基线的总体表现；联合 Model×Native Effort、KV/Trace/反馈、输入信息组和监督/数据配方的**受控消融移入 RQ4**。完整 Episode 费用既是全部 RQ 的计量口径，也是 RQ1 主表和 RQ4 消融的共同评价指标。正式 Q-ID/H1–H7 不因论文重编号而改变。
 
@@ -147,8 +151,9 @@ flowchart LR
   CAP --> SELECT
   CAP --> LEGAL["Existing constraints: legal Model × Native Effort"]
   SELECT --> LEGAL
-  TASK["Real Agent Task"] --> G["Fixed G0..G3 / Agent Roles"]
-  G --> SNAP["v9/runtime: continuous pre-decision State at F0..F3"]
+  TASK["Original Single-Agent task"] --> G["Whole task or source-defined real subtask boundary"]
+  STAGE["Observed phase label"] --> SNAP["Pre-decision state at generation boundary"]
+  G --> SNAP
   EXEC["Existing Agent Harness: Generation / Tools / Verifier"] --> HIST["Observed tools, progress, verification, usage"]
   HIST --> SNAP
   REF["Two fixed successful TRAIN/DEV reference excerpts"] --> JUDGE["v9/teacher: optional EXTERNAL assessment"]
@@ -166,7 +171,7 @@ flowchart LR
   COST --> OUT["Episode Resolved / Complete USD / Latency"]
 ```
 
-Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定池/Router 改同一任务的拆分 G**，RQ4 **固定池/任务/评测口径改动作、可选信息或训练监督**，RQ5 **固定 Router/池/G 比较预定工作负载条件**。同一单活跃 Laya **或** Kev 负责 Model×Native Effort 选择，教师只加工状态，原 Agent 继续执行。`v9/training` 复用原 V2.1/L1 与 Trainer/控制器，把离线真实前缀、三字段和合法监督送入同义编码；不新增 Agent 循环、训练队列或监测状态来源。当前图表达要求，新特征未学习标 `FEATURE_NOT_TRAINED`。
+用户选定的目标池固定为 K=3；RQ2 研究该固定池中每个身份的真实 Model×Native Effort 候选及其 Provider 能力。RQ3 **固定池/Router，比较原任务整体或真实子任务边界 G 与生成决策粒度 F**，RQ4 **固定池/任务/评测口径改动作、可选信息或训练监督**，RQ5 **固定 Router/池/生成粒度比较预定义工作负载条件**。同一单活跃 Laya **或** Kev 负责联合候选选择，教师只加工状态，原单 Agent 继续执行。实际动作数由 Provider 证据确定，不将 15 个规划候选或缺失 GLM 绑定写成已可执行。`v9/training` 复用原 Trainer/控制器，把离线真实前缀、三字段和合法监督送入同义编码；不新增 Agent 循环、训练队列或监测状态来源。当前图表达要求，新特征未学习标 `FEATURE_NOT_TRAINED`。
 
 ### 1.3a · 输入字段和模块接口：三字段、实际编码与能力卡（2026-10-29）
 
@@ -174,7 +179,7 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 
 | 输入对象 | 字段（拟议） | 解释和来源 |
 | --- | --- | --- |
-| `task_state` | `task_id, task_summary, task_domain, subtask_id, agent_role, stage, step_index, remaining_steps, context_tokens, remaining_time_seconds, remaining_budget_usd` | 当前任务与已知预算，估计/实际 token 分开 |
+| `task_state` | `task_id, task_summary, task_domain, source_defined_subtask_id, stage, step_index, remaining_steps, context_tokens, remaining_time_seconds, remaining_budget_usd` | 单 Agent 当前任务与已知预算；子任务边界须有原始来源 |
 | `tool_trace` | `recent_tool_events[{tool_name, tool_intent, args_digest, observed_result, observed_at}], progress_milestones, verification_status, recovery_attempts` | 只记录已经发生的行为，退出码不是合理性结论 |
 | `external_trajectory_assessment` | `progress_summary, main_blocker, next_milestone` | 教师推断实际进入 state 文本/编码，离线/在线同义；不能作终局或最优动作标签 |
 | `assessment_provenance` | `assessed_through_decision_id, teacher_provider, teacher_model_id, teacher_native_effort, reference_trajectory_ids, reference_split, trigger_reason, generated_at, teacher_input/output_tokens, teacher_cost_usd, teacher_latency_ms, status` | 固定两参考；实际顶级/联调教师分开，离线制作与在线 Episode 费用分开 |
@@ -183,7 +188,7 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 | `capability_evidence[]` | `benchmark_id, version, metric, score_raw, score_normalized, harness, evaluator_revision, eval_split, evaluated_effort, sample_count, eval_date, source_url, evidence_status` | 每档 Effort 的实测分数仅在确有同协议结果时填；未测=NOT_MEASURED |
 | 模型映射与学习状态 | 逻辑 ID、实际 Provider/API 模型/端点/部署、`ALIAS_SMOKE`、`FEATURE_NOT_TRAINED` | Alias 不填正式三模型比较；API 前向不证明新特征已学习，9002 与 Parfit API 身份分开 |
 
-**Benchmark 能力维度**：软件工程修复、代码推理、工具调用可参考 SWE-Bench Pro、LiveCodeBench、BFCL，具体版本/来源仍待证据。保存原分、量纲、Provider/Endpoint/Revision 和实际 Effort；AA Intelligence Index 是综合指数，不能作正确率百分比或最优动作标签。综合低中高只作固定参考分布的派生特征，专业维度保留连续原分。模型级成绩不能复制为每档实测；每次手动执行专用刷新入口重新请求 AA，Agent 使用已保存快照，Agent 启动和 Router 每次决策不自动访问 AA。正式训练/实验固定相应 `snapshot_id`，复用现有 `load_current`，不新增 job、自动网络行为、在线检索或定时刷新服务。
+**Benchmark 能力维度**：软件工程修复、代码推理、工具调用可参考 SWE-Bench Pro、LiveCodeBench、BFCL，具体版本/来源仍待证据。保存原分、量纲、Provider/Endpoint/Revision 和实际 Effort；AA Intelligence Index 是综合指数，不能作正确率百分比或最优动作标签。模型级成绩不能复制为每档实测。目标刷新方式为 TTL 到期自动更新、显式 `force` 刷新、批次固定 `snapshot_id`；Router 决策只读批次快照。当前刷新正在进行，现有实现仍是手动刷新；TTL/force 自动更新与新池逐档数据尚未完成。
 
 **实验和安全边界**：Final 的未来轨迹、答案、最终 verifier 或结局不得进入教师、训练、选池和调参。无教师标 `NOT_USED`，调用失败标 `FAILED`；不把缺失或回退算有效评审。现有 F05/F06/C03 和当前服务权重尚无新特征学习证据，记 `FEATURE_NOT_TRAINED`。RQ4 比无评审/确定性摘要/独立教师、名称+Effort/能力分数、工具返回/真实行为进展；只有正式真实 Episode 才填任务效果。教师制作、权重编码/学习与 API 前向证据分别记录。
 
@@ -204,62 +209,63 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 
 ## 2. 五个研究问题（V9，最新确认）
 
-> 本节为当前**正式确定**的 RQ1–RQ5。旧 V8 的角色互补性独立 RQ 已取消。真实 Agent 任务仍可带有多个角色，但不把多 Agent 架构或角色专业化本身当成本文独立研究问题。
+> 本节为当前**正式确定**的 RQ1–RQ5。现行方法只研究单 Agent；旧 V8 角色互补性和多 Agent 组织仅作为历史。
 
 | RQ | 白话问法 | 主要变化轴 | 图 | 表 |
 |---|---|---|---|---|
 | **RQ1 Overall Performance** | **我们的动态 ModelRouter 与相同任务环境中的其他路由方法相比，整体成功率—成本表现如何？** | 相同工作负载/模型池/Harness/预算下改变路由策略 | Fig.3–4 | T3、T10（成本账本） |
-| **RQ2 Pool Selection** | **池里放哪些模型、放几个最有价值？** | 模型身份成员与数量 K | Fig.5 | T6 |
-| **RQ3 Task Decomposition** | **同样的模型池与 Router，任务拆多细比较划算？** | 同原任务的可复现拆分粒度 G | Fig.6 | T7 |
+| **RQ2 Fixed Pool Model×Effort** | **在固定 K=3 目标池中，Provider 实际支持哪些 Model×Native Effort 候选？** | 固定用户目标身份；按 Provider 证据记录合法联合动作，不扩 K/换成员 | Fig.5 | T6 |
+| **RQ3 Single-Agent Granularity** | **单 Agent 的阶段识别、真实子任务边界与生成决策粒度如何影响完整任务？** | 同一任务的实际 G 边界及生成决策粒度 F | Fig.6 | T7 |
 | **RQ4 Systematic Ablation** | **Router 究竟靠哪些设计发挥作用？联合模型与档位、状态信息、训练数据/监督，哪些必要，哪些组合有效？** | 固定任务/池/评测，仅改变受控组件、输入信息组或训练配置 | Fig.7 | T4–T5、T8、T11 |
-| **RQ5 Workload Boundary** | **哪些多 Agent 任务真正适合动态路由，哪些不值得？** | 预先定义的任务类别、难度/长度、协作结构等工作负载分层 | Fig.8 | T9 |
+| **RQ5 Workload Boundary** | **哪些事前可观察的单 Agent 工作负载更适合动态路由？** | 任务类别、难度/长度及原始材料中真实存在的子任务结构 | Fig.8 | T9 |
 
 ### 2.1 动作树、状态与训练的边界
 
 - **Model pool**：K 统计不同模型身份，池成员为 `provider/model/revision` 的实际候选；每个模型有不同且真实存在的原生 Effort 集合 `E_m`，不能由用户提前规定每个 Agent 固定用哪个模型。
 - **Single Router**：每个合法调用边界，由一个路由策略在可变长 `{(m,e):m∈P,e∈E_m,legal(m,e,s_t)}` 中**同时选择模型与这个模型自己的 Effort**。树按“模型→原生档位”组织，不能把几十个固定组合当成永远不变的类别。缓存、角色和历史信息属于状态/候选条件特征。
-- **Multi-Agent state**：当前 `agent_role`、`agent_id`、`subtask_goal`、`task_phase`、已发生 handoff、当前上下文、KV、Trace、验证反馈、剩余预算；观测缺失标 UNKNOWN。消息 `role=assistant` 不能冒充子 Agent 的 `agent_role`。这些设计已纳入 Research Overview，但当前 P22 数据和训练权重**尚不能证明角色特征已经成功进入训练编码**。
+- **Single-Agent state**：任务目标、原始资料中的真实子任务边界、当前阶段、上下文、KV/Usage、已发生工具和验证反馈、剩余预算。阶段标签不自动变成拆分，不记录 Agent 角色、协作或 handoff。
 - **证据**：S1 偏好、S2 观察性轨迹、S3 缓存辅助不是同状态、全候选 `(m,e)` 的最优反事实标签；不能从一个成功轨迹推断未执行模型会失败。
 
 ### 2.2 RQ1：完整 Router 的总体性能（已确认局部调整）
 
 **科学问题**：在可复现的真实 Agent 任务中，相同模型身份池、真实原生 Effort 菜单、Harness、预算与最终验证规则下，ModelRouter 是否优于具有竞争力的固定、混合、简单动态以及可兼容的公开路由方法？本 RQ 仅做最终方法横向比较；机制、输入变量、训练配方归正式 **RQ4 系统消融**。
 
-- **主对照**：固定强/低价配置、开发集最优固定策略、整任务固定策略随机混合（含双模型混合包络）、Task-only、Greedy、Rule/Sticky、轻量 Router；在多 Agent Harness 上存在真实角色时加入 Role-static；优先比较**同一执行接口真正可运行的学术路由算法**（如已合法接入的 RouteLLM/SR-KNN/Agent 方向算法），不把 TwinRouterBench 评测框架名直接当成算法名。
+- **主对照**：固定强/低价配置、开发集最优固定策略、整任务固定策略随机混合、Task-only、Greedy、Rule/Sticky、轻量 Router；只纳入在同一单 Agent 执行接口可运行的真实算法。
 - **共同条件**：相同任务 ID、原始任务集合、工具/容器/终局 Evaluator、候选模型身份和每个模型自己的合法原生 Effort、可比 API 预算/成本计价与路由频率规则；对不支持动态 Effort 的外部方法明确注释动作能力差异。
 - **主指标**：Task Success Rate、Mean Complete Episode USD、Cost per Resolved；补充真实 Router 费用/延迟、P95 Episode Time、按独立任务计算的置信区间。失败任务和已发生的失败重试费用全部计入总费用，不能重复计价。
 - **核心结果图表**：Fig.3 成功率—Episode USD Pareto，Table 3 同环境横向对照；费用 ledger 用 T10 作为任务级总成本口径说明，并不在此宣称任何模块有贡献。
-- **可证伪性**：Full 可能无法超越认真选择的双模型整任务随机混合、开发集最佳固定或 Role-static，也可能被自身路由开销抵消；均须如实报告。
+- **可证伪性**：Full 可能无法超越认真选择的双模型整任务随机混合或开发集最佳固定，也可能被自身路由开销抵消；均须如实报告。
 
 ### 2.2A 消融实验索引（正式归属为 RQ4，详细定义见 §2.5）
 
-> 2026-10-18 负责人已明确确认：**本项就是新的 RQ4**。保留此节为从原 RQ1 迁移来的实验索引，详细控制与图表安排见 §2.5，不再是候选。以前独立的「角色互补性 RQ4」已删除；角色信息是可选评分特征之一，不预先断言它有效。
+> 本节是 RQ4 系统消融的索引；更早独立的角色互补性研究只保留为历史，不属于现行因素。
 
 - **A｜动作结构消融**：Fixed Model+Effort、Model-only（模型动态、每模型合法 Effort 预先固定）、Effort-only（模型固定）、Hierarchical Model→Effort、Joint Model×Native Effort；考察联合动作在实际任务上是否产生净收益，并分别说明候选动作空间是否相同。
-- **B｜决策输入消融**：T（任务/当前 Agent 与子任务）、M（模型能力和候选经济性）、H（上下文/KV/已发生 Trace 和验证反馈）的单组、双组、三组组合；根据开发集再细分关键字段。**所有模型合法性、Effort 支持、工具/权限硬约束保持启用**；去掉某组评分特征不是允许非法调用。
+- **B｜决策输入消融**：T（任务/来源中真实存在的子任务边界/阶段）、M（模型能力和候选经济性）、H（上下文/KV/已发生 Trace 和验证反馈）的单组、双组、三组组合；根据开发集再细分关键字段。**所有模型合法性、Effort 支持、工具/权限硬约束保持启用**；去掉某组评分特征不是允许非法调用。
 - **C｜训练证据消融（新增讨论方向）**：在确实能合法训练与配对的前提下，对比 S1 静态偏好、S2 观察性 Agent 轨迹、S3 缓存/调用辅助及其合规组合的作用，或 Laya/Kev Checkpoint/数据配比的真实影响。固定任务、池、评测条件，对照离线指标和真实 Episode 表现；绝不将异构观察数据当作同状态所有未选动作的反事实真值。
 - **D｜运行开销与费用解释**：实际 token、reasoning、缓存读写、失败重试、路由器本身成本与延迟单独计账；这部分也可作为全论文共有的成本测量，不一定占一个消融子题。
 - **实验组织**：先分组，不穷举全部原始变量；对测过的负结果做汇总，依据开发集定最终模型、独立测试不参与事后筛选；端到端成功率与 Episode USD 才能确认最终经济价值。
 
 
 
-### 2.3 RQ2：模型池该放哪些模型、多少个？
+### 2.3 RQ2：固定 K=3 目标池中的 Model×Native Effort 候选
 
-**科学问题**：公开静态能力—价格 Pareto 与真实多 Agent 路由需求是否一致？池成员互补性以及规模 K 的边际收益如何变化？
+**科学问题**：在用户选定的固定 K=3 目标池中，每个 Provider 实际支持哪些原生 Effort，组成怎样的联合候选集合？这些模型与档位的真实能力证据和终局效果如何记录？
 
-- 在**固定 K** 下比较不同成员集合：公开前沿/Agent 开发集/价位分层/按任务互补/随机；再比较不同 K（如 3/5/8 仅作候选，不是已锁定配置）和在前沿之外加入模型的价值。
-- 固定 Router、任务、拆分、Evaluator 与预算；**K 是模型身份数**，另外报告每个池实际合法 Model×Effort 动作数 `Σ|E_m|`。
-- RQ2 测**池怎么搭**，不预设不同 Agent 角色必须选择不同模型；角色信息是否帮助评分可在 RQ4 的输入消融中测试。主要指标为整体任务成功率、费用、K 的边际价值及选池成本。
-- 允许“两个模型足够”“扩大池子无收益”等负结果。公开 AA 图与真实 Episode 图须分开坐标。
+- 目标身份固定为 Luna、GLM-5.3-Flash、Terra；不开展扩 K、换成员或替换成其他池的对照。
+- 每批记录精确 Provider/model ID、真实原生 Effort、实际支持条件及合法 Model×Native Effort 数；15 是规划数，不补造缺失组合。
+- GLM 渠道尚未绑定，精确 ID/能力结果待 Provider `/models` 返回；不把 GLM 记为已可用或已实测。
+- AA 分数按精确 model×effort 保留实测来源；当前刷新进行中，未返回项目保持空白或 `NOT_MEASURED`。模型级指数不复制成逐档成绩。
+- 真实任务成功率、完整 Episode USD 与每个动作的覆盖在有 Harbor 执行结果后填入；固定目标池不是 3 个 Provider 已全部可用的声明。
 
-### 2.4 RQ3：同池条件下的任务拆分效果
+### 2.4 RQ3：单 Agent 阶段、真实子任务边界与生成决策粒度
 
-**科学问题**：固定模型数量、具体成员、每模型原生 Effort 支持和 Router，改变同一多 Agent 任务的可复现拆分粒度，是否改善动态分配的净收益？
+**科学问题**：固定模型池、Router、单 Agent Harness 和评价协议，任务中的真实子任务边界 G 与路由决策粒度 F 是否改变完整任务质量和成本？
 
-- 在相同原始任务上比较整体/阶段级/细粒度子任务等可执行 G，配合至少一种固定模型或 Role-static 对照；保持 Router 核心策略及合法动作条件一致。
-- 记录实际 agent 数、可用路由边界 F、handoff、上下文复制、Trace、费用和成功率。任务粒度改变可能自然增加 Agent 数：主结果可作为**整体拆分方案效果**；如需纯粒度因果结论，另加控制对照，不能声称这些因素完全独立。
-- 在可用的 Coding / Research / Data 等**真实多 Agent 工作负载**上分别展示，不把不同 benchmark 难度直接作同一任务的配对比较。
-- RQ3 研究**拆分方法本身带来的变化**；是否需要给 Router 提供角色、交接等额外输入，作为 RQ4 的信息消融，不另设角色互补性 RQ。
+- G 只来自原任务定义或已保存材料中可证实的实际子任务边界；没有明确边界时记为整任务，不人为拆分。
+- F 比较任务起点、实际阶段转折、实际子任务边界和每次模型生成等粒度；阶段标签本身不是任务拆分。
+- 在相同任务/工具/Router/候选动作/官方终局下比较；记录真实决策次数、成功率、完整费用和路由耗时，不增加 Agent 数/角色/handoff 变量。
+- Inspect、Modify、Verify、Recover 仅作阶段状态；不能单独作为 G，也不能从阶段名称推断任务需要多个步骤或多个决策。
 
 ### 2.5 RQ4：哪些设计与训练信息真正决定 ModelRouter 的任务级效果？（系统消融）
 
@@ -291,24 +297,24 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 **主图**：Fig.7 为三面板（A 联合动作、B 信息组、C 训练数据/监督）；必要时另以小面板列 Router/Cache 开销。不画虚假提升曲线。**主表**：T4、T5、T8；补充 T10/T11。
 
 
-### 2.6 RQ5：哪些多 Agent 工作负载值得动态路由？（用户确认原方案 C）
+### 2.6 RQ5：哪些单 Agent 工作负载值得动态路由？
 
-**科学问题**：动态路由相对于有竞争力的简单策略，其**任务级净收益**是否随任务类别、预先可观测的任务规模/难度、协作结构发生系统变化？能否识别没有路由收益空间的场景？
+**科学问题**：动态路由相对于有竞争力的简单策略，其**任务级净收益**是否随任务类别、预先可观察的任务规模，以及原始任务中已有的子任务结构发生系统变化？能否识别没有路由收益空间的场景？
 
 所有任务均可经过原 Router；RQ5 研究不同条件下的实际收益，不给正常任务增加调用限制。依据：下载讨论行 28868–28876。
 
-- **实验**：在**已固定的 Router、池、拆分协议**下跨若干多 Agent 工作负载类别做横向实验；优先预定义 Coding/Research/Data 等可真正执行且有统一终局评价的任务类型，或按同一 benchmark 内已知任务规模、预定角色/依赖结构、预算档位分层。
-- **主对照**：每个工作负载分层都重用 RQ1 中同一组强基线（尤其 Best-Fixed-on-Dev、Role-static、随机 Episode Mix、Rule/Sticky）和同一 Full Router；计算每层在**相同成功率要求**下的任务级费用差和不确定性，不只给一个 Full 的整体平均值。
+- **实验**：固定 Router、池和生成决策粒度，按事前可观察的单 Agent 任务类型、规模/难度及来源中真实存在的子任务边界分层；不根据阶段标签制造子任务。
+- **主对照**：每个工作负载分层重用 RQ1 的固定、随机 Episode Mix、Rule/Sticky 和其他可比强基线，与 Full Router 对比；计算每层在相同成功率条件下的任务费用差和不确定性。
 - **预定义工作负载与收益交互**：事前规定可观察的工作负载特征，检验 `policy × workload` 的收益交互；以跨类型复测和足够独立任务支撑“适用边界”，不能靠观察到好结果再筛选任务类型。任务完成后的实际 Trace/失败次数只能用于机制解释，不能冒充任务开始前的条件。
 - **RQ1 区别**：RQ1 回答整体上有没有收益；RQ5 回答**在什么任务条件下有收益/无收益且是否稳定**。
-- **RQ3 区别**：RQ3 控制并改变同一任务的拆分；RQ5 固定当前选定 G，比较**工作负载原有差异**，不得再次把拆分处理效果当 RQ5 新结论。
+- **RQ3 区别**：RQ3 比较阶段识别、真实子任务边界与生成决策粒度；RQ5 固定所选粒度，比较**工作负载原有差异**，不把不存在的拆分作为处理条件。
 - **证伪情况**：收益与所选任务特征没有稳定关系，或样本过少以致无法可靠划定边界；必须如实报告。
-- **主图**：不同预定义工作负载（任务类型×复杂度/协作结构）的`Full vs 强基线`净经济收益矩阵和分层置信区间。不要为了作图捏造任务类型覆盖。
+- **主图**：不同预定义工作负载（任务类型×复杂度/真实子任务结构）的`Full vs 强基线`净经济收益矩阵和分层置信区间。不要为了作图捏造任务类型覆盖。
 
 ### 2.7 论文逻辑与必要数据
 
-- **数据优先**：RQ1–RQ5 均需要真实完整 Agent Episode、终局成功标签、当时合法池及完整费用；**RQ4** 额外要求每种训练监督/信息组的真实覆盖、可比 Checkpoint 和合法输入编码证据；**RQ5** 要有预定义的、独立任务数量足够的工作负载分层。Agent role/handoff 仅作为具体输入字段候选，不另设跨角色模型互补性 RQ。
-- **现有训练缺口**：已加工轨迹含 `agent_framework`、消息 role、step/context 及部分 thinking mode，但这些不等于真正的子 Agent 角色监督；AgentState 已在研究总纲和数据台账设计，尚未验证进入 Laya/Kev 实际训练输入。公开数据集可帮助角色表征，不能凭此制造最佳 Model×Effort 动作标签。
+- **数据优先**：RQ1–RQ5 均需要真实完整单 Agent Episode、终局成功标签、当时合法池及完整费用；**RQ4** 额外要求每种训练监督/信息组的真实覆盖、可比 Checkpoint 和合法输入编码证据；**RQ5** 要有预定义的独立任务工作负载分层。
+- **现有训练缺口**：已加工轨迹含 `agent_framework`、消息 role、step/context 及部分 thinking mode；这些字段不构成研究中的 Agent 角色变量，不能据此补造任务拆分或最佳 Model×Effort 标签。
 - **微调定位**：Laya / Kev 的 S1/S2/S3 联合训练和 Checkpoint 比选是 Router 的训练证据，继续作为方法、训练记录和附录；离线 Accuracy 不是 RQ1–RQ5 的任务级成绩。
 
 
@@ -329,18 +335,18 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 
 | 顺序 | 目的 | 对应 | 结果图表 |
 |---|---|---|---|
-| A | 锁定真实多 Agent task/evaluator、候选模型树、原生 Effort、完整费用口径；不改变现有训练授权 | Setup | Fig.1–2, T1–2 |
+| A | 对齐 Harbor `DefaultAgent` 与原 Evaluator、固定 K=3 目标身份、真实原生 Effort 和完整费用口径；GLM 授权确认前不启动新 K=3 实验 | Setup | Fig.1–2, T1–2 |
 | B | 同池同任务运行固定/随机混合/简单/可比 Agent Router/Full，完成主要任务级横向对照 | RQ1 | Fig.3–4, T3/T10 |
 | C | 固定池与任务做联合动作、T/M/H 信息单双三组合、训练数据/监督与费用开销的系统消融 | **RQ4** | **Fig.7, T4–5、T8、T10–11** |
-| D | 固定 Router/G，比不同 K 和同 K 不同模型组合，区分 K 与 `Σ\|E_m\|` | RQ2 | Fig.5, T6 |
-| E | 固定模型池身份/K/原生 Effort/Router 改可复现任务拆分，按任务类型分层 | RQ3 | Fig.6, T7 |
+| D | 固定用户目标池 K=3，依实际 Provider 能力记录 Model×Native Effort 联合候选及真实覆盖 | RQ2 | Fig.5, T6 |
+| E | 固定模型池身份/K=3/原生 Effort/Router，比较真实子任务边界与生成决策粒度 | RQ3 | Fig.6, T7 |
 | F | 对照合法训练数据/监督的真实效果，核验动态输入编码并报告独立样本、训练开销和最终任务级效果 | **RQ4（训练消融）** | **Fig.7, T8/T11** |
 | G | 固定池/Router/G，预先定义工作负载分层，比较 Full 相对强基线的任务级收益边界 | RQ5 | Fig.8, T9 |
 | H | 报告费用分解、真实训练证据和代表性任务轨迹；独立 Test 不用于事后挑池/变量 | 全部 | T10–12 |
 
-**讲述顺序**先 RQ1，再解释模型池、任务拆分、系统消融、工作负载边界。实际采集可复用同一 Episode 与账本，控制重复计费；不能将不同任务拼成假配对，Alias 前向/联调不能充当正式三模型结果。
+**讲述顺序**先 RQ1，再解释固定 K=3 池内的 Model×Native Effort 候选、单 Agent 生成粒度、系统消融和工作负载边界。实际采集可复用同一 Episode 与账本；不能将不同任务拼成假配对，Alias 前向/联调不能充当正式新池结果。
 
-首轮联调沿既有接口完成真实任务前缀、路由、生成、工具、验证和费用记录；无需为它先完成 G0–G3 所有实验或穷举消融。正式 RQ1–RQ5 在真实身份/协议下另作受控比较，不重复建设底层 Router/Provider。
+正式执行只沿 Harbor `DefaultAgent` 与原版 Evaluator；已删除的 `sandbox/canary_verifier.py`、`experiments/harbor` 同名 shim 和本地 Demo 均不是入口。旧 Mock 分数仅作历史记录，不提供 smoke 命令。原始报告中的 Mock 环境和分数不改名、不改写。正式 RQ1–RQ5 在真实身份/协议下另作比较，不重复建设底层 Router/Provider。
 
 
 ### 3.3 微调支撑路由研究，论文主体关注方法与任务效果
@@ -356,13 +362,13 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 ## 4. 八张图的 V9 设计（结果点全部留空）
 
 
-### Fig.2 · 中文方法主图（2026-11-02 生图初稿与准确连线规范）
+### Fig.2 · 单 Agent 方法主图（当前可编辑图源）
 
-**图的定位**：仅保留论文中间的完整架构插图（白底、无大标题、无上/下说明条、无外围任务输入循环），采用 C 版三列：左侧 T/H 决策上下文、中央单一 ModelRouter（Laya 或 Kev）、右侧 M 模型能力与 Provider 合法动作；上方小型可选轨迹教师，下方 Mini-SWE-agent 执行循环及任务结束后 Harbor Verifier。任务初始化为左侧独立入口，不参与每轮回环；图标只用于文件/终端/测试等有实义的对象，不给抽象状态任意配图标。
+**图的定位**：只表达原任务与真实子任务边界、单 Agent 阶段/决策前状态、可选教师、Provider 合法候选、单一 Router、原 Mini-SWE 执行循环、下一生成前反馈和 Harbor 官方终局。不得画多个 Agent、角色分工、协作、handoff 或数量变量。可编辑 Mermaid 图源唯一维护在[研究总纲 2026-11-07 Fig.2 节](../../our-project/planning/RESEARCH_OVERVIEW.md#2026-11-07--现行-fig2-方法定义)。
 
-**真实循环与箭头**：Agent 首次或下一次需要模型生成→构建决策前 T/H/M 统一状态→条件满足时教师读取历史前缀和两条固定参考，三字段短评并入决策状态→根据真实 Model ID、原生 Effort、价格/可用性等约束先筛合法动作→Router 选择 Model×Native Effort→Mini-SWE-agent 用选中配置生成→（如需）调用工具→观察实际输出/测试→判断是否继续。继续时将新证据、缓存、Token、费用、延迟更新到 H，返回**下一次生成前**重新路由；终止时由 Harbor Verifier 负责正式结局评价。教师支路不是独立 Loop，不直接控制 Agent 或路由；不要画「继续→直接模型生成」绕过 Router，也不把 Harbor 终局返回本次任务输入。
+**RQ3 真实循环与粒度**：G 只取原任务或已有真实执行材料能够确认的子任务边界；F 记录生成路由时机。`inspect/modify/verify/recover` 仅作阶段识别，不能单独变成任务拆分。工具命令不等于模型生成。教师读取截止前前缀并输出三字段，进入同一状态编码；下一次模型生成仍经过同一个 Router。
 
-**模型卡与证据范围**：三逻辑候选只作方法示例（Sol/Luna/Flash）；AA v4 的 Max 成绩不填成 Low 实测；Flash 当前实际服务可用性尚未确认。图中不填虚构准确率、费用或实验结论，Laya/Kev 表示两种可替换的单活跃 Router。当前生图原型文件 `ModelRouter_V9_Fig2_中文高清.png` 已在会话导出（3344×1882 PNG，未提交 GitHub 图片二进制），教师短评直指 Router、合法动作筛选顺序等潜在视觉偏差以上述结构文字为准，尚不是最终可投稿的精确图。
+**模型与证据范围**：目标候选为 Luna、GLM-5.3-Flash、Terra，规划 15 个 Model×Native Effort 动作；精确 ID、Effort 和可用性按 Provider 实际证据，不将历史 HY4 执行改写成新池结果。图中不填虚构能力、价格或实验结论。AA 每档能力须来自真实测量；TTL/force 刷新与 GLM 可用性仍在获取/实现过程中。Laya/Kev 可替代，但单次只活跃一个 Router。
 
 
 
@@ -372,12 +378,12 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 |---|---|---|
 | Fig.1 | Motivation | 静态 AA Intelligence–Price 与真实 Agent Success–Episode USD **两个独立面板**，不能把 AA 结果当 Agent 任务结果 |
 | **Fig.2** | Method | **Model→Native Effort**、连续 AgentState/真实前缀→两条固定成功公开摘要与外置教师三字段→**实际 state 编码**；能力/价格/合法动作同义输入→**单活跃 Laya 或 Kev**→原 Agent 执行→真实费用/验证/上下文与物理缓存反馈 |
-| **Fig.3** | **RQ1 主结果** | X=Mean Complete Episode USD，Y=Task Success Rate；固定、Role-static、随机整任务混合、简单、同 Harness 学术 Router、Full；真实实测后绘 Pareto |
+| **Fig.3** | **RQ1 主结果** | X=Mean Complete Episode USD，Y=Task Success Rate；固定、随机整任务混合、简单、同 Harness 学术 Router、Full；真实实测后绘 Pareto |
 | Fig.4 | RQ1 结果解释 | 完整 Episode 生成/缓存/在线教师/Router 费用分解及成功率—费用对照包络；失败重试是已计调用的子集，不重复相加，离线教师制作另列；不重复 Fig.7 消融 |
-| Fig.5 | RQ2 | 不同 Pool Rule、不同 K 的 Success–Episode Cost/边际收益，分开标注 K 与实际合法 M×E 动作数 |
-| Fig.6 | RQ3 | X=可复现拆分粒度 G，Y=Success/Mean Episode USD（双面板），图例 Fixed/Role-static/Full、任务类型分层；标注 Agents/Handoffs/F |
+| Fig.5 | RQ2 | 固定 K=3 目标池内各 Model×Native Effort 候选的真实覆盖与 Success–Episode Cost；标明 Provider 支持状态和合法动作数 |
+| Fig.6 | RQ3 | 分别展示 G（原任务/真实子任务边界）与 F（生成决策粒度），比较成功率/完整 Episode USD；阶段识别单独记录，不含角色、Agent 数或 handoff |
 | **Fig.7** | **RQ4 系统消融** | 三面板：A 固定/Model-only/Effort-only/分层/Joint；B T/M/H 单双三组与**外置 LLM 轨迹短评/候选分数**的有无及规则摘要对照；C S1/S2/S3 合法数据与监督配置；真实 Success/完整 USD（含教师费用）衡量，结果待测 |
-| **Fig.8** | **RQ5** | X=预定义多 Agent 工作负载分层（类型/复杂度/结构），Y=在可比成功率下的 Full 相对强基线的**任务级费用改善**及不确定性；无收益区域同样保留 |
+| **Fig.8** | **RQ5** | X=预定义单 Agent 任务属性/规模及真实子任务边界分层，Y=在可比成功率下 Full 相对强基线的**任务级费用改善**及不确定性；无收益区域同样保留 |
 
 **不得填假坐标点或预设正收益**。Case trajectory、Provider cached-read 细节和失败案例可作补充图；图 8 不得简单重复图 3 的总体平均数。
 
@@ -388,25 +394,22 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 
 **全部结果单元格空白，不意味着零。** 第一列只是计划对照条件，实际有没有该 benchmark/模型、能否运行需以之后的执行证据为准。数据采集只需一套共享 Episode/Agent/Decision 账本，结果表从同一事实派生；没有真实结果不填数字。
 
-### Table 1 · 模型池树与供应商能力（Setup）
+### Table 1 · 固定 K=3 目标池与 Provider 能力（Setup）
 
 | Model Identity | Provider / Revision | Allowed Native Efforts | Context | Tools | Input $/M | Output $/M | Cache Policy |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `gpt-6.1-sol`（规划身份） |   |   |   |   |   |   |   |
-| `gpt-6-luna`（规划身份） |   |   |   |   |   |   |   |
-| `qwen3.8-flash`（规划身份） |   |   |   |   |   |   |   |
-| Other pool member（RQ2 按实际范围选择） |   |   |   |   |   |   |   |
+| GPT-6 Luna（目标身份） |   |   |   |   |   |   |   |
+| GLM-5.3-Flash（渠道未绑定；精确 ID 待查） |   |   |   |   |   |   |   |
+| GPT-6.1 Terra（目标身份） |   |   |   |   |   |   |   |
 
-> **T1 补充**：三 ID 是已定规划身份，实际 Provider/修订/原生 Effort/价格和认证尚待证据；V8 两Luna规则与审阅 Agent 配置不能证明三正式生成可用。每动作关联已有能力资产的 `capability_evidence_refs`，AA 综合指数、开源 Flash-Next 分数和 Alias 后端成绩不可代填托管型号。`ALIAS_SMOKE` 另记逻辑与实际身份，正式比较格保持空白，不新增另一张长期能力表。
+> **T1 补充**：三者是固定目标池身份，不表示均已绑定或可调用。GLM 私有渠道尚未绑定，Provider 正在查询 `/models`；low/high/max 是待核对的预期档位。15 个 Model×Native Effort 候选是规划数；表内只填实际 Provider 证据。AA 刷新正在进行，未返回数据留空；不将模型级分数复制到档位，也不把旧 HY4 结果写作 GLM。
 
-### Table 2 · 真实多 Agent Benchmark / 协议（Setup）
+### Table 2 · Harbor 单 Agent Benchmark / 协议（Setup）
 
-| Benchmark / Task Type | Independent Tasks | Real Agent Roles | Decomposition G | Harness / Evaluator | Development / Test Split | Budget |
-| --- | --- | --- | --- | --- | --- | --- |
-| Coding tasks |   |   |   |   |   |   |
-| Research tasks (if available) |   |   |   |   |   |   |
-| Data tasks (if available) |   |   |   |   |   |   |
-| Held-out tasks |   |   |   |   |   |   |
+| Benchmark / Task Set | Independent Tasks | Source-defined Subtask Boundaries | Single-Agent Harness / Evaluator | Development / Test Split | Cost Scope |
+| --- | --- | --- | --- | --- | --- |
+| Terminal-Bench 2.1 Canary / Dev / Final |   |   | Harbor `DefaultAgent` / official Evaluator |   |   |
+| Other authorized single-agent task set |   |   |   |   |   |
 
 ### Table 3 · RQ1 同类 Router 主结果
 
@@ -415,7 +418,6 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 | Fixed-Strong |   |   |   |   |   |   |
 | Fixed-Cheap |   |   |   |   |   |   |
 | Best-Fixed-on-Dev |   |   |   |   |   |   |
-| Role-Static (dev-chosen) |   |   |   |   |   |   |
 | Random Whole-Episode Mix |   |   |   |   |   |   |
 | Task-only Router |   |   |   |   |   |   |
 | Greedy / Rule / Sticky |   |   |   |   |   |   |
@@ -426,14 +428,13 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 
 | Information Used | Valid Action Space | Task Success ↑ | Mean Episode USD ↓ | Δ vs Full | Router Cost |
 | --- | --- | --- | --- | --- | --- |
-| T: Task/Agent |   |   |   |   |   |
+| T: Task/Stage/Real Subtask |   |   |   |   |   |
 | M: Candidate Economics |   |   |   |   |   |
 | H: Execution History |   |   |   |   |   |
 | T+M |   |   |   |   |   |
 | T+H |   |   |   |   |   |
 | M+H |   |   |   |   |   |
 | T+M+H |   |   |   |   |   |
-| Full minus Agent role |   |   |   |   |   |
 | Full minus KV |   |   |   |   |   |
 | Full minus Verifier feedback |   |   |   |   |   |
 | Full minus external LLM trajectory assessment |   |   |   |   |   |
@@ -453,29 +454,23 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 | Hierarchical M→E |   |   |   |   |   |   |
 | Joint M×E |   |   |   |   |   |   |
 
-### Table 6 · RQ2 池规模与组成
+### Table 6 · RQ2 固定 K=3 池内 Model×Native Effort 证据与结果
 
-| Pool Selection | K Models | Model Identities | Legal M×E Actions | Task Success ↑ | Mean Episode USD ↓ | Marginal Value |
+| Fixed Pool Model | Native Effort | Provider Evidence | Legal Action in Batch | Task Success ↑ | Mean Episode USD ↓ | Evidence / Coverage |
 | --- | --- | --- | --- | --- | --- | --- |
-| Equal K: AA Pareto |   |   |   |   |   |   |
-| Equal K: Agent-dev |   |   |   |   |   |   |
-| Equal K: Price-tiered |   |   |   |   |   |   |
-| Equal K: Complementary |   |   |   |   |   |   |
-| Equal K: Random |   |   |   |   |   |   |
-| Expanded K |   |   |   |   |   |   |
-| Off-frontier addition |   |   |   |   |   |   |
+| GPT-6 Luna |   |   |   |   |   |   |
+| GLM-5.3-Flash |   |   |   |   |   |   |
+| GPT-6.1 Terra |   |   |   |   |   |   |
+| Fixed K=3 pool summary |   |   |   |   |   |   |
 
-### Table 7 · RQ3 固定模型池的任务拆分
+### Table 7 · RQ3 单 Agent 阶段、子任务边界与生成粒度
 
-| Task Type / Same Task Set | Decomposition G | Policy | Agents | Handoffs | Route Calls F | Task Success ↑ | Episode USD ↓ |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Coding: Whole / Role-static |   |   |   |   |   |   |   |
-| Coding: Whole / Full |   |   |   |   |   |   |   |
-| Coding: Phase / Role-static |   |   |   |   |   |   |   |
-| Coding: Phase / Full |   |   |   |   |   |   |   |
-| Coding: Fine / Role-static |   |   |   |   |   |   |   |
-| Coding: Fine / Full |   |   |   |   |   |   |   |
-| Other multi-Agent task: paired granularity (if runnable) |   |   |   |   |   |   |   |
+| Task / Same Task Set | G: Whole or Source-Defined Subtask | Stage Label (observed) | Generation Granularity F | Policy | Task Success ↑ | Episode USD ↓ |
+| --- | --- | --- | --- | --- | --- | --- |
+| Coding: Whole Task |   |   | Task-start | Fixed |   |   |
+| Coding: Whole Task |   |   | Every generation | Full |   |   |
+| Coding: Source-defined Subtask |   |   | Subtask boundary | Full |   |   |
+| Coding: Same Task |   | `inspect/modify/verify/recover` | Actual stage transition | Full |   |   |
 
 ### Table 8 · RQ4 合法训练数据/监督与微调策略消融
 
@@ -500,13 +495,13 @@ Pool 在开发阶段选定；RQ2 **改变 K 与具体池成员**，RQ3 **固定�
 | Task type: Data (if runnable) |   |   |   |   |   |   |   |
 | Predefined task size: Small |   |   |   |   |   |   |   |
 | Predefined task size: Large |   |   |   |   |   |   |   |
-| Predefined coordination pattern |   |   |   |   |   |   |   |
+| Source-defined subtask boundary (if present) |   |   |   |   |   |   |   |
 
 ### Table 10 · 在线 Episode 费用与连续性（支持 RQ1/RQ4）
 
 | Policy | Generation Input/Output USD | Generation Cache USD | Retry/Failed Subset | Online Teacher USD | Router Cost | Trace / Task | Switches / Task | Total Episode USD |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Fixed / Role-static |   |   |   |   |   |   |   |   |
+| Fixed policy |   |   |   |   |   |   |   |   |
 | Random Mix |   |   |   |   |   |   |   |   |
 | Greedy / Sticky |   |   |   |   |   |   |   |   |
 | Full ModelRouter |   |   |   |   |   |   |   |   |
@@ -524,13 +519,13 @@ Online Teacher 按配置教师目标身份价格计入实际输入/输出/缓存
 
 ### Table 12 · 真实 Episode 与系统开销（Appendix）
 
-| Task / Policy | Agent Role Sequence | Selected Logical / Actual M×E | Trace | Handoffs | Continuous Context / Resent Tokens | Measured Physical Cache | Resolved? | Episode USD |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Representative Case A |   |   |   |   |   |   |   |   |
-| Representative Case B |   |   |   |   |   |   |   |   |
-| Failure Case |   |   |   |   |   |   |   |   |
-| Full Router |   |   |   |   |   |   |   |   |
-| Role-static reference |   |   |   |   |   |   |   |   |
+| Task / Policy | Single-Agent Phase Sequence | Selected Logical / Actual M×E | Trace | Continuous Context / Resent Tokens | Measured Physical Cache | Resolved? | Episode USD |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Representative Case A |   |   |   |   |   |   |   |
+| Representative Case B |   |   |   |   |   |   |   |
+| Failure Case |   |   |   |   |   |   |   |
+| Full Router |   |   |   |   |   |   |   |
+| Fixed reference |   |   |   |   |   |   |   |
 
 上下文消息连续与实际 KV/缓存各列记录；重发、估计复用、模拟和 Provider/引擎实测分开。Alias 同后端不能证明跨模型缓存效果，API 路由前向不填 Resolved 或 Episode 成绩。来源：下载讨论行 27359–27361、28747–28784。
 
@@ -540,9 +535,9 @@ Online Teacher 按配置教师目标身份价格计入实际输入/输出/缓存
 | 层级 | 必需字段与因果边界 |
 |---|---|
 | Model Registry | `provider/model_id/revision/native_effort_set/capabilities/price/cache_policy`；原生档位以 Provider 实际支持为准 |
-| Pool | `pool_id/K/model_ids/legal_action_count/selection_split`；K≠effort 动作数 |
-| Task / Multi-Agent | `task_id/task_type/repo/subtask_id/subtask_goal/agent_id/agent_role/parent_agent/handoff_so_far`，并标 `observed_at` 与 UNKNOWN |
-| G/F | `decomposition_id/G/agent_count/decision_boundary_F/handoffs/context_copy` |
+| Pool | `pool_id/K=3/model_ids/legal_model_effort_actions/provider_evidence`；实际动作集合按 Provider 证据记录 |
+| Task / Single-Agent | `task_id/task_type/repo/source_defined_subtask_id/subtask_goal/stage`，并标 `observed_at` |
+| G/F | `source_boundary_id/G/decision_boundary_F/context_copy`；阶段状态与真实子任务边界分开记录 |
 | Decision | `pre_decision_state/model/effort/legal_candidates/policy/router_time`；不得读取未来验证或未来 Trace |
 | Evidence | `supervision_regime/task_group/observed_action/true_matched_branch`；历史单轨迹不是最优反事实标签 |
 | Usage | `actual_input/output/reasoning/cache_read/cache_write/retries/router_overhead/price_snapshot`；估计和实测分离 |
@@ -560,8 +555,8 @@ Online Teacher 按配置教师目标身份价格计入实际输入/输出/缓存
 | Motivation / Method / Setup | Fig.1–2 | T1–2 |
 | **RQ1 Overall Performance** | **Fig.3** | **T3（主表）** |
 | **RQ1 Results & Accounting** | **Fig.3–4** | **T3、T10** |
-| RQ2 Pool | Fig.5 | T6 |
-| RQ3 Task Decomposition | Fig.6 | T7 |
+| RQ2 Fixed-K=3 Model×Effort | Fig.5 | T6 |
+| RQ3 Single-Agent Granularity | Fig.6 | T7 |
 | **RQ4 Systematic Ablation** | **Fig.7** | **T4–5、T8、T11** |
 | **RQ5 Workload Boundary** | **Fig.8** | **T9** |
 | Appendix: Laya/Kev, Case Traces | Supplementary | T11–12 |
@@ -569,9 +564,9 @@ Online Teacher 按配置教师目标身份价格计入实际输入/输出/缓存
 
 ## 8. 适用边界与结果填写
 
-- 开发集选择模型、池成员与阈值，独立任务只用于评估，不根据最终测试结果重新选池。
-- 沿用既有实验授权与费用记录，本轮只更新研究材料，不运行付费 API、GPU 或训练任务。
-- 泛化补充覆盖未见仓库/任务、模型池变化、供应商故障、缓存 TTL，选择必要场景，失败和费用一并报告。
+- 固定 K=3 目标身份；实际候选动作按 Provider 能力记录。独立任务用于效果评估，不依据最终测试结果改换池。
+- 本次文档修改不新增 API、GPU、训练或 Harbor Episode；11-07 执行事实以原完整报告为准。
+- 泛化分析可覆盖未见仓库/任务、供应商故障及缓存 TTL；不进行扩 K 或替换池成员比较。
 - 即使公开前沿可以迁移、前沿外模型无增量或动态路由收益不成立，也记录结果并收紧贡献，不把预期写成事实。
 - 后续填表直接使用同口径实测，不要求新增 PR、CI、审批或反复复核流程。
 

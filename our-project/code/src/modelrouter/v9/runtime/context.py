@@ -14,15 +14,19 @@ WRITE_COMMAND = re.compile(
     r"\b(?:cat\s*>|sed\s+-i\b|git\s+apply\b|apply_patch\b|"
     r"open\([^\n]*,\s*['\"]w['\"]\)|\w+\.write_text\()"
 )
-_METRIC_FIELDS = ("metric_name", "score_raw", "score_unit", "benchmark_version",
-                  "score_scope", "evaluated_native_effort")
+_METRIC_FIELDS = ("metric_name", "score_unit", "benchmark_version", "aa_index_version", "source_url")
 
 
-def _metric_rows(metrics):
+def _metric_rows(metrics, definitions, source_url):
     measured, missing = [], []
     for metric in metrics:
         if metric.get("evidence_status") == "MEASURED" and metric.get("score_raw") is not None:
-            measured.append([metric.get(name) for name in _METRIC_FIELDS])
+            definition = [metric.get(name) for name in _METRIC_FIELDS]
+            if definition[-1] == source_url:
+                definition[-1] = None
+            if definition not in definitions:
+                definitions.append(definition)
+            measured.append([definitions.index(definition), metric["score_raw"]])
         else:
             missing.append(metric["metric_name"])
     return measured, list(dict.fromkeys(missing))
@@ -41,13 +45,16 @@ def format_router_payload(payload: Mapping) -> str:
     assessment = ({name: teacher.get(name) for name in (
         "progress_summary", "main_blocker", "next_milestone",
         "assessed_through_step", "assessed_through_decision_id", "for_decision_id", "phase")}
-        if teacher else {"status": "NOT_AVAILABLE"})
+        if teacher and "progress_summary" in teacher else
+        {"status": data.get("teacher_status") or (teacher or {}).get("status") or "NOT_AVAILABLE"})
     conditions = {row["model_id"]: row for row in data.get("candidate_conditions", [])}
     models = {}
-    for card in data.get("capability_cards", []):
+    shared_evaluation_fields = ("aa_fetched_at", "aa_index_version", "publication_at", "source_url", "model_revision", "freshness_status")
+    for card in sorted(data.get("capability_cards", []), key=lambda card: card["action_id"]):
         model_id = card["model_id"]
         if model_id not in models:
             metadata = card.get("model_provider_metadata", {})
+            definitions = []
             models[model_id] = {
                 "provider": card.get("model_provider"),
                 "revision": card.get("model_revision", "NOT_REPORTED"),
@@ -56,23 +63,43 @@ def format_router_payload(payload: Mapping) -> str:
                 "pricing": card.get("model_pricing", {}),
                 "capabilities": {name: metadata.get(name, "NOT_MEASURED") for name in
                     ("tool_supported", "input_modalities", "output_modalities", "capability_status")},
-                "model_metrics": _metric_rows(card.get("model_metrics", []))[0],
-                "reference_metrics": _metric_rows(card.get("reference_metrics", []))[0],
-                "metric_fields": list(_METRIC_FIELDS),
+                "model_metrics": _metric_rows(card.get("model_metrics", []), definitions, card.get("source_url"))[0],
+                "other_effort_reference": "SEE_INDEPENDENT_EFFORT_ROWS",
+                "metric_definition_fields": list(_METRIC_FIELDS),
+                "metric_definitions": definitions,
+                "metric_source_null": "USE_SHARED_SOURCE_URL",
+                "evaluation_identity_fields": ["model_id", "model_revision", "native_effort", "aa_model_slug"],
+                "metric_score_fields": ["definition_index", "score_raw"],
                 "evidence_status": card.get("model_evidence_status", "NOT_MEASURED"),
-                "source_url": card.get("source_url"),
-                "condition": conditions.get(model_id, {"availability": "UNKNOWN"}),
+                "evaluation_defaults": {name: card.get(name) for name in shared_evaluation_fields},
+                "missing_metric_definitions": [],
+                "condition": {name: conditions[model_id].get(name) for name in (
+                    "endpoint_id", "base_url", "protocol", "availability", "exclusion_reason",
+                    "context_capacity", "output_capacity", "tool_supported")}
+                    if model_id in conditions else {"availability": "UNKNOWN"},
                 "efforts": [],
             }
+        missing_definitions = models[model_id]["missing_metric_definitions"]
+        missing = []
+        for metric in card.get("missing_metrics", []):
+            definition = [metric["metric_name"], metric.get("missing_reason")]
+            if definition not in missing_definitions:
+                missing_definitions.append(definition)
+            missing.append(missing_definitions.index(definition))
         models[model_id]["efforts"].append({
             "native_effort": card.get("native_effort"), "action_id": card["action_id"],
-            "evidence_status": card.get("evidence_status", "NOT_MEASURED"),
-            "metrics": _metric_rows(card.get("action_metrics", []))[0],
+            "evidence_status": card.get("evaluation_status", "NOT_MEASURED"),
+            "metrics": _metric_rows(card.get("metrics", []), models[model_id]["metric_definitions"], models[model_id]["evaluation_defaults"]["source_url"])[0],
+            "aa_model_slug": card.get("aa_model_slug"),
+            **{name: card.get(name) for name in shared_evaluation_fields
+               if card.get(name) != models[model_id]["evaluation_defaults"][name]},
+            "missing_metrics": missing,
+            "stale_metrics": _metric_rows(card.get("stale_metrics", []), models[model_id]["metric_definitions"], models[model_id]["evaluation_defaults"]["source_url"])[0],
         })
     history = {name: data.get(name) for name in (
         "history_length", "prior_tool_calls_count", "prior_error_signals_count",
         "last_tool_exit_code", "last_observation_summary", "context_chars",
-        "context_tokens_approx", "agent_context", "model_time_sec", "tool_time_sec")}
+        "context_tokens_approx", "agent_context", "model_time_sec", "tool_time_sec", "router_time_sec", "teacher_time_sec")}
     continuity = dict(data.get("continuity") or {})
     # Runtime identity and old Router input copies are evidence, not Agent state.
     for name in list(continuity):
@@ -81,10 +108,16 @@ def format_router_payload(payload: Mapping) -> str:
             "previous_router_checkpoint_id"):
             continuity.pop(name)
     history["continuity"] = continuity
-    history["history_snippet"] = data.get("history_snippet")
+    snippet = data.get("history_snippet") or ""
+    history["history_snippet"] = snippet if len(snippet) <= 2500 else snippet[:1247] + "\n...\n" + snippet[-1248:]
+    history["history_summary_view"] = {"source_chars": len(snippet), "retained_chars": len(history["history_snippet"]),
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY" if len(snippet) > 2500 else "SAVED_CHARACTER_SUMMARY"}
     groups = {
         "T": task, "teacher_assessment": assessment, "M": models, "H": history,
         "capability_snapshot_id": data.get("capability_snapshot_id"),
+        "aa_fetched_at": data.get("aa_fetched_at"),
+        "aa_index_version": data.get("aa_index_version"),
+        "capability_freshness": data.get("capability_freshness"),
         "feature_training_status": data.get("feature_training_status", "FEATURE_NOT_TRAINED"),
     }
     for name in data.get("disabled_information_groups", []):
@@ -110,13 +143,25 @@ def encoded_group_coverage(state, tokenizer, dropped=0):
     offsets = tokenizer(state, add_special_tokens=False, return_offsets_mapping=True)["offset_mapping"]
     kept = len(offsets) - dropped
     result = {}
+    def span(start, length):
+        positions = [i for i, (a, b) in enumerate(offsets) if b > start and a < start + length]
+        return {"status": "FULL" if positions[-1] < kept else "PARTIAL" if positions[0] < kept else "DROPPED",
+                "token_start": positions[0], "token_end": positions[-1] + 1}
     for name in ("T", "teacher_assessment", "M", "H"):
         marker = json.dumps(name) + ":"
         start = state.index(marker) + len(marker)
         _, length = json.JSONDecoder().raw_decode(state[start:])
-        positions = [i for i, (a, b) in enumerate(offsets) if b > start and a < start + length]
-        result[name] = {"status": "FULL" if positions[-1] < kept else "PARTIAL" if positions[0] < kept else "DROPPED",
-                        "token_start": positions[0], "token_end": positions[-1] + 1}
+        result[name] = span(start, length)
+    result["candidate_actions"] = {}
+    for match in re.finditer(r'\{"native_effort":', state):
+        row, length = json.JSONDecoder().raw_decode(state[match.start():])
+        result["candidate_actions"][row["action_id"]] = {
+            **span(match.start(), length), "measured_metrics": len(row["metrics"]),
+            "evidence_status": row["evidence_status"], "freshness": row.get("freshness_status",
+                json.loads(state)["M"][row["action_id"].rpartition(":")[0]]["evaluation_defaults"]["freshness_status"]),
+            "stale_metrics": len(row.get("stale_metrics", []))}
+    teacher = json.loads(state).get("teacher_assessment", {})
+    result["teacher_fields"] = [name for name in ("progress_summary", "main_blocker", "next_milestone") if name in teacher]
     return result
 
 
@@ -241,7 +286,7 @@ def compact_router_state(state, messages, snapshot, char_limit=6000):
                   context_chars=message_chars(messages), context_tokens_approx=(message_chars(messages) + 3) // 4,
                   history_length=len(history), prior_tool_calls_count=len(history),
                   prior_error_signals_count=state.tool_error_count,
-                  last_tool_exit_code=0, last_observation_summary="Initial task prompt")
+                  last_tool_exit_code=None, last_observation_summary="Initial task prompt")
     if history:
         result.update(last_tool_exit_code=history[-1].tool_exit_code,
                       last_observation_summary=(f"command={command_summary(history[-1].tool_action)}\n"
@@ -262,8 +307,15 @@ def compact_router_state(state, messages, snapshot, char_limit=6000):
     durations = [step.step_duration_sec for step in history]
     result["tool_time_sec"] = None if any(value is None for value in durations) else sum(durations)
     result["model_time_sec"] = getattr(state, "model_time_sec", 0.0)
+    result["router_time_sec"] = state.router_time_sec
+    result["teacher_time_sec"] = state.teacher_time_sec
     result["task_domain"] = getattr(state, "task_domain", snapshot.get("task_domain"))
-    result["agent_state"] = getattr(state, "agent_state", snapshot.get("agent_state") or {"framework": "RECORDED_TRAJECTORY", "role": "NOT_REPORTED", "coordination": "NOT_REPORTED"})
+    agent = getattr(state, "agent_state", snapshot.get("agent_state") or {"framework": "RECORDED_TRAJECTORY", "responsibility": "task_executor"})
+    result["agent_state"] = {name: agent[name] for name in ("framework", "responsibility", "current_goal", "progress") if name in agent}
+    result["agent_state"]["progress"] = {"completed_generations": state.step_index,
+        "observed_tool_calls": len(history), "phase_source": "OBSERVED_COMMAND_HEURISTIC"}
+    result["agent_state"].setdefault("current_goal", "NOT_REPORTED_BY_UPSTREAM")
+    result["agent_context"]["history_retention"] = "CHARACTER_BOUNDED_OBSERVED_SUMMARIES_NOT_FULL_RAW_HISTORY"
     return result
 
 

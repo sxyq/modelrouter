@@ -1,4 +1,4 @@
-"""Load local capability evidence and make cards for the supplied legal actions."""
+"""Load capability snapshots and serialize shared model and exact effort data."""
 
 from __future__ import annotations
 
@@ -7,40 +7,23 @@ from collections.abc import Mapping
 from copy import deepcopy
 from pathlib import Path
 
-from .normalize import INDEX_METRICS, MODEL_IDS, missing_metric
 from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS
-
 
 DEFAULT_DATA_DIR = Path(__file__).resolve().parents[4] / "data" / "v9" / "capabilities"
 
 
-def _evidence_summary(models: dict) -> dict:
-    measured = [(model_id, metric) for model_id, model in models.items()
-                for metric in model.get("metrics", [])
-                if metric.get("evidence_status") == "MEASURED" and metric.get("score_raw") is not None]
-    covered = {(model_id, metric["metric_name"]) for model_id, metric in measured}
-    complete = all((model_id, name) in covered for model_id in MODEL_IDS for name in INDEX_METRICS)
-    return {
-        "capability_evidence_status": "NOT_MEASURED" if not measured else "MEASURED" if complete else "PARTIAL",
-        "measured_metric_count": len(measured),
-        "provider_metadata_model_count": sum(bool(model.get("provider_metadata")) for model in models.values()),
-    }
-
-
 def load_current(path: str | Path = DEFAULT_DATA_DIR) -> dict:
-    """Read a capability directory or its current.json index; no network access."""
+    """Read a local capability directory or current.json pointer without network access."""
     path = Path(path)
     index_path = path if path.name == "current.json" else path / "current.json"
     if not index_path.exists():
         return {}
     index = json.loads(index_path.read_text(encoding="utf-8"))
     snapshot = json.loads((index_path.parent / index["snapshot_file"]).read_text(encoding="utf-8"))
-    snapshot.update(_evidence_summary(snapshot.get("models", {})))
     return snapshot
 
 
 def candidate_action(action) -> dict:
-    """Accept saved model IDs, model/effort IDs and serving action objects unchanged."""
     if isinstance(action, str):
         model, separator, effort = action.rpartition(":")
         if not separator or effort not in ("none", "minimal", "low", "medium", "high", "xhigh", "max"):
@@ -51,11 +34,9 @@ def candidate_action(action) -> dict:
     model = action.get("model_id") or action.get("model")
     if action.get("model_id") and action.get("model") and action["model_id"] != action["model"]:
         raise ValueError("Candidate model identities differ")
-    if not isinstance(model, str) or not model:
-        raise ValueError("Candidate model identity is missing")
     effort = action.get("native_effort")
-    if effort is not None and (not isinstance(effort, str) or not effort):
-        raise ValueError("Candidate effort must be a string or unreported")
+    if not isinstance(model, str) or not model or (effort is not None and not isinstance(effort, str)):
+        raise ValueError("Candidate model/effort identity is invalid")
     action_id = f"{model}:{effort}" if effort is not None else model
     if action.get("action_id") not in (None, action_id):
         raise ValueError("Candidate action identity differs from model and effort")
@@ -63,66 +44,55 @@ def candidate_action(action) -> dict:
 
 
 def capability_cards(snapshot: dict, legal_actions: list) -> list[dict]:
-    """Keep model-level evidence separate from measured model/effort evidence."""
-    cards = []
-    for action in legal_actions:
-        action = candidate_action(action)
-        model_id = action["model_id"]
-        effort = action["native_effort"]
+    registry, cards = ModelRegistry(), []
+    for supplied in legal_actions:
+        action = candidate_action(supplied)
+        model_id, effort = action["model_id"], action["native_effort"]
         model = snapshot.get("models", {}).get(model_id, {})
-        model_status = model.get("evidence_status", "NOT_MEASURED")
-        metadata = deepcopy(model.get("provider_metadata", {}))
-        if model_id in V9_MODEL_IDS:
-            spec = ModelRegistry().get_spec(model_id)
-            metadata.update(provider=spec.provider, native_efforts=list(spec.native_efforts or ("none",)),
-                            tool_supported=spec.tool_supported,
-                            input_modalities=["text", "image"], output_modalities=["text"],
-                            capability_status="REGISTERED_PROVIDER_MODALITIES_NOT_FULLY_MEASURED")
-            metadata["pricing"] = {"input": spec.input_price_per_1m, "output": spec.output_price_per_1m,
-                "reasoning": spec.reasoning_price_per_1m, "cache_read": spec.cache_read_price_per_1m,
-                "cache_write": spec.cache_write_price_per_1m, "unit": "USD_PER_MILLION_TOKENS",
-                "status": spec.pricing_status, "as_of": spec.pricing_as_of, "source": spec.pricing_source}
-            metadata["context_limits"] = {"context_window": spec.context_window,
-                "max_output_tokens": spec.max_output_tokens, "status": spec.context_status}
-        evidence = model.get("metrics", [])
-        names = list(dict.fromkeys([*INDEX_METRICS, *(item["metric_name"] for item in evidence)]))
-        action_metrics = []
-        for name in names:
-            measured = [item for item in evidence if item["metric_name"] == name
-                        and effort is not None and item["score_scope"] == "effort"
-                        and item["evaluated_native_effort"] == effort
-                        and item["evidence_status"] == "MEASURED"]
-            if measured:
-                action_metrics.extend(deepcopy(measured))
-            else:
-                missing = missing_metric(name, model.get("source_url", ""),
-                    "MODEL_NOT_FOUND" if model_status == "MODEL_NOT_FOUND" else
-                    "EFFORT_NOT_REPORTED" if effort is None else
-                    "EFFORT_NOT_MEASURED" if model else
-                    "MODEL_NOT_IN_CAPABILITY_SET" if snapshot else "SNAPSHOT_NOT_AVAILABLE")
-                missing["score_scope"] = "effort"
-                action_metrics.append(missing)
+        evaluation = model.get("evaluations", {}).get(effort, {})
+        spec = registry.get_spec(model_id) if model_id in V9_MODEL_IDS else None
+        pricing = ({"input": spec.input_price_per_1m, "output": spec.output_price_per_1m,
+                    "reasoning": spec.reasoning_price_per_1m, "cache_read": spec.cache_read_price_per_1m,
+                    "cache_write": spec.cache_write_price_per_1m, "unit": "USD_PER_MILLION_TOKENS",
+                    "status": spec.pricing_status, "as_of": spec.pricing_as_of, "source": spec.pricing_source}
+                   if spec else deepcopy(model.get("pricing", {})))
+        context = ({"context_window": spec.context_window, "max_output_tokens": spec.max_output_tokens,
+                    "status": spec.context_status} if spec else deepcopy(model.get("context_limits", {})))
+        metadata = {
+            "provider": spec.provider if spec else model.get("provider"),
+            "native_efforts": list(spec.native_efforts or ("none",)) if spec else [],
+            "tool_supported": spec.tool_supported if spec else None,
+            "input_modalities": getattr(spec, "input_modalities", "NOT_MEASURED") if spec else "NOT_MEASURED",
+            "output_modalities": getattr(spec, "output_modalities", "NOT_MEASURED") if spec else "NOT_MEASURED",
+            "pricing": pricing,
+            "context_limits": context,
+            "aa_provider": model.get("aa_provider"),
+        }
+        if spec and spec.tool_supported is None:
+            metadata["tool_supported"] = "NOT_MEASURED"
         cards.append({
-            "model_id": model_id,
-            "native_effort": effort,
-            "action_id": action["action_id"],
+            "model_id": model_id, "native_effort": effort, "action_id": action["action_id"],
+            "evaluation_identity": evaluation.get("evaluation_identity", f"NOT_MEASURED:{model_id}:{effort}"),
+            "evaluation_status": evaluation.get("evaluation_status", "NOT_MEASURED"),
+            "freshness_status": evaluation.get("freshness_status", model.get("freshness_status", "NOT_MEASURED")),
+            "other_effort_reference": evaluation.get("other_effort_reference"),
             "snapshot_id": snapshot.get("snapshot_id"),
-            "source_url": model.get("source_url"),
-            "fetched_at_utc": model.get("fetched_at_utc"),
-            "model_revision": model.get("model_revision", "NOT_REPORTED"),
-            "model_evidence_status": model_status,
-            "evidence_status": "MEASURED" if any(
-                item["evidence_status"] == "MEASURED" for item in action_metrics
-            ) else "NOT_MEASURED",
-            "model_metrics": deepcopy([item for item in evidence if item["score_scope"] == "model"]),
-            "reference_metrics": deepcopy([item for item in evidence if item["score_scope"] == "effort"
-                and item.get("evidence_status") == "MEASURED"
-                and item.get("evaluated_native_effort") != effort]),
-            "action_metrics": action_metrics,
-            "model_pricing": deepcopy(metadata.get("pricing", model.get("pricing", {}))),
-            "model_provider": metadata.get("provider", model.get("provider")),
-            "model_context_limits": deepcopy(metadata.get("context_limits", model.get("context_limits", {}))),
-            "model_provider_metadata": deepcopy(metadata),
+            "aa_model_id": evaluation.get("aa_model_id", model.get("aa_model_id")),
+            "aa_model_slug": evaluation.get("aa_model_slug", model.get("aa_model_slug")),
+            "aa_model_name": evaluation.get("aa_model_name", model.get("aa_model_name")),
+            "aa_fetched_at": evaluation.get("aa_fetched_at", model.get("aa_fetched_at")),
+            "aa_index_version": evaluation.get("aa_index_version", model.get("aa_index_version", "NOT_REPORTED")),
+            "source_url": evaluation.get("source_url", model.get("source_url")),
+            "publication_at": evaluation.get("publication_at", model.get("publication_at", "NOT_REPORTED")),
+            "model_revision": evaluation.get("model_revision", model.get("model_revision", "NOT_REPORTED")),
+            "model_evidence_status": model.get("evidence_status", "NOT_MEASURED"),
+            "model_metrics": deepcopy(model.get("model_metrics", [])),
+            "metrics": deepcopy(evaluation.get("metrics", [])),
+            "missing_metrics": deepcopy(evaluation.get("missing_metrics", [])),
+            "stale_metrics": deepcopy(evaluation.get("stale_metrics", [])),
+            "model_pricing": deepcopy(pricing), "model_provider": metadata["provider"],
+            "model_context_limits": deepcopy(context),
+            "model_provider_metadata": metadata,
         })
         if "requested_native_effort" in action:
             cards[-1]["requested_native_effort"] = action["requested_native_effort"]
