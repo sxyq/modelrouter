@@ -246,9 +246,11 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 raise
         raw_usage = body.get("usage")
         p_tokens, c_tokens, r_tokens, cached, cache_written = transport.usage(raw_usage or {})
+        usage_consistent = r_tokens is None or c_tokens is None or r_tokens <= c_tokens
         reported_completion = (raw_usage or {}).get("completion_tokens") if request_protocol == "chat_completions" else (raw_usage or {}).get("output_tokens")
         with _token_budget() as budget:
-            _record_budget(budget, p_tokens, c_tokens, request_bound)
+            _record_budget(budget, p_tokens if usage_consistent else None,
+                           c_tokens if usage_consistent else None, request_bound)
         latency_ms = (time.perf_counter() - started) * 1000
         returned = body.get("model")
         matched = returned == target
@@ -258,7 +260,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                          "PROVIDER_REPORTED_MATCH" if returned_effort == effective_effort else
                          "PROVIDER_REPORTED_MISMATCH")
         usage_complete = p_tokens is not None and c_tokens is not None
-        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and matched else None
+        cost = target_spec.calculate_cost(p_tokens, c_tokens, r_tokens or 0, cached or 0, cache_written or 0) if usage_complete and usage_consistent and matched else None
         # Vendor cost is distinct from the configured price estimate.
         reported_cost = (raw_usage or {}).get("cost")
         reported_cost_unit = (raw_usage or {}).get("cost_currency") or (raw_usage or {}).get("currency")
@@ -310,7 +312,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             "requested_max_output_tokens": max_tokens,
             "reported_max_output_tokens": body.get("max_output_tokens"),
             "raw_usage": raw_usage,
-            "usage_status": "REPORTED" if usage_complete else "MISSING",
+            "usage_status": "INCONSISTENT_REASONING_SUBSET" if not usage_consistent else "REPORTED" if usage_complete else "MISSING",
             "identity_status": identity_status,
             "prompt_tokens": p_tokens,
             "completion_tokens": c_tokens,

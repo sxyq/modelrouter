@@ -20,6 +20,41 @@
   "feature_training_status": "FEATURE_NOT_TRAINED",
   "backend_deployment_status": "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION",
   "strategy_configs": {
+    "glm_low": {
+      "policy": "fixed_strong",
+      "v9_config": {"fixed_model_id": "glm-5.3-flash", "teacher_enabled": false},
+      "candidate_actions": [{"provider": "colink", "model": "glm-5.3-flash", "native_effort": "low"}]
+    },
+    "glm_high": {
+      "policy": "fixed_strong",
+      "v9_config": {"fixed_model_id": "glm-5.3-flash", "teacher_enabled": false},
+      "candidate_actions": [{"provider": "colink", "model": "glm-5.3-flash", "native_effort": "high"}]
+    },
+    "glm_max": {
+      "policy": "fixed_strong",
+      "v9_config": {"fixed_model_id": "glm-5.3-flash", "teacher_enabled": false},
+      "candidate_actions": [{"provider": "colink", "model": "glm-5.3-flash", "native_effort": "max"}]
+    },
+    "luna_low": {
+      "policy": "fixed_strong",
+      "v9_config": {"fixed_model_id": "gpt-6-luna", "teacher_enabled": false},
+      "candidate_actions": [{"provider": "codegoai", "model": "gpt-6-luna", "native_effort": "low"}]
+    },
+    "luna_max": {
+      "policy": "fixed_strong",
+      "v9_config": {"fixed_model_id": "gpt-6-luna", "teacher_enabled": false},
+      "candidate_actions": [{"provider": "codegoai", "model": "gpt-6-luna", "native_effort": "max"}]
+    },
+    "terra_low": {
+      "policy": "fixed_strong",
+      "v9_config": {"fixed_model_id": "gpt-6.1-terra", "teacher_enabled": false},
+      "candidate_actions": [{"provider": "jiji", "model": "gpt-6.1-terra", "native_effort": "low"}]
+    },
+    "terra_max": {
+      "policy": "fixed_strong",
+      "v9_config": {"fixed_model_id": "gpt-6.1-terra", "teacher_enabled": false},
+      "candidate_actions": [{"provider": "jiji", "model": "gpt-6.1-terra", "native_effort": "max"}]
+    },
     "joint_laya": {
       "v9_config": {
         "router_checkpoint": {

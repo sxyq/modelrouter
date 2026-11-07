@@ -43,6 +43,15 @@ def candidate_action(action) -> dict:
     return {**action, "model_id": model, "native_effort": effort, "action_id": action_id}
 
 
+def distinct_stale_metrics(metrics, stale_metrics):
+    """Repeated retrieval of the same score is not a separate historical result."""
+    fields = ("aa_model_id", "aa_model_slug", "model_revision", "evaluated_native_effort",
+              "metric_name", "score_raw", "score_unit", "benchmark_version", "harness_id",
+              "aa_index_version", "source_url")
+    current = {tuple(row.get(name) for name in fields) for row in metrics}
+    return [row for row in stale_metrics if tuple(row.get(name) for name in fields) not in current]
+
+
 def capability_cards(snapshot: dict, legal_actions: list) -> list[dict]:
     registry, cards = ModelRegistry(), []
     for supplied in legal_actions:
@@ -89,7 +98,8 @@ def capability_cards(snapshot: dict, legal_actions: list) -> list[dict]:
             "model_metrics": deepcopy(model.get("model_metrics", [])),
             "metrics": deepcopy(evaluation.get("metrics", [])),
             "missing_metrics": deepcopy(evaluation.get("missing_metrics", [])),
-            "stale_metrics": deepcopy(evaluation.get("stale_metrics", [])),
+            "stale_metrics": deepcopy(distinct_stale_metrics(evaluation.get("metrics", []),
+                                                            evaluation.get("stale_metrics", []))),
             "model_pricing": deepcopy(pricing), "model_provider": metadata["provider"],
             "model_context_limits": deepcopy(context),
             "model_provider_metadata": metadata,

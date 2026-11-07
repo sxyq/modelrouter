@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS
-from .features import DEFAULT_DATA_DIR, load_current
+from .features import DEFAULT_DATA_DIR, load_current, distinct_stale_metrics
 from .normalize import INDEX_METRICS, normalize_catalog, public_catalog, matches_model
 
 API_URL = "https://artificialanalysis.ai/api/v2/language/models/free"
@@ -150,7 +150,7 @@ def _merge_models(api_models: dict, public_models: dict, previous: dict, *, api_
             page_action = page_model.get("evaluations", {}).get(effort, {})
             metrics = _merge_metric_rows(api_action.get("metrics", []), page_action.get("metrics", []))
             previous_metrics = _old_metrics(previous, model_id, effort)
-            stale_metrics = previous_metrics
+            stale_metrics = distinct_stale_metrics(metrics, previous_metrics)
             known = set(INDEX_METRICS) | {row["metric_name"] for row in model["model_metrics"]}
             for source in (api_model, page_model):
                 for item in source.get("evaluations", {}).values():

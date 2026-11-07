@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import json
 from pathlib import Path
 
 from modelrouter.benchmark.iterations import event, write_atomic
@@ -16,6 +17,8 @@ class V9DecisionHook:
     def __init__(self, config: dict, provider, record_dir: Path):
         self.config, self.record_dir = dict(config), Path(record_dir)
         self.capability_snapshot = (
+            json.loads(Path(config["comparison_config_path"]).read_text())["v9_config"]["capability_snapshot"]
+            if "comparison_config_path" in config else
             deepcopy(config["capability_snapshot"]) if "capability_snapshot" in config
             else ensure_current(config.get("capabilities_path", DEFAULT_DATA_DIR),
                                 max_age_seconds=config.get("capability_max_age_seconds", DEFAULT_MAX_AGE_SECONDS),

@@ -388,7 +388,7 @@ def publish(path: Path, output: Path = DASHBOARD):
     metrics = summarize(path)
     write_atomic(output, metrics)
     config = json.loads((path / "run_config.json").read_text())
-    if config.get("dashboard_ssh"):
+    if config.get("dashboard_ssh") and output.resolve() != Path(config["dashboard_remote_path"]).resolve():
         target = config["dashboard_ssh"]
         remote_path = config["dashboard_remote_path"]
         import shlex

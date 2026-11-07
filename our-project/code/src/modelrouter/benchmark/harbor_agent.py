@@ -199,7 +199,8 @@ class PolicyModel(LitellmModel):
         response_error = None
         try:
             body, metrics = self.provider.query_raw(
-                messages, spec, selected["native_effort"], self.max_output_tokens, [BASH_TOOL], self.generator_stream)
+                messages, spec, selected["native_effort"], self.max_output_tokens, [BASH_TOOL], self.generator_stream,
+                raw_response_path=self.record_dir / "provider_responses" / f"{decision_id}.sse")
         except ProviderResponseError as exc:
             body, metrics = exc.response, exc.metrics
             response_error = exc

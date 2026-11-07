@@ -433,9 +433,10 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
                     cmd += ["--agent-kwarg", f"{key}={value}"]
                 if "v9_config" in config:
                     for key in ("v9_config", "candidate_actions"):
-                        value = {**config[key], **strategy.get(key, {})} if key == "v9_config" else config[key]
+                        value = {**config[key], **strategy.get(key, {})} if key == "v9_config" else strategy.get(key, config[key])
                         if key == "v9_config":
-                            value["capability_snapshot"] = config[key]["capability_snapshot"]
+                            value.pop("capability_snapshot", None)
+                            value["comparison_config_path"] = str(path / "run_config.json")
                         cmd += ["--agent-kwarg", f"{key}={json.dumps(value)}"]
             for key, value in config.get("environment_kwargs", {}).items():
                 cmd += ["--environment-kwarg", f"{key}={json.dumps(value)}"]
