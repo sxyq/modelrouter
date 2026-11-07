@@ -1,0 +1,3408 @@
+{
+  "scope": "REENCODING_REAL_DEV_PRE_DECISION_STATES_NO_NEW_MODEL_FORWARD_OR_AGENT_RUN",
+  "tool_history_limit_chars": 1000,
+  "generation_history_limit_chars": 800,
+  "capability_snapshot_id": "20261107T134704898459Z-v7",
+  "results": [
+    {
+      "encoder": "laya",
+      "observed_router": "laya",
+      "decision_id": "3fb15dd0-3f55-44ca-a648-ede6b2e73a3f-0",
+      "step": 0,
+      "input_tokens": 6525,
+      "state_usage": {
+        "state_tokens": 6047,
+        "state_tokens_used": 6047,
+        "state_tokens_dropped": 0,
+        "truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 455
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 461,
+          "token_end": 471
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 473,
+          "token_end": 5656
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5658,
+          "token_end": 5962
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1485,
+            "token_end": 1540,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1540,
+            "token_end": 1595,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1595,
+            "token_end": 1754,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2916,
+            "token_end": 3069,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 3069,
+            "token_end": 3217,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3217,
+            "token_end": 3468,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3468,
+            "token_end": 3623,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3623,
+            "token_end": 3782,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3782,
+            "token_end": 3938,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4690,
+            "token_end": 4851,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4851,
+            "token_end": 5011,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5011,
+            "token_end": 5167,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5167,
+            "token_end": 5326,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5326,
+            "token_end": 5492,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5492,
+            "token_end": 5655,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 0,
+        "retained_chars": 0,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 0,
+        "retained_chars": 0,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "kev",
+      "observed_router": "laya",
+      "decision_id": "3fb15dd0-3f55-44ca-a648-ede6b2e73a3f-0",
+      "step": 0,
+      "input_tokens": 6727,
+      "state_usage": {
+        "state_tokens": 6300,
+        "state_truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 434
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 437,
+          "token_end": 444
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 445,
+          "token_end": 5989
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5991,
+          "token_end": 6209
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1278,
+            "token_end": 1329,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1329,
+            "token_end": 1380,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1380,
+            "token_end": 1605,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2550,
+            "token_end": 2758,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 2758,
+            "token_end": 2953,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 2953,
+            "token_end": 3338,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3338,
+            "token_end": 3560,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3560,
+            "token_end": 3772,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3772,
+            "token_end": 3999,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4632,
+            "token_end": 4858,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4858,
+            "token_end": 5089,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5089,
+            "token_end": 5315,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5315,
+            "token_end": 5532,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5532,
+            "token_end": 5762,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5762,
+            "token_end": 5988,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 0,
+        "retained_chars": 0,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 0,
+        "retained_chars": 0,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "laya",
+      "observed_router": "laya",
+      "decision_id": "3fb15dd0-3f55-44ca-a648-ede6b2e73a3f-1",
+      "step": 1,
+      "input_tokens": 7839,
+      "state_usage": {
+        "state_tokens": 7361,
+        "state_tokens_used": 7361,
+        "state_tokens_dropped": 0,
+        "truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 455
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 461,
+          "token_end": 471
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 473,
+          "token_end": 5656
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5658,
+          "token_end": 7276
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1485,
+            "token_end": 1540,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1540,
+            "token_end": 1595,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1595,
+            "token_end": 1754,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2916,
+            "token_end": 3069,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 3069,
+            "token_end": 3217,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3217,
+            "token_end": 3468,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3468,
+            "token_end": 3623,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3623,
+            "token_end": 3782,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3782,
+            "token_end": 3938,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4690,
+            "token_end": 4851,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4851,
+            "token_end": 5011,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5011,
+            "token_end": 5167,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5167,
+            "token_end": 5326,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5326,
+            "token_end": 5492,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5492,
+            "token_end": 5655,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 283,
+        "retained_chars": 283,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "kev",
+      "observed_router": "laya",
+      "decision_id": "3fb15dd0-3f55-44ca-a648-ede6b2e73a3f-1",
+      "step": 1,
+      "input_tokens": 7960,
+      "state_usage": {
+        "state_tokens": 7533,
+        "state_truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 435
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 438,
+          "token_end": 445
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 446,
+          "token_end": 5990
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5992,
+          "token_end": 7442
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1279,
+            "token_end": 1330,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1330,
+            "token_end": 1381,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1381,
+            "token_end": 1606,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2551,
+            "token_end": 2759,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 2759,
+            "token_end": 2954,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 2954,
+            "token_end": 3339,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3339,
+            "token_end": 3561,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3561,
+            "token_end": 3773,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3773,
+            "token_end": 4000,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4633,
+            "token_end": 4859,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4859,
+            "token_end": 5090,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5090,
+            "token_end": 5316,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5316,
+            "token_end": 5533,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5533,
+            "token_end": 5763,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5763,
+            "token_end": 5989,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 283,
+        "retained_chars": 283,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "laya",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-0",
+      "step": 0,
+      "input_tokens": 6524,
+      "state_usage": {
+        "state_tokens": 6046,
+        "state_tokens_used": 6046,
+        "state_tokens_dropped": 0,
+        "truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 454
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 460,
+          "token_end": 470
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 472,
+          "token_end": 5655
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5657,
+          "token_end": 5961
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1484,
+            "token_end": 1539,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1539,
+            "token_end": 1594,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1594,
+            "token_end": 1753,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2915,
+            "token_end": 3068,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 3068,
+            "token_end": 3216,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3216,
+            "token_end": 3467,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3467,
+            "token_end": 3622,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3622,
+            "token_end": 3781,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3781,
+            "token_end": 3937,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4689,
+            "token_end": 4850,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4850,
+            "token_end": 5010,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5010,
+            "token_end": 5166,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5166,
+            "token_end": 5325,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5325,
+            "token_end": 5491,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5491,
+            "token_end": 5654,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 0,
+        "retained_chars": 0,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 0,
+        "retained_chars": 0,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "kev",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-0",
+      "step": 0,
+      "input_tokens": 6727,
+      "state_usage": {
+        "state_tokens": 6300,
+        "state_truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 434
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 437,
+          "token_end": 444
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 445,
+          "token_end": 5989
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5991,
+          "token_end": 6209
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1278,
+            "token_end": 1329,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1329,
+            "token_end": 1380,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1380,
+            "token_end": 1605,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2550,
+            "token_end": 2758,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 2758,
+            "token_end": 2953,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 2953,
+            "token_end": 3338,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3338,
+            "token_end": 3560,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3560,
+            "token_end": 3772,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3772,
+            "token_end": 3999,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4632,
+            "token_end": 4858,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4858,
+            "token_end": 5089,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5089,
+            "token_end": 5315,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5315,
+            "token_end": 5532,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5532,
+            "token_end": 5762,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5762,
+            "token_end": 5988,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 0,
+        "retained_chars": 0,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 0,
+        "retained_chars": 0,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "laya",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-1",
+      "step": 1,
+      "input_tokens": 7850,
+      "state_usage": {
+        "state_tokens": 7372,
+        "state_tokens_used": 7372,
+        "state_tokens_dropped": 0,
+        "truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 455
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 461,
+          "token_end": 471
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 473,
+          "token_end": 5654
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5656,
+          "token_end": 7287
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1485,
+            "token_end": 1540,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1540,
+            "token_end": 1595,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1595,
+            "token_end": 1754,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2914,
+            "token_end": 3067,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 3067,
+            "token_end": 3215,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3215,
+            "token_end": 3466,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3466,
+            "token_end": 3621,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3621,
+            "token_end": 3780,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3780,
+            "token_end": 3936,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4688,
+            "token_end": 4849,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4849,
+            "token_end": 5009,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5009,
+            "token_end": 5165,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5165,
+            "token_end": 5324,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5324,
+            "token_end": 5490,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5490,
+            "token_end": 5653,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 487,
+        "retained_chars": 487,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "kev",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-1",
+      "step": 1,
+      "input_tokens": 8030,
+      "state_usage": {
+        "state_tokens": 7603,
+        "state_truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 436
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 439,
+          "token_end": 446
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 447,
+          "token_end": 5991
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5993,
+          "token_end": 7512
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1280,
+            "token_end": 1331,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1331,
+            "token_end": 1382,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1382,
+            "token_end": 1607,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2552,
+            "token_end": 2760,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 2760,
+            "token_end": 2955,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 2955,
+            "token_end": 3340,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3340,
+            "token_end": 3562,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3562,
+            "token_end": 3774,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3774,
+            "token_end": 4001,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4634,
+            "token_end": 4860,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4860,
+            "token_end": 5091,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5091,
+            "token_end": 5317,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5317,
+            "token_end": 5534,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5534,
+            "token_end": 5764,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5764,
+            "token_end": 5990,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 487,
+        "retained_chars": 487,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "laya",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-2",
+      "step": 2,
+      "input_tokens": 7950,
+      "state_usage": {
+        "state_tokens": 7472,
+        "state_tokens_used": 7472,
+        "state_tokens_dropped": 0,
+        "truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 457
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 463,
+          "token_end": 473
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 475,
+          "token_end": 5656
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5658,
+          "token_end": 7387
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1487,
+            "token_end": 1542,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1542,
+            "token_end": 1597,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1597,
+            "token_end": 1756,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2916,
+            "token_end": 3069,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 3069,
+            "token_end": 3217,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3217,
+            "token_end": 3468,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3468,
+            "token_end": 3623,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3623,
+            "token_end": 3782,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3782,
+            "token_end": 3938,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4690,
+            "token_end": 4851,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4851,
+            "token_end": 5011,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5011,
+            "token_end": 5167,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5167,
+            "token_end": 5326,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5326,
+            "token_end": 5492,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5492,
+            "token_end": 5655,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 781,
+        "retained_chars": 781,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "kev",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-2",
+      "step": 2,
+      "input_tokens": 8144,
+      "state_usage": {
+        "state_tokens": 7717,
+        "state_truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 446
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 449,
+          "token_end": 456
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 457,
+          "token_end": 6001
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 6003,
+          "token_end": 7626
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1290,
+            "token_end": 1341,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1341,
+            "token_end": 1392,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1392,
+            "token_end": 1617,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2562,
+            "token_end": 2770,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 2770,
+            "token_end": 2965,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 2965,
+            "token_end": 3350,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3350,
+            "token_end": 3572,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3572,
+            "token_end": 3784,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3784,
+            "token_end": 4011,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4644,
+            "token_end": 4870,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4870,
+            "token_end": 5101,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5101,
+            "token_end": 5327,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5327,
+            "token_end": 5544,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5544,
+            "token_end": 5774,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5774,
+            "token_end": 6000,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 781,
+        "retained_chars": 781,
+        "status": "SAVED_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "laya",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-3",
+      "step": 3,
+      "input_tokens": 8092,
+      "state_usage": {
+        "state_tokens": 7614,
+        "state_tokens_used": 7614,
+        "state_tokens_dropped": 0,
+        "truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 455
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 461,
+          "token_end": 610
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 612,
+          "token_end": 5793
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5795,
+          "token_end": 7529
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1624,
+            "token_end": 1679,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1679,
+            "token_end": 1734,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1734,
+            "token_end": 1893,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 3053,
+            "token_end": 3206,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 3206,
+            "token_end": 3354,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3354,
+            "token_end": 3605,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3605,
+            "token_end": 3760,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3760,
+            "token_end": 3919,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3919,
+            "token_end": 4075,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4827,
+            "token_end": 4988,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4988,
+            "token_end": 5148,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5148,
+            "token_end": 5304,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5304,
+            "token_end": 5463,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5463,
+            "token_end": 5629,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5629,
+            "token_end": 5792,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": [
+          "progress_summary",
+          "main_blocker",
+          "next_milestone"
+        ]
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 1199,
+        "retained_chars": 800,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "kev",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-3",
+      "step": 3,
+      "input_tokens": 8194,
+      "state_usage": {
+        "state_tokens": 7767,
+        "state_truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 436
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 439,
+          "token_end": 587
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 588,
+          "token_end": 6132
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 6134,
+          "token_end": 7676
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1421,
+            "token_end": 1472,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1472,
+            "token_end": 1523,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1523,
+            "token_end": 1748,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2693,
+            "token_end": 2901,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 2901,
+            "token_end": 3096,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3096,
+            "token_end": 3481,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3481,
+            "token_end": 3703,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3703,
+            "token_end": 3915,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3915,
+            "token_end": 4142,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4775,
+            "token_end": 5001,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 5001,
+            "token_end": 5232,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5232,
+            "token_end": 5458,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5458,
+            "token_end": 5675,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5675,
+            "token_end": 5905,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5905,
+            "token_end": 6131,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": [
+          "progress_summary",
+          "main_blocker",
+          "next_milestone"
+        ]
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 1199,
+        "retained_chars": 800,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "laya",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-4",
+      "step": 4,
+      "input_tokens": 8057,
+      "state_usage": {
+        "state_tokens": 7579,
+        "state_tokens_used": 7579,
+        "state_tokens_dropped": 0,
+        "truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 455
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 461,
+          "token_end": 475
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 477,
+          "token_end": 5658
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5660,
+          "token_end": 7494
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1489,
+            "token_end": 1544,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1544,
+            "token_end": 1599,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1599,
+            "token_end": 1758,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2918,
+            "token_end": 3071,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 3071,
+            "token_end": 3219,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3219,
+            "token_end": 3470,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3470,
+            "token_end": 3625,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3625,
+            "token_end": 3784,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3784,
+            "token_end": 3940,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4692,
+            "token_end": 4853,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4853,
+            "token_end": 5013,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5013,
+            "token_end": 5169,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5169,
+            "token_end": 5328,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5328,
+            "token_end": 5494,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5494,
+            "token_end": 5657,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 1199,
+        "retained_chars": 800,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "kev",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-4",
+      "step": 4,
+      "input_tokens": 8167,
+      "state_usage": {
+        "state_tokens": 7740,
+        "state_truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 436
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 439,
+          "token_end": 451
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 452,
+          "token_end": 5996
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5998,
+          "token_end": 7649
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1285,
+            "token_end": 1336,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1336,
+            "token_end": 1387,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1387,
+            "token_end": 1612,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2557,
+            "token_end": 2765,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 2765,
+            "token_end": 2960,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 2960,
+            "token_end": 3345,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3345,
+            "token_end": 3567,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3567,
+            "token_end": 3779,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3779,
+            "token_end": 4006,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4639,
+            "token_end": 4865,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4865,
+            "token_end": 5096,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5096,
+            "token_end": 5322,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5322,
+            "token_end": 5539,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5539,
+            "token_end": 5769,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5769,
+            "token_end": 5995,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 1199,
+        "retained_chars": 800,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "laya",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-5",
+      "step": 5,
+      "input_tokens": 7996,
+      "state_usage": {
+        "state_tokens": 7518,
+        "state_tokens_used": 7518,
+        "state_tokens_dropped": 0,
+        "truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 455
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 461,
+          "token_end": 471
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 473,
+          "token_end": 5654
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5656,
+          "token_end": 7433
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1485,
+            "token_end": 1540,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1540,
+            "token_end": 1595,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1595,
+            "token_end": 1754,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2914,
+            "token_end": 3067,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 3067,
+            "token_end": 3215,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3215,
+            "token_end": 3466,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3466,
+            "token_end": 3621,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3621,
+            "token_end": 3780,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3780,
+            "token_end": 3936,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4688,
+            "token_end": 4849,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4849,
+            "token_end": 5009,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5009,
+            "token_end": 5165,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5165,
+            "token_end": 5324,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5324,
+            "token_end": 5490,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5490,
+            "token_end": 5653,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 1199,
+        "retained_chars": 800,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      }
+    },
+    {
+      "encoder": "kev",
+      "observed_router": "kev",
+      "decision_id": "ca90a7cb-798c-4e6d-ac05-b61235b21de5-5",
+      "step": 5,
+      "input_tokens": 8141,
+      "state_usage": {
+        "state_tokens": 7714,
+        "state_truncated": false
+      },
+      "coverage": {
+        "T": {
+          "status": "FULL",
+          "token_start": 2,
+          "token_end": 437
+        },
+        "teacher_assessment": {
+          "status": "FULL",
+          "token_start": 440,
+          "token_end": 447
+        },
+        "M": {
+          "status": "FULL",
+          "token_start": 448,
+          "token_end": 5992
+        },
+        "H": {
+          "status": "FULL",
+          "token_start": 5994,
+          "token_end": 7623
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1281,
+            "token_end": 1332,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1332,
+            "token_end": 1383,
+            "measured_metrics": 0,
+            "evidence_status": "NOT_MEASURED",
+            "aa_model_id": null,
+            "aa_model_slug": null,
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1383,
+            "token_end": 1608,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19496b81-9f41-4214-a77a-1df803b3c5ae",
+            "aa_model_slug": "glm-5-3-flash",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2553,
+            "token_end": 2761,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "7d1229bc-deea-4717-ba5b-f59a35d991e3",
+            "aa_model_slug": "gpt-6-luna-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 2761,
+            "token_end": 2956,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "bf9708d8-933d-44f6-affa-b696a7a650c9",
+            "aa_model_slug": "gpt-6-luna-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 2956,
+            "token_end": 3341,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "6fb13851-40ce-4bda-ad3f-6b38e0c5daa7",
+            "aa_model_slug": "gpt-6-luna",
+            "freshness": "FRESH",
+            "stale_metrics": 10
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3341,
+            "token_end": 3563,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "36667da0-9222-4967-adbb-f7efa15ad213",
+            "aa_model_slug": "gpt-6-luna-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3563,
+            "token_end": 3775,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "63cb48ea-0b0c-4e07-8ded-6d28dec4fa28",
+            "aa_model_slug": "gpt-6-luna-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3775,
+            "token_end": 4002,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "19813eb2-460a-475c-af65-810bb8660fec",
+            "aa_model_slug": "gpt-6-luna-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4635,
+            "token_end": 4861,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "ea3e1f50-f62d-41d2-849a-9af0413e4d37",
+            "aa_model_slug": "gpt-6-1-terra-high",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4861,
+            "token_end": 5092,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c955b262-a17f-4f1a-b097-6860b866295b",
+            "aa_model_slug": "gpt-6-1-terra-low",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 5092,
+            "token_end": 5318,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "b0c462cf-f2d0-4126-9434-28db9502219f",
+            "aa_model_slug": "gpt-6-1-terra",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5318,
+            "token_end": 5535,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "c441e158-a87d-4116-911b-93325e4b4f1c",
+            "aa_model_slug": "gpt-6-1-terra-medium",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5535,
+            "token_end": 5765,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "0d3c777f-6817-42d7-9bb9-223314bc5a57",
+            "aa_model_slug": "gpt-6-1-terra-non-reasoning",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5765,
+            "token_end": 5991,
+            "measured_metrics": 10,
+            "evidence_status": "EXACT_EFFORT",
+            "aa_model_id": "e8d443ba-8aca-4830-a186-ae869bb9c6fe",
+            "aa_model_slug": "gpt-6-1-terra-xhigh",
+            "freshness": "FRESH",
+            "stale_metrics": 0
+          }
+        },
+        "teacher_fields": []
+      },
+      "history_view": {
+        "source_chars": 5148,
+        "retained_chars": 1000,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      },
+      "generation_view": {
+        "source_chars": 1199,
+        "retained_chars": 800,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+      }
+    }
+  ]
+}

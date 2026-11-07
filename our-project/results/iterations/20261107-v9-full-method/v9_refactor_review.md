@@ -6,7 +6,7 @@
 
 当前只研究 Single-Agent。RQ3 已改为单 Agent 的任务阶段、真实子任务边界和路由决策粒度；多 Agent、角色协作、委派和 handoff 正式取消。`inspect/modify/verify/recover` 只是观察到的阶段，不表示已经实现任务拆分算法。
 
-本批已完成主要源码收敛和 AA/原生输入工作，尚未完成整个科研工作包：GLM 未绑定授权渠道，新 K=3 Harbor 比较、新池训练及净收益证明均未取得。
+本批已完成主要源码收敛、GLM授权接入、AA与原生输入工作，并新增10个真实Harbor尝试。整个科研工作包仍未完成：GLM多轮响应和Luna Max渠道档位存在实际问题，新池合法训练、最终四实体比较及完整任务净收益证明尚未取得。
 
 ## 二、真实进度与唯一职责
 
@@ -55,23 +55,23 @@ flowchart LR
 
 自有实现均已低于 1000 行，最大实现 `data_pipeline/views.py` 为 982 行。**所有 Python 文件无例外达标尚未成立**：既有 `router_data/test_retention_ordering.py` 1491 行，遵守本轮不改现有测试/夹具的要求保留；旧测试对已移除历史模块的引用也没有改写或运行。
 
-A6000 原 `/home/syy/路由/` 已定向部署源码；删除28个实际存在的过时源文件/配置，唯一上版源码包为 `.runtime/modelrouter-previous-source.tar.gz`（99文件、887058字节）。原权重、账本、轨迹、F15恢复材料、GPU锁及健康Serving未替换。专用 `.runtime/benchmark-venv` 已安装 Harbor 0.24.0、mini-swe-agent 2.4.6、LiteLLM 1.106.0；上游 Terminal-Bench 2.1 的89题目录可实际加载，用户Docker元数据读取成功，容器0、镜像20。Mac与A6000本批临时wheel目录已删除，必要安装环境保留。
+A6000 原 `/home/syy/路由/` 已定向部署源码；删除28个实际存在的过时源文件/配置，唯一上版源码包为 `.runtime/modelrouter-previous-source.tar.gz`（99文件、887058字节）。原权重、轨迹、F15恢复材料、GPU锁及健康Serving未替换。专用 `.runtime/benchmark-venv` 已安装 Harbor 0.24.0、mini-swe-agent 2.4.6、LiteLLM 1.106.0，并复用原Code Generation的37个CWEaver依赖源码，未另写Luna账户实现。上游 Terminal-Bench 2.1 的89题目录可实际加载。新增circuit-fibsqrt镜像供后续开发对照复用；本批任务容器全部结束并移除，原20镜像保留。Mac与A6000临时wheel目录已删除。
 
 ## 三、五个 RQ 的实际缺口
 
 | RQ | 本批事实 | 仍缺结果 |
 | --- | --- | --- |
-| RQ1 完整质量—总成本 | 单一路径、事件与未知费用语义收敛 | 新GLM池完整官方Episode、独立评价及模型/教师/Router/缓存/资源净收益 |
-| RQ2 联合档位效果 | 登记15个 Model×Effort，AA精确档位区别可输入 | GLM渠道级档位实测、同批完整任务质量与费用对照 |
+| RQ1 完整质量—总成本 | 新开发题10次尝试，4个有效官方零分，6个无有效Reward | GLM完整任务、独立评价及模型/教师/Router/缓存/资源净收益 |
+| RQ2 联合档位效果 | 登记15动作；Terra Low/Max完整运行；GLM三档接收请求但不报告返回档位 | GLM档位身份与完整响应、Luna Max返回xhigh、可比质量—费用证据 |
 | RQ3 单Agent粒度 | 文档、图表及分析定义已统一 | 当前实现仍主要为阶段观察和逐生成路由；任务起点、阶段转折及真实子任务边界的可比粒度结果未完成 |
 | RQ4 教师/T/M/H/训练 | 唯一教师与共享Serializer；真实保存教师可进入原生输入 | 可比消融与新池合法训练；编码成功不能作为学习贡献证据 |
 | RQ5 适用边界 | 旧预填结果生成器取消，保留真实任务属性分析 | 未见任务上的分层、缓存及切换收益边界 |
 
 ## 四、前三任务
 
-1. 在唯一私有配置提供获授权的精确 GLM Chat Completions 绑定，随后核实 low/high/max 和工具调用。不能将HY4或相似型号作为请求目标。
-2. 复用A6000正式环境，固定同一比较批次AA快照，先取得新开发题RQ1/RQ2完整Episode的质量、实际Usage、缓存和总费用证据。
-3. 用新池真实任务结果更新合法监督，沿原Trainer分别比较每架构原始与选定训练版；其后推进RQ4消融、RQ3粒度和RQ5独立边界。
+1. 解决Colink GLM多轮空流、矛盾Usage及未报告Effort的问题，取得渠道档位和计价说明；确认Luna Max为何返回xhigh。现有授权Key不用重新提供。
+2. 原A6000环境继续开发题RQ1/RQ2；固定同批AA版本，取得可比完整Episode及所有已知/未知成本。当前10尝试不升级为论文效果结论。
+3. 根据真实新池任务结果形成合法监督，沿原Trainer比较每架构原始与选定训练实体；再推进RQ4、RQ3其他粒度及RQ5独立评价。
 
 ## 五、实验与能力数据结果
 
@@ -79,13 +79,17 @@ A6000 原 `/home/syy/路由/` 已定向部署源码；删除28个实际存在的
 
 Registry 登记GLM的 `low/high/max`，官方Chat参数使用顶层 `reasoning_effort` 和独立 `thinking: {type: enabled}`，不使用OpenAI Responses的reasoning对象或HY4的none动作。官方来源：<https://docs.z.ai/api-reference/llm/chat-completion>、<https://docs.z.ai/guides/vlm/glm-5.3-flash>。
 
-统一私有配置尚无GLM绑定。已有Terra端点 `/models` 返回200，但没有精确GLM；Luna/HY4/DeepSeek端点列表返回403，不能由此推断支持。GLM当前为 `UNAVAILABLE / MODEL_ENDPOINT_UNBOUND`，没有发送真实GLM请求，也没有渠道级合法档位或实收价格证据。
+负责人提供的Colink绑定已写入唯一私有配置 `~/.agent-global/外部文本模型.local.json`，权限600；不进入Git，不在实验目录另存Key。A6000通过SSH标准输入取得同一配置，在父进程memfd中读取，运行结束已关闭内存文件。精确请求ID为小写 `glm-5.3-flash`，不使用大写Alias或HY4映射。
 
-A6000尚无该唯一私有配置，公网请求也不可直达。新的付费实验需先让原正式进程能够读取授权配置并使用临时任务内网络路径；不得把Key放实验目录，或修改共享Serving/GPU服务来代替必要接入。
+`/v1/models`返回200；A6000初始low/high/max三个请求均返回精确GLM及bash function calls，但返回Effort、物理权重未报告。因此15登记动作不等于15档位已获渠道独立确认。Luna Max在本批返回xhigh，原记录保留为 `NATIVE_EFFORT_MISMATCH`，不改名或自动转档。
+
+GLM Low1024第二次生成只有reasoning、finish=length，无工具/文本；High/Max出现reasoning大于completion。Provider现保留原Usage，完整用量及费用标未知，不让计费异常掩盖有效生成；旧失败不重写。更新后的Laya真实GLM High仍返回矛盾Usage（prompt4561、completion1024、reasoning1025、cached1024）。单独4096输出组的第二请求182.345秒仅有role及keepalive，无DONE、内容或Usage，原229字节SSE保留。GLM完整多轮任务尚未跑通。
+
+Colink自身Key接口 `https://www.colink.site/v1/usage`真实返回USD用量及多个费用字段；完整私人查询保留在private/glm_channel，不公开账户账目。这是累计模型汇总，未取得逐请求关联及费率说明，不能分摊给Episode或冒称本批实收。公开模型广场接口返回401，不使用admin接口。Registry仍明确使用官方标准参考价，不冒称Colink费率。
 
 ### AA 精确记录
 
-当前快照 `20261107T123907543910Z-v6`，取得时间 `2026-11-07T12:15:19.946883Z`，Intelligence Index版本 `5.0.1`，状态 `PARTIAL`。免费API密钥不可用；真实成绩来自三个AA公开release页面，不冒称授权API已返回完整数据。
+当前快照 `20261107T134704898459Z-v7`，取得时间 `2026-11-07T13:47:04.783836Z`，Intelligence Index版本 `5.0.1`，状态 `PARTIAL`。AA专用API密钥不可用；真实成绩来自三个AA公开release页面，不冒称授权API已返回完整数据。
 
 | Effort | Luna Intelligence Index | GLM-5.3-Flash | Terra Intelligence Index |
 | --- | ---: | --- | ---: |
@@ -108,23 +112,42 @@ Luna/Terra各6档、GLM Max各有10项独立metric，共130条，完整原分数
 
 T保留真实任务、目标、阶段、已发生进度、剩余步骤/预算/时间与单Agent职责。M用模型共享字段、逐档分数、原始metric定义、精确AA slug及版本/来源；合法动作与实际可用性分开。H保留已观察生成、工具/错误/修改摘要、此前Usage/缓存、上次模型/端点、前缀连续性与耗时，当前请求命中不提前写入。
 
-历史摘要由同一Serializer控制；较长工具摘要保留头尾2500字符，明确保存源字符数和保留字符数。完整原消息、命令输出和轨迹另存。编码FULL指该紧凑摘要，不代表完整原始历史。
+历史摘要由同一Serializer控制；工具历史最多1000字符、生成历史最多800字符，保留头尾并记录源字符数与保留字符数。共享模型metric格式与缺测原因，不重复解释六遍；H去除已在T/H表达的重复计数，保留真实生成、最近成功修改、截止、缓存和连续性。完整原消息、命令输出和轨迹另存。编码FULL指该紧凑摘要，不代表完整原始历史。
 
-已复用4条保存状态，用当前Registry/AA更新M后通过两套真实原生Encoder，15动作与130分数均保留。前三条教师缺失状态如实保留；第四条包含真实保存的Luna三个字段及观察截止。详细Token跨度、保留量和候选状态见 `refactor_encoding.json`。这不是四次新Agent决策，也没有新教师API请求。
+此前4条保存状态的8项当前v7原生编码均FULL，见 `glm_channel_encoding.json`。新真实Laya第二次决策曾出现H PARTIAL；仅缩至1200字符仍不能解决。去除共享字段重复并采用上述摘要后，复用新实验8条真实决策前状态完成16项原生编码：Laya总输入6524–8092 Token，Kev6727–8194 Token；T/M/H/教师状态、15动作、130当前分数及10条独立历史分数全部FULL，无状态截断，见新开发目录 `native_encoding_final.json`。逐档行保留13条实测的AA稳定ID及Slug，GLM Low/High身份缺测保持null。两套编码各有1条真实Luna三字段教师、其余教师缺失状态。原H截断结果和中间编码均保留，最终重编码不改写原实验，也没有另跑模型前向或新Agent任务。
 
 Laya原始保存配置为512，F05原Serving为1024，V9-K3训练版为8192。本批原始Laya前向明确使用8192/512运行配置；Kev使用原生65536状态容量，两者Tokenizer和容量未统一成一个限制。Laya原始checkpoint的choice温度被上游运行时调整到允许范围，置信度仍未校准，原权重未改。
 
-本批两个原始实体真实CPU前向均返回15候选概率，T/M/H与教师均FULL；8线程下Laya为40.877秒，Kev为575.349秒。实际结果在 `refactor_forward.json`，不据此宣布方法有效。正式配置复用已有Checkpoint原生入口与历史已使用的40线程参数，去除原60秒Router窗口，由上游Harbor管理任务时间；没有补造40线程新输入性能结果。健康Serving PID327621保持原代码进程和权重，没有重启；新源码部署不等于现有API进程已切换到新版本。
+此前CPU8前向Laya40.877秒、Kev575.349秒保留于 `refactor_forward.json`。本批新Harbor使用40线程：Laya两次路由19.918/16.689秒；Kev六次路由p50=189.923秒、p95=205.311秒，初次模型推理141.192秒。两组测量不混称。Kev真实触发1次Luna Low教师，墙钟11.105秒、参考费0.0002309美元；三字段实际进入该次Kev，`TEACHER_ROUTER_INPUT.assessment_consumed_by_router=true`且原生跨度FULL。健康Serving PID327621和权重未重启或替换；新源码部署不等于现有API进程切换。
 
 ### 版本与新Harbor结果
 
 原始实体为服务器 `models/laya-421m` 与 `models/kev-4b-adapter`。`runs/V9-K3-LAYA-20261107`、`runs/V9-K3-KEV-20261107`各18次更新及正式三题结果保留，它们是旧Luna/HY4/Terra池的有限研究实体，不是新GLM池训练版，也不是最优实体证明。F05/R11及其他研究权重保持；新GLM监督不由HY4标签改名生成。
 
-本批新增付费生成0、教师请求0、训练更新0、官方Harbor Episode0。之前regex-log、sqlite-db-truncate、openssl-selfsigned-cert三题均已观察，不改名为新独立评价。旧任务质量与费用仍以原 `review.md/summary.json` 为准，不重跑旧题挑checkpoint。
+新增两组真实Harbor运行均结束：`20261107-v9-glm-development`九策略/1024输出与 `20261107-v9-glm-high-4096`单GLM High/4096输出，同用v7。九策略批次在运行中有源码处理，不作为代码不变的纯因果主表；4096组保持独立，不改写1024组。
+
+| 策略 | 官方Reward | Episode秒 | 输入/输出Token | 结果 |
+| --- | ---: | ---: | --- | --- |
+| GLM Low1024 | 无 | 145.207 | 5561/1058 | EMPTY_RESPONSE |
+| GLM High1024 | 无 | 114.139 | 未知 | 原计费解析异常 |
+| GLM Max1024 | 无 | 112.965 | 未知 | 原计费解析异常 |
+| Luna Low | 0 | 134.306 | 92902/3015 | 上游Evaluator完成 |
+| Luna Max | 无 | 36.286 | 19984/288 | max返回xhigh |
+| Terra Low | 0 | 344.302 | 138988/4074 | 上游Evaluator完成 |
+| Terra Max | 0 | 1135.990 | 522682/28759 | 上游Evaluator完成 |
+| 原始Laya | 无 | 233.422 | 总用量未知 | 两次选择GLM High，最终空返回 |
+| 原始Kev | 0 | 1314.663 | 107210/2224 | 六次选择Luna Low，Evaluator完成 |
+| GLM High4096 | 无 | 225.125 | 总用量未知 | 第二次返回空流 |
+
+四个有效官方零分、六个无有效Reward；没有成功任务或合法S1赢家，未取得质量—总成本收益。九策略已知生成参考费0.26879623美元、教师0.0002309美元，4096组已知生成0.00008247美元；合计部分已知参考费0.2691096美元。总Token、完整生成费、逐请求渠道实收及CPU/VM资源费仍未知，不把部分已知金额当完整总成本。
+
+GLM High4096第一请求原Usage为prompt1119/completion75/reasoning1/cached1024，参考费0.00008247美元。缓存是该请求返回后的事实，不提前进入当前H；不等于已证明完整Agent缓存净收益。本机原Token账本已合并远端增量，未知用量与历史保留，不上传私人账本。
+
+新池训练更新0。之前regex-log、sqlite-db-truncate、openssl-selfsigned-cert三题均已观察，不改名为新独立评价。旧质量、训练与费用仍以原 `review.md/summary.json` 为准，不用这些题挑Checkpoint。
 
 ## 六、独立判断
 
-源码、数据链和原生消费已显著收敛，但真实K=3尚未可执行。当前证据支持“新精确档位能力能进入两个Router”，不支持“Router已学会新池选择”或“完整任务净收益成立”。AA分数是外部能力先验；GLM缺测不删除API支持的候选，API未授权也不能靠登记表冒称可用。
+源码、数据链和原生消费已收敛，三个精确API模型都实际被请求，但GLM完整多轮任务和15档位渠道证据尚不成立。当前支持“当前能力与真实教师能进入Router”，不支持“Router学会新池”或“完整任务净收益成立”。AA分数是外部能力参考，不能用作Terminal-Bench赢家标签。新开发题Terra Low/Max与Luna Low均失败，也没有证据说明Max更有质量收益；单题结果不作总体档位结论。
 
 原始Laya在CPU上的路由时间不能忽略；Kev更大的原生状态容量也不能直接解释成任务收益。论文主表需要完整Episode和所有成本项，部分已知参考模型费用须与未知实收/资源费用分开。
 
@@ -134,6 +157,6 @@ Laya原始保存配置为512，F05原Serving为1024，V9-K3训练版为8192。�
 
 ## 八、下一批完整工作
 
-事前选择新开发用途 `circuit-fibsqrt`、独立评价用途 `constraints-scheduling`。它们未出现在本次只读汇总的既有run_config任务身份中；这只证明当前可见运行记录未暴露，不证明模型预训练无暴露。尚未阅读其终局结果或运行任务，独立题不用于挑选checkpoint。
+事前选定开发用途 `circuit-fibsqrt`已真实运行并成为已观察开发题；独立评价用途 `constraints-scheduling`仍未运行、未阅读终局，不用于挑权重。可见旧运行目录未包含这两题，不等于证明模型预训练无暴露。
 
-GLM渠道到位后，先用最小真实请求确认精确ID、支持Effort、工具及Usage；沿当前唯一Harbor路径，在固定AA快照的开发比较中优先RQ1/RQ2。随后以真实监督更新原Trainer并按可比开发证据选择每架构一个训练实体，保留原始版对照。最后在事前独立题报告完整质量—模型/教师/Router/缓存/资源总成本，继续RQ4、RQ3和RQ5。当前不创建后台调度、不另建工作区、不改共享服务。
+当前可以自行完成的源码、原生编码、证据同步及临时容器清理已处理。临时17898 SSH反向代理已结束，memfd凭据已关闭；原Docker VM/用户socket保留，其镜像联网仍需任务内代理，不建立持久调度。进一步付费比较依赖渠道解决GLM空流、Usage/Effort及Luna Max身份问题，不继续重复同一失败烧Token。得到有效渠道事实后沿唯一Harbor路径补RQ1/RQ2开发结果，形成新池合法监督，原Trainer选择每架构一个训练实体；最后在事前独立题报告完整质量与全部成本，推进RQ4、RQ3和RQ5。不创建后台调度、第二工作区或训练队列，不改共享服务。

@@ -220,7 +220,8 @@ def summarize(path: Path, *, persist=True):
                  if all(v is not None for v in (billed_generator, billed_teacher, sandbox_cost, router_cost)) else None)
     run_config = json.loads((path / "run_config.json").read_text())
     started = datetime.fromisoformat(run_config["started_at"])
-    elapsed = (datetime.fromisoformat(state.get("finished_at", now())) - started).total_seconds()
+    ended = now() if state["status"] == "RUNNING" else state.get("finished_at", now())
+    elapsed = (datetime.fromisoformat(ended) - started).total_seconds()
     current = next((u for u in state["units"] if u["status"] == "RUNNING"), None)
     unit = current or (state["units"][-1] if state["units"] else {})
     unit_trials = [r for r in trials if r.get("job_name") == unit.get("job_name")]

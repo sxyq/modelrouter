@@ -17,6 +17,13 @@ WRITE_COMMAND = re.compile(
 _METRIC_FIELDS = ("metric_name", "score_unit", "benchmark_version", "aa_index_version", "source_url")
 
 
+def _history_summary(text, limit):
+    room = limit - 5
+    summary = text if len(text) <= limit else text[:room // 2] + "\n...\n" + text[-(room - room // 2):]
+    return summary, {"source_chars": len(text), "retained_chars": len(summary),
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY" if len(text) > limit else "SAVED_CHARACTER_SUMMARY"}
+
+
 def _metric_rows(metrics, definitions, source_url):
     measured, missing = [], []
     for metric in metrics:
@@ -48,7 +55,13 @@ def format_router_payload(payload: Mapping) -> str:
         if teacher and "progress_summary" in teacher else
         {"status": data.get("teacher_status") or (teacher or {}).get("status") or "NOT_AVAILABLE"})
     conditions = {row["model_id"]: row for row in data.get("candidate_conditions", [])}
-    models = {}
+    models = {"metric_schema": {
+        "definition_fields": list(_METRIC_FIELDS), "score_fields": ["definition_index", "score_raw"],
+        "null_source": "USE_SHARED_SOURCE_URL", "other_effort_reference": "SEE_INDEPENDENT_EFFORT_ROWS",
+        "missing_definition_fields": ["metric_name", "reason_index"],
+        "effort_fields": ["native_effort", "action_id", "evidence_status", "metrics", "aa_model_id",
+                          "aa_model_slug", "evaluation_overrides", "missing_metrics", "stale_metrics"],
+    }}
     shared_evaluation_fields = ("aa_fetched_at", "aa_index_version", "publication_at", "source_url", "model_revision", "freshness_status")
     for card in sorted(data.get("capability_cards", []), key=lambda card: card["action_id"]):
         model_id = card["model_id"]
@@ -64,15 +77,11 @@ def format_router_payload(payload: Mapping) -> str:
                 "capabilities": {name: metadata.get(name, "NOT_MEASURED") for name in
                     ("tool_supported", "input_modalities", "output_modalities", "capability_status")},
                 "model_metrics": _metric_rows(card.get("model_metrics", []), definitions, card.get("source_url"))[0],
-                "other_effort_reference": "SEE_INDEPENDENT_EFFORT_ROWS",
-                "metric_definition_fields": list(_METRIC_FIELDS),
                 "metric_definitions": definitions,
-                "metric_source_null": "USE_SHARED_SOURCE_URL",
-                "evaluation_identity_fields": ["model_id", "model_revision", "native_effort", "aa_model_slug"],
-                "metric_score_fields": ["definition_index", "score_raw"],
                 "evidence_status": card.get("model_evidence_status", "NOT_MEASURED"),
                 "evaluation_defaults": {name: card.get(name) for name in shared_evaluation_fields},
                 "missing_metric_definitions": [],
+                "missing_reasons": [],
                 "condition": {name: conditions[model_id].get(name) for name in (
                     "endpoint_id", "base_url", "protocol", "availability", "exclusion_reason",
                     "context_capacity", "output_capacity", "tool_supported")}
@@ -80,26 +89,33 @@ def format_router_payload(payload: Mapping) -> str:
                 "efforts": [],
             }
         missing_definitions = models[model_id]["missing_metric_definitions"]
+        reasons = models[model_id]["missing_reasons"]
         missing = []
         for metric in card.get("missing_metrics", []):
-            definition = [metric["metric_name"], metric.get("missing_reason")]
+            reason = metric.get("missing_reason")
+            if reason not in reasons:
+                reasons.append(reason)
+            definition = [metric["metric_name"], reasons.index(reason)]
             if definition not in missing_definitions:
                 missing_definitions.append(definition)
             missing.append(missing_definitions.index(definition))
-        models[model_id]["efforts"].append({
-            "native_effort": card.get("native_effort"), "action_id": card["action_id"],
-            "evidence_status": card.get("evaluation_status", "NOT_MEASURED"),
-            "metrics": _metric_rows(card.get("metrics", []), models[model_id]["metric_definitions"], models[model_id]["evaluation_defaults"]["source_url"])[0],
-            "aa_model_slug": card.get("aa_model_slug"),
-            **{name: card.get(name) for name in shared_evaluation_fields
-               if card.get(name) != models[model_id]["evaluation_defaults"][name]},
-            "missing_metrics": missing,
-            "stale_metrics": _metric_rows(card.get("stale_metrics", []), models[model_id]["metric_definitions"], models[model_id]["evaluation_defaults"]["source_url"])[0],
-        })
+        models[model_id]["efforts"].append([
+            card.get("native_effort"), card["action_id"], card.get("evaluation_status", "NOT_MEASURED"),
+            _metric_rows(card.get("metrics", []), models[model_id]["metric_definitions"], models[model_id]["evaluation_defaults"]["source_url"])[0],
+            card.get("aa_model_id"), card.get("aa_model_slug"),
+            {name: card.get(name) for name in shared_evaluation_fields
+             if card.get(name) != models[model_id]["evaluation_defaults"][name]}, missing,
+            _metric_rows(card.get("stale_metrics", []), models[model_id]["metric_definitions"], models[model_id]["evaluation_defaults"]["source_url"])[0],
+        ])
     history = {name: data.get(name) for name in (
         "history_length", "prior_tool_calls_count", "prior_error_signals_count",
         "last_tool_exit_code", "last_observation_summary", "context_chars",
         "context_tokens_approx", "agent_context", "model_time_sec", "tool_time_sec", "router_time_sec", "teacher_time_sec")}
+    history["agent_context"] = {name: value for name, value in (data.get("agent_context") or {}).items()
+        if name in ("observed_generation_summary", "last_successful_modification", "observed_through_step", "history_retention")}
+    if "observed_generation_summary" in history["agent_context"]:
+        history["agent_context"]["observed_generation_summary"], history["generation_summary_view"] = _history_summary(
+            history["agent_context"]["observed_generation_summary"], 800)
     continuity = dict(data.get("continuity") or {})
     # Runtime identity and old Router input copies are evidence, not Agent state.
     for name in list(continuity):
@@ -109,9 +125,7 @@ def format_router_payload(payload: Mapping) -> str:
             continuity.pop(name)
     history["continuity"] = continuity
     snippet = data.get("history_snippet") or ""
-    history["history_snippet"] = snippet if len(snippet) <= 2500 else snippet[:1247] + "\n...\n" + snippet[-1248:]
-    history["history_summary_view"] = {"source_chars": len(snippet), "retained_chars": len(history["history_snippet"]),
-        "status": "HEAD_TAIL_CHARACTER_SUMMARY" if len(snippet) > 2500 else "SAVED_CHARACTER_SUMMARY"}
+    history["history_snippet"], history["history_summary_view"] = _history_summary(snippet, 1000)
     groups = {
         "T": task, "teacher_assessment": assessment, "M": models, "H": history,
         "capability_snapshot_id": data.get("capability_snapshot_id"),
@@ -153,14 +167,20 @@ def encoded_group_coverage(state, tokenizer, dropped=0):
         _, length = json.JSONDecoder().raw_decode(state[start:])
         result[name] = span(start, length)
     result["candidate_actions"] = {}
-    for match in re.finditer(r'\{"native_effort":', state):
-        row, length = json.JSONDecoder().raw_decode(state[match.start():])
-        result["candidate_actions"][row["action_id"]] = {
-            **span(match.start(), length), "measured_metrics": len(row["metrics"]),
-            "evidence_status": row["evidence_status"], "freshness": row.get("freshness_status",
-                json.loads(state)["M"][row["action_id"].rpartition(":")[0]]["evaluation_defaults"]["freshness_status"]),
-            "stale_metrics": len(row.get("stale_metrics", []))}
-    teacher = json.loads(state).get("teacher_assessment", {})
+    groups = json.loads(state)
+    for model_id, model in groups["M"].items():
+        if model_id in ("metric_schema", "status"):
+            continue
+        for values in model["efforts"]:
+            row = dict(zip(groups["M"]["metric_schema"]["effort_fields"], values))
+            encoded = json.dumps(values, ensure_ascii=False, separators=(",", ":"))
+            result["candidate_actions"][row["action_id"]] = {
+                **span(state.index(encoded), len(encoded)), "measured_metrics": len(row["metrics"]),
+                "evidence_status": row["evidence_status"], "aa_model_id": row["aa_model_id"],
+                "aa_model_slug": row["aa_model_slug"], "freshness": row["evaluation_overrides"].get(
+                    "freshness_status", model["evaluation_defaults"]["freshness_status"]),
+                "stale_metrics": len(row["stale_metrics"])}
+    teacher = groups.get("teacher_assessment", {})
     result["teacher_fields"] = [name for name in ("progress_summary", "main_blocker", "next_milestone") if name in teacher]
     return result
 
