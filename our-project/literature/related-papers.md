@@ -6,6 +6,7 @@
 
 | 论文 | 时间 / 来源 | 研究对象 | 核心做法 | 与你的方案的关系 |
 |---|---|---|---|---|
+| [Whose turn is it? Context-guided model routing for stateful agents](https://arxiv.org/abs/2610.19292) | 2026-10 / arXiv v1 | 状态化多轮表格 Agent；用户轮次级、二候选 | 零样本路由比较有/无历史、升级/降级；按缓存价差与模型切换方向分析回本；实验含模型、Provider、Effort 配对 | **直接先例**：已明确提出缓存切换不对称和历史感知；不等同于 Mini-SWE-agent 每次生成前可训练 K=3/5/7 联合 Model×Native Effort 路由，也未证明我们的完整 Episode 结果。[中文详细笔记](notes/whose-turn-is-it-2610.19292.zh.md) / [原版 PDF](https://arxiv.org/pdf/2610.19292) |
 | [Unified AI Gateway: A Framework for Joint Model Routing and KV Cache Management](https://arxiv.org/abs/2609.06940) | 2026-09 / arXiv | 端—边—云 AI Gateway | 请求级联合选择模型、执行位置和 KV 缓存动作；覆盖直接复用、跨模型映射、传输、压缩、边缘 prefill 和重新 prefill；用解析仿真评估 TTFT 与输入成本 | 最接近的系统框架。它把缓存状态和模型选择放在一起，但目标是延迟/输入成本/资源约束下的系统联合决策；没有建立“预计完成轨迹数 × 单次成本 × 成功概率”的任务级路由，也没有验证在线模型路由器 |
 | [InfraMind: Infrastructure-Aware Multi-Agent Orchestration](https://arxiv.org/abs/2606.11440) | 2026-06 / arXiv | 多 Agent 编排 | 在 Agent step 观测模型队列、KV cache 利用率和延迟，再决定模型与推理深度；采用分层受限 MDP 与强化学习 | 与你的缓存状态路由和 Agent 场景相邻；它偏基础设施状态与在线编排，你偏任务完成成本、调用轨迹和质量—成本权衡 |
 | [Serving agentic workloads at scale with vLLM x Mooncake](https://vllm.ai/blog/2026-05-06-mooncake-store) | 2026-05 / 工程报告 | 长程 Agent 服务 | 分离 prefill/decode，并利用 Mooncake Store 管理长上下文 KV 状态 | 为你的缓存实验提供系统背景和长程 Agent 场景；没有提出任务级模型选择方法 |
