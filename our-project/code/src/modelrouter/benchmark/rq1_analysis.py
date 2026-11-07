@@ -335,7 +335,7 @@ def observed_research_groups(trials, events, request_rows):
                "table4": ("information_ablation",), "table5": ("action_ablation",),
                "table8": ("supervision_ablation",), "table11": ("checkpoint_id",),
                "teacher": ("teacher_enabled",)}
-    controls = ("checkpoint_id", "capability_snapshot_id", "information_ablation", "teacher_enabled", "model_effort_action_set")
+    controls = ("checkpoint_id", "capability_snapshot_id", "information_ablation", "teacher_enabled", "model_effort_action_set", "granularity")
     group_status = {}
     for table, fields in factors.items():
         grouped = defaultdict(list)

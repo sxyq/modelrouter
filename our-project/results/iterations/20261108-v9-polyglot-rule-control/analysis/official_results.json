@@ -1,0 +1,537 @@
+{
+  "data_origin": "OFFICIAL_HARBOR_TRIALS",
+  "status": "NOT_EVALUATED",
+  "publication_eligible": false,
+  "paired_task_sets": false,
+  "table3": [],
+  "table10": [
+    {
+      "policy": "rule_no_teacher",
+      "provider_recorded_cost_usd": null,
+      "known_provider_recorded_cost_usd": 0.03187143,
+      "failed_provider_cost_usd": null,
+      "known_failed_provider_cost_usd": null,
+      "failed_provider_request_count": 1,
+      "unknown_provider_cost_request_count": 1,
+      "provider_cost_sources": [
+        [
+          "gpt-6-luna",
+          "https://developers.openai.com/api/docs/models/gpt-6-luna",
+          "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+        ],
+        [
+          "gpt-6-luna",
+          null,
+          "UNKNOWN"
+        ],
+        [
+          "gpt-6.1-terra",
+          "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+          "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+        ]
+      ],
+      "input_tokens": 61610,
+      "output_tokens": 6334
+    }
+  ],
+  "fig3": [],
+  "fig4": [
+    {
+      "policy": "rule_no_teacher",
+      "provider_recorded_cost_usd": null,
+      "known_provider_recorded_cost_usd": 0.03187143,
+      "failed_provider_cost_usd": null,
+      "known_failed_provider_cost_usd": null,
+      "failed_provider_request_count": 1,
+      "unknown_provider_cost_request_count": 1,
+      "provider_cost_sources": [
+        [
+          "gpt-6-luna",
+          "https://developers.openai.com/api/docs/models/gpt-6-luna",
+          "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+        ],
+        [
+          "gpt-6-luna",
+          null,
+          "UNKNOWN"
+        ],
+        [
+          "gpt-6.1-terra",
+          "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+          "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT"
+        ]
+      ],
+      "input_tokens": 61610,
+      "output_tokens": 6334
+    }
+  ],
+  "pending": {
+    "RQ1": "Need paired task/seed sets, attributable model identities and full infrastructure billing",
+    "RQ2_Table6_Fig5": "Need repeated official trials grouped by registry-derived Model×Native Effort action sets",
+    "RQ3_Table7_Fig6": "Need repeated official trials at declared single-agent decomposition settings",
+    "RQ4_Table4_Table5_Table8_Table11_Fig7": "Need observed ablation and checkpoint assignments",
+    "RQ5_Table9_Fig8": "Need workload labels independent of outcomes and paired observed costs"
+  },
+  "excluded": [
+    {
+      "trial_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4",
+      "status": "NOT_EVALUATED",
+      "policy": "rule_no_teacher"
+    }
+  ],
+  "table6": [],
+  "table7": [],
+  "table4": [],
+  "table5": [],
+  "table8": [],
+  "table11": [],
+  "teacher": [],
+  "table9": [],
+  "fig5": [],
+  "fig6": [],
+  "fig7": {
+    "information": [],
+    "teacher": [],
+    "actions": [],
+    "supervision": [],
+    "checkpoints": []
+  },
+  "fig8": [],
+  "observed_factor_status": {
+    "table6": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "model_effort_action_set"
+      ]
+    },
+    "table7": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "granularity"
+      ]
+    },
+    "table4": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "information_ablation"
+      ]
+    },
+    "table5": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "action_ablation"
+      ]
+    },
+    "table8": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "supervision_ablation"
+      ]
+    },
+    "table11": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "checkpoint_id"
+      ]
+    },
+    "teacher": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "teacher_enabled"
+      ]
+    }
+  },
+  "rq3_single_agent_observations": {
+    "data_origin": "OFFICIAL_HARBOR_TRIALS_AND_ROUTER_EVENTS",
+    "execution_model": "singleAgent",
+    "decomposition_comparison_status": "NOT_EVALUATED",
+    "decomposition_comparison_reason": "No repeated official trials at declared single-agent decomposition settings",
+    "subtask_boundaries_implemented": false,
+    "observations": [
+      {
+        "trial_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4",
+        "task_id": "terminal-bench/polyglot-c-py",
+        "policy": "rule_no_teacher",
+        "status": "NOT_EVALUATED",
+        "reward": null,
+        "execution_model": "singleAgent",
+        "task_scope": "WHOLE_TASK_SINGLE_AGENT",
+        "task_start_observed": true,
+        "phase_changes": [
+          {
+            "from": "inspect",
+            "to": "recover",
+            "generation": 1
+          },
+          {
+            "from": "recover",
+            "to": "inspect",
+            "generation": 2
+          },
+          {
+            "from": "inspect",
+            "to": "recover",
+            "generation": 4
+          },
+          {
+            "from": "recover",
+            "to": "inspect",
+            "generation": 5
+          },
+          {
+            "from": "inspect",
+            "to": "recover",
+            "generation": 6
+          },
+          {
+            "from": "recover",
+            "to": "modify",
+            "generation": 7
+          },
+          {
+            "from": "modify",
+            "to": "inspect",
+            "generation": 8
+          }
+        ],
+        "implemented_subtask_ids": null,
+        "subtask_boundaries": null,
+        "subtask_boundary_status": "NOT_IMPLEMENTED_OR_RECORDED",
+        "generation_count": 8,
+        "generation_count_source": "RECORDED_GENERATOR_END",
+        "generator_request_count": 18,
+        "decision_boundary_count": 18,
+        "router_call_count": 18,
+        "generation_granularity": "generation",
+        "generations": [
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-0",
+            "step": 0,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "jiji",
+              "model": "gpt-6.1-terra",
+              "revision": "latest",
+              "native_effort": "xhigh",
+              "action_id": "gpt-6.1-terra:xhigh",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": true,
+            "model_request_started": true,
+            "model_response_recorded": true
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-1",
+            "step": 1,
+            "phase": "recover",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "jiji",
+              "model": "gpt-6.1-terra",
+              "revision": "latest",
+              "native_effort": "xhigh",
+              "action_id": "gpt-6.1-terra:xhigh",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": true
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-2",
+            "step": 2,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": true
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-3",
+            "step": 3,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": true
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-4",
+            "step": 4,
+            "phase": "recover",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "jiji",
+              "model": "gpt-6.1-terra",
+              "revision": "latest",
+              "native_effort": "xhigh",
+              "action_id": "gpt-6.1-terra:xhigh",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": true
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-5",
+            "step": 5,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": true
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-6",
+            "step": 6,
+            "phase": "recover",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "jiji",
+              "model": "gpt-6.1-terra",
+              "revision": "latest",
+              "native_effort": "xhigh",
+              "action_id": "gpt-6.1-terra:xhigh",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": true
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-7",
+            "step": 7,
+            "phase": "modify",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "jiji",
+              "model": "gpt-6.1-terra",
+              "revision": "latest",
+              "native_effort": "xhigh",
+              "action_id": "gpt-6.1-terra:xhigh",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": true
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-8",
+            "step": 8,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": false
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-8",
+            "step": 8,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": false
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-8",
+            "step": 8,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": false
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-8",
+            "step": 8,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": false
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-8",
+            "step": 8,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": false
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-8",
+            "step": 8,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": false
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-8",
+            "step": 8,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": false
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-8",
+            "step": 8,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": false
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-8",
+            "step": 8,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": false
+          },
+          {
+            "decision_id": "b2e3e88e-2af7-4b23-9e65-2d27690cd1b4-8",
+            "step": 8,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "codegoai",
+              "model": "gpt-6-luna",
+              "revision": "latest",
+              "native_effort": "high",
+              "action_id": "gpt-6-luna:high",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": false,
+            "model_request_started": true,
+            "model_response_recorded": false
+          }
+        ]
+      }
+    ],
+    "granularity_comparisons": [],
+    "granularity_comparison_status": "NOT_EVALUATED"
+  }
+}

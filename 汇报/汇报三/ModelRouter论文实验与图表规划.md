@@ -1,8 +1,8 @@
 # ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-07 更新）
 
-> **2026-11-08 当前方法定义**：只研究Single-Agent，链为Harbor→ModelRouterMiniSweAgent→DefaultAgent。RQ3为阶段、真实子任务边界与路由粒度；Inspect/Modify/Verify/Recover只表示阶段。RQ2固定Luna/GLM-5.3-Flash/Terra，Registry登记15个Model×Native Effort。GLM已绑定Colink，短文本正常，长High4096耗尽推理额度，返回Effort未报告。AA v7包含Luna/Terra各六档及GLM Max共130项，Low/High缺测，TTL/force/STALE及同批固定版本已实现。T/M/H和三字段教师沿共享Serializer进入原生Laya/Kev。开发题circuit-fibsqrt已有10尝试：4官方零分、6无有效Reward；旧HY4结果保持历史身份。
+> **2026-11-08 当前方法定义**：只研究Single-Agent，链为Harbor→ModelRouterMiniSweAgent→DefaultAgent。RQ3为阶段、真实子任务边界与路由粒度；Inspect/Modify/Verify/Recover只表示阶段。RQ2固定Luna/GLM-5.3-Flash/Terra，登记15个Model×Native Effort。GLM Colink新Train六请求有三次实际工具输出，返回Effort未报告；后续完整任务429为上游限流。新池一个五候选偏好与16辅助行进入原Trainer，Laya17更新已保存，Kev17行在CPU计算。git-multibranch已暴露开发：Luna Low/High=0/1、Terra Low/High=1/1；去M Laya逐生成/任务开始/阶段=1/1/0。polyglot已观察，High及Kev比较继续；constraints-scheduling未运行。旧HY4结果保持历史身份，完整K=3质量—总成本与训练贡献尚缺。
 >
-> 当前能力链为Registry→AA统一快照→逐档候选卡→M→共享Serializer→原生Tokenizer。v7取得时间2026-11-07T13:47:04.783836Z，Intelligence Index 5.0.1；13条独立实测动作共130项。8个真实状态的16项双原生编码均FULL，工具/生成摘要上限1000/800字符。Laya总输入6524–8092 Token、Kev6727–8194 Token；原始历史另存。正式批次保持同一snapshot_id，过期和强制刷新沿原capabilities入口。
+> 当前能力链为Registry→AA统一快照→逐档候选卡→M→共享Serializer→原生Tokenizer。v7取得时间2026-11-07T13:47:04.783836Z、Index5.0.1；Luna/Terra各六档和GLM Max共130项，GLM Low/High缺测。17训练行的34项双原生编码FULL，最高Laya7575/Kev7583Token，15合法动作、130当前指标和教师状态保留；只有1行真实教师三字段，其他明确缺失。工具/生成摘要1000/800字符，原始历史另存。TTL/force/STALE及正式同批固定snapshot_id沿原capabilities，不逐生成访问AA。
 
 > **11-02最新Dev批次**：9个公开Dev任务19 Episode全部结束，原Harbor Verifier9次，7成功/2失败/10未知。实际请求DeepSeek，动态三身份为ALIAS_SMOKE，正式K=3质量结果仍缺。Git/HF/POV-Ray三组同协议完整对照固定3/3、动态2/3；参考模型费按成功数分摊0.006153744/0.006720942USD，Trial合计738.50/1805.48秒，动态收益未证明。财务/MTEB跨处理版本只观察。详见[批次结果](../../our-project/results/iterations/20261102-v9-deepseek-dev/review.md)。
 >

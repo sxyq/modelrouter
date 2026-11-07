@@ -12,5 +12,6 @@
 | `REAL_K3_DEVELOPMENT` | [本批配置与结果](iterations/20261106-v9-k3-real/) | 两个已开发暴露任务，原Harbor／Evaluator、真实请求、原始与训练代表、Effort与缓存；有效性按实际返回身份和终局分别报告，不作为最终盲测 |
 | `REAL_K3_FORMAL_SUBSET_AND_TRAINING` | [完整方法、Train及官方子集](iterations/20261107-v9-full-method/review.md) | T/M/H与Luna教师原生消费、有限新联合监督、原Trainer更新、Terminal-Bench 2.1事前子集的原始/更新完整Episode；跟进与异常分列，不证明完整K=3净收益 |
 | `GLM_REFACTOR_AND_REAL_DEVELOPMENT` | [本批八部分结果](iterations/20261107-v9-full-method/v9_refactor_review.md) | 唯一执行链、精确GLM渠道、AA v7与原生输入；新开发题10尝试、4个官方零分、6个无有效Reward。未证明新池训练或净收益 |
+| `GLM_POOL_PREFIX_TRAINING_AND_EPISODES` | [合法联合监督](iterations/20261108-v9-k3-training/joint_supervision.json)、[Laya训练](iterations/20261108-v9-k3-training/laya_training.json)、[开发固定模型](iterations/20261108-v9-k3-network-recovery/analysis/official_results.json)、[Laya消融](iterations/20261108-v9-laya-comparison/analysis/official_results.json)、[真实粒度](iterations/20261108-v9-laya-granularity/analysis/official_results.json)、[polyglot评价](iterations/20261108-v9-polyglot-independent/analysis/official_results.json) | GLM三次真实Train工具生成，1条五候选联合偏好+16辅助，Laya17更新已完成，Kev同数据原Trainer在计算；固定Luna Low/High及Terra Low/High、原始Kev、Laya遮蔽/教师/粒度的原Harbor结果。GLM429无Reward保持未知，全T/M/H训练收益与完整K=3净收益尚缺 |
 
 完整私人响应、请求正文、账单、凭据和物理权重不进入公开目录。模型参考费、供应商实收、Router／教师／CPU／GPU／VM资源费用分别保留未知项。官方Reward、单步结果、终态恢复、静态预测和模拟结果不能互相替代。

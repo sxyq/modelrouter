@@ -10,21 +10,23 @@ GLM已绑定唯一私人config的Colink。短SSE两客户端成功；High4096真
 
 AA v7取得时间2026-11-07T13:47:04.783836Z，Index 5.0.1、130项独立指标。Luna/Terra各六档，GLM仅Max；Low/High缺测。沿原TTL/force/STALE入口在正式启动取得最新数据，同一比较批次固定snapshot_id。授权API完整数据、revision和官方发布时间尚缺；不借其他模型或档位填值。
 
-## 第一：合法新池监督与实际工具生成
+## 第一：复用已完成的新池监督与训练
 
-优先复用TRA-001的Dynaconf/Hikari真实Train前缀、原恢复镜像和原Verifier。原GPT有效候选结果保持，不改HY4标签。对仍有任务缺项的截止补充GLM真实动作；请求、Reasoning、实际文本/工具、请求/返回Effort、原验证和费用各自记录。
+Dynaconf/Hikari四截止的新GLM采集已完成六请求、三实际工具生成，另三429。保留原GPT结果与Verifier；唯一新联合偏好为Dynaconf继续截止的五个实际观察候选，赢家Luna Xhigh。其余截止无合法完整一步赢家，未知不填失败。新17行=1联合偏好+16原辅助，34项双原生编码FULL、15动作/130当前AA指标保留。不要重采这些已完成位置或将AA/HY4标签改成GLM答案。
 
-同起点各候选独立容器，原F2P/P2P和测试源码保持。只执行真实返回工具；UNKNOWN不填失败。单步质量标签描述该步后原验证结果，多步接续沿原DefaultAgent，不建立另一Agent循环。目标仍为质量优先、同质量参考费次之。
+Laya新实体V9-K3-GLM-LAYA-20261108已按原Head Trainer完成17更新、736.337秒并实际加载。Kev原Trainer在CPU40、LoRA+Head、同17行/1epoch健康计算，已经写第10/17次更新；取得最终物理参数和training_metrics后再做该实体的真实比较，不停止或重开，不创建第二训练队列。
 
-新监督按实际观察候选集合编码，注明未观察动作及有效档位未知项，不宣称15动作最优。T/M/H沿现行共享Serializer，AA为外部能力信息，Verifier结果只进入训练标签，不进入当前状态。
+后续需要新的真实任务/截止和候选结果信息增量才继续梯度更新。单步监督描述该步原验证，不冒称完整Episode或15动作最优。所有决策状态沿原Serializer，最终Verifier只用于合法标签，不进入当前输入。多步执行继续沿DefaultAgent。
 
 ## 第二：原Trainer和四实体比较
 
-11-07的V9-K3-LAYA/KEV各18次更新属于旧HY4池，保留历史实体。新GLM任务结果有有效信息增量后，沿原laya.train.finetune/kev.train更新；每架构保留原始实体并选定一个新池训练实体。F05/R11、旧V9及F15恢复权重不自动删、不自动换Serving。
+11-07的V9-K3-LAYA/KEV各18次更新属于旧HY4池，保留历史实体。当前两原始实体是models/laya-421m和models/kev-4b-adapter；本批新GLM实体均按事前指定的17行单Epoch选定，不根据polyglot或已看三题换权重。F05/R11、旧V9及F15恢复权重不删除、不自动换Serving。
 
 训练版本在独立终局前确定，不按已观察regex-log/sqlite-db-truncate/openssl-selfsigned-cert三题挑权重。circuit-fibsqrt是已观察开发题。constraints-scheduling仍为独立评价，在模型选择和训练完成前不看其终局或用于调参。
 
-开发比较采用三固定模型及有效Effort、原始/训练Laya、原始/训练Kev、必要简单策略与教师开/关。各项均完整Harbor Episode，相同任务定义、工具、Evaluator、能力数据、输出额度和资源口径。用实际质量—费用结果选择研究实体。
+已结束git-multibranch开发固定七臂、Laya九臂、去M粒度两臂及原始Kev，原结果不重跑。Luna Low/High=0/1、Terra Low/High=1/1；去M逐生成/开始/阶段=1/1/0；原始Kev0且Agent超时。完整主方法和GLM固定臂429无Reward。polyglot原六臂已结束，Low固定0/0、规则1；教师关规则臂SSL EOF后重复SSE文件失败，原证据保留，正式适配已移除该重复重试。High与原始Kev正在同任务接续。
+
+Kev完训后完成新训练版、教师关、任务开始/阶段开发与polyglot比较。保持同v7、同30步/4096输出、原环境/Verifier和CPU40记录；CPU训练并行时，不将墙钟差单归因训练或路由粒度。constraints-scheduling在模型/训练实体确定后再进行事前独立比较，不提前查看终局用于选择。
 
 ## 第三：RQ1–RQ5连续推进
 

@@ -1,18 +1,30 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-**GLM接口定位（2026-11-08）**：原A6000同Key/小写ID的Provider与有效curl短SSE均HTTP200/OK/DONE。原失败工具历史High4096非流式在本地180秒超时；无此等待限制的同请求经一次429重试，在333.097秒返回HTTP200，4706输入/4096输出/4096推理、cached4608、finish=length，没有文本或工具。这证明接入能工作，不能以旧失败概括渠道不可用；旧229字节SSE的精确原因仍未独立证明。正式请求现在用同一AgentState的Harbor剩余时间；length改记INCOMPLETE_RESPONSE，不自动扩大输出额度。Low4096两次429，尚无有效对照。新接口材料全部私有，不作完整任务或训练标签；三条请求体未正确装载的curl控制404/400不作GLM失败。
+**当前执行事实（2026-11-08）**：GLM新Train六请求有三次实际工具生成，另三次429；返回精确模型ID，Effort未报告。原长High4096请求在333.097秒返回HTTP200但4096输出全为推理、finish=length，旧229字节空SSE保留。正式Provider使用Harbor剩余时间，length记INCOMPLETE_RESPONSE；后续完整任务429原文是上游限流。失败不改名为官方零分，也不无限扩大输出额度。
 
-**当前重构状态（2026-11-07）**：主要自有源码已按职责收敛并定向部署原A6000主工程。正式链为Harbor→ModelRouterMiniSweAgent→DefaultAgent。GLM授权绑定只在统一私人config；A6000用SSH输入及memfd读取，两个Run结束后已关闭。新开发题circuit-fibsqrt共10个Harbor尝试均结束：4个有效官方Reward均0、6个无有效Reward；没有新池训练或净收益结论。1024九策略组运行中有源码处理，4096 GLM High单列，均固定AA v7。原三题、失败和原始响应保留。[八部分结果](../results/iterations/20261107-v9-full-method/v9_refactor_review.md)已纳入新增实验。
+**当前源码和训练**：主要自有源码职责收敛已部署原A6000工程；默认Harbor CLI现在只加载正式V9配置，Agent适配删除非V9重复状态路径。1491行既有测试按原职责拆分，52原函数保持，自有Python最大982行。新池一个五候选偏好和16辅助行沿原Trainer更新：Laya17更新/736.337秒已保存并实际加载；Kev同17行/1epoch在CPU40计算，尚无最终metrics。旧HY4两个11-07实体保持历史身份。网络SSL提前结束的真实事件暴露上游自动重试和SSE文件重复；正式适配现直接保留OSError，不重新进入同一生成边界。
+
+| 本批实验 | 当前官方结果与用途 |
+|---|---|
+| git-multibranch固定档位 | 11-03已暴露，开发复用；Luna Low/High=0/1，Terra Low/High=1/1，GLM三档429无Reward |
+| Laya原始/新训练/教师关/T/M/H消融 | 全T/M/H及去T遇GLM429；去H有4次有效生成后429；去M逐生成=1 |
+| 去M Laya粒度 | 同实体/同v7：任务开始=1、阶段=0；逐生成与任务开始模型加教师参考费$0.05961651/$0.0571708 |
+| 原始Kev开发 | 0，AgentTimeoutError；2模型返回、3Router边界，末次只计Router资源 |
+| polyglot事前评价 | Low Luna/Terra=0/0，规则=1，GLM/原始Laya/训练Laya均429无Reward；High与Kev继续 |
+| 教师关闭规则臂 | SSL EOF后重复SSE文件导致无Reward；8模型返回及$0.03187143已知参考费保留 |
+| 未运行评价 | constraints-scheduling仍未看终局，模型和训练完成前不用它调参 |
+
+表中模型/教师USD来自登记价格，实收、Router/VM资源USD未知；CPU训练并行使墙钟差不能单归因于策略。原Harbor/Provider证据和旧尝试完整保留，质量表由真实事件归组而非历史账本资格字段决定。
 
 **方法范围**：只研究单Agent，取消多Agent角色协作、handoff及Agent数量变量。RQ3为单Agent阶段、真实子任务边界与路由粒度；现阶段主要实现观察阶段和逐生成路由，不冒称自动拆分。Luna/GLM-5.3-Flash/Terra登记15个Model×Effort，登记不代表渠道全部实测可用。AA已实现TTL更新、force刷新、STALE识别及同一比较批次固定快照。旧HY4数据、权重与结果保留历史身份。
 
 **唯一执行与事实来源**：取消旧Agent Pilot runner、开发执行命令、Alias、重复logger、预填RQ结果生成器、原生mini中继和另一自定义Agent入口。旧SingleAgent仅在legacy位置保留，正式包不导出，正式CLI不调用；Oracle仅保留上游工具用途。AgentState与runtime/context、teacher/trigger/assessor、providers/registry/protocols/usage、iterations.event分别统一状态、教师、模型/协议/费用和UTC/单调事件，Ledger/Dashboard/RQ从保存事实派生。根router_data和scripts复用正式包，不保留重复完整实现。
 
-**Provider与AA**：GLM使用Colink精确小写请求与返回身份；low/high/max请求被接受，实际Effort与物理权重未报告。1024组有reasoning大于completion的矛盾Usage；Provider现保留原值，费用/完整用量未知，合法输出仍交给原Agent，旧失败不改写。4096 High第二次响应只有role/keepalive，无DONE、内容或Usage。Luna Max请求返回xhigh，不改名。Colink自身Key用量接口真实返回USD累计模型汇总，无逐请求关联，不能用于Episode实收，私人查询不上传。AA v7为130条独立metric，版本5.0.1，取得时间2026-11-07T13:47:04.783836Z；Luna/Terra各六档、GLM仅Max10项，Low/High缺测。Coding/Agentic Index、模型revision和官方发布时间仍缺。重复取得不算新发布；独立旧分数保留。没有AA专用Key，不冒称授权API完整数据已取得。
+**Provider与AA**：GLM使用Colink精确小写身份和Chat原生参数，Low/High/Max请求被接受，返回Effort与物理权重未报告。旧矛盾Usage、只有role/keepalive的SSE及Luna Max返回xhigh保留原貌。Colink累计USD接口无逐请求关联，不用于Episode实收。AA v7为130条独立metric/5.0.1，取得时间2026-11-07T13:47:04.783836Z；Luna/Terra各六档、GLM仅Max10项，Low/High缺测。Coding/Agentic Index、模型revision、官方发布时间及授权API完整数据仍缺。本批固定v7，普通在线TTL/force/STALE行为继续由原capabilities负责。
 
-**原生输入与资源**：M共享字段与缺测原因、逐档成绩及精确AA身份，保留全部130当前及10条独立旧metric；工具/生成摘要上限1000/800字符，原始轨迹另存。此前保存状态8项编码FULL；新真实Laya第二次决策H曾PARTIAL。最终Serializer用新运行8条真实状态作16项双原生编码，所有T/M/H/教师状态和候选FULL，无截断，原失败与中间编码保留。Laya使用8192/512，Kev原生状态65536，Tokenizer不统一。真实CPU40：Laya两路由19.918/16.689秒，Kev六路由p50=189.923、p95=205.311秒；1次Luna Low教师11.105秒、三字段真实被Kev消费。与此前CPU8结果分列。Serving PID327621未重启/换权重，共享GPU未使用；本批Docker容器0、镜像21，circuit-fibsqrt镜像留作后续开发对照。11-08将1491行既有测试按保留算法、包入口、队列、汇总和Kev保留拆分，52个原函数逐段内容一致，自有Python最大982行。原账本保留真实请求和未知用量。
+**原生输入与资源**：M使用共享模型字段、逐档分数和精确AA身份；工具/生成摘要1000/800字符，原始轨迹另存。11-08的17训练行共34项原生编码FULL，最高Laya7575/Kev7583Token；15动作、130当前指标和1条真实教师三字段保留，其他教师行明确缺失。FULL表示当前Serializer内容，不表示原历史全量。Laya窗口8192/512、Kev原生容量65536各自保留。当前CPU训练与Harbor并行、共享GPU作业不变；Serving PID327621仍原权重。用户Docker按原socket执行，临时17898代理与SSH/memfd仍用于本批，结束后关闭。原账本、恢复权重及私有响应保持。
 
-**科研接续**：circuit-fibsqrt已观察，constraints-scheduling仍未执行。按11-08定位结果沿Harbor统一时间推进RQ1/RQ2，区分推理预算耗尽、限流和原空流，不概括渠道不可用或重复补发。实际Usage/Effort、Luna Max返回身份仍需补齐。原两Run部分已知参考费0.2691096美元不包含本次接口诊断，完整/实收/资源费用未知。真实新池监督、每架构训练实体与RQ4/RQ3/RQ5继续按原目标；旧HY4两V9-K3实体不改名。最终四实体与完整净收益未完成，F15恢复/GPU锁保留，无第二队列。
+**科研接续**：继续完成健康Kev训练并取得物理参数，再沿原Harbor补齐原始/训练Kev、教师和粒度对照。独立实体在polyglot终局前已事前选定单Epoch，不按已看三题或本批结果挑权重。RQ1完整K=3净收益、RQ2有效GLM各档完整结果、RQ3可迁移粒度收益、RQ4全T/M/H及训练/教师贡献、RQ5足够独立工作负载仍缺。原F15无Worker/Controller，物理恢复step61180、GPU锁和Serving PID327621保护；临时代理与SSH/memfd仍在本批使用，结束后关闭。
 
 **11-07完整方法与正式子集**：[本批研究](../results/iterations/20261107-v9-full-method/review.md)。原State/Schema/Serializer/Provider/原生Adapter已原位表达T/M/H、13登记联合动作、当前缓存时序和Luna三字段教师；新方法不走旧Alias。18条Train记录在两Tokenizer下36项编码无截断，最长5515状态Token；已保存的真实新Luna教师另实际进入原生前向。FULL指序列化摘要，不是全部原轨迹，也不代表已经学会有效利用。
 

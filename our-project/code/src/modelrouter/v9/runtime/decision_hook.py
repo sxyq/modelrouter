@@ -157,7 +157,7 @@ class V9DecisionHook:
             "previous_response_reasoning_tokens": metrics.get("reasoning_tokens"),
             "previous_response_cost_usd": metrics.get("cost_usd"),
             "previous_response_latency_ms": metrics.get("latency_ms"),
-            "previous_response_status": metrics.get("status"),
+            "previous_response_status": metrics["response_status"],
             "context_tokens_resent": None,
             "previous_selected_native_effort": self.continuity.get("selected_native_effort"),
             "selected_native_effort": selected["native_effort"],

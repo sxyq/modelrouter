@@ -5,11 +5,15 @@
 负责人明确要求：遇到 JevAgentHarness、Whose turn、SAAR、MTRouter、Unified AI Gateway 等近期竞品直接重叠时，**不可因相近而直接否决整个 V9，也不可只靠重新命名、叠加组件或空泛差异包装新颖性**。研究讨论须从最早 KV Cache/跨模型切换与完整 Agent 成本动机出发，回顾所有历史与现行 RQ、S1/S2/S3、Laya/Kev、Harbor/Mini-SWE、教师/能力卡和 Model×Native Effort；**最终收敛之前始终保留至少五至六条具有实质方法差异的并行候选路线供负责人选择**，不自动将“K=3 当前实验配置”当作 RQ2 的上限（同时明示现行正式 RQ2 仍固定 K=3，K=3/5/7 属拟议恢复）。每条候选路线必须列出：真实科学问题、精确最近邻论文及其已做范围、与之相同部分和潜在新增部分、合适的直接基线、既有模型数据/代码可复用范围、最低价值实验与明显失败风险；“尚未见覆盖”不等于首创。已检索的直接先例包括 [Whose turn](https://arxiv.org/abs/2610.19292)、[JevAgentHarness](https://arxiv.org/abs/2610.21412)、[SAAR](https://vllm.ai/blog/2026-06-02-session-aware-agentic-routing)、[MTRouter](https://aclanthology.org/2026.acl-long.2045/)、[SaveRouter](https://arxiv.org/abs/2609.37402)、[CodeRescue](https://arxiv.org/abs/2607.19338)、[Ares](https://arxiv.org/abs/2603.07915)、[HyDRA](https://aclanthology.org/2026.emnlp-industry.82/)、[Mo' Models](https://arxiv.org/abs/2609.17306)、[Unified AI Gateway](https://arxiv.org/abs/2609.06940)。该约束仅约束后续方案讨论，**不修改现行训练、服务、模型池或已批准 RQ**。
 
 
-### 2026-11-07 · 单 Agent 方法与当前执行事实
+### 2026-11-08 · 单 Agent 方法与当前执行事实
 
 现行研究采用 Harbor 官方 `DefaultAgent` 单 Agent 链路。RQ3 为阶段识别、真实子任务边界与生成决策粒度；`inspect/modify/verify/recover` 仅是阶段标签，不等于任务拆分。取消多 Agent 设计、角色/协作/handoff/Agent 数量变量；下方旧条目保留为历史记录，不恢复为当前方法。
 
-当前池为Luna、GLM-5.3-Flash、Terra，Registry登记15个联合动作。GLM已绑定唯一私人config的Colink，短文本成功；High4096真实长请求耗尽推理额度，Low/High/Max返回档位未报告。AA v7含130条独立指标，Luna/Terra各六档、GLM仅Max，已有TTL/force/STALE及同批固定版本。两项11-07训练仍是HY4池，原标签与结果不改。正式执行沿Harbor→ModelRouterMiniSweAgent→DefaultAgent；旧development和模拟结果生成入口已删除，legacy不参与正式调用。11-08现场无F15/controller进程，物理恢复实体保留。
+当前池为Luna、GLM-5.3-Flash、Terra，Registry登记15个联合动作。GLM绑定唯一私人config的Colink；新Train六请求取得三次实际工具生成，返回档位未报告，后续完整Harbor受上游429限流。AA v7含130条独立指标，Luna/Terra各六档、GLM仅Max，TTL/force/STALE及同批固定版本沿原链。复用GPT真实结果形成一个五候选STEP_LEVEL偏好与16辅助行；Laya新GLM实体17更新已完成，Kev同17行原Trainer仍在CPU计算。两项11-07实体继续保持旧HY4身份。
+
+git-multibranch在11-03已暴露，本批开发复用：Luna Low/High为0/1，Terra Low/High为1/1；完整M遮蔽Laya逐生成/任务开始/阶段为1/1/0。polyglot事前选定评价后已观察，Low两固定模型均0，规则臂1；原始/训练Laya均GLM429无Reward。原始Kev开发Reward0且Agent超时。后续High及Kev比较沿同一批AA v7继续，不据这些结果挑权重。constraints-scheduling仍未执行或查看终局。
+
+正式执行沿Harbor→ModelRouterMiniSweAgent→DefaultAgent；旧development和模拟结果生成入口已删除，legacy不参与正式调用。11-08默认CLI已统一正式配置，移除非V9重复状态分支；网络异常不再触发上游重复同一生成边界。RQ归组按真实Checkpoint、AA、输入遮蔽、教师、候选和粒度，生成/教师费用分开。F15/controller没有进程，恢复step61180、GPU锁与Serving PID327621保留。
 
 实际完整报告：[20261107-v9-full-method](../results/iterations/20261107-v9-full-method/review.md)。当前详细状态见 [PROJECT_STATUS](PROJECT_STATUS.md)；RQ1–RQ5、Fig.1–8 与 Table 1–12 的科研结构继续保留。
 
