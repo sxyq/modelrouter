@@ -41,6 +41,10 @@
 | InfraMind (2606.11440) | Agent step 使用队列、缓存压力和基础设施状态选择模型与推理深度 | “Agent 路由首次结合 Infra 状态” |
 | MTRouter (2604.23530) | 逐 turn 历史—候选模型表示与学习型效用估计 | “小型/学习型候选质量路由” |
 | JevAgentHarness (2610.21412) | 决策模型参与 Agent Harness、包括模型委派 | “Agent 模型动态委派” |
+| HyDRA (2605.17106；EMNLP 2026 industry) | 异构五模型池、能力需求匹配、变更候选目录无需重训编码器，含 SWE-bench 实验 | “池规模 K=5／添加模型／能力卡”本身 | 
+| vLLM SAAR (2026-06-02 工程报告) | session memory、工具循环保护、切换边界与 prefix-cache-aware 估价 | “第一次使用缓存感知 Sticky/切换边界”本身 |
+
+进一步最相近证据：[HyDRA 论文](https://aclanthology.org/2026.emnlp-industry.82/)（五模型和目录解耦，但主要是请求路由）与 [vLLM SAAR 技术报告](https://vllm.ai/blog/2026-06-02-session-aware-agentic-routing)（缓存感知切换与 session continuity；工程/系统报告，不直接等于与我们的 Harbor 成功—成本评测）。因此 **“K=5 可扩”“Cache-aware Sticky”也都不是天然新颖性**。特别需要研究 K 扩张与 Agent 实际结果、缓存经济性及训练稀疏性的交互，不能简单把 K 作为创新数字。
 
 已有仓库文献根源：[2026-09-15 任务级事前成本 Brief](../brief.md)（当时明确暂不以 KV Infra 为主线）、[2026-10-11 组会研究简纲](../../planning/GROUP_MEETING_RESEARCH_BRIEF.md)（明确“最初以 KV Cache 与切换成本为动机”）、[模型路由及缓存相关论文表](../related-papers.md)。**不同日期的研究范围发生过演变，不能混为同一已经正式验证的方案。**
 
