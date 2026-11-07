@@ -1,5 +1,8 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
+**2026-11-08 · 新增近邻文献与研究方向讨论（未变更正式 RQ）**：[Whose turn is it? 中文技术笔记](../literature/notes/whose-turn-is-it-2610.19292.zh.md) 已核对并登记 [官方原 PDF 链接](https://arxiv.org/pdf/2610.19292) 和中文解读。该文实证研究零样本、二候选、**用户轮次级**表格 Agent 路由、历史依赖、缓存切换方向与回本成本；这些概念不能作为我们 V9 的首创声明。V9 保留真实 Harbor 单 Agent 每次生成机会可选 Model×Native Effort、Laya/Kev、T/M/H、Provider 缓存 Usage、教师和终局账本；候选差异化集中在独立任务验证过的**缓存机会成本×实际质量/恢复×完整 Episode 净收益**，而非堆输入或新建 KV Infra 服务。用户重新提出 K=3/5/7 与同 K 不同池组成作为 RQ2 拟议恢复范围；**当前正式 RQ2 仍为固定 K=3**，本次仅记研究讨论，尚未批准替换正式五 RQ/图表或声称 K=5/7 已可用。论文 PDF 二进制尚未导入仓库；链接归档见 [论文库条目](../external/research/papers/59_Whose_Turn_Is_It_PDF_LINK.md)。
+
+
 **当前研究方法与证据（2026-11-07）**：[完整真实报告](../results/iterations/20261107-v9-full-method/review.md)。原 Harbor/Mini-SWE/官方 Evaluator 链、共享 T/M/H Serializer、单活跃 Laya 或 Kev、Luna 三字段教师和 Model×Native Effort 路由已有真实执行依据。该批正式三题及其固定策略结果属于旧 Luna/HY4/Terra 研究池；GLM-5.3-Flash 尚未进入该批，也没有新的独立执行结果。
 
 GLM 渠道授权、绑定与精确模型 ID 尚待确认；自上述报告批次后新增正式 Harbor 实验为 0，确认前不启动新的固定 K=3 实验。现行五个 RQ 为：RQ1 整体效果；RQ2 固定目标身份 K=3 内的 Model×Native Effort 能力和结果，不扩 K 或替换池成员；RQ3 单 Agent 阶段识别、真实子任务边界与生成决策粒度；RQ4 系统消融；RQ5 单 Agent 工作负载收益边界。旧 HY4 结果和身份不改写。
