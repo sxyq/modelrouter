@@ -1,5 +1,10 @@
 # ModelRouter · Planning Memory（研究协作记忆）
 
+### 2026-11-08 · 新颖性比较要求（待用户选择，非正式 RQ 变更）
+
+负责人明确要求：遇到 JevAgentHarness、Whose turn、SAAR、MTRouter、Unified AI Gateway 等近期竞品直接重叠时，**不可因相近而直接否决整个 V9，也不可只靠重新命名、叠加组件或空泛差异包装新颖性**。研究讨论须从最早 KV Cache/跨模型切换与完整 Agent 成本动机出发，回顾所有历史与现行 RQ、S1/S2/S3、Laya/Kev、Harbor/Mini-SWE、教师/能力卡和 Model×Native Effort；**最终收敛之前始终保留至少五至六条具有实质方法差异的并行候选路线供负责人选择**，不自动将“K=3 当前实验配置”当作 RQ2 的上限（同时明示现行正式 RQ2 仍固定 K=3，K=3/5/7 属拟议恢复）。每条候选路线必须列出：真实科学问题、精确最近邻论文及其已做范围、与之相同部分和潜在新增部分、合适的直接基线、既有模型数据/代码可复用范围、最低价值实验与明显失败风险；“尚未见覆盖”不等于首创。已检索的直接先例包括 [Whose turn](https://arxiv.org/abs/2610.19292)、[JevAgentHarness](https://arxiv.org/abs/2610.21412)、[SAAR](https://vllm.ai/blog/2026-06-02-session-aware-agentic-routing)、[MTRouter](https://aclanthology.org/2026.acl-long.2045/)、[SaveRouter](https://arxiv.org/abs/2609.37402)、[CodeRescue](https://arxiv.org/abs/2607.19338)、[Ares](https://arxiv.org/abs/2603.07915)、[HyDRA](https://aclanthology.org/2026.emnlp-industry.82/)、[Mo' Models](https://arxiv.org/abs/2609.17306)、[Unified AI Gateway](https://arxiv.org/abs/2609.06940)。该约束仅约束后续方案讨论，**不修改现行训练、服务、模型池或已批准 RQ**。
+
+
 ### 2026-11-07 · 单 Agent 方法与当前执行事实
 
 现行研究采用 Harbor 官方 `DefaultAgent` 单 Agent 链路。RQ3 为阶段识别、真实子任务边界与生成决策粒度；`inspect/modify/verify/recover` 仅是阶段标签，不等于任务拆分。取消多 Agent 设计、角色/协作/handoff/Agent 数量变量；下方旧条目保留为历史记录，不恢复为当前方法。
