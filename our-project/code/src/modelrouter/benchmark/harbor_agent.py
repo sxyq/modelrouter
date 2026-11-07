@@ -84,6 +84,9 @@ class PolicyModel(LitellmModel):
                              else OpenAICompatibleProvider)
             self.provider = provider_type(request_timeout_sec=None if self.v9_enabled else 60.0)
         self.max_output_tokens = max_output_tokens
+        self.routing_granularity = v9_config.get("routing_granularity", "generation") if self.v9_enabled else "generation"
+        self.last_router_decision = None
+        self.last_route_phase = None
         self.generator_stream = v9_config.get("generator_stream", True) if self.v9_enabled else True
         self.last_metrics, self.usage = {}, []
         self.provider_failures = []
@@ -124,9 +127,12 @@ class PolicyModel(LitellmModel):
             snapshot["candidate_conditions"] = conditions
             if not available_actions:
                 raise RuntimeError("No available model/effort candidate: " + json.dumps(conditions))
+        route_due = (self.last_router_decision is None or self.routing_granularity == "generation"
+                     or self.last_router_decision.selected_action not in available_actions
+                     or self.routing_granularity == "phase" and self.state.current_phase != self.last_route_phase)
         if self.v9_hook:
             self.provider.request_timeout_sec = snapshot["time_remaining_sec"]
-            snapshot = self.v9_hook.before_route(self.state, messages, snapshot, available_actions)
+            snapshot = self.v9_hook.before_route(self.state, messages, snapshot, available_actions, route_due=route_due)
         else:
             snapshot.update(prompt=json.dumps(messages, ensure_ascii=False))
             snapshot.update(context_chars=len(snapshot["prompt"]), prior_tool_calls_count=len(self.state.history),
@@ -142,11 +148,14 @@ class PolicyModel(LitellmModel):
         snapshot = PreDecisionState.model_validate(snapshot).model_dump()
         self.state.pre_decision_snapshot = snapshot
         route_start = time.perf_counter()
-        event(self.record_dir, "ROUTER_START", episode_id=self.state.episode_id,
-              decision_id=decision_id, decision_sequence=self.state.step_index,
-              elapsed_time_sec=snapshot["elapsed_time_sec"], time_remaining_sec=snapshot["time_remaining_sec"],
-              capability_snapshot_id=snapshot.get("capability_snapshot_id"))
-        if hasattr(self.policy, "client"):
+        if route_due:
+            event(self.record_dir, "ROUTER_START", episode_id=self.state.episode_id,
+                  decision_id=decision_id, decision_sequence=self.state.step_index,
+                  elapsed_time_sec=snapshot["elapsed_time_sec"], time_remaining_sec=snapshot["time_remaining_sec"],
+                  capability_snapshot_id=snapshot.get("capability_snapshot_id"))
+        if not route_due:
+            decision = self.last_router_decision
+        elif hasattr(self.policy, "client"):
             decision = self.policy.client.route(
                 episode_id=self.state.episode_id, decision_id=decision_id,
                 pre_decision_state=snapshot, legal_actions=available_actions,
@@ -163,6 +172,9 @@ class PolicyModel(LitellmModel):
                 decision = self.policy.select(self.state, available_actions)
         selected = LegalAction.model_validate(decision.selected_action).model_dump()
         router_wall_ms = (time.perf_counter() - route_start) * 1000
+        if route_due:
+            self.last_router_decision = decision
+            self.last_route_phase = self.state.current_phase
         if self.state.router_time_sec is not None:
             self.state.router_time_sec += router_wall_ms / 1000
         if selected not in available_actions:
@@ -171,18 +183,19 @@ class PolicyModel(LitellmModel):
         self.state.last_router_checkpoint_id = decision.checkpoint_id
         self.state.last_selected_action = selected
         if self.v9_hook:
-            self.v9_hook.after_route(decision, neural_route=hasattr(self.policy, "client"))
+            self.v9_hook.after_route(decision, neural_route=route_due and hasattr(self.policy, "client"))
         router_identity = {key: value for key, value in self.v9_hook.current_context.items()
                            if key.startswith("router_") and key not in
                            ("router_checkpoint_id", "router_family", "router_fallback_used")} if self.v9_hook else {}
         self.fallback_used = self.fallback_used or decision.fallback_used
         if selected["native_effort"] != "low" and not (self.v9_enabled and selected["native_effort"] == "none"):
             self.untested_efforts_used.add(selected["native_effort"])
-        event(self.record_dir, "ROUTER_END", episode_id=self.state.episode_id, step=self.state.step_index,
+        event(self.record_dir, "ROUTER_END" if route_due else "ROUTER_REUSE", episode_id=self.state.episode_id, step=self.state.step_index,
               decision_id=decision_id,
+              routing_granularity=self.routing_granularity, decision_reused=not route_due,
               policy=self.policy_name, router_family=decision.router_family,
               router_latency_ms=router_wall_ms,
-              inference_latency_ms=decision.inference_latency_ms,
+              inference_latency_ms=decision.inference_latency_ms if route_due else None,
               checkpoint_id=decision.checkpoint_id, fallback_used=decision.fallback_used,
               ranked_actions=decision.ranked_actions, confidence=decision.confidence,
               **router_identity,

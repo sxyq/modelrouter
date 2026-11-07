@@ -1,8 +1,8 @@
 # ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-07 更新）
 
-> **2026-11-07 当前方法定义**：只研究单 Agent。RQ3 为阶段识别、实际子任务边界和生成决策粒度；`inspect/modify/verify/recover` 仅是阶段标签，不自动表示拆分。取消多 Agent 结构、角色/协作/handoff/Agent 数量变量及相关图表内容。RQ2 固定用户选定的 K=3 目标身份 Luna、GLM-5.3-Flash、Terra，不扩 K、不换池；GLM 渠道授权、绑定及精确 ID 尚待确认，确认前不开展新 K=3 Harbor 实验。15 个 Model×Native Effort 动作是规划数，真实可用组合以 Provider 能力为准。旧 HY4 及本文件上方的历史批次结果保持原貌，不可改写成 GLM 结果。
+> **2026-11-08 当前方法定义**：只研究Single-Agent，链为Harbor→ModelRouterMiniSweAgent→DefaultAgent。RQ3为阶段、真实子任务边界与路由粒度；Inspect/Modify/Verify/Recover只表示阶段。RQ2固定Luna/GLM-5.3-Flash/Terra，Registry登记15个Model×Native Effort。GLM已绑定Colink，短文本正常，长High4096耗尽推理额度，返回Effort未报告。AA v7包含Luna/Terra各六档及GLM Max共130项，Low/High缺测，TTL/force/STALE及同批固定版本已实现。T/M/H和三字段教师沿共享Serializer进入原生Laya/Kev。开发题circuit-fibsqrt已有10尝试：4官方零分、6无有效Reward；旧HY4结果保持历史身份。
 >
-> AA 能力按真实 `model×effort` 分数保存，目标 TTL 自动刷新、`force` 强制刷新、实验批次固定 `snapshot_id`。当前 AA 刷新正在实际运行；Provider 正在 GET `/models` 确认 GLM 精确 ID，授权与绑定仍待确认。原生 Effort 能力 M 特征过大，主 Agent 正在压紧；同源 Serializer 保留 130 项分数及其 `slug/version/source`。A6000 源码同步已完成，4 条原生 Encoder 均保留全字段；CPU forward 进行中，结果待回报。自 11-07 报告批次后新增正式 Harbor 实验为 0。响应、快照和后续 Episode 结果须由主 Agent 实际补入原八部分报告；尚未取得的结果保持待补，不视为完成。
+> 当前能力链为Registry→AA统一快照→逐档候选卡→M→共享Serializer→原生Tokenizer。v7取得时间2026-11-07T13:47:04.783836Z，Intelligence Index 5.0.1；13条独立实测动作共130项。8个真实状态的16项双原生编码均FULL，工具/生成摘要上限1000/800字符。Laya总输入6524–8092 Token、Kev6727–8194 Token；原始历史另存。正式批次保持同一snapshot_id，过期和强制刷新沿原capabilities入口。
 
 > **11-02最新Dev批次**：9个公开Dev任务19 Episode全部结束，原Harbor Verifier9次，7成功/2失败/10未知。实际请求DeepSeek，动态三身份为ALIAS_SMOKE，正式K=3质量结果仍缺。Git/HF/POV-Ray三组同协议完整对照固定3/3、动态2/3；参考模型费按成功数分摊0.006153744/0.006720942USD，Trial合计738.50/1805.48秒，动态收益未证明。财务/MTEB跨处理版本只观察。详见[批次结果](../../our-project/results/iterations/20261102-v9-deepseek-dev/review.md)。
 >
@@ -188,7 +188,7 @@ flowchart LR
 | `capability_evidence[]` | `benchmark_id, version, metric, score_raw, score_normalized, harness, evaluator_revision, eval_split, evaluated_effort, sample_count, eval_date, source_url, evidence_status` | 每档 Effort 的实测分数仅在确有同协议结果时填；未测=NOT_MEASURED |
 | 模型映射与学习状态 | 逻辑 ID、实际 Provider/API 模型/端点/部署、`ALIAS_SMOKE`、`FEATURE_NOT_TRAINED` | Alias 不填正式三模型比较；API 前向不证明新特征已学习，9002 与 Parfit API 身份分开 |
 
-**Benchmark 能力维度**：软件工程修复、代码推理、工具调用可参考 SWE-Bench Pro、LiveCodeBench、BFCL，具体版本/来源仍待证据。保存原分、量纲、Provider/Endpoint/Revision 和实际 Effort；AA Intelligence Index 是综合指数，不能作正确率百分比或最优动作标签。模型级成绩不能复制为每档实测。目标刷新方式为 TTL 到期自动更新、显式 `force` 刷新、批次固定 `snapshot_id`；Router 决策只读批次快照。当前刷新正在进行，现有实现仍是手动刷新；TTL/force 自动更新与新池逐档数据尚未完成。
+**Benchmark 能力维度**：M保存每个独立Benchmark的原分、单位、评测Effort、模型/AA身份、来源及版本。v7各实测动作有10项，GLM Low/High仅有其他档位Max参考；Coding/Agentic Index、revision和官方发布时间尚缺。Index版本5.0.1，能力先验与Terminal-Bench 2.1真实任务结果分别记录。TTL86400秒、force、STALE及同批固定snapshot_id已实现。
 
 **实验和安全边界**：Final 的未来轨迹、答案、最终 verifier 或结局不得进入教师、训练、选池和调参。无教师标 `NOT_USED`，调用失败标 `FAILED`；不把缺失或回退算有效评审。现有 F05/F06/C03 和当前服务权重尚无新特征学习证据，记 `FEATURE_NOT_TRAINED`。RQ4 比无评审/确定性摘要/独立教师、名称+Effort/能力分数、工具返回/真实行为进展；只有正式真实 Episode 才填任务效果。教师制作、权重编码/学习与 API 前向证据分别记录。
 

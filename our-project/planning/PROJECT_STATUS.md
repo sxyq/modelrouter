@@ -10,7 +10,7 @@
 
 **Provider与AA**：GLM使用Colink精确小写请求与返回身份；low/high/max请求被接受，实际Effort与物理权重未报告。1024组有reasoning大于completion的矛盾Usage；Provider现保留原值，费用/完整用量未知，合法输出仍交给原Agent，旧失败不改写。4096 High第二次响应只有role/keepalive，无DONE、内容或Usage。Luna Max请求返回xhigh，不改名。Colink自身Key用量接口真实返回USD累计模型汇总，无逐请求关联，不能用于Episode实收，私人查询不上传。AA v7为130条独立metric，版本5.0.1，取得时间2026-11-07T13:47:04.783836Z；Luna/Terra各六档、GLM仅Max10项，Low/High缺测。Coding/Agentic Index、模型revision和官方发布时间仍缺。重复取得不算新发布；独立旧分数保留。没有AA专用Key，不冒称授权API完整数据已取得。
 
-**原生输入与资源**：M共享字段与缺测原因、逐档成绩及精确AA身份，保留全部130当前及10条独立旧metric；工具/生成摘要上限1000/800字符，原始轨迹另存。此前保存状态8项编码FULL；新真实Laya第二次决策H曾PARTIAL。最终Serializer用新运行8条真实状态作16项双原生编码，所有T/M/H/教师状态和候选FULL，无截断，原失败与中间编码保留。Laya使用8192/512，Kev原生状态65536，Tokenizer不统一。真实CPU40：Laya两路由19.918/16.689秒，Kev六路由p50=189.923、p95=205.311秒；1次Luna Low教师11.105秒、三字段真实被Kev消费。与此前CPU8结果分列。Serving PID327621未重启/换权重，共享GPU未使用；本批Docker容器0、镜像21，circuit-fibsqrt镜像留作后续开发对照。本机原账本合并远端增量到1645 calls，104个未知用量记录保留。自有实现最大982行；既有1491行测试文件未动，全部Python无例外达标尚未成立。
+**原生输入与资源**：M共享字段与缺测原因、逐档成绩及精确AA身份，保留全部130当前及10条独立旧metric；工具/生成摘要上限1000/800字符，原始轨迹另存。此前保存状态8项编码FULL；新真实Laya第二次决策H曾PARTIAL。最终Serializer用新运行8条真实状态作16项双原生编码，所有T/M/H/教师状态和候选FULL，无截断，原失败与中间编码保留。Laya使用8192/512，Kev原生状态65536，Tokenizer不统一。真实CPU40：Laya两路由19.918/16.689秒，Kev六路由p50=189.923、p95=205.311秒；1次Luna Low教师11.105秒、三字段真实被Kev消费。与此前CPU8结果分列。Serving PID327621未重启/换权重，共享GPU未使用；本批Docker容器0、镜像21，circuit-fibsqrt镜像留作后续开发对照。11-08将1491行既有测试按保留算法、包入口、队列、汇总和Kev保留拆分，52个原函数逐段内容一致，自有Python最大982行。原账本保留真实请求和未知用量。
 
 **科研接续**：circuit-fibsqrt已观察，constraints-scheduling仍未执行。按11-08定位结果沿Harbor统一时间推进RQ1/RQ2，区分推理预算耗尽、限流和原空流，不概括渠道不可用或重复补发。实际Usage/Effort、Luna Max返回身份仍需补齐。原两Run部分已知参考费0.2691096美元不包含本次接口诊断，完整/实收/资源费用未知。真实新池监督、每架构训练实体与RQ4/RQ3/RQ5继续按原目标；旧HY4两V9-K3实体不改名。最终四实体与完整净收益未完成，F15恢复/GPU锁保留，无第二队列。
 

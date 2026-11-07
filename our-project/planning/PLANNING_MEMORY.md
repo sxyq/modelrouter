@@ -4,7 +4,7 @@
 
 现行研究采用 Harbor 官方 `DefaultAgent` 单 Agent 链路。RQ3 为阶段识别、真实子任务边界与生成决策粒度；`inspect/modify/verify/recover` 仅是阶段标签，不等于任务拆分。取消多 Agent 设计、角色/协作/handoff/Agent 数量变量；下方旧条目保留为历史记录，不恢复为当前方法。
 
-新池目标 Luna、GLM-5.3-Flash、Terra，规划 15 个联合候选；私有配置没有 GLM 绑定，Provider `/models` 查询和 AA 刷新正在进行，结果待主 Agent 补入。两项 11-07 训练仍是 HY4 池有限监督，原标签与结果不改。正式实验仅沿 Harbor `DefaultAgent`；`runtime/development.py` 与 benchmark development 命令、RQ4/RQ5 模拟结果生成源码已删除；`agent/legacy.py` 保留历史但不导出或正式调用，观察汇总沿 `benchmark.rq1_analysis`。F15/controller 当前无进程，`continuous_queue.log` 的 `KeyboardInterrupt` 属既有历史尾项，不记作本批停止；不据此重训。
+当前池为Luna、GLM-5.3-Flash、Terra，Registry登记15个联合动作。GLM已绑定唯一私人config的Colink，短文本成功；High4096真实长请求耗尽推理额度，Low/High/Max返回档位未报告。AA v7含130条独立指标，Luna/Terra各六档、GLM仅Max，已有TTL/force/STALE及同批固定版本。两项11-07训练仍是HY4池，原标签与结果不改。正式执行沿Harbor→ModelRouterMiniSweAgent→DefaultAgent；旧development和模拟结果生成入口已删除，legacy不参与正式调用。11-08现场无F15/controller进程，物理恢复实体保留。
 
 实际完整报告：[20261107-v9-full-method](../results/iterations/20261107-v9-full-method/review.md)。当前详细状态见 [PROJECT_STATUS](PROJECT_STATUS.md)；RQ1–RQ5、Fig.1–8 与 Table 1–12 的科研结构继续保留。
 

@@ -5,11 +5,11 @@
 
 **当前研究方法与证据（2026-11-07）**：[完整真实报告](../results/iterations/20261107-v9-full-method/review.md)。原 Harbor/Mini-SWE/官方 Evaluator 链、共享 T/M/H Serializer、单活跃 Laya 或 Kev、Luna 三字段教师和 Model×Native Effort 路由已有真实执行依据。该批正式三题及其固定策略结果属于旧 Luna/HY4/Terra 研究池；GLM-5.3-Flash 尚未进入该批，也没有新的独立执行结果。
 
-GLM 渠道授权、绑定与精确模型 ID 尚待确认；自上述报告批次后新增正式 Harbor 实验为 0，确认前不启动新的固定 K=3 实验。现行五个 RQ 为：RQ1 整体效果；RQ2 固定目标身份 K=3 内的 Model×Native Effort 能力和结果，不扩 K 或替换池成员；RQ3 单 Agent 阶段识别、真实子任务边界与生成决策粒度；RQ4 系统消融；RQ5 单 Agent 工作负载收益边界。旧 HY4 结果和身份不改写。
+GLM 已绑定统一私人配置中的 Colink，精确请求 ID 为 `glm-5.3-flash`，Chat 顶层 `reasoning_effort` 与 `thinking.enabled`；短输出已成功，长 High4096 请求耗尽推理额度。新增开发题 circuit-fibsqrt 已完成10个Harbor尝试：4个官方零分、6个无有效Reward。现行五个 RQ 为：RQ1 整体效果；RQ2 固定 K=3 内的 Model×Native Effort；RQ3 单 Agent 阶段、真实子任务边界与路由粒度；RQ4 系统消融；RQ5 单 Agent 工作负载收益边界。
 
 当前研究池目标为 **Luna、GLM-5.3-Flash、Terra**，规划 15 个 Model×Native Effort 候选。每批实际候选严格依精确 Provider/model 身份、原生 Effort、可用性、工具和上下文能力生成；15 是规划数，不把缺失或未支持动作伪造成可运行候选。旧 HY4 请求、训练和结果保留其历史身份。
 
-AA 能力记录按真实 `model×effort` 测量，不复制模型级分数。目标为 TTL 到期自动刷新、显式 force 刷新、实验批次固定 `snapshot_id`；同批不刷新漂移、Router 决策不逐次联网。目前原刷新入口仍为手动脚本，TTL/force 自动更新与 GLM 新池的实测能力均尚未实现或验证。
+AA 已沿原 capabilities 实现 TTL、force、STALE 与同批固定快照。v7共130条独立指标：Luna/Terra各六档，GLM仅Max，Low/High缺测；Index 5.0.1，取得时间2026-11-07T13:47:04.783836Z，来源为三个真实AA release页面。授权API完整数据、模型revision及官方发布时间尚缺。最新8个真实状态的16项双原生编码保留全部当前分数及T/M/H/教师状态；历史工具/生成使用1000/800字符摘要。
 
 11-07 报告的真实执行显示：两 Trainer 各 18 次更新，Train 有 2 条联合 S1、每类 8 条 S2/S3 辅助材料，但两条 S1 来自同一个截止；正式三题没有用于梯度或调参。更新 Laya 的 Terra 切换在相同输入下原始 Laya 也会作出，不能归因于训练。更新 Kev 有真实切换，但三题均触及 Agent 时限，不能据此宣称分工或完整净收益。其它 RQ 与成本缺口按报告原数值和 UNKNOWN 保留。
 
@@ -251,23 +251,23 @@ flowchart LR
 
 **现行研究版本**：保留 V9 五 RQ、8 图/12 表；RQ3 已更新为单 Agent 阶段识别、真实子任务边界与生成决策粒度。更早的任务拆分、多 Agent 角色与协作方案只作为历史证据。三核心 RQ/把消融归 RQ1 的建议仍按当时状态保留，不覆盖现行编号。
 
-**当前模型池与动作数**：Luna、GLM-5.3-Flash、Terra 是研究目标身份，计划 15 个联合候选；GLM 授权、绑定及可用性未确认，当前没有新的 K=3 实验。旧 HY4/Flash/Sol 与 Alias/映射执行仍按原实验 ID 保留，不合并或替代新池。每个批次记录精确请求与返回 ID；Effort、价格、工具支持和可用性按 Provider 证据确定，未知不外推。候选数以当批真实合法动作数报告，不为凑 15 补造动作。
+**当前模型池与动作数**：Registry唯一登记Luna、GLM-5.3-Flash、Terra及15个联合动作。GLM Low/High/Max请求被接受，返回Effort未报告；Luna曾请求Max返回xhigh。每批记录请求与返回身份、实际文本/工具、Usage和官方Reward。旧HY4/Flash/Sol结果保留历史身份。
 
-**Native Effort 能力卡接续**：当前 M 特征过大，主 Agent 正在压紧；同源 Serializer 保留 130 项分数及其 `slug/version/source`。A6000 源码同步已完成，4 条原生 Encoder 均保留全字段；CPU forward 进行中，结果待回报。该整理尚未报告完成，不代表 GLM 授权或新池实验结果。
+**Native Effort 能力卡**：共享Serializer用模型公共字段与逐档数组保留130项分数、13条精确AA身份及来源/版本。8个新真实状态×两Encoder共16项均FULL；Laya总输入6524–8092 Token，Kev6727–8194 Token。Laya窗口8192/512，Kev原生状态容量65536。原始消息另存。
 
 **最小轨迹教师**：现有 Agent 在合法模型生成边界请求同一 Router 选择 `(model,native_effort)`，工具执行仍由原 Harness 完成。外置教师只加工当前轨迹前缀，首版对照两条许可适用、成功证据明确、与 Final 隔离的固定公开摘要（高效完成/失败恢复），不建在线检索服务。约三次生成或阶段/重复失败/停滞事件触发只作为 Dev 起点。输出固定 `progress_summary, main_blocker, next_milestone`，另记截止 `decision_id`、实际教师与参考 ID、Token、费用、时延和状态；顶级教师与 Qwen 联调教师分开记录，不用联调身份证明顶级教师效果。
 
 **实际编码要求**：行 27359–27361 明确要求三字段进入 `PreDecisionState` 及 Laya/Kev 实际 state 文本/编码；写入 JSON、日志或 API 返回值不能证明模型消费。离线使用真实决策前前缀、相同语义和触发规则生成摘要，训练标签仍来自合法既有监督，不能由教师猜测最优动作。新特征尚未学习记 `FEATURE_NOT_TRAINED`；这一状态允许既有路由联调，但不能据此宣称新字段提升任务效果。后续继续微调、权重载入、教师到下一次路由的消费证据分别记录，当前 API 前向结果只见 Status。
 
-**AA 能力更新要求与实际状态**：能力按 `provider/model/revision/endpoint/native_effort` 记录原分、单位、来源版本和缺测；AA Intelligence Index 是综合指数，模型级分不复制成每 Effort 实测，也不直接成为最优动作标签。目标为 TTL 到期时自动刷新、显式 `force` 刷新、批次启动时锁定 `snapshot_id`，整批执行期间保持不变；Router 每次决策只读取批次快照。现有 `refresh.py` 仍是手动刷新入口，TTL、force 参数和按新池真实档位的 AA 更新尚未实现/验证。正式训练/实验固定实际测得的快照与来源；缺测保留 `NOT_MEASURED`。
+**AA 能力更新**：`refresh.ensure_current()`从Registry派生全部合法组合，默认TTL86400秒，支持force，刷新失败保留实际取得时间及STALE。正式启动取得最新数据，同批及Episode使用确定的snapshot_id；生成前不逐次联网。AA原分、单位、版本与缺测进入M组，训练标签来自真实任务结果。
 
 **唯一职责归属**：新增方法集中在 `our-project/code/src/modelrouter/v9/`；行 28185、28201–28203 要求旧系统只保留必要调用接点。同一功能一个正式实现，不另建 Agent 循环、Trainer、队列、Serving 或监测服务。
 
 | 原位置/模块 | 职责 | 与旧系统的接点 |
 | --- | --- | --- |
-| `v9/runtime` | 决策前状态、三身份联调映射、连续上下文和路由输入组装 | 原 Agent 生成边界调用；任务状态仅维护一份 |
+| `v9/runtime` | 决策前状态、连续上下文和共享T/M/H序列化 | 原 Agent 生成边界调用；任务状态仅维护一份 |
 | `v9/teacher` | 触发、两条固定参考摘要、三字段短评及来源/费用 | 输出进入 runtime 和训练编码；不执行工具、不选生成模型 |
-| `v9/capabilities` | 当前是手动 AA 刷新与快照读取；目标为 TTL/force 更新并记录真实 model×effort 分数 | 训练/实验批次固定 `snapshot_id`；TTL/force 尚待实现与实跑 |
+| `v9/capabilities` | AA逐档采集、TTL/force、STALE和能力卡 | 训练/实验批次固定 `snapshot_id`，在线使用有效快照 |
 | `v9/training` | 合法前缀和监督对齐、新特征编码、继续微调配置 | 交给现有 Trainer/控制器自然接续，无第二训练循环 |
 | 旧 Provider / Agent / Serving | 真实请求、原工具/Evaluator 执行、已有路由模型前向 | 必要参数传递和调用接点；不混放 V9 方法实现 |
 | 旧 Trainer / 队列 / telemetry | 优化器、训练运行、自然交接、原 usage 账本和展示 | 使用 V9 数据/配置，复用原记录，不重复计价或建立第二状态来源 |
@@ -844,44 +844,3 @@ Execution 报告已落地 80,970 个多来源 JSONL 行；Planning 从 main 966f
 
 
 
-## 2026-10-16 历史研究设计：层级候选池与多 Agent 决策输入
-
-> **历史草案，已由 2026-11-07 单 Agent 方法取代。** 以下 Agent 身份、角色、团队、handoff、子 Agent 数和多 Agent 比较不属于现行设计；原文保留用于追溯，不表示当前拟实现或实验安排。
->
-> 本节以下所有 RQ3 Decomposition、扩展 K/换池比较及多 Agent 字段，均描述 2026-10-16 当时的设想；现行 RQ2 固定用户选定的 K=3 目标身份，现行 RQ3 研究单 Agent 阶段识别、原任务中真实子任务边界与生成决策粒度。历史样本、结果与文内字段名不改名、不改写。
-
-> 本节是研究设计澄清与真实代码审阅后的缺口记录，不代表当前训练已使用全部字段。既有 H1–H7、Q-ID、历史训练协议和 GPU 队列不因本节修改。
-
-### 1. 模型池采用树形结构，避免固定的 Model×Effort 平面分类标签
-
-- **模型池的计数单位 K 是模型身份**：`provider/model_id/revision`（同一模型跨 Provider 的部署差异另计属性，不未经说明重复算独立模型）；开发阶段决定选哪些模型、选几个模型。每个模型是一级资源节点，至少挂载能力、原生 Effort 支持集合、上下文/工具能力、官方价目与缓存政策、可用性。
-- **第二层才是该模型自己的原生 Effort 候选**：`E(model)` 是官方真实支持的离散集合，可为单一默认选项；不能向不支持 Effort 的模型虚构档位，也不假定不同 Provider 的 Low/High 等价。Router 每次从合法 `(model, native_effort)` 中**联合选择模型与其 Effort**，不能由研究者事前固定“规划用 A/High、编码用 B/Low”。
-- **缓存与 Agent 信息不是三级动作标签**：在每个决策时刻，缓存命中机会、该模型已有会话、子 Agent 身份/职责、任务进度、失败与 Trace 是评估候选动作的当时状态；Router 不将“模型×Effort×KV 状态×历史事件”穷举为固定分类头。
-- **比较口径**：RQ 的模型池实验须固定同一批 K 模型比较不同 Router，或固定 Router/Harness/任务集比较不同 K 与池成员；对每个池同时报告 K 和实际合法 `Σ_m |E_t(m)|`；静态 AA Pareto 与真实 Agent Episode Pareto 不共用能力纵轴。
-
-### 2. 多 Agent Router 的必要决策前输入
-
-在任务开始及每个合法模型调用边界，Harness 向**同一个 Router**传入以下可得信息；字段缺失要显式标 `UNKNOWN`，不得补入未来结果：
-
-| 信息 | 推荐决策前字段 | 角色及界限 |
-|---|---|---|
-| 当前是谁 | `agent_id`、`agent_role`、`agent_capabilities`、`agent_framework` | `agent_role` 如 planner/coder/tester/reviewer/recovery，依真实 Harness 定义；**不得混为 user/assistant/tool 消息 role**。`agent_id` 仅作局部稳定身份，不把任意字符串当泛化训练信号 |
-| 与谁协作 | `parent_agent_id`、`team_id`、`handoff_from_agent_id`、`handoff_count_so_far`、`coordination_mode` | 仅保留已经发生的 handoff；不得读取未来指派或终局 |
-| 当前工作 | `task_id`、`subtask_id`、`subtask_goal`、`task_phase`、`dependency_status_observed` | 当前计划和已满足依赖；不是事后真实解决路径 |
-| 当前执行 | `step_index`、`prior_failures`、`last_verification_feedback`、`elapsed_time`、`remaining_budget` | 所有状态都以本次模型选择前为时间截断 |
-| 候选与连续性 | 树形 `model_pool[] -> allowed_native_efforts[]`，以及每候选当时可知的 `price`、`context_fit`、`estimated_cache_reuse`、`session_affinity` | 官方合法动作过滤优先；历史实际 cached tokens 与本次预计命中不能混淆 |
-
-Agent 身份必须在调用日志中可定位；训练时优先使用**可迁移的角色/职责、子任务文本和已发生交接信息**，避免对只有一次出现的 `agent_id` 做无意义记忆。
-
-### 3. 当前训练现状与不得越界的推断
-
-- 已核查 `router_data/tra.py`：TRA-001 的 `pre_decision_state` 保留 step/context/tool/error 和初始任务文字，`provenance` 记录的是 `agent_framework`；TRA-004 保留模型名、thinking mode 和 task_axis。**这些不等同于有真实子 Agent 角色、团队拓扑、已发生 handoff 的训练监督**。
-- `router_data/laya_batch_train.py` 当前从 V2.1 索引物化 S1/S2/S3 等样本，通过 `laya.train.encode_item` 编码后优化。未看到已落实上述多 Agent 角色/交接字段的独立训练表示，因此不能宣称 P22 已训练出“Agent-role-aware joint Model×Effort Router”。本审阅未证明第三方 Laya tokenizer/编码器会自动保留任意元数据字段。
-- 不改正在运行的训练协议；后续只在统一训练数据物化与 Router 输入边界**增补一个可选、时间截断的 AgentState**，并确保正式训练使用的 `state` 文本/编码确实包含该信息，当前训练与改造后的训练严格区分。不能把 Agent 做过某事的观察日志直接生成为未选候选的最优标签。
-
-### 4. 多 Agent RQ 的横向比较原则
-
-- **主效果**：相同 Agent 任务和预算上，比较与本任务类型一致的固定/任务级/已有多 Agent 或动态路由基线；完整模型的 Model 和 Effort 都由 Router 决定；提供单/双/三组信息消融，但不宣称所有字段必定有效。
-- **模型池**：固定任务、Router、拆分方式，改变 K 和池成员，单独记录每模型真实 Effort 数；不把扩大动作数误作模型数增加。
-- **任务拆分**：固定 K、模型身份、各模型原生 Effort 选项、Router 与原始任务集合，主要改变拆分粗细；同时记录实际子 Agent 数、交接、调用次数和费用。跨不同多 Agent 任务类型的比较作为分层报告，不将任务难度差异归因于拆分。
-- 按 2026-10-16 当时的计划，RQ 编号写作 RQ1 Overall、RQ2 Pool、RQ3 Decomposition、RQ4 Systematic Ablation、RQ5 Workload Boundary，图表沿 Fig.1–8/T1–T12。此处的 RQ3 Decomposition 与 K/池比较已由 2026-11-07 现行定义取代；原文和历史结果保留。

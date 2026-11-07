@@ -13,7 +13,7 @@ def compute_decomposition_benchmarks(
     """Report observed task starts, phase changes and generation boundaries only."""
     by_episode = defaultdict(list)
     for event in events or []:
-        if event.get("event") == "ROUTER_END" and event.get("episode_id") is not None:
+        if event.get("event") in ("ROUTER_END", "ROUTER_REUSE") and event.get("episode_id") is not None:
             by_episode[str(event["episode_id"])].append(event)
 
     observations = []
@@ -69,7 +69,8 @@ def compute_decomposition_benchmarks(
             "subtask_boundaries": subtask_boundaries or None,
             "subtask_boundary_status": "OBSERVED" if subtask_boundaries else "NOT_IMPLEMENTED_OR_RECORDED",
             "generation_count": len(generations),
-            "generation_granularity": "ONE_ROUTER_DECISION_BEFORE_EACH_GENERATION",
+            "router_call_count": sum(not row.get("decision_reused", False) for row in decisions),
+            "generation_granularity": decisions[0].get("routing_granularity", "generation") if decisions else None,
             "generations": generations,
         })
 

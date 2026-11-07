@@ -1,6 +1,6 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
-**2026-11-07 当前方法与执行状态**：当前研究为 Harbor 官方链路中的单 Agent。RQ3 研究阶段识别、原任务或真实执行材料中可定位的子任务边界，以及生成决策粒度；`inspect/modify/verify/recover` 只作阶段状态，不自动构成任务拆分。当前池目标为 Luna、GLM-5.3-Flash、Terra，规划 15 个 Model×Native Effort 候选；私有配置尚无 GLM 绑定，Provider `/models` 查询与 AA 刷新正在进行，均无本次可报告新结果。两项 2026-11-07 训练仍是 HY4 池的有限监督；原标签与结果保持原貌。正式 Benchmark 只用 Harbor `DefaultAgent`，本地 development 入口及模拟结果生成源码已删除；`agent/legacy.py` 留作历史、不导出或正式调用。RQ4/RQ5 观察汇总沿 `benchmark.rq1_analysis`。详细执行事实见[本批报告](../results/iterations/20261107-v9-full-method/review.md)和[项目现状](PROJECT_STATUS.md)。
+**2026-11-08 当前方法与执行状态**：正式链为Harbor→ModelRouterMiniSweAgent→DefaultAgent，只使用Single-Agent。RQ3研究阶段、真实子任务边界与路由粒度；Inspect/Modify/Verify/Recover只表示阶段。Luna/GLM-5.3-Flash/Terra由Registry登记15个Model×Native Effort；GLM已通过唯一私人配置绑定Colink，短文本正常，High4096长请求耗尽推理额度，返回Effort未报告。AA v7含130项独立成绩，Luna/Terra各六档、GLM仅Max，Low/High缺测；TTL/force/STALE与同批固定快照已实现。circuit-fibsqrt开发10尝试为4官方零分、6无有效Reward。两个11-07训练实体属于旧HY4池；本轮继续合法新池监督和两架构训练。完整结果见[重构报告](../results/iterations/20261107-v9-full-method/v9_refactor_review.md)及[项目现状](PROJECT_STATUS.md)。
 
 本文件早期 Q-ID、研究建议和协作记录保留其原始时间与语义；它们不覆盖以上现行方法。
 

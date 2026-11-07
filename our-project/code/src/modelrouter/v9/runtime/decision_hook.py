@@ -49,7 +49,7 @@ class V9DecisionHook:
         return decision.router_identity or {"router_run_id": None,
             "router_identity_status": "NOT_REPORTED_BY_RUNNING_SERVING"}
 
-    def before_route(self, state, messages, snapshot, legal_actions):
+    def before_route(self, state, messages, snapshot, legal_actions, *, route_due=True):
         if state.episode_id != self.episode_id:
             self.episode_id = state.episode_id
             self.trigger.reset(state.episode_id)
@@ -73,7 +73,7 @@ class V9DecisionHook:
         if self.teacher_enabled:
             reason = self.trigger.reason(state)
             teacher_status = "CARRIED_ASSESSMENT" if self.assessment else "NOT_TRIGGERED"
-            if reason:
+            if reason and route_due:
                 event(self.record_dir, "TEACHER_START", episode_id=state.episode_id,
                       decision_id=self.current_context["decision_id"], trigger_reason=reason)
                 self.assessment, metrics = self.assessor.assess(state, messages, reason)
