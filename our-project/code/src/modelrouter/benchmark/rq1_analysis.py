@@ -9,7 +9,7 @@ import math
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
-from modelrouter.providers.usage import known_request_cost
+from modelrouter.providers.usage import known_request_cost, request_decision_id
 
 
 def wilson_score_interval(successes: int, total: int, confidence: float = 0.95) -> Tuple[float, float]:
@@ -110,7 +110,6 @@ def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
     usable = [r for r in raw if r["status"] == "OFFICIAL_ARTIFACT_VERIFIED"
               and r.get("agent") != "oracle" and not r.get("router_fallback_used")
               and r.get("reward") in (0, 1)
-              and not r.get("untested_native_efforts_used")
               and r.get("policy_implementation_status") != "UNVERIFIED_EXAMPLE"
               and r.get("policy") not in ("routellm", "sr_knn", "laya_v2", "kev_4b")
               and (r.get("policy") not in ("joint_laya", "joint_kev")
@@ -133,13 +132,13 @@ def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
             if kind == "TEACHER_ERROR" and not item.get("provider_request_attempted", True):
                 continue
             role = "teacher" if kind.startswith("TEACHER") or item.get("role") == "teacher" else "generator"
-            identity = item.get("decision_id") or item.get("request_id") or (kind, len(recorded))
+            identity = request_decision_id(item) or (kind, len(recorded))
             key = (role, identity)
             recorded[key] = {**recorded.get(key, {}), **item, "role": role}
         for source, role, items in (("generator", "generator", metadata.get("provider_metrics", [])),
                                     ("failure", "generator", metadata.get("provider_failures", []))):
             for index, item in enumerate(items):
-                identity = item.get("decision_id") or item.get("request_id") or (source, index)
+                identity = request_decision_id(item) or (source, index)
                 key = (role, identity)
                 row = {**recorded.get(key, {}), **item, "role": role}
                 row.setdefault("event", "ERROR" if source == "failure" else "GENERATOR_END")
@@ -147,15 +146,15 @@ def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
         v9 = metadata.get("v9") or {}
         for index, item in enumerate(v9.get("teacher_metrics", [])):
             if item.get("provider_request_attempted", True):
-                identity = item.get("decision_id") or item.get("request_id") or ("teacher", index)
+                identity = request_decision_id(item) or ("teacher", index)
                 key = ("teacher", identity)
                 row = {**recorded.get(key, {}), **item, "role": "teacher"}
                 row.setdefault("event", "TEACHER_END")
                 recorded[key] = row
         ended = {
-            "generator": {item.get("decision_id") for item in recorded.values()
+            "generator": {request_decision_id(item) for item in recorded.values()
                           if item.get("role") == "generator" and item.get("event") in ("GENERATOR_END", "ERROR")},
-            "teacher": {item.get("decision_id") for item in recorded.values()
+            "teacher": {request_decision_id(item) for item in recorded.values()
                         if item.get("role") == "teacher" and item.get("event") in ("TEACHER_END", "TEACHER_ERROR")},
         }
         for item in events_by_episode[episode]:
@@ -207,7 +206,7 @@ def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
         costs = [request.get("cost_usd") for request in requests]
         known_costs = [known_request_cost(request) for request in requests]
         failed = [request for request in requests if request.get("event") in ("ERROR", "TEACHER_ERROR")
-                  or request.get("status") not in (None, "RECORDED")]
+                  or request.get("status") not in (None, "RECORDED", "SUCCESS")]
         known_failed_costs = [known_request_cost(request) for request in failed]
         calls = [request for request in requests if request.get("event") == "GENERATOR_END"]
         sources = {(request.get("cost_model_id"), request.get("cost_source"), request.get("cost_status"))

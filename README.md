@@ -17,11 +17,11 @@ ModelRouter 是面向长程 Agent 任务的模型、推理档位与成本研究�
 
 当前联合候选为 GPT-6 Luna、GLM-5.3-Flash 与 GPT-6.1 Terra。精确 `model_id`、Provider、协议、原生 Effort 菜单和当前可用条件按 Registry 与实际 Provider 能力记录，不假设不同模型支持相同档位，也不将旧 HY4 结果改写为 GLM 结果。
 
-GLM 渠道授权、绑定和精确模型 ID 仍待确认；确认前不启动新的固定 K=3 Harbor 实验。既有 2026-11-07 报告中的结果保留原身份，本次接续新增正式 Harbor 实验为 0。
+GLM 已沿唯一私人配置绑定 Colink，精确请求与返回为 `glm-5.3-flash`。Low/High 已有真实工具输出；返回 Effort 未报告，High 长请求曾耗尽输出额度，本轮部分请求返回 429。11-07 历史结果保持原身份，新完整 Episode 按原 Harbor 终局记录。
 
 候选动作是实际支持的 `(model, native_effort)` 组合；请求与返回身份、档位分别记录，未知保持未知。15 个联合候选是本轮规划目标，实际每批动作集合按 Provider 支持、工具与上下文条件生成；不支持或未证实的组合不补齐成可运行候选。
 
-AA 能力证据按精确模型和原生档位保存实际测量、版本、来源和时间；没有同档测量的字段保持 `NOT_MEASURED`，不复制模型级分数。能力快照按 TTL 刷新并可强制更新；一个实验批次固定所用 `snapshot_id`，批次中不漂移，路由决策不逐次联网查询。自动 TTL/强制刷新和新池能力结果尚待实际实现与运行，本文不将其写成已完成。
+AA 能力证据按精确模型和原生档位保存实际测量、版本、来源和时间；没有同档测量的字段保持 `NOT_MEASURED`，不复制模型级分数。TTL、强制刷新、STALE及同批固定 `snapshot_id` 已实现，路由决策不逐次联网。v7共有130项真实指标，Luna/Terra各六档、GLM仅Max；GLM Low/High、授权API完整数据、模型revision和官方发布时间仍缺。
 
 ModelRouter与Code Generation统一读取本机 `~/.agent-global/外部文本模型.local.json`。URL、Key、供应商池及模型账户绑定仅在此文件维护；`EXTERNAL_TEXT_MODEL_CONFIG`只指定文件位置。账户统一列在 `providers`，各组默认账户在 `defaults`，ModelRouter模型账户绑定在 `account_endpoints`，并发及输出等运行参数在 `provider_settings`。
 

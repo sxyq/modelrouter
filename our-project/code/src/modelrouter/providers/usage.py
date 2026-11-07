@@ -53,6 +53,11 @@ def update_token_budget(prompt_tokens: int, completion_tokens: int) -> None:
         _record_budget(data, prompt_tokens, completion_tokens)
 
 
+def request_decision_id(record):
+    """Resolve the recorded request boundary, including saved teacher records."""
+    return record.get("decision_id") or record.get("for_decision_id") or record.get("request_id")
+
+
 def known_request_cost(record):
     """Read known charges, retaining a partially priced account-switch request."""
     if record.get("cost_usd") is not None:

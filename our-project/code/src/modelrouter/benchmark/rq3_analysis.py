@@ -74,11 +74,27 @@ def compute_decomposition_benchmarks(
             "generations": generations,
         })
 
+    groups = defaultdict(list)
+    for row in observations:
+        decisions = by_episode[row["trial_id"]]
+        if not decisions or row["reward"] is None:
+            continue
+        first = decisions[0]
+        if first.get("checkpoint_id") in (None, "none"):
+            continue
+        pre = first["pre_decision_state"]
+        key = (row["task_id"], first["checkpoint_id"], pre.get("capability_snapshot_id"),
+               tuple(pre.get("disabled_information_groups", [])), pre.get("teacher_status") == "DISABLED")
+        groups[key].append(row)
+    comparisons = [rows for rows in groups.values()
+                   if len({row["generation_granularity"] for row in rows}) > 1]
     return {
         "data_origin": "OFFICIAL_HARBOR_TRIALS_AND_ROUTER_EVENTS",
         "execution_model": "singleAgent",
         "decomposition_comparison_status": "NOT_EVALUATED",
         "decomposition_comparison_reason": "No repeated official trials at declared single-agent decomposition settings",
         "subtask_boundaries_implemented": any(row["subtask_boundaries"] for row in observations),
+        "granularity_comparisons": comparisons,
+        "granularity_comparison_status": "RECORDED_OFFICIAL_RESULTS" if comparisons else "NOT_EVALUATED",
         "observations": observations,
     }

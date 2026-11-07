@@ -91,7 +91,6 @@ class PolicyModel(LitellmModel):
         self.last_metrics, self.usage = {}, []
         self.provider_failures = []
         self.fallback_used = False
-        self.untested_efforts_used = set()
         self.v9_hook = None
         if self.v9_enabled:
             from modelrouter.v9.runtime.decision_hook import V9DecisionHook
@@ -188,8 +187,6 @@ class PolicyModel(LitellmModel):
                            if key.startswith("router_") and key not in
                            ("router_checkpoint_id", "router_family", "router_fallback_used")} if self.v9_hook else {}
         self.fallback_used = self.fallback_used or decision.fallback_used
-        if selected["native_effort"] != "low" and not (self.v9_enabled and selected["native_effort"] == "none"):
-            self.untested_efforts_used.add(selected["native_effort"])
         event(self.record_dir, "ROUTER_END" if route_due else "ROUTER_REUSE", episode_id=self.state.episode_id, step=self.state.step_index,
               decision_id=decision_id,
               routing_granularity=self.routing_granularity, decision_reused=not route_due,
@@ -471,7 +468,6 @@ class ModelRouterMiniSweAgent(BaseAgent):
                                 "fallback_used": model.fallback_used,
                                 "policy_implementation_status": model.policy.implementation_status,
                                 "action_validation": model.action_validation,
-                                "untested_native_efforts_used": sorted(model.untested_efforts_used),
                                 "neural_router_evidence_eligible": bool(model.usage) and (
                                     model.policy.implementation_status == "REMOTE_NEURAL_ROUTER"
                                     and not model.fallback_used

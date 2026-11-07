@@ -58,6 +58,7 @@ class TrajectoryAssessor:
         started = time.perf_counter()
         metrics = {
             "role": "teacher", "episode_id": state.episode_id,
+            "decision_id": f"{state.episode_id}-{state.step_index}",
             "assessed_through_decision_id": getattr(
                 state, "last_decision_id", f"{state.episode_id}-{state.step_index - 1}"),
             "assessed_through_step": state.step_index, "phase": state.current_phase,

@@ -213,7 +213,6 @@ class ExperimentLedger:
         evaluated = trial["status"] == "OFFICIAL_ARTIFACT_VERIFIED"
         fallback = trial.get("router_fallback_used") is True
         scientific = (evaluated and trial.get("agent") != "oracle" and not fallback
-                      and not trial.get("untested_native_efforts_used")
                       and trial.get("policy_implementation_status") != "UNVERIFIED_EXAMPLE"
                       and trial.get("policy") not in ("routellm", "sr_knn")
                       and (trial.get("policy") not in ("laya_v2", "kev_4b", "joint_laya", "joint_kev")

@@ -4,7 +4,6 @@
   "execution_mode": "REAL_API",
   "execution_model": "singleAgent",
   "selection_scope": "MODEL_NATIVE_EFFORT",
-  "capability_force_refresh": false,
   "router_endpoint": "http://127.0.0.1:8000",
   "router_timeout_sec": null,
   "router_context_chars": 6000,
@@ -20,6 +19,9 @@
   "feature_training_status": "FEATURE_NOT_TRAINED",
   "backend_deployment_status": "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION",
   "strategy_configs": {
+    "rule_sticky": {
+      "v9_config": {"teacher_enabled": false}
+    },
     "glm_low": {
       "policy": "fixed_strong",
       "v9_config": {"fixed_model_id": "glm-5.3-flash", "teacher_enabled": false},
@@ -73,6 +75,32 @@
           "device": "cpu",
           "max_len": 8192,
           "head_max_len": 512,
+          "command": ["env", "OMP_NUM_THREADS=40", "HF_HUB_OFFLINE=1", "/home/syy/路由/.runtime/benchmark-venv/bin/python", "-m", "modelrouter.v9.runtime.checkpoint"]
+        }
+      }
+    },
+    "laya_trained": {
+      "policy": "joint_laya",
+      "v9_config": {
+        "feature_training_status": "PARTIAL_NEW_POOL_PREFIX_TRAINING",
+        "router_checkpoint": {
+          "family": "laya",
+          "path": "/home/syy/路由/runs/V9-K3-GLM-LAYA-20261108",
+          "device": "cpu",
+          "max_len": 8192,
+          "head_max_len": 512,
+          "command": ["env", "OMP_NUM_THREADS=40", "HF_HUB_OFFLINE=1", "/home/syy/路由/.runtime/benchmark-venv/bin/python", "-m", "modelrouter.v9.runtime.checkpoint"]
+        }
+      }
+    },
+    "kev_trained": {
+      "policy": "joint_kev",
+      "v9_config": {
+        "feature_training_status": "PARTIAL_NEW_POOL_PREFIX_TRAINING",
+        "router_checkpoint": {
+          "family": "kev",
+          "path": "/home/syy/路由/runs/V9-K3-GLM-KEV-20261108",
+          "device": "cpu",
           "command": ["env", "OMP_NUM_THREADS=40", "HF_HUB_OFFLINE=1", "/home/syy/路由/.runtime/benchmark-venv/bin/python", "-m", "modelrouter.v9.runtime.checkpoint"]
         }
       }
