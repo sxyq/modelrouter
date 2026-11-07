@@ -53,7 +53,7 @@ flowchart LR
 
 已取消多 Agent Schema 字段与正式描述；源码中没有新增多 Agent 系统。根 AGENTS、README、四规划、现行方法与 Fig.2/RQ3 图表同步调整。历史响应、旧提交及日期结果保留原貌。
 
-自有实现均已低于 1000 行，最大实现 `data_pipeline/views.py` 为 982 行。**所有 Python 文件无例外达标尚未成立**：既有 `router_data/test_retention_ordering.py` 1491 行，遵守本轮不改现有测试/夹具的要求保留；旧测试对已移除历史模块的引用也没有改写或运行。
+11-07自有实现已低于1000行，最大 `data_pipeline/views.py` 为982行；当时保留的1491行 `router_data/test_retention_ordering.py` 是剩余例外。11-08已按负责人要求把它按保留算法、包入口、队列、汇总和Kev保留职责拆成五个文件，52个原函数内容一致，没有新增断言。当前全部自有Python文件均低于1000行，最大仍982行。
 
 A6000 原 `/home/syy/路由/` 已定向部署源码；删除28个实际存在的过时源文件/配置，唯一上版源码包为 `.runtime/modelrouter-previous-source.tar.gz`（99文件、887058字节）。原权重、轨迹、F15恢复材料、GPU锁及健康Serving未替换。专用 `.runtime/benchmark-venv` 已安装 Harbor 0.24.0、mini-swe-agent 2.4.6、LiteLLM 1.106.0，并复用原Code Generation的37个CWEaver依赖源码，未另写Luna账户实现。上游 Terminal-Bench 2.1 的89题目录可实际加载。新增circuit-fibsqrt镜像供后续开发对照复用；本批任务容器全部结束并移除，原20镜像保留。Mac与A6000临时wheel目录已删除。
 

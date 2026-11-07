@@ -1,0 +1,185 @@
+{
+  "data_origin": "OFFICIAL_HARBOR_TRIALS",
+  "status": "NOT_EVALUATED",
+  "publication_eligible": false,
+  "paired_task_sets": false,
+  "table3": [],
+  "table10": [
+    {
+      "policy": "glm_low_json",
+      "provider_recorded_cost_usd": null,
+      "known_provider_recorded_cost_usd": null,
+      "failed_provider_cost_usd": null,
+      "known_failed_provider_cost_usd": null,
+      "failed_provider_request_count": 1,
+      "unknown_provider_cost_request_count": 1,
+      "provider_cost_sources": [
+        [
+          "glm-5.3-flash",
+          null,
+          "UNKNOWN"
+        ],
+        [
+          null,
+          null,
+          null
+        ]
+      ],
+      "input_tokens": null,
+      "output_tokens": null
+    }
+  ],
+  "fig3": [],
+  "fig4": [
+    {
+      "policy": "glm_low_json",
+      "provider_recorded_cost_usd": null,
+      "known_provider_recorded_cost_usd": null,
+      "failed_provider_cost_usd": null,
+      "known_failed_provider_cost_usd": null,
+      "failed_provider_request_count": 1,
+      "unknown_provider_cost_request_count": 1,
+      "provider_cost_sources": [
+        [
+          "glm-5.3-flash",
+          null,
+          "UNKNOWN"
+        ],
+        [
+          null,
+          null,
+          null
+        ]
+      ],
+      "input_tokens": null,
+      "output_tokens": null
+    }
+  ],
+  "pending": {
+    "RQ1": "Need paired task/seed sets, attributable model identities and full infrastructure billing",
+    "RQ2_Table6_Fig5": "Need repeated official trials grouped by registry-derived Model×Native Effort action sets",
+    "RQ3_Table7_Fig6": "Need repeated official trials at declared single-agent decomposition settings",
+    "RQ4_Table4_Table5_Table8_Table11_Fig7": "Need observed ablation and checkpoint assignments",
+    "RQ5_Table9_Fig8": "Need workload labels independent of outcomes and paired observed costs"
+  },
+  "excluded": [
+    {
+      "trial_id": "fb29004b-c55d-4815-85b7-e75bc78923be",
+      "status": "NOT_EVALUATED",
+      "policy": "glm_low_json"
+    }
+  ],
+  "table6": [],
+  "table7": [],
+  "table4": [],
+  "table5": [],
+  "table8": [],
+  "table11": [],
+  "teacher": [],
+  "table9": [],
+  "fig5": [],
+  "fig6": [],
+  "fig7": {
+    "information": [],
+    "teacher": [],
+    "actions": [],
+    "supervision": [],
+    "checkpoints": []
+  },
+  "fig8": [],
+  "observed_factor_status": {
+    "table6": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "model_effort_action_set"
+      ]
+    },
+    "table7": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "granularity"
+      ]
+    },
+    "table4": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "information_ablation"
+      ]
+    },
+    "table5": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "action_ablation"
+      ]
+    },
+    "table8": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "supervision_ablation"
+      ]
+    },
+    "table11": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "checkpoint_id"
+      ]
+    },
+    "teacher": {
+      "status": "NOT_EVALUATED",
+      "required_observed_fields": [
+        "teacher_enabled"
+      ]
+    }
+  },
+  "rq3_single_agent_observations": {
+    "data_origin": "OFFICIAL_HARBOR_TRIALS_AND_ROUTER_EVENTS",
+    "execution_model": "singleAgent",
+    "decomposition_comparison_status": "NOT_EVALUATED",
+    "decomposition_comparison_reason": "No repeated official trials at declared single-agent decomposition settings",
+    "subtask_boundaries_implemented": false,
+    "observations": [
+      {
+        "trial_id": "fb29004b-c55d-4815-85b7-e75bc78923be",
+        "task_id": "terminal-bench/git-multibranch",
+        "policy": "glm_low_json",
+        "status": "NOT_EVALUATED",
+        "reward": null,
+        "execution_model": "singleAgent",
+        "task_scope": "WHOLE_TASK_SINGLE_AGENT",
+        "task_start_observed": true,
+        "phase_changes": [],
+        "implemented_subtask_ids": null,
+        "subtask_boundaries": null,
+        "subtask_boundary_status": "NOT_IMPLEMENTED_OR_RECORDED",
+        "generation_count": 0,
+        "generation_count_source": "RECORDED_GENERATOR_END",
+        "generator_request_count": 1,
+        "decision_boundary_count": 1,
+        "router_call_count": 1,
+        "generation_granularity": "generation",
+        "generations": [
+          {
+            "decision_id": "fb29004b-c55d-4815-85b7-e75bc78923be-0",
+            "step": 0,
+            "phase": "inspect",
+            "phase_source": "OBSERVED_COMMAND_HEURISTIC",
+            "selected_action": {
+              "provider": "colink",
+              "model": "glm-5.3-flash",
+              "revision": "latest",
+              "native_effort": "low",
+              "action_id": "glm-5.3-flash:low",
+              "pool": "Reasoning"
+            },
+            "subtask_id": null,
+            "task_start": true,
+            "model_request_started": true,
+            "model_response_recorded": false
+          }
+        ]
+      }
+    ],
+    "granularity_comparisons": [],
+    "granularity_comparison_status": "NOT_EVALUATED"
+  }
+}
