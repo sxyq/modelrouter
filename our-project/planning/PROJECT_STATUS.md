@@ -1,5 +1,15 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**11-07完整方法与正式子集**：[本批研究](../results/iterations/20261107-v9-full-method/review.md)。原State/Schema/Serializer/Provider/原生Adapter已原位表达T/M/H、13登记联合动作、当前缓存时序和Luna三字段教师；新方法不走旧Alias。18条Train记录在两Tokenizer下36项编码无截断，最长5515状态Token；已保存的真实新Luna教师另实际进入原生前向。FULL指序列化摘要，不是全部原轨迹，也不代表已经学会有效利用。
+
+两合法Train任务、四真实截止、17个有效GPT候选；Dynaconf新增2条S1来自同一个截止（联合问题及low/xhigh档位问题），并重放S2/S3各8条。Luna请求max返回xhigh的两条不用于max监督，HY4两次502及一次短诊断未知，旧40保持Model-only身份。两原Trainer各完成18更新：Laya Head 546.828秒、Kev LoRA/Head 8495.464秒；最终研究实体均保存并实际执行正式三题，不使用正式任务拟合、不替Serving。
+
+Terminal-Bench 2.1事前三题以原Harbor/Mini-SWE/官方Evaluator完整执行。固定Luna low为0/1/1、Terra low为1/1/1、HY4均UNKNOWN；原始Laya三题1/1/1且全Luna high，固定high跟进也三题全过、参考费更低。训练Laya出现实际Terra切换，但相同输入原始权重也选择Terra，不能称训练新增分工。Kev初始8线程三题CPU路由超时；相同保存输入40线程前向252.066→120.084秒后，原始/更新版接续统一40线程，失败另列。TLS EOF等供应商异常不记质量失败，恢复完整Episode另记，不拼接。
+
+28次原完整Episode尝试已结束：19个可信业务终局、4个Provider未知、3个CPU路由超时、2个环境未知。更新Kev原Reward1/0/1、可信业务1/UNKNOWN/1，SQLite终态恢复1/1单列；三题均Agent超时。有效生成15次、实际模型切换4，另3次取消后返回路由不算执行动作；三题参考费$0.065009、返回路由2726.638秒，没有可归因训练的有用分工或独立双方向收益。
+
+当前没有完整K=3稳定净收益或独立质量—费用双方向选择证明。五RQ仍需有效第三模型、不同Train机制、独立分层任务及真实组件消融和全部资源费用。原38组25完成；F15上次10:47明确BrokenPipeError/返回120，报告80252而保存点仍61180。现在原Controller使用原虚拟环境、普通文件输出与GPU锁再次EXACT_RESUME，13:00新游标61820；期间系统Python缺torch的接续错误保留、未产生更新。Serving保持原F05-e01和导入Kev。下文按日期保留历史事实，不将旧“无新联合训练”或HY4身份不符口径当成本批状态。
+
 **11-06正式转向真实K=3**：负责人已将主线确定为Luna／HY4／Terra、Model×Native Effort、缓存、Laya／Kev原始及训练代表、Luna教师和完整Episode净收益。[统一研究入口](../results/README.md)及[本批结果](../results/iterations/20261106-v9-k3-real/review.md)为当前入口。旧K=2正式40条和STEP009/010保留历史身份，不作为新池联合监督。历史Alias源码与配置已按本轮要求保留，新正式入口不调用。下列此前“仅本地、未生成、Alias已删除”的段落描述各自当时状态，不代表本批执行结论。
 
 **本批真实执行已结束**：两开发任务五策略共10个主位置，6个原Reward／CTRF、5通过／1业务失败／4未知；Hy4两题都返回preview，未执行身份不符动作，所以三有效模型比较仍未成立。Laya F05-e01、Kev R11共16次CPU前向全选Luna low、切换0、620.979秒；第二题两个动态策略同成功但均比固定Luna参考费高，没有净收益。四个原始／训练版本另各一次相同输入真实CPU前向，均Luna low；不确认新池最优或训练贡献。38 Agent请求＋3身份诊断、345373已知Token／$0.06117485已知参考费，实收、HY4费率及资源USD未知。教师关闭、新联合监督与神经训练0，旧40保留；不扩原始Episode／档位／教师组合。

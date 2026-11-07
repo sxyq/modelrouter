@@ -10,5 +10,6 @@
 | `SYNTHETIC` | [RQ4原Demo](benchmarks/rq4_data.json)、[权重与方法核对](iterations/20261106-v9-routing-granularity/review.md) | 预填演示，不是正式消融成绩 |
 | `UNKNOWN_OR_ENVIRONMENT_FAILURE` | [原Trial与终态验证区别](iterations/20261106-v9-complete-opportunities/review.md) | 原Reward缺失、环境失败、身份不符分别保留；终态后来通过不改变原完整Episode结果 |
 | `REAL_K3_DEVELOPMENT` | [本批配置与结果](iterations/20261106-v9-k3-real/) | 两个已开发暴露任务，原Harbor／Evaluator、真实请求、原始与训练代表、Effort与缓存；有效性按实际返回身份和终局分别报告，不作为最终盲测 |
+| `REAL_K3_FORMAL_SUBSET_AND_TRAINING` | [完整方法、Train及官方子集](iterations/20261107-v9-full-method/review.md) | T/M/H与Luna教师原生消费、有限新联合监督、原Trainer更新、Terminal-Bench 2.1事前子集的原始/更新完整Episode；跟进与异常分列，不证明完整K=3净收益 |
 
 完整私人响应、请求正文、账单、凭据和物理权重不进入公开目录。模型参考费、供应商实收、Router／教师／CPU／GPU／VM资源费用分别保留未知项。官方Reward、单步结果、终态恢复、静态预测和模拟结果不能互相替代。
