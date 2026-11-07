@@ -244,9 +244,12 @@ def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
         "excluded": [{"trial_id": r.get("trial_id"), "status": r["status"],
                       "policy": r.get("policy")} for r in raw if r not in usable],
     }
-    output.update(observed_research_groups(usable, events))
+    output.update(observed_research_groups(usable, events, trial_requests))
     from .rq3_analysis import compute_decomposition_benchmarks
     output["rq3_single_agent_observations"] = compute_decomposition_benchmarks(raw, events)
+    grain = output["rq3_single_agent_observations"]
+    grain["granularity_comparisons"] = [r for r in output["table7"] if r["paired_task_seed_sets"]]
+    grain["granularity_comparison_status"] = "RECORDED_OFFICIAL_RESULTS" if grain["granularity_comparisons"] else "NOT_EVALUATED"
     destination = iteration_dir / "analysis"
     write_atomic(destination / "official_results.json", output)
     for number in range(3, 12):
@@ -262,11 +265,23 @@ def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
     return output
 
 
-def observed_research_groups(trials, events):
+def observed_research_groups(trials, events, request_rows):
     """Group only declared experimental factors and observed official outcomes."""
     from .iterations import percentile
 
     def label(trial, field):
+        decisions = [e for e in events if e.get("event") in ("ROUTER_END", "ROUTER_REUSE")
+                     and str(e.get("episode_id")) == str(trial.get("trial_id"))]
+        if field in ("granularity", "checkpoint_id", "information_ablation", "capability_snapshot_id", "teacher_enabled"):
+            values = set()
+            for row in decisions:
+                pre = row.get("pre_decision_state") or {}
+                values.add({"granularity": row.get("routing_granularity"),
+                            "checkpoint_id": row.get("checkpoint_id"),
+                            "information_ablation": tuple(pre.get("disabled_information_groups", [])),
+                            "capability_snapshot_id": pre.get("capability_snapshot_id"),
+                            "teacher_enabled": pre.get("teacher_status") != "DISABLED"}[field])
+            return next(iter(values)) if len(values) == 1 else None
         if field == "model_effort_action_set":
             episode = str(trial.get("trial_id"))
             action_sets = {
@@ -296,11 +311,14 @@ def observed_research_groups(trials, events):
         routed = [e for e in events if e["event"] == "ROUTER_END" and e.get("episode_id") in ids]
         calls = [e for e in events if e["event"] == "GENERATOR_END" and e.get("episode_id") in ids]
         success = sum(t["reward"] == 1 for t in group)
-        generator = [t.get("cost_usd") for t in group]
+        requests = [r for t in group for r in request_rows[str(t["trial_id"])]]
+        generator = [r.get("cost_usd") for r in requests if r["role"] == "generator"]
+        teacher = [r.get("cost_usd") for r in requests if r["role"] == "teacher"]
         complete = [full_cost(t) for t in group]
         return {**labels, "episodes": len(group), "successes": success,
                 "success_rate": success / len(group), "ci95": wilson_score_interval(success, len(group)),
-                "generator_mean_usd": sum(generator) / len(group) if all(c is not None for c in generator) else None,
+                "generator_mean_usd": sum(generator) / len(group) if generator and all(c is not None for c in generator) else None,
+                "teacher_mean_usd": sum(teacher) / len(group) if all(c is not None for c in teacher) else None,
                 "actual_complete_mean_usd": sum(complete) / len(group) if all(c is not None for c in complete) else None,
                 "actual_cost_per_success_usd": sum(complete) / success if success and all(c is not None for c in complete) else None,
                 "episode_p95_s": percentile([t.get("duration_sec") for t in group], .95),
@@ -315,7 +333,9 @@ def observed_research_groups(trials, events):
     result = {}
     factors = {"table6": ("model_effort_action_set",), "table7": ("granularity",),
                "table4": ("information_ablation",), "table5": ("action_ablation",),
-               "table8": ("supervision_ablation",), "table11": ("checkpoint_id",)}
+               "table8": ("supervision_ablation",), "table11": ("checkpoint_id",),
+               "teacher": ("teacher_enabled",)}
+    controls = ("checkpoint_id", "capability_snapshot_id", "information_ablation", "teacher_enabled", "model_effort_action_set")
     group_status = {}
     for table, fields in factors.items():
         grouped = defaultdict(list)
@@ -323,13 +343,15 @@ def observed_research_groups(trials, events):
             values = tuple(label(trial, f) for f in fields)
             if any(value is None for value in values):
                 continue
-            grouped[(trial["policy"], *values)].append(trial)
+            cohort = ((trial.get("agent_metadata") or {}).get("policy", trial["policy"]),
+                      tuple((f, label(trial, f)) for f in controls if f not in fields))
+            grouped[(cohort, *values)].append(trial)
         records = []
         for key, group in sorted(grouped.items(), key=lambda kv: str(kv[0])):
             same_policy = [v for k, v in grouped.items() if k[0] == key[0]]
             sets = [{task_seed(t) for t in v} for v in same_policy]
             paired = len(sets) > 1 and all(s == sets[0] for s in sets)
-            records.append(summarize(group, {"policy": key[0], **dict(zip(fields, key[1:])),
+            records.append(summarize(group, {"policy": key[0][0], **dict(key[0][1]), **dict(zip(fields, key[1:])),
                                             "paired_task_seed_sets": paired}))
         result[table] = records
         group_status[table] = {"status": "PARTIAL" if records else "NOT_EVALUATED",
@@ -365,7 +387,7 @@ def observed_research_groups(trials, events):
                 "trial_pairs": [[a["trial_id"], b["trial_id"]] for a, b in pairs],
                 "publication_eligible": False})
     result.update(table9=comparisons, fig5=result["table6"], fig6=result["table7"],
-                  fig7={"information": result["table4"], "actions": result["table5"],
+                  fig7={"information": result["table4"], "teacher": result["teacher"], "actions": result["table5"],
                         "supervision": result["table8"], "checkpoints": result["table11"]},
                   fig8=comparisons, observed_factor_status=group_status)
     return result

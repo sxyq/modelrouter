@@ -59,56 +59,46 @@ def mini_configuration(max_steps=30, cost_limit=0.0):
 class PolicyModel(LitellmModel):
     """Reuse official tool handling; call the existing Provider once per query."""
 
-    abort_exceptions = LitellmModel.abort_exceptions + [ValueError, RuntimeError, TypeError, urllib.error.HTTPError]
+    abort_exceptions = LitellmModel.abort_exceptions + [ValueError, RuntimeError, TypeError, OSError]
 
     def __init__(self, *, policy, state, record_dir, provider=None, seed=42, max_output_tokens=2048,
-                 v9_config=None, candidate_actions=None, **kwargs):
+                 v9_config, candidate_actions=None, **kwargs):
         super().__init__(**kwargs)
         self.policy_name = policy
-        self.v9_enabled = v9_config is not None and v9_config.get("enabled", True)
         if candidate_actions is not None:
             self.actions = [LegalAction.model_validate(action).model_dump() for action in candidate_actions]
         else:
-            self.actions = legal_actions(v9_config.get("formal_model_ids", V9_MODEL_IDS)
-                                         if self.v9_enabled else V9_MODEL_IDS)
+            self.actions = legal_actions(v9_config.get("formal_model_ids", V9_MODEL_IDS))
         policy_key = {"joint_laya": "laya_v2", "joint_kev": "kev_4b"}.get(policy, policy)
         target = "gpt-6.1-terra" if policy == "fixed_strong" else "gpt-6-luna"
-        if self.v9_enabled:
-            target = v9_config.get("fixed_model_id", target)
+        target = v9_config.get("fixed_model_id", target)
         self.policy = create_policy(policy_key, seed=seed, target_model=target)
         self.state, self.record_dir = state, record_dir
         self.provider = provider
         if self.provider is None:
-            provider_type = (OpenAIResponsesProvider if self.v9_enabled
-                             and v9_config.get("generator_protocol") == "responses"
+            provider_type = (OpenAIResponsesProvider if v9_config.get("generator_protocol") == "responses"
                              else OpenAICompatibleProvider)
-            self.provider = provider_type(request_timeout_sec=None if self.v9_enabled else 60.0)
+            self.provider = provider_type(request_timeout_sec=None)
         self.max_output_tokens = max_output_tokens
-        self.routing_granularity = v9_config.get("routing_granularity", "generation") if self.v9_enabled else "generation"
+        self.routing_granularity = v9_config.get("routing_granularity", "generation")
         self.last_router_decision = None
         self.last_route_phase = None
-        self.generator_stream = v9_config.get("generator_stream", True) if self.v9_enabled else True
+        self.generator_stream = v9_config.get("generator_stream", True)
         self.last_metrics, self.usage = {}, []
         self.provider_failures = []
         self.fallback_used = False
-        self.v9_hook = None
-        if self.v9_enabled:
-            from modelrouter.v9.runtime.decision_hook import V9DecisionHook
-            self.v9_hook = V9DecisionHook(v9_config, self.provider, Path(record_dir))
-            if hasattr(self.policy, "client"):
-                self.policy.client.protocol = "system_one"
-                self.policy.client.endpoint = v9_config["router_endpoint"].rstrip("/")
-                self.policy.client.timeout = v9_config.get(
-                    "router_timeout_sec", 60.0 if self.policy.client.router_family == "kev" else 20.0)
-                if v9_config.get("router_checkpoint"):
-                    from modelrouter.v9.runtime.checkpoint import CheckpointRouterClient
-                    self.policy.client = CheckpointRouterClient(v9_config)
-        self.teacher_metrics = self.v9_hook.teacher_metrics if self.v9_hook else []
-        self.action_validation = {
-            action["action_id"]: ("REAL_API_NOT_OBSERVED" if self.v9_enabled else
-                                  "REAL_TESTED_LOW" if action["native_effort"] == "low" else "NOT_TESTED")
-            for action in self.actions
-        }
+        from modelrouter.v9.runtime.decision_hook import V9DecisionHook
+        self.v9_hook = V9DecisionHook(v9_config, self.provider, Path(record_dir))
+        if hasattr(self.policy, "client"):
+            self.policy.client.protocol = "system_one"
+            self.policy.client.endpoint = v9_config["router_endpoint"].rstrip("/")
+            self.policy.client.timeout = v9_config.get(
+                "router_timeout_sec", 60.0 if self.policy.client.router_family == "kev" else 20.0)
+            if v9_config.get("router_checkpoint"):
+                from modelrouter.v9.runtime.checkpoint import CheckpointRouterClient
+                self.policy.client = CheckpointRouterClient(v9_config)
+        self.teacher_metrics = self.v9_hook.teacher_metrics
+        self.action_validation = {action["action_id"]: "REAL_API_NOT_OBSERVED" for action in self.actions}
 
     def _query(self, messages, **kwargs):
         if self.state.status == EpisodeStatus.TIMEOUT:
@@ -116,34 +106,19 @@ class PolicyModel(LitellmModel):
         decision_id = f"{self.state.episode_id}-{self.state.step_index}"
         snapshot = self.state.build_pre_decision_snapshot().to_dict()
         snapshot.update(decision_id=decision_id, decision_sequence=self.state.step_index)
-        available_actions = self.actions
-        if self.v9_enabled:
-            input_bound = len(json.dumps(messages, ensure_ascii=False).encode("utf-8"))
-            conditions = [self.provider.candidate_conditions(ModelRegistry().get_spec(model), input_bound, self.max_output_tokens)
-                          for model in dict.fromkeys(action["model"] for action in self.actions)]
-            excluded = {row["model_id"] for row in conditions if row["exclusion_reason"]}
-            available_actions = [action for action in self.actions if action["model"] not in excluded]
-            snapshot["candidate_conditions"] = conditions
-            if not available_actions:
-                raise RuntimeError("No available model/effort candidate: " + json.dumps(conditions))
+        input_bound = len(json.dumps(messages, ensure_ascii=False).encode("utf-8"))
+        conditions = [self.provider.candidate_conditions(ModelRegistry().get_spec(model), input_bound, self.max_output_tokens)
+                      for model in dict.fromkeys(action["model"] for action in self.actions)]
+        excluded = {row["model_id"] for row in conditions if row["exclusion_reason"]}
+        available_actions = [action for action in self.actions if action["model"] not in excluded]
+        snapshot["candidate_conditions"] = conditions
+        if not available_actions:
+            raise RuntimeError("No available model/effort candidate: " + json.dumps(conditions))
         route_due = (self.last_router_decision is None or self.routing_granularity == "generation"
                      or self.last_router_decision.selected_action not in available_actions
                      or self.routing_granularity == "phase" and self.state.current_phase != self.last_route_phase)
-        if self.v9_hook:
-            self.provider.request_timeout_sec = snapshot["time_remaining_sec"]
-            snapshot = self.v9_hook.before_route(self.state, messages, snapshot, available_actions, route_due=route_due)
-        else:
-            snapshot.update(prompt=json.dumps(messages, ensure_ascii=False))
-            snapshot.update(context_chars=len(snapshot["prompt"]), prior_tool_calls_count=len(self.state.history),
-                            prior_error_signals_count=self.state.tool_error_count,
-                            context_tokens_approx=len(snapshot["prompt"]) // 4,
-                            history_snippet=json.dumps([
-                                {"command": step.tool_action, "output": step.tool_observation,
-                                 "exit_code": step.tool_exit_code} for step in self.state.history
-                            ], ensure_ascii=False))
-            if hasattr(self.state, "last_output"):
-                snapshot.update(last_tool_exit_code=self.state.last_output["returncode"],
-                                last_observation_summary=self.state.last_output["output"])
+        self.provider.request_timeout_sec = snapshot["time_remaining_sec"]
+        snapshot = self.v9_hook.before_route(self.state, messages, snapshot, available_actions, route_due=route_due)
         snapshot = PreDecisionState.model_validate(snapshot).model_dump()
         self.state.pre_decision_snapshot = snapshot
         route_start = time.perf_counter()
@@ -158,9 +133,9 @@ class PolicyModel(LitellmModel):
             decision = self.policy.client.route(
                 episode_id=self.state.episode_id, decision_id=decision_id,
                 pre_decision_state=snapshot, legal_actions=available_actions,
-                policy_version="mini-v9" if self.v9_enabled else "mini-v10")
+                policy_version="mini-v9")
         else:
-            fixed_effort = self.v9_hook.config.get("fixed_native_effort") if self.v9_hook else None
+            fixed_effort = self.v9_hook.config.get("fixed_native_effort")
             if fixed_effort is not None and self.policy_name in ("fixed_strong", "fixed_cheap"):
                 fixed_actions = [action for action in available_actions if action["model"] == self.policy.target_model
                                  and action["native_effort"] == fixed_effort]
@@ -181,11 +156,10 @@ class PolicyModel(LitellmModel):
         self.state.last_decision_id = decision_id
         self.state.last_router_checkpoint_id = decision.checkpoint_id
         self.state.last_selected_action = selected
-        if self.v9_hook:
-            self.v9_hook.after_route(decision, neural_route=route_due and hasattr(self.policy, "client"))
+        self.v9_hook.after_route(decision, neural_route=route_due and hasattr(self.policy, "client"))
         router_identity = {key: value for key, value in self.v9_hook.current_context.items()
                            if key.startswith("router_") and key not in
-                           ("router_checkpoint_id", "router_family", "router_fallback_used")} if self.v9_hook else {}
+                           ("router_checkpoint_id", "router_family", "router_fallback_used")}
         self.fallback_used = self.fallback_used or decision.fallback_used
         event(self.record_dir, "ROUTER_END" if route_due else "ROUTER_REUSE", episode_id=self.state.episode_id, step=self.state.step_index,
               decision_id=decision_id,
@@ -202,8 +176,7 @@ class PolicyModel(LitellmModel):
         spec = ModelRegistry().get_spec(selected["model"])
         if self.state.status == EpisodeStatus.TIMEOUT:
             raise RuntimeError("Harbor episode timed out")
-        if self.v9_enabled:
-            self.provider.request_timeout_sec = self.state.time_budget_sec - self.state.elapsed_time_sec
+        self.provider.request_timeout_sec = self.state.time_budget_sec - self.state.elapsed_time_sec
         started = time.perf_counter()
         event(self.record_dir, "GENERATOR_START", episode_id=self.state.episode_id, decision_id=decision_id,
               decision_sequence=self.state.step_index, selected_action=selected,
@@ -240,22 +213,20 @@ class PolicyModel(LitellmModel):
                        router_checkpoint_id=decision.checkpoint_id,
                        router_family=decision.router_family, **router_identity,
                        capability_snapshot_id=snapshot.get("capability_snapshot_id"))
-        if self.v9_enabled:
-            metrics["execution_mode"] = "REAL_API"
-            identity_status = ("REAL_API_IDENTITY_MATCHED" if metrics["identity_status"] == "MATCHED_REQUEST"
-                               else "REAL_API_IDENTITY_UNVERIFIED")
-            effort_status = metrics["native_effort_status"]
-            self.action_validation[selected["action_id"]] = effort_status
-            metrics["model_validation_status"] = identity_status
-            metrics["effort_validation_status"] = effort_status
+        metrics["execution_mode"] = "REAL_API"
+        identity_status = ("REAL_API_IDENTITY_MATCHED" if metrics["identity_status"] == "MATCHED_REQUEST"
+                           else "REAL_API_IDENTITY_UNVERIFIED")
+        effort_status = metrics["native_effort_status"]
+        self.action_validation[selected["action_id"]] = effort_status
+        metrics["model_validation_status"] = identity_status
+        metrics["effort_validation_status"] = effort_status
         self.last_metrics = metrics
         self.usage.append(metrics)
         self.state.accumulated_cost_usd += metrics.get("cost_usd") or 0
         metrics["agent_request_wall_ms"] = (time.perf_counter() - started) * 1000
         if self.state.model_time_sec is not None:
             self.state.model_time_sec += metrics["agent_request_wall_ms"] / 1000
-        if self.v9_hook:
-            self.v9_hook.after_generation(metrics, selected, body)
+        self.v9_hook.after_generation(metrics, selected, body)
         event(self.record_dir, "GENERATOR_END", **metrics,
               step=self.state.step_index, policy=self.policy_name, model=selected["model"],
               returned_model=metrics["returned_model_id"], effort=selected["native_effort"])
@@ -285,8 +256,7 @@ class PolicyModel(LitellmModel):
     def _calculate_cost(self, response):
         # Upstream needs a number; unpriced API usage remains null in records.
         cost = self.last_metrics.get("cost_usd") or 0.0
-        teacher_cost = sum(row.get("cost_usd") or 0 for row in
-                           (self.v9_hook.last_teacher_metrics if self.v9_hook else []))
+        teacher_cost = sum(row.get("cost_usd") or 0 for row in self.v9_hook.last_teacher_metrics)
         return {"cost": cost + teacher_cost}
 
     @property
@@ -314,20 +284,19 @@ class PolicyModel(LitellmModel):
                                     "policy_implementation_status": self.policy.implementation_status},
                          "fallback_used": self.fallback_used, "provider_metrics": self.usage,
                          "provider_failures": self.provider_failures}}
-        if self.v9_hook:
-            result["info"]["v9"] = {
-                "teacher_metrics": self.teacher_metrics, "continuity": self.v9_hook.continuity,
-                "capability_snapshot_id": self.v9_hook.capability_snapshot.get("snapshot_id"),
-                "router_checkpoint_ids": sorted({row["router_checkpoint_id"] for row in self.usage}),
-                "router_checkpoints": [dict(router_family=family, run_id=run_id, checkpoint_id=checkpoint_id)
-                                       for family, run_id, checkpoint_id in sorted(
-                                           {(row["router_family"], row.get("router_run_id"), row["router_checkpoint_id"])
-                                            for row in self.usage}, key=lambda item: (item[0], item[1] or "", item[2]))],
-                "feature_training_status": self.v9_hook.config.get("feature_training_status", "FEATURE_NOT_TRAINED"),
-                "backend_deployment_status": self.v9_hook.config.get("backend_deployment_status", "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION"),
-                "complete_episode_cost_usd": self.complete_episode_cost_usd,
-                "upstream_cost_accounting": "KNOWN_COSTS_PLUS_UNKNOWN_PLACEHOLDERS_NOT_BILLING",
-            }
+        result["info"]["v9"] = {
+            "teacher_metrics": self.teacher_metrics, "continuity": self.v9_hook.continuity,
+            "capability_snapshot_id": self.v9_hook.capability_snapshot.get("snapshot_id"),
+            "router_checkpoint_ids": sorted({row["router_checkpoint_id"] for row in self.usage}),
+            "router_checkpoints": [dict(router_family=family, run_id=run_id, checkpoint_id=checkpoint_id)
+                                   for family, run_id, checkpoint_id in sorted(
+                                       {(row["router_family"], row.get("router_run_id"), row["router_checkpoint_id"])
+                                        for row in self.usage}, key=lambda item: (item[0], item[1] or "", item[2]))],
+            "feature_training_status": self.v9_hook.config.get("feature_training_status", "FEATURE_NOT_TRAINED"),
+            "backend_deployment_status": self.v9_hook.config.get("backend_deployment_status", "PROVIDER_RETURNED_IDENTITY_NOT_WEIGHT_INSPECTION"),
+            "complete_episode_cost_usd": self.complete_episode_cost_usd,
+            "upstream_cost_accounting": "KNOWN_COSTS_PLUS_UNKNOWN_PLACEHOLDERS_NOT_BILLING",
+        }
         return result
 
 
@@ -386,7 +355,7 @@ class ModelRouterMiniSweAgent(BaseAgent):
     capabilities = AgentCapabilities(atif=True)
     def __init__(self, logs_dir=None, model_name=None, *, policy="fixed_strong", seed=42,
                  max_steps=30, max_output_tokens=2048, cost_limit=0.0,
-                 v9_config=None, candidate_actions=None, provider=None, **kwargs):
+                 v9_config, candidate_actions=None, provider=None, **kwargs):
         super().__init__(logs_dir=Path(logs_dir or "/tmp/modelrouter-mini"), model_name=model_name, **kwargs)
         self.policy, self.seed = policy, int(seed)
         self.max_steps, self.max_output_tokens = int(max_steps), int(max_output_tokens)
@@ -459,7 +428,7 @@ class ModelRouterMiniSweAgent(BaseAgent):
             event(record_dir, "AGENT_END", episode_id=state.episode_id, step=state.step_index,
                   elapsed_time_sec=state.elapsed_time_sec, status=state.status.value,
                   reward_status="AWAITING_OFFICIAL_EVALUATOR")
-            if self.v9_config and self.v9_config.get("router_checkpoint") and hasattr(model.policy, "client"):
+            if self.v9_config.get("router_checkpoint") and hasattr(model.policy, "client"):
                 model.policy.client.close()
             context.metadata = {**(context.metadata or {}), "harness": "minisweagent.agents.default.DefaultAgent",
                                 "mini_version": version("mini-swe-agent"), "policy": self.policy,
@@ -472,11 +441,10 @@ class ModelRouterMiniSweAgent(BaseAgent):
                                     model.policy.implementation_status == "REMOTE_NEURAL_ROUTER"
                                     and not model.fallback_used
                                     and all(u.get("identity_status") == "MATCHED_REQUEST"
-                                            for u in model.episode_usage)),
+                                            for u in model.usage)),
                                 "raw_trajectory": str(self.logs_dir / "mini-swe-agent.trajectory.json")}
             context.metadata["provider_failures"] = model.provider_failures
-            if model.v9_hook:
-                context.metadata["v9"] = model.serialize()["info"]["v9"]
+            context.metadata["v9"] = model.serialize()["info"]["v9"]
             if model.usage:
                 usage = model.episode_usage
                 if all(u["usage_status"] == "REPORTED" for u in usage):

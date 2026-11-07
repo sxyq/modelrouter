@@ -105,7 +105,8 @@ def collect_trials(path: Path):
             continue
         for row in audit_job(job)["trials"]:
             unit = units.get(job.name, {})
-            trials.append({**unit, **row, "job_name": job.name, "job_dir": str(job)})
+            trials.append({**unit, **row, "seed": config["seed"],
+                           "job_name": job.name, "job_dir": str(job)})
     recorded_tools = {(r.get("episode_id"), r.get("tool_call_id")) for r in rows(path / "tool_calls.jsonl") if r.get("kind") == "agent_tool"}
     for trial in trials:
         if not trial.get("trial_id"):

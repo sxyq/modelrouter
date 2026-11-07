@@ -199,9 +199,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--dev", action="store_true")
     p.add_argument("--subset", choices=["canary", "dev", "sealed"], default="canary")
     p.add_argument("--agent", choices=["oracle", "modelrouter"], default="modelrouter")
-    p.add_argument("--policies", default="fixed_strong,fixed_cheap,random,rule_sticky,joint_laya,joint_kev")
+    p.add_argument("--policies", default="luna_high,glm_high,terra_high,rule_sticky,joint_laya,joint_kev")
     p.add_argument("--model", help="Verified provider/model name; do not supply unverified aliases")
-    p.add_argument("--v9-config", type=Path, help="Existing V9 JSON configuration for the routed mini agent")
+    p.add_argument("--v9-config", type=Path,
+                   default=iterations.ROOT / "our-project/experiments/configs/v9_real_comparison.json",
+                   help="Existing V9 JSON configuration for the routed mini agent")
     p.add_argument("--environment", choices=["docker", "daytona", "modal", "e2b"], default="docker")
     p.add_argument("--docker-host", help="Docker endpoint for this run; overrides runtime config")
     p.add_argument("--force-build", action="store_true", help="Build the task environment from its upstream Dockerfile")
