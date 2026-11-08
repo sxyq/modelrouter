@@ -1,5 +1,7 @@
 # ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-07 更新）
 
+> **2026-11-09正式RQ1数据来源**：[Terminal-Bench 2.0批次](../../our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)，官方89题×17策略；原Harbor/Verifier、固定四并发、Router两并发、四实体Teacher OFF/ON、4096输出与AA v7事前确定。Fig.3质量—费用、Fig.4费用构成及Model×Effort/教师/训练对照从本批真实终局读取；图中无Reward与未运行留空，模型参考费不命名为完整现金费用。旧2.1及历史预填图表保持原身份，八图十二表结构不变。
+
 > **2026-11-08 当前方法定义**：Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位；缓存连续性；Luna教师；Laya/Kev原始与新池训练版；A6000原Harbor；完整任务质量—总成本净收益。唯一链Harbor→ModelRouterMiniSweAgent→DefaultAgent，Registry登记15动作。RQ3为阶段、真实子任务边界与路由粒度。新池一个五候选偏好+16辅助，两架构各17更新事前确定。49尝试全部结束：33有效终局/21个1/12个0，16无Reward。GLM三档工具及官方1，返回Effort缺；constraints CPU Laya1/1/1、Kev1/1/0，只有原始/训练Kev触及时限。sanitize Laya1→0/Kev0→0，text有效终局全0；当前[八部分报告](../../our-project/results/iterations/20261108-v9-k3-training/review.md)与脱敏49行结果提供Fig.3–8/Table3–12实际位置，未运行项目保持缺项。旧HY4和过去素材保留历史；完整现金净收益与训练贡献仍缺。
 >
 > 当前能力链为Registry→AA统一快照→逐档候选卡→M→共享Serializer→原生Tokenizer。v7取得时间2026-11-07T13:47:04.783836Z、Index5.0.1，130项；GLM Low/High缺测。原34训练编码保留；共享指标定义令241保存前缀截断48→0、Laya最高8173Token，AA分数/来源不符0；四实体同前缀原生前向无截断，不改写49个Episode输入版本。68教师短评成功；教师状态FULL可包含缺失/关闭。模型+教师已知参考$1.45700272，缓存读取报告5572672 Token/66条缺测，实际实收/资源价未知。工具/生成摘要1000/800字符，原始历史另存。TTL/force/STALE及同批固定snapshot_id保持。

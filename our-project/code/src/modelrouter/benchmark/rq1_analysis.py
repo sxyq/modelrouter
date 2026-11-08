@@ -399,12 +399,13 @@ def export_batch_results(root, config):
     tasks = {t["task_id"]: t for t in config["tasks"]}
     strategies = {s["id"]: s for s in config["strategies"]}
     units = json.loads((root / "manifest.json").read_text())["units"]
+    job_states = {r["unit_id"]: r for r in rows(root / "jobs.jsonl")}
     episodes = []
     for unit in units:
         relative = Path(unit["task_id"]) / unit["strategy_id"] / str(unit["seed"])
         public = root / "trials" / relative
         private = root / ".private/episodes" / relative
-        if (public / "summary.json").exists():
+        if (public / "summary.json").exists() and not private.exists():
             episodes.append(json.loads((public / "summary.json").read_text()))
             continue
         strategy, task = strategies[unit["strategy_id"]], tasks[unit["task_id"]]
@@ -421,6 +422,8 @@ def export_batch_results(root, config):
                "aa_snapshot_id": config["capability_snapshot"]["snapshot_id"],
                "harbor_version": config["harbor_version"], "mini_swe_version": config["mini_swe_version"],
                "task_resources": task["environment"], "reward": None, "error_type": None,
+               "execution_status": job_states.get(unit["unit_id"], unit)["status"],
+               "effort_comparison_eligible": not job_states.get(unit["unit_id"], {}).get("unsupported_effort", False),
                "episode_wall_s": None, "generator_known_reference_usd": None,
                "teacher_known_reference_usd": None, "reference_cost_usd": None,
                "supplier_billed_usd": None, "router_compute_cost_usd": None,
@@ -437,6 +440,7 @@ def export_batch_results(root, config):
             continue
         trials = rows(private / "official_trials.jsonl")
         trial = trials[-1] if trials else {}
+        error = trial.get("error") or {}
         events = rows(private / "events.jsonl")
         requests = provider_requests(trial, events)
         generator = [r for r in requests if r["role"] == "generator"]
@@ -449,7 +453,7 @@ def export_batch_results(root, config):
             values = [r.get(field) for r in group]
             return sum(values) if all(v is not None for v in values) else None
         row.update(trial_id=trial.get("trial_id"), reward=trial.get("reward"),
-                   official_status=trial.get("status"), error_type=trial.get("error_type"),
+                   official_status=trial.get("status"), error_type=error.get("exception_type"),
                    verifier_path=trial.get("verifier_path"), episode_wall_s=trial.get("duration_sec"),
                    phase_wall_s=trial.get("phase_wall_s"),
                    generator_requests=len(generator), teacher_requests=len(teacher),
@@ -478,9 +482,9 @@ def export_batch_results(root, config):
                    router_truncated_decisions=sum(bool((e.get("router_input_usage") or {}).get("truncated")) for e in routing),
                    teacher_consumed_decisions=sum(e.get("assessment_consumed_by_router") is True for e in events if e["event"] == "TEACHER_ROUTER_INPUT"))
         public.mkdir(parents=True, exist_ok=True)
-        write_atomic(public / "official_result.json", {k: trial.get(k) for k in ("trial_id", "task_name", "task_git_sha", "status", "reward", "error_type", "duration_sec", "started_at", "finished_at", "verifier_path")})
+        write_atomic(public / "official_result.json", {**{k: trial.get(k) for k in ("trial_id", "task_name", "task_git_sha", "status", "reward", "duration_sec", "started_at", "finished_at", "verifier_path")}, "error_type": row["error_type"], "provider_http_status": next((r.get("http_status") for r in requests if r.get("http_status")), None)})
         write_atomic(public / "summary.json", row)
-        fields = {"timestamp", "monotonic_ns", "event", "episode_id", "decision_id", "selected_action", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "provider_endpoint_id", "cost_usd", "actual_billed_cost_usd", "prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "router_latency_ms", "inference_latency_ms", "router_input_usage", "router_cpu_time_sec", "teacher_wall_ms", "capability_snapshot_id", "assessment_consumed_by_router", "error", "category"}
+        fields = {"timestamp", "monotonic_ns", "event", "episode_id", "decision_id", "selected_action", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "provider_endpoint_id", "cost_usd", "actual_billed_cost_usd", "prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "router_latency_ms", "inference_latency_ms", "router_input_usage", "router_cpu_time_sec", "teacher_wall_ms", "capability_snapshot_id", "assessment_consumed_by_router", "http_status", "category"}
         with (public / "events.jsonl").open("w") as stream:
             for event in events:
                 stream.write(json.dumps({k: v for k, v in event.items() if k in fields}, ensure_ascii=False) + "\n")
@@ -494,33 +498,44 @@ def export_batch_results(root, config):
             writer.writeheader()
             writer.writerows({k: json.dumps(v, ensure_ascii=False) if isinstance(v, (list, dict)) else v for k, v in row.items()} for row in records)
     grouped = []
+    def measured_sum(group, field):
+        values = [r[field] for r in group if r.get(field) is not None]
+        return sum(values) if values else None
     for strategy in strategies:
         all_rows = [r for r in episodes if r["strategy_id"] == strategy]
         for subset, group in (("all", all_rows), ("independent_of_training_and_selection", [r for r in all_rows if r["independent_of_training_and_selection"]]), ("historically_exposed", [r for r in all_rows if r["historically_exposed"]]), ("not_historically_exposed", [r for r in all_rows if not r["historically_exposed"]])):
             n = len(group)
-            one, zero = sum(r["reward"] == 1 for r in group), sum(r["reward"] == 0 for r in group)
+            eligible = [r for r in group if r["effort_comparison_eligible"]]
+            one, zero = sum(r["reward"] == 1 for r in eligible), sum(r["reward"] == 0 for r in eligible)
             finished = [r for r in group if r["status"] in ("EVALUATED", "PARTIAL", "BLOCKED")]
+            running = sum(r["execution_status"] == "RUNNING" for r in group)
+            unavailable = sum(r["execution_status"] == "UNAVAILABLE_PROVIDER_EFFORT" for r in group)
             grouped.append({"strategy_id": strategy, "subset": subset, "tasks": n,
                             "attempted": len(finished), "reward_1": one, "reward_0": zero,
                             "no_official_reward": sum(r["reward"] is None for r in finished),
-                            "not_run": n - len(finished), "scored_pass_rate": one / (one + zero) if one + zero else None,
+                            "running": running, "not_started": n - len(finished) - running - unavailable,
+                            "unavailable": unavailable, "effort_mismatch_completed": sum(not r["effort_comparison_eligible"] for r in finished),
+                            "not_finished": n - len(finished), "scored_pass_rate": one / (one + zero) if one + zero else None,
                             "benchmark_success_lower": one / n if n else None,
                             "benchmark_success_upper": (n - zero) / n if n else None,
-                            "generator_known_reference_usd": sum(r["generator_known_reference_usd"] or 0 for r in group),
-                            "teacher_known_reference_usd": sum(r["teacher_known_reference_usd"] or 0 for r in group),
+                            "generator_known_reference_usd": measured_sum(group, "generator_known_reference_usd"),
+                            "teacher_known_reference_usd": measured_sum(group, "teacher_known_reference_usd"),
+                            **{field: measured_sum(group, field) for field in ("generator_requests", "teacher_requests", "prompt_tokens", "completion_tokens", "reasoning_tokens", "known_cache_read_tokens", "cache_read_unknown_records", "unknown_provider_cost_requests", "router_wall_s", "router_cpu_time_sec", "router_gpu_wait_s", "teacher_wall_s", "logical_model_changes", "endpoint_changes")},
                             "complete_cost_usd": None, "supplier_billed_usd": None,
-                            "episode_total_wall_s": sum(r["episode_wall_s"] or 0 for r in group),
+                            "episode_total_wall_s": measured_sum(group, "episode_wall_s"),
                             "episode_p50_s": percentile([r["episode_wall_s"] for r in group], .5),
                             "episode_p95_s": percentile([r["episode_wall_s"] for r in group], .95)})
     comparisons = []
     pairs = [(f"{family}_{version}_off", f"{family}_{version}_on", "teacher") for family in ("laya", "kev") for version in ("original", "trained")]
     pairs += [(f"{family}_original_{teacher}", f"{family}_trained_{teacher}", "training") for family in ("laya", "kev") for teacher in ("off", "on")]
+    pairs += [(fixed["id"], router["id"], "fixed_vs_router") for fixed in strategies.values() if fixed.get("model") for router in strategies.values() if router["stage"] == "router"]
     for left, right, factor in pairs:
         a = {(r["task_id"], r["seed"]): r for r in episodes if r["strategy_id"] == left}
         b = {(r["task_id"], r["seed"]): r for r in episodes if r["strategy_id"] == right}
-        paired = [(a[k], b[k]) for k in a.keys() & b.keys() if a[k]["reward"] in (0, 1) and b[k]["reward"] in (0, 1)]
+        paired = [(a[k], b[k]) for k in a.keys() & b.keys() if a[k]["reward"] in (0, 1) and b[k]["reward"] in (0, 1) and a[k]["effort_comparison_eligible"] and b[k]["effort_comparison_eligible"]]
         comparisons.append({"factor": factor, "left": left, "right": right, "scored_pairs": len(paired),
                             "reward_delta_sum": sum(y["reward"] - x["reward"] for x, y in paired),
+                            **{field + "_delta_sum": sum(y[field] - x[field] for x, y in paired) if paired and all(x.get(field) is not None and y.get(field) is not None for x, y in paired) else None for field in ("generator_requests", "teacher_requests", "teacher_known_reference_usd", "known_cache_read_tokens", "logical_model_changes", "router_wall_s", "episode_wall_s")},
                             "known_reference_delta_usd": sum(y["reference_cost_usd"] - x["reference_cost_usd"] for x, y in paired) if paired and all(x["reference_cost_usd"] is not None and y["reference_cost_usd"] is not None for x, y in paired) else None,
                             "complete_cash_net_benefit_usd": None})
     write_csv("per_episode.csv", episodes)
@@ -528,8 +543,11 @@ def export_batch_results(root, config):
     write_csv("per_strategy.csv", grouped)
     write_csv("cost_breakdown.csv", [{k: r[k] for k in ("task_id", "strategy_id", "seed", "generator_known_reference_usd", "teacher_known_reference_usd", "reference_cost_usd", "supplier_billed_usd", "router_compute_cost_usd", "environment_cost_usd", "complete_cost_usd")} for r in episodes])
     write_atomic(metrics / "comparisons.json", comparisons)
-    report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n", "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。\n", "| 策略 | 已结束 | Reward1 | Reward0 | 缺Reward | 尚未结束 | 已知模型+教师USD |", "|---|---:|---:|---:|---:|---:|---:|"]
-    report += [f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {r['no_official_reward']} | {r['not_run']} | {r['generator_known_reference_usd'] + r['teacher_known_reference_usd']:.8f} |" for r in grouped if r["subset"] == "all"]
+    report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n", "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。档位不符的官方结果保留在逐Episode表，单独排除于精确档位主比较。\n", "| 策略 | 已结束 | Reward1 | Reward0 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |", "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    for r in grouped:
+        if r["subset"] == "all":
+            cost = "UNKNOWN" if r["generator_known_reference_usd"] is None else f"{r['generator_known_reference_usd'] + (r['teacher_known_reference_usd'] or 0):.8f}"
+            report.append(f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {r['no_official_reward']} | {r['running']} | {r['not_started']} | {r['unavailable']} | {cost} |")
     (root / "review.md").write_text("\n".join(report) + "\n")
     return {"episodes": episodes, "strategies": grouped, "comparisons": comparisons}
 

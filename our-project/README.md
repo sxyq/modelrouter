@@ -8,7 +8,8 @@
 - [研究总纲](planning/RESEARCH_OVERVIEW.md)：五个 RQ、单 Agent 方法与证据边界。
 - [论文实验与图表规划](../汇报/汇报三/ModelRouter论文实验与图表规划.md)：保留 Fig.1–8、Table 1–12 结构。
 - [结果入口](results/README.md)：按实验批次查看原始报告与结果。
-- [89题完整任务清单](results/benchmark/README.md)：29题Agent尝试、22题官方Reward、60题未Agent运行；当前三题的四Router与固定模型Pass率、费用和缺失终局。
+- [正式2.0 RQ1结果](results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)：89题×17策略的实时官方结果、费用及未完成位置。
+- [历史2.1完整任务清单](results/benchmark/README.md)：29题Agent尝试、22题官方Reward、60题未Agent运行；原三题四Router与固定模型结果。
 - [全项目数据与成果](data/README.md)：已探索来源、公开全量、自有调用、训练材料及实际用途。
 - [模型版本与当前训练](results/training/training_research.md)：原始/研究/旧参考/Serving/F15恢复，以及全量实体和候选记录。
 - [数据来源及许可](data/DATA_SOURCE_AND_POLICY_REGISTRY.md)：来源登记与使用信息。

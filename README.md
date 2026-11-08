@@ -4,15 +4,18 @@ ModelRouter 研究长程 **单 Agent** 执行中的模型与 Provider 原生推�
 
 ModelRouter 是面向长程 Agent 任务的模型、推理档位与成本研究项目。
 
+**正式RQ1正在运行（2026-11-09）**：[Terminal-Bench 2.0批次](our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)，官方89题、17策略、seed42，共1513个任务/策略位置。固定模型阶段四并发，随后四Router实体各Teacher OFF/ON两并发；最新通过/失败/无Reward、运行中与未开始数量由该批次原记录更新。[旧2.1覆盖](our-project/results/benchmark/README.md)单独保留。
+
 ## 项目目录分类
 
 | 职责 | 当前目录 | 主要入口与内容 |
 |---|---|---|
 | 正式源码 | `our-project/code/src/modelrouter/` | [包职责](our-project/code/README.md)：Harbor适配、状态、Provider、联合路由、AA、教师、训练与Serving |
+| 当前自有测试 | `our-project/code/tests/` | 按正式模块分类；原`router_data/`七文件归入training/telemetry，旧Pilot文件归入operations/legacy |
 | 保留的命令入口 | `router_data/`、`scripts/`、根目录Python入口 | 复用已有包及训练路径；[脚本分类](scripts/README.md)，历史脚本单列 |
 | 科研规划 | `our-project/planning/` | 四份现行核心规划，旧方案按日期保留 |
 | 数据与来源 | `our-project/data/`、`data/` | [数据总入口](our-project/data/README.md)：公开来源、自有调用、训练材料、用途；大型全量保留A6000原位置 |
-| 完整任务结果 | `our-project/results/iterations/` | [75批次索引](our-project/results/README.md#全项目迭代目录索引)、原Harbor/Verifier及脱敏报告 |
+| 完整任务结果 | `our-project/results/benchmark/rq1/terminal-bench-2.0/`、`our-project/results/iterations/` | 正式2.0 RQ1唯一批次；[75历史批次索引](our-project/results/README.md#全项目迭代目录索引)保留原Harbor/Verifier |
 | 任务覆盖与历史图表 | `our-project/results/benchmark/`、`benchmarks/` | [89题进度、Pass率与费用](our-project/results/benchmark/README.md)；预填图表列为历史 |
 | 训练结果与参数 | `our-project/results/training/`、`runs/`、A6000 `models/` | [版本与训练](our-project/results/training/training_research.md)；原始、新池、旧参考、Serving及F15恢复分别保留 |
 | 实验配置 | `our-project/experiments/`、`experiments/` | 现行模型/协议配置、原实验参数；私人用量与凭据不公开 |

@@ -2,6 +2,10 @@
 
 现行正式包位于`src/modelrouter/`。唯一Agent执行链为 **Harbor → ModelRouterMiniSweAgent → DefaultAgent**，完整任务使用原官方Verifier。结果入口为[89题任务进度与费用](../results/benchmark/README.md)，版本与训练入口为[训练总报告](../results/training/training_research.md)。
 
+正式2.0 RQ1使用`python -m modelrouter.benchmark rq1 our-project/experiments/configs/rq1_terminal_bench_2_0.json --source-revision <方法提交SHA>`，只在A6000执行。`benchmark/rq1_batch.py`编排原Harbor，逐任务/策略/seed续未完成位置；`v9/runtime/checkpoint.py`共享原生worker，GPU仍使用原锁。`--collect-only`只导出已保存事实，不发送模型请求。
+
+现行测试统一在`tests/`：原`router_data/`六个训练文件归`tests/training/`，采集文件归`tests/telemetry/`。旧Pilot流式测试在`docs/operations/legacy/responses_stream_tool_20261018.py`保留原正文，不作正式入口。
+
 ## Installation
 
 Install in editable mode:

@@ -1,5 +1,9 @@
 # Laya / Kev 全历史训练研究报告
 
+## 2026-11-09 · 正式RQ1版本已事前确定
+
+[Terminal-Bench 2.0 RQ1](../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)使用下面两原始实体及两GLM研究代表，各Teacher OFF/ON；[model_entities.json](../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/model_entities.json)记录参数文件、实际metadata与原生前向。后四次前向使用完整15候选卡及真实T/M/H无截断；前四次单能力卡前向只用于参数加载记录。当前没有新训练，“最强”尚无同协议多任务结果，RQ1期间不换权重。F15恢复和Serving原实体保持。
+
 ## 2026-11-08 · 当前模型版本与训练进度
 
 A6000取样19:10台北，源码HEAD `688479af67b5b0682d67d43415af64a1011ecfe4`。以下为当前整理；原历史保留当时日期、监督与模型池。结构化全量见同名JSON的`project_inventory_current`：125份run.json、36保存目录、26个Kev候选及原38组逐项状态。

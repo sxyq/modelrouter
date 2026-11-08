@@ -1,5 +1,7 @@
 # ModelRouter 全项目数据与成果入口
 
+**2026-11-09增量**：[正式Terminal-Bench 2.0 RQ1](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)已启动，89题×17策略、固定四并发。此批次独立保存官方结果/费用，不并入以下2.1历史覆盖或重复统计已有660万清洗行。四实体身份与实际原生前向见[model_entities](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/model_entities.json)。当前不新增训练，两个研究代表仍各17更新。
+
 整理时间：2026-11-08，A6000现场取样19:10台北；源码HEAD为`688479af67b5b0682d67d43415af64a1011ecfe4`。公开清洗行数沿已保存统计，模型实体、进程和队列由本轮服务器文件取得。
 
 **Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**

@@ -2,6 +2,20 @@
 
 当前主线：真实K=3，Luna／GLM-5.3-Flash／Terra，Single-Agent、Model×Native Effort、T/M/H、AA逐档能力、缓存连续性、Laya／Kev原始与训练版、Luna轨迹教师，以及含全部开销的完整Episode收益。RQ3为单Agent阶段、真实子任务边界与路由粒度。历史HY4实验保持原处；以下分类不改写旧成绩。
 
+## 当前正式Terminal-Bench 2.0 RQ1
+
+| 项目 | 已确定条件与入口 |
+|---|---|
+| 官方任务 | `terminal-bench@2.0`，89题，Commit `69671fbaac6d67a7ef0dfec016cc38a64ef7a77c`；旧2.1结果不计入 |
+| 批量执行 | [唯一结果目录](benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/)，17策略×89题×seed42=1513位置；固定四并发，Router两并发 |
+| 原官方结果与费用 | [实时报告](benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)、metrics逐位置/逐任务/逐策略、trials脱敏事件；无Reward保持空值 |
+| 模型版本 | 两原始实体＋11-08各17更新GLM研究代表，事前固定；[实际实体与原生前向](benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/model_entities.json) |
+| 比较协议 | Harbor0.24.0、Mini-SWE2.4.6、原Verifier/时限、4096输出、AA v7；统一GPU Router设备及原锁 |
+| 任务用途 | 89题均未用于当前17行训练或选权重；31题历史暴露、58题未历史暴露分别展示 |
+| 费用口径 | 模型/教师参考费与真实读取；供应商逐请求实收、Router/工具/资源美元价未知，不填零 |
+
+以下75迭代目录及2.1覆盖是已整理历史；当前2.0的每条完成状态沿上述独立批次更新。
+
 | 实验性质 | 入口 | 证据范围 |
 |---|---|---|
 | `ALIAS_OR_SINGLE_BACKEND` | [早期三身份联调](iterations/20261029-v9-alias-smoke-tools/)、[DeepSeek开发运行](iterations/20261102-v9-deepseek-dev/) | Agent、Router、工具和记录链路；不支持三个独立模型质量或跨模型物理缓存结论 |

@@ -1,5 +1,7 @@
 # 路由实现调研与可发表、可开源方案
 
+**2026-11-09现行执行入口**：`modelrouter.benchmark rq1`沿原Harbor批量执行官方Terminal-Bench 2.0的89题，17策略包括固定模型与四实体Teacher OFF/ON；[当前结果](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)。本文历史架构建议不进入当前代码或实验配置。
+
 > **全文为历史方案，不是现行方法或实现指令。** 本文的admission-only、GBDT/MLP与多Agent讨论仅供追溯。当前唯一链为Harbor→ModelRouterMiniSweAgent→DefaultAgent和原Evaluator，只研究Single-Agent；RQ2固定Luna/GLM-5.3-Flash/Terra。GLM三档已有实际工具与官方Reward 1，返回Effort未报告；新池Laya/Kev各17次更新已保存。当前执行、费用及失败见[PROJECT_STATUS](PROJECT_STATUS.md)。RQ3为单Agent阶段、真实子任务边界与路由粒度，开始/阶段/逐生成已实跑；真实子任务边界对照仍缺。本文旧RQ、接口和池规模建议不覆盖现行定义。
 
 ## 结论

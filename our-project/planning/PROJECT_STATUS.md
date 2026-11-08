@@ -1,5 +1,19 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 当前执行：正式Terminal-Bench 2.0 RQ1（2026-11-09）
+
+| 项目 | 当前事实 |
+|---|---|
+| 目标与结果 | [89题×17策略×seed42批次](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)，1513位置，逐Episode原官方Reward/参考费/墙钟；旧2.1不计入 |
+| 官方版本 | `terminal-bench@2.0`，Commit `69671fbaac6d67a7ef0dfec016cc38a64ef7a77c`，Harbor0.24.0/Mini-SWE2.4.6/原Verifier与时限 |
+| 方法版本 | `cb4371da0635d9d550314b6703af4cbe87f0b714`；报告读取和目录整理不改变模型/编码/教师/计费方法 |
+| 模型与训练 | 两原始实体＋11-08各17更新GLM研究代表事前固定；当前不启动新训练，不按RQ1结果换权重 |
+| 并发与资源 | 固定四并发，随后八Router组两并发；原用户Docker同qcow2调整为16核40GiB，GPU沿原锁共享worker，Serving/F15保持 |
+| 数据用途 | 当前训练/选择使用Terminal-Bench任务0；历史暴露31题、未历史暴露58题分别展示 |
+| 费用 | 模型/教师实际用量参考费与已知资源时间；逐请求实收及资源USD未知 |
+
+下列11-08及更早段落保留历史日期；当前运行数量沿上方唯一结果目录更新，不再以额外训练作为正式RQ1前置。
+
 **全项目整理（11-08 19:10台北）**：[数据总入口](../data/README.md)统一35来源/用途ID、14公开源6,600,628行、自有调用和历次训练数据；[模型总报告](../results/training/training_research.md)与同名JSON的project_inventory_current保存125份run.json、36参数保存目录和26个Kev候选；[75个迭代目录](../results/README.md#全项目迭代目录索引)覆盖198个不同原Harbor记录、31个官方任务ID，旧池/映射/Oracle用途保持。两新池代表各17更新完成；原38组25完成，F15可恢复61180步、后续游标66172，当前无Controller/训练worker。Kev R01–R16训练与固定Val全完成；Serving仍PID327621健康200。
 
 **完整任务覆盖（11-08本地原记录整理）**：[89题清单、Pass率与费用](../results/benchmark/README.md)。Agent尝试29题，22题有官方Reward，7题尝试但无Reward，60题未Agent运行；神经Router参与25题。仅Oracle的2题另列，共31题有记录、58题完全未运行。当前GLM三题中Laya原始/训练通过2/3、1/3；Kev两版各1通过/1失败/1缺Reward。模型+教师已知参考费合计$0.13532442/$0.11108159、$0.03250188/$0.17776966，除原始Kev外均有未知请求费用；完整实收及资源价仍缺。最后编码版本的完整Episode为0，原结果版本保持。

@@ -1,5 +1,7 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
+**2026-11-09执行优先级**：[正式2.0 RQ1](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)已启动89题×17策略批量比较，四实体采用事前GLM代表及原始版，Teacher OFF/ON分别完整执行。当前不新增训练、不重复旧2.1成果、不用静态正确率替代任务Reward。下面11-08“本轮结束”只指原49次历史尝试。
+
 **2026-11-08 当前方法与执行状态**：Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。唯一链为Harbor→ModelRouterMiniSweAgent→DefaultAgent，Registry登记15动作。新池Laya/Kev各17更新已保存，联合选择监督仍只有一个五候选Train截止和16辅助行；旧HY4实体保持历史。GLM非流式4096开发成功，constraints-scheduling三档均官方1但返回Effort未报告。Luna Max→xhigh和Terra none→medium真实差异不改标签。v7/130指标/Index5.0.1固定，GLM Low/High缺AA成绩。RQ3开始/阶段/逐生成已实跑，真实子任务边界对照仍缺。当前结果和费用见[项目现状](PROJECT_STATUS.md)。
 
 本文件早期 Q-ID、研究建议和协作记录保留其原始时间与语义；它们不覆盖以上现行方法。
