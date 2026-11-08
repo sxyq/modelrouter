@@ -546,11 +546,19 @@ def export_batch_results(root, config):
     write_csv("per_strategy.csv", grouped)
     write_csv("cost_breakdown.csv", [{k: r[k] for k in ("task_id", "strategy_id", "seed", "generator_known_reference_usd", "teacher_known_reference_usd", "reference_cost_usd", "supplier_billed_usd", "router_compute_cost_usd", "environment_cost_usd", "complete_cost_usd")} for r in episodes])
     write_atomic(metrics / "comparisons.json", comparisons)
-    report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n", "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。档位不符的官方结果保留在逐Episode表，单独排除于精确档位主比较。\n", "| 策略 | 已结束 | Reward1 | Reward0 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |", "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    totals = {field: sum(r[field] for r in grouped if r["subset"] == "all")
+              for field in ("tasks", "attempted", "reward_1", "reward_0", "no_official_reward", "running", "not_started", "unavailable")}
+    report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
+              "**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**\n",
+              f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。已结束位置中，精确档位有效Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}。\n",
+              "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。档位不符的官方结果保留在逐Episode表，单独排除于精确档位主比较。通过率分母仅为该策略已取得的有效官方评分任务，89题全量结果尚在执行。\n",
+              "| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
+              "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for r in grouped:
         if r["subset"] == "all":
             cost = "UNKNOWN" if r["generator_known_reference_usd"] is None else f"{r['generator_known_reference_usd'] + (r['teacher_known_reference_usd'] or 0):.8f}"
-            report.append(f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {r['no_official_reward']} | {r['running']} | {r['not_started']} | {r['unavailable']} | {cost} |")
+            rate = "未评分" if r["scored_pass_rate"] is None else f"{r['reward_1']}/{r['reward_1'] + r['reward_0']} = {r['scored_pass_rate']:.2%}"
+            report.append(f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {rate} | {r['no_official_reward']} | {r['running']} | {r['not_started']} | {r['unavailable']} | {cost} |")
     (root / "review.md").write_text("\n".join(report) + "\n")
     return {"episodes": episodes, "strategies": grouped, "comparisons": comparisons}
 
