@@ -60,5 +60,29 @@
     "kvm_user_writable": false,
     "resource_billing_usd": null,
     "episode_apportionment": "NOT_MEASURED; shared VM sample is not an episode charge"
+  },
+  {
+    "observed_at": "2026-11-08T19:53:44.267834+00:00",
+    "container_samples": [
+      {"Name": "configure-git-webserver__j8mqeqh__env-main-1", "CPUPerc": "0.00%", "MemUsage": "2.172MiB / 2GiB", "PIDs": "2"},
+      {"Name": "configure-git-webserver__cztibow__env-main-1", "CPUPerc": "2.43%", "MemUsage": "86.17MiB / 2GiB", "PIDs": "5"},
+      {"Name": "configure-git-webserver__nzya8fs__env-main-1", "CPUPerc": "0.00%", "MemUsage": "1.16MiB / 2GiB", "PIDs": "2"},
+      {"Name": "configure-git-webserver__tlbcj3r__env-main-1", "CPUPerc": "101.78%", "MemUsage": "12.39MiB / 2GiB", "PIDs": "12"}
+    ],
+    "shared_qemu": {
+      "pid": 2744271,
+      "lifetime_average_cpu_percent": 289.0,
+      "resident_kib": 9180664,
+      "elapsed": "04:22:49",
+      "accelerator": "tcg",
+      "allocated_vcpus": 16,
+      "allocated_memory_mib": 40960
+    },
+    "shared_gpu_sample": {
+      "index": 0, "name": "NVIDIA RTX A6000", "memory_used_mib": 31423,
+      "memory_total_mib": 49140, "utilization_percent": 0, "temperature_c": 28, "power_w": 9.86
+    },
+    "resource_billing_usd": null,
+    "episode_apportionment": "NOT_MEASURED; shared samples are not episode charges"
   }
 ]
