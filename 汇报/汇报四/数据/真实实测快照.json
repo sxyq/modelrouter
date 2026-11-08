@@ -1,0 +1,198 @@
+{
+  "source": "github main 2026-11-08 / official Harbor and recorded provider usage",
+  "source_files": [
+    "our-project/results/iterations/20261108-v9-k3-training/episode_results.json",
+    "our-project/results/benchmark/README.md",
+    "our-project/results/training/training_research.md",
+    "our-project/results/iterations/20261108-v9-k3-training/review.md"
+  ],
+  "training": {
+    "laya": {
+      "historical_completed": 25,
+      "historical_planned": 38,
+      "new_updates": 17,
+      "new_training_seconds": 736.337
+    },
+    "kev": {
+      "historical_completed": 16,
+      "historical_planned": 16,
+      "new_updates": 17,
+      "new_training_seconds": 13420.549
+    },
+    "run_files": 125,
+    "checkpoint_dirs": 36,
+    "new_training_rows": 17,
+    "five_candidate_preference_rows": 1,
+    "auxiliary_rows": 16,
+    "held_out_eval_rows": 0
+  },
+  "models": {
+    "candidate_models": [
+      "Luna",
+      "Terra",
+      "GLM-5.3-Flash"
+    ],
+    "registered_model_effort_actions": 15,
+    "aa_metric_count": 130,
+    "glm_constraints_reward": {
+      "low": 1,
+      "high": 1,
+      "max": 1
+    },
+    "glm_returned_effort": null
+  },
+  "benchmark": {
+    "total": 89,
+    "agent_attempted_unique": 29,
+    "with_official_reward": 22,
+    "attempted_no_reward": 7,
+    "not_agent_attempted": 60,
+    "canary": [
+      8,
+      2
+    ],
+    "external_dev": [
+      24,
+      16
+    ],
+    "final_test": [
+      57,
+      11
+    ],
+    "historical_trials": 198,
+    "agent_trials": 187,
+    "oracle_trials": 11
+  },
+  "recent_49": {
+    "attempts": 49,
+    "valid_rewards": 33,
+    "reward_1": 21,
+    "reward_0": 12,
+    "no_reward": 16,
+    "generator_known_reference_usd": 1.4236132,
+    "teacher_known_reference_usd": 0.03338952,
+    "known_reference_usd": 1.45700272,
+    "teacher_starts": 68,
+    "teacher_statuses": {
+      "SUCCESS": 68
+    },
+    "generator_end_count": 601,
+    "provider_usage_missing_records": 8,
+    "unknown_provider_cost_requests": 8,
+    "reported_cache_read_tokens": 5572672,
+    "cache_read_unknown_records": 66,
+    "reported_cache_write_tokens": 0,
+    "cache_write_unknown_records": 256,
+    "prefix_continuity_counts": {
+      "FIRST_REQUEST": 41,
+      "EXACT_PREVIOUS_MESSAGES": 560
+    },
+    "finish_reason_counts": {
+      "tool_calls": 246,
+      "completed": 423
+    }
+  },
+  "comparison": {
+    "tasks": [
+      "constraints-scheduling",
+      "sanitize-git-repo",
+      "large-scale-text-editing"
+    ],
+    "rows": [
+      {
+        "method": "Laya 原始＋教师",
+        "official_rewards": [
+          1,
+          1,
+          0
+        ],
+        "model_teacher_reference_usd_known": 0.13532442,
+        "is_cost_lower_bound": true
+      },
+      {
+        "method": "Laya 训练＋教师",
+        "official_rewards": [
+          1,
+          0,
+          0
+        ],
+        "model_teacher_reference_usd_known": 0.11108159,
+        "is_cost_lower_bound": true
+      },
+      {
+        "method": "Kev 原始＋教师",
+        "official_rewards": [
+          1,
+          0,
+          null
+        ],
+        "model_teacher_reference_usd_known": 0.03250188,
+        "is_cost_lower_bound": false
+      },
+      {
+        "method": "Kev 训练＋教师",
+        "official_rewards": [
+          1,
+          0,
+          null
+        ],
+        "model_teacher_reference_usd_known": 0.17776966,
+        "is_cost_lower_bound": true
+      },
+      {
+        "method": "固定 Luna High",
+        "official_rewards": [
+          1,
+          1,
+          null
+        ],
+        "model_teacher_reference_usd_known": 0.03825362,
+        "is_cost_lower_bound": false
+      },
+      {
+        "method": "固定 Terra High",
+        "official_rewards": [
+          1,
+          1,
+          0
+        ],
+        "model_teacher_reference_usd_known": 0.134762,
+        "is_cost_lower_bound": false
+      },
+      {
+        "method": "固定 GLM Low",
+        "official_rewards": [
+          1,
+          1,
+          0
+        ],
+        "model_teacher_reference_usd_known": 0.08262495,
+        "is_cost_lower_bound": false
+      },
+      {
+        "method": "规则策略",
+        "official_rewards": [
+          1,
+          null,
+          0
+        ],
+        "model_teacher_reference_usd_known": 0.07531212,
+        "is_cost_lower_bound": true
+      }
+    ]
+  },
+  "runtime": {
+    "saved_prefixes": 241,
+    "truncated_before": 48,
+    "truncated_after": 0,
+    "forward_ms": {
+      "laya_original": 2407.12,
+      "laya_trained": 2428.79,
+      "kev_original": 4949.91,
+      "kev_trained": 4781.8
+    },
+    "post_encoding_fix_full_episodes": 0,
+    "physical_kv_shared": null,
+    "complete_cash_net_gain_usd": null
+  }
+}
