@@ -542,15 +542,18 @@ def export_batch_results(root, config):
                             "known_reference_delta_usd": sum(y["reference_cost_usd"] - x["reference_cost_usd"] for x, y in paired) if paired and all(x["reference_cost_usd"] is not None and y["reference_cost_usd"] is not None for x, y in paired) else None,
                             "complete_cash_net_benefit_usd": None})
     write_csv("per_episode.csv", episodes)
-    write_csv("per_task.csv", [{"task_id": task, "attempted_strategies": sum(r["task_id"] == task and r["status"] in ("EVALUATED", "PARTIAL", "BLOCKED") for r in episodes), "scored_strategies": sum(r["task_id"] == task and r["reward"] in (0, 1) for r in episodes)} for task in tasks])
+    task_rows = [{"task_id": task, "attempted_strategies": sum(r["task_id"] == task and r["status"] in ("EVALUATED", "PARTIAL", "BLOCKED") for r in episodes), "scored_strategies": sum(r["task_id"] == task and r["reward"] in (0, 1) for r in episodes)} for task in tasks]
+    write_csv("per_task.csv", task_rows)
     write_csv("per_strategy.csv", grouped)
     write_csv("cost_breakdown.csv", [{k: r[k] for k in ("task_id", "strategy_id", "seed", "generator_known_reference_usd", "teacher_known_reference_usd", "reference_cost_usd", "supplier_billed_usd", "router_compute_cost_usd", "environment_cost_usd", "complete_cost_usd")} for r in episodes])
     write_atomic(metrics / "comparisons.json", comparisons)
     totals = {field: sum(r[field] for r in grouped if r["subset"] == "all")
               for field in ("tasks", "attempted", "reward_1", "reward_0", "no_official_reward", "running", "not_started", "unavailable")}
+    fixed_count = sum(s["stage"] == "fixed" for s in strategies.values())
     report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
               "**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**\n",
               f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。已结束位置中，精确档位有效Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}。\n",
+              f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{sum(r['attempted_strategies'] >= fixed_count for r in task_rows)}题已结束全部{fixed_count}个固定/简单策略；{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。批次先执行固定阶段，再执行Router阶段。\n",
               "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。档位不符的官方结果保留在逐Episode表，单独排除于精确档位主比较。通过率分母仅为该策略已取得的有效官方评分任务，89题全量结果尚在执行。\n",
               "| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
               "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
