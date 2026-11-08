@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """
+历史2026-10-18：保留当时模拟SSE与已删除Pilot模块的原引用，不作现行测试入口。
 Test Suite for GPT Responses Streaming, Native Reasoning Effort, and Tool Calling Roundtrip.
 Validates:
 1. Responses API request with stream: true

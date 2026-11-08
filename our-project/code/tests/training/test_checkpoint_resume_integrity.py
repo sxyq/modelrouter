@@ -18,7 +18,7 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 
-_ROOT = str(Path(__file__).resolve().parent.parent)
+_ROOT = str(Path(__file__).resolve().parents[4])
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 

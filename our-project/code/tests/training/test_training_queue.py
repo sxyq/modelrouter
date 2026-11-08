@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-from router_data.test_retention_ordering import _PROJECT_ROOT, _dummy_saver
+from test_retention_ordering import _PROJECT_ROOT, _dummy_saver
 
 
 def test_queue_gpu_uses_available_memory(monkeypatch):

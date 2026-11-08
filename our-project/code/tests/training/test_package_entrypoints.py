@@ -1,7 +1,7 @@
 """Existing package identity and CLI cases."""
 import sys
 
-from router_data.test_retention_ordering import _PROJECT_ROOT
+from test_retention_ordering import _PROJECT_ROOT
 from router_data.checkpoint_retention import CheckpointRetentionManager
 
 
