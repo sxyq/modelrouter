@@ -20,3 +20,13 @@ Jev 原版论文 PDF 保存于 `our-project/external/research/papers/60_JevAgent
 ## 我们自有的实测图（矢量 SVG）
 
 在 `../数据图/` 下：`P01_微调.svg`、`P03_真实任务覆盖.svg`、`P04_三题八策略.svg`、`P05_费用.svg`、`P05_缓存教师前向.svg`。这些是由真实汇总值排版的**本项目原创数据可视化**，不是论文截图。绘制数值参照 [数据快照](../../数据/真实实测快照.json)，且缺失费用保留下界符号，不把无 Reward 当 Reward 0。
+
+## Whose turn：本轮已核对的图号与素材缺口
+
+| 指定图 | 对应组会页 | 作者内容/位置 | 当前存档状态 |
+|---|---|---|---|
+| **Figure 1** | P09 | 用户轮次路由与策略示意，作者正文 §1/§2 | 已核图号与图注，原PDF截图**未取得** |
+| **Figure 4** | P10 | Sol→Luna/Haiku 的缓存输入净成本 vs 新模型后续调用次数，作者缓存分析段 | 已核图号与图注，原PDF截图**未取得** |
+| **Figure 2** | P11 | 2 Benchmark×3 pairs 成本–通过率散点图，Table3/4的图形摘要 | 已核图号与图注，原PDF截图**未取得** |
+
+作者原 PDF [arXiv:2610.19292v1](https://arxiv.org/pdf/2610.19292) 约 196 KB。此次确认数据及图片说明所用辅助页面： [Bytez 正文](https://bytez.com/docs/arxiv/2610.19292/paper)、[thelatestinai 带图表标签的论文转录](https://thelatestinai.com/papers/2610.19292)、[alphaXiv 作者摘要与图说明](https://www.alphaxiv.org/abs/2610.19292)。**链接不等于已经存入原图**。此外 Table4 在 SpreadsheetBench2 的 Opus high/low 下历史信息反而导致 35.8%→32.4% 的下降，P11应保留此反例，不仅强调 SheetCopilot 的 +3.3pp。
