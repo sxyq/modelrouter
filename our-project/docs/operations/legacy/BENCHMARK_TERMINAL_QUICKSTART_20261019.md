@@ -1,5 +1,7 @@
 # ModelRouter 官方 Benchmark 运行说明
 
+> 历史材料：以下保留2026-10-19的环境、命令与结果。Docker可用状态、生成模型配置、累计Token限制及部分旧命令已经改变，不作当前操作说明。当前入口与89题成果见[完整任务进度](../../../results/benchmark/README.md)和[源码职责](../../../code/README.md)。
+
 更新日期：2026-10-19。当前正式 Agent 评测状态：`BLOCKED / NOT_EVALUATED`。
 
 ## 当前证据

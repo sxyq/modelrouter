@@ -1,5 +1,7 @@
 # ModelRouter · Harbor Official Benchmark Sandbox Gate & Diagnostic Audit
 
+> 历史材料：以下保留2026-10-18原报告，不作当前运行指令。2026-11-04起A6000用户Docker已可用；旧系统socket状态不再限制现行任务运行。现行单Agent执行及89题完整任务结果见[任务进度](../../../results/benchmark/README.md)，当前环境与模型状态见[项目现状](../../../planning/PROJECT_STATUS.md)。原`results/benchmark/`中内容相同的副本已合并到此处；旧runner、累计Token上限和旧激活命令仅表示当时记录。
+
 > **Date**: 2026-10-18 18:50 (CST)  
 > **Status**: `BLOCKED_AWAITING_DOCKER_SOCKET_AUTHORIZATION`  
 > **Protocol**: Official Harbor Docker Sandbox Isolation Protocol (V8 §7.4 & §8.2)

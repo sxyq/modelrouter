@@ -1,18 +1,27 @@
-# Scripts Directory Status & Governance Registry
+# 脚本目录职责
 
-This registry tracks the status and canonical destinations of all scripts in `scripts/` according to REPOSITORY_STRUCTURE_MIGRATION_20261018.md §IV and §VII.
+本目录保留现有命令路径，按实际代码用途分类。旧报告中的PID只描述当时进程，当前训练与Serving状态见[项目现状](../our-project/planning/PROJECT_STATUS.md)。
 
-| Script | Classification | Canonical Destination | Description / Active Process Binding |
-|---|---|---|---|
-| `serve_dashboard.py` | `ACTIVE_HOLD` | `our-project/code/src/modelrouter/telemetry/serve_dashboard.py` | Active on A6000 (PID 2349761). Serves `our-project/dashboard/` at port 8765. |
-| `fetch_live_status.py` | `ACTIVE_HOLD` | `our-project/code/src/modelrouter/telemetry/fetch_live_status.py` | Active on A6000 (PID 2494953). Continuous status poller. Supports `--source local` and `--source mac`. |
-| `oneshot_f05_to_f03_handover.py` | `ARCHIVE_LEGACY` | `our-project/docs/operations/legacy/oneshot_f05_to_f03_handover.py` | One-shot handover script (F05->F03). Execution-guarded to prevent accidental rerun. |
-| `build_clean_chart_dashboard.py` | `ARCHIVE_LEGACY` | `our-project/docs/operations/legacy/` | Historical dashboard generator script. |
-| `build_clean_dashboard.py` | `ARCHIVE_LEGACY` | `our-project/docs/operations/legacy/` | Historical dashboard builder. |
-| `build_upgraded_dashboard.py` | `ARCHIVE_LEGACY` | `our-project/docs/operations/legacy/` | Historical dashboard builder. |
-| `generate_cds_dashboard.py` | `ARCHIVE_LEGACY` | `our-project/docs/operations/legacy/` | Historical monolith HTML generator. Canonical dashboard is in `our-project/dashboard/`. |
-| `benchmark_ollama_impact.py` | `ARCHIVE_LEGACY` | `our-project/docs/operations/legacy/` | Historical GPU interference test script. |
-| `val_benchmark_compare.py` | `ARCHIVE_LEGACY` | `our-project/docs/operations/legacy/` | Historical comparison script. |
-| `jev_laya_kev_typed_demo_v2.py`| `ARCHIVE_LEGACY` | `our-project/docs/operations/legacy/` | Historical typed system demonstration script. |
-| `capture_dashboard_screenshots.py` | `TEST_TOOL` | `our-project/code/tests/` | Playwright screenshot verification tool. |
-| `verify_dashboard_browser.py` | `TEST_TOOL` | `our-project/code/tests/` | Headless browser verification tool. |
+## 现有看板入口
+
+| 脚本 | 实际职责 |
+|---|---|
+| `fetch_live_status.py` | 委托`modelrouter.telemetry.fetch_live_status`，从现有事实生成状态 |
+| `serve_dashboard.py` | 现有只读HTTP看板入口，提供`our-project/dashboard/` |
+| `build_clean_chart_dashboard.py` | 返回已有看板路径，不再生成第二套模板 |
+| `build_clean_dashboard.py`、`build_upgraded_dashboard.py`、`generate_cds_dashboard.py` | 委托上述同一看板入口 |
+
+## 历史研究与展示
+
+| 脚本 | 保留用途 |
+|---|---|
+| `benchmark_ollama_impact.py` | 原F05与本地Ollama单/双并发资源干扰实验，非当前K=3任务评测 |
+| `val_benchmark_compare.py` | 原Laya静态Val比较，非完整Agent任务结果 |
+| `jev_laya_kev_typed_demo_v2.py` | 根目录具名展示工具的保留命令路径，非Harbor正式实现 |
+| `oneshot_f05_to_f03_handover.py` | 2026-10-18历史一次性交接材料，原PIDs不作当前状态；原归档同时在`our-project/docs/operations/legacy/` |
+
+## 既有浏览器工具
+
+`capture_dashboard_screenshots.py`保存看板截图；`verify_dashboard_browser.py`读取已有看板与JSON响应。两者不是Terminal-Bench评分器。
+
+当前完整任务只有 **Harbor → ModelRouterMiniSweAgent → DefaultAgent → 原官方Verifier** 一条执行链，入口在`modelrouter.benchmark`。89题进度、当前Router Pass率及任务费用见[完整任务结果](../our-project/results/benchmark/README.md)。本目录分类不启动上述脚本或新增常驻执行。

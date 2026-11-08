@@ -1,6 +1,6 @@
-# ModelRouter Package
+# ModelRouter正式源码职责
 
-The formal Python package for the ModelRouter project.
+现行正式包位于`src/modelrouter/`。唯一Agent执行链为 **Harbor → ModelRouterMiniSweAgent → DefaultAgent**，完整任务使用原官方Verifier。结果入口为[89题任务进度与费用](../results/benchmark/README.md)，版本与训练入口为[训练总报告](../results/training/training_research.md)。
 
 ## Installation
 
@@ -16,23 +16,35 @@ Or ensure `our-project/code/src` is included in `PYTHONPATH`:
 export PYTHONPATH="/Users/sunyiyang/Desktop/Project/路由/our-project/code/src:$PYTHONPATH"
 ```
 
-## Structure
+## 职责与唯一事实来源
 
-- `modelrouter.agent`: 原单 Agent loop、状态管理和 Provider 接入；按模型生成边界请求路由。
-- `modelrouter.baselines`: Fixed, random, sticky and explicitly named heuristic policies; Laya/Kev use real native inference. The old example-weight RouteLLM/SR-KNN implementations were removed and are not official comparator results.
-- `modelrouter.benchmark`: Official Harbor trials, evaluation matrix, scoring.
-- `modelrouter.common`: Shared schemas and utilities.
-- `modelrouter.data_pipeline`: Data source extraction, cleaning, quality assurance.
-- `modelrouter.datasets`: Training views, splits, feature extractors.
-- `modelrouter.providers`: LLM Provider adapters, registry, pricing, token budget.
-- `modelrouter.sandbox`: Harbor environment execution and task loading.
-- `modelrouter.serving`: FastAPI serving endpoints, Laya and Kev model loaders.
-- `modelrouter.telemetry`: Logging, ledger tracking, live telemetry collector.
-- `modelrouter.training`: Training recipes, queue management, checkpoint retention.
+| 包/文件 | 职责 |
+|---|---|
+| `benchmark/harbor_agent.py` | `ModelRouterMiniSweAgent`复用上游`DefaultAgent`，无第二套正式Agent循环 |
+| `benchmark/__main__.py`、`iterations.py`、`official_artifacts.py` | 原Harbor命令入口、时间事件、官方结果读取 |
+| `benchmark/rq1_analysis.py`、`rq3_analysis.py` | 从保存事实派生质量、费用和粒度分析 |
+| `agent/state.py` | Agent任务、工具历史、缓存、进度和时间状态 |
+| `v9/runtime/context.py` | T/M/H决策前序列化；训练与原生前向使用同义表示 |
+| `v9/runtime/decision_hook.py`、`checkpoint.py` | 单Agent路由时机、合法Model×Native Effort评分及两Router原生前向 |
+| `providers/registry.py` | 精确模型、原生档位、组合ID、能力目标和参考价格 |
+| `providers/provider.py`、`protocols.py`、`usage.py` | 实际调用、Responses/Chat原生参数、返回身份、缓存读取及费用 |
+| `v9/capabilities/` | AA精确模型/档位的TTL、force、STALE与同批版本 |
+| `v9/teacher/trigger.py`、`assessor.py` | 低频Luna触发、短评和真实教师用量 |
+| `v9/training/` | 原任务截止、联合监督、训练材料和原Trainer接续 |
+| `training/laya/`、`kev/`、`common/` | 原Laya/Kev训练、队列、参数保存及恢复 |
+| `data_pipeline/`、`datasets/` | 已有公开来源、清洗和来源引用、训练视图 |
+| `baselines/` | 固定模型、随机和具名规则；结果只记实际执行 |
+| `serving/` | 原FastAPI和Laya/Kev加载；研究版不自动替换Serving |
+| `sandbox/` | 原Harbor环境与任务加载 |
+| `telemetry/` | 原事件派生账本、资源、报告与看板 |
 
-当前代码中的 `V9_MODEL_IDS` 仍是上一轮 Luna/Terra/HY4 清单；GLM-5.3-Flash 与新 15 个 Provider 原生 Model×Effort 候选尚未接入代码。GLM 预期使用 Chat Completions 的 low/high/max，渠道未绑定，Provider 正在核对 `/models`，不写作已调用或已验证。AA 实际刷新正在进行，但刷新入口仍是手动脚本 `python -m modelrouter.v9.capabilities.refresh`；TTL 自动更新和 `--force` 尚未实现。精确身份、合法 Effort 和能力分数以 Provider/实测证据为准。
+当前Registry为`gpt-6-luna`、`glm-5.3-flash`、`gpt-6.1-terra`共15登记组合。GLM Chat的Low/High/Max均已有有效工具及完整Harbor官方Reward 1，返回Effort未报告；Luna Max→xhigh、Terra none→medium保留原记录，不改请求标签。旧HY4仅在历史配置、训练和结果中保留。
 
-正式 Benchmark 只经 Harbor 官方 `DefaultAgent` 与原版 Evaluator。`runtime/development.py`、benchmark development 命令、`sandbox/canary_verifier.py` 和 `experiments/harbor` 同名 shim 已删除；旧 Mock `pwd`/`fix-git` 分数不是可运行或推荐的 smoke 入口。`agent/legacy.py` 仅留历史，不由 SingleAgent 包导出或正式调用。RQ4/RQ5 的模拟结果生成源码已删除，观察汇总入口为 `modelrouter.benchmark.rq1_analysis`。GLM 渠道授权与绑定待确认，尚无新固定 K=3 Harbor 实验。
+AA的TTL自动更新、force、STALE和同批固定版本已经实现；Registry派生模型/档位目标，并进入Laya/Kev的M输入。当前v7为130指标、Intelligence Index5.0.1，Luna/Terra各六档，GLM仅Max有独立成绩，Low/High缺测。在线路由不逐次请求AA。
+
+新池两研究版各完成17更新，当前三题完整比较及全部异常保留原Episode版本。最终编码去重后241保存前缀由48截断降为0、四实体真实前向完成，该输入版本尚无完整Episode。源码职责整理已完成，自有Python245个、最大982行，详细出处见[原执行报告](../results/iterations/20261108-v9-k3-training/review.md)。
+
+`agent/legacy.py`仅留历史，不由正式包导出或调用；已删除的独立Agent Pilot、development执行、Alias、重复logger、原生mini中继和模拟RQ生成器不是入口。旧Mock图表与展示工具按历史用途保存。RQ3只研究单Agent任务开始、阶段、真实子任务边界和生成粒度。
 
 ## CLI Usage
 
