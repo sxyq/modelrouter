@@ -458,6 +458,8 @@ def export_batch_results(root, config):
                    verifier_path=trial.get("verifier_path"), episode_wall_s=trial.get("duration_sec"),
                    phase_wall_s=trial.get("phase_wall_s"),
                    generator_requests=len(generator), teacher_requests=len(teacher),
+                   started_tool_calls=sum(e["event"] == "TOOL_START" for e in events),
+                   completed_tool_calls=sum(e["event"] == "TOOL_END" for e in events),
                    generator_known_reference_usd=known_cost(generator), teacher_known_reference_usd=known_cost(teacher),
                    reference_cost_usd=reported(requests, "cost_usd"),
                    supplier_billed_usd=reported(requests, "actual_billed_cost_usd"),
@@ -476,7 +478,7 @@ def export_batch_results(root, config):
                    teacher_wall_s=sum(r.get("teacher_wall_ms", 0) for r in teacher) / 1000,
                    generator_wall_s=sum(r.get("agent_request_wall_ms", r.get("duration_ms", 0)) for r in generator) / 1000,
                    selected_actions=[e["selected_action"] for e in routing],
-                   request_return_identities=[{k: r.get(k) for k in ("role", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "provider_endpoint_id", "identity_status")} for r in requests],
+                   request_return_identities=[{k: r.get(k) for k in ("role", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "sent_effort_parameter", "protocol", "stream", "requested_max_output_tokens", "reported_max_output_tokens", "finish_reason", "http_status", "physical_backend_identity_status", "provider_endpoint_id", "identity_status", "cost_source", "cost_status", "cache_cost_policy", "reasoning_cost_policy")} for r in requests],
                    logical_model_changes=sum(bool(e.get("logical_model_changed")) for e in contexts),
                    endpoint_changes=sum(e.get("previous_provider_endpoint_id") is not None and e.get("previous_provider_endpoint_id") != e.get("provider_endpoint_id") for e in contexts),
                    prefix_continuity_counts={label: sum(e.get("input_prefix_continuity") == label for e in contexts) for label in ("FIRST_REQUEST", "EXACT_PREVIOUS_MESSAGES", "PREFIX_CHANGED")},
@@ -485,7 +487,7 @@ def export_batch_results(root, config):
         public.mkdir(parents=True, exist_ok=True)
         write_atomic(public / "official_result.json", {**{k: trial.get(k) for k in ("trial_id", "task_name", "task_git_sha", "status", "reward", "duration_sec", "started_at", "finished_at", "verifier_path")}, "error_type": row["error_type"], "failed_provider_http_status": row["failed_provider_http_status"]})
         write_atomic(public / "summary.json", row)
-        fields = {"timestamp", "monotonic_ns", "event", "episode_id", "decision_id", "selected_action", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "provider_endpoint_id", "cost_usd", "actual_billed_cost_usd", "prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "router_latency_ms", "inference_latency_ms", "router_input_usage", "router_cpu_time_sec", "teacher_wall_ms", "capability_snapshot_id", "assessment_consumed_by_router", "http_status", "category"}
+        fields = {"timestamp", "monotonic_ns", "event", "episode_id", "decision_id", "selected_action", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "sent_effort_parameter", "protocol", "stream", "requested_max_output_tokens", "reported_max_output_tokens", "finish_reason", "physical_backend_identity_status", "provider_endpoint_id", "cost_usd", "cost_source", "cost_status", "cache_cost_policy", "reasoning_cost_policy", "actual_billed_cost_usd", "prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "router_latency_ms", "inference_latency_ms", "router_input_usage", "router_cpu_time_sec", "teacher_wall_ms", "capability_snapshot_id", "assessment_consumed_by_router", "http_status", "category"}
         with (public / "events.jsonl").open("w") as stream:
             for event in events:
                 stream.write(json.dumps({k: v for k, v in event.items() if k in fields}, ensure_ascii=False) + "\n")
