@@ -39,7 +39,7 @@ class TeacherTrigger:
     def reason(self, state):
         if state.episode_id != self.episode_id:
             self.reset(state.episode_id)
-        if state.status not in ("INITIALIZED", "RUNNING") or state.steps_remaining <= 1:
+        if state.status not in ("INITIALIZED", "RUNNING") or state.steps_remaining is not None and state.steps_remaining <= 1:
             return None
         if state.step_index < self.initial_generations:
             return None

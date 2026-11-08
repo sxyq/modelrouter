@@ -74,7 +74,7 @@ class PreDecisionSnapshot:
     last_observation_summary: str
     history_length: int
     budget_remaining_usd: Optional[float]
-    steps_remaining: int
+    steps_remaining: Optional[int]
     context_tokens_approx: int
     task_id: str
     episode_id: str
@@ -165,8 +165,8 @@ class AgentState:
         return max(0.0, self.usd_budget - self.accumulated_cost_usd)
 
     @property
-    def steps_remaining(self) -> int:
-        return max(0, self.max_steps - self.step_index)
+    def steps_remaining(self) -> Optional[int]:
+        return max(0, self.max_steps - self.step_index) if self.max_steps > 0 else None
 
     def start(self) -> None:
         self.start_time = time.time()
@@ -176,7 +176,7 @@ class AgentState:
 
     def check_termination(self) -> Optional[EpisodeStatus]:
         """Checks if budget or step limits have been exceeded."""
-        if self.step_index >= self.max_steps:
+        if 0 < self.max_steps <= self.step_index:
             return EpisodeStatus.TIMEOUT
         if self.time_budget_sec is not None and self.time_budget_sec > 0 and self.elapsed_time_sec >= self.time_budget_sec:
             return EpisodeStatus.TIMEOUT
@@ -262,7 +262,7 @@ class AgentState:
         # Advance G1 phase heuristics
         if self.step_index == 1:
             self.current_phase = PhaseType.MODIFY.value
-        elif self.step_index >= max(2, self.max_steps - 3):
+        elif self.max_steps > 0 and self.step_index >= max(2, self.max_steps - 3):
             self.current_phase = PhaseType.VERIFY.value
 
     def finish(self, status: EpisodeStatus) -> None:

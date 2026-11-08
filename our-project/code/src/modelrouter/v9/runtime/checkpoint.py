@@ -4,6 +4,8 @@ from __future__ import annotations
 import json
 import fcntl
 import select
+import socket
+import socketserver
 import subprocess
 import sys
 import time
@@ -38,14 +40,24 @@ class CheckpointRouterClient:
         if payload["device"] == "cuda":
             payload["gpu_lock_path"] = self.checkpoint["gpu_lock_path"]
         started = time.perf_counter()
-        if self.process is None:
-            self.process = subprocess.Popen(self.checkpoint["command"], stdin=subprocess.PIPE,
-                                            stdout=subprocess.PIPE, text=True)
-        self.process.stdin.write(json.dumps(payload) + "\n")
-        self.process.stdin.flush()
-        if not select.select([self.process.stdout], [], [], self.timeout)[0]:
-            raise subprocess.TimeoutExpired(self.checkpoint["command"], self.timeout)
-        body = json.loads(self.process.stdout.readline())
+        if self.checkpoint.get("socket_path"):
+            with socket.socket(socket.AF_UNIX) as connection:
+                connection.settimeout(self.timeout)
+                connection.connect(self.checkpoint["socket_path"])
+                connection.sendall((json.dumps(payload) + "\n").encode())
+                with connection.makefile("r") as stream:
+                    body = json.loads(stream.readline())
+            if "error" in body:
+                raise RuntimeError(body["error"])
+        else:
+            if self.process is None:
+                self.process = subprocess.Popen(self.checkpoint["command"], stdin=subprocess.PIPE,
+                                                stdout=subprocess.PIPE, text=True)
+            self.process.stdin.write(json.dumps(payload) + "\n")
+            self.process.stdin.flush()
+            if not select.select([self.process.stdout], [], [], self.timeout)[0]:
+                raise subprocess.TimeoutExpired(self.checkpoint["command"], self.timeout)
+            body = json.loads(self.process.stdout.readline())
         answer = body["answers"][target]
         probabilities = answer["probabilities"]
         return RouterDecision(
@@ -63,6 +75,8 @@ class CheckpointRouterClient:
                              "router_device": body["device"],
                              "router_gpu_wait_ms": body["gpu_wait_ms"],
                              "router_device_transfer_ms": body["device_transfer_ms"],
+                             "router_worker_pid": body["worker_pid"],
+                             "router_cpu_time_sec": body["cpu_time_sec"],
                              "router_question_id": target,
                              "router_candidate_order": list(payload["questions"][target]["criteria"]),
                              "router_input_usage": body["usage"],
@@ -81,68 +95,94 @@ class CheckpointRouterClient:
             self.process = None
 
 
-def main():
-    initialized = time.perf_counter()
+def answer(payload, adapters):
+    import os
+    import resource
     import torch
+    initialized = time.perf_counter()
+    cpu_started = resource.getrusage(resource.RUSAGE_SELF)
+    checkpoint = Path(payload["checkpoint_path"]).resolve()
+    reused = str(checkpoint) in adapters
+    initialization_ms = 0.0
+    if not reused:
+        if payload["router_family"] == "kev":
+            from modelrouter.serving.kev_adapter import KevAdapter
+            adapter = KevAdapter(adapter_dir=str(checkpoint), device="cpu")
+        else:
+            from modelrouter.serving.laya_adapter import LayaAdapter
+            adapter = LayaAdapter(model_dir=str(checkpoint), device="cpu")
+            adapter.agent.cfg["max_len"] = payload["router_max_len"]
+            adapter.agent.cfg["head_max_len"] = payload["router_head_max_len"]
+        adapters[str(checkpoint)] = adapter
+        initialization_ms = (time.perf_counter() - initialized) * 1000
+    adapter = adapters[str(checkpoint)]
+    device = payload.get("device", "cpu")
+    gpu_wait_ms, transfer_ms = 0.0, 0.0
+    lock = open(payload["gpu_lock_path"], "a") if device == "cuda" else nullcontext()
+    with lock as lock_file:
+        try:
+            if device == "cuda":
+                before = time.perf_counter()
+                fcntl.flock(lock_file, fcntl.LOCK_EX)
+                gpu_wait_ms = (time.perf_counter() - before) * 1000
+                before = time.perf_counter()
+                if payload["router_family"] == "kev":
+                    adapter.model.to("cuda")
+                    adapter.model.device = "cuda"
+                    adapter.model.lm.set_attn_implementation("sdpa")
+                else:
+                    from laya.agent import _cuda_amp_dtype
+                    adapter.agent.model.to("cuda")
+                    adapter.agent.device = torch.device("cuda")
+                    adapter.agent.dtype = _cuda_amp_dtype(adapter.agent.cfg.get("amp_dtype", "fp16"))
+                    adapter.agent.amp_enabled = True
+                transfer_ms += (time.perf_counter() - before) * 1000
+            with torch.inference_mode():
+                answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
+        finally:
+            if device == "cuda":
+                before = time.perf_counter()
+                if payload["router_family"] == "kev":
+                    adapter.model.to("cpu")
+                    adapter.model.device = "cpu"
+                    adapter.model.lm.set_attn_implementation("eager")
+                else:
+                    adapter.agent.model.to("cpu")
+                    adapter.agent.device = torch.device("cpu")
+                    adapter.agent.dtype = torch.float32
+                    adapter.agent.amp_enabled = False
+                torch.cuda.empty_cache()
+                transfer_ms += (time.perf_counter() - before) * 1000
+    cpu_end = resource.getrusage(resource.RUSAGE_SELF)
+    return {"answers": answers, "decision_latency_ms": latency, "usage": usage,
+            "initialization_latency_ms": initialization_ms, "process_reused": reused,
+            "device": device, "gpu_wait_ms": gpu_wait_ms, "device_transfer_ms": transfer_ms,
+            "run_id": adapter.run_id, "checkpoint_id": str(checkpoint), "weights_path": str(checkpoint),
+            "worker_pid": os.getpid(),
+            "cpu_time_sec": cpu_end.ru_utime + cpu_end.ru_stime - cpu_started.ru_utime - cpu_started.ru_stime}
 
-    adapter = None
-    for line in sys.stdin:
-        payload = json.loads(line)
-        reused = adapter is not None
-        initialization_ms = 0.0
-        if not reused:
-            checkpoint = Path(payload["checkpoint_path"]).resolve()
-            if payload["router_family"] == "kev":
-                from modelrouter.serving.kev_adapter import KevAdapter
-                adapter = KevAdapter(adapter_dir=str(checkpoint), device="cpu")
-            else:
-                from modelrouter.serving.laya_adapter import LayaAdapter
-                adapter = LayaAdapter(model_dir=str(checkpoint), device="cpu")
-                adapter.agent.cfg["max_len"] = payload["router_max_len"]
-                adapter.agent.cfg["head_max_len"] = payload["router_head_max_len"]
-            initialization_ms = (time.perf_counter() - initialized) * 1000
-        device = payload.get("device", "cpu")
-        gpu_wait_ms, transfer_ms = 0.0, 0.0
-        lock = open(payload["gpu_lock_path"], "a") if device == "cuda" else nullcontext()
-        with lock as lock_file:
-            try:
-                if device == "cuda":
-                    before = time.perf_counter()
-                    fcntl.flock(lock_file, fcntl.LOCK_EX)
-                    gpu_wait_ms = (time.perf_counter() - before) * 1000
-                    before = time.perf_counter()
-                    if payload["router_family"] == "kev":
-                        adapter.model.to("cuda")
-                        adapter.model.device = "cuda"
-                        adapter.model.lm.set_attn_implementation("sdpa")
-                    else:
-                        from laya.agent import _cuda_amp_dtype
-                        adapter.agent.model.to("cuda")
-                        adapter.agent.device = torch.device("cuda")
-                        adapter.agent.dtype = _cuda_amp_dtype(adapter.agent.cfg.get("amp_dtype", "fp16"))
-                        adapter.agent.amp_enabled = True
-                    transfer_ms += (time.perf_counter() - before) * 1000
-                with torch.inference_mode():
-                    answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
-            finally:
-                if device == "cuda":
-                    before = time.perf_counter()
-                    if payload["router_family"] == "kev":
-                        adapter.model.to("cpu")
-                        adapter.model.device = "cpu"
-                        adapter.model.lm.set_attn_implementation("eager")
-                    else:
-                        adapter.agent.model.to("cpu")
-                        adapter.agent.device = torch.device("cpu")
-                        adapter.agent.dtype = torch.float32
-                        adapter.agent.amp_enabled = False
-                    torch.cuda.empty_cache()
-                    transfer_ms += (time.perf_counter() - before) * 1000
-        print(json.dumps({"answers": answers, "decision_latency_ms": latency, "usage": usage,
-                          "initialization_latency_ms": initialization_ms, "process_reused": reused,
-                          "device": device, "gpu_wait_ms": gpu_wait_ms, "device_transfer_ms": transfer_ms,
-                          "run_id": adapter.run_id, "checkpoint_id": str(checkpoint),
-                          "weights_path": str(checkpoint)}), flush=True)
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--socket", type=Path)
+    args = parser.parse_args()
+    adapters = {}
+    if args.socket:
+        class Handler(socketserver.StreamRequestHandler):
+            def handle(self):
+                payload = json.loads(self.rfile.readline())
+                try:
+                    response = answer(payload, adapters)
+                except Exception as exc:
+                    response = {"error": f"{type(exc).__name__}: {exc}"}
+                self.wfile.write((json.dumps(response) + "\n").encode())
+        with socketserver.UnixStreamServer(str(args.socket), Handler) as server:
+            args.socket.chmod(0o600)
+            server.serve_forever()
+    else:
+        for line in sys.stdin:
+            print(json.dumps(answer(json.loads(line), adapters)), flush=True)
 
 
 if __name__ == "__main__":

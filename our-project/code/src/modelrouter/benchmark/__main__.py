@@ -186,6 +186,10 @@ def execution_units(tasks, policies, agent, seed, manifest, subset, *, single_ep
     return list(unique.values())
 
 def main(argv: Optional[List[str]] = None) -> int:
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    if arguments and arguments[0] == "rq1":
+        from .rq1_batch import main as batch_main
+        return batch_main(arguments[1:])
     parser = argparse.ArgumentParser(description="ModelRouter official Harbor evidence CLI")
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("preflight", help="Check Harbor and Docker, with no API calls")

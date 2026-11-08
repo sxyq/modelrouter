@@ -102,6 +102,60 @@ def analyze_rq1(episodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
+def provider_requests(trial, events):
+    events_by_episode = defaultdict(list)
+    for event in events:
+        if event.get('episode_id') is not None:
+            events_by_episode[str(event['episode_id'])].append(event)
+    episode = str(trial.get("trial_id") or next((e["episode_id"] for e in events if e.get("event") == "AGENT_START"), None))
+    metadata = trial.get("agent_metadata") or {}
+    recorded = {}
+    for item in events_by_episode[episode]:
+        kind = item.get("event")
+        if kind not in ("GENERATOR_END", "TEACHER_END", "TEACHER_ERROR") and not (
+                kind == "ERROR" and item.get("category") == "PROVIDER"):
+            continue
+        if kind == "TEACHER_ERROR" and not item.get("provider_request_attempted", True):
+            continue
+        role = "teacher" if kind.startswith("TEACHER") or item.get("role") == "teacher" else "generator"
+        identity = request_decision_id(item) or (kind, len(recorded))
+        key = (role, identity)
+        recorded[key] = {**recorded.get(key, {}), **item, "role": role}
+    for source, role, items in (("generator", "generator", metadata.get("provider_metrics", [])),
+                                ("failure", "generator", metadata.get("provider_failures", []))):
+        for index, item in enumerate(items):
+            identity = request_decision_id(item) or (source, index)
+            key = (role, identity)
+            row = {**recorded.get(key, {}), **item, "role": role}
+            row.setdefault("event", "ERROR" if source == "failure" else "GENERATOR_END")
+            recorded[key] = row
+    v9 = metadata.get("v9") or {}
+    for index, item in enumerate(v9.get("teacher_metrics", [])):
+        if item.get("provider_request_attempted", True):
+            identity = request_decision_id(item) or ("teacher", index)
+            key = ("teacher", identity)
+            row = {**recorded.get(key, {}), **item, "role": "teacher"}
+            row.setdefault("event", "TEACHER_END")
+            recorded[key] = row
+    ended = {
+        "generator": {request_decision_id(item) for item in recorded.values()
+                      if item.get("role") == "generator" and item.get("event") in ("GENERATOR_END", "ERROR")},
+        "teacher": {request_decision_id(item) for item in recorded.values()
+                    if item.get("role") == "teacher" and item.get("event") in ("TEACHER_END", "TEACHER_ERROR")},
+    }
+    for item in events_by_episode[episode]:
+        kind = item.get("event")
+        if kind not in ("GENERATOR_START", "TEACHER_START"):
+            continue
+        role = "generator" if kind == "GENERATOR_START" else "teacher"
+        decision_id = item.get("decision_id")
+        if decision_id not in ended[role]:
+            key = (role, decision_id)
+            recorded[key] = {**recorded.get(key, {}), "event": "ERROR", "cost_usd": None,
+                             "role": role, "decision_id": decision_id}
+    return list(recorded.values())
+
+
 def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
     """Aggregate Harbor outcomes and the costs recorded by each Provider response."""
     from .iterations import collect_trials, rows, write_atomic, percentile
@@ -115,64 +169,10 @@ def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
               and (r.get("policy") not in ("joint_laya", "joint_kev")
                    or r.get("neural_router_evidence_eligible") is True)]
     events = rows(iteration_dir / "events.jsonl")
-    events_by_episode = defaultdict(list)
-    for event in events:
-        if event.get("episode_id") is not None:
-            events_by_episode[str(event["episode_id"])].append(event)
-
-    def provider_requests(trial):
-        episode = str(trial["trial_id"])
-        metadata = trial.get("agent_metadata") or {}
-        recorded = {}
-        for item in events_by_episode[episode]:
-            kind = item.get("event")
-            if kind not in ("GENERATOR_END", "TEACHER_END", "TEACHER_ERROR") and not (
-                    kind == "ERROR" and item.get("category") == "PROVIDER"):
-                continue
-            if kind == "TEACHER_ERROR" and not item.get("provider_request_attempted", True):
-                continue
-            role = "teacher" if kind.startswith("TEACHER") or item.get("role") == "teacher" else "generator"
-            identity = request_decision_id(item) or (kind, len(recorded))
-            key = (role, identity)
-            recorded[key] = {**recorded.get(key, {}), **item, "role": role}
-        for source, role, items in (("generator", "generator", metadata.get("provider_metrics", [])),
-                                    ("failure", "generator", metadata.get("provider_failures", []))):
-            for index, item in enumerate(items):
-                identity = request_decision_id(item) or (source, index)
-                key = (role, identity)
-                row = {**recorded.get(key, {}), **item, "role": role}
-                row.setdefault("event", "ERROR" if source == "failure" else "GENERATOR_END")
-                recorded[key] = row
-        v9 = metadata.get("v9") or {}
-        for index, item in enumerate(v9.get("teacher_metrics", [])):
-            if item.get("provider_request_attempted", True):
-                identity = request_decision_id(item) or ("teacher", index)
-                key = ("teacher", identity)
-                row = {**recorded.get(key, {}), **item, "role": "teacher"}
-                row.setdefault("event", "TEACHER_END")
-                recorded[key] = row
-        ended = {
-            "generator": {request_decision_id(item) for item in recorded.values()
-                          if item.get("role") == "generator" and item.get("event") in ("GENERATOR_END", "ERROR")},
-            "teacher": {request_decision_id(item) for item in recorded.values()
-                        if item.get("role") == "teacher" and item.get("event") in ("TEACHER_END", "TEACHER_ERROR")},
-        }
-        for item in events_by_episode[episode]:
-            kind = item.get("event")
-            if kind not in ("GENERATOR_START", "TEACHER_START"):
-                continue
-            role = "generator" if kind == "GENERATOR_START" else "teacher"
-            decision_id = item.get("decision_id")
-            if decision_id not in ended[role]:
-                key = (role, decision_id)
-                recorded[key] = {**recorded.get(key, {}), "event": "ERROR", "cost_usd": None,
-                                 "role": role, "decision_id": decision_id}
-        return list(recorded.values())
-
     by_policy = defaultdict(list)
     for trial in usable:
         by_policy[trial["policy"]].append(trial)
-    trial_requests = {str(trial["trial_id"]): provider_requests(trial) for trial in raw
+    trial_requests = {str(trial["trial_id"]): provider_requests(trial, events) for trial in raw
                       if trial.get("trial_id")}
     table3, table10 = [], []
     for policy, trials in by_policy.items():
@@ -391,5 +391,146 @@ def observed_research_groups(trials, events, request_rows):
                         "supervision": result["table8"], "checkpoints": result["table11"]},
                   fig8=comparisons, observed_factor_status=group_status)
     return result
+
+
+def export_batch_results(root, config):
+    """Collect the same Provider and official facts, including unscored paid attempts."""
+    from .iterations import rows, write_atomic, percentile
+    tasks = {t["task_id"]: t for t in config["tasks"]}
+    strategies = {s["id"]: s for s in config["strategies"]}
+    units = json.loads((root / "manifest.json").read_text())["units"]
+    episodes = []
+    for unit in units:
+        relative = Path(unit["task_id"]) / unit["strategy_id"] / str(unit["seed"])
+        public = root / "trials" / relative
+        private = root / ".private/episodes" / relative
+        if (public / "summary.json").exists():
+            episodes.append(json.loads((public / "summary.json").read_text()))
+            continue
+        strategy, task = strategies[unit["strategy_id"]], tasks[unit["task_id"]]
+        row = {**unit, "run_id": config["run_id"], "benchmark_name": "Terminal-Bench",
+               "benchmark_version": "2.0", "benchmark_commit": config["dataset_commit"],
+               "source_revision": config["source_revision"], "original_subset": task["original_subset"],
+               "historically_exposed": task["historically_exposed"],
+               "used_for_current_training": task["used_for_current_training"],
+               "used_for_model_selection": task["used_for_model_selection"],
+               "independent_of_training_and_selection": not task["used_for_current_training"] and not task["used_for_model_selection"],
+               "checkpoint_path": strategy.get("checkpoint", {}).get("path"),
+               "router_device": strategy.get("checkpoint", {}).get("device"),
+               "teacher_enabled": strategy.get("teacher_enabled", False),
+               "aa_snapshot_id": config["capability_snapshot"]["snapshot_id"],
+               "harbor_version": config["harbor_version"], "mini_swe_version": config["mini_swe_version"],
+               "task_resources": task["environment"], "reward": None, "error_type": None,
+               "episode_wall_s": None, "generator_known_reference_usd": None,
+               "teacher_known_reference_usd": None, "reference_cost_usd": None,
+               "supplier_billed_usd": None, "router_compute_cost_usd": None,
+               "environment_cost_usd": None, "complete_cost_usd": None,
+               "physical_kv_sharing": "UNKNOWN", "evidence_path": str(private)}
+        state_path = private / "resume_state.json"
+        if not state_path.exists():
+            episodes.append(row)
+            continue
+        state = json.loads(state_path.read_text())
+        row["status"] = state["status"]
+        if state["status"] not in ("EVALUATED", "PARTIAL", "BLOCKED"):
+            episodes.append(row)
+            continue
+        trials = rows(private / "official_trials.jsonl")
+        trial = trials[-1] if trials else {}
+        events = rows(private / "events.jsonl")
+        requests = provider_requests(trial, events)
+        generator = [r for r in requests if r["role"] == "generator"]
+        teacher = [r for r in requests if r["role"] == "teacher"]
+        routing = [e for e in events if e["event"] == "ROUTER_END"]
+        contexts = [e for e in events if e["event"] == "V9_CONTEXT_END"]
+        def known_cost(group):
+            return sum(known_request_cost(r) or 0 for r in group)
+        def reported(group, field):
+            values = [r.get(field) for r in group]
+            return sum(values) if all(v is not None for v in values) else None
+        row.update(trial_id=trial.get("trial_id"), reward=trial.get("reward"),
+                   official_status=trial.get("status"), error_type=trial.get("error_type"),
+                   verifier_path=trial.get("verifier_path"), episode_wall_s=trial.get("duration_sec"),
+                   phase_wall_s=trial.get("phase_wall_s"),
+                   generator_requests=len(generator), teacher_requests=len(teacher),
+                   generator_known_reference_usd=known_cost(generator), teacher_known_reference_usd=known_cost(teacher),
+                   reference_cost_usd=reported(requests, "cost_usd"),
+                   supplier_billed_usd=reported(requests, "actual_billed_cost_usd"),
+                   unknown_provider_cost_requests=sum(r.get("cost_usd") is None for r in requests),
+                   prompt_tokens=reported(requests, "prompt_tokens"), completion_tokens=reported(requests, "completion_tokens"),
+                   reasoning_tokens=reported(requests, "reasoning_tokens"),
+                   reported_cache_read_tokens=reported(requests, "cached_tokens"),
+                   known_cache_read_tokens=sum(r.get("cached_tokens") or 0 for r in requests),
+                   cache_read_unknown_records=sum(r.get("cached_tokens") is None for r in requests),
+                   reported_cache_write_tokens=reported(requests, "cache_write_tokens"),
+                   cache_write_unknown_records=sum(r.get("cache_write_tokens") is None for r in requests),
+                   router_wall_s=sum(e.get("router_latency_ms", 0) for e in routing) / 1000,
+                   router_cpu_time_sec=sum(e.get("router_cpu_time_sec", 0) for e in routing),
+                   router_gpu_wait_s=sum(e.get("router_gpu_wait_ms", 0) for e in routing) / 1000,
+                   router_transfer_s=sum(e.get("router_device_transfer_ms", 0) for e in routing) / 1000,
+                   teacher_wall_s=sum(r.get("teacher_wall_ms", 0) for r in teacher) / 1000,
+                   generator_wall_s=sum(r.get("agent_request_wall_ms", r.get("duration_ms", 0)) for r in generator) / 1000,
+                   selected_actions=[e["selected_action"] for e in routing],
+                   request_return_identities=[{k: r.get(k) for k in ("role", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "provider_endpoint_id", "identity_status")} for r in requests],
+                   logical_model_changes=sum(bool(e.get("logical_model_changed")) for e in contexts),
+                   endpoint_changes=sum(e.get("previous_provider_endpoint_id") is not None and e.get("previous_provider_endpoint_id") != e.get("provider_endpoint_id") for e in contexts),
+                   prefix_continuity_counts={label: sum(e.get("input_prefix_continuity") == label for e in contexts) for label in ("FIRST_REQUEST", "EXACT_PREVIOUS_MESSAGES", "PREFIX_CHANGED")},
+                   router_truncated_decisions=sum(bool((e.get("router_input_usage") or {}).get("truncated")) for e in routing),
+                   teacher_consumed_decisions=sum(e.get("assessment_consumed_by_router") is True for e in events if e["event"] == "TEACHER_ROUTER_INPUT"))
+        public.mkdir(parents=True, exist_ok=True)
+        write_atomic(public / "official_result.json", {k: trial.get(k) for k in ("trial_id", "task_name", "task_git_sha", "status", "reward", "error_type", "duration_sec", "started_at", "finished_at", "verifier_path")})
+        write_atomic(public / "summary.json", row)
+        fields = {"timestamp", "monotonic_ns", "event", "episode_id", "decision_id", "selected_action", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "provider_endpoint_id", "cost_usd", "actual_billed_cost_usd", "prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "router_latency_ms", "inference_latency_ms", "router_input_usage", "router_cpu_time_sec", "teacher_wall_ms", "capability_snapshot_id", "assessment_consumed_by_router", "error", "category"}
+        with (public / "events.jsonl").open("w") as stream:
+            for event in events:
+                stream.write(json.dumps({k: v for k, v in event.items() if k in fields}, ensure_ascii=False) + "\n")
+        episodes.append(row)
+    metrics = root / "metrics"
+    metrics.mkdir(exist_ok=True)
+    def write_csv(name, records):
+        fields = list(dict.fromkeys(k for row in records for k in row))
+        with (metrics / name).open("w", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows({k: json.dumps(v, ensure_ascii=False) if isinstance(v, (list, dict)) else v for k, v in row.items()} for row in records)
+    grouped = []
+    for strategy in strategies:
+        all_rows = [r for r in episodes if r["strategy_id"] == strategy]
+        for subset, group in (("all", all_rows), ("independent_of_training_and_selection", [r for r in all_rows if r["independent_of_training_and_selection"]]), ("historically_exposed", [r for r in all_rows if r["historically_exposed"]]), ("not_historically_exposed", [r for r in all_rows if not r["historically_exposed"]])):
+            n = len(group)
+            one, zero = sum(r["reward"] == 1 for r in group), sum(r["reward"] == 0 for r in group)
+            finished = [r for r in group if r["status"] in ("EVALUATED", "PARTIAL", "BLOCKED")]
+            grouped.append({"strategy_id": strategy, "subset": subset, "tasks": n,
+                            "attempted": len(finished), "reward_1": one, "reward_0": zero,
+                            "no_official_reward": sum(r["reward"] is None for r in finished),
+                            "not_run": n - len(finished), "scored_pass_rate": one / (one + zero) if one + zero else None,
+                            "benchmark_success_lower": one / n if n else None,
+                            "benchmark_success_upper": (n - zero) / n if n else None,
+                            "generator_known_reference_usd": sum(r["generator_known_reference_usd"] or 0 for r in group),
+                            "teacher_known_reference_usd": sum(r["teacher_known_reference_usd"] or 0 for r in group),
+                            "complete_cost_usd": None, "supplier_billed_usd": None,
+                            "episode_total_wall_s": sum(r["episode_wall_s"] or 0 for r in group),
+                            "episode_p50_s": percentile([r["episode_wall_s"] for r in group], .5),
+                            "episode_p95_s": percentile([r["episode_wall_s"] for r in group], .95)})
+    comparisons = []
+    pairs = [(f"{family}_{version}_off", f"{family}_{version}_on", "teacher") for family in ("laya", "kev") for version in ("original", "trained")]
+    pairs += [(f"{family}_original_{teacher}", f"{family}_trained_{teacher}", "training") for family in ("laya", "kev") for teacher in ("off", "on")]
+    for left, right, factor in pairs:
+        a = {(r["task_id"], r["seed"]): r for r in episodes if r["strategy_id"] == left}
+        b = {(r["task_id"], r["seed"]): r for r in episodes if r["strategy_id"] == right}
+        paired = [(a[k], b[k]) for k in a.keys() & b.keys() if a[k]["reward"] in (0, 1) and b[k]["reward"] in (0, 1)]
+        comparisons.append({"factor": factor, "left": left, "right": right, "scored_pairs": len(paired),
+                            "reward_delta_sum": sum(y["reward"] - x["reward"] for x, y in paired),
+                            "known_reference_delta_usd": sum(y["reference_cost_usd"] - x["reference_cost_usd"] for x, y in paired) if paired and all(x["reference_cost_usd"] is not None and y["reference_cost_usd"] is not None for x, y in paired) else None,
+                            "complete_cash_net_benefit_usd": None})
+    write_csv("per_episode.csv", episodes)
+    write_csv("per_task.csv", [{"task_id": task, "attempted_strategies": sum(r["task_id"] == task and r["status"] in ("EVALUATED", "PARTIAL", "BLOCKED") for r in episodes), "scored_strategies": sum(r["task_id"] == task and r["reward"] in (0, 1) for r in episodes)} for task in tasks])
+    write_csv("per_strategy.csv", grouped)
+    write_csv("cost_breakdown.csv", [{k: r[k] for k in ("task_id", "strategy_id", "seed", "generator_known_reference_usd", "teacher_known_reference_usd", "reference_cost_usd", "supplier_billed_usd", "router_compute_cost_usd", "environment_cost_usd", "complete_cost_usd")} for r in episodes])
+    write_atomic(metrics / "comparisons.json", comparisons)
+    report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n", "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。\n", "| 策略 | 已结束 | Reward1 | Reward0 | 缺Reward | 尚未结束 | 已知模型+教师USD |", "|---|---:|---:|---:|---:|---:|---:|"]
+    report += [f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {r['no_official_reward']} | {r['not_run']} | {r['generator_known_reference_usd'] + r['teacher_known_reference_usd']:.8f} |" for r in grouped if r["subset"] == "all"]
+    (root / "review.md").write_text("\n".join(report) + "\n")
+    return {"episodes": episodes, "strategies": grouped, "comparisons": comparisons}
 
 
