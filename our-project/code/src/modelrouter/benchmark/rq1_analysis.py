@@ -454,6 +454,7 @@ def export_batch_results(root, config):
             return sum(values) if all(v is not None for v in values) else None
         row.update(trial_id=trial.get("trial_id"), reward=trial.get("reward"),
                    official_status=trial.get("status"), error_type=error.get("exception_type"),
+                   failed_provider_http_status=next((r.get("http_status") for r in requests if r.get("event") in ("ERROR", "TEACHER_ERROR") and r.get("http_status")), None),
                    verifier_path=trial.get("verifier_path"), episode_wall_s=trial.get("duration_sec"),
                    phase_wall_s=trial.get("phase_wall_s"),
                    generator_requests=len(generator), teacher_requests=len(teacher),
@@ -482,7 +483,7 @@ def export_batch_results(root, config):
                    router_truncated_decisions=sum(bool((e.get("router_input_usage") or {}).get("truncated")) for e in routing),
                    teacher_consumed_decisions=sum(e.get("assessment_consumed_by_router") is True for e in events if e["event"] == "TEACHER_ROUTER_INPUT"))
         public.mkdir(parents=True, exist_ok=True)
-        write_atomic(public / "official_result.json", {**{k: trial.get(k) for k in ("trial_id", "task_name", "task_git_sha", "status", "reward", "duration_sec", "started_at", "finished_at", "verifier_path")}, "error_type": row["error_type"], "provider_http_status": next((r.get("http_status") for r in requests if r.get("http_status")), None)})
+        write_atomic(public / "official_result.json", {**{k: trial.get(k) for k in ("trial_id", "task_name", "task_git_sha", "status", "reward", "duration_sec", "started_at", "finished_at", "verifier_path")}, "error_type": row["error_type"], "failed_provider_http_status": row["failed_provider_http_status"]})
         write_atomic(public / "summary.json", row)
         fields = {"timestamp", "monotonic_ns", "event", "episode_id", "decision_id", "selected_action", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "provider_endpoint_id", "cost_usd", "actual_billed_cost_usd", "prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "router_latency_ms", "inference_latency_ms", "router_input_usage", "router_cpu_time_sec", "teacher_wall_ms", "capability_snapshot_id", "assessment_consumed_by_router", "http_status", "category"}
         with (public / "events.jsonl").open("w") as stream:
