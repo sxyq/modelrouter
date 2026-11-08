@@ -55,9 +55,10 @@ def format_router_payload(payload: Mapping) -> str:
         if teacher and "progress_summary" in teacher else
         {"status": data.get("teacher_status") or (teacher or {}).get("status") or "NOT_AVAILABLE"})
     conditions = {row["model_id"]: row for row in data.get("candidate_conditions", [])}
-    models = {"metric_schema": {
+    definitions = []
+    models = {"metric_definitions": definitions, "metric_schema": {
         "definition_fields": list(_METRIC_FIELDS), "score_fields": ["definition_index", "score_raw"],
-        "null_source": "USE_SHARED_SOURCE_URL", "other_effort_reference": "SEE_INDEPENDENT_EFFORT_ROWS",
+        "null_source": "MODEL_SOURCE_URL", "other_effort_reference": "SEE_INDEPENDENT_EFFORT_ROWS",
         "missing_definition_fields": ["metric_name", "reason_index"],
         "effort_fields": ["native_effort", "action_id", "evidence_status", "metrics", "aa_model_id",
                           "aa_model_slug", "evaluation_overrides", "missing_metrics", "stale_metrics"],
@@ -67,7 +68,6 @@ def format_router_payload(payload: Mapping) -> str:
         model_id = card["model_id"]
         if model_id not in models:
             metadata = card.get("model_provider_metadata", {})
-            definitions = []
             models[model_id] = {
                 "provider": card.get("model_provider"),
                 "revision": card.get("model_revision", "NOT_REPORTED"),
@@ -77,7 +77,6 @@ def format_router_payload(payload: Mapping) -> str:
                 "capabilities": {name: metadata.get(name, "NOT_MEASURED") for name in
                     ("tool_supported", "input_modalities", "output_modalities", "capability_status")},
                 "model_metrics": _metric_rows(card.get("model_metrics", []), definitions, card.get("source_url"))[0],
-                "metric_definitions": definitions,
                 "evidence_status": card.get("model_evidence_status", "NOT_MEASURED"),
                 "evaluation_defaults": {name: card.get(name) for name in shared_evaluation_fields},
                 "missing_metric_definitions": [],
@@ -101,11 +100,11 @@ def format_router_payload(payload: Mapping) -> str:
             missing.append(missing_definitions.index(definition))
         models[model_id]["efforts"].append([
             card.get("native_effort"), card["action_id"], card.get("evaluation_status", "NOT_MEASURED"),
-            _metric_rows(card.get("metrics", []), models[model_id]["metric_definitions"], models[model_id]["evaluation_defaults"]["source_url"])[0],
+            _metric_rows(card.get("metrics", []), definitions, models[model_id]["evaluation_defaults"]["source_url"])[0],
             card.get("aa_model_id"), card.get("aa_model_slug"),
             {name: card.get(name) for name in shared_evaluation_fields
              if card.get(name) != models[model_id]["evaluation_defaults"][name]}, missing,
-            _metric_rows(card.get("stale_metrics", []), models[model_id]["metric_definitions"], models[model_id]["evaluation_defaults"]["source_url"])[0],
+            _metric_rows(card.get("stale_metrics", []), definitions, models[model_id]["evaluation_defaults"]["source_url"])[0],
         ])
     history = {name: data.get(name) for name in (
         "history_length", "prior_tool_calls_count", "prior_error_signals_count",
@@ -128,11 +127,6 @@ def format_router_payload(payload: Mapping) -> str:
     history["history_snippet"], history["history_summary_view"] = _history_summary(snippet, 1000)
     groups = {
         "T": task, "teacher_assessment": assessment, "M": models, "H": history,
-        "capability_snapshot_id": data.get("capability_snapshot_id"),
-        "aa_fetched_at": data.get("aa_fetched_at"),
-        "aa_index_version": data.get("aa_index_version"),
-        "capability_freshness": data.get("capability_freshness"),
-        "feature_training_status": data.get("feature_training_status", "FEATURE_NOT_TRAINED"),
     }
     for name in data.get("disabled_information_groups", []):
         groups[name] = {"status": "ABLATION_DISABLED"}
@@ -169,7 +163,7 @@ def encoded_group_coverage(state, tokenizer, dropped=0):
     result["candidate_actions"] = {}
     groups = json.loads(state)
     for model_id, model in groups["M"].items():
-        if model_id in ("metric_schema", "status"):
+        if model_id in ("metric_schema", "metric_definitions", "status"):
             continue
         for values in model["efforts"]:
             row = dict(zip(groups["M"]["metric_schema"]["effort_fields"], values))

@@ -1,8 +1,10 @@
 # ModelRouter · E-DESIGN 实验设计问答与决策记录
 
-**2026-11-08 当前方法与执行状态**：正式链为Harbor→ModelRouterMiniSweAgent→DefaultAgent，只使用Single-Agent。RQ3研究阶段、真实子任务边界与路由粒度；Inspect/Modify/Verify/Recover只表示阶段。Luna/GLM-5.3-Flash/Terra由Registry登记15个Model×Native Effort；GLM已通过唯一私人配置绑定Colink，短文本正常，High4096长请求耗尽推理额度，返回Effort未报告。AA v7含130项独立成绩，Luna/Terra各六档、GLM仅Max，Low/High缺测；TTL/force/STALE与同批固定快照已实现。circuit-fibsqrt开发10尝试为4官方零分、6无有效Reward。两个11-07训练实体属于旧HY4池；本轮继续合法新池监督和两架构训练。完整结果见[重构报告](../results/iterations/20261107-v9-full-method/v9_refactor_review.md)及[项目现状](PROJECT_STATUS.md)。
+**2026-11-08 当前方法与执行状态**：Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。唯一链为Harbor→ModelRouterMiniSweAgent→DefaultAgent，Registry登记15动作。新池Laya/Kev各17更新已保存，联合选择监督仍只有一个五候选Train截止和16辅助行；旧HY4实体保持历史。GLM非流式4096开发成功，constraints-scheduling三档均官方1但返回Effort未报告。Luna Max→xhigh和Terra none→medium真实差异不改标签。v7/130指标/Index5.0.1固定，GLM Low/High缺AA成绩。RQ3开始/阶段/逐生成已实跑，真实子任务边界对照仍缺。当前结果和费用见[项目现状](PROJECT_STATUS.md)。
 
 本文件早期 Q-ID、研究建议和协作记录保留其原始时间与语义；它们不覆盖以上现行方法。
+
+**本轮执行已经结束**：[49条原官方结果与八部分判断](../results/iterations/20261108-v9-k3-training/review.md)。33有效终局、21个1/12个0、16无Reward；sanitize Laya1→0/Kev0→0，text有效终局全0。68教师短评成功，模型+教师已知参考$1.45700272；完整实收/资源价未知。241保存前缀截断48→0及四实体原生前向成功不改变原Episode输入版本；下一批用收敛后的编码补多Train截止监督、最终训练及事前独立Episode。CPU constraints无教师Kev正常结束，text训练Kev在档位不符前已有19工具事件，不能写成整条轨迹无动作。容器、研究进程、临时转发和memfd已结束，原Serving/F15恢复保持。
 
 **11-07当前方法的实际证据**：[完整研究](../results/iterations/20261107-v9-full-method/review.md)。T/M/H、13动作及Luna教师进入原生编码；当前前缀连续性不再沿上一轮输入。Responses消息字段及通用生成解析按实际协议处理；HY4/preview遵从负责人同模型口径，502仍UNKNOWN。Train新S1为2条但仅一个任务截止，旧40不是新池联合数据，16辅助标签不变。Luna max→xhigh不当max标签；明确xhigh和low同过后的缓存/参考费差不能推广成档位价格规律。
 

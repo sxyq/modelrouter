@@ -1,6 +1,6 @@
 # 路由实现调研与可发表、可开源方案
 
-> **全文为历史方案，不是现行方法或实现指令。** 本文的 admission-only、GBDT/MLP 与多 Agent 讨论仅供追溯。当前唯一链路为 Harbor → ModelRouterMiniSweAgent → DefaultAgent 与原 Evaluator，只研究 Single-Agent；RQ2 固定 K=3（Luna、GLM-5.3-Flash、Terra）。GLM 已绑定唯一私人配置中的 Colink，并取得真实工具生成；11-08 后续完整任务遇到上游限流。新池合法前缀监督及原 Trainer 已开始实际更新，当前状态见 [PROJECT_STATUS](PROJECT_STATUS.md)。RQ3 研究单 Agent 阶段、真实子任务边界与生成决策粒度，已运行任务开始/阶段/逐生成对照；阶段标签不构成任务拆分。本文旧 RQ、接口与池规模建议不覆盖现行定义。
+> **全文为历史方案，不是现行方法或实现指令。** 本文的admission-only、GBDT/MLP与多Agent讨论仅供追溯。当前唯一链为Harbor→ModelRouterMiniSweAgent→DefaultAgent和原Evaluator，只研究Single-Agent；RQ2固定Luna/GLM-5.3-Flash/Terra。GLM三档已有实际工具与官方Reward 1，返回Effort未报告；新池Laya/Kev各17次更新已保存。当前执行、费用及失败见[PROJECT_STATUS](PROJECT_STATUS.md)。RQ3为单Agent阶段、真实子任务边界与路由粒度，开始/阶段/逐生成已实跑；真实子任务边界对照仍缺。本文旧RQ、接口和池规模建议不覆盖现行定义。
 
 ## 结论
 

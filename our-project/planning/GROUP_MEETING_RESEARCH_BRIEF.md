@@ -1,4 +1,6 @@
-# ModelRouter 组会研究内容简纲：文献、方法与实验
+# ModelRouter 2026-10-11 组会研究简纲（历史）
+
+> 本文保留当时的文献、方案和未执行状态，不是当前研究入口。当前正式范围为Single-Agent、Luna/GLM-5.3-Flash/Terra、Model×Native Effort、T/M/H、AA精确档位、缓存连续性、Luna教师、Laya/Kev原始与新池训练版、A6000原Harbor及完整任务质量—总成本。RQ3为单Agent阶段、真实子任务边界与路由粒度；下文的协作和旧RQ设计不再执行。当前事实见[项目现状](PROJECT_STATUS.md)。
 
 > 2026-10-11｜讨论稿，非论文结论、非实验报告。
 > 研究主线以 [RESEARCH_OVERVIEW.md](RESEARCH_OVERVIEW.md) 和 [PROJECT_STATUS.md](PROJECT_STATUS.md) 为准。

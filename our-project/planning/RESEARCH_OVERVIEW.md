@@ -3,13 +3,13 @@
 **2026-11-08 · 新增近邻文献与研究方向讨论（未变更正式 RQ）**：[Whose turn is it? 中文技术笔记](../literature/notes/whose-turn-is-it-2610.19292.zh.md) 已核对并登记 [官方原 PDF 链接](https://arxiv.org/pdf/2610.19292) 和中文解读。该文实证研究零样本、二候选、**用户轮次级**表格 Agent 路由、历史依赖、缓存切换方向与回本成本；这些概念不能作为我们 V9 的首创声明。V9 保留真实 Harbor 单 Agent 每次生成机会可选 Model×Native Effort、Laya/Kev、T/M/H、Provider 缓存 Usage、教师和终局账本；候选差异化集中在独立任务验证过的**缓存机会成本×实际质量/恢复×完整 Episode 净收益**，而非堆输入或新建 KV Infra 服务。用户重新提出 K=3/5/7 与同 K 不同池组成作为 RQ2 拟议恢复范围；**当前正式 RQ2 仍为固定 K=3**，本次仅记研究讨论，尚未批准替换正式五 RQ/图表或声称 K=5/7 已可用。论文 PDF 二进制尚未导入仓库；链接归档见 [论文库条目](../external/research/papers/59_Whose_Turn_Is_It_PDF_LINK.md)。
 
 
-**当前研究方法与证据（2026-11-08）**：原 Harbor/Mini-SWE/官方 Evaluator 链、共享 T/M/H Serializer、Laya 或 Kev 原生前向、Luna 三字段教师和 Model×Native Effort 路由继续沿同一实现。11-07的[完整真实报告](../results/iterations/20261107-v9-full-method/review.md)属于旧 Luna/HY4/Terra 池。本批已取得真实 GLM Train 工具输出和新池偏好，Laya17更新完成，Kev17行原Trainer仍在计算；版本在polyglot终局前事前确定，不据已看任务选择Checkpoint。
+**当前研究方法与证据（2026-11-08）**：唯一Harbor→ModelRouterMiniSweAgent→DefaultAgent与原Evaluator、共享T/M/H、Laya/Kev原生前向、Luna教师和Model×Native Effort继续复用。11-07[完整报告](../results/iterations/20261107-v9-full-method/review.md)属于旧HY4池。新GLM池已有1条五候选联合偏好+16辅助；Laya/Kev各17更新已保存，两个代表在独立评价终局前确定。
 
-GLM 绑定唯一私人配置中的 Colink，精确请求 ID 为 `glm-5.3-flash`，Chat 顶层 `reasoning_effort` 与 `thinking.enabled`；新Train六请求中三次产生工具，返回Effort未报告。完整任务后续429原文为上游限流，Reward缺失保持未知。git-multibranch属于已暴露开发复用：Luna Low/High为0/1、Terra Low/High为1/1；去M的Laya逐生成/任务开始/阶段为1/1/0。全T/M/H训练贡献尚无成功配对。polyglot事前评价已得到Low固定策略0/0和规则1，High及Kev比较继续；constraints-scheduling仍保留未运行。现行五RQ为RQ1整体质量—总成本、RQ2固定K=3联合档位、RQ3单Agent阶段/真实子任务/粒度、RQ4系统消融、RQ5工作负载收益边界。
+GLM开发非流式4096已取得实际工具与官方Reward 1；独立constraints-scheduling三档均1，返回Effort未报告。该题Laya原始/训练/无教师=1/1/1，CPU Kev=1/1/0；只有原始/训练Kev触及Agent时限。全部49尝试已结束，33有效终局/21个1/12个0，16无Reward。sanitize Laya1→0、修复后Kev0→0；text五个有效终局全0，三项缺Reward。模型+教师已知参考费$1.45700272，实收与资源美元价未知，训练及完整净收益未建立。旧polyglot已观察，query-optimize原Verifier超时；保持原用途。现行五RQ为整体质量—总成本、固定K=3联合档位、单Agent阶段/真实子任务/粒度、系统消融、工作负载收益边界；详见[本轮报告](../results/iterations/20261108-v9-k3-training/review.md)。
 
 当前研究池目标为 **Luna、GLM-5.3-Flash、Terra**，规划 15 个 Model×Native Effort 候选。每批实际候选严格依精确 Provider/model 身份、原生 Effort、可用性、工具和上下文能力生成；15 是规划数，不把缺失或未支持动作伪造成可运行候选。旧 HY4 请求、训练和结果保留其历史身份。
 
-AA 沿原 capabilities 实现 TTL、force、STALE 与同批固定快照。v7共130条独立指标：Luna/Terra各六档，GLM仅Max，Low/High缺测；Index5.0.1，取得时间2026-11-07T13:47:04.783836Z，三个真实AA release页面为来源。授权API完整数据、模型revision及官方发布时间尚缺。17训练行的34项双原生编码为FULL，Laya最高7575、Kev最高7583Token，15动作/130当前指标及教师状态保留；只有1条实际教师三字段，其他行明确缺失。工具/生成使用1000/800字符摘要，不代表全部原始轨迹。
+AA 沿原 capabilities 实现 TTL、force、STALE 与同批固定快照。v7共130条独立指标：Luna/Terra各六档，GLM仅Max，Low/High缺测；Index5.0.1，取得时间2026-11-07T13:47:04.783836Z，三个真实AA release页面为来源。授权API完整数据、模型revision及官方发布时间尚缺。原17训练行34项编码保持；最终共享指标定义令241保存前缀截断48→0，Laya最长8173Token且AA分数/来源不符0，四实体原生前向无截断。49个Episode输入版本保持，修复后训练及完整比较仍缺。工具/生成使用1000/800字符摘要，不代表全部原始轨迹；教师状态FULL含缺失/关闭标记。
 
 11-07 报告的真实执行显示：两 Trainer 各 18 次更新，Train 有 2 条联合 S1、每类 8 条 S2/S3 辅助材料，但两条 S1 来自同一个截止；正式三题没有用于梯度或调参。更新 Laya 的 Terra 切换在相同输入下原始 Laya 也会作出，不能归因于训练。更新 Kev 有真实切换，但三题均触及 Agent 时限，不能据此宣称分工或完整净收益。其它 RQ 与成本缺口按报告原数值和 UNKNOWN 保留。
 

@@ -1,20 +1,22 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-**当前执行事实（2026-11-08）**：GLM新Train六请求有三次实际工具生成，另三次429；返回精确模型ID，Effort未报告。原长High4096请求在333.097秒返回HTTP200但4096输出全为推理、finish=length，旧229字节空SSE保留。正式Provider使用Harbor剩余时间，length记INCOMPLETE_RESPONSE；后续完整任务429原文是上游限流。失败不改名为官方零分，也不无限扩大输出额度。
+**当前执行事实（2026-11-08）**：GLM已在开发configure-git-webserver用非流式/4096输出完成30次生成并取得官方Reward 1；独立constraints-scheduling的Low/High/Max均正常提交、Reward 1，模型参考费$0.00806607/$0.00712319/$0.00968241，返回Effort未报告。Provider已沿Harbor剩余时间；旧429、推理额度耗尽、空流与Luna Max返回xhigh保留原记录。
 
-**当前源码和训练**：主要自有源码职责收敛已部署原A6000工程；默认Harbor CLI现在只加载正式V9配置，Agent适配删除非V9重复状态路径。1491行既有测试按原职责拆分，52原函数保持，自有Python最大982行。新池一个五候选偏好和16辅助行沿原Trainer更新：Laya17更新/736.337秒已保存并实际加载；Kev同17行/1epoch在CPU40计算，尚无最终metrics。旧HY4两个11-07实体保持历史身份。网络SSL提前结束的真实事件暴露上游自动重试和SSE文件重复；正式适配现直接保留OSError，不重新进入同一生成边界。
+**源码与训练**：1491行既有测试已按五职责拆分，52原函数保持；245个自有Python文件最大982行，本轮复用已完成重构。新池1条五候选偏好+16辅助共17行：Laya17更新/736.337秒；Kev17更新/13420.549秒，2026-11-08 05:58台北保存LoRA/Head/Tokenizer/metrics，CPU峰值RSS238751465472字节。两版本在独立评价前确定，原始实体models/laya-421m和models/kev-4b-adapter保持；旧HY4两实体不作为GLM研究版。
 
-| 本批实验 | 当前官方结果与用途 |
+| 实验 | 已取得结果与用途 |
 |---|---|
-| git-multibranch固定档位 | 11-03已暴露，开发复用；Luna Low/High=0/1，Terra Low/High=1/1，GLM三档429无Reward |
-| Laya原始/新训练/教师关/T/M/H消融 | 全T/M/H及去T遇GLM429；去H有4次有效生成后429；去M逐生成=1 |
-| 去M Laya粒度 | 同实体/同v7：任务开始=1、阶段=0；逐生成与任务开始模型加教师参考费$0.05961651/$0.0571708 |
-| 原始Kev开发 | 0，AgentTimeoutError；2模型返回、3Router边界，末次只计Router资源 |
-| polyglot事前评价 | Low Luna/Terra=0/0，规则=1，GLM/原始Laya/训练Laya均429无Reward；High与Kev继续 |
-| 教师关闭规则臂 | SSL EOF后重复SSE文件导致无Reward；8模型返回及$0.03187143已知参考费保留 |
-| 未运行评价 | constraints-scheduling仍未看终局，模型和训练完成前不用它调参 |
+| constraints-scheduling固定模型与规则 | 训练代表确定后首次执行；Luna High/Terra High/GLM Low/High/Max/规则均1 |
+| constraints-scheduling CPU Laya | 原始/训练/无教师=1/1/1，模型+教师参考费$0.01053198/$0.01409152/$0.00418989 |
+| constraints-scheduling CPU Kev | 原始/训练/无教师=1/1/0；原始/训练触及1200秒Agent时限，无教师正常结束；训练版一请求费用未知 |
+| git-multibranch CPU训练Kev | 逐生成/阶段=0/0；开始无Reward；无教师Terra请求none、返回medium，无Reward |
+| git-multibranch GPU Laya | 原始/训练/无教师=1/UNKNOWN/1；训练版原Verifier超时，晚到reward.txt=1不改原结果 |
+| sanitize-git-repo独立工作负载 | Luna/Terra/GLM Low均1，GPU Laya原始/训练1/0，修复后GPU Kev0/0；规则上游流错误无Reward |
+| large-scale-text-editing独立工作负载 | Terra/GLM Low/规则/Laya原始/训练五个有效终局全0；Luna及原始Kev原Verifier超时，训练Kev档位不符，无Reward |
 
-表中模型/教师USD来自登记价格，实收、Router/VM资源USD未知；CPU训练并行使墙钟差不能单归因于策略。原Harbor/Provider证据和旧尝试完整保留，质量表由真实事件归组而非历史账本资格字段决定。
+**本轮全部尝试已结束**：49次=41原位置+8次实际故障处理后的两臂运行；33有效终局、21个1/12个0、16无Reward。601个生成返回、68次教师触发/成功短评、8个Provider用量/参考费未知记录。已知模型$1.42361320、教师$0.03338952，共$1.45700272；现金实收与资源价未知。实际报告缓存读取5572672 Token，66记录缺读取数；560次消息前缀连续不等于缓存读取。详见[八部分报告与49条结果](../results/iterations/20261108-v9-k3-training/review.md)。
+
+CPU/流式与后续GPU/非流式批次分别保存。GPU复用既有Checkpoint路径和共享锁，Serving未换权重。费用含模型与教师参考费，供应商逐请求实收和Router/工具/CPU/GPU/VM美元费仍缺；不能计完整现金净收益。
 
 **方法范围**：只研究单Agent，取消多Agent角色协作、handoff及Agent数量变量。RQ3为单Agent阶段、真实子任务边界与路由粒度；现阶段主要实现观察阶段和逐生成路由，不冒称自动拆分。Luna/GLM-5.3-Flash/Terra登记15个Model×Effort，登记不代表渠道全部实测可用。AA已实现TTL更新、force刷新、STALE识别及同一比较批次固定快照。旧HY4数据、权重与结果保留历史身份。
 
@@ -22,9 +24,9 @@
 
 **Provider与AA**：GLM使用Colink精确小写身份和Chat原生参数，Low/High/Max请求被接受，返回Effort与物理权重未报告。旧矛盾Usage、只有role/keepalive的SSE及Luna Max返回xhigh保留原貌。Colink累计USD接口无逐请求关联，不用于Episode实收。AA v7为130条独立metric/5.0.1，取得时间2026-11-07T13:47:04.783836Z；Luna/Terra各六档、GLM仅Max10项，Low/High缺测。Coding/Agentic Index、模型revision、官方发布时间及授权API完整数据仍缺。本批固定v7，普通在线TTL/force/STALE行为继续由原capabilities负责。
 
-**原生输入与资源**：M使用共享模型字段、逐档分数和精确AA身份；工具/生成摘要1000/800字符，原始轨迹另存。11-08的17训练行共34项原生编码FULL，最高Laya7575/Kev7583Token；15动作、130当前指标和1条真实教师三字段保留，其他教师行明确缺失。FULL表示当前Serializer内容，不表示原历史全量。Laya窗口8192/512、Kev原生容量65536各自保留。当前CPU训练与Harbor并行、共享GPU作业不变；Serving PID327621仍原权重。用户Docker按原socket执行，临时17898代理与SSH/memfd仍用于本批，结束后关闭。原账本、恢复权重及私有响应保持。
+**原生输入与资源**：M使用统一Registry、精确AA档位与模型字段，工具/生成按1000/800字符摘要，原始轨迹另存。原17训练行34项编码FULL、1条真实教师保持。最终共享指标定义只保留一份，移除重复AA顶层及训练标签/快照ID的神经输入副本，原状态记录仍保留；241实际前缀Laya截断48→0，最长8173/窗口8192，AA分数/来源不符0。四实体同一真实前缀CUDA前向均T/M/H与教师状态FULL；Laya8173、Kev8409Token，前向约2.4/4.8–4.9秒，含首次加载/转移约12.2–12.5/68.4–69.9秒。教师状态FULL包含缺失/关闭，不等于全部有短评。49 Episode均保留旧输入版本，修复后完整比较未运行。Kev CUDA转移同步原DecisionModel.device和SDPA，Laya专用导入留在Laya分支。模型、共享锁和原Serving PID327621保持。
 
-**科研接续**：继续完成健康Kev训练并取得物理参数，再沿原Harbor补齐原始/训练Kev、教师和粒度对照。独立实体在polyglot终局前已事前选定单Epoch，不按已看三题或本批结果挑权重。RQ1完整K=3净收益、RQ2有效GLM各档完整结果、RQ3可迁移粒度收益、RQ4全T/M/H及训练/教师贡献、RQ5足够独立工作负载仍缺。原F15无Worker/Controller，物理恢复step61180、GPU锁和Serving PID327621保护；临时代理与SSH/memfd仍在本批使用，结束后关闭。
+**科研接续**：原始/研究版本按事前17行单Epoch规则确定，独立评价不用于训练或选权重。所有本轮Episode及原生前向已结束；下一批从多个合法Train截止补联合监督并按收敛后的编码训练，再做事前独立完整比较。RQ1完整现金净收益、RQ2真实逐档身份和互补选择、RQ3真实子任务边界对照、RQ4T/M/H/教师/训练可归因贡献、RQ5独立多工作负载仍缺。F15当前无Controller或训练进程，物理恢复epoch_01/61180，原38组25完成；用户Docker容器0、GPU锁无持有者、临时17898与SSH/memfd已关闭。
 
 **11-07完整方法与正式子集**：[本批研究](../results/iterations/20261107-v9-full-method/review.md)。原State/Schema/Serializer/Provider/原生Adapter已原位表达T/M/H、13登记联合动作、当前缓存时序和Luna三字段教师；新方法不走旧Alias。18条Train记录在两Tokenizer下36项编码无截断，最长5515状态Token；已保存的真实新Luna教师另实际进入原生前向。FULL指序列化摘要，不是全部原轨迹，也不代表已经学会有效利用。
 

@@ -1,8 +1,8 @@
 # ModelRouter · 论文研究问题、实验与图表规划（V9｜2026-11-07 更新）
 
-> **2026-11-08 当前方法定义**：只研究Single-Agent，链为Harbor→ModelRouterMiniSweAgent→DefaultAgent。RQ3为阶段、真实子任务边界与路由粒度；Inspect/Modify/Verify/Recover只表示阶段。RQ2固定Luna/GLM-5.3-Flash/Terra，登记15个Model×Native Effort。GLM Colink新Train六请求有三次实际工具输出，返回Effort未报告；后续完整任务429为上游限流。新池一个五候选偏好与16辅助行进入原Trainer，Laya17更新已保存，Kev17行在CPU计算。git-multibranch已暴露开发：Luna Low/High=0/1、Terra Low/High=1/1；去M Laya逐生成/任务开始/阶段=1/1/0。polyglot已观察，High及Kev比较继续；constraints-scheduling未运行。旧HY4结果保持历史身份，完整K=3质量—总成本与训练贡献尚缺。
+> **2026-11-08 当前方法定义**：Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位；缓存连续性；Luna教师；Laya/Kev原始与新池训练版；A6000原Harbor；完整任务质量—总成本净收益。唯一链Harbor→ModelRouterMiniSweAgent→DefaultAgent，Registry登记15动作。RQ3为阶段、真实子任务边界与路由粒度。新池一个五候选偏好+16辅助，两架构各17更新事前确定。49尝试全部结束：33有效终局/21个1/12个0，16无Reward。GLM三档工具及官方1，返回Effort缺；constraints CPU Laya1/1/1、Kev1/1/0，只有原始/训练Kev触及时限。sanitize Laya1→0/Kev0→0，text有效终局全0；当前[八部分报告](../../our-project/results/iterations/20261108-v9-k3-training/review.md)与脱敏49行结果提供Fig.3–8/Table3–12实际位置，未运行项目保持缺项。旧HY4和过去素材保留历史；完整现金净收益与训练贡献仍缺。
 >
-> 当前能力链为Registry→AA统一快照→逐档候选卡→M→共享Serializer→原生Tokenizer。v7取得时间2026-11-07T13:47:04.783836Z、Index5.0.1；Luna/Terra各六档和GLM Max共130项，GLM Low/High缺测。17训练行的34项双原生编码FULL，最高Laya7575/Kev7583Token，15合法动作、130当前指标和教师状态保留；只有1行真实教师三字段，其他明确缺失。工具/生成摘要1000/800字符，原始历史另存。TTL/force/STALE及正式同批固定snapshot_id沿原capabilities，不逐生成访问AA。
+> 当前能力链为Registry→AA统一快照→逐档候选卡→M→共享Serializer→原生Tokenizer。v7取得时间2026-11-07T13:47:04.783836Z、Index5.0.1，130项；GLM Low/High缺测。原34训练编码保留；共享指标定义令241保存前缀截断48→0、Laya最高8173Token，AA分数/来源不符0；四实体同前缀原生前向无截断，不改写49个Episode输入版本。68教师短评成功；教师状态FULL可包含缺失/关闭。模型+教师已知参考$1.45700272，缓存读取报告5572672 Token/66条缺测，实际实收/资源价未知。工具/生成摘要1000/800字符，原始历史另存。TTL/force/STALE及同批固定snapshot_id保持。
 
 > **11-02最新Dev批次**：9个公开Dev任务19 Episode全部结束，原Harbor Verifier9次，7成功/2失败/10未知。实际请求DeepSeek，动态三身份为ALIAS_SMOKE，正式K=3质量结果仍缺。Git/HF/POV-Ray三组同协议完整对照固定3/3、动态2/3；参考模型费按成功数分摊0.006153744/0.006720942USD，Trial合计738.50/1805.48秒，动态收益未证明。财务/MTEB跨处理版本只观察。详见[批次结果](../../our-project/results/iterations/20261102-v9-deepseek-dev/review.md)。
 >
@@ -171,7 +171,7 @@ flowchart LR
   COST --> OUT["Episode Resolved / Complete USD / Latency"]
 ```
 
-用户选定的目标池固定为 K=3；RQ2 研究该固定池中每个身份的真实 Model×Native Effort 候选及其 Provider 能力。RQ3 **固定池/Router，比较原任务整体或真实子任务边界 G 与生成决策粒度 F**，RQ4 **固定池/任务/评测口径改动作、可选信息或训练监督**，RQ5 **固定 Router/池/生成粒度比较预定义工作负载条件**。同一单活跃 Laya **或** Kev 负责联合候选选择，教师只加工状态，原单 Agent 继续执行。实际动作数由 Provider 证据确定，不将 15 个规划候选或缺失 GLM 绑定写成已可执行。`v9/training` 复用原 Trainer/控制器，把离线真实前缀、三字段和合法监督送入同义编码；不新增 Agent 循环、训练队列或监测状态来源。当前图表达要求，新特征未学习标 `FEATURE_NOT_TRAINED`。
+用户选定的目标池固定为 K=3；RQ2 研究该固定池中每个身份的真实 Model×Native Effort 候选及其 Provider 能力。RQ3 **固定池/Router，比较原任务整体或真实子任务边界 G 与生成决策粒度 F**，RQ4 **固定池/任务/评测口径改动作、可选信息或训练监督**，RQ5 **固定 Router/池/生成粒度比较预定义工作负载条件**。同一单活跃 Laya **或** Kev 负责联合候选选择，教师只加工状态，原单 Agent 继续执行。实际动作数由 Provider 证据确定，15个登记动作与实际返回Effort分列；GLM三档已有工具和官方结果，但返回Effort未报告。`v9/training` 复用原 Trainer/控制器，把离线真实前缀、三字段和合法监督送入同义编码；不新增 Agent 循环、训练队列或监测状态来源。本批17更新实体标为有限新池训练，原始实体保持FEATURE_NOT_TRAINED，历史HY4身份不改。
 
 ### 1.3a · 输入字段和模块接口：三字段、实际编码与能力卡（2026-10-29）
 
@@ -368,7 +368,7 @@ flowchart LR
 
 **RQ3 真实循环与粒度**：G 只取原任务或已有真实执行材料能够确认的子任务边界；F 记录生成路由时机。`inspect/modify/verify/recover` 仅作阶段识别，不能单独变成任务拆分。工具命令不等于模型生成。教师读取截止前前缀并输出三字段，进入同一状态编码；下一次模型生成仍经过同一个 Router。
 
-**模型与证据范围**：目标候选为 Luna、GLM-5.3-Flash、Terra，规划 15 个 Model×Native Effort 动作；精确 ID、Effort 和可用性按 Provider 实际证据，不将历史 HY4 执行改写成新池结果。图中不填虚构能力、价格或实验结论。AA 每档能力须来自真实测量；TTL/force 刷新与 GLM 可用性仍在获取/实现过程中。Laya/Kev 可替代，但单次只活跃一个 Router。
+**模型与证据范围**：Luna/GLM-5.3-Flash/Terra由统一Registry登记15动作。GLM三档已有实际工具和官方Reward，返回Effort未报告；Luna Max→xhigh和Terra none→medium保持原记录。AA逐档数据经TTL/force/STALE和同批固定v7输入M，GLM Low/High缺测。Laya/Kev各17更新代表已保存，单次只用一个Router；旧HY4和原始响应不改写为新池结果。
 
 
 
@@ -398,11 +398,11 @@ flowchart LR
 
 | Model Identity | Provider / Revision | Allowed Native Efforts | Context | Tools | Input $/M | Output $/M | Cache Policy |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| GPT-6 Luna（目标身份） |   |   |   |   |   |   |   |
-| GLM-5.3-Flash（渠道未绑定；精确 ID 待查） |   |   |   |   |   |   |   |
-| GPT-6.1 Terra（目标身份） |   |   |   |   |   |   |   |
+| gpt-6-luna | codegoai / revision未报告 | none, low, medium, high, xhigh, max | 1,050,000（登记） | 实际bash工具 | $0.10 | $0.50 | 已报告读取按$0.01/M，写入$0.125/M；未知保持缺失 |
+| glm-5.3-flash | Colink / revision未报告 | low, high, max（返回档位未报告） | 1,000,000（登记） | 三档实际bash工具 | $0.15 | $0.50 | 读取参考$0.03/M，写入价缺失 |
+| gpt-6.1-terra | jiji / revision未报告 | none, low, medium, high, xhigh, max | 1,050,000（登记） | 实际bash工具 | $1.00 | $5.00 | 读取$0.05/M，写入$1.25/M；未知保持缺失 |
 
-> **T1 补充**：三者是固定目标池身份，不表示均已绑定或可调用。GLM 私有渠道尚未绑定，Provider 正在查询 `/models`；low/high/max 是待核对的预期档位。15 个 Model×Native Effort 候选是规划数；表内只填实际 Provider 证据。AA 刷新正在进行，未返回数据留空；不将模型级分数复制到档位，也不把旧 HY4 结果写作 GLM。
+> **T1计价与身份**：价格为Registry保存的精确请求模型参考价，GLM官方参考不等于Colink实收。reasoning已含completion时只计一次；缓存计数缺失不作命中，供应商逐请求账单、物理后端和跨模型KV共享未知。登记菜单与实际返回Effort分列，AA仅为能力先验。数据来源为[统一Registry](../../our-project/code/src/modelrouter/providers/registry.py)和原Provider记录，不采用旧HY4成绩。
 
 ### Table 2 · Harbor 单 Agent Benchmark / 协议（Setup）
 

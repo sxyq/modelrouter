@@ -1,4 +1,5 @@
-[
+{
+"training_prefixes": [
   {
     "row": 0,
     "family": "laya",
@@ -6807,4 +6808,144 @@
       "teacher_fields": []
     }
   }
-]
+],
+  "post_compaction_saved_episode_prefixes": {
+    "data_origin": "SAVED_REAL_ROUTER_PREFIXES_NATIVE_LAYA_BUILD_SEQUENCE",
+    "max_len": 8192,
+    "head_max_len": 512,
+    "measured_states": 241,
+    "original_truncated_states": 48,
+    "new_truncated_states": 0,
+    "maximum_encoded_tokens": 8173,
+    "coverage": {
+      "T": {
+        "FULL": 228,
+        "DISABLED": 13
+      },
+      "teacher_assessment": {
+        "FULL": 241
+      },
+      "M": {
+        "FULL": 224,
+        "DISABLED": 17
+      },
+      "H": {
+        "FULL": 219,
+        "DISABLED": 22
+      }
+    },
+    "aa_score_source_mismatch_count": 0,
+    "results_scope": "Encoding only; saved Episode outcomes remain under their recorded input version"
+  },
+  "final_native_checkpoint_forward": {
+    "data_origin": "REAL_A6000_NATIVE_CHECKPOINT_FORWARD",
+    "source_decision_id": "314e754e-55a0-425e-a4dd-b9892f67e252-7",
+    "original_dropped_tokens": 595,
+    "results": [
+      {
+        "policy": "joint_laya",
+        "checkpoint": "/home/syy/路由/models/laya-421m",
+        "selected_action": {
+          "provider": "colink",
+          "model": "glm-5.3-flash",
+          "revision": "latest",
+          "native_effort": "high",
+          "action_id": "glm-5.3-flash:high",
+          "pool": "Reasoning"
+        },
+        "inference_latency_ms": 2407.1199130266905,
+        "total_latency_ms": 12235.789068043232,
+        "gpu_wait_ms": 0.015178695321083069,
+        "device_transfer_ms": 2391.617752611637,
+        "initialization_ms": 6976.671382784843,
+        "input_tokens": 8173,
+        "truncated": false,
+        "coverage": {
+          "T": "FULL",
+          "teacher_assessment": "FULL",
+          "M": "FULL",
+          "H": "FULL"
+        }
+      },
+      {
+        "policy": "laya_trained",
+        "checkpoint": "/home/syy/路由/runs/V9-K3-GLM-LAYA-20261108",
+        "selected_action": {
+          "provider": "colink",
+          "model": "glm-5.3-flash",
+          "revision": "latest",
+          "native_effort": "high",
+          "action_id": "glm-5.3-flash:high",
+          "pool": "Reasoning"
+        },
+        "inference_latency_ms": 2428.7864677608013,
+        "total_latency_ms": 12490.149147808552,
+        "gpu_wait_ms": 0.020712614059448242,
+        "device_transfer_ms": 2359.541667625308,
+        "initialization_ms": 7274.366974830627,
+        "input_tokens": 8173,
+        "truncated": false,
+        "coverage": {
+          "T": "FULL",
+          "teacher_assessment": "FULL",
+          "M": "FULL",
+          "H": "FULL"
+        }
+      },
+      {
+        "policy": "joint_kev",
+        "checkpoint": "/home/syy/路由/models/kev-4b-adapter",
+        "selected_action": {
+          "provider": "codegoai",
+          "model": "gpt-6-luna",
+          "revision": "latest",
+          "native_effort": "low",
+          "action_id": "gpt-6-luna:low",
+          "pool": "Reasoning"
+        },
+        "inference_latency_ms": 4949.9130472540855,
+        "total_latency_ms": 69904.45520170033,
+        "gpu_wait_ms": 0.056084245443344116,
+        "device_transfer_ms": 15676.510220393538,
+        "initialization_ms": 48830.330392345786,
+        "input_tokens": 8409,
+        "truncated": false,
+        "coverage": {
+          "T": "FULL",
+          "teacher_assessment": "FULL",
+          "M": "FULL",
+          "H": "FULL"
+        }
+      },
+      {
+        "policy": "kev_trained",
+        "checkpoint": "/home/syy/路由/runs/V9-K3-GLM-KEV-20261108",
+        "selected_action": {
+          "provider": "jiji",
+          "model": "gpt-6.1-terra",
+          "revision": "latest",
+          "native_effort": "max",
+          "action_id": "gpt-6.1-terra:max",
+          "pool": "Reasoning"
+        },
+        "inference_latency_ms": 4781.801650300622,
+        "total_latency_ms": 68429.79600466788,
+        "gpu_wait_ms": 0.057270750403404236,
+        "device_transfer_ms": 15066.420819610357,
+        "initialization_ms": 48144.29637417197,
+        "input_tokens": 8409,
+        "truncated": false,
+        "coverage": {
+          "T": "FULL",
+          "teacher_assessment": "FULL",
+          "M": "FULL",
+          "H": "FULL"
+        }
+      }
+    ],
+    "official_reward": null,
+    "external_api_calls": 0,
+    "cost_scope": "Router compute only; resource tariff not supplied"
+  },
+  "episode_evidence_scope": "Saved Episode outcomes remain pre-compaction-fix; native encoding/forward adds no Reward or new supervision."
+}

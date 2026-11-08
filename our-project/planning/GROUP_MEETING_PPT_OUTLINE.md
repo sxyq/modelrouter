@@ -1,4 +1,6 @@
-# ModelRouter 组会 PPT 分镜 v7｜10 页压缩版
+# ModelRouter 2026-10-12 组会 PPT 分镜 v7（历史）
+
+> 这是当时的制作规划与数据状态，原论文图和已保存素材继续保留。当前系统图、五RQ及实验位置沿[论文图表规划](../../汇报/汇报三/ModelRouter论文实验与图表规划.md)，只画Harbor→ModelRouterMiniSweAgent→DefaultAgent单Agent循环、三真实模型和联合原生档位；不按本旧稿恢复角色协作、旧池或“尚未训练”状态。
 
 > 2026-10-12。由 v6 的 16 页压缩为 **10 页、约 15 分钟**。这是制作规划，**尚未制作整页 PPT；三张新 PDF Figure 已由另一会话裁剪并推送**。论文依据 `../汇报/ModelRouter组会/PAPER_NOTES_AND_FIGURES.md`。本轮不使用深度研究、GPU 训练或付费 API。
 >

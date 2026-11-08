@@ -9,9 +9,11 @@
 
 现行研究采用 Harbor 官方 `DefaultAgent` 单 Agent 链路。RQ3 为阶段识别、真实子任务边界与生成决策粒度；`inspect/modify/verify/recover` 仅是阶段标签，不等于任务拆分。取消多 Agent 设计、角色/协作/handoff/Agent 数量变量；下方旧条目保留为历史记录，不恢复为当前方法。
 
-当前池为Luna、GLM-5.3-Flash、Terra，Registry登记15个联合动作。GLM绑定唯一私人config的Colink；新Train六请求取得三次实际工具生成，返回档位未报告，后续完整Harbor受上游429限流。AA v7含130条独立指标，Luna/Terra各六档、GLM仅Max，TTL/force/STALE及同批固定版本沿原链。复用GPT真实结果形成一个五候选STEP_LEVEL偏好与16辅助行；Laya新GLM实体17更新已完成，Kev同17行原Trainer仍在CPU计算。两项11-07实体继续保持旧HY4身份。
+当前池Luna/GLM-5.3-Flash/Terra由Registry登记15动作。新池1条五候选Train偏好+16辅助沿原Trainer完成Laya17更新/736.337秒、Kev17更新/13420.549秒；Kev于11-08 05:58台北保存，原始/训练代表事前确定。旧HY4实体不作GLM训练结果。AA同批固定v7/130指标，GLM仅Max有成绩，Low/High缺测，TTL/force/STALE保持。
 
-git-multibranch在11-03已暴露，本批开发复用：Luna Low/High为0/1，Terra Low/High为1/1；完整M遮蔽Laya逐生成/任务开始/阶段为1/1/0。polyglot事前选定评价后已观察，Low两固定模型均0，规则臂1；原始/训练Laya均GLM429无Reward。原始Kev开发Reward0且Agent超时。后续High及Kev比较沿同一批AA v7继续，不据这些结果挑权重。constraints-scheduling仍未执行或查看终局。
+GLM非流式4096开发已取得30生成和官方1；constraints-scheduling训练代表确定后首次评价，Luna High/Terra High/GLM Low/High/Max/规则均1，返回GLM Effort未报告。Laya原始/训练/无教师=1/1/1；CPU Kev=1/1/0，仅原始/训练触及Agent时限。49尝试全部结束：33有效终局、21个1/12个0、16无Reward；sanitize Laya1→0/Kev0→0，text有效终局全0。601生成返回、68成功教师，模型+教师已知参考$1.45700272，现金/资源价未知。polyglot及三独立评价题现在均已观察，终局不用于新训练或挑权重；query-optimize原Verifier超时。真实子任务边界对照未实现。
+
+最终共享指标定义只保留一份，原AA分数/来源保持；241保存前缀截断48→0，四实体同前缀原生前向无截断。原49 Episode不改成新表示结果；下一批须用收敛后的同义编码形成多截止合法监督、两Trainer最终版及事前独立完整比较。全部研究进程、容器、临时SSH/17898与memfd已结束。当前证据见[八部分报告](../results/iterations/20261108-v9-k3-training/review.md)。
 
 正式执行沿Harbor→ModelRouterMiniSweAgent→DefaultAgent；旧development和模拟结果生成入口已删除，legacy不参与正式调用。11-08默认CLI已统一正式配置，移除非V9重复状态分支；网络异常不再触发上游重复同一生成边界。RQ归组按真实Checkpoint、AA、输入遮蔽、教师、候选和粒度，生成/教师费用分开。F15/controller没有进程，恢复step61180、GPU锁与Serving PID327621保留。
 

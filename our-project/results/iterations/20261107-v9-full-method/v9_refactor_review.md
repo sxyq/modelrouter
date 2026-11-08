@@ -1,5 +1,9 @@
 # V9 单 Agent 重构与 GLM 迁移结果
 
+> **11-08接续已结束**：当前正式范围为Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。新池两架构各17更新，49次Harbor尝试已结束：33有效终局、21个1/12个0，16无Reward；GLM三档已取得工具和官方1，返回Effort仍缺。当前详细结果见[八部分接续报告](../20261108-v9-k3-training/review.md)，逐条结果和最终原生编码沿同目录保存。
+>
+> 本文下方为前批重构与10次开发尝试的历史记录；其中“尚未训练”“constraints未运行”和当时源码包大小不再描述当前状态。当前245自有Python最大982行；Laya实际48/241截断已通过共享指标定义收敛到0，四实体原生前向无截断，但原49个Episode不重标为表示变化后的结果。所有任务容器、研究进程、临时转发与memfd已结束；Serving及F15恢复保留。训练收益和完整现金净收益未建立。
+
 ## 一、整体科研目标
 
 负责人正式要求保持：真实 K=3 `gpt-6-luna / glm-5.3-flash / gpt-6.1-terra`，研究 Model×Native Effort 联合选择、T/M/H、AA 精确档位能力、实际缓存读取、前缀连续性、模型切换成本、Luna 低频教师，以及 Laya/Kev 原始与选定训练版的完整 Agent 质量—总成本净收益。

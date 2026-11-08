@@ -143,7 +143,10 @@ class Responses:
             if kind in ("response.completed", "response.done", "response.incomplete"):
                 body, terminal_event = item.get("response", {}), kind
             if kind in ("error", "response.failed"):
-                raise RuntimeError(f"Provider stream ended with {kind}")
+                body, terminal_event = item.get("response", body), kind
+                error = body.get("error") or item
+                body["error"] = {**error, "type": error.get("code") or error.get("type", kind)}
+                break
         if "output" not in body:
             body["output"] = list(output.values())
             if text:

@@ -107,14 +107,16 @@ def main():
         with lock as lock_file:
             try:
                 if device == "cuda":
-                    from laya.agent import _cuda_amp_dtype
                     before = time.perf_counter()
                     fcntl.flock(lock_file, fcntl.LOCK_EX)
                     gpu_wait_ms = (time.perf_counter() - before) * 1000
                     before = time.perf_counter()
                     if payload["router_family"] == "kev":
                         adapter.model.to("cuda")
+                        adapter.model.device = "cuda"
+                        adapter.model.lm.set_attn_implementation("sdpa")
                     else:
+                        from laya.agent import _cuda_amp_dtype
                         adapter.agent.model.to("cuda")
                         adapter.agent.device = torch.device("cuda")
                         adapter.agent.dtype = _cuda_amp_dtype(adapter.agent.cfg.get("amp_dtype", "fp16"))
@@ -127,6 +129,8 @@ def main():
                     before = time.perf_counter()
                     if payload["router_family"] == "kev":
                         adapter.model.to("cpu")
+                        adapter.model.device = "cpu"
+                        adapter.model.lm.set_attn_implementation("eager")
                     else:
                         adapter.agent.model.to("cpu")
                         adapter.agent.device = torch.device("cpu")

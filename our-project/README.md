@@ -14,9 +14,9 @@ RQ3 正式研究单 Agent 阶段识别、真实子任务边界及生成决策粒
 
 ## 模型候选与能力证据
 
-当前目标候选为 GPT-6 Luna、GLM-5.3-Flash 与 GPT-6.1 Terra，共规划 15 个 Model×Native Effort 组合。GLM 预期使用 Chat Completions 与 low/high/max 原生档位；渠道授权、绑定和精确模型 ID 尚待确认，当前不得写成已验证或可调用。确认前不启动新的固定 K=3 Harbor 实验。每批可用动作以实际 Registry/Provider 的精确模型 ID、原生档位、工具支持与上下文条件为准；不以规划数量填补未支持或未证实动作。旧 HY4 及其真实结果只作为历史，不替代新池候选证据。
+当前候选为 `gpt-6-luna`、`glm-5.3-flash` 与 `gpt-6.1-terra`，Registry登记15个Model×Native Effort组合。GLM已绑定唯一私人配置的Colink，Chat Completions使用low/high/max；三档均已有实际工具和完整Harbor官方Reward 1，返回Effort未报告。Luna Max返回xhigh及Terra none返回medium的原记录保持。每批动作由统一Registry和Provider派生，登记数量不代表渠道逐档独立确认。旧HY4结果保留历史身份。
 
-AA 记录按精确模型和 Effort 保存真实测量及来源。目标刷新方式为 TTL 自动更新、显式 force 刷新和批次固定 `snapshot_id`；不在单次 Router 决策中联网。目前真实刷新正在进行，结果待写回；现有代码仍是手动刷新，TTL/force 与 GLM 新池逐档能力结果尚未完成，不能作为已交付能力描述。
+AA沿现有TTL自动更新、force刷新、STALE和同批固定snapshot_id机制，Registry派生目标并进入Laya/Kev的M输入，不逐生成联网。本批固定v7/130指标/Intelligence Index5.0.1；Luna/Terra各六档，GLM仅Max，Low/High缺测。授权AA API Key尚缺，没有借用其他模型或档位成绩。
 
 实验结果必须区分模型执行、教师、Router 与环境费用；供应商 Usage、返回身份、终局和不完整费用按原记录表达。旧 Model-only、HY4、映射和多 Agent 相关数据保留原始身份，不重写为新池联合监督。
 
