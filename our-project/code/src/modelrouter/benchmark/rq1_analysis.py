@@ -508,7 +508,7 @@ def export_batch_results(root, config):
             eligible = [r for r in group if r["effort_comparison_eligible"]]
             one, zero = sum(r["reward"] == 1 for r in eligible), sum(r["reward"] == 0 for r in eligible)
             finished = [r for r in group if r["status"] in ("EVALUATED", "PARTIAL", "BLOCKED")]
-            running = sum(r["execution_status"] == "RUNNING" for r in group)
+            running = sum(r["execution_status"] == "RUNNING" and r["status"] not in ("EVALUATED", "PARTIAL", "BLOCKED") for r in group)
             unavailable = sum(r["execution_status"] == "UNAVAILABLE_PROVIDER_EFFORT" for r in group)
             grouped.append({"strategy_id": strategy, "subset": subset, "tasks": n,
                             "attempted": len(finished), "reward_1": one, "reward_0": zero,
