@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+**全项目整理（11-08 19:10台北）**：[数据总入口](../data/README.md)统一35来源/用途ID、14公开源6,600,628行、自有调用和历次训练数据；[模型总报告](../results/training/training_research.md)与同名JSON的project_inventory_current保存125份run.json、36参数保存目录和26个Kev候选；[75个迭代目录](../results/README.md#全项目迭代目录索引)覆盖198个不同原Harbor记录、31个官方任务ID，旧池/映射/Oracle用途保持。两新池代表各17更新完成；原38组25完成，F15可恢复61180步、后续游标66172，当前无Controller/训练worker。Kev R01–R16训练与固定Val全完成；Serving仍PID327621健康200。
+
+**完整任务覆盖（11-08本地原记录整理）**：[89题清单、Pass率与费用](../results/benchmark/README.md)。Agent尝试29题，22题有官方Reward，7题尝试但无Reward，60题未Agent运行；神经Router参与25题。仅Oracle的2题另列，共31题有记录、58题完全未运行。当前GLM三题中Laya原始/训练通过2/3、1/3；Kev两版各1通过/1失败/1缺Reward。模型+教师已知参考费合计$0.13532442/$0.11108159、$0.03250188/$0.17776966，除原始Kev外均有未知请求费用；完整实收及资源价仍缺。最后编码版本的完整Episode为0，原结果版本保持。
+
 **当前执行事实（2026-11-08）**：GLM已在开发configure-git-webserver用非流式/4096输出完成30次生成并取得官方Reward 1；独立constraints-scheduling的Low/High/Max均正常提交、Reward 1，模型参考费$0.00806607/$0.00712319/$0.00968241，返回Effort未报告。Provider已沿Harbor剩余时间；旧429、推理额度耗尽、空流与Luna Max返回xhigh保留原记录。
 
 **源码与训练**：1491行既有测试已按五职责拆分，52原函数保持；245个自有Python文件最大982行，本轮复用已完成重构。新池1条五候选偏好+16辅助共17行：Laya17更新/736.337秒；Kev17更新/13420.549秒，2026-11-08 05:58台北保存LoRA/Head/Tokenizer/metrics，CPU峰值RSS238751465472字节。两版本在独立评价前确定，原始实体models/laya-421m和models/kev-4b-adapter保持；旧HY4两实体不作为GLM研究版。

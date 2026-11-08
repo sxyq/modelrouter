@@ -1,5 +1,89 @@
 # Laya / Kev 全历史训练研究报告
 
+## 2026-11-08 · 当前模型版本与训练进度
+
+A6000取样19:10台北，源码HEAD `688479af67b5b0682d67d43415af64a1011ecfe4`。以下为当前整理；原历史保留当时日期、监督与模型池。结构化全量见同名JSON的`project_inventory_current`：125份run.json、36保存目录、26个Kev候选及原38组逐项状态。
+
+**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
+
+### 已确定的版本及用途
+
+| 用途 | Laya | Kev |
+|---|---|---|
+| 原始可执行版 | models/laya-421m | models/kev-4b-adapter |
+| 当前GLM池研究代表 | runs/V9-K3-GLM-LAYA-20261108 | runs/V9-K3-GLM-KEV-20261108 |
+| 当前代表训练 | 17行、1epoch、17次Head更新，736.337秒 | 17行、1epoch、17次LoRA+Head更新，13420.549秒 |
+| 原固定Val参考 | F11-e01：Acc0.6898/Loss0.5941 | R11：Acc0.56902465/NLL1.06872374 |
+| 当前Serving | F05-e01 | 原导入Kev |
+| 11-07旧HY4实体 | V9-K3-LAYA-20261107，18更新 | V9-K3-KEV-20261107，18更新 |
+| 新池论文最终有效版 | 尚未由多任务监督及完整净收益确定 | 尚未由多任务监督及完整净收益确定 |
+
+新池17行只有1个五候选有效偏好截止及16辅助；赢家明确Luna Xhigh，其余10个登记动作缺联合偏好监督。两代表按事前单Epoch规则确定，不按已观察独立题挑权重。Laya原Encoder未更新；Kev CPU/FP32训练于05:58台北保存，99745前向Token。Kev共享基座为A6000 models/qwen3.5-4b-base，它不是当前生成池的第四个模型。
+
+### 当前训练到了哪里
+
+| 训练对象 | 实际已完成 | 当前进程 |
+|---|---|---|
+| 原38组Laya计划 | 25组完成两轮；F15完成首轮，另12组未完成 | 无Controller/训练worker |
+| F15可恢复实体 | epoch_01，61180/122360更新，3915484条消费，11-05 17:22:48Z保存 | 无 |
+| F15后续游标 | 第2轮39/478块，66172步，11-07 06:52:24Z写入 | 不是当前计算或可恢复保存点 |
+| Kev R01–R16 | 16组训练与固定Val全部完成 | 无 |
+| Kev候选账本 | 26条，其中20条训练及评价完成；另6项待定/选择记录 | 无 |
+| 新GLM池Laya/Kev | 各17更新、最终参数均保存 | 无 |
+
+原queue仍写RUNNING/F15，完成列表只列原38组中的22组；F01_S1、F05、F14各自run.json已completed、两轮历史齐全，故实际为25完成。第39项V9_LAYA_STEP_001是追加的历史STEP对象，不加入原38组总数。原队列文件及恢复材料保持原貌，现状由本段和结构化快照表达。
+
+当前GPU31423/49140MiB、利用率0%；项目仅Serving PID327621，健康200，原权重未替换。36可见保存目录含25 Laya、11 Kev；F14失败目录仅作历史，没有作为研究代表。参数文件存在、历史训练完成及最终任务收益各自记录。
+
+### 已有数据与科研结果
+
+数据来源、训练候选、40条Model-only、17行新池材料的用途和版本见[数据总入口](../../data/README.md)。原75迭代目录及198个不同原Harbor trial_id见[结果总入口](../README.md#全项目迭代目录索引)，包括Oracle/映射/旧池，不能合成新池成功率。
+
+最近49尝试33有效终局/21个1/12个0，16无Reward。sanitize Laya1→0、Kev0→0；text有效终局全0，尚未建立训练及完整净收益。241真实前缀48→0截断和四实体前向是表示证据，原Episode版本不改。
+
+### 可见保存目录
+
+| 服务器相对目录 | 参数类型 | 用途 |
+|---|---|---|
+| runs/V9-K3-GLM-LAYA-20261108 | Laya | 当前GLM研究 |
+| runs/V9-K3-LAYA-20261107 | Laya | 旧HY4 |
+| runs/V9-K3-KEV-20261107 | Kev LoRA | 旧HY4 |
+| runs/V9-K3-GLM-KEV-20261108 | Kev LoRA | 当前GLM研究 |
+| runs/KEV-V9-001/checkpoint | Kev LoRA | 历史保存 |
+| runs/KEV-V8-EXT-01/formal_run | Kev LoRA | 历史保存 |
+| runs/KEV-V8-HOMO-e02/checkpoint | Kev LoRA | 历史保存 |
+| runs/KEV-V8-HOMOLOGOUS-20261018/test_run | Kev LoRA | 历史保存 |
+| runs/KEV-V8-HOMOLOGOUS-20261018/formal_run | Kev LoRA | 历史保存 |
+| runs/KEV-V8-HOMOLOGOUS-20261018/smoke_run | Kev LoRA | 历史保存 |
+| runs/KEV-V8-COVERAGE-R11/checkpoint | Kev LoRA | 旧固定Val参考 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_004/checkpoints/epoch_03 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_008/checkpoints/epoch_03 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F14/failed_attempt_0001/checkpoints/_temp_recovery | Laya | 失败历史 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F14/checkpoints/epoch_02 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F14/checkpoints/epoch_01 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_007/checkpoints/epoch_03 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F13/checkpoints/epoch_02 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F13/checkpoints/epoch_01 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_003/checkpoints/epoch_01 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F15/checkpoints/epoch_01 | Laya | F15恢复 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_006/checkpoints/epoch_03 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F11/checkpoints/epoch_01 | Laya | 旧固定Val参考 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/epoch_01 | Laya | 当前Serving |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F12/checkpoints/epoch_02 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F12/checkpoints/epoch_01 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B01_C01_QB_PB/checkpoints/epoch_02 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_002/checkpoints/epoch_01 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_009/checkpoints/epoch_03 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_001/checkpoints/epoch_02 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_010/checkpoints/epoch_03 | Laya | 历史保存 |
+| runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C01_QB_PB/checkpoints/epoch_02 | Laya | 历史保存 |
+| runs/KEV-V8-COVERAGE-R12/checkpoint | Kev LoRA | 历史保存 |
+| runs/OVERNIGHT-LAYA-TRAINING/R1/checkpoints/epoch_01 | Laya | 历史保存 |
+| runs/OVERNIGHT-LAYA-TRAINING/R2/checkpoints/epoch_01 | Laya | 历史保存 |
+| runs/KEV-V8-COVERAGE-R01/checkpoint | Kev LoRA | 历史保存 |
+
+## 以下为原历史报告
+
 ## 2026-11-02 · 当前执行：STEP_002完成，原训练目标不增加
 
 [执行记录](../iterations/20261102-v9-task-links/review.md) / [训练原记录](../iterations/20261102-v9-task-links/completion_execution/laya_step_training.json) / [真实CPU前向](../iterations/20261102-v9-task-links/completion_execution/step_cpu_forward.json)：原STEP_001权重未找到，沿原Trainer从F11-e01使用现有74行完成独立实验 `V9_LAYA_STEP_002-e01`，不冒充原checkpoint。

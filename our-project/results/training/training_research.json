@@ -1,4 +1,1889 @@
 {
+  "project_inventory_current": {
+    "collected_at_utc": "2026-11-08T11:10:55.080953+00:00",
+    "collected_at_local": "2026-11-08T19:10:55+08:00",
+    "source_commit": "688479af67b5b0682d67d43415af64a1011ecfe4",
+    "execution_scope": "Single-Agent; Luna/GLM-5.3-Flash/Terra; Model×Native Effort; T/M/H; exact AA; cache continuity; Luna teacher; original/trained Laya/Kev; A6000 Harbor; quality and complete cost",
+    "active_training_processes": [],
+    "project_processes": [
+      {
+        "pid": 327621,
+        "kind": [
+          "uvicorn"
+        ],
+        "cwd": "/home/syy/路由"
+      }
+    ],
+    "version_roles": {
+      "original_laya": "models/laya-421m",
+      "original_kev": "models/kev-4b-adapter",
+      "kev_shared_backbone": "models/qwen3.5-4b-base",
+      "current_laya_research": "runs/V9-K3-GLM-LAYA-20261108",
+      "current_kev_research": "runs/V9-K3-GLM-KEV-20261108",
+      "historical_laya_fixed_val_reference": "F11-e01",
+      "historical_kev_fixed_val_reference": "KEV-V8-R11",
+      "serving_laya": "F05-e01",
+      "serving_kev": "original imported models/kev-4b-adapter",
+      "historical_hy4_checkpoints": [
+        "runs/V9-K3-LAYA-20261107",
+        "runs/V9-K3-KEV-20261107"
+      ],
+      "final_new_pool_net_benefit_checkpoint": null
+    },
+    "current_glm_training": {
+      "laya": {
+        "train_items": 17,
+        "epoch_loss": [
+          1.1539820607970743
+        ],
+        "wall_seconds": 736.3366877362132,
+        "parent_checkpoint": "models/laya-421m",
+        "registered_actions": 15,
+        "supervised_actions": 5,
+        "unique_preference_states": 1
+      },
+      "kev": {
+        "records_seen": 17,
+        "optimizer_steps": 17,
+        "wall_seconds": 13420.54917383194,
+        "device": "cpu",
+        "dtype": "fp32",
+        "forward_tokens": 99745,
+        "parent_checkpoint": "models/kev-4b-adapter",
+        "checkpoint": "V9-K3-GLM-KEV-20261108",
+        "finished_at_local": "2026-11-08T05:58:00+08:00"
+      },
+      "supervision": "1 five-action preference state and 16 auxiliary rows; not 15-action optimality"
+    },
+    "original_queue": {
+      "plan_count": 38,
+      "completed_from_run_metadata": 25,
+      "queue_list_completed": 22,
+      "completion_metadata_missing_from_queue_list": [
+        "F01_S1",
+        "F05",
+        "F14"
+      ],
+      "active_controller": null,
+      "active_worker": null,
+      "queue_file_status": "RUNNING",
+      "queue_file_updated_at": "2026-11-07T04:39:15Z",
+      "status": "NO_ACTIVE_TRAINING_PROCESS_WITH_STALE_RUNNING_METADATA",
+      "f15_recovery": {
+        "epoch": 1,
+        "step_count": 61180,
+        "total_updates": 122360,
+        "consumed_items": 3915484,
+        "saved_at": "2026-11-05T17:22:48Z",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F15/checkpoints/epoch_01"
+      },
+      "f15_cursor": {
+        "run_id": "F15",
+        "epoch": 1,
+        "chunk_idx": 39,
+        "total_chunks": 478,
+        "step_count": 66172,
+        "total_updates": 122360,
+        "consumed_items": 4234972,
+        "consumed_units": 109676,
+        "latest_chunk_loss": 0.4621768769144978,
+        "updated_at": "2026-11-07T06:52:24Z"
+      },
+      "remaining": [
+        "F15",
+        "F16",
+        "F17",
+        "F18",
+        "F19",
+        "F20",
+        "F01_S3",
+        "F02_S3",
+        "F03_S3",
+        "F04_S3",
+        "F05_S3",
+        "F06_S3",
+        "F07_S3"
+      ],
+      "plan_rows": [
+        {
+          "run_id": "F01_S1",
+          "metadata_status": "completed",
+          "queue_completed": false,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F02_S1",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F03_S1",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F04_S1",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F05_S1",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F06_S1",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F07_S1",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F01",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F02",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F03",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F04",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F05",
+          "metadata_status": "completed",
+          "queue_completed": false,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F06",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F07",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F08",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F09",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F10",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F11",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F12",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F13",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F14",
+          "metadata_status": "completed",
+          "queue_completed": false,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "F15",
+          "metadata_status": "running",
+          "queue_completed": false,
+          "completed_epochs": 1
+        },
+        {
+          "run_id": "F16",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F17",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F18",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F19",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F20",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F01_S3",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F02_S3",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F03_S3",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F04_S3",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F05_S3",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F06_S3",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "F07_S3",
+          "metadata_status": null,
+          "queue_completed": false,
+          "completed_epochs": 0
+        },
+        {
+          "run_id": "ALGN_01_S1",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "ALGN_02_S1_S2",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "ALGN_03_S1_S3",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        },
+        {
+          "run_id": "ALGN_04_S1_S2_S3",
+          "metadata_status": "completed",
+          "queue_completed": true,
+          "completed_epochs": 2
+        }
+      ]
+    },
+    "historical_metadata_entries": [
+      {
+        "id": "KEV-V8-EXT-01",
+        "path": "runs/KEV-V8-EXT-01/run.json",
+        "status": null,
+        "epochs": 0,
+        "last_epoch": null
+      },
+      {
+        "id": "LAYA-V8-EXT-01",
+        "path": "runs/LAYA-V8-EXT-01/run.json",
+        "status": null,
+        "epochs": 1,
+        "last_epoch": 1
+      },
+      {
+        "id": "N05",
+        "path": "runs/OVERNIGHT-LAYA-SWEEP-02/N05/run.json",
+        "status": "completed",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "N10",
+        "path": "runs/OVERNIGHT-LAYA-SWEEP-02/N10/run.json",
+        "status": "completed",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "N06",
+        "path": "runs/OVERNIGHT-LAYA-SWEEP-02/N06/run.json",
+        "status": "completed",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "N07",
+        "path": "runs/OVERNIGHT-LAYA-SWEEP-02/N07/run.json",
+        "status": "early_stopped",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "N08",
+        "path": "runs/OVERNIGHT-LAYA-SWEEP-02/N08/run.json",
+        "status": "completed",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "N01",
+        "path": "runs/OVERNIGHT-LAYA-SWEEP-02/N01/run.json",
+        "status": "early_stopped",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "N03",
+        "path": "runs/OVERNIGHT-LAYA-SWEEP-02/N03/run.json",
+        "status": "early_stopped",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "N02",
+        "path": "runs/OVERNIGHT-LAYA-SWEEP-02/N02/run.json",
+        "status": "early_stopped",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "N09",
+        "path": "runs/OVERNIGHT-LAYA-SWEEP-02/N09/run.json",
+        "status": "early_stopped",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "N04",
+        "path": "runs/OVERNIGHT-LAYA-SWEEP-02/N04/run.json",
+        "status": "completed",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "B01_C03_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C03_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C07_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C07_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C05_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C05_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C01_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C01_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C12_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C12_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C11_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C11_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C15_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C15_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C13_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C13_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C08_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C08_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C10_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C10_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C16_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C16_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C04_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C04_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C09_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C09_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C14_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C14_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C02_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C02_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "B01_C06_QB_PB",
+        "path": "runs/MR-FULL-GRADED-TRAINING/B01_C06_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C07_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C07_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C12_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C12_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C03_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C03_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_STEP_004",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_004/run.json",
+        "status": "early_stopped",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "V9_LAYA_STEP_001",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/run.json",
+        "status": "completed",
+        "epochs": 1,
+        "last_epoch": 1
+      },
+      {
+        "id": "P0_B03_C14_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C14_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C07_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C07_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C05_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C05_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C04_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C04_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C14_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C14_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F07",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F07/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C16_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C16_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C11_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C11_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C08_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C08_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C16_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C16_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F06",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F06/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_STEP_008",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_008/run.json",
+        "status": "completed",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "P0_B02_C05_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C05_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F14",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F14/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C09_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C09_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C15_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C15_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "ALGN_03_S1_S3",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/ALGN_03_S1_S3/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B01_C13_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B01_C13_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F07_S1",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F07_S1/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C10_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C10_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F04",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F04/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C13_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C13_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C03_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C03_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F09",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F09/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_STEP_007",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_007/run.json",
+        "status": "completed",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "P0_B01_C04_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B01_C04_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F13",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F13/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C02_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C02_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C12_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C12_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C01_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C01_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C08_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C08_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_STEP_003",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_003/run.json",
+        "status": "completed",
+        "epochs": 1,
+        "last_epoch": 1
+      },
+      {
+        "id": "F15",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F15/run.json",
+        "status": "running",
+        "epochs": 1,
+        "last_epoch": 1
+      },
+      {
+        "id": "F03",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F03/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "ALGN_02_S1_S2",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/ALGN_02_S1_S2/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_STEP_006",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_006/run.json",
+        "status": "completed",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "P0_B04_C02_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C02_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C10_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C10_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C09_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C09_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F04_S1",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F04_S1/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F05_S1",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05_S1/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C03_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C03_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F11",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F11/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C06_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C06_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F01",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F01/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_STEP_005",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_005/run.json",
+        "status": "early_stopped",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "P0_B02_C04_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C04_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F08",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F08/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C04_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C04_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C07_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C07_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C13_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C13_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C11_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C11_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C06_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C06_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C15_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C15_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C13_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C13_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C11_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C11_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F05",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F12",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F12/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B01_C01_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B01_C01_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B01_C07_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B01_C07_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C09_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C09_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F03_S1",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F03_S1/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C14_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C14_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F02_S1",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F02_S1/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C12_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C12_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B03_C05_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C05_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C10_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C10_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_STEP_002",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_002/run.json",
+        "status": "completed",
+        "epochs": 1,
+        "last_epoch": 1
+      },
+      {
+        "id": "F06_S1",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F06_S1/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_STEP_009",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_009/run.json",
+        "status": "completed",
+        "epochs": 3,
+        "last_epoch": 2
+      },
+      {
+        "id": "F03_LEGACY_MINFACTOR",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F03_LEGACY_MINFACTOR/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C02_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C02_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "ALGN_01_S1",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/ALGN_01_S1/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C08_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C08_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_001",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_001/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F02",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F02/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C15_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C15_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "R0",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/R0/run.json",
+        "status": "completed",
+        "epochs": 0,
+        "last_epoch": null
+      },
+      {
+        "id": "P0_B02_C06_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C06_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B04_C16_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B04_C16_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F10",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F10/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "F01_S1",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F01_S1/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "ALGN_04_S1_S2_S3",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/ALGN_04_S1_S2_S3/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "P0_B02_C01_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B02_C01_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_STEP_010",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_010/run.json",
+        "status": "completed",
+        "epochs": 0,
+        "last_epoch": null
+      },
+      {
+        "id": "P0_B03_C01_QB_PB",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C01_QB_PB/run.json",
+        "status": "completed",
+        "epochs": 2,
+        "last_epoch": 2
+      },
+      {
+        "id": "V9_LAYA_STEP_001",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_001/failed_attempt_0001/run.json",
+        "status": "completed",
+        "epochs": 1,
+        "last_epoch": 1
+      },
+      {
+        "id": "F14",
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F14/failed_attempt_0001/run.json",
+        "status": "failed",
+        "epochs": 1,
+        "last_epoch": 1
+      },
+      {
+        "id": "R1",
+        "path": "runs/OVERNIGHT-LAYA-TRAINING/R1/run.json",
+        "status": "early_stopped",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "R2",
+        "path": "runs/OVERNIGHT-LAYA-TRAINING/R2/run.json",
+        "status": "early_stopped",
+        "epochs": 3,
+        "last_epoch": 3
+      },
+      {
+        "id": "R0",
+        "path": "runs/OVERNIGHT-LAYA-TRAINING/R0/run.json",
+        "status": "completed",
+        "epochs": 0,
+        "last_epoch": null
+      },
+      {
+        "id": "R3",
+        "path": "runs/OVERNIGHT-LAYA-TRAINING/R3/run.json",
+        "status": "early_stopped",
+        "epochs": 3,
+        "last_epoch": 3
+      }
+    ],
+    "physical_checkpoint_directories": [
+      {
+        "path": "runs/V9-K3-GLM-LAYA-20261108",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "CURRENT_GLM_POOL_RESEARCH"
+      },
+      {
+        "path": "runs/V9-K3-LAYA-20261107",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_HY4_POOL"
+      },
+      {
+        "path": "runs/V9-K3-KEV-20261107",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "HISTORICAL_HY4_POOL"
+      },
+      {
+        "path": "runs/V9-K3-GLM-KEV-20261108",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "CURRENT_GLM_POOL_RESEARCH"
+      },
+      {
+        "path": "runs/KEV-V9-001/checkpoint",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/KEV-V8-EXT-01/formal_run",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/KEV-V8-HOMO-e02/checkpoint",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/KEV-V8-HOMOLOGOUS-20261018/test_run",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/KEV-V8-HOMOLOGOUS-20261018/formal_run",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/KEV-V8-HOMOLOGOUS-20261018/smoke_run",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/KEV-V8-COVERAGE-R11/checkpoint",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "HISTORICAL_FIXED_VAL_REFERENCE"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_004/checkpoints/epoch_03",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_008/checkpoints/epoch_03",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F14/failed_attempt_0001/checkpoints/_temp_recovery",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "FAILED_HISTORY"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F14/checkpoints/epoch_02",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F14/checkpoints/epoch_01",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_007/checkpoints/epoch_03",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F13/checkpoints/epoch_02",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F13/checkpoints/epoch_01",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_003/checkpoints/epoch_01",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F15/checkpoints/epoch_01",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "ORIGINAL_QUEUE_RECOVERY"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_006/checkpoints/epoch_03",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F11/checkpoints/epoch_01",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_FIXED_VAL_REFERENCE"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F05/checkpoints/epoch_01",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "CURRENT_SERVING_LAYA"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F12/checkpoints/epoch_02",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F12/checkpoints/epoch_01",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B01_C01_QB_PB/checkpoints/epoch_02",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_002/checkpoints/epoch_01",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_009/checkpoints/epoch_03",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_001/checkpoints/epoch_02",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/V9_LAYA_STEP_010/checkpoints/epoch_03",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/P0_B03_C01_QB_PB/checkpoints/epoch_02",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/KEV-V8-COVERAGE-R12/checkpoint",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/OVERNIGHT-LAYA-TRAINING/R1/checkpoints/epoch_01",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/OVERNIGHT-LAYA-TRAINING/R2/checkpoints/epoch_01",
+        "filename": "model.safetensors",
+        "bytes": 842609220,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      },
+      {
+        "path": "runs/KEV-V8-COVERAGE-R01/checkpoint",
+        "filename": "adapter_model.safetensors",
+        "bytes": 129924032,
+        "role": "HISTORICAL_WEIGHT_PRESENT"
+      }
+    ],
+    "physical_checkpoint_directory_count": 36,
+    "physical_scope": "runs model.safetensors/adapter_model.safetensors presence only; not an additional forward or tensor-value evaluation",
+    "kev_current_candidate_ledger": {
+      "source": "our-project/results/training/kev/candidate_ledger.json",
+      "source_updated_at": "2026-10-29T20:32:41Z",
+      "candidate_count": 26,
+      "trained_and_evaluated": 20,
+      "rows": [
+        {
+          "candidate_id": "KEV-V8-C03",
+          "name": "KEV-V8-HOMOLOGOUS-20261018",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3099.012350168079,
+            "nll": 1.0795525776246775,
+            "acc": 0.5715969989281886,
+            "ece": 0.05104668378873653,
+            "brier": 0.537533605673637
+          },
+          "score": 100,
+          "rank": 1
+        },
+        {
+          "candidate_id": "KEV-V8-C04",
+          "name": "KEV-V8-HOMO-e02",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 2982.712651308626,
+            "nll": 1.0872975000322915,
+            "acc": 0.5711682743837084,
+            "ece": 0.05987151793598101,
+            "brier": 0.5402653787706695
+          },
+          "score": 97.84213070623746,
+          "rank": 2
+        },
+        {
+          "candidate_id": "KEV-V8-C05",
+          "name": "KEV-V8-ABL-NOSTATE",
+          "training_status": "UNKNOWN",
+          "evaluation_status": null,
+          "status": "PENDING",
+          "pending_reason": "Missing training data: /home/syy/路由/data/kev/公开数据/train_nostate.jsonl",
+          "metrics": {},
+          "score": null,
+          "rank": null
+        },
+        {
+          "candidate_id": "KEV-V8-C06",
+          "name": "KEV-V8-ABL-FULLSTATE",
+          "training_status": "UNKNOWN",
+          "evaluation_status": null,
+          "status": "PENDING",
+          "pending_reason": "Eight real state fields are not available in the current typed training records",
+          "metrics": {},
+          "score": null,
+          "rank": null
+        },
+        {
+          "candidate_id": "KEV-V8-C07",
+          "name": "KEV-V8-ABL-LORA8",
+          "training_status": "UNKNOWN",
+          "evaluation_status": null,
+          "status": "PENDING",
+          "pending_reason": "warm_start lora: source rank 16, requested rank 8",
+          "metrics": {},
+          "score": null,
+          "rank": null
+        },
+        {
+          "candidate_id": "KEV-V8-C08",
+          "name": "KEV-V8-ABL-LORA32",
+          "training_status": "UNKNOWN",
+          "evaluation_status": null,
+          "status": "PENDING",
+          "pending_reason": "warm_start lora: source rank 16, requested rank 32",
+          "metrics": {},
+          "score": null,
+          "rank": null
+        },
+        {
+          "candidate_id": "KEV-V8-C09",
+          "name": "KEV-V8-EXT-01",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3812.194547228515,
+            "nll": 1.0748016646459615,
+            "acc": 0.5667738478027867,
+            "ece": 0.023637797412261016,
+            "brier": 0.5385626193509407
+          },
+          "score": 105.20094505844149,
+          "rank": 1
+        },
+        {
+          "candidate_id": "KEV-V8-C10",
+          "name": "KEV-V8-S1-W2",
+          "training_status": "UNKNOWN",
+          "evaluation_status": null,
+          "status": "PENDING",
+          "pending_reason": "Original train contains 35,645 ROUTE-001/002 rows excluded by current policy and 17 TRA-004 rows outside the legal source set; difficulty_tier is historical auxiliary supervision",
+          "metrics": {},
+          "score": null,
+          "rank": null
+        },
+        {
+          "candidate_id": "KEV-V8-C11",
+          "name": "KEV-V8-VAL-BEST",
+          "training_status": "NOT_APPLICABLE",
+          "evaluation_status": null,
+          "status": "PENDING",
+          "pending_reason": "Selection uses comparable completed Val results; no new training",
+          "metrics": {},
+          "score": null,
+          "rank": null
+        },
+        {
+          "candidate_id": "KEV-V8-R01",
+          "name": "KEV-V8-COVERAGE-R01",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3714.5903850402683,
+            "nll": 1.0947744186320645,
+            "acc": 0.5663451232583065,
+            "ece": 0.05103907884189752,
+            "brier": 0.5424889919371423
+          },
+          "score": 98.86092652834587,
+          "rank": 9
+        },
+        {
+          "candidate_id": "KEV-V8-R02",
+          "name": "KEV-V8-COVERAGE-R02",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3059.9625480286777,
+            "nll": 1.110397028169808,
+            "acc": 0.5739549839228296,
+            "ece": 0.09340236816929533,
+            "brier": 0.5521168785776309
+          },
+          "score": 90.17501520407407,
+          "rank": 16
+        },
+        {
+          "candidate_id": "KEV-V8-R03",
+          "name": "KEV-V8-COVERAGE-R03",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3191.2572551313788,
+            "nll": 1.1042406641467737,
+            "acc": 0.5679528403001072,
+            "ece": 0.06373829340256014,
+            "brier": 0.5444481569790544
+          },
+          "score": 96.03648479485287,
+          "rank": 14
+        },
+        {
+          "candidate_id": "KEV-V8-R04",
+          "name": "KEV-V8-COVERAGE-R04",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3224.718836626038,
+            "nll": 1.0815259125865484,
+            "acc": 0.5678456591639871,
+            "ece": 0.02795676328298525,
+            "brier": 0.5408010620003451
+          },
+          "score": 104.08716239501341,
+          "rank": 3
+        },
+        {
+          "candidate_id": "KEV-V8-R05",
+          "name": "KEV-V8-COVERAGE-R05",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3179.781784027815,
+            "nll": 1.0941285903828288,
+            "acc": 0.5713826366559486,
+            "ece": 0.043058595796956874,
+            "brier": 0.5438058325913012
+          },
+          "score": 100.767234558792,
+          "rank": 7
+        },
+        {
+          "candidate_id": "KEV-V8-R06",
+          "name": "KEV-V8-COVERAGE-R06",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3029.3727081753314,
+            "nll": 1.0992559548398997,
+            "acc": 0.5690246516613076,
+            "ece": 0.061394260614268586,
+            "brier": 0.549006150447572
+          },
+          "score": 96.65132546341414,
+          "rank": 13
+        },
+        {
+          "candidate_id": "KEV-V8-R07",
+          "name": "KEV-V8-COVERAGE-R07",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 2976.219419909641,
+            "nll": 1.094258020766934,
+            "acc": 0.5735262593783494,
+            "ece": 0.05468985898518275,
+            "brier": 0.5437569211365106
+          },
+          "score": 98.63476273657461,
+          "rank": 10
+        },
+        {
+          "candidate_id": "KEV-V8-R08",
+          "name": "KEV-V8-COVERAGE-R08",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 2994.4177406281233,
+            "nll": 1.0924777941365882,
+            "acc": 0.5691318327974276,
+            "ece": 0.060925613746606086,
+            "brier": 0.5442430757284936
+          },
+          "score": 97.16609371639798,
+          "rank": 11
+        },
+        {
+          "candidate_id": "KEV-V8-R09",
+          "name": "KEV-V8-COVERAGE-R09",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 2967.0885825883597,
+            "nll": 1.0958047474284984,
+            "acc": 0.5630225080385852,
+            "ece": 0.06601669490731427,
+            "brier": 0.5467424579427178
+          },
+          "score": 95.53250822766378,
+          "rank": 15
+        },
+        {
+          "candidate_id": "KEV-V8-R10",
+          "name": "KEV-V8-COVERAGE-R10",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 2999.5980566758662,
+            "nll": 1.084009090407371,
+            "acc": 0.5710610932475885,
+            "ece": 0.03945904000899079,
+            "brier": 0.5390273669702125
+          },
+          "score": 102.00503222796071,
+          "rank": 5
+        },
+        {
+          "candidate_id": "KEV-V8-R11",
+          "name": "KEV-V8-COVERAGE-R11",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3209.4682243727148,
+            "nll": 1.0687237358658521,
+            "acc": 0.5690246516613076,
+            "ece": 0.018245896357096725,
+            "brier": 0.5356784886480057
+          },
+          "score": 106.74866622586939,
+          "rank": 1
+        },
+        {
+          "candidate_id": "KEV-V8-R12",
+          "name": "KEV-V8-COVERAGE-R12",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3086.111373465508,
+            "nll": 1.0740358242273134,
+            "acc": 0.5684887459807074,
+            "ece": 0.02386122815106577,
+            "brier": 0.5378212823873345
+          },
+          "score": 105.32987566537435,
+          "rank": 2
+        },
+        {
+          "candidate_id": "KEV-V8-R13",
+          "name": "KEV-V8-COVERAGE-R13",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3057.3671408481896,
+            "nll": 1.0772480919990897,
+            "acc": 0.5710610932475885,
+            "ece": 0.03729033295023294,
+            "brier": 0.5400117173836336
+          },
+          "score": 102.68423650867963,
+          "rank": 4
+        },
+        {
+          "candidate_id": "KEV-V8-R14",
+          "name": "KEV-V8-COVERAGE-R14",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 2998.153802447021,
+            "nll": 1.0884253914471589,
+            "acc": 0.5708467309753483,
+            "ece": 0.0462875576977174,
+            "brier": 0.5424181885335775
+          },
+          "score": 100.37360995113988,
+          "rank": 8
+        },
+        {
+          "candidate_id": "KEV-V8-R15",
+          "name": "KEV-V8-COVERAGE-R15",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3099.864800872281,
+            "nll": 1.080296165386948,
+            "acc": 0.5732047159699892,
+            "ece": 0.04570770565534802,
+            "brier": 0.5409919869468435
+          },
+          "score": 101.03098291480666,
+          "rank": 6
+        },
+        {
+          "candidate_id": "KEV-V8-R16",
+          "name": "KEV-V8-COVERAGE-R16",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3011.8440324403346,
+            "nll": 1.0969011540027673,
+            "acc": 0.5681672025723473,
+            "ece": 0.0611018910610564,
+            "brier": 0.5477866507241165
+          },
+          "score": 96.7807431542914,
+          "rank": 12
+        },
+        {
+          "candidate_id": "KEV-V9-001",
+          "name": "KEV-V9-001",
+          "training_status": "COMPLETED",
+          "evaluation_status": "EVALUATED",
+          "status": "COMPLETED",
+          "pending_reason": null,
+          "metrics": {
+            "test_used": false,
+            "duration_sec": 3468.2793178632855,
+            "nll": 1.1103247352468928,
+            "acc": 0.5658092175777063,
+            "ece": 0.08006657253210539,
+            "brier": 0.5461336121552054
+          },
+          "score": 92.38703579133796,
+          "rank": 1
+        }
+      ]
+    },
+    "data_summary": {
+      "explored_catalog_ids": 35,
+      "public_processed_sources": 14,
+      "public_processed_records": 6600628,
+      "count_source_at": "2026-10-19T10:43:10.323901+00:00",
+      "old_s1_s2_s3_candidate_references": 4863900,
+      "model_only_preferences": 40,
+      "new_pool_preference_states": 1,
+      "new_pool_training_rows": 17,
+      "aa_snapshot": "20261107T134704898459Z-v7",
+      "aa_metrics": 130
+    },
+    "source_documents": {
+      "data": "our-project/data/README.md",
+      "iterations": "our-project/results/README.md",
+      "new_pool_results": "our-project/results/iterations/20261108-v9-k3-training/review.md"
+    }
+  },
   "task_links_completion_execution": {
     "analysis_date": "2026-11-02",
     "source_main": "e222deadc19854d2a7a32a731c5f0e4610f6690e",
