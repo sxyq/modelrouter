@@ -1,5 +1,13 @@
 # ModelRouter · 数据源、模型能力与缓存政策统一台账
 
+## 2026-11-08 · 当前数据与版本入口
+
+全项目整理见[数据总入口](README.md)，模型实体和现场训练见[训练总报告](../results/training/training_research.md)，75个原迭代目录及31个记录任务名见[实验目录](../results/README.md#全项目迭代目录索引)。
+
+来源目录共有35项来源/用途ID；14个公开清洗源6,600,628行、自产110聚合行/221,128调用行/79衍生行分开计数。历史静态导出83,259，原S1/S2/S3候选4,863,900引用，旧40条Model-only保持原标签。当前新GLM池17行只有1条五候选联合偏好和16辅助，Laya/Kev各17更新已完成；AA固定v7/130指标，GLM Low/High缺测。原49尝试和现行编码证据分别保存，历史多Agent资料不进入正式Single-Agent。
+
+A600019:10台北没有训练进程；F15物理epoch_01/61180，后续游标66172不作已保存训练点；原38组25完成。Kev R01–R16训练及固定Val全部完成。Serving仍原F05/导入Kev。以下日期章节保留各阶段当时的数量、访问失败、模型池及来源许可，不以旧“当前”、空目录或RUNNING描述覆盖本节；raw/v9-task-links现已有任务关联材料。
+
 ## 当前：DeepSeek Dev证据与训练资格（2026-11-02）
 
 原Terminal-Bench 2.1 Dev资产本轮9个不同任务、19 Episode，所有任务/来源与逐步状态保留在[批次结果](../results/iterations/20261102-v9-deepseek-dev/summary.json)。原Verifier执行9次，7成功/2失败/10未知；固定为DeepSeek、动态为ALIAS_SMOKE，三组同协议完整对照可作Dev分析。全部明确`OBSERVED_OUTCOME_ONLY`、`train_eligible=false`，不生成正式Sol/Luna/Flash或Native Effort选择目标；财务/MTEB跨处理版本不作有效胜负比较。

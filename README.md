@@ -4,12 +4,28 @@ ModelRouter 研究长程 **单 Agent** 执行中的模型与 Provider 原生推�
 
 ModelRouter 是面向长程 Agent 任务的模型、推理档位与成本研究项目。
 
-仓库分为两部分：
+## 项目目录分类
 
-- `our-project/`：本项目的研究报告、文献笔记、清洗数据、汇总数据和规划文档。
-- `external-projects/`：外部项目的来源登记，仅用于说明文献和实验参考，不包含外部仓库源码。
+| 职责 | 当前目录 | 主要入口与内容 |
+|---|---|---|
+| 正式源码 | `our-project/code/src/modelrouter/` | [包职责](our-project/code/README.md)：Harbor适配、状态、Provider、联合路由、AA、教师、训练与Serving |
+| 保留的命令入口 | `router_data/`、`scripts/`、根目录Python入口 | 复用已有包及训练路径；[脚本分类](scripts/README.md)，历史脚本单列 |
+| 科研规划 | `our-project/planning/` | 四份现行核心规划，旧方案按日期保留 |
+| 数据与来源 | `our-project/data/`、`data/` | [数据总入口](our-project/data/README.md)：公开来源、自有调用、训练材料、用途；大型全量保留A6000原位置 |
+| 完整任务结果 | `our-project/results/iterations/` | [75批次索引](our-project/results/README.md#全项目迭代目录索引)、原Harbor/Verifier及脱敏报告 |
+| 任务覆盖与历史图表 | `our-project/results/benchmark/`、`benchmarks/` | [89题进度、Pass率与费用](our-project/results/benchmark/README.md)；预填图表列为历史 |
+| 训练结果与参数 | `our-project/results/training/`、`runs/`、A6000 `models/` | [版本与训练](our-project/results/training/training_research.md)；原始、新池、旧参考、Serving及F15恢复分别保留 |
+| 实验配置 | `our-project/experiments/`、`experiments/` | 现行模型/协议配置、原实验参数；私人用量与凭据不公开 |
+| 文献与外部参考 | `our-project/literature/`、`our-project/external/`、`research/`、`papers/`、`external-projects/` | 论文、笔记、来源登记、历史研究；根`external/`保存本机上游仓库，不纳入Git |
+| 汇报与展示 | `汇报/`、`our-project/汇报/`、`our-project/dashboard/`、`docs/training-dashboard/` | 论文图表方案、组会资料和已有看板；展示数值按原来源解释 |
+| 历史运行资料 | `our-project/docs/`、`docs/` | 日期化报告及[旧Docker资料](our-project/docs/operations/legacy/HARBOR_DOCKER_STATUS_20261018.md)，不作当前执行指令 |
+| 本地运行与生成产物 | `.runtime/`、`our-project/.runtime/`、`.tmp/`、`output/`、Python缓存 | 环境、私有请求与生成文件，保留本地；`.git/`及旧`.workbuddy/`资料保持原位置 |
 
 **数据来源与 Provider 政策台账**：[DATA_SOURCE_AND_POLICY_REGISTRY.md](our-project/data/DATA_SOURCE_AND_POLICY_REGISTRY.md)：公开轨迹、模型比较、缓存、时间/预算与 Provider 来源状态。台账是来源登记，不代表已有原生档位实测分数或新实验结果。
+
+**全项目数据与成果**：[数据总入口](our-project/data/README.md)列出已探索来源、取得的数据、训练材料和用途；[模型版本与训练进度](our-project/results/training/training_research.md)区分原始版、新GLM研究版、旧固定Val参考、Serving和F15恢复。当前两新池代表各17更新已完成，原38组25完成，F15保存61180步，19:10台北取样无训练进程。
+
+**完整任务成果**：[89题清单与费用](our-project/results/benchmark/README.md)：Agent尝试29题，22题有官方Reward，7题尝试但无Reward，60题尚无Agent运行；神经Router参与25题。当前GLM池三题中Laya原始/训练通过2/3、1/3，Kev两版各1通过/1失败/1缺Reward。模型+教师已知参考费分别$0.13532442/$0.11108159、$0.03250188/$0.17776966，除原始Kev外均有请求费用缺失；全部实收及资源价未知。[75批次](our-project/results/README.md#全项目迭代目录索引)的198记录保留旧池、映射和Oracle身份。
 
 原始服务器日志、凭据、浏览器调试文件和外部仓库源码不纳入本仓库。
 
@@ -17,7 +33,7 @@ ModelRouter 是面向长程 Agent 任务的模型、推理档位与成本研究�
 
 当前联合候选为 GPT-6 Luna、GLM-5.3-Flash 与 GPT-6.1 Terra。精确 `model_id`、Provider、协议、原生 Effort 菜单和当前可用条件按 Registry 与实际 Provider 能力记录，不假设不同模型支持相同档位，也不将旧 HY4 结果改写为 GLM 结果。
 
-GLM 已沿唯一私人配置绑定 Colink，精确请求与返回为 `glm-5.3-flash`。Low/High 已有真实工具输出；返回 Effort 未报告，High 长请求曾耗尽输出额度，本轮部分请求返回 429。11-07 历史结果保持原身份，新完整 Episode 按原 Harbor 终局记录。
+GLM沿唯一私人配置绑定Colink，精确请求与返回为`glm-5.3-flash`。Low/High/Max均已有实际工具及原Harbor官方Reward 1，返回Effort未报告；旧High额度耗尽、429与空流保持。49次最新尝试已结束，33有效终局/21个1/12个0，16无Reward；训练收益及完整现金净收益仍缺。
 
 候选动作是实际支持的 `(model, native_effort)` 组合；请求与返回身份、档位分别记录，未知保持未知。15 个联合候选是本轮规划目标，实际每批动作集合按 Provider 支持、工具与上下文条件生成；不支持或未证实的组合不补齐成可运行候选。
 
