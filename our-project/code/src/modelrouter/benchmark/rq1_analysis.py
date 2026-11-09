@@ -567,10 +567,11 @@ def export_batch_results(root, config, output_root=None):
     fixed_count = sum(s["stage"] == "fixed" for s in strategies.values())
     report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
               "**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**\n",
-              f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。已结束位置中，精确档位有效Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}。\n",
+              f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。已结束位置中，无已报告档位冲突的官方Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}。\n",
               f"已保存原Harbor Trial {totals['harbor_trial_count']}次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。\n",
               f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{sum(r['attempted_strategies'] >= fixed_count for r in task_rows)}题已结束全部{fixed_count}个固定/简单策略；{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。批次先执行固定阶段，再执行Router阶段。\n",
-              "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。档位不符的官方结果保留在逐Episode表，单独排除于精确档位主比较。通过率分母仅为该策略已取得的有效官方评分任务，89题全量结果尚在执行。\n",
+              "GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。\n",
+              "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。已报告档位冲突的官方结果保留在逐Episode表，并从按请求档位主比较中另列。通过率分母仅为该策略已取得的有效官方评分任务，89题全量结果尚在执行。\n",
               "| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
               "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for r in grouped:
