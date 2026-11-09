@@ -126,7 +126,7 @@ def main(argv=None):
     parser.add_argument("config", type=Path)
     parser.add_argument("--source-revision", required=True)
     parser.add_argument("--collect-only", action="store_true")
-    parser.add_argument("--export-dir", type=Path, help="Public output directory for collection")
+    parser.add_argument("--export-dir", type=Path, help="Public output directory")
     parser.add_argument("--recover-infrastructure", action="store_true", help="One explicit attempt after the recorded proxy or image preparation failure")
     args = parser.parse_args(argv)
     root, config = prepare(args.config, args.source_revision)
@@ -184,11 +184,11 @@ def main(argv=None):
                     iterations.append(root / "jobs.jsonl", record)
                     print(json.dumps(record, ensure_ascii=False), flush=True)
                     if not record.get("reused"):
-                        export_batch_results(root, config)
+                        export_batch_results(root, config, args.export_dir)
     finally:
         if worker is not None:
             worker.terminate()
             worker.wait()
             Path(config["router_socket"]).unlink(missing_ok=True)
-        export_batch_results(root, config)
+        export_batch_results(root, config, args.export_dir)
     return 0

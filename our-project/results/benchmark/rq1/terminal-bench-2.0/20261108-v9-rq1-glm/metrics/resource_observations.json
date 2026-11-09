@@ -272,5 +272,31 @@
       "first_router_strategies": ["laya_original_off", "laya_original_on"]
     },
     "resource_billing_usd": null
+  },
+  {
+    "observed_at": "2026-11-09T10:08:48+00:00",
+    "shared_gpu_wait": {
+      "waiting_router_worker_pid": 3851219,
+      "waiting_kernel_state": "LOCKS_LOCK_INODE_WAIT",
+      "lock_owner_pid": 3956314,
+      "lock_owner_workload": "EXISTING_H3_VIDEO_GATEWAY",
+      "backend_pid": 3956820,
+      "backend_gpu_memory_mib": 8392,
+      "shared_service_action": "NONE; ORIGINAL_GPU_LOCK_RESPECTED"
+    },
+    "fixed_infrastructure_recovery": {
+      "selected_positions": 458,
+      "selected_by_strategy": {"glm_low": 51, "glm_high": 52, "glm_max": 52, "luna_low": 51, "luna_high": 50, "luna_max": 50, "terra_high": 50, "luna_xhigh": 51, "rule_sticky": 51},
+      "selected_router_positions": 0,
+      "wrapper_pid": 3966928,
+      "parent_pid": 3966929,
+      "export_dir": "/home/syy/路由/.runtime/rq1-recovery-export._tbrx8zk",
+      "concurrency": 4,
+      "gpu_required": false,
+      "original_trials_and_costs": "RETAINED; ONE_RECOVERY_JOB_PER_SELECTED_POSITION",
+      "dispatch_reason": "COMPLETED_FIXED_STAGE_AND_RESOLVED_PROXY_IMAGE_FAILURES; ROUTER_QUEUED_FOR_SHARED_GPU",
+      "report_output": "SEPARATE_TEMPORARY_DIRECTORY; NO_CONCURRENT_REPORT_OVERWRITE"
+    },
+    "resource_billing_usd": null
   }
 ]
