@@ -212,5 +212,28 @@
       "verifier_stdout_bytes": 272
     },
     "resource_billing_usd": null
+  },
+  {
+    "observed_at": "2026-11-09T06:20:32+00:00",
+    "image_preparation": {
+      "task_id": "custom-memory-heap-crash",
+      "docker_image": "alexgshaw/custom-memory-heap-crash:20251031",
+      "image_id": "sha256:1895d7d6240d5fb2ec774d6bfdd1057d170f8d199c15c582e4585d3c63802557",
+      "repo_digest": "alexgshaw/custom-memory-heap-crash@sha256:1895d7d6240d5fb2ec774d6bfdd1057d170f8d199c15c582e4585d3c63802557",
+      "image_size_bytes": 5985186340,
+      "architecture": "amd64",
+      "os": "linux",
+      "image_last_tag_at": "2026-11-09T06:20:22.766375611Z",
+      "manual_pull_exit_code": 0,
+      "official_environment_start_timeout_sec": 600,
+      "observed_failed_fixed_positions": 5,
+      "failed_strategies": ["glm_low", "glm_high", "glm_max", "luna_low", "luna_high"],
+      "generator_requests_in_failed_episodes": 0,
+      "observed_errors": "GLM_LOW_ANONYMOUS_DOCKER_TOKEN_EOF; FOUR_COLD_IMAGE_ENVIRONMENT_START_TIMEOUTS",
+      "execution_overlap": "WITH_ORIGINAL_HARBOR_PULLS; NOT_AN_ADDITIONAL_INDEPENDENT_VM_CHARGE",
+      "recovery": "ONE_EXPLICIT_ATTEMPT_AFTER_ORIGINAL_BATCH; ORIGINAL_TRIALS_RETAINED"
+    },
+    "resource_billing_usd": null,
+    "episode_apportionment": "NOT_MEASURED; image preparation overlaps recorded episodes"
   }
 ]
