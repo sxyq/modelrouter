@@ -122,5 +122,27 @@
     },
     "resource_billing_usd": null,
     "episode_apportionment": "NOT_MEASURED; preparation overlaps recorded episodes and is not charged twice"
+  },
+  {
+    "observed_at": "2026-11-09T01:22:46.771699+00:00",
+    "network_interruption": {
+      "component": "TEMPORARY_MAC_TO_A6000_REVERSE_PROXY",
+      "remote_port": 17898,
+      "observed_exit": "SSH_EXIT_255_BROKEN_PIPE",
+      "proxy_failure_records": 151,
+      "error_counts": {"RuntimeError": 99, "URLError": 52},
+      "first_affected_trial_started_at": "2026-11-09T01:07:07.421112Z",
+      "last_observed_affected_trial_finished_at": "2026-11-09T01:20:02.901512Z",
+      "record_count_scope": "COMPLETED_ORIGINAL_TRIALS_REPORTING_CONNECTION_REFUSED_AT_SURVEY",
+      "restored_registry_response_at": "2026-11-09T01:20:30Z",
+      "restored_registry_http_status": 401,
+      "registry_response": "EXPECTED_UNAUTHENTICATED_DOCKER_REGISTRY_RESPONSE",
+      "subsequent_agent_task": "sanitize-git-repo",
+      "subsequent_generator_http_status": 200,
+      "subsequent_exact_models": ["gpt-6-luna", "gpt-6.1-terra"],
+      "original_evidence_retained": true,
+      "task_protocol_changed": false
+    },
+    "resource_billing_usd": null
   }
 ]
