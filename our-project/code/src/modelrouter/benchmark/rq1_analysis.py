@@ -547,11 +547,20 @@ def export_batch_results(root, config, output_root=None):
     pairs = [(f"{family}_{version}_off", f"{family}_{version}_on", "teacher") for family in ("laya", "kev") for version in ("original", "trained")]
     pairs += [(f"{family}_original_{teacher}", f"{family}_trained_{teacher}", "training") for family in ("laya", "kev") for teacher in ("off", "on")]
     pairs += [(fixed["id"], router["id"], "fixed_vs_router") for fixed in strategies.values() if fixed.get("model") for router in strategies.values() if router["stage"] == "router"]
+    fixed = [s for s in strategies.values() if s["stage"] == "fixed"]
+    pairs += [(x["id"], y["id"], "native_effort" if x.get("model") == y.get("model") else "fixed_strategy")
+              for i, x in enumerate(fixed) for y in fixed[i + 1:]]
     for left, right, factor in pairs:
         a = {(r["task_id"], r["seed"]): r for r in episodes if r["strategy_id"] == left}
         b = {(r["task_id"], r["seed"]): r for r in episodes if r["strategy_id"] == right}
         paired = [(a[k], b[k]) for k in a.keys() & b.keys() if a[k]["reward"] in (0, 1) and b[k]["reward"] in (0, 1) and a[k]["effort_comparison_eligible"] and b[k]["effort_comparison_eligible"]]
+        cost_pairs = [(x, y) for x, y in paired if x["reference_cost_usd"] is not None and y["reference_cost_usd"] is not None]
         comparisons.append({"factor": factor, "left": left, "right": right, "scored_pairs": len(paired),
+                            "left_reward_1": sum(x["reward"] == 1 for x, y in paired),
+                            "right_reward_1": sum(y["reward"] == 1 for x, y in paired),
+                            "reference_known_pairs": len(cost_pairs),
+                            "left_reference_known_pairs_usd": sum(x["reference_cost_usd"] for x, y in cost_pairs) if cost_pairs else None,
+                            "right_reference_known_pairs_usd": sum(y["reference_cost_usd"] for x, y in cost_pairs) if cost_pairs else None,
                             "reward_delta_sum": sum(y["reward"] - x["reward"] for x, y in paired),
                             **{field + "_delta_sum": sum(y[field] - x[field] for x, y in paired) if paired and all(x.get(field) is not None and y.get(field) is not None for x, y in paired) else None for field in ("generator_requests", "teacher_requests", "teacher_known_reference_usd", "known_cache_read_tokens", "logical_model_changes", "router_wall_s", "episode_wall_s")},
                             "known_reference_delta_usd": sum(y["reference_cost_usd"] - x["reference_cost_usd"] for x, y in paired) if paired and all(x["reference_cost_usd"] is not None and y["reference_cost_usd"] is not None for x, y in paired) else None,
