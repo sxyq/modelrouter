@@ -393,9 +393,17 @@ def observed_research_groups(trials, events, request_rows):
     return result
 
 
-def export_batch_results(root, config):
+def export_batch_results(root, config, output_root=None):
     """Collect the same Provider and official facts, including unscored paid attempts."""
     from .iterations import rows, write_atomic, percentile
+    output_root = root if output_root is None else output_root
+    if output_root != root:
+        from shutil import copyfile
+        output_root.mkdir(parents=True, exist_ok=True)
+        for name in ("config.json", "manifest.json", "jobs.jsonl", "metrics/resource_observations.json"):
+            destination = output_root / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            copyfile(root / name, destination)
     tasks = {t["task_id"]: t for t in config["tasks"]}
     strategies = {s["id"]: s for s in config["strategies"]}
     units = json.loads((root / "manifest.json").read_text())["units"]
@@ -403,10 +411,11 @@ def export_batch_results(root, config):
     episodes = []
     for unit in units:
         relative = Path(unit["task_id"]) / unit["strategy_id"] / str(unit["seed"])
-        public = root / "trials" / relative
+        public = output_root / "trials" / relative
+        source_public = root / "trials" / relative
         private = root / ".private/episodes" / relative
-        if (public / "summary.json").exists() and not private.exists():
-            episodes.append(json.loads((public / "summary.json").read_text()))
+        if (source_public / "summary.json").exists() and not private.exists():
+            episodes.append(json.loads((source_public / "summary.json").read_text()))
             continue
         strategy, task = strategies[unit["strategy_id"]], tasks[unit["task_id"]]
         row = {**unit, "run_id": config["run_id"], "benchmark_name": "Terminal-Bench",
@@ -492,7 +501,7 @@ def export_batch_results(root, config):
             for event in events:
                 stream.write(json.dumps({k: v for k, v in event.items() if k in fields}, ensure_ascii=False) + "\n")
         episodes.append(row)
-    metrics = root / "metrics"
+    metrics = output_root / "metrics"
     metrics.mkdir(exist_ok=True)
     def write_csv(name, records):
         fields = list(dict.fromkeys(k for row in records for k in row))
@@ -562,7 +571,7 @@ def export_batch_results(root, config):
             cost = "UNKNOWN" if r["generator_known_reference_usd"] is None else f"{r['generator_known_reference_usd'] + (r['teacher_known_reference_usd'] or 0):.8f}"
             rate = "未评分" if r["scored_pass_rate"] is None else f"{r['reward_1']}/{r['reward_1'] + r['reward_0']} = {r['scored_pass_rate']:.2%}"
             report.append(f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {rate} | {r['no_official_reward']} | {r['running']} | {r['not_started']} | {r['unavailable']} | {cost} |")
-    (root / "review.md").write_text("\n".join(report) + "\n")
+    (output_root / "review.md").write_text("\n".join(report) + "\n")
     return {"episodes": episodes, "strategies": grouped, "comparisons": comparisons}
 
 

@@ -115,13 +115,14 @@ def main(argv=None):
     parser.add_argument("config", type=Path)
     parser.add_argument("--source-revision", required=True)
     parser.add_argument("--collect-only", action="store_true")
+    parser.add_argument("--export-dir", type=Path, help="Public output directory for collection")
     args = parser.parse_args(argv)
     root, config = prepare(args.config, args.source_revision)
     config["router_socket"] = str(iterations.ROOT / ".runtime" / (config["run_id"] + "-router.sock"))
     units = json.loads((root / "manifest.json").read_text())["units"]
     from .rq1_analysis import export_batch_results
     if args.collect_only:
-        export_batch_results(root, config)
+        export_batch_results(root, config, args.export_dir)
         return 0
     worker = None
     unavailable = {r["strategy_id"]: r["unit_id"] for r in iterations.rows(root / "jobs.jsonl") if r.get("unsupported_effort")}
