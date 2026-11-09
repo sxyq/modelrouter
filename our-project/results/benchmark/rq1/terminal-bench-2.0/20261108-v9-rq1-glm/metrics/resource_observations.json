@@ -189,5 +189,28 @@
     "existing_serving_pid": 327621,
     "resource_billing_usd": null,
     "episode_apportionment": "NOT_MEASURED; shared samples are not episode charges"
+  },
+  {
+    "observed_at": "2026-11-09T04:15:24+00:00",
+    "expired_task_cleanup": {
+      "task_id": "caffe-cifar-10",
+      "strategy_id": "terra_high",
+      "seed": 42,
+      "container_id": "0075c0bf72d82208b34a04de317c5fb24c82378332aad9d5a76ede3382fe1f2e",
+      "original_agent_timeout_sec": 1200,
+      "original_verifier_timeout_sec": 1200,
+      "residual_processes": "CMAKE_GMAKE_CC1PLUS_FROM_AGENT_AND_APT_GET_FROM_VERIFIER",
+      "last_container_memory_observation": "1.989GiB / 2GiB; 99.44%",
+      "pending_harbor_operation": "CHOWN_VERIFIER_LOG_BIND_MOUNT",
+      "cleanup_command": "DOCKER_STOP_TIMEOUT_10_SECONDS_AFTER_RECORDED_TIMEOUTS",
+      "cleanup_exit_code": 0,
+      "container_removed_by_original_harbor": true,
+      "official_finished_at": "2026-11-09T04:14:58.850481Z",
+      "official_error_type": "AgentTimeoutError",
+      "official_reward": null,
+      "original_logs_and_artifacts": "RETAINED_IN_ORIGINAL_HARBOR_BIND_MOUNTS",
+      "verifier_stdout_bytes": 272
+    },
+    "resource_billing_usd": null
   }
 ]
