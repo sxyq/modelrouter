@@ -59,7 +59,7 @@ def render_batch_figures(root):
     ax.axhline(0, color="#999999", linewidth=.6)
     ax.axvline(0, color="#999999", linewidth=.6)
     ax.set(xlabel="ON − OFF model + teacher reference fee (USD)", ylabel="ON − OFF official Reward", yticks=[-1, 0, 1], ylim=(-1.3, 1.3), title=f"Same task / seed / weight teacher comparison: {pairs} pairs")
-    ax.legend(handles=[Line2D([], [], color=colors[family], marker="s" if version == "original" else "o", linestyle="", label=f"{family.title()} {version}") for family in ("laya", "kev") for version in ("original", "trained")], fontsize=8, loc="upper left")
+    ax.legend(handles=[Line2D([], [], color=colors[family], marker="s" if version == "original" else "o", linestyle="", label=f"{family.title()} {version}") for family in ("laya", "kev") for version in ("original", "trained")], fontsize=8, loc="upper right")
     fig.supxlabel("Each point is one task pair; complete cash net benefit remains unknown.", fontsize=8)
     save(fig, "teacher_effect")
 

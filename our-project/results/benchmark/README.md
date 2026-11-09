@@ -19,7 +19,7 @@ LITELLM_LOCAL_MODEL_COST_MAP=true .runtime/benchmark-venv/bin/python -m modelrou
 
 沿同一入口的`--recover-infrastructure`补充一次恢复尝试：仅选代理连接被拒绝，或已准备镜像的`hf-model-inference`及`custom-memory-heap-crash`环境启动超时，以及后者已记录的Docker匿名认证EOF；此前须没有成功生成、教师响应或工具结果。两镜像的实际准备结果见当前批次`metrics/resource_observations.json`。固定阶段已结束，Router等待共享GPU时先推进不占GPU的固定策略恢复；恢复过程用`--export-dir`写入临时公开目录，避免与原Router批次同时写同一报告。原Job和Trial留在原目录，新Job使用`--infrastructure-recovery-1`后缀；已有恢复尝试的位置不再次选入。终局采用最后结束的Trial，费用与墙钟累计所有尝试。
 
-最新公开快照：915位置结束，1049次Harbor Trial，141个Reward 1、185个0、589个缺Reward；6个运行、592个未开始。已结束位置中，已知模型参考费$9.85619630、教师$0.02824674，合计$9.88444304；339请求费用未知。已报告缓存读取57,824,448 Token，Harbor命令累计墙钟366,406.344424秒，内含官方Trial累计357,505.056295秒；差值8,901.288129秒为CLI启动、退出与等待。两项均为并发尝试时长之和，官方Trial时间已含在命令时间内。供应商实收、Router、工具、CPU/GPU及VM美元价未知。
+最新公开快照（2026-11-09T16:47:48Z）：919位置结束，1061次Harbor Trial，143个Reward 1、189个0、587个缺Reward；6个运行、588个未开始。已结束位置中，已知模型参考费$10.20642476、教师$0.02947744，合计$10.23590220；346请求费用未知。已报告缓存读取58,980,928 Token，Harbor命令累计墙钟375,930.068932秒，内含官方Trial累计366,967.861638秒；差值8,962.207294秒为CLI启动、退出与等待。两项均为并发尝试时长之和，官方Trial时间已含在命令时间内。供应商实收、Router、工具、CPU/GPU及VM美元价未知。
 
 官方`fix-git`原始Laya OFF已通过，298.091351秒，实际生成使用Terra High。原始Laya ON、训练Laya OFF/ON三臂的GLM High请求均HTTP 502，没有Reward或Usage；原错误仅为`Bad Gateway`，未保存上游响应正文，渠道内部原因缺失，实际费用未知。三个失败保持原记录，不转为零分，不作为档位不受支持的事实。
 
@@ -31,7 +31,7 @@ LITELLM_LOCAL_MODEL_COST_MAP=true .runtime/benchmark-venv/bin/python -m modelrou
 
 新增完整任务结果：原始Kev Teacher ON通过`cobol-modernization`，11生成、3教师请求、5次教师短评消费、14工具结果、825.191309秒；模型$0.01084208、教师$0.00151440。训练Kev Teacher ON同题21生成、6教师请求、9次消费、25工具结果、1084.022053秒，AgentTimeout后原Verifier仍给1；模型$0.10402240、教师$0.00344550。两者没有未知请求费或输入截断，同质量下训练版参考费为原始版约8.70倍。两个OFF没有官方Reward，教师收益暂缺该题成对结果。恢复后的HF任务GLM Low、Luna High、Terra High通过；全部原环境失败计入累计尝试时长。
 
-当前同题有效评分比较：Luna High/Max共26对，High通过14、Max9；21对请求费齐全，High合计$0.26990722、Max$0.35085184。Kev无教师原始/训练共4对，双方均零分；其中3对请求费齐全，分别$0.01126084/$0.34524960。这些结果随剩余预定任务连续增加，权重不随正式结果改变。
+当前同题有效评分比较：Luna High/Max共29对，High通过15、Max10；23对请求费齐全，High合计$0.28364164、Max$0.38964854。Kev无教师原始/训练共7对，通过数1/2；其中6对请求费齐全，分别$0.02439166/$0.51478000。两组费用齐全任务均为相应评分对的子集。结果随剩余预定任务连续增加，权重不随正式结果改变。
 
 首批全部17策略已结束的8题中，合并各权重Teacher OFF/ON的实际路由决策：原始Laya选择GLM/Luna/Terra各66/10/26次，训练Laya各72/7/19次，均为High。原始Kev的108次均为Luna Low；训练Kev的185次均为Terra，其中152 Max、24 Low、4 Medium、4 None、1 High。当前Kev表现为单模型集中选择；15个合法登记动作的存在不能解释为15种动作均已实际选用。逐决策原记录保存在本批`trials/*/*/42/events.jsonl`和`metrics/per_episode.csv`，汇总字段为`selected_action_counts`。
 
