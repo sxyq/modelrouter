@@ -22,6 +22,8 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 接续[唯一2.0批次](../../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)，官方89题×17策略×seed42=1513位置。先固定GLM/Luna Low、High、Max，再Terra High、单独Luna Xhigh及规则；随后四实体各Teacher OFF/ON。固定四并发、Router两并发，原官方任务时限/Verifier、4096输出、AA v7与统一GPU条件保持。已结束位置不重发，缺Reward保留真实失败，档位不符不改标签。旧2.1结果不作为本批完成状态。
 
+等待复用同一入口的`--watch-pids 3851142 3966929 --watch-interval 1200`，每20分钟导出一次到当前`.runtime/rq1-watch-export.fwknr5fn`，收到新快照再传回和汇总。两个原父进程退出后读取末次结果和退出原因，完成传回后清理临时导出目录；位置仍未结束时沿原批次接续。
+
 当前联合偏好来自Dynaconf一个截止、赢家Luna Xhigh；两研究代表各17更新已保存并事前确定。当前不新增训练，不将AA、旧HY4或已观察RQ1结果用来挑权重。多任务联合监督与新编码训练是本批比较之后的研究，不再作为本次正式RQ1的前置。
 
 ## 第二：四实体、教师、输入与粒度完整比较
