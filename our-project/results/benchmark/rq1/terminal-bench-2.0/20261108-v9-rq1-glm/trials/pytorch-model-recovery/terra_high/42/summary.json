@@ -28,14 +28,14 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "RuntimeError",
-  "execution_status": "FINISHED",
+  "error_type": "EnvironmentStartTimeoutError",
+  "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 3.548641,
+  "episode_wall_s": 603.549743,
   "generator_known_reference_usd": 0,
-  "harbor_trial_count": 1,
-  "attempts_wall_s": 3.548641,
-  "harness_command_wall_s": 8.672294756397605,
+  "harbor_trial_count": 2,
+  "attempts_wall_s": 607.098384,
+  "harness_command_wall_s": 617.3892573993653,
   "teacher_known_reference_usd": 0,
   "reference_cost_usd": 0,
   "supplier_billed_usd": 0,
@@ -44,14 +44,32 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-recovery/terra_high/42",
-  "trial_id": "ef288863-8de1-4dec-86cd-581a590639b8",
-  "outside_harbor_wall_s": 5.123653756397605,
-  "previous_attempts": [],
+  "trial_id": "bc1b37c7-e7f2-494d-86da-3a31f50c9e61",
+  "outside_harbor_wall_s": 10.290873399365296,
+  "previous_attempts": [
+    {
+      "trial_id": "ef288863-8de1-4dec-86cd-581a590639b8",
+      "job_name": "pytorch-model-recovery--terra_high--s42",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-recovery/terra_high/42/jobs/pytorch-model-recovery--terra_high--s42/pytorch-model-recovery__aLQFt2K",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-09T01:15:16.743458Z",
+      "finished_at": "2026-11-09T01:15:20.292099Z",
+      "duration_sec": 3.548641,
+      "phase_wall_s": {
+        "environment_setup": 0.687633,
+        "agent_setup": null,
+        "agent_execution": null,
+        "verifier": null
+      },
+      "error_type": "RuntimeError"
+    }
+  ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
   "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 0.687633,
+    "environment_setup": 600.001418,
     "agent_setup": null,
     "agent_execution": null,
     "verifier": null
