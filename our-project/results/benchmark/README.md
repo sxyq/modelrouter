@@ -10,7 +10,7 @@
 
 沿同一入口的`--recover-infrastructure`补充一次恢复尝试：仅选代理连接被拒绝，或已准备镜像的`hf-model-inference`及`custom-memory-heap-crash`环境启动超时，以及后者已记录的Docker匿名认证EOF；此前须没有成功生成、教师响应或工具结果。两镜像的实际准备结果见当前批次`metrics/resource_observations.json`。固定阶段已结束，Router等待共享GPU时先推进不占GPU的固定策略恢复；恢复过程用`--export-dir`写入临时公开目录，避免与原Router批次同时写同一报告。原Job和Trial留在原目录，新Job使用`--infrastructure-recovery-1`后缀；已有恢复尝试的位置不再次选入。终局采用最后结束的Trial，费用与墙钟累计所有尝试。
 
-11-09最新公开快照：887位置结束，982次Harbor Trial，128个Reward 1、162个0、597个缺Reward；6个运行、620个未开始。已结束位置中，已知模型参考费$8.40257831、教师$0.02079320，合计$8.42337151；319请求费用未知。已报告缓存读取53,464,640 Token，Harbor命令累计墙钟313,350.972733秒，内含官方Trial累计305,680.359383秒；差值7,670.613350秒为CLI启动、退出与等待。两项均为并发尝试时长之和，官方Trial时间已含在命令时间内。供应商实收、Router、工具、CPU/GPU及VM美元价未知。
+11-09最新公开快照：889位置结束，993次Harbor Trial，128个Reward 1、166个0、595个缺Reward；6个运行、618个未开始。已结束位置中，已知模型参考费$8.51818620、教师$0.02125240，合计$8.53943860；324请求费用未知。已报告缓存读取53,740,992 Token，Harbor命令累计墙钟324,593.543370秒，内含官方Trial累计316,865.506429秒；差值7,728.036941秒为CLI启动、退出与等待。两项均为并发尝试时长之和，官方Trial时间已含在命令时间内。供应商实收、Router、工具、CPU/GPU及VM美元价未知。
 
 完整墙钟沿原`COMMAND_END.duration_ms`登记为`harness_command_wall_s`，官方Trial时间仍为`attempts_wall_s`；对照表追加同题的命令墙钟差值。`crack-7z-hash`训练Kev Teacher ON的原Verifier给1，官方Episode1104.737195秒，Harbor命令2074.480310秒；15生成、4教师请求、3次教师短评消费、24工具结果，已知模型$0.09041620、教师$0.00102230、1请求费未知、无输入截断。900秒AgentTimeout后仍有Router调用等待共享GPU，记录Router1663.982069秒、直接GPU锁等待1462.092615秒。数据库WAL原始Laya Teacher ON官方0，命令1436.662496秒，官方Episode1184.042602秒；没有实际生成或工具结果。原Agent、Provider、Verifier、权重和预算保持该批方法版本。
 
