@@ -463,6 +463,7 @@ def export_batch_results(root, config, output_root=None):
             values = [r.get(field) for r in group]
             return sum(values) if all(v is not None for v in values) else None
         row.update(trial_id=trial.get("trial_id"), reward=trial.get("reward"),
+                   effort_comparison_eligible=not strategy.get("model") or not any(r.get("native_effort_status") == "PROVIDER_REPORTED_MISMATCH" for r in generator),
                    harbor_trial_count=len(trials),
                    attempts_wall_s=sum(t["duration_sec"] for t in trials),
                    previous_attempts=[{**{k: t.get(k) for k in ("trial_id", "job_name", "trial_dir", "status", "reward", "started_at", "finished_at", "duration_sec", "phase_wall_s")}, "error_type": (t.get("error") or {}).get("exception_type")} for t in trials if t is not trial],
