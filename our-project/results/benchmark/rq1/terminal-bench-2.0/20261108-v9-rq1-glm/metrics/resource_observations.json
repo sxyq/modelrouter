@@ -84,5 +84,43 @@
     },
     "resource_billing_usd": null,
     "episode_apportionment": "NOT_MEASURED; shared samples are not episode charges"
+  },
+  {
+    "observed_at": "2026-11-09T00:08:43+00:00",
+    "image_preparation": {
+      "task_id": "hf-model-inference",
+      "docker_image": "alexgshaw/hf-model-inference:20251031",
+      "repo_digest": "alexgshaw/hf-model-inference@sha256:f96dd7d3c85c7257b404fd63ba8d24ced2478cd90232c20e297c372f953fa607",
+      "image_size_bytes": 15037767100,
+      "large_layer_compressed_bytes": 6141831756,
+      "architecture": "amd64",
+      "os": "linux",
+      "manual_pull_started_at": "2026-11-08T23:22:46.070+00:00",
+      "image_pull_event_at": "2026-11-09T00:03:38.381+00:00",
+      "image_pull_event_time_nano": 1794182618381704253,
+      "elapsed_to_image_pull_event_sec": 2452.311,
+      "manual_pull_exit_code": 0,
+      "official_environment_start_timeout_sec": 600,
+      "fixed_strategy_environment_start_failures": 9,
+      "generator_requests_in_failed_episodes": 0,
+      "observed_cause": "LARGE_LAYER_COLD_PULL_AND_CONCURRENT_CONTENT_WRITE_WAIT",
+      "execution_overlap": "WITH_ORIGINAL_HARBOR_PULLS; NOT_AN_ADDITIONAL_INDEPENDENT_VM_CHARGE"
+    },
+    "guest_image_count": 47,
+    "shared_qemu": {
+      "pid": 2744271,
+      "lifetime_average_cpu_percent": 328,
+      "resident_kib": 27011204,
+      "elapsed": "08:37:48",
+      "accelerator": "tcg",
+      "allocated_vcpus": 16,
+      "allocated_memory_mib": 40960
+    },
+    "shared_gpu_sample": {
+      "index": 0, "name": "NVIDIA RTX A6000", "memory_used_mib": 31423,
+      "memory_total_mib": 49140, "utilization_percent": 0, "temperature_c": 26, "power_w": 15.84
+    },
+    "resource_billing_usd": null,
+    "episode_apportionment": "NOT_MEASURED; preparation overlaps recorded episodes and is not charged twice"
   }
 ]
