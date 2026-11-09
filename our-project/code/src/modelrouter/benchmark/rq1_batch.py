@@ -60,13 +60,24 @@ def prepare(config_path, revision):
     return root, config
 
 
-def run_unit(root, config, unit, strategy, unavailable):
+def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=False):
     if unit["strategy_id"] in unavailable:
         return dict(unit, status="UNAVAILABLE_PROVIDER_EFFORT", cause=unavailable[unit["strategy_id"]])
     path = root / ".private/episodes" / unit["task_id"] / unit["strategy_id"] / str(unit["seed"])
     job = path / "jobs" / unit["unit_id"]
     observed = audit_job(job)
     state = path / "resume_state.json"
+    if recover_infrastructure:
+        saved = json.loads(state.read_text())
+        episode = json.loads((path / "run_config.json").read_text())
+        recovery = dict(saved["units"][-1], job_name=unit["unit_id"] + "--infrastructure-recovery-1", status="PENDING")
+        saved["units"].append(recovery)
+        saved.update(status="PENDING", updated_at=iterations.now())
+        episode["units"].append(recovery)
+        iterations.write_atomic(path / "run_config.json", episode)
+        iterations.write_atomic(state, saved)
+        job = path / "jobs" / recovery["job_name"]
+        observed = audit_job(job)
     if observed["status"] == "OFFICIAL_ARTIFACT_VERIFIED" or state.exists() and json.loads(state.read_text())["status"] in ("EVALUATED", "PARTIAL"):
         return dict(unit, status="FINISHED", reused=True)
     if not state.exists():
@@ -116,6 +127,7 @@ def main(argv=None):
     parser.add_argument("--source-revision", required=True)
     parser.add_argument("--collect-only", action="store_true")
     parser.add_argument("--export-dir", type=Path, help="Public output directory for collection")
+    parser.add_argument("--recover-infrastructure", action="store_true", help="One explicit attempt after the recorded proxy or image preparation failure")
     args = parser.parse_args(argv)
     root, config = prepare(args.config, args.source_revision)
     config["router_socket"] = str(iterations.ROOT / ".runtime" / (config["run_id"] + "-router.sock"))
@@ -124,11 +136,31 @@ def main(argv=None):
     if args.collect_only:
         export_batch_results(root, config, args.export_dir)
         return 0
+    if args.recover_infrastructure:
+        selected = []
+        for unit in units:
+            path = root / ".private/episodes" / unit["task_id"] / unit["strategy_id"] / str(unit["seed"])
+            trials = iterations.rows(path / "official_trials.jsonl")
+            if not trials:
+                continue
+            trial = max(trials, key=lambda r: r["finished_at"])
+            error = trial.get("error") or {}
+            restored_proxy = "connection refused" in error.get("exception_message", "").lower()
+            prepared_image = unit["task_id"] == "hf-model-inference" and error.get("exception_type") == "EnvironmentStartTimeoutError"
+            events = iterations.rows(path / "events.jsonl")
+            attempted_recovery = any(u["job_name"].endswith("--infrastructure-recovery-1") for u in json.loads((path / "resume_state.json").read_text())["units"])
+            if (restored_proxy or prepared_image) and trial.get("reward") is None and not attempted_recovery and not any(e["event"] in ("GENERATOR_END", "TEACHER_END", "TOOL_END") for e in events):
+                selected.append(unit)
+        units = selected
     worker = None
     unavailable = {r["strategy_id"]: r["unit_id"] for r in iterations.rows(root / "jobs.jsonl") if r.get("unsupported_effort")}
     try:
         for stage in ("fixed", "router"):
             strategies = [s for s in config["strategies"] if s["stage"] == stage]
+            by_id = {s["id"]: s for s in strategies}
+            pending = [u for u in units if u["strategy_id"] in by_id]
+            if not pending:
+                continue
             if stage == "router":
                 socket_path = Path(config["router_socket"])
                 socket_path.unlink(missing_ok=True)
@@ -140,10 +172,8 @@ def main(argv=None):
                     if worker.poll() is not None:
                         raise RuntimeError("Native Router worker exited before accepting requests")
                     select.select([], [], [], .1)
-            by_id = {s["id"]: s for s in strategies}
-            pending = [u for u in units if u["strategy_id"] in by_id]
             with ThreadPoolExecutor(max_workers=config["concurrency"][stage]) as pool:
-                futures = [pool.submit(run_unit, root, config, u, by_id[u["strategy_id"]], unavailable) for u in pending]
+                futures = [pool.submit(run_unit, root, config, u, by_id[u["strategy_id"]], unavailable, args.recover_infrastructure) for u in pending]
                 for future in as_completed(futures):
                     record = future.result()
                     if record.get("unsupported_effort"):

@@ -8,6 +8,8 @@
 
 运行期间收集沿原`modelrouter.benchmark rq1 … --collect-only --export-dir <临时公开目录>`：从原私有Harbor记录派生结果，公开输出独立于活跃父进程写入；传回本批目录后删除该临时目录。未指定`--export-dir`时保留原输出位置。
 
+原批次结束后，沿同一入口的`--recover-infrastructure`补充一次恢复尝试：仅选代理连接被拒绝、或已经准备好镜像的`hf-model-inference`环境启动失败，且此前没有成功生成、教师响应或工具结果的位置。原Job和Trial留在原目录，新Job使用`--infrastructure-recovery-1`后缀；已有恢复尝试的位置不再次选入。终局采用最后结束的Trial，费用与墙钟累计所有尝试。
+
 ## 历史Terminal-Bench 2.1.0
 
 统计截至2026-11-08，使用本地保存的原Harbor记录，不新增运行。Benchmark为 **Terminal-Bench 2.1.0，共89题**，上游版本 `7131e4375048a0e408a8fb404b5f499d726b695b`。任务清单见[原manifest](../../../router_data/terminal_bench_manifest.json)，逐次原结果保留在[iterations](../iterations/)。

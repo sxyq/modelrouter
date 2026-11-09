@@ -434,6 +434,7 @@ def export_batch_results(root, config, output_root=None):
                "execution_status": job_states.get(unit["unit_id"], unit)["status"],
                "effort_comparison_eligible": not job_states.get(unit["unit_id"], {}).get("unsupported_effort", False),
                "episode_wall_s": None, "generator_known_reference_usd": None,
+               "harbor_trial_count": 0, "attempts_wall_s": None,
                "teacher_known_reference_usd": None, "reference_cost_usd": None,
                "supplier_billed_usd": None, "router_compute_cost_usd": None,
                "environment_cost_usd": None, "complete_cost_usd": None,
@@ -448,10 +449,10 @@ def export_batch_results(root, config, output_root=None):
             episodes.append(row)
             continue
         trials = rows(private / "official_trials.jsonl")
-        trial = trials[-1] if trials else {}
+        trial = max(trials, key=lambda r: r["finished_at"]) if trials else {}
         error = trial.get("error") or {}
         events = rows(private / "events.jsonl")
-        requests = provider_requests(trial, events)
+        requests = [request for attempt in trials for request in provider_requests(attempt, events)]
         generator = [r for r in requests if r["role"] == "generator"]
         teacher = [r for r in requests if r["role"] == "teacher"]
         routing = [e for e in events if e["event"] == "ROUTER_END"]
@@ -462,6 +463,9 @@ def export_batch_results(root, config, output_root=None):
             values = [r.get(field) for r in group]
             return sum(values) if all(v is not None for v in values) else None
         row.update(trial_id=trial.get("trial_id"), reward=trial.get("reward"),
+                   harbor_trial_count=len(trials),
+                   attempts_wall_s=sum(t["duration_sec"] for t in trials),
+                   previous_attempts=[{**{k: t.get(k) for k in ("trial_id", "job_name", "trial_dir", "status", "reward", "started_at", "finished_at", "duration_sec", "phase_wall_s")}, "error_type": (t.get("error") or {}).get("exception_type")} for t in trials if t is not trial],
                    official_status=trial.get("status"), error_type=error.get("exception_type"),
                    failed_provider_http_status=next((r.get("http_status") for r in requests if r.get("event") in ("ERROR", "TEACHER_ERROR") and r.get("http_status")), None),
                    verifier_path=trial.get("verifier_path"), episode_wall_s=trial.get("duration_sec"),
@@ -524,6 +528,7 @@ def export_batch_results(root, config, output_root=None):
             unavailable = sum(r["execution_status"] == "UNAVAILABLE_PROVIDER_EFFORT" for r in group)
             grouped.append({"strategy_id": strategy, "subset": subset, "tasks": n,
                             "attempted": len(finished), "reward_1": one, "reward_0": zero,
+                            "harbor_trial_count": sum(r["harbor_trial_count"] for r in group),
                             "no_official_reward": sum(r["reward"] is None for r in finished),
                             "running": running, "not_started": n - len(finished) - running - unavailable,
                             "unavailable": unavailable, "effort_mismatch_completed": sum(not r["effort_comparison_eligible"] for r in finished),
@@ -534,7 +539,7 @@ def export_batch_results(root, config, output_root=None):
                             "teacher_known_reference_usd": measured_sum(group, "teacher_known_reference_usd"),
                             **{field: measured_sum(group, field) for field in ("generator_requests", "teacher_requests", "prompt_tokens", "completion_tokens", "reasoning_tokens", "known_cache_read_tokens", "cache_read_unknown_records", "unknown_provider_cost_requests", "router_wall_s", "router_cpu_time_sec", "router_gpu_wait_s", "teacher_wall_s", "logical_model_changes", "endpoint_changes")},
                             "complete_cost_usd": None, "supplier_billed_usd": None,
-                            "episode_total_wall_s": measured_sum(group, "episode_wall_s"),
+                            "episode_total_wall_s": measured_sum(group, "attempts_wall_s"),
                             "episode_p50_s": percentile([r["episode_wall_s"] for r in group], .5),
                             "episode_p95_s": percentile([r["episode_wall_s"] for r in group], .95)})
     comparisons = []
@@ -557,11 +562,12 @@ def export_batch_results(root, config, output_root=None):
     write_csv("cost_breakdown.csv", [{k: r[k] for k in ("task_id", "strategy_id", "seed", "generator_known_reference_usd", "teacher_known_reference_usd", "reference_cost_usd", "supplier_billed_usd", "router_compute_cost_usd", "environment_cost_usd", "complete_cost_usd")} for r in episodes])
     write_atomic(metrics / "comparisons.json", comparisons)
     totals = {field: sum(r[field] for r in grouped if r["subset"] == "all")
-              for field in ("tasks", "attempted", "reward_1", "reward_0", "no_official_reward", "running", "not_started", "unavailable")}
+              for field in ("tasks", "attempted", "harbor_trial_count", "reward_1", "reward_0", "no_official_reward", "running", "not_started", "unavailable")}
     fixed_count = sum(s["stage"] == "fixed" for s in strategies.values())
     report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
               "**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**\n",
               f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。已结束位置中，精确档位有效Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}。\n",
+              f"已保存原Harbor Trial {totals['harbor_trial_count']}次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。\n",
               f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{sum(r['attempted_strategies'] >= fixed_count for r in task_rows)}题已结束全部{fixed_count}个固定/简单策略；{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。批次先执行固定阶段，再执行Router阶段。\n",
               "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。档位不符的官方结果保留在逐Episode表，单独排除于精确档位主比较。通过率分母仅为该策略已取得的有效官方评分任务，89题全量结果尚在执行。\n",
               "| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
