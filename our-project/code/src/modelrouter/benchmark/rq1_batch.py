@@ -180,7 +180,8 @@ def main(argv=None):
                         unavailable[record["strategy_id"]] = record["unit_id"]
                     iterations.append(root / "jobs.jsonl", record)
                     print(json.dumps(record, ensure_ascii=False), flush=True)
-                    export_batch_results(root, config)
+                    if not record.get("reused"):
+                        export_batch_results(root, config)
     finally:
         if worker is not None:
             worker.terminate()
