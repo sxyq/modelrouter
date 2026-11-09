@@ -8,6 +8,15 @@
 
 运行期间收集沿原`modelrouter.benchmark rq1 … --collect-only --export-dir <临时公开目录>`：从原私有Harbor记录派生结果，公开输出独立于活跃父进程写入；传回本批目录后删除该临时目录。未指定`--export-dir`时保留原输出位置。
 
+固定批次等待沿同一入口的`--watch-pids <原Router父PID> <原恢复父PID> --watch-interval 1200`：立即收集一次，此后每20分钟收集一次；两父进程均退出后收集末次并退出。等待使用异步计时，独立临时公开目录复用到底，不创建新Episode、模型worker或定时服务。原批次并发、断点继续和官方执行链不变。
+
+```bash
+LITELLM_LOCAL_MODEL_COST_MAP=true .runtime/benchmark-venv/bin/python -m modelrouter.benchmark rq1 \
+  our-project/experiments/configs/rq1_terminal_bench_2_0.json \
+  --source-revision cb4371da0635d9d550314b6703af4cbe87f0b714 \
+  --watch-pids 3851142 3966929 --watch-interval 1200
+```
+
 沿同一入口的`--recover-infrastructure`补充一次恢复尝试：仅选代理连接被拒绝，或已准备镜像的`hf-model-inference`及`custom-memory-heap-crash`环境启动超时，以及后者已记录的Docker匿名认证EOF；此前须没有成功生成、教师响应或工具结果。两镜像的实际准备结果见当前批次`metrics/resource_observations.json`。固定阶段已结束，Router等待共享GPU时先推进不占GPU的固定策略恢复；恢复过程用`--export-dir`写入临时公开目录，避免与原Router批次同时写同一报告。原Job和Trial留在原目录，新Job使用`--infrastructure-recovery-1`后缀；已有恢复尝试的位置不再次选入。终局采用最后结束的Trial，费用与墙钟累计所有尝试。
 
 最新公开快照：915位置结束，1049次Harbor Trial，141个Reward 1、185个0、589个缺Reward；6个运行、592个未开始。已结束位置中，已知模型参考费$9.85619630、教师$0.02824674，合计$9.88444304；339请求费用未知。已报告缓存读取57,824,448 Token，Harbor命令累计墙钟366,406.344424秒，内含官方Trial累计357,505.056295秒；差值8,901.288129秒为CLI启动、退出与等待。两项均为并发尝试时长之和，官方Trial时间已含在命令时间内。供应商实收、Router、工具、CPU/GPU及VM美元价未知。

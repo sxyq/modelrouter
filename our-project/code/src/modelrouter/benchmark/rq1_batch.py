@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from copy import deepcopy
 from dataclasses import asdict
@@ -11,6 +12,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 import tomllib
 
 from . import iterations
@@ -127,12 +129,29 @@ def main(argv=None):
     parser.add_argument("--source-revision", required=True)
     parser.add_argument("--collect-only", action="store_true")
     parser.add_argument("--export-dir", type=Path, help="Public output directory")
+    parser.add_argument("--watch-pids", type=int, nargs="+", help="Observe these existing batch processes without launching episodes")
+    parser.add_argument("--watch-interval", type=int, default=1200, help="Seconds between batch snapshots; default 20 minutes")
     parser.add_argument("--recover-infrastructure", action="store_true", help="One explicit attempt after the recorded proxy or image preparation failure")
     args = parser.parse_args(argv)
     root, config = prepare(args.config, args.source_revision)
     config["router_socket"] = str(iterations.ROOT / ".runtime" / (config["run_id"] + "-router.sock"))
     units = json.loads((root / "manifest.json").read_text())["units"]
     from .rq1_analysis import export_batch_results
+    if args.watch_pids:
+        destination = args.export_dir or Path(tempfile.mkdtemp(prefix="rq1-watch-export.", dir=iterations.ROOT / ".runtime"))
+        async def watch():
+            while True:
+                result = export_batch_results(root, config, destination)
+                groups = [r for r in result["strategies"] if r["subset"] == "all"]
+                live = [pid for pid in args.watch_pids if Path(f"/proc/{pid}").exists()]
+                fields = ("tasks", "attempted", "harbor_trial_count", "reward_1", "reward_0", "no_official_reward", "running", "not_started")
+                print(json.dumps({"observed_at": iterations.now(), "controllers_running": live,
+                                  "export_dir": str(destination), "interval_sec": args.watch_interval,
+                                  **{field: sum(r[field] for r in groups) for field in fields}}, ensure_ascii=False), flush=True)
+                if not live:
+                    return 0
+                await asyncio.sleep(args.watch_interval)
+        return asyncio.run(watch())
     if args.collect_only:
         export_batch_results(root, config, args.export_dir)
         return 0
