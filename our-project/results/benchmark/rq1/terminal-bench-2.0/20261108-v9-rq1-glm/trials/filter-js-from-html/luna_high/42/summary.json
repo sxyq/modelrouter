@@ -28,60 +28,284 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "RuntimeError",
-  "execution_status": "FINISHED",
+  "error_type": "VerifierTimeoutError",
+  "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 3.536186,
-  "generator_known_reference_usd": 0,
-  "harbor_trial_count": 1,
-  "attempts_wall_s": 3.536186,
-  "harness_command_wall_s": 8.544852396473289,
+  "episode_wall_s": 1133.877934,
+  "generator_known_reference_usd": 0.00374256,
+  "harbor_trial_count": 2,
+  "attempts_wall_s": 1137.4141200000001,
+  "harness_command_wall_s": 1147.7913983482867,
   "teacher_known_reference_usd": 0,
-  "reference_cost_usd": 0,
-  "supplier_billed_usd": 0,
+  "reference_cost_usd": 0.00374256,
+  "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
   "environment_cost_usd": null,
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/filter-js-from-html/luna_high/42",
-  "trial_id": "1f95d7d1-008d-43fe-9411-af2050ba1718",
-  "outside_harbor_wall_s": 5.008666396473289,
-  "previous_attempts": [],
+  "trial_id": "7383f8b0-c3a1-4047-a8e2-bf2384ffc5c7",
+  "outside_harbor_wall_s": 10.377278348286609,
+  "previous_attempts": [
+    {
+      "trial_id": "1f95d7d1-008d-43fe-9411-af2050ba1718",
+      "job_name": "filter-js-from-html--luna_high--s42",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/filter-js-from-html/luna_high/42/jobs/filter-js-from-html--luna_high--s42/filter-js-from-html__EDCm7Wh",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-09T06:45:13.462676Z",
+      "finished_at": "2026-11-09T06:45:16.998862Z",
+      "duration_sec": 3.536186,
+      "phase_wall_s": {
+        "environment_setup": 0.901254,
+        "agent_setup": null,
+        "agent_execution": null,
+        "verifier": null
+      },
+      "error_type": "RuntimeError"
+    }
+  ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
   "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 0.901254,
-    "agent_setup": null,
-    "agent_execution": null,
-    "verifier": null
+    "environment_setup": 15.369918,
+    "agent_setup": 0.000172,
+    "agent_execution": 145.985049,
+    "verifier": 900.090837
   },
-  "generator_requests": 0,
+  "generator_requests": 6,
   "teacher_requests": 0,
   "started_tool_calls": 0,
-  "completed_tool_calls": 0,
+  "completed_tool_calls": 5,
   "unknown_provider_cost_requests": 0,
-  "prompt_tokens": 0,
-  "completion_tokens": 0,
-  "reasoning_tokens": 0,
-  "reported_cache_read_tokens": 0,
-  "known_cache_read_tokens": 0,
+  "prompt_tokens": 24646,
+  "completion_tokens": 4906,
+  "reasoning_tokens": 1198,
+  "reported_cache_read_tokens": 13056,
+  "known_cache_read_tokens": 13056,
   "cache_read_unknown_records": 0,
   "reported_cache_write_tokens": 0,
   "cache_write_unknown_records": 0,
-  "router_wall_s": 0.0,
+  "router_wall_s": 0.001404670998454094,
   "router_cpu_time_sec": 0,
   "router_gpu_wait_s": 0.0,
   "router_transfer_s": 0.0,
   "teacher_wall_s": 0.0,
-  "generator_wall_s": 0.0,
-  "selected_actions": [],
-  "request_return_identities": [],
+  "generator_wall_s": 129.16221995279193,
+  "selected_actions": [
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    }
+  ],
+  "request_return_identities": [
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "requested_native_effort": "high",
+      "returned_native_effort": "high",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "high"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "luna-codegoai",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "requested_native_effort": "high",
+      "returned_native_effort": "high",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "high"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "luna-codegoai",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "requested_native_effort": "high",
+      "returned_native_effort": "high",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "high"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "luna-codegoai",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "requested_native_effort": "high",
+      "returned_native_effort": "high",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "high"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "luna-codegoai",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "requested_native_effort": "high",
+      "returned_native_effort": "high",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "high"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "luna-codegoai",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": "gpt-6-luna",
+      "requested_native_effort": "high",
+      "returned_native_effort": "high",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "high"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "luna-codegoai",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    }
+  ],
   "logical_model_changes": 0,
   "endpoint_changes": 0,
   "prefix_continuity_counts": {
-    "FIRST_REQUEST": 0,
-    "EXACT_PREVIOUS_MESSAGES": 0,
+    "FIRST_REQUEST": 1,
+    "EXACT_PREVIOUS_MESSAGES": 5,
     "PREFIX_CHANGED": 0
   },
   "router_truncated_decisions": 0,
