@@ -19,7 +19,7 @@ LITELLM_LOCAL_MODEL_COST_MAP=true .runtime/benchmark-venv/bin/python -m modelrou
 
 沿同一入口的`--recover-infrastructure`补充一次恢复尝试：仅选代理连接被拒绝，或已准备镜像的`hf-model-inference`及`custom-memory-heap-crash`环境启动超时，以及后者已记录的Docker匿名认证EOF；此前须没有成功生成、教师响应或工具结果。两镜像的实际准备结果见当前批次`metrics/resource_observations.json`。固定阶段已结束，Router等待共享GPU时先推进不占GPU的固定策略恢复；恢复过程用`--export-dir`写入临时公开目录，避免与原Router批次同时写同一报告。原Job和Trial留在原目录，新Job使用`--infrastructure-recovery-1`后缀；已有恢复尝试的位置不再次选入。终局采用最后结束的Trial，费用与墙钟累计所有尝试。
 
-最新公开快照（2026-11-09T17:08:03Z）：922位置结束，1076次Harbor Trial，143个Reward 1、195个0、584个缺Reward；6个运行、585个未开始。已结束位置中，已知模型参考费$10.43016651、教师$0.03035734，合计$10.46052385；348请求费用未知。已报告缓存读取59,804,224 Token，Harbor命令累计墙钟386,377.680838秒，内含官方Trial累计377,340.189037秒；差值9,037.491801秒为CLI启动、退出与等待。两项均为并发尝试时长之和，官方Trial时间已含在命令时间内。供应商实收、Router、工具、CPU/GPU及VM美元价未知。
+最新公开快照（2026-11-09T17:28:18Z）：925位置结束，1084次Harbor Trial，149个Reward 1、196个0、580个缺Reward；6个运行、582个未开始。已结束位置中，已知模型参考费$10.66158272、教师$0.03104774，合计$10.69263046；350请求费用未知。已报告缓存读取60,379,072 Token，Harbor命令累计墙钟390,917.339284秒，内含官方Trial累计381,837.359957秒；差值9,079.979327秒为CLI启动、退出与等待。两项均为并发尝试时长之和，官方Trial时间已含在命令时间内。供应商实收、Router、工具、CPU/GPU及VM美元价未知。
 
 官方`fix-git`原始Laya OFF已通过，298.091351秒，实际生成使用Terra High。原始Laya ON、训练Laya OFF/ON三臂的GLM High请求均HTTP 502，没有Reward或Usage；原错误仅为`Bad Gateway`，未保存上游响应正文，渠道内部原因缺失，实际费用未知。三个失败保持原记录，不转为零分，不作为档位不受支持的事实。
 
