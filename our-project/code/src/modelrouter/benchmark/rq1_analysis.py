@@ -6,7 +6,7 @@ from __future__ import annotations
 import csv
 import json
 import math
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 from modelrouter.providers.usage import known_request_cost, request_decision_id
@@ -540,6 +540,7 @@ def export_batch_results(root, config, output_root=None):
                             "teacher_known_reference_usd": measured_sum(group, "teacher_known_reference_usd"),
                             **{field: measured_sum(group, field) for field in ("generator_requests", "teacher_requests", "prompt_tokens", "completion_tokens", "reasoning_tokens", "known_cache_read_tokens", "cache_read_unknown_records", "unknown_provider_cost_requests", "router_wall_s", "router_cpu_time_sec", "router_gpu_wait_s", "teacher_wall_s", "logical_model_changes", "endpoint_changes")},
                             "complete_cost_usd": None, "supplier_billed_usd": None,
+                            "selected_action_counts": dict(Counter(action["action_id"] for row in group for action in row.get("selected_actions", []))),
                             "episode_total_wall_s": measured_sum(group, "attempts_wall_s"),
                             "episode_p50_s": percentile([r["episode_wall_s"] for r in group], .5),
                             "episode_p95_s": percentile([r["episode_wall_s"] for r in group], .95)})

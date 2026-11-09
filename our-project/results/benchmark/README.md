@@ -16,6 +16,8 @@
 
 当前同题有效评分比较：Luna High/Max共24对，High通过13、Max8；20对请求费齐全，High合计$0.26122394、Max$0.33549668。Kev无教师原始/训练共3对，双方均零分；请求费分别$0.01126084/$0.34524960。这些结果随剩余预定任务连续增加，权重不随正式结果改变。
 
+首批全部17策略已结束的8题中，合并各权重Teacher OFF/ON的实际路由决策：原始Laya选择GLM/Luna/Terra各66/10/26次，训练Laya各72/7/19次，均为High。原始Kev的108次均为Luna Low；训练Kev的185次均为Terra，其中152 Max、24 Low、4 Medium、4 None、1 High。当前Kev表现为单模型集中选择；15个合法登记动作的存在不能解释为15种动作均已实际选用。逐决策原记录保存在本批`trials/*/*/42/events.jsonl`和`metrics/per_episode.csv`，汇总字段为`selected_action_counts`。
+
 ## 历史Terminal-Bench 2.1.0
 
 统计截至2026-11-08，使用本地保存的原Harbor记录，不新增运行。Benchmark为 **Terminal-Bench 2.1.0，共89题**，上游版本 `7131e4375048a0e408a8fb404b5f499d726b695b`。任务清单见[原manifest](../../../router_data/terminal_bench_manifest.json)，逐次原结果保留在[iterations](../iterations/)。
