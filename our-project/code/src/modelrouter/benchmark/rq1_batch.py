@@ -146,7 +146,10 @@ def main(argv=None):
             trial = max(trials, key=lambda r: r["finished_at"])
             error = trial.get("error") or {}
             restored_proxy = "connection refused" in error.get("exception_message", "").lower()
-            prepared_image = unit["task_id"] == "hf-model-inference" and error.get("exception_type") == "EnvironmentStartTimeoutError"
+            prepared_image = unit["task_id"] in ("hf-model-inference", "custom-memory-heap-crash") and error.get("exception_type") == "EnvironmentStartTimeoutError"
+            prepared_image |= (unit["task_id"] == "custom-memory-heap-crash" and error.get("exception_type") == "RuntimeError"
+                               and "failed to fetch anonymous token" in error.get("exception_message", "")
+                               and "EOF" in error.get("exception_message", ""))
             events = iterations.rows(path / "events.jsonl")
             attempted_recovery = any(u["job_name"].endswith("--infrastructure-recovery-1") for u in json.loads((path / "resume_state.json").read_text())["units"])
             if (restored_proxy or prepared_image) and trial.get("reward") is None and not attempted_recovery and not any(e["event"] in ("GENERATOR_END", "TEACHER_END", "TOOL_END") for e in events):
