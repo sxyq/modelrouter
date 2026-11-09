@@ -10,6 +10,12 @@
 
 沿同一入口的`--recover-infrastructure`补充一次恢复尝试：仅选代理连接被拒绝，或已准备镜像的`hf-model-inference`及`custom-memory-heap-crash`环境启动超时，以及后者已记录的Docker匿名认证EOF；此前须没有成功生成、教师响应或工具结果。两镜像的实际准备结果见当前批次`metrics/resource_observations.json`。固定阶段已结束，Router等待共享GPU时先推进不占GPU的固定策略恢复；恢复过程用`--export-dir`写入临时公开目录，避免与原Router批次同时写同一报告。原Job和Trial留在原目录，新Job使用`--infrastructure-recovery-1`后缀；已有恢复尝试的位置不再次选入。终局采用最后结束的Trial，费用与墙钟累计所有尝试。
 
+11-09 19:24台北公开快照：860位置结束，892次Harbor Trial，92个Reward 1、137个0、631个缺Reward；6个运行、647个未开始。已知模型参考费$7.21169706、教师$0.01227568，合计$7.22397274；284请求费用未知。已报告缓存读取50,019,136 Token，全部尝试墙钟合计255,583.046684秒；后者是并发Episode时长之和。供应商实收、Router、工具、CPU/GPU及VM美元价未知。
+
+新增完整任务结果：原始Kev Teacher ON通过`cobol-modernization`，11生成、3教师请求、5次教师短评消费、14工具结果、825.191309秒；模型$0.01084208、教师$0.00151440，无未知请求费、无输入截断。对应OFF没有官方Reward，教师收益暂缺该题成对结果。恢复后的HF任务GLM Low、Luna High、Terra High通过；全部原环境失败计入累计尝试时长。
+
+当前同题有效评分比较：Luna High/Max共23对，High通过12、Max7；20对请求费齐全，High合计$0.26122394、Max$0.33549668。Kev无教师原始/训练共3对，双方均零分；请求费分别$0.01126084/$0.34524960。这些结果随剩余预定任务连续增加，权重不随正式结果改变。
+
 ## 历史Terminal-Bench 2.1.0
 
 统计截至2026-11-08，使用本地保存的原Harbor记录，不新增运行。Benchmark为 **Terminal-Bench 2.1.0，共89题**，上游版本 `7131e4375048a0e408a8fb404b5f499d726b695b`。任务清单见[原manifest](../../../router_data/terminal_bench_manifest.json)，逐次原结果保留在[iterations](../iterations/)。
