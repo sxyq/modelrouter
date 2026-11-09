@@ -235,5 +235,38 @@
     },
     "resource_billing_usd": null,
     "episode_apportionment": "NOT_MEASURED; image preparation overlaps recorded episodes"
+  },
+  {
+    "observed_at": "2026-11-09T07:05:42+00:00",
+    "network_interruption": {
+      "component": "TEMPORARY_MAC_TO_A6000_REVERSE_PROXY",
+      "remote_port": 17898,
+      "observed_exit": "SSH_EXIT_255_SERVER_NOT_RESPONDING",
+      "proxy_failure_records": 269,
+      "record_count_scope": "ORIGINAL_TRIALS_FINISHED_AFTER_06_36_57Z_REPORTING_CONNECTION_REFUSED",
+      "first_affected_trial_started_at": "2026-11-09T06:43:33.156842Z",
+      "first_affected_trial_finished_at": "2026-11-09T06:43:36.361714Z",
+      "last_observed_affected_trial_finished_at": "2026-11-09T06:55:08.641169Z",
+      "restored_registry_response_at": "2026-11-09T07:05:42Z",
+      "restored_registry_http_status": 401,
+      "registry_response": "EXPECTED_UNAUTHENTICATED_DOCKER_REGISTRY_RESPONSE",
+      "original_evidence_retained": true,
+      "task_protocol_changed": false
+    },
+    "batch_continuation": {
+      "previous_parent_pid": 2748418,
+      "previous_parent_exit_code": null,
+      "previous_parent_exit_cause": "NOT_CAPTURED",
+      "ended_fixed_positions_before_continuation": 801,
+      "reused_fixed_positions": 801,
+      "wrapper_pid": 3851141,
+      "parent_pid": 3851142,
+      "native_router_worker_pid": 3851219,
+      "stdout_stderr": "ORIGINAL_BATCH_PRIVATE_BATCH_LOG_APPEND",
+      "router_concurrency": 2,
+      "first_router_task": "modernize-scientific-stack",
+      "first_router_strategies": ["laya_original_off", "laya_original_on"]
+    },
+    "resource_billing_usd": null
   }
 ]
