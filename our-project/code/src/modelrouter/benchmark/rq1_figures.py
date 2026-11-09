@@ -6,6 +6,7 @@ from pathlib import Path
 
 def render_batch_figures(root):
     import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
     root = Path(root)
     episodes = list(csv.DictReader((root / "metrics/per_episode.csv").open()))
     strategies = json.loads((root / "config.json").read_text())["strategies"]
@@ -26,6 +27,7 @@ def render_batch_figures(root):
         if len(scored) < 15:
             ax.annotate(strategy, (float(row["reference_cost_usd"]), float(row["reward"])), xytext=(0, 8 + i % 3 * 10), textcoords="offset points", fontsize=7, ha="center")
     ax.set(xlabel="Recorded model + teacher reference fee / episode (USD)", ylabel="Official task Reward", yticks=[0, 1], ylim=(-.2, 1.4), title=f"Terminal-Bench 2.0: {len(scored)} scored episodes with known request fees")
+    ax.legend(handles=[Line2D([], [], color=color, marker="o", linestyle="", label=name.upper()) for name, color in colors.items()], ncol=3, fontsize=8, loc="center right")
     fig.supxlabel("Each point is one complete episode; supplier billing and resource USD are unknown.", fontsize=8)
     save(fig, "success_cost_frontier")
 
@@ -57,6 +59,7 @@ def render_batch_figures(root):
     ax.axhline(0, color="#999999", linewidth=.6)
     ax.axvline(0, color="#999999", linewidth=.6)
     ax.set(xlabel="ON − OFF model + teacher reference fee (USD)", ylabel="ON − OFF official Reward", yticks=[-1, 0, 1], ylim=(-1.3, 1.3), title=f"Same task / seed / weight teacher comparison: {pairs} pairs")
+    ax.legend(handles=[Line2D([], [], color=colors[family], marker="s" if version == "original" else "o", linestyle="", label=f"{family.title()} {version}") for family in ("laya", "kev") for version in ("original", "trained")], fontsize=8, loc="upper left")
     fig.supxlabel("Each point is one task pair; complete cash net benefit remains unknown.", fontsize=8)
     save(fig, "teacher_effect")
 
