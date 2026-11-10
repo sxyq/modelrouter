@@ -565,6 +565,8 @@ def export_batch_results(root, config, output_root=None):
                             "left_reward_1": sum(x["reward"] == 1 for x, y in paired),
                             "right_reward_1": sum(y["reward"] == 1 for x, y in paired),
                             "reference_known_pairs": len(cost_pairs),
+                            "left_reward_1_reference_known_pairs": sum(x["reward"] == 1 for x, y in cost_pairs),
+                            "right_reward_1_reference_known_pairs": sum(y["reward"] == 1 for x, y in cost_pairs),
                             "left_reference_known_pairs_usd": sum(x["reference_cost_usd"] for x, y in cost_pairs) if cost_pairs else None,
                             "right_reference_known_pairs_usd": sum(y["reference_cost_usd"] for x, y in cost_pairs) if cost_pairs else None,
                             "reward_delta_sum": sum(y["reward"] - x["reward"] for x, y in paired),
@@ -628,13 +630,13 @@ def export_batch_results(root, config, output_root=None):
         report.append(f"| {error} | {sum(r['reward'] == 1 for r in group)} | {sum(r['reward'] == 0 for r in group)} | {sum(r['reward'] is None for r in group)} |")
     report += ["\n## 同题训练与教师对照\n",
                "评分对只包含两侧均有官方Reward的同题同seed；费用对是其中两侧请求参考费均齐全的子集。通过数差异与费用差异分别按对应集合报告。\n",
-               "| 因素 | 左侧 → 右侧 | 评分对 | 通过数左/右 | 费用齐全对 | 参考费左/右USD |",
-               "|---|---|---:|---:|---:|---|"]
+               "| 因素 | 左侧 → 右侧 | 评分对 | 通过数左/右 | 费用齐全对 | 费用对通过数左/右 | 参考费左/右USD |",
+               "|---|---|---:|---:|---:|---:|---|"]
     for r in comparisons:
         if r["factor"] in ("training", "teacher"):
             costs = ["UNKNOWN" if r[key] is None else f"{r[key]:.8f}"
                      for key in ("left_reference_known_pairs_usd", "right_reference_known_pairs_usd")]
-            report.append(f"| {r['factor']} | {r['left']} → {r['right']} | {r['scored_pairs']} | {r['left_reward_1']}/{r['right_reward_1']} | {r['reference_known_pairs']} | {' / '.join(costs)} |")
+            report.append(f"| {r['factor']} | {r['left']} → {r['right']} | {r['scored_pairs']} | {r['left_reward_1']}/{r['right_reward_1']} | {r['reference_known_pairs']} | {r['left_reward_1_reference_known_pairs']}/{r['right_reward_1_reference_known_pairs']} | {' / '.join(costs)} |")
     report += ["\n## 实际Router动作\n", "以下是已记录的Model×Native Effort选择次数；教师短评输入Router，不直接写入执行模型消息。\n"]
     for r in all_groups:
         if strategies[r["strategy_id"]]["stage"] == "router":
