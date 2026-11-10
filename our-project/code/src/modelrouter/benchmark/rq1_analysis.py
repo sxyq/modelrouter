@@ -606,9 +606,18 @@ def export_batch_results(root, config, output_root=None):
     cache_tokens = measured_sum(all_groups, "known_cache_read_tokens")
     cache_label = "UNKNOWN" if cache_tokens is None else f"{cache_tokens:,}"
     report += ["\n评分覆盖是已取得有效官方评分的任务数/89；通过率区间把其余位置分别按全部未通过或全部通过计算。\n",
-               f"Provider实际报告缓存读取{cache_label} Token；跨模型物理KV共享未知。\n"]
+               f"Provider实际报告缓存读取{cache_label} Token；{sum(r['cache_read_unknown_records'] or 0 for r in all_groups)}次请求未报告缓存读取；跨模型物理KV共享未知。\n",
+               f"教师请求{sum(r['teacher_requests'] or 0 for r in all_groups)}次，短评实际输入Router {sum(r.get('teacher_consumed_decisions', 0) for r in episodes)}次；同一短评可由多次决策消费。\n"]
     truncated = [r for r in episodes if r.get("router_truncated_decisions")]
     report.append(f"已记录Router输入截断{sum(r['router_truncated_decisions'] for r in truncated)}次，涉及{len(truncated)}个位置；原输入及官方结果保留在逐Episode表。\n")
+    report += ["\n## Episode结束事件\n",
+               "按每个位置最后结束的原Harbor Trial记录；超时且取得Reward的两项事实同时保留。\n",
+               "| 原异常类型 | Reward1 | Reward0 | 缺Reward |",
+               "|---|---:|---:|---:|"]
+    ended = [r for r in episodes if r.get("episode_wall_s") is not None]
+    for error in sorted({r.get("error_type") or "NO_RECORDED_ERROR" for r in ended}):
+        group = [r for r in ended if (r.get("error_type") or "NO_RECORDED_ERROR") == error]
+        report.append(f"| {error} | {sum(r['reward'] == 1 for r in group)} | {sum(r['reward'] == 0 for r in group)} | {sum(r['reward'] is None for r in group)} |")
     report += ["\n## 同题训练与教师对照\n",
                "评分对只包含两侧均有官方Reward的同题同seed；费用对是其中两侧请求参考费均齐全的子集。通过数差异与费用差异分别按对应集合报告。\n",
                "| 因素 | 左侧 → 右侧 | 评分对 | 通过数左/右 | 费用齐全对 | 参考费左/右USD |",
