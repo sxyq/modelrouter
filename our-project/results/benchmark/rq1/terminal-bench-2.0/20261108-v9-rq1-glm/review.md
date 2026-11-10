@@ -4,6 +4,8 @@
 
 **Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
+快照截至2026-11-10T05:01:05Z（台北13:01）。等待与原控制SSH会话随后断开；19:04台北记录的直接SSH超时，现有A6000代理节点拒绝22端口（`administratively prohibited`），ModelRouter HTTP健康接口仍200。下列运行数为断连前快照，远端当前进程及后续任务状态未知；接续见[原执行入口](../../../../iterations/20261107-v9-full-method/next_execution.md)。
+
 共1513个任务/策略/seed位置；已结束1137，运行中6，未开始370，渠道档位不可用0。已结束位置中，无已报告档位冲突的官方Reward 1/0为231/291，无官方Reward 615。
 
 已保存原Harbor Trial 1501次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。
