@@ -16,6 +16,7 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 - large-scale-text-editing与sanitize-git-repo已完成事前独立评价，现在均为已观察任务；sanitize Laya原始/训练1/0、修复后Kev0/0，text五有效终局全0、三项无Reward。git-multibranch是已暴露开发题，JSON/GPU T/M/H、教师和粒度对照已结束；原训练Laya终局Verifier超时，晚到reward不改原结果。
 - 49尝试全部结束，33有效终局/21个1/12个0、16无Reward；68成功教师，模型+教师已知参考$1.45700272，完整费用未知。[详细成果](../20261108-v9-k3-training/review.md)和49条结果为下一批起点，不重发已保存Episode。
 - 241真实前缀Laya截断48→0、最长8173/8192，AA分数及来源保持；四实体同前缀CUDA原生前向成功。原49 Episode保持当时编码，不称为修复后T/M/H效果。下一批Train/Prepare与在线均使用唯一收敛后的Serializer。
+- 正式2.0的21:21快照发现两次Laya H部分截断：build-cython-ext训练版教师关闭丢161 Token，count-dataset-tokens原始版教师开启丢805 Token，两项均缺Reward。原生state_room同时计入问题/候选头与状态Token，固定字符预算不能使这两个真实输入完整进入8192窗口。当前批次不改变编码；本批收尾后沿原Serializer处理实际长度预算，保存原版本及原失败，不重跑此前241前缀或将已观察任务用于挑权重。
 - polyglot已观察，Luna Low/High=0/1、Terra Low/High=0/0。query-optimize三臂进入原业务评价后在1800秒处超时，无Reward；不作模型质量零分、不重发已保存模型轨迹。
 
 ## 第一：完成正在运行的正式2.0 RQ1

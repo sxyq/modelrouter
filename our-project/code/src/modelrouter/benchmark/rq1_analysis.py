@@ -594,13 +594,21 @@ def export_batch_results(root, config, output_root=None):
               f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{sum(r['ended_fixed_strategies'] == fixed_count for r in task_rows)}题已结束全部{fixed_count}个固定/简单策略；{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。批次先执行固定阶段，再执行Router阶段。\n",
               "GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。\n",
               "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。已报告档位冲突的官方结果保留在逐Episode表，并从按请求档位主比较中另列。通过率分母仅为该策略已取得的有效官方评分任务。\n",
-              "| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
-              "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+              "| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 评分覆盖 | 89题通过率区间 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
+              "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for r in grouped:
         if r["subset"] == "all":
             cost = "UNKNOWN" if r["generator_known_reference_usd"] is None else f"{r['generator_known_reference_usd'] + (r['teacher_known_reference_usd'] or 0):.8f}"
             rate = "未评分" if r["scored_pass_rate"] is None else f"{r['reward_1']}/{r['reward_1'] + r['reward_0']} = {r['scored_pass_rate']:.2%}"
-            report.append(f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {rate} | {r['no_official_reward']} | {r['running']} | {r['not_started']} | {r['unavailable']} | {cost} |")
+            coverage = f"{r['reward_1'] + r['reward_0']}/{r['tasks']}"
+            interval = f"{r['benchmark_success_lower']:.2%}—{r['benchmark_success_upper']:.2%}"
+            report.append(f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {rate} | {coverage} | {interval} | {r['no_official_reward']} | {r['running']} | {r['not_started']} | {r['unavailable']} | {cost} |")
+    cache_tokens = measured_sum(all_groups, "known_cache_read_tokens")
+    cache_label = "UNKNOWN" if cache_tokens is None else f"{cache_tokens:,}"
+    report += ["\n评分覆盖是已取得有效官方评分的任务数/89；通过率区间把其余位置分别按全部未通过或全部通过计算。\n",
+               f"Provider实际报告缓存读取{cache_label} Token；跨模型物理KV共享未知。\n"]
+    truncated = [r for r in episodes if r.get("router_truncated_decisions")]
+    report.append(f"已记录Router输入截断{sum(r['router_truncated_decisions'] for r in truncated)}次，涉及{len(truncated)}个位置；原输入及官方结果保留在逐Episode表。\n")
     report += ["\n## 同题训练与教师对照\n",
                "评分对只包含两侧均有官方Reward的同题同seed；费用对是其中两侧请求参考费均齐全的子集。通过数差异与费用差异分别按对应集合报告。\n",
                "| 因素 | 左侧 → 右侧 | 评分对 | 通过数左/右 | 费用齐全对 | 参考费左/右USD |",
