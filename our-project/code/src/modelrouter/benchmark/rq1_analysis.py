@@ -601,6 +601,19 @@ def export_batch_results(root, config, output_root=None):
             cost = "UNKNOWN" if r["generator_known_reference_usd"] is None else f"{r['generator_known_reference_usd'] + (r['teacher_known_reference_usd'] or 0):.8f}"
             rate = "未评分" if r["scored_pass_rate"] is None else f"{r['reward_1']}/{r['reward_1'] + r['reward_0']} = {r['scored_pass_rate']:.2%}"
             report.append(f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {rate} | {r['no_official_reward']} | {r['running']} | {r['not_started']} | {r['unavailable']} | {cost} |")
+    report += ["\n## 同题训练与教师对照\n",
+               "评分对只包含两侧均有官方Reward的同题同seed；费用对是其中两侧请求参考费均齐全的子集。通过数差异与费用差异分别按对应集合报告。\n",
+               "| 因素 | 左侧 → 右侧 | 评分对 | 通过数左/右 | 费用齐全对 | 参考费左/右USD |",
+               "|---|---|---:|---:|---:|---|"]
+    for r in comparisons:
+        if r["factor"] in ("training", "teacher"):
+            costs = ["UNKNOWN" if r[key] is None else f"{r[key]:.8f}"
+                     for key in ("left_reference_known_pairs_usd", "right_reference_known_pairs_usd")]
+            report.append(f"| {r['factor']} | {r['left']} → {r['right']} | {r['scored_pairs']} | {r['left_reward_1']}/{r['right_reward_1']} | {r['reference_known_pairs']} | {' / '.join(costs)} |")
+    report += ["\n## 实际Router动作\n", "以下是已记录的Model×Native Effort选择次数；教师短评输入Router，不直接写入执行模型消息。\n"]
+    for r in all_groups:
+        if strategies[r["strategy_id"]]["stage"] == "router":
+            report.append(f"- {r['strategy_id']}: `{json.dumps(r['selected_action_counts'], ensure_ascii=False)}`")
     (output_root / "review.md").write_text("\n".join(report) + "\n")
     return {"episodes": episodes, "strategies": grouped, "comparisons": comparisons}
 
