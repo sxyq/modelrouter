@@ -587,7 +587,7 @@ def export_batch_results(root, config, output_root=None):
     fixed_count = sum(s["stage"] == "fixed" for s in strategies.values())
     report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
               "**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**\n",
-              f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。已结束位置中，无已报告档位冲突的官方Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}。\n",
+              f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。固定组已报告档位不符另列后，官方Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}；Router组保留实际任务Reward及内部请求/返回档位差异。\n",
               f"已保存原Harbor Trial {totals['harbor_trial_count']}次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。\n",
               f"已知模型参考费${model_usd:.8f}、教师${teacher_usd:.8f}，合计${model_usd + teacher_usd:.8f}；{sum(r['unknown_provider_cost_requests'] or 0 for r in all_groups)}次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。\n",
               f"Harbor命令累计墙钟{sum(r['harness_total_wall_s'] or 0 for r in all_groups):.6f}秒，内含官方Trial累计{sum(r['episode_total_wall_s'] or 0 for r in all_groups):.6f}秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。\n",
@@ -610,6 +610,14 @@ def export_batch_results(root, config, output_root=None):
                f"教师请求{sum(r['teacher_requests'] or 0 for r in all_groups)}次，短评实际输入Router {sum(r.get('teacher_consumed_decisions', 0) for r in episodes)}次；同一短评可由多次决策消费。\n"]
     truncated = [r for r in episodes if r.get("router_truncated_decisions")]
     report.append(f"已记录Router输入截断{sum(r['router_truncated_decisions'] for r in truncated)}次，涉及{len(truncated)}个位置；原输入及官方结果保留在逐Episode表。\n")
+    mismatch = Counter((q.get("request_model_id"), q.get("requested_native_effort"), q.get("returned_native_effort"))
+                       for r in episodes for q in r.get("request_return_identities", [])
+                       if q.get("native_effort_status") == "PROVIDER_REPORTED_MISMATCH")
+    report += ["\n## 已报告Native Effort差异\n",
+               "以下保留实际请求与返回档位，不改请求标签；登记菜单不代表渠道逐档已经确认。\n",
+               "| 请求模型 | 请求Effort | 返回Effort | 请求次数 |", "|---|---|---|---:|"]
+    for (model, requested, returned), count in sorted(mismatch.items(), key=str):
+        report.append(f"| {model} | {requested} | {returned} | {count} |")
     report += ["\n## Episode结束事件\n",
                "按每个位置最后结束的原Harbor Trial记录；超时且取得Reward的两项事实同时保留。\n",
                "| 原异常类型 | Reward1 | Reward0 | 缺Reward |",
