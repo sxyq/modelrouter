@@ -19,16 +19,33 @@ def render_batch_figures(root):
             fig.savefig(destination / f"{name}.{extension}", dpi=300)
         plt.close(fig)
 
-    fig, ax = plt.subplots(figsize=(7.2, 4.2), layout="constrained")
-    scored = [r for r in ended if r["reward"] and r["reference_cost_usd"] and r["effort_comparison_eligible"] == "True"]
-    for i, row in enumerate(scored):
-        strategy = row["strategy_id"]
-        ax.scatter(float(row["reference_cost_usd"]), float(row["reward"]), color=colors[strategy.split("_")[0]], marker="o" if "_off" not in strategy else "s", alpha=.7)
-        if len(scored) < 15:
-            ax.annotate(strategy, (float(row["reference_cost_usd"]), float(row["reward"])), xytext=(0, 8 + i % 3 * 10), textcoords="offset points", fontsize=7, ha="center")
-    ax.set(xlabel="Recorded model + teacher reference fee / episode (USD)", ylabel="Official task Reward", yticks=[0, 1], ylim=(-.2, 1.4), title=f"Terminal-Bench 2.0: {len(scored)} scored episodes with known request fees")
-    ax.legend(handles=[Line2D([], [], color=color, marker="o", linestyle="", label=name.upper()) for name, color in colors.items()], ncol=3, fontsize=8, loc="center right")
-    fig.supxlabel("Each point is one complete episode; supplier billing and resource USD are unknown.", fontsize=8)
+    totals = [r for r in csv.DictReader((root / "metrics/per_strategy.csv").open()) if r["subset"] == "all"]
+    fig, (ax, fees) = plt.subplots(1, 2, figsize=(11, 7.2), sharey=True,
+                                  gridspec_kw={"width_ratios": [2, 1]}, layout="constrained")
+    for i, row in enumerate(totals):
+        one, zero, n = (int(row[k]) for k in ("reward_1", "reward_0", "tasks"))
+        ax.barh(i, one, color="#009E73")
+        ax.barh(i, zero, left=one, color="#D55E00")
+        ax.barh(i, n - one - zero, left=one + zero, color="#dddddd")
+        ax.text(n + 1, i, f"{one}/{one + zero} scored", va="center", fontsize=8)
+        model, teacher = row["generator_known_reference_usd"], row["teacher_known_reference_usd"]
+        if model:
+            cost = float(model) + float(teacher or 0)
+            fees.barh(i, cost, color=colors[row["strategy_id"].split("_")[0]])
+            fees.text(cost + .03, i, f"${cost:.3f}", va="center", fontsize=8)
+    ax.set(yticks=range(len(totals)), yticklabels=[r["strategy_id"] for r in totals],
+           xlabel="Official tasks per strategy", xlim=(0, 115))
+    ax.set_title("89-task outcomes and scoring coverage", pad=28)
+    ax.invert_yaxis()
+    ax.legend(handles=[Line2D([], [], color=color, linewidth=6, label=label)
+                       for color, label in (("#009E73", "Reward 1"), ("#D55E00", "Reward 0"),
+                                            ("#dddddd", "No eligible score yet"))], fontsize=8,
+              loc="lower left", bbox_to_anchor=(0, 1.005), ncol=3)
+    fees.set(xlabel="Known model + teacher reference USD", title="All attempts, including failures")
+    fees.tick_params(axis="y", labelleft=False)
+    fees.margins(x=.22)
+    fig.suptitle("Terminal-Bench 2.0: task results, not Router prediction accuracy")
+    fig.supxlabel("Gray includes missing Reward, unfinished positions and reported effort conflicts. Supplier billing and resource USD are unknown.", fontsize=8)
     save(fig, "success_cost_frontier")
 
     fixed = [s["id"] for s in strategies if s["stage"] == "fixed"]
