@@ -593,7 +593,7 @@ def export_batch_results(root, config, output_root=None):
               f"Harbor命令累计墙钟{sum(r['harness_total_wall_s'] or 0 for r in all_groups):.6f}秒，内含官方Trial累计{sum(r['episode_total_wall_s'] or 0 for r in all_groups):.6f}秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。\n",
               f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{sum(r['ended_fixed_strategies'] == fixed_count for r in task_rows)}题已结束全部{fixed_count}个固定/简单策略；{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。批次先执行固定阶段，再执行Router阶段。\n",
               "GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。\n",
-              "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。已报告档位冲突的官方结果保留在逐Episode表，并从按请求档位主比较中另列。通过率分母仅为该策略已取得的有效官方评分任务，89题全量结果尚在执行。\n",
+              "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。已报告档位冲突的官方结果保留在逐Episode表，并从按请求档位主比较中另列。通过率分母仅为该策略已取得的有效官方评分任务。\n",
               "| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
               "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for r in grouped:
