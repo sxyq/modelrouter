@@ -28,14 +28,14 @@
     "docker_image": "alexgshaw/extract-moves-from-video:20251031"
   },
   "reward": null,
-  "error_type": "URLError",
+  "error_type": "RemoteDisconnected",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 43.990332,
-  "generator_known_reference_usd": 0,
-  "harbor_trial_count": 1,
-  "attempts_wall_s": 43.990332,
-  "harness_command_wall_s": 49.376613965258,
+  "episode_wall_s": 1252.862272,
+  "generator_known_reference_usd": 0.188697,
+  "harbor_trial_count": 2,
+  "attempts_wall_s": 1296.8526040000002,
+  "harness_command_wall_s": 1307.2888733036816,
   "teacher_known_reference_usd": 0,
   "reference_cost_usd": null,
   "supplier_billed_usd": null,
@@ -44,38 +44,248 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/extract-moves-from-video/kev_trained_off/42",
-  "trial_id": "75e8f147-b608-4eb4-9044-26d3004ccb16",
-  "outside_harbor_wall_s": 5.386281965258,
-  "previous_attempts": [],
+  "trial_id": "8c9f41c2-fe49-45bd-8a99-08cfd66e9812",
+  "outside_harbor_wall_s": 10.436269303681456,
+  "previous_attempts": [
+    {
+      "trial_id": "75e8f147-b608-4eb4-9044-26d3004ccb16",
+      "job_name": "extract-moves-from-video--kev_trained_off--s42",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/extract-moves-from-video/kev_trained_off/42/jobs/extract-moves-from-video--kev_trained_off--s42/extract-moves-from-video__tNAbEgq",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-10T06:10:33.268438Z",
+      "finished_at": "2026-11-10T06:11:17.258770Z",
+      "duration_sec": 43.990332,
+      "phase_wall_s": {
+        "environment_setup": 8.727014,
+        "agent_setup": 0.000146,
+        "agent_execution": 13.427237,
+        "verifier": null
+      },
+      "error_type": "URLError"
+    }
+  ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
   "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 8.727014,
-    "agent_setup": 0.000146,
-    "agent_execution": 13.427237,
+    "environment_setup": 9.430194,
+    "agent_setup": 0.000136,
+    "agent_execution": 1220.63954,
     "verifier": null
   },
-  "generator_requests": 1,
+  "generator_requests": 25,
   "teacher_requests": 0,
   "started_tool_calls": 0,
-  "completed_tool_calls": 0,
-  "unknown_provider_cost_requests": 1,
+  "completed_tool_calls": 54,
+  "unknown_provider_cost_requests": 2,
   "prompt_tokens": null,
   "completion_tokens": null,
   "reasoning_tokens": null,
   "reported_cache_read_tokens": null,
-  "known_cache_read_tokens": 0,
-  "cache_read_unknown_records": 1,
+  "known_cache_read_tokens": 233600,
+  "cache_read_unknown_records": 2,
   "reported_cache_write_tokens": null,
-  "cache_write_unknown_records": 1,
-  "router_wall_s": 11.95808645710349,
-  "router_cpu_time_sec": 11.959797999999864,
-  "router_gpu_wait_s": 1.479126513004303e-05,
-  "router_transfer_s": 10.057633066549897,
+  "cache_write_unknown_records": 2,
+  "router_wall_s": 331.14840033091605,
+  "router_cpu_time_sec": 310.395502999997,
+  "router_gpu_wait_s": 0.0003144238144159317,
+  "router_transfer_s": 251.28421838395298,
   "teacher_wall_s": 0.0,
-  "generator_wall_s": 0.042531535029411316,
+  "generator_wall_s": 655.7795112356544,
   "selected_actions": [
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "gpt-6.1-terra:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "gpt-6.1-terra:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "gpt-6.1-terra:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "gpt-6.1-terra:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "gpt-6.1-terra:max",
+      "pool": "Reasoning"
+    },
     {
       "provider": "jiji",
       "model": "gpt-6.1-terra",
@@ -107,13 +317,633 @@
       "cost_status": "UNKNOWN",
       "cache_cost_policy": null,
       "reasoning_cost_policy": null
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "low",
+      "returned_native_effort": "low",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "low"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "low",
+      "returned_native_effort": "low",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "low"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "low",
+      "returned_native_effort": "low",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "low"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "low",
+      "returned_native_effort": "low",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "low"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "max",
+      "returned_native_effort": "max",
+      "native_effort_status": "PROVIDER_REPORTED_MATCH",
+      "sent_effort_parameter": {
+        "reasoning": {
+          "effort": "max"
+        }
+      },
+      "protocol": "responses",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "completed",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "terra-jiji",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+      "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6.1-terra",
+      "returned_model_id": null,
+      "requested_native_effort": "max",
+      "returned_native_effort": null,
+      "native_effort_status": null,
+      "sent_effort_parameter": null,
+      "protocol": null,
+      "stream": null,
+      "requested_max_output_tokens": null,
+      "reported_max_output_tokens": null,
+      "finish_reason": null,
+      "http_status": null,
+      "physical_backend_identity_status": null,
+      "provider_endpoint_id": null,
+      "identity_status": null,
+      "cost_source": null,
+      "cost_status": "UNKNOWN",
+      "cache_cost_policy": null,
+      "reasoning_cost_policy": null
     }
   ],
   "logical_model_changes": 0,
   "endpoint_changes": 0,
   "prefix_continuity_counts": {
-    "FIRST_REQUEST": 0,
-    "EXACT_PREVIOUS_MESSAGES": 0,
+    "FIRST_REQUEST": 1,
+    "EXACT_PREVIOUS_MESSAGES": 22,
     "PREFIX_CHANGED": 0
   },
   "router_truncated_decisions": 0,
