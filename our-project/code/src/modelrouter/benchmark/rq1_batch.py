@@ -131,6 +131,7 @@ def main(argv=None):
     parser.add_argument("config", type=Path)
     parser.add_argument("--source-revision", required=True)
     parser.add_argument("--collect-only", action="store_true")
+    parser.add_argument("--stage", choices=("fixed", "router"), help="Execute one existing stage of the same comparison batch")
     parser.add_argument("--export-dir", type=Path, help="Public output directory")
     parser.add_argument("--watch-pids", type=int, nargs="+", help="Observe these existing batch processes without launching episodes")
     parser.add_argument("--watch-interval", type=int, default=1200, help="Seconds between batch snapshots; default 20 minutes")
@@ -180,7 +181,7 @@ def main(argv=None):
     worker = None
     unavailable = {r["strategy_id"]: r["unit_id"] for r in iterations.rows(root / "jobs.jsonl") if r.get("unsupported_effort")}
     try:
-        for stage in ("fixed", "router"):
+        for stage in ([args.stage] if args.stage else ("fixed", "router")):
             strategies = [s for s in config["strategies"] if s["stage"] == stage]
             by_id = {s["id"]: s for s in strategies}
             pending = [u for u in units if u["strategy_id"] in by_id]
