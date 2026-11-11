@@ -36,9 +36,6 @@ def _history_summary(text, limit):
             tail += 1
         summary = text[:head] + "\n...\n" + text[-tail:]
     return summary, {"source_chars": len(text), "retained_chars": len(summary),
-        "source_rendered_chars": rendered,
-        "retained_rendered_chars": len(json.dumps(summary, ensure_ascii=False)) - 2,
-        "rendered_char_limit": limit,
         "status": "HEAD_TAIL_CHARACTER_SUMMARY" if rendered > limit else "SAVED_CHARACTER_SUMMARY"}
 
 
@@ -129,7 +126,7 @@ def format_router_payload(payload: Mapping) -> str:
         "last_tool_exit_code", "last_observation_summary", "context_chars",
         "context_tokens_approx", "agent_context", "model_time_sec", "tool_time_sec", "router_time_sec", "teacher_time_sec")}
     if history["last_observation_summary"] is not None:
-        history["last_observation_summary"], history["last_observation_view"] = _history_summary(
+        history["last_observation_summary"], _ = _history_summary(
             history["last_observation_summary"], 800)
     history["agent_context"] = {name: value for name, value in (data.get("agent_context") or {}).items()
         if name in ("observed_generation_summary", "last_successful_modification", "observed_through_step", "history_retention")}
@@ -145,7 +142,7 @@ def format_router_payload(payload: Mapping) -> str:
             continuity.pop(name)
     history["continuity"] = continuity
     snippet = data.get("history_snippet") or ""
-    history["history_snippet"], history["history_summary_view"] = _history_summary(snippet, 1000)
+    history["history_snippet"], history["history_summary_view"] = _history_summary(snippet, 900)
     groups = {
         "T": task, "teacher_assessment": assessment, "M": models, "H": history,
     }
