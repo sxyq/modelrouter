@@ -7,6 +7,7 @@ import csv
 import json
 import math
 from collections import Counter, defaultdict
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 from modelrouter.providers.usage import known_request_cost, request_decision_id
@@ -408,7 +409,7 @@ def export_batch_results(root, config, output_root=None):
     strategies = {s["id"]: s for s in config["strategies"]}
     units = json.loads((root / "manifest.json").read_text())["units"]
     job_states = {r["unit_id"]: r for r in rows(root / "jobs.jsonl")}
-    episodes = []
+    episodes, command_starts, command_ends = [], [], []
     for unit in units:
         relative = Path(unit["task_id"]) / unit["strategy_id"] / str(unit["seed"])
         public = output_root / "trials" / relative
@@ -452,6 +453,8 @@ def export_batch_results(root, config, output_root=None):
         trial = max(trials, key=lambda r: r["finished_at"]) if trials else {}
         error = trial.get("error") or {}
         events = rows(private / "events.jsonl")
+        command_starts.extend(datetime.fromisoformat(e["timestamp"]) for e in events if e["event"] == "COMMAND_START")
+        command_ends.extend(datetime.fromisoformat(e["timestamp"]) for e in events if e["event"] == "COMMAND_END")
         command_wall_s = sum(e["duration_ms"] for e in events if e["event"] == "COMMAND_END") / 1000
         requests = [request for attempt in trials for request in provider_requests(attempt, events)]
         generator = [r for r in requests if r["role"] == "generator"]
@@ -586,6 +589,11 @@ def export_batch_results(root, config, output_root=None):
               for field in ("tasks", "attempted", "harbor_trial_count", "reward_1", "reward_0", "no_official_reward", "running", "not_started", "unavailable")}
     model_usd = sum(r["generator_known_reference_usd"] or 0 for r in all_groups)
     teacher_usd = sum(r["teacher_known_reference_usd"] or 0 for r in all_groups)
+    if command_starts and command_ends:
+        first, last = min(command_starts), max(command_ends)
+        write_atomic(metrics / "execution_span.json", {"first_command_started_at": first.isoformat(),
+            "last_command_finished_at": last.isoformat(), "elapsed_wall_s": (last - first).total_seconds(),
+            "command_starts": len(command_starts), "command_ends": len(command_ends)})
     fixed_count = sum(s["stage"] == "fixed" for s in strategies.values())
     report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
               "**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**\n",
@@ -605,6 +613,8 @@ def export_batch_results(root, config, output_root=None):
             coverage = f"{r['reward_1'] + r['reward_0']}/{r['tasks']}"
             interval = f"{r['benchmark_success_lower']:.2%}—{r['benchmark_success_upper']:.2%}"
             report.append(f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {rate} | {coverage} | {interval} | {r['no_official_reward']} | {r['running']} | {r['not_started']} | {r['unavailable']} | {cost} |")
+    if command_starts and command_ends:
+        report.append(f"\n实际执行跨度：{first.isoformat()}至{last.isoformat()}，{(last - first).total_seconds():.6f}秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。\n")
     cache_tokens = measured_sum(all_groups, "known_cache_read_tokens")
     cache_label = "UNKNOWN" if cache_tokens is None else f"{cache_tokens:,}"
     report += ["\n评分覆盖是已取得有效官方评分的任务数/89；通过率区间把其余位置分别按全部未通过或全部通过计算。\n",

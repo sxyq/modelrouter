@@ -44,7 +44,7 @@ def render_batch_figures(root):
     fees.set(xlabel="Known model + teacher reference USD", title="All attempts, including failures")
     fees.tick_params(axis="y", labelleft=False)
     fees.margins(x=.22)
-    fig.suptitle("Terminal-Bench 2.0: task results, not Router prediction accuracy")
+    fig.suptitle("Terminal-Bench 2.0")
     fig.supxlabel("Gray includes missing Reward, unfinished positions and reported effort conflicts. Supplier billing and resource USD are unknown.", fontsize=8)
     save(fig, "success_cost_frontier")
 
