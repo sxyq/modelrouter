@@ -28,14 +28,14 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "RuntimeError",
+  "error_type": "EnvironmentStartTimeoutError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 4.273066,
+  "episode_wall_s": 603.797546,
   "generator_known_reference_usd": 0,
-  "harbor_trial_count": 1,
-  "attempts_wall_s": 4.273066,
-  "harness_command_wall_s": 9.479190967977047,
+  "harbor_trial_count": 2,
+  "attempts_wall_s": 608.070612,
+  "harness_command_wall_s": 618.3563024085015,
   "teacher_known_reference_usd": 0,
   "reference_cost_usd": 0,
   "supplier_billed_usd": 0,
@@ -44,14 +44,32 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/mteb-leaderboard/kev_trained_on/42",
-  "trial_id": "a48869d5-abd0-4275-b145-8cb8ca6054c8",
-  "outside_harbor_wall_s": 5.206124967977047,
-  "previous_attempts": [],
+  "trial_id": "e4275a12-b15d-4a87-92b9-1396d2508b76",
+  "outside_harbor_wall_s": 10.285690408501523,
+  "previous_attempts": [
+    {
+      "trial_id": "a48869d5-abd0-4275-b145-8cb8ca6054c8",
+      "job_name": "mteb-leaderboard--kev_trained_on--s42",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/mteb-leaderboard/kev_trained_on/42/jobs/mteb-leaderboard--kev_trained_on--s42/mteb-leaderboard__LgaVHem",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-10T07:05:53.409972Z",
+      "finished_at": "2026-11-10T07:05:57.683038Z",
+      "duration_sec": 4.273066,
+      "phase_wall_s": {
+        "environment_setup": 0.837573,
+        "agent_setup": null,
+        "agent_execution": null,
+        "verifier": null
+      },
+      "error_type": "RuntimeError"
+    }
+  ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
   "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 0.837573,
+    "environment_setup": 600.001685,
     "agent_setup": null,
     "agent_execution": null,
     "verifier": null
