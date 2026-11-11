@@ -1,4 +1,4 @@
-"""Character-bounded views of observed Agent state; never alter its messages."""
+"""JSON-render-bounded views of observed Agent state; never alter its messages."""
 from __future__ import annotations
 
 import json
@@ -18,10 +18,28 @@ _METRIC_FIELDS = ("metric_name", "score_unit", "benchmark_version", "aa_index_ve
 
 
 def _history_summary(text, limit):
-    room = limit - 5
-    summary = text if len(text) <= limit else text[:room // 2] + "\n...\n" + text[-(room - room // 2):]
+    widths = [len(json.dumps(char, ensure_ascii=False)) - 2 for char in text]
+    rendered = sum(widths)
+    summary = text
+    if rendered > limit:
+        room = limit - 7
+        head = tail = used = 0
+        for width in widths:
+            if used + width > room // 2:
+                break
+            used += width
+            head += 1
+        for width in reversed(widths):
+            if used + width > room:
+                break
+            used += width
+            tail += 1
+        summary = text[:head] + "\n...\n" + text[-tail:]
     return summary, {"source_chars": len(text), "retained_chars": len(summary),
-        "status": "HEAD_TAIL_CHARACTER_SUMMARY" if len(text) > limit else "SAVED_CHARACTER_SUMMARY"}
+        "source_rendered_chars": rendered,
+        "retained_rendered_chars": len(json.dumps(summary, ensure_ascii=False)) - 2,
+        "rendered_char_limit": limit,
+        "status": "HEAD_TAIL_CHARACTER_SUMMARY" if rendered > limit else "SAVED_CHARACTER_SUMMARY"}
 
 
 def _metric_rows(metrics, definitions, source_url):
@@ -110,6 +128,9 @@ def format_router_payload(payload: Mapping) -> str:
         "history_length", "prior_tool_calls_count", "prior_error_signals_count",
         "last_tool_exit_code", "last_observation_summary", "context_chars",
         "context_tokens_approx", "agent_context", "model_time_sec", "tool_time_sec", "router_time_sec", "teacher_time_sec")}
+    if history["last_observation_summary"] is not None:
+        history["last_observation_summary"], history["last_observation_view"] = _history_summary(
+            history["last_observation_summary"], 800)
     history["agent_context"] = {name: value for name, value in (data.get("agent_context") or {}).items()
         if name in ("observed_generation_summary", "last_successful_modification", "observed_through_step", "history_retention")}
     if "observed_generation_summary" in history["agent_context"]:
