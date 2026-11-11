@@ -1,6 +1,6 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-**2026-11-09正式RQ1**：[Terminal-Bench 2.0完整批次](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)正在执行，官方89题、17策略、seed42；固定四并发，八Router组随后两并发。两原始实体与11-08各17更新GLM研究代表事前确定，不以新增训练为本批前置。原Harbor/Verifier、4096输出、AA v7、统一Router GPU设备与原锁保持；2.1历史结果不计入本批。RQ1/RQ2使用完整任务质量和费用，RQ4使用四实体教师开关成对结果；RQ3单Agent子任务边界及RQ5工作负载收益仍依实际后续数据推进。
+**2026-11-11正式RQ1**：[Terminal-Bench 2.0完整批次](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)的89题×17策略×seed42全部结束，614位置有官方评分、899缺评分；固定四并发、Router两并发，原Harbor/Verifier、4096输出、AA v7与原GPU锁。事前确定的两原始实体和11-08各17更新GLM研究代表保持。同题且费用齐全的13/19题中，固定Terra High通过10/14题、训练Kev OFF/ON通过7/11题，后者参考费均更高。完整现金净收益仍缺供应商实收与资源单价。原4条H截断保存输入已沿唯一Serializer完成原生编码，丢失Token为0；该收尾编码尚无新训练及完整Episode。后续补多任务合法联合监督、单Agent阶段/子任务边界/粒度、T/M/H消融和独立工作负载，不以本批结果挑权重。
 
 **2026-11-08 · 新增近邻文献与研究方向讨论（未变更正式 RQ）**：[Whose turn is it? 中文技术笔记](../literature/notes/whose-turn-is-it-2610.19292.zh.md) 已核对并登记 [官方原 PDF 链接](https://arxiv.org/pdf/2610.19292) 和中文解读。该文实证研究零样本、二候选、**用户轮次级**表格 Agent 路由、历史依赖、缓存切换方向与回本成本；这些概念不能作为我们 V9 的首创声明。V9 保留真实 Harbor 单 Agent 每次生成机会可选 Model×Native Effort、Laya/Kev、T/M/H、Provider 缓存 Usage、教师和终局账本；候选差异化集中在独立任务验证过的**缓存机会成本×实际质量/恢复×完整 Episode 净收益**，而非堆输入或新建 KV Infra 服务。用户重新提出 K=3/5/7 与同 K 不同池组成作为 RQ2 拟议恢复范围；**当前正式 RQ2 仍为固定 K=3**，本次仅记研究讨论，尚未批准替换正式五 RQ/图表或声称 K=5/7 已可用。论文 PDF 二进制尚未导入仓库；链接归档见 [论文库条目](../external/research/papers/59_Whose_Turn_Is_It_PDF_LINK.md)。
 

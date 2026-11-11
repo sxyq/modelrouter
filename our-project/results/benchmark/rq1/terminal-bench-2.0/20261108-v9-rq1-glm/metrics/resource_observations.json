@@ -64,14 +64,34 @@
   {
     "observed_at": "2026-11-08T19:53:44.267834+00:00",
     "container_samples": [
-      {"Name": "configure-git-webserver__j8mqeqh__env-main-1", "CPUPerc": "0.00%", "MemUsage": "2.172MiB / 2GiB", "PIDs": "2"},
-      {"Name": "configure-git-webserver__cztibow__env-main-1", "CPUPerc": "2.43%", "MemUsage": "86.17MiB / 2GiB", "PIDs": "5"},
-      {"Name": "configure-git-webserver__nzya8fs__env-main-1", "CPUPerc": "0.00%", "MemUsage": "1.16MiB / 2GiB", "PIDs": "2"},
-      {"Name": "configure-git-webserver__tlbcj3r__env-main-1", "CPUPerc": "101.78%", "MemUsage": "12.39MiB / 2GiB", "PIDs": "12"}
+      {
+        "Name": "configure-git-webserver__j8mqeqh__env-main-1",
+        "CPUPerc": "0.00%",
+        "MemUsage": "2.172MiB / 2GiB",
+        "PIDs": "2"
+      },
+      {
+        "Name": "configure-git-webserver__cztibow__env-main-1",
+        "CPUPerc": "2.43%",
+        "MemUsage": "86.17MiB / 2GiB",
+        "PIDs": "5"
+      },
+      {
+        "Name": "configure-git-webserver__nzya8fs__env-main-1",
+        "CPUPerc": "0.00%",
+        "MemUsage": "1.16MiB / 2GiB",
+        "PIDs": "2"
+      },
+      {
+        "Name": "configure-git-webserver__tlbcj3r__env-main-1",
+        "CPUPerc": "101.78%",
+        "MemUsage": "12.39MiB / 2GiB",
+        "PIDs": "12"
+      }
     ],
     "shared_qemu": {
       "pid": 2744271,
-      "lifetime_average_cpu_percent": 289.0,
+      "lifetime_average_cpu_percent": 289,
       "resident_kib": 9180664,
       "elapsed": "04:22:49",
       "accelerator": "tcg",
@@ -79,8 +99,13 @@
       "allocated_memory_mib": 40960
     },
     "shared_gpu_sample": {
-      "index": 0, "name": "NVIDIA RTX A6000", "memory_used_mib": 31423,
-      "memory_total_mib": 49140, "utilization_percent": 0, "temperature_c": 28, "power_w": 9.86
+      "index": 0,
+      "name": "NVIDIA RTX A6000",
+      "memory_used_mib": 31423,
+      "memory_total_mib": 49140,
+      "utilization_percent": 0,
+      "temperature_c": 28,
+      "power_w": 9.86
     },
     "resource_billing_usd": null,
     "episode_apportionment": "NOT_MEASURED; shared samples are not episode charges"
@@ -97,7 +122,7 @@
       "os": "linux",
       "manual_pull_started_at": "2026-11-08T23:22:46.070+00:00",
       "image_pull_event_at": "2026-11-09T00:03:38.381+00:00",
-      "image_pull_event_time_nano": 1794182618381704253,
+      "image_pull_event_time_nano": 1794182618381704200,
       "elapsed_to_image_pull_event_sec": 2452.311,
       "manual_pull_exit_code": 0,
       "official_environment_start_timeout_sec": 600,
@@ -117,8 +142,13 @@
       "allocated_memory_mib": 40960
     },
     "shared_gpu_sample": {
-      "index": 0, "name": "NVIDIA RTX A6000", "memory_used_mib": 31423,
-      "memory_total_mib": 49140, "utilization_percent": 0, "temperature_c": 26, "power_w": 15.84
+      "index": 0,
+      "name": "NVIDIA RTX A6000",
+      "memory_used_mib": 31423,
+      "memory_total_mib": 49140,
+      "utilization_percent": 0,
+      "temperature_c": 26,
+      "power_w": 15.84
     },
     "resource_billing_usd": null,
     "episode_apportionment": "NOT_MEASURED; preparation overlaps recorded episodes and is not charged twice"
@@ -130,7 +160,10 @@
       "remote_port": 17898,
       "observed_exit": "SSH_EXIT_255_BROKEN_PIPE",
       "proxy_failure_records": 151,
-      "error_counts": {"RuntimeError": 99, "URLError": 52},
+      "error_counts": {
+        "RuntimeError": 99,
+        "URLError": 52
+      },
       "first_affected_trial_started_at": "2026-11-09T01:07:07.421112Z",
       "last_observed_affected_trial_finished_at": "2026-11-09T01:20:02.901512Z",
       "record_count_scope": "COMPLETED_ORIGINAL_TRIALS_REPORTING_CONNECTION_REFUSED_AT_SURVEY",
@@ -139,7 +172,10 @@
       "registry_response": "EXPECTED_UNAUTHENTICATED_DOCKER_REGISTRY_RESPONSE",
       "subsequent_agent_task": "sanitize-git-repo",
       "subsequent_generator_http_status": 200,
-      "subsequent_exact_models": ["gpt-6-luna", "gpt-6.1-terra"],
+      "subsequent_exact_models": [
+        "gpt-6-luna",
+        "gpt-6.1-terra"
+      ],
       "original_evidence_retained": true,
       "task_protocol_changed": false
     },
@@ -227,7 +263,13 @@
       "manual_pull_exit_code": 0,
       "official_environment_start_timeout_sec": 600,
       "observed_failed_fixed_positions": 5,
-      "failed_strategies": ["glm_low", "glm_high", "glm_max", "luna_low", "luna_high"],
+      "failed_strategies": [
+        "glm_low",
+        "glm_high",
+        "glm_max",
+        "luna_low",
+        "luna_high"
+      ],
       "generator_requests_in_failed_episodes": 0,
       "observed_errors": "GLM_LOW_ANONYMOUS_DOCKER_TOKEN_EOF; FOUR_COLD_IMAGE_ENVIRONMENT_START_TIMEOUTS",
       "execution_overlap": "WITH_ORIGINAL_HARBOR_PULLS; NOT_AN_ADDITIONAL_INDEPENDENT_VM_CHARGE",
@@ -269,7 +311,10 @@
       "stdout_stderr": "ORIGINAL_BATCH_PRIVATE_BATCH_LOG_APPEND",
       "router_concurrency": 2,
       "first_router_task": "modernize-scientific-stack",
-      "first_router_strategies": ["laya_original_off", "laya_original_on"]
+      "first_router_strategies": [
+        "laya_original_off",
+        "laya_original_on"
+      ]
     },
     "resource_billing_usd": null
   },
@@ -286,7 +331,17 @@
     },
     "fixed_infrastructure_recovery": {
       "selected_positions": 458,
-      "selected_by_strategy": {"glm_low": 51, "glm_high": 52, "glm_max": 52, "luna_low": 51, "luna_high": 50, "luna_max": 50, "terra_high": 50, "luna_xhigh": 51, "rule_sticky": 51},
+      "selected_by_strategy": {
+        "glm_low": 51,
+        "glm_high": 52,
+        "glm_max": 52,
+        "luna_low": 51,
+        "luna_high": 50,
+        "luna_max": 50,
+        "terra_high": 50,
+        "luna_xhigh": 51,
+        "rule_sticky": 51
+      },
       "selected_router_positions": 0,
       "wrapper_pid": 3966928,
       "parent_pid": 3966929,
@@ -327,7 +382,10 @@
   {
     "observed_at": "2026-11-10T13:01:18.667522+00:00",
     "direct_ssh": "RESTORED; hostname k3s-infra-01",
-    "previous_batch_parent_pids": [3851142, 3966929],
+    "previous_batch_parent_pids": [
+      3851142,
+      3966929
+    ],
     "previous_parent_processes": "ABSENT_AT_RESUME; exit causes not captured",
     "router_infrastructure_recovery": {
       "selected_positions": 368,
@@ -343,5 +401,76 @@
     "restored_registry_http_status": 401,
     "watch_interval_sec": 1200,
     "resource_billing_usd": null
+  },
+  {
+    "rq1_state": "ALL_1513_POSITIONS_ENDED",
+    "router_recovery": {
+      "positions": 368,
+      "evaluated": 90,
+      "not_evaluated": 278,
+      "parent_pid": 1436024,
+      "parent_present": false,
+      "parent_exit_code": null,
+      "ssh_transport_exit_code": 255,
+      "ssh_transport_error": "Can't assign requested address; Broken pipe"
+    },
+    "harbor_commands": 2339,
+    "harbor_trials": 2333,
+    "user_docker_container_count": 0,
+    "docker_vm_pid": 2744271,
+    "docker_vm_present": true,
+    "existing_serving": {
+      "pid": 327621,
+      "present": true,
+      "status": "healthy",
+      "weights": "F05_E01_AND_IMPORTED_KEV"
+    },
+    "f15": {
+      "checkpoint": "runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F15/checkpoints/epoch_01",
+      "step_count": 61180,
+      "consumed_items": 3915484,
+      "matching_processes": [],
+      "model_bytes": 842609220,
+      "optimizer_bytes": 3368412933
+    },
+    "shared_gpu_sample": {
+      "name": "NVIDIA RTX A6000",
+      "memory_used_mib": 18747,
+      "memory_total_mib": 49140,
+      "utilization_percent": 100,
+      "temperature_c": 80,
+      "power_w": 296.49
+    },
+    "shared_compute_processes": [
+      {
+        "pid": 2124069,
+        "name": "sgl_diffusion::scheduler",
+        "memory_mib": 17972
+      },
+      {
+        "pid": 2931285,
+        "name": "Image API",
+        "memory_mib": 378
+      }
+    ],
+    "rq1_router_socket_present": false,
+    "temporary_proxy_port_17898_listening": false,
+    "resource_billing_usd": null,
+    "gpu_sampled_at": "2026-11-11T14:42:29.330491+00:00",
+    "recorded_at": "2026-11-11T15:04:13Z",
+    "episode_apportionment": "NOT_MEASURED; GPU sample was taken after RQ1 ended",
+    "cleanup": {
+      "temporary_export_directories_removed": [
+        ".runtime/rq1-watch-export.fwknr5fn",
+        ".runtime/rq1-recovery-export._tbrx8zk"
+      ],
+      "temporary_export_apparent_bytes": 318979911,
+      "canonical_public_results_retained": true,
+      "private_harbor_evidence_retained": true,
+      "source_rollback_archive": ".runtime/modelrouter-previous-source.tar.gz",
+      "source_rollback_archive_bytes": 1386380,
+      "source_rollback_archive_members": 352,
+      "redundant_partial_source_archive_removed": true
+    }
   }
 ]

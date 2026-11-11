@@ -1,8 +1,10 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 正式2.0 RQ1正在执行
+## 正式2.0 RQ1全量尝试已结束
 
 [当前批次](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)采用官方`terminal-bench@2.0`、Commit `69671fbaac6d67a7ef0dfec016cc38a64ef7a77c`，89题×17策略×seed42=1513位置。固定组含GLM/Luna Low、High、Max，Terra High、单独Luna Xhigh及规则；八Router组为四实体各Teacher OFF/ON。固定四并发、Router两并发，共享原GPU锁和原生Adapter worker，不新增训练或替换Serving。
+
+11-11末次汇总：全部位置结束，官方Reward 1/0为256/358、899缺评分；2339条Harbor命令、2333个原Trial。已知模型+教师参考费$35.11821871，1036请求缺费用；真实执行跨度68.51小时。以下首批与连接过程按原日期保留，当前每策略通过率、分母、费用和缺项以终局报告为准。四条实际H截断输入的收尾编码见同批`metrics/h_encoding_followup.json`，原Episode结果保持原编码版本。
 
 逐Episode官方Reward、失败类型、请求/返回身份、实际缓存读取、参考费与墙钟集中在同目录`trials/`及`metrics/`。完整现金费用与资源美元价仍缺。任务集合和权重事前确定，31题历史暴露与58题未历史暴露分别保留，未评分不填0。
 
@@ -14,7 +16,7 @@
 LITELLM_LOCAL_MODEL_COST_MAP=true .runtime/benchmark-venv/bin/python -m modelrouter.benchmark rq1 \
   our-project/experiments/configs/rq1_terminal_bench_2_0.json \
   --source-revision cb4371da0635d9d550314b6703af4cbe87f0b714 \
-  --watch-pids 3851142 3966929 --watch-interval 1200
+  --collect-only
 ```
 
 沿同一入口的`--recover-infrastructure`补充一次恢复尝试：仅选代理连接被拒绝，或已准备镜像的`hf-model-inference`及`custom-memory-heap-crash`环境启动超时，以及后者已记录的Docker匿名认证EOF；此前须没有成功生成、教师响应或工具结果。两镜像的实际准备结果见当前批次`metrics/resource_observations.json`。固定阶段已结束，Router等待共享GPU时先推进不占GPU的固定策略恢复；恢复过程用`--export-dir`写入临时公开目录，避免与原Router批次同时写同一报告。原Job和Trial留在原目录，新Job使用`--infrastructure-recovery-1`后缀；已有恢复尝试的位置不再次选入。终局采用最后结束的Trial，费用与墙钟累计所有尝试。
@@ -35,7 +37,7 @@ LITELLM_LOCAL_MODEL_COST_MAP=true .runtime/benchmark-venv/bin/python -m modelrou
 
 新增完整任务结果：原始Kev Teacher ON通过`cobol-modernization`，11生成、3教师请求、5次教师短评消费、14工具结果、825.191309秒；模型$0.01084208、教师$0.00151440。训练Kev Teacher ON同题21生成、6教师请求、9次消费、25工具结果、1084.022053秒，AgentTimeout后原Verifier仍给1；模型$0.10402240、教师$0.00344550。两者没有未知请求费或输入截断，同质量下训练版参考费为原始版约8.70倍。两个OFF没有官方Reward，教师收益暂缺该题成对结果。恢复后的HF任务GLM Low、Luna High、Terra High通过；全部原环境失败计入累计尝试时长。
 
-当前同题有效评分比较直接读取[统一对照表](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/metrics/comparisons.json)：分别保存Luna档位、固定与Router、原始与训练、教师OFF/ON的成对通过数、费用及时间差值。费用齐全对与评分对分别登记。结果随剩余预定任务连续增加，权重不随正式结果改变。
+当前同题有效评分比较直接读取[统一对照表](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/metrics/comparisons.json)：分别保存Luna档位、固定与Router、原始与训练、教师OFF/ON的成对通过数、费用及时间差值。费用齐全对与评分对分别登记；终局保持同一方法与事前权重。
 
 首批全部17策略已结束的8题中，合并各权重Teacher OFF/ON的实际路由决策：原始Laya选择GLM/Luna/Terra各66/10/26次，训练Laya各72/7/19次，均为High。原始Kev的108次均为Luna Low；训练Kev的185次均为Terra，其中152 Max、24 Low、4 Medium、4 None、1 High。当前Kev表现为单模型集中选择；15个合法登记动作的存在不能解释为15种动作均已实际选用。逐决策原记录保存在本批`trials/*/*/42/events.jsonl`和`metrics/per_episode.csv`，汇总字段为`selected_action_counts`。
 

@@ -1,0 +1,609 @@
+{
+  "scope": "POST_BATCH_FOUR_SAVED_REAL_TRUNCATED_PREFIXES_NATIVE_ENCODING_ONLY",
+  "measured_at": "2026-11-11T14:49:07.838088+00:00",
+  "episode_source_revision": "cb4371da0635d9d550314b6703af4cbe87f0b714",
+  "encoder_source_revision": "24a66dec601b461aba7b0ba162f2f7de5277f5f0",
+  "max_len": 8192,
+  "head_max_len": 512,
+  "records": [
+    {
+      "task_id": "build-cython-ext",
+      "strategy_id": "laya_trained_off",
+      "decision_id": "63dfd392-b903-4cce-94fe-dcb62f15ad9e-10",
+      "checkpoint_path": "/home/syy/路由/runs/V9-K3-GLM-LAYA-20261108",
+      "old": {
+        "input_tokens": 8192,
+        "state_tokens": 7875,
+        "state_tokens_dropped": 161,
+        "truncated": true
+      },
+      "new": {
+        "input_tokens": 7489,
+        "state_room_tokens": 7714,
+        "state_tokens": 7011,
+        "state_tokens_used": 7011,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "option_stats": {
+          "options": 15,
+          "options_distinct": 15,
+          "tokens_per_option": null
+        },
+        "groups": {
+          "T": {
+            "status": "FULL",
+            "token_start": 2,
+            "token_end": 621
+          },
+          "teacher_assessment": {
+            "status": "FULL",
+            "token_start": 627,
+            "token_end": 634
+          },
+          "M": {
+            "status": "FULL",
+            "token_start": 636,
+            "token_end": 5288
+          },
+          "H": {
+            "status": "FULL",
+            "token_start": 5290,
+            "token_end": 7011
+          }
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 2061,
+            "token_end": 2116
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 2116,
+            "token_end": 2171
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 2171,
+            "token_end": 2330
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2811,
+            "token_end": 2964
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 2964,
+            "token_end": 3112
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3112,
+            "token_end": 3363
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3363,
+            "token_end": 3518
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3518,
+            "token_end": 3677
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3677,
+            "token_end": 3833
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4322,
+            "token_end": 4483
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4483,
+            "token_end": 4643
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 4643,
+            "token_end": 4799
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 4799,
+            "token_end": 4958
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 4958,
+            "token_end": 5124
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5124,
+            "token_end": 5287
+          }
+        },
+        "mask_token_occurrences": 0,
+        "history_view": {
+          "last_observation_view": null,
+          "generation_summary_view": {
+            "source_chars": 1199,
+            "retained_chars": 745,
+            "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+          },
+          "history_summary_view": {
+            "source_chars": 4386,
+            "retained_chars": 684,
+            "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+          }
+        }
+      },
+      "original_episode_reward": null
+    },
+    {
+      "task_id": "count-dataset-tokens",
+      "strategy_id": "laya_original_on",
+      "decision_id": "b35db034-e679-4766-b6a6-e84b692b4c46-5",
+      "checkpoint_path": "/home/syy/路由/models/laya-421m",
+      "old": {
+        "input_tokens": 8192,
+        "state_tokens": 8519,
+        "state_tokens_dropped": 805,
+        "truncated": true
+      },
+      "new": {
+        "input_tokens": 7177,
+        "state_room_tokens": 7714,
+        "state_tokens": 6699,
+        "state_tokens_used": 6699,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "option_stats": {
+          "options": 15,
+          "options_distinct": 15,
+          "tokens_per_option": null
+        },
+        "groups": {
+          "T": {
+            "status": "FULL",
+            "token_start": 2,
+            "token_end": 288
+          },
+          "teacher_assessment": {
+            "status": "FULL",
+            "token_start": 294,
+            "token_end": 308
+          },
+          "M": {
+            "status": "FULL",
+            "token_start": 310,
+            "token_end": 4962
+          },
+          "H": {
+            "status": "FULL",
+            "token_start": 4964,
+            "token_end": 6699
+          }
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 1735,
+            "token_end": 1790
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 1790,
+            "token_end": 1845
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 1845,
+            "token_end": 2004
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 2485,
+            "token_end": 2638
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 2638,
+            "token_end": 2786
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 2786,
+            "token_end": 3037
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3037,
+            "token_end": 3192
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3192,
+            "token_end": 3351
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3351,
+            "token_end": 3507
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 3996,
+            "token_end": 4157
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4157,
+            "token_end": 4317
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 4317,
+            "token_end": 4473
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 4473,
+            "token_end": 4632
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 4632,
+            "token_end": 4798
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 4798,
+            "token_end": 4961
+          }
+        },
+        "mask_token_occurrences": 0,
+        "history_view": {
+          "last_observation_view": null,
+          "generation_summary_view": {
+            "source_chars": 1199,
+            "retained_chars": 723,
+            "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+          },
+          "history_summary_view": {
+            "source_chars": 5575,
+            "retained_chars": 657,
+            "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+          }
+        }
+      },
+      "original_episode_reward": null
+    },
+    {
+      "task_id": "sam-cell-seg",
+      "strategy_id": "laya_original_on",
+      "decision_id": "784d022d-774a-46b6-8940-a624e6df2a04-23",
+      "checkpoint_path": "/home/syy/路由/models/laya-421m",
+      "old": {
+        "input_tokens": 8192,
+        "state_tokens": 7804,
+        "state_tokens_dropped": 90,
+        "truncated": true
+      },
+      "new": {
+        "input_tokens": 8189,
+        "state_room_tokens": 7714,
+        "state_tokens": 7711,
+        "state_tokens_used": 7711,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "option_stats": {
+          "options": 15,
+          "options_distinct": 15,
+          "tokens_per_option": null
+        },
+        "groups": {
+          "T": {
+            "status": "FULL",
+            "token_start": 2,
+            "token_end": 702
+          },
+          "teacher_assessment": {
+            "status": "FULL",
+            "token_start": 708,
+            "token_end": 858
+          },
+          "M": {
+            "status": "FULL",
+            "token_start": 860,
+            "token_end": 5512
+          },
+          "H": {
+            "status": "FULL",
+            "token_start": 5514,
+            "token_end": 7711
+          }
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 2285,
+            "token_end": 2340
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 2340,
+            "token_end": 2395
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 2395,
+            "token_end": 2554
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 3035,
+            "token_end": 3188
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 3188,
+            "token_end": 3336
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3336,
+            "token_end": 3587
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3587,
+            "token_end": 3742
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3742,
+            "token_end": 3901
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3901,
+            "token_end": 4057
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4546,
+            "token_end": 4707
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4707,
+            "token_end": 4867
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 4867,
+            "token_end": 5023
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5023,
+            "token_end": 5182
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5182,
+            "token_end": 5348
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5348,
+            "token_end": 5511
+          }
+        },
+        "mask_token_occurrences": 0,
+        "history_view": {
+          "last_observation_view": null,
+          "generation_summary_view": {
+            "source_chars": 1199,
+            "retained_chars": 715,
+            "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+          },
+          "history_summary_view": {
+            "source_chars": 3999,
+            "retained_chars": 852,
+            "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+          }
+        }
+      },
+      "original_episode_reward": 0
+    },
+    {
+      "task_id": "sam-cell-seg",
+      "strategy_id": "laya_original_on",
+      "decision_id": "784d022d-774a-46b6-8940-a624e6df2a04-24",
+      "checkpoint_path": "/home/syy/路由/models/laya-421m",
+      "old": {
+        "input_tokens": 8192,
+        "state_tokens": 7803,
+        "state_tokens_dropped": 89,
+        "truncated": true
+      },
+      "new": {
+        "input_tokens": 8188,
+        "state_room_tokens": 7714,
+        "state_tokens": 7710,
+        "state_tokens_used": 7710,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "option_stats": {
+          "options": 15,
+          "options_distinct": 15,
+          "tokens_per_option": null
+        },
+        "groups": {
+          "T": {
+            "status": "FULL",
+            "token_start": 2,
+            "token_end": 702
+          },
+          "teacher_assessment": {
+            "status": "FULL",
+            "token_start": 708,
+            "token_end": 858
+          },
+          "M": {
+            "status": "FULL",
+            "token_start": 860,
+            "token_end": 5512
+          },
+          "H": {
+            "status": "FULL",
+            "token_start": 5514,
+            "token_end": 7710
+          }
+        },
+        "candidate_actions": {
+          "glm-5.3-flash:high": {
+            "status": "FULL",
+            "token_start": 2285,
+            "token_end": 2340
+          },
+          "glm-5.3-flash:low": {
+            "status": "FULL",
+            "token_start": 2340,
+            "token_end": 2395
+          },
+          "glm-5.3-flash:max": {
+            "status": "FULL",
+            "token_start": 2395,
+            "token_end": 2554
+          },
+          "gpt-6-luna:high": {
+            "status": "FULL",
+            "token_start": 3035,
+            "token_end": 3188
+          },
+          "gpt-6-luna:low": {
+            "status": "FULL",
+            "token_start": 3188,
+            "token_end": 3336
+          },
+          "gpt-6-luna:max": {
+            "status": "FULL",
+            "token_start": 3336,
+            "token_end": 3587
+          },
+          "gpt-6-luna:medium": {
+            "status": "FULL",
+            "token_start": 3587,
+            "token_end": 3742
+          },
+          "gpt-6-luna:none": {
+            "status": "FULL",
+            "token_start": 3742,
+            "token_end": 3901
+          },
+          "gpt-6-luna:xhigh": {
+            "status": "FULL",
+            "token_start": 3901,
+            "token_end": 4057
+          },
+          "gpt-6.1-terra:high": {
+            "status": "FULL",
+            "token_start": 4546,
+            "token_end": 4707
+          },
+          "gpt-6.1-terra:low": {
+            "status": "FULL",
+            "token_start": 4707,
+            "token_end": 4867
+          },
+          "gpt-6.1-terra:max": {
+            "status": "FULL",
+            "token_start": 4867,
+            "token_end": 5023
+          },
+          "gpt-6.1-terra:medium": {
+            "status": "FULL",
+            "token_start": 5023,
+            "token_end": 5182
+          },
+          "gpt-6.1-terra:none": {
+            "status": "FULL",
+            "token_start": 5182,
+            "token_end": 5348
+          },
+          "gpt-6.1-terra:xhigh": {
+            "status": "FULL",
+            "token_start": 5348,
+            "token_end": 5511
+          }
+        },
+        "mask_token_occurrences": 0,
+        "history_view": {
+          "last_observation_view": null,
+          "generation_summary_view": {
+            "source_chars": 1199,
+            "retained_chars": 715,
+            "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+          },
+          "history_summary_view": {
+            "source_chars": 3999,
+            "retained_chars": 852,
+            "status": "HEAD_TAIL_CHARACTER_SUMMARY"
+          }
+        }
+      },
+      "original_episode_reward": 0
+    }
+  ],
+  "json_content_character_limits": {
+    "observed_generation_summary": 800,
+    "history_snippet": 880,
+    "last_observation_summary": 800
+  },
+  "initial_native_measurements": [
+    {
+      "encoder_source_revision": "01304849f998ca8ebbf469caeb1531585d6b3e99",
+      "input_tokens": [
+        7658,
+        7339,
+        8192,
+        8192
+      ],
+      "state_tokens_dropped": [
+        0,
+        0,
+        158,
+        157
+      ]
+    },
+    {
+      "encoder_source_revision": "41c6b22ea1efcfc43d808917a5d0e32583917609",
+      "input_tokens": [
+        7498,
+        7184,
+        8192,
+        8192
+      ],
+      "state_tokens_dropped": [
+        0,
+        0,
+        7,
+        6
+      ]
+    }
+  ],
+  "initial_native_measurements_record_order": [
+    "63dfd392-b903-4cce-94fe-dcb62f15ad9e-10",
+    "b35db034-e679-4766-b6a6-e84b692b4c46-5",
+    "784d022d-774a-46b6-8940-a624e6df2a04-23",
+    "784d022d-774a-46b6-8940-a624e6df2a04-24"
+  ]
+}

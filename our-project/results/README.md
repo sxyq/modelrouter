@@ -7,12 +7,13 @@
 | 项目 | 已确定条件与入口 |
 |---|---|
 | 官方任务 | `terminal-bench@2.0`，89题，Commit `69671fbaac6d67a7ef0dfec016cc38a64ef7a77c`；旧2.1结果不计入 |
-| 批量执行 | [唯一结果目录](benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/)，17策略×89题×seed42=1513位置；固定四并发，Router两并发 |
-| 原官方结果与费用 | [实时报告](benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)、metrics逐位置/逐任务/逐策略、trials脱敏事件；无Reward保持空值 |
+| 批量执行 | [唯一结果目录](benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/)，17策略×89题×seed42=1513位置全部结束；固定四并发，Router两并发 |
+| 原官方结果与费用 | [终局报告](benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)、metrics逐位置/逐任务/逐策略、trials脱敏事件；614位置有评分、899缺评分 |
 | 模型版本 | 两原始实体＋11-08各17更新GLM研究代表，事前固定；[实际实体与原生前向](benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/model_entities.json) |
 | 比较协议 | Harbor0.24.0、Mini-SWE2.4.6、原Verifier/时限、4096输出、AA v7；统一GPU Router设备及原锁 |
 | 任务用途 | 89题均未用于当前17行训练或选权重；31题历史暴露、58题未历史暴露分别展示 |
 | 费用口径 | 模型/教师参考费与真实读取；供应商逐请求实收、Router/工具/资源美元价未知，不填零 |
+| 收尾编码 | [4条真实H输入](benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/metrics/h_encoding_followup.json)原生编码无截断；原2333个Harbor Trial及其评分仍采用本批保存版本 |
 
 以下75迭代目录及2.1覆盖是已整理历史；当前2.0的每条完成状态沿上述独立批次更新。
 
