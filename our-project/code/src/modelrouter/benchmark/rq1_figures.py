@@ -20,22 +20,24 @@ def render_batch_figures(root):
         plt.close(fig)
 
     totals = [r for r in csv.DictReader((root / "metrics/per_strategy.csv").open()) if r["subset"] == "all"]
-    fig, (ax, fees) = plt.subplots(1, 2, figsize=(11, 7.2), sharey=True,
+    n_tasks = len({r["task_id"] for r in episodes})
+    max_cost = max(float(r["generator_known_reference_usd"] or 0) + float(r["teacher_known_reference_usd"] or 0) for r in totals)
+    fig, (ax, fees) = plt.subplots(1, 2, figsize=(11, max(7.2, len(totals) * .34 + 1.5)), sharey=True,
                                   gridspec_kw={"width_ratios": [2, 1]}, layout="constrained")
     for i, row in enumerate(totals):
         one, zero, n = (int(row[k]) for k in ("reward_1", "reward_0", "tasks"))
         ax.barh(i, one, color="#009E73")
         ax.barh(i, zero, left=one, color="#D55E00")
         ax.barh(i, n - one - zero, left=one + zero, color="#dddddd")
-        ax.text(n + 1, i, f"{one}/{one + zero} scored", va="center", fontsize=8)
+        ax.text(n + .03 * n_tasks, i, f"{one}/{one + zero} scored", va="center", fontsize=8)
         model, teacher = row["generator_known_reference_usd"], row["teacher_known_reference_usd"]
         if model:
             cost = float(model) + float(teacher or 0)
             fees.barh(i, cost, color=colors[row["strategy_id"].split("_")[0]])
-            fees.text(cost + .03, i, f"${cost:.3f}", va="center", fontsize=8)
+            fees.text(cost + .02 * max_cost, i, f"${cost:.4f}", va="center", fontsize=8)
     ax.set(yticks=range(len(totals)), yticklabels=[r["strategy_id"] for r in totals],
-           xlabel="Official tasks per strategy", xlim=(0, 115))
-    ax.set_title("89-task outcomes and scoring coverage", pad=28)
+           xlabel="Official tasks per strategy", xlim=(0, n_tasks * 1.45))
+    ax.set_title(f"{n_tasks}-task outcomes and scoring coverage", pad=28)
     ax.invert_yaxis()
     ax.legend(handles=[Line2D([], [], color=color, linewidth=6, label=label)
                        for color, label in (("#009E73", "Reward 1"), ("#D55E00", "Reward 0"),
@@ -51,13 +53,16 @@ def render_batch_figures(root):
     fixed = [s["id"] for s in strategies if s["stage"] == "fixed"]
     fig, ax = plt.subplots(figsize=(7.2, 4.6), layout="constrained")
     for row in ended:
-        if row["strategy_id"] not in fixed or not row["generator_known_reference_usd"]:
+        cost = row.get("latest_trial_reference_usd", row["reference_cost_usd"])
+        if row["strategy_id"] not in fixed or not cost:
             continue
         reward = row["reward"]
-        ax.scatter(float(row["generator_known_reference_usd"]), fixed.index(row["strategy_id"]), marker="o" if reward == "1.0" else "x" if reward == "0.0" else "^", color=colors[row["strategy_id"].split("_")[0]], alpha=.7)
-    ax.set(yticks=range(len(fixed)), yticklabels=fixed, xlabel="Known model reference fee / episode (USD)", title="Fixed model × requested Native Effort: actual task results")
+        eligible = row["effort_comparison_eligible"] == "True" and row.get("verifier_dependency_failure") != "True"
+        marker = "o" if reward and float(reward) == 1 and eligible else "x" if reward and float(reward) == 0 and eligible else "^"
+        ax.scatter(float(cost), fixed.index(row["strategy_id"]), marker=marker, color=colors[row["strategy_id"].split("_")[0]], alpha=.7)
+    ax.set(yticks=range(len(fixed)), yticklabels=fixed, xlabel="Final episode model reference fee (USD)", title="Fixed model × requested Native Effort: actual task results")
     ax.invert_yaxis()
-    fig.supxlabel("Circle: Reward 1; cross: Reward 0; triangle: no Reward. Missing request fees excluded from known sum.", fontsize=8)
+    fig.supxlabel("Circle: Reward 1; cross: Reward 0; triangle: no eligible score. Episodes with incomplete fees omitted.", fontsize=8)
     save(fig, "model_effort_comparison")
 
     lookup = {(r["task_id"], r["strategy_id"], r["seed"]): r for r in ended}
@@ -67,15 +72,16 @@ def render_batch_figures(root):
         if not row["strategy_id"].endswith("_off"):
             continue
         other = lookup.get((row["task_id"], row["strategy_id"][:-3] + "on", row["seed"]))
-        if not other or not all(r["reward"] and r["reference_cost_usd"] for r in (row, other)):
+        if not other or not all(r["reward"] and r.get("latest_trial_reference_usd", r["reference_cost_usd"]) and r.get("verifier_dependency_failure") != "True" for r in (row, other)):
             continue
         pairs += 1
-        ax.scatter(float(other["reference_cost_usd"]) - float(row["reference_cost_usd"]), float(other["reward"]) - float(row["reward"]), color=colors[row["strategy_id"].split("_")[0]], marker="s" if "original" in row["strategy_id"] else "o", alpha=.6)
+        delta = float(other.get("latest_trial_reference_usd", other["reference_cost_usd"])) - float(row.get("latest_trial_reference_usd", row["reference_cost_usd"]))
+        ax.scatter(delta, float(other["reward"]) - float(row["reward"]), color=colors[row["strategy_id"].split("_")[0]], marker="s" if "original" in row["strategy_id"] else "o", alpha=.6)
     if not pairs:
         ax.text(.5, .5, "No scored Teacher OFF/ON pairs yet", ha="center", transform=ax.transAxes)
     ax.axhline(0, color="#999999", linewidth=.6)
     ax.axvline(0, color="#999999", linewidth=.6)
-    ax.set(xlabel="ON − OFF model + teacher reference fee (USD)", ylabel="ON − OFF official Reward", yticks=[-1, 0, 1], ylim=(-1.3, 1.3), title=f"Same task / seed / weight teacher comparison: {pairs} pairs")
+    ax.set(xlabel="ON − OFF final episode model + teacher reference fee (USD)", ylabel="ON − OFF official Reward", yticks=[-1, 0, 1], ylim=(-1.3, 1.3), title=f"Same task / seed / weight teacher comparison: {pairs} pairs")
     ax.legend(handles=[Line2D([], [], color=colors[family], marker="s" if version == "original" else "o", linestyle="", label=f"{family.title()} {version}") for family in ("laya", "kev") for version in ("original", "trained")], fontsize=8, loc="upper right")
     fig.supxlabel("Each point is one task pair; complete cash net benefit remains unknown.", fontsize=8)
     save(fig, "teacher_effect")
