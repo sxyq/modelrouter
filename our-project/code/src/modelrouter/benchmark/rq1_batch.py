@@ -112,6 +112,7 @@ def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=F
                    "ledger_runs_root": str(path / "ledger-runs"), "ledger_root": str(path / "ledgers"),
                    "units": [{"task_id": unit["task_id"], "policy": unit["strategy_id"], "agent": "modelrouter",
                               "job_name": unit["unit_id"], "status": "PENDING", "pipeline_stage": "RQ1"}]}
+        episode["environment_kwargs"].update(config.get("environment_kwargs", {}))
         iterations.start(path, episode)
     iterations.append(root / "jobs.jsonl", dict(unit, status="RUNNING", timestamp=iterations.now()))
     with (path / "batch.log").open("a") as output:
