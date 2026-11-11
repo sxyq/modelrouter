@@ -74,7 +74,8 @@ def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=F
     if recover_infrastructure:
         saved = json.loads(state.read_text())
         episode = json.loads((path / "run_config.json").read_text())
-        recovery = dict(saved["units"][-1], job_name=unit["unit_id"] + "--infrastructure-recovery-1", status="PENDING")
+        recovery = dict(saved["units"][-1], job_name=unit["unit_id"] + f"--infrastructure-recovery-{len(saved['units'])}",
+                        environment_source_revision=config.get("environment_source_revision"), status="PENDING")
         saved["units"].append(recovery)
         saved.update(status="PENDING", updated_at=iterations.now())
         episode["units"].append(recovery)
@@ -176,10 +177,12 @@ def main(argv=None):
                                and "failed to fetch anonymous token" in error.get("exception_message", "")
                                and "EOF" in error.get("exception_message", ""))
             events = iterations.rows(path / "events.jsonl")
-            attempted_recovery = any(u["job_name"].endswith("--infrastructure-recovery-1") for u in json.loads((path / "resume_state.json").read_text())["units"])
+            saved_units = json.loads((path / "resume_state.json").read_text())["units"]
+            attempted_recovery = (any(u["job_name"] != unit["unit_id"] and u.get("environment_source_revision") == config["environment_source_revision"] for u in saved_units)
+                                  if "environment_source_revision" in config else any(u["job_name"].endswith("--infrastructure-recovery-1") for u in saved_units))
             verifier_download_failed = bool(config.get("environment_kwargs", {}).get("apt_mirrors", {}).get(unit["task_id"])) and any(
-                "uvx: command not found" in log.read_text() and "502  Bad Gateway" in log.read_text()
-                for log in path.glob("jobs/*/*/verifier/test-stdout.txt"))
+                not log.with_name("ctrf.json").exists() and "uvx: command not found" in log.read_text() and "502  Bad Gateway" in log.read_text()
+                for log in path.glob(f"jobs/{saved_units[-1]['job_name']}/*/verifier/test-stdout.txt"))
             if not attempted_recovery and (verifier_download_failed or
                     (restored_proxy or prepared_image) and trial.get("reward") is None and not any(
                         e["event"] in ("GENERATOR_END", "TEACHER_END", "TOOL_END") for e in events)):

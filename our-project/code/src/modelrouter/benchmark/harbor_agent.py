@@ -42,7 +42,7 @@ class A6000DockerEnvironment(DockerEnvironment):
 
     def __init__(self, *args, apt_mirrors=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.apt_mirror = (apt_mirrors or {}).get(self.environment_dir.parent.name)
+        self.apt_mirror = (apt_mirrors or {}).get(self.environment_name)
 
     async def start(self, force_build):
         await super().start(force_build)
