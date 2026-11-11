@@ -555,6 +555,7 @@ def export_batch_results(root, config, output_root=None):
     comparisons = []
     pairs = [(f"{family}_{version}_off", f"{family}_{version}_on", "teacher") for family in ("laya", "kev") for version in ("original", "trained")]
     pairs += [(f"{family}_original_{teacher}", f"{family}_trained_{teacher}", "training") for family in ("laya", "kev") for teacher in ("off", "on")]
+    pairs += [(pair["left"], pair["right"], pair["factor"]) for pair in config.get("paired_comparisons", [])]
     pairs += [(fixed["id"], router["id"], "fixed_vs_router") for fixed in strategies.values() if fixed.get("model") for router in strategies.values() if router["stage"] == "router"]
     fixed = [s for s in strategies.values() if s["stage"] == "fixed"]
     pairs += [(x["id"], y["id"], "native_effort" if x.get("model") == y.get("model") else "fixed_strategy")
@@ -603,8 +604,8 @@ def export_batch_results(root, config, output_root=None):
               f"Harbor命令累计墙钟{sum(r['harness_total_wall_s'] or 0 for r in all_groups):.6f}秒，内含官方Trial累计{sum(r['episode_total_wall_s'] or 0 for r in all_groups):.6f}秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。\n",
               f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{sum(r['ended_fixed_strategies'] == fixed_count for r in task_rows)}题已结束全部{fixed_count}个固定/简单策略；{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。批次先执行固定阶段，再执行Router阶段。\n",
               "GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。\n",
-              "完整89题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。已报告档位冲突的官方结果保留在逐Episode表，并从按请求档位主比较中另列。通过率分母仅为该策略已取得的有效官方评分任务。\n",
-              "| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 评分覆盖 | 89题通过率区间 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
+              f"本批{len(tasks)}题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。已报告档位冲突的官方结果保留在逐Episode表，并从按请求档位主比较中另列。通过率分母仅为该策略已取得的有效官方评分任务。\n",
+              f"| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 评分覆盖 | {len(tasks)}题通过率区间 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
               "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for r in grouped:
         if r["subset"] == "all":
@@ -617,7 +618,7 @@ def export_batch_results(root, config, output_root=None):
         report.append(f"\n实际执行跨度：{first.isoformat()}至{last.isoformat()}，{(last - first).total_seconds():.6f}秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。\n")
     cache_tokens = measured_sum(all_groups, "known_cache_read_tokens")
     cache_label = "UNKNOWN" if cache_tokens is None else f"{cache_tokens:,}"
-    report += ["\n评分覆盖是已取得有效官方评分的任务数/89；通过率区间把其余位置分别按全部未通过或全部通过计算。\n",
+    report += [f"\n评分覆盖是已取得有效官方评分的任务数/{len(tasks)}；通过率区间把其余位置分别按全部未通过或全部通过计算。\n",
                f"Provider实际报告缓存读取{cache_label} Token；{sum(r['cache_read_unknown_records'] or 0 for r in all_groups)}次请求未报告缓存读取；跨模型物理KV共享未知。\n",
                f"教师请求{sum(r['teacher_requests'] or 0 for r in all_groups)}次，短评实际输入Router {sum(r.get('teacher_consumed_decisions', 0) for r in episodes)}次；同一短评可由多次决策消费。\n"]
     truncated = [r for r in episodes if r.get("router_truncated_decisions")]
@@ -638,12 +639,12 @@ def export_batch_results(root, config, output_root=None):
     for error in sorted({r.get("error_type") or "NO_RECORDED_ERROR" for r in ended}):
         group = [r for r in ended if (r.get("error_type") or "NO_RECORDED_ERROR") == error]
         report.append(f"| {error} | {sum(r['reward'] == 1 for r in group)} | {sum(r['reward'] == 0 for r in group)} | {sum(r['reward'] is None for r in group)} |")
-    report += ["\n## 同题训练与教师对照\n",
+    report += ["\n## 同题训练、教师与消融对照\n",
                "评分对只包含两侧均有官方Reward的同题同seed；费用对是其中两侧请求参考费均齐全的子集。通过数差异与费用差异分别按对应集合报告。\n",
                "| 因素 | 左侧 → 右侧 | 评分对 | 通过数左/右 | 费用齐全对 | 费用对通过数左/右 | 参考费左/右USD |",
                "|---|---|---:|---:|---:|---:|---|"]
     for r in comparisons:
-        if r["factor"] in ("training", "teacher"):
+        if r["factor"] in ("training", "teacher", "granularity", "information"):
             costs = ["UNKNOWN" if r[key] is None else f"{r[key]:.8f}"
                      for key in ("left_reference_known_pairs_usd", "right_reference_known_pairs_usd")]
             report.append(f"| {r['factor']} | {r['left']} → {r['right']} | {r['scored_pairs']} | {r['left_reward_1']}/{r['right_reward_1']} | {r['reference_known_pairs']} | {r['left_reward_1_reference_known_pairs']}/{r['right_reward_1_reference_known_pairs']} | {' / '.join(costs)} |")
