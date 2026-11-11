@@ -437,6 +437,7 @@ def export_batch_results(root, config, output_root=None):
                "episode_wall_s": None, "generator_known_reference_usd": None,
                "harbor_trial_count": 0, "attempts_wall_s": None, "harness_command_wall_s": None,
                "teacher_known_reference_usd": None, "reference_cost_usd": None,
+               "latest_trial_reference_usd": None, "verifier_dependency_failure": False,
                "supplier_billed_usd": None, "router_compute_cost_usd": None,
                "environment_cost_usd": None, "complete_cost_usd": None,
                "physical_kv_sharing": "UNKNOWN", "evidence_path": str(private)}
@@ -466,6 +467,12 @@ def export_batch_results(root, config, output_root=None):
         def reported(group, field):
             values = [r.get(field) for r in group]
             return sum(values) if all(v is not None for v in values) else None
+        latest_requests = provider_requests(trial, events) if trial else []
+        if trial:
+            verifier_dir = Path(trial["trial_dir"]) / "verifier"
+            stdout = verifier_dir / "test-stdout.txt"
+            row["verifier_dependency_failure"] = (stdout.exists() and not (verifier_dir / "ctrf.json").exists()
+                                                  and "uvx: command not found" in stdout.read_text())
         row.update(trial_id=trial.get("trial_id"), reward=trial.get("reward"),
                    effort_comparison_eligible=not strategy.get("model") or not any(r.get("native_effort_status") == "PROVIDER_REPORTED_MISMATCH" for r in generator),
                    harbor_trial_count=len(trials),
@@ -482,6 +489,7 @@ def export_batch_results(root, config, output_root=None):
                    completed_tool_calls=sum(e["event"] == "TOOL_END" for e in events),
                    generator_known_reference_usd=known_cost(generator), teacher_known_reference_usd=known_cost(teacher),
                    reference_cost_usd=reported(requests, "cost_usd"),
+                   latest_trial_reference_usd=reported(latest_requests, "cost_usd") if trial else None,
                    supplier_billed_usd=reported(requests, "actual_billed_cost_usd"),
                    unknown_provider_cost_requests=sum(r.get("cost_usd") is None for r in requests),
                    prompt_tokens=reported(requests, "prompt_tokens"), completion_tokens=reported(requests, "completion_tokens"),
@@ -528,7 +536,7 @@ def export_batch_results(root, config, output_root=None):
         all_rows = [r for r in episodes if r["strategy_id"] == strategy]
         for subset, group in (("all", all_rows), ("independent_of_training_and_selection", [r for r in all_rows if r["independent_of_training_and_selection"]]), ("historically_exposed", [r for r in all_rows if r["historically_exposed"]]), ("not_historically_exposed", [r for r in all_rows if not r["historically_exposed"]])):
             n = len(group)
-            eligible = [r for r in group if r["effort_comparison_eligible"]]
+            eligible = [r for r in group if r["effort_comparison_eligible"] and not r.get("verifier_dependency_failure")]
             one, zero = sum(r["reward"] == 1 for r in eligible), sum(r["reward"] == 0 for r in eligible)
             finished = [r for r in group if r["status"] in ("EVALUATED", "PARTIAL", "BLOCKED")]
             running = sum(r["execution_status"] == "RUNNING" and r["status"] not in ("EVALUATED", "PARTIAL", "BLOCKED") for r in group)
@@ -537,6 +545,7 @@ def export_batch_results(root, config, output_root=None):
                             "attempted": len(finished), "reward_1": one, "reward_0": zero,
                             "harbor_trial_count": sum(r["harbor_trial_count"] for r in group),
                             "no_official_reward": sum(r["reward"] is None for r in finished),
+                            "verifier_dependency_failed_positions": sum(r.get("verifier_dependency_failure", False) for r in finished),
                             "running": running, "not_started": n - len(finished) - running - unavailable,
                             "unavailable": unavailable, "effort_mismatch_completed": sum(not r["effort_comparison_eligible"] for r in finished),
                             "not_finished": n - len(finished), "scored_pass_rate": one / (one + zero) if one + zero else None,
@@ -563,8 +572,9 @@ def export_batch_results(root, config, output_root=None):
     for left, right, factor in pairs:
         a = {(r["task_id"], r["seed"]): r for r in episodes if r["strategy_id"] == left}
         b = {(r["task_id"], r["seed"]): r for r in episodes if r["strategy_id"] == right}
-        paired = [(a[k], b[k]) for k in a.keys() & b.keys() if a[k]["reward"] in (0, 1) and b[k]["reward"] in (0, 1) and a[k]["effort_comparison_eligible"] and b[k]["effort_comparison_eligible"]]
+        paired = [(a[k], b[k]) for k in a.keys() & b.keys() if a[k]["reward"] in (0, 1) and b[k]["reward"] in (0, 1) and a[k]["effort_comparison_eligible"] and b[k]["effort_comparison_eligible"] and not a[k].get("verifier_dependency_failure") and not b[k].get("verifier_dependency_failure")]
         cost_pairs = [(x, y) for x, y in paired if x["reference_cost_usd"] is not None and y["reference_cost_usd"] is not None]
+        latest_pairs = [(x, y) for x, y in paired if x.get("latest_trial_reference_usd") is not None and y.get("latest_trial_reference_usd") is not None]
         comparisons.append({"factor": factor, "left": left, "right": right, "scored_pairs": len(paired),
                             "left_reward_1": sum(x["reward"] == 1 for x, y in paired),
                             "right_reward_1": sum(y["reward"] == 1 for x, y in paired),
@@ -573,6 +583,9 @@ def export_batch_results(root, config, output_root=None):
                             "right_reward_1_reference_known_pairs": sum(y["reward"] == 1 for x, y in cost_pairs),
                             "left_reference_known_pairs_usd": sum(x["reference_cost_usd"] for x, y in cost_pairs) if cost_pairs else None,
                             "right_reference_known_pairs_usd": sum(y["reference_cost_usd"] for x, y in cost_pairs) if cost_pairs else None,
+                            "latest_trial_reference_known_pairs": len(latest_pairs),
+                            "left_latest_trial_reference_usd": sum(x["latest_trial_reference_usd"] for x, y in latest_pairs) if latest_pairs else None,
+                            "right_latest_trial_reference_usd": sum(y["latest_trial_reference_usd"] for x, y in latest_pairs) if latest_pairs else None,
                             "reward_delta_sum": sum(y["reward"] - x["reward"] for x, y in paired),
                             **{field + "_delta_sum": sum(y[field] - x[field] for x, y in paired) if paired and all(x.get(field) is not None and y.get(field) is not None for x, y in paired) else None for field in ("generator_requests", "teacher_requests", "teacher_known_reference_usd", "known_cache_read_tokens", "logical_model_changes", "router_wall_s", "episode_wall_s", "harness_command_wall_s")},
                             "known_reference_delta_usd": sum(y["reference_cost_usd"] - x["reference_cost_usd"] for x, y in paired) if paired and all(x["reference_cost_usd"] is not None and y["reference_cost_usd"] is not None for x, y in paired) else None,
@@ -601,6 +614,7 @@ def export_batch_results(root, config, output_root=None):
               f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。固定组已报告档位不符另列后，官方Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}；Router组保留实际任务Reward及内部请求/返回档位差异。\n",
               f"已保存原Harbor Trial {totals['harbor_trial_count']}次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。\n",
               f"已知模型参考费${model_usd:.8f}、教师${teacher_usd:.8f}，合计${model_usd + teacher_usd:.8f}；{sum(r['unknown_provider_cost_requests'] or 0 for r in all_groups)}次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。\n",
+              "费用主表包含全部尝试；latest_trial_reference_usd单列最后Episode参考费。原Verifier写出的0保留；已确认uvx缺失且没有测试报告的尝试单列，不计入任务质量对照。\n",
               f"Harbor命令累计墙钟{sum(r['harness_total_wall_s'] or 0 for r in all_groups):.6f}秒，内含官方Trial累计{sum(r['episode_total_wall_s'] or 0 for r in all_groups):.6f}秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。\n",
               f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{sum(r['ended_fixed_strategies'] == fixed_count for r in task_rows)}题已结束全部{fixed_count}个固定/简单策略；{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。批次先执行固定阶段，再执行Router阶段。\n",
               "GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。\n",
