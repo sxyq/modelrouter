@@ -34,6 +34,8 @@ def prepare(config_path, revision):
     source = iterations.ROOT / config["task_source"]
     tasks = []
     for task in dataset["tasks"]:
+        if "task_ids" in config and task["name"] not in config["task_ids"]:
+            continue
         definition = tomllib.loads((source / task["path"] / "task.toml").read_text())
         exposed = task["name"] in config["historically_exposed_tasks"]
         tasks.append({"task_id": task["name"], "path": task["path"],
@@ -84,6 +86,7 @@ def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=F
         return dict(unit, status="FINISHED", reused=True)
     if not state.exists():
         v9 = deepcopy(config["v9_config"])
+        v9.update(strategy.get("v9_config", {}))
         v9.update(teacher_enabled=strategy.get("teacher_enabled", False),
                   capability_snapshot=config["capability_snapshot"])
         actions = config["candidate_actions"]
