@@ -1,5 +1,11 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 当前接续：新联合训练与完整比较（2026-11-12）
+
+[联合数据与训练](../results/iterations/20261111-v9-rq4-joint/)新增6请求、5有效工具/原评价器结果、2通过，已知模型参考费$0.09683890、1请求费用未知。Hikari的新Terra High通过，Dynaconf的新GLM Max通过；合并原候选的两个严格偏好分别为Terra High、Luna Xhigh。2条七候选偏好+16辅助已沿原Trainer完成Laya/Kev各18更新，保存`V9-K3-GLM-*-20261111`；单轮代表在评价前确定。
+
+[接续比较配置](../experiments/configs/v9_joint_followup.json)按2题×27策略×seed43执行完整Harbor Episode，关联RQ1质量/费用、RQ2档位、RQ3开始/阶段/逐生成、RQ4训练/教师/T/M/H。两任务均为历史已观察、独立于本批训练和选权重；RQ5的工作负载扩展及重复仍待结果推进。正式范围与下方已结束89题批次保持。
+
 ## 当前成果：正式Terminal-Bench 2.0 RQ1（2026-11-11）
 
 | 项目 | 当前事实 |

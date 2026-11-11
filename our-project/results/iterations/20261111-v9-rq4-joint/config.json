@@ -1,0 +1,24 @@
+{
+  "run_id": "20261111-v9-rq4-joint",
+  "source_revision": "4f20fb030f113c8f0dc13770dc7b846847575bdd",
+  "primary_rq": "RQ4",
+  "linked_rqs": ["RQ1", "RQ2", "RQ3", "RQ5"],
+  "purpose": "New native-effort observations at two existing legal Train cutoffs, followed by necessary training and independent complete Agent comparison",
+  "formal_model_ids": ["gpt-6-luna", "glm-5.3-flash", "gpt-6.1-terra"],
+  "source_directory": "our-project/results/iterations/20261107-v9-full-method/private/joint",
+  "actions": {
+    "hikari-py__hikari-2224-continued": ["gpt-6-luna:high", "gpt-6-luna:xhigh", "gpt-6.1-terra:high"],
+    "rochacbruno__dynaconf-375-continued": ["gpt-6-luna:high", "gpt-6.1-terra:high", "glm-5.3-flash:max"]
+  },
+  "max_output_tokens": 4096,
+  "generator_stream": false,
+  "teacher_enabled_during_collection": false,
+  "verifier": "Original saved task test_patch, fixed FAIL_TO_PASS/PASS_TO_PASS IDs and upstream parser",
+  "preference_scope": "Observed candidate subset only; quality first, measured model-rate cost at equal quality",
+  "full_action_pool_optimum_known": false,
+  "training_selection_rule": "Only after new valid joint information; one epoch with original Trainer, no official 89-task outcome selects weights",
+  "historical_cutoffs_reused": true,
+  "capability_snapshot_id": "20261107T134704898459Z-v7",
+  "resource_lock": "/home/syy/ai-serving/state/gpu.lock",
+  "billing": "Reference model-rate cost and actual billed cost reported separately; unknown resource prices remain unknown"
+}

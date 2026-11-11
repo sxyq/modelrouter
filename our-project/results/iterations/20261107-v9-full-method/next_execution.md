@@ -16,6 +16,8 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 ## 第一：多任务合法联合监督与必要训练
 
+2026-11-12本项已取得实际增量：[两个合法截止](../20261111-v9-rq4-joint/joint_supervision.json)新增6请求、5有效原评价器结果，合并原候选形成2条七候选偏好+16辅助。Laya/Kev新实体各18更新保存，15.193/252.463秒，代表按单轮规则在评价前确定；原11-08实体不改写。
+
 沿原合法Train任务、保存前缀、镜像、Harbor和Verifier取得多个真实截止的Model×Native Effort质量及费用。质量优先，同质量费用次之；监督只读取该截止之前的T/M/H与教师短评。
 
 保留真实请求与返回模型/Effort。GLM Low/High/Max已有工具及官方Reward，但返回Effort未报告；本批Terra none→medium共52次，Luna历史max→xhigh保持原标签。不同返回、未知身份和缺Reward分别保存；AA与本轮正式终局不作训练标签。
@@ -23,6 +25,8 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 有真实联合信息增量后沿原Laya/Kev Trainer开展必要更新，统一使用当前Serializer；保留原始、11-08研究实体和新保存点的实际来源。训练完成后事前确定每架构一个新代表，不依据已观察89题挑权重，不重做此前241前缀与数据盘点。
 
 ## 第二：独立完整Agent比较及单Agent阶段研究
+
+当前沿[同批配置](../../../experiments/configs/v9_joint_followup.json)执行2题×27策略×seed43=54个完整Episode，保留历史已观察身份；固定模型、四实体Teacher OFF/ON、两新实体开始/阶段粒度及各T/M/H遮蔽一起比较。结果归入正式2.0结果体系中的`20261111-v9-joint-followup`，不并入原89题seed42结果。
 
 使用未参与新训练与权重选择的独立工作负载，明确历史暴露属性。成对保持任务、seed、权重、池、Effort菜单、预算、AA、Encoder和GPU条件；固定Luna/GLM/Terra、简单规则、两架构原始/新训练代表及Teacher OFF/ON均沿原Harbor执行完整Episode。
 

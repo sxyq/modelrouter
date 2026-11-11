@@ -1,5 +1,7 @@
 # ModelRouter研究结果总览
 
+**2026-11-12接续**：[两个Train截止与两18更新实体](iterations/20261111-v9-rq4-joint/)集中保存新联合监督及原Trainer结果；[同批完整比较配置](../experiments/configs/v9_joint_followup.json)为2个历史已观察任务、27策略、seed43。该批关联RQ1/RQ2/RQ3/RQ4，原89题完整批次及以下历史目录分类保持独立。
+
 当前主线：真实K=3，Luna／GLM-5.3-Flash／Terra，Single-Agent、Model×Native Effort、T/M/H、AA逐档能力、缓存连续性、Laya／Kev原始与训练版、Luna轨迹教师，以及含全部开销的完整Episode收益。RQ3为单Agent阶段、真实子任务边界与路由粒度。历史HY4实验保持原处；以下分类不改写旧成绩。
 
 ## 当前正式Terminal-Bench 2.0 RQ1

@@ -1,5 +1,16 @@
 # Laya / Kev 全历史训练研究报告
 
+## 2026-11-12 · 两任务新联合监督训练
+
+本批事前确定`runs/V9-K3-GLM-LAYA-20261111`及`runs/V9-K3-GLM-KEV-20261111`，均从两原始可执行实体训练单轮、18更新；2条七候选偏好来自Hikari与Dynaconf，加16条原辅助。各任务的偏好仅涵盖实际候选；GLM返回Effort未报告，完整15动作最优未知。原11-08实体仍为旧批代表。
+
+| 新实体 | 训练 | 实际时间 | 参数与输入 |
+|---|---|---:|---|
+| [Laya](../iterations/20261111-v9-rq4-joint/laya_training.json) | CUDA、原Trainer、Head-only | 15.193秒 | 18行均使用；原8192/512窗口 |
+| [Kev](../iterations/20261111-v9-rq4-joint/kev_training.json) | CUDA/BF16计算、FP32权重、LoRA+Head | 252.463秒 | 96732前向Token、截断0、峰值GPU15657493504字节 |
+
+数据及权重在完整评价前确定，Terminal-Bench终局不参与训练或权重选择。沿共享GPU锁串行完成，旧F15恢复、Serving和原始实体保持。
+
 ## 2026-11-09 · 正式RQ1版本已事前确定
 
 [Terminal-Bench 2.0 RQ1](../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)使用下面两原始实体及两GLM研究代表，各Teacher OFF/ON；[model_entities.json](../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/model_entities.json)记录参数文件、实际metadata与原生前向。后四次前向使用完整15候选卡及真实T/M/H无截断；前四次单能力卡前向只用于参数加载记录。当前没有新训练，“最强”尚无同协议多任务结果，RQ1期间不换权重。F15恢复和Serving原实体保持。

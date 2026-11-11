@@ -1,5 +1,7 @@
 # ModelRouter 全项目数据与成果入口
 
+**2026-11-12增量**：[新联合监督](../results/iterations/20261111-v9-rq4-joint/joint_supervision.json)复用两个合法Train截止，新增6个真实请求、5个原评价器有效结果；合并原候选后形成2条七候选偏好，加16辅助共18行。Laya/Kev均完成18次更新，新权重在A6000；后续完整比较沿[同批配置](../experiments/configs/v9_joint_followup.json)，2个历史已观察任务×27策略×seed43，原660万行及旧17行数据保持原身份。
+
 **2026-11-09增量**：[正式Terminal-Bench 2.0 RQ1](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)已启动，89题×17策略、固定四并发。此批次独立保存官方结果/费用，不并入以下2.1历史覆盖或重复统计已有660万清洗行。四实体身份与实际原生前向见[model_entities](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/model_entities.json)。当前不新增训练，两个研究代表仍各17更新。
 
 整理时间：2026-11-08，A6000现场取样19:10台北；源码HEAD为`688479af67b5b0682d67d43415af64a1011ecfe4`。公开清洗行数沿已保存统计，模型实体、进程和队列由本轮服务器文件取得。
