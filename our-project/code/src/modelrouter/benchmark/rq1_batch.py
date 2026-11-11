@@ -181,7 +181,7 @@ def main(argv=None):
             attempted_recovery = (any(u["job_name"] != unit["unit_id"] and u.get("environment_source_revision") == config["environment_source_revision"] for u in saved_units)
                                   if "environment_source_revision" in config else any(u["job_name"].endswith("--infrastructure-recovery-1") for u in saved_units))
             verifier_download_failed = bool(config.get("environment_kwargs", {}).get("apt_mirrors", {}).get(unit["task_id"])) and any(
-                not log.with_name("ctrf.json").exists() and "uvx: command not found" in log.read_text() and "502  Bad Gateway" in log.read_text()
+                not log.with_name("ctrf.json").exists() and "uvx: command not found" in log.read_text()
                 for log in path.glob(f"jobs/{saved_units[-1]['job_name']}/*/verifier/test-stdout.txt"))
             if not attempted_recovery and (verifier_download_failed or
                     (restored_proxy or prepared_image) and trial.get("reward") is None and not any(
