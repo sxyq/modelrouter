@@ -1,6 +1,8 @@
 # ModelRouter · 研究总纲、相关工作与方法设计
 
-**2026-11-12接续**：[新监督与训练](../results/iterations/20261111-v9-rq4-joint/)覆盖两个合法Train截止、各七个有效比较候选；两架构各18更新已保存。新请求中GLM Max/Dynaconf与Terra High/Hikari通过原评价器；GLM请求档位和未报告的返回档位分别保留。随后以2个历史已观察且独立于新训练/选择的任务执行27策略完整Episode：原始/新训练、教师开关、三模型固定参照、开始/阶段/逐生成与T/M/H。RQ1为完整任务质量—成本，联合监督/训练与系统消融属于RQ4，并衔接RQ2/RQ3；真实子任务边界与RQ5工作负载范围继续按实际结果补充。
+**2026-11-12接续已结束**：[新监督与训练](../results/iterations/20261111-v9-rq4-joint/)覆盖两个合法Train验证阶段截止、各七个有效候选；两架构各18更新已保存。新GLM Max/Dynaconf与Terra High/Hikari通过原评价器，两个偏好分别Luna Xhigh、Terra High。随后[2题×27策略完整结果](../results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)全部54位置结束：42通过/2失败/10缺评分、74原Trial，模型+教师已知$0.73402850。两任务历史已观察且独立于新训练/选择；覆盖原始/训练、教师、三模型参照、开始/阶段/逐生成和T/M/H。
+
+本批新训练Laya ON与Kev OFF/ON均2/2，相对固定Terra High参考费降低15.13%–34.25%，相对固定Luna High增加225.67%–320.35%。Laya ON训练后更省参考费但更慢；Kev ON从1/2升至2/2却更贵，新Kev主组全选Terra Medium。六个有效教师对未增加通过数；原始Laya教师参考费下降7.42%。RQ1整体净收益继续缺完整实收与资源USD；RQ4后续重点为两个验证截止之外的阶段监督及可重复贡献。RQ2精确返回/AA缺项、RQ3真实子任务边界与RQ5跨机制工作负载分别继续，单Agent范围保持。
 
 **2026-11-11正式RQ1**：[Terminal-Bench 2.0完整批次](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)的89题×17策略×seed42全部结束，614位置有官方评分、899缺评分；固定四并发、Router两并发，原Harbor/Verifier、4096输出、AA v7与原GPU锁。事前确定的两原始实体和11-08各17更新GLM研究代表保持。同题且费用齐全的13/19题中，固定Terra High通过10/14题、训练Kev OFF/ON通过7/11题，后者参考费均更高。完整现金净收益仍缺供应商实收与资源单价。原4条H截断保存输入已沿唯一Serializer完成原生编码，丢失Token为0；该收尾编码尚无新训练及完整Episode。后续补多任务合法联合监督、单Agent阶段/子任务边界/粒度、T/M/H消融和独立工作负载，不以本批结果挑权重。
 

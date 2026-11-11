@@ -11,6 +11,8 @@
 
 数据及权重在完整评价前确定，Terminal-Bench终局不参与训练或权重选择。沿共享GPU锁串行完成，旧F15恢复、Serving和原始实体保持。
 
+[随后54项完整比较](../benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)已结束。Laya Teacher ON训练前后均2/2，参考费0.03337800→0.02466572美元，但累计Episode墙钟增加593.650秒；Kev ON由1/2→2/2、参考费0.00300610→0.03183710美元。新Kev OFF/ON全程Terra Medium，原始版全程Luna Low。固定Luna High两题均通过、最后Episode参考费仅0.00757392美元；论文最终训练版本与更广任务收益仍待后续研究。这些实际终局没有触发重选权重。
+
 ## 2026-11-09 · 正式RQ1版本已事前确定
 
 [Terminal-Bench 2.0 RQ1](../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)使用下面两原始实体及两GLM研究代表，各Teacher OFF/ON；[model_entities.json](../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/model_entities.json)记录参数文件、实际metadata与原生前向。后四次前向使用完整15候选卡及真实T/M/H无截断；前四次单能力卡前向只用于参数加载记录。当前没有新训练，“最强”尚无同协议多任务结果，RQ1期间不换权重。F15恢复和Serving原实体保持。

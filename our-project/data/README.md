@@ -1,6 +1,6 @@
 # ModelRouter 全项目数据与成果入口
 
-**2026-11-12增量**：[新联合监督](../results/iterations/20261111-v9-rq4-joint/joint_supervision.json)复用两个合法Train截止，新增6个真实请求、5个原评价器有效结果；合并原候选后形成2条七候选偏好，加16辅助共18行。Laya/Kev均完成18次更新，新权重在A6000；后续完整比较沿[同批配置](../experiments/configs/v9_joint_followup.json)，2个历史已观察任务×27策略×seed43，原660万行及旧17行数据保持原身份。
+**2026-11-12增量**：[新联合监督](../results/iterations/20261111-v9-rq4-joint/joint_supervision.json)复用两个合法Train截止，新增6个真实请求、5个原评价器有效结果；合并原候选后形成2条七候选偏好，加16辅助共18行。Laya/Kev均完成18次更新，新权重在A6000；[后续完整比较](../results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)的54位置全部结束，42通过/2失败/10缺评分、74原Trial，模型+教师已知参考费$0.73402850。2题历史已观察，原660万行及旧17行数据保持原身份。
 
 **2026-11-09增量**：[正式Terminal-Bench 2.0 RQ1](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)已启动，89题×17策略、固定四并发。此批次独立保存官方结果/费用，不并入以下2.1历史覆盖或重复统计已有660万清洗行。四实体身份与实际原生前向见[model_entities](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/model_entities.json)。当前不新增训练，两个研究代表仍各17更新。
 
@@ -19,10 +19,12 @@
 | 原S1/S2/S3训练候选 | 4,863,900条来源引用 | 31,766偏好／3,537,955观察动作／1,294,179资源辅助；原模型身份 |
 | 原固定Val | S1 561／S2 337／S3 4,794问题 | S3来自2,244条记录；问题数和记录数分别保存 |
 | 历史V9 Model-only偏好 | 40条 | 步骤质量23／等质量成本8／任务成本9，不是新K=3联合标签 |
-| 新GLM池训练输入 | 17行 | 1个五候选联合偏好截止＋16辅助，赢家明确Luna Xhigh；[联合监督](../results/iterations/20261108-v9-k3-training/joint_supervision.json) |
+| 当前GLM池训练输入 | 18行 | 2个七候选联合偏好截止＋16辅助；Hikari选Terra High、Dynaconf选Luna Xhigh；[新联合监督](../results/iterations/20261111-v9-rq4-joint/joint_supervision.json)。[11-08的17行](../results/iterations/20261108-v9-k3-training/joint_supervision.json)保留历史身份 |
 | 真实实验目录 | 75个 | 其中43目录有原Harbor记录，合计198个不同trial_id、31个官方任务ID；[全部批次](../results/README.md#全项目迭代目录索引) |
-| Terminal-Bench任务覆盖 | 89题 | 29题有Agent尝试、22题有官方Reward、7题无终局、60题尚无Agent运行；[逐题与Pass率/费用](../results/benchmark/README.md) |
-| 最近一轮完整尝试 | 49个 | 33有效终局：21个1／12个0；16无Reward；[逐条结果](../results/iterations/20261108-v9-k3-training/episode_results.json) |
+| 正式Terminal-Bench 2.0 | 89题×17策略 | 全部1513位置结束，256通过／358失败／899缺评分，2333个Harbor Trial；[逐题Pass率与费用](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) |
+| 新训练与粒度/信息消融 | 2题×27策略 | 全部54位置结束，42通过／2失败／10缺评分、74原Trial；[独立批次终局](../results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md) |
+| 历史Terminal-Bench 2.1 | 89题 | 29题有Agent尝试、22题有官方Reward、7题无终局、60题尚无Agent运行；[历史覆盖](../results/benchmark/README.md) |
+| 11-08新池开发与三题比较 | 49次尝试 | 33有效终局：21个1／12个0；16无Reward；[逐条结果](../results/iterations/20261108-v9-k3-training/episode_results.json) |
 | 当前AA能力 | v7，130指标 | Luna/Terra各六档，GLM仅Max；Low/High缺测，Index5.0.1 |
 | 模型实体与训练历史 | 36个可见保存目录，125份run.json | 目录存在、历史训练记录、当前研究代表分别解释；[模型总报告](../results/training/training_research.md) |
 | 文献材料 | 本地59个PDF文件 | 按文件计；论文、笔记和重复素材仍按各原索引追溯 |

@@ -1,5 +1,13 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
+## 2026-11-12 · 新联合训练与关联完整比较
+
+[本批终局](rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)为2个历史已观察任务×27策略×seed43：54位置、74个Trial全部结束，42通过/2失败/10缺评分，模型+教师已知参考费$0.73402850、12请求费用未知。固定四并发、Router两并发；新18更新Laya/Kev、原始版、教师开关、开始/阶段/逐生成及T/M/H共同执行原Harbor/Verifier。
+
+同题最后Episode参考费：固定Luna High $0.00757392，新训练Laya ON $0.02466572、Kev OFF/ON $0.02944120/$0.03183710，均2/2通过。新Kev主组全选Terra Medium，原始Kev全选Luna Low；Laya ON训练前后2/2且参考费下降26.10%，累计墙钟增加593.650秒。原Verifier安装失败的20个0保留在原尝试，不计任务质量；最终2个0来自日期匹配断言。
+
+完整实收与资源USD未知；实际缓存读1,964,032 Token，Router截断0，Luna Low教师32请求/45次消费。任务容器、Router socket、控制与20分钟观察脚本、临时反向代理均已结束，实验镜像配置保留。图表和逐任务费用在同一批次，不合并到下方89题seed42结果。
+
 ## 正式2.0 RQ1全量尝试已结束
 
 [当前批次](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)采用官方`terminal-bench@2.0`、Commit `69671fbaac6d67a7ef0dfec016cc38a64ef7a77c`，89题×17策略×seed42=1513位置。固定组含GLM/Luna Low、High、Max，Terra High、单独Luna Xhigh及规则；八Router组为四实体各Teacher OFF/ON。固定四并发、Router两并发，共享原GPU锁和原生Adapter worker，不新增训练或替换Serving。
