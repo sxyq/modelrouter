@@ -142,7 +142,7 @@ def format_router_payload(payload: Mapping) -> str:
             continuity.pop(name)
     history["continuity"] = continuity
     snippet = data.get("history_snippet") or ""
-    history["history_snippet"], history["history_summary_view"] = _history_summary(snippet, 900)
+    history["history_snippet"], history["history_summary_view"] = _history_summary(snippet, 880)
     groups = {
         "T": task, "teacher_assessment": assessment, "M": models, "H": history,
     }

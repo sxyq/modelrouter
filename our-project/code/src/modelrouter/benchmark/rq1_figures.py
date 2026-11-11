@@ -39,13 +39,13 @@ def render_batch_figures(root):
     ax.invert_yaxis()
     ax.legend(handles=[Line2D([], [], color=color, linewidth=6, label=label)
                        for color, label in (("#009E73", "Reward 1"), ("#D55E00", "Reward 0"),
-                                            ("#dddddd", "No eligible score yet"))], fontsize=8,
+                                            ("#dddddd", "No eligible official score"))], fontsize=8,
               loc="lower left", bbox_to_anchor=(0, 1.005), ncol=3)
     fees.set(xlabel="Known model + teacher reference USD", title="All attempts, including failures")
     fees.tick_params(axis="y", labelleft=False)
     fees.margins(x=.22)
     fig.suptitle("Terminal-Bench 2.0")
-    fig.supxlabel("Gray includes missing Reward, unfinished positions and reported effort conflicts. Supplier billing and resource USD are unknown.", fontsize=8)
+    fig.supxlabel("Supplier billing and resource USD are unknown.", fontsize=8)
     save(fig, "success_cost_frontier")
 
     fixed = [s["id"] for s in strategies if s["stage"] == "fixed"]
