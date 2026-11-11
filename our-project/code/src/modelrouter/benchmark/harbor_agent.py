@@ -40,6 +40,16 @@ from .iterations import append, event, now, rows
 class A6000DockerEnvironment(DockerEnvironment):
     """Use upstream Docker transfers when its engine is on the remote VM."""
 
+    def __init__(self, *args, apt_mirrors=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.apt_mirror = (apt_mirrors or {}).get(self.environment_dir.parent.name)
+
+    async def start(self, force_build):
+        await super().start(force_build)
+        if self.apt_mirror:
+            await self.exec("sed -i -E 's|http://(archive|security).ubuntu.com/ubuntu/?|"
+                            + self.apt_mirror + "|g' /etc/apt/sources.list.d/ubuntu.sources")
+
     @property
     def capabilities(self):
         return super().capabilities.model_copy(update={"mounted": False})

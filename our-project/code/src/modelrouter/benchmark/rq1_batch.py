@@ -78,6 +78,7 @@ def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=F
         saved["units"].append(recovery)
         saved.update(status="PENDING", updated_at=iterations.now())
         episode["units"].append(recovery)
+        episode["environment_kwargs"].update(config.get("environment_kwargs", {}))
         iterations.write_atomic(path / "run_config.json", episode)
         iterations.write_atomic(state, saved)
         job = path / "jobs" / recovery["job_name"]
@@ -175,7 +176,12 @@ def main(argv=None):
                                and "EOF" in error.get("exception_message", ""))
             events = iterations.rows(path / "events.jsonl")
             attempted_recovery = any(u["job_name"].endswith("--infrastructure-recovery-1") for u in json.loads((path / "resume_state.json").read_text())["units"])
-            if (restored_proxy or prepared_image) and trial.get("reward") is None and not attempted_recovery and not any(e["event"] in ("GENERATOR_END", "TEACHER_END", "TOOL_END") for e in events):
+            verifier_download_failed = bool(config.get("environment_kwargs", {}).get("apt_mirrors", {}).get(unit["task_id"])) and any(
+                "uvx: command not found" in log.read_text() and "502  Bad Gateway" in log.read_text()
+                for log in path.glob("jobs/*/*/verifier/test-stdout.txt"))
+            if not attempted_recovery and (verifier_download_failed or
+                    (restored_proxy or prepared_image) and trial.get("reward") is None and not any(
+                        e["event"] in ("GENERATOR_END", "TEACHER_END", "TOOL_END") for e in events)):
                 selected.append(unit)
         units = selected
     worker = None
