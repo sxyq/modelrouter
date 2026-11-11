@@ -1,0 +1,338 @@
+{
+  "task_id": "openssl-selfsigned-cert",
+  "strategy_id": "glm_low",
+  "seed": 43,
+  "unit_id": "openssl-selfsigned-cert--glm_low--s43",
+  "status": "EVALUATED",
+  "run_id": "20261111-v9-joint-followup",
+  "benchmark_name": "Terminal-Bench",
+  "benchmark_version": "2.0",
+  "benchmark_commit": "69671fbaac6d67a7ef0dfec016cc38a64ef7a77c",
+  "source_revision": "0a9998aeb260f5e2a501212ed79d5904682afa87",
+  "original_subset": "final_test",
+  "historically_exposed": true,
+  "used_for_current_training": false,
+  "used_for_model_selection": false,
+  "independent_of_training_and_selection": true,
+  "checkpoint_path": null,
+  "router_device": null,
+  "teacher_enabled": false,
+  "aa_snapshot_id": "20261107T134704898459Z-v7",
+  "harbor_version": "0.24.0",
+  "mini_swe_version": "2.4.6",
+  "task_resources": {
+    "build_timeout_sec": 600.0,
+    "docker_image": "alexgshaw/openssl-selfsigned-cert:20251031",
+    "cpus": 1,
+    "memory": "2G",
+    "storage": "10G"
+  },
+  "reward": 1.0,
+  "error_type": null,
+  "execution_status": "FINISHED",
+  "effort_comparison_eligible": true,
+  "episode_wall_s": 450.733735,
+  "generator_known_reference_usd": 0.00219704,
+  "harbor_trial_count": 1,
+  "attempts_wall_s": 450.733735,
+  "harness_command_wall_s": 455.6728568710387,
+  "teacher_known_reference_usd": 0,
+  "reference_cost_usd": 0.00219704,
+  "latest_trial_reference_usd": 0.00219704,
+  "verifier_dependency_failure": false,
+  "supplier_billed_usd": null,
+  "router_compute_cost_usd": null,
+  "environment_cost_usd": null,
+  "complete_cost_usd": null,
+  "physical_kv_sharing": "UNKNOWN",
+  "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/.private/episodes/openssl-selfsigned-cert/glm_low/43",
+  "trial_id": "67e9dc17-0321-40a0-bc6a-167081835653",
+  "outside_harbor_wall_s": 4.939121871038651,
+  "previous_attempts": [],
+  "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+  "failed_provider_http_status": null,
+  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/.private/episodes/openssl-selfsigned-cert/glm_low/43/jobs/openssl-selfsigned-cert--glm_low--s43/openssl-selfsigned-cert__JQZDCUZ/verifier/reward.txt",
+  "phase_wall_s": {
+    "environment_setup": 16.875896,
+    "agent_setup": 0.000182,
+    "agent_execution": 85.52048,
+    "verifier": 324.815078
+  },
+  "generator_requests": 7,
+  "teacher_requests": 0,
+  "started_tool_calls": 0,
+  "completed_tool_calls": 7,
+  "unknown_provider_cost_requests": 0,
+  "prompt_tokens": 18448,
+  "completion_tokens": 1348,
+  "reasoning_tokens": null,
+  "reported_cache_read_tokens": null,
+  "known_cache_read_tokens": 10368,
+  "cache_read_unknown_records": 2,
+  "reported_cache_write_tokens": null,
+  "cache_write_unknown_records": 7,
+  "router_wall_s": 0.0018176715821027756,
+  "router_cpu_time_sec": 0,
+  "router_gpu_wait_s": 0.0,
+  "router_transfer_s": 0.0,
+  "teacher_wall_s": 0.0,
+  "generator_wall_s": 49.10025588423014,
+  "selected_actions": [
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "glm-5.3-flash:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "glm-5.3-flash:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "glm-5.3-flash:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "glm-5.3-flash:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "glm-5.3-flash:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "glm-5.3-flash:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "glm-5.3-flash:low",
+      "pool": "Reasoning"
+    }
+  ],
+  "request_return_identities": [
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "returned_native_effort": null,
+      "native_effort_status": "NOT_REPORTED",
+      "sent_effort_parameter": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low"
+      },
+      "protocol": "chat_completions",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "tool_calls",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "glm-colink",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://docs.z.ai/guides/overview/pricing",
+      "cost_status": "OFFICIAL_STANDARD_REFERENCE_NOT_PROVIDER_TARIFF",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "returned_native_effort": null,
+      "native_effort_status": "NOT_REPORTED",
+      "sent_effort_parameter": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low"
+      },
+      "protocol": "chat_completions",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "tool_calls",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "glm-colink",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://docs.z.ai/guides/overview/pricing",
+      "cost_status": "OFFICIAL_STANDARD_REFERENCE_NOT_PROVIDER_TARIFF",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "returned_native_effort": null,
+      "native_effort_status": "NOT_REPORTED",
+      "sent_effort_parameter": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low"
+      },
+      "protocol": "chat_completions",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "tool_calls",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "glm-colink",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://docs.z.ai/guides/overview/pricing",
+      "cost_status": "OFFICIAL_STANDARD_REFERENCE_NOT_PROVIDER_TARIFF",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "returned_native_effort": null,
+      "native_effort_status": "NOT_REPORTED",
+      "sent_effort_parameter": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low"
+      },
+      "protocol": "chat_completions",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "tool_calls",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "glm-colink",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://docs.z.ai/guides/overview/pricing",
+      "cost_status": "OFFICIAL_STANDARD_REFERENCE_NOT_PROVIDER_TARIFF",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "returned_native_effort": null,
+      "native_effort_status": "NOT_REPORTED",
+      "sent_effort_parameter": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low"
+      },
+      "protocol": "chat_completions",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "tool_calls",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "glm-colink",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://docs.z.ai/guides/overview/pricing",
+      "cost_status": "OFFICIAL_STANDARD_REFERENCE_NOT_PROVIDER_TARIFF",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "returned_native_effort": null,
+      "native_effort_status": "NOT_REPORTED",
+      "sent_effort_parameter": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low"
+      },
+      "protocol": "chat_completions",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "tool_calls",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "glm-colink",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://docs.z.ai/guides/overview/pricing",
+      "cost_status": "OFFICIAL_STANDARD_REFERENCE_NOT_PROVIDER_TARIFF",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "returned_native_effort": null,
+      "native_effort_status": "NOT_REPORTED",
+      "sent_effort_parameter": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low"
+      },
+      "protocol": "chat_completions",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "tool_calls",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "glm-colink",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://docs.z.ai/guides/overview/pricing",
+      "cost_status": "OFFICIAL_STANDARD_REFERENCE_NOT_PROVIDER_TARIFF",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    }
+  ],
+  "logical_model_changes": 0,
+  "endpoint_changes": 0,
+  "prefix_continuity_counts": {
+    "FIRST_REQUEST": 1,
+    "EXACT_PREVIOUS_MESSAGES": 6,
+    "PREFIX_CHANGED": 0
+  },
+  "router_truncated_decisions": 0,
+  "teacher_consumed_decisions": 0
+}

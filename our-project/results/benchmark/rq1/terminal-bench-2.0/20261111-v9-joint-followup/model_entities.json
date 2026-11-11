@@ -1,0 +1,152 @@
+{
+  "observed_at": "2026-11-11T18:32:34.424199+00:00",
+  "selection_rule": "Predeclared one-epoch representatives before benchmark outcomes; strongest version not established",
+  "weights_location": "A6000_ONLY",
+  "capability_snapshot_id": "20261107T134704898459Z-v7",
+  "candidate_count": 15,
+  "entities": [
+    {
+      "family": "laya",
+      "checkpoint_path": "/home/syy/路由/models/laya-421m",
+      "parameters": [
+        {
+          "name": "model.safetensors",
+          "bytes": 842609210,
+          "mtime_ns": "1791575148309517675"
+        }
+      ],
+      "declared_device": "cuda",
+      "training_updates": 0,
+      "training_report": null,
+      "observed_forward": {
+        "episode_id": "5725fa91-93cf-4e2a-baf3-a12dadd1b3ad",
+        "decision_id": "5725fa91-93cf-4e2a-baf3-a12dadd1b3ad-0",
+        "checkpoint_id": "/home/syy/路由/models/laya-421m",
+        "fallback_used": false,
+        "input_tokens": 6008,
+        "state_tokens": 5530,
+        "output_tokens": 0,
+        "truncated": false,
+        "state_group_coverage": {
+          "T": "FULL",
+          "M": "FULL",
+          "H": "FULL",
+          "teacher_assessment": "FULL"
+        },
+        "inference_latency_ms": 2260.451503098011,
+        "source": "Original private Episode ROUTER_END; no additional model request"
+      }
+    },
+    {
+      "family": "laya",
+      "checkpoint_path": "/home/syy/路由/runs/V9-K3-GLM-LAYA-20261111",
+      "parameters": [
+        {
+          "name": "model.safetensors",
+          "bytes": 842609220,
+          "mtime_ns": "1794413579993827316"
+        },
+        {
+          "name": "checkpoint_latest/model.safetensors",
+          "bytes": 842609220,
+          "mtime_ns": "1794413579008783662"
+        }
+      ],
+      "declared_device": "cuda",
+      "training_updates": 18,
+      "training_report": "../../../../iterations/20261111-v9-rq4-joint/laya_training.json",
+      "observed_forward": {
+        "episode_id": "aaa93f0a-268b-43d2-a919-9a97608e58b8",
+        "decision_id": "aaa93f0a-268b-43d2-a919-9a97608e58b8-0",
+        "checkpoint_id": "/home/syy/路由/runs/V9-K3-GLM-LAYA-20261111",
+        "fallback_used": false,
+        "input_tokens": 6011,
+        "state_tokens": 5533,
+        "output_tokens": 0,
+        "truncated": false,
+        "state_group_coverage": {
+          "T": "FULL",
+          "M": "FULL",
+          "H": "FULL",
+          "teacher_assessment": "FULL"
+        },
+        "inference_latency_ms": 201.55391469597816,
+        "source": "Original private Episode ROUTER_END; no additional model request"
+      }
+    },
+    {
+      "family": "kev",
+      "checkpoint_path": "/home/syy/路由/models/kev-4b-adapter",
+      "parameters": [
+        {
+          "name": "adapter_model.safetensors",
+          "bytes": 129924032,
+          "mtime_ns": "1791575198602719548"
+        },
+        {
+          "name": "head.pt",
+          "bytes": 5249791,
+          "mtime_ns": "1791575294214905513"
+        }
+      ],
+      "declared_device": "cuda",
+      "training_updates": 0,
+      "training_report": null,
+      "observed_forward": {
+        "episode_id": "c0eb4880-200d-4a46-a4cd-4fd832274088",
+        "decision_id": "c0eb4880-200d-4a46-a4cd-4fd832274088-0",
+        "checkpoint_id": "/home/syy/路由/models/kev-4b-adapter",
+        "fallback_used": false,
+        "input_tokens": 6210,
+        "state_tokens": 5783,
+        "output_tokens": 310,
+        "truncated": false,
+        "state_group_coverage": {
+          "T": "FULL",
+          "M": "FULL",
+          "H": "FULL",
+          "teacher_assessment": "FULL"
+        },
+        "inference_latency_ms": 1989.5045850425959,
+        "source": "Original private Episode ROUTER_END; no additional model request"
+      }
+    },
+    {
+      "family": "kev",
+      "checkpoint_path": "/home/syy/路由/runs/V9-K3-GLM-KEV-20261111",
+      "parameters": [
+        {
+          "name": "adapter_model.safetensors",
+          "bytes": 129924032,
+          "mtime_ns": "1794413560640969658"
+        },
+        {
+          "name": "head.pt",
+          "bytes": 5248895,
+          "mtime_ns": "1794413560662970633"
+        }
+      ],
+      "declared_device": "cuda",
+      "training_updates": 18,
+      "training_report": "../../../../iterations/20261111-v9-rq4-joint/kev_training.json",
+      "observed_forward": {
+        "episode_id": "cd7538f1-6e45-47b4-8d1b-caaa553fdd5b",
+        "decision_id": "cd7538f1-6e45-47b4-8d1b-caaa553fdd5b-0",
+        "checkpoint_id": "/home/syy/路由/runs/V9-K3-GLM-KEV-20261111",
+        "fallback_used": false,
+        "input_tokens": 6210,
+        "state_tokens": 5783,
+        "output_tokens": 315,
+        "truncated": false,
+        "state_group_coverage": {
+          "T": "FULL",
+          "M": "FULL",
+          "H": "FULL",
+          "teacher_assessment": "FULL"
+        },
+        "inference_latency_ms": 1555.7929407805204,
+        "source": "Original private Episode ROUTER_END; no additional model request"
+      }
+    }
+  ]
+}

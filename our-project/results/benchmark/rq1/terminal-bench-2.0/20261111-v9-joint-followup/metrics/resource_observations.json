@@ -1,0 +1,103 @@
+{
+  "observed_at": "2026-11-11T18:32:34.424199+00:00",
+  "host": "k3s-infra-01",
+  "user": "syy",
+  "uptime": "174 days, 14:38",
+  "load_average": [
+    0.4,
+    0.71,
+    1.31
+  ],
+  "gpu": {
+    "id": 0,
+    "model": "NVIDIA RTX A6000",
+    "memory_used_mib": 989,
+    "memory_total_mib": 49140,
+    "utilization_pct": 0,
+    "temperature_c": 31,
+    "power_w": 35.05,
+    "source": "nvidia-smi"
+  },
+  "memory": {
+    "total_bytes": 404305604608,
+    "available_bytes": 310255390720
+  },
+  "disk": {
+    "total_bytes": 3778190245888,
+    "used_bytes": 2720106287104,
+    "available_bytes": 866085867520,
+    "used_pct": 76
+  },
+  "serving": {
+    "pid": 327621,
+    "port": 8000,
+    "status": "healthy",
+    "laya_loaded": true,
+    "kev_loaded": true,
+    "weights": "Original F05 Laya and imported Kev; unchanged serving selection"
+  },
+  "user_docker": {
+    "socket": "unix:///home/syy/路由/.runtime/docker-vm/docker.sock",
+    "qemu_pid": 2744271,
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "task_containers": 0
+  },
+  "batch": {
+    "controller_pid": 2179011,
+    "controller_finished": true,
+    "control_session_exit_code": 0,
+    "watch_interval_sec": 1200,
+    "watch_session_exit_code": 0,
+    "router_socket_exists": false
+  },
+  "cleanup": {
+    "temporary_proxy_pid": 86734,
+    "temporary_proxy_port": 17898,
+    "proxy_session_exit_code": 0,
+    "proxy_listener": false,
+    "temporary_runtime_environment_revision_removed": true,
+    "temporary_runtime_mirror_removed": true,
+    "experiment_mirror_configuration_retained": true
+  },
+  "f15": {
+    "checkpoint_path": "/home/syy/路由/runs/MR-FULL-GRADED-P0-DATA-REPAIR-20261012/F15/checkpoints/epoch_01",
+    "optimizer_steps": 61180,
+    "consumed_items": 3915484,
+    "saved_at": "2026-11-05T17:22:48Z",
+    "model_bytes": 842609220,
+    "optimizer_bytes": 3368412933,
+    "active_process": false
+  },
+  "monetary_prices": {
+    "cpu_usd_per_core_hour": null,
+    "gpu_usd_per_hour": null,
+    "vm_usd_per_hour": null,
+    "tool_usd": null,
+    "supplier_billed_usd": null
+  },
+  "environment_events": {
+    "affected_task": "regex-log",
+    "previous_unexecuted_verifier_trials": 20,
+    "previous_raw_reward": 0,
+    "previous_ctrf_exists": false,
+    "previous_stdout_marker": "uvx: command not found",
+    "final_mirror": "http://mirrors.ustc.edu.cn/ubuntu/",
+    "ubuntu_signature_verification": "UNCHANGED",
+    "official_test_code": "UNCHANGED",
+    "final_assertion_failures": [
+      {
+        "strategy": "luna_low",
+        "test": "test_outputs.py::test_regex_matches_dates",
+        "expected_dates": 9,
+        "returned_dates": 3
+      },
+      {
+        "strategy": "kev_original_on",
+        "test": "test_outputs.py::test_regex_matches_dates",
+        "failure": "Captured log prefixes along with dates"
+      }
+    ]
+  },
+  "model_entity_evidence": "../model_entities.json"
+}
