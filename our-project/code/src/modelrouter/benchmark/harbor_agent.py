@@ -47,8 +47,10 @@ class A6000DockerEnvironment(DockerEnvironment):
     async def start(self, force_build):
         await super().start(force_build)
         if self.apt_mirror:
-            await self.exec("sed -i -E 's|http://(archive|security).ubuntu.com/ubuntu/?|"
-                            + self.apt_mirror + "|g' /etc/apt/sources.list.d/ubuntu.sources")
+            await self._run_docker_compose_command([
+                "exec", "-T", "main", "sed", "-i", "-E",
+                "s#http://(archive|security).ubuntu.com/ubuntu/?#" + self.apt_mirror + "#g",
+                "/etc/apt/sources.list.d/ubuntu.sources"])
 
     @property
     def capabilities(self):
