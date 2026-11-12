@@ -697,6 +697,12 @@
   "environment_kwargs": {
     "apt_mirrors": {
       "regex-log": "http://mirrors.ustc.edu.cn/ubuntu/"
+    },
+    "verifier_dependencies": {
+      "fix-git": "/home/syy/路由/.runtime/verifier-dependencies",
+      "gcode-to-text": "/home/syy/路由/.runtime/verifier-dependencies",
+      "git-leak-recovery": "/home/syy/路由/.runtime/verifier-dependencies",
+      "git-multibranch": "/home/syy/路由/.runtime/verifier-dependencies"
     }
   },
   "environment_change_reason": "Original regex-log verifier could not install curl/uvx after archive.ubuntu.com returned 502; the base image has no CA bundle. Use the reachable USTC HTTP mirror with the existing Ubuntu archive signature verification, retaining official image, tests and task resources",
@@ -934,7 +940,11 @@
   "comparison_scope": "Paired seed43 joint results reused on openssl-selfsigned-cert/regex-log; old 89-task seed42 batch is historical, not seed-matched",
   "model_only_semantics": "Same Router checkpoints and T/M/H; exactly three model candidates sharing the requested native effort; no effort decision, no model-only retraining",
   "failure_policy": "Original Harbor timeouts and provider failures retained; no automatic rerun",
-  "repaired_verifier_tasks": ["fix-git", "gcode-to-text", "git-leak-recovery"],
+  "repaired_verifier_tasks": [
+    "fix-git",
+    "gcode-to-text",
+    "git-leak-recovery"
+  ],
   "source_revision": "b9fba0a4488731c76718221e0572e5e7f2e8f936",
   "started_at": "2026-11-12T03:19:03.567078+00:00",
   "tasks": [
@@ -10959,5 +10969,11 @@
       "action_id": "gpt-6.1-terra:xhigh",
       "pool": "Reasoning"
     }
-  ]
+  ],
+  "provider_request_retry_policy": {
+    "max_extra_retries": 100,
+    "source_revision": "213d446952c9debc9ac7fdcb0b06cca1292ebfe8",
+    "original_task_deadline": true,
+    "output_limit_retry": false
+  }
 }

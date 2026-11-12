@@ -2,6 +2,8 @@
 
 ## 2026-11-12 · Model-only全量执行与Token统计
 
+[RQ1部分帕雷托图与40组状态](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_review.md)按openssl-selfsigned-cert、regex-log同两题、seed43、原始及11-11微调实体绘制；21组评分与API费用齐全，另19组缺项。费用累计全部尝试的模型＋教师参考费，完整现金费用保持未知。[逐点数据](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_points.csv)保存来源、版本与缺项；沿原`rq1_figures.py <本批目录> --pareto`更新图表。
+
 正式数据集为`terminal-bench@2.0`，89题，Commit `69671fbaac6d67a7ef0dfec016cc38a64ef7a77c`。训练数据与Benchmark分开保存；这里的通过来自原Harbor完整Agent及官方Verifier。
 
 [Model-only批次](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)沿同一入口执行89题×24组×seed43：Laya/Kev原始及11-11训练版，教师OFF/ON，固定Low/High/Max，每次仅在同档位三个真实模型中选模型。两道历史已观察任务优先执行，旧seed43联合选择结果直接引用作配对，其他87题的联合选择配对尚缺。旧89题seed42比较使用11-08训练版，版本和seed分别保留。
