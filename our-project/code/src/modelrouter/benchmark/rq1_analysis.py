@@ -505,6 +505,9 @@ def export_batch_results(root, config, output_root=None):
                    reported_cache_write_tokens=reported(requests, "cache_write_tokens"),
                    cache_write_unknown_records=sum(r.get("cache_write_tokens") is None for r in requests),
                    router_wall_s=sum(e.get("router_latency_ms", 0) for e in routing) / 1000,
+                   router_known_input_tokens=sum(e["router_input_usage"]["input_tokens"] for e in routing if e.get("router_input_usage")),
+                   router_known_output_tokens=sum(e["router_input_usage"]["output_tokens"] for e in routing if e.get("router_input_usage")),
+                   router_usage_unknown_decisions=sum(not e.get("router_input_usage") for e in routing) if strategy.get("checkpoint") else 0,
                    router_cpu_time_sec=sum(e.get("router_cpu_time_sec", 0) for e in routing),
                    router_gpu_wait_s=sum(e.get("router_gpu_wait_ms", 0) for e in routing) / 1000,
                    router_transfer_s=sum(e.get("router_device_transfer_ms", 0) for e in routing) / 1000,
@@ -559,7 +562,7 @@ def export_batch_results(root, config, output_root=None):
                             "benchmark_success_upper": (n - zero) / n if n else None,
                             "generator_known_reference_usd": measured_sum(group, "generator_known_reference_usd"),
                             "teacher_known_reference_usd": measured_sum(group, "teacher_known_reference_usd"),
-                            **{field: measured_sum(group, field) for field in ("generator_requests", "teacher_requests", "prompt_tokens", "completion_tokens", "known_prompt_tokens", "known_completion_tokens", "usage_unknown_requests", "generator_known_tokens", "teacher_known_tokens", "reasoning_tokens", "known_cache_read_tokens", "cache_read_unknown_records", "unknown_provider_cost_requests", "router_wall_s", "router_cpu_time_sec", "router_gpu_wait_s", "teacher_wall_s", "logical_model_changes", "endpoint_changes")},
+                            **{field: measured_sum(group, field) for field in ("generator_requests", "teacher_requests", "prompt_tokens", "completion_tokens", "known_prompt_tokens", "known_completion_tokens", "usage_unknown_requests", "generator_known_tokens", "teacher_known_tokens", "reasoning_tokens", "known_cache_read_tokens", "cache_read_unknown_records", "unknown_provider_cost_requests", "router_wall_s", "router_known_input_tokens", "router_known_output_tokens", "router_usage_unknown_decisions", "router_cpu_time_sec", "router_gpu_wait_s", "teacher_wall_s", "logical_model_changes", "endpoint_changes")},
                             "complete_cost_usd": None, "supplier_billed_usd": None,
                             "selected_action_counts": dict(Counter(action["action_id"] for row in group for action in row.get("selected_actions", []))),
                             "episode_total_wall_s": measured_sum(group, "attempts_wall_s"),
@@ -629,6 +632,8 @@ def export_batch_results(root, config, output_root=None):
             "last_command_finished_at": last.isoformat(), "elapsed_wall_s": (last - first).total_seconds(),
             "command_starts": len(command_starts), "command_ends": len(command_ends)})
     fixed_count = sum(s["stage"] == "fixed" for s in strategies.values())
+    fixed_summary = (f"{sum(r['ended_fixed_strategies'] == fixed_count for r in task_rows)}题已结束全部{fixed_count}个固定/简单策略；"
+                     if fixed_count else "")
     report = [f"# {config.get('report_title', 'Terminal-Bench 2.0 RQ1')}\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
               "**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**\n",
               f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。固定组已报告档位不符另列后，官方Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}；Router组保留实际任务Reward及内部请求/返回档位差异。\n",
@@ -636,7 +641,7 @@ def export_batch_results(root, config, output_root=None):
               f"已知模型参考费${model_usd:.8f}、教师${teacher_usd:.8f}，合计${model_usd + teacher_usd:.8f}；{sum(r['unknown_provider_cost_requests'] or 0 for r in all_groups)}次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。\n",
               "费用主表包含全部尝试；latest_trial_reference_usd单列最后Episode参考费。原Verifier写出的0保留；已确认uvx缺失且没有测试报告的尝试单列，不计入任务质量对照。\n",
               f"Harbor命令累计墙钟{sum(r['harness_total_wall_s'] or 0 for r in all_groups):.6f}秒，内含官方Trial累计{sum(r['episode_total_wall_s'] or 0 for r in all_groups):.6f}秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。\n",
-              f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{sum(r['ended_fixed_strategies'] == fixed_count for r in task_rows)}题已结束全部{fixed_count}个固定/简单策略；{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。批次先执行固定阶段，再执行Router阶段。\n",
+              f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{fixed_summary}{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。\n",
               "GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。\n",
               f"本批{len(tasks)}题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。已报告档位冲突的官方结果保留在逐Episode表，并从按请求档位主比较中另列。通过率分母仅为该策略已取得的有效官方评分任务。\n",
               f"| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 评分覆盖 | {len(tasks)}题通过率区间 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
@@ -655,8 +660,12 @@ def export_batch_results(root, config, output_root=None):
     token_counts = [measured_sum(all_groups, field) for field in
                     ("known_prompt_tokens", "known_completion_tokens", "usage_unknown_requests")]
     input_label, output_label, missing_label = ["UNKNOWN" if value is None else f"{value:,}" for value in token_counts]
+    router_input_label, router_output_label, router_missing_label = [
+        "UNKNOWN" if value is None else f"{value:,}" for value in
+        (measured_sum(all_groups, field) for field in ("router_known_input_tokens", "router_known_output_tokens", "router_usage_unknown_decisions"))]
     report += [f"\n评分覆盖是已取得有效官方评分的任务数/{len(tasks)}；通过率区间把其余位置分别按全部未通过或全部通过计算。\n",
                f"已报告输入{input_label}、输出{output_label} Token；{missing_label}次请求缺用量。推理包含在输出内，缓存读取包含在输入内，各只计一次；数值包含模型、教师及全部已发生尝试。\n",
+               f"Router本地前向另报告输入{router_input_label}、输出{router_output_label} Token；{router_missing_label}次决策缺用量。其计算费用按A6000资源计量，美元单价未知。\n",
                f"Provider实际报告缓存读取{cache_label} Token；{sum(r['cache_read_unknown_records'] or 0 for r in all_groups)}次请求未报告缓存读取；跨模型物理KV共享未知。\n",
                f"教师请求{sum(r['teacher_requests'] or 0 for r in all_groups)}次，短评实际输入Router {sum(r.get('teacher_consumed_decisions', 0) for r in episodes)}次；同一短评可由多次决策消费。\n"]
     truncated = [r for r in episodes if r.get("router_truncated_decisions")]
@@ -682,11 +691,11 @@ def export_batch_results(root, config, output_root=None):
                "| 因素 | 左侧 → 右侧 | 评分对 | 通过数左/右 | 费用齐全对 | 费用对通过数左/右 | 参考费左/右USD |",
                "|---|---|---:|---:|---:|---:|---|"]
     for r in comparisons:
-        if r["factor"] in ("training", "teacher", "granularity", "information"):
+        if r["factor"] in ("training", "teacher", "granularity", "information", "joint_vs_model_only"):
             costs = ["UNKNOWN" if r[key] is None else f"{r[key]:.8f}"
                      for key in ("left_reference_known_pairs_usd", "right_reference_known_pairs_usd")]
             report.append(f"| {r['factor']} | {r['left']} → {r['right']} | {r['scored_pairs']} | {r['left_reward_1']}/{r['right_reward_1']} | {r['reference_known_pairs']} | {r['left_reward_1_reference_known_pairs']}/{r['right_reward_1_reference_known_pairs']} | {' / '.join(costs)} |")
-    report += ["\n## 实际Router动作\n", "以下是已记录的Model×Native Effort选择次数；教师短评输入Router，不直接写入执行模型消息。\n"]
+    report += ["\n## 实际Router动作\n", "以下登记实际选中模型及请求Native Effort；Model-only组固定档位、只选择模型。教师短评输入Router，不直接写入执行模型消息。\n"]
     for r in all_groups:
         if strategies[r["strategy_id"]]["stage"] == "router":
             report.append(f"- {r['strategy_id']}: `{json.dumps(r['selected_action_counts'], ensure_ascii=False)}`")
