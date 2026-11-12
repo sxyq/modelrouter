@@ -490,6 +490,7 @@ def export_batch_results(root, config, output_root=None):
             row["verifier_dependency_failure"] = (stdout.exists() and not (verifier_dir / "ctrf.json").exists()
                                                   and "uvx: command not found" in stdout.read_text())
         row.update(trial_id=trial.get("trial_id"), reward=trial.get("reward"),
+                   raw_verifier_rewards=[a.get("rewards") for a in trial.get("verifier_artifacts", [])],
                    effort_comparison_eligible=not strategy.get("model") or not any(r.get("native_effort_status") == "PROVIDER_REPORTED_MISMATCH" for r in generator),
                    harbor_trial_count=len(trials),
                    attempts_wall_s=sum(t["duration_sec"] for t in trials),
@@ -579,7 +580,7 @@ def export_batch_results(root, config, output_root=None):
             grouped.append({"strategy_id": strategy, "subset": subset, "tasks": n,
                             "attempted": len(finished), "reward_1": one, "reward_0": zero,
                             "harbor_trial_count": sum(r["harbor_trial_count"] for r in group),
-                            "no_official_reward": sum(r["reward"] is None for r in finished),
+                            "no_official_reward": sum(r["reward"] is None and not r.get("verifier_dependency_failure") for r in finished),
                             "verifier_dependency_failed_positions": sum(r.get("verifier_dependency_failure", False) for r in finished),
                             "running": running, "not_started": n - len(finished) - running - unavailable,
                             "unavailable": unavailable, "effort_mismatch_completed": sum(not r["effort_comparison_eligible"] for r in finished),

@@ -1,5 +1,17 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-13：请求重试与技术恢复接续
+
+正式范围：Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。
+
+Provider实际请求路径已部署最多额外100次同请求重试，首次不计；覆盖临时HTTP、连接、DNS、提前断连及传输不完整响应，保持模型、档位、消息和4096参数。沿现有Luna账户池切换；优先Retry-After，等待及每次请求受原任务剩余时间约束。长度耗尽不重试。逐尝试PROVIDER_ATTEMPT、account_attempts保存原因、耗时、已知消费及停止原因；未知费用保持空值。
+
+恢复入口增加原矩阵单题/单策略选择，任何有效官方1/0均复用；技术恢复另建原位置下的独立Harbor Job，保留原尝试。已有断言执行后挂起的Verifier超时不归为下载故障。四个已知依赖故障任务复用uv0.9.5、Python3.13.9、pytest8.4.1、pytest-json-ctrf0.3.5；原官方脚本及断言保持。依赖包位于A6000 `.runtime/verifier-dependencies`，已完成离线导入，临时容器已移除。
+
+01:35台北取样：Model-only479/2136结束，70通过、16有效失败、379缺评分、14依赖失败；1运行、1656未开始。gpt2-codegolf原始Laya OFF Low已保存8次真实请求，HTTP200、max_extra_retries=100；原Controller2373109继续，权重及Serving保持。当前矩阵和其技术恢复→957位置联合批次由原持有进程2806615接续；等待进程330065随后执行联合技术恢复和旧1513位置必要技术恢复，不整体重跑历史批次。后续仍需维护原17898连接直至全部有限批次结束。
+
+源码已发布cba25388、213d4469、73771894；当前结果数量沿服务器原始记录更新，全部矩阵尚在运行。正式汇总包含逐策略评分分母、两侧有评分的同seed配对、全部尝试费用及实际重试次数。
+
 ## 当前执行：Model-only全量对照（2026-11-12）
 
 [Model-only批次](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)执行Terminal-Bench 2.0全部89题×24组×seed43，覆盖Laya/Kev原始及11-11各18更新权重、教师OFF/ON、固定Low/High/Max。每次只选同档位三个模型；正式主方法仍为Model×Native Effort。完成数量、有效评分、依赖失败及费用由该批次报告统一更新。原Controller2373109、凭据持有2372941、Router worker2373123继续，生成方法为b9fba0a4488731c76718221e0572e5e7f2e8f936。
