@@ -52,7 +52,10 @@ class A6000DockerEnvironment(DockerEnvironment):
             await self._run_docker_compose_command([
                 "exec", "-T", "main", "sh", "-c",
                 "mkdir -p /root/.local/bin && cp /opt/modelrouter-verifier/bin/uv "
-                "/opt/modelrouter-verifier/bin/uvx /opt/modelrouter-verifier/bin/env /root/.local/bin/"])
+                "/opt/modelrouter-verifier/bin/uvx /opt/modelrouter-verifier/bin/env /root/.local/bin/ "
+                "&& mkdir -p /root/.cache /root/.local/share/uv "
+                "&& ln -s /opt/modelrouter-verifier/cache /root/.cache/uv "
+                "&& ln -s /opt/modelrouter-verifier/python /root/.local/share/uv/python"])
         if self.apt_mirror:
             await self._run_docker_compose_command([
                 "exec", "-T", "main", "sed", "-i", "-E",
