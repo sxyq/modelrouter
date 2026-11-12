@@ -48,7 +48,8 @@ def prepare(config_path, revision):
     priority = {task: index for index, task in enumerate(config.get("task_priority", []))}
     tasks.sort(key=lambda t: (priority.get(t["task_id"], len(priority)), t["agent"]["timeout_sec"], t["task_id"]))
     config.update(source_revision=revision, started_at=iterations.now(), tasks=tasks,
-                  capability_snapshot=load_current(),
+                  capability_snapshot=(json.loads((iterations.ROOT / config["capability_snapshot_path"]).read_text())["capability_snapshot"]
+                                       if config.get("capability_snapshot_path") else load_current()),
                   harbor_version=version("harbor"), mini_swe_version=version("mini-swe-agent"),
                   model_registry={k: asdict(MODEL_REGISTRY[k]) for k in V9_MODEL_IDS},
                   candidate_actions=legal_actions(V9_MODEL_IDS))

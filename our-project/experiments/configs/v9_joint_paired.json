@@ -1,0 +1,576 @@
+{
+  "benchmark": "terminal-bench@2.0",
+  "registry_path": "external/benchmarks/harbor/registry.json",
+  "task_source": "external/benchmarks/terminal-bench-2-0",
+  "dataset_commit": "69671fbaac6d67a7ef0dfec016cc38a64ef7a77c",
+  "max_steps": 0,
+  "max_steps_semantics": "UPSTREAM_UNLIMITED_STEPS_OFFICIAL_AGENT_TIMEOUT_RETAINED",
+  "max_output_tokens": 4096,
+  "timeout_multiplier": 1,
+  "concurrency": {
+    "fixed": 4,
+    "router": 2
+  },
+  "resources": {
+    "docker_host": "unix:///home/syy/路由/.runtime/docker-vm/docker.sock",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "task_resources": "ORIGINAL_2_0_TASK_TOML_UNCHANGED",
+    "router_threads": 40,
+    "router_gpu_worker_count": 1,
+    "router_deployment": "SHARED_NATIVE_ADAPTER_CPU_RESIDENT_GPU_SERIALIZED_BY_EXISTING_LOCK",
+    "cpu_usd_per_core_hour": null,
+    "gpu_usd_per_hour": null,
+    "vm_usd_per_hour": null,
+    "resource_allocation": "ROUTER_CPU_REQUEST_CPU_SECONDS; SERIAL_GPU_LOCK_HELD_TIME; VM_ACTIVE_EPISODE_RESOURCE_TIME_SHARE",
+    "supplier_billed_usd": "UNKNOWN",
+    "training_cost": "SEPARATE_FROM_ONLINE_COST"
+  },
+  "v9_config": {
+    "execution_scope": "REAL_K3_JOINT_RESEARCH",
+    "execution_mode": "REAL_API",
+    "execution_model": "singleAgent",
+    "selection_scope": "MODEL_NATIVE_EFFORT",
+    "router_endpoint": "http://127.0.0.1:8000",
+    "router_timeout_sec": null,
+    "router_context_chars": 6000,
+    "router_max_len": 8192,
+    "router_head_max_len": 512,
+    "generator_protocol": "responses",
+    "generator_stream": false,
+    "formal_model_ids": [
+      "gpt-6-luna",
+      "glm-5.3-flash",
+      "gpt-6.1-terra"
+    ],
+    "teacher_model_id": "gpt-6-luna",
+    "teacher_native_effort": "low",
+    "teacher_max_output_tokens": 4096,
+    "teacher_context_chars": 8000,
+    "routing_granularity": "generation",
+    "disabled_information_groups": [],
+    "feature_training_status": "MULTI_TASK_REAL_JOINT_PREFIX_TRAINING; ORIGINAL_ENTITIES_HAVE_NO_NEW_POOL_UPDATES"
+  },
+  "strategies": [
+    {
+      "id": "laya_original_off",
+      "stage": "router",
+      "policy": "joint_laya",
+      "teacher_enabled": false,
+      "checkpoint": {
+        "family": "laya",
+        "path": "/home/syy/路由/models/laya-421m",
+        "device": "cuda",
+        "gpu_lock_path": "/home/syy/ai-serving/state/gpu.lock",
+        "max_len": 8192,
+        "head_max_len": 512,
+        "command": [
+          "env",
+          "OMP_NUM_THREADS=40",
+          "HF_HUB_OFFLINE=1",
+          "/home/syy/路由/.runtime/benchmark-venv/bin/python",
+          "-m",
+          "modelrouter.v9.runtime.checkpoint"
+        ]
+      },
+      "v9_config": {
+        "feature_training_status": "FEATURE_NOT_TRAINED"
+      }
+    },
+    {
+      "id": "laya_original_on",
+      "stage": "router",
+      "policy": "joint_laya",
+      "teacher_enabled": true,
+      "checkpoint": {
+        "family": "laya",
+        "path": "/home/syy/路由/models/laya-421m",
+        "device": "cuda",
+        "gpu_lock_path": "/home/syy/ai-serving/state/gpu.lock",
+        "max_len": 8192,
+        "head_max_len": 512,
+        "command": [
+          "env",
+          "OMP_NUM_THREADS=40",
+          "HF_HUB_OFFLINE=1",
+          "/home/syy/路由/.runtime/benchmark-venv/bin/python",
+          "-m",
+          "modelrouter.v9.runtime.checkpoint"
+        ]
+      },
+      "v9_config": {
+        "feature_training_status": "FEATURE_NOT_TRAINED"
+      }
+    },
+    {
+      "id": "laya_trained_off",
+      "stage": "router",
+      "policy": "joint_laya",
+      "teacher_enabled": false,
+      "checkpoint": {
+        "family": "laya",
+        "path": "/home/syy/路由/runs/V9-K3-GLM-LAYA-20261111",
+        "device": "cuda",
+        "gpu_lock_path": "/home/syy/ai-serving/state/gpu.lock",
+        "max_len": 8192,
+        "head_max_len": 512,
+        "command": [
+          "env",
+          "OMP_NUM_THREADS=40",
+          "HF_HUB_OFFLINE=1",
+          "/home/syy/路由/.runtime/benchmark-venv/bin/python",
+          "-m",
+          "modelrouter.v9.runtime.checkpoint"
+        ]
+      }
+    },
+    {
+      "id": "laya_trained_on",
+      "stage": "router",
+      "policy": "joint_laya",
+      "teacher_enabled": true,
+      "checkpoint": {
+        "family": "laya",
+        "path": "/home/syy/路由/runs/V9-K3-GLM-LAYA-20261111",
+        "device": "cuda",
+        "gpu_lock_path": "/home/syy/ai-serving/state/gpu.lock",
+        "max_len": 8192,
+        "head_max_len": 512,
+        "command": [
+          "env",
+          "OMP_NUM_THREADS=40",
+          "HF_HUB_OFFLINE=1",
+          "/home/syy/路由/.runtime/benchmark-venv/bin/python",
+          "-m",
+          "modelrouter.v9.runtime.checkpoint"
+        ]
+      }
+    },
+    {
+      "id": "kev_original_off",
+      "stage": "router",
+      "policy": "joint_kev",
+      "teacher_enabled": false,
+      "checkpoint": {
+        "family": "kev",
+        "path": "/home/syy/路由/models/kev-4b-adapter",
+        "device": "cuda",
+        "gpu_lock_path": "/home/syy/ai-serving/state/gpu.lock",
+        "max_len": 8192,
+        "head_max_len": 512,
+        "command": [
+          "env",
+          "OMP_NUM_THREADS=40",
+          "HF_HUB_OFFLINE=1",
+          "/home/syy/路由/.runtime/benchmark-venv/bin/python",
+          "-m",
+          "modelrouter.v9.runtime.checkpoint"
+        ]
+      },
+      "v9_config": {
+        "feature_training_status": "FEATURE_NOT_TRAINED"
+      }
+    },
+    {
+      "id": "kev_original_on",
+      "stage": "router",
+      "policy": "joint_kev",
+      "teacher_enabled": true,
+      "checkpoint": {
+        "family": "kev",
+        "path": "/home/syy/路由/models/kev-4b-adapter",
+        "device": "cuda",
+        "gpu_lock_path": "/home/syy/ai-serving/state/gpu.lock",
+        "max_len": 8192,
+        "head_max_len": 512,
+        "command": [
+          "env",
+          "OMP_NUM_THREADS=40",
+          "HF_HUB_OFFLINE=1",
+          "/home/syy/路由/.runtime/benchmark-venv/bin/python",
+          "-m",
+          "modelrouter.v9.runtime.checkpoint"
+        ]
+      },
+      "v9_config": {
+        "feature_training_status": "FEATURE_NOT_TRAINED"
+      }
+    },
+    {
+      "id": "kev_trained_off",
+      "stage": "router",
+      "policy": "joint_kev",
+      "teacher_enabled": false,
+      "checkpoint": {
+        "family": "kev",
+        "path": "/home/syy/路由/runs/V9-K3-GLM-KEV-20261111",
+        "device": "cuda",
+        "gpu_lock_path": "/home/syy/ai-serving/state/gpu.lock",
+        "max_len": 8192,
+        "head_max_len": 512,
+        "command": [
+          "env",
+          "OMP_NUM_THREADS=40",
+          "HF_HUB_OFFLINE=1",
+          "/home/syy/路由/.runtime/benchmark-venv/bin/python",
+          "-m",
+          "modelrouter.v9.runtime.checkpoint"
+        ]
+      }
+    },
+    {
+      "id": "kev_trained_on",
+      "stage": "router",
+      "policy": "joint_kev",
+      "teacher_enabled": true,
+      "checkpoint": {
+        "family": "kev",
+        "path": "/home/syy/路由/runs/V9-K3-GLM-KEV-20261111",
+        "device": "cuda",
+        "gpu_lock_path": "/home/syy/ai-serving/state/gpu.lock",
+        "max_len": 8192,
+        "head_max_len": 512,
+        "command": [
+          "env",
+          "OMP_NUM_THREADS=40",
+          "HF_HUB_OFFLINE=1",
+          "/home/syy/路由/.runtime/benchmark-venv/bin/python",
+          "-m",
+          "modelrouter.v9.runtime.checkpoint"
+        ]
+      }
+    }
+  ],
+  "run_id": "20261112-v9-joint-paired",
+  "environment_kwargs": {
+    "apt_mirrors": {
+      "regex-log": "http://mirrors.ustc.edu.cn/ubuntu/"
+    }
+  },
+  "environment_change_reason": "Original regex-log verifier could not install curl/uvx after archive.ubuntu.com returned 502; the base image has no CA bundle. Use the reachable USTC HTTP mirror with the existing Ubuntu archive signature verification, retaining official image, tests and task resources",
+  "execution_scope": "SINGLE_AGENT_REAL_K3_RQ1_RQ2_RQ3_RQ4_FOLLOWUP",
+  "result_dir": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261112-v9-joint-paired",
+  "task_ids": [
+    "modernize-scientific-stack",
+    "overfull-hbox",
+    "adaptive-rejection-sampler",
+    "build-cython-ext",
+    "build-pmars",
+    "cancel-async-tasks",
+    "chess-best-move",
+    "cobol-modernization",
+    "configure-git-webserver",
+    "count-dataset-tokens",
+    "crack-7z-hash",
+    "db-wal-recovery",
+    "extract-elf",
+    "fix-code-vulnerability",
+    "fix-git",
+    "gcode-to-text",
+    "git-leak-recovery",
+    "git-multibranch",
+    "gpt2-codegolf",
+    "headless-terminal",
+    "hf-model-inference",
+    "kv-store-grpc",
+    "largest-eigenval",
+    "log-summary-date-ranges",
+    "make-doom-for-mips",
+    "merge-diff-arc-agi-task",
+    "model-extraction-relu-logits",
+    "multi-source-data-merger",
+    "nginx-request-logging",
+    "password-recovery",
+    "polyglot-c-py",
+    "polyglot-rust-c",
+    "prove-plus-comm",
+    "pypi-server",
+    "pytorch-model-cli",
+    "pytorch-model-recovery",
+    "qemu-alpine-ssh",
+    "qemu-startup",
+    "query-optimize",
+    "raman-fitting",
+    "sanitize-git-repo",
+    "sparql-university",
+    "sqlite-db-truncate",
+    "sqlite-with-gcov",
+    "torch-pipeline-parallelism",
+    "torch-tensor-parallelism",
+    "tune-mjcf",
+    "vulnerable-secret",
+    "write-compressor",
+    "break-filter-js-from-html",
+    "caffe-cifar-10",
+    "code-from-image",
+    "constraints-scheduling",
+    "financial-document-processor",
+    "large-scale-text-editing",
+    "custom-memory-heap-crash",
+    "dna-assembly",
+    "dna-insert",
+    "extract-moves-from-video",
+    "feal-differential-cryptanalysis",
+    "feal-linear-cryptanalysis",
+    "filter-js-from-html",
+    "llm-inference-batching-scheduler",
+    "mailman",
+    "make-mips-interpreter",
+    "mcmc-sampling-stan",
+    "mteb-retrieve",
+    "path-tracing",
+    "path-tracing-reverse",
+    "protein-assembly",
+    "rstan-to-pystan",
+    "compile-compcert",
+    "schemelike-metacircular-eval",
+    "bn-fit-modify",
+    "circuit-fibsqrt",
+    "distribution-search",
+    "fix-ocaml-gc",
+    "install-windows-3.11",
+    "mteb-leaderboard",
+    "portfolio-optimization",
+    "regex-chess",
+    "reshard-c4-data",
+    "train-fasttext",
+    "video-processing",
+    "winning-avg-corewars",
+    "sam-cell-seg",
+    "build-pov-ray"
+  ],
+  "seeds": [
+    43
+  ],
+  "historically_exposed_tasks": [
+    "openssl-selfsigned-cert",
+    "regex-log",
+    "modernize-scientific-stack",
+    "overfull-hbox",
+    "adaptive-rejection-sampler",
+    "build-cython-ext",
+    "build-pmars",
+    "cancel-async-tasks",
+    "chess-best-move",
+    "cobol-modernization",
+    "configure-git-webserver",
+    "count-dataset-tokens",
+    "crack-7z-hash",
+    "db-wal-recovery",
+    "extract-elf",
+    "fix-code-vulnerability",
+    "fix-git",
+    "gcode-to-text",
+    "git-leak-recovery",
+    "git-multibranch",
+    "gpt2-codegolf",
+    "headless-terminal",
+    "hf-model-inference",
+    "kv-store-grpc",
+    "largest-eigenval",
+    "log-summary-date-ranges",
+    "make-doom-for-mips",
+    "merge-diff-arc-agi-task",
+    "model-extraction-relu-logits",
+    "multi-source-data-merger",
+    "nginx-request-logging",
+    "password-recovery",
+    "polyglot-c-py",
+    "polyglot-rust-c",
+    "prove-plus-comm",
+    "pypi-server",
+    "pytorch-model-cli",
+    "pytorch-model-recovery",
+    "qemu-alpine-ssh",
+    "qemu-startup",
+    "query-optimize",
+    "raman-fitting",
+    "sanitize-git-repo",
+    "sparql-university",
+    "sqlite-db-truncate",
+    "sqlite-with-gcov",
+    "torch-pipeline-parallelism",
+    "torch-tensor-parallelism",
+    "tune-mjcf",
+    "vulnerable-secret",
+    "write-compressor",
+    "break-filter-js-from-html",
+    "caffe-cifar-10",
+    "code-from-image",
+    "constraints-scheduling",
+    "financial-document-processor",
+    "large-scale-text-editing",
+    "custom-memory-heap-crash",
+    "dna-assembly",
+    "dna-insert",
+    "extract-moves-from-video",
+    "feal-differential-cryptanalysis",
+    "feal-linear-cryptanalysis",
+    "filter-js-from-html",
+    "llm-inference-batching-scheduler",
+    "mailman",
+    "make-mips-interpreter",
+    "mcmc-sampling-stan",
+    "mteb-retrieve",
+    "path-tracing",
+    "path-tracing-reverse",
+    "protein-assembly",
+    "rstan-to-pystan",
+    "compile-compcert",
+    "schemelike-metacircular-eval",
+    "bn-fit-modify",
+    "circuit-fibsqrt",
+    "distribution-search",
+    "fix-ocaml-gc",
+    "install-windows-3.11",
+    "mteb-leaderboard",
+    "portfolio-optimization",
+    "regex-chess",
+    "reshard-c4-data",
+    "train-fasttext",
+    "video-processing",
+    "winning-avg-corewars",
+    "sam-cell-seg",
+    "build-pov-ray"
+  ],
+  "current_training_tasks": [],
+  "model_selection_tasks": [],
+  "exposure_basis": "All 89 workloads observed in the preceding seed42 batch; none used for this training or weight selection. First two seed43 joint tasks reused from the 11-11 batch; remaining 87 tasks run here.",
+  "training_selection": {
+    "rule": "One epoch of new valid joint information via original Trainers; no evaluation outcome selects checkpoints",
+    "laya": "runs/V9-K3-GLM-LAYA-20261111",
+    "kev": "runs/V9-K3-GLM-KEV-20261111"
+  },
+  "paired_comparisons": [
+    {
+      "left": "laya_original_off",
+      "right": "laya_original_off_model_only_low",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_original_off",
+      "right": "laya_original_off_model_only_high",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_original_off",
+      "right": "laya_original_off_model_only_max",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_original_on",
+      "right": "laya_original_on_model_only_low",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_original_on",
+      "right": "laya_original_on_model_only_high",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_original_on",
+      "right": "laya_original_on_model_only_max",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_trained_off",
+      "right": "laya_trained_off_model_only_low",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_trained_off",
+      "right": "laya_trained_off_model_only_high",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_trained_off",
+      "right": "laya_trained_off_model_only_max",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_trained_on",
+      "right": "laya_trained_on_model_only_low",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_trained_on",
+      "right": "laya_trained_on_model_only_high",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "laya_trained_on",
+      "right": "laya_trained_on_model_only_max",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_original_off",
+      "right": "kev_original_off_model_only_low",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_original_off",
+      "right": "kev_original_off_model_only_high",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_original_off",
+      "right": "kev_original_off_model_only_max",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_original_on",
+      "right": "kev_original_on_model_only_low",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_original_on",
+      "right": "kev_original_on_model_only_high",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_original_on",
+      "right": "kev_original_on_model_only_max",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_trained_off",
+      "right": "kev_trained_off_model_only_low",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_trained_off",
+      "right": "kev_trained_off_model_only_high",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_trained_off",
+      "right": "kev_trained_off_model_only_max",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_trained_on",
+      "right": "kev_trained_on_model_only_low",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_trained_on",
+      "right": "kev_trained_on_model_only_high",
+      "factor": "joint_vs_model_only"
+    },
+    {
+      "left": "kev_trained_on",
+      "right": "kev_trained_on_model_only_max",
+      "factor": "joint_vs_model_only"
+    }
+  ],
+  "subtask_boundary_status": "No explicit upstream subtask IDs; phase arms do not claim subtask boundary evidence",
+  "capability_snapshot_source": "Existing v7 snapshot; fixed for this follow-up comparison",
+  "report_title": "Terminal-Bench 2.0 · Joint selection paired continuation",
+  "comparison_batches": [
+    "our-project/results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup",
+    "our-project/results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only"
+  ],
+  "comparison_scope": "Same seed43, 11-11 original/trained checkpoints, T/M/H encoder, teacher, provider, official task timeouts and 4096 output budget as Model-only; combined with two completed joint tasks, covers all 89.",
+  "capability_snapshot_path": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/config.json",
+  "method_source_revision": "b9fba0a4488731c76718221e0572e5e7f2e8f936"
+}
