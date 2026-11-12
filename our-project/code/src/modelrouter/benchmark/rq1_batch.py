@@ -124,6 +124,9 @@ def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=F
         saved.update(status="PENDING", updated_at=iterations.now())
         episode["units"].append(recovery)
         episode["environment_kwargs"].update(config.get("environment_kwargs", {}))
+        runtime = json.loads((iterations.ROOT / "our-project/experiments/configs/benchmark_runtime.json").read_text())
+        episode["environment_kwargs"].update({k: v for k, v in runtime.get("environment_kwargs", {}).items()
+                                              if k == "verifier_dependencies"})
         iterations.write_atomic(path / "run_config.json", episode)
         iterations.write_atomic(state, saved)
         job = path / "jobs" / recovery["job_name"]
