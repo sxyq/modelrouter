@@ -29,7 +29,7 @@ class V9DecisionHook:
             model_id=config.get("teacher_model_id", "gpt-6-luna"),
             native_effort=config.get("teacher_native_effort", "low"),
             max_output_tokens=config.get("teacher_max_output_tokens", 4096),
-            context_chars=config.get("teacher_context_chars", 8000))
+            context_chars=config.get("teacher_context_chars", 8000), record_dir=self.record_dir)
         self.trigger = TeacherTrigger()
         self.episode_id = None
         self.assessment = None

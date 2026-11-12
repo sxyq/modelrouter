@@ -130,7 +130,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 body, metrics = self._query_raw(
                     messages, model_spec, native_effort, max_tokens, tools, stream,
                     response_format=response_format, raw_response_path=capture,
-                    excluded_endpoints=excluded, request_deadline=deadline)
+                    excluded_endpoints=excluded, request_deadline=deadline, capture_request=index == 0)
             except Exception as exc:
                 attempt = dict(exc.metrics) if isinstance(exc, ProviderResponseError) else {
                     "http_status": exc.code if isinstance(exc, urllib.error.HTTPError) else None,
@@ -144,7 +144,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                                max_extra_retries=100)
                 transient = self._retryable(exc, attempt)
                 switched = False
-                if self.luna_registry is not None and model_spec.model_id == "gpt-6-luna" and endpoint is not None and (
+                if self.luna_registry is not None and (model_spec.model_id == "gpt-6-luna" or
+                        model_spec.model_id in self.account_endpoints) and endpoint is not None and (
                         transient or attempt.get("http_status") in (401, 403, 404) or
                         str(exc) in ("MODEL_IDENTITY_MISMATCH", "NATIVE_EFFORT_MISMATCH", "model_not_found")):
                     excluded.append(endpoint)
@@ -238,6 +239,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         raw_response_path: Optional[str | Path] = None,
         excluded_endpoints=(),
         request_deadline=None,
+        capture_request=True,
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Return (native_response, metrics); one request, no execution or retry.
 
@@ -292,6 +294,10 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             if raw_response_path is not None:
                 capture_path = Path(raw_response_path)
                 capture_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+                if capture_request:
+                    with os.fdopen(os.open(capture_path.with_suffix(".request.json"),
+                            os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "wb") as saved_request:
+                        saved_request.write(request.data)
                 capture = files.enter_context(os.fdopen(os.open(
                     capture_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "wb"))
             try:
@@ -429,9 +435,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         return body, metrics
 
     def generate(self, messages, model_spec, native_effort="none", max_tokens=1024, tools=None,
-                 stream=False, *, response_format=None) -> GeneratorResponse:
+                 stream=False, *, response_format=None, raw_response_path=None) -> GeneratorResponse:
         body, metrics = self.query_raw(messages, model_spec, native_effort, max_tokens, tools, stream,
-                                       response_format=response_format)
+                                       response_format=response_format, raw_response_path=raw_response_path)
         if metrics["protocol"] == "responses":
             content = "".join(part.get("text", "") for item in body["output"]
                               if item["type"] == "message" for part in item["content"])

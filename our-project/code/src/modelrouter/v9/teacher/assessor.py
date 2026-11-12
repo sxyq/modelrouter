@@ -30,8 +30,9 @@ _INSTRUCTION = (
 
 class TrajectoryAssessor:
     def __init__(self, provider, references_path=DEFAULT_REFERENCES, *, model_id="gpt-6-luna",
-                 native_effort="low", max_output_tokens=4096, context_chars=8000):
+                 native_effort="low", max_output_tokens=4096, context_chars=8000, record_dir=None):
         self.provider = provider
+        self.record_dir = Path(record_dir) if record_dir is not None else None
         self.references_path = Path(references_path)
         self.model_id, self.native_effort = model_id, native_effort
         if model_id != "gpt-6-luna":
@@ -97,7 +98,9 @@ class TrajectoryAssessor:
                 [{"role": "system", "content": _INSTRUCTION}, {"role": "user", "content": context}],
                 ModelRegistry().get_spec(self.model_id), self.native_effort,
                 self.max_output_tokens, tools=None, stream=True,
-                response_format={"type": "json_object"})
+                response_format={"type": "json_object"},
+                raw_response_path=self.record_dir / "provider_responses" / f"{metrics['decision_id']}.teacher.sse"
+                if self.record_dir is not None else None)
             body, usage = response.raw_response, response.metadata
             metrics.update(usage)
             metrics["execution_mode"] = "TEACHER"
