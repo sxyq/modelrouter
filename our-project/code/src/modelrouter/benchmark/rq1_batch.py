@@ -185,7 +185,9 @@ def main(argv=None):
             saved_units = json.loads((path / "resume_state.json").read_text())["units"]
             attempted_recovery = (any(u["job_name"] != unit["unit_id"] and u.get("environment_source_revision") == config["environment_source_revision"] for u in saved_units)
                                   if "environment_source_revision" in config else any(u["job_name"].endswith("--infrastructure-recovery-1") for u in saved_units))
-            verifier_download_failed = bool(config.get("environment_kwargs", {}).get("apt_mirrors", {}).get(unit["task_id"])) and any(
+            verifier_network_repaired = (unit["task_id"] in config.get("repaired_verifier_tasks", []) or
+                                         bool(config.get("environment_kwargs", {}).get("apt_mirrors", {}).get(unit["task_id"])))
+            verifier_download_failed = verifier_network_repaired and any(
                 not log.with_name("ctrf.json").exists() and "uvx: command not found" in log.read_text()
                 for log in path.glob(f"jobs/{saved_units[-1]['job_name']}/*/verifier/test-stdout.txt"))
             if not attempted_recovery and (verifier_download_failed or
