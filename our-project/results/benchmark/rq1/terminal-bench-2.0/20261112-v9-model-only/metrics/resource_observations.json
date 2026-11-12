@@ -1,1 +1,72 @@
-{"sampled_at": "2026-11-12T03:19:03.610202+00:00", "gpu": "memory.used [MiB], utilization.gpu [%]\n682 MiB, 0 %\n", "memory": "               total        used        free      shared  buff/cache   available\nMem:     404305604608 93706895360 63212081152   231940096 251634106368 310598709248\nSwap:              0           0           0\n", "resources": {"docker_host": "unix:///home/syy/\u8def\u7531/.runtime/docker-vm/docker.sock", "vm_cpus": 16, "vm_memory_mib": 40960, "task_resources": "ORIGINAL_2_0_TASK_TOML_UNCHANGED", "router_threads": 40, "router_gpu_worker_count": 1, "router_deployment": "SHARED_NATIVE_ADAPTER_CPU_RESIDENT_GPU_SERIALIZED_BY_EXISTING_LOCK", "cpu_usd_per_core_hour": null, "gpu_usd_per_hour": null, "vm_usd_per_hour": null, "resource_allocation": "ROUTER_CPU_REQUEST_CPU_SECONDS; SERIAL_GPU_LOCK_HELD_TIME; VM_ACTIVE_EPISODE_RESOURCE_TIME_SHARE", "supplier_billed_usd": "UNKNOWN", "training_cost": "SEPARATE_FROM_ONLINE_COST"}}
+{
+  "sampled_at": "2026-11-12T03:19:03.610202+00:00",
+  "gpu": "memory.used [MiB], utilization.gpu [%]\n682 MiB, 0 %\n",
+  "memory": "               total        used        free      shared  buff/cache   available\nMem:     404305604608 93706895360 63212081152   231940096 251634106368 310598709248\nSwap:              0           0           0\n",
+  "resources": {
+    "docker_host": "unix:///home/syy/路由/.runtime/docker-vm/docker.sock",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "task_resources": "ORIGINAL_2_0_TASK_TOML_UNCHANGED",
+    "router_threads": 40,
+    "router_gpu_worker_count": 1,
+    "router_deployment": "SHARED_NATIVE_ADAPTER_CPU_RESIDENT_GPU_SERIALIZED_BY_EXISTING_LOCK",
+    "cpu_usd_per_core_hour": null,
+    "gpu_usd_per_hour": null,
+    "vm_usd_per_hour": null,
+    "resource_allocation": "ROUTER_CPU_REQUEST_CPU_SECONDS; SERIAL_GPU_LOCK_HELD_TIME; VM_ACTIVE_EPISODE_RESOURCE_TIME_SHARE",
+    "supplier_billed_usd": "UNKNOWN",
+    "training_cost": "SEPARATE_FROM_ONLINE_COST"
+  },
+  "network_observations": [
+    {
+      "observed_at": "2026-11-12T18:30:15+08:00",
+      "event": "PROXY_LISTENER_ABSENT",
+      "remote_proxy": "127.0.0.1:17898",
+      "reported_connection_refused_trials": 316,
+      "source": "Original Harbor errors and observed missing socket"
+    },
+    {
+      "observed_at": "2026-11-12T18:31:32+08:00",
+      "event": "PROXY_RECONNECTED",
+      "local_mixed_port": 17897,
+      "remote_proxy": "127.0.0.1:17898",
+      "metadata_http_status": 200
+    },
+    {
+      "observed_at": "2026-11-12T19:00:12+08:00",
+      "event": "MODEL_DOMAINS_USE_EXISTING_TCP_EGRESS",
+      "domains": [
+        "codegoai.com",
+        "www.jiji.cc",
+        "www.colink.site"
+      ],
+      "previous_rule": "MATCH",
+      "previous_egress": "Los Angeles Hysteria2",
+      "current_egress": "Los Angeles TCP",
+      "config_reload_http_status": 204,
+      "model_and_provider_ids_changed": false
+    },
+    {
+      "observed_at": "2026-11-12T19:02:59+08:00",
+      "event": "LOCAL_PROXY_SSH_ENDED_AFTER_TURN_INTERRUPTION",
+      "remote_controller_pids": [
+        2373109,
+        2806615
+      ],
+      "controllers_still_running": true
+    },
+    {
+      "observed_at": "2026-11-12T19:05:01+08:00",
+      "event": "BATCH_SCOPED_PROXY_RECONNECTED",
+      "local_proxy_pid": 44998,
+      "batch_owner_pid": 2806615,
+      "exit_condition": "Original continuation owner exits; 1200-second observation interval",
+      "domain_root_http_status": {
+        "codegoai.com": 200,
+        "www.jiji.cc": 200,
+        "www.colink.site": 200
+      },
+      "metadata_is_not_official_reward": true
+    }
+  ]
+}

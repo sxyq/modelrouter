@@ -10,6 +10,8 @@
 
 本批316个连接拒绝记录发生在原控制SSH断开、17898代理停止监听后。18:31按本机Clash实际mixed-port=17897恢复同一代理，元数据HTTP200，新请求已有响应。原观察进程已退出，脚本现接上原Controller；保留原失败与费用，矩阵结束后只沿原机制恢复一次相应位置。[87题联合成对接续](../../experiments/configs/v9_joint_paired.json)已排在其后，八个主组共696位置，复用两道旧seed43联合题，能力快照直接读取本批保存配置。
 
+19:05网络接续：Luna/GLM/Terra原域名改走现有TCP出口，元数据均HTTP200，gcode-to-text的Luna High/Max已返回文本并执行工具。单批代理连接跟随现有接续持有进程结束而退出，原观察输出接回同一controller.log。18:58快照412位置结束，53通过/9有效失败/349缺Reward，1个uvx缺失原0另列；API已报告4,542,691 Token、360请求缺用量、已知模型+教师参考费$1.23820567。原结果与网络变更分别登记，后续终局由原Verifier写出。
+
 唯一[配对汇总](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/comparisons.json)已纳入Model-only同档位的原始/训练、教师OFF/ON及固定模型对照，记录实际评分与费用齐全的任务/seed。两优先题中，训练Kev OFF联合/Model-only Low、High、Max均2/2通过，模型+教师参考费分别为$0.02944120 / $0.03871960、$0.04624140、$0.26640480。训练Kev ON联合/Model-only High、Max均2/2，参考费分别为$0.03183710 / $0.05734710、$0.30910010；ON Low仅一对费用齐全，单列该题。Laya原始OFF的联合/Model-only Low、High均2/2，参考费$0.03605180 / $0.00242127、$0.00463366。完整实收及Router/工具/资源USD缺项保持UNKNOWN。
 
 原8个官方零分保存实际任务评价；Provider与Verifier异常分别保留缺评分。modernize-scientific-stack零分含官方测试执行现代化脚本超时，任务代码效率与VM资源的贡献尚缺分离结果。原Agent超时且官方Reward1同时登记。生成方法版本仍为b9fba0a4488731c76718221e0572e5e7f2e8f936；现有矩阵继续使用原Controller2373109。
@@ -21,6 +23,8 @@ python3 our-project/code/cli/run_rq1_a6000.py our-project/experiments/configs/v9
 ```
 
 接上当前批次并顺序完成已授权接续，使用同一脚本的`--attach-pid 2373109 --recover-infrastructure`及两个配置参数：先`v9_model_only.json`，再`v9_joint_paired.json`。接入模式复用已恢复的17898代理；常规启动从Clash `/configs`读取当前端口，不再使用旧7897。观察进程退出码实际传播；原任务进程不因报告更新重启。
+
+仅重连当前批次的代理使用同一脚本的`--proxy-for-pid 2806615`；它不创建Episode或读取模型Key，单次SSH与当前接续进程绑定，每1200秒观察退出条件，结束后关闭连接。
 
 已完成批次的逐请求用量已重新聚合到原`metrics/per_episode.csv`和`per_strategy.csv`。`known_prompt_tokens`与`known_completion_tokens`合计已报告Token，`usage_unknown_requests`记录缺用量请求；旧完整用量字段仍在任一请求缺值时保持空值。模型、教师和全部已发生尝试均纳入；Reasoning包含在输出内，缓存读取包含在输入内，各只计一次。
 

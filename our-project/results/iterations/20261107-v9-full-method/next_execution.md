@@ -23,6 +23,8 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 固定脚本`our-project/code/cli/run_rq1_a6000.py`已接上原父2373109，使用`--attach-pid 2373109 --recover-infrastructure`和Model-only、Joint-paired两个配置顺序执行。原控制SSH断开后316请求记录连接拒绝，18:31按本机Clash实际17897端口恢复原17898代理；旧观察已退出，现观察每1200秒汇总。原GPU锁、用户Docker和唯一SSH/memfd凭据沿用；本次全部批次结束后退出并清理临时导出。完整API Token按已报告输入+输出登记，Router本地另计；缓存读取与Reasoning各计一次。连接失败及费用保持，只有已记录且没有成功生成/教师/工具的相应位置沿原机制恢复一次，不重做Provider额度耗尽或已有Reward。
 
+19:05当前运行事实：持有进程2806615、观察2806620仍在；单批代理SSH44998跟随该持有进程结束，观察输出已接回原controller.log。原三个模型域名经现有TCP出口HTTP200，gcode-to-text的Luna High/Max已有实际生成和工具结果，终局待原Verifier；18:58快照412结束、2运行、1722未开始，1个Verifier依赖失败与349缺Reward分别登记。中断后不重建矩阵或重复首两题。
+
 ## 后续一：补任务开始、转折与恢复状态（RQ4，关联RQ2）
 
 2026-11-12：[两个合法截止](../20261111-v9-rq4-joint/joint_supervision.json)新增6请求、5有效原评价器结果，合并原候选形成2条七候选偏好+16辅助；两者均为验证阶段。Laya/Kev新实体各18更新保存，15.193/252.463秒；18行及现有六请求不重做。下一增量定位原合法Train前缀中的任务开始、修改、真实阶段转折及恢复，质量优先、等质量费用次之。
