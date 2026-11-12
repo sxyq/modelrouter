@@ -50,8 +50,8 @@ def render_batch_figures(root):
     fig.supxlabel("Supplier billing and resource USD are unknown.", fontsize=8)
     save(fig, "success_cost_frontier")
 
-    fixed = [s["id"] for s in strategies if s["stage"] == "fixed"]
-    fig, ax = plt.subplots(figsize=(7.2, 4.6), layout="constrained")
+    fixed = [s["id"] for s in strategies if s["stage"] == "fixed" or s.get("effort")]
+    fig, ax = plt.subplots(figsize=(9, max(4.6, len(fixed) * .34 + 1.5)), layout="constrained")
     for row in ended:
         cost = row.get("latest_trial_reference_usd", row["reference_cost_usd"])
         if row["strategy_id"] not in fixed or not cost:
@@ -60,7 +60,7 @@ def render_batch_figures(root):
         eligible = row["effort_comparison_eligible"] == "True" and row.get("verifier_dependency_failure") != "True"
         marker = "o" if reward and float(reward) == 1 and eligible else "x" if reward and float(reward) == 0 and eligible else "^"
         ax.scatter(float(cost), fixed.index(row["strategy_id"]), marker=marker, color=colors[row["strategy_id"].split("_")[0]], alpha=.7)
-    ax.set(yticks=range(len(fixed)), yticklabels=fixed, xlabel="Final episode model reference fee (USD)", title="Fixed model × requested Native Effort: actual task results")
+    ax.set(yticks=range(len(fixed)), yticklabels=fixed, xlabel="Final episode model + teacher reference fee (USD)", title="Fixed requested Native Effort: actual task results")
     ax.invert_yaxis()
     fig.supxlabel("Circle: Reward 1; cross: Reward 0; triangle: no eligible score. Episodes with incomplete fees omitted.", fontsize=8)
     save(fig, "model_effort_comparison")
@@ -69,9 +69,9 @@ def render_batch_figures(root):
     fig, ax = plt.subplots(figsize=(7.2, 4.2), layout="constrained")
     pairs = 0
     for row in ended:
-        if not row["strategy_id"].endswith("_off"):
+        if "_off" not in row["strategy_id"]:
             continue
-        other = lookup.get((row["task_id"], row["strategy_id"][:-3] + "on", row["seed"]))
+        other = lookup.get((row["task_id"], row["strategy_id"].replace("_off", "_on", 1), row["seed"]))
         if not other or not all(r["reward"] and r.get("latest_trial_reference_usd", r["reference_cost_usd"]) and r.get("verifier_dependency_failure") != "True" for r in (row, other)):
             continue
         pairs += 1

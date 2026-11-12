@@ -521,6 +521,7 @@ def export_batch_results(root, config, output_root=None):
         write_atomic(public / "official_result.json", {**{k: trial.get(k) for k in ("trial_id", "task_name", "task_git_sha", "status", "reward", "duration_sec", "started_at", "finished_at", "verifier_path")}, "error_type": row["error_type"], "failed_provider_http_status": row["failed_provider_http_status"]})
         write_atomic(public / "summary.json", row)
         fields = {"timestamp", "monotonic_ns", "event", "episode_id", "decision_id", "command_id", "duration_ms", "selected_action", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "sent_effort_parameter", "protocol", "stream", "requested_max_output_tokens", "reported_max_output_tokens", "finish_reason", "physical_backend_identity_status", "provider_endpoint_id", "cost_usd", "cost_source", "cost_status", "cache_cost_policy", "reasoning_cost_policy", "actual_billed_cost_usd", "prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "router_latency_ms", "inference_latency_ms", "router_input_usage", "router_cpu_time_sec", "teacher_wall_ms", "capability_snapshot_id", "assessment_consumed_by_router", "http_status", "category"}
+        fields.update({"router_gpu_wait_ms", "router_device_transfer_ms", "router_device", "router_weights_path"})
         with (public / "events.jsonl").open("w") as stream:
             for event in events:
                 stream.write(json.dumps({k: v for k, v in event.items() if k in fields}, ensure_ascii=False) + "\n")
@@ -567,17 +568,21 @@ def export_batch_results(root, config, output_root=None):
                             "episode_p50_s": percentile([r["episode_wall_s"] for r in group], .5),
                             "episode_p95_s": percentile([r["episode_wall_s"] for r in group], .95)})
     comparisons = []
-    pairs = [(f"{family}_{version}_off", f"{family}_{version}_on", "teacher") for family in ("laya", "kev") for version in ("original", "trained")]
-    pairs += [(f"{family}_original_{teacher}", f"{family}_trained_{teacher}", "training") for family in ("laya", "kev") for teacher in ("off", "on")]
+    suffixes = [""] + sorted({f"_model_only_{s['effort']}" for s in strategies.values()
+                              if s.get("v9_config", {}).get("selection_scope") == "MODEL_ONLY_FIXED_NATIVE_EFFORT"})
+    pairs = [(f"{family}_{version}_off{suffix}", f"{family}_{version}_on{suffix}", "teacher") for suffix in suffixes for family in ("laya", "kev") for version in ("original", "trained")]
+    pairs += [(f"{family}_original_{teacher}{suffix}", f"{family}_trained_{teacher}{suffix}", "training") for suffix in suffixes for family in ("laya", "kev") for teacher in ("off", "on")]
     pairs += [(pair["left"], pair["right"], pair["factor"]) for pair in config.get("paired_comparisons", [])]
-    pairs += [(fixed["id"], router["id"], "fixed_vs_router") for fixed in strategies.values() if fixed.get("model") for router in strategies.values() if router["stage"] == "router"]
     fixed = [s for s in strategies.values() if s["stage"] == "fixed"]
     pairs += [(x["id"], y["id"], "native_effort" if x.get("model") == y.get("model") else "fixed_strategy")
               for i, x in enumerate(fixed) for y in fixed[i + 1:]]
     comparison_episodes = list(episodes)
+    comparison_strategies = dict(strategies)
     for batch in config.get("comparison_batches", []):
         comparison_episodes.extend(json.loads(path.read_text()) for path in
                                    (ROOT / batch / "trials").glob("*/*/*/summary.json"))
+        comparison_strategies.update({s["id"]: s for s in json.loads((ROOT / batch / "config.json").read_text())["strategies"]})
+    pairs += [(fixed["id"], router["id"], "fixed_vs_router") for fixed in comparison_strategies.values() if fixed.get("model") for router in strategies.values() if router["stage"] == "router"]
     for left, right, factor in pairs:
         a = {(r["task_id"], r["seed"]): r for r in comparison_episodes if r["strategy_id"] == left}
         b = {(r["task_id"], r["seed"]): r for r in comparison_episodes if r["strategy_id"] == right}
@@ -587,6 +592,8 @@ def export_batch_results(root, config, output_root=None):
         cost_pairs = [(x, y) for x, y in paired if x["reference_cost_usd"] is not None and y["reference_cost_usd"] is not None]
         latest_pairs = [(x, y) for x, y in paired if x.get("latest_trial_reference_usd") is not None and y.get("latest_trial_reference_usd") is not None]
         comparisons.append({"factor": factor, "left": left, "right": right, "scored_pairs": len(paired),
+                            "scored_task_seeds": sorted({(x["task_id"], x["seed"]) for x, y in paired}),
+                            "reference_known_task_seeds": sorted({(x["task_id"], x["seed"]) for x, y in cost_pairs}),
                             "left_run_ids": sorted({r["run_id"] for r in a.values()}),
                             "right_run_ids": sorted({r["run_id"] for r in b.values()}),
                             "left_reward_1": sum(x["reward"] == 1 for x, y in paired),
