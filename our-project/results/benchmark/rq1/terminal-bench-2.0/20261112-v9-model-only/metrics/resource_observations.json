@@ -95,6 +95,21 @@
       "dependency_failed_positions_at_2139": 11,
       "recovery": "One complete original Harbor Episode per recorded download failure without CTRF; preserve original reward, attempts and costs",
       "official_task_and_tests_changed": false
+    },
+    {
+      "recorded_at": "2026-11-12T22:13:11+08:00",
+      "event": "VERIFIER_DOWNLOAD_PATH_MEASURED",
+      "url": "http://archive.ubuntu.com/ubuntu/dists/noble/universe/binary-amd64/Packages.xz",
+      "expected_bytes": 15037908,
+      "mac_direct": {"http_status": 200, "received_bytes": 15037908, "elapsed_seconds": 9.767470, "exit_code": 0},
+      "mac_existing_tcp_proxy": {"http_status": 200, "received_bytes": 5563145, "elapsed_seconds": 30.253145, "exit_code": 28},
+      "a6000_through_mac_direct_egress": {"http_status": 200, "received_bytes": 1169641, "elapsed_seconds": 30.001583, "exit_code": 28},
+      "a6000_direct": {"http_status": 200, "received_bytes": 3185, "elapsed_seconds": 0.030920, "content_type_observed": "HTML_NOT_OFFICIAL_PACKAGE_INDEX"},
+      "a6000_existing_proxy_7890": {"http_status": 502, "received_bytes": 0, "elapsed_seconds": 5.039333},
+      "temporary_archive_direct_rule": "Reverted to existing Los Angeles TCP after remote transfer still timed out",
+      "official_git_multibranch_high": {"apt_index_elapsed_seconds": 738, "verifier_timeout_seconds": 900, "last_stdout_stage": "Downloading cpython-3.13.9", "ctrf_exists": false, "official_reward": null},
+      "additional_episode_recovery_added": false,
+      "official_task_and_tests_changed": false
     }
   ]
 }

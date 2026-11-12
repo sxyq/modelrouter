@@ -24,9 +24,9 @@ git-leak-recovery新增三组训练Kev完整通过，CTRF各5条断言全部通�
 | Kev训练 ON High | 1 | 8/16 | 2 | 568.403828 | 0.03641570 |
 | Kev训练 ON Max | 1 | 17/65 | 4 | 1252.111846 | 0.16013990 |
 
-同题ON High与ON Max均通过，参考费相差$0.12372420、墙钟相差683.708018秒；这里同时改变请求Effort，不归因为教师收益。Low及OFF High的原0含下载失败、没有CTRF，另列。
+同题ON High与ON Max均通过，参考费相差$0.12372420、墙钟相差683.708018秒；教师均ON，差异变量为Effort。Low及OFF High的原0含下载失败、没有CTRF，另列。
 
-Provider与Verifier异常分别保留缺评分。modernize-scientific-stack零分含官方测试执行现代化脚本超时，任务代码效率与VM资源的贡献尚缺分离结果。新git-multibranch原始Laya OFF Low完整通过，OFF High在900秒Verifier超时后缺Reward；不以晚到文件改写原终局。生成方法版本仍为b9fba0a4488731c76718221e0572e5e7f2e8f936；原Controller2373109继续。
+Provider与Verifier异常分别保留缺评分。modernize-scientific-stack零分含官方测试执行现代化脚本超时，任务代码效率与VM资源的贡献尚缺分离结果。新git-multibranch原始Laya OFF Low完整通过，OFF High在900秒Verifier超时后缺Reward；原终局保持。其apt索引用时738秒，最后停在Python下载阶段；Mac官方索引直连更快，A6000经相同出口仍在30秒传输时限后仅取得部分字节。远端直连返回HTML、已有7890返回502，域名恢复原TCP出口；具体限速环节未知，实际字节与时间见[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)，没有增加Episode恢复范围。生成方法版本仍为b9fba0a4488731c76718221e0572e5e7f2e8f936；原Controller2373109继续。
 
 固定执行脚本为`our-project/code/cli/run_rq1_a6000.py`，调用原Harbor批量入口、共享GPU锁、原用户Docker及官方Verifier，每1200秒汇总一次；单次批次结束后退出。凭据从唯一600权限文件经SSH输入/memfd读取。启动命令：
 
