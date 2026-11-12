@@ -60,7 +60,8 @@ for index, config_path in enumerate(payload['configs']):
             observer = observe(runner.pid)
             status = runner.wait()
             output.write(json.dumps({'controller_pid': runner.pid, 'exit_code': status}) + '\n')
-            status = status or observer.wait()
+            observer_status = observer.wait()
+            status = status or observer_status
     shutil.rmtree(export)
     if status:
         break
