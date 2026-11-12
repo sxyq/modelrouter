@@ -32,6 +32,7 @@ from modelrouter.agent.state import AgentState, EpisodeStatus
 from modelrouter.baselines.policy import create_policy
 from modelrouter.providers.provider import OpenAICompatibleProvider, OpenAIResponsesProvider, ProviderResponseError
 from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS, legal_actions
+from modelrouter.providers.usage import known_request_cost
 from modelrouter.serving.schemas import LegalAction, PreDecisionState
 from modelrouter.v9.runtime.context import record_tool_result
 from .iterations import append, event, now, rows
@@ -251,7 +252,7 @@ class PolicyModel(LitellmModel):
         metrics["effort_validation_status"] = effort_status
         self.last_metrics = metrics
         self.usage.append(metrics)
-        self.state.accumulated_cost_usd += metrics.get("cost_usd") or 0
+        self.state.accumulated_cost_usd += known_request_cost(metrics) or 0
         metrics["agent_request_wall_ms"] = (time.perf_counter() - started) * 1000
         if self.state.model_time_sec is not None:
             self.state.model_time_sec += metrics["agent_request_wall_ms"] / 1000

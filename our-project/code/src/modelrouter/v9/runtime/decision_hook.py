@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from modelrouter.benchmark.iterations import event, write_atomic
+from modelrouter.providers.usage import known_request_cost
 from modelrouter.v9.capabilities.features import capability_cards, DEFAULT_DATA_DIR
 from modelrouter.v9.capabilities.refresh import ensure_current, DEFAULT_MAX_AGE_SECONDS
 from modelrouter.v9.teacher.assessor import TrajectoryAssessor, DEFAULT_REFERENCES
@@ -83,8 +84,9 @@ class V9DecisionHook:
                 self.last_teacher_metrics.append(metrics)
                 if state.teacher_time_sec is not None:
                     state.teacher_time_sec += metrics["teacher_wall_ms"] / 1000
-                if metrics.get("cost_usd") is not None:
-                    state.accumulated_cost_usd += metrics["cost_usd"]
+                known_cost = known_request_cost(metrics)
+                if known_cost is not None:
+                    state.accumulated_cost_usd += known_cost
                     result["budget_remaining_usd"] = state.budget_remaining_usd
                 event(self.record_dir, "TEACHER_END" if self.assessment is not None else "TEACHER_ERROR",
                       assessment=self.assessment, **metrics)
