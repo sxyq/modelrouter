@@ -3,12 +3,17 @@ from __future__ import annotations
 
 import json
 import io
+import errno
+import http.client
 import os
+import ssl
+import socket
 import sys
 import time
 import urllib.error
 import urllib.request
 from contextlib import ExitStack
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -44,6 +49,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
             creds.get("api_key", "") if self.base_url == credential_endpoint else ""
         )
         self.request_timeout_sec = request_timeout_sec
+        self.attempt_callback = None
+        self.cancel_requested = lambda: False
         self.model_endpoints = {item["model"]: item for item in creds.get("providers", [])}
         self.model_endpoints.update(creds.get("model_endpoints", {}))
         self.model_endpoints.update(model_endpoints or {})
@@ -105,49 +112,118 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
 
     def query_raw(self, messages, model_spec, native_effort="none", max_tokens=1024,
                   tools=None, stream=True, *, response_format=None, raw_response_path=None):
-        """Switch only registered Luna accounts after a failed transport response."""
+        """Retry the identical API operation, at most 100 times within its deadline."""
         excluded, attempts = [], []
-        while True:
+        request_started = time.monotonic()
+        deadline = (request_started + self.request_timeout_sec
+                    if self.request_timeout_sec is not None else None)
+        for index in range(101):
+            if self.cancel_requested() or deadline is not None and time.monotonic() >= deadline:
+                error = TimeoutError("Original task request deadline reached")
+                error.account_attempts, error.retry_count = attempts, max(0, len(attempts) - 1)
+                raise error
             attempt_started = time.perf_counter()
+            capture = (Path(raw_response_path).with_name(Path(raw_response_path).stem +
+                       f".retry-{index:03d}" + Path(raw_response_path).suffix)
+                       if raw_response_path is not None and index else raw_response_path)
             try:
                 body, metrics = self._query_raw(
                     messages, model_spec, native_effort, max_tokens, tools, stream,
-                    response_format=response_format, raw_response_path=raw_response_path,
-                    excluded_endpoints=excluded)
-            except (urllib.error.HTTPError, ProviderResponseError) as exc:
-                endpoint = (exc.metrics["provider_endpoint_id"] if isinstance(exc, ProviderResponseError)
-                            else exc.provider_endpoint_id)
-                retry = (self.luna_registry is not None and model_spec.model_id == "gpt-6-luna" and endpoint is not None and
-                         (isinstance(exc, urllib.error.HTTPError) and exc.code in (401, 403, 429, 502, 503, 509, 520)
-                          or isinstance(exc, ProviderResponseError) and str(exc) in
-                          ("EMPTY_RESPONSE", "INCOMPLETE_RESPONSE", "INCOMPLETE_TOOL_CALL", "rate_limit_error")))
+                    response_format=response_format, raw_response_path=capture,
+                    excluded_endpoints=excluded, request_deadline=deadline)
+            except Exception as exc:
                 attempt = dict(exc.metrics) if isinstance(exc, ProviderResponseError) else {
-                    "http_status": exc.code, "usage_status": "MISSING", "cost_usd": None,
+                    "http_status": exc.code if isinstance(exc, urllib.error.HTTPError) else None,
+                    "usage_status": "MISSING", "cost_usd": None,
                     "prompt_tokens": None, "completion_tokens": None,
                     "latency_ms": (time.perf_counter() - attempt_started) * 1000}
-                attempt.update(provider_endpoint_id=endpoint, error=str(exc))
+                endpoint = attempt.get("provider_endpoint_id") or getattr(exc, "provider_endpoint_id", None)
+                attempt.update(provider_endpoint_id=endpoint, error_type=type(exc).__name__,
+                               error=str(exc), attempt_index=index, request_model_id=model_spec.model_id,
+                               requested_native_effort=native_effort, requested_max_output_tokens=max_tokens,
+                               max_extra_retries=100)
+                transient = self._retryable(exc, attempt)
+                switched = False
+                if self.luna_registry is not None and model_spec.model_id == "gpt-6-luna" and endpoint is not None and (
+                        transient or attempt.get("http_status") in (401, 403, 404) or
+                        str(exc) in ("MODEL_IDENTITY_MISMATCH", "NATIVE_EFFORT_MISMATCH", "model_not_found")):
+                    excluded.append(endpoint)
+                    switched = bool(self.luna_registry.list_active_endpoints("luna", model_spec.model_id, excluded))
+                    if not switched and transient:
+                        excluded.clear()
+                retry = (transient or switched) and index < 100 and not self.cancel_requested()
+                wait = self._retry_wait(exc, index) if transient else 0.0
+                if deadline is not None and time.monotonic() + wait >= deadline:
+                    retry = False
+                attempt.update(retry_scheduled=retry, retry_wait_sec=wait if retry else 0,
+                               retry_stop_reason=None if retry else
+                               "TASK_DEADLINE" if self.cancel_requested() or deadline is not None and time.monotonic() + wait >= deadline
+                               else "RETRY_LIMIT" if index == 100 else "NON_RECOVERABLE")
                 attempts.append(attempt)
                 exc.account_attempts = attempts
+                exc.retry_count = index
                 if isinstance(exc, ProviderResponseError):
-                    exc.metrics["account_attempts"] = attempts
+                    self._merge_attempts(exc.metrics, attempts, request_started)
+                if self.attempt_callback is not None:
+                    self.attempt_callback(attempt)
                 if not retry:
                     raise
-                excluded.append(endpoint)
-                if not self.luna_registry.list_active_endpoints("luna", "gpt-6-luna", excluded):
-                    raise
-                raw_response_path = None
+                wait_until = time.monotonic() + wait
+                while time.monotonic() < wait_until:
+                    if self.cancel_requested():
+                        raise
+                    time.sleep(max(0.0, min(1.0, wait_until - time.monotonic())))
                 continue
-            attempts.append(dict(metrics))
-            if len(attempts) > 1:
-                metrics["account_attempts"] = attempts
-                metrics["account_attempts_elapsed_ms"] = sum(item["latency_ms"] for item in attempts)
-                known_costs = [item["cost_usd"] for item in attempts if item.get("cost_usd") is not None]
-                metrics["known_model_rate_cost_usd"] = sum(known_costs) if known_costs else None
-                for field in ("prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "cost_usd", "actual_billed_cost_usd"):
-                    values = [item.get(field) for item in attempts]
-                    metrics[field] = sum(values) if all(value is not None for value in values) else None
-                metrics["usage_status"] = "REPORTED" if metrics["prompt_tokens"] is not None and metrics["completion_tokens"] is not None else "PARTIAL_ACCOUNT_SWITCH"
+            attempt = dict(metrics, attempt_index=index, retry_scheduled=False, max_extra_retries=100)
+            attempts.append(attempt)
+            if self.attempt_callback is not None:
+                self.attempt_callback(attempt)
+            self._merge_attempts(metrics, attempts, request_started)
             return body, metrics
+
+    @staticmethod
+    def _retryable(exc, metrics):
+        if isinstance(exc, urllib.error.HTTPError):
+            return exc.code in (408, 429, 500, 502, 503, 504, 509, 520, 522, 524)
+        if isinstance(exc, ProviderResponseError):
+            limited = (metrics.get("finish_reason") == "length" or
+                       (metrics.get("incomplete_details") or {}).get("reason") == "max_output_tokens")
+            return not limited and str(exc) in (
+                "EMPTY_RESPONSE", "INCOMPLETE_RESPONSE", "INCOMPLETE_TOOL_CALL",
+                "rate_limit_error", "server_error", "overloaded_error")
+        if isinstance(exc, json.JSONDecodeError):
+            return not exc.doc.strip() or exc.pos >= len(exc.doc) - 2 or exc.msg.startswith("Unterminated string")
+        if isinstance(exc, urllib.error.URLError):
+            return OpenAICompatibleProvider._retryable(exc.reason, metrics)
+        return isinstance(exc, (ConnectionError, TimeoutError,
+                                http.client.HTTPException, ssl.SSLEOFError)) or (
+            isinstance(exc, OSError) and exc.errno in (errno.ECONNRESET, errno.ECONNABORTED,
+                errno.ECONNREFUSED, errno.ETIMEDOUT, errno.ENETUNREACH, errno.EHOSTUNREACH,
+                socket.EAI_AGAIN))
+
+    @staticmethod
+    def _retry_wait(exc, index):
+        value = exc.headers.get("Retry-After") if isinstance(exc, urllib.error.HTTPError) else None
+        if value is not None:
+            try:
+                return max(0.0, float(value))
+            except ValueError:
+                return max(0.0, parsedate_to_datetime(value).timestamp() - time.time())
+        return float(min(30, 2 ** min(index, 5)))
+
+    @staticmethod
+    def _merge_attempts(metrics, attempts, started):
+        metrics.update(account_attempts=attempts, retry_count=len(attempts) - 1,
+                       max_extra_retries=100, request_wall_ms=(time.monotonic() - started) * 1000,
+                       account_attempts_elapsed_ms=sum(item["latency_ms"] for item in attempts))
+        known = [a["cost_usd"] for a in attempts if a.get("cost_usd") is not None]
+        metrics["known_model_rate_cost_usd"] = sum(known) if known else None
+        for field in ("prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens",
+                      "cache_write_tokens", "cost_usd", "actual_billed_cost_usd"):
+            values = [a.get(field) for a in attempts]
+            metrics[field] = sum(values) if all(v is not None for v in values) else None
+        if len(attempts) > 1:
+            metrics["usage_status"] = "REPORTED" if metrics["prompt_tokens"] is not None and metrics["completion_tokens"] is not None else "PARTIAL_RETRY"
 
     def _query_raw(
         self,
@@ -161,6 +237,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         response_format: Optional[Dict[str, Any]] = None,
         raw_response_path: Optional[str | Path] = None,
         excluded_endpoints=(),
+        request_deadline=None,
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """Return (native_response, metrics); one request, no execution or retry.
 
@@ -189,8 +266,6 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                 raise RuntimeError("No active Luna account endpoint")
             request_base_url = pool_endpoint.base_url
             request_api_key = pool_endpoint.api_key
-            if pool_endpoint.max_output_tokens is not None:
-                max_tokens = min(max_tokens, pool_endpoint.max_output_tokens)
         if target == "glm-5.3-flash" and endpoint_credentials is None and pool_endpoint is None:
             raise RuntimeError("No configured provider endpoint for glm-5.3-flash")
         model_spec.validate_effort(effective_effort)
@@ -221,7 +296,10 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                     capture_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "wb"))
             try:
                 try:
-                    with urllib.request.urlopen(request, timeout=self.request_timeout_sec) as response:
+                    timeout = self.request_timeout_sec if request_deadline is None else request_deadline - time.monotonic()
+                    if timeout is not None and timeout <= 0:
+                        raise TimeoutError("Original task request deadline reached")
+                    with urllib.request.urlopen(request, timeout=timeout) as response:
                         http_status = response.status
                         response_content_type = response.headers.get("Content-Type")
                         body, ttft_ms = transport.read(
@@ -236,6 +314,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                         exc.read = io.BytesIO(raw).read
                     raise
             except (Exception, KeyboardInterrupt) as exc:
+                exc.provider_endpoint_id = pool_endpoint.endpoint_id if pool_endpoint else (endpoint_credentials or {}).get("endpoint_id")
                 with _token_budget() as budget:
                     _record_budget(budget, None, None, request_bound)
                 if pool_endpoint is not None:

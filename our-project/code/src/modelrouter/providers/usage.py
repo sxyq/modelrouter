@@ -67,3 +67,10 @@ def known_request_cost(record):
     known = [attempt["cost_usd"] for attempt in record.get("account_attempts", [])
              if attempt.get("cost_usd") is not None]
     return sum(known) if known else None
+
+
+def known_request_tokens(record, field):
+    value = record.get(field)
+    if value is not None:
+        return value
+    return sum(a[field] for a in record.get("account_attempts", []) if a.get(field) is not None)

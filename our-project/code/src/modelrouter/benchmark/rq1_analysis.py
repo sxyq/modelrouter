@@ -10,7 +10,7 @@ from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
-from modelrouter.providers.usage import known_request_cost, request_decision_id
+from modelrouter.providers.usage import known_request_cost, known_request_tokens, request_decision_id
 
 
 def wilson_score_interval(successes: int, total: int, confidence: float = 0.95) -> Tuple[float, float]:
@@ -138,6 +138,21 @@ def provider_requests(trial, events):
             row = {**recorded.get(key, {}), **item, "role": "teacher"}
             row.setdefault("event", "TEACHER_END")
             recorded[key] = row
+    attempts = defaultdict(dict)
+    for item in events_by_episode[episode]:
+        if item.get("event") == "PROVIDER_ATTEMPT":
+            attempts[(item["role"], item["decision_id"])][item["attempt_index"]] = item
+    for key, values in attempts.items():
+        row = recorded.setdefault(key, {"event": "ERROR", "role": key[0], "decision_id": key[1]})
+        ordered = [values[i] for i in sorted(values)]
+        row.update(account_attempts=ordered, retry_count=max(0, len(ordered) - 1),
+                   max_extra_retries=100)
+        for field in ("prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens",
+                      "cache_write_tokens", "cost_usd", "actual_billed_cost_usd"):
+            amounts = [a.get(field) for a in ordered]
+            row[field] = sum(amounts) if all(v is not None for v in amounts) else None
+        known = [a["cost_usd"] for a in ordered if a.get("cost_usd") is not None]
+        row["known_model_rate_cost_usd"] = sum(known) if known else None
     ended = {
         "generator": {request_decision_id(item) for item in recorded.values()
                       if item.get("role") == "generator" and item.get("event") in ("GENERATOR_END", "ERROR")},
@@ -463,7 +478,8 @@ def export_batch_results(root, config, output_root=None):
         routing = [e for e in events if e["event"] == "ROUTER_END"]
         contexts = [e for e in events if e["event"] == "V9_CONTEXT_END"]
         def known_cost(group):
-            return sum(known_request_cost(r) or 0 for r in group)
+            values = [known_request_cost(r) for r in group]
+            return sum(v for v in values if v is not None) if any(v is not None for v in values) else None
         def reported(group, field):
             values = [r.get(field) for r in group]
             return sum(values) if all(v is not None for v in values) else None
@@ -485,6 +501,16 @@ def export_batch_results(root, config, output_root=None):
                    verifier_path=trial.get("verifier_path"), episode_wall_s=trial.get("duration_sec"),
                    phase_wall_s=trial.get("phase_wall_s"),
                    generator_requests=len(generator), teacher_requests=len(teacher),
+                   provider_attempt_count=sum(len(r.get("account_attempts", [])) or 1 for r in requests),
+                   provider_retry_count=sum(r.get("retry_count", max(0, len(r.get("account_attempts", [])) - 1)) for r in requests),
+                   provider_retry_stop_reasons=dict(Counter(a["retry_stop_reason"] for r in requests
+                       for a in r.get("account_attempts", []) if a.get("retry_stop_reason"))),
+                   provider_attempts=[{**{k: a.get(k) for k in ("attempt_index", "request_model_id",
+                       "requested_native_effort", "http_status", "error_type", "response_status", "finish_reason",
+                       "latency_ms", "retry_wait_sec", "retry_stop_reason", "prompt_tokens", "completion_tokens",
+                       "cached_tokens", "cost_usd", "actual_billed_cost_usd")}, "role": r["role"],
+                       "decision_id": request_decision_id(r)} for r in requests for a in r.get("account_attempts", [])],
+                   technical_recovery_count=sum(u.get("provider_retry_limit") == 100 for u in state["units"]),
                    started_tool_calls=sum(e["event"] == "TOOL_START" for e in events),
                    completed_tool_calls=sum(e["event"] == "TOOL_END" for e in events),
                    generator_known_reference_usd=known_cost(generator), teacher_known_reference_usd=known_cost(teacher),
@@ -493,14 +519,14 @@ def export_batch_results(root, config, output_root=None):
                    supplier_billed_usd=reported(requests, "actual_billed_cost_usd"),
                    unknown_provider_cost_requests=sum(r.get("cost_usd") is None for r in requests),
                    prompt_tokens=reported(requests, "prompt_tokens"), completion_tokens=reported(requests, "completion_tokens"),
-                   known_prompt_tokens=sum(r["prompt_tokens"] for r in requests if r.get("prompt_tokens") is not None),
-                   known_completion_tokens=sum(r["completion_tokens"] for r in requests if r.get("completion_tokens") is not None),
+                   known_prompt_tokens=sum(known_request_tokens(r, "prompt_tokens") for r in requests),
+                   known_completion_tokens=sum(known_request_tokens(r, "completion_tokens") for r in requests),
                    usage_unknown_requests=sum(r.get("prompt_tokens") is None or r.get("completion_tokens") is None for r in requests),
-                   generator_known_tokens=sum(r["prompt_tokens"] + r["completion_tokens"] for r in generator if r.get("prompt_tokens") is not None and r.get("completion_tokens") is not None),
-                   teacher_known_tokens=sum(r["prompt_tokens"] + r["completion_tokens"] for r in teacher if r.get("prompt_tokens") is not None and r.get("completion_tokens") is not None),
+                   generator_known_tokens=sum(known_request_tokens(r, "prompt_tokens") + known_request_tokens(r, "completion_tokens") for r in generator),
+                   teacher_known_tokens=sum(known_request_tokens(r, "prompt_tokens") + known_request_tokens(r, "completion_tokens") for r in teacher),
                    reasoning_tokens=reported(requests, "reasoning_tokens"),
                    reported_cache_read_tokens=reported(requests, "cached_tokens"),
-                   known_cache_read_tokens=sum(r.get("cached_tokens") or 0 for r in requests),
+                   known_cache_read_tokens=sum(known_request_tokens(r, "cached_tokens") for r in requests),
                    cache_read_unknown_records=sum(r.get("cached_tokens") is None for r in requests),
                    reported_cache_write_tokens=reported(requests, "cache_write_tokens"),
                    cache_write_unknown_records=sum(r.get("cache_write_tokens") is None for r in requests),
@@ -562,7 +588,7 @@ def export_batch_results(root, config, output_root=None):
                             "benchmark_success_upper": (n - zero) / n if n else None,
                             "generator_known_reference_usd": measured_sum(group, "generator_known_reference_usd"),
                             "teacher_known_reference_usd": measured_sum(group, "teacher_known_reference_usd"),
-                            **{field: measured_sum(group, field) for field in ("generator_requests", "teacher_requests", "prompt_tokens", "completion_tokens", "known_prompt_tokens", "known_completion_tokens", "usage_unknown_requests", "generator_known_tokens", "teacher_known_tokens", "reasoning_tokens", "known_cache_read_tokens", "cache_read_unknown_records", "unknown_provider_cost_requests", "router_wall_s", "router_known_input_tokens", "router_known_output_tokens", "router_usage_unknown_decisions", "router_cpu_time_sec", "router_gpu_wait_s", "teacher_wall_s", "logical_model_changes", "endpoint_changes")},
+                            **{field: measured_sum(group, field) for field in ("generator_requests", "teacher_requests", "provider_attempt_count", "provider_retry_count", "technical_recovery_count", "prompt_tokens", "completion_tokens", "known_prompt_tokens", "known_completion_tokens", "usage_unknown_requests", "generator_known_tokens", "teacher_known_tokens", "reasoning_tokens", "known_cache_read_tokens", "cache_read_unknown_records", "unknown_provider_cost_requests", "router_wall_s", "router_known_input_tokens", "router_known_output_tokens", "router_usage_unknown_decisions", "router_cpu_time_sec", "router_gpu_wait_s", "teacher_wall_s", "logical_model_changes", "endpoint_changes")},
                             "complete_cost_usd": None, "supplier_billed_usd": None,
                             "selected_action_counts": dict(Counter(action["action_id"] for row in group for action in row.get("selected_actions", []))),
                             "episode_total_wall_s": measured_sum(group, "attempts_wall_s"),
@@ -671,6 +697,7 @@ def export_batch_results(root, config, output_root=None):
                f"Router本地前向另报告输入{router_input_label}、输出{router_output_label} Token；{router_missing_label}次决策缺用量。其计算费用按A6000资源计量，美元单价未知。\n",
                f"Provider实际报告缓存读取{cache_label} Token；{sum(r['cache_read_unknown_records'] or 0 for r in all_groups)}次请求未报告缓存读取；跨模型物理KV共享未知。\n",
                f"教师请求{sum(r['teacher_requests'] or 0 for r in all_groups)}次，短评实际输入Router {sum(r.get('teacher_consumed_decisions', 0) for r in episodes)}次；同一短评可由多次决策消费。\n"]
+    report.append(f"Provider实际额外重试{sum(r.get('provider_retry_count') or 0 for r in all_groups)}次；本次技术恢复{sum(r.get('technical_recovery_count') or 0 for r in all_groups)}位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。\n")
     truncated = [r for r in episodes if r.get("router_truncated_decisions")]
     report.append(f"已记录Router输入截断{sum(r['router_truncated_decisions'] for r in truncated)}次，涉及{len(truncated)}个位置；原输入及官方结果保留在逐Episode表。\n")
     mismatch = Counter((q.get("request_model_id"), q.get("requested_native_effort"), q.get("returned_native_effort"))

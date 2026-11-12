@@ -180,6 +180,10 @@ def audit_trial(trial_dir: str | Path) -> dict[str, Any]:
             row["status"] = "VERIFIER_MISMATCH"
             row["reason"] = "Trial result rewards differ from original verifier artifact"
             return row
+        stdout = directory / "verifier" / "test-stdout.txt"
+        if stdout.is_file() and "uvx: command not found" in stdout.read_text() and not (directory / "verifier" / "ctrf.json").is_file():
+            row["reason"] = "Official test dependency uvx absent; no task assertions executed"
+            return row
         task_path = (config.get("task") or {}).get("path")
         script = Path(task_path) / "tests" / "test.sh" if task_path else None
         expects_ctrf = row["task_name"] == "terminal-bench/fix-git"

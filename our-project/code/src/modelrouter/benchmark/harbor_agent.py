@@ -130,6 +130,10 @@ class PolicyModel(LitellmModel):
                      or self.last_router_decision.selected_action not in available_actions
                      or self.routing_granularity == "phase" and self.state.current_phase != self.last_route_phase)
         self.provider.request_timeout_sec = snapshot["time_remaining_sec"]
+        self.provider.cancel_requested = lambda: self.state.status == EpisodeStatus.TIMEOUT
+        self.provider.attempt_callback = lambda attempt: event(
+            self.record_dir, "PROVIDER_ATTEMPT", **dict(attempt, episode_id=self.state.episode_id,
+                                                       decision_id=decision_id, role="teacher"))
         snapshot = self.v9_hook.before_route(self.state, messages, snapshot, available_actions, route_due=route_due)
         snapshot = PreDecisionState.model_validate(snapshot).model_dump()
         self.state.pre_decision_snapshot = snapshot
@@ -189,6 +193,9 @@ class PolicyModel(LitellmModel):
         if self.state.status == EpisodeStatus.TIMEOUT:
             raise RuntimeError("Harbor episode timed out")
         self.provider.request_timeout_sec = self.state.time_budget_sec - self.state.elapsed_time_sec
+        self.provider.attempt_callback = lambda attempt: event(
+            self.record_dir, "PROVIDER_ATTEMPT", **dict(attempt, episode_id=self.state.episode_id,
+                                                       decision_id=decision_id, role="generator"))
         started = time.perf_counter()
         event(self.record_dir, "GENERATOR_START", episode_id=self.state.episode_id, decision_id=decision_id,
               decision_sequence=self.state.step_index, selected_action=selected,

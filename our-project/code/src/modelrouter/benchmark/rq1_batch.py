@@ -20,6 +20,8 @@ from .harbor_agent import legal_actions, mini_configuration
 from .official_artifacts import audit_job
 from modelrouter.providers.registry import MODEL_REGISTRY, V9_MODEL_IDS
 from modelrouter.v9.capabilities.features import load_current
+from modelrouter.providers.base import ProviderResponseError
+from modelrouter.providers.provider import OpenAICompatibleProvider
 
 
 def prepare(config_path, revision):
@@ -67,6 +69,34 @@ def prepare(config_path, revision):
     return root, config
 
 
+def recovery_reason(path):
+    """Recover technical interruptions only; never repeat a valid official score."""
+    observed = [t for job in (path / "jobs").glob("*") for t in audit_job(job)["trials"]]
+    if any(t["status"] == "OFFICIAL_ARTIFACT_VERIFIED" and t["reward"] in (0, 1) for t in observed):
+        return None
+    if not observed:
+        return None
+    trial = max(observed, key=lambda t: t.get("finished_at") or "")
+    error = trial.get("error") or {}
+    kind, message = error.get("exception_type"), error.get("exception_message", "")
+    if "dependency uvx absent" in trial.get("reason", "") or "CTRF report absent" in trial.get("reason", ""):
+        return "VERIFIER_DEPENDENCY"
+    if kind in ("URLError", "RemoteDisconnected", "ConnectionResetError", "TimeoutError", "IncompleteRead"):
+        return "PROVIDER_TRANSPORT"
+    if kind == "HTTPError" and any(str(code) in message for code in (408, 429, 500, 502, 503, 504, 509, 520, 522, 524)):
+        return "PROVIDER_HTTP"
+    if kind in ("ProviderResponseError", "JSONDecodeError"):
+        request = next((e for e in reversed(iterations.rows(path / "events.jsonl"))
+                        if e.get("episode_id") == trial["trial_id"] and e.get("event") == "GENERATOR_END"), {})
+        if kind == "JSONDecodeError" and "Unterminated string" in message or kind == "ProviderResponseError" and OpenAICompatibleProvider._retryable(ProviderResponseError(message, {}, request), request):
+            return "PROVIDER_INTERRUPTED_RESPONSE"
+    if kind in ("EnvironmentStartTimeoutError", "VerifierTimeoutError"):
+        return kind
+    if kind == "RuntimeError" and any(s in message for s in ("failed to fetch anonymous token", "connection refused", "502 Bad Gateway")):
+        return "ENVIRONMENT_NETWORK"
+    return None
+
+
 def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=False):
     if unit["strategy_id"] in unavailable:
         return dict(unit, status="UNAVAILABLE_PROVIDER_EFFORT", cause=unavailable[unit["strategy_id"]])
@@ -75,10 +105,14 @@ def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=F
     observed = audit_job(job)
     state = path / "resume_state.json"
     if recover_infrastructure:
+        reason = recovery_reason(path)
+        if reason is None:
+            return dict(unit, status="FINISHED", reused=True)
         saved = json.loads(state.read_text())
         episode = json.loads((path / "run_config.json").read_text())
         recovery = dict(saved["units"][-1], job_name=unit["unit_id"] + f"--infrastructure-recovery-{len(saved['units'])}",
-                        environment_source_revision=config.get("environment_source_revision"), status="PENDING")
+                        environment_source_revision=config.get("environment_source_revision"), status="PENDING",
+                        recovery_reason=reason, provider_retry_limit=100)
         saved["units"].append(recovery)
         saved.update(status="PENDING", updated_at=iterations.now())
         episode["units"].append(recovery)
@@ -143,11 +177,15 @@ def main(argv=None):
     parser.add_argument("--export-dir", type=Path, help="Public output directory")
     parser.add_argument("--watch-pids", type=int, nargs="+", help="Observe these existing batch processes without launching episodes")
     parser.add_argument("--watch-interval", type=int, default=1200, help="Seconds between batch snapshots; default 20 minutes")
-    parser.add_argument("--recover-infrastructure", action="store_true", help="One explicit attempt after the recorded proxy or image preparation failure")
+    parser.add_argument("--recover-infrastructure", action="store_true", help="One separate attempt after a recorded technical fault; retain valid scores")
+    parser.add_argument("--task", action="append", help="Select existing task IDs without changing the matrix")
+    parser.add_argument("--strategy", action="append", help="Select existing strategy IDs without changing the matrix")
     args = parser.parse_args(argv)
     root, config = prepare(args.config, args.source_revision)
     config["router_socket"] = str(iterations.ROOT / ".runtime" / (config["run_id"] + "-router.sock"))
     units = json.loads((root / "manifest.json").read_text())["units"]
+    units = [u for u in units if (not args.task or u["task_id"] in args.task)
+             and (not args.strategy or u["strategy_id"] in args.strategy)]
     from .rq1_analysis import export_batch_results
     if args.watch_pids:
         destination = args.export_dir or Path(tempfile.mkdtemp(prefix="rq1-watch-export.", dir=iterations.ROOT / ".runtime"))
@@ -171,28 +209,11 @@ def main(argv=None):
         selected = []
         for unit in units:
             path = root / ".private/episodes" / unit["task_id"] / unit["strategy_id"] / str(unit["seed"])
-            trials = iterations.rows(path / "official_trials.jsonl")
-            if not trials:
+            if not (path / "resume_state.json").exists():
                 continue
-            trial = max(trials, key=lambda r: r["finished_at"])
-            error = trial.get("error") or {}
-            restored_proxy = "connection refused" in error.get("exception_message", "").lower()
-            prepared_image = unit["task_id"] in ("hf-model-inference", "custom-memory-heap-crash") and error.get("exception_type") == "EnvironmentStartTimeoutError"
-            prepared_image |= (unit["task_id"] == "custom-memory-heap-crash" and error.get("exception_type") == "RuntimeError"
-                               and "failed to fetch anonymous token" in error.get("exception_message", "")
-                               and "EOF" in error.get("exception_message", ""))
-            events = iterations.rows(path / "events.jsonl")
             saved_units = json.loads((path / "resume_state.json").read_text())["units"]
-            attempted_recovery = (any(u["job_name"] != unit["unit_id"] and u.get("environment_source_revision") == config["environment_source_revision"] for u in saved_units)
-                                  if "environment_source_revision" in config else any(u["job_name"].endswith("--infrastructure-recovery-1") for u in saved_units))
-            verifier_network_repaired = (unit["task_id"] in config.get("repaired_verifier_tasks", []) or
-                                         bool(config.get("environment_kwargs", {}).get("apt_mirrors", {}).get(unit["task_id"])))
-            verifier_download_failed = verifier_network_repaired and any(
-                not log.with_name("ctrf.json").exists() and "uvx: command not found" in log.read_text()
-                for log in path.glob(f"jobs/{saved_units[-1]['job_name']}/*/verifier/test-stdout.txt"))
-            if not attempted_recovery and (verifier_download_failed or
-                    (restored_proxy or prepared_image) and trial.get("reward") is None and not any(
-                        e["event"] in ("GENERATOR_END", "TEACHER_END", "TOOL_END") for e in events)):
+            attempted_recovery = any(u.get("provider_retry_limit") == 100 for u in saved_units)
+            if not attempted_recovery and recovery_reason(path):
                 selected.append(unit)
         units = selected
     worker = None
@@ -218,7 +239,12 @@ def main(argv=None):
             with ThreadPoolExecutor(max_workers=config["concurrency"][stage]) as pool:
                 futures = [pool.submit(run_unit, root, config, u, by_id[u["strategy_id"]], unavailable, args.recover_infrastructure) for u in pending]
                 for future in as_completed(futures):
-                    record = future.result()
+                    try:
+                        record = future.result()
+                    except Exception as exc:
+                        unit = pending[futures.index(future)]
+                        record = dict(unit, status="UNKNOWN", error_type=type(exc).__name__,
+                                      error=str(exc), timestamp=iterations.now())
                     if record.get("unsupported_effort"):
                         unavailable[record["strategy_id"]] = record["unit_id"]
                     iterations.append(root / "jobs.jsonl", record)
