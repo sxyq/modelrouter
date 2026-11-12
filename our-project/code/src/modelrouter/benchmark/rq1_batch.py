@@ -45,7 +45,8 @@ def prepare(config_path, revision):
                       "used_for_model_selection": task["name"] in config["model_selection_tasks"],
                       "environment": definition["environment"], "agent": definition["agent"],
                       "verifier": definition["verifier"]})
-    tasks.sort(key=lambda t: (t["agent"]["timeout_sec"], t["task_id"]))
+    priority = {task: index for index, task in enumerate(config.get("task_priority", []))}
+    tasks.sort(key=lambda t: (priority.get(t["task_id"], len(priority)), t["agent"]["timeout_sec"], t["task_id"]))
     config.update(source_revision=revision, started_at=iterations.now(), tasks=tasks,
                   capability_snapshot=load_current(),
                   harbor_version=version("harbor"), mini_swe_version=version("mini-swe-agent"),
@@ -95,6 +96,8 @@ def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=F
         if strategy.get("model"):
             v9["fixed_model_id"] = strategy["model"]
             actions = [a for a in actions if a["model"] == strategy["model"] and a["native_effort"] == strategy["effort"]]
+        elif strategy.get("effort"):
+            actions = [a for a in actions if a["native_effort"] == strategy["effort"]]
         if strategy.get("checkpoint"):
             v9["router_checkpoint"] = {**strategy["checkpoint"], "socket_path": config["router_socket"]}
         runtime = json.loads((iterations.ROOT / "our-project/experiments/configs/benchmark_runtime.json").read_text())

@@ -396,7 +396,7 @@ def observed_research_groups(trials, events, request_rows):
 
 def export_batch_results(root, config, output_root=None):
     """Collect the same Provider and official facts, including unscored paid attempts."""
-    from .iterations import rows, write_atomic, percentile
+    from .iterations import ROOT, rows, write_atomic, percentile
     output_root = root if output_root is None else output_root
     if output_root != root:
         from shutil import copyfile
@@ -493,6 +493,11 @@ def export_batch_results(root, config, output_root=None):
                    supplier_billed_usd=reported(requests, "actual_billed_cost_usd"),
                    unknown_provider_cost_requests=sum(r.get("cost_usd") is None for r in requests),
                    prompt_tokens=reported(requests, "prompt_tokens"), completion_tokens=reported(requests, "completion_tokens"),
+                   known_prompt_tokens=sum(r["prompt_tokens"] for r in requests if r.get("prompt_tokens") is not None),
+                   known_completion_tokens=sum(r["completion_tokens"] for r in requests if r.get("completion_tokens") is not None),
+                   usage_unknown_requests=sum(r.get("prompt_tokens") is None or r.get("completion_tokens") is None for r in requests),
+                   generator_known_tokens=sum(r["prompt_tokens"] + r["completion_tokens"] for r in generator if r.get("prompt_tokens") is not None and r.get("completion_tokens") is not None),
+                   teacher_known_tokens=sum(r["prompt_tokens"] + r["completion_tokens"] for r in teacher if r.get("prompt_tokens") is not None and r.get("completion_tokens") is not None),
                    reasoning_tokens=reported(requests, "reasoning_tokens"),
                    reported_cache_read_tokens=reported(requests, "cached_tokens"),
                    known_cache_read_tokens=sum(r.get("cached_tokens") or 0 for r in requests),
@@ -553,7 +558,7 @@ def export_batch_results(root, config, output_root=None):
                             "benchmark_success_upper": (n - zero) / n if n else None,
                             "generator_known_reference_usd": measured_sum(group, "generator_known_reference_usd"),
                             "teacher_known_reference_usd": measured_sum(group, "teacher_known_reference_usd"),
-                            **{field: measured_sum(group, field) for field in ("generator_requests", "teacher_requests", "prompt_tokens", "completion_tokens", "reasoning_tokens", "known_cache_read_tokens", "cache_read_unknown_records", "unknown_provider_cost_requests", "router_wall_s", "router_cpu_time_sec", "router_gpu_wait_s", "teacher_wall_s", "logical_model_changes", "endpoint_changes")},
+                            **{field: measured_sum(group, field) for field in ("generator_requests", "teacher_requests", "prompt_tokens", "completion_tokens", "known_prompt_tokens", "known_completion_tokens", "usage_unknown_requests", "generator_known_tokens", "teacher_known_tokens", "reasoning_tokens", "known_cache_read_tokens", "cache_read_unknown_records", "unknown_provider_cost_requests", "router_wall_s", "router_cpu_time_sec", "router_gpu_wait_s", "teacher_wall_s", "logical_model_changes", "endpoint_changes")},
                             "complete_cost_usd": None, "supplier_billed_usd": None,
                             "selected_action_counts": dict(Counter(action["action_id"] for row in group for action in row.get("selected_actions", []))),
                             "episode_total_wall_s": measured_sum(group, "attempts_wall_s"),
@@ -569,13 +574,21 @@ def export_batch_results(root, config, output_root=None):
     fixed = [s for s in strategies.values() if s["stage"] == "fixed"]
     pairs += [(x["id"], y["id"], "native_effort" if x.get("model") == y.get("model") else "fixed_strategy")
               for i, x in enumerate(fixed) for y in fixed[i + 1:]]
+    comparison_episodes = list(episodes)
+    for batch in config.get("comparison_batches", []):
+        comparison_episodes.extend(json.loads(path.read_text()) for path in
+                                   (ROOT / batch / "trials").glob("*/*/*/summary.json"))
     for left, right, factor in pairs:
-        a = {(r["task_id"], r["seed"]): r for r in episodes if r["strategy_id"] == left}
-        b = {(r["task_id"], r["seed"]): r for r in episodes if r["strategy_id"] == right}
+        a = {(r["task_id"], r["seed"]): r for r in comparison_episodes if r["strategy_id"] == left}
+        b = {(r["task_id"], r["seed"]): r for r in comparison_episodes if r["strategy_id"] == right}
+        if not a or not b:
+            continue
         paired = [(a[k], b[k]) for k in a.keys() & b.keys() if a[k]["reward"] in (0, 1) and b[k]["reward"] in (0, 1) and a[k]["effort_comparison_eligible"] and b[k]["effort_comparison_eligible"] and not a[k].get("verifier_dependency_failure") and not b[k].get("verifier_dependency_failure")]
         cost_pairs = [(x, y) for x, y in paired if x["reference_cost_usd"] is not None and y["reference_cost_usd"] is not None]
         latest_pairs = [(x, y) for x, y in paired if x.get("latest_trial_reference_usd") is not None and y.get("latest_trial_reference_usd") is not None]
         comparisons.append({"factor": factor, "left": left, "right": right, "scored_pairs": len(paired),
+                            "left_run_ids": sorted({r["run_id"] for r in a.values()}),
+                            "right_run_ids": sorted({r["run_id"] for r in b.values()}),
                             "left_reward_1": sum(x["reward"] == 1 for x, y in paired),
                             "right_reward_1": sum(y["reward"] == 1 for x, y in paired),
                             "reference_known_pairs": len(cost_pairs),
@@ -609,7 +622,7 @@ def export_batch_results(root, config, output_root=None):
             "last_command_finished_at": last.isoformat(), "elapsed_wall_s": (last - first).total_seconds(),
             "command_starts": len(command_starts), "command_ends": len(command_ends)})
     fixed_count = sum(s["stage"] == "fixed" for s in strategies.values())
-    report = ["# Terminal-Bench 2.0 RQ1\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
+    report = [f"# {config.get('report_title', 'Terminal-Bench 2.0 RQ1')}\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
               "**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**\n",
               f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。固定组已报告档位不符另列后，官方Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}；Router组保留实际任务Reward及内部请求/返回档位差异。\n",
               f"已保存原Harbor Trial {totals['harbor_trial_count']}次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。\n",
@@ -632,7 +645,11 @@ def export_batch_results(root, config, output_root=None):
         report.append(f"\n实际执行跨度：{first.isoformat()}至{last.isoformat()}，{(last - first).total_seconds():.6f}秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。\n")
     cache_tokens = measured_sum(all_groups, "known_cache_read_tokens")
     cache_label = "UNKNOWN" if cache_tokens is None else f"{cache_tokens:,}"
+    token_counts = [measured_sum(all_groups, field) for field in
+                    ("known_prompt_tokens", "known_completion_tokens", "usage_unknown_requests")]
+    input_label, output_label, missing_label = ["UNKNOWN" if value is None else f"{value:,}" for value in token_counts]
     report += [f"\n评分覆盖是已取得有效官方评分的任务数/{len(tasks)}；通过率区间把其余位置分别按全部未通过或全部通过计算。\n",
+               f"已报告输入{input_label}、输出{output_label} Token；{missing_label}次请求缺用量。推理包含在输出内，缓存读取包含在输入内，各只计一次；数值包含模型、教师及全部已发生尝试。\n",
                f"Provider实际报告缓存读取{cache_label} Token；{sum(r['cache_read_unknown_records'] or 0 for r in all_groups)}次请求未报告缓存读取；跨模型物理KV共享未知。\n",
                f"教师请求{sum(r['teacher_requests'] or 0 for r in all_groups)}次，短评实际输入Router {sum(r.get('teacher_consumed_decisions', 0) for r in episodes)}次；同一短评可由多次决策消费。\n"]
     truncated = [r for r in episodes if r.get("router_truncated_decisions")]
