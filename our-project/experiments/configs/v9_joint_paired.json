@@ -53,6 +53,30 @@
   },
   "strategies": [
     {
+      "id": "glm_low",
+      "stage": "fixed",
+      "policy": "fixed_strong",
+      "model": "glm-5.3-flash",
+      "effort": "low",
+      "teacher_enabled": false
+    },
+    {
+      "id": "luna_high",
+      "stage": "fixed",
+      "policy": "fixed_strong",
+      "model": "gpt-6-luna",
+      "effort": "high",
+      "teacher_enabled": false
+    },
+    {
+      "id": "terra_high",
+      "stage": "fixed",
+      "policy": "fixed_strong",
+      "model": "gpt-6.1-terra",
+      "effort": "high",
+      "teacher_enabled": false
+    },
+    {
       "id": "laya_original_off",
       "stage": "router",
       "policy": "joint_laya",
@@ -570,7 +594,7 @@
     "our-project/results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup",
     "our-project/results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only"
   ],
-  "comparison_scope": "Same seed43, 11-11 original/trained checkpoints, T/M/H encoder, teacher, provider, official task timeouts and 4096 output budget as Model-only; combined with two completed joint tasks, covers all 89.",
+  "comparison_scope": "Same seed43, 11-11 original/trained checkpoints, T/M/H encoder, teacher, provider, official task timeouts and 4096 output budget as Model-only; three predeclared fixed model controls and eight joint Router groups, combined with two completed tasks, cover all 89.",
   "capability_snapshot_path": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/config.json",
   "method_source_revision": "b9fba0a4488731c76718221e0572e5e7f2e8f936"
 }

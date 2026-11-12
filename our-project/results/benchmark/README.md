@@ -12,6 +12,8 @@
 
 19:05网络接续：Luna/GLM/Terra原域名改走现有TCP出口，元数据均HTTP200，gcode-to-text的Luna High/Max已返回文本并执行工具。单批代理连接跟随现有接续持有进程结束而退出，原观察输出接回同一controller.log。18:58快照412位置结束，53通过/9有效失败/349缺Reward，1个uvx缺失原0另列；API已报告4,542,691 Token、360请求缺用量、已知模型+教师参考费$1.23820567。原结果与网络变更分别登记，后续终局由原Verifier写出。
 
+gcode-to-text训练Kev Model-only、Teacher OFF：High实际执行2条断言、1通过/1失败，完整任务Reward0；1064.318775秒、26生成/26工具结果、模型参考费$0.15098180，26次费用齐全，实际请求/返回均Terra High。Low的原0来自Debian官方下载502、uvx未安装，测试断言未执行；783.051197秒、20生成/20工具结果、$0.07798260保留，任务质量另列。此前Luna High/Max均INCOMPLETE_RESPONSE、缺Reward。后续87题为八联合主组696位置＋三固定参照261位置，共957；固定参照GLM Low/Luna High/Terra High先四并发、再两并发Router，复用原两题seed43结果。
+
 唯一[配对汇总](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/comparisons.json)已纳入Model-only同档位的原始/训练、教师OFF/ON及固定模型对照，记录实际评分与费用齐全的任务/seed。两优先题中，训练Kev OFF联合/Model-only Low、High、Max均2/2通过，模型+教师参考费分别为$0.02944120 / $0.03871960、$0.04624140、$0.26640480。训练Kev ON联合/Model-only High、Max均2/2，参考费分别为$0.03183710 / $0.05734710、$0.30910010；ON Low仅一对费用齐全，单列该题。Laya原始OFF的联合/Model-only Low、High均2/2，参考费$0.03605180 / $0.00242127、$0.00463366。完整实收及Router/工具/资源USD缺项保持UNKNOWN。
 
 原8个官方零分保存实际任务评价；Provider与Verifier异常分别保留缺评分。modernize-scientific-stack零分含官方测试执行现代化脚本超时，任务代码效率与VM资源的贡献尚缺分离结果。原Agent超时且官方Reward1同时登记。生成方法版本仍为b9fba0a4488731c76718221e0572e5e7f2e8f936；现有矩阵继续使用原Controller2373109。

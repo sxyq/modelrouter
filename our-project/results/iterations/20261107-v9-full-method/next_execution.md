@@ -25,6 +25,8 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 19:05当前运行事实：持有进程2806615、观察2806620仍在；单批代理SSH44998跟随该持有进程结束，观察输出已接回原controller.log。原三个模型域名经现有TCP出口HTTP200，gcode-to-text的Luna High/Max已有实际生成和工具结果，终局待原Verifier；18:58快照412结束、2运行、1722未开始，1个Verifier依赖失败与349缺Reward分别登记。中断后不重建矩阵或重复首两题。
 
+gcode-to-text终局：训练Kev Model-only OFF/High实际执行2条断言、1通过/1失败，完整任务Reward0；1064.319秒、26生成/26工具结果、模型参考费$0.15098180且缺费用0，请求/返回均Terra High。Low的原0来自Debian下载502、uvx未安装，未执行断言；783.051秒、20生成/20工具及$0.07798260保留，任务质量另列。原始Kev ON的Luna High/Max前序工具有效、终局INCOMPLETE_RESPONSE且缺Reward。联合接续同时补三固定参照GLM Low/Luna High/Terra High的87题×3=261位置，联合主组696，合计957；旧两题seed43结果复用，旧seed42不替代。
+
 ## 后续一：补任务开始、转折与恢复状态（RQ4，关联RQ2）
 
 2026-11-12：[两个合法截止](../20261111-v9-rq4-joint/joint_supervision.json)新增6请求、5有效原评价器结果，合并原候选形成2条七候选偏好+16辅助；两者均为验证阶段。Laya/Kev新实体各18更新保存，15.193/252.463秒；18行及现有六请求不重做。下一增量定位原合法Train前缀中的任务开始、修改、真实阶段转折及恢复，质量优先、等质量费用次之。
