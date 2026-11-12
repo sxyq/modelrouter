@@ -40,12 +40,19 @@ from .iterations import append, event, now, rows
 class A6000DockerEnvironment(DockerEnvironment):
     """Use upstream Docker transfers when its engine is on the remote VM."""
 
-    def __init__(self, *args, apt_mirrors=None, **kwargs):
+    def __init__(self, *args, apt_mirrors=None, verifier_dependencies=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.apt_mirror = (apt_mirrors or {}).get(self.environment_name)
+        self.verifier_dependencies = (verifier_dependencies or {}).get(self.environment_name)
 
     async def start(self, force_build):
         await super().start(force_build)
+        if self.verifier_dependencies:
+            await self.upload_dir(self.verifier_dependencies, "/opt/modelrouter-verifier")
+            await self._run_docker_compose_command([
+                "exec", "-T", "main", "sh", "-c",
+                "mkdir -p /root/.local/bin && cp /opt/modelrouter-verifier/bin/uv "
+                "/opt/modelrouter-verifier/bin/uvx /opt/modelrouter-verifier/bin/env /root/.local/bin/"])
         if self.apt_mirror:
             await self._run_docker_compose_command([
                 "exec", "-T", "main", "sed", "-i", "-E",

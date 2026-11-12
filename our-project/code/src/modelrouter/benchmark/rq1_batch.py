@@ -90,7 +90,14 @@ def recovery_reason(path):
                         if e.get("episode_id") == trial["trial_id"] and e.get("event") == "GENERATOR_END"), {})
         if kind == "JSONDecodeError" and "Unterminated string" in message or kind == "ProviderResponseError" and OpenAICompatibleProvider._retryable(ProviderResponseError(message, {}, request), request):
             return "PROVIDER_INTERRUPTED_RESPONSE"
-    if kind in ("EnvironmentStartTimeoutError", "VerifierTimeoutError"):
+    if kind == "VerifierTimeoutError":
+        stdout = Path(trial["trial_dir"]) / "verifier/test-stdout.txt"
+        output = stdout.read_text() if stdout.exists() else ""
+        if "test session starts" in output:
+            return None
+        if any(s in output.lower() for s in ("downloading", "apt-get", "fetch", "failed to connect")):
+            return "VERIFIER_DOWNLOAD_TIMEOUT"
+    if kind == "EnvironmentStartTimeoutError":
         return kind
     if kind == "RuntimeError" and any(s in message for s in ("failed to fetch anonymous token", "connection refused", "502 Bad Gateway")):
         return "ENVIRONMENT_NETWORK"
@@ -180,7 +187,17 @@ def main(argv=None):
     parser.add_argument("--recover-infrastructure", action="store_true", help="One separate attempt after a recorded technical fault; retain valid scores")
     parser.add_argument("--task", action="append", help="Select existing task IDs without changing the matrix")
     parser.add_argument("--strategy", action="append", help="Select existing strategy IDs without changing the matrix")
+    parser.add_argument("--after-pids", type=int, nargs="+", help="Wait for existing batches before executing this batch")
+    parser.add_argument("--then-config", type=Path, action="append", help="Continue with another saved batch after this one")
     args = parser.parse_args(argv)
+    if args.after_pids:
+        # Keep the same private memfd open across the preceding holder's natural exit.
+        fd = os.open(os.environ["EXTERNAL_TEXT_MODEL_CONFIG"], os.O_RDONLY)
+        os.environ["EXTERNAL_TEXT_MODEL_CONFIG"] = f"/proc/{os.getpid()}/fd/{fd}"
+        async def await_batches():
+            while any(Path(f"/proc/{pid}").exists() for pid in args.after_pids):
+                await asyncio.sleep(20)
+        asyncio.run(await_batches())
     root, config = prepare(args.config, args.source_revision)
     config["router_socket"] = str(iterations.ROOT / ".runtime" / (config["run_id"] + "-router.sock"))
     units = json.loads((root / "manifest.json").read_text())["units"]
@@ -257,4 +274,7 @@ def main(argv=None):
             worker.wait()
             Path(config["router_socket"]).unlink(missing_ok=True)
         export_batch_results(root, config, args.export_dir)
+    for following in args.then_config or []:
+        main([str(following), "--source-revision", args.source_revision,
+              *(["--recover-infrastructure"] if args.recover_infrastructure else [])])
     return 0
