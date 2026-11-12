@@ -1,5 +1,41 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
+## 2026-11-12 · Model-only全量执行与Token统计
+
+正式数据集为`terminal-bench@2.0`，89题，Commit `69671fbaac6d67a7ef0dfec016cc38a64ef7a77c`。训练数据与Benchmark分开保存；这里的通过来自原Harbor完整Agent及官方Verifier。
+
+[Model-only批次](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)沿同一入口执行89题×24组×seed43：Laya/Kev原始及11-11训练版，教师OFF/ON，固定Low/High/Max，每次仅在同档位三个真实模型中选模型。两道历史已观察任务优先执行，旧seed43联合选择结果直接引用作配对，其他87题的联合选择配对尚缺。旧89题seed42比较使用11-08训练版，版本和seed分别保留。
+
+固定执行脚本为`our-project/code/cli/run_rq1_a6000.py`，调用原Harbor批量入口、共享GPU锁、原用户Docker及官方Verifier，每1200秒汇总一次；单次批次结束后退出。凭据从唯一600权限文件经SSH输入/memfd读取。启动命令：
+
+```bash
+python3 our-project/code/cli/run_rq1_a6000.py our-project/experiments/configs/v9_model_only.json
+```
+
+已完成批次的逐请求用量已重新聚合到原`metrics/per_episode.csv`和`per_strategy.csv`。`known_prompt_tokens`与`known_completion_tokens`合计已报告Token，`usage_unknown_requests`记录缺用量请求；旧完整用量字段仍在任一请求缺值时保持空值。模型、教师和全部已发生尝试均纳入；Reasoning包含在输出内，缓存读取包含在输入内，各只计一次。
+
+| 已结束批次 | 任务/策略位置 | 已报告输入Token | 已报告输出Token | 合计 | 缺用量请求 |
+|---|---:|---:|---:|---:|---:|
+| 11-08全量：89题×17策略 | 1513 | 222,158,587 | 6,585,204 | 228,743,791 | 1028 |
+| 11-11关联：2题×27策略 | 54 | 2,805,948 | 325,179 | 3,131,127 | 12 |
+
+每个Router在旧全量89题的一次批次，API模型+教师已报告Token如下；数值包含失败与恢复尝试，完整用量仍缺列出的请求。两训练版对应11-08实体。
+
+| Router | 教师 | 已报告Token | 缺用量请求 |
+|---|---|---:|---:|
+| Laya原始 | OFF | 1,800,940 | 104 |
+| Laya原始 | ON | 1,584,642 | 108 |
+| Laya训练 | OFF | 904,973 | 110 |
+| Laya训练 | ON | 1,391,048 | 111 |
+| Kev原始 | OFF | 4,107,166 | 47 |
+| Kev原始 | ON | 4,206,669 | 57 |
+| Kev训练 | OFF | 18,751,846 | 56 |
+| Kev训练 | ON | 23,488,559 | 68 |
+
+Router自身原生前向另记：旧全量4813次已报告34,619,004输入/1,158,807输出Token，11-11关联196次已报告1,216,085输入/23,867输出Token；这部分对应A6000本地计算，美元费率未知。示例完整Episode：11-11训练Kev ON在`openssl-selfsigned-cert`官方Reward1，模型+教师26,374输入/1,313输出=27,687 Token，参考费$0.01004740，官方墙钟396.359101秒；无缺用量请求。
+
+旧全量所有1513位置均已结束，原始Reward为256个1、358个0、899缺值。统一分析从原Verifier日志定位101个`uvx`未安装且无CTRF测试报告的位置，原零分保留并单列，有效质量比较为256通过/257失败；完整89题评分齐全的Router组为0。供应商实收、Router、工具和资源USD缺失，完整费用未知。
+
 ## 2026-11-12 · 新联合训练与关联完整比较
 
 [本批终局](rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)为2个历史已观察任务×27策略×seed43：54位置、74个Trial全部结束，42通过/2失败/10缺评分，模型+教师已知参考费$0.73402850、12请求费用未知。固定四并发、Router两并发；新18更新Laya/Kev、原始版、教师开关、开始/阶段/逐生成及T/M/H共同执行原Harbor/Verifier。
