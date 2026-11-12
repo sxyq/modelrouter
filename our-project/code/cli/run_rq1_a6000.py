@@ -75,10 +75,10 @@ def main():
     parser.add_argument('configs', nargs='+', help='Existing batch JSON files, executed in order')
     parser.add_argument('--attach-pid', type=int, help='Observe the first existing batch before continuing')
     parser.add_argument('--recover-infrastructure', action='store_true', help='Run the existing one-time recovery for the first batch')
+    parser.add_argument('--proxy-for-pid', type=int, help='Reconnect only the proxy for an existing batch; exit when that process ends')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[3]
     revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-    credentials = json.loads((Path.home() / '.agent-global/外部文本模型.local.json').read_text())
     with urlopen('http://127.0.0.1:19097/configs', timeout=5) as response:
         proxy_port = json.load(response)['mixed-port']
     command = ['ssh', '-i', str(Path.home() / '.ssh/id_ed25519_remote_server'),
@@ -87,7 +87,19 @@ def main():
                '-o', 'ServerAliveCountMax=10']
     if not args.attach_pid:
         command += ['-R', f'127.0.0.1:17898:127.0.0.1:{proxy_port}']
+    if args.proxy_for_pid:
+        command += ['syy@10.16.15.202', f'while test -d /proc/{args.proxy_for_pid}; do sleep 1200; done']
+        config = json.loads((root / args.configs[0]).read_text())
+        log = root / config['result_dir'] / '.private/controller.log'
+        log.parent.mkdir(parents=True, exist_ok=True)
+        with log.open('a') as output:
+            process = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=output,
+                                       stderr=subprocess.STDOUT, start_new_session=True)
+        print(json.dumps({'proxy_pid': process.pid, 'batch_pid': args.proxy_for_pid,
+                          'local_proxy_port': proxy_port}))
+        return
     command += ['syy@10.16.15.202', '/home/syy/路由/.runtime/benchmark-venv/bin/python -c ' + shlex.quote(REMOTE)]
+    credentials = json.loads((Path.home() / '.agent-global/外部文本模型.local.json').read_text())
     result = subprocess.run(command, input=json.dumps({'configs': args.configs,
                             'attach_pid': args.attach_pid,
                             'recover_infrastructure': args.recover_infrastructure,

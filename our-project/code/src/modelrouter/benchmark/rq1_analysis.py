@@ -624,6 +624,7 @@ def export_batch_results(root, config, output_root=None):
     all_groups = [r for r in grouped if r["subset"] == "all"]
     totals = {field: sum(r[field] for r in all_groups)
               for field in ("tasks", "attempted", "harbor_trial_count", "reward_1", "reward_0", "no_official_reward", "running", "not_started", "unavailable")}
+    verifier_dependency_failures = sum(r["verifier_dependency_failed_positions"] for r in all_groups)
     model_usd = sum(r["generator_known_reference_usd"] or 0 for r in all_groups)
     teacher_usd = sum(r["teacher_known_reference_usd"] or 0 for r in all_groups)
     if command_starts and command_ends:
@@ -636,7 +637,7 @@ def export_batch_results(root, config, output_root=None):
                      if fixed_count else "")
     report = [f"# {config.get('report_title', 'Terminal-Bench 2.0 RQ1')}\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
               "**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**\n",
-              f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。固定组已报告档位不符另列后，官方Reward 1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}；Router组保留实际任务Reward及内部请求/返回档位差异。\n",
+              f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。有效官方任务评分1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}，原Verifier依赖失败{verifier_dependency_failures}位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。\n",
               f"已保存原Harbor Trial {totals['harbor_trial_count']}次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。\n",
               f"已知模型参考费${model_usd:.8f}、教师${teacher_usd:.8f}，合计${model_usd + teacher_usd:.8f}；{sum(r['unknown_provider_cost_requests'] or 0 for r in all_groups)}次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。\n",
               "费用主表包含全部尝试；latest_trial_reference_usd单列最后Episode参考费。原Verifier写出的0保留；已确认uvx缺失且没有测试报告的尝试单列，不计入任务质量对照。\n",
