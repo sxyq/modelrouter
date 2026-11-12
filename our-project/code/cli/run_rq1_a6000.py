@@ -64,7 +64,7 @@ def main():
                '-o', 'IdentitiesOnly=yes', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8',
                '-o', 'ExitOnForwardFailure=yes', '-o', 'ServerAliveInterval=30',
                '-o', 'ServerAliveCountMax=10', '-R', '127.0.0.1:17898:127.0.0.1:7897',
-               'syy@10.16.15.202', 'python3 -c ' + shlex.quote(REMOTE)]
+               'syy@10.16.15.202', '/home/syy/路由/.runtime/benchmark-venv/bin/python -c ' + shlex.quote(REMOTE)]
     result = subprocess.run(command, input=json.dumps({'config': args.config,
                             'revision': revision, 'credentials': credentials}), text=True)
     raise SystemExit(result.returncode)
