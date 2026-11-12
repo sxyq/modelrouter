@@ -45,7 +45,7 @@ def render_batch_figures(root):
               loc="lower left", bbox_to_anchor=(0, 1.005), ncol=3)
     fees.set(xlabel="Known model + teacher reference USD", title="All attempts, including failures")
     fees.tick_params(axis="y", labelleft=False)
-    fees.margins(x=.22)
+    fees.margins(x=.35)
     fig.suptitle("Terminal-Bench 2.0")
     fig.supxlabel("Supplier billing and resource USD are unknown.", fontsize=8)
     save(fig, "success_cost_frontier")

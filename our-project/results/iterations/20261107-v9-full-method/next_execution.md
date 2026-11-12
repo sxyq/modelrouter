@@ -8,14 +8,22 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 ## 已完成的科研起点
 
-- [正式2.0 RQ1](../../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)：89题×17策略×seed42全部结束；614位置有官方评分、899缺评分，2333原Trial、2339条Harbor命令，模型+教师已知参考费$35.11821871。全部368个Router恢复位置结束；原父进程1436024、观察连接、临时反向代理均已退出。
+- [正式2.0 RQ1](../../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)：89题×17策略×seed42全部结束；614位置有原始Reward、899缺评分，101个原0来自uvx未安装且无测试报告，有效任务评分513位置。2333原Trial、2339条Harbor命令，模型+教师已知参考费$35.11821871，已报告228743791 Token、1028请求缺用量。原结果、费用与全部尝试保持。
 - 原始实体models/laya-421m、models/kev-4b-adapter；本批GLM训练代表runs/V9-K3-GLM-LAYA-20261111、runs/V9-K3-GLM-KEV-20261111各18更新，来自两个验证阶段的七候选偏好+16辅助，事前确定；11-08各17更新及11-07各18更新分别保留其原池/批次身份。F05/R11/F15的原研究身份保持。
 - [收尾H编码](../../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/metrics/h_encoding_followup.json)：生成/历史/最后观察按JSON内容呈现800/880/800字符摘要，原四条输入分别7489/7177/8189/8188 Token；T/M/H、教师状态及15候选全部FULL。原89题Episode及其4次H截断保持原版本；新编码已用于本批18更新与54位置，实际Router截断0。
 - [新训练与54项完整结果](../../benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)：2个已观察任务×27策略×seed43全部结束，42通过、2失败、10缺评分，74原Trial；模型+教师已知参考费$0.73402850、12请求缺费用，跨度8648.372秒。两个0均为真实日期匹配失败；此前20个未执行测试的原0和费用保持。控制、观察、临时代理与任务容器已结束。
 - 6600628行公开数据、125份训练元数据、36参数保存目录及75历史迭代已分类；245个自有Python文件最大982行，1491行既有测试的52原函数已按五职责拆分。
 - [旧49尝试](../20261108-v9-k3-training/review.md)与2.1历史结果分别保存；constraints-scheduling、sanitize-git-repo、large-scale-text-editing及本轮89题均保留已观察身份。
 
-## 第一：补任务开始、转折与恢复状态（RQ4，关联RQ2）
+## 当前优先：Model-only全量对照（RQ2，关联RQ1/RQ4）
+
+按负责人最新要求，先执行[Model-only配置](../../../experiments/configs/v9_model_only.json)：全部89题×24组×seed43，Laya/Kev原始及11-11各18更新实体、教师OFF/ON、固定Low/High/Max。每次仅在三个同档模型中选择，沿原Harbor/DefaultAgent及原Verifier，所有任务保持已观察身份，不作新训练或选权重。首两个完整Episode官方Reward1，全批继续执行；最终状态沿[本批结果](../../benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)读取。
+
+旧54位置seed43联合选择结果直接引用，与openssl-selfsigned-cert/regex-log逐题配对；其余87题相同版本/seed的联合选择配对尚缺。旧89题seed42训练版为11-08实体，保留其历史身份。先完成当前Model-only质量、用量、成本与失败分类，再接续下面三项科研任务。
+
+固定脚本`our-project/code/cli/run_rq1_a6000.py`只控制同一批次，原GPU锁、用户Docker、唯一SSH/memfd凭据和1200秒观察沿用；批次结束后退出并清理临时导出。当前父2373109、凭据持有2372941；完整Token按已报告输入+输出登记，缓存读取与Reasoning分别已包含在输入/输出内。原缺用量请求和完整实收/资源USD缺项保持。
+
+## 后续一：补任务开始、转折与恢复状态（RQ4，关联RQ2）
 
 2026-11-12：[两个合法截止](../20261111-v9-rq4-joint/joint_supervision.json)新增6请求、5有效原评价器结果，合并原候选形成2条七候选偏好+16辅助；两者均为验证阶段。Laya/Kev新实体各18更新保存，15.193/252.463秒；18行及现有六请求不重做。下一增量定位原合法Train前缀中的任务开始、修改、真实阶段转折及恢复，质量优先、等质量费用次之。
 
@@ -25,7 +33,7 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 有真实联合信息增量后沿原Laya/Kev Trainer开展必要更新，统一使用当前Serializer；保留原始、11-08研究实体和新保存点的实际来源。训练完成后事前确定每架构一个新代表，不依据已观察89题挑权重，不重做此前241前缀与数据盘点。
 
-## 第二：跨机制成对完整Agent与阶段研究（RQ1/RQ3/RQ4）
+## 后续二：跨机制成对完整Agent与阶段研究（RQ1/RQ3/RQ4）
 
 沿[同批配置](../../../experiments/configs/v9_joint_followup.json)的54位置已结束，保留历史已观察身份；固定模型、四实体Teacher OFF/ON、两新实体开始/阶段及各T/M/H遮蔽已经共同执行。新训练Laya ON、Kev OFF/ON两题均通过，相对固定Luna High最后Episode参考费高225.67%/288.72%/320.35%；新Kev主组全选Terra Medium，原始Kev全选Luna Low。下一比较事前确定不同任务机制与重复，沿同一结果体系另记批次，不重跑本批54位置或原1513矩阵。
 
@@ -35,7 +43,7 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 原89题同题费用齐全集合中，11-08训练Kev OFF/ON相对Terra High均少通过3题且更贵；训练Laya OFF由5题通过降为4题。本批Laya ON训练后参考费下降26.10%但累计墙钟多593.650秒；Kev ON由1/2升至2/2但更贵。六个有效教师对未增加通过数，原始Laya参考费下降7.42%。后续研究优先解释阶段覆盖、静态选择及时间—费用差异，不依据这些终局重选权重。
 
-## 第三：成本、缓存与工作负载收益边界
+## 后续三：成本、缓存与工作负载收益边界
 
 | RQ | 尚需取得的实际结果 |
 |---|---|
