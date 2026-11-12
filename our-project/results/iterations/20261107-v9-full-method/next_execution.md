@@ -17,11 +17,11 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 ## 当前优先：Model-only全量对照（RQ2，关联RQ1/RQ4）
 
-按负责人最新要求，先执行[Model-only配置](../../../experiments/configs/v9_model_only.json)：全部89题×24组×seed43，Laya/Kev原始及11-11各18更新实体、教师OFF/ON、固定Low/High/Max。每次仅在三个同档模型中选择，沿原Harbor/DefaultAgent及原Verifier，所有任务保持已观察身份，不作新训练或选权重。首两个完整Episode官方Reward1，全批继续执行；最终状态沿[本批结果](../../benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)读取。
+按负责人最新要求，先执行[Model-only配置](../../../experiments/configs/v9_model_only.json)：全部89题×24组×seed43，Laya/Kev原始及11-11各18更新实体、教师OFF/ON、固定Low/High/Max。每次仅在三个同档模型中选择，沿原Harbor/DefaultAgent及原Verifier，所有任务保持已观察身份，不作新训练或选权重。18:38台北396位置结束，53通过/8失败/335缺评分；2运行、1738未开始，17题有结束记录。已报告4,440,557模型+教师Token、346次缺用量、已知模型+教师参考费$1.23215771；Router本地另报告3,508,964输入/34,622输出Token。当前与终局状态沿[本批结果](../../benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)读取。
 
-旧54位置seed43联合选择结果直接引用，与openssl-selfsigned-cert/regex-log逐题配对；其余87题相同版本/seed的联合选择配对尚缺。旧89题seed42训练版为11-08实体，保留其历史身份。先完成当前Model-only质量、用量、成本与失败分类，再接续下面三项科研任务。
+旧54位置seed43联合选择结果已与openssl-selfsigned-cert/regex-log逐题配对；原分析器同时纳入同档位Model-only训练/教师及固定模型对照，实际评分和费用齐全的task/seed分别登记。其余87题相同权重/seed的八个联合主组共696位置，已按[联合接续配置](../../../experiments/configs/v9_joint_paired.json)排在当前矩阵和一次连接恢复之后；新配置直接读取Model-only批次保存的AA能力快照，沿相同Encoder、教师、Harbor、Verifier、输出及任务时限执行。旧89题seed42训练版为11-08实体，保留其历史身份；不重复首两题和旧批次。
 
-固定脚本`our-project/code/cli/run_rq1_a6000.py`只控制同一批次，原GPU锁、用户Docker、唯一SSH/memfd凭据和1200秒观察沿用；批次结束后退出并清理临时导出。当前父2373109、凭据持有2372941；完整Token按已报告输入+输出登记，缓存读取与Reasoning分别已包含在输入/输出内。原缺用量请求和完整实收/资源USD缺项保持。
+固定脚本`our-project/code/cli/run_rq1_a6000.py`已接上原父2373109，使用`--attach-pid 2373109 --recover-infrastructure`和Model-only、Joint-paired两个配置顺序执行。原控制SSH断开后316请求记录连接拒绝，18:31按本机Clash实际17897端口恢复原17898代理；旧观察已退出，现观察每1200秒汇总。原GPU锁、用户Docker和唯一SSH/memfd凭据沿用；本次全部批次结束后退出并清理临时导出。完整API Token按已报告输入+输出登记，Router本地另计；缓存读取与Reasoning各计一次。连接失败及费用保持，只有已记录且没有成功生成/教师/工具的相应位置沿原机制恢复一次，不重做Provider额度耗尽或已有Reward。
 
 ## 后续一：补任务开始、转折与恢复状态（RQ4，关联RQ2）
 

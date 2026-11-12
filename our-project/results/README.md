@@ -1,5 +1,7 @@
 # ModelRouter研究结果总览
 
+**当前接续**：[Model-only全量RQ2](benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)覆盖89题×24组×seed43，使用11-11各18更新代表；模型/教师Token、Router本地Token、官方Reward及缺评分分列。原连接失败按已恢复代理后的既有一次恢复机制处理，随后[87题联合成对接续](../experiments/configs/v9_joint_paired.json)沿相同权重、T/M/H和固定AA版本执行696位置；此前两题seed43联合结果复用。旧89题seed42训练代表仍为11-08实体。
+
 **2026-11-12接续已结束**：[两个Train截止与两18更新实体](iterations/20261111-v9-rq4-joint/)保存新联合监督及原Trainer结果；[2题×27策略×seed43完整结果](benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)全部54位置结束，42通过、2失败、10缺评分，74次原Trial。模型+教师已知参考费$0.73402850，12请求缺费用；实际跨度2.402小时。两题历史已观察且独立于这次训练/代表选择，关联RQ1/RQ2/RQ3/RQ4；原89题批次与以下历史分类保持独立。
 
 当前主线：真实K=3，Luna／GLM-5.3-Flash／Terra，Single-Agent、Model×Native Effort、T/M/H、AA逐档能力、缓存连续性、Laya／Kev原始与训练版、Luna轨迹教师，以及含全部开销的完整Episode收益。RQ3为单Agent阶段、真实子任务边界与路由粒度。历史HY4实验保持原处；以下分类不改写旧成绩。

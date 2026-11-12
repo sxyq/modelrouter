@@ -2,11 +2,15 @@
 
 ## 当前执行：Model-only全量对照（2026-11-12）
 
-[批次入口](../experiments/configs/v9_model_only.json)为Terminal-Bench 2.0全部89题×24个Model-only组×seed43，沿原Harbor执行中。组别覆盖Laya/Kev原始及11-11各18更新实体、教师OFF/ON、固定Low/High/Max；每次只选同档位的三个模型，正式主方法仍为Model×Native Effort。首两个完整Episode已有官方Reward1，当前批次终局沿[统一结果](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)更新。原两题seed43联合选择证据直接用于配对，其他87题尚缺相同版本/seed的联合选择结果。
+[批次入口](../experiments/configs/v9_model_only.json)为Terminal-Bench 2.0全部89题×24个Model-only组×seed43，沿原Harbor执行中。组别覆盖Laya/Kev原始及11-11各18更新实体、教师OFF/ON、固定Low/High/Max；每次只选同档位的三个模型，正式主方法仍为Model×Native Effort。18:38台北快照396位置结束：53通过、8失败、335缺评分；2运行、1738未开始，17题有结束记录。原Controller2373109、SSH/memfd2372941及Router worker2373123继续；方法版本b9fba0a4488731c76718221e0572e5e7f2e8f936和实际结果沿[本批报告](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)登记。
 
-[Token统计](../results/benchmark/README.md#2026-11-12--model-only全量执行与token统计)已从原请求重聚合：旧1513位置已报告228,743,791模型+教师Token、1028请求缺用量；54位置已报告3,131,127、12请求缺用量。旧358原始零分中101项为uvx缺失且无测试报告，原结果保留；有效质量比较单列256通过/257失败。固定脚本调用原批量入口，每1200秒观察一次，批次结束即退出，不创建周期服务。
+原控制SSH断开后，17898代理失去监听，316次请求记录连接拒绝；18:31沿本机实际Clash端口17897恢复原代理，元数据HTTP200，新请求已有实际返回。原观察进程已退出，现有脚本接上同一Controller，每1200秒汇总；结束后沿原一次恢复机制执行这些连接失败位置，再按[联合成对配置](../experiments/configs/v9_joint_paired.json)执行其他87题×8组×seed43。两道已经结束的seed43联合题直接复用；新配置直接读取Model-only保存的AA快照，保持四权重、完整T/M/H、教师、Harbor、Verifier、4096输出和原任务时限。
 
-## 当前接续：新联合训练与完整比较（2026-11-12）
+同档位Model-only训练/教师和固定模型对照已由原结果分析器纳入。两题训练Kev OFF的联合/Low/High/Max均2/2通过，模型+教师参考费为$0.02944120/$0.03871960/$0.04624140/$0.26640480；原始Laya OFF联合与Low/High均2/2，参考费为$0.03605180/$0.00242127/$0.00463366。费用齐全集合与评分集合分列；供应商实收和Router/工具/资源单价尚缺。本轮读取原训练目录：Kev的training_metrics.json仍为18更新/18条/252.463秒；Laya原train_report.json保留单轮训练配置。15:47 GPU1095/49140MiB、0%，Serving healthy，原用户Docker继续执行。
+
+[Token统计](../results/benchmark/README.md#2026-11-12--model-only全量执行与token统计)已从原请求重聚合：旧1513位置已报告228,743,791模型+教师Token、1028请求缺用量；54位置已报告3,131,127、12请求缺用量。Router本地输入/输出另计，不按商业API收费；当前批次已纳入同一分析器。旧358原始零分中101项为uvx缺失且无测试报告，原结果保留；有效任务质量256通过/257失败。脚本只执行本次矩阵及关联接续，全部结束后退出。
+
+## 已完成：新联合训练与完整比较（2026-11-12 02:32）
 
 [联合数据与训练](../results/iterations/20261111-v9-rq4-joint/)新增6请求、5有效工具/原评价器结果、2通过，已知模型参考费$0.09683890、1请求费用未知。Hikari的新Terra High通过，Dynaconf的新GLM Max通过；合并原候选的两个严格偏好分别为Terra High、Luna Xhigh。2条七候选偏好+16辅助已沿原Trainer完成Laya/Kev各18更新，保存`V9-K3-GLM-*-20261111`；单轮代表在评价前确定。
 

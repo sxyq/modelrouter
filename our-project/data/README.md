@@ -1,5 +1,7 @@
 # ModelRouter 全项目数据与成果入口
 
+**Model-only接续**：[89题×24组×seed43](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)使用11-11各18更新代表，固定Low/High/Max、教师OFF/ON；完整官方任务结果、模型/教师Token及Router本地Token分别保存。连接失败恢复和[87题×8联合主组](../experiments/configs/v9_joint_paired.json)沿同一脚本顺序接续，原两题联合结果复用。
+
 **2026-11-12增量**：[新联合监督](../results/iterations/20261111-v9-rq4-joint/joint_supervision.json)复用两个合法Train截止，新增6个真实请求、5个原评价器有效结果；合并原候选后形成2条七候选偏好，加16辅助共18行。Laya/Kev均完成18次更新，新权重在A6000；[后续完整比较](../results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)的54位置全部结束，42通过/2失败/10缺评分、74原Trial，模型+教师已知参考费$0.73402850。2题历史已观察，原660万行及旧17行数据保持原身份。
 
 **2026-11-09增量**：[正式Terminal-Bench 2.0 RQ1](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)已启动，89题×17策略、固定四并发。此批次独立保存官方结果/费用，不并入以下2.1历史覆盖或重复统计已有660万清洗行。四实体身份与实际原生前向见[model_entities](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/model_entities.json)。当前不新增训练，两个研究代表仍各17更新。
@@ -23,6 +25,7 @@
 | 真实实验目录 | 75个 | 其中43目录有原Harbor记录，合计198个不同trial_id、31个官方任务ID；[全部批次](../results/README.md#全项目迭代目录索引) |
 | 正式Terminal-Bench 2.0 | 89题×17策略 | 全部1513位置结束，256通过／358失败／899缺评分，2333个Harbor Trial；[逐题Pass率与费用](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) |
 | 新训练与粒度/信息消融 | 2题×27策略 | 全部54位置结束，42通过／2失败／10缺评分、74原Trial；[独立批次终局](../results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md) |
+| Model-only完整任务消融 | 89题×24策略 | 18:38台北396位置结束；[本批逐任务结果](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)。原始/18更新权重、三个固定档位与教师开关分别登记 |
 | 历史Terminal-Bench 2.1 | 89题 | 29题有Agent尝试、22题有官方Reward、7题无终局、60题尚无Agent运行；[历史覆盖](../results/benchmark/README.md) |
 | 11-08新池开发与三题比较 | 49次尝试 | 33有效终局：21个1／12个0；16无Reward；[逐条结果](../results/iterations/20261108-v9-k3-training/episode_results.json) |
 | 当前AA能力 | v7，130指标 | Luna/Terra各六档，GLM仅Max；Low/High缺测，Index5.0.1 |
@@ -63,9 +66,9 @@ CMU TRA-003原403、MARBLE MAS-001原401，已有清洗记录均0。MAS相关资
 | OWN-003 汇总 | [summaries/cch-sxyq-gpt-unified-summary.csv](summaries/cch-sxyq-gpt-unified-summary.csv) | 79衍生行，无新增独立观察 |
 | 真实模型请求账本 | 仓库外发范围之外的原experiments/agent_pilot/token_budget.json | 请求身份、用量与缺测累计；不公开正文或私人凭据 |
 | 原Harbor记录 | results/iterations原批次 | 每条trial_id、任务/设备/协议/参数、时间、工具、Verifier、Reward和异常 |
-| 当前模型/教师费 | [49条结果](../results/iterations/20261108-v9-k3-training/episode_results.json) | 已知参考$1.45700272；实收与计算资源价未知 |
-| 当前缓存 | 同一原事件和49条结果 | 读取5,572,672 Token；66条缺读取数，560次消息前缀连续；物理KV未知 |
-| 当前教师 | 同一原事件 | 68次触发/成功短评；训练17行只有1条复用真实教师，其余缺失状态 |
+| 11-08模型/教师费 | [49条结果](../results/iterations/20261108-v9-k3-training/episode_results.json) | 已知参考$1.45700272；实收与计算资源价未知 |
+| 11-08缓存 | 同一原事件和49条结果 | 读取5,572,672 Token；66条缺读取数，560次消息前缀连续；物理KV未知 |
+| 11-08教师 | 同一原事件 | 68次触发/成功短评；训练17行只有1条复用真实教师，其余缺失状态 |
 | 原生表示 | [native_encoding.json](../results/iterations/20261108-v9-k3-training/native_encoding.json) | 原34训练编码、241保存前缀48→0截断、四实体实际CUDA前向；原Episode版本不改 |
 
 ## 4. 从探索到训练的成果演变
@@ -101,8 +104,8 @@ CMU TRA-003原403、MARBLE MAS-001原401，已有清洗记录均0。MAS相关资
 
 ## 6. 模型已经确定到哪一步
 
-当前原始实体为`models/laya-421m`和`models/kev-4b-adapter`；新池研究代表为`V9-K3-GLM-LAYA-20261108`与`V9-K3-GLM-KEV-20261108`，各17更新已完成。旧固定Val参考仍Laya F11-e01、Kev R11；Serving仍F05-e01/原导入Kev。新池论文最终有效版本尚未由多任务监督和完整质量—总成本收益确定。
+当前原始实体为`models/laya-421m`和`models/kev-4b-adapter`；本次成对比较训练代表为`V9-K3-GLM-LAYA-20261111`与`V9-K3-GLM-KEV-20261111`，各18更新已完成，训练墙钟15.193/252.463秒。11-08各17更新代表用于旧89题seed42批次，历史结果与新seed43比较分开。旧固定Val参考仍Laya F11-e01、Kev R11；Serving仍F05-e01/原导入Kev。论文最终净收益版本待完整任务对照确定。
 
 当前没有Laya/Kev训练进程。F15完成第1轮并保存61,180/122,360更新；游标曾记第2轮39/478块、66,172步，但当前不是活动训练，恢复实体仍61,180步。原38组25完成，F15半程、另外12组未完成。详细26个Kev候选、36保存目录与125份run.json见[训练总报告](../results/training/training_research.md)及同名JSON的`project_inventory_current`。
 
-当前仍缺多任务联合偏好、GLM返回档位、新编码训练与独立完整Episode、真实子任务边界对照、全部费用及多工作负载收益边界。
+当前已取得两个合法截止的七候选联合偏好和新编码训练，54位置完整比较结束；仍缺早期/转折/恢复阶段的更多联合监督、GLM返回档位、全量成对任务评分、真实子任务边界对照、完整实收/资源价及多工作负载收益边界。

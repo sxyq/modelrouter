@@ -6,11 +6,21 @@
 
 [Model-only批次](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)沿同一入口执行89题×24组×seed43：Laya/Kev原始及11-11训练版，教师OFF/ON，固定Low/High/Max，每次仅在同档位三个真实模型中选模型。两道历史已观察任务优先执行，旧seed43联合选择结果直接引用作配对，其他87题的联合选择配对尚缺。旧89题seed42比较使用11-08训练版，版本和seed分别保留。
 
+18:38台北公开快照：396/2136位置结束，53通过、8失败、335缺评分；2运行、1738未开始，17题有结束记录。已报告模型+教师4,440,557 Token，346次请求缺用量；已知模型参考费$1.22088631、教师$0.01127140，实际缓存读取2,794,048 Token。58次Luna Low教师请求；Router本地另报告3,508,964输入/34,622输出Token，0次决策缺用量。Router累计墙钟9647.529秒、CPU6110.589秒、GPU锁等待2177.449秒，批次首末跨度26299.658秒；时间分项分别列出。
+
+本批316个连接拒绝记录发生在原控制SSH断开、17898代理停止监听后。18:31按本机Clash实际mixed-port=17897恢复同一代理，元数据HTTP200，新请求已有响应。原观察进程已退出，脚本现接上原Controller；保留原失败与费用，矩阵结束后只沿原机制恢复一次相应位置。[87题联合成对接续](../../experiments/configs/v9_joint_paired.json)已排在其后，八个主组共696位置，复用两道旧seed43联合题，能力快照直接读取本批保存配置。
+
+唯一[配对汇总](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/comparisons.json)已纳入Model-only同档位的原始/训练、教师OFF/ON及固定模型对照，记录实际评分与费用齐全的任务/seed。两优先题中，训练Kev OFF联合/Model-only Low、High、Max均2/2通过，模型+教师参考费分别为$0.02944120 / $0.03871960、$0.04624140、$0.26640480。训练Kev ON联合/Model-only High、Max均2/2，参考费分别为$0.03183710 / $0.05734710、$0.30910010；ON Low仅一对费用齐全，单列该题。Laya原始OFF的联合/Model-only Low、High均2/2，参考费$0.03605180 / $0.00242127、$0.00463366。完整实收及Router/工具/资源USD缺项保持UNKNOWN。
+
+原8个官方零分保存实际任务评价；Provider与Verifier异常分别保留缺评分。modernize-scientific-stack零分含官方测试执行现代化脚本超时，任务代码效率与VM资源的贡献尚缺分离结果。原Agent超时且官方Reward1同时登记。生成方法版本仍为b9fba0a4488731c76718221e0572e5e7f2e8f936；现有矩阵继续使用原Controller2373109。
+
 固定执行脚本为`our-project/code/cli/run_rq1_a6000.py`，调用原Harbor批量入口、共享GPU锁、原用户Docker及官方Verifier，每1200秒汇总一次；单次批次结束后退出。凭据从唯一600权限文件经SSH输入/memfd读取。启动命令：
 
 ```bash
 python3 our-project/code/cli/run_rq1_a6000.py our-project/experiments/configs/v9_model_only.json
 ```
+
+接上当前批次并顺序完成已授权接续，使用同一脚本的`--attach-pid 2373109 --recover-infrastructure`及两个配置参数：先`v9_model_only.json`，再`v9_joint_paired.json`。接入模式复用已恢复的17898代理；常规启动从Clash `/configs`读取当前端口，不再使用旧7897。观察进程退出码实际传播；原任务进程不因报告更新重启。
 
 已完成批次的逐请求用量已重新聚合到原`metrics/per_episode.csv`和`per_strategy.csv`。`known_prompt_tokens`与`known_completion_tokens`合计已报告Token，`usage_unknown_requests`记录缺用量请求；旧完整用量字段仍在任一请求缺值时保持空值。模型、教师和全部已发生尝试均纳入；Reasoning包含在输出内，缓存读取包含在输入内，各只计一次。
 
