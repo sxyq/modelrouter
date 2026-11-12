@@ -189,8 +189,11 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         if isinstance(exc, ProviderResponseError):
             limited = (metrics.get("finish_reason") == "length" or
                        (metrics.get("incomplete_details") or {}).get("reason") == "max_output_tokens")
+            if str(exc) == "INCOMPLETE_TOOL_CALL":
+                end = metrics.get("stream_end") or {}
+                return not limited and metrics.get("finish_reason") is None and not end.get("terminal_event")
             return not limited and str(exc) in (
-                "EMPTY_RESPONSE", "INCOMPLETE_RESPONSE", "INCOMPLETE_TOOL_CALL",
+                "EMPTY_RESPONSE", "INCOMPLETE_RESPONSE",
                 "rate_limit_error", "server_error", "overloaded_error")
         if isinstance(exc, json.JSONDecodeError):
             return not exc.doc.strip() or exc.pos >= len(exc.doc) - 2 or exc.msg.startswith("Unterminated string")
