@@ -56,6 +56,7 @@ def prepare(config_path, revision):
               "unit_id": f"{t['task_id']}--{s['id']}--s{seed}", "status": "PENDING"}
              for t in tasks for s in config["strategies"] for seed in config["seeds"]]
     iterations.write_atomic(root / "config.json", config)
+    (root / "jobs.jsonl").touch()
     iterations.write_atomic(root / "manifest.json", {
         "run_id": config["run_id"], "benchmark_name": "Terminal-Bench", "benchmark_version": "2.0",
         "source_revision": revision, "dataset": dataset, "tasks": tasks, "units": units,
