@@ -1,6 +1,6 @@
 # ModelRouter 全项目数据与成果入口
 
-**Model-only接续**：[89题×24组×seed43](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)使用11-11各18更新代表，固定Low/High/Max、教师OFF/ON；完整官方任务结果、模型/教师Token及Router本地Token分别保存。连接失败恢复和[87题×8联合主组](../experiments/configs/v9_joint_paired.json)沿同一脚本顺序接续，原两题联合结果复用。
+**Model-only接续**：[89题×24组×seed43](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)使用11-11各18更新代表，固定Low/High/Max、教师OFF/ON；完整官方任务结果、模型/教师Token及Router本地Token分别保存。已处理网络失败的一次恢复和[87题×11组联合/固定模型比较](../experiments/configs/v9_joint_paired.json)沿同一脚本顺序接续，原两题结果复用。
 
 **2026-11-12增量**：[新联合监督](../results/iterations/20261111-v9-rq4-joint/joint_supervision.json)复用两个合法Train截止，新增6个真实请求、5个原评价器有效结果；合并原候选后形成2条七候选偏好，加16辅助共18行。Laya/Kev均完成18次更新，新权重在A6000；[后续完整比较](../results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)的54位置全部结束，42通过/2失败/10缺评分、74原Trial，模型+教师已知参考费$0.73402850。2题历史已观察，原660万行及旧17行数据保持原身份。
 
@@ -25,7 +25,7 @@
 | 真实实验目录 | 75个 | 其中43目录有原Harbor记录，合计198个不同trial_id、31个官方任务ID；[全部批次](../results/README.md#全项目迭代目录索引) |
 | 正式Terminal-Bench 2.0 | 89题×17策略 | 全部1513位置结束，256通过／358失败／899缺评分，2333个Harbor Trial；[逐题Pass率与费用](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) |
 | 新训练与粒度/信息消融 | 2题×27策略 | 全部54位置结束，42通过／2失败／10缺评分、74原Trial；[独立批次终局](../results/benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md) |
-| Model-only完整任务消融 | 89题×24策略 | 18:38台北396位置结束；[本批逐任务结果](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)。原始/18更新权重、三个固定档位与教师开关分别登记 |
+| Model-only完整任务消融 | 89题×24策略 | [本批逐任务结果](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)统一更新结束数、有效评分与依赖失败；原始/18更新权重、三个固定档位与教师开关分别登记 |
 | 历史Terminal-Bench 2.1 | 89题 | 29题有Agent尝试、22题有官方Reward、7题无终局、60题尚无Agent运行；[历史覆盖](../results/benchmark/README.md) |
 | 11-08新池开发与三题比较 | 49次尝试 | 33有效终局：21个1／12个0；16无Reward；[逐条结果](../results/iterations/20261108-v9-k3-training/episode_results.json) |
 | 当前AA能力 | v7，130指标 | Luna/Terra各六档，GLM仅Max；Low/High缺测，Index5.0.1 |

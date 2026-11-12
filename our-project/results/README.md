@@ -1,6 +1,6 @@
 # ModelRouter研究结果总览
 
-**当前接续**：[Model-only全量RQ2](benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)覆盖89题×24组×seed43，使用11-11各18更新代表；模型/教师Token、Router本地Token、官方Reward及缺评分分列。原连接失败按已恢复代理后的既有一次恢复机制处理，随后[87题联合成对接续](../experiments/configs/v9_joint_paired.json)沿相同权重、T/M/H和固定AA版本执行696位置；此前两题seed43联合结果复用。旧89题seed42训练代表仍为11-08实体。
+**当前接续**：[Model-only全量RQ2](benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)覆盖89题×24组×seed43，使用11-11各18更新代表；模型/教师Token、Router本地Token、有效官方Reward、依赖失败及缺评分分列。已处理网络失败沿原机制恢复一次，随后[87题联合成对接续](../experiments/configs/v9_joint_paired.json)执行八联合组696位置＋GLM Low/Luna High/Terra High三固定组261位置，共957；保持权重、T/M/H、AA及seed43，此前两题结果复用。旧89题seed42训练代表仍为11-08实体。
 
 **2026-11-12接续已结束**：[两个Train截止与两18更新实体](iterations/20261111-v9-rq4-joint/)保存新联合监督及原Trainer结果；[2题×27策略×seed43完整结果](benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)全部54位置结束，42通过、2失败、10缺评分，74次原Trial。模型+教师已知参考费$0.73402850，12请求缺费用；实际跨度2.402小时。两题历史已观察且独立于这次训练/代表选择，关联RQ1/RQ2/RQ3/RQ4；原89题批次与以下历史分类保持独立。
 

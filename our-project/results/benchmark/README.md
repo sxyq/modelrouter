@@ -6,17 +6,27 @@
 
 [Model-only批次](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)沿同一入口执行89题×24组×seed43：Laya/Kev原始及11-11训练版，教师OFF/ON，固定Low/High/Max，每次仅在同档位三个真实模型中选模型。两道历史已观察任务优先执行，旧seed43联合选择结果直接引用作配对，其他87题的联合选择配对尚缺。旧89题seed42比较使用11-08训练版，版本和seed分别保留。
 
-18:38台北公开快照：396/2136位置结束，53通过、8失败、335缺评分；2运行、1738未开始，17题有结束记录。已报告模型+教师4,440,557 Token，346次请求缺用量；已知模型参考费$1.22088631、教师$0.01127140，实际缓存读取2,794,048 Token。58次Luna Low教师请求；Router本地另报告3,508,964输入/34,622输出Token，0次决策缺用量。Router累计墙钟9647.529秒、CPU6110.589秒、GPU锁等待2177.449秒，批次首末跨度26299.658秒；时间分项分别列出。
+21:59台北公开快照：458/2136位置结束，63通过、11有效失败、373缺Reward、11个Verifier依赖失败原0另列；2运行、1676未开始。20/89题有结束记录，19题已结束全部24策略。已报告模型+教师输入7,544,340、输出509,218，合计8,053,558 Token；394次请求缺用量。已知模型参考费$2.30393366、教师$0.01786016，合计$2.32179382；实际缓存读取5,398,848 Token。Router本地另报告5,140,119输入/59,236输出Token，资源美元单价未知。后续数量沿本批报告和逐Episode表更新。
 
-本批316个连接拒绝记录发生在原控制SSH断开、17898代理停止监听后。18:31按本机Clash实际mixed-port=17897恢复同一代理，元数据HTTP200，新请求已有响应。原观察进程已退出，脚本现接上原Controller；保留原失败与费用，矩阵结束后只沿原机制恢复一次相应位置。[87题联合成对接续](../../experiments/configs/v9_joint_paired.json)已排在其后，八个主组共696位置，复用两道旧seed43联合题，能力快照直接读取本批保存配置。
+本批316个连接拒绝记录发生在原控制SSH断开、17898代理停止监听后。18:31按本机Clash实际mixed-port=17897恢复同一代理，新请求已有响应。矩阵结束后沿原机制恢复一次相应位置，并处理fix-git、gcode-to-text、git-leak-recovery中uvx下载失败且无CTRF的原0；有CTRF的有效失败保持，全部尝试和费用保留。[87题联合成对接续](../../experiments/configs/v9_joint_paired.json)已排在其后，能力快照直接读取本批保存配置。
 
-19:05网络接续：Luna/GLM/Terra原域名改走现有TCP出口，元数据均HTTP200，gcode-to-text的Luna High/Max已返回文本并执行工具。单批代理连接跟随现有接续持有进程结束而退出，原观察输出接回同一controller.log。18:58快照412位置结束，53通过/9有效失败/349缺Reward，1个uvx缺失原0另列；API已报告4,542,691 Token、360请求缺用量、已知模型+教师参考费$1.23820567。原结果与网络变更分别登记，后续终局由原Verifier写出。
+19:05网络接续：Luna/GLM/Terra原域名改走现有TCP出口；后续Debian/Ubuntu及uv初址也沿该出口，官方Release与uv实际跳转目标HTTP200。单批代理连接跟随现有接续持有进程结束而退出，原观察输出接回同一controller.log；原任务、Verifier与模型身份保持。
 
 gcode-to-text训练Kev Model-only、Teacher OFF：High实际执行2条断言、1通过/1失败，完整任务Reward0；1064.318775秒、26生成/26工具结果、模型参考费$0.15098180，26次费用齐全，实际请求/返回均Terra High。Low的原0来自Debian官方下载502、uvx未安装，测试断言未执行；783.051197秒、20生成/20工具结果、$0.07798260保留，任务质量另列。此前Luna High/Max均INCOMPLETE_RESPONSE、缺Reward。后续87题为八联合主组696位置＋三固定参照261位置，共957；固定参照GLM Low/Luna High/Terra High先四并发、再两并发Router，复用原两题seed43结果。
 
 唯一[配对汇总](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/comparisons.json)已纳入Model-only同档位的原始/训练、教师OFF/ON及固定模型对照，记录实际评分与费用齐全的任务/seed。两优先题中，训练Kev OFF联合/Model-only Low、High、Max均2/2通过，模型+教师参考费分别为$0.02944120 / $0.03871960、$0.04624140、$0.26640480。训练Kev ON联合/Model-only High、Max均2/2，参考费分别为$0.03183710 / $0.05734710、$0.30910010；ON Low仅一对费用齐全，单列该题。Laya原始OFF的联合/Model-only Low、High均2/2，参考费$0.03605180 / $0.00242127、$0.00463366。完整实收及Router/工具/资源USD缺项保持UNKNOWN。
 
-原8个官方零分保存实际任务评价；Provider与Verifier异常分别保留缺评分。modernize-scientific-stack零分含官方测试执行现代化脚本超时，任务代码效率与VM资源的贡献尚缺分离结果。原Agent超时且官方Reward1同时登记。生成方法版本仍为b9fba0a4488731c76718221e0572e5e7f2e8f936；现有矩阵继续使用原Controller2373109。
+git-leak-recovery新增三组训练Kev完整通过，CTRF各5条断言全部通过；所有请求参考费齐全。金额含模型与实际教师请求，墙钟为原Harbor Trial。
+
+| Model-only策略 | Reward | 生成/工具 | 教师请求 | 墙钟秒 | 已知参考费USD |
+|---|---:|---:|---:|---:|---:|
+| Kev训练 OFF Max | 1 | 15/58 | 0 | 998.052763 | 0.16573660 |
+| Kev训练 ON High | 1 | 8/16 | 2 | 568.403828 | 0.03641570 |
+| Kev训练 ON Max | 1 | 17/65 | 4 | 1252.111846 | 0.16013990 |
+
+同题ON High与ON Max均通过，参考费相差$0.12372420、墙钟相差683.708018秒；这里同时改变请求Effort，不归因为教师收益。Low及OFF High的原0含下载失败、没有CTRF，另列。
+
+Provider与Verifier异常分别保留缺评分。modernize-scientific-stack零分含官方测试执行现代化脚本超时，任务代码效率与VM资源的贡献尚缺分离结果。新git-multibranch原始Laya OFF Low完整通过，OFF High在900秒Verifier超时后缺Reward；不以晚到文件改写原终局。生成方法版本仍为b9fba0a4488731c76718221e0572e5e7f2e8f936；原Controller2373109继续。
 
 固定执行脚本为`our-project/code/cli/run_rq1_a6000.py`，调用原Harbor批量入口、共享GPU锁、原用户Docker及官方Verifier，每1200秒汇总一次；单次批次结束后退出。凭据从唯一600权限文件经SSH输入/memfd读取。启动命令：
 

@@ -17,13 +17,13 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 ## 当前优先：Model-only全量对照（RQ2，关联RQ1/RQ4）
 
-按负责人最新要求，先执行[Model-only配置](../../../experiments/configs/v9_model_only.json)：全部89题×24组×seed43，Laya/Kev原始及11-11各18更新实体、教师OFF/ON、固定Low/High/Max。每次仅在三个同档模型中选择，沿原Harbor/DefaultAgent及原Verifier，所有任务保持已观察身份，不作新训练或选权重。18:38台北396位置结束，53通过/8失败/335缺评分；2运行、1738未开始，17题有结束记录。已报告4,440,557模型+教师Token、346次缺用量、已知模型+教师参考费$1.23215771；Router本地另报告3,508,964输入/34,622输出Token。当前与终局状态沿[本批结果](../../benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)读取。
+按负责人最新要求，先执行[Model-only配置](../../../experiments/configs/v9_model_only.json)：全部89题×24组×seed43，Laya/Kev原始及11-11各18更新实体、教师OFF/ON、固定Low/High/Max。每次仅在三个同档模型中选择，沿原Harbor/DefaultAgent及原Verifier，所有任务保持已观察身份，不作新训练或选权重。当前与终局数量、有效评分、依赖失败、模型/教师及Router Token沿[本批结果](../../benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)读取，不使用入口旧快照。
 
-旧54位置seed43联合选择结果已与openssl-selfsigned-cert/regex-log逐题配对；原分析器同时纳入同档位Model-only训练/教师及固定模型对照，实际评分和费用齐全的task/seed分别登记。其余87题相同权重/seed的八个联合主组共696位置，已按[联合接续配置](../../../experiments/configs/v9_joint_paired.json)排在当前矩阵和一次连接恢复之后；新配置直接读取Model-only批次保存的AA能力快照，沿相同Encoder、教师、Harbor、Verifier、输出及任务时限执行。旧89题seed42训练版为11-08实体，保留其历史身份；不重复首两题和旧批次。
+旧54位置seed43联合选择结果已与openssl-selfsigned-cert/regex-log逐题配对；原分析器同时纳入同档位Model-only训练/教师及固定模型对照，实际评分和费用齐全的task/seed分别登记。其余87题相同权重/seed的八个联合主组696位置和三固定模型参照261位置，共957，已按[联合接续配置](../../../experiments/configs/v9_joint_paired.json)排在当前矩阵和已处理网络失败的一次恢复之后；新配置直接读取Model-only保存的AA快照，保持Encoder、教师、Harbor、Verifier、输出及任务时限。旧89题seed42训练版为11-08实体，保留其历史身份；不重复首两题和旧批次。
 
-固定脚本`our-project/code/cli/run_rq1_a6000.py`已接上原父2373109，使用`--attach-pid 2373109 --recover-infrastructure`和Model-only、Joint-paired两个配置顺序执行。原控制SSH断开后316请求记录连接拒绝，18:31按本机Clash实际17897端口恢复原17898代理；旧观察已退出，现观察每1200秒汇总。原GPU锁、用户Docker和唯一SSH/memfd凭据沿用；本次全部批次结束后退出并清理临时导出。完整API Token按已报告输入+输出登记，Router本地另计；缓存读取与Reasoning各计一次。连接失败及费用保持，只有已记录且没有成功生成/教师/工具的相应位置沿原机制恢复一次，不重做Provider额度耗尽或已有Reward。
+固定脚本`our-project/code/cli/run_rq1_a6000.py`已接上原父2373109，使用`--attach-pid 2373109 --recover-infrastructure`和Model-only、Joint-paired两个配置顺序执行。原控制SSH断开后316请求记录连接拒绝，18:31按本机Clash实际17897端口恢复原17898代理；现观察每1200秒汇总。原GPU锁、用户Docker和唯一SSH/memfd凭据沿用；本次全部批次结束后退出并清理临时导出。完整API Token按已报告输入+输出登记，Router本地另计；缓存读取与Reasoning各计一次。恢复范围为未成功生成/教师/工具的原连接失败，以及fix-git、gcode-to-text、git-leak-recovery的uvx下载失败且无CTRF位置；各完整Episode仅恢复一次，原结果及费用保留，有CTRF的失败与Provider额度耗尽保持。
 
-19:05当前运行事实：持有进程2806615、观察2806620仍在；单批代理SSH44998跟随该持有进程结束，观察输出已接回原controller.log。原三个模型域名经现有TCP出口HTTP200，gcode-to-text的Luna High/Max已有实际生成和工具结果，终局待原Verifier；18:58快照412结束、2运行、1722未开始，1个Verifier依赖失败与349缺Reward分别登记。中断后不重建矩阵或重复首两题。
+当前运行对象：持有进程2806615、观察2806620；单批代理SSH44998跟随该持有进程结束，观察输出已接回原controller.log。三个模型域名、Debian/Ubuntu及uv初址使用既有TCP出口；uv跟随实际跳转后HTTP200。中断后不重建矩阵或重复首两题。
 
 gcode-to-text终局：训练Kev Model-only OFF/High实际执行2条断言、1通过/1失败，完整任务Reward0；1064.319秒、26生成/26工具结果、模型参考费$0.15098180且缺费用0，请求/返回均Terra High。Low的原0来自Debian下载502、uvx未安装，未执行断言；783.051秒、20生成/20工具及$0.07798260保留，任务质量另列。原始Kev ON的Luna High/Max前序工具有效、终局INCOMPLETE_RESPONSE且缺Reward。联合接续同时补三固定参照GLM Low/Luna High/Terra High的87题×3=261位置，联合主组696，合计957；旧两题seed43结果复用，旧seed42不替代。
 

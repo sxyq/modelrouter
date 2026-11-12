@@ -616,7 +616,9 @@ def export_batch_results(root, config, output_root=None):
     write_csv("per_episode.csv", episodes)
     task_rows = [{"task_id": task, "attempted_strategies": sum(r["task_id"] == task and r["status"] in ("EVALUATED", "PARTIAL", "BLOCKED") for r in episodes),
                   "ended_fixed_strategies": sum(r["task_id"] == task and strategies[r["strategy_id"]]["stage"] == "fixed" and r["status"] in ("EVALUATED", "PARTIAL", "BLOCKED") for r in episodes),
-                  "scored_strategies": sum(r["task_id"] == task and r["reward"] in (0, 1) for r in episodes)} for task in tasks]
+                  "scored_strategies": sum(r["task_id"] == task and r["reward"] in (0, 1)
+                                           and r["effort_comparison_eligible"] and not r.get("verifier_dependency_failure")
+                                           for r in episodes)} for task in tasks]
     write_csv("per_task.csv", task_rows)
     write_csv("per_strategy.csv", grouped)
     write_csv("cost_breakdown.csv", [{k: r[k] for k in ("task_id", "strategy_id", "seed", "generator_known_reference_usd", "teacher_known_reference_usd", "reference_cost_usd", "supplier_billed_usd", "router_compute_cost_usd", "environment_cost_usd", "complete_cost_usd")} for r in episodes])

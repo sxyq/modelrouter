@@ -2,15 +2,15 @@
 
 ## 当前执行：Model-only全量对照（2026-11-12）
 
-[Model-only批次](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)执行Terminal-Bench 2.0全部89题×24组×seed43，覆盖Laya/Kev原始及11-11各18更新权重、教师OFF/ON、固定Low/High/Max。每次只选同档位三个模型；正式主方法仍为Model×Native Effort。19:28快照428位置结束：53通过、10有效失败、363缺Reward、2个Verifier依赖失败原0另列；2运行、1706未开始。原Controller2373109、凭据持有2372941、Router worker2373123继续，生成方法为b9fba0a4488731c76718221e0572e5e7f2e8f936。
+[Model-only批次](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)执行Terminal-Bench 2.0全部89题×24组×seed43，覆盖Laya/Kev原始及11-11各18更新权重、教师OFF/ON、固定Low/High/Max。每次只选同档位三个模型；正式主方法仍为Model×Native Effort。完成数量、有效评分、依赖失败及费用由该批次报告统一更新。原Controller2373109、凭据持有2372941、Router worker2373123继续，生成方法为b9fba0a4488731c76718221e0572e5e7f2e8f936。
 
-原控制SSH断开导致代理连接拒绝；19:05单批代理SSH44998恢复17898→本机17897，跟随接续持有进程2806615结束而退出。20分钟观察2806620的输出已接回原controller.log；三个模型域名使用既有Los Angeles TCP出口，原Provider账户与模型ID保持。Debian官方下载502另按实际失败记录处理，网络与时间见[资源记录](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。原Serving及F15物理epoch_01/61180恢复实体保持。
+原控制SSH断开导致代理连接拒绝；19:05单批代理SSH44998恢复17898→本机17897，跟随接续持有进程2806615结束而退出。20分钟观察2806620的输出已接回原controller.log；三个模型域名、Debian/Ubuntu及uv初址使用既有Los Angeles TCP出口，原Provider账户与模型ID保持。fix-git、gcode-to-text、git-leak-recovery中uvx缺失且无CTRF的原0单列；已处理下载路径后沿原Harbor完整Episode恢复一次，有CTRF的任务失败保持。网络与时间见[资源记录](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。原Serving及F15物理epoch_01/61180恢复实体保持。
 
 gcode-to-text训练Kev OFF：High实际执行2条断言，1通过/1失败，完整任务Reward0；1064.319秒、26生成/26工具结果、模型参考费$0.15098180，全部请求/返回Terra High，费用齐全。Low的原0来自Debian下载502、uvx未安装，未执行断言；783.051秒、20生成/20工具结果和$0.07798260保留，任务质量另列。原始Kev ON的Luna High/Max前序工具有效，终局INCOMPLETE_RESPONSE且缺Reward。
 
-后续顺序为当前矩阵→原一次连接失败恢复→[87题同seed43成对接续](../experiments/configs/v9_joint_paired.json)：三个固定参照GLM Low/Luna High/Terra High共261位置、八个联合主组696位置，合计957，固定四并发后Router两并发。复用旧两题seed43结果，直接读取本批AA快照，保持四权重、完整T/M/H、教师、Harbor/Verifier、4096输出与原任务时限；旧seed42不替代。两题训练Kev OFF联合/Model-only Low/High/Max均2/2，通过相同时参考费$0.02944120/$0.03871960/$0.04624140/$0.26640480。
+后续顺序为当前矩阵→已处理网络失败的一次恢复→[87题同seed43成对接续](../experiments/configs/v9_joint_paired.json)：三个固定参照GLM Low/Luna High/Terra High共261位置、八个联合主组696位置，合计957，固定四并发后Router两并发。复用旧两题seed43结果，直接读取本批AA快照，保持四权重、完整T/M/H、教师、Harbor/Verifier、4096输出与原任务时限；旧seed42不替代。两题训练Kev OFF联合/Model-only Low/High/Max均2/2，通过相同时参考费$0.02944120/$0.03871960/$0.04624140/$0.26640480。
 
-[Token统计](../results/benchmark/README.md#2026-11-12--model-only全量执行与token统计)分别保存API模型/教师与Router本地输入/输出。当前快照API已报告5,588,085 Token、376请求缺用量、模型+教师已知参考费$1.48793159；供应商实收、Router/工具/资源美元价仍缺。旧1513位置的228,743,791 Token/1028缺用量与54位置的3,131,127/12保留各自身份，不重复运行或改变代表权重。
+[Token统计及新增完整任务结果](../results/benchmark/README.md#2026-11-12--model-only全量执行与token统计)分别保存API模型/教师与Router本地输入/输出；供应商实收、Router/工具/资源美元价仍缺。旧1513位置的228,743,791 Token/1028缺用量与54位置的3,131,127/12保留各自身份，不重复运行或改变代表权重。
 
 ## 已完成：新联合训练与完整比较（2026-11-12 02:32）
 
