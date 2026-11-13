@@ -103,6 +103,20 @@ def analyze_rq1(episodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
+def interrupted_provider_request(trial, events):
+    """Recognize a recorded generator retry still failing when Harbor timed out."""
+    if (trial.get("error") or {}).get("exception_type") != "AgentTimeoutError":
+        return False
+    for request in provider_requests(trial, events):
+        attempts = request.get("account_attempts", [])
+        if request["role"] == "generator" and request.get("event") == "ERROR" and attempts:
+            last = attempts[-1]
+            if last.get("error_type") and (last.get("retry_scheduled") or
+                                          last.get("retry_stop_reason") == "TASK_DEADLINE"):
+                return True
+    return False
+
+
 def provider_requests(trial, events):
     events_by_episode = defaultdict(list)
     for event in events:
@@ -489,7 +503,10 @@ def export_batch_results(root, config, output_root=None):
             stdout = verifier_dir / "test-stdout.txt"
             row["verifier_dependency_failure"] = (stdout.exists() and not (verifier_dir / "ctrf.json").exists()
                                                   and "uvx: command not found" in stdout.read_text())
-        row.update(trial_id=trial.get("trial_id"), reward=trial.get("reward"),
+        interrupted = trial.get("reward") == 0 and interrupted_provider_request(trial, events)
+        row.update(trial_id=trial.get("trial_id"), reward=None if interrupted else trial.get("reward"),
+                   official_reward=trial.get("reward"),
+                   technical_fault="PROVIDER_RETRY_DEADLINE" if interrupted else None,
                    raw_verifier_rewards=[a.get("rewards") for a in trial.get("verifier_artifacts", [])],
                    effort_comparison_eligible=not strategy.get("model") or not any(r.get("native_effort_status") == "PROVIDER_REPORTED_MISMATCH" for r in generator),
                    harbor_trial_count=len(trials),

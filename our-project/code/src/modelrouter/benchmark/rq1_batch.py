@@ -71,12 +71,17 @@ def prepare(config_path, revision):
 
 def recovery_reason(path):
     """Recover technical interruptions only; never repeat a valid official score."""
+    from .rq1_analysis import interrupted_provider_request
     observed = [t for job in (path / "jobs").glob("*") for t in audit_job(job)["trials"]]
-    if any(t["status"] == "OFFICIAL_ARTIFACT_VERIFIED" and t["reward"] in (0, 1) for t in observed):
+    events = iterations.rows(path / "events.jsonl")
+    if any(t["status"] == "OFFICIAL_ARTIFACT_VERIFIED" and (t["reward"] == 1 or
+           t["reward"] == 0 and not interrupted_provider_request(t, events)) for t in observed):
         return None
     if not observed:
         return None
     trial = max(observed, key=lambda t: t.get("finished_at") or "")
+    if interrupted_provider_request(trial, events):
+        return "PROVIDER_RETRY_DEADLINE"
     error = trial.get("error") or {}
     kind, message = error.get("exception_type"), error.get("exception_message", "")
     if "dependency uvx absent" in trial.get("reason", "") or "CTRF report absent" in trial.get("reason", ""):
