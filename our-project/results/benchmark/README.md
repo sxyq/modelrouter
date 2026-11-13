@@ -40,7 +40,7 @@ make-doom-for-mips全部24组Model-only已结束：0通过、17有效失败、7�
 
 11-14 00:21台北：merge-diff-arc-agi-task原始Laya OFF High官方5/5通过、Reward1，Max在原Agent900秒结束后官方0/5、Reward0；两条分别17/38次生成、0次额外重试、$0.01114506/$0.05922257模型参考费。ON Low/High尚在GPU锁前等待，Agent时限未开始。Model-only已结束651/2136，128通过/68有效失败/435缺评分/20依赖故障；模型与教师已知参考费$7.80484740，472请求费用未知。逐题结果与分母沿原正式报告更新。
 
-01:12：ON Low/High后续进入Agent并自然结束，原Verifier在Ubuntu下载阶段耗尽900秒、断言未执行、Reward未知。现行apt镜像映射沿原环境类覆盖38个明确Ubuntu24.04且调用apt-get update的任务；USTC发行索引及原失败软件包HTTP200，下载0.226/0.142秒。源码2308ba82c1dcfcba44e309127b54a2a38b7f802b已部署，下一完整Episode待评分；两条原日志、Token、费用及技术恢复身份保留。
+01:12：ON Low/High后续进入Agent并自然结束，原Verifier在Ubuntu下载阶段耗尽900秒、断言未执行、Reward未知。现行apt镜像映射沿原环境类覆盖38个明确Ubuntu24.04且调用apt-get update的任务；USTC发行索引及原失败软件包HTTP200，下载0.226/0.142秒。源码2308ba82c1dcfcba44e309127b54a2a38b7f802b已部署。01:27训练Laya OFF Low完整Episode验证修复：6.8MB软件包4秒下载、原Verifier185.998秒、5断言2通过/3失败，官方Reward0；原始Laya ON Max亦官方0/5、Reward0。原下载失败日志、Token、费用及独立恢复身份保留，两个有效0不重跑。
 
 ## 2026-11-12 · Model-only全量执行与Token统计
 
