@@ -96,6 +96,9 @@ def recovery_reason(path):
     if kind in ("ProviderResponseError", "JSONDecodeError"):
         request = next((e for e in reversed(iterations.rows(path / "events.jsonl"))
                         if e.get("episode_id") == trial["trial_id"] and e.get("event") == "GENERATOR_END"), {})
+        if kind == "ProviderResponseError" and (request.get("finish_reason") == "length" or
+                (request.get("incomplete_details") or {}).get("reason") == "max_output_tokens"):
+            return "AGENT_OUTPUT_LIMIT_NO_VERIFIER"
         if kind == "JSONDecodeError" and "Unterminated string" in message or kind == "ProviderResponseError" and OpenAICompatibleProvider._retryable(ProviderResponseError(message, {}, request), request):
             return "PROVIDER_INTERRUPTED_RESPONSE"
     if kind == "VerifierTimeoutError":
