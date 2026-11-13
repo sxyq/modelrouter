@@ -163,6 +163,23 @@
   ],
   "runtime_repairs": [
     {
+      "recorded_at": "2026-11-13T22:11:19+08:00",
+      "source_revision": "a4c961535dfbb37920a7c80a29bde3864533edb1",
+      "file": "our-project/code/src/modelrouter/benchmark/harbor_agent.py",
+      "cause": "A final HTTP 503 stopped retrying with TASK_DEADLINE before asyncio cancellation, and escaped Harbor without its verifier",
+      "observed_original_task": "make-doom-for-mips",
+      "observed_original_strategy": "laya_original_off_model_only_low",
+      "observed_last_attempt_index": 14,
+      "observed_retry_stop_reason": "TASK_DEADLINE",
+      "change": "USE_ORIGINAL_HARBOR_AGENT_TIMEOUT_ONLY_FOR_RECORDED_PROVIDER_TASK_DEADLINE_ABORTS",
+      "provider_failure_classification": "PROVIDER_RETRY_DEADLINE_RETAINED",
+      "extra_model_requests": 0,
+      "output_limit": 4096,
+      "original_task_time_limit_changed": false,
+      "official_tests_changed": false,
+      "live_new_handler_verifier_outcome": "AWAITING_NEXT_REAL_OCCURRENCE"
+    },
+    {
       "recorded_at": "2026-11-13T20:30:34+08:00",
       "change": "REUSE_EXISTING_VERIFIER_DEPENDENCIES_FOR_ALL_82_OFFICIAL_UV_0_9_5_CALL_SITES",
       "cause": "make-doom-for-mips repeated the already observed releases.astral.sh TLS failure; uvx absent and no CTRF",

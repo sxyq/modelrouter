@@ -34,6 +34,8 @@ uv索引修复后，log-summary-date-ranges训练Kev教师ON Max原官方2/2断�
 
 20:24原观察627结束，新增make-doom-for-mips原始Laya OFF High/Max的uv下载失败、无CTRF；这两条原0单列。读取官方89题脚本发现82题明确请求同一uv0.9.5安装地址，现行依赖映射统一覆盖这82个实际调用位置，复用原依赖目录及清华uv索引，各题Python和测试包参数由未改动的原脚本决定。两条在途原始Laya ON Low/High的容器已在20:29补入依赖，继续原Episode；固定模型四并发、Router两并发保持。
 
+`a4c961535dfbb37920a7c80a29bde3864533edb1`将Provider已经记录TASK_DEADLINE的终止交给Harbor原AgentTimeoutError处理，随后调用原Verifier；未恢复的网络故障仍单列，正常4096输出耗尽继续使用OutputTokenExceededError。依据为make-doom-for-mips原始Laya OFF Low的第14次额外尝试503/TASK_DEADLINE后曾跳过Verifier。源码已部署，等待下一次该分支真实发生；原模型、档位、工具、时限和包版本保持。
+
 `e537e363c8a84c3669fc7bfd0dbfd5f2b57fe6f9`按真实生成重试记录单列时限耗尽时仍未恢复的技术故障；gpt2-codegolf原始Laya OFF Max、headless-terminal训练Kev OFF Max两条原0保留，质量汇总为空。新等待队列已载入该分类。`0ddeb6482420f0629637fd540118f4bcbf24eff5`将原工具等待约束到任务剩余时间；旧晚到工具记录保持。
 
 ## 当前执行：Model-only全量对照（2026-11-12）

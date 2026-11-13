@@ -34,6 +34,8 @@ uv索引修复后，log-summary-date-ranges训练Kev教师ON Max官方2/2断言�
 
 make-doom-for-mips原始Laya OFF High/Max同样在uv下载TLS中断后没有uvx和CTRF，原0另列。官方89题中82题使用精确uv0.9.5安装地址，现行运行配置统一将这82题接入原依赖目录，完整名单及原脚本来源在本批资源记录。原测试脚本和包版本参数保持；20:29两条在途原始Laya ON Low/High已经补入依赖，继续原任务，不重发已完成的工具命令。
 
+`a4c961535dfbb37920a7c80a29bde3864533edb1`将Provider已记录TASK_DEADLINE的终止映射为原Harbor AgentTimeoutError，再调用原Verifier；原网络故障仍单列，未增加请求或时间。原始Laya OFF Low的第14次额外尝试503/TASK_DEADLINE后曾没有评分，原记录保持。正常4096输出耗尽保留原OutputTokenExceededError路径，两条新终止分支的实际验证沿下一次真实Episode记录。
+
 ## 2026-11-12 · Model-only全量执行与Token统计
 
 [RQ1部分帕雷托图与40组状态](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_review.md)按openssl-selfsigned-cert、regex-log同两题、seed43、原始及11-11微调实体绘制；21组评分与API费用齐全，另19组缺项。费用累计全部尝试的模型＋教师参考费，完整现金费用保持未知。[逐点数据](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_points.csv)保存来源、版本与缺项；沿原`rq1_figures.py <本批目录> --pareto`更新图表。
