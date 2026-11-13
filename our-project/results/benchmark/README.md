@@ -1,5 +1,13 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
+## 2026-11-13 · 请求重试与Router收尾
+
+Provider最多额外100次同请求重试已在正式请求路径生效，原任务时限及4096输出保持。最新[Model-only正式报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)与逐Episode表保存实际重试、原始与恢复尝试、有效官方评分、缺评分和费用；批次仍按原矩阵推进，20分钟观察复用原控制进程。
+
+`96d065e3e0564d0e2a610d3cb92d412823fdadb6`将Router客户端、排队及共享GPU等待约束到任务剩余时间。hf-model-inference训练Kev OFF High/Max原官方Reward1/0已写入后，收尾仍等待Router线程；仅替换等待锁的worker，两条原结果及费用保留，新任务已经接续。High的实际Token为203,004，模型参考费$0.114308；Max为21,411 Token/$0.026639，教师均OFF。原Harbor任务墙钟1124.269493/1105.229683秒，含CLI收尾的命令墙钟5787.671381/5226.806454秒，两项时间分别保存。
+
+训练Kev ON Low/High两条新Episode在首个路由等待中耗尽900秒原Agent时限，生成请求0、路由返回0、CTRF缺失；保持无有效评分。同时间共享GPU锁由现有视频服务持有，原视频服务与Benchmark条件保持。资源和修复身份见[运行事实](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。
+
 ## 2026-11-12 · Model-only全量执行与Token统计
 
 [RQ1部分帕雷托图与40组状态](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_review.md)按openssl-selfsigned-cert、regex-log同两题、seed43、原始及11-11微调实体绘制；21组评分与API费用齐全，另19组缺项。费用累计全部尝试的模型＋教师参考费，完整现金费用保持未知。[逐点数据](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_points.csv)保存来源、版本与缺项；沿原`rq1_figures.py <本批目录> --pareto`更新图表。
