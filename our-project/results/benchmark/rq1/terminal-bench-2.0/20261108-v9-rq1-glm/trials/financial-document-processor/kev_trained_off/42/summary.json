@@ -36,7 +36,7 @@
   "harbor_trial_count": 2,
   "attempts_wall_s": 823.8617790000001,
   "harness_command_wall_s": 834.4188232421875,
-  "teacher_known_reference_usd": 0,
+  "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
   "latest_trial_reference_usd": 0.1216344,
   "verifier_dependency_failure": false,
@@ -47,6 +47,11 @@
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/financial-document-processor/kev_trained_off/42",
   "trial_id": "b3abcdfd-0bdf-4cf4-a8cc-f6d25e030910",
+  "official_reward": null,
+  "technical_fault": null,
+  "raw_verifier_rewards": [
+    null
+  ],
   "outside_harbor_wall_s": 10.55704424218743,
   "previous_attempts": [
     {
@@ -78,6 +83,31 @@
   },
   "generator_requests": 22,
   "teacher_requests": 0,
+  "provider_attempt_count": 22,
+  "provider_retry_count": 0,
+  "provider_retry_stop_reasons": {},
+  "provider_attempts": [
+    {
+      "attempt_index": null,
+      "request_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "none",
+      "http_status": 200,
+      "error_type": null,
+      "response_status": "NATIVE_EFFORT_MISMATCH",
+      "finish_reason": "completed",
+      "latency_ms": 7301.392806693912,
+      "retry_wait_sec": null,
+      "retry_stop_reason": null,
+      "prompt_tokens": 24628,
+      "completion_tokens": 160,
+      "cached_tokens": 4096,
+      "cost_usd": 0.0215368,
+      "actual_billed_cost_usd": null,
+      "role": "generator",
+      "decision_id": "b3abcdfd-0bdf-4cf4-a8cc-f6d25e030910-20"
+    }
+  ],
+  "technical_recovery_count": 0,
   "started_tool_calls": 0,
   "completed_tool_calls": 30,
   "unknown_provider_cost_requests": 1,
@@ -95,6 +125,10 @@
   "reported_cache_write_tokens": null,
   "cache_write_unknown_records": 1,
   "router_wall_s": 295.17301525734365,
+  "initial_gpu_queue_wait_s": 0.0,
+  "router_known_input_tokens": 162394,
+  "router_known_output_tokens": 6925,
+  "router_usage_unknown_decisions": 0,
   "router_cpu_time_sec": 281.0582230000027,
   "router_gpu_wait_s": 0.0002936534583568573,
   "router_transfer_s": 229.45842164196074,

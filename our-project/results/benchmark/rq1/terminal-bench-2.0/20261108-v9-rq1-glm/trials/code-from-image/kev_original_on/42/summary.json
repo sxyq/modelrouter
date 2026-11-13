@@ -47,6 +47,11 @@
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/code-from-image/kev_original_on/42",
   "trial_id": "70d59778-33cc-4d91-8e78-ce527a3c5a65",
+  "official_reward": null,
+  "technical_fault": null,
+  "raw_verifier_rewards": [
+    null
+  ],
   "outside_harbor_wall_s": 10.159588342034567,
   "previous_attempts": [
     {
@@ -78,6 +83,31 @@
   },
   "generator_requests": 9,
   "teacher_requests": 2,
+  "provider_attempt_count": 11,
+  "provider_retry_count": 0,
+  "provider_retry_stop_reasons": {},
+  "provider_attempts": [
+    {
+      "attempt_index": null,
+      "request_model_id": "gpt-6-luna",
+      "requested_native_effort": "low",
+      "http_status": 200,
+      "error_type": null,
+      "response_status": "error",
+      "finish_reason": null,
+      "latency_ms": 6236.992958933115,
+      "retry_wait_sec": null,
+      "retry_stop_reason": null,
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "cached_tokens": null,
+      "cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "role": "generator",
+      "decision_id": "70d59778-33cc-4d91-8e78-ce527a3c5a65-7"
+    }
+  ],
+  "technical_recovery_count": 0,
   "started_tool_calls": 0,
   "completed_tool_calls": 7,
   "unknown_provider_cost_requests": 2,
@@ -95,6 +125,10 @@
   "reported_cache_write_tokens": null,
   "cache_write_unknown_records": 2,
   "router_wall_s": 130.63107244484127,
+  "initial_gpu_queue_wait_s": 0.0,
+  "router_known_input_tokens": 61541,
+  "router_known_output_tokens": 2817,
+  "router_usage_unknown_decisions": 0,
   "router_cpu_time_sec": 112.77076600000191,
   "router_gpu_wait_s": 0.00010977312922477722,
   "router_transfer_s": 93.11022232659161,

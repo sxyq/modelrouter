@@ -36,7 +36,7 @@
   "harbor_trial_count": 2,
   "attempts_wall_s": 498.68318500000004,
   "harness_command_wall_s": 509.0580691527575,
-  "teacher_known_reference_usd": 0,
+  "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
   "latest_trial_reference_usd": null,
   "verifier_dependency_failure": false,
@@ -47,6 +47,11 @@
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/query-optimize/glm_max/42",
   "trial_id": "758d03b7-88ca-4b5d-96e2-450ddbf2a0bc",
+  "official_reward": null,
+  "technical_fault": null,
+  "raw_verifier_rewards": [
+    null
+  ],
   "outside_harbor_wall_s": 10.374884152757488,
   "previous_attempts": [
     {
@@ -78,6 +83,31 @@
   },
   "generator_requests": 6,
   "teacher_requests": 0,
+  "provider_attempt_count": 6,
+  "provider_retry_count": 0,
+  "provider_retry_stop_reasons": {},
+  "provider_attempts": [
+    {
+      "attempt_index": null,
+      "request_model_id": "glm-5.3-flash",
+      "requested_native_effort": "max",
+      "http_status": 200,
+      "error_type": null,
+      "response_status": "INCOMPLETE_RESPONSE",
+      "finish_reason": "length",
+      "latency_ms": 296095.7581587136,
+      "retry_wait_sec": null,
+      "retry_stop_reason": null,
+      "prompt_tokens": 4194,
+      "completion_tokens": 4096,
+      "cached_tokens": 3584,
+      "cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "role": "generator",
+      "decision_id": "758d03b7-88ca-4b5d-96e2-450ddbf2a0bc-4"
+    }
+  ],
+  "technical_recovery_count": 0,
   "started_tool_calls": 0,
   "completed_tool_calls": 7,
   "unknown_provider_cost_requests": 2,
@@ -95,6 +125,10 @@
   "reported_cache_write_tokens": null,
   "cache_write_unknown_records": 6,
   "router_wall_s": 0.0015752539038658142,
+  "initial_gpu_queue_wait_s": 0.0,
+  "router_known_input_tokens": 0,
+  "router_known_output_tokens": 0,
+  "router_usage_unknown_decisions": 0,
   "router_cpu_time_sec": 0,
   "router_gpu_wait_s": 0.0,
   "router_transfer_s": 0.0,

@@ -47,6 +47,11 @@
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/winning-avg-corewars/kev_trained_on/42",
   "trial_id": "ef4ef1ad-91f0-443c-a2a6-a1a2bfea052c",
+  "official_reward": null,
+  "technical_fault": null,
+  "raw_verifier_rewards": [
+    null
+  ],
   "outside_harbor_wall_s": 10.178293921321483,
   "previous_attempts": [
     {
@@ -78,6 +83,31 @@
   },
   "generator_requests": 15,
   "teacher_requests": 3,
+  "provider_attempt_count": 18,
+  "provider_retry_count": 0,
+  "provider_retry_stop_reasons": {},
+  "provider_attempts": [
+    {
+      "attempt_index": null,
+      "request_model_id": "gpt-6.1-terra",
+      "requested_native_effort": "none",
+      "http_status": 200,
+      "error_type": null,
+      "response_status": "NATIVE_EFFORT_MISMATCH",
+      "finish_reason": "completed",
+      "latency_ms": 5679.101433604956,
+      "retry_wait_sec": null,
+      "retry_stop_reason": null,
+      "prompt_tokens": 18055,
+      "completion_tokens": 70,
+      "cached_tokens": 0,
+      "cost_usd": 0.018405,
+      "actual_billed_cost_usd": null,
+      "role": "generator",
+      "decision_id": "ef4ef1ad-91f0-443c-a2a6-a1a2bfea052c-14"
+    }
+  ],
+  "technical_recovery_count": 0,
   "started_tool_calls": 0,
   "completed_tool_calls": 31,
   "unknown_provider_cost_requests": 0,
@@ -95,6 +125,10 @@
   "reported_cache_write_tokens": 0,
   "cache_write_unknown_records": 0,
   "router_wall_s": 188.25306916423142,
+  "initial_gpu_queue_wait_s": 0.0,
+  "router_known_input_tokens": 113422,
+  "router_known_output_tokens": 4722,
+  "router_usage_unknown_decisions": 0,
   "router_cpu_time_sec": 188.26086299999588,
   "router_gpu_wait_s": 0.00019088387489318848,
   "router_transfer_s": 153.59036831371486,

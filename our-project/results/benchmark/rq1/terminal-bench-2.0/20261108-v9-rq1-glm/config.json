@@ -10366,5 +10366,19 @@
       "action_id": "gpt-6.1-terra:xhigh",
       "pool": "Reasoning"
     }
-  ]
+  ],
+  "environment_kwargs": {
+    "verifier_dependencies": {
+      "fix-git": "/home/syy/路由/.runtime/verifier-dependencies",
+      "gcode-to-text": "/home/syy/路由/.runtime/verifier-dependencies",
+      "git-leak-recovery": "/home/syy/路由/.runtime/verifier-dependencies",
+      "git-multibranch": "/home/syy/路由/.runtime/verifier-dependencies"
+    }
+  },
+  "provider_request_retry_policy": {
+    "max_extra_retries": 100,
+    "source_revision": "213d446952c9debc9ac7fdcb0b06cca1292ebfe8",
+    "original_task_deadline": true,
+    "output_limit_retry": false
+  }
 }
