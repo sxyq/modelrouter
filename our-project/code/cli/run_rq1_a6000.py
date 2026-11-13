@@ -1,9 +1,12 @@
 """Control the existing A6000 Harbor batch; credentials remain in SSH/memfd."""
 import argparse
 import json
+import os
 from pathlib import Path
 import shlex
 import subprocess
+import sys
+import time
 from urllib.request import urlopen
 
 
@@ -76,6 +79,8 @@ def main():
     parser.add_argument('--attach-pid', type=int, help='Observe the first existing batch before continuing')
     parser.add_argument('--recover-infrastructure', action='store_true', help='Run the existing one-time recovery for the first batch')
     parser.add_argument('--proxy-for-pid', type=int, nargs='+', help='Reconnect the proxy; exit when all these existing batches end')
+    parser.add_argument('--proxy-after-pid', type=int, help='Let the current local proxy finish before reconnecting')
+    parser.add_argument('--proxy-worker', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[3]
     revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
@@ -84,21 +89,42 @@ def main():
     command = ['ssh', '-i', str(Path.home() / '.ssh/id_ed25519_remote_server'),
                '-o', 'IdentitiesOnly=yes', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8',
                '-o', 'ExitOnForwardFailure=yes', '-o', 'ServerAliveInterval=30',
-               '-o', 'ServerAliveCountMax=10']
+               '-o', 'ServerAliveCountMax=3']
     if not args.attach_pid:
         command += ['-R', f'127.0.0.1:17898:127.0.0.1:{proxy_port}']
     if args.proxy_for_pid:
+        if not args.proxy_worker:
+            config = json.loads((root / args.configs[0]).read_text())
+            log = root / config['result_dir'] / '.private/controller.log'
+            log.parent.mkdir(parents=True, exist_ok=True)
+            with log.open('a') as output:
+                process = subprocess.Popen([sys.executable, str(Path(__file__).resolve()),
+                                            *sys.argv[1:], '--proxy-worker'],
+                                           stdin=subprocess.DEVNULL, stdout=output,
+                                           stderr=subprocess.STDOUT, start_new_session=True)
+            print(json.dumps({'proxy_pid': process.pid, 'batch_pids': args.proxy_for_pid,
+                              'local_proxy_port': proxy_port}))
+            return
+        if args.proxy_after_pid:
+            while True:
+                try:
+                    os.kill(args.proxy_after_pid, 0)
+                except ProcessLookupError:
+                    break
+                time.sleep(5)
         live = ' || '.join(f'test -d /proc/{pid}' for pid in args.proxy_for_pid)
         command += ['syy@10.16.15.202', f'while {live}; do sleep 1200; done']
-        config = json.loads((root / args.configs[0]).read_text())
-        log = root / config['result_dir'] / '.private/controller.log'
-        log.parent.mkdir(parents=True, exist_ok=True)
-        with log.open('a') as output:
-            process = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=output,
-                                       stderr=subprocess.STDOUT, start_new_session=True)
-        print(json.dumps({'proxy_pid': process.pid, 'batch_pids': args.proxy_for_pid,
-                          'local_proxy_port': proxy_port}))
-        return
+        while True:
+            started = time.monotonic()
+            result = subprocess.run(command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                                    stderr=subprocess.STDOUT, text=True)
+            print(result.stdout, end='', flush=True)
+            print(json.dumps({'proxy_exit_code': result.returncode,
+                              'connection_wall_sec': time.monotonic() - started}), flush=True)
+            if result.returncode != 255 or any(message in result.stdout for message in
+                    ('Permission denied', 'Host key verification failed', 'UNPROTECTED PRIVATE KEY FILE')):
+                raise SystemExit(result.returncode)
+            time.sleep(5)
     command += ['syy@10.16.15.202', '/home/syy/路由/.runtime/benchmark-venv/bin/python -c ' + shlex.quote(REMOTE)]
     credentials = json.loads((Path.home() / '.agent-global/外部文本模型.local.json').read_text())
     result = subprocess.run(command, input=json.dumps({'configs': args.configs,
