@@ -25,6 +25,11 @@ class CheckpointRouterClient:
         self.process = None
 
     def route(self, *, pre_decision_state, legal_actions, **_):
+        limits = [value for value in (self.timeout, pre_decision_state.get("time_remaining_sec"))
+                  if value is not None]
+        timeout = min(limits) if limits else None
+        if timeout is not None and timeout <= 0:
+            raise TimeoutError("Original task Router deadline reached")
         actions = {action.action_id: action.model_dump()
                    for action in map(LegalAction.model_validate, legal_actions)}
         target = "route_decision"
@@ -36,13 +41,14 @@ class CheckpointRouterClient:
             "router_head_max_len": self.checkpoint.get("head_max_len", 512),
             "state": PreDecisionState.model_validate(pre_decision_state).router_text(),
             "questions": route_questions([LegalAction.model_validate(a) for a in actions.values()]),
+            "deadline": time.monotonic() + timeout if timeout is not None else None,
         }
         if payload["device"] == "cuda":
             payload["gpu_lock_path"] = self.checkpoint["gpu_lock_path"]
         started = time.perf_counter()
         if self.checkpoint.get("socket_path"):
             with socket.socket(socket.AF_UNIX) as connection:
-                connection.settimeout(self.timeout)
+                connection.settimeout(timeout)
                 connection.connect(self.checkpoint["socket_path"])
                 connection.sendall((json.dumps(payload) + "\n").encode())
                 with connection.makefile("r") as stream:
@@ -55,8 +61,8 @@ class CheckpointRouterClient:
                                                 stdout=subprocess.PIPE, text=True)
             self.process.stdin.write(json.dumps(payload) + "\n")
             self.process.stdin.flush()
-            if not select.select([self.process.stdout], [], [], self.timeout)[0]:
-                raise subprocess.TimeoutExpired(self.checkpoint["command"], self.timeout)
+            if not select.select([self.process.stdout], [], [], timeout)[0]:
+                raise subprocess.TimeoutExpired(self.checkpoint["command"], timeout)
             body = json.loads(self.process.stdout.readline())
         answer = body["answers"][target]
         probabilities = answer["probabilities"]
@@ -120,11 +126,19 @@ def answer(payload, adapters):
     gpu_wait_ms, transfer_ms = 0.0, 0.0
     lock = open(payload["gpu_lock_path"], "a") if device == "cuda" else nullcontext()
     with lock as lock_file:
+        if device == "cuda":
+            before = time.perf_counter()
+            while True:
+                if payload.get("deadline") is not None and time.monotonic() >= payload["deadline"]:
+                    raise TimeoutError("Original task Router deadline reached while waiting for shared GPU")
+                try:
+                    fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    break
+                except BlockingIOError:
+                    time.sleep(.1)
+            gpu_wait_ms = (time.perf_counter() - before) * 1000
         try:
             if device == "cuda":
-                before = time.perf_counter()
-                fcntl.flock(lock_file, fcntl.LOCK_EX)
-                gpu_wait_ms = (time.perf_counter() - before) * 1000
                 before = time.perf_counter()
                 if payload["router_family"] == "kev":
                     adapter.model.to("cuda")
@@ -173,10 +187,16 @@ def main():
             def handle(self):
                 payload = json.loads(self.rfile.readline())
                 try:
+                    if payload.get("deadline") is not None and time.monotonic() >= payload["deadline"]:
+                        raise TimeoutError("Original task Router deadline reached in request queue")
                     response = answer(payload, adapters)
                 except Exception as exc:
                     response = {"error": f"{type(exc).__name__}: {exc}"}
-                self.wfile.write((json.dumps(response) + "\n").encode())
+                try:
+                    self.wfile.write((json.dumps(response) + "\n").encode())
+                except BrokenPipeError:
+                    # Harbor already ended this task and closed its request socket.
+                    return
         with socketserver.UnixStreamServer(str(args.socket), Handler) as server:
             args.socket.chmod(0o600)
             server.serve_forever()
