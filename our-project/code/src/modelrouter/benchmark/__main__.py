@@ -403,6 +403,7 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
         return 2
     config["environment_kwargs"]["persistent_env"].update(runtime["environment_kwargs"]["persistent_env"])
     config["environment_kwargs"]["verifier_dependencies"].update(runtime["environment_kwargs"]["verifier_dependencies"])
+    config["environment_kwargs"].setdefault("apt_mirrors", {}).update(runtime["environment_kwargs"]["apt_mirrors"])
     iterations.write_atomic(path / "run_config.json", config)
     env = _runtime_env(docker_host)
     env["MODELROUTER_ITERATION"] = str(path)
