@@ -8,7 +8,7 @@ Provider实际请求路径已部署最多额外100次同请求重试，首次不
 
 恢复入口增加原矩阵单题/单策略选择，任何有效官方1/0均复用；技术恢复另建原位置下的独立Harbor Job，保留原尝试。已有断言执行后挂起的Verifier超时不归为下载故障。四个已知依赖故障任务复用uv0.9.5、Python3.13.9、pytest8.4.1、pytest-json-ctrf0.3.5；原官方脚本及断言保持。依赖包位于A6000 `.runtime/verifier-dependencies`，已完成离线导入，临时容器已移除。
 
-11-14 00:21台北服务器实读：Model-only结束651/2136位置，128通过、68有效失败、435缺评分、20依赖失败另列；两项在GPU锁前排队，1483项尚未派发。最新数量、逐策略分母、费用和实际重试统一见[Model-only正式报告](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)。新Episode保存600权限请求正文及教师原始响应，授权头不写入。
+11-14 01:12台北服务器实读：Model-only结束653/2136位置，128通过、68有效失败、437缺评分、20依赖失败另列；1运行、1项在GPU锁前排队，1481项尚未派发。最新数量、逐策略分母、费用和实际重试统一见[Model-only正式报告](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)。新Episode保存600权限请求正文及教师原始响应，授权头不写入。
 
 当前Controller1696641、凭据持有1696633、Router1696717；接续持有1700006和1200秒观察1700191沿原矩阵运行，随后完成本批技术恢复和联合957位置。等待1704159再执行联合及历史1513位置的必要技术恢复。merge-diff-arc-agi-task原始Laya OFF High官方5/5通过、Reward1；Max原900秒耗尽后官方0/5、Reward0，保留这条有效失败。该题ON Low/High在Agent计时前等待共享GPU锁；持锁H3服务302097活动请求0，沿其原900秒空闲释放机制自然交接。联合957正常位置尚未开始，前两题seed43结果继续复用。历史原1513位置与2333个Trial保留身份，最新数量见历史报告。
 
@@ -39,6 +39,8 @@ uv索引修复后，log-summary-date-ranges训练Kev教师ON Max原官方2/2断�
 23:56前make-doom-for-mips的24组Model-only全部结束：0通过、17有效失败、7缺有效评分（2依赖故障、5生成请求故障），有效评分为0/17；这17条零分不重跑。模型与教师已知参考费$1.66774970，9位置费用不完整、14请求缺用量，已报告输入12597869/输出251230 Token。原官方VM运行超时、frame.bmp缺失及帧比较失败记录保持，代码与TCG资源贡献仍未分离。原队列已推进merge-diff-arc-agi-task；最新批次649结束、127通过/67有效失败/435缺评分/20依赖失败，2运行、1485未开始。
 
 `e537e363c8a84c3669fc7bfd0dbfd5f2b57fe6f9`按真实生成重试记录单列时限耗尽时仍未恢复的技术故障；gpt2-codegolf原始Laya OFF Max、headless-terminal训练Kev OFF Max两条原0保留，质量汇总为空。新等待队列已载入该分类。`0ddeb6482420f0629637fd540118f4bcbf24eff5`将原工具等待约束到任务剩余时间；旧晚到工具记录保持。
+
+11-14 01:12：merge-diff-arc-agi-task原始Laya ON Low/High均在原Verifier900秒内因Ubuntu下载未完成而缺Reward；未执行断言，进入原技术恢复队列。`2308ba82c1dcfcba44e309127b54a2a38b7f802b`合并当前apt镜像映射，复用原环境类的URI替换。按官方Dockerfile和test.sh将38个Ubuntu24.04且实际调用apt-get update的任务接入USTC；发行索引和原502软件包分别HTTP200、0.226/0.142秒。原脚本、包参数、输出和时限保持，等待下一项完整Episode评分。最新653结束、128通过/68有效失败/437缺评分/20依赖失败，已知模型与教师参考费$7.83004545、477请求费用未知。
 
 ## 当前执行：Model-only全量对照（2026-11-12）
 

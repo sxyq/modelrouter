@@ -40,6 +40,8 @@ make-doom-for-mips全部24组Model-only已结束：0通过、17有效失败、7�
 
 11-14 00:21台北：merge-diff-arc-agi-task原始Laya OFF High官方5/5通过、Reward1，Max在原Agent900秒结束后官方0/5、Reward0；两条分别17/38次生成、0次额外重试、$0.01114506/$0.05922257模型参考费。ON Low/High尚在GPU锁前等待，Agent时限未开始。Model-only已结束651/2136，128通过/68有效失败/435缺评分/20依赖故障；模型与教师已知参考费$7.80484740，472请求费用未知。逐题结果与分母沿原正式报告更新。
 
+01:12：ON Low/High后续进入Agent并自然结束，原Verifier在Ubuntu下载阶段耗尽900秒、断言未执行、Reward未知。现行apt镜像映射沿原环境类覆盖38个明确Ubuntu24.04且调用apt-get update的任务；USTC发行索引及原失败软件包HTTP200，下载0.226/0.142秒。源码2308ba82c1dcfcba44e309127b54a2a38b7f802b已部署，下一完整Episode待评分；两条原日志、Token、费用及技术恢复身份保留。
+
 ## 2026-11-12 · Model-only全量执行与Token统计
 
 [RQ1部分帕雷托图与40组状态](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_review.md)按openssl-selfsigned-cert、regex-log同两题、seed43、原始及11-11微调实体绘制；21组评分与API费用齐全，另19组缺项。费用累计全部尝试的模型＋教师参考费，完整现金费用保持未知。[逐点数据](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_points.csv)保存来源、版本与缺项；沿原`rq1_figures.py <本批目录> --pareto`更新图表。
