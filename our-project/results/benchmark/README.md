@@ -8,6 +8,24 @@ Provider最多额外100次同请求重试已在正式请求路径生效，原任
 
 训练Kev ON Low/High两条新Episode在首个路由等待中耗尽900秒原Agent时限，生成请求0、路由返回0、CTRF缺失；保持无有效评分。同时间共享GPU锁由现有视频服务持有，原视频服务与Benchmark条件保持。资源和修复身份见[运行事实](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。
 
+当前Controller1696641、持有1696633继续原矩阵；1700006接续本批技术恢复及联合957，1700191每1200秒汇总，1704159等待后执行联合与历史技术恢复。18:26代理再次断线，18:46恢复17898，公开依赖地址HTTP200；服务器7890实测TLS失败。当前连接17649正常执行，等待交接27095沿现有CLI在其自然退出后接管：SSH断线5秒后重接，30秒保活、连续3次无响应退出连接，认证及主机密钥错误结束，两个批次均退出后关闭。
+
+```bash
+python3 our-project/code/cli/run_rq1_a6000.py \
+  our-project/experiments/configs/v9_model_only.json \
+  --proxy-for-pid 1700006 1704159 --proxy-after-pid 17649
+```
+
+kv-store-grpc训练Laya OFF Low的同一个Luna Low/4096请求经历7次URLError，attempt_index=7返回HTTP200，原Agent继续工具执行并取得官方Reward1。GLM Max在30次额外重试后也返回合法工具调用，两次成功生成后达到900秒原时限，官方Reward0保留；失败尝试费用未知。该题训练Laya OFF Low/High/Max和ON Low/High均取得官方Reward1。
+
+`e537e363c8a84c3669fc7bfd0dbfd5f2b57fe6f9`按真实逐请求记录区分超时前仍失败的生成重试：gpt2-codegolf原始Laya OFF Max、headless-terminal训练Kev OFF Max的原Verifier0保存在`official_reward`和原文件，质量汇总的`reward`为空，`technical_fault=PROVIDER_RETRY_DEADLINE`。正常完成请求后的有效失败和成功均复用。`0ddeb6482420f0629637fd540118f4bcbf24eff5`使原Harbor工具调用的等待时间取原工具时间与任务剩余时间的较小值；旧晚到工具日志和官方结果保留。
+
+`fe2857938a1fce4bfebb0a7de10e1ac35db37297`统一新Job技术恢复、任务计时前共享GPU等待。首次交接遗漏两条线程子任务，上游原地恢复删除部分kv-store-grpc原Trial文件；缺失目录与配置无法从现存副本恢复，原事件、工具、请求和命令在[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)逐项列出。后续恢复使用独立Job，保留全部现存记录。
+
+`e4375ef4cd104d7d6d0f918a1e6fb9b9a6731027`将现行PIP_INDEX_URL用于每次原Harbor调用；清华源已安装官方要求的pytest8.4.1/pytest-json-ctrf0.3.5。largest-eigenval训练Kev OFF Low/High/Max均取得官方Reward1，原Trial墙钟542.738121/364.342884/989.729592秒，原测试脚本和断言保持。
+
+`c1e55dd13897376e4e9b0d4ce22a8f1b771f4c7c`保存上述有限代理重接。log-summary-date-ranges训练Laya教师ON High/Max的首个GLM请求分别在27/20次额外重试后取得合法工具调用，原Agent继续执行，两条完整任务均为官方Reward1；费用包含成功请求参考费，失败尝试账单未知。
+
 ## 2026-11-12 · Model-only全量执行与Token统计
 
 [RQ1部分帕雷托图与40组状态](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_review.md)按openssl-selfsigned-cert、regex-log同两题、seed43、原始及11-11微调实体绘制；21组评分与API费用齐全，另19组缺项。费用累计全部尝试的模型＋教师参考费，完整现金费用保持未知。[逐点数据](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_points.csv)保存来源、版本与缺项；沿原`rq1_figures.py <本批目录> --pareto`更新图表。
@@ -46,7 +64,7 @@ python3 our-project/code/cli/run_rq1_a6000.py our-project/experiments/configs/v9
 
 接上当前批次并顺序完成已授权接续，使用同一脚本的`--attach-pid 2373109 --recover-infrastructure`及两个配置参数：先`v9_model_only.json`，再`v9_joint_paired.json`。接入模式复用已恢复的17898代理；常规启动从Clash `/configs`读取当前端口，不再使用旧7897。观察进程退出码实际传播；原任务进程不因报告更新重启。
 
-仅重连当前批次的代理使用同一脚本的`--proxy-for-pid 2806615`；它不创建Episode或读取模型Key，单次SSH与当前接续进程绑定，每1200秒观察退出条件，结束后关闭连接。
+仅重连代理使用同一脚本的`--proxy-for-pid`，进程参数取当前实际批次；`--proxy-after-pid`等待现有本机代理自然退出。它不创建Episode或读取模型Key，每1200秒观察远端接续进程，均结束后关闭连接，连接故障在同一入口重接。
 
 已完成批次的逐请求用量已重新聚合到原`metrics/per_episode.csv`和`per_strategy.csv`。`known_prompt_tokens`与`known_completion_tokens`合计已报告Token，`usage_unknown_requests`记录缺用量请求；旧完整用量字段仍在任一请求缺值时保持空值。模型、教师和全部已发生尝试均纳入；Reasoning包含在输出内，缓存读取包含在输入内，各只计一次。
 

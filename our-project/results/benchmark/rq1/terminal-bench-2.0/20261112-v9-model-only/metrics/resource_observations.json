@@ -19,6 +19,17 @@
   },
   "network_observations": [
     {
+      "observed_at": "2026-11-13T18:46:30+08:00",
+      "event": "BATCH_PROXY_RECONNECTED_AFTER_BROKEN_PIPE",
+      "remote_proxy": "127.0.0.1:17898",
+      "local_proxy_pid": 17649,
+      "local_mixed_port": 17897,
+      "public_dependency_url": "https://pypi.tuna.tsinghua.edu.cn/simple/pytest/",
+      "public_dependency_http_status": 200,
+      "existing_server_proxy_7890_result": "TLS_SSL_ERROR_SYSCALL",
+      "continuation_pids": [1700006, 1704159]
+    },
+    {
       "observed_at": "2026-11-12T18:30:15+08:00",
       "event": "PROXY_LISTENER_ABSENT",
       "remote_proxy": "127.0.0.1:17898",
@@ -152,6 +163,21 @@
   ],
   "runtime_repairs": [
     {
+      "recorded_at": "2026-11-13T19:00:51.335126+08:00",
+      "source_revision": "c1e55dd13897376e4e9b0d4ce22a8f1b771f4c7c",
+      "file": "our-project/code/cli/run_rq1_a6000.py",
+      "change": "RECONNECT_SAME_FINITE_PROXY_AFTER_SSH_TRANSPORT_DISCONNECT",
+      "waiting_proxy_pid": 27095,
+      "wait_for_current_local_proxy_pid": 17649,
+      "follow_remote_pids": [1700006, 1704159],
+      "server_alive_interval_sec": 30,
+      "server_alive_count_max": 3,
+      "reconnect_wait_sec": 5,
+      "terminal_errors": ["AUTHENTICATION", "HOST_KEY_VERIFICATION", "PRIVATE_KEY_PERMISSIONS"],
+      "exit_condition": "ALL_NAMED_BATCHES_EXIT",
+      "current_connection_interrupted": false
+    },
+    {
       "at": "2026-11-13T02:52:38+00:00",
       "source_revision": "96d065e3e0564d0e2a610d3cb92d412823fdadb6",
       "file": "our-project/code/src/modelrouter/v9/runtime/checkpoint.py",
@@ -168,6 +194,150 @@
       "shared_gpu_owner_pid": 302097,
       "guardian_stop_condition": "ORIGINAL_CONTROLLER_EXITS",
       "benchmark_conditions_changed": false
+    },
+    {
+      "at": "2026-11-13T03:59:02.657785+00:00",
+      "cause": "Previous local SSH proxy process exited; A6000 had no 17898 listener",
+      "action": "RECONNECTED_SAME_PROXY_USING_EXISTING_RUN_RQ1_A6000_ENTRY",
+      "local_proxy_pid": 69761,
+      "local_proxy_port": 17897,
+      "server_proxy_port": 17898,
+      "follow_batch_pids": [
+        2806615,
+        330065
+      ],
+      "stop_condition": "BOTH_EXISTING_BATCHES_EXIT",
+      "provider_request_retry_continuation": true,
+      "source_revision": "02bd05f2f389ec9215426f33d310f64827ba5d7b"
+    },
+    {
+      "at": "2026-11-13T04:38:21.295500+00:00",
+      "source_revision": "0ddeb6482420f0629637fd540118f4bcbf24eff5",
+      "file": "our-project/code/src/modelrouter/benchmark/harbor_agent.py",
+      "cause": "Original tool timeout could extend beyond remaining Agent time; a real tool result was recorded after AGENT_END",
+      "change": "EXISTING_HARBOR_TOOL_TIMEOUT_MIN_ORIGINAL_REMAINING_TIME",
+      "previous_official_results_retained": true
+    },
+    {
+      "at": "2026-11-13T04:38:21.295519+00:00",
+      "source_revision": "e537e363c8a84c3669fc7bfd0dbfd5f2b57fe6f9",
+      "files": [
+        "our-project/code/src/modelrouter/benchmark/rq1_analysis.py",
+        "our-project/code/src/modelrouter/benchmark/rq1_batch.py"
+      ],
+      "change": "SEPARATE_PENDING_FAILED_GENERATOR_RETRIES_AT_TASK_DEADLINE_FROM_QUALITY_FAILURES",
+      "official_rewards_retained": true,
+      "measured_original_glm_max_zero_retained": true
+    },
+    {
+      "at": "2026-11-13T04:53:36.080096+00:00",
+      "change": "REFRESHED_ONLY_THE_WAITING_RECOVERY_PROCESS_TO_LOAD_NEW_CLASSIFICATION",
+      "previous_waiting_pid": 330065,
+      "waiting_pid": 1611878,
+      "unchanged_after_pid": 2806615,
+      "original_commands_retained": true,
+      "same_credentials_memfd_opened": true,
+      "proxy_pid": 60248,
+      "proxy_follow_pids": [
+        2806615,
+        1611878
+      ],
+      "proxy_handoff": "NO_ACTIVE_17898_CONNECTIONS",
+      "original_controller_retained": 2373109,
+      "source_revision": "e537e363c8a84c3669fc7bfd0dbfd5f2b57fe6f9"
+    },
+    {
+      "at": "2026-11-13T07:15:51.494331+00:00",
+      "source_revision": "fe2857938a1fce4bfebb0a7de10e1ac35db37297",
+      "change": "FRESH_CONTROLLER_AND_REPORTER_USE_UPDATED_CODE; GPU_QUEUE_PRECEDES_AGENT_TIMER; INCOMPLETE_RECOVERY_USES_DISTINCT_JOB",
+      "controller_pid": 1696641,
+      "credential_holder_pid": 1696633,
+      "continuation_holder_pid": 1700006,
+      "observer_pid": 1700191,
+      "joint_and_historical_recovery_waiting_pid": 1704159,
+      "watch_interval_sec": 1200,
+      "original_controller_retired_pid": 2373109,
+      "benchmark_conditions_retained": true
+    },
+    {
+      "source_revision": "e4375ef4cd104d7d6d0f918a1e6fb9b9a6731027",
+      "change": "CURRENT_RUNTIME_PIP_INDEX_APPLIED_AT_EACH_HARBOR_INVOCATION",
+      "pip_index_url": "https://pypi.tuna.tsinghua.edu.cn/simple",
+      "cause": "largest-eigenval official verifier pip download had TLS EOF; pytest module and CTRF report absent",
+      "actual_installation": {
+        "docker_image": "alexgshaw/largest-eigenval:20251031",
+        "packages": [
+          "pytest==8.4.1",
+          "pytest-json-ctrf==0.3.5"
+        ],
+        "status": "SUCCESS",
+        "temporary_container": "modelrouter-pytest-install-20261113",
+        "container_removed": true
+      },
+      "official_tests_changed": false
     }
-  ]
+  ],
+  "observations": [
+    {
+      "recorded_at": "2026-11-13T19:00:51.335126+08:00",
+      "kind": "REAL_REQUEST_RETRY_RECOVERY_AND_OFFICIAL_REWARD",
+      "task": "log-summary-date-ranges",
+      "seed": 43,
+      "strategies": ["laya_trained_on_model_only_high", "laya_trained_on_model_only_max"],
+      "episode_ids": ["4e4fc5ab-c4a2-4122-a07f-560034d0aa5c", "ae5ab676-9b3e-4bdd-bf26-f1d462a37d4f"],
+      "first_request_model": "glm-5.3-flash",
+      "first_request_efforts": ["high", "max"],
+      "first_request_extra_retries": [27, 20],
+      "successful_http_status": 200,
+      "successful_finish_reason": "tool_calls",
+      "agent_tools_continued": true,
+      "official_terminal_rewards": [1, 1],
+      "failed_attempt_billing": "UNKNOWN"
+    },
+    {
+      "at": "2026-11-13T04:10:52.298998+00:00",
+      "kind": "REAL_REQUEST_RETRY_RECOVERY",
+      "task": "kv-store-grpc",
+      "strategy": "laya_trained_off_model_only_low",
+      "seed": 43,
+      "decision_id": "93a36fbf-d3f5-48da-b333-bc26c36f3073-0",
+      "extra_retries": 7,
+      "failed_attempts_error": "URLError",
+      "successful_attempt_index": 7,
+      "successful_attempt_http_status": 200,
+      "request_model_id": "gpt-6-luna",
+      "native_effort": "low",
+      "requested_max_output_tokens": 4096,
+      "original_request_then_agent_continued": true,
+      "official_terminal_result": 1,
+      "incomplete_failed_attempt_billing": "UNKNOWN",
+      "official_finished_at": "2026-11-13T04:12:05.325939+00:00"
+    }
+  ],
+  "control_handoff_artifact_loss": {
+    "cause": "Thread-owned children were omitted during the first controller handoff; upstream Harbor jobs resume restarted two incomplete trials",
+    "task": "kv-store-grpc",
+    "seed": 43,
+    "strategies": [
+      "kev_trained_off_model_only_high",
+      "kev_trained_off_model_only_max"
+    ],
+    "original_episode_ids": [
+      "732dbd54-0685-4644-aa1c-ddb6f7487bf9",
+      "1faa5fcc-f6c3-41e7-9d8d-e695ae7da53b"
+    ],
+    "recovery_episode_ids": [
+      "d85ac0b6-3d1f-41a8-a5f0-3ef0b588db6b",
+      "1b1ee092-6969-4a7a-866b-2a50f9995977"
+    ],
+    "missing_original_artifacts": "Some original trial config/lock/trajectory files; original High trial directory absent; original Max config and lock absent",
+    "preserved_original_records": [
+      "events.jsonl",
+      "tool_calls.jsonl",
+      "commands/",
+      "provider_responses/"
+    ],
+    "missing_files_recoverable": "NO_ORIGINAL_COPY_LOCATED",
+    "prevention": "Upstream destructive jobs resume removed; existing recovery preparation now creates a separate Harbor job; dispatch enumerates all parent-owned subprocesses"
+  }
 }

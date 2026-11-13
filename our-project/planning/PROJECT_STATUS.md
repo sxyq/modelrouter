@@ -8,15 +8,29 @@ Provider实际请求路径已部署最多额外100次同请求重试，首次不
 
 恢复入口增加原矩阵单题/单策略选择，任何有效官方1/0均复用；技术恢复另建原位置下的独立Harbor Job，保留原尝试。已有断言执行后挂起的Verifier超时不归为下载故障。四个已知依赖故障任务复用uv0.9.5、Python3.13.9、pytest8.4.1、pytest-json-ctrf0.3.5；原官方脚本及断言保持。依赖包位于A6000 `.runtime/verifier-dependencies`，已完成离线导入，临时容器已移除。
 
-11-13公开取样：Model-only553/2136结束，102通过、50有效失败、387缺评分、14依赖失败；2运行、1581未开始。Provider逐尝试账本已记录54次额外重试。新Episode保存600权限请求正文及教师原始响应，授权头不写入。原Controller2373109继续，当前矩阵和其技术恢复→957位置联合批次由原持有进程2806615接续；等待进程330065随后执行联合技术恢复和旧1513位置必要技术恢复，不整体重跑历史批次。17898连接跟随两个有限批次，全部退出后自动结束。
+11-13 18:48台北服务器实读：Model-only结束610/2136位置，120通过、49有效失败、427缺评分、14依赖失败另列；2运行、1524未开始。最新数量、逐策略分母、费用和实际重试统一见[Model-only正式报告](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)。新Episode保存600权限请求正文及教师原始响应，授权头不写入。
+
+当前Controller1696641、凭据持有1696633、Router1696717；接续持有1700006和1200秒观察1700191沿原矩阵运行，随后完成本批技术恢复和联合957位置。等待1704159再执行联合及历史1513位置的必要技术恢复。旧Controller2373109已退出；联合957正常位置尚未开始，前两题seed43结果继续复用。历史原1513位置与2333个Trial保留身份，已新增build-pmars/GLM Max及rule_sticky两项Reward1，最新数量见历史报告。
 
 11-13修复`v9/runtime/checkpoint.py`：Router客户端、请求队列与GPU锁等待使用原任务剩余时间，客户端已关闭的连接不影响后续请求。hf-model-inference训练Kev OFF High/Max已经取得原官方1/0，但收尾线程仍等待无期限Router返回；10:52台北仅替换处于锁等待的批次worker2373123→1568793，两条结果均保留，后续位置已接上。替换worker的有限持有1568792随原Controller退出后结束。新训练Kev ON Low/High在900秒原Agent时限结束，生成请求0、路由返回0、CTRF缺失，单列无有效评分；同时段GPU锁由现有H3服务302097持有，资源影响不归入模型能力。
 
 源码修复版本`96d065e3e0564d0e2a610d3cb92d412823fdadb6`；生成方法版本和四份权重保持原身份。公开结果包含逐策略评分分母、同seed成对结果、全部尝试费用、请求重试明细；运行修复事实保存在本批`metrics/resource_observations.json`。全部矩阵尚未结束。
 
+18:26原SSH再次断线，17898停止监听；18:46同一代理17649恢复，公开依赖地址返回HTTP200，原在途请求继续。服务器已有7890出口实测TLS失败，未用于实验。现有`run_rq1_a6000.py`增加有限批次断线重接，30秒保活、连续3次无响应退出SSH，5秒后重新连接；认证或主机密钥错误立即结束。等待交接进程27095在当前连接自然结束后接管，跟随1700006与1704159，两者均结束后退出。
+
+kv-store-grpc训练Laya OFF Low的同一次Luna Low/4096请求在7次URLError后HTTP200并取得官方Reward1；该题训练Laya OFF三档、ON Low/High均1。GLM Max的503在30次额外重试后恢复合法工具调用，随后原Agent时限耗尽、官方0保留；失败尝试费用未知。
+
+`fe2857938a1fce4bfebb0a7de10e1ac35db37297`统一独立Job恢复，GPU排队放到任务计时前。首次Controller交接漏掉线程启动的两条kv-store-grpc任务，上游原地恢复删除部分原Trial文件；原High目录缺失、原Max配置及锁缺失，未找到可恢复副本。原事件、工具、命令和Provider响应保持，具体Episode身份见本批资源记录，后续不再使用原地恢复。
+
+`e4375ef4cd104d7d6d0f918a1e6fb9b9a6731027`使每次Harbor调用使用现行运行环境；PIP_INDEX_URL采用清华源，官方包版本及脚本保持。largest-eigenval训练Kev OFF Low/High/Max已经取得原Verifier Reward1，墙钟542.738121/364.342884/989.729592秒，CTRF均在原Trial中。
+
+`c1e55dd13897376e4e9b0d4ce22a8f1b771f4c7c`为本机有限代理重接版本。log-summary-date-ranges训练Laya教师ON High/Max的首个GLM请求分别在27/20次额外重试后成功，两条完整任务均取得原官方Reward1；失败尝试用量及费用保持未知。
+
+`e537e363c8a84c3669fc7bfd0dbfd5f2b57fe6f9`按真实生成重试记录单列时限耗尽时仍未恢复的技术故障；gpt2-codegolf原始Laya OFF Max、headless-terminal训练Kev OFF Max两条原0保留，质量汇总为空。新等待队列已载入该分类。`0ddeb6482420f0629637fd540118f4bcbf24eff5`将原工具等待约束到任务剩余时间；旧晚到工具记录保持。
+
 ## 当前执行：Model-only全量对照（2026-11-12）
 
-[Model-only批次](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)执行Terminal-Bench 2.0全部89题×24组×seed43，覆盖Laya/Kev原始及11-11各18更新权重、教师OFF/ON、固定Low/High/Max。每次只选同档位三个模型；正式主方法仍为Model×Native Effort。完成数量、有效评分、依赖失败及费用由该批次报告统一更新。原Controller2373109、凭据持有2372941、Router worker2373123继续，生成方法为b9fba0a4488731c76718221e0572e5e7f2e8f936。
+[Model-only批次](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)执行Terminal-Bench 2.0全部89题×24组×seed43，覆盖Laya/Kev原始及11-11各18更新权重、教师OFF/ON、固定Low/High/Max。每次只选同档位三个模型；正式主方法仍为Model×Native Effort。完成数量、有效评分、依赖失败及费用由该批次报告统一更新，生成方法为b9fba0a4488731c76718221e0572e5e7f2e8f936；当前进程与运行修复见上节。
 
 原控制SSH断开导致代理连接拒绝；19:05单批代理SSH44998恢复17898→本机17897，跟随接续持有进程2806615结束而退出。20分钟观察2806620的输出已接回原controller.log；三个模型域名、Debian/Ubuntu及uv初址使用既有Los Angeles TCP出口，原Provider账户与模型ID保持。fix-git、gcode-to-text、git-leak-recovery中uvx缺失且无CTRF的原0单列；已处理下载路径后沿原Harbor完整Episode恢复一次，有CTRF的任务失败保持。网络与时间见[资源记录](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。原Serving及F15物理epoch_01/61180恢复实体保持。
 
