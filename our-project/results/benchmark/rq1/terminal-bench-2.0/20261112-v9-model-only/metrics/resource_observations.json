@@ -1,18 +1,18 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "observed_at": "2026-11-14T06:12:24+08:00",
+    "observed_at": "2026-11-14T06:34:18+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 694,
-    "reward_1": 151,
-    "reward_0": 90,
+    "finished_positions": 697,
+    "reward_1": 153,
+    "reward_0": 91,
     "no_official_reward": 433,
     "verifier_dependency_failure": 20,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1440,
-    "known_model_teacher_reference_usd": 8.96965506,
-    "unknown_cost_requests": 482,
+    "not_dispatched": 1437,
+    "known_model_teacher_reference_usd": 9.01390945,
+    "unknown_cost_requests": 484,
     "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
     "joint_positions_started": 0
   },
@@ -492,6 +492,55 @@
     }
   ],
   "observations": [
+    {
+      "recorded_at": "2026-11-14T06:34:18+08:00",
+      "kind": "MODEL_EXTRACTION_ALL_24_MODEL_ONLY_POSITIONS_ENDED",
+      "task": "model-extraction-relu-logits",
+      "seed": 43,
+      "official_success_valid_failure_unscored": [10, 12, 2],
+      "unscored_positions": {
+        "kev_original_off_model_only_max": "VERIFIER_TIMED_OUT_AFTER_OFFICIAL_ASSERTION_STARTED; NO_REWARD",
+        "kev_trained_off_model_only_max": "PROVIDER_RETRY_DEADLINE; RAW_OFFICIAL_ZERO_RETAINED"
+      },
+      "kev_trained_on_high": {
+        "episode_id": "11907110-8541-41b7-8c52-a489afb43571",
+        "official_reward": 1,
+        "generator_teacher_requests": [7, 2],
+        "extra_retries": 0,
+        "teacher_consumed_decisions": 2,
+        "input_output_tokens": [46907, 2315],
+        "reported_cache_read_tokens": 24960,
+        "complete_model_teacher_reference_usd": 0.0311997,
+        "harbor_seconds": 784.41181
+      },
+      "kev_trained_on_max": {
+        "episode_id": "8737693b-14e2-4db0-b640-482239e608c9",
+        "official_reward": 0,
+        "quality_reward": 0,
+        "recovery_reason": null,
+        "request_model_id": "gpt-6.1-terra",
+        "requested_native_effort": "max",
+        "second_request_http502_http503_failures": [13, 1],
+        "successful_attempt_index": 14,
+        "successful_http_status": 200,
+        "successful_finish_reason": "completed",
+        "extra_retries": 14,
+        "last_request": "ONE_READ_TIMEOUT_AT_ORIGINAL_TASK_DEADLINE",
+        "generator_teacher_requests": [4, 1],
+        "teacher_consumed_decisions": 1,
+        "known_input_output_tokens": [17686, 2005],
+        "reported_cache_read_tokens": 15360,
+        "known_model_teacher_reference_usd": 0.0113982,
+        "unknown_cost_requests": 2,
+        "original_agent_seconds": 900.021156,
+        "verifier_seconds": 154.083196,
+        "harbor_seconds": 1128.11048,
+        "failure_attribution": "RECOVERED_PROVIDER_ERRORS_CONSUMED_TASK_TIME; GENERATION_AND_TRANSPORT_TIME_NOT_SEPARATED"
+      },
+      "current_task": "multi-source-data-merger",
+      "active_strategies": ["laya_original_off_model_only_high", "laya_original_off_model_only_max"],
+      "valid_official_scores_rerun": false
+    },
     {
       "recorded_at": "2026-11-14T06:13:00+08:00",
       "kind": "PROVIDER_HTTP524_RETRY_DEADLINE_WITH_RAW_OFFICIAL_ZERO",
