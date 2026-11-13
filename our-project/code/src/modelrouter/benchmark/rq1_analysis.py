@@ -115,6 +115,10 @@ def technical_interruption(trial, events):
         attempts = request.get("account_attempts", [])
         if request["role"] == "generator" and request.get("event") == "ERROR" and attempts:
             last = attempts[-1]
+            if (len(attempts) == 1 and last.get("error_type") == "TimeoutError"
+                    and last.get("error") == "The read operation timed out"
+                    and last.get("retry_stop_reason") == "TASK_DEADLINE"):
+                continue
             if last.get("error_type") and (last.get("retry_scheduled") or
                                           last.get("retry_stop_reason") == "TASK_DEADLINE"):
                 return "PROVIDER_RETRY_DEADLINE"
