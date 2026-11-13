@@ -18,6 +18,7 @@ import yaml
 from harbor.agents.base import BaseAgent
 from harbor.environments.docker.docker import DockerEnvironment
 from harbor.agents.capabilities import AgentCapabilities
+from harbor.agents.installed.base import NonZeroAgentExitCodeError
 from harbor.agents.installed.mini_swe_agent import convert_mini_swe_agent_to_atif
 from harbor.models.agent.context import AgentContext
 from harbor.models.trial.config import TaskConfig
@@ -449,6 +450,13 @@ class ModelRouterMiniSweAgent(BaseAgent):
         agent_result = {}
         try:
             agent_result = await asyncio.to_thread(agent.run, instruction)
+        except ProviderResponseError as exc:
+            if not (exc.metrics.get("finish_reason") == "length" or
+                    (exc.metrics.get("incomplete_details") or {}).get("reason") == "max_output_tokens"):
+                raise
+            event(record_dir, "AGENT_OUTPUT_LIMIT", episode_id=state.episode_id,
+                  error=str(exc), max_output_tokens=self.max_output_tokens)
+            raise NonZeroAgentExitCodeError(f"Provider output limit exhausted: {exc}") from exc
         except asyncio.CancelledError:
             state.finish(EpisodeStatus.TIMEOUT)
             event(record_dir, "AGENT_CANCELLED", episode_id=state.episode_id, step=state.step_index)
