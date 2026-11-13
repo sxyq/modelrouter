@@ -36,7 +36,7 @@ make-doom-for-mips原始Laya OFF High/Max同样在uv下载TLS中断后没有uvx�
 
 `a4c961535dfbb37920a7c80a29bde3864533edb1`将Provider已记录TASK_DEADLINE的终止映射为原Harbor AgentTimeoutError，再调用原Verifier；原网络故障仍单列，未增加请求或时间。原始Laya OFF Low的第14次额外尝试503/TASK_DEADLINE后曾没有评分，原记录保持。正常4096输出耗尽保留原OutputTokenExceededError路径，两条新终止分支的实际验证沿下一次真实Episode记录。
 
-make-doom-for-mips全部24组Model-only已结束：0通过、17有效失败、7缺有效评分，17条有效0保留；七缺项包括2依赖故障、5生成请求故障。模型与教师已知参考费$1.66774970，9位置费用不完整，已报告12849099 API Token、14请求缺用量。原测试VM超时、frame.bmp缺失和帧比较失败均有原始记录；代码与TCG资源影响尚未分离。后续merge-diff-arc-agi-task继续原矩阵。
+make-doom-for-mips全部24组Model-only已结束，05:13当前分类为0通过、21有效失败、3缺有效评分；四个原任务截止时的单次读取超时恢复为原官方0，21条有效0不重跑。剩余2个依赖故障、1个旧HTTP503提前跳过Verifier。模型与教师已知参考费$1.66774970，9位置费用不完整，已报告12849099 API Token、14请求缺用量。原测试VM超时、frame.bmp缺失和帧比较失败均有原始记录；代码与TCG资源影响尚未分离。
 
 11-14 00:21台北：merge-diff-arc-agi-task原始Laya OFF High官方5/5通过、Reward1，Max在原Agent900秒结束后官方0/5、Reward0；两条分别17/38次生成、0次额外重试、$0.01114506/$0.05922257模型参考费。ON Low/High尚在GPU锁前等待，Agent时限未开始。Model-only已结束651/2136，128通过/68有效失败/435缺评分/20依赖故障；模型与教师已知参考费$7.80484740，472请求费用未知。逐题结果与分母沿原正式报告更新。
 
@@ -64,6 +64,8 @@ hf-model-inference／GLM High／seed42的单项恢复已取得原官方Reward0�
 历史1513位置现为258通过/257有效失败/895缺评分/103依赖失败，2354个Harbor Trial；原2333 Trial身份保持。已知模型与教师$35.62336373，1050请求费用未知；完整实收和资源美元费用继续缺失。
 
 04:29：model-extraction-relu-logits训练Laya OFF High的最后一次GLM High/4096请求经历23次HTTP503后返回tool_calls，模型及档位保持；原900秒终止及原Verifier继续生效，官方Reward1。失败尝试缺用量/费用，完整参考费为空；本批已知模型与教师$8.74583274，478请求费用未知。Model-only680结束、145通过/78有效失败/437缺评分/20依赖失败，当前2子任务在途、1454尚未派发。
+
+05:13：训练Laya OFF Max的同次GLM Max/4096请求17次503后返回tool_calls，原官方Reward1；ON Low也取得1、$0.00537924参考费。ON Max末次请求仅剩约55秒，单次读取超时后原任务900秒结束、官方0保持，不作恢复重跑。7311981e3578af888ddc1afc9909f375415e80d9同批保留7个这种任务时限0，重复503等已观察技术故障仍单列；等待原因未分离。当前源码collect-only汇总686结束、147通过/88有效失败/431缺评分/20依赖失败，API参考已知$8.82566382、480请求费用未知。老观察进程内存分类仍旧，公开结果沿原导出目录采用当前源码汇总。
 
 ## 2026-11-12 · Model-only全量执行与Token统计
 

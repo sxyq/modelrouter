@@ -1,18 +1,19 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "observed_at": "2026-11-14T03:50:00+08:00",
+    "observed_at": "2026-11-14T05:13:00+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 677,
-    "reward_1": 143,
-    "reward_0": 77,
-    "no_official_reward": 437,
+    "finished_positions": 686,
+    "reward_1": 147,
+    "reward_0": 88,
+    "no_official_reward": 431,
     "verifier_dependency_failure": 20,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1457,
-    "known_model_teacher_reference_usd": 8.68990218,
-    "unknown_cost_requests": 477,
+    "not_dispatched": 1448,
+    "known_model_teacher_reference_usd": 8.82566382,
+    "unknown_cost_requests": 480,
+    "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
     "joint_positions_started": 0
   },
   "current_recovery_queue": {
@@ -491,6 +492,47 @@
     }
   ],
   "observations": [
+    {
+      "recorded_at": "2026-11-14T05:13:00+08:00",
+      "kind": "RETAIN_ORIGINAL_TASK_DEADLINE_READ_TIMEOUT_ZEROS",
+      "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
+      "rule": "One read-timeout attempt at the original task deadline, without preceding failed attempts in that request, retains the official task reward",
+      "provider_retry_rules_and_task_limits": "UNCHANGED",
+      "cause_attribution": "MODEL_RESPONSE_TIME_OR_TRANSPORT_WAIT_NOT_SEPARATED",
+      "retained_official_zero_positions": 7,
+      "positions": [
+        {"task": "gpt2-codegolf", "strategy": "laya_original_off_model_only_max", "seed": 43},
+        {"task": "headless-terminal", "strategy": "kev_trained_off_model_only_max", "seed": 43},
+        {"task": "make-doom-for-mips", "strategy": "laya_original_on_model_only_low", "seed": 43},
+        {"task": "make-doom-for-mips", "strategy": "laya_original_on_model_only_high", "seed": 43},
+        {"task": "make-doom-for-mips", "strategy": "laya_trained_off_model_only_low", "seed": 43},
+        {"task": "make-doom-for-mips", "strategy": "laya_trained_off_model_only_max", "seed": 43},
+        {"task": "model-extraction-relu-logits", "strategy": "laya_trained_on_model_only_max", "seed": 43}
+      ],
+      "fresh_collection": "Existing --collect-only entry and .runtime/rq1-watch-export.0mfflnnw",
+      "active_old_observer_counts": "PRE_CHANGE_IN_MEMORY_MODULE; PUBLICATION_USES_CURRENT_SOURCE_COLLECTION",
+      "episodes_rerun_for_this_classification": 0
+    },
+    {
+      "recorded_at": "2026-11-14T04:49:00+08:00",
+      "kind": "REAL_SAME_REQUEST_MAX_RETRY_AND_OFFICIAL_RESULT",
+      "task": "model-extraction-relu-logits",
+      "strategy": "laya_trained_off_model_only_max",
+      "seed": 43,
+      "episode_id": "26697732-273e-4506-84ad-401d179f2e2f",
+      "decision_id": "26697732-273e-4506-84ad-401d179f2e2f-3",
+      "request_model_id": "glm-5.3-flash",
+      "requested_native_effort": "max",
+      "requested_max_output_tokens": 4096,
+      "extra_retries": 17,
+      "failed_attempts": "HTTP503",
+      "successful_http_status": 200,
+      "successful_finish_reason": "tool_calls",
+      "official_reward": 1,
+      "original_agent_timeout_seconds": 900,
+      "failed_attempt_usage_and_billing": "UNKNOWN",
+      "new_budget_exception_branches_triggered": false
+    },
     {
       "recorded_at": "2026-11-14T04:29:00+08:00",
       "kind": "REAL_SAME_REQUEST_RETRY_WITH_OFFICIAL_TASK_RESULT",
