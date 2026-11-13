@@ -341,14 +341,16 @@ class HarborEnvironment(LocalEnvironment):
     def execute(self, action, cwd="", *, timeout=None):
         if self.state.status == EpisodeStatus.TIMEOUT:
             raise RuntimeError("Harbor episode timed out")
+        tool_timeout = min(timeout or self.config.timeout,
+                           self.state.time_budget_sec - self.state.elapsed_time_sec)
         started = time.perf_counter()
         try:
             result = asyncio.run_coroutine_threadsafe(
-                self.environment.exec(command=action["command"], timeout_sec=timeout or self.config.timeout),
+                self.environment.exec(command=action["command"], timeout_sec=tool_timeout),
                 self.loop,
             ).result()
         except RuntimeError as exc:
-            if str(exc) == f"Command timed out after {timeout or self.config.timeout} seconds":
+            if str(exc) == f"Command timed out after {tool_timeout} seconds":
                 output = {"output": "", "returncode": -1, "exception_info": str(exc),
                           "extra": {"actual_exit_code": None, "actual_output": None,
                                     "exception_type": "RuntimeError"}}
