@@ -6,6 +6,7 @@ The historical Agent Pilot loop is isolated in modelrouter.agent.legacy.
 from __future__ import annotations
 
 import asyncio
+import http.client
 import json
 import os
 import time
@@ -22,6 +23,7 @@ from harbor.agents.installed.base import OutputTokenExceededError
 from harbor.agents.installed.mini_swe_agent import convert_mini_swe_agent_to_atif
 from harbor.models.agent.context import AgentContext
 from harbor.models.trial.config import TaskConfig
+from harbor.trial.errors import AgentTimeoutError
 from minisweagent import package_dir
 from minisweagent.agents.default import DefaultAgent
 from minisweagent.environments.local import LocalEnvironment
@@ -450,13 +452,19 @@ class ModelRouterMiniSweAgent(BaseAgent):
         agent_result = {}
         try:
             agent_result = await asyncio.to_thread(agent.run, instruction)
-        except ProviderResponseError as exc:
-            if not (exc.metrics.get("finish_reason") == "length" or
+        except (ProviderResponseError, OSError, http.client.HTTPException, json.JSONDecodeError) as exc:
+            if isinstance(exc, ProviderResponseError) and (exc.metrics.get("finish_reason") == "length" or
                     (exc.metrics.get("incomplete_details") or {}).get("reason") == "max_output_tokens"):
+                event(record_dir, "AGENT_OUTPUT_LIMIT", episode_id=state.episode_id,
+                      error=str(exc), max_output_tokens=self.max_output_tokens)
+                raise OutputTokenExceededError(f"Provider output limit exhausted: {exc}") from exc
+            attempts = getattr(exc, "account_attempts", [])
+            if not attempts or attempts[-1].get("retry_stop_reason") != "TASK_DEADLINE":
                 raise
-            event(record_dir, "AGENT_OUTPUT_LIMIT", episode_id=state.episode_id,
-                  error=str(exc), max_output_tokens=self.max_output_tokens)
-            raise OutputTokenExceededError(f"Provider output limit exhausted: {exc}") from exc
+            state.finish(EpisodeStatus.TIMEOUT)
+            event(record_dir, "AGENT_PROVIDER_DEADLINE", episode_id=state.episode_id,
+                  error_type=type(exc).__name__, error=str(exc), retry_count=len(attempts) - 1)
+            raise AgentTimeoutError("Provider retries could not recover within the original task deadline") from exc
         except asyncio.CancelledError:
             state.finish(EpisodeStatus.TIMEOUT)
             event(record_dir, "AGENT_CANCELLED", episode_id=state.episode_id, step=state.step_index)
