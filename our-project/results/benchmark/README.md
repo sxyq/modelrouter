@@ -32,6 +32,8 @@ kv-store-grpc训练Laya OFF Low的同一个Luna Low/4096请求经历7次URLError
 
 uv索引修复后，log-summary-date-ranges训练Kev教师ON Max官方2/2断言通过、Reward1；模型与教师API125298 Token、$0.09735750参考费、用量缺项0、Harbor668.024798秒。该题24组已结束；Model-only矩阵已推进到make-doom-for-mips，全部数量沿原报告更新。
 
+make-doom-for-mips原始Laya OFF High/Max同样在uv下载TLS中断后没有uvx和CTRF，原0另列。官方89题中82题使用精确uv0.9.5安装地址，现行运行配置统一将这82题接入原依赖目录，完整名单及原脚本来源在本批资源记录。原测试脚本和包版本参数保持；20:29两条在途原始Laya ON Low/High已经补入依赖，继续原任务，不重发已完成的工具命令。
+
 ## 2026-11-12 · Model-only全量执行与Token统计
 
 [RQ1部分帕雷托图与40组状态](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_review.md)按openssl-selfsigned-cert、regex-log同两题、seed43、原始及11-11微调实体绘制；21组评分与API费用齐全，另19组缺项。费用累计全部尝试的模型＋教师参考费，完整现金费用保持未知。[逐点数据](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_points.csv)保存来源、版本与缺项；沿原`rq1_figures.py <本批目录> --pareto`更新图表。
