@@ -4,17 +4,17 @@
 
 **Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
-共2136个任务/策略/seed位置；已结束672，运行中1，未开始1463，渠道档位不可用0。有效官方任务评分1/0为142/73，无官方Reward 437，原Verifier依赖失败20位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。
+共2136个任务/策略/seed位置；已结束677，运行中1，未开始1458，渠道档位不可用0。有效官方任务评分1/0为143/77，无官方Reward 437，原Verifier依赖失败20位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。
 
-已保存原Harbor Trial 673次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。
+已保存原Harbor Trial 678次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。
 
-已知模型参考费$8.48398341、教师$0.09527584，合计$8.57925925；477次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。
+已知模型参考费$8.59264144、教师$0.09726074，合计$8.68990218；477次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。
 
 费用主表包含全部尝试；latest_trial_reference_usd单列最后Episode参考费。原Verifier写出的0保留；已确认uvx缺失且没有测试报告的尝试单列，不计入任务质量对照。
 
-Harbor命令累计墙钟273825.970569秒，内含官方Trial累计254940.270252秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。
+Harbor命令累计墙钟279426.148539秒，内含官方Trial累计260515.321873秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。
 
-按逐题表：28/89题已有结束记录；28题已结束全部24个策略。
+按逐题表：29/89题已有结束记录；28题已结束全部24个策略。
 
 GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。
 
@@ -22,12 +22,12 @@ GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请
 
 | 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 评分覆盖 | 89题通过率区间 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| laya_original_off_model_only_low | 28 | 6 | 3 | 6/9 = 66.67% | 9/89 | 6.74%—96.63% | 19 | 1 | 60 | 0 | 0.04859112 |
-| laya_original_off_model_only_high | 28 | 8 | 1 | 8/9 = 88.89% | 9/89 | 8.99%—98.88% | 18 | 0 | 61 | 0 | 0.11209945 |
-| laya_original_off_model_only_max | 28 | 5 | 1 | 5/6 = 83.33% | 6/89 | 5.62%—98.88% | 21 | 0 | 61 | 0 | 0.28162216 |
-| laya_original_on_model_only_low | 28 | 5 | 1 | 5/6 = 83.33% | 6/89 | 5.62%—98.88% | 22 | 0 | 61 | 0 | 0.04684932 |
-| laya_original_on_model_only_high | 28 | 4 | 2 | 4/6 = 66.67% | 6/89 | 4.49%—97.75% | 22 | 0 | 61 | 0 | 0.10020504 |
-| laya_original_on_model_only_max | 28 | 1 | 7 | 1/8 = 12.50% | 8/89 | 1.12%—92.13% | 19 | 0 | 61 | 0 | 0.20515030 |
+| laya_original_off_model_only_low | 29 | 6 | 4 | 6/10 = 60.00% | 10/89 | 6.74%—95.51% | 19 | 0 | 60 | 0 | 0.06871774 |
+| laya_original_off_model_only_high | 29 | 9 | 1 | 9/10 = 90.00% | 10/89 | 10.11%—98.88% | 18 | 0 | 60 | 0 | 0.14998529 |
+| laya_original_off_model_only_max | 29 | 5 | 2 | 5/7 = 71.43% | 7/89 | 5.62%—97.75% | 21 | 0 | 60 | 0 | 0.30979880 |
+| laya_original_on_model_only_low | 29 | 5 | 2 | 5/7 = 71.43% | 7/89 | 5.62%—97.75% | 22 | 0 | 60 | 0 | 0.06559647 |
+| laya_original_on_model_only_high | 29 | 4 | 3 | 4/7 = 57.14% | 7/89 | 4.49%—96.63% | 22 | 0 | 60 | 0 | 0.10591172 |
+| laya_original_on_model_only_max | 28 | 1 | 7 | 1/8 = 12.50% | 8/89 | 1.12%—92.13% | 19 | 1 | 60 | 0 | 0.20515030 |
 | laya_trained_off_model_only_low | 28 | 4 | 4 | 4/8 = 50.00% | 8/89 | 4.49%—95.51% | 19 | 0 | 61 | 0 | 0.06557843 |
 | laya_trained_off_model_only_high | 28 | 6 | 2 | 6/8 = 75.00% | 8/89 | 6.74%—97.75% | 20 | 0 | 61 | 0 | 0.09926452 |
 | laya_trained_off_model_only_max | 28 | 6 | 1 | 6/7 = 85.71% | 7/89 | 6.74%—98.88% | 20 | 0 | 61 | 0 | 0.23237830 |
@@ -47,18 +47,18 @@ GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请
 | kev_trained_on_model_only_high | 28 | 9 | 1 | 9/10 = 90.00% | 10/89 | 10.11%—98.88% | 17 | 0 | 61 | 0 | 0.64537350 |
 | kev_trained_on_model_only_max | 28 | 8 | 2 | 8/10 = 80.00% | 10/89 | 8.99%—97.75% | 17 | 0 | 61 | 0 | 1.66079572 |
 
-实际执行跨度：2026-11-12T03:19:08.007951+00:00至2026-11-13T19:04:30.140718+00:00，143122.132767秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。
+实际执行跨度：2026-11-12T03:19:08.007951+00:00至2026-11-13T19:49:15.935447+00:00，145807.927496秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。
 
 
 评分覆盖是已取得有效官方评分的任务数/89；通过率区间把其余位置分别按全部未通过或全部通过计算。
 
-已报告输入39,391,805、输出2,037,253 Token；477次请求缺用量。推理包含在输出内，缓存读取包含在输入内，各只计一次；数值包含模型、教师及全部已发生尝试。
+已报告输入40,516,680、输出2,130,441 Token；477次请求缺用量。推理包含在输出内，缓存读取包含在输入内，各只计一次；数值包含模型、教师及全部已发生尝试。
 
-Router本地前向另报告输入17,296,296、输出177,982 Token；0次决策缺用量。其计算费用按A6000资源计量，美元单价未知。
+Router本地前向另报告输入17,749,352、输出177,982 Token；0次决策缺用量。其计算费用按A6000资源计量，美元单价未知。
 
-Provider实际报告缓存读取27,874,496 Token；672次请求未报告缓存读取；跨模型物理KV共享未知。
+Provider实际报告缓存读取28,655,680 Token；684次请求未报告缓存读取；跨模型物理KV共享未知。
 
-教师请求410次，短评实际输入Router 742次；同一短评可由多次决策消费。
+教师请求419次，短评实际输入Router 756次；同一短评可由多次决策消费。
 
 Provider实际额外重试627次；本次技术恢复0位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。
 
@@ -78,10 +78,10 @@ Provider实际额外重试627次；本次技术恢复0位置。最多额外100�
 
 | 原异常类型 | Reward1 | Reward0 | 缺Reward |
 |---|---:|---:|---:|
-| AgentTimeoutError | 20 | 42 | 33 |
+| AgentTimeoutError | 20 | 43 | 33 |
 | HTTPError | 0 | 0 | 8 |
 | JSONDecodeError | 0 | 0 | 1 |
-| NO_RECORDED_ERROR | 122 | 45 | 15 |
+| NO_RECORDED_ERROR | 123 | 48 | 15 |
 | ProviderResponseError | 0 | 0 | 25 |
 | RemoteDisconnected | 0 | 0 | 2 |
 | URLError | 0 | 0 | 352 |
@@ -97,11 +97,11 @@ Provider实际额外重试627次；本次技术恢复0位置。最多额外100�
 | teacher | laya_trained_off → laya_trained_on | 1 | 1/1 | 1 | 1/1 | 0.01114295 / 0.01687280 |
 | teacher | kev_original_off → kev_original_on | 1 | 1/1 | 1 | 1/1 | 0.00152466 / 0.00174950 |
 | teacher | kev_trained_off → kev_trained_on | 2 | 2/2 | 2 | 2/2 | 0.02944120 / 0.03183710 |
-| teacher | laya_original_off_model_only_high → laya_original_on_model_only_high | 6 | 5/4 | 5 | 5/4 | 0.01213406 / 0.02191035 |
+| teacher | laya_original_off_model_only_high → laya_original_on_model_only_high | 7 | 6/4 | 6 | 6/4 | 0.05001990 / 0.02761703 |
 | teacher | laya_trained_off_model_only_high → laya_trained_on_model_only_high | 6 | 4/2 | 4 | 3/2 | 0.02326000 / 0.00967264 |
 | teacher | kev_original_off_model_only_high → kev_original_on_model_only_high | 7 | 4/4 | 6 | 4/4 | 0.03781556 / 0.03923324 |
 | teacher | kev_trained_off_model_only_high → kev_trained_on_model_only_high | 9 | 6/8 | 9 | 6/8 | 0.53357710 / 0.45813000 |
-| teacher | laya_original_off_model_only_low → laya_original_on_model_only_low | 6 | 4/5 | 6 | 4/5 | 0.01413069 / 0.01802118 |
+| teacher | laya_original_off_model_only_low → laya_original_on_model_only_low | 7 | 4/5 | 7 | 4/5 | 0.03425731 / 0.03676833 |
 | teacher | laya_trained_off_model_only_low → laya_trained_on_model_only_low | 7 | 4/3 | 5 | 3/2 | 0.01977058 / 0.01608185 |
 | teacher | kev_original_off_model_only_low → kev_original_on_model_only_low | 5 | 1/1 | 5 | 1/1 | 0.01009434 / 0.01187836 |
 | teacher | kev_trained_off_model_only_low → kev_trained_on_model_only_low | 9 | 8/8 | 7 | 6/6 | 0.38422240 / 0.37548740 |
@@ -154,11 +154,11 @@ Provider实际额外重试627次；本次技术恢复0位置。最多额外100�
 
 以下登记实际选中模型及请求Native Effort；Model-only组固定档位、只选择模型。教师短评输入Router，不直接写入执行模型消息。
 
-- laya_original_off_model_only_low: `{"glm-5.3-flash:low": 38, "gpt-6-luna:low": 76}`
-- laya_original_off_model_only_high: `{"glm-5.3-flash:high": 45, "gpt-6-luna:high": 94}`
-- laya_original_off_model_only_max: `{"glm-5.3-flash:max": 189, "gpt-6-luna:max": 48}`
-- laya_original_on_model_only_low: `{"glm-5.3-flash:low": 51, "gpt-6-luna:low": 50}`
-- laya_original_on_model_only_high: `{"glm-5.3-flash:high": 27, "gpt-6-luna:high": 136}`
+- laya_original_off_model_only_low: `{"glm-5.3-flash:low": 54, "gpt-6-luna:low": 84}`
+- laya_original_off_model_only_high: `{"glm-5.3-flash:high": 58, "gpt-6-luna:high": 102}`
+- laya_original_off_model_only_max: `{"glm-5.3-flash:max": 200, "gpt-6-luna:max": 54}`
+- laya_original_on_model_only_low: `{"glm-5.3-flash:low": 66, "gpt-6-luna:low": 60}`
+- laya_original_on_model_only_high: `{"glm-5.3-flash:high": 28, "gpt-6-luna:high": 147}`
 - laya_original_on_model_only_max: `{"glm-5.3-flash:max": 166, "gpt-6-luna:max": 25}`
 - laya_trained_off_model_only_low: `{"glm-5.3-flash:low": 49, "gpt-6-luna:low": 71}`
 - laya_trained_off_model_only_high: `{"glm-5.3-flash:high": 35, "gpt-6-luna:high": 123}`

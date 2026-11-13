@@ -57,7 +57,11 @@ make-doom-for-mips全部24组Model-only已结束：0通过、17有效失败、7�
 
 该题训练Kev的High前后均通过，模型参考费$0.00496054→$0.08205140；Low从未通过变为通过。训练Kev教师ON保持三档通过，并降低三档已知API参考费；训练Laya教师ON令Low通过、High失败，Max仍通过。新训练Kev Low/High及教师ON各档均选Terra，OFF Max实际选过Luna和Terra；原始Kev六组均选Luna。两个Laya原始ON下载超时保留原记录并待独立恢复。完整实收及Router、工具、资源美元费用未知。
 
-Model-only已结束672/2136，142通过/73有效失败/437缺评分/20依赖失败；已知模型与教师$8.57925925，477请求费用未知。hf-model-inference／GLM High／seed42已沿原单策略恢复入口执行，控制2068155、子任务2068258，不启动Router GPU worker；两条早期无评分Trial保留，新Job为infrastructure-recovery-2。
+Model-only03:48快照已结束676/2136，143通过/76有效失败/437缺评分/20依赖失败；后续仍沿原队列执行。
+
+hf-model-inference／GLM High／seed42的单项恢复已取得原官方Reward0，4条断言2通过/2失败；失败为Agent产生的localhost:5000接口连接拒绝，不再运行该有效0。两条早期无评分Trial和全部原消费保留，新Job为infrastructure-recovery-2，Episode4d854990-2cde-4b4a-8ce1-58b656368712；该次38生成/40工具结果、0额外API重试，352580输入+10326输出=362906 Token。缓存实际已报告295808 Token、3请求未报；推理已包含输出，不重复相加。原Agent900.052秒、Verifier274.839秒，新Episode参考费$0.02255304、三次尝试合计$0.02733079；请求High/4096、返回Effort未报告，所有38次返回tool_calls，新预算异常分支未触发。25个历史长度缺评分位置中1个恢复结束、24个仍在原队列。
+
+历史1513位置现为258通过/257有效失败/895缺评分/103依赖失败，2354个Harbor Trial；原2333 Trial身份保持。已知模型与教师$35.62336373，1050请求费用未知；完整实收和资源美元费用继续缺失。
 
 ## 2026-11-12 · Model-only全量执行与Token统计
 
