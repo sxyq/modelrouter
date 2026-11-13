@@ -401,6 +401,8 @@ def run_iteration(path: Path, resume=False, docker_host: Optional[str] = None) -
     if not state["units"]:
         print("No pending benchmark units; retain this development iteration and its next plan")
         return 2
+    config["environment_kwargs"]["persistent_env"].update(runtime["environment_kwargs"]["persistent_env"])
+    iterations.write_atomic(path / "run_config.json", config)
     env = _runtime_env(docker_host)
     env["MODELROUTER_ITERATION"] = str(path)
     env["LITELLM_LOCAL_MODEL_COST_MAP"] = "true"
