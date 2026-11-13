@@ -36,6 +36,8 @@ make-doom-for-mips原始Laya OFF High/Max同样在uv下载TLS中断后没有uvx�
 
 `a4c961535dfbb37920a7c80a29bde3864533edb1`将Provider已记录TASK_DEADLINE的终止映射为原Harbor AgentTimeoutError，再调用原Verifier；原网络故障仍单列，未增加请求或时间。原始Laya OFF Low的第14次额外尝试503/TASK_DEADLINE后曾没有评分，原记录保持。正常4096输出耗尽保留原OutputTokenExceededError路径，两条新终止分支的实际验证沿下一次真实Episode记录。
 
+make-doom-for-mips全部24组Model-only已结束：0通过、17有效失败、7缺有效评分，17条有效0保留；七缺项包括2依赖故障、5生成请求故障。模型与教师已知参考费$1.66774970，9位置费用不完整，已报告12849099 API Token、14请求缺用量。原测试VM超时、frame.bmp缺失和帧比较失败均有原始记录；代码与TCG资源影响尚未分离。后续merge-diff-arc-agi-task继续原矩阵。
+
 ## 2026-11-12 · Model-only全量执行与Token统计
 
 [RQ1部分帕雷托图与40组状态](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_review.md)按openssl-selfsigned-cert、regex-log同两题、seed43、原始及11-11微调实体绘制；21组评分与API费用齐全，另19组缺项。费用累计全部尝试的模型＋教师参考费，完整现金费用保持未知。[逐点数据](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_points.csv)保存来源、版本与缺项；沿原`rq1_figures.py <本批目录> --pareto`更新图表。

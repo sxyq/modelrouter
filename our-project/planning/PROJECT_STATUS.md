@@ -36,6 +36,8 @@ uv索引修复后，log-summary-date-ranges训练Kev教师ON Max原官方2/2断�
 
 `a4c961535dfbb37920a7c80a29bde3864533edb1`将Provider已经记录TASK_DEADLINE的终止交给Harbor原AgentTimeoutError处理，随后调用原Verifier；未恢复的网络故障仍单列，正常4096输出耗尽继续使用OutputTokenExceededError。依据为make-doom-for-mips原始Laya OFF Low的第14次额外尝试503/TASK_DEADLINE后曾跳过Verifier。源码已部署，等待下一次该分支真实发生；原模型、档位、工具、时限和包版本保持。
 
+23:56前make-doom-for-mips的24组Model-only全部结束：0通过、17有效失败、7缺有效评分（2依赖故障、5生成请求故障），有效评分为0/17；这17条零分不重跑。模型与教师已知参考费$1.66774970，9位置费用不完整、14请求缺用量，已报告输入12597869/输出251230 Token。原官方VM运行超时、frame.bmp缺失及帧比较失败记录保持，代码与TCG资源贡献仍未分离。原队列已推进merge-diff-arc-agi-task；最新批次649结束、127通过/67有效失败/435缺评分/20依赖失败，2运行、1485未开始。
+
 `e537e363c8a84c3669fc7bfd0dbfd5f2b57fe6f9`按真实生成重试记录单列时限耗尽时仍未恢复的技术故障；gpt2-codegolf原始Laya OFF Max、headless-terminal训练Kev OFF Max两条原0保留，质量汇总为空。新等待队列已载入该分类。`0ddeb6482420f0629637fd540118f4bcbf24eff5`将原工具等待约束到任务剩余时间；旧晚到工具记录保持。
 
 ## 当前执行：Model-only全量对照（2026-11-12）
