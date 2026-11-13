@@ -63,6 +63,8 @@ hf-model-inference／GLM High／seed42的单项恢复已取得原官方Reward0�
 
 历史1513位置现为258通过/257有效失败/895缺评分/103依赖失败，2354个Harbor Trial；原2333 Trial身份保持。已知模型与教师$35.62336373，1050请求费用未知；完整实收和资源美元费用继续缺失。
 
+04:29：model-extraction-relu-logits训练Laya OFF High的最后一次GLM High/4096请求经历23次HTTP503后返回tool_calls，模型及档位保持；原900秒终止及原Verifier继续生效，官方Reward1。失败尝试缺用量/费用，完整参考费为空；本批已知模型与教师$8.74583274，478请求费用未知。Model-only680结束、145通过/78有效失败/437缺评分/20依赖失败，当前2子任务在途、1454尚未派发。
+
 ## 2026-11-12 · Model-only全量执行与Token统计
 
 [RQ1部分帕雷托图与40组状态](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_review.md)按openssl-selfsigned-cert、regex-log同两题、seed43、原始及11-11微调实体绘制；21组评分与API费用齐全，另19组缺项。费用累计全部尝试的模型＋教师参考费，完整现金费用保持未知。[逐点数据](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_points.csv)保存来源、版本与缺项；沿原`rq1_figures.py <本批目录> --pareto`更新图表。
