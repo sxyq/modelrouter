@@ -26,6 +26,12 @@ kv-store-grpc训练Laya OFF Low的同一个Luna Low/4096请求经历7次URLError
 
 `c1e55dd13897376e4e9b0d4ce22a8f1b771f4c7c`保存上述有限代理重接。log-summary-date-ranges训练Laya教师ON High/Max的首个GLM请求分别在27/20次额外重试后取得合法工具调用，原Agent继续执行，两条完整任务均为官方Reward1；费用包含成功请求参考费，失败尝试账单未知。
 
+`3e1321fe371441081fcce69a664a2819464a38fe`在每次Harbor调用合并现行依赖映射。log-summary-date-ranges原始Kev ON Max、训练Kev OFF Low在原Episode补入原版本依赖后均官方1；训练Kev OFF High/Max沿新映射也均1。训练Kev ON Low/High的原0没有CTRF，uv仍访问pypi.org；现行UV_INDEX_URL和依赖env已改用清华源，恢复留在既有队列。
+
+正常4096输出耗尽现由`274b683c68f0c26db281e7a1a8477f9fedf865cf`直接使用原Harbor的OutputTokenExceededError，错误策略为AGENT_EXHAUSTED_BUDGET/retry=false/grade=true，随后调用原Verifier；该请求不重试、不升额度，下一次真实发生后记录实际评分，旧未知终局保持。
+
+uv索引修复后，log-summary-date-ranges训练Kev教师ON Max官方2/2断言通过、Reward1；模型与教师API125298 Token、$0.09735750参考费、用量缺项0、Harbor668.024798秒。该题24组已结束；Model-only矩阵已推进到make-doom-for-mips，全部数量沿原报告更新。
+
 ## 2026-11-12 · Model-only全量执行与Token统计
 
 [RQ1部分帕雷托图与40组状态](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_review.md)按openssl-selfsigned-cert、regex-log同两题、seed43、原始及11-11微调实体绘制；21组评分与API费用齐全，另19组缺项。费用累计全部尝试的模型＋教师参考费，完整现金费用保持未知。[逐点数据](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/pareto_points.csv)保存来源、版本与缺项；沿原`rq1_figures.py <本批目录> --pareto`更新图表。

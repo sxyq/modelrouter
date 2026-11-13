@@ -26,6 +26,12 @@ kv-store-grpc训练Laya OFF Low的同一次Luna Low/4096请求在7次URLError后
 
 `c1e55dd13897376e4e9b0d4ce22a8f1b771f4c7c`为本机有限代理重接版本。log-summary-date-ranges训练Laya教师ON High/Max的首个GLM请求分别在27/20次额外重试后成功，两条完整任务均取得原官方Reward1；失败尝试用量及费用保持未知。
 
+`3e1321fe371441081fcce69a664a2819464a38fe`使每次Harbor调用合并现行Verifier依赖映射，避免旧批次配置覆盖新增log-summary-date-ranges映射。原始Kev ON Max、训练Kev OFF Low在原Episode补入依赖后均官方1，训练Kev OFF High/Max随后使用新映射也均1。两条训练Kev ON Low/High的原0来自uv访问pypi.org失败、无CTRF，单列技术故障；现行运行环境及原依赖env均设置UV_INDEX_URL为清华源。
+
+正常4096输出耗尽现由`274b683c68f0c26db281e7a1a8477f9fedf865cf`直接使用原Harbor的OutputTokenExceededError，原错误策略为AGENT_EXHAUSTED_BUDGET/retry=false/grade=true，随后调用原Verifier；仍不重试该请求、不增加额度。该路径已部署，等待下一次真实长度耗尽验证，旧缺评分记录保持。
+
+uv索引修复后，log-summary-date-ranges训练Kev教师ON Max原官方2/2断言通过、Reward1；API模型与教师125298 Token、$0.09735750已知参考费、用量缺项0、原Harbor668.024798秒。该题24组已结束，后续make-doom-for-mips继续；20:04原观察快照625结束、127通过、49有效失败、431缺评分、18依赖失败，2运行、1509未开始。
+
 `e537e363c8a84c3669fc7bfd0dbfd5f2b57fe6f9`按真实生成重试记录单列时限耗尽时仍未恢复的技术故障；gpt2-codegolf原始Laya OFF Max、headless-terminal训练Kev OFF Max两条原0保留，质量汇总为空。新等待队列已载入该分类。`0ddeb6482420f0629637fd540118f4bcbf24eff5`将原工具等待约束到任务剩余时间；旧晚到工具记录保持。
 
 ## 当前执行：Model-only全量对照（2026-11-12）
