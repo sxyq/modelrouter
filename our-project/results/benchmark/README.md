@@ -8,12 +8,12 @@ Provider最多额外100次同请求重试已在正式请求路径生效，原任
 
 训练Kev ON Low/High两条新Episode在首个路由等待中耗尽900秒原Agent时限，生成请求0、路由返回0、CTRF缺失；保持无有效评分。同时间共享GPU锁由现有视频服务持有，原视频服务与Benchmark条件保持。资源和修复身份见[运行事实](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。
 
-当前Controller1696641、持有1696633继续原矩阵；1700006接续本批技术恢复及联合957，1700191每1200秒汇总，1704159等待后执行联合与历史技术恢复。18:26代理再次断线，18:46恢复17898，公开依赖地址HTTP200；服务器7890实测TLS失败。当前连接17649正常执行，等待交接27095沿现有CLI在其自然退出后接管：SSH断线5秒后重接，30秒保活、连续3次无响应退出连接，认证及主机密钥错误结束，两个批次均退出后关闭。
+当前Controller1696641、持有1696633继续原矩阵；1700006接续本批技术恢复及联合957，1700191每1200秒汇总，2024071等待后执行联合与历史技术恢复。2989c4ecb89aa4306710236d764ada2caf084783使历史25条GLM4096长度耗尽且跳过Verifier的位置进入一次独立Episode恢复；均无先前有效评分及恢复，原记录和seed42身份保持，正常长度耗尽不重试API请求。旧等待队列1704159退出后，凭据同一memfd继续由2024071持有。当前代理17649继续运行；等待交接18875沿现有CLI在其自然退出后接管，跟随1700006和2024071：SSH断线5秒后重接，30秒保活、连续3次无响应退出连接，认证及主机密钥错误结束，两个批次均退出后关闭。
 
 ```bash
 python3 our-project/code/cli/run_rq1_a6000.py \
   our-project/experiments/configs/v9_model_only.json \
-  --proxy-for-pid 1700006 1704159 --proxy-after-pid 17649
+  --proxy-for-pid 1700006 2024071 --proxy-after-pid 17649
 ```
 
 kv-store-grpc训练Laya OFF Low的同一个Luna Low/4096请求经历7次URLError，attempt_index=7返回HTTP200，原Agent继续工具执行并取得官方Reward1。GLM Max在30次额外重试后也返回合法工具调用，两次成功生成后达到900秒原时限，官方Reward0保留；失败尝试费用未知。该题训练Laya OFF Low/High/Max和ON Low/High均取得官方Reward1。
@@ -41,6 +41,8 @@ make-doom-for-mips全部24组Model-only已结束：0通过、17有效失败、7�
 11-14 00:21台北：merge-diff-arc-agi-task原始Laya OFF High官方5/5通过、Reward1，Max在原Agent900秒结束后官方0/5、Reward0；两条分别17/38次生成、0次额外重试、$0.01114506/$0.05922257模型参考费。ON Low/High尚在GPU锁前等待，Agent时限未开始。Model-only已结束651/2136，128通过/68有效失败/435缺评分/20依赖故障；模型与教师已知参考费$7.80484740，472请求费用未知。逐题结果与分母沿原正式报告更新。
 
 01:12：ON Low/High后续进入Agent并自然结束，原Verifier在Ubuntu下载阶段耗尽900秒、断言未执行、Reward未知。现行apt镜像映射沿原环境类覆盖38个明确Ubuntu24.04且调用apt-get update的任务；USTC发行索引及原失败软件包HTTP200，下载0.226/0.142秒。源码2308ba82c1dcfcba44e309127b54a2a38b7f802b已部署。01:27训练Laya OFF Low完整Episode验证修复：6.8MB软件包4秒下载、原Verifier185.998秒、5断言2通过/3失败，官方Reward0；原始Laya ON Max亦官方0/5、Reward0。原下载失败日志、Token、费用及独立恢复身份保留，两个有效0不重跑。
+
+02:00：merge-diff-arc-agi-task的Laya12组均结束；原始OFF Low/High/Max为0/1/0、ON为缺分/缺分/0；训练OFF为0/1/1、ON为1/0/1。所有有评分项均由原官方Verifier给出，两个下载缺分待独立恢复。训练OFF三档模型参考费$0.00448842/$0.00776408/$0.01072710，训练ON三档模型与教师参考费$0.01002750/$0.00315340/$0.01073354。Model-only已结束661位置，132通过/72有效失败/437缺评分/20依赖失败，已知模型与教师$7.88272565、477请求费用未知。
 
 ## 2026-11-12 · Model-only全量执行与Token统计
 
