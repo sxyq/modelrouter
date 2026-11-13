@@ -103,18 +103,22 @@ def analyze_rq1(episodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
-def interrupted_provider_request(trial, events):
-    """Recognize a recorded generator retry still failing when Harbor timed out."""
+def technical_interruption(trial, events):
+    """Separate observed first-route and unresolved generator transport timeouts."""
     if (trial.get("error") or {}).get("exception_type") != "AgentTimeoutError":
-        return False
+        return None
+    episode_events = [e for e in events if e.get("episode_id") == trial.get("trial_id")]
+    if any(e["event"] == "ROUTER_START" for e in episode_events) and not any(
+            e["event"] == "GENERATOR_START" for e in episode_events):
+        return "ROUTER_BEFORE_GENERATION_TIMEOUT"
     for request in provider_requests(trial, events):
         attempts = request.get("account_attempts", [])
         if request["role"] == "generator" and request.get("event") == "ERROR" and attempts:
             last = attempts[-1]
             if last.get("error_type") and (last.get("retry_scheduled") or
                                           last.get("retry_stop_reason") == "TASK_DEADLINE"):
-                return True
-    return False
+                return "PROVIDER_RETRY_DEADLINE"
+    return None
 
 
 def provider_requests(trial, events):
@@ -503,10 +507,10 @@ def export_batch_results(root, config, output_root=None):
             stdout = verifier_dir / "test-stdout.txt"
             row["verifier_dependency_failure"] = (stdout.exists() and not (verifier_dir / "ctrf.json").exists()
                                                   and "uvx: command not found" in stdout.read_text())
-        interrupted = trial.get("reward") == 0 and interrupted_provider_request(trial, events)
+        interrupted = technical_interruption(trial, events) if trial.get("reward") == 0 else None
         row.update(trial_id=trial.get("trial_id"), reward=None if interrupted else trial.get("reward"),
                    official_reward=trial.get("reward"),
-                   technical_fault="PROVIDER_RETRY_DEADLINE" if interrupted else None,
+                   technical_fault=interrupted,
                    raw_verifier_rewards=[a.get("rewards") for a in trial.get("verifier_artifacts", [])],
                    effort_comparison_eligible=not strategy.get("model") or not any(r.get("native_effort_status") == "PROVIDER_REPORTED_MISMATCH" for r in generator),
                    harbor_trial_count=len(trials),
@@ -549,6 +553,7 @@ def export_batch_results(root, config, output_root=None):
                    reported_cache_write_tokens=reported(requests, "cache_write_tokens"),
                    cache_write_unknown_records=sum(r.get("cache_write_tokens") is None for r in requests),
                    router_wall_s=sum(e.get("router_latency_ms", 0) for e in routing) / 1000,
+                   initial_gpu_queue_wait_s=sum(e["duration_ms"] for e in events if e["event"] == "GPU_QUEUE_WAIT") / 1000,
                    router_known_input_tokens=sum(e["router_input_usage"]["input_tokens"] for e in routing if e.get("router_input_usage")),
                    router_known_output_tokens=sum(e["router_input_usage"]["output_tokens"] for e in routing if e.get("router_input_usage")),
                    router_usage_unknown_decisions=sum(not e.get("router_input_usage") for e in routing) if strategy.get("checkpoint") else 0,

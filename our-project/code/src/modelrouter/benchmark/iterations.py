@@ -64,6 +64,28 @@ def latest(root: Path = ITERATIONS):
     return paths[-1].parent if paths else None
 
 
+def prepare_recovery(path, reason, updates):
+    state = json.loads((path / "resume_state.json").read_text())
+    config = json.loads((path / "run_config.json").read_text())
+    previous = state["units"][-1]
+    recovery = dict(previous, job_name=state["units"][0]["job_name"] +
+                    f"--infrastructure-recovery-{len(state['units'])}", status="PENDING",
+                    recovery_reason=reason, provider_retry_limit=100,
+                    environment_source_revision=updates.get("environment_source_revision"))
+    if previous["status"] == "RUNNING":
+        previous["status"] = "NOT_EVALUATED"
+    state["units"].append(recovery)
+    state.update(status="PENDING", updated_at=now())
+    config["units"].append(recovery)
+    config["environment_kwargs"].update(updates.get("environment_kwargs", {}))
+    runtime = json.loads((ROOT / "our-project/experiments/configs/benchmark_runtime.json").read_text())
+    config["environment_kwargs"].update({k: v for k, v in runtime.get("environment_kwargs", {}).items()
+                                          if k == "verifier_dependencies"})
+    write_atomic(path / "run_config.json", config)
+    write_atomic(path / "resume_state.json", state)
+    return recovery, state, config
+
+
 def start(path: Path, config: dict):
     previous = latest(path.parent)
     prior_plan = None

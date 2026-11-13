@@ -7,12 +7,14 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from copy import deepcopy
 from dataclasses import asdict
 from importlib.metadata import version
+import fcntl
 import json
 import os
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 import tomllib
 
 from . import iterations
@@ -71,17 +73,18 @@ def prepare(config_path, revision):
 
 def recovery_reason(path):
     """Recover technical interruptions only; never repeat a valid official score."""
-    from .rq1_analysis import interrupted_provider_request
+    from .rq1_analysis import technical_interruption
     observed = [t for job in (path / "jobs").glob("*") for t in audit_job(job)["trials"]]
     events = iterations.rows(path / "events.jsonl")
     if any(t["status"] == "OFFICIAL_ARTIFACT_VERIFIED" and (t["reward"] == 1 or
-           t["reward"] == 0 and not interrupted_provider_request(t, events)) for t in observed):
+           t["reward"] == 0 and not technical_interruption(t, events)) for t in observed):
         return None
     if not observed:
         return None
     trial = max(observed, key=lambda t: t.get("finished_at") or "")
-    if interrupted_provider_request(trial, events):
-        return "PROVIDER_RETRY_DEADLINE"
+    interruption = technical_interruption(trial, events)
+    if interruption:
+        return interruption
     error = trial.get("error") or {}
     kind, message = error.get("exception_type"), error.get("exception_message", "")
     if "dependency uvx absent" in trial.get("reason", "") or "CTRF report absent" in trial.get("reason", ""):
@@ -120,24 +123,17 @@ def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=F
         reason = recovery_reason(path)
         if reason is None:
             return dict(unit, status="FINISHED", reused=True)
-        saved = json.loads(state.read_text())
-        episode = json.loads((path / "run_config.json").read_text())
-        recovery = dict(saved["units"][-1], job_name=unit["unit_id"] + f"--infrastructure-recovery-{len(saved['units'])}",
-                        environment_source_revision=config.get("environment_source_revision"), status="PENDING",
-                        recovery_reason=reason, provider_retry_limit=100)
-        saved["units"].append(recovery)
-        saved.update(status="PENDING", updated_at=iterations.now())
-        episode["units"].append(recovery)
-        episode["environment_kwargs"].update(config.get("environment_kwargs", {}))
-        runtime = json.loads((iterations.ROOT / "our-project/experiments/configs/benchmark_runtime.json").read_text())
-        episode["environment_kwargs"].update({k: v for k, v in runtime.get("environment_kwargs", {}).items()
-                                              if k == "verifier_dependencies"})
-        iterations.write_atomic(path / "run_config.json", episode)
-        iterations.write_atomic(state, saved)
+        recovery, _, _ = iterations.prepare_recovery(path, reason, config)
         job = path / "jobs" / recovery["job_name"]
         observed = audit_job(job)
     if observed["status"] == "OFFICIAL_ARTIFACT_VERIFIED" or state.exists() and json.loads(state.read_text())["status"] in ("EVALUATED", "PARTIAL"):
         return dict(unit, status="FINISHED", reused=True)
+    if strategy.get("checkpoint", {}).get("device") == "cuda":
+        iterations.append(root / "jobs.jsonl", dict(unit, status="WAITING_FOR_GPU", timestamp=iterations.now()))
+        waiting = time.monotonic()
+        with open(strategy["checkpoint"]["gpu_lock_path"], "a") as gpu_lock:
+            fcntl.flock(gpu_lock, fcntl.LOCK_SH)
+        iterations.event(path, "GPU_QUEUE_WAIT", duration_ms=(time.monotonic() - waiting) * 1000)
     if not state.exists():
         v9 = deepcopy(config["v9_config"])
         v9.update(strategy.get("v9_config", {}))
