@@ -84,14 +84,22 @@
     {
       "recorded_at": "2026-11-12T21:59:38+08:00",
       "event": "OFFICIAL_VERIFIER_UBUNTU_UV_ROUTE_UPDATED",
-      "domains": ["archive.ubuntu.com", "security.ubuntu.com", "astral.sh"],
+      "domains": [
+        "archive.ubuntu.com",
+        "security.ubuntu.com",
+        "astral.sh"
+      ],
       "current_egress": "🇺🇸 美国洛杉矶 TCP · Mac Clash Verge",
       "config_reload_http_status": 204,
       "ubuntu_release_http_status": 200,
       "uv_installer_final_url": "https://releases.astral.sh/github/uv/releases/download/0.9.5/uv-installer.sh",
       "uv_installer_redirect_http_status": 301,
       "uv_installer_final_http_status": 200,
-      "repaired_verifier_tasks": ["fix-git", "gcode-to-text", "git-leak-recovery"],
+      "repaired_verifier_tasks": [
+        "fix-git",
+        "gcode-to-text",
+        "git-leak-recovery"
+      ],
       "dependency_failed_positions_at_2139": 11,
       "recovery": "One complete original Harbor Episode per recorded download failure without CTRF; preserve original reward, attempts and costs",
       "official_task_and_tests_changed": false
@@ -101,15 +109,65 @@
       "event": "VERIFIER_DOWNLOAD_PATH_MEASURED",
       "url": "http://archive.ubuntu.com/ubuntu/dists/noble/universe/binary-amd64/Packages.xz",
       "expected_bytes": 15037908,
-      "mac_direct": {"http_status": 200, "received_bytes": 15037908, "elapsed_seconds": 9.767470, "exit_code": 0},
-      "mac_existing_tcp_proxy": {"http_status": 200, "received_bytes": 5563145, "elapsed_seconds": 30.253145, "exit_code": 28},
-      "a6000_through_mac_direct_egress": {"http_status": 200, "received_bytes": 1169641, "elapsed_seconds": 30.001583, "exit_code": 28},
-      "a6000_direct": {"http_status": 200, "received_bytes": 3185, "elapsed_seconds": 0.030920, "content_type_observed": "HTML_NOT_OFFICIAL_PACKAGE_INDEX"},
-      "a6000_existing_proxy_7890": {"http_status": 502, "received_bytes": 0, "elapsed_seconds": 5.039333},
+      "mac_direct": {
+        "http_status": 200,
+        "received_bytes": 15037908,
+        "elapsed_seconds": 9.76747,
+        "exit_code": 0
+      },
+      "mac_existing_tcp_proxy": {
+        "http_status": 200,
+        "received_bytes": 5563145,
+        "elapsed_seconds": 30.253145,
+        "exit_code": 28
+      },
+      "a6000_through_mac_direct_egress": {
+        "http_status": 200,
+        "received_bytes": 1169641,
+        "elapsed_seconds": 30.001583,
+        "exit_code": 28
+      },
+      "a6000_direct": {
+        "http_status": 200,
+        "received_bytes": 3185,
+        "elapsed_seconds": 0.03092,
+        "content_type_observed": "HTML_NOT_OFFICIAL_PACKAGE_INDEX"
+      },
+      "a6000_existing_proxy_7890": {
+        "http_status": 502,
+        "received_bytes": 0,
+        "elapsed_seconds": 5.039333
+      },
       "temporary_archive_direct_rule": "Reverted to existing Los Angeles TCP after remote transfer still timed out",
-      "official_git_multibranch_high": {"apt_index_elapsed_seconds": 738, "verifier_timeout_seconds": 900, "last_stdout_stage": "Downloading cpython-3.13.9", "ctrf_exists": false, "official_reward": null},
+      "official_git_multibranch_high": {
+        "apt_index_elapsed_seconds": 738,
+        "verifier_timeout_seconds": 900,
+        "last_stdout_stage": "Downloading cpython-3.13.9",
+        "ctrf_exists": false,
+        "official_reward": null
+      },
       "additional_episode_recovery_added": false,
       "official_task_and_tests_changed": false
+    }
+  ],
+  "runtime_repairs": [
+    {
+      "at": "2026-11-13T02:52:38+00:00",
+      "source_revision": "96d065e3e0564d0e2a610d3cb92d412823fdadb6",
+      "file": "our-project/code/src/modelrouter/v9/runtime/checkpoint.py",
+      "cause": "Harbor completed official results but executor threads remained on deadline-free Router sockets; worker blocked behind shared GPU owner PID302097",
+      "original_controller_pid": 2373109,
+      "replaced_waiting_worker_pid": 2373123,
+      "replacement_worker_pid": 1568793,
+      "finite_worker_guard_pid": 1568792,
+      "scores_retained": {
+        "hf-model-inference/kev_trained_off_model_only_high/43": 1,
+        "hf-model-inference/kev_trained_off_model_only_max/43": 0
+      },
+      "change": "CLIENT_SOCKET_AND_GPU_QUEUE_WAIT_USE_ORIGINAL_TASK_REMAINING_TIME",
+      "shared_gpu_owner_pid": 302097,
+      "guardian_stop_condition": "ORIGINAL_CONTROLLER_EXITS",
+      "benchmark_conditions_changed": false
     }
   ]
 }
