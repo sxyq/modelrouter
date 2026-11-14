@@ -1,8 +1,12 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 2026-11-14 · 共享GPU等待原因
+## 2026-11-14 · GPU共享并发与技术恢复
 
-H3视频Gateway的闲置回收线程17:22:37因共享临时状态文件写入冲突退出，19:27仍持有GPU锁，0活动任务／0活动请求；Model-only两项在Harbor计时前排队。故障依据、进程和必要共享服务动作见原[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)；该动作等待明确授权。
+H3状态文件写入已纳入原锁，闲置Gateway按授权重启，原Model-only两项已在20:06自动接续。现有GPU锁文件保持，H3和Router前向共享读锁，训练和Breeze语音继续独占；原固定模型4并发、Router2并发。Gateway2495490、原生Router2496626运行，四权重及正式比较条件沿原配置。故障日志、实际进程接续、35条H3旧状态的保留位置及唯一回退包见原[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。
+
+795个已结束位置中的466个缺有效评分按原异常类型为：连接错误352、Agent时限异常58、Provider响应异常26、HTTP异常8、Verifier时限异常8、提前断连2、JSON解析异常1、未记录异常11；20个依赖故障另列。原312个代理连接拒绝属于连接错误子集。恢复只处理实际技术故障，原101个有效官方0保留；当前GLM仍有503，模型请求保持原参数及最多额外100次重试、原任务时限。唯一私有配置与批次memfd相同，具体渠道后端原因未知。
+
+20:37 Model-only当前汇总797结束，208通过／101有效失败／468缺评分／20依赖故障；2运行、1337未开始，API已知参考费$10.52758842、515请求费用未知、实际额外重试1513次。polyglot-rust-c原始Laya教师ON Low/High各31次额外重试后未恢复503，原Verifier0及费用缺项保留。历史count-dataset-tokens和headless-terminal的Luna High／seed42已沿原单项入口独立恢复，旧连接故障记录不覆盖；原固定阶段最多4并发、Router2并发。当前Luna请求200、0额外重试，等待两项原Verifier终局；不将seed42写入seed43配对结果。
 
 联合批次首题`modernize-scientific-stack`三个固定策略已完整执行至原结束条件并由原Verifier评分；Seed43，与本题现有Model-only24组同seed。下表为单题结果，完整87题批次仍剩954位置；[逐策略及费用报告](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md)保存所有原评分和缺项。
 

@@ -1,10 +1,14 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-11-14：共享GPU闲置回收故障
+## 2026-11-14：GPU共享并发与技术恢复
 
-19:27台北，Model-only Controller1696641的两个位置仍在Harbor任务计时前等待原GPU锁。锁由H3视频Gateway302097持有，后端2457191／GPU进程2457371；GPU9546/49140MiB、利用率0%，视频任务34完成／1失败／0活动，请求0。原900秒闲置回收线程在17:22:37因`gateway-current.json.tmp`的`os.replace`抛出FileNotFoundError而退出；源码把共享临时文件的写入放在原状态锁之外，真实日志及仅剩主线程相符。继续等待无法触发该已退出线程。必要动作是把现有状态文件写入纳入原锁，并重启闲置H3 Gateway；该共享服务操作等待负责人明确授权。运行依据保存于原Model-only `metrics/resource_observations.json`。
+H3状态写入已按负责人授权纳入原`self.lock`，闲置Gateway20:06重启，原Controller1696641自动接续polyglot-rust-c教师ON Low/High两项。20:12当前Gateway2495490 active、原monitor线程恢复、HTTP200、后端按需加载。GPU锁文件保持，H3及Router前向改用共享读锁，训练和Breeze语音继续独占写锁；固定模型4并发、Router Episode2并发。原生worker在0未返回路由且闲置时由1696717切为2496626，仍用原Socket；有限持有2496618在Controller结束后清理worker，当前Agent与凭据继续原过程。源码发布922ee8a2，四权重、AA v7、模型／Effort／4096／Seed／官方时限保持原配置。原回收线程17:22:37因临时状态文件写入冲突退出的日志及部署事实保存在原Model-only `metrics/resource_observations.json`；唯一H3回退包保存部署前源码和35条旧任务状态，较旧单文件源码备份已移除。
+
+795个已结束位置中466缺有效质量评分，原异常类型为352个URLError、58个AgentTimeoutError、26个ProviderResponseError、8个HTTPError、8个VerifierTimeoutError、2个RemoteDisconnected、1个JSONDecodeError及11个未记录异常；20个Verifier依赖故障另列。原312个代理连接拒绝记录包含在连接错误中。该分类不改写原Reward；恢复沿原入口，仅选择技术故障，101个有效官方0保留。当前唯一私有配置与批次memfd内容相同，继续使用现有账户；GLM首请求仍返回503，原时限内最多额外100次同请求重试，输出长度耗尽不重试。
 
 联合87题／957位置首题`modernize-scientific-stack`的三个固定模型已在19:43结束：Luna High官方1、Terra High有效官方0、GLM Low原官方0因23个503／22次额外重试到原期限而另列请求故障。两条有效结果不重跑，GLM进入原联合独立恢复队列。已知API49065 Token／$0.04081750，GLM请求用量及费用未知；教师关闭，Luna/Terra返回High匹配。Terra失败为官方任务脚本超过30秒，代码与CPU TCG资源贡献未分离。本批还剩954位置，原Model-only数量保持；[联合报告](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md)已保存逐Episode和原始评分。有限固定阶段Controller2481191已自然结束。
+
+20:37最新当前源码汇总：Model-only797/2136位置结束，208通过／101有效失败／468缺有效评分／20依赖故障；2运行、1337未开始，已知API参考费$10.52758842、515请求费用未知、额外重试1513次。新worker2496626已完成两条真实CUDA路由、fallback_used=false。polyglot-rust-c原始Laya教师ON Low/High各31次额外重试后仍503，原Verifier0另列请求故障，费用未知。历史count-dataset-tokens与headless-terminal的Luna High／seed42已沿原单项恢复入口并行启动，Controller2501975；二者旧记录均为连接中断、无有效官方评分、没有100次规则下的恢复，首次记录继续保留。当前Luna生成均HTTP200、0额外重试；新最终恢复队列2501976等待1700006及2501975后接续联合与历史恢复，已独立持有同一memfd。代理等待30395在17649结束后接管并跟随1700006／2501976；旧等待2024071及18875已退出，防止后续与这两条在途恢复重复。
 
 ## 2026-11-13：请求重试与技术恢复接续
 
