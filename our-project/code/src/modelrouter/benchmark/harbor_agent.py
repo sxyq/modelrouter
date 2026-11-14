@@ -51,6 +51,10 @@ class A6000DockerEnvironment(DockerEnvironment):
         if self.verifier_dependencies:
             self._mounts.append({"type": "bind", "source": self.verifier_dependencies,
                                  "target": self.verifier_dependencies, "read_only": True})
+            for archive in (Path(self.verifier_dependencies) / "cache/archive-v0").iterdir():
+                self._mounts.append({"type": "bind", "source": str(archive),
+                                     "target": "/root/.cache/uv/archive-v0/" + archive.name,
+                                     "read_only": True})
 
     async def start(self, force_build):
         await super().start(force_build)
@@ -65,9 +69,7 @@ class A6000DockerEnvironment(DockerEnvironment):
                 "&& echo 'export UV_LINK_MODE=copy' >> /root/.local/bin/env "
                 "&& mkdir -p /root/.cache/uv/archive-v0 /root/.local/share/uv/python; "
                 "for d in /opt/modelrouter-verifier/cache/*; do "
-                "if [ \"${d##*/}\" = archive-v0 ]; then "
-                "for a in \"$d\"/*; do ln -s \"$a\" /root/.cache/uv/archive-v0/; done; "
-                "else cp -a \"$d\" /root/.cache/uv/; fi; done; "
+                "if [ \"${d##*/}\" != archive-v0 ]; then cp -a \"$d\" /root/.cache/uv/; fi; done; "
                 "cp -a /opt/modelrouter-verifier/cache/.lock /opt/modelrouter-verifier/cache/CACHEDIR.TAG /root/.cache/uv/; "
                 "for d in /opt/modelrouter-verifier/python/cpython-*; do "
                 "cp -a \"$d\" /root/.local/share/uv/python/; done; "
