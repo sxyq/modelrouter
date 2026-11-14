@@ -61,10 +61,15 @@ class A6000DockerEnvironment(DockerEnvironment):
                 "&& ln -s /opt/modelrouter-verifier/cache /root/.cache/uv "
                 "&& ln -s /opt/modelrouter-verifier/python /root/.local/share/uv/python"])
         if self.apt_mirror:
+            debian = self.apt_mirror.endswith("/debian/")
+            expression = "s#http://(archive|security).ubuntu.com/ubuntu/?#" + self.apt_mirror + "#g"
+            if debian:
+                expression = ("s#http://deb.debian.org/debian-security/?#" +
+                              self.apt_mirror.replace("/debian/", "/debian-security/") + "#g; "
+                              "s#http://deb.debian.org/debian/?#" + self.apt_mirror + "#g")
             await self._run_docker_compose_command([
                 "exec", "-T", "main", "sed", "-i", "-E",
-                "s#http://(archive|security).ubuntu.com/ubuntu/?#" + self.apt_mirror + "#g",
-                "/etc/apt/sources.list.d/ubuntu.sources"])
+                expression, "/etc/apt/sources.list.d/" + ("debian.sources" if debian else "ubuntu.sources")])
 
     @property
     def capabilities(self):

@@ -184,6 +184,11 @@ def audit_trial(trial_dir: str | Path) -> dict[str, Any]:
         if stdout.is_file() and "uvx: command not found" in stdout.read_text() and not (directory / "verifier" / "ctrf.json").is_file():
             row["reason"] = "Official test dependency uvx absent; no task assertions executed"
             return row
+        ctrf = directory / "verifier" / "ctrf.json"
+        if (stdout.is_file() and "ImportError: libGL.so.1:" in stdout.read_text()
+                and ctrf.is_file() and _read_json(ctrf)["results"]["summary"]["tests"] == 0):
+            row["reason"] = "Official test dependency libGL.so.1 absent; no task assertions executed"
+            return row
         task_path = (config.get("task") or {}).get("path")
         script = Path(task_path) / "tests" / "test.sh" if task_path else None
         expects_ctrf = row["task_name"] == "terminal-bench/fix-git"

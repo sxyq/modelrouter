@@ -87,7 +87,7 @@ def recovery_reason(path):
         return interruption
     error = trial.get("error") or {}
     kind, message = error.get("exception_type"), error.get("exception_message", "")
-    if "dependency uvx absent" in trial.get("reason", "") or "CTRF report absent" in trial.get("reason", ""):
+    if trial.get("reason", "").startswith("Official test dependency") or "CTRF report absent" in trial.get("reason", ""):
         return "VERIFIER_DEPENDENCY"
     if kind in ("URLError", "RemoteDisconnected", "ConnectionResetError", "TimeoutError", "IncompleteRead"):
         return "PROVIDER_TRANSPORT"
