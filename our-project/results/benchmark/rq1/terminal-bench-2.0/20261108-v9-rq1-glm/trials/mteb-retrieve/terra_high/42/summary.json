@@ -28,14 +28,14 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "EnvironmentStartTimeoutError",
+  "error_type": "RuntimeError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 604.43158,
+  "episode_wall_s": 21.716053,
   "generator_known_reference_usd": null,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 607.803488,
-  "harness_command_wall_s": 618.1383174601942,
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 629.519541,
+  "harness_command_wall_s": 644.8623477257788,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": 0,
   "latest_trial_reference_usd": 0,
@@ -46,13 +46,13 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/mteb-retrieve/terra_high/42",
-  "trial_id": "5546786b-8985-47c9-965f-6703d6ce5687",
+  "trial_id": "f9607e32-f8e7-4b3a-be88-578e15afda74",
   "official_reward": null,
   "technical_fault": null,
   "raw_verifier_rewards": [
     null
   ],
-  "outside_harbor_wall_s": 10.334829460194214,
+  "outside_harbor_wall_s": 15.342806725778814,
   "previous_attempts": [
     {
       "trial_id": "0a7f3a58-52f5-460f-86c0-e7c0b45f8c89",
@@ -70,13 +70,30 @@
         "verifier": null
       },
       "error_type": "RuntimeError"
+    },
+    {
+      "trial_id": "5546786b-8985-47c9-965f-6703d6ce5687",
+      "job_name": "mteb-retrieve--terra_high--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/mteb-retrieve/terra_high/42/jobs/mteb-retrieve--terra_high--s42--infrastructure-recovery-1/mteb-retrieve__6u9L4Yz",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-09T22:57:41.592817Z",
+      "finished_at": "2026-11-09T23:07:46.024397Z",
+      "duration_sec": 604.43158,
+      "phase_wall_s": {
+        "environment_setup": 600.002195,
+        "agent_setup": null,
+        "agent_execution": null,
+        "verifier": null
+      },
+      "error_type": "EnvironmentStartTimeoutError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
   "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 600.002195,
+    "environment_setup": 17.677425,
     "agent_setup": null,
     "agent_execution": null,
     "verifier": null
@@ -87,7 +104,7 @@
   "provider_retry_count": 0,
   "provider_retry_stop_reasons": {},
   "provider_attempts": [],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 0,
   "unknown_provider_cost_requests": 0,
