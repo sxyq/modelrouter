@@ -2,11 +2,13 @@
 
 ## 2026-11-15 · 原Verifier依赖与继续运行
 
-Model-only当前[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为842/2136结束：217通过、108有效失败、486缺有效评分、31依赖故障另列；2运行、1292未开始，843次已结束Harbor Trial，已知模型与教师$11.09057912，533请求费用未知。联合仍3/957，历史数量由[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)更新。统计基于官方任务终局，原失败尝试、实报Token与消费保持。
+Model-only03:10当前[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为852/2136结束：227通过、108有效失败、486缺有效评分、31依赖故障另列；2运行、1282未开始，853次已结束Harbor Trial，已知模型与教师$11.17694566，533请求费用未知。联合仍3/957；历史02:56快照为2442次结束Trial、279通过／280有效失败／860缺评分／90依赖故障，4恢复运行，已知参考费$37.18518857、1058请求缺费用。原1513位置已全部首轮结束，当前恢复详见[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)。统计基于官方任务终局，原失败尝试、实报Token与消费保持。
 
 新增缺分实际来自只读UV缓存和解释器安装标记写入，未执行任务断言。现有环境类已改为母缓存只读绑定、每题元数据和107MiB解释器可写；不再复制6.0GiB全部依赖。三个精确NumPy／PyTorch缓存安装完成，原包版本和官方脚本保持；旧无断言Reward0另列依赖故障并进入同条件恢复。
 
-缓存根软链接实际导致uv安装的os error 20；`71175861313c90def9f23b5bc3c3290d7c48e0e9`使用原Harbor逐目录只读挂载替换软链接，并以copy方式安装轮子，原官方脚本保持。break-filter-js-from-html／Luna High／seed42已完成52挂载的新Episode：有效Reward0、1断言失败、11991 API Token／$0.00182214参考费／398.950095秒；HTML未绕过过滤器，有效0保留。Controller1696641／历史固定恢复2509357并行推进，原Router两并发与固定四并发保持；2750259等待固定恢复结束后接续已修复位置及联合矩阵。H3／Router共享原GPU锁的真实同视频前向记录、原VM磁盘在线扩容及当前接续PID见[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。GLM仍按相同模型和档位最多额外100次请求重试至原期限。
+缓存根软链接实际导致uv安装的os error 20；`71175861313c90def9f23b5bc3c3290d7c48e0e9`使用原Harbor逐目录只读挂载替换软链接，并以copy方式安装轮子，原官方脚本保持。break-filter-js-from-html／Luna High／seed42已完成52挂载的新Episode：有效Reward0、1断言失败、11991 API Token／$0.00182214参考费／398.950095秒；HTML未绕过过滤器，有效0保留。Controller1696641／历史固定恢复2509357并行推进，原Router两并发与固定四并发保持；2850892等待固定恢复结束后单独恢复Caffe Xhigh无评分项，再接续已修复位置及联合矩阵。H3／Router共享原GPU锁的真实同视频前向记录、原VM磁盘在线扩容及当前接续PID见[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。GLM仍按相同模型和档位最多额外100次请求重试至原期限。
+
+pypi-server／seed43已取得12个官方1：Laya原始6组、训练5组、原始Kev OFF Low；额外重试均0。原始Laya OFF／ON High分别53044／54725 API Token、$0.00385200／$0.00497218参考费、534.423／517.475秒，ON High的2次Luna教师短评进入4次真实Router决策。原始OFF Max有20次GLM工具生成、132324 Token、$0.01906652、1099.075秒，返回Effort未报告。每项均保存原始完整Episode和官方评分。
 
 ## 2026-11-14 · GPU共享并发与技术恢复
 
