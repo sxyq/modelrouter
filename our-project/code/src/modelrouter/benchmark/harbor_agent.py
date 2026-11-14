@@ -48,18 +48,23 @@ class A6000DockerEnvironment(DockerEnvironment):
         super().__init__(*args, **kwargs)
         self.apt_mirror = (apt_mirrors or {}).get(self.environment_name)
         self.verifier_dependencies = (verifier_dependencies or {}).get(self.environment_name)
+        if self.verifier_dependencies:
+            self._mounts.append({"type": "bind", "source": self.verifier_dependencies,
+                                 "target": self.verifier_dependencies, "read_only": True})
 
     async def start(self, force_build):
         await super().start(force_build)
         if self.verifier_dependencies:
-            await self.upload_dir(self.verifier_dependencies, "/opt/modelrouter-verifier")
             await self._run_docker_compose_command([
                 "exec", "-T", "main", "sh", "-c",
-                "mkdir -p /root/.local/bin && cp /opt/modelrouter-verifier/bin/uv "
+                "ln -s " + self.verifier_dependencies + " /opt/modelrouter-verifier "
+                "&& mkdir -p /root/.local/bin && cp /opt/modelrouter-verifier/bin/uv "
                 "/opt/modelrouter-verifier/bin/uvx /opt/modelrouter-verifier/bin/env /root/.local/bin/ "
-                "&& mkdir -p /root/.cache /root/.local/share/uv "
-                "&& ln -s /opt/modelrouter-verifier/cache /root/.cache/uv "
-                "&& ln -s /opt/modelrouter-verifier/python /root/.local/share/uv/python"])
+                "&& mkdir -p /root/.cache/uv /root/.local/share/uv/python "
+                "&& cp -as /opt/modelrouter-verifier/cache/. /root/.cache/uv/ "
+                "&& cp -a --remove-destination /opt/modelrouter-verifier/cache/.lock /root/.cache/uv/.lock "
+                "&& cp -as /opt/modelrouter-verifier/python/. /root/.local/share/uv/python/ "
+                "&& cp -a --remove-destination /opt/modelrouter-verifier/python/.lock /root/.local/share/uv/python/.lock"])
         if self.apt_mirror:
             debian = self.apt_mirror.endswith("/debian/")
             expression = "s#http://(archive|security).ubuntu.com/ubuntu/?#" + self.apt_mirror + "#g"
