@@ -1,17 +1,17 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "observed_at": "2026-11-14T11:34:32+08:00",
+    "observed_at": "2026-11-14T11:56:40+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 751,
-    "reward_1": 193,
-    "reward_0": 95,
+    "finished_positions": 757,
+    "reward_1": 195,
+    "reward_0": 99,
     "no_official_reward": 443,
     "verifier_dependency_failure": 20,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1383,
-    "known_model_teacher_reference_usd": 9.55257272,
+    "not_dispatched": 1377,
+    "known_model_teacher_reference_usd": 9.61951265,
     "unknown_cost_requests": 497,
     "provider_retry_count": 1032,
     "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
@@ -494,6 +494,64 @@
     }
   ],
   "observations": [
+    {
+      "recorded_at": "2026-11-14T11:56:40+08:00",
+      "kind": "PASSWORD_RECOVERY_LAYA_ALL_TWELVE_CONFIGURATIONS_COMPLETE",
+      "task": "password-recovery",
+      "seed": 43,
+      "ended_success_valid_failure": [
+        13,
+        7,
+        6
+      ],
+      "remaining_positions": 11,
+      "laya_original_off_on_low_high_max_rewards": [
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "laya_trained_off_on_low_high_max_rewards": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "new_valid_failure_strategies": [
+        "laya_trained_off_model_only_high",
+        "laya_trained_on_model_only_low",
+        "laya_trained_on_model_only_high",
+        "kev_original_off_model_only_low"
+      ],
+      "new_failure_assertions_passed_failed": [
+        1,
+        1
+      ],
+      "new_failure_reason": "Output file exists but does not contain the required password",
+      "new_six_positions_extra_api_retries": 0,
+      "new_six_positions_unknown_cost_requests": 0,
+      "trained_off_max_episode": "7e6e60dc-a449-46c7-9a06-57b1bbdb2503",
+      "trained_off_max_generator_model_effort": "glm-5.3-flash:max",
+      "trained_off_max_generator_requests": 16,
+      "trained_off_max_reward": 1,
+      "trained_off_max_api_tokens": 302005,
+      "trained_off_max_reference_usd": 0.0183827,
+      "trained_off_max_harbor_seconds": 475.216602,
+      "valid_failure_rerun": false,
+      "model_choice_training_teacher_and_trajectory_effects": "NOT_SEPARATED"
+    },
     {
       "recorded_at": "2026-11-14T11:34:32+08:00",
       "kind": "PASSWORD_RECOVERY_SEVEN_COMPLETE_OFFICIAL_EPISODES",
