@@ -10,7 +10,7 @@ Model-only07:02当前[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/revi
 
 pypi-server／seed43全部24组结束：Laya原始、训练及原始Kev各6组共18个官方1，额外重试均0；训练Kev六组累计186次额外重试、生成0次到原期限，原Verifier0保留、质量另列请求故障，费用未知。原始Laya OFF／ON High分别53044／54725 API Token、$0.00385200／$0.00497218参考费、534.423／517.475秒，ON High的2次Luna教师短评进入4次真实Router决策。原始OFF Max有20次GLM工具生成、132324 Token、$0.01906652、1099.075秒，返回Effort未报告。训练Laya ON Max有26生成请求／7教师、14次短评消费，最后GLM请求在原期限单次读超时，但原Verifier给1；该请求消费未知，完整模型费用为空。每项均保存原始完整Episode和官方评分。
 
-mteb-retrieve官方镜像已下载并恢复原alexgshaw/mteb-retrieve:20251031标签，Linux/amd64、21,556,522,773字节；临时域名标签已移除，镜像层保留。mteb-leaderboard新增五固定位置在Agent前因同一镜像入口TLS EOF退出，正沿官方域名下载。两项MTEB五策略均纳入现有限3022818接续，首次故障、原时限和Verifier保持。
+mteb-retrieve官方镜像已下载并恢复原alexgshaw/mteb-retrieve:20251031标签，Linux/amd64、21,556,522,773字节；临时域名标签已移除，镜像层保留。mteb-leaderboard新增五固定位置在Agent前因同一镜像入口TLS EOF退出，正沿官方域名下载。两项MTEB五策略均纳入现有限3031707接续，首次故障、原时限和Verifier保持。
 
 f1ae75923db3479b0b8006165db4342ce3144eda已处理PyTorch CLI真实APT锁竞争与缺libGL.so.1。训练Laya／教师OFF／Low／seed43的[完整Episode](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-cli/laya_trained_off_model_only_low/43/summary.json)取得原官方Reward1、6断言全通过；41生成请求、0额外重试，405103已知API Token、$0.01924296已知参考费，1请求消费未知。完整墙钟2122.637秒；Agent原900秒到期后Verifier896.565秒完成，断言执行213.48秒。旧collecting阶段超时原因仍未知，原失败日志继续保留。
 
