@@ -108,11 +108,18 @@ def technical_interruption(trial, events):
     if (trial.get("error") or {}).get("exception_type") != "AgentTimeoutError":
         return None
     episode_events = [e for e in events if e.get("episode_id") == trial.get("trial_id")]
-    returned = {e["decision_id"] for e in episode_events if e["event"] == "ROUTER_END"}
-    if any(e["event"] == "ROUTER_START" and e["decision_id"] not in returned
-           for e in episode_events):
-        return ("ROUTER_DECISION_TIMEOUT" if any(e["event"] == "GENERATOR_START"
-                for e in episode_events) else "ROUTER_BEFORE_GENERATION_TIMEOUT")
+    if any(e["event"] == "ROUTER_START" for e in episode_events) and not any(
+            e["event"] == "GENERATOR_START" for e in episode_events):
+        return "ROUTER_BEFORE_GENERATION_TIMEOUT"
+    returned = {e["decision_id"]: e for e in episode_events if e["event"] == "ROUTER_END"}
+    ended = [datetime.fromisoformat(e["timestamp"]) for e in episode_events
+             if e["event"] in ("AGENT_CANCELLED", "AGENT_END")]
+    if returned and ended:
+        previous_wall_s = max(e["router_latency_ms"] for e in returned.values()) / 1000
+        if any(e["event"] == "ROUTER_START" and e["decision_id"] not in returned and
+               (min(ended) - datetime.fromisoformat(e["timestamp"])).total_seconds() > previous_wall_s
+               for e in episode_events):
+            return "ROUTER_DECISION_TIMEOUT"
     for request in provider_requests(trial, events):
         attempts = request.get("account_attempts", [])
         if request["role"] == "generator" and request.get("event") == "ERROR" and attempts:
