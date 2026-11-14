@@ -493,10 +493,10 @@ def export_batch_results(root, config, output_root=None):
             continue
         state = json.loads(state_path.read_text())
         row["status"] = state["status"]
-        if state["status"] not in ("EVALUATED", "PARTIAL", "BLOCKED"):
+        trials = rows(private / "official_trials.jsonl")
+        if state["status"] not in ("EVALUATED", "PARTIAL", "BLOCKED") and not trials:
             episodes.append(row)
             continue
-        trials = rows(private / "official_trials.jsonl")
         trial = max(trials, key=lambda r: r["finished_at"]) if trials else {}
         error = trial.get("error") or {}
         events = rows(private / "events.jsonl")
