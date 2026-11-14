@@ -1,19 +1,19 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "observed_at": "2026-11-14T13:16:22+08:00",
+    "observed_at": "2026-11-14T13:35:57+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 771,
+    "finished_positions": 773,
     "reward_1": 204,
     "reward_0": 103,
-    "no_official_reward": 444,
+    "no_official_reward": 446,
     "verifier_dependency_failure": 20,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1363,
+    "not_dispatched": 1361,
     "known_model_teacher_reference_usd": 10.12863356,
-    "unknown_cost_requests": 499,
-    "provider_retry_count": 1072,
+    "unknown_cost_requests": 501,
+    "provider_retry_count": 1134,
     "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
     "joint_positions_started": 0
@@ -494,6 +494,44 @@
     }
   ],
   "observations": [
+    {
+      "recorded_at": "2026-11-14T13:35:57+08:00",
+      "kind": "POLYGLOT_ORIGINAL_LAYA_TEACHER_ON_FIRST_GLM_REQUESTS_FAILED",
+      "task": "polyglot-c-py",
+      "seed": 43,
+      "strategies": [
+        "laya_original_on_model_only_low",
+        "laya_original_on_model_only_high"
+      ],
+      "episode_ids": [
+        "59715823-3e5d-42aa-a1e7-7e322efe5cc3",
+        "201c2377-0111-4802-a710-e4aca7320d2a"
+      ],
+      "http502_http503_attempts_per_episode": [
+        1,
+        31
+      ],
+      "extra_retries_per_episode": 31,
+      "stop": "TASK_DEADLINE",
+      "successful_generator_requests_per_episode": 0,
+      "teacher_requests_per_episode": 0,
+      "teacher_consumed_decisions_per_episode": 0,
+      "raw_official_rewards": [
+        0,
+        0
+      ],
+      "quality_rewards": [
+        null,
+        null
+      ],
+      "harbor_seconds": [
+        1146.607458,
+        1146.270709
+      ],
+      "request_usage_and_billing": "UNKNOWN",
+      "teacher_effect": "NOT_EXECUTED_BECAUSE_FIRST_GENERATOR_REQUEST_NEVER_COMPLETED",
+      "recovery": "EXISTING_DISTINCT_JOB_QUEUE_FOR_UNSCORED_POSITIONS"
+    },
     {
       "recorded_at": "2026-11-14T13:21:53+08:00",
       "kind": "POLYGLOT_GLM_HIGH_UNRECOVERED_AND_MAX_RECOVERED_WITH_VALID_ZERO",
