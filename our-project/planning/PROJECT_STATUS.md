@@ -1,5 +1,17 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-15：依赖缓存写入故障与接续
+
+当前正式范围：**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
+
+00:35原Harbor汇总：Model-only结束827/2136位置，215通过、108有效失败、482缺有效评分、22依赖故障另列，2运行、1307未开始；828次已结束Trial，模型与教师已知参考费$11.07341110，526请求缺费用。联合批次仍3/957结束。历史恢复的当前数量沿[历史报告](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)读取，原1513位置和2333次首次Trial保持身份。
+
+大型依赖缓存整目录复制曾超过原600秒环境启动时限；改为原Harbor只读绑定后，真实Verifier又遇到旧env指向只读缓存及Python软链接的EXTERNALLY-MANAGED写入失败。源码`b4358a1a375e6244db4d24fed70d83f2529566cf`让每题env指向私有可写UV目录、复制107MiB解释器并复用大型包缓存；原官方脚本、包参数、评分标准和任务时限保持。无断言的原Reward0保留，质量单列依赖故障；本次从原记录重建2个Model-only和8个历史只读故障位置，后续新增位置沿同一入口处理。新路径的完整官方评分尚待取得。
+
+原Controller1696641、CUDAworker2496626、历史固定恢复2509357继续；有限接续2713497独立持有原600权限memfd，等待2509357后恢复已修复依赖／环境故障的固定位置，再接续联合剩余固定组，等待1700006后做联合及历史必要恢复。本机代理等待62798跟随1700006／2713497，健康SSH17649保留；旧闲置2675272／2705590／96934／61064已退出。两个1200秒观察沿原ac90l478／Etxhms目录运行。H3当前PID2685675 active，GPU锁保留；11-14同一H3视频期间已观察到Kev真实CUDA前向、fallback=false、12.212秒。
+
+用户VM原磁盘已在线100→200GiB，根ext4可用96.7GiB；QEMU2744271保持16CPU／40GiB。NumPy精确7包、PyTorch CLI原CPU index的20包及recovery原默认index的31包均已安装，缓存约6.0GiB。原权重与11-11两训练实体各18更新保持，本轮不训练。恢复只选择技术故障，已有有效官方1/0不重跑；每次模型／教师请求仍最多额外100次且受原期限约束。
+
 ## 2026-11-14：GPU共享并发与技术恢复
 
 H3状态写入已按负责人授权纳入原`self.lock`，闲置Gateway20:06重启，原Controller1696641自动接续polyglot-rust-c教师ON Low/High两项。20:12当前Gateway2495490 active、原monitor线程恢复、HTTP200、后端按需加载。GPU锁文件保持，H3及Router前向改用共享读锁，训练和Breeze语音继续独占写锁；固定模型4并发、Router Episode2并发。原生worker在0未返回路由且闲置时由1696717切为2496626，仍用原Socket；有限持有2496618在Controller结束后清理worker，当前Agent与凭据继续原过程。源码发布922ee8a2，四权重、AA v7、模型／Effort／4096／Seed／官方时限保持原配置。原回收线程17:22:37因临时状态文件写入冲突退出的日志及部署事实保存在原Model-only `metrics/resource_observations.json`；唯一H3回退包保存部署前源码和35条旧任务状态，较旧单文件源码备份已移除。

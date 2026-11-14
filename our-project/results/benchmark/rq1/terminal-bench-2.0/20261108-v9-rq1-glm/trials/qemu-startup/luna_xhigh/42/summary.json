@@ -28,17 +28,17 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "ProviderResponseError",
+  "error_type": "EnvironmentStartTimeoutError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 530.324429,
+  "episode_wall_s": 721.723212,
   "generator_known_reference_usd": 0.00854958,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 533.679065,
-  "harness_command_wall_s": 544.2805343531072,
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 1255.402277,
+  "harness_command_wall_s": 1272.032647125423,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
-  "latest_trial_reference_usd": null,
+  "latest_trial_reference_usd": 0,
   "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
@@ -46,13 +46,13 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/qemu-startup/luna_xhigh/42",
-  "trial_id": "40ad220c-08fd-4d9e-98fa-71ba3ff21bd8",
+  "trial_id": "2d76dc93-b477-4bc9-9932-cfcdebc6f226",
   "official_reward": null,
   "technical_fault": null,
   "raw_verifier_rewards": [
     null
   ],
-  "outside_harbor_wall_s": 10.601469353107177,
+  "outside_harbor_wall_s": 16.630370125423042,
   "previous_attempts": [
     {
       "trial_id": "c6d876c2-4dd7-4341-8a0a-a9b872227593",
@@ -70,15 +70,32 @@
         "verifier": null
       },
       "error_type": "RuntimeError"
+    },
+    {
+      "trial_id": "40ad220c-08fd-4d9e-98fa-71ba3ff21bd8",
+      "job_name": "qemu-startup--luna_xhigh--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/qemu-startup/luna_xhigh/42/jobs/qemu-startup--luna_xhigh--s42--infrastructure-recovery-1/qemu-startup__qSs63pt",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-09T15:35:23.887871Z",
+      "finished_at": "2026-11-09T15:44:14.212300Z",
+      "duration_sec": 530.324429,
+      "phase_wall_s": {
+        "environment_setup": 10.152532,
+        "agent_setup": 0.000143,
+        "agent_execution": 498.049338,
+        "verifier": null
+      },
+      "error_type": "ProviderResponseError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
   "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 10.152532,
-    "agent_setup": 0.000143,
-    "agent_execution": 498.049338,
+    "environment_setup": 600.099896,
+    "agent_setup": null,
+    "agent_execution": null,
     "verifier": null
   },
   "generator_requests": 11,
@@ -107,7 +124,7 @@
       "decision_id": "40ad220c-08fd-4d9e-98fa-71ba3ff21bd8-10"
     }
   ],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 28,
   "unknown_provider_cost_requests": 1,

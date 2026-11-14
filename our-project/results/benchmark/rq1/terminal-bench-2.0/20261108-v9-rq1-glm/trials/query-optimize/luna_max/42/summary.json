@@ -28,17 +28,17 @@
     "docker_image": "alexgshaw/query-optimize:20251031"
   },
   "reward": null,
-  "error_type": "URLError",
+  "error_type": "EnvironmentStartTimeoutError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 143.321999,
+  "episode_wall_s": 722.071977,
   "generator_known_reference_usd": 0.0008958,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 176.892524,
-  "harness_command_wall_s": 187.94198169745505,
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 898.9645009999999,
+  "harness_command_wall_s": 915.4116090796888,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
-  "latest_trial_reference_usd": null,
+  "latest_trial_reference_usd": 0,
   "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
@@ -46,13 +46,13 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/query-optimize/luna_max/42",
-  "trial_id": "7dc24b16-13ec-4418-9369-ed9eeb60c4f0",
+  "trial_id": "7dbdd43d-389b-4000-99e7-c22bc37342b0",
   "official_reward": null,
   "technical_fault": null,
   "raw_verifier_rewards": [
     null
   ],
-  "outside_harbor_wall_s": 11.04945769745504,
+  "outside_harbor_wall_s": 16.44710807968886,
   "previous_attempts": [
     {
       "trial_id": "a41449bf-4dc6-4c25-8770-1144954091a4",
@@ -70,15 +70,32 @@
         "verifier": null
       },
       "error_type": "URLError"
+    },
+    {
+      "trial_id": "7dc24b16-13ec-4418-9369-ed9eeb60c4f0",
+      "job_name": "query-optimize--luna_max--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/query-optimize/luna_max/42/jobs/query-optimize--luna_max--s42--infrastructure-recovery-1/query-optimize__bFHfHFJ",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-09T16:15:03.315469Z",
+      "finished_at": "2026-11-09T16:17:26.637468Z",
+      "duration_sec": 143.321999,
+      "phase_wall_s": {
+        "environment_setup": 8.629441,
+        "agent_setup": 0.000143,
+        "agent_execution": 109.587738,
+        "verifier": null
+      },
+      "error_type": "URLError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
   "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 8.629441,
-    "agent_setup": 0.000143,
-    "agent_execution": 109.587738,
+    "environment_setup": 600.099659,
+    "agent_setup": null,
+    "agent_execution": null,
     "verifier": null
   },
   "generator_requests": 4,
@@ -87,7 +104,7 @@
   "provider_retry_count": 0,
   "provider_retry_stop_reasons": {},
   "provider_attempts": [],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 5,
   "unknown_provider_cost_requests": 2,

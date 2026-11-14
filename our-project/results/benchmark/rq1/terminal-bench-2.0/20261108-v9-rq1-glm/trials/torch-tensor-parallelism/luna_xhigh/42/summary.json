@@ -3,7 +3,7 @@
   "strategy_id": "luna_xhigh",
   "seed": 42,
   "unit_id": "torch-tensor-parallelism--luna_xhigh--s42",
-  "status": "EVALUATED",
+  "status": "RUNNING",
   "run_id": "20261108-v9-rq1-glm",
   "benchmark_name": "Terminal-Bench",
   "benchmark_version": "2.0",
@@ -27,9 +27,9 @@
     "memory": "4G",
     "storage": "10G"
   },
-  "reward": 0.0,
+  "reward": null,
   "error_type": "AgentTimeoutError",
-  "execution_status": "FINISHED",
+  "execution_status": "RUNNING",
   "effort_comparison_eligible": true,
   "episode_wall_s": 1475.961864,
   "generator_known_reference_usd": 0.00831168,
@@ -48,7 +48,7 @@
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/torch-tensor-parallelism/luna_xhigh/42",
   "trial_id": "543aeefc-4196-4c88-9bff-5e9c1c547785",
   "official_reward": 0.0,
-  "technical_fault": null,
+  "technical_fault": "VERIFIER_DEPENDENCY",
   "raw_verifier_rewards": [
     {
       "reward": 0.0
@@ -56,7 +56,7 @@
   ],
   "outside_harbor_wall_s": 5.25673553179945,
   "previous_attempts": [],
-  "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+  "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
   "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/torch-tensor-parallelism/luna_xhigh/42/jobs/torch-tensor-parallelism--luna_xhigh--s42/torch-tensor-parallelism__wXjYfN7/verifier/reward.txt",
   "phase_wall_s": {
@@ -71,7 +71,7 @@
   "provider_retry_count": 0,
   "provider_retry_stop_reasons": {},
   "provider_attempts": [],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 9,
   "unknown_provider_cost_requests": 1,

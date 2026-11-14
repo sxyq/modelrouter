@@ -28,17 +28,17 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "HTTPError",
+  "error_type": "EnvironmentStartTimeoutError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 743.56894,
+  "episode_wall_s": 1785.975741,
   "generator_known_reference_usd": 0.0265369,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 746.649069,
-  "harness_command_wall_s": 757.2858131825924,
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 2532.62481,
+  "harness_command_wall_s": 2549.005730610341,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
-  "latest_trial_reference_usd": null,
+  "latest_trial_reference_usd": 0,
   "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
@@ -46,13 +46,13 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/qemu-alpine-ssh/luna_xhigh/42",
-  "trial_id": "67c1d640-a178-4221-b384-8e5cc5142cc7",
+  "trial_id": "d8bc5e19-8c80-4dd6-998c-a37ba1c6c234",
   "official_reward": null,
   "technical_fault": null,
   "raw_verifier_rewards": [
     null
   ],
-  "outside_harbor_wall_s": 10.636744182592338,
+  "outside_harbor_wall_s": 16.380920610341036,
   "previous_attempts": [
     {
       "trial_id": "7218513c-5140-4156-b4ad-58427aa5cc12",
@@ -70,15 +70,32 @@
         "verifier": null
       },
       "error_type": "RuntimeError"
+    },
+    {
+      "trial_id": "67c1d640-a178-4221-b384-8e5cc5142cc7",
+      "job_name": "qemu-alpine-ssh--luna_xhigh--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/qemu-alpine-ssh/luna_xhigh/42/jobs/qemu-alpine-ssh--luna_xhigh--s42--infrastructure-recovery-1/qemu-alpine-ssh__WpQmN2s",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-09T15:05:59.067063Z",
+      "finished_at": "2026-11-09T15:18:22.636003Z",
+      "duration_sec": 743.56894,
+      "phase_wall_s": {
+        "environment_setup": 10.675584,
+        "agent_setup": 0.000137,
+        "agent_execution": 699.889147,
+        "verifier": null
+      },
+      "error_type": "HTTPError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": 520,
   "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 10.675584,
-    "agent_setup": 0.000137,
-    "agent_execution": 699.889147,
+    "environment_setup": 600.100845,
+    "agent_setup": null,
+    "agent_execution": null,
     "verifier": null
   },
   "generator_requests": 19,
@@ -107,7 +124,7 @@
       "decision_id": "67c1d640-a178-4221-b384-8e5cc5142cc7-18"
     }
   ],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 28,
   "unknown_provider_cost_requests": 1,

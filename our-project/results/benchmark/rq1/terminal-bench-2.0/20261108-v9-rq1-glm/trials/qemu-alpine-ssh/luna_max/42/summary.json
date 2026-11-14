@@ -27,34 +27,32 @@
     "memory": "4G",
     "storage": "10G"
   },
-  "reward": 0.0,
-  "error_type": "AgentTimeoutError",
-  "execution_status": "FINISHED",
+  "reward": null,
+  "error_type": "EnvironmentStartTimeoutError",
+  "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 999.340174,
+  "episode_wall_s": 779.071861,
   "generator_known_reference_usd": 0.03423512,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 1002.4813660000001,
-  "harness_command_wall_s": 1012.4686822704971,
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 1781.553227,
+  "harness_command_wall_s": 1796.5436402689666,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": 0.03423512,
-  "latest_trial_reference_usd": 0.03423512,
-  "verifier_dependency_failure": true,
+  "latest_trial_reference_usd": 0,
+  "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
   "environment_cost_usd": null,
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/qemu-alpine-ssh/luna_max/42",
-  "trial_id": "ab068f1d-674a-40d6-bcb6-e9ec944322ac",
-  "official_reward": 0.0,
+  "trial_id": "7d0c798b-c30a-4713-ad54-4d2855812c7f",
+  "official_reward": null,
   "technical_fault": null,
   "raw_verifier_rewards": [
-    {
-      "reward": 0.0
-    }
+    null
   ],
-  "outside_harbor_wall_s": 9.98731627049699,
+  "outside_harbor_wall_s": 14.99041326896645,
   "previous_attempts": [
     {
       "trial_id": "b04040c9-81ba-4ed1-9ea0-17883007954a",
@@ -72,16 +70,33 @@
         "verifier": null
       },
       "error_type": "RuntimeError"
+    },
+    {
+      "trial_id": "ab068f1d-674a-40d6-bcb6-e9ec944322ac",
+      "job_name": "qemu-alpine-ssh--luna_max--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/qemu-alpine-ssh/luna_max/42/jobs/qemu-alpine-ssh--luna_max--s42--infrastructure-recovery-1/qemu-alpine-ssh__7F65eF4",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-09T15:00:01.304351Z",
+      "finished_at": "2026-11-09T15:16:40.644525Z",
+      "duration_sec": 999.340174,
+      "phase_wall_s": {
+        "environment_setup": 9.248729,
+        "agent_setup": 0.000166,
+        "agent_execution": 900.126973,
+        "verifier": 65.922923
+      },
+      "error_type": "AgentTimeoutError"
     }
   ],
-  "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+  "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
-  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/qemu-alpine-ssh/luna_max/42/jobs/qemu-alpine-ssh--luna_max--s42--infrastructure-recovery-1/qemu-alpine-ssh__7F65eF4/verifier/reward.txt",
+  "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 9.248729,
-    "agent_setup": 0.000166,
-    "agent_execution": 900.126973,
-    "verifier": 65.922923
+    "environment_setup": 600.09591,
+    "agent_setup": null,
+    "agent_execution": null,
+    "verifier": null
   },
   "generator_requests": 23,
   "teacher_requests": 0,
@@ -89,7 +104,7 @@
   "provider_retry_count": 0,
   "provider_retry_stop_reasons": {},
   "provider_attempts": [],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 46,
   "unknown_provider_cost_requests": 0,

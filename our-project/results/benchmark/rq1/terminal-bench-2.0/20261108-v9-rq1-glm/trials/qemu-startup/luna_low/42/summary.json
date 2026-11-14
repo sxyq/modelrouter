@@ -27,34 +27,32 @@
     "memory": "4G",
     "storage": "10G"
   },
-  "reward": 0.0,
-  "error_type": null,
-  "execution_status": "FINISHED",
+  "reward": null,
+  "error_type": "EnvironmentStartTimeoutError",
+  "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 439.929947,
+  "episode_wall_s": 1473.501438,
   "generator_known_reference_usd": 0.00338152,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 443.13207700000004,
-  "harness_command_wall_s": 453.04724546708167,
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 1916.633515,
+  "harness_command_wall_s": 1932.4653029982,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": 0.00338152,
-  "latest_trial_reference_usd": 0.00338152,
-  "verifier_dependency_failure": true,
+  "latest_trial_reference_usd": 0,
+  "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
   "environment_cost_usd": null,
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/qemu-startup/luna_low/42",
-  "trial_id": "e3c3e685-7b77-423c-984e-204ef335e1b1",
-  "official_reward": 0.0,
+  "trial_id": "02e6f69d-0697-4c0b-b318-a8392240608a",
+  "official_reward": null,
   "technical_fault": null,
   "raw_verifier_rewards": [
-    {
-      "reward": 0.0
-    }
+    null
   ],
-  "outside_harbor_wall_s": 9.915168467081628,
+  "outside_harbor_wall_s": 15.83178799820007,
   "previous_attempts": [
     {
       "trial_id": "1da0400a-3d20-4642-8214-74c90abfb6a4",
@@ -72,16 +70,33 @@
         "verifier": null
       },
       "error_type": "RuntimeError"
+    },
+    {
+      "trial_id": "e3c3e685-7b77-423c-984e-204ef335e1b1",
+      "job_name": "qemu-startup--luna_low--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/qemu-startup/luna_low/42/jobs/qemu-startup--luna_low--s42--infrastructure-recovery-1/qemu-startup__dJPni6B",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-09T15:23:02.892733Z",
+      "finished_at": "2026-11-09T15:30:22.822680Z",
+      "duration_sec": 439.929947,
+      "phase_wall_s": {
+        "environment_setup": 9.563484,
+        "agent_setup": 0.000133,
+        "agent_execution": 303.371267,
+        "verifier": 101.377041
+      },
+      "error_type": null
     }
   ],
-  "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+  "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
-  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/qemu-startup/luna_low/42/jobs/qemu-startup--luna_low--s42--infrastructure-recovery-1/qemu-startup__dJPni6B/verifier/reward.txt",
+  "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 9.563484,
-    "agent_setup": 0.000133,
-    "agent_execution": 303.371267,
-    "verifier": 101.377041
+    "environment_setup": 600.01506,
+    "agent_setup": null,
+    "agent_execution": null,
+    "verifier": null
   },
   "generator_requests": 14,
   "teacher_requests": 0,
@@ -89,7 +104,7 @@
   "provider_retry_count": 0,
   "provider_retry_stop_reasons": {},
   "provider_attempts": [],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 16,
   "unknown_provider_cost_requests": 0,

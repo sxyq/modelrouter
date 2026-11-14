@@ -1,5 +1,13 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
+## 2026-11-15 · 原Verifier依赖与继续运行
+
+Model-only当前[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为827/2136结束：215通过、108有效失败、482缺有效评分、22依赖故障另列；2运行、1307未开始，828次已结束Harbor Trial，已知模型与教师$11.07341110，526请求费用未知。联合仍3/957，历史数量由[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)更新。统计基于官方任务终局，原失败尝试、实报Token与消费保持。
+
+新增缺分实际来自只读UV缓存和解释器安装标记写入，未执行任务断言。现有环境类已改为母缓存只读绑定、每题元数据和107MiB解释器可写；不再复制6.0GiB全部依赖。三个精确NumPy／PyTorch缓存安装完成，原包版本和官方脚本保持。代码`b4358a1a375e6244db4d24fed70d83f2529566cf`已部署，完整评分待新Episode；旧无断言Reward0另列依赖故障并进入同条件恢复。
+
+Controller1696641／历史固定恢复2509357并行推进，原Router两并发与固定四并发保持；2713497等待固定恢复结束后接续已修复位置及联合矩阵。H3／Router共享原GPU锁的真实同视频前向记录、原VM磁盘在线扩容及当前接续PID见[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。有效官方0保持，GLM仍按相同模型和档位最多额外100次请求重试至原期限。
+
 ## 2026-11-14 · GPU共享并发与技术恢复
 
 H3状态文件写入已纳入原锁，闲置Gateway按授权重启，原Model-only两项已在20:06自动接续。现有GPU锁文件保持，H3和Router前向共享读锁，训练和Breeze语音继续独占；原固定模型4并发、Router2并发。Gateway2495490、原生Router2496626运行，四权重及正式比较条件沿原配置。故障日志、实际进程接续、35条H3旧状态的保留位置及唯一回退包见原[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。
