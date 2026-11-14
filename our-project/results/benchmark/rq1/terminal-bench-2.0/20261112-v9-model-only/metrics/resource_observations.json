@@ -1,17 +1,17 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "observed_at": "2026-11-14T12:16:38+08:00",
+    "observed_at": "2026-11-14T12:57:48+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 761,
-    "reward_1": 197,
-    "reward_0": 101,
+    "finished_positions": 769,
+    "reward_1": 204,
+    "reward_0": 102,
     "no_official_reward": 443,
     "verifier_dependency_failure": 20,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1373,
-    "known_model_teacher_reference_usd": 9.68908993,
+    "not_dispatched": 1365,
+    "known_model_teacher_reference_usd": 10.09989337,
     "unknown_cost_requests": 497,
     "provider_retry_count": 1032,
     "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
@@ -494,6 +494,71 @@
     }
   ],
   "observations": [
+    {
+      "recorded_at": "2026-11-14T12:57:48+08:00",
+      "kind": "PASSWORD_RECOVERY_ALL_24_COMPLETE_AND_TERRA_ALL_THREE_EFFORTS_MATCHED",
+      "task": "password-recovery",
+      "seed": 43,
+      "ended_success_valid_failure_unscored": [
+        24,
+        16,
+        8,
+        0
+      ],
+      "all_extra_api_retries": 0,
+      "unknown_cost_requests": 0,
+      "api_tokens": 3600344,
+      "api_reference_usd": 0.63935043,
+      "known_reported_cache_read_tokens": 1757248,
+      "cache_read_unreported_requests": 26,
+      "teacher_requests": 26,
+      "teacher_consumed_decisions": 60,
+      "harbor_seconds_sum": 11851.330736,
+      "laya_original_trained_successes_of_six": [
+        5,
+        2
+      ],
+      "kev_original_trained_successes_of_six": [
+        3,
+        6
+      ],
+      "kev_trained_all_generator_model": "gpt-6.1-terra",
+      "kev_trained_off_on_generator_requests_by_low_high_max": [
+        [
+          10,
+          10,
+          8
+        ],
+        [
+          8,
+          9,
+          10
+        ]
+      ],
+      "kev_trained_returned_effort_matches_requested": true,
+      "kev_trained_all_generator_endpoint": "terra-jiji",
+      "kev_original_all_generator_model": "gpt-6-luna",
+      "kev_original_off_on_api_reference_usd": [
+        0.05786462,
+        0.04231276
+      ],
+      "kev_trained_off_on_api_reference_usd": [
+        0.2129124,
+        0.1748891
+      ],
+      "kev_trained_on_high_max_episode_ids": [
+        "01c36ac9-9db0-42ae-b878-a689a77f93d4",
+        "0aa933a6-010a-4cec-8541-fa0bd7367990"
+      ],
+      "next_task": "polyglot-c-py",
+      "next_strategy": "laya_original_off_model_only_low",
+      "next_episode": "5f741ead-dcf1-4e62-b082-bf83a8b855d1",
+      "next_official_reward": 0,
+      "next_failure": "Unexpected cmain file violates official single-file assertion",
+      "valid_failure_rerun": false,
+      "supplier_router_tool_resource_dollars": "UNKNOWN",
+      "attribution": "MODEL_CHOICE_TRAINING_TEACHER_AND_LATER_TRAJECTORY_EFFECTS_NOT_SEPARATED"
+    },
     {
       "recorded_at": "2026-11-14T12:16:38+08:00",
       "kind": "PASSWORD_RECOVERY_SEVENTEEN_COMPLETE_OFFICIAL_EPISODES",
