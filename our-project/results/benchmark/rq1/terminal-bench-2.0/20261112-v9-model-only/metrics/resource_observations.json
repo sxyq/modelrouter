@@ -1,19 +1,20 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "observed_at": "2026-11-14T09:40:30+08:00",
+    "observed_at": "2026-11-14T10:32:06+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 729,
-    "reward_1": 180,
-    "reward_0": 92,
-    "no_official_reward": 437,
+    "finished_positions": 739,
+    "reward_1": 188,
+    "reward_0": 93,
+    "no_official_reward": 438,
     "verifier_dependency_failure": 20,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1405,
-    "known_model_teacher_reference_usd": 9.39864195,
-    "unknown_cost_requests": 491,
+    "not_dispatched": 1395,
+    "known_model_teacher_reference_usd": 9.45543906,
+    "unknown_cost_requests": 492,
     "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
+    "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
     "joint_positions_started": 0
   },
   "current_recovery_queue": {
@@ -492,6 +493,20 @@
     }
   ],
   "observations": [
+    {
+      "recorded_at": "2026-11-14T10:32:06+08:00",
+      "kind": "REPORT_TERMINOLOGY_MATCHES_EFFECTIVE_GRADE_AND_RAW_REWARD",
+      "source_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
+      "file": "our-project/code/src/modelrouter/benchmark/rq1_analysis.py",
+      "human_label": "缺有效评分",
+      "definition": "No raw Reward, or a recorded request/resource interruption with original raw zero retained",
+      "raw_reward_field": "official_reward",
+      "numeric_grade_and_episode_protocol_changed": false,
+      "actual_verification": "Existing --collect-only entry rendered the revised labels from real Harbor records",
+      "active_controller_retired": false,
+      "previous_source_archive": "/home/syy/路由/.runtime/modelrouter-previous-source.tar.gz",
+      "backup_scope": "Pre-deployment source, CLI, runtime configuration and verifier environment; generated caches excluded"
+    },
     {
       "recorded_at": "2026-11-14T09:40:30+08:00",
       "kind": "VALID_NGINX_TASK_FAILURE_WITH_IDENTICAL_INITIAL_MODEL_REQUEST",

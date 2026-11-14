@@ -304,7 +304,7 @@
     "factor": "teacher",
     "left": "laya_trained_off_model_only_high",
     "right": "laya_trained_on_model_only_high",
-    "scored_pairs": 8,
+    "scored_pairs": 9,
     "scored_task_seeds": [
       [
         "gpt2-codegolf",
@@ -337,6 +337,10 @@
       [
         "multi-source-data-merger",
         43
+      ],
+      [
+        "nginx-request-logging",
+        43
       ]
     ],
     "reference_known_task_seeds": [
@@ -358,6 +362,123 @@
       ],
       [
         "multi-source-data-merger",
+        43
+      ],
+      [
+        "nginx-request-logging",
+        43
+      ]
+    ],
+    "left_run_ids": [
+      "20261112-v9-model-only"
+    ],
+    "right_run_ids": [
+      "20261112-v9-model-only"
+    ],
+    "left_reward_1": 7,
+    "right_reward_1": 4,
+    "reference_known_pairs": 6,
+    "left_reward_1_reference_known_pairs": 5,
+    "right_reward_1_reference_known_pairs": 4,
+    "left_reference_known_pairs_usd": 0.04172456,
+    "right_reference_known_pairs_usd": 0.0177787,
+    "latest_trial_reference_known_pairs": 6,
+    "left_latest_trial_reference_usd": 0.04172456,
+    "right_latest_trial_reference_usd": 0.0177787,
+    "reward_delta_sum": -3.0,
+    "generator_requests_delta_sum": -22,
+    "teacher_requests_delta_sum": 24,
+    "teacher_known_reference_usd_delta_sum": null,
+    "known_cache_read_tokens_delta_sum": -292672,
+    "logical_model_changes_delta_sum": -3,
+    "router_wall_s_delta_sum": -24.20227998495102,
+    "episode_wall_s_delta_sum": -572.674781,
+    "harness_command_wall_s_delta_sum": -572.7823076266795,
+    "known_reference_delta_usd": null,
+    "complete_cash_net_benefit_usd": null
+  },
+  {
+    "factor": "teacher",
+    "left": "kev_original_off_model_only_high",
+    "right": "kev_original_on_model_only_high",
+    "scored_pairs": 10,
+    "scored_task_seeds": [
+      [
+        "gpt2-codegolf",
+        43
+      ],
+      [
+        "headless-terminal",
+        43
+      ],
+      [
+        "hf-model-inference",
+        43
+      ],
+      [
+        "kv-store-grpc",
+        43
+      ],
+      [
+        "make-doom-for-mips",
+        43
+      ],
+      [
+        "merge-diff-arc-agi-task",
+        43
+      ],
+      [
+        "model-extraction-relu-logits",
+        43
+      ],
+      [
+        "multi-source-data-merger",
+        43
+      ],
+      [
+        "nginx-request-logging",
+        43
+      ],
+      [
+        "openssl-selfsigned-cert",
+        43
+      ]
+    ],
+    "reference_known_task_seeds": [
+      [
+        "headless-terminal",
+        43
+      ],
+      [
+        "hf-model-inference",
+        43
+      ],
+      [
+        "kv-store-grpc",
+        43
+      ],
+      [
+        "make-doom-for-mips",
+        43
+      ],
+      [
+        "merge-diff-arc-agi-task",
+        43
+      ],
+      [
+        "model-extraction-relu-logits",
+        43
+      ],
+      [
+        "multi-source-data-merger",
+        43
+      ],
+      [
+        "nginx-request-logging",
+        43
+      ],
+      [
+        "openssl-selfsigned-cert",
         43
       ]
     ],
@@ -368,129 +489,24 @@
       "20261112-v9-model-only"
     ],
     "left_reward_1": 6,
-    "right_reward_1": 3,
-    "reference_known_pairs": 5,
-    "left_reward_1_reference_known_pairs": 4,
-    "right_reward_1_reference_known_pairs": 3,
-    "left_reference_known_pairs_usd": 0.0283932,
-    "right_reference_known_pairs_usd": 0.01324864,
-    "latest_trial_reference_known_pairs": 5,
-    "left_latest_trial_reference_usd": 0.0283932,
-    "right_latest_trial_reference_usd": 0.01324864,
-    "reward_delta_sum": -3.0,
-    "generator_requests_delta_sum": -17,
-    "teacher_requests_delta_sum": 22,
-    "teacher_known_reference_usd_delta_sum": null,
-    "known_cache_read_tokens_delta_sum": -266432,
-    "logical_model_changes_delta_sum": -3,
-    "router_wall_s_delta_sum": -19.189190113916993,
-    "episode_wall_s_delta_sum": -431.069113,
-    "harness_command_wall_s_delta_sum": -431.0781825296581,
-    "known_reference_delta_usd": null,
-    "complete_cash_net_benefit_usd": null
-  },
-  {
-    "factor": "teacher",
-    "left": "kev_original_off_model_only_high",
-    "right": "kev_original_on_model_only_high",
-    "scored_pairs": 9,
-    "scored_task_seeds": [
-      [
-        "gpt2-codegolf",
-        43
-      ],
-      [
-        "headless-terminal",
-        43
-      ],
-      [
-        "hf-model-inference",
-        43
-      ],
-      [
-        "kv-store-grpc",
-        43
-      ],
-      [
-        "make-doom-for-mips",
-        43
-      ],
-      [
-        "merge-diff-arc-agi-task",
-        43
-      ],
-      [
-        "model-extraction-relu-logits",
-        43
-      ],
-      [
-        "multi-source-data-merger",
-        43
-      ],
-      [
-        "openssl-selfsigned-cert",
-        43
-      ]
-    ],
-    "reference_known_task_seeds": [
-      [
-        "headless-terminal",
-        43
-      ],
-      [
-        "hf-model-inference",
-        43
-      ],
-      [
-        "kv-store-grpc",
-        43
-      ],
-      [
-        "make-doom-for-mips",
-        43
-      ],
-      [
-        "merge-diff-arc-agi-task",
-        43
-      ],
-      [
-        "model-extraction-relu-logits",
-        43
-      ],
-      [
-        "multi-source-data-merger",
-        43
-      ],
-      [
-        "openssl-selfsigned-cert",
-        43
-      ]
-    ],
-    "left_run_ids": [
-      "20261112-v9-model-only"
-    ],
-    "right_run_ids": [
-      "20261112-v9-model-only"
-    ],
-    "left_reward_1": 5,
-    "right_reward_1": 5,
-    "reference_known_pairs": 8,
-    "left_reward_1_reference_known_pairs": 5,
-    "right_reward_1_reference_known_pairs": 5,
-    "left_reference_known_pairs_usd": 0.04298746,
-    "right_reference_known_pairs_usd": 0.052032300000000004,
-    "latest_trial_reference_known_pairs": 8,
-    "left_latest_trial_reference_usd": 0.04298746,
-    "right_latest_trial_reference_usd": 0.052032300000000004,
+    "right_reward_1": 6,
+    "reference_known_pairs": 9,
+    "left_reward_1_reference_known_pairs": 6,
+    "right_reward_1_reference_known_pairs": 6,
+    "left_reference_known_pairs_usd": 0.04498642,
+    "right_reference_known_pairs_usd": 0.05435302,
+    "latest_trial_reference_known_pairs": 9,
+    "left_latest_trial_reference_usd": 0.04498642,
+    "right_latest_trial_reference_usd": 0.05435302,
     "reward_delta_sum": 0.0,
     "generator_requests_delta_sum": 7,
-    "teacher_requests_delta_sum": 27,
+    "teacher_requests_delta_sum": 29,
     "teacher_known_reference_usd_delta_sum": null,
-    "known_cache_read_tokens_delta_sum": -34688,
+    "known_cache_read_tokens_delta_sum": -29312,
     "logical_model_changes_delta_sum": 0,
-    "router_wall_s_delta_sum": -1007.6589272134006,
-    "episode_wall_s_delta_sum": 217.38346400000006,
-    "harness_command_wall_s_delta_sum": -36.66135008260608,
+    "router_wall_s_delta_sum": -1004.178661711514,
+    "episode_wall_s_delta_sum": 275.6761310000001,
+    "harness_command_wall_s_delta_sum": 21.38655520044267,
     "known_reference_delta_usd": null,
     "complete_cash_net_benefit_usd": null
   },
@@ -724,7 +740,7 @@
     "factor": "teacher",
     "left": "laya_trained_off_model_only_low",
     "right": "laya_trained_on_model_only_low",
-    "scored_pairs": 10,
+    "scored_pairs": 11,
     "scored_task_seeds": [
       [
         "gpt2-codegolf",
@@ -763,6 +779,10 @@
         43
       ],
       [
+        "nginx-request-logging",
+        43
+      ],
+      [
         "openssl-selfsigned-cert",
         43
       ]
@@ -793,6 +813,10 @@
         43
       ],
       [
+        "nginx-request-logging",
+        43
+      ],
+      [
         "openssl-selfsigned-cert",
         43
       ]
@@ -804,24 +828,24 @@
       "20261112-v9-model-only"
     ],
     "left_reward_1": 5,
-    "right_reward_1": 5,
-    "reference_known_pairs": 7,
+    "right_reward_1": 6,
+    "reference_known_pairs": 8,
     "left_reward_1_reference_known_pairs": 4,
-    "right_reward_1_reference_known_pairs": 4,
-    "left_reference_known_pairs_usd": 0.03443025,
-    "right_reference_known_pairs_usd": 0.023412060000000002,
-    "latest_trial_reference_known_pairs": 7,
-    "left_latest_trial_reference_usd": 0.03443025,
-    "right_latest_trial_reference_usd": 0.023412060000000002,
-    "reward_delta_sum": 0.0,
-    "generator_requests_delta_sum": 3,
-    "teacher_requests_delta_sum": 22,
+    "right_reward_1_reference_known_pairs": 5,
+    "left_reference_known_pairs_usd": 0.04262229,
+    "right_reference_known_pairs_usd": 0.03669492,
+    "latest_trial_reference_known_pairs": 8,
+    "left_latest_trial_reference_usd": 0.04262229,
+    "right_latest_trial_reference_usd": 0.03669492,
+    "reward_delta_sum": 1.0,
+    "generator_requests_delta_sum": 7,
+    "teacher_requests_delta_sum": 26,
     "teacher_known_reference_usd_delta_sum": null,
-    "known_cache_read_tokens_delta_sum": 181312,
+    "known_cache_read_tokens_delta_sum": 219584,
     "logical_model_changes_delta_sum": 3,
-    "router_wall_s_delta_sum": -524.3997805453837,
-    "episode_wall_s_delta_sum": -165.15291000000022,
-    "harness_command_wall_s_delta_sum": -825.7814661078155,
+    "router_wall_s_delta_sum": -522.5025692097843,
+    "episode_wall_s_delta_sum": -60.14203500000022,
+    "harness_command_wall_s_delta_sum": -720.9441993888468,
     "known_reference_delta_usd": null,
     "complete_cash_net_benefit_usd": null
   },
@@ -829,7 +853,7 @@
     "factor": "teacher",
     "left": "kev_original_off_model_only_low",
     "right": "kev_original_on_model_only_low",
-    "scored_pairs": 7,
+    "scored_pairs": 8,
     "scored_task_seeds": [
       [
         "gpt2-codegolf",
@@ -857,6 +881,10 @@
       ],
       [
         "multi-source-data-merger",
+        43
+      ],
+      [
+        "nginx-request-logging",
         43
       ]
     ],
@@ -888,6 +916,10 @@
       [
         "multi-source-data-merger",
         43
+      ],
+      [
+        "nginx-request-logging",
+        43
       ]
     ],
     "left_run_ids": [
@@ -897,25 +929,25 @@
       "20261112-v9-model-only"
     ],
     "left_reward_1": 2,
-    "right_reward_1": 2,
-    "reference_known_pairs": 7,
+    "right_reward_1": 3,
+    "reference_known_pairs": 8,
     "left_reward_1_reference_known_pairs": 2,
-    "right_reward_1_reference_known_pairs": 2,
-    "left_reference_known_pairs_usd": 0.01440312,
-    "right_reference_known_pairs_usd": 0.01893394,
-    "latest_trial_reference_known_pairs": 7,
-    "left_latest_trial_reference_usd": 0.01440312,
-    "right_latest_trial_reference_usd": 0.01893394,
-    "reward_delta_sum": 0.0,
-    "generator_requests_delta_sum": 0,
-    "teacher_requests_delta_sum": 11,
+    "right_reward_1_reference_known_pairs": 3,
+    "left_reference_known_pairs_usd": 0.0154124,
+    "right_reference_known_pairs_usd": 0.02145196,
+    "latest_trial_reference_known_pairs": 8,
+    "left_latest_trial_reference_usd": 0.0154124,
+    "right_latest_trial_reference_usd": 0.02145196,
+    "reward_delta_sum": 1.0,
+    "generator_requests_delta_sum": 4,
+    "teacher_requests_delta_sum": 13,
     "teacher_known_reference_usd_delta_sum": null,
-    "known_cache_read_tokens_delta_sum": 13312,
+    "known_cache_read_tokens_delta_sum": 26496,
     "logical_model_changes_delta_sum": 0,
-    "router_wall_s_delta_sum": -998.8139493837953,
-    "episode_wall_s_delta_sum": -589.9476740000002,
-    "harness_command_wall_s_delta_sum": -629.9172790646553,
-    "known_reference_delta_usd": 0.00453082,
+    "router_wall_s_delta_sum": -960.6656709704548,
+    "episode_wall_s_delta_sum": -499.37642100000016,
+    "harness_command_wall_s_delta_sum": -539.358209002763,
+    "known_reference_delta_usd": 0.00603956,
     "complete_cash_net_benefit_usd": null
   },
   {
@@ -1112,7 +1144,7 @@
     "factor": "teacher",
     "left": "laya_trained_off_model_only_max",
     "right": "laya_trained_on_model_only_max",
-    "scored_pairs": 10,
+    "scored_pairs": 11,
     "scored_task_seeds": [
       [
         "gpt2-codegolf",
@@ -1147,6 +1179,10 @@
         43
       ],
       [
+        "nginx-request-logging",
+        43
+      ],
+      [
         "openssl-selfsigned-cert",
         43
       ],
@@ -1163,6 +1199,10 @@
       [
         "multi-source-data-merger",
         43
+      ],
+      [
+        "nginx-request-logging",
+        43
       ]
     ],
     "left_run_ids": [
@@ -1171,25 +1211,25 @@
     "right_run_ids": [
       "20261112-v9-model-only"
     ],
-    "left_reward_1": 8,
-    "right_reward_1": 5,
-    "reference_known_pairs": 2,
-    "left_reward_1_reference_known_pairs": 2,
-    "right_reward_1_reference_known_pairs": 2,
-    "left_reference_known_pairs_usd": 0.02336841,
-    "right_reference_known_pairs_usd": 0.03061154,
-    "latest_trial_reference_known_pairs": 2,
-    "left_latest_trial_reference_usd": 0.02336841,
-    "right_latest_trial_reference_usd": 0.03061154,
+    "left_reward_1": 9,
+    "right_reward_1": 6,
+    "reference_known_pairs": 3,
+    "left_reward_1_reference_known_pairs": 3,
+    "right_reward_1_reference_known_pairs": 3,
+    "left_reference_known_pairs_usd": 0.03946183,
+    "right_reference_known_pairs_usd": 0.04843487,
+    "latest_trial_reference_known_pairs": 3,
+    "left_latest_trial_reference_usd": 0.03946183,
+    "right_latest_trial_reference_usd": 0.04843487,
     "reward_delta_sum": -3.0,
-    "generator_requests_delta_sum": -21,
-    "teacher_requests_delta_sum": 34,
+    "generator_requests_delta_sum": -17,
+    "teacher_requests_delta_sum": 41,
     "teacher_known_reference_usd_delta_sum": null,
-    "known_cache_read_tokens_delta_sum": -487936,
+    "known_cache_read_tokens_delta_sum": -449344,
     "logical_model_changes_delta_sum": 3,
-    "router_wall_s_delta_sum": 1245.5918713472784,
-    "episode_wall_s_delta_sum": 665.076404,
-    "harness_command_wall_s_delta_sum": 694.4842634629458,
+    "router_wall_s_delta_sum": 1264.210386192426,
+    "episode_wall_s_delta_sum": 779.195606,
+    "harness_command_wall_s_delta_sum": 808.5654338803142,
     "known_reference_delta_usd": null,
     "complete_cash_net_benefit_usd": null
   },
@@ -1197,7 +1237,7 @@
     "factor": "teacher",
     "left": "kev_original_off_model_only_max",
     "right": "kev_original_on_model_only_max",
-    "scored_pairs": 8,
+    "scored_pairs": 9,
     "scored_task_seeds": [
       [
         "gpt2-codegolf",
@@ -1228,6 +1268,10 @@
         43
       ],
       [
+        "nginx-request-logging",
+        43
+      ],
+      [
         "openssl-selfsigned-cert",
         43
       ]
@@ -1262,6 +1306,10 @@
         43
       ],
       [
+        "nginx-request-logging",
+        43
+      ],
+      [
         "openssl-selfsigned-cert",
         43
       ]
@@ -1272,26 +1320,26 @@
     "right_run_ids": [
       "20261112-v9-model-only"
     ],
-    "left_reward_1": 5,
-    "right_reward_1": 5,
-    "reference_known_pairs": 8,
-    "left_reward_1_reference_known_pairs": 5,
-    "right_reward_1_reference_known_pairs": 5,
-    "left_reference_known_pairs_usd": 0.09296734,
-    "right_reference_known_pairs_usd": 0.07701616,
-    "latest_trial_reference_known_pairs": 8,
-    "left_latest_trial_reference_usd": 0.09296734,
-    "right_latest_trial_reference_usd": 0.07701616,
+    "left_reward_1": 6,
+    "right_reward_1": 6,
+    "reference_known_pairs": 9,
+    "left_reward_1_reference_known_pairs": 6,
+    "right_reward_1_reference_known_pairs": 6,
+    "left_reference_known_pairs_usd": 0.1001827,
+    "right_reference_known_pairs_usd": 0.08311468,
+    "latest_trial_reference_known_pairs": 9,
+    "left_latest_trial_reference_usd": 0.1001827,
+    "right_latest_trial_reference_usd": 0.08311468,
     "reward_delta_sum": 0.0,
     "generator_requests_delta_sum": -10,
-    "teacher_requests_delta_sum": 24,
+    "teacher_requests_delta_sum": 27,
     "teacher_known_reference_usd_delta_sum": null,
-    "known_cache_read_tokens_delta_sum": -139648,
+    "known_cache_read_tokens_delta_sum": -127232,
     "logical_model_changes_delta_sum": 0,
-    "router_wall_s_delta_sum": -1170.3736492879689,
-    "episode_wall_s_delta_sum": -890.3643359999999,
-    "harness_command_wall_s_delta_sum": -1063.717248307541,
-    "known_reference_delta_usd": -0.015951179999999995,
+    "router_wall_s_delta_sum": -1159.423239544034,
+    "episode_wall_s_delta_sum": -829.1195209999998,
+    "harness_command_wall_s_delta_sum": -1002.3771478477865,
+    "known_reference_delta_usd": -0.017068019999999996,
     "complete_cash_net_benefit_usd": null
   },
   {
@@ -1700,7 +1748,7 @@
     "factor": "training",
     "left": "laya_original_on_model_only_high",
     "right": "laya_trained_on_model_only_high",
-    "scored_pairs": 7,
+    "scored_pairs": 8,
     "scored_task_seeds": [
       [
         "gpt2-codegolf",
@@ -1727,6 +1775,10 @@
         43
       ],
       [
+        "nginx-request-logging",
+        43
+      ],
+      [
         "openssl-selfsigned-cert",
         43
       ]
@@ -1749,6 +1801,10 @@
         43
       ],
       [
+        "nginx-request-logging",
+        43
+      ],
+      [
         "openssl-selfsigned-cert",
         43
       ]
@@ -1759,25 +1815,25 @@
     "right_run_ids": [
       "20261112-v9-model-only"
     ],
-    "left_reward_1": 4,
-    "right_reward_1": 3,
-    "reference_known_pairs": 5,
-    "left_reward_1_reference_known_pairs": 3,
-    "right_reward_1_reference_known_pairs": 3,
-    "left_reference_known_pairs_usd": 0.0286609,
-    "right_reference_known_pairs_usd": 0.04013144,
-    "latest_trial_reference_known_pairs": 5,
-    "left_latest_trial_reference_usd": 0.0286609,
-    "right_latest_trial_reference_usd": 0.04013144,
+    "left_reward_1": 5,
+    "right_reward_1": 4,
+    "reference_known_pairs": 6,
+    "left_reward_1_reference_known_pairs": 4,
+    "right_reward_1_reference_known_pairs": 4,
+    "left_reference_known_pairs_usd": 0.038381280000000004,
+    "right_reference_known_pairs_usd": 0.0446615,
+    "latest_trial_reference_known_pairs": 6,
+    "left_latest_trial_reference_usd": 0.038381280000000004,
+    "right_latest_trial_reference_usd": 0.0446615,
     "reward_delta_sum": -1.0,
-    "generator_requests_delta_sum": -3,
-    "teacher_requests_delta_sum": -3,
+    "generator_requests_delta_sum": -6,
+    "teacher_requests_delta_sum": -4,
     "teacher_known_reference_usd_delta_sum": null,
-    "known_cache_read_tokens_delta_sum": 2112,
+    "known_cache_read_tokens_delta_sum": 10560,
     "logical_model_changes_delta_sum": -6,
-    "router_wall_s_delta_sum": -1.088069036602974,
-    "episode_wall_s_delta_sum": 471.2286710000001,
-    "harness_command_wall_s_delta_sum": 468.1487134862691,
+    "router_wall_s_delta_sum": -4.242530291900039,
+    "episode_wall_s_delta_sum": 403.06734000000006,
+    "harness_command_wall_s_delta_sum": 399.5852473657578,
     "known_reference_delta_usd": null,
     "complete_cash_net_benefit_usd": null
   },
@@ -2100,7 +2156,7 @@
     "factor": "training",
     "left": "laya_original_on_model_only_low",
     "right": "laya_trained_on_model_only_low",
-    "scored_pairs": 8,
+    "scored_pairs": 9,
     "scored_task_seeds": [
       [
         "gpt2-codegolf",
@@ -2131,6 +2187,10 @@
         43
       ],
       [
+        "nginx-request-logging",
+        43
+      ],
+      [
         "openssl-selfsigned-cert",
         43
       ]
@@ -2157,6 +2217,10 @@
         43
       ],
       [
+        "nginx-request-logging",
+        43
+      ],
+      [
         "openssl-selfsigned-cert",
         43
       ]
@@ -2167,25 +2231,25 @@
     "right_run_ids": [
       "20261112-v9-model-only"
     ],
-    "left_reward_1": 5,
-    "right_reward_1": 3,
-    "reference_known_pairs": 6,
-    "left_reward_1_reference_known_pairs": 4,
-    "right_reward_1_reference_known_pairs": 3,
-    "left_reference_known_pairs_usd": 0.03103693,
-    "right_reference_known_pairs_usd": 0.01338456,
-    "latest_trial_reference_known_pairs": 6,
-    "left_latest_trial_reference_usd": 0.03103693,
-    "right_latest_trial_reference_usd": 0.01338456,
+    "left_reward_1": 6,
+    "right_reward_1": 4,
+    "reference_known_pairs": 7,
+    "left_reward_1_reference_known_pairs": 5,
+    "right_reward_1_reference_known_pairs": 4,
+    "left_reference_known_pairs_usd": 0.03773146,
+    "right_reference_known_pairs_usd": 0.02666742,
+    "latest_trial_reference_known_pairs": 7,
+    "left_latest_trial_reference_usd": 0.03773146,
+    "right_latest_trial_reference_usd": 0.02666742,
     "reward_delta_sum": -2.0,
-    "generator_requests_delta_sum": -15,
-    "teacher_requests_delta_sum": -6,
+    "generator_requests_delta_sum": -7,
+    "teacher_requests_delta_sum": -4,
     "teacher_known_reference_usd_delta_sum": null,
-    "known_cache_read_tokens_delta_sum": 88128,
-    "logical_model_changes_delta_sum": -14,
-    "router_wall_s_delta_sum": 933.454468080774,
-    "episode_wall_s_delta_sum": 625.9197529999998,
-    "harness_command_wall_s_delta_sum": 624.5337825510651,
+    "known_cache_read_tokens_delta_sum": 152640,
+    "logical_model_changes_delta_sum": -20,
+    "router_wall_s_delta_sum": 942.1827279161662,
+    "episode_wall_s_delta_sum": 802.4691539999999,
+    "harness_command_wall_s_delta_sum": 800.9620786067098,
     "known_reference_delta_usd": null,
     "complete_cash_net_benefit_usd": null
   },
@@ -2452,7 +2516,7 @@
     "factor": "training",
     "left": "laya_original_on_model_only_max",
     "right": "laya_trained_on_model_only_max",
-    "scored_pairs": 9,
+    "scored_pairs": 10,
     "scored_task_seeds": [
       [
         "gpt2-codegolf",
@@ -2487,6 +2551,10 @@
         43
       ],
       [
+        "nginx-request-logging",
+        43
+      ],
+      [
         "openssl-selfsigned-cert",
         43
       ]
@@ -2503,6 +2571,10 @@
       [
         "multi-source-data-merger",
         43
+      ],
+      [
+        "nginx-request-logging",
+        43
       ]
     ],
     "left_run_ids": [
@@ -2511,25 +2583,25 @@
     "right_run_ids": [
       "20261112-v9-model-only"
     ],
-    "left_reward_1": 3,
-    "right_reward_1": 4,
-    "reference_known_pairs": 3,
-    "left_reward_1_reference_known_pairs": 1,
-    "right_reward_1_reference_known_pairs": 2,
-    "left_reference_known_pairs_usd": 0.08117173,
-    "right_reference_known_pairs_usd": 0.06948839,
-    "latest_trial_reference_known_pairs": 3,
-    "left_latest_trial_reference_usd": 0.08117173,
-    "right_latest_trial_reference_usd": 0.06948839,
+    "left_reward_1": 4,
+    "right_reward_1": 5,
+    "reference_known_pairs": 4,
+    "left_reward_1_reference_known_pairs": 2,
+    "right_reward_1_reference_known_pairs": 3,
+    "left_reference_known_pairs_usd": 0.09134217,
+    "right_reference_known_pairs_usd": 0.08731172,
+    "latest_trial_reference_known_pairs": 4,
+    "left_latest_trial_reference_usd": 0.09134217,
+    "right_latest_trial_reference_usd": 0.08731172,
     "reward_delta_sum": 1.0,
-    "generator_requests_delta_sum": 28,
-    "teacher_requests_delta_sum": 2,
+    "generator_requests_delta_sum": 34,
+    "teacher_requests_delta_sum": 7,
     "teacher_known_reference_usd_delta_sum": null,
-    "known_cache_read_tokens_delta_sum": 97344,
-    "logical_model_changes_delta_sum": -3,
-    "router_wall_s_delta_sum": 765.0493666268885,
-    "episode_wall_s_delta_sum": -134.76349499999992,
-    "harness_command_wall_s_delta_sum": -487.457629783079,
+    "known_cache_read_tokens_delta_sum": 208512,
+    "logical_model_changes_delta_sum": -1,
+    "router_wall_s_delta_sum": 786.4200531467795,
+    "episode_wall_s_delta_sum": -41.12295699999993,
+    "harness_command_wall_s_delta_sum": -393.82131218351424,
     "known_reference_delta_usd": null,
     "complete_cash_net_benefit_usd": null
   },
