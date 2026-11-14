@@ -3,7 +3,7 @@
   "strategy_id": "terra_high",
   "seed": 42,
   "unit_id": "dna-insert--terra_high--s42",
-  "status": "PARTIAL",
+  "status": "RUNNING",
   "run_id": "20261108-v9-rq1-glm",
   "benchmark_name": "Terminal-Bench",
   "benchmark_version": "2.0",
@@ -29,7 +29,7 @@
   },
   "reward": null,
   "error_type": null,
-  "execution_status": "FINISHED",
+  "execution_status": "RUNNING",
   "effort_comparison_eligible": true,
   "episode_wall_s": 375.393396,
   "generator_known_reference_usd": 0.0489628,
@@ -59,7 +59,7 @@
     {
       "trial_id": "a9321f5e-02fd-47e1-8768-a570bd139099",
       "job_name": "dna-insert--terra_high--s42",
-      "trial_dir": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/dna-insert/terra_high/42/jobs/dna-insert--terra_high--s42/dna-insert__i8bPycA",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/dna-insert/terra_high/42/jobs/dna-insert--terra_high--s42/dna-insert__i8bPycA",
       "status": "NOT_EVALUATED",
       "reward": null,
       "started_at": "2026-11-09T06:43:53.559515Z",
@@ -76,7 +76,7 @@
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
-  "verifier_path": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/dna-insert/terra_high/42/jobs/dna-insert--terra_high--s42--infrastructure-recovery-1/dna-insert__woVDjas/verifier/reward.txt",
+  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/dna-insert/terra_high/42/jobs/dna-insert--terra_high--s42--infrastructure-recovery-1/dna-insert__woVDjas/verifier/reward.txt",
   "phase_wall_s": {
     "environment_setup": 10.059601,
     "agent_setup": 0.000239,
@@ -89,7 +89,7 @@
   "provider_retry_count": 0,
   "provider_retry_stop_reasons": {},
   "provider_attempts": [],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 26,
   "unknown_provider_cost_requests": 0,
@@ -106,7 +106,7 @@
   "cache_read_unknown_records": 0,
   "reported_cache_write_tokens": 0,
   "cache_write_unknown_records": 0,
-  "router_wall_s": 0.006169617176055908,
+  "router_wall_s": 0.006401153281331062,
   "initial_gpu_queue_wait_s": 0.0,
   "router_known_input_tokens": 0,
   "router_known_output_tokens": 0,
@@ -117,6 +117,14 @@
   "teacher_wall_s": 0.0,
   "generator_wall_s": 157.8963452130556,
   "selected_actions": [
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6.1-terra:high",
+      "pool": "Reasoning"
+    },
     {
       "provider": "jiji",
       "model": "gpt-6.1-terra",
