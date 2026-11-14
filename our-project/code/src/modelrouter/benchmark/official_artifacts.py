@@ -175,7 +175,8 @@ def audit_trial(trial_dir: str | Path) -> dict[str, Any]:
         })
         stdout = directory / "verifier" / "test-stdout.txt"
         if (stdout.is_file() and "Read-only file system" in stdout.read_text()
-                and "modelrouter-verifier/cache" in stdout.read_text()
+                and any(path in stdout.read_text() for path in (
+                    "modelrouter-verifier/cache", "/root/.local/share/uv/python/"))
                 and not (directory / "verifier" / "ctrf.json").is_file()):
             row["reason"] = "Official test dependency cache is read-only; no task assertions executed"
             return row

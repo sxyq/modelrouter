@@ -69,7 +69,7 @@ class A6000DockerEnvironment(DockerEnvironment):
                 "else cp -a \"$d\" /root/.cache/uv/; fi; done; "
                 "cp -a /opt/modelrouter-verifier/cache/.lock /opt/modelrouter-verifier/cache/CACHEDIR.TAG /root/.cache/uv/; "
                 "for d in /opt/modelrouter-verifier/python/cpython-*; do "
-                "ln -s \"$d\" /root/.local/share/uv/python/; done; "
+                "cp -a \"$d\" /root/.local/share/uv/python/; done; "
                 "cp -a /opt/modelrouter-verifier/python/.lock /root/.local/share/uv/python/.lock"])
         if self.apt_mirror:
             debian = self.apt_mirror.endswith("/debian/")
