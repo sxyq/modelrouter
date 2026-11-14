@@ -6,7 +6,16 @@ H3状态文件写入已纳入原锁，闲置Gateway按授权重启，原Model-on
 
 795个已结束位置中的466个缺有效评分按原异常类型为：连接错误352、Agent时限异常58、Provider响应异常26、HTTP异常8、Verifier时限异常8、提前断连2、JSON解析异常1、未记录异常11；20个依赖故障另列。原312个代理连接拒绝属于连接错误子集。恢复只处理实际技术故障，原101个有效官方0保留；当前GLM仍有503，模型请求保持原参数及最多额外100次重试、原任务时限。唯一私有配置与批次memfd相同，具体渠道后端原因未知。
 
-20:37 Model-only当前汇总797结束，208通过／101有效失败／468缺评分／20依赖故障；2运行、1337未开始，API已知参考费$10.52758842、515请求费用未知、实际额外重试1513次。polyglot-rust-c原始Laya教师ON Low/High各31次额外重试后未恢复503，原Verifier0及费用缺项保留。历史count-dataset-tokens和headless-terminal的Luna High／seed42已沿原单项入口独立恢复，旧连接故障记录不覆盖；原固定阶段最多4并发、Router2并发。当前Luna请求200、0额外重试，等待两项原Verifier终局；不将seed42写入seed43配对结果。
+21:52当前源码汇总：Model-only804/2136结束，208通过／102有效失败／474缺有效评分／20依赖故障；2运行、1330未开始。已知API参考费$10.53449284、521请求费用未知、额外重试1699次。polyglot-rust-c原始Kev教师OFF Low完成11次Luna Low生成、0重试、原官方0，API参考费$0.00690442；有效失败保留。该统计复用原同批导出目录ac90l478，避开旧内存模块的观察输出；原模型、Effort、权重、Seed43及时限保持。
+
+历史两个Luna High／seed42连接故障位置已独立恢复；下面只计各自新完整Episode，原失败记录和费用另存，完整实收与资源费用未知。
+
+| 恢复任务 | 官方Reward | 官方断言通过／失败 | API Token | 新Episode参考USD |
+|---|---:|---:|---:|---:|
+| headless-terminal | 1 | 7／0 | 14849 | 0.00204818 |
+| count-dataset-tokens | 0 | 0／1 | 394286 | 0.01317300 |
+
+两项共45次正常Luna High请求、0额外重试、实报缓存读取316288 Token。count-dataset-tokens在原900秒后仍缺answer.txt，原Verifier有效0保留；Debian依赖下载虽较慢，原脚本最终完成并输出CTRF。固定模型恢复已沿原入口继续Luna Low/High/Max/Xhigh及Terra High的历史技术故障，最多4并发，当前四项运行；没有重复有效1/0。13:32 UTC快照较本轮前2354次已结束Trial增加11次，取得6个有效1及5个有效0；旧1513位置身份和2333次首次Trial保留。当前汇总入口在恢复运行中保留旧已结束Trial与费用，尚未结束的时间记录不混入完成时长。seed42不写入seed43配对结果。
 
 联合批次首题`modernize-scientific-stack`三个固定策略已完整执行至原结束条件并由原Verifier评分；Seed43，与本题现有Model-only24组同seed。下表为单题结果，完整87题批次仍剩954位置；[逐策略及费用报告](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md)保存所有原评分和缺项。
 
