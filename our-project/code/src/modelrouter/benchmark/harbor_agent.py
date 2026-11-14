@@ -56,15 +56,19 @@ class A6000DockerEnvironment(DockerEnvironment):
         await super().start(force_build)
         if self.verifier_dependencies:
             await self._run_docker_compose_command([
-                "exec", "-T", "main", "sh", "-c",
+                "exec", "-T", "main", "sh", "-ec",
                 "ln -s " + self.verifier_dependencies + " /opt/modelrouter-verifier "
                 "&& mkdir -p /root/.local/bin && cp /opt/modelrouter-verifier/bin/uv "
                 "/opt/modelrouter-verifier/bin/uvx /opt/modelrouter-verifier/bin/env /root/.local/bin/ "
-                "&& mkdir -p /root/.cache/uv /root/.local/share/uv/python "
-                "&& cp -as /opt/modelrouter-verifier/cache/. /root/.cache/uv/ "
-                "&& cp -a --remove-destination /opt/modelrouter-verifier/cache/.lock /root/.cache/uv/.lock "
-                "&& cp -as /opt/modelrouter-verifier/python/. /root/.local/share/uv/python/ "
-                "&& cp -a --remove-destination /opt/modelrouter-verifier/python/.lock /root/.local/share/uv/python/.lock"])
+                "&& mkdir -p /root/.cache/uv/archive-v0 /root/.local/share/uv/python; "
+                "for d in /opt/modelrouter-verifier/cache/*; do "
+                "if [ \"${d##*/}\" = archive-v0 ]; then "
+                "for a in \"$d\"/*; do ln -s \"$a\" /root/.cache/uv/archive-v0/; done; "
+                "else cp -a \"$d\" /root/.cache/uv/; fi; done; "
+                "cp -a /opt/modelrouter-verifier/cache/.lock /opt/modelrouter-verifier/cache/CACHEDIR.TAG /root/.cache/uv/; "
+                "for d in /opt/modelrouter-verifier/python/cpython-*; do "
+                "ln -s \"$d\" /root/.local/share/uv/python/; done; "
+                "cp -a /opt/modelrouter-verifier/python/.lock /root/.local/share/uv/python/.lock"])
         if self.apt_mirror:
             debian = self.apt_mirror.endswith("/debian/")
             expression = "s#http://(archive|security).ubuntu.com/ubuntu/?#" + self.apt_mirror + "#g"
