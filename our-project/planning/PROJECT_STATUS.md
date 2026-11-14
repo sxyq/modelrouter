@@ -4,7 +4,7 @@
 
 当前正式范围：**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
-01:21原Harbor汇总：Model-only结束836/2136位置，215通过、108有效失败、482缺有效评分、31依赖故障另列，2运行、1298未开始；837次已结束Trial，模型与教师已知参考费$11.08350706，529请求缺费用。联合批次仍3/957结束。历史恢复的当前数量沿[历史报告](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)读取，原1513位置和2333次首次Trial保持身份。
+02:16原Harbor汇总：Model-only结束842/2136位置，217通过、108有效失败、486缺有效评分、31依赖故障另列，2运行、1292未开始；843次已结束Trial，模型与教师已知参考费$11.09057912，533请求缺费用。联合批次仍3/957结束。历史恢复的当前数量沿[历史报告](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)读取，原1513位置和2333次首次Trial保持身份。
 
 大型依赖缓存整目录复制曾超过原600秒环境启动时限；改为原Harbor只读绑定后，真实Verifier又遇到旧env指向只读缓存及Python软链接的EXTERNALLY-MANAGED写入失败。源码`b4358a1a375e6244db4d24fed70d83f2529566cf`让每题env指向私有可写UV目录、复制107MiB解释器并复用大型包缓存；原官方脚本、包参数、评分标准和任务时限保持。无断言的原Reward0保留，质量单列依赖故障；本次从原记录重建2个Model-only和8个历史只读故障位置，后续新增位置沿同一入口处理。
 
