@@ -493,7 +493,7 @@ def export_batch_results(root, config, output_root=None):
             continue
         state = json.loads(state_path.read_text())
         row["status"] = state["status"]
-        trials = rows(private / "official_trials.jsonl")
+        trials = [t for t in rows(private / "official_trials.jsonl") if t.get("finished_at")]
         if state["status"] not in ("EVALUATED", "PARTIAL", "BLOCKED") and not trials:
             episodes.append(row)
             continue
@@ -704,7 +704,7 @@ def export_batch_results(root, config, output_root=None):
               f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。有效官方任务评分1/0为{totals['reward_1']}/{totals['reward_0']}，缺有效评分 {totals['no_official_reward']}，原Verifier依赖失败{verifier_dependency_failures}位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。\n",
               f"已保存原Harbor Trial {totals['harbor_trial_count']}次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。\n",
               f"已知模型参考费${model_usd:.8f}、教师${teacher_usd:.8f}，合计${model_usd + teacher_usd:.8f}；{sum(r['unknown_provider_cost_requests'] or 0 for r in all_groups)}次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。\n",
-              "费用主表包含全部尝试；latest_trial_reference_usd单列最后Episode参考费。official_reward保留原分数；缺有效评分包含未返回Reward及已记录请求/资源故障的原0。uvx缺失且没有测试报告的尝试另列，不计入正常任务质量对照。\n",
+              "费用主表包含全部已结束尝试；latest_trial_reference_usd单列最后Episode参考费。official_reward保留原分数；缺有效评分包含未返回Reward及已记录请求/资源故障的原0。uvx缺失且没有测试报告的尝试另列，不计入正常任务质量对照。\n",
               f"Harbor命令累计墙钟{sum(r['harness_total_wall_s'] or 0 for r in all_groups):.6f}秒，内含官方Trial累计{sum(r['episode_total_wall_s'] or 0 for r in all_groups):.6f}秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。\n",
               f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{fixed_summary}{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。\n",
               "GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。\n",
