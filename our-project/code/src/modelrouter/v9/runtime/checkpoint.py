@@ -132,7 +132,7 @@ def answer(payload, adapters):
                 if payload.get("deadline") is not None and time.monotonic() >= payload["deadline"]:
                     raise TimeoutError("Original task Router deadline reached while waiting for shared GPU")
                 try:
-                    fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    fcntl.flock(lock_file, fcntl.LOCK_SH | fcntl.LOCK_NB)
                     break
                 except BlockingIOError:
                     time.sleep(.1)
