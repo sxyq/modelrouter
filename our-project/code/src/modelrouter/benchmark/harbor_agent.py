@@ -84,6 +84,11 @@ class A6000DockerEnvironment(DockerEnvironment):
             await self._run_docker_compose_command([
                 "exec", "-T", "main", "sed", "-i", "-E",
                 expression, "/etc/apt/sources.list.d/" + ("debian.sources" if debian else "ubuntu.sources")])
+        if self.environment_name == "pytorch-model-cli":
+            await self._run_docker_compose_command([
+                "exec", "-T", "main", "sh", "-ec",
+                "echo 'DPkg::Lock::Timeout \"-1\";' > /etc/apt/apt.conf.d/99modelrouter-lock "
+                "&& apt-get update && apt-get install -y libgl1"])
 
     @property
     def capabilities(self):
