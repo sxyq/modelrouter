@@ -692,20 +692,20 @@ def export_batch_results(root, config, output_root=None):
                      if fixed_count else "")
     report = [f"# {config.get('report_title', 'Terminal-Bench 2.0 RQ1')}\n", f"官方版本：{config['dataset_commit']}；源码：{config['source_revision']}。\n",
               "**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**\n",
-              f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。有效官方任务评分1/0为{totals['reward_1']}/{totals['reward_0']}，无官方Reward {totals['no_official_reward']}，原Verifier依赖失败{verifier_dependency_failures}位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。\n",
+              f"共{totals['tasks']}个任务/策略/seed位置；已结束{totals['attempted']}，运行中{totals['running']}，未开始{totals['not_started']}，渠道档位不可用{totals['unavailable']}。有效官方任务评分1/0为{totals['reward_1']}/{totals['reward_0']}，缺有效评分 {totals['no_official_reward']}，原Verifier依赖失败{verifier_dependency_failures}位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。\n",
               f"已保存原Harbor Trial {totals['harbor_trial_count']}次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。\n",
               f"已知模型参考费${model_usd:.8f}、教师${teacher_usd:.8f}，合计${model_usd + teacher_usd:.8f}；{sum(r['unknown_provider_cost_requests'] or 0 for r in all_groups)}次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。\n",
-              "费用主表包含全部尝试；latest_trial_reference_usd单列最后Episode参考费。原Verifier写出的0保留；已确认uvx缺失且没有测试报告的尝试单列，不计入任务质量对照。\n",
+              "费用主表包含全部尝试；latest_trial_reference_usd单列最后Episode参考费。official_reward保留原分数；缺有效评分包含未返回Reward及已记录请求/资源故障的原0。uvx缺失且没有测试报告的尝试另列，不计入正常任务质量对照。\n",
               f"Harbor命令累计墙钟{sum(r['harness_total_wall_s'] or 0 for r in all_groups):.6f}秒，内含官方Trial累计{sum(r['episode_total_wall_s'] or 0 for r in all_groups):.6f}秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。\n",
               f"按逐题表：{sum(r['attempted_strategies'] > 0 for r in task_rows)}/{len(tasks)}题已有结束记录；{fixed_summary}{sum(r['attempted_strategies'] == len(strategies) for r in task_rows)}题已结束全部{len(strategies)}个策略。\n",
               "GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。\n",
-              f"本批{len(tasks)}题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺Reward不填0，完整实收与资源USD保持未知。已报告档位冲突的官方结果保留在逐Episode表，并从按请求档位主比较中另列。通过率分母仅为该策略已取得的有效官方评分任务。\n",
-              f"| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 评分覆盖 | {len(tasks)}题通过率区间 | 缺Reward | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
+              f"本批{len(tasks)}题，旧2.1不计入。独立于训练/选择和历史暴露分别列出；缺有效评分不补0，完整实收与资源USD保持未知。已报告档位冲突的官方结果保留在逐Episode表，并从按请求档位主比较中另列。通过率分母仅为该策略已取得的有效官方评分任务。\n",
+              f"| 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 评分覆盖 | {len(tasks)}题通过率区间 | 缺有效评分 | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |",
               "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for r in grouped:
         if r["subset"] == "all":
             cost = "UNKNOWN" if r["generator_known_reference_usd"] is None else f"{r['generator_known_reference_usd'] + (r['teacher_known_reference_usd'] or 0):.8f}"
-            rate = "未评分" if r["scored_pass_rate"] is None else f"{r['reward_1']}/{r['reward_1'] + r['reward_0']} = {r['scored_pass_rate']:.2%}"
+            rate = "缺有效评分" if r["scored_pass_rate"] is None else f"{r['reward_1']}/{r['reward_1'] + r['reward_0']} = {r['scored_pass_rate']:.2%}"
             coverage = f"{r['reward_1'] + r['reward_0']}/{r['tasks']}"
             interval = f"{r['benchmark_success_lower']:.2%}—{r['benchmark_success_upper']:.2%}"
             report.append(f"| {r['strategy_id']} | {r['attempted']} | {r['reward_1']} | {r['reward_0']} | {rate} | {coverage} | {interval} | {r['no_official_reward']} | {r['running']} | {r['not_started']} | {r['unavailable']} | {cost} |")
@@ -737,14 +737,14 @@ def export_batch_results(root, config, output_root=None):
         report.append(f"| {model} | {requested} | {returned} | {count} |")
     report += ["\n## Episode结束事件\n",
                "按每个位置最后结束的原Harbor Trial记录；超时且取得Reward的两项事实同时保留。\n",
-               "| 原异常类型 | Reward1 | Reward0 | 缺Reward |",
+               "| 原异常类型 | Reward1 | Reward0 | 缺有效评分 |",
                "|---|---:|---:|---:|"]
     ended = [r for r in episodes if r.get("episode_wall_s") is not None]
     for error in sorted({r.get("error_type") or "NO_RECORDED_ERROR" for r in ended}):
         group = [r for r in ended if (r.get("error_type") or "NO_RECORDED_ERROR") == error]
         report.append(f"| {error} | {sum(r['reward'] == 1 for r in group)} | {sum(r['reward'] == 0 for r in group)} | {sum(r['reward'] is None for r in group)} |")
     report += ["\n## 同题训练、教师与消融对照\n",
-               "评分对只包含两侧均有官方Reward的同题同seed；费用对是其中两侧请求参考费均齐全的子集。通过数差异与费用差异分别按对应集合报告。\n",
+               "评分对只包含两侧均有有效任务评分的同题同seed；费用对是其中两侧请求参考费均齐全的子集。通过数差异与费用差异分别按对应集合报告。\n",
                "| 因素 | 左侧 → 右侧 | 评分对 | 通过数左/右 | 费用齐全对 | 费用对通过数左/右 | 参考费左/右USD |",
                "|---|---|---:|---:|---:|---:|---|"]
     for r in comparisons:
