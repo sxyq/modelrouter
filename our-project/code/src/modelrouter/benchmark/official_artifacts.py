@@ -178,6 +178,7 @@ def audit_trial(trial_dir: str | Path) -> dict[str, Any]:
         cache_failure = ("Read-only file system" in output and any(path in output for path in (
             "modelrouter-verifier/cache", "/root/.local/share/uv/python/"))
             or "Not a directory (os error 20)" in output and "/root/.cache/uv/builds-v0/" in output
+            or "source path is neither a regular file nor a symlink to a regular file" in output and "/root/.cache/uv/archive-v0/" in output
             or "Failed to import encodings module" in output and "/root/.local/share/uv/python/" in output)
         if (cache_failure
                 and not (directory / "verifier" / "ctrf.json").is_file()):
