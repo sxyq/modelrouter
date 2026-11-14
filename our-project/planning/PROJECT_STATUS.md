@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-14：共享GPU闲置回收故障
+
+19:27台北，Model-only Controller1696641的两个位置仍在Harbor任务计时前等待原GPU锁。锁由H3视频Gateway302097持有，后端2457191／GPU进程2457371；GPU9546/49140MiB、利用率0%，视频任务34完成／1失败／0活动，请求0。原900秒闲置回收线程在17:22:37因`gateway-current.json.tmp`的`os.replace`抛出FileNotFoundError而退出；源码把共享临时文件的写入放在原状态锁之外，真实日志及仅剩主线程相符。继续等待无法触发该已退出线程。必要动作是把现有状态文件写入纳入原锁，并重启闲置H3 Gateway；该共享服务操作等待负责人明确授权。运行依据保存于原Model-only `metrics/resource_observations.json`。
+
 ## 2026-11-13：请求重试与技术恢复接续
 
 正式范围：Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。
