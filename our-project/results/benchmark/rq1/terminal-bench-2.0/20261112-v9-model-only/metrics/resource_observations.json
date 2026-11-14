@@ -1,19 +1,19 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "observed_at": "2026-11-14T12:57:48+08:00",
+    "observed_at": "2026-11-14T13:16:22+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 769,
+    "finished_positions": 771,
     "reward_1": 204,
-    "reward_0": 102,
-    "no_official_reward": 443,
+    "reward_0": 103,
+    "no_official_reward": 444,
     "verifier_dependency_failure": 20,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1365,
-    "known_model_teacher_reference_usd": 10.09989337,
-    "unknown_cost_requests": 497,
-    "provider_retry_count": 1032,
+    "not_dispatched": 1363,
+    "known_model_teacher_reference_usd": 10.12863356,
+    "unknown_cost_requests": 499,
+    "provider_retry_count": 1072,
     "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
     "joint_positions_started": 0
@@ -494,6 +494,49 @@
     }
   ],
   "observations": [
+    {
+      "recorded_at": "2026-11-14T13:21:53+08:00",
+      "kind": "POLYGLOT_GLM_HIGH_UNRECOVERED_AND_MAX_RECOVERED_WITH_VALID_ZERO",
+      "task": "polyglot-c-py",
+      "seed": 43,
+      "original_laya_off_low_high_max_quality_rewards": [
+        0,
+        null,
+        0
+      ],
+      "raw_official_rewards": [
+        0,
+        0,
+        0
+      ],
+      "high_episode": "2e1806d2-f176-433a-8fd8-6ea7dc863272",
+      "high_failed_generation_index": 17,
+      "high_http503_attempts": 18,
+      "high_extra_retries": 17,
+      "high_stop": "TASK_DEADLINE",
+      "high_retry_wait_seconds": 391,
+      "high_attempt_latency_seconds": 36.37141412869096,
+      "high_known_api_reference_usd": 0.01794385,
+      "high_independent_recovery_queued": true,
+      "max_episode": "3dfc2ebd-1475-4cdb-9521-12c03acb3b4b",
+      "max_retried_generation_index": 4,
+      "max_http502_http503_attempts": [
+        1,
+        22
+      ],
+      "max_extra_retries": 23,
+      "max_recovered_http_status": 200,
+      "max_recovered_finish_reason": "tool_calls",
+      "max_retry_wait_seconds": 571,
+      "max_attempt_latency_seconds": 74.04425934329629,
+      "max_all_ten_generation_requests_final_response": "COMPLETE",
+      "max_agent_execution_seconds": 900.017367,
+      "max_official_failure": "Unexpected cmain file violates official single-file assertion",
+      "max_known_api_reference_usd": 0.01079634,
+      "unknown_cost_requests_per_episode": 1,
+      "valid_max_failure_rerun": false,
+      "technical_wait_generation_and_tool_effects": "NOT_SEPARATED"
+    },
     {
       "recorded_at": "2026-11-14T12:57:48+08:00",
       "kind": "PASSWORD_RECOVERY_ALL_24_COMPLETE_AND_TERRA_ALL_THREE_EFFORTS_MATCHED",
