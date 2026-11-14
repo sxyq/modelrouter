@@ -16,6 +16,8 @@ mteb-retrieve五个固定恢复位置在镜像拉取前中断，Agent和模型�
 
 源码f1ae75923db3479b0b8006165db4342ce3144eda已部署：PyTorch CLI在原环境启动阶段准备libgl1，并让官方APT等待已有安装锁。原失败df9116a0-c1ff-4c46-924d-73a327c72142为APT被Agent占锁后安装失败、pytest导入libGL.so.1失败、0断言。新训练Laya／教师OFF／Low／seed43的38192abc-49b0-44f5-a49b-2638be46ad1e于06:20结束，原官方Reward1、6断言全通过；41生成请求、0额外重试、已知405103 API Token／$0.01924296，1请求消费未知。完整墙钟2122.637秒，原Agent900秒达到期限后Verifier896.565秒完成，断言执行213.48秒；原官方脚本和900秒Verifier时限保持。旧Low的collecting阶段超时原因仍待定位，不据此重跑有效失败。唯一源码回退包保存f1ae部署前harbor_agent.py和rq1_batch.py。
 
+训练Laya OFF High的新332acb3e-e3d0-46b9-b429-d3d1769ffe1a于06:33结束，26生成请求、$0.02412922已知参考费；原Verifier900秒耗在系统包安装及UV启动，仍无断言或Reward，现有入口识别VERIFIER_DOWNLOAD_TIMEOUT。在途读取看到Agent后台/tmp/eval持续占CPU，UV的具体等待原因未取得；该次独立日志、用量和费用继续保留。
+
 pypi-server／seed43全部24组结束：Laya原始、训练及原始Kev各6组共18个官方1，额外重试均0；训练Kev六组累计186次额外重试、生成0次到原期限，原Verifier0保留、质量另列请求故障，费用未知。Laya原始OFF／ON High为53044／54725 API Token、$0.00385200／$0.00497218、534.423／517.475秒；ON High有2次成功Luna短评、4次决策消费。训练Laya ON Max为26生成请求／7教师、14次短评消费，最后GLM Max请求在原期限单次读超时；原Verifier仍给1，该请求用量及费用未知，完整模型费用保持空值。逐次模型、教师、工具与Verifier沿原Episode目录保存。
 
 用户VM原磁盘已在线100→200GiB，根ext4可用96.7GiB；QEMU2744271保持16CPU／40GiB。NumPy精确7包、PyTorch CLI原CPU index的20包及recovery原默认index的31包均已安装，缓存约6.0GiB。原权重与11-11两训练实体各18更新保持，本轮不训练。恢复只选择技术故障，已有有效官方1/0不重跑；每次模型／教师请求仍最多额外100次且受原期限约束。
