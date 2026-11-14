@@ -101,7 +101,9 @@ def recovery_reason(path):
             return "AGENT_OUTPUT_LIMIT_NO_VERIFIER"
         if kind == "JSONDecodeError" and "Unterminated string" in message or kind == "ProviderResponseError" and OpenAICompatibleProvider._retryable(ProviderResponseError(message, {}, request), request):
             return "PROVIDER_INTERRUPTED_RESPONSE"
-    if kind == "VerifierTimeoutError":
+    runtime_log = Path(trial["runtime_log"]) if trial.get("runtime_log") else None
+    if kind == "VerifierTimeoutError" or (kind == "AgentTimeoutError" and runtime_log
+            and "VerifierTimeoutError" in runtime_log.read_text()):
         stdout = Path(trial["trial_dir"]) / "verifier/test-stdout.txt"
         output = stdout.read_text() if stdout.exists() else ""
         if "test session starts" in output:
@@ -237,7 +239,7 @@ def main(argv=None):
                 continue
             saved_units = json.loads((path / "resume_state.json").read_text())["units"]
             attempted_recovery = any(u.get("provider_retry_limit") == 100 for u in saved_units)
-            if not attempted_recovery and recovery_reason(path):
+            if (not attempted_recovery or args.task) and recovery_reason(path):
                 selected.append(unit)
         units = selected
     worker = None
