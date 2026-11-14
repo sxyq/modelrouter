@@ -4,7 +4,7 @@
 
 当前正式范围：**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
-04:51原Harbor汇总：Model-only结束864/2136位置，233通过、108有效失败、492缺有效评分、31依赖故障另列，2运行、1270未开始；865次已结束Trial，模型与教师已知参考费$11.22448393，540请求缺费用，2205次额外重试。联合批次仍3/957结束。历史04:40快照结束1509/1513位置、4恢复运行，281通过、292有效失败、852缺评分、84依赖故障另列，2464次结束Trial；原1513位置和2333次首次Trial保持身份，最新费用沿历史逐Episode表读取。
+06:28原Harbor汇总：Model-only结束871/2136位置，234通过、108有效失败、497缺有效评分、32依赖故障另列，2运行、1263未开始；872次已结束Trial，模型与教师已知参考费$11.31455165，543请求缺费用，2205次额外重试。联合批次仍3/957结束。历史06:29快照结束1509/1513位置、4恢复运行，285通过、298有效失败、845缺评分、81依赖故障另列，2477次结束Trial；已知模型与教师参考费$37.90883169、1068请求缺费用。原1513位置和2333次首次Trial保持身份。
 
 大型依赖缓存整目录复制曾超过原600秒环境启动时限；改为原Harbor只读绑定后，真实Verifier又遇到旧env指向只读缓存及Python软链接的EXTERNALLY-MANAGED写入失败。源码`b4358a1a375e6244db4d24fed70d83f2529566cf`让每题env指向私有可写UV目录、复制107MiB解释器并复用大型包缓存；原官方脚本、包参数、评分标准和任务时限保持。无断言的原Reward0保留，质量单列依赖故障；本次从原记录重建2个Model-only和8个历史只读故障位置，后续新增位置沿同一入口处理。
 
@@ -12,7 +12,9 @@
 
 原Controller1696641、CUDAworker2496626、历史固定恢复2509357继续；有限接续2932692独立持有原600权限memfd，等待2509357后先恢复Caffe Xhigh无评分项，再恢复已修复依赖及镜像位置、接续联合剩余固定组，等待1700006后做联合及历史必要恢复。本机代理等待30587跟随1700006／2932692，健康SSH17649保留；已替换的闲置2850892／47171退出。两个1200秒观察沿原ac90l478／Etxhms目录运行。H3当前PID2685675 active，GPU锁保留；同视频期间Kev真实CUDA前向、fallback=false、12.212秒的原记录保持。Caffe原Agent和Verifier各1200秒超时，最后输出为uv安装完成、无pytest报告；具体停滞进程待新Episode读取。
 
-mteb-retrieve五个固定恢复位置在镜像拉取前中断，Agent和模型请求均未开始。registry-1.docker.io经原通路返回TLS EOF；Docker Hub官方registry.hub.docker.com返回401认证提示并成功提供同一镜像manifest。原alexgshaw/mteb-retrieve:20251031的9层、压缩8,810,527,785字节正在下载；原镜像标签、任务时限及Verifier保持。源码d804db32c42bf8fcf55ac74817e44d183effd953已部署，原入口对实际失败记录返回ENVIRONMENT_NETWORK；新有限队列已加入该任务五策略。唯一源码回退包保存部署前harbor_agent.py和rq1_batch.py。
+mteb-retrieve五个固定恢复位置在镜像拉取前中断，Agent和模型请求均未开始。registry-1.docker.io返回TLS EOF；同一官方镜像已经Docker Hub官方registry.hub.docker.com下载完成，06:24恢复原alexgshaw/mteb-retrieve:20251031标签，Linux/amd64、展开21,556,522,773字节。临时域名标签已移除，镜像层及原标签保留。原入口将首次故障记录为ENVIRONMENT_NETWORK，新有限队列已加入五策略，等待当前固定恢复自然结束。任务时限及Verifier保持。
+
+源码f1ae75923db3479b0b8006165db4342ce3144eda已部署：PyTorch CLI在原环境启动阶段准备libgl1，并让官方APT等待已有安装锁。原失败df9116a0-c1ff-4c46-924d-73a327c72142为APT被Agent占锁后安装失败、pytest导入libGL.so.1失败、0断言。新训练Laya／教师OFF／Low／seed43的38192abc-49b0-44f5-a49b-2638be46ad1e于06:20结束，原官方Reward1、6断言全通过；41生成请求、0额外重试、已知405103 API Token／$0.01924296，1请求消费未知。完整墙钟2122.637秒，原Agent900秒达到期限后Verifier896.565秒完成，断言执行213.48秒；原官方脚本和900秒Verifier时限保持。旧Low的collecting阶段超时原因仍待定位，不据此重跑有效失败。唯一源码回退包保存f1ae部署前harbor_agent.py和rq1_batch.py。
 
 pypi-server／seed43全部24组结束：Laya原始、训练及原始Kev各6组共18个官方1，额外重试均0；训练Kev六组累计186次额外重试、生成0次到原期限，原Verifier0保留、质量另列请求故障，费用未知。Laya原始OFF／ON High为53044／54725 API Token、$0.00385200／$0.00497218、534.423／517.475秒；ON High有2次成功Luna短评、4次决策消费。训练Laya ON Max为26生成请求／7教师、14次短评消费，最后GLM Max请求在原期限单次读超时；原Verifier仍给1，该请求用量及费用未知，完整模型费用保持空值。逐次模型、教师、工具与Verifier沿原Episode目录保存。
 
