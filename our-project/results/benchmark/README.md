@@ -2,11 +2,11 @@
 
 ## 2026-11-15 · 原Verifier依赖与继续运行
 
-Model-only当前[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为827/2136结束：215通过、108有效失败、482缺有效评分、22依赖故障另列；2运行、1307未开始，828次已结束Harbor Trial，已知模型与教师$11.07341110，526请求费用未知。联合仍3/957，历史数量由[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)更新。统计基于官方任务终局，原失败尝试、实报Token与消费保持。
+Model-only当前[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为836/2136结束：215通过、108有效失败、482缺有效评分、31依赖故障另列；2运行、1298未开始，837次已结束Harbor Trial，已知模型与教师$11.08350706，529请求费用未知。联合仍3/957，历史数量由[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)更新。统计基于官方任务终局，原失败尝试、实报Token与消费保持。
 
-新增缺分实际来自只读UV缓存和解释器安装标记写入，未执行任务断言。现有环境类已改为母缓存只读绑定、每题元数据和107MiB解释器可写；不再复制6.0GiB全部依赖。三个精确NumPy／PyTorch缓存安装完成，原包版本和官方脚本保持。代码`b4358a1a375e6244db4d24fed70d83f2529566cf`已部署，完整评分待新Episode；旧无断言Reward0另列依赖故障并进入同条件恢复。
+新增缺分实际来自只读UV缓存和解释器安装标记写入，未执行任务断言。现有环境类已改为母缓存只读绑定、每题元数据和107MiB解释器可写；不再复制6.0GiB全部依赖。三个精确NumPy／PyTorch缓存安装完成，原包版本和官方脚本保持；旧无断言Reward0另列依赖故障并进入同条件恢复。
 
-Controller1696641／历史固定恢复2509357并行推进，原Router两并发与固定四并发保持；2713497等待固定恢复结束后接续已修复位置及联合矩阵。H3／Router共享原GPU锁的真实同视频前向记录、原VM磁盘在线扩容及当前接续PID见[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。有效官方0保持，GLM仍按相同模型和档位最多额外100次请求重试至原期限。
+缓存根软链接实际导致uv安装的os error 20；`71175861313c90def9f23b5bc3c3290d7c48e0e9`使用原Harbor逐目录只读挂载替换软链接，并以copy方式安装轮子，原官方脚本保持。break-filter-js-from-html／Luna High／seed42已完成52挂载的新Episode：有效Reward0、1断言失败、11991 API Token／$0.00182214参考费／398.950095秒；HTML未绕过过滤器，有效0保留。Controller1696641／历史固定恢复2509357并行推进，原Router两并发与固定四并发保持；2750259等待固定恢复结束后接续已修复位置及联合矩阵。H3／Router共享原GPU锁的真实同视频前向记录、原VM磁盘在线扩容及当前接续PID见[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。GLM仍按相同模型和档位最多额外100次请求重试至原期限。
 
 ## 2026-11-14 · GPU共享并发与技术恢复
 
