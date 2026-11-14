@@ -1,18 +1,18 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "observed_at": "2026-11-14T08:13:48+08:00",
+    "observed_at": "2026-11-14T08:38:56+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 715,
+    "finished_positions": 717,
     "reward_1": 170,
     "reward_0": 91,
-    "no_official_reward": 434,
+    "no_official_reward": 436,
     "verifier_dependency_failure": 20,
-    "running_positions": 1,
+    "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1420,
+    "not_dispatched": 1417,
     "known_model_teacher_reference_usd": 9.14454449,
-    "unknown_cost_requests": 485,
+    "unknown_cost_requests": 487,
     "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
     "joint_positions_started": 0
   },
@@ -492,6 +492,37 @@
     }
   ],
   "observations": [
+    {
+      "recorded_at": "2026-11-14T08:38:56+08:00",
+      "kind": "TERRA_ALL_EFFORT_HTTP502_AND_METADATA_DIAGNOSIS",
+      "task": "multi-source-data-merger",
+      "seed": 43,
+      "completed_off_groups": {
+        "low": "fda90c54-b1f3-4ce4-afb8-c3f16825117b",
+        "high": "08593872-56f0-4a9c-a970-a6846b51a038",
+        "max": "6ac325e3-d951-416f-8323-f6154040665e"
+      },
+      "http502_attempts_per_group": 33,
+      "extra_retries_per_group": 32,
+      "actual_stop_event_all_groups": "AGENT_PROVIDER_DEADLINE",
+      "raw_official_rewards": [0, 0, 0],
+      "quality_rewards": [null, null, null],
+      "high_agent_verifier_seconds": [892.160723, 221.573943],
+      "max_agent_verifier_seconds": [893.863085, 223.825946],
+      "all_request_usage_and_billing": "UNKNOWN",
+      "generation_error_body": "error code: 502",
+      "endpoint_id": "terra-jiji",
+      "domain": "www.jiji.cc",
+      "existing_proxy_root_http_status": 200,
+      "existing_proxy_unauthenticated_models_status": 401,
+      "existing_proxy_authenticated_models_status": 200,
+      "authenticated_models_contains_exact_model_id": true,
+      "mac_direct_root_and_unauthenticated_models_status": [200, 401],
+      "registry_active_same_model_switch_candidates": [],
+      "network_or_model_configuration_changed": false,
+      "generation_backend_cause": "UNKNOWN",
+      "recovery": "ONE_DISTINCT_JOB_PER_UNSCORED_POSITION_IN_EXISTING_QUEUE"
+    },
     {
       "recorded_at": "2026-11-14T08:13:48+08:00",
       "kind": "REAL_PROVIDER_DEADLINE_BRANCH_AND_OFFICIAL_VERIFIER",
