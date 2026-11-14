@@ -1,0 +1,53 @@
+{
+  "sampled_at": "2026-11-14T19:29:06+08:00",
+  "resources": {
+    "docker_host": "unix:///home/syy/路由/.runtime/docker-vm/docker.sock",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "task_resources": "ORIGINAL_2_0_TASK_TOML_UNCHANGED",
+    "router_threads": 40,
+    "router_gpu_worker_count": 1,
+    "router_deployment": "SHARED_NATIVE_ADAPTER_CPU_RESIDENT_GPU_SERIALIZED_BY_EXISTING_LOCK",
+    "cpu_usd_per_core_hour": null,
+    "gpu_usd_per_hour": null,
+    "vm_usd_per_hour": null,
+    "resource_allocation": "ROUTER_CPU_REQUEST_CPU_SECONDS; SERIAL_GPU_LOCK_HELD_TIME; VM_ACTIVE_EPISODE_RESOURCE_TIME_SHARE",
+    "supplier_billed_usd": "UNKNOWN",
+    "training_cost": "SEPARATE_FROM_ONLINE_COST"
+  },
+  "current_execution": {
+    "controller_pid": 2481191,
+    "controller_exited": true,
+    "latest_result_at": "2026-11-14T19:43:11+08:00",
+    "finished_positions": 3,
+    "not_started_positions": 954,
+    "reward_1": 1,
+    "reward_0": 1,
+    "no_effective_quality_score": 1,
+    "provider_extra_retries": 22,
+    "known_api_reference_usd": 0.0408175,
+    "unknown_cost_requests": 1,
+    "stage": "fixed",
+    "selected_tasks": [
+      "modernize-scientific-stack"
+    ],
+    "selected_strategies": [
+      "glm_low",
+      "luna_high",
+      "terra_high"
+    ],
+    "seed": 43,
+    "generation_revision": "213d4469",
+    "analysis_revision": "9d46b66e2d9c244d6c210d64be5166f07f7fdb4b",
+    "provider_extra_retry_limit": 100,
+    "maximum_output_tokens": 4096,
+    "original_harbor_task_limits_retained": true
+  },
+  "execution_reason": "Existing Model-only queue waits for protected H3 GPU lease; start three unattempted fixed-model positions without loading a Router or consuming the GPU",
+  "official_outcomes": {
+    "luna_high": {"reward": 1, "assertions_passed": 2, "assertions_failed": 0, "api_tokens": 13239, "known_reference_usd": 0.0010995, "reported_cached_tokens": 7680, "requested_returned_effort": "high/high"},
+    "terra_high": {"reward": 0, "assertions_passed": 1, "assertions_failed": 1, "api_tokens": 35826, "known_reference_usd": 0.039718, "reported_cached_tokens": 0, "requested_returned_effort": "high/high", "failure": "Official task subprocess analyze_climate_modern.py exceeded its original 30-second timeout", "code_and_resource_contribution": "NOT_SEPARATED"},
+    "glm_low": {"official_reward": 0, "quality_reward": null, "assertions_passed": 0, "assertions_failed": 2, "api_tokens": null, "known_reference_usd": null, "attempts": 23, "extra_retries": 22, "attempt_http_status": 503, "tools_executed": 0, "retry_stop_reason": "TASK_DEADLINE", "technical_fault": "PROVIDER_RETRY_DEADLINE", "recovery": "ONE_SEPARATE_EPISODE_IN_EXISTING_JOINT_RECOVERY_QUEUE"}
+  },
+  "following_execution": "Existing full joint queue reuses valid completed positions; retain each original fault and recover only eligible technical faults once"
+}

@@ -4,6 +4,16 @@
 
 H3视频Gateway的闲置回收线程17:22:37因共享临时状态文件写入冲突退出，19:27仍持有GPU锁，0活动任务／0活动请求；Model-only两项在Harbor计时前排队。故障依据、进程和必要共享服务动作见原[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)；该动作等待明确授权。
 
+联合批次首题`modernize-scientific-stack`三个固定策略已完整执行至原结束条件并由原Verifier评分；Seed43，与本题现有Model-only24组同seed。下表为单题结果，完整87题批次仍剩954位置；[逐策略及费用报告](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md)保存所有原评分和缺项。
+
+| 固定模型／档位 | 官方Reward | 质量统计 | API Token | 已知参考USD | 额外请求重试 |
+|---|---:|---|---:|---:|---:|
+| Luna High | 1 | 有效通过 | 13239 | 0.00109950 | 0 |
+| Terra High | 0 | 有效失败 | 35826 | 0.03971800 | 0 |
+| GLM Low | 0 | 请求故障另列 | 未知 | 未知 | 22 |
+
+Luna两条官方断言均通过；Terra一通过／一失败，`analyze_climate_modern.py`超过原测试内30秒，代码与CPU TCG资源贡献未分离。GLM同一个Low/4096请求23次503到原600秒任务截止，生成内容与工具均0，原Verifier两条断言失败；API消费未知，原0保留，进入一次独立恢复。Luna/Terra请求与返回均High，缓存实际报告7680／0 Token，教师关闭。现有同题Model-only为16通过／5有效失败／3缺评分；有效结果不重跑。原请求、工具、Verifier及结束日志均在本批私有Episode目录。
+
 ## 2026-11-13 · 请求重试与Router收尾
 
 multi-source-data-merger训练Kev OFF Low的首个Terra Low/4096请求33次HTTP502、32次额外重试后停止，真实事件AGENT_PROVIDER_DEADLINE已触发。Episode fda90c54-b1f3-4ce4-afb8-c3f16825117b的原Verifier正常执行3条断言、全部失败；原0保留，质量单列技术故障并排入独立恢复。Agent896.767655秒、Verifier209.615364秒、Harbor1184.931551秒，请求用量与费用未知。此事件确认已部署的Provider截止异常分支能够继续原Verifier，长度耗尽分支仍待真实触发。

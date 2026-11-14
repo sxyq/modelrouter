@@ -4,6 +4,8 @@
 
 19:27台北，Model-only Controller1696641的两个位置仍在Harbor任务计时前等待原GPU锁。锁由H3视频Gateway302097持有，后端2457191／GPU进程2457371；GPU9546/49140MiB、利用率0%，视频任务34完成／1失败／0活动，请求0。原900秒闲置回收线程在17:22:37因`gateway-current.json.tmp`的`os.replace`抛出FileNotFoundError而退出；源码把共享临时文件的写入放在原状态锁之外，真实日志及仅剩主线程相符。继续等待无法触发该已退出线程。必要动作是把现有状态文件写入纳入原锁，并重启闲置H3 Gateway；该共享服务操作等待负责人明确授权。运行依据保存于原Model-only `metrics/resource_observations.json`。
 
+联合87题／957位置首题`modernize-scientific-stack`的三个固定模型已在19:43结束：Luna High官方1、Terra High有效官方0、GLM Low原官方0因23个503／22次额外重试到原期限而另列请求故障。两条有效结果不重跑，GLM进入原联合独立恢复队列。已知API49065 Token／$0.04081750，GLM请求用量及费用未知；教师关闭，Luna/Terra返回High匹配。Terra失败为官方任务脚本超过30秒，代码与CPU TCG资源贡献未分离。本批还剩954位置，原Model-only数量保持；[联合报告](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md)已保存逐Episode和原始评分。有限固定阶段Controller2481191已自然结束。
+
 ## 2026-11-13：请求重试与技术恢复接续
 
 正式范围：Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。
