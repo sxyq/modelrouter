@@ -1,19 +1,19 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "observed_at": "2026-11-14T14:00:45+08:00",
+    "observed_at": "2026-11-14T14:24:13+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 776,
+    "finished_positions": 779,
     "reward_1": 204,
     "reward_0": 103,
-    "no_official_reward": 449,
+    "no_official_reward": 452,
     "verifier_dependency_failure": 20,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1358,
+    "not_dispatched": 1355,
     "known_model_teacher_reference_usd": 10.12863356,
-    "unknown_cost_requests": 504,
-    "provider_retry_count": 1229,
+    "unknown_cost_requests": 507,
+    "provider_retry_count": 1324,
     "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
     "joint_positions_started": 0
@@ -494,6 +494,24 @@
     }
   ],
   "observations": [
+    {
+      "recorded_at": "2026-11-14T14:24:13+08:00",
+      "kind": "POLYGLOT_ELEVEN_POSITIONS_ENDED_WITH_NINE_GLM_TECHNICAL_FAULTS",
+      "task": "polyglot-c-py",
+      "seed": 43,
+      "ended_success_valid_failure_technical_fault": [11, 0, 2, 9],
+      "new_fault_strategies": ["laya_trained_off_model_only_max", "laya_trained_on_model_only_low", "laya_trained_on_model_only_high"],
+      "new_episode_ids": ["2f2cf60c-f339-4e74-8ad1-b9d52ff288ba", "b27b4e04-bc5e-426f-9ffd-9e4af5eb8836", "bc3d9704-a61b-4566-9cdb-92b2fae259e4"],
+      "new_extra_retries": [32, 31, 32],
+      "new_http503_attempts": [33, 32, 33],
+      "new_raw_rewards": [0, 0, 0],
+      "new_quality_rewards": [null, null, null],
+      "new_tool_teacher_calls": 0,
+      "unknown_request_cost_per_episode": 1,
+      "valid_failures_preserved": ["laya_original_off_model_only_low", "laya_original_off_model_only_max"],
+      "running_strategies": ["laya_trained_on_model_only_max", "kev_original_off_model_only_low"],
+      "recovery": "EXISTING_DISTINCT_JOB_QUEUE_FOR_UNSCORED_POSITIONS"
+    },
     {
       "recorded_at": "2026-11-14T14:00:45+08:00",
       "kind": "GLM_TEMPORARY_SERVICE_ERROR_AND_THREE_MORE_UNSCORED_POSITIONS",

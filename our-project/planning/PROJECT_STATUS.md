@@ -8,7 +8,7 @@ Provider实际请求路径已部署最多额外100次同请求重试，首次不
 
 恢复入口增加原矩阵单题/单策略选择，任何有效官方1/0均复用；技术恢复另建原位置下的独立Harbor Job，保留原尝试。已有断言执行后挂起的Verifier超时不归为下载故障。四个已知依赖故障任务复用uv0.9.5、Python3.13.9、pytest8.4.1、pytest-json-ctrf0.3.5；原官方脚本及断言保持。依赖包位于A6000 `.runtime/verifier-dependencies`，已完成离线导入，临时容器已移除。
 
-11-14 14:00台北本次源码汇总：Model-only结束776/2136位置，204通过、103有效失败、449缺有效评分、20依赖失败另列；2个子任务在途、1358项尚未派发。7311981e3578af888ddc1afc9909f375415e80d9保留原任务截止时单次读取超时的7个官方0，不将它们恢复重跑；此前重复503等技术中断仍单列。具体读取等待原因未分离。运行中的老观察进程使用旧内存分类，公开发布采用现有collect-only入口的当前源码汇总。最新数量、逐策略分母、费用和实际重试统一见[Model-only正式报告](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)。新Episode保存600权限请求正文及教师原始响应，授权头不写入。
+11-14 14:24台北本次源码汇总：Model-only结束779/2136位置，204通过、103有效失败、452缺有效评分、20依赖失败另列；2个子任务在途、1355项尚未派发。7311981e3578af888ddc1afc9909f375415e80d9保留原任务截止时单次读取超时的7个官方0，不将它们恢复重跑；此前重复503等技术中断仍单列。具体读取等待原因未分离。运行中的老观察进程使用旧内存分类，公开发布采用现有collect-only入口的当前源码汇总。最新数量、逐策略分母、费用和实际重试统一见[Model-only正式报告](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)。新Episode保存600权限请求正文及教师原始响应，授权头不写入。
 
 nginx-request-logging全部24组结束：16官方1、2有效官方0、6请求故障原0另列。六个训练Kev固定Low/High/Max、教师OFF/ON位置各33个HTTP502、32次额外重试，在原时限结束后调用原Verifier；请求费用未知，沿原独立恢复队列。原始Kev OFF Low与训练Laya OFF Low的有效0保留。原队列进入password-recovery，原始Laya OFF Low官方2条断言全失败、Reward0，/app/recovered_passwords.txt缺失；13生成、0重试、134960 Token、$0.01128877参考费、Harbor378.71589秒，这条有效失败不重跑。
 
