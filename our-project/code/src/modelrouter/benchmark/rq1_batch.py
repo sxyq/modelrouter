@@ -112,7 +112,8 @@ def recovery_reason(path):
             return "VERIFIER_DOWNLOAD_TIMEOUT"
     if kind == "EnvironmentStartTimeoutError":
         return kind
-    if kind == "RuntimeError" and any(s in message for s in ("failed to fetch anonymous token", "connection refused", "502 Bad Gateway")):
+    if kind == "RuntimeError" and (any(s in message for s in ("failed to fetch anonymous token", "connection refused", "502 Bad Gateway"))
+            or "failed to resolve reference" in message and "EOF" in message):
         return "ENVIRONMENT_NETWORK"
     return None
 
