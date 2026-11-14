@@ -107,7 +107,9 @@ def recovery_reason(path):
         stdout = Path(trial["trial_dir"]) / "verifier/test-stdout.txt"
         output = stdout.read_text() if stdout.exists() else ""
         if "test session starts" in output:
-            if path.parent.parent.name == "pytorch-model-cli" and output.rstrip().endswith("collecting ...") and "Installed 20 packages in" in output:
+            if (path.parent.parent.name == "pytorch-model-cli" and output.rstrip().endswith("collecting ...")
+                    and "Installed 20 packages in " in output and
+                    "m " in output.split("Installed 20 packages in ", 1)[1].splitlines()[0]):
                 return "VERIFIER_PACKAGE_COPY_TIMEOUT"
             return None
         if any(s in output.lower() for s in ("downloading", "apt-get", "fetch", "failed to connect")):
