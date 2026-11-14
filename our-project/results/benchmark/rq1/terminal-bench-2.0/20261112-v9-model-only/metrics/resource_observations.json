@@ -1,18 +1,18 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "observed_at": "2026-11-14T08:55:09+08:00",
+    "observed_at": "2026-11-14T09:16:54+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 720,
-    "reward_1": 172,
+    "finished_positions": 725,
+    "reward_1": 177,
     "reward_0": 91,
     "no_official_reward": 437,
     "verifier_dependency_failure": 20,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1414,
-    "known_model_teacher_reference_usd": 9.19306675,
-    "unknown_cost_requests": 489,
+    "not_dispatched": 1409,
+    "known_model_teacher_reference_usd": 9.35085469,
+    "unknown_cost_requests": 491,
     "analysis_revision": "7311981e3578af888ddc1afc9909f375415e80d9",
     "joint_positions_started": 0
   },
@@ -492,6 +492,27 @@
     }
   ],
   "observations": [
+    {
+      "recorded_at": "2026-11-14T09:16:54+08:00",
+      "kind": "MODEL_ONLY_MERGER_ALL_24_EPISODES_ENDED",
+      "task": "multi-source-data-merger",
+      "seed": 43,
+      "official_success_valid_failure_provider_fault": [20, 0, 4],
+      "raw_official_zero_positions": ["kev_trained_off_model_only_low", "kev_trained_off_model_only_high", "kev_trained_off_model_only_max", "kev_trained_on_model_only_low"],
+      "provider_fault_quality_rewards": [null, null, null, null],
+      "on_max_episode_id": "4e737241-bd5d-4d46-b04a-0fcc44366cdc",
+      "on_max_official_reward": 1,
+      "on_max_extra_retries": 11,
+      "on_max_generator_teacher_requests": [9, 2],
+      "on_max_teacher_consumed_decisions": 2,
+      "on_max_known_input_output_tokens": [97820, 12768],
+      "on_max_unknown_cost_requests": 2,
+      "on_max_known_generator_teacher_reference_usd": [0.119308, 0.0004048],
+      "on_max_harbor_seconds": 1223.295913,
+      "full_episode_reference_cost": "UNKNOWN_WHEN_FAILED_ATTEMPT_USAGE_IS_MISSING",
+      "attribution": "TEACHER_AND_TRAINING_EFFECTS_NOT_SEPARATED_FROM_GENERATION_ENDPOINT_RECOVERY",
+      "next_task": "nginx-request-logging"
+    },
     {
       "recorded_at": "2026-11-14T08:55:09+08:00",
       "kind": "TERRA_HIGH_GENERATION_RECOVERED_AND_OFFICIAL_TASK_PASSED",
