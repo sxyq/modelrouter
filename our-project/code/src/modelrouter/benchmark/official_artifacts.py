@@ -174,11 +174,14 @@ def audit_trial(trial_dir: str | Path) -> dict[str, Any]:
             if (directory / "verifier" / "ctrf.json").is_file() else None,
         })
         stdout = directory / "verifier" / "test-stdout.txt"
-        if (stdout.is_file() and "Read-only file system" in stdout.read_text()
-                and any(path in stdout.read_text() for path in (
-                    "modelrouter-verifier/cache", "/root/.local/share/uv/python/"))
+        output = stdout.read_text() if stdout.is_file() else ""
+        cache_failure = ("Read-only file system" in output and any(path in output for path in (
+            "modelrouter-verifier/cache", "/root/.local/share/uv/python/"))
+            or "Not a directory (os error 20)" in output and "/root/.cache/uv/builds-v0/" in output
+            or "Failed to import encodings module" in output and "/root/.local/share/uv/python/" in output)
+        if (cache_failure
                 and not (directory / "verifier" / "ctrf.json").is_file()):
-            row["reason"] = "Official test dependency cache is read-only; no task assertions executed"
+            row["reason"] = "Official test dependency cache installation failed; no task assertions executed"
             return row
         if original is None or not rewards or not (phase.get("verifier") or {}).get("finished_at"):
             row["reason"] = "Original verifier output or completed verifier timing absent"

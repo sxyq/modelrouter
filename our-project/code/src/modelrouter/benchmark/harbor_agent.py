@@ -62,6 +62,7 @@ class A6000DockerEnvironment(DockerEnvironment):
                 "/opt/modelrouter-verifier/bin/uvx /opt/modelrouter-verifier/bin/env /root/.local/bin/ "
                 "&& sed -i 's#/opt/modelrouter-verifier/cache#/root/.cache/uv#g; "
                 "s#/opt/modelrouter-verifier/python#/root/.local/share/uv/python#g' /root/.local/bin/env "
+                "&& echo 'export UV_LINK_MODE=copy' >> /root/.local/bin/env "
                 "&& mkdir -p /root/.cache/uv/archive-v0 /root/.local/share/uv/python; "
                 "for d in /opt/modelrouter-verifier/cache/*; do "
                 "if [ \"${d##*/}\" = archive-v0 ]; then "
