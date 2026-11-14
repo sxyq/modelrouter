@@ -1,19 +1,19 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "snapshot_exported_at": "2026-11-14T22:28:02+00:00",
+    "snapshot_exported_at": "2026-11-14T23:01:00+00:00",
     "controller_pid": 1696641,
-    "finished_positions": 871,
+    "finished_positions": 874,
     "reward_1": 234,
     "reward_0": 108,
-    "no_official_reward": 497,
+    "no_official_reward": 500,
     "missing_quality_reasons": {
       "URLError": 352,
       "PROVIDER_RETRY_DEADLINE": 45,
       "ProviderResponseError": 26,
-      "AgentTimeoutError": 24,
+      "AgentTimeoutError": 26,
       "NO_RECORDED_ERROR": 11,
-      "VerifierTimeoutError": 11,
+      "VerifierTimeoutError": 12,
       "HTTPError": 8,
       "ROUTER_DECISION_TIMEOUT": 7,
       "ROUTER_BEFORE_GENERATION_TIMEOUT": 5,
@@ -24,11 +24,11 @@
     "verifier_dependency_failure": 32,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1263,
-    "known_model_teacher_reference_usd": 11.31455165,
+    "not_dispatched": 1260,
+    "known_model_teacher_reference_usd": 11.37256213,
     "unknown_cost_requests": 543,
     "provider_retry_count": 2205,
-    "runtime_source_revision": "f1ae75923db3479b0b8006165db4342ce3144eda",
+    "runtime_source_revision": "ab4dadb4e8dd4ad85913f9466e7222a846da1f7d",
     "analysis_revision": "90640d53f583eb7d38f1cbf0a44cccd194b440c1",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
     "joint_positions_started": 3,
@@ -136,12 +136,16 @@
     "recovery": "Reuse existing one-time technical recovery after fixing each actual cause; preserve valid official ones and zeros"
   },
   "current_recovery_queue": {
-    "source_revision": "d804db32c42bf8fcf55ac74817e44d183effd953",
-    "queue_pid": 2932692,
+    "source_revision": "ab4dadb4e8dd4ad85913f9466e7222a846da1f7d",
+    "queue_pid": 3031707,
     "after_pid": 2509357,
     "after_pids": [2509357],
     "stages": ["CAFFE_XHIGH_UNSCORED_RECOVERY", "REPAIRED_FIXED_DEPENDENCY_AND_IMAGE_POSITIONS", "JOINT_REMAINING_FIXED", "WAIT_FOR_1700006", "JOINT_TECHNICAL_RECOVERY", "HISTORICAL_NECESSARY_RECOVERY"],
-    "explicit_repaired_tasks": ["model-extraction-relu-logits", "pytorch-model-cli", "pytorch-model-recovery", "mteb-retrieve"],
+    "explicit_repaired_tasks": ["model-extraction-relu-logits", "pytorch-model-cli", "pytorch-model-recovery", "mteb-retrieve", "mteb-leaderboard"],
+    "previous_finite_waiter_pid": 2932692,
+    "previous_finite_waiter_retired_idle_after_credentials_held": true,
+    "previous_proxy_waiter_pid": 30587,
+    "previous_proxy_waiter_retired_idle": true,
     "caffe_xhigh_recovery": {
       "task_id": "caffe-cifar-10",
       "strategy_id": "luna_xhigh",
@@ -161,9 +165,9 @@
     "old_queue_exited_after_new_queue_held_same_private_memfd": true,
     "active_controller_pid": 1696641,
     "active_router_worker_pid": 2496626,
-    "proxy_waiting_pid": 30587,
+    "proxy_waiting_pid": 7412,
     "proxy_waiting_for_existing_connection_pid": 17649,
-    "proxy_followed_pids": [1700006, 2932692],
+    "proxy_followed_pids": [1700006,3031707],
     "replaced_idle_queue_pid": 2850892,
     "replaced_idle_proxy_waiting_pid": 47171,
     "replacement_credentials_held": true,
@@ -285,6 +289,19 @@
     "original_image_tag_task_limits_and_verifier_preserved": true,
     "guest_root_available_gib_before_pull": 104.1
   },
+  "docker_registry_leaderboard_transport": {
+    "task_id": "mteb-leaderboard",
+    "official_image": "alexgshaw/mteb-leaderboard:20251031",
+    "compressed_layer_bytes": 8820321042,
+    "layer_count": 7,
+    "affected_fixed_recovery_positions": 5,
+    "error": "TLS_EOF_BEFORE_AGENT_START",
+    "failed_host": "registry-1.docker.io",
+    "official_alternate_host": "registry.hub.docker.com",
+    "image_status": "PULL_RUNNING",
+    "recovery_queue_pid": 3031707,
+    "first_failure_records_preserved": true
+  },
   "pytorch_cli_system_dependencies": {
     "source_revision": "f1ae75923db3479b0b8006165db4342ce3144eda",
     "task_id": "pytorch-model-cli",
@@ -318,6 +335,41 @@
     "separate_collection_timeout_trial_id": "3d49274e-7e22-42ce-9bc0-f3fb4fc427f2",
     "separate_collection_timeout_cause": "UNKNOWN; LAST_OUTPUT_COLLECTING; DO_NOT_RECLASSIFY_FOR_RETRY_WITHOUT_CAUSE",
     "official_script_parameters_and_limits_preserved": true
+  },
+  "pytorch_cli_package_linking": {
+    "source_revision": "ab4dadb4e8dd4ad85913f9466e7222a846da1f7d",
+    "task_id": "pytorch-model-cli",
+    "mode": "UV_LINK_MODE=symlink",
+    "other_tasks_mode": "UV_LINK_MODE=copy",
+    "same_official_20_packages_preserved": true,
+    "known_previous_package_copy_s": [
+      171,
+      196
+    ],
+    "previous_pytest_process": {
+      "status": "CPU_RUNNING_DURING_COLLECTION",
+      "resident_kb": 235240,
+      "threads": 16,
+      "loaded_libraries": [
+        "cv2",
+        "numpy",
+        "torch._C",
+        "libtorch_cpu",
+        "libtorch_python"
+      ],
+      "uv_status": "WAITING_FOR_PYTEST_CHILD"
+    },
+    "new_startup_container": "11a5d54bb2d5",
+    "new_startup_setting_observed": "export UV_LINK_MODE=symlink",
+    "new_startup_libgl1_status_at_sample": "INSTALLED; VERSION_1.6.0-1",
+    "completed_post_linking_official_episode": null,
+    "recovery_reason_on_original_low_and_trained_max": "VERIFIER_PACKAGE_COPY_TIMEOUT",
+    "valid_reward_1_on_trained_low_reused": true,
+    "reload_idle_waiter_pid": 3031707,
+    "retired_previous_idle_waiter_pid": 3022818,
+    "new_proxy_waiter_pid": 7412,
+    "retired_previous_proxy_waiter_pid": 57168,
+    "sole_rollback_contains_pre_linking_f1ae_source": true
   },
   "pytorch_cli_remaining_verifier_timeout": {
     "trial_id": "332acb3e-e3d0-46b9-b429-d3d1769ffe1a",

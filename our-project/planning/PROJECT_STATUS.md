@@ -4,15 +4,15 @@
 
 当前正式范围：**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
-06:28原Harbor汇总：Model-only结束871/2136位置，234通过、108有效失败、497缺有效评分、32依赖故障另列，2运行、1263未开始；872次已结束Trial，模型与教师已知参考费$11.31455165，543请求缺费用，2205次额外重试。联合批次仍3/957结束。历史06:29快照结束1509/1513位置、4恢复运行，285通过、298有效失败、845缺评分、81依赖故障另列，2477次结束Trial；已知模型与教师参考费$37.90883169、1068请求缺费用。原1513位置和2333次首次Trial保持身份。
+07:02原Harbor汇总：Model-only结束874/2136位置，234通过、108有效失败、500缺有效评分、32依赖故障另列，2运行、1260未开始；875次已结束Trial，模型与教师已知参考费$11.37256213，543请求缺费用，2205次额外重试。89题中36题全部24策略结束、37题已有结束位置，2题全部24策略取得有效评分。联合批次仍3/957结束。历史07:02快照结束1509/1513位置、4恢复运行，285通过、300有效失败、843缺评分、81依赖故障另列，2484次结束Trial；模型与教师已知参考费$37.92517063、1068请求缺费用。原1513位置和2333次首次Trial保持身份。
 
 大型依赖缓存整目录复制曾超过原600秒环境启动时限；改为原Harbor只读绑定后，真实Verifier又遇到旧env指向只读缓存及Python软链接的EXTERNALLY-MANAGED写入失败。源码`b4358a1a375e6244db4d24fed70d83f2529566cf`让每题env指向私有可写UV目录、复制107MiB解释器并复用大型包缓存；原官方脚本、包参数、评分标准和任务时限保持。无断言的原Reward0保留，质量单列依赖故障；本次从原记录重建2个Model-only和8个历史只读故障位置，后续新增位置沿同一入口处理。
 
 01:08进一步读取原日志：缓存根软链接安装时被uv重命名到site-packages目录，出现os error 20且无断言。源码`71175861313c90def9f23b5bc3c3290d7c48e0e9`以原Harbor逐目录只读挂载替换这些软链接，uv沿原工具选择copy安装模式；此前7个Model-only及5个历史轮子／解释器安装故障位置已重新分类，原0及费用保持。break-filter-js-from-html／Luna High／seed42的新Episode902a488c-ab31-47c0-acee-3751f9a18a35于01:15完成原Verifier：1断言失败、有效Reward0，HTML未绕过过滤器；11991 API Token、$0.00182214参考费、398.950095秒，环境116.469672秒、Verifier174.65114秒。该任务使用52个实际只读缓存挂载，评分依赖已执行完成，有效0不重跑。
 
-原Controller1696641、CUDAworker2496626、历史固定恢复2509357继续；有限接续2932692独立持有原600权限memfd，等待2509357后先恢复Caffe Xhigh无评分项，再恢复已修复依赖及镜像位置、接续联合剩余固定组，等待1700006后做联合及历史必要恢复。本机代理等待30587跟随1700006／2932692，健康SSH17649保留；已替换的闲置2850892／47171退出。两个1200秒观察沿原ac90l478／Etxhms目录运行。H3当前PID2685675 active，GPU锁保留；同视频期间Kev真实CUDA前向、fallback=false、12.212秒的原记录保持。Caffe原Agent和Verifier各1200秒超时，最后输出为uv安装完成、无pytest报告；具体停滞进程待新Episode读取。
+原Controller1696641、CUDAworker2496626、历史固定恢复2509357继续；现有限接续3031707独立持有原600权限memfd并加载ab4dadb4e8dd4ad85913f9466e7222a846da1f7d。等待2509357后先恢复Caffe Xhigh无评分项，再恢复已修复依赖及两项MTEB镜像位置、接续联合剩余固定组，等待1700006后做联合及历史必要恢复。本机代理等待7412跟随1700006／3031707，健康SSH17649保留；旧闲置3022818／57168在新进程持有凭据及代理等待建立后退出。两个1200秒观察沿原ac90l478／Etxhms目录运行。H3当前PID2685675 active，GPU锁保留；同视频期间Kev真实CUDA前向、fallback=false、12.212秒的原记录保持。Caffe具体停滞进程待新Episode读取。
 
-mteb-retrieve五个固定恢复位置在镜像拉取前中断，Agent和模型请求均未开始。registry-1.docker.io返回TLS EOF；同一官方镜像已经Docker Hub官方registry.hub.docker.com下载完成，06:24恢复原alexgshaw/mteb-retrieve:20251031标签，Linux/amd64、展开21,556,522,773字节。临时域名标签已移除，镜像层及原标签保留。原入口将首次故障记录为ENVIRONMENT_NETWORK，新有限队列已加入五策略，等待当前固定恢复自然结束。任务时限及Verifier保持。
+mteb-retrieve五个固定恢复位置在镜像拉取前中断，Agent和模型请求均未开始。registry-1.docker.io返回TLS EOF；同一官方镜像已经Docker Hub官方registry.hub.docker.com下载完成，06:24恢复原alexgshaw/mteb-retrieve:20251031标签，Linux/amd64、展开21,556,522,773字节。临时域名标签已移除，镜像层及原标签保留。原入口将首次故障记录为ENVIRONMENT_NETWORK；两项MTEB任务五策略均纳入现有限队列，等待当前固定恢复自然结束。任务时限及Verifier保持。
 
 源码f1ae75923db3479b0b8006165db4342ce3144eda已部署：PyTorch CLI在原环境启动阶段准备libgl1，并让官方APT等待已有安装锁。原失败df9116a0-c1ff-4c46-924d-73a327c72142为APT被Agent占锁后安装失败、pytest导入libGL.so.1失败、0断言。新训练Laya／教师OFF／Low／seed43的38192abc-49b0-44f5-a49b-2638be46ad1e于06:20结束，原官方Reward1、6断言全通过；41生成请求、0额外重试、已知405103 API Token／$0.01924296，1请求消费未知。完整墙钟2122.637秒，原Agent900秒达到期限后Verifier896.565秒完成，断言执行213.48秒；原官方脚本和900秒Verifier时限保持。旧Low的collecting阶段超时原因仍待定位，不据此重跑有效失败。唯一源码回退包保存f1ae部署前harbor_agent.py和rq1_batch.py。
 
@@ -21,6 +21,8 @@ mteb-retrieve五个固定恢复位置在镜像拉取前中断，Agent和模型�
 pypi-server／seed43全部24组结束：Laya原始、训练及原始Kev各6组共18个官方1，额外重试均0；训练Kev六组累计186次额外重试、生成0次到原期限，原Verifier0保留、质量另列请求故障，费用未知。Laya原始OFF／ON High为53044／54725 API Token、$0.00385200／$0.00497218、534.423／517.475秒；ON High有2次成功Luna短评、4次决策消费。训练Laya ON Max为26生成请求／7教师、14次短评消费，最后GLM Max请求在原期限单次读超时；原Verifier仍给1，该请求用量及费用未知，完整模型费用保持空值。逐次模型、教师、工具与Verifier沿原Episode目录保存。
 
 用户VM原磁盘已在线100→200GiB，根ext4可用96.7GiB；QEMU2744271保持16CPU／40GiB。NumPy精确7包、PyTorch CLI原CPU index的20包及recovery原默认index的31包均已安装，缓存约6.0GiB。原权重与11-11两训练实体各18更新保持，本轮不训练。恢复只选择技术故障，已有有效官方1/0不重跑；每次模型／教师请求仍最多额外100次且受原期限约束。
+
+ab4dadb4e8dd4ad85913f9466e7222a846da1f7d只将PyTorch CLI原20包安装改为UV符号链接，其他任务继续copy。真实旧安装复制171／196秒，pytest收集时CPU执行、235240kB／16线程，CV2、NumPy及Torch已加载；UV等待该Python子进程。旧Low和训练Max的分钟级复制后无断言超时沿原入口记录VERIFIER_PACKAGE_COPY_TIMEOUT，已有官方1继续复用。新容器11a5d54bb2d5已确认symlink及libgl1 1.6.0-1，完整官方评分尚在执行；原包、评分和时限保持。唯一源码回退包保存链接变更前f1ae源码。
 
 ## 2026-11-14：GPU共享并发与技术恢复
 
