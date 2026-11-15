@@ -2,13 +2,17 @@
 
 ## 2026-11-15 · 原Verifier依赖与继续运行
 
+PyTorch recovery两条新Model-only原始Laya OFF Low／High完整Episode均安装31包耗时524秒，原5项pytest断言全通过，但Verifier到原900秒时限未取得官方Reward，分数继续空值。`24ee16e16fd000f3c35915724ee35c1fee5b76eb`仅将该实际复制改为原轮子符号链接；其他任务继续copy，CLI原APT缓存保持。历史四个CLI缺分优先恢复由有限3205488接续，已有Luna Max有效评分保留；新模式的完整官方结果仍待运行。
+
+10:23同一依赖目录的真实APT缓存完成249包：183211524字节包文件、19838946字节索引，临时准备容器已移除。新部署`f1828108ee189b94790ca84ebc81d7bae235ace0`在原CLI启动链复用签名包和索引，原版本、推荐依赖和600／900秒时限保持。此前无缓存预装的教师ON High／Max两项因600秒启动到期未开始Agent，均缺评分。现有限3195433优先四个历史固定CLI缺分位置，已有Luna Max有效评分保留；尚待新缓存下完整官方结果。
+
 09:29新部署`1e42cfcd4045e08bdf71e87ab9c07678469adcfa`仅提前准备PyTorch CLI原Verifier四个系统包，原600秒环境启动、900秒Agent和900秒Verifier时限保持。训练Kev OFF Low原Agent改回deb.debian.org，Verifier下载124 MB耗时313秒，20个Python包安装20.29秒后到期、无Reward；原日志和费用保留，纳入原技术恢复。新部署后完整评分尚待原队列自然结束。
 
 训练Kev OFF High的[完整Episode](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-cli/kev_trained_off_model_only_high/43/summary.json)获得官方1／6断言全通过；20次生成均选Terra High且返回匹配，0额外重试，231713 API Token、$0.08868740参考费、1649.580秒。同题同Seed的原始Kev OFF High也为官方1；训练版参考费33.19倍、Token7.61倍、墙钟增加21.04%，完整实收与资源USD仍未知。
 
 历史regex-chess／seed42恢复：Terra High官方1／4断言全通过，已知1014871 API Token、$0.330015参考费、1请求消费未知、20次额外重试；Luna Max官方0／1断言通过3失败、1811182 API Token／$0.09110628／3993.733秒、0重试。video-processing／Luna Low亦获有效0／3过2失败，API32056 Token／$0.00218080／512.239秒，原失败不重跑。
 
-Model-only09:35原Harbor导出[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为884/2136结束：242通过、108有效失败、502缺有效评分、32依赖故障另列；2运行、1250未开始，885次已结束Harbor Trial，已知模型与教师$11.67309730，544请求费用未知、2205次额外重试。36题全部24策略结束，其中2题全部24策略有效评分；当前共有37题已有结束位置。联合仍3/957；历史09:32导出为2505次结束Trial、289通过／309有效失败／830缺评分／81依赖故障，4恢复运行，已知模型与教师$38.50513245、1072请求费用未知、746次额外重试。原1513位置已全部首轮结束，原失败尝试、实报Token及费用保持，详见[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)。
+Model-only10:36原Harbor导出[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为890/2136结束：242通过、108有效失败、508缺有效评分、32依赖故障另列；2运行、1244未开始，891次已结束Harbor Trial，已知模型与教师$12.03700598，544请求费用未知、2205次额外重试。36题全部24策略结束，其中2题全部24策略有效评分；当前共有37题已有结束位置。联合仍3/957；历史10:35导出为2516次结束Trial、290通过／318有效失败／820缺评分／81依赖故障，4恢复运行，已知模型与教师$39.35468527、1073请求费用未知、746次额外重试。原1513位置已全部首轮结束，原失败尝试、实报Token及费用保持，详见[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)。
 
 PyTorch CLI原始Kev／seed43六项独立完整Episode均获官方1、各6断言全通过、0额外请求重试；全部生成请求均选择Luna并返回相同Effort。下表每格对应一次完整任务，Token与参考费包含教师；供应商实收和完整资源费用未知。
 
@@ -20,11 +24,11 @@ PyTorch CLI原始Kev／seed43六项独立完整Episode均获官方1、各6断言
 
 该题教师Low／High参考费增加203.24%／183.45%，Max减少71.35%；Low／Max墙钟缩短6.79%／14.02%，High增加37.28%。ON Low／High／Max的2／5／2次Luna短评分别进入2／5／5次决策，短评实际复用。89题的成对总体收益仍待原矩阵完成。
 
-reshard-c4-data与build-pov-ray原镜像已通过Docker Hub官方registry.hub.docker.com恢复原alexgshaw标签，分别4,235,256,296／579,715,713字节；临时域名标签已移除、镜像层保留。前者五固定位置原TLS EOF，后者17历史位置原代理拒绝，Agent均未开始。现有限3143824已将两题与其余五项依赖／镜像恢复合并，固定4并发、Router2并发；原任务、Seed、时限及评分保持。
+reshard-c4-data与build-pov-ray原镜像已通过Docker Hub官方registry.hub.docker.com恢复原alexgshaw标签，分别4,235,256,296／579,715,713字节；临时域名标签已移除、镜像层保留。前者五固定位置原TLS EOF，后者17历史位置原代理拒绝，Agent均未开始。现有限3205488已将两题与其余五项依赖／镜像恢复合并，固定4并发、Router2并发；原任务、Seed、时限及评分保持。
 
 新增缺分实际来自只读UV缓存和解释器安装标记写入，未执行任务断言。现有环境类已改为母缓存只读绑定、每题元数据和107MiB解释器可写；不再复制6.0GiB全部依赖。三个精确NumPy／PyTorch缓存安装完成，原包版本和官方脚本保持；旧无断言Reward0另列依赖故障并进入同条件恢复。
 
-缓存根软链接实际导致uv安装的os error 20；`71175861313c90def9f23b5bc3c3290d7c48e0e9`使用原Harbor逐目录只读挂载替换软链接，并以copy方式安装轮子，原官方脚本保持。break-filter-js-from-html／Luna High／seed42已完成52挂载的新Episode：有效Reward0、1断言失败、11991 API Token／$0.00182214参考费／398.950095秒；HTML未绕过过滤器，有效0保留。Controller1696641／历史固定恢复2509357并行推进，原Router两并发与固定四并发保持；3143824等待固定恢复结束后单独恢复Caffe Xhigh无评分项，再恢复已修复依赖、两项MTEB、reshard-c4-data及build-pov-ray位置并接续联合矩阵。H3／Router共享原GPU锁的真实同视频前向记录、原VM磁盘在线扩容及当前接续PID见[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。GLM仍按相同模型和档位最多额外100次请求重试至原期限。
+缓存根软链接实际导致uv安装的os error 20；`71175861313c90def9f23b5bc3c3290d7c48e0e9`使用原Harbor逐目录只读挂载替换软链接，并以copy方式安装轮子，原官方脚本保持。break-filter-js-from-html／Luna High／seed42已完成52挂载的新Episode：有效Reward0、1断言失败、11991 API Token／$0.00182214参考费／398.950095秒；HTML未绕过过滤器，有效0保留。Controller1696641／历史固定恢复2509357并行推进，原Router两并发与固定四并发保持；3205488等待固定恢复结束后单独恢复Caffe Xhigh无评分项，再恢复已修复依赖、两项MTEB、reshard-c4-data及build-pov-ray位置并接续联合矩阵。H3／Router共享原GPU锁的真实同视频前向记录、原VM磁盘在线扩容及当前接续PID见[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。GLM仍按相同模型和档位最多额外100次请求重试至原期限。
 
 pypi-server／seed43全部24组结束：Laya原始、训练及原始Kev各6组共18个官方1，额外重试均0；训练Kev六组累计186次额外重试、生成0次到原期限，原Verifier0保留、质量另列请求故障，费用未知。原始Laya OFF／ON High分别53044／54725 API Token、$0.00385200／$0.00497218参考费、534.423／517.475秒，ON High的2次Luna教师短评进入4次真实Router决策。原始OFF Max有20次GLM工具生成、132324 Token、$0.01906652、1099.075秒，返回Effort未报告。训练Laya ON Max有26生成请求／7教师、14次短评消费，最后GLM请求在原期限单次读超时，但原Verifier给1；该请求消费未知，完整模型费用为空。每项均保存原始完整Episode和官方评分。
 
