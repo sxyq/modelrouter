@@ -2,7 +2,7 @@
 
 ## 2026-11-16 · 接口故障与有效官方结果
 
-04:10—04:11原批次：Model-only1020/2136结束、262通过／152有效失败／574缺评分／32依赖故障；联合185/957结束、66通过／41有效失败／78缺评分。旧352条URL错误中338为连接拒绝、14为SSL EOF，按原技术恢复另存，不计为模型能力失败。共享READ锁保持；03:34实际GPU可用47444MiB，H3后端stopped、活动请求0。
+04:50—04:52原批次：Model-only1029/2136结束、263通过／152有效失败／582缺评分／32依赖故障；联合197/957结束、71通过／42有效失败／84缺评分。旧352条URL错误中338为连接拒绝、14为SSL EOF，按原技术恢复另存，不计为模型能力失败。共享READ锁保持；03:34实际GPU可用47444MiB，H3后端stopped、活动请求0。
 
 raman-fitting／训练Kev教师ON／seed43完整三档结果，额外重试均0；教师消费均0、教师费用未知，模型费用只列已知参考部分：
 
@@ -20,6 +20,10 @@ Max的G与2D峰值两项失败、有效0保留，模型参考费为Low的5.23倍
 |---|---:|---:|---:|---:|
 | [FEAL差分密码分析](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/feal-differential-cryptanalysis/terra_high/43/summary.json) | 26838 | 0.0171108 | 4／4 | 354.964261 |
 | [FEAL线性密码分析](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/feal-linear-cryptanalysis/terra_high/43/summary.json) | 73172 | 0.0349608 | 7／7 | 207.012172 |
+
+filter-js-from-html两条固定Seed43 Episode缺官方评分：Terra High的94690280、GLM Low的aa1287ab均在原900秒Verifier到期；24包分别安装1.41／1.76秒，2项测试已收集，内部阶段耗时未保存。该题历史17位置也均缺有效评分，其中8个VerifierTimeout、9个HTTP错误；当前Model-only原24组尚未开始。
+
+沿原镜像alexgshaw/filter-js-from-html:20251031的一次网络／浏览器准备及一次原退出顺序观察：Selenium4.38.0、Chromium／Driver140.0.7339.127，417条外部XSS样例的原GitHub归档136398字节下载成功，浏览器真实启动；按原先kill再quit仅耗0.007877秒。两次准备均用1CPU／2GiB并自动移除容器，原镜像供原24组保留；这两项为依赖运行数据，完整Episode质量仍为空。下一实际任务的Verifier内部阶段与进程状态用于定位停点，不改测试或时限。
 
 02:50现行分析e1cb909b补计未返回的Router墙钟：同一已结束Trial的ROUTER_START至AGENT_END；原始Laya ON Low／High实际899.873759／899.806012秒，原汇总均为0。CPU、GPU等待和传输细分缺测为空，Router用量缺测各1次；原官方评分及API费用保持。当前三个20分钟观察4041864／4041865／4041866沿相同目录导出。
 
