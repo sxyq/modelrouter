@@ -1,47 +1,47 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "snapshot_exported_at": "2026-11-15T14:36:56.788158+00:00",
+    "snapshot_exported_at": "2026-11-15T15:42:26.845879+00:00",
     "controller_pid": 1696641,
-    "finished_positions": 970,
+    "finished_positions": 975,
     "reward_1": 259,
     "reward_0": 148,
-    "no_official_reward": 531,
+    "no_official_reward": 536,
     "missing_quality_reasons": {
-      "URLError": 352,
-      "PROVIDER_RETRY_DEADLINE": 46,
-      "VERIFIER_REPORT_ABSENT": 29,
-      "ProviderResponseError": 26,
-      "VerifierTimeoutError": 22,
       "HTTPError": 10,
-      "ROUTER_DECISION_TIMEOUT": 8,
-      "AgentTimeoutError": 8,
-      "EnvironmentStartTimeoutError": 7,
-      "PROVIDER_REQUEST_FAILED": 12,
+      "ProviderResponseError": 26,
       "ROUTER_BEFORE_GENERATION_TIMEOUT": 6,
-      "RemoteDisconnected": 2,
+      "VerifierTimeoutError": 22,
+      "URLError": 352,
       "JSONDecodeError": 1,
+      "RemoteDisconnected": 2,
+      "AgentTimeoutError": 9,
+      "VERIFIER_REPORT_ABSENT": 29,
+      "ROUTER_DECISION_TIMEOUT": 8,
+      "PROVIDER_RETRY_DEADLINE": 46,
+      "EnvironmentStartTimeoutError": 7,
+      "PROVIDER_REQUEST_FAILED": 16,
       "ROUTER_CUDA_OUT_OF_MEMORY": 2
     },
     "verifier_dependency_failure": 32,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1164,
-    "known_model_teacher_reference_usd": 14.51062617,
-    "unknown_cost_requests": 582,
+    "not_dispatched": 1159,
+    "known_model_teacher_reference_usd": 14.53038187,
+    "unknown_cost_requests": 593,
     "provider_retry_count": 2222,
-    "runtime_source_revision": "e05caa115ed00e68ba26abf9aed72847440b4fde",
-    "analysis_revision": "f25eab27a92577ce212beab4b821c952d394ead4",
+    "runtime_source_revision": "1e3d8f8d26daf0374f0e11082c9f81effebf44e8",
+    "analysis_revision": "d013f87ac71904e51527e3a2e825f0ab9b3ef61a",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
-    "joint_positions_started": 81,
-    "joint_observed_at": "2026-11-15T14:36:22.098870+00:00",
-    "joint_finished_positions": 77,
-    "joint_reward_1": 31,
-    "joint_reward_0": 26,
-    "joint_missing_official_reward": 20,
-    "joint_known_model_teacher_reference_usd": 2.65124735,
-    "joint_unknown_cost_requests": 22,
-    "joint_provider_retry_count": 26
+    "joint_positions_started": 97,
+    "joint_observed_at": "2026-11-15T15:41:54.863969+00:00",
+    "joint_finished_positions": 93,
+    "joint_reward_1": 38,
+    "joint_reward_0": 28,
+    "joint_missing_official_reward": 27,
+    "joint_known_model_teacher_reference_usd": 3.49814624,
+    "joint_unknown_cost_requests": 30,
+    "joint_provider_retry_count": 45
   },
   "shared_cuda_memory_recovery": {
     "source_revision": "ab5c0b818ad49b343f8b8e0f7979189c0ca6bfd0",
@@ -241,11 +241,11 @@
     "old_queue_exited_after_new_queue_held_same_private_memfd": true,
     "active_controller_pid": 1696641,
     "active_router_worker_pid": 3708428,
-    "proxy_waiting_pid": 69540,
+    "proxy_waiting_pid": 26576,
     "proxy_waiting_for_existing_connection_pid": 17649,
     "proxy_followed_pids": [
       1700006,
-      3787256
+      3843075
     ],
     "repair_tail_queue": {
       "pid": 3575811,
@@ -305,11 +305,11 @@
       "luna_xhigh",
       "terra_high"
     ],
-    "current_analysis_revision": "f25eab27a92577ce212beab4b821c952d394ead4",
+    "current_analysis_revision": "d013f87ac71904e51527e3a2e825f0ab9b3ef61a",
     "analysis_change": "Retain original Harbor reward-valid policy and expose recorded terminal Provider failures with unscored outcomes",
-    "model_only_observer_pid": 3792352,
-    "historical_observer_pid": 3792410,
-    "joint_observer_pid": 3792468,
+    "model_only_observer_pid": 3847241,
+    "historical_observer_pid": 3847293,
+    "joint_observer_pid": 3847344,
     "joint_observer_export": "/home/syy/路由/.runtime/rq1-joint-collect.wAgWOn",
     "observation_interval_s": 1200,
     "observers_follow_existing_controllers": [
@@ -317,7 +317,7 @@
       1700006,
       3205488,
       3575811,
-      3787256
+      3843075
     ],
     "previous_final_queue_pid": 2024071,
     "previous_final_queue_exited_after_replacement_held_credentials": true,
@@ -344,23 +344,24 @@
     },
     "old_proxy_waiting_pid": 27095,
     "old_proxy_waiter_exited": true,
-    "recovery_successor_pid": 3787256,
+    "recovery_successor_pid": 3843075,
     "recovery_successor": {
-      "pid": 3787256,
-      "source_revision": "e05caa115ed00e68ba26abf9aed72847440b4fde",
+      "pid": 3843075,
+      "source_revision": "1e3d8f8d26daf0374f0e11082c9f81effebf44e8",
       "same_original_private_memfd_held": true,
       "status": "WAITING_FOR_ORIGINAL_JOINT_FIXED_261",
-      "recorded_at": "2026-11-15T14:10:36.790687+00:00",
+      "recorded_at": "2026-11-15T15:16:58.156453+00:00",
       "original_fixed_holder_pid": 3205488,
       "old_tail_holder_pid": 3575811,
       "fixed_positions": 261,
-      "transition": "After fixed261 ends and original holder is idle with no children in any thread: retire idle3575811 before idle3205488; run the same five repaired-task fixed recovery through existing rq1_batch.main, wait1700006, then joint and historical recovery",
+      "transition": "After fixed261 ends and old3205488 is idle with no children in any thread: retire idle3575811 before idle3205488; run the existing six-task fixed recovery, wait1700006, then current-source model-only query technical recovery, joint and historical recovery; retain all valid official scores",
       "tasks": [
         "pytorch-model-cli",
         "caffe-cifar-10",
         "torch-pipeline-parallelism",
         "torch-tensor-parallelism",
-        "mteb-retrieve"
+        "mteb-retrieve",
+        "query-optimize"
       ],
       "strategies": [
         "luna_low",
@@ -368,7 +369,8 @@
         "luna_max",
         "luna_xhigh",
         "terra_high"
-      ]
+      ],
+      "previous_idle_holder_pid": 3787256
     }
   },
   "torch_exact_dependencies": {
@@ -489,24 +491,21 @@
       1013
     ],
     "sudo_noninteractive_result": "PASSWORD_REQUIRED",
-    "qemu_pid": 2744271,
-    "current_machine": "q35,accel=tcg",
+    "qemu_pid": 3832028,
+    "current_machine": "q35,accel=kvm",
     "current_cpu": "max",
     "current_vm_cpus_memory_mib": [
       16,
       40960
     ],
     "required_external_permission": null,
-    "current_active_episode_conditions": "ORIGINAL_TCG_EPISODES_CONTINUE; DISPATCH_PAUSED_UNTIL_VM_DRAIN",
+    "current_active_episode_conditions": "ORIGINAL_DISK_IMAGES_CPU_MEMORY_DEADLINES; QEMU_KVM_AFTER_RECORDED_SWITCH",
     "device_acl_user": "syy:rw",
     "kvm_api_version": 12,
     "sudo_saved_credential_used": true,
     "vm_start_script_machine": "q35,accel=kvm",
     "dispatch_paused_at": "2026-11-15T14:55:46.037849+00:00",
-    "paused_controller_pids": [
-      1696641,
-      3205488
-    ],
+    "paused_controller_pids": [],
     "original_episode_children": [
       3803468,
       3817027,
@@ -515,8 +514,41 @@
       3819998,
       3822217
     ],
-    "vm_switch_status": "WAITING_FOR_ORIGINAL_EPISODES_TO_END",
-    "vm_start_rollback": "/home/syy/路由/.runtime/docker-vm/start.sh.previous"
+    "vm_switch_status": "ACTIVE; ORIGINAL_CONTROLLERS_RESUMED",
+    "vm_start_rollback": "/home/syy/路由/.runtime/docker-vm/start.sh.previous",
+    "previous_qemu_pid": 2744271,
+    "qemu_monitor_kvm_support": "enabled",
+    "vm_switch_completed_at": "2026-11-15T15:11:54.380166+00:00",
+    "original_episodes_drained_at": "2026-11-15T15:04:19.575852+00:00",
+    "controllers_paused_for_maintenance": [
+      1696641,
+      3205488
+    ],
+    "docker_images_preserved": 101,
+    "shared_project_mount": "modelrouter 9p rw access=client trans=virtio",
+    "query_reference_timeout_after_kvm": {
+      "task": "query-optimize",
+      "strategies": [
+        "kev_original_off_model_only_high",
+        "kev_original_off_model_only_max"
+      ],
+      "trial_ids": [
+        "979a4732-5f52-4cb8-9681-ee06efd5c748",
+        "4329f23a-3fdd-404e-a8bb-4b999ecec0bd"
+      ],
+      "official_rewards": [
+        null,
+        null
+      ],
+      "package_install_seconds": [
+        1,
+        1.36
+      ],
+      "original_verifier_seconds": 900,
+      "first_official_test_finished": false,
+      "provider_failure": "LUNA_QUOTA; NO_AGENT_TOOLS",
+      "remaining_verifier_cause": "FIRST_PROVIDED_SQL_EXECUTION_NOT_LOCALIZED"
+    }
   },
   "verifier_cache_runtime": {
     "deployed_revision": "71175861313c90def9f23b5bc3c3290d7c48e0e9",
