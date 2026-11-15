@@ -2,6 +2,17 @@
 
 ## 2026-11-16 · 接口故障与有效官方结果
 
+02:50现行分析e1cb909b补计未返回的Router墙钟：同一已结束Trial的ROUTER_START至AGENT_END；原始Laya ON Low／High实际899.873759／899.806012秒，原汇总均为0。CPU、GPU等待和传输细分缺测为空，Router用量缺测各1次；原官方评分及API费用保持。当前三个20分钟观察4041864／4041865／4041866沿相同目录导出。
+
+constraints-scheduling／seed43同题两个固定策略均官方1、0额外重试；GLM原3断言全过，该题保持已观察身份。完整供应商和资源实收未知：
+
+| 固定策略 | API Token | 模型参考USD | Harbor秒 |
+|---|---:|---:|---:|
+| GLM Low | 18084 | 0.00311024 | 914.282028 |
+| Terra High | 21475 | 0.01035980 | 268.264976 |
+
+raman-fitting／训练Laya OFF／Model-only Max／seed43的d57bf31d完整Episode：9次生成请求，8次GLM Max成功响应均为合法工具调用、10次工具结果；最后单次读超时达到原期限。原官方3断言均因/app/results.json缺失失败、Reward0保留；已报30868 API Token、1请求费用未知、1564.903406秒。GLM返回模型ID匹配，返回Effort未报告；该次延迟的模型与网络贡献未知。
+
 01:36原17898代理已退出，重建同一转发后HTTPS200。02:00原主接续1700006已退出，闲置队列替换为3993622，等待实际Model-only1696641并明确接续原696个联合Router位置；三个当前源码观察每1200秒导出，02:22的98294已自然接管代理。模型与教师仍沿Provider最多额外100次同参数重试，原期限有效。三批总量及剩余位置见[项目现状](../../planning/PROJECT_STATUS.md)，逐尝试费用、失败和首次日志保留。
 
 02:15新增资源事实：gpu.lock为共享READ锁，H3调度GPU46506MiB、Native396MiB、可用844MiB；raman-fitting的原始Laya教师ON Low／High均在路由返回前耗尽900秒、0生成请求，任务质量空值。已有10个该类缺分位置，按原Model-only技术恢复另存。
