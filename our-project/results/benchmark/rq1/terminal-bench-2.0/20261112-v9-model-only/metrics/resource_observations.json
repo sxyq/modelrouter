@@ -1,10 +1,10 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "snapshot_exported_at": "2026-11-14T23:49:00+00:00",
+    "snapshot_exported_at": "2026-11-15T00:29:41+00:00",
     "controller_pid": 1696641,
-    "finished_positions": 876,
-    "reward_1": 235,
+    "finished_positions": 880,
+    "reward_1": 239,
     "reward_0": 108,
     "no_official_reward": 501,
     "missing_quality_reasons": {
@@ -24,8 +24,8 @@
     "verifier_dependency_failure": 32,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1258,
-    "known_model_teacher_reference_usd": 11.40917488,
+    "not_dispatched": 1254,
+    "known_model_teacher_reference_usd": 11.44749670,
     "unknown_cost_requests": 544,
     "provider_retry_count": 2205,
     "runtime_source_revision": "ab4dadb4e8dd4ad85913f9466e7222a846da1f7d",
@@ -399,6 +399,33 @@
     "new_proxy_waiter_pid": 7412,
     "retired_previous_proxy_waiter_pid": 57168,
     "sole_rollback_contains_pre_linking_f1ae_source": true
+  },
+  "pytorch_cli_original_kev_post_linking": {
+    "seed": 43,
+    "all_official_rewards": 1,
+    "assertions_passed_per_episode": 6,
+    "extra_retries_per_episode": 0,
+    "episodes": [
+      {"strategy_id": "kev_original_off_model_only_low", "trial_id": "3502200e-4829-4158-8698-f97dca40c371", "api_tokens": 42536, "known_model_teacher_reference_usd": 0.00243552, "usage_unknown_requests": 0, "package_install_s": 19.21, "episode_wall_s": 1462.409653, "router_wall_s": 100.32504750229418, "reported_cache_read_tokens": 32512, "teacher_requests": 0},
+      {"strategy_id": "kev_original_off_model_only_high", "trial_id": "ec31669d-4b9f-4ee8-95a1-643491d5facc", "api_tokens": 30456, "known_model_teacher_reference_usd": 0.00267200, "usage_unknown_requests": 0, "package_install_s": 17.34, "episode_wall_s": 1362.794999, "router_wall_s": 79.10014685243368, "reported_cache_read_tokens": 19840, "teacher_requests": 0},
+      {"strategy_id": "kev_original_off_model_only_max", "trial_id": "31045a3e-863b-4c6a-a3d4-72878970e6fd", "api_tokens": 290242, "known_model_teacher_reference_usd": 0.02582876, "usage_unknown_requests": 0, "package_install_s": 19.24, "episode_wall_s": 1923.992190, "router_wall_s": 195.77019187808037, "reported_cache_read_tokens": 137216, "teacher_requests": 0, "agent_timeout_with_valid_reward_1": true},
+      {"strategy_id": "kev_original_on_model_only_low", "trial_id": "970af582-4081-446e-baac-73b023284b6e", "api_tokens": 70317, "known_model_teacher_reference_usd": 0.00738554, "usage_unknown_requests": 0, "package_install_s": 20.13, "episode_wall_s": 1363.091161, "router_wall_s": 89.24958582036197, "reported_cache_read_tokens": 15104, "teacher_requests": 2, "teacher_consumed_decisions": 2}
+    ],
+    "supplier_billed_usd": null,
+    "resource_billed_usd": null
+  },
+  "current_provider_account_diagnosis": {
+    "source": "Unique private configuration and installed CWEaver Registry; existing failed SSE response",
+    "luna_bound_endpoint_id": "luna-codegoai",
+    "terra_bound_endpoint_id": "terra-jiji",
+    "luna_same_model_endpoints": 1,
+    "terra_same_model_endpoints": 1,
+    "same_model_alternate_endpoints_after_excluding_self": 0,
+    "terra_max_retry_response": "error code: 502",
+    "upstream_failure_detail": null,
+    "extra_model_probe_requests": 0,
+    "retry_limit": 100,
+    "original_task_deadline_preserved": true
   },
   "pytorch_cli_remaining_verifier_timeout": {
     "trial_id": "332acb3e-e3d0-46b9-b429-d3d1769ffe1a",
