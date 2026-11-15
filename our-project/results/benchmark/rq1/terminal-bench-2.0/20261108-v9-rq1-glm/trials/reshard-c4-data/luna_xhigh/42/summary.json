@@ -31,11 +31,11 @@
   "error_type": "RuntimeError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 5.077864,
+  "episode_wall_s": 20.537556,
   "generator_known_reference_usd": null,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 8.135704,
-  "harness_command_wall_s": 18.430195517838,
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 28.67326,
+  "harness_command_wall_s": 44.066671362146735,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": 0,
   "latest_trial_reference_usd": 0,
@@ -46,13 +46,13 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/reshard-c4-data/luna_xhigh/42",
-  "trial_id": "9f0500ab-fdd3-433b-ad10-a8b60d74b35d",
+  "trial_id": "f6e885a1-6c9b-4c1e-b91f-8d023099892e",
   "official_reward": null,
   "technical_fault": null,
   "raw_verifier_rewards": [
     null
   ],
-  "outside_harbor_wall_s": 10.294491517838,
+  "outside_harbor_wall_s": 15.393411362146736,
   "previous_attempts": [
     {
       "trial_id": "db7db21e-e7f8-447b-9026-9e55f24d16bd",
@@ -70,13 +70,30 @@
         "verifier": null
       },
       "error_type": "RuntimeError"
+    },
+    {
+      "trial_id": "9f0500ab-fdd3-433b-ad10-a8b60d74b35d",
+      "job_name": "reshard-c4-data--luna_xhigh--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/reshard-c4-data/luna_xhigh/42/jobs/reshard-c4-data--luna_xhigh--s42--infrastructure-recovery-1/reshard-c4-data__cdnnmTR",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-10T05:23:26.934492Z",
+      "finished_at": "2026-11-10T05:23:32.012356Z",
+      "duration_sec": 5.077864,
+      "phase_wall_s": {
+        "environment_setup": 1.128733,
+        "agent_setup": null,
+        "agent_execution": null,
+        "verifier": null
+      },
+      "error_type": "RuntimeError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
   "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 1.128733,
+    "environment_setup": 16.239597,
     "agent_setup": null,
     "agent_execution": null,
     "verifier": null
@@ -87,7 +104,7 @@
   "provider_retry_count": 0,
   "provider_retry_stop_reasons": {},
   "provider_attempts": [],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 0,
   "unknown_provider_cost_requests": 0,
