@@ -1,12 +1,12 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "snapshot_exported_at": "2026-11-15T15:42:26.845879+00:00",
+    "snapshot_exported_at": "2026-11-15T16:36:19.000Z",
     "controller_pid": 1696641,
-    "finished_positions": 975,
+    "finished_positions": 980,
     "reward_1": 259,
     "reward_0": 148,
-    "no_official_reward": 536,
+    "no_official_reward": 541,
     "missing_quality_reasons": {
       "HTTPError": 10,
       "ProviderResponseError": 26,
@@ -18,30 +18,30 @@
       "AgentTimeoutError": 9,
       "VERIFIER_REPORT_ABSENT": 29,
       "ROUTER_DECISION_TIMEOUT": 8,
-      "PROVIDER_RETRY_DEADLINE": 46,
+      "PROVIDER_RETRY_DEADLINE": 48,
       "EnvironmentStartTimeoutError": 7,
-      "PROVIDER_REQUEST_FAILED": 16,
+      "PROVIDER_REQUEST_FAILED": 19,
       "ROUTER_CUDA_OUT_OF_MEMORY": 2
     },
     "verifier_dependency_failure": 32,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1159,
+    "not_dispatched": 1154,
     "known_model_teacher_reference_usd": 14.53038187,
-    "unknown_cost_requests": 593,
-    "provider_retry_count": 2222,
-    "runtime_source_revision": "1e3d8f8d26daf0374f0e11082c9f81effebf44e8",
-    "analysis_revision": "d013f87ac71904e51527e3a2e825f0ab9b3ef61a",
+    "unknown_cost_requests": 598,
+    "provider_retry_count": 2285,
+    "runtime_source_revision": "8db98d081d186a216b8772f3a22a6d7645ed23e3",
+    "analysis_revision": "8db98d081d186a216b8772f3a22a6d7645ed23e3",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
-    "joint_positions_started": 97,
-    "joint_observed_at": "2026-11-15T15:41:54.863969+00:00",
-    "joint_finished_positions": 93,
-    "joint_reward_1": 38,
-    "joint_reward_0": 28,
-    "joint_missing_official_reward": 27,
-    "joint_known_model_teacher_reference_usd": 3.49814624,
-    "joint_unknown_cost_requests": 30,
-    "joint_provider_retry_count": 45
+    "joint_positions_started": 118,
+    "joint_observed_at": "2026-11-15T16:35:49.000Z",
+    "joint_finished_positions": 114,
+    "joint_reward_1": 45,
+    "joint_reward_0": 29,
+    "joint_missing_official_reward": 40,
+    "joint_known_model_teacher_reference_usd": 3.67092664,
+    "joint_unknown_cost_requests": 44,
+    "joint_provider_retry_count": 176
   },
   "shared_cuda_memory_recovery": {
     "source_revision": "ab5c0b818ad49b343f8b8e0f7979189c0ca6bfd0",
@@ -241,11 +241,11 @@
     "old_queue_exited_after_new_queue_held_same_private_memfd": true,
     "active_controller_pid": 1696641,
     "active_router_worker_pid": 3708428,
-    "proxy_waiting_pid": 26576,
+    "proxy_waiting_pid": 79774,
     "proxy_waiting_for_existing_connection_pid": 17649,
     "proxy_followed_pids": [
       1700006,
-      3843075
+      3887267
     ],
     "repair_tail_queue": {
       "pid": 3575811,
@@ -305,11 +305,11 @@
       "luna_xhigh",
       "terra_high"
     ],
-    "current_analysis_revision": "d013f87ac71904e51527e3a2e825f0ab9b3ef61a",
+    "current_analysis_revision": "8db98d081d186a216b8772f3a22a6d7645ed23e3",
     "analysis_change": "Retain original Harbor reward-valid policy and expose recorded terminal Provider failures with unscored outcomes",
-    "model_only_observer_pid": 3847241,
-    "historical_observer_pid": 3847293,
-    "joint_observer_pid": 3847344,
+    "model_only_observer_pid": 3891110,
+    "historical_observer_pid": 3891169,
+    "joint_observer_pid": 3891222,
     "joint_observer_export": "/home/syy/路由/.runtime/rq1-joint-collect.wAgWOn",
     "observation_interval_s": 1200,
     "observers_follow_existing_controllers": [
@@ -317,7 +317,7 @@
       1700006,
       3205488,
       3575811,
-      3843075
+      3887267
     ],
     "previous_final_queue_pid": 2024071,
     "previous_final_queue_exited_after_replacement_held_credentials": true,
@@ -344,17 +344,17 @@
     },
     "old_proxy_waiting_pid": 27095,
     "old_proxy_waiter_exited": true,
-    "recovery_successor_pid": 3843075,
+    "recovery_successor_pid": 3887267,
     "recovery_successor": {
-      "pid": 3843075,
-      "source_revision": "1e3d8f8d26daf0374f0e11082c9f81effebf44e8",
+      "pid": 3887267,
+      "source_revision": "8db98d081d186a216b8772f3a22a6d7645ed23e3",
       "same_original_private_memfd_held": true,
       "status": "WAITING_FOR_ORIGINAL_JOINT_FIXED_261",
       "recorded_at": "2026-11-15T15:16:58.156453+00:00",
       "original_fixed_holder_pid": 3205488,
       "old_tail_holder_pid": 3575811,
       "fixed_positions": 261,
-      "transition": "After fixed261 ends and old3205488 is idle with no children in any thread: retire idle3575811 before idle3205488; run the existing six-task fixed recovery, wait1700006, then current-source model-only query technical recovery, joint and historical recovery; retain all valid official scores",
+      "transition": "After fixed261 ends and old3205488 is idle with no children in any thread: retire idle3575811 before idle3205488; run the existing six-task fixed recovery, wait1700006, then all remaining Model-only technical faults using the existing no-force-repeat selection, joint and historical recovery",
       "tasks": [
         "pytorch-model-cli",
         "caffe-cifar-10",
@@ -370,8 +370,13 @@
         "luna_xhigh",
         "terra_high"
       ],
-      "previous_idle_holder_pid": 3787256
-    }
+      "previous_idle_holder_pid": 3843075
+    },
+    "historical_recovery_distinct_positions": 193,
+    "historical_recovery_attempts": 248,
+    "historical_recovery_latest_valid_ones": 51,
+    "historical_recovery_latest_valid_zeros": 92,
+    "historical_recovery_latest_missing_quality": 50
   },
   "torch_exact_dependencies": {
     "tasks": ["torch-pipeline-parallelism", "torch-tensor-parallelism"],
@@ -547,7 +552,16 @@
       "original_verifier_seconds": 900,
       "first_official_test_finished": false,
       "provider_failure": "LUNA_QUOTA; NO_AGENT_TOOLS",
-      "remaining_verifier_cause": "FIRST_PROVIDED_SQL_EXECUTION_NOT_LOCALIZED"
+      "sqlite_version": "3.50.4",
+      "provided_query_bytes": 1158,
+      "golden_query_bytes": 1140,
+      "provided_query_correlated_scalar_subqueries": 3,
+      "provided_query_plan_scans": ["SCAN s", "SCAN s", "SCAN s2"],
+      "observed_verifier_container_cpu_percent": 99.52,
+      "observed_verifier_container_memory_mib": 99.66,
+      "host_qemu_and_parent_cpu_quota": "max 100000",
+      "remaining_verifier_cause": "Provided reference SQL has correlated full scans; original stdout does not expose which of the two reference statements is active",
+      "official_queries_limits_and_scoring": "UNCHANGED"
     }
   },
   "verifier_cache_runtime": {

@@ -21,7 +21,7 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 旧54位置seed43联合选择结果已与openssl-selfsigned-cert/regex-log逐题配对；原分析器同时纳入同档位Model-only训练/教师及固定模型对照，实际评分和费用齐全的task/seed分别登记。其余87题相同权重/seed的八个联合主组696位置和三固定模型参照261位置，共957，已按[联合接续配置](../../../experiments/configs/v9_joint_paired.json)排在当前矩阵和已处理网络失败的一次恢复之后；新配置直接读取Model-only保存的AA快照，保持Encoder、教师、Harbor、Verifier、输出及任务时限。旧89题seed42训练版为11-08实体，保留其历史身份；不重复首两题和旧批次。
 
-2026-11-15沿固定脚本`our-project/code/cli/run_rq1_a6000.py`及原rq1入口接续。原Controller1696641继续Model-only；3205488执行联合固定261位置，有限接续3843075已持有同一原600权限memfd。等待该固定段结束且3205488实际闲置、所有线程无子进程后，先退出闲置3575811再退出闲置3205488，沿原入口接续CLI、Caffe、两项Torch、MTEB-retrieve和旧query-optimize技术缺分；再等待1700006结束，以当前源码接续Model-only查询技术恢复、联合及历史必要恢复。当前尾段尚未启动，有效官方1/0保留。健康SSH17649保持，有限代理等待26576在其自然结束后接管并跟随1700006／3843075；只读观察3847241／3847293／3847344每1200秒导出三批，原主观察1700191保持。旧闲置观察、3787256及69540已退出。四权重、11-11各18更新、AA v7及原模型／档位／4096／Seed／时限保持。 每次模型及教师请求最多额外100次同参数重试，原任务时间有效，正常4096长度耗尽不重试；API Token按已报输入+输出登记，缓存和Reasoning各计一次。
+2026-11-15沿固定脚本`our-project/code/cli/run_rq1_a6000.py`及原rq1入口接续。原Controller1696641继续Model-only；3205488执行联合固定261位置，有限接续3887267已持有同一原600权限memfd。等待该固定段结束且3205488实际闲置、所有线程无子进程后，先退出闲置3575811再退出闲置3205488，沿原入口接续CLI、Caffe、两项Torch、MTEB-retrieve和旧query-optimize技术缺分；再等待1700006结束，以当前源码接续Model-only其余技术恢复、联合及历史必要恢复。当前尾段尚未启动，有效官方1/0保留。健康SSH17649保持，有限代理等待79774在其自然结束后接管并跟随1700006／3887267；只读观察3891110／3891169／3891222每1200秒导出三批，原主观察1700191保持。旧闲置观察、3787256及69540已退出。四权重、11-11各18更新、AA v7及原模型／档位／4096／Seed／时限保持。 每次模型及教师请求最多额外100次同参数重试，原任务时间有效，正常4096长度耗尽不重试；API Token按已报输入+输出登记，缓存和Reasoning各计一次。
 
 现行观察及代理只跟随上述原Controller与有限接续，无新矩阵或持久定时服务。公开表复用1e3源码的20分钟导出；旧首失败、费用、有效1/0和原权重分别保留。GPU仍用原共享读锁，训练及Breeze的独占锁保持。
 
@@ -65,7 +65,7 @@ AA v7固定快照20261107T134704898459Z-v7、130真实指标、Intelligence Inde
 
 ## 连续执行与资源
 
-23:11:54同一VM已切换KVM，QEMU3832028及监控确认kvm support: enabled；原16CPU／40960MiB、200GiB磁盘、101镜像、9p共享目录保持。此前六个Episode自然结束、容器0后才关闭原TCG VM；原Controller1696641／3205488已恢复，GPU锁及Native worker3708428保持。使用原私有维护记录中的已有sudo凭据开放syy的/dev/kvm读写ACL，实际API版本12；start.sh.previous为此前启动版本，唯一源码回退包保存1e3部署前d013四源码。后续Episode由原Agent日志记录真实QEMU身份；query-optimize原始Kev High／Max在KVM下仍首项900秒超时，6包安装1.00／1.36秒，两条因Luna额度故障未执行工具、没有Reward，SQL等待仍待定位。新Kev High真实CUDA/fallback=false、19.102秒，选Luna High后接口故障与路由前向分别保存。
+23:11:54同一VM已切换KVM，QEMU3832028及监控确认kvm support: enabled；原16CPU／40960MiB、200GiB磁盘、101镜像、9p共享目录保持。此前六个Episode自然结束、容器0后才关闭原TCG VM；原Controller1696641／3205488已恢复，GPU锁及Native worker3708428保持。使用原私有维护记录中的已有sudo凭据开放syy的/dev/kvm读写ACL，实际API版本12；start.sh.previous为此前启动版本，当前唯一源码回退包为8db统计变更前的1d645126四源码。后续Episode由原Agent日志记录真实QEMU身份；query-optimize原始Kev High／Max在KVM下仍首项900秒超时，6包安装1.00／1.36秒，两条因Luna额度故障未执行工具、没有Reward，SQL等待仍待定位。新Kev High真实CUDA/fallback=false、19.102秒，选Luna High后接口故障与路由前向分别保存。
 
 当前e05caa115ed00e68ba26abf9aed72847440b4fde在原GPU共享读锁内按模型实际张量字节等待显存，保留Router原时限；四原权重CPU预加载后再接受任务。Worker3708428／有限持有3708420已接同一入口，旧闲置2496626／2496618退出，实际Laya CUDA/fallback=false日志已取得。qemu-startup训练Kev教师ON High／Max两条CUDA OOM由原技术恢复入口接续，原记录及费用独立保留；有效1/0不重复。
 
