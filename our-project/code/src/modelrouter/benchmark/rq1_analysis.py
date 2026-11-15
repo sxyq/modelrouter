@@ -516,7 +516,8 @@ def export_batch_results(root, config, output_root=None):
             return sum(values) if all(v is not None for v in values) else None
         latest_requests = provider_requests(trial, events) if trial else []
         row["verifier_dependency_failure"] = trial.get("reason", "").startswith("Official test dependency")
-        interrupted = technical_interruption(trial, events) if trial.get("reward") == 0 else None
+        interrupted = ("VERIFIER_REPORT_ABSENT" if "CTRF report absent" in trial.get("reason", "")
+                       else technical_interruption(trial, events) if trial.get("reward") == 0 else None)
         row.update(trial_id=trial.get("trial_id"), reward=None if interrupted else trial.get("reward"),
                    official_reward=next((a["rewards"].get("reward") for a in trial.get("verifier_artifacts", [])
                                          if a.get("rewards")), trial.get("reward")),
