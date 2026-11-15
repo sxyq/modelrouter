@@ -34,7 +34,7 @@ PyTorch CLI原始Kev／seed43六项完整Episode均获官方1、各6断言全通
 
 01:08进一步读取原日志：缓存根软链接安装时被uv重命名到site-packages目录，出现os error 20且无断言。源码`71175861313c90def9f23b5bc3c3290d7c48e0e9`以原Harbor逐目录只读挂载替换这些软链接，uv沿原工具选择copy安装模式；此前7个Model-only及5个历史轮子／解释器安装故障位置已重新分类，原0及费用保持。break-filter-js-from-html／Luna High／seed42的新Episode902a488c-ab31-47c0-acee-3751f9a18a35于01:15完成原Verifier：1断言失败、有效Reward0，HTML未绕过过滤器；11991 API Token、$0.00182214参考费、398.950095秒，环境116.469672秒、Verifier174.65114秒。该任务使用52个实际只读缓存挂载，评分依赖已执行完成，有效0不重跑。
 
-原Controller1696641、CUDAworker2496626继续；3205488的历史固定段已结束，现执行联合剩余固定组，再等待1700006后接续联合及历史必要恢复。尾段3575811已持有同一600权限memfd，等待3205488后恢复CLI、Caffe、两项Torch及MTEB-retrieve，五固定策略的有效评分直接复用；旧闲置3378616退出。代理等待83231跟随三条持有进程，健康SSH17649保持。只读观察3580822／3580879／3594578每1200秒导出三批，原主批观察1700191保持；公开结果以当前源码collect-only一次采集，临时发布目录复制后移除。GPU共享读锁和同视频Kev CUDA/fallback=false/12.212秒记录保持。唯一源码回退保存c81部署前四个原文件。
+原Controller1696641、CUDAworker3708428继续；3205488的历史固定段已结束，现执行联合剩余固定组，再等待1700006后接续联合及历史必要恢复。尾段3575811已持有同一600权限memfd，等待3205488后恢复CLI、Caffe、两项Torch及MTEB-retrieve，五固定策略的有效评分直接复用；旧闲置3378616退出。代理等待83231跟随三条持有进程，健康SSH17649保持。只读观察3580822／3580879／3594578每1200秒导出三批，原主批观察1700191保持；公开结果以当前源码collect-only一次采集，临时发布目录复制后移除。GPU共享读锁和同视频Kev CUDA/fallback=false/12.212秒记录保持。唯一源码回退保存e05部署前f25版本的四个原文件。
 
 mteb-retrieve五个固定恢复位置在镜像拉取前中断，Agent和模型请求均未开始。registry-1.docker.io返回TLS EOF；同一官方镜像已经Docker Hub官方registry.hub.docker.com下载完成，06:24恢复原alexgshaw/mteb-retrieve:20251031标签，Linux/amd64、展开21,556,522,773字节。临时域名标签已移除，镜像层及原标签保留。原入口将首次故障记录为ENVIRONMENT_NETWORK；两项MTEB任务五策略均纳入现有限队列，等待当前固定恢复自然结束。任务时限及Verifier保持。
 
