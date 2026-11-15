@@ -742,7 +742,7 @@ def export_batch_results(root, config, output_root=None):
                f"Router本地前向另报告输入{router_input_label}、输出{router_output_label} Token；{router_missing_label}次决策缺用量。其计算费用按A6000资源计量，美元单价未知。\n",
                f"Provider实际报告缓存读取{cache_label} Token；{sum(r['cache_read_unknown_records'] or 0 for r in all_groups)}次请求未报告缓存读取；跨模型物理KV共享未知。\n",
                f"教师请求{sum(r['teacher_requests'] or 0 for r in all_groups)}次，短评实际输入Router {sum(r.get('teacher_consumed_decisions', 0) for r in episodes)}次；同一短评可由多次决策消费。\n"]
-    report.append(f"Provider实际额外重试{sum(r.get('provider_retry_count') or 0 for r in all_groups)}次；本次技术恢复{sum(r.get('technical_recovery_count') or 0 for r in all_groups)}位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。\n")
+    report.append(f"Provider实际额外重试{sum(r.get('provider_retry_count') or 0 for r in all_groups)}次；已记录技术恢复{sum(r.get('technical_recovery_count') or 0 for r in all_groups)}次，涉及{sum(bool(r.get('technical_recovery_count')) for r in episodes)}个位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。\n")
     truncated = [r for r in episodes if r.get("router_truncated_decisions")]
     report.append(f"已记录Router输入截断{sum(r['router_truncated_decisions'] for r in truncated)}次，涉及{len(truncated)}个位置；原输入及官方结果保留在逐Episode表。\n")
     mismatch = Counter((q.get("request_model_id"), q.get("requested_native_effort"), q.get("returned_native_effort"))
