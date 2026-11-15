@@ -129,6 +129,153 @@ def render_pareto_comparison(root, rows):
     return frontier
 
 
+def model_only_effort_rows(root):
+    """Summarize current Terminal-Bench 2.0 Model-only strategies by effort."""
+    root = Path(root).resolve()
+    path = root / "metrics/per_strategy.csv"
+    efforts = {"low": 0, "high": 1, "max": 2}
+    rows = []
+    for raw in csv.DictReader(path.open(encoding="utf-8-sig")):
+        sid = raw["strategy_id"]
+        if raw.get("subset") != "all" or "_model_only_" not in sid:
+            continue
+        prefix, effort = sid.split("_model_only_", 1)
+        family, checkpoint, teacher = prefix.split("_")
+        reward_1 = int(raw.get("reward_1") or 0)
+        reward_0 = int(raw.get("reward_0") or 0)
+        scored = reward_1 + reward_0
+        attempted = int(raw.get("attempted") or 0)
+        generator_cost = (float(raw["generator_known_reference_usd"])
+                          if raw.get("generator_known_reference_usd") else None)
+        teacher_cost = (float(raw["teacher_known_reference_usd"])
+                        if raw.get("teacher_known_reference_usd") else None)
+        known_cost = sum(v for v in (generator_cost, teacher_cost) if v is not None)
+        rows.append({
+            "source_run_id": root.name,
+            "strategy_id": sid,
+            "family": family,
+            "checkpoint": checkpoint,
+            "teacher": teacher,
+            "effort": effort,
+            "planned_positions": int(raw["tasks"]),
+            "completed_positions": attempted,
+            "running_positions": int(raw.get("running") or 0),
+            "not_started_positions": int(raw.get("not_started") or 0),
+            "scored_positions": scored,
+            "reward_1": reward_1,
+            "reward_0": reward_0,
+            "scored_pass_rate_percent": 100 * reward_1 / scored if scored else None,
+            "known_generator_reference_usd": generator_cost,
+            "known_teacher_reference_usd": teacher_cost,
+            "known_reference_total_usd": known_cost,
+            "known_reference_per_completed_position_usd": known_cost / attempted if attempted else None,
+            "unknown_provider_cost_requests": int(raw.get("unknown_provider_cost_requests") or 0),
+            "verifier_dependency_failed_positions": int(raw.get("verifier_dependency_failed_positions") or 0),
+            "complete_cost_usd": raw.get("complete_cost_usd") or "",
+            "supplier_billed_usd": raw.get("supplier_billed_usd") or "",
+        })
+    rows.sort(key=lambda r: (r["family"], r["checkpoint"], r["teacher"], efforts[r["effort"]]))
+    return rows
+
+
+def render_model_only_effort(root, rows):
+    """Plot all Model-only checkpoints on one cost/quality plane."""
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+    from matplotlib.ticker import LogLocator, FuncFormatter
+
+    root = Path(root)
+    destination = root / "figures"
+    destination.mkdir(exist_ok=True)
+    table = root / "metrics/model_only_effort_points.csv"
+    with table.open("w", newline="", encoding="utf-8-sig") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+    family_colors = {"laya": "#0072B2", "kev": "#D55E00"}
+    checkpoint_lines = {"original": "-", "trained": "--"}
+    effort_markers = {"low": "o", "high": "^", "max": "s"}
+    effort_order = {"low": 0, "high": 1, "max": 2}
+    plot_rows = [r for r in rows if r["known_reference_per_completed_position_usd"]
+                 and r["scored_pass_rate_percent"] is not None]
+    groups = {}
+    for r in plot_rows:
+        groups.setdefault((r["family"], r["checkpoint"], r["teacher"]), []).append(r)
+
+    plt.rcParams.update({"font.family": "PingFang HK", "font.size": 10,
+                         "axes.unicode_minus": False, "pdf.fonttype": 42,
+                         "svg.fonttype": "none"})
+    fig, ax = plt.subplots(figsize=(11, 8.5))
+    fig.subplots_adjust(left=.12, right=.98, top=.82, bottom=.34)
+    for (family, checkpoint, teacher), group in groups.items():
+        group.sort(key=lambda r: effort_order[r["effort"]])
+        color = family_colors[family]
+        linestyle = checkpoint_lines[checkpoint]
+        xs = [r["known_reference_per_completed_position_usd"] for r in group]
+        ys = [r["scored_pass_rate_percent"] for r in group]
+        ax.plot(xs, ys, color=color, linestyle=linestyle, linewidth=1.35, alpha=.82, zorder=1)
+        for r in group:
+            x = r["known_reference_per_completed_position_usd"]
+            y = r["scored_pass_rate_percent"]
+            face = color if teacher == "on" else "white"
+            ax.scatter(x, y, marker=effort_markers[r["effort"]], s=62,
+                       facecolor=face, edgecolor=color, linewidth=1.35, zorder=3)
+            if r["running_positions"]:
+                ax.scatter(x, y, marker="o", s=108, facecolor="none",
+                           edgecolor="#222222", linewidth=1.2, zorder=4)
+
+    series_handles = []
+    for family in ("laya", "kev"):
+        for checkpoint in ("original", "trained"):
+            for teacher in ("off", "on"):
+                color = family_colors[family]
+                label = "{} · {} · Teacher {}".format(
+                    family.title(), "微调" if checkpoint == "trained" else "原版", teacher.upper())
+                series_handles.append(Line2D(
+                    [], [], color=color, linestyle=checkpoint_lines[checkpoint],
+                    marker="o", markerfacecolor="white" if teacher == "off" else color,
+                    markeredgecolor=color, linewidth=1.3, markersize=6, label=label))
+    effort_handles = [Line2D([], [], color="#444444", marker=effort_markers[e],
+                             linestyle="", markersize=6, label=e.title())
+                      for e in ("low", "high", "max")]
+
+    total = sum(r["planned_positions"] for r in rows)
+    done = sum(r["completed_positions"] for r in rows)
+    running = sum(r["running_positions"] for r in rows)
+    pending = sum(r["not_started_positions"] for r in rows)
+    valid_scores = sum(r["scored_positions"] for r in rows)
+    unknown_requests = sum(r["unknown_provider_cost_requests"] for r in rows)
+    scored_counts = [r["scored_positions"] for r in rows]
+    ax.set_xscale("log")
+    ax.xaxis.set_major_locator(LogLocator(base=10))
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: "${:g}".format(x)))
+    ax.set_ylim(0, 100)
+    ax.set_yticks([0, 20, 40, 60, 80, 100])
+    ax.set_xlabel("已知模型 + 教师参考费 / 已完成任务位置（USD/位置，对数轴）")
+    ax.set_ylabel("有效官方评分通过率（%）")
+    ax.set_title("Terminal-Bench 2.0 · Model-only：Laya / Kev 原版与微调版", loc="left", fontsize=15, pad=14)
+    ax.grid(True, which="major", color="#dedede", linewidth=.55)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.margins(x=.12, y=.06)
+    fig.text(.5, .915, "每条线按 Low → High → Max 连接；颜色=Laya/Kev，线型=原版/微调，空心/实心=Teacher OFF/ON",
+             ha="center", fontsize=9.5)
+    fig.legend(handles=series_handles, loc="lower center", bbox_to_anchor=(.5, .205),
+               ncol=4, frameon=False, fontsize=8.8, columnspacing=1.35)
+    fig.legend(handles=effort_handles, loc="lower center", bbox_to_anchor=(.5, .155),
+               ncol=3, frameon=False, fontsize=8.8)
+    fig.text(.5, .095,
+             "24 个策略 × 89 个计划位置：已结束 {}，运行中 {}，未开始 {}；有效评分 {}，每策略 n={}–{}。".format(
+                 done, running, pending, valid_scores, min(scored_counts), max(scored_counts)),
+             ha="center", fontsize=9)
+    fig.text(.5, .055,
+             "费用仅含已知模型/教师参考费；{} 次请求费用未知，完整现金成本栏为空。黑色外圈表示该策略仍有运行中的任务。".format(unknown_requests),
+             ha="center", fontsize=8.6)
+    fig.savefig(destination / "rq1_model_only_effort_comparison.png", dpi=300, bbox_inches="tight")
+    fig.savefig(destination / "rq1_model_only_effort_comparison.pdf", bbox_inches="tight")
+    plt.close(fig)
+
+
 def render_batch_figures(root):
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
@@ -214,7 +361,9 @@ def render_batch_figures(root):
 
 if __name__ == "__main__":
     import sys
-    if "--pareto" in sys.argv[2:]:
+    if "--model-only-effort" in sys.argv[2:]:
+        render_model_only_effort(sys.argv[1], model_only_effort_rows(sys.argv[1]))
+    elif "--pareto" in sys.argv[2:]:
         render_pareto_comparison(sys.argv[1], pareto_rows(sys.argv[1]))
     else:
         render_batch_figures(sys.argv[1])
