@@ -106,6 +106,9 @@ def analyze_rq1(episodes: List[Dict[str, Any]]) -> Dict[str, Any]:
 def technical_interruption(trial, events):
     """Separate unfinished Router decisions and unresolved generator transport timeouts."""
     episode_events = [e for e in events if e.get("episode_id") == trial.get("trial_id")]
+    error = trial.get("error") or {}
+    if error.get("exception_type") == "RuntimeError" and "OutOfMemoryError: CUDA out of memory" in error.get("exception_message", ""):
+        return "ROUTER_CUDA_OUT_OF_MEMORY"
     if trial.get("reward") != 1 and any(e["event"] == "AGENT_PROVIDER_FAILURE" for e in episode_events):
         return "PROVIDER_REQUEST_FAILED"
     if (trial.get("error") or {}).get("exception_type") != "AgentTimeoutError":

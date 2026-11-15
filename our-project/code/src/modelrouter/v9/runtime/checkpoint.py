@@ -101,12 +101,8 @@ class CheckpointRouterClient:
             self.process = None
 
 
-def answer(payload, adapters):
-    import os
-    import resource
-    import torch
+def load_adapter(payload, adapters):
     initialized = time.perf_counter()
-    cpu_started = resource.getrusage(resource.RUSAGE_SELF)
     checkpoint = Path(payload["checkpoint_path"]).resolve()
     reused = str(checkpoint) in adapters
     initialization_ms = 0.0
@@ -121,19 +117,34 @@ def answer(payload, adapters):
             adapter.agent.cfg["head_max_len"] = payload["router_head_max_len"]
         adapters[str(checkpoint)] = adapter
         initialization_ms = (time.perf_counter() - initialized) * 1000
-    adapter = adapters[str(checkpoint)]
+    return adapters[str(checkpoint)], initialization_ms, reused
+
+
+def answer(payload, adapters):
+    import os
+    import resource
+    import torch
+    cpu_started = resource.getrusage(resource.RUSAGE_SELF)
+    adapter, initialization_ms, reused = load_adapter(payload, adapters)
+    checkpoint = Path(payload["checkpoint_path"]).resolve()
     device = payload.get("device", "cpu")
     gpu_wait_ms, transfer_ms = 0.0, 0.0
     lock = open(payload["gpu_lock_path"], "a") if device == "cuda" else nullcontext()
     with lock as lock_file:
         if device == "cuda":
             before = time.perf_counter()
+            model = adapter.model if payload["router_family"] == "kev" else adapter.agent.model
+            required_bytes = sum(t.numel() * t.element_size()
+                                 for t in (*model.parameters(), *model.buffers()))
             while True:
                 if payload.get("deadline") is not None and time.monotonic() >= payload["deadline"]:
                     raise TimeoutError("Original task Router deadline reached while waiting for shared GPU")
                 try:
                     fcntl.flock(lock_file, fcntl.LOCK_SH | fcntl.LOCK_NB)
-                    break
+                    if torch.cuda.mem_get_info()[0] >= required_bytes:
+                        break
+                    fcntl.flock(lock_file, fcntl.LOCK_UN)
+                    time.sleep(.1)
                 except BlockingIOError:
                     time.sleep(.1)
             gpu_wait_ms = (time.perf_counter() - before) * 1000
@@ -180,8 +191,17 @@ def main():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--socket", type=Path)
+    parser.add_argument("--preload-config", type=Path)
     args = parser.parse_args()
     adapters = {}
+    if args.preload_config:
+        for strategy in json.loads(args.preload_config.read_text())["strategies"]:
+            checkpoint = strategy.get("checkpoint")
+            if checkpoint:
+                load_adapter({"checkpoint_path": checkpoint["path"],
+                              "router_family": checkpoint["family"],
+                              "router_max_len": checkpoint.get("max_len", 8192),
+                              "router_head_max_len": checkpoint.get("head_max_len", 512)}, adapters)
     if args.socket:
         class Handler(socketserver.StreamRequestHandler):
             def handle(self):
