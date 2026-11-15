@@ -19,7 +19,7 @@ import yaml
 from harbor.agents.base import BaseAgent
 from harbor.environments.docker.docker import DockerEnvironment
 from harbor.agents.capabilities import AgentCapabilities
-from harbor.agents.installed.base import OutputTokenExceededError
+from harbor.agents.installed.base import NonZeroAgentExitCodeError
 from harbor.agents.installed.mini_swe_agent import convert_mini_swe_agent_to_atif
 from harbor.models.agent.context import AgentContext
 from harbor.models.trial.config import TaskConfig
@@ -479,24 +479,34 @@ class ModelRouterMiniSweAgent(BaseAgent):
         try:
             agent_result = await asyncio.to_thread(agent.run, instruction)
         except (ProviderResponseError, OSError, http.client.HTTPException, json.JSONDecodeError) as exc:
+            if not isinstance(exc, ProviderResponseError) and not model.provider_failures:
+                raise
             if isinstance(exc, ProviderResponseError) and (exc.metrics.get("finish_reason") == "length" or
                     (exc.metrics.get("incomplete_details") or {}).get("reason") == "max_output_tokens"):
                 event(record_dir, "AGENT_OUTPUT_LIMIT", episode_id=state.episode_id,
                       error=str(exc), max_output_tokens=self.max_output_tokens)
-                raise OutputTokenExceededError(f"Provider output limit exhausted: {exc}") from exc
+                raise NonZeroAgentExitCodeError(f"Provider output limit exhausted: {exc}") from exc
             attempts = getattr(exc, "account_attempts", [])
-            if not attempts or attempts[-1].get("retry_stop_reason") != "TASK_DEADLINE":
-                raise
-            state.finish(EpisodeStatus.TIMEOUT)
-            event(record_dir, "AGENT_PROVIDER_DEADLINE", episode_id=state.episode_id,
-                  error_type=type(exc).__name__, error=str(exc), retry_count=len(attempts) - 1)
-            raise AgentTimeoutError("Provider retries could not recover within the original task deadline") from exc
+            if attempts and attempts[-1].get("retry_stop_reason") == "TASK_DEADLINE":
+                state.finish(EpisodeStatus.TIMEOUT)
+                event(record_dir, "AGENT_PROVIDER_DEADLINE", episode_id=state.episode_id,
+                      error_type=type(exc).__name__, error=str(exc), retry_count=len(attempts) - 1)
+                raise AgentTimeoutError("Provider retries could not recover within the original task deadline") from exc
+            if (not isinstance(exc, ProviderResponseError) or
+                    OpenAICompatibleProvider._retryable(exc, exc.metrics) or
+                    str(exc) in ("MODEL_IDENTITY_MISMATCH", "NATIVE_EFFORT_MISMATCH")):
+                state.finish(EpisodeStatus.PROVIDER_UNAVAILABLE)
+                event(record_dir, "AGENT_PROVIDER_FAILURE", episode_id=state.episode_id,
+                      error_type=type(exc).__name__, error=str(exc),
+                      http_status=exc.code if isinstance(exc, urllib.error.HTTPError) else None,
+                      retry_count=getattr(exc, "retry_count", 0))
+            raise NonZeroAgentExitCodeError(f"Provider request stopped: {type(exc).__name__}: {exc}") from exc
         except asyncio.CancelledError:
             state.finish(EpisodeStatus.TIMEOUT)
             event(record_dir, "AGENT_CANCELLED", episode_id=state.episode_id, step=state.step_index)
             raise
         finally:
-            if state.status != EpisodeStatus.TIMEOUT:
+            if state.status not in (EpisodeStatus.TIMEOUT, EpisodeStatus.PROVIDER_UNAVAILABLE):
                 state.finish(EpisodeStatus.SUBMITTED if agent_result.get("exit_status") == "Submitted"
                              else EpisodeStatus.FAILED)
             event(record_dir, "AGENT_END", episode_id=state.episode_id, step=state.step_index,

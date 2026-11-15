@@ -105,9 +105,11 @@ def analyze_rq1(episodes: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 def technical_interruption(trial, events):
     """Separate unfinished Router decisions and unresolved generator transport timeouts."""
+    episode_events = [e for e in events if e.get("episode_id") == trial.get("trial_id")]
+    if trial.get("reward") != 1 and any(e["event"] == "AGENT_PROVIDER_FAILURE" for e in episode_events):
+        return "PROVIDER_REQUEST_FAILED"
     if (trial.get("error") or {}).get("exception_type") != "AgentTimeoutError":
         return None
-    episode_events = [e for e in events if e.get("episode_id") == trial.get("trial_id")]
     if any(e["event"] == "ROUTER_START" for e in episode_events) and not any(
             e["event"] == "GENERATOR_START" for e in episode_events):
         return "ROUTER_BEFORE_GENERATION_TIMEOUT"
