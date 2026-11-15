@@ -108,6 +108,9 @@ def recovery_reason(path):
         output = stdout.read_text() if stdout.exists() else ""
         if "test session starts" in output:
             if (path.parent.parent.name == "pytorch-model-cli" and output.rstrip().endswith("collecting ...")
+                    and any(line.startswith("Fetched ") and "min " in line for line in output.splitlines())):
+                return "VERIFIER_SYSTEM_PACKAGE_DOWNLOAD_TIMEOUT"
+            if (path.parent.parent.name == "pytorch-model-cli" and output.rstrip().endswith("collecting ...")
                     and "Installed 20 packages in " in output and
                     "m " in output.split("Installed 20 packages in ", 1)[1].splitlines()[0]):
                 return "VERIFIER_PACKAGE_COPY_TIMEOUT"
