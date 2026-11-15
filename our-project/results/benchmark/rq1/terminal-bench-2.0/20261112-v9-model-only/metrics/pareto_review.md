@@ -38,7 +38,7 @@
 | laya_trained_on_model_only_low | 1/2 | 1 | 未知 | 未知 | 缺有效官方评分；缺API费用 |
 | laya_trained_on_model_only_high | 1/2 | 1 | 未知 | 未知 | 缺有效官方评分；缺API费用 |
 | laya_trained_on_model_only_max | 2/2 | 2 | 100% | 未知 | 缺API费用 |
-| kev_original_off_model_only_low | 1/2 | 0 | 未知 | 未知 | 缺有效官方评分；缺API费用 |
+| kev_original_off_model_only_low | 0/2 | 0 | 未知 | 未知 | 缺有效官方评分；缺API费用 |
 | kev_original_off_model_only_high | 1/2 | 1 | 未知 | 未知 | 缺有效官方评分；缺API费用 |
 | kev_original_off_model_only_max | 1/2 | 1 | 未知 | 未知 | 缺有效官方评分；缺API费用 |
 | kev_original_on_model_only_low | 2/2 | 2 | 100% | 未知 | 缺API费用 |
