@@ -272,7 +272,8 @@ def main(argv=None):
             if stage == "router":
                 socket_path = Path(config["router_socket"])
                 socket_path.unlink(missing_ok=True)
-                command = strategies[0]["checkpoint"]["command"] + ["--socket", str(socket_path)]
+                command = strategies[0]["checkpoint"]["command"] + [
+                    "--socket", str(socket_path), "--preload-config", str(root / "config.json")]
                 worker = subprocess.Popen(command, stdout=subprocess.DEVNULL)
                 # Readiness comes from the worker, not a model generation or a separate demo.
                 import select
