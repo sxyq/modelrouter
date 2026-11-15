@@ -28,38 +28,36 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": null,
-  "execution_status": "FINISHED",
+  "error_type": "EnvironmentStartTimeoutError",
+  "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 696.550015,
+  "episode_wall_s": 646.624831,
   "generator_known_reference_usd": 0.0800246,
-  "harbor_trial_count": 3,
-  "attempts_wall_s": 786.036166,
-  "harness_command_wall_s": 802.0370852220803,
+  "harbor_trial_count": 4,
+  "attempts_wall_s": 1432.660997,
+  "harness_command_wall_s": 1454.073841759935,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
-  "latest_trial_reference_usd": 0.0660712,
-  "verifier_dependency_failure": true,
+  "latest_trial_reference_usd": 0,
+  "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
   "environment_cost_usd": null,
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-cli/terra_high/42",
-  "trial_id": "36bcde18-52d7-4005-9b17-c93e69d9298b",
-  "official_reward": 0.0,
-  "technical_fault": "VERIFIER_DEPENDENCY",
+  "trial_id": "f5c3d85a-a3f5-4ae4-9a1c-980a61f80771",
+  "official_reward": null,
+  "technical_fault": null,
   "raw_verifier_rewards": [
-    {
-      "reward": 0.0
-    }
+    null
   ],
-  "outside_harbor_wall_s": 16.00091922208037,
+  "outside_harbor_wall_s": 21.41284475993507,
   "previous_attempts": [
     {
       "trial_id": "f0b537e2-d7a2-4f04-953c-79cdbc2fb34d",
       "job_name": "pytorch-model-cli--terra_high--s42",
-      "trial_dir": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-cli/terra_high/42/jobs/pytorch-model-cli--terra_high--s42/pytorch-model-cli__f5Rp5Ez",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-cli/terra_high/42/jobs/pytorch-model-cli--terra_high--s42/pytorch-model-cli__f5Rp5Ez",
       "status": "NOT_EVALUATED",
       "reward": null,
       "started_at": "2026-11-09T01:14:58.280442Z",
@@ -76,7 +74,7 @@
     {
       "trial_id": "ed2c2172-0e64-4424-9d39-1a92d216e67d",
       "job_name": "pytorch-model-cli--terra_high--s42--infrastructure-recovery-1",
-      "trial_dir": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-cli/terra_high/42/jobs/pytorch-model-cli--terra_high--s42--infrastructure-recovery-1/pytorch-model-cli__PNY84YY",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-cli/terra_high/42/jobs/pytorch-model-cli--terra_high--s42--infrastructure-recovery-1/pytorch-model-cli__PNY84YY",
       "status": "NOT_EVALUATED",
       "reward": null,
       "started_at": "2026-11-09T14:02:56.555673Z",
@@ -89,16 +87,33 @@
         "verifier": null
       },
       "error_type": "URLError"
+    },
+    {
+      "trial_id": "36bcde18-52d7-4005-9b17-c93e69d9298b",
+      "job_name": "pytorch-model-cli--terra_high--s42--infrastructure-recovery-2",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-cli/terra_high/42/jobs/pytorch-model-cli--terra_high--s42--infrastructure-recovery-2/pytorch-model-cli__QR9tLRJ",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-14T14:32:09.494435Z",
+      "finished_at": "2026-11-14T14:43:46.044450Z",
+      "duration_sec": 696.550015,
+      "phase_wall_s": {
+        "environment_setup": 69.338542,
+        "agent_setup": 0.000191,
+        "agent_execution": 176.993119,
+        "verifier": 412.209808
+      },
+      "error_type": null
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
-  "verifier_path": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-cli/terra_high/42/jobs/pytorch-model-cli--terra_high--s42--infrastructure-recovery-2/pytorch-model-cli__QR9tLRJ/verifier/reward.txt",
+  "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 69.338542,
-    "agent_setup": 0.000191,
-    "agent_execution": 176.993119,
-    "verifier": 412.209808
+    "environment_setup": 600.001138,
+    "agent_setup": null,
+    "agent_execution": null,
+    "verifier": null
   },
   "generator_requests": 14,
   "teacher_requests": 0,
@@ -297,7 +312,7 @@
       "decision_id": "36bcde18-52d7-4005-9b17-c93e69d9298b-9"
     }
   ],
-  "technical_recovery_count": 1,
+  "technical_recovery_count": 2,
   "started_tool_calls": 0,
   "completed_tool_calls": 17,
   "unknown_provider_cost_requests": 1,

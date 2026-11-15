@@ -28,17 +28,17 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "VerifierTimeoutError",
+  "error_type": "EnvironmentStartTimeoutError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 1244.208619,
+  "episode_wall_s": 645.83068,
   "generator_known_reference_usd": 0.01896354,
-  "harbor_trial_count": 3,
-  "attempts_wall_s": 1704.006816,
-  "harness_command_wall_s": 1719.1452729012817,
+  "harbor_trial_count": 4,
+  "attempts_wall_s": 2349.837496,
+  "harness_command_wall_s": 2370.404053123668,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": 0.01896354,
-  "latest_trial_reference_usd": 0.0053158599999999995,
+  "latest_trial_reference_usd": 0,
   "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
@@ -46,13 +46,13 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-cli/luna_xhigh/42",
-  "trial_id": "4c899bb3-e73f-4415-ab7c-6d23dd839e66",
+  "trial_id": "27101918-e43b-46e7-905d-bbf54163942f",
   "official_reward": null,
   "technical_fault": null,
   "raw_verifier_rewards": [
     null
   ],
-  "outside_harbor_wall_s": 15.138456901281643,
+  "outside_harbor_wall_s": 20.566557123667735,
   "previous_attempts": [
     {
       "trial_id": "b1851e0e-df5b-4fc8-b1d0-5b9233980331",
@@ -87,16 +87,33 @@
         "verifier": 23.709527
       },
       "error_type": null
+    },
+    {
+      "trial_id": "4c899bb3-e73f-4415-ab7c-6d23dd839e66",
+      "job_name": "pytorch-model-cli--luna_xhigh--s42--infrastructure-recovery-2",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/pytorch-model-cli/luna_xhigh/42/jobs/pytorch-model-cli--luna_xhigh--s42--infrastructure-recovery-2/pytorch-model-cli__kS3ccEP",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-14T14:33:16.297403Z",
+      "finished_at": "2026-11-14T14:54:00.506022Z",
+      "duration_sec": 1244.208619,
+      "phase_wall_s": {
+        "environment_setup": 68.464691,
+        "agent_setup": 0.000187,
+        "agent_execution": 246.324243,
+        "verifier": 900.004363
+      },
+      "error_type": "VerifierTimeoutError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
   "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 68.464691,
-    "agent_setup": 0.000187,
-    "agent_execution": 246.324243,
-    "verifier": 900.004363
+    "environment_setup": 600.00276,
+    "agent_setup": null,
+    "agent_execution": null,
+    "verifier": null
   },
   "generator_requests": 19,
   "teacher_requests": 0,
@@ -276,7 +293,7 @@
       "decision_id": "4c899bb3-e73f-4415-ab7c-6d23dd839e66-8"
     }
   ],
-  "technical_recovery_count": 1,
+  "technical_recovery_count": 2,
   "started_tool_calls": 0,
   "completed_tool_calls": 36,
   "unknown_provider_cost_requests": 0,

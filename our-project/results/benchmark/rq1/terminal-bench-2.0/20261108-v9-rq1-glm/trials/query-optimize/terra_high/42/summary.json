@@ -3,7 +3,7 @@
   "strategy_id": "terra_high",
   "seed": 42,
   "unit_id": "query-optimize--terra_high--s42",
-  "status": "PARTIAL",
+  "status": "RUNNING",
   "run_id": "20261108-v9-rq1-glm",
   "benchmark_name": "Terminal-Bench",
   "benchmark_version": "2.0",
@@ -29,7 +29,7 @@
   },
   "reward": null,
   "error_type": "EnvironmentStartTimeoutError",
-  "execution_status": "UNKNOWN",
+  "execution_status": "RUNNING",
   "effort_comparison_eligible": true,
   "episode_wall_s": 722.047968,
   "generator_known_reference_usd": 0.0324048,
@@ -104,9 +104,9 @@
   "provider_retry_count": 0,
   "provider_retry_stop_reasons": {},
   "provider_attempts": [],
-  "technical_recovery_count": 1,
+  "technical_recovery_count": 2,
   "started_tool_calls": 0,
-  "completed_tool_calls": 16,
+  "completed_tool_calls": 19,
   "unknown_provider_cost_requests": 2,
   "prompt_tokens": null,
   "completion_tokens": null,
@@ -121,7 +121,7 @@
   "cache_read_unknown_records": 2,
   "reported_cache_write_tokens": null,
   "cache_write_unknown_records": 2,
-  "router_wall_s": 0.004508413374423981,
+  "router_wall_s": 0.005665440112352371,
   "initial_gpu_queue_wait_s": 0.0,
   "router_known_input_tokens": 0,
   "router_known_output_tokens": 0,
@@ -132,6 +132,38 @@
   "teacher_wall_s": 0.0,
   "generator_wall_s": 117.08457853272557,
   "selected_actions": [
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6.1-terra:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6.1-terra:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6.1-terra:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "jiji",
+      "model": "gpt-6.1-terra",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6.1-terra:high",
+      "pool": "Reasoning"
+    },
     {
       "provider": "jiji",
       "model": "gpt-6.1-terra",
@@ -742,8 +774,8 @@
   "logical_model_changes": 0,
   "endpoint_changes": 0,
   "prefix_continuity_counts": {
-    "FIRST_REQUEST": 1,
-    "EXACT_PREVIOUS_MESSAGES": 15,
+    "FIRST_REQUEST": 2,
+    "EXACT_PREVIOUS_MESSAGES": 17,
     "PREFIX_CHANGED": 0
   },
   "router_truncated_decisions": 0,
