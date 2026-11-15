@@ -2,6 +2,8 @@
 
 ## 2026-11-15 · 原Verifier依赖与继续运行
 
+13:27部署`4b095e5e914f1ebabc850a7cf2724130cb941636`：删除CLI启动链里会触发官方镜像APT清理钩子的重复update；同官方镜像、同源、249个原版本推荐包已经0 B下载完成安装，临时容器自动移除。三项CLI恢复在600秒启动到期，High在410.254秒因183 MB重下载及libmbedcrypto7 HTTP502退出，四项Agent均未开始；完整新评分仍待接续。Caffe Xhigh的11e6497b原HTTP200实际为嵌套server_error/request_timeout、耗131.726秒，旧解析为error且0重试；新协议读取实际错误类型，原保存响应已解析为可重试，沿现有100次上限和原任务时限恢复。两项修复的完整Episode结果保持空值，详情见原[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。
+
 PyTorch recovery／原始Laya／Model-only／教师ON／seed43已新增两条原官方Reward1，各5断言全通过。部署`24ee16e16fd000f3c35915724ee35c1fee5b76eb`后原31包符号链接安装21.97／24.09秒，原900秒Verifier时限保持。此前OFF Low／High安装524秒、pytest全过却无官方Reward的原记录继续空值；恢复另存，其他任务继续copy。下表每行都是一次完整Agent Episode，Token含教师、0额外重试、请求费用齐全；完整实收和资源USD未知。
 
 | 请求Effort | 官方Reward | API Token | 模型＋教师参考USD | Harbor秒 | Verifier秒 | 实报缓存Token | 教师请求／消费决策 |

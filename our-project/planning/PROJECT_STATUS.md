@@ -2,6 +2,8 @@
 
 ## 2026-11-15：依赖缓存写入故障与接续
 
+13:27新部署`4b095e5e914f1ebabc850a7cf2724130cb941636`合并两项实际故障：CLI官方镜像的APT更新钩子删除刚复制的.deb缓存，导致High重下183 MB后HTTP502、其余三项600秒启动到期，四项Agent均未开始；现删除启动链重复update，同镜像、同USTC源、249个原版本推荐包已以0 B下载完成安装，临时容器自动移除。Caffe Xhigh原HTTP200含嵌套server_error/request_timeout，旧解析只得到error而0重试；现按实际保存响应解析server_error、可恢复入口已识别，仍遵守原1200秒及最多额外100次请求重试。四CLI和该Caffe的完整新Episode评分仍待接续，原记录保持。2509357已自然结束，3205488执行原固定依赖恢复，健康任务继续。
+
 12:20 PyTorch recovery在原900秒Verifier时限内新增五条官方1：原始Laya／教师ON High、Max，以及训练Laya／教师OFF High、Max和ON High；各5断言全通过、0额外请求重试。训练版OFF／ON Low均缺/app/model.pt，1断言通过、4失败，官方0保留。原31包安装由524秒降至21.02—32.63秒；旧无Reward记录继续空值、恢复另存，逐次Token、教师、缓存、参考费用和墙钟见[Benchmark汇总](../results/benchmark/README.md)。实际执行源码仍为`24ee16e16fd000f3c35915724ee35c1fee5b76eb`；汇总源码`3f57521fe0ddb5281fab9e71dbde75d2d894c0e8`将缺失原CTRF报告明确列为VERIFIER_REPORT_ABSENT，不改原评分。两条只读观察已换为当前源码，每1200秒跟随既有Controller；唯一源码回退保存部署前24ee的三个文件。CLI APT缓存下完整官方结果仍待有限3205488执行。 同题训练版High的OFF／ON均官方1，ON参考费$0.00441104、64152 API Token，四次Luna短评进入七次决策；相对OFF参考费减少22.88%，完整净收益仍缺供应商与资源实收。
 
 10:23真实APT缓存准备完成：249包，包文件183211524字节、索引19838946字节；复用`.runtime/verifier-dependencies/apt`，临时准备容器已移除。部署`f1828108ee189b94790ca84ebc81d7bae235ace0`让原CLI启动链复制这些签名包和索引，再安装同版本、同推荐依赖。此前无缓存的教师ON High／Max两项均在原600秒环境启动期限退出、Agent未开始，原记录保留。有限3195433在现有四个固定任务结束后先恢复历史CLI Low／High／Xhigh／Terra四个缺分位置，Luna Max已有有效评分直接保留；后续依赖任务扫描排除这次已优先执行的CLI，避免同一位置重复恢复。新缓存下的完整官方结果待该原队列执行。

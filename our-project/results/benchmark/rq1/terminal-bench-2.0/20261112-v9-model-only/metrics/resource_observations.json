@@ -28,7 +28,7 @@
     "known_model_teacher_reference_usd": 12.08937083,
     "unknown_cost_requests": 544,
     "provider_retry_count": 2205,
-    "runtime_source_revision": "24ee16e16fd000f3c35915724ee35c1fee5b76eb",
+    "runtime_source_revision": "4b095e5e914f1ebabc850a7cf2724130cb941636",
     "analysis_revision": "3f57521fe0ddb5281fab9e71dbde75d2d894c0e8",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
     "joint_positions_started": 3,
@@ -502,7 +502,31 @@
     "no_agent_or_model_request_in_uncached_setup_failures": true,
     "preparation_fault": "First preparation lacked the original HTTP proxy and received unsigned captive network content; corrected using existing runtime persistent_env, then APT signatures and installation completed",
     "sole_rollback_previous_running_source": "1e42cfcd4045e08bdf71e87ab9c07678469adcfa",
-    "complete_official_episode_after_cached_setup": null
+    "complete_official_episode_after_cached_setup": null,
+    "cache_cleanup_fault": {
+      "official_image_config": "/etc/apt/apt.conf.d/docker-clean",
+      "hook": "APT::Update::Post-Invoke removes /var/cache/apt/archives/*.deb",
+      "luna_high_refetched": "183 MB in 3min 32s",
+      "luna_high_error": "HTTP 502 fetching libmbedcrypto7_2.28.3-1_amd64.deb",
+      "failed_trials": [
+        {"trial_id": "965e1bc3-1185-466c-baca-5882b7fd9331", "strategy": "luna_low", "environment_setup_s": 600.001315},
+        {"trial_id": "7d1d9d20-1aba-402d-8ea0-498ac208b5e7", "strategy": "luna_high", "environment_setup_s": 410.253843},
+        {"trial_id": "27101918-e43b-46e7-905d-bbf54163942f", "strategy": "luna_xhigh", "environment_setup_s": 600.00276},
+        {"trial_id": "f5c3d85a-a3f5-4ae4-9a1c-980a61f80771", "strategy": "terra_high", "environment_setup_s": 600.001138}
+      ],
+      "no_agent_or_verifier_started": true,
+      "repair_source_revision": "4b095e5e914f1ebabc850a7cf2724130cb941636",
+      "repair": "Omit redundant setup apt-get update; install from copied original signed APT indices and archives",
+      "same_image_cached_installation": {
+        "mirror": "http://mirrors.ustc.edu.cn/debian/",
+        "additional_package_count": 249,
+        "reported_network_download": "0 B/183 MB",
+        "status": "INSTALLATION_COMPLETED",
+        "exit_code": 0,
+        "temporary_container_removed": true,
+        "official_episode_reward": null
+      }
+    }
   },
   "pytorch_recovery_observed_package_copy_timeout": {
     "task_id": "pytorch-model-recovery",
@@ -2051,6 +2075,24 @@
       "official_finished_at": "2026-11-13T04:12:05.325939+00:00"
     }
   ],
+  "provider_sse_timeout": {
+    "task": "caffe-cifar-10",
+    "strategy": "luna_xhigh",
+    "seed": 42,
+    "trial_id": "11e6497b-c639-450d-99ca-e930d55dd6c6",
+    "http_status": 200,
+    "original_outer_type": "error",
+    "actual_inner_type": "server_error",
+    "actual_inner_code": "request_timeout",
+    "latency_ms": 131725.8871756494,
+    "original_extra_retries": 0,
+    "original_official_reward": null,
+    "repair_source_revision": "4b095e5e914f1ebabc850a7cf2724130cb941636",
+    "real_saved_response_normalized_to": "server_error",
+    "retryable_from_real_saved_response": true,
+    "recovery_reason": "PROVIDER_INTERRUPTED_RESPONSE",
+    "complete_official_episode_after_repair": null
+  },
   "control_handoff_artifact_loss": {
     "cause": "Thread-owned children were omitted during the first controller handoff; upstream Harbor jobs resume restarted two incomplete trials",
     "task": "kv-store-grpc",
