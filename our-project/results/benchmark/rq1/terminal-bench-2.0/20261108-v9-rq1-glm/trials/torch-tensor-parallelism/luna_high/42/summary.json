@@ -3,7 +3,7 @@
   "strategy_id": "luna_high",
   "seed": 42,
   "unit_id": "torch-tensor-parallelism--luna_high--s42",
-  "status": "PARTIAL",
+  "status": "RUNNING",
   "run_id": "20261108-v9-rq1-glm",
   "benchmark_name": "Terminal-Bench",
   "benchmark_version": "2.0",
@@ -29,7 +29,7 @@
   },
   "reward": null,
   "error_type": null,
-  "execution_status": "UNKNOWN",
+  "execution_status": "RUNNING",
   "effort_comparison_eligible": true,
   "episode_wall_s": 462.100374,
   "generator_known_reference_usd": 0.00717406,
@@ -39,7 +39,7 @@
   "teacher_known_reference_usd": null,
   "reference_cost_usd": 0.00717406,
   "latest_trial_reference_usd": 0.00240858,
-  "verifier_dependency_failure": false,
+  "verifier_dependency_failure": true,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
   "environment_cost_usd": null,
@@ -48,7 +48,7 @@
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/torch-tensor-parallelism/luna_high/42",
   "trial_id": "cc46b20e-6463-4f31-8a1f-fcd2b0109fab",
   "official_reward": 0.0,
-  "technical_fault": "VERIFIER_REPORT_ABSENT",
+  "technical_fault": "VERIFIER_DEPENDENCY",
   "raw_verifier_rewards": [
     {
       "reward": 0.0
@@ -166,9 +166,9 @@
       "decision_id": "cc46b20e-6463-4f31-8a1f-fcd2b0109fab-3"
     }
   ],
-  "technical_recovery_count": 1,
+  "technical_recovery_count": 2,
   "started_tool_calls": 0,
-  "completed_tool_calls": 14,
+  "completed_tool_calls": 18,
   "unknown_provider_cost_requests": 0,
   "prompt_tokens": 33062,
   "completion_tokens": 10777,
@@ -183,7 +183,7 @@
   "cache_read_unknown_records": 0,
   "reported_cache_write_tokens": 0,
   "cache_write_unknown_records": 0,
-  "router_wall_s": 0.0022760946303606033,
+  "router_wall_s": 0.0033428706228733063,
   "initial_gpu_queue_wait_s": 0.0,
   "router_known_input_tokens": 0,
   "router_known_output_tokens": 0,
@@ -194,6 +194,38 @@
   "teacher_wall_s": 0.0,
   "generator_wall_s": 367.7981388512999,
   "selected_actions": [
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "gpt-6-luna:high",
+      "pool": "Reasoning"
+    },
     {
       "provider": "codegoai",
       "model": "gpt-6-luna",
@@ -540,8 +572,8 @@
   "logical_model_changes": 0,
   "endpoint_changes": 0,
   "prefix_continuity_counts": {
-    "FIRST_REQUEST": 2,
-    "EXACT_PREVIOUS_MESSAGES": 8,
+    "FIRST_REQUEST": 3,
+    "EXACT_PREVIOUS_MESSAGES": 11,
     "PREFIX_CHANGED": 0
   },
   "router_truncated_decisions": 0,
