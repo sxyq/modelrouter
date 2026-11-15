@@ -1,10 +1,10 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "snapshot_exported_at": "2026-11-15T00:29:41+00:00",
+    "snapshot_exported_at": "2026-11-15T00:52:03+00:00",
     "controller_pid": 1696641,
-    "finished_positions": 880,
-    "reward_1": 239,
+    "finished_positions": 882,
+    "reward_1": 241,
     "reward_0": 108,
     "no_official_reward": 501,
     "missing_quality_reasons": {
@@ -24,8 +24,8 @@
     "verifier_dependency_failure": 32,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1254,
-    "known_model_teacher_reference_usd": 11.44749670,
+    "not_dispatched": 1252,
+    "known_model_teacher_reference_usd": 11.46247030,
     "unknown_cost_requests": 544,
     "provider_retry_count": 2205,
     "runtime_source_revision": "ab4dadb4e8dd4ad85913f9466e7222a846da1f7d",
@@ -137,11 +137,13 @@
   },
   "current_recovery_queue": {
     "source_revision": "ab4dadb4e8dd4ad85913f9466e7222a846da1f7d",
-    "queue_pid": 3031707,
+    "queue_pid": 3110498,
     "after_pid": 2509357,
     "after_pids": [2509357],
     "stages": ["CAFFE_XHIGH_UNSCORED_RECOVERY", "REPAIRED_FIXED_DEPENDENCY_AND_IMAGE_POSITIONS", "JOINT_REMAINING_FIXED", "WAIT_FOR_1700006", "JOINT_TECHNICAL_RECOVERY", "HISTORICAL_NECESSARY_RECOVERY"],
-    "explicit_repaired_tasks": ["model-extraction-relu-logits", "pytorch-model-cli", "pytorch-model-recovery", "mteb-retrieve", "mteb-leaderboard"],
+    "explicit_repaired_tasks": ["model-extraction-relu-logits", "pytorch-model-cli", "pytorch-model-recovery", "mteb-retrieve", "mteb-leaderboard", "reshard-c4-data", "build-pov-ray"],
+    "retired_idle_image_queue_pids": [3031707,3103545],
+    "image_queue_handoff": "New finite queue holds the same original memfd before the old idle waiter exits; no active Agent or Controller stopped",
     "previous_finite_waiter_pid": 2932692,
     "previous_finite_waiter_retired_idle_after_credentials_held": true,
     "previous_proxy_waiter_pid": 30587,
@@ -165,9 +167,10 @@
     "old_queue_exited_after_new_queue_held_same_private_memfd": true,
     "active_controller_pid": 1696641,
     "active_router_worker_pid": 2496626,
-    "proxy_waiting_pid": 7412,
+    "proxy_waiting_pid": 49076,
     "proxy_waiting_for_existing_connection_pid": 17649,
-    "proxy_followed_pids": [1700006,3031707],
+    "proxy_followed_pids": [1700006,3110498],
+    "retired_idle_image_proxy_waiter_pids": [7412,39772],
     "replaced_idle_queue_pid": 2850892,
     "replaced_idle_proxy_waiting_pid": 47171,
     "replacement_credentials_held": true,
@@ -306,6 +309,18 @@
     "recovery_queue_pid": 3031707,
     "first_failure_records_preserved": true
   },
+  "docker_registry_remaining_images": {
+    "observed_at": "2026-11-15T00:49:56+00:00",
+    "official_alternate_host": "registry.hub.docker.com",
+    "images": [
+      {"task_id": "reshard-c4-data", "official_tag": "alexgshaw/reshard-c4-data:20251031", "original_failure": "registry-1.docker.io TLS EOF before Agent start", "affected_fixed_recovery_positions": 5, "official_digest": "sha256:92d209e704785e17ad6b3f740e813dd72bc7ac33982ce435d197ab9d890eac2a", "unpacked_image_bytes": 4235256296},
+      {"task_id": "build-pov-ray", "official_tag": "alexgshaw/build-pov-ray:20251031", "original_failure": "Proxy connection refused before Agent start", "affected_historical_positions": 17, "official_digest": "sha256:874baf49341e2853a15a9184e308c7eb632e97f434359fcff2891c6e5ca1b39b", "unpacked_image_bytes": 579715713}
+    ],
+    "platform": "linux/amd64",
+    "image_status": "READY_ORIGINAL_TAG; TEMPORARY_HOST_TAG_REMOVED; IMAGE_LAYERS_RETAINED",
+    "recovery_queue_pid": 3110498,
+    "original_trials_limits_seeds_and_official_verifier_preserved": true
+  },
   "pytorch_cli_system_dependencies": {
     "source_revision": "f1ae75923db3479b0b8006165db4342ce3144eda",
     "task_id": "pytorch-model-cli",
@@ -409,7 +424,9 @@
       {"strategy_id": "kev_original_off_model_only_low", "trial_id": "3502200e-4829-4158-8698-f97dca40c371", "api_tokens": 42536, "known_model_teacher_reference_usd": 0.00243552, "usage_unknown_requests": 0, "package_install_s": 19.21, "episode_wall_s": 1462.409653, "router_wall_s": 100.32504750229418, "reported_cache_read_tokens": 32512, "teacher_requests": 0},
       {"strategy_id": "kev_original_off_model_only_high", "trial_id": "ec31669d-4b9f-4ee8-95a1-643491d5facc", "api_tokens": 30456, "known_model_teacher_reference_usd": 0.00267200, "usage_unknown_requests": 0, "package_install_s": 17.34, "episode_wall_s": 1362.794999, "router_wall_s": 79.10014685243368, "reported_cache_read_tokens": 19840, "teacher_requests": 0},
       {"strategy_id": "kev_original_off_model_only_max", "trial_id": "31045a3e-863b-4c6a-a3d4-72878970e6fd", "api_tokens": 290242, "known_model_teacher_reference_usd": 0.02582876, "usage_unknown_requests": 0, "package_install_s": 19.24, "episode_wall_s": 1923.992190, "router_wall_s": 195.77019187808037, "reported_cache_read_tokens": 137216, "teacher_requests": 0, "agent_timeout_with_valid_reward_1": true},
-      {"strategy_id": "kev_original_on_model_only_low", "trial_id": "970af582-4081-446e-baac-73b023284b6e", "api_tokens": 70317, "known_model_teacher_reference_usd": 0.00738554, "usage_unknown_requests": 0, "package_install_s": 20.13, "episode_wall_s": 1363.091161, "router_wall_s": 89.24958582036197, "reported_cache_read_tokens": 15104, "teacher_requests": 2, "teacher_consumed_decisions": 2}
+      {"strategy_id": "kev_original_on_model_only_low", "trial_id": "970af582-4081-446e-baac-73b023284b6e", "api_tokens": 70317, "known_model_teacher_reference_usd": 0.00738554, "usage_unknown_requests": 0, "package_install_s": 20.13, "episode_wall_s": 1363.091161, "router_wall_s": 89.24958582036197, "reported_cache_read_tokens": 15104, "teacher_requests": 2, "teacher_consumed_decisions": 2},
+      {"strategy_id": "kev_original_on_model_only_high", "trial_id": "5fbb7487-db9b-4134-912f-189f9c30c1fc", "api_tokens": 134173, "known_model_teacher_reference_usd": 0.00757378, "usage_unknown_requests": 0, "package_install_s": 20.10, "episode_wall_s": 1870.815973, "router_wall_s": 177.43050565384328, "reported_cache_read_tokens": 96768, "teacher_requests": 5, "teacher_consumed_decisions": 5},
+      {"strategy_id": "kev_original_on_model_only_max", "trial_id": "0e94ede5-9d72-4394-923f-2dc5d7990127", "api_tokens": 90507, "known_model_teacher_reference_usd": 0.00739982, "usage_unknown_requests": 0, "package_install_s": 21.26, "episode_wall_s": 1654.305103, "router_wall_s": 104.03667513467371, "reported_cache_read_tokens": 60032, "teacher_requests": 2, "teacher_consumed_decisions": 5, "pytest_total_s": 305.08}
     ],
     "supplier_billed_usd": null,
     "resource_billed_usd": null
