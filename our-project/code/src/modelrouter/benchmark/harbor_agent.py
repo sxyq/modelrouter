@@ -38,7 +38,7 @@ from modelrouter.providers.registry import ModelRegistry, V9_MODEL_IDS, legal_ac
 from modelrouter.providers.usage import known_request_cost
 from modelrouter.serving.schemas import LegalAction, PreDecisionState
 from modelrouter.v9.runtime.context import record_tool_result
-from .iterations import append, event, now, rows
+from .iterations import ROOT, append, event, now, rows
 
 
 class OutputTokenExceededError(HarborOutputTokenExceededError, NonZeroAgentExitCodeError):
@@ -462,6 +462,13 @@ class ModelRouterMiniSweAgent(BaseAgent):
         record_dir = Path(os.environ.get("MODELROUTER_ITERATION", str(self.logs_dir)))
         event(record_dir, "AGENT_START", episode_id=state.episode_id, task_id=task_id,
               time_budget_sec=state.time_budget_sec, execution_scope="SINGLE_AGENT")
+        if isinstance(environment, A6000DockerEnvironment):
+            qemu_pid = int((ROOT / ".runtime/docker-vm/qemu.pid").read_text())
+            qemu_args = Path(f"/proc/{qemu_pid}/cmdline").read_text().split("\0")
+            event(record_dir, "EXECUTION_ENVIRONMENT", episode_id=state.episode_id,
+                  qemu_pid=qemu_pid, machine=qemu_args[qemu_args.index("-machine") + 1],
+                  vm_cpus=int(qemu_args[qemu_args.index("-smp") + 1]),
+                  vm_memory_mib=int(qemu_args[qemu_args.index("-m") + 1]))
         model = PolicyModel(policy=self.policy, state=state, record_dir=record_dir, seed=self.seed,
                             provider=self.provider, v9_config=self.v9_config,
                             candidate_actions=self.candidate_actions,

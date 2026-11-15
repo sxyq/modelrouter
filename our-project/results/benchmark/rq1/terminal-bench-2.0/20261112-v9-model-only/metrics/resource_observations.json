@@ -478,17 +478,45 @@
   "hardware_acceleration_access": {
     "dev_kvm_exists": true,
     "host_cpu_virtualization_flag_present": true,
-    "syy_can_read_write_kvm": false,
+    "syy_can_read_write_kvm": true,
     "device_mode": "0660",
-    "device_owner_uid_gid": [0,993],
-    "syy_groups": [27,1013],
+    "device_owner_uid_gid": [
+      0,
+      993
+    ],
+    "syy_groups": [
+      27,
+      1013
+    ],
     "sudo_noninteractive_result": "PASSWORD_REQUIRED",
     "qemu_pid": 2744271,
     "current_machine": "q35,accel=tcg",
     "current_cpu": "max",
-    "current_vm_cpus_memory_mib": [16,40960],
-    "required_external_permission": "Administrator grants syy read/write access to /dev/kvm",
-    "current_active_episode_conditions": "UNCHANGED"
+    "current_vm_cpus_memory_mib": [
+      16,
+      40960
+    ],
+    "required_external_permission": null,
+    "current_active_episode_conditions": "ORIGINAL_TCG_EPISODES_CONTINUE; DISPATCH_PAUSED_UNTIL_VM_DRAIN",
+    "device_acl_user": "syy:rw",
+    "kvm_api_version": 12,
+    "sudo_saved_credential_used": true,
+    "vm_start_script_machine": "q35,accel=kvm",
+    "dispatch_paused_at": "2026-11-15T14:55:46.037849+00:00",
+    "paused_controller_pids": [
+      1696641,
+      3205488
+    ],
+    "original_episode_children": [
+      3803468,
+      3817027,
+      3825077,
+      3801075,
+      3819998,
+      3822217
+    ],
+    "vm_switch_status": "WAITING_FOR_ORIGINAL_EPISODES_TO_END",
+    "vm_start_rollback": "/home/syy/路由/.runtime/docker-vm/start.sh.previous"
   },
   "verifier_cache_runtime": {
     "deployed_revision": "71175861313c90def9f23b5bc3c3290d7c48e0e9",

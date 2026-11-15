@@ -488,6 +488,7 @@ def export_batch_results(root, config, output_root=None):
                "execution_status": job_states.get(unit["unit_id"], unit)["status"],
                "effort_comparison_eligible": not job_states.get(unit["unit_id"], {}).get("unsupported_effort", False),
                "episode_wall_s": None, "generator_known_reference_usd": None,
+               "execution_environment": None,
                "harbor_trial_count": 0, "attempts_wall_s": None, "harness_command_wall_s": None,
                "teacher_known_reference_usd": None, "reference_cost_usd": None,
                "latest_trial_reference_usd": None, "verifier_dependency_failure": False,
@@ -526,6 +527,8 @@ def export_batch_results(root, config, output_root=None):
         interrupted = ("VERIFIER_REPORT_ABSENT" if "CTRF report absent" in trial.get("reason", "")
                        else technical_interruption(trial, events) if trial.get("reward") != 1 else None)
         row.update(trial_id=trial.get("trial_id"), reward=None if interrupted else trial.get("reward"),
+                   execution_environment=next((e for e in events if e["event"] == "EXECUTION_ENVIRONMENT"
+                       and e.get("episode_id") == trial.get("trial_id")), None),
                    official_reward=next((a["rewards"].get("reward") for a in trial.get("verifier_artifacts", [])
                                          if a.get("rewards")), trial.get("reward")),
                    technical_fault="VERIFIER_DEPENDENCY" if row["verifier_dependency_failure"] else interrupted,
@@ -592,6 +595,7 @@ def export_batch_results(root, config, output_root=None):
         write_atomic(public / "summary.json", row)
         fields = {"timestamp", "monotonic_ns", "event", "episode_id", "decision_id", "command_id", "duration_ms", "selected_action", "request_model_id", "returned_model_id", "requested_native_effort", "returned_native_effort", "native_effort_status", "sent_effort_parameter", "protocol", "stream", "requested_max_output_tokens", "reported_max_output_tokens", "finish_reason", "physical_backend_identity_status", "provider_endpoint_id", "cost_usd", "cost_source", "cost_status", "cache_cost_policy", "reasoning_cost_policy", "actual_billed_cost_usd", "prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "cache_write_tokens", "router_latency_ms", "inference_latency_ms", "router_input_usage", "router_cpu_time_sec", "teacher_wall_ms", "capability_snapshot_id", "assessment_consumed_by_router", "http_status", "category"}
         fields.update({"router_gpu_wait_ms", "router_device_transfer_ms", "router_device", "router_weights_path"})
+        fields.update({"qemu_pid", "machine", "vm_cpus", "vm_memory_mib"})
         with (public / "events.jsonl").open("w") as stream:
             for event in events:
                 stream.write(json.dumps({k: v for k, v in event.items() if k in fields}, ensure_ascii=False) + "\n")

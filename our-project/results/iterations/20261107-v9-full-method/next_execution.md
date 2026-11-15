@@ -65,6 +65,8 @@ AA v7固定快照20261107T134704898459Z-v7、130真实指标、Intelligence Inde
 
 ## 连续执行与资源
 
+当前syy已取得原/dev/kvm读写ACL，KVM API版本12。Controller1696641／3205488于22:55:46暂停新派发，六个原Episode继续至自然终局；其容器清空后将同一VM改用KVM，再恢复这两个Controller。start.sh.previous保存当前16核40GiB版本，磁盘、镜像、任务时限和GPU锁保持。Luna原账户额度仍需恢复；旧TCG结果与后续真实KVM身份在逐Episode日志分别保存。
+
 当前e05caa115ed00e68ba26abf9aed72847440b4fde在原GPU共享读锁内按模型实际张量字节等待显存，保留Router原时限；四原权重CPU预加载后再接受任务。Worker3708428／有限持有3708420已接同一入口，旧闲置2496626／2496618退出，实际Laya CUDA/fallback=false日志已取得。qemu-startup训练Kev教师ON High／Max两条CUDA OOM由原技术恢复入口接续，原记录及费用独立保留；有效1/0不重复。
 
 当前源码46155662617507f354d85b9a3d7754c334e45cb3：输出额度异常保留Harbor原预算类别且由原单步处理调用Verifier；403等技术故障继续独立。等待原批次自然产生新长度耗尽终局，有效1/0不重复，旧NonZero缺有效分由原恢复入口处理。Luna正常High请求与教师403均已存在，同端点各请求事实分别保存。

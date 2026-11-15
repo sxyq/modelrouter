@@ -2,6 +2,8 @@
 
 ## 2026-11-15：依赖缓存写入故障与接续
 
+已沿原私人维护记录使用保存的sudo凭据，开放syy的/dev/kvm读写ACL，实际KVM API版本12。22:55:46只暂停Controller1696641和3205488的新派发，六个在途Harbor Episode自然执行、Router及共享GPU服务保持。原start.sh已仅把accel=tcg改为kvm，16核/40GiB、同一200GiB磁盘和全部镜像不变；start.sh.previous保存此前启动版本。原任务结束且容器清空后切换VM，再恢复同一Controller。后续Episode沿原Agent日志登记实际QEMU PID、machine、CPU和内存，旧记录不补写环境身份。
+
 22:48原日志定位query-optimize：训练Laya教师ON Low的0f2774c3只有1条失败生成请求、0工具、0教师，官方6包安装3.25秒后收集6项测试，在首项900秒到期、无Reward；OFF Max的c72b1931安装3.73秒，亦停在首项。原首项先执行任务提供的SQL，再执行原任务查询；不把该等待归为已完成的模型能力失败。Low的接口403和Max的2次额外重试到原期限分别保存。原KVM设备授权和Luna账户额度仍需外部恢复，其他任务继续原矩阵。
 
 21:00显存故障已定位并接入原恢复分类：qemu-startup训练Kev教师ON High／Max两条原Trial无Reward，H3占39.02 GiB、Router已占7.60 GiB，剩余8 MiB时再申请46 MiB失败。当前源码e05caa115ed00e68ba26abf9aed72847440b4fde按实际模型参数和缓冲区字节数等待可用CUDA显存，保留共享读锁与原Router时限。四原实体在CPU预加载后，20:54同一socket切换到Worker3708428／有限持有3708420，旧闲置2496626／2496618已退出；query-optimize两条实际Laya CUDA返回fallback=false、971.376／976.715毫秒。两条显存故障保留原记录，恢复评分待原Router空位。
