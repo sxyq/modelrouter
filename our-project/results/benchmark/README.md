@@ -11,15 +11,17 @@ PyTorch recovery／原始Laya／Model-only／教师ON／seed43已新增两条原
 
 两条17／18次生成均选择Luna对应档位；Router耗时18.461／19.718秒。历史四个CLI缺分优先恢复由有限3205488接续，已有Luna Max有效评分保留；CLI APT缓存下完整官方结果仍待运行。
 
-同题训练Laya／教师OFF／seed43也已完成三个独立Episode；下表全部0额外重试、请求消费齐全，仍沿原官方评分。
+同题训练Laya／seed43已完成五个独立Episode；下表全部0额外重试、请求消费齐全，仍沿原官方评分。
 
-| 固定Effort | 官方Reward | 断言通过／失败 | API Token | 参考USD | Harbor秒 | Verifier秒 | 实报缓存Token |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| [Low](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-recovery/laya_trained_off_model_only_low/43/summary.json) | 0 | 1／4 | 105798 | 0.00302812 | 1062.990163 | 386.011757 | 93312 |
-| [High](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-recovery/laya_trained_off_model_only_high/43/summary.json) | 1 | 5／0 | 181481 | 0.00571962 | 1829.313692 | 773.068765 | 157312 |
-| [Max](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-recovery/laya_trained_off_model_only_max/43/summary.json) | 1 | 5／0 | 161957 | 0.01017346 | 1588.327147 | 543.730255 | 126336 |
+| 教师 | 固定Effort | 官方Reward | 断言通过／失败 | API Token | 参考USD | Harbor秒 | Verifier秒 | 实报缓存Token |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| OFF | [Low](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-recovery/laya_trained_off_model_only_low/43/summary.json) | 0 | 1／4 | 105798 | 0.00302812 | 1062.990163 | 386.011757 | 93312 |
+| OFF | [High](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-recovery/laya_trained_off_model_only_high/43/summary.json) | 1 | 5／0 | 181481 | 0.00571962 | 1829.313692 | 773.068765 | 157312 |
+| OFF | [Max](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-recovery/laya_trained_off_model_only_max/43/summary.json) | 1 | 5／0 | 161957 | 0.01017346 | 1588.327147 | 543.730255 | 126336 |
+| ON | [Low](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-recovery/laya_trained_on_model_only_low/43/summary.json) | 0 | 1／4 | 31430 | 0.00211812 | 768.786837 | 343.688458 | 17792 |
+| ON | [High](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-recovery/laya_trained_on_model_only_high/43/summary.json) | 1 | 5／0 | 64152 | 0.00441104 | 1091.029489 | 488.157664 | 38144 |
 
-Low缺少任务要求的/app/model.pt，有效0不重跑；High／Max的27／25次生成均选择Luna对应档位，原31包安装32.63／21.02秒。汇总源码3f57521fe0ddb5281fab9e71dbde75d2d894c0e8将29项缺CTRF报告明确列出，原11项无异常字段的日志已确认pytest下载TLS中断；其余记录保留原Agent时限异常字段，质量分母保持原范围。
+Low的OFF／ON均缺少任务要求的/app/model.pt，有效0不重跑；ON Low的3条Luna短评进入4次决策。High两侧同为官方1，ON的4条短评进入7次决策，14次生成均选Luna High；ON相对OFF参考费减少22.88%、API Token减少64.65%、墙钟减少40.36%。生成模型与档位相同，教师效应与轨迹差异尚未分离。OFF High／Max的27／25次生成均选择Luna对应档位，原31包安装32.63／21.02秒。汇总源码3f57521fe0ddb5281fab9e71dbde75d2d894c0e8将29项缺CTRF报告明确列出，原11项无异常字段的日志已确认pytest下载TLS中断；其余记录保留原Agent时限异常字段，质量分母保持原范围。
 
 10:23同一依赖目录的真实APT缓存完成249包：183211524字节包文件、19838946字节索引，临时准备容器已移除。新部署`f1828108ee189b94790ca84ebc81d7bae235ace0`在原CLI启动链复用签名包和索引，原版本、推荐依赖和600／900秒时限保持。此前无缓存预装的教师ON High／Max两项因600秒启动到期未开始Agent，均缺评分。现有限3195433优先四个历史固定CLI缺分位置，已有Luna Max有效评分保留；尚待新缓存下完整官方结果。
 
@@ -29,7 +31,7 @@ Low缺少任务要求的/app/model.pt，有效0不重跑；High／Max的27／25�
 
 历史regex-chess／seed42恢复：Terra High官方1／4断言全通过，已知1014871 API Token、$0.330015参考费、1请求消费未知、20次额外重试；Luna Max官方0／1断言通过3失败、1811182 API Token／$0.09110628／3993.733秒、0重试。video-processing／Luna Low亦获有效0／3过2失败，API32056 Token／$0.00218080／512.239秒，原失败不重跑。
 
-Model-only12:00原Harbor导出[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为897/2136结束：246通过、109有效失败、510缺有效评分、32依赖故障另列；2运行、1237未开始，898次已结束Harbor Trial，已知模型与教师$12.08284167，544请求费用未知、2205次额外重试。37题全部24策略结束，38题已有结束位置。联合仍3/957；历史12:00导出为2521次结束Trial、290通过／323有效失败／815缺评分／81依赖故障，3恢复运行、1恢复待启动，已知模型与教师$39.69387853、1073请求费用未知、746次额外重试。原1513位置已全部首轮结束，原失败尝试、实报Token及费用保持，详见[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)。
+Model-only12:20原Harbor导出[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为899/2136结束：247通过、110有效失败、510缺有效评分、32依赖故障另列；2运行、1235未开始，900次已结束Harbor Trial，已知模型与教师$12.08937083，544请求费用未知、2205次额外重试。37题全部24策略结束，38题已有结束位置。联合仍3/957；历史12:21导出为2523次结束Trial、290通过／325有效失败／814缺评分／81依赖故障，3恢复运行，已知模型与教师$39.99040011、1073请求费用未知、746次额外重试。原1513位置已全部首轮结束，原失败尝试、实报Token及费用保持，详见[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)。
 
 PyTorch CLI原始Kev／seed43六项独立完整Episode均获官方1、各6断言全通过、0额外请求重试；全部生成请求均选择Luna并返回相同Effort。下表每格对应一次完整任务，Token与参考费包含教师；供应商实收和完整资源费用未知。
 
