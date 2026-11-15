@@ -2,6 +2,8 @@
 
 ## 2026-11-15：依赖缓存写入故障与接续
 
+21:00显存故障已定位并接入原恢复分类：qemu-startup训练Kev教师ON High／Max两条原Trial无Reward，H3占39.02 GiB、Router已占7.60 GiB，剩余8 MiB时再申请46 MiB失败。当前源码e05caa115ed00e68ba26abf9aed72847440b4fde按实际模型参数和缓冲区字节数等待可用CUDA显存，保留共享读锁与原Router时限。四原实体在CPU预加载后，20:54同一socket切换到Worker3708428／有限持有3708420，旧闲置2496626／2496618已退出；query-optimize两条实际Laya CUDA返回fallback=false、971.376／976.715毫秒。两条显存故障保留原记录，恢复评分待原Router空位。
+
 20:17源码46155662617507f354d85b9a3d7754c334e45cb3已部署：适配器的OutputTokenExceededError同时继承Harbor原输出额度异常和原非零退出异常，使原单步处理调用Verifier、原错误政策保留AGENT_EXHAUSTED_BUDGET。已从服务器实际包读取继承关系及reward_valid=true；新完整Episode的真实长度耗尽终局待原矩阵自然产生。403等技术故障仍单列，旧NonZero输出耗尽缺有效分可由原恢复入口另存，不改写原评分。20:01的count-dataset-tokens/Luna High返回正常completed、请求/返回模型及High一致；20:04的qemu-startup教师仍返回403，同端点成功与额度故障分别保留。
 
 19:43现行源码c81a6b8f9597af2eded1eebbb57fc2786afbe458已部署：403等终止Provider错误和4096输出耗尽经原Harbor NonZeroAgentExitCodeError进入官方Verifier，不改上游脚本或时限。cancel-async-tasks／Luna High／seed43原Verifier158.819613秒写Reward0，Harbor按原错误政策将该非零退出列为未归类故障，质量栏为空、PROVIDER_REQUEST_FAILED单列。原qemu-startup的403响应已明确为pre_consume_token_quota_failed／token quota is insufficient，需恢复现有Luna凭据额度；原配置和模型保持。MTEB原95包缓存已完成，含mteb1.36.8／scikit-learn1.9.1／torchvision0.29.2，解决Low／High未执行断言的下载超时；真实新评分待尾段3575811。
@@ -22,7 +24,7 @@
 
 当前正式范围：**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
-19:42／19:43当前源码采集：Model-only结束954/2136位置，259通过、144有效失败、519缺有效评分、32依赖故障另列，2运行、1180未开始；955次已结束Trial，模型与教师已知参考费$13.87757491，568请求缺费用，2217次额外重试。40题已有结束位置、39题全部24策略结束。历史本段1513位置全部结束、2581次Trial，307通过、343有效失败、797缺评分、66依赖故障，$41.94341055已知参考费、1083请求缺费用、765额外重试，248技术恢复位置；原2333次首次Trial保留。联合固定组已由原3205488接续：24/957结束、5通过／11有效失败／8缺评分，4运行、929未开始，$0.97476520参考费、7请求缺费用、22额外重试；两道原seed43结果继续复用。
+20:59当前源码采集：Model-only结束962/2136位置，259通过、148有效失败、523缺有效评分、32依赖故障另列，2运行、1172未开始；963次已结束Trial，模型与教师已知参考费$14.46199232，570请求缺费用，2218次额外重试。历史本段1513位置全部结束、2581次Trial，307通过、343有效失败、797缺评分、66依赖故障，$41.94341055已知参考费、1083请求缺费用、765额外重试，248位置有技术恢复尝试；原2333次首次Trial保留。联合固定组现46/957结束、16通过／21有效失败／9缺评分，4运行、907未开始，$1.54574519参考费、9请求缺费用、24额外重试；两道原seed43结果继续复用。
 
 PyTorch CLI原始Kev／seed43六项完整Episode均获官方1、各6断言全通过、0额外请求重试，全部生成请求均选择Luna并返回相同Effort。教师OFF／ON的Low、High、Max均完成；ON High／Max分别134173／90507 API Token，模型与教师参考费$0.00757378／$0.00739982，5／2次教师短评分别进入5／5次决策。该题教师Low／High参考费增加203.24%／183.45%，Max减少71.35%；逐项Token、费用、墙钟及独立日志见[Benchmark汇总](../results/benchmark/README.md)。
 
