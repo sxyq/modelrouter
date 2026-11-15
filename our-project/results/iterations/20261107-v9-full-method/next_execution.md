@@ -65,6 +65,8 @@ AA v7固定快照20261107T134704898459Z-v7、130真实指标、Intelligence Inde
 
 ## 连续执行与资源
 
+当前源码46155662617507f354d85b9a3d7754c334e45cb3：输出额度异常保留Harbor原预算类别且由原单步处理调用Verifier；403等技术故障继续独立。等待原批次自然产生新长度耗尽终局，有效1/0不重复，旧NonZero缺有效分由原恢复入口处理。Luna正常High请求与教师403均已存在，同端点各请求事实分别保存。
+
 当前Luna原403返回pre_consume_token_quota_failed／token quota is insufficient，需恢复已有私人凭据额度；Key、模型和Effort保持。MTEB-leaderboard五固定组、MTEB-retrieve三有效失败组直接保留，后者Low／High依赖故障由新缓存恢复。原Harbor NonZeroAgentExitCodeError会执行Verifier，其错误政策仍将未归类退出列为缺有效评分；原0与技术原因分别存放，不手工改分。
 
 新Tensor完整Episode的31包安装17.91秒后进入13项官方测试，900秒Verifier仍无终局；该次14生成请求、151644 API Token和$0.06207760参考费另记，不把3次累计用量称为一次运行。宿主机/dev/kvm存在、syy无读写权限、sudo需密码，硬件加速需要管理员设备授权；原QEMU2744271仍为q35,accel=tcg、16核40GiB，现有健康实验继续原配置。CPU等待与生成代码的贡献保持未知，不修改官方测试或时限。

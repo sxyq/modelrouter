@@ -2,6 +2,8 @@
 
 ## 2026-11-15 · 原Verifier依赖与继续运行
 
+20:17现行46155662617507f354d85b9a3d7754c334e45cb3让正常4096耗尽保留Harbor原OutputTokenExceededError类别，并经原NonZero捕获路径执行Verifier；服务器实际包的原政策为AGENT_EXHAUSTED_BUDGET、reward_valid=true。真实新长度耗尽Episode仍待原矩阵，不额外发送已知相同失败请求。Luna同端点20:01的High请求completed且返回档位匹配，20:04教师请求仍403；额度故障没有概括为全部模型请求不可达。
+
 19:43 Provider终止后官方评分路径已实际执行：cancel-async-tasks／Luna High／seed43的75dee28d原Verifier158.819613秒返回0；Harbor原非零退出错误政策将其列为未归类故障，质量栏继续空值、PROVIDER_REQUEST_FAILED单列。源码c81a6b8f9597af2eded1eebbb57fc2786afbe458保留真实失败状态、原时限及4096额度，长度耗尽不作网络重试。qemu-startup的原403返回pre_consume_token_quota_failed／token quota is insufficient，现有Luna凭据额度待恢复。
 
 MTEB-retrieve的原Low／High零分由scikit-learn1.9.1和torchvision0.29.2下载超时造成，未执行断言。共享缓存已完成原pytest8.4.1／mteb1.36.8／CTRF0.3.5及其95个实际依赖，原解析出的scikit-learn1.9.1、torch2.15.0、torchvision0.29.2均保留；现行模块复用既有链接安装。MTEB-leaderboard五个固定恢复均取得有效官方0；MTEB-retrieve的Max、Xhigh、Terra亦为有效0，全部保留。reshard-c4-data四个Luna档位及Terra High恢复均取得官方1，原请求、费用与首次失败分开；详情沿历史逐Episode表。

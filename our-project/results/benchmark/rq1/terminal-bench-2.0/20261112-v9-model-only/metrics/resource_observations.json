@@ -29,12 +29,26 @@
     "known_model_teacher_reference_usd": 13.87757491,
     "unknown_cost_requests": 568,
     "provider_retry_count": 2217,
-    "runtime_source_revision": "c81a6b8f9597af2eded1eebbb57fc2786afbe458",
+    "runtime_source_revision": "46155662617507f354d85b9a3d7754c334e45cb3",
     "analysis_revision": "c81a6b8f9597af2eded1eebbb57fc2786afbe458",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
     "joint_positions_started": 28,
     "joint_observed_at": "2026-11-15T11:43:34+00:00",
     "joint_finished_positions": 24
+  },
+  "output_budget_adapter": {
+    "deployed_at": "2026-11-15T12:17:00+00:00",
+    "source_revision": "46155662617507f354d85b9a3d7754c334e45cb3",
+    "exception_type": "OutputTokenExceededError",
+    "inherits_original_output_exception": true,
+    "inherits_original_single_step_catch_exception": true,
+    "original_policy_cause": "agent_exhausted_budget",
+    "original_policy_reward_valid": true,
+    "verification": "Imported the actual server package and read original Harbor policy; no generated request",
+    "new_complete_episode_result": null,
+    "remaining": "Await a naturally length-limited episode in the original matrix",
+    "normal_length_extra_retries": 0,
+    "previous_nonzero_invalid_quality_recovery_reason": "AGENT_OUTPUT_LIMIT_NO_VALID_REWARD"
   },
   "shared_gpu_wait": {
     "observed_at": "2026-11-14T19:27:46+08:00",

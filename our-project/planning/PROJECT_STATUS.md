@@ -2,6 +2,8 @@
 
 ## 2026-11-15：依赖缓存写入故障与接续
 
+20:17源码46155662617507f354d85b9a3d7754c334e45cb3已部署：适配器的OutputTokenExceededError同时继承Harbor原输出额度异常和原非零退出异常，使原单步处理调用Verifier、原错误政策保留AGENT_EXHAUSTED_BUDGET。已从服务器实际包读取继承关系及reward_valid=true；新完整Episode的真实长度耗尽终局待原矩阵自然产生。403等技术故障仍单列，旧NonZero输出耗尽缺有效分可由原恢复入口另存，不改写原评分。20:01的count-dataset-tokens/Luna High返回正常completed、请求/返回模型及High一致；20:04的qemu-startup教师仍返回403，同端点成功与额度故障分别保留。
+
 19:43现行源码c81a6b8f9597af2eded1eebbb57fc2786afbe458已部署：403等终止Provider错误和4096输出耗尽经原Harbor NonZeroAgentExitCodeError进入官方Verifier，不改上游脚本或时限。cancel-async-tasks／Luna High／seed43原Verifier158.819613秒写Reward0，Harbor按原错误政策将该非零退出列为未归类故障，质量栏为空、PROVIDER_REQUEST_FAILED单列。原qemu-startup的403响应已明确为pre_consume_token_quota_failed／token quota is insufficient，需恢复现有Luna凭据额度；原配置和模型保持。MTEB原95包缓存已完成，含mteb1.36.8／scikit-learn1.9.1／torchvision0.29.2，解决Low／High未执行断言的下载超时；真实新评分待尾段3575811。
 
 15:39新Tensor／Terra High／seed42完整Episode已结束：原31包安装17.91秒，收集13项官方测试并完成前5项，随后900秒Verifier超时、Reward为空。该次单独14生成请求、151644 API Token、0额外重试、$0.06207760参考费、1390.4198秒；此前2次Trial继续保留，累计字段与该次用量分别登记。宿主机有/dev/kvm和CPU虚拟化支持，当前QEMU2744271为q35,accel=tcg、16核40GiB；syy无设备读写权限，sudo需要密码，已请求管理员开放设备。现有批次保持原条件。query-optimize及tune-mjcf也已进入官方计算而无终局，代码执行与TCG资源贡献未知，不追加模型失败评分。
