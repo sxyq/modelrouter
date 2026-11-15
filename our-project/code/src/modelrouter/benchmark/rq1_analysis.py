@@ -514,7 +514,15 @@ def export_batch_results(root, config, output_root=None):
         requests = [request for attempt in trials for request in provider_requests(attempt, events)]
         generator = [r for r in requests if r["role"] == "generator"]
         teacher = [r for r in requests if r["role"] == "teacher"]
-        routing = [e for e in events if e["event"] == "ROUTER_END"]
+        trial_ids = {t["trial_id"] for t in trials}
+        routing = [e for e in events if e["event"] == "ROUTER_END" and e.get("episode_id") in trial_ids]
+        returned = {e["decision_id"] for e in routing}
+        unanswered = [e for e in events if e["event"] == "ROUTER_START"
+                      and e.get("episode_id") in trial_ids and e["decision_id"] not in returned]
+        agent_ends = {e["episode_id"]: datetime.fromisoformat(e["timestamp"]) for e in events
+                      if e["event"] == "AGENT_END" and e.get("episode_id") in trial_ids}
+        unanswered_wall = [(agent_ends[e["episode_id"]] - datetime.fromisoformat(e["timestamp"])).total_seconds()
+                           if e["episode_id"] in agent_ends else None for e in unanswered]
         contexts = [e for e in events if e["event"] == "V9_CONTEXT_END"]
         def known_cost(group):
             values = [known_request_cost(r) for r in group]
@@ -522,6 +530,10 @@ def export_batch_results(root, config, output_root=None):
         def reported(group, field):
             values = [r.get(field) for r in group]
             return sum(values) if all(v is not None for v in values) else None
+        returned_wall = reported(routing, "router_latency_ms")
+        router_cpu, router_wait, router_transfer = (
+            reported(routing, field) if not unanswered else None
+            for field in ("router_cpu_time_sec", "router_gpu_wait_ms", "router_device_transfer_ms"))
         latest_requests = provider_requests(trial, events) if trial else []
         row["verifier_dependency_failure"] = trial.get("reason", "").startswith("Official test dependency")
         interrupted = ("VERIFIER_REPORT_ABSENT" if "CTRF report absent" in trial.get("reason", "")
@@ -573,14 +585,16 @@ def export_batch_results(root, config, output_root=None):
                    cache_read_unknown_records=sum(r.get("cached_tokens") is None for r in requests),
                    reported_cache_write_tokens=reported(requests, "cache_write_tokens"),
                    cache_write_unknown_records=sum(r.get("cache_write_tokens") is None for r in requests),
-                   router_wall_s=sum(e.get("router_latency_ms", 0) for e in routing) / 1000,
+                   router_wall_s=returned_wall / 1000 + sum(unanswered_wall)
+                       if returned_wall is not None and all(v is not None for v in unanswered_wall) else None,
                    initial_gpu_queue_wait_s=sum(e["duration_ms"] for e in events if e["event"] == "GPU_QUEUE_WAIT") / 1000,
                    router_known_input_tokens=sum(e["router_input_usage"]["input_tokens"] for e in routing if e.get("router_input_usage")),
                    router_known_output_tokens=sum(e["router_input_usage"]["output_tokens"] for e in routing if e.get("router_input_usage")),
-                   router_usage_unknown_decisions=sum(not e.get("router_input_usage") for e in routing) if strategy.get("checkpoint") else 0,
-                   router_cpu_time_sec=sum(e.get("router_cpu_time_sec", 0) for e in routing),
-                   router_gpu_wait_s=sum(e.get("router_gpu_wait_ms", 0) for e in routing) / 1000,
-                   router_transfer_s=sum(e.get("router_device_transfer_ms", 0) for e in routing) / 1000,
+                   router_usage_unknown_decisions=sum(not e.get("router_input_usage") for e in routing) + len(unanswered)
+                       if strategy.get("checkpoint") else 0,
+                   router_cpu_time_sec=router_cpu,
+                   router_gpu_wait_s=router_wait / 1000 if router_wait is not None else None,
+                   router_transfer_s=router_transfer / 1000 if router_transfer is not None else None,
                    teacher_wall_s=sum(r.get("teacher_wall_ms", 0) for r in teacher) / 1000,
                    generator_wall_s=sum(r.get("agent_request_wall_ms", r.get("duration_ms", 0)) for r in generator) / 1000,
                    selected_actions=[e["selected_action"] for e in routing],
