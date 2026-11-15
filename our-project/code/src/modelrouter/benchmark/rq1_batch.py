@@ -88,6 +88,9 @@ def recovery_reason(path):
         return interruption
     error = trial.get("error") or {}
     kind, message = error.get("exception_type"), error.get("exception_message", "")
+    if kind == "NonZeroAgentExitCodeError" and any(e.get("episode_id") == trial["trial_id"]
+            and e["event"] == "AGENT_OUTPUT_LIMIT" for e in events):
+        return "AGENT_OUTPUT_LIMIT_NO_VALID_REWARD"
     if trial.get("reason", "").startswith("Official test dependency") or "CTRF report absent" in trial.get("reason", ""):
         return "VERIFIER_DEPENDENCY"
     if kind in ("URLError", "RemoteDisconnected", "ConnectionResetError", "TimeoutError", "IncompleteRead"):

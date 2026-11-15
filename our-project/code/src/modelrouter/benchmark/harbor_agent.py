@@ -19,7 +19,7 @@ import yaml
 from harbor.agents.base import BaseAgent
 from harbor.environments.docker.docker import DockerEnvironment
 from harbor.agents.capabilities import AgentCapabilities
-from harbor.agents.installed.base import NonZeroAgentExitCodeError
+from harbor.agents.installed.base import NonZeroAgentExitCodeError, OutputTokenExceededError as HarborOutputTokenExceededError
 from harbor.agents.installed.mini_swe_agent import convert_mini_swe_agent_to_atif
 from harbor.models.agent.context import AgentContext
 from harbor.models.trial.config import TaskConfig
@@ -39,6 +39,10 @@ from modelrouter.providers.usage import known_request_cost
 from modelrouter.serving.schemas import LegalAction, PreDecisionState
 from modelrouter.v9.runtime.context import record_tool_result
 from .iterations import append, event, now, rows
+
+
+class OutputTokenExceededError(HarborOutputTokenExceededError, NonZeroAgentExitCodeError):
+    """Retain Harbor's budget cause while its single-step handler runs the verifier."""
 
 
 class A6000DockerEnvironment(DockerEnvironment):
@@ -485,7 +489,7 @@ class ModelRouterMiniSweAgent(BaseAgent):
                     (exc.metrics.get("incomplete_details") or {}).get("reason") == "max_output_tokens"):
                 event(record_dir, "AGENT_OUTPUT_LIMIT", episode_id=state.episode_id,
                       error=str(exc), max_output_tokens=self.max_output_tokens)
-                raise NonZeroAgentExitCodeError(f"Provider output limit exhausted: {exc}") from exc
+                raise OutputTokenExceededError(f"Provider output limit exhausted: {exc}") from exc
             attempts = getattr(exc, "account_attempts", [])
             if attempts and attempts[-1].get("retry_stop_reason") == "TASK_DEADLINE":
                 state.finish(EpisodeStatus.TIMEOUT)
