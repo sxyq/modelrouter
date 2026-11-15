@@ -2,9 +2,17 @@
 
 ## 2026-11-16 · 接口故障与有效官方结果
 
-03:30原批次：Model-only1007/2136结束、260通过／151有效失败／564缺评分／32依赖故障；联合171/957结束、64通过／38有效失败／69缺评分。旧352条URL错误中338为连接拒绝、14为SSL EOF，按原技术恢复另存，不计为模型能力失败。共享READ锁保持；03:31实际GPU可用47444MiB，H3后端stopped、活动请求0。
+03:50—03:51原批次：Model-only1010/2136结束、260通过／152有效失败／566缺评分／32依赖故障；联合175/957结束、64通过／40有效失败／71缺评分。旧352条URL错误中338为连接拒绝、14为SSL EOF，按原技术恢复另存，不计为模型能力失败。共享READ锁保持；03:34实际GPU可用47444MiB，H3后端stopped、活动请求0。
 
-新增[raman-fitting训练Kev ON Low](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/raman-fitting/kev_trained_on_model_only_low/43/summary.json)完整Episode官方1、3断言全过，8次生成与8次工具全部Terra Low、0额外重试；57905已报API Token、模型参考$0.017749、330.452390秒。Router墙钟82.879958秒，GPU等待0.023336秒。两次Luna教师请求403、短评消费0、教师费用未知，保留教师ON配置与实际未生效两项事实。
+raman-fitting／训练Kev教师ON／seed43完整三档结果，额外重试均0；教师消费均0、教师费用未知，模型费用只列已知参考部分：
+
+| Effort与完整Episode | 官方有效质量 | 原断言通过／失败 | 实际选择 | 已报模型API Token | 模型参考USD | 生成／工具结果 | Harbor秒 |
+|---|---:|---:|---|---:|---:|---:|---:|
+| [Low](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/raman-fitting/kev_trained_on_model_only_low/43/summary.json) | 1 | 3／0 | Terra Low | 57905 | 0.017749 | 8／8 | 330.452390 |
+| [High](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/raman-fitting/kev_trained_on_model_only_high/43/summary.json) | 缺分：生成403 | 1／2，原0保留 | Terra High、Luna High | 71848 | 0.0236424 | 10／9 | 966.932015 |
+| [Max](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/raman-fitting/kev_trained_on_model_only_max/43/summary.json) | 0 | 1／2 | Terra Max | 174888 | 0.0928536 | 11／20 | 1151.020477 |
+
+Max的G与2D峰值两项失败、有效0保留，模型参考费为Low的5.23倍；High第10条Luna生成403后结束，单独技术恢复。Low／High／Max的Router墙钟82.879958／103.521921／111.542919秒、GPU等待0.023336／0.025692／0.028904秒，教师请求2／3／3次，消费均0。当前Model-only教师ON已结束504位置：246实际消费短评、15发出教师请求但消费0、243未触发请求；没有把所有ON配置直接解释为有效教师干预。
 
 02:50现行分析e1cb909b补计未返回的Router墙钟：同一已结束Trial的ROUTER_START至AGENT_END；原始Laya ON Low／High实际899.873759／899.806012秒，原汇总均为0。CPU、GPU等待和传输细分缺测为空，Router用量缺测各1次；原官方评分及API费用保持。当前三个20分钟观察4041864／4041865／4041866沿相同目录导出。
 
