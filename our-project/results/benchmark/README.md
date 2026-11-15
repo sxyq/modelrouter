@@ -2,7 +2,17 @@
 
 ## 2026-11-16 · 接口故障与有效官方结果
 
-04:50—04:52原批次：Model-only1029/2136结束、263通过／152有效失败／582缺评分／32依赖故障；联合197/957结束、71通过／42有效失败／84缺评分。旧352条URL错误中338为连接拒绝、14为SSL EOF，按原技术恢复另存，不计为模型能力失败。共享READ锁保持；03:34实际GPU可用47444MiB，H3后端stopped、活动请求0。
+06:38—06:39当前分析c6b2a7b1导出：Model-only1070/2136结束，273有效1／152有效0／613缺评分／32依赖故障另列；联合220/957结束，77有效1／44有效0／99缺评分。参考费分别$15.32252788／$5.87838663，709／108请求费用未知，2623／874额外重试。历史1513位置、2581 Trial，307有效1／343有效0／797缺分／66依赖故障，参考费$41.94341055。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
+
+三个GLM Low完整Episode的末次请求max_tokens=4096、thinking.enabled、stream=false，返回completion_tokens=128000、finish=length、0额外重试。已进入原官方Verifier；质量栏单列PROVIDER_OUTPUT_BUDGET_EXCEEDED，原Reward0及全部费用保留，原自动恢复理由仍为None。
+
+| 完整Episode | 单次已报模型Token | 模型参考USD | Harbor秒 | 超额请求 |
+|---|---:|---:|---:|---:|
+| [custom-memory-heap-crash](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/custom-memory-heap-crash/glm_low/43/summary.json) | 160910 | 0.06779314 | 1781.260825 | 1 |
+| [dna-assembly](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/dna-assembly/glm_low/43/summary.json) | 217850 | 0.07425886 | 2399.466770 | 2 |
+| [protein-assembly](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/protein-assembly/glm_low/43/summary.json) | 736623 | 0.09387332 | 1792.998447 | 1 |
+
+原请求参数符合[智谱现行max_tokens说明](https://docs.bigmodel.cn/cn/guide/start/concept-param)，实际渠道未落实4096；返回Effort、物理后端及供应商实收未知。当前三个批次分别记录99／32／239次超额输出请求，只有上述3个额度终止位置因此另列；正常额度内length原0保持。分析807行，观察123359／123360／123364已加载，公开汇总沿原.runtime导出，不采用旧Controller内存分类。
 
 raman-fitting／训练Kev教师ON／seed43完整三档结果，额外重试均0；教师消费均0、教师费用未知，模型费用只列已知参考部分：
 
