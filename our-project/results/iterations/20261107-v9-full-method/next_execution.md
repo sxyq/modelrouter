@@ -65,6 +65,8 @@ AA v7固定快照20261107T134704898459Z-v7、130真实指标、Intelligence Inde
 
 ## 连续执行与资源
 
+新Tensor完整Episode的31包安装17.91秒后进入13项官方测试，900秒Verifier仍无终局；该次14生成请求、151644 API Token和$0.06207760参考费另记，不把3次累计用量称为一次运行。宿主机/dev/kvm存在、syy无读写权限、sudo需密码，硬件加速需要管理员设备授权；原QEMU2744271仍为q35,accel=tcg、16核40GiB，现有健康实验继续原配置。CPU等待与生成代码的贡献保持未知，不修改官方测试或时限。
+
 复用原modelrouter.benchmark rq1入口和配置批量运行；固定任务四并发、Router两并发，原任务时限、4096输出及官方Verifier。需要等待时沿原--watch-pids <实际父PID> --watch-interval 1200每20分钟汇总，父进程退出后取末次结果并结束，不建立新的Runner或定时服务。
 
 2026-11-12 02:32台北历史快照：F15物理epoch_01/61180、3915484条，模型842609220字节、优化器3368412933字节，无F15进程；Serving PID327621为原F05/导入Kev。该快照GPU989/49140MiB、0%，用户VM16核40GiB、任务容器0，前一批临时代理及Socket已撤去。当前批次代理、Router与容器状态见上文及[现行资源记录](../../benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)，不沿旧快照推断训练或任务状态。
