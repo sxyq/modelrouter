@@ -1,5 +1,22 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
+## 2026-11-16 · 接口故障与有效官方结果
+
+01:36原17898代理已退出，重建同一转发后HTTPS200；原固定脚本76902跟随1700006／3887267，三条当前源码观察每1200秒导出。模型与教师仍沿Provider最多额外100次同参数重试，原期限有效。三批总量及剩余位置见[项目现状](../../planning/PROJECT_STATUS.md)，逐尝试费用、失败和首次日志保留。
+
+联合Seed43新增两题固定模型对照；每行一次完整Episode、0额外重试、模型用量齐全，完整实收与资源费未知：
+
+| 官方任务 | 固定策略 | Reward | 单次API Token | 参考USD | Harbor秒 |
+|---|---|---:|---:|---:|---:|
+| sparql-university | GLM Low | 0 | 302160 | 0.01179221 | 1037.150976 |
+| sparql-university | Terra High | 1 | 145042 | 0.03639560 | 837.370931 |
+| torch-pipeline-parallelism | GLM Low | 0 | 534662 | 0.02614088 | 1314.716340 |
+| torch-pipeline-parallelism | Terra High | 1 | 58995 | 0.02819820 | 499.515814 |
+
+pipeline的GLM原官方2过2失败，未提供position_embeddings；其有效0保留。Tensor／GLM Low的5109434f则因17898拒绝连接而无法安装APT与pytest、0断言，原0保留、任务质量空值，沿原技术恢复另存。
+
+query-optimize训练Kev OFF三档均在首条Terra请求收到502，Low／High／Max额外重试31／32／32次，High另有一次TLS握手超时；0工具、无Reward、费用未知。ON Max的c5288b74同为33次502、0工具，原官方2过4失败并给0，任务质量单列技术故障。该次官方断言耗830.57秒；其他记录仍有原900秒无终局，SQL耗时的变化原因未知。原始错误与恢复身份见[资源记录](rq1/terminal-bench-2.0/20261112-v9-model-only/metrics/resource_observations.json)。
+
 ## 2026-11-15 · 原Verifier依赖与继续运行
 
 23:11:54原VM切换KVM并恢复同一Controller，16核/40GiB和原任务条件保持；下表两条新Episode的EXECUTION_ENVIRONMENT均记录QEMU3832028、q35,accel=kvm，0额外重试、用量及参考费齐全。供应商、工具及资源实收未知。
