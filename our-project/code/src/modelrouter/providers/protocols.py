@@ -145,7 +145,7 @@ class Responses:
             if kind in ("error", "response.failed"):
                 body, terminal_event = item.get("response", body), kind
                 error = body.get("error") or item
-                body["error"] = {**error, "type": error.get("code") or error.get("type", kind)}
+                body["error"] = error
                 break
         if "output" not in body:
             body["output"] = list(output.values())
@@ -165,7 +165,11 @@ class Responses:
 
 def response_error(body, protocol):
     if body.get("error") is not None:
-        return body["error"].get("type", "unknown")
+        error = body["error"]
+        if error.get("type") == "error":
+            error = error["error"]
+        kind = error.get("type")
+        return kind if kind in ("server_error", "rate_limit_error", "overloaded_error") else error.get("code") or kind or "unknown"
     if protocol == "responses":
         outputs = body.get("output", [])
         calls = [item for item in outputs if item["type"] == "function_call"]

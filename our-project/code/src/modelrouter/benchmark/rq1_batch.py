@@ -24,6 +24,7 @@ from modelrouter.providers.registry import MODEL_REGISTRY, V9_MODEL_IDS
 from modelrouter.v9.capabilities.features import load_current
 from modelrouter.providers.base import ProviderResponseError
 from modelrouter.providers.provider import OpenAICompatibleProvider
+from modelrouter.providers.protocols import response_error
 
 
 def prepare(config_path, revision):
@@ -96,6 +97,9 @@ def recovery_reason(path):
     if kind in ("ProviderResponseError", "JSONDecodeError"):
         request = next((e for e in reversed(iterations.rows(path / "events.jsonl"))
                         if e.get("episode_id") == trial["trial_id"] and e.get("event") == "GENERATOR_END"), {})
+        if kind == "ProviderResponseError" and message == "error" and request.get("diagnostic_capture_enabled"):
+            response = json.loads((path / "provider_responses" / (request["decision_id"] + ".json")).read_text())["response"]
+            message = response_error(response, request["protocol"])
         if kind == "ProviderResponseError" and (request.get("finish_reason") == "length" or
                 (request.get("incomplete_details") or {}).get("reason") == "max_output_tokens"):
             return "AGENT_OUTPUT_LIMIT_NO_VERIFIER"
