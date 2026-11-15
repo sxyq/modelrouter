@@ -535,9 +535,17 @@ def export_batch_results(root, config, output_root=None):
             reported(routing, field) if not unanswered else None
             for field in ("router_cpu_time_sec", "router_gpu_wait_ms", "router_device_transfer_ms"))
         latest_requests = provider_requests(trial, events) if trial else []
+        output_overruns = [r for r in requests if r.get("completion_tokens") is not None
+                           and r.get("requested_max_output_tokens") is not None
+                           and r["completion_tokens"] > r["requested_max_output_tokens"]]
+        latest_output_overruns = [r for r in latest_requests if r.get("completion_tokens") is not None
+                                  and r.get("requested_max_output_tokens") is not None
+                                  and r["completion_tokens"] > r["requested_max_output_tokens"]]
         row["verifier_dependency_failure"] = trial.get("reason", "").startswith("Official test dependency")
         interrupted = ("VERIFIER_REPORT_ABSENT" if "CTRF report absent" in trial.get("reason", "")
                        else technical_interruption(trial, events) if trial.get("reward") != 1 else None)
+        if error.get("exception_type") == "OutputTokenExceededError" and latest_output_overruns:
+            interrupted = "PROVIDER_OUTPUT_BUDGET_EXCEEDED"
         row.update(trial_id=trial.get("trial_id"), reward=None if interrupted else trial.get("reward"),
                    execution_environment=next((e for e in events if e["event"] == "EXECUTION_ENVIRONMENT"
                        and e.get("episode_id") == trial.get("trial_id")), None),
@@ -545,6 +553,8 @@ def export_batch_results(root, config, output_root=None):
                                          if a.get("rewards")), trial.get("reward")),
                    technical_fault="VERIFIER_DEPENDENCY" if row["verifier_dependency_failure"] else interrupted,
                    raw_verifier_rewards=[a.get("rewards") for a in trial.get("verifier_artifacts", [])],
+                   provider_output_budget_exceeded_requests=len(output_overruns),
+                   latest_output_budget_exceeded_requests=len(latest_output_overruns),
                    effort_comparison_eligible=not strategy.get("model") or not any(r.get("native_effort_status") == "PROVIDER_REPORTED_MISMATCH" for r in generator),
                    harbor_trial_count=len(trials),
                    attempts_wall_s=sum(t["duration_sec"] for t in trials),
@@ -757,6 +767,9 @@ def export_batch_results(root, config, output_root=None):
                f"Provider实际报告缓存读取{cache_label} Token；{sum(r['cache_read_unknown_records'] or 0 for r in all_groups)}次请求未报告缓存读取；跨模型物理KV共享未知。\n",
                f"教师请求{sum(r['teacher_requests'] or 0 for r in all_groups)}次，短评实际输入Router {sum(r.get('teacher_consumed_decisions', 0) for r in episodes)}次；同一短评可由多次决策消费。\n"]
     report.append(f"Provider实际额外重试{sum(r.get('provider_retry_count') or 0 for r in all_groups)}次；已记录技术恢复{sum(r.get('technical_recovery_count') or 0 for r in all_groups)}次，涉及{sum(bool(r.get('technical_recovery_count')) for r in episodes)}个位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。\n")
+    report.append(f"Provider报告输出超过请求额度{sum(r.get('provider_output_budget_exceeded_requests', 0) for r in episodes)}次；"
+                  f"其中{sum(r.get('technical_fault') == 'PROVIDER_OUTPUT_BUDGET_EXCEEDED' for r in episodes)}个"
+                  "额度终止位置单列渠道故障，原官方Reward及全部费用保留。请求额度内的正常length原0继续保留；不因本项重复已评分任务。\n")
     truncated = [r for r in episodes if r.get("router_truncated_decisions")]
     report.append(f"已记录Router输入截断{sum(r['router_truncated_decisions'] for r in truncated)}次，涉及{len(truncated)}个位置；原输入及官方结果保留在逐Episode表。\n")
     mismatch = Counter((q.get("request_model_id"), q.get("requested_native_effort"), q.get("returned_native_effort"))
