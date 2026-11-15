@@ -25,6 +25,8 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 现行观察及代理只跟随上述原Controller与有限接续，无新矩阵或持久定时服务。02:22代理98294已在76902自然结束后接管；02:50分析e1cb909b已补计未返回的Router墙钟，4041864／4041865／4041866每20分钟导出，CPU/GPU细分缺测保留空值。旧首失败、费用、有效1/0和原权重分别保留；gpu.lock共享READ保持，02:15可用显存844MiB，路由前无生成的900秒终止另列技术恢复。训练及Breeze的独占锁保持。
 
+03:31共享GPU可用47444MiB，H3后端stopped、活动请求0；11条路由返回前超时、2条CUDA OOM及338条连接拒绝／14条SSL EOF沿原3993622技术恢复，保持同任务、策略与seed43、首次日志及费用。新raman-fitting训练Kev ON Low获官方1、3断言全过、实际GPU等待0.023336秒；两次教师403且短评消费0，教师生效集合需按实际短评使用单列。当前原固定段未结束，后续696个联合Router位置仍待原顺序接续。
+
 gcode-to-text终局：训练Kev Model-only OFF/High实际执行2条断言、1通过/1失败，完整任务Reward0；1064.319秒、26生成/26工具结果、模型参考费$0.15098180且缺费用0，请求/返回均Terra High。Low的原0来自Debian下载502、uvx未安装，未执行断言；783.051秒、20生成/20工具及$0.07798260保留，任务质量另列。原始Kev ON的Luna High/Max前序工具有效、终局INCOMPLETE_RESPONSE且缺Reward。联合接续同时补三固定参照GLM Low/Luna High/Terra High的87题×3=261位置，联合主组696，合计957；旧两题seed43结果复用，旧seed42不替代。
 
 ## 后续一：补任务开始、转折与恢复状态（RQ4，关联RQ2）

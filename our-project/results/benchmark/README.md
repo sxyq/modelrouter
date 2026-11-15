@@ -2,6 +2,10 @@
 
 ## 2026-11-16 · 接口故障与有效官方结果
 
+03:30原批次：Model-only1007/2136结束、260通过／151有效失败／564缺评分／32依赖故障；联合171/957结束、64通过／38有效失败／69缺评分。旧352条URL错误中338为连接拒绝、14为SSL EOF，按原技术恢复另存，不计为模型能力失败。共享READ锁保持；03:31实际GPU可用47444MiB，H3后端stopped、活动请求0。
+
+新增[raman-fitting训练Kev ON Low](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/raman-fitting/kev_trained_on_model_only_low/43/summary.json)完整Episode官方1、3断言全过，8次生成与8次工具全部Terra Low、0额外重试；57905已报API Token、模型参考$0.017749、330.452390秒。Router墙钟82.879958秒，GPU等待0.023336秒。两次Luna教师请求403、短评消费0、教师费用未知，保留教师ON配置与实际未生效两项事实。
+
 02:50现行分析e1cb909b补计未返回的Router墙钟：同一已结束Trial的ROUTER_START至AGENT_END；原始Laya ON Low／High实际899.873759／899.806012秒，原汇总均为0。CPU、GPU等待和传输细分缺测为空，Router用量缺测各1次；原官方评分及API费用保持。当前三个20分钟观察4041864／4041865／4041866沿相同目录导出。
 
 constraints-scheduling／seed43同题两个固定策略均官方1、0额外重试；GLM原3断言全过，该题保持已观察身份。完整供应商和资源实收未知：
