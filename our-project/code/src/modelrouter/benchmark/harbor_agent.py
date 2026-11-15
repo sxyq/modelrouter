@@ -90,7 +90,7 @@ class A6000DockerEnvironment(DockerEnvironment):
                 "cp -a /opt/modelrouter-verifier/apt/archives/. /var/cache/apt/archives/ "
                 "&& cp -a /opt/modelrouter-verifier/apt/lists/. /var/lib/apt/lists/ "
                 "&& echo 'DPkg::Lock::Timeout \"-1\";' > /etc/apt/apt.conf.d/99modelrouter-lock "
-                "&& apt-get update && apt-get install -y libgl1 curl ffmpeg libsm6 libxext6"])
+                "&& apt-get install -y libgl1 curl ffmpeg libsm6 libxext6"])
 
     @property
     def capabilities(self):
