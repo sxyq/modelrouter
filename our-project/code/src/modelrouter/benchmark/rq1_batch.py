@@ -114,6 +114,10 @@ def recovery_reason(path):
         stdout = Path(trial["trial_dir"]) / "verifier/test-stdout.txt"
         output = stdout.read_text() if stdout.exists() else ""
         if "test session starts" in output:
+            if (path.parent.parent.name == "query-optimize" and output.rstrip().endswith("test_outputs.py")
+                    and not any(e.get("event") == "EXECUTION_ENVIRONMENT" and
+                        e.get("episode_id") == trial["trial_id"] for e in iterations.rows(path / "events.jsonl"))):
+                return "VERIFIER_REFERENCE_QUERY_TIMEOUT_BEFORE_KVM"
             if (path.parent.parent.name == "pytorch-model-recovery" and "Installed 31 packages in " in output
                     and "m " in output.split("Installed 31 packages in ", 1)[1].splitlines()[0]):
                 return "VERIFIER_PACKAGE_COPY_TIMEOUT"
