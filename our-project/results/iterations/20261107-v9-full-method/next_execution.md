@@ -21,9 +21,9 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 旧54位置seed43联合选择结果已与openssl-selfsigned-cert/regex-log逐题配对；原分析器同时纳入同档位Model-only训练/教师及固定模型对照，实际评分和费用齐全的task/seed分别登记。其余87题相同权重/seed的八个联合主组696位置和三固定模型参照261位置，共957，已按[联合接续配置](../../../experiments/configs/v9_joint_paired.json)排在当前矩阵和已处理网络失败的一次恢复之后；新配置直接读取Model-only保存的AA快照，保持Encoder、教师、Harbor、Verifier、输出及任务时限。旧89题seed42训练版为11-08实体，保留其历史身份；不重复首两题和旧批次。
 
-2026-11-15当前沿固定脚本`our-project/code/cli/run_rq1_a6000.py`及原rq1入口接续；Controller1696641执行Model-only，1700006持有其恢复及联合批次，3205488已结束历史固定段、现接续联合固定组，3575811等待其结束后恢复CLI、Caffe、两项Torch及MTEB-retrieve，五固定策略的有效评分直接复用。共享缓存已完成原Torch45包和MTEB95包，现行源码c81a6b8f9597af2eded1eebbb57fc2786afbe458复用链接安装并让终止Provider错误经原非零退出路径进入官方Verifier；原错误政策及质量分栏保持。固定最多4并发、Router最多2并发。每次模型和教师请求最多额外100次同参数重试，原任务时间有效，正常4096长度耗尽不重试请求。完整API Token按已报告输入+输出登记，Router本地另计；缓存读取与Reasoning各计一次。
+2026-11-15当前沿固定脚本`our-project/code/cli/run_rq1_a6000.py`及原rq1入口接续；Controller1696641执行Model-only，1700006持有其恢复及联合批次。3205488继续原联合固定261位置；新有限接续3787256持有同一原600权限memfd，等待固定段结束且3205488实际闲置、所有线程无子进程后，先退出闲置3575811再退出闲置3205488，沿原入口恢复CLI、Caffe、两项Torch及MTEB-retrieve五固定策略技术缺分，再等待1700006后接续联合和历史必要恢复。当前未交接。共享缓存为原Torch45包、MTEB95包和CLI249包；现行源码e05caa115ed00e68ba26abf9aed72847440b4fde保留Provider终止与输出额度原错误类别，并由原Verifier评价。固定最多4并发、Router最多2并发；每次模型和教师请求最多额外100次同参数重试，原任务时间有效，正常4096长度耗尽不重试。API Token按已报告输入+输出登记，Router本地另计；缓存读取与Reasoning各计一次。
 
-当前健康代理SSH17649保持，有限等待83231跟随1700006／3205488／3575811；只读观察3580822／3580879／3594578每1200秒导出三批，原主批观察1700191保持。公开表采用当前源码collect-only，临时发布目录复制后移除。原GPU锁保留，H3与Router共享读锁，训练及Breeze独占锁不变；四权重和Serving继续原配置。恢复只选真实请求、网络、环境或官方依赖故障，修复实际原因后另存完整Episode；有效官方1或0直接保留，原失败日志、费用与恢复记录分开。
+当前健康代理SSH17649保持，有限等待69540在其自然结束后接管并跟随1700006／3787256；只读观察3792352／3792410／3792468每1200秒导出三批，原主观察1700191保持。公开表复用这些当前e05源码观察成果，完成传输后移除发布临时目录。原GPU锁保留，H3与Router共享读锁，训练及Breeze独占锁保持；四权重和Serving继续原配置。技术恢复修复实际原因后另存完整Episode；有效官方1或0保留，首次失败日志、费用与恢复记录分别保存。
 
 gcode-to-text终局：训练Kev Model-only OFF/High实际执行2条断言、1通过/1失败，完整任务Reward0；1064.319秒、26生成/26工具结果、模型参考费$0.15098180且缺费用0，请求/返回均Terra High。Low的原0来自Debian下载502、uvx未安装，未执行断言；783.051秒、20生成/20工具及$0.07798260保留，任务质量另列。原始Kev ON的Luna High/Max前序工具有效、终局INCOMPLETE_RESPONSE且缺Reward。联合接续同时补三固定参照GLM Low/Luna High/Terra High的87题×3=261位置，联合主组696，合计957；旧两题seed43结果复用，旧seed42不替代。
 

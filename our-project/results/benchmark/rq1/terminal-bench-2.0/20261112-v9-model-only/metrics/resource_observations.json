@@ -1,41 +1,47 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "snapshot_exported_at": "2026-11-15T12:59:16.081315+00:00",
+    "snapshot_exported_at": "2026-11-15T14:16:34.631133+00:00",
     "controller_pid": 1696641,
-    "finished_positions": 962,
+    "finished_positions": 968,
     "reward_1": 259,
     "reward_0": 148,
-    "no_official_reward": 523,
+    "no_official_reward": 529,
     "missing_quality_reasons": {
       "URLError": 352,
       "PROVIDER_RETRY_DEADLINE": 45,
-      "ProviderResponseError": 26,
-      "AgentTimeoutError": 7,
       "VERIFIER_REPORT_ABSENT": 29,
-      "VerifierTimeoutError": 21,
+      "ProviderResponseError": 26,
+      "VerifierTimeoutError": 22,
       "HTTPError": 10,
       "ROUTER_DECISION_TIMEOUT": 8,
-      "ROUTER_BEFORE_GENERATION_TIMEOUT": 6,
+      "AgentTimeoutError": 8,
       "EnvironmentStartTimeoutError": 7,
+      "PROVIDER_REQUEST_FAILED": 11,
+      "ROUTER_BEFORE_GENERATION_TIMEOUT": 6,
       "RemoteDisconnected": 2,
       "JSONDecodeError": 1,
-      "PROVIDER_REQUEST_FAILED": 7,
       "ROUTER_CUDA_OUT_OF_MEMORY": 2
     },
     "verifier_dependency_failure": 32,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 1172,
-    "known_model_teacher_reference_usd": 14.46199232,
-    "unknown_cost_requests": 570,
-    "provider_retry_count": 2218,
+    "not_dispatched": 1166,
+    "known_model_teacher_reference_usd": 14.49608843,
+    "unknown_cost_requests": 580,
+    "provider_retry_count": 2220,
     "runtime_source_revision": "e05caa115ed00e68ba26abf9aed72847440b4fde",
     "analysis_revision": "f25eab27a92577ce212beab4b821c952d394ead4",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
-    "joint_positions_started": 50,
-    "joint_observed_at": "2026-11-15T12:59:22.275940+00:00",
-    "joint_finished_positions": 46
+    "joint_positions_started": 76,
+    "joint_observed_at": "2026-11-15T14:16:18.739429+00:00",
+    "joint_finished_positions": 72,
+    "joint_reward_1": 29,
+    "joint_reward_0": 25,
+    "joint_missing_official_reward": 18,
+    "joint_known_model_teacher_reference_usd": 2.53663884,
+    "joint_unknown_cost_requests": 18,
+    "joint_provider_retry_count": 24
   },
   "shared_cuda_memory_recovery": {
     "source_revision": "ab5c0b818ad49b343f8b8e0f7979189c0ca6bfd0",
@@ -182,10 +188,35 @@
     "source_revision": "24ee16e16fd000f3c35915724ee35c1fee5b76eb",
     "queue_pid": 3205488,
     "after_pid": 2509357,
-    "after_pids": [2509357],
-    "stages": ["PYTORCH_CLI_UNSCORED_FIXED_RECOVERY", "CAFFE_XHIGH_UNSCORED_RECOVERY", "REPAIRED_FIXED_DEPENDENCY_AND_IMAGE_POSITIONS", "JOINT_REMAINING_FIXED", "WAIT_FOR_1700006", "JOINT_TECHNICAL_RECOVERY", "HISTORICAL_NECESSARY_RECOVERY"],
-    "explicit_repaired_tasks": ["model-extraction-relu-logits", "pytorch-model-cli", "pytorch-model-recovery", "mteb-retrieve", "mteb-leaderboard", "reshard-c4-data", "build-pov-ray"],
-    "retired_idle_image_queue_pids": [3031707,3103545,3110498,3143824,3192661,3195433],
+    "after_pids": [
+      2509357
+    ],
+    "stages": [
+      "PYTORCH_CLI_UNSCORED_FIXED_RECOVERY",
+      "CAFFE_XHIGH_UNSCORED_RECOVERY",
+      "REPAIRED_FIXED_DEPENDENCY_AND_IMAGE_POSITIONS",
+      "JOINT_REMAINING_FIXED",
+      "WAIT_FOR_1700006",
+      "JOINT_TECHNICAL_RECOVERY",
+      "HISTORICAL_NECESSARY_RECOVERY"
+    ],
+    "explicit_repaired_tasks": [
+      "model-extraction-relu-logits",
+      "pytorch-model-cli",
+      "pytorch-model-recovery",
+      "mteb-retrieve",
+      "mteb-leaderboard",
+      "reshard-c4-data",
+      "build-pov-ray"
+    ],
+    "retired_idle_image_queue_pids": [
+      3031707,
+      3103545,
+      3110498,
+      3143824,
+      3192661,
+      3195433
+    ],
     "image_queue_handoff": "New finite queue holds the same original memfd before the old idle waiter exits; no active Agent or Controller stopped",
     "previous_finite_waiter_pid": 2932692,
     "previous_finite_waiter_retired_idle_after_credentials_held": true,
@@ -210,24 +241,52 @@
     "old_queue_exited_after_new_queue_held_same_private_memfd": true,
     "active_controller_pid": 1696641,
     "active_router_worker_pid": 3708428,
-    "proxy_waiting_pid": 83231,
+    "proxy_waiting_pid": 69540,
     "proxy_waiting_for_existing_connection_pid": 17649,
-    "proxy_followed_pids": [1700006,3205488,3575811],
+    "proxy_followed_pids": [
+      1700006,
+      3787256
+    ],
     "repair_tail_queue": {
       "pid": 3575811,
-      "after_pids": [3205488],
+      "after_pids": [
+        3205488
+      ],
       "source_revision": "190292f2e549b2a753e3e3a23c429ba03542eaa6",
-      "tasks": ["pytorch-model-cli", "caffe-cifar-10", "torch-pipeline-parallelism", "torch-tensor-parallelism", "mteb-retrieve"],
-      "strategies": ["luna_low", "luna_high", "luna_max", "luna_xhigh", "terra_high"],
+      "tasks": [
+        "pytorch-model-cli",
+        "caffe-cifar-10",
+        "torch-pipeline-parallelism",
+        "torch-tensor-parallelism",
+        "mteb-retrieve"
+      ],
+      "strategies": [
+        "luna_low",
+        "luna_high",
+        "luna_max",
+        "luna_xhigh",
+        "terra_high"
+      ],
       "same_original_private_memfd_held": true,
-      "status": "WAITING_FOR_EXISTING_QUEUE",
+      "status": "WAITING; SUPERSEDED_TAIL_RETIRES_ONLY_AFTER_ORIGINAL_FIXED_261_ENDS",
       "valid_official_scores_reused": true,
       "retired_idle_tail_pid": 3378616,
       "handoff_observation": "Replacement holds the same original memfd inode with mode600 before the idle old tail exits",
       "handoff_read_error": "One transient /proc fd disappeared during initial startup enumeration; the already-created replacement was retained and its live descriptor was read subsequently"
     },
-    "retired_idle_image_proxy_waiter_pids": [7412,39772,49076,78844,21952],
-    "priority_cli_fixed_strategies": ["luna_low","luna_high","luna_xhigh","terra_high"],
+    "retired_idle_image_proxy_waiter_pids": [
+      7412,
+      39772,
+      49076,
+      78844,
+      21952
+    ],
+    "priority_cli_fixed_strategies": [
+      "luna_low",
+      "luna_high",
+      "luna_xhigh",
+      "terra_high"
+    ],
     "priority_cli_luna_max_has_valid_official_score": true,
     "priority_cli_excluded_from_later_repaired_task_scan": true,
     "replaced_idle_queue_pid": 2850892,
@@ -239,15 +298,27 @@
     "superseded_proxy_waiting_pid": 30395,
     "superseded_proxy_waiter_exited": true,
     "historical_stable_fixed_recovery_queue_pid": 2509357,
-    "historical_stable_fixed_recovery_strategies": ["luna_low", "luna_high", "luna_max", "luna_xhigh", "terra_high"],
-    "current_analysis_revision": "c81a6b8f9597af2eded1eebbb57fc2786afbe458",
+    "historical_stable_fixed_recovery_strategies": [
+      "luna_low",
+      "luna_high",
+      "luna_max",
+      "luna_xhigh",
+      "terra_high"
+    ],
+    "current_analysis_revision": "f25eab27a92577ce212beab4b821c952d394ead4",
     "analysis_change": "Retain original Harbor reward-valid policy and expose recorded terminal Provider failures with unscored outcomes",
-    "model_only_observer_pid": 3580822,
-    "historical_observer_pid": 3580879,
-    "joint_observer_pid": 3594578,
+    "model_only_observer_pid": 3792352,
+    "historical_observer_pid": 3792410,
+    "joint_observer_pid": 3792468,
     "joint_observer_export": "/home/syy/路由/.runtime/rq1-joint-collect.wAgWOn",
     "observation_interval_s": 1200,
-    "observers_follow_existing_controllers": [1696641, 1700006, 3205488, 3575811],
+    "observers_follow_existing_controllers": [
+      1696641,
+      1700006,
+      3205488,
+      3575811,
+      3787256
+    ],
     "previous_final_queue_pid": 2024071,
     "previous_final_queue_exited_after_replacement_held_credentials": true,
     "previous_proxy_waiting_pid": 18875,
@@ -257,7 +328,10 @@
     "initial_parallel_historical_fixed_recovery_status": "COMPLETED; ONE_VALID_ONE_AND_ONE_VALID_ZERO",
     "parallel_historical_fixed_recovery": {
       "status": "COMPLETED_INITIAL_TWO_TRANSPORT_RECOVERIES",
-      "tasks": ["count-dataset-tokens", "headless-terminal"],
+      "tasks": [
+        "count-dataset-tokens",
+        "headless-terminal"
+      ],
       "strategy": "luna_high",
       "seed": 42,
       "reason": "PROVIDER_TRANSPORT",
@@ -269,7 +343,33 @@
       "joint_seed43_results_substitution": false
     },
     "old_proxy_waiting_pid": 27095,
-    "old_proxy_waiter_exited": true
+    "old_proxy_waiter_exited": true,
+    "recovery_successor_pid": 3787256,
+    "recovery_successor": {
+      "pid": 3787256,
+      "source_revision": "e05caa115ed00e68ba26abf9aed72847440b4fde",
+      "same_original_private_memfd_held": true,
+      "status": "WAITING_FOR_ORIGINAL_JOINT_FIXED_261",
+      "recorded_at": "2026-11-15T14:10:36.790687+00:00",
+      "original_fixed_holder_pid": 3205488,
+      "old_tail_holder_pid": 3575811,
+      "fixed_positions": 261,
+      "transition": "After fixed261 ends and original holder is idle with no children in any thread: retire idle3575811 before idle3205488; run the same five repaired-task fixed recovery through existing rq1_batch.main, wait1700006, then joint and historical recovery",
+      "tasks": [
+        "pytorch-model-cli",
+        "caffe-cifar-10",
+        "torch-pipeline-parallelism",
+        "torch-tensor-parallelism",
+        "mteb-retrieve"
+      ],
+      "strategies": [
+        "luna_low",
+        "luna_high",
+        "luna_max",
+        "luna_xhigh",
+        "terra_high"
+      ]
+    }
   },
   "torch_exact_dependencies": {
     "tasks": ["torch-pipeline-parallelism", "torch-tensor-parallelism"],
