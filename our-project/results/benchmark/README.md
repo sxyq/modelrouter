@@ -2,7 +2,14 @@
 
 ## 2026-11-15 · 原Verifier依赖与继续运行
 
-PyTorch recovery两条新Model-only原始Laya OFF Low／High完整Episode均安装31包耗时524秒，原5项pytest断言全通过，但Verifier到原900秒时限未取得官方Reward，分数继续空值。`24ee16e16fd000f3c35915724ee35c1fee5b76eb`仅将该实际复制改为原轮子符号链接；其他任务继续copy，CLI原APT缓存保持。历史四个CLI缺分优先恢复由有限3205488接续，已有Luna Max有效评分保留；新模式的完整官方结果仍待运行。
+PyTorch recovery／原始Laya／Model-only／教师ON／seed43已新增两条原官方Reward1，各5断言全通过。部署`24ee16e16fd000f3c35915724ee35c1fee5b76eb`后原31包符号链接安装21.97／24.09秒，原900秒Verifier时限保持。此前OFF Low／High安装524秒、pytest全过却无官方Reward的原记录继续空值；恢复另存，其他任务继续copy。下表每行都是一次完整Agent Episode，Token含教师、0额外重试、请求费用齐全；完整实收和资源USD未知。
+
+| 请求Effort | 官方Reward | API Token | 模型＋教师参考USD | Harbor秒 | Verifier秒 | 实报缓存Token | 教师请求／消费决策 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| [High](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-recovery/laya_original_on_model_only_high/43/summary.json) | 1 | 92728 | 0.00462992 | 1236.957864 | 484.955602 | 67712 | 4／7 |
+| [Max](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/pytorch-model-recovery/laya_original_on_model_only_max/43/summary.json) | 1 | 126182 | 0.00869508 | 1422.129829 | 545.536811 | 85248 | 5／4 |
+
+两条17／18次生成均选择Luna对应档位；Router耗时18.461／19.718秒。历史四个CLI缺分优先恢复由有限3205488接续，已有Luna Max有效评分保留；CLI APT缓存下完整官方结果仍待运行。
 
 10:23同一依赖目录的真实APT缓存完成249包：183211524字节包文件、19838946字节索引，临时准备容器已移除。新部署`f1828108ee189b94790ca84ebc81d7bae235ace0`在原CLI启动链复用签名包和索引，原版本、推荐依赖和600／900秒时限保持。此前无缓存预装的教师ON High／Max两项因600秒启动到期未开始Agent，均缺评分。现有限3195433优先四个历史固定CLI缺分位置，已有Luna Max有效评分保留；尚待新缓存下完整官方结果。
 
@@ -12,7 +19,7 @@ PyTorch recovery两条新Model-only原始Laya OFF Low／High完整Episode均安�
 
 历史regex-chess／seed42恢复：Terra High官方1／4断言全通过，已知1014871 API Token、$0.330015参考费、1请求消费未知、20次额外重试；Luna Max官方0／1断言通过3失败、1811182 API Token／$0.09110628／3993.733秒、0重试。video-processing／Luna Low亦获有效0／3过2失败，API32056 Token／$0.00218080／512.239秒，原失败不重跑。
 
-Model-only10:36原Harbor导出[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为890/2136结束：242通过、108有效失败、508缺有效评分、32依赖故障另列；2运行、1244未开始，891次已结束Harbor Trial，已知模型与教师$12.03700598，544请求费用未知、2205次额外重试。36题全部24策略结束，其中2题全部24策略有效评分；当前共有37题已有结束位置。联合仍3/957；历史10:35导出为2516次结束Trial、290通过／318有效失败／820缺评分／81依赖故障，4恢复运行，已知模型与教师$39.35468527、1073请求费用未知、746次额外重试。原1513位置已全部首轮结束，原失败尝试、实报Token及费用保持，详见[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)。
+Model-only11:42原Harbor导出[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为895/2136结束：244通过、109有效失败、510缺有效评分、32依赖故障另列；2运行、1239未开始，896次已结束Harbor Trial，已知模型与教师$12.06694859，544请求费用未知、2205次额外重试。37题全部24策略结束，38题已有结束位置。联合仍3/957；历史11:43导出为2518次结束Trial、290通过／320有效失败／818缺评分／81依赖故障，4恢复运行，已知模型与教师$39.67190439、1073请求费用未知、746次额外重试。原1513位置已全部首轮结束，原失败尝试、实报Token及费用保持，详见[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)。
 
 PyTorch CLI原始Kev／seed43六项独立完整Episode均获官方1、各6断言全通过、0额外请求重试；全部生成请求均选择Luna并返回相同Effort。下表每格对应一次完整任务，Token与参考费包含教师；供应商实收和完整资源费用未知。
 
