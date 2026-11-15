@@ -2,6 +2,10 @@
 
 ## 2026-11-15 · 原Verifier依赖与继续运行
 
+19:43 Provider终止后官方评分路径已实际执行：cancel-async-tasks／Luna High／seed43的75dee28d原Verifier158.819613秒返回0；Harbor原非零退出错误政策将其列为未归类故障，质量栏继续空值、PROVIDER_REQUEST_FAILED单列。源码c81a6b8f9597af2eded1eebbb57fc2786afbe458保留真实失败状态、原时限及4096额度，长度耗尽不作网络重试。qemu-startup的原403返回pre_consume_token_quota_failed／token quota is insufficient，现有Luna凭据额度待恢复。
+
+MTEB-retrieve的原Low／High零分由scikit-learn1.9.1和torchvision0.29.2下载超时造成，未执行断言。共享缓存已完成原pytest8.4.1／mteb1.36.8／CTRF0.3.5及其95个实际依赖，原解析出的scikit-learn1.9.1、torch2.15.0、torchvision0.29.2均保留；现行模块复用既有链接安装。MTEB-leaderboard五个固定恢复均取得有效官方0；MTEB-retrieve的Max、Xhigh、Terra亦为有效0，全部保留。reshard-c4-data四个Luna档位及Terra High恢复均取得官方1，原请求、费用与首次失败分开；详情沿历史逐Episode表。
+
 15:39修复后Tensor／Terra High／seed42的[f6d172b1完整Episode](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/trials/torch-tensor-parallelism/terra_high/42/summary.json)已结束，原31包安装17.91秒，13项测试完成前5项后在900秒Verifier期限退出、无Reward。该次14生成请求、148378输入＋3266输出Token、0重试、$0.06207760 API参考费、1390.4198秒；原2次Trial及其费用分别保留，供应商和资源实收未知。依赖安装故障已消除，后续计算等待与生成代码贡献尚未分离。当前QEMU为q35,accel=tcg、16CPU／40GiB；宿主机/dev/kvm存在但syy无读写权限，sudo需密码，管理员设备授权仍缺。原运行条件与有效1/0保持。
 
 14:49共享缓存已补齐官方Torch2.7.0、Transformers4.55.0及原pytest／CTRF共45包；原缓存只有2.7.1，pipeline四个固定恢复位置重复下载约1 GB并安装314—343秒，900秒Verifier到期时没有pytest会话输出。新源码`9b9458eacf683d66c9dde79feff85bdeb6082a46`已部署，两项Torch任务沿现有链接安装方式，原包、官方脚本和时限保持；完整新评分仍待执行。尾段3378616复用同一600权限memfd，等待3205488后恢复CLI、Caffe及两项Torch，五固定策略的有效1/0直接保留；只读观察3380730／3380780与代理等待335跟随新尾段，原主批和健康代理继续。
@@ -38,7 +42,7 @@ Low的OFF／ON均缺少任务要求的/app/model.pt，有效0不重跑；ON Low�
 
 历史regex-chess／seed42恢复：Terra High官方1／4断言全通过，已知1014871 API Token、$0.330015参考费、1请求消费未知、20次额外重试；Luna Max官方0／1断言通过3失败、1811182 API Token／$0.09110628／3993.733秒、0重试。video-processing／Luna Low亦获有效0／3过2失败，API32056 Token／$0.00218080／512.239秒，原失败不重跑。
 
-Model-only15:34原Harbor导出[报告](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)为920/2136结束：259通过、119有效失败、510缺有效评分、32依赖故障另列；2运行、1214未开始，921次已结束Harbor Trial，已知模型与教师$12.85733707，549请求费用未知、2206次额外重试。38题全部24策略结束，39题已有结束位置。联合仍3/957；历史15:36导出为2560次结束Trial、300通过／334有效失败／808缺评分／67依赖故障，4恢复运行，已知模型与教师$41.01707629、1079请求费用未知、748次额外重试，231个技术恢复位置。原1513位置已全部首轮结束，原失败尝试、实报Token及费用保持，详见[原报告](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)。
+19:42／19:43当前源码[采集](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)：Model-only954/2136结束，259通过／144有效失败／519缺评分／32依赖故障，2运行、1180未开始，955个Trial；参考$13.87757491、568请求费用未知、2217额外重试。40题有结束位置、39题全部24组结束。历史本段2581个Trial／1513位置全部结束，307通过／343有效失败／797缺评分／66依赖故障，参考$41.94341055、1083请求费用未知、765额外重试，248技术恢复位置；原2333次首次Trial保留。联合24/957结束，5通过／11有效失败／8缺评分，4运行、929未开始，参考$0.97476520、7请求费用未知、22额外重试，沿[原联合报告](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md)保存，未使用seed42替代。
 
 同题原始Kev／seed43六项现均取得完整官方评分，额外重试仅ON High为1次，其余0次；全部生成选择Luna对应档位。教师Low由官方0变1，High和Max均1；Max教师ON参考费比OFF减少20.07%，Low增加13.23%，High失败请求用量未知，完整API费用为空。训练Laya ON Max有24次生成、5条Luna短评进入9次决策，实际22次Luna Max与2次GLM Max、4次模型切换；0额外重试、原官方1，GLM返回档位未报告。
 

@@ -2,6 +2,8 @@
 
 ## 2026-11-15：依赖缓存写入故障与接续
 
+19:43现行源码c81a6b8f9597af2eded1eebbb57fc2786afbe458已部署：403等终止Provider错误和4096输出耗尽经原Harbor NonZeroAgentExitCodeError进入官方Verifier，不改上游脚本或时限。cancel-async-tasks／Luna High／seed43原Verifier158.819613秒写Reward0，Harbor按原错误政策将该非零退出列为未归类故障，质量栏为空、PROVIDER_REQUEST_FAILED单列。原qemu-startup的403响应已明确为pre_consume_token_quota_failed／token quota is insufficient，需恢复现有Luna凭据额度；原配置和模型保持。MTEB原95包缓存已完成，含mteb1.36.8／scikit-learn1.9.1／torchvision0.29.2，解决Low／High未执行断言的下载超时；真实新评分待尾段3575811。
+
 15:39新Tensor／Terra High／seed42完整Episode已结束：原31包安装17.91秒，收集13项官方测试并完成前5项，随后900秒Verifier超时、Reward为空。该次单独14生成请求、151644 API Token、0额外重试、$0.06207760参考费、1390.4198秒；此前2次Trial继续保留，累计字段与该次用量分别登记。宿主机有/dev/kvm和CPU虚拟化支持，当前QEMU2744271为q35,accel=tcg、16核40GiB；syy无设备读写权限，sudo需要密码，已请求管理员开放设备。现有批次保持原条件。query-optimize及tune-mjcf也已进入官方计算而无终局，代码执行与TCG资源贡献未知，不追加模型失败评分。
 
 14:49原共享缓存补齐官方Torch2.7.0及Transformers4.55.0，安装元数据确认pytest8.4.1／pytest-json-ctrf0.3.5，共45包。此前缓存仅有Torch2.7.1；pipeline四条恢复重复下载825 MiB Torch及149.3 MiB Triton，安装314—343秒后900秒Verifier到期、没有pytest会话输出。源码`9b9458eacf683d66c9dde79feff85bdeb6082a46`已部署，仅将两项Torch任务纳入现有链接安装方式，包、脚本、Agent及Verifier时限保持。新的完整官方评分待原队列，原请求和费用保留。PyTorch recovery全24位置已结束：17有效官方1、3有效0、4缺有效Harbor评分；训练Kev六组全部1，Max OFF参考费为原始OFF的45.45倍。
@@ -18,7 +20,7 @@
 
 当前正式范围：**Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
-15:34原Harbor导出：Model-only结束920/2136位置，259通过、119有效失败、510缺有效评分、32依赖故障另列，2运行、1214未开始；921次已结束Trial，模型与教师已知参考费$12.85733707，549请求缺费用，2206次额外重试。89题中38题全部24策略结束、39题已有结束位置。联合批次仍3/957结束。历史15:36导出结束1509/1513恢复状态位置、4恢复运行，300通过、334有效失败、808缺评分、67依赖故障另列，2560次结束Trial；模型与教师已知参考费$41.01707629、1079请求缺费用、748次额外重试，231个技术恢复位置。原1513位置和2333次首次Trial保持身份；采集期间恢复状态与已保存终局分字段列出。
+19:42／19:43当前源码采集：Model-only结束954/2136位置，259通过、144有效失败、519缺有效评分、32依赖故障另列，2运行、1180未开始；955次已结束Trial，模型与教师已知参考费$13.87757491，568请求缺费用，2217次额外重试。40题已有结束位置、39题全部24策略结束。历史本段1513位置全部结束、2581次Trial，307通过、343有效失败、797缺评分、66依赖故障，$41.94341055已知参考费、1083请求缺费用、765额外重试，248技术恢复位置；原2333次首次Trial保留。联合固定组已由原3205488接续：24/957结束、5通过／11有效失败／8缺评分，4运行、929未开始，$0.97476520参考费、7请求缺费用、22额外重试；两道原seed43结果继续复用。
 
 PyTorch CLI原始Kev／seed43六项完整Episode均获官方1、各6断言全通过、0额外请求重试，全部生成请求均选择Luna并返回相同Effort。教师OFF／ON的Low、High、Max均完成；ON High／Max分别134173／90507 API Token，模型与教师参考费$0.00757378／$0.00739982，5／2次教师短评分别进入5／5次决策。该题教师Low／High参考费增加203.24%／183.45%，Max减少71.35%；逐项Token、费用、墙钟及独立日志见[Benchmark汇总](../results/benchmark/README.md)。
 
@@ -28,7 +30,7 @@ PyTorch CLI原始Kev／seed43六项完整Episode均获官方1、各6断言全通
 
 01:08进一步读取原日志：缓存根软链接安装时被uv重命名到site-packages目录，出现os error 20且无断言。源码`71175861313c90def9f23b5bc3c3290d7c48e0e9`以原Harbor逐目录只读挂载替换这些软链接，uv沿原工具选择copy安装模式；此前7个Model-only及5个历史轮子／解释器安装故障位置已重新分类，原0及费用保持。break-filter-js-from-html／Luna High／seed42的新Episode902a488c-ab31-47c0-acee-3751f9a18a35于01:15完成原Verifier：1断言失败、有效Reward0，HTML未绕过过滤器；11991 API Token、$0.00182214参考费、398.950095秒，环境116.469672秒、Verifier174.65114秒。该任务使用52个实际只读缓存挂载，评分依赖已执行完成，有效0不重跑。
 
-原Controller1696641、CUDAworker2496626继续；历史固定恢复2509357已自然结束，3205488执行原固定依赖恢复，再接续联合剩余固定组，等待1700006后做联合及历史必要恢复。有限尾段3378616已持有同一600权限memfd，等待3205488后恢复CLI、Caffe及两项Torch任务，五固定策略中的有效评分直接复用；旧闲置3313188已退出。本机代理等待335跟随1700006／3205488／3378616，健康SSH17649保持；旧闲置76704退出。两个1200秒观察3380730／3380780沿原ac90l478／Etxhms目录运行，原主批观察1700191保持。H3当前PID2685675 active，GPU锁保留；同视频期间Kev真实CUDA前向、fallback=false、12.212秒的原记录保持。唯一源码回退保存本次9b部署前四个原文件。
+原Controller1696641、CUDAworker2496626继续；3205488的历史固定段已结束，现执行联合剩余固定组，再等待1700006后接续联合及历史必要恢复。尾段3575811已持有同一600权限memfd，等待3205488后恢复CLI、Caffe、两项Torch及MTEB-retrieve，五固定策略的有效评分直接复用；旧闲置3378616退出。代理等待83231跟随三条持有进程，健康SSH17649保持。只读观察3580822／3580879／3594578每1200秒导出三批，原主批观察1700191保持；公开结果以当前源码collect-only一次采集，临时发布目录复制后移除。GPU共享读锁和同视频Kev CUDA/fallback=false/12.212秒记录保持。唯一源码回退保存c81部署前四个原文件。
 
 mteb-retrieve五个固定恢复位置在镜像拉取前中断，Agent和模型请求均未开始。registry-1.docker.io返回TLS EOF；同一官方镜像已经Docker Hub官方registry.hub.docker.com下载完成，06:24恢复原alexgshaw/mteb-retrieve:20251031标签，Linux/amd64、展开21,556,522,773字节。临时域名标签已移除，镜像层及原标签保留。原入口将首次故障记录为ENVIRONMENT_NETWORK；两项MTEB任务五策略均纳入现有限队列，等待当前固定恢复自然结束。任务时限及Verifier保持。
 
