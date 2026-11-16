@@ -2,7 +2,21 @@
 
 ## 2026-11-16 · 接口故障与有效官方结果
 
-09:19—09:21当前分析c6b2a7b1导出：Model-only1106/2136结束，276有效1／152有效0／646缺评分／32依赖故障另列；联合243/957结束，81有效1／50有效0／112缺评分。参考费分别$15.43084192／$7.70367489，753／129请求费用未知，3008／1360额外重试。历史1513位置、2581 Trial，307有效1／343有效0／797缺分／66依赖故障，参考费$41.94341055。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
+11:22:56原联合固定261位置全部结束，闲置3205488／3575811退出；六任务固定恢复于12:00:58结束，3993622等待实际Model-only1696641，再按原顺序执行Model-only技术恢复、696联合Router及联合／历史恢复。两个原始有分结果直接复用；Model-only当前49/89题已有结束记录、48题结束全部24组。
+
+以下为本次独立恢复Episode，Token与费用按该episode_id的原事件计量；位置累计费用仍在逐Episode表另列：
+
+| Seed42固定Terra High恢复 | 官方结果 | 单次已报模型Token | 单次模型参考USD | 单次生成／工具结果 | Harbor秒 |
+|---|---|---:|---:|---:|---:|
+| [pytorch-model-cli](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/trials/pytorch-model-cli/terra_high/42/summary.json) | 1、6断言全过 | 103531 | 0.04923340 | 11／17 | 341.119623 |
+| [torch-pipeline-parallelism](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/trials/torch-pipeline-parallelism/terra_high/42/summary.json) | 0、2过2败 | 519485 | 0.09868260 | 34／34 | 841.559595 |
+| [query-optimize](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/trials/query-optimize/terra_high/42/summary.json) | 原Verifier超时、无分 | 64663 | 0.02393660 | 9／12 | 1158.164856 |
+
+三个新Episode全部生成请求HTTP200、0重试，用量齐全；供应商与资源实收未知。Pipeline的lm_head反向梯度最大差0.03571479767560959，原断言2失败，保留有效0。Query原6包安装0.962秒后收集6测试，900秒Verifier结束前无测试结果；停点仍缺内部阶段记录，不据此手工评分。历史累计恢复266次、涉及196位置，原2333首次Trial保持。
+
+[winning-avg-corewars／GLM Low](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/winning-avg-corewars/glm_low/43/summary.json)成为第4个输出额度终止位置：请求4096、返回报告128000输出/127999推理、length、0重试，单请求1905403.192毫秒；原Verifier0保留，质量单列PROVIDER_OUTPUT_BUDGET_EXCEEDED。该次已报603867 Token、模型参考$0.11520320、3263.207275秒；原恢复规则仍保留已评分0，不重跑。
+
+13:39—13:46当前分析c6b2a7b1导出：Model-only1155/2136结束，277有效1／155有效0／691缺评分／32依赖故障另列；联合261/957结束，84有效1／55有效0／122缺评分。参考费分别$15.57279415／$9.07206206，816／142请求费用未知，3351／1862额外重试。历史1513位置、2599 Trial，308有效1／344有效0／795缺分／66依赖故障，参考费$42.11526315。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
 
 三个GLM Low完整Episode的末次请求max_tokens=4096、thinking.enabled、stream=false，返回completion_tokens=128000、finish=length、0额外重试。已进入原官方Verifier；质量栏单列PROVIDER_OUTPUT_BUDGET_EXCEEDED，原Reward0及全部费用保留，原自动恢复理由仍为None。
 
