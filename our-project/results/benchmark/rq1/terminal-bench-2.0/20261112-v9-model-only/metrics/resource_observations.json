@@ -1,12 +1,12 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "snapshot_exported_at": "2026-11-16T22:30:00+08:00",
+    "snapshot_exported_at": "2026-11-16T23:10:00+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 1259,
+    "finished_positions": 1282,
     "reward_1": 289,
     "reward_0": 165,
-    "no_official_reward": 773,
+    "no_official_reward": 796,
     "missing_quality_reasons": {
       "HTTPError": 10,
       "ProviderResponseError": 26,
@@ -18,18 +18,18 @@
       "AgentTimeoutError": 9,
       "VERIFIER_REPORT_ABSENT": 43,
       "ROUTER_DECISION_TIMEOUT": 9,
-      "PROVIDER_RETRY_DEADLINE": 91,
+      "PROVIDER_RETRY_DEADLINE": 94,
       "EnvironmentStartTimeoutError": 7,
-      "PROVIDER_REQUEST_FAILED": 180,
-      "ROUTER_CUDA_OUT_OF_MEMORY": 2
+      "PROVIDER_REQUEST_FAILED": 188,
+      "ROUTER_CUDA_OUT_OF_MEMORY": 14
     },
     "verifier_dependency_failure": 32,
-    "running_positions": 1,
+    "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 876,
-    "known_model_teacher_reference_usd": 16.01471175,
-    "unknown_cost_requests": 946,
-    "provider_retry_count": 3930,
+    "not_dispatched": 852,
+    "known_model_teacher_reference_usd": 16.02295367,
+    "unknown_cost_requests": 976,
+    "provider_retry_count": 3999,
     "runtime_source_revision": "8db98d081d186a216b8772f3a22a6d7645ed23e3",
     "analysis_revision": "c6b2a7b1c30dc1295c01640b47cd6d657f52f9d3",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
@@ -42,91 +42,93 @@
     "joint_known_model_teacher_reference_usd": 9.07206206,
     "joint_unknown_cost_requests": 142,
     "joint_provider_retry_count": 1862,
-    "last_observed_task": "caffe-cifar-10",
+    "last_observed_task": "code-from-image",
     "last_observed_task_positions": [
       {
+        "task_id": "code-from-image",
         "strategy_id": "laya_original_off_model_only_low",
-        "trial_id": "c0c2036c-1522-431e-805f-db8df9df816f",
+        "trial_id": "7327934e-ea34-45d9-9e79-92a329de2b8c",
         "reward": "",
         "official_reward": "0.0",
         "technical_fault": "PROVIDER_REQUEST_FAILED",
         "error_type": "NonZeroAgentExitCodeError"
       },
       {
+        "task_id": "code-from-image",
         "strategy_id": "laya_original_off_model_only_high",
-        "trial_id": "e333b9f6-a062-4462-87ac-99c39754a493",
+        "trial_id": "0e4d6788-948c-4f72-995e-0547e7b6e24c",
         "reward": "",
         "official_reward": "0.0",
         "technical_fault": "PROVIDER_REQUEST_FAILED",
         "error_type": "NonZeroAgentExitCodeError"
       },
       {
+        "task_id": "code-from-image",
         "strategy_id": "laya_original_off_model_only_max",
-        "trial_id": "ec038061-5485-4948-9551-e1bed22bf9bc",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "ROUTER_DECISION_TIMEOUT",
-        "error_type": "AgentTimeoutError"
-      },
-      {
-        "strategy_id": "laya_original_on_model_only_low",
-        "trial_id": "ba7eb0b7-2252-486b-9348-f23156c0f43e",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "strategy_id": "laya_original_on_model_only_high",
-        "trial_id": "58cd38bd-58f0-4427-9469-82fa0a0affa9",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "ROUTER_BEFORE_GENERATION_TIMEOUT",
-        "error_type": "AgentTimeoutError"
-      },
-      {
-        "strategy_id": "laya_original_on_model_only_max",
-        "trial_id": "d2c7f61c-331e-4c26-ab31-6a0cfc420db7",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "ROUTER_BEFORE_GENERATION_TIMEOUT",
-        "error_type": "AgentTimeoutError"
-      },
-      {
-        "strategy_id": "laya_trained_off_model_only_low",
-        "trial_id": "97dae752-170c-4a90-8a21-49dd8bc79919",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "ROUTER_BEFORE_GENERATION_TIMEOUT",
-        "error_type": "AgentTimeoutError"
-      },
-      {
-        "strategy_id": "laya_trained_off_model_only_high",
-        "trial_id": "f402cba2-cd52-493a-af87-c4af5f702692",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "ROUTER_BEFORE_GENERATION_TIMEOUT",
-        "error_type": "AgentTimeoutError"
-      },
-      {
-        "strategy_id": "laya_trained_off_model_only_max",
-        "trial_id": "f48d4ae6-629d-4b91-8e44-aa7b83a73b44",
+        "trial_id": "05165e19-d0db-401f-89de-ec1cd0d4be8a",
         "reward": "",
         "official_reward": "0.0",
         "technical_fault": "PROVIDER_RETRY_DEADLINE",
         "error_type": "AgentTimeoutError"
       },
       {
-        "strategy_id": "laya_trained_on_model_only_low",
-        "trial_id": "00aefbac-70cc-4974-a160-8d265ad7ae6f",
+        "task_id": "code-from-image",
+        "strategy_id": "laya_original_on_model_only_low",
+        "trial_id": "d72e7c33-55a3-49a8-8a19-1b9142ecf89f",
         "reward": "",
         "official_reward": "0.0",
         "technical_fault": "PROVIDER_REQUEST_FAILED",
         "error_type": "NonZeroAgentExitCodeError"
       },
       {
+        "task_id": "code-from-image",
+        "strategy_id": "laya_original_on_model_only_high",
+        "trial_id": "2bee25d2-29a6-4532-af1f-434c96f69155",
+        "reward": "",
+        "official_reward": "0.0",
+        "technical_fault": "PROVIDER_REQUEST_FAILED",
+        "error_type": "NonZeroAgentExitCodeError"
+      },
+      {
+        "task_id": "code-from-image",
+        "strategy_id": "laya_original_on_model_only_max",
+        "trial_id": "f750bbe9-6e71-4f82-92d4-0ab23fc8728c",
+        "reward": "",
+        "official_reward": "0.0",
+        "technical_fault": "PROVIDER_RETRY_DEADLINE",
+        "error_type": "AgentTimeoutError"
+      },
+      {
+        "task_id": "code-from-image",
+        "strategy_id": "laya_trained_off_model_only_low",
+        "trial_id": "33b9585b-5fef-400b-940c-93fff8ed420e",
+        "reward": "",
+        "official_reward": "0.0",
+        "technical_fault": "PROVIDER_REQUEST_FAILED",
+        "error_type": "NonZeroAgentExitCodeError"
+      },
+      {
+        "task_id": "code-from-image",
+        "strategy_id": "laya_trained_off_model_only_high",
+        "trial_id": "825d30c2-0276-4844-8c96-9e2dacb215db",
+        "reward": "",
+        "official_reward": "0.0",
+        "technical_fault": "PROVIDER_REQUEST_FAILED",
+        "error_type": "NonZeroAgentExitCodeError"
+      },
+      {
+        "task_id": "code-from-image",
+        "strategy_id": "laya_trained_on_model_only_low",
+        "trial_id": "4b9b641c-56d7-42b5-bebf-f385547dd055",
+        "reward": "",
+        "official_reward": "0.0",
+        "technical_fault": "PROVIDER_REQUEST_FAILED",
+        "error_type": "NonZeroAgentExitCodeError"
+      },
+      {
+        "task_id": "code-from-image",
         "strategy_id": "laya_trained_on_model_only_high",
-        "trial_id": "312007c3-5894-4d1a-8183-66981c04dce5",
+        "trial_id": "fd914332-7339-40ae-93e9-475128a0e07b",
         "reward": "",
         "official_reward": "0.0",
         "technical_fault": "PROVIDER_REQUEST_FAILED",
@@ -135,12 +137,12 @@
     ],
     "running_positions_at_export": [
       {
-        "task_id": "caffe-cifar-10",
-        "strategy_id": "laya_trained_on_model_only_max"
+        "task_id": "code-from-image",
+        "strategy_id": "laya_trained_off_model_only_max"
       },
       {
-        "task_id": "caffe-cifar-10",
-        "strategy_id": "kev_original_off_model_only_low"
+        "task_id": "code-from-image",
+        "strategy_id": "laya_trained_on_model_only_max"
       }
     ]
   },
