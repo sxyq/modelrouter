@@ -1,12 +1,12 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "snapshot_exported_at": "2026-11-17T00:12:00+08:00",
+    "snapshot_exported_at": "2026-11-17T01:15:11+08:00",
     "controller_pid": 1696641,
-    "finished_positions": 1292,
-    "reward_1": 290,
+    "finished_positions": 1301,
+    "reward_1": 295,
     "reward_0": 166,
-    "no_official_reward": 804,
+    "no_official_reward": 808,
     "missing_quality_reasons": {
       "HTTPError": 10,
       "ProviderResponseError": 26,
@@ -18,18 +18,18 @@
       "AgentTimeoutError": 9,
       "VERIFIER_REPORT_ABSENT": 43,
       "ROUTER_DECISION_TIMEOUT": 9,
-      "PROVIDER_RETRY_DEADLINE": 96,
+      "PROVIDER_RETRY_DEADLINE": 98,
       "EnvironmentStartTimeoutError": 7,
-      "PROVIDER_REQUEST_FAILED": 194,
+      "PROVIDER_REQUEST_FAILED": 196,
       "ROUTER_CUDA_OUT_OF_MEMORY": 14
     },
     "verifier_dependency_failure": 32,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 842,
-    "known_model_teacher_reference_usd": 16.07561677,
-    "unknown_cost_requests": 985,
-    "provider_retry_count": 4046,
+    "not_dispatched": 833,
+    "known_model_teacher_reference_usd": 16.2374055,
+    "unknown_cost_requests": 1007,
+    "provider_retry_count": 4121,
     "runtime_source_revision": "8db98d081d186a216b8772f3a22a6d7645ed23e3",
     "analysis_revision": "c6b2a7b1c30dc1295c01640b47cd6d657f52f9d3",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
@@ -42,7 +42,7 @@
     "joint_known_model_teacher_reference_usd": 9.07206206,
     "joint_unknown_cost_requests": 142,
     "joint_provider_retry_count": 1862,
-    "last_observed_task": "code-from-image",
+    "last_observed_task": "constraints-scheduling",
     "last_observed_task_positions": [
       {
         "task_id": "code-from-image",
@@ -227,12 +227,12 @@
     ],
     "running_positions_at_export": [
       {
-        "task_id": "code-from-image",
-        "strategy_id": "kev_trained_off_model_only_max"
+        "task_id": "constraints-scheduling",
+        "strategy_id": "laya_original_on_model_only_max"
       },
       {
-        "task_id": "code-from-image",
-        "strategy_id": "kev_trained_on_model_only_low"
+        "task_id": "constraints-scheduling",
+        "strategy_id": "laya_trained_off_model_only_low"
       }
     ]
   },

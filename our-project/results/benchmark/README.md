@@ -4,6 +4,8 @@
 
 2026-11-17 `code-from-image`／训练Kev OFF／Seed43：Low原官方0、两项断言均失败，High原官方1、两项全过；均0重试、0教师请求、模型费用无缺测。Low单次80292 Token、$0.02542160模型参考费、363.051578秒；High单次102268 Token、$0.02707040、455.964205秒。保留失败Low，不根据该题重新选择权重；完整供应商与资源费用未知。
 
+2026-11-17 `code-from-image`训练Kev补齐：ON Low/High/Max均官方1，153536／152642／237616 Token、模型参考费$0.02346240／$0.02355080／$0.04964000，Harbor702.340897／659.919150／743.275536秒；三组各4次教师请求、0次短评消费。OFF Max官方1，274457 Token、$0.06271220、789.205727秒。原队列随后进入`constraints-scheduling`；这些结果均保存原始Episode。
+
 ### tune-mjcf · Model-only同题三档实际终局
 
 以下为Seed43独立完整Episode；模型均为GLM，返回Effort未报告，完整账单未知。教师请求发出与实际短评消费分列。
@@ -29,7 +31,7 @@
 
 OFF三档实报缓存读取49792／121088／150528 Token、各0缓存缺测，物理KV共享未知；Router墙钟97.063／164.537／162.415秒、实际GPU等待0.022／0.040／0.035秒。该题OFF三档同质量时Low模型参考费最低，Max为Low的3.50倍；ON Low/High的四条教师均401且未消费。ON Max先执行2次Terra Max，再选Luna Max并遇401，缺1请求费用；原始Kev六组也均Luna401缺分，训练前后仍缺两侧有分的同题比较。
 
-2026-11-17 00:12最新Model-only导出1292/2136结束，290官方Reward1、166 Reward0、804缺有效分、32项Verifier依赖故障另列；2运行、842未开始。已保存1293个Trial，已知模型与教师参考费$16.07561677、985个请求费用未知、4046次额外重试。A6000上原Agent、有限恢复及观察器仍运行；H3正在占GPU计算资源，原GPU共享锁保持。
+2026-11-17 01:15最新Model-only导出1301/2136结束，290官方Reward1、166 Reward0、808缺有效分、32项Verifier依赖故障另列；2运行、833未开始。已保存1302个Trial，已知模型与教师参考费$16.23740550、1007个请求费用未知、4100次额外重试。A6000上原Agent、有限恢复及观察器仍运行；H3正在占GPU计算资源，原GPU共享锁保持。
 
 | caffe-cifar-10 Seed43已结束位置 | 评分状态 | 已报模型Token | 已知模型参考USD | 额外重试 | 单次Harbor秒 |
 |---|---|---:|---:|---:|---:|
@@ -57,7 +59,7 @@ OFF三档实报缓存读取49792／121088／150528 Token、各0缓存缺测，�
 
 [winning-avg-corewars／GLM Low](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/winning-avg-corewars/glm_low/43/summary.json)成为第4个输出额度终止位置：请求4096、返回报告128000输出/127999推理、length、0重试，单请求1905403.192毫秒；原Verifier0保留，质量单列PROVIDER_OUTPUT_BUDGET_EXCEEDED。该次已报603867 Token、模型参考$0.11520320、3263.207275秒；原恢复规则仍保留已评分0，不重跑。
 
-2026-11-17 00:12 Model-only／13:39—13:46联合与历史最新真实导出：Model-only1292/2136结束，290有效1／166有效0／804缺评分／32依赖故障另列；2运行、842未开始。1293 Trial，模型与教师参考费$16.07561677，985请求费用未知，4046额外重试。本批继续生成原始Episode记录；caffe-cifar-10的24项全部结束且缺有效分：5项Provider请求故障、5项Router超时、2项Provider重试到期、12项CUDA显存不足；当前运行code-from-image。联合261/957结束，84有效1／55有效0／122缺评分；参考费$9.07206206，142请求费用未知，1862额外重试。历史1513位置、2599 Trial，308有效1／344有效0／795缺分／66依赖故障，参考费$42.11526315。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
+2026-11-17 01:15 Model-only／13:39—13:46联合与历史最新真实导出：Model-only1301/2136结束，295有效1／166有效0／808缺评分／32依赖故障另列；2运行、833未开始。1302 Trial，模型与教师参考费$16.23740550，1007请求费用未知，4100额外重试。新增code-from-image训练Kev OFF Low官方0、OFF High官方1及训练Kev ON Low/High/Max官方1；constraints-scheduling继续运行；caffe-cifar-10的24项全部结束且缺有效分：5项Provider请求故障、5项Router超时、2项Provider重试到期、12项CUDA显存不足；当前运行constraints-scheduling。联合261/957结束，84有效1／55有效0／122缺评分；参考费$9.07206206，142请求费用未知，1862额外重试。历史1513位置、2599 Trial，308有效1／344有效0／795缺分／66依赖故障，参考费$42.11526315。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
 
 三个GLM Low完整Episode的末次请求max_tokens=4096、thinking.enabled、stream=false，返回completion_tokens=128000、finish=length、0额外重试。已进入原官方Verifier；质量栏单列PROVIDER_OUTPUT_BUDGET_EXCEEDED，原Reward0及全部费用保留，原自动恢复理由仍为None。
 
