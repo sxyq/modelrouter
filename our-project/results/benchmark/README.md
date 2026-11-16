@@ -2,7 +2,7 @@
 
 ## 2026-11-16 · 接口故障与有效官方结果
 
-07:58—08:00当前分析c6b2a7b1导出：Model-only1085/2136结束，274有效1／152有效0／627缺评分／32依赖故障另列；联合231/957结束，78有效1／47有效0／106缺评分。参考费分别$15.35447719／$7.13368176，723／120请求费用未知，2815／1157额外重试。历史1513位置、2581 Trial，307有效1／343有效0／797缺分／66依赖故障，参考费$41.94341055。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
+09:19—09:21当前分析c6b2a7b1导出：Model-only1106/2136结束，276有效1／152有效0／646缺评分／32依赖故障另列；联合243/957结束，81有效1／50有效0／112缺评分。参考费分别$15.43084192／$7.70367489，753／129请求费用未知，3008／1360额外重试。历史1513位置、2581 Trial，307有效1／343有效0／797缺分／66依赖故障，参考费$41.94341055。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
 
 三个GLM Low完整Episode的末次请求max_tokens=4096、thinking.enabled、stream=false，返回completion_tokens=128000、finish=length、0额外重试。已进入原官方Verifier；质量栏单列PROVIDER_OUTPUT_BUDGET_EXCEEDED，原Reward0及全部费用保留，原自动恢复理由仍为None。
 
@@ -21,6 +21,16 @@
 | 固定GLM Low · [distribution-search](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/distribution-search/glm_low/43/summary.json) | Reward1 | 61571 | 0.00519298 | 0 | 10／10 | 307.655962 |
 | 固定GLM Low · [circuit-fibsqrt](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/circuit-fibsqrt/glm_low/43/summary.json) | Reward0、2过1败 | 24309513 | 0.86166677 | 2 | 214／213 | 3717.727741 |
 | 原始Laya OFF Max · [sqlite-with-gcov](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/sqlite-with-gcov/laya_original_off_model_only_max/43/summary.json) | Reward1 | 630540 | 0.03194931 | 0 | 42／55 | 1260.019631 |
+| 原始Laya ON Max · [sqlite-with-gcov](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/sqlite-with-gcov/laya_original_on_model_only_max/43/summary.json) | Reward1 | 535611 | 0.02697806 | 5 | 31／50 | 1207.770084 |
+| 训练Laya OFF Max · [sqlite-with-gcov](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/sqlite-with-gcov/laya_trained_off_model_only_max/43/summary.json) | Reward1 | 664280 | 0.03764832 | 2 | 36／64 | 988.808875 |
+| 固定Terra High · [install-windows-3.11](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/install-windows-3.11/terra_high/43/summary.json) | Reward0 | 748312 | 0.12139280 | 0 | 44／44 | 1153.148129 |
+| 固定GLM Low · [install-windows-3.11](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/install-windows-3.11/glm_low/43/summary.json) | Reward0 | 9953346 | 0.36045462 | 2 | 214／215 | 3719.577577 |
+| 固定GLM Low · [mteb-leaderboard](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/mteb-leaderboard/glm_low/43/summary.json) | Reward0 | 341391 | 0.01760725 | 0 | 52／54 | 1600.047511 |
+| 固定GLM Low · [portfolio-optimization](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/portfolio-optimization/glm_low/43/summary.json) | Reward1 | 149167 | 0.01042787 | 0 | 20／20 | 780.787958 |
+| 固定Terra High · [regex-chess](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/regex-chess/terra_high/43/summary.json) | Reward1 | 88198 | 0.04795480 | 0 | 6／6 | 355.578624 |
+| 固定GLM Low · [reshard-c4-data](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/reshard-c4-data/glm_low/43/summary.json) | Reward1 | 194477 | 0.01215579 | 1 | 24／27 | 766.649811 |
+
+SQLite/gcov原始ON Max的5次教师请求均为HTTP401、new_api_error/invalid token，0额外重试、短评消费0；唯一配置与原Model-only/有限接续的Luna绑定相同。三组生成均选GLM Max并得到原官方1，返回Effort未报告；训练OFF已知模型费高于原始OFF，另2请求费用未知。Terra Windows44次、regex-chess6次均HTTP200且请求/返回模型及High一致，0重试；后者官方1，前者官方0，服务生成恢复与任务质量分列。
 
 电路任务test_sqrt_fib失败，文件存在及尺寸两项通过；214次真实生成及213次工具执行后的有效0保留，不作技术恢复。SQLite/gcov的Model-only原始Laya Max全部42次生成选择GLM Max，实际官方Reward1；返回Effort未报告。已报Token是每次完整Episode中所有请求的输入加输出，包含重复上下文；缺用量或账单保持未知。
 

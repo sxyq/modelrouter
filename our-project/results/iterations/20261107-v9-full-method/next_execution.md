@@ -25,7 +25,7 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 现行观察123359／123360／123364只跟随原Controller与有限接续，每20分钟复用原.runtime导出目录，已加载分析c6b2a7b1；旧闲置4041864／4041865／4041866退出。02:22代理98294在76902自然结束后接管；原首失败、费用、有效1/0和权重保留。gpu.lock共享READ与训练及Breeze独占锁保持。需要等待使用纯20分钟wait，期间不重复读取未变状态。
 
-07:58—08:00原Model-only1085/2136、联合231/957结束；有效1／0为274／152及78／47，缺分627／106，Model-only另32依赖故障。原固定261未结束，696联合Router仍按既定有限顺序接续。GLM Low三个原完整Episode已以输出额度异常进入Verifier并写原0，但末次请求4096返回报告128000；质量单列渠道额度故障、原恢复规则None、不重跑。正常≤4096的length终局仍待自然出现，不能将这三个超额输出终局当作参数已落实；原Provider参数、模型、Effort和时限保持。
+09:19—09:21原Model-only1106/2136、联合243/957结束；有效1／0为276／152及81／50，缺分646／112，Model-only另32依赖故障。原固定261未结束，696联合Router仍按既定有限顺序接续。GLM Low三个原完整Episode已以输出额度异常进入Verifier并写原0，但末次请求4096返回报告128000；质量单列渠道额度故障、原恢复规则None、不重跑。正常≤4096的length终局仍待自然出现，不能将这三个超额输出终局当作参数已落实；原Provider参数、模型、Effort和时限保持。
 
 03:31共享GPU可用47444MiB，H3后端stopped、活动请求0；11条路由返回前超时、2条CUDA OOM及338条连接拒绝／14条SSL EOF沿原3993622技术恢复，保持同任务、策略与seed43、首次日志及费用。新raman-fitting训练Kev ON Low获官方1、3断言全过、实际GPU等待0.023336秒；两次教师403且短评消费0，教师生效集合需按实际短评使用单列。当前原固定段未结束，后续696个联合Router位置仍待原顺序接续。
 
@@ -75,7 +75,7 @@ AA v7固定快照20261107T134704898459Z-v7、130真实指标、Intelligence Inde
 
 当前Agent8db98d081d186a216b8772f3a22a6d7645ed23e3保留Harbor预算类别并调用原Verifier；分析c6b2a7b1c30dc1295c01640b47cd6d657f52f9d3已从三个超额输出完整Episode验证该调用，渠道4096执行问题仍未解决。403等技术故障继续独立，正常请求额度内length仍待原矩阵；有效1/0不重复，旧NonZero缺有效分沿原恢复入口。唯一源码回退保存Agent8db与分析e1四源码。
 
-当前Luna原403返回pre_consume_token_quota_failed／token quota is insufficient，需恢复已有私人凭据额度；Key、模型和Effort保持。MTEB-leaderboard五固定组、MTEB-retrieve三有效失败组直接保留，后者Low／High依赖故障由新缓存恢复。原Harbor NonZeroAgentExitCodeError会执行Verifier，其错误政策仍将未归类退出列为缺有效评分；原0与技术原因分别存放，不手工改分。
+Luna已记录额度403与SQLite教师五次401 invalid token，现行唯一绑定与原Model-only／有限持有配置一致；401请求0重试、0短评消费，不将教师ON配置直接归为实际干预。Terra High在新Windows与regex-chess完整Episode恢复正常生成，分别官方0／1，前者44次、后者6次HTTP200且档位一致。此前502位置沿原恢复范围，已评分1/0保留；MTEB-leaderboard五固定组、MTEB-retrieve三有效失败组也直接复用，Low／High依赖故障使用原缓存恢复。原Harbor错误政策、评分及失败记录保持。
 
 新Tensor完整Episode的31包安装17.91秒后进入13项官方测试，900秒Verifier仍无终局；该次14生成请求、151644 API Token和$0.06207760参考费另记，不把3次累计用量称为一次运行。宿主机/dev/kvm存在、syy无读写权限、sudo需密码，硬件加速需要管理员设备授权；原QEMU2744271仍为q35,accel=tcg、16核40GiB，现有健康实验继续原配置。CPU等待与生成代码的贡献保持未知，不修改官方测试或时限。
 
