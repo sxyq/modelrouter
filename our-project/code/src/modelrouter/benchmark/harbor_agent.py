@@ -50,7 +50,9 @@ class A6000DockerEnvironment(DockerEnvironment):
 
     def __init__(self, *args, apt_mirrors=None, verifier_dependencies=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.apt_mirror = (apt_mirrors or {}).get(self.environment_name)
+        self.apt_mirror = (apt_mirrors or {}).get(self.environment_name) or (
+            "http://mirrors.ustc.edu.cn/debian/"
+            if self.environment_name == "break-filter-js-from-html" else None)
         self.verifier_dependencies = (verifier_dependencies or {}).get(self.environment_name)
         if self.verifier_dependencies:
             self._mounts.append({"type": "bind", "source": self.verifier_dependencies,
