@@ -36,8 +36,10 @@ OFF三档实报缓存读取49792／121088／150528 Token、各0缓存缺测，�
 | [原Laya OFF Max](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/caffe-cifar-10/laya_original_off_model_only_max/43/summary.json) | Router决策超时、缺有效分 | 20987 | 0.00302089已知 | 7 | 1307.673302 |
 | [原Laya ON Low](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/caffe-cifar-10/laya_original_on_model_only_low/43/summary.json) | Luna 401、缺有效分 | 0 | 未知 | 0 | 105.505917 |
 | [原Laya ON High](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/caffe-cifar-10/laya_original_on_model_only_high/43/summary.json) | 首次生成前路由超时、缺有效分 | 0 | 未知 | 0 | 1301.860888 |
+| [训练Laya OFF Low](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/caffe-cifar-10/laya_trained_off_model_only_low/43/summary.json) | 首次生成前路由超时、缺有效分 | 0 | 未知 | 0 | 1299.298292 |
+| [训练Laya ON Max](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/caffe-cifar-10/laya_trained_on_model_only_max/43/summary.json) | 首次生成前路由超时、缺有效分 | 0 | 未知 | 0 | 1303.308547 |
 
-上述五项保存的原始`official_reward`均为0，但都没有可用于模型质量比较的有效官方分数。另有两项同题位置仍在原矩阵运行。
+上述七项保存的原始`official_reward`均为0，但都没有可用于模型质量比较的有效官方分数。原Router调用超时位置工具次数与已报Token保留各自Trial记录；另有两项同题位置仍在原矩阵运行。
 
 11:22:56原联合固定261位置全部结束，闲置3205488／3575811退出；六任务固定恢复于12:00:58结束，3993622等待实际Model-only1696641，再按原顺序执行Model-only技术恢复、696联合Router及联合／历史恢复。两个原始有分结果直接复用；Model-only当前50/89题已有结束记录、49题结束全部24组。
 
@@ -53,7 +55,7 @@ OFF三档实报缓存读取49792／121088／150528 Token、各0缓存缺测，�
 
 [winning-avg-corewars／GLM Low](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/winning-avg-corewars/glm_low/43/summary.json)成为第4个输出额度终止位置：请求4096、返回报告128000输出/127999推理、length、0重试，单请求1905403.192毫秒；原Verifier0保留，质量单列PROVIDER_OUTPUT_BUDGET_EXCEEDED。该次已报603867 Token、模型参考$0.11520320、3263.207275秒；原恢复规则仍保留已评分0，不重跑。
 
-21:49 Model-only／13:39—13:46联合与历史最新真实导出：Model-only1253/2136结束，289有效1／165有效0／767缺评分／32依赖故障另列；2运行、881未开始。1254 Trial，模型与教师参考费$16.01363795，941请求费用未知，3922额外重试。新增58位置含2官方1、5官方0、51缺有效分；caffe-cifar-10五项完成位置中3项Provider故障、1项Router决策超时、1项首次生成前超时，另2项仍运行。联合261/957结束，84有效1／55有效0／122缺评分；参考费$9.07206206，142请求费用未知，1862额外重试。历史1513位置、2599 Trial，308有效1／344有效0／795缺分／66依赖故障，参考费$42.11526315。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
+22:10 Model-only／13:39—13:46联合与历史最新真实导出：Model-only1255/2136结束，289有效1／165有效0／769缺评分／32依赖故障另列；2运行、879未开始。1254 Trial，模型与教师参考费$16.01363795，941请求费用未知，3922额外重试。新增60位置含2官方1、5官方0、53缺有效分；caffe-cifar-10七项完成位置中3项Provider故障、4项Router超时，另2项仍运行。联合261/957结束，84有效1／55有效0／122缺评分；参考费$9.07206206，142请求费用未知，1862额外重试。历史1513位置、2599 Trial，308有效1／344有效0／795缺分／66依赖故障，参考费$42.11526315。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
 
 三个GLM Low完整Episode的末次请求max_tokens=4096、thinking.enabled、stream=false，返回completion_tokens=128000、finish=length、0额外重试。已进入原官方Verifier；质量栏单列PROVIDER_OUTPUT_BUDGET_EXCEEDED，原Reward0及全部费用保留，原自动恢复理由仍为None。
 
