@@ -191,9 +191,10 @@ def audit_trial(trial_dir: str | Path) -> dict[str, Any]:
             row["status"] = "VERIFIER_MISMATCH"
             row["reason"] = "Trial result rewards differ from original verifier artifact"
             return row
-        if stdout.is_file() and "uvx: command not found" in stdout.read_text() and not (directory / "verifier" / "ctrf.json").is_file():
-            row["reason"] = "Official test dependency uvx absent; no task assertions executed"
-            return row
+        for executable in ("uvx", "curl"):
+            if f"{executable}: command not found" in output and not (directory / "verifier" / "ctrf.json").is_file():
+                row["reason"] = f"Official test dependency {executable} absent; no task assertions executed"
+                return row
         ctrf = directory / "verifier" / "ctrf.json"
         if (stdout.is_file() and "ImportError: libGL.so.1:" in stdout.read_text()
                 and ctrf.is_file() and _read_json(ctrf)["results"]["summary"]["tests"] == 0):
