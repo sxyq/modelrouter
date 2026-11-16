@@ -2,7 +2,7 @@
 
 ## 2026-11-16 · 接口故障与有效官方结果
 
-06:38—06:39当前分析c6b2a7b1导出：Model-only1070/2136结束，273有效1／152有效0／613缺评分／32依赖故障另列；联合220/957结束，77有效1／44有效0／99缺评分。参考费分别$15.32252788／$5.87838663，709／108请求费用未知，2623／874额外重试。历史1513位置、2581 Trial，307有效1／343有效0／797缺分／66依赖故障，参考费$41.94341055。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
+07:58—08:00当前分析c6b2a7b1导出：Model-only1085/2136结束，274有效1／152有效0／627缺评分／32依赖故障另列；联合231/957结束，78有效1／47有效0／106缺评分。参考费分别$15.35447719／$7.13368176，723／120请求费用未知，2815／1157额外重试。历史1513位置、2581 Trial，307有效1／343有效0／797缺分／66依赖故障，参考费$41.94341055。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
 
 三个GLM Low完整Episode的末次请求max_tokens=4096、thinking.enabled、stream=false，返回completion_tokens=128000、finish=length、0额外重试。已进入原官方Verifier；质量栏单列PROVIDER_OUTPUT_BUDGET_EXCEEDED，原Reward0及全部费用保留，原自动恢复理由仍为None。
 
@@ -13,6 +13,16 @@
 | [protein-assembly](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/protein-assembly/glm_low/43/summary.json) | 736623 | 0.09387332 | 1792.998447 | 1 |
 
 原请求参数符合[智谱现行max_tokens说明](https://docs.bigmodel.cn/cn/guide/start/concept-param)，实际渠道未落实4096；返回Effort、物理后端及供应商实收未知。当前三个批次分别记录99／32／239次超额输出请求，只有上述3个额度终止位置因此另列；正常额度内length原0保持。分析807行，观察123359／123360／123364已加载，公开汇总沿原.runtime导出，不采用旧Controller内存分类。
+
+07:52读取原请求逐尝试：circuit-fibsqrt／Terra High／seed43的bddd548f共101个HTTP502，最后attempt_index=100、RETRY_LIMIT；保持High／4096，1次逻辑生成、0工具执行，Harbor3091.824703秒，原Verifier0保留、质量另列请求故障、用量及账单未知。sqlite-db-truncate／训练Kev OFF Low的33127bdf共33个HTTP502、额外32次后TASK_DEADLINE，未执行工具；原0单列技术故障。100次是上限，原任务时限仍实际生效。
+
+| Seed43策略与完整Episode | 官方结果 | 已报模型Token | 已知模型参考USD | 未知费用请求 | 生成／工具结果 | Harbor秒 |
+|---|---|---:|---:|---:|---:|---:|
+| 固定GLM Low · [distribution-search](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/distribution-search/glm_low/43/summary.json) | Reward1 | 61571 | 0.00519298 | 0 | 10／10 | 307.655962 |
+| 固定GLM Low · [circuit-fibsqrt](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/circuit-fibsqrt/glm_low/43/summary.json) | Reward0、2过1败 | 24309513 | 0.86166677 | 2 | 214／213 | 3717.727741 |
+| 原始Laya OFF Max · [sqlite-with-gcov](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/sqlite-with-gcov/laya_original_off_model_only_max/43/summary.json) | Reward1 | 630540 | 0.03194931 | 0 | 42／55 | 1260.019631 |
+
+电路任务test_sqrt_fib失败，文件存在及尺寸两项通过；214次真实生成及213次工具执行后的有效0保留，不作技术恢复。SQLite/gcov的Model-only原始Laya Max全部42次生成选择GLM Max，实际官方Reward1；返回Effort未报告。已报Token是每次完整Episode中所有请求的输入加输出，包含重复上下文；缺用量或账单保持未知。
 
 raman-fitting／训练Kev教师ON／seed43完整三档结果，额外重试均0；教师消费均0、教师费用未知，模型费用只列已知参考部分：
 
