@@ -1,12 +1,12 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "snapshot_exported_at": "2026-11-16T05:46:43.346323+00:00",
+    "snapshot_exported_at": "2026-11-16T06:47:00+00:00",
     "controller_pid": 1696641,
-    "finished_positions": 1155,
-    "reward_1": 277,
-    "reward_0": 155,
-    "no_official_reward": 691,
+    "finished_positions": 1163,
+    "reward_1": 279,
+    "reward_0": 159,
+    "no_official_reward": 693,
     "missing_quality_reasons": {
       "HTTPError": 10,
       "ProviderResponseError": 26,
@@ -20,16 +20,16 @@
       "ROUTER_DECISION_TIMEOUT": 8,
       "PROVIDER_RETRY_DEADLINE": 80,
       "EnvironmentStartTimeoutError": 7,
-      "PROVIDER_REQUEST_FAILED": 127,
+      "PROVIDER_REQUEST_FAILED": 129,
       "ROUTER_CUDA_OUT_OF_MEMORY": 2
     },
     "verifier_dependency_failure": 32,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 979,
-    "known_model_teacher_reference_usd": 15.57279415,
-    "unknown_cost_requests": 816,
-    "provider_retry_count": 3351,
+    "not_dispatched": 971,
+    "known_model_teacher_reference_usd": 15.67067322,
+    "unknown_cost_requests": 844,
+    "provider_retry_count": 3385,
     "runtime_source_revision": "8db98d081d186a216b8772f3a22a6d7645ed23e3",
     "analysis_revision": "c6b2a7b1c30dc1295c01640b47cd6d657f52f9d3",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
@@ -42,6 +42,18 @@
     "joint_known_model_teacher_reference_usd": 9.07206206,
     "joint_unknown_cost_requests": 142,
     "joint_provider_retry_count": 1862
+  },
+  "tune_mjcf_model_only_observation_20261116": {
+    "seed": 43,
+    "single_episode_scope": "Each row uses its original episode_id; prior attempts remain separate",
+    "episodes": [
+      {"strategy": "laya_original_on_model_only_low", "trial_id": "6ab4ed38-8489-4b27-a52d-cdde48e896c7", "official_reward": 0, "passed": 1, "failed": 3, "generator_model": "glm-5.3-flash", "effort": "low", "reported_tokens": 1022, "known_reference_usd": 0.00016135, "extra_retries": 33, "connection_refused_attempts": 33, "retry_wait_sec": 871, "generator_requests": 2, "tool_results": 1, "teacher_requests": 0, "teacher_consumed": 0, "unknown_cost_requests": 2, "harbor_wall_s": 1059.214431},
+      {"strategy": "laya_original_on_model_only_max", "trial_id": "705b50bd-cb7e-4246-b6b7-a8f13204551b", "official_reward": 1, "passed": 4, "failed": 0, "generator_model": "glm-5.3-flash", "effort": "max", "reported_tokens": 255162, "known_reference_usd": 0.01837626, "extra_retries": 1, "recovered_error": "RemoteDisconnected", "generator_requests": 20, "tool_results": 22, "teacher_requests": 5, "teacher_http401": 5, "teacher_consumed": 0, "unknown_cost_requests": 7, "harbor_wall_s": 1105.180536},
+      {"strategy": "laya_trained_on_model_only_low", "trial_id": "368338fb-de6e-4b45-adb7-b88e896d4983", "official_reward": 1, "passed": 4, "failed": 0, "generator_model": "glm-5.3-flash", "effort": "low", "reported_tokens": 138278, "known_reference_usd": 0.00734119, "extra_retries": 0, "generator_requests": 21, "tool_results": 22, "teacher_requests": 5, "teacher_http401": 5, "teacher_consumed": 0, "unknown_cost_requests": 5, "harbor_wall_s": 745.742216}
+    ],
+    "returned_glm_effort": null,
+    "supplier_and_resource_billing": null,
+    "teacher_effect": "No assessment consumed in the two successful ON episodes"
   },
   "provider_output_budget_observation_20261116": {
     "analysis_revision": "c6b2a7b1c30dc1295c01640b47cd6d657f52f9d3",

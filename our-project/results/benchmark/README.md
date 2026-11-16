@@ -2,6 +2,18 @@
 
 ## 2026-11-16 · 接口故障与有效官方结果
 
+### tune-mjcf · Model-only同题三档实际终局
+
+以下为Seed43独立完整Episode；模型均为GLM，返回Effort未报告，完整账单未知。教师请求发出与实际短评消费分列。
+
+| 策略 | 原官方结果 | 已报模型Token | 已知模型参考USD | 未知费用请求 | 生成／工具 | 教师请求／消费 | Harbor秒 |
+|---|---|---:|---:|---:|---:|---:|---:|
+| [原始Laya ON Low](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/tune-mjcf/laya_original_on_model_only_low/43/summary.json) | 0、1过3败 | 1022 | 0.00016135 | 2 | 2／1 | 0／0 | 1059.214431 |
+| [原始Laya ON Max](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/tune-mjcf/laya_original_on_model_only_max/43/summary.json) | 1、4断言全过 | 255162 | 0.01837626 | 7 | 20／22 | 5／0 | 1105.180536 |
+| [训练Laya ON Low](rq1/terminal-bench-2.0/20261112-v9-model-only/trials/tune-mjcf/laya_trained_on_model_only_low/43/summary.json) | 1、4断言全过 | 138278 | 0.00734119 | 5 | 21／22 | 5／0 | 745.742216 |
+
+原始Low首个请求遇到33次连接拒绝，累计等待871秒后恢复HTTP200/tool_calls；第二请求到原期限结束，原有效0保留。Max第14个请求遇到RemoteDisconnected，额外1次恢复工具生成；两个成功Episode的五次教师响应均401、消费0。训练OFF Low/High的Luna请求中断分别保留无有效评分及首次记录，沿原技术恢复；不将这两个位置补0。Max与训练Low的成绩来自实际生成及原Verifier，教师有效贡献尚缺可用短评对照。
+
 11:22:56原联合固定261位置全部结束，闲置3205488／3575811退出；六任务固定恢复于12:00:58结束，3993622等待实际Model-only1696641，再按原顺序执行Model-only技术恢复、696联合Router及联合／历史恢复。两个原始有分结果直接复用；Model-only当前49/89题已有结束记录、48题结束全部24组。
 
 以下为本次独立恢复Episode，Token与费用按该episode_id的原事件计量；位置累计费用仍在逐Episode表另列：
@@ -16,7 +28,7 @@
 
 [winning-avg-corewars／GLM Low](rq1/terminal-bench-2.0/20261112-v9-joint-paired/trials/winning-avg-corewars/glm_low/43/summary.json)成为第4个输出额度终止位置：请求4096、返回报告128000输出/127999推理、length、0重试，单请求1905403.192毫秒；原Verifier0保留，质量单列PROVIDER_OUTPUT_BUDGET_EXCEEDED。该次已报603867 Token、模型参考$0.11520320、3263.207275秒；原恢复规则仍保留已评分0，不重跑。
 
-13:39—13:46当前分析c6b2a7b1导出：Model-only1155/2136结束，277有效1／155有效0／691缺评分／32依赖故障另列；联合261/957结束，84有效1／55有效0／122缺评分。参考费分别$15.57279415／$9.07206206，816／142请求费用未知，3351／1862额外重试。历史1513位置、2599 Trial，308有效1／344有效0／795缺分／66依赖故障，参考费$42.11526315。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
+14:47 Model-only／13:39—13:46联合与历史当前分析c6b2a7b1导出：Model-only1163/2136结束，279有效1／159有效0／693缺评分／32依赖故障另列；联合261/957结束，84有效1／55有效0／122缺评分。参考费分别$15.67067322／$9.07206206，844／142请求费用未知，3385／1862额外重试。历史1513位置、2599 Trial，308有效1／344有效0／795缺分／66依赖故障，参考费$42.11526315。原352条URL错误及首次记录沿既定技术恢复保留；GPU共享READ锁继续。
 
 三个GLM Low完整Episode的末次请求max_tokens=4096、thinking.enabled、stream=false，返回completion_tokens=128000、finish=length、0额外重试。已进入原官方Verifier；质量栏单列PROVIDER_OUTPUT_BUDGET_EXCEEDED，原Reward0及全部费用保留，原自动恢复理由仍为None。
 
