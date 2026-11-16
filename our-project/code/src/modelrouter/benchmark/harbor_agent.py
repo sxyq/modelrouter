@@ -88,13 +88,14 @@ class A6000DockerEnvironment(DockerEnvironment):
             await self._run_docker_compose_command([
                 "exec", "-T", "main", "sed", "-i", "-E",
                 expression, "/etc/apt/sources.list.d/" + ("debian.sources" if debian else "ubuntu.sources")])
-        if self.environment_name == "pytorch-model-cli":
+        if self.environment_name in ("pytorch-model-cli", "break-filter-js-from-html"):
+            packages = "libgl1 curl ffmpeg libsm6 libxext6" if self.environment_name == "pytorch-model-cli" else "curl"
             await self._run_docker_compose_command([
                 "exec", "-T", "main", "sh", "-ec",
                 "cp -a /opt/modelrouter-verifier/apt/archives/. /var/cache/apt/archives/ "
                 "&& cp -a /opt/modelrouter-verifier/apt/lists/. /var/lib/apt/lists/ "
                 "&& echo 'DPkg::Lock::Timeout \"-1\";' > /etc/apt/apt.conf.d/99modelrouter-lock "
-                "&& apt-get install -y libgl1 curl ffmpeg libsm6 libxext6"])
+                "&& apt-get install -y " + packages])
 
     @property
     def capabilities(self):
