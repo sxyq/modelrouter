@@ -98,6 +98,14 @@ class A6000DockerEnvironment(DockerEnvironment):
                 "&& cp -a /opt/modelrouter-verifier/apt/lists/. /var/lib/apt/lists/ "
                 "&& echo 'DPkg::Lock::Timeout \"-1\";' > /etc/apt/apt.conf.d/99modelrouter-lock "
                 "&& apt-get install -y " + packages])
+        if self.environment_name == "filter-js-from-html":
+            # The official verifier kills ChromeDriver before quit; its browsers must exit too.
+            launcher = "import ctypes,os,sys; ctypes.CDLL(None).prctl(1,15); os.execv(sys.argv[1],sys.argv[1:])"
+            await self._run_docker_compose_command([
+                "exec", "-T", "main", "python3", "-c",
+                "from pathlib import Path; p=Path('/usr/bin/chromium'); "
+                "p.write_text(p.read_text().replace('exec $LIBDIR/$APPNAME $CHROMIUM_FLAGS', "
+                + repr("exec python3 -c '" + launcher + "' $LIBDIR/$APPNAME $CHROMIUM_FLAGS") + "))"])
 
     @property
     def capabilities(self):
