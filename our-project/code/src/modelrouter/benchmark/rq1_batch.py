@@ -114,6 +114,9 @@ def recovery_reason(path):
         stdout = Path(trial["trial_dir"]) / "verifier/test-stdout.txt"
         output = stdout.read_text() if stdout.exists() else ""
         if "test session starts" in output:
+            if (path.parent.parent.name == "filter-js-from-html" and "Installed 24 packages in " in output
+                    and output.rstrip().endswith("test_outputs.py")):
+                return "VERIFIER_CHROMIUM_ORPHAN_RESOURCE_EXHAUSTION"
             if (path.parent.parent.name == "query-optimize" and output.rstrip().endswith("test_outputs.py")
                     and not any(e.get("event") == "EXECUTION_ENVIRONMENT" and
                         e.get("episode_id") == trial["trial_id"] for e in iterations.rows(path / "events.jsonl"))):
