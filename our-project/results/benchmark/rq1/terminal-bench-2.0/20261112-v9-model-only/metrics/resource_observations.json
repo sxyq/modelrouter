@@ -1,12 +1,12 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
   "current_execution": {
-    "snapshot_exported_at": "2026-11-17T01:15:11+08:00",
+    "snapshot_exported_at": "2026-11-17T02:00:28.342018+00:00",
     "controller_pid": 1696641,
-    "finished_positions": 1301,
-    "reward_1": 295,
-    "reward_0": 166,
-    "no_official_reward": 808,
+    "finished_positions": 1447,
+    "reward_1": 314,
+    "reward_0": 172,
+    "no_official_reward": 929,
     "missing_quality_reasons": {
       "HTTPError": 10,
       "ProviderResponseError": 26,
@@ -18,18 +18,18 @@
       "AgentTimeoutError": 9,
       "VERIFIER_REPORT_ABSENT": 43,
       "ROUTER_DECISION_TIMEOUT": 9,
-      "PROVIDER_RETRY_DEADLINE": 98,
+      "PROVIDER_RETRY_DEADLINE": 117,
       "EnvironmentStartTimeoutError": 7,
-      "PROVIDER_REQUEST_FAILED": 196,
+      "PROVIDER_REQUEST_FAILED": 298,
       "ROUTER_CUDA_OUT_OF_MEMORY": 14
     },
     "verifier_dependency_failure": 32,
     "running_positions": 2,
     "waiting_for_gpu": 0,
-    "not_dispatched": 833,
-    "known_model_teacher_reference_usd": 16.2374055,
-    "unknown_cost_requests": 1007,
-    "provider_retry_count": 4121,
+    "not_dispatched": 687,
+    "known_model_teacher_reference_usd": 18.61946239,
+    "unknown_cost_requests": 1236,
+    "provider_retry_count": 4637,
     "runtime_source_revision": "8db98d081d186a216b8772f3a22a6d7645ed23e3",
     "analysis_revision": "c6b2a7b1c30dc1295c01640b47cd6d657f52f9d3",
     "report_format_revision": "275ddb2f48ad195a8b24d75733b0f322c62ac25b",
@@ -42,199 +42,20 @@
     "joint_known_model_teacher_reference_usd": 9.07206206,
     "joint_unknown_cost_requests": 142,
     "joint_provider_retry_count": 1862,
-    "last_observed_task": "constraints-scheduling",
-    "last_observed_task_positions": [
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_original_off_model_only_low",
-        "trial_id": "7327934e-ea34-45d9-9e79-92a329de2b8c",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_original_off_model_only_high",
-        "trial_id": "0e4d6788-948c-4f72-995e-0547e7b6e24c",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_original_off_model_only_max",
-        "trial_id": "05165e19-d0db-401f-89de-ec1cd0d4be8a",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_RETRY_DEADLINE",
-        "error_type": "AgentTimeoutError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_original_on_model_only_low",
-        "trial_id": "d72e7c33-55a3-49a8-8a19-1b9142ecf89f",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_original_on_model_only_high",
-        "trial_id": "2bee25d2-29a6-4532-af1f-434c96f69155",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_original_on_model_only_max",
-        "trial_id": "f750bbe9-6e71-4f82-92d4-0ab23fc8728c",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_RETRY_DEADLINE",
-        "error_type": "AgentTimeoutError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_trained_off_model_only_low",
-        "trial_id": "33b9585b-5fef-400b-940c-93fff8ed420e",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_trained_off_model_only_high",
-        "trial_id": "825d30c2-0276-4844-8c96-9e2dacb215db",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_trained_off_model_only_max",
-        "trial_id": "e89ea89c-c44c-4bb5-8f12-723a080a5f42",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_RETRY_DEADLINE",
-        "error_type": "AgentTimeoutError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_trained_on_model_only_low",
-        "trial_id": "4b9b641c-56d7-42b5-bebf-f385547dd055",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_trained_on_model_only_high",
-        "trial_id": "fd914332-7339-40ae-93e9-475128a0e07b",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "laya_trained_on_model_only_max",
-        "trial_id": "be5ff635-c002-45c1-a880-749508854f35",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_RETRY_DEADLINE",
-        "error_type": "AgentTimeoutError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "kev_original_off_model_only_low",
-        "trial_id": "62d082be-4b38-451d-9aa0-0420656e682b",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "kev_original_off_model_only_high",
-        "trial_id": "52e2a616-0602-4615-900a-3cee96470d8c",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "kev_original_off_model_only_max",
-        "trial_id": "392d8254-5811-4da0-b8cb-418d01017a1a",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "kev_original_on_model_only_low",
-        "trial_id": "1ba3a97f-f93c-45ac-998f-d1111acf4e80",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "kev_original_on_model_only_high",
-        "trial_id": "acc5dfb0-74d3-4e01-909c-88ecc108c1f3",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "kev_original_on_model_only_max",
-        "trial_id": "501a1cbb-e480-4a4c-be1c-155d302240eb",
-        "reward": "",
-        "official_reward": "0.0",
-        "technical_fault": "PROVIDER_REQUEST_FAILED",
-        "error_type": "NonZeroAgentExitCodeError"
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "kev_trained_off_model_only_low",
-        "trial_id": "996b1b1f-b3be-40d3-99ab-4fe5b842ab2e",
-        "reward": "0.0",
-        "official_reward": "0.0",
-        "technical_fault": "",
-        "error_type": ""
-      },
-      {
-        "task_id": "code-from-image",
-        "strategy_id": "kev_trained_off_model_only_high",
-        "trial_id": "ebb5b780-bbcc-40c5-939d-f216915d4b4f",
-        "reward": "1.0",
-        "official_reward": "1.0",
-        "technical_fault": "",
-        "error_type": ""
-      }
-    ],
+    "last_observed_task": "extract-moves-from-video",
     "running_positions_at_export": [
       {
-        "task_id": "constraints-scheduling",
-        "strategy_id": "laya_original_on_model_only_max"
+        "task_id": "financial-document-processor",
+        "strategy_id": "laya_original_off_model_only_max"
       },
       {
-        "task_id": "constraints-scheduling",
-        "strategy_id": "laya_trained_off_model_only_low"
+        "task_id": "financial-document-processor",
+        "strategy_id": "laya_original_on_model_only_low"
       }
-    ]
+    ],
+    "router_worker_pid": 1142336,
+    "router_holder_pid": 1142328,
+    "router_runtime_revision": "72cac7bbc7e9c72dd3bd8a25308a708a923ab986"
   },
   "tune_mjcf_model_only_observation_20261116": {
     "seed": 43,
@@ -764,11 +585,20 @@
       {"task": "polyglot-rust-c", "strategy": "laya_trained_off_model_only_low", "timestamp": "2026-11-14T12:26:31.993437+00:00", "worker_pid": 2496626, "router_device": "cuda", "fallback_used": false}
     ],
     "h3_gateway_status": "ACTIVE; HEALTH_HTTP200; BACKEND_ON_DEMAND",
-    "native_router_worker_pid": 3708428,
-    "previous_native_router_worker_pid": 2496626,
-    "finite_worker_holder_pid": 3708420,
-    "worker_handoff": "Four original CPU entities preloaded before atomic canonical socket switch at 2026-11-15T12:54:05.932092+00:00; old worker drained with no established requests or queued connections, retaining Controller1696641 and active Agent episodes",
-    "worker_cleanup": "Finite holder ends the replacement worker after Controller1696641 exits",
+    "native_router_worker_pid": 1142336,
+    "previous_native_router_worker_pid": 3708428,
+    "finite_worker_holder_pid": 1142328,
+    "worker_handoff": "Four original CPU entities preloaded before atomic canonical socket switch at 2026-11-17T02:24:35.287256+00:00; old idle worker3708428 and holder3708420 drained at 02:24:35.316490, retaining Controller1696641 and active Agent episodes",
+    "worker_cleanup": "Finite holder follows Controller1696641 and continuation3993622; retire this worker when the original recovery runner creates its own worker",
+    "router_source_revision": "72cac7bbc7e9c72dd3bd8a25308a708a923ab986",
+    "observed_cuda_allocation_recovery": {
+      "known_previous_oom_positions": 14,
+      "caffe_cifar_10_kev_positions": 12,
+      "action": "Release own CUDA tensors and shared read lock, wait for reserved bytes plus the observed failed allocation within the original task deadline, then repeat the same Router forward",
+      "event": "ROUTER_GPU_ALLOCATION_WAIT",
+      "recovery_trigger_observed_after_deployment": false,
+      "original_precision_weights_inputs_preserved": true
+    },
     "execution_fault": "First finite-holder command had a shell-quoting SyntaxError before launching a worker; corrected the command and launched one worker",
     "sole_h3_rollback": "/home/syy/ai-serving/state/h3-gateway-previous.tar.gz",
     "preserved_original_h3_job_states": 35,

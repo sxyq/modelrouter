@@ -28,18 +28,27 @@
     "docker_image": "alexgshaw/torch-pipeline-parallelism:20251031"
   },
   "reward": null,
-  "error_type": "VerifierTimeoutError",
+  "error_type": "NonZeroAgentExitCodeError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 1572.93308,
+  "episode_wall_s": 228.655869,
   "generator_known_reference_usd": 0.02988084,
-  "execution_environment": null,
-  "harbor_trial_count": 3,
-  "attempts_wall_s": 3274.1167020000003,
-  "harness_command_wall_s": 3290.3380519170314,
+  "execution_environment": {
+    "episode_id": "c4762141-d12f-468c-a59e-8d9a601fafd0",
+    "qemu_pid": 3832028,
+    "machine": "q35,accel=kvm",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "timestamp": "2026-11-16T03:48:49.716339+00:00",
+    "monotonic_ns": 15465273496081180,
+    "event": "EXECUTION_ENVIRONMENT"
+  },
+  "harbor_trial_count": 4,
+  "attempts_wall_s": 3502.772571,
+  "harness_command_wall_s": 3524.4184366613626,
   "teacher_known_reference_usd": null,
-  "reference_cost_usd": 0.02988084,
-  "latest_trial_reference_usd": 0.01063658,
+  "reference_cost_usd": null,
+  "latest_trial_reference_usd": null,
   "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
@@ -47,13 +56,16 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/torch-pipeline-parallelism/luna_xhigh/42",
-  "trial_id": "2bceb7df-c263-44dc-898c-362faa5f79b8",
-  "official_reward": null,
-  "technical_fault": null,
+  "trial_id": "c4762141-d12f-468c-a59e-8d9a601fafd0",
+  "official_reward": 0.0,
+  "technical_fault": "PROVIDER_REQUEST_FAILED",
   "raw_verifier_rewards": [
-    null
+    {
+      "reward": 0.0
+    }
   ],
-  "outside_harbor_wall_s": 16.221349917031148,
+  "provider_output_budget_exceeded_requests": 4,
+  "outside_harbor_wall_s": 21.645865661362677,
   "previous_attempts": [
     {
       "trial_id": "1dfeb38d-6d14-4307-aba5-0506f62fc65a",
@@ -88,22 +100,41 @@
         "verifier": 175.659094
       },
       "error_type": null
+    },
+    {
+      "trial_id": "2bceb7df-c263-44dc-898c-362faa5f79b8",
+      "job_name": "torch-pipeline-parallelism--luna_xhigh--s42--infrastructure-recovery-2",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/torch-pipeline-parallelism/luna_xhigh/42/jobs/torch-pipeline-parallelism--luna_xhigh--s42--infrastructure-recovery-2/torch-pipeline-parallelism__JaWHtuH",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-15T06:33:39.417784Z",
+      "finished_at": "2026-11-15T06:59:52.350864Z",
+      "duration_sec": 1572.93308,
+      "phase_wall_s": {
+        "environment_setup": 160.040044,
+        "agent_setup": 0.000214,
+        "agent_execution": 457.616564,
+        "verifier": 900.101752
+      },
+      "error_type": "VerifierTimeoutError"
     }
   ],
   "official_status": "NOT_EVALUATED",
-  "failed_provider_http_status": null,
-  "verifier_path": null,
+  "failed_provider_http_status": 401,
+  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/torch-pipeline-parallelism/luna_xhigh/42/jobs/torch-pipeline-parallelism--luna_xhigh--s42--infrastructure-recovery-3/torch-pipeline-parallelism__aDK3V5m/verifier/reward.txt",
   "phase_wall_s": {
-    "environment_setup": 160.040044,
-    "agent_setup": 0.000214,
-    "agent_execution": 457.616564,
-    "verifier": 900.101752
+    "environment_setup": 33.538375,
+    "agent_setup": 0.000252,
+    "agent_execution": 1.465891,
+    "verifier": 180.821494
   },
-  "generator_requests": 22,
+  "generator_requests": 23,
   "teacher_requests": 0,
-  "provider_attempt_count": 22,
+  "provider_attempt_count": 23,
   "provider_retry_count": 0,
-  "provider_retry_stop_reasons": {},
+  "provider_retry_stop_reasons": {
+    "NON_RECOVERABLE": 1
+  },
   "provider_attempts": [
     {
       "attempt_index": 0,
@@ -408,26 +439,45 @@
       "actual_billed_cost_usd": null,
       "role": "generator",
       "decision_id": "2bceb7df-c263-44dc-898c-362faa5f79b8-7"
+    },
+    {
+      "attempt_index": 0,
+      "request_model_id": "gpt-6-luna",
+      "requested_native_effort": "xhigh",
+      "http_status": 401,
+      "error_type": "HTTPError",
+      "response_status": null,
+      "finish_reason": null,
+      "latency_ms": 1253.8460977375507,
+      "retry_wait_sec": 0,
+      "retry_stop_reason": "NON_RECOVERABLE",
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "cached_tokens": null,
+      "cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "role": "generator",
+      "decision_id": "c4762141-d12f-468c-a59e-8d9a601fafd0-0"
     }
   ],
-  "technical_recovery_count": 2,
+  "technical_recovery_count": 3,
   "started_tool_calls": 0,
   "completed_tool_calls": 25,
-  "unknown_provider_cost_requests": 0,
-  "prompt_tokens": 115688,
-  "completion_tokens": 46946,
+  "unknown_provider_cost_requests": 1,
+  "prompt_tokens": null,
+  "completion_tokens": null,
   "known_prompt_tokens": 115688,
   "known_completion_tokens": 46946,
-  "usage_unknown_requests": 0,
+  "usage_unknown_requests": 1,
   "generator_known_tokens": 162634,
   "teacher_known_tokens": 0,
-  "reasoning_tokens": 33202,
-  "reported_cache_read_tokens": 57344,
+  "reasoning_tokens": null,
+  "reported_cache_read_tokens": null,
   "known_cache_read_tokens": 57344,
-  "cache_read_unknown_records": 0,
-  "reported_cache_write_tokens": 0,
-  "cache_write_unknown_records": 0,
-  "router_wall_s": 0.005716882646083832,
+  "cache_read_unknown_records": 1,
+  "reported_cache_write_tokens": null,
+  "cache_write_unknown_records": 1,
+  "router_wall_s": 0.005986647680401802,
   "initial_gpu_queue_wait_s": 0.0,
   "router_known_input_tokens": 0,
   "router_known_output_tokens": 0,
@@ -436,8 +486,16 @@
   "router_gpu_wait_s": null,
   "router_transfer_s": null,
   "teacher_wall_s": 0.0,
-  "generator_wall_s": 1049.6057384554297,
+  "generator_wall_s": 1050.8599574044347,
   "selected_actions": [
+    {
+      "provider": "codegoai",
+      "model": "gpt-6-luna",
+      "revision": "latest",
+      "native_effort": "xhigh",
+      "action_id": "gpt-6-luna:xhigh",
+      "pool": "Reasoning"
+    },
     {
       "provider": "codegoai",
       "model": "gpt-6-luna",
@@ -1187,6 +1245,28 @@
       "cost_status": "VERIFIED_OFFICIAL_STANDARD_SHORT_CONTEXT",
       "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
       "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "gpt-6-luna",
+      "returned_model_id": null,
+      "requested_native_effort": "xhigh",
+      "returned_native_effort": null,
+      "native_effort_status": null,
+      "sent_effort_parameter": null,
+      "protocol": null,
+      "stream": null,
+      "requested_max_output_tokens": null,
+      "reported_max_output_tokens": null,
+      "finish_reason": null,
+      "http_status": 401,
+      "physical_backend_identity_status": null,
+      "provider_endpoint_id": null,
+      "identity_status": null,
+      "cost_source": null,
+      "cost_status": "UNKNOWN",
+      "cache_cost_policy": null,
+      "reasoning_cost_policy": null
     }
   ],
   "logical_model_changes": 0,
