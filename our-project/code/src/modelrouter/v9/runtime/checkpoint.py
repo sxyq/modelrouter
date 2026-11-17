@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import fcntl
+import re
 import select
 import socket
 import socketserver
@@ -80,6 +81,7 @@ class CheckpointRouterClient:
                              "router_process_reused": body["process_reused"],
                              "router_device": body["device"],
                              "router_gpu_wait_ms": body["gpu_wait_ms"],
+                             "router_gpu_oom_retries": body.get("gpu_oom_retries", 0),
                              "router_device_transfer_ms": body["device_transfer_ms"],
                              "router_worker_pid": body["worker_pid"],
                              "router_cpu_time_sec": body["cpu_time_sec"],
@@ -128,60 +130,76 @@ def answer(payload, adapters):
     adapter, initialization_ms, reused = load_adapter(payload, adapters)
     checkpoint = Path(payload["checkpoint_path"]).resolve()
     device = payload.get("device", "cpu")
-    gpu_wait_ms, transfer_ms = 0.0, 0.0
+    gpu_wait_ms, transfer_ms, gpu_oom_retries = 0.0, 0.0, 0
     lock = open(payload["gpu_lock_path"], "a") if device == "cuda" else nullcontext()
     with lock as lock_file:
         if device == "cuda":
-            before = time.perf_counter()
             model = adapter.model if payload["router_family"] == "kev" else adapter.agent.model
             required_bytes = sum(t.numel() * t.element_size()
                                  for t in (*model.parameters(), *model.buffers()))
-            while True:
-                if payload.get("deadline") is not None and time.monotonic() >= payload["deadline"]:
-                    raise TimeoutError("Original task Router deadline reached while waiting for shared GPU")
-                try:
-                    fcntl.flock(lock_file, fcntl.LOCK_SH | fcntl.LOCK_NB)
-                    if torch.cuda.mem_get_info()[0] >= required_bytes:
-                        break
+        while True:
+            if device == "cuda":
+                before = time.perf_counter()
+                while True:
+                    if payload.get("deadline") is not None and time.monotonic() >= payload["deadline"]:
+                        raise TimeoutError("Original task Router deadline reached while waiting for shared GPU")
+                    try:
+                        fcntl.flock(lock_file, fcntl.LOCK_SH | fcntl.LOCK_NB)
+                        if torch.cuda.mem_get_info()[0] >= required_bytes:
+                            break
+                        fcntl.flock(lock_file, fcntl.LOCK_UN)
+                    except BlockingIOError:
+                        pass
+                    time.sleep(.1)
+                gpu_wait_ms += (time.perf_counter() - before) * 1000
+            try:
+                if device == "cuda":
+                    before = time.perf_counter()
+                    if payload["router_family"] == "kev":
+                        adapter.model.to("cuda")
+                        adapter.model.device = "cuda"
+                        adapter.model.lm.set_attn_implementation("sdpa")
+                    else:
+                        from laya.agent import _cuda_amp_dtype
+                        adapter.agent.model.to("cuda")
+                        adapter.agent.device = torch.device("cuda")
+                        adapter.agent.dtype = _cuda_amp_dtype(adapter.agent.cfg.get("amp_dtype", "fp16"))
+                        adapter.agent.amp_enabled = True
+                    transfer_ms += (time.perf_counter() - before) * 1000
+                with torch.inference_mode():
+                    answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
+                break
+            except torch.cuda.OutOfMemoryError as exc:
+                allocation = re.search(r"Tried to allocate ([\d.]+) ([KMG]iB)", str(exc))
+                if device != "cuda" or allocation is None or payload.get("deadline") is None:
+                    raise
+                requested = float(allocation[1]) * 1024 ** {"KiB": 1, "MiB": 2, "GiB": 3}[allocation[2]]
+                required_bytes = max(required_bytes, torch.cuda.memory_reserved()) + int(requested)
+                gpu_oom_retries += 1
+                print(json.dumps({"event": "ROUTER_GPU_ALLOCATION_WAIT", "error": str(exc),
+                                  "checkpoint_path": str(checkpoint), "required_bytes": required_bytes,
+                                  "attempt": gpu_oom_retries, "deadline": payload.get("deadline")}),
+                      file=sys.stderr, flush=True)
+            finally:
+                if device == "cuda":
+                    before = time.perf_counter()
+                    if payload["router_family"] == "kev":
+                        adapter.model.to("cpu")
+                        adapter.model.device = "cpu"
+                        adapter.model.lm.set_attn_implementation("eager")
+                    else:
+                        adapter.agent.model.to("cpu")
+                        adapter.agent.device = torch.device("cpu")
+                        adapter.agent.dtype = torch.float32
+                        adapter.agent.amp_enabled = False
+                    torch.cuda.empty_cache()
                     fcntl.flock(lock_file, fcntl.LOCK_UN)
-                    time.sleep(.1)
-                except BlockingIOError:
-                    time.sleep(.1)
-            gpu_wait_ms = (time.perf_counter() - before) * 1000
-        try:
-            if device == "cuda":
-                before = time.perf_counter()
-                if payload["router_family"] == "kev":
-                    adapter.model.to("cuda")
-                    adapter.model.device = "cuda"
-                    adapter.model.lm.set_attn_implementation("sdpa")
-                else:
-                    from laya.agent import _cuda_amp_dtype
-                    adapter.agent.model.to("cuda")
-                    adapter.agent.device = torch.device("cuda")
-                    adapter.agent.dtype = _cuda_amp_dtype(adapter.agent.cfg.get("amp_dtype", "fp16"))
-                    adapter.agent.amp_enabled = True
-                transfer_ms += (time.perf_counter() - before) * 1000
-            with torch.inference_mode():
-                answers, latency, usage = adapter.system_one(payload["state"], payload["questions"])
-        finally:
-            if device == "cuda":
-                before = time.perf_counter()
-                if payload["router_family"] == "kev":
-                    adapter.model.to("cpu")
-                    adapter.model.device = "cpu"
-                    adapter.model.lm.set_attn_implementation("eager")
-                else:
-                    adapter.agent.model.to("cpu")
-                    adapter.agent.device = torch.device("cpu")
-                    adapter.agent.dtype = torch.float32
-                    adapter.agent.amp_enabled = False
-                torch.cuda.empty_cache()
-                transfer_ms += (time.perf_counter() - before) * 1000
+                    transfer_ms += (time.perf_counter() - before) * 1000
     cpu_end = resource.getrusage(resource.RUSAGE_SELF)
     return {"answers": answers, "decision_latency_ms": latency, "usage": usage,
             "initialization_latency_ms": initialization_ms, "process_reused": reused,
             "device": device, "gpu_wait_ms": gpu_wait_ms, "device_transfer_ms": transfer_ms,
+            "gpu_oom_retries": gpu_oom_retries,
             "run_id": adapter.run_id, "checkpoint_id": str(checkpoint), "weights_path": str(checkpoint),
             "worker_pid": os.getpid(),
             "cpu_time_sec": cpu_end.ru_utime + cpu_end.ru_stime - cpu_started.ru_utime - cpu_started.ru_stime}
