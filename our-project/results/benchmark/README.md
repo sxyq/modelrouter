@@ -1,8 +1,14 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 2026-11-18 13:17 · Model-only接续与MTEB完整Episode
+## 2026-11-18 16:22 · 原批次接续与实际故障
 
-Model-only原观察导出1746/2136位置结束，339有效Reward1、191有效Reward0、1184缺分、32依赖故障另列；2运行、388未开始。1747原Trial，模型与教师已知参考费$25.22174546、1614请求费用未知。控制器和有限接续进程仍在；下节12:07数字保留其采集时点。
+16:21:58台北原观察导出Model-only 1758/2136位置结束，339有效Reward1、195有效Reward0、1192缺分、32依赖故障另列；2运行、376未开始。1759原Trial，模型与教师已知参考费$26.88846586、1654请求费用未知、7608次额外重试。三个公开导出已同步；联合固定261/957、历史1513位置保持原结果，696个联合Router位置待现有队列接续。
+
+`compile-compcert`原始Laya六组均未执行工具。OFF Low/Max为81/79次GLM请求，ON Low/Max为68/63次GLM请求，分别额外重试80/78/67/62次后在原期限停止；两项High为Luna401、额外重试0。六组原Verifier均写0，质量表单列接口故障，费用未知。GLM原429正文为`group requests-per-minute limit exceeded`，原502正文为`Upstream access forbidden, please contact administrator`。逐尝试与独立Episode见本批`trials/compile-compcert/*/43/`。
+
+16:26两项训练Laya OFF Low/High停在首个ROUTER_START，尚无生成请求；共享GPU锁为READ，H3扩散进程计算、GPU剩余629MiB。原Router等待显存并保留2400秒任务期限，原控制器1696641和有限接续1345012继续；GPU锁、H3任务与四套权重保持现行配置。
+
+16:32现有分析提交a3dd87909260252205e45925ca822af480b96216已补部署，终止性401不再进入技术恢复队列；原始0和缺评分身份保持。三个现行采集进程1909073/1909074/1909081沿原目录每1200秒导出，原批次控制进程继续。
 
 `mteb-retrieve`全部24组已结束。下表每行是训练Kev、Seed43的一次完整Episode，所有生成均使用Terra对应档位、请求与返回身份和档位一致、额外重试0；原官方Verifier每行执行2项断言。
 
