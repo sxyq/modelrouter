@@ -111,7 +111,18 @@ def technical_interruption(trial, events):
         return "ROUTER_CUDA_OUT_OF_MEMORY"
     if error.get("exception_type") == "RuntimeError" and "Original task Router deadline reached while waiting for shared GPU" in error.get("exception_message", ""):
         return "ROUTER_GPU_RESOURCE_TIMEOUT"
-    if trial.get("reward") != 1 and any(e["event"] == "AGENT_PROVIDER_FAILURE" for e in episode_events):
+    failures = [e for e in episode_events if e.get("event") == "AGENT_PROVIDER_FAILURE"]
+    if trial.get("reward") != 1 and failures:
+        failure = failures[-1]
+        request_error = next((e for e in reversed(episode_events)
+                              if e.get("event") == "ERROR" and e.get("category") == "PROVIDER"
+                              and e.get("role") == "generator"), {})
+        attempts = request_error.get("account_attempts", [])
+        last = attempts[-1] if attempts else {}
+        status = last.get("http_status") if last.get("http_status") is not None else failure.get("http_status")
+        if (last.get("retry_stop_reason") == "NON_RECOVERABLE" or
+                status is not None and 400 <= status < 500 and status not in (408, 429)):
+            return None
         return "PROVIDER_REQUEST_FAILED"
     if (trial.get("error") or {}).get("exception_type") != "AgentTimeoutError":
         return None
