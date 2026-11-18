@@ -1,6 +1,6 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 2026-11-18 23:38 · 新凭据后的官方任务结果
+## 2026-11-19 · 新凭据后的官方任务结果
 
 Colink凭据已更新到唯一0600私有配置与原控制器内存；GLM、Terra的实际生成和工具执行已恢复，Luna仍401/Invalid token。以下均为原Seed43策略位置的新独立Harbor Episode，0额外重试；旧Trial及费用完整保留。
 
@@ -10,21 +10,31 @@ Colink凭据已更新到唯一0600私有配置与原控制器内存；GLM、Terr
 | pypi-server／Terra High | 1 | 1/1 | 112688 | 0.08142400 | 301.465327 |
 | prove-plus-comm／Terra High | 1 | 4/4 | 126691 | 0.06974860 | 336.666307 |
 | polyglot-rust-c／GLM Low | 1 | 1/1 | 181150 | 0.03521321 | 875.733494 |
+| crack-7z-hash／GLM Low | 1 | 2/2 | 156829 | 0.00937014 | 405.902621 |
+| overfull-hbox／GLM Low | 1 | 4/4 | 232336 | 0.01612408 | 625.056263 |
 
-四项合计431559 API Token、$0.18742474模型参考费，均无请求费用缺项；供应商实收及资源USD未知。表内仅列该次Episode。polyglot-rust-c的Controller exit_code=2、Agent SUBMITTED、Harbor OFFICIAL_ARTIFACT_VERIFIED及Reward1全部按原记录保留；原Verifier断言1/1通过。
+六项合计820724已报API Token、$0.21291896模型参考费，均无请求费用缺项；供应商实收及资源USD未知。表内仅列该次Episode。GLM后三项的Controller exit_code=2、Agent SUBMITTED、Harbor OFFICIAL_ARTIFACT_VERIFIED及Reward1全部按原记录保留。
 
-2057312／2057318已接续GLM Low／Terra High原技术故障位置。23:37四项在途为overfull-hbox、crack-7z-hash的GLM Low及polyglot-rust-c、polyglot-c-py的Terra High，前两项已有工具执行，后两项首请求仍在重试；固定4并发、原Model-only Router2并发。
+Terra High两项首请求均由502重试至200并执行工具，随后仍到原任务期限，原官方0保留、质量单列接口故障。以下Token和费用为已知部分，各有1次请求费用缺项。
 
-23:39现行分析快照如下；“已结束缺分”不含正在恢复的位置。联合恢复中的4项保留各自旧Trial。
+| 任务／Terra High | 原官方Reward | 质量评分 | 工具结果 | 额外重试 | 已报Token | 已知参考USD | Harbor秒 |
+|---|---:|---|---:|---:|---:|---:|---:|
+| polyglot-rust-c | 0 | PROVIDER_RETRY_DEADLINE | 4 | 15 | 27413 | 0.02725860 | 1011.913281 |
+| polyglot-c-py | 0 | PROVIDER_RETRY_DEADLINE | 1 | 30 | 5461 | 0.00634500 | 1017.149216 |
+
+训练Laya OFF Max的bn-fit-modify为正常有效失败：原Reward0、275377已报Token、$0.02339090参考费、0额外重试、Harbor742.499254秒。该有效0不进入技术恢复。
+
+11-18 23:59现行分析快照如下；“已结束缺分”不含正在恢复的位置。联合恢复中的4项保留各自旧Trial。
 
 | 批次 | 计划位置 | 已结束 | 有效1 | 有效0 | 已结束缺分 | Verifier依赖故障 | 运行 | 未开始 | 原Harbor Trial | 已知参考USD | 请求费用未知 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Model-only | 2136 | 1811 | 340 | 198 | 1241 | 32 | 2 | 323 | 1812 | 27.47543736 | 1714 |
-| Model×Effort联合 | 957 | 257 | 88 | 55 | 114 | 0 | 4 | 696 | 269 | 9.25948680 | 146 |
+| Model-only | 2136 | 1818 | 341 | 188 | 1257 | 32 | 2 | 316 | 1819 | 27.49070775 | 1725 |
+| Model×Effort联合 | 957 | 257 | 90 | 50 | 117 | 0 | 4 | 696 | 273 | 9.31858462 | 153 |
+| 历史Seed42 | 1513 | 1513 | 308 | 342 | 797 | 66 | 0 | 0 | 2599 | 42.11526315 | 1098 |
 
 费用按原试次累计已知模型与教师参考部分，仍缺供应商及资源实收；各策略及成对结果见两批`metrics/per_strategy.csv`、`per_episode.csv`和`comparisons.json`。全部89题的完整比较尚未完成。
 
-两项在途Terra High随后在15:38:49 UTC前后从HTTP502重试至200，均继续原工具执行，原请求模型与档位保持；失败尝试及未知费用单列。
+分析212be725580150967149e1baa8125e157ba8fb95统一处理“本Episode已有生成重试，末次请求因原任务期限截断”的真实记录；三批各10／5／2个同Trial原有效0转为接口缺分，官方原始Reward不变。三批当前采集器2097071／2097072／2097073保持1200秒间隔。2057318继续query-optimize、torch-tensor-parallelism、tune-mjcf的四项固定恢复；1696641继续bn-fit-modify训练Kev OFF Low／High；2097543等待2057318后接续pytorch-model-cli／qemu-alpine-ssh Terra High，均沿原CLI、Seed43和原时限。
 
 ## 2026-11-18 18:06 · 原批次接续与渠道故障定位
 

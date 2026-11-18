@@ -1,16 +1,18 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-11-18 23:38：GLM凭据更新与真实任务恢复
+## 2026-11-19：Colink凭据生效、原任务恢复与费用保留
 
 Colink新凭据已更新到唯一0600私有配置和原1696633／1345012内存描述符，后续Episode直接读取；原在途请求保持已有Provider实例。GLM、Terra均在原Harbor任务中恢复HTTP200及工具执行，Luna当前模型列表仍401/Invalid token。
 
-Seed43四项原位置均新增原官方Reward1：GLM Low的modernize-scientific-stack（2/2断言、11030 Token、$0.00103893、129.639379秒）及polyglot-rust-c（1/1、181150 Token、$0.03521321、875.733494秒），Terra High的pypi-server（1/1、112688 Token、$0.081424、301.465327秒）及prove-plus-comm（4/4、126691 Token、$0.0697486、336.666307秒）。四项新Episode合计431559 API Token、$0.18742474模型参考费，0额外重试、0请求费用缺项；供应商实收及资源美元费用未知，既往故障与费用分别保留。polyglot-rust-c的Controller exit_code=2与官方Reward1同时保留，成绩依据原Verifier的1/1断言。
+Seed43原固定位置共新增六个原官方Reward1：GLM Low的modernize-scientific-stack、polyglot-rust-c、crack-7z-hash、overfull-hbox，Terra High的pypi-server、prove-plus-comm。六项新Episode合计820724已报API Token、$0.21291896模型参考费、0额外重试、0请求费用缺项；供应商实收及资源美元费用未知，既往故障与费用分别保留。GLM后三项Controller exit_code=2与官方Reward1同时保留，成绩依据原Verifier断言。
 
-2046212／2046219／2046220已自然退出；2057312／2057318沿原CLI接续GLM Low／Terra High固定技术恢复。23:37在途为overfull-hbox、crack-7z-hash的GLM Low及polyglot-rust-c、polyglot-c-py的Terra High；GLM两项已有实际工具执行，Terra两项首请求仍在重试。原Model-only 1696641继续两项bn-fit-modify训练Laya Max，已有GLM实际生成和工具。固定总并发4、Router并发2，原矩阵、权重、Seed及4096参数保持。
+Terra High的polyglot-rust-c／polyglot-c-py分别完成4／1次工具、额外重试15／30次后到原任务期限，原Verifier均0，质量单列PROVIDER_RETRY_DEADLINE。两项已报27413／5461 Token、已知参考费$0.02725860／$0.00634500，各1次请求费用缺失。训练Laya OFF Max的bn-fit-modify正常执行后原官方0、275377已报Token、$0.02339090参考费、0额外重试，保留有效失败。
 
-23:39现行分析导出：Model-only 1811/2136位置结束，340有效1、198有效0、1241缺分、32项Verifier依赖故障另列；2运行、323未开始，1812个原Trial，已知模型与教师参考费$27.47543736、1714次请求费用未知、8802次额外重试。联合257位置结束、4项恢复中、696未开始，有效88/55、114缺分，269个原Trial、已知参考费$9.25948680、146次请求费用未知；已结束数因原故障位置处于独立恢复而暂减，不删除旧Trial。当前仍不能形成全89题的完整方法比较。
+11-18 23:59现行快照：Model-only 1818/2136位置结束，341有效1、188有效0、1257缺分、32项Verifier依赖故障另列；2运行、316未开始，1819个原Trial，已知模型与教师参考费$27.49070775、1725次请求费用未知。联合257位置结束、4项恢复中、696未开始，有效90/50、117缺分，273个原Trial、已知参考费$9.31858462、153次请求费用未知；历史1513位置、2599 Trial、308/342有效1/0、797缺分、66依赖故障，已知参考费$42.11526315。恢复中的原故障位置不计入当下已结束数，旧Trial保留；全89题完整比较尚未完成。
 
-后续两项Terra High首请求均在15:38:49 UTC前后从HTTP502重试至200，并继续原工具执行；失败尝试与未知费用保留。该记录实际验证现行Provider重试后恢复同一次生成，不重新执行既有工具。
+分析212be725580150967149e1baa8125e157ba8fb95已部署，821行：本Episode已有生成重试且末次请求被原任务期限截断时，沿原逻辑列为接口故障，保留官方0。三批同Trial对比有10／5／2个原有效0转入缺分；原始成绩、费用和失败尝试均保留。真实bn-fit-modify正常0及GLM成功1的分类保持。2097071／2097072／2097073沿原目录每1200秒采集。
+
+原1696641、2057318及有限1345012继续；当前固定四项为query-optimize、torch-tensor-parallelism的Terra High及GLM Low、tune-mjcf的Terra High；Model-only为bn-fit-modify训练Kev OFF Low／High，两类均已有工具执行。2097543沿原CLI等待2057318退出后接续渠道恢复前已做过失败尝试的pytorch-model-cli／qemu-alpine-ssh Terra High。固定4并发、Router2并发及原矩阵、权重、Seed、4096参数保持。
 
 ## 2026-11-18 18:06：原批次接续与渠道故障定位
 

@@ -3,7 +3,7 @@
   "strategy_id": "glm_low",
   "seed": 43,
   "unit_id": "torch-tensor-parallelism--glm_low--s43",
-  "status": "PARTIAL",
+  "status": "RUNNING",
   "run_id": "20261112-v9-joint-paired",
   "benchmark_name": "Terminal-Bench",
   "benchmark_version": "2.0",
@@ -29,7 +29,7 @@
   },
   "reward": null,
   "error_type": "AgentTimeoutError",
-  "execution_status": "UNKNOWN",
+  "execution_status": "RUNNING",
   "effort_comparison_eligible": true,
   "episode_wall_s": 969.952274,
   "generator_known_reference_usd": 0.01152986,
@@ -49,7 +49,7 @@
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
   "latest_trial_reference_usd": null,
-  "verifier_dependency_failure": false,
+  "verifier_dependency_failure": true,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
   "environment_cost_usd": null,
@@ -58,7 +58,7 @@
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261112-v9-joint-paired/.private/episodes/torch-tensor-parallelism/glm_low/43",
   "trial_id": "5109434f-cc17-4161-a32a-fae71476a061",
   "official_reward": 0.0,
-  "technical_fault": "VERIFIER_REPORT_ABSENT",
+  "technical_fault": "VERIFIER_DEPENDENCY",
   "raw_verifier_rewards": [
     {
       "reward": 0.0
@@ -979,9 +979,9 @@
       "decision_id": "5109434f-cc17-4161-a32a-fae71476a061-33"
     }
   ],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
-  "completed_tool_calls": 33,
+  "completed_tool_calls": 68,
   "unknown_provider_cost_requests": 1,
   "prompt_tokens": null,
   "completion_tokens": null,
@@ -2198,8 +2198,8 @@
   "logical_model_changes": 0,
   "endpoint_changes": 0,
   "prefix_continuity_counts": {
-    "FIRST_REQUEST": 1,
-    "EXACT_PREVIOUS_MESSAGES": 32,
+    "FIRST_REQUEST": 2,
+    "EXACT_PREVIOUS_MESSAGES": 67,
     "PREFIX_CHANGED": 0
   },
   "router_truncated_decisions": 0,
