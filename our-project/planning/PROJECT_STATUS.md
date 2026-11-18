@@ -2,7 +2,7 @@
 
 ## 2026-11-19：原批次继续与凭据进程路径
 
-最近采集为Model-only 03:03、联合03:00、历史03:08台北：Model-only 1842/2136位置结束，343有效1、190有效0、1277缺分、32项Verifier依赖故障另列；2运行、292未开始，1843个Trial，已知模型与教师参考费$28.28908443、1768次请求费用未知。联合260位置结束、1项恢复中、696未开始，有效98/55、107缺分，297个Trial，已知参考费$14.22216817、194次请求费用未知。历史原1513位置均有既往记录，当前1512位置结束、1项恢复中；308/342有效1/0、800缺分、62依赖故障，2604 Trial，已知参考费$42.11526315、1098次请求费用未知。
+最近采集为Model-only 03:03、联合03:20、历史03:16台北：Model-only 1842/2136位置结束，343有效1、190有效0、1277缺分、32项Verifier依赖故障另列；2运行、292未开始，1843个Trial，已知模型与教师参考费$28.28908443、1768次请求费用未知。联合259位置结束、2项恢复中、696未开始，有效98/56、105缺分，298个Trial，已知参考费$14.74138297、195次请求费用未知。历史03:16快照1513位置结束，308/343有效1/0、800缺分、62依赖故障，2605 Trial，已知参考费$42.12164942、1098次请求费用未知；其余4个GLM位置继续接续。
 
 本轮联合新增八个Terra High有效1：code-from-image、custom-memory-heap-crash、break-filter-js-from-html、mteb-retrieve、rstan-to-pystan、distribution-search、mteb-leaderboard、fix-ocaml-gc。八次独立Episode合计8047751已报Token、$1.94008140已知模型参考费、70次额外重试，请求与返回模型及High均匹配；失败尝试实收、供应商账单及资源美元费用未知。原恢复前失败与费用保留。新增有效0还包括circuit-fibsqrt、portfolio-optimization／Terra High，均不重跑。
 
@@ -12,7 +12,7 @@ bn-fit-modify训练Kev OFF Low／High各有一条请求实际执行101次总尝�
 
 query-optimize／Terra High已正常提交，原Verifier900秒超时。原镜像、1CPU／2GiB只读诊断中，参考SQL1.829秒、任务自带原始SQL823.925秒（818.340 CPU秒）各返回500行；原生SQLite3.45.1与评分Python3.13.9的SQLite3.50.4均保留实测记录。依赖预装9.986秒后，复用保存的最终文件及原Harbor Verifier仍900.090秒超时，正式Episode成绩保持空值；该诊断不替代Agent结果。首轮诊断缺日志目录的失败与后续超时均留在该原位置.private目录，后续正式源码继续原实现。
 
-1696641及2057318继续，03:03原Model-only正在circuit-fibsqrt，联合固定为train-fasttext／Terra High。2253174沿原CLI先恢复5个历史Seed42 GLM位置，再等待2057318／2097543后执行其余固定恢复及9个事前选定Terra位置；已有有效0／1复用。首次5项因控制命令的/proc/self/fd/3在Harbor子进程内不可读而提前中断，0次Provider请求，原故障Trial保留。6eaee77a9e90ece40d4c0a3378eb1803d8bc26c1在现行rq1_batch.py增加5行：执行前将self描述符绑定父PID，并识别该明确故障供独立接续。03:08 configure-git-webserver新Trial 55d17b19-b45e-48d5-a07a-762f4891e792已取得GLM Low HTTP200和2次工具结果，原参数与时限保持。固定4、Router2、每1200秒采集及原有限1345012接续顺序保持。
+1696641继续circuit-fibsqrt。2057318／2057312已自然退出，train-fasttext／Terra High取得正常官方0；2097543已接上pytorch-model-cli／qemu-alpine-ssh。2253174沿原CLI先恢复5个历史Seed42 GLM位置，再等待原固定工作后执行其余固定恢复及9个事前选定Terra位置；已有有效0／1复用。首次5项因控制命令的/proc/self/fd/3在Harbor子进程内不可读而提前中断，0次Provider请求，原故障Trial保留。6eaee77a9e90ece40d4c0a3378eb1803d8bc26c1在现行rq1_batch.py增加5行：执行前将self描述符绑定父PID，并识别该明确故障供独立接续。03:14 configure-git-webserver新Trial 55d17b19-b45e-48d5-a07a-762f4891e792完整结束，20次GLM Low请求、22次工具、90093已报Token、$0.00638627已知参考费，0额外重试、0请求费用缺项；原官方1断言失败、有效Reward0保留。固定4、Router2、每1200秒采集及原有限1345012接续顺序保持。
 
 ## 2026-11-19：Colink凭据生效、原任务恢复与费用保留
 
