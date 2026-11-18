@@ -4,17 +4,17 @@
 
 **Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
-共2136个任务/策略/seed位置；已结束1860，运行中1，未开始275，渠道档位不可用0。有效官方任务评分1/0为344/193，缺有效评分 1291，原Verifier依赖失败32位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。
+共2136个任务/策略/seed位置；已结束1873，运行中2，未开始261，渠道档位不可用0。有效官方任务评分1/0为349/193，缺有效评分 1299，原Verifier依赖失败32位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。
 
-已保存原Harbor Trial 1861次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。
+已保存原Harbor Trial 1874次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。
 
-已知模型参考费$29.86899396、教师$0.17324836，合计$30.04224232；1810次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。
+已知模型参考费$30.24137706、教师$0.17324836，合计$30.41462542；1826次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。
 
 费用主表包含全部已结束尝试。逐Episode表的latest_trial_*字段单列最后一次运行的参考费和API Token。official_reward保留原分数；缺有效评分包含未返回Reward及已记录请求/资源故障的原0。官方测试依赖缺失且未执行任务断言的尝试另列。
 
-Harbor命令累计墙钟1119540.415214秒，内含官方Trial累计1094815.182488秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。
+Harbor命令累计墙钟1123043.676371秒，内含官方Trial累计1098254.345755秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。
 
-按逐题表：78/89题已有结束记录；77题已结束全部24个策略。
+按逐题表：79/89题已有结束记录；78题已结束全部24个策略。
 
 GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。
 
@@ -22,9 +22,9 @@ GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请
 
 | 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 评分覆盖 | 89题通过率区间 | 缺有效评分 | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| laya_original_off_model_only_low | 78 | 10 | 8 | 10/18 = 55.56% | 18/89 | 11.24%—91.01% | 60 | 0 | 11 | 0 | 0.12382197 |
-| laya_original_off_model_only_high | 78 | 14 | 3 | 14/17 = 82.35% | 17/89 | 15.73%—96.63% | 59 | 0 | 11 | 0 | 0.23985883 |
-| laya_original_off_model_only_max | 78 | 14 | 8 | 14/22 = 63.64% | 22/89 | 15.73%—91.01% | 55 | 0 | 11 | 0 | 0.73901485 |
+| laya_original_off_model_only_low | 79 | 10 | 8 | 10/18 = 55.56% | 18/89 | 11.24%—91.01% | 61 | 0 | 10 | 0 | 0.12400307 |
+| laya_original_off_model_only_high | 78 | 14 | 3 | 14/17 = 82.35% | 17/89 | 15.73%—96.63% | 59 | 1 | 10 | 0 | 0.23985883 |
+| laya_original_off_model_only_max | 78 | 14 | 8 | 14/22 = 63.64% | 22/89 | 15.73%—91.01% | 55 | 1 | 10 | 0 | 0.73901485 |
 | laya_original_on_model_only_low | 78 | 10 | 4 | 10/14 = 71.43% | 14/89 | 11.24%—95.51% | 64 | 0 | 11 | 0 | 0.10728609 |
 | laya_original_on_model_only_high | 78 | 9 | 7 | 9/16 = 56.25% | 16/89 | 10.11%—92.13% | 62 | 0 | 11 | 0 | 0.17931817 |
 | laya_original_on_model_only_max | 78 | 12 | 10 | 12/22 = 54.55% | 22/89 | 13.48%—88.76% | 55 | 0 | 11 | 0 | 0.70759377 |
@@ -34,31 +34,31 @@ GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请
 | laya_trained_on_model_only_low | 78 | 10 | 11 | 10/21 = 47.62% | 21/89 | 11.24%—87.64% | 56 | 0 | 11 | 0 | 0.15428526 |
 | laya_trained_on_model_only_high | 78 | 10 | 8 | 10/18 = 55.56% | 18/89 | 11.24%—91.01% | 59 | 0 | 11 | 0 | 0.21917176 |
 | laya_trained_on_model_only_max | 78 | 18 | 10 | 18/28 = 64.29% | 28/89 | 20.22%—88.76% | 49 | 0 | 11 | 0 | 0.79115160 |
-| kev_original_off_model_only_low | 77 | 5 | 13 | 5/18 = 27.78% | 18/89 | 5.62%—85.39% | 56 | 1 | 11 | 0 | 0.06820436 |
-| kev_original_off_model_only_high | 77 | 11 | 6 | 11/17 = 64.71% | 17/89 | 12.36%—93.26% | 56 | 0 | 12 | 0 | 0.12089308 |
-| kev_original_off_model_only_max | 77 | 10 | 6 | 10/16 = 62.50% | 16/89 | 11.24%—93.26% | 60 | 0 | 12 | 0 | 0.25497354 |
-| kev_original_on_model_only_low | 77 | 10 | 8 | 10/18 = 55.56% | 18/89 | 11.24%—91.01% | 56 | 0 | 12 | 0 | 0.06332390 |
-| kev_original_on_model_only_high | 77 | 11 | 7 | 11/18 = 61.11% | 18/89 | 12.36%—92.13% | 57 | 0 | 12 | 0 | 0.13393332 |
-| kev_original_on_model_only_max | 77 | 15 | 6 | 15/21 = 71.43% | 21/89 | 16.85%—93.26% | 55 | 0 | 12 | 0 | 0.22503076 |
-| kev_trained_off_model_only_low | 77 | 28 | 12 | 28/40 = 70.00% | 40/89 | 31.46%—86.52% | 34 | 0 | 12 | 0 | 2.91945140 |
-| kev_trained_off_model_only_high | 77 | 26 | 12 | 26/38 = 68.42% | 38/89 | 29.21%—86.52% | 37 | 0 | 12 | 0 | 3.60972900 |
-| kev_trained_off_model_only_max | 77 | 20 | 10 | 20/30 = 66.67% | 30/89 | 22.47%—88.76% | 47 | 0 | 12 | 0 | 6.78971840 |
-| kev_trained_on_model_only_low | 77 | 25 | 10 | 25/35 = 71.43% | 35/89 | 28.09%—88.76% | 40 | 0 | 12 | 0 | 2.24263850 |
-| kev_trained_on_model_only_high | 77 | 24 | 7 | 24/31 = 77.42% | 31/89 | 26.97%—92.13% | 45 | 0 | 12 | 0 | 3.14715120 |
-| kev_trained_on_model_only_max | 77 | 21 | 6 | 21/27 = 77.78% | 27/89 | 23.60%—93.26% | 49 | 0 | 12 | 0 | 6.31915592 |
+| kev_original_off_model_only_low | 78 | 5 | 13 | 5/18 = 27.78% | 18/89 | 5.62%—85.39% | 57 | 0 | 11 | 0 | 0.06820436 |
+| kev_original_off_model_only_high | 78 | 11 | 6 | 11/17 = 64.71% | 17/89 | 12.36%—93.26% | 57 | 0 | 11 | 0 | 0.12089308 |
+| kev_original_off_model_only_max | 78 | 10 | 6 | 10/16 = 62.50% | 16/89 | 11.24%—93.26% | 61 | 0 | 11 | 0 | 0.25497354 |
+| kev_original_on_model_only_low | 78 | 10 | 8 | 10/18 = 55.56% | 18/89 | 11.24%—91.01% | 57 | 0 | 11 | 0 | 0.06332390 |
+| kev_original_on_model_only_high | 78 | 11 | 7 | 11/18 = 61.11% | 18/89 | 12.36%—92.13% | 58 | 0 | 11 | 0 | 0.13393332 |
+| kev_original_on_model_only_max | 78 | 15 | 6 | 15/21 = 71.43% | 21/89 | 16.85%—93.26% | 56 | 0 | 11 | 0 | 0.22503076 |
+| kev_trained_off_model_only_low | 78 | 29 | 12 | 29/41 = 70.73% | 41/89 | 32.58%—86.52% | 34 | 0 | 11 | 0 | 2.97188780 |
+| kev_trained_off_model_only_high | 78 | 27 | 12 | 27/39 = 69.23% | 39/89 | 30.34%—86.52% | 37 | 0 | 11 | 0 | 3.65981900 |
+| kev_trained_off_model_only_max | 78 | 20 | 10 | 20/30 = 66.67% | 30/89 | 22.47%—88.76% | 48 | 0 | 11 | 0 | 6.83316680 |
+| kev_trained_on_model_only_low | 78 | 26 | 10 | 26/36 = 72.22% | 36/89 | 29.21%—88.76% | 40 | 0 | 11 | 0 | 2.28594390 |
+| kev_trained_on_model_only_high | 78 | 25 | 7 | 25/32 = 78.12% | 32/89 | 28.09%—92.13% | 45 | 0 | 11 | 0 | 3.19878200 |
+| kev_trained_on_model_only_max | 78 | 22 | 6 | 22/28 = 78.57% | 28/89 | 24.72%—93.26% | 49 | 0 | 11 | 0 | 6.45044692 |
 
-实际执行跨度：2026-11-12T03:19:08.007951+00:00至2026-11-18T20:28:31.404090+00:00，580163.396139秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。
+实际执行跨度：2026-11-12T03:19:08.007951+00:00至2026-11-18T20:59:37.881110+00:00，582029.873159秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。
 
 
 评分覆盖是已取得有效官方评分的任务数/89；通过率区间把其余位置分别按全部未通过或全部通过计算。
 
-已报告输入121,354,050、输出5,547,444 Token；1,793次请求缺用量。推理包含在输出内，缓存读取包含在输入内，各只计一次；数值包含模型、教师及全部已发生尝试。
+已报告输入121,799,055、输出5,591,883 Token；1,809次请求缺用量。推理包含在输出内，缓存读取包含在输入内，各只计一次；数值包含模型、教师及全部已发生尝试。
 
-Router本地前向另报告输入46,540,561、输出516,419 Token；69次决策缺用量。其计算费用按A6000资源计量，美元单价未知。
+Router本地前向另报告输入46,803,125、输出522,136 Token；69次决策缺用量。其计算费用按A6000资源计量，美元单价未知。
 
-Provider实际报告缓存读取89,763,702 Token；2291次请求未报告缓存读取；跨模型物理KV共享未知。
+Provider实际报告缓存读取90,072,822 Token；2308次请求未报告缓存读取；跨模型物理KV共享未知。
 
-教师请求1072次，短评实际输入Router 1316次；同一短评可由多次决策消费。
+教师请求1080次，短评实际输入Router 1316次；同一短评可由多次决策消费。
 
 Provider实际额外重试9232次；已记录技术恢复0次，涉及0个位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。
 
@@ -85,8 +85,8 @@ Provider报告输出超过请求额度126次；其中0个额度终止位置单�
 | EnvironmentStartTimeoutError | 0 | 0 | 7 |
 | HTTPError | 0 | 0 | 10 |
 | JSONDecodeError | 0 | 0 | 1 |
-| NO_RECORDED_ERROR | 305 | 108 | 34 |
-| NonZeroAgentExitCodeError | 0 | 0 | 567 |
+| NO_RECORDED_ERROR | 310 | 108 | 34 |
+| NonZeroAgentExitCodeError | 0 | 0 | 575 |
 | OutputTokenExceededError | 0 | 7 | 0 |
 | ProviderResponseError | 0 | 0 | 26 |
 | RemoteDisconnected | 0 | 0 | 2 |
@@ -107,11 +107,11 @@ Provider报告输出超过请求额度126次；其中0个额度终止位置单�
 | teacher | laya_original_off_model_only_high → laya_original_on_model_only_high | 13 | 10/8 | 11 | 10/8 | 0.08617201 / 0.06919549 |
 | teacher | laya_trained_off_model_only_high → laya_trained_on_model_only_high | 13 | 9/6 | 9 | 7/6 | 0.05737206 / 0.02962023 |
 | teacher | kev_original_off_model_only_high → kev_original_on_model_only_high | 16 | 10/10 | 13 | 9/9 | 0.07743622 / 0.08966418 |
-| teacher | kev_trained_off_model_only_high → kev_trained_on_model_only_high | 26 | 20/21 | 13 | 10/12 | 0.66151930 / 0.58588480 |
+| teacher | kev_trained_off_model_only_high → kev_trained_on_model_only_high | 27 | 21/22 | 13 | 10/12 | 0.66151930 / 0.58588480 |
 | teacher | laya_original_off_model_only_low → laya_original_on_model_only_low | 13 | 7/9 | 12 | 7/9 | 0.05613557 / 0.05385480 |
 | teacher | laya_trained_off_model_only_low → laya_trained_on_model_only_low | 15 | 6/7 | 12 | 5/6 | 0.05340857 / 0.04677343 |
 | teacher | kev_original_off_model_only_low → kev_original_on_model_only_low | 14 | 4/6 | 13 | 4/6 | 0.04198150 / 0.04457288 |
-| teacher | kev_trained_off_model_only_low → kev_trained_on_model_only_low | 32 | 22/25 | 11 | 9/9 | 0.69389400 / 0.64950570 |
+| teacher | kev_trained_off_model_only_low → kev_trained_on_model_only_low | 33 | 23/26 | 11 | 9/9 | 0.69389400 / 0.64950570 |
 | teacher | laya_original_off_model_only_max → laya_original_on_model_only_max | 15 | 11/9 | 5 | 4/5 | 0.08708049 / 0.13727857 |
 | teacher | laya_trained_off_model_only_max → laya_trained_on_model_only_max | 18 | 12/10 | 6 | 5/5 | 0.07046604 / 0.08377243 |
 | teacher | kev_original_off_model_only_max → kev_original_on_model_only_max | 15 | 9/10 | 15 | 9/10 | 0.19307260 / 0.14507666 |
@@ -161,7 +161,7 @@ Provider报告输出超过请求额度126次；其中0个额度终止位置单�
 
 以下登记实际选中模型及请求Native Effort；Model-only组固定档位、只选择模型。教师短评输入Router，不直接写入执行模型消息。
 
-- laya_original_off_model_only_low: `{"glm-5.3-flash:low": 118, "gpt-6-luna:low": 195}`
+- laya_original_off_model_only_low: `{"glm-5.3-flash:low": 119, "gpt-6-luna:low": 196}`
 - laya_original_off_model_only_high: `{"glm-5.3-flash:high": 106, "gpt-6-luna:high": 240}`
 - laya_original_off_model_only_max: `{"glm-5.3-flash:max": 561, "gpt-6-luna:max": 111}`
 - laya_original_on_model_only_low: `{"glm-5.3-flash:low": 108, "gpt-6-luna:low": 168}`
@@ -173,15 +173,15 @@ Provider报告输出超过请求额度126次；其中0个额度终止位置单�
 - laya_trained_on_model_only_low: `{"glm-5.3-flash:low": 117, "gpt-6-luna:low": 196}`
 - laya_trained_on_model_only_high: `{"glm-5.3-flash:high": 71, "gpt-6-luna:high": 328}`
 - laya_trained_on_model_only_max: `{"glm-5.3-flash:max": 607, "gpt-6-luna:max": 113}`
-- kev_original_off_model_only_low: `{"gpt-6-luna:low": 231}`
-- kev_original_off_model_only_high: `{"gpt-6-luna:high": 308}`
-- kev_original_off_model_only_max: `{"gpt-6-luna:max": 331}`
-- kev_original_on_model_only_low: `{"gpt-6-luna:low": 203}`
-- kev_original_on_model_only_high: `{"gpt-6-luna:high": 306}`
-- kev_original_on_model_only_max: `{"gpt-6-luna:max": 319}`
-- kev_trained_off_model_only_low: `{"gpt-6.1-terra:low": 625, "gpt-6-luna:low": 1}`
-- kev_trained_off_model_only_high: `{"gpt-6.1-terra:high": 615, "gpt-6-luna:high": 5}`
-- kev_trained_off_model_only_max: `{"gpt-6.1-terra:max": 689, "gpt-6-luna:max": 10}`
-- kev_trained_on_model_only_low: `{"gpt-6.1-terra:low": 587, "gpt-6-luna:low": 2}`
-- kev_trained_on_model_only_high: `{"gpt-6.1-terra:high": 572, "gpt-6-luna:high": 8}`
-- kev_trained_on_model_only_max: `{"gpt-6.1-terra:max": 703, "gpt-6-luna:max": 12}`
+- kev_original_off_model_only_low: `{"gpt-6-luna:low": 232}`
+- kev_original_off_model_only_high: `{"gpt-6-luna:high": 309}`
+- kev_original_off_model_only_max: `{"gpt-6-luna:max": 332}`
+- kev_original_on_model_only_low: `{"gpt-6-luna:low": 204}`
+- kev_original_on_model_only_high: `{"gpt-6-luna:high": 307}`
+- kev_original_on_model_only_max: `{"gpt-6-luna:max": 320}`
+- kev_trained_off_model_only_low: `{"gpt-6.1-terra:low": 633, "gpt-6-luna:low": 1}`
+- kev_trained_off_model_only_high: `{"gpt-6.1-terra:high": 624, "gpt-6-luna:high": 5}`
+- kev_trained_off_model_only_max: `{"gpt-6.1-terra:max": 693, "gpt-6-luna:max": 11}`
+- kev_trained_on_model_only_low: `{"gpt-6.1-terra:low": 596, "gpt-6-luna:low": 2}`
+- kev_trained_on_model_only_high: `{"gpt-6.1-terra:high": 579, "gpt-6-luna:high": 8}`
+- kev_trained_on_model_only_max: `{"gpt-6.1-terra:max": 720, "gpt-6-luna:max": 12}`
