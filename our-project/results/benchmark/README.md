@@ -10,6 +10,8 @@
 
 Colink新凭据已用于GLM完整Episode，Low／High／Max三档均有实际工具调用。五个原始403响应明确为`SUBSCRIPTION_NOT_FOUND`的Seed43位置进入单次技术恢复。`llm-inference-batching-scheduler`的原始Laya OFF、训练Laya OFF／ON，以及`mailman`的原始Laya OFF／ON均为固定Max的Model-only路由，原位置仍无有效评分。Luna／Codegoai生成接口最近记录仍为401。Terra／Jiji已在原Harbor取得官方结果。三批分别有1829、196和1117条请求费用未知，供应商实收及资源美元费用缺项。
 
+05:55四个Seed42旧uvx故障已加入有限队列2492278：GLM Low的overfull-hbox、adaptive-rejection-sampler、cobol-modernization及GLM High的build-pmars。原bin/uv与bin/uvx现均存在、可执行，相同依赖机制已有完整成功Episode。四个位置此前都有一次无有效评分的恢复记录，普通批次会跳过；现等待固定阶段2253174自然结束后沿原--task／--strategy入口各接续一次。另三个同类旧恢复位置属于Luna的adaptive-rejection-sampler Low／High／Max，仍有渠道401，保留无分。其余55个历史评分依赖故障尚无本轮恢复标记，继续沿原普通恢复入口处理。
+
 05:22至05:43历史Seed42新增以下七个有效官方结果，均由原Verifier给分，原恢复入口对这七项返回None，保留终局。Token与参考费均取本次独立Episode。
 
 | GLM任务／档位 | 官方Reward | 原断言通过 | 本次已报API Token | 本次已知参考USD | 本次费用缺项请求 |
