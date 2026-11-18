@@ -40,7 +40,7 @@
     "training_cost": "SEPARATE_FROM_ONLINE_COST"
   },
   "current_execution": {
-    "observed_at": "2026-11-18T23:59:30+08:00",
+    "observed_at": "2026-11-19T01:28:43+08:00",
     "controller_pid": 2057318,
     "credential_holder_pid": 2057312,
     "stage": "fixed_technical_recovery",
@@ -49,10 +49,10 @@
     "fixed_concurrency": 4,
     "other_running_router_concurrency": 2,
     "active_positions": [
-      {"task": "torch-tensor-parallelism", "strategy": "glm_low", "episode_id": "ed1e68b4-18bc-4a84-a012-a6eb7e225bcd"},
-      {"task": "query-optimize", "strategy": "terra_high", "episode_id": "5c6f01fa-2740-4ad9-a020-171b431f9f3b"},
-      {"task": "torch-tensor-parallelism", "strategy": "terra_high", "episode_id": "a36c08f9-3492-425a-a441-a4ae07378255"},
-      {"task": "tune-mjcf", "strategy": "terra_high", "episode_id": "43f7541f-95f5-4343-98cc-e43c9db8d606"}
+      {"task": "distribution-search", "strategy": "terra_high", "episode_id": "e2df619d-ddf9-4c4d-b6e5-739adc50f530"},
+      {"task": "schemelike-metacircular-eval", "strategy": "terra_high", "episode_id": "2fe290c3-7c6e-46a5-8dd3-eec6a0bceae5"},
+      {"task": "compile-compcert", "strategy": "terra_high", "episode_id": "f386a6be-0fdb-48ca-accc-a732a4d7003c"},
+      {"task": "circuit-fibsqrt", "strategy": "terra_high", "episode_id": "933016dd-1c84-4310-8e75-dc24b8254a9c"}
     ],
     "provider_extra_retry_limit": 100,
     "maximum_output_tokens": 4096,
@@ -79,6 +79,50 @@
       {"task": "polyglot-rust-c", "strategy": "terra_high", "trial_id": "98b3dc00-4141-43a5-926b-18a8b46aefe5", "official_reward": 0, "effective_quality_reward": null, "technical_fault": "PROVIDER_RETRY_DEADLINE", "assertions_passed": 0, "assertions_failed": 1, "reported_api_tokens": 27413, "known_reference_usd": 0.02725860, "unknown_cost_requests": 1, "extra_retries": 15, "tool_results": 4, "harbor_wall_s": 1011.913281},
       {"task": "polyglot-c-py", "strategy": "terra_high", "trial_id": "672de591-29df-4098-9cf1-0ffe132ed0ba", "official_reward": 0, "effective_quality_reward": null, "technical_fault": "PROVIDER_RETRY_DEADLINE", "assertions_passed": 0, "assertions_failed": 1, "reported_api_tokens": 5461, "known_reference_usd": 0.00634500, "unknown_cost_requests": 1, "extra_retries": 30, "tool_results": 1, "harbor_wall_s": 1017.149216}
     ]
+  },
+  "terra_successes_20261119_continuation": {
+    "seed": 43,
+    "strategy": "terra_high",
+    "episodes": [
+      {"task": "code-from-image", "trial_id": "7ceabb45-06d4-491a-8fc6-13744cc1b14d", "official_reward": 1, "assertions_passed": 2, "assertions_failed": 0, "reported_tokens": 223092, "known_reference_usd": 0.10942400, "extra_retries": 0, "provider_cache_read_tokens": 153600, "harbor_wall_s": 516.401811},
+      {"task": "custom-memory-heap-crash", "trial_id": "a1406c15-a555-486f-8d03-3492096d7524", "official_reward": 1, "assertions_passed": 6, "assertions_failed": 0, "reported_tokens": 273895, "known_reference_usd": 0.13016700, "extra_retries": 0, "provider_cache_read_tokens": 181760, "harbor_wall_s": 432.288186},
+      {"task": "break-filter-js-from-html", "trial_id": "213535fe-fda7-480e-87d0-790b18a99b9e", "official_reward": 1, "assertions_passed": 1, "assertions_failed": 0, "reported_tokens": 219178, "known_reference_usd": 0.14789000, "extra_retries": 2, "provider_cache_read_tokens": 154880, "cache_unknown_requests": 2, "harbor_wall_s": 959.926754},
+      {"task": "mteb-retrieve", "trial_id": "4c346be9-c976-4f69-ab32-354b1957621a", "official_reward": 1, "assertions_passed": 2, "assertions_failed": 0, "reported_tokens": 212851, "known_reference_usd": 0.10979260, "extra_retries": 1, "provider_cache_read_tokens": 138112, "cache_unknown_requests": 1, "harbor_wall_s": 602.009708},
+      {"task": "rstan-to-pystan", "trial_id": "0475b474-f91b-4fe7-925d-ae0ab5539350", "official_reward": 1, "assertions_passed": 6, "assertions_failed": 0, "reported_tokens": 2356762, "known_reference_usd": 0.38832200, "extra_retries": 0, "provider_cache_read_tokens": 2152960, "harbor_wall_s": 1708.788725}
+    ],
+    "reported_tokens": 3285778,
+    "known_reference_usd": 0.88559560,
+    "extra_retries": 3,
+    "requested_and_returned_model": "gpt-6.1-terra",
+    "requested_and_returned_effort": "high",
+    "supplier_billed_and_resource_usd": null,
+    "failed_attempt_billed_usd": null,
+    "physical_kv_shared": null
+  },
+  "query_verifier_diagnosis_20261119": {
+    "source_trial_id": "5c6f01fa-2740-4ad9-a020-171b431f9f3b",
+    "original_agent_status": "SUBMITTED",
+    "original_episode_reward": null,
+    "original_verifier_limit_s": 900,
+    "original_task_cpu_limit": 1,
+    "original_task_memory_gib": 2,
+    "sqlite_python_version": "3.13.9",
+    "sqlite_python_library_version": "3.50.4",
+    "native_sqlite_cli_version": "3.45.1",
+    "golden_sql_wall_s": 1.8293487959890626,
+    "golden_sql_rows": 500,
+    "original_sql_wall_s": 823.9250340649742,
+    "original_sql_cpu_s": 818.339516684,
+    "original_sql_rows": 500,
+    "curl_prewarm_wall_s": 9.985872641205788,
+    "reconstructed_solution_verifier_status": "VERIFIER_TIMEOUT",
+    "reconstructed_solution_verifier_wall_s": 900.0904582049698,
+    "diagnostic_verifier_logs": "ABSENT_AFTER_TIMEOUT_CLEANUP",
+    "first_dependency_diagnosis_status": "DIAGNOSTIC_SETUP_FAILED_MISSING_CONTAINER_LOG_DIRECTORY",
+    "formal_quality_reward_from_diagnosis": null,
+    "diagnosis_resource_usd": null,
+    "private_evidence_directory": ".private/episodes/query-optimize/terra_high/43",
+    "scope": "DIAGNOSIS_ONLY_NOT_AN_AGENT_EPISODE"
   },
   "quality_classification_update_20261119": {
     "analysis_revision": "212be725580150967149e1baa8125e157ba8fb95",

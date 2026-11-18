@@ -1,5 +1,17 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-19：原批次继续、100次停止与SQL评分耗时
+
+最近采集为Model-only 01:21、联合01:19台北：Model-only 1820/2136位置结束，341有效1、188有效0、1259缺分、32项Verifier依赖故障另列；2运行、314未开始，1821个Trial，已知模型与教师参考费$27.55151955、1727次请求费用未知。联合257位置结束、4项恢复中、696未开始，有效95/53、109缺分，288个Trial，已知参考费$12.17954317、169次请求费用未知。历史1513位置、2599 Trial及308/342有效1/0保持。
+
+本轮联合新增五个Terra High有效1：code-from-image、custom-memory-heap-crash、break-filter-js-from-html、mteb-retrieve、rstan-to-pystan。五次独立Episode合计3285778已报Token、$0.88559560已知模型参考费、3次额外重试，请求与返回模型及High均匹配；失败尝试实收、供应商账单及资源美元费用未知。原恢复前失败与费用保留。新增有效0为torch-tensor-parallelism／GLM Low、filter-js-from-html／GLM Low、extract-moves-from-video／Terra High，均不重跑。
+
+bn-fit-modify训练Kev OFF Low／High各有一条请求实际执行101次总尝试，末次attempt_index=100、retry_stop_reason=RETRY_LIMIT，随后停止。两项原Verifier均执行9断言并写0，Harbor对接口异常保留无有效质量评分；各100次额外重试、36795／41956已报Token、$0.03738780／$0.02342400已知参考费，各1次请求费用缺项。原3600秒Agent及Verifier时限保持。
+
+query-optimize／Terra High已正常提交，原Verifier900秒超时。原镜像、1CPU／2GiB只读诊断中，参考SQL1.829秒、任务自带原始SQL823.925秒（818.340 CPU秒）各返回500行；原生SQLite3.45.1与评分Python3.13.9的SQLite3.50.4均保留实测记录。依赖预装9.986秒后，复用保存的最终文件及原Harbor Verifier仍900.090秒超时，正式Episode成绩保持空值；该诊断不替代Agent结果。首轮诊断缺日志目录的失败与后续超时均留在该原位置.private目录，后续正式源码继续原实现。
+
+1696641及2057318继续；当前Model-only为bn-fit-modify训练Kev OFF Max／ON Low，01:27新教师请求仍401。固定队列继续distribution-search、schemelike-metacircular-eval、compile-compcert、circuit-fibsqrt的Terra High。2097543仍等待2057318接续pytorch-model-cli／qemu-alpine-ssh；新增2163799沿原CLI等待这两组固定工作结束后，执行历史Seed42的GLM Low／High／Max及Terra High必要技术恢复，已有有效0／1复用。固定4、Router2、每1200秒采集及原有限1345012接续顺序保持。
+
 ## 2026-11-19：Colink凭据生效、原任务恢复与费用保留
 
 Colink新凭据已更新到唯一0600私有配置和原1696633／1345012内存描述符，后续Episode直接读取；原在途请求保持已有Provider实例。GLM、Terra均在原Harbor任务中恢复HTTP200及工具执行，Luna当前模型列表仍401/Invalid token。
