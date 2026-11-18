@@ -1,5 +1,269 @@
 [
   {
+    "event": "HISTORICAL_GLM_MAX_AND_FIXED_RECOVERY_RESULTS",
+    "controller_pid": 2253174,
+    "episodes": [
+      {
+        "task": "adaptive-rejection-sampler",
+        "strategy": "glm_max",
+        "seed": 42,
+        "trial_id": "90cab049-a06a-4e69-b4bc-14dc1d61fb82",
+        "official_reward": 0,
+        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+        "provider_interruption_observed": null,
+        "assertions": [
+          {
+            "passed": 5,
+            "failed": 4,
+            "tests": 9
+          }
+        ],
+        "reported_api_tokens": 838535,
+        "known_reference_usd": 0.06354141,
+        "unknown_cost_requests": 1,
+        "extra_retries": 0,
+        "generator_requests": 29,
+        "cache_read_reported_tokens": 648192,
+        "tool_results": 30,
+        "harbor_wall_s": 978.757454,
+        "finished_at": "2026-11-18T19:52:33.044866Z",
+        "returned_efforts": {
+          "None": 29
+        }
+      },
+      {
+        "task": "cancel-async-tasks",
+        "strategy": "glm_max",
+        "seed": 42,
+        "trial_id": "bcddd7fd-df83-4bc9-ba1b-b4223cca408c",
+        "official_reward": 1,
+        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+        "provider_interruption_observed": null,
+        "assertions": [
+          {
+            "passed": 6,
+            "failed": 0,
+            "tests": 6
+          }
+        ],
+        "reported_api_tokens": 1277766,
+        "known_reference_usd": 0.07791612,
+        "unknown_cost_requests": 0,
+        "extra_retries": 0,
+        "generator_requests": 36,
+        "cache_read_reported_tokens": 1072384,
+        "tool_results": 48,
+        "harbor_wall_s": 967.182655,
+        "finished_at": "2026-11-18T19:52:21.469548Z",
+        "returned_efforts": {
+          "None": 36
+        }
+      },
+      {
+        "batch": "20261108-v9-rq1-glm",
+        "task": "count-dataset-tokens",
+        "strategy": "glm_low",
+        "seed": 42,
+        "trial_id": "59a0afcb-f8ea-4ab3-8919-7125dec2cae8",
+        "finished_at": "2026-11-18T20:02:46.078311Z",
+        "official_reward": 1,
+        "raw_reward": [
+          {
+            "reward": 1
+          }
+        ],
+        "technical_fault": null,
+        "assertions": [
+          {
+            "passed": 1,
+            "failed": 0,
+            "tests": 1
+          }
+        ],
+        "reported_api_tokens": 89954,
+        "known_reference_usd": 0.0057902,
+        "unknown_cost_requests": 0,
+        "extra_retries": 0,
+        "teacher_requests": 0,
+        "teacher_http": [],
+        "teacher_consumed_decisions": 0,
+        "latest_teacher_event": null,
+        "cache_read_reported_tokens": 69120,
+        "tool_results": 18,
+        "harbor_wall_s": 448.165669
+      },
+      {
+        "batch": "20261108-v9-rq1-glm",
+        "task": "count-dataset-tokens",
+        "strategy": "glm_high",
+        "seed": 42,
+        "trial_id": "c4f67996-b802-4769-9271-e1b599462489",
+        "finished_at": "2026-11-18T20:06:57.943174Z",
+        "official_reward": 1,
+        "raw_reward": [
+          {
+            "reward": 1
+          }
+        ],
+        "technical_fault": null,
+        "assertions": [
+          {
+            "passed": 1,
+            "failed": 0,
+            "tests": 1
+          }
+        ],
+        "reported_api_tokens": 205882,
+        "known_reference_usd": 0.01807174,
+        "unknown_cost_requests": 0,
+        "extra_retries": 0,
+        "teacher_requests": 0,
+        "teacher_http": [],
+        "teacher_consumed_decisions": 0,
+        "latest_teacher_event": null,
+        "cache_read_reported_tokens": 132608,
+        "tool_results": 36,
+        "harbor_wall_s": 700.031281
+      }
+    ],
+    "original_failed_trials_retained": true,
+    "supplier_billed_and_resource_usd": null
+  },
+  {
+    "event": "HISTORICAL_GLM_HIGH_RECOVERY_COMPLETED",
+    "completed_at": "2026-11-18T19:33:25.404390Z",
+    "controller_pid": 2253174,
+    "source_revision": "6eaee77a9e90ece40d4c0a3378eb1803d8bc26c1",
+    "episodes": [
+      {
+        "batch": "20261108-v9-rq1-glm",
+        "task": "adaptive-rejection-sampler",
+        "strategy": "glm_high",
+        "seed": 42,
+        "trial_id": "c6acf811-6052-4e07-b74a-685899641a44",
+        "official_reward": 0,
+        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+        "technical_fault": null,
+        "ctrf_summaries": [
+          {
+            "tests": 9,
+            "passed": 6,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1795030370.7500827,
+            "stop": 1795030373.15932
+          }
+        ],
+        "reported_api_tokens": 1044649,
+        "known_reference_usd": 0.05919533,
+        "unknown_cost_requests": 1,
+        "extra_retries": 0,
+        "generator_requests": 32,
+        "teacher_requests": 0,
+        "teacher_consumed_decisions": 0,
+        "cache_read_reported_tokens": 941696,
+        "tool_results": 36,
+        "harbor_wall_s": 980.51038,
+        "finished_at": "2026-11-18T19:33:18.972526Z",
+        "request_return_identities": [
+          {
+            "identity": [
+              "glm-5.3-flash",
+              "high",
+              "glm-5.3-flash",
+              null,
+              "NOT_REPORTED"
+            ],
+            "count": 31
+          },
+          {
+            "identity": [
+              "glm-5.3-flash",
+              "high",
+              null,
+              null,
+              null
+            ],
+            "count": 1
+          }
+        ],
+        "router_fallback_values": [
+          false
+        ],
+        "effective_quality_reward": 0
+      },
+      {
+        "batch": "20261108-v9-rq1-glm",
+        "task": "cancel-async-tasks",
+        "strategy": "glm_high",
+        "seed": 42,
+        "trial_id": "f7821f34-7172-41d1-b443-e36ce0fc0270",
+        "official_reward": 1,
+        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+        "technical_fault": null,
+        "ctrf_summaries": [
+          {
+            "tests": 6,
+            "passed": 6,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1795030361.6069982,
+            "stop": 1795030380.2708254
+          }
+        ],
+        "reported_api_tokens": 595317,
+        "known_reference_usd": 0.03794485,
+        "unknown_cost_requests": 1,
+        "extra_retries": 0,
+        "generator_requests": 22,
+        "teacher_requests": 0,
+        "teacher_consumed_decisions": 0,
+        "cache_read_reported_tokens": 524160,
+        "tool_results": 25,
+        "harbor_wall_s": 986.943215,
+        "finished_at": "2026-11-18T19:33:25.404390Z",
+        "request_return_identities": [
+          {
+            "identity": [
+              "glm-5.3-flash",
+              "high",
+              "glm-5.3-flash",
+              null,
+              "NOT_REPORTED"
+            ],
+            "count": 21
+          },
+          {
+            "identity": [
+              "glm-5.3-flash",
+              "high",
+              null,
+              null,
+              null
+            ],
+            "count": 1
+          }
+        ],
+        "router_fallback_values": [
+          false
+        ],
+        "effective_quality_reward": 1,
+        "provider_interruption_observed": "PROVIDER_RETRY_DEADLINE"
+      }
+    ],
+    "following_stage": "GLM_MAX",
+    "following_trials": [
+      "90cab049-a06a-4e69-b4bc-14dc1d61fb82",
+      "bcddd7fd-df83-4bc9-ba1b-b4223cca408c"
+    ],
+    "supplier_billed_and_resource_usd": null,
+    "previous_failed_trials_retained": true
+  },
+  {
     "event": "RECOVERED_HISTORICAL_GLM_EPISODE",
     "task": "configure-git-webserver",
     "strategy": "glm_low",

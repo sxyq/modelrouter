@@ -144,19 +144,135 @@
     "supplier_billed_usd": "UNKNOWN",
     "training_cost": "SEPARATE_FROM_ONLINE_COST"
   },
+  "completed_episodes_20261119_0330": {
+    "episodes": [
+      {
+        "batch": "20261112-v9-joint-paired",
+        "task": "pytorch-model-cli",
+        "strategy": "terra_high",
+        "seed": 43,
+        "trial_id": "dca687f1-37b2-4403-aca9-d9be0f2eb1b0",
+        "official_reward": 1,
+        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+        "technical_fault": null,
+        "ctrf_summaries": [
+          {
+            "tests": 6,
+            "passed": 6,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1795029839.5960588,
+            "stop": 1795029896.0364592
+          }
+        ],
+        "reported_api_tokens": 375086,
+        "known_reference_usd": 0.1908916,
+        "unknown_cost_requests": 0,
+        "extra_retries": 0,
+        "generator_requests": 21,
+        "teacher_requests": 0,
+        "teacher_consumed_decisions": 0,
+        "teacher_http_counts": {},
+        "cache_read_reported_tokens": 275072,
+        "tool_results": 34,
+        "harbor_wall_s": 705.780305,
+        "finished_at": "2026-11-18T19:25:23.262815Z",
+        "request_return_identities": [
+          {
+            "identity": [
+              "gpt-6.1-terra",
+              "high",
+              "gpt-6.1-terra",
+              "high",
+              "PROVIDER_REPORTED_MATCH"
+            ],
+            "count": 21
+          }
+        ],
+        "router_fallback_values": [
+          false
+        ]
+      },
+      {
+        "batch": "20261112-v9-joint-paired",
+        "task": "qemu-alpine-ssh",
+        "strategy": "terra_high",
+        "seed": 43,
+        "trial_id": "73077030-9f09-4c81-b7f4-dfe1a87fe01a",
+        "official_reward": 0,
+        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+        "technical_fault": null,
+        "ctrf_summaries": [
+          {
+            "tests": 1,
+            "passed": 0,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1795030133.1813376,
+            "stop": 1795030133.2752113
+          }
+        ],
+        "reported_api_tokens": 1010618,
+        "known_reference_usd": 0.3931532,
+        "unknown_cost_requests": 1,
+        "extra_retries": 0,
+        "generator_requests": 36,
+        "teacher_requests": 0,
+        "teacher_consumed_decisions": 0,
+        "cache_read_reported_tokens": 733184,
+        "tool_results": 60,
+        "harbor_wall_s": 940.675811,
+        "finished_at": "2026-11-18T19:29:18.308621Z",
+        "request_return_identities": [
+          {
+            "identity": [
+              "gpt-6.1-terra",
+              "high",
+              "gpt-6.1-terra",
+              "high",
+              "PROVIDER_REPORTED_MATCH"
+            ],
+            "count": 35
+          },
+          {
+            "identity": [
+              "gpt-6.1-terra",
+              "high",
+              null,
+              null,
+              null
+            ],
+            "count": 1
+          }
+        ],
+        "router_fallback_values": [
+          false
+        ],
+        "effective_quality_reward": 0
+      }
+    ],
+    "supplier_billed_and_resource_usd": null,
+    "previous_failed_trials_retained": true
+  },
   "current_execution": {
-    "observed_at": "2026-11-19T03:21:46.482020+08:00",
-    "controller_pid": 2097543,
-    "credential_holder_pid": 2097543,
-    "stage": "fixed_technical_recovery",
+    "observed_at": "2026-11-19T04:00:36.541774+08:00",
+    "controller_pid": null,
+    "credential_holder_pid": null,
+    "stage": "fixed_stage_finished_router_waiting",
     "selected_strategies": ["glm_low", "terra_high"],
     "seed": 43,
     "fixed_concurrency": 4,
     "other_running_router_concurrency": 2,
-    "active_positions": [
-      {"task": "pytorch-model-cli", "strategy": "terra_high", "episode_id": "dca687f1-37b2-4403-aca9-d9be0f2eb1b0"},
-      {"task": "qemu-alpine-ssh", "strategy": "terra_high", "episode_id": "73077030-9f09-4c81-b7f4-dfe1a87fe01a"}
-    ],
+    "active_positions": [],
+    "finished_positions": 261,
+    "effective_reward_1": 99,
+    "effective_reward_0": 57,
+    "no_effective_reward": 105,
+    "router_positions_waiting": 696,
     "provider_extra_retry_limit": 100,
     "maximum_output_tokens": 4096,
     "original_harbor_task_limits_retained": true,

@@ -2,9 +2,11 @@
 
 ## 2026-11-19：原批次继续与凭据进程路径
 
-最近采集为Model-only 03:03、联合03:20、历史03:16台北：Model-only 1842/2136位置结束，343有效1、190有效0、1277缺分、32项Verifier依赖故障另列；2运行、292未开始，1843个Trial，已知模型与教师参考费$28.28908443、1768次请求费用未知。联合259位置结束、2项恢复中、696未开始，有效98/56、105缺分，298个Trial，已知参考费$14.74138297、195次请求费用未知。历史03:16快照1513位置结束，308/343有效1/0、800缺分、62依赖故障，2605 Trial，已知参考费$42.12164942、1098次请求费用未知；其余4个GLM位置继续接续。
+台北时间04:05的Model-only已结束1846/2136位置，有效1/0为344/193，缺分1277，另有32项评分依赖故障。原队列2项运行、288项待首次运行。04:00的Seed43联合固定阶段261项结束，有效1/0为99/57，缺分105，696个联合Router位置待原队列接续。历史批次正在恢复已执行过的技术故障位置。原Trial、费用和各策略分母见Benchmark总入口。
 
-本轮联合新增八个Terra High有效1：code-from-image、custom-memory-heap-crash、break-filter-js-from-html、mteb-retrieve、rstan-to-pystan、distribution-search、mteb-leaderboard、fix-ocaml-gc。八次独立Episode合计8047751已报Token、$1.94008140已知模型参考费、70次额外重试，请求与返回模型及High均匹配；失败尝试实收、供应商账单及资源美元费用未知。原恢复前失败与费用保留。新增有效0还包括circuit-fibsqrt、portfolio-optimization／Terra High，均不重跑。
+本轮联合新增九个Terra High有效1：code-from-image、custom-memory-heap-crash、break-filter-js-from-html、mteb-retrieve、rstan-to-pystan、distribution-search、mteb-leaderboard、fix-ocaml-gc、pytorch-model-cli。九次独立Episode合计8422837已报Token、$2.13097300已知模型参考费、70次额外重试，请求与返回模型及High均匹配；失败尝试实收、供应商账单及资源美元费用未知。原恢复前失败与费用保留。新增有效0还包括circuit-fibsqrt、portfolio-optimization／Terra High，均不重跑。
+
+circuit-fibsqrt／训练Laya ON Max／Seed43取得原官方1、3/3断言通过，Trial9e70a33b-22b8-4650-877c-a9d49731b06a；40次生成均请求GLM Max，返回Effort未报告，fallback=false。单次3340892已报Token、$0.15077049已知模型参考费、Provider已报缓存读取3150528 Token，Harbor2003.820276秒；10次教师请求均401、短评消费0、10次请求费用未知。训练Kev OFF High／ON Low同题各2/3断言、原官方0保留。新增逐Episode数据见Benchmark总入口。
 
 bn-fit-modify训练Kev ON Low／High／Max原官方分别0／1／1，断言分别8/9、9/9、9/9；单次已报Token为58760／119224／155261，已知模型参考费$0.04806080／$0.06593760／$0.13650180，额外重试70／20／31次。全部生成请求与返回Terra同档；教师分别2／2／3次请求均401、短评消费0，教师作用仍缺有效调用。三组各3／4／6次请求费用未知，原失败与原官方结果保留。
 
@@ -12,7 +14,7 @@ bn-fit-modify训练Kev OFF Low／High各有一条请求实际执行101次总尝�
 
 query-optimize／Terra High已正常提交，原Verifier900秒超时。原镜像、1CPU／2GiB只读诊断中，参考SQL1.829秒、任务自带原始SQL823.925秒（818.340 CPU秒）各返回500行；原生SQLite3.45.1与评分Python3.13.9的SQLite3.50.4均保留实测记录。依赖预装9.986秒后，复用保存的最终文件及原Harbor Verifier仍900.090秒超时，正式Episode成绩保持空值；该诊断不替代Agent结果。首轮诊断缺日志目录的失败与后续超时均留在该原位置.private目录，后续正式源码继续原实现。
 
-1696641继续circuit-fibsqrt。2057318／2057312已自然退出，train-fasttext／Terra High取得正常官方0；2097543已接上pytorch-model-cli／qemu-alpine-ssh。2253174沿原CLI先恢复5个历史Seed42 GLM位置，再等待原固定工作后执行其余固定恢复及9个事前选定Terra位置；已有有效0／1复用。首次5项因控制命令的/proc/self/fd/3在Harbor子进程内不可读而提前中断，0次Provider请求，原故障Trial保留。6eaee77a9e90ece40d4c0a3378eb1803d8bc26c1在现行rq1_batch.py增加5行：执行前将self描述符绑定父PID，并识别该明确故障供独立接续。03:14 configure-git-webserver新Trial 55d17b19-b45e-48d5-a07a-762f4891e792完整结束，20次GLM Low请求、22次工具、90093已报Token、$0.00638627已知参考费，0额外重试、0请求费用缺项；原官方1断言失败、有效Reward0保留。固定4、Router2、每1200秒采集及原有限1345012接续顺序保持。
+2097543已自然退出。pytorch-model-cli／Terra High取得官方1，qemu-alpine-ssh／Terra High取得官方0。历史控制器2253174的首批5个GLM技术恢复位置全部获得有效评分，2个通过、3个失败。后续count-dataset-tokens／GLM Low和High均取得官方1。原Model-only从circuit-fibsqrt推进到distribution-search。此前凭据描述符故障的5条原Trial均保留，已部署版本为6eaee77a9e90ece40d4c0a3378eb1803d8bc26c1。固定4、Router2及每1200秒采集继续。
 
 ## 2026-11-19：Colink凭据生效、原任务恢复与费用保留
 
