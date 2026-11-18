@@ -1,5 +1,31 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
+## 2026-11-18 23:38 · 新凭据后的官方任务结果
+
+Colink凭据已更新到唯一0600私有配置与原控制器内存；GLM、Terra的实际生成和工具执行已恢复，Luna仍401/Invalid token。以下均为原Seed43策略位置的新独立Harbor Episode，0额外重试；旧Trial及费用完整保留。
+
+| 任务／固定策略 | 官方Reward | 通过断言 | 本次API Token | 本次模型参考USD | Harbor秒 |
+|---|---:|---:|---:|---:|---:|
+| modernize-scientific-stack／GLM Low | 1 | 2/2 | 11030 | 0.00103893 | 129.639379 |
+| pypi-server／Terra High | 1 | 1/1 | 112688 | 0.08142400 | 301.465327 |
+| prove-plus-comm／Terra High | 1 | 4/4 | 126691 | 0.06974860 | 336.666307 |
+| polyglot-rust-c／GLM Low | 1 | 1/1 | 181150 | 0.03521321 | 875.733494 |
+
+四项合计431559 API Token、$0.18742474模型参考费，均无请求费用缺项；供应商实收及资源USD未知。表内仅列该次Episode。polyglot-rust-c的Controller exit_code=2、Agent SUBMITTED、Harbor OFFICIAL_ARTIFACT_VERIFIED及Reward1全部按原记录保留；原Verifier断言1/1通过。
+
+2057312／2057318已接续GLM Low／Terra High原技术故障位置。23:37四项在途为overfull-hbox、crack-7z-hash的GLM Low及polyglot-rust-c、polyglot-c-py的Terra High，前两项已有工具执行，后两项首请求仍在重试；固定4并发、原Model-only Router2并发。
+
+23:39现行分析快照如下；“已结束缺分”不含正在恢复的位置。联合恢复中的4项保留各自旧Trial。
+
+| 批次 | 计划位置 | 已结束 | 有效1 | 有效0 | 已结束缺分 | Verifier依赖故障 | 运行 | 未开始 | 原Harbor Trial | 已知参考USD | 请求费用未知 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Model-only | 2136 | 1811 | 340 | 198 | 1241 | 32 | 2 | 323 | 1812 | 27.47543736 | 1714 |
+| Model×Effort联合 | 957 | 257 | 88 | 55 | 114 | 0 | 4 | 696 | 269 | 9.25948680 | 146 |
+
+费用按原试次累计已知模型与教师参考部分，仍缺供应商及资源实收；各策略及成对结果见两批`metrics/per_strategy.csv`、`per_episode.csv`和`comparisons.json`。全部89题的完整比较尚未完成。
+
+两项在途Terra High随后在15:38:49 UTC前后从HTTP502重试至200，均继续原工具执行，原请求模型与档位保持；失败尝试及未知费用单列。
+
 ## 2026-11-18 18:06 · 原批次接续与渠道故障定位
 
 18:06台北现行分析导出Model-only 1770/2136位置结束，339有效Reward1、195有效Reward0、1204缺分、32依赖故障另列；2运行、364未开始。1771原Trial，模型与教师已知参考费$26.88846586、1665请求费用未知、7844次额外重试（已结束Episode），另1次直连诊断消费未知。联合固定261/957、现265原Trial、146请求费用未知、1994次额外重试；历史1513位置保持原结果，696个联合Router位置待现有队列接续。

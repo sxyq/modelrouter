@@ -58,6 +58,28 @@
       "laya_original_on_model_only_max": "PROVIDER_RETRY_DEADLINE"
     }
   },
+  "provider_update_20261118_2316": {
+    "updated_at": "2026-11-18T15:16:11.331494+00:00",
+    "model": "glm-5.3-flash",
+    "endpoint_id": "glm-colink",
+    "private_config_mode": "0600",
+    "credential_storage": "UNIQUE_PRIVATE_CONFIG_AND_EXISTING_MEMORY_DESCRIPTORS",
+    "updated_holder_pids": [1696633, 1345012],
+    "active_episodes": "RETAIN_EXISTING_PROVIDER_INSTANCE_AND_ORIGINAL_REQUEST_PARAMETERS",
+    "following_episodes": "LOAD_UPDATED_CREDENTIALS",
+    "metadata_http_status": {"glm-5.3-flash": 200, "gpt-6.1-terra": 200, "gpt-6-luna": 401},
+    "luna_error": "Invalid token",
+    "observed_generation_at": "2026-11-18T15:20:16+00:00",
+    "generation_restored_models": ["glm-5.3-flash", "gpt-6.1-terra"],
+    "joint_recovery_holder_pid": 2046212,
+    "joint_recovery_controller_pids": [2046219, 2046220],
+    "joint_recovery_positions": [
+      {"task": "modernize-scientific-stack", "strategy": "glm_low", "seed": 43},
+      {"task": "polyglot-rust-c", "strategy": "glm_low", "seed": 43},
+      {"task": "pypi-server", "strategy": "terra_high", "seed": 43},
+      {"task": "prove-plus-comm", "strategy": "terra_high", "seed": 43}
+    ]
+  },
   "provider_metadata_observation_20261118": {
     "observed_at": "2026-11-18T09:43:10+00:00",
     "request": "GET /v1/models",

@@ -1,5 +1,29 @@
 {
   "sampled_at": "2026-11-14T19:29:06+08:00",
+  "provider_update_recovery_20261118_2318": {
+    "started_at": "2026-11-18T15:18:54.486858+00:00",
+    "holder_pid": 2046212,
+    "controller_pids": [2046219, 2046220],
+    "seed": 43,
+    "fixed_concurrency": 4,
+    "credential_source": "EXISTING_UPDATED_MEMFD",
+    "luna_metadata_http_status": 401,
+    "completed_episodes": [
+      {"task": "modernize-scientific-stack", "strategy": "glm_low", "trial_id": "3f44cb80-8165-41b5-b155-a080ed6ffd73", "official_reward": 1, "assertions_passed": 2, "assertions_failed": 0, "model_requests": 4, "extra_retries": 0, "api_tokens": 11030, "known_reference_usd": 0.00103893, "unknown_cost_requests": 0, "tool_results": 4, "harbor_wall_s": 129.639379},
+      {"task": "pypi-server", "strategy": "terra_high", "trial_id": "63036c21-8752-4c90-8d84-74fde63761db", "official_reward": 1, "assertions_passed": 1, "assertions_failed": 0, "model_requests": 12, "extra_retries": 0, "api_tokens": 112688, "known_reference_usd": 0.081424, "unknown_cost_requests": 0, "tool_results": 13, "harbor_wall_s": 301.465327},
+      {"task": "prove-plus-comm", "strategy": "terra_high", "trial_id": "a5de6012-6f32-4eae-b19d-f424e4ea892b", "official_reward": 1, "assertions_passed": 4, "assertions_failed": 0, "model_requests": 14, "extra_retries": 0, "api_tokens": 126691, "known_reference_usd": 0.0697486, "unknown_cost_requests": 0, "tool_results": 22, "harbor_wall_s": 336.666307},
+      {"task": "polyglot-rust-c", "strategy": "glm_low", "trial_id": "72b5a0d9-d127-4752-a8be-594509e8155c", "official_reward": 1, "assertions_passed": 1, "assertions_failed": 0, "model_requests": 14, "extra_retries": 0, "api_tokens": 181150, "known_reference_usd": 0.03521321, "unknown_cost_requests": 0, "tool_results": 13, "harbor_wall_s": 875.733494, "controller_exit_code": 2, "agent_status": "SUBMITTED", "harbor_status": "OFFICIAL_ARTIFACT_VERIFIED"}
+    ],
+    "finished_at": "2026-11-18T15:33:54.406410+00:00",
+    "controller_exit_codes": [0, 0],
+    "api_tokens": 431559,
+    "known_reference_usd": 0.18742474,
+    "extra_retries": 0,
+    "following_fixed_recovery_holder_pid": 2057312,
+    "following_strategies": ["glm_low", "terra_high"],
+    "previous_trials_and_costs": "RETAINED_SEPARATELY",
+    "supplier_billed_and_resource_usd": null
+  },
   "resources": {
     "docker_host": "unix:///home/syy/路由/.runtime/docker-vm/docker.sock",
     "vm_cpus": 16,
@@ -16,6 +40,36 @@
     "training_cost": "SEPARATE_FROM_ONLINE_COST"
   },
   "current_execution": {
+    "observed_at": "2026-11-18T23:38:00+08:00",
+    "controller_pid": 2057318,
+    "credential_holder_pid": 2057312,
+    "stage": "fixed_technical_recovery",
+    "selected_strategies": ["glm_low", "terra_high"],
+    "seed": 43,
+    "fixed_concurrency": 4,
+    "other_running_router_concurrency": 2,
+    "active_positions": [
+      {"task": "overfull-hbox", "strategy": "glm_low", "episode_id": "52d3e13b-d8bd-4b95-b484-ccaa958b2b29"},
+      {"task": "crack-7z-hash", "strategy": "glm_low", "episode_id": "3f3b3e5c-cd49-4803-ae2b-2007c19d2265"},
+      {"task": "polyglot-rust-c", "strategy": "terra_high", "episode_id": "98b3dc00-4141-43a5-926b-18a8b46aefe5"},
+      {"task": "polyglot-c-py", "strategy": "terra_high", "episode_id": "672de591-29df-4098-9cf1-0ffe132ed0ba"}
+    ],
+    "provider_extra_retry_limit": 100,
+    "maximum_output_tokens": 4096,
+    "original_harbor_task_limits_retained": true,
+    "terra_first_request_recovery": {
+      "observed_at": "2026-11-18T15:40:00+00:00",
+      "positions": [
+        {"task": "polyglot-rust-c", "strategy": "terra_high", "episode_id": "98b3dc00-4141-43a5-926b-18a8b46aefe5", "successful_attempt_at": "2026-11-18T15:38:48.950826+00:00", "http_status": 200, "prior_attempt_http_status": 502, "generator_completions": 1, "tool_results": 1},
+        {"task": "polyglot-c-py", "strategy": "terra_high", "episode_id": "672de591-29df-4098-9cf1-0ffe132ed0ba", "successful_attempt_at": "2026-11-18T15:38:49.753324+00:00", "http_status": 200, "prior_attempt_http_status": 502, "generator_completions": 1, "tool_results": 1}
+      ],
+      "original_request_model_effort_and_parameters_retained": true,
+      "failed_attempts_retained": true
+    },
+    "runtime_source_revision": "2d1be7ba960ee88a78696c47508c927199ab516e",
+    "analysis_revision": "a3dd87909260252205e45925ca822af480b96216"
+  },
+  "fixed_recovery_20261118_1729": {
     "controller_pid": 1920505,
     "credential_holder_pid": 1920499,
     "controller_exited": true,
