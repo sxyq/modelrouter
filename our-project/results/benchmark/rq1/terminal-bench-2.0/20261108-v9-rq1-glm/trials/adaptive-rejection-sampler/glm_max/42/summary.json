@@ -28,41 +28,48 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "AgentTimeoutError",
+  "error_type": "PermissionError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 966.091756,
+  "episode_wall_s": 43.274595,
   "generator_known_reference_usd": 0.0342252,
-  "execution_environment": null,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 1849.764529,
-  "harness_command_wall_s": 1859.5989256408066,
+  "execution_environment": {
+    "episode_id": "aefb1f40-2f8b-4962-b01a-af78d712a78c",
+    "qemu_pid": 3832028,
+    "machine": "q35,accel=kvm",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "timestamp": "2026-11-18T18:53:15.458020+00:00",
+    "monotonic_ns": 15692339237757832,
+    "event": "EXECUTION_ENVIRONMENT"
+  },
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 1893.0391240000001,
+  "harness_command_wall_s": 1907.7209998536855,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
-  "latest_trial_reference_usd": null,
-  "verifier_dependency_failure": true,
+  "latest_trial_reference_usd": 0,
+  "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
   "environment_cost_usd": null,
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/adaptive-rejection-sampler/glm_max/42",
-  "trial_id": "2da59f4c-2899-4a3d-ba78-1a5a423a47f1",
-  "official_reward": 0.0,
-  "technical_fault": "VERIFIER_DEPENDENCY",
+  "trial_id": "aefb1f40-2f8b-4962-b01a-af78d712a78c",
+  "official_reward": null,
+  "technical_fault": null,
   "raw_verifier_rewards": [
-    {
-      "reward": 0.0
-    }
+    null
   ],
   "provider_output_budget_exceeded_requests": 5,
-  "latest_output_budget_exceeded_requests": 2,
-  "outside_harbor_wall_s": 9.834396640806517,
+  "latest_output_budget_exceeded_requests": 0,
+  "outside_harbor_wall_s": 14.68187585368537,
   "previous_attempts": [
     {
       "trial_id": "7b447af3-e4c0-45f6-a9a5-1f096bc8d1f0",
       "job_name": "adaptive-rejection-sampler--glm_max--s42",
-      "trial_dir": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/adaptive-rejection-sampler/glm_max/42/jobs/adaptive-rejection-sampler--glm_max--s42/adaptive-rejection-sampler__MrHbbFe",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/adaptive-rejection-sampler/glm_max/42/jobs/adaptive-rejection-sampler--glm_max--s42/adaptive-rejection-sampler__MrHbbFe",
       "status": "NOT_EVALUATED",
       "reward": null,
       "started_at": "2026-11-08T16:46:11.212365Z",
@@ -75,16 +82,33 @@
         "verifier": null
       },
       "error_type": "RemoteDisconnected"
+    },
+    {
+      "trial_id": "2da59f4c-2899-4a3d-ba78-1a5a423a47f1",
+      "job_name": "adaptive-rejection-sampler--glm_max--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/adaptive-rejection-sampler/glm_max/42/jobs/adaptive-rejection-sampler--glm_max--s42--infrastructure-recovery-1/adaptive-rejection-sampler__kQJ8maQ",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-13T05:42:14.568260Z",
+      "finished_at": "2026-11-13T05:58:20.660016Z",
+      "duration_sec": 966.091756,
+      "phase_wall_s": {
+        "environment_setup": 8.484152,
+        "agent_setup": 0.000191,
+        "agent_execution": 900.068073,
+        "verifier": 33.808851
+      },
+      "error_type": "AgentTimeoutError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
-  "verifier_path": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/adaptive-rejection-sampler/glm_max/42/jobs/adaptive-rejection-sampler--glm_max--s42--infrastructure-recovery-1/adaptive-rejection-sampler__kQJ8maQ/verifier/reward.txt",
+  "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 8.484152,
-    "agent_setup": 0.000191,
-    "agent_execution": 900.068073,
-    "verifier": 33.808851
+    "environment_setup": 31.302894,
+    "agent_setup": 0.00017,
+    "agent_execution": 0.012196,
+    "verifier": null
   },
   "generator_requests": 21,
   "teacher_requests": 0,
@@ -323,7 +347,7 @@
       "decision_id": "2da59f4c-2899-4a3d-ba78-1a5a423a47f1-10"
     }
   ],
-  "technical_recovery_count": 1,
+  "technical_recovery_count": 2,
   "started_tool_calls": 0,
   "completed_tool_calls": 28,
   "unknown_provider_cost_requests": 3,

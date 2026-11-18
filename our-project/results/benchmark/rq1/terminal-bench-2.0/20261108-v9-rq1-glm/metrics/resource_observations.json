@@ -1,5 +1,65 @@
 [
   {
+    "observed_at": "2026-11-19T03:07:14.951229+08:00",
+    "event": "PRIVATE_DESCRIPTOR_SCOPE_FAILURE_AND_RECOVERY",
+    "source_revision": "6eaee77a9e90ece40d4c0a3378eb1803d8bc26c1",
+    "controller_pid": 2253174,
+    "replaced_idle_pid": 2231655,
+    "failed_attempts": [
+      {
+        "task": "configure-git-webserver",
+        "strategy": "glm_low",
+        "trial_id": "513eba49-d230-461c-814e-5dafe73ce15a"
+      },
+      {
+        "task": "adaptive-rejection-sampler",
+        "strategy": "glm_high",
+        "trial_id": "c6d49c6e-8cb4-44f4-b282-bf4809d0799d"
+      },
+      {
+        "task": "cancel-async-tasks",
+        "strategy": "glm_high",
+        "trial_id": "9b322c79-84e8-4359-81b2-b8546c9eb46a"
+      },
+      {
+        "task": "adaptive-rejection-sampler",
+        "strategy": "glm_max",
+        "trial_id": "aefb1f40-2f8b-4962-b01a-af78d712a78c"
+      },
+      {
+        "task": "cancel-async-tasks",
+        "strategy": "glm_max",
+        "trial_id": "88e3286a-3bce-40bd-8a3f-066f36241b08"
+      }
+    ],
+    "error_type": "PermissionError",
+    "failed_config_path": "/proc/self/fd/3",
+    "provider_request_count": 0,
+    "official_quality_reward": null,
+    "original_failed_trials_retained": true,
+    "recovery_reason": "PRIVATE_CONFIG_DESCRIPTOR_UNAVAILABLE",
+    "repair": "CANONICAL_RQ1_CLI_RESOLVES_SELF_DESCRIPTOR_TO_PARENT_PID_BEFORE_HARBOR_SUBPROCESSES",
+    "credential_storage": "EXISTING_MEMFD_ONLY",
+    "seed": 42,
+    "after_existing_fixed_groups": [
+      2057318,
+      2097543
+    ],
+    "following_terra_selected_positions": 9,
+    "first_actual_episode_after_repair": {
+      "observed_at": "2026-11-19T03:08:30.420397+08:00",
+      "task": "configure-git-webserver",
+      "strategy": "glm_low",
+      "trial_id": "55d17b19-b45e-48d5-a07a-762f4891e792",
+      "http_status": 200,
+      "request_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "generator_completions": 1,
+      "tool_results": 2,
+      "official_reward": null
+    }
+  },
+  {
     "observed_at": "2026-11-19T02:45:52.330792+08:00",
     "event": "PRE_RESTORATION_PROVIDER_FAULTS_APPENDED_TO_EXISTING_RECOVERY",
     "controller_pid": 2231655,

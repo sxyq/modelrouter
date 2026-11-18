@@ -3,7 +3,7 @@
   "strategy_id": "glm_high",
   "seed": 42,
   "unit_id": "adaptive-rejection-sampler--glm_high--s42",
-  "status": "EVALUATED",
+  "status": "PARTIAL",
   "run_id": "20261108-v9-rq1-glm",
   "benchmark_name": "Terminal-Bench",
   "benchmark_version": "2.0",
@@ -28,18 +28,27 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "AgentTimeoutError",
-  "execution_status": "FINISHED",
+  "error_type": "PermissionError",
+  "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 1201.212732,
+  "episode_wall_s": 58.539612,
   "generator_known_reference_usd": 0.04488988,
-  "execution_environment": null,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 2199.266387,
-  "harness_command_wall_s": 2209.4597975406796,
+  "execution_environment": {
+    "episode_id": "c6d49c6e-8cb4-44f4-b282-bf4809d0799d",
+    "qemu_pid": 3832028,
+    "machine": "q35,accel=kvm",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "timestamp": "2026-11-18T18:49:59.535472+00:00",
+    "monotonic_ns": 15692143315210655,
+    "event": "EXECUTION_ENVIRONMENT"
+  },
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 2257.805999,
+  "harness_command_wall_s": 2272.756871143356,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
-  "latest_trial_reference_usd": null,
+  "latest_trial_reference_usd": 0,
   "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
@@ -47,17 +56,15 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/adaptive-rejection-sampler/glm_high/42",
-  "trial_id": "06e04753-5dbb-4926-9181-012f217612db",
-  "official_reward": 0.0,
-  "technical_fault": "PROVIDER_RETRY_DEADLINE",
+  "trial_id": "c6d49c6e-8cb4-44f4-b282-bf4809d0799d",
+  "official_reward": null,
+  "technical_fault": null,
   "raw_verifier_rewards": [
-    {
-      "reward": 0.0
-    }
+    null
   ],
   "provider_output_budget_exceeded_requests": 3,
-  "latest_output_budget_exceeded_requests": 1,
-  "outside_harbor_wall_s": 10.193410540679452,
+  "latest_output_budget_exceeded_requests": 0,
+  "outside_harbor_wall_s": 14.95087214335581,
   "previous_attempts": [
     {
       "trial_id": "b39ecc98-2454-4426-8a61-39c3674a22b3",
@@ -75,16 +82,33 @@
         "verifier": 65.582483
       },
       "error_type": "AgentTimeoutError"
+    },
+    {
+      "trial_id": "06e04753-5dbb-4926-9181-012f217612db",
+      "job_name": "adaptive-rejection-sampler--glm_high--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/adaptive-rejection-sampler/glm_high/42/jobs/adaptive-rejection-sampler--glm_high--s42--infrastructure-recovery-1/adaptive-rejection-sampler__7f4jsCZ",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "started_at": "2026-11-13T05:38:03.237239Z",
+      "finished_at": "2026-11-13T05:58:04.449971Z",
+      "duration_sec": 1201.212732,
+      "phase_wall_s": {
+        "environment_setup": 9.560639,
+        "agent_setup": 0.000371,
+        "agent_execution": 900.035922,
+        "verifier": 263.679783
+      },
+      "error_type": "AgentTimeoutError"
     }
   ],
-  "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
+  "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
-  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/adaptive-rejection-sampler/glm_high/42/jobs/adaptive-rejection-sampler--glm_high--s42--infrastructure-recovery-1/adaptive-rejection-sampler__7f4jsCZ/verifier/reward.txt",
+  "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 9.560639,
-    "agent_setup": 0.000371,
-    "agent_execution": 900.035922,
-    "verifier": 263.679783
+    "environment_setup": 46.40091,
+    "agent_setup": 0.000199,
+    "agent_execution": 0.007197,
+    "verifier": null
   },
   "generator_requests": 29,
   "teacher_requests": 0,
@@ -304,7 +328,7 @@
       "decision_id": "06e04753-5dbb-4926-9181-012f217612db-8"
     }
   ],
-  "technical_recovery_count": 1,
+  "technical_recovery_count": 2,
   "started_tool_calls": 0,
   "completed_tool_calls": 30,
   "unknown_provider_cost_requests": 1,

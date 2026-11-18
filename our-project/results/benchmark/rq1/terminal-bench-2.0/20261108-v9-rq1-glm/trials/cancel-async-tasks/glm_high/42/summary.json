@@ -28,41 +28,48 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "AgentTimeoutError",
-  "execution_status": "RUNNING",
+  "error_type": "PermissionError",
+  "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 1033.938717,
+  "episode_wall_s": 32.840449,
   "generator_known_reference_usd": 0.09418758,
-  "execution_environment": null,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 2026.582789,
-  "harness_command_wall_s": 2036.558288777247,
+  "execution_environment": {
+    "episode_id": "9b322c79-84e8-4359-81b2-b8546c9eb46a",
+    "qemu_pid": 3832028,
+    "machine": "q35,accel=kvm",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "timestamp": "2026-11-18T18:49:33.823635+00:00",
+    "monotonic_ns": 15692117603373323,
+    "event": "EXECUTION_ENVIRONMENT"
+  },
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 2059.423238,
+  "harness_command_wall_s": 2074.0736275929958,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
-  "latest_trial_reference_usd": null,
-  "verifier_dependency_failure": true,
+  "latest_trial_reference_usd": 0,
+  "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
   "environment_cost_usd": null,
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/cancel-async-tasks/glm_high/42",
-  "trial_id": "f3a5fcd3-1cbe-46e3-b2e0-335cb45d1986",
-  "official_reward": 0.0,
-  "technical_fault": "VERIFIER_DEPENDENCY",
+  "trial_id": "9b322c79-84e8-4359-81b2-b8546c9eb46a",
+  "official_reward": null,
+  "technical_fault": null,
   "raw_verifier_rewards": [
-    {
-      "reward": 0.0
-    }
+    null
   ],
   "provider_output_budget_exceeded_requests": 3,
-  "latest_output_budget_exceeded_requests": 2,
-  "outside_harbor_wall_s": 9.975499777247023,
+  "latest_output_budget_exceeded_requests": 0,
+  "outside_harbor_wall_s": 14.650389592995907,
   "previous_attempts": [
     {
       "trial_id": "8a70934b-da66-4205-b3c3-d97b1efe268f",
       "job_name": "cancel-async-tasks--glm_high--s42",
-      "trial_dir": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/cancel-async-tasks/glm_high/42/jobs/cancel-async-tasks--glm_high--s42/cancel-async-tasks__hxKrsA7",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/cancel-async-tasks/glm_high/42/jobs/cancel-async-tasks--glm_high--s42/cancel-async-tasks__hxKrsA7",
       "status": "NOT_EVALUATED",
       "reward": null,
       "started_at": "2026-11-08T18:20:01.106105Z",
@@ -75,16 +82,33 @@
         "verifier": 62.976205
       },
       "error_type": "AgentTimeoutError"
+    },
+    {
+      "trial_id": "f3a5fcd3-1cbe-46e3-b2e0-335cb45d1986",
+      "job_name": "cancel-async-tasks--glm_high--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/cancel-async-tasks/glm_high/42/jobs/cancel-async-tasks--glm_high--s42--infrastructure-recovery-1/cancel-async-tasks__vSpeMxK",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-13T06:22:49.381613Z",
+      "finished_at": "2026-11-13T06:40:03.320330Z",
+      "duration_sec": 1033.938717,
+      "phase_wall_s": {
+        "environment_setup": 10.295523,
+        "agent_setup": 0.000131,
+        "agent_execution": 900.045749,
+        "verifier": 99.943748
+      },
+      "error_type": "AgentTimeoutError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": null,
-  "verifier_path": "our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/cancel-async-tasks/glm_high/42/jobs/cancel-async-tasks--glm_high--s42--infrastructure-recovery-1/cancel-async-tasks__vSpeMxK/verifier/reward.txt",
+  "verifier_path": null,
   "phase_wall_s": {
-    "environment_setup": 10.295523,
-    "agent_setup": 0.000131,
-    "agent_execution": 900.045749,
-    "verifier": 99.943748
+    "environment_setup": 20.687919,
+    "agent_setup": 0.000192,
+    "agent_execution": 0.008337,
+    "verifier": null
   },
   "generator_requests": 41,
   "teacher_requests": 0,
@@ -418,7 +442,7 @@
       "decision_id": "f3a5fcd3-1cbe-46e3-b2e0-335cb45d1986-15"
     }
   ],
-  "technical_recovery_count": 1,
+  "technical_recovery_count": 2,
   "started_tool_calls": 0,
   "completed_tool_calls": 56,
   "unknown_provider_cost_requests": 3,
