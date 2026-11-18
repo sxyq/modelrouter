@@ -1,5 +1,51 @@
 [
   {
+    "observed_at": "2026-11-19T02:45:52.330792+08:00",
+    "event": "PRE_RESTORATION_PROVIDER_FAULTS_APPENDED_TO_EXISTING_RECOVERY",
+    "controller_pid": 2231655,
+    "replaced_idle_controller_pids": [2163799, 2225543],
+    "after_controller_pids": [
+      2057318,
+      2097543
+    ],
+    "seed": 42,
+    "pre_restoration_cutoff_utc": "2026-11-18T15:16:00+00:00",
+    "selected_positions": 14,
+    "selected_tasks": {
+      "glm_low": [
+        "configure-git-webserver"
+      ],
+      "glm_high": [
+        "adaptive-rejection-sampler",
+        "cancel-async-tasks"
+      ],
+      "glm_max": [
+        "adaptive-rejection-sampler",
+        "cancel-async-tasks"
+      ],
+      "terra_high": [
+        "bn-fit-modify",
+        "break-filter-js-from-html",
+        "dna-assembly",
+        "dna-insert",
+        "extract-moves-from-video",
+        "install-windows-3.11",
+        "path-tracing",
+        "portfolio-optimization",
+        "rstan-to-pystan"
+      ]
+    },
+    "execution": "EXISTING_RQ1_CLI_EXPLICIT_GLM_FIVE_THEN_WAIT_FIXED_THEN_DEFAULT_RECOVERY_THEN_TERRA_NINE",
+    "immediate_selected_positions_per_group": [1, 2, 2],
+    "existing_active_fixed_position_at_launch": "train-fasttext--terra_high--s43",
+    "fixed_concurrency_upper_bound_during_initial_glm_groups": 4,
+    "valid_official_scores_reused": true,
+    "original_failed_trials_and_costs_retained": true,
+    "extra_retry_limit": 100,
+    "max_output_tokens": 4096,
+    "source_revision": "9e4a4a29a6a88f5431f246e34d961b867b261e90"
+  },
+  {
     "observed_at": "2026-11-18T17:22:18.126732+00:00",
     "event": "HISTORICAL_FIXED_TECHNICAL_RECOVERY_QUEUED",
     "controller_pid": 2163799,
