@@ -88,6 +88,8 @@ def recovery_reason(path):
         return interruption
     error = trial.get("error") or {}
     kind, message = error.get("exception_type"), error.get("exception_message", "")
+    if kind == "PermissionError" and "/proc/self/fd/" in message:
+        return "PRIVATE_CONFIG_DESCRIPTOR_UNAVAILABLE"
     if kind == "NonZeroAgentExitCodeError" and any(e.get("episode_id") == trial["trial_id"]
             and e["event"] == "AGENT_OUTPUT_LIMIT" for e in events):
         return "AGENT_OUTPUT_LIMIT_NO_VALID_REWARD"
@@ -224,6 +226,9 @@ def main(argv=None):
     parser.add_argument("--after-pids", type=int, nargs="+", help="Wait for existing batches before executing this batch")
     parser.add_argument("--then-config", type=Path, action="append", help="Continue with another saved batch after this one")
     args = parser.parse_args(argv)
+    credential_path = os.environ.get("EXTERNAL_TEXT_MODEL_CONFIG", "")
+    if credential_path.startswith("/proc/self/fd/"):
+        os.environ["EXTERNAL_TEXT_MODEL_CONFIG"] = credential_path.replace("/proc/self/", f"/proc/{os.getpid()}/", 1)
     if args.after_pids:
         # Keep the same private memfd open across the preceding holder's natural exit.
         fd = os.open(os.environ["EXTERNAL_TEXT_MODEL_CONFIG"], os.O_RDONLY)
