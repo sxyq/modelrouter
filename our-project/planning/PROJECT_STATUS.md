@@ -12,6 +12,10 @@ compile-compcert原始Laya六组已结束；Low/Max的OFF额外重试80/78次、
 
 17:29已完成Seed43 Terra High四个原位置的独立恢复：pypi-server、prove-plus-comm、pytorch-model-cli和qemu-alpine-ssh。每项34次请求、33次额外重试，全部HTTP502，生成及工具结果0；原官方Verifier均执行断言并写0，质量仍为PROVIDER_RETRY_DEADLINE、费用未知。四个旧Trial与四个新Trial分别保留，联合原Trial累计265；有效84/55、缺分122保持。Controller1920505／凭据持有1920499已自然退出，原Router两并发继续；有限1345012后续复用本次恢复记录，不再自动重做这些位置。
 
+17:43沿原控制器内存凭据读取GET /v1/models，原代理和A6000直连分别采样一次：Luna两条路径均401/Invalid token，GLM与Terra两条路径均200且列出精确模型ID。该次只读取模型元数据；生成接口仍分别为GLM429/502、Terra502，原Benchmark网络路径保持。17:44两个真实Episode仍存活、无生成及工具结果，等待原2400秒期限。
+
+17:57单次直连诊断复用当前Terra Low失败请求原始正文，模型、Effort、4096参数保持；2.991秒返回Cloudflare HTTP502，正文error code: 502，与原代理路径相同。该请求独立保存于原Episode私有direct_transport_diagnosis.json，Token和费用未知、未执行工具、无官方Reward，未合入Episode成绩或冒充网络恢复。当前Luna认证、GLM上游访问与Terra生成服务均需现有供应商恢复，未发现可用同模型备用端点。
+
 mteb-retrieve全部24组结束，训练Kev六组原Verifier均实际执行2断言：High/Max的OFF/ON四组2/2通过、Reward1；Low的OFF/ON两组1/2通过、Reward0。其余18组为12个GLM429/502到期及6个Luna401。六组生成均请求/返回Terra与相同Effort、0额外重试；ON三组共9次教师请求均401，短评消费0，不能将四个成功归因教师。逐Episode Token与费用见Benchmark总入口。
 
 13:17 `rstan-to-pystan`已有18组结束：16个Luna HTTP401、2个GLM HTTP502到期，均无Reward；另2组仍运行。唯一600权限配置与1696633内存凭据的三模型URL、Key和请求模型绑定逐项一致，各仅1个端点、无同模型备用。Provider最多额外100次及原任务期限继续生效；Luna认证需现有渠道恢复。

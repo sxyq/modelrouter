@@ -58,6 +58,44 @@
       "laya_original_on_model_only_max": "PROVIDER_RETRY_DEADLINE"
     }
   },
+  "provider_metadata_observation_20261118": {
+    "observed_at": "2026-11-18T09:43:10+00:00",
+    "request": "GET /v1/models",
+    "credentials_source": "EXISTING_CONTROLLER_MEMFD",
+    "routes": ["EXISTING_PROXY", "DIRECT"],
+    "results": {
+      "gpt-6-luna": {"proxy_http_status": 401, "direct_http_status": 401, "response": "Invalid token"},
+      "glm-5.3-flash": {"proxy_http_status": 200, "direct_http_status": 200, "exact_model_listed": true},
+      "gpt-6.1-terra": {"proxy_http_status": 200, "direct_http_status": 200, "exact_model_listed": true}
+    },
+    "inference_requests_added": 0,
+    "benchmark_request_route": "UNCHANGED",
+    "active_inference_faults": {"glm-5.3-flash": [429, 502], "gpt-6.1-terra": [502]},
+    "official_quality_source": "ORIGINAL_HARBOR_VERIFIER_ONLY"
+  },
+  "terra_direct_generation_diagnosis_20261118": {
+    "observed_at": "2026-11-18T09:57:40.416902+00:00",
+    "original_episode": "d73fa3da-7a2d-4940-9b4e-2a768cc83809",
+    "original_decision": "d73fa3da-7a2d-4940-9b4e-2a768cc83809-0",
+    "request_model": "gpt-6.1-terra",
+    "requested_effort": "low",
+    "requested_max_output_tokens": 4096,
+    "same_saved_request_body": true,
+    "request_route": "A6000_DIRECT_WITHOUT_EXISTING_HTTP_PROXY",
+    "http_status": 502,
+    "server": "cloudflare",
+    "error_response": "error code: 502",
+    "wall_sec": 2.991349183022976,
+    "attempts": 1,
+    "tools_executed": false,
+    "api_tokens": null,
+    "reference_cost_usd": null,
+    "supplier_billed_usd": null,
+    "official_reward": null,
+    "scope": "SEPARATE_NETWORK_DIAGNOSIS_NOT_AN_OFFICIAL_EPISODE",
+    "batch_total_cost_includes_diagnosis": false,
+    "benchmark_request_route": "UNCHANGED"
+  },
   "tune_mjcf_model_only_observation_20261116": {
     "seed": 43,
     "single_episode_scope": "Each row uses its original episode_id; prior attempts remain separate",

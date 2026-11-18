@@ -23,6 +23,10 @@
 
 四项新旧Episode身份、逐尝试、原断言及费用记录分别保存在联合批次`trials/<任务>/terra_high/43/`和`metrics/resource_observations.json`。
 
+17:43使用原内存凭据对GET /v1/models分别读取原代理与A6000直连：Luna均401/Invalid token，GLM、Terra均200并列出精确模型ID；原生成接口仍返回GLM429/502、Terra502。模型列表、实际生成和官方Reward分列，Benchmark网络路径保持原配置。
+
+17:57同一Terra Low/4096失败请求单次改用A6000直连诊断，2.991秒仍返回Cloudflare502、正文error code: 502。该次不执行工具，Token与费用未知，独立记录于Model-only资源文件，官方Episode成绩及费用列保持原范围；诊断未知消费另计，不填0美元。原Benchmark请求继续沿既有网络路径。
+
 `mteb-retrieve`全部24组已结束。下表每行是训练Kev、Seed43的一次完整Episode，所有生成均使用Terra对应档位、请求与返回身份和档位一致、额外重试0；原官方Verifier每行执行2项断言。
 
 | 教师/档位 | Reward | 通过断言 | 已报API Token | 已知模型参考USD | 未知费用请求 | Harbor秒 |
