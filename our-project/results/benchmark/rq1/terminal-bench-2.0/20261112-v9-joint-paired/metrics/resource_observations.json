@@ -18,17 +18,17 @@
   "current_execution": {
     "controller_pid": 1920505,
     "credential_holder_pid": 1920499,
-    "controller_exited": false,
-    "observed_at": "2026-11-18T17:12:38+08:00",
+    "controller_exited": true,
+    "observed_at": "2026-11-18T17:29:35+08:00",
     "first_pass_finished_positions": 261,
-    "recovery_running_positions": 4,
+    "recovery_running_positions": 0,
     "not_started_positions": 696,
     "reward_1_before_recovery": 84,
     "reward_0_before_recovery": 55,
     "no_effective_quality_score_before_recovery": 122,
     "known_api_reference_usd_before_recovery": 9.07206206,
     "unknown_cost_requests_before_recovery": 142,
-    "stage": "fixed_recovery",
+    "stage": "fixed_recovery_finished",
     "selected_tasks": [
       "pypi-server",
       "prove-plus-comm",
@@ -55,10 +55,27 @@
     },
     "current_provider_http_status": 502,
     "current_provider_response": "error code: 502",
-    "recovery_completed": false
+    "recovery_completed": true,
+    "recovery_raw_official_reward_0": 4,
+    "recovery_effective_reward_1": 0,
+    "recovery_effective_reward_0": 0,
+    "recovery_no_effective_quality_score": 4,
+    "recovery_http_502_attempts": 136,
+    "recovery_extra_retries": 132,
+    "recovery_generator_completions": 0,
+    "recovery_tool_results": 0,
+    "recovery_stop_reason": "TASK_DEADLINE",
+    "recovery_api_tokens": null,
+    "recovery_api_reference_usd": null,
+    "recovery_results": {
+      "pypi-server": {"provider_attempts": 34, "extra_retries": 33, "verifier_passed": 0, "verifier_failed": 1, "harbor_wall_s": 981.310651, "verifier_wall_s": 52.277454},
+      "prove-plus-comm": {"provider_attempts": 34, "extra_retries": 33, "verifier_passed": 1, "verifier_failed": 3, "harbor_wall_s": 984.748705, "verifier_wall_s": 47.701603},
+      "pytorch-model-cli": {"provider_attempts": 34, "extra_retries": 33, "verifier_passed": 0, "verifier_failed": 6, "harbor_wall_s": 1061.207227, "verifier_wall_s": 93.031077},
+      "qemu-alpine-ssh": {"provider_attempts": 34, "extra_retries": 33, "verifier_passed": 0, "verifier_failed": 1, "harbor_wall_s": 942.780942, "verifier_wall_s": 15.157137}
+    }
   },
   "execution_reason": "Recover four existing seed43 Terra High transport-failure positions in the available fixed-model concurrency; Model-only and the original finite continuation remain active",
-  "official_outcomes": {
+  "modernize_scientific_stack_original_outcomes_20261114": {
     "luna_high": {"reward": 1, "assertions_passed": 2, "assertions_failed": 0, "api_tokens": 13239, "known_reference_usd": 0.0010995, "reported_cached_tokens": 7680, "requested_returned_effort": "high/high"},
     "terra_high": {"reward": 0, "assertions_passed": 1, "assertions_failed": 1, "api_tokens": 35826, "known_reference_usd": 0.039718, "reported_cached_tokens": 0, "requested_returned_effort": "high/high", "failure": "Official task subprocess analyze_climate_modern.py exceeded its original 30-second timeout", "code_and_resource_contribution": "NOT_SEPARATED"},
     "glm_low": {"official_reward": 0, "quality_reward": null, "assertions_passed": 0, "assertions_failed": 2, "api_tokens": null, "known_reference_usd": null, "attempts": 23, "extra_retries": 22, "attempt_http_status": 503, "tools_executed": 0, "retry_stop_reason": "TASK_DEADLINE", "technical_fault": "PROVIDER_RETRY_DEADLINE", "recovery": "ONE_SEPARATE_EPISODE_IN_EXISTING_JOINT_RECOVERY_QUEUE"}

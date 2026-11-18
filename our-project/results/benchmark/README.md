@@ -1,8 +1,8 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 2026-11-18 16:52 · 原批次接续与实际故障
+## 2026-11-18 17:33 · 原批次接续与四项固定恢复结束
 
-16:52台北原观察导出Model-only 1760/2136位置结束，339有效Reward1、195有效Reward0、1194缺分、32依赖故障另列；2运行、374未开始。1761原Trial，模型与教师已知参考费$26.88846586、1655请求费用未知、7608次额外重试（已结束Episode）。三个公开导出已同步；联合固定261/957、历史1513位置保持原结果，696个联合Router位置待现有队列接续。
+17:33台北原观察导出Model-only 1767/2136位置结束，339有效Reward1、195有效Reward0、1201缺分、32依赖故障另列；2运行、367未开始。1768原Trial，模型与教师已知参考费$26.88846586、1662请求费用未知、7767次额外重试（已结束Episode）。联合固定261/957、现265原Trial、146请求费用未知、1994次额外重试；历史1513位置保持原结果，696个联合Router位置待现有队列接续。
 
 `compile-compcert`原始Laya六组均未执行工具。OFF Low/Max为81/79次GLM请求，ON Low/Max为68/63次GLM请求，分别额外重试80/78/67/62次后在原期限停止；两项High为Luna401、额外重试0。六组原Verifier均写0，质量表单列接口故障，费用未知。GLM原429正文为`group requests-per-minute limit exceeded`，原502正文为`Upstream access forbidden, please contact administrator`。逐尝试与独立Episode见本批`trials/compile-compcert/*/43/`。
 
@@ -12,7 +12,16 @@
 
 16:41显存自然释放至23455MiB，训练Laya OFF Low因首个Router未返回达到2400秒，原0单列资源故障；OFF High真实前向91.955毫秒、包含等待的路由墙钟1955.743秒，选Luna High后401、0额外重试、无有效Reward。两项均无工具执行，原队列随后接续OFF Max及ON Low。
 
-17:11沿原联合矩阵单题恢复Seed43 Terra High的pypi-server、prove-plus-comm、pytorch-model-cli、qemu-alpine-ssh；四个位置均为已结束的请求故障、没有有效评分或此前本轮恢复。Controller1920505／持有1920499与原Router两并发同时运行，固定四并发；新独立Episode身份记录在联合批次`metrics/resource_observations.json`，原Trial与费用保留。17:12四项当前请求均502、正文仅error code: 502，实际生成和工具结果均0，恢复结果待原时限结束。
+17:29四项Seed43 Terra High独立恢复已结束，Controller1920505／持有1920499自然退出。每项34次HTTP502、33次额外重试后在原期限停止，0次生成、0工具；原Verifier全部执行并写Reward0，质量仍列PROVIDER_RETRY_DEADLINE，费用未知。原联合累计265个Trial，有效84/55及缺分122保持，原有限队列会复用这四项本轮恢复记录。
+
+| 原位置任务 | 本次官方通过/失败断言 | 本次Harbor秒 | 本次Verifier秒 |
+|---|---:|---:|---:|
+| pypi-server | 0/1 | 981.310651 | 52.277454 |
+| prove-plus-comm | 1/3 | 984.748705 | 47.701603 |
+| pytorch-model-cli | 0/6 | 1061.207227 | 93.031077 |
+| qemu-alpine-ssh | 0/1 | 942.780942 | 15.157137 |
+
+四项新旧Episode身份、逐尝试、原断言及费用记录分别保存在联合批次`trials/<任务>/terra_high/43/`和`metrics/resource_observations.json`。
 
 `mteb-retrieve`全部24组已结束。下表每行是训练Kev、Seed43的一次完整Episode，所有生成均使用Terra对应档位、请求与返回身份和档位一致、额外重试0；原官方Verifier每行执行2项断言。
 

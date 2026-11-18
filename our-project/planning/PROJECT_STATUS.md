@@ -1,8 +1,8 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-11-18 16:52：原批次接续、接口与显存等待
+## 2026-11-18 17:33：原批次接续与四项固定恢复结束
 
-16:52台北原观察导出1760/2136位置结束：339有效1、195有效0、1194缺有效评分、32项Verifier依赖故障另列；2运行、374未开始，1761原Trial。已知模型与教师参考费$26.88846586、1655请求费用未知、7608次额外重试（已结束Episode）。1696641、1345012、Native1142336/1142328及三个1200秒观察者仍运行。联合261/957结束、84有效1/55有效0/122缺分，696个Router位置待原队列；历史1513位置、2599次Trial、308有效1/344有效0/795缺分、66依赖故障保持。
+17:33台北原观察导出1767/2136位置结束：339有效1、195有效0、1201缺有效评分、32项Verifier依赖故障另列；2运行、367未开始，1768原Trial。已知模型与教师参考费$26.88846586、1662请求费用未知、7767次额外重试（已结束Episode）。1696641、1345012、Native1142336/1142328及三个1200秒观察者仍运行。联合261/957结束、84有效1/55有效0/122缺分，现265原Trial、146请求费用未知、1994次额外重试，696个Router位置待原队列；历史1513位置、2599次Trial、308有效1/344有效0/795缺分、66依赖故障保持。
 
 compile-compcert原始Laya六组已结束；Low/Max的OFF额外重试80/78次、ON额外重试67/62次，均到原任务期限；High两组Luna401各0额外重试。六组均未执行工具，原Verifier0保留，质量列为接口故障。GLM原429响应为group requests-per-minute limit exceeded，原502响应为Upstream access forbidden, please contact administrator。训练Laya OFF Low/High两项已进入Router，16:26仍未返回；H3计算占用显存，GPU只余629MiB。共享锁为READ，原Router同时等待实际显存与任务期限，不终止H3、不移除锁、不更换设备或权重。
 
@@ -10,7 +10,7 @@ compile-compcert原始Laya六组已结束；Low/Max的OFF额外重试80/78次、
 
 16:41显存自然释放到23455MiB；训练Laya OFF Low在2400秒期限内无Router返回、无生成，原Verifier0单列资源故障。OFF High完成Router前向，选择Luna High后HTTP401、0额外重试、无有效Reward；路由总墙钟1955.743秒与实际前向91.955毫秒分别记录，不将队列等待写成推理耗时。原队列已接续OFF Max与ON Low。
 
-17:11原固定并发空闲，沿现有单题恢复入口启动Seed43 Terra High的pypi-server、prove-plus-comm、pytorch-model-cli和qemu-alpine-ssh四个位置，Controller1920505／凭据持有1920499；均为旧请求故障、无有效评分、此前本轮恢复0次。原Router两并发继续，固定四并发，原任务与独立新Job保留。17:12四项已实际进入Agent，但Terra均返回502、正文error code: 502，尚无生成与工具结果；按原期限继续请求，结果待结束。原有限1345012后续会复用这些恢复记录。
+17:29已完成Seed43 Terra High四个原位置的独立恢复：pypi-server、prove-plus-comm、pytorch-model-cli和qemu-alpine-ssh。每项34次请求、33次额外重试，全部HTTP502，生成及工具结果0；原官方Verifier均执行断言并写0，质量仍为PROVIDER_RETRY_DEADLINE、费用未知。四个旧Trial与四个新Trial分别保留，联合原Trial累计265；有效84/55、缺分122保持。Controller1920505／凭据持有1920499已自然退出，原Router两并发继续；有限1345012后续复用本次恢复记录，不再自动重做这些位置。
 
 mteb-retrieve全部24组结束，训练Kev六组原Verifier均实际执行2断言：High/Max的OFF/ON四组2/2通过、Reward1；Low的OFF/ON两组1/2通过、Reward0。其余18组为12个GLM429/502到期及6个Luna401。六组生成均请求/返回Terra与相同Effort、0额外重试；ON三组共9次教师请求均401，短评消费0，不能将四个成功归因教师。逐Episode Token与费用见Benchmark总入口。
 
