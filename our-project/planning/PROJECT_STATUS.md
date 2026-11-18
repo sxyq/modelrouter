@@ -10,6 +10,8 @@ compile-compcert原始Laya六组已结束；Low/Max的OFF额外重试80/78次、
 
 16:41显存自然释放到23455MiB；训练Laya OFF Low在2400秒期限内无Router返回、无生成，原Verifier0单列资源故障。OFF High完成Router前向，选择Luna High后HTTP401、0额外重试、无有效Reward；路由总墙钟1955.743秒与实际前向91.955毫秒分别记录，不将队列等待写成推理耗时。原队列已接续OFF Max与ON Low。
 
+17:11原固定并发空闲，沿现有单题恢复入口启动Seed43 Terra High的pypi-server、prove-plus-comm、pytorch-model-cli和qemu-alpine-ssh四个位置，Controller1920505／凭据持有1920499；均为旧请求故障、无有效评分、此前本轮恢复0次。原Router两并发继续，固定四并发，原任务与独立新Job保留。17:12四项已实际进入Agent，但Terra均返回502、正文error code: 502，尚无生成与工具结果；按原期限继续请求，结果待结束。原有限1345012后续会复用这些恢复记录。
+
 mteb-retrieve全部24组结束，训练Kev六组原Verifier均实际执行2断言：High/Max的OFF/ON四组2/2通过、Reward1；Low的OFF/ON两组1/2通过、Reward0。其余18组为12个GLM429/502到期及6个Luna401。六组生成均请求/返回Terra与相同Effort、0额外重试；ON三组共9次教师请求均401，短评消费0，不能将四个成功归因教师。逐Episode Token与费用见Benchmark总入口。
 
 13:17 `rstan-to-pystan`已有18组结束：16个Luna HTTP401、2个GLM HTTP502到期，均无Reward；另2组仍运行。唯一600权限配置与1696633内存凭据的三模型URL、Key和请求模型绑定逐项一致，各仅1个端点、无同模型备用。Provider最多额外100次及原任务期限继续生效；Luna认证需现有渠道恢复。

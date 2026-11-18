@@ -16,34 +16,48 @@
     "training_cost": "SEPARATE_FROM_ONLINE_COST"
   },
   "current_execution": {
-    "controller_pid": 2481191,
-    "controller_exited": true,
-    "latest_result_at": "2026-11-14T19:43:11+08:00",
-    "finished_positions": 3,
-    "not_started_positions": 954,
-    "reward_1": 1,
-    "reward_0": 1,
-    "no_effective_quality_score": 1,
-    "provider_extra_retries": 22,
-    "known_api_reference_usd": 0.0408175,
-    "unknown_cost_requests": 1,
-    "stage": "fixed",
+    "controller_pid": 1920505,
+    "credential_holder_pid": 1920499,
+    "controller_exited": false,
+    "observed_at": "2026-11-18T17:12:38+08:00",
+    "first_pass_finished_positions": 261,
+    "recovery_running_positions": 4,
+    "not_started_positions": 696,
+    "reward_1_before_recovery": 84,
+    "reward_0_before_recovery": 55,
+    "no_effective_quality_score_before_recovery": 122,
+    "known_api_reference_usd_before_recovery": 9.07206206,
+    "unknown_cost_requests_before_recovery": 142,
+    "stage": "fixed_recovery",
     "selected_tasks": [
-      "modernize-scientific-stack"
+      "pypi-server",
+      "prove-plus-comm",
+      "pytorch-model-cli",
+      "qemu-alpine-ssh"
     ],
     "selected_strategies": [
-      "glm_low",
-      "luna_high",
       "terra_high"
     ],
     "seed": 43,
-    "generation_revision": "213d4469",
-    "analysis_revision": "9d46b66e2d9c244d6c210d64be5166f07f7fdb4b",
+    "runtime_source_revision": "2d1be7ba960ee88a78696c47508c927199ab516e",
+    "analysis_revision": "a3dd87909260252205e45925ca822af480b96216",
     "provider_extra_retry_limit": 100,
     "maximum_output_tokens": 4096,
-    "original_harbor_task_limits_retained": true
+    "original_harbor_task_limits_retained": true,
+    "fixed_concurrency": 4,
+    "other_running_router_concurrency": 2,
+    "original_failures_retained": true,
+    "recovery_episode_ids": {
+      "pypi-server": "e338ee92-58e4-48c0-9d7d-68f2af5425cd",
+      "prove-plus-comm": "92fbb1f8-b510-450b-87d8-7e640dfefb35",
+      "pytorch-model-cli": "3b8cef05-94f6-4f14-9133-49264b3536e4",
+      "qemu-alpine-ssh": "3ea9374c-68a9-4d52-81bf-3757dddca782"
+    },
+    "current_provider_http_status": 502,
+    "current_provider_response": "error code: 502",
+    "recovery_completed": false
   },
-  "execution_reason": "Existing Model-only queue waits for protected H3 GPU lease; start three unattempted fixed-model positions without loading a Router or consuming the GPU",
+  "execution_reason": "Recover four existing seed43 Terra High transport-failure positions in the available fixed-model concurrency; Model-only and the original finite continuation remain active",
   "official_outcomes": {
     "luna_high": {"reward": 1, "assertions_passed": 2, "assertions_failed": 0, "api_tokens": 13239, "known_reference_usd": 0.0010995, "reported_cached_tokens": 7680, "requested_returned_effort": "high/high"},
     "terra_high": {"reward": 0, "assertions_passed": 1, "assertions_failed": 1, "api_tokens": 35826, "known_reference_usd": 0.039718, "reported_cached_tokens": 0, "requested_returned_effort": "high/high", "failure": "Official task subprocess analyze_climate_modern.py exceeded its original 30-second timeout", "code_and_resource_contribution": "NOT_SEPARATED"},

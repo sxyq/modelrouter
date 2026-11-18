@@ -12,6 +12,8 @@
 
 16:41显存自然释放至23455MiB，训练Laya OFF Low因首个Router未返回达到2400秒，原0单列资源故障；OFF High真实前向91.955毫秒、包含等待的路由墙钟1955.743秒，选Luna High后401、0额外重试、无有效Reward。两项均无工具执行，原队列随后接续OFF Max及ON Low。
 
+17:11沿原联合矩阵单题恢复Seed43 Terra High的pypi-server、prove-plus-comm、pytorch-model-cli、qemu-alpine-ssh；四个位置均为已结束的请求故障、没有有效评分或此前本轮恢复。Controller1920505／持有1920499与原Router两并发同时运行，固定四并发；新独立Episode身份记录在联合批次`metrics/resource_observations.json`，原Trial与费用保留。17:12四项当前请求均502、正文仅error code: 502，实际生成和工具结果均0，恢复结果待原时限结束。
+
 `mteb-retrieve`全部24组已结束。下表每行是训练Kev、Seed43的一次完整Episode，所有生成均使用Terra对应档位、请求与返回身份和档位一致、额外重试0；原官方Verifier每行执行2项断言。
 
 | 教师/档位 | Reward | 通过断言 | 已报API Token | 已知模型参考USD | 未知费用请求 | Harbor秒 |
