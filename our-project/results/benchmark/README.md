@@ -4,11 +4,31 @@
 
 | 批次／台北时刻 | 已结束／计划 | 官方1 | 官方0 | 缺分 | 评分依赖故障 | 运行 | 待首跑 | 已知模型和教师参考USD |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Model-only／05:42 | 1876／2136 | 349 | 193 | 1302 | 32 | 2 | 258 | 30.41512086 |
-| 联合／05:40 | 261／957 | 99 | 57 | 105 | 0 | 0 | 696 | 15.32542777 |
-| 历史Seed42／05:43 | 1509／1513 | 332 | 360 | 755 | 62 | 4 | 0 | 43.64631544 |
+| Model-only／06:15 | 1880／2136 | 350 | 193 | 1305 | 32 | 2 | 254 | 30.78120818 |
+| 联合／06:14 | 261／957 | 99 | 57 | 105 | 0 | 0 | 696 | 15.32542777 |
+| 历史Seed42／06:16 | 1509／1513 | 338 | 361 | 748 | 62 | 4 | 0 | 44.07746163 |
 
-Colink新凭据已用于GLM完整Episode，Low／High／Max三档均有实际工具调用。五个原始403响应明确为`SUBSCRIPTION_NOT_FOUND`的Seed43位置进入单次技术恢复。`llm-inference-batching-scheduler`的原始Laya OFF、训练Laya OFF／ON，以及`mailman`的原始Laya OFF／ON均为固定Max的Model-only路由，原位置仍无有效评分。Luna／Codegoai生成接口最近记录仍为401。Terra／Jiji已在原Harbor取得官方结果。三批分别有1829、196和1117条请求费用未知，供应商实收及资源美元费用缺项。
+Colink新凭据已用于GLM完整Episode，Low／High／Max三档均有实际工具调用。五个原始403响应明确为`SUBSCRIPTION_NOT_FOUND`的Seed43位置进入单次技术恢复。`llm-inference-batching-scheduler`的原始Laya OFF、训练Laya OFF／ON，以及`mailman`的原始Laya OFF／ON均为固定Max的Model-only路由，原位置仍无有效评分。Luna／Codegoai生成接口最近记录仍为401。Terra／Jiji已在原Harbor取得官方结果。三批分别有1849、196和1124条请求费用未知，供应商实收及资源美元费用缺项。
+
+### 06:14–06:16新汇总的完整Episode
+
+fix-ocaml-gc／原始Laya OFF Model-only Max／Seed43取得Harbor官方1，Trial3698ecf4-928e-49fa-afc2-932815ea882b，原断言1/1通过。126次生成均请求GLM Max，返回Effort未报告；2次额外重试，本次6918671已报API Token、$0.26481256已知模型参考费、2次请求用量与费用缺项。Provider已报缓存读取6513472 Token、8次请求未报缓存；Router墙钟144.187932秒，GPU等待0.016230秒，Harbor4442.840521秒。
+
+同题原始Laya ON Max的原Verifier也写1，Harbor因NonZeroAgentExitCodeError保留无有效评分。该次先完成65条GLM Max生成，随后1条Luna Max请求401中断；14条Luna Low教师请求均401，短评消费0。原Verifier1、Harbor空值、2117162已报Token、$0.10121368已知参考费、16条请求费用缺项及2254.950625秒均分别保留。
+
+历史Seed42本轮新纳入6个有效1及1个有效0如下。表内Token、参考费与墙钟取各自单次Episode，原失败尝试另存。
+
+| 固定GLM策略／任务 | 官方Reward | 本次已报API Token | 本次已知参考USD | 费用缺项请求 | Harbor秒 |
+|---|---:|---:|---:|---:|---:|
+| Low／merge-diff-arc-agi-task | 1 | 66078 | 0.00425038 | 0 | 257.551132 |
+| High／merge-diff-arc-agi-task | 1 | 242240 | 0.02131848 | 0 | 539.115923 |
+| Max／merge-diff-arc-agi-task | 1 | 389104 | 0.02991372 | 0 | 472.129068 |
+| Max／model-extraction-relu-logits | 1 | 616350 | 0.06138191 | 2 | 1024.524686 |
+| Max／multi-source-data-merger | 1 | 272924 | 0.01836808 | 0 | 430.144449 |
+| Max／nginx-request-logging | 1 | 55334 | 0.00608804 | 0 | 210.965136 |
+| High／make-doom-for-mips | 0 | 2264141 | 0.10372820 | 1 | 1065.754425 |
+
+make-doom-for-mips Low／Max的原Verifier均0，现有分析列PROVIDER_RETRY_DEADLINE：此前各一条502已重试恢复为200，末次单次读取分别在6.693秒／77.546秒到原期限。两档分别完成52／32次生成，末次各一次读取超时。原0、恢复成功的早期502、末次时限及质量空值均保留，延迟贡献沿实际记录区分。
 
 05:55四个Seed42旧uvx故障已加入有限队列2492278：GLM Low的overfull-hbox、adaptive-rejection-sampler、cobol-modernization及GLM High的build-pmars。原bin/uv与bin/uvx现均存在、可执行，相同依赖机制已有完整成功Episode。四个位置此前都有一次无有效评分的恢复记录，普通批次会跳过；现等待固定阶段2253174自然结束后沿原--task／--strategy入口各接续一次。另三个同类旧恢复位置属于Luna的adaptive-rejection-sampler Low／High／Max，仍有渠道401，保留无分。其余55个历史评分依赖故障尚无本轮恢复标记，继续沿原普通恢复入口处理。
 
@@ -45,7 +65,7 @@ headless-terminal Max的失败为任务内localhost:8000后台服务连接拒绝
 | Kev ON High | 11 | 6／10 | 6 | 3／6 | 0.04774198／0.25828660 |
 | Kev ON Max | 14 | 10／12 | 9 | 7／7 | 0.07880220／1.25152050 |
 
-Kev OFF Low在同一12题中多完成7题，API参考费为原始版16.62倍。原始版105次生成全请求Luna Low，训练版152次生成全请求Terra Low，两侧模型切换均0；该12题的固定Terra Low完整对照尚缺。Kev OFF Max在全部11个配对中少完成1题。Laya OFF Low在14个配对中少完成2题，Laya OFF Max在12个配对中多完成2题，各档位方向不同。当前272个有评分的教师ON位置中，191个有短评被Router消费、通过125个；81个没有消费短评、通过53个。教师配置、实际调用和短评消费保留独立字段。依据为本批metrics/per_episode.csv、metrics/comparisons.json及逐题原Harbor导出。
+Kev OFF Low在同一12题中多完成7题，API参考费为原始版16.62倍。原始版105次生成全请求Luna Low，训练版152次生成全请求Terra Low，两侧模型切换均0；该12题的固定Terra Low完整对照尚缺，24次Episode的execution_environment字段均为空，物理VM模式缺测。Kev OFF Max在全部11个配对中少完成1题。Laya OFF Low在14个配对中少完成2题，Laya OFF Max在12个配对中多完成2题，各档位方向不同。当前272个有评分的教师ON位置中，191个有短评被Router消费、通过125个；81个没有消费短评、通过53个。教师配置、实际调用和短评消费保留独立字段。依据为本批metrics/per_episode.csv、metrics/comparisons.json及逐题原Harbor导出。
 
 ## 2026-11-19 · 继续执行后的官方结果与重试终局
 
