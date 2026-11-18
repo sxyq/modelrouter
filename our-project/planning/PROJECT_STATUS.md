@@ -2,7 +2,7 @@
 
 ## 2026-11-19：原批次继续与凭据进程路径
 
-台北时间04:05的Model-only已结束1846/2136位置，有效1/0为344/193，缺分1277，另有32项评分依赖故障。原队列2项运行、288项待首次运行。04:00的Seed43联合固定阶段261项结束，有效1/0为99/57，缺分105，696个联合Router位置待原队列接续。历史批次正在恢复已执行过的技术故障位置。原Trial、费用和各策略分母见Benchmark总入口。
+台北时间04:29的Model-only已结束1860/2136位置，有效1/0为344/193，缺分1291，另有32项评分依赖故障。原队列1项运行、275项待首次运行。04:29的Seed43联合固定阶段261项结束，有效1/0为99/57，缺分105，696个联合Router位置待原队列接续。历史04:30采集时4项正在恢复，有效1/0为316/350。三批逐Episode表的latest_trial_*字段已单列最后一次实际运行的输入、输出、已报Token、参考费与缺项数量。原Trial、费用和各策略分母见Benchmark总入口。
 
 本轮联合新增九个Terra High有效1：code-from-image、custom-memory-heap-crash、break-filter-js-from-html、mteb-retrieve、rstan-to-pystan、distribution-search、mteb-leaderboard、fix-ocaml-gc、pytorch-model-cli。九次独立Episode合计8422837已报Token、$2.13097300已知模型参考费、70次额外重试，请求与返回模型及High均匹配；失败尝试实收、供应商账单及资源美元费用未知。原恢复前失败与费用保留。新增有效0还包括circuit-fibsqrt、portfolio-optimization／Terra High，均不重跑。
 
