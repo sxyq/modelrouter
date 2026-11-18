@@ -1,8 +1,8 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 2026-11-18 12:36 · MTEB完整Episode与最新接续
+## 2026-11-18 13:17 · Model-only接续与MTEB完整Episode
 
-Model-only原观察导出1737/2136位置结束，339有效Reward1、191有效Reward0、1175缺分、32依赖故障另列；2运行、397未开始。1738原Trial，模型与教师已知参考费$25.22174546、1605请求费用未知。当前控制与有限接续进程仍在；下节12:07数字保留其采集时点。
+Model-only原观察导出1746/2136位置结束，339有效Reward1、191有效Reward0、1184缺分、32依赖故障另列；2运行、388未开始。1747原Trial，模型与教师已知参考费$25.22174546、1614请求费用未知。控制器和有限接续进程仍在；下节12:07数字保留其采集时点。
 
 `mteb-retrieve`全部24组已结束。下表每行是训练Kev、Seed43的一次完整Episode，所有生成均使用Terra对应档位、请求与返回身份和档位一致、额外重试0；原官方Verifier每行执行2项断言。
 
@@ -17,7 +17,7 @@ Model-only原观察导出1737/2136位置结束，339有效Reward1、191有效Rew
 
 ON的2/3/4次Luna教师请求全部401，短评消费均0；表中ON费用仅为已知模型部分，教师及完整成本未知。该题High与Max均成功，OFF High模型参考费比OFF Max低28.57%；当前记录无法归因教师收益。其余18组由12个GLM429/502到期和6个Luna401构成，原始0、故障和费用保留，质量不计模型失败。
 
-12:39本地唯一配置与原Controller内存凭据绑定一致，Luna/Terra/GLM各仅1个端点，无同模型备用；最新rstan-to-pystan的Luna401继续按不可恢复请求保存。三模型与原任务条件保持，账户认证需渠道恢复。逐项证据见本批`trials/mteb-retrieve/*/43/summary.json`与服务器同位置原Verifier的`ctrf.json`。
+13:17 `rstan-to-pystan`已有18组结束，16组因Luna HTTP401、2组因GLM HTTP502到任务期限而无Reward；当前2组继续运行。本地唯一配置与控制器内存凭据绑定一致，Luna/Terra/GLM各仅1个端点，无同模型备用；Luna 401没有可切换账户。401位置不重复发送相同凭据请求，GLM502按原请求与任务期限继续最多100次额外重试。逐项证据见本批`trials/mteb-retrieve/*/43/summary.json`、`trials/rstan-to-pystan/*/43/summary.json`与服务器原Episode记录。
 
 ## 2026-11-18 · 已同步公开中期结果（非终局）
 
