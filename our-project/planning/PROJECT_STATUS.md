@@ -158,6 +158,16 @@ uv索引修复后，log-summary-date-ranges训练Kev教师ON Max原官方2/2断�
 
 11-14 01:12：merge-diff-arc-agi-task原始Laya ON Low/High均在原Verifier900秒内因Ubuntu下载未完成而缺Reward；未执行断言，进入原技术恢复队列。`2308ba82c1dcfcba44e309127b54a2a38b7f802b`合并当前apt镜像映射，复用原环境类的URI替换。按官方Dockerfile和test.sh将38个Ubuntu24.04且实际调用apt-get update的任务接入USTC；发行索引和原502软件包分别HTTP200、0.226/0.142秒。01:27训练Laya OFF Low完整Episode确认生效：6.8MB软件包4秒下载，原Verifier185.998秒，5断言2通过/3失败、Reward0，$0.00448842参考费；这条有效失败保留。原始Laya ON Max亦取得原官方0/5、Reward0；两条下载超时仍待独立恢复。原脚本、包参数、输出和时限保持，批次已知模型与教师参考费$7.83882391、477请求费用未知。
 
+## 2026-11-18：公开结果同步中期快照
+
+已从三个活跃远端观察者各自的公开导出目录同步到[Model-only](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/)、[Joint](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-joint-paired/)及[历史](../results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/)结果批次。只增加/更新公开导出文件，未删除本地文件或改动远端；私有/raw数据排除。逐策略、逐Episode和配对数据以每批`metrics/per_strategy.csv`、`per_episode.csv`、`comparisons.json`及`review.md`为准。
+
+12:07快照：Model-only 1726/2136已结束、2运行、408未开始，Reward 1/0为339/191，1164缺有效评分、32依赖失败另列、1727个Trial；已知模型+教师参考费$25.22174546，1594请求费用未知。Joint 261/957已结束，固定参照84/55/122（Reward1/0/缺评分），696个Router位置未开始；261 Trial、已知模型+教师参考费$9.07206206、142请求费用未知。历史批次1513/1513，Reward 1/0/缺评分308/344/795，66依赖失败另列、2599 Trial；已知模型+教师参考费$42.11526315、1098请求费用未知。Model-only与Joint的同题seed43局部配对只对两侧有效评分及费用均齐全的子集报告，不外推未评分/未执行位置；不据此作完整净收益结论。供应商实收与Router、工具、CPU/GPU/VM美元成本未知，参考费不是实收。三批仍属非终局数据；Model-only和联合Router矩阵均未全部结束。
+Provider重试烟测已在两个已结束真实Episode确认：OFF Max连续记录61次额外重试／62条原始SSE（第62次最终TASK_DEADLINE）；ON Low连续62次额外重试／63条原始SSE（第63次TASK_DEADLINE）。两者索引连续、各仅一个决策ID和一份请求JSON，分别保持Terra Max/4096与Low/4096。Provider源码本地/远端SHA-256相同：`b95c2ca5a7b74f69336f55aba1172fbca9ecb04a3f35b17f03d5c95503591c40`。原时限生效，失败响应和终局均按既有Trial留存。
+
+
+公开图表已由既有`rq1_figures.py`刷新：以uv临时分析环境补齐matplotlib，并按项目既有`csv.field_size_limit(sys.maxsize)`惯例修复联合批次真实CSV超过128KiB字段限制的失败。三批PNG/SVG/PDF和Model-only两题配对图已生成；配对图21/40组评分与参考费齐全，另19组缺项，仍为部分前沿。实际运行确认修复，远端执行流程未改。
+
 ## 当前执行：Model-only全量对照（2026-11-12）
 
 [Model-only批次](../results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/review.md)执行Terminal-Bench 2.0全部89题×24组×seed43，覆盖Laya/Kev原始及11-11各18更新权重、教师OFF/ON、固定Low/High/Max。每次只选同档位三个模型；正式主方法仍为Model×Native Effort。完成数量、有效评分、依赖失败及费用由该批次报告统一更新，生成方法为b9fba0a4488731c76718221e0572e5e7f2e8f936；当前进程与运行修复见上节。

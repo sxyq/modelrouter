@@ -1,6 +1,7 @@
 """Plot recorded RQ1 episodes; unscored and unexecuted positions remain distinct."""
 import csv
 import json
+import sys
 from pathlib import Path
 
 
@@ -280,6 +281,7 @@ def render_batch_figures(root):
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
     root = Path(root)
+    csv.field_size_limit(sys.maxsize)
     episodes = list(csv.DictReader((root / "metrics/per_episode.csv").open()))
     strategies = json.loads((root / "config.json").read_text())["strategies"]
     destination = root / "figures"
@@ -360,7 +362,6 @@ def render_batch_figures(root):
 
 
 if __name__ == "__main__":
-    import sys
     if "--model-only-effort" in sys.argv[2:]:
         render_model_only_effort(sys.argv[1], model_only_effort_rows(sys.argv[1]))
     elif "--pareto" in sys.argv[2:]:
