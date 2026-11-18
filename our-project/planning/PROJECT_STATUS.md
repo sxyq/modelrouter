@@ -1,8 +1,10 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-11-19 05:01 · Colink接入与接续队列
+## 2026-11-19 05:43 · Colink接入与接续队列
 
 已部署`56effc7f0633caab76f2d8b94a88f625ff0fdd6a`。Provider用私有配置的`request_model`匹配精确模型ID，兼容现有只定义`model`的条目。Colink新凭据已与A6000在用内存配置逐项核对。新接续进程2412227在原Model-only控制器及其Router退出后接管恢复和联合阶段，纳入已有原响应的五个Colink订阅故障位置。三个采集进程2412240／2412241／2412242继续每1200秒更新，代理接续8301等待58053自然退出。原两并发Router及四并发固定阶段继续。Luna／Codegoai生成仍401，Terra／Jiji已有恢复后的官方成绩。逐批分母和费用见Benchmark报告。
+
+05:43历史有效1/0为332/360，新增headless-terminal High及log-summary-date-ranges三档共4个通过，另有headless-terminal Max、largest-eigenval High／Max共3个有效失败，七项均沿原终局保留。Model-only仍1876/2136结束、2项运行、258项待首次运行。已保存同题同Seed训练比较：Kev OFF Low的12题由2通过升至9通过，单次API参考费由$0.04807856升至$0.79889000，原始105次生成均选Luna、训练152次生成均选Terra，两侧切换均0；同题固定Terra Low对照尚缺。十二组配对与教师实际消费见Benchmark总入口。
 
 ## 2026-11-19：原批次继续与凭据进程路径
 

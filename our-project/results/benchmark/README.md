@@ -4,11 +4,25 @@
 
 | 批次／台北时刻 | 已结束／计划 | 官方1 | 官方0 | 缺分 | 评分依赖故障 | 运行 | 待首跑 | 已知模型和教师参考USD |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Model-only／05:21 | 1876／2136 | 349 | 193 | 1302 | 32 | 2 | 258 | 30.41512086 |
-| 联合／05:20 | 261／957 | 99 | 57 | 105 | 0 | 0 | 696 | 15.32542777 |
-| 历史Seed42／05:22 | 1509／1513 | 328 | 357 | 762 | 62 | 4 | 0 | 43.32234129 |
+| Model-only／05:42 | 1876／2136 | 349 | 193 | 1302 | 32 | 2 | 258 | 30.41512086 |
+| 联合／05:40 | 261／957 | 99 | 57 | 105 | 0 | 0 | 696 | 15.32542777 |
+| 历史Seed42／05:43 | 1509／1513 | 332 | 360 | 755 | 62 | 4 | 0 | 43.64631544 |
 
-Colink新凭据已用于GLM完整Episode，Low／High／Max三档均有实际工具调用。五个原始403响应明确为`SUBSCRIPTION_NOT_FOUND`的Seed43位置进入单次技术恢复。`llm-inference-batching-scheduler`的原始Laya OFF、训练Laya OFF／ON，以及`mailman`的原始Laya OFF／ON均为固定Max的Model-only路由，原位置仍无有效评分。Luna／Codegoai生成接口最近记录仍为401。Terra／Jiji已在原Harbor取得官方结果。三批分别有1829、196和1112条请求费用未知，供应商实收及资源美元费用缺项。
+Colink新凭据已用于GLM完整Episode，Low／High／Max三档均有实际工具调用。五个原始403响应明确为`SUBSCRIPTION_NOT_FOUND`的Seed43位置进入单次技术恢复。`llm-inference-batching-scheduler`的原始Laya OFF、训练Laya OFF／ON，以及`mailman`的原始Laya OFF／ON均为固定Max的Model-only路由，原位置仍无有效评分。Luna／Codegoai生成接口最近记录仍为401。Terra／Jiji已在原Harbor取得官方结果。三批分别有1829、196和1117条请求费用未知，供应商实收及资源美元费用缺项。
+
+05:22至05:43历史Seed42新增以下七个有效官方结果，均由原Verifier给分，原恢复入口对这七项返回None，保留终局。Token与参考费均取本次独立Episode。
+
+| GLM任务／档位 | 官方Reward | 原断言通过 | 本次已报API Token | 本次已知参考USD | 本次费用缺项请求 |
+|---|---:|---:|---:|---:|---:|
+| headless-terminal／High | 1 | 7／7 | 943998 | 0.05963380 | 1 |
+| headless-terminal／Max | 0 | 6／7 | 915786 | 0.05990997 | 1 |
+| largest-eigenval／High | 0 | 21／27 | 716751 | 0.06292392 | 1 |
+| largest-eigenval／Max | 0 | 20／27 | 752129 | 0.05901461 | 0 |
+| log-summary-date-ranges／Low | 1 | 2／2 | 10165 | 0.00114170 | 0 |
+| log-summary-date-ranges／High | 1 | 2／2 | 92646 | 0.00915795 | 0 |
+| log-summary-date-ranges／Max | 1 | 2／2 | 46368 | 0.00443302 | 0 |
+
+headless-terminal Max的失败为任务内localhost:8000后台服务连接拒绝。largest-eigenval两档分别有6和7个原速度断言未通过；High出现50μs对49μs的失败，Max出现252μs对111μs的失败。原性能成绩保持0，执行环境与实现各自的耗时贡献缺测。
 
 ### 同题训练前后：05:21快照
 
