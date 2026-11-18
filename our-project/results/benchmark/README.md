@@ -1,8 +1,8 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 2026-11-18 17:33 · 原批次接续与四项固定恢复结束
+## 2026-11-18 18:06 · 原批次接续与渠道故障定位
 
-17:33台北原观察导出Model-only 1767/2136位置结束，339有效Reward1、195有效Reward0、1201缺分、32依赖故障另列；2运行、367未开始。1768原Trial，模型与教师已知参考费$26.88846586、1662请求费用未知、7767次额外重试（已结束Episode）。联合固定261/957、现265原Trial、146请求费用未知、1994次额外重试；历史1513位置保持原结果，696个联合Router位置待现有队列接续。
+18:06台北现行分析导出Model-only 1770/2136位置结束，339有效Reward1、195有效Reward0、1204缺分、32依赖故障另列；2运行、364未开始。1771原Trial，模型与教师已知参考费$26.88846586、1665请求费用未知、7844次额外重试（已结束Episode），另1次直连诊断消费未知。联合固定261/957、现265原Trial、146请求费用未知、1994次额外重试；历史1513位置保持原结果，696个联合Router位置待现有队列接续。
 
 `compile-compcert`原始Laya六组均未执行工具。OFF Low/Max为81/79次GLM请求，ON Low/Max为68/63次GLM请求，分别额外重试80/78/67/62次后在原期限停止；两项High为Luna401、额外重试0。六组原Verifier均写0，质量表单列接口故障，费用未知。GLM原429正文为`group requests-per-minute limit exceeded`，原502正文为`Upstream access forbidden, please contact administrator`。逐尝试与独立Episode见本批`trials/compile-compcert/*/43/`。
 
@@ -26,6 +26,8 @@
 17:43使用原内存凭据对GET /v1/models分别读取原代理与A6000直连：Luna均401/Invalid token，GLM、Terra均200并列出精确模型ID；原生成接口仍返回GLM429/502、Terra502。模型列表、实际生成和官方Reward分列，Benchmark网络路径保持原配置。
 
 17:57同一Terra Low/4096失败请求单次改用A6000直连诊断，2.991秒仍返回Cloudflare502、正文error code: 502。该次不执行工具，Token与费用未知，独立记录于Model-only资源文件，官方Episode成绩及费用列保持原范围；诊断未知消费另计，不填0美元。原Benchmark请求继续沿既有网络路径。
+
+18:03训练Laya ON Max的compile-compcert原Episode结束：78次GLM Max请求、77次额外重试至原任务期限，0生成、0工具；原官方Reward0保存，质量列为PROVIDER_RETRY_DEADLINE，费用未知。
 
 `mteb-retrieve`全部24组已结束。下表每行是训练Kev、Seed43的一次完整Episode，所有生成均使用Terra对应档位、请求与返回身份和档位一致、额外重试0；原官方Verifier每行执行2项断言。
 

@@ -1,8 +1,8 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 2026-11-18 17:33：原批次接续与四项固定恢复结束
+## 2026-11-18 18:06：原批次接续与渠道故障定位
 
-17:33台北原观察导出1767/2136位置结束：339有效1、195有效0、1201缺有效评分、32项Verifier依赖故障另列；2运行、367未开始，1768原Trial。已知模型与教师参考费$26.88846586、1662请求费用未知、7767次额外重试（已结束Episode）。1696641、1345012、Native1142336/1142328及三个1200秒观察者仍运行。联合261/957结束、84有效1/55有效0/122缺分，现265原Trial、146请求费用未知、1994次额外重试，696个Router位置待原队列；历史1513位置、2599次Trial、308有效1/344有效0/795缺分、66依赖故障保持。
+18:06台北现行分析导出1770/2136位置结束：339有效1、195有效0、1204缺有效评分、32项Verifier依赖故障另列；2运行、364未开始，1771原Trial。已知模型与教师参考费$26.88846586、1665请求费用未知、7844次额外重试（已结束Episode）；另有1次直连诊断消费未知。1696641、1345012、Native1142336/1142328及三个1200秒观察者仍运行。联合261/957结束、84有效1/55有效0/122缺分，现265原Trial、146请求费用未知、1994次额外重试，696个Router位置待原队列；历史1513位置、2599次Trial、308有效1/344有效0/795缺分、66依赖故障保持。
 
 compile-compcert原始Laya六组已结束；Low/Max的OFF额外重试80/78次、ON额外重试67/62次，均到原任务期限；High两组Luna401各0额外重试。六组均未执行工具，原Verifier0保留，质量列为接口故障。GLM原429响应为group requests-per-minute limit exceeded，原502响应为Upstream access forbidden, please contact administrator。训练Laya OFF Low/High两项已进入Router，16:26仍未返回；H3计算占用显存，GPU只余629MiB。共享锁为READ，原Router同时等待实际显存与任务期限，不终止H3、不移除锁、不更换设备或权重。
 
@@ -15,6 +15,8 @@ compile-compcert原始Laya六组已结束；Low/Max的OFF额外重试80/78次、
 17:43沿原控制器内存凭据读取GET /v1/models，原代理和A6000直连分别采样一次：Luna两条路径均401/Invalid token，GLM与Terra两条路径均200且列出精确模型ID。该次只读取模型元数据；生成接口仍分别为GLM429/502、Terra502，原Benchmark网络路径保持。17:44两个真实Episode仍存活、无生成及工具结果，等待原2400秒期限。
 
 17:57单次直连诊断复用当前Terra Low失败请求原始正文，模型、Effort、4096参数保持；2.991秒返回Cloudflare HTTP502，正文error code: 502，与原代理路径相同。该请求独立保存于原Episode私有direct_transport_diagnosis.json，Token和费用未知、未执行工具、无官方Reward，未合入Episode成绩或冒充网络恢复。当前Luna认证、GLM上游访问与Terra生成服务均需现有供应商恢复，未发现可用同模型备用端点。
+
+18:03训练Laya ON Max的compile-compcert结束：78次GLM Max请求、77次额外重试后TASK_DEADLINE，0生成、0工具，原Verifier Reward0、质量PROVIDER_RETRY_DEADLINE。原队列继续推进；新增有效任务评分为0，剩余完整比较依赖现有渠道恢复。
 
 mteb-retrieve全部24组结束，训练Kev六组原Verifier均实际执行2断言：High/Max的OFF/ON四组2/2通过、Reward1；Low的OFF/ON两组1/2通过、Reward0。其余18组为12个GLM429/502到期及6个Luna401。六组生成均请求/返回Terra与相同Effort、0额外重试；ON三组共9次教师请求均401，短评消费0，不能将四个成功归因教师。逐Episode Token与费用见Benchmark总入口。
 
