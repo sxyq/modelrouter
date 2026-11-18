@@ -88,6 +88,13 @@ def recovery_reason(path):
         return interruption
     error = trial.get("error") or {}
     kind, message = error.get("exception_type"), error.get("exception_message", "")
+    if kind == "NonZeroAgentExitCodeError" and trial.get("reward") is None and "HTTP Error 403" in message:
+        request = next((e for e in reversed(events) if e.get("episode_id") == trial["trial_id"]
+                        and e["event"] == "ERROR" and e.get("role") == "generator"), {})
+        if request.get("http_status") == 403 and request.get("request_model_id") == "glm-5.3-flash":
+            raw = path / "provider_responses" / f"{request['decision_id']}.sse"
+            if raw.is_file() and b"SUBSCRIPTION_NOT_FOUND" in raw.read_bytes():
+                return "COLINK_SUBSCRIPTION_RESTORED"
     if kind == "PermissionError" and "/proc/self/fd/" in message:
         return "PRIVATE_CONFIG_DESCRIPTOR_UNAVAILABLE"
     if kind == "NonZeroAgentExitCodeError" and any(e.get("episode_id") == trial["trial_id"]

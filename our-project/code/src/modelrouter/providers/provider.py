@@ -51,7 +51,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         self.request_timeout_sec = request_timeout_sec
         self.attempt_callback = None
         self.cancel_requested = lambda: False
-        self.model_endpoints = {item["model"]: item for item in creds.get("providers", [])}
+        self.model_endpoints = {item.get("request_model", item["model"]): item
+                                for item in creds.get("providers", [])}
         self.model_endpoints.update(creds.get("model_endpoints", {}))
         self.model_endpoints.update(model_endpoints or {})
         self.account_endpoints = creds.get("account_endpoints", {})
