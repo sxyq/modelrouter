@@ -35,6 +35,10 @@ for index, config_path in enumerate(payload['configs']):
     command = [str(root / '.runtime/benchmark-venv/bin/python'), '-m',
                'modelrouter.benchmark', 'rq1', config_path,
                '--source-revision', config['source_revision']]
+    for model in payload['restored_providers']:
+        command += ['--restored-provider', model]
+    for task in payload['excluded_tasks']:
+        command += ['--exclude-task', task]
     export = Path(tempfile.mkdtemp(prefix='rq1-watch-export.', dir=root / '.runtime'))
     def observe(pid):
         return subprocess.Popen(command + ['--watch-pids', str(pid), '--watch-interval',
@@ -47,7 +51,7 @@ for index, config_path in enumerate(payload['configs']):
             sys.exit(status)
     if index == 0 and payload['recover_infrastructure']:
         command.append('--recover-infrastructure')
-    if not (index == 0 and payload['attach_pid']) or payload['recover_infrastructure']:
+    if not (index == 0 and payload['attach_pid']) or payload['recover_infrastructure'] or payload['restored_providers']:
         (result / 'metrics').mkdir(exist_ok=True)
         if not (result / 'metrics/resource_observations.json').exists():
             (result / 'metrics/resource_observations.json').write_text(json.dumps({
@@ -78,6 +82,8 @@ def main():
     parser.add_argument('configs', nargs='+', help='Existing batch JSON files, executed in order')
     parser.add_argument('--attach-pid', type=int, help='Observe the first existing batch before continuing')
     parser.add_argument('--recover-infrastructure', action='store_true', help='Run the existing one-time recovery for the first batch')
+    parser.add_argument('--restored-provider', action='append', default=[], help='Resume failures for an exact model ID after its account recovers')
+    parser.add_argument('--exclude-task', action='append', default=[], help='Leave these tasks out of resumed batches')
     parser.add_argument('--proxy-for-pid', type=int, nargs='+', help='Reconnect the proxy; exit when all these existing batches end')
     parser.add_argument('--proxy-after-pid', type=int, help='Let the current local proxy finish before reconnecting')
     parser.add_argument('--proxy-worker', action='store_true', help=argparse.SUPPRESS)
@@ -130,6 +136,7 @@ def main():
     result = subprocess.run(command, input=json.dumps({'configs': args.configs,
                             'attach_pid': args.attach_pid,
                             'recover_infrastructure': args.recover_infrastructure,
+                            'restored_providers': args.restored_provider, 'excluded_tasks': args.exclude_task,
                             'revision': revision, 'credentials': credentials}), text=True)
     raise SystemExit(result.returncode)
 
