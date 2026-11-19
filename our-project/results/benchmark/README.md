@@ -1,24 +1,26 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-19 21:57–21:58 台北
+## 当前结果 · 2026-11-19 23:24–23:26 台北
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／未首跑 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2005／2136 | 359／203 | 1411 | 32 | 1／130 | 176591821 | 36.76676864 | 2077 |
+| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2020／2136 | 365／203 | 1420 | 32 | 2／114 | 178142838 | 37.61686244 | 2104 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 99／57 | 105 | 0 | 0／696 | 143404387 | 15.32542777 | 196 |
-| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 376／395 | 686 | 52 | 4／0 | 400118046 | 48.51249537 | 1337 |
+| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 380／400 | 677 | 52 | 4／0 | 418930362 | 49.42226244 | 1362 |
 
 有效 1、有效 0、缺有效评分、评分依赖故障四列合计为已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。Seed42 的 1513 个位置均已有结束记录，当前四个位置正在独立恢复，表内另列运行状态。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
-Model-only 已覆盖 84／89 题，83 题的 24 组均有结束记录；八组架构、权重和教师组合各有 Low／High／Max。联合批次已结束的均为固定模型，696 个联合 Router 位置尚未首跑。原两题排除范围继续有效：Model-only 48 个、联合 22 个计划位置不再新增运行，原分母和已有结果保留。
+Model-only 已覆盖 85／89 题，84 题的 24 组均有结束记录；八组架构、权重和教师组合各有 Low／High／Max。联合批次已结束的均为固定模型，696 个联合 Router 位置尚未首跑。原两题排除范围继续有效：Model-only 48 个、联合 22 个计划位置不再新增运行，原分母和已有结果保留。
 
 GLM 新凭据已更新到唯一权限 600 私有配置，并在真实 Episode 中返回 HTTP 200 和工具调用；其余尝试仍出现上游 502。Terra 已有 HTTP 200、工具执行及官方评分。Luna／Codegoai 最近生成仍为 HTTP 401 `Invalid token`，同一渠道的教师调用也受影响。请求成功、工具执行、教师短评实际消费和最终官方 Reward 分别记录。
 
 旧账户故障接续新增一个已观察格式：Colink 403 的 `insufficient balance` 文本此前被原恢复入口漏选，现与原有 `INSUFFICIENT_BALANCE`／`SUBSCRIPTION_NOT_FOUND` 一起识别。仍由原 `--restored-provider` 按同题、策略和 Seed 创建独立恢复 Trial，已有有效官方评分不再运行。
 
-Provider 每请求最多额外 100 次、保留原参数和任务期限的重试已部署。三批分别累计额外重试 9368／2332／1660 次。原 Verifier 数值与技术分类分别保存。原 Controller 和 Native Worker 继续，固定访问恢复 Controller `3122030` 与原 Router 批次并行；后续有限队列继续接续 Model-only 技术恢复及联合 Router。21:35 在途 Terra Max 返回 HTTP524、GLM Max 返回 HTTP502，均沿原任务期限重试。
+Provider 每请求最多额外 100 次、保留原参数和任务期限的重试已部署。三批分别累计额外重试 9381／2332／1749 次。原 Verifier 数值与技术分类分别保存。原 Controller 和 Native Worker 继续，固定访问恢复 Controller `3122030` 与原 Router 批次并行；后续有限队列继续接续 Model-only 技术恢复及联合 Router。21:35 在途 Terra Max 返回 HTTP524、GLM Max 返回 HTTP502，均沿原任务期限重试。
+
+21:58以后，Model-only 新增 `reshard-c4-data／训练 Kev OFF/ON Low/High/Max` 六个官方1；历史恢复新增 `llm-inference-batching-scheduler High/Max`、`mcmc-sampling-stan Low/High` 四个官方1，及 `mailman Low/Max`、`make-mips-interpreter High`、`mteb-retrieve Low/High` 五个有效官方0。每次恢复的用量和费用在原逐题表中单列，旧故障记录保留。
 
 自18:47快照新增历史有效1／0为12／14。通过为 GLM 的 `code-from-image Low`、`constraints-scheduling Low/High/Max`、`financial-document-processor Low`、`custom-memory-heap-crash High/Max`、`dna-insert High/Max`、`feal-differential-cryptanalysis Low`、`feal-linear-cryptanalysis Low/Max`。有效失败为 `tune-mjcf Low/High/Max`、`caffe-cifar-10 Low/Max`、`code-from-image Max`、`dna-assembly Low/High/Max`、`extract-moves-from-video Low/High/Max`、`filter-js-from-html Low`、`llm-inference-batching-scheduler Low`。原故障及恢复费用分别保留，不再运行有效失败。Model-only 新增两个通过：`portfolio-optimization／训练 Laya OFF Max` 和 `regex-chess／训练 Kev OFF Low`；六个失败为 portfolio-optimization 的训练 Kev OFF/ON Low/High、regex-chess 的训练 Kev ON Low，以及 reshard-c4-data 的训练 Laya OFF Max。
 
