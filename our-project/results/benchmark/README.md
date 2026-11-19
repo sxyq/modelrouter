@@ -1,6 +1,26 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 2026-11-19 · Colink订阅恢复与原批次进度
+## 2026-11-19 10:43 台北 · Colink账户余额与批次进度
+
+GLM私有凭据已更新至唯一0600配置，A6000活动队列中的凭据与之相同。真实Colink生成请求返回HTTP 403 `INSUFFICIENT_BALANCE`；新增尝试无官方Reward，不计作模型质量失败，也不再重复发起。Model-only最近汇总10:30为1895/2136：Reward 1/0为356/189，无有效Reward1330、Verifier依赖缺项20、运行0、未开始241；模型与教师参考费$33.49232752、费用未知请求1895。Seed43联合最近汇总03:29为261/957：99/57/105、未开始696，参考费$15.32542777、费用未知请求196。Seed42历史批次10:42汇总1509/1513：363/377/713、依赖缺项56、运行3、未开始1；参考费$45.50735920、费用未知请求1265。GLM恢复位置保持缺分；Model-only及Seed42各有Harbor容器仍在执行。
+
+## 2026-11-19 08:49–08:51 · A6000原队列快照
+
+| 批次 | 已结束／计划 | 官方1 | 官方0 | 缺分 | Verifier依赖缺项 | 运行 | 未首跑 | 已知模型＋教师参考费USD | 请求费用未知 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Model-only | 1892／2136 | 354 | 193 | 1313 | 32 | 2 | 242 | 32.11756632 | 1876 |
+| 联合 | 261／957 | 99 | 57 | 105 | 0 | 0 | 696 | 15.32542777 | 196 |
+| 历史Seed42 | 1509／1513 | 359 | 374 | 720 | 56 | 3 | 1 | 45.19441491 | 1162 |
+
+Model-only有48个原矩阵位置、联合有22个原矩阵位置已从本轮及后续恢复队列排除；分母保留原矩阵，因此未首跑数包含这些位置。两题所有过往Trial与结果保留，不再发起新Episode。历史技术恢复期间四个原Harbor Episode正在执行，队列2630763仍运行。
+
+自06:16快照后，历史批次另取得25个有效官方评分：12个Reward 1、13个Reward 0；新增有效Episode合计9,382,752已报API Token、已知模型参考费$0.70741649，另有15条请求的费用未知。另一个`qemu-startup／GLM Max`位置因生成请求在原任务时限内超时，原Verifier虽然写0，该位置仍记为接口故障、没有有效质量分。
+
+新增通过：`model-extraction-relu-logits／GLM High`、`password-recovery／GLM High/Max`、`prove-plus-comm／GLM Low/Max`、`pypi-server／GLM High/Max`、`pytorch-model-recovery／GLM Low/High/Max`、`qemu-startup／GLM High`、`regex-log／GLM Low`。
+
+新增有效失败：`polyglot-c-py／GLM Low`、`polyglot-rust-c／GLM High/Max`、`pytorch-model-cli／GLM Low/High/Max`、`qemu-alpine-ssh／GLM Low/High/Max`、`qemu-startup／GLM Low`、`query-optimize／GLM High/Max`、`raman-fitting／GLM Low`。每个位置的单次Trial、Token、已知参考费、费用缺项与Harbor时间见历史批次逐题CSV及Trial目录。
+
+## 2026-11-19 06:15前 · Colink订阅恢复历史快照
 
 | 批次／台北时刻 | 已结束／计划 | 官方1 | 官方0 | 缺分 | 评分依赖故障 | 运行 | 待首跑 | 已知模型和教师参考USD |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -12,7 +32,7 @@ Colink新凭据已用于GLM完整Episode，Low／High／Max三档均有实际工
 
 新增Episode／恢复均排除`vulnerable-secret`和`break-filter-js-from-html`，原历史日志和评分保留。两题对应Model-only的48个、联合的22个计划位置不执行；表内仍保留正式矩阵分母，故“待首跑”也包含这些排除位置。
 
-### 06:14–06:16新汇总的完整Episode
+### 06:14–06:16 Model-only完整Episode
 
 fix-ocaml-gc／原始Laya OFF Model-only Max／Seed43取得Harbor官方1，Trial3698ecf4-928e-49fa-afc2-932815ea882b，原断言1/1通过。126次生成均请求GLM Max，返回Effort未报告；2次额外重试，本次6918671已报API Token、$0.26481256已知模型参考费、2次请求用量与费用缺项。Provider已报缓存读取6513472 Token、8次请求未报缓存；Router墙钟144.187932秒，GPU等待0.016230秒，Harbor4442.840521秒。
 

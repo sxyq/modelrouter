@@ -1,6 +1,6 @@
 # 下一批完整关联 Execution 工作包
 
-2026-11-19当前入口：Model-only原Controller1696641、Native1142328继续；历史原Controller2253174已排空。固定阶段恢复队列2630763继续原GLM／Terra有限恢复，外层队列2630764等待后再接续Model-only技术恢复、联合Router696位置、联合及历史必要恢复。两队列均沿原入口排除`vulnerable-secret`与`break-filter-js-from-html`；Model-only计划数2136含48个不再调度位置，联合957含22个不再调度位置，历史已有Trial与产物保留但不再恢复这两题。四个已修复uvx来源的Seed42位置仍位于2630764后续队列：GLM Low的overfull-hbox、adaptive-rejection-sampler、cobol-modernization及GLM High的build-pmars；五个旧Colink订阅故障位置继续由Model-only技术恢复接续。观察2630773／2630774／2630775每1200秒复用原导出目录；代理58053继续，51278等待其自然退出后跟随1696641／2630764。当前分母、逐次费用及无评分原因以[项目现状](../../../planning/PROJECT_STATUS.md)与[Benchmark报告](../../benchmark/README.md)为准；下列旧进度和部署段保留其历史身份。
+2026-11-19 08:35当前入口：Model-only原Controller1696641、Native1142328继续；历史原Controller2253174、旧有限队列2630764已排空。历史技术恢复控制器2630763仍在执行，有限队列2690322等待该批结束，随后单独接续四个历史uvx依赖故障、Model-only技术恢复、联合Router696位置及联合／历史恢复。两队列均沿原入口排除`vulnerable-secret`与`break-filter-js-from-html`；Model-only计划数2136含48个不再调度位置，联合957含22个不再调度位置；既有Trial与评分保留。四个待接续Seed42位置：GLM Low的overfull-hbox、adaptive-rejection-sampler、cobol-modernization及GLM High的build-pmars；五个旧Colink订阅故障位置仍由Model-only技术恢复接续。观察2630773／2630774／2630775每1200秒复用原导出目录；代理58053继续，51278等待其自然退出后跟随1696641／2690322。当前分母、逐次费用及无评分原因以[项目现状](../../../planning/PROJECT_STATUS.md)与[Benchmark报告](../../benchmark/README.md)为准；下列旧进度和部署段保留其历史身份。
 
 ## 正式范围
 

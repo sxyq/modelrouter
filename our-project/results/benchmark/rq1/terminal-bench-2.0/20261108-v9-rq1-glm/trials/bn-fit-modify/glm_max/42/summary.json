@@ -28,15 +28,24 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "HTTPError",
+  "error_type": "NonZeroAgentExitCodeError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 62.469295,
+  "episode_wall_s": 259.451056,
   "generator_known_reference_usd": null,
-  "execution_environment": null,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 65.861778,
-  "harness_command_wall_s": 76.18040095828474,
+  "execution_environment": {
+    "episode_id": "5c61cce3-b2d5-4a96-af6d-1d41221412ec",
+    "qemu_pid": 3832028,
+    "machine": "q35,accel=kvm",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "timestamp": "2026-11-19T02:14:03.064066+00:00",
+    "monotonic_ns": 15718786843804981,
+    "event": "EXECUTION_ENVIRONMENT"
+  },
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 325.312834,
+  "harness_command_wall_s": 340.3751331716776,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
   "latest_trial_reference_usd": null,
@@ -47,15 +56,17 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/bn-fit-modify/glm_max/42",
-  "trial_id": "74c8afd4-cc33-4909-a225-556e1dd8e3ee",
-  "official_reward": null,
+  "trial_id": "5c61cce3-b2d5-4a96-af6d-1d41221412ec",
+  "official_reward": 0.0,
   "technical_fault": null,
   "raw_verifier_rewards": [
-    null
+    {
+      "reward": 0.0
+    }
   ],
   "provider_output_budget_exceeded_requests": 0,
   "latest_output_budget_exceeded_requests": 0,
-  "outside_harbor_wall_s": 10.318622958284735,
+  "outside_harbor_wall_s": 15.06229917167758,
   "previous_attempts": [
     {
       "trial_id": "90b3db8c-1f87-48f0-a01b-80ae6af9a1a0",
@@ -73,22 +84,41 @@
         "verifier": null
       },
       "error_type": "RuntimeError"
+    },
+    {
+      "trial_id": "74c8afd4-cc33-4909-a225-556e1dd8e3ee",
+      "job_name": "bn-fit-modify--glm_max--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/bn-fit-modify/glm_max/42/jobs/bn-fit-modify--glm_max--s42--infrastructure-recovery-1/bn-fit-modify__NBisr5X",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-10T02:12:11.589567Z",
+      "finished_at": "2026-11-10T02:13:14.058862Z",
+      "duration_sec": 62.469295,
+      "phase_wall_s": {
+        "environment_setup": 22.8576,
+        "agent_setup": 0.000208,
+        "agent_execution": 7.311,
+        "verifier": null
+      },
+      "error_type": "HTTPError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": 502,
-  "verifier_path": null,
+  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/bn-fit-modify/glm_max/42/jobs/bn-fit-modify--glm_max--s42--infrastructure-recovery-2/bn-fit-modify__m9x8DFw/verifier/reward.txt",
   "phase_wall_s": {
-    "environment_setup": 22.8576,
-    "agent_setup": 0.000208,
-    "agent_execution": 7.311,
-    "verifier": null
+    "environment_setup": 70.069981,
+    "agent_setup": 0.000172,
+    "agent_execution": 1.957411,
+    "verifier": 174.168532
   },
-  "generator_requests": 1,
+  "generator_requests": 2,
   "teacher_requests": 0,
-  "provider_attempt_count": 1,
+  "provider_attempt_count": 2,
   "provider_retry_count": 0,
-  "provider_retry_stop_reasons": {},
+  "provider_retry_stop_reasons": {
+    "NON_RECOVERABLE": 1
+  },
   "provider_attempts": [
     {
       "attempt_index": null,
@@ -108,9 +138,28 @@
       "actual_billed_cost_usd": null,
       "role": "generator",
       "decision_id": "74c8afd4-cc33-4909-a225-556e1dd8e3ee-0"
+    },
+    {
+      "attempt_index": 0,
+      "request_model_id": "glm-5.3-flash",
+      "requested_native_effort": "max",
+      "http_status": 403,
+      "error_type": "HTTPError",
+      "response_status": null,
+      "finish_reason": null,
+      "latency_ms": 1768.9603567123413,
+      "retry_wait_sec": 0,
+      "retry_stop_reason": "NON_RECOVERABLE",
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "cached_tokens": null,
+      "cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "role": "generator",
+      "decision_id": "5c61cce3-b2d5-4a96-af6d-1d41221412ec-0"
     }
   ],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 0,
   "latest_trial_known_reference_usd": null,
@@ -119,21 +168,21 @@
   "latest_trial_completion_tokens": null,
   "latest_trial_known_tokens": 0,
   "latest_trial_usage_unknown_requests": 1,
-  "unknown_provider_cost_requests": 1,
+  "unknown_provider_cost_requests": 2,
   "prompt_tokens": null,
   "completion_tokens": null,
   "known_prompt_tokens": 0,
   "known_completion_tokens": 0,
-  "usage_unknown_requests": 1,
+  "usage_unknown_requests": 2,
   "generator_known_tokens": 0,
   "teacher_known_tokens": 0,
   "reasoning_tokens": null,
   "reported_cache_read_tokens": null,
   "known_cache_read_tokens": 0,
-  "cache_read_unknown_records": 1,
+  "cache_read_unknown_records": 2,
   "reported_cache_write_tokens": null,
-  "cache_write_unknown_records": 1,
-  "router_wall_s": 0.0003560055047273636,
+  "cache_write_unknown_records": 2,
+  "router_wall_s": 0.0005911756306886673,
   "initial_gpu_queue_wait_s": 0.0,
   "router_known_input_tokens": 0,
   "router_known_output_tokens": 0,
@@ -142,8 +191,16 @@
   "router_gpu_wait_s": null,
   "router_transfer_s": null,
   "teacher_wall_s": 0.0,
-  "generator_wall_s": 5.095391936600208,
+  "generator_wall_s": 6.8647084683179855,
   "selected_actions": [
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "glm-5.3-flash:max",
+      "pool": "Reasoning"
+    },
     {
       "provider": "colink",
       "model": "glm-5.3-flash",
@@ -168,6 +225,28 @@
       "reported_max_output_tokens": null,
       "finish_reason": null,
       "http_status": 502,
+      "physical_backend_identity_status": null,
+      "provider_endpoint_id": null,
+      "identity_status": null,
+      "cost_source": null,
+      "cost_status": "UNKNOWN",
+      "cache_cost_policy": null,
+      "reasoning_cost_policy": null
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": null,
+      "requested_native_effort": "max",
+      "returned_native_effort": null,
+      "native_effort_status": null,
+      "sent_effort_parameter": null,
+      "protocol": null,
+      "stream": null,
+      "requested_max_output_tokens": null,
+      "reported_max_output_tokens": null,
+      "finish_reason": null,
+      "http_status": 403,
       "physical_backend_identity_status": null,
       "provider_endpoint_id": null,
       "identity_status": null,

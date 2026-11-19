@@ -28,15 +28,24 @@
     "docker_image": "alexgshaw/llm-inference-batching-scheduler:20251031"
   },
   "reward": null,
-  "error_type": "HTTPError",
+  "error_type": "NonZeroAgentExitCodeError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 38.368871,
+  "episode_wall_s": 79.004244,
   "generator_known_reference_usd": null,
-  "execution_environment": null,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 41.919074,
-  "harness_command_wall_s": 51.908567763864994,
+  "execution_environment": {
+    "episode_id": "f22b2d2d-993c-4a07-b363-499e758a68a8",
+    "qemu_pid": 3832028,
+    "machine": "q35,accel=kvm",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "timestamp": "2026-11-19T01:49:32.403174+00:00",
+    "monotonic_ns": 15717316182912315,
+    "event": "EXECUTION_ENVIRONMENT"
+  },
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 120.923318,
+  "harness_command_wall_s": 135.89644391089678,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
   "latest_trial_reference_usd": null,
@@ -47,15 +56,17 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/llm-inference-batching-scheduler/glm_max/42",
-  "trial_id": "ac50a381-bf4c-46be-a76f-9ced31b68286",
-  "official_reward": null,
+  "trial_id": "f22b2d2d-993c-4a07-b363-499e758a68a8",
+  "official_reward": 0.0,
   "technical_fault": null,
   "raw_verifier_rewards": [
-    null
+    {
+      "reward": 0.0
+    }
   ],
   "provider_output_budget_exceeded_requests": 0,
   "latest_output_budget_exceeded_requests": 0,
-  "outside_harbor_wall_s": 9.989493763864992,
+  "outside_harbor_wall_s": 14.973125910896783,
   "previous_attempts": [
     {
       "trial_id": "759dc7a0-d4ce-407a-ad53-61bbcc51053d",
@@ -73,22 +84,41 @@
         "verifier": null
       },
       "error_type": "RuntimeError"
+    },
+    {
+      "trial_id": "ac50a381-bf4c-46be-a76f-9ced31b68286",
+      "job_name": "llm-inference-batching-scheduler--glm_max--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/llm-inference-batching-scheduler/glm_max/42/jobs/llm-inference-batching-scheduler--glm_max--s42--infrastructure-recovery-1/llm-inference-batching-scheduler__Duj2gK2",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-09T20:31:54.450101Z",
+      "finished_at": "2026-11-09T20:32:32.818972Z",
+      "duration_sec": 38.368871,
+      "phase_wall_s": {
+        "environment_setup": 9.935146,
+        "agent_setup": 0.00022,
+        "agent_execution": 6.333775,
+        "verifier": null
+      },
+      "error_type": "HTTPError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": 429,
-  "verifier_path": null,
+  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/llm-inference-batching-scheduler/glm_max/42/jobs/llm-inference-batching-scheduler--glm_max--s42--infrastructure-recovery-2/llm-inference-batching-scheduler__ud3CK5U/verifier/reward.txt",
   "phase_wall_s": {
-    "environment_setup": 9.935146,
-    "agent_setup": 0.00022,
-    "agent_execution": 6.333775,
-    "verifier": null
+    "environment_setup": 32.900077,
+    "agent_setup": 0.000208,
+    "agent_execution": 1.151817,
+    "verifier": 32.552824
   },
-  "generator_requests": 1,
+  "generator_requests": 2,
   "teacher_requests": 0,
-  "provider_attempt_count": 1,
+  "provider_attempt_count": 2,
   "provider_retry_count": 0,
-  "provider_retry_stop_reasons": {},
+  "provider_retry_stop_reasons": {
+    "NON_RECOVERABLE": 1
+  },
   "provider_attempts": [
     {
       "attempt_index": null,
@@ -108,9 +138,28 @@
       "actual_billed_cost_usd": null,
       "role": "generator",
       "decision_id": "ac50a381-bf4c-46be-a76f-9ced31b68286-0"
+    },
+    {
+      "attempt_index": 0,
+      "request_model_id": "glm-5.3-flash",
+      "requested_native_effort": "max",
+      "http_status": 403,
+      "error_type": "HTTPError",
+      "response_status": null,
+      "finish_reason": null,
+      "latency_ms": 950.9881269186735,
+      "retry_wait_sec": 0,
+      "retry_stop_reason": "NON_RECOVERABLE",
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "cached_tokens": null,
+      "cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "role": "generator",
+      "decision_id": "f22b2d2d-993c-4a07-b363-499e758a68a8-0"
     }
   ],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 0,
   "latest_trial_known_reference_usd": null,
@@ -119,21 +168,21 @@
   "latest_trial_completion_tokens": null,
   "latest_trial_known_tokens": 0,
   "latest_trial_usage_unknown_requests": 1,
-  "unknown_provider_cost_requests": 1,
+  "unknown_provider_cost_requests": 2,
   "prompt_tokens": null,
   "completion_tokens": null,
   "known_prompt_tokens": 0,
   "known_completion_tokens": 0,
-  "usage_unknown_requests": 1,
+  "usage_unknown_requests": 2,
   "generator_known_tokens": 0,
   "teacher_known_tokens": 0,
   "reasoning_tokens": null,
   "reported_cache_read_tokens": null,
   "known_cache_read_tokens": 0,
-  "cache_read_unknown_records": 1,
+  "cache_read_unknown_records": 2,
   "reported_cache_write_tokens": null,
-  "cache_write_unknown_records": 1,
-  "router_wall_s": 0.0003175754100084305,
+  "cache_write_unknown_records": 2,
+  "router_wall_s": 0.0005835555493831635,
   "initial_gpu_queue_wait_s": 0.0,
   "router_known_input_tokens": 0,
   "router_known_output_tokens": 0,
@@ -142,8 +191,16 @@
   "router_gpu_wait_s": null,
   "router_transfer_s": null,
   "teacher_wall_s": 0.0,
-  "generator_wall_s": 4.877937000244856,
+  "generator_wall_s": 5.829292764887214,
   "selected_actions": [
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "max",
+      "action_id": "glm-5.3-flash:max",
+      "pool": "Reasoning"
+    },
     {
       "provider": "colink",
       "model": "glm-5.3-flash",
@@ -168,6 +225,28 @@
       "reported_max_output_tokens": null,
       "finish_reason": null,
       "http_status": 429,
+      "physical_backend_identity_status": null,
+      "provider_endpoint_id": null,
+      "identity_status": null,
+      "cost_source": null,
+      "cost_status": "UNKNOWN",
+      "cache_cost_policy": null,
+      "reasoning_cost_policy": null
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": null,
+      "requested_native_effort": "max",
+      "returned_native_effort": null,
+      "native_effort_status": null,
+      "sent_effort_parameter": null,
+      "protocol": null,
+      "stream": null,
+      "requested_max_output_tokens": null,
+      "reported_max_output_tokens": null,
+      "finish_reason": null,
+      "http_status": 403,
       "physical_backend_identity_status": null,
       "provider_endpoint_id": null,
       "identity_status": null,

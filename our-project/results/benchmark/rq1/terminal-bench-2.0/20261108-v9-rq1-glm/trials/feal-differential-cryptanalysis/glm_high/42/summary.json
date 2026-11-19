@@ -28,15 +28,24 @@
     "storage": "10G"
   },
   "reward": null,
-  "error_type": "HTTPError",
+  "error_type": "NonZeroAgentExitCodeError",
   "execution_status": "UNKNOWN",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 40.728241,
+  "episode_wall_s": 472.491768,
   "generator_known_reference_usd": null,
-  "execution_environment": null,
-  "harbor_trial_count": 2,
-  "attempts_wall_s": 44.303689999999996,
-  "harness_command_wall_s": 54.64379741810262,
+  "execution_environment": {
+    "episode_id": "6cac0bed-69c1-42b0-9d94-881fe2d976b4",
+    "qemu_pid": 3832028,
+    "machine": "q35,accel=kvm",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "timestamp": "2026-11-19T01:40:17.009837+00:00",
+    "monotonic_ns": 15716760789575921,
+    "event": "EXECUTION_ENVIRONMENT"
+  },
+  "harbor_trial_count": 3,
+  "attempts_wall_s": 516.7954579999999,
+  "harness_command_wall_s": 532.0364028904587,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
   "latest_trial_reference_usd": null,
@@ -47,15 +56,17 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/feal-differential-cryptanalysis/glm_high/42",
-  "trial_id": "496ca707-1bd0-48f5-9e95-30c833e7e765",
-  "official_reward": null,
+  "trial_id": "6cac0bed-69c1-42b0-9d94-881fe2d976b4",
+  "official_reward": 0.0,
   "technical_fault": null,
   "raw_verifier_rewards": [
-    null
+    {
+      "reward": 0.0
+    }
   ],
   "provider_output_budget_exceeded_requests": 0,
   "latest_output_budget_exceeded_requests": 0,
-  "outside_harbor_wall_s": 10.340107418102626,
+  "outside_harbor_wall_s": 15.240944890458763,
   "previous_attempts": [
     {
       "trial_id": "21609d05-62f2-4b46-a557-064994ed22de",
@@ -73,22 +84,41 @@
         "verifier": null
       },
       "error_type": "RuntimeError"
+    },
+    {
+      "trial_id": "496ca707-1bd0-48f5-9e95-30c833e7e765",
+      "job_name": "feal-differential-cryptanalysis--glm_high--s42--infrastructure-recovery-1",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/feal-differential-cryptanalysis/glm_high/42/jobs/feal-differential-cryptanalysis--glm_high--s42--infrastructure-recovery-1/feal-differential-cryptanalysis__ZpzKMqD",
+      "status": "NOT_EVALUATED",
+      "reward": null,
+      "started_at": "2026-11-09T19:19:12.336012Z",
+      "finished_at": "2026-11-09T19:19:53.064253Z",
+      "duration_sec": 40.728241,
+      "phase_wall_s": {
+        "environment_setup": 10.932727,
+        "agent_setup": 0.00019,
+        "agent_execution": 6.18084,
+        "verifier": null
+      },
+      "error_type": "HTTPError"
     }
   ],
   "official_status": "NOT_EVALUATED",
   "failed_provider_http_status": 429,
-  "verifier_path": null,
+  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/feal-differential-cryptanalysis/glm_high/42/jobs/feal-differential-cryptanalysis--glm_high--s42--infrastructure-recovery-2/feal-differential-cryptanalysis__qN6bKBC/verifier/reward.txt",
   "phase_wall_s": {
-    "environment_setup": 10.932727,
-    "agent_setup": 0.00019,
-    "agent_execution": 6.18084,
-    "verifier": null
+    "environment_setup": 44.866036,
+    "agent_setup": 0.000156,
+    "agent_execution": 2.383741,
+    "verifier": 412.05023
   },
-  "generator_requests": 1,
+  "generator_requests": 2,
   "teacher_requests": 0,
-  "provider_attempt_count": 1,
+  "provider_attempt_count": 2,
   "provider_retry_count": 0,
-  "provider_retry_stop_reasons": {},
+  "provider_retry_stop_reasons": {
+    "NON_RECOVERABLE": 1
+  },
   "provider_attempts": [
     {
       "attempt_index": null,
@@ -108,9 +138,28 @@
       "actual_billed_cost_usd": null,
       "role": "generator",
       "decision_id": "496ca707-1bd0-48f5-9e95-30c833e7e765-0"
+    },
+    {
+      "attempt_index": 0,
+      "request_model_id": "glm-5.3-flash",
+      "requested_native_effort": "high",
+      "http_status": 403,
+      "error_type": "HTTPError",
+      "response_status": null,
+      "finish_reason": null,
+      "latency_ms": 2191.6557252407074,
+      "retry_wait_sec": 0,
+      "retry_stop_reason": "NON_RECOVERABLE",
+      "prompt_tokens": null,
+      "completion_tokens": null,
+      "cached_tokens": null,
+      "cost_usd": null,
+      "actual_billed_cost_usd": null,
+      "role": "generator",
+      "decision_id": "6cac0bed-69c1-42b0-9d94-881fe2d976b4-0"
     }
   ],
-  "technical_recovery_count": 0,
+  "technical_recovery_count": 1,
   "started_tool_calls": 0,
   "completed_tool_calls": 0,
   "latest_trial_known_reference_usd": null,
@@ -119,21 +168,21 @@
   "latest_trial_completion_tokens": null,
   "latest_trial_known_tokens": 0,
   "latest_trial_usage_unknown_requests": 1,
-  "unknown_provider_cost_requests": 1,
+  "unknown_provider_cost_requests": 2,
   "prompt_tokens": null,
   "completion_tokens": null,
   "known_prompt_tokens": 0,
   "known_completion_tokens": 0,
-  "usage_unknown_requests": 1,
+  "usage_unknown_requests": 2,
   "generator_known_tokens": 0,
   "teacher_known_tokens": 0,
   "reasoning_tokens": null,
   "reported_cache_read_tokens": null,
   "known_cache_read_tokens": 0,
-  "cache_read_unknown_records": 1,
+  "cache_read_unknown_records": 2,
   "reported_cache_write_tokens": null,
-  "cache_write_unknown_records": 1,
-  "router_wall_s": 0.0002371668815612793,
+  "cache_write_unknown_records": 2,
+  "router_wall_s": 0.0004888549447059631,
   "initial_gpu_queue_wait_s": 0.0,
   "router_known_input_tokens": 0,
   "router_known_output_tokens": 0,
@@ -142,8 +191,16 @@
   "router_gpu_wait_s": null,
   "router_transfer_s": null,
   "teacher_wall_s": 0.0,
-  "generator_wall_s": 4.64963835477829,
+  "generator_wall_s": 6.841704271733761,
   "selected_actions": [
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "high",
+      "action_id": "glm-5.3-flash:high",
+      "pool": "Reasoning"
+    },
     {
       "provider": "colink",
       "model": "glm-5.3-flash",
@@ -168,6 +225,28 @@
       "reported_max_output_tokens": null,
       "finish_reason": null,
       "http_status": 429,
+      "physical_backend_identity_status": null,
+      "provider_endpoint_id": null,
+      "identity_status": null,
+      "cost_source": null,
+      "cost_status": "UNKNOWN",
+      "cache_cost_policy": null,
+      "reasoning_cost_policy": null
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": null,
+      "requested_native_effort": "high",
+      "returned_native_effort": null,
+      "native_effort_status": null,
+      "sent_effort_parameter": null,
+      "protocol": null,
+      "stream": null,
+      "requested_max_output_tokens": null,
+      "reported_max_output_tokens": null,
+      "finish_reason": null,
+      "http_status": 403,
       "physical_backend_identity_status": null,
       "provider_endpoint_id": null,
       "identity_status": null,
