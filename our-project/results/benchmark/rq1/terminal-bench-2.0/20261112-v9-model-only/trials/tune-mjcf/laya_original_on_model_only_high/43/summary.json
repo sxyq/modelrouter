@@ -27,12 +27,22 @@
     "memory": "2G",
     "storage": "10G"
   },
-  "reward": null,
+  "reward": 0.0,
   "error_type": "AgentTimeoutError",
   "execution_status": "FINISHED",
   "effort_comparison_eligible": true,
   "episode_wall_s": 1083.368865,
   "generator_known_reference_usd": 0.01940855,
+  "execution_environment": {
+    "episode_id": "63f41d1b-c3fa-4511-923b-3a431be31cc4",
+    "qemu_pid": 3832028,
+    "machine": "q35,accel=kvm",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "timestamp": "2026-11-16T05:46:46.805614+00:00",
+    "monotonic_ns": 15472350585353117,
+    "event": "EXECUTION_ENVIRONMENT"
+  },
   "harbor_trial_count": 1,
   "attempts_wall_s": 1083.368865,
   "harness_command_wall_s": 1088.0989343766123,
@@ -48,12 +58,14 @@
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/.private/episodes/tune-mjcf/laya_original_on_model_only_high/43",
   "trial_id": "63f41d1b-c3fa-4511-923b-3a431be31cc4",
   "official_reward": 0.0,
-  "technical_fault": "PROVIDER_RETRY_DEADLINE",
+  "technical_fault": null,
   "raw_verifier_rewards": [
     {
       "reward": 0.0
     }
   ],
+  "provider_output_budget_exceeded_requests": 1,
+  "latest_output_budget_exceeded_requests": 1,
   "outside_harbor_wall_s": 4.730069376612391,
   "previous_attempts": [],
   "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
@@ -515,6 +527,12 @@
   "technical_recovery_count": 0,
   "started_tool_calls": 0,
   "completed_tool_calls": 25,
+  "latest_trial_known_reference_usd": 0.01940855,
+  "latest_trial_unknown_cost_requests": 6,
+  "latest_trial_prompt_tokens": null,
+  "latest_trial_completion_tokens": null,
+  "latest_trial_known_tokens": 210772,
+  "latest_trial_usage_unknown_requests": 6,
   "unknown_provider_cost_requests": 6,
   "prompt_tokens": null,
   "completion_tokens": null,

@@ -1,269 +1,5 @@
 [
   {
-    "event": "HISTORICAL_GLM_MAX_AND_FIXED_RECOVERY_RESULTS",
-    "controller_pid": 2253174,
-    "episodes": [
-      {
-        "task": "adaptive-rejection-sampler",
-        "strategy": "glm_max",
-        "seed": 42,
-        "trial_id": "90cab049-a06a-4e69-b4bc-14dc1d61fb82",
-        "official_reward": 0,
-        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
-        "provider_interruption_observed": null,
-        "assertions": [
-          {
-            "passed": 5,
-            "failed": 4,
-            "tests": 9
-          }
-        ],
-        "reported_api_tokens": 838535,
-        "known_reference_usd": 0.06354141,
-        "unknown_cost_requests": 1,
-        "extra_retries": 0,
-        "generator_requests": 29,
-        "cache_read_reported_tokens": 648192,
-        "tool_results": 30,
-        "harbor_wall_s": 978.757454,
-        "finished_at": "2026-11-18T19:52:33.044866Z",
-        "returned_efforts": {
-          "None": 29
-        }
-      },
-      {
-        "task": "cancel-async-tasks",
-        "strategy": "glm_max",
-        "seed": 42,
-        "trial_id": "bcddd7fd-df83-4bc9-ba1b-b4223cca408c",
-        "official_reward": 1,
-        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
-        "provider_interruption_observed": null,
-        "assertions": [
-          {
-            "passed": 6,
-            "failed": 0,
-            "tests": 6
-          }
-        ],
-        "reported_api_tokens": 1277766,
-        "known_reference_usd": 0.07791612,
-        "unknown_cost_requests": 0,
-        "extra_retries": 0,
-        "generator_requests": 36,
-        "cache_read_reported_tokens": 1072384,
-        "tool_results": 48,
-        "harbor_wall_s": 967.182655,
-        "finished_at": "2026-11-18T19:52:21.469548Z",
-        "returned_efforts": {
-          "None": 36
-        }
-      },
-      {
-        "batch": "20261108-v9-rq1-glm",
-        "task": "count-dataset-tokens",
-        "strategy": "glm_low",
-        "seed": 42,
-        "trial_id": "59a0afcb-f8ea-4ab3-8919-7125dec2cae8",
-        "finished_at": "2026-11-18T20:02:46.078311Z",
-        "official_reward": 1,
-        "raw_reward": [
-          {
-            "reward": 1
-          }
-        ],
-        "technical_fault": null,
-        "assertions": [
-          {
-            "passed": 1,
-            "failed": 0,
-            "tests": 1
-          }
-        ],
-        "reported_api_tokens": 89954,
-        "known_reference_usd": 0.0057902,
-        "unknown_cost_requests": 0,
-        "extra_retries": 0,
-        "teacher_requests": 0,
-        "teacher_http": [],
-        "teacher_consumed_decisions": 0,
-        "latest_teacher_event": null,
-        "cache_read_reported_tokens": 69120,
-        "tool_results": 18,
-        "harbor_wall_s": 448.165669
-      },
-      {
-        "batch": "20261108-v9-rq1-glm",
-        "task": "count-dataset-tokens",
-        "strategy": "glm_high",
-        "seed": 42,
-        "trial_id": "c4f67996-b802-4769-9271-e1b599462489",
-        "finished_at": "2026-11-18T20:06:57.943174Z",
-        "official_reward": 1,
-        "raw_reward": [
-          {
-            "reward": 1
-          }
-        ],
-        "technical_fault": null,
-        "assertions": [
-          {
-            "passed": 1,
-            "failed": 0,
-            "tests": 1
-          }
-        ],
-        "reported_api_tokens": 205882,
-        "known_reference_usd": 0.01807174,
-        "unknown_cost_requests": 0,
-        "extra_retries": 0,
-        "teacher_requests": 0,
-        "teacher_http": [],
-        "teacher_consumed_decisions": 0,
-        "latest_teacher_event": null,
-        "cache_read_reported_tokens": 132608,
-        "tool_results": 36,
-        "harbor_wall_s": 700.031281
-      }
-    ],
-    "original_failed_trials_retained": true,
-    "supplier_billed_and_resource_usd": null
-  },
-  {
-    "event": "HISTORICAL_GLM_HIGH_RECOVERY_COMPLETED",
-    "completed_at": "2026-11-18T19:33:25.404390Z",
-    "controller_pid": 2253174,
-    "source_revision": "6eaee77a9e90ece40d4c0a3378eb1803d8bc26c1",
-    "episodes": [
-      {
-        "batch": "20261108-v9-rq1-glm",
-        "task": "adaptive-rejection-sampler",
-        "strategy": "glm_high",
-        "seed": 42,
-        "trial_id": "c6acf811-6052-4e07-b74a-685899641a44",
-        "official_reward": 0,
-        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
-        "technical_fault": null,
-        "ctrf_summaries": [
-          {
-            "tests": 9,
-            "passed": 6,
-            "failed": 3,
-            "skipped": 0,
-            "pending": 0,
-            "other": 0,
-            "start": 1795030370.7500827,
-            "stop": 1795030373.15932
-          }
-        ],
-        "reported_api_tokens": 1044649,
-        "known_reference_usd": 0.05919533,
-        "unknown_cost_requests": 1,
-        "extra_retries": 0,
-        "generator_requests": 32,
-        "teacher_requests": 0,
-        "teacher_consumed_decisions": 0,
-        "cache_read_reported_tokens": 941696,
-        "tool_results": 36,
-        "harbor_wall_s": 980.51038,
-        "finished_at": "2026-11-18T19:33:18.972526Z",
-        "request_return_identities": [
-          {
-            "identity": [
-              "glm-5.3-flash",
-              "high",
-              "glm-5.3-flash",
-              null,
-              "NOT_REPORTED"
-            ],
-            "count": 31
-          },
-          {
-            "identity": [
-              "glm-5.3-flash",
-              "high",
-              null,
-              null,
-              null
-            ],
-            "count": 1
-          }
-        ],
-        "router_fallback_values": [
-          false
-        ],
-        "effective_quality_reward": 0
-      },
-      {
-        "batch": "20261108-v9-rq1-glm",
-        "task": "cancel-async-tasks",
-        "strategy": "glm_high",
-        "seed": 42,
-        "trial_id": "f7821f34-7172-41d1-b443-e36ce0fc0270",
-        "official_reward": 1,
-        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
-        "technical_fault": null,
-        "ctrf_summaries": [
-          {
-            "tests": 6,
-            "passed": 6,
-            "failed": 0,
-            "skipped": 0,
-            "pending": 0,
-            "other": 0,
-            "start": 1795030361.6069982,
-            "stop": 1795030380.2708254
-          }
-        ],
-        "reported_api_tokens": 595317,
-        "known_reference_usd": 0.03794485,
-        "unknown_cost_requests": 1,
-        "extra_retries": 0,
-        "generator_requests": 22,
-        "teacher_requests": 0,
-        "teacher_consumed_decisions": 0,
-        "cache_read_reported_tokens": 524160,
-        "tool_results": 25,
-        "harbor_wall_s": 986.943215,
-        "finished_at": "2026-11-18T19:33:25.404390Z",
-        "request_return_identities": [
-          {
-            "identity": [
-              "glm-5.3-flash",
-              "high",
-              "glm-5.3-flash",
-              null,
-              "NOT_REPORTED"
-            ],
-            "count": 21
-          },
-          {
-            "identity": [
-              "glm-5.3-flash",
-              "high",
-              null,
-              null,
-              null
-            ],
-            "count": 1
-          }
-        ],
-        "router_fallback_values": [
-          false
-        ],
-        "effective_quality_reward": 1,
-        "provider_interruption_observed": "PROVIDER_RETRY_DEADLINE"
-      }
-    ],
-    "following_stage": "GLM_MAX",
-    "following_trials": [
-      "90cab049-a06a-4e69-b4bc-14dc1d61fb82",
-      "bcddd7fd-df83-4bc9-ba1b-b4223cca408c"
-    ],
-    "supplier_billed_and_resource_usd": null,
-    "previous_failed_trials_retained": true
-  },
-  {
     "event": "RECOVERED_HISTORICAL_GLM_EPISODE",
     "task": "configure-git-webserver",
     "strategy": "glm_low",
@@ -357,7 +93,10 @@
     "observed_at": "2026-11-19T02:45:52.330792+08:00",
     "event": "PRE_RESTORATION_PROVIDER_FAULTS_APPENDED_TO_EXISTING_RECOVERY",
     "controller_pid": 2231655,
-    "replaced_idle_controller_pids": [2163799, 2225543],
+    "replaced_idle_controller_pids": [
+      2163799,
+      2225543
+    ],
     "after_controller_pids": [
       2057318,
       2097543
@@ -390,7 +129,11 @@
       ]
     },
     "execution": "EXISTING_RQ1_CLI_EXPLICIT_GLM_FIVE_THEN_WAIT_FIXED_THEN_DEFAULT_RECOVERY_THEN_TERRA_NINE",
-    "immediate_selected_positions_per_group": [1, 2, 2],
+    "immediate_selected_positions_per_group": [
+      1,
+      2,
+      2
+    ],
     "existing_active_fixed_position_at_launch": "train-fasttext--terra_high--s43",
     "fixed_concurrency_upper_bound_during_initial_glm_groups": 4,
     "valid_official_scores_reused": true,
@@ -403,8 +146,16 @@
     "observed_at": "2026-11-18T17:22:18.126732+00:00",
     "event": "HISTORICAL_FIXED_TECHNICAL_RECOVERY_QUEUED",
     "controller_pid": 2163799,
-    "after_controller_pids": [2057318, 2097543],
-    "strategies": ["glm_low", "glm_high", "glm_max", "terra_high"],
+    "after_controller_pids": [
+      2057318,
+      2097543
+    ],
+    "strategies": [
+      "glm_low",
+      "glm_high",
+      "glm_max",
+      "terra_high"
+    ],
     "seed": 42,
     "fixed_concurrency": 4,
     "execution": "EXISTING_RQ1_CLI_RECOVER_INFRASTRUCTURE_STAGE_FIXED",
@@ -419,8 +170,18 @@
     "rule": "FINAL_REQUEST_TASK_DEADLINE_AFTER_RECORDED_GENERATOR_RETRIES",
     "same_trial_effective_zero_to_missing": 2,
     "positions": [
-      {"task": "large-scale-text-editing", "strategy": "luna_xhigh", "seed": 42, "trial_id": "d1e9cb28-2610-4e26-aaf0-9e687da186c5"},
-      {"task": "mcmc-sampling-stan", "strategy": "luna_max", "seed": 42, "trial_id": "cab410aa-c482-44e8-84d4-60db4666c5be"}
+      {
+        "task": "large-scale-text-editing",
+        "strategy": "luna_xhigh",
+        "seed": 42,
+        "trial_id": "d1e9cb28-2610-4e26-aaf0-9e687da186c5"
+      },
+      {
+        "task": "mcmc-sampling-stan",
+        "strategy": "luna_max",
+        "seed": 42,
+        "trial_id": "cab410aa-c482-44e8-84d4-60db4666c5be"
+      }
     ],
     "original_official_rewards_retained": true,
     "trials": 2599,
@@ -475,15 +236,30 @@
     ],
     "all_original_jobs_requests_costs_and_logs": "RETAINED_SEPARATELY_FROM_RECOVERY_EPISODES",
     "current_fixed_recovery_queue_pid": 2509357,
-    "current_fixed_recovery_strategies": ["luna_low", "luna_high", "luna_max", "luna_xhigh", "terra_high"],
+    "current_fixed_recovery_strategies": [
+      "luna_low",
+      "luna_high",
+      "luna_max",
+      "luna_xhigh",
+      "terra_high"
+    ],
     "current_fixed_recovery_scope": "Only eligible technical faults in the original 1513 positions; reuse valid rewards and do not alter the matrix",
     "fixed_maximum_concurrency": 4,
     "final_recovery_queue_pid": 2509358,
-    "final_recovery_after_pids": [1700006, 2509357],
+    "final_recovery_after_pids": [
+      1700006,
+      2509357
+    ],
     "proxy_waiting_pid": 42716,
     "proxy_after_pid": 17649,
-    "proxy_followed_pids": [1700006, 2509358],
-    "superseded_waiting_pids_exited": [2501976, 30395],
+    "proxy_followed_pids": [
+      1700006,
+      2509358
+    ],
+    "superseded_waiting_pids_exited": [
+      2501976,
+      30395
+    ],
     "seed43_result_substitution": false,
     "supplier_billing_and_resource_dollar_rates": "UNKNOWN"
   },
@@ -518,7 +294,10 @@
       "official_reward": 0,
       "assertions_passed": 2,
       "assertions_failed": 2,
-      "failed_assertions": ["test_sentiment_endpoint", "test_api_error_handling"],
+      "failed_assertions": [
+        "test_sentiment_endpoint",
+        "test_api_error_handling"
+      ],
       "failure": "Agent-produced localhost:5000 sentiment service refused connections",
       "generator_requests": 38,
       "tool_results": 40,
@@ -544,31 +323,131 @@
     "recovery_queue_pid": 2024071,
     "after_pid": 1700006,
     "positions": [
-      {"task_id": "adaptive-rejection-sampler", "strategy_id": "laya_trained_on", "seed": 42},
-      {"task_id": "cancel-async-tasks", "strategy_id": "laya_original_off", "seed": 42},
-      {"task_id": "chess-best-move", "strategy_id": "laya_original_on", "seed": 42},
-      {"task_id": "gcode-to-text", "strategy_id": "laya_trained_off", "seed": 42},
-      {"task_id": "gcode-to-text", "strategy_id": "laya_trained_on", "seed": 42},
-      {"task_id": "gpt2-codegolf", "strategy_id": "laya_original_on", "seed": 42},
-      {"task_id": "headless-terminal", "strategy_id": "laya_original_on", "seed": 42},
-      {"task_id": "hf-model-inference", "strategy_id": "glm_high", "seed": 42},
-      {"task_id": "password-recovery", "strategy_id": "glm_high", "seed": 42},
-      {"task_id": "polyglot-rust-c", "strategy_id": "glm_high", "seed": 42},
-      {"task_id": "polyglot-rust-c", "strategy_id": "glm_max", "seed": 42},
-      {"task_id": "query-optimize", "strategy_id": "glm_max", "seed": 42},
-      {"task_id": "raman-fitting", "strategy_id": "glm_high", "seed": 42},
-      {"task_id": "regex-log", "strategy_id": "glm_low", "seed": 42},
-      {"task_id": "regex-log", "strategy_id": "glm_high", "seed": 42},
-      {"task_id": "regex-log", "strategy_id": "glm_max", "seed": 42},
-      {"task_id": "vulnerable-secret", "strategy_id": "glm_max", "seed": 42},
-      {"task_id": "write-compressor", "strategy_id": "glm_low", "seed": 42},
-      {"task_id": "write-compressor", "strategy_id": "glm_max", "seed": 42},
-      {"task_id": "break-filter-js-from-html", "strategy_id": "glm_max", "seed": 42},
-      {"task_id": "large-scale-text-editing", "strategy_id": "glm_high", "seed": 42},
-      {"task_id": "dna-assembly", "strategy_id": "glm_high", "seed": 42},
-      {"task_id": "dna-assembly", "strategy_id": "glm_max", "seed": 42},
-      {"task_id": "dna-insert", "strategy_id": "glm_high", "seed": 42},
-      {"task_id": "dna-insert", "strategy_id": "glm_max", "seed": 42}
+      {
+        "task_id": "adaptive-rejection-sampler",
+        "strategy_id": "laya_trained_on",
+        "seed": 42
+      },
+      {
+        "task_id": "cancel-async-tasks",
+        "strategy_id": "laya_original_off",
+        "seed": 42
+      },
+      {
+        "task_id": "chess-best-move",
+        "strategy_id": "laya_original_on",
+        "seed": 42
+      },
+      {
+        "task_id": "gcode-to-text",
+        "strategy_id": "laya_trained_off",
+        "seed": 42
+      },
+      {
+        "task_id": "gcode-to-text",
+        "strategy_id": "laya_trained_on",
+        "seed": 42
+      },
+      {
+        "task_id": "gpt2-codegolf",
+        "strategy_id": "laya_original_on",
+        "seed": 42
+      },
+      {
+        "task_id": "headless-terminal",
+        "strategy_id": "laya_original_on",
+        "seed": 42
+      },
+      {
+        "task_id": "hf-model-inference",
+        "strategy_id": "glm_high",
+        "seed": 42
+      },
+      {
+        "task_id": "password-recovery",
+        "strategy_id": "glm_high",
+        "seed": 42
+      },
+      {
+        "task_id": "polyglot-rust-c",
+        "strategy_id": "glm_high",
+        "seed": 42
+      },
+      {
+        "task_id": "polyglot-rust-c",
+        "strategy_id": "glm_max",
+        "seed": 42
+      },
+      {
+        "task_id": "query-optimize",
+        "strategy_id": "glm_max",
+        "seed": 42
+      },
+      {
+        "task_id": "raman-fitting",
+        "strategy_id": "glm_high",
+        "seed": 42
+      },
+      {
+        "task_id": "regex-log",
+        "strategy_id": "glm_low",
+        "seed": 42
+      },
+      {
+        "task_id": "regex-log",
+        "strategy_id": "glm_high",
+        "seed": 42
+      },
+      {
+        "task_id": "regex-log",
+        "strategy_id": "glm_max",
+        "seed": 42
+      },
+      {
+        "task_id": "vulnerable-secret",
+        "strategy_id": "glm_max",
+        "seed": 42
+      },
+      {
+        "task_id": "write-compressor",
+        "strategy_id": "glm_low",
+        "seed": 42
+      },
+      {
+        "task_id": "write-compressor",
+        "strategy_id": "glm_max",
+        "seed": 42
+      },
+      {
+        "task_id": "break-filter-js-from-html",
+        "strategy_id": "glm_max",
+        "seed": 42
+      },
+      {
+        "task_id": "large-scale-text-editing",
+        "strategy_id": "glm_high",
+        "seed": 42
+      },
+      {
+        "task_id": "dna-assembly",
+        "strategy_id": "glm_high",
+        "seed": 42
+      },
+      {
+        "task_id": "dna-assembly",
+        "strategy_id": "glm_max",
+        "seed": 42
+      },
+      {
+        "task_id": "dna-insert",
+        "strategy_id": "glm_high",
+        "seed": 42
+      },
+      {
+        "task_id": "dna-insert",
+        "strategy_id": "glm_max",
+        "seed": 42
+      }
     ]
   },
   {
@@ -1049,7 +928,13 @@
     "observed_at": "2026-11-14T14:35:06.322990+00:00",
     "technical_recovery": {
       "controller_pid": 2509357,
-      "strategies": ["luna_low", "luna_high", "luna_max", "luna_xhigh", "terra_high"],
+      "strategies": [
+        "luna_low",
+        "luna_high",
+        "luna_max",
+        "luna_xhigh",
+        "terra_high"
+      ],
       "concurrency": 4,
       "seed": 42,
       "preexisting_finished_trials": 2354,
@@ -1081,8 +966,17 @@
     "followup": {
       "finite_recovery_holder_pid": 3031707,
       "replaced_idle_waiter_pid": 2509358,
-      "sequence": ["Wait for 2509357; recover Caffe Xhigh unscored position", "Recover repaired NumPy/PyTorch, both MTEB official images and cache-installation positions", "Joint remaining fixed-model stage", "Wait for 1700006; joint technical recovery", "Remaining historical technical recovery"],
-      "saved_configs": ["rq1_terminal_bench_2_0.json", "v9_joint_paired.json"],
+      "sequence": [
+        "Wait for 2509357; recover Caffe Xhigh unscored position",
+        "Recover repaired NumPy/PyTorch, both MTEB official images and cache-installation positions",
+        "Joint remaining fixed-model stage",
+        "Wait for 1700006; joint technical recovery",
+        "Remaining historical technical recovery"
+      ],
+      "saved_configs": [
+        "rq1_terminal_bench_2_0.json",
+        "v9_joint_paired.json"
+      ],
       "source_revision": "ab4dadb4e8dd4ad85913f9466e7222a846da1f7d",
       "proxy_handoff_holder_pid": 7412,
       "retired_idle_waiter_pid": 2932692,
@@ -1104,7 +998,12 @@
       "primary_result_error": "AgentTimeoutError",
       "finished_at": "2026-11-14T14:31:59.535042Z",
       "existing_dependency_cache": ".runtime/verifier-dependencies/cache",
-      "original_dependency_parameters": ["-p 3.13", "pytest==8.4.1", "numpy==2.3.1", "pytest-json-ctrf==0.3.5"],
+      "original_dependency_parameters": [
+        "-p 3.13",
+        "pytest==8.4.1",
+        "numpy==2.3.1",
+        "pytest-json-ctrf==0.3.5"
+      ],
       "dependency_install_output": "Downloaded numpy and pygments; Installed 7 packages in 27ms; pytest 8.4.1",
       "repair_status": "EXACT_PACKAGES_INSTALLED_IN_EXISTING_CACHE; SEPARATE_FULL_EPISODE_QUEUED_AFTER_FIXED_RECOVERY",
       "runtime_revision": "f97e614d0b944323ed5cee0669309e446f213e55"

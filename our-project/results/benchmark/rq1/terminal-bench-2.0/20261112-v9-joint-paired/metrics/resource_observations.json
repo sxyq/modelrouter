@@ -3,27 +3,474 @@
   "provider_update_recovery_20261118_2318": {
     "started_at": "2026-11-18T15:18:54.486858+00:00",
     "holder_pid": 2046212,
-    "controller_pids": [2046219, 2046220],
+    "controller_pids": [
+      2046219,
+      2046220
+    ],
     "seed": 43,
     "fixed_concurrency": 4,
     "credential_source": "EXISTING_UPDATED_MEMFD",
     "luna_metadata_http_status": 401,
     "completed_episodes": [
-      {"task": "modernize-scientific-stack", "strategy": "glm_low", "trial_id": "3f44cb80-8165-41b5-b155-a080ed6ffd73", "official_reward": 1, "assertions_passed": 2, "assertions_failed": 0, "model_requests": 4, "extra_retries": 0, "api_tokens": 11030, "known_reference_usd": 0.00103893, "unknown_cost_requests": 0, "tool_results": 4, "harbor_wall_s": 129.639379},
-      {"task": "pypi-server", "strategy": "terra_high", "trial_id": "63036c21-8752-4c90-8d84-74fde63761db", "official_reward": 1, "assertions_passed": 1, "assertions_failed": 0, "model_requests": 12, "extra_retries": 0, "api_tokens": 112688, "known_reference_usd": 0.081424, "unknown_cost_requests": 0, "tool_results": 13, "harbor_wall_s": 301.465327},
-      {"task": "prove-plus-comm", "strategy": "terra_high", "trial_id": "a5de6012-6f32-4eae-b19d-f424e4ea892b", "official_reward": 1, "assertions_passed": 4, "assertions_failed": 0, "model_requests": 14, "extra_retries": 0, "api_tokens": 126691, "known_reference_usd": 0.0697486, "unknown_cost_requests": 0, "tool_results": 22, "harbor_wall_s": 336.666307},
-      {"task": "polyglot-rust-c", "strategy": "glm_low", "trial_id": "72b5a0d9-d127-4752-a8be-594509e8155c", "official_reward": 1, "assertions_passed": 1, "assertions_failed": 0, "model_requests": 14, "extra_retries": 0, "api_tokens": 181150, "known_reference_usd": 0.03521321, "unknown_cost_requests": 0, "tool_results": 13, "harbor_wall_s": 875.733494, "controller_exit_code": 2, "agent_status": "SUBMITTED", "harbor_status": "OFFICIAL_ARTIFACT_VERIFIED"}
+      {
+        "task": "modernize-scientific-stack",
+        "strategy": "glm_low",
+        "trial_id": "3f44cb80-8165-41b5-b155-a080ed6ffd73",
+        "official_reward": 1,
+        "assertions_passed": 2,
+        "assertions_failed": 0,
+        "model_requests": 4,
+        "extra_retries": 0,
+        "api_tokens": 11030,
+        "known_reference_usd": 0.00103893,
+        "unknown_cost_requests": 0,
+        "tool_results": 4,
+        "harbor_wall_s": 129.639379
+      },
+      {
+        "task": "pypi-server",
+        "strategy": "terra_high",
+        "trial_id": "63036c21-8752-4c90-8d84-74fde63761db",
+        "official_reward": 1,
+        "assertions_passed": 1,
+        "assertions_failed": 0,
+        "model_requests": 12,
+        "extra_retries": 0,
+        "api_tokens": 112688,
+        "known_reference_usd": 0.081424,
+        "unknown_cost_requests": 0,
+        "tool_results": 13,
+        "harbor_wall_s": 301.465327
+      },
+      {
+        "task": "prove-plus-comm",
+        "strategy": "terra_high",
+        "trial_id": "a5de6012-6f32-4eae-b19d-f424e4ea892b",
+        "official_reward": 1,
+        "assertions_passed": 4,
+        "assertions_failed": 0,
+        "model_requests": 14,
+        "extra_retries": 0,
+        "api_tokens": 126691,
+        "known_reference_usd": 0.0697486,
+        "unknown_cost_requests": 0,
+        "tool_results": 22,
+        "harbor_wall_s": 336.666307
+      },
+      {
+        "task": "polyglot-rust-c",
+        "strategy": "glm_low",
+        "trial_id": "72b5a0d9-d127-4752-a8be-594509e8155c",
+        "official_reward": 1,
+        "assertions_passed": 1,
+        "assertions_failed": 0,
+        "model_requests": 14,
+        "extra_retries": 0,
+        "api_tokens": 181150,
+        "known_reference_usd": 0.03521321,
+        "unknown_cost_requests": 0,
+        "tool_results": 13,
+        "harbor_wall_s": 875.733494,
+        "controller_exit_code": 2,
+        "agent_status": "SUBMITTED",
+        "harbor_status": "OFFICIAL_ARTIFACT_VERIFIED"
+      }
     ],
     "finished_at": "2026-11-18T15:33:54.406410+00:00",
-    "controller_exit_codes": [0, 0],
+    "controller_exit_codes": [
+      0,
+      0
+    ],
     "api_tokens": 431559,
     "known_reference_usd": 0.18742474,
     "extra_retries": 0,
     "following_fixed_recovery_holder_pid": 2057312,
-    "following_strategies": ["glm_low", "terra_high"],
+    "following_strategies": [
+      "glm_low",
+      "terra_high"
+    ],
     "previous_trials_and_costs": "RETAINED_SEPARATELY",
     "supplier_billed_and_resource_usd": null
   },
+  "resources": {
+    "docker_host": "unix:///home/syy/路由/.runtime/docker-vm/docker.sock",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "task_resources": "ORIGINAL_2_0_TASK_TOML_UNCHANGED",
+    "router_threads": 40,
+    "router_gpu_worker_count": 1,
+    "router_deployment": "SHARED_NATIVE_ADAPTER_CPU_RESIDENT_GPU_SERIALIZED_BY_EXISTING_LOCK",
+    "cpu_usd_per_core_hour": null,
+    "gpu_usd_per_hour": null,
+    "vm_usd_per_hour": null,
+    "resource_allocation": "ROUTER_CPU_REQUEST_CPU_SECONDS; SERIAL_GPU_LOCK_HELD_TIME; VM_ACTIVE_EPISODE_RESOURCE_TIME_SHARE",
+    "supplier_billed_usd": "UNKNOWN",
+    "training_cost": "SEPARATE_FROM_ONLINE_COST"
+  },
+  "current_execution": {
+    "observed_at": "2026-11-19T03:21:46.482020+08:00",
+    "controller_pid": 2097543,
+    "credential_holder_pid": 2097543,
+    "stage": "fixed_technical_recovery",
+    "selected_strategies": [
+      "glm_low",
+      "terra_high"
+    ],
+    "seed": 43,
+    "fixed_concurrency": 4,
+    "other_running_router_concurrency": 2,
+    "active_positions": [
+      {
+        "task": "pytorch-model-cli",
+        "strategy": "terra_high",
+        "episode_id": "dca687f1-37b2-4403-aca9-d9be0f2eb1b0"
+      },
+      {
+        "task": "qemu-alpine-ssh",
+        "strategy": "terra_high",
+        "episode_id": "73077030-9f09-4c81-b7f4-dfe1a87fe01a"
+      }
+    ],
+    "provider_extra_retry_limit": 100,
+    "maximum_output_tokens": 4096,
+    "original_harbor_task_limits_retained": true,
+    "terra_first_request_recovery": {
+      "observed_at": "2026-11-18T15:40:00+00:00",
+      "positions": [
+        {
+          "task": "polyglot-rust-c",
+          "strategy": "terra_high",
+          "episode_id": "98b3dc00-4141-43a5-926b-18a8b46aefe5",
+          "successful_attempt_at": "2026-11-18T15:38:48.950826+00:00",
+          "http_status": 200,
+          "prior_attempt_http_status": 502,
+          "generator_completions": 1,
+          "tool_results": 1
+        },
+        {
+          "task": "polyglot-c-py",
+          "strategy": "terra_high",
+          "episode_id": "672de591-29df-4098-9cf1-0ffe132ed0ba",
+          "successful_attempt_at": "2026-11-18T15:38:49.753324+00:00",
+          "http_status": 200,
+          "prior_attempt_http_status": 502,
+          "generator_completions": 1,
+          "tool_results": 1
+        }
+      ],
+      "original_request_model_effort_and_parameters_retained": true,
+      "failed_attempts_retained": true
+    },
+    "runtime_source_revision": "2d1be7ba960ee88a78696c47508c927199ab516e",
+    "analysis_revision": "212be725580150967149e1baa8125e157ba8fb95",
+    "observer_pid": 2097072,
+    "targeted_recovery_after_controller_pid": 2057318,
+    "targeted_recovery_pid": 2097543,
+    "targeted_recovery_tasks": [
+      "pytorch-model-cli",
+      "qemu-alpine-ssh"
+    ],
+    "targeted_recovery_strategy": "terra_high",
+    "recent_completed_episodes": [
+      {
+        "task": "crack-7z-hash",
+        "strategy": "glm_low",
+        "trial_id": "3f3b3e5c-cd49-4803-ae2b-2007c19d2265",
+        "official_reward": 1,
+        "effective_quality_reward": 1,
+        "assertions_passed": 2,
+        "assertions_failed": 0,
+        "reported_api_tokens": 156829,
+        "known_reference_usd": 0.00937014,
+        "unknown_cost_requests": 0,
+        "extra_retries": 0,
+        "tool_results": 27,
+        "harbor_wall_s": 405.902621,
+        "controller_exit_code": 2
+      },
+      {
+        "task": "overfull-hbox",
+        "strategy": "glm_low",
+        "trial_id": "52d3e13b-d8bd-4b95-b484-ccaa958b2b29",
+        "official_reward": 1,
+        "effective_quality_reward": 1,
+        "assertions_passed": 4,
+        "assertions_failed": 0,
+        "reported_api_tokens": 232336,
+        "known_reference_usd": 0.01612408,
+        "unknown_cost_requests": 0,
+        "extra_retries": 0,
+        "tool_results": 32,
+        "harbor_wall_s": 625.056263,
+        "controller_exit_code": 2
+      },
+      {
+        "task": "polyglot-rust-c",
+        "strategy": "terra_high",
+        "trial_id": "98b3dc00-4141-43a5-926b-18a8b46aefe5",
+        "official_reward": 0,
+        "effective_quality_reward": null,
+        "technical_fault": "PROVIDER_RETRY_DEADLINE",
+        "assertions_passed": 0,
+        "assertions_failed": 1,
+        "reported_api_tokens": 27413,
+        "known_reference_usd": 0.0272586,
+        "unknown_cost_requests": 1,
+        "extra_retries": 15,
+        "tool_results": 4,
+        "harbor_wall_s": 1011.913281
+      },
+      {
+        "task": "polyglot-c-py",
+        "strategy": "terra_high",
+        "trial_id": "672de591-29df-4098-9cf1-0ffe132ed0ba",
+        "official_reward": 0,
+        "effective_quality_reward": null,
+        "technical_fault": "PROVIDER_RETRY_DEADLINE",
+        "assertions_passed": 0,
+        "assertions_failed": 1,
+        "reported_api_tokens": 5461,
+        "known_reference_usd": 0.006345,
+        "unknown_cost_requests": 1,
+        "extra_retries": 30,
+        "tool_results": 1,
+        "harbor_wall_s": 1017.149216
+      }
+    ]
+  },
+  "terra_successes_20261119_continuation": {
+    "seed": 43,
+    "strategy": "terra_high",
+    "episodes": [
+      {
+        "task": "code-from-image",
+        "trial_id": "7ceabb45-06d4-491a-8fc6-13744cc1b14d",
+        "official_reward": 1,
+        "assertions_passed": 2,
+        "assertions_failed": 0,
+        "reported_tokens": 223092,
+        "known_reference_usd": 0.109424,
+        "extra_retries": 0,
+        "provider_cache_read_tokens": 153600,
+        "harbor_wall_s": 516.401811
+      },
+      {
+        "task": "custom-memory-heap-crash",
+        "trial_id": "a1406c15-a555-486f-8d03-3492096d7524",
+        "official_reward": 1,
+        "assertions_passed": 6,
+        "assertions_failed": 0,
+        "reported_tokens": 273895,
+        "known_reference_usd": 0.130167,
+        "extra_retries": 0,
+        "provider_cache_read_tokens": 181760,
+        "harbor_wall_s": 432.288186
+      },
+      {
+        "task": "break-filter-js-from-html",
+        "trial_id": "213535fe-fda7-480e-87d0-790b18a99b9e",
+        "official_reward": 1,
+        "assertions_passed": 1,
+        "assertions_failed": 0,
+        "reported_tokens": 219178,
+        "known_reference_usd": 0.14789,
+        "extra_retries": 2,
+        "provider_cache_read_tokens": 154880,
+        "cache_unknown_requests": 2,
+        "harbor_wall_s": 959.926754
+      },
+      {
+        "task": "mteb-retrieve",
+        "trial_id": "4c346be9-c976-4f69-ab32-354b1957621a",
+        "official_reward": 1,
+        "assertions_passed": 2,
+        "assertions_failed": 0,
+        "reported_tokens": 212851,
+        "known_reference_usd": 0.1097926,
+        "extra_retries": 1,
+        "provider_cache_read_tokens": 138112,
+        "cache_unknown_requests": 1,
+        "harbor_wall_s": 602.009708
+      },
+      {
+        "task": "rstan-to-pystan",
+        "trial_id": "0475b474-f91b-4fe7-925d-ae0ab5539350",
+        "official_reward": 1,
+        "assertions_passed": 6,
+        "assertions_failed": 0,
+        "reported_tokens": 2356762,
+        "known_reference_usd": 0.388322,
+        "extra_retries": 0,
+        "provider_cache_read_tokens": 2152960,
+        "harbor_wall_s": 1708.788725
+      }
+    ],
+    "reported_tokens": 3285778,
+    "known_reference_usd": 0.8855956,
+    "extra_retries": 3,
+    "requested_and_returned_model": "gpt-6.1-terra",
+    "requested_and_returned_effort": "high",
+    "supplier_billed_and_resource_usd": null,
+    "failed_attempt_billed_usd": null,
+    "physical_kv_shared": null
+  },
+  "query_verifier_diagnosis_20261119": {
+    "source_trial_id": "5c6f01fa-2740-4ad9-a020-171b431f9f3b",
+    "original_agent_status": "SUBMITTED",
+    "original_episode_reward": null,
+    "original_verifier_limit_s": 900,
+    "original_task_cpu_limit": 1,
+    "original_task_memory_gib": 2,
+    "sqlite_python_version": "3.13.9",
+    "sqlite_python_library_version": "3.50.4",
+    "native_sqlite_cli_version": "3.45.1",
+    "golden_sql_wall_s": 1.8293487959890626,
+    "golden_sql_rows": 500,
+    "original_sql_wall_s": 823.9250340649742,
+    "original_sql_cpu_s": 818.339516684,
+    "original_sql_rows": 500,
+    "curl_prewarm_wall_s": 9.985872641205788,
+    "reconstructed_solution_verifier_status": "VERIFIER_TIMEOUT",
+    "reconstructed_solution_verifier_wall_s": 900.0904582049698,
+    "diagnostic_verifier_logs": "ABSENT_AFTER_TIMEOUT_CLEANUP",
+    "first_dependency_diagnosis_status": "DIAGNOSTIC_SETUP_FAILED_MISSING_CONTAINER_LOG_DIRECTORY",
+    "formal_quality_reward_from_diagnosis": null,
+    "diagnosis_resource_usd": null,
+    "private_evidence_directory": ".private/episodes/query-optimize/terra_high/43",
+    "scope": "DIAGNOSIS_ONLY_NOT_AN_AGENT_EPISODE"
+  },
+  "quality_classification_update_20261119": {
+    "analysis_revision": "212be725580150967149e1baa8125e157ba8fb95",
+    "rule": "FINAL_REQUEST_TASK_DEADLINE_AFTER_RECORDED_GENERATOR_RETRIES",
+    "same_trial_effective_zero_to_missing": 5,
+    "original_official_rewards_retained": true
+  },
+  "fixed_recovery_20261118_1729": {
+    "controller_pid": 1920505,
+    "credential_holder_pid": 1920499,
+    "controller_exited": true,
+    "observed_at": "2026-11-18T17:29:35+08:00",
+    "first_pass_finished_positions": 261,
+    "recovery_running_positions": 0,
+    "not_started_positions": 696,
+    "reward_1_before_recovery": 84,
+    "reward_0_before_recovery": 55,
+    "no_effective_quality_score_before_recovery": 122,
+    "known_api_reference_usd_before_recovery": 9.07206206,
+    "unknown_cost_requests_before_recovery": 142,
+    "stage": "fixed_recovery_finished",
+    "selected_tasks": [
+      "pypi-server",
+      "prove-plus-comm",
+      "pytorch-model-cli",
+      "qemu-alpine-ssh"
+    ],
+    "selected_strategies": [
+      "terra_high"
+    ],
+    "seed": 43,
+    "runtime_source_revision": "2d1be7ba960ee88a78696c47508c927199ab516e",
+    "analysis_revision": "a3dd87909260252205e45925ca822af480b96216",
+    "provider_extra_retry_limit": 100,
+    "maximum_output_tokens": 4096,
+    "original_harbor_task_limits_retained": true,
+    "fixed_concurrency": 4,
+    "other_running_router_concurrency": 2,
+    "original_failures_retained": true,
+    "recovery_episode_ids": {
+      "pypi-server": "e338ee92-58e4-48c0-9d7d-68f2af5425cd",
+      "prove-plus-comm": "92fbb1f8-b510-450b-87d8-7e640dfefb35",
+      "pytorch-model-cli": "3b8cef05-94f6-4f14-9133-49264b3536e4",
+      "qemu-alpine-ssh": "3ea9374c-68a9-4d52-81bf-3757dddca782"
+    },
+    "current_provider_http_status": 502,
+    "current_provider_response": "error code: 502",
+    "recovery_completed": true,
+    "recovery_raw_official_reward_0": 4,
+    "recovery_effective_reward_1": 0,
+    "recovery_effective_reward_0": 0,
+    "recovery_no_effective_quality_score": 4,
+    "recovery_http_502_attempts": 136,
+    "recovery_extra_retries": 132,
+    "recovery_generator_completions": 0,
+    "recovery_tool_results": 0,
+    "recovery_stop_reason": "TASK_DEADLINE",
+    "recovery_api_tokens": null,
+    "recovery_api_reference_usd": null,
+    "recovery_results": {
+      "pypi-server": {
+        "provider_attempts": 34,
+        "extra_retries": 33,
+        "verifier_passed": 0,
+        "verifier_failed": 1,
+        "harbor_wall_s": 981.310651,
+        "verifier_wall_s": 52.277454
+      },
+      "prove-plus-comm": {
+        "provider_attempts": 34,
+        "extra_retries": 33,
+        "verifier_passed": 1,
+        "verifier_failed": 3,
+        "harbor_wall_s": 984.748705,
+        "verifier_wall_s": 47.701603
+      },
+      "pytorch-model-cli": {
+        "provider_attempts": 34,
+        "extra_retries": 33,
+        "verifier_passed": 0,
+        "verifier_failed": 6,
+        "harbor_wall_s": 1061.207227,
+        "verifier_wall_s": 93.031077
+      },
+      "qemu-alpine-ssh": {
+        "provider_attempts": 34,
+        "extra_retries": 33,
+        "verifier_passed": 0,
+        "verifier_failed": 1,
+        "harbor_wall_s": 942.780942,
+        "verifier_wall_s": 15.157137
+      }
+    }
+  },
+  "execution_reason": "Recover four existing seed43 Terra High transport-failure positions in the available fixed-model concurrency; Model-only and the original finite continuation remain active",
+  "modernize_scientific_stack_original_outcomes_20261114": {
+    "luna_high": {
+      "reward": 1,
+      "assertions_passed": 2,
+      "assertions_failed": 0,
+      "api_tokens": 13239,
+      "known_reference_usd": 0.0010995,
+      "reported_cached_tokens": 7680,
+      "requested_returned_effort": "high/high"
+    },
+    "terra_high": {
+      "reward": 0,
+      "assertions_passed": 1,
+      "assertions_failed": 1,
+      "api_tokens": 35826,
+      "known_reference_usd": 0.039718,
+      "reported_cached_tokens": 0,
+      "requested_returned_effort": "high/high",
+      "failure": "Official task subprocess analyze_climate_modern.py exceeded its original 30-second timeout",
+      "code_and_resource_contribution": "NOT_SEPARATED"
+    },
+    "glm_low": {
+      "official_reward": 0,
+      "quality_reward": null,
+      "assertions_passed": 0,
+      "assertions_failed": 2,
+      "api_tokens": null,
+      "known_reference_usd": null,
+      "attempts": 23,
+      "extra_retries": 22,
+      "attempt_http_status": 503,
+      "tools_executed": 0,
+      "retry_stop_reason": "TASK_DEADLINE",
+      "technical_fault": "PROVIDER_RETRY_DEADLINE",
+      "recovery": "ONE_SEPARATE_EPISODE_IN_EXISTING_JOINT_RECOVERY_QUEUE"
+    }
+  },
+  "following_execution": "Existing full joint queue reuses valid completed positions; retain each original fault and recover only eligible technical faults once",
   "additional_fixed_recovery_20261119": {
     "seed": 43,
     "episodes": [
@@ -128,291 +575,5 @@
       }
     ],
     "supplier_billed_and_resource_usd": null
-  },
-  "resources": {
-    "docker_host": "unix:///home/syy/路由/.runtime/docker-vm/docker.sock",
-    "vm_cpus": 16,
-    "vm_memory_mib": 40960,
-    "task_resources": "ORIGINAL_2_0_TASK_TOML_UNCHANGED",
-    "router_threads": 40,
-    "router_gpu_worker_count": 1,
-    "router_deployment": "SHARED_NATIVE_ADAPTER_CPU_RESIDENT_GPU_SERIALIZED_BY_EXISTING_LOCK",
-    "cpu_usd_per_core_hour": null,
-    "gpu_usd_per_hour": null,
-    "vm_usd_per_hour": null,
-    "resource_allocation": "ROUTER_CPU_REQUEST_CPU_SECONDS; SERIAL_GPU_LOCK_HELD_TIME; VM_ACTIVE_EPISODE_RESOURCE_TIME_SHARE",
-    "supplier_billed_usd": "UNKNOWN",
-    "training_cost": "SEPARATE_FROM_ONLINE_COST"
-  },
-  "completed_episodes_20261119_0330": {
-    "episodes": [
-      {
-        "batch": "20261112-v9-joint-paired",
-        "task": "pytorch-model-cli",
-        "strategy": "terra_high",
-        "seed": 43,
-        "trial_id": "dca687f1-37b2-4403-aca9-d9be0f2eb1b0",
-        "official_reward": 1,
-        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
-        "technical_fault": null,
-        "ctrf_summaries": [
-          {
-            "tests": 6,
-            "passed": 6,
-            "failed": 0,
-            "skipped": 0,
-            "pending": 0,
-            "other": 0,
-            "start": 1795029839.5960588,
-            "stop": 1795029896.0364592
-          }
-        ],
-        "reported_api_tokens": 375086,
-        "known_reference_usd": 0.1908916,
-        "unknown_cost_requests": 0,
-        "extra_retries": 0,
-        "generator_requests": 21,
-        "teacher_requests": 0,
-        "teacher_consumed_decisions": 0,
-        "teacher_http_counts": {},
-        "cache_read_reported_tokens": 275072,
-        "tool_results": 34,
-        "harbor_wall_s": 705.780305,
-        "finished_at": "2026-11-18T19:25:23.262815Z",
-        "request_return_identities": [
-          {
-            "identity": [
-              "gpt-6.1-terra",
-              "high",
-              "gpt-6.1-terra",
-              "high",
-              "PROVIDER_REPORTED_MATCH"
-            ],
-            "count": 21
-          }
-        ],
-        "router_fallback_values": [
-          false
-        ]
-      },
-      {
-        "batch": "20261112-v9-joint-paired",
-        "task": "qemu-alpine-ssh",
-        "strategy": "terra_high",
-        "seed": 43,
-        "trial_id": "73077030-9f09-4c81-b7f4-dfe1a87fe01a",
-        "official_reward": 0,
-        "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
-        "technical_fault": null,
-        "ctrf_summaries": [
-          {
-            "tests": 1,
-            "passed": 0,
-            "failed": 1,
-            "skipped": 0,
-            "pending": 0,
-            "other": 0,
-            "start": 1795030133.1813376,
-            "stop": 1795030133.2752113
-          }
-        ],
-        "reported_api_tokens": 1010618,
-        "known_reference_usd": 0.3931532,
-        "unknown_cost_requests": 1,
-        "extra_retries": 0,
-        "generator_requests": 36,
-        "teacher_requests": 0,
-        "teacher_consumed_decisions": 0,
-        "cache_read_reported_tokens": 733184,
-        "tool_results": 60,
-        "harbor_wall_s": 940.675811,
-        "finished_at": "2026-11-18T19:29:18.308621Z",
-        "request_return_identities": [
-          {
-            "identity": [
-              "gpt-6.1-terra",
-              "high",
-              "gpt-6.1-terra",
-              "high",
-              "PROVIDER_REPORTED_MATCH"
-            ],
-            "count": 35
-          },
-          {
-            "identity": [
-              "gpt-6.1-terra",
-              "high",
-              null,
-              null,
-              null
-            ],
-            "count": 1
-          }
-        ],
-        "router_fallback_values": [
-          false
-        ],
-        "effective_quality_reward": 0
-      }
-    ],
-    "supplier_billed_and_resource_usd": null,
-    "previous_failed_trials_retained": true
-  },
-  "current_execution": {
-    "observed_at": "2026-11-19T04:29:20.123522+08:00",
-    "controller_pid": null,
-    "credential_holder_pid": null,
-    "stage": "fixed_stage_finished_router_waiting",
-    "selected_strategies": ["glm_low", "terra_high"],
-    "seed": 43,
-    "fixed_concurrency": 4,
-    "other_running_router_concurrency": 2,
-    "active_positions": [],
-    "finished_positions": 261,
-    "effective_reward_1": 99,
-    "effective_reward_0": 57,
-    "no_effective_reward": 105,
-    "router_positions_waiting": 696,
-    "provider_extra_retry_limit": 100,
-    "maximum_output_tokens": 4096,
-    "original_harbor_task_limits_retained": true,
-    "terra_first_request_recovery": {
-      "observed_at": "2026-11-18T15:40:00+00:00",
-      "positions": [
-        {"task": "polyglot-rust-c", "strategy": "terra_high", "episode_id": "98b3dc00-4141-43a5-926b-18a8b46aefe5", "successful_attempt_at": "2026-11-18T15:38:48.950826+00:00", "http_status": 200, "prior_attempt_http_status": 502, "generator_completions": 1, "tool_results": 1},
-        {"task": "polyglot-c-py", "strategy": "terra_high", "episode_id": "672de591-29df-4098-9cf1-0ffe132ed0ba", "successful_attempt_at": "2026-11-18T15:38:49.753324+00:00", "http_status": 200, "prior_attempt_http_status": 502, "generator_completions": 1, "tool_results": 1}
-      ],
-      "original_request_model_effort_and_parameters_retained": true,
-      "failed_attempts_retained": true
-    },
-    "runtime_source_revision": "2d1be7ba960ee88a78696c47508c927199ab516e",
-    "analysis_revision": "212be725580150967149e1baa8125e157ba8fb95",
-    "observer_pid": 2097072,
-    "targeted_recovery_after_controller_pid": 2057318,
-    "targeted_recovery_pid": 2097543,
-    "targeted_recovery_tasks": ["pytorch-model-cli", "qemu-alpine-ssh"],
-    "targeted_recovery_strategy": "terra_high",
-    "recent_completed_episodes": [
-      {"task": "crack-7z-hash", "strategy": "glm_low", "trial_id": "3f3b3e5c-cd49-4803-ae2b-2007c19d2265", "official_reward": 1, "effective_quality_reward": 1, "assertions_passed": 2, "assertions_failed": 0, "reported_api_tokens": 156829, "known_reference_usd": 0.00937014, "unknown_cost_requests": 0, "extra_retries": 0, "tool_results": 27, "harbor_wall_s": 405.902621, "controller_exit_code": 2},
-      {"task": "overfull-hbox", "strategy": "glm_low", "trial_id": "52d3e13b-d8bd-4b95-b484-ccaa958b2b29", "official_reward": 1, "effective_quality_reward": 1, "assertions_passed": 4, "assertions_failed": 0, "reported_api_tokens": 232336, "known_reference_usd": 0.01612408, "unknown_cost_requests": 0, "extra_retries": 0, "tool_results": 32, "harbor_wall_s": 625.056263, "controller_exit_code": 2},
-      {"task": "polyglot-rust-c", "strategy": "terra_high", "trial_id": "98b3dc00-4141-43a5-926b-18a8b46aefe5", "official_reward": 0, "effective_quality_reward": null, "technical_fault": "PROVIDER_RETRY_DEADLINE", "assertions_passed": 0, "assertions_failed": 1, "reported_api_tokens": 27413, "known_reference_usd": 0.02725860, "unknown_cost_requests": 1, "extra_retries": 15, "tool_results": 4, "harbor_wall_s": 1011.913281},
-      {"task": "polyglot-c-py", "strategy": "terra_high", "trial_id": "672de591-29df-4098-9cf1-0ffe132ed0ba", "official_reward": 0, "effective_quality_reward": null, "technical_fault": "PROVIDER_RETRY_DEADLINE", "assertions_passed": 0, "assertions_failed": 1, "reported_api_tokens": 5461, "known_reference_usd": 0.00634500, "unknown_cost_requests": 1, "extra_retries": 30, "tool_results": 1, "harbor_wall_s": 1017.149216}
-    ]
-  },
-  "terra_successes_20261119_continuation": {
-    "seed": 43,
-    "strategy": "terra_high",
-    "episodes": [
-      {"task": "code-from-image", "trial_id": "7ceabb45-06d4-491a-8fc6-13744cc1b14d", "official_reward": 1, "assertions_passed": 2, "assertions_failed": 0, "reported_tokens": 223092, "known_reference_usd": 0.10942400, "extra_retries": 0, "provider_cache_read_tokens": 153600, "harbor_wall_s": 516.401811},
-      {"task": "custom-memory-heap-crash", "trial_id": "a1406c15-a555-486f-8d03-3492096d7524", "official_reward": 1, "assertions_passed": 6, "assertions_failed": 0, "reported_tokens": 273895, "known_reference_usd": 0.13016700, "extra_retries": 0, "provider_cache_read_tokens": 181760, "harbor_wall_s": 432.288186},
-      {"task": "break-filter-js-from-html", "trial_id": "213535fe-fda7-480e-87d0-790b18a99b9e", "official_reward": 1, "assertions_passed": 1, "assertions_failed": 0, "reported_tokens": 219178, "known_reference_usd": 0.14789000, "extra_retries": 2, "provider_cache_read_tokens": 154880, "cache_unknown_requests": 2, "harbor_wall_s": 959.926754},
-      {"task": "mteb-retrieve", "trial_id": "4c346be9-c976-4f69-ab32-354b1957621a", "official_reward": 1, "assertions_passed": 2, "assertions_failed": 0, "reported_tokens": 212851, "known_reference_usd": 0.10979260, "extra_retries": 1, "provider_cache_read_tokens": 138112, "cache_unknown_requests": 1, "harbor_wall_s": 602.009708},
-      {"task": "rstan-to-pystan", "trial_id": "0475b474-f91b-4fe7-925d-ae0ab5539350", "official_reward": 1, "assertions_passed": 6, "assertions_failed": 0, "reported_tokens": 2356762, "known_reference_usd": 0.38832200, "extra_retries": 0, "provider_cache_read_tokens": 2152960, "harbor_wall_s": 1708.788725}
-    ],
-    "reported_tokens": 3285778,
-    "known_reference_usd": 0.88559560,
-    "extra_retries": 3,
-    "requested_and_returned_model": "gpt-6.1-terra",
-    "requested_and_returned_effort": "high",
-    "supplier_billed_and_resource_usd": null,
-    "failed_attempt_billed_usd": null,
-    "physical_kv_shared": null
-  },
-  "query_verifier_diagnosis_20261119": {
-    "source_trial_id": "5c6f01fa-2740-4ad9-a020-171b431f9f3b",
-    "original_agent_status": "SUBMITTED",
-    "original_episode_reward": null,
-    "original_verifier_limit_s": 900,
-    "original_task_cpu_limit": 1,
-    "original_task_memory_gib": 2,
-    "sqlite_python_version": "3.13.9",
-    "sqlite_python_library_version": "3.50.4",
-    "native_sqlite_cli_version": "3.45.1",
-    "golden_sql_wall_s": 1.8293487959890626,
-    "golden_sql_rows": 500,
-    "original_sql_wall_s": 823.9250340649742,
-    "original_sql_cpu_s": 818.339516684,
-    "original_sql_rows": 500,
-    "curl_prewarm_wall_s": 9.985872641205788,
-    "reconstructed_solution_verifier_status": "VERIFIER_TIMEOUT",
-    "reconstructed_solution_verifier_wall_s": 900.0904582049698,
-    "diagnostic_verifier_logs": "ABSENT_AFTER_TIMEOUT_CLEANUP",
-    "first_dependency_diagnosis_status": "DIAGNOSTIC_SETUP_FAILED_MISSING_CONTAINER_LOG_DIRECTORY",
-    "formal_quality_reward_from_diagnosis": null,
-    "diagnosis_resource_usd": null,
-    "private_evidence_directory": ".private/episodes/query-optimize/terra_high/43",
-    "scope": "DIAGNOSIS_ONLY_NOT_AN_AGENT_EPISODE"
-  },
-  "quality_classification_update_20261119": {
-    "analysis_revision": "212be725580150967149e1baa8125e157ba8fb95",
-    "rule": "FINAL_REQUEST_TASK_DEADLINE_AFTER_RECORDED_GENERATOR_RETRIES",
-    "same_trial_effective_zero_to_missing": 5,
-    "original_official_rewards_retained": true
-  },
-  "fixed_recovery_20261118_1729": {
-    "controller_pid": 1920505,
-    "credential_holder_pid": 1920499,
-    "controller_exited": true,
-    "observed_at": "2026-11-18T17:29:35+08:00",
-    "first_pass_finished_positions": 261,
-    "recovery_running_positions": 0,
-    "not_started_positions": 696,
-    "reward_1_before_recovery": 84,
-    "reward_0_before_recovery": 55,
-    "no_effective_quality_score_before_recovery": 122,
-    "known_api_reference_usd_before_recovery": 9.07206206,
-    "unknown_cost_requests_before_recovery": 142,
-    "stage": "fixed_recovery_finished",
-    "selected_tasks": [
-      "pypi-server",
-      "prove-plus-comm",
-      "pytorch-model-cli",
-      "qemu-alpine-ssh"
-    ],
-    "selected_strategies": [
-      "terra_high"
-    ],
-    "seed": 43,
-    "runtime_source_revision": "2d1be7ba960ee88a78696c47508c927199ab516e",
-    "analysis_revision": "a3dd87909260252205e45925ca822af480b96216",
-    "provider_extra_retry_limit": 100,
-    "maximum_output_tokens": 4096,
-    "original_harbor_task_limits_retained": true,
-    "fixed_concurrency": 4,
-    "other_running_router_concurrency": 2,
-    "original_failures_retained": true,
-    "recovery_episode_ids": {
-      "pypi-server": "e338ee92-58e4-48c0-9d7d-68f2af5425cd",
-      "prove-plus-comm": "92fbb1f8-b510-450b-87d8-7e640dfefb35",
-      "pytorch-model-cli": "3b8cef05-94f6-4f14-9133-49264b3536e4",
-      "qemu-alpine-ssh": "3ea9374c-68a9-4d52-81bf-3757dddca782"
-    },
-    "current_provider_http_status": 502,
-    "current_provider_response": "error code: 502",
-    "recovery_completed": true,
-    "recovery_raw_official_reward_0": 4,
-    "recovery_effective_reward_1": 0,
-    "recovery_effective_reward_0": 0,
-    "recovery_no_effective_quality_score": 4,
-    "recovery_http_502_attempts": 136,
-    "recovery_extra_retries": 132,
-    "recovery_generator_completions": 0,
-    "recovery_tool_results": 0,
-    "recovery_stop_reason": "TASK_DEADLINE",
-    "recovery_api_tokens": null,
-    "recovery_api_reference_usd": null,
-    "recovery_results": {
-      "pypi-server": {"provider_attempts": 34, "extra_retries": 33, "verifier_passed": 0, "verifier_failed": 1, "harbor_wall_s": 981.310651, "verifier_wall_s": 52.277454},
-      "prove-plus-comm": {"provider_attempts": 34, "extra_retries": 33, "verifier_passed": 1, "verifier_failed": 3, "harbor_wall_s": 984.748705, "verifier_wall_s": 47.701603},
-      "pytorch-model-cli": {"provider_attempts": 34, "extra_retries": 33, "verifier_passed": 0, "verifier_failed": 6, "harbor_wall_s": 1061.207227, "verifier_wall_s": 93.031077},
-      "qemu-alpine-ssh": {"provider_attempts": 34, "extra_retries": 33, "verifier_passed": 0, "verifier_failed": 1, "harbor_wall_s": 942.780942, "verifier_wall_s": 15.157137}
-    }
-  },
-  "execution_reason": "Recover four existing seed43 Terra High transport-failure positions in the available fixed-model concurrency; Model-only and the original finite continuation remain active",
-  "modernize_scientific_stack_original_outcomes_20261114": {
-    "luna_high": {"reward": 1, "assertions_passed": 2, "assertions_failed": 0, "api_tokens": 13239, "known_reference_usd": 0.0010995, "reported_cached_tokens": 7680, "requested_returned_effort": "high/high"},
-    "terra_high": {"reward": 0, "assertions_passed": 1, "assertions_failed": 1, "api_tokens": 35826, "known_reference_usd": 0.039718, "reported_cached_tokens": 0, "requested_returned_effort": "high/high", "failure": "Official task subprocess analyze_climate_modern.py exceeded its original 30-second timeout", "code_and_resource_contribution": "NOT_SEPARATED"},
-    "glm_low": {"official_reward": 0, "quality_reward": null, "assertions_passed": 0, "assertions_failed": 2, "api_tokens": null, "known_reference_usd": null, "attempts": 23, "extra_retries": 22, "attempt_http_status": 503, "tools_executed": 0, "retry_stop_reason": "TASK_DEADLINE", "technical_fault": "PROVIDER_RETRY_DEADLINE", "recovery": "ONE_SEPARATE_EPISODE_IN_EXISTING_JOINT_RECOVERY_QUEUE"}
-  },
-  "following_execution": "Existing full joint queue reuses valid completed positions; retain each original fault and recover only eligible technical faults once"
+  }
 }

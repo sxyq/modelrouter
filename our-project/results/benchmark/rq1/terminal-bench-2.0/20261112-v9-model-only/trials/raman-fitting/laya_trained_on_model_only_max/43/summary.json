@@ -27,12 +27,22 @@
     "storage": "10G",
     "docker_image": "alexgshaw/raman-fitting:20251031"
   },
-  "reward": null,
+  "reward": 0.0,
   "error_type": "AgentTimeoutError",
   "execution_status": "FINISHED",
   "effort_comparison_eligible": true,
   "episode_wall_s": 1058.454973,
   "generator_known_reference_usd": 0.04680247,
+  "execution_environment": {
+    "episode_id": "84f33bf9-614c-4e2a-8c59-1ddd6a46da5f",
+    "qemu_pid": 3832028,
+    "machine": "q35,accel=kvm",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "timestamp": "2026-11-15T18:43:04.928915+00:00",
+    "monotonic_ns": 15432528708653375,
+    "event": "EXECUTION_ENVIRONMENT"
+  },
   "harbor_trial_count": 1,
   "attempts_wall_s": 1058.454973,
   "harness_command_wall_s": 1063.2076979409903,
@@ -48,12 +58,14 @@
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/.private/episodes/raman-fitting/laya_trained_on_model_only_max/43",
   "trial_id": "84f33bf9-614c-4e2a-8c59-1ddd6a46da5f",
   "official_reward": 0.0,
-  "technical_fault": "PROVIDER_RETRY_DEADLINE",
+  "technical_fault": null,
   "raw_verifier_rewards": [
     {
       "reward": 0.0
     }
   ],
+  "provider_output_budget_exceeded_requests": 2,
+  "latest_output_budget_exceeded_requests": 2,
   "outside_harbor_wall_s": 4.75272494099022,
   "previous_attempts": [],
   "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
@@ -534,6 +546,12 @@
   "technical_recovery_count": 0,
   "started_tool_calls": 0,
   "completed_tool_calls": 26,
+  "latest_trial_known_reference_usd": 0.04680247,
+  "latest_trial_unknown_cost_requests": 4,
+  "latest_trial_prompt_tokens": null,
+  "latest_trial_completion_tokens": null,
+  "latest_trial_known_tokens": 597937,
+  "latest_trial_usage_unknown_requests": 4,
   "unknown_provider_cost_requests": 4,
   "prompt_tokens": null,
   "completion_tokens": null,

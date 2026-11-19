@@ -33,6 +33,16 @@
   "effort_comparison_eligible": true,
   "episode_wall_s": 453.142378,
   "generator_known_reference_usd": null,
+  "execution_environment": {
+    "episode_id": "3cabb3b4-16c2-4a75-ab49-93cd3a8c7bf4",
+    "qemu_pid": 3832028,
+    "machine": "q35,accel=kvm",
+    "vm_cpus": 16,
+    "vm_memory_mib": 40960,
+    "timestamp": "2026-11-17T15:05:33.460720+00:00",
+    "monotonic_ns": 15592277240458253,
+    "event": "EXECUTION_ENVIRONMENT"
+  },
   "harbor_trial_count": 1,
   "attempts_wall_s": 453.142378,
   "harness_command_wall_s": 458.12456884235144,
@@ -47,13 +57,15 @@
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261112-v9-model-only/.private/episodes/make-mips-interpreter/kev_trained_on_model_only_max/43",
   "trial_id": "3cabb3b4-16c2-4a75-ab49-93cd3a8c7bf4",
-  "official_reward": null,
-  "technical_fault": null,
+  "official_reward": 0.0,
+  "technical_fault": "PROVIDER_REQUEST_FAILED",
   "raw_verifier_rewards": [
     {
       "reward": 0.0
     }
   ],
+  "provider_output_budget_exceeded_requests": 0,
+  "latest_output_budget_exceeded_requests": 0,
   "outside_harbor_wall_s": 4.982190842351429,
   "previous_attempts": [],
   "official_status": "NOT_EVALUATED",
@@ -96,6 +108,12 @@
   "technical_recovery_count": 0,
   "started_tool_calls": 0,
   "completed_tool_calls": 0,
+  "latest_trial_known_reference_usd": null,
+  "latest_trial_unknown_cost_requests": 1,
+  "latest_trial_prompt_tokens": 19412,
+  "latest_trial_completion_tokens": 159,
+  "latest_trial_known_tokens": 19571,
+  "latest_trial_usage_unknown_requests": 0,
   "unknown_provider_cost_requests": 1,
   "prompt_tokens": 19412,
   "completion_tokens": 159,

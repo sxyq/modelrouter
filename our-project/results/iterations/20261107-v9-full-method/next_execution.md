@@ -1,8 +1,8 @@
 # 下一批完整关联 Execution 工作包
 
-2026-11-19 当前入口：沿原 Model-only 与 Native 进程收集结束记录。Seed42 历史矩阵已有 1513 个结束位置，必要技术恢复仍单独记录。Colink 返回余额不足，Codegoai 返回凭据无效。四个旧 uvx 依赖恢复位置和五个旧 Colink 订阅故障位置需要对应渠道恢复。Seed43 联合固定阶段已有结果，动态联合路由仍缺本批对照。原排除任务及既有 Trial 保留原记录。当前分母、逐次费用及无评分原因见[项目现状](../../../planning/PROJECT_STATUS.md)和[Benchmark 报告](../../benchmark/README.md)。
+2026-11-19 17:45 当前入口：原 Model-only／Native 继续执行，有限队列 `2690322` 等待两者自然结束，再沿既定次序处理 Model-only 技术恢复、联合 Router 及联合／Seed42 必要恢复。Model-only 已结束 1942／2136，联合已结束 261／957；后者 696 个 Router 位置尚未首跑。Seed42 的 1513 个位置均有结束记录。已修复 uvx 缺项的位置沿原单题入口处理，原始及恢复 Trial 分别保留。原两题排除范围继续有效。数量、逐次费用和无评分原因见[项目现状](../../../planning/PROJECT_STATUS.md)和[Benchmark 当前报告](../../benchmark/README.md)。
 
-账户恢复后，本机 `run_rq1_a6000.py` 将 `--restored-provider MODEL_ID` 和原任务排除参数传给 A6000 的 `rq1`。生成请求的 401 或 Colink 余额、订阅 403 中断位置可按同题、策略、Seed 创建独立 Harbor 试次。已有有效官方分数和原故障记录保留。
+GLM 新凭据已在真实 Episode 中产生工具调用，Terra 也已取得官方评分；Luna／Codegoai 最新生成仍 401。既有 `run_rq1_a6000.py` 连接已附着原队列，持有 GLM／Terra 的 `--restored-provider` 与原任务排除参数，等待其结束后按同题、策略和 Seed 恢复对应访问故障。Luna 需现有账户恢复后再走同一入口。全部请求保持原模型、档位、4096 和任务期限，最多额外重试 100 次。已有有效官方分数保留。
 
 ## 正式范围
 
