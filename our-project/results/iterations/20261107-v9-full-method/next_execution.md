@@ -1,6 +1,6 @@
 # 下一批完整关联 Execution 工作包
 
-2026-11-19 17:45 当前入口：原 Model-only／Native 继续执行，有限队列 `2690322` 等待两者自然结束，再沿既定次序处理 Model-only 技术恢复、联合 Router 及联合／Seed42 必要恢复。Model-only 已结束 1942／2136，联合已结束 261／957；后者 696 个 Router 位置尚未首跑。Seed42 的 1513 个位置均有结束记录。已修复 uvx 缺项的位置沿原单题入口处理，原始及恢复 Trial 分别保留。原两题排除范围继续有效。数量、逐次费用和无评分原因见[项目现状](../../../planning/PROJECT_STATUS.md)和[Benchmark 当前报告](../../benchmark/README.md)。
+2026-11-19 18:47 当前入口：原 Model-only／Native 继续执行，有限队列 `2690322` 等待两者自然结束，再沿既定次序处理 Model-only 技术恢复、联合 Router 及联合／Seed42 必要恢复。Model-only 已结束 1954／2136，联合已结束 261／957；后者 696 个 Router 位置尚未首跑。Seed42 的 1513 个位置均有结束记录，本轮五次独立恢复已结束，新增四个有效官方 0、一个接口缺分；固定访问恢复 Controller `3122030` 正处理其余 GLM 位置。原始及恢复 Trial 分别保留，原两题排除范围继续有效。数量、逐次费用和无评分原因见[项目现状](../../../planning/PROJECT_STATUS.md)和[Benchmark 当前报告](../../benchmark/README.md)。
 
 GLM 新凭据已在真实 Episode 中产生工具调用，Terra 也已取得官方评分；Luna／Codegoai 最新生成仍 401。既有 `run_rq1_a6000.py` 连接已附着原队列，持有 GLM／Terra 的 `--restored-provider` 与原任务排除参数，等待其结束后按同题、策略和 Seed 恢复对应访问故障。Luna 需现有账户恢复后再走同一入口。全部请求保持原模型、档位、4096 和任务期限，最多额外重试 100 次。已有有效官方分数保留。
 
