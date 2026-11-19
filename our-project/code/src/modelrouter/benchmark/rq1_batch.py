@@ -229,6 +229,7 @@ def main(argv=None):
     parser.add_argument("--watch-interval", type=int, default=1200, help="Seconds between batch snapshots; default 20 minutes")
     parser.add_argument("--recover-infrastructure", action="store_true", help="One separate attempt after a recorded technical fault; retain valid scores")
     parser.add_argument("--task", action="append", help="Select existing task IDs without changing the matrix")
+    parser.add_argument("--exclude-task", action="append", default=[], help="Leave selected task IDs unexecuted; retain their existing results")
     parser.add_argument("--strategy", action="append", help="Select existing strategy IDs without changing the matrix")
     parser.add_argument("--after-pids", type=int, nargs="+", help="Wait for existing batches before executing this batch")
     parser.add_argument("--then-config", type=Path, action="append", help="Continue with another saved batch after this one")
@@ -248,6 +249,7 @@ def main(argv=None):
     config["router_socket"] = str(iterations.ROOT / ".runtime" / (config["run_id"] + "-router.sock"))
     units = json.loads((root / "manifest.json").read_text())["units"]
     units = [u for u in units if (not args.task or u["task_id"] in args.task)
+             and u["task_id"] not in args.exclude_task
              and (not args.strategy or u["strategy_id"] in args.strategy)]
     from .rq1_analysis import export_batch_results
     if args.watch_pids:
@@ -323,5 +325,6 @@ def main(argv=None):
         export_batch_results(root, config, args.export_dir)
     for following in args.then_config or []:
         main([str(following), "--source-revision", args.source_revision,
+              *(value for task in args.exclude_task for value in ("--exclude-task", task)),
               *(["--recover-infrastructure"] if args.recover_infrastructure else [])])
     return 0
