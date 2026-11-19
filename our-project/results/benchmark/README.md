@@ -10,6 +10,8 @@
 
 Colink新凭据已用于GLM完整Episode，Low／High／Max三档均有实际工具调用。五个原始403响应明确为`SUBSCRIPTION_NOT_FOUND`的Seed43位置进入单次技术恢复。`llm-inference-batching-scheduler`的原始Laya OFF、训练Laya OFF／ON，以及`mailman`的原始Laya OFF／ON均为固定Max的Model-only路由，原位置仍无有效评分。Luna／Codegoai生成接口最近记录仍为401。Terra／Jiji已在原Harbor取得官方结果。三批分别有1849、196和1124条请求费用未知，供应商实收及资源美元费用缺项。
 
+新增Episode／恢复均排除`vulnerable-secret`和`break-filter-js-from-html`，原历史日志和评分保留。两题对应Model-only的48个、联合的22个计划位置不执行；表内仍保留正式矩阵分母，故“待首跑”也包含这些排除位置。
+
 ### 06:14–06:16新汇总的完整Episode
 
 fix-ocaml-gc／原始Laya OFF Model-only Max／Seed43取得Harbor官方1，Trial3698ecf4-928e-49fa-afc2-932815ea882b，原断言1/1通过。126次生成均请求GLM Max，返回Effort未报告；2次额外重试，本次6918671已报API Token、$0.26481256已知模型参考费、2次请求用量与费用缺项。Provider已报缓存读取6513472 Token、8次请求未报缓存；Router墙钟144.187932秒，GPU等待0.016230秒，Harbor4442.840521秒。

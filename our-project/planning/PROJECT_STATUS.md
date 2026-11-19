@@ -6,6 +6,8 @@
 
 06:14至06:16采集：Model-only1880/2136结束、350有效1／193有效0／1305缺分／32依赖故障，2运行、254未首跑；联合261/957保持99/57有效1/0、105缺分、696未首跑；历史338/361有效1/0、748缺分、62依赖故障。fix-ocaml-gc原始Laya OFF Max新增Harbor官方1、126次GLM Max生成、6918671已报Token、$0.26481256已知参考费；ON Max原Verifier1但Luna401后Harbor无有效评分，14次教师调用均401、短评消费0。单次原始结果与累计费用分别保留。
 
+07:20起后续新Episode及恢复队列显式排除`vulnerable-secret`和`break-filter-js-from-html`，原始既有记录保留。两题的Model-only48与联合22个计划位置不再启动。固定恢复队列2630763执行中的Episode全部为其他任务；2630764仍等待其完成。原1696641／Native1142328继续，三观察器2630773／2630774／2630775每1200秒，旧恢复队列2492278与原固定Controller2253174已退出。
+
 05:43历史有效1/0为332/360，新增headless-terminal High及log-summary-date-ranges三档共4个通过，另有headless-terminal Max、largest-eigenval High／Max共3个有效失败，七项均沿原终局保留。Model-only仍1876/2136结束、2项运行、258项待首次运行。已保存同题同Seed训练比较：Kev OFF Low的12题由2通过升至9通过，单次API参考费由$0.04807856升至$0.79889000，原始105次生成均选Luna、训练152次生成均选Terra，两侧切换均0；同题固定Terra Low对照尚缺。十二组配对与教师实际消费见Benchmark总入口。
 
 ## 2026-11-19：原批次继续与凭据进程路径

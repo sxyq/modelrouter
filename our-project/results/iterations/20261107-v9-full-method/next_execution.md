@@ -1,6 +1,6 @@
 # 下一批完整关联 Execution 工作包
 
-2026-11-18 00:01唯一反向代理58053已恢复服务器17898至Mac17897，跟随1696641／1345012。当前观察1345169／1345170／1345171仍按1200秒导出；新版有限1345012等待原Model-only与Native持有1142328退出，再按原顺序接续技术恢复及联合696位置。Luna401、GLM429／502、Terra返回Luna身份冲突均保留原请求和费用，不修改模型、Effort或已评分结果。
+2026-11-19当前入口：Model-only原Controller1696641、Native1142328继续；历史原Controller2253174已排空。固定阶段恢复队列2630763继续原GLM／Terra有限恢复，外层队列2630764等待后再接续Model-only技术恢复、联合Router696位置、联合及历史必要恢复。两队列均沿原入口排除`vulnerable-secret`与`break-filter-js-from-html`；Model-only计划数2136含48个不再调度位置，联合957含22个不再调度位置，历史已有Trial与产物保留但不再恢复这两题。四个已修复uvx来源的Seed42位置仍位于2630764后续队列：GLM Low的overfull-hbox、adaptive-rejection-sampler、cobol-modernization及GLM High的build-pmars；五个旧Colink订阅故障位置继续由Model-only技术恢复接续。观察2630773／2630774／2630775每1200秒复用原导出目录；代理58053继续，51278等待其自然退出后跟随1696641／2630764。当前分母、逐次费用及无评分原因以[项目现状](../../../planning/PROJECT_STATUS.md)与[Benchmark报告](../../benchmark/README.md)为准；下列旧进度和部署段保留其历史身份。
 
 ## 正式范围
 
@@ -10,7 +10,7 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 ## 已完成的科研起点
 
-- [正式2.0 RQ1](../../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)：89题×17策略×seed42全部结束；614位置有原始Reward、899缺评分，101个原0来自uvx未安装且无测试报告，有效任务评分513位置。2333原Trial、2339条Harbor命令，模型+教师已知参考费$35.11821871，已报告228743791 Token、1028请求缺用量。原结果、费用与全部尝试保持。
+- [正式2.0 RQ1首次批次历史](../../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md)：89题×17策略×seed42全部结束；614位置有原始Reward、899缺评分，101个原0来自uvx未安装且无测试报告，有效任务评分513位置。2333原Trial、2339条Harbor命令，模型+教师已知参考费$35.11821871，已报告228743791 Token、1028请求缺用量。原结果、费用与全部尝试保持。
 - 原始实体models/laya-421m、models/kev-4b-adapter；本批GLM训练代表runs/V9-K3-GLM-LAYA-20261111、runs/V9-K3-GLM-KEV-20261111各18更新，来自两个验证阶段的七候选偏好+16辅助，事前确定；11-08各17更新及11-07各18更新分别保留其原池/批次身份。F05/R11/F15的原研究身份保持。
 - [收尾H编码](../../benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/metrics/h_encoding_followup.json)：生成/历史/最后观察按JSON内容呈现800/880/800字符摘要，原四条输入分别7489/7177/8189/8188 Token；T/M/H、教师状态及15候选全部FULL。原89题Episode及其4次H截断保持原版本；新编码已用于本批18更新与54位置，实际Router截断0。
 - [新训练与54项完整结果](../../benchmark/rq1/terminal-bench-2.0/20261111-v9-joint-followup/review.md)：2个已观察任务×27策略×seed43全部结束，42通过、2失败、10缺评分，74原Trial；模型+教师已知参考费$0.73402850、12请求缺费用，跨度8648.372秒。两个0均为真实日期匹配失败；此前20个未执行测试的原0和费用保持。控制、观察、临时代理与任务容器已结束。
@@ -25,9 +25,9 @@ Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；A
 
 2026-11-16沿固定脚本our-project/code/cli/run_rq1_a6000.py及原rq1入口接续：11:22:56原联合固定261位置全部结束，闲置3205488／3575811退出；六项既定固定技术恢复于12:00:58结束。3993622持有原私有描述符并等待实际Model-only1696641结束，再执行Model-only技术恢复、696联合Router、联合与历史必要恢复；有效官方1/0直接保留。观察668034／668035／668036每1200秒复用原.runtime导出，代理98294跟随1696641／3993622，原共享GPU锁保持。四权重、11-11各18更新、AA v7、模型/档位/4096/Seed及原时限保持；所有模型及教师请求最多额外100次，长度耗尽不网络重试，Reasoning/缓存各计一次。
 
-现行观察668034／668035／668036只跟随原Controller与有限接续，每20分钟复用原.runtime导出目录，已加载分析c6b2a7b1；旧闲置4041864／4041865／4041866退出。02:22代理98294在76902自然结束后接管；原首失败、费用、有效1/0和权重保留。gpu.lock共享READ与训练及Breeze独占锁保持。需要等待使用纯20分钟wait，期间不重复读取未变状态。
+11-16历史观察668034／668035／668036只跟随原Controller与有限接续，每20分钟复用原.runtime导出目录，已加载分析c6b2a7b1；旧闲置4041864／4041865／4041866退出。02:22代理98294在76902自然结束后接管；原首失败、费用、有效1/0和权重保留。gpu.lock共享READ与训练及Breeze独占锁保持。需要等待使用纯20分钟wait，期间不重复读取未变状态。
 
-最新导出末次终局2026-11-17T18:33:44.919743+00:00：Model-only1632/2136结束，335官方1、183官方0、1082缺有效评分、32项Verifier依赖故障另列；2运行、502未开始。1633 Trial，模型与教师已知参考费$21.86417166、1485请求费用未知、5936额外重试。联合261/957保持84官方1、55官方0、122缺分、696 Router位置未开始；历史1513位置、2599 Trial保持308官方1、344官方0、795缺分及66项依赖故障。新有限1345012等待Model-only及旧Native自然退出，再执行技术恢复、联合Router及联合／历史恢复。
+11-17历史导出末次终局2026-11-17T18:33:44.919743+00:00：Model-only1632/2136结束，335官方1、183官方0、1082缺有效评分、32项Verifier依赖故障另列；2运行、502未开始。1633 Trial，模型与教师已知参考费$21.86417166、1485请求费用未知、5936额外重试。联合261/957保持84官方1、55官方0、122缺分、696 Router位置未开始；历史1513位置、2599 Trial保持308官方1、344官方0、795缺分及66项依赖故障。该时刻有限1345012等待Model-only及旧Native自然退出，再执行技术恢复、联合Router及联合／历史恢复。
 
 11-17浏览器资源故障：filter-js-from-html原测试结束ChromeDriver后遗留Chromium，1904进程占满2GiB、cgroup累计30384次OOM／17次OOM kill。原A6000DockerEnvironment为该题浏览器设置父进程退出SIGTERM，测试与资源时限保持；在途20个孤立浏览器主进程退出后ON Low原测试714.90秒完成、ON High新版166.08秒完成，两者原官方0、断言各2失败。f3c83d235522c60b70caf44f98395e3957d02c22将旧OFF Low/High资源超时列入单位置技术恢复，有效0恢复理由None。闲置3993622已自然交接1345012、凭据仅内存保留；观察1345169／1345170／1345171每1200秒沿原目录，代理16862等待98294退出后接管，原1696641继续。
 
@@ -75,15 +75,15 @@ AA v7固定快照20261107T134704898459Z-v7、130真实指标、Intelligence Inde
 
 ## 连续执行与资源
 
-23:11:54同一VM已切换KVM，QEMU3832028及监控确认kvm support: enabled；原16CPU／40960MiB、200GiB磁盘、101镜像、9p共享目录保持。此前六个Episode自然结束、容器0后才关闭原TCG VM；原Controller1696641／3205488已恢复，GPU锁及Native worker3708428保持。使用原私有维护记录中的已有sudo凭据开放syy的/dev/kvm读写ACL，实际API版本12；start.sh.previous为此前启动版本，当前唯一源码回退包为8db统计变更前的1d645126四源码。后续Episode由原Agent日志记录真实QEMU身份；query-optimize原始Kev High／Max在KVM下仍首项900秒超时，6包安装1.00／1.36秒，两条因Luna额度故障未执行工具、没有Reward，SQL等待仍待定位。新Kev High真实CUDA/fallback=false、19.102秒，选Luna High后接口故障与路由前向分别保存。
+历史KVM切换记录：23:11:54同一VM已切换KVM，QEMU3832028及监控确认kvm support: enabled；原16CPU／40960MiB、200GiB磁盘、101镜像、9p共享目录保持。此前六个Episode自然结束、容器0后才关闭原TCG VM；原Controller1696641／3205488已恢复，GPU锁及Native worker3708428保持。使用原私有维护记录中的已有sudo凭据开放syy的/dev/kvm读写ACL，实际API版本12；start.sh.previous为此前启动版本，该时刻唯一源码回退包为8db统计变更前的1d645126四源码。后续Episode由原Agent日志记录真实QEMU身份；query-optimize原始Kev High／Max在KVM下仍首项900秒超时，6包安装1.00／1.36秒，两条因Luna额度故障未执行工具、没有Reward，SQL等待在该记录时尚未定位。新Kev High真实CUDA/fallback=false、19.102秒，选Luna High后接口故障与路由前向分别保存。
 
-当前e05caa115ed00e68ba26abf9aed72847440b4fde在原GPU共享读锁内按模型实际张量字节等待显存，保留Router原时限；四原权重CPU预加载后再接受任务。Worker3708428／有限持有3708420已接同一入口，旧闲置2496626／2496618退出，实际Laya CUDA/fallback=false日志已取得。qemu-startup训练Kev教师ON High／Max两条CUDA OOM由原技术恢复入口接续，原记录及费用独立保留；有效1/0不重复。
+旧部署记录：e05caa115ed00e68ba26abf9aed72847440b4fde在原GPU共享读锁内按模型实际张量字节等待显存，保留Router原时限；四原权重CPU预加载后再接受任务。Worker3708428／有限持有3708420已接同一入口，旧闲置2496626／2496618退出，实际Laya CUDA/fallback=false日志已取得。qemu-startup训练Kev教师ON High／Max两条CUDA OOM由原技术恢复入口接续，原记录及费用独立保留；有效1/0不重复。
 
-当前Agent8db98d081d186a216b8772f3a22a6d7645ed23e3保留Harbor预算类别并调用原Verifier；分析c6b2a7b1c30dc1295c01640b47cd6d657f52f9d3已从三个超额输出完整Episode验证该调用，渠道4096执行问题仍未解决。403等技术故障继续独立，正常请求额度内length仍待原矩阵；有效1/0不重复，旧NonZero缺有效分沿原恢复入口。唯一源码回退保存Agent8db与分析e1四源码。
+旧Agent与分析部署记录：Agent8db98d081d186a216b8772f3a22a6d7645ed23e3保留Harbor预算类别并调用原Verifier；分析c6b2a7b1c30dc1295c01640b47cd6d657f52f9d3已从三个超额输出完整Episode验证该调用，该时刻渠道4096执行问题仍未解决。403等技术故障继续独立，正常请求额度内length仍待原矩阵；有效1/0不重复，旧NonZero缺有效分沿原恢复入口。该时刻唯一源码回退保存Agent8db与分析e1四源码。
 
 Luna已记录额度403与SQLite教师五次401 invalid token，现行唯一绑定与原Model-only／有限持有配置一致；401请求0重试、0短评消费，不将教师ON配置直接归为实际干预。Terra High在新Windows与regex-chess完整Episode恢复正常生成，分别官方0／1，前者44次、后者6次HTTP200且档位一致。此前502位置沿原恢复范围，已评分1/0保留；MTEB-leaderboard五固定组、MTEB-retrieve三有效失败组也直接复用，Low／High依赖故障使用原缓存恢复。原Harbor错误政策、评分及失败记录保持。
 
-新Tensor完整Episode的31包安装17.91秒后进入13项官方测试，900秒Verifier仍无终局；该次14生成请求、151644 API Token和$0.06207760参考费另记，不把3次累计用量称为一次运行。宿主机/dev/kvm存在、syy无读写权限、sudo需密码，硬件加速需要管理员设备授权；原QEMU2744271仍为q35,accel=tcg、16核40GiB，现有健康实验继续原配置。CPU等待与生成代码的贡献保持未知，不修改官方测试或时限。
+切换KVM前的原Tensor记录：31包安装17.91秒后进入13项官方测试，900秒Verifier仍无终局；该次14生成请求、151644 API Token和$0.06207760参考费另记，不把3次累计用量称为一次运行。该时刻宿主机/dev/kvm存在、syy无读写权限、sudo需密码，硬件加速需要管理员设备授权；原QEMU2744271仍为q35,accel=tcg、16核40GiB，健康实验继续该时刻配置。CPU等待与生成代码的贡献保持未知，不修改官方测试或时限。
 
 复用原modelrouter.benchmark rq1入口和配置批量运行；固定任务四并发、Router两并发，原任务时限、4096输出及官方Verifier。需要等待时沿原--watch-pids <实际父PID> --watch-interval 1200每20分钟汇总，父进程退出后取末次结果并结束，不建立新的Runner或定时服务。
 
