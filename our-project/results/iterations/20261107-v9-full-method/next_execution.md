@@ -1,6 +1,6 @@
 # 下一批完整关联 Execution 工作包
 
-2026-11-19 08:35当前入口：Model-only原Controller1696641、Native1142328继续；历史原Controller2253174、旧有限队列2630764已排空。历史技术恢复控制器2630763仍在执行，有限队列2690322等待该批结束，随后单独接续四个历史uvx依赖故障、Model-only技术恢复、联合Router696位置及联合／历史恢复。两队列均沿原入口排除`vulnerable-secret`与`break-filter-js-from-html`；Model-only计划数2136含48个不再调度位置，联合957含22个不再调度位置；既有Trial与评分保留。四个待接续Seed42位置：GLM Low的overfull-hbox、adaptive-rejection-sampler、cobol-modernization及GLM High的build-pmars；五个旧Colink订阅故障位置仍由Model-only技术恢复接续。观察2630773／2630774／2630775每1200秒复用原导出目录；代理58053继续，51278等待其自然退出后跟随1696641／2690322。当前分母、逐次费用及无评分原因以[项目现状](../../../planning/PROJECT_STATUS.md)与[Benchmark报告](../../benchmark/README.md)为准；下列旧进度和部署段保留其历史身份。
+2026-11-19 当前入口：沿原 Model-only 与 Native 进程收集结束记录。Seed42 历史矩阵已有 1513 个结束位置，必要技术恢复仍单独记录。Colink 返回余额不足，Codegoai 返回凭据无效。四个旧 uvx 依赖恢复位置和五个旧 Colink 订阅故障位置需要对应渠道恢复。Seed43 联合固定阶段已有结果，动态联合路由仍缺本批对照。原排除任务及既有 Trial 保留原记录。当前分母、逐次费用及无评分原因见[项目现状](../../../planning/PROJECT_STATUS.md)和[Benchmark 报告](../../benchmark/README.md)。
 
 ## 正式范围
 
