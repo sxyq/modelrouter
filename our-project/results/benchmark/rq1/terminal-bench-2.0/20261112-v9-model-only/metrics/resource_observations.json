@@ -1,5 +1,34 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
+  "credential_memory_sync_20261120": {
+    "observed_at": "2026-11-19T17:33:54+00:00",
+    "endpoint_id": "glm-colink",
+    "finding": "Unique private local configuration was updated while existing controller memory retained the previous GLM key",
+    "updated_credential_holders": [1696633, 2690322, 2966963, 3121802],
+    "exact_request_model_retained": "glm-5.3-flash",
+    "transport": "SSH input to existing memfd only",
+    "post_write_key_equality": true,
+    "active_requests_retained_existing_provider_instance": true
+  },
+  "proxy_reconnection_20261120": {
+    "observed_at": "2026-11-19T16:12:25+00:00",
+    "remote_port": 17898,
+    "failure": "A6000 reverse proxy listener absent; original local wrapper repeatedly reported No user exists for uid 501",
+    "affected_active_positions": [
+      "train-fasttext/laya_original_off_model_only_max/43",
+      "train-fasttext/laya_original_on_model_only_max/43",
+      "path-tracing-reverse/glm_low/42",
+      "path-tracing-reverse/glm_high/42",
+      "path-tracing-reverse/glm_max/42",
+      "protein-assembly/glm_low/42"
+    ],
+    "ended_obsolete_local_proxy_pids": [51278, 58053],
+    "reconnected_with": "our-project/code/cli/run_rq1_a6000.py --proxy-for-pid 1696641 2690322 3122030 --proxy-worker",
+    "after_reconnection": "127.0.0.1:17898 LISTEN; original requests received upstream HTTP502 at 16:13-16:14 UTC instead of connection failure",
+    "episode_restarted": false,
+    "original_request_parameters_and_deadlines_retained": true,
+    "supplier_and_resource_usd": null
+  },
   "current_execution": {
     "snapshot_exported_at": "2026-11-18T19:03:54.442086+00:00",
     "controller_pid": 1696641,

@@ -1,14 +1,14 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-19 23:24–23:26 台北
+## 当前结果 · 2026-11-20 02:36–02:38 台北
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／未首跑 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2020／2136 | 365／203 | 1420 | 32 | 2／114 | 178142838 | 37.61686244 | 2104 |
+| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2028／2136 | 365／203 | 1428 | 32 | 2／106 | 178614478 | 37.64988177 | 2123 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 99／57 | 105 | 0 | 0／696 | 143404387 | 15.32542777 | 196 |
-| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 380／400 | 677 | 52 | 4／0 | 418930362 | 49.42226244 | 1362 |
+| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 385／412 | 660 | 52 | 4／0 | 425883963 | 49.79502663 | 1389 |
 
 有效 1、有效 0、缺有效评分、评分依赖故障四列合计为已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。Seed42 的 1513 个位置均已有结束记录，当前四个位置正在独立恢复，表内另列运行状态。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
@@ -18,7 +18,11 @@ GLM 新凭据已更新到唯一权限 600 私有配置，并在真实 Episode �
 
 旧账户故障接续新增一个已观察格式：Colink 403 的 `insufficient balance` 文本此前被原恢复入口漏选，现与原有 `INSUFFICIENT_BALANCE`／`SUBSCRIPTION_NOT_FOUND` 一起识别。仍由原 `--restored-provider` 按同题、策略和 Seed 创建独立恢复 Trial，已有有效官方评分不再运行。
 
-Provider 每请求最多额外 100 次、保留原参数和任务期限的重试已部署。三批分别累计额外重试 9381／2332／1749 次。原 Verifier 数值与技术分类分别保存。原 Controller 和 Native Worker 继续，固定访问恢复 Controller `3122030` 与原 Router 批次并行；后续有限队列继续接续 Model-only 技术恢复及联合 Router。21:35 在途 Terra Max 返回 HTTP524、GLM Max 返回 HTTP502，均沿原任务期限重试。
+Provider 每请求最多额外 100 次、保留原参数和任务期限的重试已部署。三批分别累计额外重试 9694／2332／2678 次。原 Verifier 数值与技术分类分别保存。原 Controller 和 Native Worker 继续，固定访问恢复 Controller `3122030` 与原 Router 批次并行；后续有限队列继续接续 Model-only 技术恢复及联合 Router。
+
+11月20日00:12发现17898反向代理无监听，旧Mac代理包装反复报`No user exists for uid 501`；已结束两个失效代理包装，沿原脚本恢复连接，六个在途请求继续，随后收到上游502。01:34确认唯一私有配置的GLM凭据比四个原内存对象更新，仅将`glm-colink`条目同步至原memfd，保持精确模型、档位、参数与期限；后续完整Episode已恢复HTTP200。凭据数值不进入结果文件。
+
+自11月19日23:26快照新增历史有效1／0为5／12。通过为`mcmc-sampling-stan Max`、`schemelike-metacircular-eval Low`、`distribution-search Low/High/Max`；有效失败为`compile-compcert Low/High/Max`、`schemelike-metacircular-eval High/Max`、`bn-fit-modify Low/High/Max`、`circuit-fibsqrt Low/High/Max`、`fix-ocaml-gc Low`。原失败尝试及费用保留，已有有效0不再运行。
 
 21:58以后，Model-only 新增 `reshard-c4-data／训练 Kev OFF/ON Low/High/Max` 六个官方1；历史恢复新增 `llm-inference-batching-scheduler High/Max`、`mcmc-sampling-stan Low/High` 四个官方1，及 `mailman Low/Max`、`make-mips-interpreter High`、`mteb-retrieve Low/High` 五个有效官方0。每次恢复的用量和费用在原逐题表中单列，旧故障记录保留。
 
