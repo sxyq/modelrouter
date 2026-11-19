@@ -72,7 +72,7 @@ def prepare(config_path, revision):
     return root, config
 
 
-def recovery_reason(path):
+def recovery_reason(path, restored_providers=()):
     """Recover technical interruptions only; never repeat a valid official score."""
     from .rq1_analysis import technical_interruption
     observed = [t for job in (path / "jobs").glob("*") for t in audit_job(job)["trials"]]
@@ -88,13 +88,17 @@ def recovery_reason(path):
         return interruption
     error = trial.get("error") or {}
     kind, message = error.get("exception_type"), error.get("exception_message", "")
-    if kind == "NonZeroAgentExitCodeError" and trial.get("reward") is None and "HTTP Error 403" in message:
+    if restored_providers and kind in ("NonZeroAgentExitCodeError", "HTTPError") and trial.get("reward") is None:
         request = next((e for e in reversed(events) if e.get("episode_id") == trial["trial_id"]
                         and e["event"] == "ERROR" and e.get("role") == "generator"), {})
-        if request.get("http_status") == 403 and request.get("request_model_id") == "glm-5.3-flash":
+        model, status = request.get("request_model_id"), request.get("http_status")
+        if model in restored_providers and status == 401:
+            return "PROVIDER_ACCESS_RESTORED"
+        if model in restored_providers and model == "glm-5.3-flash" and status == 403:
             raw = path / "provider_responses" / f"{request['decision_id']}.sse"
-            if raw.is_file() and b"SUBSCRIPTION_NOT_FOUND" in raw.read_bytes():
-                return "COLINK_SUBSCRIPTION_RESTORED"
+            response = raw.read_bytes() if raw.is_file() else b""
+            if b"INSUFFICIENT_BALANCE" in response or b"SUBSCRIPTION_NOT_FOUND" in response:
+                return "PROVIDER_ACCESS_RESTORED"
     if kind == "PermissionError" and "/proc/self/fd/" in message:
         return "PRIVATE_CONFIG_DESCRIPTOR_UNAVAILABLE"
     if kind == "NonZeroAgentExitCodeError" and any(e.get("episode_id") == trial["trial_id"]
@@ -151,16 +155,16 @@ def recovery_reason(path):
     return None
 
 
-def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=False):
+def run_unit(root, config, unit, strategy, unavailable, recover_infrastructure=False, restored_providers=()):
     if unit["strategy_id"] in unavailable:
         return dict(unit, status="UNAVAILABLE_PROVIDER_EFFORT", cause=unavailable[unit["strategy_id"]])
     path = root / ".private/episodes" / unit["task_id"] / unit["strategy_id"] / str(unit["seed"])
     job = path / "jobs" / unit["unit_id"]
     observed = audit_job(job)
     state = path / "resume_state.json"
-    if recover_infrastructure:
-        reason = recovery_reason(path)
-        if reason is None:
+    if recover_infrastructure or restored_providers:
+        reason = recovery_reason(path, restored_providers)
+        if reason is None or restored_providers and reason != "PROVIDER_ACCESS_RESTORED":
             return dict(unit, status="FINISHED", reused=True)
         recovery, _, _ = iterations.prepare_recovery(path, reason, config)
         job = path / "jobs" / recovery["job_name"]
@@ -228,6 +232,8 @@ def main(argv=None):
     parser.add_argument("--watch-pids", type=int, nargs="+", help="Observe these existing batch processes without launching episodes")
     parser.add_argument("--watch-interval", type=int, default=1200, help="Seconds between batch snapshots; default 20 minutes")
     parser.add_argument("--recover-infrastructure", action="store_true", help="One separate attempt after a recorded technical fault; retain valid scores")
+    parser.add_argument("--restored-provider", action="append", choices=V9_MODEL_IDS, default=[],
+                        help="Resume only access failures for the specified model after its account is restored")
     parser.add_argument("--task", action="append", help="Select existing task IDs without changing the matrix")
     parser.add_argument("--exclude-task", action="append", default=[], help="Leave selected task IDs unexecuted; retain their existing results")
     parser.add_argument("--strategy", action="append", help="Select existing strategy IDs without changing the matrix")
@@ -270,7 +276,7 @@ def main(argv=None):
     if args.collect_only:
         export_batch_results(root, config, args.export_dir)
         return 0
-    if args.recover_infrastructure:
+    if args.recover_infrastructure or args.restored_provider:
         selected = []
         for unit in units:
             path = root / ".private/episodes" / unit["task_id"] / unit["strategy_id"] / str(unit["seed"])
@@ -278,7 +284,10 @@ def main(argv=None):
                 continue
             saved_units = json.loads((path / "resume_state.json").read_text())["units"]
             attempted_recovery = any(u.get("provider_retry_limit") == 100 for u in saved_units)
-            if (not attempted_recovery or args.task) and recovery_reason(path):
+            if attempted_recovery and not (args.task or args.restored_provider):
+                continue
+            reason = recovery_reason(path, args.restored_provider)
+            if reason and (not args.restored_provider or reason == "PROVIDER_ACCESS_RESTORED"):
                 selected.append(unit)
         units = selected
     worker = None
@@ -303,7 +312,8 @@ def main(argv=None):
                         raise RuntimeError("Native Router worker exited before accepting requests")
                     select.select([], [], [], .1)
             with ThreadPoolExecutor(max_workers=config["concurrency"][stage]) as pool:
-                futures = [pool.submit(run_unit, root, config, u, by_id[u["strategy_id"]], unavailable, args.recover_infrastructure) for u in pending]
+                futures = [pool.submit(run_unit, root, config, u, by_id[u["strategy_id"]], unavailable,
+                                       args.recover_infrastructure, args.restored_provider) for u in pending]
                 for future in as_completed(futures):
                     try:
                         record = future.result()
@@ -326,5 +336,6 @@ def main(argv=None):
     for following in args.then_config or []:
         main([str(following), "--source-revision", args.source_revision,
               *(value for task in args.exclude_task for value in ("--exclude-task", task)),
+              *(value for model in args.restored_provider for value in ("--restored-provider", model)),
               *(["--recover-infrastructure"] if args.recover_infrastructure else [])])
     return 0

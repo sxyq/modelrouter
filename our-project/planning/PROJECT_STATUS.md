@@ -1,5 +1,9 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
+## 2026-11-19 12:06 · 供应商账户恢复入口
+
+原 `rq1` 入口已在 A6000 部署 `--restored-provider`。读取真实 Harbor 记录确认 Luna 401 和 Colink 余额 403 可在账户恢复后按模型接续，Terra High 的 `fix-ocaml-gc` 官方 1 保留。账户仍不可用的位置等待供应商恢复。请求级 100 次重试上限和原时限继续沿现有 Provider。
+
 ## 2026-11-19 11:24 · Seed42 首跑覆盖与剩余实验
 
 Seed42 历史矩阵 1513 个位置均有结束记录，新增 `fix-ocaml-gc／Terra High` 官方 1。Model-only 已结束 1897/2136，联合已结束 261/957，8 个联合 Router 策略尚缺这一批的结果。Colink 余额不足、Codegoai 凭据无效，A6000 队列使用当前私有配置。供应商实收和资源费用仍缺。逐批成绩、用量与参考费见 [Benchmark 结果](../results/benchmark/README.md)。

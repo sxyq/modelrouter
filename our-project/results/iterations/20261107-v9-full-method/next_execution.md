@@ -2,6 +2,8 @@
 
 2026-11-19 当前入口：沿原 Model-only 与 Native 进程收集结束记录。Seed42 历史矩阵已有 1513 个结束位置，必要技术恢复仍单独记录。Colink 返回余额不足，Codegoai 返回凭据无效。四个旧 uvx 依赖恢复位置和五个旧 Colink 订阅故障位置需要对应渠道恢复。Seed43 联合固定阶段已有结果，动态联合路由仍缺本批对照。原排除任务及既有 Trial 保留原记录。当前分母、逐次费用及无评分原因见[项目现状](../../../planning/PROJECT_STATUS.md)和[Benchmark 报告](../../benchmark/README.md)。
 
+账户恢复后，原 `rq1` 入口使用 `--restored-provider MODEL_ID` 选取由对应模型生成请求的 401 或 Colink 余额、订阅 403 中断的原位置。该入口沿同题、策略、Seed 创建独立 Harbor 试次，保留已有有效官方分数和原故障记录。
+
 ## 正式范围
 
 Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。
