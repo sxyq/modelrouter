@@ -16,6 +16,8 @@ Model-only 已覆盖 81／89 题，80 题的 24 组均有结束记录；八组�
 
 GLM 新凭据已更新到唯一权限 600 私有配置，并在真实 Episode 中返回 HTTP 200 和工具调用；其余尝试仍出现上游 502。Terra 已有 HTTP 200、工具执行及官方评分。Luna／Codegoai 最近生成仍为 HTTP 401 `Invalid token`，同一渠道的教师调用也受影响。请求成功、工具执行、教师短评实际消费和最终官方 Reward 分别记录。
 
+旧账户故障接续新增一个已观察格式：Colink 403 的 `insufficient balance` 文本此前被原恢复入口漏选，现与原有 `INSUFFICIENT_BALANCE`／`SUBSCRIPTION_NOT_FOUND` 一起识别。仍由原 `--restored-provider` 按同题、策略和 Seed 创建独立恢复 Trial，已有有效官方评分不再运行。
+
 Provider 每请求最多额外 100 次、保留原参数和任务期限的重试已部署。三批分别累计额外重试 9292／2332／1585 次。Model-only 已结束位置中，25 个首次生成前 Router 超时、14 个 CUDA 显存异常、11 个 Router 决策超时、208 个 Provider 重试到期；原 Verifier 数值与技术分类分别保存。17:47 现场 GPU 使用 1436／49140 MiB，原 Controller 和 Native Worker 仍存活，后续有限队列等待其自然结束后接续技术恢复及联合 Router。
 
 **Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**

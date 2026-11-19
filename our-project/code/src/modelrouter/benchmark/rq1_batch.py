@@ -96,8 +96,8 @@ def recovery_reason(path, restored_providers=()):
             return "PROVIDER_ACCESS_RESTORED"
         if model in restored_providers and model == "glm-5.3-flash" and status == 403:
             raw = path / "provider_responses" / f"{request['decision_id']}.sse"
-            response = raw.read_bytes() if raw.is_file() else b""
-            if b"INSUFFICIENT_BALANCE" in response or b"SUBSCRIPTION_NOT_FOUND" in response:
+            response = raw.read_bytes().lower() if raw.is_file() else b""
+            if any(code in response for code in (b"insufficient_balance", b"insufficient balance", b"subscription_not_found")):
                 return "PROVIDER_ACCESS_RESTORED"
     if kind == "PermissionError" and "/proc/self/fd/" in message:
         return "PRIVATE_CONFIG_DESCRIPTOR_UNAVAILABLE"

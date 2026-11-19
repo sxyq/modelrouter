@@ -4,6 +4,8 @@
 
 GLM 新凭据已在真实 Episode 中产生工具调用，Terra 也已取得官方评分；Luna／Codegoai 最新生成仍 401。既有 `run_rq1_a6000.py` 连接已附着原队列，持有 GLM／Terra 的 `--restored-provider` 与原任务排除参数，等待其结束后按同题、策略和 Seed 恢复对应访问故障。Luna 需现有账户恢复后再走同一入口。全部请求保持原模型、档位、4096 和任务期限，最多额外重试 100 次。已有有效官方分数保留。
 
+Colink 403 的原 `insufficient balance` 文本已纳入同一个恢复函数。固定模型阶段可与现有两个 Router Episode 并行；仅处理原记录确认的访问故障，最多四个固定 Episode，沿原配置和逐题恢复入口保存全部尝试。
+
 ## 正式范围
 
 Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。
