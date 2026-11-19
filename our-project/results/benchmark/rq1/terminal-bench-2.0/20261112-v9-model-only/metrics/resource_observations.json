@@ -1,5 +1,23 @@
 {
   "sampled_at": "2026-11-12T03:19:03.610202+00:00",
+  "idle_gpu_release_20261120": {
+    "observed_at": "2026-11-19T19:02:30+00:00",
+    "before_gpu_used_mib": 41724,
+    "comfyui_model_memory_mib": 40674,
+    "comfyui_running_tasks": 0,
+    "comfyui_pending_tasks": 0,
+    "h3_active_requests": 0,
+    "operation": "POST existing ComfyUI /free with unload_models and free_memory true",
+    "http_status": 200,
+    "after_observed_at": "2026-11-19T19:05:03+00:00",
+    "after_gpu_used_mib": 1436,
+    "router_resumed": [
+      "train-fasttext/kev_original_off_model_only_max/43",
+      "train-fasttext/kev_original_on_model_only_low/43"
+    ],
+    "following_outcome": "Both original Router requests returned; selected Luna generation failed with HTTP401",
+    "shared_gpu_lock_and_services_retained": true
+  },
   "credential_memory_sync_20261120": {
     "observed_at": "2026-11-19T17:33:54+00:00",
     "endpoint_id": "glm-colink",
