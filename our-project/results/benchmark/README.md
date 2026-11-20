@@ -1,26 +1,26 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-20 17:58–17:59 台北
+## 当前结果 · 2026-11-20 18:29–18:30 台北
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2107／2136 | 379／223 | 1473 | 32 | 2／27 | 253687052 | 44.61735345 | 2281 |
+| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2109／2136 | 379／224 | 1474 | 32 | 2／25 | 255034754 | 44.84106298 | 2283 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 102／68 | 91 | 0 | 0／696 | 148548538 | 15.59871483 | 202 |
-| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 393／426 | 638 | 52 | 4／0 | 447804429 | 50.86359053 | 1435 |
+| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 393／426 | 638 | 52 | 4／0 | 448056658 | 50.88470291 | 1437 |
 
 有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
-Model-only已有88／89题的结束记录，87题的24组均结束，单策略最多49/89题有有效Reward；27个待首跑位置为sam-cell-seg的3组与build-pov-ray的24组。八个Laya/Kev版本和教师开关均含Low／High／Max。696个联合动态Router位置待首跑，其中16个属于原两题排除范围；固定组沿原配置接续GLM账户恢复。Seed42历史全部位置此前均已结束，本快照4项独立恢复运行中。排除任务的既有记录保留。
+Model-only已有88／89题的结束记录，87题的24组均结束，单策略最高评分覆盖50/89；25个待首跑位置为sam-cell-seg的1组与build-pov-ray的24组。八个Laya/Kev版本和教师开关均含Low／High／Max。696个联合动态Router位置待首跑，其中16个属于原两题排除范围；固定组沿原配置接续GLM账户恢复。Seed42历史全部位置此前均已结束，本快照4项独立恢复运行中。排除任务的既有记录保留。
 
-早先GLM、Luna Colink生成与Luna教师HTTP200均按原请求保存。15:50 glm-colink和luna-colink均曾返回403 insufficient_balance，Codegoai401；16:08后当前GLM条目已恢复真实工具生成，并取得下述完整Episode。Luna最近仍有余额403／备用401，实际干预与配置开关分别统计。原GLM404和Luna额度403均沿现行账户恢复入口保留独立Trial。
+GLM当前条目已恢复真实工具生成并取得下述完整Episode。18:16新Episode的Luna教师HTTP200，请求与返回均Low，短评实际进入Router。先前余额403、备用401及Max请求／Xhigh返回均按各次请求保存；当前Terra524和既有200分别记录。原GLM404和Luna额度403沿现行恢复入口保留独立Trial。
 
 Provider现行部署`421b1e45889dd8d22a28d796d225582cd6df8bdd`。私有配置同时保留新旧GLM条目，原列表后项曾覆盖所选供应商；现按既有defaults选择精确模型，GLM默认指向更新凭据的glm-colink，活动memfd已同步。非恢复性错误不机械请求100次。
 
 Responses读取器16658cb5fd8954250abfb7c74230fbb77c1f6d0c处理了已观察的响应格式错误：Luna响应头为SSE，正文为完整JSON。保存的sam-cell-seg／Kev原始ON Max第33次响应status=completed，含合法工具调用，输入23002／输出3521／推理3363 Token，请求Max、返回Xhigh。旧读取器丢弃该正文并记INCOMPLETE_RESPONSE；新读取器直接读取实际JSON，后续Episode生效。在途旧实例保持原记录。
 
-分析e742a46425fb77522ad62bac587438d0805fb1bc从相应原始响应补记实际用量与已知参考费，逐次保存raw_response_usage_recovered及证据路径；原执行错误、尝试次数、请求档位和官方分数保持。Reasoning只作为completion子集计一次。17:58后的表格已采用该分析；进行中的尝试终局后进入累计费用。
+分析c4d8495da5ed6b270a1c3f2658b87a48b0cdb330从相应原始响应补记实际用量与已知参考费，仅实际补记的尝试增加raw_response_usage_recovered及证据字段；原执行错误、尝试次数、请求档位和官方分数保持。Reasoning只作为completion子集计一次。Kev原始ON Max的旧实例在原期限结束，原Verifier0仍标PROVIDER_RETRY_DEADLINE、有效分数为空；40次误读JSON的实际响应补得1281524 Token/$0.19534449，本次完整尝试累计1305420 Token/$0.19780353，另2请求费用未知。
 
 17:45在ComfyUI队列0／0、H3活动请求0时调用原/free卸载闲置模型，显存降至1436MiB。Kev训练OFF Max在同一请求恢复真实GPU前向，fallback_used=false，router_gpu_wait_ms=2103357.152019；原资源等待、任务期限与GPU锁均有记录。
 
@@ -42,7 +42,18 @@ Responses读取器16658cb5fd8954250abfb7c74230fbb77c1f6d0c处理了已观察的�
 
 旧账户故障接续新增一个已观察格式：Colink 403 的 `insufficient balance` 文本此前被原恢复入口漏选，现与原有 `INSUFFICIENT_BALANCE`／`SUBSCRIPTION_NOT_FOUND` 一起识别。仍由原 `--restored-provider` 按同题、策略和 Seed 创建独立恢复 Trial，已有有效官方评分不再运行。
 
-Provider每请求最多额外100次同参数重试已部署，并受原任务期限限制。三批累计额外重试9872／2362／2720次。原Model-only1696641和Native继续；旧固定3958396已自然结束，GLM恢复4114698沿原联合／历史固定配置接续。等待队列4114699在旧3979909无子进程时接管原七阶段，并等待当前任务自然结束；固定4、Router2并发。Luna High的compile-compcert、distribution-search、build-pov-ray本轮新获有效官方1，全部有效官方0保留。
+Provider每请求最多额外100次同参数重试已部署，并受原任务期限限制。三批累计额外重试9918／2362／2721次。原Model-only1696641和Native继续；旧固定3958396已自然结束，GLM恢复4114698沿原联合／历史固定配置接续。等待队列4114699等待当前任务自然结束后按原七阶段继续；固定4、Router2并发。Luna High的compile-compcert、distribution-search、build-pov-ray本轮新获有效官方1，全部有效官方0保留。
+
+### sam-cell-seg：训练Kev Low教师成对结果
+
+两侧为相同任务、Seed43、11月11日训练权重及固定Low的完整Model-only Episode。
+
+| 教师配置 | 官方Reward | 单次已报Token | 单次已知参考USD | 请求费用未知 | Harbor秒 | 教师请求／实际消费决策 |
+|---|---:|---:|---:|---:|---:|---:|
+| OFF | 0 | 75178 | 0.05388760 | 0 | 563.619701 | 0／0 |
+| ON | 0 | 42282 | 0.02590600 | 0 | 456.788633 | 1／1 |
+
+ON Trial112444fa-7c36-4788-b550-e078d15a0cae的Luna教师真实HTTP200，请求／返回Low、response_status=COMPLETE，教师参考费$0.00019120已计入。两侧官方失败均保留，本题未增加通过数；本对记录的费用与墙钟较低，整批效果继续按完整同题集合评价。
 
 ### 账户切换的真实恢复
 
