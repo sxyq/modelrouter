@@ -1,12 +1,14 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前进度 · 2026-11-20 15:47–15:55 台北
+## 当前进度 · 2026-11-20 17:15–17:17 台北
 
-三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。15:47–15:51导出：Model-only结束2100/2136，官方有效1／0为379／220、缺分1469、Verifier依赖故障32、运行2、待首跑34；待首跑为sam-cell-seg的10组和build-pov-ray的24组。Seed43联合261/957，102／68、缺分91、696个动态Router位置未首跑。Seed42历史1509/1513，392／425、缺分640、依赖故障52、3项恢复运行中、1项恢复待执行；历史1513个位置此前均已有结束记录。
+三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。17:15–17:17导出：Model-only结束2107/2136，官方有效1／0为379／223、缺分1473、Verifier依赖故障32、运行2、待首跑27；待首跑为sam-cell-seg的3组和build-pov-ray的24组。Seed43联合261/957，102／68、缺分91、696个动态Router位置未首跑。Seed42历史1509/1513，392／426、缺分639、依赖故障52、4项独立恢复运行中；历史1513个位置此前均已有结束记录。
 
-唯一权限600私密配置及A6000活动memfd保留现用凭据。早先GLM、Luna Colink生成及Luna教师HTTP200按原请求保留；15:50真实请求确认所选glm-colink与luna-colink均返回403 insufficient_balance，luna-codegoai返回401。Provider原来按列表后项选到了glm-colink-old；现行421b1e45889dd8d22a28d796d225582cd6df8bdd遵从私有配置默认项，GLM默认已指向本次更新凭据的glm-colink，实际解析及实际403均确认使用该条目。
+唯一权限600私密配置及A6000活动memfd保留现用凭据。Provider421b1e45889dd8d22a28d796d225582cd6df8bdd遵从所选默认供应商，GLM使用本次更新凭据的glm-colink。15:50该条目曾返回403余额不足，16:08后同条目已恢复真实工具生成；17:17历史恢复的train-fasttext GLM High／Max均有HTTP200工具调用。Luna最近实际记录仍为Colink余额403／Codegoai401，按各次请求保存。
 
-原Model-only Controller1696641、Native1142328/1142336继续；固定3958396已完成本轮联合恢复并转入历史固定组。15:55确认3967996仍无子进程且等待前轮，因账户当前不可用取消该未开始轮次；后续恢复仍保留在原有限队列3979909中，等待当前任务自然结束后按既定顺序执行。固定最多4并发、Router最多2并发。winning-avg-corewars中Kev原始ON Max／High／Low官方Reward1／0／0及训练Kev OFF／ON六档Reward1均保持原始记录。
+原Model-only1696641、Native1142328/1142336继续，Terra Jiji最新实际生成HTTP200。旧固定3958396已自然结束；GLM恢复4114698等待其结束后沿原联合固定、历史固定两配置执行。原等待接续3979909在无子进程时交接至4114699，等待Model-only、Native及当前固定恢复自然结束后按原七阶段接续，全部有效官方1／0跳过。固定最多4并发、Router最多2并发。三个20分钟观察器4115057／4115058／4116847继续原导出目录；后续代理44976等待当前9516自然结束再接管。
+
+新凭据完整Episode：build-pov-ray／GLM Max／Seed42的Trial5cf886a7-7455-42b1-b3ca-791a20fb62e6官方Reward0、技术中断为空；26次生成均HTTP200、37条工具结果，526232个已报Token、$0.03342933已知参考费、1次请求费用未知、1458.757748秒。请求档位Max，返回档位未报告；该有效失败保留。
 
 14:19原17898反向代理保持监听；原脚本已安排现用连接自然结束后接管新队列。Provider每次请求仍最多额外100次重试并受原期限约束。现行恢复函数已合并实际GLM 404 `model_not_found`和Luna 403 `pre_consume_token_quota_failed`账户恢复情形，部署源码`8bb0745a9699e843aa6ccb3c8af675b5454dbfc1`；新Luna High完整Episode中path-tracing、path-tracing-reverse、protein-assembly均获有效官方0，直接保留。
 
