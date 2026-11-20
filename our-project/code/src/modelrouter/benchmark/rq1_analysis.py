@@ -196,7 +196,42 @@ def provider_requests(trial, events):
             attempts[(item["role"], item["decision_id"])][item["attempt_index"]] = item
     for key, values in attempts.items():
         row = recorded.setdefault(key, {"event": "ERROR", "role": key[0], "decision_id": key[1]})
-        ordered = [values[i] for i in sorted(values)]
+        ordered = [dict(values[i]) for i in sorted(values)]
+        registry = None
+        for attempt in ordered:
+            if (attempt.get("protocol") != "responses" or attempt.get("error") != "INCOMPLETE_RESPONSE"
+                    or attempt.get("http_status") != 200 or attempt.get("prompt_tokens") is not None):
+                continue
+            private = Path(trial["trial_dir"]).parents[2]
+            suffix = ".teacher" if key[0] == "teacher" else ""
+            index = attempt["attempt_index"]
+            suffix += f".retry-{index:03d}" if index else ""
+            capture = private / "provider_responses" / f"{key[1]}{suffix}.sse"
+            if not capture.is_file():
+                continue
+            raw = capture.read_bytes().lstrip()
+            if not raw.startswith(b"{"):
+                continue
+            try:
+                body = json.loads(raw)
+            except json.JSONDecodeError:
+                continue
+            from modelrouter.providers.protocols import Responses
+            from modelrouter.providers.registry import ModelSpec
+            p, c, r, cached, written = Responses.usage(body.get("usage") or {})
+            if (p is None or c is None or r is not None and r > c
+                    or body.get("model") != attempt["request_model_id"]):
+                continue
+            if registry is None:
+                registry = json.loads((private / "run_config.json").read_text())["model_registry"]
+            spec = ModelSpec(**registry[attempt["request_model_id"]])
+            usage = body["usage"]
+            attempt.update(prompt_tokens=p, completion_tokens=c, reasoning_tokens=r, cached_tokens=cached,
+                           cache_write_tokens=written, cost_usd=spec.calculate_cost(p, c, r or 0, cached or 0, written or 0),
+                           actual_billed_cost_usd=usage.get("cost") if (usage.get("cost_currency") or usage.get("currency")) == "USD" else None,
+                           raw_response_usage_recovered=True, response_usage_evidence=str(capture),
+                           recovered_returned_model_id=body["model"], recovered_response_status=body.get("status"),
+                           recovered_returned_native_effort=(body.get("reasoning") or {}).get("effort"))
         row.update(account_attempts=ordered, retry_count=max(0, len(ordered) - 1),
                    max_extra_retries=100)
         for field in ("prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens",
@@ -587,7 +622,9 @@ def export_batch_results(root, config, output_root=None):
                    provider_attempts=[{**{k: a.get(k) for k in ("attempt_index", "request_model_id",
                        "requested_native_effort", "http_status", "error_type", "response_status", "finish_reason",
                        "latency_ms", "retry_wait_sec", "retry_stop_reason", "prompt_tokens", "completion_tokens",
-                       "cached_tokens", "cost_usd", "actual_billed_cost_usd")}, "role": r["role"],
+                       "cached_tokens", "cost_usd", "actual_billed_cost_usd", "raw_response_usage_recovered",
+                       "response_usage_evidence", "recovered_returned_model_id", "recovered_response_status",
+                       "recovered_returned_native_effort")}, "role": r["role"],
                        "decision_id": request_decision_id(r)} for r in requests for a in r.get("account_attempts", [])],
                    technical_recovery_count=sum(u.get("provider_retry_limit") == 100 for u in state["units"]),
                    started_tool_calls=sum(e["event"] == "TOOL_START" for e in events),
