@@ -1,20 +1,22 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-20 08:21–08:33 台北
+## 当前结果 · 2026-11-20 09:02–09:15 台北
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／未首跑 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2082／2136 | 373／210 | 1467 | 32 | 1／53 | 204184371 | 41.65840893 | 2224 |
+| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2086／2136 | 377／210 | 1467 | 32 | 2／48 | 205706749 | 42.08643693 | 2228 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 99／57 | 105 | 0 | 0／696 | 143404387 | 15.32542777 | 196 |
 | [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1513／1513 | 391／422 | 648 | 52 | 0／0 | 444893675 | 50.62987761 | 1408 |
 
 有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
-Model-only已覆盖87／89题；85题的24组均有结束记录，单策略最多48/89题有有效Reward。八个Laya/Kev版本和教师开关均含Low／High／Max。联合已结束位置均为固定模型，696个动态Router位置未首跑。原排除的Model-only48、联合22个位置保留在分母。
+Model-only已覆盖87／89题；85题的24组均有结束记录，单策略最多48/89题有有效Reward。八个Laya/Kev版本和教师开关均含Low／High／Max。联合已结束位置均为固定模型，696个动态Router位置未首跑。Model-only当前48个未开始位置均是原排除位置；联合仍有22个排除位置在696个未首跑中。
 
 GLM新凭据更新后请求已HTTP200；将A6000现存Luna账号绑定切到配置中的`luna-colink`后，完整Episode生成及教师调用均HTTP200。`winning-avg-corewars`三种Kev原始教师开关组取得官方1／0／0，训练Kev OFF Low另取得官方1；同题结果留在逐题Trial。旧Codegoai 401与精确GLM模型404保留原记录，不改模型名或转发。
+
+同题训练Kev OFF Low／High／Max及ON Low已分别取得官方Reward 1；训练ON High／Max仍运行。完整Episode成功只说明各自单次终局。
 
 ### `winning-avg-corewars`：Luna账号恢复后的完整Episode
 
