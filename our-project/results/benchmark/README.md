@@ -1,12 +1,12 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-21 00:44技术恢复中
+## 当前结果 · 2026-11-21 03:10技术恢复中
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 399／233 | 1470 | 32 | 2／0 | 270635030 | 47.29850179 | 2335 |
+| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 407／249 | 1446 | 32 | 2／0 | 274415634 | 47.92972205 | 2368 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 102／68 | 91 | 0 | 0／696 | 148548538 | 15.59871483 | 202 |
 | [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1513／1513 | 395／432 | 634 | 52 | 0／0 | 452801409 | 51.22307955 | 1461 |
 
@@ -15,6 +15,23 @@
 Model-only首轮全部89题×24组于11月20日23:06结束，当时393／230有效1／0、1481缺分与32依赖故障，累计269991808已报Token及$47.24640648已知参考费。当前2项独立技术恢复运行，故表中已结束位置为2134；全部首轮记录继续保留。原控制1696641及Native1142328／1142336正常退出，七阶段4114699与Worker110914已接续。696个联合动态Router位置仍待首跑，其中16个属于原两题排除范围。GLM固定恢复4114698已自然结束；Seed42仍有634缺分与52项评分依赖故障，沿原队列处理。
 
 新恢复通过为openssl-selfsigned-cert的训练Laya OFF High、regex-log的训练Laya ON Low／High与原始Kev OFF High／Max、modernize-scientific-stack的原始Kev ON High。regex-log原始Laya ON Max及原始Kev OFF Low的有效0、overfull-hbox原始Laya OFF Low的有效0均保留；后者188475 Token、$0.01053206参考费、513.345172秒。overfull-hbox High／Max和openssl-selfsigned-cert另两项原0仍有Provider或Router超时，保持技术缺分。00:04与00:45在视频队列0／0、H3活动0时通过原/free释放闲置模型，健康服务和GPU锁保持。
+
+03:10相对首轮已补得33个有效评分：14通过、19失败。overfull-hbox新增训练Laya OFF High／Max、原始Kev OFF Max／ON High、训练Kev OFF Low／High及ON Low／High八个通过。adaptive-rejection-sampler的Laya原始OFF／ON三档及训练OFF Low七项均为有效官方0；其余技术恢复继续原队列。累计2180个Harbor Trial，全部首次记录、恢复费用与原0均保留。
+
+### overfull-hbox：同题同Seed43的训练前后结果
+
+以下均为独立完整Model-only Episode、教师OFF，六项请求参考费齐全。
+
+| Kev版本／固定Effort | 官方Reward | 已报Token | 已知模型参考USD | Harbor秒 |
+|---|---:|---:|---:|---:|
+| 原始／Low | 0 | 157458 | 0.00393564 | 413.156129 |
+| 原始／High | 0 | 171428 | 0.00803208 | 463.332151 |
+| 原始／Max | 1 | 235253 | 0.01551698 | 811.360870 |
+| 11月11日训练／Low | 1 | 369182 | 0.09370760 | 622.215024 |
+| 11月11日训练／High | 1 | 167735 | 0.06982860 | 414.644492 |
+| 11月11日训练／Max | 0 | 190541 | 0.09983860 | 894.708837 |
+
+本题训练版Low／High由失败变通过且参考费增加，Max由通过变失败且费用增加；更高Effort和训练均未带来单调收益。当前结论范围为该任务、Seed43及上述六个原权重／配置，整批结论继续采用同题配对结果。
 
 首轮最后五项缺分均保留接口原始身份：请求gpt-6-luna，Colink返回gpt-5.6-luna，Max还返回Xhigh；原账户轮换继续到备用Codegoai并收到401，未接受错误模型作为有效动作。教师部分HTTP400正文仅为invalid_request_error／Invalid request；原400未机械重试。Luna此前正常返回精确模型的完整通过记录同时保留。
 
@@ -68,7 +85,7 @@ Responses读取器16658cb5fd8954250abfb7c74230fbb77c1f6d0c处理了已观察的�
 
 旧账户故障接续新增一个已观察格式：Colink 403 的 `insufficient balance` 文本此前被原恢复入口漏选，现与原有 `INSUFFICIENT_BALANCE`／`SUBSCRIPTION_NOT_FOUND` 一起识别。仍由原 `--restored-provider` 按同题、策略和 Seed 创建独立恢复 Trial，已有有效官方评分不再运行。
 
-Provider每请求最多额外100次同参数重试已部署，并受原任务期限限制。三批累计额外重试10135／2362／3118次。原Model-only首轮及GLM固定恢复均已自然结束，4114699沿原七阶段执行；固定4、Router2并发。Luna High的compile-compcert、distribution-search、build-pov-ray本轮新获有效官方1，全部有效官方0保留。
+Provider每请求最多额外100次同参数重试已部署，并受原任务期限限制。三批累计额外重试10213／2362／3118次。原Model-only首轮及GLM固定恢复均已自然结束，4114699沿原七阶段执行；固定4、Router2并发。Luna High的compile-compcert、distribution-search、build-pov-ray本轮新获有效官方1，全部有效官方0保留。
 
 23:01 ComfyUI队列0／0、H3活动请求0时经原/free释放40802MiB闲置模型，最后训练Kev ON Max的同一Router请求恢复CUDA，记录860924.742ms等待，随后Terra请求HTTP200。23:11另一ComfyUI作业正在运行、GPU利用率100%，技术恢复沿共享锁等待；服务及锁保持。
 
