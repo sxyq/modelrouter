@@ -1,6 +1,6 @@
 # 下一批完整关联 Execution 工作包
 
-2026-11-20 19:49–19:55 当前入口：Model-only1696641、Native1142328/1142336、GLM固定恢复4114698及原七阶段接续4114699继续；固定4、Router2。Model-only2113／2136结束、380／227有效1／0；sam-cell-seg与build-pov-ray各1组运行，后者21组待首跑；联合261／957、102／68、696 Router待首跑；历史1509／1513、394／429、4恢复运行。build-pov-ray的原始Laya OFF High／Seed43及固定GLM Low／Seed42新增官方1，分别保存。GLM的video-processing Low官方1、High官方0，build-pov-ray Max及winning-avg-corewars Low／Max有效官方0均保留。sam-cell-seg训练Kev Low／High教师两对均官方0，ON的1／3次Luna Low短评均实际进入Router。train-fasttext High及video-processing Max原期限结束的技术缺分保留。逐题数据见Benchmark报告。
+2026-11-20 20:55–20:58 当前入口：Model-only1696641、Native1142328/1142336及原七阶段接续4114699继续；GLM固定恢复4114698已自然结束。固定4、Router2。Model-only2117／2136结束、382／228有效1／0；build-pov-ray两组运行、17组待首跑；联合261／957、102／68、696 Router待首跑；历史1513／1513、395／432、634缺分与52依赖故障。新增build-pov-ray原始Laya OFF Max／ON High官方1，固定GLM High／Seed42官方1；sam-cell-seg GLM三档恢复均官方0。训练Kev ON Max的sam-cell-seg达到原时限，仍为PROVIDER_RETRY_DEADLINE，3次Luna短评进入5次决策。原有效成绩、技术故障及所有费用分别保存；逐题数据见Benchmark报告。
 
 19:15GLM原始502正文为upstream_error／Upstream service temporarily unavailable，另有503；19:36原始Laya Low的同一GLM请求在80次额外重试后恢复200、合法工具调用及原Agent执行。其完整Episode官方0保留。Terra同一Episode保留524和重试后200。当前共享GPU最近1436MiB、0%，沿原Provider等待端点恢复及原任务期限，不重放已完成工具命令。
 
