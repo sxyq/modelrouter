@@ -1,12 +1,12 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前进度 · 2026-11-20 09:15 台北
+## 当前进度 · 2026-11-20 14:14–14:19 台北
 
-三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。09:15 Model-only结束2086/2136，官方有效1／0为377／210、缺分1467、Verifier依赖故障32、运行2、未开始48；Seed43联合261/957，99／57、缺分105、696个动态Router位置未首跑；Seed42历史1513/1513，391／422、缺分648、依赖故障52。Model-only未开始48处均属原排除位置。
+三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。14:14–14:15导出：Model-only结束2097/2136，官方有效1／0为379／219、缺分1467、Verifier依赖故障32、运行2、未开始37；待首跑为sam-cell-seg的13组和build-pov-ray的24组。Seed43联合257/957，99／60、缺分98、4项固定模型恢复中、696个动态Router位置未首跑；此前261个固定位置均已有结束记录。Seed42历史1513/1513，391／422、缺分648、依赖故障52。
 
-新GLM Colink凭据、Luna Colink供应商项与账号绑定已同步到唯一权限600私密配置及A6000四个现存凭据memfd。GLM更新后生成HTTP200；Luna Colink生成与教师均HTTP200。`winning-avg-corewars`中Kev原始ON Max／High／Low官方Reward为1／0／0，训练Kev OFF Low／High／Max及ON Low也各Reward1。Model-only剩余2个Kev训练ON策略仍在运行。此前Codegoai 401保持原始记录，不重启在途Episode。原Model-only Controller `1696641`、Native `1142328/1142336`、有限队列`2690322`继续，固定4并发与Router2并发上限保留。
+新GLM Colink凭据、Luna Colink供应商项与账号绑定已同步到唯一权限600私密配置及A6000现存凭据memfd。GLM更新后生成HTTP200；Luna Colink生成与教师均HTTP200。`winning-avg-corewars`中Kev原始ON Max／High／Low官方Reward为1／0／0，训练Kev OFF与ON六档配置均取得Reward1。旧Codegoai 401保留原始记录。原Model-only Controller `1696641`、Native `1142328/1142336`继续；固定恢复`3958396`先运行，`3967996`顺序接续。新有限队列`3979909`已替换无子进程的旧等待队列`2690322`，等待现有Controller自然结束，再处理Model-only技术及账户恢复、联合Router与联合／历史恢复。固定最多4并发、Router最多2并发。
 
-00:13已沿原脚本恢复失去监听的17898代理；01:34及本轮均沿原路径同步GLM条目至现存凭据memfd，不落服务器凭据副本。在途请求保持原实例、模型、档位及期限，连接失败与上游502分别记录。新GLM Key 尚未获得更新后的真实Provider响应。
+14:19原17898反向代理保持监听；原脚本已安排现用连接自然结束后接管新队列。Provider每次请求仍最多额外100次重试并受原期限约束。现行恢复函数已合并实际GLM 404 `model_not_found`和Luna 403 `pre_consume_token_quota_failed`账户恢复情形，部署源码`8bb0745a9699e843aa6ccb3c8af675b5454dbfc1`；新Luna High完整Episode中path-tracing、path-tracing-reverse、protein-assembly均获有效官方0，直接保留。
 
 当前四实体仍为原始 Laya／Kev 及 `V9-K3-GLM-LAYA-20261111`／`V9-K3-GLM-KEV-20261111` 各 18 更新，AA 同批固定 v7。账户恢复入口和每请求最多额外 100 次重试已在原执行路径生效；不再训练或依据已观察题目选权重。下方按日期保留此前进度。
 
