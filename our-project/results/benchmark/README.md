@@ -1,14 +1,14 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-20 17:15–17:17 台北
+## 当前结果 · 2026-11-20 17:58–17:59 台北
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2107／2136 | 379／223 | 1473 | 32 | 2／27 | 253549455 | 44.59854890 | 2281 |
-| [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 102／68 | 91 | 0 | 0／696 | 148483684 | 15.59203903 | 202 |
-| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 392／426 | 639 | 52 | 4／0 | 446332353 | 50.75039020 | 1435 |
+| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2107／2136 | 379／223 | 1473 | 32 | 2／27 | 253687052 | 44.61735345 | 2281 |
+| [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 102／68 | 91 | 0 | 0／696 | 148548538 | 15.59871483 | 202 |
+| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 393／426 | 638 | 52 | 4／0 | 447804429 | 50.86359053 | 1435 |
 
 有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
@@ -18,7 +18,15 @@ Model-only已有88／89题的结束记录，87题的24组均结束，单策略�
 
 Provider现行部署`421b1e45889dd8d22a28d796d225582cd6df8bdd`。私有配置同时保留新旧GLM条目，原列表后项曾覆盖所选供应商；现按既有defaults选择精确模型，GLM默认指向更新凭据的glm-colink，活动memfd已同步。非恢复性错误不机械请求100次。
 
+Responses读取器16658cb5fd8954250abfb7c74230fbb77c1f6d0c处理了已观察的响应格式错误：Luna响应头为SSE，正文为完整JSON。保存的sam-cell-seg／Kev原始ON Max第33次响应status=completed，含合法工具调用，输入23002／输出3521／推理3363 Token，请求Max、返回Xhigh。旧读取器丢弃该正文并记INCOMPLETE_RESPONSE；新读取器直接读取实际JSON，后续Episode生效。在途旧实例保持原记录。
+
+分析e742a46425fb77522ad62bac587438d0805fb1bc从相应原始响应补记实际用量与已知参考费，逐次保存raw_response_usage_recovered及证据路径；原执行错误、尝试次数、请求档位和官方分数保持。Reasoning只作为completion子集计一次。17:58后的表格已采用该分析；进行中的尝试终局后进入累计费用。
+
+17:45在ComfyUI队列0／0、H3活动请求0时调用原/free卸载闲置模型，显存降至1436MiB。Kev训练OFF Max在同一请求恢复真实GPU前向，fallback_used=false，router_gpu_wait_ms=2103357.152019；原资源等待、任务期限与GPU锁均有记录。
+
 [build-pov-ray／GLM Max／Seed42](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/trials/build-pov-ray/glm_max/42/summary.json)的新凭据完整Trial为5cf886a7-7455-42b1-b3ca-791a20fb62e6：26次生成均HTTP200、37条工具结果，官方Reward0、技术中断为空；526232个已报Token、$0.03342933已知参考费、1次请求费用未知、1458.757748秒。请求Max，返回档位未报告；有效失败不重复。
+
+[video-processing／GLM Low／Seed42](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/trials/video-processing/glm_low/42/summary.json)新增有效官方Reward1，Trial6c9120dc-def5-4300-ae89-6066fd79846c；单次813284 Token、$0.06554628已知参考费、费用未知请求0、2263.668296秒，原故障和本次恢复分别保存。
 
 `winning-avg-corewars`训练Kev OFF／ON六个固定档位位置均已取得官方Reward1。ON High／Max最后一次独立运行分别980235／1498400 Token、$0.17646170／$0.38306590已知参考费、2095.547750／1970.317009秒，另有8／5次请求费用未知；教师分别12／11次请求、短评进入7／11个决策。
 
