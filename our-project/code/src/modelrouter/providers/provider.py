@@ -53,6 +53,9 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         self.cancel_requested = lambda: False
         self.model_endpoints = {item.get("request_model", item["model"]): item
                                 for item in creds.get("providers", [])}
+        for item in creds.get("providers", []):
+            if item.get("endpoint_id") == creds.get("defaults", {}).get(item.get("provider_id")):
+                self.model_endpoints[item.get("request_model", item["model"])] = item
         self.model_endpoints.update(creds.get("model_endpoints", {}))
         self.model_endpoints.update(model_endpoints or {})
         self.account_endpoints = creds.get("account_endpoints", {})
