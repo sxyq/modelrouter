@@ -122,6 +122,10 @@ class Responses:
         for raw_line in response:
             record_bytes(raw_line, capture, secret)
             line = raw_line.decode("utf-8").strip()
+            if line.startswith("{"):
+                remaining = response.read()
+                record_bytes(remaining, capture, secret)
+                return json.loads((raw_line + remaining).decode("utf-8")), None
             if line.startswith("event:"):
                 event = line[6:].strip()
             if not line.startswith("data:"):
