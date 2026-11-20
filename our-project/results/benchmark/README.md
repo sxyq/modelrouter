@@ -1,26 +1,38 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-20 05:02–05:04 台北
+## 当前结果 · 2026-11-20 08:21–08:33 台北
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／未首跑 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2038／2136 | 368／204 | 1434 | 32 | 2／96 | 186014753 | 38.87806477 | 2134 |
+| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2082／2136 | 373／210 | 1467 | 32 | 1／53 | 204184371 | 41.65840893 | 2224 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 99／57 | 105 | 0 | 0／696 | 143404387 | 15.32542777 | 196 |
 | [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1513／1513 | 391／422 | 648 | 52 | 0／0 | 444893675 | 50.62987761 | 1408 |
 
 有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
-Model-only 已覆盖 85／89 题，84 题的 24 组均有结束记录；八组架构、权重和教师组合各有 Low／High／Max。联合批次已结束的均为固定模型，696 个联合 Router 位置尚未首跑。原两题排除范围继续有效：Model-only 48 个、联合 22 个计划位置不再新增运行，原分母和已有结果保留。
+Model-only已覆盖87／89题；85题的24组均有结束记录，单策略最多48/89题有有效Reward。八个Laya/Kev版本和教师开关均含Low／High／Max。联合已结束位置均为固定模型，696个动态Router位置未首跑。原排除的Model-only48、联合22个位置保留在分母。
 
-GLM 新凭据已更新到唯一权限 600 私有配置，并在真实 Episode 中返回 HTTP 200 和工具调用；其余尝试仍出现上游 502。Terra 已有 HTTP 200、工具执行及官方评分。Luna／Codegoai 最近生成仍为 HTTP 401 `Invalid token`，同一渠道的教师调用也受影响。请求成功、工具执行、教师短评实际消费和最终官方 Reward 分别记录。
+GLM新凭据更新后请求已HTTP200；将A6000现存Luna账号绑定切到配置中的`luna-colink`后，完整Episode生成及教师调用均HTTP200。`winning-avg-corewars`三种Kev原始教师开关组取得官方1／0／0，训练Kev OFF Low另取得官方1；同题结果留在逐题Trial。旧Codegoai 401与精确GLM模型404保留原记录，不改模型名或转发。
+
+### `winning-avg-corewars`：Luna账号恢复后的完整Episode
+
+| 策略 | 官方Reward | 已报Token | 已知参考费USD | Luna执行请求 | Luna教师请求／消费决策 |
+|---|---:|---:|---:|---:|---:|
+| Kev原始 ON Low | 0 | 34,023 | 0.00222230 | 8/8 HTTP 200，Effort匹配 | 1／4，HTTP 200、Low匹配 |
+| Kev原始 ON High | 0 | 135,056 | 0.00909432 | 14/14 HTTP 200，Effort匹配 | 3／8，HTTP 200、Low匹配 |
+| Kev原始 ON Max | 1 | 146,692 | 0.01424792 | 12/12 HTTP 200，Effort匹配 | 3／4，HTTP 200、Low匹配 |
+
+三题独立Trial共315,771个已报Token、$0.02556454已知参考费；有效结果1通过／2失败，全部无额外请求重试。Max完成任务且该单题开教师配置成功，Low与High虽正常执行仍未通过；单题结果不代表全矩阵方法差异。训练Kev OFF Low的同题Episode仍在运行。
 
 旧账户故障接续新增一个已观察格式：Colink 403 的 `insufficient balance` 文本此前被原恢复入口漏选，现与原有 `INSUFFICIENT_BALANCE`／`SUBSCRIPTION_NOT_FOUND` 一起识别。仍由原 `--restored-provider` 按同题、策略和 Seed 创建独立恢复 Trial，已有有效官方评分不再运行。
 
-Provider 每请求最多额外 100 次、保留原参数和任务期限的重试已部署。三批分别累计额外重试 9694／2332／2681 次。原 Verifier 数值与技术分类分别保存。Seed42 固定访问恢复 Controller `3122030` 正常退出；原 Model-only Controller 和 Native Worker 继续，随后由原有限队列处理技术恢复和联合 Router。
+Provider每请求最多额外100次同参数重试已部署，并受原任务期限限制。三批累计额外重试9724／2332／2681次。Seed42固定恢复Controller `3122030`正常退出；Model-only和Native Worker继续，有限队列随后处理技术恢复及联合Router。
 
-自02:38快照新增 Seed42 有效1／0为6／10，其中 `portfolio-optimization` 三个 GLM 档位均得到1。Model-only 的 `train-fasttext` 训练 Kev 新增 OFF Low、OFF Max、ON Low 三个1及 OFF High 一个0；四次分别报告943263／3736012／895076／1825924 Token，已知模型参考费分别为$0.18206060／$0.59650560／$0.15306880／$0.29654800。03:03由ComfyUI原接口释放空闲模型，GPU降至1436 MiB；同题两个原始Kev请求完成首次路由后因Luna 401结束，资源等待与请求故障分列。
+自02:38快照起，Seed42新增6个通过、10个失败。Model-only `train-fasttext`训练Kev的OFF Low、OFF Max、ON Low／High／Max五个位置得1，OFF High得0。ON High／Max分别报告508522／1933086 Token及$0.10442760／$0.38496440参考费。ComfyUI空闲模型释放后GPU降至1436MiB，服务和锁保留；两个原始Kev Episode首次路由后因Luna 401结束。
+
+Model-only `video-processing／训练Kev OFF Low/High`新增两个有效官方0：62391／68614 Token、$0.03912860／$0.04059960模型参考费，费用未知请求均为0。GLM精确模型404保留为无质量分技术记录。
 
 11月20日00:12发现17898反向代理无监听，旧Mac代理包装反复报`No user exists for uid 501`；已结束两个失效代理包装，沿原脚本恢复连接，六个在途请求继续，随后收到上游502。01:34确认唯一私有配置的GLM凭据比四个原内存对象更新，仅将`glm-colink`条目同步至原memfd，保持精确模型、档位、参数与期限；后续完整Episode已恢复HTTP200。凭据数值不进入结果文件。
 
