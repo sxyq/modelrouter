@@ -1,18 +1,18 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-20 18:29–18:30 台北
+## 当前结果 · 2026-11-20 18:49–18:52 台北
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2109／2136 | 379／224 | 1474 | 32 | 2／25 | 255034754 | 44.84106298 | 2283 |
+| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2111／2136 | 379／226 | 1474 | 32 | 1／24 | 258492027 | 45.70420938 | 2290 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 102／68 | 91 | 0 | 0／696 | 148548538 | 15.59871483 | 202 |
-| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 393／426 | 638 | 52 | 4／0 | 448056658 | 50.88470291 | 1437 |
+| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 393／429 | 635 | 52 | 3／1 | 449395247 | 50.99897348 | 1444 |
 
 有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
-Model-only已有88／89题的结束记录，87题的24组均结束，单策略最高评分覆盖50/89；25个待首跑位置为sam-cell-seg的1组与build-pov-ray的24组。八个Laya/Kev版本和教师开关均含Low／High／Max。696个联合动态Router位置待首跑，其中16个属于原两题排除范围；固定组沿原配置接续GLM账户恢复。Seed42历史全部位置此前均已结束，本快照4项独立恢复运行中。排除任务的既有记录保留。
+Model-only已有88／89题的结束记录，87题的24组均结束，单策略最高评分覆盖50/89；快照中sam-cell-seg剩1组运行、build-pov-ray的24组待首跑，后者第一组已于18:50:47启动。八个Laya/Kev版本和教师开关均含Low／High／Max。696个联合动态Router位置待首跑，其中16个属于原两题排除范围；固定组沿原配置接续GLM账户恢复。Seed42历史全部位置此前均已结束，本快照3项独立恢复运行、1项待接续。排除任务的既有记录保留。
 
 GLM当前条目已恢复真实工具生成并取得下述完整Episode。18:16新Episode的Luna教师HTTP200，请求与返回均Low，短评实际进入Router。先前余额403、备用401及Max请求／Xhigh返回均按各次请求保存；当前Terra524和既有200分别记录。原GLM404和Luna额度403沿现行恢复入口保留独立Trial。
 
@@ -28,6 +28,8 @@ Responses读取器16658cb5fd8954250abfb7c74230fbb77c1f6d0c处理了已观察的�
 
 [video-processing／GLM Low／Seed42](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/trials/video-processing/glm_low/42/summary.json)新增有效官方Reward1，Trial6c9120dc-def5-4300-ae89-6066fd79846c；单次813284 Token、$0.06554628已知参考费、费用未知请求0、2263.668296秒，原故障和本次恢复分别保存。
 
+同题GLM High的新Trial811053a7-bd64-4bfb-ad67-dc4678150f7f完成29次生成及29条工具结果，官方Reward0、技术中断为空；679160 Token、$0.05385879已知参考费、1请求费用未知、2822.544500秒。winning-avg-corewars的GLM Low／Max新增有效官方0。train-fasttext的GLM High在第49次请求期间达到原时限，保留PROVIDER_RETRY_DEADLINE、323687已报Token和$0.02618955参考费，不列入能力失败。
+
 `winning-avg-corewars`训练Kev OFF／ON六个固定档位位置均已取得官方Reward1。ON High／Max最后一次独立运行分别980235／1498400 Token、$0.17646170／$0.38306590已知参考费、2095.547750／1970.317009秒，另有8／5次请求费用未知；教师分别12／11次请求、短评进入7／11个决策。
 
 ### `winning-avg-corewars`：Luna账号恢复后的完整Episode
@@ -42,18 +44,20 @@ Responses读取器16658cb5fd8954250abfb7c74230fbb77c1f6d0c处理了已观察的�
 
 旧账户故障接续新增一个已观察格式：Colink 403 的 `insufficient balance` 文本此前被原恢复入口漏选，现与原有 `INSUFFICIENT_BALANCE`／`SUBSCRIPTION_NOT_FOUND` 一起识别。仍由原 `--restored-provider` 按同题、策略和 Seed 创建独立恢复 Trial，已有有效官方评分不再运行。
 
-Provider每请求最多额外100次同参数重试已部署，并受原任务期限限制。三批累计额外重试9918／2362／2721次。原Model-only1696641和Native继续；旧固定3958396已自然结束，GLM恢复4114698沿原联合／历史固定配置接续。等待队列4114699等待当前任务自然结束后按原七阶段继续；固定4、Router2并发。Luna High的compile-compcert、distribution-search、build-pov-ray本轮新获有效官方1，全部有效官方0保留。
+Provider每请求最多额外100次同参数重试已部署，并受原任务期限限制。三批累计额外重试9931／2362／2727次。原Model-only1696641和Native继续；旧固定3958396已自然结束，GLM恢复4114698沿原联合／历史固定配置接续。等待队列4114699等待当前任务自然结束后按原七阶段继续；固定4、Router2并发。Luna High的compile-compcert、distribution-search、build-pov-ray本轮新获有效官方1，全部有效官方0保留。
 
-### sam-cell-seg：训练Kev Low教师成对结果
+### sam-cell-seg：训练Kev教师成对结果
 
-两侧为相同任务、Seed43、11月11日训练权重及固定Low的完整Model-only Episode。
+每对保持相同任务、Seed43、11月11日训练权重及固定档位，均为完整Model-only Episode。
 
-| 教师配置 | 官方Reward | 单次已报Token | 单次已知参考USD | 请求费用未知 | Harbor秒 | 教师请求／实际消费决策 |
-|---|---:|---:|---:|---:|---:|---:|
-| OFF | 0 | 75178 | 0.05388760 | 0 | 563.619701 | 0／0 |
-| ON | 0 | 42282 | 0.02590600 | 0 | 456.788633 | 1／1 |
+| 固定档位 | 教师配置 | 官方Reward | 单次已报Token | 单次已知参考USD | 请求费用未知 | Harbor秒 | 教师请求／实际消费决策 |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Low | OFF | 0 | 75178 | 0.05388760 | 0 | 563.619701 | 0／0 |
+| Low | ON | 0 | 42282 | 0.02590600 | 0 | 456.788633 | 1／1 |
+| High | OFF | 0 | 225821 | 0.13045540 | 0 | 844.484689 | 0／0 |
+| High | ON | 0 | 122911 | 0.05220040 | 0 | 670.980226 | 3／3 |
 
-ON Trial112444fa-7c36-4788-b550-e078d15a0cae的Luna教师真实HTTP200，请求／返回Low、response_status=COMPLETE，教师参考费$0.00019120已计入。两侧官方失败均保留，本题未增加通过数；本对记录的费用与墙钟较低，整批效果继续按完整同题集合评价。
+Low ON Trial112444fa-7c36-4788-b550-e078d15a0cae的Luna教师真实HTTP200，请求／返回Low、response_status=COMPLETE，教师参考费$0.00019120已计入。High ON Trialf0c0afb8-58aa-4f8f-aeb4-d2dd8a7e622d的3次教师请求同样均200、Low匹配、COMPLETE，并进入3次Router决策。两对均未增加通过数，ON的单次参考费与墙钟较低；整批效果按完整同题集合评价。OFF Max另获有效官方0，3334362 Token、$0.81094600已知参考费、6765.825560秒，原GPU等待包含在该次运行内。
 
 ### 账户切换的真实恢复
 

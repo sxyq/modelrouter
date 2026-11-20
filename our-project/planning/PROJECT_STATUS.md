@@ -1,8 +1,8 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前进度 · 2026-11-20 18:29–18:30 台北
+## 当前进度 · 2026-11-20 18:49–18:52 台北
 
-三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。18:29–18:30导出：Model-only结束2109/2136，官方有效1／0为379／224、缺分1474、Verifier依赖故障32、运行2、待首跑25；待首跑为sam-cell-seg的1组和build-pov-ray的24组，单策略最高评分覆盖50/89。Seed43联合261/957，102／68、缺分91、696个动态Router位置未首跑。Seed42历史1509/1513，393／426、缺分638、依赖故障52、4项独立恢复运行中；历史1513个位置此前均已有结束记录。
+三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。18:49–18:52导出：Model-only结束2111/2136，官方有效1／0为379／226、缺分1474、Verifier依赖故障32；快照中sam-cell-seg剩1组运行、build-pov-ray24组待首跑，后者首组18:50:47已启动，单策略最高评分覆盖50/89。Seed43联合261/957，102／68、缺分91、696个动态Router位置未首跑。Seed42历史1509/1513，393／429、缺分635、依赖故障52、3项独立恢复运行／1项待接续；历史1513个位置此前均已有结束记录。
 
 唯一权限600私密配置及A6000活动memfd保留现用凭据。Provider421b1e45889dd8d22a28d796d225582cd6df8bdd遵从所选默认供应商，GLM使用本次更新凭据的glm-colink，已恢复真实工具生成和完整任务。18:16新Episode中的Luna教师HTTP200，请求／返回均Low且实际进入1次Router决策；先前余额403、备用401及Max请求返回Xhigh仍按各次请求保留。Terra既有200和后续524请求分别记录。
 
@@ -18,7 +18,9 @@ Responses读取器16658cb5fd8954250abfb7c74230fbb77c1f6d0c已部署：实际Luna
 
 现行分析c4d8495da5ed6b270a1c3f2658b87a48b0cdb330仅在实际补记的尝试保存新增字段。旧Kev原始ON Max已于原期限结束，其原Verifier0仍标PROVIDER_RETRY_DEADLINE、有效评分为空；40次真实JSON响应补得1281524 Token/$0.19534449，原请求Max／返回Xhigh及错误未改。
 
-同题同Seed43的训练Kev Low教师OFF／ON均有效官方0。OFF为75178 Token/$0.05388760/563.619701秒；ON为42282 Token/$0.02590600/456.788633秒，两侧费用未知请求均0。ON的1次Luna Low短评实际进入1次Router决策，教师参考费$0.00019120；该完整Episode保留，无成功数增量。
+同题同Seed43的训练Kev Low和High教师OFF／ON两对均有效官方0。Low ON的1次Luna短评和High ON的3次短评均HTTP200、请求／返回Low且实际进入Router。High OFF／ON单次分别225821／122911 Token、$0.13045540／$0.05220040参考费、844.484689／670.980226秒，费用未知请求均0；两对无成功数增量。OFF Max另获有效官方0，原GPU等待及3334362 Token/$0.81094600/6765.825560秒保留。
+
+GLM High的video-processing新Trial完成29次生成及工具交互，官方0、技术中断为空，679160 Token/$0.05385879/2822.544500秒；winning-avg-corewars的GLM Low／Max同获有效0，不再运行。train-fasttext High在第49次请求期间达到原时限，仍为技术缺分，原费用及故障记录保存。
 
 14:19原17898反向代理保持监听；原脚本已安排现用连接自然结束后接管新队列。Provider每次请求仍最多额外100次重试并受原期限约束。现行恢复函数已合并实际GLM 404 `model_not_found`和Luna 403 `pre_consume_token_quota_failed`账户恢复情形，部署源码`8bb0745a9699e843aa6ccb3c8af675b5454dbfc1`；新Luna High完整Episode中path-tracing、path-tracing-reverse、protein-assembly均获有效官方0，直接保留。
 
