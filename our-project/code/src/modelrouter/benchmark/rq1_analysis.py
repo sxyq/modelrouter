@@ -622,9 +622,10 @@ def export_batch_results(root, config, output_root=None):
                    provider_attempts=[{**{k: a.get(k) for k in ("attempt_index", "request_model_id",
                        "requested_native_effort", "http_status", "error_type", "response_status", "finish_reason",
                        "latency_ms", "retry_wait_sec", "retry_stop_reason", "prompt_tokens", "completion_tokens",
-                       "cached_tokens", "cost_usd", "actual_billed_cost_usd", "raw_response_usage_recovered",
-                       "response_usage_evidence", "recovered_returned_model_id", "recovered_response_status",
-                       "recovered_returned_native_effort")}, "role": r["role"],
+                       "cached_tokens", "cost_usd", "actual_billed_cost_usd")},
+                       **{k: a[k] for k in ("raw_response_usage_recovered", "response_usage_evidence",
+                           "recovered_returned_model_id", "recovered_response_status", "recovered_returned_native_effort")
+                          if a.get("raw_response_usage_recovered")}, "role": r["role"],
                        "decision_id": request_decision_id(r)} for r in requests for a in r.get("account_attempts", [])],
                    technical_recovery_count=sum(u.get("provider_retry_limit") == 100 for u in state["units"]),
                    started_tool_calls=sum(e["event"] == "TOOL_START" for e in events),
