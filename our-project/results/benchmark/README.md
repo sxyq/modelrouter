@@ -1,18 +1,18 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-20 14:14–14:15 台北
+## 当前结果 · 2026-11-20 15:06–15:09 台北
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／未首跑 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2097／2136 | 379／219 | 1467 | 32 | 2／37 | 243053527 | 43.98766350 | 2265 |
-| [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 257／957 | 99／60 | 98 | 0 | 4／696 | 144058940 | 15.37056739 | 196 |
-| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1513／1513 | 391／422 | 648 | 52 | 0／0 | 444893675 | 50.62987761 | 1408 |
+| [Model-only](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2098／2136 | 379／220 | 1467 | 32 | 2／36 | 249101197 | 44.21337318 | 2269 |
+| [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 102／68 | 91 | 0 | 0／696 | 148483684 | 15.59203903 | 202 |
+| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 391／423 | 643 | 52 | 4／0 | 445040220 | 50.64489765 | 1409 |
 
 有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
-Model-only已有88／89题的结束记录，87题的24组均结束，单策略最多49/89题有有效Reward；37个待首跑位置为sam-cell-seg的13组与build-pov-ray的24组。八个Laya/Kev版本和教师开关均含Low／High／Max。联合261个固定位置此前均已结束，本快照4项正在独立恢复；696个动态Router位置待首跑，其中16个属于原两题排除范围。排除任务的既有记录保留，未开始数量按实际逐题状态统计。
+Model-only已有88／89题的结束记录，87题的24组均结束，单策略最多49/89题有有效Reward；36个待首跑位置为sam-cell-seg的12组与build-pov-ray的24组。八个Laya/Kev版本和教师开关均含Low／High／Max。联合本轮固定账户恢复已结束；696个动态Router位置待首跑，其中16个属于原两题排除范围。Seed42历史全部位置此前均已结束，本快照4项独立恢复中。排除任务的既有记录保留，未开始数量按实际逐题状态统计。
 
 GLM新凭据更新后请求已HTTP200；将A6000现存Luna账号绑定切到配置中的`luna-colink`后，完整Episode生成及教师调用均HTTP200。旧Codegoai 401与精确GLM模型404保留原记录。现行账户恢复函数已识别实际GLM 404 `model_not_found`和Luna额度403 `pre_consume_token_quota_failed`，沿原同题、策略与Seed创建独立Trial。源码`8bb0745a9699e843aa6ccb3c8af675b5454dbfc1`已部署并推送。
 
@@ -30,7 +30,13 @@ GLM新凭据更新后请求已HTTP200；将A6000现存Luna账号绑定切到配�
 
 旧账户故障接续新增一个已观察格式：Colink 403 的 `insufficient balance` 文本此前被原恢复入口漏选，现与原有 `INSUFFICIENT_BALANCE`／`SUBSCRIPTION_NOT_FOUND` 一起识别。仍由原 `--restored-provider` 按同题、策略和 Seed 创建独立恢复 Trial，已有有效官方评分不再运行。
 
-Provider每请求最多额外100次同参数重试已部署，并受原任务期限限制。三批累计额外重试9824／2332／2681次。原Model-only和Native继续；固定恢复3958396／3967996顺序执行，接续队列3979909等待现有任务自然结束后处理Model-only恢复、联合Router与联合／历史恢复。Luna High恢复中的path-tracing、path-tracing-reverse、protein-assembly新获有效官方0，直接保留。
+Provider每请求最多额外100次同参数重试已部署，并受原任务期限限制。三批累计额外重试9857／2362／2683次。原Model-only和Native继续；固定恢复3958396已转入历史固定组，3967996顺序接续，有限队列3979909等待现有任务自然结束后处理Model-only恢复、联合Router与联合／历史恢复。Luna High的compile-compcert、distribution-search、build-pov-ray本轮新获有效官方1；path-tracing、path-tracing-reverse、protein-assembly等有效官方0直接保留。
+
+### 账户切换的真实恢复
+
+Provider部署`0254cb32d0c036d766f3bc891b44ac4086b3271b`，区分本请求内的不可恢复账户与临时失败轮次。15:17已记录4次原请求恢复，覆盖query-optimize的Luna Low／Xhigh与pytorch-model-cli的Luna Low／Xhigh；其中真实序列为Colink429→Codegoai401→Colink200。原模型、档位、消息、4096及任务期限保持。
+
+[pytorch-model-cli／Luna Low／Seed42](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/trials/pytorch-model-cli/luna_low/42/summary.json)的完整恢复Trial为`d421b906-7c01-4504-a105-87ca86448264`：15次生成、17次请求尝试、16条工具结果，官方Reward0、技术中断为空；146545个已报Token、$0.01502004已知模型参考费、1次请求费用未知、483.192358秒。原始故障Trial和本次任务质量失败分别保留。
 
 自02:38快照起，Seed42新增6个通过、10个失败。Model-only `train-fasttext`训练Kev的OFF Low、OFF Max、ON Low／High／Max五个位置得1，OFF High得0。ON High／Max分别报告508522／1933086 Token及$0.10442760／$0.38496440参考费。ComfyUI空闲模型释放后GPU降至1436MiB，服务和锁保留；两个原始Kev Episode首次路由后因Luna 401结束。
 
