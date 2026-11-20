@@ -6,6 +6,8 @@ GLM新凭据及Luna Colink生成和教师均已有真实HTTP200，Terra已有官
 
 Colink 403 的原 `insufficient balance` 文本已纳入同一个恢复函数。固定模型阶段可与现有两个 Router Episode 并行；仅处理原记录确认的访问故障，最多四个固定 Episode，沿原配置和逐题恢复入口保存全部尝试。
 
+14:43 Provider部署`0254cb32d0c036d766f3bc891b44ac4086b3271b`：原Colink临时SSL EOF与Codegoai401组合曾使同一请求提前结束；现把不可恢复账户与临时轮换分开，继续原同模型可用账户。已失败的winning-avg-corewars／Luna High保持独立Trial，由已排定的账户恢复接续；请求模型、Effort、消息、4096和原时限不变。新增分支实际恢复效果沿后续Provider日志确认。
+
 ## 正式范围
 
 Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。
