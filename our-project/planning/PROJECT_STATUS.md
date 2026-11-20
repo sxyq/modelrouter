@@ -1,14 +1,16 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前进度 · 2026-11-20 20:55–20:58 台北
+## 当前进度 · 2026-11-20 23:06首轮结束／23:11接续
 
-三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。20:55–20:58导出：Model-only结束2117/2136，官方有效1／0为382／228、缺分1475、Verifier依赖故障32；build-pov-ray两组运行、17组待首跑。89题均已有结束记录，88题的24组全结束，单策略最高评分覆盖50/89。Seed43联合261/957，102／68、缺分91、696个动态Router位置未首跑。Seed42历史1513/1513，395／432、缺分634、依赖故障52；本轮GLM固定恢复已自然结束。
+三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。Model-only首轮2136/2136全部结束，官方有效1／0为393／230、缺分1481、Verifier依赖故障32；单策略最高有效评分覆盖51/89。Seed43联合261/957，102／68、缺分91、696个动态Router位置未首跑。Seed42历史1513/1513，395／432、缺分634、依赖故障52；本轮GLM固定恢复已自然结束。现行分析器统一导出首轮终局，用量及费用包含旧响应补记。
 
 19:15原始响应确认Colink GLM的502为upstream_error、Upstream service temporarily unavailable；19:36同一Low请求在80次额外重试后返回200及合法工具调用，原Agent继续，最终官方0。build-pov-ray／原始Laya OFF High新增官方1，854301 Token/$0.06470014/689.921801秒；历史固定GLM Low同题新增官方1，348122 Token/$0.02159304/736.656282秒。两者Seed43／42分别保留。Terra仍有524及重试后200；video-processing GLM Max于第74次额外重试后原期限结束，技术缺分保存。原批次继续，GPU最近1436/49140MiB、利用率0%。
 
 唯一权限600私密配置及A6000活动memfd保留现用凭据。Provider421b1e45889dd8d22a28d796d225582cd6df8bdd遵从所选默认供应商，GLM使用本次更新凭据的glm-colink，已恢复真实工具生成和完整任务。18:16新Episode中的Luna教师HTTP200，请求／返回均Low且实际进入1次Router决策；先前余额403、备用401及Max请求返回Xhigh仍按各次请求保留。Terra既有200和后续524请求分别记录。
 
-原Model-only1696641、Native1142328/1142336继续；GLM固定恢复4114698已自然结束，接续4114699等待当前Model-only及Native自然结束后按原七阶段执行，全部有效官方1／0跳过。固定最多4并发、Router最多2并发。三个20分钟观察器4138232／4138233／4138234加载最新分析并复用原导出目录；后续代理44976等待当前9516自然结束再接管。
+原Model-only1696641于23:06正常退出，Native1142328/1142336及GLM固定恢复4114698均自然结束。接续4114699已加载原四权重，Worker110914沿原七阶段开始技术恢复；openssl-selfsigned-cert的Laya原始OFF Max与训练OFF High等待当前活动ComfyUI作业的共享锁。固定最多4并发、Router最多2并发，全部有效官方1／0跳过。三个20分钟观察器4138232／4138233／4138234复用原导出目录；17898代理保持监听。
+
+最后若干Luna调用出现请求gpt-6-luna、Colink返回gpt-5.6-luna，备用Codegoai401；Max返回Xhigh同时保留。错误身份未进入工具执行，对应位置缺分。部分教师400仅返回Invalid request，沿原不可恢复参数错误处理。23:01在ComfyUI队列0／0时释放闲置模型，最后Kev同一请求恢复CUDA，860.925秒等待进入原Episode；23:11已有新视频作业在运行，恢复队列保持共享锁等待。
 
 新增build-pov-ray原始Laya OFF Max／ON High官方1，ON Low官方0；历史固定GLM High官方1，sam-cell-seg GLM Low／High／Max三档均获有效官方0。训练Kev ON Max的sam-cell-seg达到原时限，原Verifier0仍列PROVIDER_RETRY_DEADLINE，3次Luna短评进入5次Router决策；232603已报Token、$0.15583770已知参考费、7448.427173秒保留。
 
