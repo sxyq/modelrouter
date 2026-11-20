@@ -114,7 +114,7 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
     def query_raw(self, messages, model_spec, native_effort="none", max_tokens=1024,
                   tools=None, stream=True, *, response_format=None, raw_response_path=None):
         """Retry the identical API operation, at most 100 times within its deadline."""
-        excluded, attempts = [], []
+        excluded, rejected, attempts = [], [], []
         request_started = time.monotonic()
         deadline = (request_started + self.request_timeout_sec
                     if self.request_timeout_sec is not None else None)
@@ -149,10 +149,13 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                         model_spec.model_id in self.account_endpoints) and endpoint is not None and (
                         transient or attempt.get("http_status") in (401, 403, 404) or
                         str(exc) in ("MODEL_IDENTITY_MISMATCH", "NATIVE_EFFORT_MISMATCH", "model_not_found")):
+                    if not transient:
+                        rejected.append(endpoint)
                     excluded.append(endpoint)
                     switched = bool(self.luna_registry.list_active_endpoints("luna", model_spec.model_id, excluded))
-                    if not switched and transient:
-                        excluded.clear()
+                    if not switched:
+                        excluded[:] = rejected
+                        switched = bool(self.luna_registry.list_active_endpoints("luna", model_spec.model_id, excluded))
                 retry = (transient or switched) and index < 100 and not self.cancel_requested()
                 wait = self._retry_wait(exc, index) if transient else 0.0
                 if deadline is not None and time.monotonic() + wait >= deadline:
