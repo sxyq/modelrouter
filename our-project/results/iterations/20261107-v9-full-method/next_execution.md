@@ -2,6 +2,8 @@
 
 2026-11-21 15:42：Model-only首轮2136／2136已于11月20日23:06结束；原1696641与Native1142328／1142336自然退出。原七阶段4114699与Worker110914继续技术恢复，2134位置结束、445／289有效1／0、1368缺分、32项Verifier故障、2个恢复位运行，2294 Trial。联合261／957、133／98、30缺分、383 Trial、696个Router位置待首跑。历史1513／1513、396／435、630缺分、52项依赖故障。chess-best-move当前5通过、12有效失败、7技术缺分；训练Kev OFF High／Max及ON三档均为有效1，OFF Low为有效0。ON Low／High各采用1次Luna短评，Max教师400、采用0次；失败教师请求费用仍未知。cobol-modernization原始Laya OFF Low新增官方1。固定4、Router2。
 
+15:48—15:49新SSH两次被远端关闭，TCP22接通后读取不到SSH标识；现有代理41374仍ESTABLISHED，无ControlMaster可复用。末次进程读取15:36、导出15:42。连接恢复后先读取原4114699／696492及原观察结果，再沿既定阶段继续；保持现有进程，不新增控制器。
+
 09:08启动的原固定阶段接续442468已于12:07自然结束，联合59个Luna High账户故障新增24通过／30有效失败，历史4项新增1通过／3有效失败。原七阶段继续复用全部有效评分；三个观察目录及1200秒间隔保持。12:29在视频队列与H3活动均0时沿原/free卸载闲置模型，Kev原始ON Max同一请求恢复CUDA，保存570.776秒GPU等待并收到Luna Max真实生成200；GPU锁及原任务期限保持。
 
 12:46起，696492等待主批次和三个观察器自然结束后，沿原rq1入口补齐`vulnerable-secret`及`break-filter-js-from-html`的Model-only、联合及历史必要位置。Terra/Luna对vulnerable-secret、GLM Low/Terra High/Luna High对break-filter均已得Reward 1。Luna High旧额度403与传输中断Trial保留，下一次独立Harbor Trial已得Reward 1。15:23撤掉重复待机747251及对应63521代理，保留696492及原86519代理；已有有效1／0复用。固定4／Router2、原凭据memfd、4096、AA、任务时限和原观察目录保持。
