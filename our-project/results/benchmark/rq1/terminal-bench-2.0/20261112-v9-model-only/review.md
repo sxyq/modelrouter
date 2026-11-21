@@ -4,15 +4,15 @@
 
 **Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
-共2136个任务/策略/seed位置；已结束2134，运行中2，未开始0，渠道档位不可用0。有效官方任务评分1/0为463/322，缺有效评分 1313，原Verifier依赖失败36位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。
+共2136个任务/策略/seed位置；已结束2134，运行中2，未开始0，渠道档位不可用0。有效官方任务评分1/0为463/323，缺有效评分 1312，原Verifier依赖失败36位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。
 
-已保存原Harbor Trial 2360次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。
+已保存原Harbor Trial 2362次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。
 
-已知模型参考费$53.73822435、教师$0.32524376，合计$54.06346811；2533次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。
+已知模型参考费$53.80175415、教师$0.32524376，合计$54.12699791；2533次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。
 
 费用主表包含全部已结束尝试。逐Episode表的latest_trial_*字段单列最后一次运行的参考费和API Token。official_reward保留原分数；缺有效评分包含未返回Reward及已记录请求/资源故障的原0。官方测试依赖缺失且未执行任务断言的尝试另列。
 
-Harbor命令累计墙钟1582289.396491秒，内含官方Trial累计1555153.628715秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。
+Harbor命令累计墙钟1584492.359988秒，内含官方Trial累计1557346.948588秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。
 
 按逐题表：89/89题已有结束记录；88题已结束全部24个策略。
 
@@ -41,26 +41,26 @@ GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请
 | kev_original_on_model_only_high | 89 | 16 | 12 | 16/28 = 57.14% | 28/89 | 17.98%—86.52% | 58 | 0 | 0 | 0 | 0.24753836 |
 | kev_original_on_model_only_max | 89 | 19 | 10 | 19/29 = 65.52% | 29/89 | 21.35%—88.76% | 59 | 0 | 0 | 0 | 0.56120142 |
 | kev_trained_off_model_only_low | 89 | 42 | 18 | 42/60 = 70.00% | 60/89 | 47.19%—79.78% | 26 | 0 | 0 | 0 | 4.45736560 |
-| kev_trained_off_model_only_high | 88 | 38 | 17 | 38/55 = 69.09% | 55/89 | 42.70%—80.90% | 31 | 1 | 0 | 0 | 5.69673180 |
-| kev_trained_off_model_only_max | 88 | 30 | 13 | 30/43 = 69.77% | 43/89 | 33.71%—85.39% | 45 | 1 | 0 | 0 | 13.18916690 |
-| kev_trained_on_model_only_low | 89 | 36 | 17 | 36/53 = 67.92% | 53/89 | 40.45%—80.90% | 34 | 0 | 0 | 0 | 3.60715291 |
-| kev_trained_on_model_only_high | 89 | 37 | 12 | 37/49 = 75.51% | 49/89 | 41.57%—86.52% | 39 | 0 | 0 | 0 | 5.27970383 |
+| kev_trained_off_model_only_high | 89 | 38 | 17 | 38/55 = 69.09% | 55/89 | 42.70%—80.90% | 32 | 0 | 0 | 0 | 5.72878460 |
+| kev_trained_off_model_only_max | 89 | 30 | 14 | 30/44 = 68.18% | 44/89 | 33.71%—84.27% | 45 | 0 | 0 | 0 | 13.22064390 |
+| kev_trained_on_model_only_low | 88 | 36 | 17 | 36/53 = 67.92% | 53/89 | 40.45%—80.90% | 33 | 1 | 0 | 0 | 3.60715291 |
+| kev_trained_on_model_only_high | 88 | 37 | 12 | 37/49 = 75.51% | 49/89 | 41.57%—86.52% | 38 | 1 | 0 | 0 | 5.27970383 |
 | kev_trained_on_model_only_max | 89 | 29 | 10 | 29/39 = 74.36% | 39/89 | 32.58%—88.76% | 49 | 0 | 0 | 0 | 10.72472506 |
 
-实际执行跨度：2026-11-12T03:19:08.007951+00:00至2026-11-21T15:36:15.139473+00:00，821827.131522秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。
+实际执行跨度：2026-11-12T03:19:08.007951+00:00至2026-11-21T15:56:06.161520+00:00，823018.153569秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。
 
 
 评分覆盖是已取得有效官方评分的任务数/89；通过率区间把其余位置分别按全部未通过或全部通过计算。
 
-已报告输入301,661,278、输出9,774,839 Token；2,516次请求缺用量。推理包含在输出内，缓存读取包含在输入内，各只计一次；数值包含模型、教师及全部已发生尝试。
+已报告输入301,759,979、输出9,777,703 Token；2,516次请求缺用量。推理包含在输出内，缓存读取包含在输入内，各只计一次；数值包含模型、教师及全部已发生尝试。
 
-Router本地前向另报告输入77,648,596、输出825,026 Token；103次决策缺用量。其计算费用按A6000资源计量，美元单价未知。
+Router本地前向另报告输入77,697,455、输出826,255 Token；105次决策缺用量。其计算费用按A6000资源计量，美元单价未知。
 
-Provider实际报告缓存读取242,921,834 Token；3098次请求未报告缓存读取；跨模型物理KV共享未知。
+Provider实际报告缓存读取242,973,930 Token；3098次请求未报告缓存读取；跨模型物理KV共享未知。
 
 教师请求1747次，短评实际输入Router 1971次；同一短评可由多次决策消费。
 
-Provider实际额外重试11101次；已记录技术恢复225次，涉及225个位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。
+Provider实际额外重试11101次；已记录技术恢复227次，涉及227个位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。
 
 Provider报告输出超过请求额度211次；其中2个额度终止位置单列渠道故障，原官方Reward及全部费用保留。请求额度内的正常length原0继续保留；不因本项重复已评分任务。
 
@@ -81,7 +81,7 @@ Provider报告输出超过请求额度211次；其中2个额度终止位置单�
 
 | 原异常类型 | Reward1 | Reward0 | 缺有效评分 |
 |---|---:|---:|---:|
-| AgentTimeoutError | 49 | 113 | 359 |
+| AgentTimeoutError | 49 | 114 | 360 |
 | EnvironmentStartTimeoutError | 0 | 0 | 7 |
 | HTTPError | 0 | 0 | 8 |
 | JSONDecodeError | 0 | 0 | 1 |
@@ -91,7 +91,7 @@ Provider报告输出超过请求额度211次；其中2个额度终止位置单�
 | ProviderResponseError | 0 | 0 | 15 |
 | RemoteDisconnected | 0 | 0 | 2 |
 | RuntimeError | 0 | 0 | 14 |
-| URLError | 0 | 0 | 145 |
+| URLError | 0 | 0 | 143 |
 | VerifierTimeoutError | 0 | 0 | 23 |
 
 ## 同题训练、教师与消融对照
@@ -372,8 +372,8 @@ Provider报告输出超过请求额度211次；其中2个额度终止位置单�
 - kev_original_on_model_only_high: `{"gpt-6-luna:high": 460}`
 - kev_original_on_model_only_max: `{"gpt-6-luna:max": 454}`
 - kev_trained_off_model_only_low: `{"gpt-6.1-terra:low": 975, "gpt-6-luna:low": 3}`
-- kev_trained_off_model_only_high: `{"gpt-6.1-terra:high": 983, "gpt-6-luna:high": 8}`
-- kev_trained_off_model_only_max: `{"gpt-6.1-terra:max": 1285, "gpt-6-luna:max": 17}`
+- kev_trained_off_model_only_high: `{"gpt-6.1-terra:high": 992, "gpt-6-luna:high": 8}`
+- kev_trained_off_model_only_max: `{"gpt-6.1-terra:max": 1289, "gpt-6-luna:max": 17}`
 - kev_trained_on_model_only_low: `{"gpt-6.1-terra:low": 914, "gpt-6-luna:low": 3}`
 - kev_trained_on_model_only_high: `{"gpt-6.1-terra:high": 952, "gpt-6-luna:high": 10}`
 - kev_trained_on_model_only_max: `{"gpt-6.1-terra:max": 1150, "gpt-6-luna:max": 17}`

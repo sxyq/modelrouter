@@ -1,10 +1,10 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前执行 · 2026-11-21 23:42技术恢复与有限接续
+## 当前执行 · 2026-11-22 00:03技术恢复与有限接续
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过／9失败。新增overfull-hbox的Luna High为0、Terra High为1；此前Terra十二项8／4、GLM Low四项均0、tune-mjcf／Luna High为1。共5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均自然退出；逐题结果见[当前报告](../results/benchmark/README.md)。
 
-23:41–23:42导出：Model-only 2134／2136结束、463／322有效1／0、1313缺分与36项Verifier依赖故障，2360 Trial，2项恢复运行。联合261／957结束、143／107、11缺分、403 Trial，696个Router位置待首跑。历史1510／1513结束、403／454、601缺分与52项依赖故障，3022 Trial，3项恢复运行。用量与费用见[批次报告](../results/benchmark/README.md)。
+00:02–00:03导出：Model-only 2134／2136结束、463／323有效1／0、1312缺分与36项Verifier依赖故障，2362 Trial，2项恢复运行。联合23:41快照261／957结束、143／107、11缺分、403 Trial，696个Router位置待首跑。历史1509／1513结束、404／456、597缺分与52项依赖故障，3025 Trial，4项恢复运行。用量与费用见[批次报告](../results/benchmark/README.md)。
 
 历史固定首9个Terra全部完成5通过／4有效失败、4667095 Token、$1.18037500参考费、费用缺项0。GLM Low首14项现为2通过／11有效失败／1技术缺分，余项path-tracing-reverse为供应商超额输出。count-dataset-tokens训练Laya OFF High／Max的官方1及ON Low／High的Router超时分别保留。
 
