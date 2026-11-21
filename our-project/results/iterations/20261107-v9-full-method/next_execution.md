@@ -4,6 +4,8 @@
 
 已完成交接：980527于20:16:48实际恢复955580，972291及980527自然结束；固定5并发事件及涉及Trial已记原日志。Caffe／GLM Low／Seed43旧APT仅收到InRelease即超时，现已由原恢复函数识别为VERIFIER_DOWNLOAD_TIMEOUT；1015278等待4114699／955580／696492后沿原CLI恢复一次。99588继续原17898转发，待机19344跟随4114699／696492／871083／955580／1015278，旧51503已在无子任务时替换。继续112位置与主队列，已有有效1／0直接复用。
 
+21:35补齐固定模型与完整Model-only的192组同题Seed43配对；沿原分析器生成，最后一次Trial费用齐全的题目与通过数已进入原comparisons.json。训练Kev OFF Low在59对与Terra High同41通过，费用子集45对同33通过，参考费$2.38813480／$3.57915700；ON High在49对37／35，费用15对15／12，$0.64094442／$0.96945420。其余策略、费用缺项和原分母见Benchmark报告，继续现有队列。
+
 2026-11-21 19:32：联合Terra High的12项恢复已全部获得有效官方评分，8通过／4失败，4,377,779已报API Token、$1.08236780已知模型参考费、请求费用缺项0；885120自然退出。Terra本批87题当前62／23／2（通过／有效失败／缺分），两项原Verifier超时保留。891922已自动启动原四个GLM Low传输故障位置，随后接续tune-mjcf／Luna High；原主4114699／110914继续Model-only，696492及871083仍按原顺序等待。账户恢复读取最后一次尝试正文的096a237c5已部署并推送。
 
 2026-11-21 18:54：联合固定Terra High恢复885120与原Model-only两个Router并行，原固定4并发。精确12题：polyglot-c-py、polyglot-rust-c、torch-tensor-parallelism、tune-mjcf、caffe-cifar-10、filter-js-from-html、mcmc-sampling-stan、path-tracing、compile-compcert、schemelike-metacircular-eval、reshard-c4-data、video-processing。891922持有原内存凭据并等待885120，随后接续GLM Low的make-doom-for-mips、schemelike-metacircular-eval、circuit-fibsqrt、regex-chess四项，最后接续tune-mjcf／Luna High额度故障。两条有限固定队列日志均追加原联合.private/controller.log；后续原主队列复用新有效评分。

@@ -740,7 +740,10 @@ def export_batch_results(root, config, output_root=None):
         comparison_episodes.extend(json.loads(path.read_text()) for path in
                                    (ROOT / batch / "trials").glob("*/*/*/summary.json"))
         comparison_strategies.update({s["id"]: s for s in json.loads((ROOT / batch / "config.json").read_text())["strategies"]})
-    pairs += [(fixed["id"], router["id"], "fixed_vs_router") for fixed in comparison_strategies.values() if fixed.get("model") for router in strategies.values() if router["stage"] == "router"]
+    pairs += [(fixed["id"], router["id"], "fixed_vs_router")
+              for fixed in comparison_strategies.values() if fixed.get("model")
+              for router in comparison_strategies.values() if router["stage"] == "router"
+              and (router["id"] in strategies or router.get("v9_config", {}).get("selection_scope") == "MODEL_ONLY_FIXED_NATIVE_EFFORT")]
     for left, right, factor in pairs:
         a = {(r["task_id"], r["seed"]): r for r in comparison_episodes if r["strategy_id"] == left}
         b = {(r["task_id"], r["seed"]): r for r in comparison_episodes if r["strategy_id"] == right}
@@ -762,6 +765,9 @@ def export_batch_results(root, config, output_root=None):
                             "left_reference_known_pairs_usd": sum(x["reference_cost_usd"] for x, y in cost_pairs) if cost_pairs else None,
                             "right_reference_known_pairs_usd": sum(y["reference_cost_usd"] for x, y in cost_pairs) if cost_pairs else None,
                             "latest_trial_reference_known_pairs": len(latest_pairs),
+                            "latest_trial_reference_known_task_seeds": sorted((x["task_id"], x["seed"]) for x, y in latest_pairs),
+                            "left_reward_1_latest_trial_reference_known_pairs": sum(x["reward"] == 1 for x, y in latest_pairs),
+                            "right_reward_1_latest_trial_reference_known_pairs": sum(y["reward"] == 1 for x, y in latest_pairs),
                             "left_latest_trial_reference_usd": sum(x["latest_trial_reference_usd"] for x, y in latest_pairs) if latest_pairs else None,
                             "right_latest_trial_reference_usd": sum(y["latest_trial_reference_usd"] for x, y in latest_pairs) if latest_pairs else None,
                             "reward_delta_sum": sum(y["reward"] - x["reward"] for x, y in paired),
@@ -853,7 +859,7 @@ def export_batch_results(root, config, output_root=None):
                "| 因素 | 左侧 → 右侧 | 评分对 | 通过数左/右 | 费用齐全对 | 费用对通过数左/右 | 参考费左/右USD |",
                "|---|---|---:|---:|---:|---:|---|"]
     for r in comparisons:
-        if r["factor"] in ("training", "teacher", "granularity", "information", "joint_vs_model_only"):
+        if r["factor"] in ("training", "teacher", "granularity", "information", "joint_vs_model_only", "fixed_vs_router"):
             costs = ["UNKNOWN" if r[key] is None else f"{r[key]:.8f}"
                      for key in ("left_reference_known_pairs_usd", "right_reference_known_pairs_usd")]
             report.append(f"| {r['factor']} | {r['left']} → {r['right']} | {r['scored_pairs']} | {r['left_reward_1']}/{r['right_reward_1']} | {r['reference_known_pairs']} | {r['left_reward_1_reference_known_pairs']}/{r['right_reward_1_reference_known_pairs']} | {' / '.join(costs)} |")
