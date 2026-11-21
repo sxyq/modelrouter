@@ -1,14 +1,14 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前进度 · 2026-11-21 13:20技术恢复中
+## 当前进度 · 2026-11-21 13:50技术恢复中
 
-三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。Model-only首轮2136/2136于11月20日23:06全部结束；2134位置结束、439／277有效1／0、1386缺分与32项Verifier故障，另有2个恢复位置运行。累计301025666已报Token、$51.86053654已知参考费、2451费用未知请求、2270个Trial。Seed43联合261/957，132／98、31缺有效评分，382个Trial，696个Router位置待首跑。Seed42历史1513/1513，396／435、630缺分、52项依赖故障。
+三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。Model-only首轮2136/2136于11月20日23:06全部结束；2134位置结束、439／279有效1／0、1384缺分与32项Verifier故障，另有2个恢复位置运行。累计301321719已报Token、$51.88616029已知参考费、2457费用未知请求、2273个Trial。Seed43联合261/957，133／98、30缺有效评分，383个Trial，696个Router位置待首跑。Seed42历史1513/1513，396／435、630缺分、52项依赖故障。
 
 09:08启动的固定账户恢复442468已在12:07自然结束：联合59个Luna High位置新增24通过／30有效失败，余5项缺有效评分；历史4项新增1通过／3有效失败。联合固定三组GLM Low、Luna High、Terra High分别为42／32／13、35／47／5、53／19／15（通过／有效失败／缺分），每组分母87。原七阶段4114699与Worker110914继续Model-only技术恢复，随后接续原联合Router段。
 
 12:29，ComfyUI运行／等待均0、H3活动0／backend stopped，原8187/free释放闲置模型后GPU从41946降至7468MiB。原始Kev ON Max同一请求恢复CUDA，570.776秒GPU等待已入原日志，随后Luna Max生成HTTP200；共享服务、gpu.lock和任务原期限保持。GPU等待与模型生成、官方评分分别记录。
 
-12:46起，有限接续696492负责补齐`vulnerable-secret`与`break-filter-js-from-html`两题。vulnerable-secret／Terra High和Luna High、break-filter／GLM Low和Terra High均获Reward 1。break-filter／Luna High旧额度403后，恢复请求已生成3次并连续遇到传输中断；末Trial保留原始Reward 0、分析归类为技术缺分。PID718992已沿原配置接续一次，之后PID717793按原入口补齐两题剩余Model-only、联合和历史缺项；有效官方1／0复用。凭据只从4114699现有memfd读取，固定4／Router2、原任务时限、AA、Seed及4096保持；本机原代理沿既有进程顺序等待并维持17898。
+12:46起，有限接续696492负责补齐`vulnerable-secret`与`break-filter-js-from-html`两题。vulnerable-secret／Terra High和Luna High、break-filter／GLM Low、Terra High和Luna High均获Reward 1。Luna High原额度403后，前次恢复因断线到期，第三个Trial官方1已取回。717793仍等待696492结束后，依原配置补齐两题剩余Model-only、联合Router和历史必要位置；有效官方1／0复用。原Docker VM与SSH socket转发均在线，Docker Engine 29.9.2、活动任务容器3个。凭据沿原memfd读取，固定4／Router2、任务时限、AA、Seed及4096保持。
 
 adaptive-rejection-sampler恢复后4通过、16有效失败、4技术缺分；Laya的12组全为有效0，Kev四个Max均在Provider请求期间原期限结束，原Verifier0不列能力失败。四个通过为原始Kev ON High、训练Kev OFF Low／High及ON High，真实Token／参考费／墙钟已入原报告。build-cython-ext原始Laya OFF High新增官方1，原队列继续。
 

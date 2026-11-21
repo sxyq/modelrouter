@@ -1,13 +1,13 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-21 13:20技术恢复中
+## 当前结果 · 2026-11-21 13:50技术恢复中
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 439／277 | 1386 | 32 | 2／0 | 301025666 | 51.86053654 | 2451 |
-| [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 132／98 | 31 | 0 | 0／696 | 171672579 | 16.64314044 | 208 |
+| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 439／279 | 1384 | 32 | 2／0 | 301321719 | 51.88616029 | 2457 |
+| [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 133／98 | 30 | 0 | 0／696 | 171979127 | 16.66261980 | 208 |
 | [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1513／1513 | 396／435 | 630 | 52 | 0／0 | 455699234 | 51.28992757 | 1462 |
 
 有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
@@ -24,7 +24,7 @@ build-pmars恢复中GLM持续503，已结束的8个位置均为PROVIDER_RETRY_DE
 
 12:29，两个Kev请求因闲置ComfyUI模型占用约40GB显存等待；运行／等待队列及H3活动均0时，通过原8187/free卸载，整卡占用从41946降至7468MiB。原始Kev ON Max同一请求恢复CUDA，实际GPU等待570.776秒，随后Luna Max生成HTTP200；费用和任务原期限沿原Episode记录。
 
-12:46起，有限接续696492负责补齐`vulnerable-secret`及`break-filter-js-from-html`两题。vulnerable-secret的Terra High、Luna High与break-filter的GLM Low、Terra High已有官方Reward 1。break-filter／Luna High额度403后，恢复请求真实生成，随后传输中断；原Reward 0按技术缺分处理，PID718992已接续一次。PID717793之后沿同一rq1入口完成这两题剩余Model-only、联合Router及历史必要位置。已取得的1／0直接复用；Model-only当前两个恢复位为cancel-async-tasks与chess-best-move。
+12:46起，有限接续696492负责补齐`vulnerable-secret`及`break-filter-js-from-html`两题。vulnerable-secret的Terra High、Luna High与break-filter的GLM Low、Terra High、Luna High已有官方Reward 1；Luna High恢复第三Trial传输中断后，于下一独立Trial取得官方1。PID717793等待696492结束后沿原入口完成两题剩余Model-only、联合Router及历史必要位置。已取得的1／0直接复用；Model-only当前两个恢复位为cancel-async-tasks与chess-best-move。服务器Docker VM的QEMU KVM、Docker Engine 29.9.2与用户socket转发均保持在线。
 
 ### build-cython-ext：训练Kev完整Episode
 
