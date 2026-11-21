@@ -1,12 +1,12 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前执行 · 2026-11-22 00:42技术恢复与有限接续
+## 当前执行 · 2026-11-22 00:57技术恢复与有限接续
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过／9失败。新增overfull-hbox的Luna High为0、Terra High为1；此前Terra十二项8／4、GLM Low四项均0、tune-mjcf／Luna High为1。共5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均自然退出；逐题结果见[当前报告](../results/benchmark/README.md)。
 
-00:35导出：Model-only 2134／2136结束、468／323有效1／0、1307缺分与36项Verifier依赖故障，2367 Trial，2项恢复运行。联合261／957结束、143／107、11缺分、403 Trial，696个Router位置尚未首跑。历史1511／1513结束、404／458、597缺分与52项依赖故障，3027 Trial，2项恢复运行。三批累计已知参考费$54.30875985／$17.86228316／$53.07366366，费用未知请求2536／209／1473。逐题用量见[批次报告](../results/benchmark/README.md)。
+00:56导出：Model-only 2134／2136结束、469／326有效1／0、1303缺分与36项Verifier依赖故障，2371 Trial，2项恢复运行。联合261／957结束、143／107、11缺分、403 Trial，696个Router位置尚未首跑。历史1512／1513结束、404／459、597缺分与52项依赖故障，3028 Trial，1项恢复运行。三批累计已知参考费$54.33137713／$17.86228316／$53.10006047，费用未知请求2536／209／1474。逐题用量见[批次报告](../results/benchmark/README.md)。
 
-新增count-dataset-tokens训练Kev ON三档和db-wal-recovery原始Laya OFF Low／High共五个官方1。历史protein-assembly和winning-avg-corewars的GLM High为有效官方0。已评分位置直接复用。
+新增count-dataset-tokens训练Kev ON三档和db-wal-recovery原始Laya OFF Low／High共五个官方1；同题原始Laya ON Low／High及训练Laya OFF Low为有效0。历史protein-assembly、winning-avg-corewars、rstan-to-pystan的GLM High为有效官方0；历史余一项仍运行。
 
 历史固定首9个Terra全部完成5通过／4有效失败、4667095 Token、$1.18037500参考费、费用缺项0。GLM Low首14项现为2通过／11有效失败／1技术缺分，余项path-tracing-reverse为供应商超额输出。count-dataset-tokens训练Laya OFF High／Max的官方1及ON Low／High的Router超时分别保留。
 
