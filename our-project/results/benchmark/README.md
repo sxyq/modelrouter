@@ -24,7 +24,7 @@ Caffe的GLM Low独立恢复在官方APT阶段再次到1200秒，缺Reward，1404
 
 1154473（固定）与1154474（Router）沿原rq1入口运行，Native1169087加载原四权重；六项cobol由1154475等待Router结束。
 
-联合696个Router位置中，648项进入现行执行。`vulnerable-secret`、`break-filter-js-from-html`、两项FEAL、`crack-7z-hash`和`model-extraction-relu-logits`对应的48项保留计划位置及已有记录。`dna-insert`与官方荧光报告质粒的唯一变化为39碱基ALFA标签，已纳入原入口1224021，与本地取证与清理题`git-leak-recovery`、`password-recovery`一同接续。
+联合Router原计划696项完整执行。1154474先处理648项，1268679在既有队列结束后接续其余48项。`dna-insert`与官方荧光报告质粒的唯一变化为39碱基ALFA标签，已纳入1224021，与本地取证与清理题一并接续。
 
 现行观察1187905／1187906／1187907继续原导出目录与1200秒间隔。SSH64205及后继10217负责17898→17897，跟随现有五条有限队列。两个过时公开导出副本约350MiB已删除，可从原记录重新导出。
 
