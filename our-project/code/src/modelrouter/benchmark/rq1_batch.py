@@ -6,6 +6,7 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from copy import deepcopy
 from dataclasses import asdict
+from datetime import datetime
 from importlib.metadata import version
 import fcntl
 import json
@@ -133,6 +134,10 @@ def recovery_reason(path, restored_providers=()):
         stdout = Path(trial["trial_dir"]) / "verifier/test-stdout.txt"
         output = stdout.read_text() if stdout.exists() else ""
         if "test session starts" in output:
+            if (path.parent.parent.name == "overfull-hbox" and output.rstrip().endswith("test_outputs.py")
+                    and datetime.fromisoformat(trial["started_at"]) <
+                    datetime.fromisoformat("2026-11-15T15:11:54+00:00")):
+                return "VERIFIER_TIMEOUT_BEFORE_KVM"
             if (path.parent.parent.name == "filter-js-from-html" and "Installed 24 packages in " in output
                     and output.rstrip().endswith("test_outputs.py")):
                 return "VERIFIER_CHROMIUM_ORPHAN_RESOURCE_EXHAUSTION"
