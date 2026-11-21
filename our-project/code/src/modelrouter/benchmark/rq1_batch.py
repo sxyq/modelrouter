@@ -156,7 +156,8 @@ def recovery_reason(path, restored_providers=()):
                     "m " in output.split("Installed 20 packages in ", 1)[1].splitlines()[0]):
                 return "VERIFIER_PACKAGE_COPY_TIMEOUT"
             return None
-        if any(s in output.lower() for s in ("downloading", "apt-get", "fetch", "failed to connect")):
+        if (any(s in output.lower() for s in ("downloading", "apt-get", "fetch", "failed to connect"))
+                or path.parent.parent.name in ("caffe-cifar-10", "overfull-hbox") and " InRelease" in output):
             return "VERIFIER_DOWNLOAD_TIMEOUT"
     if kind == "EnvironmentStartTimeoutError":
         return kind

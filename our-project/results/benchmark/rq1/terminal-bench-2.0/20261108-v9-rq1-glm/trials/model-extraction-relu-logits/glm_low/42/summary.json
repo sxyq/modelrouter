@@ -27,28 +27,28 @@
     "memory": "2G",
     "storage": "10G"
   },
-  "reward": null,
-  "error_type": "AgentTimeoutError",
+  "reward": 0.0,
+  "error_type": "OutputTokenExceededError",
   "execution_status": "FINISHED",
   "effort_comparison_eligible": true,
-  "episode_wall_s": 1483.679633,
-  "generator_known_reference_usd": 0.030890400000000002,
+  "episode_wall_s": 392.699992,
+  "generator_known_reference_usd": 0.03329985,
   "execution_environment": {
-    "episode_id": "1cb13c47-f31b-42b0-974d-827a48b552d4",
+    "episode_id": "720a94aa-a7a0-4531-8ac4-98bce3ce0dbd",
     "qemu_pid": 3832028,
     "machine": "q35,accel=kvm",
     "vm_cpus": 16,
     "vm_memory_mib": 40960,
-    "timestamp": "2026-11-18T21:53:20.697384+00:00",
-    "monotonic_ns": 15703144477122626,
+    "timestamp": "2026-11-21T13:01:29.452760+00:00",
+    "monotonic_ns": 15930433232498565,
     "event": "EXECUTION_ENVIRONMENT"
   },
-  "harbor_trial_count": 3,
-  "attempts_wall_s": 1838.236211,
-  "harness_command_wall_s": 1853.355854280293,
+  "harbor_trial_count": 4,
+  "attempts_wall_s": 2230.936203,
+  "harness_command_wall_s": 2250.893520731479,
   "teacher_known_reference_usd": null,
   "reference_cost_usd": null,
-  "latest_trial_reference_usd": null,
+  "latest_trial_reference_usd": 0.00240945,
   "verifier_dependency_failure": false,
   "supplier_billed_usd": null,
   "router_compute_cost_usd": null,
@@ -56,9 +56,9 @@
   "complete_cost_usd": null,
   "physical_kv_sharing": "UNKNOWN",
   "evidence_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/model-extraction-relu-logits/glm_low/42",
-  "trial_id": "1cb13c47-f31b-42b0-974d-827a48b552d4",
+  "trial_id": "720a94aa-a7a0-4531-8ac4-98bce3ce0dbd",
   "official_reward": 0.0,
-  "technical_fault": "PROVIDER_RETRY_DEADLINE",
+  "technical_fault": null,
   "raw_verifier_rewards": [
     {
       "reward": 0.0
@@ -66,7 +66,7 @@
   ],
   "provider_output_budget_exceeded_requests": 0,
   "latest_output_budget_exceeded_requests": 0,
-  "outside_harbor_wall_s": 15.119643280293076,
+  "outside_harbor_wall_s": 19.957317731478724,
   "previous_attempts": [
     {
       "trial_id": "9eaa4c6f-f8ae-454c-ae8e-1786ca613320",
@@ -101,23 +101,41 @@
         "verifier": null
       },
       "error_type": "RemoteDisconnected"
+    },
+    {
+      "trial_id": "1cb13c47-f31b-42b0-974d-827a48b552d4",
+      "job_name": "model-extraction-relu-logits--glm_low--s42--infrastructure-recovery-2",
+      "trial_dir": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/model-extraction-relu-logits/glm_low/42/jobs/model-extraction-relu-logits--glm_low--s42--infrastructure-recovery-2/model-extraction-relu-logits__jxsXNt7",
+      "status": "OFFICIAL_ARTIFACT_VERIFIED",
+      "reward": 0.0,
+      "started_at": "2026-11-18T21:52:33.555543Z",
+      "finished_at": "2026-11-18T22:17:17.235176Z",
+      "duration_sec": 1483.679633,
+      "phase_wall_s": {
+        "environment_setup": 47.113416,
+        "agent_setup": 0.000156,
+        "agent_execution": 900.031539,
+        "verifier": 522.956141
+      },
+      "error_type": "AgentTimeoutError"
     }
   ],
   "official_status": "OFFICIAL_ARTIFACT_VERIFIED",
   "failed_provider_http_status": null,
-  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/model-extraction-relu-logits/glm_low/42/jobs/model-extraction-relu-logits--glm_low--s42--infrastructure-recovery-2/model-extraction-relu-logits__jxsXNt7/verifier/reward.txt",
+  "verifier_path": "/home/syy/路由/our-project/results/benchmark/rq1/terminal-bench-2.0/20261108-v9-rq1-glm/.private/episodes/model-extraction-relu-logits/glm_low/42/jobs/model-extraction-relu-logits--glm_low--s42--infrastructure-recovery-3/model-extraction-relu-logits__ANgHohK/verifier/reward.txt",
   "phase_wall_s": {
-    "environment_setup": 47.113416,
-    "agent_setup": 0.000156,
-    "agent_execution": 900.031539,
-    "verifier": 522.956141
+    "environment_setup": 55.420356,
+    "agent_setup": 0.00019,
+    "agent_execution": 139.904542,
+    "verifier": 184.759391
   },
-  "generator_requests": 35,
+  "generator_requests": 37,
   "teacher_requests": 0,
-  "provider_attempt_count": 40,
+  "provider_attempt_count": 42,
   "provider_retry_count": 5,
   "provider_retry_stop_reasons": {
-    "TASK_DEADLINE": 1
+    "TASK_DEADLINE": 1,
+    "NON_RECOVERABLE": 1
   },
   "provider_attempts": [
     {
@@ -841,32 +859,70 @@
       "actual_billed_cost_usd": null,
       "role": "generator",
       "decision_id": "1cb13c47-f31b-42b0-974d-827a48b552d4-32"
+    },
+    {
+      "attempt_index": 0,
+      "request_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "http_status": 200,
+      "error_type": null,
+      "response_status": "COMPLETE",
+      "finish_reason": "tool_calls",
+      "latency_ms": 15707.633476704359,
+      "retry_wait_sec": null,
+      "retry_stop_reason": null,
+      "prompt_tokens": 997,
+      "completion_tokens": 20,
+      "cached_tokens": 0,
+      "cost_usd": 0.00015955,
+      "actual_billed_cost_usd": null,
+      "role": "generator",
+      "decision_id": "720a94aa-a7a0-4531-8ac4-98bce3ce0dbd-0"
+    },
+    {
+      "attempt_index": 0,
+      "request_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "http_status": 200,
+      "error_type": "ProviderResponseError",
+      "response_status": "INCOMPLETE_RESPONSE",
+      "finish_reason": "length",
+      "latency_ms": 123847.4267758429,
+      "retry_wait_sec": 0,
+      "retry_stop_reason": "NON_RECOVERABLE",
+      "prompt_tokens": 1346,
+      "completion_tokens": 4096,
+      "cached_tokens": 0,
+      "cost_usd": 0.0022499,
+      "actual_billed_cost_usd": null,
+      "role": "generator",
+      "decision_id": "720a94aa-a7a0-4531-8ac4-98bce3ce0dbd-1"
     }
   ],
-  "technical_recovery_count": 1,
+  "technical_recovery_count": 2,
   "started_tool_calls": 0,
-  "completed_tool_calls": 33,
-  "latest_trial_known_reference_usd": 0.03072635,
-  "latest_trial_unknown_cost_requests": 3,
-  "latest_trial_prompt_tokens": null,
-  "latest_trial_completion_tokens": null,
-  "latest_trial_known_tokens": 405733,
-  "latest_trial_usage_unknown_requests": 3,
+  "completed_tool_calls": 34,
+  "latest_trial_known_reference_usd": 0.00240945,
+  "latest_trial_unknown_cost_requests": 0,
+  "latest_trial_prompt_tokens": 2343,
+  "latest_trial_completion_tokens": 4116,
+  "latest_trial_known_tokens": 6459,
+  "latest_trial_usage_unknown_requests": 0,
   "unknown_provider_cost_requests": 4,
   "prompt_tokens": null,
   "completion_tokens": null,
-  "known_prompt_tokens": 389914,
-  "known_completion_tokens": 16845,
+  "known_prompt_tokens": 392257,
+  "known_completion_tokens": 20961,
   "usage_unknown_requests": 4,
-  "generator_known_tokens": 406759,
+  "generator_known_tokens": 413218,
   "teacher_known_tokens": 0,
   "reasoning_tokens": null,
   "reported_cache_read_tokens": null,
   "known_cache_read_tokens": 300160,
   "cache_read_unknown_records": 8,
   "reported_cache_write_tokens": null,
-  "cache_write_unknown_records": 35,
-  "router_wall_s": 0.008230023086071014,
+  "cache_write_unknown_records": 37,
+  "router_wall_s": 0.0086996890604496,
   "initial_gpu_queue_wait_s": 0.0,
   "router_known_input_tokens": 0,
   "router_known_output_tokens": 0,
@@ -875,8 +931,24 @@
   "router_gpu_wait_s": null,
   "router_transfer_s": null,
   "teacher_wall_s": 0.0,
-  "generator_wall_s": 803.7482329625636,
+  "generator_wall_s": 943.30533333309,
   "selected_actions": [
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "glm-5.3-flash:low",
+      "pool": "Reasoning"
+    },
+    {
+      "provider": "colink",
+      "model": "glm-5.3-flash",
+      "revision": "latest",
+      "native_effort": "low",
+      "action_id": "glm-5.3-flash:low",
+      "pool": "Reasoning"
+    },
     {
       "provider": "colink",
       "model": "glm-5.3-flash",
@@ -2093,13 +2165,67 @@
       "cost_status": "UNKNOWN",
       "cache_cost_policy": null,
       "reasoning_cost_policy": null
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "returned_native_effort": null,
+      "native_effort_status": "NOT_REPORTED",
+      "sent_effort_parameter": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low"
+      },
+      "protocol": "chat_completions",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "tool_calls",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "glm-colink",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://docs.z.ai/guides/overview/pricing",
+      "cost_status": "OFFICIAL_STANDARD_REFERENCE_NOT_PROVIDER_TARIFF",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
+    },
+    {
+      "role": "generator",
+      "request_model_id": "glm-5.3-flash",
+      "returned_model_id": "glm-5.3-flash",
+      "requested_native_effort": "low",
+      "returned_native_effort": null,
+      "native_effort_status": "NOT_REPORTED",
+      "sent_effort_parameter": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low"
+      },
+      "protocol": "chat_completions",
+      "stream": false,
+      "requested_max_output_tokens": 4096,
+      "reported_max_output_tokens": null,
+      "finish_reason": "length",
+      "http_status": 200,
+      "physical_backend_identity_status": "NOT_REPORTED",
+      "provider_endpoint_id": "glm-colink",
+      "identity_status": "MATCHED_REQUEST",
+      "cost_source": "https://docs.z.ai/guides/overview/pricing",
+      "cost_status": "OFFICIAL_STANDARD_REFERENCE_NOT_PROVIDER_TARIFF",
+      "cache_cost_policy": "Missing cache counts stay null; corresponding input uses the ordinary input rate",
+      "reasoning_cost_policy": "Reasoning is included in completion tokens and charged once"
     }
   ],
   "logical_model_changes": 0,
   "endpoint_changes": 0,
   "prefix_continuity_counts": {
-    "FIRST_REQUEST": 2,
-    "EXACT_PREVIOUS_MESSAGES": 31,
+    "FIRST_REQUEST": 3,
+    "EXACT_PREVIOUS_MESSAGES": 32,
     "PREFIX_CHANGED": 0
   },
   "router_truncated_decisions": 0,

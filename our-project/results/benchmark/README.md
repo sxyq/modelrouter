@@ -1,6 +1,6 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前执行 · 2026-11-21 20:26联合与历史恢复
+## 当前执行 · 2026-11-21 21:21联合与历史恢复
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过、9失败，5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均已自然退出；历史固定恢复955580接续112个明确技术或账户故障位置。
 
@@ -45,7 +45,7 @@ torch-tensor-parallelism原测试9过4败；filter-js-from-html两项断言均�
 
 ### 历史Seed42：Terra High独立恢复
 
-955580首9个位置中，以下8项已取得有效官方评分，portfolio-optimization于20:31取得有效0；install-windows-3.11仍在运行。每行最后一次Trial的费用未知请求均0，原技术故障、首次2333个Trial及后续独立尝试继续保留。
+955580首9个位置全部取得有效官方评分，5通过／4失败，4,667,095已报Token、$1.18037500参考费；每行最后一次Trial的费用未知请求均0。原技术故障、首次2333个Trial及后续独立尝试继续保留。
 
 | 任务 | 官方Reward | 本次已报API Token | 本次已知参考USD | 本次Harbor秒 |
 |---|---:|---:|---:|---:|
@@ -57,20 +57,25 @@ torch-tensor-parallelism原测试9过4败；filter-js-from-html两项断言均�
 | rstan-to-pystan | 1 | 792020 | 0.16923680 | 790.444296 |
 | bn-fit-modify | 1 | 59572 | 0.03279440 | 194.969148 |
 | portfolio-optimization | 0 | 170093 | 0.05501380 | 848.263483 |
+| install-windows-3.11 | 0 | 1643201 | 0.29095940 | 1703.847867 |
+
+历史GLM Low已取得cobol-modernization官方1；adaptive-rejection-sampler、largest-eigenval、model-extraction-relu-logits及make-doom-for-mips有效0。overfull-hbox新Trial在APT索引下载耗尽原360秒、无Reward，128172已报Token、$0.01059639参考费、675.411346秒单独保留。现有恢复函数已识别该实际下载超时；Caffe／GLM Low／Seed43同类旧故障由1015278等待前序固定队列后沿原CLI接续。query-optimize两项恢复后仍在900秒Verifier结束、未得评分，继续保留缺分。
+
+Model-only的count-dataset-tokens原始Laya ON Max与训练Laya OFF Low于21:07进入共享GPU锁等待，Agent时限尚未开始；21:12视频队列1运行／1等待、GPU43034MiB。原健康作业继续，当前SSH99588及待机19344保持模型转发。
 
 ## 已保存结果 · 2026-11-21
 
-三批由A6000现行分析器导出：Model-only为20:26:07、Seed43联合为20:26:45、历史为20:28:13快照。各批报告、指标和`trials/`来自对应导出；历史上表额外列出20:31结束的portfolio-optimization，下一次导出纳入累计量。
+三批由A6000现行分析器导出：Model-only为21:14:32、Seed43联合为21:14:55、历史为21:16:17快照。各批报告、指标和`trials/`来自对应导出；历史正文另列其后结束的make-doom-for-mips。
 
 16:08已恢复原SSH与rsync直连。此前新连接被生产Clash TUN送入拒绝22端口转发的A6000节点，实际日志为`ssh: rejected: administratively prohibited (open failed)`；本机现有SSH配置仅为`Host 10.16.15.202`设置`BindInterface en0`。原主队列4114699、Router110914、两题接续696492及三个观察进程均实读存活。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 459／312 | 1327 | 36 | 2／0 | 309762803 | 53.85829727 | 2520 |
+| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 459／318 | 1321 | 36 | 0／2 | 310678904 | 53.98355566 | 2525 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 143／107 | 11 | 0 | 0／696 | 177479142 | 17.85562461 | 208 |
-| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1511／1513 | 401／437 | 621 | 52 | 2／0 | 458553035 | 52.12432937 | 1462 |
+| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 402／442 | 613 | 52 | 4／0 | 460904500 | 52.52156340 | 1463 |
 
-有效1、有效0、缺有效评分、评分依赖故障四列合计为对应快照的已结束位置。Model-only首轮2136位置均已结束，本次2项处于恢复运行。Token和参考费累计已结束Trial；每题最后一次独立运行见各批`metrics/per_episode.csv`的`latest_trial_*`。本次Model-only共2340个Trial，联合402个、历史2999个；额外请求重试分别11092／2377／3118次。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部89题的Token尚缺用量齐全的整轮记录。
+有效1、有效0、缺有效评分、评分依赖故障四列合计为对应快照的已结束位置。Model-only首轮2136位置均已结束，本次2项处于GPU锁等待，表内待执行包含该等待状态。Token和参考费累计已结束Trial；每题最后一次独立运行见各批`metrics/per_episode.csv`的`latest_trial_*`。本次Model-only共2346个Trial，联合402个、历史3006个；额外请求重试分别11094／2377／3118次。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部89题的Token尚缺用量齐全的整轮记录。
 
 ### Model-only训练前后：当前同题Seed43配对
 
