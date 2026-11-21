@@ -1,22 +1,22 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前执行 · 2026-11-22 00:26技术恢复与有限接续
+## 当前执行 · 2026-11-22 00:42技术恢复与有限接续
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过／9失败。新增overfull-hbox的Luna High为0、Terra High为1；此前Terra十二项8／4、GLM Low四项均0、tune-mjcf／Luna High为1。共5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均自然退出；逐题结果见[当前报告](../results/benchmark/README.md)。
 
-00:26导出：Model-only 2134／2136结束、466／323有效1／0、1309缺分与36项Verifier依赖故障，2365 Trial，2项恢复运行。联合23:41快照261／957结束、143／107、11缺分、403 Trial，696个Router位置待首跑。历史1511／1513结束、404／458、597缺分与52项依赖故障，3027 Trial，2项恢复运行。三批累计已知参考费$54.19683297／$17.86228316／$53.07366366，费用未知请求2536／209／1473；逐题用量见[批次报告](../results/benchmark/README.md)。
+00:35导出：Model-only 2134／2136结束、468／323有效1／0、1307缺分与36项Verifier依赖故障，2367 Trial，2项恢复运行。联合261／957结束、143／107、11缺分、403 Trial，696个Router位置尚未首跑。历史1511／1513结束、404／458、597缺分与52项依赖故障，3027 Trial，2项恢复运行。三批累计已知参考费$54.30875985／$17.86228316／$53.07366366，费用未知请求2536／209／1473。逐题用量见[批次报告](../results/benchmark/README.md)。
 
-新增count-dataset-tokens训练Kev ON Low／High及db-wal-recovery原始Laya OFF Low三个官方1；历史protein-assembly、winning-avg-corewars的GLM High为有效官方0。已评分位置直接复用；当前Model-only运行训练Kev ON Max与db-wal-recovery原始Laya OFF High，历史运行rstan-to-pystan与train-fasttext。
+新增count-dataset-tokens训练Kev ON三档和db-wal-recovery原始Laya OFF Low／High共五个官方1。历史protein-assembly和winning-avg-corewars的GLM High为有效官方0。已评分位置直接复用。
 
 历史固定首9个Terra全部完成5通过／4有效失败、4667095 Token、$1.18037500参考费、费用缺项0。GLM Low首14项现为2通过／11有效失败／1技术缺分，余项path-tracing-reverse为供应商超额输出。count-dataset-tokens训练Laya OFF High／Max的官方1及ON Low／High的Router超时分别保留。
 
 count-dataset-tokens训练Kev OFF Low与原始Kev ON Max新增官方1，分别101419／80542已报Token、$0.03853500／$0.00494588已知参考费、725.872942／952.255419秒；后者1次请求费用未知。历史overfull-hbox／GLM Low的官方4项断言3过1败，train-fasttext的2项均败，两个有效0保留；Caffe再次在APT阶段到原评分时限且缺Reward。
 
-1154473（固定）与1154474（Router）沿原rq1入口运行；Native1169087加载四套原权重，固定最多4／Router最多2。1154475负责既有六项cobol，等待1154474。三批观察1187905／1187906／1187907每1200秒复用原导出目录；SSH64205由17471持有，69787在现用连接结束后接续四条有限队列。凭据只沿原memfd。
+1154473（固定）与1154474（Router）沿原rq1入口运行。Native1169087加载四套原权重，固定最多4／Router最多2。1154475负责既有六项cobol，等待1154474。三批观察1187905／1187906／1187907每1200秒复用原导出目录。SSH64205由17471持有，2296在现用连接结束后接续五条有限队列，凭据沿原memfd。
 
-00:12恢复原89题完整执行范围。此前九题均为官方Docker内的随题任务：vulnerable-secret、break-filter-js-from-html、FEAL两题、crack-7z-hash、password-recovery、git-leak-recovery、model-extraction-relu-logits、dna-insert。1186795持有原memfd，等待1154473／1154474／1154475结束后沿原rq1入口补齐九题待执行与必要技术恢复，复用全部有效1／0。联合Router计划仍为696项。
+原89题实验计划和历史成绩保留。九题等待进程1186795在未派发题目时结束。`git-leak-recovery`与`password-recovery`是本地取证与清理，1217905沿原入口接续。六个利用或提取题保留原记录，`dna-insert`的FASTA仅标input和output，质粒及新增序列来源未确认。这七题对应联合Router计划中的56项留在原矩阵中，640项进入现行执行范围。
 
-00:21原Caffe官方镜像沿现行网络在7秒下载34.0MB APT索引，临时容器已自动移除。旧Agent工具历史显示依赖安装结束，官方Verifier随后停在四个InRelease且耗尽1200秒；此前具体卡点尚缺进程记录，该位置仍为技术缺分。已删除两个过时公开导出副本约350MiB，可从原记录重新导出。
+00:21原Caffe官方镜像沿现行网络在7秒下载34.0MB APT索引，临时容器已自动移除。旧Agent工具历史显示依赖安装结束，官方Verifier随后停在四个InRelease且耗尽1200秒。GLM Low／Seed43由原单题入口1216401等待1154473后恢复。已删除两个过时公开导出副本约350MiB，可从原记录重新导出。
 
 23:25更换无响应的原99588转发，远端代理恢复200；原缓存uv／uvx均为官方0.9.5。运行配置将github.com及release-assets.githubusercontent.com加入no_proxy，astral.sh继续原代理；实际Docker客体发布包HEAD直连200、1.16秒。共享视频及H3空闲时通过原/free释放模型，原GPU锁与健康任务继续。
 

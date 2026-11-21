@@ -1,8 +1,8 @@
 # 下一批完整关联 Execution 工作包
 
-2026-11-22 00:26：Model-only466／323有效1／0、1309缺分、36依赖故障、2365 Trial；历史404／458、597缺分、52依赖故障、3027 Trial。新增count-dataset-tokens训练Kev ON Low／High、db-wal-recovery原始Laya OFF Low三个官方1，历史protein-assembly及winning-avg-corewars／GLM High为有效0。最新费用见[结果入口](../../benchmark/README.md)。1154473接续固定恢复，1154474接续Model-only、联合Router及历史Router，Native1169087保留原四权重；1154475等待1154474后处理六项cobol。凭据沿原memfd，勿另建相同范围队列。
+2026-11-22 00:42。Model-only 468／323有效1／0、1307缺分、36依赖故障、2367 Trial。历史404／458、597缺分、52依赖故障、3027 Trial。新增count-dataset-tokens训练Kev ON三档、db-wal-recovery原始Laya OFF Low／High五个官方1，历史protein-assembly和winning-avg-corewars／GLM High为有效0。最新费用见[结果入口](../../benchmark/README.md)。1154473接续固定恢复，1154474接续Model-only、联合Router及历史Router，Native1169087加载原四权重。1154475等待1154474后处理六项cobol。
 
-00:12已恢复原89题完整范围。九个此前排除的随题任务由1186795等待1154473／1154474／1154475结束后沿原rq1入口补齐：vulnerable-secret、break-filter-js-from-html、FEAL两题、crack-7z-hash、password-recovery、git-leak-recovery、model-extraction-relu-logits、dna-insert。联合Router仍为696项；保留全部有效官方1／0，单独恢复技术故障。观察1187905／1187906／1187907每1200秒沿原目录导出，SSH64205及后继69787跟随四条队列。Caffe旧Verifier停在APT索引阶段；00:21同一官方镜像沿现行网络7秒下载34.0MB索引。该位置仍缺评分，固定队列释放后沿原单题入口处理；原uv／uvx0.9.5已就绪。两个过时公开导出副本约350MiB已删除，可从原记录重新导出。
+联合Router原计划696项，640项进入现行范围，其余56项保留原位置及既有结果。九题等待进程1186795在未派发题目时结束。本地取证与清理两题由1217905等待现行队列后接续。Caffe／GLM Low／Seed43所在镜像已于00:21完成34.0MB APT索引下载，耗时7秒，原单题入口1216401等待1154473后恢复。观察1187905／1187906／1187907每1200秒沿原目录导出，SSH64205及后继2296跟随五条有限队列，凭据沿原memfd。两个过时公开导出副本约350MiB已删除，可从原记录重新导出。
 
 2026-11-21 22:20：三批22:17导出已同步。Model-only461／320有效1／0、1317缺分、36依赖故障、2352 Trial；count-dataset-tokens训练Laya OFF High／Max新增官方1，ON Low／High因Router超时保持技术缺分。联合261／957结束、143／107、11缺分、696 Router待首跑，本轮19项10过9败。历史403／448、609缺分、52依赖故障、3014 Trial，1项恢复运行；Terra九项5过4败，GLM Low首14项当前2过9败2技术缺分，余train-fasttext。reshard-c4-data新增1、596848已报Token、$0.03765780已知参考费、1次费用未知；rstan-to-pystan新增有效0。22:13原运行配置将APT镜像加入no_proxy／NO_PROXY，客体直连200；22:20视频与H3均闲置时原/free再次释放显存，22:21 GPU1530MiB。继续原112位置及主队列。
 
