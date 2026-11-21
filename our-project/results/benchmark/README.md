@@ -1,8 +1,10 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-21 14:36技术恢复中
+## 当前结果 · 2026-11-21 15:04技术恢复中
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
+
+15:04当前快照：Model-only 2134／2136结束，官方Reward 1／0为439／286，缺有效评分1377，Verifier依赖32，运行2，Trial2285，已知参考费$52.02477088；联合261／957结束位置，133／98、30缺分，Router待首跑696，Trial383，已知参考费$16.66261980；历史1513／1513、396／435、630缺分及52依赖缺项，Trial2992，已知参考费$51.28992757。费用未知请求分别为2475、208、1462次。供应商实收及完整Router、工具、虚机美元成本未知。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -25,6 +27,8 @@ build-pmars恢复中GLM持续503，已结束的8个位置均为PROVIDER_RETRY_DE
 12:29，两个Kev请求因闲置ComfyUI模型占用约40GB显存等待；运行／等待队列及H3活动均0时，通过原8187/free卸载，整卡占用从41946降至7468MiB。原始Kev ON Max同一请求恢复CUDA，实际GPU等待570.776秒，随后Luna Max生成HTTP200；费用和任务原期限沿原Episode记录。
 
 12:46起，有限接续696492负责补齐`vulnerable-secret`及`break-filter-js-from-html`两题。vulnerable-secret的Terra High、Luna High与break-filter的GLM Low、Terra High、Luna High已有官方Reward 1；Luna High恢复第三Trial传输中断后，于下一独立Trial取得官方1。PID717793等待696492结束后沿原入口完成两题剩余Model-only、联合Router及历史必要位置。已取得的1／0直接复用；Model-only当前两个恢复位为cancel-async-tasks与chess-best-move。服务器Docker VM的QEMU KVM、Docker Engine 29.9.2与用户socket转发均保持在线。
+
+14:54至15:04，`chess-best-move`的Kev与Laya Model-only已有14个有效官方0；新增Kev原始ON Low／High两项有效Reward 0。任务错误结果原样保留、不重复运行。
 
 ### build-cython-ext：训练Kev完整Episode
 
