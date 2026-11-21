@@ -1,24 +1,28 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-21 08:44技术恢复中
+## 当前结果 · 2026-11-21 12:29技术恢复中
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 419／273 | 1410 | 32 | 2／0 | 296198092 | 50.47784303 | 2427 |
-| [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 102／68 | 91 | 0 | 0／696 | 148548538 | 15.59871483 | 202 |
-| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1513／1513 | 395／432 | 634 | 52 | 0／0 | 452801409 | 51.22307955 | 1461 |
+| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 432／276 | 1394 | 32 | 2／0 | 300188760 | 51.42223770 | 2448 |
+| [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 130／98 | 33 | 0 | 0／696 | 171390252 | 16.54656978 | 207 |
+| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1513／1513 | 396／435 | 630 | 52 | 0／0 | 455699234 | 51.28992757 | 1462 |
 
 有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
-Model-only首轮全部89题×24组于11月20日23:06结束，当时393／230有效1／0、1481缺分与32依赖故障，累计269991808已报Token及$47.24640648已知参考费。当前2项独立技术恢复运行，故表中已结束位置为2134；全部首轮记录继续保留。原控制1696641及Native1142328／1142336正常退出，七阶段4114699与Worker110914已接续。696个联合动态Router位置仍待首跑，其中16个属于原两题排除范围。GLM固定恢复4114698已自然结束；Seed42仍有634缺分与52项评分依赖故障，沿原队列处理。
+Model-only首轮全部89题×24组于11月20日23:06结束，当时393／230有效1／0、1481缺分与32依赖故障，累计269991808已报Token及$47.24640648已知参考费。当前2项独立技术恢复运行，故表中已结束位置为2134；全部首轮记录继续保留。原控制1696641及Native1142328／1142336正常退出，七阶段4114699与Worker110914已接续。696个联合动态Router位置仍待首跑，其中16个属于原两题排除范围。GLM固定恢复4114698与Luna账户恢复442468已自然结束；Seed42的630缺分与52项评分依赖故障沿原队列处理。
 
 新恢复通过为openssl-selfsigned-cert的训练Laya OFF High、regex-log的训练Laya ON Low／High与原始Kev OFF High／Max、modernize-scientific-stack的原始Kev ON High。regex-log原始Laya ON Max及原始Kev OFF Low的有效0、overfull-hbox原始Laya OFF Low的有效0均保留；后者188475 Token、$0.01053206参考费、513.345172秒。overfull-hbox High／Max和openssl-selfsigned-cert另两项原0仍有Provider或Router超时，保持技术缺分。00:04与00:45在视频队列0／0、H3活动0时通过原/free释放闲置模型，健康服务和GPU锁保持。
 
 08:44相对首轮已补得69个有效评分：26通过、43失败，累计2229个Harbor Trial。overfull-hbox新增训练Laya OFF High／Max、原始Kev OFF Max／ON High、训练Kev OFF Low／High及ON Low／High八个通过。adaptive-rejection-sampler当前4通过、16有效失败、4技术缺分：Laya全部12组有效0，Kev四个Max均PROVIDER_RETRY_DEADLINE，原Verifier0保持但质量分为空。build-cython-ext当前8通过、15有效失败、1技术缺分；原始Kev六组全为有效0，训练Kev六组为5通过、1有效失败。
 
 build-pmars恢复中GLM持续503，已结束的8个位置均为PROVIDER_RETRY_DEADLINE，原Verifier0保持、质量分为空；当前任务没有新增有效评分。原请求、同模型同档位、100次上限及原任务期限保持，后续位置继续原队列。
+
+09:08启动的Controller442468已自然完成原账户恢复：联合59个Luna High位置新增24通过／30有效失败，余5项缺分；历史4项新增1通过／3有效失败。63个位置均保留各次独立Trial、原故障和费用。联合261个固定位置已有228个有效评分，379个Harbor Trial；历史共2992个Trial。联合GLM Low、Luna High、Terra High分别42／32／13、35／47／5、53／19／15（通过／有效失败／缺分），每组87题。
+
+12:29，两个Kev请求因闲置ComfyUI模型占用约40GB显存等待；运行／等待队列及H3活动均0时，通过原8187/free卸载，整卡占用从41946降至7468MiB。原始Kev ON Max同一请求恢复CUDA，实际GPU等待570.776秒，随后Luna Max生成HTTP200；费用和任务原期限沿原Episode记录。
 
 ### build-cython-ext：训练Kev完整Episode
 
