@@ -1,14 +1,26 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前执行 · 2026-11-22 00:03技术恢复
+## 当前执行 · 2026-11-22 00:26技术恢复
+
+本轮新增三个官方1和两个有效官方0，原失败、独立Trial及费用继续保留。下表为最后一次Trial；参考费缺项按请求数单列。
+
+| 任务／策略 | Seed | Reward | 已报Token | 已知参考USD | 费用未知请求 | Trial秒 |
+|---|---:|---:|---:|---:|---:|---:|
+| count-dataset-tokens／训练Kev ON Low | 43 | 1 | 88240 | 0.02996180 | 1 | 1137.819255 |
+| count-dataset-tokens／训练Kev ON High | 43 | 1 | 105745 | 0.03615410 | 2 | 795.260073 |
+| db-wal-recovery／原始Laya OFF Low | 43 | 1 | 35386 | 0.00371916 | 0 | 170.172497 |
+| protein-assembly／GLM High | 42 | 0 | 460008 | 0.02858335 | 0 | 828.838045 |
+| winning-avg-corewars／GLM High | 42 | 0 | 710757 | 0.03905761 | 0 | 948.779409 |
 
 count-dataset-tokens新增两个有效官方1：训练Kev OFF Low为101419 Token／$0.03853500／725.872942秒，原始Kev ON Max为80542 Token／$0.00494588／952.255419秒；后者1次请求费用未知。历史GLM Low的overfull-hbox与train-fasttext新增有效0，原断言分别3过1败、0过2败；旧故障及费用继续单列。
 
-Caffe的GLM Low独立恢复在官方APT阶段再次到1200秒，缺Reward，140465已报Token、$0.00665855已知参考费、1次费用未知。原容器已退出。23:25替换无响应的99588转发后，远端代理恢复200，现SSH94200；原uv／uvx缓存为官方0.9.5，发布站在原运行配置中改用直连，Docker客体HEAD返回200／1.16秒。
+Caffe的GLM Low独立恢复在官方APT阶段再次到1200秒，缺Reward，140465已报Token、$0.00665855已知参考费、1次费用未知。原工具历史显示Agent依赖安装已结束；Verifier停在四个InRelease，缺少当时进程记录。00:21在同一官方镜像沿现行网络执行APT更新，34.0MB索引7秒完成，临时容器已自动移除。原uv／uvx缓存为官方0.9.5，发布站沿运行配置直连。
 
-原六个在途Episode已于23:56全部结束，旧父控制器及Native110914已释放；1154473（固定）与1154474（Router）沿原rq1入口接续，新Native1169087加载原四权重。六项cobol由1154475等待Router结束。观察1155155／1155156／1155157复用原目录与1200秒间隔，原代理后继17471跟随本轮控制器。
+1154473（固定）与1154474（Router）沿原rq1入口运行，Native1169087加载原四权重；六项cobol由1154475等待Router结束。
 
-本次执行排除vulnerable-secret、break-filter-js-from-html、FEAL两题、crack-7z-hash、password-recovery、git-leak-recovery、model-extraction-relu-logits及dna-insert；保留原评分、Trial和分母。联合696个未首跑Router位置中624项继续、72项留为未执行。
+00:12恢复原89题范围。vulnerable-secret、break-filter-js-from-html、FEAL两题、crack-7z-hash、password-recovery、git-leak-recovery、model-extraction-relu-logits及dna-insert均沿官方Docker和随题文件执行；1186795等待三条当前队列结束后按原入口补齐九题待执行与必要恢复，全部有效1／0复用。联合Router仍按原696项计划执行。
+
+现行观察1187905／1187906／1187907继续原导出目录与1200秒间隔；SSH64205及后继69787负责17898→17897，跟随全部四条有限队列。两个过时公开导出副本约350MiB已删除，可从原记录重新导出。
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过、9失败，5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均已自然退出；历史固定恢复955580接续112个明确技术或账户故障位置。
 
@@ -77,19 +89,19 @@ Model-only的count-dataset-tokens原始Laya ON Max与训练Laya OFF Low于21:41�
 
 count-dataset-tokens的训练Laya ON Max与原始Kev OFF Low新增有效0，分别3611／96248已报Token、$0.00030060／$0.00323928已知参考费、1039.289425／1047.986605秒；后者1次请求费用未知。训练Laya ON Low／High的原0均伴随Router超时，保持技术缺分。22:20视频队列0／0、H3活动0时再次沿原/free释放闲置模型，显存回到1530MiB。
 
-## 已保存结果 · 2026-11-21
+## 已保存结果 · 2026-11-22
 
-三批由A6000现行分析器导出：Model-only为11月22日00:02:54、Seed43联合为11月21日23:41:12、历史为11月22日00:03:18快照。各批报告、指标和`trials/`来自对应导出；原始请求和工具输出保存在A6000各批.private目录。
+三批由A6000现行分析器导出：Model-only为11月22日00:26:19、Seed43联合为11月21日23:41:12、历史为11月22日00:26:34快照。各批报告、指标和`trials/`来自对应导出；原始请求和工具输出保存在A6000各批.private目录。
 
-16:08已恢复原SSH与rsync直连。此前新连接被生产Clash TUN送入拒绝22端口转发的A6000节点，实际日志为`ssh: rejected: administratively prohibited (open failed)`；本机现有SSH配置仅为`Host 10.16.15.202`设置`BindInterface en0`。原主队列4114699、Router110914、两题接续696492及三个观察进程均实读存活。
+原SSH与rsync通过`BindInterface en0`直连A6000，当前进程见本页执行记录。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 463／323 | 1312 | 36 | 2／0 | 311537682 | 54.12699791 | 2533 |
+| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 466／323 | 1309 | 36 | 2／0 | 311767053 | 54.19683297 | 2536 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 143／107 | 11 | 0 | 0／696 | 177619607 | 17.86228316 | 209 |
-| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 404／456 | 597 | 52 | 4／0 | 468397398 | 53.00602270 | 1473 |
+| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1511／1513 | 404／458 | 597 | 52 | 2／0 | 469568163 | 53.07366366 | 1473 |
 
-有效1、有效0、缺有效评分、评分依赖故障四列合计为对应快照的已结束位置。Model-only首轮2136位置均已结束，当前运行项为独立恢复。Token和参考费累计已结束Trial；每题最后一次独立运行见各批`metrics/per_episode.csv`的`latest_trial_*`。本次Model-only共2362个Trial，联合403个、历史3025个；额外请求重试分别11101／2377／3128次。供应商实收、Router、工具和共享资源美元费用仍缺项。
+有效1、有效0、缺有效评分、评分依赖故障四列合计为对应快照的已结束位置。Model-only首轮2136位置均已结束，当前运行项为独立恢复。Token和参考费累计已结束Trial；每题最后一次独立运行见各批`metrics/per_episode.csv`的`latest_trial_*`。本次Model-only共2365个Trial，联合403个、历史3027个；额外请求重试分别11101／2377／3128次。供应商实收、Router、工具和共享资源美元费用仍缺项。
 
 ### Model-only训练前后：当前同题Seed43配对
 
