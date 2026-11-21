@@ -1,12 +1,12 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前进度 · 2026-11-21 15:42技术恢复中
+## 当前进度 · 2026-11-21 16:03技术恢复中
 
-三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。Model-only首轮2136/2136于11月20日23:06全部结束；当前2134位置结束、445／289有效1／0、1368缺有效评分、32项Verifier故障，另2个恢复位置运行。累计304191502已报Token、$52.34748631已知参考费、2484次费用未知请求、2294个Trial。Seed43联合261/957，133／98、30缺分，383个Trial，696个Router位置待首跑。Seed42历史1513/1513，396／435、630缺分、52项依赖故障。
+三批逐题结果、数量及费用见 [Benchmark 当前结果](../results/benchmark/README.md)。Model-only首轮2136/2136于11月20日23:06全部结束；当前2134位置结束、446／290有效1／0、1366缺有效评分、32项Verifier故障，另2个恢复位置运行。累计304653441已报Token、$52.38679598已知参考费、2486次费用未知请求、2296个Trial。Seed43联合261/957，133／98、30缺分，383个Trial，696个Router位置待首跑。Seed42历史1513/1513，396／435、630缺分、52项依赖故障。
 
-15:48—15:49两次新建SSH均被远端关闭；TCP22可接通，但读取SSH标识得到空响应。现有代理SSH41374仍为ESTABLISHED，无ControlMaster可复用；最后成功读取进程为15:36、结果导出为15:42。新进程状态与后续Trial尚待连接恢复后读取，原有限队列和代理保持。
+15:48后的新SSH闭连已定位为生产Clash TUN的A6000节点拒绝转发22端口，原日志为`ssh: rejected: administratively prohibited (open failed)`。16:08在本机现有SSH配置的`Host 10.16.15.202`设置`BindInterface en0`，原密钥连接及rsync恢复直连；原4114699／110914／696492及三个观察进程均实读存活。生产核心7897与实验代理17897分别保留各自用途，后续原控制脚本自动继承同一SSH设置。
 
-chess-best-move训练Kev OFF High／Max及ON Low／High／Max共5项取得有效官方1，OFF Low为有效0；该题当前5通过、12有效失败、7项技术缺分。教师ON Low／High各3次真实请求，其中2次HTTP400、1次HTTP200，分别有1次短评进入Router；ON Max的1次请求HTTP400、短评消费0，仍取得官方1。cobol-modernization原始Laya OFF Low新增官方1，79048 Token、$0.00757126参考费、250.778303秒。逐次消费、费用缺项及原故障见Benchmark报告，已评分位置不重跑。
+chess-best-move训练Kev OFF High／Max及ON Low／High／Max共5项取得有效官方1，OFF Low为有效0；该题当前5通过、12有效失败、7项技术缺分。教师ON Low／High各3次真实请求，其中2次HTTP400、1次HTTP200，分别有1次短评进入Router；ON Max的1次请求HTTP400、短评消费0，仍取得官方1。cobol-modernization原始Laya OFF Low／High／Max为有效官方1／1／0；High实际15次Luna和1次GLM生成、26条工具结果，Max为3次Luna和7次GLM生成、16条工具结果。GLM均返回合法工具调用，返回Effort仍未报告；逐次Token、费用、墙钟及原故障见Benchmark报告，已评分位置不重跑。
 
 09:08启动的固定账户恢复442468已在12:07自然结束：联合59个Luna High位置新增24通过／30有效失败，当时余5项缺有效评分；历史4项新增1通过／3有效失败。当前联合固定三组GLM Low、Luna High、Terra High分别为42／32／13、37／47／3、54／19／14（通过／有效失败／缺分），每组分母87。原七阶段4114699与Worker110914继续Model-only技术恢复，随后接续原联合Router段。
 

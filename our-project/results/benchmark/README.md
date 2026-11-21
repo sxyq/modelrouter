@@ -1,18 +1,18 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-21 15:42技术恢复中
+## 当前结果 · 2026-11-21 16:03技术恢复中
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
-15:48—15:49新建SSH两次被远端关闭，TCP22接通后未收到SSH标识；现有代理SSH41374仍为ESTABLISHED。最后进程读取15:36、评分导出15:42，后续结果尚未取回。
+16:08已恢复原SSH与rsync直连。此前新连接被生产Clash TUN送入拒绝22端口转发的A6000节点，实际日志为`ssh: rejected: administratively prohibited (open failed)`；本机现有SSH配置仅为`Host 10.16.15.202`设置`BindInterface en0`。原主队列4114699、Router110914、两题接续696492及三个观察进程均实读存活。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 445／289 | 1368 | 32 | 2／0 | 304191502 | 52.34748631 | 2484 |
+| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 446／290 | 1366 | 32 | 2／0 | 304653441 | 52.38679598 | 2486 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 133／98 | 30 | 0 | 0／696 | 171979127 | 16.66261980 | 208 |
 | [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1513／1513 | 396／435 | 630 | 52 | 0／0 | 455699234 | 51.28992757 | 1462 |
 
-有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。首轮2136位置均已结束，当前2项处于恢复运行。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。本次Model-only共2294个Trial，联合383个、历史2992个。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
+有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。首轮2136位置均已结束，当前2项处于恢复运行。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。本次Model-only共2296个Trial，联合383个、历史2992个。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
 Model-only首轮全部89题×24组于11月20日23:06结束，当时393／230有效1／0、1481缺分与32依赖故障，累计269991808已报Token及$47.24640648已知参考费，全部首轮记录保留。原1696641及Native1142328／1142336正常退出，4114699与Worker110914接续原七阶段。
 
@@ -41,7 +41,17 @@ build-pmars恢复中GLM持续503，已结束的8个位置均为PROVIDER_RETRY_DE
 
 上述六项均为Seed43及11月11日训练Kev，原请求、工具和Verifier结果见本批对应`trials/chess-best-move/`目录。ON Low／High各3次教师请求：前2次HTTP400，后1次精确Luna Low返回HTTP200并进入Router；ON Max的1次教师请求HTTP400，实际短评采用0次。400原文仅为`invalid_request_error / Invalid request`；三组均请求Luna Low、Responses、4096输出，原错误未机械重试。ON配置、成功教师请求与实际短评输入分别记录，失败请求费用保持未知。
 
-`cobol-modernization`原始Laya OFF Low恢复Trial `ca120c2f-2aee-4f95-a18c-2fac090bd421`新增有效官方1：79048 API Token、$0.00757126参考费、费用未知请求0、250.778303秒。
+### cobol-modernization：原始Laya Model-only完整Episode
+
+三项均为Seed43、教师OFF，原故障与新Trial分别保留。
+
+| 固定Effort | 官方Reward | 本次API Token | 本次已知参考USD | 费用未知请求 | 本次Harbor秒 |
+|---|---:|---:|---:|---:|---:|
+| Low | 1 | 79048 | 0.00757126 | 0 | 250.778303 |
+| High | 1 | 290256 | 0.02324367 | 1 | 995.176327 |
+| Max | 0 | 171683 | 0.01606600 | 1 | 1006.502730 |
+
+High的独立Trial `c8fe0efc-aa88-4632-9574-6749ddd596da`实际返回15次Luna High及1次GLM High生成，共26条工具结果；Max的Trial `c12672d3-fccc-49ab-97b8-04941446414c`返回3次Luna Max及7次GLM Max生成，共16条工具结果。上述响应均HTTP200，Luna请求与返回档位相符；GLM返回`tool_calls`、返回档位未报告。High／Max两组的实际模型构成同时变化，原有效Reward 0直接保留。
 
 ### build-cython-ext：训练Kev完整Episode
 
