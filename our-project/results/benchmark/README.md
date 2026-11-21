@@ -1,6 +1,6 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前执行 · 2026-11-21 21:21联合与历史恢复
+## 当前执行 · 2026-11-21 22:20联合与历史恢复
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过、9失败，5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均已自然退出；历史固定恢复955580接续112个明确技术或账户故障位置。
 
@@ -59,35 +59,37 @@ torch-tensor-parallelism原测试9过4败；filter-js-from-html两项断言均�
 | portfolio-optimization | 0 | 170093 | 0.05501380 | 848.263483 |
 | install-windows-3.11 | 0 | 1643201 | 0.29095940 | 1703.847867 |
 
-历史GLM Low已取得cobol-modernization官方1；adaptive-rejection-sampler、largest-eigenval、model-extraction-relu-logits及make-doom-for-mips有效0。overfull-hbox新Trial在APT索引下载耗尽原360秒、无Reward，128172已报Token、$0.01059639参考费、675.411346秒单独保留。现有恢复函数已识别该实际下载超时；Caffe／GLM Low／Seed43同类旧故障由1015278等待前序固定队列后沿原CLI接续。query-optimize两项恢复后仍在900秒Verifier结束、未得评分，继续保留缺分。
+历史GLM Low首14项已有13项结束：cobol-modernization与reshard-c4-data官方1；adaptive-rejection-sampler、largest-eigenval、model-extraction-relu-logits、make-doom-for-mips、torch-tensor-parallelism、make-mips-interpreter、path-tracing、protein-assembly及rstan-to-pystan有效0；train-fasttext仍在运行。reshard-c4-data为596848已报Token、$0.03765780已知参考费、1次请求费用未知、2200.695501秒；rstan-to-pystan为465194 Token、$0.02459566、1949.100764秒。overfull-hbox在APT索引下载耗尽原360秒、无Reward，128172 Token／$0.01059639／675.411346秒保留；path-tracing-reverse原Verifier0因供应商报告超出4096输出而列技术缺分，1071382 Token／$0.08431183／1432.872797秒。现有恢复函数已识别实际APT超时；Caffe／GLM Low／Seed43同类旧故障由1015278等待前序队列后沿原CLI接续。query-optimize两项恢复后仍在900秒Verifier结束、未得评分，继续保留缺分。
 
-Model-only的count-dataset-tokens原始Laya ON Max与训练Laya OFF Low于21:07进入共享GPU锁等待，Agent时限尚未开始；21:12视频队列1运行／1等待、GPU43034MiB。原健康作业继续，当前SSH99588及待机19344保持模型转发。
+Model-only的count-dataset-tokens原始Laya ON Max与训练Laya OFF Low于21:41均获有效0；训练Laya OFF High／Max于21:52／21:53均获官方1，分别为160768／157889 Token、$0.01075872／$0.00858068参考费、653.507544／740.482384秒，费用缺项0。21:39视频队列0／0、H3活动0时沿原/free释放闲置显存，21:40整卡1530MiB。SSH99588与待机19344保持原模型转发。
+
+22:13将原本机及A6000的`benchmark_runtime.json`中`no_proxy`／`NO_PROXY`加入`mirrors.ustc.edu.cn`。宿主机同一1MiB索引片段直连0.446秒、经原代理3.603秒；原Docker客体直连同一镜像的InRelease返回200。官方APT继续原镜像及签名验证，模型请求沿原代理；后续Episode由现有入口读取该运行配置。
 
 ## 已保存结果 · 2026-11-21
 
-三批由A6000现行分析器导出：Model-only为21:14:32、Seed43联合为21:14:55、历史为21:16:17快照。各批报告、指标和`trials/`来自对应导出；历史正文另列其后结束的make-doom-for-mips。
+三批由A6000现行分析器导出：Model-only为22:17:35、Seed43联合为22:17:02、历史为22:17:41快照。各批报告、指标和`trials/`来自对应导出；原始请求和工具输出保存在A6000各批.private目录。
 
 16:08已恢复原SSH与rsync直连。此前新连接被生产Clash TUN送入拒绝22端口转发的A6000节点，实际日志为`ssh: rejected: administratively prohibited (open failed)`；本机现有SSH配置仅为`Host 10.16.15.202`设置`BindInterface en0`。原主队列4114699、Router110914、两题接续696492及三个观察进程均实读存活。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 459／318 | 1321 | 36 | 0／2 | 310678904 | 53.98355566 | 2525 |
+| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 461／320 | 1317 | 36 | 2／0 | 311080776 | 54.01078061 | 2529 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 143／107 | 11 | 0 | 0／696 | 177479142 | 17.85562461 | 208 |
-| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1509／1513 | 402／442 | 613 | 52 | 4／0 | 460904500 | 52.52156340 | 1463 |
+| [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1512／1513 | 403／448 | 609 | 52 | 1／0 | 465058929 | 52.79412051 | 1465 |
 
-有效1、有效0、缺有效评分、评分依赖故障四列合计为对应快照的已结束位置。Model-only首轮2136位置均已结束，本次2项处于GPU锁等待，表内待执行包含该等待状态。Token和参考费累计已结束Trial；每题最后一次独立运行见各批`metrics/per_episode.csv`的`latest_trial_*`。本次Model-only共2346个Trial，联合402个、历史3006个；额外请求重试分别11094／2377／3118次。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部89题的Token尚缺用量齐全的整轮记录。
+有效1、有效0、缺有效评分、评分依赖故障四列合计为对应快照的已结束位置。Model-only首轮2136位置均已结束，当前2项为独立恢复运行。Token和参考费累计已结束Trial；每题最后一次独立运行见各批`metrics/per_episode.csv`的`latest_trial_*`。本次Model-only共2352个Trial，联合402个、历史3014个；额外请求重试分别11101／2377／3119次。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部89题的Token尚缺用量齐全的整轮记录。
 
 ### Model-only训练前后：当前同题Seed43配对
 
-下表取20:26导出。评分配对只含两侧均有有效官方评分的同题；费用配对再取两侧最后一次Trial参考费齐全的子集，并单列该子集的通过数。费用列只计最后一次独立Trial，全部恢复尝试费用见上方累计量。
+下表取22:17导出。评分配对只含两侧均有有效官方评分的同题；费用配对再取两侧最后一次Trial参考费齐全的子集，并单列该子集的通过数。费用列只计最后一次独立Trial，全部恢复尝试费用见上方累计量。
 
 | Router／教师／固定档位 | 评分配对题数 | 原始通过 | 训练通过 | 费用配对题数 | 费用子集原始／训练通过 | 原始参考USD | 训练参考USD |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Laya／OFF／Low | 21 | 8 | 6 | 16 | 8／5 | 0.08650752 | 0.07118955 |
+| Laya／OFF／Low | 22 | 8 | 6 | 17 | 8／5 | 0.09414992 | 0.07283659 |
 | Laya／ON／Low | 21 | 11 | 9 | 10 | 8／6 | 0.04672450 | 0.03435483 |
-| Laya／OFF／High | 21 | 14 | 13 | 15 | 12／11 | 0.18753063 | 0.20409048 |
+| Laya／OFF／High | 22 | 14 | 14 | 16 | 12／12 | 0.20536945 | 0.21484920 |
 | Laya／ON／High | 18 | 9 | 8 | 10 | 7／7 | 0.06316320 | 0.05965283 |
-| Laya／OFF／Max | 18 | 10 | 12 | 5 | 4／5 | 0.11812642 | 0.07792263 |
+| Laya／OFF／Max | 19 | 10 | 13 | 6 | 4／6 | 0.12872153 | 0.08650331 |
 | Laya／ON／Max | 20 | 12 | 11 | 6 | 4／4 | 0.15511911 | 0.12221184 |
 | Kev／OFF／Low | 20 | 4 | 15 | 20 | 4／15 | 0.12539441 | 1.35185960 |
 | Kev／ON／Low | 19 | 5 | 15 | 10 | 4／9 | 0.02921018 | 0.52469344 |
@@ -112,6 +114,8 @@ Model-only的count-dataset-tokens原始Laya ON Max与训练Laya OFF Low于21:07�
 | ON／Max | 39 | 28／29 | 10 | 9／9 | 0.64906680 | 1.39596274 |
 
 当前同题评分集合中，教师ON三档分别多通过1／2／1题；费用齐全子集的Low／High同时通过更多且参考费更低，Max同为9通过、费用更高。各行有独立的真实题目分母；固定Terra始终High，Model-only列的执行模型按该列固定档位请求。完整资源费用及剩余任务沿原批次继续取得。
+
+训练Laya相对Terra High的六组同题结果分别为OFF Low 8／19（26题）、High 17／18（26题）、Max 19／22（31题），ON Low 14／22（31题）、High 14／18（25题）、Max 20／23（33题），均少通过。其六组费用齐全子集参考费均更低、通过数也均更少；逐题集合见同一comparisons.json。
 
 本轮恢复远端17898到原本机17897的模型转发，闲置视频模型经原/free卸载后GPU1530MiB。cobol原始Kev ON Max及训练Kev OFF Low／High／Max、ON Low／High共6项新增官方1；训练Kev ON Max新增有效官方0，原900秒时限结束后原Verifier执行3断言、1过2败，保留该失败。原始Kev四项转发／依赖故障及两项Router超时已交给原单题恢复入口，等待现有主队列及两题接续完成后各处理一次；原Trial、费用与官方成绩分别保存。
 
