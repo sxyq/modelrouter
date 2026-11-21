@@ -95,7 +95,10 @@ def recovery_reason(path, restored_providers=()):
         if model in restored_providers and status == 401:
             return "PROVIDER_ACCESS_RESTORED"
         if model in restored_providers and status in (403, 404):
-            raw = path / "provider_responses" / f"{request['decision_id']}.sse"
+            attempts = request.get("account_attempts", [])
+            retry = attempts[-1].get("attempt_index", 0) if attempts else 0
+            suffix = f".retry-{retry:03d}" if retry else ""
+            raw = path / "provider_responses" / f"{request['decision_id']}{suffix}.sse"
             response = raw.read_bytes().lower() if raw.is_file() else b""
             if (status == 403 and any(code in response for code in
                     (b"insufficient_balance", b"insufficient balance", b"subscription_not_found",

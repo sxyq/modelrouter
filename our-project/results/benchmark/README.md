@@ -1,6 +1,12 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-21 18:30技术恢复中
+## 当前执行 · 2026-11-21 联合固定策略恢复
+
+18:54起，原联合Seed43批次沿`v9_joint_paired.json`恢复12个Terra High传输故障位置，控制器885120、固定最多4并发，与原Model-only两个Router并行。有限891922在该固定队列结束后接续4个GLM Low传输故障位置及tune-mjcf／Luna High额度故障；新评分和原故障各保留独立Trial。
+
+账户恢复入口已按`account_attempts`最后一项读取对应`.retry-NNN.sse`。真实tune-mjcf的第6次尝试返回额度不足，现已识别；FEAL两题的供应商`content_policy_violation`继续保留缺分。下表仍为18:30已保存快照，当前恢复结果将在官方Verifier完成后更新。
+
+## 已保存结果 · 2026-11-21 18:30
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 

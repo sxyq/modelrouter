@@ -1,5 +1,9 @@
 # 下一批完整关联 Execution 工作包
 
+2026-11-21 18:54：联合固定Terra High恢复885120与原Model-only两个Router并行，原固定4并发。精确12题：polyglot-c-py、polyglot-rust-c、torch-tensor-parallelism、tune-mjcf、caffe-cifar-10、filter-js-from-html、mcmc-sampling-stan、path-tracing、compile-compcert、schemelike-metacircular-eval、reshard-c4-data、video-processing。891922持有原内存凭据并等待885120，随后接续GLM Low的make-doom-for-mips、schemelike-metacircular-eval、circuit-fibsqrt、regex-chess四项，最后接续tune-mjcf／Luna High额度故障。两条有限固定队列日志均追加原联合.private/controller.log；后续原主队列复用新有效评分。
+
+账户恢复函数已读取最后一次请求尝试对应的正文；真实tune-mjcf最后.retry-006.sse为pre_consume_token_quota_failed，原函数现返回PROVIDER_ACCESS_RESTORED。FEAL两题content_policy_violation返回空恢复原因；不将其加入账户恢复。原任务时限、模型、Effort、Seed43、4096及官方Verifier保持原配置。
+
 2026-11-21 18:30更新：Model-only2134／2136结束、458／294有效1／0、1346技术缺分与36项Verifier依赖故障，2项运行；2318 Trial、307938707已报Token、$53.31921439已知参考费、2503次费用未知请求。联合261／957、133／98、30缺分、696未首跑；历史1513／1513、396／435、630缺分与52依赖故障。本轮cobol恢复6通过、1有效失败；训练Kev OFF三档1／1／1、ON三档1／1／0，ON Max原900秒后1过2败，保留0。
 
 六项cobol技术缺分已沿原入口交给871083，`--after-pids 4114699 696492`：原始Laya ON High、原始Kev OFF Low／High／Max、ON Low／High，各恢复一次。两项原因为Router决策超时／生成前Router超时，另四项为转发／依赖下载失败；现已释放闲置显存并恢复原转发。旧待机860061被本次范围替代。当前SSH99588转发17898→本机17897，原CLI待机94026在其退出后接管，跟随4114699、696492、871083，全部结束即退出。不要创建相同范围的恢复队列。

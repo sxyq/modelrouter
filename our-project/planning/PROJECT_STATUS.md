@@ -1,6 +1,14 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前进度 · 2026-11-21 18:30技术恢复中
+## 当前执行 · 2026-11-21 联合固定策略并行恢复
+
+18:54启动联合Seed43固定恢复885120，沿原`v9_joint_paired.json`以4并发处理12个Terra High旧传输故障位置，与原4114699的两个Model-only Router并行。当前新Trial中polyglot-c-py、polyglot-rust-c和torch-tensor-parallelism已分别完成8、10、6次HTTP200生成及对应工具命令，原Harbor继续官方Verifier；最终评分另行保存。
+
+有限接续891922等待885120结束，再恢复GLM Low的make-doom-for-mips、schemelike-metacircular-eval、circuit-fibsqrt、regex-chess四个传输故障位置，最后处理tune-mjcf／Luna High旧额度故障。两条固定队列串行使用原4并发额度，日志追加原联合`.private/controller.log`；原696492、871083及主Router队列保持既有顺序。
+
+`rq1_batch.py`账户恢复现读取最后一次API尝试对应的响应文件。tune-mjcf／Luna High的首次正文为空，第6次重试正文为`pre_consume_token_quota_failed`，现场调用原恢复函数已返回`PROVIDER_ACCESS_RESTORED`。FEAL两题GLM旧403为`content_policy_violation`，原函数继续返回空恢复原因；输出预算超额与Verifier在正式断言阶段超时的位置另列缺分。
+
+## 早前快照 · 2026-11-21 18:30技术恢复中
 
 Model-only当前2134／2136位置结束、458／294有效1／0、1346缺有效评分、36项Verifier依赖故障、2项运行；累计2318个Trial、307938707已报API Token、$53.31921439已知参考费、2503次请求费用未知。Seed43联合261／957结束、133／98有效1／0、30缺分、696个Router位置待首跑；Seed42历史1513／1513结束、396／435有效1／0、630缺分与52项依赖故障。分策略、同题配对与各次费用见[当前结果](../results/benchmark/README.md)。
 
