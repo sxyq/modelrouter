@@ -1,10 +1,10 @@
 # 下一批完整关联 Execution 工作包
 
-2026-11-21 15:04：Model-only首轮2136／2136已于11月20日23:06结束；原1696641与Native1142328／1142336自然退出。原七阶段4114699与Worker110914继续技术恢复，2134位置结束、439／286有效1／0、1377缺分、32项Verifier故障、2个恢复位运行，2285 Trial。联合261／957、133／98、30缺分、383 Trial、696个Router位置待首跑。历史1513／1513、396／435、630缺分、52项依赖故障。chess-best-move Kev／Laya已结束14项均为官方0，不重复运行。固定4、Router2。
+2026-11-21 15:22：Model-only首轮2136／2136已于11月20日23:06结束；原1696641与Native1142328／1142336自然退出。原七阶段4114699与Worker110914继续技术恢复，2134位置结束、441／289有效1／0、1372缺分、32项Verifier故障、2个恢复交接位置，2290 Trial。联合261／957、133／98、30缺分、383 Trial、696个Router位置待首跑。历史1513／1513、396／435、630缺分、52项依赖故障。chess-best-move训练Kev OFF High／Max于15:21取得两个官方1，当前2通过、12有效失败、10项技术缺分或恢复中。固定4、Router2。
 
 09:08启动的原固定阶段接续442468已于12:07自然结束，联合59个Luna High账户故障新增24通过／30有效失败，历史4项新增1通过／3有效失败。原七阶段继续复用全部有效评分；三个观察目录及1200秒间隔保持。12:29在视频队列与H3活动均0时沿原/free卸载闲置模型，Kev原始ON Max同一请求恢复CUDA，保存570.776秒GPU等待并收到Luna Max真实生成200；GPU锁及原任务期限保持。
 
-12:46起，696492等待主批次和三个观察器自然结束后，沿原rq1入口补齐`vulnerable-secret`及`break-filter-js-from-html`。Terra/Luna对vulnerable-secret、GLM Low/Terra High/Luna High对break-filter均已得Reward 1。Luna High旧额度403后两次恢复，第三次传输中断并保留该Trial；下一次独立Harbor Trial已得Reward 1。717793待696492自然结束后补两题其余Model-only、联合及历史位置；已有有效1／0复用。固定4／Router2、原凭据memfd、4096、AA、任务时限、服务器Docker VM和原观察目录保持。
+12:46起，696492等待主批次和三个观察器自然结束后，沿原rq1入口补齐`vulnerable-secret`及`break-filter-js-from-html`的Model-only、联合及历史必要位置。Terra/Luna对vulnerable-secret、GLM Low/Terra High/Luna High对break-filter均已得Reward 1。Luna High旧额度403与传输中断Trial保留，下一次独立Harbor Trial已得Reward 1。15:23撤掉重复待机747251及对应63521代理，保留696492及原86519代理；已有有效1／0复用。固定4／Router2、原凭据memfd、4096、AA、任务时限和原观察目录保持。
 
 19:15GLM原始502正文为upstream_error／Upstream service temporarily unavailable，另有503；19:36原始Laya Low的同一GLM请求在80次额外重试后恢复200、合法工具调用及原Agent执行。其完整Episode官方0保留。Terra同一Episode保留524和重试后200。当前共享GPU最近1436MiB、0%，沿原Provider等待端点恢复及原任务期限，不重放已完成工具命令。
 

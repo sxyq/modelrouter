@@ -1,20 +1,18 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前结果 · 2026-11-21 15:04技术恢复中
+## 当前结果 · 2026-11-21 15:22技术恢复中
 
 三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
 
-15:04当前快照：Model-only 2134／2136结束，官方Reward 1／0为439／286，缺有效评分1377，Verifier依赖32，运行2，Trial2285，已知参考费$52.02477088；联合261／957结束位置，133／98、30缺分，Router待首跑696，Trial383，已知参考费$16.66261980；历史1513／1513、396／435、630缺分及52依赖缺项，Trial2992，已知参考费$51.28992757。费用未知请求分别为2475、208、1462次。供应商实收及完整Router、工具、虚机美元成本未知。
-
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 439／284 | 1379 | 32 | 2／0 | 302728193 | 51.99965402 | 2470 |
+| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 441／289 | 1372 | 32 | 1／1 | 303712114 | 52.18381710 | 2479 |
 | [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 133／98 | 30 | 0 | 0／696 | 171979127 | 16.66261980 | 208 |
 | [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1513／1513 | 396／435 | 630 | 52 | 0／0 | 455699234 | 51.28992757 | 1462 |
 
-有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
+有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。运行／待执行的1／1是采集时的恢复交接状态，首轮2136位置均已结束。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。本次Model-only共2290个Trial，联合383个、历史2992个。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
 
-Model-only首轮全部89题×24组于11月20日23:06结束，当时393／230有效1／0、1481缺分与32依赖故障，累计269991808已报Token及$47.24640648已知参考费。当前2项独立技术恢复运行，故表中已结束位置为2134；全部首轮记录保留。原1696641及Native1142328／1142336正常退出，4114699与Worker110914接续原七阶段。联合696个动态Router位置仍待首跑；历史Seed42有630个缺有效评分和52项Verifier依赖故障。
+Model-only首轮全部89题×24组于11月20日23:06结束，当时393／230有效1／0、1481缺分与32依赖故障，累计269991808已报Token及$47.24640648已知参考费。当前2个位置处于独立技术恢复交接，故表中已结束位置为2134；全部首轮记录保留。原1696641及Native1142328／1142336正常退出，4114699与Worker110914接续原七阶段。联合696个动态Router位置仍待首跑；历史Seed42有630个缺有效评分和52项Verifier依赖故障。
 
 新恢复通过为openssl-selfsigned-cert的训练Laya OFF High、regex-log的训练Laya ON Low／High与原始Kev OFF High／Max、modernize-scientific-stack的原始Kev ON High。regex-log原始Laya ON Max及原始Kev OFF Low的有效0、overfull-hbox原始Laya OFF Low的有效0均保留；后者188475 Token、$0.01053206参考费、513.345172秒。overfull-hbox High／Max和openssl-selfsigned-cert另两项原0仍有Provider或Router超时，保持技术缺分。00:04与00:45在视频队列0／0、H3活动0时通过原/free释放闲置模型，健康服务和GPU锁保持。
 
@@ -26,9 +24,16 @@ build-pmars恢复中GLM持续503，已结束的8个位置均为PROVIDER_RETRY_DE
 
 12:29，两个Kev请求因闲置ComfyUI模型占用约40GB显存等待；运行／等待队列及H3活动均0时，通过原8187/free卸载，整卡占用从41946降至7468MiB。原始Kev ON Max同一请求恢复CUDA，实际GPU等待570.776秒，随后Luna Max生成HTTP200；费用和任务原期限沿原Episode记录。
 
-12:46起，有限接续696492负责补齐`vulnerable-secret`及`break-filter-js-from-html`两题。vulnerable-secret的Terra High、Luna High与break-filter的GLM Low、Terra High、Luna High已有官方Reward 1；Luna High恢复第三Trial传输中断后，于下一独立Trial取得官方1。PID717793等待696492结束后沿原入口完成两题剩余Model-only、联合Router及历史必要位置。已取得的1／0直接复用；Model-only当前两个恢复位为cancel-async-tasks与chess-best-move。服务器Docker VM的QEMU KVM、Docker Engine 29.9.2与用户socket转发均保持在线。
+12:46起，有限接续696492负责在主队列及原观察结束后补齐`vulnerable-secret`及`break-filter-js-from-html`两题的Model-only、联合Router及历史必要位置。vulnerable-secret的Terra High、Luna High与break-filter的GLM Low、Terra High、Luna High已有官方Reward 1；Luna High原额度403与传输中断Trial保留，下一独立Trial官方1保存。15:23撤掉范围重复且尚无子任务的等待者747251及其待机代理63521，保留696492／86519。有效1／0直接复用；QEMU KVM、Docker Engine 29.9.2与用户socket转发沿原环境运行。
 
-14:54至15:04，`chess-best-move`的Kev与Laya Model-only已有14个有效官方0；新增Kev原始ON Low／High两项有效Reward 0。任务错误结果原样保留、不重复运行。
+15:21，`chess-best-move`训练Kev OFF High／Max新增两个官方Reward 1。15:22逐题表为2通过、12有效失败、10项技术缺分或处于恢复过程；原Reward 0按有效失败及技术故障分别保存。
+
+| 训练Kev／固定Effort／教师 | 官方Reward | 本次API Token | 本次已知参考USD | 本次Harbor秒 |
+|---|---:|---:|---:|---:|
+| High／OFF | 1 | 96133 | 0.03866100 | 485.389615 |
+| Max／OFF | 1 | 70282 | 0.04383720 | 421.238490 |
+
+上述两次独立Trial的请求费用缺项均为0；原请求、工具和Verifier结果见本批对应`trials/chess-best-move/`目录。
 
 ### build-cython-ext：训练Kev完整Episode
 
