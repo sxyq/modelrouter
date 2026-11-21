@@ -6,7 +6,7 @@ count-dataset-tokens新增两个有效官方1：训练Kev OFF Low为101419 Token
 
 Caffe的GLM Low独立恢复在官方APT阶段再次到1200秒，缺Reward，140465已报Token、$0.00665855已知参考费、1次费用未知。原容器已退出。23:25替换无响应的99588转发后，远端代理恢复200，现SSH94200；原uv／uvx缓存为官方0.9.5，发布站在原运行配置中改用直连，Docker客体HEAD返回200／1.16秒。
 
-两条原父控制器暂停后续派发，六个在途Episode自然结束后由1154473（固定）与1154474（Router）沿原rq1入口接续；六项cobol由1154475等待Router结束。观察1155155／1155156／1155157复用原目录与1200秒间隔，原代理后继17471跟随本轮控制器。
+原六个在途Episode已于23:56全部结束，旧父控制器及Native110914已释放；1154473（固定）与1154474（Router）沿原rq1入口接续，新Native1169087加载原四权重。六项cobol由1154475等待Router结束。观察1155155／1155156／1155157复用原目录与1200秒间隔，原代理后继17471跟随本轮控制器。
 
 本次执行排除vulnerable-secret、break-filter-js-from-html、FEAL两题、crack-7z-hash、password-recovery、git-leak-recovery、model-extraction-relu-logits及dna-insert；保留原评分、Trial和分母。联合696个未首跑Router位置中624项继续、72项留为未执行。
 

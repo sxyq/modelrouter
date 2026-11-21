@@ -10,7 +10,7 @@
 
 count-dataset-tokens训练Kev OFF Low与原始Kev ON Max新增官方1，分别101419／80542已报Token、$0.03853500／$0.00494588已知参考费、725.872942／952.255419秒；后者1次请求费用未知。历史overfull-hbox／GLM Low的官方4项断言3过1败，train-fasttext的2项均败，两个有效0保留；Caffe再次在APT阶段到原评分时限且缺Reward。
 
-23:40已把两条旧控制器的后续派发交给1154473（固定）与1154474（Router），各等待原在途子任务自然结束，再释放旧持有进程。仍沿原rq1入口、固定4／Router2；1154475负责既有六项cobol，等待1154474。三批观察1155155／1155156／1155157每1200秒复用原三个导出目录。SSH94200维持17898→本机17897，待机17471接续新控制器；凭据只沿原memfd。
+23:56两条旧控制器均在原子任务结束后释放，1154473（固定）与1154474（Router）已沿原rq1入口接管；新Native1169087已加载四套原权重，固定4／Router2。1154475负责既有六项cobol，等待1154474。三批观察1155155／1155156／1155157每1200秒复用原三个导出目录。SSH94200维持17898→本机17897，待机17471接续新控制器；凭据只沿原memfd。
 
 执行排除9题：vulnerable-secret、break-filter-js-from-html、FEAL两题、crack-7z-hash、password-recovery、git-leak-recovery、model-extraction-relu-logits、dna-insert。原矩阵、已有成绩与费用保留；联合696项中72项留为未执行，624项在本次可执行范围。
 
