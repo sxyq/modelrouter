@@ -20,9 +20,9 @@ Caffe的GLM Low独立恢复在官方APT阶段再次到1200秒，缺Reward，1404
 
 1154473（固定）与1154474（Router）沿原rq1入口运行，Native1169087加载原四权重；六项cobol由1154475等待Router结束。
 
-原89题计划、各分母和已有成绩保留。九题等待进程1186795在未派发题目时结束。本地取证与清理题`git-leak-recovery`、`password-recovery`由1217905接续。`vulnerable-secret`、`break-filter-js-from-html`、两项FEAL、`crack-7z-hash`和`model-extraction-relu-logits`仅保留已有记录。`dna-insert`输入仅标input和output，质粒及新增序列来源未确认。联合696个Router位置中，640项进入现行执行，另56项保留原计划位置。
+联合696个Router位置中，648项进入现行执行。`vulnerable-secret`、`break-filter-js-from-html`、两项FEAL、`crack-7z-hash`和`model-extraction-relu-logits`对应的48项保留计划位置及已有记录。`dna-insert`与官方荧光报告质粒的唯一变化为39碱基ALFA标签，已纳入原入口1224021，与本地取证与清理题`git-leak-recovery`、`password-recovery`一同接续。
 
-现行观察1187905／1187906／1187907继续原导出目录与1200秒间隔。SSH64205及后继2296负责17898→17897，跟随现有五条有限队列。两个过时公开导出副本约350MiB已删除，可从原记录重新导出。
+现行观察1187905／1187906／1187907继续原导出目录与1200秒间隔。SSH64205及后继10217负责17898→17897，跟随现有五条有限队列。两个过时公开导出副本约350MiB已删除，可从原记录重新导出。
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过、9失败，5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均已自然退出；历史固定恢复955580接续112个明确技术或账户故障位置。
 
