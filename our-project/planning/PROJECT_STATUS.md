@@ -1,10 +1,10 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前执行 · 2026-11-22 03:04远端最新导出与有限接续
+## 当前执行 · 2026-11-22 03:44左右远端最新导出与有限接续
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过／9失败。新增overfull-hbox的Luna High为0、Terra High为1；此前Terra十二项8／4、GLM Low四项均0、tune-mjcf／Luna High为1。共5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均自然退出；逐题结果见[当前报告](../results/benchmark/README.md)。
 
-Model-only 2134／2136结束，481／336为有效1／0，1281项缺有效评分，36项评分依赖故障，2项恢复运行。联合261／957结束，143／107为有效1／0，11项缺有效评分，696项保留待执行快照；1154474主队列覆盖624项，1224021续接24项，48项按现有范围不执行。历史导出1509／1513结束，406／475为有效1／0，579项缺有效评分，49项评分依赖故障，4项运行、0项待执行；1154473仍在当前固定恢复队列。费用、逐题用量与缺分见[批次报告](../results/benchmark/README.md)。
+Model-only 2134／2136结束，484／341为有效1／0，1273项缺有效评分，36项评分依赖故障，2项运行，2403 Trial，已知参考费$54.79363584，2554次费用未知请求，Provider额外重试11149次。联合261／957结束，143／107为有效1／0，11项缺有效评分，696项保留待执行快照，403 Trial，已知参考费$17.86228316，209次费用未知请求，Provider额外重试2377次；1154474主队列覆盖624项，1224021续接24项，48项按现有范围不执行。历史导出1512／1513结束，407／475为有效1／0，581项缺有效评分，49项评分依赖故障，1项运行，3054 Trial，已知参考费$53.58548757，1485次费用未知请求，Provider额外重试3137次；1154473仍在当前固定恢复队列。费用、逐题用量与缺分见[批次报告](../results/benchmark/README.md)。
 
 db-wal-recovery按`per_episode.csv`实际`strategy_id`记录：Model-only的`laya_original_off_model_only_low`／`laya_original_off_model_only_high`／`laya_original_off_model_only_max`为1，`laya_trained_off_model_only_max`为1；`laya_original_on_model_only_low`／`laya_original_on_model_only_high`／`laya_original_on_model_only_max`、`laya_trained_off_model_only_low`／`laya_trained_off_model_only_high`、`laya_trained_on_model_only_low`／`laya_trained_on_model_only_high`／`laya_trained_on_model_only_max`为0。历史的`glm_high`为1、`glm_low`／`glm_max`为0；其余缺有效Reward保留缺分。
 
@@ -12,7 +12,7 @@ db-wal-recovery按`per_episode.csv`实际`strategy_id`记录：Model-only的`lay
 
 count-dataset-tokens训练Kev OFF Low与原始Kev ON Max新增官方1，分别101419／80542已报Token、$0.03853500／$0.00494588已知参考费、725.872942／952.255419秒；后者1次请求费用未知。历史overfull-hbox／GLM Low的官方4项断言3过1败，train-fasttext的2项均败，两个有效0保留；Caffe再次在APT阶段到原评分时限且缺Reward。
 
-1154473（固定）、1154474（Router）与1154475（六项cobol）沿原rq1入口运行。Native1169087加载四套原权重，固定最多4／Router最多2。1216401等待1154473处理Caffe／GLM Low／Seed43单题；1224021仅等待1154473、1154474、1154475、1216401。三批观察1187905／1187906／1187907每1200秒复用原导出目录。SSH64205由17471持有，后续由现有接续进程处理，凭据沿原memfd。Provider最多额外100次重试已部署；1268679已退出。
+1154473（固定恢复）与1154474（Router）仍在运行；1154475（六项cobol）、1216401（Caffe／GLM Low／Seed43单题）与1224021仍在等待，1224021仅等待前四者。Native1169087加载四套原权重，固定最多4／Router最多2。三批观察1187905／1187906／1187907每1200秒复用原导出目录。SSH64205由17471持有，后续由现有接续进程处理，凭据沿原memfd。Provider最多额外100次重试已部署；1268679已退出。
 
 联合Router原计划696项。1154474覆盖624项，1224021覆盖本地取证／清理和荧光报告质粒三题的24项。六题涉及自动化漏洞利用或密钥提取，原待机进程1268679已退出，相关48项不执行。保留原89题计划分母和历史评分。
 
