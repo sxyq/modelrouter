@@ -1,5 +1,9 @@
 # 下一批完整关联 Execution 工作包
 
+2026-11-21 23:42：最新评分与费用见[结果入口](../../benchmark/README.md)。1154473等待原955580四个在途子进程结束后接续固定恢复；1154474等待原4114699两个在途Episode结束后接续Model-only、联合Router及历史Router。旧父进程已停止新派发，健康子任务继续；旧Native110914只在两项结束后退出。1154475等待1154474后处理既有六项cobol。沿原rq1入口与原导出目录，观察1155155／1155156／1155157每1200秒采集，SSH94200及后继17471负责17898→17897。凭据沿原memfd，勿另建相同范围队列。
+
+执行排除vulnerable-secret、break-filter-js-from-html、FEAL两题、crack-7z-hash、password-recovery、git-leak-recovery、model-extraction-relu-logits、dna-insert。原任务矩阵、Trial和评分保留；联合87题中78题的624个Router位置继续，另72位置留为未执行。Caffe旧评分在APT阶段再次到原1200秒，待实际下载路径恢复后沿原单题入口处理。原99588转发已更换，远端代理200；运行配置发布站直连，原缓存uv／uvx0.9.5已就绪。
+
 2026-11-21 22:20：三批22:17导出已同步。Model-only461／320有效1／0、1317缺分、36依赖故障、2352 Trial；count-dataset-tokens训练Laya OFF High／Max新增官方1，ON Low／High因Router超时保持技术缺分。联合261／957结束、143／107、11缺分、696 Router待首跑，本轮19项10过9败。历史403／448、609缺分、52依赖故障、3014 Trial，1项恢复运行；Terra九项5过4败，GLM Low首14项当前2过9败2技术缺分，余train-fasttext。reshard-c4-data新增1、596848已报Token、$0.03765780已知参考费、1次费用未知；rstan-to-pystan新增有效0。22:13原运行配置将APT镜像加入no_proxy／NO_PROXY，客体直连200；22:20视频与H3均闲置时原/free再次释放显存，22:21 GPU1530MiB。继续原112位置及主队列。
 
 已完成交接：980527于20:16:48实际恢复955580，972291及980527自然结束；固定5并发事件及涉及Trial已记原日志。Caffe／GLM Low／Seed43旧APT仅收到InRelease即超时，现已由原恢复函数识别为VERIFIER_DOWNLOAD_TIMEOUT；1015278等待4114699／955580／696492后沿原CLI恢复一次。99588继续原17898转发，待机19344跟随4114699／696492／871083／955580／1015278，旧51503已在无子任务时替换。继续112位置与主队列，已有有效1／0直接复用。

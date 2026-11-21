@@ -1,14 +1,20 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前执行 · 2026-11-21 22:20联合与历史恢复
+## 当前执行 · 2026-11-21 23:42技术恢复与有限接续
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过／9失败。新增overfull-hbox的Luna High为0、Terra High为1；此前Terra十二项8／4、GLM Low四项均0、tune-mjcf／Luna High为1。共5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均自然退出；逐题结果见[当前报告](../results/benchmark/README.md)。
 
-本次保存三批原分析器22:17导出：Model-only2134／2136结束、461／320有效1／0、1317缺有效评分与36项Verifier依赖故障，另2项恢复运行；2352个Trial、311080776已报API Token、$54.01078061已知参考费、2529次请求费用未知。联合261／957结束、143／107、11缺分、402个Trial，696个Router位置待首跑。历史1512／1513结束、403／448、609缺分与52项依赖故障，1项运行；3014个Trial、465058929已报Token、$52.79412051已知参考费、1465次请求费用未知。
+23:41–23:42导出：Model-only 2134／2136结束、463／322有效1／0、1313缺分与36项Verifier依赖故障，2360 Trial，2项恢复运行。联合261／957结束、143／107、11缺分、403 Trial，696个Router位置待首跑。历史1510／1513结束、403／454、601缺分与52项依赖故障，3022 Trial，3项恢复运行。用量与费用见[批次报告](../results/benchmark/README.md)。
 
-历史固定恢复955580范围112，首9个Terra已全部完成5通过／4有效失败、4667095 Token、$1.18037500参考费、费用缺项0。GLM Low首14项当前2通过／9有效失败／2技术缺分，余train-fasttext运行；新增rstan-to-pystan有效0、reshard-c4-data官方1，596848已报Token、$0.03765780已知参考费与1次费用未知。两项技术缺分为overfull-hbox的APT下载超时、path-tracing-reverse的供应商超额输出。原4114699／110914继续Model-only；count-dataset-tokens训练Laya OFF High／Max新增官方1，分别160768／157889 Token、$0.01075872／$0.00858068、653.507544／740.482384秒，费用缺项0。ON Low／High两项原0均有Router超时，保持技术缺分。22:20再次在视频及H3活动均0时沿原/free释放闲置显存，22:21 GPU1530MiB；原始Kev OFF Low生成已恢复。696492、871083保持既有顺序。
+历史固定首9个Terra全部完成5通过／4有效失败、4667095 Token、$1.18037500参考费、费用缺项0。GLM Low首14项现为2通过／11有效失败／1技术缺分，余项path-tracing-reverse为供应商超额输出。count-dataset-tokens训练Laya OFF High／Max的官方1及ON Low／High的Router超时分别保留。
 
-Caffe／GLM Low／Seed43旧Verifier仅收到APT InRelease索引即超时，恢复入口已识别该实际特征，并部署到原工程；官方脚本与原1200秒保持。1015278沿原CLI等待4114699／955580／696492后各恢复这一位置一次。SSH99588继续17898→本机17897，待机19344跟随4114699／696492／871083／955580／1015278；原51503已在无子任务时替换。仓库5383b22dc保存三批此前评分、联合19项及Model-only同题成本比较。
+count-dataset-tokens训练Kev OFF Low与原始Kev ON Max新增官方1，分别101419／80542已报Token、$0.03853500／$0.00494588已知参考费、725.872942／952.255419秒；后者1次请求费用未知。历史overfull-hbox／GLM Low的官方4项断言3过1败，train-fasttext的2项均败，两个有效0保留；Caffe再次在APT阶段到原评分时限且缺Reward。
+
+23:40已把两条旧控制器的后续派发交给1154473（固定）与1154474（Router），各等待原在途子任务自然结束，再释放旧持有进程。仍沿原rq1入口、固定4／Router2；1154475负责既有六项cobol，等待1154474。三批观察1155155／1155156／1155157每1200秒复用原三个导出目录。SSH94200维持17898→本机17897，待机17471接续新控制器；凭据只沿原memfd。
+
+执行排除9题：vulnerable-secret、break-filter-js-from-html、FEAL两题、crack-7z-hash、password-recovery、git-leak-recovery、model-extraction-relu-logits、dna-insert。原矩阵、已有成绩与费用保留；联合696项中72项留为未执行，624项在本次可执行范围。
+
+23:25更换无响应的原99588转发，远端代理恢复200；原缓存uv／uvx均为官方0.9.5。运行配置将github.com及release-assets.githubusercontent.com加入no_proxy，astral.sh继续原代理；实际Docker客体发布包HEAD直连200、1.16秒。共享视频及H3空闲时通过原/free释放模型，原GPU锁与健康任务继续。
 
 22:13原运行配置`no_proxy`／`NO_PROXY`加入`mirrors.ustc.edu.cn`并同步A6000；同一1MiB索引片段宿主直连0.446秒、代理3.603秒，原Docker客体直连InRelease返回200。后续Episode沿原入口应用，官方APT、签名及模型转发保持。
 

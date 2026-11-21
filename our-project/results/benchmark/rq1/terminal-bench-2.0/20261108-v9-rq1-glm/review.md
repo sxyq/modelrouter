@@ -4,17 +4,17 @@
 
 **Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
-共1513个任务/策略/seed位置；已结束1512，运行中1，未开始0，渠道档位不可用0。有效官方任务评分1/0为403/448，缺有效评分 609，原Verifier依赖失败52位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。
+共1513个任务/策略/seed位置；已结束1510，运行中3，未开始0，渠道档位不可用0。有效官方任务评分1/0为403/454，缺有效评分 601，原Verifier依赖失败52位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。
 
-已保存原Harbor Trial 3014次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。
+已保存原Harbor Trial 3022次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。
 
-已知模型参考费$52.65025509、教师$0.14386542，合计$52.79412051；1465次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。
+已知模型参考费$52.73357083、教师$0.14386542，合计$52.87743625；1471次请求费用未知。供应商实收、Router、工具、CPU/GPU和VM美元价缺失，完整现金费用未知。
 
 费用主表包含全部已结束尝试。逐Episode表的latest_trial_*字段单列最后一次运行的参考费和API Token。official_reward保留原分数；缺有效评分包含未返回Reward及已记录请求/资源故障的原0。官方测试依赖缺失且未执行任务断言的尝试另列。
 
-Harbor命令累计墙钟1532343.355473秒，内含官方Trial累计1513170.390730秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。
+Harbor命令累计墙钟1544535.756900秒，内含官方Trial累计1525323.592709秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。
 
-按逐题表：89/89题已有结束记录；88题已结束全部9个固定/简单策略；88题已结束全部17个策略。
+按逐题表：89/89题已有结束记录；86题已结束全部9个固定/简单策略；86题已结束全部17个策略。
 
 GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。
 
@@ -22,8 +22,8 @@ GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请
 
 | 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 评分覆盖 | 89题通过率区间 | 缺有效评分 | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| glm_low | 88 | 42 | 42 | 42/84 = 50.00% | 84/89 | 47.19%—52.81% | 4 | 1 | 0 | 0 | 2.46039491 |
-| glm_high | 89 | 37 | 35 | 37/72 = 51.39% | 72/89 | 41.57%—60.67% | 16 | 0 | 0 | 0 | 3.60949096 |
+| glm_low | 89 | 42 | 44 | 42/86 = 48.84% | 86/89 | 47.19%—50.56% | 3 | 0 | 0 | 0 | 2.48989393 |
+| glm_high | 86 | 37 | 39 | 37/76 = 48.68% | 76/89 | 41.57%—56.18% | 9 | 3 | 0 | 0 | 3.66330768 |
 | glm_max | 89 | 35 | 37 | 35/72 = 48.61% | 72/89 | 39.33%—58.43% | 17 | 0 | 0 | 0 | 3.42192357 |
 | luna_low | 89 | 21 | 57 | 21/78 = 26.92% | 78/89 | 23.60%—35.96% | 10 | 0 | 0 | 0 | 0.43558043 |
 | luna_high | 89 | 29 | 47 | 29/76 = 38.16% | 76/89 | 32.58%—47.19% | 12 | 0 | 0 | 0 | 1.20460446 |
@@ -40,22 +40,22 @@ GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请
 | kev_trained_off | 89 | 16 | 4 | 16/20 = 80.00% | 20/89 | 17.98%—95.51% | 63 | 0 | 0 | 0 | 9.19439320 |
 | kev_trained_on | 89 | 26 | 7 | 26/33 = 78.79% | 33/89 | 29.21%—92.13% | 47 | 0 | 0 | 0 | 11.02521100 |
 
-实际执行跨度：2026-11-08T15:48:04.949644+00:00至2026-11-21T14:01:41.267913+00:00，1116816.318269秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。
+实际执行跨度：2026-11-08T15:48:04.949644+00:00至2026-11-21T15:41:27.494524+00:00，1122802.544880秒；按最早COMMAND_START与最晚COMMAND_END计算，包含批次间等待。
 
 
 评分覆盖是已取得有效官方评分的任务数/89；通过率区间把其余位置分别按全部未通过或全部通过计算。
 
-已报告输入451,244,232、输出13,814,697 Token；1,457次请求缺用量。推理包含在输出内，缓存读取包含在输入内，各只计一次；数值包含模型、教师及全部已发生尝试。
+已报告输入452,273,030、输出13,851,971 Token；1,463次请求缺用量。推理包含在输出内，缓存读取包含在输入内，各只计一次；数值包含模型、教师及全部已发生尝试。
 
 Router本地前向另报告输入34,619,004、输出1,158,807 Token；0次决策缺用量。其计算费用按A6000资源计量，美元单价未知。
 
-Provider实际报告缓存读取375,348,604 Token；2103次请求未报告缓存读取；跨模型物理KV共享未知。
+Provider实际报告缓存读取376,095,612 Token；2109次请求未报告缓存读取；跨模型物理KV共享未知。
 
 教师请求473次，短评实际输入Router 886次；同一短评可由多次决策消费。
 
-Provider实际额外重试3119次；已记录技术恢复682次，涉及404个位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。
+Provider实际额外重试3127次；已记录技术恢复692次，涉及404个位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。
 
-Provider报告输出超过请求额度375次；其中1个额度终止位置单列渠道故障，原官方Reward及全部费用保留。请求额度内的正常length原0继续保留；不因本项重复已评分任务。
+Provider报告输出超过请求额度376次；其中2个额度终止位置单列渠道故障，原官方Reward及全部费用保留。请求额度内的正常length原0继续保留；不因本项重复已评分任务。
 
 已记录Router输入截断4次，涉及3个位置；原输入及官方结果保留在逐Episode表。
 
@@ -74,18 +74,18 @@ Provider报告输出超过请求额度375次；其中1个额度终止位置单�
 
 | 原异常类型 | Reward1 | Reward0 | 缺有效评分 |
 |---|---:|---:|---:|
-| AgentTimeoutError | 40 | 168 | 76 |
+| AgentTimeoutError | 40 | 173 | 69 |
 | EnvironmentStartTimeoutError | 0 | 0 | 28 |
 | HTTPError | 0 | 0 | 294 |
 | NO_RECORDED_ERROR | 363 | 263 | 34 |
 | NonZeroAgentExitCodeError | 0 | 0 | 5 |
-| OutputTokenExceededError | 0 | 17 | 1 |
+| OutputTokenExceededError | 0 | 18 | 3 |
 | ProviderResponseError | 0 | 0 | 106 |
 | RemoteDisconnected | 0 | 0 | 14 |
 | RuntimeError | 0 | 0 | 30 |
 | URLError | 0 | 0 | 30 |
 | ValueError | 0 | 0 | 2 |
-| VerifierTimeoutError | 0 | 0 | 42 |
+| VerifierTimeoutError | 0 | 0 | 41 |
 
 ## 同题训练、教师与消融对照
 
@@ -102,7 +102,7 @@ Provider报告输出超过请求额度375次；其中1个额度终止位置单�
 | training | kev_original_off → kev_trained_off | 17 | 6/14 | 9 | 4/8 | 0.03084862 / 0.84991960 |
 | training | kev_original_on → kev_trained_on | 25 | 11/21 | 13 | 8/11 | 0.05194438 / 1.21800562 |
 | fixed_vs_router | glm_low → laya_original_off | 12 | 8/7 | 4 | 3/3 | 0.08251028 / 0.06967313 |
-| fixed_vs_router | glm_low → laya_original_on | 7 | 4/3 | 2 | 1/1 | 0.04227675 / 0.03723031 |
+| fixed_vs_router | glm_low → laya_original_on | 8 | 4/3 | 2 | 1/1 | 0.04227675 / 0.03723031 |
 | fixed_vs_router | glm_low → laya_trained_off | 7 | 5/4 | 2 | 2/1 | 0.02393492 / 0.03696540 |
 | fixed_vs_router | glm_low → laya_trained_on | 8 | 5/3 | 3 | 2/1 | 0.06114758 / 0.07356230 |
 | fixed_vs_router | glm_low → kev_original_off | 52 | 28/11 | 9 | 7/2 | 0.14226416 / 0.02652834 |
@@ -113,10 +113,10 @@ Provider报告输出超过请求额度375次；其中1个额度终止位置单�
 | fixed_vs_router | glm_high → laya_original_on | 8 | 4/3 | 0 | 0/0 | UNKNOWN / UNKNOWN |
 | fixed_vs_router | glm_high → laya_trained_off | 6 | 4/4 | 0 | 0/0 | UNKNOWN / UNKNOWN |
 | fixed_vs_router | glm_high → laya_trained_on | 7 | 6/3 | 0 | 0/0 | UNKNOWN / UNKNOWN |
-| fixed_vs_router | glm_high → kev_original_off | 42 | 24/10 | 4 | 2/1 | 0.10132981 / 0.01407712 |
-| fixed_vs_router | glm_high → kev_original_on | 40 | 26/15 | 5 | 4/3 | 0.07217661 / 0.01289234 |
-| fixed_vs_router | glm_high → kev_trained_off | 16 | 12/13 | 4 | 3/3 | 0.08095072 / 0.21023380 |
-| fixed_vs_router | glm_high → kev_trained_on | 26 | 16/21 | 3 | 3/3 | 0.03944069 / 0.17267320 |
+| fixed_vs_router | glm_high → kev_original_off | 43 | 24/10 | 4 | 2/1 | 0.10132981 / 0.01407712 |
+| fixed_vs_router | glm_high → kev_original_on | 41 | 26/15 | 5 | 4/3 | 0.07217661 / 0.01289234 |
+| fixed_vs_router | glm_high → kev_trained_off | 17 | 12/14 | 4 | 3/3 | 0.08095072 / 0.21023380 |
+| fixed_vs_router | glm_high → kev_trained_on | 28 | 16/23 | 3 | 3/3 | 0.03944069 / 0.17267320 |
 | fixed_vs_router | glm_max → laya_original_off | 12 | 6/7 | 4 | 4/3 | 0.08384967 / 0.06967313 |
 | fixed_vs_router | glm_max → laya_original_on | 7 | 4/3 | 1 | 1/1 | 0.02156601 / 0.02143155 |
 | fixed_vs_router | glm_max → laya_trained_off | 7 | 5/4 | 2 | 2/1 | 0.03714903 / 0.03696540 |
