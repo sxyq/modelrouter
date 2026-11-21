@@ -1,5 +1,7 @@
 # 下一批完整关联 Execution 工作包
 
+2026-11-21 19:32：联合Terra High的12项恢复已全部获得有效官方评分，8通过／4失败，4,377,779已报API Token、$1.08236780已知模型参考费、请求费用缺项0；885120自然退出。Terra本批87题当前62／23／2（通过／有效失败／缺分），两项原Verifier超时保留。891922已自动启动原四个GLM Low传输故障位置，随后接续tune-mjcf／Luna High；原主4114699／110914继续Model-only，696492及871083仍按原顺序等待。账户恢复读取最后一次尝试正文的096a237c5已部署并推送。
+
 2026-11-21 18:54：联合固定Terra High恢复885120与原Model-only两个Router并行，原固定4并发。精确12题：polyglot-c-py、polyglot-rust-c、torch-tensor-parallelism、tune-mjcf、caffe-cifar-10、filter-js-from-html、mcmc-sampling-stan、path-tracing、compile-compcert、schemelike-metacircular-eval、reshard-c4-data、video-processing。891922持有原内存凭据并等待885120，随后接续GLM Low的make-doom-for-mips、schemelike-metacircular-eval、circuit-fibsqrt、regex-chess四项，最后接续tune-mjcf／Luna High额度故障。两条有限固定队列日志均追加原联合.private/controller.log；后续原主队列复用新有效评分。
 
 账户恢复函数已读取最后一次请求尝试对应的正文；真实tune-mjcf最后.retry-006.sse为pre_consume_token_quota_failed，原函数现返回PROVIDER_ACCESS_RESTORED。FEAL两题content_policy_violation返回空恢复原因；不将其加入账户恢复。原任务时限、模型、Effort、Seed43、4096及官方Verifier保持原配置。

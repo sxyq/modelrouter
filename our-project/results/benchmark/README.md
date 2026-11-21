@@ -1,24 +1,45 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前执行 · 2026-11-21 联合固定策略恢复
+## 当前执行 · 2026-11-21 19:32联合固定恢复
 
-18:54起，原联合Seed43批次沿`v9_joint_paired.json`恢复12个Terra High传输故障位置，控制器885120、固定最多4并发，与原Model-only两个Router并行。有限891922在该固定队列结束后接续4个GLM Low传输故障位置及tune-mjcf／Luna High额度故障；新评分和原故障各保留独立Trial。
+联合Seed43的12个Terra High旧传输故障位置已取得8个官方1、4个有效官方0，原控制器885120自然退出。有限891922已接续4个GLM Low传输故障位置，随后处理tune-mjcf／Luna High额度故障；固定最多4并发，与原Model-only两个Router并行。
 
-账户恢复入口已按`account_attempts`最后一项读取对应`.retry-NNN.sse`。真实tune-mjcf的第6次尝试返回额度不足，现已识别；FEAL两题的供应商`content_policy_violation`继续保留缺分。下表仍为18:30已保存快照，当前恢复结果将在官方Verifier完成后更新。
+账户恢复入口`096a237c5`已部署并推送，按`account_attempts`最后一项读取对应`.retry-NNN.sse`。真实tune-mjcf的第6次尝试返回额度不足，现已识别；FEAL两题的供应商`content_policy_violation`继续保留缺分。
 
-## 已保存结果 · 2026-11-21 18:30
+### 本轮Terra High独立恢复
 
-三批由 A6000 现行分析器连续导出；各批报告、指标和 `trials/` 来自对应导出。下方较早时刻的记录保留为历史。
+下表为Seed43、原High档位及4096设置，全部沿原Harbor和官方Verifier完成。12次新Trial共4,377,779个已报Token、$1.08236780已知模型参考费，请求费用缺项0；供应商实收仍未知。原失败的费用、用量及耗时继续保留在累计表和`previous_attempts`。
+
+| 任务 | 官方Reward | 本次已报API Token | 本次已知参考USD | 本次Harbor秒 |
+|---|---:|---:|---:|---:|
+| polyglot-c-py | 1 | 68081 | 0.04075940 | 443.869847 |
+| polyglot-rust-c | 1 | 68523 | 0.03428140 | 443.873060 |
+| torch-tensor-parallelism | 0 | 41262 | 0.02163640 | 578.462370 |
+| tune-mjcf | 1 | 192817 | 0.06268820 | 503.661748 |
+| caffe-cifar-10 | 0 | 1314913 | 0.22221460 | 1274.598698 |
+| filter-js-from-html | 0 | 60506 | 0.04307720 | 393.105665 |
+| mcmc-sampling-stan | 1 | 635911 | 0.12320540 | 1281.946261 |
+| path-tracing | 1 | 276270 | 0.11523880 | 238.277992 |
+| compile-compcert | 1 | 1267381 | 0.21682180 | 1394.867358 |
+| schemelike-metacircular-eval | 1 | 224225 | 0.07752740 | 518.880298 |
+| reshard-c4-data | 1 | 131405 | 0.06036100 | 399.879816 |
+| video-processing | 0 | 96485 | 0.06455620 | 265.990953 |
+
+torch-tensor-parallelism原测试9过4败；filter-js-from-html两项断言均失败；Caffe在原1200秒结束时缺目标二进制，原测试1过5败。四个有效0均保留。Terra High在本批87题累计62通过、23有效失败、2项缺分；其余两项为overfull-hbox和query-optimize的原Verifier超时。该组87题分母保留，另外两题的Seed43既有结果沿原批次复用。
+
+## 已保存结果 · 2026-11-21
+
+三批由 A6000 现行分析器导出：Model-only为19:33快照，Seed43联合为19:31的Terra恢复终局，历史为18:27快照。各批报告、指标和`trials/`来自对应导出；19:32起的GLM恢复另行接续。
 
 16:08已恢复原SSH与rsync直连。此前新连接被生产Clash TUN送入拒绝22端口转发的A6000节点，实际日志为`ssh: rejected: administratively prohibited (open failed)`；本机现有SSH配置仅为`Host 10.16.15.202`设置`BindInterface en0`。原主队列4114699、Router110914、两题接续696492及三个观察进程均实读存活。
 
 | 批次 | 已结束／计划 | 有效 Reward 1／0 | 缺有效评分 | 评分依赖故障 | 运行／待执行 | 已报 API Token | 模型＋教师已知参考费 USD | 费用未知请求 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 458／294 | 1346 | 36 | 2／0 | 307938707 | 53.31921439 | 2503 |
-| [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 133／98 | 30 | 0 | 0／696 | 171979127 | 16.66261980 | 208 |
+| [Model-only当前恢复](rq1/terminal-bench-2.0/20261112-v9-model-only/review.md) | 2134／2136 | 459／306 | 1333 | 36 | 2／0 | 309064713 | 53.40251903 | 2512 |
+| [Seed43 联合](rq1/terminal-bench-2.0/20261112-v9-joint-paired/review.md) | 261／957 | 141／102 | 18 | 0 | 0／696 | 176356906 | 17.74498760 | 208 |
 | [Seed42 历史](rq1/terminal-bench-2.0/20261108-v9-rq1-glm/review.md) | 1513／1513 | 396／435 | 630 | 52 | 0／0 | 455699234 | 51.28992757 | 1462 |
 
-有效 1、有效 0、缺有效评分、评分依赖故障四列合计为本次快照的已结束位置。首轮2136位置均已结束，当前2项处于恢复运行。Token 和参考费累计已结束 Trial；每题最后一次独立运行见各批 `metrics/per_episode.csv` 的 `latest_trial_*`。本次Model-only共2318个Trial，联合383个、历史2992个。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部 89 题的 Token 尚缺用量齐全的整轮记录。
+有效1、有效0、缺有效评分、评分依赖故障四列合计为对应快照的已结束位置。Model-only首轮2136位置均已结束，本次2项处于恢复运行。Token和参考费累计已结束Trial；每题最后一次独立运行见各批`metrics/per_episode.csv`的`latest_trial_*`。本次Model-only共2332个Trial，联合395个、历史2992个。供应商实收、Router、工具和共享资源美元费用仍缺项。一个策略完整运行全部89题的Token尚缺用量齐全的整轮记录。
 
 本轮恢复远端17898到原本机17897的模型转发，闲置视频模型经原/free卸载后GPU1530MiB。cobol原始Kev ON Max及训练Kev OFF Low／High／Max、ON Low／High共6项新增官方1；训练Kev ON Max新增有效官方0，原900秒时限结束后原Verifier执行3断言、1过2败，保留该失败。原始Kev四项转发／依赖故障及两项Router超时已交给原单题恢复入口，等待现有主队列及两题接续完成后各处理一次；原Trial、费用与官方成绩分别保存。
 
