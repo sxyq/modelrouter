@@ -31,6 +31,56 @@ def load_generator_credentials() -> Dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+class _DeadlineResponse:
+    def __init__(self, response, deadline):
+        self.response, self.deadline = response, deadline
+        self.buffer = bytearray()
+        self.truncated_line = False
+
+    def _set_timeout(self):
+        if self.deadline is None:
+            return
+        remaining = self.deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError("Original task request deadline reached")
+        self.response.fp.raw._sock.settimeout(remaining)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        while True:
+            self._set_timeout()
+            newline = self.buffer.find(b"\n")
+            if newline >= 0:
+                line = bytes(self.buffer[:newline + 1])
+                del self.buffer[:newline + 1]
+                return line
+            chunk = self.response.read1(65536)
+            if not chunk:
+                if self.response.length:
+                    raise http.client.IncompleteRead(bytes(self.buffer), self.response.length)
+                if not self.buffer:
+                    raise StopIteration
+                self.truncated_line = True
+                line = bytes(self.buffer)
+                self.buffer.clear()
+                return line
+            self.buffer.extend(chunk)
+
+    def read(self):
+        chunks = [bytes(self.buffer)] if self.buffer else []
+        self.buffer.clear()
+        while True:
+            self._set_timeout()
+            chunk = self.response.read1(65536)
+            if not chunk:
+                if self.response.length:
+                    raise http.client.IncompleteRead(b"".join(chunks), self.response.length)
+                return b"".join(chunks)
+            chunks.append(chunk)
+
+
 
 class OpenAICompatibleProvider(BaseGeneratorProvider):
     """Single-request Chat Completions transport; tools belong to the agent."""
@@ -196,14 +246,16 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         if isinstance(exc, ProviderResponseError):
             limited = (metrics.get("finish_reason") == "length" or
                        (metrics.get("incomplete_details") or {}).get("reason") == "max_output_tokens")
-            if str(exc) == "INCOMPLETE_TOOL_CALL":
+            if str(exc) in ("INCOMPLETE_TOOL_CALL", "INCOMPLETE_RESPONSE"):
                 end = metrics.get("stream_end") or {}
-                return not limited and metrics.get("finish_reason") is None and not end.get("terminal_event")
+                interrupted = (metrics.get("stream") and not end.get("done_received")
+                               and not end.get("terminal_event"))
+                return not limited and interrupted and metrics.get("finish_reason") is None
             return not limited and str(exc) in (
-                "EMPTY_RESPONSE", "INCOMPLETE_RESPONSE",
+                "EMPTY_RESPONSE",
                 "rate_limit_error", "server_error", "overloaded_error")
         if isinstance(exc, json.JSONDecodeError):
-            return not exc.doc.strip() or exc.pos >= len(exc.doc) - 2 or exc.msg.startswith("Unterminated string")
+            return not exc.doc.strip() or getattr(exc, "transport_interrupted", False)
         if isinstance(exc, urllib.error.URLError):
             return OpenAICompatibleProvider._retryable(exc.reason, metrics)
         return isinstance(exc, (ConnectionError, TimeoutError,
@@ -318,13 +370,19 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
                     with urllib.request.urlopen(request, timeout=timeout) as response:
                         http_status = response.status
                         response_content_type = response.headers.get("Content-Type")
-                        body, ttft_ms = transport.read(
-                            response, stream or "text/event-stream" in (response_content_type or ""),
-                            started, capture, request_api_key.encode("utf-8"), self._record_response_bytes)
+                        reader = _DeadlineResponse(response, request_deadline)
+                        try:
+                            body, ttft_ms = transport.read(
+                                reader, stream or "text/event-stream" in (response_content_type or ""),
+                                started, capture, request_api_key.encode("utf-8"), self._record_response_bytes)
+                        except json.JSONDecodeError as exc:
+                            exc.transport_interrupted = reader.truncated_line
+                            raise
                 except urllib.error.HTTPError as exc:
                     exc.provider_endpoint_id = pool_endpoint.endpoint_id if pool_endpoint else None
                     if capture is not None:
-                        raw = exc.read()
+                        raw = (_DeadlineResponse(exc.fp, request_deadline).read()
+                               if request_deadline is not None else exc.read())
                         self._record_response_bytes(raw, capture, request_api_key.encode("utf-8"))
                         # Existing HTTPError consumers must still be able to read the body.
                         exc.read = io.BytesIO(raw).read
@@ -440,6 +498,8 @@ class OpenAICompatibleProvider(BaseGeneratorProvider):
         }
         if response_format is not None:
             metrics["requested_response_format"] = response_format
+        if request_deadline is not None and time.monotonic() >= request_deadline:
+            raise ProviderResponseError("TASK_DEADLINE", body, metrics)
         if response_error:
             raise ProviderResponseError(response_error, body, metrics)
         return body, metrics

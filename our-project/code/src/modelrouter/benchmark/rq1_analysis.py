@@ -259,19 +259,45 @@ def provider_requests(trial, events):
     return list(recorded.values())
 
 
+def quality_fault(trial, events):
+    reason = trial.get("reason", "")
+    if reason.startswith("Official test dependency"):
+        return "VERIFIER_DEPENDENCY"
+    if "CTRF report absent" in reason:
+        return "VERIFIER_REPORT_ABSENT"
+    if trial.get("reward") == 1:
+        return None
+    interruption = technical_interruption(trial, events)
+    if interruption:
+        return interruption
+    error = trial.get("error") or {}
+    if error.get("exception_type") == "OutputTokenExceededError" and any(
+            r.get("completion_tokens") is not None and r.get("requested_max_output_tokens") is not None
+            and r["completion_tokens"] > r["requested_max_output_tokens"]
+            for r in provider_requests(trial, events)):
+        return "PROVIDER_OUTPUT_BUDGET_EXCEEDED"
+    return None
+
+
+def has_valid_official_reward(trial, events):
+    return (trial.get("status") == "OFFICIAL_ARTIFACT_VERIFIED"
+            and trial.get("reward") in (0, 1) and quality_fault(trial, events) is None)
+
+
 def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
     """Aggregate Harbor outcomes and the costs recorded by each Provider response."""
     from .iterations import collect_trials, rows, write_atomic, percentile
 
     raw = collect_trials(iteration_dir)
+    events = rows(iteration_dir / "events.jsonl")
     usable = [r for r in raw if r["status"] == "OFFICIAL_ARTIFACT_VERIFIED"
               and r.get("agent") != "oracle" and not r.get("router_fallback_used")
               and r.get("reward") in (0, 1)
+              and has_valid_official_reward(r, events)
               and r.get("policy_implementation_status") != "UNVERIFIED_EXAMPLE"
               and r.get("policy") not in ("routellm", "sr_knn", "laya_v2", "kev_4b")
               and (r.get("policy") not in ("joint_laya", "joint_kev")
                    or r.get("neural_router_evidence_eligible") is True)]
-    events = rows(iteration_dir / "events.jsonl")
     by_policy = defaultdict(list)
     for trial in usable:
         by_policy[trial["policy"]].append(trial)
@@ -345,11 +371,26 @@ def export_official_results(iteration_dir: Path) -> Dict[str, Any]:
             "RQ5_Table9_Fig8": "Need workload labels independent of outcomes and paired observed costs",
         },
         "excluded": [{"trial_id": r.get("trial_id"), "status": r["status"],
-                      "policy": r.get("policy")} for r in raw if r not in usable],
+                      "official_reward": (r.get("reward") if r.get("status") == "OFFICIAL_ARTIFACT_VERIFIED"
+                                          and r.get("reward") in (0, 1) else None),
+                      "raw_verifier_rewards": [a.get("rewards") for a in r.get("verifier_artifacts", [])],
+                      "quality_valid": has_valid_official_reward(r, events),
+                      "technical_fault": quality_fault(r, events), "policy": r.get("policy")}
+                     for r in raw if r not in usable],
     }
     output.update(observed_research_groups(usable, events, trial_requests))
     from .rq3_analysis import compute_decomposition_benchmarks
-    output["rq3_single_agent_observations"] = compute_decomposition_benchmarks(raw, events)
+    rq3 = compute_decomposition_benchmarks(raw, events)
+    trials_by_id = {str(r["trial_id"]): r for r in raw if r.get("trial_id")}
+    for observation in rq3["observations"]:
+        trial = trials_by_id[observation["trial_id"]]
+        official_reward = (trial.get("reward") if trial.get("status") == "OFFICIAL_ARTIFACT_VERIFIED"
+                           and trial.get("reward") in (0, 1) else None)
+        valid = has_valid_official_reward(trial, events)
+        observation.update(official_reward=official_reward, reward=official_reward if valid else None,
+                           quality_valid=valid, technical_fault=quality_fault(trial, events),
+                           raw_verifier_rewards=[a.get("rewards") for a in trial.get("verifier_artifacts", [])])
+    output["rq3_single_agent_observations"] = rq3
     grain = output["rq3_single_agent_observations"]
     grain["granularity_comparisons"] = [r for r in output["table7"] if r["paired_task_seed_sets"]]
     grain["granularity_comparison_status"] = "RECORDED_OFFICIAL_RESULTS" if grain["granularity_comparisons"] else "NOT_EVALUATED"
@@ -540,6 +581,9 @@ def export_batch_results(root, config, output_root=None):
                "execution_environment": None,
                "harbor_trial_count": 0, "attempts_wall_s": None, "harness_command_wall_s": None,
                "teacher_known_reference_usd": None, "reference_cost_usd": None,
+               "latest_trial_id": None, "latest_trial_duration_sec": None,
+               "selected_trial_known_reference_usd": None, "selected_trial_reference_usd": None,
+               "selected_trial_unknown_cost_requests": None,
                "latest_trial_reference_usd": None, "verifier_dependency_failure": False,
                "supplier_billed_usd": None, "router_compute_cost_usd": None,
                "environment_cost_usd": None, "complete_cost_usd": None,
@@ -554,9 +598,15 @@ def export_batch_results(root, config, output_root=None):
         if state["status"] not in ("EVALUATED", "PARTIAL", "BLOCKED") and not trials:
             episodes.append(row)
             continue
-        trial = max(trials, key=lambda r: r["finished_at"]) if trials else {}
-        error = trial.get("error") or {}
+        ordered_trials = sorted(trials, key=lambda t: t["finished_at"])
         events = rows(private / "events.jsonl")
+        latest_trial = ordered_trials[-1] if ordered_trials else {}
+        trial_faults = {t["trial_id"]: quality_fault(t, events) for t in ordered_trials}
+        valid_trials = [t for t in ordered_trials if t.get("status") == "OFFICIAL_ARTIFACT_VERIFIED"
+                        and t.get("reward") in (0, 1) and trial_faults[t["trial_id"]] is None]
+        trial = valid_trials[-1] if valid_trials else latest_trial
+        trial_index = ordered_trials.index(trial) if ordered_trials else 0
+        error = trial.get("error") or {}
         command_starts.extend(datetime.fromisoformat(e["timestamp"]) for e in events if e["event"] == "COMMAND_START")
         command_ends.extend(datetime.fromisoformat(e["timestamp"]) for e in events if e["event"] == "COMMAND_END")
         command_wall_s = sum(e["duration_ms"] for e in events if e["event"] == "COMMAND_END") / 1000
@@ -579,28 +629,49 @@ def export_batch_results(root, config, output_root=None):
         def reported(group, field):
             values = [r.get(field) for r in group]
             return sum(values) if all(v is not None for v in values) else None
+        trial_history = []
+        for attempt in ordered_trials:
+            attempt_requests = provider_requests(attempt, events)
+            attempt_generator = [r for r in attempt_requests if r["role"] == "generator"]
+            attempt_teacher = [r for r in attempt_requests if r["role"] == "teacher"]
+            attempt_reward = (attempt.get("reward") if attempt.get("status") == "OFFICIAL_ARTIFACT_VERIFIED"
+                              and attempt.get("reward") in (0, 1) else None)
+            trial_history.append({**{k: attempt.get(k) for k in (
+                "trial_id", "job_name", "trial_dir", "status", "reward", "started_at",
+                "finished_at", "duration_sec", "phase_wall_s")},
+                "error_type": (attempt.get("error") or {}).get("exception_type"),
+                "official_reward": attempt_reward,
+                "quality_valid": attempt_reward is not None and trial_faults[attempt["trial_id"]] is None,
+                "technical_fault": trial_faults[attempt["trial_id"]],
+                "raw_verifier_rewards": [a.get("rewards") for a in attempt.get("verifier_artifacts", [])],
+                "generator_known_reference_usd": known_cost(attempt_generator),
+                "teacher_known_reference_usd": known_cost(attempt_teacher),
+                "known_reference_usd": known_cost(attempt_requests),
+                "reference_cost_usd": reported(attempt_requests, "cost_usd") if attempt_requests else None,
+                "unknown_cost_requests": sum(r.get("cost_usd") is None for r in attempt_requests)})
         returned_wall = reported(routing, "router_latency_ms")
         router_cpu, router_wait, router_transfer = (
             reported(routing, field) if not unanswered else None
             for field in ("router_cpu_time_sec", "router_gpu_wait_ms", "router_device_transfer_ms"))
-        latest_requests = provider_requests(trial, events) if trial else []
+        result_requests = provider_requests(trial, events) if trial else []
+        latest_requests = provider_requests(latest_trial, events) if latest_trial else []
         output_overruns = [r for r in requests if r.get("completion_tokens") is not None
                            and r.get("requested_max_output_tokens") is not None
                            and r["completion_tokens"] > r["requested_max_output_tokens"]]
         latest_output_overruns = [r for r in latest_requests if r.get("completion_tokens") is not None
                                   and r.get("requested_max_output_tokens") is not None
                                   and r["completion_tokens"] > r["requested_max_output_tokens"]]
-        row["verifier_dependency_failure"] = trial.get("reason", "").startswith("Official test dependency")
-        interrupted = ("VERIFIER_REPORT_ABSENT" if "CTRF report absent" in trial.get("reason", "")
-                       else technical_interruption(trial, events) if trial.get("reward") != 1 else None)
-        if error.get("exception_type") == "OutputTokenExceededError" and latest_output_overruns:
-            interrupted = "PROVIDER_OUTPUT_BUDGET_EXCEEDED"
-        row.update(trial_id=trial.get("trial_id"), reward=None if interrupted else trial.get("reward"),
+        interrupted = trial_faults.get(trial.get("trial_id"))
+        official_reward = (trial.get("reward") if trial.get("status") == "OFFICIAL_ARTIFACT_VERIFIED"
+                           and trial.get("reward") in (0, 1) else None)
+        valid_official_reward = official_reward is not None and interrupted is None
+        row["verifier_dependency_failure"] = interrupted == "VERIFIER_DEPENDENCY"
+        row.update(trial_id=trial.get("trial_id"), latest_trial_id=latest_trial.get("trial_id"),
+                   reward=official_reward if valid_official_reward else None,
                    execution_environment=next((e for e in events if e["event"] == "EXECUTION_ENVIRONMENT"
                        and e.get("episode_id") == trial.get("trial_id")), None),
-                   official_reward=next((a["rewards"].get("reward") for a in trial.get("verifier_artifacts", [])
-                                         if a.get("rewards")), trial.get("reward")),
-                   technical_fault="VERIFIER_DEPENDENCY" if row["verifier_dependency_failure"] else interrupted,
+                   official_reward=official_reward,
+                   technical_fault=interrupted,
                    raw_verifier_rewards=[a.get("rewards") for a in trial.get("verifier_artifacts", [])],
                    provider_output_budget_exceeded_requests=len(output_overruns),
                    latest_output_budget_exceeded_requests=len(latest_output_overruns),
@@ -609,10 +680,15 @@ def export_batch_results(root, config, output_root=None):
                    attempts_wall_s=sum(t["duration_sec"] for t in trials),
                    harness_command_wall_s=command_wall_s,
                    outside_harbor_wall_s=command_wall_s - sum(t["duration_sec"] for t in trials),
-                   previous_attempts=[{**{k: t.get(k) for k in ("trial_id", "job_name", "trial_dir", "status", "reward", "started_at", "finished_at", "duration_sec", "phase_wall_s")}, "error_type": (t.get("error") or {}).get("exception_type")} for t in trials if t is not trial],
+                   previous_attempts=trial_history[:trial_index],
+                   subsequent_attempts=trial_history[trial_index + 1:],
                    official_status=trial.get("status"), error_type=error.get("exception_type"),
-                   failed_provider_http_status=next((r.get("http_status") for r in requests if r.get("event") in ("ERROR", "TEACHER_ERROR") and r.get("http_status")), None),
+                   failed_provider_http_status=next((r.get("http_status") for r in result_requests if r.get("event") in ("ERROR", "TEACHER_ERROR") and r.get("http_status")), None),
                    verifier_path=trial.get("verifier_path"), episode_wall_s=trial.get("duration_sec"),
+                   latest_trial_duration_sec=latest_trial.get("duration_sec"),
+                   selected_trial_known_reference_usd=known_cost(result_requests),
+                   selected_trial_reference_usd=reported(result_requests, "cost_usd") if result_requests else None,
+                   selected_trial_unknown_cost_requests=sum(r.get("cost_usd") is None for r in result_requests) if trial else None,
                    phase_wall_s=trial.get("phase_wall_s"),
                    generator_requests=len(generator), teacher_requests=len(teacher),
                    provider_attempt_count=sum(len(r.get("account_attempts", [])) or 1 for r in requests),

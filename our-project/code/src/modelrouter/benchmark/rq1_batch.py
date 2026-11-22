@@ -75,11 +75,10 @@ def prepare(config_path, revision):
 
 def recovery_reason(path, restored_providers=()):
     """Recover technical interruptions only; never repeat a valid official score."""
-    from .rq1_analysis import technical_interruption
+    from .rq1_analysis import has_valid_official_reward, technical_interruption
     observed = [t for job in (path / "jobs").glob("*") for t in audit_job(job)["trials"]]
     events = iterations.rows(path / "events.jsonl")
-    if any(t["status"] == "OFFICIAL_ARTIFACT_VERIFIED" and (t["reward"] == 1 or
-           t["reward"] == 0 and not technical_interruption(t, events)) for t in observed):
+    if any(has_valid_official_reward(t, events) for t in observed):
         return None
     if not observed:
         return None
