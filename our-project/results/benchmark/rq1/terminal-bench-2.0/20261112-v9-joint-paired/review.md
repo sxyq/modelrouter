@@ -4,7 +4,7 @@
 
 **Single-Agent；Luna/GLM-5.3-Flash/Terra；Model×Native Effort；完整T/M/H；AA精确档位能力；缓存连续性；Luna教师；Laya/Kev原始与最终训练版；A6000原Harbor；完整任务质量—总成本净收益。**
 
-共957个任务/策略/seed位置；已结束261，运行中0，未开始696，渠道档位不可用0。有效官方任务评分1/0为143/107，缺有效评分 11，原Verifier依赖失败0位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。
+共957个任务/策略/seed位置；已结束260，运行中1，未开始696，渠道档位不可用0。有效官方任务评分1/0为143/107，缺有效评分 10，原Verifier依赖失败0位置另列；固定组已报告档位不符另列，Router组保留实际Reward及内部请求/返回档位差异。
 
 已保存原Harbor Trial 403次。恢复尝试保留原Trial、原失败及费用；逐位置终局取最后结束的Trial，费用与墙钟合计包含全部尝试。
 
@@ -14,7 +14,7 @@
 
 Harbor命令累计墙钟355062.383656秒，内含官方Trial累计353060.975823秒；差值包含CLI启动、退出及已发生的等待。以上是并发尝试时长之和。
 
-按逐题表：87/87题已有结束记录；87题已结束全部3个固定/简单策略；0题已结束全部11个策略。
+按逐题表：87/87题已有结束记录；86题已结束全部3个固定/简单策略；0题已结束全部11个策略。
 
 GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请求与返回档位逐次登记。
 
@@ -22,7 +22,7 @@ GLM Low/High/Max按请求档位分组，返回档位未报告；Luna/Terra的请
 
 | 策略 | 已结束 | Reward1 | Reward0 | 有效评分通过率 | 评分覆盖 | 87题通过率区间 | 缺有效评分 | 运行中 | 未开始 | 渠道档位不可用 | 已知模型+教师USD |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| glm_low | 87 | 42 | 36 | 42/78 = 53.85% | 78/87 | 48.28%—58.62% | 9 | 0 | 0 | 0 | 4.66286319 |
+| glm_low | 86 | 42 | 36 | 42/78 = 53.85% | 78/87 | 48.28%—58.62% | 8 | 1 | 0 | 0 | 4.66286319 |
 | luna_high | 87 | 38 | 48 | 38/86 = 44.19% | 86/87 | 43.68%—44.83% | 1 | 0 | 0 | 0 | 1.36614357 |
 | terra_high | 87 | 63 | 23 | 63/86 = 73.26% | 86/87 | 72.41%—73.56% | 1 | 0 | 0 | 0 | 11.83327640 |
 | laya_original_off | 0 | 0 | 0 | 缺有效评分 | 0/87 | 0.00%—100.00% | 0 | 0 | 87 | 0 | UNKNOWN |
@@ -47,7 +47,7 @@ Provider实际报告缓存读取153,515,302 Token；570次请求未报告缓存�
 
 教师请求0次，短评实际输入Router 0次；同一短评可由多次决策消费。
 
-Provider实际额外重试2377次；已记录技术恢复142次，涉及119个位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。
+Provider实际额外重试2377次；已记录技术恢复143次，涉及119个位置。最多额外100次，原任务时限有效，4096输出耗尽不重试；逐尝试原因、耗时及已知消费沿PROVIDER_ATTEMPT和account_attempts保存。
 
 Provider报告输出超过请求额度54次；其中4个额度终止位置单列渠道故障，原官方Reward及全部费用保留。请求额度内的正常length原0继续保留；不因本项重复已评分任务。
 
@@ -124,17 +124,17 @@ Provider报告输出超过请求额度54次；其中4个额度终止位置单列
 | fixed_vs_router | glm_low → laya_original_off_model_only_max | 32 | 18/18 | 10 | 10/9 | 0.04980015 / 0.20664262 |
 | fixed_vs_router | glm_low → laya_original_on_model_only_low | 25 | 16/11 | 8 | 7/7 | 0.07596758 / 0.03072162 |
 | fixed_vs_router | glm_low → laya_original_on_model_only_high | 25 | 14/13 | 11 | 10/9 | 0.12754115 / 0.07904878 |
-| fixed_vs_router | glm_low → laya_original_on_model_only_max | 33 | 20/16 | 9 | 8/6 | 0.08670468 / 0.20727087 |
+| fixed_vs_router | glm_low → laya_original_on_model_only_max | 34 | 20/16 | 9 | 8/6 | 0.08670468 / 0.20727087 |
 | fixed_vs_router | glm_low → laya_trained_off_model_only_low | 29 | 19/9 | 12 | 11/5 | 0.13704008 / 0.06278844 |
-| fixed_vs_router | glm_low → laya_trained_off_model_only_high | 28 | 18/18 | 13 | 11/9 | 0.18530743 / 0.35224659 |
-| fixed_vs_router | glm_low → laya_trained_off_model_only_max | 33 | 20/20 | 11 | 9/8 | 0.09527452 / 0.17753246 |
-| fixed_vs_router | glm_low → laya_trained_on_model_only_low | 32 | 21/14 | 13 | 12/7 | 0.11031713 / 0.04799512 |
-| fixed_vs_router | glm_low → laya_trained_on_model_only_high | 27 | 18/16 | 11 | 10/8 | 0.08823407 / 0.04314608 |
-| fixed_vs_router | glm_low → laya_trained_on_model_only_max | 35 | 20/21 | 7 | 7/5 | 0.04655713 / 0.11228692 |
-| fixed_vs_router | glm_low → kev_original_off_model_only_low | 28 | 18/8 | 14 | 12/5 | 0.18461692 / 0.08431651 |
-| fixed_vs_router | glm_low → kev_original_off_model_only_high | 27 | 19/15 | 14 | 13/11 | 0.16849440 / 0.11198228 |
-| fixed_vs_router | glm_low → kev_original_off_model_only_max | 24 | 18/14 | 12 | 11/8 | 0.14162746 / 0.12651492 |
-| fixed_vs_router | glm_low → kev_original_on_model_only_low | 26 | 18/11 | 13 | 12/8 | 0.15295188 / 0.03477706 |
+| fixed_vs_router | glm_low → laya_trained_off_model_only_high | 29 | 18/18 | 13 | 11/9 | 0.18530743 / 0.35224659 |
+| fixed_vs_router | glm_low → laya_trained_off_model_only_max | 34 | 20/20 | 11 | 9/8 | 0.09527452 / 0.17753246 |
+| fixed_vs_router | glm_low → laya_trained_on_model_only_low | 33 | 21/14 | 13 | 12/7 | 0.11031713 / 0.04799512 |
+| fixed_vs_router | glm_low → laya_trained_on_model_only_high | 28 | 18/16 | 11 | 10/8 | 0.08823407 / 0.04314608 |
+| fixed_vs_router | glm_low → laya_trained_on_model_only_max | 36 | 20/21 | 7 | 7/5 | 0.04655713 / 0.11228692 |
+| fixed_vs_router | glm_low → kev_original_off_model_only_low | 29 | 18/8 | 14 | 12/5 | 0.18461692 / 0.08431651 |
+| fixed_vs_router | glm_low → kev_original_off_model_only_high | 28 | 19/15 | 14 | 13/11 | 0.16849440 / 0.11198228 |
+| fixed_vs_router | glm_low → kev_original_off_model_only_max | 25 | 18/14 | 12 | 11/8 | 0.14162746 / 0.12651492 |
+| fixed_vs_router | glm_low → kev_original_on_model_only_low | 27 | 18/11 | 13 | 12/8 | 0.15295188 / 0.03477706 |
 | fixed_vs_router | glm_low → kev_original_on_model_only_high | 28 | 17/17 | 11 | 10/8 | 0.10280261 / 0.06996194 |
 | fixed_vs_router | glm_low → kev_original_on_model_only_max | 30 | 21/19 | 15 | 13/12 | 0.14634921 / 0.13179584 |
 | fixed_vs_router | glm_low → kev_trained_off_model_only_low | 58 | 30/40 | 31 | 19/23 | 1.11179475 / 1.90489840 |
@@ -156,17 +156,17 @@ Provider报告输出超过请求额度54次；其中4个额度终止位置单列
 | fixed_vs_router | luna_high → laya_original_off_model_only_max | 36 | 19/19 | 1 | 1/1 | 0.01148994 / 0.01794657 |
 | fixed_vs_router | luna_high → laya_original_on_model_only_low | 27 | 14/12 | 3 | 3/3 | 0.01446218 / 0.00554765 |
 | fixed_vs_router | luna_high → laya_original_on_model_only_high | 27 | 14/13 | 3 | 3/2 | 0.01446218 / 0.01072316 |
-| fixed_vs_router | luna_high → laya_original_on_model_only_max | 36 | 19/17 | 1 | 1/1 | 0.00187274 / 0.01134179 |
+| fixed_vs_router | luna_high → laya_original_on_model_only_max | 37 | 19/17 | 1 | 1/1 | 0.00187274 / 0.01134179 |
 | fixed_vs_router | luna_high → laya_trained_off_model_only_low | 31 | 17/9 | 3 | 3/2 | 0.01446218 / 0.00355368 |
-| fixed_vs_router | luna_high → laya_trained_off_model_only_high | 30 | 16/20 | 2 | 2/2 | 0.01258944 / 0.00814146 |
-| fixed_vs_router | luna_high → laya_trained_off_model_only_max | 35 | 20/22 | 1 | 1/1 | 0.00187274 / 0.01194385 |
-| fixed_vs_router | luna_high → laya_trained_on_model_only_low | 35 | 20/16 | 2 | 2/1 | 0.00297224 / 0.00241099 |
-| fixed_vs_router | luna_high → laya_trained_on_model_only_high | 29 | 19/17 | 2 | 2/2 | 0.00297224 / 0.00377197 |
-| fixed_vs_router | luna_high → laya_trained_on_model_only_max | 37 | 25/22 | 0 | 0/0 | UNKNOWN / UNKNOWN |
-| fixed_vs_router | luna_high → kev_original_off_model_only_low | 30 | 15/8 | 2 | 2/2 | 0.00378666 / 0.00538690 |
-| fixed_vs_router | luna_high → kev_original_off_model_only_high | 29 | 16/16 | 3 | 3/3 | 0.00565940 / 0.00857048 |
-| fixed_vs_router | luna_high → kev_original_off_model_only_max | 25 | 15/15 | 1 | 1/1 | 0.00187274 / 0.00180800 |
-| fixed_vs_router | luna_high → kev_original_on_model_only_low | 29 | 16/12 | 1 | 1/1 | 0.00187274 / 0.00171380 |
+| fixed_vs_router | luna_high → laya_trained_off_model_only_high | 31 | 16/20 | 2 | 2/2 | 0.01258944 / 0.00814146 |
+| fixed_vs_router | luna_high → laya_trained_off_model_only_max | 36 | 20/22 | 1 | 1/1 | 0.00187274 / 0.01194385 |
+| fixed_vs_router | luna_high → laya_trained_on_model_only_low | 36 | 20/16 | 2 | 2/1 | 0.00297224 / 0.00241099 |
+| fixed_vs_router | luna_high → laya_trained_on_model_only_high | 30 | 19/17 | 2 | 2/2 | 0.00297224 / 0.00377197 |
+| fixed_vs_router | luna_high → laya_trained_on_model_only_max | 38 | 25/22 | 0 | 0/0 | UNKNOWN / UNKNOWN |
+| fixed_vs_router | luna_high → kev_original_off_model_only_low | 31 | 15/8 | 2 | 2/2 | 0.00378666 / 0.00538690 |
+| fixed_vs_router | luna_high → kev_original_off_model_only_high | 30 | 16/16 | 3 | 3/3 | 0.00565940 / 0.00857048 |
+| fixed_vs_router | luna_high → kev_original_off_model_only_max | 26 | 15/15 | 1 | 1/1 | 0.00187274 / 0.00180800 |
+| fixed_vs_router | luna_high → kev_original_on_model_only_low | 30 | 16/12 | 1 | 1/1 | 0.00187274 / 0.00171380 |
 | fixed_vs_router | luna_high → kev_original_on_model_only_high | 31 | 17/18 | 1 | 1/1 | 0.00187274 / 0.00348850 |
 | fixed_vs_router | luna_high → kev_original_on_model_only_max | 33 | 21/22 | 3 | 3/2 | 0.01446218 / 0.01173330 |
 | fixed_vs_router | luna_high → kev_trained_off_model_only_low | 64 | 31/46 | 3 | 3/3 | 0.01446218 / 0.05154140 |
@@ -188,17 +188,17 @@ Provider报告输出超过请求额度54次；其中4个额度终止位置单列
 | fixed_vs_router | terra_high → laya_original_off_model_only_max | 36 | 26/19 | 8 | 8/7 | 0.38377700 / 0.16730302 |
 | fixed_vs_router | terra_high → laya_original_on_model_only_low | 27 | 19/12 | 9 | 8/8 | 0.74809400 / 0.03181255 |
 | fixed_vs_router | terra_high → laya_original_on_model_only_high | 27 | 18/13 | 12 | 11/9 | 0.84563560 / 0.08313901 |
-| fixed_vs_router | terra_high → laya_original_on_model_only_max | 36 | 26/17 | 9 | 8/5 | 1.15485300 / 0.23135221 |
+| fixed_vs_router | terra_high → laya_original_on_model_only_max | 37 | 26/17 | 9 | 8/5 | 1.15485300 / 0.23135221 |
 | fixed_vs_router | terra_high → laya_trained_off_model_only_low | 31 | 22/9 | 13 | 12/5 | 0.92721860 / 0.06222791 |
-| fixed_vs_router | terra_high → laya_trained_off_model_only_high | 30 | 21/20 | 13 | 12/10 | 0.96069600 / 0.16472858 |
-| fixed_vs_router | terra_high → laya_trained_off_model_only_max | 35 | 25/22 | 8 | 8/6 | 0.56663060 / 0.12141666 |
-| fixed_vs_router | terra_high → laya_trained_on_model_only_low | 35 | 25/16 | 14 | 12/6 | 1.45456840 / 0.09184631 |
-| fixed_vs_router | terra_high → laya_trained_on_model_only_high | 29 | 21/17 | 11 | 10/8 | 0.76604340 / 0.04221460 |
-| fixed_vs_router | terra_high → laya_trained_on_model_only_max | 37 | 27/22 | 7 | 6/5 | 0.93624580 / 0.14881487 |
-| fixed_vs_router | terra_high → kev_original_off_model_only_low | 30 | 22/8 | 13 | 11/5 | 1.49123260 / 0.06961117 |
-| fixed_vs_router | terra_high → kev_original_off_model_only_high | 29 | 21/16 | 14 | 12/11 | 1.53616180 / 0.12074542 |
-| fixed_vs_router | terra_high → kev_original_off_model_only_max | 25 | 20/15 | 11 | 10/7 | 1.41500920 / 0.13488274 |
-| fixed_vs_router | terra_high → kev_original_on_model_only_low | 29 | 22/12 | 12 | 11/7 | 1.52375660 / 0.03495950 |
+| fixed_vs_router | terra_high → laya_trained_off_model_only_high | 31 | 21/20 | 13 | 12/10 | 0.96069600 / 0.16472858 |
+| fixed_vs_router | terra_high → laya_trained_off_model_only_max | 36 | 25/22 | 8 | 8/6 | 0.56663060 / 0.12141666 |
+| fixed_vs_router | terra_high → laya_trained_on_model_only_low | 36 | 25/16 | 14 | 12/6 | 1.45456840 / 0.09184631 |
+| fixed_vs_router | terra_high → laya_trained_on_model_only_high | 30 | 21/17 | 11 | 10/8 | 0.76604340 / 0.04221460 |
+| fixed_vs_router | terra_high → laya_trained_on_model_only_max | 38 | 27/22 | 7 | 6/5 | 0.93624580 / 0.14881487 |
+| fixed_vs_router | terra_high → kev_original_off_model_only_low | 31 | 22/8 | 13 | 11/5 | 1.49123260 / 0.06961117 |
+| fixed_vs_router | terra_high → kev_original_off_model_only_high | 30 | 21/16 | 14 | 12/11 | 1.53616180 / 0.12074542 |
+| fixed_vs_router | terra_high → kev_original_off_model_only_max | 26 | 20/15 | 11 | 10/7 | 1.41500920 / 0.13488274 |
+| fixed_vs_router | terra_high → kev_original_on_model_only_low | 30 | 22/12 | 12 | 11/7 | 1.52375660 / 0.03495950 |
 | fixed_vs_router | terra_high → kev_original_on_model_only_high | 31 | 21/18 | 9 | 8/7 | 1.12375220 / 0.06465850 |
 | fixed_vs_router | terra_high → kev_original_on_model_only_max | 33 | 26/22 | 15 | 13/11 | 1.57049720 / 0.12311584 |
 | fixed_vs_router | terra_high → kev_trained_off_model_only_low | 64 | 45/46 | 27 | 22/22 | 2.05760960 / 1.44169740 |
