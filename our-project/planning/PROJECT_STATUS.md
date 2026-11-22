@@ -1,10 +1,10 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前执行 · 2026-11-22 17:26 本地 review 快照与有限接续
+## 当前执行 · 2026-11-22 18:29 本地 review 快照与有限接续
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过／9失败。新增overfull-hbox的Luna High为0、Terra High为1；此前Terra十二项8／4、GLM Low四项均0、tune-mjcf／Luna High为1。共5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均自然退出；逐题结果见[当前报告](../results/benchmark/README.md)。
 
-Model-only计划2136、结束2134、运行2，Reward 1／0为603／419，缺有效评分1101，Verifier依赖故障11，2610 Trial，已知参考费$59.85555374，2663次费用未知请求，Provider额外重试11301次。联合计划957、结束261、运行0、未执行快照696，Reward 1／0为143／107，缺有效评分11，404 Trial，已知参考费$17.87105198，209次费用未知请求，Provider额外重试2377次；624项在1154474主队列，24项由1224021续接，48项不执行，保留原957计划分母。1154474运行，1154475等候其接续，1224021仅等待这两项。历史计划1513、全部结束1513、运行0，Reward 1／0为439／488，544项仍缺有效评分并保留技术缺分，Verifier依赖故障42，3102 Trial，已知参考费$57.23135580，1488次费用未知请求，Provider额外重试3144次。Reward 1／0只计有效官方评分；缺分和依赖故障分列，不计作0。费用、逐题用量与缺分见[批次报告](../results/benchmark/README.md)。
+Model-only计划2136、结束2134、运行2，Reward 1／0为615／420，缺有效评分1089，Verifier依赖故障10，2623 Trial，已知参考费$60.16883320，2664次费用未知请求，Provider额外重试11301次。联合计划957、结束261、运行0、未开始快照696，Reward 1／0为143／107，缺有效评分11，404 Trial，已知参考费$17.87105198，209次费用未知请求，Provider额外重试2377次；624项在1154474主队列，24项由1224021续接，48项不执行，保留原957计划分母。1154474运行，1154475等候其完成后接续，1224021仅等待这两项。历史计划1513、全部结束1513、运行0，Reward 1／0为439／488，544项缺有效评分，Verifier依赖故障42，3102 Trial，已知参考费$57.23135580，1488次费用未知请求，Provider额外重试3144次。Reward 1／0只计有效官方评分；有效0、缺分和依赖故障分列。费用、逐题用量与缺分见[批次报告](../results/benchmark/README.md)。
 
 db-wal-recovery按各批`per_episode.csv`真实`strategy_id`记录：Model-only的`laya_original_off_model_only_low`／`laya_original_off_model_only_high`／`laya_original_off_model_only_max`／`laya_trained_off_model_only_max`／`kev_original_on_model_only_max`／`kev_trained_off_model_only_low`／`kev_trained_off_model_only_high`／`kev_trained_off_model_only_max`／`kev_trained_on_model_only_low`／`kev_trained_on_model_only_high`／`kev_trained_on_model_only_max`为有效1；`laya_original_on_model_only_low`／`laya_original_on_model_only_high`／`laya_original_on_model_only_max`／`laya_trained_off_model_only_low`／`laya_trained_off_model_only_high`／`laya_trained_on_model_only_low`／`laya_trained_on_model_only_high`／`laya_trained_on_model_only_max`／`kev_original_off_model_only_low`／`kev_original_off_model_only_high`／`kev_original_off_model_only_max`／`kev_original_on_model_only_low`为有效0，`kev_original_on_model_only_high`缺有效Reward。联合`glm_low`／`terra_high`为有效1、`luna_high`为有效0，其余八个策略仍待执行。历史`glm_high`／`luna_high`／`terra_high`／`rule_sticky`／`kev_trained_on`为有效1；`glm_low`／`glm_max`／`luna_low`／`luna_max`／`luna_xhigh`／`laya_original_off`／`laya_trained_on`／`kev_original_off`／`kev_original_on`为有效0；`laya_original_on`／`laya_trained_off`／`kev_trained_off`缺有效Reward，其中`laya_trained_off`为Verifier依赖故障。缺分不计作0。
 
@@ -12,7 +12,7 @@ db-wal-recovery按各批`per_episode.csv`真实`strategy_id`记录：Model-only�
 
 count-dataset-tokens训练Kev OFF Low与原始Kev ON Max新增官方1，分别101419／80542已报Token、$0.03853500／$0.00494588已知参考费、725.872942／952.255419秒；后者1次请求费用未知。历史overfull-hbox／GLM Low的官方4项断言3过1败，train-fasttext的2项均败，两个有效0保留；Caffe再次在APT阶段到原评分时限且缺Reward。
 
-1154473与1216401已退出；1154474运行，1154475等候其接续六项cobol，1224021仅等待1154474与1154475。Native1169087加载四套原权重，固定最多4／Router最多2。三批观察1187905／1187906／1187907每1200秒复用原导出目录。SSH64205由17471持有，后续由现有接续进程处理，凭据沿原memfd。Provider每请求最多额外100次重试已部署；1268679已退出。
+1154473与1216401已退出；1154474运行，1154475等候其完成后接续六项cobol，1224021仅等待1154474与1154475。Native1169087加载四套原权重，固定最多4／Router最多2。三批观察1187905／1187906／1187907每1200秒复用原导出目录。SSH64205由17471持有，后续由现有接续进程处理，凭据沿原memfd。Provider每请求最多额外100次重试已部署；1268679已退出。
 
 联合Router原计划696项。1154474覆盖624项，1224021覆盖本地取证／清理和荧光报告质粒三题的24项。六题涉及自动化漏洞利用或密钥提取，原待机进程1268679已退出，相关48项不执行。保留原89题计划分母和历史评分。
 
