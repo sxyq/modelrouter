@@ -1,10 +1,10 @@
 # ModelRouter · 项目现状、资源条件与执行路线
 
-## 当前执行 · 2026-11-22 08:16本地 review 快照与有限接续
+## 当前执行 · 2026-11-22 09:10本地 review 快照与有限接续
 
 联合Seed43本轮19个旧技术缺分位置全部取得有效官方评分：10通过／9失败。新增overfull-hbox的Luna High为0、Terra High为1；此前Terra十二项8／4、GLM Low四项均0、tune-mjcf／Luna High为1。共5,500,015个已报API Token、$1.19300481已知模型参考费，请求费用缺项0。885120、891922、972291及980527均自然退出；逐题结果见[当前报告](../results/benchmark/README.md)。
 
-Model-only计划2136、已结束2134、运行2，Reward 1／0为528／367，缺有效评分1204，Verifier依赖故障35，2476 Trial，已知参考费$56.58097900，2579次费用未知请求，Provider额外重试11151次。联合计划957、已结束260、运行1、未开始快照696，Reward 1／0为143／107，缺有效评分10，403 Trial，已知参考费$17.86228316，209次费用未知请求，Provider额外重试2377次；624项在1154474主队列，24项由1224021续接，48项不执行，保留原957计划分母。历史计划1513、已结束1513、运行0，Reward 1／0为439／488，544项仍无有效评分并保留技术缺分，Verifier依赖故障42，3102 Trial，已知参考费$57.23135580，1488次费用未知请求，Provider额外重试3144次。Reward 1／0只计有效官方评分；缺分和依赖故障分列，不计作0。最终结果汇总仍待其余批次与安全范围内工作；费用、逐题用量与缺分见[批次报告](../results/benchmark/README.md)。
+Model-only计划2136、结束2134、运行2，Reward 1／0为533／376，缺有效评分1197，Verifier依赖故障28，2490 Trial，已知参考费$57.58622533，2594次费用未知请求，Provider额外重试11152次。联合计划957、结束261、运行0、未执行快照696，Reward 1／0为143／107，缺有效评分11，404 Trial，已知参考费$17.87105198，209次费用未知请求，Provider额外重试2377次；624项在1154474主队列，24项由1224021续接，48项不执行，保留原957计划分母。历史计划1513、全部结束1513、运行0，Reward 1／0为439／488，544项仍缺有效评分并保留技术缺分，Verifier依赖故障42，3102 Trial，已知参考费$57.23135580，1488次费用未知请求，Provider额外重试3144次。Reward 1／0只计有效官方评分；缺分和依赖故障分列，不计作0。费用、逐题用量与缺分见[批次报告](../results/benchmark/README.md)。
 
 db-wal-recovery按`per_episode.csv`实际`strategy_id`记录：Model-only的`laya_original_off_model_only_low`／`laya_original_off_model_only_high`／`laya_original_off_model_only_max`／`laya_trained_off_model_only_max`／`kev_original_on_model_only_max`／`kev_trained_off_model_only_low`／`kev_trained_off_model_only_high`／`kev_trained_off_model_only_max`／`kev_trained_on_model_only_low`／`kev_trained_on_model_only_high`／`kev_trained_on_model_only_max`为1；`laya_original_on_model_only_low`／`laya_original_on_model_only_high`／`laya_original_on_model_only_max`／`laya_trained_off_model_only_low`／`laya_trained_off_model_only_high`／`laya_trained_on_model_only_low`／`laya_trained_on_model_only_high`／`laya_trained_on_model_only_max`／`kev_original_off_model_only_low`／`kev_original_off_model_only_high`／`kev_original_off_model_only_max`／`kev_original_on_model_only_low`为0，`kev_original_on_model_only_high`缺有效Reward。联合的`glm_low`／`terra_high`为1、`luna_high`为0；`laya_original_off`／`laya_original_on`／`laya_trained_off`／`laya_trained_on`／`kev_original_off`／`kev_original_on`／`kev_trained_off`／`kev_trained_on`仍待执行。历史的`glm_high`／`luna_high`／`terra_high`／`rule_sticky`／`kev_trained_on`为1，`glm_low`／`glm_max`／`luna_low`／`luna_max`／`luna_xhigh`／`laya_original_off`／`laya_trained_on`／`kev_original_off`／`kev_original_on`为0，`laya_original_on`／`laya_trained_off`／`kev_trained_off`缺有效Reward。
 
@@ -12,11 +12,11 @@ db-wal-recovery按`per_episode.csv`实际`strategy_id`记录：Model-only的`lay
 
 count-dataset-tokens训练Kev OFF Low与原始Kev ON Max新增官方1，分别101419／80542已报Token、$0.03853500／$0.00494588已知参考费、725.872942／952.255419秒；后者1次请求费用未知。历史overfull-hbox／GLM Low的官方4项断言3过1败，train-fasttext的2项均败，两个有效0保留；Caffe再次在APT阶段到原评分时限且缺Reward。
 
-1154473已于2026-11-22 00:02:40台北记录自然结束；1154474仍运行，1154475等待六项cobol，1216401与1224021仍保持原队列等待，1224021仅等待1154473、1154474、1154475、1216401。Native1169087加载四套原权重，固定最多4／Router最多2。三批观察1187905／1187906／1187907每1200秒复用原导出目录。SSH64205由17471持有，后续由现有接续进程处理，凭据沿原memfd。Provider每请求最多额外100次重试已部署；1268679已退出。
+1154473与1216401已退出；1154474仍运行，1154475等待六项cobol，1224021仅等待1154474与1154475。Native1169087加载四套原权重，固定最多4／Router最多2。三批观察1187905／1187906／1187907每1200秒复用原导出目录。SSH64205由17471持有，后续由现有接续进程处理，凭据沿原memfd。Provider每请求最多额外100次重试已部署；1268679已退出。
 
 联合Router原计划696项。1154474覆盖624项，1224021覆盖本地取证／清理和荧光报告质粒三题的24项。六题涉及自动化漏洞利用或密钥提取，原待机进程1268679已退出，相关48项不执行。保留原89题计划分母和历史评分。
 
-00:21原Caffe官方镜像沿现行网络在7秒下载34.0MB APT索引，临时容器已自动移除。旧Agent工具历史显示依赖安装结束，官方Verifier随后停在四个InRelease且耗尽1200秒。GLM Low／Seed43由原单题入口1216401保持原队列等待，后续由原入口恢复该位置。已删除两个过时公开导出副本约350MiB，可从原记录重新导出。
+00:21原Caffe官方镜像沿现行网络在7秒下载34.0MB APT索引，临时容器已自动移除。旧Agent工具历史显示依赖安装结束，官方Verifier随后停在四个InRelease且耗尽1200秒。已删除两个过时公开导出副本约350MiB，可从原记录重新导出。
 
 23:25更换无响应的原99588转发，远端代理恢复200；原缓存uv／uvx均为官方0.9.5。运行配置将github.com及release-assets.githubusercontent.com加入no_proxy，astral.sh继续原代理；实际Docker客体发布包HEAD直连200、1.16秒。共享视频及H3空闲时通过原/free释放模型，原GPU锁与健康任务继续。
 
