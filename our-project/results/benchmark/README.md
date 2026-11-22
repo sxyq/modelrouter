@@ -1,14 +1,14 @@
 # Terminal-Bench正式2.0与历史2.1结果
 
-## 当前执行 · 2026-11-22 16:42 本地 review 快照
+## 当前执行 · 2026-11-22 17:26 本地 review 快照
 
 | 批次 | 原计划 | 已结束 | 官方1 | 有效官方0 | 缺有效评分 | 评分依赖故障 | 运行中 | 待执行快照 | Trial | 已知参考费 USD | 费用未知请求 | 额外重试 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Model-only · Seed43 | 2136 | 2134 | 590 | 419 | 1105 | 20 | 2 | 0 | 2597 | 59.75918127 | 2649 | 11212 |
+| Model-only · Seed43 | 2136 | 2134 | 603 | 419 | 1101 | 11 | 2 | 0 | 2610 | 59.85555374 | 2663 | 11301 |
 | 联合 · Seed43 | 957 | 261 | 143 | 107 | 11 | 0 | 0 | 696 | 404 | 17.87105198 | 209 | 2377 |
 | 历史 · Seed42 | 1513 | 1513 | 439 | 488 | 544 | 42 | 0 | 0 | 3102 | 57.23135580 | 1488 | 3144 |
 
-Reward 1／0仅统计有效官方评分；缺有效评分、Verifier依赖故障与有效0分分列。Model-only仍运行2项；联合已结束261项、运行0项，696项待执行分为624项主队列、24项续接、48项不执行，保留957项原计划分母；1154474运行，1154475等候其接续，1224021仅等待这两项。历史1513项全部结束，544项缺有效评分并保留技术缺分。Provider每请求最多额外100次重试已部署；供应商实收与资源费用未知。
+Reward 1／0仅统计有效官方评分；缺有效评分、Verifier依赖故障与有效0分分列。Model-only结束2134项、仍运行2项；联合结束261项、运行0项，696项待执行分为624项主队列、24项续接、48项不执行，保留957项原计划分母；1154474运行，1154475等候其接续，1224021仅等待这两项。历史1513项全部结束，544项缺有效评分并保留技术缺分。Provider每请求最多额外100次重试已部署；供应商实收与资源费用未知。
 
 db-wal-recovery按各批 `metrics/per_episode.csv` 的实际 `strategy_id` 归档；缺有效Reward保留缺分。
 
@@ -18,7 +18,7 @@ db-wal-recovery按真实`strategy_id`分别记录有效1、有效0、缺有效Re
 |---|---|---|---|
 | Model-only | `laya_original_off_model_only_low`、`laya_original_off_model_only_high`、`laya_original_off_model_only_max`、`laya_trained_off_model_only_max`、`kev_original_on_model_only_max`、`kev_trained_off_model_only_low`、`kev_trained_off_model_only_high`、`kev_trained_off_model_only_max`、`kev_trained_on_model_only_low`、`kev_trained_on_model_only_high`、`kev_trained_on_model_only_max` | `laya_original_on_model_only_low`、`laya_original_on_model_only_high`、`laya_original_on_model_only_max`、`laya_trained_off_model_only_low`、`laya_trained_off_model_only_high`、`laya_trained_on_model_only_low`、`laya_trained_on_model_only_high`、`laya_trained_on_model_only_max`、`kev_original_off_model_only_low`、`kev_original_off_model_only_high`、`kev_original_off_model_only_max`、`kev_original_on_model_only_low` | 缺有效Reward：`kev_original_on_model_only_high` |
 | 联合 | `glm_low`、`terra_high` | `luna_high` | 待执行：`laya_original_off`、`laya_original_on`、`laya_trained_off`、`laya_trained_on`、`kev_original_off`、`kev_original_on`、`kev_trained_off`、`kev_trained_on` |
-| 历史 | `glm_high`、`luna_high`、`terra_high`、`rule_sticky`、`kev_trained_on` | `glm_low`、`glm_max`、`luna_low`、`luna_max`、`luna_xhigh`、`laya_original_off`、`laya_original_on`、`laya_trained_off`、`laya_trained_on`、`kev_original_off`、`kev_original_on`、`kev_trained_off` | 无 |
+| 历史 | `glm_high`、`luna_high`、`terra_high`、`rule_sticky`、`kev_trained_on` | `glm_low`、`glm_max`、`luna_low`、`luna_max`、`luna_xhigh`、`laya_original_off`、`laya_trained_on`、`kev_original_off`、`kev_original_on` | 缺有效Reward：`laya_original_on`、`laya_trained_off`、`kev_trained_off`；`laya_trained_off`同时记录Verifier依赖故障 |
 
 近期独立Trial如下。原失败、官方评分及费用分别保留。
 
